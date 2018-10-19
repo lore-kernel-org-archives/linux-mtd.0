@@ -1,30 +1,29 @@
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
- Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
- <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
- <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
- <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
- <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
- <20181018225009.59d94aee@bbrezillon>
- <695f6a8b-d37b-bc57-215b-eb6c36252a80@amlogic.com>
- <20181019104248.528a3409@bbrezillon>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <0b07e022-60f5-6263-bfa7-779e7aa3cbe1@amlogic.com>
-Date: Fri, 19 Oct 2018 17:01:51 +0800
+Received: from vulcan.natalenko.name ([104.207.131.136])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDR3V-0000bf-1s
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:26:55 +0000
 MIME-Version: 1.0
-In-Reply-To: <20181019104248.528a3409@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date: Fri, 19 Oct 2018 11:26:37 +0200
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-block <linux-block@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org, Pavel
+ Machek <pavel@ucw.cz>, Paolo Valente <paolo.valente@linaro.org>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, Adrian Hunter
+ <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>, Jan Kara
+ <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig
+ <hch@infradead.org>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Mark
+ Brown <broonie@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes
+ Thumshirn <jthumshirn@suse.de>, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+In-Reply-To: <CACRpkdZgethKLu3P4taLfzqjGULyoP-T7bhUUpRKtjDRteNnxA@mail.gmail.com>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <18744e21b9f5aa4b3ab721a007a3e9a2@natalenko.name>
+ <CACRpkdZgethKLu3P4taLfzqjGULyoP-T7bhUUpRKtjDRteNnxA@mail.gmail.com>
+Message-ID: <42fc6a366e88335b72517ea7d58847fd@natalenko.name>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,82 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi.
 
+On 19.10.2018 10:33, Linus Walleij wrote:
+>> > +     /*
+>> > +      * Zoned devices must use a deadline scheduler because currently
+>> > +      * that is the only scheduler respecting zoned writes.
+>> > +      */
+>> > +     if (blk_queue_is_zoned(q))
+>> > +             policy = "mq-deadline";
+>> > +     else if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
+>> > +             policy = "bfq";
+>> > +     else
+>> > +             policy = "mq-deadline";
+>> 
+>> If more rules will be needed in the future, shall we just add extra 
+>> ifs,
+>> or it would be better to craft some struct/table now + policy search
+>> helper?
+> 
+> Let's do it when it happens. Premature optimization is the root
+> of all evil ;)
 
-On 2018/10/19 16:42, Boris Brezillon wrote:
-> On Fri, 19 Oct 2018 16:29:40 +0800
-> Liang Yang <liang.yang@amlogic.com> wrote:
-> 
->> On 2018/10/19 4:50, Boris Brezillon wrote:
->>> On Thu, 18 Oct 2018 13:09:05 +0800
->>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
->>>    
->>>> +static int meson_nfc_buffer_init(struct mtd_info *mtd)
->>>> +{
->>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
->>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>> +	static int max_page_bytes, max_info_bytes;
->>>> +	int page_bytes, info_bytes;
->>>> +	int nsectors;
->>>> +
->>>> +	nsectors = mtd->writesize / nand->ecc.size;
->>>> +	page_bytes =  mtd->writesize + mtd->oobsize;
->>>> +	info_bytes = nsectors * PER_INFO_BYTE;
->>>> +
->>>> +	if (nfc->data_buf && nfc->info_buf) {
->>>> +		if (max_page_bytes < page_bytes)
->>>> +			meson_nfc_free_buffer(nfc);
->>>> +		else
->>>> +			return 0;
->>>> +	}
->>>> +
->>>> +	max_page_bytes = max_t(int, max_page_bytes, page_bytes);
->>>> +	max_info_bytes = max_t(int, max_info_bytes, info_bytes);
->>>> +
->>>> +	nfc->data_buf = kmalloc(max_page_bytes, GFP_KERNEL);
->>>
->>> Is there a good reason for not using chip->data_buf and allocating a
->>> new buffer here?
->>>    
->> when calling read_oob or write_oob, i need a mid-buffer which is used in
->> meson_nfc_prase_data_oob(). i.e. after reading a page data into
->> nfc->data_buf, I will format it and transfer to chip->data_buf.
->>
->>
->>>> +	if (!nfc->data_buf)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	nfc->info_buf = kmalloc(max_info_bytes, GFP_KERNEL);
->>>> +	if (!nfc->info_buf) {
->>>> +		kfree(nfc->data_buf);
->>>> +		return -ENOMEM;
->>>> +	}
->>>
->>> I'd recommend moving this info_buf in the priv chip struct, otherwise
->>> you'll have to protect nfc->info_buf with a lock to prevent an already
->>> register chip from using this pointer while you're reallocating the
->>> buffer. Also, I think you have a memleak here.
->>>    
->> ok, i will move it in the chip struct .
->>
->> but how memleak happens even i have called meson_nfc_free_buffer before
->> and free data_buf if info_buf alloc faied.
-> 
-> You're right, I missed the call to meson_nfc_free_buffer() when
-> max_page_bytes < page_bytes. Still, this part is racy, just like the
-> nfc->data_buf replacement is if you have several NAND chips. I'd
-> recommend moving those bufs to the priv chip struct.
-> 
+I'd say, this is a matter of code readability, not optimisations. I do 
+not strongly object against current approach, though.
 
-ok. i will move data_duf and info_buf to priv chip struct.
-
->>
->>>> +
->>>> +	return 0;
->>>> +}
->>>
->>> .
->>>    
-> 
-> .
-> 
+-- 
+   Oleksandr Natalenko (post-factum)
