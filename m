@@ -1,7 +1,7 @@
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.1])
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.5])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDY46-0007FD-U0
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 16:56:03 +0000
+ id 1gDY47-0007F3-VY
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 16:56:06 +0000
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 To: boris.brezillon@free-electrons.com
 Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
@@ -9,10 +9,10 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v2 04/10] mtd: cfi_cmdset_0002: Call xip_enable() once only in
- do_write_buffer().
-Date: Sat, 20 Oct 2018 01:55:20 +0900
-Message-Id: <20181019165526.11159-5-ikegami@allied-telesis.co.jp>
+Subject: [PATCH v2 05/10] mtd: cfi_cmdset_0002: Split do_write_oneword() to
+ reduce function size
+Date: Sat, 20 Oct 2018 01:55:21 +0900
+Message-Id: <20181019165526.11159-6-ikegami@allied-telesis.co.jp>
 In-Reply-To: <20181019165526.11159-1-ikegami@allied-telesis.co.jp>
 References: <20181019165526.11159-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,8 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By the removed goto statement it can be called xip_enable() once.
-Also for a maintainability refactor it to call the function only once.
+The function is longer so add do_write_oneword_once() to split.
+This is also for to reduce goto statement by additional patch.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -37,42 +37,126 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org
 ---
 Changes since v1:
-- Split from the patch v1 3/3.
+- Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 89 ++++++++++++++++-------------
+ 1 file changed, 50 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index deffafab067e..a3fa2d7b1ba0 100644
+index a3fa2d7b1ba0..ae2d8bd7154e 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1882,10 +1882,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 			continue;
- 		}
+@@ -1547,11 +1547,10 @@ static int cfi_amdstd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 				   do_otp_lock, 1);
+ }
  
--		if (chip_good(map, adr, datum)) {
--			xip_enable(map, chip, adr);
-+		if (chip_good(map, adr, datum))
- 			break;
--		}
+-static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+-				     unsigned long adr, map_word datum,
+-				     int mode)
++static int __xipram do_write_oneword_once(struct map_info *map, struct flchip *chip,
++					  unsigned long adr, map_word datum,
++					  int mode, struct cfi_private *cfi)
+ {
+-	struct cfi_private *cfi = map->fldrv_priv;
+ 	unsigned long timeo = jiffies + HZ;
+ 	/*
+ 	 * We use a 1ms + 1 jiffies generic timeout for writes (most devices
+@@ -1564,42 +1563,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	 */
+ 	unsigned long uWriteTimeout = (HZ / 1000) + 1;
+ 	int ret = 0;
+-	map_word oldd;
+-	int retry_cnt = 0;
+-
+-	adr += chip->start;
+-
+-	mutex_lock(&chip->mutex);
+-	ret = get_chip(map, chip, adr, mode);
+-	if (ret) {
+-		mutex_unlock(&chip->mutex);
+-		return ret;
+-	}
  
- 		if (time_after(jiffies, timeo)) {
- 			ret = -EIO;
-@@ -1911,13 +1909,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 				 cfi->device_type, NULL);
- 		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
- 				 cfi->device_type, NULL);
--		xip_enable(map, chip, adr);
- 		/* FIXME - should have reset delay before continuing */
- 
- 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
- 		       __func__, adr);
+-	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
+-		 __func__, adr, datum.x[0]);
+-
+-	if (mode == FL_OTP_WRITE)
+-		otp_enter(map, chip, adr, map_bankwidth(map));
+-
+-	/*
+-	 * Check for a NOP for the case when the datum to write is already
+-	 * present - it saves time and works around buggy chips that corrupt
+-	 * data at other locations when 0xff is written to a location that
+-	 * already contains 0xff.
+-	 */
+-	oldd = map_read(map, adr);
+-	if (map_word_equal(map, oldd, datum)) {
+-		pr_debug("MTD %s(): NOP\n",
+-		       __func__);
+-		goto op_done;
+-	}
+-
+-	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
+-	ENABLE_VPP(map);
+-	xip_disable(map, chip, adr);
+-
+- retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+@@ -1642,6 +1606,53 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 		UDELAY(map, chip, adr, 1);
  	}
  
-+	xip_enable(map, chip, adr);
++	return ret;
++}
 +
- 	chip->state = FL_READY;
- 	DISABLE_VPP(map);
- 	put_chip(map, chip, adr);
++static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
++				     unsigned long adr, map_word datum,
++				     int mode)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++	int ret = 0;
++	map_word oldd;
++	int retry_cnt = 0;
++
++	adr += chip->start;
++
++	mutex_lock(&chip->mutex);
++	ret = get_chip(map, chip, adr, mode);
++	if (ret) {
++		mutex_unlock(&chip->mutex);
++		return ret;
++	}
++
++	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
++		 __func__, adr, datum.x[0]);
++
++	if (mode == FL_OTP_WRITE)
++		otp_enter(map, chip, adr, map_bankwidth(map));
++
++	/*
++	 * Check for a NOP for the case when the datum to write is already
++	 * present - it saves time and works around buggy chips that corrupt
++	 * data at other locations when 0xff is written to a location that
++	 * already contains 0xff.
++	 */
++	oldd = map_read(map, adr);
++	if (map_word_equal(map, oldd, datum)) {
++		pr_debug("MTD %s(): NOP\n",
++		       __func__);
++		goto op_done;
++	}
++
++	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
++	ENABLE_VPP(map);
++	xip_disable(map, chip, adr);
++
++ retry:
++	ret = do_write_oneword_once(map, chip, adr, datum, mode, cfi);
++
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
 -- 
 2.18.0
