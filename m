@@ -1,21 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDPgr-0001dH-7I
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 08:01:25 +0000
-Date: Fri, 19 Oct 2018 09:59:03 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] mtd: partitions: Add OF support to RedBoot partitions
-Message-ID: <20181019095903.5dee8dd4@bbrezillon>
-In-Reply-To: <20181019070622.26661-3-linus.walleij@linaro.org>
-References: <20181019070622.26661-1-linus.walleij@linaro.org>
- <20181019070622.26661-3-linus.walleij@linaro.org>
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>
+CC: <linux-mtd@lists.infradead.org>, Yixun Lan <yixun.lan@amlogic.com>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
+ <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181018223943.145e5497@bbrezillon>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <b80f2e72-7ad5-9f37-a059-87b1d8344e7b@amlogic.com>
+Date: Fri, 19 Oct 2018 16:04:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181018223943.145e5497@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,100 +32,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Oct 2018 09:06:22 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> This adds device tree support for RedBoot partitioning. We
-> read out the FIS directory block information from the device
-> tree and then parse the partition table from there.
+
+On 2018/10/19 4:39, Boris Brezillon wrote:
+> On Thu, 18 Oct 2018 13:09:05 +0800
+> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
 > 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/mtd/parsers/redboot.c | 35 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 34 insertions(+), 1 deletion(-)
+>> +static int meson_nfc_calc_set_timing(struct meson_nfc *nfc,
+>> +				     const struct nand_sdr_timings *timings)
+>> +{
+>> +	struct nand_timing *timing = &nfc->timing;
+>> +	int div, bt_min, bt_max, bus_timing;
+>> +	int ret;
+>> +
+>> +	div = DIV_ROUND_UP((timings->tRC_min / 1000), NFC_CLK_CYCLE);
+>> +	ret = clk_set_rate(nfc->device_clk, 1000000000 / div);
+>> +	if (ret) {
+>> +		dev_err(nfc->dev, "failed to set nand clock rate\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	timing->twb = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tWB_max),
+>> +				   div * NFC_CLK_CYCLE);
+>> +	timing->tadl = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tADL_min),
+>> +				    div * NFC_CLK_CYCLE);
+>> +	timing->twhr = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tWHR_min),
+>> +				    div * NFC_CLK_CYCLE);
+>> +
+>> +	bt_min = (timings->tREA_max + NFC_DEFAULT_DELAY) / div;
+>> +	bt_max = (NFC_DEFAULT_DELAY + timings->tRHOH_min
+>> +			+ timings->tRC_min / 2) / div;
+>> +
+>> +	bt_min = DIV_ROUND_UP(bt_min, 1000);
+>> +	bt_max = DIV_ROUND_UP(bt_max, 1000);
+>> +
+>> +	if (bt_max < bt_min)
+>> +		return -EINVAL;
+>> +
+>> +	bus_timing = (bt_min + bt_max) / 2 + 1;
+>> +
+>> +	writel((1 << 21), nfc->reg_base + NFC_REG_CFG);
+>> +	writel((NFC_CLK_CYCLE - 1) | (bus_timing << 5),
+>> +	       nfc->reg_base + NFC_REG_CFG);
+>> +
+>> +	writel((1 << 31), nfc->reg_base + NFC_REG_CMD);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int
+>> +meson_nfc_setup_data_interface(struct nand_chip *nand, int csline,
+>> +			       const struct nand_data_interface *conf)
+>> +{
+>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
+>> +	const struct nand_sdr_timings *timings;
+>> +
+>> +	timings = nand_get_sdr_timings(conf);
+>> +	if (IS_ERR(timings))
+>> +		return -ENOTSUPP;
+>> +
+>> +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+>> +		return 0;
 > 
-> diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
-> index 7623ac5fc586..fb816825aa19 100644
-> --- a/drivers/mtd/parsers/redboot.c
-> +++ b/drivers/mtd/parsers/redboot.c
-> @@ -25,7 +25,7 @@
->  #include <linux/slab.h>
->  #include <linux/init.h>
->  #include <linux/vmalloc.h>
-> -
-> +#include <linux/of.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/module.h>
-> @@ -56,6 +56,31 @@ static inline int redboot_checksum(struct fis_image_desc *img)
->  	return 1;
->  }
->  
-> +#ifdef CONFIG_OF
-> +static void parse_redboot_of(struct mtd_info *master)
-> +{
-> +	struct device_node *np;
-> +	u32 dirblock;
-> +	int ret;
-> +
-> +	np = mtd_get_of_node(master);
-> +	if (!np)
-> +		return;
-> +	ret = of_property_read_u32(np, "fis-index-block", &dirblock);
-> +	if (ret)
-> +		return;
-> +	/*
-> +	 * Assign the block found in the device tree to the local
-> +	 * directory block pointer.
-> +	 */
-> +	directory = dirblock;
-> +}
-> +#else
-> +static void parse_redboot_of(struct mtd_info *master)
-> +{
-> +}
-> +#endif
-> +
->  static int parse_redboot_partitions(struct mtd_info *master,
->  				    const struct mtd_partition **pparts,
->  				    struct mtd_part_parser_data *data)
-> @@ -75,6 +100,7 @@ static int parse_redboot_partitions(struct mtd_info *master,
->  #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
->  	static char nullstring[] = "unallocated";
->  #endif
-> +	parse_redboot_of(master);
->  
->  	if ( directory < 0 ) {
->  		offset = master->size + directory * master->erasesize;
-> @@ -289,9 +315,16 @@ static int parse_redboot_partitions(struct mtd_info *master,
->  	return ret;
->  }
->  
-> +static const struct of_device_id mtd_parser_redboot_of_match_table[] = {
-> +	{ .compatible = "redboot-fis" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, mtd_parser_trx_of_match_table);
+> Hm, before saying you supporting the requested timing, you should make
+> sure they are actually supported. I'd recommend splitting this in 2
+> steps:
+> 
+> 1/ calc timings
+> 2/ store the timings in the chip priv struct so that they can be
+> applied next time ->select_chip() is called.
+> 
+ok, i will try to split.
 
-You might want to have this match table definition enclosed in a #ifdef
-CONFIG_OF section...
-
-> +
->  static struct mtd_part_parser redboot_parser = {
->  	.parse_fn = parse_redboot_partitions,
->  	.name = "RedBoot",
-> +	.of_match_table = mtd_parser_redboot_of_match_table,
-
-... and use of_match_ptr(mtd_parser_redboot_of_match_table) here.
-
-I'm proposing that to make it consistent with the
-approach you've taken for the parse_redboot_of() function.
-
-Alternatively, you could just drop the #ifdef CONFIG_OF section around
-parse_redboot_of() (there's already a dummy of_property_read_u32()
-func returning -ENOSYS when CONFIG_OF is not set, so it should work
-just fine).
-
->  };
->  module_mtd_part_parser(redboot_parser);
->  
+>> +
+>> +	meson_nfc_calc_set_timing(nfc, timings);
+> > You should not set the timing from ->setup_data_interface(), just
+> calculate them, make sure they are supported and store the state in the
+> private chip struct. Applying those timings should be done in
+> ->select_chip(), so that you can support 2 chips with different timings.
+> 
+em, i will fix it.
+>> +	return 0;
+>> +}
+> 
+> .
+> 
