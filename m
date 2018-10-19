@@ -1,28 +1,24 @@
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
- <jianxin.pan@amlogic.com>
-CC: <linux-mtd@lists.infradead.org>, Yixun Lan <yixun.lan@amlogic.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDPXJ-0003Pd-2E
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:49:34 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
- Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
- <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
- <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
- <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
- <20181018162449.3fe433e7@bbrezillon>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <30ceed2f-03a2-8e4c-b267-df14d052f13d@amlogic.com>
-Date: Fri, 19 Oct 2018 15:29:13 +0800
-MIME-Version: 1.0
-In-Reply-To: <20181018162449.3fe433e7@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ linux-mtd@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v2 01/15] mtd: maps: physmap: Add SPDX header
+Date: Fri, 19 Oct 2018 09:48:54 +0200
+Message-Id: <20181019074908.13226-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20181019074908.13226-1-boris.brezillon@bootlin.com>
+References: <20181019074908.13226-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,69 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add an SPDX header matching the MODULE_LICENSE("GPL") definition.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Reviewed-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+Changes in v2:
+- Add Ricardo's R-b
+---
+ drivers/mtd/maps/physmap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 2018/10/18 22:24, Boris Brezillon wrote:
-> On Thu, 18 Oct 2018 13:09:05 +0800
-> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
-> 
->> +static int meson_nfc_exec_op(struct nand_chip *chip,
->> +			     const struct nand_operation *op, bool check_only)
->> +{
->> +	struct mtd_info *mtd = nand_to_mtd(chip);
->> +	struct meson_nfc *nfc = nand_get_controller_data(chip);
->> +	const struct nand_op_instr *instr = NULL;
->> +	int ret = 0, cmd;
->> +	unsigned int op_id;
->> +	int i;
->> +
->> +	for (op_id = 0; op_id < op->ninstrs; op_id++) {
->> +		instr = &op->instrs[op_id];
->> +		switch (instr->type) {
->> +		case NAND_OP_CMD_INSTR:
->> +			if (instr->ctx.cmd.opcode == NAND_CMD_STATUS)
->> +				meson_nfc_cmd_idle(nfc, nfc->timing.twb);
-> 
-> Hm, I don't want drivers to base their decisions on the opcode value.
-> There's a ->delay_ns field in the instruction object, can't you use
-> that one instead? Also, I don't understand why this is only needed for
-> the STATUS command. It should normally be applied to all instructions.
-> 
-em, it should be applied to all instructions.
-i will fix it and use instr->delay_ns instead.
-
->> +			cmd = nfc->param.chip_select | NFC_CMD_CLE;
->> +			cmd |= instr->ctx.cmd.opcode & 0xff;
->> +			writel(cmd, nfc->reg_base + NFC_REG_CMD);
->> +			if (instr->ctx.cmd.opcode == NAND_CMD_STATUS)
->> +				meson_nfc_cmd_idle(nfc, nfc->timing.twhr);
->> +			break;
->> +
->> +		case NAND_OP_ADDR_INSTR:
->> +			for (i = 0; i < instr->ctx.addr.naddrs; i++) {
->> +				cmd = nfc->param.chip_select | NFC_CMD_ALE;
->> +				cmd |= instr->ctx.addr.addrs[i] & 0xff;
->> +				writel(cmd, nfc->reg_base + NFC_REG_CMD);
->> +			}
->> +			break;
->> +
->> +		case NAND_OP_DATA_IN_INSTR:
->> +			meson_nfc_read_buf(mtd, instr->ctx.data.buf.in,
->> +					   instr->ctx.data.len);
->> +			break;
->> +
->> +		case NAND_OP_DATA_OUT_INSTR:
->> +			meson_nfc_write_buf(mtd, instr->ctx.data.buf.out,
->> +					    instr->ctx.data.len);
->> +			break;
->> +
->> +		case NAND_OP_WAITRDY_INSTR:
->> +			meson_nfc_queue_rb(nfc, instr->ctx.waitrdy.timeout_ms);
->> +			break;
->> +		}
->> +	}
->> +	return ret;
->> +}
-> 
-> .
-> 
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index cc2adbbcd60f..19ec105cbb2d 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0+
+ /*
+  * Normal mappings of chips in physical memory
+  *
+-- 
+2.14.1
