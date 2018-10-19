@@ -1,29 +1,25 @@
-Received: from vulcan.natalenko.name ([104.207.131.136])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDR3V-0000bf-1s
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:26:55 +0000
+Received: from mail1.bemta24.messagelabs.com ([67.219.250.1])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDR7Y-0002Kz-60
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:31:06 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: FabioB <fbettoni@gmail.com>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>, Hauke Mehrtens <hauke@hauke-m.de>, Koen
+ Vandeputte <koen.vandeputte@ncentric.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, PACKHAM
+ Chris <chris.packham@alliedtelesis.co.nz>, "Joakim.Tjernlund@infinera.com"
+ <Joakim.Tjernlund@infinera.com>
+Subject: RE: [PATCH 0/3] mtd: cfi_cmdset_0002: Fix flash write issue for
+ OpenWrt Project
+Date: Fri, 19 Oct 2018 09:24:08 +0000
+Message-ID: <TY2PR01MB2169074C1A733002276B09D2DCF90@TY2PR01MB2169.jpnprd01.prod.outlook.com>
+References: <20181019081320.12843-1-ikegami@allied-telesis.co.jp>
+ <20181019102736.2a65c66a@bbrezillon>
+ <CAP7n=KdZ5hdxgZRMixdkuMiVMuCpaXq9hOX_0r1eCQc5Ej4raw@mail.gmail.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Fri, 19 Oct 2018 11:26:37 +0200
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-block <linux-block@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org, Pavel
- Machek <pavel@ucw.cz>, Paolo Valente <paolo.valente@linaro.org>, Ulf Hansson
- <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, Adrian Hunter
- <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>, Jan Kara
- <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig
- <hch@infradead.org>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Mark
- Brown <broonie@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes
- Thumshirn <jthumshirn@suse.de>, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-In-Reply-To: <CACRpkdZgethKLu3P4taLfzqjGULyoP-T7bhUUpRKtjDRteNnxA@mail.gmail.com>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <18744e21b9f5aa4b3ab721a007a3e9a2@natalenko.name>
- <CACRpkdZgethKLu3P4taLfzqjGULyoP-T7bhUUpRKtjDRteNnxA@mail.gmail.com>
-Message-ID: <42fc6a366e88335b72517ea7d58847fd@natalenko.name>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,30 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
-
-On 19.10.2018 10:33, Linus Walleij wrote:
->> > +     /*
->> > +      * Zoned devices must use a deadline scheduler because currently
->> > +      * that is the only scheduler respecting zoned writes.
->> > +      */
->> > +     if (blk_queue_is_zoned(q))
->> > +             policy = "mq-deadline";
->> > +     else if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
->> > +             policy = "bfq";
->> > +     else
->> > +             policy = "mq-deadline";
->> 
->> If more rules will be needed in the future, shall we just add extra 
->> ifs,
->> or it would be better to craft some struct/table now + policy search
->> helper?
-> 
-> Let's do it when it happens. Premature optimization is the root
-> of all evil ;)
-
-I'd say, this is a matter of code readability, not optimisations. I do 
-not strongly object against current approach, though.
-
--- 
-   Oleksandr Natalenko (post-factum)
+U29ycnkgbGV0IG1lIHJlc2VuZCB0aGUgbWFpbCBhcyB0ZXh0IG1haWwgZm9ybWF0IHNpbmNlIGVy
+cm9yIHJldHVybmVkLg0KDQpGcm9tOiBJS0VHQU1JIFRva3Vub3JpIA0KU2VudDogRnJpZGF5LCBP
+Y3RvYmVyIDE5LCAyMDE4IDY6MjAgUE0NClRvOiAnRmFiaW9CJzsgYm9yaXMuYnJlemlsbG9uQGJv
+b3RsaW4uY29tOyAnSGF1a2UgTWVocnRlbnMnOyAnS29lbiBWYW5kZXB1dHRlJw0KQ2M6IGxpbnV4
+LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBQQUNLSEFNIENocmlzOyBKb2FraW0uVGplcm5sdW5k
+QGluZmluZXJhLmNvbQ0KU3ViamVjdDogUkU6IFtQQVRDSCAwLzNdIG10ZDogY2ZpX2NtZHNldF8w
+MDAyOiBGaXggZmxhc2ggd3JpdGUgaXNzdWUgZm9yIE9wZW5XcnQgUHJvamVjdA0KDQpUaGFuayB5
+b3Ugc28gbXVjaCBmb3IgeW91ciBjb21tZW50cy4NCg0KVGhlIG9yaWdpbmFsIHBhdGNoIGluIE9w
+ZW5XUlQgaXMgYmVsb3cuDQrjgIA8aHR0cHM6Ly9naXRodWIuY29tL29wZW53cnQvb3BlbndydC9i
+bG9iL3YxOC4wNi4wL3RhcmdldC9saW51eC9hcjcxeHgvcGF0Y2hlcy00LjkvNDAzLW10ZF9maXhf
+Y2ZpX2NtZHNldF8wMDAyX3N0YXR1c19jaGVjay5wYXRjaD4NCg0KU28gSSB3aWxsIGRvIGFkZCBI
+YXVrZS1zYW4gYW5kIEtvZW4tc2FuIGFsc28gaW4gdGhpcyBwYXRjaCBtYWlsLg0KDQpIYXVrZS1z
+YW4gYW5kIEtvZW4tc2FuLA0KDQrjgIBDYW4geW91IGFsc28gYWdyZWUgdG8gZml4IHRoZSBhYm92
+ZSBPcGVuV1JUIHBhdGNoIGluIHRoZSB1cHN0cmVhbSBieSBtZT8NCuOAgE9mIGNvdXJzZSBpZiB5
+b3UgbGlrZSBwbGVhc2UgZG8gaXQgYnkgeW91cnNlbGYgYnV0IEkgdGhpbmsgdGhhdCB5b3UgYXJl
+IHZlcnkgYnVzeSBzbyBJIHdpbGwgZG8gdGhpcyBpZiBva2F5Lg0KDQpCeSB0aGUgd2F5IGhvdyBj
+YW4gSSBhZGQgdGhlIG9yaWdpbmF0b3IgbmFtZSBpbiB0aGUgY29tbWl0IG1lc3NhZ2Ugd2l0aCB0
+YWc/DQpTbyBJIGhhdmUganVzdCBjaGVja2VkIHRoZSBEb2N1bWVudGF0aW9uIGFuZCBJIHRoaW5r
+IHRoYXQgdGhlIENvLURldmVsb3BlZC1ieSB0YWcgY2FuIGJlIHVzZWQgZm9yIHRoZSBvcmlnaW5h
+dG9yIG5hbWUuDQpJcyB0aGlzIGNvcnJlY3Q/DQpBbnl3YXkgSSB3aWxsIGRvIHVwZGF0ZSB0aGUg
+cGF0Y2hlcy4NCg0KDQpGcm9tOiBGYWJpb0IgW21haWx0bzpmYmV0dG9uaUBnbWFpbC5jb21dIA0K
+U2VudDogRnJpZGF5LCBPY3RvYmVyIDE5LCAyMDE4IDU6MzcgUE0NClRvOiBib3Jpcy5icmV6aWxs
+b25AYm9vdGxpbi5jb20NCkNjOiBJS0VHQU1JIFRva3Vub3JpOyBsaW51eC1tdGRAbGlzdHMuaW5m
+cmFkZWFkLm9yZzsgUEFDS0hBTSBDaHJpczsgSm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20N
+ClN1YmplY3Q6IFJlOiBbUEFUQ0ggMC8zXSBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogRml4IGZsYXNo
+IHdyaXRlIGlzc3VlIGZvciBPcGVuV3J0IFByb2plY3QNCg0KSGkgQm9yaXMsDQpzdXJlIGl0J3Mg
+T0sgdG8gaGFuZG92ZXIgYXV0b3JzaGlwIHRvIFRva3Vub3JpLA0KSSB3cm90ZSB0byBoaW0gdG8g
+YXNrIGZvciBoZWxwIGFuZCBoZSB0b2xkIG1lIHRvIHJlc3RvcmUgcmVtb3ZlZCBwYXRjaC4NClNv
+IEkgb25seSBoYWQgdG8gZWRpdCBieSBoYW5kIGJlY2F1c2UgcGF0Y2hpbmcgcGhhc2Ugd2FzIG5v
+dCB3b3JraW5nIGR1cmluZyBidWlsZC4NClRva3Vub3JpIG11c3QgaGF2ZSBhbGwgYXV0aG9yc2hp
+cCBhbmQgY3JlZGl0cyB0byB0aGUgc29sdXRpb24uDQoNCkZhYmlvDQoNCklsIGdpb3JubyB2ZW4g
+MTkgb3R0IDIwMTggYWxsZSBvcmUgMTA6MjcgQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxs
+b25AYm9vdGxpbi5jb20+IGhhIHNjcml0dG86DQorbXRkIE1MIGFuZCBhbGwgcGVvcGxlIENDLWVk
+IG9uIG90aGVyIHBhdGNoZXMNCg0KT24gRnJpLCAxOSBPY3QgMjAxOCAxNzoxMzoxNyArMDkwMA0K
+VG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4gd3JvdGU6DQoN
+Cj4gVGhlIGNoYW5nZSBpcyBiYXNlZCBvbiB0aGUgZml4IGZvciBmbGFzaCBlcmFzZSB0byB1c2Ug
+Y2hpcF9nb29kKCkgZG9uZSBpbiB0aGUgcGFzdC4NCj4gQW5kIGl0IGlzIGZpeGVkIGFzIHNhbWUg
+d2F5IGluIHRoZSBPcGVuV3J0IFByb2plY3QgYXMgYmVsb3cuDQo+wqAgwqA8aHR0cHM6Ly9naXQu
+b3BlbndydC5vcmcvP3A9b3BlbndydC9vcGVud3J0LmdpdDthPWNvbW1pdGRpZmY7aD1kZGMxMWMz
+OTMyYzdiN2I3ZGY3ZDVmYmQ0OGYyMDdlNzc2MTllYWE3Pg0KPiBBbHNvIGluY2x1ZGVzIHNvbWUg
+cmVmYWN0b3JpbmcgY2hhbmdlcy4NCj4gDQo+IFRva3Vub3JpIElrZWdhbWkgKDMpOg0KPsKgIMKg
+bXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSBkb193cml0ZV9vbmV3b3JkKCkgdG8gdXNlIGNo
+aXBfZ29vZCgpDQo+wqAgwqBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogUmVtb3ZlIGNoaXBfcmVhZHko
+KSBmcm9tIGRvX3dyaXRlX2J1ZmZlcigpDQo+wqAgwqBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogUmVt
+b3ZlIGdvdG8gc3RhdGVtbmV0IGZyb20gZG9fd3JpdGVfYnVmZmVyKCkNCg0KSSBzZWUgdGhhdCBG
+YWJpbyB3YXMgdGhlIG9yaWdpbmFsIGF1dGhvciBvZiB0aGUgT3BlbldSVCBwYXRjaC4gV2UNCnVz
+dWFsbHkga2VlcCBhdXRob3JzaGlwIHdoZW4gcG9ydGluZyBwYXRjaGluZyBmcm9tIG9uZSBwcm9q
+ZWN0IHRvDQphbm90aGVyLCBzbyBJIGp1c3Qgd2FudCB0byBjaGVjayB3aXRoIEZhYmlvIGlmIGhl
+J3Mgb2theSB0byBoYW5kb3Zlcg0KdGhpcyBhdXRob3JzaGlwIHRvIHlvdS4NCg0KPiANCj7CoCBk
+cml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYyB8IDY4ICsrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLS0tDQo+wqAgMSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKyksIDMwIGRl
+bGV0aW9ucygtKQ0KPiANCg==
