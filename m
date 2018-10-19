@@ -1,43 +1,24 @@
-Received: from mail-wm1-f67.google.com ([209.85.128.67])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDVZa-0003lP-3E
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 14:16:24 +0000
-Received: by mail-wm1-f67.google.com with SMTP id 185-v6so3878048wmt.2
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 07:16:07 -0700 (PDT)
+ id 1gDW2a-0007Hp-25
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 14:46:18 +0000
+Date: Fri, 19 Oct 2018 16:45:53 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Russell Senior <russell@personaltelco.net>,
+ OpenWrt Development List <openwrt-devel@lists.openwrt.org>
+Message-ID: <1457198086.5374.1539960353710.JavaMail.zimbra@nod.at>
+In-Reply-To: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
+References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
+Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl:
+ store file handle of lower inode on copy up")
 MIME-Version: 1.0
-In-Reply-To: <e7687ded-bf95-5b76-a56b-99dc27434b8c@suse.de>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
- <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
- <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
- <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
- <20181017100526.GB23493@quack2.suse.cz>
- <d1d082f3-d681-02ed-5bbe-5eb011d6b0da@acm.org>
- <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
- <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
- <CAHhmqcQinFN9ez5MTRquY0FPaYO2BmOKMn0avy84QPWLK1g2Gg@mail.gmail.com>
- <e7687ded-bf95-5b76-a56b-99dc27434b8c@suse.de>
-From: Bryan Gurney <bgurney@redhat.com>
-Date: Fri, 19 Oct 2018 10:16:05 -0400
-Message-ID: <CAHhmqcRft76_FRaHdZrSvG_kvp8hYTehO73PHdoKg4RZB+Utkg@mail.gmail.com>
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Johannes Thumshirn <jthumshirn@suse.de>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bart Van Assche <bvanassche@acm.org>,
- Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
- Paolo Valente <paolo.valente@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Hellwig <hch@infradead.org>,
- One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>,
- Mark Brown <broonie@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,46 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 19, 2018 at 9:44 AM, Johannes Thumshirn <jthumshirn@suse.de> wrote:
-> On 19/10/18 15:36, Bryan Gurney wrote:
->> I like this idea.  I don't have enough experience to write this patch
->> myself, but I imagine something like adding "bool is_zoned_aware" to
->> "struct elevator_type", and setting that true only for the schedulers
->> that are currently zoned-device aware (which is currently deadline on
->> single queue, mq-deadline on blk-mq).
->
-> I don't think this is needed currently as a) Jens is working on getting
-> rid of the legacy path,
+Rafa=C5=82,
 
-Once the legacy schedulers are gone, the default (prior to Linus'
-proposed patch) will be mq-deadline, which is zoned-device-aware.  So
-the default scheduler will be "safer" for zoned devices.
+----- Urspr=C3=BCngliche Mail -----
+> Von: "Rafa=C5=82 Mi=C5=82ecki" <zajec5@gmail.com>
+> An: "Amir Goldstein" <amir73il@gmail.com>, "Miklos Szeredi" <miklos@szere=
+di.hu>, linux-unionfs@vger.kernel.org,
+> linux-fsdevel@vger.kernel.org, "richard" <richard@nod.at>, "Artem Bityuts=
+kiy" <dedekind1@gmail.com>, "Adrian Hunter"
+> <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org, "Russell Senior=
+" <russell@personaltelco.net>, "OpenWrt
+> Development List" <openwrt-devel@lists.openwrt.org>
+> Gesendet: Freitag, 19. Oktober 2018 14:31:29
+> Betreff: Regression in handling power cuts since 3a1e819b4e80 ("ovl: stor=
+e file handle of lower inode on copy up")
 
-However, it will still be possible for users (or distro defaults) to
-select a non-zoned-aware scheduler, such as "none", "kyber", or "bfq"
-(prior to this patch).  So there would still be a window for users to
-encounter the same problems I found when aborted commands start
-occurring during otherwise normal filesystem or storage activity, by
-drivers that are otherwise compliant with the handling characteristics
-of zoned block devices.
+> Hi,
+>=20
+> Since OpenWrt switch from kernel 4.9 to 4.14 users started randomly
+> reporting file system corruptions. OpenWrt uses overlay(fs) with
+> squashfs as lowerdir and ubifs as upperdir. Russell managed to isolate
+> & describe test case for reproducing corruption when doing a power cut
+> after first boot.
+>=20
+> Interestingly it cannot be reproduced on all devices (NAND dependant?
+> arch dependant?!). I couldn't reproduce that problem on none of my
+> Broadcom devices (ARM=3Dy ARCH_BCM_5301X=3Dy) so I had to buy Ubiquiti
+> EdgeRouter X (ER-X) (MIPS=3Dy RALINK=3Dy). I reproduced it then and
+> bisected down to the commit 3a1e819b4e80 ("ovl: store file handle of
+> lower inode on copy up").
+>=20
+> FWIW I was told it also affects:
+> Asus RT-AC58U (ARCH_IPQ40XX=3Dy)
+> powerpc
+> RB493G, DIR-860L (ATH79=3Dy)
+>=20
+> Steps to reproduce the problem:
+> 1) Flash firmware
+> 2) Boot (for the first time)
+> 3) Let the init script copy config files from lowerdir to the upperdir
+> 4) Wait for boot to finish
+> 5) Verify content of some unmodified config on overlay, using either:
+> hexdump -C /etc/config/dropbear
+> hexdump -C /overlay/upper/etc/config/dropbear
+> 6) Power cut & boot again
+> 7) Check the content of the same file
 
-> which leaves us with mq-deadline only and Linus'
-> patch has:
->
-> +       if (blk_queue_is_zoned(q))
-> +               policy = "mq-deadline";
->
-> Which chooses mq-deadline on a zoned device.
->
-> So nothing to worry about here now.
->
-> All this only given Linus' patch actually gets merged.
+Do you have something also I can test?
+A C reproducer? An xfstest case?
 
-I hope it does get merged.  I keep forgetting to save my "zoned
-devices use deadline" udev rule on my SMR drive test machine in
-between reinstalls.
+> After above regressing commit the later check confirms the file size
+> looks correct but it's filled with all 00-es only.
+>=20
+> Can I ask you to check if there is something possibly wrong with the
+> above ovl commit? Or does it expose some problem with the ubifs? Or
+> maybe the whole UBI?
 
+Well, I fear it uncovers a problem in UBIFS. We had already problems with o=
+verlayfs.
+Did you bisect the problem and you are sure that the said commit is the fir=
+st bad commit?
+=20
+> FWIW testing above commit (and one before it) always results in single
+> error in the kernel log:
+> [   14.250184] UBIFS error (ubi0:1 pid 637): ubifs_add_orphan: orphaned t=
+wice
+
+Please show the full log.
+The orphan thing rings a bell, we had such a bug already.
 
 Thanks,
-
-Bryan
+//richard
