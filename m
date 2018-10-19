@@ -1,7 +1,7 @@
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.212])
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.5])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDY4V-0007F6-V7
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 16:56:57 +0000
+ id 1gDY4o-0007F3-QP
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 16:57:54 +0000
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 To: boris.brezillon@free-electrons.com
 Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
@@ -9,10 +9,10 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v2 09/10] mtd: cfi_cmdset_0002: Split write-to-buffer-reset
- sequence
-Date: Sat, 20 Oct 2018 01:55:25 +0900
-Message-Id: <20181019165526.11159-10-ikegami@allied-telesis.co.jp>
+Subject: [PATCH v2 10/10] mtd: cfi_cmdset_0002: Split to wait write buffer to
+ check if completed
+Date: Sat, 20 Oct 2018 01:55:26 +0900
+Message-Id: <20181019165526.11159-11-ikegami@allied-telesis.co.jp>
 In-Reply-To: <20181019165526.11159-1-ikegami@allied-telesis.co.jp>
 References: <20181019165526.11159-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,7 +24,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just refactor to split the sequence from do_write_buffer().
+Just refactor to split the wait from do_write_buffer().
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -38,64 +38,114 @@ Cc: linux-mtd@lists.infradead.org
 Changes since v1:
 - Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 38 +++++++++++++++++------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 81 ++++++++++++++++-------------
+ 1 file changed, 46 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index b8f94f47d07c..e45b906c5ea7 100644
+index e45b906c5ea7..0b8efb60a3f1 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1808,6 +1808,27 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -1808,6 +1808,51 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
  	return 0;
  }
  
-+static void __xipram do_write_buffer_reset(struct map_info *map,
-+					   struct flchip *chip,
-+					   struct cfi_private *cfi)
++static int __xipram do_write_buffer_wait(struct map_info *map,
++					 struct flchip *chip, unsigned long adr,
++					 map_word datum)
 +{
-+	/*
-+	 * Recovery from write-buffer programming failures requires
-+	 * the write-to-buffer-reset sequence.  Since the last part
-+	 * of the sequence also works as a normal reset, we can run
-+	 * the same commands regardless of why we are here.
-+	 * See e.g.
-+	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
-+	 */
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
++	unsigned long timeo;
++	unsigned long uWriteTimeout;
++	int ret = 0;
 +
-+	/* FIXME - should have reset delay before continuing */
++	/*
++	 * Timeout is calculated according to CFI data, if available.
++	 * See more comments in cfi_cmdset_0002().
++	 */
++	uWriteTimeout = usecs_to_jiffies(chip->buffer_write_time_max);
++	timeo = jiffies + uWriteTimeout;
++
++	for (;;) {
++		if (chip->state != FL_WRITING) {
++			/* Someone's suspended the write. Sleep */
++			DECLARE_WAITQUEUE(wait, current);
++
++			set_current_state(TASK_UNINTERRUPTIBLE);
++			add_wait_queue(&chip->wq, &wait);
++			mutex_unlock(&chip->mutex);
++			schedule();
++			remove_wait_queue(&chip->wq, &wait);
++			timeo = jiffies + (HZ / 2); /* FIXME */
++			mutex_lock(&chip->mutex);
++			continue;
++		}
++
++		if (chip_good(map, adr, datum))
++			break;
++
++		if (time_after(jiffies, timeo)) {
++			ret = -EIO;
++			break;
++		}
++
++		/* Latency issues. Drop the lock, wait a while and retry */
++		UDELAY(map, chip, adr, 1);
++	}
++
++	return ret;
 +}
++
+ static void __xipram do_write_buffer_reset(struct map_info *map,
+ 					   struct flchip *chip,
+ 					   struct cfi_private *cfi)
+@@ -1838,13 +1883,6 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 				    int len)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long timeo = jiffies + HZ;
+-	/*
+-	 * Timeout is calculated according to CFI data, if available.
+-	 * See more comments in cfi_cmdset_0002().
+-	 */
+-	unsigned long uWriteTimeout =
+-				usecs_to_jiffies(chip->buffer_write_time_max);
+ 	int ret = -EIO;
+ 	unsigned long cmd_adr;
+ 	int z, words;
+@@ -1901,34 +1939,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 				adr, map_bankwidth(map),
+ 				chip->word_write_time);
  
- /*
-  * FIXME: interleaved mode not tested, and probably not supported!
-@@ -1910,22 +1931,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	}
+-	timeo = jiffies + uWriteTimeout;
+-
+-	for (;;) {
+-		if (chip->state != FL_WRITING) {
+-			/* Someone's suspended the write. Sleep */
+-			DECLARE_WAITQUEUE(wait, current);
+-
+-			set_current_state(TASK_UNINTERRUPTIBLE);
+-			add_wait_queue(&chip->wq, &wait);
+-			mutex_unlock(&chip->mutex);
+-			schedule();
+-			remove_wait_queue(&chip->wq, &wait);
+-			timeo = jiffies + (HZ / 2); /* FIXME */
+-			mutex_lock(&chip->mutex);
+-			continue;
+-		}
+-
+-		if (chip_good(map, adr, datum))
+-			break;
+-
+-		if (time_after(jiffies, timeo)) {
+-			ret = -EIO;
+-			break;
+-		}
+-
+-		/* Latency issues. Drop the lock, wait a while and retry */
+-		UDELAY(map, chip, adr, 1);
+-	}
++	ret = do_write_buffer_wait(map, chip, adr, datum);
  
  	if (ret) {
--		/*
--		 * Recovery from write-buffer programming failures requires
--		 * the write-to-buffer-reset sequence.  Since the last part
--		 * of the sequence also works as a normal reset, we can run
--		 * the same commands regardless of why we are here.
--		 * See e.g.
--		 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
--		 */
--		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		/* FIXME - should have reset delay before continuing */
--
-+		do_write_buffer_reset(map, chip, cfi);
- 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
- 		       __func__, adr);
- 	}
+ 		do_write_buffer_reset(map, chip, cfi);
 -- 
 2.18.0
