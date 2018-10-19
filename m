@@ -1,23 +1,25 @@
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDTwX-00069k-Lc
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 12:32:40 +0000
-Received: by mail-wm1-x343.google.com with SMTP id 189-v6so3461751wmw.2
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 05:31:42 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDUNS-0000Ho-J9
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 12:59:44 +0000
+Date: Fri, 19 Oct 2018 14:59:20 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Julien Su <juliensu@mxic.com.tw>, Mason Yang
+ <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
+ linux-spi@vger.kernel.org
+Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
+Message-ID: <20181019145920.43f9d5ec@bbrezillon>
+In-Reply-To: <20181019122527.GJ5895@sirena.org.uk>
+References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+ <20181019122527.GJ5895@sirena.org.uk>
 MIME-Version: 1.0
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Fri, 19 Oct 2018 14:31:29 +0200
-Message-ID: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
-Subject: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
- file handle of lower inode on copy up")
-To: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-unionfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-mtd@lists.infradead.org, Russell Senior <russell@personaltelco.net>,
- OpenWrt Development List <openwrt-devel@lists.openwrt.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Mark,
 
-Since OpenWrt switch from kernel 4.9 to 4.14 users started randomly
-reporting file system corruptions. OpenWrt uses overlay(fs) with
-squashfs as lowerdir and ubifs as upperdir. Russell managed to isolate
-& describe test case for reproducing corruption when doing a power cut
-after first boot.
+On Fri, 19 Oct 2018 13:25:27 +0100
+Mark Brown <broonie@kernel.org> wrote:
 
-Interestingly it cannot be reproduced on all devices (NAND dependant?
-arch dependant?!). I couldn't reproduce that problem on none of my
-Broadcom devices (ARM=3Dy ARCH_BCM_5301X=3Dy) so I had to buy Ubiquiti
-EdgeRouter X (ER-X) (MIPS=3Dy RALINK=3Dy). I reproduced it then and
-bisected down to the commit 3a1e819b4e80 ("ovl: store file handle of
-lower inode on copy up").
+> On Fri, Oct 12, 2018 at 10:48:07AM +0200, Boris Brezillon wrote:
+> 
+> > First question that might come to mind is why should we support such
+> > stateful modes? If you think about it, the gain of transmitting the
+> > opcode on 8 IO lines is rather small compared to the pain it is to
+> > teach the SPI NOR framework how to deal with that. The problem is,
+> > some SPI NOR manufacturers (Macronix for instance) only implement 1-1-1
+> > and 8-8-8 (or 8D-8D-8D), and they want to be able to use their NORs in
+> > 8-8-8 mode when the controller supports it.  
+> 
+> The SPI framework changes definitely look OK to me, if everyone agrees
+> that this is a good way to go from a MTD point of view I'm happy to
+> apply them.  I have no strong opinion on the MTD bits of the series.
 
-FWIW I was told it also affects:
-Asus RT-AC58U (ARCH_IPQ40XX=3Dy)
-powerpc
-RB493G, DIR-860L (ATH79=3Dy)
+Actually, Yogesh posted similar patches before me, so maybe you can
+look at this series [1]. The spi/spi-mem side of things is rather
+uncontroversial. Feel free to apply them if you think they're good
+enough to go in.
 
-Steps to reproduce the problem:
-1) Flash firmware
-2) Boot (for the first time)
-3) Let the init script copy config files from lowerdir to the upperdir
-4) Wait for boot to finish
-5) Verify content of some unmodified config on overlay, using either:
-hexdump -C /etc/config/dropbear
-hexdump -C /overlay/upper/etc/config/dropbear
-6) Power cut & boot again
-7) Check the content of the same file
+Thanks for your review.
 
-After above regressing commit the later check confirms the file size
-looks correct but it's filled with all 00-es only.
+Boris
 
-Can I ask you to check if there is something possibly wrong with the
-above ovl commit? Or does it expose some problem with the ubifs? Or
-maybe the whole UBI?
-
-FWIW testing above commit (and one before it) always results in single
-error in the kernel log:
-[   14.250184] UBIFS error (ubi0:1 pid 637): ubifs_add_orphan: orphaned twi=
-ce
-
-That UBIFS error doesn't occur with 4.12.14. Unfortunately it's
-impossible to cleanly revert 3a1e819b4e80 from the top of 4.12.14.
-
---=20
-Rafa=C5=82
+[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=70822
