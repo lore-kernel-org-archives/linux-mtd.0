@@ -1,23 +1,30 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDPYl-0002Yw-Mx
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:51:04 +0000
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Make SFDP-based 4B_OPCODE support
- detection works correctly
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Marek Vasut <marek.vasut@gmail.com>
-CC: Alexandre Belloni <alexandre.belloni@bootlin.com>, Richard Weinberger
- <richard@nod.at>, <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-References: <20181017144424.17554-1-boris.brezillon@bootlin.com>
-From: Cyrille Pitchen - M19942 <cyrille.pitchen@microchip.com>
-Message-ID: <166fc7d5-695f-5c60-be07-c819736a123d@microchip.com>
-Date: Fri, 19 Oct 2018 09:50:31 +0200
-MIME-Version: 1.0
-In-Reply-To: <20181017144424.17554-1-boris.brezillon@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
+Received: from mail-eopbgr710045.outbound.protection.outlook.com
+ ([40.107.71.45] helo=NAM05-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDRND-0002Hc-Te
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:47:33 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
+ <nagasuresh12@gmail.com>
+Subject: RE: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Fri, 19 Oct 2018 09:47:01 +0000
+Message-ID: <MWHPR02MB262333376A88320A52F06331AFF90@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1537878031-22253-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20181003214633.54e93c00@bbrezillon>
+In-Reply-To: <20181003214633.54e93c00@bbrezillon>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,100 +36,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-looks good, just a small remark below:
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Thursday, October 4, 2018 1:17 AM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
+> <michals@xilinx.com>; linux-mtd@lists.infradead.org; linux-kernel@vger.ke=
+rnel.org;
+> nagasuresh12@gmail.com
+> Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for =
+Arasan
+> NAND Flash Controller
+>=20
+> On Tue, 25 Sep 2018 17:50:31 +0530
+> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+>=20
+> > +static int anfc_zero_len_page_write_type_exec(struct nand_chip *chip,
+> > +					      const struct nand_subop *subop) {
+> > +	const struct nand_op_instr *instr;
+> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
+> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
+> > +	unsigned int op_id;
+> > +	struct anfc_op nfc_op =3D {};
+> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> > +	u32 addrcycles;
+> > +
+> > +	anfc_parse_instructions(chip, subop, &nfc_op);
+> > +	nfc->prog =3D PROG_PGRD;
+> > +	instr =3D nfc_op.data_instr;
+> > +	op_id =3D nfc_op.data_instr_idx;
+> > +
+> > +	addrcycles =3D achip->raddr_cycles + achip->caddr_cycles;
+> > +
+> > +	anfc_prepare_cmd(nfc, nfc_op.cmds[0], NAND_CMD_PAGEPROG, 1,
+>=20
+> Why are the second opcode and the number of address cycles hardcoded.
+> That's simply not future-proof, and I don't want that. Also, I don't unde=
+rstand why you do
+> that, you have all the information you need in subop and you keep guessin=
+g some parameters.
+Ok, I will remove all these hard coding commands from the driver, instead I=
+ will use nfc_op.cmds[0], nfc_op.cmds[1].
 
-Le 17/10/2018 à 16:44, Boris Brezillon a écrit :
-> Some flash_info entries have the SPI_NOR_4B_OPCODES to let the core
-> know that the flash supports 4B opcode. While this solution works fine
-> for id-based caps detection, it doesn't work that well when relying on
-> SFDP-based caps detection. Let's add an SNOR_F_4B_OPCODES flag so that
-> spi_nor_parse_bfpt() can add it when the BFPT_DWORD1_ADDRESS_BYTES
-> field is set to BFPT_DWORD1_ADDRESS_BYTES_4_ONLY.
-> 
-> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++---
->  include/linux/mtd/spi-nor.h   |  1 +
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 9407ca5f9443..85e57e9ea1b5 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->  		break;
->  
->  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
-> +		nor->flags |= SNOR_F_4B_OPCODES;
-
-if spi_nor_parse_sdfp() fails, there is a kind of roll-back operation done
-in spi_nor_init_params() to set the struct spi_nor *nor back to its previous
-state.
-
-		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
-			nor->addr_width = 0;
-			nor->mtd.erasesize = 0;
-		} else {
-			[...]
-
-maybe "nor->flags &= ~SNOR_F_4B_OPCODES;" should be added there.
-If this roll-back block grows too much, maybe we could introduce a
-void spi_nor_roll_back_sfdp(struct spi_nor *nor) function.
-Also it would make the roll back operation more explicit.
-
-Best regards,
-
-Cyrille
-
->  		nor->addr_width = 4;
->  		break;
->  
-> @@ -3552,7 +3553,7 @@ static int spi_nor_init(struct spi_nor *nor)
->  
->  	if ((nor->addr_width == 4) &&
->  	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
-> -	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
-> +	    !(nor->flags & SNOR_F_4B_OPCODES)) {
->  		/*
->  		 * If the RESET# pin isn't hooked up properly, or the system
->  		 * otherwise doesn't perform a reset command in the boot
-> @@ -3586,7 +3587,7 @@ void spi_nor_restore(struct spi_nor *nor)
->  	/* restore the addressing mode */
->  	if ((nor->addr_width == 4) &&
->  	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
-> -	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
-> +	    !(nor->flags & SNOR_F_4B_OPCODES) &&
->  	    (nor->flags & SNOR_F_BROKEN_RESET))
->  		set_4byte(nor, nor->info, 0);
->  }
-> @@ -3744,11 +3745,15 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  		nor->addr_width = 4;
->  		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
->  		    info->flags & SPI_NOR_4B_OPCODES)
-> -			spi_nor_set_4byte_opcodes(nor, info);
-> +			nor->flags |= SNOR_F_4B_OPCODES;
->  	} else {
->  		nor->addr_width = 3;
->  	}
->  
-> +	if (info->addr_width == 4 &&
-> +	    nor->flags & SNOR_F_4B_OPCODES)
-> +		spi_nor_set_4byte_opcodes(nor, info);
-> +
->  	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
->  		dev_err(dev, "address width is too large: %u\n",
->  			nor->addr_width);
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 7f0c7303575e..4ffb165f4f85 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -236,6 +236,7 @@ enum spi_nor_option_flags {
->  	SNOR_F_READY_XSR_RDY	= BIT(4),
->  	SNOR_F_USE_CLSR		= BIT(5),
->  	SNOR_F_BROKEN_RESET	= BIT(6),
-> +	SNOR_F_4B_OPCODES	= BIT(7)
->  };
->  
->  /**
-> 
+Thanks,
+Naga Sureshkumar Relli
+>=20
+> > +			 mtd->writesize, addrcycles);
+> > +	anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > +
+> > +	return 0;
+> > +}
