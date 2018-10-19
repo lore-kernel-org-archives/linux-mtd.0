@@ -1,28 +1,20 @@
-Date: Fri, 19 Oct 2018 10:10:33 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
- Rob Herring <robh@kernel.org>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor
- Wan <victor.wan@amlogic.com>, Neil Armstrong <narmstrong@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Richard
- Weinberger <richard@nod.at>, Yixun Lan <yixun.lan@amlogic.com>,
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Jian
- Hu <jian.hu@amlogic.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione
- <carlo@caione.org>, <linux-amlogic@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Jerome Brunet
- <jbrunet@baylibre.com>
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20181019101033.0a160506@bbrezillon>
-In-Reply-To: <09f76f17-05c4-d9e0-0167-f68e224f00c4@amlogic.com>
-References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
- <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
- <20181018213308.3f8a5279@bbrezillon>
- <09f76f17-05c4-d9e0-0167-f68e224f00c4@amlogic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.211])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDPvJ-0001zL-MD
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 08:14:23 +0000
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+To: boris.brezillon@free-electrons.com
+Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
+ Fabio Bettoni <fbettoni@gmail.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] mtd: cfi_cmdset_0002: Change do_write_oneword() to use
+ chip_good()
+Date: Fri, 19 Oct 2018 17:13:18 +0900
+Message-Id: <20181019081320.12843-2-ikegami@allied-telesis.co.jp>
+In-Reply-To: <20181019081320.12843-1-ikegami@allied-telesis.co.jp>
+References: <20181019081320.12843-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,52 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Oct 2018 15:29:05 +0800
-Liang Yang <liang.yang@amlogic.com> wrote:
+This is required for OpenWrt Project to result the flash write issue as
+below patche.
 
-> > How about defining that the HW returns an array of __le64 instead and then
-> > define the following macros which you can use after converting in the
-> > CPU endianness
-> > 
-> > #define ECC_GET_PROTECTED_OOB_BYTE(x, y)	(((x) >> (8 * (1 + y)) & GENMASK(7, 0))
-> > #define ECC_COMPLETE			BIT(31)
-> > #define ECC_ERR_CNT(x)			(((x) >> 24) & GENMASK(5, 0))
-> > 
-> > (I'm not entirely sure the field positions are correct, but I'll let you
-> > check that).
-> >   
-> ok. i think it should be:
-> 
-> #define ECC_GET_PROTECTED_OOB_BYTE(x, y)	(((x) >> (8 * y) &
-> GENMASK(7, 0))
-> 
-> if x represents the u64 and y represents the index of the u64.
+  <https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=ddc11c3932c7b7b7df7d5fbd48f207e77619eaa7>
 
-Absolutely.
+So change to use chip_good() instead of chip_ready().
 
-> 
-> 
-> 
-> >> +
-> >> +#define PER_INFO_BYTE	(sizeof(struct meson_nfc_info_format))
-> >> +
-> >> +struct meson_nfc_nand_chip {
-> >> +	struct list_head node;
-> >> +	struct nand_chip nand;
-> >> +	bool is_scramble;  
-> > 
-> > I think I already mentioned the NAND_NEED_SCRAMBLING flag []. Please
-> > drop this field and test (chip->flags & NAND_NEED_SCRAMBLING) instead.
-> >   
-> em, i use NAND_NEED_SCRAMBLING and is_scramble is set:
-> static int meson_nand_attach_chip(struct nand_chip *nand)
-> {
-> 	......
-> 	meson_chip->is_scramble =
-> 		(nand->options & NAND_NEED_SCRAMBLING) ? 1 : 0;
-> 	......
-> }
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Fabio Bettoni <fbettoni@gmail.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-Why do you need to add a new field then? Just test
-nand->options & NAND_NEED_SCRAMBLING directly or provide a helper
-function that does that.
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 72428b6bfc47..251c9e1675bd 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1627,31 +1627,37 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 			continue;
+ 		}
+ 
+-		if (time_after(jiffies, timeo) && !chip_ready(map, adr)){
++		if (chip_good(map, adr, datum))
++			break;
++
++		if (time_after(jiffies, timeo)){
+ 			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
+ 			xip_disable(map, chip, adr);
++			ret = -EIO;
+ 			break;
+ 		}
+ 
+-		if (chip_ready(map, adr))
+-			break;
+-
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1);
+ 	}
++
+ 	/* Did we succeed? */
+-	if (!chip_good(map, adr, datum)) {
++	if (ret) {
+ 		/* reset on all failures. */
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+-		if (++retry_cnt <= MAX_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES) {
++			ret = 0;
+ 			goto retry;
++		}
+ 
+ 		ret = -EIO;
+ 	}
++
+ 	xip_enable(map, chip, adr);
++
+  op_done:
+ 	if (mode == FL_OTP_WRITE)
+ 		otp_exit(map, chip, adr, map_bankwidth(map));
+-- 
+2.18.0
