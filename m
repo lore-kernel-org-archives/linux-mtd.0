@@ -1,26 +1,16 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDlDz-0007o4-IF
- for linux-mtd@lists.infradead.org; Sat, 20 Oct 2018 06:59:05 +0000
-From: Richard Weinberger <richard@nod.at>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Russell Senior <russell@personaltelco.net>,
- OpenWrt Development List <openwrt-devel@lists.openwrt.org>
-Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
- file handle of lower inode on copy up")
-Date: Sat, 20 Oct 2018 08:58:49 +0200
-Message-ID: <1818049.3sKzV5Nla8@blindfold>
-In-Reply-To: <CACna6rzvf3+rL9x1uY2NrSd-OD_p08mhzY9hT6dpTOYseja_-g@mail.gmail.com>
-References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
- <11759557.52cTf2r1oB@blindfold>
- <CACna6rzvf3+rL9x1uY2NrSd-OD_p08mhzY9hT6dpTOYseja_-g@mail.gmail.com>
+ id 1gDp4X-0007yU-6W
+ for linux-mtd@lists.infradead.org; Sat, 20 Oct 2018 11:05:35 +0000
+From: Hou Tao <houtao1@huawei.com>
+To: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>
+CC: <linux-kernel@vger.kernel.org>, <richard.weinberger@gmail.com>,
+ <boris.brezillon@bootlin.com>
+Subject: [RFC PATCH] jffs2: make the overwritten xattr invisible after remount
+Date: Sat, 20 Oct 2018 19:07:41 +0800
+Message-ID: <20181020110741.98202-1-houtao1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +20,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, 19. Oktober 2018, 23:28:33 CEST schrieb Rafa=C5=82 Mi=C5=82ecki:
-> On Fri, 19 Oct 2018 at 16:59, Richard Weinberger <richard@nod.at> wrote:
-> > Am Freitag, 19. Oktober 2018, 16:45:53 CEST schrieb Richard Weinberger:
-> > > Well, I fear it uncovers a problem in UBIFS. We had already problems =
-with overlayfs.
-> > > Did you bisect the problem and you are sure that the said commit is t=
-he first bad commit?
-> >
-> > Another thing, UBIFS has no export operations, so overlayfs will fall b=
-ack to xattrs,
-> > if I read the commit correctly.
-> > Maybe this is the root of the problem.
-> >
-> > I'm currently traveling, so I cannot test much. Please make sure whether
-> > 3a1e819b4e80 is really the first bad commit.
-> > Then I can go for a bug hunt. :-)
->=20
-> I did another test and everything keeps pointing to the 3a1e819b4e80.
->=20
-> 1) I switched to the 4.12.14
-> 2) I confirmed problem exists there
-> 3) I added "return 0;" at the beginning of ovl_set_origin()
-> 4) I confirmed problem disappeared
+For xattr modification, we do not write a new jffs2_raw_xref with
+delete marker into flash, so if a xattr is modified then removed,
+and the old xref & xdatum are not erased by GC, after reboot or
+remount, the new xattr xref will be dead but the old xattr xref
+will be alive, and we will get the overwritten xattr instead of
+non-existent error when reading the removed xattr.
 
-Okay. But I still think we're facing some UBIFS problem.
+Fix it by keeping dead xrefs and linking them to the corresponding
+xdatum & inode in jffs2_build_xattr_subsystem(), and using them to
+check and remove the xrefs with a lower xseqno in check_xattr_ref_inode(),
+and removing these dead xrefs once the check is done.
 
-To double check, on Linux 4.12.14 the problem exists and by reverting 3a1e8=
-19b4e80 (or making it a nop)
-it goes away?
-Do you see the warning regarding the double orphan only in the bad case?
+The fix will cause performance degradation in check_xattr_ref_inode(),
+when xattrs are updated through deletion & addition, because there will
+be many dead xrefs in the inode xref list. Luckily SELinux and ACL always
+update xattr through overwrite, so the degradation may be acceptable.
 
-Thanks,
-//richard
+The problem can also be fixed by writing the delete marker for xattr
+ovewrite, but that will incur an extra flash write for each update
+which is more expensive than just checking the lower xseqno once.
+
+Fixes: 8a13695cbe4e ("[JFFS2][XATTR] rid unnecessary writing of delete marker.")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ fs/jffs2/xattr.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ fs/jffs2/xattr.h |  8 +++++++-
+ 2 files changed, 63 insertions(+), 6 deletions(-)
+
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index da3e18503c65..3d40fe02b003 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -522,6 +522,12 @@ static int save_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
+ 		rr.ino = cpu_to_je32(ref->ino);
+ 		rr.xid = cpu_to_je32(ref->xid);
+ 	} else {
++		/*
++		 * For dead xref which has not been moved to xref_dead_list yet
++		 * (refer to jffs2_build_xattr_subsystem())
++		 */
++		if (ref->flags & JFFS2_XREF_FLAGS_DEAD)
++			xseqno |= XREF_DELETE_MARKER;
+ 		rr.ino = cpu_to_je32(ref->ic->ino);
+ 		rr.xid = cpu_to_je32(ref->xd->xid);
+ 	}
+@@ -539,6 +545,8 @@ static int save_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
+ 		return ret;
+ 	}
+ 	/* success */
++	if (ref->flags & JFFS2_XREF_FLAGS_DEAD)
++		xseqno &= ~XREF_DELETE_MARKER;
+ 	ref->xseqno = xseqno;
+ 	jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, PAD(sizeof(rr)), (void *)ref);
+ 
+@@ -680,6 +688,22 @@ static int check_xattr_ref_inode(struct jffs2_sb_info *c, struct jffs2_inode_cac
+ 			}
+ 		}
+ 	}
++
++	/* Remove dead xrefs moved in by jffs2_build_xattr_subsystem() */
++	for (ref=ic->xref, pref=&ic->xref; ref; ref=*pref) {
++		if (ref->flags & JFFS2_XREF_FLAGS_DEAD) {
++			ref->flags &= ~JFFS2_XREF_FLAGS_DEAD;
++
++			*pref = ref->next;
++			dbg_xattr("remove dead xref (ino=%u, xid=%u)\n",
++					ref->ic->ino, ref->xd->xid);
++			delete_xattr_ref(c, ref);
++			continue;
++		}
++
++		pref = &ref->next;
++	}
++
+ 	ic->flags |= INO_FLAGS_XATTR_CHECKED;
+  out:
+ 	up_write(&c->xattr_sem);
+@@ -830,12 +854,27 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
+ 		for (ref=xref_tmphash[i]; ref; ref=_ref) {
+ 			xref_count++;
+ 			_ref = ref->next;
+-			if (is_xattr_ref_dead(ref)) {
+-				ref->next = c->xref_dead_list;
+-				c->xref_dead_list = ref;
++			/*
++			 * Now the dead xref can not been moved into
++			 * xref_dead_list, it will be used in
++			 * check_xattr_ref_inode() to check whether or not
++			 * a xref with a lower xseqno (without delete marker)
++			 * also needs to be marked as dead. After that, the
++			 * dead xref will be moved into xref_dead_list.
++			 *
++			 * The reason for a xref with lower xseqno may be dead
++			 * is that for xattr modification we do not write a new
++			 * jffs2_raw_xref with delete mark into flash as we do
++			 * for xattr removal. So if a xattr is modified then
++			 * removed and the old xref & xdatum are not GC-ed,
++			 * after reboot or remount, the new xattr xref will be
++			 * dead but the old xattr xref will be alive, and we
++			 * will get a older xattr value instead of non-existent
++			 * error when reading the removed xattr.
++			 */
++			if (is_xattr_ref_dead(ref))
+ 				xref_dead_count++;
+-				continue;
+-			}
++
+ 			/* At this point, ref->xid and ref->ino contain XID and inode number.
+ 			   ref->xd and ref->ic are not valid yet. */
+ 			xd = jffs2_find_xattr_datum(c, ref->xid);
+@@ -849,6 +888,18 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
+ 				xref_orphan_count++;
+ 				continue;
+ 			}
++
++			/*
++			 * Use JFFS2_XREF_FLAGS_DEAD instead of
++			 * XREF_DELETE_MARKER to prevent xref from being
++			 * skipped by jffs2_garbage_collect_xattr_ref()
++			 * during GC.
++			 */
++			if (is_xattr_ref_dead(ref)) {
++				ref->xseqno &= ~XREF_DELETE_MARKER;
++				ref->flags |= JFFS2_XREF_FLAGS_DEAD;
++			}
++
+ 			ref->xd = xd;
+ 			ref->ic = ic;
+ 			atomic_inc(&xd->refcnt);
+diff --git a/fs/jffs2/xattr.h b/fs/jffs2/xattr.h
+index 720007b2fd65..f18f968bd901 100644
+--- a/fs/jffs2/xattr.h
++++ b/fs/jffs2/xattr.h
+@@ -41,13 +41,19 @@ struct jffs2_xattr_datum
+ 	uint32_t value_len;	/* length of xvalue */
+ };
+ 
++/*
++ * xref is dead, but has not been moved to xref_dead_list yet
++ * and needs save during GC.
++ */
++#define JFFS2_XREF_FLAGS_DEAD (0x01)
++
+ struct jffs2_inode_cache;
+ struct jffs2_xattr_ref
+ {
+ 	void *always_null;
+ 	struct jffs2_raw_node_ref *node;
+ 	uint8_t class;
+-	uint8_t flags;		/* Currently unused */
++	uint8_t flags;
+ 	u16 unused;
+ 
+ 	uint32_t xseqno;
+-- 
+2.16.2.dirty
