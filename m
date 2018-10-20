@@ -1,16 +1,14 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+Received: from mail.stusta.mhn.de ([141.84.69.5])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDq1Y-0001rt-Ms
- for linux-mtd@lists.infradead.org; Sat, 20 Oct 2018 12:06:34 +0000
-From: Hou Tao <houtao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>
-CC: <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
- <richard.weinberger@gmail.com>, <boris.brezillon@bootlin.com>
-Subject: [PATCH] jffs2: ensure wbuf_verify is valid before using it.
-Date: Sat, 20 Oct 2018 20:08:49 +0800
-Message-ID: <20181020120849.65708-1-houtao1@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1gDxBQ-0001XO-3l
+ for linux-mtd@lists.infradead.org; Sat, 20 Oct 2018 19:45:14 +0000
+From: Adrian Bunk <bunk@kernel.org>
+To: stable@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org
+Subject: [4.4/4.9/4.14 patch] mtd: spi-nor: Add support for is25wp series chips
+Date: Sat, 20 Oct 2018 22:44:42 +0300
+Message-Id: <20181020194442.13769-1-bunk@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now MTD emulated by UBI volumn doesn't allocate wbuf_verify in
-jffs2_ubivol_setup(), because UBI can do the verifcation itself,
-so when CONFIG_JFFS2_FS_WBUF_VERIFY is enabled and a MTD device
-emulated by UBI volumn is used, a Oops will occur as show in the
-following trace:
+From: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
 
-    general protection fault: 0000 [#1] SMP KASAN PTI
-    CPU: 6 PID: 404 Comm: kworker/6:1 Not tainted 4.19.0-rc8
-    Workqueue: events_long delayed_wbuf_sync
-    RIP: 0010:ubi_io_read+0x156/0x650
-    Call Trace:
-     ubi_eba_read_leb+0x57d/0xba0
-     ubi_leb_read+0xe5/0x1b0
-     gluebi_read+0x10c/0x1a0
-     mtd_read+0x112/0x340
-     jffs2_verify_write+0xef/0x440
-     __jffs2_flush_wbuf+0x3fa/0x3540
-     jffs2_flush_wbuf_gc+0x1b1/0x2e0
-     process_one_work+0x58b/0x11e0
-     worker_thread+0x8f/0xfe0
-     kthread+0x2ae/0x3a0
-     ret_from_fork+0x35/0x40
+Added support for is25wp032, is25wp064 and is25wp128.
 
-Fix the problem by checking the validity of wbuf_verify before
-using it in jffs2_verify_write().
-
-Cc: stable@vger.kernel.org
-Fixes: 0029da3bf430 ("JFFS2: add UBI support")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+[ Adrian Bunk: Trivial adaption to changed context. ]
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
 ---
- fs/jffs2/wbuf.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index c6821a509481..3de45f4559d1 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -234,6 +234,13 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
- 	size_t retlen;
- 	char *eccstr;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 19c000722cbc..34ecc12ee3d9 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1005,6 +1005,12 @@ static const struct flash_info spi_nor_ids[] = {
  
-+	/*
-+	 * MTD emulated by UBI volume doesn't allocate wbuf_verify,
-+	 * because it can do the verification itself.
-+	 */
-+	if (!c->wbuf_verify)
-+		return 0;
-+
- 	ret = mtd_read(c->mtd, ofs, c->wbuf_pagesize, &retlen, c->wbuf_verify);
- 	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
- 		pr_warn("%s(): Read back of page at %08x failed: %d\n",
+ 	/* ISSI */
+ 	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
++	{ "is25wp032", INFO(0x9d7016, 0, 64 * 1024,  64,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25wp064", INFO(0x9d7017, 0, 64 * 1024, 128,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25wp128", INFO(0x9d7018, 0, 64 * 1024, 256,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
 -- 
-2.16.2.dirty
+2.11.0
