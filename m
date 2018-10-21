@@ -1,22 +1,29 @@
-Received: from mail.stusta.mhn.de ([2001:4ca0:200:3:200:5efe:8d54:4505])
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gE8eB-0008IB-76
- for linux-mtd@lists.infradead.org; Sun, 21 Oct 2018 07:59:41 +0000
-Date: Sun, 21 Oct 2018 10:43:31 +0300
-From: Adrian Bunk <bunk@kernel.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [4.4/4.9/4.14 patch] mtd: spi-nor: Add support for is25wp series
- chips
-Message-ID: <20181021074331.GA8410@localhost>
-References: <20181020194442.13769-1-bunk@kernel.org>
- <20181021071117.GA11176@kroah.com>
+ id 1gEDu1-0002J4-3P
+ for linux-mtd@lists.infradead.org; Sun, 21 Oct 2018 13:36:22 +0000
+Date: Sun, 21 Oct 2018 14:36:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Julien Su <juliensu@mxic.com.tw>,
+ Mason Yang <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
+ linux-spi@vger.kernel.org
+Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
+Message-ID: <20181021133600.GE8554@sirena.org.uk>
+References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+ <20181019122527.GJ5895@sirena.org.uk>
+ <20181019145920.43f9d5ec@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ieNMXl1Fr3cevapt"
 Content-Disposition: inline
-In-Reply-To: <20181021071117.GA11176@kroah.com>
+In-Reply-To: <20181019145920.43f9d5ec@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 21, 2018 at 09:11:17AM +0200, Greg KH wrote:
-> On Sat, Oct 20, 2018 at 10:44:42PM +0300, Adrian Bunk wrote:
-> > From: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
-> > 
-> > Added support for is25wp032, is25wp064 and is25wp128.
-> > 
-> > Signed-off-by: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
-> > Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > [ Adrian Bunk: Trivial adaption to changed context. ]
-> > Signed-off-by: Adrian Bunk <bunk@kernel.org>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> 
-> What is the git commit id of this patch in Linus's tree?
 
-Apologies for forgetting that, it is 
-d616f81cdd2a21edfa90a595a4e9b143f5ba8414
+--ieNMXl1Fr3cevapt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> thanks,
-> 
-> greg k-h
+On Fri, Oct 19, 2018 at 02:59:20PM +0200, Boris Brezillon wrote:
+> Mark Brown <broonie@kernel.org> wrote:
 
-cu
-Adrian
+> > The SPI framework changes definitely look OK to me, if everyone agrees
+> > that this is a good way to go from a MTD point of view I'm happy to
+> > apply them.  I have no strong opinion on the MTD bits of the series.
 
--- 
+> Actually, Yogesh posted similar patches before me, so maybe you can
+> look at this series [1]. The spi/spi-mem side of things is rather
+> uncontroversial. Feel free to apply them if you think they're good
+> enough to go in.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Ugh, unfortunately he didn't send me them so I'll have to try to find
+them on the list and it looks like there's been no review from any of
+the other MTD people.  It'd be good to get some consensus, yours seems a
+bit more complete so my inclination would be to go that way.
+
+--ieNMXl1Fr3cevapt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvMgL0ACgkQJNaLcl1U
+h9DZ6wf/cnQtBWcvGvsEUyUogeZOm9SrDiC4eCgj+xC1bxOYdJChmLpSpZIC0npZ
+iVBUmJ3EXQFQ6XhYFW3WcfprR187gdCaibG2nUnk5MZvbsXmaWIOcBKo06XejpHR
+59sbMO9ODLCK3u7KZHW7AhnOysU7O+/bnHTwc8aTyRhKvBIw6fSC7+qT7O/DNzOJ
+T3C4VlwcFL4b4iTc3Awe4Sj2Nxm76eqn6L0I7d110XwFKEpDEOKjooSk5BGoXCtQ
+WwV5GMbBMKVJDHi6tdSB1PmnmDHP5Ov6Kf2nUHsao5Us/SHS0Ob8HI0q3K9iVE2f
+NO9tBwp9VxBaSkDkmdMv63eUHVOMnA==
+=XkDj
+-----END PGP SIGNATURE-----
+
+--ieNMXl1Fr3cevapt--
