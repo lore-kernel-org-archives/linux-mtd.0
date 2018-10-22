@@ -1,42 +1,29 @@
-Date: Mon, 22 Oct 2018 13:52:11 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "Cristian.Birsan@microchip.com" <Cristian.Birsan@microchip.com>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, "richard@nod.at" <richard@nod.at>,
- Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
- <nicolas.ferre@microchip.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "cyrille.pitchen@microchip.com"
- <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
- SPI NOR flash memories
-Message-ID: <20181022135211.1978c25d@bbrezillon>
-In-Reply-To: <VI1PR04MB1038E072BFFD09C7C19AD2F899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
- <VI1PR04MB1038AB25EABDC8507984ADC799FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017090724.12f2cd79@bbrezillon>
- <20181017091045.124e0266@bbrezillon>
- <20181017092941.3658bd9a@bbrezillon>
- <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017115237.07310b74@bbrezillon>
- <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181022111543.2a607efc@bbrezillon>
- <VI1PR04MB1038EF892921194D1BFDE6FC99F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181022122659.0675942e@bbrezillon>
- <VI1PR04MB1038E92FFAB03E07048FD8B499F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181022124627.2c6c3b93@bbrezillon>
- <20181022125259.42df83ea@bbrezillon>
- <VI1PR04MB1038C9C889185F2A700220F299F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181022134324.2c1bd248@bbrezillon>
- <VI1PR04MB1038E072BFFD09C7C19AD2F899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEYez-0004oI-7R
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 11:46:15 +0000
+Received: by mail-lj1-x241.google.com with SMTP id j4-v6so36647101ljc.12
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 04:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20181019074908.13226-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181019074908.13226-1-boris.brezillon@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 22 Oct 2018 13:45:49 +0200
+Message-ID: <CACRpkdbHDTcz_X_ijV+B-DkahsTWDyW2+h0n4W5o9GU3f6kmrA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/15] mtd: maps: physmap cleanups
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Mark Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,82 +33,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 Oct 2018 11:46:55 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+On Fri, Oct 19, 2018 at 9:49 AM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-> Hi,
-> 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Monday, October 22, 2018 5:13 PM
-> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > Cc: Cristian.Birsan@microchip.com; Tudor Ambarus
-> > <tudor.ambarus@microchip.com>; richard@nod.at; Mark Brown
-> > <broonie@kernel.org>; linux-kernel@vger.kernel.org;
-> > nicolas.ferre@microchip.com; marek.vasut@gmail.com;
-> > cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org; Cyrille Pitchen
-> > <cyrille.pitchen@wedev4u.fr>; computersforpeace@gmail.com;
-> > dwmw2@infradead.org; linux-arm-kernel@lists.infradead.org
-> > Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
-> > NOR flash memories
-> > 
-> > On Mon, 22 Oct 2018 11:03:09 +0000
-> > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> >   
-> > > Hi,
-> > >  
-> > > > -----Original Message-----
-> > > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > > > Sent: Monday, October 22, 2018 4:23 PM
-> > > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>;
-> > > > Cristian.Birsan@microchip.com
-> > > > Cc: Tudor Ambarus <tudor.ambarus@microchip.com>; richard@nod.at;
-> > > > Mark Brown <broonie@kernel.org>; linux-kernel@vger.kernel.org;
-> > > > nicolas.ferre@microchip.com; marek.vasut@gmail.com;
-> > > > cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org;
-> > > > Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>;
-> > > > computersforpeace@gmail.com; dwmw2@infradead.org;
-> > > > linux-arm-kernel@lists.infradead.org
-> > > > Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform
-> > > > SFDP SPI NOR flash memories
-> > > >
-> > > > On Mon, 22 Oct 2018 12:46:27 +0200
-> > > > Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> > > >  
-> > > > > On Mon, 22 Oct 2018 10:39:48 +0000 Yogesh Narayan Gaur
-> > > > > <yogeshnarayan.gaur@nxp.com> wrote:
-> > > > >  
-> Patch used
-> 
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2863,26 +2863,39 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
+> This is an attempt at merging physmap_of.c, gpio-addr-flash.c and
+> physmap.c. The rational behind this decision is code sharing and
+> consistency with what's done in other parts of the kernel:
+>
+> - physmap_of is just adding OF/DT support to the physmap logic, and we
+>   usually put that code in the pre-existing driver instead of creating
+>   a new one
+>
+> - gpio-addr-flash is just an extension of the physmap logic which is
+>   needed when the platform does not have enough native ADDR lines
+>   to address the whole flash. Again, I think this core belongs in the
+>   physmap driver
+>
+> Patches 1 to 9 are just cleanups, and are not really related to the
+> merging of physmap_of and gpio-addr-flash into physmap.c.
+>
+> Patch 10 to 13 are doing the actual merging work, and patch 14 is
+> documenting the addr-gpios property that has been added to support
+> the gpio-addr-flash on DT platforms.
+>
+> Patch 15 is a cosmetic change proposed by Ricardo.
 
->         /* Determine if there are any optional Detection Command Descriptors */
-> -       while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
-> +       for (i = 0; i< smpt_len; i++) {
+This series:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-See, you should have i += 2 here, not i++.
+I expect to test the result when rebasing my patches for Gemini,
+so hope for this to hit your devel branch after v4.20-rc1.
 
-> +               if ((smpt[i] & SMPT_DESC_TYPE_MAP))
-> +                       break;
-> +
->                 read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
->                 nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
-> -               nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
-> +               if (!nor->addr_width)
-> +                       nor->addr_width = 3;
-> +
-> +               nor->read_dummy = 8; //spi_nor_smpt_read_dummy(nor, smpt[i]);
->                 nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
-> +               pr_info("smpt[%d]=[addr_width:%08x, read_dumy:%08x, read_opcode:%08x]\n", i, nor->addr_width, nor->read_dummy, nor->read_opcode);
-> +
->                 addr = smpt[i + 1];
-> 
->                 err = spi_nor_read_raw(nor, addr, 1, &data_byte);
-
-And add a trace here to print data_byte and addr.
-
-Thanks,
-
-Boris
+Yours,
+Linus Walleij
