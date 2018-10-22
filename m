@@ -1,31 +1,24 @@
-Received: from heliosphere.sirena.org.uk ([172.104.155.198])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEYuA-0006tN-Tg
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 12:02:46 +0000
-Date: Mon, 22 Oct 2018 13:01:37 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Vignesh R <vigneshr@ti.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Julien Su <juliensu@mxic.com.tw>,
- Mason Yang <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
- linux-spi@vger.kernel.org
-Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
-Message-ID: <20181022120137.GB2103@sirena.org.uk>
-References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
- <20181019122527.GJ5895@sirena.org.uk>
- <20181019145920.43f9d5ec@bbrezillon>
- <20181021133600.GE8554@sirena.org.uk>
- <20181022102126.529bebb3@bbrezillon>
+Date: Mon, 22 Oct 2018 14:40:07 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
+ <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/7] spi: add support for octal mode
+Message-ID: <20181022144007.367830c6@bbrezillon>
+In-Reply-To: <1539605534-22302-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+References: <1539605534-22302-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
-Content-Disposition: inline
-In-Reply-To: <20181022102126.529bebb3@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,33 +28,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
++Mark
 
---98e8jtXdkpgskNou
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Yogesh,
 
-On Mon, Oct 22, 2018 at 10:21:26AM +0200, Boris Brezillon wrote:
+On Mon, 15 Oct 2018 12:13:57 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-> So, if you don't mind, I'll ask him to send a new version addressing
-> this problem (which should make our patches almost identical, except for
-> the naming: OCTAL vs OCTO), and I'll put my R-b.
+> Add support for octal mode IO data transfer.
+> Micron flash, mt35xu512aba, supports octal mode data transfer and
+> NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
+> 
+> Patch series
+> * Add support for octal mode flags and parsing of same in spi driver.
+> * Add parsing logic for spi-mem framework and m25p80.c device file.
+> * Add opcodes for octal I/O commands in spi-nor framework, Read and Write proto for (1-1-8/1-8-8) mode.
+>   Opcodes are added as per octal data IO commands required for mt35xu512aba [1] flash.
+> * Add mode bit required for octal mode in nxp-fspi driver [2].
+> * Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
+> 
+> Cherry pick below 2 patches (from: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git):
+>     c639f871febe6667d9afce28108c634e5636c735 spi: spi-mem: Fix inverted logic in op sanity check
+>     db122eb8a749a1eff038f9a282c620ab16c4be1d spi: spi-mem: Add extra sanity checks on the op param
+> 
+> Tested on LX2160ARDB target with nxp-fspi driver, below are
+> Read performance number of 1-1-1 and 1-1-8 read protocol.
+> 
+>  root@lxxx:~# cat /proc/mtd
+>  dev:    size   erasesize  name
+>  mtd0: 04000000 00001000 "spi0.0"
+>  mtd1: 04000000 00001000 "spi0.1"
+>  root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
+>  Copied 16777216 bytes from address 0x00000000 in flash to 0read
+> 
+>  real    0m2.792s
+>  user    0m0.000s
+>  sys     0m2.790s
+>  root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
+>  Copied 16777216 bytes from address 0x00000000 in flash to 0read
+> 
+>  real    0m0.441s
+>  user    0m0.000s
+>  sys     0m0.440s
+>  root@ls1012ardb:~#
+> 
+>  Flash device MTD0 configured in 1-1-1 protocol.
+>  Flash device MTD1 configured in 1-1-8 protocol.
+> 
+> [1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=70384
+> [2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=70210
+> 
+> Yogesh Gaur (7):
+>   spi: add support for octal I/O data transfer
 
-That sounds great, I'll apply them on a branch and give you a pull
-request after the merge window.
+I guess you've followed the discussion with Mark on the "mtd: spi-nor:
+Proposal for 8-8-8 mode support" series. Can you please send a new
+version of this patchset after adding patching spi_setup() to support
+octal mode?
 
---98e8jtXdkpgskNou
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvNvCAACgkQJNaLcl1U
-h9AxIAf/a+aK0JfS5lRufKxh5fsMZyuthbErj4s8esW+le06XHmo7SsKal4tQHTA
-xruzl8tdgaWO7Q4vaIwVE6ZAonLYakKjKYazNE/kMB9BaPS0vDjyUd1IQcvDRC9H
-SVViXGzka1PU3WP1Efb6p31nAnyNjqVYjPRit5EKDAMQZ2C7aQMX0lRZL2OpGIoj
-KgEp4/KfZKsLbU/UQobMvpwvElNAj5WVwSxuu7/CbMTwxK9TZMSd/zkUEtu508s3
-pmeqzyRylcJd8sG1Cjmeu9Yh7Z749T8DNz7s9L+jNKdGonW55aU5PxomVqem+SfQ
-RiraRTTS+8Qs+8U8UihVQc71uiZpCA==
-=MFZR
------END PGP SIGNATURE-----
-
---98e8jtXdkpgskNou--
+Boris
