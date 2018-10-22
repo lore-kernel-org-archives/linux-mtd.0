@@ -1,25 +1,35 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEVTA-0002uG-7X
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:21:49 +0000
-Date: Mon, 22 Oct 2018 10:21:26 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Vignesh R
- <vigneshr@ti.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Julien Su
- <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
- zhengxunli@mxic.com.tw, linux-spi@vger.kernel.org
-Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
-Message-ID: <20181022102126.529bebb3@bbrezillon>
-In-Reply-To: <20181021133600.GE8554@sirena.org.uk>
-References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
- <20181019122527.GJ5895@sirena.org.uk>
- <20181019145920.43f9d5ec@bbrezillon>
- <20181021133600.GE8554@sirena.org.uk>
+Received: from mail-yw1-xc44.google.com ([2607:f8b0:4864:20::c44])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEVTX-0002yJ-0M
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:22:22 +0000
+Received: by mail-yw1-xc44.google.com with SMTP id m127-v6so15668918ywb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 01:22:00 -0700 (PDT)
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+To: Paolo Valente <paolo.valente@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter
+ <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>,
+ Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>, Alan Cox
+ <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
+ <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+ <E2DDE0B9-F693-4EF3-B90C-C57F787B4DB3@linaro.org>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <fa57d440-dff1-e260-c8c9-6d4bf04221a8@kernel.dk>
+Date: Mon, 22 Oct 2018 02:21:47 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <E2DDE0B9-F693-4EF3-B90C-C57F787B4DB3@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,33 +40,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 21 Oct 2018 14:36:00 +0100
-Mark Brown <broonie@kernel.org> wrote:
-
-> On Fri, Oct 19, 2018 at 02:59:20PM +0200, Boris Brezillon wrote:
-> > Mark Brown <broonie@kernel.org> wrote:  
+On 10/19/18 4:59 AM, Paolo Valente wrote:
 > 
-> > > The SPI framework changes definitely look OK to me, if everyone agrees
-> > > that this is a good way to go from a MTD point of view I'm happy to
-> > > apply them.  I have no strong opinion on the MTD bits of the series.  
 > 
-> > Actually, Yogesh posted similar patches before me, so maybe you can
-> > look at this series [1]. The spi/spi-mem side of things is rather
-> > uncontroversial. Feel free to apply them if you think they're good
-> > enough to go in.  
+>> Il giorno 15 ott 2018, alle ore 20:26, Paolo Valente <paolo.valente@linaro.org> ha scritto:
+>>
+>> ...
+>>> This kind of policy does not belong in the kernel, at least
+>>> not in the current form. If we had some sort of "enable best
+>>> options for a desktop" then it could fall under that umbrella.
+>>>
+>>
+>> I don't think bfq can be considered a scheduler for only desktops any
+>> longer.
+>>
 > 
-> Ugh, unfortunately he didn't send me them so I'll have to try to find
-> them on the list and it looks like there's been no review from any of
-> the other MTD people.  It'd be good to get some consensus, yours seems a
-> bit more complete so my inclination would be to go that way.
+> Hi Jens,
+> this reply of mine went on bugging me, until I understood my mistake.
+> 
+> The fact that I consider bfq good also for servers *does not* imply
+> that having bfq in desktops is to be refused.
+> 
+> As for the option that you are hinting at, I also acknowledge that it
+> would be trivial for an admin/developer to know whether a given kernel
+> is meant for a desktop/personal system, while it is more difficult to
+> choose explicitly among the various I/O schedulers available.
+> 
+> So, I apologize for my shortsighted, initial reply, and ask you if can
+> elaborate a little more on this.  I'm willing to help, if I can.
 
-Indeed, looks like Yogesh version is not patching spi_setup() to
-support octal mode. Anyway, it seems unfair to push for my own version
-while I was clearly aware of Yogesh's patchset before posting my RFC
-(the only reason I did not use his patches is laziness on my side: I had
-my own working version, and the RFC was not really about these
-spi/spi-mem aspects, more the spi-nor side of things :-)).
+I think I've written about this multiple times now, but for me it
+really just boils down to sane default, and policy in the kernel.
+BFQ is very complicated, about 10K lines of code. I'm not comfortable
+making that the default right now - as I've mentioned in other
+replies, I think something like that should be driven by the distros
+as they will ultimately be the ones that usually get complaints
+about behavioral changes that impact performance adversely. This isn't
+just about running some benchmarks and calling it a day.
 
-So, if you don't mind, I'll ask him to send a new version addressing
-this problem (which should make our patches almost identical, except for
-the naming: OCTAL vs OCTO), and I'll put my R-b.
+Maybe some day we can make it the default on mq for single queue
+devices, but I just don't think we are there yet in terms of
+coverage. 
+
+While I don't work for a distro anymore, I do have my hands dirty
+with a fairly substantial deployment at work. There we run mq-deadline
+on single queue devices, and kyber on multiqueue capable devices.
+
+-- 
+Jens Axboe
