@@ -1,36 +1,28 @@
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
- NOR flash memories
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "richard@nod.at"
- <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
- <nicolas.ferre@microchip.com>, "cyrille.pitchen@microchip.com"
- <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
- <Cristian.Birsan@microchip.com>, Mark Brown <broonie@kernel.org>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
- <20180911154007.17195-2-tudor.ambarus@microchip.com>
- <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
- <de0f7245-2557-12be-a306-67b08e55ae7b@wedev4u.fr>
- <VI1PR04MB1038AB25EABDC8507984ADC799FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017090724.12f2cd79@bbrezillon> <20181017091045.124e0266@bbrezillon>
- <20181017092941.3658bd9a@bbrezillon>
- <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017115237.07310b74@bbrezillon>
- <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <c96cf515-3e9c-b775-38bf-51e85af96e32@microchip.com>
-Date: Mon, 22 Oct 2018 11:33:40 +0300
+Received: from mail-yb1-xb43.google.com ([2607:f8b0:4864:20::b43])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEW1v-0000OY-Vw
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:57:45 +0000
+Received: by mail-yb1-xb43.google.com with SMTP id o8-v6so15830787ybk.13
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 01:57:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
+ <CACna6rx_jSTEEt6TAzQcBpAHZA_CJGhkjJhWWJKG3cQmr9c9ug@mail.gmail.com>
+ <3000620.g91H2S8sUk@blindfold>
+In-Reply-To: <3000620.g91H2S8sUk@blindfold>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 22 Oct 2018 11:57:20 +0300
+Message-ID: <CAOQ4uxii0rZv3SVXWNN7yug_WZ-TKLL3Wo-mti0y9K66Z+-EcQ@mail.gmail.com>
+Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
+ file handle of lower inode on copy up")
+To: Richard Weinberger <richard@nod.at>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, overlayfs <linux-unionfs@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ russell@personaltelco.net, openwrt-devel@lists.openwrt.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,60 +32,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, Oct 22, 2018 at 11:26 AM Richard Weinberger <richard@nod.at> wrote:
+>
+> Am Montag, 22. Oktober 2018, 09:14:08 CEST schrieb Rafa=C5=82 Mi=C5=82eck=
+i:
+> > On Fri, 19 Oct 2018 at 14:31, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com=
+> wrote:
+> > > Since OpenWrt switch from kernel 4.9 to 4.14 users started randomly
+> > > reporting file system corruptions. OpenWrt uses overlay(fs) with
+> > > squashfs as lowerdir and ubifs as upperdir. Russell managed to isolat=
+e
+> > > & describe test case for reproducing corruption when doing a power cu=
+t
+> > > after first boot.
+> > >
+> > > (...)
+> > >
+> > > Can I ask you to check if there is something possibly wrong with the
+> > > above ovl commit? Or does it expose some problem with the ubifs? Or
+> > > maybe the whole UBI?
+> > >
+> > > FWIW testing above commit (and one before it) always results in singl=
+e
+> > > error in the kernel log:
+> > > [   14.250184] UBIFS error (ubi0:1 pid 637): ubifs_add_orphan: orphan=
+ed twice
+> > >
+> > > That UBIFS error doesn't occur with 4.12.14. Unfortunately it's
+> > > impossible to cleanly revert 3a1e819b4e80 from the top of 4.12.14.
+> >
+> > Let me provide a summary of all relevant commits & tests:
+> >
+> > By "Corruption" I mean file system corruption after power cut
+>
+> Well, is the filesystem not consistent anymore?
+> From what Russel explained to me, I thought the main problem is that no w=
+rite back happens.
+> IOW the inode is present, has correct length, but no content is there (al=
+l zeros).
+>
+> Just like the typical case where userspace does not fsync.
+> But in your case sooner or later write back should have happened because =
+the writeback timer
+> fires at some point.
+>
 
-Please amend this as well. Thanks!
+For the records overlayfs does:
+- open(O_TMPFILE)
+- setxattr() [with 3a1e819b4e80]
+- write to tmpfile
+- fsync tmpfile
+- link tmpfile
 
----
- drivers/mtd/spi-nor/spi-nor.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+I suggest that you try the same from user space on ubifs.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 3a9b69e9ba6d..3019708696cd 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2887,10 +2887,15 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
- static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
- {
- 	const u32 *ret = NULL;
-+	u8 *dma_safe;
- 	u32 i, addr;
- 	int err;
- 	u8 addr_width, read_opcode, read_dummy;
--	u8 read_data_mask, data_byte, map_id;
-+	u8 read_data_mask, map_id;
-+
-+	dma_safe = kmalloc(sizeof(*dma_safe), GFP_KERNEL | GFP_DMA);
-+	if (!dma_safe)
-+		return ERR_PTR(-ENOMEM);
- 
- 	addr_width = nor->addr_width;
- 	read_dummy = nor->read_dummy;
-@@ -2906,7 +2911,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
- 		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
- 		addr = smpt[i + 1];
- 
--		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
-+		err = spi_nor_read_raw(nor, addr, 1, dma_safe);
- 		if (err)
- 			goto out;
- 
-@@ -2914,7 +2919,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
- 		 * Build an index value that is used to select the Sector Map
- 		 * Configuration that is currently in use.
- 		 */
--		map_id = map_id << 1 | !!(data_byte & read_data_mask);
-+		map_id = map_id << 1 | !!(*dma_safe & read_data_mask);
- 		i = i + 2;
- 	}
- 
-@@ -2929,6 +2934,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
- 	ret = smpt + i;
- 	/* fall through */
- out:
-+	kfree(dma_safe);
- 	nor->addr_width = addr_width;
- 	nor->read_dummy = read_dummy;
- 	nor->read_opcode = read_opcode;
--- 
-2.9.4
+Thanks,
+Amir.
