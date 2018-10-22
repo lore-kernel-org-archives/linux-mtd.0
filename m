@@ -1,28 +1,38 @@
-Received: from mail-yb1-xb43.google.com ([2607:f8b0:4864:20::b43])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEW1v-0000OY-Vw
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:57:45 +0000
-Received: by mail-yb1-xb43.google.com with SMTP id o8-v6so15830787ybk.13
- for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 01:57:33 -0700 (PDT)
+Date: Mon, 22 Oct 2018 11:09:19 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "richard@nod.at" <richard@nod.at>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
+ <nicolas.ferre@microchip.com>, "cyrille.pitchen@microchip.com"
+ <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
+ <Cristian.Birsan@microchip.com>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
+ SPI NOR flash memories
+Message-ID: <20181022110919.2b44f0e6@bbrezillon>
+In-Reply-To: <VI1PR04MB1038A95F9378AAEAC8D75CB399F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+ <20180911154007.17195-2-tudor.ambarus@microchip.com>
+ <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
+ <de0f7245-2557-12be-a306-67b08e55ae7b@wedev4u.fr>
+ <VI1PR04MB1038AB25EABDC8507984ADC799FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181017090724.12f2cd79@bbrezillon>
+ <20181017091045.124e0266@bbrezillon>
+ <20181017092941.3658bd9a@bbrezillon>
+ <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181017115237.07310b74@bbrezillon>
+ <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181022100152.05da1b6c@bbrezillon>
+ <VI1PR04MB1038A95F9378AAEAC8D75CB399F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
- <CACna6rx_jSTEEt6TAzQcBpAHZA_CJGhkjJhWWJKG3cQmr9c9ug@mail.gmail.com>
- <3000620.g91H2S8sUk@blindfold>
-In-Reply-To: <3000620.g91H2S8sUk@blindfold>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 22 Oct 2018 11:57:20 +0300
-Message-ID: <CAOQ4uxii0rZv3SVXWNN7yug_WZ-TKLL3Wo-mti0y9K66Z+-EcQ@mail.gmail.com>
-Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
- file handle of lower inode on copy up")
-To: Richard Weinberger <richard@nod.at>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>, overlayfs <linux-unionfs@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- russell@personaltelco.net, openwrt-devel@lists.openwrt.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,59 +42,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 22, 2018 at 11:26 AM Richard Weinberger <richard@nod.at> wrote:
->
-> Am Montag, 22. Oktober 2018, 09:14:08 CEST schrieb Rafa=C5=82 Mi=C5=82eck=
-i:
-> > On Fri, 19 Oct 2018 at 14:31, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com=
-> wrote:
-> > > Since OpenWrt switch from kernel 4.9 to 4.14 users started randomly
-> > > reporting file system corruptions. OpenWrt uses overlay(fs) with
-> > > squashfs as lowerdir and ubifs as upperdir. Russell managed to isolat=
-e
-> > > & describe test case for reproducing corruption when doing a power cu=
-t
-> > > after first boot.
-> > >
-> > > (...)
-> > >
-> > > Can I ask you to check if there is something possibly wrong with the
-> > > above ovl commit? Or does it expose some problem with the ubifs? Or
-> > > maybe the whole UBI?
-> > >
-> > > FWIW testing above commit (and one before it) always results in singl=
-e
-> > > error in the kernel log:
-> > > [   14.250184] UBIFS error (ubi0:1 pid 637): ubifs_add_orphan: orphan=
-ed twice
-> > >
-> > > That UBIFS error doesn't occur with 4.12.14. Unfortunately it's
-> > > impossible to cleanly revert 3a1e819b4e80 from the top of 4.12.14.
-> >
-> > Let me provide a summary of all relevant commits & tests:
-> >
-> > By "Corruption" I mean file system corruption after power cut
->
-> Well, is the filesystem not consistent anymore?
-> From what Russel explained to me, I thought the main problem is that no w=
-rite back happens.
-> IOW the inode is present, has correct length, but no content is there (al=
-l zeros).
->
-> Just like the typical case where userspace does not fsync.
-> But in your case sooner or later write back should have happened because =
-the writeback timer
-> fires at some point.
->
+On Mon, 22 Oct 2018 08:32:21 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-For the records overlayfs does:
-- open(O_TMPFILE)
-- setxattr() [with 3a1e819b4e80]
-- write to tmpfile
-- fsync tmpfile
-- link tmpfile
+> HI,
+> 
+> 
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > Sent: Monday, October 22, 2018 1:32 PM
+> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> > Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>; Tudor Ambarus
+> > <tudor.ambarus@microchip.com>; marek.vasut@gmail.com;
+> > dwmw2@infradead.org; computersforpeace@gmail.com; richard@nod.at;
+> > linux-kernel@vger.kernel.org; nicolas.ferre@microchip.com;
+> > cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org; linux-arm-
+> > kernel@lists.infradead.org; Cristian.Birsan@microchip.com; Mark Brown
+> > <broonie@kernel.org>
+> > Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
+> > NOR flash memories
+> > 
+> > On Mon, 22 Oct 2018 06:04:13 +0000
+> > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> >   
+> > > -static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const
+> > > u32 *smpt)
+> > > +static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const
+> > > +u32 *smpt, u32 smpt_len)
+> > >  {
+> > >         const u32 *ret = NULL;
+> > > -       u32 i, addr;
+> > > +       u32 i, addr, nmaps;
+> > >         int err;
+> > >         u8 addr_width, read_opcode, read_dummy;
+> > >         u8 read_data_mask, data_byte, map_id;
+> > > +       bool map_id_is_valid = false;
+> > >
+> > >         addr_width = nor->addr_width;
+> > >         read_dummy = nor->read_dummy;
+> > >         read_opcode = nor->read_opcode;
+> > >
+> > > +       for (i = 0; i<smpt_len; i++)
+> > > +               pr_info("%s:%i smpt[%d]=%08x\n", __func__, __LINE__,
+> > > + i, smpt[i]);
+> > > +
+> > >         map_id = 0;
+> > > -       i = 0;
+> > >         /* Determine if there are any optional Detection Command Descriptors */
+> > > -       while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
+> > > +       for (i = 0; i< smpt_len; i++) {
+> > > +               if (!(smpt[i] & SMPT_DESC_TYPE_MAP))
+> > > +                       break;
+> > > +
+> > >                 read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
+> > >                 nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
+> > >                 nor->read_dummy = spi_nor_smpt_read_dummy(nor,
+> > > smpt[i]);  
+> > 
+> > Could you also print the ->addr_width, ->read_dummy and ->read_opcode here?
+> >   
+> It didn't showing any print messages here, did above line "         if (!(smpt[i] & SMPT_DESC_TYPE_MAP))" also needs to be changes to "    if ((smpt[i] & SMPT_DESC_TYPE_MAP))"?
 
-I suggest that you try the same from user space on ubifs.
+Yes.
 
-Thanks,
-Amir.
+> 
+> Below is the log, with the suggested change of modifying as
+> > +       for (nmaps = 0; nmaps< smpt_len; nmaps++) {
+> > +               if((smpt[nmaps] & SMPT_DESC_TYPE_MAP))  
+> 
+> [    1.625992] m25p80 spi0.0: found s25fl512s, expected m25p80                                                                   
+> [    1.631681] spi_nor_get_map_in_use:2880 smpt[0]=08ff65fc                                                                      
+> [    1.636988] spi_nor_get_map_in_use:2880 smpt[1]=00000004                                                                      
+> [    1.642292] spi_nor_get_map_in_use:2880 smpt[2]=04ff65fc                                                                      
+> [    1.647596] spi_nor_get_map_in_use:2880 smpt[3]=00000002                                                                      
+> [    1.652898] spi_nor_get_map_in_use:2880 smpt[4]=02ff65fd                                                                      
+> [    1.658200] spi_nor_get_map_in_use:2880 smpt[5]=00000004                                                                      
+> [    1.663503] spi_nor_get_map_in_use:2880 smpt[6]=ff0201fe                                                                      
+> [    1.668806] spi_nor_get_map_in_use:2880 smpt[7]=00007ff1                                                                      
+> [    1.674108] spi_nor_get_map_in_use:2880 smpt[8]=00037ff4                                                                      
+> [    1.679412] spi_nor_get_map_in_use:2880 smpt[9]=03fbfff4                                                                      
+> [    1.684715] spi_nor_get_map_in_use:2880 smpt[10]=ff0203fe                                                                     
+> [    1.690105] spi_nor_get_map_in_use:2880 smpt[11]=03fbfff4                                                                     
+> [    1.695495] spi_nor_get_map_in_use:2880 smpt[12]=00037ff4                                                                     
+> [    1.700886] spi_nor_get_map_in_use:2880 smpt[13]=00007ff1                                                                     
+> [    1.706275] spi_nor_get_map_in_use:2880 smpt[14]=ff0005ff                                                                     
+> [    1.711664] spi_nor_get_map_in_use:2880 smpt[15]=03fffff4                                                                     
+> [    1.717053] spi_nor_get_map_in_use:2910 NO map_id                                                                             
+> [    1.721777] m25p80 spi0.0: s25fl512s (65536 Kbytes)                
+> 
+> Didn't throw any return error.
+> 
+> --
+> Regards,
+> Yogesh Gaur
+> 
+> 
+> > > @@ -2894,18 +2900,35 @@ static const u32 *spi_nor_get_map_in_use(struct  
+> > spi_nor *nor, const u32 *smpt)  
+> > >                  * Configuration that is currently in use.
+> > >                  */
+> > >                 map_id = map_id << 1 | !!(data_byte & read_data_mask);
+> > > +               map_id_is_valid = true;
+> > >                 i = i + 2;
+> > >         }  
+> 
