@@ -1,34 +1,19 @@
-Date: Mon, 22 Oct 2018 11:15:43 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEWdN-0008I6-Ft
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 09:36:27 +0000
+Date: Mon, 22 Oct 2018 11:36:03 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, "richard@nod.at"
- <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "cyrille.pitchen@microchip.com" <cyrille.pitchen@microchip.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Cristian.Birsan@microchip.com" <Cristian.Birsan@microchip.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
- SPI NOR flash memories
-Message-ID: <20181022111543.2a607efc@bbrezillon>
-In-Reply-To: <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
- <20180911154007.17195-2-tudor.ambarus@microchip.com>
- <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
- <de0f7245-2557-12be-a306-67b08e55ae7b@wedev4u.fr>
- <VI1PR04MB1038AB25EABDC8507984ADC799FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017090724.12f2cd79@bbrezillon>
- <20181017091045.124e0266@bbrezillon>
- <20181017092941.3658bd9a@bbrezillon>
- <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017115237.07310b74@bbrezillon>
- <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 1/3] mtd: Move Redboot partition parser
+Message-ID: <20181022113603.730c5f84@bbrezillon>
+In-Reply-To: <20181019070622.26661-1-linus.walleij@linaro.org>
+References: <20181019070622.26661-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -41,50 +26,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 Oct 2018 06:04:13 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
++Rafal 
 
+On Fri, 19 Oct 2018 09:06:20 +0200
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> -       /* Find the matching configuration map */
-> -       while (SMPT_MAP_ID(smpt[i]) != map_id) {
-> -               if (smpt[i] & SMPT_DESC_END)
-> -                       goto out;
-> +       if (map_id_is_valid)
-> +               pr_info("%s:%i map_id=%d\n", __func__, __LINE__, map_id);
-> +       else
-> +               pr_info("%s:%i NO map_id\n", __func__, __LINE__);
-> +
-> +       for (nmaps = 0; nmaps< smpt_len; nmaps++) {
+> This moves the Redboot partition parser down to the parsers
+> subdirectory.
 
-Why did you change this for loop?
+Rafal, could you have a look at this patchset and maybe add your R-b if
+you're okay with it?
 
-> +               if(!(smpt[nmaps] & SMPT_DESC_TYPE_MAP))
-> +                       continue;
-> +
-> +               if(!map_id_is_valid) {
-> +                       if (nmaps) {
+Thanks,
 
-With your change in the for () block, this test is no longer valid...
+Boris
 
-Please keep the original patch and patch the if () condition as
-suggested.
-
-> +                               ret = NULL;
-> +                               break;
-> +                       }
-> +
-> +                       ret = smpt+nmaps;
-> +               } else if (map_id == SMPT_MAP_ID(smpt[nmaps])) {
-> +                       ret = smpt+nmaps;
-> +                       break;
-> +               }
-> +
->                 /* increment the table index to the next map */
-> -               i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
-> +               nmaps += SMPT_MAP_REGION_COUNT(smpt[nmaps]) + 1;
->         }
 > 
-> -       ret = smpt + i;
->         /* fall through */
->  out:
->         nor->addr_width = addr_width;
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  drivers/mtd/Kconfig                 | 50 -----------------------------
+>  drivers/mtd/Makefile                |  1 -
+>  drivers/mtd/parsers/Kconfig         | 50 +++++++++++++++++++++++++++++
+>  drivers/mtd/parsers/Makefile        |  1 +
+>  drivers/mtd/{ => parsers}/redboot.c |  0
+>  5 files changed, 51 insertions(+), 51 deletions(-)
+>  rename drivers/mtd/{ => parsers}/redboot.c (100%)
+> 
+> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> index c77f537323ec..4523c875f29a 100644
+> --- a/drivers/mtd/Kconfig
+> +++ b/drivers/mtd/Kconfig
+> @@ -22,56 +22,6 @@ config MTD_TESTS
+>  	  WARNING: some of the tests will ERASE entire MTD device which they
+>  	  test. Do not use these tests unless you really know what you do.
+>  
+> -config MTD_REDBOOT_PARTS
+> -	tristate "RedBoot partition table parsing"
+> -	help
+> -	  RedBoot is a ROM monitor and bootloader which deals with multiple
+> -	  'images' in flash devices by putting a table one of the erase
+> -	  blocks on the device, similar to a partition table, which gives
+> -	  the offsets, lengths and names of all the images stored in the
+> -	  flash.
+> -
+> -	  If you need code which can detect and parse this table, and register
+> -	  MTD 'partitions' corresponding to each image in the table, enable
+> -	  this option.
+> -
+> -	  You will still need the parsing functions to be called by the driver
+> -	  for your particular device. It won't happen automatically. The
+> -	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
+> -	  example.
+> -
+> -if MTD_REDBOOT_PARTS
+> -
+> -config MTD_REDBOOT_DIRECTORY_BLOCK
+> -	int "Location of RedBoot partition table"
+> -	default "-1"
+> -	help
+> -	  This option is the Linux counterpart to the
+> -	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
+> -	  option.
+> -
+> -	  The option specifies which Flash sectors holds the RedBoot
+> -	  partition table.  A zero or positive value gives an absolute
+> -	  erase block number. A negative value specifies a number of
+> -	  sectors before the end of the device.
+> -
+> -	  For example "2" means block number 2, "-1" means the last
+> -	  block and "-2" means the penultimate block.
+> -
+> -config MTD_REDBOOT_PARTS_UNALLOCATED
+> -	bool "Include unallocated flash regions"
+> -	help
+> -	  If you need to register each unallocated flash region as a MTD
+> -	  'partition', enable this option.
+> -
+> -config MTD_REDBOOT_PARTS_READONLY
+> -	bool "Force read-only for RedBoot system images"
+> -	help
+> -	  If you need to force read-only for 'RedBoot', 'RedBoot Config' and
+> -	  'FIS directory' images, enable this option.
+> -
+> -endif # MTD_REDBOOT_PARTS
+> -
+>  config MTD_CMDLINE_PARTS
+>  	tristate "Command line partition table parsing"
+>  	depends on MTD
+> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+> index 93473d215a38..58fc327a5276 100644
+> --- a/drivers/mtd/Makefile
+> +++ b/drivers/mtd/Makefile
+> @@ -8,7 +8,6 @@ obj-$(CONFIG_MTD)		+= mtd.o
+>  mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o mtdpart.o mtdchar.o
+>  
+>  obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
+> -obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
+>  obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
+>  obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
+>  obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
+> diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+> index ee5ab994132f..fccf1950e92d 100644
+> --- a/drivers/mtd/parsers/Kconfig
+> +++ b/drivers/mtd/parsers/Kconfig
+> @@ -14,3 +14,53 @@ config MTD_SHARPSL_PARTS
+>  	  This provides the read-only FTL logic necessary to read the partition
+>  	  table from the NAND flash of Sharp SL Series (Zaurus) and the MTD
+>  	  partition parser using this code.
+> +
+> +config MTD_REDBOOT_PARTS
+> +	tristate "RedBoot partition table parsing"
+> +	help
+> +	  RedBoot is a ROM monitor and bootloader which deals with multiple
+> +	  'images' in flash devices by putting a table one of the erase
+> +	  blocks on the device, similar to a partition table, which gives
+> +	  the offsets, lengths and names of all the images stored in the
+> +	  flash.
+> +
+> +	  If you need code which can detect and parse this table, and register
+> +	  MTD 'partitions' corresponding to each image in the table, enable
+> +	  this option.
+> +
+> +	  You will still need the parsing functions to be called by the driver
+> +	  for your particular device. It won't happen automatically. The
+> +	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
+> +	  example.
+> +
+> +if MTD_REDBOOT_PARTS
+> +
+> +config MTD_REDBOOT_DIRECTORY_BLOCK
+> +	int "Location of RedBoot partition table"
+> +	default "-1"
+> +	help
+> +	  This option is the Linux counterpart to the
+> +	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
+> +	  option.
+> +
+> +	  The option specifies which Flash sectors holds the RedBoot
+> +	  partition table.  A zero or positive value gives an absolute
+> +	  erase block number. A negative value specifies a number of
+> +	  sectors before the end of the device.
+> +
+> +	  For example "2" means block number 2, "-1" means the last
+> +	  block and "-2" means the penultimate block.
+> +
+> +config MTD_REDBOOT_PARTS_UNALLOCATED
+> +	bool "Include unallocated flash regions"
+> +	help
+> +	  If you need to register each unallocated flash region as a MTD
+> +	  'partition', enable this option.
+> +
+> +config MTD_REDBOOT_PARTS_READONLY
+> +	bool "Force read-only for RedBoot system images"
+> +	help
+> +	  If you need to force read-only for 'RedBoot', 'RedBoot Config' and
+> +	  'FIS directory' images, enable this option.
+> +
+> +endif # MTD_REDBOOT_PARTS
+> diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+> index 5b1bcc3d90d9..d8418bf6804a 100644
+> --- a/drivers/mtd/parsers/Makefile
+> +++ b/drivers/mtd/parsers/Makefile
+> @@ -1,2 +1,3 @@
+>  obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
+>  obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
+> +obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
+> diff --git a/drivers/mtd/redboot.c b/drivers/mtd/parsers/redboot.c
+> similarity index 100%
+> rename from drivers/mtd/redboot.c
+> rename to drivers/mtd/parsers/redboot.c
