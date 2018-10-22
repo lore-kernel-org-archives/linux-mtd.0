@@ -1,29 +1,21 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEDu1-0002J4-3P
- for linux-mtd@lists.infradead.org; Sun, 21 Oct 2018 13:36:22 +0000
-Date: Sun, 21 Oct 2018 14:36:00 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Julien Su <juliensu@mxic.com.tw>,
- Mason Yang <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
- linux-spi@vger.kernel.org
-Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
-Message-ID: <20181021133600.GE8554@sirena.org.uk>
-References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
- <20181019122527.GJ5895@sirena.org.uk>
- <20181019145920.43f9d5ec@bbrezillon>
+ id 1gEOAF-0007SJ-Ks
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 00:33:53 +0000
+Subject: Re: [PATCH] jffs2: Fix use of uninitialized delayed_work, lockdep
+ breakage
+To: Daniel Santos <daniel.santos@pobox.com>, LKML
+ <linux-kernel@vger.kernel.org>
+CC: David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+References: <20181019083020.14335-1-daniel.santos@pobox.com>
+From: Hou Tao <houtao1@huawei.com>
+Message-ID: <d2f16a3a-7237-6c4e-5ff8-43f05bdb7e0f@huawei.com>
+Date: Mon, 22 Oct 2018 08:32:52 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ieNMXl1Fr3cevapt"
-Content-Disposition: inline
-In-Reply-To: <20181019145920.43f9d5ec@bbrezillon>
+In-Reply-To: <20181019083020.14335-1-daniel.santos@pobox.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,40 +26,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---ieNMXl1Fr3cevapt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Oct 19, 2018 at 02:59:20PM +0200, Boris Brezillon wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+On 2018/10/19 16:30, Daniel Santos wrote:
+> jffs2_sync_fs makes the assumption that if CONFIG_JFFS2_FS_WRITEBUFFER
+> is defined then a write buffer is available and has been initialized.
+> However, this does is not the case when the mtd device has no
+> out-of-band buffer:
+> 
+> int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
+> {
+>         if (!c->mtd->oobsize)
+>                 return 0;
+> ...
+> 
+> The resulting call to cancel_delayed_work_sync passing a uninitialized
+> (but zeroed) delayed_work struct forces lockdep to become disabled.
+> 
+> [   90.050639] overlayfs: upper fs does not support tmpfile.
+> [   90.652264] INFO: trying to register non-static key.
+> [   90.662171] the code is fine but needs lockdep annotation.
+> [   90.673090] turning off the locking correctness validator.
+> [   90.684021] CPU: 0 PID: 1762 Comm: mount_root Not tainted 4.14.63 #0
+> [   90.696672] Stack : 00000000 00000000 80d8f6a2 00000038 805f0000 80444600 8fe364f4 805dfbe7
+> [   90.713349]         80563a30 000006e2 8068370c 00000001 00000000 00000001 8e2fdc48 ffffffff
+> [   90.730020]         00000000 00000000 80d90000 00000000 00000106 00000000 6465746e 312e3420
+> [   90.746690]         6b636f6c 03bf0000 f8000000 20676e69 00000000 80000000 00000000 8e2c2a90
+> [   90.763362]         80d90000 00000001 00000000 8e2c2a90 00000003 80260dc0 08052098 80680000
+> [   90.780033]         ...
+> [   90.784902] Call Trace:
+> [   90.789793] [<8000f0d8>] show_stack+0xb8/0x148
+> [   90.798659] [<8005a000>] register_lock_class+0x270/0x55c
+> [   90.809247] [<8005cb64>] __lock_acquire+0x13c/0xf7c
+> [   90.818964] [<8005e314>] lock_acquire+0x194/0x1dc
+> [   90.828345] [<8003f27c>] flush_work+0x200/0x24c
+> [   90.837374] [<80041dfc>] __cancel_work_timer+0x158/0x210
+> [   90.847958] [<801a8770>] jffs2_sync_fs+0x20/0x54
+> [   90.857173] [<80125cf4>] iterate_supers+0xf4/0x120
+> [   90.866729] [<80158fc4>] sys_sync+0x44/0x9c
+> [   90.875067] [<80014424>] syscall_common+0x34/0x58
+> 
+> Signed-off-by: Daniel Santos <daniel.santos@pobox.com>
+> ---
+>  fs/jffs2/super.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+> index 793ad30970ff..cae4ecda3c50 100644
+> --- a/fs/jffs2/super.c
+> +++ b/fs/jffs2/super.c
+> @@ -101,7 +101,8 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
+>  	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+>  
+>  #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+> -	cancel_delayed_work_sync(&c->wbuf_dwork);
+> +	if (jffs2_is_writebuffered(c))
+> +		cancel_delayed_work_sync(&c->wbuf_dwork);
+>  #endif
+>  
+>  	mutex_lock(&c->alloc_sem);
+> 
 
-> > The SPI framework changes definitely look OK to me, if everyone agrees
-> > that this is a good way to go from a MTD point of view I'm happy to
-> > apply them.  I have no strong opinion on the MTD bits of the series.
+Reviewed-by: Hou Tao <houtao1@huawei.com>
 
-> Actually, Yogesh posted similar patches before me, so maybe you can
-> look at this series [1]. The spi/spi-mem side of things is rather
-> uncontroversial. Feel free to apply them if you think they're good
-> enough to go in.
+And I am curious that why is there NAND Flash without OOB area ? So for them
+the ECC data must be saved in data area ?
 
-Ugh, unfortunately he didn't send me them so I'll have to try to find
-them on the list and it looks like there's been no review from any of
-the other MTD people.  It'd be good to get some consensus, yours seems a
-bit more complete so my inclination would be to go that way.
+Regards,
 
---ieNMXl1Fr3cevapt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvMgL0ACgkQJNaLcl1U
-h9DZ6wf/cnQtBWcvGvsEUyUogeZOm9SrDiC4eCgj+xC1bxOYdJChmLpSpZIC0npZ
-iVBUmJ3EXQFQ6XhYFW3WcfprR187gdCaibG2nUnk5MZvbsXmaWIOcBKo06XejpHR
-59sbMO9ODLCK3u7KZHW7AhnOysU7O+/bnHTwc8aTyRhKvBIw6fSC7+qT7O/DNzOJ
-T3C4VlwcFL4b4iTc3Awe4Sj2Nxm76eqn6L0I7d110XwFKEpDEOKjooSk5BGoXCtQ
-WwV5GMbBMKVJDHi6tdSB1PmnmDHP5Ov6Kf2nUHsao5Us/SHS0Ob8HI0q3K9iVE2f
-NO9tBwp9VxBaSkDkmdMv63eUHVOMnA==
-=XkDj
------END PGP SIGNATURE-----
-
---ieNMXl1Fr3cevapt--
+Tao
