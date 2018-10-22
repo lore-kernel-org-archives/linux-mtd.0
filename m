@@ -1,29 +1,31 @@
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEYez-0004oI-7R
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 11:46:15 +0000
-Received: by mail-lj1-x241.google.com with SMTP id j4-v6so36647101ljc.12
- for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 04:46:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20181019074908.13226-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181019074908.13226-1-boris.brezillon@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 22 Oct 2018 13:45:49 +0200
-Message-ID: <CACRpkdbHDTcz_X_ijV+B-DkahsTWDyW2+h0n4W5o9GU3f6kmrA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] mtd: maps: physmap cleanups
+Received: from heliosphere.sirena.org.uk ([172.104.155.198])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEYuA-0006tN-Tg
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 12:02:46 +0000
+Date: Mon, 22 Oct 2018 13:01:37 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Mark Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Vignesh R <vigneshr@ti.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Julien Su <juliensu@mxic.com.tw>,
+ Mason Yang <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
+ linux-spi@vger.kernel.org
+Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
+Message-ID: <20181022120137.GB2103@sirena.org.uk>
+References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+ <20181019122527.GJ5895@sirena.org.uk>
+ <20181019145920.43f9d5ec@bbrezillon>
+ <20181021133600.GE8554@sirena.org.uk>
+ <20181022102126.529bebb3@bbrezillon>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
+Content-Disposition: inline
+In-Reply-To: <20181022102126.529bebb3@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,36 +35,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 19, 2018 at 9:49 AM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
 
-> This is an attempt at merging physmap_of.c, gpio-addr-flash.c and
-> physmap.c. The rational behind this decision is code sharing and
-> consistency with what's done in other parts of the kernel:
->
-> - physmap_of is just adding OF/DT support to the physmap logic, and we
->   usually put that code in the pre-existing driver instead of creating
->   a new one
->
-> - gpio-addr-flash is just an extension of the physmap logic which is
->   needed when the platform does not have enough native ADDR lines
->   to address the whole flash. Again, I think this core belongs in the
->   physmap driver
->
-> Patches 1 to 9 are just cleanups, and are not really related to the
-> merging of physmap_of and gpio-addr-flash into physmap.c.
->
-> Patch 10 to 13 are doing the actual merging work, and patch 14 is
-> documenting the addr-gpios property that has been added to support
-> the gpio-addr-flash on DT platforms.
->
-> Patch 15 is a cosmetic change proposed by Ricardo.
+--98e8jtXdkpgskNou
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This series:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+On Mon, Oct 22, 2018 at 10:21:26AM +0200, Boris Brezillon wrote:
 
-I expect to test the result when rebasing my patches for Gemini,
-so hope for this to hit your devel branch after v4.20-rc1.
+> So, if you don't mind, I'll ask him to send a new version addressing
+> this problem (which should make our patches almost identical, except for
+> the naming: OCTAL vs OCTO), and I'll put my R-b.
 
-Yours,
-Linus Walleij
+That sounds great, I'll apply them on a branch and give you a pull
+request after the merge window.
+
+--98e8jtXdkpgskNou
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvNvCAACgkQJNaLcl1U
+h9AxIAf/a+aK0JfS5lRufKxh5fsMZyuthbErj4s8esW+le06XHmo7SsKal4tQHTA
+xruzl8tdgaWO7Q4vaIwVE6ZAonLYakKjKYazNE/kMB9BaPS0vDjyUd1IQcvDRC9H
+SVViXGzka1PU3WP1Efb6p31nAnyNjqVYjPRit5EKDAMQZ2C7aQMX0lRZL2OpGIoj
+KgEp4/KfZKsLbU/UQobMvpwvElNAj5WVwSxuu7/CbMTwxK9TZMSd/zkUEtu508s3
+pmeqzyRylcJd8sG1Cjmeu9Yh7Z749T8DNz7s9L+jNKdGonW55aU5PxomVqem+SfQ
+RiraRTTS+8Qs+8U8UihVQc71uiZpCA==
+=MFZR
+-----END PGP SIGNATURE-----
+
+--98e8jtXdkpgskNou--
