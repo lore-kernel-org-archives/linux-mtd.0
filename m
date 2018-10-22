@@ -1,21 +1,37 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEWkp-00028O-QI
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 09:44:10 +0000
-Date: Mon, 22 Oct 2018 11:43:45 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>, Richard
- Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: [GIT PULL] mtd: Changes for 4.20
-Message-ID: <20181022114345.65c144ef@bbrezillon>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, "richard@nod.at"
+ <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "cyrille.pitchen@microchip.com" <cyrille.pitchen@microchip.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Cristian.Birsan@microchip.com" <Cristian.Birsan@microchip.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
+ NOR flash memories
+Date: Mon, 22 Oct 2018 10:03:55 +0000
+Message-ID: <VI1PR04MB1038EF892921194D1BFDE6FC99F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+ <20180911154007.17195-2-tudor.ambarus@microchip.com>
+ <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
+ <de0f7245-2557-12be-a306-67b08e55ae7b@wedev4u.fr>
+ <VI1PR04MB1038AB25EABDC8507984ADC799FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181017090724.12f2cd79@bbrezillon>	<20181017091045.124e0266@bbrezillon>
+ <20181017092941.3658bd9a@bbrezillon>
+ <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181017115237.07310b74@bbrezillon>
+ <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181022111543.2a607efc@bbrezillon>
+In-Reply-To: <20181022111543.2a607efc@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,348 +41,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus, Greg,
+Hi,
 
-I'm sending this PR to both of you since I'm not sure who will be in
-charge of 4.20 (5.0?) yet.
 
-Regards,
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, October 22, 2018 2:46 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>; richard@nod.at; Mark
+> Brown <broonie@kernel.org>; linux-kernel@vger.kernel.org;
+> nicolas.ferre@microchip.com; marek.vasut@gmail.com;
+> cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org;
+> Cristian.Birsan@microchip.com; Cyrille Pitchen <cyrille.pitchen@wedev4u.f=
+r>;
+> computersforpeace@gmail.com; dwmw2@infradead.org; linux-arm-
+> kernel@lists.infradead.org
+> Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP=
+ SPI
+> NOR flash memories
+>=20
+> On Mon, 22 Oct 2018 06:04:13 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+>=20
+With below patch, it gets stuck in for loop of "+       for (nmaps =3D 0; i=
+< smpt_len; nmaps++) {".
 
-Boris
+[    1.624684] m25p80 spi0.0: found s25fl512s, expected m25p80
+[    1.630377] Start [addr_width:00000000, read_dumy:08, read_opcode:000000=
+00]
+[    1.637335] spi_nor_get_map_in_use:2882 smpt[0]=3D08ff65fc
+[    1.642641] spi_nor_get_map_in_use:2882 smpt[1]=3D00000004
+[    1.647945] spi_nor_get_map_in_use:2882 smpt[2]=3D04ff65fc
+[    1.653248] spi_nor_get_map_in_use:2882 smpt[3]=3D00000002
+[    1.658551] spi_nor_get_map_in_use:2882 smpt[4]=3D02ff65fd
+[    1.663855] spi_nor_get_map_in_use:2882 smpt[5]=3D00000004
+[    1.669158] spi_nor_get_map_in_use:2882 smpt[6]=3Dff0201fe
+[    1.674461] spi_nor_get_map_in_use:2882 smpt[7]=3D00007ff1
+[    1.679766] spi_nor_get_map_in_use:2882 smpt[8]=3D00037ff4
+[    1.685070] spi_nor_get_map_in_use:2882 smpt[9]=3D03fbfff4
+[    1.690375] spi_nor_get_map_in_use:2882 smpt[10]=3Dff0203fe
+[    1.695768] spi_nor_get_map_in_use:2882 smpt[11]=3D03fbfff4
+[    1.701158] spi_nor_get_map_in_use:2882 smpt[12]=3D00037ff4
+[    1.706550] spi_nor_get_map_in_use:2882 smpt[13]=3D00007ff1
+[    1.711940] spi_nor_get_map_in_use:2882 smpt[14]=3Dff0005ff
+[    1.717330] spi_nor_get_map_in_use:2882 smpt[15]=3D03fffff4
+[    1.722720] smpt[0]=3D[addr_width:00000000, read_dumy:08, read_opcode:00=
+000065]
+[    1.729861] spi_nor_get_map_in_use:2912 map_id=3D1
 
-The following changes since commit 57361846b52bc686112da6ca5368d11210796804:
 
-  Linux 4.19-rc2 (2018-09-02 14:37:30 -0700)
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2863,26 +2863,36 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_=
+nor *nor, const u32 settings)
+  * @nor:       pointer to a 'struct spi_nor'
+  * @smpt:      pointer to the sector map parameter table
+  */
+-static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *s=
+mpt)
++static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *s=
+mpt, u32 smpt_len)
+ {
+        const u32 *ret =3D NULL;
+-       u32 i, addr;
++       u32 i, addr, nmaps;
+        int err;
+        u8 addr_width, read_opcode, read_dummy;
+        u8 read_data_mask, data_byte, map_id;
++       bool map_id_is_valid =3D false;
 
-are available in the Git repository at:
+        addr_width =3D nor->addr_width;
+        read_dummy =3D nor->read_dummy;
+        read_opcode =3D nor->read_opcode;
 
-  git://git.infradead.org/linux-mtd.git tags/mtd/for-4.20
++       pr_info("Start [addr_width:%08x, read_dumy:%0x8, read_opcode:%08x]\=
+n", nor->addr_width, nor->read_dummy, nor->read_opcode);
++
++       for (i =3D 0; i<smpt_len; i++)
++               pr_info("%s:%i smpt[%d]=3D%08x\n", __func__, __LINE__, i, s=
+mpt[i]);
++
+        map_id =3D 0;
+-       i =3D 0;
+        /* Determine if there are any optional Detection Command Descriptor=
+s */
+-       while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
++       for (i =3D 0; i< smpt_len; i++) {
++               if ((smpt[i] & SMPT_DESC_TYPE_MAP))
++                       break;
++
+                read_data_mask =3D SMPT_CMD_READ_DATA(smpt[i]);
+                nor->addr_width =3D spi_nor_smpt_addr_width(nor, smpt[i]);
+                nor->read_dummy =3D spi_nor_smpt_read_dummy(nor, smpt[i]);
+                nor->read_opcode =3D SMPT_CMD_OPCODE(smpt[i]);
++               pr_info("smpt[%d]=3D[addr_width:%08x, read_dumy:%0x8, read_=
+opcode:%08x]\n", i, nor->addr_width, nor->read_dummy, nor->read_opcode);
++
+                addr =3D smpt[i + 1];
 
-for you to fetch changes up to 042c1a5a6021f73c10dc84958c287eb2a2a26f7c:
+                err =3D spi_nor_read_raw(nor, addr, 1, &data_byte);
+@@ -2894,18 +2904,36 @@ static const u32 *spi_nor_get_map_in_use(struct spi=
+_nor *nor, const u32 *smpt)
+                 * Configuration that is currently in use.
+                 */
+                map_id =3D map_id << 1 | !!(data_byte & read_data_mask);
++               map_id_is_valid =3D true;
+                i =3D i + 2;
+        }
 
-  Merge tag 'nand/for-4.20' of git://git.infradead.org/linux-mtd into mtd/next (2018-10-19 09:20:09 +0200)
+-       /* Find the matching configuration map */
+-       while (SMPT_MAP_ID(smpt[i]) !=3D map_id) {
+-               if (smpt[i] & SMPT_DESC_END)
+-                       goto out;
++       if (map_id_is_valid)
++               pr_info("%s:%i map_id=3D%d\n", __func__, __LINE__, map_id);
++       else
++               pr_info("%s:%i NO map_id\n", __func__, __LINE__);
++
++       for (nmaps =3D 0; i< smpt_len; nmaps++) {
++               if((smpt[i] & SMPT_DESC_TYPE_MAP))
++                       continue;
++
++               if(!map_id_is_valid) {
++                       if (nmaps) {
++                               ret =3D NULL;
++                               break;
++                       }
++
++                       ret =3D smpt+i;
++               } else if (map_id =3D=3D SMPT_MAP_ID(smpt[i])) {
++                       ret =3D smpt+i;
++                       break;
++               }
++
+                /* increment the table index to the next map */
+                i +=3D SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
+        }
 
-----------------------------------------------------------------
-SPI NOR changes:
- Core changes:
-  * Support non-uniform erase size
-  * Support controllers with limited TX fifo size
-
- Driver changes:
-  * m25p80: Re-issue a WREN command after each write access
-  * cadence: Pass a proper dir value to dma_[un]map_single()
-  * fsl-qspi: Check fsl_qspi_get_seqid() return val make sure 4B
-    addressing opcodes are properly handled
-  * intel-spi: Add a new PCI entry for Ice Lake
-
-NAND changes:
- Raw NAND core changes:
- - Two batchs of cleanups of the NAND API, including:
-   * Deprecating a lot of interfaces (now replaced by ->exec_op()).
-   * Moving code in separate drivers (JEDEC, ONFI), in private files
-     (internals), in platform drivers, etc.
-   * Functions/structures reordering.
-   * Exclusive use of the nand_chip structure instead of the MTD one
-     all across the subsystem.
- - Addition of the nand_wait_readrdy/rdy_op() helpers.
-
- Raw NAND controllers drivers changes:
- - Various coccinelle patches.
- - Marvell:
-   * Use regmap_update_bits() for syscon access.
-   * More documentation.
-   * BCH failure path rework.
-   * More layouts to be supported.
-   * IRQ handler complete() condition fixed.
- - Fsl_ifc:
-   * SRAM initialization fixed for newer controller versions.
- - Denali:
-   * Fix licenses mismatch and use a SPDX tag.
-   * Set SPARE_AREA_SKIP_BYTES register to 8 if unset.
- - Qualcomm:
-   * Do not include dma-direct.h.
- - Docg4:
-   * Removed.
- - Ams-delta:
-   * Use of a GPIO lookup table
-   * Internal machinery changes.
-
- Raw NAND chip drivers changes:
- - Toshiba:
-   * Add support for Toshiba memory BENAND
-   * Pass a single nand_chip object to the status helper.
- - ESMT:
-   * New driver to retrieve the ECC requirements from the 5th ID byte.
-
-MTD changes:
- * physmap cleanups/fixe
- * gpio-addr-flash cleanups/fixes
-
-----------------------------------------------------------------
-Ahmad Fatoum (1):
-      mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
-
-Boris Brezillon (52):
-      mtd: rawnand: Add the nand_wait_readrdy() helper and use it
-      mtd: rawnand: Add the nand_wait_rdy_op() helper and use it
-      mtd: rawnand: Get rid of the ->read_word() hook
-      mtd: rawnand: plat_nand: Pass a nand_chip object to all platform_nand_ctrl hooks
-      mtd: rawnand: Pass a nand_chip object to nand_scan()
-      mtd: rawnand: Pass a nand_chip object to nand_release()
-      mtd: rawnand: Pass a nand_chip object to nand_wait_ready()
-      mtd: rawnand: Pass a nand_chip object to ecc->hwctl()
-      mtd: rawnand: Pass a nand_chip object to ecc->calculate()
-      mtd: rawnand: Pass a nand_chip object to ecc->correct()
-      mtd: rawnand: Pass a nand_chip object to ecc->read_xxx() hooks
-      mtd: rawnand: Pass a nand_chip object to ecc->write_xxx() hooks
-      mtd: rawnand: Pass a nand_chip object to chip->read_xxx() hooks
-      mtd: rawnand: Pass a nand_chip object to chip->write_xxx() hooks
-      mtd: rawnand: Pass a nand_chip object to chip->select_chip()
-      mtd: rawnand: Pass a nand_chip object to chip->block_xxx() hooks
-      mtd: rawnand: Pass a nand_chip object to chip->cmd_ctrl()
-      mtd: rawnand: Pass a nand_chip object to chip->dev_ready()
-      mtd: rawnand: Pass a nand_chip object to chip->cmdfunc()
-      mtd: rawnand: Pass a nand_chip object to chip->waitfunc()
-      mtd: rawnand: Pass a nand_chip object to chip->erase()
-      mtd: rawnand: Pass a nand_chip object to chip->{get, set}_features()
-      mtd: rawnand: Pass a nand_chip object to chip->setup_read_retry()
-      mtd: rawnand: Pass a nand_chip object to chip->setup_data_interface()
-      mtd: rawnand: Pass a nand_chip object to all nand_xxx_bbt() helpers
-      mtd: rawnand: Pass a nand_chip object nand_erase_nand()
-      mtd: rawnand: Remove docg4
-      ARM: pxa: palmtreo: Drop docg4 specific init
-      mtd: rawnand: Make maxchips an unsigned int
-      mtd: rawnand: Do not treat !maxchips specially in nand_scan_with_ids()
-      mtd: rawnand: Leave chip->IO_ADDR_{R, W} to NULL when unused
-      mtd: rawnand: Create a legacy struct and move ->IO_ADDR_{R, W} there
-      mtd: rawnand: Deprecate ->{read, write}_{byte, buf}() hooks
-      mtd: rawnand: Deprecate ->cmd_ctrl() and ->cmdfunc()
-      mtd: rawnand: Deprecate ->dev_ready() and ->waitfunc()
-      mtd: rawnand: Deprecate ->block_{bad,markbad}() hooks
-      mtd: rawnand: Deprecate ->erase()
-      mtd: rawnand: Deprecate ->{set,get}_features() hooks
-      mtd: rawnand: Deprecate ->chip_delay
-      mtd: rawnand: Move function prototypes after struct declarations
-      mtd: rawnand: Get rid of nand_flash_dev forward declation
-      mtd: rawnand: Get rid of the duplicate nand_chip forward declaration
-      mtd: rawnand: Get rid of a few unused definitions
-      mtd: rawnand: Move platform_nand_xxx definitions out of rawnand.h
-      mtd: rawnand: Inline onfi_get_async_timing_mode()
-      mtd: rawnand: Keep all internal stuff private
-      mtd: rawnand: Move legacy code to nand_legacy.c
-      mtd: rawnand: Move ONFI code to nand_onfi.c
-      mtd: rawnand: Move JEDEC code to nand_jedec.c
-      mtd: rawnand: Allow selection of ECC byte ordering at runtime
-      Merge tag 'spi-nor/for-4.20' of git://git.infradead.org/linux-mtd into mtd/next
-      Merge tag 'nand/for-4.20' of git://git.infradead.org/linux-mtd into mtd/next
-
-Christoph Hellwig (1):
-      mtd: rawnand: qcom: don't include dma-direct.h
-
-Colin Ian King (1):
-      mtd: rawnand: r852: fix spelling mistake "card_registred" -> "card_registered"
-
-Gustavo A. R. Silva (3):
-      mtd: rawnand: jz4780: use struct_size() in devm_kzalloc()
-      mtd: rawnand: atmel: use struct_size() in devm_kzalloc()
-      mtd: rawnand: atmel: Fix potential NULL pointer dereference
-
-Hou Tao (1):
-      jffs2: free jffs2_sb_info through jffs2_kill_sb()
-
-Janusz Krzysztofik (4):
-      mtd: rawnand: ams-delta: use GPIO lookup table
-      mtd: rawnand: ams-delta: show parent device in sysfs
-      mtd: rawnand: ams-delta: Use private structure
-      mtd: rawnand: ams-delta: Set port direction when needed
-
-KOBAYASHI Yoshitake (1):
-      mtd: rawnand: toshiba: Add support for Toshiba Memory BENAND (Built-in ECC NAND)
-
-Konstantin Porotchkin (1):
-      mtd: rawnand: marvell: Add support for 8kiB pages NAND chips layout
-
-Kurt Kanzenbach (2):
-      mtd: rawnand: fsl_ifc: check result of SRAM initialization
-      mtd: rawnand: fsl_ifc: fixup SRAM init for newer ctrl versions
-
-Liu Xiang (1):
-      mtd: spi-nor: fsl-quadspi: fix read error for flash size larger than 16MB
-
-Marcel Ziswiler (2):
-      mtd: rawnand: reorder NAND manufacturer IDs
-      mtd: rawnand: ESMT: retrieve ECC requirements from 5th id byte
-
-Masahiro Yamada (2):
-      mtd: rawnand: denali: use SPDX-License-Identifier and fix license mismatch
-      mtd: rawnand: denali: set SPARE_AREA_SKIP_BYTES register to 8 if unset
-
-Mika Westerberg (1):
-      mtd: spi-nor: intel-spi: Add support for Intel Ice Lake SPI serial flash
-
-Miquel Raynal (6):
-      mtd: rawnand: marvell: document a bit more the driver
-      Documentation: mtd: remove stale pxa3xx NAND controller documentation
-      mtd: rawnand: marvell: rework BCH engine failure path
-      mtd: rawnand: marvell: support 8b/512B strength for 2kiB pages layout
-      mtd: rawnand: toshiba: Pass a single nand_chip object to the status helper
-      mtd: rawnand: marvell: fix the IRQ handler complete() condition
-
-Nathan Chancellor (2):
-      mtd: rawnand: sh_flctl: Use proper enum for flctl_dma_fifo0_transfer
-      mtd: spi-nor: cadence-quadspi: Use proper enum for dma_[un]map_single
-
-Ricardo Ribalda Delgado (8):
-      mtd: physmap_of: Remove unused struct of_device_id
-      mtd: physmap_of: Release resources on error
-      mtd: maps: gpio-addr-flash: Replace custom printk
-      mtd: maps: gpio-addr-flash: Fix ioremapped size
-      mtd: maps: gpio-addr-flash: Use devm_* functions
-      mtd: maps: gpio-addr-flash: Use order instead of size
-      mtd: maps: gpio-addr-flash: Replace array with an integer
-      mtd: maps: gpio-addr-flash: Convert to gpiod
-
-Rob Herring (1):
-      mtd: rawnand: Convert to using %pOFn instead of device_node.name
-
-Thomas Petazzoni (1):
-      mtd: rawnand: marvell: use regmap_update_bits() for syscon access
-
-Tudor Ambarus (2):
-      mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories
-      mtd: spi-nor: parse SFDP Sector Map Parameter Table
-
-Yogesh Gaur (2):
-      mtd: spi-nor: Support controllers with limited TX FIFO size
-      mtd: devices: m25p80: Make sure WRITE_EN is issued before each write
-
- Documentation/driver-api/mtdnand.rst             |   34 +-
- Documentation/mtd/nand/pxa3xx-nand.txt           |  113 ----
- arch/arm/mach-ep93xx/snappercl15.c               |   15 +-
- arch/arm/mach-ep93xx/ts72xx.c                    |   16 +-
- arch/arm/mach-imx/mach-qong.c                    |   17 +-
- arch/arm/mach-ixp4xx/ixdp425-setup.c             |    6 +-
- arch/arm/mach-omap1/board-fsample.c              |    5 +-
- arch/arm/mach-omap1/board-h2.c                   |    5 +-
- arch/arm/mach-omap1/board-h3.c                   |    4 +-
- arch/arm/mach-omap1/board-nand.c                 |    5 +-
- arch/arm/mach-omap1/board-perseus2.c             |    5 +-
- arch/arm/mach-omap1/common.h                     |    4 +-
- arch/arm/mach-orion5x/ts78xx-setup.c             |   27 +-
- arch/arm/mach-pxa/balloon3.c                     |   13 +-
- arch/arm/mach-pxa/em-x270.c                      |   14 +-
- arch/arm/mach-pxa/palmtreo.c                     |   31 -
- arch/arm/mach-pxa/palmtx.c                       |   10 +-
- arch/mips/alchemy/devboards/db1200.c             |   14 +-
- arch/mips/alchemy/devboards/db1300.c             |   14 +-
- arch/mips/alchemy/devboards/db1550.c             |   14 +-
- arch/mips/netlogic/xlr/platform-flash.c          |    7 +-
- arch/mips/pnx833x/common/platform.c              |    8 +-
- arch/mips/rb532/devices.c                        |   10 +-
- arch/sh/boards/mach-migor/setup.c                |   14 +-
- drivers/mtd/devices/m25p80.c                     |   23 +-
- drivers/mtd/maps/gpio-addr-flash.c               |  146 ++--
- drivers/mtd/maps/physmap_of_core.c               |   27 +-
- drivers/mtd/maps/physmap_of_gemini.c             |    5 -
- drivers/mtd/nand/raw/Kconfig                     |   20 -
- drivers/mtd/nand/raw/Makefile                    |    6 +-
- drivers/mtd/nand/raw/ams-delta.c                 |  249 ++++---
- drivers/mtd/nand/raw/atmel/nand-controller.c     |  111 ++-
- drivers/mtd/nand/raw/au1550nd.c                  |  124 ++--
- drivers/mtd/nand/raw/bcm47xxnflash/main.c        |    2 +-
- drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c |   58 +-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c         |   93 ++-
- drivers/mtd/nand/raw/cafe_nand.c                 |   74 +-
- drivers/mtd/nand/raw/cmx270_nand.c               |   48 +-
- drivers/mtd/nand/raw/cs553x_nand.c               |   75 +--
- drivers/mtd/nand/raw/davinci_nand.c              |   93 ++-
- drivers/mtd/nand/raw/denali.c                    |  151 +++--
- drivers/mtd/nand/raw/denali.h                    |   10 +-
- drivers/mtd/nand/raw/denali_dt.c                 |   12 +-
- drivers/mtd/nand/raw/denali_pci.c                |   10 +-
- drivers/mtd/nand/raw/diskonchip.c                |  156 ++---
- drivers/mtd/nand/raw/docg4.c                     | 1442 ---------------------------------------
- drivers/mtd/nand/raw/fsl_elbc_nand.c             |   70 +-
- drivers/mtd/nand/raw/fsl_ifc_nand.c              |  106 +--
- drivers/mtd/nand/raw/fsl_upm.c                   |   66 +-
- drivers/mtd/nand/raw/fsmc_nand.c                 |   44 +-
- drivers/mtd/nand/raw/gpio.c                      |   29 +-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c        |    3 +-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c       |  111 ++-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h       |    2 +-
- drivers/mtd/nand/raw/hisi504_nand.c              |   68 +-
- drivers/mtd/nand/raw/internals.h                 |  115 ++++
- drivers/mtd/nand/raw/jz4740_nand.c               |   53 +-
- drivers/mtd/nand/raw/jz4780_nand.c               |   42 +-
- drivers/mtd/nand/raw/lpc32xx_mlc.c               |   59 +-
- drivers/mtd/nand/raw/lpc32xx_slc.c               |   83 ++-
- drivers/mtd/nand/raw/marvell_nand.c              |  275 +++++---
- drivers/mtd/nand/raw/mpc5121_nfc.c               |   65 +-
- drivers/mtd/nand/raw/mtk_nand.c                  |   93 ++-
- drivers/mtd/nand/raw/mxc_nand.c                  |  114 ++--
- drivers/mtd/nand/raw/nand_amd.c                  |    2 +-
- drivers/mtd/nand/raw/nand_base.c                 | 1721 ++++++++++-------------------------------------
- drivers/mtd/nand/raw/nand_bbt.c                  |   24 +-
- drivers/mtd/nand/raw/nand_bch.c                  |   10 +-
- drivers/mtd/nand/raw/nand_ecc.c                  |   99 ++-
- drivers/mtd/nand/raw/nand_esmt.c                 |   47 ++
- drivers/mtd/nand/raw/nand_hynix.c                |   15 +-
- drivers/mtd/nand/raw/nand_ids.c                  |   26 +-
- drivers/mtd/nand/raw/nand_jedec.c                |  113 ++++
- drivers/mtd/nand/raw/nand_legacy.c               |  642 ++++++++++++++++++
- drivers/mtd/nand/raw/nand_macronix.c             |    2 +-
- drivers/mtd/nand/raw/nand_micron.c               |   19 +-
- drivers/mtd/nand/raw/nand_onfi.c                 |  305 +++++++++
- drivers/mtd/nand/raw/nand_samsung.c              |    2 +-
- drivers/mtd/nand/raw/nand_timings.c              |   18 +-
- drivers/mtd/nand/raw/nand_toshiba.c              |   88 ++-
- drivers/mtd/nand/raw/nandsim.c                   |   50 +-
- drivers/mtd/nand/raw/ndfc.c                      |   43 +-
- drivers/mtd/nand/raw/nuc900_nand.c               |   47 +-
- drivers/mtd/nand/raw/omap2.c                     |  200 +++---
- drivers/mtd/nand/raw/orion_nand.c                |   26 +-
- drivers/mtd/nand/raw/oxnas_nand.c                |   29 +-
- drivers/mtd/nand/raw/pasemi_nand.c               |   51 +-
- drivers/mtd/nand/raw/plat_nand.c                 |   23 +-
- drivers/mtd/nand/raw/qcom_nandc.c                |   92 ++-
- drivers/mtd/nand/raw/r852.c                      |   80 +--
- drivers/mtd/nand/raw/r852.h                      |    2 +-
- drivers/mtd/nand/raw/s3c2410.c                   |  106 +--
- drivers/mtd/nand/raw/sh_flctl.c                  |   68 +-
- drivers/mtd/nand/raw/sharpsl.c                   |   36 +-
- drivers/mtd/nand/raw/sm_common.c                 |    7 +-
- drivers/mtd/nand/raw/socrates_nand.c             |   60 +-
- drivers/mtd/nand/raw/sunxi_nand.c                |   96 ++-
- drivers/mtd/nand/raw/tango_nand.c                |   77 +--
- drivers/mtd/nand/raw/tegra_nand.c                |   36 +-
- drivers/mtd/nand/raw/tmio_nand.c                 |   78 +--
- drivers/mtd/nand/raw/txx9ndfmc.c                 |   53 +-
- drivers/mtd/nand/raw/vf610_nfc.c                 |   43 +-
- drivers/mtd/nand/raw/xway_nand.c                 |   39 +-
- drivers/mtd/sm_ftl.c                             |   20 +-
- drivers/mtd/spi-nor/cadence-quadspi.c            |    4 +-
- drivers/mtd/spi-nor/fsl-quadspi.c                |   15 +-
- drivers/mtd/spi-nor/intel-spi-pci.c              |    1 +
- drivers/mtd/spi-nor/spi-nor.c                    |  925 +++++++++++++++++++++++--
- drivers/mtd/tests/mtd_nandecctest.c              |   21 +-
- drivers/staging/mt29f_spinand/mt29f_spinand.c    |   47 +-
- fs/jffs2/super.c                                 |    4 +-
- include/linux/fsl_ifc.h                          |    2 +
- include/linux/mtd/jedec.h                        |   91 +++
- include/linux/mtd/nand_bch.h                     |   11 +-
- include/linux/mtd/nand_ecc.h                     |   12 +-
- include/linux/mtd/onfi.h                         |  178 +++++
- include/linux/mtd/platnand.h                     |   74 ++
- include/linux/mtd/rawnand.h                      |  635 ++++-------------
- include/linux/mtd/spi-nor.h                      |  119 ++++
- 119 files changed, 5374 insertions(+), 5998 deletions(-)
- delete mode 100644 Documentation/mtd/nand/pxa3xx-nand.txt
- delete mode 100644 drivers/mtd/nand/raw/docg4.c
- create mode 100644 drivers/mtd/nand/raw/internals.h
- create mode 100644 drivers/mtd/nand/raw/nand_esmt.c
- create mode 100644 drivers/mtd/nand/raw/nand_jedec.c
- create mode 100644 drivers/mtd/nand/raw/nand_legacy.c
- create mode 100644 drivers/mtd/nand/raw/nand_onfi.c
- create mode 100644 include/linux/mtd/jedec.h
- create mode 100644 include/linux/mtd/onfi.h
- create mode 100644 include/linux/mtd/platnand.h
+-       ret =3D smpt + i;
++       pr_info("End [addr_width:%08x, read_dumy:%0x8, read_opcode:%08x]\n"=
+, nor->addr_width, nor->read_dummy, nor->read_opcode);
+        /* fall through */
+ out:
+        nor->addr_width =3D addr_width;
