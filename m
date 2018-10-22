@@ -1,26 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEaSa-0001xS-TX
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 13:41:34 +0000
-Date: Mon, 22 Oct 2018 15:41:10 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Rob Herring
- <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE BINDINGS" <devicetree@vger.kernel.org>, Ricardo Ribalda Delgado
- <ricardo.ribalda@gmail.com>
-Subject: Re: [PATCH v2 00/15] mtd: maps: physmap cleanups
-Message-ID: <20181022154110.62c0e178@bbrezillon>
-In-Reply-To: <CACRpkdbHDTcz_X_ijV+B-DkahsTWDyW2+h0n4W5o9GU3f6kmrA@mail.gmail.com>
-References: <20181019074908.13226-1-boris.brezillon@bootlin.com>
- <CACRpkdbHDTcz_X_ijV+B-DkahsTWDyW2+h0n4W5o9GU3f6kmrA@mail.gmail.com>
+From: Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>
+To: "Eugeniy.Paltsev@synopsys.com" <Eugeniy.Paltsev@synopsys.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
+ Alexey Brodkin <alexey.brodkin@synopsys.com>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ Vineet Gupta <vineet.gupta1@synopsys.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "richard@nod.at" <richard@nod.at>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Add support of sst26wf* flash ICs
+ protection ops
+Date: Mon, 22 Oct 2018 13:46:53 +0000
+Message-ID: <1540216012.19916.5.camel@synopsys.com>
+References: <20180910114628.19156-1-Eugeniy.Paltsev@synopsys.com>
+ <20180910114628.19156-2-Eugeniy.Paltsev@synopsys.com>
+In-Reply-To: <20180910114628.19156-2-Eugeniy.Paltsev@synopsys.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A869B85F8C864547AA2C54DCE1FE3375@internal.synopsys.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,48 +31,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
-
-On Mon, 22 Oct 2018 13:45:49 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
-
-> On Fri, Oct 19, 2018 at 9:49 AM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> 
-> > This is an attempt at merging physmap_of.c, gpio-addr-flash.c and
-> > physmap.c. The rational behind this decision is code sharing and
-> > consistency with what's done in other parts of the kernel:
-> >
-> > - physmap_of is just adding OF/DT support to the physmap logic, and we
-> >   usually put that code in the pre-existing driver instead of creating
-> >   a new one
-> >
-> > - gpio-addr-flash is just an extension of the physmap logic which is
-> >   needed when the platform does not have enough native ADDR lines
-> >   to address the whole flash. Again, I think this core belongs in the
-> >   physmap driver
-> >
-> > Patches 1 to 9 are just cleanups, and are not really related to the
-> > merging of physmap_of and gpio-addr-flash into physmap.c.
-> >
-> > Patch 10 to 13 are doing the actual merging work, and patch 14 is
-> > documenting the addr-gpios property that has been added to support
-> > the gpio-addr-flash on DT platforms.
-> >
-> > Patch 15 is a cosmetic change proposed by Ricardo.  
-> 
-> This series:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> I expect to test the result when rebasing my patches for Gemini,
-> so hope for this to hit your devel branch after v4.20-rc1.
-> 
-
-I already have a topic branch [1] in case you want to start working on
-it before 4.20-rc1.
-
-Regards,
-
-Boris
-
-[1]https://github.com/bbrezillon/linux-0day/tree/mtd/physmap-cleanup
+SGkhDQoNCk1heWJlIHlvdSBoYXZlIGFueSBjb21tZW50cyBvciByZW1hcmtzIGFib3V0IHRoaXMg
+cGF0Y2g/QW5kIGlmIHlvdSBkb24ndCBjb3VsZCB5b3UgcGxlYXNlIGFwcGx5IGl0LiBUaGFua3Mh
+DQoNCk9uIE1vbiwgMjAxOC0wOS0xMCBhdCAxNDo0NiArMDMwMCwgRXVnZW5peSBQYWx0c2V2IHdy
+b3RlOg0KPiBzc3QyNndmIGZsYXNoIHNlcmllcyBibG9jayBwcm90ZWN0aW9uIGltcGxlbWVudGF0
+aW9uIGRpZmZlcnMNCj4gZnJvbSBvdGhlciBTU1Qgc2VyaWVzLCBzbyBhZGQgc3BlY2lmaWMgaW1w
+bGVtZW50YXRpb24NCj4gZmxhc2hfbG9jay9mbGFzaF91bmxvY2svZmxhc2hfaXNfbG9ja2VkIGZ1
+bmN0aW9ucyBmb3Igc3N0MjZ3Zg0KPiBmbGFzaCBJQ3MuDQo+IA0KPiBOT1RFOg0KPiB0aGlzIHBh
+dGNoIGlzIGJhc2ljYWxseSBmb2xsb3dpbmcgbWluZSB1LWJvb3QgY29tbWl0IHBvcnQ6DQo+IGh0
+dHA6Ly9naXQuZGVueC5kZS8/cD11LWJvb3QuZ2l0O2E9Y29tbWl0ZGlmZjtoPTNkNGZlZDg3YTVm
+YTNmZmVkZjY0ZmYyODExY2Q5NWM1YWM0NTAzYWMNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEV1Z2Vu
+aXkgUGFsdHNldiA8RXVnZW5peS5QYWx0c2V2QHN5bm9wc3lzLmNvbT4NCj4gLS0tDQo+IENoYW5n
+ZXMgdjEtPnYyOg0KPiAgKiBDaGVjayByZXR1cm4gdmFsdWUgb2Yge3JlYWQgfCB3cml0ZX1fcmVn
+IGNhbGxiYWNrcy4NCj4gDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDE3NyAr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIGluY2x1ZGUvbGlu
+dXgvbXRkL3NwaS1ub3IuaCAgIHwgICA0ICsNCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTgxIGluc2Vy
+dGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3Iu
+YyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IGluZGV4IGQ5YzM2OGM0NDE5NC4u
+ZDBlN2M4NWI2MDAyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3Iu
+Yw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiBAQCAtNTk4LDYgKzU5
+OCwxNzcgQEAgc3RhdGljIGludCB3cml0ZV9zcl9hbmRfY2hlY2soc3RydWN0IHNwaV9ub3IgKm5v
+ciwgdTggc3RhdHVzX25ldywgdTggbWFzaykNCj4gIAlyZXR1cm4gKChyZXQgJiBtYXNrKSAhPSAo
+c3RhdHVzX25ldyAmIG1hc2spKSA/IC1FSU8gOiAwOw0KPiAgfQ0KPiAgDQo+ICsvKg0KPiArICog
+c3N0MjZ3ZjAxNi9zc3QyNndmMDMyL3NzdDI2d2YwNjQgaGF2ZSBuZXh0IGJsb2NrIHByb3RlY3Rp
+b246DQo+ICsgKiA0eCAgIC0gOCAgS0J5dGUgYmxvY2tzIC0gcmVhZCAmIHdyaXRlIHByb3RlY3Rp
+b24gYml0cyAtIHVwcGVyIGFkZHJlc3Nlcw0KPiArICogMXggICAtIDMyIEtCeXRlIGJsb2NrcyAt
+IHdyaXRlIHByb3RlY3Rpb24gYml0cw0KPiArICogcmVzdCAtIDY0IEtCeXRlIGJsb2NrcyAtIHdy
+aXRlIHByb3RlY3Rpb24gYml0cw0KPiArICogMXggICAtIDMyIEtCeXRlIGJsb2NrcyAtIHdyaXRl
+IHByb3RlY3Rpb24gYml0cw0KPiArICogNHggICAtIDggIEtCeXRlIGJsb2NrcyAtIHJlYWQgJiB3
+cml0ZSBwcm90ZWN0aW9uIGJpdHMgLSBsb3dlciBhZGRyZXNzZXMNCj4gKyAqDQo+ICsgKiBXZSds
+bCBzdXBwb3J0IG9ubHkgcGVyIDY0ayBsb2NrL3VubG9jayBzbyBsb3dlciBhbmQgdXBwZXIgNjQg
+S0J5dGUgcmVnaW9uDQo+ICsgKiB3aWxsIGJlIHRyZWF0ZWQgYXMgc2luZ2xlIGJsb2NrLg0KPiAr
+ICovDQo+ICsjZGVmaW5lIFNTVDI2X0JQUl84S19OVU0JCTQNCj4gKyNkZWZpbmUgU1NUMjZfTUFY
+X0JQUl9SRUdfTEVOCQkoMTggKyAxKQ0KPiArI2RlZmluZSBTU1QyNl9CT1VORF9SRUdfU0laRQkJ
+KCgzMiArIFNTVDI2X0JQUl84S19OVU0gKiA4KSAqIFNaXzFLKQ0KPiArDQo+ICtlbnVtIGxvY2tf
+Y3RsIHsNCj4gKwlTU1QyNl9DVExfTE9DSywNCj4gKwlTU1QyNl9DVExfVU5MT0NLLA0KPiArCVNT
+VDI2X0NUTF9DSEVDSw0KPiArfTsNCj4gKw0KPiArc3RhdGljIGJvb2wgc3N0MjZfcHJvY2Vzc19i
+cHIodTMyIGJwcl9zaXplLCB1OCAqY21kLCB1MzIgYml0LCBlbnVtIGxvY2tfY3RsIGN0bCkNCj4g
+K3sNCj4gKwlzd2l0Y2ggKGN0bCkgew0KPiArCWNhc2UgU1NUMjZfQ1RMX0xPQ0s6DQo+ICsJCWNt
+ZFticHJfc2l6ZSAtIChiaXQgLyA4KSAtIDFdIHw9IEJJVChiaXQgJSA4KTsNCj4gKwkJYnJlYWs7
+DQo+ICsJY2FzZSBTU1QyNl9DVExfVU5MT0NLOg0KPiArCQljbWRbYnByX3NpemUgLSAoYml0IC8g
+OCkgLSAxXSAmPSB+QklUKGJpdCAlIDgpOw0KPiArCQlicmVhazsNCj4gKwljYXNlIFNTVDI2X0NU
+TF9DSEVDSzoNCj4gKwkJcmV0dXJuICEhKGNtZFticHJfc2l6ZSAtIChiaXQgLyA4KSAtIDFdICYg
+QklUKGJpdCAlIDgpKTsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gZmFsc2U7DQo+ICt9DQo+ICsN
+Cj4gKy8qDQo+ICsgKiBMb2NrLCB1bmxvY2sgb3IgY2hlY2sgbG9jayBzdGF0dXMgb2YgdGhlIGZs
+YXNoIHJlZ2lvbiBvZiB0aGUgZmxhc2ggKGRlcGVuZGluZw0KPiArICogb24gdGhlIGxvY2tfY3Rs
+IHZhbHVlKQ0KPiArICovDQo+ICtzdGF0aWMgaW50IHNzdDI2X2xvY2tfY3RsKHN0cnVjdCBzcGlf
+bm9yICpub3IsIGxvZmZfdCBvZnMsIHVpbnQ2NF90IGxlbiwgZW51bSBsb2NrX2N0bCBjdGwpDQo+
+ICt7DQo+ICsJc3RydWN0IG10ZF9pbmZvICptdGQgPSAmbm9yLT5tdGQ7DQo+ICsJdTMyIGksIGJw
+cl9wdHIsIHJwdHJfNjRrLCBscHRyXzY0aywgYnByX3NpemU7DQo+ICsJYm9vbCBsb3dlcl82NGsg
+PSBmYWxzZSwgdXBwZXJfNjRrID0gZmFsc2U7DQo+ICsJdTggYnByX2J1ZmZbU1NUMjZfTUFYX0JQ
+Ul9SRUdfTEVOXSA9IHt9Ow0KPiArCWludCByZXQ7DQo+ICsNCj4gKwkvKiBDaGVjayBsZW5ndGgg
+YW5kIG9mZnNldCBmb3IgNjRrIGFsaWdubWVudCAqLw0KPiArCWlmICgob2ZzICYgKFNaXzY0SyAt
+IDEpKSB8fCAobGVuICYgKFNaXzY0SyAtIDEpKSkgew0KPiArCQlkZXZfZXJyKG5vci0+ZGV2LCAi
+bGVuZ3RoIG9yIG9mZnNldCBpcyBub3QgNjRLaUIgYWxsaWdobmVkXG4iKTsNCj4gKwkJcmV0dXJu
+IC1FSU5WQUw7DQo+ICsJfQ0KPiArDQo+ICsJaWYgKG9mcyArIGxlbiA+IG10ZC0+c2l6ZSkgew0K
+PiArCQlkZXZfZXJyKG5vci0+ZGV2LCAicmFuZ2UgaXMgbW9yZSB0aGFuIGRldmljZSBzaXplOiAl
+I2xseCArICUjbGx4ID4gJSNsbHhcbiIsDQo+ICsJCQlvZnMsIGxlbiwgbXRkLT5zaXplKTsNCj4g
+KwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsJfQ0KPiArDQo+ICsJLyogU1NUMjYgZmFtaWx5IGhhcyBv
+bmx5IDE2IE1iaXQsIDMyIE1iaXQgYW5kIDY0IE1iaXQgSUMgKi8NCj4gKwlpZiAobXRkLT5zaXpl
+ICE9IFNaXzJNICYmDQo+ICsJICAgIG10ZC0+c2l6ZSAhPSBTWl80TSAmJg0KPiArCSAgICBtdGQt
+PnNpemUgIT0gU1pfOE0pDQo+ICsJCXJldHVybiAtRUlOVkFMOw0KPiArDQo+ICsJYnByX3NpemUg
+PSAyICsgKG10ZC0+c2l6ZSAvIFNaXzY0SyAvIDgpOw0KPiArDQo+ICsJcmV0ID0gbm9yLT5yZWFk
+X3JlZyhub3IsIFNQSU5PUl9PUF9SRUFEX0JQUiwgYnByX2J1ZmYsIGJwcl9zaXplKTsNCj4gKwlp
+ZiAocmV0IDwgMCkgew0KPiArCQlkZXZfZXJyKG5vci0+ZGV2LCAiZmFpbCB0byByZWFkIGJsb2Nr
+LXByb3RlY3Rpb24gcmVnaXN0ZXJcbiIpOw0KPiArCQlyZXR1cm4gcmV0Ow0KPiArCX0NCj4gKw0K
+PiArCXJwdHJfNjRrID0gbWluX3QodTMyLCBvZnMgKyBsZW4sIG10ZC0+c2l6ZSAtIFNTVDI2X0JP
+VU5EX1JFR19TSVpFKTsNCj4gKwlscHRyXzY0ayA9IG1heF90KHUzMiwgb2ZzLCBTU1QyNl9CT1VO
+RF9SRUdfU0laRSk7DQo+ICsNCj4gKwl1cHBlcl82NGsgPSAoKG9mcyArIGxlbikgPiAobXRkLT5z
+aXplIC0gU1NUMjZfQk9VTkRfUkVHX1NJWkUpKTsNCj4gKwlsb3dlcl82NGsgPSAob2ZzIDwgU1NU
+MjZfQk9VTkRfUkVHX1NJWkUpOw0KPiArDQo+ICsJLyogTG93ZXIgYml0cyBpbiBibG9jay1wcm90
+ZWN0aW9uIHJlZ2lzdGVyIGFyZSBhYm91dCA2NGsgcmVnaW9uICovDQo+ICsJYnByX3B0ciA9IGxw
+dHJfNjRrIC8gU1pfNjRLIC0gMTsNCj4gKw0KPiArCS8qIFByb2Nlc3MgNjRLIGJsb2NrcyByZWdp
+b24gKi8NCj4gKwl3aGlsZSAobHB0cl82NGsgPCBycHRyXzY0aykgew0KPiArCQlpZiAoc3N0MjZf
+cHJvY2Vzc19icHIoYnByX3NpemUsIGJwcl9idWZmLCBicHJfcHRyLCBjdGwpKQ0KPiArCQkJcmV0
+dXJuIEVBQ0NFUzsNCj4gKw0KPiArCQlicHJfcHRyKys7DQo+ICsJCWxwdHJfNjRrICs9IFNaXzY0
+SzsNCj4gKwl9DQo+ICsNCj4gKwkvKiAzMksgYW5kIDhLIHJlZ2lvbiBiaXRzIGluIEJQUiBhcmUg
+YWZ0ZXIgNjRrIHJlZ2lvbiBiaXRzICovDQo+ICsJYnByX3B0ciA9IChtdGQtPnNpemUgLSAyICog
+U1NUMjZfQk9VTkRfUkVHX1NJWkUpIC8gU1pfNjRLOw0KPiArDQo+ICsJLyogUHJvY2VzcyBsb3dl
+ciAzMksgYmxvY2sgcmVnaW9uICovDQo+ICsJaWYgKGxvd2VyXzY0aykNCj4gKwkJaWYgKHNzdDI2
+X3Byb2Nlc3NfYnByKGJwcl9zaXplLCBicHJfYnVmZiwgYnByX3B0ciwgY3RsKSkNCj4gKwkJCXJl
+dHVybiBFQUNDRVM7DQo+ICsNCj4gKwlicHJfcHRyKys7DQo+ICsNCj4gKwkvKiBQcm9jZXNzIHVw
+cGVyIDMySyBibG9jayByZWdpb24gKi8NCj4gKwlpZiAodXBwZXJfNjRrKQ0KPiArCQlpZiAoc3N0
+MjZfcHJvY2Vzc19icHIoYnByX3NpemUsIGJwcl9idWZmLCBicHJfcHRyLCBjdGwpKQ0KPiArCQkJ
+cmV0dXJuIEVBQ0NFUzsNCj4gKw0KPiArCWJwcl9wdHIrKzsNCj4gKw0KPiArCS8qIFByb2Nlc3Mg
+bG93ZXIgOEsgYmxvY2sgcmVnaW9ucyAqLw0KPiArCWZvciAoaSA9IDA7IGkgPCBTU1QyNl9CUFJf
+OEtfTlVNOyBpKyspIHsNCj4gKwkJaWYgKGxvd2VyXzY0aykNCj4gKwkJCWlmIChzc3QyNl9wcm9j
+ZXNzX2JwcihicHJfc2l6ZSwgYnByX2J1ZmYsIGJwcl9wdHIsIGN0bCkpDQo+ICsJCQkJcmV0dXJu
+IEVBQ0NFUzsNCj4gKw0KPiArCQkvKiBJbiA4SyBhcmVhIEJQUiBoYXMgYm90aCByZWFkIGFuZCB3
+cml0ZSBwcm90ZWN0aW9uIGJpdHMgKi8NCj4gKwkJYnByX3B0ciArPSAyOw0KPiArCX0NCj4gKw0K
+PiArCS8qIFByb2Nlc3MgdXBwZXIgOEsgYmxvY2sgcmVnaW9ucyAqLw0KPiArCWZvciAoaSA9IDA7
+IGkgPCBTU1QyNl9CUFJfOEtfTlVNOyBpKyspIHsNCj4gKwkJaWYgKHVwcGVyXzY0aykNCj4gKwkJ
+CWlmIChzc3QyNl9wcm9jZXNzX2JwcihicHJfc2l6ZSwgYnByX2J1ZmYsIGJwcl9wdHIsIGN0bCkp
+DQo+ICsJCQkJcmV0dXJuIEVBQ0NFUzsNCj4gKw0KPiArCQkvKiBJbiA4SyBhcmVhIEJQUiBoYXMg
+Ym90aCByZWFkIGFuZCB3cml0ZSBwcm90ZWN0aW9uIGJpdHMgKi8NCj4gKwkJYnByX3B0ciArPSAy
+Ow0KPiArCX0NCj4gKw0KPiArCS8qIElmIHdlIGNoZWNrIHJlZ2lvbiBzdGF0dXMgd2UgZG9uJ3Qg
+bmVlZCB0byB3cml0ZSBCUFIgYmFjayAqLw0KPiArCWlmIChjdGwgPT0gU1NUMjZfQ1RMX0NIRUNL
+KQ0KPiArCQlyZXR1cm4gMDsNCj4gKw0KPiArCXJldCA9IG5vci0+d3JpdGVfcmVnKG5vciwgU1BJ
+Tk9SX09QX1dSSVRFX0JQUiwgYnByX2J1ZmYsIGJwcl9zaXplKTsNCj4gKwlpZiAocmV0IDwgMCkg
+ew0KPiArCQlkZXZfZXJyKG5vci0+ZGV2LCAiZmFpbCB0byB3cml0ZSBibG9jay1wcm90ZWN0aW9u
+IHJlZ2lzdGVyXG4iKTsNCj4gKwkJcmV0dXJuIHJldDsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4g
+MDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBzc3QyNl91bmxvY2soc3RydWN0IHNwaV9ub3Ig
+Km5vciwgbG9mZl90IG9mcywgdWludDY0X3QgbGVuKQ0KPiArew0KPiArCXJldHVybiBzc3QyNl9s
+b2NrX2N0bChub3IsIG9mcywgbGVuLCBTU1QyNl9DVExfVU5MT0NLKTsNCj4gK30NCj4gKw0KPiAr
+c3RhdGljIGludCBzc3QyNl9sb2NrKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCBvZnMsIHVp
+bnQ2NF90IGxlbikNCj4gK3sNCj4gKwlyZXR1cm4gc3N0MjZfbG9ja19jdGwobm9yLCBvZnMsIGxl
+biwgU1NUMjZfQ1RMX0xPQ0spOw0KPiArfQ0KPiArDQo+ICsvKg0KPiArICogUmV0dXJucyBFQUND
+RVMgKHBvc2l0aXZlIHZhbHVlKSBpZiByZWdpb24gaXMgbG9ja2VkLCAwIGlmIHJlZ2lvbiBpcyB1
+bmxvY2tlZCwNCj4gKyAqIGFuZCBuZWdhdGl2ZSBvbiBlcnJvcnMuDQo+ICsgKi8NCj4gK3N0YXRp
+YyBpbnQgc3N0MjZfaXNfbG9ja2VkKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCBvZnMsIHVp
+bnQ2NF90IGxlbikNCj4gK3sNCj4gKwkvKg0KPiArCSAqIGlzX2xvY2tlZCBmdW5jdGlvbiBpcyB1
+c2VkIGZvciBjaGVjayBiZWZvcmUgcmVhZGluZyBvciBlcmFzaW5nIGZsYXNoDQo+ICsJICogcmVn
+aW9uLCBzbyBvZmZzZXQgYW5kIGxlbmd0aCBtaWdodCBiZSBub3QgNjRrIGFsbGlnaG5lZCwgc28g
+YWRqdXN0DQo+ICsJICogdGhlbSB0byBiZSA2NGsgYWxsaWdobmVkIGFzIHNzdDI2X2xvY2tfY3Rs
+IHdvcmtzIG9ubHkgd2l0aCA2NGsNCj4gKwkgKiBhbGxpZ2huZWQgcmVnaW9ucy4NCj4gKwkgKi8N
+Cj4gKwlvZnMgLT0gb2ZzICYgKFNaXzY0SyAtIDEpOw0KPiArCWxlbiA9IGxlbiAmIChTWl82NEsg
+LSAxKSA/IChsZW4gJiB+KFNaXzY0SyAtIDEpKSArIFNaXzY0SyA6IGxlbjsNCj4gKw0KPiArCXJl
+dHVybiBzc3QyNl9sb2NrX2N0bChub3IsIG9mcywgbGVuLCBTU1QyNl9DVExfQ0hFQ0spOw0KPiAr
+fQ0KPiArDQo+ICBzdGF0aWMgdm9pZCBzdG1fZ2V0X2xvY2tlZF9yYW5nZShzdHJ1Y3Qgc3BpX25v
+ciAqbm9yLCB1OCBzciwgbG9mZl90ICpvZnMsDQo+ICAJCQkJIHVpbnQ2NF90ICpsZW4pDQo+ICB7
+DQo+IEBAIC0yODcyLDYgKzMwNDMsMTIgQEAgaW50IHNwaV9ub3Jfc2NhbihzdHJ1Y3Qgc3BpX25v
+ciAqbm9yLCBjb25zdCBjaGFyICpuYW1lLA0KPiAgCQlub3ItPmZsYXNoX2lzX2xvY2tlZCA9IHN0
+bV9pc19sb2NrZWQ7DQo+ICAJfQ0KPiAgDQo+ICsJaWYgKEpFREVDX01GUihpbmZvKSA9PSBTTk9S
+X01GUl9TU1QgJiYgaW5mby0+aWRbMV0gPT0gMHgyNikgew0KPiArCQlub3ItPmZsYXNoX2xvY2sg
+PSBzc3QyNl9sb2NrOw0KPiArCQlub3ItPmZsYXNoX3VubG9jayA9IHNzdDI2X3VubG9jazsNCj4g
+KwkJbm9yLT5mbGFzaF9pc19sb2NrZWQgPSBzc3QyNl9pc19sb2NrZWQ7DQo+ICsJfQ0KPiArDQo+
+ICAJaWYgKG5vci0+Zmxhc2hfbG9jayAmJiBub3ItPmZsYXNoX3VubG9jayAmJiBub3ItPmZsYXNo
+X2lzX2xvY2tlZCkgew0KPiAgCQltdGQtPl9sb2NrID0gc3BpX25vcl9sb2NrOw0KPiAgCQltdGQt
+Pl91bmxvY2sgPSBzcGlfbm9yX3VubG9jazsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgv
+bXRkL3NwaS1ub3IuaCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBpbmRleCBlNjBk
+YTBkMzRjYzEuLjI0NjAxNGE3M2Y4MyAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQv
+c3BpLW5vci5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBAQCAtOTMs
+NiArOTMsMTAgQEANCj4gICNkZWZpbmUgU1BJTk9SX09QX1dSREkJCTB4MDQJLyogV3JpdGUgZGlz
+YWJsZSAqLw0KPiAgI2RlZmluZSBTUElOT1JfT1BfQUFJX1dQCTB4YWQJLyogQXV0byBhZGRyZXNz
+IGluY3JlbWVudCB3b3JkIHByb2dyYW0gKi8NCj4gIA0KPiArLyogVXNlZCBmb3IgU1NUMjYqIGZs
+YXNoZXMgb25seS4gKi8NCj4gKyNkZWZpbmUgU1BJTk9SX09QX1JFQURfQlBSCTB4NzIJLyogUmVh
+ZCBibG9jayBwcm90ZWN0aW9uIHJlZ2lzdGVyICovDQo+ICsjZGVmaW5lIFNQSU5PUl9PUF9XUklU
+RV9CUFIJMHg0MgkvKiBXcml0ZSBibG9jayBwcm90ZWN0aW9uIHJlZ2lzdGVyICovDQo+ICsNCj4g
+IC8qIFVzZWQgZm9yIFMzQU4gZmxhc2hlcyBvbmx5ICovDQo+ICAjZGVmaW5lIFNQSU5PUl9PUF9Y
+U0UJCTB4NTAJLyogU2VjdG9yIGVyYXNlICovDQo+ICAjZGVmaW5lIFNQSU5PUl9PUF9YUFAJCTB4
+ODIJLyogUGFnZSBwcm9ncmFtICovDQotLSANCiBFdWdlbml5IFBhbHRzZXY=
