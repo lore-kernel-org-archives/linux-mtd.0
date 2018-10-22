@@ -1,41 +1,25 @@
-Received: from mail-yw1-xc42.google.com ([2607:f8b0:4864:20::c42])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEVKI-00079T-CT
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:12:39 +0000
-Received: by mail-yw1-xc42.google.com with SMTP id m127-v6so15659820ywb.0
- for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 01:12:27 -0700 (PDT)
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Linus Walleij <linus.walleij@linaro.org>, bgurney@redhat.com
-Cc: Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
- Paolo Valente <paolo.valente@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>, Adrian Hunter
- <adrian.hunter@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Hellwig <hch@infradead.org>,
- One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>,
- Mark Brown <broonie@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>,
- Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
- <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
- <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
- <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
- <20181017100526.GB23493@quack2.suse.cz>
- <d1d082f3-d681-02ed-5bbe-5eb011d6b0da@acm.org>
- <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
- <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <eb60af4f-40bb-da3a-1399-60040d2d2fe2@kernel.dk>
-Date: Mon, 22 Oct 2018 02:12:15 -0600
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEVTA-0002uG-7X
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:21:49 +0000
+Date: Mon, 22 Oct 2018 10:21:26 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Vignesh R
+ <vigneshr@ti.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Julien Su
+ <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
+ zhengxunli@mxic.com.tw, linux-spi@vger.kernel.org
+Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
+Message-ID: <20181022102126.529bebb3@bbrezillon>
+In-Reply-To: <20181021133600.GE8554@sirena.org.uk>
+References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+ <20181019122527.GJ5895@sirena.org.uk>
+ <20181019145920.43f9d5ec@bbrezillon>
+ <20181021133600.GE8554@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -46,32 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/18 2:42 AM, Linus Walleij wrote:
-> On Wed, Oct 17, 2018 at 4:59 PM Bryan Gurney <bgurney@redhat.com> wrote:
-> 
->> I feel strongly about the prevention of users running into errors
->> because of an incorrect scheduler default, because I encountered that
->> situation three times in my testing with zoned block devices. The
->> switch to SCSI_MQ would resolve that, since mq-deadline is the
->> default, but in my case, I was using Fedora 28, which disables
->> CONFIG_SCSI_MQ_DEFAULT (which is enabled in the 4.18 kernel), so my
->> default scheduler was cfq.
-> 
-> I think we should make a patch to the kernel that makes it
-> impossible (even from sysfs) to choose a non-zone aware
-> scheduler for these devices.
-> 
-> It's another topic than $SUBJECT patch though. I take this
-> into account in this version.
+On Sun, 21 Oct 2018 14:36:00 +0100
+Mark Brown <broonie@kernel.org> wrote:
 
-Yes I agree, and I'd be happy to take such a patch. The only matching we
-do now is mq-sched for mq-device, and vice versa.  And that will be
-going away in 4.21, when there are no more !mq devices that use
-scheduling.
+> On Fri, Oct 19, 2018 at 02:59:20PM +0200, Boris Brezillon wrote:
+> > Mark Brown <broonie@kernel.org> wrote:  
+> 
+> > > The SPI framework changes definitely look OK to me, if everyone agrees
+> > > that this is a good way to go from a MTD point of view I'm happy to
+> > > apply them.  I have no strong opinion on the MTD bits of the series.  
+> 
+> > Actually, Yogesh posted similar patches before me, so maybe you can
+> > look at this series [1]. The spi/spi-mem side of things is rather
+> > uncontroversial. Feel free to apply them if you think they're good
+> > enough to go in.  
+> 
+> Ugh, unfortunately he didn't send me them so I'll have to try to find
+> them on the list and it looks like there's been no review from any of
+> the other MTD people.  It'd be good to get some consensus, yours seems a
+> bit more complete so my inclination would be to go that way.
 
-If your device is zoned, then you should not be able to switch to a
-scheduler that doesn't have support for that. The right approach here
-would be to add a capability flag to the IO schedulers.
+Indeed, looks like Yogesh version is not patching spi_setup() to
+support octal mode. Anyway, it seems unfair to push for my own version
+while I was clearly aware of Yogesh's patchset before posting my RFC
+(the only reason I did not use his patches is laziness on my side: I had
+my own working version, and the RFC was not really about these
+spi/spi-mem aspects, more the spi-nor side of things :-)).
 
--- 
-Jens Axboe
+So, if you don't mind, I'll ask him to send a new version addressing
+this problem (which should make our patches almost identical, except for
+the naming: OCTAL vs OCTO), and I'll put my R-b.
