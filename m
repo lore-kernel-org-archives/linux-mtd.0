@@ -1,36 +1,25 @@
-Received: from mail-yw1-xc44.google.com ([2607:f8b0:4864:20::c44])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gEVTX-0002yJ-0M
- for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:22:22 +0000
-Received: by mail-yw1-xc44.google.com with SMTP id m127-v6so15668918ywb.0
- for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 01:22:00 -0700 (PDT)
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Paolo Valente <paolo.valente@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>, Adrian Hunter
- <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>,
- Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Alan Cox
- <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>,
- Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
- <E2DDE0B9-F693-4EF3-B90C-C57F787B4DB3@linaro.org>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <fa57d440-dff1-e260-c8c9-6d4bf04221a8@kernel.dk>
-Date: Mon, 22 Oct 2018 02:21:47 -0600
+ id 1gEVY6-0004sJ-Vm
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:26:58 +0000
+From: Richard Weinberger <richard@nod.at>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Russell Senior <russell@personaltelco.net>,
+ OpenWrt Development List <openwrt-devel@lists.openwrt.org>
+Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
+ file handle of lower inode on copy up")
+Date: Mon, 22 Oct 2018 10:26:29 +0200
+Message-ID: <3000620.g91H2S8sUk@blindfold>
+In-Reply-To: <CACna6rx_jSTEEt6TAzQcBpAHZA_CJGhkjJhWWJKG3cQmr9c9ug@mail.gmail.com>
+References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
+ <CACna6rx_jSTEEt6TAzQcBpAHZA_CJGhkjJhWWJKG3cQmr9c9ug@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <E2DDE0B9-F693-4EF3-B90C-C57F787B4DB3@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,51 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/18 4:59 AM, Paolo Valente wrote:
-> 
-> 
->> Il giorno 15 ott 2018, alle ore 20:26, Paolo Valente <paolo.valente@linaro.org> ha scritto:
->>
->> ...
->>> This kind of policy does not belong in the kernel, at least
->>> not in the current form. If we had some sort of "enable best
->>> options for a desktop" then it could fall under that umbrella.
->>>
->>
->> I don't think bfq can be considered a scheduler for only desktops any
->> longer.
->>
-> 
-> Hi Jens,
-> this reply of mine went on bugging me, until I understood my mistake.
-> 
-> The fact that I consider bfq good also for servers *does not* imply
-> that having bfq in desktops is to be refused.
-> 
-> As for the option that you are hinting at, I also acknowledge that it
-> would be trivial for an admin/developer to know whether a given kernel
-> is meant for a desktop/personal system, while it is more difficult to
-> choose explicitly among the various I/O schedulers available.
-> 
-> So, I apologize for my shortsighted, initial reply, and ask you if can
-> elaborate a little more on this.  I'm willing to help, if I can.
+Am Montag, 22. Oktober 2018, 09:14:08 CEST schrieb Rafa=C5=82 Mi=C5=82ecki:
+> On Fri, 19 Oct 2018 at 14:31, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> =
+wrote:
+> > Since OpenWrt switch from kernel 4.9 to 4.14 users started randomly
+> > reporting file system corruptions. OpenWrt uses overlay(fs) with
+> > squashfs as lowerdir and ubifs as upperdir. Russell managed to isolate
+> > & describe test case for reproducing corruption when doing a power cut
+> > after first boot.
+> >
+> > (...)
+> >
+> > Can I ask you to check if there is something possibly wrong with the
+> > above ovl commit? Or does it expose some problem with the ubifs? Or
+> > maybe the whole UBI?
+> >
+> > FWIW testing above commit (and one before it) always results in single
+> > error in the kernel log:
+> > [   14.250184] UBIFS error (ubi0:1 pid 637): ubifs_add_orphan: orphaned=
+ twice
+> >
+> > That UBIFS error doesn't occur with 4.12.14. Unfortunately it's
+> > impossible to cleanly revert 3a1e819b4e80 from the top of 4.12.14.
+>=20
+> Let me provide a summary of all relevant commits & tests:
+>=20
+> By "Corruption" I mean file system corruption after power cut
 
-I think I've written about this multiple times now, but for me it
-really just boils down to sane default, and policy in the kernel.
-BFQ is very complicated, about 10K lines of code. I'm not comfortable
-making that the default right now - as I've mentioned in other
-replies, I think something like that should be driven by the distros
-as they will ultimately be the ones that usually get complaints
-about behavioral changes that impact performance adversely. This isn't
-just about running some benchmarks and calling it a day.
+Well, is the filesystem not consistent anymore?
+=46rom what Russel explained to me, I thought the main problem is that no w=
+rite back happens.
+IOW the inode is present, has correct length, but no content is there (all =
+zeros).
 
-Maybe some day we can make it the default on mq for single queue
-devices, but I just don't think we are there yet in terms of
-coverage. 
+Just like the typical case where userspace does not fsync.
+But in your case sooner or later write back should have happened because th=
+e writeback timer
+fires at some point.
 
-While I don't work for a distro anymore, I do have my hands dirty
-with a fairly substantial deployment at work. There we run mq-deadline
-on single queue devices, and kyber on multiqueue capable devices.
-
--- 
-Jens Axboe
+Thanks,
+//richard
