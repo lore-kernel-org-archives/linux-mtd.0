@@ -1,35 +1,41 @@
-Date: Mon, 22 Oct 2018 10:01:52 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "richard@nod.at" <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
- <nicolas.ferre@microchip.com>, "cyrille.pitchen@microchip.com"
- <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
- <Cristian.Birsan@microchip.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
- SPI NOR flash memories
-Message-ID: <20181022100152.05da1b6c@bbrezillon>
-In-Reply-To: <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
- <20180911154007.17195-2-tudor.ambarus@microchip.com>
- <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
- <de0f7245-2557-12be-a306-67b08e55ae7b@wedev4u.fr>
- <VI1PR04MB1038AB25EABDC8507984ADC799FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017090724.12f2cd79@bbrezillon>
- <20181017091045.124e0266@bbrezillon>
- <20181017092941.3658bd9a@bbrezillon>
- <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181017115237.07310b74@bbrezillon>
- <VI1PR04MB1038BD6103DD8BD6B6DEC2B899F40@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Received: from mail-yw1-xc41.google.com ([2607:f8b0:4864:20::c41])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEVGu-0005Bt-Bj
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 08:09:09 +0000
+Received: by mail-yw1-xc41.google.com with SMTP id y76-v6so15659033ywd.2
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 01:08:54 -0700 (PDT)
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>, Bart Van Assche
+ <bvanassche@acm.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>, Alan Cox
+ <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
+ <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+ <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
+ <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
+ <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
+ <20181017100526.GB23493@quack2.suse.cz>
+ <e54c3943-0335-6db4-1c86-f093432fd84b@kernel.dk>
+ <20181018072110.GI23493@quack2.suse.cz>
+ <3a844733-ddcd-2f5f-80fc-645daeec0046@kernel.dk> <20181019082203.GA10361@amd>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <1643e1b5-bb05-bbbb-83c8-02c3a70a147c@kernel.dk>
+Date: Mon, 22 Oct 2018 02:08:42 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181019082203.GA10361@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -40,46 +46,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 Oct 2018 06:04:13 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-
-> -static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
-> +static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt, u32 smpt_len)
->  {
->         const u32 *ret = NULL;
-> -       u32 i, addr;
-> +       u32 i, addr, nmaps;
->         int err;
->         u8 addr_width, read_opcode, read_dummy;
->         u8 read_data_mask, data_byte, map_id;
-> +       bool map_id_is_valid = false;
+On 10/19/18 2:22 AM, Pavel Machek wrote:
+> Hi!
 > 
->         addr_width = nor->addr_width;
->         read_dummy = nor->read_dummy;
->         read_opcode = nor->read_opcode;
+>>>> Which is also the approach that I've been advocating for here, instead
+>>>> of a kernel patch...
+>>>
+>>> I know you've been advocating the use of udev for IO scheduler selection.
+>>> But do you want to force everybody to use udev? And for people who build
+>>> their own (usually small) systems, do you want to force them to think about
+>>> IO scheduler selection and writing appropriate rules? These are the
+>>> problems people were mentioning and I'm not sure what is your opinion on
+>>> this.
+>>
+>> I don't want to force everybody to use udev, use whatever you like on
+>> your platform. For most people that is udev, for embedded it's something
+>> else. As you said, distros already do this via udev. When I've had to
+>> do it on my systems, I've added a udev rule to do it.
 > 
-> +       for (i = 0; i<smpt_len; i++)
-> +               pr_info("%s:%i smpt[%d]=%08x\n", __func__, __LINE__, i, smpt[i]);
-> +
->         map_id = 0;
-> -       i = 0;
->         /* Determine if there are any optional Detection Command Descriptors */
-> -       while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
-> +       for (i = 0; i< smpt_len; i++) {
-> +               if (!(smpt[i] & SMPT_DESC_TYPE_MAP))
-> +                       break;
-> +
->                 read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
->                 nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
->                 nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
+> This is not really helpful.
+> 
+> So you want me and everyone else and everyone on embedded to mess with
+> udev? No, thanks.
 
-Could you also print the ->addr_width, ->read_dummy and ->read_opcode
-here?
+Did you read what I wrote?
 
-> @@ -2894,18 +2900,35 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
->                  * Configuration that is currently in use.
->                  */
->                 map_id = map_id << 1 | !!(data_byte & read_data_mask);
-> +               map_id_is_valid = true;
->                 i = i + 2;
->         }
+> There are people booting with init=/bin/bash, too, running fsck. Would
+> not it be nice to use reasonable schedulers there?
+
+I can pretty much guarantee that fsck will run the same speed,
+regardless of scheduler. And users generally don't care about
+ultimate fairness on the device while running fsck...
+
+If you (or someone else) doesn't want to use udev, use whatever
+you want. You're doing something heavily customized at that
+point anyway, surely this isn't a show stopper.
+
+>> My opinion is that the kernel makes various schedulers available.
+>> Deciding which one to use is policy that should go into user space.
+>> The default should be something that's solid and works, fancier
+>> setups and tuning should be left to user space.
+> 
+> Kernel should do reasonable thing by default, and it seems to be easy
+> in this case.
+
+I agree, we just differ on what we consider the reasonable choice to
+be.
+
+-- 
+Jens Axboe
