@@ -1,24 +1,28 @@
-Date: Mon, 22 Oct 2018 15:56:35 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- Alexey Brodkin <alexey.brodkin@synopsys.com>, Vineet Gupta
- <vineet.gupta1@synopsys.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH v2 0/2] MTD: spi-nor: add support for sst26wf016,
- sst26wf032
-Message-ID: <20181022155635.2175a595@bbrezillon>
-In-Reply-To: <1540216028.19916.6.camel@synopsys.com>
-References: <20180910114628.19156-1-Eugeniy.Paltsev@synopsys.com>
- <1540216028.19916.6.camel@synopsys.com>
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gEcEW-00017b-CO
+ for linux-mtd@lists.infradead.org; Mon, 22 Oct 2018 15:35:11 +0000
+Received: by mail-wr1-x442.google.com with SMTP id t10-v6so3902960wrn.10
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2018 08:34:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
+ <CACna6rx_jSTEEt6TAzQcBpAHZA_CJGhkjJhWWJKG3cQmr9c9ug@mail.gmail.com>
+ <3000620.g91H2S8sUk@blindfold>
+ <CAOQ4uxii0rZv3SVXWNN7yug_WZ-TKLL3Wo-mti0y9K66Z+-EcQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxii0rZv3SVXWNN7yug_WZ-TKLL3Wo-mti0y9K66Z+-EcQ@mail.gmail.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Mon, 22 Oct 2018 17:34:44 +0200
+Message-ID: <CACna6rzvzc-_X3VDeA-nwtTW7KHaQGtbvzjVNoOFEQuHKi3PJg@mail.gmail.com>
+Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
+ file handle of lower inode on copy up")
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-unionfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Russell Senior <russell@personaltelco.net>,
+ OpenWrt Development List <openwrt-devel@lists.openwrt.org>
+Content-Type: multipart/mixed; boundary="000000000000c694880578d2fe72"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +32,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Tudor
+--000000000000c694880578d2fe72
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Eugeniy,
+On Mon, 22 Oct 2018 at 10:57, Amir Goldstein <amir73il@gmail.com> wrote:
+> On Mon, Oct 22, 2018 at 11:26 AM Richard Weinberger <richard@nod.at> wrot=
+e:
+> >
+> > Am Montag, 22. Oktober 2018, 09:14:08 CEST schrieb Rafa=C5=82 Mi=C5=82e=
+cki:
+> > > On Fri, 19 Oct 2018 at 14:31, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.c=
+om> wrote:
+> > > > Since OpenWrt switch from kernel 4.9 to 4.14 users started randomly
+> > > > reporting file system corruptions. OpenWrt uses overlay(fs) with
+> > > > squashfs as lowerdir and ubifs as upperdir. Russell managed to isol=
+ate
+> > > > & describe test case for reproducing corruption when doing a power =
+cut
+> > > > after first boot.
+> > > >
+> > > > (...)
+> > > >
+> > > > Can I ask you to check if there is something possibly wrong with th=
+e
+> > > > above ovl commit? Or does it expose some problem with the ubifs? Or
+> > > > maybe the whole UBI?
+> > > >
+> > > > FWIW testing above commit (and one before it) always results in sin=
+gle
+> > > > error in the kernel log:
+> > > > [   14.250184] UBIFS error (ubi0:1 pid 637): ubifs_add_orphan: orph=
+aned twice
+> > > >
+> > > > That UBIFS error doesn't occur with 4.12.14. Unfortunately it's
+> > > > impossible to cleanly revert 3a1e819b4e80 from the top of 4.12.14.
+> > >
+> > > Let me provide a summary of all relevant commits & tests:
+> > >
+> > > By "Corruption" I mean file system corruption after power cut
+> >
+> > Well, is the filesystem not consistent anymore?
+> > From what Russel explained to me, I thought the main problem is that no=
+ write back happens.
+> > IOW the inode is present, has correct length, but no content is there (=
+all zeros).
+> >
+> > Just like the typical case where userspace does not fsync.
+> > But in your case sooner or later write back should have happened becaus=
+e the writeback timer
+> > fires at some point.
+> >
+>
+> For the records overlayfs does:
+> - open(O_TMPFILE)
+> - setxattr() [with 3a1e819b4e80]
+> - write to tmpfile
+> - fsync tmpfile
+> - link tmpfile
+>
+> I suggest that you try the same from user space on ubifs.
 
-On Mon, 22 Oct 2018 13:47:09 +0000
-Eugeniy Paltsev <eugeniy.paltsev@synopsys.com> wrote:
+Are you 100% sure about it? I tried writing C app behaving as you
+described above and I could not reproduce the problem.
 
-> Hi!
-> 
-> Maybe you have any comments or remarks about this patch?And if you don't could you please apply it. Thanks!
+Then I took a close look at ovl_copy_up_locked() and it seems above
+info isn't accurate. It seems to me that setxattr() happens between
+fsync and link. I modified my C app to follow that order (open, write,
+fsync, setxattr, link) and I can reproduce the problem now!
 
-Sorry, it's already too late for 4.20, and I won't apply patches to the
-spi-nor/next branch before 4.20-rc1 is out.
+Steps to reproduce the problem:
+1) compile tmptest.c
+2) tmptest /overlay/upper/foo.txt user.bar baz
+3) wait 5 seconds (so ubifs writes to flash)
+4) power cut
+5) boot again and check content of /overlay/upper/foo.txt
+6) in my case content appears to be 00 00 00 00
 
-Tudor, Marek, can I have a Reviewed-by/Acked-by on this patchset?
+Is this correct for ovl to call vfs_setxattr() *after* calling vfs_fsync()?
 
-Thanks,
+--=20
+Rafa=C5=82
 
-Boris
+--000000000000c694880578d2fe72
+Content-Type: text/x-csrc; charset="US-ASCII"; name="tmptest.c"
+Content-Disposition: attachment; filename="tmptest.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jnkghgd90>
+X-Attachment-Id: f_jnkghgd90
 
-> 
-> On Mon, 2018-09-10 at 14:46 +0300, Eugeniy Paltsev wrote:
-> > Add support for the SST sst26wf016 and sst26wf032 flash IC:
-> > 
-> > sst26wf*** flash series block protection implementation differs from other
-> > SST series, so we add implementation for sst26wf*** lock/unlock/is_locked
-> > functions.
-> > 
-> > Add sst26wf016 and sst26wf032 flash IC info to spi_flash_ids list.
-> > 
-> > NOTE:
-> > these patches is basically following mine u-boot commits port:
-> > http://git.denx.de/?p=u-boot.git;a=commitdiff;h=3d4fed87a5fa3ffedf64ff2811cd95c5ac4503ac
-> > http://git.denx.de/?p=u-boot.git;a=commitdiff;h=a19e97157c3721ef9c4b15c68c1773467a3b4a98
-> > 
-> > Changes v1->v2:
-> >  * Check return value of {read | write}_reg callbacks.
-> > 
-> > Eugeniy Paltsev (2):
-> >   mtd: spi-nor: Add support of sst26wf* flash ICs protection ops
-> >   mtd: spi-nor: add support for sst26wf016, sst26wf032
-> > 
-> >  drivers/mtd/spi-nor/spi-nor.c | 179 ++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mtd/spi-nor.h   |   4 +
-> >  2 files changed, 183 insertions(+)
-> >   
+I2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRlIDxmY250bC5oPgojaW5jbHVkZSA8bGliZ2VuLmg+
+CiNpbmNsdWRlIDxsaW51eC9saW1pdHMuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxz
+dHJpbmcuaD4KI2luY2x1ZGUgPHN5cy94YXR0ci5oPgojaW5jbHVkZSA8dW5pc3RkLmg+CgpzdGF0
+aWMgY29uc3QgY2hhciBmb29bXSA9ICJmb29cbiI7CgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAq
+KmFyZ3YpIHsKCWNoYXIgcGF0aFtQQVRIX01BWF07CgljaGFyICpkaXI7CglpbnQgZXJyOwoJaW50
+IGZkOwoKCWlmIChhcmdjIDwgMikgewoJCWZwcmludGYoc3RkZXJyLCAiWW91IGhhdmUgdG8gcGFz
+cyBmaWxlIGFzIGFyZ3VtZW50XG4iKTsKCQlyZXR1cm4gLUVOT0VOVDsKCX0KCglkaXIgPSBzdHJk
+dXAoYXJndlsxXSk7CglpZiAoIWRpcikgewoJCXJldHVybiAtRU5PTUVNOwoJfQoJZGlyID0gZGly
+bmFtZShkaXIpOwoJZmQgPSBvcGVuKGRpciwgT19UTVBGSUxFIHwgT19SRFdSKTsKCWlmIChmZCA8
+IDApIHsKCQllcnIgPSAtZXJybm87CgkJZnByaW50ZihzdGRlcnIsICJGYWlsZWQgdG8gb3BlbiBP
+X1RNUEZJTEU6ICVkXG4iLCBlcnIpOwoJCXJldHVybiBlcnI7Cgl9CgojaWYgMAoJaWYgKGFyZ2Mg
+Pj0gNCkgewoJCWlmIChmc2V0eGF0dHIoZmQsIGFyZ3ZbMl0sIGFyZ3ZbM10sIHN0cmxlbihhcmd2
+WzNdKSwgMCkgIT0gMCkgewoJCQllcnIgPSAtZXJybm87CgkJCWZwcmludGYoc3RkZXJyLCAiRmFp
+bGVkIHRvIGZzZXR4YXR0cigpOiAlZFxuIiwgZXJyKTsKCQkJcmV0dXJuIGVycjsKCQl9CgkJcHJp
+bnRmKCJXcm90ZSB4YXR0ciBcIiVzXCIgdmFsdWUgXCIlc1wiXG4iLCBhcmd2WzJdLCBhcmd2WzNd
+KTsKCX0KI2VuZGlmCgoJaWYgKHdyaXRlKGZkLCBmb28sIHNpemVvZihmb28pKSAhPSBzaXplb2Yo
+Zm9vKSkgewoJCWVyciA9IC1lcnJubzsKCQlmcHJpbnRmKHN0ZGVyciwgIkZhaWxlZCB0byB3cml0
+ZSgpOiAlZFxuIiwgZXJyKTsKCQlyZXR1cm4gZXJyOwoJfQoKCWlmIChmc3luYyhmZCkgPCAwKSB7
+CgkJZXJyID0gLWVycm5vOwoJCWZwcmludGYoc3RkZXJyLCAiRmFpbGVkIHRvIGZzeW5jKCk6ICVk
+XG4iLCBlcnIpOwoJCXJldHVybiBlcnI7Cgl9CgojaWYgMQoJaWYgKGFyZ2MgPj0gNCkgewoJCWlm
+IChmc2V0eGF0dHIoZmQsIGFyZ3ZbMl0sIGFyZ3ZbM10sIHN0cmxlbihhcmd2WzNdKSwgMCkgIT0g
+MCkgewoJCQllcnIgPSAtZXJybm87CgkJCWZwcmludGYoc3RkZXJyLCAiRmFpbGVkIHRvIGZzZXR4
+YXR0cigpOiAlZFxuIiwgZXJyKTsKCQkJcmV0dXJuIGVycjsKCQl9CgkJcHJpbnRmKCJXcm90ZSB4
+YXR0ciBcIiVzXCIgdmFsdWUgXCIlc1wiXG4iLCBhcmd2WzJdLCBhcmd2WzNdKTsKCX0KI2VuZGlm
+CgoJc25wcmludGYocGF0aCwgc2l6ZW9mKHBhdGgpLCAiL3Byb2Mvc2VsZi9mZC8lZCIsIGZkKTsK
+CWlmIChsaW5rYXQoLTEsIHBhdGgsIEFUX0ZEQ1dELCBhcmd2WzFdLCBBVF9TWU1MSU5LX0ZPTExP
+VykgIT0gMCkgewoJCWVyciA9IC1lcnJubzsKCQlmcHJpbnRmKHN0ZGVyciwgIkZhaWxlZCB0byBs
+aW5rYXQoKTogJWRcbiIsIGVycik7CgkJcmV0dXJuIGVycjsKCX0KCglwcmludGYoIlN1Y2Nlc3Mh
+XG4iKTsKCglyZXR1cm4gMDsKfQo=
+--000000000000c694880578d2fe72--
