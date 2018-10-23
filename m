@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF1lR-0005Z1-Ey
- for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:51:14 +0000
+ id 1gF1lR-0005b4-Fa
+ for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:51:21 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -15,9 +15,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Xiaolei Li <xiaolei.li@mediatek.com>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 11/15] mtd: rawnand: tegra: Stop implementing ->select_chip()
-Date: Tue, 23 Oct 2018 20:50:07 +0200
-Message-Id: <20181023185011.3356-12-boris.brezillon@bootlin.com>
+Subject: [PATCH 10/15] mtd: rawnand: marvell: Stop implementing ->select_chip()
+Date: Tue, 23 Oct 2018 20:50:06 +0200
+Message-Id: <20181023185011.3356-11-boris.brezillon@bootlin.com>
 In-Reply-To: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 References: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,69 +36,143 @@ from the chip->exec_op() and chip->ecc.read/write_xxx() hooks.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/tegra_nand.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 9767e29d74e2..590393d93ffc 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -454,29 +454,24 @@ static const struct nand_op_parser tegra_nand_op_parser = NAND_OP_PARSER(
- 		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 4)),
- 	);
- 
-+static void tegra_nand_select_target(struct nand_chip *chip,
-+				     unsigned int die_nr)
-+{
-+	struct tegra_nand_chip *nand = to_tegra_chip(chip);
-+	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
-+
-+	ctrl->cur_cs = nand->cs[die_nr];
-+}
-+
- static int tegra_nand_exec_op(struct nand_chip *chip,
- 			      const struct nand_operation *op,
- 			      bool check_only)
- {
-+	tegra_nand_select_target(chip, op->cs);
- 	return nand_op_parser_exec_op(chip, &tegra_nand_op_parser, op,
- 				      check_only);
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index c6e039f362f1..bcfa99c8c214 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -704,7 +704,8 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+ 	return 0;
  }
  
--static void tegra_nand_select_chip(struct nand_chip *chip, int die_nr)
--{
--	struct tegra_nand_chip *nand = to_tegra_chip(chip);
--	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
--
--	WARN_ON(die_nr >= (int)ARRAY_SIZE(nand->cs));
--
--	if (die_nr < 0 || die_nr > 0) {
--		ctrl->cur_cs = -1;
+-static void marvell_nfc_select_chip(struct nand_chip *chip, int die_nr)
++static void marvell_nfc_select_target(struct nand_chip *chip,
++				      unsigned int die_nr)
+ {
+ 	struct marvell_nand_chip *marvell_nand = to_marvell_nand(chip);
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+@@ -713,12 +714,6 @@ static void marvell_nfc_select_chip(struct nand_chip *chip, int die_nr)
+ 	if (chip == nfc->selected_chip && die_nr == marvell_nand->selected_die)
+ 		return;
+ 
+-	if (die_nr < 0 || die_nr >= marvell_nand->nsels) {
+-		nfc->selected_chip = NULL;
+-		marvell_nand->selected_die = -1;
 -		return;
 -	}
 -
--	ctrl->cur_cs = nand->cs[die_nr];
--}
+ 	writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
+ 	writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
+ 
+@@ -1024,13 +1019,13 @@ static int marvell_nfc_hw_ecc_hmg_do_read_page(struct nand_chip *chip,
+ 	}
+ 
+ 	ret = marvell_nfc_wait_cmdd(chip);
 -
- static void tegra_nand_hw_ecc(struct tegra_nand_controller *ctrl,
- 			      struct nand_chip *chip, bool enable)
+ 	return ret;
+ }
+ 
+ static int marvell_nfc_hw_ecc_hmg_read_page_raw(struct nand_chip *chip, u8 *buf,
+ 						int oob_required, int page)
  {
-@@ -503,6 +498,8 @@ static int tegra_nand_page_xfer(struct mtd_info *mtd, struct nand_chip *chip,
- 	u32 addr1, cmd, dma_ctrl;
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi,
+ 						   true, page);
+ }
+@@ -1043,6 +1038,7 @@ static int marvell_nfc_hw_ecc_hmg_read_page(struct nand_chip *chip, u8 *buf,
+ 	int max_bitflips = 0, ret;
+ 	u8 *raw_buf;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	marvell_nfc_enable_hw_ecc(chip);
+ 	marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi, false,
+ 					    page);
+@@ -1079,6 +1075,7 @@ static int marvell_nfc_hw_ecc_hmg_read_oob_raw(struct nand_chip *chip, int page)
+ 	/* Invalidate page cache */
+ 	chip->pagebuf = -1;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_read_page(chip, chip->data_buf,
+ 						   chip->oob_poi, true, page);
+ }
+@@ -1142,6 +1139,7 @@ static int marvell_nfc_hw_ecc_hmg_write_page_raw(struct nand_chip *chip,
+ 						 const u8 *buf,
+ 						 int oob_required, int page)
+ {
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_write_page(chip, buf, chip->oob_poi,
+ 						    true, page);
+ }
+@@ -1152,6 +1150,7 @@ static int marvell_nfc_hw_ecc_hmg_write_page(struct nand_chip *chip,
+ {
  	int ret;
  
-+	tegra_nand_select_target(chip, chip->cur_cs);
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	marvell_nfc_enable_hw_ecc(chip);
+ 	ret = marvell_nfc_hw_ecc_hmg_do_write_page(chip, buf, chip->oob_poi,
+ 						   false, page);
+@@ -1175,6 +1174,7 @@ static int marvell_nfc_hw_ecc_hmg_write_oob_raw(struct nand_chip *chip,
+ 
+ 	memset(chip->data_buf, 0xFF, mtd->writesize);
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_write_page(chip, chip->data_buf,
+ 						    chip->oob_poi, true, page);
+ }
+@@ -1194,6 +1194,8 @@ static int marvell_nfc_hw_ecc_bch_read_page_raw(struct nand_chip *chip, u8 *buf,
+ 	int ecc_len = lt->ecc_bytes;
+ 	int chunk;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
 +
- 	if (read) {
- 		writel_relaxed(NAND_CMD_READ0, ctrl->regs + CMD_REG1);
- 		writel_relaxed(NAND_CMD_READSTART, ctrl->regs + CMD_REG2);
-@@ -1116,7 +1113,6 @@ static int tegra_nand_chips_init(struct device *dev,
+ 	if (oob_required)
+ 		memset(chip->oob_poi, 0xFF, mtd->oobsize);
  
- 	chip->options = NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER;
- 	chip->exec_op = tegra_nand_exec_op;
--	chip->select_chip = tegra_nand_select_chip;
- 	chip->setup_data_interface = tegra_nand_setup_data_interface;
+@@ -1304,6 +1306,8 @@ static int marvell_nfc_hw_ecc_bch_read_page(struct nand_chip *chip,
+ 	u32 failure_mask = 0;
+ 	int chunk, ret;
  
- 	ret = nand_scan(chip, 1);
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	/*
+ 	 * With BCH, OOB is not fully used (and thus not read entirely), not
+ 	 * expected bytes could show up at the end of the OOB buffer if not
+@@ -1448,6 +1452,8 @@ static int marvell_nfc_hw_ecc_bch_write_page_raw(struct nand_chip *chip,
+ 		lt->last_spare_bytes;
+ 	int chunk;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+ 
+ 	for (chunk = 0; chunk < lt->nchunks; chunk++) {
+@@ -1559,6 +1565,8 @@ static int marvell_nfc_hw_ecc_bch_write_page(struct nand_chip *chip,
+ 	int spare_len = lt->spare_bytes;
+ 	int chunk, ret;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	/* Spare data will be written anyway, so clear it to avoid garbage */
+ 	if (!oob_required)
+ 		memset(chip->oob_poi, 0xFF, mtd->oobsize);
+@@ -2095,6 +2103,8 @@ static int marvell_nfc_exec_op(struct nand_chip *chip,
+ {
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+ 
++	marvell_nfc_select_target(chip, op->cs);
++
+ 	if (nfc->caps->is_nfcv2)
+ 		return nand_op_parser_exec_op(chip, &marvell_nfcv2_op_parser,
+ 					      op, check_only);
+@@ -2616,7 +2626,6 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+ 	nand_set_flash_node(chip, np);
+ 
+ 	chip->exec_op = marvell_nfc_exec_op;
+-	chip->select_chip = marvell_nfc_select_chip;
+ 	if (!of_property_read_bool(np, "marvell,nand-keep-config"))
+ 		chip->setup_data_interface = marvell_nfc_setup_data_interface;
+ 
 -- 
 2.17.1
