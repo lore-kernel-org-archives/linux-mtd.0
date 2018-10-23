@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF1lR-0005b5-F1
- for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:51:07 +0000
+ id 1gF1lR-0005Z1-Ey
+ for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:51:14 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -15,9 +15,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Xiaolei Li <xiaolei.li@mediatek.com>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 12/15] mtd: rawnand: vf610: Stop implementing ->select_chip()
-Date: Tue, 23 Oct 2018 20:50:08 +0200
-Message-Id: <20181023185011.3356-13-boris.brezillon@bootlin.com>
+Subject: [PATCH 11/15] mtd: rawnand: tegra: Stop implementing ->select_chip()
+Date: Tue, 23 Oct 2018 20:50:07 +0200
+Message-Id: <20181023185011.3356-12-boris.brezillon@bootlin.com>
 In-Reply-To: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 References: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,89 +36,69 @@ from the chip->exec_op() and chip->ecc.read/write_xxx() hooks.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 34 +++++++++++++++++---------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/raw/tegra_nand.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 9814fd4a84cf..b243434f5046 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -487,36 +487,35 @@ static const struct nand_op_parser vf610_nfc_op_parser = NAND_OP_PARSER(
- 		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, PAGE_2K + OOB_MAX)),
+diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
+index 9767e29d74e2..590393d93ffc 100644
+--- a/drivers/mtd/nand/raw/tegra_nand.c
++++ b/drivers/mtd/nand/raw/tegra_nand.c
+@@ -454,29 +454,24 @@ static const struct nand_op_parser tegra_nand_op_parser = NAND_OP_PARSER(
+ 		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 4)),
  	);
  
--static int vf610_nfc_exec_op(struct nand_chip *chip,
--			     const struct nand_operation *op,
--			     bool check_only)
--{
--	return nand_op_parser_exec_op(chip, &vf610_nfc_op_parser, op,
--				      check_only);
--}
--
- /*
-  * This function supports Vybrid only (MPC5125 would have full RB and four CS)
-  */
--static void vf610_nfc_select_chip(struct nand_chip *chip, int cs)
-+static void vf610_nfc_select_target(struct nand_chip *chip, unsigned int cs)
- {
- 	struct vf610_nfc *nfc = mtd_to_nfc(nand_to_mtd(chip));
--	u32 tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
-+	u32 tmp;
- 
- 	/* Vybrid only (MPC5125 would have full RB and four CS) */
- 	if (nfc->variant != NFC_VFC610)
- 		return;
- 
-+	tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
- 	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
--
--	if (cs >= 0) {
--		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
--		tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
--	}
-+	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
-+	tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
- 
- 	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
- }
- 
-+static int vf610_nfc_exec_op(struct nand_chip *chip,
-+			     const struct nand_operation *op,
-+			     bool check_only)
++static void tegra_nand_select_target(struct nand_chip *chip,
++				     unsigned int die_nr)
 +{
-+	vf610_nfc_select_target(chip, chip->cur_cs);
-+	return nand_op_parser_exec_op(chip, &vf610_nfc_op_parser, op,
-+				      check_only);
++	struct tegra_nand_chip *nand = to_tegra_chip(chip);
++	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
++
++	ctrl->cur_cs = nand->cs[die_nr];
 +}
 +
- static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
- 					 uint8_t *oob, int page)
+ static int tegra_nand_exec_op(struct nand_chip *chip,
+ 			      const struct nand_operation *op,
+ 			      bool check_only)
  {
-@@ -566,6 +565,8 @@ static int vf610_nfc_read_page(struct nand_chip *chip, uint8_t *buf,
- 	u32 row = 0, cmd1 = 0, cmd2 = 0, code = 0;
- 	int stat;
++	tegra_nand_select_target(chip, op->cs);
+ 	return nand_op_parser_exec_op(chip, &tegra_nand_op_parser, op,
+ 				      check_only);
+ }
  
-+	vf610_nfc_select_target(chip, chip->cur_cs);
-+
- 	cmd2 |= NAND_CMD_READ0 << CMD_BYTE1_SHIFT;
- 	code |= COMMAND_CMD_BYTE1 | COMMAND_CAR_BYTE1 | COMMAND_CAR_BYTE2;
- 
-@@ -613,6 +614,8 @@ static int vf610_nfc_write_page(struct nand_chip *chip, const uint8_t *buf,
- 	u8 status;
+-static void tegra_nand_select_chip(struct nand_chip *chip, int die_nr)
+-{
+-	struct tegra_nand_chip *nand = to_tegra_chip(chip);
+-	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+-
+-	WARN_ON(die_nr >= (int)ARRAY_SIZE(nand->cs));
+-
+-	if (die_nr < 0 || die_nr > 0) {
+-		ctrl->cur_cs = -1;
+-		return;
+-	}
+-
+-	ctrl->cur_cs = nand->cs[die_nr];
+-}
+-
+ static void tegra_nand_hw_ecc(struct tegra_nand_controller *ctrl,
+ 			      struct nand_chip *chip, bool enable)
+ {
+@@ -503,6 +498,8 @@ static int tegra_nand_page_xfer(struct mtd_info *mtd, struct nand_chip *chip,
+ 	u32 addr1, cmd, dma_ctrl;
  	int ret;
  
-+	vf610_nfc_select_target(chip, chip->cur_cs);
++	tegra_nand_select_target(chip, chip->cur_cs);
 +
- 	cmd2 |= NAND_CMD_SEQIN << CMD_BYTE1_SHIFT;
- 	code |= COMMAND_CMD_BYTE1 | COMMAND_CAR_BYTE1 | COMMAND_CAR_BYTE2;
+ 	if (read) {
+ 		writel_relaxed(NAND_CMD_READ0, ctrl->regs + CMD_REG1);
+ 		writel_relaxed(NAND_CMD_READSTART, ctrl->regs + CMD_REG2);
+@@ -1116,7 +1113,6 @@ static int tegra_nand_chips_init(struct device *dev,
  
-@@ -877,7 +880,6 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	}
+ 	chip->options = NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER;
+ 	chip->exec_op = tegra_nand_exec_op;
+-	chip->select_chip = tegra_nand_select_chip;
+ 	chip->setup_data_interface = tegra_nand_setup_data_interface;
  
- 	chip->exec_op = vf610_nfc_exec_op;
--	chip->select_chip = vf610_nfc_select_chip;
- 
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
- 
+ 	ret = nand_scan(chip, 1);
 -- 
 2.17.1
