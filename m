@@ -1,27 +1,27 @@
-Date: Tue, 23 Oct 2018 11:49:00 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
  "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
  <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
  <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
  "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/7] spi: spi-mem: add support for octo mode I/O data
- transfer
-Message-ID: <20181023114900.2ff4cbfc@bbrezillon>
-In-Reply-To: <1540287311-1572-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v3 7/7] arm64: dts: lx2160a: update fspi node
+Date: Tue, 23 Oct 2018 09:37:45 +0000
+Message-ID: <1540287311-1572-8-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1540287311-1572-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1540287311-1572-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1540287311-1572-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,48 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 Oct 2018 09:37:13 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Flash mt35xu512aba connected to FlexSPI controller supports
+1-1-8/1-8-8 protocol.
+Added flag spi-rx-bus-width and spi-tx-bus-width with values as
+8 and 8 respectively for both flashes connected at CS0 and CS1.
 
-> Add support for octo mode I/O data transfer in spi-mem framework.
-> 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+---
+Changes for v3:
+- None
+Changes for v2:
+- None
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> ---
-> Changes for v3:
-> - Modified string 'octal' with 'octo'.
-> Changes for v2:
-> - Patch added in v2 version.
-> 
->  drivers/spi/spi-mem.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> index c6bdea7..2379efc 100644
-> --- a/drivers/spi/spi-mem.c
-> +++ b/drivers/spi/spi-mem.c
-> @@ -12,7 +12,7 @@
->  
->  #include "internals.h"
->  
-> -#define SPI_MEM_MAX_BUSWIDTH		4
-> +#define SPI_MEM_MAX_BUSWIDTH		8
->  
->  /**
->   * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
-> @@ -121,6 +121,13 @@ static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool tx)
->  
->  		break;
->  
-> +	case 8:
-> +		if ((tx && (mode & SPI_TX_OCTO)) ||
-> +		    (!tx && (mode & SPI_RX_OCTO)))
-> +			return 0;
-> +
-> +		break;
-> +
->  	default:
->  		break;
->  	}
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64=
+/boot/dts/freescale/fsl-lx2160a-rdb.dts
+index 3b20c97..24cc41c 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+@@ -45,6 +45,8 @@
+ 		m25p,fast-read;
+ 		spi-max-frequency =3D <20000000>;
+ 		reg =3D <0>;
++		spi-rx-bus-width =3D <8>;
++		spi-tx-bus-width =3D <8>;
+ 	};
+=20
+ 	mt35xu512aba1: flash@1 {
+@@ -54,6 +56,8 @@
+ 		m25p,fast-read;
+ 		spi-max-frequency =3D <20000000>;
+ 		reg =3D <1>;
++		spi-rx-bus-width =3D <8>;
++		spi-tx-bus-width =3D <8>;
+ 	};
+ };
+=20
+--=20
+2.7.4
