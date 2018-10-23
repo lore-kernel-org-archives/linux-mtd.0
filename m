@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF1lR-0005Z0-Ez
- for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:51:00 +0000
+ id 1gF1lR-0005Yj-EW
+ for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:51:01 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -15,9 +15,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Xiaolei Li <xiaolei.li@mediatek.com>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 09/15] mtd: rawnand: fsmc: Stop implementing ->select_chip()
-Date: Tue, 23 Oct 2018 20:50:05 +0200
-Message-Id: <20181023185011.3356-10-boris.brezillon@bootlin.com>
+Subject: [PATCH 08/15] mtd: rawnand: Make ->select_chip() optional when
+ ->exec_op() is implemented
+Date: Tue, 23 Oct 2018 20:50:04 +0200
+Message-Id: <20181023185011.3356-9-boris.brezillon@bootlin.com>
 In-Reply-To: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 References: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,76 +30,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the CS line to assert is directly passed through the
-nand_operation struct we can replace the fsmc_select_chip()
-implementation by an internal fsmc_ce_ctrl() function which is
-directly called from fsmc_exec_op()
+Now that the CS to be selected on a nand_operation is passed in
+nand_operation->cs we can make the ->select_chip() hook optional for
+drivers implementing ->exec_op().
+
+When not implemented, the core is assuming the CS line is automatically
+asserted/deasserted by the driver ->exec_op() implementation.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 70ac8d875218..b31f7d2fa216 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -609,22 +609,19 @@ static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
- }
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 06c5fbe574eb..ae70f27b0d41 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -248,7 +248,9 @@ void nand_select_target(struct nand_chip *chip, unsigned int cs)
+ 		return;
  
- /* fsmc_select_chip - assert or deassert nCE */
--static void fsmc_select_chip(struct nand_chip *chip, int chipnr)
-+static void fsmc_ce_ctrl(struct fsmc_nand_data *host, bool assert)
+ 	chip->cur_cs = cs;
+-	chip->select_chip(chip, cs);
++
++	if (chip->select_chip)
++		chip->select_chip(chip, cs);
+ }
+ EXPORT_SYMBOL_GPL(nand_select_target);
+ 
+@@ -261,7 +263,9 @@ EXPORT_SYMBOL_GPL(nand_select_target);
+  */
+ void nand_deselect_target(struct nand_chip *chip)
  {
--	struct fsmc_nand_data *host = mtd_to_fsmc(nand_to_mtd(chip));
--	u32 pc;
+-	chip->select_chip(chip, -1);
++	if (chip->select_chip)
++		chip->select_chip(chip, -1);
++
+ 	chip->cur_cs = -1;
+ }
+ EXPORT_SYMBOL_GPL(nand_deselect_target);
+@@ -4995,11 +4999,6 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 	if (!mtd->name && mtd->dev.parent)
+ 		mtd->name = dev_name(mtd->dev.parent);
+ 
+-	if (chip->exec_op && !chip->select_chip) {
+-		pr_err("->select_chip() is mandatory when implementing ->exec_op()\n");
+-		return -EINVAL;
+-	}
 -
--	/* Support only one CS */
--	if (chipnr > 0)
--		return;
-+	u32 pc = readl(host->regs_va + FSMC_PC);
- 
--	pc = readl(host->regs_va + FSMC_PC);
--	if (chipnr < 0)
-+	if (!assert)
- 		writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
- 	else
- 		writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
- 
--	/* nCE line must be asserted before starting any operation */
-+	/*
-+	 * nCE line changes must be applied before returning from this
-+	 * function.
-+	 */
- 	mb();
- }
- 
-@@ -645,6 +642,9 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 	int i;
- 
- 	pr_debug("Executing operation [%d instructions]:\n", op->ninstrs);
-+
-+	fsmc_ce_ctrl(host, true);
-+
- 	for (op_id = 0; op_id < op->ninstrs; op_id++) {
- 		instr = &op->instrs[op_id];
- 
-@@ -701,6 +701,8 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 		}
- 	}
- 
-+	fsmc_ce_ctrl(host, false);
-+
- 	return ret;
- }
- 
-@@ -1080,7 +1082,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 
- 	mtd->dev.parent = &pdev->dev;
- 	nand->exec_op = fsmc_exec_op;
--	nand->select_chip = fsmc_select_chip;
- 
- 	/*
- 	 * Setup default ECC mode. nand_dt_init() called from nand_scan_ident()
+ 	ret = nand_legacy_check_hooks(chip);
+ 	if (ret)
+ 		return ret;
 -- 
 2.17.1
