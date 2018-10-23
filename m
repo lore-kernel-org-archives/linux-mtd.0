@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gF1lE-0005XM-Oi
+ id 1gF1lE-0005WW-Od
  for linux-mtd@lists.infradead.org; Tue, 23 Oct 2018 18:50:38 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -15,9 +15,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Xiaolei Li <xiaolei.li@mediatek.com>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 05/15] mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC flag
-Date: Tue, 23 Oct 2018 20:50:01 +0200
-Message-Id: <20181023185011.3356-6-boris.brezillon@bootlin.com>
+Subject: [PATCH 03/15] mtd: rawnand: legacy: Drop useless test in
+ nand_legacy_set_defaults()
+Date: Tue, 23 Oct 2018 20:49:59 +0200
+Message-Id: <20181023185011.3356-4-boris.brezillon@bootlin.com>
 In-Reply-To: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 References: <20181023185011.3356-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,31 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Looks like NAND_CONTROLLER_ALLOC has been introduced a long time ago
-back when the dummy nand_hw_ctrl object was dynamically allocated
-instead of being embedded in nand_chip.
-
-We can safely get rid of this unused flag.
+nand_legacy_set_defaults() returns directly if chip->exec_op != NULL,
+no need to test !chip->exec_op after that.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- include/linux/mtd/rawnand.h | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/mtd/nand/raw/nand_legacy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index c789026426c1..bcdc3819ad17 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -203,10 +203,6 @@ enum nand_ecc_algo {
-  */
- #define NAND_IS_BOOT_MEDIUM	0x00400000
+diff --git a/drivers/mtd/nand/raw/nand_legacy.c b/drivers/mtd/nand/raw/nand_legacy.c
+index 1281ebe2a094..7adcd1df49f1 100644
+--- a/drivers/mtd/nand/raw/nand_legacy.c
++++ b/drivers/mtd/nand/raw/nand_legacy.c
+@@ -587,7 +587,7 @@ void nand_legacy_set_defaults(struct nand_chip *chip)
+ 		chip->legacy.chip_delay = 20;
  
--/* Options set by nand scan */
--/* Nand scan has allocated controller struct */
--#define NAND_CONTROLLER_ALLOC	0x80000000
--
- /* Cell info constants */
- #define NAND_CI_CHIPNR_MSK	0x03
- #define NAND_CI_CELLTYPE_MSK	0x0C
+ 	/* check, if a user supplied command function given */
+-	if (!chip->legacy.cmdfunc && !chip->exec_op)
++	if (!chip->legacy.cmdfunc)
+ 		chip->legacy.cmdfunc = nand_command;
+ 
+ 	/* check, if a user supplied wait function given */
 -- 
 2.17.1
