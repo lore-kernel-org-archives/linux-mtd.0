@@ -1,7 +1,7 @@
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.4])
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.1])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFiZM-0004jV-Le
- for linux-mtd@lists.infradead.org; Thu, 25 Oct 2018 16:33:37 +0000
+ id 1gFiZN-0004je-Tb
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2018 16:33:35 +0000
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 To: boris.brezillon@free-electrons.com
 Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
@@ -9,10 +9,10 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v3 09/11] mtd: cfi_cmdset_0002: Split write-to-buffer-reset
- sequence
-Date: Fri, 26 Oct 2018 01:32:17 +0900
-Message-Id: <20181025163219.25788-10-ikegami@allied-telesis.co.jp>
+Subject: [PATCH v3 11/11] mtd: cfi_cmdset_0002: Split do_write_oneword() to
+ reduce exit paths
+Date: Fri, 26 Oct 2018 01:32:19 +0900
+Message-Id: <20181025163219.25788-12-ikegami@allied-telesis.co.jp>
 In-Reply-To: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
 References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,7 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just refactor to split the sequence from do_write_buffer().
+The do_write_oneword_done() is called twice at the exit paths.
+By splitting the retry functionality it can be reduced to call once.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -35,70 +36,81 @@ Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org
 ---
-Changes since v2:
-- None.
-
 Changes since v1:
 - Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 38 +++++++++++++++++------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 39 ++++++++++++++++++-----------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 97e5b3948e20..b54599cb6ae5 100644
+index 0188187939c8..d76af85cfe59 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1823,6 +1823,27 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
- 	return 0;
+@@ -1643,25 +1643,16 @@ static void __xipram do_write_oneword_done(struct map_info *map,
+ 	mutex_unlock(&chip->mutex);
  }
  
-+static void __xipram do_write_buffer_reset(struct map_info *map,
+-static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+-				     unsigned long adr, map_word datum,
+-				     int mode)
++static int __xipram do_write_oneword_retry(struct map_info *map,
 +					   struct flchip *chip,
-+					   struct cfi_private *cfi)
-+{
-+	/*
-+	 * Recovery from write-buffer programming failures requires
-+	 * the write-to-buffer-reset sequence.  Since the last part
-+	 * of the sequence also works as a normal reset, we can run
-+	 * the same commands regardless of why we are here.
-+	 * See e.g.
-+	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
-+	 */
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+
-+	/* FIXME - should have reset delay before continuing */
-+}
++					   unsigned long adr, map_word datum,
++					   int mode)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	int ret = 0;
+ 	map_word oldd;
+ 	int retry_cnt = 0;
  
- /*
-  * FIXME: interleaved mode not tested, and probably not supported!
-@@ -1925,22 +1946,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	}
- 
- 	if (ret) {
--		/*
--		 * Recovery from write-buffer programming failures requires
--		 * the write-to-buffer-reset sequence.  Since the last part
--		 * of the sequence also works as a normal reset, we can run
--		 * the same commands regardless of why we are here.
--		 * See e.g.
--		 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
--		 */
--		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		/* FIXME - should have reset delay before continuing */
+-	adr += chip->start;
 -
-+		do_write_buffer_reset(map, chip, cfi);
- 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
- 		       __func__, adr);
+-	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n", __func__, adr,
+-		 datum.x[0]);
+-
+-	ret = do_write_oneword_start(map, chip, adr, mode);
+-	if (ret) {
+-		return ret;
+-	}
+-
+ 	/*
+ 	 * Check for a NOP for the case when the datum to write is already
+ 	 * present - it saves time and works around buggy chips that corrupt
+@@ -1671,7 +1662,6 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	oldd = map_read(map, adr);
+ 	if (map_word_equal(map, oldd, datum)) {
+ 		pr_debug("MTD %s(): NOP\n", __func__);
+-		do_write_oneword_done(map, chip, adr, mode);
+ 		return ret;
  	}
+ 
+@@ -1694,6 +1684,27 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 
+ 	xip_enable(map, chip, adr);
+ 
++	return ret;
++}
++
++static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
++				     unsigned long adr, map_word datum,
++				     int mode)
++{
++	int ret = 0;
++
++	adr += chip->start;
++
++	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n", __func__, adr,
++		 datum.x[0]);
++
++	ret = do_write_oneword_start(map, chip, adr, mode);
++	if (ret) {
++		return ret;
++	}
++
++	ret = do_write_oneword_retry(map, chip, adr, datum, mode);
++
+ 	do_write_oneword_done(map, chip, adr, mode);
+ 
+ 	return ret;
 -- 
 2.18.0
