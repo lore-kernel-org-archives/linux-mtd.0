@@ -1,27 +1,28 @@
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.4])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFijI-0002kc-Un
- for linux-mtd@lists.infradead.org; Thu, 25 Oct 2018 16:43:51 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
-CC: Hauke Mehrtens <hauke@hauke-m.de>, Koen Vandeputte
- <koen.vandeputte@ncentric.com>, Fabio Bettoni <fbettoni@gmail.com>, Joakim
- Tjernlund <Joakim.Tjernlund@infinera.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 01/10] mtd: cfi_cmdset_0002: Change do_write_oneword()
- to use chip_good()
-Date: Thu, 25 Oct 2018 16:36:11 +0000
-Message-ID: <TYAPR01MB21757CF9C706C213D19CE5B6DCF70@TYAPR01MB2175.jpnprd01.prod.outlook.com>
-References: <20181019165526.11159-1-ikegami@allied-telesis.co.jp>
- <20181019165526.11159-2-ikegami@allied-telesis.co.jp>
- <a35141a64cd24b90854770c66ed1aba3@svr-chch-ex1.atlnz.lc>
-In-Reply-To: <a35141a64cd24b90854770c66ed1aba3@svr-chch-ex1.atlnz.lc>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-ot1-f66.google.com ([209.85.210.66])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gFkzl-0003CO-VN
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2018 19:08:40 +0000
+Received: by mail-ot1-f66.google.com with SMTP id u26so9065524otk.13
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2018 12:08:27 -0700 (PDT)
+Date: Thu, 25 Oct 2018 14:08:25 -0500
+From: Rob Herring <robh@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Mark Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 2/3] mtd: partitions: Add RedBoot FIS DT bindings
+Message-ID: <20181025190825.GA15870@bogus>
+References: <20181019070622.26661-1-linus.walleij@linaro.org>
+ <20181019070622.26661-2-linus.walleij@linaro.org>
+ <CACRpkda=1CNzZe1ACGm9nwVDGbHdAxhWzpqcANs-KKBhPpNF-w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkda=1CNzZe1ACGm9nwVDGbHdAxhWzpqcANs-KKBhPpNF-w@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,130 +32,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Oct 19, 2018 at 09:27:24AM +0200, Linus Walleij wrote:
+> Hi,
+> 
+> now just to forestall possible predictable bikeshedding on the devicetree
+> list before it happens:
+> 
+> On Fri, Oct 19, 2018 at 9:06 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> 
+> > +RedBoot FLASH Image System (FIS) Partitions
+> 
+> This expansion of the acronym including using capital letters in
+> FLASH comes from the eCOS source code for RedBoot:
+> https://sourceware.org/viewvc/ecos/packages/redboot/current/src/flash.c?view=markup
+> 
+> > +- compatible : (required) must be "redboot-fis"
+> 
+> There is no vendor here because the source code was owned by
+> Cygnus Solutions, Redhat and now Free Software Foundation.
+> https://en.wikipedia.org/wiki/ECos
+> 
+> We have no (AFAICT) policy for whether stuff that just change vendor
+> all the time should be named after the inventing (first) company "cygnus,*",
+> current owner "fsf,*" or the one that made most changes to the source
+> code "redhat,*". I do not think we should care, and just name it
+> "redboot-fis" for it's historical value and widespread acceptance so this
+> is a conscious naming scheme.
+> 
+> If one of the OF maintainers says they want it a certain way I will change
+> it without discussion, I just want this supported.
 
+It's all fine for me.
 
-> -----Original Message-----
-> From: stable-owner@vger.kernel.org
-> [mailto:stable-owner@vger.kernel.org] On Behalf Of Chris Packham
-> Sent: Thursday, October 25, 2018 6:24 AM
-> To: IKEGAMI Tokunori; boris.brezillon@free-electrons.com
-> Cc: Hauke Mehrtens; Koen Vandeputte; Fabio Bettoni; Joakim Tjernlund;
-> linux-mtd@lists.infradead.org; stable@vger.kernel.org
-> Subject: Re: [PATCH v2 01/10] mtd: cfi_cmdset_0002: Change
-> do_write_oneword() to use chip_good()
->=20
-> On 20/10/18 5:55 AM, Tokunori Ikegami wrote:
-> > This is required for OpenWrt Project to result the flash write issue as
-> > below patche.
-> >
-> <https://git.openwrt.org/?p=3Dopenwrt/openwrt.git;a=3Dcommitdiff;h=3Dddc1=
-1c3
-> 932c7b7b7df7d5fbd48f207e77619eaa7>
-> >
-> > Also the original patch in OpenWRT is below.
-> >
-> <https://github.com/openwrt/openwrt/blob/v18.06.0/target/linux/ar71xx/
-> patches-4.9/403-mtd_fix_cfi_cmdset_0002_status_check.patch>
-> >
-> > So change to use chip_good() instead of chip_ready().
-> >
-> > The reason to use chip_good() is that just actually fix the issue.
-> > And also in the past I had fixed the erase function also as same way by
-> the
-> > patch below.
-> >    <https://patchwork.ozlabs.org/patch/922656/>
-> >      Note: The reason for the patch for erase is same.
-> >
-> > In my understanding the chip_ready() is just checked the value twice fr=
-om
-> > flash.
-> > So I think that sometimes incorrect value is read twice and it is depen=
-ded
-> > on the flash device behavior but not sure..
-> >
-> > So change to use chip_good() instead of chip_ready().
->=20
-> I think much of this is commentary for readers of the mailing list not
-> something that should be in the final commit (i.e. it should be after
-> the '---'). The commit message should really reflect what the problem
-> was and how this change fixes it.
+I was only going to comment is Redboot still a thing? :)
 
-[Ikegami] Yes fixed as so.
-
->=20
-> I think you've got a better handle on what chip_good() does than I do so
-> I won't attempt to provide a commit message here.
->=20
-> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> > Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> > Signed-off-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> > Signed-off-by: Fabio Bettoni <fbettoni@gmail.com>
-> > Co-Developed-by: Hauke Mehrtens <hauke@hauke-m.de>
-> > Co-Developed-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> > Co-Developed-by: Fabio Bettoni <fbettoni@gmail.com>
-> > Reported-by: Fabio Bettoni <fbettoni@gmail.com>
-> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: stable@vger.kernel.org
-> > ---
-> > Changes since v1:
-> > - Just update the commit message.
-> >
-> >   drivers/mtd/chips/cfi_cmdset_0002.c | 18 ++++++++++++------
-> >   1 file changed, 12 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
-> b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > index 72428b6bfc47..251c9e1675bd 100644
-> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -1627,31 +1627,37 @@ static int __xipram do_write_oneword(struct
-> map_info *map, struct flchip *chip,
-> >   			continue;
-> >   		}
-> >
-> > -		if (time_after(jiffies, timeo) && !chip_ready(map, adr)){
-> > +		if (chip_good(map, adr, datum))
-> > +			break;
-> > +
-> > +		if (time_after(jiffies, timeo)){
-> >   			xip_enable(map, chip, adr);
-> >   			printk(KERN_WARNING "MTD %s(): software
-> timeout\n", __func__);
-> >   			xip_disable(map, chip, adr);
-> > +			ret =3D -EIO;
-> >   			break;
-> >   		}
-> >
-> > -		if (chip_ready(map, adr))
-> > -			break;
-> > -
-> >   		/* Latency issues. Drop the lock, wait a while and retry
-> */
-> >   		UDELAY(map, chip, adr, 1);
-> >   	}
-> > +
-> >   	/* Did we succeed? */
-> > -	if (!chip_good(map, adr, datum)) {
-> > +	if (ret) {
-> >   		/* reset on all failures. */
-> >   		map_write(map, CMD(0xF0), chip->start);
-> >   		/* FIXME - should have reset delay before continuing */
-> >
-> > -		if (++retry_cnt <=3D MAX_RETRIES)
-> > +		if (++retry_cnt <=3D MAX_RETRIES) {
-> > +			ret =3D 0;
-> >   			goto retry;
-> > +		}
-> >
-> >   		ret =3D -EIO;
-> >   	}
-> > +
-> >   	xip_enable(map, chip, adr);
-> > +
-> >    op_done:
-> >   	if (mode =3D=3D FL_OTP_WRITE)
-> >   		otp_exit(map, chip, adr, map_bankwidth(map));
-> >
+Rob
