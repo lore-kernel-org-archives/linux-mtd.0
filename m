@@ -1,21 +1,21 @@
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.115])
+Received: from mail1.bemta24.messagelabs.com ([67.219.250.116])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gFibi-0006xM-CR
- for linux-mtd@lists.infradead.org; Thu, 25 Oct 2018 16:37:38 +0000
+ id 1gFigc-00022j-0O
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2018 16:42:38 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
 To: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
  "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
 CC: Fabio Bettoni <fbettoni@gmail.com>, Joakim Tjernlund
  <Joakim.Tjernlund@infinera.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v2 05/10] mtd: cfi_cmdset_0002: Split do_write_oneword()
- to reduce function size
-Date: Thu, 25 Oct 2018 16:35:17 +0000
-Message-ID: <TYAPR01MB21758DC32A309C52A7A7DFFEDCF70@TYAPR01MB2175.jpnprd01.prod.outlook.com>
+Subject: RE: [PATCH v2 06/10] mtd: cfi_cmdset_0002: Split do_write_oneword()
+ op_done goto statement
+Date: Thu, 25 Oct 2018 16:40:21 +0000
+Message-ID: <TYAPR01MB2175D9060454CAA033A6F54EDCF70@TYAPR01MB2175.jpnprd01.prod.outlook.com>
 References: <20181019165526.11159-1-ikegami@allied-telesis.co.jp>
- <20181019165526.11159-6-ikegami@allied-telesis.co.jp>
- <5d77ea55e2504e5ca7e22e21fc8b7358@svr-chch-ex1.atlnz.lc>
-In-Reply-To: <5d77ea55e2504e5ca7e22e21fc8b7358@svr-chch-ex1.atlnz.lc>
+ <20181019165526.11159-7-ikegami@allied-telesis.co.jp>
+ <4dafd74641184172bc51e80668a393a5@svr-chch-ex1.atlnz.lc>
+In-Reply-To: <4dafd74641184172bc51e80668a393a5@svr-chch-ex1.atlnz.lc>
 Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -29,42 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chris-san,
 
-Thank you so much for your reviewing and comments.
-
-Regards,
-Ikegami
 
 > -----Original Message-----
 > From: Chris Packham [mailto:Chris.Packham@alliedtelesis.co.nz]
-> Sent: Thursday, October 25, 2018 6:11 AM
+> Sent: Thursday, October 25, 2018 6:34 AM
 > To: IKEGAMI Tokunori; boris.brezillon@free-electrons.com
 > Cc: Fabio Bettoni; Joakim Tjernlund; linux-mtd@lists.infradead.org
-> Subject: Re: [PATCH v2 05/10] mtd: cfi_cmdset_0002: Split
-> do_write_oneword() to reduce function size
->=20
-> Hi Ikegami-san,
+> Subject: Re: [PATCH v2 06/10] mtd: cfi_cmdset_0002: Split
+> do_write_oneword() op_done goto statement
 >=20
 > On 20/10/18 5:55 AM, Tokunori Ikegami wrote:
-> > The function is longer so add do_write_oneword_once() to split.
-> > This is also for to reduce goto statement by additional patch.
->=20
-> I think the following would be easier to understand.
->=20
-> "Reduce the size of do_write_oneword() by extracting a helper function
-> for the hardware access."
-
-[Ikegami] Just fixed as this.
-
->=20
-> With that change
->=20
-> Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-
-[Ikegami] Added the Reviewed-by tag.
-
->=20
+> > To reduce function size and remove the goto statement split the op_done
+> goto
+> > statement part into do_write_oneword_done() created a function.
 > >
 > > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 > > Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -78,146 +56,64 @@ Ikegami
 > > Changes since v1:
 > > - Add the patch.
 > >
-> >   drivers/mtd/chips/cfi_cmdset_0002.c | 89
-> ++++++++++++++++-------------
-> >   1 file changed, 50 insertions(+), 39 deletions(-)
+> >   drivers/mtd/chips/cfi_cmdset_0002.c | 21 +++++++++++++++------
+> >   1 file changed, 15 insertions(+), 6 deletions(-)
 > >
 > > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
 > b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > index a3fa2d7b1ba0..ae2d8bd7154e 100644
+> > index ae2d8bd7154e..2340a5a7cc39 100644
 > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -1547,11 +1547,10 @@ static int cfi_amdstd_lock_user_prot_reg(struct
-> mtd_info *mtd, loff_t from,
-> >   				   do_otp_lock, 1);
+> > @@ -1609,6 +1609,20 @@ static int __xipram do_write_oneword_once(struct
+> map_info *map, struct flchip *c
+> >   	return ret;
 > >   }
 > >
-> > -static int __xipram do_write_oneword(struct map_info *map, struct flch=
-ip
-> *chip,
-> > -				     unsigned long adr, map_word datum,
-> > -				     int mode)
-> > +static int __xipram do_write_oneword_once(struct map_info *map, struct
-> flchip *chip,
-> > +					  unsigned long adr, map_word
-> datum,
-> > +					  int mode, struct cfi_private
-> *cfi)
+> > +static void __xipram do_write_oneword_done(struct map_info *map,
+> > +					   struct flchip *chip,
+> > +					   unsigned long adr, int mode)
+> > +{
+> > +	if (mode =3D=3D FL_OTP_WRITE)
+> > +		otp_exit(map, chip, adr, map_bankwidth(map));
+> > +
+> > +	chip->state =3D FL_READY;
+> > +	DISABLE_VPP(map);
+> > +	put_chip(map, chip, adr);
+> > +
+> > +	mutex_unlock(&chip->mutex);
 >=20
-> No particular objections to the name (i.e. don't change it unless the
-> maintainer insists) but often these kinds of helpers are just prefixed
-> with '_' (e.g. _do_write_oneword).
+> Personally I find it easier if the mutex_lock()/mutex_unlock() are in
+> the same function. That way it's easier to audit the exit paths from a
+> single function rather than needing to know that some functions
+> implicitly release the lock. The same probably applies to
+> get_chip/put_chip pairs.
 
-[Ikegami] I see about this.
+[Ikegami] Thank you. I could understand well. Fixed but still remain the do=
+ne function.
+But added the start function to find easier the pairs instead of not change=
+ to split as the done function.
+Also for the exit paths to find easier added the patch 11 additionally.
 
 >=20
-> >   {
-> > -	struct cfi_private *cfi =3D map->fldrv_priv;
-> >   	unsigned long timeo =3D jiffies + HZ;
-> >   	/*
-> >   	 * We use a 1ms + 1 jiffies generic timeout for writes (most devices
-> > @@ -1564,42 +1563,7 @@ static int __xipram do_write_oneword(struct
-> map_info *map, struct flchip *chip,
-> >   	 */
-> >   	unsigned long uWriteTimeout =3D (HZ / 1000) + 1;
-> >   	int ret =3D 0;
-> > -	map_word oldd;
-> > -	int retry_cnt =3D 0;
-> > -
-> > -	adr +=3D chip->start;
-> > -
-> > -	mutex_lock(&chip->mutex);
-> > -	ret =3D get_chip(map, chip, adr, mode);
-> > -	if (ret) {
-> > -		mutex_unlock(&chip->mutex);
-> > -		return ret;
-> > -	}
-> >
-> > -	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
-> > -		 __func__, adr, datum.x[0]);
-> > -
-> > -	if (mode =3D=3D FL_OTP_WRITE)
-> > -		otp_enter(map, chip, adr, map_bankwidth(map));
-> > -
-> > -	/*
-> > -	 * Check for a NOP for the case when the datum to write is already
-> > -	 * present - it saves time and works around buggy chips that corrupt
-> > -	 * data at other locations when 0xff is written to a location that
-> > -	 * already contains 0xff.
-> > -	 */
-> > -	oldd =3D map_read(map, adr);
-> > -	if (map_word_equal(map, oldd, datum)) {
-> > -		pr_debug("MTD %s(): NOP\n",
-> > -		       __func__);
-> > -		goto op_done;
-> > -	}
-> > -
-> > -	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
-> > -	ENABLE_VPP(map);
-> > -	xip_disable(map, chip, adr);
-> > -
-> > - retry:
-> >   	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> >   	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> >   	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> > @@ -1642,6 +1606,53 @@ static int __xipram do_write_oneword(struct
-> map_info *map, struct flchip *chip,
-> >   		UDELAY(map, chip, adr, 1);
-> >   	}
-> >
-> > +	return ret;
 > > +}
 > > +
-> > +static int __xipram do_write_oneword(struct map_info *map, struct flch=
-ip
-> *chip,
-> > +				     unsigned long adr, map_word datum,
-> > +				     int mode)
-> > +{
-> > +	struct cfi_private *cfi =3D map->fldrv_priv;
-> > +	int ret =3D 0;
-> > +	map_word oldd;
-> > +	int retry_cnt =3D 0;
-> > +
-> > +	adr +=3D chip->start;
-> > +
-> > +	mutex_lock(&chip->mutex);
-> > +	ret =3D get_chip(map, chip, adr, mode);
-> > +	if (ret) {
-> > +		mutex_unlock(&chip->mutex);
-> > +		return ret;
-> > +	}
-> > +
-> > +	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
-> > +		 __func__, adr, datum.x[0]);
-> > +
-> > +	if (mode =3D=3D FL_OTP_WRITE)
-> > +		otp_enter(map, chip, adr, map_bankwidth(map));
-> > +
-> > +	/*
-> > +	 * Check for a NOP for the case when the datum to write is already
-> > +	 * present - it saves time and works around buggy chips that corrupt
-> > +	 * data at other locations when 0xff is written to a location that
-> > +	 * already contains 0xff.
-> > +	 */
-> > +	oldd =3D map_read(map, adr);
-> > +	if (map_word_equal(map, oldd, datum)) {
-> > +		pr_debug("MTD %s(): NOP\n",
-> > +		       __func__);
-> > +		goto op_done;
-> > +	}
-> > +
-> > +	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
-> > +	ENABLE_VPP(map);
-> > +	xip_disable(map, chip, adr);
-> > +
-> > + retry:
-> > +	ret =3D do_write_oneword_once(map, chip, adr, datum, mode, cfi);
-> > +
-> >   	/* Did we succeed? */
-> >   	if (ret) {
-> >   		/* reset on all failures. */
+> >   static int __xipram do_write_oneword(struct map_info *map, struct
+> flchip *chip,
+> >   				     unsigned long adr, map_word datum,
+> >   				     int mode)
+> > @@ -1670,12 +1684,7 @@ static int __xipram do_write_oneword(struct
+> map_info *map, struct flchip *chip,
+> >   	xip_enable(map, chip, adr);
+> >
+> >    op_done:
+> > -	if (mode =3D=3D FL_OTP_WRITE)
+> > -		otp_exit(map, chip, adr, map_bankwidth(map));
+> > -	chip->state =3D FL_READY;
+> > -	DISABLE_VPP(map);
+> > -	put_chip(map, chip, adr);
+> > -	mutex_unlock(&chip->mutex);
+> > +	do_write_oneword_done(map, chip, adr, mode);
+> >
+> >   	return ret;
+> >   }
 > >
