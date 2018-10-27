@@ -1,26 +1,19 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGULe-0000qE-Dy
- for linux-mtd@lists.infradead.org; Sat, 27 Oct 2018 19:34:16 +0000
-From: Richard Weinberger <richard@nod.at>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Russell Senior <russell@personaltelco.net>,
- OpenWrt Development List <openwrt-devel@lists.openwrt.org>
-Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
- file handle of lower inode on copy up")
-Date: Sat, 27 Oct 2018 21:33:56 +0200
-Message-ID: <6556017.quyC1DpDMg@blindfold>
-In-Reply-To: <CACna6rzvzc-_X3VDeA-nwtTW7KHaQGtbvzjVNoOFEQuHKi3PJg@mail.gmail.com>
-References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
- <CAOQ4uxii0rZv3SVXWNN7yug_WZ-TKLL3Wo-mti0y9K66Z+-EcQ@mail.gmail.com>
- <CACna6rzvzc-_X3VDeA-nwtTW7KHaQGtbvzjVNoOFEQuHKi3PJg@mail.gmail.com>
+ id 1gGVKO-00054V-Lr
+ for linux-mtd@lists.infradead.org; Sat, 27 Oct 2018 20:37:02 +0000
+Received: by mail-wm1-x344.google.com with SMTP id q12-v6so1645427wmq.0
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Oct 2018 13:36:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="nextPart1960845.MarFMtrmzt"
-Content-Transfer-Encoding: 7Bit
+References: <14ebdb35-43e6-47b6-e947-2d9f9cee100b@candelatech.com>
+In-Reply-To: <14ebdb35-43e6-47b6-e947-2d9f9cee100b@candelatech.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sat, 27 Oct 2018 22:36:36 +0200
+Message-ID: <CAFLxGvzhaXFo8B6F9=MxXfs6kq3BH-buRZQAT8nz=mqSOOGBRA@mail.gmail.com>
+Subject: Re: read-only FS with error -2
+To: greearb@candelatech.com
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,85 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Ben,
 
---nextPart1960845.MarFMtrmzt
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+On Fri, Oct 26, 2018 at 8:39 PM Ben Greear <greearb@candelatech.com> wrote:
+>
+> Hello,
+>
+> I did something to my OpenWRT system (running 4.14.78 + 4.19 backports kernel),
 
-Rafa=C5=82,
+What did you do? :)
 
-Am Montag, 22. Oktober 2018, 17:34:44 CEST schrieb Rafa=C5=82 Mi=C5=82ecki:
-> Then I took a close look at ovl_copy_up_locked() and it seems above
-> info isn't accurate. It seems to me that setxattr() happens between
-> fsync and link. I modified my C app to follow that order (open, write,
-> fsync, setxattr, link) and I can reproduce the problem now!
->=20
-> Steps to reproduce the problem:
-> 1) compile tmptest.c
-> 2) tmptest /overlay/upper/foo.txt user.bar baz
-> 3) wait 5 seconds (so ubifs writes to flash)
-> 4) power cut
-> 5) boot again and check content of /overlay/upper/foo.txt
-> 6) in my case content appears to be 00 00 00 00
+> and it went read-only.  Upon reboot, it is still read-only.  Is there something
+> I can to do debug and/or fix this?
+>
+> root@LF-R7800-6ab8:/home/lanforge# dmesg|grep -i ubif
+> [   11.595662] UBIFS (ubi0:1): background thread "ubifs_bgt0_1" started, PID 143
+> [   11.674298] UBIFS (ubi0:1): recovery needed
+> [   12.028518] UBIFS (ubi0:1): recovery completed
+> [   12.028598] UBIFS (ubi0:1): UBIFS: mounted UBI device 0, volume 1, name "rootfs_data"
+> [   12.031847] UBIFS (ubi0:1): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+> [   12.039815] UBIFS (ubi0:1): FS size: 83042304 bytes (79 MiB, 654 LEBs), journal size 4190208 bytes (3 MiB, 33 LEBs)
+> [   12.049711] UBIFS (ubi0:1): reserved for root: 3922293 bytes (3830 KiB)
+> [   12.059957] UBIFS (ubi0:1): media format: w4/r0 (latest is w5/r0), UUID 036CCB1F-5608-4069-B5A0-D22544398634, small LPT model
+> [   12.085050] mount_root: switching to ubifs overlay
+> [   31.942522] UBIFS error (ubi0:1 pid 570): ubifs_iget: failed to read inode 1623, error -2
 
-Just returned from Edinburgh and had a chance to look at the problem.
-The problem is not that no write-back happens, in fact it happens just fine.
-But we have a problem upon journal replay if an unlinked file (O_TMPFILE)
-gets relinked in combination with xattrs.
+Hmm, UBIFS is unable to find a inode on your MTD.
+Can you please mount UBIFS again with "/sys/kernel/debug/ubifs/chk_fs" set to 1?
+This will run a self-check and give us maybe more details.
 
-Can you please give the attached patch a try? It is not perfect but if I=20
-understand the problem correctly it should fix the issues you're facing.
+Did you see in the past odd logs? ECC errors or such?
 
+-- 
 Thanks,
 //richard
---nextPart1960845.MarFMtrmzt
-Content-Disposition: attachment; filename="replay_tmpfile_fix.diff"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/x-patch; charset="UTF-8"; name="replay_tmpfile_fix.diff"
-
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 4844538eb926..82b1244e4138 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -209,6 +209,19 @@ static int trun_remove_range(struct ubifs_info *c, struct replay_entry *r)
- 	return ubifs_tnc_remove_range(c, &min_key, &max_key);
- }
- 
-+static bool inode_comes_back(struct ubifs_info *c, struct replay_entry *rino)
-+{
-+	struct replay_entry *r;
-+
-+	list_for_each_entry(r, &c->replay_list, list) {
-+		if (keys_cmp(c, &rino->key, &r->key) == 0 &&
-+		    r->deletion == 0)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * apply_replay_entry - apply a replay entry to the TNC.
-  * @c: UBIFS file-system description object
-@@ -218,7 +231,7 @@ static int trun_remove_range(struct ubifs_info *c, struct replay_entry *r)
-  */
- static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
- {
--	int err;
-+	int err = 0;
- 
- 	dbg_mntk(&r->key, "LEB %d:%d len %d deletion %d sqnum %llu key ",
- 		 r->lnum, r->offs, r->len, r->deletion, r->sqnum);
-@@ -236,6 +249,9 @@ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
- 			{
- 				ino_t inum = key_inum(c, &r->key);
- 
-+				if (inode_comes_back(c, r))
-+					break;
-+
- 				err = ubifs_tnc_remove_ino(c, inum);
- 				break;
- 			}
-
---nextPart1960845.MarFMtrmzt--
