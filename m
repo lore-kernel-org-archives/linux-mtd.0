@@ -1,23 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGQgz-0004bV-6e
- for linux-mtd@lists.infradead.org; Sat, 27 Oct 2018 15:40:03 +0000
-Date: Sat, 27 Oct 2018 17:39:45 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Grandbois, Brett" <brett.grandbois@opengear.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for SPI boot flash access
- for AMD Family 16h
-Message-ID: <20181027173945.241e87b2@bbrezillon>
-In-Reply-To: <20181016005726.26813-1-brett.grandbois@opengear.com>
-References: <20181016005726.26813-1-brett.grandbois@opengear.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gGULe-0000qE-Dy
+ for linux-mtd@lists.infradead.org; Sat, 27 Oct 2018 19:34:16 +0000
+From: Richard Weinberger <richard@nod.at>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Russell Senior <russell@personaltelco.net>,
+ OpenWrt Development List <openwrt-devel@lists.openwrt.org>
+Subject: Re: Regression in handling power cuts since 3a1e819b4e80 ("ovl: store
+ file handle of lower inode on copy up")
+Date: Sat, 27 Oct 2018 21:33:56 +0200
+Message-ID: <6556017.quyC1DpDMg@blindfold>
+In-Reply-To: <CACna6rzvzc-_X3VDeA-nwtTW7KHaQGtbvzjVNoOFEQuHKi3PJg@mail.gmail.com>
+References: <CACna6rx3YBNYKGu7T-J2J-S_3yr-oafJf3pL5TbGDFRzU6dihg@mail.gmail.com>
+ <CAOQ4uxii0rZv3SVXWNN7yug_WZ-TKLL3Wo-mti0y9K66Z+-EcQ@mail.gmail.com>
+ <CACna6rzvzc-_X3VDeA-nwtTW7KHaQGtbvzjVNoOFEQuHKi3PJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="nextPart1960845.MarFMtrmzt"
+Content-Transfer-Encoding: 7Bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +30,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brett,
+This is a multi-part message in MIME format.
 
-On Tue, 16 Oct 2018 00:57:41 +0000
-"Grandbois, Brett" <brett.grandbois@opengear.com> wrote:
+--nextPart1960845.MarFMtrmzt
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-> Add support to expose the SPI boot flash on AMD Family 16h CPUs as a
-> standard mtd device to give userspace BIOS updaters greater feature
-> support.  The BIOS and Kernel Developer's Guide refers to this as the
-> 'SPI ROM' controller and so the driver follows that naming convention
-> for consistency.
-> 
+Rafa=C5=82,
 
-We're currently trying to convert spi-nor controller drivers to the
-spi-mem interface [1]. Can you look at this new interface and tell me if
-you'd be able to implement it? If that's not possible, then I'd prefer
-to have this driver implement the mtd_info interface directly.
+Am Montag, 22. Oktober 2018, 17:34:44 CEST schrieb Rafa=C5=82 Mi=C5=82ecki:
+> Then I took a close look at ovl_copy_up_locked() and it seems above
+> info isn't accurate. It seems to me that setxattr() happens between
+> fsync and link. I modified my C app to follow that order (open, write,
+> fsync, setxattr, link) and I can reproduce the problem now!
+>=20
+> Steps to reproduce the problem:
+> 1) compile tmptest.c
+> 2) tmptest /overlay/upper/foo.txt user.bar baz
+> 3) wait 5 seconds (so ubifs writes to flash)
+> 4) power cut
+> 5) boot again and check content of /overlay/upper/foo.txt
+> 6) in my case content appears to be 00 00 00 00
+
+Just returned from Edinburgh and had a chance to look at the problem.
+The problem is not that no write-back happens, in fact it happens just fine.
+But we have a problem upon journal replay if an unlinked file (O_TMPFILE)
+gets relinked in combination with xattrs.
+
+Can you please give the attached patch a try? It is not perfect but if I=20
+understand the problem correctly it should fix the issues you're facing.
 
 Thanks,
+//richard
+--nextPart1960845.MarFMtrmzt
+Content-Disposition: attachment; filename="replay_tmpfile_fix.diff"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="replay_tmpfile_fix.diff"
 
-Boris
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 4844538eb926..82b1244e4138 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -209,6 +209,19 @@ static int trun_remove_range(struct ubifs_info *c, struct replay_entry *r)
+ 	return ubifs_tnc_remove_range(c, &min_key, &max_key);
+ }
+ 
++static bool inode_comes_back(struct ubifs_info *c, struct replay_entry *rino)
++{
++	struct replay_entry *r;
++
++	list_for_each_entry(r, &c->replay_list, list) {
++		if (keys_cmp(c, &rino->key, &r->key) == 0 &&
++		    r->deletion == 0)
++			return true;
++	}
++
++	return false;
++}
++
+ /**
+  * apply_replay_entry - apply a replay entry to the TNC.
+  * @c: UBIFS file-system description object
+@@ -218,7 +231,7 @@ static int trun_remove_range(struct ubifs_info *c, struct replay_entry *r)
+  */
+ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
+ {
+-	int err;
++	int err = 0;
+ 
+ 	dbg_mntk(&r->key, "LEB %d:%d len %d deletion %d sqnum %llu key ",
+ 		 r->lnum, r->offs, r->len, r->deletion, r->sqnum);
+@@ -236,6 +249,9 @@ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
+ 			{
+ 				ino_t inum = key_inum(c, &r->key);
+ 
++				if (inode_comes_back(c, r))
++					break;
++
+ 				err = ubifs_tnc_remove_ino(c, inum);
+ 				break;
+ 			}
 
-[1]https://elixir.bootlin.com/linux/latest/source/include/linux/spi/spi-mem.h#L185
+--nextPart1960845.MarFMtrmzt--
