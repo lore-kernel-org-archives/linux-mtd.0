@@ -1,20 +1,23 @@
-Received: from mta.witecom.ch ([185.43.244.8])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGMX1-0003X1-96
- for linux-mtd@lists.infradead.org; Sat, 27 Oct 2018 11:13:29 +0000
-From: Yannick Lanz <yannick.lanz@wifx.net>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: bad block table erased by u-boot's ubi part command
-Date: Sat, 27 Oct 2018 11:13:04 +0000
-Message-ID: <A5CEBF07E04C514A9C56312C6027F32186A8C8CC@SWIFXDC01.lan.wifx.net>
-References: <A5CEBF07E04C514A9C56312C6027F32186A8C57B@SWIFXDC01.lan.wifx.net>
- <20181026225651.24be0d06@bbrezillon>
-In-Reply-To: <20181026225651.24be0d06@bbrezillon>
-Content-Language: fr-FR
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gGQgz-0004bV-6e
+ for linux-mtd@lists.infradead.org; Sat, 27 Oct 2018 15:40:03 +0000
+Date: Sat, 27 Oct 2018 17:39:45 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "Grandbois, Brett" <brett.grandbois@opengear.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for SPI boot flash access
+ for AMD Family 16h
+Message-ID: <20181027173945.241e87b2@bbrezillon>
+In-Reply-To: <20181016005726.26813-1-brett.grandbois@opengear.com>
+References: <20181016005726.26813-1-brett.grandbois@opengear.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >=20
-> > If a mount the UBI partition in U-Boot, then the bad block table is=20
-> > never found in the kernel and always recreated. The other strange=20
-> > point is that U-Boot doesn't find the 4 bad block found by the kernel.
-> >=20
-> > If I reboot without mounting the UBI partition in U-Boot, then the bad=
-=20
-> > block table is directly discovered by the kernel following its creation=
- on latest boot.
-> > It seems that U-Boot is destroying the bad block table.
-> >=20
-> > Do you have any idea what's happening ?
->
-> Probably because u-boot does not have on-flash-bbt enabled, so it's assum=
-ing the blocks reserved by Linux for the bad block table are free, and when=
- UBI is attached to the last partition it picks > the last 4 blocks and wri=
-tes its metadata on it.
+Hi Brett,
 
-Exactly, thank you for the support. I activated the on-flash-bbt in my u-bo=
-ot device tree but I was using the binary without embedded device tree...
-It's now working well.
+On Tue, 16 Oct 2018 00:57:41 +0000
+"Grandbois, Brett" <brett.grandbois@opengear.com> wrote:
 
-Yannick=20
+> Add support to expose the SPI boot flash on AMD Family 16h CPUs as a
+> standard mtd device to give userspace BIOS updaters greater feature
+> support.  The BIOS and Kernel Developer's Guide refers to this as the
+> 'SPI ROM' controller and so the driver follows that naming convention
+> for consistency.
+> 
+
+We're currently trying to convert spi-nor controller drivers to the
+spi-mem interface [1]. Can you look at this new interface and tell me if
+you'd be able to implement it? If that's not possible, then I'd prefer
+to have this driver implement the mtd_info interface directly.
+
+Thanks,
+
+Boris
+
+[1]https://elixir.bootlin.com/linux/latest/source/include/linux/spi/spi-mem.h#L185
