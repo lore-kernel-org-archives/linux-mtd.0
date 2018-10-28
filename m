@@ -1,20 +1,28 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGqI9-00066C-Lf
- for linux-mtd@lists.infradead.org; Sun, 28 Oct 2018 19:00:12 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: read-only FS with error -2
-Date: Sun, 28 Oct 2018 19:59:52 +0100
-Message-ID: <3653061.hV2SDYrdd6@blindfold>
-In-Reply-To: <0e90fe2a-1747-7a4c-9b6b-576dfdfad86d@candelatech.com>
-References: <14ebdb35-43e6-47b6-e947-2d9f9cee100b@candelatech.com>
- <12453083.5lVtCAIVAB@blindfold>
- <0e90fe2a-1747-7a4c-9b6b-576dfdfad86d@candelatech.com>
+ id 1gGqgZ-0006xZ-GB
+ for linux-mtd@lists.infradead.org; Sun, 28 Oct 2018 19:25:20 +0000
+Received: by mail-lj1-x243.google.com with SMTP id t22-v6so5711614lji.7
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2018 12:25:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20181019070622.26661-1-linus.walleij@linaro.org>
+ <20181019070622.26661-2-linus.walleij@linaro.org>
+ <CACRpkda=1CNzZe1ACGm9nwVDGbHdAxhWzpqcANs-KKBhPpNF-w@mail.gmail.com>
+ <20181025190825.GA15870@bogus>
+In-Reply-To: <20181025190825.GA15870@bogus>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 28 Oct 2018 20:24:52 +0100
+Message-ID: <CACRpkdbThqKUTvN294iKad0z4or5FAJioR08b9n5UwbF=hCCDQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: partitions: Add RedBoot FIS DT bindings
+To: Rob Herring <robh@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Mark Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben,
+On Thu, Oct 25, 2018 at 9:08 PM Rob Herring <robh@kernel.org> wrote:
 
-Am Sonntag, 28. Oktober 2018, 19:44:46 CET schrieb Ben Greear:
-> > For now you can just use your initramfs (AFAIK OpenWRT has one), boot with rdinit=/bin/sh ...
-> >
-> > Or apply a hacky patch like this one to enable chk_fs always...
-> 
-> Problem is, when I re-install then the problem goes away.  Would it
-> be bad to enable this code all the time on production systems?
+> It's all fine for me.
 
-Did you face the problem more than *once*?
+Thanks.
 
-chk_fs makes mounting very slow, it is basically a fsck upon mount.
- 
-> Could UBIFS just enable debugging and print out any pertinent
-> info when it detects the failure instead of (just) going into RO
-> mode?
+> I was only going to comment is Redboot still a thing? :)
 
-UBIFS prints a ton on debug information upon unexpected situations.
-But if your logs are gone and you have only very the last one (after a reboot),
-UBIFS cannot do much...
+Yep. What I've learned recently is that some of the stuff we
+support has way longer lifecycles than we expected. There are
+brand new devices shipping using the RedBoot partition table
+as we speak. It seems to be coming from places like Taiwan.
 
-Thanks,
-//richard
+Yours,
+Linus Walleij
