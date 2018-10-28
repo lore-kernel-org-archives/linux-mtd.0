@@ -1,28 +1,17 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGqgZ-0006xZ-GB
- for linux-mtd@lists.infradead.org; Sun, 28 Oct 2018 19:25:20 +0000
-Received: by mail-lj1-x243.google.com with SMTP id t22-v6so5711614lji.7
- for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2018 12:25:05 -0700 (PDT)
+ id 1gGsrO-00046C-4V
+ for linux-mtd@lists.infradead.org; Sun, 28 Oct 2018 21:44:40 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, russell@personaltelco.net, zajec5@gmail.com,
+ Richard Weinberger <richard@nod.at>, stable@vger.kernel.org
+Subject: [PATCH] ubifs: Handle re-linking of inodes correctly while recovery
+Date: Sun, 28 Oct 2018 22:44:07 +0100
+Message-Id: <20181028214407.20965-1-richard@nod.at>
 MIME-Version: 1.0
-References: <20181019070622.26661-1-linus.walleij@linaro.org>
- <20181019070622.26661-2-linus.walleij@linaro.org>
- <CACRpkda=1CNzZe1ACGm9nwVDGbHdAxhWzpqcANs-KKBhPpNF-w@mail.gmail.com>
- <20181025190825.GA15870@bogus>
-In-Reply-To: <20181025190825.GA15870@bogus>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 28 Oct 2018 20:24:52 +0100
-Message-ID: <CACRpkdbThqKUTvN294iKad0z4or5FAJioR08b9n5UwbF=hCCDQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mtd: partitions: Add RedBoot FIS DT bindings
-To: Rob Herring <robh@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +21,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 25, 2018 at 9:08 PM Rob Herring <robh@kernel.org> wrote:
+UBIFS's recovery code strictly assumes that a deleted inode will never
+come back, therefore it removes all data which belongs to that inode
+as soon it faces an inode with link count 0 in the replay list.
+Before O_TMPFILE this assumption was perfectly fine. With O_TMPFILE
+it can lead to data loss upon a power-cut.
 
-> It's all fine for me.
+Consider a journal with entries like:
+0: inode X (nlink =3D 0) /* O_TMPFILE was created */
+1: data for inode X /* Someone writes to the temp file */
+2: inode X (nlink =3D 0) /* inode was changed, xattr, chmod, =E2=80=A6 */
+3: inode X (nlink =3D 1) /* inode was re-linked via linkat() */
 
-Thanks.
+Upon replay of entry #2 UBIFS will drop all data that belongs to inode X,
+this will lead to an empty file after mounting.
 
-> I was only going to comment is Redboot still a thing? :)
+As solution for this problem, scan the replay list for a re-link entry
+before dropping data.
 
-Yep. What I've learned recently is that some of the stuff we
-support has way longer lifecycles than we expected. There are
-brand new devices shipping using the RedBoot partition table
-as we speak. It seems to be coming from places like Taiwan.
+Fixes: 474b93704f32 ("ubifs: Implement O_TMPFILE")
+Cc: stable@vger.kernel.org
+Reported-by: Russell Senior <russell@personaltelco.net>
+Reported-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+Russel, Rafa=C5=82,
 
-Yours,
-Linus Walleij
+please give this patch another testing.
+I'll also run it on different test systems before merging.
+
+Thanks,
+//richard
+---
+ fs/ubifs/replay.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 4844538eb926..65a780685b82 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -209,6 +209,34 @@ static int trun_remove_range(struct ubifs_info *c, s=
+truct replay_entry *r)
+ 	return ubifs_tnc_remove_range(c, &min_key, &max_key);
+ }
+=20
++/**
++ * inode_relinked - check whether inode in question will be re-linked.
++ * @c: UBIFS file-system description object
++ * @rino: replay entry to test
++ *
++ * O_TMPFILE files can be re-linked, this means link count goes from 0 t=
+o 1.
++ * This case needs special care, otherwise all references to the inode w=
+ill
++ * be removed upon the first replay entry of an inode with link count 0
++ * is found.
++ */
++static bool inode_relinked(struct ubifs_info *c, struct replay_entry *ri=
+no)
++{
++	struct replay_entry *r =3D rino;
++
++	ubifs_assert(c, rino->deletion);
++	ubifs_assert(c, key_type(c, &rino->key) =3D=3D UBIFS_INO_KEY);
++
++	list_for_each_entry_from(r, &c->replay_list, list) {
++		if (key_inum(c, &r->key) =3D=3D key_inum(c, &rino->key) &&
++		    r->deletion =3D=3D 0) {
++			ubifs_assert(c, r->sqnum > rino->sqnum);
++			return true;
++		}
++	}
++
++	return false;
++}
++
+ /**
+  * apply_replay_entry - apply a replay entry to the TNC.
+  * @c: UBIFS file-system description object
+@@ -236,6 +264,11 @@ static int apply_replay_entry(struct ubifs_info *c, =
+struct replay_entry *r)
+ 			{
+ 				ino_t inum =3D key_inum(c, &r->key);
+=20
++				if (inode_relinked(c, r)) {
++					err =3D 0;
++					break;
++				}
++
+ 				err =3D ubifs_tnc_remove_ino(c, inum);
+ 				break;
+ 			}
+--=20
+2.19.1
