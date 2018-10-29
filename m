@@ -1,17 +1,34 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-yw1-xc42.google.com ([2607:f8b0:4864:20::c42])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gGsrO-00046C-4V
- for linux-mtd@lists.infradead.org; Sun, 28 Oct 2018 21:44:40 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, russell@personaltelco.net, zajec5@gmail.com,
- Richard Weinberger <richard@nod.at>, stable@vger.kernel.org
-Subject: [PATCH] ubifs: Handle re-linking of inodes correctly while recovery
-Date: Sun, 28 Oct 2018 22:44:07 +0100
-Message-Id: <20181028214407.20965-1-richard@nod.at>
+ id 1gGx3n-0001rf-5w
+ for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 02:13:45 +0000
+Received: by mail-yw1-xc42.google.com with SMTP id c126-v6so2748733ywd.8
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2018 19:13:31 -0700 (PDT)
+Received: from mail-yw1-f44.google.com (mail-yw1-f44.google.com.
+ [209.85.161.44])
+ by smtp.gmail.com with ESMTPSA id 80-v6sm5454032ywh.55.2018.10.28.19.13.29
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sun, 28 Oct 2018 19:13:29 -0700 (PDT)
+Received: by mail-yw1-f44.google.com with SMTP id v199-v6so2763155ywg.1
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Oct 2018 19:13:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20181012112259.56f3c44f@bbrezillon>
+References: <20181010184533.691620-1-arnd@arndb.de>
+ <20181012111603.0d03e043@bbrezillon>
+ <CAK8P3a1zYoGtfe6PVEM-oLNxXQAt12iiNR1ZLiaGvrY5LFKwwA@mail.gmail.com>
+ <20181012112259.56f3c44f@bbrezillon>
+From: Kees Cook <keescook@chromium.org>
+Date: Sun, 28 Oct 2018 19:13:26 -0700
+Message-ID: <CAGXu5jLS5sEFgM1Vzri+cAONYKUqdXbahyNUU1xvRF0cbZrX1w@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sa1100: avoid VLA in sa1100_setup_mtd
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,96 +38,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBIFS's recovery code strictly assumes that a deleted inode will never
-come back, therefore it removes all data which belongs to that inode
-as soon it faces an inode with link count 0 in the replay list.
-Before O_TMPFILE this assumption was perfectly fine. With O_TMPFILE
-it can lead to data loss upon a power-cut.
+On Fri, Oct 12, 2018 at 2:22 AM, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> On Fri, 12 Oct 2018 11:19:52 +0200
+> Arnd Bergmann <arnd@arndb.de> wrote:
+>
+>> On Fri, Oct 12, 2018 at 11:16 AM Boris Brezillon
+>> <boris.brezillon@bootlin.com> wrote:
+>> >
+>> > Hi Arnd,
+>> >
+>> > On Wed, 10 Oct 2018 20:44:50 +0200
+>> > Arnd Bergmann <arnd@arndb.de> wrote:
+>> >
+>> > > Enabling -Wvla found another variable-length array with randconfig
+>> > > testing:
+>> > >
+>> > > drivers/mtd/maps/sa1100-flash.c: In function 'sa1100_setup_mtd':
+>> > > drivers/mtd/maps/sa1100-flash.c:224:10: error: ISO C90 forbids variable length array 'cdev' [-Werror=vla]
+>> > >
+>> > > As far as I can tell, there is an upper bound on the number of resources
+>> > > that can be passed, based on the number of CS lines on the bus.
+>> > > In practice, all boards we support have either one or two resources,
+>> > > but using six to be on the safe side has no extra cost.
+>> >
+>> > Why not dynamically allocate cdev instead? That removes any kind of
+>> > guessing on the max value, and it shouldn't hurt much since this code is
+>> > in the probe path.
+>>
+>> Fine with me as well, If you prefer that one, please just add
+>> Reported-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Oh, I thought I'd let you send a v2, but I can do it if you prefer.
 
-Consider a journal with entries like:
-0: inode X (nlink =3D 0) /* O_TMPFILE was created */
-1: data for inode X /* Someone writes to the temp file */
-2: inode X (nlink =3D 0) /* inode was changed, xattr, chmod, =E2=80=A6 */
-3: inode X (nlink =3D 1) /* inode was re-linked via linkat() */
+Olof just pointed out to me that neither fix landed for this? What's
+needed for this?
 
-Upon replay of entry #2 UBIFS will drop all data that belongs to inode X,
-this will lead to an empty file after mounting.
+Thanks!
 
-As solution for this problem, scan the replay list for a re-link entry
-before dropping data.
-
-Fixes: 474b93704f32 ("ubifs: Implement O_TMPFILE")
-Cc: stable@vger.kernel.org
-Reported-by: Russell Senior <russell@personaltelco.net>
-Reported-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
-Russel, Rafa=C5=82,
-
-please give this patch another testing.
-I'll also run it on different test systems before merging.
-
-Thanks,
-//richard
----
- fs/ubifs/replay.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 4844538eb926..65a780685b82 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -209,6 +209,34 @@ static int trun_remove_range(struct ubifs_info *c, s=
-truct replay_entry *r)
- 	return ubifs_tnc_remove_range(c, &min_key, &max_key);
- }
-=20
-+/**
-+ * inode_relinked - check whether inode in question will be re-linked.
-+ * @c: UBIFS file-system description object
-+ * @rino: replay entry to test
-+ *
-+ * O_TMPFILE files can be re-linked, this means link count goes from 0 t=
-o 1.
-+ * This case needs special care, otherwise all references to the inode w=
-ill
-+ * be removed upon the first replay entry of an inode with link count 0
-+ * is found.
-+ */
-+static bool inode_relinked(struct ubifs_info *c, struct replay_entry *ri=
-no)
-+{
-+	struct replay_entry *r =3D rino;
-+
-+	ubifs_assert(c, rino->deletion);
-+	ubifs_assert(c, key_type(c, &rino->key) =3D=3D UBIFS_INO_KEY);
-+
-+	list_for_each_entry_from(r, &c->replay_list, list) {
-+		if (key_inum(c, &r->key) =3D=3D key_inum(c, &rino->key) &&
-+		    r->deletion =3D=3D 0) {
-+			ubifs_assert(c, r->sqnum > rino->sqnum);
-+			return true;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * apply_replay_entry - apply a replay entry to the TNC.
-  * @c: UBIFS file-system description object
-@@ -236,6 +264,11 @@ static int apply_replay_entry(struct ubifs_info *c, =
-struct replay_entry *r)
- 			{
- 				ino_t inum =3D key_inum(c, &r->key);
-=20
-+				if (inode_relinked(c, r)) {
-+					err =3D 0;
-+					break;
-+				}
-+
- 				err =3D ubifs_tnc_remove_ino(c, inum);
- 				break;
- 			}
---=20
-2.19.1
+-- 
+Kees Cook
