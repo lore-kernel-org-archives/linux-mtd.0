@@ -1,18 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gH4Co-0004DO-4j
- for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 09:53:30 +0000
-Date: Mon, 29 Oct 2018 10:51:08 +0100
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gH4Eo-0004Iq-L7
+ for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 09:53:35 +0000
+Date: Mon, 29 Oct 2018 10:53:12 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: <boris.brezillon@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <michals@xilinx.com>, <nagasuresh12@gmail.com>
-Subject: Re: [LINUX PATCH v11 0/3] Add support for Arasan NAND Flash controller
-Message-ID: <20181029105108.562ddd21@xps13>
-In-Reply-To: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
-References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: FIX Re: GPMI IMX6ull timeout on dma
+Message-ID: <20181029105312.1a62628c@xps13>
+In-Reply-To: <CAOf5uwmETDH2wz9vGfmETi=as4VtidOPT34-C8ndJiP_sooAZw@mail.gmail.com>
+References: <CAOf5uwku9Nx5-5h77yCtYwNxKHfZSfD+Dk3Fe41Ry45Lf+MdNw@mail.gmail.com>
+ <CAOf5uwmZkjF1Xp8vekBYnuBZZJhYk+n+=K7QW_8MAJJ6gw5xWw@mail.gmail.com>
+ <CAOf5uwnPnh3ZP932BGJkb_u10-WHwmq5srKaLdKbcFqs4A6mXg@mail.gmail.com>
+ <20181029104057.30428a2a@xps13>
+ <CAOf5uwmETDH2wz9vGfmETi=as4VtidOPT34-C8ndJiP_sooAZw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,27 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
+Hi Michael,
 
-Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote on
-Tue, 25 Sep 2018 17:50:28 +0530:
+Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote on
+Mon, 29 Oct 2018 10:43:05 +0100:
 
-> This patch series adds the basic driver support for Arasan NAND Flash con=
-troller.
-> We are reinitiating the patch series by fixing the comments given by Miqu=
-el and Boris.
-> Major changes are exec_op() implementation related.
-> Rebased to 4.19 nand tree.
-> Tested MT29F32G08ABCDBJ4.
+> Hi
 >=20
-> As suggested by Boris, it also adds a new varaible called mode in
-> struct nand_sdr_timings, which will give directly the sdr operating
-> mode. and it is useful for some controllers, where we can configure
-> direclty the operating mode instead of timings.
+> On Mon, Oct 29, 2018 at 10:41 AM Miquel Raynal
+> <miquel.raynal@bootlin.com> wrote:
+> >
+> > Hi Michael,
+> >
+> > Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote on
+> > Fri, 5 Oct 2018 12:32:18 +0200:
+> > =20
+> > > Hi Boris
+> > >
+> > > I have reverted for now
+> > >
+> > > Revert "mtd: rawnand: gpmi: support ->setup_data_interface()"
+> > > This reverts commit 76e1a0086a0c3276b384f77905345e0fcc886fdd.
+> > >
+> > > Revert "mtd: rawnand: gpmi: use core timings instead of an empirical
+> > > derivation"
+> > > This reverts commit b1206122069aadabe1a8c50789277a978aaa4df7. =20
+> >
+> > Sorry for the delay, I've been very busy lately.
+> >
+> > Please also Cc: me in your e-mails to the MTD ML.
+> >
+> > AFAIR I'm the author of these patches so I would like to understand and
+> > fix what's wrong there. As a start, can you discriminate which patch
+> > actually makes the timings inconsistent? Are you ready to do more
+> > testing to find what's wrong? =20
 >=20
+> Yes it's on my plan. Now for field I need to revert them but I have
+> them in roadmap.
+> We are testing now an imx6dl. It can be a combination with the micron
+> part number too.
 
-Unless I missed something there are still comments from Boris pending?
-I will wait for your v12 to give this driver another shot.
+Sure, let us know about your discoveries, I really want the GPMI driver
+to use core timings and ->setup_data_interface() so if there is
+something wrong there it should be fixed.
 
 Thanks,
 Miqu=C3=A8l
