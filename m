@@ -1,23 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gH4Eo-0004Iq-L7
- for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 09:53:35 +0000
-Date: Mon, 29 Oct 2018 10:53:12 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Cc: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: FIX Re: GPMI IMX6ull timeout on dma
-Message-ID: <20181029105312.1a62628c@xps13>
-In-Reply-To: <CAOf5uwmETDH2wz9vGfmETi=as4VtidOPT34-C8ndJiP_sooAZw@mail.gmail.com>
-References: <CAOf5uwku9Nx5-5h77yCtYwNxKHfZSfD+Dk3Fe41Ry45Lf+MdNw@mail.gmail.com>
- <CAOf5uwmZkjF1Xp8vekBYnuBZZJhYk+n+=K7QW_8MAJJ6gw5xWw@mail.gmail.com>
- <CAOf5uwnPnh3ZP932BGJkb_u10-WHwmq5srKaLdKbcFqs4A6mXg@mail.gmail.com>
- <20181029104057.30428a2a@xps13>
- <CAOf5uwmETDH2wz9vGfmETi=as4VtidOPT34-C8ndJiP_sooAZw@mail.gmail.com>
+Received: from mail-qk1-f195.google.com ([209.85.222.195])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gH48d-00046t-B6
+ for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 09:47:12 +0000
+Received: by mail-qk1-f195.google.com with SMTP id d135so3427520qkc.12
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Oct 2018 02:46:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20181010184533.691620-1-arnd@arndb.de>
+ <20181012111603.0d03e043@bbrezillon>
+ <CAK8P3a1zYoGtfe6PVEM-oLNxXQAt12iiNR1ZLiaGvrY5LFKwwA@mail.gmail.com>
+ <20181012112259.56f3c44f@bbrezillon>
+ <CAGXu5jLS5sEFgM1Vzri+cAONYKUqdXbahyNUU1xvRF0cbZrX1w@mail.gmail.com>
+ <20181029083004.54d535d2@bbrezillon>
+In-Reply-To: <20181029083004.54d535d2@bbrezillon>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 29 Oct 2018 10:46:41 +0100
+Message-ID: <CAK8P3a0Tu-dayaHMjUf1Cfo=2gn7Djphj8w7iamBPdcYC78ATA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sa1100: avoid VLA in sa1100_setup_mtd
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Kees Cook <keescook@chromium.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,49 +33,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Michael,
+On Mon, Oct 29, 2018 at 8:30 AM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> On Sun, 28 Oct 2018 19:13:26 -0700 Kees Cook <keescook@chromium.org> wrote:
+> > On Fri, Oct 12, 2018 at 2:22 AM, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> > > On Fri, 12 Oct 2018 11:19:52 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Fri, Oct 12, 2018 at 11:16 AM Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> > > Oh, I thought I'd let you send a v2, but I can do it if you prefer.
+> >
+> > Olof just pointed out to me that neither fix landed for this? What's
+> > needed for this?
+>
+> Nothing in particular, I was planning on sending a new version after
+> -rc1 is out and then queue it for 4.21 (5.1?) (this patch came in a bit
+> late, and I had already stopped taking patches for 4.20).
+>
+> If you consider this a fix or want to have it in 4.20 for other reasons,
+> just let me know and I'll queue it to the -fixes branch.
 
-Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote on
-Mon, 29 Oct 2018 10:43:05 +0100:
+We generally try to have a kernel that can be built in any configuration
+without warnings, so please add it for v4.20.
 
-> Hi
->=20
-> On Mon, Oct 29, 2018 at 10:41 AM Miquel Raynal
-> <miquel.raynal@bootlin.com> wrote:
-> >
-> > Hi Michael,
-> >
-> > Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote on
-> > Fri, 5 Oct 2018 12:32:18 +0200:
-> > =20
-> > > Hi Boris
-> > >
-> > > I have reverted for now
-> > >
-> > > Revert "mtd: rawnand: gpmi: support ->setup_data_interface()"
-> > > This reverts commit 76e1a0086a0c3276b384f77905345e0fcc886fdd.
-> > >
-> > > Revert "mtd: rawnand: gpmi: use core timings instead of an empirical
-> > > derivation"
-> > > This reverts commit b1206122069aadabe1a8c50789277a978aaa4df7. =20
-> >
-> > Sorry for the delay, I've been very busy lately.
-> >
-> > Please also Cc: me in your e-mails to the MTD ML.
-> >
-> > AFAIR I'm the author of these patches so I would like to understand and
-> > fix what's wrong there. As a start, can you discriminate which patch
-> > actually makes the timings inconsistent? Are you ready to do more
-> > testing to find what's wrong? =20
->=20
-> Yes it's on my plan. Now for field I need to revert them but I have
-> them in roadmap.
-> We are testing now an imx6dl. It can be a combination with the micron
-> part number too.
-
-Sure, let us know about your discoveries, I really want the GPMI driver
-to use core timings and ->setup_data_interface() so if there is
-something wrong there it should be fixed.
-
-Thanks,
-Miqu=C3=A8l
+        Arnd
