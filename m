@@ -1,30 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gH8Tx-00062H-UP
- for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 14:25:32 +0000
-Date: Mon, 29 Oct 2018 15:25:08 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+Received: from mail-sn1nam01on0048.outbound.protection.outlook.com
+ ([104.47.32.48] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHGlK-0000G6-AS
+ for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 23:16:00 +0000
+From: "Grandbois, Brett" <brett.grandbois@opengear.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Han Xu
- <han.xu@nxp.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Harvey Hunt
- <harveyhuntnexus@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>, Maxim
- Levitsky <maximlevitsky@gmail.com>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>
-Subject: Re: [PATCH 06/15] mtd: rawnand: Add nand_[de]select_target() helpers
-Message-ID: <20181029152508.253216c9@xps13>
-In-Reply-To: <20181029151634.76c86cf8@bbrezillon>
-References: <20181023185011.3356-1-boris.brezillon@bootlin.com>
- <20181023185011.3356-7-boris.brezillon@bootlin.com>
- <20181029143647.2efe60cb@xps13> <20181029143924.7ed5dc4f@xps13>
- <20181029145727.773c8118@bbrezillon>
- <20181029150641.7ef0f92e@xps13>
- <20181029151634.76c86cf8@bbrezillon>
+CC: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for SPI boot flash access
+ for AMD Family 16h
+Date: Mon, 29 Oct 2018 23:15:42 +0000
+Message-ID: <a6edf985-0d15-5b2b-a6ba-9cfcd7a67836@opengear.com>
+References: <20181016005726.26813-1-brett.grandbois@opengear.com>
+ <20181027173945.241e87b2@bbrezillon>
+In-Reply-To: <20181027173945.241e87b2@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E3B3E0CEBDE0434B83B7EF663A3C5FC6@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,82 +31,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 29 Oct 2018
-15:16:34 +0100:
-
-> On Mon, 29 Oct 2018 15:06:41 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 29 Oct 2018
-> > 14:57:27 +0100:
-> >   
-> > > On Mon, 29 Oct 2018 14:39:24 +0100
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >     
-> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote on Mon, 29 Oct 2018
-> > > > 14:36:47 +0100:
-> > > >       
-> > > > > Hi Boris,
-> > > > > 
-> > > > > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 23 Oct 2018
-> > > > > 20:50:02 +0200:
-> > > > >         
-> > > > > > Add a wrapper to prevent drivers and core code from directly calling
-> > > > > > the ->select_chip hook which we are about to deprecate.
-> > > > > > 
-> > > > > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > > > > ---
-> > > > > >  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c |  23 +++--
-> > > > > >  drivers/mtd/nand/raw/jz4740_nand.c         |   4 +-
-> > > > > >  drivers/mtd/nand/raw/nand_base.c           | 114 ++++++++++++++-------
-> > > > > >  drivers/mtd/nand/raw/r852.c                |   4 +-
-> > > > > >  include/linux/mtd/rawnand.h                |   4 +
-> > > > > >  5 files changed, 98 insertions(+), 51 deletions(-)
-> > > > > >           
-> > > > > 
-> > > > > So far I am glad to see all these changes.
-> > > > > 
-> > > > > About the ->select_chip() removal, I wonder if it would not be better
-> > > > > to also change the local variables "chipnr" or "chip_number" (or
-> > > > > even "i") that suggest that this ID selects a chip, while it
-> > > > > actually selects a die in a chip (and it is possible to have multiple
-> > > > > die on a chip, so multiple CS for one single NAND chip).      
-> > > 
-> > > I agree.
-> > >     
-> > > > > 
-> > > > > Do you think it is worth the change ? If yes, would it fit in this patch
-> > > > > or is it better to do this change elsewhere?
-> > > > >         
-> > > > 
-> > > > This request actually applies to the following patches as well. Maybe we
-> > > > could even find a uniform way to name it, "die_nr" or something like
-> > > > this?      
-> > > 
-> > > Target is the name used in the ONFI spec, hence the function names.
-> > > Note that die is not accurate since you might have several dies exposed
-> > > through a single CS line (that's called LUNs).    
-> > 
-> > I'm completely fine with the rename of the functions being now
-> > <nfc>_select_target().
-> > 
-> > What about renaming local variables -when relevant- as lun_nr? lun?
-> > lun_idx?  
-> 
-> Nope, a LUN is a logically selection-able die, while a target is a
-> physically selection-able one. We should rename the vars/args target or
-> cs, not lun.
-
-Ok then, let's try 'target' to avoid the confusion with
-
-       cs -> chip select -> NAND chip select
-
-> 
-> > 
-> > Do you think it should be done in place in these patches or as a
-> > separate change?  
-> 
-> I think it should be done separately.
-
-Ok.
+DQpPbiAyOC8xMC8xOCAxOjM5IGFtLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6DQo+IEhpIEJyZXR0
+LA0KPg0KPiBPbiBUdWUsIDE2IE9jdCAyMDE4IDAwOjU3OjQxICswMDAwDQo+ICJHcmFuZGJvaXMs
+IEJyZXR0IjxicmV0dC5ncmFuZGJvaXNAb3BlbmdlYXIuY29tPiAgd3JvdGU6DQo+DQo+PiBBZGQg
+c3VwcG9ydCB0byBleHBvc2UgdGhlIFNQSSBib290IGZsYXNoIG9uIEFNRCBGYW1pbHkgMTZoIENQ
+VXMgYXMgYQ0KPj4gc3RhbmRhcmQgbXRkIGRldmljZSB0byBnaXZlIHVzZXJzcGFjZSBCSU9TIHVw
+ZGF0ZXJzIGdyZWF0ZXIgZmVhdHVyZQ0KPj4gc3VwcG9ydC4gIFRoZSBCSU9TIGFuZCBLZXJuZWwg
+RGV2ZWxvcGVyJ3MgR3VpZGUgcmVmZXJzIHRvIHRoaXMgYXMgdGhlDQo+PiAnU1BJIFJPTScgY29u
+dHJvbGxlciBhbmQgc28gdGhlIGRyaXZlciBmb2xsb3dzIHRoYXQgbmFtaW5nIGNvbnZlbnRpb24N
+Cj4+IGZvciBjb25zaXN0ZW5jeS4NCj4+DQo+IFdlJ3JlIGN1cnJlbnRseSB0cnlpbmcgdG8gY29u
+dmVydCBzcGktbm9yIGNvbnRyb2xsZXIgZHJpdmVycyB0byB0aGUNCj4gc3BpLW1lbSBpbnRlcmZh
+Y2UgWzFdLiBDYW4geW91IGxvb2sgYXQgdGhpcyBuZXcgaW50ZXJmYWNlIGFuZCB0ZWxsIG1lIGlm
+DQo+IHlvdSdkIGJlIGFibGUgdG8gaW1wbGVtZW50IGl0PyBJZiB0aGF0J3Mgbm90IHBvc3NpYmxl
+LCB0aGVuIEknZCBwcmVmZXINCj4gdG8gaGF2ZSB0aGlzIGRyaXZlciBpbXBsZW1lbnQgdGhlIG10
+ZF9pbmZvIGludGVyZmFjZSBkaXJlY3RseS4NCg0KU28gZnJvbSBnb2luZyBvdmVyIHRoZSBzcGkt
+bWVtIGludGVyZmFjZSBpdCBsb29rcyBsaWtlIHRoZSBpbnRlbnQgaXMgZm9yIHRoZXNlIHNvcnRz
+IG9mIGRldmljZXMgdG8gYmUgYSBzdGFuZGFyZCBzcGlfY29udHJvbGxlciB3aXRoIG9ubHkgbWVt
+X29wcyBkZWZpbmVkIGFuZCB0aGUgdHJhbnNmZXIvX29uZS9fb25lX21lc3NhZ2UgbGVmdCBhcyBO
+VUxMPyAgSXMgdGhhdCBjb3JyZWN0PyAgVGhhdCdzIGEgYml0IG9mIGEgcGl2b3QgZnJvbSBob3cg
+aXQncyBjdXJyZW50bHkgZG9uZSAoaXQncyBjb25jZXB0dWFsbHkgc2ltaWxhciB0byB0aGUgaW50
+ZWwtc3BpLXBjaSBkcml2ZXIgc28gSSB3YXMgZm9sbG93aW5nIHRoYXQpIGJ1dCBJIHNob3VsZCBi
+ZSBhYmxlIHRvIHJld29yayBpdCB0byB0aGUgbmV3IGludGVyZmFjZS4gIFRoaXMgdGhlbiBsaXZl
+cyB1bmRlciBkcml2ZXJzL3NwaSBhbmQgdGh1cyBzaG91bGQgYmUgc3VibWl0dGVkIHRvIGxpbnV4
+LXNwaT8NCiAgIA0KDQo+IFRoYW5rcywNCj4NCj4gQm9yaXMNCj4NCj4gWzFdaHR0cHM6Ly9uYTAx
+LnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZlbGl4
+aXIuYm9vdGxpbi5jb20lMkZsaW51eCUyRmxhdGVzdCUyRnNvdXJjZSUyRmluY2x1ZGUlMkZsaW51
+eCUyRnNwaSUyRnNwaS1tZW0uaCUyM0wxODUmYW1wO2RhdGE9MDIlN0MwMSU3Q2JyZXR0LmdyYW5k
+Ym9pcyU0MG9wZW5nZWFyLmNvbSU3Q2Y1MjQ0ZDkyODc1MzRlYTg0YjEyMDhkNjNjMjI2ZThmJTdD
+YTYyNTFjMjZkMjFmNDE2NGEyMjUxZjRlYWViZjVmOWElN0MwJTdDMCU3QzYzNjc2MjUxNTkxNTA5
+NzQwNSZhbXA7c2RhdGE9OWJyR0lYY0VjTFF1NWc2V3hhWFQ2NjElMkJqZjhVTE1RUXBWZFh6STM2
+TlRVJTNEJmFtcDtyZXNlcnZlZD0wDQo=
