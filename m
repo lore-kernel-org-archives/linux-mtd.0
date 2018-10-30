@@ -1,21 +1,26 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHH1l-0005hC-Oj
- for linux-mtd@lists.infradead.org; Mon, 29 Oct 2018 23:33:00 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Colin King <colin.king@canonical.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ubifs: authentication: fix memory leak on error
- exit path
-Date: Tue, 30 Oct 2018 00:32:36 +0100
-Message-ID: <2101590.OYyDjomelk@blindfold>
-In-Reply-To: <20181029232146.21262-1-colin.king@canonical.com>
-References: <20181029232146.21262-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHUCm-0003CZ-1h
+ for linux-mtd@lists.infradead.org; Tue, 30 Oct 2018 13:37:12 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Vignesh R <vigneshr@ti.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 2/7] spi: spi-mem: Add SPI_MEM_NO_DATA to the
+ spi_mem_data_dir enum
+Date: Tue, 30 Oct 2018 14:36:33 +0100
+Message-Id: <20181030133638.3322-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20181030133638.3322-1-boris.brezillon@bootlin.com>
+References: <20181030133638.3322-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 30. Oktober 2018, 00:21:46 CET schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently a failure when calling ubifs_read_nnode results in a leak
-> of desc and buf because of a direct return. Fix this by exiting via
-> label 'out' that performs the necessary free'ing of the resources.
-> 
-> Fixes: a1dc58140f7e ("ubifs: authentication: Authenticate LPT")
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  fs/ubifs/lpt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-> index d1d5e96350dd..c162459a1e02 100644
-> --- a/fs/ubifs/lpt.c
-> +++ b/fs/ubifs/lpt.c
-> @@ -1688,7 +1688,7 @@ int ubifs_lpt_calc_hash(struct ubifs_info *c, u8 *hash)
->  	if (!c->nroot) {
->  		err = ubifs_read_nnode(c, NULL, 0);
->  		if (err)
-> -			return err;
-> +			goto out;
+When defining spi_mem_op templates we don't necessarily know the size
+that will be passed when the template is actually used, and basing the
+supports_op() check on op->data.nbytes to know whether there will be
+data transferred for a specific operation is this not possible.
 
-IMHO a better fix would be reading the root node before allocating these buffers.
+Add SPI_MEM_NO_DATA to the spi_mem_data_dir enum so that we can base
+our checks on op->data.dir instead of op->data.nbytes.
 
-Thanks,
-//richard
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Changes in v2:
+- New patch
+---
+ drivers/spi/spi-mem.c       | 2 +-
+ include/linux/spi/spi-mem.h | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 62a7b80801d2..967f581bca4f 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -142,7 +142,7 @@ static bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 	    spi_check_buswidth_req(mem, op->dummy.buswidth, true))
+ 		return false;
+ 
+-	if (op->data.nbytes &&
++	if (op->data.dir != SPI_MEM_NO_DATA &&
+ 	    spi_check_buswidth_req(mem, op->data.buswidth,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 867839cc69a7..250b6f5c47c2 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -57,10 +57,12 @@
+ /**
+  * enum spi_mem_data_dir - describes the direction of a SPI memory data
+  *			   transfer from the controller perspective
++ * @SPI_MEM_NO_DATA: no data transferred
+  * @SPI_MEM_DATA_IN: data coming from the SPI memory
+  * @SPI_MEM_DATA_OUT: data sent to the SPI memory
+  */
+ enum spi_mem_data_dir {
++	SPI_MEM_NO_DATA,
+ 	SPI_MEM_DATA_IN,
+ 	SPI_MEM_DATA_OUT,
+ };
+-- 
+2.17.1
