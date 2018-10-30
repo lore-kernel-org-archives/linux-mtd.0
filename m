@@ -1,25 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHUCm-0003Ca-1f
- for linux-mtd@lists.infradead.org; Tue, 30 Oct 2018 13:37:13 +0000
+ id 1gHPMc-0001Lb-Rf
+ for linux-mtd@lists.infradead.org; Tue, 30 Oct 2018 08:27:04 +0000
+Date: Tue, 30 Oct 2018 09:26:05 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Vignesh R <vigneshr@ti.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 3/7] spi: spi-mem: Split spi_mem_exec_op() code
-Date: Tue, 30 Oct 2018 14:36:34 +0100
-Message-Id: <20181030133638.3322-4-boris.brezillon@bootlin.com>
-In-Reply-To: <20181030133638.3322-1-boris.brezillon@bootlin.com>
-References: <20181030133638.3322-1-boris.brezillon@bootlin.com>
+To: "Grandbois, Brett" <brett.grandbois@opengear.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for SPI boot flash access
+ for AMD Family 16h
+Message-ID: <20181030092605.38851906@bbrezillon>
+In-Reply-To: <a6edf985-0d15-5b2b-a6ba-9cfcd7a67836@opengear.com>
+References: <20181016005726.26813-1-brett.grandbois@opengear.com>
+ <20181027173945.241e87b2@bbrezillon>
+ <a6edf985-0d15-5b2b-a6ba-9cfcd7a67836@opengear.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,101 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The logic surrounding the ->exec_op() call applies to direct mapping
-accessors. Move this code to separate functions to avoid duplicating
-code.
+On Mon, 29 Oct 2018 23:15:42 +0000
+"Grandbois, Brett" <brett.grandbois@opengear.com> wrote:
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Changes:
-- New patch
----
- drivers/spi/spi-mem.c | 63 ++++++++++++++++++++++++++++---------------
- 1 file changed, 42 insertions(+), 21 deletions(-)
+> On 28/10/18 1:39 am, Boris Brezillon wrote:
+> > Hi Brett,
+> >
+> > On Tue, 16 Oct 2018 00:57:41 +0000
+> > "Grandbois, Brett"<brett.grandbois@opengear.com>  wrote:
+> >  
+> >> Add support to expose the SPI boot flash on AMD Family 16h CPUs as
+> >> a standard mtd device to give userspace BIOS updaters greater
+> >> feature support.  The BIOS and Kernel Developer's Guide refers to
+> >> this as the 'SPI ROM' controller and so the driver follows that
+> >> naming convention for consistency.
+> >>  
+> > We're currently trying to convert spi-nor controller drivers to the
+> > spi-mem interface [1]. Can you look at this new interface and tell
+> > me if you'd be able to implement it? If that's not possible, then
+> > I'd prefer to have this driver implement the mtd_info interface
+> > directly.  
+> 
+> So from going over the spi-mem interface it looks like the intent is
+> for these sorts of devices to be a standard spi_controller with only
+> mem_ops defined and the transfer/_one/_one_message left as NULL?  Is
+> that correct? 
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 967f581bca4f..7916e655afc8 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -213,6 +213,44 @@ bool spi_mem_supports_op(struct spi_mem *mem, const struct spi_mem_op *op)
- }
- EXPORT_SYMBOL_GPL(spi_mem_supports_op);
- 
-+static int spi_mem_access_start(struct spi_mem *mem)
-+{
-+	struct spi_controller *ctlr = mem->spi->controller;
-+
-+	/*
-+	 * Flush the message queue before executing our SPI memory
-+	 * operation to prevent preemption of regular SPI transfers.
-+	 */
-+	spi_flush_queue(ctlr);
-+
-+	if (ctlr->auto_runtime_pm) {
-+		int ret;
-+
-+		ret = pm_runtime_get_sync(ctlr->dev.parent);
-+		if (ret < 0) {
-+			dev_err(&ctlr->dev, "Failed to power device: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
-+	mutex_lock(&ctlr->bus_lock_mutex);
-+	mutex_lock(&ctlr->io_mutex);
-+
-+	return 0;
-+}
-+
-+static void spi_mem_access_end(struct spi_mem *mem)
-+{
-+	struct spi_controller *ctlr = mem->spi->controller;
-+
-+	mutex_unlock(&ctlr->io_mutex);
-+	mutex_unlock(&ctlr->bus_lock_mutex);
-+
-+	if (ctlr->auto_runtime_pm)
-+		pm_runtime_put(ctlr->dev.parent);
-+}
-+
- /**
-  * spi_mem_exec_op() - Execute a memory operation
-  * @mem: the SPI memory
-@@ -242,30 +280,13 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 		return -ENOTSUPP;
- 
- 	if (ctlr->mem_ops) {
--		/*
--		 * Flush the message queue before executing our SPI memory
--		 * operation to prevent preemption of regular SPI transfers.
--		 */
--		spi_flush_queue(ctlr);
--
--		if (ctlr->auto_runtime_pm) {
--			ret = pm_runtime_get_sync(ctlr->dev.parent);
--			if (ret < 0) {
--				dev_err(&ctlr->dev,
--					"Failed to power device: %d\n",
--					ret);
--				return ret;
--			}
--		}
-+		ret = spi_mem_access_start(mem);
-+		if (ret)
-+			return ret;
- 
--		mutex_lock(&ctlr->bus_lock_mutex);
--		mutex_lock(&ctlr->io_mutex);
- 		ret = ctlr->mem_ops->exec_op(mem, op);
--		mutex_unlock(&ctlr->io_mutex);
--		mutex_unlock(&ctlr->bus_lock_mutex);
- 
--		if (ctlr->auto_runtime_pm)
--			pm_runtime_put(ctlr->dev.parent);
-+		spi_mem_access_end(mem);
- 
- 		/*
- 		 * Some controllers only optimize specific paths (typically the
--- 
-2.17.1
+Yes
+
+> That's a bit of a pivot from how it's currently done
+> (it's conceptually similar to the intel-spi-pci driver so I was
+> following that)
+
+Yes, and that's exactly what I'd like to avoid. intel-spi-pci will
+probably be the trickiest conversion, so I'd like to avoid having
+another one ;-).
+
+> but I should be able to rework it to the new
+> interface.  This then lives under drivers/spi and thus should be
+> submitted to linux-spi? 
+
+Actually, if the controller is only ever connected to the same SPI NOR
+chip (no need for advanced detection scheme) and does not support
+support Octo/Quad/Dual modes (or any other advanced features), you'll
+be better off implementing mtd->_read/_write/_erase() directly (the
+driver would then live in drivers/mtd/devices/).
