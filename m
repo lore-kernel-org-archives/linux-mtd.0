@@ -1,23 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHUCm-0003Cb-1g
- for linux-mtd@lists.infradead.org; Tue, 30 Oct 2018 13:37:12 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Vignesh R <vigneshr@ti.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 0/7] spi: spi-mem: Add a direct mapping API
-Date: Tue, 30 Oct 2018 14:36:31 +0100
-Message-Id: <20181030133638.3322-1-boris.brezillon@bootlin.com>
+Date: Tue, 30 Oct 2018 10:49:03 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-mtd
+ <linux-mtd@lists.infradead.org>, linux-clk@vger.kernel.org
+Subject: Re: Clock configuration for the SAMA5D2 NAND controller
+Message-ID: <20181030104903.518f1fdd@xps13>
+In-Reply-To: <CAGkQfmMphvck9rraYq+o8zA254q7ETYyniiUV-QBsUR9X+OFKQ@mail.gmail.com>
+References: <CAGkQfmNuROsD29jR_7opiXcfPB6=FuaoxaK-hF5Ezz7r-1pBZA@mail.gmail.com>
+ <CAGkQfmMphvck9rraYq+o8zA254q7ETYyniiUV-QBsUR9X+OFKQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Romain,
 
-I didn't have much review on the RFC, so I'm resending this series
-without "RFC" in the subject. Maybe I'll get more reviews this time.
+Romain Izard <romain.izard.pro@gmail.com> wrote on Wed, 17 Oct 2018
+12:42:28 +0200:
 
-A few things have changed since I submitted the RFC
-- The spi-nand framework has been merged, and I can thus patch this
-  driver to use the dirmap API
-- The MXIC controller has been submitted, and since I did my tests
-  with this controller, I can also add a patch showing how to
-  implement the dirmap hooks
+> +linux-mtd, linux-clk
+>=20
+> Le mer. 10 oct. 2018 =C3=A0 19:05, Romain Izard
+> <romain.izard.pro@gmail.com> a =C3=A9crit :
+> >
+> > Hello,
+> >
+> > While evaluating a new flash memory chip for my product based on a SAMA=
+5D2
+> > chip, I tried to update my software to use the latest device tree bindi=
+ngs.
+> >
+> > Until now, I was using the legacy bindings for the NAND controller, that
+> > preserved the timings configured by the bootloader in the EBI registers=
+. The
+> > bindings introduced in Linux 4.13 are used together with the NAND drive=
+r to
+> > reconfigure the timings of the memory interface to match the speed prof=
+ile
+> > declared by some NAND components.
+> >
+> > However, when comparing the timings in the registers, there was a large
+> > difference between what I calculated by hand in the past and the values
+> > configured by the drivers. The difference was in fact a 2 factor.
+> >
+> > For me, the issue is due to the clock configuration declared in the SAM=
+A5D2
+> > device tree: The reference clock used by the nand-controller driver is =
+the
+> > clock for its parent node, which is directly the Master Clock. And on my
+> > end, what I understood when writing the clock settings for my bootloade=
+r was
+> > that the reference clock was the HSMC clock, which derives from the H32=
+MX
+> > clock, which runs at half the rate of the Master Clock.
+> >
+> > The documentation for the SAMA5D2 is not very precise on this topic, so=
+ I
+> > would like to have some feedback. Is the clock used as a reference for =
+the
+> > chip select configuration registers the Master Clock itself, or is it t=
+he
+> > peripheral clock for the HSMC module ?
+> >
 
-Other changes are addressing the comments I received from Miquel.
+FYI I had the same issue on the Marvell NAND controller: the actual
+frequency of the controller clock was half of the "parent" clock
+retrieved by clk_get_rate(), hence I needed to double the clock period
+for the timings derivation in ->setup_data_interface().
 
-I'd still like to get feedback on the API and controller interface if
-anyone is interested in reviewing it.
+If you can't get more feedback from SAMA5 people and if this works for
+you, please send a patch with a nice comment.
+
 
 Thanks,
-
-Boris
-
-Boris Brezillon (7):
-  spi: spi-mem: Add missing word in the SPI_MEM_DATA_OUT description
-  spi: spi-mem: Add SPI_MEM_NO_DATA to the spi_mem_data_dir enum
-  spi: spi-mem: Split spi_mem_exec_op() code
-  spi: spi-mem: Add a new API to support direct mapping
-  mtd: devices: m25p80: Use the spi-mem dirmap API
-  mtd: spinand: Use the spi-mem dirmap API
-  spi: mxic: Add support for direct mapping
-
- drivers/mtd/devices/m25p80.c | 142 +++++++++++-------
- drivers/mtd/nand/spi/core.c  | 231 +++++++++++++++++-------------
- drivers/spi/spi-mem.c        | 269 ++++++++++++++++++++++++++++++++---
- drivers/spi/spi-mxic.c       | 140 ++++++++++++++----
- include/linux/mtd/spinand.h  |   7 +
- include/linux/spi/spi-mem.h  |  84 ++++++++++-
- 6 files changed, 670 insertions(+), 203 deletions(-)
-
--- 
-2.17.1
+Miqu=C3=A8l
