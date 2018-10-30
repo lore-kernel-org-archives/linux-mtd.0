@@ -1,16 +1,25 @@
-Date: Tue, 30 Oct 2018 10:49:03 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-mtd
- <linux-mtd@lists.infradead.org>, linux-clk@vger.kernel.org
-Subject: Re: Clock configuration for the SAMA5D2 NAND controller
-Message-ID: <20181030104903.518f1fdd@xps13>
-In-Reply-To: <CAGkQfmMphvck9rraYq+o8zA254q7ETYyniiUV-QBsUR9X+OFKQ@mail.gmail.com>
-References: <CAGkQfmNuROsD29jR_7opiXcfPB6=FuaoxaK-hF5Ezz7r-1pBZA@mail.gmail.com>
- <CAGkQfmMphvck9rraYq+o8zA254q7ETYyniiUV-QBsUR9X+OFKQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHUD3-000506-8t
+ for linux-mtd@lists.infradead.org; Tue, 30 Oct 2018 13:37:31 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Vignesh R <vigneshr@ti.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 5/7] mtd: devices: m25p80: Use the spi-mem dirmap API
+Date: Tue, 30 Oct 2018 14:36:36 +0100
+Message-Id: <20181030133638.3322-6-boris.brezillon@bootlin.com>
+In-Reply-To: <20181030133638.3322-1-boris.brezillon@bootlin.com>
+References: <20181030133638.3322-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,64 +29,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Romain,
+Make use of the spi-mem direct mapping API to let advanced controllers
+optimize read/write operations when they support direct mapping.
 
-Romain Izard <romain.izard.pro@gmail.com> wrote on Wed, 17 Oct 2018
-12:42:28 +0200:
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Changes in v2:
+- Rename the dirmap fields
+- Return directly after calling dirmap_read/write() and let the spi-nor
+  framework call us again if those functions returned less than the
+  requested length
+---
+ drivers/mtd/devices/m25p80.c | 142 ++++++++++++++++++++++-------------
+ 1 file changed, 89 insertions(+), 53 deletions(-)
 
-> +linux-mtd, linux-clk
->=20
-> Le mer. 10 oct. 2018 =C3=A0 19:05, Romain Izard
-> <romain.izard.pro@gmail.com> a =C3=A9crit :
-> >
-> > Hello,
-> >
-> > While evaluating a new flash memory chip for my product based on a SAMA=
-5D2
-> > chip, I tried to update my software to use the latest device tree bindi=
-ngs.
-> >
-> > Until now, I was using the legacy bindings for the NAND controller, that
-> > preserved the timings configured by the bootloader in the EBI registers=
-. The
-> > bindings introduced in Linux 4.13 are used together with the NAND drive=
-r to
-> > reconfigure the timings of the memory interface to match the speed prof=
-ile
-> > declared by some NAND components.
-> >
-> > However, when comparing the timings in the registers, there was a large
-> > difference between what I calculated by hand in the past and the values
-> > configured by the drivers. The difference was in fact a 2 factor.
-> >
-> > For me, the issue is due to the clock configuration declared in the SAM=
-A5D2
-> > device tree: The reference clock used by the nand-controller driver is =
-the
-> > clock for its parent node, which is directly the Master Clock. And on my
-> > end, what I understood when writing the clock settings for my bootloade=
-r was
-> > that the reference clock was the HSMC clock, which derives from the H32=
-MX
-> > clock, which runs at half the rate of the Master Clock.
-> >
-> > The documentation for the SAMA5D2 is not very precise on this topic, so=
- I
-> > would like to have some feedback. Is the clock used as a reference for =
-the
-> > chip select configuration registers the Master Clock itself, or is it t=
-he
-> > peripheral clock for the HSMC module ?
-> >
-
-FYI I had the same issue on the Marvell NAND controller: the actual
-frequency of the controller clock was half of the "parent" clock
-retrieved by clk_get_rate(), hence I needed to double the clock period
-for the timings derivation in ->setup_data_interface().
-
-If you can't get more feedback from SAMA5 people and if this works for
-you, please send a patch with a nice comment.
-
-
-Thanks,
-Miqu=C3=A8l
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c4a1d04b8c80..55cf3b2e1dc1 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -31,6 +31,10 @@
+ struct m25p {
+ 	struct spi_mem		*spimem;
+ 	struct spi_nor		spi_nor;
++	struct {
++		struct spi_mem_dirmap_desc *rdesc;
++		struct spi_mem_dirmap_desc *wdesc;
++	} dirmap;
+ };
+ 
+ static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+@@ -85,31 +89,8 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 			    const u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+-	struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
+-				   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
+-				   SPI_MEM_OP_NO_DUMMY,
+-				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
+-	int ret;
+-
+-	/* get transfer protocols. */
+-	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+-	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+-	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+-
+-	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+-		op.addr.nbytes = 0;
+-
+-	ret = spi_mem_adjust_op_size(flash->spimem, &op);
+-	if (ret)
+-		return ret;
+-	op.data.nbytes = len < op.data.nbytes ? len : op.data.nbytes;
+-
+-	ret = spi_mem_exec_op(flash->spimem, &op);
+-	if (ret)
+-		return ret;
+ 
+-	return op.data.nbytes;
++	return spi_mem_dirmap_write(flash->dirmap.wdesc, to, len, buf);
+ }
+ 
+ /*
+@@ -120,39 +101,66 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 			   u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+-	struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
+-				   SPI_MEM_OP_ADDR(nor->addr_width, from, 1),
+-				   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
+-				   SPI_MEM_OP_DATA_IN(len, buf, 1));
+-	size_t remaining = len;
+-	int ret;
++
++	return spi_mem_dirmap_read(flash->dirmap.rdesc, from, len, buf);
++}
++
++static int m25p_create_write_dirmap(struct m25p *flash)
++{
++	struct spi_nor *nor = &flash->spi_nor;
++	struct spi_mem_dirmap_info info = {
++		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
++				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
++				      SPI_MEM_OP_NO_DUMMY,
++				      SPI_MEM_OP_DATA_OUT(0, NULL, 1)),
++		.offset = 0,
++		.length = flash->spi_nor.mtd.size,
++	};
++	struct spi_mem_op *op = &info.op_tmpl;
+ 
+ 	/* get transfer protocols. */
+-	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+-	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
+-	op.dummy.buswidth = op.addr.buswidth;
+-	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
++	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
++	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
++	op->dummy.buswidth = op->addr.buswidth;
++	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+ 
+-	/* convert the dummy cycles to the number of bytes */
+-	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
++	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
++		op->addr.nbytes = 0;
+ 
+-	while (remaining) {
+-		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
+-		ret = spi_mem_adjust_op_size(flash->spimem, &op);
+-		if (ret)
+-			return ret;
++	flash->dirmap.wdesc = spi_mem_dirmap_create(flash->spimem, &info);
++	if (IS_ERR(flash->dirmap.wdesc))
++		return PTR_ERR(flash->dirmap.wdesc);
+ 
+-		ret = spi_mem_exec_op(flash->spimem, &op);
+-		if (ret)
+-			return ret;
++	return 0;
++}
+ 
+-		op.addr.val += op.data.nbytes;
+-		remaining -= op.data.nbytes;
+-		op.data.buf.in += op.data.nbytes;
+-	}
++static int m25p_create_read_dirmap(struct m25p *flash)
++{
++	struct spi_nor *nor = &flash->spi_nor;
++	struct spi_mem_dirmap_info info = {
++		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
++				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
++				      SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
++				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
++		.offset = 0,
++		.length = flash->spi_nor.mtd.size,
++	};
++	struct spi_mem_op *op = &info.op_tmpl;
++
++	/* get transfer protocols. */
++	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
++	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
++	op->dummy.buswidth = op->addr.buswidth;
++	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
++
++	/* convert the dummy cycles to the number of bytes */
++	op->dummy.nbytes = (nor->read_dummy * op->dummy.buswidth) / 8;
++
++	flash->dirmap.rdesc = spi_mem_dirmap_create(flash->spimem, &info);
++	if (IS_ERR(flash->dirmap.rdesc))
++		return PTR_ERR(flash->dirmap.rdesc);
+ 
+-	return len;
++	return 0;
+ }
+ 
+ /*
+@@ -231,19 +239,47 @@ static int m25p_probe(struct spi_mem *spimem)
+ 	if (ret)
+ 		return ret;
+ 
+-	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+-				   data ? data->nr_parts : 0);
++	ret = m25p_create_write_dirmap(flash);
++	if (ret)
++		return ret;
++
++	ret = m25p_create_read_dirmap(flash);
++	if (ret)
++		goto err_destroy_write_dirmap;
++
++	ret = mtd_device_register(&nor->mtd, data ? data->parts : NULL,
++				  data ? data->nr_parts : 0);
++	if (ret)
++		goto err_destroy_read_dirmap;
++
++	return 0;
++
++err_destroy_read_dirmap:
++	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
++
++err_destroy_write_dirmap:
++	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
++
++	return ret;
+ }
+ 
+ 
+ static int m25p_remove(struct spi_mem *spimem)
+ {
+ 	struct m25p	*flash = spi_mem_get_drvdata(spimem);
++	int ret;
+ 
+ 	spi_nor_restore(&flash->spi_nor);
+ 
+ 	/* Clean up MTD stuff. */
+-	return mtd_device_unregister(&flash->spi_nor.mtd);
++	ret = mtd_device_unregister(&flash->spi_nor.mtd);
++	if (ret)
++		return ret;
++
++	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
++	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
++
++	return 0;
+ }
+ 
+ static void m25p_shutdown(struct spi_mem *spimem)
+-- 
+2.17.1
