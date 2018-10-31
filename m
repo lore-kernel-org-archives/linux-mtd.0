@@ -1,21 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHrbd-0003jn-9z
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 14:36:29 +0000
-Date: Wed, 31 Oct 2018 15:36:02 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: Fix nanddev_neraseblocks()
-Message-ID: <20181031153602.7abe8825@xps13>
-In-Reply-To: <20181028112955.26547-1-boris.brezillon@bootlin.com>
-References: <20181028112955.26547-1-boris.brezillon@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ id 1gHrkg-0000qz-4T
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 14:45:48 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH v3 2/2] mtd: spi-nor: Use 4B opcodes when the NOR advertises
+ both 3B and 4B
+Date: Wed, 31 Oct 2018 15:45:04 +0100
+Message-Id: <20181031144504.19405-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20181031144504.19405-1-boris.brezillon@bootlin.com>
+References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+When the NOR supports 4 bytes opcodes we should use those instead of
+switching the flash in 4-bytes mode. This way, we don't have to restore
+the addressing mode when resetting the board.
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Sun, 28 Oct 2018
-12:29:55 +0100:
+Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+---
+Changes in v3:
+- Add Alexandre R-b+T-b
+- Add Cyrille R-b
 
-> nanddev_neraseblocks() currently returns the number pages per LUN
-> instead of the total number of eraseblocks.
->=20
-> Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAN=
-D devices")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  include/linux/mtd/nand.h | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->=20
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index abe975c87b90..78b86dea2f29 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -324,9 +324,8 @@ static inline unsigned int nanddev_ntargets(const str=
-uct nand_device *nand)
->   */
->  static inline unsigned int nanddev_neraseblocks(const struct nand_device=
- *nand)
->  {
-> -	return (u64)nand->memorg.luns_per_target *
-> -	       nand->memorg.eraseblocks_per_lun *
-> -	       nand->memorg.pages_per_eraseblock;
-> +	return nand->memorg.ntargets * nand->memorg.luns_per_target *
-> +	       nand->memorg.eraseblocks_per_lun;
->  }
-> =20
->  /**
+Changes in v2
+- None
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-
-Thanks,
-Miqu=C3=A8l
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 798915b5c2b0..b20bc4b36f0f 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		break;
+ 
+ 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
++	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+ 		nor->flags |= SNOR_F_4B_OPCODES;
+ 		nor->addr_width = 4;
+ 		break;
+-- 
+2.17.1
