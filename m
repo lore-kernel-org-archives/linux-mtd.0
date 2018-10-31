@@ -1,11 +1,10 @@
-Received: from mail-he1eur01on0088.outbound.protection.outlook.com
- ([104.47.0.88] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHsyZ-0004X1-7s
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 16:04:13 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Schrempf Frieder
- <frieder.schrempf@kontron.De>
+ id 1gHt3u-0006h2-O6
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 16:09:44 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.De>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>
 CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
@@ -13,19 +12,21 @@ CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
  "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "broonie@kernel.org"
  <broonie@kernel.org>, David Wolfe <david.wolfe@nxp.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Han
- Xu <han.xu@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>
-Subject: RE: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
-Date: Wed, 31 Oct 2018 16:03:55 +0000
-Message-ID: <VI1PR04MB57265EAA4010079B6194367599CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <fabio.estevam@nxp.com>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ "Han Xu" <han.xu@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>
+Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
+Date: Wed, 31 Oct 2018 16:09:29 +0000
+Message-ID: <02902fad-8c60-49a0-34d6-5bbf4ef38fd9@kontron.de>
 References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
  <20181031144055.32e1c8f1@bbrezillon>
  <dd4b9af1-82f3-469e-e70f-2858e85a5dfe@kontron.de>
  <20181031153125.3c5dfca1@bbrezillon>
-In-Reply-To: <20181031153125.3c5dfca1@bbrezillon>
+ <VI1PR04MB57265EAA4010079B6194367599CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR04MB57265EAA4010079B6194367599CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E9C1E1AA7FEE384A9C706B243643902F@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,96 +37,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frieder,
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Wednesday, October 31, 2018 8:01 PM
-> To: Schrempf Frieder <frieder.schrempf@kontron.De>
-> Cc: linux-mtd@lists.infradead.org; linux-spi@vger.kernel.org;
-> dwmw2@infradead.org; computersforpeace@gmail.com;
-> marek.vasut@gmail.com; richard@nod.at; miquel.raynal@bootlin.com;
-> broonie@kernel.org; David Wolfe <david.wolfe@nxp.com>; Fabio Estevam
-> <fabio.estevam@nxp.com>; Prabhakar Kushwaha
-> <prabhakar.kushwaha@nxp.com>; Yogesh Narayan Gaur
-> <yogeshnarayan.gaur@nxp.com>; Han Xu <han.xu@nxp.com>;
-> shawnguo@kernel.org
-> Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framewo=
-rk
->=20
-> On Wed, 31 Oct 2018 13:54:29 +0000
-> Schrempf Frieder <frieder.schrempf@kontron.De> wrote:
->=20
-> > Hi Boris,
-> >
-> > On 31.10.18 14:40, Boris Brezillon wrote:
-> > > Hi Frieder, Yogesh,
-> > >
-> > > On Thu,  5 Jul 2018 13:14:56 +0200
-> > > Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
-> > >
-> > >> Now that the SPI memory interface was introduced by Boris [1], it
-> > >> is possible to move drivers from mtd/spi-nor to the SPI framework
-> > >> in order to use them for different type of SPI memory chips.
-> > >>
-> > >> Patch 1 adds a function spi_mem_get_name() to the SPI memory
-> > >> interface and a ->name field to struct spi_mem.
-> > >> Patch 2 uses it in m25p80.c to make it possible for SPI controller
-> > >> drivers to provide a custom naming scheme for the flash chip.
-> > >> This is needed to avoid breaking compatibility of mtdparts when
-> > >> switching from the old to the new driver.
-> > >>
-> > >> Patch 3 adds a driver for the Freescale QSPI controller to the SPI
-> > >> framework. Together with m25p80.c it can be used to interface SPI
-> > >> NOR flashes just as the old driver did. For this to work properly a
-> > >> few minor changes to the devicetrees are necessary (see patches 5 to=
- 7).
-> > >>
-> > >> Patch 8 changes the defconfigs to use the new driver and patch 9
-> > >> removes the old driver.
-> > >>
-> > >> Patch 10 and 11 remove 'fsl,qspi-has-second-chip' from the devicetre=
-es.
-> > >> Patch 12 adjusts the MAINTAINERS file.
-> > >>
-> > >> The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
-> > >> The read performance of the new driver is almost the same or even
-> > >> better than the old driver, depending on the block size.
-> > >> The write performance is a bit slower on average (~10-15%).
-> > >>
-> > >> The new driver was also tested with the SPI NAND framework [2] and
-> > >> a Winbond W25M02GV flash.
-> > >>
-> > >> If someone has a board that uses both chips selects and/or both
-> > >> busses, it would be really nice to have the driver be tested on such=
- a setup.
-> > >
-> > > Any progress on this front? Yogesh, can you please remind us the
-> > > remaining issues? I'd really like to make some progress, otherwise
-> > > the conversion to spi-mem will take ages.
-> >
-> > I definitely want to continue this. I just did not have the time to
-> > work on it.
-> >
-> > I think the only remaining blocking issues is the one that Yogesh
-> > reported while testing with two chips on the same bus.
->=20
-> Maybe you can send a new version rebased on v4.20-rc1 (when it's out) and
-> push it somewhere so that Yogesh can test it (again).
-In next version, please take care of the comments being raised by Boris in =
-NXP FlexSPI controller driver patch series. E.g.=20
-1. Redefine all mask fields and use BIT(X) for single bit set/unset.
-2. Remove function pointer hooks for ->read/->write function.
-3. Remove dependency from 'endianess' property from DTS node.
-4. Usage of readl_poll_timeout() instead of busy looping.
-
---
-Regards
-Yogesh Gaur
-
- Yogesh, can we please
-> make some progress on this? If you really have a bug, that'd be great to =
-have a
-> serious investigation on what is causing this bug. The explanation we had=
- so far
-> were not really helpful in understanding the problem.
+SGkgWW9nZXNoLA0KDQpPbiAzMS4xMC4xOCAxNzowMywgWW9nZXNoIE5hcmF5YW4gR2F1ciB3cm90
+ZToNCj4gSGkgRnJpZWRlciwNCj4gDQo+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPj4g
+RnJvbTogQm9yaXMgQnJlemlsbG9uIFttYWlsdG86Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29t
+XQ0KPj4gU2VudDogV2VkbmVzZGF5LCBPY3RvYmVyIDMxLCAyMDE4IDg6MDEgUE0NCj4+IFRvOiBT
+Y2hyZW1wZiBGcmllZGVyIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uRGU+DQo+PiBDYzogbGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LXNwaUB2Z2VyLmtlcm5lbC5vcmc7DQo+
+PiBkd213MkBpbmZyYWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207DQo+PiBt
+YXJlay52YXN1dEBnbWFpbC5jb207IHJpY2hhcmRAbm9kLmF0OyBtaXF1ZWwucmF5bmFsQGJvb3Rs
+aW4uY29tOw0KPj4gYnJvb25pZUBrZXJuZWwub3JnOyBEYXZpZCBXb2xmZSA8ZGF2aWQud29sZmVA
+bnhwLmNvbT47IEZhYmlvIEVzdGV2YW0NCj4+IDxmYWJpby5lc3RldmFtQG54cC5jb20+OyBQcmFi
+aGFrYXIgS3VzaHdhaGENCj4+IDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IFlvZ2VzaCBO
+YXJheWFuIEdhdXINCj4+IDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT47IEhhbiBYdSA8aGFu
+Lnh1QG54cC5jb20+Ow0KPj4gc2hhd25ndW9Aa2VybmVsLm9yZw0KPj4gU3ViamVjdDogUmU6IFtQ
+QVRDSCB2MiAwMC8xMl0gUG9ydCB0aGUgRlNMIFFTUEkgZHJpdmVyIHRvIHRoZSBTUEkgZnJhbWV3
+b3JrDQo+Pg0KPj4gT24gV2VkLCAzMSBPY3QgMjAxOCAxMzo1NDoyOSArMDAwMA0KPj4gU2NocmVt
+cGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLkRlPiB3cm90ZToNCj4+DQo+Pj4g
+SGkgQm9yaXMsDQo+Pj4NCj4+PiBPbiAzMS4xMC4xOCAxNDo0MCwgQm9yaXMgQnJlemlsbG9uIHdy
+b3RlOg0KPj4+PiBIaSBGcmllZGVyLCBZb2dlc2gsDQo+Pj4+DQo+Pj4+IE9uIFRodSwgIDUgSnVs
+IDIwMTggMTM6MTQ6NTYgKzAyMDANCj4+Pj4gRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5zY2hy
+ZW1wZkBleGNlZXQuZGU+IHdyb3RlOg0KPj4+Pg0KPj4+Pj4gTm93IHRoYXQgdGhlIFNQSSBtZW1v
+cnkgaW50ZXJmYWNlIHdhcyBpbnRyb2R1Y2VkIGJ5IEJvcmlzIFsxXSwgaXQNCj4+Pj4+IGlzIHBv
+c3NpYmxlIHRvIG1vdmUgZHJpdmVycyBmcm9tIG10ZC9zcGktbm9yIHRvIHRoZSBTUEkgZnJhbWV3
+b3JrDQo+Pj4+PiBpbiBvcmRlciB0byB1c2UgdGhlbSBmb3IgZGlmZmVyZW50IHR5cGUgb2YgU1BJ
+IG1lbW9yeSBjaGlwcy4NCj4+Pj4+DQo+Pj4+PiBQYXRjaCAxIGFkZHMgYSBmdW5jdGlvbiBzcGlf
+bWVtX2dldF9uYW1lKCkgdG8gdGhlIFNQSSBtZW1vcnkNCj4+Pj4+IGludGVyZmFjZSBhbmQgYSAt
+Pm5hbWUgZmllbGQgdG8gc3RydWN0IHNwaV9tZW0uDQo+Pj4+PiBQYXRjaCAyIHVzZXMgaXQgaW4g
+bTI1cDgwLmMgdG8gbWFrZSBpdCBwb3NzaWJsZSBmb3IgU1BJIGNvbnRyb2xsZXINCj4+Pj4+IGRy
+aXZlcnMgdG8gcHJvdmlkZSBhIGN1c3RvbSBuYW1pbmcgc2NoZW1lIGZvciB0aGUgZmxhc2ggY2hp
+cC4NCj4+Pj4+IFRoaXMgaXMgbmVlZGVkIHRvIGF2b2lkIGJyZWFraW5nIGNvbXBhdGliaWxpdHkg
+b2YgbXRkcGFydHMgd2hlbg0KPj4+Pj4gc3dpdGNoaW5nIGZyb20gdGhlIG9sZCB0byB0aGUgbmV3
+IGRyaXZlci4NCj4+Pj4+DQo+Pj4+PiBQYXRjaCAzIGFkZHMgYSBkcml2ZXIgZm9yIHRoZSBGcmVl
+c2NhbGUgUVNQSSBjb250cm9sbGVyIHRvIHRoZSBTUEkNCj4+Pj4+IGZyYW1ld29yay4gVG9nZXRo
+ZXIgd2l0aCBtMjVwODAuYyBpdCBjYW4gYmUgdXNlZCB0byBpbnRlcmZhY2UgU1BJDQo+Pj4+PiBO
+T1IgZmxhc2hlcyBqdXN0IGFzIHRoZSBvbGQgZHJpdmVyIGRpZC4gRm9yIHRoaXMgdG8gd29yayBw
+cm9wZXJseSBhDQo+Pj4+PiBmZXcgbWlub3IgY2hhbmdlcyB0byB0aGUgZGV2aWNldHJlZXMgYXJl
+IG5lY2Vzc2FyeSAoc2VlIHBhdGNoZXMgNSB0byA3KS4NCj4+Pj4+DQo+Pj4+PiBQYXRjaCA4IGNo
+YW5nZXMgdGhlIGRlZmNvbmZpZ3MgdG8gdXNlIHRoZSBuZXcgZHJpdmVyIGFuZCBwYXRjaCA5DQo+
+Pj4+PiByZW1vdmVzIHRoZSBvbGQgZHJpdmVyLg0KPj4+Pj4NCj4+Pj4+IFBhdGNoIDEwIGFuZCAx
+MSByZW1vdmUgJ2ZzbCxxc3BpLWhhcy1zZWNvbmQtY2hpcCcgZnJvbSB0aGUgZGV2aWNldHJlZXMu
+DQo+Pj4+PiBQYXRjaCAxMiBhZGp1c3RzIHRoZSBNQUlOVEFJTkVSUyBmaWxlLg0KPj4+Pj4NCj4+
+Pj4+IFRoZSBuZXcgZHJpdmVyIHdhcyB0ZXN0ZWQgd2l0aCBpLk1YNlVMIGFuZCBhIE1pY3JvbiBT
+UEkgTk9SIEAgNjBNSHouDQo+Pj4+PiBUaGUgcmVhZCBwZXJmb3JtYW5jZSBvZiB0aGUgbmV3IGRy
+aXZlciBpcyBhbG1vc3QgdGhlIHNhbWUgb3IgZXZlbg0KPj4+Pj4gYmV0dGVyIHRoYW4gdGhlIG9s
+ZCBkcml2ZXIsIGRlcGVuZGluZyBvbiB0aGUgYmxvY2sgc2l6ZS4NCj4+Pj4+IFRoZSB3cml0ZSBw
+ZXJmb3JtYW5jZSBpcyBhIGJpdCBzbG93ZXIgb24gYXZlcmFnZSAofjEwLTE1JSkuDQo+Pj4+Pg0K
+Pj4+Pj4gVGhlIG5ldyBkcml2ZXIgd2FzIGFsc28gdGVzdGVkIHdpdGggdGhlIFNQSSBOQU5EIGZy
+YW1ld29yayBbMl0gYW5kDQo+Pj4+PiBhIFdpbmJvbmQgVzI1TTAyR1YgZmxhc2guDQo+Pj4+Pg0K
+Pj4+Pj4gSWYgc29tZW9uZSBoYXMgYSBib2FyZCB0aGF0IHVzZXMgYm90aCBjaGlwcyBzZWxlY3Rz
+IGFuZC9vciBib3RoDQo+Pj4+PiBidXNzZXMsIGl0IHdvdWxkIGJlIHJlYWxseSBuaWNlIHRvIGhh
+dmUgdGhlIGRyaXZlciBiZSB0ZXN0ZWQgb24gc3VjaCBhIHNldHVwLg0KPj4+Pg0KPj4+PiBBbnkg
+cHJvZ3Jlc3Mgb24gdGhpcyBmcm9udD8gWW9nZXNoLCBjYW4geW91IHBsZWFzZSByZW1pbmQgdXMg
+dGhlDQo+Pj4+IHJlbWFpbmluZyBpc3N1ZXM/IEknZCByZWFsbHkgbGlrZSB0byBtYWtlIHNvbWUg
+cHJvZ3Jlc3MsIG90aGVyd2lzZQ0KPj4+PiB0aGUgY29udmVyc2lvbiB0byBzcGktbWVtIHdpbGwg
+dGFrZSBhZ2VzLg0KPj4+DQo+Pj4gSSBkZWZpbml0ZWx5IHdhbnQgdG8gY29udGludWUgdGhpcy4g
+SSBqdXN0IGRpZCBub3QgaGF2ZSB0aGUgdGltZSB0bw0KPj4+IHdvcmsgb24gaXQuDQo+Pj4NCj4+
+PiBJIHRoaW5rIHRoZSBvbmx5IHJlbWFpbmluZyBibG9ja2luZyBpc3N1ZXMgaXMgdGhlIG9uZSB0
+aGF0IFlvZ2VzaA0KPj4+IHJlcG9ydGVkIHdoaWxlIHRlc3Rpbmcgd2l0aCB0d28gY2hpcHMgb24g
+dGhlIHNhbWUgYnVzLg0KPj4NCj4+IE1heWJlIHlvdSBjYW4gc2VuZCBhIG5ldyB2ZXJzaW9uIHJl
+YmFzZWQgb24gdjQuMjAtcmMxICh3aGVuIGl0J3Mgb3V0KSBhbmQNCj4+IHB1c2ggaXQgc29tZXdo
+ZXJlIHNvIHRoYXQgWW9nZXNoIGNhbiB0ZXN0IGl0IChhZ2FpbikuDQo+IEluIG5leHQgdmVyc2lv
+biwgcGxlYXNlIHRha2UgY2FyZSBvZiB0aGUgY29tbWVudHMgYmVpbmcgcmFpc2VkIGJ5IEJvcmlz
+IGluIE5YUCBGbGV4U1BJIGNvbnRyb2xsZXIgZHJpdmVyIHBhdGNoIHNlcmllcy4gRS5nLg0KPiAx
+LiBSZWRlZmluZSBhbGwgbWFzayBmaWVsZHMgYW5kIHVzZSBCSVQoWCkgZm9yIHNpbmdsZSBiaXQg
+c2V0L3Vuc2V0Lg0KPiAyLiBSZW1vdmUgZnVuY3Rpb24gcG9pbnRlciBob29rcyBmb3IgLT5yZWFk
+Ly0+d3JpdGUgZnVuY3Rpb24uDQo+IDMuIFJlbW92ZSBkZXBlbmRlbmN5IGZyb20gJ2VuZGlhbmVz
+cycgcHJvcGVydHkgZnJvbSBEVFMgbm9kZS4NCj4gNC4gVXNhZ2Ugb2YgcmVhZGxfcG9sbF90aW1l
+b3V0KCkgaW5zdGVhZCBvZiBidXN5IGxvb3BpbmcuDQoNClRoYW5rcyBmb3IgcmVtaW5kaW5nIG1l
+LiBJIGhhdmUgdGhlc2Ugb24gbXkgbGlzdC4NCg0KVGhhbmtzLA0KRnJpZWRlcg0KDQo+IA0KPiAt
+LQ0KPiBSZWdhcmRzDQo+IFlvZ2VzaCBHYXVyDQo+IA0KPiAgIFlvZ2VzaCwgY2FuIHdlIHBsZWFz
+ZQ0KPj4gbWFrZSBzb21lIHByb2dyZXNzIG9uIHRoaXM/IElmIHlvdSByZWFsbHkgaGF2ZSBhIGJ1
+ZywgdGhhdCdkIGJlIGdyZWF0IHRvIGhhdmUgYQ0KPj4gc2VyaW91cyBpbnZlc3RpZ2F0aW9uIG9u
+IHdoYXQgaXMgY2F1c2luZyB0aGlzIGJ1Zy4gVGhlIGV4cGxhbmF0aW9uIHdlIGhhZCBzbyBmYXIN
+Cj4+IHdlcmUgbm90IHJlYWxseSBoZWxwZnVsIGluIHVuZGVyc3RhbmRpbmcgdGhlIHByb2JsZW0u
