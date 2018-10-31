@@ -1,33 +1,16 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHt3u-0006h2-O6
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 16:09:44 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "broonie@kernel.org"
- <broonie@kernel.org>, David Wolfe <david.wolfe@nxp.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- "Han Xu" <han.xu@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>
-Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
-Date: Wed, 31 Oct 2018 16:09:29 +0000
-Message-ID: <02902fad-8c60-49a0-34d6-5bbf4ef38fd9@kontron.de>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <20181031144055.32e1c8f1@bbrezillon>
- <dd4b9af1-82f3-469e-e70f-2858e85a5dfe@kontron.de>
- <20181031153125.3c5dfca1@bbrezillon>
- <VI1PR04MB57265EAA4010079B6194367599CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB57265EAA4010079B6194367599CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E9C1E1AA7FEE384A9C706B243643902F@snt-world.com>
-Content-Transfer-Encoding: base64
+ id 1gHxwq-00013c-2F
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 21:22:45 +0000
+From: Richard Weinberger <richard@nod.at>
+To: torvalds@linuxfoundation.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] UBIFS updates for 4.20-rc1
+Date: Wed, 31 Oct 2018 22:22:30 +0100
+Message-ID: <2346471.iD2boZGiFq@blindfold>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,76 +20,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgWW9nZXNoLA0KDQpPbiAzMS4xMC4xOCAxNzowMywgWW9nZXNoIE5hcmF5YW4gR2F1ciB3cm90
-ZToNCj4gSGkgRnJpZWRlciwNCj4gDQo+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPj4g
-RnJvbTogQm9yaXMgQnJlemlsbG9uIFttYWlsdG86Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29t
-XQ0KPj4gU2VudDogV2VkbmVzZGF5LCBPY3RvYmVyIDMxLCAyMDE4IDg6MDEgUE0NCj4+IFRvOiBT
-Y2hyZW1wZiBGcmllZGVyIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uRGU+DQo+PiBDYzogbGlu
-dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LXNwaUB2Z2VyLmtlcm5lbC5vcmc7DQo+
-PiBkd213MkBpbmZyYWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207DQo+PiBt
-YXJlay52YXN1dEBnbWFpbC5jb207IHJpY2hhcmRAbm9kLmF0OyBtaXF1ZWwucmF5bmFsQGJvb3Rs
-aW4uY29tOw0KPj4gYnJvb25pZUBrZXJuZWwub3JnOyBEYXZpZCBXb2xmZSA8ZGF2aWQud29sZmVA
-bnhwLmNvbT47IEZhYmlvIEVzdGV2YW0NCj4+IDxmYWJpby5lc3RldmFtQG54cC5jb20+OyBQcmFi
-aGFrYXIgS3VzaHdhaGENCj4+IDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IFlvZ2VzaCBO
-YXJheWFuIEdhdXINCj4+IDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT47IEhhbiBYdSA8aGFu
-Lnh1QG54cC5jb20+Ow0KPj4gc2hhd25ndW9Aa2VybmVsLm9yZw0KPj4gU3ViamVjdDogUmU6IFtQ
-QVRDSCB2MiAwMC8xMl0gUG9ydCB0aGUgRlNMIFFTUEkgZHJpdmVyIHRvIHRoZSBTUEkgZnJhbWV3
-b3JrDQo+Pg0KPj4gT24gV2VkLCAzMSBPY3QgMjAxOCAxMzo1NDoyOSArMDAwMA0KPj4gU2NocmVt
-cGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLkRlPiB3cm90ZToNCj4+DQo+Pj4g
-SGkgQm9yaXMsDQo+Pj4NCj4+PiBPbiAzMS4xMC4xOCAxNDo0MCwgQm9yaXMgQnJlemlsbG9uIHdy
-b3RlOg0KPj4+PiBIaSBGcmllZGVyLCBZb2dlc2gsDQo+Pj4+DQo+Pj4+IE9uIFRodSwgIDUgSnVs
-IDIwMTggMTM6MTQ6NTYgKzAyMDANCj4+Pj4gRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5zY2hy
-ZW1wZkBleGNlZXQuZGU+IHdyb3RlOg0KPj4+Pg0KPj4+Pj4gTm93IHRoYXQgdGhlIFNQSSBtZW1v
-cnkgaW50ZXJmYWNlIHdhcyBpbnRyb2R1Y2VkIGJ5IEJvcmlzIFsxXSwgaXQNCj4+Pj4+IGlzIHBv
-c3NpYmxlIHRvIG1vdmUgZHJpdmVycyBmcm9tIG10ZC9zcGktbm9yIHRvIHRoZSBTUEkgZnJhbWV3
-b3JrDQo+Pj4+PiBpbiBvcmRlciB0byB1c2UgdGhlbSBmb3IgZGlmZmVyZW50IHR5cGUgb2YgU1BJ
-IG1lbW9yeSBjaGlwcy4NCj4+Pj4+DQo+Pj4+PiBQYXRjaCAxIGFkZHMgYSBmdW5jdGlvbiBzcGlf
-bWVtX2dldF9uYW1lKCkgdG8gdGhlIFNQSSBtZW1vcnkNCj4+Pj4+IGludGVyZmFjZSBhbmQgYSAt
-Pm5hbWUgZmllbGQgdG8gc3RydWN0IHNwaV9tZW0uDQo+Pj4+PiBQYXRjaCAyIHVzZXMgaXQgaW4g
-bTI1cDgwLmMgdG8gbWFrZSBpdCBwb3NzaWJsZSBmb3IgU1BJIGNvbnRyb2xsZXINCj4+Pj4+IGRy
-aXZlcnMgdG8gcHJvdmlkZSBhIGN1c3RvbSBuYW1pbmcgc2NoZW1lIGZvciB0aGUgZmxhc2ggY2hp
-cC4NCj4+Pj4+IFRoaXMgaXMgbmVlZGVkIHRvIGF2b2lkIGJyZWFraW5nIGNvbXBhdGliaWxpdHkg
-b2YgbXRkcGFydHMgd2hlbg0KPj4+Pj4gc3dpdGNoaW5nIGZyb20gdGhlIG9sZCB0byB0aGUgbmV3
-IGRyaXZlci4NCj4+Pj4+DQo+Pj4+PiBQYXRjaCAzIGFkZHMgYSBkcml2ZXIgZm9yIHRoZSBGcmVl
-c2NhbGUgUVNQSSBjb250cm9sbGVyIHRvIHRoZSBTUEkNCj4+Pj4+IGZyYW1ld29yay4gVG9nZXRo
-ZXIgd2l0aCBtMjVwODAuYyBpdCBjYW4gYmUgdXNlZCB0byBpbnRlcmZhY2UgU1BJDQo+Pj4+PiBO
-T1IgZmxhc2hlcyBqdXN0IGFzIHRoZSBvbGQgZHJpdmVyIGRpZC4gRm9yIHRoaXMgdG8gd29yayBw
-cm9wZXJseSBhDQo+Pj4+PiBmZXcgbWlub3IgY2hhbmdlcyB0byB0aGUgZGV2aWNldHJlZXMgYXJl
-IG5lY2Vzc2FyeSAoc2VlIHBhdGNoZXMgNSB0byA3KS4NCj4+Pj4+DQo+Pj4+PiBQYXRjaCA4IGNo
-YW5nZXMgdGhlIGRlZmNvbmZpZ3MgdG8gdXNlIHRoZSBuZXcgZHJpdmVyIGFuZCBwYXRjaCA5DQo+
-Pj4+PiByZW1vdmVzIHRoZSBvbGQgZHJpdmVyLg0KPj4+Pj4NCj4+Pj4+IFBhdGNoIDEwIGFuZCAx
-MSByZW1vdmUgJ2ZzbCxxc3BpLWhhcy1zZWNvbmQtY2hpcCcgZnJvbSB0aGUgZGV2aWNldHJlZXMu
-DQo+Pj4+PiBQYXRjaCAxMiBhZGp1c3RzIHRoZSBNQUlOVEFJTkVSUyBmaWxlLg0KPj4+Pj4NCj4+
-Pj4+IFRoZSBuZXcgZHJpdmVyIHdhcyB0ZXN0ZWQgd2l0aCBpLk1YNlVMIGFuZCBhIE1pY3JvbiBT
-UEkgTk9SIEAgNjBNSHouDQo+Pj4+PiBUaGUgcmVhZCBwZXJmb3JtYW5jZSBvZiB0aGUgbmV3IGRy
-aXZlciBpcyBhbG1vc3QgdGhlIHNhbWUgb3IgZXZlbg0KPj4+Pj4gYmV0dGVyIHRoYW4gdGhlIG9s
-ZCBkcml2ZXIsIGRlcGVuZGluZyBvbiB0aGUgYmxvY2sgc2l6ZS4NCj4+Pj4+IFRoZSB3cml0ZSBw
-ZXJmb3JtYW5jZSBpcyBhIGJpdCBzbG93ZXIgb24gYXZlcmFnZSAofjEwLTE1JSkuDQo+Pj4+Pg0K
-Pj4+Pj4gVGhlIG5ldyBkcml2ZXIgd2FzIGFsc28gdGVzdGVkIHdpdGggdGhlIFNQSSBOQU5EIGZy
-YW1ld29yayBbMl0gYW5kDQo+Pj4+PiBhIFdpbmJvbmQgVzI1TTAyR1YgZmxhc2guDQo+Pj4+Pg0K
-Pj4+Pj4gSWYgc29tZW9uZSBoYXMgYSBib2FyZCB0aGF0IHVzZXMgYm90aCBjaGlwcyBzZWxlY3Rz
-IGFuZC9vciBib3RoDQo+Pj4+PiBidXNzZXMsIGl0IHdvdWxkIGJlIHJlYWxseSBuaWNlIHRvIGhh
-dmUgdGhlIGRyaXZlciBiZSB0ZXN0ZWQgb24gc3VjaCBhIHNldHVwLg0KPj4+Pg0KPj4+PiBBbnkg
-cHJvZ3Jlc3Mgb24gdGhpcyBmcm9udD8gWW9nZXNoLCBjYW4geW91IHBsZWFzZSByZW1pbmQgdXMg
-dGhlDQo+Pj4+IHJlbWFpbmluZyBpc3N1ZXM/IEknZCByZWFsbHkgbGlrZSB0byBtYWtlIHNvbWUg
-cHJvZ3Jlc3MsIG90aGVyd2lzZQ0KPj4+PiB0aGUgY29udmVyc2lvbiB0byBzcGktbWVtIHdpbGwg
-dGFrZSBhZ2VzLg0KPj4+DQo+Pj4gSSBkZWZpbml0ZWx5IHdhbnQgdG8gY29udGludWUgdGhpcy4g
-SSBqdXN0IGRpZCBub3QgaGF2ZSB0aGUgdGltZSB0bw0KPj4+IHdvcmsgb24gaXQuDQo+Pj4NCj4+
-PiBJIHRoaW5rIHRoZSBvbmx5IHJlbWFpbmluZyBibG9ja2luZyBpc3N1ZXMgaXMgdGhlIG9uZSB0
-aGF0IFlvZ2VzaA0KPj4+IHJlcG9ydGVkIHdoaWxlIHRlc3Rpbmcgd2l0aCB0d28gY2hpcHMgb24g
-dGhlIHNhbWUgYnVzLg0KPj4NCj4+IE1heWJlIHlvdSBjYW4gc2VuZCBhIG5ldyB2ZXJzaW9uIHJl
-YmFzZWQgb24gdjQuMjAtcmMxICh3aGVuIGl0J3Mgb3V0KSBhbmQNCj4+IHB1c2ggaXQgc29tZXdo
-ZXJlIHNvIHRoYXQgWW9nZXNoIGNhbiB0ZXN0IGl0IChhZ2FpbikuDQo+IEluIG5leHQgdmVyc2lv
-biwgcGxlYXNlIHRha2UgY2FyZSBvZiB0aGUgY29tbWVudHMgYmVpbmcgcmFpc2VkIGJ5IEJvcmlz
-IGluIE5YUCBGbGV4U1BJIGNvbnRyb2xsZXIgZHJpdmVyIHBhdGNoIHNlcmllcy4gRS5nLg0KPiAx
-LiBSZWRlZmluZSBhbGwgbWFzayBmaWVsZHMgYW5kIHVzZSBCSVQoWCkgZm9yIHNpbmdsZSBiaXQg
-c2V0L3Vuc2V0Lg0KPiAyLiBSZW1vdmUgZnVuY3Rpb24gcG9pbnRlciBob29rcyBmb3IgLT5yZWFk
-Ly0+d3JpdGUgZnVuY3Rpb24uDQo+IDMuIFJlbW92ZSBkZXBlbmRlbmN5IGZyb20gJ2VuZGlhbmVz
-cycgcHJvcGVydHkgZnJvbSBEVFMgbm9kZS4NCj4gNC4gVXNhZ2Ugb2YgcmVhZGxfcG9sbF90aW1l
-b3V0KCkgaW5zdGVhZCBvZiBidXN5IGxvb3BpbmcuDQoNClRoYW5rcyBmb3IgcmVtaW5kaW5nIG1l
-LiBJIGhhdmUgdGhlc2Ugb24gbXkgbGlzdC4NCg0KVGhhbmtzLA0KRnJpZWRlcg0KDQo+IA0KPiAt
-LQ0KPiBSZWdhcmRzDQo+IFlvZ2VzaCBHYXVyDQo+IA0KPiAgIFlvZ2VzaCwgY2FuIHdlIHBsZWFz
-ZQ0KPj4gbWFrZSBzb21lIHByb2dyZXNzIG9uIHRoaXM/IElmIHlvdSByZWFsbHkgaGF2ZSBhIGJ1
-ZywgdGhhdCdkIGJlIGdyZWF0IHRvIGhhdmUgYQ0KPj4gc2VyaW91cyBpbnZlc3RpZ2F0aW9uIG9u
-IHdoYXQgaXMgY2F1c2luZyB0aGlzIGJ1Zy4gVGhlIGV4cGxhbmF0aW9uIHdlIGhhZCBzbyBmYXIN
-Cj4+IHdlcmUgbm90IHJlYWxseSBoZWxwZnVsIGluIHVuZGVyc3RhbmRpbmcgdGhlIHByb2JsZW0u
+Linus,
+
+The following changes since commit 84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d:
+
+  Linux 4.19 (2018-10-22 07:37:37 +0100)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/tags/upstream-4.20-rc1
+
+for you to fetch changes up to 84db119f5a83e1bf9cffbc6d9cf16487eda1c056:
+
+  ubifs: Remove unneeded semicolon (2018-10-23 13:49:02 +0200)
+
+----------------------------------------------------------------
+This pull request contains updates for UBIFS:
+
+- Full filesystem authentication feature,
+  UBIFS is now able to have the whole filesystem structure
+  authenticated plus user data encrypted and authenticated.
+- Minor cleanups
+
+----------------------------------------------------------------
+Ding Xiang (1):
+      ubifs: Remove unneeded semicolon
+
+Gustavo A. R. Silva (1):
+      ubi: Mark expected switch fall-throughs
+
+Sascha Hauer (24):
+      ubifs: Refactor create_default_filesystem()
+      ubifs: Pass ubifs_zbranch to try_read_node()
+      ubifs: Pass ubifs_zbranch to read_znode()
+      ubifs: Export pnode_lookup as ubifs_pnode_lookup
+      ubifs: Implement ubifs_lpt_lookup using ubifs_pnode_lookup
+      ubifs: Drop write_node
+      ubifs: Store read superblock node
+      ubifs: Format changes for authentication support
+      ubifs: Add separate functions to init/crc a node
+      ubifs: Add helper functions for authentication support
+      ubifs: Create functions to embed a HMAC in a node
+      ubifs: Add hashes to the tree node cache
+      ubifs: authentication: Add hashes to index nodes
+      ubifs: Add authentication nodes to journal
+      ubifs: Add auth nodes to garbage collector journal head
+      ubifs: Authenticate replayed journal
+      ubifs: authentication: Authenticate LPT
+      ubfis: authentication: Authenticate master node
+      ubifs: Create hash for default LPT
+      ubifs: authentication: Authenticate super block node
+      ubifs: Add hashes and HMACs to default filesystem
+      ubifs: Do not update inode size in-place in authenticated mode
+      ubifs: Enable authentication support
+      Documentation: ubifs: Add authentication whitepaper
+
+ Documentation/filesystems/ubifs-authentication.md | 426 ++++++++++++++++++
+ Documentation/filesystems/ubifs.txt               |   7 +
+ drivers/mtd/ubi/attach.c                          |   1 +
+ drivers/mtd/ubi/build.c                           |   2 +
+ fs/ubifs/Kconfig                                  |  11 +
+ fs/ubifs/Makefile                                 |   1 +
+ fs/ubifs/auth.c                                   | 502 ++++++++++++++++++++++
+ fs/ubifs/debug.c                                  |   6 +
+ fs/ubifs/gc.c                                     |  49 ++-
+ fs/ubifs/io.c                                     | 110 ++++-
+ fs/ubifs/journal.c                                | 289 ++++++++++---
+ fs/ubifs/log.c                                    |  24 ++
+ fs/ubifs/lpt.c                                    | 184 +++++++-
+ fs/ubifs/lpt_commit.c                             |  44 +-
+ fs/ubifs/master.c                                 |  64 ++-
+ fs/ubifs/misc.h                                   |   5 +-
+ fs/ubifs/recovery.c                               | 120 ++++--
+ fs/ubifs/replay.c                                 | 177 +++++++-
+ fs/ubifs/sb.c                                     | 209 ++++++---
+ fs/ubifs/super.c                                  |  91 +++-
+ fs/ubifs/tnc.c                                    |  36 +-
+ fs/ubifs/tnc_commit.c                             |  27 ++
+ fs/ubifs/tnc_misc.c                               |  26 +-
+ fs/ubifs/ubifs-media.h                            |  46 +-
+ fs/ubifs/ubifs.h                                  | 253 ++++++++++-
+ 25 files changed, 2418 insertions(+), 292 deletions(-)
+ create mode 100644 Documentation/filesystems/ubifs-authentication.md
+ create mode 100644 fs/ubifs/auth.c
