@@ -1,23 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHqNe-0005TC-BQ
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 13:17:56 +0000
-Date: Wed, 31 Oct 2018 14:17:42 +0100
+ id 1gHqkH-0006i8-Ks
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 13:41:19 +0000
+Date: Wed, 31 Oct 2018 14:40:55 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Grandbois, Brett" <brett.grandbois@opengear.com>
-Cc: Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for SPI boot flash access
- for AMD Family 16h
-Message-ID: <20181031141742.4fd2d33b@bbrezillon>
-In-Reply-To: <1912426d-8189-0508-d152-8dfcf6192162@opengear.com>
-References: <20181016005726.26813-1-brett.grandbois@opengear.com>
- <20181027173945.241e87b2@bbrezillon>
- <a6edf985-0d15-5b2b-a6ba-9cfcd7a67836@opengear.com>
- <20181030092605.38851906@bbrezillon>
- <1912426d-8189-0508-d152-8dfcf6192162@opengear.com>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
+ david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org
+Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
+Message-ID: <20181031144055.32e1c8f1@bbrezillon>
+In-Reply-To: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,70 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 Oct 2018 03:18:28 +0000
-"Grandbois, Brett" <brett.grandbois@opengear.com> wrote:
+Hi Frieder, Yogesh,
 
-> On 30/10/18 6:26 pm, Boris Brezillon wrote:
-> > On Mon, 29 Oct 2018 23:15:42 +0000
-> > "Grandbois, Brett"<brett.grandbois@opengear.com>  wrote:
-> >  
-> >> On 28/10/18 1:39 am, Boris Brezillon wrote:  
-> >>> Hi Brett,
-> >>>
-> >>> On Tue, 16 Oct 2018 00:57:41 +0000
-> >>> "Grandbois, Brett"<brett.grandbois@opengear.com>   wrote:
-> >>>     
-> >>>> Add support to expose the SPI boot flash on AMD Family 16h CPUs
-> >>>> as a standard mtd device to give userspace BIOS updaters greater
-> >>>> feature support.  The BIOS and Kernel Developer's Guide refers to
-> >>>> this as the 'SPI ROM' controller and so the driver follows that
-> >>>> naming convention for consistency.
-> >>>>     
-> >>> We're currently trying to convert spi-nor controller drivers to
-> >>> the spi-mem interface [1]. Can you look at this new interface and
-> >>> tell me if you'd be able to implement it? If that's not possible,
-> >>> then I'd prefer to have this driver implement the mtd_info
-> >>> interface directly.  
-> >> So from going over the spi-mem interface it looks like the intent
-> >> is for these sorts of devices to be a standard spi_controller with
-> >> only mem_ops defined and the transfer/_one/_one_message left as
-> >> NULL?  Is that correct?  
-> > Yes
-> >  
-> >> That's a bit of a pivot from how it's currently done
-> >> (it's conceptually similar to the intel-spi-pci driver so I was
-> >> following that)  
-> > Yes, and that's exactly what I'd like to avoid. intel-spi-pci will
-> > probably be the trickiest conversion, so I'd like to avoid having
-> > another one ;-).
-> >  
-> >> but I should be able to rework it to the new
-> >> interface.  This then lives under drivers/spi and thus should be
-> >> submitted to linux-spi?  
-> > Actually, if the controller is only ever connected to the same SPI
-> > NOR chip (no need for advanced detection scheme) and does not
-> > support support Octo/Quad/Dual modes (or any other advanced
-> > features), you'll be better off implementing
-> > mtd->_read/_write/_erase() directly (the driver would then live in
-> > drivers/mtd/devices/).  
+On Thu,  5 Jul 2018 13:14:56 +0200
+Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+
+> Now that the SPI memory interface was introduced by Boris [1], it is
+> possible to move drivers from mtd/spi-nor to the SPI framework in order
+> to use them for different type of SPI memory chips.
 > 
-> Hmm, conceptually the device is better suited to the mtd layer than
-> the spi layer.  The HW is designed to only ever access spi flash
-> chips, not as a general spi master controller, so really the end
-> result of it should always only ever be 1 mtd device.  Unfortunately
-> as the device probing and command sequences for this are the same as
-> implemented in spi-nor I'd either be duplicating a lot of existing
-> code, or just wrapping around spi_nor_scan which sounds like we're
-> back to the dedicated spi-nor controller you're trying to move away
-> from.
+> Patch 1 adds a function spi_mem_get_name() to the SPI memory interface
+> and a ->name field to struct spi_mem.
+> Patch 2 uses it in m25p80.c to make it possible for SPI controller
+> drivers to provide a custom naming scheme for the flash chip.
+> This is needed to avoid breaking compatibility of mtdparts when switching
+> from the old to the new driver.
 > 
-> The spi-mem interface ops do nicely match up with what the controller
-> supports, including the new direct mapping mode which I'd be able to
-> make use of, so as long as there aren't any issues with supporting
-> only mem_ops and not the message transfers
+> Patch 3 adds a driver for the Freescale QSPI controller to the SPI
+> framework. Together with m25p80.c it can be used to interface SPI
+> NOR flashes just as the old driver did. For this to work properly a few
+> minor changes to the devicetrees are necessary (see patches 5 to 7).
+> 
+> Patch 8 changes the defconfigs to use the new driver and patch 9 removes
+> the old driver.
+> 
+> Patch 10 and 11 remove 'fsl,qspi-has-second-chip' from the devicetrees.
+> Patch 12 adjusts the MAINTAINERS file.
+> 
+> The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
+> The read performance of the new driver is almost the same or even better
+> than the old driver, depending on the block size.
+> The write performance is a bit slower on average (~10-15%).
+> 
+> The new driver was also tested with the SPI NAND framework [2] and a
+> Winbond W25M02GV flash.
+> 
+> If someone has a board that uses both chips selects and/or both busses,
+> it would be really nice to have the driver be tested on such a setup.
 
-That's allowed.
+Any progress on this front? Yogesh, can you please remind us the
+remaining issues? I'd really like to make some progress, otherwise the
+conversion to spi-mem will take ages.
 
-> then it's probably the way to go.
+Regards,
 
-Sounds good then.
+Boris
