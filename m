@@ -1,31 +1,27 @@
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHo4R-0004Wf-EE
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 10:49:56 +0000
-Received: by mail-lj1-x241.google.com with SMTP id z21-v6so14366506ljz.0
- for <linux-mtd@lists.infradead.org>; Wed, 31 Oct 2018 03:49:44 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gHo4k-0004cd-Tm
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 10:50:16 +0000
+Date: Wed, 31 Oct 2018 11:49:51 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Mark Brown <broonie@kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Vignesh R <vigneshr@ti.com>, Cyrille
+ Pitchen <cyrille.pitchen@microchip.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 5/7] mtd: devices: m25p80: Use the spi-mem dirmap API
+Message-ID: <20181031114951.55f662cc@bbrezillon>
+In-Reply-To: <VI1PR04MB57269B26A682B1FCFAC4E6F399CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <20181030133638.3322-1-boris.brezillon@bootlin.com>
+ <20181030133638.3322-6-boris.brezillon@bootlin.com>
+ <VI1PR04MB57269B26A682B1FCFAC4E6F399CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20181019074908.13226-1-boris.brezillon@bootlin.com>
- <20181019074908.13226-14-boris.brezillon@bootlin.com>
-In-Reply-To: <20181019074908.13226-14-boris.brezillon@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 31 Oct 2018 11:49:31 +0100
-Message-ID: <CACRpkdZN_L_M+KRGKYjVM0FbKiT0=mRGVGS-EerXgWTCqif8=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 13/15] dt-binding: mtd: physmap: Document the
- addr-gpios property
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Mark Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,21 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 19, 2018 at 9:49 AM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
->
-> Add documentation for the addr-gpios. This extension to the physmap
-> binding allow creating flash devices that are paged using GPIOs.
->
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
-> Changes in v2:
-> - Drop Rob's R-b (waiting for a second review)
+On Wed, 31 Oct 2018 10:28:04 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Yours,
-Linus Walleij
+> > +static int m25p_create_read_dirmap(struct m25p *flash) {
+> > +	struct spi_nor *nor = &flash->spi_nor;
+> > +	struct spi_mem_dirmap_info info = {
+> > +		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor-  
+> > >read_opcode, 1),  
+> > +				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
+> > +				      SPI_MEM_OP_DUMMY(nor->read_dummy,
+> > 1),
+> > +				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
+> > +		.offset = 0,
+> > +		.length = flash->spi_nor.mtd.size,  
+> 
+> I want to understand the sequence of calling up of this routine from drivers/mtd/spi-nor/spi-nor.c file.
+> Because till point of JedecID read and SFDP command read mtd.size is not being populated and having value as 0. This would make length as 0.
+
+When the dirmap is created mtd->size has been initialized already. But
+you're right, nor->read() might be called before the read dirmap has
+been created (SFDP read), which will lead to a NULL pointer exception.
+
+> 
+> Did these read follow different path?
+
+Nope.
