@@ -1,25 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHoMD-0006aQ-Gt
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 11:08:19 +0000
-Date: Wed, 31 Oct 2018 12:03:55 +0100
+ id 1gHqNe-0005TC-BQ
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 13:17:56 +0000
+Date: Wed, 31 Oct 2018 14:17:42 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Vignesh R <vigneshr@ti.com>, Cyrille
- Pitchen <cyrille.pitchen@microchip.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 5/7] mtd: devices: m25p80: Use the spi-mem dirmap API
-Message-ID: <20181031120355.4c2da37e@bbrezillon>
-In-Reply-To: <20181031114951.55f662cc@bbrezillon>
-References: <20181030133638.3322-1-boris.brezillon@bootlin.com>
- <20181030133638.3322-6-boris.brezillon@bootlin.com>
- <VI1PR04MB57269B26A682B1FCFAC4E6F399CD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181031114951.55f662cc@bbrezillon>
+To: "Grandbois, Brett" <brett.grandbois@opengear.com>
+Cc: Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for SPI boot flash access
+ for AMD Family 16h
+Message-ID: <20181031141742.4fd2d33b@bbrezillon>
+In-Reply-To: <1912426d-8189-0508-d152-8dfcf6192162@opengear.com>
+References: <20181016005726.26813-1-brett.grandbois@opengear.com>
+ <20181027173945.241e87b2@bbrezillon>
+ <a6edf985-0d15-5b2b-a6ba-9cfcd7a67836@opengear.com>
+ <20181030092605.38851906@bbrezillon>
+ <1912426d-8189-0508-d152-8dfcf6192162@opengear.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,178 +30,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 Oct 2018 11:49:51 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Wed, 31 Oct 2018 03:18:28 +0000
+"Grandbois, Brett" <brett.grandbois@opengear.com> wrote:
 
-> On Wed, 31 Oct 2018 10:28:04 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> On 30/10/18 6:26 pm, Boris Brezillon wrote:
+> > On Mon, 29 Oct 2018 23:15:42 +0000
+> > "Grandbois, Brett"<brett.grandbois@opengear.com>  wrote:
+> >  
+> >> On 28/10/18 1:39 am, Boris Brezillon wrote:  
+> >>> Hi Brett,
+> >>>
+> >>> On Tue, 16 Oct 2018 00:57:41 +0000
+> >>> "Grandbois, Brett"<brett.grandbois@opengear.com>   wrote:
+> >>>     
+> >>>> Add support to expose the SPI boot flash on AMD Family 16h CPUs
+> >>>> as a standard mtd device to give userspace BIOS updaters greater
+> >>>> feature support.  The BIOS and Kernel Developer's Guide refers to
+> >>>> this as the 'SPI ROM' controller and so the driver follows that
+> >>>> naming convention for consistency.
+> >>>>     
+> >>> We're currently trying to convert spi-nor controller drivers to
+> >>> the spi-mem interface [1]. Can you look at this new interface and
+> >>> tell me if you'd be able to implement it? If that's not possible,
+> >>> then I'd prefer to have this driver implement the mtd_info
+> >>> interface directly.  
+> >> So from going over the spi-mem interface it looks like the intent
+> >> is for these sorts of devices to be a standard spi_controller with
+> >> only mem_ops defined and the transfer/_one/_one_message left as
+> >> NULL?  Is that correct?  
+> > Yes
+> >  
+> >> That's a bit of a pivot from how it's currently done
+> >> (it's conceptually similar to the intel-spi-pci driver so I was
+> >> following that)  
+> > Yes, and that's exactly what I'd like to avoid. intel-spi-pci will
+> > probably be the trickiest conversion, so I'd like to avoid having
+> > another one ;-).
+> >  
+> >> but I should be able to rework it to the new
+> >> interface.  This then lives under drivers/spi and thus should be
+> >> submitted to linux-spi?  
+> > Actually, if the controller is only ever connected to the same SPI
+> > NOR chip (no need for advanced detection scheme) and does not
+> > support support Octo/Quad/Dual modes (or any other advanced
+> > features), you'll be better off implementing
+> > mtd->_read/_write/_erase() directly (the driver would then live in
+> > drivers/mtd/devices/).  
 > 
+> Hmm, conceptually the device is better suited to the mtd layer than
+> the spi layer.  The HW is designed to only ever access spi flash
+> chips, not as a general spi master controller, so really the end
+> result of it should always only ever be 1 mtd device.  Unfortunately
+> as the device probing and command sequences for this are the same as
+> implemented in spi-nor I'd either be duplicating a lot of existing
+> code, or just wrapping around spi_nor_scan which sounds like we're
+> back to the dedicated spi-nor controller you're trying to move away
+> from.
 > 
-> > > +static int m25p_create_read_dirmap(struct m25p *flash) {
-> > > +	struct spi_nor *nor = &flash->spi_nor;
-> > > +	struct spi_mem_dirmap_info info = {
-> > > +		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor-    
-> > > >read_opcode, 1),    
-> > > +				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-> > > +				      SPI_MEM_OP_DUMMY(nor->read_dummy,
-> > > 1),
-> > > +				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
-> > > +		.offset = 0,
-> > > +		.length = flash->spi_nor.mtd.size,    
-> > 
-> > I want to understand the sequence of calling up of this routine from drivers/mtd/spi-nor/spi-nor.c file.
-> > Because till point of JedecID read and SFDP command read mtd.size is not being populated and having value as 0. This would make length as 0.  
-> 
-> When the dirmap is created mtd->size has been initialized already. But
-> you're right, nor->read() might be called before the read dirmap has
-> been created (SFDP read), which will lead to a NULL pointer exception.
+> The spi-mem interface ops do nicely match up with what the controller
+> supports, including the new direct mapping mode which I'd be able to
+> make use of, so as long as there aren't any issues with supporting
+> only mem_ops and not the message transfers
 
-The following version should fix the problem:
+That's allowed.
 
---->8---
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c4a1d04b8c80..847188e8a99e 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -31,8 +31,70 @@
- struct m25p {
-        struct spi_mem          *spimem;
-        struct spi_nor          spi_nor;
-+       struct {
-+               struct spi_mem_dirmap_desc *rdesc;
-+               struct spi_mem_dirmap_desc *wdesc;
-+       } dirmap;
- };
- 
-+static int m25p_create_write_dirmap(struct m25p *flash)
-+{
-+       struct spi_nor *nor = &flash->spi_nor;
-+       struct spi_mem_dirmap_info info = {
-+               .op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
-+                                     SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-+                                     SPI_MEM_OP_NO_DUMMY,
-+                                     SPI_MEM_OP_DATA_OUT(0, NULL, 1)),
-+               .offset = 0,
-+               .length = flash->spi_nor.mtd.size,
-+       };
-+       struct spi_mem_op *op = &info.op_tmpl;
-+
-+       /* get transfer protocols. */
-+       op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
-+       op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-+       op->dummy.buswidth = op->addr.buswidth;
-+       op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
-+
-+       if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
-+               op->addr.nbytes = 0;
-+
-+       flash->dirmap.wdesc = spi_mem_dirmap_create(flash->spimem, &info);
-+       if (IS_ERR(flash->dirmap.wdesc))
-+               return PTR_ERR(flash->dirmap.wdesc);
-+
-+       return 0;
-+}
-+
-+static int m25p_create_read_dirmap(struct m25p *flash)
-+{
-+       struct spi_nor *nor = &flash->spi_nor;
-+       struct spi_mem_dirmap_info info = {
-+               .op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
-+                                     SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-+                                     SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
-+                                     SPI_MEM_OP_DATA_IN(0, NULL, 1)),
-+               .offset = 0,
-+               .length = flash->spi_nor.mtd.size,
-+       };
-+       struct spi_mem_op *op = &info.op_tmpl;
-+
-+       /* get transfer protocols. */
-+       op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
-+       op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-+       op->dummy.buswidth = op->addr.buswidth;
-+       op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
-+
-+       /* convert the dummy cycles to the number of bytes */
-+       op->dummy.nbytes = (nor->read_dummy * op->dummy.buswidth) / 8;
-+
-+       flash->dirmap.rdesc = spi_mem_dirmap_create(flash->spimem, &info);
-+       if (IS_ERR(flash->dirmap.rdesc))
-+               return PTR_ERR(flash->dirmap.rdesc);
-+
-+       return 0;
-+}
-+
- static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
- {
-        struct m25p *flash = nor->priv;
-@@ -92,6 +154,9 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
-                                   SPI_MEM_OP_DATA_OUT(len, buf, 1));
-        int ret;
- 
-+       if (flash->dirmap.wdesc)
-+               return spi_mem_dirmap_write(flash->dirmap.wdesc, to, len, buf);
-+
-        /* get transfer protocols. */
-        op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
-        op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-@@ -128,6 +193,9 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
-        size_t remaining = len;
-        int ret;
- 
-+       if (flash->dirmap.rdesc)
-+               return spi_mem_dirmap_read(flash->dirmap.rdesc, from, len, buf);
-+
-        /* get transfer protocols. */
-        op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
-        op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-@@ -231,19 +299,47 @@ static int m25p_probe(struct spi_mem *spimem)
-        if (ret)
-                return ret;
- 
--       return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
--                                  data ? data->nr_parts : 0);
-+       ret = m25p_create_write_dirmap(flash);
-+       if (ret)
-+               return ret;
-+
-+       ret = m25p_create_read_dirmap(flash);
-+       if (ret)
-+               goto err_destroy_write_dirmap;
-+
-+       ret = mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-+                                 data ? data->nr_parts : 0);
-+       if (ret)
-+               goto err_destroy_read_dirmap;
-+
-+       return 0;
-+
-+err_destroy_read_dirmap:
-+       spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-+
-+err_destroy_write_dirmap:
-+       spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-+
-+       return ret;
- }
- 
- 
- static int m25p_remove(struct spi_mem *spimem)
- {
-        struct m25p     *flash = spi_mem_get_drvdata(spimem);
-+       int ret;
- 
-        spi_nor_restore(&flash->spi_nor);
- 
-        /* Clean up MTD stuff. */
--       return mtd_device_unregister(&flash->spi_nor.mtd);
-+       ret = mtd_device_unregister(&flash->spi_nor.mtd);
-+       if (ret)
-+               return ret;
-+
-+       spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-+       spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-+
-+       return 0;
- }
- 
- static void m25p_shutdown(struct spi_mem *spimem)
+> then it's probably the way to go.
+
+Sounds good then.
