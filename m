@@ -1,19 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHqkH-0006i8-Ks
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 13:41:19 +0000
-Date: Wed, 31 Oct 2018 14:40:55 +0100
+Date: Wed, 31 Oct 2018 14:43:40 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
-Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
- david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
- yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org
-Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
-Message-ID: <20181031144055.32e1c8f1@bbrezillon>
-In-Reply-To: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+To: Piotr Bugalski <bugalski.piotr@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+Subject: Re: [RFC PATCH v2 0/6] New QuadSPI driver for Atmel SAMA5D2
+Message-ID: <20181031144340.4f1a030a@bbrezillon>
+In-Reply-To: <20180627131609.13681-1-bugalski.piotr@gmail.com>
+References: <20180627131609.13681-1-bugalski.piotr@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,48 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frieder, Yogesh,
+Hi Piotr, Tudor,
 
-On Thu,  5 Jul 2018 13:14:56 +0200
-Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+On Wed, 27 Jun 2018 15:16:03 +0200
+Piotr Bugalski <bugalski.piotr@gmail.com> wrote:
 
-> Now that the SPI memory interface was introduced by Boris [1], it is
-> possible to move drivers from mtd/spi-nor to the SPI framework in order
-> to use them for different type of SPI memory chips.
+> Hello,
 > 
-> Patch 1 adds a function spi_mem_get_name() to the SPI memory interface
-> and a ->name field to struct spi_mem.
-> Patch 2 uses it in m25p80.c to make it possible for SPI controller
-> drivers to provide a custom naming scheme for the flash chip.
-> This is needed to avoid breaking compatibility of mtdparts when switching
-> from the old to the new driver.
+> Atmel SAMA5D2 is equipped with two QSPI interfaces. These interfaces can
+> work as in SPI-compatible mode or use two / four lines to improve
+> communication speed. At the moment there is QSPI driver strongly tied to
+> NOR-flash memory and MTD subsystem.
+> Intention of this change is to provide new driver which will not be tied
+> to MTD and allows using QSPI with NAND-flash memory or other peripherals
+> New spi-mem API provides abstraction layer which can disconnect QSPI
+> from MTD. This driver doesn't support regular SPI interface, it should
+> be used with spi-mem interface only.
+> Unfortunately SAMA5D2 hardware by default supports only NOR-flash
+> memory. It allows 24- and 32-bit addressing while NAND-flash requires
+> 16-bit long. To workaround hardware limitation driver is a bit more
+> complicated.
 > 
-> Patch 3 adds a driver for the Freescale QSPI controller to the SPI
-> framework. Together with m25p80.c it can be used to interface SPI
-> NOR flashes just as the old driver did. For this to work properly a few
-> minor changes to the devicetrees are necessary (see patches 5 to 7).
+> Request to spi-mem contains three fiels: opcode (command), address,
+> dummy bytes. SAMA5D2 QSPI hardware supports opcode, address, dummy and
+> option byte where address field can only be 24- or 32- bytes long.
+> Handling 8-bits long addresses is done using option field. For 16-bits
+> address behaviour depends of number of requested dummy bits. If there
+> are 8 or more dummy cycles, address is shifted and sent with first dummy
+> byte. Otherwise opcode is disabled and first byte of address contains
+> command opcode (works only if opcode and address use the same buswidth).
+> The limitation is when 16-bit address is used without enough dummy
+> cycles and opcode is using different buswidth than address. Other modes
+> are supported with described workaround.
 > 
-> Patch 8 changes the defconfigs to use the new driver and patch 9 removes
-> the old driver.
+> It looks like hardware has some limitation in performance. The same issue
+> exists in current QSPI driver (MTD/nor-flash) and soft-pack (bare-metal
+> library from Atmel). Without using DMA read speed is much worse than
+> maximum bandwidth (efficiency 30-40%). Any help with performance
+> improvement is highly welcome, especially for NAND-flash memories which
+> offers higher capacity than NOR-flash used with previous driver.
 > 
-> Patch 10 and 11 remove 'fsl,qspi-has-second-chip' from the devicetrees.
-> Patch 12 adjusts the MAINTAINERS file.
+> Best Regards,
+> Piotr
 > 
-> The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
-> The read performance of the new driver is almost the same or even better
-> than the old driver, depending on the block size.
-> The write performance is a bit slower on average (~10-15%).
-> 
-> The new driver was also tested with the SPI NAND framework [2] and a
-> Winbond W25M02GV flash.
-> 
-> If someone has a board that uses both chips selects and/or both busses,
-> it would be really nice to have the driver be tested on such a setup.
+> v2 changes:
+>  - driver is now replacement of existing atmel-quadspi
+>  - code was re-written to follow original code structure
+>  - deinitialization order fixed
+>  - empty atmel_qspi_adjust_op_size function removed
+>  - code formatting fixes
+>  - use spi_device->max_speed_hz to get spi speed
+>  - spi freqency set in spi_controller->setup() hook
+>  - address range checkng for 4-bytes addressing
+>  - use timeout to avoid infinite waiting
 
-Any progress on this front? Yogesh, can you please remind us the
-remaining issues? I'd really like to make some progress, otherwise the
-conversion to spi-mem will take ages.
+IIRC, this version was almost ready to be merged except for the missing
+->get_name() implementation which should be easy to add.
 
-Regards,
+Can one of you post a new version of this patchset?
+
+Thanks,
 
 Boris
