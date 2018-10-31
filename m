@@ -1,17 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gHqxz-0004IJ-Ii
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 13:55:30 +0000
-Date: Wed, 31 Oct 2018 14:55:05 +0100
+ id 1gHr54-00062X-VN
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2018 14:02:48 +0000
+Date: Wed, 31 Oct 2018 15:02:25 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Huijin Park <huijin.park@samsung.com>
 Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- bbanghj.park@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: cast to u64 to avoid unexpected error
-Message-ID: <20181031145505.6b034b84@bbrezillon>
-In-Reply-To: <1535009282-1480-1-git-send-email-huijin.park@samsung.com>
-References: <CGME20180823072813eucas1p2a534b4be94a3a2bc3480adcefca2ca22@eucas1p2.samsung.com>
- <1535009282-1480-1-git-send-email-huijin.park@samsung.com>
+ linux-kernel@vger.kernel.org, bbanghj.park@gmail.com
+Subject: Re: [PATCH] mtd: change len type from signed to unsigned type
+Message-ID: <20181031150225.175ec1d4@bbrezillon>
+In-Reply-To: <1535013819-1646-1-git-send-email-huijin.park@samsung.com>
+References: <CGME20180823084348eucas1p2157ab1089290298cf43647e522b8be4f@eucas1p2.samsung.com>
+ <1535013819-1646-1-git-send-email-huijin.park@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,55 +26,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Huijin,
 
-Subject prefix should be "mtd: spi-nor: ...", and please replace
-"unexpected error" by "unsigned int overflows".
-
-On Thu, 23 Aug 2018 03:28:02 -0400
+On Thu, 23 Aug 2018 04:43:39 -0400
 Huijin Park <huijin.park@samsung.com> wrote:
 
 > From: "huijin.park" <huijin.park@samsung.com>
 > 
-> the params->size is defined as "u64"
-> and, "info->sector_size" and "info->n_sectors" is defined as unsgined and u16
+> assign of a signed value which has type 'int' to a variable of
+> a bigger unsigned integer type 'uint64_t'.
 
-						 ^ are		^ unsigned
+Why are you mentioning u64? AFAICT, the len passed to erase_write() is
+always an unsigned int.
 
-> thus, u64 data might have strange data(loss data) if data is overflow.
+> this is ok most of the time, but can lead to unexpectedly large
+> resulting value if the original signed value is negative.
+> in addtion, the callers of the erase_write() pass the len parameter
 
-						    ^ if the result
-overflows an unsigned int.
+  ^In addition,
 
-> this patch cast it to u64.
-
-	     ^casts info->sector_size to an u64.
-
+> as unsigned type.
 > 
 > Signed-off-by: huijin.park <huijin.park@samsung.com>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c |    2 +-
+>  drivers/mtd/mtdblock.c |    2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d9c368c..527f281 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2459,7 +2459,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
->  	memset(params, 0, sizeof(*params));
+> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+> index a5b1933..b2d5ed1 100644
+> --- a/drivers/mtd/mtdblock.c
+> +++ b/drivers/mtd/mtdblock.c
+> @@ -56,7 +56,7 @@ struct mtdblk_dev {
+>   */
 >  
->  	/* Set SPI NOR sizes. */
-> -	params->size = info->sector_size * info->n_sectors;
-> +	params->size = (u64)info->sector_size * (u64)info->n_sectors;
+>  static int erase_write (struct mtd_info *mtd, unsigned long pos,
+> -			int len, const char *buf)
+> +			unsigned int len, const char *buf)
 
-						^ this cast is not needed.
+The diff looks good, but the commit message is not clear at all. Can
+you reword it?
 
-BTW, I doubt we'll ever have to deal with NORs that are more than 4GB,
-but making static code analysis tools happy and enforcing code
-correctness is important too.
-
->  	params->page_size = info->page_size;
->  
->  	/* (Fast) Read settings. */
-
-Regards,
+Thanks,
 
 Boris
+
+>  {
+>  	struct erase_info erase;
+>  	size_t retlen;
