@@ -1,16 +1,27 @@
-Received: from a27-23.smtp-out.us-west-2.amazonses.com ([54.240.27.23])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIBcS-0006Zf-Oi
- for linux-mtd@lists.infradead.org; Thu, 01 Nov 2018 11:58:38 +0000
-MIME-Version: 1.0
-Date: Thu, 1 Nov 2018 11:58:23 +0000
-Message-ID: <01010166cf2386db-bb8d698a-f75b-4ff2-90e8-ed8c94c3ce50-000000@us-west-2.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: AmericanHort | Cultivate'18 Exposition and Convention Participants
-From: "Michael Talbott" <michael.talbott@balanceexports.com>
-Reply-To: "Michael Talbott" <michael.talbott@balanceexports.com>
-To: linux-mtd@lists.infradead.org
+Received: from relmlor4.renesas.com ([210.160.252.174]
+ helo=relmlie3.idc.renesas.com)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gICC7-00039r-Bu
+ for linux-mtd@lists.infradead.org; Thu, 01 Nov 2018 12:35:29 +0000
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Horman <horms@verge.net.au>, Richard Weinberger <richard@nod.at>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
+ Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Chris Paterson <Chris.Paterson2@renesas.com>,
+ Biju Das <biju.das@bp.renesas.com>
+Subject: [PATCH 2/4] mtd: spi-nor: Add support for is25lp016d
+Date: Thu,  1 Nov 2018 12:35:03 +0000
+Message-Id: <1541075705-1333-3-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
+References: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+The is25lp016d is found on the iwg23s from iWave, therefore
+add driver support for it so that we can upstream board support.
 
-I'm making sure you know about this limited time deal, because your organiz=
-ation is a preferred customer:
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-You might have seen other lists, ours is superior in every way. Our marketi=
-ng team works around the clock compiling this list of industry decision mak=
-ers and verifying their complete contact information.
-
-Purchase the AmericanHort | Cultivate'18 Exposition and Convention Attendee=
-s =E2=80=93 11000 contacts at $1100
-until the end of business today.
-
-Our list is regular updated =E2=80=93 there's no other list as accurate and=
- comprehensive as ours.
-
-We've got exclusive access and direct connections for you, look forward to =
-hearing back from you today.
-
-Thanks and Regards
-
-Michael Talbott
-
-Notice of use: This data contained herein is not provided to us or shared b=
-y anyone related to the AmericanHort | Cultivate'18 Exposition and Conventi=
-on. Furthermore, our organization is not a part of or affiliated with the A=
-mericanHort | Cultivate'18 Exposition and Convention event organizers. If y=
-ou are not the original intended recipient of this transmission, please doe=
-s not review, retransmit, disseminate, or take any action based on it. If t=
-his was sent to you accidentally, please delete it as soon as possible from=
- all storage media and contact the sender to inform them of the mistake. Al=
-l data contained herein is compiled lawfully, using public reference materi=
-als and our own database. We reserve all ownership rights to this material,=
- as well as all legal recourse available to seek remedy for its misuse.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 9407ca5..85d869b 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1352,6 +1352,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+ 	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,   8,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25lp016d", INFO(0x9d6015, 0, 64 * 1024,  32,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+-- 
+2.7.4
