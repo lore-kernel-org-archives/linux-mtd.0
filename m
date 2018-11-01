@@ -1,25 +1,27 @@
 Received: from relmlor4.renesas.com ([210.160.252.174]
  helo=relmlie3.idc.renesas.com)
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gICC7-00039S-Dd
+ id 1gICCA-00039f-5S
  for linux-mtd@lists.infradead.org; Thu, 01 Nov 2018 12:35:31 +0000
 From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Horman <horms@verge.net.au>, Richard Weinberger <richard@nod.at>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Horman <horms@verge.net.au>
 Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
- Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
  Chris Paterson <Chris.Paterson2@renesas.com>,
  Biju Das <biju.das@bp.renesas.com>
-Subject: [PATCH 0/4] Add QSPI flash support to iwg23s
-Date: Thu,  1 Nov 2018 12:35:01 +0000
-Message-Id: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Subject: [PATCH 3/4] ARM: dts: r8a77470: Add QSPI support
+Date: Thu,  1 Nov 2018 12:35:04 +0000
+Message-Id: <1541075705-1333-4-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
+References: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+Add QSPI[01] support to the RZ/G1C SoC specific device tree.
 
-this series includes all that is necessary to add QSPI flash
-support to the iwg23s board powered by the RZ/G1C SoC (a.k.a.
-r8a77470).
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+---
+ arch/arm/boot/dts/r8a77470.dtsi | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-Thanks,
-Fab
-
-Fabrizio Castro (4):
-  spi: rspi: Add r8a77470 to the compatible list
-  mtd: spi-nor: Add support for is25lp016d
-  ARM: dts: r8a77470: Add QSPI support
-  ARM: dts: iwg23s-sbc: Add QSPI flash support
-
- Documentation/devicetree/bindings/spi/spi-rspi.txt |  1 +
- arch/arm/boot/dts/r8a77470-iwg23s-sbc.dts          | 26 +++++++++++++++++
- arch/arm/boot/dts/r8a77470.dtsi                    | 34 ++++++++++++++++++++++
- drivers/mtd/spi-nor/spi-nor.c                      |  2 ++
- 4 files changed, 63 insertions(+)
-
+diff --git a/arch/arm/boot/dts/r8a77470.dtsi b/arch/arm/boot/dts/r8a77470.dtsi
+index e6407e5..04a8877 100644
+--- a/arch/arm/boot/dts/r8a77470.dtsi
++++ b/arch/arm/boot/dts/r8a77470.dtsi
+@@ -20,6 +20,8 @@
+ 		i2c2 = &i2c2;
+ 		i2c3 = &i2c3;
+ 		i2c4 = &i2c4;
++		spi0 = &qspi0;
++		spi1 = &qspi1;
+ 	};
+ 
+ 	cpus {
+@@ -460,6 +462,38 @@
+ 			status = "disabled";
+ 		};
+ 
++		qspi0: spi@e6b10000 {
++			compatible = "renesas,qspi-r8a77470", "renesas,qspi";
++			reg = <0 0xe6b10000 0 0x2c>;
++			interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 918>;
++			dmas = <&dmac0 0x17>, <&dmac0 0x18>,
++			       <&dmac1 0x17>, <&dmac1 0x18>;
++			dma-names = "tx", "rx", "tx", "rx";
++			power-domains = <&sysc R8A77470_PD_ALWAYS_ON>;
++			num-cs = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			resets = <&cpg 918>;
++			status = "disabled";
++		};
++
++		qspi1: spi@ee200000 {
++			compatible = "renesas,qspi-r8a77470", "renesas,qspi";
++			reg = <0 0xee200000 0 0x2c>;
++			interrupts = <GIC_SPI 239 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 917>;
++			dmas = <&dmac0 0xd1>, <&dmac0 0xd2>,
++			       <&dmac1 0xd1>, <&dmac1 0xd2>;
++			dma-names = "tx", "rx", "tx", "rx";
++			power-domains = <&sysc R8A77470_PD_ALWAYS_ON>;
++			num-cs = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			resets = <&cpg 917>;
++			status = "disabled";
++		};
++
+ 		scif0: serial@e6e60000 {
+ 			compatible = "renesas,scif-r8a77470",
+ 				     "renesas,rcar-gen2-scif", "renesas,scif";
 -- 
 2.7.4
