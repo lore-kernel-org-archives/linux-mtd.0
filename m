@@ -1,19 +1,25 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIcXv-0006bz-4j
- for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 16:43:44 +0000
-From: Richard Weinberger <richard@nod.at>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 00/42] mtd-utils: Add fscrypt support to mkfs.ubifs
-Date: Fri, 02 Nov 2018 17:43:30 +0100
-Message-ID: <17926749.dDWCxxX0MU@blindfold>
-In-Reply-To: <14ba6760-1d30-3814-408b-089667ccec1f@sigma-star.at>
-References: <20181018143718.26298-1-richard@nod.at>
- <14ba6760-1d30-3814-408b-089667ccec1f@sigma-star.at>
+ id 1gIfqr-0005TE-WB
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 20:15:31 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id a8-v6so2865428wmf.1
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Nov 2018 13:15:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20181101225603.17806-1-nkela@cisco.com>
+ <20181102000236.rqho7txtb7gv543t@zorba>
+ <20181102003434.GW32577@ZenIV.linux.org.uk>
+ <20181102140420.jiuhcsrahoeqe5vk@zorba>
+In-Reply-To: <20181102140420.jiuhcsrahoeqe5vk@zorba>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 2 Nov 2018 21:15:06 +0100
+Message-ID: <CAFLxGvy-0-A1Ta1vf=o4q0tcJAdr+uv9eQc7UrnwqF9NkJiWUw@mail.gmail.com>
+Subject: Re: [PATCH] Make JFFS2 endianness configurable
+To: danielwa@cisco.com
+Cc: Al Viro <viro@zeniv.linux.org.uk>, nkela@cisco.com,
+ xe-linux-external@cisco.com, LKML <linux-kernel@vger.kernel.org>,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ Rod Whitby <rod@whitby.id.au>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
+On Fri, Nov 2, 2018 at 3:04 PM Daniel Walker <danielwa@cisco.com> wrote:
+> Do you have any thought on how to implement it ? I was think abstracting the
+> endian functions in the nodelist.h
 
-Am Freitag, 2. November 2018, 17:41:44 CET schrieb David Oberhollenzer:
-> Hi!
-> 
-> This patch set has been sitting on the ML for more than two weeks now, with no
-> one commenting/complaining/nit-picking/bike-shedding/etc, so I'll push it to
-> mtd-utils.git master.
-> 
-> Since I authored some of those commits and already stared at the whole patch
-> set for quite some time before it's been submitted, I'm not sure how helpful
-> it is for me to try and review it now. Nevertheless, I've looked through the
-> patch set again over the last few days, compared it against the latest version
-> I have locally and did some quick tests and it still looks good to me.
+Yes, see what UFS does.
 
-one thing is to consider, Sascha's UBIFS auth patches for mkfs.ubifs.
-Not that there are some subtle merge issues.
+> static inline jint16_t cpu_to_je16(jint16_t x) {
+>         if (check_big_endian()) {
+>                 return cpu_to_be16(x);
+>         } else if (check_little_endian()) {
+>                 return cpu_to_le16(x);
+>         }
+> }
+>
+> but how would you setup the checking ?
 
+Make it a mount option and store the endianness mode in the super block.
+
+-- 
 Thanks,
-//richard 
+//richard
