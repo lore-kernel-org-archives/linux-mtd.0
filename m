@@ -1,16 +1,23 @@
-Received: from mout.kundenserver.de ([217.72.192.73])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIbYG-0000ze-Fn
- for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 15:40:03 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ubifs: replay: fix high stack usage
-Date: Fri,  2 Nov 2018 16:39:24 +0100
-Message-Id: <20181102153932.1750967-1-arnd@arndb.de>
+Subject: Re: [PATCH resend] arch/sh: mach-kfr2r09: fix struct mtd_oob_ops
+ build warning
+To: jacopo mondi <jacopo@jmondi.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>, Magnus Damm
+ <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-sh@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+References: <702f0a25-c63e-6912-4640-6ab0f00afbc7@infradead.org>
+ <20181102075245.GR15991@w540>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bcd90d69-7487-a927-d5c1-d77c422665a8@infradead.org>
+Date: Fri, 2 Nov 2018 09:07:01 -0700
+MIME-Version: 1.0
+In-Reply-To: <20181102075245.GR15991@w540>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,79 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Having two shash descriptors on the stack cause a very significant kernel
-stack usage that can cross the warning threshold:
+On 11/2/18 12:52 AM, jacopo mondi wrote:
+> Hi Randy,
+>    thanks for the patch.
+> 
+> On Thu, Nov 01, 2018 at 04:38:30PM -0700, Randy Dunlap wrote:
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> arch/sh/boards/mach-kfr2r09/setup.c does not need to #include
+>> <mtd/onenand.h>, and doing so causes a build warning, so drop
+>> that header file.
+>>
+>> In file included from ../arch/sh/boards/mach-kfr2r09/setup.c:28:
+>> ../include/linux/mtd/onenand.h:225:12: warning: 'struct mtd_oob_ops' declared inside parameter list will not be visible outside of this definition or declaration
+>>      struct mtd_oob_ops *ops);
+>>
+>> Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
+> 
+> Not sure if this is worth pointing out, but this commit only resorts
+> headers. The one introducing the warning is actually 33893d7aa.
+> 
+> I felt like reporting this, as introducing a "Fixes" line for that
+> commit too would help backporting maybe?
 
-fs/ubifs/replay.c: In function 'authenticate_sleb':
-fs/ubifs/replay.c:633:1: error: the frame size of 1144 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+Oops, thanks, I'll fix that and send a v2 with your Ack.
 
-Normally, gcc optimizes the out, but with CONFIG_CC_OPTIMIZE_FOR_DEBUGGING,
-it does not. Splitting the two stack allocations into separate functions
-means that they will use the same memory again. In normal configurations
-(optimizing for size or performance), those should get inlined and we get
-the same behavior as before.
+> In any case:
+> Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+> 
+> Thanks
+>    j
+> 
+>>
+>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+>> Cc: Rich Felker <dalias@libc.org>
+>> Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>> Cc: Magnus Damm <magnus.damm@gmail.com>
+>> Cc: linux-mtd@lists.infradead.org
+>> Cc: linux-sh@vger.kernel.org
+>> ---
+>>  arch/sh/boards/mach-kfr2r09/setup.c |    1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> --- linux-next-20181101.orig/arch/sh/boards/mach-kfr2r09/setup.c
+>> +++ linux-next-20181101/arch/sh/boards/mach-kfr2r09/setup.c
+>> @@ -25,7 +25,6 @@
+>>  #include <linux/memblock.h>
+>>  #include <linux/mfd/tmio.h>
+>>  #include <linux/mmc/host.h>
+>> -#include <linux/mtd/onenand.h>
+>>  #include <linux/mtd/physmap.h>
+>>  #include <linux/platform_data/lv5207lp.h>
+>>  #include <linux/platform_device.h>
+>>
+>>
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/ubifs/replay.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
 
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 75f961c4c044..a08c5b7030ea 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -533,6 +533,28 @@ static int is_last_bud(struct ubifs_info *c, struct ubifs_bud *bud)
- 	return data == 0xFFFFFFFF;
- }
- 
-+/* authenticate_sleb_hash and authenticate_sleb_hmac are split out for stack usage */
-+static int authenticate_sleb_hash(struct ubifs_info *c, struct shash_desc *log_hash, u8 *hash)
-+{
-+	SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
-+
-+	hash_desc->tfm = c->hash_tfm;
-+	hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-+
-+	ubifs_shash_copy_state(c, log_hash, hash_desc);
-+	return crypto_shash_final(hash_desc, hash);
-+}
-+
-+static int authenticate_sleb_hmac(struct ubifs_info *c, u8 *hash, u8 *hmac)
-+{
-+	SHASH_DESC_ON_STACK(hmac_desc, c->hmac_tfm);
-+
-+	hmac_desc->tfm = c->hmac_tfm;
-+	hmac_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-+
-+	return crypto_shash_digest(hmac_desc, hash, c->hash_len, hmac);
-+}
-+
- /**
-  * authenticate_sleb - authenticate one scan LEB
-  * @c: UBIFS file-system description object
-@@ -574,21 +596,12 @@ static int authenticate_sleb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 
- 		if (snod->type == UBIFS_AUTH_NODE) {
- 			struct ubifs_auth_node *auth = snod->node;
--			SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
--			SHASH_DESC_ON_STACK(hmac_desc, c->hmac_tfm);
--
--			hash_desc->tfm = c->hash_tfm;
--			hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
- 
--			ubifs_shash_copy_state(c, log_hash, hash_desc);
--			err = crypto_shash_final(hash_desc, hash);
-+			err = authenticate_sleb_hash(c, log_hash, hash);
- 			if (err)
- 				goto out;
- 
--			hmac_desc->tfm = c->hmac_tfm;
--			hmac_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
--			err = crypto_shash_digest(hmac_desc, hash, c->hash_len,
--						  hmac);
-+			err = authenticate_sleb_hmac(c, hash, hmac);
- 			if (err)
- 				goto out;
- 
 -- 
-2.18.0
+~Randy
