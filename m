@@ -1,22 +1,26 @@
-Received: from zeniv.linux.org.uk ([195.92.253.2])
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gINSP-0006yb-DG
- for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 00:37:03 +0000
-Date: Fri, 2 Nov 2018 00:34:34 +0000
-From: Al Viro <viro@ZenIV.linux.org.uk>
-To: Daniel Walker <danielwa@cisco.com>
-Cc: Nikunj Kela <nkela@cisco.com>, David Woodhouse <dwmw2@infradead.org>,
- xe-linux-external@cisco.com, Rod Whitby <rod@whitby.id.au>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Make JFFS2 endianness configurable
-Message-ID: <20181102003434.GW32577@ZenIV.linux.org.uk>
-References: <20181101225603.17806-1-nkela@cisco.com>
- <20181102000236.rqho7txtb7gv543t@zorba>
+ id 1gIUGe-00054Y-HX
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 07:53:22 +0000
+Date: Fri, 2 Nov 2018 08:52:45 +0100
+From: jacopo mondi <jacopo@jmondi.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>,
+ Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-sh@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH resend] arch/sh: mach-kfr2r09: fix struct mtd_oob_ops
+ build warning
+Message-ID: <20181102075245.GR15991@w540>
+References: <702f0a25-c63e-6912-4640-6ab0f00afbc7@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="3rzwkXnKuCXxoL5m"
 Content-Disposition: inline
-In-Reply-To: <20181102000236.rqho7txtb7gv543t@zorba>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <702f0a25-c63e-6912-4640-6ab0f00afbc7@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +30,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 01, 2018 at 05:02:36PM -0700, Daniel Walker wrote:
-> 
-> 
-> 
-> On Thu, Nov 01, 2018 at 03:56:03PM -0700, Nikunj Kela wrote:
-> > This patch allows the endianness of the JFSS2 filesystem to be
-> > specified by config options.
-> > 
-> > It defaults to native-endian (the previously hard-coded option).
-> > 
-> > Some architectures benefit from having a single known endianness
-> > of JFFS2 filesystem (for data, not executables) independent of the
-> > endianness of the processor (ARM processors can be switched to either
-> > endianness at run-time).
-> > 
-> 
-> 
-> The description is pretty sad .. We have a product which we released that uses
-> JFFS2, and that product was release with a kernel in one endianness. Then later
-> on we decided to change the endianness and now we're stuck with a JFFS2
-> partition that has the wrong endiannes, in a released product. This patch allows
-> us to set the endianness to something different from the architecture setting.
-> 
-> So there a significant use case for the change, at least for Cisco.
 
-FWIW, can't we detect it at mount time, as e.g. UFS does?
+--3rzwkXnKuCXxoL5m
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+Hi Randy,
+   thanks for the patch.
+
+On Thu, Nov 01, 2018 at 04:38:30PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> arch/sh/boards/mach-kfr2r09/setup.c does not need to #include
+> <mtd/onenand.h>, and doing so causes a build warning, so drop
+> that header file.
+>
+> In file included from ../arch/sh/boards/mach-kfr2r09/setup.c:28:
+> ../include/linux/mtd/onenand.h:225:12: warning: 'struct mtd_oob_ops' declared inside parameter list will not be visible outside of this definition or declaration
+>      struct mtd_oob_ops *ops);
+>
+> Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
+
+Not sure if this is worth pointing out, but this commit only resorts
+headers. The one introducing the warning is actually 33893d7aa.
+
+I felt like reporting this, as introducing a "Fixes" line for that
+commit too would help backporting maybe?
+
+In any case:
+Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+
+Thanks
+   j
+
+>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Cc: Magnus Damm <magnus.damm@gmail.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-sh@vger.kernel.org
+> ---
+>  arch/sh/boards/mach-kfr2r09/setup.c |    1 -
+>  1 file changed, 1 deletion(-)
+>
+> --- linux-next-20181101.orig/arch/sh/boards/mach-kfr2r09/setup.c
+> +++ linux-next-20181101/arch/sh/boards/mach-kfr2r09/setup.c
+> @@ -25,7 +25,6 @@
+>  #include <linux/memblock.h>
+>  #include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+> -#include <linux/mtd/onenand.h>
+>  #include <linux/mtd/physmap.h>
+>  #include <linux/platform_data/lv5207lp.h>
+>  #include <linux/platform_device.h>
+>
+>
+
+--3rzwkXnKuCXxoL5m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCAAGBQJb3AJNAAoJEHI0Bo8WoVY8AsIQAJETDari2XU4nzfJKl9tbQxZ
+KdRZxRp4fzLI5VfzlJWOjY2IK7VtSf2mJ3yd9lXcXAT8OmbuoXXaomtYBxKhlmKP
+mMxNzOfhl7zn+UUOpN70XIaVtb791OA3TEB1Ohx15gUQj9wd7kB6g5V/coXgzdpP
+e2lkpZ1x5yWdye3eJto0D7HBi2fXFj+zaElNhpg2l+CyfkuovspJUjeZ9bfRVisf
+O+BwoeNNpP++U1KnS29YvonIU2b/dQfCl9sep3/kKF72IX8eQKWMR9fej4FXpEh4
+0c8HLrfalc2dKJwQYlLeuCpSzMC0MDVviISKvsF/+OtMJsg3kCFx4oCyg1ZTTdT/
+yMTDS2PjHa6OvBPnnDyel+qQSnPU8UkIfHCfyRxyZ55Nj/11cz2NKfgbliNeVbdb
+bqxJFsnPeFDvhhbIjvX+ri6wUamcKD6jP1Fs8GRXrZYeAbbyKKAFs1ypZQKNuICh
+YhWDvITQcQPoVdJcMY4E331lmI/4sQDku96oW9wDykw9gwVYI+NlbQsnLbuaY092
+pkCENu6UO+az/uOzgx2ZZzTN80CaWXJrQOJ3UL00RDEEZzreAypLzws1s4AB0uPk
+As+ozwwmlBJjuf4fFn2liyapFQgwBbe2EfQRSXF6dnassMghFhQc6vyHK0HOGm7Y
+Y6ejWsgxCgB9fiW+AmqQ
+=O2GC
+-----END PGP SIGNATURE-----
+
+--3rzwkXnKuCXxoL5m--
