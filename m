@@ -1,19 +1,20 @@
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Jacopo Mondi <jacopo+renesas@jmondi.org>, Magnus Damm
- <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH resend] arch/sh: mach-kfr2r09: fix struct mtd_oob_ops build
- warning
-Message-ID: <702f0a25-c63e-6912-4640-6ab0f00afbc7@infradead.org>
-Date: Thu, 1 Nov 2018 16:38:30 -0700
+Received: from alln-iport-4.cisco.com ([173.37.142.91])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gIMvP-0004nM-9t
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 00:02:56 +0000
+Date: Thu, 1 Nov 2018 17:02:36 -0700
+From: Daniel Walker <danielwa@cisco.com>
+To: Nikunj Kela <nkela@cisco.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, xe-linux-external@cisco.com,
+ Rod Whitby <rod@whitby.id.au>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Make JFFS2 endianness configurable
+Message-ID: <20181102000236.rqho7txtb7gv543t@zorba>
+References: <20181101225603.17806-1-nkela@cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181101225603.17806-1-nkela@cisco.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-arch/sh/boards/mach-kfr2r09/setup.c does not need to #include
-<mtd/onenand.h>, and doing so causes a build warning, so drop
-that header file.
 
-In file included from ../arch/sh/boards/mach-kfr2r09/setup.c:28:
-../include/linux/mtd/onenand.h:225:12: warning: 'struct mtd_oob_ops' declared inside parameter list will not be visible outside of this definition or declaration
-     struct mtd_oob_ops *ops);
 
-Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
+On Thu, Nov 01, 2018 at 03:56:03PM -0700, Nikunj Kela wrote:
+> This patch allows the endianness of the JFSS2 filesystem to be
+> specified by config options.
+> 
+> It defaults to native-endian (the previously hard-coded option).
+> 
+> Some architectures benefit from having a single known endianness
+> of JFFS2 filesystem (for data, not executables) independent of the
+> endianness of the processor (ARM processors can be switched to either
+> endianness at run-time).
+> 
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc: Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-sh@vger.kernel.org
----
- arch/sh/boards/mach-kfr2r09/setup.c |    1 -
- 1 file changed, 1 deletion(-)
 
---- linux-next-20181101.orig/arch/sh/boards/mach-kfr2r09/setup.c
-+++ linux-next-20181101/arch/sh/boards/mach-kfr2r09/setup.c
-@@ -25,7 +25,6 @@
- #include <linux/memblock.h>
- #include <linux/mfd/tmio.h>
- #include <linux/mmc/host.h>
--#include <linux/mtd/onenand.h>
- #include <linux/mtd/physmap.h>
- #include <linux/platform_data/lv5207lp.h>
- #include <linux/platform_device.h>
+The description is pretty sad .. We have a product which we released that uses
+JFFS2, and that product was release with a kernel in one endianness. Then later
+on we decided to change the endianness and now we're stuck with a JFFS2
+partition that has the wrong endiannes, in a released product. This patch allows
+us to set the endianness to something different from the architecture setting.
+
+So there a significant use case for the change, at least for Cisco.
+
+Daniel
