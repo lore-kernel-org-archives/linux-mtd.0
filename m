@@ -1,26 +1,25 @@
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+Received: from mail-eopbgr720056.outbound.protection.outlook.com
+ ([40.107.72.56] helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIUGe-00054Y-HX
- for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 07:53:22 +0000
-Date: Fri, 2 Nov 2018 08:52:45 +0100
-From: jacopo mondi <jacopo@jmondi.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Jacopo Mondi <jacopo+renesas@jmondi.org>,
- Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH resend] arch/sh: mach-kfr2r09: fix struct mtd_oob_ops
- build warning
-Message-ID: <20181102075245.GR15991@w540>
-References: <702f0a25-c63e-6912-4640-6ab0f00afbc7@infradead.org>
+ id 1gIV5Y-0002fI-Ft
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 08:45:58 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "nkela@cisco.com" <nkela@cisco.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>
+CC: "rod@whitby.id.au" <rod@whitby.id.au>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "xe-linux-external@cisco.com"
+ <xe-linux-external@cisco.com>
+Subject: Re: [PATCH] Make JFFS2 endianness configurable
+Date: Fri, 2 Nov 2018 08:45:43 +0000
+Message-ID: <c6b51706910048b8dd0732f8963a69867542e9a4.camel@infinera.com>
+References: <20181101225603.17806-1-nkela@cisco.com>
+In-Reply-To: <20181101225603.17806-1-nkela@cisco.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <094A24FA86A5AB499D966AE6DA70864B@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="3rzwkXnKuCXxoL5m"
-Content-Disposition: inline
-In-Reply-To: <702f0a25-c63e-6912-4640-6ab0f00afbc7@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,86 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---3rzwkXnKuCXxoL5m
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-Hi Randy,
-   thanks for the patch.
-
-On Thu, Nov 01, 2018 at 04:38:30PM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
->
-> arch/sh/boards/mach-kfr2r09/setup.c does not need to #include
-> <mtd/onenand.h>, and doing so causes a build warning, so drop
-> that header file.
->
-> In file included from ../arch/sh/boards/mach-kfr2r09/setup.c:28:
-> ../include/linux/mtd/onenand.h:225:12: warning: 'struct mtd_oob_ops' declared inside parameter list will not be visible outside of this definition or declaration
->      struct mtd_oob_ops *ops);
->
-> Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
-
-Not sure if this is worth pointing out, but this commit only resorts
-headers. The one introducing the warning is actually 33893d7aa.
-
-I felt like reporting this, as introducing a "Fixes" line for that
-commit too would help backporting maybe?
-
-In any case:
-Acked-by: Jacopo Mondi <jacopo@jmondi.org>
-
-Thanks
-   j
-
->
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> Cc: Magnus Damm <magnus.damm@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> ---
->  arch/sh/boards/mach-kfr2r09/setup.c |    1 -
->  1 file changed, 1 deletion(-)
->
-> --- linux-next-20181101.orig/arch/sh/boards/mach-kfr2r09/setup.c
-> +++ linux-next-20181101/arch/sh/boards/mach-kfr2r09/setup.c
-> @@ -25,7 +25,6 @@
->  #include <linux/memblock.h>
->  #include <linux/mfd/tmio.h>
->  #include <linux/mmc/host.h>
-> -#include <linux/mtd/onenand.h>
->  #include <linux/mtd/physmap.h>
->  #include <linux/platform_data/lv5207lp.h>
->  #include <linux/platform_device.h>
->
->
-
---3rzwkXnKuCXxoL5m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCAAGBQJb3AJNAAoJEHI0Bo8WoVY8AsIQAJETDari2XU4nzfJKl9tbQxZ
-KdRZxRp4fzLI5VfzlJWOjY2IK7VtSf2mJ3yd9lXcXAT8OmbuoXXaomtYBxKhlmKP
-mMxNzOfhl7zn+UUOpN70XIaVtb791OA3TEB1Ohx15gUQj9wd7kB6g5V/coXgzdpP
-e2lkpZ1x5yWdye3eJto0D7HBi2fXFj+zaElNhpg2l+CyfkuovspJUjeZ9bfRVisf
-O+BwoeNNpP++U1KnS29YvonIU2b/dQfCl9sep3/kKF72IX8eQKWMR9fej4FXpEh4
-0c8HLrfalc2dKJwQYlLeuCpSzMC0MDVviISKvsF/+OtMJsg3kCFx4oCyg1ZTTdT/
-yMTDS2PjHa6OvBPnnDyel+qQSnPU8UkIfHCfyRxyZ55Nj/11cz2NKfgbliNeVbdb
-bqxJFsnPeFDvhhbIjvX+ri6wUamcKD6jP1Fs8GRXrZYeAbbyKKAFs1ypZQKNuICh
-YhWDvITQcQPoVdJcMY4E331lmI/4sQDku96oW9wDykw9gwVYI+NlbQsnLbuaY092
-pkCENu6UO+az/uOzgx2ZZzTN80CaWXJrQOJ3UL00RDEEZzreAypLzws1s4AB0uPk
-As+ozwwmlBJjuf4fFn2liyapFQgwBbe2EfQRSXF6dnassMghFhQc6vyHK0HOGm7Y
-Y6ejWsgxCgB9fiW+AmqQ
-=O2GC
------END PGP SIGNATURE-----
-
---3rzwkXnKuCXxoL5m--
+T24gVGh1LCAyMDE4LTExLTAxIGF0IDE1OjU2IC0wNzAwLCBOaWt1bmogS2VsYSB3cm90ZToNCj4g
+Q0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0aGUgb3JnYW5p
+emF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
+IHJlY29nbml6ZSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUuDQo+IA0K
+PiANCj4gVGhpcyBwYXRjaCBhbGxvd3MgdGhlIGVuZGlhbm5lc3Mgb2YgdGhlIEpGU1MyIGZpbGVz
+eXN0ZW0gdG8gYmUNCj4gc3BlY2lmaWVkIGJ5IGNvbmZpZyBvcHRpb25zLg0KPiANCj4gSXQgZGVm
+YXVsdHMgdG8gbmF0aXZlLWVuZGlhbiAodGhlIHByZXZpb3VzbHkgaGFyZC1jb2RlZCBvcHRpb24p
+Lg0KPiANCj4gU29tZSBhcmNoaXRlY3R1cmVzIGJlbmVmaXQgZnJvbSBoYXZpbmcgYSBzaW5nbGUg
+a25vd24gZW5kaWFubmVzcw0KPiBvZiBKRkZTMiBmaWxlc3lzdGVtIChmb3IgZGF0YSwgbm90IGV4
+ZWN1dGFibGVzKSBpbmRlcGVuZGVudCBvZiB0aGUNCj4gZW5kaWFubmVzcyBvZiB0aGUgcHJvY2Vz
+c29yIChBUk0gcHJvY2Vzc29ycyBjYW4gYmUgc3dpdGNoZWQgdG8gZWl0aGVyDQo+IGVuZGlhbm5l
+c3MgYXQgcnVuLXRpbWUpLg0KDQpJIGxpa2UgdGhpcyB0b28uIEkgaGF2ZSBvbiBzZXZlcmFsIG9j
+Y2FzaW9ucyBuZWVkZWQgdG8gbW91bnQgYSBKRkZTMiBCRSBvbg0KbXkgUEMuIFRoaXMgc2F2ZXMg
+bWUgZnJvbSBoYXZpbmcgdG8gaGFjayB0aGUgc3JjLg0KDQogSm9ja2UNCg0KDQo+IA0KPiBUaGlz
+IHBhdGNoIGlzIHRha2VuIGZyb206DQo+IGh0dHA6Ly93d3cuaW5mcmFkZWFkLm9yZy9waXBlcm1h
+aWwvbGludXgtbXRkLzIwMDYtSmFudWFyeS8wMTQ3MTcuaHRtbA0KPiANCj4gQ2M6IHhlLWxpbnV4
+LWV4dGVybmFsQGNpc2NvLmNvbQ0KPiBTaWduZWQtb2ZmLWJ5OiBSb2QgV2hpdGJ5IDxyb2RAd2hp
+dGJ5LmlkLmF1Pg0KPiBTaWduZWQtb2ZmLWJ5OiBOaWt1bmogS2VsYSA8bmtlbGFAY2lzY28uY29t
+Pg0KPiAtLS0NCj4gIGZzL2pmZnMyL0tjb25maWcgICAgfCAyNSArKysrKysrKysrKysrKysrKysr
+KysrKysrDQo+ICBmcy9qZmZzMi9ub2RlbGlzdC5oIHwgIDggKysrLS0tLS0NCj4gIDIgZmlsZXMg
+Y2hhbmdlZCwgMjggaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1n
+aXQgYS9mcy9qZmZzMi9LY29uZmlnIGIvZnMvamZmczIvS2NvbmZpZw0KPiBpbmRleCBhZDg1MGM1
+YmYyY2EuLjg2ZTkzZmJjOWQ3NCAxMDA2NDQNCj4gLS0tIGEvZnMvamZmczIvS2NvbmZpZw0KPiAr
+KysgYi9mcy9qZmZzMi9LY29uZmlnDQo+IEBAIC0xODIsMyArMTgyLDI4IEBAIGNvbmZpZyBKRkZT
+Ml9DTU9ERV9GQVZPVVJMWk8NCj4gICAgICAgICAgIGRlY29tcHJlc3Npb24pIGF0IHRoZSBleHBl
+bnNlIG9mIHNpemUuDQo+IA0KPiAgZW5kY2hvaWNlDQo+ICsNCj4gK2Nob2ljZQ0KPiArICAgICAg
+IHByb21wdCAiSkZGUzIgZW5kaWFubmVzcyINCj4gKyAgICAgICBkZWZhdWx0IEpGRlMyX05BVElW
+RV9FTkRJQU4NCj4gKyAgICAgICBkZXBlbmRzIG9uIEpGRlMyX0ZTDQo+ICsgICAgICAgaGVscA0K
+PiArICAgICAgICAgWW91IGNhbiBzZXQgaGVyZSB0aGUgZGVmYXVsdCBlbmRpYW5uZXNzIG9mIEpG
+RlMyIGZyb20NCj4gKyAgICAgICAgIHRoZSBhdmFpbGFibGUgb3B0aW9ucy4gRG8gbm90IHRvdWNo
+IGlmIHVuc3VyZS4NCj4gKw0KPiArY29uZmlnIEpGRlMyX05BVElWRV9FTkRJQU4NCj4gKyAgICAg
+ICBib29sICJuYXRpdmUgZW5kaWFuIg0KPiArICAgICAgIGhlbHANCj4gKyAgICAgICAgIFVzZXMg
+YSBuYXRpdmUgZW5kaWFuIGJ5dGVzdHJlYW0uDQo+ICsNCj4gK2NvbmZpZyBKRkZTMl9CSUdfRU5E
+SUFODQo+ICsgICAgICAgYm9vbCAiYmlnIGVuZGlhbiINCj4gKyAgICAgICBoZWxwDQo+ICsgICAg
+ICAgICBVc2VzIGEgYmlnIGVuZGlhbiBieXRlc3RyZWFtLg0KPiArDQo+ICtjb25maWcgSkZGUzJf
+TElUVExFX0VORElBTg0KPiArICAgICAgIGJvb2wgImxpdHRsZSBlbmRpYW4iDQo+ICsgICAgICAg
+aGVscA0KPiArICAgICAgICAgVXNlcyBhIGxpdHRsZSBlbmRpYW4gYnl0ZXN0cmVhbS4NCj4gKw0K
+PiArZW5kY2hvaWNlDQo+IGRpZmYgLS1naXQgYS9mcy9qZmZzMi9ub2RlbGlzdC5oIGIvZnMvamZm
+czIvbm9kZWxpc3QuaA0KPiBpbmRleCAwNjM3MjcxZjM3NzAuLmExZWJmMDRmMjE3YyAxMDA2NDQN
+Cj4gLS0tIGEvZnMvamZmczIvbm9kZWxpc3QuaA0KPiArKysgYi9mcy9qZmZzMi9ub2RlbGlzdC5o
+DQo+IEBAIC0yNywxMiArMjcsMTAgQEANCj4gICNpbmNsdWRlICJvcy1saW51eC5oIg0KPiAgI2Vu
+ZGlmDQo+IA0KPiAtI2RlZmluZSBKRkZTMl9OQVRJVkVfRU5ESUFODQo+IC0NCj4gIC8qIE5vdGUg
+d2UgaGFuZGxlIG1vZGUgYml0cyBjb252ZXJzaW9uIGZyb20gSkZGUzIgKGkuZS4gTGludXgpIHRv
+L2Zyb20NCj4gICAgIHdoYXRldmVyIE9TIHdlJ3JlIGFjdHVhbGx5IHJ1bm5pbmcgb24gaGVyZSB0
+b28uICovDQo+IA0KPiAtI2lmIGRlZmluZWQoSkZGUzJfTkFUSVZFX0VORElBTikNCj4gKyNpZiBk
+ZWZpbmVkKENPTkZJR19KRkZTMl9OQVRJVkVfRU5ESUFOKQ0KPiAgI2RlZmluZSBjcHVfdG9famUx
+Nih4KSAoKGppbnQxNl90KXt4fSkNCj4gICNkZWZpbmUgY3B1X3RvX2plMzIoeCkgKChqaW50MzJf
+dCl7eH0pDQo+ICAjZGVmaW5lIGNwdV90b19qZW1vZGUoeCkgKChqbW9kZV90KXtvc190b19qZmZz
+Ml9tb2RlKHgpfSkNCj4gQEAgLTQzLDcgKzQxLDcgQEANCj4gICNkZWZpbmUgamUxNl90b19jcHUo
+eCkgKCh4KS52MTYpDQo+ICAjZGVmaW5lIGplMzJfdG9fY3B1KHgpICgoeCkudjMyKQ0KPiAgI2Rl
+ZmluZSBqZW1vZGVfdG9fY3B1KHgpIChqZmZzMl90b19vc19tb2RlKCh4KS5tKSkNCj4gLSNlbGlm
+IGRlZmluZWQoSkZGUzJfQklHX0VORElBTikNCj4gKyNlbGlmIGRlZmluZWQoQ09ORklHX0pGRlMy
+X0JJR19FTkRJQU4pDQo+ICAjZGVmaW5lIGNwdV90b19qZTE2KHgpICgoamludDE2X3Qpe2NwdV90
+b19iZTE2KHgpfSkNCj4gICNkZWZpbmUgY3B1X3RvX2plMzIoeCkgKChqaW50MzJfdCl7Y3B1X3Rv
+X2JlMzIoeCl9KQ0KPiAgI2RlZmluZSBjcHVfdG9famVtb2RlKHgpICgoam1vZGVfdCl7Y3B1X3Rv
+X2JlMzIob3NfdG9famZmczJfbW9kZSh4KSl9KQ0KPiBAQCAtNTQsNyArNTIsNyBAQA0KPiAgI2Rl
+ZmluZSBqZTE2X3RvX2NwdSh4KSAoYmUxNl90b19jcHUoeC52MTYpKQ0KPiAgI2RlZmluZSBqZTMy
+X3RvX2NwdSh4KSAoYmUzMl90b19jcHUoeC52MzIpKQ0KPiAgI2RlZmluZSBqZW1vZGVfdG9fY3B1
+KHgpIChiZTMyX3RvX2NwdShqZmZzMl90b19vc19tb2RlKCh4KS5tKSkpDQo+IC0jZWxpZiBkZWZp
+bmVkKEpGRlMyX0xJVFRMRV9FTkRJQU4pDQo+ICsjZWxpZiBkZWZpbmVkKENPTkZJR19KRkZTMl9M
+SVRUTEVfRU5ESUFOKQ0KPiAgI2RlZmluZSBjcHVfdG9famUxNih4KSAoKGppbnQxNl90KXtjcHVf
+dG9fbGUxNih4KX0pDQo+ICAjZGVmaW5lIGNwdV90b19qZTMyKHgpICgoamludDMyX3Qpe2NwdV90
+b19sZTMyKHgpfSkNCj4gICNkZWZpbmUgY3B1X3RvX2plbW9kZSh4KSAoKGptb2RlX3Qpe2NwdV90
+b19sZTMyKG9zX3RvX2pmZnMyX21vZGUoeCkpfSkNCj4gLS0NCj4gMi4xOS4xDQo+IA0KPiANCj4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8NCg0K
