@@ -1,14 +1,15 @@
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Jacopo Mondi <jacopo@jmondi.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] arch/sh: mach-kfr2r09: fix struct mtd_oob_ops build warning
-Message-ID: <99e03339-5fab-bcdf-902d-962084db86e8@infradead.org>
-Date: Fri, 2 Nov 2018 09:14:12 -0700
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gIcWO-00060I-Nd
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 16:42:10 +0000
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 00/42] mtd-utils: Add fscrypt support to mkfs.ubifs
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <20181018143718.26298-1-richard@nod.at>
+Message-ID: <14ba6760-1d30-3814-408b-089667ccec1f@sigma-star.at>
+Date: Fri, 2 Nov 2018 17:41:44 +0100
 MIME-Version: 1.0
+In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -21,42 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi!
 
-arch/sh/boards/mach-kfr2r09/setup.c does not need to #include
-<mtd/onenand.h>, and doing so causes a build warning, so drop
-that header file.
+This patch set has been sitting on the ML for more than two weeks now, with no
+one commenting/complaining/nit-picking/bike-shedding/etc, so I'll push it to
+mtd-utils.git master.
 
-In file included from ../arch/sh/boards/mach-kfr2r09/setup.c:28:
-../include/linux/mtd/onenand.h:225:12: warning: 'struct mtd_oob_ops' declared inside parameter list will not be visible outside of this definition or declaration
-     struct mtd_oob_ops *ops);
+Since I authored some of those commits and already stared at the whole patch
+set for quite some time before it's been submitted, I'm not sure how helpful
+it is for me to try and review it now. Nevertheless, I've looked through the
+patch set again over the last few days, compared it against the latest version
+I have locally and did some quick tests and it still looks good to me.
 
-Fixes: 33893d7aa000 ("sh: kfr2r09 board support - NAND flash")
+Thanks,
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Jacopo Mondi <jacopo@jmondi.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc: Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-sh@vger.kernel.org
----
-v2: fix the Fixes commit ID and add Ack from Jacopo.
-
- arch/sh/boards/mach-kfr2r09/setup.c |    1 -
- 1 file changed, 1 deletion(-)
-
---- linux-next-20181101.orig/arch/sh/boards/mach-kfr2r09/setup.c
-+++ linux-next-20181101/arch/sh/boards/mach-kfr2r09/setup.c
-@@ -25,7 +25,6 @@
- #include <linux/memblock.h>
- #include <linux/mfd/tmio.h>
- #include <linux/mmc/host.h>
--#include <linux/mtd/onenand.h>
- #include <linux/mtd/physmap.h>
- #include <linux/platform_data/lv5207lp.h>
- #include <linux/platform_device.h>
+David
