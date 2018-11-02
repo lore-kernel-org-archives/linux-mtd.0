@@ -1,25 +1,23 @@
-Received: from mail-eopbgr720056.outbound.protection.outlook.com
- ([40.107.72.56] helo=NAM05-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gIV5Y-0002fI-Ft
- for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 08:45:58 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "nkela@cisco.com" <nkela@cisco.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>
-CC: "rod@whitby.id.au" <rod@whitby.id.au>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "xe-linux-external@cisco.com"
- <xe-linux-external@cisco.com>
-Subject: Re: [PATCH] Make JFFS2 endianness configurable
-Date: Fri, 2 Nov 2018 08:45:43 +0000
-Message-ID: <c6b51706910048b8dd0732f8963a69867542e9a4.camel@infinera.com>
-References: <20181101225603.17806-1-nkela@cisco.com>
-In-Reply-To: <20181101225603.17806-1-nkela@cisco.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <094A24FA86A5AB499D966AE6DA70864B@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1gIVlR-0005LB-GE
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2018 09:29:15 +0000
+Received: by mail-wr1-x443.google.com with SMTP id j26-v6so1282626wre.1
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Nov 2018 02:29:03 -0700 (PDT)
 MIME-Version: 1.0
+References: <20181101225603.17806-1-nkela@cisco.com>
+ <c6b51706910048b8dd0732f8963a69867542e9a4.camel@infinera.com>
+In-Reply-To: <c6b51706910048b8dd0732f8963a69867542e9a4.camel@infinera.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 2 Nov 2018 10:28:49 +0100
+Message-ID: <CAFLxGvwy=ksb=GVg-D6cD40JQ1b7+RGjXH9vq8w4jB0N9rmK3Q@mail.gmail.com>
+Subject: Re: [PATCH] Make JFFS2 endianness configurable
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: nkela@cisco.com, David Woodhouse <dwmw2@infradead.org>,
+ xe-linux-external@cisco.com,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, rod@whitby.id.au
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVGh1LCAyMDE4LTExLTAxIGF0IDE1OjU2IC0wNzAwLCBOaWt1bmogS2VsYSB3cm90ZToNCj4g
-Q0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0aGUgb3JnYW5p
-emF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
-IHJlY29nbml6ZSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUuDQo+IA0K
-PiANCj4gVGhpcyBwYXRjaCBhbGxvd3MgdGhlIGVuZGlhbm5lc3Mgb2YgdGhlIEpGU1MyIGZpbGVz
-eXN0ZW0gdG8gYmUNCj4gc3BlY2lmaWVkIGJ5IGNvbmZpZyBvcHRpb25zLg0KPiANCj4gSXQgZGVm
-YXVsdHMgdG8gbmF0aXZlLWVuZGlhbiAodGhlIHByZXZpb3VzbHkgaGFyZC1jb2RlZCBvcHRpb24p
-Lg0KPiANCj4gU29tZSBhcmNoaXRlY3R1cmVzIGJlbmVmaXQgZnJvbSBoYXZpbmcgYSBzaW5nbGUg
-a25vd24gZW5kaWFubmVzcw0KPiBvZiBKRkZTMiBmaWxlc3lzdGVtIChmb3IgZGF0YSwgbm90IGV4
-ZWN1dGFibGVzKSBpbmRlcGVuZGVudCBvZiB0aGUNCj4gZW5kaWFubmVzcyBvZiB0aGUgcHJvY2Vz
-c29yIChBUk0gcHJvY2Vzc29ycyBjYW4gYmUgc3dpdGNoZWQgdG8gZWl0aGVyDQo+IGVuZGlhbm5l
-c3MgYXQgcnVuLXRpbWUpLg0KDQpJIGxpa2UgdGhpcyB0b28uIEkgaGF2ZSBvbiBzZXZlcmFsIG9j
-Y2FzaW9ucyBuZWVkZWQgdG8gbW91bnQgYSBKRkZTMiBCRSBvbg0KbXkgUEMuIFRoaXMgc2F2ZXMg
-bWUgZnJvbSBoYXZpbmcgdG8gaGFjayB0aGUgc3JjLg0KDQogSm9ja2UNCg0KDQo+IA0KPiBUaGlz
-IHBhdGNoIGlzIHRha2VuIGZyb206DQo+IGh0dHA6Ly93d3cuaW5mcmFkZWFkLm9yZy9waXBlcm1h
-aWwvbGludXgtbXRkLzIwMDYtSmFudWFyeS8wMTQ3MTcuaHRtbA0KPiANCj4gQ2M6IHhlLWxpbnV4
-LWV4dGVybmFsQGNpc2NvLmNvbQ0KPiBTaWduZWQtb2ZmLWJ5OiBSb2QgV2hpdGJ5IDxyb2RAd2hp
-dGJ5LmlkLmF1Pg0KPiBTaWduZWQtb2ZmLWJ5OiBOaWt1bmogS2VsYSA8bmtlbGFAY2lzY28uY29t
-Pg0KPiAtLS0NCj4gIGZzL2pmZnMyL0tjb25maWcgICAgfCAyNSArKysrKysrKysrKysrKysrKysr
-KysrKysrDQo+ICBmcy9qZmZzMi9ub2RlbGlzdC5oIHwgIDggKysrLS0tLS0NCj4gIDIgZmlsZXMg
-Y2hhbmdlZCwgMjggaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1n
-aXQgYS9mcy9qZmZzMi9LY29uZmlnIGIvZnMvamZmczIvS2NvbmZpZw0KPiBpbmRleCBhZDg1MGM1
-YmYyY2EuLjg2ZTkzZmJjOWQ3NCAxMDA2NDQNCj4gLS0tIGEvZnMvamZmczIvS2NvbmZpZw0KPiAr
-KysgYi9mcy9qZmZzMi9LY29uZmlnDQo+IEBAIC0xODIsMyArMTgyLDI4IEBAIGNvbmZpZyBKRkZT
-Ml9DTU9ERV9GQVZPVVJMWk8NCj4gICAgICAgICAgIGRlY29tcHJlc3Npb24pIGF0IHRoZSBleHBl
-bnNlIG9mIHNpemUuDQo+IA0KPiAgZW5kY2hvaWNlDQo+ICsNCj4gK2Nob2ljZQ0KPiArICAgICAg
-IHByb21wdCAiSkZGUzIgZW5kaWFubmVzcyINCj4gKyAgICAgICBkZWZhdWx0IEpGRlMyX05BVElW
-RV9FTkRJQU4NCj4gKyAgICAgICBkZXBlbmRzIG9uIEpGRlMyX0ZTDQo+ICsgICAgICAgaGVscA0K
-PiArICAgICAgICAgWW91IGNhbiBzZXQgaGVyZSB0aGUgZGVmYXVsdCBlbmRpYW5uZXNzIG9mIEpG
-RlMyIGZyb20NCj4gKyAgICAgICAgIHRoZSBhdmFpbGFibGUgb3B0aW9ucy4gRG8gbm90IHRvdWNo
-IGlmIHVuc3VyZS4NCj4gKw0KPiArY29uZmlnIEpGRlMyX05BVElWRV9FTkRJQU4NCj4gKyAgICAg
-ICBib29sICJuYXRpdmUgZW5kaWFuIg0KPiArICAgICAgIGhlbHANCj4gKyAgICAgICAgIFVzZXMg
-YSBuYXRpdmUgZW5kaWFuIGJ5dGVzdHJlYW0uDQo+ICsNCj4gK2NvbmZpZyBKRkZTMl9CSUdfRU5E
-SUFODQo+ICsgICAgICAgYm9vbCAiYmlnIGVuZGlhbiINCj4gKyAgICAgICBoZWxwDQo+ICsgICAg
-ICAgICBVc2VzIGEgYmlnIGVuZGlhbiBieXRlc3RyZWFtLg0KPiArDQo+ICtjb25maWcgSkZGUzJf
-TElUVExFX0VORElBTg0KPiArICAgICAgIGJvb2wgImxpdHRsZSBlbmRpYW4iDQo+ICsgICAgICAg
-aGVscA0KPiArICAgICAgICAgVXNlcyBhIGxpdHRsZSBlbmRpYW4gYnl0ZXN0cmVhbS4NCj4gKw0K
-PiArZW5kY2hvaWNlDQo+IGRpZmYgLS1naXQgYS9mcy9qZmZzMi9ub2RlbGlzdC5oIGIvZnMvamZm
-czIvbm9kZWxpc3QuaA0KPiBpbmRleCAwNjM3MjcxZjM3NzAuLmExZWJmMDRmMjE3YyAxMDA2NDQN
-Cj4gLS0tIGEvZnMvamZmczIvbm9kZWxpc3QuaA0KPiArKysgYi9mcy9qZmZzMi9ub2RlbGlzdC5o
-DQo+IEBAIC0yNywxMiArMjcsMTAgQEANCj4gICNpbmNsdWRlICJvcy1saW51eC5oIg0KPiAgI2Vu
-ZGlmDQo+IA0KPiAtI2RlZmluZSBKRkZTMl9OQVRJVkVfRU5ESUFODQo+IC0NCj4gIC8qIE5vdGUg
-d2UgaGFuZGxlIG1vZGUgYml0cyBjb252ZXJzaW9uIGZyb20gSkZGUzIgKGkuZS4gTGludXgpIHRv
-L2Zyb20NCj4gICAgIHdoYXRldmVyIE9TIHdlJ3JlIGFjdHVhbGx5IHJ1bm5pbmcgb24gaGVyZSB0
-b28uICovDQo+IA0KPiAtI2lmIGRlZmluZWQoSkZGUzJfTkFUSVZFX0VORElBTikNCj4gKyNpZiBk
-ZWZpbmVkKENPTkZJR19KRkZTMl9OQVRJVkVfRU5ESUFOKQ0KPiAgI2RlZmluZSBjcHVfdG9famUx
-Nih4KSAoKGppbnQxNl90KXt4fSkNCj4gICNkZWZpbmUgY3B1X3RvX2plMzIoeCkgKChqaW50MzJf
-dCl7eH0pDQo+ICAjZGVmaW5lIGNwdV90b19qZW1vZGUoeCkgKChqbW9kZV90KXtvc190b19qZmZz
-Ml9tb2RlKHgpfSkNCj4gQEAgLTQzLDcgKzQxLDcgQEANCj4gICNkZWZpbmUgamUxNl90b19jcHUo
-eCkgKCh4KS52MTYpDQo+ICAjZGVmaW5lIGplMzJfdG9fY3B1KHgpICgoeCkudjMyKQ0KPiAgI2Rl
-ZmluZSBqZW1vZGVfdG9fY3B1KHgpIChqZmZzMl90b19vc19tb2RlKCh4KS5tKSkNCj4gLSNlbGlm
-IGRlZmluZWQoSkZGUzJfQklHX0VORElBTikNCj4gKyNlbGlmIGRlZmluZWQoQ09ORklHX0pGRlMy
-X0JJR19FTkRJQU4pDQo+ICAjZGVmaW5lIGNwdV90b19qZTE2KHgpICgoamludDE2X3Qpe2NwdV90
-b19iZTE2KHgpfSkNCj4gICNkZWZpbmUgY3B1X3RvX2plMzIoeCkgKChqaW50MzJfdCl7Y3B1X3Rv
-X2JlMzIoeCl9KQ0KPiAgI2RlZmluZSBjcHVfdG9famVtb2RlKHgpICgoam1vZGVfdCl7Y3B1X3Rv
-X2JlMzIob3NfdG9famZmczJfbW9kZSh4KSl9KQ0KPiBAQCAtNTQsNyArNTIsNyBAQA0KPiAgI2Rl
-ZmluZSBqZTE2X3RvX2NwdSh4KSAoYmUxNl90b19jcHUoeC52MTYpKQ0KPiAgI2RlZmluZSBqZTMy
-X3RvX2NwdSh4KSAoYmUzMl90b19jcHUoeC52MzIpKQ0KPiAgI2RlZmluZSBqZW1vZGVfdG9fY3B1
-KHgpIChiZTMyX3RvX2NwdShqZmZzMl90b19vc19tb2RlKCh4KS5tKSkpDQo+IC0jZWxpZiBkZWZp
-bmVkKEpGRlMyX0xJVFRMRV9FTkRJQU4pDQo+ICsjZWxpZiBkZWZpbmVkKENPTkZJR19KRkZTMl9M
-SVRUTEVfRU5ESUFOKQ0KPiAgI2RlZmluZSBjcHVfdG9famUxNih4KSAoKGppbnQxNl90KXtjcHVf
-dG9fbGUxNih4KX0pDQo+ICAjZGVmaW5lIGNwdV90b19qZTMyKHgpICgoamludDMyX3Qpe2NwdV90
-b19sZTMyKHgpfSkNCj4gICNkZWZpbmUgY3B1X3RvX2plbW9kZSh4KSAoKGptb2RlX3Qpe2NwdV90
-b19sZTMyKG9zX3RvX2pmZnMyX21vZGUoeCkpfSkNCj4gLS0NCj4gMi4xOS4xDQo+IA0KPiANCj4g
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
-IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8NCg0K
+On Fri, Nov 2, 2018 at 9:46 AM Joakim Tjernlund
+<Joakim.Tjernlund@infinera.com> wrote:
+>
+> On Thu, 2018-11-01 at 15:56 -0700, Nikunj Kela wrote:
+> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> >
+> >
+> > This patch allows the endianness of the JFSS2 filesystem to be
+> > specified by config options.
+> >
+> > It defaults to native-endian (the previously hard-coded option).
+> >
+> > Some architectures benefit from having a single known endianness
+> > of JFFS2 filesystem (for data, not executables) independent of the
+> > endianness of the processor (ARM processors can be switched to either
+> > endianness at run-time).
+>
+> I like this too. I have on several occasions needed to mount a JFFS2 BE on
+> my PC. This saves me from having to hack the src.
+
+The feature makes sense, but I don't like it being a Kconfig option.
+As Al pointed out, it should be done like UFS does.
+
+IOW, implement a wrapper function which selects the endianness automatically.
+That way you can force it as mount option or detect during mount what
+kind of JFFS2
+you have.
+
+-- 
+Thanks,
+//richard
