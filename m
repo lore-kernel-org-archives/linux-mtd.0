@@ -1,17 +1,18 @@
-To: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Andrew Morton <akpm@linux-foundation.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] mtd: nand: drop kernel-doc notation for a deleted function
- parameter
-Message-ID: <88c00c96-cfd2-4ff1-e753-8875501895df@infradead.org>
-Date: Sun, 4 Nov 2018 18:38:35 -0800
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJZml-00048i-0Y
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 07:59:00 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+ Olof Johansson <olof@lixom.net>
+Subject: [PATCH v2] mtd: sa1100: avoid VLA in sa1100_setup_mtd
+Date: Mon,  5 Nov 2018 08:58:35 +0100
+Message-Id: <20181105075835.16234-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Enabling -Wvla found another variable-length array with randconfig
+testing:
 
-Remove kernel-doc notation for a deleted function parameter to prevent
-a kernel-doc warning:
+drivers/mtd/maps/sa1100-flash.c: In function 'sa1100_setup_mtd':
+drivers/mtd/maps/sa1100-flash.c:224:10: error: ISO C90 forbids variable length array 'cdev' [-Werror=vla]
 
-../drivers/mtd/nand/raw/nand_base.c:603: warning: Excess function parameter 'mtd' description in 'panic_nand_wait'
+Dynamically allocate the cdev array passed to mtd_concat_create()
+instead of using a VLA.
 
-Fixes: f1d46942e823 ("mtd: rawnand: Pass a nand_chip object to chip->waitfunc()")
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Olof Johansson <olof@lixom.net>
 ---
+Changes in v2:
+- Allocate cdev dynamically instead of having a fixed-size array
 
- drivers/mtd/nand/raw/nand_base.c |    1 -
- 1 file changed, 1 deletion(-)
+Hello,
 
---- lnx-420-rc1.orig/drivers/mtd/nand/raw/nand_base.c
-+++ lnx-420-rc1/drivers/mtd/nand/raw/nand_base.c
-@@ -590,7 +590,6 @@ retry:
+I'm planning to queue this patch to the mtd/fixes PR. Arnd, Kees, feel
+free to add your R-b.
+
+Regards,
+
+Boris
+---
+ drivers/mtd/maps/sa1100-flash.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index 784c6e1a0391..fd5fe12d7461 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -221,7 +221,14 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+ 		info->mtd = info->subdev[0].mtd;
+ 		ret = 0;
+ 	} else if (info->num_subdev > 1) {
+-		struct mtd_info *cdev[nr];
++		struct mtd_info **cdev;
++
++		cdev = kmalloc_array(nr, sizeof(*cdev), GFP_KERNEL);
++		if (!cdev) {
++			ret = -ENOMEM;
++			goto err;
++		}
++
+ 		/*
+ 		 * We detected multiple devices.  Concatenate them together.
+ 		 */
+@@ -230,6 +237,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
  
- /**
-  * panic_nand_wait - [GENERIC] wait until the command is done
-- * @mtd: MTD device structure
-  * @chip: NAND chip structure
-  * @timeo: timeout
-  *
+ 		info->mtd = mtd_concat_create(cdev, info->num_subdev,
+ 					      plat->name);
++		kfree(cdev);
+ 		if (info->mtd == NULL) {
+ 			ret = -ENXIO;
+ 			goto err;
+-- 
+2.17.1
