@@ -1,32 +1,23 @@
-Received: from mail-eopbgr680056.outbound.protection.outlook.com
- ([40.107.68.56] helo=NAM04-BN3-obe.outbound.protection.outlook.com)
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJept-00061E-94
- for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 13:22:34 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
- "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "fbettoni@gmail.com" <fbettoni@gmail.com>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>, "hauke@hauke-m.de" <hauke@hauke-m.de>,
- "koen.vandeputte@ncentric.com" <koen.vandeputte@ncentric.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change do_write_oneword()
- to use chip_good()
-Date: Mon, 5 Nov 2018 13:22:19 +0000
-Message-ID: <6c3538c4662c292ea4acbe76f255efa412193047.camel@infinera.com>
-References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
- <20181025163219.25788-2-ikegami@allied-telesis.co.jp>
- <20181105111544.4e511ed9@bbrezillon>
- <403739a3578a37c517626091535fa4574bee0171.camel@infinera.com>
- <20181105135211.78da0a3f@bbrezillon>
-In-Reply-To: <20181105135211.78da0a3f@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <41AA9451FB8DA54BAF9BB114CE460903@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1gJex9-00005M-UY
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 13:30:05 +0000
+Date: Mon, 5 Nov 2018 14:29:49 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: devel@driverdev.osuosl.org, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] staging: Remove the mt29f_spinand driver
+Message-ID: <20181105132949.GC20797@kroah.com>
+References: <20181022201059.8630-1-boris.brezillon@bootlin.com>
+ <20181105111227.7bf08cfa@xps13>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181105111227.7bf08cfa@xps13>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,57 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gTW9uLCAyMDE4LTExLTA1IGF0IDEzOjUyICswMTAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+IE9uIE1vbiwgNSBOb3YgMjAxOCAxMjowMzowNCArMDAwMA0KPiBKb2FraW0gVGpl
-cm5sdW5kIDxKb2FraW0uVGplcm5sdW5kQGluZmluZXJhLmNvbT4gd3JvdGU6DQo+IA0KPiA+IE9u
-IE1vbiwgMjAxOC0xMS0wNSBhdCAxMToxNSArMDEwMCwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0K
-PiA+ID4gQ0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0aGUg
-b3JnYW5pemF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxl
-c3MgeW91IHJlY29nbml6ZSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUu
-DQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gT24gRnJpLCAyNiBPY3QgMjAxOCAwMTozMjowOSArMDkw
-MA0KPiA+ID4gVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4g
-d3JvdGU6DQo+ID4gPiANCj4gPiA+ID4gSW4gT3BlbldydCBQcm9qZWN0IHRoZSBmbGFzaCB3cml0
-ZSBlcnJvciBjYXVzZWQgb24gc29tZSBwcm9kdWN0cy4NCj4gPiA+IA0KPiA+ID4gSXQncyBva2F5
-IHRvIG1lbnRpb24gdGhhdCB0aGUgaXNzdWUgd2FzIGRpc2NvdmVyZWQgYnkgdGhlIE9wZW5XUlQg
-dGVhbSwNCj4gPiA+IGJ1dCBJJ2QgcmVwaHJhc2UgaXQgZGlmZmVyZW50bHkuDQo+ID4gPiANCj4g
-PiA+ICJBcyByZXBvcnRlZCBieSB0aGUgT3BlbldSVCB0ZWFtLCB3cml0ZSByZXF1ZXN0cyBzb21l
-dGltZXMgZmFpbCBvbiBzb21lDQo+ID4gPiBwbGF0Zm9ybXMiLg0KPiA+ID4gDQo+ID4gPiA+IEFs
-c28gdGhlIGlzc3VlIGNhbiBiZSBmaXhlZCBieSB1c2luZyBjaGlwX2dvb2QoKSBpbnN0ZWFkIG9m
-IGNoaXBfcmVhZHkoKS4NCj4gPiA+ID4gVGhlIGNoaXBfcmVhZHkoKSBqdXN0IGNoZWNrcyB0aGUg
-dmFsdWUgZnJvbSBmbGFzaCBtZW1vcnkgdHdpY2UuDQo+ID4gPiA+IEFuZCB0aGUgY2hpcF9nb29k
-KCkgY2hlY2tzIHRoZSB2YWx1ZSB3aXRoIHRoZSBleHBlY3RlZCB2YWx1ZS4NCj4gPiA+ID4gUHJv
-YmFibHkgdGhlIGlzc3VlIGNhbiBiZSBmaXhlZCBhcyBjaGVja2VkIGNvcnJlY3RseSBieSB0aGUg
-Y2hpcF9nb29kKCkuDQo+ID4gPiA+IFNvIGNoYW5nZSB0byB1c2UgY2hpcF9nb29kKCkgaW5zdGVh
-ZCBvZiBjaGlwX3JlYWR5KCkuDQo+ID4gPiANCj4gPiA+IFdlbGwsIHRoYXQncyBub3QgcmVhbGx5
-IGV4cGxhaW5pbmcgd2h5IHlvdSB0aGluayBjaGlwX2dvb2QoKSBzaG91bGQgYmUNCj4gPiA+IHVz
-ZWQgaW5zdGVhZCBvZiBjaGlwX3JlYWR5KCkuIFNvIEkgd2VudCBvbiBhbmQgbG9va2VkIGF0IHRo
-ZQ0KPiA+ID4gY2hpcF9nb29kKCksIGNoaXBfcmVhZHkoKSBhbmQgZG9fd3JpdGVfb25ld29yZCgp
-IGltcGxlbWVudGF0aW9uLCBhbmQNCj4gPiA+IGFsc28gbG9va2VkIGF0IHVzZXJzIG9mIGRvX3dy
-aXRlX29uZXdvcmQoKS4gSXQgc2VlbXMgdGhpcyBmdW5jdGlvbiBpcw0KPiA+ID4gdXNlZCB0byB3
-cml0ZSBkYXRhIHRvIHRoZSBmbGFzaCwgYW5kIGFwcGFyZW50bHkgdGhlICJvbmUgYml0IHNob3Vs
-ZA0KPiA+ID4gdG9nZ2xlIHRvIHJlZmxlY3QgYSBidXN5IHN0YXRlIiBkb2VzIG5vdCBhcHBseSB3
-aGVuIHdyaXRpbmcgdGhpbmdzIHRvDQo+ID4gPiB0aGUgbWVtb3J5IGFycmF5IChpdCdzIHByb2Jh
-Ymx5IHdvcmtpbmcgZm9yIG90aGVyIENGSSBjb21tYW5kcywgYnV0IEkNCj4gPiA+IGd1ZXNzIGl0
-IHRha2VzIG1vcmUgdGltZSB0byBhY3R1YWxseSBjaGFuZ2UgdGhlIGxldmVsIG9mIGEgTk9SIGNl
-bGwsDQo+ID4gPiBoZW5jZSB0aGUgcmVzdWx0IG9mIDIgaWRlbnRpY2FsIHJlYWRzIGRvZXMgbm90
-IG1lYW4gdGhhdCB0aGUgd3JpdGUgaXMNCj4gPiA+IGRvbmUpLg0KPiA+ID4gDQo+ID4gPiBBbHNv
-LCBpdCBzZWVtcyB0aGF0IGNtZHNldF8wMDAxIGlzIG5vdCBpbXBsZW1lbnRpbmcgY2hpcF9yZWFk
-eSgpIHRoZQ0KPiA+ID4gc2FtZSB3YXksIGFuZCBJIHdvbmRlciBpZiBjbWRzZXRfMDAwMiBpbXBs
-ZW1lbnRhdGlvbiBpcyBjb3JyZWN0IHRvDQo+ID4gPiBzdGFydCB3aXRoLiBPciBtYXliZSBJIGRv
-bid0IGdldCB3aGF0IGNoaXBfcmVhZHkoKSBpcyBmb3IuDQo+ID4gPiANCj4gPiBUaGUgMDAwMSBj
-bWQgc2V0IGlzIHF1aXRlIGRpZmZlcmVudCB0byAwMDAyIGFuZCAwMDAxIGlzIHRoZSBzdXBlcmlv
-ciBvbmUuDQo+ID4gSWYgeW91IGxvb2sgYXQgcmVjZW50IDAwMDIgY21kIHNldHMgdGhleSBvZmZl
-ciBhbiBhbHRlcm5hdGl2ZSBjbWQNCj4gPiBzZXQgdG8gcmVwbGFjZSB0aGUgYWxsIHRoZSAidG9n
-Z2xlIiBvbmVzIHdpdGggc29tZXRoaW5nIHRoYXQgaXMNCj4gPiBzYW1lL3NpbWlsYXIgdG8gd2hh
-dCAwMDAxIG9mZmVycy4NCj4gDQo+IE9rYXkuIERvIHlvdSBrbm93IHdoZW4gY2hpcF9yZWFkeSgp
-ICh0aGUgb25lIHRoYXQgY2hlY2tzIGlmIHNvbWV0aGluZw0KPiBjaGFuZ2VzIGJldHdlZW4gMiBy
-ZWFkcykgc2hvdWxkIGJlIHVzZWQgYW5kIHdoZW4gaXQgc2hvdWxkbid0Pw0KDQpJdCBpcyBuZXh0
-IHRvIGltcG9zc2libGUgdG8gZG8gcHJvcGVyIGVycm9yIGhhbmRsaW5nKGFuYWx5c2luZyBzdGF0
-dXMpIHdpdGgNCnRvZ2dsZSBtZXRob2QsIGVzcGVjaWFsbHkgd2hlbiB5b3UgaGF2ZSBpbnRlcmxl
-YXZlZCBjaGlwcy4NClRyeSB3aXRoIGVyYXNlIHN1c3BlbmQgd2hlbiBzb21ldGhpbmcgZ29lcyB3
-cm9uZyBhbmQgeW91IHdhbnQNCnRvIGFkZHJlc3MgdGhhdCBwcm9wZXJseS4NCkJlc3QgaXMgdG8g
-YWRkIHN1cHBvcnQgZm9yIHRoZSBleHRlbmRlZCAwMDAyIGNtZCBzZXQgYW5kIHVzZSB0aGF0DQp3
-aGVuZXZlciBwb3NzaWJsZS4NCg0KIEpvY2tlDQoNCg0KDQo=
+On Mon, Nov 05, 2018 at 11:12:27AM +0100, Miquel Raynal wrote:
+> Hi Greg,
+> 
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 22 Oct 2018
+> 22:10:59 +0200:
+> 
+> > A new SPI NAND subsystem has been added in drivers/mtd/nand/spi/ and
+> > Micron's MT29F devices are now supported in
+> > drivers/mtd/nand/spi/micron.c.
+> > 
+> > Remove the old driver.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> > Hello,
+> > 
+> > If anything is missing in drivers/mtd/nand/spi/micron.c to properly
+> > support the devices supported by the mt29f_spinand driver, please let
+> > me know.
+> > I might accept to delay removal of this driver if I have some guarantees
+> > that existing users will actually switch to the new driver at some
+> > point.
+> > 
+> > Regards,
+> > 
+> > Boris
+> > ---
+> 
+> I plan to apply this patch but I would like your approval first.
+> 
+> As a summary, the mt29f_spinand driver is a Micron SPI NAND chip
+> driver interfacing with the raw NAND API (which is 'wrong').
+> 
+> Boris has recently contributed a SPI NAND framework supporting SPI
+> NAND chips from several vendors, including Micron, that is supposed to
+> take over this driver.
+> 
+> Do you see anything that should prevent us to remove it now?
+
+Not at all, I was going to add this patch to my tree right now, as I
+couldn't do anything until after 4.20-rc1 was out.  Any objection from
+me just taking it that way and getting it into 4.20-final?
+
+thanks,
+
+greg k-h
