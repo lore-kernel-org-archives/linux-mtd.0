@@ -1,22 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJeo3-0005B9-6i
- for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 13:20:43 +0000
-Date: Mon, 5 Nov 2018 14:20:17 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Cc: boris.brezillon@free-electrons.com, Fabio Bettoni <fbettoni@gmail.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>, Joakim Tjernlund
- <Joakim.Tjernlund@infinera.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 04/11] mtd: cfi_cmdset_0002: Call xip_enable() once
- only in do_write_buffer().
-Message-ID: <20181105142017.2e51b8aa@bbrezillon>
-In-Reply-To: <20181025163219.25788-5-ikegami@allied-telesis.co.jp>
+Received: from mail-eopbgr680056.outbound.protection.outlook.com
+ ([40.107.68.56] helo=NAM04-BN3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJept-00061E-94
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 13:22:34 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
+ "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "fbettoni@gmail.com" <fbettoni@gmail.com>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>, "hauke@hauke-m.de" <hauke@hauke-m.de>,
+ "koen.vandeputte@ncentric.com" <koen.vandeputte@ncentric.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change do_write_oneword()
+ to use chip_good()
+Date: Mon, 5 Nov 2018 13:22:19 +0000
+Message-ID: <6c3538c4662c292ea4acbe76f255efa412193047.camel@infinera.com>
 References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
- <20181025163219.25788-5-ikegami@allied-telesis.co.jp>
+ <20181025163219.25788-2-ikegami@allied-telesis.co.jp>
+ <20181105111544.4e511ed9@bbrezillon>
+ <403739a3578a37c517626091535fa4574bee0171.camel@infinera.com>
+ <20181105135211.78da0a3f@bbrezillon>
+In-Reply-To: <20181105135211.78da0a3f@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <41AA9451FB8DA54BAF9BB114CE460903@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,63 +36,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 Oct 2018 01:32:12 +0900
-Tokunori Ikegami <ikegami@allied-telesis.co.jp> wrote:
-
-> By the removed goto statement it can be called xip_enable() once.
-> Also for a maintainability refactor it to call the function only once.
-
-Would have worked with the op_done label too if you place the
-xip_enable() call just after this label, right?
-
-> 
-> Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> Cc: Fabio Bettoni <fbettoni@gmail.com>
-> Co: Hauke Mehrtens <hauke@hauke-m.de>
-> Co: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: linux-mtd@lists.infradead.org
-> ---
-> Changes since v2:
-> - None.
-> 
-> Changes since v1:
-> - Split from the patch v1 3/3.
-> 
->  drivers/mtd/chips/cfi_cmdset_0002.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index deffafab067e..a3fa2d7b1ba0 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -1882,10 +1882,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  			continue;
->  		}
->  
-> -		if (chip_good(map, adr, datum)) {
-> -			xip_enable(map, chip, adr);
-> +		if (chip_good(map, adr, datum))
->  			break;
-> -		}
->  
->  		if (time_after(jiffies, timeo)) {
->  			ret = -EIO;
-> @@ -1911,13 +1909,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  				 cfi->device_type, NULL);
->  		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
->  				 cfi->device_type, NULL);
-> -		xip_enable(map, chip, adr);
->  		/* FIXME - should have reset delay before continuing */
->  
->  		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
->  		       __func__, adr);
->  	}
->  
-> +	xip_enable(map, chip, adr);
-> +
->  	chip->state = FL_READY;
->  	DISABLE_VPP(map);
->  	put_chip(map, chip, adr);
+T24gTW9uLCAyMDE4LTExLTA1IGF0IDEzOjUyICswMTAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
+PiANCj4gDQo+IE9uIE1vbiwgNSBOb3YgMjAxOCAxMjowMzowNCArMDAwMA0KPiBKb2FraW0gVGpl
+cm5sdW5kIDxKb2FraW0uVGplcm5sdW5kQGluZmluZXJhLmNvbT4gd3JvdGU6DQo+IA0KPiA+IE9u
+IE1vbiwgMjAxOC0xMS0wNSBhdCAxMToxNSArMDEwMCwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0K
+PiA+ID4gQ0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0aGUg
+b3JnYW5pemF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxl
+c3MgeW91IHJlY29nbml6ZSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUu
+DQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gT24gRnJpLCAyNiBPY3QgMjAxOCAwMTozMjowOSArMDkw
+MA0KPiA+ID4gVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4g
+d3JvdGU6DQo+ID4gPiANCj4gPiA+ID4gSW4gT3BlbldydCBQcm9qZWN0IHRoZSBmbGFzaCB3cml0
+ZSBlcnJvciBjYXVzZWQgb24gc29tZSBwcm9kdWN0cy4NCj4gPiA+IA0KPiA+ID4gSXQncyBva2F5
+IHRvIG1lbnRpb24gdGhhdCB0aGUgaXNzdWUgd2FzIGRpc2NvdmVyZWQgYnkgdGhlIE9wZW5XUlQg
+dGVhbSwNCj4gPiA+IGJ1dCBJJ2QgcmVwaHJhc2UgaXQgZGlmZmVyZW50bHkuDQo+ID4gPiANCj4g
+PiA+ICJBcyByZXBvcnRlZCBieSB0aGUgT3BlbldSVCB0ZWFtLCB3cml0ZSByZXF1ZXN0cyBzb21l
+dGltZXMgZmFpbCBvbiBzb21lDQo+ID4gPiBwbGF0Zm9ybXMiLg0KPiA+ID4gDQo+ID4gPiA+IEFs
+c28gdGhlIGlzc3VlIGNhbiBiZSBmaXhlZCBieSB1c2luZyBjaGlwX2dvb2QoKSBpbnN0ZWFkIG9m
+IGNoaXBfcmVhZHkoKS4NCj4gPiA+ID4gVGhlIGNoaXBfcmVhZHkoKSBqdXN0IGNoZWNrcyB0aGUg
+dmFsdWUgZnJvbSBmbGFzaCBtZW1vcnkgdHdpY2UuDQo+ID4gPiA+IEFuZCB0aGUgY2hpcF9nb29k
+KCkgY2hlY2tzIHRoZSB2YWx1ZSB3aXRoIHRoZSBleHBlY3RlZCB2YWx1ZS4NCj4gPiA+ID4gUHJv
+YmFibHkgdGhlIGlzc3VlIGNhbiBiZSBmaXhlZCBhcyBjaGVja2VkIGNvcnJlY3RseSBieSB0aGUg
+Y2hpcF9nb29kKCkuDQo+ID4gPiA+IFNvIGNoYW5nZSB0byB1c2UgY2hpcF9nb29kKCkgaW5zdGVh
+ZCBvZiBjaGlwX3JlYWR5KCkuDQo+ID4gPiANCj4gPiA+IFdlbGwsIHRoYXQncyBub3QgcmVhbGx5
+IGV4cGxhaW5pbmcgd2h5IHlvdSB0aGluayBjaGlwX2dvb2QoKSBzaG91bGQgYmUNCj4gPiA+IHVz
+ZWQgaW5zdGVhZCBvZiBjaGlwX3JlYWR5KCkuIFNvIEkgd2VudCBvbiBhbmQgbG9va2VkIGF0IHRo
+ZQ0KPiA+ID4gY2hpcF9nb29kKCksIGNoaXBfcmVhZHkoKSBhbmQgZG9fd3JpdGVfb25ld29yZCgp
+IGltcGxlbWVudGF0aW9uLCBhbmQNCj4gPiA+IGFsc28gbG9va2VkIGF0IHVzZXJzIG9mIGRvX3dy
+aXRlX29uZXdvcmQoKS4gSXQgc2VlbXMgdGhpcyBmdW5jdGlvbiBpcw0KPiA+ID4gdXNlZCB0byB3
+cml0ZSBkYXRhIHRvIHRoZSBmbGFzaCwgYW5kIGFwcGFyZW50bHkgdGhlICJvbmUgYml0IHNob3Vs
+ZA0KPiA+ID4gdG9nZ2xlIHRvIHJlZmxlY3QgYSBidXN5IHN0YXRlIiBkb2VzIG5vdCBhcHBseSB3
+aGVuIHdyaXRpbmcgdGhpbmdzIHRvDQo+ID4gPiB0aGUgbWVtb3J5IGFycmF5IChpdCdzIHByb2Jh
+Ymx5IHdvcmtpbmcgZm9yIG90aGVyIENGSSBjb21tYW5kcywgYnV0IEkNCj4gPiA+IGd1ZXNzIGl0
+IHRha2VzIG1vcmUgdGltZSB0byBhY3R1YWxseSBjaGFuZ2UgdGhlIGxldmVsIG9mIGEgTk9SIGNl
+bGwsDQo+ID4gPiBoZW5jZSB0aGUgcmVzdWx0IG9mIDIgaWRlbnRpY2FsIHJlYWRzIGRvZXMgbm90
+IG1lYW4gdGhhdCB0aGUgd3JpdGUgaXMNCj4gPiA+IGRvbmUpLg0KPiA+ID4gDQo+ID4gPiBBbHNv
+LCBpdCBzZWVtcyB0aGF0IGNtZHNldF8wMDAxIGlzIG5vdCBpbXBsZW1lbnRpbmcgY2hpcF9yZWFk
+eSgpIHRoZQ0KPiA+ID4gc2FtZSB3YXksIGFuZCBJIHdvbmRlciBpZiBjbWRzZXRfMDAwMiBpbXBs
+ZW1lbnRhdGlvbiBpcyBjb3JyZWN0IHRvDQo+ID4gPiBzdGFydCB3aXRoLiBPciBtYXliZSBJIGRv
+bid0IGdldCB3aGF0IGNoaXBfcmVhZHkoKSBpcyBmb3IuDQo+ID4gPiANCj4gPiBUaGUgMDAwMSBj
+bWQgc2V0IGlzIHF1aXRlIGRpZmZlcmVudCB0byAwMDAyIGFuZCAwMDAxIGlzIHRoZSBzdXBlcmlv
+ciBvbmUuDQo+ID4gSWYgeW91IGxvb2sgYXQgcmVjZW50IDAwMDIgY21kIHNldHMgdGhleSBvZmZl
+ciBhbiBhbHRlcm5hdGl2ZSBjbWQNCj4gPiBzZXQgdG8gcmVwbGFjZSB0aGUgYWxsIHRoZSAidG9n
+Z2xlIiBvbmVzIHdpdGggc29tZXRoaW5nIHRoYXQgaXMNCj4gPiBzYW1lL3NpbWlsYXIgdG8gd2hh
+dCAwMDAxIG9mZmVycy4NCj4gDQo+IE9rYXkuIERvIHlvdSBrbm93IHdoZW4gY2hpcF9yZWFkeSgp
+ICh0aGUgb25lIHRoYXQgY2hlY2tzIGlmIHNvbWV0aGluZw0KPiBjaGFuZ2VzIGJldHdlZW4gMiBy
+ZWFkcykgc2hvdWxkIGJlIHVzZWQgYW5kIHdoZW4gaXQgc2hvdWxkbid0Pw0KDQpJdCBpcyBuZXh0
+IHRvIGltcG9zc2libGUgdG8gZG8gcHJvcGVyIGVycm9yIGhhbmRsaW5nKGFuYWx5c2luZyBzdGF0
+dXMpIHdpdGgNCnRvZ2dsZSBtZXRob2QsIGVzcGVjaWFsbHkgd2hlbiB5b3UgaGF2ZSBpbnRlcmxl
+YXZlZCBjaGlwcy4NClRyeSB3aXRoIGVyYXNlIHN1c3BlbmQgd2hlbiBzb21ldGhpbmcgZ29lcyB3
+cm9uZyBhbmQgeW91IHdhbnQNCnRvIGFkZHJlc3MgdGhhdCBwcm9wZXJseS4NCkJlc3QgaXMgdG8g
+YWRkIHN1cHBvcnQgZm9yIHRoZSBleHRlbmRlZCAwMDAyIGNtZCBzZXQgYW5kIHVzZSB0aGF0DQp3
+aGVuZXZlciBwb3NzaWJsZS4NCg0KIEpvY2tlDQoNCg0KDQo=
