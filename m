@@ -1,19 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJnox-0001Yc-Kv
- for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 22:58:12 +0000
-Date: Mon, 5 Nov 2018 23:57:49 +0100
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJnq0-0000gc-41
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 22:59:17 +0000
+Date: Mon, 5 Nov 2018 23:58:30 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: Fix nanddev_neraseblocks()
-Message-ID: <20181105235749.06fcdc6d@bbrezillon>
-In-Reply-To: <20181028112955.26547-1-boris.brezillon@bootlin.com>
-References: <20181028112955.26547-1-boris.brezillon@bootlin.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mtd: nand: drop kernel-doc notation for a deleted
+ function parameter
+Message-ID: <20181105235830.6105ebdf@bbrezillon>
+In-Reply-To: <88c00c96-cfd2-4ff1-e753-8875501895df@infradead.org>
+References: <88c00c96-cfd2-4ff1-e753-8875501895df@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,35 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 28 Oct 2018 12:29:55 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Sun, 4 Nov 2018 18:38:35 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-> nanddev_neraseblocks() currently returns the number pages per LUN
-> instead of the total number of eraseblocks.
+> From: Randy Dunlap <rdunlap@infradead.org>
 > 
-> Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAND devices")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Remove kernel-doc notation for a deleted function parameter to prevent
+> a kernel-doc warning:
+> 
+> ../drivers/mtd/nand/raw/nand_base.c:603: warning: Excess function parameter 'mtd' description in 'panic_nand_wait'
+> 
+> Fixes: f1d46942e823 ("mtd: rawnand: Pass a nand_chip object to chip->waitfunc()")
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
 
 Queued to the fixes branch.
 
+Thanks,
+
+Boris
+
 > ---
->  include/linux/mtd/nand.h | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index abe975c87b90..78b86dea2f29 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -324,9 +324,8 @@ static inline unsigned int nanddev_ntargets(const struct nand_device *nand)
->   */
->  static inline unsigned int nanddev_neraseblocks(const struct nand_device *nand)
->  {
-> -	return (u64)nand->memorg.luns_per_target *
-> -	       nand->memorg.eraseblocks_per_lun *
-> -	       nand->memorg.pages_per_eraseblock;
-> +	return nand->memorg.ntargets * nand->memorg.luns_per_target *
-> +	       nand->memorg.eraseblocks_per_lun;
->  }
+>  drivers/mtd/nand/raw/nand_base.c |    1 -
+>  1 file changed, 1 deletion(-)
+> 
+> --- lnx-420-rc1.orig/drivers/mtd/nand/raw/nand_base.c
+> +++ lnx-420-rc1/drivers/mtd/nand/raw/nand_base.c
+> @@ -590,7 +590,6 @@ retry:
 >  
 >  /**
+>   * panic_nand_wait - [GENERIC] wait until the command is done
+> - * @mtd: MTD device structure
+>   * @chip: NAND chip structure
+>   * @timeo: timeout
+>   *
+> 
+> 
