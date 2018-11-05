@@ -1,22 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJZz8-0000ug-Nd
- for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 08:11:48 +0000
-Date: Mon, 5 Nov 2018 09:11:24 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, Olof
- Johansson <olof@lixom.net>
-Subject: Re: [PATCH v2] mtd: sa1100: avoid VLA in sa1100_setup_mtd
-Message-ID: <20181105091124.6594ee53@bbrezillon>
-In-Reply-To: <20181105075835.16234-1-boris.brezillon@bootlin.com>
-References: <20181105075835.16234-1-boris.brezillon@bootlin.com>
+ id 1gJa7J-0003Tm-RR
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2018 08:20:19 +0000
+Date: Mon, 5 Nov 2018 09:19:46 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mtd: nand: drop kernel-doc notation for a deleted
+ function parameter
+Message-ID: <20181105091946.1bd5c854@xps13>
+In-Reply-To: <88c00c96-cfd2-4ff1-e753-8875501895df@infradead.org>
+References: <88c00c96-cfd2-4ff1-e753-8875501895df@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,67 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  5 Nov 2018 08:58:35 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Hi Randy,
 
-> Enabling -Wvla found another variable-length array with randconfig
-> testing:
-> 
-> drivers/mtd/maps/sa1100-flash.c: In function 'sa1100_setup_mtd':
-> drivers/mtd/maps/sa1100-flash.c:224:10: error: ISO C90 forbids variable length array 'cdev' [-Werror=vla]
-> 
-> Dynamically allocate the cdev array passed to mtd_concat_create()
-> instead of using a VLA.
-> 
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Olof Johansson <olof@lixom.net>
+Subject prefix should be "mtd: rawnand:".
+
+Randy Dunlap <rdunlap@infradead.org> wrote on Sun, 4 Nov 2018 18:38:35
+-0800:
+
+> From: Randy Dunlap <rdunlap@infradead.org>
+>=20
+> Remove kernel-doc notation for a deleted function parameter to prevent
+> a kernel-doc warning:
+>=20
+> ../drivers/mtd/nand/raw/nand_base.c:603: warning: Excess function paramet=
+er 'mtd' description in 'panic_nand_wait'
+>=20
+> Fixes: f1d46942e823 ("mtd: rawnand: Pass a nand_chip object to chip->wait=
+func()")
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
 > ---
-> Changes in v2:
-> - Allocate cdev dynamically instead of having a fixed-size array
-> 
-> Hello,
-> 
-> I'm planning to queue this patch to the mtd/fixes PR. Arnd, Kees, feel
 
-						    ^ I meant branch,
-not PR, but this patch should also be part of the 4.20-rc2 fixes PR.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-> free to add your R-b.
-> 
-> Regards,
-> 
-> Boris
-> ---
->  drivers/mtd/maps/sa1100-flash.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-> index 784c6e1a0391..fd5fe12d7461 100644
-> --- a/drivers/mtd/maps/sa1100-flash.c
-> +++ b/drivers/mtd/maps/sa1100-flash.c
-> @@ -221,7 +221,14 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
->  		info->mtd = info->subdev[0].mtd;
->  		ret = 0;
->  	} else if (info->num_subdev > 1) {
-> -		struct mtd_info *cdev[nr];
-> +		struct mtd_info **cdev;
-> +
-> +		cdev = kmalloc_array(nr, sizeof(*cdev), GFP_KERNEL);
-> +		if (!cdev) {
-> +			ret = -ENOMEM;
-> +			goto err;
-> +		}
-> +
->  		/*
->  		 * We detected multiple devices.  Concatenate them together.
->  		 */
-> @@ -230,6 +237,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
->  
->  		info->mtd = mtd_concat_create(cdev, info->num_subdev,
->  					      plat->name);
-> +		kfree(cdev);
->  		if (info->mtd == NULL) {
->  			ret = -ENXIO;
->  			goto err;
+
+Thanks,
+Miqu=C3=A8l
