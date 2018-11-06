@@ -1,17 +1,30 @@
-Received: from tonali.inaoep.mx ([192.100.172.5])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJyQs-0003HP-B2
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 10:18:04 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+Date: Tue, 6 Nov 2018 11:22:06 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
+ Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
+ <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+Message-ID: <20181106112206.65a70a81@bbrezillon>
+In-Reply-To: <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
+References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
+ <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181105165321.7ea2b45f@bbrezillon>
+ <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
+ <20181106102851.61deb97a@bbrezillon>
+ <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: RE
-To: Recipients <astrofi@inaoep.mx>
-From: "Alice Waltoni" <astrofi@inaoep.mx>
-Date: Tue, 06 Nov 2018 10:13:51 +0000
-Reply-To: shengli019@outlook.com
-Message-Id: <20181106101742.B81CCCE07F4@calmecac.inaoep.mx>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,5 +34,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You have a charity mission worth $ 100,000,000.00 from Alice Walton For Mor=
-e Info=20
+On Tue, 6 Nov 2018 18:00:37 +0800
+Liang Yang <liang.yang@amlogic.com> wrote:
+
+> On 2018/11/6 17:28, Boris Brezillon wrote:
+> > On Tue, 6 Nov 2018 17:08:00 +0800
+> > Liang Yang <liang.yang@amlogic.com> wrote:
+> >   
+> >> On 2018/11/5 23:53, Boris Brezillon wrote:  
+> >>> On Fri, 2 Nov 2018 00:42:21 +0800
+> >>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
+> >>>      
+> >>>> +
+> >>>> +static inline u8 meson_nfc_read_byte(struct mtd_info *mtd)
+> >>>> +{
+> >>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
+> >>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
+> >>>> +	u32 cmd;
+> >>>> +
+> >>>> +	cmd = nfc->param.chip_select | NFC_CMD_DRD | 0;
+> >>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+> >>>> +
+> >>>> +	meson_nfc_drain_cmd(nfc);  
+> >>>
+> >>> You probably don't want to drain the FIFO every time you read a byte on
+> >>> the bus, and I guess the INPUT FIFO is at least as big as the CMD
+> >>> FIFO, right? If that's the case, you should queue as much DRD cmd as
+> >>> possible and only sync when the user explicitly requests it or when
+> >>> the INPUT/READ FIFO is full.
+> >>>      
+> >> Register 'NFC_REG_BUF' can holds only 4 bytes, also DRD sends only one
+> >> nand cycle to read one byte and covers the 1st byte every time reading.
+> >> i think nfc controller is faster than nand cycle, but really it is not
+> >> high efficiency when reading so many bytes once.
+> >> Or use dma command here like read_page and read_page_raw.  
+> > 
+> > Yep, that's also an alternative, though you'll have to make sure the
+> > buffer passed through the nand_op_inst is DMA-safe, and use a bounce
+> > buffer when that's not the case.
+> >   
+> ok, i will try dma here.
+
+We should probably expose the bounce buf handling as generic helpers at
+the rawnand level:
+
+void *nand_op_get_dma_safe_input_buf(struct nand_op_instr *instr)
+{
+	void *buf;
+
+	if (WARN_ON(instr->type != NAND_OP_DATA_IN_INSTR))
+		return NULL;
+
+	if (virt_addr_valid(instr->data.in) &&
+	    !object_is_on_stack(instr->data.buf.in))
+		return instr->data.buf.in;
+
+	return kzalloc(instr->data.len, GFP_KERNEL);
+}
+
+void nand_op_put_dma_safe_input_buf(struct nand_op_instr *instr,
+				    void *buf)
+{
+	if (WARN_ON(instr->type != NAND_OP_DATA_IN_INSTR) ||
+	    WARN_ON(!buf))
+		return;
+
+	if (buf == instr->data.buf.in)
+		return;
+
+	memcpy(instr->data.buf.in, buf, instr->data.len);
+	kfree(buf);
+}
+
+const void *nand_op_get_dma_safe_output_buf(struct nand_op_instr *instr)
+{
+	void *buf;
+
+	if (WARN_ON(instr->type != NAND_OP_DATA_OUT_INSTR))
+		return NULL;
+
+	if (virt_addr_valid(instr->data.out) &&
+	    !object_is_on_stack(instr->data.buf.out))
+		return instr->data.buf.out;
+
+	return kmemdup(instr->data.buf.out, GFP_KERNEL);
+}
+
+void nand_op_put_dma_safe_output_buf(struct nand_op_instr *instr,
+				    void *buf)
+{
+	if (WARN_ON(instr->type != NAND_OP_DATA_OUT_INSTR) ||
+	    WARN_ON(!buf))
+		return;
+
+	if (buf != instr->data.buf.out)
+		kfree(buf);
+}
+
+> > 
+> > Isn't the controller engine able to wait on the data transfer to be
+> > complete before sending the next instruction in the CMD FIFO pipe?
+> > I'm pretty sure it's able to do that, which would make
+> > meson_nfc_wait_dma_finish() useless, and all you'd have to do is wait
+> > for the CMD FIFO to be empty (assuming it guarantees the last command
+> > has been executed).
+> > Maybe the nfc design is difference. dedicated nfc dma engine is   
+> concatenated with the command fifo, there is no other status to check 
+> whether dma is done.
+
+No, I mean that internally a "DMA-transfer" instruction probably
+forces the NAND controller to wait for the DMA transfer to be finished
+before dequeuing/executing the next instruction. So, it should be safe
+to queue the PROG and WAIT_RB instructions and just rely on the "FIFO
+empty" event to consider the operation as finished. Then, all you'll
+have to do is check the status reg to determine whether the
+write operation succeeded or not.
