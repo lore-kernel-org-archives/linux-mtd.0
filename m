@@ -1,29 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK4eR-0000Nz-4p
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 16:56:27 +0000
-Date: Tue, 6 Nov 2018 17:56:04 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Han Xu
- <han.xu@nxp.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Harvey Hunt
- <harveyhuntnexus@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>, Maxim
- Levitsky <maximlevitsky@gmail.com>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>, Janusz
- Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH v2 06/22] mtd: rawnand: ams-delta: Allow this driver to
- be compiled when COMPILE_TEST=y
-Message-ID: <20181106175604.2225dbee@bbrezillon>
-In-Reply-To: <20181106150810.9569-7-boris.brezillon@bootlin.com>
-References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
- <20181106150810.9569-7-boris.brezillon@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gK99R-0008CH-4R
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 21:44:47 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH next] mtd: maps: physmap: Fix infinite loop crash in ROM type
+ probing
+Date: Tue,  6 Nov 2018 22:44:16 +0100
+Message-Id: <20181106214416.11342-1-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,60 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Nov 2018 16:07:54 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Toshiba RBTX4927, where map_probe is supposed to fail:
 
-> Drop the asm and mach headers inclusion and allow this driver to be
-> compiled when COMPILE_TEST=y in order to increase compile-test
-> coverage.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
-> Changes in v2:
-> - New patch
-> ---
->  drivers/mtd/nand/raw/Kconfig     | 2 +-
->  drivers/mtd/nand/raw/ams-delta.c | 5 -----
->  2 files changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index c7efc31384d5..1a55d3e3d4c5 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -70,7 +70,7 @@ config MTD_NAND_GPIO
->  
->  config MTD_NAND_AMS_DELTA
->  	tristate "NAND Flash device on Amstrad E3"
-> -	depends on MACH_AMS_DELTA
-> +	depends on MACH_AMS_DELTA || COMPILE_TEST
->  	default y
->  	help
->  	  Support for NAND flash on Amstrad E3 (Delta).
-> diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-> index 9ca70aab199d..37dec9ee9239 100644
-> --- a/drivers/mtd/nand/raw/ams-delta.c
-> +++ b/drivers/mtd/nand/raw/ams-delta.c
-> @@ -26,11 +26,6 @@
->  #include <linux/mtd/partitions.h>
->  #include <linux/platform_data/gpio-omap.h>
->  
-> -#include <asm/io.h>
-> -#include <asm/sizes.h>
+    Creating 2 MTD partitions on "physmap-flash.0":
+    0x000000c00000-0x000001000000 : "boot"
+    0x000000000000-0x000000c00000 : "user"
+    physmap-flash physmap-flash.1: physmap platform flash device: [mem 0x1e000000-0x1effffff]
+    CPU 0 Unable to handle kernel paging request at virtual address 00000000, epc == 80320f40, ra == 80321004
+    ...
+    Call Trace:
+    [<80320f40>] get_mtd_chip_driver+0x30/0x8c
+    [<80321004>] do_map_probe+0x20/0x90
+    [<80328448>] physmap_flash_probe+0x484/0x4ec
 
-Looks like linux/io.h and linux/sizes.h were indirectly included when
-compiling for ARM, which is not necessarily the case (kbuild robots
-report an error when compiling for sparc64).
+The access to rom_probe_types[] was changed from a sentinel-based loop
+to an infinite loop, causing a crash when reaching the sentinel.
 
-I'll add
+Fix this by:
+  - Removing the no longer needed sentinel,
+  - Limiting the number of loop iterations to the actual number of ROM
+    types.
 
-#include <linux/io.h>
-#include <linux/sizes.h>
+Fixes: c7afe08496fa463e ("mtd: maps: physmap: Invert logic on if/else branch")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/mtd/maps/physmap-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-in v3.
-
-> -
-> -#include <mach/hardware.h>
-> -
->  /*
->   * MTD structure for E3 (Delta)
->   */
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 33b77bd9022ce251..e8c3b250d8421edc 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -396,7 +396,7 @@ static int physmap_flash_of_init(struct platform_device *dev)
+ #endif /* IS_ENABLED(CONFIG_MTD_PHYSMAP_OF) */
+ 
+ static const char * const rom_probe_types[] = {
+-	"cfi_probe", "jedec_probe", "qinfo_probe", "map_rom", NULL
++	"cfi_probe", "jedec_probe", "qinfo_probe", "map_rom",
+ };
+ 
+ static const char * const part_probe_types[] = {
+@@ -524,7 +524,7 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		} else {
+ 			int j;
+ 
+-			for (j = 0; ARRAY_SIZE(rom_probe_types); j++) {
++			for (j = 0; j < ARRAY_SIZE(rom_probe_types); j++) {
+ 				info->mtds[i] = do_map_probe(rom_probe_types[j],
+ 							     &info->maps[i]);
+ 				if (info->mtds[i])
+-- 
+2.17.1
