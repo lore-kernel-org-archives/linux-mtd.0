@@ -1,22 +1,29 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK4Rw-0000B4-Pz
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 16:43:33 +0000
-Date: Tue, 6 Nov 2018 17:43:10 +0100
+ id 1gK4eR-0000Nz-4p
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 16:56:27 +0000
+Date: Tue, 6 Nov 2018 17:56:04 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, David
- Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] mtd: nand: Fix nanddev_pos_next_page() kernel-doc header
-Message-ID: <20181106174310.66d8b134@bbrezillon>
-In-Reply-To: <20181106173713.38806c5e@bbrezillon>
-References: <20181106162537.13882-1-boris.brezillon@bootlin.com>
- <20181106172946.10f9c3ca@xps13>
- <20181106173713.38806c5e@bbrezillon>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Han Xu
+ <han.xu@nxp.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>, Harvey Hunt
+ <harveyhuntnexus@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>, Maxim
+ Levitsky <maximlevitsky@gmail.com>, Marc Gonzalez
+ <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>, Janusz
+ Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH v2 06/22] mtd: rawnand: ams-delta: Allow this driver to
+ be compiled when COMPILE_TEST=y
+Message-ID: <20181106175604.2225dbee@bbrezillon>
+In-Reply-To: <20181106150810.9569-7-boris.brezillon@bootlin.com>
+References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
+ <20181106150810.9569-7-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +33,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 6 Nov 2018 17:37:13 +0100
+On Tue,  6 Nov 2018 16:07:54 +0100
 Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> On Tue, 6 Nov 2018 17:29:46 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->=20
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  6 Nov 2018
-> > 17:25:37 +0100:
-> >  =20
-> > > Function name is wrong in the kernel-doc header.
-> > >  =20
->=20
-> Oops, forgot to add
->=20
-> Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAN=
-D devices")
+> Drop the asm and mach headers inclusion and allow this driver to be
+> compiled when COMPILE_TEST=y in order to increase compile-test
+> coverage.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v2:
+> - New patch
+> ---
+>  drivers/mtd/nand/raw/Kconfig     | 2 +-
+>  drivers/mtd/nand/raw/ams-delta.c | 5 -----
+>  2 files changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index c7efc31384d5..1a55d3e3d4c5 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -70,7 +70,7 @@ config MTD_NAND_GPIO
+>  
+>  config MTD_NAND_AMS_DELTA
+>  	tristate "NAND Flash device on Amstrad E3"
+> -	depends on MACH_AMS_DELTA
+> +	depends on MACH_AMS_DELTA || COMPILE_TEST
+>  	default y
+>  	help
+>  	  Support for NAND flash on Amstrad E3 (Delta).
+> diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+> index 9ca70aab199d..37dec9ee9239 100644
+> --- a/drivers/mtd/nand/raw/ams-delta.c
+> +++ b/drivers/mtd/nand/raw/ams-delta.c
+> @@ -26,11 +26,6 @@
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/platform_data/gpio-omap.h>
+>  
+> -#include <asm/io.h>
+> -#include <asm/sizes.h>
 
-Queued to the fixes branch after adding the Fixes tag.
+Looks like linux/io.h and linux/sizes.h were indirectly included when
+compiling for ARM, which is not necessarily the case (kbuild robots
+report an error when compiling for sparc64).
 
->=20
-> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > ---
-> > >  include/linux/mtd/nand.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > > index 7ff3770e468b..12d75402472a 100644
-> > > --- a/include/linux/mtd/nand.h
-> > > +++ b/include/linux/mtd/nand.h
-> > > @@ -583,7 +583,7 @@ static inline void nanddev_pos_next_eraseblock(st=
-ruct nand_device *nand,
-> > >  }
-> > > =20
-> > >  /**
-> > > - * nanddev_pos_next_eraseblock() - Move a position to the next page
-> > > + * nanddev_pos_next_page() - Move a position to the next page
-> > >   * @nand: NAND device
-> > >   * @pos: the position to update
-> > >   *   =20
-> >=20
-> > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> >=20
-> >=20
-> > Thanks,
-> > Miqu=C3=A8l =20
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+I'll add
+
+#include <linux/io.h>
+#include <linux/sizes.h>
+
+in v3.
+
+> -
+> -#include <mach/hardware.h>
+> -
+>  /*
+>   * MTD structure for E3 (Delta)
+>   */
