@@ -1,26 +1,27 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK37F-0007wu-87
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:18:06 +0000
+ id 1gK3rd-0008Jh-Kn
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 16:06:02 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Han Xu <han.xu@nxp.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org
+Cc: Vignesh R <vigneshr@ti.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 15/22] mtd: rawnand: fsmc: Stop implementing ->select_chip()
-Date: Tue,  6 Nov 2018 16:08:03 +0100
-Message-Id: <20181106150810.9569-16-boris.brezillon@bootlin.com>
-In-Reply-To: <20181106150810.9569-1-boris.brezillon@bootlin.com>
-References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Piotr Bugalski <bugalski.piotr@gmail.com>
+Subject: [PATCH v3 2/7] spi: spi-mem: Add SPI_MEM_NO_DATA to the
+ spi_mem_data_dir enum
+Date: Tue,  6 Nov 2018 17:05:31 +0100
+Message-Id: <20181106160536.13415-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20181106160536.13415-1-boris.brezillon@bootlin.com>
+References: <20181106160536.13415-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,79 +31,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the CS line to assert is directly passed through the
-nand_operation struct we can replace the fsmc_select_chip()
-implementation by an internal fsmc_ce_ctrl() function which is
-directly called from fsmc_exec_op()
+When defining spi_mem_op templates we don't necessarily know the size
+that will be passed when the template is actually used, and basing the
+supports_op() check on op->data.nbytes to know whether there will be
+data transferred for a specific operation is this not possible.
+
+Add SPI_MEM_NO_DATA to the spi_mem_data_dir enum so that we can base
+our checks on op->data.dir instead of op->data.nbytes.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Changes in v2:
-- None
----
- drivers/mtd/nand/raw/fsmc_nand.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+Changes in v3:
+- Add Miquel's R-b
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 41ba76efd6c8..ea69ac6e6d7a 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -609,22 +609,19 @@ static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
- }
+Changes in v2:
+- New patch
+---
+ drivers/spi/spi-mem.c       | 2 +-
+ include/linux/spi/spi-mem.h | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 62a7b80801d2..967f581bca4f 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -142,7 +142,7 @@ static bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 	    spi_check_buswidth_req(mem, op->dummy.buswidth, true))
+ 		return false;
  
- /* fsmc_select_chip - assert or deassert nCE */
--static void fsmc_select_chip(struct nand_chip *chip, int chipnr)
-+static void fsmc_ce_ctrl(struct fsmc_nand_data *host, bool assert)
- {
--	struct fsmc_nand_data *host = mtd_to_fsmc(nand_to_mtd(chip));
--	u32 pc;
--
--	/* Support only one CS */
--	if (chipnr > 0)
--		return;
-+	u32 pc = readl(host->regs_va + FSMC_PC);
- 
--	pc = readl(host->regs_va + FSMC_PC);
--	if (chipnr < 0)
-+	if (!assert)
- 		writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
- 	else
- 		writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
- 
--	/* nCE line must be asserted before starting any operation */
-+	/*
-+	 * nCE line changes must be applied before returning from this
-+	 * function.
-+	 */
- 	mb();
- }
- 
-@@ -645,6 +642,9 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 	int i;
- 
- 	pr_debug("Executing operation [%d instructions]:\n", op->ninstrs);
-+
-+	fsmc_ce_ctrl(host, true);
-+
- 	for (op_id = 0; op_id < op->ninstrs; op_id++) {
- 		instr = &op->instrs[op_id];
- 
-@@ -701,6 +701,8 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 		}
- 	}
- 
-+	fsmc_ce_ctrl(host, false);
-+
- 	return ret;
- }
- 
-@@ -1081,7 +1083,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 
- 	mtd->dev.parent = &pdev->dev;
- 	nand->exec_op = fsmc_exec_op;
--	nand->select_chip = fsmc_select_chip;
- 
- 	/*
- 	 * Setup default ECC mode. nand_dt_init() called from nand_scan_ident()
+-	if (op->data.nbytes &&
++	if (op->data.dir != SPI_MEM_NO_DATA &&
+ 	    spi_check_buswidth_req(mem, op->data.buswidth,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 867839cc69a7..250b6f5c47c2 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -57,10 +57,12 @@
+ /**
+  * enum spi_mem_data_dir - describes the direction of a SPI memory data
+  *			   transfer from the controller perspective
++ * @SPI_MEM_NO_DATA: no data transferred
+  * @SPI_MEM_DATA_IN: data coming from the SPI memory
+  * @SPI_MEM_DATA_OUT: data sent to the SPI memory
+  */
+ enum spi_mem_data_dir {
++	SPI_MEM_NO_DATA,
+ 	SPI_MEM_DATA_IN,
+ 	SPI_MEM_DATA_OUT,
+ };
 -- 
 2.17.1
