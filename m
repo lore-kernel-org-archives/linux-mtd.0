@@ -1,7 +1,7 @@
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.213])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gJpI8-0003iW-Jk
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 00:32:28 +0000
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.210])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJpSS-0002Kj-AY
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 00:43:06 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
@@ -9,14 +9,14 @@ CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
  <chris.packham@alliedtelesis.co.nz>, Joakim Tjernlund
  <Joakim.Tjernlund@infinera.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v3 03/11] mtd: cfi_cmdset_0002: Remove goto statement from
- do_write_buffer()
-Date: Tue, 6 Nov 2018 00:32:06 +0000
-Message-ID: <TYAPR01MB2175B59378F0445F3D95D055DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>
+Subject: RE: [PATCH v3 04/11] mtd: cfi_cmdset_0002: Call xip_enable() once
+ only in do_write_buffer().
+Date: Tue, 6 Nov 2018 00:42:46 +0000
+Message-ID: <TYAPR01MB21758521DFA2729982C5C443DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>
 References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
- <20181025163219.25788-4-ikegami@allied-telesis.co.jp>
- <20181105141437.1a517176@bbrezillon>
-In-Reply-To: <20181105141437.1a517176@bbrezillon>
+ <20181025163219.25788-5-ikegami@allied-telesis.co.jp>
+ <20181105142017.2e51b8aa@bbrezillon>
+In-Reply-To: <20181105142017.2e51b8aa@bbrezillon>
 Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -34,25 +34,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 > -----Original Message-----
 > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Monday, November 05, 2018 10:15 PM
+> Sent: Monday, November 05, 2018 10:20 PM
 > To: IKEGAMI Tokunori
 > Cc: boris.brezillon@free-electrons.com; Fabio Bettoni; PACKHAM Chris;
 > Joakim Tjernlund; linux-mtd@lists.infradead.org
-> Subject: Re: [PATCH v3 03/11] mtd: cfi_cmdset_0002: Remove goto statement
-> from do_write_buffer()
+> Subject: Re: [PATCH v3 04/11] mtd: cfi_cmdset_0002: Call xip_enable() onc=
+e
+> only in do_write_buffer().
 >=20
-> On Fri, 26 Oct 2018 01:32:11 +0900
+> On Fri, 26 Oct 2018 01:32:12 +0900
 > Tokunori Ikegami <ikegami@allied-telesis.co.jp> wrote:
 >=20
-> > For a maintainability by reducing the goto statement remove it from
-> > do_write_buffer().
+> > By the removed goto statement it can be called xip_enable() once.
+> > Also for a maintainability refactor it to call the function only once.
 >=20
-> I guess that's a matter of taste, but I don't find this version more
-> readable than the previous one. Any strong reason to get rid of the
-> op_done label?
+> Would have worked with the op_done label too if you place the
+> xip_enable() call just after this label, right?
 
-No there is no strong reason.
-I have just thought also that it is better for the maintainability.
+Yes I think so.
+Since both the change does not change the actual behavior as that the place=
+ to call xip_enable() is changed but it is called as same with the original=
+.
 
 Regards,
 Ikegami
@@ -72,91 +74,45 @@ Ikegami
 > > - None.
 > >
 > > Changes since v1:
-> > - Split the patch v1 3/3.
+> > - Split from the patch v1 3/3.
 > >
-> >  drivers/mtd/chips/cfi_cmdset_0002.c | 46
-> +++++++++++++++--------------
-> >  1 file changed, 24 insertions(+), 22 deletions(-)
+> >  drivers/mtd/chips/cfi_cmdset_0002.c | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
 > >
 > > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
 > b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > index c2e51768a02c..deffafab067e 100644
+> > index deffafab067e..a3fa2d7b1ba0 100644
 > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -1884,38 +1884,40 @@ static int __xipram do_write_buffer(struct
+> > @@ -1882,10 +1882,8 @@ static int __xipram do_write_buffer(struct
 > map_info *map, struct flchip *chip,
-> >
-> >  		if (chip_good(map, adr, datum)) {
-> >  			xip_enable(map, chip, adr);
-> > -			goto op_done;
-> > +			break;
+> >  			continue;
 > >  		}
 > >
-> > -		if (time_after(jiffies, timeo))
-> > +		if (time_after(jiffies, timeo)) {
-> > +			ret =3D -EIO;
+> > -		if (chip_good(map, adr, datum)) {
+> > -			xip_enable(map, chip, adr);
+> > +		if (chip_good(map, adr, datum))
 > >  			break;
-> > +		}
+> > -		}
 > >
-> >  		/* Latency issues. Drop the lock, wait a while and retry
-> */
-> >  		UDELAY(map, chip, adr, 1);
+> >  		if (time_after(jiffies, timeo)) {
+> >  			ret =3D -EIO;
+> > @@ -1911,13 +1909,14 @@ static int __xipram do_write_buffer(struct
+> map_info *map, struct flchip *chip,
+> >  				 cfi->device_type, NULL);
+> >  		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start,
+> map, cfi,
+> >  				 cfi->device_type, NULL);
+> > -		xip_enable(map, chip, adr);
+> >  		/* FIXME - should have reset delay before continuing */
+> >
+> >  		printk(KERN_WARNING "MTD %s(): software timeout,
+> address:0x%.8lx.\n",
+> >  		       __func__, adr);
 > >  	}
 > >
-> > -	/*
-> > -	 * Recovery from write-buffer programming failures requires
-> > -	 * the write-to-buffer-reset sequence.  Since the last part
-> > -	 * of the sequence also works as a normal reset, we can run
-> > -	 * the same commands regardless of why we are here.
-> > -	 * See e.g.
-> > -	 *
-> http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Bu
-> ffer_Prog_Page_Buffer_Read_AN.pdf
-> > -	 */
-> > -	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> > -			 cfi->device_type, NULL);
-> > -	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-> > -			 cfi->device_type, NULL);
-> > -	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-> > -			 cfi->device_type, NULL);
-> > -	xip_enable(map, chip, adr);
-> > -	/* FIXME - should have reset delay before continuing */
-> > +	if (ret) {
-> > +		/*
-> > +		 * Recovery from write-buffer programming failures
-> requires
-> > +		 * the write-to-buffer-reset sequence.  Since the last
-> part
-> > +		 * of the sequence also works as a normal reset, we can
-> run
-> > +		 * the same commands regardless of why we are here.
-> > +		 * See e.g.
-> > +		 *
-> http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Bu
-> ffer_Prog_Page_Buffer_Read_AN.pdf
-> > +		 */
-> > +		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start,
-> map, cfi,
-> > +				 cfi->device_type, NULL);
-> > +		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start,
-> map, cfi,
-> > +				 cfi->device_type, NULL);
-> > +		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start,
-> map, cfi,
-> > +				 cfi->device_type, NULL);
-> > +		xip_enable(map, chip, adr);
-> > +		/* FIXME - should have reset delay before continuing */
-> >
-> > -	printk(KERN_WARNING "MTD %s(): software timeout,
-> address:0x%.8lx.\n",
-> > -	       __func__, adr);
-> > +		printk(KERN_WARNING "MTD %s(): software timeout,
-> address:0x%.8lx.\n",
-> > +		       __func__, adr);
-> > +	}
-> >
-> > -	ret =3D -EIO;
-> > - op_done:
+> > +	xip_enable(map, chip, adr);
+> > +
 > >  	chip->state =3D FL_READY;
 > >  	DISABLE_VPP(map);
 > >  	put_chip(map, chip, adr);
