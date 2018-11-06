@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK2yH-00075v-KJ
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:58 +0000
+ id 1gK2yM-00075S-85
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:59 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -16,10 +16,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 11/22] mtd: rawnand: ams-delta: Explicitly inherit from
- nand_controller
-Date: Tue,  6 Nov 2018 16:07:59 +0100
-Message-Id: <20181106150810.9569-12-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 19/22] mtd: rawnand: ams-delta: Stop implementing
+ ->select_chip()
+Date: Tue,  6 Nov 2018 16:08:07 +0100
+Message-Id: <20181106150810.9569-20-boris.brezillon@bootlin.com>
 In-Reply-To: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,40 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All NAND objects are supposed to inherit from nand_controller. The
-framework is providing a dummy controller object, but we're moving
-away from this approach in favor of explicit inheritance.
+Now that the CS to be selected is passed in nand_operation->cs, we can
+get rid of the ->select_chip() implementation and replace it by an
+internal function which is called from the chip->exec_op() hook.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes in v2:
-- None
+- New patch
 ---
- drivers/mtd/nand/raw/ams-delta.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/nand/raw/ams-delta.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index ccdd114495bc..723318e25691 100644
+index 723318e25691..1c4aa0380599 100644
 --- a/drivers/mtd/nand/raw/ams-delta.c
 +++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -27,6 +27,7 @@
-  * MTD structure for E3 (Delta)
-  */
- struct ams_delta_nand {
-+	struct nand_controller	base;
- 	struct nand_chip	nand_chip;
- 	struct gpio_desc	*gpiod_rdy;
- 	struct gpio_desc	*gpiod_nce;
-@@ -275,6 +276,10 @@ static int ams_delta_init(struct platform_device *pdev)
- 	/* Initialize data port direction to a known state */
- 	ams_delta_dir_input(priv, true);
+@@ -114,14 +114,9 @@ static void ams_delta_read_buf(struct ams_delta_nand *priv, u8 *buf, int len)
+ 		buf[i] = ams_delta_io_read(priv);
+ }
  
-+	/* Initialize the NAND controller object embedded in ams_delta_nand. */
-+	nand_controller_init(&priv->base);
-+	this->controller = &priv->base;
+-static void ams_delta_select_chip(struct nand_chip *this, int n)
++static void ams_delta_ctrl_cs(struct ams_delta_nand *priv, bool assert)
+ {
+-	struct ams_delta_nand *priv = nand_get_controller_data(this);
+-
+-	if (n > 0)
+-		return;
+-
+-	gpiod_set_value(priv->gpiod_nce, n < 0);
++	gpiod_set_value(priv->gpiod_nce, assert ? 0 : 1);
+ }
+ 
+ static int ams_delta_exec_op(struct nand_chip *this,
+@@ -134,6 +129,8 @@ static int ams_delta_exec_op(struct nand_chip *this,
+ 	if (check_only)
+ 		return 0;
+ 
++	ams_delta_ctrl_cs(priv, 1);
 +
- 	/* Scan to find existence of the device */
- 	err = nand_scan(this, 1);
- 	if (err)
+ 	for (instr = op->instrs; instr < op->instrs + op->ninstrs; instr++) {
+ 		switch (instr->type) {
+ 		case NAND_OP_CMD_INSTR:
+@@ -172,6 +169,8 @@ static int ams_delta_exec_op(struct nand_chip *this,
+ 			break;
+ 	}
+ 
++	ams_delta_ctrl_cs(priv, 0);
++
+ 	return ret;
+ }
+ 
+@@ -215,7 +214,6 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	priv->io_base = io_base;
+ 	nand_set_controller_data(this, priv);
+ 
+-	this->select_chip = ams_delta_select_chip;
+ 	this->exec_op = ams_delta_exec_op;
+ 
+ 	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
 -- 
 2.17.1
