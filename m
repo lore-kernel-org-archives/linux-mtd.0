@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK2yJ-00075b-Mt
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gK2yM-0007gB-Ai
  for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:56 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,10 +16,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 14/22] mtd: rawnand: Make ->select_chip() optional when
- ->exec_op() is implemented
-Date: Tue,  6 Nov 2018 16:08:02 +0100
-Message-Id: <20181106150810.9569-15-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 16/22] mtd: rawnand: marvell: Stop implementing
+ ->select_chip()
+Date: Tue,  6 Nov 2018 16:08:04 +0100
+Message-Id: <20181106150810.9569-17-boris.brezillon@bootlin.com>
 In-Reply-To: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,58 +31,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the CS to be selected on a nand_operation is passed in
-nand_operation->cs we can make the ->select_chip() hook optional for
-drivers implementing ->exec_op().
-
-When not implemented, the core is assuming the CS line is automatically
-asserted/deasserted by the driver ->exec_op() implementation.
+Now that the CS to be selected is kept in chip->cur_cs and passed
+in nand_operation->cs, we can get rid of the ->select_chip()
+implementation and replace it by an internal function which is called
+from the chip->exec_op() and chip->ecc.read/write_xxx() hooks.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes in v2:
 - None
 ---
- drivers/mtd/nand/raw/nand_base.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 26e7bfb22a58..dae4848a8e3d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -247,7 +247,9 @@ void nand_select_target(struct nand_chip *chip, unsigned int cs)
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 650f2b490a05..ba7a45fb1905 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -704,7 +704,8 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+ 	return 0;
+ }
+ 
+-static void marvell_nfc_select_chip(struct nand_chip *chip, int die_nr)
++static void marvell_nfc_select_target(struct nand_chip *chip,
++				      unsigned int die_nr)
+ {
+ 	struct marvell_nand_chip *marvell_nand = to_marvell_nand(chip);
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+@@ -713,12 +714,6 @@ static void marvell_nfc_select_chip(struct nand_chip *chip, int die_nr)
+ 	if (chip == nfc->selected_chip && die_nr == marvell_nand->selected_die)
  		return;
  
- 	chip->cur_cs = cs;
--	chip->select_chip(chip, cs);
-+
-+	if (chip->select_chip)
-+		chip->select_chip(chip, cs);
- }
- EXPORT_SYMBOL_GPL(nand_select_target);
- 
-@@ -260,7 +262,9 @@ EXPORT_SYMBOL_GPL(nand_select_target);
-  */
- void nand_deselect_target(struct nand_chip *chip)
- {
--	chip->select_chip(chip, -1);
-+	if (chip->select_chip)
-+		chip->select_chip(chip, -1);
-+
- 	chip->cur_cs = -1;
- }
- EXPORT_SYMBOL_GPL(nand_deselect_target);
-@@ -5021,11 +5025,6 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
- 	if (!mtd->name && mtd->dev.parent)
- 		mtd->name = dev_name(mtd->dev.parent);
- 
--	if (chip->exec_op && !chip->select_chip) {
--		pr_err("->select_chip() is mandatory when implementing ->exec_op()\n");
--		return -EINVAL;
+-	if (die_nr < 0 || die_nr >= marvell_nand->nsels) {
+-		nfc->selected_chip = NULL;
+-		marvell_nand->selected_die = -1;
+-		return;
 -	}
 -
- 	ret = nand_legacy_check_hooks(chip);
- 	if (ret)
- 		return ret;
+ 	writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
+ 	writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
+ 
+@@ -1024,13 +1019,13 @@ static int marvell_nfc_hw_ecc_hmg_do_read_page(struct nand_chip *chip,
+ 	}
+ 
+ 	ret = marvell_nfc_wait_cmdd(chip);
+-
+ 	return ret;
+ }
+ 
+ static int marvell_nfc_hw_ecc_hmg_read_page_raw(struct nand_chip *chip, u8 *buf,
+ 						int oob_required, int page)
+ {
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi,
+ 						   true, page);
+ }
+@@ -1043,6 +1038,7 @@ static int marvell_nfc_hw_ecc_hmg_read_page(struct nand_chip *chip, u8 *buf,
+ 	int max_bitflips = 0, ret;
+ 	u8 *raw_buf;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	marvell_nfc_enable_hw_ecc(chip);
+ 	marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi, false,
+ 					    page);
+@@ -1079,6 +1075,7 @@ static int marvell_nfc_hw_ecc_hmg_read_oob_raw(struct nand_chip *chip, int page)
+ 	/* Invalidate page cache */
+ 	chip->pagebuf = -1;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_read_page(chip, chip->data_buf,
+ 						   chip->oob_poi, true, page);
+ }
+@@ -1142,6 +1139,7 @@ static int marvell_nfc_hw_ecc_hmg_write_page_raw(struct nand_chip *chip,
+ 						 const u8 *buf,
+ 						 int oob_required, int page)
+ {
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_write_page(chip, buf, chip->oob_poi,
+ 						    true, page);
+ }
+@@ -1152,6 +1150,7 @@ static int marvell_nfc_hw_ecc_hmg_write_page(struct nand_chip *chip,
+ {
+ 	int ret;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	marvell_nfc_enable_hw_ecc(chip);
+ 	ret = marvell_nfc_hw_ecc_hmg_do_write_page(chip, buf, chip->oob_poi,
+ 						   false, page);
+@@ -1175,6 +1174,7 @@ static int marvell_nfc_hw_ecc_hmg_write_oob_raw(struct nand_chip *chip,
+ 
+ 	memset(chip->data_buf, 0xFF, mtd->writesize);
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
+ 	return marvell_nfc_hw_ecc_hmg_do_write_page(chip, chip->data_buf,
+ 						    chip->oob_poi, true, page);
+ }
+@@ -1194,6 +1194,8 @@ static int marvell_nfc_hw_ecc_bch_read_page_raw(struct nand_chip *chip, u8 *buf,
+ 	int ecc_len = lt->ecc_bytes;
+ 	int chunk;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	if (oob_required)
+ 		memset(chip->oob_poi, 0xFF, mtd->oobsize);
+ 
+@@ -1304,6 +1306,8 @@ static int marvell_nfc_hw_ecc_bch_read_page(struct nand_chip *chip,
+ 	u32 failure_mask = 0;
+ 	int chunk, ret;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	/*
+ 	 * With BCH, OOB is not fully used (and thus not read entirely), not
+ 	 * expected bytes could show up at the end of the OOB buffer if not
+@@ -1448,6 +1452,8 @@ static int marvell_nfc_hw_ecc_bch_write_page_raw(struct nand_chip *chip,
+ 		lt->last_spare_bytes;
+ 	int chunk;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+ 
+ 	for (chunk = 0; chunk < lt->nchunks; chunk++) {
+@@ -1559,6 +1565,8 @@ static int marvell_nfc_hw_ecc_bch_write_page(struct nand_chip *chip,
+ 	int spare_len = lt->spare_bytes;
+ 	int chunk, ret;
+ 
++	marvell_nfc_select_target(chip, chip->cur_cs);
++
+ 	/* Spare data will be written anyway, so clear it to avoid garbage */
+ 	if (!oob_required)
+ 		memset(chip->oob_poi, 0xFF, mtd->oobsize);
+@@ -2097,6 +2105,8 @@ static int marvell_nfc_exec_op(struct nand_chip *chip,
+ {
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+ 
++	marvell_nfc_select_target(chip, op->cs);
++
+ 	if (nfc->caps->is_nfcv2)
+ 		return nand_op_parser_exec_op(chip, &marvell_nfcv2_op_parser,
+ 					      op, check_only);
+@@ -2618,7 +2628,6 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+ 	nand_set_flash_node(chip, np);
+ 
+ 	chip->exec_op = marvell_nfc_exec_op;
+-	chip->select_chip = marvell_nfc_select_chip;
+ 	if (!of_property_read_bool(np, "marvell,nand-keep-config"))
+ 		chip->setup_data_interface = marvell_nfc_setup_data_interface;
+ 
 -- 
 2.17.1
