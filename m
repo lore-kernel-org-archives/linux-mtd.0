@@ -1,30 +1,24 @@
-Received: from kirsty.vergenet.net ([202.4.237.240])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK22j-00076D-1v
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 14:09:26 +0000
-Date: Tue, 6 Nov 2018 15:09:05 +0100
-From: Simon Horman <horms@verge.net.au>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gK2y0-00073K-MN
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:37 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
- Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>
-Subject: Re: [PATCH 1/4] spi: rspi: Add r8a77470 to the compatible list
-Message-ID: <20181106140905.yfhr7fayi6decjzz@verge.net.au>
-References: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1541075705-1333-2-git-send-email-fabrizio.castro@bp.renesas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1541075705-1333-2-git-send-email-fabrizio.castro@bp.renesas.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: [PATCH v2 00/22] mtd: rawnand: 3rd batch of cleanup
+Date: Tue,  6 Nov 2018 16:07:48 +0100
+Message-Id: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +28,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 01, 2018 at 12:35:02PM +0000, Fabrizio Castro wrote:
-> Add r8a77470 to the list of examples with soctypes.
-> No driver change is needed as "renesas,qspi" will activate
-> the right code within the corresponding driver.
-> 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+Hello,
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+After the sanitization of the raw NAND API, here is a smaller
+patchset continuing in this direction.
 
-> 
-> ---
-> 
-> As per Mark Brown's comment on patch "dt-bindings: spi: rspi: Add
-> r8a7744 to the compatible list", this patch doesn't come with the
-> "dt-bindings" prefix in the title.
-> 
->  Documentation/devicetree/bindings/spi/spi-rspi.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-rspi.txt b/Documentation/devicetree/bindings/spi/spi-rspi.txt
-> index fc97ad6..421722b 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-rspi.txt
-> +++ b/Documentation/devicetree/bindings/spi/spi-rspi.txt
-> @@ -15,6 +15,7 @@ Required properties:
->  			- "renesas,qspi-r8a7743" (RZ/G1M)
->  			- "renesas,qspi-r8a7744" (RZ/G1N)
->  			- "renesas,qspi-r8a7745" (RZ/G1E)
-> +			- "renesas,qspi-r8a77470" (RZ/G1C)
->  			- "renesas,qspi-r8a7790" (R-Car H2)
->  			- "renesas,qspi-r8a7791" (R-Car M2-W)
->  			- "renesas,qspi-r8a7792" (R-Car V2H)
-> -- 
-> 2.7.4
-> 
+Patch 1 is just a follow-up on the "stop passing mtd_info objects
+around" patches, except this times it takes care of internal functions.
+There's still a lot of sanitization to do in drivers in order to get
+rid of those mtd params, but I'll leave that to driver maintainers.
+
+Patch 2 is trying to get rid of 3 forward declarations that are not
+really needed.
+
+Patch 3 is getting rid of useless test in nand_legacy_set_defaults().
+
+Patch 4 is making nand_exec_op() private, so that NAND controller
+drivers are not tempted to use it.
+
+Patch 5 is getting rid of an unused flag that has been around for quite
+some time.
+
+Patches 6 to 11 are doing various cleanups/fixes/improvements in the
+ams-delta driver.
+
+Patches 12 to 20 are deprecating the ->select_chip() hook which should
+now be replaced by internal target/die selection logic directly called
+from the ->exec_op() and ecc.read/write_xxx() implementations. The
+rational behind this change is that modern controller now take care of
+asserting/deasserting the CS pin on a per-operation basis, and if we
+ever want to implement advanced queuing logic (instead of the basic
+serialization we currently have) we'll have to attach a CS line to the
+operation we want to execute.
+
+Finally, patches 21 and 22 are moving the controller specific methods
+to nand_controller_ops.
+
+As usual, let me know what you think of those changes.
+
+Regards,
+
+Boris
+
+Boris Brezillon (22):
+  mtd: rawnand: Stop passing mtd_info objects to internal functions
+  mtd: rawnand: Reorganize code to avoid forward declarations
+  mtd: rawnand: legacy: Drop useless test in nand_legacy_set_defaults()
+  mtd: rawnand: Move nand_exec_op() to internal.h
+  mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC flag
+  mtd: rawnand: ams-delta: Allow this driver to be compiled when
+    COMPILE_TEST=y
+  mtd: rawnand: ams-delta: Add an SPDX tag to replace the license text
+  mtd: rawnand: ams-delta: Fix various coding style issues
+  mtd: rawnand: ams-delta: cleanup ams_delta_init() error path
+  mtd: rawnand: ams-delta: Check mtd_device_register() return code
+  mtd: rawnand: ams-delta: Explicitly inherit from nand_controller
+  mtd: rawnand: Add nand_[de]select_target() helpers
+  mtd: rawnand: Pass the CS line to be selected in struct nand_operation
+  mtd: rawnand: Make ->select_chip() optional when ->exec_op() is
+    implemented
+  mtd: rawnand: fsmc: Stop implementing ->select_chip()
+  mtd: rawnand: marvell: Stop implementing ->select_chip()
+  mtd: rawnand: tegra: Stop implementing ->select_chip()
+  mtd: rawnand: vf610: Stop implementing ->select_chip()
+  mtd: rawnand: ams-delta: Stop implementing ->select_chip()
+  mtd: rawnand: Deprecate the ->select_chip() hook
+  mtd: rawnand: Move the ->exec_op() method to nand_controller_ops
+  mtd: rawnand: Move ->setup_data_interface() to nand_controller_ops
+
+ drivers/mtd/nand/raw/Kconfig                  |   2 +-
+ drivers/mtd/nand/raw/ams-delta.c              |  91 +--
+ drivers/mtd/nand/raw/atmel/nand-controller.c  |   9 +-
+ drivers/mtd/nand/raw/au1550nd.c               |   2 +-
+ .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  |   2 +-
+ drivers/mtd/nand/raw/cafe_nand.c              |   2 +-
+ drivers/mtd/nand/raw/davinci_nand.c           |   2 +-
+ drivers/mtd/nand/raw/denali.c                 |   5 +-
+ drivers/mtd/nand/raw/diskonchip.c             |   4 +-
+ drivers/mtd/nand/raw/fsl_elbc_nand.c          |   2 +-
+ drivers/mtd/nand/raw/fsl_ifc_nand.c           |   2 +-
+ drivers/mtd/nand/raw/fsl_upm.c                |   2 +-
+ drivers/mtd/nand/raw/fsmc_nand.c              |  32 +-
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c    |  27 +-
+ drivers/mtd/nand/raw/hisi504_nand.c           |   2 +-
+ drivers/mtd/nand/raw/internals.h              |  33 +
+ drivers/mtd/nand/raw/jz4740_nand.c            |   6 +-
+ drivers/mtd/nand/raw/jz4780_nand.c            |   2 +-
+ drivers/mtd/nand/raw/marvell_nand.c           |  32 +-
+ drivers/mtd/nand/raw/mpc5121_nfc.c            |   4 +-
+ drivers/mtd/nand/raw/mtk_nand.c               |   4 +-
+ drivers/mtd/nand/raw/mxc_nand.c               |  14 +-
+ drivers/mtd/nand/raw/nand_base.c              | 737 +++++++++---------
+ drivers/mtd/nand/raw/nand_bbt.c               | 285 +++----
+ drivers/mtd/nand/raw/nand_hynix.c             |   8 +-
+ drivers/mtd/nand/raw/nand_legacy.c            |  35 +-
+ drivers/mtd/nand/raw/ndfc.c                   |   2 +-
+ drivers/mtd/nand/raw/plat_nand.c              |   2 +-
+ drivers/mtd/nand/raw/qcom_nandc.c             |   2 +-
+ drivers/mtd/nand/raw/r852.c                   |   4 +-
+ drivers/mtd/nand/raw/s3c2410.c                |   7 +-
+ drivers/mtd/nand/raw/sh_flctl.c               |   2 +-
+ drivers/mtd/nand/raw/sunxi_nand.c             |   4 +-
+ drivers/mtd/nand/raw/tango_nand.c             |   4 +-
+ drivers/mtd/nand/raw/tegra_nand.c             |  32 +-
+ drivers/mtd/nand/raw/vf610_nfc.c              |  38 +-
+ drivers/mtd/nand/raw/xway_nand.c              |   2 +-
+ include/linux/mtd/rawnand.h                   | 150 ++--
+ 38 files changed, 844 insertions(+), 751 deletions(-)
+
+-- 
+2.17.1
