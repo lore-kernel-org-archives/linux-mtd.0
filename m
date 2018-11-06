@@ -1,30 +1,27 @@
-Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
- Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
- <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
- <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
- <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
- <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
- <20181105165321.7ea2b45f@bbrezillon>
- <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
- <20181106102851.61deb97a@bbrezillon>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
-Date: Tue, 6 Nov 2018 18:00:37 +0800
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.211])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gJyM5-00038V-Nc
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 10:13:09 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, "ikegami_to@yahoo.co.jp"
+ <ikegami_to@yahoo.co.jp>
+CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ Fabio Bettoni <fbettoni@gmail.com>, PACKHAM Chris
+ <chris.packham@alliedtelesis.co.nz>, Joakim Tjernlund
+ <Joakim.Tjernlund@infinera.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH v3 02/11] mtd: cfi_cmdset_0002: Remove chip_ready() from
+ do_write_buffer()
+Date: Tue, 6 Nov 2018 10:12:50 +0000
+Message-ID: <TYAPR01MB21750C2E3F4011B439B59A12DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>
+References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
+ <20181025163219.25788-3-ikegami@allied-telesis.co.jp>
+ <20181105140303.6c3a247a@bbrezillon>
+In-Reply-To: <20181105140303.6c3a247a@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20181106102851.61deb97a@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,230 +31,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sorry for late to reply to the mail below. (The mail was unexpectedly moved=
+ from the inbox.)
 
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, November 05, 2018 10:03 PM
+> To: IKEGAMI Tokunori
+> Cc: boris.brezillon@free-electrons.com; Fabio Bettoni; PACKHAM Chris;
+> Joakim Tjernlund; linux-mtd@lists.infradead.org
+> Subject: Re: [PATCH v3 02/11] mtd: cfi_cmdset_0002: Remove chip_ready()
+> from do_write_buffer()
+>=20
+> On Fri, 26 Oct 2018 01:32:10 +0900
+> Tokunori Ikegami <ikegami@allied-telesis.co.jp> wrote:
+>=20
+> > It is enough to use chip_good() only so chip_ready() is not necessary.
+>=20
+> I'd like a short explanation saying why chip_good() is enough:
+> chip_good() is doing the same check chip_ready() is doing plus an extra
+> check to make sure we end up with the data we wrote.
 
-On 2018/11/6 17:28, Boris Brezillon wrote:
-> On Tue, 6 Nov 2018 17:08:00 +0800
-> Liang Yang <liang.yang@amlogic.com> wrote:
-> 
->> On 2018/11/5 23:53, Boris Brezillon wrote:
->>> On Fri, 2 Nov 2018 00:42:21 +0800
->>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
->>>    
->>>> +
->>>> +static inline u8 meson_nfc_read_byte(struct mtd_info *mtd)
->>>> +{
->>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
->>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>> +	u32 cmd;
->>>> +
->>>> +	cmd = nfc->param.chip_select | NFC_CMD_DRD | 0;
->>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>> +
->>>> +	meson_nfc_drain_cmd(nfc);
->>>
->>> You probably don't want to drain the FIFO every time you read a byte on
->>> the bus, and I guess the INPUT FIFO is at least as big as the CMD
->>> FIFO, right? If that's the case, you should queue as much DRD cmd as
->>> possible and only sync when the user explicitly requests it or when
->>> the INPUT/READ FIFO is full.
->>>    
->> Register 'NFC_REG_BUF' can holds only 4 bytes, also DRD sends only one
->> nand cycle to read one byte and covers the 1st byte every time reading.
->> i think nfc controller is faster than nand cycle, but really it is not
->> high efficiency when reading so many bytes once.
->> Or use dma command here like read_page and read_page_raw.
-> 
-> Yep, that's also an alternative, though you'll have to make sure the
-> buffer passed through the nand_op_inst is DMA-safe, and use a bounce
-> buffer when that's not the case.
-> 
-ok, i will try dma here.
+I see so I will update as this.
 
->>>> +
->>>> +	meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
->>>
->>> As for the read_byte() implementation, I don't think you should force a
->>> sync here.
->>>    
->> ok, it can send 30 bytes (command fifo size subtract 2 idle command )
->> once with a sync.
-> 
-> Okay, still better than syncing after each transmitted byte.
-> 
->> Or use dma command.
-> 
-> I guess that's the best option.
-> 
-ok, i will try dma here.
->>
->>>> +}
->>>> +
->>>> +static void meson_nfc_write_buf(struct mtd_info *mtd,
->>>> +				const u8 *buf, int len)
->>>> +{
->>>> +	int i;
->>>> +
->>>> +	for (i = 0; i < len; i++)
->>>> +		meson_nfc_write_byte(mtd, buf[i]);
->>>> +}
->>>> +
->>>> +static int meson_nfc_rw_cmd_prepare_and_execute(struct nand_chip *nand,
->>>> +						int page, bool in)
->>>> +{
->>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>> +	const struct nand_sdr_timings *sdr =
->>>> +		nand_get_sdr_timings(&nand->data_interface);
->>>> +	int cs = nfc->param.chip_select;
->>>> +	int i, cmd0, cmd_num;
->>>> +	int ret = 0;
->>>> +
->>>> +	cmd0 = in ? NAND_CMD_READ0 : NAND_CMD_SEQIN;
->>>> +	cmd_num = sizeof(struct nand_rw_cmd) / sizeof(int);
->>>> +	if (!in)
->>>> +		cmd_num--;
->>>> +
->>>> +	nfc->cmdfifo.rw.cmd0 = cs | NFC_CMD_CLE | cmd0;
->>>> +	for (i = 0; i < MAX_CYCLE_COLUMN_ADDRS; i++)
->>>> +		nfc->cmdfifo.rw.col[i] = cs | NFC_CMD_ALE | 0;
->>>> +
->>>> +	for (i = 0; i < MAX_CYCLE_ROW_ADDRS; i++)
->>>> +		nfc->cmdfifo.rw.row[i] = cs | NFC_CMD_ALE | ROW_ADDER(page, i);
->>>> +
->>>> +	nfc->cmdfifo.rw.cmd1 = cs | NFC_CMD_CLE | NAND_CMD_READSTART;
->>>
->>> Having a fixed size array for the column and row address cycles does
->>> not sound like a good idea to me (depending on the NAND chip you
->>> connect, the number of cycles for the row and column differ), which
->>> makes me realize the nand_rw_cmd struct is not such a good thing...
->>>    
->> em , i will fix it by adding the size of the column and row address.
->> is that ok?
->>
->>>> +
->>>> +	for (i = 0; i < cmd_num; i++)
->>>> +		writel(nfc->cmdfifo.cmd[i], nfc->reg_base + NFC_REG_CMD);
->>>
->>> ... why not write directly to the CMD reg?
->>>    
->>
->> it seems that too many writel(xxx, nfc->reg_base + NFC_REG_CMD) in one
->> function; so I want to cache all the commands and write it in a loop.
-> 
-> Not sure why it makes a difference since you'll end up writing to
-> NFC_REG_CMD anyway.
-> 
-> BTW, you can probably use the writel_relaxed() instead of writel() when
-> writing to the CMD FIFO.
-> 
-ok.
->>
->>>> +
->>>> +	if (in)
->>>> +		meson_nfc_queue_rb(nfc, sdr->tR_max);
->>>> +	else
->>>> +		meson_nfc_cmd_idle(nfc, nfc->timing.tadl);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static int meson_nfc_write_page_sub(struct nand_chip *nand, const u8 *buf,
->>>> +				    int page, int raw)
->>>> +{
->>>> +	struct mtd_info *mtd = nand_to_mtd(nand);
->>>> +	const struct nand_sdr_timings *sdr =
->>>> +		nand_get_sdr_timings(&nand->data_interface);
->>>> +	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
->>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>> +	dma_addr_t daddr, iaddr;
->>>> +	u32 cmd;
->>>> +	int ret;
->>>> +
->>>> +	daddr = dma_map_single(nfc->dev, (void *)meson_chip->data_buf,
->>>> +			       mtd->writesize + mtd->oobsize,
->>>> +			       DMA_TO_DEVICE);
->>>> +	ret = dma_mapping_error(nfc->dev, daddr);
->>>> +	if (ret) {
->>>> +		dev_err(nfc->dev, "dma mapping error\n");
->>>> +		goto err;
->>>> +	}
->>>> +
->>>> +	iaddr = dma_map_single(nfc->dev, (void *)meson_chip->info_buf,
->>>> +			       nand->ecc.steps * PER_INFO_BYTE,
->>>> +			       DMA_TO_DEVICE);
->>>> +	ret = dma_mapping_error(nfc->dev, iaddr);
->>>> +	if (ret) {
->>>> +		dev_err(nfc->dev, "dma mapping error\n");
->>>> +		goto err_map_daddr;
->>>> +	}
->>>> +
->>>> +	ret = meson_nfc_rw_cmd_prepare_and_execute(nand, page, DIRWRITE);
->>>> +	if (ret)
->>>> +		goto err_map_iaddr;
->>>> +
->>>> +	cmd = GENCMDDADDRL(NFC_CMD_ADL, daddr);
->>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>> +
->>>> +	cmd = GENCMDDADDRH(NFC_CMD_ADH, daddr);
->>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>> +
->>>> +	cmd = GENCMDIADDRL(NFC_CMD_AIL, iaddr);
->>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>> +
->>>> +	cmd = GENCMDIADDRH(NFC_CMD_AIH, iaddr);
->>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>> +
->>>> +	meson_nfc_cmd_seed(nfc, page);
->>>> +
->>>> +	meson_nfc_cmd_access(nand, raw, DIRWRITE);
->>>> +
->>>> +	ret = meson_nfc_wait_dma_finish(nfc);
->>>> +	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_PAGEPROG;
->>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>> +	meson_nfc_queue_rb(nfc, sdr->tPROG_max);
->>>
->>> Don't you have a way to queue the PAGEPROG and WAIT_RB instructions
->>> before the DMA finishes?
->>>    
->>
->> it runs:
->> 1) dma transfer ddr data to nand page cache.
->> 2) wait dma finish
->> 3) send the PAGEPROG command
->> 4) wait rb finish
->>
->> meson_nfc_wait_dma_finish(nfc) waits command fifo empty. Maybe it is
->> difficult or uncessary to queue the PAGEPROG command and WAIT_RB between
->> 1) and 2).
->>
->> is that right?
->>
-> 
-> Isn't the controller engine able to wait on the data transfer to be
-> complete before sending the next instruction in the CMD FIFO pipe?
-> I'm pretty sure it's able to do that, which would make
-> meson_nfc_wait_dma_finish() useless, and all you'd have to do is wait
-> for the CMD FIFO to be empty (assuming it guarantees the last command
-> has been executed).
-> Maybe the nfc design is difference. dedicated nfc dma engine is 
-concatenated with the command fifo, there is no other status to check 
-whether dma is done.
+>=20
+> > For this change the order to check timeout is also needed to chagne.
+>=20
+>=20
+> 	^change.
 
->>
->>>> +	}
->>>
->>> Don't you need a call to meson_nfc_wait_cmd_finish() here?
->>>    
->> it will be called in queue_rb, read_buf and write_buf. but i have no
->> idea whether it still needs to be called corresponding to
->> CMD_INSTR/ADDR_INSTR.To be strict, it should be called.
-> 
-> No, the synchronization is only needed before returning from
-> ->exec_op(). Everything before can be queued without being
-> executed. Of course, if you run out of entries in the CMD/INPUT
-> FIFOs you'll have to do some sort of synchronization, but that should
-> be taken care of in your helpers.
-> 
-ok, i will add it.
-> .
-> 
+Will fix this.
+
+>=20
+> And I don't think changing the order is a hard requirement, it's just
+> better to avoid the case where the data update happens just after the
+> timeout has expired.
+
+I will update as so.
+
+>=20
+> To sum-up, I'm okay with the diff, I'd just like the commit message
+> to be adjusted.
+
+I see.
+
+Regards,
+Ikegami
+
+>=20
+> >
+> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> > Cc: Fabio Bettoni <fbettoni@gmail.com>
+> > Co: Hauke Mehrtens <hauke@hauke-m.de>
+> > Co: Koen Vandeputte <koen.vandeputte@ncentric.com>
+> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Cc: linux-mtd@lists.infradead.org
+> > ---
+> > Changes since v2:
+> > - None.
+> >
+> > Changes since v1:
+> > - None.
+> >
+> >  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+> b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > index 251c9e1675bd..c2e51768a02c 100644
+> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > @@ -1882,14 +1882,14 @@ static int __xipram do_write_buffer(struct
+> map_info *map, struct flchip *chip,
+> >  			continue;
+> >  		}
+> >
+> > -		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+> > -			break;
+> > -
+> >  		if (chip_good(map, adr, datum)) {
+> >  			xip_enable(map, chip, adr);
+> >  			goto op_done;
+> >  		}
+> >
+> > +		if (time_after(jiffies, timeo))
+> > +			break;
+> > +
+> >  		/* Latency issues. Drop the lock, wait a while and retry
+> */
+> >  		UDELAY(map, chip, adr, 1);
+> >  	}
