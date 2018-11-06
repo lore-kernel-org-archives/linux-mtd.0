@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK2yF-00075S-Uc
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:54 +0000
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gK2yM-0007g8-Ah
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:55 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -16,9 +16,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 04/22] mtd: rawnand: Move nand_exec_op() to internal.h
-Date: Tue,  6 Nov 2018 16:07:52 +0100
-Message-Id: <20181106150810.9569-5-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 09/22] mtd: rawnand: ams-delta: cleanup ams_delta_init()
+ error path
+Date: Tue,  6 Nov 2018 16:07:57 +0100
+Message-Id: <20181106150810.9569-10-boris.brezillon@bootlin.com>
 In-Reply-To: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,57 +31,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_exec_op() is only used by core code (nand_xxx.c files). Let's
-move this inline function in drivers/mtd/nand/raw/internals.h.
+Remove unused labels, rename out_mtd into err_unmap to make it clearer
+and return 0 instead of using a goto out at the end of the registration
+procedure.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes in v2:
 - None
 ---
- drivers/mtd/nand/raw/internals.h | 9 +++++++++
- include/linux/mtd/rawnand.h      | 9 ---------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/ams-delta.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 04c2cf74eff3..6e2f61fbc5f0 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -95,6 +95,15 @@ void nand_decode_ext_id(struct nand_chip *chip);
- void panic_nand_wait(struct nand_chip *chip, unsigned long timeo);
- void sanitize_string(uint8_t *s, size_t len);
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index 8b90132aea43..2f49be4077df 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -208,8 +208,7 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	io_base = ioremap(res->start, resource_size(res));
+ 	if (!io_base) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+-		err = -EIO;
+-		goto out_free;
++		return -EIO;
+ 	}
  
-+static inline int nand_exec_op(struct nand_chip *chip,
-+			       const struct nand_operation *op)
-+{
-+	if (!chip->exec_op)
-+		return -ENOTSUPP;
-+
-+	return chip->exec_op(chip, op, false);
-+}
-+
- /* BBT functions */
- int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
- int nand_isreserved_bbt(struct nand_chip *chip, loff_t offs);
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 4e91a70ede10..85dd89abcd22 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1098,15 +1098,6 @@ struct nand_chip {
- 	} manufacturer;
- };
+ 	priv->io_base = io_base;
+@@ -222,7 +221,7 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	if (IS_ERR(priv->gpiod_rdy)) {
+ 		err = PTR_ERR(priv->gpiod_rdy);
+ 		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
  
--static inline int nand_exec_op(struct nand_chip *chip,
--			       const struct nand_operation *op)
--{
--	if (!chip->exec_op)
--		return -ENOTSUPP;
--
--	return chip->exec_op(chip, op, false);
--}
--
- extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
- extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
+ 	this->ecc.mode = NAND_ECC_SOFT;
+@@ -235,42 +234,42 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	if (IS_ERR(priv->gpiod_nwp)) {
+ 		err = PTR_ERR(priv->gpiod_nwp);
+ 		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
+ 
+ 	priv->gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(priv->gpiod_nce)) {
+ 		err = PTR_ERR(priv->gpiod_nce);
+ 		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
+ 
+ 	priv->gpiod_nre = devm_gpiod_get(&pdev->dev, "nre", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(priv->gpiod_nre)) {
+ 		err = PTR_ERR(priv->gpiod_nre);
+ 		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
+ 
+ 	priv->gpiod_nwe = devm_gpiod_get(&pdev->dev, "nwe", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(priv->gpiod_nwe)) {
+ 		err = PTR_ERR(priv->gpiod_nwe);
+ 		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
+ 
+ 	priv->gpiod_ale = devm_gpiod_get(&pdev->dev, "ale", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->gpiod_ale)) {
+ 		err = PTR_ERR(priv->gpiod_ale);
+ 		dev_err(&pdev->dev, "ALE GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
+ 
+ 	priv->gpiod_cle = devm_gpiod_get(&pdev->dev, "cle", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->gpiod_cle)) {
+ 		err = PTR_ERR(priv->gpiod_cle);
+ 		dev_err(&pdev->dev, "CLE GPIO request failed (%d)\n", err);
+-		goto out_mtd;
++		goto err_unmap;
+ 	}
+ 
+ 	/* Initialize data port direction to a known state */
+@@ -279,17 +278,16 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(this, 1);
+ 	if (err)
+-		goto out_mtd;
++		goto err_unmap;
+ 
+ 	/* Register the partitions */
+ 	mtd_device_register(mtd, partition_info, ARRAY_SIZE(partition_info));
+ 
+-	goto out;
++	return 0;
+ 
+- out_mtd:
++err_unmap:
+ 	iounmap(io_base);
+-out_free:
+- out:
++
+ 	return err;
+ }
  
 -- 
 2.17.1
