@@ -1,32 +1,20 @@
-Date: Tue, 6 Nov 2018 17:16:55 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
- Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
- <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
- <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
- <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20181106171655.3808d8eb@bbrezillon>
-In-Reply-To: <99475361-0115-7c16-3b7e-8f0d3a779446@amlogic.com>
-References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
- <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
- <20181105165321.7ea2b45f@bbrezillon>
- <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
- <20181106102851.61deb97a@bbrezillon>
- <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
- <20181106112206.65a70a81@bbrezillon>
- <99475361-0115-7c16-3b7e-8f0d3a779446@amlogic.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gK4FR-0002qD-Bq
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 16:30:38 +0000
+Date: Tue, 6 Nov 2018 17:29:46 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] mtd: nand: Fix nanddev_pos_next_page() kernel-doc header
+Message-ID: <20181106172946.10f9c3ca@xps13>
+In-Reply-To: <20181106162537.13882-1-boris.brezillon@bootlin.com>
+References: <20181106162537.13882-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,112 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 6 Nov 2018 19:08:27 +0800
-Liang Yang <liang.yang@amlogic.com> wrote:
 
-> On 2018/11/6 18:22, Boris Brezillon wrote:
-> > On Tue, 6 Nov 2018 18:00:37 +0800
-> > Liang Yang <liang.yang@amlogic.com> wrote:
-> >   
-> >> On 2018/11/6 17:28, Boris Brezillon wrote:  
-> >>> On Tue, 6 Nov 2018 17:08:00 +0800
-> >>> Liang Yang <liang.yang@amlogic.com> wrote:
-> >>>      
-> >>>> On 2018/11/5 23:53, Boris Brezillon wrote:  
-> >>>>> On Fri, 2 Nov 2018 00:42:21 +0800
-> >>>>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
-> >>>>>         
-> >>>>>> +
-> >>>>>> +static inline u8 meson_nfc_read_byte(struct mtd_info *mtd)
-> >>>>>> +{
-> >>>>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
-> >>>>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
-> >>>>>> +	u32 cmd;
-> >>>>>> +
-> >>>>>> +	cmd = nfc->param.chip_select | NFC_CMD_DRD | 0;
-> >>>>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-> >>>>>> +
-> >>>>>> +	meson_nfc_drain_cmd(nfc);  
-> >>>>>
-> >>>>> You probably don't want to drain the FIFO every time you read a byte on
-> >>>>> the bus, and I guess the INPUT FIFO is at least as big as the CMD
-> >>>>> FIFO, right? If that's the case, you should queue as much DRD cmd as
-> >>>>> possible and only sync when the user explicitly requests it or when
-> >>>>> the INPUT/READ FIFO is full.
-> >>>>>         
-> >>>> Register 'NFC_REG_BUF' can holds only 4 bytes, also DRD sends only one
-> >>>> nand cycle to read one byte and covers the 1st byte every time reading.
-> >>>> i think nfc controller is faster than nand cycle, but really it is not
-> >>>> high efficiency when reading so many bytes once.
-> >>>> Or use dma command here like read_page and read_page_raw.  
-> >>>
-> >>> Yep, that's also an alternative, though you'll have to make sure the
-> >>> buffer passed through the nand_op_inst is DMA-safe, and use a bounce
-> >>> buffer when that's not the case.
-> >>>      
-> >> ok, i will try dma here.  
-> > 
-> > We should probably expose the bounce buf handling as generic helpers at
-> > the rawnand level:
-> > 
-> > void *nand_op_get_dma_safe_input_buf(struct nand_op_instr *instr)
-> > {
-> > 	void *buf;
-> > 
-> > 	if (WARN_ON(instr->type != NAND_OP_DATA_IN_INSTR))
-> > 		return NULL;
-> > 
-> > 	if (virt_addr_valid(instr->data.in) &&
-> > 	    !object_is_on_stack(instr->data.buf.in))
-> > 		return instr->data.buf.in;
-> > 
-> > 	return kzalloc(instr->data.len, GFP_KERNEL);
-> > }
-> > 
-> > void nand_op_put_dma_safe_input_buf(struct nand_op_instr *instr,
-> > 				    void *buf)
-> > {
-> > 	if (WARN_ON(instr->type != NAND_OP_DATA_IN_INSTR) ||
-> > 	    WARN_ON(!buf))
-> > 		return;
-> > 
-> > 	if (buf == instr->data.buf.in)
-> > 		return;
-> > 
-> > 	memcpy(instr->data.buf.in, buf, instr->data.len);
-> > 	kfree(buf);
-> > }
-> > 
-> > const void *nand_op_get_dma_safe_output_buf(struct nand_op_instr *instr)
-> > {
-> > 	void *buf;
-> > 
-> > 	if (WARN_ON(instr->type != NAND_OP_DATA_OUT_INSTR))
-> > 		return NULL;
-> > 
-> > 	if (virt_addr_valid(instr->data.out) &&
-> > 	    !object_is_on_stack(instr->data.buf.out))
-> > 		return instr->data.buf.out;
-> > 
-> > 	return kmemdup(instr->data.buf.out, GFP_KERNEL);
-> > }
-> > 
-> > void nand_op_put_dma_safe_output_buf(struct nand_op_instr *instr,
-> > 				    void *buf)
-> > {
-> > 	if (WARN_ON(instr->type != NAND_OP_DATA_OUT_INSTR) ||
-> > 	    WARN_ON(!buf))
-> > 		return;
-> > 
-> > 	if (buf != instr->data.buf.out)
-> > 		kfree(buf);
-> > }
-> >  
-> 
-> that is more convenient.
-> i will use meson_chip->databuf as the bounce mid-buffer now.
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  6 Nov 2018
+17:25:37 +0100:
 
-It won't work: the bounce buffer is allocated after the detection, and
-the detection code is calling ->exec_op().
+> Function name is wrong in the kernel-doc header.
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  include/linux/mtd/nand.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 7ff3770e468b..12d75402472a 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -583,7 +583,7 @@ static inline void nanddev_pos_next_eraseblock(struct=
+ nand_device *nand,
+>  }
+> =20
+>  /**
+> - * nanddev_pos_next_eraseblock() - Move a position to the next page
+> + * nanddev_pos_next_page() - Move a position to the next page
+>   * @nand: NAND device
+>   * @pos: the position to update
+>   *
 
-Just add a new patch to you series adding these helpers to nand_base.c.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+
+Thanks,
+Miqu=C3=A8l
