@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gK2yF-00075c-Ug
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:51 +0000
+ id 1gK2yF-00075S-Uc
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2018 15:08:54 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -16,10 +16,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 06/22] mtd: rawnand: ams-delta: Allow this driver to be
- compiled when COMPILE_TEST=y
-Date: Tue,  6 Nov 2018 16:07:54 +0100
-Message-Id: <20181106150810.9569-7-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 04/22] mtd: rawnand: Move nand_exec_op() to internal.h
+Date: Tue,  6 Nov 2018 16:07:52 +0100
+Message-Id: <20181106150810.9569-5-boris.brezillon@bootlin.com>
 In-Reply-To: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,47 +30,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Drop the asm and mach headers inclusion and allow this driver to be
-compiled when COMPILE_TEST=y in order to increase compile-test
-coverage.
+nand_exec_op() is only used by core code (nand_xxx.c files). Let's
+move this inline function in drivers/mtd/nand/raw/internals.h.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes in v2:
-- New patch
+- None
 ---
- drivers/mtd/nand/raw/Kconfig     | 2 +-
- drivers/mtd/nand/raw/ams-delta.c | 5 -----
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ drivers/mtd/nand/raw/internals.h | 9 +++++++++
+ include/linux/mtd/rawnand.h      | 9 ---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index c7efc31384d5..1a55d3e3d4c5 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -70,7 +70,7 @@ config MTD_NAND_GPIO
+diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+index 04c2cf74eff3..6e2f61fbc5f0 100644
+--- a/drivers/mtd/nand/raw/internals.h
++++ b/drivers/mtd/nand/raw/internals.h
+@@ -95,6 +95,15 @@ void nand_decode_ext_id(struct nand_chip *chip);
+ void panic_nand_wait(struct nand_chip *chip, unsigned long timeo);
+ void sanitize_string(uint8_t *s, size_t len);
  
- config MTD_NAND_AMS_DELTA
- 	tristate "NAND Flash device on Amstrad E3"
--	depends on MACH_AMS_DELTA
-+	depends on MACH_AMS_DELTA || COMPILE_TEST
- 	default y
- 	help
- 	  Support for NAND flash on Amstrad E3 (Delta).
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index 9ca70aab199d..37dec9ee9239 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -26,11 +26,6 @@
- #include <linux/mtd/partitions.h>
- #include <linux/platform_data/gpio-omap.h>
++static inline int nand_exec_op(struct nand_chip *chip,
++			       const struct nand_operation *op)
++{
++	if (!chip->exec_op)
++		return -ENOTSUPP;
++
++	return chip->exec_op(chip, op, false);
++}
++
+ /* BBT functions */
+ int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
+ int nand_isreserved_bbt(struct nand_chip *chip, loff_t offs);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 4e91a70ede10..85dd89abcd22 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1098,15 +1098,6 @@ struct nand_chip {
+ 	} manufacturer;
+ };
  
--#include <asm/io.h>
--#include <asm/sizes.h>
+-static inline int nand_exec_op(struct nand_chip *chip,
+-			       const struct nand_operation *op)
+-{
+-	if (!chip->exec_op)
+-		return -ENOTSUPP;
 -
--#include <mach/hardware.h>
+-	return chip->exec_op(chip, op, false);
+-}
 -
- /*
-  * MTD structure for E3 (Delta)
-  */
+ extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
+ extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
+ 
 -- 
 2.17.1
