@@ -1,25 +1,16 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKVIq-0002Lk-3L
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 21:23:57 +0000
-Received: by mail-wr1-x444.google.com with SMTP id o15-v6so15332908wrv.4
- for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2018 13:23:44 -0800 (PST)
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKW7q-0003xA-R0
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 22:16:39 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, thomas.roeder@harman.com,
+ juergen.lachmann@harman.com, Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/2] ubi: Introduce in_pq()
+Date: Wed,  7 Nov 2018 23:16:18 +0100
+Message-Id: <20181107221619.32498-1-richard@nod.at>
 MIME-Version: 1.0
-References: <20181105082540.21205-1-geert@linux-m68k.org>
- <20181107080733.ojderb7dkvwtpl2i@pengutronix.de>
-In-Reply-To: <20181107080733.ojderb7dkvwtpl2i@pengutronix.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 7 Nov 2018 22:23:31 +0100
-Message-ID: <CAFLxGvy_Tg88bufFn7VXT-N64U_pem3ocPYbWSqiBsxAb_iSvw@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: CONFIG_UBIFS_FS_AUTHENTICATION should depend on
- UBIFS_FS
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Richard Weinberger <richard@nod.at>,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 7, 2018 at 9:07 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
->
-> On Mon, Nov 05, 2018 at 09:25:40AM +0100, Geert Uytterhoeven wrote:
-> > Instead of adding yet another dependency on UBIFS_FS, wrap the whole
-> > block of ubifs config options in a single "if UBIFS_FS".
-> >
-> > Fixes: d8a22773a12c6d78 ("ubifs: Enable authentication support")
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >  fs/ubifs/Kconfig | 15 +++++++--------
-> >  1 file changed, 7 insertions(+), 8 deletions(-)
->
-> I would have sent a similar patch with taking the easier way out of just
-> adding another "depends on UBIFS_FS". This one is nicer though.
->
-> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+This function works like in_wl_tree() but checks whether an ubi_wl_entry
+is currently in the protection queue.
+We need this function to query the current state of an ubi_wl_entry.
 
-Applied.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/wl.c | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
--- 
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 6f2ac865ff05..ca1b31385eb5 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -277,6 +277,27 @@ static int in_wl_tree(struct ubi_wl_entry *e, struct=
+ rb_root *root)
+ 	return 0;
+ }
+=20
++/**
++ * in_pq - check if a wear-leveling entry is present in the protection q=
+ueue.
++ * @ubi: UBI device description object
++ * @e: the wear-leveling entry to check
++ *
++ * This function returns non-zero if @e is in the protection queue and z=
+ero
++ * if it is not.
++ */
++static inline int in_pq(const struct ubi_device *ubi, struct ubi_wl_entr=
+y *e)
++{
++	struct ubi_wl_entry *p;
++	int i;
++
++	for (i =3D 0; i < UBI_PROT_QUEUE_LEN; ++i)
++		list_for_each_entry(p, &ubi->pq[i], u.list)
++			if (p =3D=3D e)
++				return 1;
++
++	return 0;
++}
++
+ /**
+  * prot_queue_add - add physical eraseblock to the protection queue.
+  * @ubi: UBI device description object
+@@ -1848,16 +1869,11 @@ static int self_check_in_wl_tree(const struct ubi=
+_device *ubi,
+ static int self_check_in_pq(const struct ubi_device *ubi,
+ 			    struct ubi_wl_entry *e)
+ {
+-	struct ubi_wl_entry *p;
+-	int i;
+-
+ 	if (!ubi_dbg_chk_gen(ubi))
+ 		return 0;
+=20
+-	for (i =3D 0; i < UBI_PROT_QUEUE_LEN; ++i)
+-		list_for_each_entry(p, &ubi->pq[i], u.list)
+-			if (p =3D=3D e)
+-				return 0;
++	if (in_pq(ubi, e))
++		return 0;
+=20
+ 	ubi_err(ubi, "self-check failed for PEB %d, EC %d, Protect queue",
+ 		e->pnum, e->ec);
+--=20
+2.19.1
