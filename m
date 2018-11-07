@@ -1,27 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKMvB-0007e9-4Y
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 12:26:59 +0000
-Date: Wed, 7 Nov 2018 13:26:45 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Christophe Kerello <christophe.kerello@st.com>, <richard@nod.at>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <marek.vasut@gmail.com>, <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND
- flash controller driver
-Message-ID: <20181107132645.7271e705@xps13>
-In-Reply-To: <20181107132342.33790247@bbrezillon>
-References: <1538732520-2800-1-git-send-email-christophe.kerello@st.com>
- <1538732520-2800-3-git-send-email-christophe.kerello@st.com>
- <20181105173905.385dd06e@bbrezillon>
- <70f99d79-a9d8-0651-d464-2d81b334dbfb@st.com>
- <20181107132342.33790247@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::10])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKP4P-0007Cs-3G
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 14:44:40 +0000
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ linux-spi@vger.kernel.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
+ david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org,
+ Frieder Schrempf <frieder.schrempf@kontron.de>
+Subject: [PATCH v4 00/10] Port the FSL QSPI driver to the SPI framework
+Date: Wed,  7 Nov 2018 15:43:17 +0100
+Message-Id: <1541601809-16950-1-git-send-email-frieder.schrempf@kontron.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,57 +22,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christophe,
+Now that the SPI memory interface was introduced by Boris [1], it is
+possible to move drivers from mtd/spi-nor to the SPI framework in order
+to use them for different type of SPI memory chips.
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 7 Nov 2018
-13:23:42 +0100:
+Patch 1 adds the driver for the Freescale QSPI controller to the SPI
+framework. Together with m25p80.c it can be used to interface SPI
+NOR flashes just as the old driver did. For this to work properly a few
+minor changes to the devicetrees might be necessary (see patches 2 to 5).
 
-> On Wed, 7 Nov 2018 12:08:58 +0100
-> Christophe Kerello <christophe.kerello@st.com> wrote:
->=20
-> > >> +
-> > >> +write_8bit:
-> > >> +	for (i =3D 0; i < len; i++)
-> > >> +		writeb_relaxed(p[i], io_addr_w);   =20
-> > >=20
-> > > Is 8bit access really enforced by the byte accessor? In this case, how
-> > > can you be sure 32-bit accesses are doing the right thing? Isn't there
-> > > a bit somewhere in the config reg to configure the bus width?
-> > >    =20
-> >=20
-> > I have checked the framework after Miqu=C3=A8l comment sent on v1 =3D> =
-"If you=20
-> > selected BOUNCE_BUFFER in the options, buf is supposedly
-> > aligned, or am I missing something?".
-> >=20
-> > After checking the framework, my understanding was:
-> >   - In case of 8-bit access is requested, the framework provides no=20
-> > guarantee on buf. To avoid any issue, I write byte per byte.
-> >   - In case of 8-bit access is not requested, it means that the=20
-> > framework will try to write data in the page or in the oob. When writin=
-g=20
-> > to oob, chip->oob_poi will be used and this buffer is aligned. When=20
-> > writing to the page, as the driver enables NAND_USE_BOUNCE_BUFFER=20
-> > option, buf is guarantee aligned. =20
->=20
-> It's probably what happens right now, but there's no guarantee that all
-> non-8-bit accesses will be provided a 32-bit aligned buffer. The only
-> guarantee we provide is on buffer passed to the
-> chip->ecc.read/write_xxx() hooks, and ->exec_op() can be used outside
-> of the "page access" path.
->=20
-> >=20
-> > But, I agree that it would be safe to reconfigure the bus width in 8-bi=
-t=20
-> > before writing byte per byte in case of a 16-bit NAND is used. =20
->=20
-> Yes, and I also think you should not base your is-aligned check on the
-> force_8bit value. Use IS_ALIGNED() instead.
+Patch 6 changes the defconfigs to use the new driver and patch 9 removes
+the old driver.
 
-Maybe the "configure the bus in 8/16-bit" blocks could deserve a
-helper. There is probably other locations within this driver with the
-same logic?
+Patch 8 and 9 remove 'fsl,qspi-has-second-chip' from the devicetrees.
+Patch 10 adjusts the MAINTAINERS file.
 
+The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
+The read performance of the new driver is almost the same or even better
+than the old driver, depending on the block size.
+The write performance is a bit slower on average (~10-15%).
 
-Thanks,
-Miqu=C3=A8l
+The new driver was also tested with the SPI NAND framework [2] and a
+Toshiba TC58CVG2S0H flash.
+
+If someone has a board that uses two chips on a single bus, it would be
+really nice to have the driver be tested on such a setup.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/commit/?h=for-4.18&id=c36ff266dc82f4ae797a6f3513c6ffa344f7f1c7
+[2] https://patchwork.ozlabs.org/cover/913728/
+
+---
+Changes in v4:
+==============
+* Rebase on top of v4.20-rc1
+* Drop patches that were merged separately
+* Address change of company name and email address
+* Use readl_poll_timeout() instead of busy waiting
+* Revert change to use callback functions for register read/write
+* Avoid divide by zero by checking op->dummy.nbytes
+* Make big-endian setting SoC-specific and don't read it from devicetree
+* Improve some register macros and masks
+
+Changes in v3:
+==============
+* Move fix for typo in spi-mem.h to a separate patch
+* Fix documentation of spi_mem_get_name() and get_name()
+* Avoid overwriting the name of the memory device in probe of m25p80
+* Add Suggested-by tags
+
+Changes in v2:
+==============
+* Rebase on top of nand/next
+* Add a name field to struct spi_mem and fill it while probing
+* Add Yogesh Gaur and Suresh Gupta as authors
+* Use GENMASK() for generating bitmasks
+* Use callback functions for read/write of registers
+* Attach the seq variable to the selected CS
+* Avoid using conditional in read/write loop
+* Avoid infinite loop and use a timeout instead
+* Return error pointer when allocation in fsl_qspi_get_name() fails
+* Remove redundant iounmap()
+* Put suspend()/resume() in dev_pm_ops instead of platform_driver
+* Split the moving and editing of the dt-bindings in two patches
+---
+Frieder Schrempf (10):
+  spi: Add a driver for the Freescale/NXP QuadSPI controller
+  dt-bindings: spi: Move the bindings for the FSL QSPI driver
+  dt-bindings: spi: Adjust the bindings for the FSL QSPI driver
+  ARM: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  arm64: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  ARM: defconfig: Use the new FSL QSPI driver under the SPI framework
+  mtd: fsl-quadspi: Remove the driver as it was replaced by
+    spi-fsl-qspi.c
+  ARM: dts: ls1021a: Remove fsl,qspi-has-second-chip as it is not used
+  ARM64: dts: ls1046a: Remove fsl,qspi-has-second-chip as it is not used
+  MAINTAINERS: Move the Freescale QSPI driver to the SPI framework
+
+ .../devicetree/bindings/mtd/fsl-quadspi.txt     |   65 -
+ .../devicetree/bindings/spi/spi-fsl-qspi.txt    |   62 +
+ MAINTAINERS                                     |    4 +-
+ arch/arm/boot/dts/imx6sx-sdb-reva.dts           |    8 +-
+ arch/arm/boot/dts/imx6sx-sdb.dts                |    8 +-
+ arch/arm/boot/dts/imx6ul-14x14-evk.dtsi         |    2 +
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts     |    6 +-
+ arch/arm/configs/imx_v6_v7_defconfig            |    2 +-
+ arch/arm/configs/multi_v7_defconfig             |    2 +-
+ .../boot/dts/freescale/fsl-ls1043a-qds.dts      |    3 +-
+ .../boot/dts/freescale/fsl-ls1046a-qds.dts      |    4 +-
+ .../boot/dts/freescale/fsl-ls1046a-rdb.dts      |    6 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi  |    1 -
+ .../boot/dts/freescale/fsl-ls208xa-qds.dtsi     |    4 +
+ drivers/mtd/spi-nor/Kconfig                     |    9 -
+ drivers/mtd/spi-nor/Makefile                    |    1 -
+ drivers/mtd/spi-nor/fsl-quadspi.c               | 1224 ------------------
+ drivers/spi/Kconfig                             |   11 +
+ drivers/spi/Makefile                            |    1 +
+ drivers/spi/spi-fsl-qspi.c                      |  948 ++++++++++++++
+ 20 files changed, 1054 insertions(+), 1317 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+ delete mode 100644 drivers/mtd/spi-nor/fsl-quadspi.c
+ create mode 100644 drivers/spi/spi-fsl-qspi.c
+
+-- 
+2.7.4
