@@ -1,25 +1,24 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from twosheds.infradead.org ([2001:8b0:10b:1:21d:7dff:fe04:dbe2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKPxN-0004er-BB
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 15:41:26 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Horman <horms@verge.net.au>, Richard Weinberger <richard@nod.at>,
- Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>, linux-spi@vger.kernel.org
-Subject: Applied "spi: rspi: Add r8a77470 to the compatible list" to the spi
- tree
-In-Reply-To: <1541075705-1333-2-git-send-email-fabrizio.castro@bp.renesas.com>
-Message-Id: <20181107154103.C8F421124E14@debutante.sirena.org.uk>
-Date: Wed,  7 Nov 2018 15:41:03 +0000 (GMT)
+ id 1gKQRL-0008Ir-Ac
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 16:12:23 +0000
+Message-ID: <8b08e8b992093453bb2b9caff8cff08c.squirrel@twosheds.infradead.org>
+In-Reply-To: <1e4c066d1896e2a0b8b146253d34d05cc4f9ab36.camel@infinera.com>
+References: <20181106214928.40020-1-nkela@cisco.com>
+ <921b0f78cf67d7307a0555e1fd6f2c2976310adc.camel@infradead.org>
+ <1e4c066d1896e2a0b8b146253d34d05cc4f9ab36.camel@infinera.com>
+Date: Wed, 7 Nov 2018 16:12:14 -0000
+Subject: Re: [PATCH] jffs2: implement mount option to configure endianness
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: "Joakim Tjernlund" <Joakim.Tjernlund@infinera.com>
+Cc: "nkela@cisco.com" <nkela@cisco.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "xe-linux-external@cisco.com" <xe-linux-external@cisco.com>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,59 +28,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch
 
-   spi: rspi: Add r8a77470 to the compatible list
+> Yes, this may slow things down. I am not sure I agree with the impl.
+> either.
+> Could one not make cpu_to_je_X/jeX_to_cpu a function ptr which is set to
+> a func. with the correct endian?
 
-has been applied to the spi tree at
+On x86 retpoline would make that quite slow.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From df80e0478972260bf285c5ed33f99b2424fba2af Mon Sep 17 00:00:00 2001
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Date: Thu, 1 Nov 2018 12:35:02 +0000
-Subject: [PATCH] spi: rspi: Add r8a77470 to the compatible list
-
-Add r8a77470 to the list of examples with soctypes.
-No driver change is needed as "renesas,qspi" will activate
-the right code within the corresponding driver.
-
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/spi/spi-rspi.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/spi/spi-rspi.txt b/Documentation/devicetree/bindings/spi/spi-rspi.txt
-index fc97ad64fbf2..421722b93992 100644
---- a/Documentation/devicetree/bindings/spi/spi-rspi.txt
-+++ b/Documentation/devicetree/bindings/spi/spi-rspi.txt
-@@ -15,6 +15,7 @@ Required properties:
- 			- "renesas,qspi-r8a7743" (RZ/G1M)
- 			- "renesas,qspi-r8a7744" (RZ/G1N)
- 			- "renesas,qspi-r8a7745" (RZ/G1E)
-+			- "renesas,qspi-r8a77470" (RZ/G1C)
- 			- "renesas,qspi-r8a7790" (R-Car H2)
- 			- "renesas,qspi-r8a7791" (R-Car M2-W)
- 			- "renesas,qspi-r8a7792" (R-Car V2H)
 -- 
-2.19.0.rc2
+dwmw2
