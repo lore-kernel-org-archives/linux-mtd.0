@@ -1,34 +1,28 @@
-Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
- Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
- <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
- <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
- <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
- <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
- <20181105165321.7ea2b45f@bbrezillon>
- <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
- <20181106102851.61deb97a@bbrezillon>
- <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
- <20181106112206.65a70a81@bbrezillon>
- <99475361-0115-7c16-3b7e-8f0d3a779446@amlogic.com>
- <20181106171655.3808d8eb@bbrezillon>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <edf58057-3237-dd16-bee6-8ed8371587b4@amlogic.com>
-Date: Wed, 7 Nov 2018 10:13:26 +0800
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKIM8-0003sa-Rl
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 07:34:30 +0000
+Received: by mail-lf1-x143.google.com with SMTP id f23so6192197lfc.13
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2018 23:34:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20181106171655.3808d8eb@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20181106214416.11342-1-geert@linux-m68k.org>
+ <20181106225829.5ecbe19e@bbrezillon>
+ <CAMuHMdUQhsikcBzRFAvrCwZwzFK_Coh=fqpSihFP6jEtugCMQw@mail.gmail.com>
+ <20181106233432.76df6bbf@bbrezillon>
+In-Reply-To: <20181106233432.76df6bbf@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Wed, 7 Nov 2018 08:33:57 +0100
+Message-ID: <CAPybu_0c115rhqO4RTa27H2j78t9z=rfOy9ukL1h4z18J8MBDQ@mail.gmail.com>
+Subject: Re: [PATCH next] mtd: maps: physmap: Fix infinite loop crash in ROM
+ type probing
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-mtd@lists.infradead.org,
+ linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,121 +32,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris and Geert
 
-
-On 2018/11/7 0:16, Boris Brezillon wrote:
-> On Tue, 6 Nov 2018 19:08:27 +0800
-> Liang Yang <liang.yang@amlogic.com> wrote:
-> 
->> On 2018/11/6 18:22, Boris Brezillon wrote:
->>> On Tue, 6 Nov 2018 18:00:37 +0800
->>> Liang Yang <liang.yang@amlogic.com> wrote:
->>>    
->>>> On 2018/11/6 17:28, Boris Brezillon wrote:
->>>>> On Tue, 6 Nov 2018 17:08:00 +0800
->>>>> Liang Yang <liang.yang@amlogic.com> wrote:
->>>>>       
->>>>>> On 2018/11/5 23:53, Boris Brezillon wrote:
->>>>>>> On Fri, 2 Nov 2018 00:42:21 +0800
->>>>>>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
->>>>>>>          
->>>>>>>> +
->>>>>>>> +static inline u8 meson_nfc_read_byte(struct mtd_info *mtd)
->>>>>>>> +{
->>>>>>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
->>>>>>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>>>>>> +	u32 cmd;
->>>>>>>> +
->>>>>>>> +	cmd = nfc->param.chip_select | NFC_CMD_DRD | 0;
->>>>>>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->>>>>>>> +
->>>>>>>> +	meson_nfc_drain_cmd(nfc);
->>>>>>>
->>>>>>> You probably don't want to drain the FIFO every time you read a byte on
->>>>>>> the bus, and I guess the INPUT FIFO is at least as big as the CMD
->>>>>>> FIFO, right? If that's the case, you should queue as much DRD cmd as
->>>>>>> possible and only sync when the user explicitly requests it or when
->>>>>>> the INPUT/READ FIFO is full.
->>>>>>>          
->>>>>> Register 'NFC_REG_BUF' can holds only 4 bytes, also DRD sends only one
->>>>>> nand cycle to read one byte and covers the 1st byte every time reading.
->>>>>> i think nfc controller is faster than nand cycle, but really it is not
->>>>>> high efficiency when reading so many bytes once.
->>>>>> Or use dma command here like read_page and read_page_raw.
->>>>>
->>>>> Yep, that's also an alternative, though you'll have to make sure the
->>>>> buffer passed through the nand_op_inst is DMA-safe, and use a bounce
->>>>> buffer when that's not the case.
->>>>>       
->>>> ok, i will try dma here.
->>>
->>> We should probably expose the bounce buf handling as generic helpers at
->>> the rawnand level:
->>>
->>> void *nand_op_get_dma_safe_input_buf(struct nand_op_instr *instr)
->>> {
->>> 	void *buf;
->>>
->>> 	if (WARN_ON(instr->type != NAND_OP_DATA_IN_INSTR))
->>> 		return NULL;
->>>
->>> 	if (virt_addr_valid(instr->data.in) &&
->>> 	    !object_is_on_stack(instr->data.buf.in))
->>> 		return instr->data.buf.in;
->>>
->>> 	return kzalloc(instr->data.len, GFP_KERNEL);
->>> }
->>>
->>> void nand_op_put_dma_safe_input_buf(struct nand_op_instr *instr,
->>> 				    void *buf)
->>> {
->>> 	if (WARN_ON(instr->type != NAND_OP_DATA_IN_INSTR) ||
->>> 	    WARN_ON(!buf))
->>> 		return;
->>>
->>> 	if (buf == instr->data.buf.in)
->>> 		return;
->>>
->>> 	memcpy(instr->data.buf.in, buf, instr->data.len);
->>> 	kfree(buf);
->>> }
->>>
->>> const void *nand_op_get_dma_safe_output_buf(struct nand_op_instr *instr)
->>> {
->>> 	void *buf;
->>>
->>> 	if (WARN_ON(instr->type != NAND_OP_DATA_OUT_INSTR))
->>> 		return NULL;
->>>
->>> 	if (virt_addr_valid(instr->data.out) &&
->>> 	    !object_is_on_stack(instr->data.buf.out))
->>> 		return instr->data.buf.out;
->>>
->>> 	return kmemdup(instr->data.buf.out, GFP_KERNEL);
->>> }
->>>
->>> void nand_op_put_dma_safe_output_buf(struct nand_op_instr *instr,
->>> 				    void *buf)
->>> {
->>> 	if (WARN_ON(instr->type != NAND_OP_DATA_OUT_INSTR) ||
->>> 	    WARN_ON(!buf))
->>> 		return;
->>>
->>> 	if (buf != instr->data.buf.out)
->>> 		kfree(buf);
->>> }
->>>   
->>
->> that is more convenient.
->> i will use meson_chip->databuf as the bounce mid-buffer now.
-> 
-> It won't work: the bounce buffer is allocated after the detection, and
-> the detection code is calling ->exec_op().
-> 
-> Just add a new patch to you series adding these helpers to nand_base.c.
+On Tue, Nov 6, 2018 at 11:34 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> On Tue, 6 Nov 2018 23:19:14 +0100
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> > Hi Boris,
+> >
+> > On Tue, Nov 6, 2018 at 10:58 PM Boris Brezillon
+> > <boris.brezillon@bootlin.com> wrote:
+> > > On Tue,  6 Nov 2018 22:44:16 +0100
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Toshiba RBTX4927, where map_probe is supposed to fail:
+> > > >
+> > > >     Creating 2 MTD partitions on "physmap-flash.0":
+> > > >     0x000000c00000-0x000001000000 : "boot"
+> > > >     0x000000000000-0x000000c00000 : "user"
+> > > >     physmap-flash physmap-flash.1: physmap platform flash device: [mem 0x1e000000-0x1effffff]
+> > > >     CPU 0 Unable to handle kernel paging request at virtual address 00000000, epc == 80320f40, ra == 80321004
+> > > >     ...
+> > > >     Call Trace:
+> > > >     [<80320f40>] get_mtd_chip_driver+0x30/0x8c
+> > > >     [<80321004>] do_map_probe+0x20/0x90
+> > > >     [<80328448>] physmap_flash_probe+0x484/0x4ec
+> > > >
+> > > > The access to rom_probe_types[] was changed from a sentinel-based loop
+> > > > to an infinite loop, causing a crash when reaching the sentinel.
+> > >
+> > > Oops. Do you mind if I fix that in-place (squash your changes in
+> > > Ricardo's original commit)?
+>
+> Done.
+>
+> >
+> > No problem. Thanks!
 >
 
-ok
+Thanks to both of you for fixing this .
+> Thanks for reporting/fixing the bug.
+>
+> Boris
+>
 
-> .
-> 
+
+-- 
+Ricardo Ribalda
