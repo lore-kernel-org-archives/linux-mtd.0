@@ -1,28 +1,22 @@
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKIM8-0003sa-Rl
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 07:34:30 +0000
-Received: by mail-lf1-x143.google.com with SMTP id f23so6192197lfc.13
- for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2018 23:34:16 -0800 (PST)
+ id 1gKIsM-0006fa-AJ
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2018 08:07:47 +0000
+Date: Wed, 7 Nov 2018 09:07:33 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ubifs: CONFIG_UBIFS_FS_AUTHENTICATION should depend on
+ UBIFS_FS
+Message-ID: <20181107080733.ojderb7dkvwtpl2i@pengutronix.de>
+References: <20181105082540.21205-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-References: <20181106214416.11342-1-geert@linux-m68k.org>
- <20181106225829.5ecbe19e@bbrezillon>
- <CAMuHMdUQhsikcBzRFAvrCwZwzFK_Coh=fqpSihFP6jEtugCMQw@mail.gmail.com>
- <20181106233432.76df6bbf@bbrezillon>
-In-Reply-To: <20181106233432.76df6bbf@bbrezillon>
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Wed, 7 Nov 2018 08:33:57 +0100
-Message-ID: <CAPybu_0c115rhqO4RTa27H2j78t9z=rfOy9ukL1h4z18J8MBDQ@mail.gmail.com>
-Subject: Re: [PATCH next] mtd: maps: physmap: Fix infinite loop crash in ROM
- type probing
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Linus Walleij <linus.walleij@linaro.org>,
- linux-mtd@lists.infradead.org,
- linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181105082540.21205-1-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,51 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris and Geert
+On Mon, Nov 05, 2018 at 09:25:40AM +0100, Geert Uytterhoeven wrote:
+> Instead of adding yet another dependency on UBIFS_FS, wrap the whole
+> block of ubifs config options in a single "if UBIFS_FS".
+> 
+> Fixes: d8a22773a12c6d78 ("ubifs: Enable authentication support")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  fs/ubifs/Kconfig | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
 
-On Tue, Nov 6, 2018 at 11:34 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> On Tue, 6 Nov 2018 23:19:14 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> > Hi Boris,
-> >
-> > On Tue, Nov 6, 2018 at 10:58 PM Boris Brezillon
-> > <boris.brezillon@bootlin.com> wrote:
-> > > On Tue,  6 Nov 2018 22:44:16 +0100
-> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Toshiba RBTX4927, where map_probe is supposed to fail:
-> > > >
-> > > >     Creating 2 MTD partitions on "physmap-flash.0":
-> > > >     0x000000c00000-0x000001000000 : "boot"
-> > > >     0x000000000000-0x000000c00000 : "user"
-> > > >     physmap-flash physmap-flash.1: physmap platform flash device: [mem 0x1e000000-0x1effffff]
-> > > >     CPU 0 Unable to handle kernel paging request at virtual address 00000000, epc == 80320f40, ra == 80321004
-> > > >     ...
-> > > >     Call Trace:
-> > > >     [<80320f40>] get_mtd_chip_driver+0x30/0x8c
-> > > >     [<80321004>] do_map_probe+0x20/0x90
-> > > >     [<80328448>] physmap_flash_probe+0x484/0x4ec
-> > > >
-> > > > The access to rom_probe_types[] was changed from a sentinel-based loop
-> > > > to an infinite loop, causing a crash when reaching the sentinel.
-> > >
-> > > Oops. Do you mind if I fix that in-place (squash your changes in
-> > > Ricardo's original commit)?
->
-> Done.
->
-> >
-> > No problem. Thanks!
->
+I would have sent a similar patch with taking the easier way out of just
+adding another "depends on UBIFS_FS". This one is nicer though.
 
-Thanks to both of you for fixing this .
-> Thanks for reporting/fixing the bug.
->
-> Boris
->
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
+Sascha
 
 -- 
-Ricardo Ribalda
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
