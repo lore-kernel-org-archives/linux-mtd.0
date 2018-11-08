@@ -1,19 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKjls-0000JT-Pl
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 12:50:54 +0000
-Date: Thu, 8 Nov 2018 13:50:38 +0100
+ id 1gKjq0-0000SI-Sm
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 12:55:10 +0000
+Date: Thu, 8 Nov 2018 13:54:47 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: <Tudor.Ambarus@microchip.com>
 Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
  <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH 2/7] mtd: spi-nor: fix iteration over smpt array
-Message-ID: <20181108135038.3fb9e995@bbrezillon>
-In-Reply-To: <20181108110653.21063-3-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH 3/7] mtd: spi-nor: add restriction for nmaps in smpt parser
+Message-ID: <20181108135447.36a0314c@bbrezillon>
+In-Reply-To: <20181108110653.21063-4-tudor.ambarus@microchip.com>
 References: <20181108110653.21063-1-tudor.ambarus@microchip.com>
- <20181108110653.21063-3-tudor.ambarus@microchip.com>
+ <20181108110653.21063-4-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,112 +26,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 Nov 2018 11:07:09 +0000
+On Thu, 8 Nov 2018 11:07:11 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
-> Iterate over smpt array using its starting address and length
-> instead of the blindly iterations that used data found in the array.
-
-		 ^blind
-
+> The map selector is limited to a maximum of 8 bits, allowing
+> for a maximum of 256 possible map configurations. The total
+> number of map configurations should be addressable by the
+> total number of bits described by the detection commands.
 > 
-> This prevents possible memory accesses outside of the smpt array
-> boundaries in case software, or manufacturers, misrepresent smpt
-> array fields.
+> For example: if there are five to eight possible sector map
+> configurations, at least three configuration detection commands
+> will be needed to extract three bits of configuration selection
+> information from the device in order to identify which configuration
+> is currently in use.
 > 
 > Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+
+I don't remember suggesting this :-).
+
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-I think we should consider this patch as a fix. Would you mind adding a
-Fixes tag?
-
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 39 +++++++++++++++++++++++++++++----------
->  1 file changed, 29 insertions(+), 10 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 2cdf96013689..59dcedb08691 100644
+> index 59dcedb08691..bd1866d714f2 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2860,12 +2860,15 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
->   * spi_nor_get_map_in_use() - get the configuration map in use
->   * @nor:	pointer to a 'struct spi_nor'
->   * @smpt:	pointer to the sector map parameter table
-> + * @smpt_len:	sector map parameter table length
->   */
-> -static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
-> +static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
-> +					 u8 smpt_len)
->  {
+> @@ -2868,7 +2868,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
 >  	const u32 *ret = NULL;
-> -	u32 i, addr;
-> +	u32 addr;
+>  	u32 addr;
 >  	int err;
-> +	u8 i;
+> -	u8 i;
+> +	u8 i, ncmds, nmaps;
 >  	u8 addr_width, read_opcode, read_dummy;
 >  	u8 read_data_mask, data_byte, map_id;
 >  
-> @@ -2874,9 +2877,10 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+> @@ -2877,6 +2877,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
 >  	read_opcode = nor->read_opcode;
 >  
 >  	map_id = 0;
-> -	i = 0;
+> +	ncmds = 0;
 >  	/* Determine if there are any optional Detection Command Descriptors */
-> -	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
-> +	for (i = 0; i < smpt_len; i += 2) {
-> +		if (smpt[i] & SMPT_DESC_TYPE_MAP)
-> +			break;
-
-nit: add a blank line here.
-
->  		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
->  		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
->  		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
-> @@ -2892,18 +2896,33 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+>  	for (i = 0; i < smpt_len; i += 2) {
+>  		if (smpt[i] & SMPT_DESC_TYPE_MAP)
+> @@ -2896,6 +2897,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
 >  		 * Configuration that is currently in use.
 >  		 */
 >  		map_id = map_id << 1 | !!(data_byte & read_data_mask);
-> -		i = i + 2;
+> +		ncmds++;
 >  	}
 >  
-> -	/* Find the matching configuration map */
-> -	while (SMPT_MAP_ID(smpt[i]) != map_id) {
-> +	/*
-> +	 * If command descriptors are provided, they always precede map
-> +	 * descriptors in the table. There is no need to start the iteration
-> +	 * over smpt array all over again.
-> +	 *
-> +	 * Find the matching configuration map.
-> +	 */
-> +	while (i < smpt_len) {
-> +		if (SMPT_MAP_ID(smpt[i]) == map_id) {
-> +			ret = smpt + i;
-> +			break;
-> +		}
-> +
+>  	/*
+> @@ -2905,7 +2907,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  	 *
+>  	 * Find the matching configuration map.
+>  	 */
+> -	while (i < smpt_len) {
+> +	for (nmaps = 0; i < smpt_len; nmaps++) {
 > +		/*
-> +		 * If there are no more configuration map descriptors and no
-> +		 * configuration ID matched the configuration identifier, the
-> +		 * sector address map is unknown.
+> +		 * The map selector is limited to a maximum of 8 bits, allowing
+> +		 * for a maximum of 256 possible map configurations. The total
+> +		 * number of map configurations should be addressable by the
+> +		 * total number of bits described by the detection commands.
 > +		 */
->  		if (smpt[i] & SMPT_DESC_END)
-> -			goto out;
+> +		if (ncmds && nmaps >= (1 << (ncmds + 1)))
 > +			break;
 > +
->  		/* increment the table index to the next map */
->  		i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
->  	}
->  
-> -	ret = smpt + i;
->  	/* fall through */
->  out:
->  	nor->addr_width = addr_width;
-> @@ -3025,7 +3044,7 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
->  	for (i = 0; i < smpt_header->length; i++)
->  		smpt[i] = le32_to_cpu(smpt[i]);
->  
-> -	sector_map = spi_nor_get_map_in_use(nor, smpt);
-> +	sector_map = spi_nor_get_map_in_use(nor, smpt, smpt_header->length);
->  	if (!sector_map) {
->  		ret = -EINVAL;
->  		goto out;
+
+Maybe I missed something but it sounds like this change is just
+optimizing the SPMT parsing a bit, and to be honest, I'm not sure this
+is really needed. Most of the time, smpt_len will be rather small, so
+trying to bail out earlier is not bringing much perf improvements.
+
+>  		if (SMPT_MAP_ID(smpt[i]) == map_id) {
+>  			ret = smpt + i;
+>  			break;
