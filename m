@@ -1,35 +1,27 @@
-Received: from skedge04.snt-world.com ([91.208.41.69])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKfnH-00065G-6g
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 08:36:04 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "yogeshnarayan.gaur@nxp.com" <yogeshnarayan.gaur@nxp.com>,
- "richard@nod.at" <richard@nod.at>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "han.xu@nxp.com"
- <han.xu@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "david.wolfe@nxp.com"
- <david.wolfe@nxp.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
-Date: Thu, 8 Nov 2018 08:35:28 +0000
-Message-ID: <903083f9-ab85-597f-3749-579789bdf85a@kontron.de>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <20181031144055.32e1c8f1@bbrezillon>
- <dd4b9af1-82f3-469e-e70f-2858e85a5dfe@kontron.de>
- <20181031153125.3c5dfca1@bbrezillon>
- <e895f059-f8fe-6d4c-3744-ab8cfa4a2147@kontron.de>
- <20181108091957.013dc540@bbrezillon>
-In-Reply-To: <20181108091957.013dc540@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E62DE01305F98A43BF206727669F0A2F@snt-world.com>
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKfpE-0007Jo-AX
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 08:38:05 +0000
+Date: Thu, 8 Nov 2018 09:37:51 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
+ david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org, Frieder
+ Schrempf <frieder.schrempf@exceet.de>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/10] dt-bindings: spi: Move the bindings for the
+ FSL QSPI driver
+Message-ID: <20181108093751.39f43e8d@bbrezillon>
+In-Reply-To: <1541601809-16950-3-git-send-email-frieder.schrempf@kontron.de>
+References: <1541601809-16950-1-git-send-email-frieder.schrempf@kontron.de>
+ <1541601809-16950-3-git-send-email-frieder.schrempf@kontron.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,74 +31,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMDguMTEuMTggMDk6MTksIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gSGkgRnJpZWRlciwN
-Cj4gDQo+IE9uIFRodSwgOCBOb3YgMjAxOCAwODoxNTo1NSArMDAwMA0KPiBTY2hyZW1wZiBGcmll
-ZGVyIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uRGU+IHdyb3RlOg0KPiANCj4+IEhpIEJvcmlz
-LCBoaSBZb2dlc2gsDQo+Pg0KPj4gT24gMzEuMTAuMTggMTU6MzEsIEJvcmlzIEJyZXppbGxvbiB3
-cm90ZToNCj4+PiBPbiBXZWQsIDMxIE9jdCAyMDE4IDEzOjU0OjI5ICswMDAwDQo+Pj4gU2NocmVt
-cGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLkRlPiB3cm90ZToNCj4+PiAgICAN
-Cj4+Pj4gSGkgQm9yaXMsDQo+Pj4+DQo+Pj4+IE9uIDMxLjEwLjE4IDE0OjQwLCBCb3JpcyBCcmV6
-aWxsb24gd3JvdGU6DQo+Pj4+PiBIaSBGcmllZGVyLCBZb2dlc2gsDQo+Pj4+Pg0KPj4+Pj4gT24g
-VGh1LCAgNSBKdWwgMjAxOCAxMzoxNDo1NiArMDIwMA0KPj4+Pj4gRnJpZWRlciBTY2hyZW1wZiA8
-ZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGU+IHdyb3RlOg0KPj4+Pj4gICAgICAgDQo+Pj4+Pj4g
-Tm93IHRoYXQgdGhlIFNQSSBtZW1vcnkgaW50ZXJmYWNlIHdhcyBpbnRyb2R1Y2VkIGJ5IEJvcmlz
-IFsxXSwgaXQgaXMNCj4+Pj4+PiBwb3NzaWJsZSB0byBtb3ZlIGRyaXZlcnMgZnJvbSBtdGQvc3Bp
-LW5vciB0byB0aGUgU1BJIGZyYW1ld29yayBpbiBvcmRlcg0KPj4+Pj4+IHRvIHVzZSB0aGVtIGZv
-ciBkaWZmZXJlbnQgdHlwZSBvZiBTUEkgbWVtb3J5IGNoaXBzLg0KPj4+Pj4+DQo+Pj4+Pj4gUGF0
-Y2ggMSBhZGRzIGEgZnVuY3Rpb24gc3BpX21lbV9nZXRfbmFtZSgpIHRvIHRoZSBTUEkgbWVtb3J5
-IGludGVyZmFjZQ0KPj4+Pj4+IGFuZCBhIC0+bmFtZSBmaWVsZCB0byBzdHJ1Y3Qgc3BpX21lbS4N
-Cj4+Pj4+PiBQYXRjaCAyIHVzZXMgaXQgaW4gbTI1cDgwLmMgdG8gbWFrZSBpdCBwb3NzaWJsZSBm
-b3IgU1BJIGNvbnRyb2xsZXINCj4+Pj4+PiBkcml2ZXJzIHRvIHByb3ZpZGUgYSBjdXN0b20gbmFt
-aW5nIHNjaGVtZSBmb3IgdGhlIGZsYXNoIGNoaXAuDQo+Pj4+Pj4gVGhpcyBpcyBuZWVkZWQgdG8g
-YXZvaWQgYnJlYWtpbmcgY29tcGF0aWJpbGl0eSBvZiBtdGRwYXJ0cyB3aGVuIHN3aXRjaGluZw0K
-Pj4+Pj4+IGZyb20gdGhlIG9sZCB0byB0aGUgbmV3IGRyaXZlci4NCj4+Pj4+Pg0KPj4+Pj4+IFBh
-dGNoIDMgYWRkcyBhIGRyaXZlciBmb3IgdGhlIEZyZWVzY2FsZSBRU1BJIGNvbnRyb2xsZXIgdG8g
-dGhlIFNQSQ0KPj4+Pj4+IGZyYW1ld29yay4gVG9nZXRoZXIgd2l0aCBtMjVwODAuYyBpdCBjYW4g
-YmUgdXNlZCB0byBpbnRlcmZhY2UgU1BJDQo+Pj4+Pj4gTk9SIGZsYXNoZXMganVzdCBhcyB0aGUg
-b2xkIGRyaXZlciBkaWQuIEZvciB0aGlzIHRvIHdvcmsgcHJvcGVybHkgYSBmZXcNCj4+Pj4+PiBt
-aW5vciBjaGFuZ2VzIHRvIHRoZSBkZXZpY2V0cmVlcyBhcmUgbmVjZXNzYXJ5IChzZWUgcGF0Y2hl
-cyA1IHRvIDcpLg0KPj4+Pj4+DQo+Pj4+Pj4gUGF0Y2ggOCBjaGFuZ2VzIHRoZSBkZWZjb25maWdz
-IHRvIHVzZSB0aGUgbmV3IGRyaXZlciBhbmQgcGF0Y2ggOSByZW1vdmVzDQo+Pj4+Pj4gdGhlIG9s
-ZCBkcml2ZXIuDQo+Pj4+Pj4NCj4+Pj4+PiBQYXRjaCAxMCBhbmQgMTEgcmVtb3ZlICdmc2wscXNw
-aS1oYXMtc2Vjb25kLWNoaXAnIGZyb20gdGhlIGRldmljZXRyZWVzLg0KPj4+Pj4+IFBhdGNoIDEy
-IGFkanVzdHMgdGhlIE1BSU5UQUlORVJTIGZpbGUuDQo+Pj4+Pj4NCj4+Pj4+PiBUaGUgbmV3IGRy
-aXZlciB3YXMgdGVzdGVkIHdpdGggaS5NWDZVTCBhbmQgYSBNaWNyb24gU1BJIE5PUiBAIDYwTUh6
-Lg0KPj4+Pj4+IFRoZSByZWFkIHBlcmZvcm1hbmNlIG9mIHRoZSBuZXcgZHJpdmVyIGlzIGFsbW9z
-dCB0aGUgc2FtZSBvciBldmVuIGJldHRlcg0KPj4+Pj4+IHRoYW4gdGhlIG9sZCBkcml2ZXIsIGRl
-cGVuZGluZyBvbiB0aGUgYmxvY2sgc2l6ZS4NCj4+Pj4+PiBUaGUgd3JpdGUgcGVyZm9ybWFuY2Ug
-aXMgYSBiaXQgc2xvd2VyIG9uIGF2ZXJhZ2UgKH4xMC0xNSUpLg0KPj4+Pj4+DQo+Pj4+Pj4gVGhl
-IG5ldyBkcml2ZXIgd2FzIGFsc28gdGVzdGVkIHdpdGggdGhlIFNQSSBOQU5EIGZyYW1ld29yayBb
-Ml0gYW5kIGENCj4+Pj4+PiBXaW5ib25kIFcyNU0wMkdWIGZsYXNoLg0KPj4+Pj4+DQo+Pj4+Pj4g
-SWYgc29tZW9uZSBoYXMgYSBib2FyZCB0aGF0IHVzZXMgYm90aCBjaGlwcyBzZWxlY3RzIGFuZC9v
-ciBib3RoIGJ1c3NlcywNCj4+Pj4+PiBpdCB3b3VsZCBiZSByZWFsbHkgbmljZSB0byBoYXZlIHRo
-ZSBkcml2ZXIgYmUgdGVzdGVkIG9uIHN1Y2ggYSBzZXR1cC4NCj4+Pj4+DQo+Pj4+PiBBbnkgcHJv
-Z3Jlc3Mgb24gdGhpcyBmcm9udD8gWW9nZXNoLCBjYW4geW91IHBsZWFzZSByZW1pbmQgdXMgdGhl
-DQo+Pj4+PiByZW1haW5pbmcgaXNzdWVzPyBJJ2QgcmVhbGx5IGxpa2UgdG8gbWFrZSBzb21lIHBy
-b2dyZXNzLCBvdGhlcndpc2UgdGhlDQo+Pj4+PiBjb252ZXJzaW9uIHRvIHNwaS1tZW0gd2lsbCB0
-YWtlIGFnZXMuDQo+Pj4+DQo+Pj4+IEkgZGVmaW5pdGVseSB3YW50IHRvIGNvbnRpbnVlIHRoaXMu
-IEkganVzdCBkaWQgbm90IGhhdmUgdGhlIHRpbWUgdG8gd29yaw0KPj4+PiBvbiBpdC4NCj4+Pj4N
-Cj4+Pj4gSSB0aGluayB0aGUgb25seSByZW1haW5pbmcgYmxvY2tpbmcgaXNzdWVzIGlzIHRoZSBv
-bmUgdGhhdCBZb2dlc2gNCj4+Pj4gcmVwb3J0ZWQgd2hpbGUgdGVzdGluZyB3aXRoIHR3byBjaGlw
-cyBvbiB0aGUgc2FtZSBidXMuDQo+Pj4NCj4+PiBNYXliZSB5b3UgY2FuIHNlbmQgYSBuZXcgdmVy
-c2lvbiByZWJhc2VkIG9uIHY0LjIwLXJjMSAod2hlbiBpdCdzIG91dCkNCj4+PiBhbmQgcHVzaCBp
-dCBzb21ld2hlcmUgc28gdGhhdCBZb2dlc2ggY2FuIHRlc3QgaXQgKGFnYWluKS4gWW9nZXNoLCBj
-YW4gd2UNCj4+PiBwbGVhc2UgbWFrZSBzb21lIHByb2dyZXNzIG9uIHRoaXM/IElmIHlvdSByZWFs
-bHkgaGF2ZSBhIGJ1ZywgdGhhdCdkIGJlDQo+Pj4gZ3JlYXQgdG8gaGF2ZSBhIHNlcmlvdXMgaW52
-ZXN0aWdhdGlvbiBvbiB3aGF0IGlzIGNhdXNpbmcgdGhpcyBidWcuIFRoZQ0KPj4+IGV4cGxhbmF0
-aW9uIHdlIGhhZCBzbyBmYXIgd2VyZSBub3QgcmVhbGx5IGhlbHBmdWwgaW4gdW5kZXJzdGFuZGlu
-ZyB0aGUNCj4+PiBwcm9ibGVtLg0KPj4NCj4+IEkgaGF2ZSBzZW50IGEgdjQgdGhhdCBpcyBiYXNl
-ZCBvbiB2NC4yMC1yYzEuIEkgb25seSBhcHBsaWVkIHNtYWxsIGZpeGVzDQo+PiBhbmQgY29zbWV0
-aWMgY2hhbmdlcy4NCj4+DQo+PiBUaGVyZSBpcyBzdGlsbCB0aGUgaGFjayB0byBhdm9pZCBBSEIg
-YnVmZmVyIGludmFsaWRhdGlvbiBkZWxheSAobm90IHN1cmUNCj4+IGlmIHdlIHNob3VsZCBrZWVw
-IGl0IGZvciBub3cpDQo+IA0KPiBJSVJDLCBZb2dlc2ggcHJvcG9zZWQgdG8gcmVwbGFjZSB0aGlz
-IGhhY2sgYnkgYSBSRVNFVCtzbWFsbGVyLWRlbGF5Lg0KPiBNYXliZSB5b3UgY2FuIHRyeSB0aGF0
-Lg0KDQpSaWdodCwgSSB3aWxsIGRvIHNvbWUgZXhwZXJpbWVudHMuDQoNCj4+IGFuZCB3ZSBzdGls
-bCBuZWVkIHRvIGZpZ3VyZSBvdXQgdGhlDQo+PiByZXBvcnRlZCBwcm9ibGVtcyB3aXRoIHR3byBj
-aGlwcyBvbiBvbmUgYnVzLg0KPj4NCj4+IEFzIFlvZ2VzaCBpcyB0aGUgb25seSBvbmUgaG93IGhh
-cyBhIGhhcmR3YXJlIHNldHVwIGZvciB0aGlzLCBtYXliZSB5b3UNCj4+IGNhbiByZXRyeSBhbmQg
-cHJvdmlkZSBzb21lIGRlYnVnZ2luZyBpbmZvPw0KPj4NCj4+IFVuZm9ydHVuYXRlbHkgSSdsbCBw
-cm9iYWJseSBkbyBub3QgaGF2ZSB0aW1lIHRvIHN3aXRjaCB0byB0aGUgZGlybWFwIEFQSQ0KPj4g
-bm93LCBzbyBJJ2QgcmF0aGVyIGRvIHRoYXQgYXMgYSBzZWNvbmQgc3RlcCwgYXMgaXQgcHJvYmFi
-bHkgd29uJ3Qgc29sdmUNCj4+IG91ciBwcm9ibGVtcyBlaXRoZXIuDQo+IA0KPiBUb3RhbGx5IGFn
-cmVlIHdpdGggdGhhdC4NCj4gDQo+IFRoYW5rcyBmb3Igc2VuZGluZyBhIHY0Lg0KPiANCj4gQm9y
-aXMNCj4g
+On Wed,  7 Nov 2018 15:43:19 +0100
+Frieder Schrempf <frieder.schrempf@kontron.de> wrote:
+
+> From: Frieder Schrempf <frieder.schrempf@exceet.de>
+> 
+> Move the documentation of the old SPI NOR driver to the place of the new
+> SPI memory interface based driver.
+> 
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+> ---
+>  .../devicetree/bindings/mtd/fsl-quadspi.txt     | 65 --------------------
+>  .../devicetree/bindings/spi/spi-fsl-qspi.txt    | 65 ++++++++++++++++++++
+
+Did you use -M when you generated patches with git format-patch?
+Normally, when you move a file without changing anything, the diff is
+smaller than that.
+
+>  2 files changed, 65 insertions(+), 65 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+> deleted file mode 100644
+> index 483e9cf..0000000
+> --- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+> +++ /dev/null
+> @@ -1,65 +0,0 @@
+> -* Freescale Quad Serial Peripheral Interface(QuadSPI)
+> -
+> -Required properties:
+> -  - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
+> -		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
+> -		 "fsl,ls1021a-qspi"
+> -		 or
+> -		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+> -		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+> -  - reg : the first contains the register location and length,
+> -          the second contains the memory mapping address and length
+> -  - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+> -  - interrupts : Should contain the interrupt for the device
+> -  - clocks : The clocks needed by the QuadSPI controller
+> -  - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
+> -
+> -Optional properties:
+> -  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
+> -                              Each bus can be connected with two NOR flashes.
+> -			      Most of the time, each bus only has one NOR flash
+> -			      connected, this is the default case.
+> -			      But if there are two NOR flashes connected to the
+> -			      bus, you should enable this property.
+> -			      (Please check the board's schematic.)
+> -  - big-endian : That means the IP register is big endian
+> -
+> -Example:
+> -
+> -qspi0: quadspi@40044000 {
+> -	compatible = "fsl,vf610-qspi";
+> -	reg = <0x40044000 0x1000>, <0x20000000 0x10000000>;
+> -	reg-names = "QuadSPI", "QuadSPI-memory";
+> -	interrupts = <0 24 IRQ_TYPE_LEVEL_HIGH>;
+> -	clocks = <&clks VF610_CLK_QSPI0_EN>,
+> -		<&clks VF610_CLK_QSPI0>;
+> -	clock-names = "qspi_en", "qspi";
+> -
+> -	flash0: s25fl128s@0 {
+> -		....
+> -	};
+> -};
+> -
+> -Example showing the usage of two SPI NOR devices:
+> -
+> -&qspi2 {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pinctrl_qspi2>;
+> -	status = "okay";
+> -
+> -	flash0: n25q256a@0 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		compatible = "micron,n25q256a", "jedec,spi-nor";
+> -		spi-max-frequency = <29000000>;
+> -		reg = <0>;
+> -	};
+> -
+> -	flash1: n25q256a@1 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		compatible = "micron,n25q256a", "jedec,spi-nor";
+> -		spi-max-frequency = <29000000>;
+> -		reg = <1>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> new file mode 100644
+> index 0000000..483e9cf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> @@ -0,0 +1,65 @@
+> +* Freescale Quad Serial Peripheral Interface(QuadSPI)
+> +
+> +Required properties:
+> +  - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
+> +		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
+> +		 "fsl,ls1021a-qspi"
+> +		 or
+> +		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+> +		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+> +  - reg : the first contains the register location and length,
+> +          the second contains the memory mapping address and length
+> +  - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+> +  - interrupts : Should contain the interrupt for the device
+> +  - clocks : The clocks needed by the QuadSPI controller
+> +  - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
+> +
+> +Optional properties:
+> +  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
+> +                              Each bus can be connected with two NOR flashes.
+> +			      Most of the time, each bus only has one NOR flash
+> +			      connected, this is the default case.
+> +			      But if there are two NOR flashes connected to the
+> +			      bus, you should enable this property.
+> +			      (Please check the board's schematic.)
+> +  - big-endian : That means the IP register is big endian
+> +
+> +Example:
+> +
+> +qspi0: quadspi@40044000 {
+> +	compatible = "fsl,vf610-qspi";
+> +	reg = <0x40044000 0x1000>, <0x20000000 0x10000000>;
+> +	reg-names = "QuadSPI", "QuadSPI-memory";
+> +	interrupts = <0 24 IRQ_TYPE_LEVEL_HIGH>;
+> +	clocks = <&clks VF610_CLK_QSPI0_EN>,
+> +		<&clks VF610_CLK_QSPI0>;
+> +	clock-names = "qspi_en", "qspi";
+> +
+> +	flash0: s25fl128s@0 {
+> +		....
+> +	};
+> +};
+> +
+> +Example showing the usage of two SPI NOR devices:
+> +
+> +&qspi2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_qspi2>;
+> +	status = "okay";
+> +
+> +	flash0: n25q256a@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "micron,n25q256a", "jedec,spi-nor";
+> +		spi-max-frequency = <29000000>;
+> +		reg = <0>;
+> +	};
+> +
+> +	flash1: n25q256a@1 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "micron,n25q256a", "jedec,spi-nor";
+> +		spi-max-frequency = <29000000>;
+> +		reg = <1>;
+> +	};
+> +};
