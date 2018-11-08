@@ -1,31 +1,30 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKj4B-0006rh-Nf
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 12:05:45 +0000
-Received: by mail-lj1-x243.google.com with SMTP id s15-v6so17742323lji.3
- for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2018 04:05:32 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com.
- [209.85.167.44])
- by smtp.gmail.com with ESMTPSA id y10-v6sm661019lje.30.2018.11.08.04.05.29
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 08 Nov 2018 04:05:29 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id i26so13996948lfc.0
- for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2018 04:05:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20181108112513.3daf0053@bbrezillon>
-In-Reply-To: <20181108112513.3daf0053@bbrezillon>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 8 Nov 2018 07:05:11 -0500
-Message-ID: <CAHk-=wi3oDSqcEEsXHX_-KHk=XyYLANTiBOONYT3ocnPvYvpgg@mail.gmail.com>
-Subject: Re: [GIT PULL] mtd: Fixes for 4.20-rc2
+Date: Thu, 8 Nov 2018 12:07:52 +0000
+From: Mark Brown <broonie@kernel.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org,
- Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, marex@denx.de,
- computersforpeace@gmail.com,
- David Woodhouse <dwmw2@infradead.org>, miquel.raynal@bootlin.com,
- tudor.ambarus@microchip.com, richard@nod.at
-Content-Type: text/plain; charset="UTF-8"
+Cc: Piotr Bugalski <bugalski.piotr@gmail.com>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: Applied "spi: Add QuadSPI driver for Atmel SAMA5D2" to the spi
+ tree
+Message-ID: <20181108120752.GC6675@sirena.org.uk>
+References: <20181105103625.9644-6-bugalski.piotr@gmail.com>
+ <20181107150327.B6DC41124E14@debutante.sirena.org.uk>
+ <20181107151836.GB6809@sirena.org.uk>
+ <20181108095022.66ad3ad1@bbrezillon>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ncSAzJYg3Aa9+CRW"
+Content-Disposition: inline
+In-Reply-To: <20181108095022.66ad3ad1@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,11 +34,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 8, 2018 at 5:25 AM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> Here is the MTD fixes PR for 4.20-rc2.
 
-Pulled,
+--ncSAzJYg3Aa9+CRW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-                Linus
+On Thu, Nov 08, 2018 at 09:50:22AM +0100, Boris Brezillon wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+
+> > Sorry, I got confused about which patch series Boris had asked me to
+> > apply for him - it wasn't this one!  Since the review looked like it was
+> > just one minor issue last time I'll just leave them for now, they were
+> > applied on a separate branch for sharing with the MTD tree so it's easy
+> > for me to drop them if that's required or if I should put together the
+> > pull request for MTD.  Sorry for any confusion this ends up causing,
+> > it's entirely my mistake.
+
+> I'm probably missing something, but I don't see where you made a
+> mistake :-). It's indeed the series I asked you to merge, the only
+> comment I had was actually a suggestion to help Piotr solve his perf
+> issue (which was already present in the old driver).
+
+Oh, OK.  Then we can definitively say I'm confused then :)
+
+> And thanks for creating the mtd topic branch BTW.
+
+Here's a signed tag for just the MTD bits:
+
+The following changes since commit 651022382c7f8da46cb4872a545ee1da6d097d2a:
+
+  Linux 4.20-rc1 (2018-11-04 15:37:52 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-mtd-atmel
+
+for you to fetch changes up to 6ca622c87149a20a47abbb954f896f515e2292a7:
+
+  mtd: spi-nor: atmel-quadspi: Remove unused code from atmel-quadspi driver (2018-11-07 13:21:10 +0000)
+
+----------------------------------------------------------------
+mtd: Atmel QuadSPI changes for MTD
+
+These changes are dependencies for a branch merged into the SPI tree,
+create a signed tag to share them with the MTD tree.
+
+----------------------------------------------------------------
+Piotr Bugalski (4):
+      mtd: spi-nor: atmel-quaspi: Typo fix
+      mtd: spi-nor: atmel-quadspi: Add spi-mem support to atmel-quadspi
+      mtd: spi-nor: atmel-quadspi: Use spi-mem interface for atmel-quadspi driver
+      mtd: spi-nor: atmel-quadspi: Remove unused code from atmel-quadspi driver
+
+ drivers/mtd/spi-nor/atmel-quadspi.c | 528 ++++++++++--------------------------
+ 1 file changed, 148 insertions(+), 380 deletions(-)
+
+--ncSAzJYg3Aa9+CRW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvkJxgACgkQJNaLcl1U
+h9BcJgf+NBCkwqCGZqSr7hUTakUsHoRWEPxfsKxf2iq4IXSlsq9ilM+d/TwJXXjf
+YQLK9WPUFg2xKylbtQscBOgt49oVGP+cCywuEWrnO32Ix5by1e9BGRFt1n2scsBT
+LyAlHyJaQr4HAagkp2F2AZjoBrXq5nRinpYSAjSfRWfL3fFl/9JIScVg+RPxraqW
+SZT8C87kQRLcU7AIIij0Q5kSuHthsunFv5tz6DFRILgDMbB5/e4BXwIHbULFj0aq
+dIBjhVMkCyhq+MJtief7hTLcO/VGVyCh1tPW449+y6UiSWh1X6bh/t9HHKYAov/e
+zZrrK+gCRC9BfrVwEvDZ5ycn4koNOQ==
+=C77L
+-----END PGP SIGNATURE-----
+
+--ncSAzJYg3Aa9+CRW--
