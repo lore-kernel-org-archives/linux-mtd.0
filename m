@@ -1,19 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKjq0-0000SI-Sm
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 12:55:10 +0000
-Date: Thu, 8 Nov 2018 13:54:47 +0100
+ id 1gKjwa-0000g8-L8
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 13:02:02 +0000
+Date: Thu, 8 Nov 2018 14:01:35 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: <Tudor.Ambarus@microchip.com>
 Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
  <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH 3/7] mtd: spi-nor: add restriction for nmaps in smpt parser
-Message-ID: <20181108135447.36a0314c@bbrezillon>
-In-Reply-To: <20181108110653.21063-4-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH 5/7] mtd: spi_nor: pass DMA-able buffer to
+ spi_nor_read_raw()
+Message-ID: <20181108140135.09a23152@bbrezillon>
+In-Reply-To: <20181108110653.21063-6-tudor.ambarus@microchip.com>
 References: <20181108110653.21063-1-tudor.ambarus@microchip.com>
- <20181108110653.21063-4-tudor.ambarus@microchip.com>
+ <20181108110653.21063-6-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,79 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 Nov 2018 11:07:11 +0000
+On Thu, 8 Nov 2018 11:07:16 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
-> The map selector is limited to a maximum of 8 bits, allowing
-> for a maximum of 256 possible map configurations. The total
-> number of map configurations should be addressable by the
-> total number of bits described by the detection commands.
+> spi_nor_read_raw() calls nor->read() which might be implemented
+> by the m25p80 driver. m25p80 uses the spi-mem layer which requires
+> DMA-able in/out buffers. Pass kmalloc'ed dma buffer to spi_nor_read_raw().
 > 
-> For example: if there are five to eight possible sector map
-> configurations, at least three configuration detection commands
-> will be needed to extract three bits of configuration selection
-> information from the device in order to identify which configuration
-> is currently in use.
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-I don't remember suggesting this :-).
-
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 59dcedb08691..bd1866d714f2 100644
+> index 79ca1102faed..2eaa21c85483 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2868,7 +2868,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->  	const u32 *ret = NULL;
+> @@ -2161,7 +2161,7 @@ spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
+>   * @nor:	pointer to a 'struct spi_nor'
+>   * @addr:	offset in the serial flash memory
+>   * @len:	number of bytes to read
+> - * @buf:	buffer where the data is copied into
+> + * @buf:	buffer where the data is copied into (dma-safe memory)
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+> @@ -2868,11 +2868,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  					 u8 smpt_len)
+>  {
+>  	const u32 *ret;
+> +	u8 *dma_safe;
+
+I'd prefer to have it named buf, data_buf or scratch_buf...
+
 >  	u32 addr;
 >  	int err;
-> -	u8 i;
-> +	u8 i, ncmds, nmaps;
+>  	u8 i, ncmds, nmaps;
 >  	u8 addr_width, read_opcode, read_dummy;
->  	u8 read_data_mask, data_byte, map_id;
->  
-> @@ -2877,6 +2877,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->  	read_opcode = nor->read_opcode;
->  
->  	map_id = 0;
-> +	ncmds = 0;
->  	/* Determine if there are any optional Detection Command Descriptors */
->  	for (i = 0; i < smpt_len; i += 2) {
->  		if (smpt[i] & SMPT_DESC_TYPE_MAP)
-> @@ -2896,6 +2897,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->  		 * Configuration that is currently in use.
->  		 */
->  		map_id = map_id << 1 | !!(data_byte & read_data_mask);
-> +		ncmds++;
->  	}
->  
->  	/*
-> @@ -2905,7 +2907,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
->  	 *
->  	 * Find the matching configuration map.
->  	 */
-> -	while (i < smpt_len) {
-> +	for (nmaps = 0; i < smpt_len; nmaps++) {
-> +		/*
-> +		 * The map selector is limited to a maximum of 8 bits, allowing
-> +		 * for a maximum of 256 possible map configurations. The total
-> +		 * number of map configurations should be addressable by the
-> +		 * total number of bits described by the detection commands.
-> +		 */
-> +		if (ncmds && nmaps >= (1 << (ncmds + 1)))
-> +			break;
+> -	u8 read_data_mask, data_byte, map_id;
+> +	u8 read_data_mask, map_id;
 > +
 
-Maybe I missed something but it sounds like this change is just
-optimizing the SPMT parsing a bit, and to be honest, I'm not sure this
-is really needed. Most of the time, smpt_len will be rather small, so
-trying to bail out earlier is not bringing much perf improvements.
+... and have a comment here explaining why your allocating the buffer
+instead of using a local var placed on the stack.
 
->  		if (SMPT_MAP_ID(smpt[i]) == map_id) {
->  			ret = smpt + i;
->  			break;
+> +	dma_safe = kmalloc(sizeof(*dma_safe), GFP_KERNEL | GFP_DMA);
+
+Please don't use GFP_DMA, kmalloc() should already return a DMA-safe
+buffer (see [1]).
+
+> +	if (!dma_safe)
+> +		return ERR_PTR(-ENOMEM);
+>  
+>  	addr_width = nor->addr_width;
+>  	read_dummy = nor->read_dummy;
+> @@ -2890,7 +2895,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
+>  		addr = smpt[i + 1];
+>  
+> -		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
+> +		err = spi_nor_read_raw(nor, addr, 1, dma_safe);
+>  		if (err) {
+>  			ret = ERR_PTR(err);
+>  			goto out;
+> @@ -2900,7 +2905,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  		 * Build an index value that is used to select the Sector Map
+>  		 * Configuration that is currently in use.
+>  		 */
+> -		map_id = map_id << 1 | !!(data_byte & read_data_mask);
+> +		map_id = map_id << 1 | !!(*dma_safe & read_data_mask);
+>  		ncmds++;
+>  	}
+>  
+> @@ -2941,6 +2946,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  
+>  	/* fall through */
+>  out:
+> +	kfree(dma_safe);
+>  	nor->addr_width = addr_width;
+>  	nor->read_dummy = read_dummy;
+>  	nor->read_opcode = read_opcode;
+
+[1]https://elixir.bootlin.com/linux/latest/source/include/linux/gfp.h#L263
