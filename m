@@ -1,23 +1,27 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKnax-0002R5-24
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 16:55:54 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@bootlin.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-CC: <alexandre.belloni@bootlin.com>, <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Make sure SFDP-based 4B_OPCODE
- support detection works correctly
-Date: Thu, 8 Nov 2018 16:55:29 +0000
-Message-ID: <10fab1c5-1a40-9d7a-b9d4-ce48afa1635d@microchip.com>
-References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181031144504.19405-1-boris.brezillon@bootlin.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <44DE565FE984344287EB77AFA2CEDFDD@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from relmlor4.renesas.com ([210.160.252.174]
+ helo=relmlie3.idc.renesas.com)
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKnjz-0003jD-Uk
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 17:05:13 +0000
+From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Horman <horms@verge.net.au>, Richard Weinberger <richard@nod.at>
+Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
+ Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Chris Paterson <Chris.Paterson2@renesas.com>,
+ Biju Das <biju.das@bp.renesas.com>
+Subject: [PATCH v2 1/3] mtd: spi-nor: Add support for is25lp016d
+Date: Thu,  8 Nov 2018 17:04:41 +0000
+Message-Id: <1541696684-21235-2-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1541696684-21235-1-git-send-email-fabrizio.castro@bp.renesas.com>
+References: <1541696684-21235-1-git-send-email-fabrizio.castro@bp.renesas.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDEwLzMxLzIwMTggMDQ6NDUgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gU29t
-ZSBmbGFzaF9pbmZvIGVudHJpZXMgaGF2ZSB0aGUgU1BJX05PUl80Ql9PUENPREVTIGZsYWcgc2V0
-IHRvIGxldCB0aGUNCj4gY29yZSBrbm93IHRoYXQgdGhlIGZsYXNoIHN1cHBvcnRzIDRCIG9wY29k
-ZS4gV2hpbGUgdGhpcyBzb2x1dGlvbiB3b3Jrcw0KPiBmaW5lIGZvciBpZC1iYXNlZCBjYXBzIGRl
-dGVjdGlvbiwgaXQgZG9lc24ndCB3b3JrIHRoYXQgd2VsbCB3aGVuIHJlbHlpbmcNCj4gb24gU0ZE
-UC1iYXNlZCBjYXBzIGRldGVjdGlvbi4gTGV0J3MgYWRkIGFuIFNOT1JfRl80Ql9PUENPREVTIGZs
-YWcgc28gdGhhdA0KPiBzcGlfbm9yX3BhcnNlX2JmcHQoKSBjYW4gYWRkIGl0IHdoZW4gdGhlIEJG
-UFRfRFdPUkQxX0FERFJFU1NfQllURVMNCj4gZmllbGQgaXMgc2V0IHRvIEJGUFRfRFdPUkQxX0FE
-RFJFU1NfQllURVNfNF9PTkxZLg0KPiANCj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRyZSBCZWxsb25p
-IDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogQm9yaXMg
-QnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb20+DQo+IFRlc3RlZC1ieTogQWxl
-eGFuZHJlIEJlbGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPg0KPiAtLS0NCj4g
-Q2hhbmdlcyBpbiB2MzoNCj4gLSBDbGVhciBTTk9SX0ZfNEJfT1BDT0RFUyBmbGFnIHdoZW4gU0ZE
-UCBmYWlscw0KPiAtIEFkZCBBbGV4YW5kcmUgUi1iDQo+IA0KPiBDaGFuZ2VzIGluIHYyOg0KPiAt
-IEZpeCB0aGUgY29tbWl0IG1lc3NhZ2UNCj4gLSBGaXggdGhlIC0+YWRkcl93aWR0aCBjaGVjaw0K
-PiAtIEFkZCBhIGNvbW1hIGF0IHRoZSBlbmQgb2YgdGhlIFNOT1JfRl80Ql9PUENPREVTIGRlZmlu
-aXRpb24NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDEyICsrKysr
-KysrKy0tLQ0KPiAgaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oICAgfCAgMSArDQo+ICAyIGZp
-bGVzIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2ZXJzL210ZC9zcGkt
-bm9yL3NwaS1ub3IuYw0KPiBpbmRleCAzZTU0ZTMxODg5YzcuLjc5ODkxNWI1YzJiMCAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJpdmVycy9t
-dGQvc3BpLW5vci9zcGktbm9yLmMNCj4gQEAgLTI2NDMsNiArMjY0Myw3IEBAIHN0YXRpYyBpbnQg
-c3BpX25vcl9wYXJzZV9iZnB0KHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICAJCWJyZWFrOw0KPiAg
-DQo+ICAJY2FzZSBCRlBUX0RXT1JEMV9BRERSRVNTX0JZVEVTXzRfT05MWToNCj4gKwkJbm9yLT5m
-bGFncyB8PSBTTk9SX0ZfNEJfT1BDT0RFUzsNCj4gIAkJbm9yLT5hZGRyX3dpZHRoID0gNDsNCj4g
-IAkJYnJlYWs7DQo+ICANCj4gQEAgLTMyNTIsNiArMzI1Myw3IEBAIHN0YXRpYyBpbnQgc3BpX25v
-cl9pbml0X3BhcmFtcyhzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiAgDQo+ICAJCWlmIChzcGlfbm9y
-X3BhcnNlX3NmZHAobm9yLCAmc2ZkcF9wYXJhbXMpKSB7DQo+ICAJCQlub3ItPmFkZHJfd2lkdGgg
-PSAwOw0KPiArCQkJbm9yLT5mbGFncyAmPSB+U05PUl9GXzRCX09QQ09ERVM7DQo+ICAJCQkvKiBy
-ZXN0b3JlIHByZXZpb3VzIGVyYXNlIG1hcCAqLw0KPiAgCQkJbWVtY3B5KCZub3ItPmVyYXNlX21h
-cCwgJnByZXZfbWFwLA0KPiAgCQkJICAgICAgIHNpemVvZihub3ItPmVyYXNlX21hcCkpOw0KPiBA
-QCAtMzU1NCw3ICszNTU2LDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXQoc3RydWN0IHNwaV9u
-b3IgKm5vcikNCj4gIA0KPiAgCWlmICgobm9yLT5hZGRyX3dpZHRoID09IDQpICYmDQo+ICAJICAg
-IChKRURFQ19NRlIobm9yLT5pbmZvKSAhPSBTTk9SX01GUl9TUEFOU0lPTikgJiYNCj4gLQkgICAg
-IShub3ItPmluZm8tPmZsYWdzICYgU1BJX05PUl80Ql9PUENPREVTKSkgew0KPiArCSAgICAhKG5v
-ci0+ZmxhZ3MgJiBTTk9SX0ZfNEJfT1BDT0RFUykpIHsNCj4gIAkJLyoNCj4gIAkJICogSWYgdGhl
-IFJFU0VUIyBwaW4gaXNuJ3QgaG9va2VkIHVwIHByb3Blcmx5LCBvciB0aGUgc3lzdGVtDQo+ICAJ
-CSAqIG90aGVyd2lzZSBkb2Vzbid0IHBlcmZvcm0gYSByZXNldCBjb21tYW5kIGluIHRoZSBib290
-DQo+IEBAIC0zNTg4LDcgKzM1OTAsNyBAQCB2b2lkIHNwaV9ub3JfcmVzdG9yZShzdHJ1Y3Qgc3Bp
-X25vciAqbm9yKQ0KPiAgCS8qIHJlc3RvcmUgdGhlIGFkZHJlc3NpbmcgbW9kZSAqLw0KPiAgCWlm
-ICgobm9yLT5hZGRyX3dpZHRoID09IDQpICYmDQo+ICAJICAgIChKRURFQ19NRlIobm9yLT5pbmZv
-KSAhPSBTTk9SX01GUl9TUEFOU0lPTikgJiYNCj4gLQkgICAgIShub3ItPmluZm8tPmZsYWdzICYg
-U1BJX05PUl80Ql9PUENPREVTKSAmJg0KPiArCSAgICAhKG5vci0+ZmxhZ3MgJiBTTk9SX0ZfNEJf
-T1BDT0RFUykgJiYNCj4gIAkgICAgKG5vci0+ZmxhZ3MgJiBTTk9SX0ZfQlJPS0VOX1JFU0VUKSkN
-Cj4gIAkJc2V0XzRieXRlKG5vciwgbm9yLT5pbmZvLCAwKTsNCj4gIH0NCj4gQEAgLTM3NDYsMTEg
-KzM3NDgsMTUgQEAgaW50IHNwaV9ub3Jfc2NhbihzdHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdCBj
-aGFyICpuYW1lLA0KPiAgCQlub3ItPmFkZHJfd2lkdGggPSA0Ow0KPiAgCQlpZiAoSkVERUNfTUZS
-KGluZm8pID09IFNOT1JfTUZSX1NQQU5TSU9OIHx8DQo+ICAJCSAgICBpbmZvLT5mbGFncyAmIFNQ
-SV9OT1JfNEJfT1BDT0RFUykNCj4gLQkJCXNwaV9ub3Jfc2V0XzRieXRlX29wY29kZXMobm9yLCBp
-bmZvKTsNCj4gKwkJCW5vci0+ZmxhZ3MgfD0gU05PUl9GXzRCX09QQ09ERVM7DQo+ICAJfSBlbHNl
-IHsNCj4gIAkJbm9yLT5hZGRyX3dpZHRoID0gMzsNCj4gIAl9DQo+ICANCj4gKwlpZiAobm9yLT5h
-ZGRyX3dpZHRoID09IDQgJiYNCg0KU2hvdWxkbid0IFNOT1JfRl80Ql9PUENPREVTIGFscmVhZHkg
-aW1wbHkgbm9yLT5hZGRyX3dpZHRoID09IDQ/DQoNCldoZW4gU05PUl9GXzRCX09QQ09ERVMgY29t
-ZXMgZnJvbSBiZnB0LCBhZGRyX3dpZHRoIGlzIHNldCB0byA0LiBGb3IgdGhlIGlkLWJhc2VkDQpj
-YXBzIGRldGVjdGlvbiwgd2hlbiBtdGQtPnNpemUgPiAweDEwMDAwMDAsIHdlIHNldCBub3ItPmFk
-ZHJfd2lkdGggPSA0IHRvby4NCg0KVGhlIG9ubHkgdW5jb3ZlcmVkIGNhc2Ugd291bGQgYmUgd2hl
-bg0KICAgICAgICB9IGVsc2UgaWYgKGluZm8tPmFkZHJfd2lkdGgpIHsNCiAgICAgICAgICAgICAg
-ICBub3ItPmFkZHJfd2lkdGggPSBpbmZvLT5hZGRyX3dpZHRoOw0KDQpidXQgdGhpcyBjYW4gYmUg
-c29sdmVkIGJ5IHJlb3JkZXJpbmcgdGhlIGVsc2UgaWYgY2FzZXMuDQoNCiAgICAgICAgaWYgKG5v
-ci0+YWRkcl93aWR0aCkgew0KICAgICAgICAgICAgICAgIC8qIGFscmVhZHkgY29uZmlndXJlZCBm
-cm9tIFNGRFAgKi8NCiAgICAgICAgfSBlbHNlIGlmIChtdGQtPnNpemUgPiAweDEwMDAwMDApIHsN
-CgkJLi4uDQogICAgICAgIH0gZWxzZSBpZiAoaW5mby0+YWRkcl93aWR0aCkgew0KICAgICAgICAg
-ICAgICAgIG5vci0+YWRkcl93aWR0aCA9IGluZm8tPmFkZHJfd2lkdGg7DQogICAgICAgIH0gZWxz
-ZSB7DQogICAgICAgICAgICAgICAgbm9yLT5hZGRyX3dpZHRoID0gMzsNCiAgICAgICAgfQ0KDQpX
-aGF0IGRvIHlvdSB0aGluaz8NCg0KPiArCSAgICBub3ItPmZsYWdzICYgU05PUl9GXzRCX09QQ09E
-RVMpDQo+ICsJCXNwaV9ub3Jfc2V0XzRieXRlX29wY29kZXMobm9yLCBpbmZvKTsNCj4gKw0KPiAg
-CWlmIChub3ItPmFkZHJfd2lkdGggPiBTUElfTk9SX01BWF9BRERSX1dJRFRIKSB7DQo+ICAJCWRl
-dl9lcnIoZGV2LCAiYWRkcmVzcyB3aWR0aCBpcyB0b28gbGFyZ2U6ICV1XG4iLA0KPiAgCQkJbm9y
-LT5hZGRyX3dpZHRoKTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3Iu
-aCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBpbmRleCA3ZjBjNzMwMzU3NWUuLjVi
-Yzc1MTEwZDVlYSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+
-ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBAQCAtMjM2LDYgKzIzNiw3IEBA
-IGVudW0gc3BpX25vcl9vcHRpb25fZmxhZ3Mgew0KPiAgCVNOT1JfRl9SRUFEWV9YU1JfUkRZCT0g
-QklUKDQpLA0KPiAgCVNOT1JfRl9VU0VfQ0xTUgkJPSBCSVQoNSksDQo+ICAJU05PUl9GX0JST0tF
-Tl9SRVNFVAk9IEJJVCg2KSwNCj4gKwlTTk9SX0ZfNEJfT1BDT0RFUwk9IEJJVCg3KSwNCj4gIH07
-DQo+ICANCj4gIC8qKg0KPiANCg==
+The is25lp016d is found on the iwg23s from iWave, therefore
+add driver support for it so that we can upstream board support.
+
+Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+
+---
+v1->v2:
+* No change
+
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 9407ca5..85d869b 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1352,6 +1352,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+ 	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,   8,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25lp016d", INFO(0x9d6015, 0, 64 * 1024,  32,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+-- 
+2.7.4
