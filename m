@@ -1,27 +1,22 @@
-Received: from relmlor3.renesas.com ([210.160.252.173]
- helo=relmlie2.idc.renesas.com)
+Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKnk4-0003jE-So
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 17:05:18 +0000
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Horman <horms@verge.net.au>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
- Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>
-Subject: [PATCH v2 2/3] ARM: dts: r8a77470: Add QSPI support
-Date: Thu,  8 Nov 2018 17:04:42 +0000
-Message-Id: <1541696684-21235-3-git-send-email-fabrizio.castro@bp.renesas.com>
-In-Reply-To: <1541696684-21235-1-git-send-email-fabrizio.castro@bp.renesas.com>
-References: <1541696684-21235-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ id 1gKnna-0003mk-TY
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 17:08:55 +0000
+Date: Thu, 8 Nov 2018 18:08:42 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <alexandre.belloni@bootlin.com>, <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Make sure SFDP-based 4B_OPCODE
+ support detection works correctly
+Message-ID: <20181108180842.48ce6d1b@bbrezillon>
+In-Reply-To: <10fab1c5-1a40-9d7a-b9d4-ce48afa1635d@microchip.com>
+References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
+ <10fab1c5-1a40-9d7a-b9d4-ce48afa1635d@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,59 +26,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add QSPI[01] support to the RZ/G1C SoC specific device tree.
+On Thu, 8 Nov 2018 16:55:29 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
+> On 10/31/2018 04:45 PM, Boris Brezillon wrote:
+> > Some flash_info entries have the SPI_NOR_4B_OPCODES flag set to let the
+> > core know that the flash supports 4B opcode. While this solution works
+> > fine for id-based caps detection, it doesn't work that well when relying
+> > on SFDP-based caps detection. Let's add an SNOR_F_4B_OPCODES flag so that
+> > spi_nor_parse_bfpt() can add it when the BFPT_DWORD1_ADDRESS_BYTES
+> > field is set to BFPT_DWORD1_ADDRESS_BYTES_4_ONLY.
+> > 
+> > Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > ---
+> > Changes in v3:
+> > - Clear SNOR_F_4B_OPCODES flag when SFDP fails
+> > - Add Alexandre R-b
+> > 
+> > Changes in v2:
+> > - Fix the commit message
+> > - Fix the ->addr_width check
+> > - Add a comma at the end of the SNOR_F_4B_OPCODES definition
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 12 +++++++++---
+> >  include/linux/mtd/spi-nor.h   |  1 +
+> >  2 files changed, 10 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index 3e54e31889c7..798915b5c2b0 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >  		break;
+> >  
+> >  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+> > +		nor->flags |= SNOR_F_4B_OPCODES;
+> >  		nor->addr_width = 4;
+> >  		break;
+> >  
+> > @@ -3252,6 +3253,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+> >  
+> >  		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+> >  			nor->addr_width = 0;
+> > +			nor->flags &= ~SNOR_F_4B_OPCODES;
+> >  			/* restore previous erase map */
+> >  			memcpy(&nor->erase_map, &prev_map,
+> >  			       sizeof(nor->erase_map));
+> > @@ -3554,7 +3556,7 @@ static int spi_nor_init(struct spi_nor *nor)
+> >  
+> >  	if ((nor->addr_width == 4) &&
+> >  	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+> > -	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
+> > +	    !(nor->flags & SNOR_F_4B_OPCODES)) {
+> >  		/*
+> >  		 * If the RESET# pin isn't hooked up properly, or the system
+> >  		 * otherwise doesn't perform a reset command in the boot
+> > @@ -3588,7 +3590,7 @@ void spi_nor_restore(struct spi_nor *nor)
+> >  	/* restore the addressing mode */
+> >  	if ((nor->addr_width == 4) &&
+> >  	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+> > -	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
+> > +	    !(nor->flags & SNOR_F_4B_OPCODES) &&
+> >  	    (nor->flags & SNOR_F_BROKEN_RESET))
+> >  		set_4byte(nor, nor->info, 0);
+> >  }
+> > @@ -3746,11 +3748,15 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >  		nor->addr_width = 4;
+> >  		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+> >  		    info->flags & SPI_NOR_4B_OPCODES)
+> > -			spi_nor_set_4byte_opcodes(nor, info);
+> > +			nor->flags |= SNOR_F_4B_OPCODES;
+> >  	} else {
+> >  		nor->addr_width = 3;
+> >  	}
+> >  
+> > +	if (nor->addr_width == 4 &&  
+> 
+> Shouldn't SNOR_F_4B_OPCODES already imply nor->addr_width == 4?
 
----
-v1->v2:
-* Removed aliases
+Can't we have NORs supporting 4B opcodes but are less than 16MB? In
+this case SNOR_F_4B_OPCODES would be set and ->addr_width would be 3.
 
- arch/arm/boot/dts/r8a77470.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+> When SNOR_F_4B_OPCODES comes from bfpt, addr_width is set to 4. For the id-based
+> caps detection, when mtd->size > 0x1000000, we set nor->addr_width = 4 too.
+> 
+> The only uncovered case would be when
+>         } else if (info->addr_width) {
+>                 nor->addr_width = info->addr_width;
+> 
+> but this can be solved by reordering the else if cases.
+> 
+>         if (nor->addr_width) {
+>                 /* already configured from SFDP */
+>         } else if (mtd->size > 0x1000000) {
+> 		...
+>         } else if (info->addr_width) {
+>                 nor->addr_width = info->addr_width;
+>         } else {
+>                 nor->addr_width = 3;
+>         }
+> 
+> What do you think?
 
-diff --git a/arch/arm/boot/dts/r8a77470.dtsi b/arch/arm/boot/dts/r8a77470.dtsi
-index 5c0e48d..f4e232b 100644
---- a/arch/arm/boot/dts/r8a77470.dtsi
-+++ b/arch/arm/boot/dts/r8a77470.dtsi
-@@ -460,6 +460,38 @@
- 			status = "disabled";
- 		};
- 
-+		qspi0: spi@e6b10000 {
-+			compatible = "renesas,qspi-r8a77470", "renesas,qspi";
-+			reg = <0 0xe6b10000 0 0x2c>;
-+			interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 918>;
-+			dmas = <&dmac0 0x17>, <&dmac0 0x18>,
-+			       <&dmac1 0x17>, <&dmac1 0x18>;
-+			dma-names = "tx", "rx", "tx", "rx";
-+			power-domains = <&sysc R8A77470_PD_ALWAYS_ON>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			resets = <&cpg 918>;
-+			status = "disabled";
-+		};
-+
-+		qspi1: spi@ee200000 {
-+			compatible = "renesas,qspi-r8a77470", "renesas,qspi";
-+			reg = <0 0xee200000 0 0x2c>;
-+			interrupts = <GIC_SPI 239 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 917>;
-+			dmas = <&dmac0 0xd1>, <&dmac0 0xd2>,
-+			       <&dmac1 0xd1>, <&dmac1 0xd2>;
-+			dma-names = "tx", "rx", "tx", "rx";
-+			power-domains = <&sysc R8A77470_PD_ALWAYS_ON>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			resets = <&cpg 917>;
-+			status = "disabled";
-+		};
-+
- 		scif0: serial@e6e60000 {
- 			compatible = "renesas,scif-r8a77470",
- 				     "renesas,rcar-gen2-scif", "renesas,scif";
--- 
-2.7.4
+I'd rather not change that in this patch, but feel free to propose
+a patch on top of mine to simplify the logic if you think it's
+needed.
+
+> 
+> > +	    nor->flags & SNOR_F_4B_OPCODES)
+> > +		spi_nor_set_4byte_opcodes(nor, info);
+> > +
+> >  	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+> >  		dev_err(dev, "address width is too large: %u\n",
+> >  			nor->addr_width);
+> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> > index 7f0c7303575e..5bc75110d5ea 100644
+> > --- a/include/linux/mtd/spi-nor.h
+> > +++ b/include/linux/mtd/spi-nor.h
+> > @@ -236,6 +236,7 @@ enum spi_nor_option_flags {
+> >  	SNOR_F_READY_XSR_RDY	= BIT(4),
+> >  	SNOR_F_USE_CLSR		= BIT(5),
+> >  	SNOR_F_BROKEN_RESET	= BIT(6),
+> > +	SNOR_F_4B_OPCODES	= BIT(7),
+> >  };
+> >  
+> >  /**
+> >   
