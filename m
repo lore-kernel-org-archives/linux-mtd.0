@@ -1,38 +1,35 @@
-Date: Thu, 8 Nov 2018 09:34:51 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.De>
-Cc: Olof Johansson <olof@lixom.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
- <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>, Shawn Guo
- <shawnguo@kernel.org>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, Sascha Hauer <s.hauer@pengutronix.de>,
- "Sascha Hauer" <kernel@pengutronix.de>, "linux-imx@nxp.com"
- <linux-imx@nxp.com>, Russell King <linux@armlinux.org.uk>, Arnd Bergmann
- <arnd@arndb.de>, Alexandre TORGUE <alexandre.torgue@st.com>, Eric Anholt
- <eric@anholt.net>, Stefan Agner <stefan@agner.ch>, Simon Horman
- <horms+renesas@verge.net.au>, Tony Lindgren <tony@atomide.com>, Geert
- Uytterhoeven <geert+renesas@glider.be>, Stefan Wahren
- <stefan.wahren@i2se.com>, "yannick.fertre@st.com" <yannick.fertre@st.com>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/10] ARM: defconfig: Use the new FSL QSPI driver
- under the SPI framework
-Message-ID: <20181108093451.08dfe63e@bbrezillon>
-In-Reply-To: <b12936f5-871d-a982-13c5-9d894f4a1521@kontron.de>
-References: <1541601809-16950-1-git-send-email-frieder.schrempf@kontron.de>
- <1541601809-16950-7-git-send-email-frieder.schrempf@kontron.de>
- <CAOesGMgPwwwmizC+R4W1aLpvgcuVOYQr2qR2Vqb6171zGfarRw@mail.gmail.com>
- <b12936f5-871d-a982-13c5-9d894f4a1521@kontron.de>
+Received: from skedge04.snt-world.com ([91.208.41.69])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKfnH-00065G-6g
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 08:36:04 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.De>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "yogeshnarayan.gaur@nxp.com" <yogeshnarayan.gaur@nxp.com>,
+ "richard@nod.at" <richard@nod.at>, "prabhakar.kushwaha@nxp.com"
+ <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "han.xu@nxp.com"
+ <han.xu@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "david.wolfe@nxp.com"
+ <david.wolfe@nxp.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
+Date: Thu, 8 Nov 2018 08:35:28 +0000
+Message-ID: <903083f9-ab85-597f-3749-579789bdf85a@kontron.de>
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+ <20181031144055.32e1c8f1@bbrezillon>
+ <dd4b9af1-82f3-469e-e70f-2858e85a5dfe@kontron.de>
+ <20181031153125.3c5dfca1@bbrezillon>
+ <e895f059-f8fe-6d4c-3744-ab8cfa4a2147@kontron.de>
+ <20181108091957.013dc540@bbrezillon>
+In-Reply-To: <20181108091957.013dc540@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E62DE01305F98A43BF206727669F0A2F@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,54 +39,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 7 Nov 2018 16:36:13 +0000
-Schrempf Frieder <frieder.schrempf@kontron.De> wrote:
-
-> Hi Olof,
-> 
-> On 07.11.18 17:20, Olof Johansson wrote:
-> > On Wed, Nov 7, 2018 at 6:44 AM Frieder Schrempf
-> > <frieder.schrempf@kontron.de> wrote:  
-> >>
-> >> From: Frieder Schrempf <frieder.schrempf@exceet.de>
-> >>
-> >> The new driver at spi/spi-fsl-qspi.c replaces the old SPI NOR driver
-> >> at mtd/fsl-quadspi.c. Switch to the new driver in the defconfigs.
-> >>
-> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>  
-> > 
-> > Hi Frieder,
-> > 
-> > This patch is part of a series that I didn't see the rest of, but in
-> > general we prefer to merge these through arm-soc even if the driver
-> > goes in through another tree. The way we'd prefer to handle it is that
-> > once the driver lands, we'll take the config option change to turn it
-> > on. To avoid our branches to break until both sides have landed, it
-> > might be a good idea to keep both drivers on for a short while (one
-> > release).
-> > 
-> > So, I'm not going to ack this since we avoid taking defconfig changes
-> > through driver trees (these two defconfigs tend to churn a lot and we
-> > don't want to create merge conflicts where we don't have to), but
-> > we'll be happy to pick it up when the time comes.  
-> 
-> Ok, thank you for explaining the common practice. I will drop the config 
-> changes for the next version and send it separately when the time is ready.
-> 
-> Both the old driver and the new one use the same compatible strings for 
-> probing. Wouldn't that cause problems if both drivers are enabled for a 
-> while, or am I missing something?
-
-Or maybe we should not introduce a new Kconfig option and just reuse
-the old one. It probably requires re-ordering patches a bit (patch 1
-should be moved after patch 5). Then you have 2 choices:
-
-1/ merge patch 1 and 6 so that the new driver effectively replaces the
-   old one but uses the same Kconfig option
-2/ remove the ability to compile the old driver when the new one is
-   introduced: remove the line from drivers/mtd/spi-nor Makefile and
-   move the Kconfig entry from drivers/mtd/spi-nor/Kconfig to
-   drivers/spi/Kconfig. And remove the old code in a separate patch
-
-I'm fine either way, but option #2 will probably make the patch
-introducing the new driver bigger and hurt readability.
+T24gMDguMTEuMTggMDk6MTksIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gSGkgRnJpZWRlciwN
+Cj4gDQo+IE9uIFRodSwgOCBOb3YgMjAxOCAwODoxNTo1NSArMDAwMA0KPiBTY2hyZW1wZiBGcmll
+ZGVyIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uRGU+IHdyb3RlOg0KPiANCj4+IEhpIEJvcmlz
+LCBoaSBZb2dlc2gsDQo+Pg0KPj4gT24gMzEuMTAuMTggMTU6MzEsIEJvcmlzIEJyZXppbGxvbiB3
+cm90ZToNCj4+PiBPbiBXZWQsIDMxIE9jdCAyMDE4IDEzOjU0OjI5ICswMDAwDQo+Pj4gU2NocmVt
+cGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLkRlPiB3cm90ZToNCj4+PiAgICAN
+Cj4+Pj4gSGkgQm9yaXMsDQo+Pj4+DQo+Pj4+IE9uIDMxLjEwLjE4IDE0OjQwLCBCb3JpcyBCcmV6
+aWxsb24gd3JvdGU6DQo+Pj4+PiBIaSBGcmllZGVyLCBZb2dlc2gsDQo+Pj4+Pg0KPj4+Pj4gT24g
+VGh1LCAgNSBKdWwgMjAxOCAxMzoxNDo1NiArMDIwMA0KPj4+Pj4gRnJpZWRlciBTY2hyZW1wZiA8
+ZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGU+IHdyb3RlOg0KPj4+Pj4gICAgICAgDQo+Pj4+Pj4g
+Tm93IHRoYXQgdGhlIFNQSSBtZW1vcnkgaW50ZXJmYWNlIHdhcyBpbnRyb2R1Y2VkIGJ5IEJvcmlz
+IFsxXSwgaXQgaXMNCj4+Pj4+PiBwb3NzaWJsZSB0byBtb3ZlIGRyaXZlcnMgZnJvbSBtdGQvc3Bp
+LW5vciB0byB0aGUgU1BJIGZyYW1ld29yayBpbiBvcmRlcg0KPj4+Pj4+IHRvIHVzZSB0aGVtIGZv
+ciBkaWZmZXJlbnQgdHlwZSBvZiBTUEkgbWVtb3J5IGNoaXBzLg0KPj4+Pj4+DQo+Pj4+Pj4gUGF0
+Y2ggMSBhZGRzIGEgZnVuY3Rpb24gc3BpX21lbV9nZXRfbmFtZSgpIHRvIHRoZSBTUEkgbWVtb3J5
+IGludGVyZmFjZQ0KPj4+Pj4+IGFuZCBhIC0+bmFtZSBmaWVsZCB0byBzdHJ1Y3Qgc3BpX21lbS4N
+Cj4+Pj4+PiBQYXRjaCAyIHVzZXMgaXQgaW4gbTI1cDgwLmMgdG8gbWFrZSBpdCBwb3NzaWJsZSBm
+b3IgU1BJIGNvbnRyb2xsZXINCj4+Pj4+PiBkcml2ZXJzIHRvIHByb3ZpZGUgYSBjdXN0b20gbmFt
+aW5nIHNjaGVtZSBmb3IgdGhlIGZsYXNoIGNoaXAuDQo+Pj4+Pj4gVGhpcyBpcyBuZWVkZWQgdG8g
+YXZvaWQgYnJlYWtpbmcgY29tcGF0aWJpbGl0eSBvZiBtdGRwYXJ0cyB3aGVuIHN3aXRjaGluZw0K
+Pj4+Pj4+IGZyb20gdGhlIG9sZCB0byB0aGUgbmV3IGRyaXZlci4NCj4+Pj4+Pg0KPj4+Pj4+IFBh
+dGNoIDMgYWRkcyBhIGRyaXZlciBmb3IgdGhlIEZyZWVzY2FsZSBRU1BJIGNvbnRyb2xsZXIgdG8g
+dGhlIFNQSQ0KPj4+Pj4+IGZyYW1ld29yay4gVG9nZXRoZXIgd2l0aCBtMjVwODAuYyBpdCBjYW4g
+YmUgdXNlZCB0byBpbnRlcmZhY2UgU1BJDQo+Pj4+Pj4gTk9SIGZsYXNoZXMganVzdCBhcyB0aGUg
+b2xkIGRyaXZlciBkaWQuIEZvciB0aGlzIHRvIHdvcmsgcHJvcGVybHkgYSBmZXcNCj4+Pj4+PiBt
+aW5vciBjaGFuZ2VzIHRvIHRoZSBkZXZpY2V0cmVlcyBhcmUgbmVjZXNzYXJ5IChzZWUgcGF0Y2hl
+cyA1IHRvIDcpLg0KPj4+Pj4+DQo+Pj4+Pj4gUGF0Y2ggOCBjaGFuZ2VzIHRoZSBkZWZjb25maWdz
+IHRvIHVzZSB0aGUgbmV3IGRyaXZlciBhbmQgcGF0Y2ggOSByZW1vdmVzDQo+Pj4+Pj4gdGhlIG9s
+ZCBkcml2ZXIuDQo+Pj4+Pj4NCj4+Pj4+PiBQYXRjaCAxMCBhbmQgMTEgcmVtb3ZlICdmc2wscXNw
+aS1oYXMtc2Vjb25kLWNoaXAnIGZyb20gdGhlIGRldmljZXRyZWVzLg0KPj4+Pj4+IFBhdGNoIDEy
+IGFkanVzdHMgdGhlIE1BSU5UQUlORVJTIGZpbGUuDQo+Pj4+Pj4NCj4+Pj4+PiBUaGUgbmV3IGRy
+aXZlciB3YXMgdGVzdGVkIHdpdGggaS5NWDZVTCBhbmQgYSBNaWNyb24gU1BJIE5PUiBAIDYwTUh6
+Lg0KPj4+Pj4+IFRoZSByZWFkIHBlcmZvcm1hbmNlIG9mIHRoZSBuZXcgZHJpdmVyIGlzIGFsbW9z
+dCB0aGUgc2FtZSBvciBldmVuIGJldHRlcg0KPj4+Pj4+IHRoYW4gdGhlIG9sZCBkcml2ZXIsIGRl
+cGVuZGluZyBvbiB0aGUgYmxvY2sgc2l6ZS4NCj4+Pj4+PiBUaGUgd3JpdGUgcGVyZm9ybWFuY2Ug
+aXMgYSBiaXQgc2xvd2VyIG9uIGF2ZXJhZ2UgKH4xMC0xNSUpLg0KPj4+Pj4+DQo+Pj4+Pj4gVGhl
+IG5ldyBkcml2ZXIgd2FzIGFsc28gdGVzdGVkIHdpdGggdGhlIFNQSSBOQU5EIGZyYW1ld29yayBb
+Ml0gYW5kIGENCj4+Pj4+PiBXaW5ib25kIFcyNU0wMkdWIGZsYXNoLg0KPj4+Pj4+DQo+Pj4+Pj4g
+SWYgc29tZW9uZSBoYXMgYSBib2FyZCB0aGF0IHVzZXMgYm90aCBjaGlwcyBzZWxlY3RzIGFuZC9v
+ciBib3RoIGJ1c3NlcywNCj4+Pj4+PiBpdCB3b3VsZCBiZSByZWFsbHkgbmljZSB0byBoYXZlIHRo
+ZSBkcml2ZXIgYmUgdGVzdGVkIG9uIHN1Y2ggYSBzZXR1cC4NCj4+Pj4+DQo+Pj4+PiBBbnkgcHJv
+Z3Jlc3Mgb24gdGhpcyBmcm9udD8gWW9nZXNoLCBjYW4geW91IHBsZWFzZSByZW1pbmQgdXMgdGhl
+DQo+Pj4+PiByZW1haW5pbmcgaXNzdWVzPyBJJ2QgcmVhbGx5IGxpa2UgdG8gbWFrZSBzb21lIHBy
+b2dyZXNzLCBvdGhlcndpc2UgdGhlDQo+Pj4+PiBjb252ZXJzaW9uIHRvIHNwaS1tZW0gd2lsbCB0
+YWtlIGFnZXMuDQo+Pj4+DQo+Pj4+IEkgZGVmaW5pdGVseSB3YW50IHRvIGNvbnRpbnVlIHRoaXMu
+IEkganVzdCBkaWQgbm90IGhhdmUgdGhlIHRpbWUgdG8gd29yaw0KPj4+PiBvbiBpdC4NCj4+Pj4N
+Cj4+Pj4gSSB0aGluayB0aGUgb25seSByZW1haW5pbmcgYmxvY2tpbmcgaXNzdWVzIGlzIHRoZSBv
+bmUgdGhhdCBZb2dlc2gNCj4+Pj4gcmVwb3J0ZWQgd2hpbGUgdGVzdGluZyB3aXRoIHR3byBjaGlw
+cyBvbiB0aGUgc2FtZSBidXMuDQo+Pj4NCj4+PiBNYXliZSB5b3UgY2FuIHNlbmQgYSBuZXcgdmVy
+c2lvbiByZWJhc2VkIG9uIHY0LjIwLXJjMSAod2hlbiBpdCdzIG91dCkNCj4+PiBhbmQgcHVzaCBp
+dCBzb21ld2hlcmUgc28gdGhhdCBZb2dlc2ggY2FuIHRlc3QgaXQgKGFnYWluKS4gWW9nZXNoLCBj
+YW4gd2UNCj4+PiBwbGVhc2UgbWFrZSBzb21lIHByb2dyZXNzIG9uIHRoaXM/IElmIHlvdSByZWFs
+bHkgaGF2ZSBhIGJ1ZywgdGhhdCdkIGJlDQo+Pj4gZ3JlYXQgdG8gaGF2ZSBhIHNlcmlvdXMgaW52
+ZXN0aWdhdGlvbiBvbiB3aGF0IGlzIGNhdXNpbmcgdGhpcyBidWcuIFRoZQ0KPj4+IGV4cGxhbmF0
+aW9uIHdlIGhhZCBzbyBmYXIgd2VyZSBub3QgcmVhbGx5IGhlbHBmdWwgaW4gdW5kZXJzdGFuZGlu
+ZyB0aGUNCj4+PiBwcm9ibGVtLg0KPj4NCj4+IEkgaGF2ZSBzZW50IGEgdjQgdGhhdCBpcyBiYXNl
+ZCBvbiB2NC4yMC1yYzEuIEkgb25seSBhcHBsaWVkIHNtYWxsIGZpeGVzDQo+PiBhbmQgY29zbWV0
+aWMgY2hhbmdlcy4NCj4+DQo+PiBUaGVyZSBpcyBzdGlsbCB0aGUgaGFjayB0byBhdm9pZCBBSEIg
+YnVmZmVyIGludmFsaWRhdGlvbiBkZWxheSAobm90IHN1cmUNCj4+IGlmIHdlIHNob3VsZCBrZWVw
+IGl0IGZvciBub3cpDQo+IA0KPiBJSVJDLCBZb2dlc2ggcHJvcG9zZWQgdG8gcmVwbGFjZSB0aGlz
+IGhhY2sgYnkgYSBSRVNFVCtzbWFsbGVyLWRlbGF5Lg0KPiBNYXliZSB5b3UgY2FuIHRyeSB0aGF0
+Lg0KDQpSaWdodCwgSSB3aWxsIGRvIHNvbWUgZXhwZXJpbWVudHMuDQoNCj4+IGFuZCB3ZSBzdGls
+bCBuZWVkIHRvIGZpZ3VyZSBvdXQgdGhlDQo+PiByZXBvcnRlZCBwcm9ibGVtcyB3aXRoIHR3byBj
+aGlwcyBvbiBvbmUgYnVzLg0KPj4NCj4+IEFzIFlvZ2VzaCBpcyB0aGUgb25seSBvbmUgaG93IGhh
+cyBhIGhhcmR3YXJlIHNldHVwIGZvciB0aGlzLCBtYXliZSB5b3UNCj4+IGNhbiByZXRyeSBhbmQg
+cHJvdmlkZSBzb21lIGRlYnVnZ2luZyBpbmZvPw0KPj4NCj4+IFVuZm9ydHVuYXRlbHkgSSdsbCBw
+cm9iYWJseSBkbyBub3QgaGF2ZSB0aW1lIHRvIHN3aXRjaCB0byB0aGUgZGlybWFwIEFQSQ0KPj4g
+bm93LCBzbyBJJ2QgcmF0aGVyIGRvIHRoYXQgYXMgYSBzZWNvbmQgc3RlcCwgYXMgaXQgcHJvYmFi
+bHkgd29uJ3Qgc29sdmUNCj4+IG91ciBwcm9ibGVtcyBlaXRoZXIuDQo+IA0KPiBUb3RhbGx5IGFn
+cmVlIHdpdGggdGhhdC4NCj4gDQo+IFRoYW5rcyBmb3Igc2VuZGluZyBhIHY0Lg0KPiANCj4gQm9y
+aXMNCj4g
