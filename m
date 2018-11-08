@@ -1,30 +1,22 @@
-Date: Thu, 8 Nov 2018 12:07:52 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Piotr Bugalski <bugalski.piotr@gmail.com>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: Applied "spi: Add QuadSPI driver for Atmel SAMA5D2" to the spi
- tree
-Message-ID: <20181108120752.GC6675@sirena.org.uk>
-References: <20181105103625.9644-6-bugalski.piotr@gmail.com>
- <20181107150327.B6DC41124E14@debutante.sirena.org.uk>
- <20181107151836.GB6809@sirena.org.uk>
- <20181108095022.66ad3ad1@bbrezillon>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKjls-0000JT-Pl
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 12:50:54 +0000
+Date: Thu, 8 Nov 2018 13:50:38 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH 2/7] mtd: spi-nor: fix iteration over smpt array
+Message-ID: <20181108135038.3fb9e995@bbrezillon>
+In-Reply-To: <20181108110653.21063-3-tudor.ambarus@microchip.com>
+References: <20181108110653.21063-1-tudor.ambarus@microchip.com>
+ <20181108110653.21063-3-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ncSAzJYg3Aa9+CRW"
-Content-Disposition: inline
-In-Reply-To: <20181108095022.66ad3ad1@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,74 +26,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 8 Nov 2018 11:07:09 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
---ncSAzJYg3Aa9+CRW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Iterate over smpt array using its starting address and length
+> instead of the blindly iterations that used data found in the array.
 
-On Thu, Nov 08, 2018 at 09:50:22AM +0100, Boris Brezillon wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+		 ^blind
 
-> > Sorry, I got confused about which patch series Boris had asked me to
-> > apply for him - it wasn't this one!  Since the review looked like it was
-> > just one minor issue last time I'll just leave them for now, they were
-> > applied on a separate branch for sharing with the MTD tree so it's easy
-> > for me to drop them if that's required or if I should put together the
-> > pull request for MTD.  Sorry for any confusion this ends up causing,
-> > it's entirely my mistake.
+> 
+> This prevents possible memory accesses outside of the smpt array
+> boundaries in case software, or manufacturers, misrepresent smpt
+> array fields.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-> I'm probably missing something, but I don't see where you made a
-> mistake :-). It's indeed the series I asked you to merge, the only
-> comment I had was actually a suggestion to help Piotr solve his perf
-> issue (which was already present in the old driver).
+I think we should consider this patch as a fix. Would you mind adding a
+Fixes tag?
 
-Oh, OK.  Then we can definitively say I'm confused then :)
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 39 +++++++++++++++++++++++++++++----------
+>  1 file changed, 29 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 2cdf96013689..59dcedb08691 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2860,12 +2860,15 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
+>   * spi_nor_get_map_in_use() - get the configuration map in use
+>   * @nor:	pointer to a 'struct spi_nor'
+>   * @smpt:	pointer to the sector map parameter table
+> + * @smpt_len:	sector map parameter table length
+>   */
+> -static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+> +static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+> +					 u8 smpt_len)
+>  {
+>  	const u32 *ret = NULL;
+> -	u32 i, addr;
+> +	u32 addr;
+>  	int err;
+> +	u8 i;
+>  	u8 addr_width, read_opcode, read_dummy;
+>  	u8 read_data_mask, data_byte, map_id;
+>  
+> @@ -2874,9 +2877,10 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+>  	read_opcode = nor->read_opcode;
+>  
+>  	map_id = 0;
+> -	i = 0;
+>  	/* Determine if there are any optional Detection Command Descriptors */
+> -	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
+> +	for (i = 0; i < smpt_len; i += 2) {
+> +		if (smpt[i] & SMPT_DESC_TYPE_MAP)
+> +			break;
 
-> And thanks for creating the mtd topic branch BTW.
+nit: add a blank line here.
 
-Here's a signed tag for just the MTD bits:
-
-The following changes since commit 651022382c7f8da46cb4872a545ee1da6d097d2a:
-
-  Linux 4.20-rc1 (2018-11-04 15:37:52 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-mtd-atmel
-
-for you to fetch changes up to 6ca622c87149a20a47abbb954f896f515e2292a7:
-
-  mtd: spi-nor: atmel-quadspi: Remove unused code from atmel-quadspi driver (2018-11-07 13:21:10 +0000)
-
-----------------------------------------------------------------
-mtd: Atmel QuadSPI changes for MTD
-
-These changes are dependencies for a branch merged into the SPI tree,
-create a signed tag to share them with the MTD tree.
-
-----------------------------------------------------------------
-Piotr Bugalski (4):
-      mtd: spi-nor: atmel-quaspi: Typo fix
-      mtd: spi-nor: atmel-quadspi: Add spi-mem support to atmel-quadspi
-      mtd: spi-nor: atmel-quadspi: Use spi-mem interface for atmel-quadspi driver
-      mtd: spi-nor: atmel-quadspi: Remove unused code from atmel-quadspi driver
-
- drivers/mtd/spi-nor/atmel-quadspi.c | 528 ++++++++++--------------------------
- 1 file changed, 148 insertions(+), 380 deletions(-)
-
---ncSAzJYg3Aa9+CRW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvkJxgACgkQJNaLcl1U
-h9BcJgf+NBCkwqCGZqSr7hUTakUsHoRWEPxfsKxf2iq4IXSlsq9ilM+d/TwJXXjf
-YQLK9WPUFg2xKylbtQscBOgt49oVGP+cCywuEWrnO32Ix5by1e9BGRFt1n2scsBT
-LyAlHyJaQr4HAagkp2F2AZjoBrXq5nRinpYSAjSfRWfL3fFl/9JIScVg+RPxraqW
-SZT8C87kQRLcU7AIIij0Q5kSuHthsunFv5tz6DFRILgDMbB5/e4BXwIHbULFj0aq
-dIBjhVMkCyhq+MJtief7hTLcO/VGVyCh1tPW449+y6UiSWh1X6bh/t9HHKYAov/e
-zZrrK+gCRC9BfrVwEvDZ5ycn4koNOQ==
-=C77L
------END PGP SIGNATURE-----
-
---ncSAzJYg3Aa9+CRW--
+>  		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
+>  		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
+>  		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
+> @@ -2892,18 +2896,33 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+>  		 * Configuration that is currently in use.
+>  		 */
+>  		map_id = map_id << 1 | !!(data_byte & read_data_mask);
+> -		i = i + 2;
+>  	}
+>  
+> -	/* Find the matching configuration map */
+> -	while (SMPT_MAP_ID(smpt[i]) != map_id) {
+> +	/*
+> +	 * If command descriptors are provided, they always precede map
+> +	 * descriptors in the table. There is no need to start the iteration
+> +	 * over smpt array all over again.
+> +	 *
+> +	 * Find the matching configuration map.
+> +	 */
+> +	while (i < smpt_len) {
+> +		if (SMPT_MAP_ID(smpt[i]) == map_id) {
+> +			ret = smpt + i;
+> +			break;
+> +		}
+> +
+> +		/*
+> +		 * If there are no more configuration map descriptors and no
+> +		 * configuration ID matched the configuration identifier, the
+> +		 * sector address map is unknown.
+> +		 */
+>  		if (smpt[i] & SMPT_DESC_END)
+> -			goto out;
+> +			break;
+> +
+>  		/* increment the table index to the next map */
+>  		i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
+>  	}
+>  
+> -	ret = smpt + i;
+>  	/* fall through */
+>  out:
+>  	nor->addr_width = addr_width;
+> @@ -3025,7 +3044,7 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
+>  	for (i = 0; i < smpt_header->length; i++)
+>  		smpt[i] = le32_to_cpu(smpt[i]);
+>  
+> -	sector_map = spi_nor_get_map_in_use(nor, smpt);
+> +	sector_map = spi_nor_get_map_in_use(nor, smpt, smpt_header->length);
+>  	if (!sector_map) {
+>  		ret = -EINVAL;
+>  		goto out;
