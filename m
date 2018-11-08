@@ -1,35 +1,20 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKg86-0007BC-TH
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 08:57:36 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "yogeshnarayan.gaur@nxp.com" <yogeshnarayan.gaur@nxp.com>,
- "richard@nod.at" <richard@nod.at>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "han.xu@nxp.com"
- <han.xu@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "david.wolfe@nxp.com"
- <david.wolfe@nxp.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
-Date: Thu, 8 Nov 2018 08:57:19 +0000
-Message-ID: <48bc2883-3b9a-55ca-8c54-d40edf161feb@kontron.de>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <20181031144055.32e1c8f1@bbrezillon>
- <dd4b9af1-82f3-469e-e70f-2858e85a5dfe@kontron.de>
- <20181031153125.3c5dfca1@bbrezillon>
- <e895f059-f8fe-6d4c-3744-ab8cfa4a2147@kontron.de>
- <20181108091957.013dc540@bbrezillon>
-In-Reply-To: <20181108091957.013dc540@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <372C0D333850DC4C85AB1E71D7DC6984@snt-world.com>
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKg8C-0007Zs-2b
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 08:57:41 +0000
+Date: Thu, 8 Nov 2018 09:57:28 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: rawnand: sh_flctl: convert to SPDX identifiers
+Message-ID: <20181108095728.6c19b8f0@bbrezillon>
+In-Reply-To: <87muqkytbv.wl-kuninori.morimoto.gx@renesas.com>
+References: <87muqkytbv.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,75 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMDguMTEuMTggMDk6MTksIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gSGkgRnJpZWRlciwN
-Cj4gDQo+IE9uIFRodSwgOCBOb3YgMjAxOCAwODoxNTo1NSArMDAwMA0KPiBTY2hyZW1wZiBGcmll
-ZGVyIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uRGU+IHdyb3RlOg0KPiANCj4+IEhpIEJvcmlz
-LCBoaSBZb2dlc2gsDQo+Pg0KPj4gT24gMzEuMTAuMTggMTU6MzEsIEJvcmlzIEJyZXppbGxvbiB3
-cm90ZToNCj4+PiBPbiBXZWQsIDMxIE9jdCAyMDE4IDEzOjU0OjI5ICswMDAwDQo+Pj4gU2NocmVt
-cGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLkRlPiB3cm90ZToNCj4+PiAgICAN
-Cj4+Pj4gSGkgQm9yaXMsDQo+Pj4+DQo+Pj4+IE9uIDMxLjEwLjE4IDE0OjQwLCBCb3JpcyBCcmV6
-aWxsb24gd3JvdGU6DQo+Pj4+PiBIaSBGcmllZGVyLCBZb2dlc2gsDQo+Pj4+Pg0KPj4+Pj4gT24g
-VGh1LCAgNSBKdWwgMjAxOCAxMzoxNDo1NiArMDIwMA0KPj4+Pj4gRnJpZWRlciBTY2hyZW1wZiA8
-ZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGU+IHdyb3RlOg0KPj4+Pj4gICAgICAgDQo+Pj4+Pj4g
-Tm93IHRoYXQgdGhlIFNQSSBtZW1vcnkgaW50ZXJmYWNlIHdhcyBpbnRyb2R1Y2VkIGJ5IEJvcmlz
-IFsxXSwgaXQgaXMNCj4+Pj4+PiBwb3NzaWJsZSB0byBtb3ZlIGRyaXZlcnMgZnJvbSBtdGQvc3Bp
-LW5vciB0byB0aGUgU1BJIGZyYW1ld29yayBpbiBvcmRlcg0KPj4+Pj4+IHRvIHVzZSB0aGVtIGZv
-ciBkaWZmZXJlbnQgdHlwZSBvZiBTUEkgbWVtb3J5IGNoaXBzLg0KPj4+Pj4+DQo+Pj4+Pj4gUGF0
-Y2ggMSBhZGRzIGEgZnVuY3Rpb24gc3BpX21lbV9nZXRfbmFtZSgpIHRvIHRoZSBTUEkgbWVtb3J5
-IGludGVyZmFjZQ0KPj4+Pj4+IGFuZCBhIC0+bmFtZSBmaWVsZCB0byBzdHJ1Y3Qgc3BpX21lbS4N
-Cj4+Pj4+PiBQYXRjaCAyIHVzZXMgaXQgaW4gbTI1cDgwLmMgdG8gbWFrZSBpdCBwb3NzaWJsZSBm
-b3IgU1BJIGNvbnRyb2xsZXINCj4+Pj4+PiBkcml2ZXJzIHRvIHByb3ZpZGUgYSBjdXN0b20gbmFt
-aW5nIHNjaGVtZSBmb3IgdGhlIGZsYXNoIGNoaXAuDQo+Pj4+Pj4gVGhpcyBpcyBuZWVkZWQgdG8g
-YXZvaWQgYnJlYWtpbmcgY29tcGF0aWJpbGl0eSBvZiBtdGRwYXJ0cyB3aGVuIHN3aXRjaGluZw0K
-Pj4+Pj4+IGZyb20gdGhlIG9sZCB0byB0aGUgbmV3IGRyaXZlci4NCj4+Pj4+Pg0KPj4+Pj4+IFBh
-dGNoIDMgYWRkcyBhIGRyaXZlciBmb3IgdGhlIEZyZWVzY2FsZSBRU1BJIGNvbnRyb2xsZXIgdG8g
-dGhlIFNQSQ0KPj4+Pj4+IGZyYW1ld29yay4gVG9nZXRoZXIgd2l0aCBtMjVwODAuYyBpdCBjYW4g
-YmUgdXNlZCB0byBpbnRlcmZhY2UgU1BJDQo+Pj4+Pj4gTk9SIGZsYXNoZXMganVzdCBhcyB0aGUg
-b2xkIGRyaXZlciBkaWQuIEZvciB0aGlzIHRvIHdvcmsgcHJvcGVybHkgYSBmZXcNCj4+Pj4+PiBt
-aW5vciBjaGFuZ2VzIHRvIHRoZSBkZXZpY2V0cmVlcyBhcmUgbmVjZXNzYXJ5IChzZWUgcGF0Y2hl
-cyA1IHRvIDcpLg0KPj4+Pj4+DQo+Pj4+Pj4gUGF0Y2ggOCBjaGFuZ2VzIHRoZSBkZWZjb25maWdz
-IHRvIHVzZSB0aGUgbmV3IGRyaXZlciBhbmQgcGF0Y2ggOSByZW1vdmVzDQo+Pj4+Pj4gdGhlIG9s
-ZCBkcml2ZXIuDQo+Pj4+Pj4NCj4+Pj4+PiBQYXRjaCAxMCBhbmQgMTEgcmVtb3ZlICdmc2wscXNw
-aS1oYXMtc2Vjb25kLWNoaXAnIGZyb20gdGhlIGRldmljZXRyZWVzLg0KPj4+Pj4+IFBhdGNoIDEy
-IGFkanVzdHMgdGhlIE1BSU5UQUlORVJTIGZpbGUuDQo+Pj4+Pj4NCj4+Pj4+PiBUaGUgbmV3IGRy
-aXZlciB3YXMgdGVzdGVkIHdpdGggaS5NWDZVTCBhbmQgYSBNaWNyb24gU1BJIE5PUiBAIDYwTUh6
-Lg0KPj4+Pj4+IFRoZSByZWFkIHBlcmZvcm1hbmNlIG9mIHRoZSBuZXcgZHJpdmVyIGlzIGFsbW9z
-dCB0aGUgc2FtZSBvciBldmVuIGJldHRlcg0KPj4+Pj4+IHRoYW4gdGhlIG9sZCBkcml2ZXIsIGRl
-cGVuZGluZyBvbiB0aGUgYmxvY2sgc2l6ZS4NCj4+Pj4+PiBUaGUgd3JpdGUgcGVyZm9ybWFuY2Ug
-aXMgYSBiaXQgc2xvd2VyIG9uIGF2ZXJhZ2UgKH4xMC0xNSUpLg0KPj4+Pj4+DQo+Pj4+Pj4gVGhl
-IG5ldyBkcml2ZXIgd2FzIGFsc28gdGVzdGVkIHdpdGggdGhlIFNQSSBOQU5EIGZyYW1ld29yayBb
-Ml0gYW5kIGENCj4+Pj4+PiBXaW5ib25kIFcyNU0wMkdWIGZsYXNoLg0KPj4+Pj4+DQo+Pj4+Pj4g
-SWYgc29tZW9uZSBoYXMgYSBib2FyZCB0aGF0IHVzZXMgYm90aCBjaGlwcyBzZWxlY3RzIGFuZC9v
-ciBib3RoIGJ1c3NlcywNCj4+Pj4+PiBpdCB3b3VsZCBiZSByZWFsbHkgbmljZSB0byBoYXZlIHRo
-ZSBkcml2ZXIgYmUgdGVzdGVkIG9uIHN1Y2ggYSBzZXR1cC4NCj4+Pj4+DQo+Pj4+PiBBbnkgcHJv
-Z3Jlc3Mgb24gdGhpcyBmcm9udD8gWW9nZXNoLCBjYW4geW91IHBsZWFzZSByZW1pbmQgdXMgdGhl
-DQo+Pj4+PiByZW1haW5pbmcgaXNzdWVzPyBJJ2QgcmVhbGx5IGxpa2UgdG8gbWFrZSBzb21lIHBy
-b2dyZXNzLCBvdGhlcndpc2UgdGhlDQo+Pj4+PiBjb252ZXJzaW9uIHRvIHNwaS1tZW0gd2lsbCB0
-YWtlIGFnZXMuDQo+Pj4+DQo+Pj4+IEkgZGVmaW5pdGVseSB3YW50IHRvIGNvbnRpbnVlIHRoaXMu
-IEkganVzdCBkaWQgbm90IGhhdmUgdGhlIHRpbWUgdG8gd29yaw0KPj4+PiBvbiBpdC4NCj4+Pj4N
-Cj4+Pj4gSSB0aGluayB0aGUgb25seSByZW1haW5pbmcgYmxvY2tpbmcgaXNzdWVzIGlzIHRoZSBv
-bmUgdGhhdCBZb2dlc2gNCj4+Pj4gcmVwb3J0ZWQgd2hpbGUgdGVzdGluZyB3aXRoIHR3byBjaGlw
-cyBvbiB0aGUgc2FtZSBidXMuDQo+Pj4NCj4+PiBNYXliZSB5b3UgY2FuIHNlbmQgYSBuZXcgdmVy
-c2lvbiByZWJhc2VkIG9uIHY0LjIwLXJjMSAod2hlbiBpdCdzIG91dCkNCj4+PiBhbmQgcHVzaCBp
-dCBzb21ld2hlcmUgc28gdGhhdCBZb2dlc2ggY2FuIHRlc3QgaXQgKGFnYWluKS4gWW9nZXNoLCBj
-YW4gd2UNCj4+PiBwbGVhc2UgbWFrZSBzb21lIHByb2dyZXNzIG9uIHRoaXM/IElmIHlvdSByZWFs
-bHkgaGF2ZSBhIGJ1ZywgdGhhdCdkIGJlDQo+Pj4gZ3JlYXQgdG8gaGF2ZSBhIHNlcmlvdXMgaW52
-ZXN0aWdhdGlvbiBvbiB3aGF0IGlzIGNhdXNpbmcgdGhpcyBidWcuIFRoZQ0KPj4+IGV4cGxhbmF0
-aW9uIHdlIGhhZCBzbyBmYXIgd2VyZSBub3QgcmVhbGx5IGhlbHBmdWwgaW4gdW5kZXJzdGFuZGlu
-ZyB0aGUNCj4+PiBwcm9ibGVtLg0KPj4NCj4+IEkgaGF2ZSBzZW50IGEgdjQgdGhhdCBpcyBiYXNl
-ZCBvbiB2NC4yMC1yYzEuIEkgb25seSBhcHBsaWVkIHNtYWxsIGZpeGVzDQo+PiBhbmQgY29zbWV0
-aWMgY2hhbmdlcy4NCg0KSSBmb3Jnb3QgdG8gYWRkLCB0aGF0IEkgaGF2ZSBwdXNoZWQgdGhlIHY0
-IGhlcmUgaWYgc29tZW9uZSBuZWVkcyBpdDoNCg0KaHR0cHM6Ly9naXRodWIuY29tL2ZzY2hyZW1w
-Zi9saW51eC9jb21taXRzL2ZzbC1xc3BpLW5leHQtNA0KDQo+Pg0KPj4gVGhlcmUgaXMgc3RpbGwg
-dGhlIGhhY2sgdG8gYXZvaWQgQUhCIGJ1ZmZlciBpbnZhbGlkYXRpb24gZGVsYXkgKG5vdCBzdXJl
-DQo+PiBpZiB3ZSBzaG91bGQga2VlcCBpdCBmb3Igbm93KQ0KPiANCj4gSUlSQywgWW9nZXNoIHBy
-b3Bvc2VkIHRvIHJlcGxhY2UgdGhpcyBoYWNrIGJ5IGEgUkVTRVQrc21hbGxlci1kZWxheS4NCj4g
-TWF5YmUgeW91IGNhbiB0cnkgdGhhdC4NCj4gDQo+PiBhbmQgd2Ugc3RpbGwgbmVlZCB0byBmaWd1
-cmUgb3V0IHRoZQ0KPj4gcmVwb3J0ZWQgcHJvYmxlbXMgd2l0aCB0d28gY2hpcHMgb24gb25lIGJ1
-cy4NCj4+DQo+PiBBcyBZb2dlc2ggaXMgdGhlIG9ubHkgb25lIGhvdyBoYXMgYSBoYXJkd2FyZSBz
-ZXR1cCBmb3IgdGhpcywgbWF5YmUgeW91DQo+PiBjYW4gcmV0cnkgYW5kIHByb3ZpZGUgc29tZSBk
-ZWJ1Z2dpbmcgaW5mbz8NCj4+DQo+PiBVbmZvcnR1bmF0ZWx5IEknbGwgcHJvYmFibHkgZG8gbm90
-IGhhdmUgdGltZSB0byBzd2l0Y2ggdG8gdGhlIGRpcm1hcCBBUEkNCj4+IG5vdywgc28gSSdkIHJh
-dGhlciBkbyB0aGF0IGFzIGEgc2Vjb25kIHN0ZXAsIGFzIGl0IHByb2JhYmx5IHdvbid0IHNvbHZl
-DQo+PiBvdXIgcHJvYmxlbXMgZWl0aGVyLg0KPiANCj4gVG90YWxseSBhZ3JlZSB3aXRoIHRoYXQu
-DQo+IA0KPiBUaGFua3MgZm9yIHNlbmRpbmcgYSB2NC4NCj4gDQo+IEJvcmlzDQo+IA==
+On Thu, 8 Nov 2018 06:39:20 +0000
+Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> This patch updates license to use SPDX-License-Identifier
+> instead of verbose license text.
+> 
+> As original license mentioned, it is GPL-2.0 in SPDX.
+> Then, MODULE_LICENSE() should be "GPL v2" instead of "GPL".
+> See ${LINUX}/include/linux/module.h
+> 
+> 	"GPL"		[GNU Public License v2 or later]
+> 	"GPL v2"	[GNU Public License v2]
+
+I had a similar case recently and I based my SPDX tag on the
+MODULE_LICENSE() value instead of the license header.
+Is this "license header" > MODULE_LICENSE() rule documented
+somewhere?
