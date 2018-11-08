@@ -1,20 +1,27 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKlLq-00026F-D3
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 14:32:07 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, juergen.lachmann@harman.com,
- linux-kernel@vger.kernel.org, thomas.roeder@harman.com
-Subject: Re: [PATCH 2/2] ubi: Expose the bitrot interface
-Date: Thu, 08 Nov 2018 15:31:53 +0100
-Message-ID: <3899237.k0VKClGc8u@blindfold>
-In-Reply-To: <20181108152642.03178c6c@bbrezillon>
-References: <20181107221619.32498-1-richard@nod.at>
- <20181107221619.32498-2-richard@nod.at> <20181108152642.03178c6c@bbrezillon>
+ id 1gKlbg-0002Lr-0g
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 14:48:28 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>
+CC: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH 3/7] mtd: spi-nor: add restriction for nmaps in smpt parser
+Date: Thu, 8 Nov 2018 14:48:11 +0000
+Message-ID: <4de81d92-ca8e-34f1-55b2-ef1b6b9dcec7@microchip.com>
+References: <20181108110653.21063-1-tudor.ambarus@microchip.com>
+ <20181108110653.21063-4-tudor.ambarus@microchip.com>
+ <20181108135447.36a0314c@bbrezillon>
+ <86d16e39-15df-c12c-7bf3-25996db0c3a9@microchip.com>
+ <20181108151509.364e3a85@bbrezillon>
+In-Reply-To: <20181108151509.364e3a85@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3B66719ACAC24B4BB4E01FC32805EF9D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +31,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 8. November 2018, 15:26:42 CET schrieb Boris Brezillon:
-> On Wed,  7 Nov 2018 23:16:19 +0100
-> Richard Weinberger <richard@nod.at> wrote:
-> 
-> > +/**
-> > + * ubi_bitflip_check - Check an eraseblock for bitflips and scrub it if needed.
-> > + * @ubi: UBI device description object
-> > + * @pnum: the physical eraseblock to schedule
-> > + * @force_scrub: force scrubbing if non-zero, schedule erase otherwise
-> 
-> Are you sure about the "schedule erase otherwise"? I'd say force_scrub
-> only influence when the scrub operation is done: either unconditionally
-> or depending on the result of ubi_io_read().
-
-True. As often, code and documentation diverged a little.
-
-Thanks,
-//richard
+DQoNCk9uIDExLzA4LzIwMTggMDQ6MTUgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24g
+VGh1LCA4IE5vdiAyMDE4IDEzOjU4OjQ1ICswMDAwDQo+IDxUdWRvci5BbWJhcnVzQG1pY3JvY2hp
+cC5jb20+IHdyb3RlOg0KPiANCj4+IE9uIDExLzA4LzIwMTggMDI6NTQgUE0sIEJvcmlzIEJyZXpp
+bGxvbiB3cm90ZToNCj4+PiBPbiBUaHUsIDggTm92IDIwMTggMTE6MDc6MTEgKzAwMDANCj4+PiA8
+VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tPiB3cm90ZToNCj4+PiAgIA0KPj4+PiBUaGUgbWFw
+IHNlbGVjdG9yIGlzIGxpbWl0ZWQgdG8gYSBtYXhpbXVtIG9mIDggYml0cywgYWxsb3dpbmcNCj4+
+Pj4gZm9yIGEgbWF4aW11bSBvZiAyNTYgcG9zc2libGUgbWFwIGNvbmZpZ3VyYXRpb25zLiBUaGUg
+dG90YWwNCj4+Pj4gbnVtYmVyIG9mIG1hcCBjb25maWd1cmF0aW9ucyBzaG91bGQgYmUgYWRkcmVz
+c2FibGUgYnkgdGhlDQo+Pj4+IHRvdGFsIG51bWJlciBvZiBiaXRzIGRlc2NyaWJlZCBieSB0aGUg
+ZGV0ZWN0aW9uIGNvbW1hbmRzLg0KPj4+Pg0KPj4+PiBGb3IgZXhhbXBsZTogaWYgdGhlcmUgYXJl
+IGZpdmUgdG8gZWlnaHQgcG9zc2libGUgc2VjdG9yIG1hcA0KPj4+PiBjb25maWd1cmF0aW9ucywg
+YXQgbGVhc3QgdGhyZWUgY29uZmlndXJhdGlvbiBkZXRlY3Rpb24gY29tbWFuZHMNCj4+Pj4gd2ls
+bCBiZSBuZWVkZWQgdG8gZXh0cmFjdCB0aHJlZSBiaXRzIG9mIGNvbmZpZ3VyYXRpb24gc2VsZWN0
+aW9uDQo+Pj4+IGluZm9ybWF0aW9uIGZyb20gdGhlIGRldmljZSBpbiBvcmRlciB0byBpZGVudGlm
+eSB3aGljaCBjb25maWd1cmF0aW9uDQo+Pj4+IGlzIGN1cnJlbnRseSBpbiB1c2UuDQo+Pj4+DQo+
+Pj4+IFN1Z2dlc3RlZC1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9vdGxp
+bi5jb20+ICANCj4+Pg0KPj4+IEkgZG9uJ3QgcmVtZW1iZXIgc3VnZ2VzdGluZyB0aGlzIDotKS4g
+IA0KPj4NCj4+IEkgc2VlIHRoaXMgd2hlbiB5b3UgZGlzY3Vzc2VkIHdpdGggWW9nZXNoOg0KPj4N
+Cj4+ICsgICAgICAgZm9yIChubWFwcyA9IDA7IGk8IHNtcHRfbGVuOyBubWFwcysrKSB7DQo+PiAr
+ICAgICAgICAgICAgICAgaWYoIShzbXB0W2ldICYgU01QVF9ERVNDX1RZUEVfTUFQKSkgew0KPj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgaSArPSAyOw0KPj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgY29udGludWU7DQo+PiArICAgICAgICAgICAgICAgfQ0KPj4gKw0KPj4gKyAgICAgICAgICAg
+ICAgIGlmKCFtYXBfaWRfaXNfdmFsaWQpIHsNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGlm
+IChubWFwcykgew0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBOVUxM
+Ow0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4+ICsgICAgICAg
+ICAgICAgICAgICAgICAgIH0NCj4+DQo+PiBJZiBJIHVuZGVyc3RhbmQgY29ycmVjdGx5LCB5b3Ug
+bWVhbnQgdGhhdCBpZiB0aGVyZSBhcmUgbm8gZGV0ZWN0aW9uIGNvbW1hbmRzLA0KPj4gYW5kIG1v
+cmUgdGhhbiBhIGNvbmZpZ3VyYXRpb24gbWFwLCB0aGVuIHJldHVybiBhbiBlcnJvci4NCj4gDQo+
+IFllcywgYmVjYXVzZSBpbiB0aGlzIGNhc2Ugd2UgaGF2ZSBubyB3YXkgdG8ga25vdyB3aGF0IGNv
+bmZpZyBpcw0KPiBjdXJyZW50bHkgc2VsZWN0ZWQuDQo+IA0KPj4NCj4+IFRoaXMgaXMgY29ycmVj
+dCBpbiBteSBvcGluaW9uLiBXaGF0IEkgZGlkIHdhcyB0byBnZW5lcmFsaXplIHRoaXMgaWRlYS4g
+SWYgc210cA0KPj4gZGVmaW5lcyBtb3JlIG1hcHMgdGhhbiB5b3UgY2FuIHNlbGVjdCB1c2luZyBk
+ZXRlY3Rpb24gY29tbWFuZHMsIHJldHVybiBlcnJvci4NCj4gDQo+IEFGQUlDVCB5b3UncmUgbm8g
+bG9uZ2VyIGNoZWNraW5nIHRoYXQgbWFwX2lkIGlzIHZhbGlkIChzZWUgYmVsb3cpLg0KPiANCj4+
+DQo+PiArDQo+PiArICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBzbXB0K2k7DQo+PiArICAg
+ICAgICAgICAgICAgfSBlbHNlIGlmIChtYXBfaWQgPT0gU01QVF9NQVBfSUQoc21wdFtpXSkpIHsN
+Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IHNtcHQraTsNCj4+ICsgICAgICAgICAg
+ICAgICAgICAgICAgIGJyZWFrOw0KPj4gKyAgICAgICAgICAgICAgIH0NCj4+ICsNCj4+ICAgICAg
+ICAgICAgICAgICAvKiBpbmNyZW1lbnQgdGhlIHRhYmxlIGluZGV4IHRvIHRoZSBuZXh0IG1hcCAq
+Lw0KPj4gICAgICAgICAgICAgICAgIGkgKz0gU01QVF9NQVBfUkVHSU9OX0NPVU5UKHNtcHRbaV0p
+ICsgMTsNCj4+ICAgICAgICAgfQ0KPj4NCj4+PiAgIA0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBUdWRv
+ciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQo+Pj4+IC0tLQ0KPj4+PiAg
+ZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAxNSArKysrKysrKysrKysrLS0NCj4+Pj4g
+IDEgZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPj4+Pg0K
+Pj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2ZXJz
+L210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPj4+PiBpbmRleCA1OWRjZWRiMDg2OTEuLmJkMTg2NmQ3
+MTRmMiAxMDA2NDQNCj4+Pj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+
+Pj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+Pj4gQEAgLTI4NjgsNyAr
+Mjg2OCw3IEBAIHN0YXRpYyBjb25zdCB1MzIgKnNwaV9ub3JfZ2V0X21hcF9pbl91c2Uoc3RydWN0
+IHNwaV9ub3IgKm5vciwgY29uc3QgdTMyICpzbXB0LA0KPj4+PiAgCWNvbnN0IHUzMiAqcmV0ID0g
+TlVMTDsNCj4+Pj4gIAl1MzIgYWRkcjsNCj4+Pj4gIAlpbnQgZXJyOw0KPj4+PiAtCXU4IGk7DQo+
+Pj4+ICsJdTggaSwgbmNtZHMsIG5tYXBzOw0KPj4+PiAgCXU4IGFkZHJfd2lkdGgsIHJlYWRfb3Bj
+b2RlLCByZWFkX2R1bW15Ow0KPj4+PiAgCXU4IHJlYWRfZGF0YV9tYXNrLCBkYXRhX2J5dGUsIG1h
+cF9pZDsNCj4+Pj4gIA0KPj4+PiBAQCAtMjg3Nyw2ICsyODc3LDcgQEAgc3RhdGljIGNvbnN0IHUz
+MiAqc3BpX25vcl9nZXRfbWFwX2luX3VzZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdCB1MzIg
+KnNtcHQsDQo+Pj4+ICAJcmVhZF9vcGNvZGUgPSBub3ItPnJlYWRfb3Bjb2RlOw0KPj4+PiAgDQo+
+Pj4+ICAJbWFwX2lkID0gMDsNCj4+Pj4gKwluY21kcyA9IDA7DQo+Pj4+ICAJLyogRGV0ZXJtaW5l
+IGlmIHRoZXJlIGFyZSBhbnkgb3B0aW9uYWwgRGV0ZWN0aW9uIENvbW1hbmQgRGVzY3JpcHRvcnMg
+Ki8NCj4+Pj4gIAlmb3IgKGkgPSAwOyBpIDwgc21wdF9sZW47IGkgKz0gMikgew0KPj4+PiAgCQlp
+ZiAoc21wdFtpXSAmIFNNUFRfREVTQ19UWVBFX01BUCkNCj4+Pj4gQEAgLTI4OTYsNiArMjg5Nyw3
+IEBAIHN0YXRpYyBjb25zdCB1MzIgKnNwaV9ub3JfZ2V0X21hcF9pbl91c2Uoc3RydWN0IHNwaV9u
+b3IgKm5vciwgY29uc3QgdTMyICpzbXB0LA0KPj4+PiAgCQkgKiBDb25maWd1cmF0aW9uIHRoYXQg
+aXMgY3VycmVudGx5IGluIHVzZS4NCj4+Pj4gIAkJICovDQo+Pj4+ICAJCW1hcF9pZCA9IG1hcF9p
+ZCA8PCAxIHwgISEoZGF0YV9ieXRlICYgcmVhZF9kYXRhX21hc2spOw0KPj4+PiArCQluY21kcysr
+Ow0KPj4+PiAgCX0NCj4+Pj4gIA0KPj4+PiAgCS8qDQo+Pj4+IEBAIC0yOTA1LDcgKzI5MDcsMTYg
+QEAgc3RhdGljIGNvbnN0IHUzMiAqc3BpX25vcl9nZXRfbWFwX2luX3VzZShzdHJ1Y3Qgc3BpX25v
+ciAqbm9yLCBjb25zdCB1MzIgKnNtcHQsDQo+Pj4+ICAJICoNCj4+Pj4gIAkgKiBGaW5kIHRoZSBt
+YXRjaGluZyBjb25maWd1cmF0aW9uIG1hcC4NCj4+Pj4gIAkgKi8NCj4+Pj4gLQl3aGlsZSAoaSA8
+IHNtcHRfbGVuKSB7DQo+Pj4+ICsJZm9yIChubWFwcyA9IDA7IGkgPCBzbXB0X2xlbjsgbm1hcHMr
+Kykgew0KPj4+PiArCQkvKg0KPj4+PiArCQkgKiBUaGUgbWFwIHNlbGVjdG9yIGlzIGxpbWl0ZWQg
+dG8gYSBtYXhpbXVtIG9mIDggYml0cywgYWxsb3dpbmcNCj4+Pj4gKwkJICogZm9yIGEgbWF4aW11
+bSBvZiAyNTYgcG9zc2libGUgbWFwIGNvbmZpZ3VyYXRpb25zLiBUaGUgdG90YWwNCj4+Pj4gKwkJ
+ICogbnVtYmVyIG9mIG1hcCBjb25maWd1cmF0aW9ucyBzaG91bGQgYmUgYWRkcmVzc2FibGUgYnkg
+dGhlDQo+Pj4+ICsJCSAqIHRvdGFsIG51bWJlciBvZiBiaXRzIGRlc2NyaWJlZCBieSB0aGUgZGV0
+ZWN0aW9uIGNvbW1hbmRzLg0KPj4+PiArCQkgKi8NCj4+Pj4gKwkJaWYgKG5jbWRzICYmIG5tYXBz
+ID49ICgxIDw8IChuY21kcyArIDEpKSkNCj4+Pj4gKwkJCWJyZWFrOw0KPiANCj4gWW91J3JlIG5v
+IGxvbmdlciBjaGVja2luZyB0aGF0IHdoZW4gbmNtZHMgPT0gMCBubWFwcyBoYXMgdG8gYmUgMS4g
+U28sDQo+IHNheSB0aGUgY2hpcCBleHBvc2VkIG5vIHNtcHQgY29tbWFuZHMgYW5kIGhhcyBzZXZl
+cmFsIG1hcHMgZGVmaW5lZCwNCj4gbWFwX2lkIHdpbGwgYmUgMCB3aGlsZSBpdCBzaG91bGQgaGF2
+ZSBiZSAidW5kZWZpbmVkIi4gTXkgdmVyc2lvbg0KPiB3b3VsZCByZXR1cm4gYW4gZXJyb3IsIGJ1
+dCB5b3VycyB0cmllcyB0byBmaW5kIG1hcF9pZCAwLg0KDQp5ZXAsIEkgbWlzc2VkIHRoZSBuY21k
+cyA9PSAwIGNhc2UuDQoNCj4gDQo+Pj4+ICsgIA0KPj4+DQo+Pj4gTWF5YmUgSSBtaXNzZWQgc29t
+ZXRoaW5nIGJ1dCBpdCBzb3VuZHMgbGlrZSB0aGlzIGNoYW5nZSBpcyBqdXN0DQo+Pj4gb3B0aW1p
+emluZyB0aGUgU1BNVCBwYXJzaW5nIGEgYml0LCBhbmQgdG8gYmUgaG9uZXN0LCBJJ20gbm90IHN1
+cmUgdGhpcw0KPj4+IGlzIHJlYWxseSBuZWVkZWQuIE1vc3Qgb2YgdGhlIHRpbWUsIHNtcHRfbGVu
+IHdpbGwgYmUgcmF0aGVyIHNtYWxsLCBzbw0KPj4+IHRyeWluZyB0byBiYWlsIG91dCBlYXJsaWVy
+IGlzIG5vdCBicmluZ2luZyBtdWNoIHBlcmYgaW1wcm92ZW1lbnRzLiAgDQo+Pg0KPj4gSXQncyBy
+YXRoZXIgYSBzbXRwIHZhbGlkaXR5IGNoZWNrLiBJIHdhbnQgdG8gcmV0dXJuIGFuIGVycm9yIGlm
+IHRoZXJlIGFyZSBub3QNCj4+IGVub3VnaCBkZXRlY3Rpb24gY29tbWFuZHMgdG8gaWRlbnRpZnkg
+dGhlIG1hcCBpZC4NCj4gDQo+IFlvdSB3b3VsZCBoYXZlIGZhaWxlZCB0aGUgc2FtZSB3YXkgd2l0
+aG91dCB0aGlzIHZhbGlkaXR5IGNoZWNrIGFmdGVyIGENCj4gbWF4aW11bSBvZiBzbXB0X2xlbiBp
+dGVyYXRpb25zLCByaWdodD8NCj4gDQoNClJpZ2h0LiBUaGUgY29ycmVjdCBmaXggd291bGQgYmUg
+dG8gY291bnQgbm1hcHMgaW4gYSBsb29wLCB0aGVuIGRvIHRoZXNlIGNoZWNrcywNCmFuZCBpZiBh
+bGwgb2ssIHNlYXJjaCBmb3IgdGhlIG1hcF9pZCBpbiBhbm90aGVyIGxvb3AgOikuDQo=
