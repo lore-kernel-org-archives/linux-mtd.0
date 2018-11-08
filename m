@@ -1,23 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKk3D-0001Mo-Ui
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 13:08:48 +0000
-Date: Thu, 8 Nov 2018 14:08:26 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKkpq-0002dB-EU
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 13:59:04 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>
+CC: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
  <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>
 Subject: Re: [PATCH 3/7] mtd: spi-nor: add restriction for nmaps in smpt parser
-Message-ID: <20181108140826.428b77ed@bbrezillon>
-In-Reply-To: <20181108135447.36a0314c@bbrezillon>
+Date: Thu, 8 Nov 2018 13:58:45 +0000
+Message-ID: <86d16e39-15df-c12c-7bf3-25996db0c3a9@microchip.com>
 References: <20181108110653.21063-1-tudor.ambarus@microchip.com>
  <20181108110653.21063-4-tudor.ambarus@microchip.com>
  <20181108135447.36a0314c@bbrezillon>
+In-Reply-To: <20181108135447.36a0314c@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <378FDC35138FF247887F0D08EC5BA9A7@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +29,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 Nov 2018 13:54:47 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-
-> > -	while (i < smpt_len) {
-> > +	for (nmaps = 0; i < smpt_len; nmaps++) {
-> > +		/*
-> > +		 * The map selector is limited to a maximum of 8 bits, allowing
-> > +		 * for a maximum of 256 possible map configurations. The total
-> > +		 * number of map configurations should be addressable by the
-> > +		 * total number of bits described by the detection commands.
-> > +		 */
-> > +		if (ncmds && nmaps >= (1 << (ncmds + 1)))
-> > +			break;
-> > +  
-> 
-> Maybe I missed something but it sounds like this change is just
-> optimizing the SPMT parsing a bit, and to be honest, I'm not sure this
-> is really needed. Most of the time, smpt_len will be rather small, so
-> trying to bail out earlier is not bringing much perf improvements.
-
-To make it clearer, I don't think the extra complexity is worth the tiny
-perf improvement.
+DQoNCk9uIDExLzA4LzIwMTggMDI6NTQgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24g
+VGh1LCA4IE5vdiAyMDE4IDExOjA3OjExICswMDAwDQo+IDxUdWRvci5BbWJhcnVzQG1pY3JvY2hp
+cC5jb20+IHdyb3RlOg0KPiANCj4+IFRoZSBtYXAgc2VsZWN0b3IgaXMgbGltaXRlZCB0byBhIG1h
+eGltdW0gb2YgOCBiaXRzLCBhbGxvd2luZw0KPj4gZm9yIGEgbWF4aW11bSBvZiAyNTYgcG9zc2li
+bGUgbWFwIGNvbmZpZ3VyYXRpb25zLiBUaGUgdG90YWwNCj4+IG51bWJlciBvZiBtYXAgY29uZmln
+dXJhdGlvbnMgc2hvdWxkIGJlIGFkZHJlc3NhYmxlIGJ5IHRoZQ0KPj4gdG90YWwgbnVtYmVyIG9m
+IGJpdHMgZGVzY3JpYmVkIGJ5IHRoZSBkZXRlY3Rpb24gY29tbWFuZHMuDQo+Pg0KPj4gRm9yIGV4
+YW1wbGU6IGlmIHRoZXJlIGFyZSBmaXZlIHRvIGVpZ2h0IHBvc3NpYmxlIHNlY3RvciBtYXANCj4+
+IGNvbmZpZ3VyYXRpb25zLCBhdCBsZWFzdCB0aHJlZSBjb25maWd1cmF0aW9uIGRldGVjdGlvbiBj
+b21tYW5kcw0KPj4gd2lsbCBiZSBuZWVkZWQgdG8gZXh0cmFjdCB0aHJlZSBiaXRzIG9mIGNvbmZp
+Z3VyYXRpb24gc2VsZWN0aW9uDQo+PiBpbmZvcm1hdGlvbiBmcm9tIHRoZSBkZXZpY2UgaW4gb3Jk
+ZXIgdG8gaWRlbnRpZnkgd2hpY2ggY29uZmlndXJhdGlvbg0KPj4gaXMgY3VycmVudGx5IGluIHVz
+ZS4NCj4+DQo+PiBTdWdnZXN0ZWQtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9u
+QGJvb3RsaW4uY29tPg0KPiANCj4gSSBkb24ndCByZW1lbWJlciBzdWdnZXN0aW5nIHRoaXMgOi0p
+Lg0KDQpJIHNlZSB0aGlzIHdoZW4geW91IGRpc2N1c3NlZCB3aXRoIFlvZ2VzaDoNCg0KKyAgICAg
+ICBmb3IgKG5tYXBzID0gMDsgaTwgc21wdF9sZW47IG5tYXBzKyspIHsNCisgICAgICAgICAgICAg
+ICBpZighKHNtcHRbaV0gJiBTTVBUX0RFU0NfVFlQRV9NQVApKSB7DQorICAgICAgICAgICAgICAg
+ICAgICAgICBpICs9IDI7DQorICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsNCisgICAg
+ICAgICAgICAgICB9DQorDQorICAgICAgICAgICAgICAgaWYoIW1hcF9pZF9pc192YWxpZCkgew0K
+KyAgICAgICAgICAgICAgICAgICAgICAgaWYgKG5tYXBzKSB7DQorICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHJldCA9IE5VTEw7DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGJyZWFrOw0KKyAgICAgICAgICAgICAgICAgICAgICAgfQ0KDQpJZiBJIHVuZGVyc3RhbmQgY29y
+cmVjdGx5LCB5b3UgbWVhbnQgdGhhdCBpZiB0aGVyZSBhcmUgbm8gZGV0ZWN0aW9uIGNvbW1hbmRz
+LA0KYW5kIG1vcmUgdGhhbiBhIGNvbmZpZ3VyYXRpb24gbWFwLCB0aGVuIHJldHVybiBhbiBlcnJv
+ci4NCg0KVGhpcyBpcyBjb3JyZWN0IGluIG15IG9waW5pb24uIFdoYXQgSSBkaWQgd2FzIHRvIGdl
+bmVyYWxpemUgdGhpcyBpZGVhLiBJZiBzbXRwDQpkZWZpbmVzIG1vcmUgbWFwcyB0aGFuIHlvdSBj
+YW4gc2VsZWN0IHVzaW5nIGRldGVjdGlvbiBjb21tYW5kcywgcmV0dXJuIGVycm9yLg0KDQorDQor
+ICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBzbXB0K2k7DQorICAgICAgICAgICAgICAgfSBl
+bHNlIGlmIChtYXBfaWQgPT0gU01QVF9NQVBfSUQoc21wdFtpXSkpIHsNCisgICAgICAgICAgICAg
+ICAgICAgICAgIHJldCA9IHNtcHQraTsNCisgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0K
+KyAgICAgICAgICAgICAgIH0NCisNCiAgICAgICAgICAgICAgICAvKiBpbmNyZW1lbnQgdGhlIHRh
+YmxlIGluZGV4IHRvIHRoZSBuZXh0IG1hcCAqLw0KICAgICAgICAgICAgICAgIGkgKz0gU01QVF9N
+QVBfUkVHSU9OX0NPVU5UKHNtcHRbaV0pICsgMTsNCiAgICAgICAgfQ0KDQo+IA0KPj4gU2lnbmVk
+LW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KPj4g
+LS0tDQo+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAxNSArKysrKysrKysrKysr
+LS0NCj4+ICAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkN
+Cj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2
+ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPj4gaW5kZXggNTlkY2VkYjA4NjkxLi5iZDE4NjZk
+NzE0ZjIgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPj4g
+KysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+IEBAIC0yODY4LDcgKzI4Njgs
+NyBAQCBzdGF0aWMgY29uc3QgdTMyICpzcGlfbm9yX2dldF9tYXBfaW5fdXNlKHN0cnVjdCBzcGlf
+bm9yICpub3IsIGNvbnN0IHUzMiAqc21wdCwNCj4+ICAJY29uc3QgdTMyICpyZXQgPSBOVUxMOw0K
+Pj4gIAl1MzIgYWRkcjsNCj4+ICAJaW50IGVycjsNCj4+IC0JdTggaTsNCj4+ICsJdTggaSwgbmNt
+ZHMsIG5tYXBzOw0KPj4gIAl1OCBhZGRyX3dpZHRoLCByZWFkX29wY29kZSwgcmVhZF9kdW1teTsN
+Cj4+ICAJdTggcmVhZF9kYXRhX21hc2ssIGRhdGFfYnl0ZSwgbWFwX2lkOw0KPj4gIA0KPj4gQEAg
+LTI4NzcsNiArMjg3Nyw3IEBAIHN0YXRpYyBjb25zdCB1MzIgKnNwaV9ub3JfZ2V0X21hcF9pbl91
+c2Uoc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgdTMyICpzbXB0LA0KPj4gIAlyZWFkX29wY29k
+ZSA9IG5vci0+cmVhZF9vcGNvZGU7DQo+PiAgDQo+PiAgCW1hcF9pZCA9IDA7DQo+PiArCW5jbWRz
+ID0gMDsNCj4+ICAJLyogRGV0ZXJtaW5lIGlmIHRoZXJlIGFyZSBhbnkgb3B0aW9uYWwgRGV0ZWN0
+aW9uIENvbW1hbmQgRGVzY3JpcHRvcnMgKi8NCj4+ICAJZm9yIChpID0gMDsgaSA8IHNtcHRfbGVu
+OyBpICs9IDIpIHsNCj4+ICAJCWlmIChzbXB0W2ldICYgU01QVF9ERVNDX1RZUEVfTUFQKQ0KPj4g
+QEAgLTI4OTYsNiArMjg5Nyw3IEBAIHN0YXRpYyBjb25zdCB1MzIgKnNwaV9ub3JfZ2V0X21hcF9p
+bl91c2Uoc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgdTMyICpzbXB0LA0KPj4gIAkJICogQ29u
+ZmlndXJhdGlvbiB0aGF0IGlzIGN1cnJlbnRseSBpbiB1c2UuDQo+PiAgCQkgKi8NCj4+ICAJCW1h
+cF9pZCA9IG1hcF9pZCA8PCAxIHwgISEoZGF0YV9ieXRlICYgcmVhZF9kYXRhX21hc2spOw0KPj4g
+KwkJbmNtZHMrKzsNCj4+ICAJfQ0KPj4gIA0KPj4gIAkvKg0KPj4gQEAgLTI5MDUsNyArMjkwNywx
+NiBAQCBzdGF0aWMgY29uc3QgdTMyICpzcGlfbm9yX2dldF9tYXBfaW5fdXNlKHN0cnVjdCBzcGlf
+bm9yICpub3IsIGNvbnN0IHUzMiAqc21wdCwNCj4+ICAJICoNCj4+ICAJICogRmluZCB0aGUgbWF0
+Y2hpbmcgY29uZmlndXJhdGlvbiBtYXAuDQo+PiAgCSAqLw0KPj4gLQl3aGlsZSAoaSA8IHNtcHRf
+bGVuKSB7DQo+PiArCWZvciAobm1hcHMgPSAwOyBpIDwgc21wdF9sZW47IG5tYXBzKyspIHsNCj4+
+ICsJCS8qDQo+PiArCQkgKiBUaGUgbWFwIHNlbGVjdG9yIGlzIGxpbWl0ZWQgdG8gYSBtYXhpbXVt
+IG9mIDggYml0cywgYWxsb3dpbmcNCj4+ICsJCSAqIGZvciBhIG1heGltdW0gb2YgMjU2IHBvc3Np
+YmxlIG1hcCBjb25maWd1cmF0aW9ucy4gVGhlIHRvdGFsDQo+PiArCQkgKiBudW1iZXIgb2YgbWFw
+IGNvbmZpZ3VyYXRpb25zIHNob3VsZCBiZSBhZGRyZXNzYWJsZSBieSB0aGUNCj4+ICsJCSAqIHRv
+dGFsIG51bWJlciBvZiBiaXRzIGRlc2NyaWJlZCBieSB0aGUgZGV0ZWN0aW9uIGNvbW1hbmRzLg0K
+Pj4gKwkJICovDQo+PiArCQlpZiAobmNtZHMgJiYgbm1hcHMgPj0gKDEgPDwgKG5jbWRzICsgMSkp
+KQ0KPj4gKwkJCWJyZWFrOw0KPj4gKw0KPiANCj4gTWF5YmUgSSBtaXNzZWQgc29tZXRoaW5nIGJ1
+dCBpdCBzb3VuZHMgbGlrZSB0aGlzIGNoYW5nZSBpcyBqdXN0DQo+IG9wdGltaXppbmcgdGhlIFNQ
+TVQgcGFyc2luZyBhIGJpdCwgYW5kIHRvIGJlIGhvbmVzdCwgSSdtIG5vdCBzdXJlIHRoaXMNCj4g
+aXMgcmVhbGx5IG5lZWRlZC4gTW9zdCBvZiB0aGUgdGltZSwgc21wdF9sZW4gd2lsbCBiZSByYXRo
+ZXIgc21hbGwsIHNvDQo+IHRyeWluZyB0byBiYWlsIG91dCBlYXJsaWVyIGlzIG5vdCBicmluZ2lu
+ZyBtdWNoIHBlcmYgaW1wcm92ZW1lbnRzLg0KDQpJdCdzIHJhdGhlciBhIHNtdHAgdmFsaWRpdHkg
+Y2hlY2suIEkgd2FudCB0byByZXR1cm4gYW4gZXJyb3IgaWYgdGhlcmUgYXJlIG5vdA0KZW5vdWdo
+IGRldGVjdGlvbiBjb21tYW5kcyB0byBpZGVudGlmeSB0aGUgbWFwIGlkLg0KDQpDaGVlcnMsDQp0
+YQ0K
