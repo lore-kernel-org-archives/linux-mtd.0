@@ -1,17 +1,16 @@
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKi9p-0000PR-DA
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 11:07:30 +0000
+ id 1gKi9n-0000Pc-1H
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 11:07:33 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
  <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>,
  <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 1/7] mtd: spi-nor: don't drop sfdp data if optional parsers
- fail
-Date: Thu, 8 Nov 2018 11:07:07 +0000
-Message-ID: <20181108110653.21063-2-tudor.ambarus@microchip.com>
+Subject: [PATCH 3/7] mtd: spi-nor: add restriction for nmaps in smpt parser
+Date: Thu, 8 Nov 2018 11:07:11 +0000
+Message-ID: <20181108110653.21063-4-tudor.ambarus@microchip.com>
 References: <20181108110653.21063-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20181108110653.21063-1-tudor.ambarus@microchip.com>
 Content-Language: en-US
@@ -27,55 +26,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JESD216C states that just the Basic Flash Parameter Table is mandatory.
-Already defined (or future) additional parameter headers and tables are
-optional.
+The map selector is limited to a maximum of 8 bits, allowing
+for a maximum of 256 possible map configurations. The total
+number of map configurations should be addressable by the
+total number of bits described by the detection commands.
 
-Don't drop already collected sfdp data in case an optional table
-parser fails. In case of failing, each optional parser is responsible
-to roll back to the previously known spi_nor data.
+For example: if there are five to eight possible sector map
+configurations, at least three configuration detection commands
+will be needed to extract three bits of configuration selection
+information from the device in order to identify which configuration
+is currently in use.
 
-Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR=
- flash memories")
-Reported-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 4a96ee719e5a..2cdf96013689 100644
+index 59dcedb08691..bd1866d714f2 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3130,7 +3130,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 	if (err)
- 		goto exit;
+@@ -2868,7 +2868,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_n=
+or *nor, const u32 *smpt,
+ 	const u32 *ret =3D NULL;
+ 	u32 addr;
+ 	int err;
+-	u8 i;
++	u8 i, ncmds, nmaps;
+ 	u8 addr_width, read_opcode, read_dummy;
+ 	u8 read_data_mask, data_byte, map_id;
 =20
--	/* Parse other parameter headers. */
-+	/* Parse optional parameter tables. */
- 	for (i =3D 0; i < header.nph; i++) {
- 		param_header =3D &param_headers[i];
+@@ -2877,6 +2877,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_n=
+or *nor, const u32 *smpt,
+ 	read_opcode =3D nor->read_opcode;
 =20
-@@ -3143,8 +3143,17 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			break;
- 		}
-=20
--		if (err)
--			goto exit;
-+		if (err) {
-+			dev_warn(dev, "Failed to parse optional parameter table: %04x\n",
-+				 SFDP_PARAM_HEADER_ID(param_header));
-+			/*
-+			 * Let's not drop all information we extracted so far
-+			 * if optional table parsers fail. In case of failing,
-+			 * each optional parser is responsible to roll back to
-+			 * the previously known spi_nor data.
-+			 */
-+			err =3D 0;
-+		}
+ 	map_id =3D 0;
++	ncmds =3D 0;
+ 	/* Determine if there are any optional Detection Command Descriptors */
+ 	for (i =3D 0; i < smpt_len; i +=3D 2) {
+ 		if (smpt[i] & SMPT_DESC_TYPE_MAP)
+@@ -2896,6 +2897,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_n=
+or *nor, const u32 *smpt,
+ 		 * Configuration that is currently in use.
+ 		 */
+ 		map_id =3D map_id << 1 | !!(data_byte & read_data_mask);
++		ncmds++;
  	}
 =20
- exit:
+ 	/*
+@@ -2905,7 +2907,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_=
+nor *nor, const u32 *smpt,
+ 	 *
+ 	 * Find the matching configuration map.
+ 	 */
+-	while (i < smpt_len) {
++	for (nmaps =3D 0; i < smpt_len; nmaps++) {
++		/*
++		 * The map selector is limited to a maximum of 8 bits, allowing
++		 * for a maximum of 256 possible map configurations. The total
++		 * number of map configurations should be addressable by the
++		 * total number of bits described by the detection commands.
++		 */
++		if (ncmds && nmaps >=3D (1 << (ncmds + 1)))
++			break;
++
+ 		if (SMPT_MAP_ID(smpt[i]) =3D=3D map_id) {
+ 			ret =3D smpt + i;
+ 			break;
 --=20
 2.9.4
