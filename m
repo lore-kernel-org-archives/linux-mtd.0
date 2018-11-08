@@ -1,22 +1,38 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKfjm-0005t0-DN
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 08:32:28 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-CC: Schrempf Frieder <frieder.schrempf@kontron.De>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: nand: spi: Add initial support for Toshiba TC58CVG2S0H
-Date: Thu, 8 Nov 2018 08:32:11 +0000
-Message-ID: <1541665796-21092-1-git-send-email-frieder.schrempf@kontron.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 8 Nov 2018 09:34:51 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.De>
+Cc: Olof Johansson <olof@lixom.net>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
+ "david.wolfe@nxp.com" <david.wolfe@nxp.com>, Fabio Estevam
+ <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
+ <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
+ <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>, Shawn Guo
+ <shawnguo@kernel.org>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, Sascha Hauer <s.hauer@pengutronix.de>,
+ "Sascha Hauer" <kernel@pengutronix.de>, "linux-imx@nxp.com"
+ <linux-imx@nxp.com>, Russell King <linux@armlinux.org.uk>, Arnd Bergmann
+ <arnd@arndb.de>, Alexandre TORGUE <alexandre.torgue@st.com>, Eric Anholt
+ <eric@anholt.net>, Stefan Agner <stefan@agner.ch>, Simon Horman
+ <horms+renesas@verge.net.au>, Tony Lindgren <tony@atomide.com>, Geert
+ Uytterhoeven <geert+renesas@glider.be>, Stefan Wahren
+ <stefan.wahren@i2se.com>, "yannick.fertre@st.com" <yannick.fertre@st.com>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 06/10] ARM: defconfig: Use the new FSL QSPI driver
+ under the SPI framework
+Message-ID: <20181108093451.08dfe63e@bbrezillon>
+In-Reply-To: <b12936f5-871d-a982-13c5-9d894f4a1521@kontron.de>
+References: <1541601809-16950-1-git-send-email-frieder.schrempf@kontron.de>
+ <1541601809-16950-7-git-send-email-frieder.schrempf@kontron.de>
+ <CAOesGMgPwwwmizC+R4W1aLpvgcuVOYQr2qR2Vqb6171zGfarRw@mail.gmail.com>
+ <b12936f5-871d-a982-13c5-9d894f4a1521@kontron.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,192 +42,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add minimal support for the Toshiba TC58CVG2S0H SPI NAND chip.
+On Wed, 7 Nov 2018 16:36:13 +0000
+Schrempf Frieder <frieder.schrempf@kontron.De> wrote:
 
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   1 +
- drivers/mtd/nand/spi/toshiba.c | 136 ++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   1 +
- 4 files changed, 139 insertions(+), 1 deletion(-)
+> Hi Olof,
+> 
+> On 07.11.18 17:20, Olof Johansson wrote:
+> > On Wed, Nov 7, 2018 at 6:44 AM Frieder Schrempf
+> > <frieder.schrempf@kontron.de> wrote:  
+> >>
+> >> From: Frieder Schrempf <frieder.schrempf@exceet.de>
+> >>
+> >> The new driver at spi/spi-fsl-qspi.c replaces the old SPI NOR driver
+> >> at mtd/fsl-quadspi.c. Switch to the new driver in the defconfigs.
+> >>
+> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>  
+> > 
+> > Hi Frieder,
+> > 
+> > This patch is part of a series that I didn't see the rest of, but in
+> > general we prefer to merge these through arm-soc even if the driver
+> > goes in through another tree. The way we'd prefer to handle it is that
+> > once the driver lands, we'll take the config option change to turn it
+> > on. To avoid our branches to break until both sides have landed, it
+> > might be a good idea to keep both drivers on for a short while (one
+> > release).
+> > 
+> > So, I'm not going to ack this since we avoid taking defconfig changes
+> > through driver trees (these two defconfigs tend to churn a lot and we
+> > don't want to create merge conflicts where we don't have to), but
+> > we'll be happy to pick it up when the time comes.  
+> 
+> Ok, thank you for explaining the common practice. I will drop the config 
+> changes for the next version and send it separately when the time is ready.
+> 
+> Both the old driver and the new one use the same compatible strings for 
+> probing. Wouldn't that cause problems if both drivers are enabled for a 
+> while, or am I missing something?
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index b74e074..be5f735 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs :=3D core.o macronix.o micron.o winbond.o
-+spinand-objs :=3D core.o macronix.o micron.o toshiba.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) +=3D spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 30f8364..87bdf2a 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -766,6 +766,7 @@ static const struct nand_ops spinand_ops =3D {
- static const struct spinand_manufacturer *spinand_manufacturers[] =3D {
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
-+	&toshiba_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- };
-=20
-diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.=
-c
-new file mode 100644
-index 0000000..294bcf6
---- /dev/null
-+++ b/drivers/mtd/nand/spi/toshiba.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2018 exceet electronics GmbH
-+ * Copyright (c) 2018 Kontron Electronics GmbH
-+ *
-+ * Author: Frieder Schrempf <frieder.schrempf@kontron.de>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_TOSHIBA		0x98
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *region)
-+{
-+	if (section > 7)
-+		return -ERANGE;
-+
-+	region->offset =3D 128 + 16 * section;
-+	region->length =3D 16;
-+
-+
-+	return 0;
-+}
-+
-+static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
-+				      struct mtd_oob_region *region)
-+{
-+	if (section > 7)
-+		return -ERANGE;
-+
-+	region->offset =3D 2 + 16 * section;
-+	region->length =3D 14;
-+
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops tc58cvg2s0h_ooblayout =3D {
-+	.ecc =3D tc58cvg2s0h_ooblayout_ecc,
-+	.free =3D tc58cvg2s0h_ooblayout_free,
-+};
-+
-+static int tc58cvg2s0h_ecc_get_status(struct spinand_device *spinand,
-+				      u8 status)
-+{
-+	struct nand_device *nand =3D spinand_to_nand(spinand);
-+	u8 mbf =3D 0;
-+	struct spi_mem_op op =3D SPINAND_GET_FEATURE_OP(0x30, &mbf);
-+
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case STATUS_ECC_HAS_BITFLIPS:
-+		/*
-+		 * Let's try to retrieve the real maximum number of bitflips
-+		 * in order to avoid forcing the wear-leveling layer to move
-+		 * data around if it's not necessary.
-+		 */
-+		if (spi_mem_exec_op(spinand->spimem, &op))
-+			return nand->eccreq.strength;
-+
-+		mbf >>=3D 4;
-+
-+		if (WARN_ON(mbf > nand->eccreq.strength || !mbf))
-+			return nand->eccreq.strength;
-+
-+		return mbf;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info toshiba_spinand_table[] =3D {
-+	SPINAND_INFO("TC58CVG2S0H", 0xCD,
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&tc58cvg2s0h_ooblayout,
-+				     tc58cvg2s0h_ecc_get_status)),
-+};
-+
-+static int toshiba_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id =3D spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * Toshiba SPI NAND read ID needs a dummy byte,
-+	 * so the first byte in id is garbage.
-+	 */
-+	if (id[1] !=3D SPINAND_MFR_TOSHIBA)
-+		return 0;
-+
-+	ret =3D spinand_match_and_init(spinand, toshiba_spinand_table,
-+				     ARRAY_SIZE(toshiba_spinand_table),
-+				     id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops toshiba_spinand_manuf_ops =3D=
- {
-+	.detect =3D toshiba_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer toshiba_spinand_manufacturer =3D {
-+	.id =3D SPINAND_MFR_TOSHIBA,
-+	.name =3D "Toshiba",
-+	.ops =3D &toshiba_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 088ff96..816c4b0 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -196,6 +196,7 @@ struct spinand_manufacturer {
- /* SPI NAND manufacturers */
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
-+extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
-=20
- /**
---=20
-2.7.4
+Or maybe we should not introduce a new Kconfig option and just reuse
+the old one. It probably requires re-ordering patches a bit (patch 1
+should be moved after patch 5). Then you have 2 choices:
+
+1/ merge patch 1 and 6 so that the new driver effectively replaces the
+   old one but uses the same Kconfig option
+2/ remove the ability to compile the old driver when the new one is
+   introduced: remove the line from drivers/mtd/spi-nor Makefile and
+   move the Kconfig entry from drivers/mtd/spi-nor/Kconfig to
+   drivers/spi/Kconfig. And remove the old code in a separate patch
+
+I'm fine either way, but option #2 will probably make the patch
+introducing the new driver bigger and hurt readability.
