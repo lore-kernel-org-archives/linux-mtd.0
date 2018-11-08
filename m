@@ -1,37 +1,19 @@
-Received: from mail-ty1jpn01on0721.outbound.protection.outlook.com
- ([2a01:111:f400:fe9d::721]
- helo=JPN01-TY1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gKhrz-0000xL-TL
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 10:49:05 +0000
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: Simon Horman <horms@verge.net.au>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Richard Weinberger <richard@nod.at>, Boris
- Brezillon <boris.brezillon@bootlin.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob
- Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Magnus Damm
- <magnus.damm@gmail.com>, linux-spi <linux-spi@vger.kernel.org>, "open
- list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Linux-Renesas
- <linux-renesas-soc@vger.kernel.org>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Chris Paterson
- <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>
-Subject: RE: [PATCH 3/4] ARM: dts: r8a77470: Add QSPI support
-Date: Thu, 8 Nov 2018 10:48:48 +0000
-Message-ID: <TY1PR01MB1770655F73AF7D8CB2EB6389C0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
-References: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1541075705-1333-4-git-send-email-fabrizio.castro@bp.renesas.com>
- <20181102114946.5tqk2lyisaey475w@verge.net.au>
- <TY1PR01MB1770FA3764370E7AEA5D30C6C0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
- <CAMuHMdX=L9d=1dq24WErcjYLv987=yKL2K7hxnS7hhsZpbKEBA@mail.gmail.com>
- <TY1PR01MB1770AD277B0A1C5DF1776F60C0C50@TY1PR01MB1770.jpnprd01.prod.outlook.com>
- <CAMuHMdWiDM8LprsjBpj0uOKSta1mMpn61tTo8SCxtC6RquSVbw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWiDM8LprsjBpj0uOKSta1mMpn61tTo8SCxtC6RquSVbw@mail.gmail.com>
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gKi9h-00049v-M0
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2018 11:07:23 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>,
+ <Tudor.Ambarus@microchip.com>
+Subject: [PATCH 0/7] mtd: spi-nor: fixes found when debugging smpt
+Date: Thu, 8 Nov 2018 11:07:05 +0000
+Message-ID: <20181108110653.21063-1-tudor.ambarus@microchip.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,56 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgR2VlcnQsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBmZWVkYmFjayENCg0KPiBTdWJqZWN0OiBS
-ZTogW1BBVENIIDMvNF0gQVJNOiBkdHM6IHI4YTc3NDcwOiBBZGQgUVNQSSBzdXBwb3J0DQo+DQo+
-IEhpIEZhYnJpemlvLA0KPg0KPiBPbiBUaHUsIE5vdiA4LCAyMDE4IGF0IDExOjMxIEFNIEZhYnJp
-emlvIENhc3Rybw0KPiA8ZmFicml6aW8uY2FzdHJvQGJwLnJlbmVzYXMuY29tPiB3cm90ZToNCj4g
-PiA+IE9uIFRodSwgTm92IDgsIDIwMTggYXQgMTE6MjIgQU0gRmFicml6aW8gQ2FzdHJvDQo+ID4g
-PiA8ZmFicml6aW8uY2FzdHJvQGJwLnJlbmVzYXMuY29tPiB3cm90ZToNCj4gPiA+ID4gPiBGcm9t
-OiBTaW1vbiBIb3JtYW4gPGhvcm1zQHZlcmdlLm5ldC5hdT4NCj4gPiA+ID4gPiBTZW50OiAwMiBO
-b3ZlbWJlciAyMDE4IDExOjUwDQo+ID4gPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSCAzLzRdIEFS
-TTogZHRzOiByOGE3NzQ3MDogQWRkIFFTUEkgc3VwcG9ydA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4g
-T24gVGh1LCBOb3YgMDEsIDIwMTggYXQgMTI6MzU6MDRQTSArMDAwMCwgRmFicml6aW8gQ2FzdHJv
-IHdyb3RlOg0KPiA+ID4gPiA+ID4gQWRkIFFTUElbMDFdIHN1cHBvcnQgdG8gdGhlIFJaL0cxQyBT
-b0Mgc3BlY2lmaWMgZGV2aWNlIHRyZWUuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gU2lnbmVk
-LW9mZi1ieTogRmFicml6aW8gQ2FzdHJvIDxmYWJyaXppby5jYXN0cm9AYnAucmVuZXNhcy5jb20+
-DQo+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ICBhcmNoL2FybS9ib290L2R0cy9yOGE3NzQ3
-MC5kdHNpIHwgMzQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ID4gPiA+
-ID4gIDEgZmlsZSBjaGFuZ2VkLCAzNCBpbnNlcnRpb25zKCspDQo+ID4gPiA+ID4gPg0KPiA+ID4g
-PiA+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL3I4YTc3NDcwLmR0c2kgYi9hcmNo
-L2FybS9ib290L2R0cy9yOGE3NzQ3MC5kdHNpDQo+ID4gPiA+ID4gPiBpbmRleCBlNjQwN2U1Li4w
-NGE4ODc3IDEwMDY0NA0KPiA+ID4gPiA+ID4gLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvcjhhNzc0
-NzAuZHRzaQ0KPiA+ID4gPiA+ID4gKysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvcjhhNzc0NzAuZHRz
-aQ0KPiA+ID4gPiA+ID4gQEAgLTIwLDYgKzIwLDggQEANCj4gPiA+ID4gPiA+ICBpMmMyID0gJmky
-YzI7DQo+ID4gPiA+ID4gPiAgaTJjMyA9ICZpMmMzOw0KPiA+ID4gPiA+ID4gIGkyYzQgPSAmaTJj
-NDsNCj4gPiA+ID4gPiA+ICtzcGkwID0gJnFzcGkwOw0KPiA+ID4gPiA+ID4gK3NwaTEgPSAmcXNw
-aTE7DQo+ID4gPiA+ID4gPiAgfTsNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEdlZXJ0IGNhbiBjb21t
-ZW50IGJ1dCBJIGJlbGlldmUgd2UgYXJlIG1vdmluZyBhd2F5IGZyb20gdXNpbmcgYWxpYXNlcw0K
-PiA+ID4gPiA+IGluIHRoaXMgd2F5IGFuZCB0aGF0IGl0IHdvdWxkIGJlIGJlc3QgaWYgdGhlIGFi
-b3ZlIGh1bmsgd2FzIGRyb3BwZWQNCj4gPiA+ID4gPiBmcm9tIHRoaXMgcGF0Y2guDQo+ID4gPiA+
-ID4NCj4gPiA+ID4gPiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEwNjQ0MTU5
-Lw0KPiA+ID4gPg0KPiA+ID4gPiBHZWVydCwgd2hhdCBkbyB5b3Ugd2FudCBtZSB0byBkbyBoZXJl
-Pw0KPiA+ID4NCj4gPiA+IFBsZWFzZSBkcm9wIHRoZSBhbGlhc2VzLiBUaGFua3MhDQo+ID4NCj4g
-PiBXaWxsIGRvLCB3aWxsIHNlbmQgYSBuZXcgdmVyc2lvbiB3aXRob3V0IHRoZSBhZGRpdGlvbmFs
-IGFsaWFzZXMuDQo+DQo+IFRoYW5rcyENCj4NCj4gPiBNeSB1bmRlcnN0YW5kaW5nIGlzIHRoYXQg
-eW91ciBwZXJzb25hbCBwcmVmZXJlbmNlIGlzIHRvIG9ubHkgbGVhdmUgZGVidWcgY29uc29sZSBh
-bmQgZXRoZXJuZXQsDQo+DQo+IExhYmVsZWQgc2VyaWFsIHBvcnRzIGFuZCBwcmltYXJ5IEV0aGVy
-bmV0LCBzbyBVLUJvb3Qga25vd3Mgd2hpY2ggTUFDIGFkZHJlc3MNCj4gcHJvcGVydHkgdG8gdXBk
-YXRlLg0KPg0KPiA+IHNoYWxsIEkgYWxzbyAgZ2V0IHJpZCBvZiB3aGF0IHdhcyBhbHJlYWR5IHVw
-c3RyZWFtZWQgZm9yIFJaL0cgcmVsYXRlZCBib2FyZHMgdGhhdCBpcyBub3QgaW4gbGluZQ0KPiA+
-IHdpdGggdGhlIG5ldyBwb2xpY3k/DQo+DQo+IEkgYmVsaWV2ZSB0aGVzZSBhcmUgYWxsIHNlcmlh
-bCBwb3J0cywgdXNpbmcgYWxpYXNlcyB0aGF0IG1hdGNoIHRoZSBkb2N1bWVudGVkDQo+IGFuZC9v
-ciBsYWJlbGVkIHBvcnQgbmFtZXM/IFNvIHRoZXkgZG9uJ3QgaGF2ZSB0byBiZSByZW1vdmVkLg0K
-DQpXZSBoYXZlIGFsc28gYmVlbiB1c2luZyBhbGlhc2VzIGZvciBpMmMsIHNwaSAobGlrZSBpbiB0
-aGlzIGNhc2UpLCB2aW4sIGV0Yy4sIGZvciBhbGwgb2YgdGhlIFJaL0cgYm9hcmRzLA0Kc2hhbGwg
-SSBnZXQgcmlkIG9mIHRob3NlPw0KDQpDaGVlcnMsDQpGYWINCg0KPg0KPiBHcntvZXRqZSxlZXRp
-bmd9cywNCj4NCj4gICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQNCj4NCj4gLS0NCj4gR2Vl
-cnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBMaW51eCBiZXlvbmQgaWEzMiAtLSBn
-ZWVydEBsaW51eC1tNjhrLm9yZw0KPg0KPiBJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGgg
-dGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0DQo+IHdoZW4gSSdt
-IHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRo
-aW5nIGxpa2UgdGhhdC4NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51
-cyBUb3J2YWxkcw0KDQoNCg0KUmVuZXNhcyBFbGVjdHJvbmljcyBFdXJvcGUgTHRkLCBEdWtlcyBN
-ZWFkb3csIE1pbGxib2FyZCBSb2FkLCBCb3VybmUgRW5kLCBCdWNraW5naGFtc2hpcmUsIFNMOCA1
-RkgsIFVLLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQgJiBXYWxlcyB1bmRlciBSZWdpc3RlcmVkIE5v
-LiAwNDU4NjcwOS4NCg==
+Bunch of fixes that we found while debugging the roll back to
+SPINOR_OP_READ_1_1_4_4B in case smpt parser fails.
+
+Boris, Yogesh,
+
+Now I'm looking for a fix in case the smpt detection commands
+define variable address length and dummy bytes. Will follow.
+
+Tudor Ambarus (7):
+  mtd: spi-nor: don't drop sfdp data if optional parsers fail
+  mtd: spi-nor: fix iteration over smpt array
+  mtd: spi-nor: add restriction for nmaps in smpt parser
+  mtd: spi-nor: don't overwrite errno in spi_nor_get_map_in_use()
+  mtd: spi_nor: pass DMA-able buffer to spi_nor_read_raw()
+  mtd: spi-nor: ensure memory used for nor->read() is DMA safe
+  mtd: spi-nor: remove unneeded smpt zeroization
+
+ drivers/mtd/spi-nor/spi-nor.c | 98 ++++++++++++++++++++++++++++++++-------=
+----
+ 1 file changed, 74 insertions(+), 24 deletions(-)
+
+--=20
+2.9.4
