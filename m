@@ -1,23 +1,24 @@
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL3YG-0000zQ-ID
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 09:58:10 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@bootlin.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-CC: <alexandre.belloni@bootlin.com>, <cyrille.pitchen@wedev4u.fr>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gL3dV-0002i1-Nw
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 10:03:34 +0000
+Date: Fri, 9 Nov 2018 11:03:21 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <alexandre.belloni@bootlin.com>, <cyrille.pitchen@wedev4u.fr>
 Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Make sure SFDP-based 4B_OPCODE
  support detection works correctly
-Date: Fri, 9 Nov 2018 09:57:52 +0000
-Message-ID: <89439290-50ec-0a2a-a50b-c917f7e36ea4@microchip.com>
+Message-ID: <20181109110321.120cb598@bbrezillon>
+In-Reply-To: <6fa42403-3a20-cdbe-caa7-d90c88b51e27@microchip.com>
 References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181031144504.19405-1-boris.brezillon@bootlin.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <35CBD0CA0359284A813A459510626ADA@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <10fab1c5-1a40-9d7a-b9d4-ce48afa1635d@microchip.com>
+ <20181108180842.48ce6d1b@bbrezillon>
+ <6fa42403-3a20-cdbe-caa7-d90c88b51e27@microchip.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,68 +28,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDEwLzMxLzIwMTggMDQ6NDUgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gU29t
-ZSBmbGFzaF9pbmZvIGVudHJpZXMgaGF2ZSB0aGUgU1BJX05PUl80Ql9PUENPREVTIGZsYWcgc2V0
-IHRvIGxldCB0aGUNCj4gY29yZSBrbm93IHRoYXQgdGhlIGZsYXNoIHN1cHBvcnRzIDRCIG9wY29k
-ZS4gV2hpbGUgdGhpcyBzb2x1dGlvbiB3b3Jrcw0KPiBmaW5lIGZvciBpZC1iYXNlZCBjYXBzIGRl
-dGVjdGlvbiwgaXQgZG9lc24ndCB3b3JrIHRoYXQgd2VsbCB3aGVuIHJlbHlpbmcNCj4gb24gU0ZE
-UC1iYXNlZCBjYXBzIGRldGVjdGlvbi4gTGV0J3MgYWRkIGFuIFNOT1JfRl80Ql9PUENPREVTIGZs
-YWcgc28gdGhhdA0KPiBzcGlfbm9yX3BhcnNlX2JmcHQoKSBjYW4gYWRkIGl0IHdoZW4gdGhlIEJG
-UFRfRFdPUkQxX0FERFJFU1NfQllURVMNCj4gZmllbGQgaXMgc2V0IHRvIEJGUFRfRFdPUkQxX0FE
-RFJFU1NfQllURVNfNF9PTkxZLg0KPiANCj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRyZSBCZWxsb25p
-IDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogQm9yaXMg
-QnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb20+DQo+IFRlc3RlZC1ieTogQWxl
-eGFuZHJlIEJlbGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPg0KDQpSZXZpZXdl
-ZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQo+IC0t
-LQ0KPiBDaGFuZ2VzIGluIHYzOg0KPiAtIENsZWFyIFNOT1JfRl80Ql9PUENPREVTIGZsYWcgd2hl
-biBTRkRQIGZhaWxzDQo+IC0gQWRkIEFsZXhhbmRyZSBSLWINCj4gDQo+IENoYW5nZXMgaW4gdjI6
-DQo+IC0gRml4IHRoZSBjb21taXQgbWVzc2FnZQ0KPiAtIEZpeCB0aGUgLT5hZGRyX3dpZHRoIGNo
-ZWNrDQo+IC0gQWRkIGEgY29tbWEgYXQgdGhlIGVuZCBvZiB0aGUgU05PUl9GXzRCX09QQ09ERVMg
-ZGVmaW5pdGlvbg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgMTIg
-KysrKysrKysrLS0tDQo+ICBpbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggICB8ICAxICsNCj4g
-IDIgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRk
-L3NwaS1ub3Ivc3BpLW5vci5jDQo+IGluZGV4IDNlNTRlMzE4ODljNy4uNzk4OTE1YjVjMmIwIDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiArKysgYi9kcml2
-ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiBAQCAtMjY0Myw2ICsyNjQzLDcgQEAgc3RhdGlj
-IGludCBzcGlfbm9yX3BhcnNlX2JmcHQoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gIAkJYnJlYWs7
-DQo+ICANCj4gIAljYXNlIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfNF9PTkxZOg0KPiArCQlu
-b3ItPmZsYWdzIHw9IFNOT1JfRl80Ql9PUENPREVTOw0KPiAgCQlub3ItPmFkZHJfd2lkdGggPSA0
-Ow0KPiAgCQlicmVhazsNCj4gIA0KPiBAQCAtMzI1Miw2ICszMjUzLDcgQEAgc3RhdGljIGludCBz
-cGlfbm9yX2luaXRfcGFyYW1zKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICANCj4gIAkJaWYgKHNw
-aV9ub3JfcGFyc2Vfc2ZkcChub3IsICZzZmRwX3BhcmFtcykpIHsNCj4gIAkJCW5vci0+YWRkcl93
-aWR0aCA9IDA7DQo+ICsJCQlub3ItPmZsYWdzICY9IH5TTk9SX0ZfNEJfT1BDT0RFUzsNCj4gIAkJ
-CS8qIHJlc3RvcmUgcHJldmlvdXMgZXJhc2UgbWFwICovDQo+ICAJCQltZW1jcHkoJm5vci0+ZXJh
-c2VfbWFwLCAmcHJldl9tYXAsDQo+ICAJCQkgICAgICAgc2l6ZW9mKG5vci0+ZXJhc2VfbWFwKSk7
-DQo+IEBAIC0zNTU0LDcgKzM1NTYsNyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdChzdHJ1Y3Qg
-c3BpX25vciAqbm9yKQ0KPiAgDQo+ICAJaWYgKChub3ItPmFkZHJfd2lkdGggPT0gNCkgJiYNCj4g
-IAkgICAgKEpFREVDX01GUihub3ItPmluZm8pICE9IFNOT1JfTUZSX1NQQU5TSU9OKSAmJg0KPiAt
-CSAgICAhKG5vci0+aW5mby0+ZmxhZ3MgJiBTUElfTk9SXzRCX09QQ09ERVMpKSB7DQo+ICsJICAg
-ICEobm9yLT5mbGFncyAmIFNOT1JfRl80Ql9PUENPREVTKSkgew0KPiAgCQkvKg0KPiAgCQkgKiBJ
-ZiB0aGUgUkVTRVQjIHBpbiBpc24ndCBob29rZWQgdXAgcHJvcGVybHksIG9yIHRoZSBzeXN0ZW0N
-Cj4gIAkJICogb3RoZXJ3aXNlIGRvZXNuJ3QgcGVyZm9ybSBhIHJlc2V0IGNvbW1hbmQgaW4gdGhl
-IGJvb3QNCj4gQEAgLTM1ODgsNyArMzU5MCw3IEBAIHZvaWQgc3BpX25vcl9yZXN0b3JlKHN0cnVj
-dCBzcGlfbm9yICpub3IpDQo+ICAJLyogcmVzdG9yZSB0aGUgYWRkcmVzc2luZyBtb2RlICovDQo+
-ICAJaWYgKChub3ItPmFkZHJfd2lkdGggPT0gNCkgJiYNCj4gIAkgICAgKEpFREVDX01GUihub3It
-PmluZm8pICE9IFNOT1JfTUZSX1NQQU5TSU9OKSAmJg0KPiAtCSAgICAhKG5vci0+aW5mby0+Zmxh
-Z3MgJiBTUElfTk9SXzRCX09QQ09ERVMpICYmDQo+ICsJICAgICEobm9yLT5mbGFncyAmIFNOT1Jf
-Rl80Ql9PUENPREVTKSAmJg0KPiAgCSAgICAobm9yLT5mbGFncyAmIFNOT1JfRl9CUk9LRU5fUkVT
-RVQpKQ0KPiAgCQlzZXRfNGJ5dGUobm9yLCBub3ItPmluZm8sIDApOw0KPiAgfQ0KPiBAQCAtMzc0
-NiwxMSArMzc0OCwxNSBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNv
-bnN0IGNoYXIgKm5hbWUsDQo+ICAJCW5vci0+YWRkcl93aWR0aCA9IDQ7DQo+ICAJCWlmIChKRURF
-Q19NRlIoaW5mbykgPT0gU05PUl9NRlJfU1BBTlNJT04gfHwNCj4gIAkJICAgIGluZm8tPmZsYWdz
-ICYgU1BJX05PUl80Ql9PUENPREVTKQ0KPiAtCQkJc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2Rlcyhu
-b3IsIGluZm8pOw0KPiArCQkJbm9yLT5mbGFncyB8PSBTTk9SX0ZfNEJfT1BDT0RFUzsNCj4gIAl9
-IGVsc2Ugew0KPiAgCQlub3ItPmFkZHJfd2lkdGggPSAzOw0KPiAgCX0NCj4gIA0KPiArCWlmIChu
-b3ItPmFkZHJfd2lkdGggPT0gNCAmJg0KPiArCSAgICBub3ItPmZsYWdzICYgU05PUl9GXzRCX09Q
-Q09ERVMpDQo+ICsJCXNwaV9ub3Jfc2V0XzRieXRlX29wY29kZXMobm9yLCBpbmZvKTsNCj4gKw0K
-PiAgCWlmIChub3ItPmFkZHJfd2lkdGggPiBTUElfTk9SX01BWF9BRERSX1dJRFRIKSB7DQo+ICAJ
-CWRldl9lcnIoZGV2LCAiYWRkcmVzcyB3aWR0aCBpcyB0b28gbGFyZ2U6ICV1XG4iLA0KPiAgCQkJ
-bm9yLT5hZGRyX3dpZHRoKTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL3NwaS1u
-b3IuaCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBpbmRleCA3ZjBjNzMwMzU3NWUu
-LjViYzc1MTEwZDVlYSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5o
-DQo+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBAQCAtMjM2LDYgKzIzNiw3
-IEBAIGVudW0gc3BpX25vcl9vcHRpb25fZmxhZ3Mgew0KPiAgCVNOT1JfRl9SRUFEWV9YU1JfUkRZ
-CT0gQklUKDQpLA0KPiAgCVNOT1JfRl9VU0VfQ0xTUgkJPSBCSVQoNSksDQo+ICAJU05PUl9GX0JS
-T0tFTl9SRVNFVAk9IEJJVCg2KSwNCj4gKwlTTk9SX0ZfNEJfT1BDT0RFUwk9IEJJVCg3KSwNCj4g
-IH07DQo+ICANCj4gIC8qKg0KPiANCg==
+On Fri, 9 Nov 2018 09:57:13 +0000
+<Tudor.Ambarus@microchip.com> wrote:
+
+> On 11/08/2018 07:08 PM, Boris Brezillon wrote:
+> > On Thu, 8 Nov 2018 16:55:29 +0000
+> > <Tudor.Ambarus@microchip.com> wrote:
+> >   
+> >> On 10/31/2018 04:45 PM, Boris Brezillon wrote:  
+> >>> Some flash_info entries have the SPI_NOR_4B_OPCODES flag set to let the
+> >>> core know that the flash supports 4B opcode. While this solution works
+> >>> fine for id-based caps detection, it doesn't work that well when relying
+> >>> on SFDP-based caps detection. Let's add an SNOR_F_4B_OPCODES flag so that
+> >>> spi_nor_parse_bfpt() can add it when the BFPT_DWORD1_ADDRESS_BYTES
+> >>> field is set to BFPT_DWORD1_ADDRESS_BYTES_4_ONLY.
+> >>>
+> >>> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> >>> Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >>> ---
+> >>> Changes in v3:
+> >>> - Clear SNOR_F_4B_OPCODES flag when SFDP fails
+> >>> - Add Alexandre R-b
+> >>>
+> >>> Changes in v2:
+> >>> - Fix the commit message
+> >>> - Fix the ->addr_width check
+> >>> - Add a comma at the end of the SNOR_F_4B_OPCODES definition
+> >>> ---
+> >>>  drivers/mtd/spi-nor/spi-nor.c | 12 +++++++++---
+> >>>  include/linux/mtd/spi-nor.h   |  1 +
+> >>>  2 files changed, 10 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> >>> index 3e54e31889c7..798915b5c2b0 100644
+> >>> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >>> @@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >>>  		break;
+> >>>  
+> >>>  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+> >>> +		nor->flags |= SNOR_F_4B_OPCODES;
+> >>>  		nor->addr_width = 4;
+> >>>  		break;
+> >>>  
+> >>> @@ -3252,6 +3253,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+> >>>  
+> >>>  		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+> >>>  			nor->addr_width = 0;
+> >>> +			nor->flags &= ~SNOR_F_4B_OPCODES;
+> >>>  			/* restore previous erase map */
+> >>>  			memcpy(&nor->erase_map, &prev_map,
+> >>>  			       sizeof(nor->erase_map));
+> >>> @@ -3554,7 +3556,7 @@ static int spi_nor_init(struct spi_nor *nor)
+> >>>  
+> >>>  	if ((nor->addr_width == 4) &&
+> >>>  	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+> >>> -	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
+> >>> +	    !(nor->flags & SNOR_F_4B_OPCODES)) {
+> >>>  		/*
+> >>>  		 * If the RESET# pin isn't hooked up properly, or the system
+> >>>  		 * otherwise doesn't perform a reset command in the boot
+> >>> @@ -3588,7 +3590,7 @@ void spi_nor_restore(struct spi_nor *nor)
+> >>>  	/* restore the addressing mode */
+> >>>  	if ((nor->addr_width == 4) &&
+> >>>  	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+> >>> -	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
+> >>> +	    !(nor->flags & SNOR_F_4B_OPCODES) &&
+> >>>  	    (nor->flags & SNOR_F_BROKEN_RESET))
+> >>>  		set_4byte(nor, nor->info, 0);
+> >>>  }
+> >>> @@ -3746,11 +3748,15 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >>>  		nor->addr_width = 4;
+> >>>  		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+> >>>  		    info->flags & SPI_NOR_4B_OPCODES)
+> >>> -			spi_nor_set_4byte_opcodes(nor, info);
+> >>> +			nor->flags |= SNOR_F_4B_OPCODES;
+> >>>  	} else {
+> >>>  		nor->addr_width = 3;
+> >>>  	}
+> >>>  
+> >>> +	if (nor->addr_width == 4 &&    
+> >>
+> >> Shouldn't SNOR_F_4B_OPCODES already imply nor->addr_width == 4?  
+> > 
+> > Can't we have NORs supporting 4B opcodes but are less than 16MB? In
+> > this case SNOR_F_4B_OPCODES would be set and ->addr_width would be 3.  
+> 
+> I guess not, it wouldn't make sense, but who knows ... :)
+
+Don't under-estimate flash manufacturers :-).
+
+> 
+> The 4-byte opcodes indicate that 4-bytes of address follow the instruction. And
+> 4-byte addresses make sense for spi memories that exceed the 16MB density.
+
+I'm pretty sure they use the same controller for <=16MB and >16MB
+chips, so I wouldn't be surprised if some of their modern <=16MB chips
+support 4B opcodes even if it's not needed.
