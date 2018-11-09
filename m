@@ -1,12 +1,12 @@
-Received: from mail-by2nam05on060a.outbound.protection.outlook.com
- ([2a01:111:f400:fe52::60a]
+Received: from mail-by2nam05on0609.outbound.protection.outlook.com
+ ([2a01:111:f400:fe52::609]
  helo=NAM05-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL6gs-0000Wv-HP
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 13:19:16 +0000
+ id 1gL6hf-0000ro-CH
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 13:20:06 +0000
 From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, "richard@nod.at"
  <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
@@ -14,17 +14,19 @@ CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
  <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
  <nagasuresh12@gmail.com>, "robh@kernel.org" <robh@kernel.org>
-Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Fri, 9 Nov 2018 13:18:42 +0000
-Message-ID: <MWHPR02MB262374134ED95C0DF68BA8F9AFC60@MWHPR02MB2623.namprd02.prod.outlook.com>
+Subject: RE: [LINUX PATCH v12 1/3] dt-bindings: mtd: arasan: Add device tree
+ binding documentation
+Date: Fri, 9 Nov 2018 13:19:28 +0000
+Message-ID: <MWHPR02MB2623087507F40BAF55D0FA98AFC60@MWHPR02MB2623.namprd02.prod.outlook.com>
 References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20181109090733.41ef6edf@bbrezillon>
-In-Reply-To: <20181109090733.41ef6edf@bbrezillon>
+ <1541739641-17789-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20181109072857.75e86cb6@bbrezillon>
+ <MWHPR02MB26235AB9959635CAA1B2B878AFC60@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181109135405.3b93b267@xps13>
+In-Reply-To: <20181109135405.3b93b267@xps13>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,322 +37,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Friday, November 9, 2018 1:38 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
-> <michals@xilinx.com>; linux-mtd@lists.infradead.org; linux-kernel@vger.ke=
-rnel.org;
-> nagasuresh12@gmail.com; robh@kernel.org
-> Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for =
-Arasan NAND
-> Flash Controller
->=20
-> Hi Naga,
->=20
-> Just a preliminary review. I still think we have problems with how you ex=
-ecute NAND
-> operations. You seem to assume that read/write operation are always page =
-write/read operation
-> with a size aligned on a page size. This is wrong, either the controller =
-is able to execute the
-> exact operation that has been requested or it returns -ENOTSUPP.
-Are you pointing the anfc_read_param_get_feature_sp_read_type_exec()?
-Where I am reading a length of page size even for get_features op.
-Is that you are pointing?
-
->=20
-> On Fri, 9 Nov 2018 10:30:41 +0530
-> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
->=20
-> > +
-> > +/**
-> > + * struct anfc_nand_chip - Defines the nand chip related information
-> > + * @node:		Used to store NAND chips into a list.
-> > + * @chip:		NAND chip information structure.
-> > + * @strength:		Bch or Hamming mode enable/disable.
->=20
-> The name is still confusing. BTW, can't you deduce Hamming vs BCH from th=
-e strength?
-> Hamming strength is 1, while BCH strengths seem to start at 4.
-Yes we can deduce. I will try that.
-.
->=20
-> > + * @ecc_strength:	Ecc strength 4.8/12/16.
->=20
-> 				      ^/
->=20
-> > + * @eccval:		Ecc config value.
-> > + * @spare_caddr_cycles:	Column address cycle information for spare are=
-a.
-> > + * @pktsize:		Packet size for read / write operation.
-> > + * @csnum:		chipselect number to be used.
-> > + * @spktsize:		Packet size in ddr mode for status operation.
-> > + * @inftimeval:		Data interface and timing mode information
-> > + */
-> > +struct anfc_nand_chip {
-> > +	struct list_head node;
-> > +	struct nand_chip chip;
-> > +	bool strength;
-> > +	u32 ecc_strength;
-> > +	u32 eccval;
-> > +	u16 spare_caddr_cycles;
-> > +	u32 pktsize;
-> > +	int csnum;
-> > +	u32 spktsize;
-> > +	u32 inftimeval;
-> > +};
-> > +
-> > +/**
-> > + * struct anfc_nand_controller - Defines the Arasan NAND flash control=
-ler
-> > + *				 driver instance
-> > + * @controller:		base controller structure.
-> > + * @chips:		list of all nand chips attached to the ctrler.
-> > + * @dev:		Pointer to the device structure.
-> > + * @base:		Virtual address of the NAND flash device.
-> > + * @clk_sys:		Pointer to the system clock.
-> > + * @clk_flash:		Pointer to the flash clock.
-> > + * @dma:		Dma enable/disable.
-> > + * @buf:		Buffer used for read/write byte operations.
-> > + * @irq:		irq number
->=20
-> You should need this field. Just get the irq num in you probe path an reg=
-ister an irq handler
-> with devm_request_irq().
-You mean to say, instead of putting irq in anfc_nand_controller structure, =
-update the code like below snippet, right?
-
-irq =3D platform_get_irq(pdev, 0);
-if (irq < 0) {
-            dev_err(dev, "failed to retrieve irq\n");
-            return irq;
-}
-devm_request_irq(&pdev->dev, irq, anfc_irq_handler, 0, "arasannfc", nfc);
-
->=20
-> > + * @bufshift:		Variable used for indexing buffer operation
-> > + * @csnum:		Chip select number currently inuse.
->=20
-> 						     ^ in use
->=20
-> > + * @event:		Completion event for nand status events.
-> > + * @status:		Status of the flash device.
-> > + * @prog:		Used to initiate controller operations.
-> > + */
-> > +struct anfc_nand_controller {
-> > +	struct nand_controller controller;
-> > +	struct list_head chips;
-> > +	struct device *dev;
-> > +	void __iomem *base;
-> > +	struct clk *clk_sys;
-> > +	struct clk *clk_flash;
-> > +	int irq;
-> > +	int csnum;
-> > +	struct completion event;
-> > +	int status;
-> > +	u8 buf[TEMP_BUF_SIZE];
->=20
-> Allocate this buf dynamically.
-Ok
->=20
-> > +	u32 eccval;
-> > +};
->=20
-> > +static int anfc_page_write_type_exec(struct nand_chip *chip,
-> > +				     const struct nand_subop *subop) {
-> > +	const struct nand_op_instr *instr;
-> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
-> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
-> > +	unsigned int op_id, len;
-> > +	struct anfc_op nfc_op =3D {};
-> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> > +
-> > +	anfc_parse_instructions(chip, subop, &nfc_op);
-> > +	instr =3D nfc_op.data_instr;
-> > +	op_id =3D nfc_op.data_instr_idx;
-> > +	anfc_prepare_cmd(chip, nfc_op.cmds[0], nfc_op.cmds[1], 1,
-> > +			 mtd->writesize, nfc_op.naddrcycles);
-> > +	anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > +	if (!nfc_op.data_instr)
-> > +		return 0;
-> > +
-> > +	len =3D nand_subop_get_data_len(subop, op_id);
-> > +	anfc_write_data_op(chip,  (char *)instr->ctx.data.buf.out,
->=20
-> 				^ extra white space here
-> and please drop the cast.
-Ok
->=20
-> Can you please run checkpatch --strict prior to submitting patches?
-I ran it with --strict while submitting the patch, but I didn't find any wa=
-rning.
-Anyway I will correct it.
->=20
-> > +			   mtd->writesize,
-> > +			   DIV_ROUND_UP(mtd->writesize, achip->pktsize),
->=20
-> No, that's wrong. You should use instr->ctx.data.len here, and the
-> DIV_ROUND_UP() thing is a bit scary. That means you might be writing more=
- data than
-> requested.
-Ok. Got it.
->=20
-> > +			   achip->pktsize);
-> > +
-> > +	return 0;
-> > +}
-> > +
->=20
-> > +
-> > +static int anfc_probe(struct platform_device *pdev) {
-> > +	struct anfc_nand_controller *nfc;
-> > +	struct anfc_nand_chip *anand_chip;
-> > +	struct device_node *np =3D pdev->dev.of_node, *child;
-> > +	struct resource *res;
-> > +	int err;
-> > +
-> > +	nfc =3D devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> > +	if (!nfc)
-> > +		return -ENOMEM;
-> > +
-> > +	nand_controller_init(&nfc->controller);
-> > +	INIT_LIST_HEAD(&nfc->chips);
-> > +	init_completion(&nfc->event);
-> > +	nfc->dev =3D &pdev->dev;
-> > +	platform_set_drvdata(pdev, nfc);
-> > +	nfc->csnum =3D -1;
-> > +	nfc->controller.ops =3D &anfc_nand_controller_ops;
->=20
-> Add a blank line here please
-Ok, I will update
->=20
-> > +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	nfc->base =3D devm_ioremap_resource(&pdev->dev, res);
-> > +	if (IS_ERR(nfc->base))
-> > +		return PTR_ERR(nfc->base);
->=20
-> and here
-Ok, I will update
->=20
-> > +	nfc->irq =3D platform_get_irq(pdev, 0);
-> > +	if (nfc->irq < 0) {
-> > +		dev_err(&pdev->dev, "platform_get_irq failed\n");
-> > +		return -ENXIO;
-> > +	}
->=20
-> and here
-Ok, I will update
->=20
-> > +	dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
->=20
-> Is this really needed?
-Yes, As our DMA supports 64bit addressing. It is needed
->=20
-> > +	err =3D devm_request_irq(&pdev->dev, nfc->irq, anfc_irq_handler,
-> > +			       0, "arasannfc", nfc);
-> > +	if (err)
-> > +		return err;
->=20
-> Add a blank line here too.
-Ok, I will update
->=20
-> > +	nfc->clk_sys =3D devm_clk_get(&pdev->dev, "clk_sys");
-> > +	if (IS_ERR(nfc->clk_sys)) {
-> > +		dev_err(&pdev->dev, "sys clock not found.\n");
-> > +		return PTR_ERR(nfc->clk_sys);
-> > +	}
-> > +
-> > +	nfc->clk_flash =3D devm_clk_get(&pdev->dev, "clk_flash");
-> > +	if (IS_ERR(nfc->clk_flash)) {
-> > +		dev_err(&pdev->dev, "flash clock not found.\n");
-> > +		return PTR_ERR(nfc->clk_flash);
-> > +	}
-> > +
-> > +	err =3D clk_prepare_enable(nfc->clk_sys);
-> > +	if (err) {
-> > +		dev_err(&pdev->dev, "Unable to enable sys clock.\n");
-> > +		return err;
-> > +	}
-> > +
-> > +	err =3D clk_prepare_enable(nfc->clk_flash);
-> > +	if (err) {
-> > +		dev_err(&pdev->dev, "Unable to enable flash clock.\n");
-> > +		goto clk_dis_sys;
-> > +	}
-> > +
-> > +	for_each_available_child_of_node(np, child) {
-> > +		anand_chip =3D devm_kzalloc(&pdev->dev, sizeof(*anand_chip),
-> > +					  GFP_KERNEL);
-> > +		if (!anand_chip) {
-> > +			of_node_put(child);
-> > +			err =3D -ENOMEM;
-> > +			goto nandchip_clean_up;
-> > +		}
->=20
-> and here.
-Ok, I will update
->=20
-> > +		err =3D anfc_nand_chip_init(nfc, anand_chip, child);
-> > +		if (err) {
-> > +			devm_kfree(&pdev->dev, anand_chip);
->=20
-> We usually try to avoid calling devm_kfree(). I guess you do it to avoid =
-keeping the chip obj
-> around when init failed, but this should be rare enough so we can actuall=
-y ignore it and let the
-> mem allocated for the NFC lifetime.
-Ok. I understood.
->=20
-> > +			continue;
-> > +		}
-> > +
-> > +		list_add_tail(&anand_chip->node, &nfc->chips);
-> > +	}
-> > +	return 0;
-> > +
-> > +nandchip_clean_up:
-> > +	list_for_each_entry(anand_chip, &nfc->chips, node)
-> > +		nand_release(&anand_chip->chip);
->=20
-> Blank line here.
-Ok, I will update
->=20
-> > +	clk_disable_unprepare(nfc->clk_flash);
->=20
-> Blank line here.
-Ok, I will update
->=20
-> > +clk_dis_sys:
-> > +	clk_disable_unprepare(nfc->clk_sys);
-> > +
-> > +	return err;
-> > +}
->=20
-> Regards,
->=20
-> Boris
-
-Boris/Miquel, could you please review the remaining code as well, if you fe=
-el
-There is still something to improve.
-One concern I have is especially anfc_read_page_hwecc(), there I am checkin=
-g erased pages bit flips.
-Since Arasan NAND controller doesn't have multibit error detection beyond 2=
-4-bit( it can correct upto 24 bit errors),=20
-I took some error count as default value(16, I put this based on the error =
-count that I got while reading erased page on Micron device).
-I will just read the error count register and compare this value with the d=
-efault error count(16) and if it is more
-Than default then I am checking for erased page bit flips.
-I am doubting that this will not work in all cases.
-In my case it is just working because the error count that it got on an era=
-sed page is 16.
-Could you please suggest a way to do detect erased_page bit flips.
-
-Thanks,
-Naga Sureshkumar Relli
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBGcmlk
+YXksIE5vdmVtYmVyIDksIDIwMTggNjoyNCBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
+aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJl
+emlsbG9uQGJvb3RsaW4uY29tPjsgcmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7
+DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBN
+aWNoYWwgU2ltZWsNCj4gPG1pY2hhbHNAeGlsaW54LmNvbT47IGxpbnV4LW10ZEBsaXN0cy5pbmZy
+YWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBuYWdhc3VyZXNoMTJA
+Z21haWwuY29tOyByb2JoQGtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtMSU5VWCBQQVRDSCB2
+MTIgMS8zXSBkdC1iaW5kaW5nczogbXRkOiBhcmFzYW46IEFkZCBkZXZpY2UgdHJlZSBiaW5kaW5n
+DQo+IGRvY3VtZW50YXRpb24NCj4gDQo+IEhpIE5hZ2EsDQo+IA0KPiBbLi4uXQ0KPiANCj4gPiA+
+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXJh
+c2FuX25hbmQudHh0DQo+ID4gPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L210ZC9hcmFzYW5fbmFuZC50eHQNCj4gPiA+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiA+
+ID4gaW5kZXggMDAwMDAwMC4uYjUyMmRhZg0KPiA+ID4gPiAtLS0gL2Rldi9udWxsDQo+ID4gPiA+
+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXJhc2FuX25hbmQu
+dHh0DQo+ID4gPiA+IEBAIC0wLDAgKzEsMzIgQEANCj4gPiA+ID4gK0FyYXNhbiBOQU5EIEZsYXNo
+IENvbnRyb2xsZXIgd2l0aCBPTkZJIDMuMSBzdXBwb3J0DQo+ID4gPiA+ICsNCj4gPiA+ID4gK1Jl
+cXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gPiA+ICstIGNvbXBhdGlibGU6CQlTaG91bGQgYmUgInhs
+bngsenlucW1wLW5hbmQiLCAiYXJhc2FuLG5mYy12M3AxMCINCj4gPiA+ID4gKy0gcmVnOgkJCU1l
+bW9yeSBtYXAgZm9yIG1vZHVsZSBhY2Nlc3MNCj4gPiA+ID4gKy0gaW50ZXJydXB0czoJCVNob3Vs
+ZCBjb250YWluIHRoZSBpbnRlcnJ1cHQgZm9yIHRoZSBkZXZpY2UNCj4gPiA+ID4gKy0gY2xvY2st
+bmFtZToJCUxpc3Qgb2YgaW5wdXQgY2xvY2tzIC0gInN5cyIsICJmbGFzaCINCj4gPiA+ID4gKwkJ
+CShTZWUgY2xvY2sgYmluZGluZ3MgZm9yIGRldGFpbHMpDQo+ID4gPiA+ICstIGNsb2NrczoJCUNs
+b2NrIHBoYW5kbGVzIChzZWUgY2xvY2sgYmluZGluZ3MgZm9yIGRldGFpbHMpDQo+ID4gPiA+ICsN
+Cj4gPiA+ID4gK1JlcXVpcmVkIHByb3BlcnRpZXMgZm9yIGNoaWxkIG5vZGU6DQo+ID4gPiA+ICst
+IG5hbmQtZWNjLW1vZGU6IHNlZSBuYW5kLnR4dA0KPiA+ID4NCj4gPiA+IFdoeSBpcyBpdCByZXF1
+aXJlZD8gQ2FuJ3QgeW91IGZhbGxiYWNrIHRvIEhXIHdoZW4gdGhpcyBwcm9wIGlzIG1pc3Npbmc/
+DQo+ID4gWWVzLCB3ZSBjYW4uDQo+ID4gRG8geW91IHdhbnQgbWUgdG8gdXBkYXRlIHRoYXQgaW4g
+ZHJpdmVyIG5vdz8NCj4gPiBMb29rcyBsaWtlIHlvdSBoYXZlIHNvbWUgY29tbWVudHMgaW4gZHJp
+dmVyIGFzIHdlbGwsIHNvIHdoaWxlDQo+ID4gYWRkcmVzc2luZyB0aG9zZSBJIHdpbGwgdXBkYXRl
+IHRoZSBjb2RlIHRvIGZhbGxiYWNrIHRvIEhXIEVDQyB3aGVuIEl0IGlzIG1pc3NpbmcuDQo+IA0K
+PiBZZXMsIHBsZWFzZS4NCj4gDQo+ID4NCj4gPiA+IE9oLCBhbmQgcmVnIGlzIG5vdCBsaXN0ZWQg
+aW4gdGhlIHJlcXVpcmVkIHByb3BzLg0KPiA+IFdoaWNoIHJlZz8NCj4gPiBJIGFscmVhZHkgbWVu
+dGlvbiB0aGlzICIgcmVnOglNZW1vcnkgbWFwIGZvciBtb2R1bGUgYWNjZXNzICIgaW4gcmVxdWly
+ZWQgcHJvcGVydGllcy4NCj4gPg0KPiA+IFRoYW5rcywNCj4gPiBOYWdhIFN1cmVzaGt1bWFyIFJl
+bGxpDQo+ID4gPg0KPiA+ID4gPiArDQo+ID4gPiA+ICtGb3IgTkFORCBwYXJ0aXRpb24gaW5mb3Jt
+YXRpb24gcGxlYXNlIHJlZmVyIHRoZSBiZWxvdyBmaWxlDQo+ID4gPiA+ICtEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbi50eHQNCj4gPiA+ID4gKw0KPiA+ID4g
+PiArRXhhbXBsZToNCj4gPiA+ID4gKwluZmM6IG5hbmRAZmYxMDAwMDAgew0KPiA+ID4gPiArCQlj
+b21wYXRpYmxlID0gInhsbngsenlucW1wLW5hbmQiLCAiYXJhc2FuLG5mYy12M3AxMCI7DQo+ID4g
+PiA+ICsJCXJlZyA9IDwweDAgMHhmZjEwMDAwMCAweDEwMDA+Ow0KPiA+ID4gPiArCQljbG9jay1u
+YW1lID0gInN5cyIsICJmbGFzaCI7DQo+ID4gPiA+ICsJCWNsb2NrcyA9IDwmbWlzY19jbGsgJm1p
+c2NfY2xrPjsNCj4gPiA+ID4gKwkJaW50ZXJydXB0LXBhcmVudCA9IDwmZ2ljPjsNCj4gPiA+ID4g
+KwkJaW50ZXJydXB0cyA9IDwwIDE0IDQ+Ow0KPiA+ID4gPiArCQkjYWRkcmVzcy1jZWxscyA9IDwx
+PjsNCj4gPiA+ID4gKwkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwkJ
+bmFuZEAwIHsNCj4gPiA+ID4gKwkJCXJlZyA9IDwwPjsNCj4gDQo+IFRoaXMgb25lLCBmb3IgdGhl
+IENTIGxpbmUocykuDQpPayBnb3QgaXQuIEkgd2lsbCB1cGRhdGUuDQoNClRoYW5rcywNCk5hZ2Eg
+U3VyZXNoa3VtYXIgUmVsbGkNCj4gDQo+ID4gPiA+ICsJCQluYW5kLWVjYy1tb2RlID0gImh3IjsN
+Cj4gPiA+ID4gKwkJfTsNCj4gPiA+ID4gKwl9Ow0KPiA+DQo+IA0KPiANCj4gVGhhbmtzLA0KPiBN
+aXF1w6hsDQo=
