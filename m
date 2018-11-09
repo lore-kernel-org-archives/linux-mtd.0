@@ -1,17 +1,18 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL6yC-0004lk-6F
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 13:37:09 +0000
-Subject: Re: [PATCH] mkfs.ubifs: Don't compress by default if filesystem is
- encrypted
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gL6zS-0000WL-Le
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 13:38:27 +0000
+Subject: Re: [PATCH 2/2] mkfs.ubifs: Store compr_size in correct endianness.
 To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, hs@denx.de
-References: <20181107205635.16704-1-richard@nod.at>
+Cc: hs@denx.de, Richard Weinberger <richard@nod.at>
+References: <20181107202108.13734-1-richard@nod.at>
+ <20181107202108.13734-2-richard@nod.at>
+ <13a59600-18dd-81cf-4e21-1b0718ec10d6@denx.de>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <361b1e3a-aa57-1820-ec04-3866c28a1fa4@sigma-star.at>
-Date: Fri, 9 Nov 2018 14:36:45 +0100
+Message-ID: <e3d02122-5a81-881b-112f-cb19ceb0e00d@sigma-star.at>
+Date: Fri, 9 Nov 2018 14:38:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <20181107205635.16704-1-richard@nod.at>
+In-Reply-To: <13a59600-18dd-81cf-4e21-1b0718ec10d6@denx.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
