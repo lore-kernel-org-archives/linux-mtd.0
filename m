@@ -1,33 +1,19 @@
-Received: from mail-by2nam05on0609.outbound.protection.outlook.com
- ([2a01:111:f400:fe52::609]
- helo=NAM05-BY2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL6hf-0000ro-CH
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 13:20:06 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
- <michals@xilinx.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
- <nagasuresh12@gmail.com>, "robh@kernel.org" <robh@kernel.org>
-Subject: RE: [LINUX PATCH v12 1/3] dt-bindings: mtd: arasan: Add device tree
- binding documentation
-Date: Fri, 9 Nov 2018 13:19:28 +0000
-Message-ID: <MWHPR02MB2623087507F40BAF55D0FA98AFC60@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20181109072857.75e86cb6@bbrezillon>
- <MWHPR02MB26235AB9959635CAA1B2B878AFC60@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181109135405.3b93b267@xps13>
-In-Reply-To: <20181109135405.3b93b267@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gL6xs-0000Sb-8C
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 13:36:49 +0000
+Subject: Re: [PATCH 1/2] mkfs.ubifs: Fix IV selection
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, hs@denx.de
+References: <20181107202108.13734-1-richard@nod.at>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <60e92927-665a-e809-b6b3-9de2949fa8a5@sigma-star.at>
+Date: Fri, 9 Nov 2018 14:36:21 +0100
 MIME-Version: 1.0
+In-Reply-To: <20181107202108.13734-1-richard@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,54 +23,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
-bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBGcmlk
-YXksIE5vdmVtYmVyIDksIDIwMTggNjoyNCBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJl
-emlsbG9uQGJvb3RsaW4uY29tPjsgcmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7
-DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBN
-aWNoYWwgU2ltZWsNCj4gPG1pY2hhbHNAeGlsaW54LmNvbT47IGxpbnV4LW10ZEBsaXN0cy5pbmZy
-YWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBuYWdhc3VyZXNoMTJA
-Z21haWwuY29tOyByb2JoQGtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtMSU5VWCBQQVRDSCB2
-MTIgMS8zXSBkdC1iaW5kaW5nczogbXRkOiBhcmFzYW46IEFkZCBkZXZpY2UgdHJlZSBiaW5kaW5n
-DQo+IGRvY3VtZW50YXRpb24NCj4gDQo+IEhpIE5hZ2EsDQo+IA0KPiBbLi4uXQ0KPiANCj4gPiA+
-ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXJh
-c2FuX25hbmQudHh0DQo+ID4gPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L210ZC9hcmFzYW5fbmFuZC50eHQNCj4gPiA+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiA+
-ID4gaW5kZXggMDAwMDAwMC4uYjUyMmRhZg0KPiA+ID4gPiAtLS0gL2Rldi9udWxsDQo+ID4gPiA+
-ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXJhc2FuX25hbmQu
-dHh0DQo+ID4gPiA+IEBAIC0wLDAgKzEsMzIgQEANCj4gPiA+ID4gK0FyYXNhbiBOQU5EIEZsYXNo
-IENvbnRyb2xsZXIgd2l0aCBPTkZJIDMuMSBzdXBwb3J0DQo+ID4gPiA+ICsNCj4gPiA+ID4gK1Jl
-cXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gPiA+ICstIGNvbXBhdGlibGU6CQlTaG91bGQgYmUgInhs
-bngsenlucW1wLW5hbmQiLCAiYXJhc2FuLG5mYy12M3AxMCINCj4gPiA+ID4gKy0gcmVnOgkJCU1l
-bW9yeSBtYXAgZm9yIG1vZHVsZSBhY2Nlc3MNCj4gPiA+ID4gKy0gaW50ZXJydXB0czoJCVNob3Vs
-ZCBjb250YWluIHRoZSBpbnRlcnJ1cHQgZm9yIHRoZSBkZXZpY2UNCj4gPiA+ID4gKy0gY2xvY2st
-bmFtZToJCUxpc3Qgb2YgaW5wdXQgY2xvY2tzIC0gInN5cyIsICJmbGFzaCINCj4gPiA+ID4gKwkJ
-CShTZWUgY2xvY2sgYmluZGluZ3MgZm9yIGRldGFpbHMpDQo+ID4gPiA+ICstIGNsb2NrczoJCUNs
-b2NrIHBoYW5kbGVzIChzZWUgY2xvY2sgYmluZGluZ3MgZm9yIGRldGFpbHMpDQo+ID4gPiA+ICsN
-Cj4gPiA+ID4gK1JlcXVpcmVkIHByb3BlcnRpZXMgZm9yIGNoaWxkIG5vZGU6DQo+ID4gPiA+ICst
-IG5hbmQtZWNjLW1vZGU6IHNlZSBuYW5kLnR4dA0KPiA+ID4NCj4gPiA+IFdoeSBpcyBpdCByZXF1
-aXJlZD8gQ2FuJ3QgeW91IGZhbGxiYWNrIHRvIEhXIHdoZW4gdGhpcyBwcm9wIGlzIG1pc3Npbmc/
-DQo+ID4gWWVzLCB3ZSBjYW4uDQo+ID4gRG8geW91IHdhbnQgbWUgdG8gdXBkYXRlIHRoYXQgaW4g
-ZHJpdmVyIG5vdz8NCj4gPiBMb29rcyBsaWtlIHlvdSBoYXZlIHNvbWUgY29tbWVudHMgaW4gZHJp
-dmVyIGFzIHdlbGwsIHNvIHdoaWxlDQo+ID4gYWRkcmVzc2luZyB0aG9zZSBJIHdpbGwgdXBkYXRl
-IHRoZSBjb2RlIHRvIGZhbGxiYWNrIHRvIEhXIEVDQyB3aGVuIEl0IGlzIG1pc3NpbmcuDQo+IA0K
-PiBZZXMsIHBsZWFzZS4NCj4gDQo+ID4NCj4gPiA+IE9oLCBhbmQgcmVnIGlzIG5vdCBsaXN0ZWQg
-aW4gdGhlIHJlcXVpcmVkIHByb3BzLg0KPiA+IFdoaWNoIHJlZz8NCj4gPiBJIGFscmVhZHkgbWVu
-dGlvbiB0aGlzICIgcmVnOglNZW1vcnkgbWFwIGZvciBtb2R1bGUgYWNjZXNzICIgaW4gcmVxdWly
-ZWQgcHJvcGVydGllcy4NCj4gPg0KPiA+IFRoYW5rcywNCj4gPiBOYWdhIFN1cmVzaGt1bWFyIFJl
-bGxpDQo+ID4gPg0KPiA+ID4gPiArDQo+ID4gPiA+ICtGb3IgTkFORCBwYXJ0aXRpb24gaW5mb3Jt
-YXRpb24gcGxlYXNlIHJlZmVyIHRoZSBiZWxvdyBmaWxlDQo+ID4gPiA+ICtEb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbi50eHQNCj4gPiA+ID4gKw0KPiA+ID4g
-PiArRXhhbXBsZToNCj4gPiA+ID4gKwluZmM6IG5hbmRAZmYxMDAwMDAgew0KPiA+ID4gPiArCQlj
-b21wYXRpYmxlID0gInhsbngsenlucW1wLW5hbmQiLCAiYXJhc2FuLG5mYy12M3AxMCI7DQo+ID4g
-PiA+ICsJCXJlZyA9IDwweDAgMHhmZjEwMDAwMCAweDEwMDA+Ow0KPiA+ID4gPiArCQljbG9jay1u
-YW1lID0gInN5cyIsICJmbGFzaCI7DQo+ID4gPiA+ICsJCWNsb2NrcyA9IDwmbWlzY19jbGsgJm1p
-c2NfY2xrPjsNCj4gPiA+ID4gKwkJaW50ZXJydXB0LXBhcmVudCA9IDwmZ2ljPjsNCj4gPiA+ID4g
-KwkJaW50ZXJydXB0cyA9IDwwIDE0IDQ+Ow0KPiA+ID4gPiArCQkjYWRkcmVzcy1jZWxscyA9IDwx
-PjsNCj4gPiA+ID4gKwkJI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwkJ
-bmFuZEAwIHsNCj4gPiA+ID4gKwkJCXJlZyA9IDwwPjsNCj4gDQo+IFRoaXMgb25lLCBmb3IgdGhl
-IENTIGxpbmUocykuDQpPayBnb3QgaXQuIEkgd2lsbCB1cGRhdGUuDQoNClRoYW5rcywNCk5hZ2Eg
-U3VyZXNoa3VtYXIgUmVsbGkNCj4gDQo+ID4gPiA+ICsJCQluYW5kLWVjYy1tb2RlID0gImh3IjsN
-Cj4gPiA+ID4gKwkJfTsNCj4gPiA+ID4gKwl9Ow0KPiA+DQo+IA0KPiANCj4gVGhhbmtzLA0KPiBN
-aXF1w6hsDQo=
+Applied to mtd-utils.git master.
+
+Thanks,
+
+David
