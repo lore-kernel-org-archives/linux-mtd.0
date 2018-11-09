@@ -1,23 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gL1pS-0005T9-Sk
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 08:07:48 +0000
-Date: Fri, 9 Nov 2018 09:07:33 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <michals@xilinx.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nagasuresh12@gmail.com>, <robh@kernel.org>
-Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20181109090733.41ef6edf@bbrezillon>
-In-Reply-To: <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gL3Xc-0002e5-77
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 09:57:29 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <alexandre.belloni@bootlin.com>, <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Make sure SFDP-based 4B_OPCODE
+ support detection works correctly
+Date: Fri, 9 Nov 2018 09:57:13 +0000
+Message-ID: <6fa42403-3a20-cdbe-caa7-d90c88b51e27@microchip.com>
+References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
+ <10fab1c5-1a40-9d7a-b9d4-ce48afa1635d@microchip.com>
+ <20181108180842.48ce6d1b@bbrezillon>
+In-Reply-To: <20181108180842.48ce6d1b@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1DFA1BEA7CE49841A884BD93D60D5A45@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,251 +29,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
-
-Just a preliminary review. I still think we have problems with how you
-execute NAND operations. You seem to assume that read/write operation
-are always page write/read operation with a size aligned on a page
-size. This is wrong, either the controller is able to execute the exact
-operation that has been requested or it returns -ENOTSUPP.
-
-On Fri, 9 Nov 2018 10:30:41 +0530
-Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
-
-> +
-> +/**
-> + * struct anfc_nand_chip - Defines the nand chip related information
-> + * @node:		Used to store NAND chips into a list.
-> + * @chip:		NAND chip information structure.
-> + * @strength:		Bch or Hamming mode enable/disable.
-
-The name is still confusing. BTW, can't you deduce Hamming vs BCH from
-the strength? Hamming strength is 1, while BCH strengths seem to start
-at 4.
-
-> + * @ecc_strength:	Ecc strength 4.8/12/16.
-
-				      ^/
-
-> + * @eccval:		Ecc config value.
-> + * @spare_caddr_cycles:	Column address cycle information for spare area.
-> + * @pktsize:		Packet size for read / write operation.
-> + * @csnum:		chipselect number to be used.
-> + * @spktsize:		Packet size in ddr mode for status operation.
-> + * @inftimeval:		Data interface and timing mode information
-> + */
-> +struct anfc_nand_chip {
-> +	struct list_head node;
-> +	struct nand_chip chip;
-> +	bool strength;
-> +	u32 ecc_strength;
-> +	u32 eccval;
-> +	u16 spare_caddr_cycles;
-> +	u32 pktsize;
-> +	int csnum;
-> +	u32 spktsize;
-> +	u32 inftimeval;
-> +};
-> +
-> +/**
-> + * struct anfc_nand_controller - Defines the Arasan NAND flash controller
-> + *				 driver instance
-> + * @controller:		base controller structure.
-> + * @chips:		list of all nand chips attached to the ctrler.
-> + * @dev:		Pointer to the device structure.
-> + * @base:		Virtual address of the NAND flash device.
-> + * @clk_sys:		Pointer to the system clock.
-> + * @clk_flash:		Pointer to the flash clock.
-> + * @dma:		Dma enable/disable.
-> + * @buf:		Buffer used for read/write byte operations.
-> + * @irq:		irq number
-
-You should need this field. Just get the irq num in you probe path an
-register an irq handler with devm_request_irq().
-
-> + * @bufshift:		Variable used for indexing buffer operation
-> + * @csnum:		Chip select number currently inuse.
-
-						     ^ in use
-
-> + * @event:		Completion event for nand status events.
-> + * @status:		Status of the flash device.
-> + * @prog:		Used to initiate controller operations.
-> + */
-> +struct anfc_nand_controller {
-> +	struct nand_controller controller;
-> +	struct list_head chips;
-> +	struct device *dev;
-> +	void __iomem *base;
-> +	struct clk *clk_sys;
-> +	struct clk *clk_flash;
-> +	int irq;
-> +	int csnum;
-> +	struct completion event;
-> +	int status;
-> +	u8 buf[TEMP_BUF_SIZE];
-
-Allocate this buf dynamically.
-
-> +	u32 eccval;
-> +};
-
-> +static int anfc_page_write_type_exec(struct nand_chip *chip,
-> +				     const struct nand_subop *subop)
-> +{
-> +	const struct nand_op_instr *instr;
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	struct anfc_nand_controller *nfc = to_anfc(chip->controller);
-> +	unsigned int op_id, len;
-> +	struct anfc_op nfc_op = {};
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +
-> +	anfc_parse_instructions(chip, subop, &nfc_op);
-> +	instr = nfc_op.data_instr;
-> +	op_id = nfc_op.data_instr_idx;
-> +	anfc_prepare_cmd(chip, nfc_op.cmds[0], nfc_op.cmds[1], 1,
-> +			 mtd->writesize, nfc_op.naddrcycles);
-> +	anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> +	if (!nfc_op.data_instr)
-> +		return 0;
-> +
-> +	len = nand_subop_get_data_len(subop, op_id);
-> +	anfc_write_data_op(chip,  (char *)instr->ctx.data.buf.out,
-
-				^ extra white space here
-and please drop the cast.
-
-Can you please run checkpatch --strict prior to submitting patches?
-
-> +			   mtd->writesize,
-> +			   DIV_ROUND_UP(mtd->writesize, achip->pktsize),
-
-No, that's wrong. You should use instr->ctx.data.len here, and the
-DIV_ROUND_UP() thing is a bit scary. That means you might be writing
-more data than requested.
-
-> +			   achip->pktsize);
-> +
-> +	return 0;
-> +}
-> +
-
-> +
-> +static int anfc_probe(struct platform_device *pdev)
-> +{
-> +	struct anfc_nand_controller *nfc;
-> +	struct anfc_nand_chip *anand_chip;
-> +	struct device_node *np = pdev->dev.of_node, *child;
-> +	struct resource *res;
-> +	int err;
-> +
-> +	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> +	if (!nfc)
-> +		return -ENOMEM;
-> +
-> +	nand_controller_init(&nfc->controller);
-> +	INIT_LIST_HEAD(&nfc->chips);
-> +	init_completion(&nfc->event);
-> +	nfc->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, nfc);
-> +	nfc->csnum = -1;
-> +	nfc->controller.ops = &anfc_nand_controller_ops;
-
-Add a blank line here please
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	nfc->base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(nfc->base))
-> +		return PTR_ERR(nfc->base);
-
-and here
-
-> +	nfc->irq = platform_get_irq(pdev, 0);
-> +	if (nfc->irq < 0) {
-> +		dev_err(&pdev->dev, "platform_get_irq failed\n");
-> +		return -ENXIO;
-> +	}
-
-and here
-
-> +	dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
-
-Is this really needed?
-
-> +	err = devm_request_irq(&pdev->dev, nfc->irq, anfc_irq_handler,
-> +			       0, "arasannfc", nfc);
-> +	if (err)
-> +		return err;
-
-Add a blank line here too.
-
-> +	nfc->clk_sys = devm_clk_get(&pdev->dev, "clk_sys");
-> +	if (IS_ERR(nfc->clk_sys)) {
-> +		dev_err(&pdev->dev, "sys clock not found.\n");
-> +		return PTR_ERR(nfc->clk_sys);
-> +	}
-> +
-> +	nfc->clk_flash = devm_clk_get(&pdev->dev, "clk_flash");
-> +	if (IS_ERR(nfc->clk_flash)) {
-> +		dev_err(&pdev->dev, "flash clock not found.\n");
-> +		return PTR_ERR(nfc->clk_flash);
-> +	}
-> +
-> +	err = clk_prepare_enable(nfc->clk_sys);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "Unable to enable sys clock.\n");
-> +		return err;
-> +	}
-> +
-> +	err = clk_prepare_enable(nfc->clk_flash);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "Unable to enable flash clock.\n");
-> +		goto clk_dis_sys;
-> +	}
-> +
-> +	for_each_available_child_of_node(np, child) {
-> +		anand_chip = devm_kzalloc(&pdev->dev, sizeof(*anand_chip),
-> +					  GFP_KERNEL);
-> +		if (!anand_chip) {
-> +			of_node_put(child);
-> +			err = -ENOMEM;
-> +			goto nandchip_clean_up;
-> +		}
-
-and here.
-
-> +		err = anfc_nand_chip_init(nfc, anand_chip, child);
-> +		if (err) {
-> +			devm_kfree(&pdev->dev, anand_chip);
-
-We usually try to avoid calling devm_kfree(). I guess you do it to
-avoid keeping the chip obj around when init failed, but this should
-be rare enough so we can actually ignore it and let the mem allocated
-for the NFC lifetime.
-
-> +			continue;
-> +		}
-> +
-> +		list_add_tail(&anand_chip->node, &nfc->chips);
-> +	}
-> +	return 0;
-> +
-> +nandchip_clean_up:
-> +	list_for_each_entry(anand_chip, &nfc->chips, node)
-> +		nand_release(&anand_chip->chip);
-
-Blank line here.
-
-> +	clk_disable_unprepare(nfc->clk_flash);
-
-Blank line here.
-
-> +clk_dis_sys:
-> +	clk_disable_unprepare(nfc->clk_sys);
-> +
-> +	return err;
-> +}
-
-Regards,
-
-Boris
+DQoNCk9uIDExLzA4LzIwMTggMDc6MDggUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24g
+VGh1LCA4IE5vdiAyMDE4IDE2OjU1OjI5ICswMDAwDQo+IDxUdWRvci5BbWJhcnVzQG1pY3JvY2hp
+cC5jb20+IHdyb3RlOg0KPiANCj4+IE9uIDEwLzMxLzIwMTggMDQ6NDUgUE0sIEJvcmlzIEJyZXpp
+bGxvbiB3cm90ZToNCj4+PiBTb21lIGZsYXNoX2luZm8gZW50cmllcyBoYXZlIHRoZSBTUElfTk9S
+XzRCX09QQ09ERVMgZmxhZyBzZXQgdG8gbGV0IHRoZQ0KPj4+IGNvcmUga25vdyB0aGF0IHRoZSBm
+bGFzaCBzdXBwb3J0cyA0QiBvcGNvZGUuIFdoaWxlIHRoaXMgc29sdXRpb24gd29ya3MNCj4+PiBm
+aW5lIGZvciBpZC1iYXNlZCBjYXBzIGRldGVjdGlvbiwgaXQgZG9lc24ndCB3b3JrIHRoYXQgd2Vs
+bCB3aGVuIHJlbHlpbmcNCj4+PiBvbiBTRkRQLWJhc2VkIGNhcHMgZGV0ZWN0aW9uLiBMZXQncyBh
+ZGQgYW4gU05PUl9GXzRCX09QQ09ERVMgZmxhZyBzbyB0aGF0DQo+Pj4gc3BpX25vcl9wYXJzZV9i
+ZnB0KCkgY2FuIGFkZCBpdCB3aGVuIHRoZSBCRlBUX0RXT1JEMV9BRERSRVNTX0JZVEVTDQo+Pj4g
+ZmllbGQgaXMgc2V0IHRvIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfNF9PTkxZLg0KPj4+DQo+
+Pj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290
+bGluLmNvbT4NCj4+PiBTaWduZWQtb2ZmLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXpp
+bGxvbkBib290bGluLmNvbT4NCj4+PiBUZXN0ZWQtYnk6IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4
+YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4NCj4+PiAtLS0NCj4+PiBDaGFuZ2VzIGluIHYzOg0K
+Pj4+IC0gQ2xlYXIgU05PUl9GXzRCX09QQ09ERVMgZmxhZyB3aGVuIFNGRFAgZmFpbHMNCj4+PiAt
+IEFkZCBBbGV4YW5kcmUgUi1iDQo+Pj4NCj4+PiBDaGFuZ2VzIGluIHYyOg0KPj4+IC0gRml4IHRo
+ZSBjb21taXQgbWVzc2FnZQ0KPj4+IC0gRml4IHRoZSAtPmFkZHJfd2lkdGggY2hlY2sNCj4+PiAt
+IEFkZCBhIGNvbW1hIGF0IHRoZSBlbmQgb2YgdGhlIFNOT1JfRl80Ql9PUENPREVTIGRlZmluaXRp
+b24NCj4+PiAtLS0NCj4+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAxMiArKysr
+KysrKystLS0NCj4+PiAgaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oICAgfCAgMSArDQo+Pj4g
+IDIgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4+Pg0K
+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMv
+bXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+Pj4gaW5kZXggM2U1NGUzMTg4OWM3Li43OTg5MTViNWMy
+YjAgMTAwNjQ0DQo+Pj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+PiAr
+KysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPj4+IEBAIC0yNjQzLDYgKzI2NDMs
+NyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFyc2VfYmZwdChzdHJ1Y3Qgc3BpX25vciAqbm9yLA0K
+Pj4+ICAJCWJyZWFrOw0KPj4+ICANCj4+PiAgCWNhc2UgQkZQVF9EV09SRDFfQUREUkVTU19CWVRF
+U180X09OTFk6DQo+Pj4gKwkJbm9yLT5mbGFncyB8PSBTTk9SX0ZfNEJfT1BDT0RFUzsNCj4+PiAg
+CQlub3ItPmFkZHJfd2lkdGggPSA0Ow0KPj4+ICAJCWJyZWFrOw0KPj4+ICANCj4+PiBAQCAtMzI1
+Miw2ICszMjUzLDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfcGFyYW1zKHN0cnVjdCBzcGlf
+bm9yICpub3IsDQo+Pj4gIA0KPj4+ICAJCWlmIChzcGlfbm9yX3BhcnNlX3NmZHAobm9yLCAmc2Zk
+cF9wYXJhbXMpKSB7DQo+Pj4gIAkJCW5vci0+YWRkcl93aWR0aCA9IDA7DQo+Pj4gKwkJCW5vci0+
+ZmxhZ3MgJj0gflNOT1JfRl80Ql9PUENPREVTOw0KPj4+ICAJCQkvKiByZXN0b3JlIHByZXZpb3Vz
+IGVyYXNlIG1hcCAqLw0KPj4+ICAJCQltZW1jcHkoJm5vci0+ZXJhc2VfbWFwLCAmcHJldl9tYXAs
+DQo+Pj4gIAkJCSAgICAgICBzaXplb2Yobm9yLT5lcmFzZV9tYXApKTsNCj4+PiBAQCAtMzU1NCw3
+ICszNTU2LDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXQoc3RydWN0IHNwaV9ub3IgKm5vcikN
+Cj4+PiAgDQo+Pj4gIAlpZiAoKG5vci0+YWRkcl93aWR0aCA9PSA0KSAmJg0KPj4+ICAJICAgIChK
+RURFQ19NRlIobm9yLT5pbmZvKSAhPSBTTk9SX01GUl9TUEFOU0lPTikgJiYNCj4+PiAtCSAgICAh
+KG5vci0+aW5mby0+ZmxhZ3MgJiBTUElfTk9SXzRCX09QQ09ERVMpKSB7DQo+Pj4gKwkgICAgIShu
+b3ItPmZsYWdzICYgU05PUl9GXzRCX09QQ09ERVMpKSB7DQo+Pj4gIAkJLyoNCj4+PiAgCQkgKiBJ
+ZiB0aGUgUkVTRVQjIHBpbiBpc24ndCBob29rZWQgdXAgcHJvcGVybHksIG9yIHRoZSBzeXN0ZW0N
+Cj4+PiAgCQkgKiBvdGhlcndpc2UgZG9lc24ndCBwZXJmb3JtIGEgcmVzZXQgY29tbWFuZCBpbiB0
+aGUgYm9vdA0KPj4+IEBAIC0zNTg4LDcgKzM1OTAsNyBAQCB2b2lkIHNwaV9ub3JfcmVzdG9yZShz
+dHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPj4+ICAJLyogcmVzdG9yZSB0aGUgYWRkcmVzc2luZyBtb2Rl
+ICovDQo+Pj4gIAlpZiAoKG5vci0+YWRkcl93aWR0aCA9PSA0KSAmJg0KPj4+ICAJICAgIChKRURF
+Q19NRlIobm9yLT5pbmZvKSAhPSBTTk9SX01GUl9TUEFOU0lPTikgJiYNCj4+PiAtCSAgICAhKG5v
+ci0+aW5mby0+ZmxhZ3MgJiBTUElfTk9SXzRCX09QQ09ERVMpICYmDQo+Pj4gKwkgICAgIShub3It
+PmZsYWdzICYgU05PUl9GXzRCX09QQ09ERVMpICYmDQo+Pj4gIAkgICAgKG5vci0+ZmxhZ3MgJiBT
+Tk9SX0ZfQlJPS0VOX1JFU0VUKSkNCj4+PiAgCQlzZXRfNGJ5dGUobm9yLCBub3ItPmluZm8sIDAp
+Ow0KPj4+ICB9DQo+Pj4gQEAgLTM3NDYsMTEgKzM3NDgsMTUgQEAgaW50IHNwaV9ub3Jfc2Nhbihz
+dHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdCBjaGFyICpuYW1lLA0KPj4+ICAJCW5vci0+YWRkcl93
+aWR0aCA9IDQ7DQo+Pj4gIAkJaWYgKEpFREVDX01GUihpbmZvKSA9PSBTTk9SX01GUl9TUEFOU0lP
+TiB8fA0KPj4+ICAJCSAgICBpbmZvLT5mbGFncyAmIFNQSV9OT1JfNEJfT1BDT0RFUykNCj4+PiAt
+CQkJc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2Rlcyhub3IsIGluZm8pOw0KPj4+ICsJCQlub3ItPmZs
+YWdzIHw9IFNOT1JfRl80Ql9PUENPREVTOw0KPj4+ICAJfSBlbHNlIHsNCj4+PiAgCQlub3ItPmFk
+ZHJfd2lkdGggPSAzOw0KPj4+ICAJfQ0KPj4+ICANCj4+PiArCWlmIChub3ItPmFkZHJfd2lkdGgg
+PT0gNCAmJiAgDQo+Pg0KPj4gU2hvdWxkbid0IFNOT1JfRl80Ql9PUENPREVTIGFscmVhZHkgaW1w
+bHkgbm9yLT5hZGRyX3dpZHRoID09IDQ/DQo+IA0KPiBDYW4ndCB3ZSBoYXZlIE5PUnMgc3VwcG9y
+dGluZyA0QiBvcGNvZGVzIGJ1dCBhcmUgbGVzcyB0aGFuIDE2TUI/IEluDQo+IHRoaXMgY2FzZSBT
+Tk9SX0ZfNEJfT1BDT0RFUyB3b3VsZCBiZSBzZXQgYW5kIC0+YWRkcl93aWR0aCB3b3VsZCBiZSAz
+Lg0KDQpJIGd1ZXNzIG5vdCwgaXQgd291bGRuJ3QgbWFrZSBzZW5zZSwgYnV0IHdobyBrbm93cyAu
+Li4gOikNCg0KVGhlIDQtYnl0ZSBvcGNvZGVzIGluZGljYXRlIHRoYXQgNC1ieXRlcyBvZiBhZGRy
+ZXNzIGZvbGxvdyB0aGUgaW5zdHJ1Y3Rpb24uIEFuZA0KNC1ieXRlIGFkZHJlc3NlcyBtYWtlIHNl
+bnNlIGZvciBzcGkgbWVtb3JpZXMgdGhhdCBleGNlZWQgdGhlIDE2TUIgZGVuc2l0eS4NCg0KPiAN
+Cj4+IFdoZW4gU05PUl9GXzRCX09QQ09ERVMgY29tZXMgZnJvbSBiZnB0LCBhZGRyX3dpZHRoIGlz
+IHNldCB0byA0LiBGb3IgdGhlIGlkLWJhc2VkDQo+PiBjYXBzIGRldGVjdGlvbiwgd2hlbiBtdGQt
+PnNpemUgPiAweDEwMDAwMDAsIHdlIHNldCBub3ItPmFkZHJfd2lkdGggPSA0IHRvby4NCj4+DQo+
+PiBUaGUgb25seSB1bmNvdmVyZWQgY2FzZSB3b3VsZCBiZSB3aGVuDQo+PiAgICAgICAgIH0gZWxz
+ZSBpZiAoaW5mby0+YWRkcl93aWR0aCkgew0KPj4gICAgICAgICAgICAgICAgIG5vci0+YWRkcl93
+aWR0aCA9IGluZm8tPmFkZHJfd2lkdGg7DQo+Pg0KPj4gYnV0IHRoaXMgY2FuIGJlIHNvbHZlZCBi
+eSByZW9yZGVyaW5nIHRoZSBlbHNlIGlmIGNhc2VzLg0KPj4NCj4+ICAgICAgICAgaWYgKG5vci0+
+YWRkcl93aWR0aCkgew0KPj4gICAgICAgICAgICAgICAgIC8qIGFscmVhZHkgY29uZmlndXJlZCBm
+cm9tIFNGRFAgKi8NCj4+ICAgICAgICAgfSBlbHNlIGlmIChtdGQtPnNpemUgPiAweDEwMDAwMDAp
+IHsNCj4+IAkJLi4uDQo+PiAgICAgICAgIH0gZWxzZSBpZiAoaW5mby0+YWRkcl93aWR0aCkgew0K
+Pj4gICAgICAgICAgICAgICAgIG5vci0+YWRkcl93aWR0aCA9IGluZm8tPmFkZHJfd2lkdGg7DQo+
+PiAgICAgICAgIH0gZWxzZSB7DQo+PiAgICAgICAgICAgICAgICAgbm9yLT5hZGRyX3dpZHRoID0g
+MzsNCj4+ICAgICAgICAgfQ0KPj4NCj4+IFdoYXQgZG8geW91IHRoaW5rPw0KPiANCj4gSSdkIHJh
+dGhlciBub3QgY2hhbmdlIHRoYXQgaW4gdGhpcyBwYXRjaCwgYnV0IGZlZWwgZnJlZSB0byBwcm9w
+b3NlDQo+IGEgcGF0Y2ggb24gdG9wIG9mIG1pbmUgdG8gc2ltcGxpZnkgdGhlIGxvZ2ljIGlmIHlv
+dSB0aGluayBpdCdzDQo+IG5lZWRlZC4NCj4gDQoNCnllYWgsIGl0IGNhbiBiZSBtYWRlIGluIGEg
+c2VwYXJhdGUgcGF0Y2guDQoNCkNoZWVycywNCnRhDQo=
