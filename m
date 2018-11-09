@@ -1,16 +1,17 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLA5i-00064D-FW
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 16:57:07 +0000
+ id 1gLA5l-00064E-KX
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 16:57:10 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
  <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>,
  <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 2/5] mtd: spi-nor: fix iteration over smpt array
-Date: Fri, 9 Nov 2018 16:56:50 +0000
-Message-ID: <20181109165644.30534-3-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 4/5] mtd: spi_nor: pass DMA-able buffer to
+ spi_nor_read_raw()
+Date: Fri, 9 Nov 2018 16:56:54 +0000
+Message-ID: <20181109165644.30534-5-tudor.ambarus@microchip.com>
 References: <20181109165644.30534-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20181109165644.30534-1-tudor.ambarus@microchip.com>
 Content-Language: en-US
@@ -26,111 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Iterate over smpt array using its starting address and length
-instead of the blind iterations that used data found in the array.
-
-This prevents possible memory accesses outside of the smpt array
-boundaries in case software, or manufacturers, misrepresent smpt
-array fields.
+spi_nor_read_raw() calls nor->read() which might be implemented
+by the m25p80 driver. m25p80 uses the spi-mem layer which requires
+DMA-able in/out buffers. Pass kmalloc'ed dma buffer to spi_nor_read_raw().
 
 Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
-v2: add Fixes tag, add a blank line
+v2: drop GFP_DMA, rename buf, add comment
 
- drivers/mtd/spi-nor/spi-nor.c | 40 ++++++++++++++++++++++++++++++---------=
--
- 1 file changed, 30 insertions(+), 10 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 2cdf96013689..98e433e8e4c2 100644
+index 04a1c5b825e6..458ca8321999 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2860,12 +2860,15 @@ static u8 spi_nor_smpt_read_dummy(const struct spi_=
-nor *nor, const u32 settings)
-  * spi_nor_get_map_in_use() - get the configuration map in use
+@@ -2161,7 +2161,7 @@ spi_nor_set_pp_settings(struct spi_nor_pp_command *pp=
+,
   * @nor:	pointer to a 'struct spi_nor'
-  * @smpt:	pointer to the sector map parameter table
-+ * @smpt_len:	sector map parameter table length
+  * @addr:	offset in the serial flash memory
+  * @len:	number of bytes to read
+- * @buf:	buffer where the data is copied into
++ * @buf:	buffer where the data is copied into (dma-safe memory)
+  *
+  * Return: 0 on success, -errno otherwise.
   */
--static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *s=
-mpt)
-+static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *s=
-mpt,
-+					 u8 smpt_len)
+@@ -2868,11 +2868,17 @@ static const u32 *spi_nor_get_map_in_use(struct spi=
+_nor *nor, const u32 *smpt,
+ 					 u8 smpt_len)
  {
- 	const u32 *ret =3D NULL;
--	u32 i, addr;
-+	u32 addr;
+ 	const u32 *ret;
++	u8 *buf;
+ 	u32 addr;
  	int err;
-+	u8 i;
+ 	u8 i;
  	u8 addr_width, read_opcode, read_dummy;
- 	u8 read_data_mask, data_byte, map_id;
-=20
-@@ -2874,9 +2877,11 @@ static const u32 *spi_nor_get_map_in_use(struct spi_=
-nor *nor, const u32 *smpt)
- 	read_opcode =3D nor->read_opcode;
-=20
- 	map_id =3D 0;
--	i =3D 0;
- 	/* Determine if there are any optional Detection Command Descriptors */
--	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
-+	for (i =3D 0; i < smpt_len; i +=3D 2) {
-+		if (smpt[i] & SMPT_DESC_TYPE_MAP)
-+			break;
+-	u8 read_data_mask, data_byte, map_id;
++	u8 read_data_mask, map_id;
 +
- 		read_data_mask =3D SMPT_CMD_READ_DATA(smpt[i]);
- 		nor->addr_width =3D spi_nor_smpt_addr_width(nor, smpt[i]);
- 		nor->read_dummy =3D spi_nor_smpt_read_dummy(nor, smpt[i]);
-@@ -2892,18 +2897,33 @@ static const u32 *spi_nor_get_map_in_use(struct spi=
-_nor *nor, const u32 *smpt)
++	/* Use a kmalloc'ed bounce buffer to guarantee it is DMA-able. */
++	buf =3D kmalloc(sizeof(*buf), GFP_KERNEL);
++	if (!buf)
++		return ERR_PTR(-ENOMEM);
+=20
+ 	addr_width =3D nor->addr_width;
+ 	read_dummy =3D nor->read_dummy;
+@@ -2890,7 +2896,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_n=
+or *nor, const u32 *smpt,
+ 		nor->read_opcode =3D SMPT_CMD_OPCODE(smpt[i]);
+ 		addr =3D smpt[i + 1];
+=20
+-		err =3D spi_nor_read_raw(nor, addr, 1, &data_byte);
++		err =3D spi_nor_read_raw(nor, addr, 1, buf);
+ 		if (err) {
+ 			ret =3D ERR_PTR(err);
+ 			goto out;
+@@ -2900,7 +2906,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_n=
+or *nor, const u32 *smpt,
+ 		 * Build an index value that is used to select the Sector Map
  		 * Configuration that is currently in use.
  		 */
- 		map_id =3D map_id << 1 | !!(data_byte & read_data_mask);
--		i =3D i + 2;
+-		map_id =3D map_id << 1 | !!(data_byte & read_data_mask);
++		map_id =3D map_id << 1 | !!(*buf & read_data_mask);
  	}
 =20
--	/* Find the matching configuration map */
--	while (SMPT_MAP_ID(smpt[i]) !=3D map_id) {
-+	/*
-+	 * If command descriptors are provided, they always precede map
-+	 * descriptors in the table. There is no need to start the iteration
-+	 * over smpt array all over again.
-+	 *
-+	 * Find the matching configuration map.
-+	 */
-+	while (i < smpt_len) {
-+		if (SMPT_MAP_ID(smpt[i]) =3D=3D map_id) {
-+			ret =3D smpt + i;
-+			break;
-+		}
-+
-+		/*
-+		 * If there are no more configuration map descriptors and no
-+		 * configuration ID matched the configuration identifier, the
-+		 * sector address map is unknown.
-+		 */
- 		if (smpt[i] & SMPT_DESC_END)
--			goto out;
-+			break;
-+
- 		/* increment the table index to the next map */
- 		i +=3D SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
- 	}
+ 	/*
+@@ -2931,6 +2937,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_n=
+or *nor, const u32 *smpt,
 =20
--	ret =3D smpt + i;
  	/* fall through */
  out:
++	kfree(buf);
  	nor->addr_width =3D addr_width;
-@@ -3025,7 +3045,7 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
- 	for (i =3D 0; i < smpt_header->length; i++)
- 		smpt[i] =3D le32_to_cpu(smpt[i]);
-=20
--	sector_map =3D spi_nor_get_map_in_use(nor, smpt);
-+	sector_map =3D spi_nor_get_map_in_use(nor, smpt, smpt_header->length);
- 	if (!sector_map) {
- 		ret =3D -EINVAL;
- 		goto out;
+ 	nor->read_dummy =3D read_dummy;
+ 	nor->read_opcode =3D read_opcode;
 --=20
 2.9.4
