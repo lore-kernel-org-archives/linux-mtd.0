@@ -1,6 +1,6 @@
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLA5i-00064C-EG
+ id 1gLA5i-00064B-66
  for linux-mtd@lists.infradead.org; Fri, 09 Nov 2018 16:57:07 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
@@ -8,12 +8,9 @@ To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yogeshnarayan.gaur@nxp.com>, <cyrille.pitchen@wedev4u.fr>,
  <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 1/5] mtd: spi-nor: don't drop sfdp data if optional parsers
- fail
-Date: Fri, 9 Nov 2018 16:56:48 +0000
-Message-ID: <20181109165644.30534-2-tudor.ambarus@microchip.com>
-References: <20181109165644.30534-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20181109165644.30534-1-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 0/5] mtd: spi-nor: fixes found when debugging smpt
+Date: Fri, 9 Nov 2018 16:56:46 +0000
+Message-ID: <20181109165644.30534-1-tudor.ambarus@microchip.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -27,56 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JESD216C states that just the Basic Flash Parameter Table is mandatory.
-Already defined (or future) additional parameter headers and tables are
-optional.
+Bunch of fixes that we found while debugging the roll back to
+SPINOR_OP_READ_1_1_4_4B in case smpt parser fails.
 
-Don't drop already collected sfdp data in case an optional table
-parser fails. In case of failing, each optional parser is responsible
-to roll back to the previously known spi_nor data.
+Boris, Yogesh,
 
-Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
-Reported-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
-v2: update Fixes tag to point to correct commit
+Now I'm looking for a fix in case the smpt detection commands
+define variable address length and dummy bytes. Will follow.
 
- drivers/mtd/spi-nor/spi-nor.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+v2:
+- drop patches 3 and 6
+- update fixes tag for the first patch
+- add fixes tags for other patches
+- typo, blank line, rename variable, add comment
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 4a96ee719e5a..2cdf96013689 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3130,7 +3130,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 	if (err)
- 		goto exit;
-=20
--	/* Parse other parameter headers. */
-+	/* Parse optional parameter tables. */
- 	for (i =3D 0; i < header.nph; i++) {
- 		param_header =3D &param_headers[i];
-=20
-@@ -3143,8 +3143,17 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			break;
- 		}
-=20
--		if (err)
--			goto exit;
-+		if (err) {
-+			dev_warn(dev, "Failed to parse optional parameter table: %04x\n",
-+				 SFDP_PARAM_HEADER_ID(param_header));
-+			/*
-+			 * Let's not drop all information we extracted so far
-+			 * if optional table parsers fail. In case of failing,
-+			 * each optional parser is responsible to roll back to
-+			 * the previously known spi_nor data.
-+			 */
-+			err =3D 0;
-+		}
- 	}
-=20
- exit:
+Tudor Ambarus (5):
+  mtd: spi-nor: don't drop sfdp data if optional parsers fail
+  mtd: spi-nor: fix iteration over smpt array
+  mtd: spi-nor: don't overwrite errno in spi_nor_get_map_in_use()
+  mtd: spi_nor: pass DMA-able buffer to spi_nor_read_raw()
+  mtd: spi-nor: remove unneeded smpt zeroization
+
+ drivers/mtd/spi-nor/spi-nor.c | 85 ++++++++++++++++++++++++++++++++-------=
+----
+ 1 file changed, 63 insertions(+), 22 deletions(-)
+
 --=20
 2.9.4
