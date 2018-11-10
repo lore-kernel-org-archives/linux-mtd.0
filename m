@@ -1,32 +1,21 @@
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLPcX-000063-OO
- for linux-mtd@lists.infradead.org; Sat, 10 Nov 2018 09:32:03 +0000
-Received: by mail-lj1-x241.google.com with SMTP id t9-v6so3618839ljh.6
- for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2018 01:31:51 -0800 (PST)
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1gLZS2-000887-GS
+ for linux-mtd@lists.infradead.org; Sat, 10 Nov 2018 20:01:52 +0000
+Received: by mail-lj1-x243.google.com with SMTP id u6-v6so4389319ljd.1
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2018 12:01:39 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Han Xu <han.xu@nxp.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH v2 13/22] mtd: rawnand: Pass the CS line to be selected in
- struct nand_operation
-Date: Sat, 10 Nov 2018 10:33:39 +0100
-Message-ID: <1618873.xLhFaQ4tnF@z50>
-In-Reply-To: <20181110090459.7a903858@bbrezillon>
-References: <20181106150810.9569-1-boris.brezillon@bootlin.com>
- <2312482.kRjraIG7a0@z50> <20181110090459.7a903858@bbrezillon>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 1/3 v2] mtd: Move Redboot partition parser
+Date: Sat, 10 Nov 2018 21:01:25 +0100
+Message-Id: <20181110200127.13847-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,81 +25,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+This moves the Redboot partition parser down to the parsers
+subdirectory.
 
-On Saturday, November 10, 2018 9:04:59 AM CET Boris Brezillon wrote:
-> Hi Janusz,
-> 
-> On Sat, 10 Nov 2018 02:30:04 +0100
-> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-> 
-> > Hi Boris,
-> > 
-> > On Tuesday, November 6, 2018 4:08:01 PM CET Boris Brezillon wrote:
-> > > In order to deprecate the ->select_chip hook we need to pass the CS
-> > > line a NAND operations are targeting. This is done through the
-> > > addition of a cs field to the nand_operation struct.
-> > > 
-> > > We also need to keep track of the currently selected target to
-> > > properly initialize op->cs, hence the ->cur_cs field addition to the
-> > > nand_chip struct.
-> > > 
-> > > Note that op->cs is not assigned in nand_exec_op() because we might
-> > > rework the way we execute NAND operations in the future (adopt a
-> > > queuing mechanism instead of the serialization we have right now).
-> > > 
-> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > ---
-> > > Changes in v2:
-> > > - Initialize ->cur_cs
-> > > ---
-> > >  drivers/mtd/nand/raw/internals.h  |  3 +++
-> > >  drivers/mtd/nand/raw/nand_base.c  | 39 +++++++++++++++++--------------
-> > >  drivers/mtd/nand/raw/nand_hynix.c |  4 ++--
-> > >  include/linux/mtd/rawnand.h       | 11 ++++++++-
-> > >  4 files changed, 37 insertions(+), 20 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-> > > index 6e2f61fbc5f0..b62728d5884b 100644
-> > > --- a/drivers/mtd/nand/raw/internals.h
-> > > +++ b/drivers/mtd/nand/raw/internals.h
-> > > @@ -101,6 +101,9 @@ static inline int nand_exec_op(struct nand_chip *chip,
-> > >  	if (!chip->exec_op)
-> > >  		return -ENOTSUPP;
-> > >  
-> > > +	if (WARN_ON(op->cs >= chip->numchips))
-> > > +		return -EINVAL;  
-> > 
-> > This needs a fix to nand_scan_ident() like the following:
-> > 
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -5034,10 +5034,11 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
-> >  
-> >  	/* Set the default functions */
-> >  	nand_set_defaults(chip);
-> >  
-> >  	/* Read the flash type */
-> > +	chip->numchips = 1;
-> 
-> Oh, you're right. Actually it should be
-> 
-> 	chip->numchips = maxchips;
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ChangeLog v1->v2:
+- Rebased on linux-mtd-next for v4.21
+---
+ drivers/mtd/Kconfig                 | 50 -----------------------------
+ drivers/mtd/Makefile                |  1 -
+ drivers/mtd/parsers/Kconfig         | 50 +++++++++++++++++++++++++++++
+ drivers/mtd/parsers/Makefile        |  1 +
+ drivers/mtd/{ => parsers}/redboot.c |  0
+ 5 files changed, 51 insertions(+), 51 deletions(-)
+ rename drivers/mtd/{ => parsers}/redboot.c (100%)
 
-Indeed, setting it to 1 would probably result in chips beyond the first one 
-never detected, which is not my case.
-
-> ... 
-> > PS.
-> > I'm ready to submit a series which converts ams-delta-nand to use GPIO 
-> > API for data I/O.  My only concerns is which branch should I rebase it on.
-> 
-> I'd say nand/next, unless you have dependencies on new GPIO stuff that
-> are not in 4.20-rc1.
-
-All GPIO dependencies are already in 4..20-rc1.   My concern was rather 
-related to a future merge with this series which will raise some conflicts 
-against mine.
-
-Thanks,
-Janusz
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index a7736c1947e7..1e18c9639c3e 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -22,56 +22,6 @@ config MTD_TESTS
+ 	  WARNING: some of the tests will ERASE entire MTD device which they
+ 	  test. Do not use these tests unless you really know what you do.
+ 
+-config MTD_REDBOOT_PARTS
+-	tristate "RedBoot partition table parsing"
+-	help
+-	  RedBoot is a ROM monitor and bootloader which deals with multiple
+-	  'images' in flash devices by putting a table one of the erase
+-	  blocks on the device, similar to a partition table, which gives
+-	  the offsets, lengths and names of all the images stored in the
+-	  flash.
+-
+-	  If you need code which can detect and parse this table, and register
+-	  MTD 'partitions' corresponding to each image in the table, enable
+-	  this option.
+-
+-	  You will still need the parsing functions to be called by the driver
+-	  for your particular device. It won't happen automatically. The
+-	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
+-	  example.
+-
+-if MTD_REDBOOT_PARTS
+-
+-config MTD_REDBOOT_DIRECTORY_BLOCK
+-	int "Location of RedBoot partition table"
+-	default "-1"
+-	help
+-	  This option is the Linux counterpart to the
+-	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
+-	  option.
+-
+-	  The option specifies which Flash sectors holds the RedBoot
+-	  partition table.  A zero or positive value gives an absolute
+-	  erase block number. A negative value specifies a number of
+-	  sectors before the end of the device.
+-
+-	  For example "2" means block number 2, "-1" means the last
+-	  block and "-2" means the penultimate block.
+-
+-config MTD_REDBOOT_PARTS_UNALLOCATED
+-	bool "Include unallocated flash regions"
+-	help
+-	  If you need to register each unallocated flash region as a MTD
+-	  'partition', enable this option.
+-
+-config MTD_REDBOOT_PARTS_READONLY
+-	bool "Force read-only for RedBoot system images"
+-	help
+-	  If you need to force read-only for 'RedBoot', 'RedBoot Config' and
+-	  'FIS directory' images, enable this option.
+-
+-endif # MTD_REDBOOT_PARTS
+-
+ config MTD_CMDLINE_PARTS
+ 	tristate "Command line partition table parsing"
+ 	depends on MTD
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 93473d215a38..58fc327a5276 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -8,7 +8,6 @@ obj-$(CONFIG_MTD)		+= mtd.o
+ mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o mtdpart.o mtdchar.o
+ 
+ obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
+-obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
+ obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
+ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
+ obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+index ee5ab994132f..fccf1950e92d 100644
+--- a/drivers/mtd/parsers/Kconfig
++++ b/drivers/mtd/parsers/Kconfig
+@@ -14,3 +14,53 @@ config MTD_SHARPSL_PARTS
+ 	  This provides the read-only FTL logic necessary to read the partition
+ 	  table from the NAND flash of Sharp SL Series (Zaurus) and the MTD
+ 	  partition parser using this code.
++
++config MTD_REDBOOT_PARTS
++	tristate "RedBoot partition table parsing"
++	help
++	  RedBoot is a ROM monitor and bootloader which deals with multiple
++	  'images' in flash devices by putting a table one of the erase
++	  blocks on the device, similar to a partition table, which gives
++	  the offsets, lengths and names of all the images stored in the
++	  flash.
++
++	  If you need code which can detect and parse this table, and register
++	  MTD 'partitions' corresponding to each image in the table, enable
++	  this option.
++
++	  You will still need the parsing functions to be called by the driver
++	  for your particular device. It won't happen automatically. The
++	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
++	  example.
++
++if MTD_REDBOOT_PARTS
++
++config MTD_REDBOOT_DIRECTORY_BLOCK
++	int "Location of RedBoot partition table"
++	default "-1"
++	help
++	  This option is the Linux counterpart to the
++	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
++	  option.
++
++	  The option specifies which Flash sectors holds the RedBoot
++	  partition table.  A zero or positive value gives an absolute
++	  erase block number. A negative value specifies a number of
++	  sectors before the end of the device.
++
++	  For example "2" means block number 2, "-1" means the last
++	  block and "-2" means the penultimate block.
++
++config MTD_REDBOOT_PARTS_UNALLOCATED
++	bool "Include unallocated flash regions"
++	help
++	  If you need to register each unallocated flash region as a MTD
++	  'partition', enable this option.
++
++config MTD_REDBOOT_PARTS_READONLY
++	bool "Force read-only for RedBoot system images"
++	help
++	  If you need to force read-only for 'RedBoot', 'RedBoot Config' and
++	  'FIS directory' images, enable this option.
++
++endif # MTD_REDBOOT_PARTS
+diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+index 5b1bcc3d90d9..d8418bf6804a 100644
+--- a/drivers/mtd/parsers/Makefile
++++ b/drivers/mtd/parsers/Makefile
+@@ -1,2 +1,3 @@
+ obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
+ obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
++obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
+diff --git a/drivers/mtd/redboot.c b/drivers/mtd/parsers/redboot.c
+similarity index 100%
+rename from drivers/mtd/redboot.c
+rename to drivers/mtd/parsers/redboot.c
+-- 
+2.19.1
