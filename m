@@ -1,9 +1,9 @@
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLZS8-00088R-Cj
- for linux-mtd@lists.infradead.org; Sat, 10 Nov 2018 20:01:57 +0000
-Received: by mail-lf1-x141.google.com with SMTP id f23so3608647lfc.13
- for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2018 12:01:45 -0800 (PST)
+ id 1gLaaT-000791-Ue
+ for linux-mtd@lists.infradead.org; Sat, 10 Nov 2018 21:14:39 +0000
+Received: by mail-lf1-x143.google.com with SMTP id e26so1905030lfc.2
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2018 13:14:23 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,11 +11,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-mtd@lists.infradead.org
 Cc: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 3/3 v2] mtd: partitions: Add OF support to RedBoot partitions
-Date: Sat, 10 Nov 2018 21:01:27 +0100
-Message-Id: <20181110200127.13847-3-linus.walleij@linaro.org>
-In-Reply-To: <20181110200127.13847-1-linus.walleij@linaro.org>
-References: <20181110200127.13847-1-linus.walleij@linaro.org>
+Subject: [PATCH 3/3 v3] mtd: partitions: Add OF support to RedBoot partitions
+Date: Sat, 10 Nov 2018 22:14:13 +0100
+Message-Id: <20181110211413.15707-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,6 +31,8 @@ tree and then parse the partition table from there.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
+ChangeLog v2->v3:
+- Fix copy/paste bug identified by the build robot.
 ChangeLog v1->v2:
 - Rebased on linux-mtd-next for v4.21
 ---
@@ -40,7 +40,7 @@ ChangeLog v1->v2:
  1 file changed, 34 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
-index 7623ac5fc586..fb816825aa19 100644
+index 7623ac5fc586..cc04a36c8251 100644
 --- a/drivers/mtd/parsers/redboot.c
 +++ b/drivers/mtd/parsers/redboot.c
 @@ -25,7 +25,7 @@
@@ -100,7 +100,7 @@ index 7623ac5fc586..fb816825aa19 100644
 +	{ .compatible = "redboot-fis" },
 +	{},
 +};
-+MODULE_DEVICE_TABLE(of, mtd_parser_trx_of_match_table);
++MODULE_DEVICE_TABLE(of, mtd_parser_redboot_of_match_table);
 +
  static struct mtd_part_parser redboot_parser = {
  	.parse_fn = parse_redboot_partitions,
