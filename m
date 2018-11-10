@@ -1,20 +1,19 @@
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLZS4-00088L-BM
- for linux-mtd@lists.infradead.org; Sat, 10 Nov 2018 20:01:53 +0000
-Received: by mail-lf1-x142.google.com with SMTP id b20so3603982lfa.12
- for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2018 12:01:41 -0800 (PST)
+ id 1gLZS8-00088R-Cj
+ for linux-mtd@lists.infradead.org; Sat, 10 Nov 2018 20:01:57 +0000
+Received: by mail-lf1-x141.google.com with SMTP id f23so3608647lfc.13
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2018 12:01:45 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-mtd@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	devicetree@vger.kernel.org
-Subject: [PATCH 2/3 v2] mtd: partitions: Add RedBoot FIS DT bindings
-Date: Sat, 10 Nov 2018 21:01:26 +0100
-Message-Id: <20181110200127.13847-2-linus.walleij@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 3/3 v2] mtd: partitions: Add OF support to RedBoot partitions
+Date: Sat, 10 Nov 2018 21:01:27 +0100
+Message-Id: <20181110200127.13847-3-linus.walleij@linaro.org>
 In-Reply-To: <20181110200127.13847-1-linus.walleij@linaro.org>
 References: <20181110200127.13847-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
@@ -28,53 +27,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds device tree bindings for the RedBoot FIS partition
-format.
+This adds device tree support for RedBoot partitioning. We
+read out the FIS directory block information from the device
+tree and then parse the partition table from there.
 
-Cc: devicetree@vger.kernel.org
-Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 ChangeLog v1->v2:
 - Rebased on linux-mtd-next for v4.21
-- Collected Rob's ACK
 ---
- .../bindings/mtd/partitions/redboot-fis.txt   | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+ drivers/mtd/parsers/redboot.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
-new file mode 100644
-index 000000000000..fd0ebe4e3415
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
-@@ -0,0 +1,27 @@
-+RedBoot FLASH Image System (FIS) Partitions
-+===========================================
+diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
+index 7623ac5fc586..fb816825aa19 100644
+--- a/drivers/mtd/parsers/redboot.c
++++ b/drivers/mtd/parsers/redboot.c
+@@ -25,7 +25,7 @@
+ #include <linux/slab.h>
+ #include <linux/init.h>
+ #include <linux/vmalloc.h>
+-
++#include <linux/of.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/module.h>
+@@ -56,6 +56,31 @@ static inline int redboot_checksum(struct fis_image_desc *img)
+ 	return 1;
+ }
+ 
++#ifdef CONFIG_OF
++static void parse_redboot_of(struct mtd_info *master)
++{
++	struct device_node *np;
++	u32 dirblock;
++	int ret;
 +
-+The FLASH Image System (FIS) directory is a flash description
-+format closely associated with the RedBoot boot loader.
++	np = mtd_get_of_node(master);
++	if (!np)
++		return;
++	ret = of_property_read_u32(np, "fis-index-block", &dirblock);
++	if (ret)
++		return;
++	/*
++	 * Assign the block found in the device tree to the local
++	 * directory block pointer.
++	 */
++	directory = dirblock;
++}
++#else
++static void parse_redboot_of(struct mtd_info *master)
++{
++}
++#endif
 +
-+It uses one single flash eraseblock in the flash to store an index of
-+all images in the flash.
-+
-+This block size will vary depending on flash but is typically
-+32 KB in size.
-+
-+Required properties:
-+- compatible : (required) must be "redboot-fis"
-+- fis-index-block : (required) a index to the eraseblock containing
-+  the FIS directory on this device. On a flash memory with 32KB
-+  eraseblocks, 0 means the first eraseblock at 0x00000000, 1 means the
-+  second eraseblock at 0x00008000 and so on.
-+
-+Example:
-+
-+flash@0 {
-+	partitions {
-+		compatible = "redboot-fis";
-+		fis-index-block = <0>;
-+	};
+ static int parse_redboot_partitions(struct mtd_info *master,
+ 				    const struct mtd_partition **pparts,
+ 				    struct mtd_part_parser_data *data)
+@@ -75,6 +100,7 @@ static int parse_redboot_partitions(struct mtd_info *master,
+ #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
+ 	static char nullstring[] = "unallocated";
+ #endif
++	parse_redboot_of(master);
+ 
+ 	if ( directory < 0 ) {
+ 		offset = master->size + directory * master->erasesize;
+@@ -289,9 +315,16 @@ static int parse_redboot_partitions(struct mtd_info *master,
+ 	return ret;
+ }
+ 
++static const struct of_device_id mtd_parser_redboot_of_match_table[] = {
++	{ .compatible = "redboot-fis" },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, mtd_parser_trx_of_match_table);
++
+ static struct mtd_part_parser redboot_parser = {
+ 	.parse_fn = parse_redboot_partitions,
+ 	.name = "RedBoot",
++	.of_match_table = mtd_parser_redboot_of_match_table,
+ };
+ module_mtd_part_parser(redboot_parser);
+ 
 -- 
 2.19.1
