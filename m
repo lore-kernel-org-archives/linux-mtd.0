@@ -1,16 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLwit-00020u-LB
- for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 20:52:49 +0000
-Date: Sun, 11 Nov 2018 21:52:35 +0100
+ id 1gLwjU-000220-4x
+ for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 20:53:25 +0000
+Date: Sun, 11 Nov 2018 21:53:11 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Robert Marko <robimarko@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spinand: winbond: Add support for W25N01GV
-Message-ID: <20181111215235.71176bbb@xps13>
-In-Reply-To: <20181012110412.000a932c@bbrezillon>
-References: <20181006153642.10376-1-robimarko@gmail.com>
- <20181012110412.000a932c@bbrezillon>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] mtd: rawnand: Provide helper for polling GPIO
+ R/B pin
+Message-ID: <20181111215311.5e8551b4@xps13>
+In-Reply-To: <20181015194130.21764-1-jmkrzyszt@gmail.com>
+References: <20181012204101.26274-1-jmkrzyszt@gmail.com>
+ <20181015194130.21764-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -23,38 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+Hi Janusz,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Fri, 12 Oct 2018
-11:04:12 +0200:
+Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote on Mon, 15 Oct 2018
+21:41:28 +0200:
 
-> +Miquel
+> Each controller driver having access to NAND R/B pin over GPIO would
+> have to reimplement the polling loop otherwise.
 >=20
-> Hi Robert,
->=20
-> Please Cc the NAND mantainers when you send a NAND related patch
-> (in case you don't know about it already, scripts/get_maintainer.pl
-> should help you find who to Cc).
->=20
-> On Sat,  6 Oct 2018 17:36:42 +0200
-> Robert Marko <robimarko@gmail.com> wrote:
->=20
-> > W25N01GV is a single die version of the already supported
-> > W25M02GV with half the capacity. Everything else is the
-> > same so introduce support for W25N01GV.
-> >=20
-> > Datasheet:http://www.winbond.com/resource-files/w25n01gv%20revl%2005091=
-8%20unsecured.pdf
-> >=20
-> > Tested on 8devices Jalapeno dev board under OpenWrt running 4.19-rc5.
-> >=20
-> > Signed-off-by: Robert Marko <robimarko@gmail.com> =20
->=20
-> Looks good.
->=20
+> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 > Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
 
-Applied to nand/next.
+Series applied to nand/next.
 
 Thanks,
 Miqu=C3=A8l
