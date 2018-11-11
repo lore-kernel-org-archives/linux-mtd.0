@@ -1,20 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLwjU-000220-4x
- for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 20:53:25 +0000
-Date: Sun, 11 Nov 2018 21:53:11 +0100
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gLwju-0002Cj-7i
+ for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 20:53:51 +0000
+Date: Sun, 11 Nov 2018 21:53:36 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: Provide helper for polling GPIO
- R/B pin
-Message-ID: <20181111215311.5e8551b4@xps13>
-In-Reply-To: <20181015194130.21764-1-jmkrzyszt@gmail.com>
-References: <20181012204101.26274-1-jmkrzyszt@gmail.com>
- <20181015194130.21764-1-jmkrzyszt@gmail.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: rawnand: denali: include <linux/bits.h> instead of
+ <linux/bitops.h>
+Message-ID: <20181111215336.049ca786@xps13>
+In-Reply-To: <1539664401-17651-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1539664401-17651-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,20 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz,
+Hi Masahiro,
 
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote on Mon, 15 Oct 2018
-21:41:28 +0200:
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 16 Oct
+2018 13:33:21 +0900:
 
-> Each controller driver having access to NAND R/B pin over GPIO would
-> have to reimplement the polling loop otherwise.
+> The reason of including <linux/bitops.h> here is just for BIT() and
+> GENMASK macros.
 >=20
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Since commit 8bd9cb51daac8 ("locking/atomics, asm-generic: Move some
+> macros from <linux/bitops.h> to a new <linux/bits.h> file"),
+> <linux/bits.h> is enough for such compile-time macros.
+>=20
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > ---
 
-Series applied to nand/next.
+Applied to nand/next.
 
 Thanks,
 Miqu=C3=A8l
