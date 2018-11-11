@@ -1,28 +1,22 @@
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLvst-00014q-Rp
- for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 19:59:06 +0000
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gLwiA-0001yx-Ms
+ for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 20:52:04 +0000
+Date: Sun, 11 Nov 2018 21:51:49 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: fsmc: Fix unchecked return value in
+ fsmc_read_page_hwecc
+Message-ID: <20181111215149.72ab683e@xps13>
+In-Reply-To: <20181010155857.GA18860@embeddedor.com>
+References: <20181010155857.GA18860@embeddedor.com>
 MIME-Version: 1.0
-From: Ben Hutchings <ben@decadent.org.uk>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-CC: akpm@linux-foundation.org, "Boris Brezillon" <boris.brezillon@bootlin.com>,
- "Tokunori Ikegami" <ikegami@allied-telesis.co.jp>,
- linux-mtd@lists.infradead.org, "Marek Vasut" <marek.vasut@gmail.com>,
- "Boris Brezillon" <boris.brezillon@free-electrons.com>,
- "Chris Packham" <chris.packham@alliedtelesis.co.nz>,
- "Brian Norris" <computersforpeace@gmail.com>,
- "Cyrille Pitchen" <cyrille.pitchen@wedev4u.fr>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Joakim Tjernlund" <Joakim.Tjernlund@infinera.com>,
- "Richard Weinberger" <richard@nod.at>
-Date: Sun, 11 Nov 2018 19:49:05 +0000
-Message-ID: <lsq.1541965745.738336013@decadent.org.uk>
-Subject: [PATCH 3.16 097/366] mtd: cfi_cmdset_0002: Change definition
- naming to retry write operation
-In-Reply-To: <lsq.1541965744.387173642@decadent.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,59 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.16.61-rc1 review patch.  If anyone has any objections, please let me know.
+Hi Gustavo,
 
-------------------
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Wed, 10 Oct
+2018 17:58:58 +0200:
 
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> Check return value of nand_read_data_op.
+>=20
+> Notice that, currently, all instances of nand_read_data_op() are
+> being checked, with the exception of two of them in marvell_nand
+> driver, in which the caller function explicitly returns 0 every
+> time.
+>=20
+> Also, notice that I moved the declaration of *ret* to the top of
+> fsmc_read_page_hwecc().
+>=20
+> Addresses-Coverity-ID: 1471968 ("Unchecked return value")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
 
-commit 85a82e28b023de9b259a86824afbd6ba07bd6475 upstream.
+Applied to nand/next.
 
-The definition can be used for other program and erase operations also.
-So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
-
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -42,7 +42,7 @@
- #define AMD_BOOTLOC_BUG
- #define FORCE_WORD_WRITE 0
- 
--#define MAX_WORD_RETRIES 3
-+#define MAX_RETRIES 3
- 
- #define SST49LF004B	        0x0060
- #define SST49LF040B	        0x0050
-@@ -1314,7 +1314,7 @@ static int __xipram do_write_oneword(str
- 		map_write( map, CMD(0xF0), chip->start );
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_WORD_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
- 
- 		ret = -EIO;
-@@ -1765,7 +1765,7 @@ retry:
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_WORD_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
- 
- 		ret = -EIO;
+Thanks,
+Miqu=C3=A8l
