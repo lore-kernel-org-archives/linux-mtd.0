@@ -1,25 +1,29 @@
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLo3x-0002Fz-Ge
- for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 11:37:58 +0000
-Received: by mail-lf1-x141.google.com with SMTP id z13so4239903lfe.11
- for <linux-mtd@lists.infradead.org>; Sun, 11 Nov 2018 03:37:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20181110211413.15707-1-linus.walleij@linaro.org>
- <20181111081632.56f1b2fe@bbrezillon>
-In-Reply-To: <20181111081632.56f1b2fe@bbrezillon>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 11 Nov 2018 12:37:33 +0100
-Message-ID: <CACRpkdbkXe9KTXKxW+XZf2ckt1VdqSMRGOyRrWbEgpK9pKYAGg@mail.gmail.com>
-Subject: Re: [PATCH 3/3 v3] mtd: partitions: Add OF support to RedBoot
- partitions
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gLvsf-000868-KA
+ for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 19:58:51 +0000
 Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: Ben Hutchings <ben@decadent.org.uk>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+CC: akpm@linux-foundation.org, "Boris Brezillon" <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org,
+ "Tokunori Ikegami" <ikegami@allied-telesis.co.jp>,
+ "Chris Packham" <chris.packham@alliedtelesis.co.nz>,
+ "Brian Norris" <computersforpeace@gmail.com>,
+ "Marek Vasut" <marek.vasut@gmail.com>,
+ "Boris Brezillon" <boris.brezillon@free-electrons.com>,
+ "Cyrille Pitchen" <cyrille.pitchen@wedev4u.fr>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "Joakim Tjernlund" <Joakim.Tjernlund@infinera.com>,
+ "Richard Weinberger" <richard@nod.at>
+Date: Sun, 11 Nov 2018 19:49:05 +0000
+Message-ID: <lsq.1541965745.726712886@decadent.org.uk>
+Subject: [PATCH 3.16 096/366] mtd: cfi_cmdset_0002: Change write buffer to
+ check correct value
+In-Reply-To: <lsq.1541965744.387173642@decadent.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +33,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 11, 2018 at 8:16 AM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+3.16.61-rc1 review patch.  If anyone has any objections, please let me know.
 
-> > ChangeLog v2->v3:
-> > - Fix copy/paste bug identified by the build robot.
-> > ChangeLog v1->v2:
-> > - Rebased on linux-mtd-next for v4.21
->
-> Looks like the comments I made on v1 have not been taken into account,
-> or replied to.
+------------------
 
-Sorry, my bad :(
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-> Those are all minor things I can fix when applying the patch. Let me
-> know if you're okay with the changes I suggest, and I'll take care of
-> that.
+commit dfeae1073583dc35c33b32150e18b7048bbb37e6 upstream.
 
-Of course you can do that, I have full confidence in you Boris!
-Please go ahead.
+For the word write it is checked if the chip has the correct value.
+But it is not checked for the write buffer as only checked if ready.
+To make sure for the write buffer change to check the value.
 
-Yours,
-Linus Walleij
+It is enough as this patch is only checking the last written word.
+Since it is described by data sheets to check the operation status.
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1541,7 +1541,7 @@ static int __xipram do_write_buffer(stru
+ 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+ 			break;
+ 
+-		if (chip_ready(map, adr)) {
++		if (chip_good(map, adr, datum)) {
+ 			xip_enable(map, chip, adr);
+ 			goto op_done;
+ 		}
