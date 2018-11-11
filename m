@@ -1,27 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLkjM-0004lI-PY
- for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 08:04:30 +0000
+ id 1gLlNl-00057w-Sx
+ for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 08:46:15 +0000
+Date: Sun, 11 Nov 2018 09:45:59 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Han Xu <han.xu@nxp.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v3 14/22] mtd: rawnand: Make ->select_chip() optional when
- ->exec_op() is implemented
-Date: Sun, 11 Nov 2018 08:55:16 +0100
-Message-Id: <20181111075524.13123-15-boris.brezillon@bootlin.com>
-In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
-References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
+To: Liu Xiang <liu.xiang6@zte.com.cn>
+Cc: linux-mtd@lists.infradead.org, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com, liuxiang_1999@126.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: Add 4-byte address support for is25lp256
+Message-ID: <20181111094559.386f15e6@bbrezillon>
+In-Reply-To: <1535121701-2925-1-git-send-email-liu.xiang6@zte.com.cn>
+References: <1535121701-2925-1-git-send-email-liu.xiang6@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the CS to be selected on a nand_operation is passed in
-nand_operation->cs we can make the ->select_chip() hook optional for
-drivers implementing ->exec_op().
+Hi Liu,
 
-When not implemented, the core is assuming the CS line is automatically
-asserted/deasserted by the driver ->exec_op() implementation.
+On Fri, 24 Aug 2018 22:41:41 +0800
+Liu Xiang <liu.xiang6@zte.com.cn> wrote:
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
----
-Changes in v3:
-- Add Janusz T-b
+> The is25lp256 supports 4-byte opcodes and quad output.
+> In is25lp256, the DWORD1 of JEDEC Basic Flash Parameter Header
+> is 0xfff920e5. So the DWORD1[18:17] Address Bytes bits are 0b00,
+> means that 3-Byte only addressing. Now this limits nor->addr_width
+> to 3 and makes it inpossible to access the address above 16MB.
+> I think the size of flash is the most important judgement for
+> nor->addr_width. Once the size is larger than 16MB, nor->addr_width
+> must be 4. This can avoid the bad situation that manufacturer sets
+> incorrect value of register.
 
-Changes in v2:
-- None
----
- drivers/mtd/nand/raw/nand_base.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Please split this patch:
+- Add 4B_OPCODES flag to is25lp256
+- Rework the ->addr_width selection logic (more about that below).
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 7aa661f76891..93a19f551796 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -247,7 +247,9 @@ void nand_select_target(struct nand_chip *chip, unsigned int cs)
- 		return;
- 
- 	chip->cur_cs = cs;
--	chip->select_chip(chip, cs);
-+
-+	if (chip->select_chip)
-+		chip->select_chip(chip, cs);
- }
- EXPORT_SYMBOL_GPL(nand_select_target);
- 
-@@ -260,7 +262,9 @@ EXPORT_SYMBOL_GPL(nand_select_target);
-  */
- void nand_deselect_target(struct nand_chip *chip)
- {
--	chip->select_chip(chip, -1);
-+	if (chip->select_chip)
-+		chip->select_chip(chip, -1);
-+
- 	chip->cur_cs = -1;
- }
- EXPORT_SYMBOL_GPL(nand_deselect_target);
-@@ -5021,11 +5025,6 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
- 	if (!mtd->name && mtd->dev.parent)
- 		mtd->name = dev_name(mtd->dev.parent);
- 
--	if (chip->exec_op && !chip->select_chip) {
--		pr_err("->select_chip() is mandatory when implementing ->exec_op()\n");
--		return -EINVAL;
--	}
--
- 	ret = nand_legacy_check_hooks(chip);
- 	if (ret)
- 		return ret;
--- 
-2.17.1
+> 
+> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d9c368c..0203b09 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1065,7 +1065,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+>  			SECT_4K | SPI_NOR_DUAL_READ) },
+>  	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
+> -			SECT_4K | SPI_NOR_DUAL_READ) },
+> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
+>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
+> @@ -2926,16 +2926,16 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (nor->addr_width) {
+> -		/* already configured from SFDP */
+> -	} else if (info->addr_width) {
+> -		nor->addr_width = info->addr_width;
+> -	} else if (mtd->size > 0x1000000) {
+> +	if (mtd->size > 0x1000000) {
+>  		/* enable 4-byte addressing if the device exceeds 16MiB */
+>  		nor->addr_width = 4;
+>  		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+> -		    info->flags & SPI_NOR_4B_OPCODES)
+> +			info->flags & SPI_NOR_4B_OPCODES)
+>  			spi_nor_set_4byte_opcodes(nor, info);
+> +	} else if (nor->addr_width) {
+> +		/* already configured from SFDP */
+> +	} else if (info->addr_width) {
+> +		nor->addr_width = info->addr_width;
+>  	} else {
+>  		nor->addr_width = 3;
+>  	}
+
+We'd rather return an error and warn users when nor->addr_width does not
+match the device size than fix this mismatch silently.
+
+Regards,
+
+Boris
