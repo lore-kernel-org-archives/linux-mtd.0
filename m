@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLkao-0004Y7-QT
+ id 1gLkao-0004Y8-QV
  for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 07:55:40 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,9 +16,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v3 00/22] mtd: rawnand: 3rd batch of cleanup
-Date: Sun, 11 Nov 2018 08:55:02 +0100
-Message-Id: <20181111075524.13123-1-boris.brezillon@bootlin.com>
+Subject: [PATCH v3 02/22] mtd: rawnand: Reorganize code to avoid forward
+ declarations
+Date: Sun, 11 Nov 2018 08:55:04 +0100
+Message-Id: <20181111075524.13123-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
+References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,120 +31,599 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Avoid forward declaration of nand_get_device(), nand_do_write_oob()
+and nand_update_bbt() by moving functions around.
 
-After the sanitization of the raw NAND API, here is a smaller
-patchset continuing in this direction.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+---
+Changes in v3:
+- Add Janusz's T-b
 
-Patch 1 is just a follow-up on the "stop passing mtd_info objects
-around" patches, except this times it takes care of internal functions.
-There's still a lot of sanitization to do in drivers in order to get
-rid of those mtd params, but I'll leave that to driver maintainers.
+Changes in v2:
+- None
+---
+ drivers/mtd/nand/raw/nand_base.c | 388 +++++++++++++++----------------
+ drivers/mtd/nand/raw/nand_bbt.c  | 112 +++++----
+ 2 files changed, 246 insertions(+), 254 deletions(-)
 
-Patch 2 is trying to get rid of 3 forward declarations that are not
-really needed.
-
-Patch 3 is getting rid of useless test in nand_legacy_set_defaults().
-
-Patch 4 is making nand_exec_op() private, so that NAND controller
-drivers are not tempted to use it.
-
-Patch 5 is getting rid of an unused flag that has been around for quite
-some time.
-
-Patches 6 to 11 are doing various cleanups/fixes/improvements in the
-ams-delta driver.
-
-Patches 12 to 20 are deprecating the ->select_chip() hook which should
-now be replaced by internal target/die selection logic directly called
-from the ->exec_op() and ecc.read/write_xxx() implementations. The
-rational behind this change is that modern controller now take care of
-asserting/deasserting the CS pin on a per-operation basis, and if we
-ever want to implement advanced queuing logic (instead of the basic
-serialization we currently have) we'll have to attach a CS line to the
-operation we want to execute.
-
-Finally, patches 21 and 22 are moving the controller specific methods
-to nand_controller_ops.
-
-As usual, let me know what you think of those changes.
-
-Regards,
-
-Boris
-
-Main changes between v1 and v2:
-- Patch the ams-delta driver
-
-Main changes between v2 and v3:
-- Fix the bug reported by Janusz
-- Fix a bug reported by kbuild bots
-
-Boris Brezillon (22):
-  mtd: rawnand: Stop passing mtd_info objects to internal functions
-  mtd: rawnand: Reorganize code to avoid forward declarations
-  mtd: rawnand: legacy: Drop useless test in nand_legacy_set_defaults()
-  mtd: rawnand: Move nand_exec_op() to internal.h
-  mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC flag
-  mtd: rawnand: ams-delta: Allow this driver to be compiled when
-    COMPILE_TEST=y
-  mtd: rawnand: ams-delta: Add an SPDX tag to replace the license text
-  mtd: rawnand: ams-delta: Fix various coding style issues
-  mtd: rawnand: ams-delta: cleanup ams_delta_init() error path
-  mtd: rawnand: ams-delta: Check mtd_device_register() return code
-  mtd: rawnand: ams-delta: Explicitly inherit from nand_controller
-  mtd: rawnand: Add nand_[de]select_target() helpers
-  mtd: rawnand: Pass the CS line to be selected in struct nand_operation
-  mtd: rawnand: Make ->select_chip() optional when ->exec_op() is
-    implemented
-  mtd: rawnand: fsmc: Stop implementing ->select_chip()
-  mtd: rawnand: marvell: Stop implementing ->select_chip()
-  mtd: rawnand: tegra: Stop implementing ->select_chip()
-  mtd: rawnand: vf610: Stop implementing ->select_chip()
-  mtd: rawnand: ams-delta: Stop implementing ->select_chip()
-  mtd: rawnand: Deprecate the ->select_chip() hook
-  mtd: rawnand: Move the ->exec_op() method to nand_controller_ops
-  mtd: rawnand: Move ->setup_data_interface() to nand_controller_ops
-
- drivers/mtd/nand/raw/Kconfig                  |   2 +-
- drivers/mtd/nand/raw/ams-delta.c              |  95 ++-
- drivers/mtd/nand/raw/atmel/nand-controller.c  |   9 +-
- drivers/mtd/nand/raw/au1550nd.c               |   2 +-
- .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  |   2 +-
- drivers/mtd/nand/raw/cafe_nand.c              |   2 +-
- drivers/mtd/nand/raw/davinci_nand.c           |   2 +-
- drivers/mtd/nand/raw/denali.c                 |   5 +-
- drivers/mtd/nand/raw/diskonchip.c             |   4 +-
- drivers/mtd/nand/raw/fsl_elbc_nand.c          |   2 +-
- drivers/mtd/nand/raw/fsl_ifc_nand.c           |   2 +-
- drivers/mtd/nand/raw/fsl_upm.c                |   2 +-
- drivers/mtd/nand/raw/fsmc_nand.c              |  32 +-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c    |  27 +-
- drivers/mtd/nand/raw/hisi504_nand.c           |   2 +-
- drivers/mtd/nand/raw/internals.h              |  33 +
- drivers/mtd/nand/raw/jz4740_nand.c            |   6 +-
- drivers/mtd/nand/raw/jz4780_nand.c            |   2 +-
- drivers/mtd/nand/raw/marvell_nand.c           |  32 +-
- drivers/mtd/nand/raw/mpc5121_nfc.c            |   4 +-
- drivers/mtd/nand/raw/mtk_nand.c               |   4 +-
- drivers/mtd/nand/raw/mxc_nand.c               |  14 +-
- drivers/mtd/nand/raw/nand_base.c              | 743 +++++++++---------
- drivers/mtd/nand/raw/nand_bbt.c               | 285 +++----
- drivers/mtd/nand/raw/nand_hynix.c             |   8 +-
- drivers/mtd/nand/raw/nand_legacy.c            |  35 +-
- drivers/mtd/nand/raw/ndfc.c                   |   2 +-
- drivers/mtd/nand/raw/plat_nand.c              |   2 +-
- drivers/mtd/nand/raw/qcom_nandc.c             |   2 +-
- drivers/mtd/nand/raw/r852.c                   |   4 +-
- drivers/mtd/nand/raw/s3c2410.c                |   7 +-
- drivers/mtd/nand/raw/sh_flctl.c               |   2 +-
- drivers/mtd/nand/raw/sunxi_nand.c             |   4 +-
- drivers/mtd/nand/raw/tango_nand.c             |   4 +-
- drivers/mtd/nand/raw/tegra_nand.c             |  32 +-
- drivers/mtd/nand/raw/vf610_nfc.c              |  38 +-
- drivers/mtd/nand/raw/xway_nand.c              |   2 +-
- include/linux/mtd/rawnand.h                   | 150 ++--
- 38 files changed, 853 insertions(+), 752 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 2a50afbdeeeb..6d9de6949366 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -49,11 +49,6 @@
+ 
+ #include "internals.h"
+ 
+-static int nand_get_device(struct nand_chip *chip, int new_state);
+-
+-static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
+-			     struct mtd_oob_ops *ops);
+-
+ /* Define default oob placement schemes for large and small page devices */
+ static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+@@ -286,6 +281,197 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+ 	return 0;
+ }
+ 
++static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
++{
++	if (chip->legacy.block_bad)
++		return chip->legacy.block_bad(chip, ofs);
++
++	return nand_block_bad(chip, ofs);
++}
++
++/**
++ * panic_nand_get_device - [GENERIC] Get chip for selected access
++ * @chip: the nand chip descriptor
++ * @new_state: the state which is requested
++ *
++ * Used when in panic, no locks are taken.
++ */
++static void panic_nand_get_device(struct nand_chip *chip, int new_state)
++{
++	/* Hardware controller shared among independent devices */
++	chip->controller->active = chip;
++	chip->state = new_state;
++}
++
++/**
++ * nand_get_device - [GENERIC] Get chip for selected access
++ * @chip: NAND chip structure
++ * @new_state: the state which is requested
++ *
++ * Get the device and lock it for exclusive access
++ */
++static int
++nand_get_device(struct nand_chip *chip, int new_state)
++{
++	spinlock_t *lock = &chip->controller->lock;
++	wait_queue_head_t *wq = &chip->controller->wq;
++	DECLARE_WAITQUEUE(wait, current);
++retry:
++	spin_lock(lock);
++
++	/* Hardware controller shared among independent devices */
++	if (!chip->controller->active)
++		chip->controller->active = chip;
++
++	if (chip->controller->active == chip && chip->state == FL_READY) {
++		chip->state = new_state;
++		spin_unlock(lock);
++		return 0;
++	}
++	if (new_state == FL_PM_SUSPENDED) {
++		if (chip->controller->active->state == FL_PM_SUSPENDED) {
++			chip->state = FL_PM_SUSPENDED;
++			spin_unlock(lock);
++			return 0;
++		}
++	}
++	set_current_state(TASK_UNINTERRUPTIBLE);
++	add_wait_queue(wq, &wait);
++	spin_unlock(lock);
++	schedule();
++	remove_wait_queue(wq, &wait);
++	goto retry;
++}
++
++/**
++ * nand_check_wp - [GENERIC] check if the chip is write protected
++ * @chip: NAND chip object
++ *
++ * Check, if the device is write protected. The function expects, that the
++ * device is already selected.
++ */
++static int nand_check_wp(struct nand_chip *chip)
++{
++	u8 status;
++	int ret;
++
++	/* Broken xD cards report WP despite being writable */
++	if (chip->options & NAND_BROKEN_XD)
++		return 0;
++
++	/* Check the WP bit */
++	ret = nand_status_op(chip, &status);
++	if (ret)
++		return ret;
++
++	return status & NAND_STATUS_WP ? 0 : 1;
++}
++
++/**
++ * nand_fill_oob - [INTERN] Transfer client buffer to oob
++ * @oob: oob data buffer
++ * @len: oob data write length
++ * @ops: oob ops structure
++ */
++static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
++			      struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	int ret;
++
++	/*
++	 * Initialise to all 0xFF, to avoid the possibility of left over OOB
++	 * data from a previous OOB read.
++	 */
++	memset(chip->oob_poi, 0xff, mtd->oobsize);
++
++	switch (ops->mode) {
++
++	case MTD_OPS_PLACE_OOB:
++	case MTD_OPS_RAW:
++		memcpy(chip->oob_poi + ops->ooboffs, oob, len);
++		return oob + len;
++
++	case MTD_OPS_AUTO_OOB:
++		ret = mtd_ooblayout_set_databytes(mtd, oob, chip->oob_poi,
++						  ops->ooboffs, len);
++		BUG_ON(ret);
++		return oob + len;
++
++	default:
++		BUG();
++	}
++	return NULL;
++}
++
++/**
++ * nand_do_write_oob - [MTD Interface] NAND write out-of-band
++ * @chip: NAND chip object
++ * @to: offset to write to
++ * @ops: oob operation description structure
++ *
++ * NAND write out-of-band.
++ */
++static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
++			     struct mtd_oob_ops *ops)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	int chipnr, page, status, len;
++
++	pr_debug("%s: to = 0x%08x, len = %i\n",
++			 __func__, (unsigned int)to, (int)ops->ooblen);
++
++	len = mtd_oobavail(mtd, ops);
++
++	/* Do not allow write past end of page */
++	if ((ops->ooboffs + ops->ooblen) > len) {
++		pr_debug("%s: attempt to write past end of page\n",
++				__func__);
++		return -EINVAL;
++	}
++
++	chipnr = (int)(to >> chip->chip_shift);
++
++	/*
++	 * Reset the chip. Some chips (like the Toshiba TC5832DC found in one
++	 * of my DiskOnChip 2000 test units) will clear the whole data page too
++	 * if we don't do this. I have no clue why, but I seem to have 'fixed'
++	 * it in the doc2000 driver in August 1999.  dwmw2.
++	 */
++	nand_reset(chip, chipnr);
++
++	chip->select_chip(chip, chipnr);
++
++	/* Shift to get page */
++	page = (int)(to >> chip->page_shift);
++
++	/* Check, if it is write protected */
++	if (nand_check_wp(chip)) {
++		chip->select_chip(chip, -1);
++		return -EROFS;
++	}
++
++	/* Invalidate the page cache, if we write to the cached page */
++	if (page == chip->pagebuf)
++		chip->pagebuf = -1;
++
++	nand_fill_oob(chip, ops->oobbuf, ops->ooblen, ops);
++
++	if (ops->mode == MTD_OPS_RAW)
++		status = chip->ecc.write_oob_raw(chip, page & chip->pagemask);
++	else
++		status = chip->ecc.write_oob(chip, page & chip->pagemask);
++
++	chip->select_chip(chip, -1);
++
++	if (status)
++		return status;
++
++	ops->oobretlen = ops->ooblen;
++
++	return 0;
++}
++
+ /**
+  * nand_default_block_markbad - [DEFAULT] mark a block bad via bad block marker
+  * @chip: NAND chip object
+@@ -341,14 +527,6 @@ int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs)
+ 	return nand_default_block_markbad(chip, ofs);
+ }
+ 
+-static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+-{
+-	if (chip->legacy.block_bad)
+-		return chip->legacy.block_bad(chip, ofs);
+-
+-	return nand_block_bad(chip, ofs);
+-}
+-
+ /**
+  * nand_block_markbad_lowlevel - mark a block bad
+  * @chip: NAND chip object
+@@ -401,30 +579,6 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
+ 	return ret;
+ }
+ 
+-/**
+- * nand_check_wp - [GENERIC] check if the chip is write protected
+- * @chip: NAND chip object
+- *
+- * Check, if the device is write protected. The function expects, that the
+- * device is already selected.
+- */
+-static int nand_check_wp(struct nand_chip *chip)
+-{
+-	u8 status;
+-	int ret;
+-
+-	/* Broken xD cards report WP despite being writable */
+-	if (chip->options & NAND_BROKEN_XD)
+-		return 0;
+-
+-	/* Check the WP bit */
+-	ret = nand_status_op(chip, &status);
+-	if (ret)
+-		return ret;
+-
+-	return status & NAND_STATUS_WP ? 0 : 1;
+-}
+-
+ /**
+  * nand_block_isreserved - [GENERIC] Check if a block is marked reserved.
+  * @mtd: MTD device structure
+@@ -555,60 +709,6 @@ int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
+ };
+ EXPORT_SYMBOL_GPL(nand_gpio_waitrdy);
+ 
+-/**
+- * panic_nand_get_device - [GENERIC] Get chip for selected access
+- * @chip: the nand chip descriptor
+- * @new_state: the state which is requested
+- *
+- * Used when in panic, no locks are taken.
+- */
+-static void panic_nand_get_device(struct nand_chip *chip, int new_state)
+-{
+-	/* Hardware controller shared among independent devices */
+-	chip->controller->active = chip;
+-	chip->state = new_state;
+-}
+-
+-/**
+- * nand_get_device - [GENERIC] Get chip for selected access
+- * @chip: NAND chip structure
+- * @new_state: the state which is requested
+- *
+- * Get the device and lock it for exclusive access
+- */
+-static int
+-nand_get_device(struct nand_chip *chip, int new_state)
+-{
+-	spinlock_t *lock = &chip->controller->lock;
+-	wait_queue_head_t *wq = &chip->controller->wq;
+-	DECLARE_WAITQUEUE(wait, current);
+-retry:
+-	spin_lock(lock);
+-
+-	/* Hardware controller shared among independent devices */
+-	if (!chip->controller->active)
+-		chip->controller->active = chip;
+-
+-	if (chip->controller->active == chip && chip->state == FL_READY) {
+-		chip->state = new_state;
+-		spin_unlock(lock);
+-		return 0;
+-	}
+-	if (new_state == FL_PM_SUSPENDED) {
+-		if (chip->controller->active->state == FL_PM_SUSPENDED) {
+-			chip->state = FL_PM_SUSPENDED;
+-			spin_unlock(lock);
+-			return 0;
+-		}
+-	}
+-	set_current_state(TASK_UNINTERRUPTIBLE);
+-	add_wait_queue(wq, &wait);
+-	spin_unlock(lock);
+-	schedule();
+-	remove_wait_queue(wq, &wait);
+-	goto retry;
+-}
+-
+ /**
+  * panic_nand_wait - [GENERIC] wait until the command is done
+  * @chip: NAND chip structure
+@@ -3807,44 +3907,6 @@ static int nand_write_page(struct nand_chip *chip, uint32_t offset,
+ 	return 0;
+ }
+ 
+-/**
+- * nand_fill_oob - [INTERN] Transfer client buffer to oob
+- * @chip: NAND chip object
+- * @oob: oob data buffer
+- * @len: oob data write length
+- * @ops: oob ops structure
+- */
+-static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
+-			      struct mtd_oob_ops *ops)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	int ret;
+-
+-	/*
+-	 * Initialise to all 0xFF, to avoid the possibility of left over OOB
+-	 * data from a previous OOB read.
+-	 */
+-	memset(chip->oob_poi, 0xff, mtd->oobsize);
+-
+-	switch (ops->mode) {
+-
+-	case MTD_OPS_PLACE_OOB:
+-	case MTD_OPS_RAW:
+-		memcpy(chip->oob_poi + ops->ooboffs, oob, len);
+-		return oob + len;
+-
+-	case MTD_OPS_AUTO_OOB:
+-		ret = mtd_ooblayout_set_databytes(mtd, oob, chip->oob_poi,
+-						  ops->ooboffs, len);
+-		BUG_ON(ret);
+-		return oob + len;
+-
+-	default:
+-		BUG();
+-	}
+-	return NULL;
+-}
+-
+ #define NOTALIGNED(x)	((x & (chip->subpagesize - 1)) != 0)
+ 
+ /**
+@@ -4012,74 +4074,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return ret;
+ }
+ 
+-/**
+- * nand_do_write_oob - [MTD Interface] NAND write out-of-band
+- * @chip: NAND chip object
+- * @to: offset to write to
+- * @ops: oob operation description structure
+- *
+- * NAND write out-of-band.
+- */
+-static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
+-			     struct mtd_oob_ops *ops)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	int chipnr, page, status, len;
+-
+-	pr_debug("%s: to = 0x%08x, len = %i\n",
+-			 __func__, (unsigned int)to, (int)ops->ooblen);
+-
+-	len = mtd_oobavail(mtd, ops);
+-
+-	/* Do not allow write past end of page */
+-	if ((ops->ooboffs + ops->ooblen) > len) {
+-		pr_debug("%s: attempt to write past end of page\n",
+-				__func__);
+-		return -EINVAL;
+-	}
+-
+-	chipnr = (int)(to >> chip->chip_shift);
+-
+-	/*
+-	 * Reset the chip. Some chips (like the Toshiba TC5832DC found in one
+-	 * of my DiskOnChip 2000 test units) will clear the whole data page too
+-	 * if we don't do this. I have no clue why, but I seem to have 'fixed'
+-	 * it in the doc2000 driver in August 1999.  dwmw2.
+-	 */
+-	nand_reset(chip, chipnr);
+-
+-	chip->select_chip(chip, chipnr);
+-
+-	/* Shift to get page */
+-	page = (int)(to >> chip->page_shift);
+-
+-	/* Check, if it is write protected */
+-	if (nand_check_wp(chip)) {
+-		chip->select_chip(chip, -1);
+-		return -EROFS;
+-	}
+-
+-	/* Invalidate the page cache, if we write to the cached page */
+-	if (page == chip->pagebuf)
+-		chip->pagebuf = -1;
+-
+-	nand_fill_oob(chip, ops->oobbuf, ops->ooblen, ops);
+-
+-	if (ops->mode == MTD_OPS_RAW)
+-		status = chip->ecc.write_oob_raw(chip, page & chip->pagemask);
+-	else
+-		status = chip->ecc.write_oob(chip, page & chip->pagemask);
+-
+-	chip->select_chip(chip, -1);
+-
+-	if (status)
+-		return status;
+-
+-	ops->oobretlen = ops->ooblen;
+-
+-	return 0;
+-}
+-
+ /**
+  * nand_write_oob - [MTD Interface] NAND write data and/or out-of-band
+  * @mtd: MTD device structure
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b5e3b54cc767..1b722fe9213c 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -77,8 +77,6 @@
+ #define BBT_ENTRY_MASK		0x03
+ #define BBT_ENTRY_SHIFT		2
+ 
+-static int nand_update_bbt(struct nand_chip *chip, loff_t offs);
+-
+ static inline uint8_t bbt_get_entry(struct nand_chip *chip, int block)
+ {
+ 	uint8_t entry = chip->bbt[block >> BBT_ENTRY_SHIFT];
+@@ -1034,6 +1032,61 @@ static int check_create(struct nand_chip *this, uint8_t *buf,
+ 	return 0;
+ }
+ 
++/**
++ * nand_update_bbt - update bad block table(s)
++ * @this: the NAND device
++ * @offs: the offset of the newly marked block
++ *
++ * The function updates the bad block table(s).
++ */
++static int nand_update_bbt(struct nand_chip *this, loff_t offs)
++{
++	struct mtd_info *mtd = nand_to_mtd(this);
++	int len, res = 0;
++	int chip, chipsel;
++	uint8_t *buf;
++	struct nand_bbt_descr *td = this->bbt_td;
++	struct nand_bbt_descr *md = this->bbt_md;
++
++	if (!this->bbt || !td)
++		return -EINVAL;
++
++	/* Allocate a temporary buffer for one eraseblock incl. oob */
++	len = (1 << this->bbt_erase_shift);
++	len += (len >> this->page_shift) * mtd->oobsize;
++	buf = kmalloc(len, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	/* Do we have a bbt per chip? */
++	if (td->options & NAND_BBT_PERCHIP) {
++		chip = (int)(offs >> this->chip_shift);
++		chipsel = chip;
++	} else {
++		chip = 0;
++		chipsel = -1;
++	}
++
++	td->version[chip]++;
++	if (md)
++		md->version[chip]++;
++
++	/* Write the bad block table to the device? */
++	if (td->options & NAND_BBT_WRITE) {
++		res = write_bbt(this, buf, td, md, chipsel);
++		if (res < 0)
++			goto out;
++	}
++	/* Write the mirror bad block table to the device? */
++	if (md && (md->options & NAND_BBT_WRITE)) {
++		res = write_bbt(this, buf, md, td, chipsel);
++	}
++
++ out:
++	kfree(buf);
++	return res;
++}
++
+ /**
+  * mark_bbt_regions - [GENERIC] mark the bad block table regions
+  * @this: the NAND device
+@@ -1220,61 +1273,6 @@ static int nand_scan_bbt(struct nand_chip *this, struct nand_bbt_descr *bd)
+ 	return res;
+ }
+ 
+-/**
+- * nand_update_bbt - update bad block table(s)
+- * @this: the NAND device
+- * @offs: the offset of the newly marked block
+- *
+- * The function updates the bad block table(s).
+- */
+-static int nand_update_bbt(struct nand_chip *this, loff_t offs)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(this);
+-	int len, res = 0;
+-	int chip, chipsel;
+-	uint8_t *buf;
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
+-
+-	if (!this->bbt || !td)
+-		return -EINVAL;
+-
+-	/* Allocate a temporary buffer for one eraseblock incl. oob */
+-	len = (1 << this->bbt_erase_shift);
+-	len += (len >> this->page_shift) * mtd->oobsize;
+-	buf = kmalloc(len, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+-	/* Do we have a bbt per chip? */
+-	if (td->options & NAND_BBT_PERCHIP) {
+-		chip = (int)(offs >> this->chip_shift);
+-		chipsel = chip;
+-	} else {
+-		chip = 0;
+-		chipsel = -1;
+-	}
+-
+-	td->version[chip]++;
+-	if (md)
+-		md->version[chip]++;
+-
+-	/* Write the bad block table to the device? */
+-	if (td->options & NAND_BBT_WRITE) {
+-		res = write_bbt(this, buf, td, md, chipsel);
+-		if (res < 0)
+-			goto out;
+-	}
+-	/* Write the mirror bad block table to the device? */
+-	if (md && (md->options & NAND_BBT_WRITE)) {
+-		res = write_bbt(this, buf, md, td, chipsel);
+-	}
+-
+- out:
+-	kfree(buf);
+-	return res;
+-}
+-
+ /*
+  * Define some generic bad / good block scan pattern which are used
+  * while scanning a device for factory marked good / bad blocks.
 -- 
 2.17.1
