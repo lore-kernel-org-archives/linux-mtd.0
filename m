@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLkb3-0004Yw-2p
+ id 1gLkb2-0004Yu-Kp
  for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 07:55:54 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,10 +16,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v3 22/22] mtd: rawnand: Move ->setup_data_interface() to
- nand_controller_ops
-Date: Sun, 11 Nov 2018 08:55:24 +0100
-Message-Id: <20181111075524.13123-23-boris.brezillon@bootlin.com>
+Subject: [PATCH v3 20/22] mtd: rawnand: Deprecate the ->select_chip() hook
+Date: Sun, 11 Nov 2018 08:55:22 +0100
+Message-Id: <20181111075524.13123-21-boris.brezillon@bootlin.com>
 In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,12 +30,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-->setup_data_interface() is a controller specific method and should
-thus be placed in nand_controller_ops.
-
-In order to make that work with controllers that support keeping
-pre-configured timings we need to add a new NAND_KEEP_TIMINGS flag to
-inform the core it should skip the timings selection step.
+Now that the CS line to be selected is passed to ->exec_op() and
+stored in chip->cur_cs and after patching all drivers implementing
+->exec_op() to stop implementing this method, we can deprecate it by
+moving it to the nand_legacy structure.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
@@ -47,423 +44,477 @@ Changes in v3:
 Changes in v2:
 - None
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c |  5 +++--
- drivers/mtd/nand/raw/denali.c                |  3 ++-
- drivers/mtd/nand/raw/fsmc_nand.c             |  7 ++++---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c   |  2 +-
- drivers/mtd/nand/raw/internals.h             | 12 ++++++++++++
- drivers/mtd/nand/raw/marvell_nand.c          |  3 ++-
- drivers/mtd/nand/raw/mtk_nand.c              |  2 +-
- drivers/mtd/nand/raw/mxc_nand.c              | 12 +++++++++++-
- drivers/mtd/nand/raw/nand_base.c             | 14 ++++++++------
- drivers/mtd/nand/raw/nand_legacy.c           |  2 +-
- drivers/mtd/nand/raw/s3c2410.c               |  5 +++--
- drivers/mtd/nand/raw/sunxi_nand.c            |  2 +-
- drivers/mtd/nand/raw/tango_nand.c            |  2 +-
- drivers/mtd/nand/raw/tegra_nand.c            |  2 +-
- include/linux/mtd/rawnand.h                  | 20 ++++++++++++++------
- 15 files changed, 65 insertions(+), 28 deletions(-)
+ drivers/mtd/nand/raw/atmel/nand-controller.c     | 4 ++--
+ drivers/mtd/nand/raw/au1550nd.c                  | 2 +-
+ drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c | 2 +-
+ drivers/mtd/nand/raw/cafe_nand.c                 | 2 +-
+ drivers/mtd/nand/raw/davinci_nand.c              | 2 +-
+ drivers/mtd/nand/raw/denali.c                    | 2 +-
+ drivers/mtd/nand/raw/diskonchip.c                | 4 ++--
+ drivers/mtd/nand/raw/fsl_elbc_nand.c             | 2 +-
+ drivers/mtd/nand/raw/fsl_ifc_nand.c              | 2 +-
+ drivers/mtd/nand/raw/fsl_upm.c                   | 2 +-
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c       | 2 +-
+ drivers/mtd/nand/raw/hisi504_nand.c              | 2 +-
+ drivers/mtd/nand/raw/jz4740_nand.c               | 2 +-
+ drivers/mtd/nand/raw/jz4780_nand.c               | 2 +-
+ drivers/mtd/nand/raw/mpc5121_nfc.c               | 4 ++--
+ drivers/mtd/nand/raw/mtk_nand.c                  | 2 +-
+ drivers/mtd/nand/raw/mxc_nand.c                  | 2 +-
+ drivers/mtd/nand/raw/nand_base.c                 | 8 ++++----
+ drivers/mtd/nand/raw/nand_legacy.c               | 9 +++++----
+ drivers/mtd/nand/raw/ndfc.c                      | 2 +-
+ drivers/mtd/nand/raw/plat_nand.c                 | 2 +-
+ drivers/mtd/nand/raw/qcom_nandc.c                | 2 +-
+ drivers/mtd/nand/raw/s3c2410.c                   | 2 +-
+ drivers/mtd/nand/raw/sh_flctl.c                  | 2 +-
+ drivers/mtd/nand/raw/sunxi_nand.c                | 2 +-
+ drivers/mtd/nand/raw/tango_nand.c                | 2 +-
+ drivers/mtd/nand/raw/xway_nand.c                 | 2 +-
+ include/linux/mtd/rawnand.h                      | 4 ++--
+ 28 files changed, 39 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index d5c58eb040d8..dcd3bd73e549 100644
+index fb33f6be7c4f..d5c58eb040d8 100644
 --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
 +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1479,8 +1479,8 @@ static void atmel_nand_init(struct atmel_nand_controller *nc,
+@@ -1477,7 +1477,7 @@ static void atmel_nand_init(struct atmel_nand_controller *nc,
+ 	chip->legacy.write_byte = atmel_nand_write_byte;
+ 	chip->legacy.read_buf = atmel_nand_read_buf;
  	chip->legacy.write_buf = atmel_nand_write_buf;
- 	chip->legacy.select_chip = atmel_nand_select_chip;
+-	chip->select_chip = atmel_nand_select_chip;
++	chip->legacy.select_chip = atmel_nand_select_chip;
  
--	if (nc->mck && nc->caps->ops->setup_data_interface)
--		chip->setup_data_interface = atmel_nand_setup_data_interface;
-+	if (!nc->mck || !nc->caps->ops->setup_data_interface)
-+		chip->options |= NAND_KEEP_TIMINGS;
+ 	if (nc->mck && nc->caps->ops->setup_data_interface)
+ 		chip->setup_data_interface = atmel_nand_setup_data_interface;
+@@ -1525,7 +1525,7 @@ static void atmel_hsmc_nand_init(struct atmel_nand_controller *nc,
  
- 	/* Some NANDs require a longer delay than the default one (20us). */
- 	chip->legacy.chip_delay = 40;
-@@ -1908,6 +1908,7 @@ static int atmel_nand_attach_chip(struct nand_chip *chip)
+ 	/* Overload some methods for the HSMC controller. */
+ 	chip->legacy.cmd_ctrl = atmel_hsmc_nand_cmd_ctrl;
+-	chip->select_chip = atmel_hsmc_nand_select_chip;
++	chip->legacy.select_chip = atmel_hsmc_nand_select_chip;
+ }
  
- static const struct nand_controller_ops atmel_nand_controller_ops = {
- 	.attach_chip = atmel_nand_attach_chip,
-+	.setup_data_interface = atmel_nand_setup_data_interface,
- };
+ static int atmel_nand_controller_remove_nand(struct atmel_nand *nand)
+diff --git a/drivers/mtd/nand/raw/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
+index 9731c1c487f6..a963002663ed 100644
+--- a/drivers/mtd/nand/raw/au1550nd.c
++++ b/drivers/mtd/nand/raw/au1550nd.c
+@@ -430,7 +430,7 @@ static int au1550nd_probe(struct platform_device *pdev)
+ 	ctx->cs = cs;
  
- static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+ 	this->legacy.dev_ready = au1550_device_ready;
+-	this->select_chip = au1550_select_chip;
++	this->legacy.select_chip = au1550_select_chip;
+ 	this->legacy.cmdfunc = au1550_command;
+ 
+ 	/* 30 us command delay time */
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+index 9095a79ebc7d..a37cbfe56567 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+@@ -383,7 +383,7 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
+ 	u8 tbits, col_bits, col_size, row_bits, row_bsize;
+ 	u32 val;
+ 
+-	b47n->nand_chip.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
++	nand_chip->legacy.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
+ 	nand_chip->legacy.cmd_ctrl = bcm47xxnflash_ops_bcm4706_cmd_ctrl;
+ 	nand_chip->legacy.dev_ready = bcm47xxnflash_ops_bcm4706_dev_ready;
+ 	b47n->nand_chip.legacy.cmdfunc = bcm47xxnflash_ops_bcm4706_cmdfunc;
+diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+index c1a745940d12..a85f5fa5c66d 100644
+--- a/drivers/mtd/nand/raw/cafe_nand.c
++++ b/drivers/mtd/nand/raw/cafe_nand.c
+@@ -708,7 +708,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	cafe->nand.legacy.read_byte = cafe_read_byte;
+ 	cafe->nand.legacy.read_buf = cafe_read_buf;
+ 	cafe->nand.legacy.write_buf = cafe_write_buf;
+-	cafe->nand.select_chip = cafe_select_chip;
++	cafe->nand.legacy.select_chip = cafe_select_chip;
+ 	cafe->nand.legacy.set_features = nand_get_set_features_notsupp;
+ 	cafe->nand.legacy.get_features = nand_get_set_features_notsupp;
+ 
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 80f228d23cd2..f430aeb917e8 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -762,7 +762,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	info->chip.legacy.IO_ADDR_R	= vaddr;
+ 	info->chip.legacy.IO_ADDR_W	= vaddr;
+ 	info->chip.legacy.chip_delay	= 0;
+-	info->chip.select_chip	= nand_davinci_select_chip;
++	info->chip.legacy.select_chip	= nand_davinci_select_chip;
+ 
+ 	/* options such as NAND_BBT_USE_FLASH */
+ 	info->chip.bbt_options	= pdata->bbt_options;
 diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 64895ca68c8d..bad3b8ad5e0a 100644
+index 830ea247277b..64895ca68c8d 100644
 --- a/drivers/mtd/nand/raw/denali.c
 +++ b/drivers/mtd/nand/raw/denali.c
-@@ -1316,6 +1316,7 @@ static void denali_detach_chip(struct nand_chip *chip)
- static const struct nand_controller_ops denali_controller_ops = {
- 	.attach_chip = denali_attach_chip,
- 	.detach_chip = denali_detach_chip,
-+	.setup_data_interface = denali_setup_data_interface,
- };
+@@ -1355,7 +1355,7 @@ int denali_init(struct denali_nand_info *denali)
+ 	if (!mtd->name)
+ 		mtd->name = "denali-nand";
  
- int denali_init(struct denali_nand_info *denali)
-@@ -1372,7 +1373,7 @@ int denali_init(struct denali_nand_info *denali)
+-	chip->select_chip = denali_select_chip;
++	chip->legacy.select_chip = denali_select_chip;
+ 	chip->legacy.read_byte = denali_read_byte;
+ 	chip->legacy.write_byte = denali_write_byte;
+ 	chip->legacy.cmd_ctrl = denali_cmd_ctrl;
+diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+index 3a4c373affab..53f57e0f007e 100644
+--- a/drivers/mtd/nand/raw/diskonchip.c
++++ b/drivers/mtd/nand/raw/diskonchip.c
+@@ -1390,7 +1390,7 @@ static inline int __init doc2001plus_init(struct mtd_info *mtd)
+ 	this->legacy.read_buf = doc2001plus_readbuf;
+ 	doc->late_init = inftl_scan_bbt;
+ 	this->legacy.cmd_ctrl = NULL;
+-	this->select_chip = doc2001plus_select_chip;
++	this->legacy.select_chip = doc2001plus_select_chip;
+ 	this->legacy.cmdfunc = doc2001plus_command;
+ 	this->ecc.hwctl = doc2001plus_enable_hwecc;
  
- 	/* clk rate info is needed for setup_data_interface */
- 	if (denali->clk_rate && denali->clk_x_rate)
--		chip->setup_data_interface = denali_setup_data_interface;
-+		chip->options |= NAND_KEEP_TIMINGS;
+@@ -1568,7 +1568,7 @@ static int __init doc_probe(unsigned long physadr)
+ 	mtd_set_ooblayout(mtd, &doc200x_ooblayout_ops);
  
- 	chip->dummy_controller.ops = &denali_controller_ops;
- 	ret = nand_scan(chip, denali->max_banks);
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 1eb5008e7453..61927c4c2650 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -996,6 +996,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
- static const struct nand_controller_ops fsmc_nand_controller_ops = {
- 	.attach_chip = fsmc_nand_attach_chip,
- 	.exec_op = fsmc_exec_op,
-+	.setup_data_interface = fsmc_setup_data_interface,
- };
+ 	nand_set_controller_data(nand, doc);
+-	nand->select_chip	= doc200x_select_chip;
++	nand->legacy.select_chip	= doc200x_select_chip;
+ 	nand->legacy.cmd_ctrl		= doc200x_hwcontrol;
+ 	nand->legacy.dev_ready	= doc200x_dev_ready;
+ 	nand->legacy.waitfunc	= doc200x_wait;
+diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+index d6ed697fcfe6..70f0d2b450ea 100644
+--- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+@@ -779,7 +779,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	chip->legacy.read_byte = fsl_elbc_read_byte;
+ 	chip->legacy.write_buf = fsl_elbc_write_buf;
+ 	chip->legacy.read_buf = fsl_elbc_read_buf;
+-	chip->select_chip = fsl_elbc_select_chip;
++	chip->legacy.select_chip = fsl_elbc_select_chip;
+ 	chip->legacy.cmdfunc = fsl_elbc_cmdfunc;
+ 	chip->legacy.waitfunc = fsl_elbc_wait;
+ 	chip->legacy.set_features = nand_get_set_features_notsupp;
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index 6f4afc44381a..e65d274399f9 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -864,7 +864,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
  
- /*
-@@ -1108,10 +1109,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		}
- 	}
+ 	chip->legacy.write_buf = fsl_ifc_write_buf;
+ 	chip->legacy.read_buf = fsl_ifc_read_buf;
+-	chip->select_chip = fsl_ifc_select_chip;
++	chip->legacy.select_chip = fsl_ifc_select_chip;
+ 	chip->legacy.cmdfunc = fsl_ifc_cmdfunc;
+ 	chip->legacy.waitfunc = fsl_ifc_wait;
+ 	chip->legacy.set_features = nand_get_set_features_notsupp;
+diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
+index 673c5a0c9345..5ccc28ec0985 100644
+--- a/drivers/mtd/nand/raw/fsl_upm.c
++++ b/drivers/mtd/nand/raw/fsl_upm.c
+@@ -170,7 +170,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	fun->chip.ecc.mode = NAND_ECC_SOFT;
+ 	fun->chip.ecc.algo = NAND_ECC_HAMMING;
+ 	if (fun->mchip_count > 1)
+-		fun->chip.select_chip = fun_select_chip;
++		fun->chip.legacy.select_chip = fun_select_chip;
  
--	if (host->dev_timings)
-+	if (host->dev_timings) {
- 		fsmc_nand_setup(host, host->dev_timings);
--	else
--		nand->setup_data_interface = fsmc_setup_data_interface;
-+		nand->options |= NAND_KEEP_TIMINGS;
-+	}
- 
- 	if (AMBA_REV_BITS(host->pid) >= 8) {
- 		nand->ecc.read_page = fsmc_read_page_hwecc;
+ 	if (fun->rnb_gpio[0] >= 0)
+ 		fun->chip.legacy.dev_ready = fun_chip_ready;
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index c461d5efabc0..25f9fe79796a 100644
+index 302ddd3d4a5f..c461d5efabc0 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1889,6 +1889,7 @@ static int gpmi_nand_attach_chip(struct nand_chip *chip)
- 
- static const struct nand_controller_ops gpmi_nand_controller_ops = {
- 	.attach_chip = gpmi_nand_attach_chip,
-+	.setup_data_interface = gpmi_setup_data_interface,
- };
- 
- static int gpmi_nand_init(struct gpmi_nand_data *this)
-@@ -1908,7 +1909,6 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+@@ -1907,7 +1907,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	/* init the nand_chip{}, we don't support a 16-bit NAND Flash bus. */
  	nand_set_controller_data(chip, this);
  	nand_set_flash_node(chip, this->pdev->dev.of_node);
- 	chip->legacy.select_chip	= gpmi_select_chip;
--	chip->setup_data_interface = gpmi_setup_data_interface;
+-	chip->select_chip	= gpmi_select_chip;
++	chip->legacy.select_chip	= gpmi_select_chip;
+ 	chip->setup_data_interface = gpmi_setup_data_interface;
  	chip->legacy.cmd_ctrl	= gpmi_cmd_ctrl;
  	chip->legacy.dev_ready	= gpmi_dev_ready;
- 	chip->legacy.read_byte	= gpmi_read_byte;
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index ac66b458566f..fbf6ca015cd7 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -116,6 +116,18 @@ static inline int nand_exec_op(struct nand_chip *chip,
- 	return chip->controller->ops->exec_op(chip, op, false);
- }
- 
-+static inline bool nand_has_setup_data_iface(struct nand_chip *chip)
-+{
-+	if (!chip->controller || !chip->controller->ops ||
-+	    !chip->controller->ops->setup_data_interface)
-+		return false;
-+
-+	if (chip->options & NAND_KEEP_TIMINGS)
-+		return false;
-+
-+	return true;
-+}
-+
- /* BBT functions */
- int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
- int nand_isreserved_bbt(struct nand_chip *chip, loff_t offs);
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 2e8257fe7d00..b7b4d9b14da1 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2506,6 +2506,7 @@ static int marvell_nand_attach_chip(struct nand_chip *chip)
- static const struct nand_controller_ops marvell_nand_controller_ops = {
- 	.attach_chip = marvell_nand_attach_chip,
- 	.exec_op = marvell_nfc_exec_op,
-+	.setup_data_interface = marvell_nfc_setup_data_interface,
- };
- 
- static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
-@@ -2629,7 +2630,7 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
+index f043938ee36b..e41c13499fd5 100644
+--- a/drivers/mtd/nand/raw/hisi504_nand.c
++++ b/drivers/mtd/nand/raw/hisi504_nand.c
+@@ -783,7 +783,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	nand_set_controller_data(chip, host);
  	nand_set_flash_node(chip, np);
+ 	chip->legacy.cmdfunc	= hisi_nfc_cmdfunc;
+-	chip->select_chip	= hisi_nfc_select_chip;
++	chip->legacy.select_chip	= hisi_nfc_select_chip;
+ 	chip->legacy.read_byte	= hisi_nfc_read_byte;
+ 	chip->legacy.write_buf	= hisi_nfc_write_buf;
+ 	chip->legacy.read_buf	= hisi_nfc_read_buf;
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+index d271004f16b0..0bcfdd3d66a8 100644
+--- a/drivers/mtd/nand/raw/jz4740_nand.c
++++ b/drivers/mtd/nand/raw/jz4740_nand.c
+@@ -427,7 +427,7 @@ static int jz_nand_probe(struct platform_device *pdev)
  
- 	if (!of_property_read_bool(np, "marvell,nand-keep-config"))
--		chip->setup_data_interface = marvell_nfc_setup_data_interface;
-+		chip->options |= NAND_KEEP_TIMINGS;
+ 	chip->legacy.chip_delay = 50;
+ 	chip->legacy.cmd_ctrl = jz_nand_cmd_ctrl;
+-	chip->select_chip = jz_nand_select_chip;
++	chip->legacy.select_chip = jz_nand_select_chip;
+ 	chip->dummy_controller.ops = &jz_nand_controller_ops;
  
- 	mtd = nand_to_mtd(chip);
- 	mtd->dev.parent = dev;
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index ce124f8c02cd..b6b4602f5132 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -1288,6 +1288,7 @@ static int mtk_nfc_attach_chip(struct nand_chip *chip)
+ 	if (nand->busy_gpio)
+diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+index cdf22100ab77..22e58975f0d5 100644
+--- a/drivers/mtd/nand/raw/jz4780_nand.c
++++ b/drivers/mtd/nand/raw/jz4780_nand.c
+@@ -279,7 +279,7 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+ 	chip->legacy.IO_ADDR_W = cs->base + OFFSET_DATA;
+ 	chip->legacy.chip_delay = RB_DELAY_US;
+ 	chip->options = NAND_NO_SUBPAGE_WRITE;
+-	chip->select_chip = jz4780_nand_select_chip;
++	chip->legacy.select_chip = jz4780_nand_select_chip;
+ 	chip->legacy.cmd_ctrl = jz4780_nand_cmd_ctrl;
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->controller = &nfc->controller;
+diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
+index 86a0aabe08df..062cd1eb2861 100644
+--- a/drivers/mtd/nand/raw/mpc5121_nfc.c
++++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
+@@ -697,7 +697,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
+ 	chip->legacy.read_byte = mpc5121_nfc_read_byte;
+ 	chip->legacy.read_buf = mpc5121_nfc_read_buf;
+ 	chip->legacy.write_buf = mpc5121_nfc_write_buf;
+-	chip->select_chip = mpc5121_nfc_select_chip;
++	chip->legacy.select_chip = mpc5121_nfc_select_chip;
+ 	chip->legacy.set_features = nand_get_set_features_notsupp;
+ 	chip->legacy.get_features = nand_get_set_features_notsupp;
+ 	chip->bbt_options = NAND_BBT_USE_FLASH;
+@@ -712,7 +712,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
+ 			return retval;
+ 		}
  
- static const struct nand_controller_ops mtk_nfc_controller_ops = {
- 	.attach_chip = mtk_nfc_attach_chip,
-+	.setup_data_interface = mtk_nfc_setup_data_interface,
- };
- 
- static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
-@@ -1339,7 +1340,6 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
- 	nand->legacy.read_byte = mtk_nfc_read_byte;
- 	nand->legacy.read_buf = mtk_nfc_read_buf;
- 	nand->legacy.cmd_ctrl = mtk_nfc_cmd_ctrl;
--	nand->setup_data_interface = mtk_nfc_setup_data_interface;
- 
- 	/* set default mode in case dt entry is missing */
- 	nand->ecc.mode = NAND_ECC_HW;
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index c00b1d408a04..9b75d894cb74 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1738,8 +1738,17 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
- 	return 0;
- }
- 
-+static int mxcnd_setup_data_interface(struct nand_chip *chip, int chipnr,
-+				      const struct nand_data_interface *conf)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+
-+	return host->devtype_data->setup_data_interface(chip, chipnr, conf);
-+}
-+
- static const struct nand_controller_ops mxcnd_controller_ops = {
- 	.attach_chip = mxcnd_attach_chip,
-+	.setup_data_interface = mxcnd_setup_data_interface,
- };
- 
- static int mxcnd_probe(struct platform_device *pdev)
-@@ -1800,7 +1809,8 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		return err;
- 
--	this->setup_data_interface = host->devtype_data->setup_data_interface;
-+	if (!host->devtype_data->setup_data_interface)
-+		this->options |= NAND_KEEP_TIMINGS;
- 
- 	if (host->devtype_data->needs_ip) {
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index a62bbf22f135..a036333629dc 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -807,7 +807,7 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
- {
- 	int ret;
- 
--	if (!chip->setup_data_interface)
-+	if (!nand_has_setup_data_iface(chip))
- 		return 0;
- 
- 	/*
-@@ -825,7 +825,8 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
- 	 */
- 
- 	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
--	ret = chip->setup_data_interface(chip, chipnr, &chip->data_interface);
-+	ret = chip->controller->ops->setup_data_interface(chip, chipnr,
-+							&chip->data_interface);
- 	if (ret)
- 		pr_err("Failed to configure data interface to SDR timing mode 0\n");
- 
-@@ -852,7 +853,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
- 	};
- 	int ret;
- 
--	if (!chip->setup_data_interface)
-+	if (!nand_has_setup_data_iface(chip))
- 		return 0;
- 
- 	/* Change the mode on the chip side (if supported by the NAND chip) */
-@@ -866,7 +867,8 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+-		chip->select_chip = ads5121_select_chip;
++		chip->legacy.select_chip = ads5121_select_chip;
  	}
  
- 	/* Change the mode on the controller side */
--	ret = chip->setup_data_interface(chip, chipnr, &chip->data_interface);
-+	ret = chip->controller->ops->setup_data_interface(chip, chipnr,
-+							&chip->data_interface);
- 	if (ret)
- 		return ret;
+ 	/* Enable NFC clock */
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index 2bb0df1b7244..ce124f8c02cd 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -1333,7 +1333,7 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
  
-@@ -921,7 +923,7 @@ static int nand_init_data_interface(struct nand_chip *chip)
+ 	nand->options |= NAND_USE_BOUNCE_BUFFER | NAND_SUBPAGE_READ;
+ 	nand->legacy.dev_ready = mtk_nfc_dev_ready;
+-	nand->select_chip = mtk_nfc_select_chip;
++	nand->legacy.select_chip = mtk_nfc_select_chip;
+ 	nand->legacy.write_byte = mtk_nfc_write_byte;
+ 	nand->legacy.write_buf = mtk_nfc_write_buf;
+ 	nand->legacy.read_byte = mtk_nfc_read_byte;
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index 88bd3f6a499c..c00b1d408a04 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -1828,7 +1828,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	this->ecc.bytes = host->devtype_data->eccbytes;
+ 	host->eccsize = host->devtype_data->eccsize;
+ 
+-	this->select_chip = host->devtype_data->select_chip;
++	this->legacy.select_chip = host->devtype_data->select_chip;
+ 	this->ecc.size = 512;
+ 	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 93a19f551796..cef6633fdce9 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -248,8 +248,8 @@ void nand_select_target(struct nand_chip *chip, unsigned int cs)
+ 
+ 	chip->cur_cs = cs;
+ 
+-	if (chip->select_chip)
+-		chip->select_chip(chip, cs);
++	if (chip->legacy.select_chip)
++		chip->legacy.select_chip(chip, cs);
+ }
+ EXPORT_SYMBOL_GPL(nand_select_target);
+ 
+@@ -262,8 +262,8 @@ EXPORT_SYMBOL_GPL(nand_select_target);
+  */
+ void nand_deselect_target(struct nand_chip *chip)
  {
- 	int modes, mode, ret;
+-	if (chip->select_chip)
+-		chip->select_chip(chip, -1);
++	if (chip->legacy.select_chip)
++		chip->legacy.select_chip(chip, -1);
  
--	if (!chip->setup_data_interface)
-+	if (!nand_has_setup_data_iface(chip))
- 		return 0;
- 
- 	/*
-@@ -947,7 +949,7 @@ static int nand_init_data_interface(struct nand_chip *chip)
- 		 * Pass NAND_DATA_IFACE_CHECK_ONLY to only check if the
- 		 * controller supports the requested timings.
- 		 */
--		ret = chip->setup_data_interface(chip,
-+		ret = chip->controller->ops->setup_data_interface(chip,
- 						 NAND_DATA_IFACE_CHECK_ONLY,
- 						 &chip->data_interface);
- 		if (!ret) {
+ 	chip->cur_cs = -1;
+ }
 diff --git a/drivers/mtd/nand/raw/nand_legacy.c b/drivers/mtd/nand/raw/nand_legacy.c
-index 47364237861e..43575943f13b 100644
+index f76b9356ba9c..4596a538b967 100644
 --- a/drivers/mtd/nand/raw/nand_legacy.c
 +++ b/drivers/mtd/nand/raw/nand_legacy.c
-@@ -364,7 +364,7 @@ static void nand_ccs_delay(struct nand_chip *chip)
- 	 * Wait tCCS_min if it is correctly defined, otherwise wait 500ns
- 	 * (which should be safe for all NANDs).
+@@ -592,8 +592,8 @@ void nand_legacy_set_defaults(struct nand_chip *chip)
+ 	if (chip->legacy.waitfunc == NULL)
+ 		chip->legacy.waitfunc = nand_wait;
+ 
+-	if (!chip->select_chip)
+-		chip->select_chip = nand_select_chip;
++	if (!chip->legacy.select_chip)
++		chip->legacy.select_chip = nand_select_chip;
+ 
+ 	/* If called twice, pointers that depend on busw may need to be reset */
+ 	if (!chip->legacy.read_byte || chip->legacy.read_byte == nand_read_byte)
+@@ -626,9 +626,10 @@ int nand_legacy_check_hooks(struct nand_chip *chip)
+ 
+ 	/*
+ 	 * Default functions assigned for ->legacy.cmdfunc() and
+-	 * ->select_chip() both expect ->legacy.cmd_ctrl() to be populated.
++	 * ->legacy.select_chip() both expect ->legacy.cmd_ctrl() to be
++	 *  populated.
  	 */
--	if (chip->setup_data_interface)
-+	if (nand_has_setup_data_iface(chip))
- 		ndelay(chip->data_interface.timings.sdr.tCCS_min / 1000);
- 	else
- 		ndelay(500);
+-	if ((!chip->legacy.cmdfunc || !chip->select_chip) &&
++	if ((!chip->legacy.cmdfunc || !chip->legacy.select_chip) &&
+ 	    !chip->legacy.cmd_ctrl) {
+ 		pr_err("->legacy.cmd_ctrl() should be provided\n");
+ 		return -EINVAL;
+diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
+index d49a7a17146c..9857e0e5acd4 100644
+--- a/drivers/mtd/nand/raw/ndfc.c
++++ b/drivers/mtd/nand/raw/ndfc.c
+@@ -146,7 +146,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 	chip->legacy.IO_ADDR_W = ndfc->ndfcbase + NDFC_DATA;
+ 	chip->legacy.cmd_ctrl = ndfc_hwcontrol;
+ 	chip->legacy.dev_ready = ndfc_ready;
+-	chip->select_chip = ndfc_select_chip;
++	chip->legacy.select_chip = ndfc_select_chip;
+ 	chip->legacy.chip_delay = 50;
+ 	chip->controller = &ndfc->ndfc_control;
+ 	chip->legacy.read_buf = ndfc_read_buf;
+diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
+index 86c536ddaf24..a994b76daa50 100644
+--- a/drivers/mtd/nand/raw/plat_nand.c
++++ b/drivers/mtd/nand/raw/plat_nand.c
+@@ -63,7 +63,7 @@ static int plat_nand_probe(struct platform_device *pdev)
+ 	data->chip.legacy.IO_ADDR_W = data->io_base;
+ 	data->chip.legacy.cmd_ctrl = pdata->ctrl.cmd_ctrl;
+ 	data->chip.legacy.dev_ready = pdata->ctrl.dev_ready;
+-	data->chip.select_chip = pdata->ctrl.select_chip;
++	data->chip.legacy.select_chip = pdata->ctrl.select_chip;
+ 	data->chip.legacy.write_buf = pdata->ctrl.write_buf;
+ 	data->chip.legacy.read_buf = pdata->ctrl.read_buf;
+ 	data->chip.legacy.chip_delay = pdata->chip.chip_delay;
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index ef75dfa62a4f..6b76fb5c0aed 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2804,7 +2804,7 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 	mtd->dev.parent = dev;
+ 
+ 	chip->legacy.cmdfunc	= qcom_nandc_command;
+-	chip->select_chip	= qcom_nandc_select_chip;
++	chip->legacy.select_chip	= qcom_nandc_select_chip;
+ 	chip->legacy.read_byte	= qcom_nandc_read_byte;
+ 	chip->legacy.read_buf	= qcom_nandc_read_buf;
+ 	chip->legacy.write_buf	= qcom_nandc_write_buf;
 diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index a8905463701a..adc7a196e383 100644
+index d2e42e9d0e8c..a8905463701a 100644
 --- a/drivers/mtd/nand/raw/s3c2410.c
 +++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -876,8 +876,8 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
- 	 * let's keep behavior unchanged for legacy boards booting via pdata and
- 	 * auto-detect timings only when booting with a device tree.
- 	 */
--	if (np)
--		chip->setup_data_interface = s3c2410_nand_setup_data_interface;
-+	if (!np)
-+		chip->options |= NAND_KEEP_TIMINGS;
+@@ -866,7 +866,7 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
  
- 	switch (info->cpu_type) {
- 	case TYPE_S3C2410:
-@@ -1011,6 +1011,7 @@ static int s3c2410_nand_attach_chip(struct nand_chip *chip)
- 
- static const struct nand_controller_ops s3c24xx_nand_controller_ops = {
- 	.attach_chip = s3c2410_nand_attach_chip,
-+	.setup_data_interface = s3c2410_nand_setup_data_interface,
- };
- 
- static const struct of_device_id s3c24xx_nand_dt_ids[] = {
+ 	chip->legacy.write_buf    = s3c2410_nand_write_buf;
+ 	chip->legacy.read_buf     = s3c2410_nand_read_buf;
+-	chip->select_chip  = s3c2410_nand_select_chip;
++	chip->legacy.select_chip  = s3c2410_nand_select_chip;
+ 	chip->legacy.chip_delay   = 50;
+ 	nand_set_controller_data(chip, nmtd);
+ 	chip->options	   = set->options;
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index 4d20d033de7b..8c538e6c4926 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -1183,7 +1183,7 @@ static int flctl_probe(struct platform_device *pdev)
+ 	nand->legacy.read_byte = flctl_read_byte;
+ 	nand->legacy.write_buf = flctl_write_buf;
+ 	nand->legacy.read_buf = flctl_read_buf;
+-	nand->select_chip = flctl_select_chip;
++	nand->legacy.select_chip = flctl_select_chip;
+ 	nand->legacy.cmdfunc = flctl_cmdfunc;
+ 	nand->legacy.set_features = nand_get_set_features_notsupp;
+ 	nand->legacy.get_features = nand_get_set_features_notsupp;
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index e489a6ff57d7..a5c83cbe4897 100644
+index 51b1a548064b..e489a6ff57d7 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1847,6 +1847,7 @@ static int sunxi_nand_attach_chip(struct nand_chip *nand)
- 
- static const struct nand_controller_ops sunxi_nand_controller_ops = {
- 	.attach_chip = sunxi_nand_attach_chip,
-+	.setup_data_interface = sunxi_nfc_setup_data_interface,
- };
- 
- static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
-@@ -1927,7 +1928,6 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+@@ -1922,7 +1922,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 	 */
+ 	nand->ecc.mode = NAND_ECC_HW;
+ 	nand_set_flash_node(nand, np);
+-	nand->select_chip = sunxi_nfc_select_chip;
++	nand->legacy.select_chip = sunxi_nfc_select_chip;
+ 	nand->legacy.cmd_ctrl = sunxi_nfc_cmd_ctrl;
  	nand->legacy.read_buf = sunxi_nfc_read_buf;
  	nand->legacy.write_buf = sunxi_nfc_write_buf;
- 	nand->legacy.read_byte = sunxi_nfc_read_byte;
--	nand->setup_data_interface = sunxi_nfc_setup_data_interface;
- 
- 	mtd = nand_to_mtd(nand);
- 	mtd->dev.parent = dev;
 diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-index ebca4579c033..cb3beda88789 100644
+index 8818f893f300..ebca4579c033 100644
 --- a/drivers/mtd/nand/raw/tango_nand.c
 +++ b/drivers/mtd/nand/raw/tango_nand.c
-@@ -530,6 +530,7 @@ static int tango_attach_chip(struct nand_chip *chip)
- 
- static const struct nand_controller_ops tango_controller_ops = {
- 	.attach_chip = tango_attach_chip,
-+	.setup_data_interface = tango_set_timings,
- };
- 
- static int chip_init(struct device *dev, struct device_node *np)
-@@ -570,7 +571,6 @@ static int chip_init(struct device *dev, struct device_node *np)
- 	chip->legacy.select_chip = tango_select_chip;
+@@ -567,7 +567,7 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 	chip->legacy.read_byte = tango_read_byte;
+ 	chip->legacy.write_buf = tango_write_buf;
+ 	chip->legacy.read_buf = tango_read_buf;
+-	chip->select_chip = tango_select_chip;
++	chip->legacy.select_chip = tango_select_chip;
  	chip->legacy.cmd_ctrl = tango_cmd_ctrl;
  	chip->legacy.dev_ready = tango_dev_ready;
--	chip->setup_data_interface = tango_set_timings;
- 	chip->options = NAND_USE_BOUNCE_BUFFER |
- 			NAND_NO_SUBPAGE_WRITE |
- 			NAND_WAIT_TCCS;
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 2fe6de09f4ff..13be32c38194 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -1051,6 +1051,7 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
- static const struct nand_controller_ops tegra_nand_controller_ops = {
- 	.attach_chip = &tegra_nand_attach_chip,
- 	.exec_op = tegra_nand_exec_op,
-+	.setup_data_interface = tegra_nand_setup_data_interface,
- };
+ 	chip->setup_data_interface = tango_set_timings;
+diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+index a234a5cb4868..4cb78106af14 100644
+--- a/drivers/mtd/nand/raw/xway_nand.c
++++ b/drivers/mtd/nand/raw/xway_nand.c
+@@ -176,7 +176,7 @@ static int xway_nand_probe(struct platform_device *pdev)
  
- static int tegra_nand_chips_init(struct device *dev,
-@@ -1113,7 +1114,6 @@ static int tegra_nand_chips_init(struct device *dev,
- 		mtd->name = "tegra_nand";
- 
- 	chip->options = NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER;
--	chip->setup_data_interface = tegra_nand_setup_data_interface;
- 
- 	ret = nand_scan(chip, 1);
- 	if (ret)
+ 	data->chip.legacy.cmd_ctrl = xway_cmd_ctrl;
+ 	data->chip.legacy.dev_ready = xway_dev_ready;
+-	data->chip.select_chip = xway_select_chip;
++	data->chip.legacy.select_chip = xway_select_chip;
+ 	data->chip.legacy.write_buf = xway_write_buf;
+ 	data->chip.legacy.read_buf = xway_read_buf;
+ 	data->chip.legacy.read_byte = xway_read_byte;
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 297b40c56403..f50f40643895 100644
+index aa1512df38a9..40b74fb1792d 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -203,6 +203,13 @@ enum nand_ecc_algo {
-  */
- #define NAND_IS_BOOT_MEDIUM	0x00400000
+@@ -902,6 +902,7 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
+  * struct nand_legacy - NAND chip legacy fields/hooks
+  * @IO_ADDR_R: address to read the 8 I/O lines of the flash device
+  * @IO_ADDR_W: address to write the 8 I/O lines of the flash device
++ * @select_chip: select/deselect a specific target/die
+  * @read_byte: read one byte from the chip
+  * @write_byte: write a single byte to the chip on the low 8 I/O lines
+  * @write_buf: write data from the buffer to the chip
+@@ -927,6 +928,7 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
+ struct nand_legacy {
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
++	void (*select_chip)(struct nand_chip *chip, int cs);
+ 	u8 (*read_byte)(struct nand_chip *chip);
+ 	void (*write_byte)(struct nand_chip *chip, u8 byte);
+ 	void (*write_buf)(struct nand_chip *chip, const u8 *buf, int len);
+@@ -954,7 +956,6 @@ struct nand_legacy {
+  *			you're modifying an existing driver that is using those
+  *			fields/hooks, you should consider reworking the driver
+  *			avoid using them.
+- * @select_chip:	[REPLACEABLE] select chip nr
+  * @exec_op:		controller specific method to execute NAND operations.
+  *			This method replaces ->cmdfunc(),
+  *			->legacy.{read,write}_{buf,byte,word}(),
+@@ -1040,7 +1041,6 @@ struct nand_chip {
  
-+/*
-+ * Do not try to tweak the timings at runtime. This is needed when the
-+ * controller initializes the timings on itself or when it relies on
-+ * configuration done by the bootloader.
-+ */
-+#define NAND_KEEP_TIMINGS	0x00800000
-+
- /* Cell info constants */
- #define NAND_CI_CHIPNR_MSK	0x03
- #define NAND_CI_CELLTYPE_MSK	0x0C
-@@ -871,6 +878,11 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
-  *		 This method replaces chip->legacy.cmdfunc(),
-  *		 chip->legacy.{read,write}_{buf,byte,word}(),
-  *		 chip->legacy.dev_ready() and chip->legacy.waifunc().
-+ * @setup_data_interface: setup the data interface and timing. If
-+ *			  chipnr is set to %NAND_DATA_IFACE_CHECK_ONLY this
-+ *			  means the configuration should not be applied but
-+ *			  only checked.
-+ *			  This hook is optional.
-  */
- struct nand_controller_ops {
- 	int (*attach_chip)(struct nand_chip *chip);
-@@ -878,6 +890,8 @@ struct nand_controller_ops {
+ 	struct nand_legacy legacy;
+ 
+-	void (*select_chip)(struct nand_chip *chip, int cs);
  	int (*exec_op)(struct nand_chip *chip,
  		       const struct nand_operation *op,
  		       bool check_only);
-+	int (*setup_data_interface)(struct nand_chip *chip, int chipnr,
-+				    const struct nand_data_interface *conf);
- };
- 
- /**
-@@ -1019,10 +1033,6 @@ struct nand_legacy {
-  *			cur_cs < numchips. NAND Controller drivers should not
-  *			modify this value, but they're allowed to read it.
-  * @read_retries:	[INTERN] the number of read retry modes supported
-- * @setup_data_interface: [OPTIONAL] setup the data interface and timing. If
-- *			  chipnr is set to %NAND_DATA_IFACE_CHECK_ONLY this
-- *			  means the configuration should not be applied but
-- *			  only checked.
-  * @bbt:		[INTERN] bad block table pointer
-  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
-  *			lookup.
-@@ -1044,8 +1054,6 @@ struct nand_chip {
- 	struct nand_legacy legacy;
- 
- 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
--	int (*setup_data_interface)(struct nand_chip *chip, int chipnr,
--				    const struct nand_data_interface *conf);
- 
- 	unsigned int options;
- 	unsigned int bbt_options;
 -- 
 2.17.1
