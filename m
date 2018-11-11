@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLkb0-0004Yg-Ac
+ id 1gLkb0-0004Yu-Ae
  for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 07:55:51 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,10 +16,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v3 06/22] mtd: rawnand: ams-delta: Allow this driver to be
- compiled when COMPILE_TEST=y
-Date: Sun, 11 Nov 2018 08:55:08 +0100
-Message-Id: <20181111075524.13123-7-boris.brezillon@bootlin.com>
+Subject: [PATCH v3 11/22] mtd: rawnand: ams-delta: Explicitly inherit from
+ nand_controller
+Date: Sun, 11 Nov 2018 08:55:13 +0100
+Message-Id: <20181111075524.13123-12-boris.brezillon@bootlin.com>
 In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,58 +31,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Drop the asm and mach headers inclusion and allow this driver to be
-compiled when COMPILE_TEST=y in order to increase compile-test
-coverage.
+All NAND objects are supposed to inherit from nand_controller. The
+framework is providing a dummy controller object, but we're moving
+away from this approach in favor of explicit inheritance.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 ---
 Changes in v3:
 - Add Janusz T-b
-- Include linux/sizes.h and linux/io.h
 
 Changes in v2:
-- New patch
+- None
 ---
- drivers/mtd/nand/raw/Kconfig     | 2 +-
- drivers/mtd/nand/raw/ams-delta.c | 7 ++-----
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/ams-delta.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index c7efc31384d5..1a55d3e3d4c5 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -70,7 +70,7 @@ config MTD_NAND_GPIO
- 
- config MTD_NAND_AMS_DELTA
- 	tristate "NAND Flash device on Amstrad E3"
--	depends on MACH_AMS_DELTA
-+	depends on MACH_AMS_DELTA || COMPILE_TEST
- 	default y
- 	help
- 	  Support for NAND flash on Amstrad E3 (Delta).
 diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index 9ca70aab199d..a7c0e3af3b11 100644
+index c59672a92832..34b83edb965c 100644
 --- a/drivers/mtd/nand/raw/ams-delta.c
 +++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -21,15 +21,12 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/platform_data/gpio-omap.h>
--
--#include <asm/io.h>
--#include <asm/sizes.h>
--
--#include <mach/hardware.h>
-+#include <linux/sizes.h>
- 
- /*
+@@ -29,6 +29,7 @@
   * MTD structure for E3 (Delta)
+  */
+ struct ams_delta_nand {
++	struct nand_controller	base;
+ 	struct nand_chip	nand_chip;
+ 	struct gpio_desc	*gpiod_rdy;
+ 	struct gpio_desc	*gpiod_nce;
+@@ -277,6 +278,10 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	/* Initialize data port direction to a known state */
+ 	ams_delta_dir_input(priv, true);
+ 
++	/* Initialize the NAND controller object embedded in ams_delta_nand. */
++	nand_controller_init(&priv->base);
++	this->controller = &priv->base;
++
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(this, 1);
+ 	if (err)
 -- 
 2.17.1
