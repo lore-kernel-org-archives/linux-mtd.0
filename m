@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLkaz-0000QQ-TT
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gLkb0-0004Yg-Ac
  for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 07:55:51 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,10 +16,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v3 05/22] mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC
- flag
-Date: Sun, 11 Nov 2018 08:55:07 +0100
-Message-Id: <20181111075524.13123-6-boris.brezillon@bootlin.com>
+Subject: [PATCH v3 06/22] mtd: rawnand: ams-delta: Allow this driver to be
+ compiled when COMPILE_TEST=y
+Date: Sun, 11 Nov 2018 08:55:08 +0100
+Message-Id: <20181111075524.13123-7-boris.brezillon@bootlin.com>
 In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,38 +31,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Looks like NAND_CONTROLLER_ALLOC has been introduced a long time ago
-back when the dummy nand_hw_ctrl object was dynamically allocated
-instead of being embedded in nand_chip.
-
-We can safely get rid of this unused flag.
+Drop the asm and mach headers inclusion and allow this driver to be
+compiled when COMPILE_TEST=y in order to increase compile-test
+coverage.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 ---
 Changes in v3:
-- Add Janusz's T-b
+- Add Janusz T-b
+- Include linux/sizes.h and linux/io.h
 
 Changes in v2:
-- None
+- New patch
 ---
- include/linux/mtd/rawnand.h | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/mtd/nand/raw/Kconfig     | 2 +-
+ drivers/mtd/nand/raw/ams-delta.c | 7 ++-----
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 85dd89abcd22..2a3dd3e633f1 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -203,10 +203,6 @@ enum nand_ecc_algo {
-  */
- #define NAND_IS_BOOT_MEDIUM	0x00400000
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index c7efc31384d5..1a55d3e3d4c5 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -70,7 +70,7 @@ config MTD_NAND_GPIO
  
--/* Options set by nand scan */
--/* Nand scan has allocated controller struct */
--#define NAND_CONTROLLER_ALLOC	0x80000000
+ config MTD_NAND_AMS_DELTA
+ 	tristate "NAND Flash device on Amstrad E3"
+-	depends on MACH_AMS_DELTA
++	depends on MACH_AMS_DELTA || COMPILE_TEST
+ 	default y
+ 	help
+ 	  Support for NAND flash on Amstrad E3 (Delta).
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index 9ca70aab199d..a7c0e3af3b11 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -21,15 +21,12 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/io.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/platform_data/gpio-omap.h>
 -
- /* Cell info constants */
- #define NAND_CI_CHIPNR_MSK	0x03
- #define NAND_CI_CELLTYPE_MSK	0x0C
+-#include <asm/io.h>
+-#include <asm/sizes.h>
+-
+-#include <mach/hardware.h>
++#include <linux/sizes.h>
+ 
+ /*
+  * MTD structure for E3 (Delta)
 -- 
 2.17.1
