@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gLkaz-0000QR-TY
+ id 1gLkaz-0000QQ-TT
  for linux-mtd@lists.infradead.org; Sun, 11 Nov 2018 07:55:51 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,10 +16,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  Marc Gonzalez <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>,
  Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v3 07/22] mtd: rawnand: ams-delta: Add an SPDX tag to replace
- the license text
-Date: Sun, 11 Nov 2018 08:55:09 +0100
-Message-Id: <20181111075524.13123-8-boris.brezillon@bootlin.com>
+Subject: [PATCH v3 05/22] mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC
+ flag
+Date: Sun, 11 Nov 2018 08:55:07 +0100
+Message-Id: <20181111075524.13123-6-boris.brezillon@bootlin.com>
 In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,47 +31,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add an SPDX GPL-2.0 tag and update MODULE_LICENSE() to match the
-license text.
+Looks like NAND_CONTROLLER_ALLOC has been introduced a long time ago
+back when the dummy nand_hw_ctrl object was dynamically allocated
+instead of being embedded in nand_chip.
+
+We can safely get rid of this unused flag.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 ---
 Changes in v3:
-- Use GPL-2.0 instead of GPL-2.0+
+- Add Janusz's T-b
 
 Changes in v2:
-- New patch
+- None
 ---
- drivers/mtd/nand/raw/ams-delta.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ include/linux/mtd/rawnand.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index a7c0e3af3b11..4862d4df1a15 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  *  Copyright (C) 2006 Jonathan McDowell <noodles@earth.li>
-  *
-@@ -8,10 +9,6 @@
-  *  Converted to platform driver by Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-  *  Partially stolen from plat_nand.c
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  *  Overview:
-  *   This is a device driver for the NAND flash device found on the
-  *   Amstrad E3 (Delta).
-@@ -332,6 +329,6 @@ static struct platform_driver ams_delta_nand_driver = {
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 85dd89abcd22..2a3dd3e633f1 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -203,10 +203,6 @@ enum nand_ecc_algo {
+  */
+ #define NAND_IS_BOOT_MEDIUM	0x00400000
  
- module_platform_driver(ams_delta_nand_driver);
- 
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Jonathan McDowell <noodles@earth.li>");
- MODULE_DESCRIPTION("Glue layer for NAND flash on Amstrad E3 (Delta)");
+-/* Options set by nand scan */
+-/* Nand scan has allocated controller struct */
+-#define NAND_CONTROLLER_ALLOC	0x80000000
+-
+ /* Cell info constants */
+ #define NAND_CI_CHIPNR_MSK	0x03
+ #define NAND_CI_CELLTYPE_MSK	0x0C
 -- 
 2.17.1
