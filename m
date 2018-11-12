@@ -1,22 +1,31 @@
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMEpt-0006pr-Cm
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 16:13:14 +0000
-Received: by mail-lf1-x141.google.com with SMTP id l10so2957165lfh.9
- for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2018 08:13:02 -0800 (PST)
+Date: Mon, 12 Nov 2018 17:13:51 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh@kernel.org>,
+ Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Richard Weinberger <richard@nod.at>,
+ Yixun Lan <yixun.lan@amlogic.com>, linux-kernel@vger.kernel.org, Marek
+ Vasut <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>,
+ linux-mtd@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>, Carlo
+ Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+Message-ID: <20181112171351.4ac3506b@xps13>
+In-Reply-To: <20181106112206.65a70a81@bbrezillon>
+References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
+ <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181105165321.7ea2b45f@bbrezillon>
+ <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
+ <20181106102851.61deb97a@bbrezillon>
+ <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
+ <20181106112206.65a70a81@bbrezillon>
 MIME-Version: 1.0
-References: <CGME20180823072813eucas1p2a534b4be94a3a2bc3480adcefca2ca22@eucas1p2.samsung.com>
- <1535009282-1480-1-git-send-email-huijin.park@samsung.com>
- <20181031145505.6b034b84@bbrezillon>
-In-Reply-To: <20181031145505.6b034b84@bbrezillon>
-From: Huijin Park <bbanghj.park@gmail.com>
-Date: Tue, 13 Nov 2018 01:12:48 +0900
-Message-ID: <CAMy0x0ngjNugPO0aN0c0hACsw3qQE0rgLwfuMaX5+L7+DhXp2w@mail.gmail.com>
-Subject: Re: [PATCH] mtd: cast to u64 to avoid unexpected error
-To: boris.brezillon@bootlin.com
-Cc: huijin.park@samsung.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +35,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
+Hello,
 
-Thanks for review.
-I will send patch again.
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 6 Nov 2018
+11:22:06 +0100:
 
-On Wed, Oct 31, 2018 at 10:55 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> Hi Huijin,
->
-> Subject prefix should be "mtd: spi-nor: ...", and please replace
-> "unexpected error" by "unsigned int overflows".
->
-> On Thu, 23 Aug 2018 03:28:02 -0400
-> Huijin Park <huijin.park@samsung.com> wrote:
->
-> > From: "huijin.park" <huijin.park@samsung.com>
-> >
-> > the params->size is defined as "u64"
-> > and, "info->sector_size" and "info->n_sectors" is defined as unsgined and u16
->
->                                                  ^ are          ^ unsigned
->
-> > thus, u64 data might have strange data(loss data) if data is overflow.
->
->                                                     ^ if the result
-> overflows an unsigned int.
->
-> > this patch cast it to u64.
->
->              ^casts info->sector_size to an u64.
->
-> >
-> > Signed-off-by: huijin.park <huijin.park@samsung.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index d9c368c..527f281 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -2459,7 +2459,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
-> >       memset(params, 0, sizeof(*params));
-> >
-> >       /* Set SPI NOR sizes. */
-> > -     params->size = info->sector_size * info->n_sectors;
-> > +     params->size = (u64)info->sector_size * (u64)info->n_sectors;
->
->                                                 ^ this cast is not needed.
->
-> BTW, I doubt we'll ever have to deal with NORs that are more than 4GB,
-> but making static code analysis tools happy and enforcing code
-> correctness is important too.
->
+> On Tue, 6 Nov 2018 18:00:37 +0800
+> Liang Yang <liang.yang@amlogic.com> wrote:
+>=20
+> > On 2018/11/6 17:28, Boris Brezillon wrote: =20
+> > > On Tue, 6 Nov 2018 17:08:00 +0800
+> > > Liang Yang <liang.yang@amlogic.com> wrote:
+> > >    =20
+> > >> On 2018/11/5 23:53, Boris Brezillon wrote:   =20
+> > >>> On Fri, 2 Nov 2018 00:42:21 +0800
+> > >>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
+> > >>>       =20
+> > >>>> +
+> > >>>> +static inline u8 meson_nfc_read_byte(struct mtd_info *mtd)
+> > >>>> +{
+> > >>>> +	struct nand_chip *nand =3D mtd_to_nand(mtd);
+> > >>>> +	struct meson_nfc *nfc =3D nand_get_controller_data(nand);
+> > >>>> +	u32 cmd;
+> > >>>> +
+> > >>>> +	cmd =3D nfc->param.chip_select | NFC_CMD_DRD | 0;
+> > >>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+> > >>>> +
+> > >>>> +	meson_nfc_drain_cmd(nfc);   =20
+> > >>>
+> > >>> You probably don't want to drain the FIFO every time you read a byt=
+e on
+> > >>> the bus, and I guess the INPUT FIFO is at least as big as the CMD
+> > >>> FIFO, right? If that's the case, you should queue as much DRD cmd as
+> > >>> possible and only sync when the user explicitly requests it or when
+> > >>> the INPUT/READ FIFO is full.
+> > >>>       =20
+> > >> Register 'NFC_REG_BUF' can holds only 4 bytes, also DRD sends only o=
+ne
+> > >> nand cycle to read one byte and covers the 1st byte every time readi=
+ng.
+> > >> i think nfc controller is faster than nand cycle, but really it is n=
+ot
+> > >> high efficiency when reading so many bytes once.
+> > >> Or use dma command here like read_page and read_page_raw.   =20
+> > >=20
+> > > Yep, that's also an alternative, though you'll have to make sure the
+> > > buffer passed through the nand_op_inst is DMA-safe, and use a bounce
+> > > buffer when that's not the case.
+> > >    =20
+> > ok, i will try dma here. =20
+>=20
+> We should probably expose the bounce buf handling as generic helpers at
+> the rawnand level:
+>=20
+> void *nand_op_get_dma_safe_input_buf(struct nand_op_instr *instr)
+> {
+> 	void *buf;
+>=20
+> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_IN_INSTR))
+> 		return NULL;
+>=20
+> 	if (virt_addr_valid(instr->data.in) &&
+> 	    !object_is_on_stack(instr->data.buf.in))
+> 		return instr->data.buf.in;
+>=20
+> 	return kzalloc(instr->data.len, GFP_KERNEL);
+> }
+>=20
+> void nand_op_put_dma_safe_input_buf(struct nand_op_instr *instr,
+> 				    void *buf)
+> {
+> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_IN_INSTR) ||
+> 	    WARN_ON(!buf))
+> 		return;
+>=20
+> 	if (buf =3D=3D instr->data.buf.in)
+> 		return;
+>=20
+> 	memcpy(instr->data.buf.in, buf, instr->data.len);
+> 	kfree(buf);
+> }
+>=20
+> const void *nand_op_get_dma_safe_output_buf(struct nand_op_instr *instr)
+> {
+> 	void *buf;
+>=20
+> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_OUT_INSTR))
+> 		return NULL;
+>=20
+> 	if (virt_addr_valid(instr->data.out) &&
+> 	    !object_is_on_stack(instr->data.buf.out))
+> 		return instr->data.buf.out;
+>=20
+> 	return kmemdup(instr->data.buf.out, GFP_KERNEL);
+> }
+>=20
+> void nand_op_put_dma_safe_output_buf(struct nand_op_instr *instr,
+> 				    void *buf)
+> {
+> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_OUT_INSTR) ||
+> 	    WARN_ON(!buf))
+> 		return;
+>=20
+> 	if (buf !=3D instr->data.buf.out)
+> 		kfree(buf);
+> }
 
-I agree that enforcing code correctness is important as your said too.
+Not that I am against such function, but maybe they should come with
+comments stating that there is no reliable way to find if a buffer is
+DMA-able at runtime and these are just sanity checks (ie. required, but
+probably not enough). This is my understanding of Wolfram's recent talk
+at ELCE [1]. I suppose using the CONFIG_DMA_API_DEBUG option could help
+more reliably to find such issues.
 
-> >       params->page_size = info->page_size;
-> >
-> >       /* (Fast) Read settings. */
->
-> Regards,
->
-> Boris
+[1] https://www.youtube.com/watch?v=3DJDwaMClvV-s
 
-Thanks & best regards,
-
-Huijin
+Thanks,
+Miqu=C3=A8l
