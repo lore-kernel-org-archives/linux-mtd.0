@@ -1,17 +1,13 @@
-Received: from rcdn-iport-1.cisco.com ([173.37.86.72])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gML2N-0001qV-5x
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 22:50:33 +0000
-Date: Mon, 12 Nov 2018 14:50:15 -0800
-From: Daniel Walker <danielwa@cisco.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: "Nikunj Kela (nkela)" <nkela@cisco.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>,
- "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
+Message-ID: <f64aa222a15467dc667deb5fc1bbcae1e477482a.camel@infradead.org>
 Subject: Re: [PATCH] jffs2: implement mount option to configure endianness
-Message-ID: <20181112225015.jyuro3z3ygavnvrp@zorba>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Daniel Walker <danielwa@cisco.com>
+Cc: "Nikunj Kela (nkela)" <nkela@cisco.com>, Richard Weinberger
+ <richard.weinberger@gmail.com>, "linux-mtd @ lists . infradead . org"
+ <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+ "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
+Date: Mon, 12 Nov 2018 15:11:32 -0800
+In-Reply-To: <20181112225015.jyuro3z3ygavnvrp@zorba>
 References: <20181106214928.40020-1-nkela@cisco.com>
  <921b0f78cf67d7307a0555e1fd6f2c2976310adc.camel@infradead.org>
  <591D4732-BC3E-4F85-9277-25E049FFF4BA@cisco.com>
@@ -20,10 +16,11 @@ References: <20181106214928.40020-1-nkela@cisco.com>
  <B1D7CC34-C9D3-4745-94A1-3F713C1CB216@cisco.com>
  <897867ec09af82ca76c642b48ad23a7f08838dcf.camel@infradead.org>
  <20181112214333.lplffcc722hta43v@zorba>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181112214333.lplffcc722hta43v@zorba>
+ <20181112225015.jyuro3z3ygavnvrp@zorba>
+Content-Type: multipart/signed; micalg="sha-256";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-q54yKuRJib47GZPfgNs2"
+Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,84 +30,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 12, 2018 at 01:43:33PM -0800, Daniel Walker wrote:
-> On Thu, Nov 08, 2018 at 07:47:08PM +0000, David Woodhouse wrote:
-> > On Thu, 2018-11-08 at 18:01 +0000, Nikunj Kela (nkela) wrote:
-> > >     But we can hypothesise and handwave about it until the cows come home;
-> > >     I'd like to see a real test of whether it actually makes a difference
-> > >     that we care about.
-> > >     
-> > >     If it does, one option might be to just build separate versions of
-> > >     scan.c for each endianness, since that's the critical path we care
-> > >     about.
-> > > 
-> > > I wonder if this feature is really that important that we need to duplicate the drivers.
-> > > Also, it might take some time for me to find some device that I can run the tests with and without this patch.
-> > 
-> > Hm?
-> > 
-> > # modprobe mtdram size=16384
-> > # mount -tjffs2 mtd0 /mnt
-> > # cp -av .git /mnt # until it fills up
-> > # umount /mnt
-> > # perf record mount -tjffs2 mtd0 /mnt
-> > 
-> > On my desktop 'perf' only gets about 12 samples from that, so it's not
-> > ideal. But you can make the mtdram device bigger, use something other
-> > than my shiny new laptop, and use a higher sample frequency from 'perf'
-> > and you should be able to get some vaguely meaningful results.
-> > 
-> 
 
-Made a little mistake. The first tests were with Nikunj's very first version
-which was just a pure Kconfig option. I reran the test of the second version and
-increased the mtdram space to 100megs.
+--=-q54yKuRJib47GZPfgNs2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-baseline below,
+On Mon, 2018-11-12 at 14:50 -0800, Daniel Walker wrote:
+>  Performance counter stats for 'mount -t jffs2 /dev/mtdblock7 /mnt':
 
-sh-4.2# perf stat -B mount -t jffs2 /dev/mtdblock7 /mnt
-jffs2: Flash size not aligned to erasesize, reducing to 99944KiB
+Hm, how many decades will it take for the 'mtdblock' thing to die?
+JFFS2 doesn't use block devices :)
 
- Performance counter stats for 'mount -t jffs2 /dev/mtdblock7 /mnt':
+> It looks like the took slightly more than twice as long to mount.
 
-        100.303072 task-clock                #    0.775 CPUs utilized          
-                19 context-switches          #    0.189 K/sec                  
-                 0 cpu-migrations            #    0.000 K/sec                  
-                94 page-faults               #    0.937 K/sec                  
-         134135872 cycles                    #    1.337 GHz                     [92.88%]
-          29217497 stalled-cycles-frontend   #   21.78% frontend cycles idle    [92.02%]
-          10493221 stalled-cycles-backend    #    7.82% backend  cycles idle    [92.05%]
-         136740541 instructions              #    1.02  insns per cycle        
-                                             #    0.21  stalled cycles per insn [92.04%]
-          14639149 branches                  #  145.949 M/sec                   [19.06%]
-           1384856 branch-misses             #    9.46% of all branches         [16.29%]
+Assuming that's repeatable, it seems moderately suboptimal.
 
-       0.129377322 seconds time elapsed
+--=-q54yKuRJib47GZPfgNs2
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEFQw
+ggUxMIIEGaADAgECAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYD
+VQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RPIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAeFw0xNzEyMjEwMDAwMDBaFw0xODEyMjEyMzU5
+NTlaMCQxIjAgBgkqhkiG9w0BCQEWE2R3bXcyQGluZnJhZGVhZC5vcmcwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQDgzLNWa18DNpGUj/ZeH0Sgz53ESIbzdPw3OJeuNP6jZhxZojbyfxbM
+hETscxI/Hj6UZ4a7sHm5BkVjlsB1Af2Za/PXUt8MmLAcPMHkMPGunvkUibEvblDvpqMkQZlaZM+t
+5PqFmWkbehLaEvbpNY7dmEAAeKh4klTzJzrr5AAzaCQ32cA2e3+DEIv5O5l9ViMIjy/JM+xMQrfX
+3PZ0chY1PaVWjg59d4Uno+5LRDbgCnPkKJX4ysBGadibjBGQGJEZCjh94iiEebn2KsRLvtrJ72Ph
+3W2HDEdngW3YP0wujFQVs81U7L8XN3kdPRsa9zNqGtYQP/+1KMMJQ57hnfi9AgMBAAGjggHpMIIB
+5TAfBgNVHSMEGDAWgBSCr2yM+MX+lmF86B89K3FIXsSLwDAdBgNVHQ4EFgQUpL+/5lli9jmj2KHj
+ryyhnB2xRt0wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYIKwYBBQUH
+AwQGCysGAQQBsjEBAwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsGDCsGAQQBsjEB
+AgEBATArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8E
+UzBRME+gTaBLhklodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50
+aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKG
+SWh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5k
+U2VjdXJlRW1haWxDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAe
+BgNVHREEFzAVgRNkd213MkBpbmZyYWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQCK28BdbVJ9
+QKQqTDfXwogAYiRBEGptfE1Bjy4F5vC6eWJqOJ15vunxjLwdbZYb4L0qrJlh+ZHHHlbIK8uEZu7N
+XHUntmWMbGbZiu7JgrbSXJK1ct9gxrN/sdWYJ+JDjVHg7GfDTvTTPa26JMRqJsO1TjjyDX7A3K39
+TjV8C0hqXvwF9BsNf+qBeWO6GVzJ5572awY221hc1umibmZaKV4fg+7fS7qscx5TSuIc6uvMBQhm
+7NQiCq6euMMWBDUDlotQCDW0ilm0OuLW3IVLuZCm6Msc+6hT9+dCT4JUvxTHZnnO7uLCxV+Ujad+
+PH3itRm38i96p2zvwgLr8vwWA0ckMIIFMTCCBBmgAwIBAgIQTUYRMpPx2e52jnkx1q87gDANBgkq
+hkiG9w0BAQsFADCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQ
+MA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENP
+TU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTcx
+MjIxMDAwMDAwWhcNMTgxMjIxMjM1OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRl
+YWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4MyzVmtfAzaRlI/2Xh9EoM+d
+xEiG83T8NziXrjT+o2YcWaI28n8WzIRE7HMSPx4+lGeGu7B5uQZFY5bAdQH9mWvz11LfDJiwHDzB
+5DDxrp75FImxL25Q76ajJEGZWmTPreT6hZlpG3oS2hL26TWO3ZhAAHioeJJU8yc66+QAM2gkN9nA
+Nnt/gxCL+TuZfVYjCI8vyTPsTEK319z2dHIWNT2lVo4OfXeFJ6PuS0Q24Apz5CiV+MrARmnYm4wR
+kBiRGQo4feIohHm59irES77aye9j4d1thwxHZ4Ft2D9MLoxUFbPNVOy/Fzd5HT0bGvczahrWED//
+tSjDCUOe4Z34vQIDAQABo4IB6TCCAeUwHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8Aw
+HQYDVR0OBBYEFKS/v+ZZYvY5o9ih468soZwdsUbdMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8E
+AjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAw
+RgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUu
+Y29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2NybC5jb21vZG9jYS5jb20v
+Q09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNybDCBiwYIKwYB
+BQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FD
+bGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRw
+Oi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkq
+hkiG9w0BAQsFAAOCAQEAitvAXW1SfUCkKkw318KIAGIkQRBqbXxNQY8uBebwunliajideb7p8Yy8
+HW2WG+C9KqyZYfmRxx5WyCvLhGbuzVx1J7ZljGxm2YruyYK20lyStXLfYMazf7HVmCfiQ41R4Oxn
+w0700z2tuiTEaibDtU448g1+wNyt/U41fAtIal78BfQbDX/qgXljuhlcyeee9msGNttYXNbpom5m
+WileH4Pu30u6rHMeU0riHOrrzAUIZuzUIgqunrjDFgQ1A5aLUAg1tIpZtDri1tyFS7mQpujLHPuo
+U/fnQk+CVL8Ux2Z5zu7iwsVflI2nfjx94rUZt/Iveqds78IC6/L8FgNHJDCCBeYwggPOoAMCAQIC
+EGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNVBAYTAkdCMRswGQYDVQQI
+ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBD
+QSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4X
+DTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJH
+cmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBM
+aW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
+dXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvrOeV6wodnVAFsc4
+A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf+bGBSyD9aH95dDSmeny1
+nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcfWlP8dSsE3Rfywq09N0Zf
+xcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqzaaPpGRqXB7IMjtf7tTmU2
+jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDKCMPybTjoNCQuelc0IAaO
+4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAUu69+Aj36pvE8hI6t7jiY
+7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1UdDwEB/wQEAwIBhjASBgNV
+HRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8ERTBDMEGgP6A9hjtodHRw
+Oi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5LmNybDBx
+BggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9E
+T1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20w
+DQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2SQgG1NgvNc3fQP7TcePo
+7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs0j8CGpfb+SJA3GaBQ+39
+4k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDMKVmU/PUWNMKSTvtlenlx
+Bhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+E2pvOUtY+hPebuPtTbq7
+vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfHM5tdhYF/8v5UY5g2xANP
+ECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4jkhJiA7EuTecP/CFtR72
+uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1tyZR2niOYihZ+FCbtf3D9
+mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4ognzgXtgtdk3ShrtOS1iA
+N2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAbR9HWdFqzcOoB/hxfEyIQ
+px9/s81rgzdEZOofSlZHynoSMYIDxzCCA8MCAQEwgawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
+ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBD
+QSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
+U2VjdXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCWCGSAFlAwQCAQUAoIIB6zAYBgkq
+hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODExMTIyMzExMzJaMC8GCSqG
+SIb3DQEJBDEiBCDe5jdBTSLW9+WJEx2oiVmKsilYoB3yRc75GileZCsz8jCBvQYJKwYBBAGCNxAE
+MYGvMIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RP
+IFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQTUYRMpPx2e52
+jnkx1q87gDCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJH
+cmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBM
+aW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
+dXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBAQUABIIBAAMVDbIiWAAH
+wXscTD4PY0x9BqDXsHEPF2XZ8pHfrfRK7J0Y6bxCJI9O3Fs9VSJ3RBGB0yfngP0SxzUXi33+gZTg
+/brqBgPrsQikBjhxjhcrfK4e7duAiFRfFUfPkRGyz3KQNYZTaoeoh4P1WgxVM/6P3SkSBgIW9lby
+/E35E+/9Cv9yynkj5CXGFdaiuRBk6hX4NWEGtVQVahygJWLFMwYHFHf359W1y+YLqZxlzDSAQGN+
+8SDFTopOKA3ZHBN33OllmPyGK1U8QW0bZNmyD5pPMggJEtD5mwJCU55vV8KzJs6Tw+c+KuFdMlTZ
+vZNGR4tCWNM2LVEVqKWdQF8/z/QAAAAAAAA=
 
 
-This is with the mount option changes added.
-
-
-sh-4.2# perf stat -B mount -t jffs2 /dev/mtdblock7 /mnt
-jffs2: Flash size not aligned to erasesize, reducing to 99944KiB
-
- Performance counter stats for 'mount -t jffs2 /dev/mtdblock7 /mnt':
-
-        100.516160 task-clock                #    0.315 CPUs utilized          
-                14 context-switches          #    0.139 K/sec                  
-                 0 cpu-migrations            #    0.000 K/sec                  
-                94 page-faults               #    0.935 K/sec                  
-         129255757 cycles                    #    1.286 GHz                     [19.32%]
-          26930446 stalled-cycles-frontend   #   20.84% frontend cycles idle    [92.00%]
-          10068627 stalled-cycles-backend    #    7.79% backend  cycles idle    [92.05%]
-         138000320 instructions              #    1.07  insns per cycle        
-                                             #    0.20  stalled cycles per insn [92.04%]
-          26158985 branches                  #  260.247 M/sec                   [90.09%]
-           1242606 branch-misses             #    4.75% of all branches         [19.24%]
-
-       0.319593555 seconds time elapsed
-
-
-It looks like the took slightly more than twice as long to mount.
-
-Daniel
+--=-q54yKuRJib47GZPfgNs2--
