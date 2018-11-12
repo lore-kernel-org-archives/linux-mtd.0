@@ -1,41 +1,30 @@
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Olof Johansson <olof@lixom.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
- <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>, Shawn Guo
- <shawnguo@kernel.org>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, Sascha Hauer <s.hauer@pengutronix.de>, "Sascha
- Hauer" <kernel@pengutronix.de>, "linux-imx@nxp.com" <linux-imx@nxp.com>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Alexandre TORGUE <alexandre.torgue@st.com>, Eric Anholt <eric@anholt.net>,
- Stefan Agner <stefan@agner.ch>, Simon Horman <horms+renesas@verge.net.au>,
- Tony Lindgren <tony@atomide.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Stefan Wahren <stefan.wahren@i2se.com>,
- "yannick.fertre@st.com" <yannick.fertre@st.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/10] ARM: defconfig: Use the new FSL QSPI driver
- under the SPI framework
-Date: Mon, 12 Nov 2018 10:46:45 +0000
-Message-ID: <b01d70ae-9feb-985a-8001-dba54206662d@kontron.de>
-References: <1541601809-16950-1-git-send-email-frieder.schrempf@kontron.de>
- <1541601809-16950-7-git-send-email-frieder.schrempf@kontron.de>
- <CAOesGMgPwwwmizC+R4W1aLpvgcuVOYQr2qR2Vqb6171zGfarRw@mail.gmail.com>
- <b12936f5-871d-a982-13c5-9d894f4a1521@kontron.de>
- <20181108093451.08dfe63e@bbrezillon>
-In-Reply-To: <20181108093451.08dfe63e@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <488850F0A853A84A8DE0BBCA83E1F7B7@snt-world.com>
-Content-Transfer-Encoding: base64
+Received: from martinlund.org ([173.255.130.145]
+ helo=slmp-550-86.slc.westdc.net)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gM9tY-0007lw-8f
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 10:56:41 +0000
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:40859)
+ by slmp-550-86.slc.westdc.net with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
+ (envelope-from <martin.lund@keep-it-simple.com>) id 1gM9sh-005Ttz-TZ
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 03:55:47 -0700
+Received: by mail-oi1-f175.google.com with SMTP id u130-v6so6784061oie.7
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2018 02:55:47 -0800 (PST)
 MIME-Version: 1.0
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+In-Reply-To: <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+From: Martin Lund <martin.lund@keep-it-simple.com>
+Date: Mon, 12 Nov 2018 11:55:36 +0100
+Message-ID: <CAB7pii1WbALtH1AHjocpC976ytrCV5gM6JGXawoN--scvEx8Mw@mail.gmail.com>
+Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+To: naga.sureshkumar.relli@xilinx.com
+Cc: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ michals@xilinx.com, nagasuresh12@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, robh@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,54 +34,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMDguMTEuMTggMDk6MzQsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24gV2VkLCA3IE5v
-diAyMDE4IDE2OjM2OjEzICswMDAwDQo+IFNjaHJlbXBmIEZyaWVkZXIgPGZyaWVkZXIuc2NocmVt
-cGZAa29udHJvbi5EZT4gd3JvdGU6DQo+IA0KPj4gSGkgT2xvZiwNCj4+DQo+PiBPbiAwNy4xMS4x
-OCAxNzoyMCwgT2xvZiBKb2hhbnNzb24gd3JvdGU6DQo+Pj4gT24gV2VkLCBOb3YgNywgMjAxOCBh
-dCA2OjQ0IEFNIEZyaWVkZXIgU2NocmVtcGYNCj4+PiA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9u
-LmRlPiB3cm90ZToNCj4+Pj4NCj4+Pj4gRnJvbTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5z
-Y2hyZW1wZkBleGNlZXQuZGU+DQo+Pj4+DQo+Pj4+IFRoZSBuZXcgZHJpdmVyIGF0IHNwaS9zcGkt
-ZnNsLXFzcGkuYyByZXBsYWNlcyB0aGUgb2xkIFNQSSBOT1IgZHJpdmVyDQo+Pj4+IGF0IG10ZC9m
-c2wtcXVhZHNwaS5jLiBTd2l0Y2ggdG8gdGhlIG5ldyBkcml2ZXIgaW4gdGhlIGRlZmNvbmZpZ3Mu
-DQo+Pj4+DQo+Pj4+IFNpZ25lZC1vZmYtYnk6IEZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2No
-cmVtcGZAZXhjZWV0LmRlPg0KPj4+DQo+Pj4gSGkgRnJpZWRlciwNCj4+Pg0KPj4+IFRoaXMgcGF0
-Y2ggaXMgcGFydCBvZiBhIHNlcmllcyB0aGF0IEkgZGlkbid0IHNlZSB0aGUgcmVzdCBvZiwgYnV0
-IGluDQo+Pj4gZ2VuZXJhbCB3ZSBwcmVmZXIgdG8gbWVyZ2UgdGhlc2UgdGhyb3VnaCBhcm0tc29j
-IGV2ZW4gaWYgdGhlIGRyaXZlcg0KPj4+IGdvZXMgaW4gdGhyb3VnaCBhbm90aGVyIHRyZWUuIFRo
-ZSB3YXkgd2UnZCBwcmVmZXIgdG8gaGFuZGxlIGl0IGlzIHRoYXQNCj4+PiBvbmNlIHRoZSBkcml2
-ZXIgbGFuZHMsIHdlJ2xsIHRha2UgdGhlIGNvbmZpZyBvcHRpb24gY2hhbmdlIHRvIHR1cm4gaXQN
-Cj4+PiBvbi4gVG8gYXZvaWQgb3VyIGJyYW5jaGVzIHRvIGJyZWFrIHVudGlsIGJvdGggc2lkZXMg
-aGF2ZSBsYW5kZWQsIGl0DQo+Pj4gbWlnaHQgYmUgYSBnb29kIGlkZWEgdG8ga2VlcCBib3RoIGRy
-aXZlcnMgb24gZm9yIGEgc2hvcnQgd2hpbGUgKG9uZQ0KPj4+IHJlbGVhc2UpLg0KPj4+DQo+Pj4g
-U28sIEknbSBub3QgZ29pbmcgdG8gYWNrIHRoaXMgc2luY2Ugd2UgYXZvaWQgdGFraW5nIGRlZmNv
-bmZpZyBjaGFuZ2VzDQo+Pj4gdGhyb3VnaCBkcml2ZXIgdHJlZXMgKHRoZXNlIHR3byBkZWZjb25m
-aWdzIHRlbmQgdG8gY2h1cm4gYSBsb3QgYW5kIHdlDQo+Pj4gZG9uJ3Qgd2FudCB0byBjcmVhdGUg
-bWVyZ2UgY29uZmxpY3RzIHdoZXJlIHdlIGRvbid0IGhhdmUgdG8pLCBidXQNCj4+PiB3ZSdsbCBi
-ZSBoYXBweSB0byBwaWNrIGl0IHVwIHdoZW4gdGhlIHRpbWUgY29tZXMuDQo+Pg0KPj4gT2ssIHRo
-YW5rIHlvdSBmb3IgZXhwbGFpbmluZyB0aGUgY29tbW9uIHByYWN0aWNlLiBJIHdpbGwgZHJvcCB0
-aGUgY29uZmlnDQo+PiBjaGFuZ2VzIGZvciB0aGUgbmV4dCB2ZXJzaW9uIGFuZCBzZW5kIGl0IHNl
-cGFyYXRlbHkgd2hlbiB0aGUgdGltZSBpcyByZWFkeS4NCj4+DQo+PiBCb3RoIHRoZSBvbGQgZHJp
-dmVyIGFuZCB0aGUgbmV3IG9uZSB1c2UgdGhlIHNhbWUgY29tcGF0aWJsZSBzdHJpbmdzIGZvcg0K
-Pj4gcHJvYmluZy4gV291bGRuJ3QgdGhhdCBjYXVzZSBwcm9ibGVtcyBpZiBib3RoIGRyaXZlcnMg
-YXJlIGVuYWJsZWQgZm9yIGENCj4+IHdoaWxlLCBvciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nPw0K
-PiANCj4gT3IgbWF5YmUgd2Ugc2hvdWxkIG5vdCBpbnRyb2R1Y2UgYSBuZXcgS2NvbmZpZyBvcHRp
-b24gYW5kIGp1c3QgcmV1c2UNCj4gdGhlIG9sZCBvbmUuIEl0IHByb2JhYmx5IHJlcXVpcmVzIHJl
-LW9yZGVyaW5nIHBhdGNoZXMgYSBiaXQgKHBhdGNoIDENCj4gc2hvdWxkIGJlIG1vdmVkIGFmdGVy
-IHBhdGNoIDUpLiBUaGVuIHlvdSBoYXZlIDIgY2hvaWNlczoNCj4gDQo+IDEvIG1lcmdlIHBhdGNo
-IDEgYW5kIDYgc28gdGhhdCB0aGUgbmV3IGRyaXZlciBlZmZlY3RpdmVseSByZXBsYWNlcyB0aGUN
-Cj4gICAgIG9sZCBvbmUgYnV0IHVzZXMgdGhlIHNhbWUgS2NvbmZpZyBvcHRpb24NCj4gMi8gcmVt
-b3ZlIHRoZSBhYmlsaXR5IHRvIGNvbXBpbGUgdGhlIG9sZCBkcml2ZXIgd2hlbiB0aGUgbmV3IG9u
-ZSBpcw0KPiAgICAgaW50cm9kdWNlZDogcmVtb3ZlIHRoZSBsaW5lIGZyb20gZHJpdmVycy9tdGQv
-c3BpLW5vciBNYWtlZmlsZSBhbmQNCj4gICAgIG1vdmUgdGhlIEtjb25maWcgZW50cnkgZnJvbSBk
-cml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcgdG8NCj4gICAgIGRyaXZlcnMvc3BpL0tjb25maWcu
-IEFuZCByZW1vdmUgdGhlIG9sZCBjb2RlIGluIGEgc2VwYXJhdGUgcGF0Y2gNCj4gDQo+IEknbSBm
-aW5lIGVpdGhlciB3YXksIGJ1dCBvcHRpb24gIzIgd2lsbCBwcm9iYWJseSBtYWtlIHRoZSBwYXRj
-aA0KPiBpbnRyb2R1Y2luZyB0aGUgbmV3IGRyaXZlciBiaWdnZXIgYW5kIGh1cnQgcmVhZGFiaWxp
-dHkuDQoNCkkgdGhpbmsgaGF2aW5nIGJvdGggZHJpdmVycyBpbiB0aGUgdHJlZSBmb3IgYSB3aGls
-ZSB3b3VsZG4ndCBiZSBzbyBiYWQuIA0KU28gaWYgYW55IGNvbXBhdGliaWxpdHkgaXNzdWVzIGNv
-bWUgdXAgd2l0aCB0aGUgbmV3IGRyaXZlciwgcGVvcGxlIGNhbiANCnN0aWxsIHVzZSB0aGUgb2xk
-IG9uZS4NCg0KVGhlcmVmb3JlIEkgdGhpbmsgSSB3aWxsIGRyb3AgdGhlIHBhdGNoZXMgdGhhdCBj
-aGFuZ2UgdGhlIGRlZmNvbmZpZyBhbmQgDQpyZW1vdmUgdGhlIG9sZCBkcml2ZXIgY29kZSBhbmQg
-a2VlcCB0aGUgZGlmZmVyZW50IEtjb25maWcgb3B0aW9ucy4gQW5kIA0KbWF5YmUgYWRkIGFuIGV4
-Y2x1c2l2ZSBkZXBlbmRlbmN5IGluIEtjb25maWcsIHNvIGJvdGggZHJpdmVycyBjYW4gbm90IGJl
-IA0KZW5hYmxlZCBhdCB0aGUgc2FtZSB0aW1lLg0KDQpEb2VzIHRoaXMgbWFrZSBzZW5zZT8=
+Hi Naga,
+
+Just a few review comments for the v12 version.
+
+On Fri, Nov 9, 2018 at 6:00 AM Naga Sureshkumar Relli
+<naga.sureshkumar.relli@xilinx.com> wrote:
+> +#define PKT_OFST               0x00
+> +#define PKT_CNT_SHIFT          12
+> +
+> +#define MEM_ADDR1_OFST         0x04
+> +#define MEM_ADDR2_OFST         0x08
+
+For the sake of readability I think *_OFFSET is preferred, especially
+since the driver already includes short macro names. I think this is
+similar to the EVNT vs EVENT point.
+The majority of drivers in the Linux kernel do not shorten OFFSET -> OFST.
+
+
+> +static void anfc_rw_pio_op(struct mtd_info *mtd, u8 *buf, int len,
+> +                          bool do_read, int prog, int pktcount, int pktsize)
+> +{
+> +       struct nand_chip *chip = mtd_to_nand(mtd);
+> +       struct anfc_nand_controller *nfc = to_anfc(chip->controller);
+> +       struct anfc_nand_chip *achip = to_anfc_nand(chip);
+> +       u32 *bufptr = (u32 *)buf;
+> +       u32 cnt = 0, intr = 0;
+> +
+> +       anfc_config_dma(nfc, 0);
+> +
+> +       if (pktsize == 0)
+> +               pktsize = len;
+> +
+> +       anfc_setpktszcnt(nfc, pktsize, pktcount);
+> +
+> +       if (!achip->strength)
+> +               intr = MBIT_ERROR;
+> +
+> +       if (do_read)
+> +               intr |= READ_READY;
+> +       else
+> +               intr |= WRITE_READY;
+> +       anfc_enable_intrs(nfc, intr);
+> +       writel(prog, nfc->base + PROG_OFST);
+> +       while (cnt < pktcount) {
+> +               anfc_wait_for_event(nfc);
+> +               cnt++;
+> +               if (cnt == pktcount)
+> +                       anfc_enable_intrs(nfc, XFER_COMPLETE);
+> +               if (do_read)
+> +                       ioread32_rep(nfc->base + DATA_PORT_OFST, bufptr,
+> +                                    pktsize / 4);
+> +               else
+> +                       iowrite32_rep(nfc->base + DATA_PORT_OFST, bufptr,
+> +                                     pktsize / 4);
+> +               bufptr += (pktsize / 4);
+> +               if (cnt < pktcount)
+> +                       anfc_enable_intrs(nfc, intr);
+> +       }
+> +       anfc_wait_for_event(nfc);
+> +}
+
+Throughout the driver all calls to anfc_wait_for_event() ignores the
+timeout return value. It would be nice to see some error handling in
+case it times out - at minimum consider printing out an error message
+since timeout on NAND operations are fairly critical and should
+generally not occur. Perhaps even an argument can be made for
+returning -ETIMEDOUT in case of timeout.
+
+I'm putting a focus on this because I see the original non-upstream
+Arasan driver sometimes timeout on NAND operations when I stress test
+it via the UBI stress test. Not sure what the cause for the timeout is
+yet but either way an error message would have been helpful.
+
+Br, Martin
