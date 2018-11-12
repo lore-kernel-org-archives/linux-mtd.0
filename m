@@ -1,23 +1,28 @@
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMJQz-00053t-NL
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 21:07:51 +0000
-Received: by mail-lj1-x241.google.com with SMTP id z80-v6so8879423ljb.8
- for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2018 13:07:39 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 2/2 v2] mtd: physmap_of_gemini: Handle pin control
-Date: Mon, 12 Nov 2018 22:07:29 +0100
-Message-Id: <20181112210729.23580-2-linus.walleij@linaro.org>
-In-Reply-To: <20181112210729.23580-1-linus.walleij@linaro.org>
-References: <20181112210729.23580-1-linus.walleij@linaro.org>
+Received: from rcdn-iport-6.cisco.com ([173.37.86.77])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMJzs-0004ye-0D
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 21:43:52 +0000
+Date: Mon, 12 Nov 2018 13:43:33 -0800
+From: Daniel Walker <danielwa@cisco.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: "Nikunj Kela (nkela)" <nkela@cisco.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
+Subject: Re: [PATCH] jffs2: implement mount option to configure endianness
+Message-ID: <20181112214333.lplffcc722hta43v@zorba>
+References: <20181106214928.40020-1-nkela@cisco.com>
+ <921b0f78cf67d7307a0555e1fd6f2c2976310adc.camel@infradead.org>
+ <591D4732-BC3E-4F85-9277-25E049FFF4BA@cisco.com>
+ <CAFLxGvz8QgK1P6d-_biSRk4fyYEobio315_tUP+cRXTvt+m1hA@mail.gmail.com>
+ <01b82f6eb37b674effc6c8b0fa4a014deb401a85.camel@infradead.org>
+ <B1D7CC34-C9D3-4745-94A1-3F713C1CB216@cisco.com>
+ <897867ec09af82ca76c642b48ad23a7f08838dcf.camel@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <897867ec09af82ca76c642b48ad23a7f08838dcf.camel@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,199 +32,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This enables the complex mapping for the Gemini and kicks in
-custom read/write functions that will wrap the existing
-simple functions in calls to enable/disable the parallel
-flash pins using pin controls.
+On Thu, Nov 08, 2018 at 07:47:08PM +0000, David Woodhouse wrote:
+> On Thu, 2018-11-08 at 18:01 +0000, Nikunj Kela (nkela) wrote:
+> >     But we can hypothesise and handwave about it until the cows come home;
+> >     I'd like to see a real test of whether it actually makes a difference
+> >     that we care about.
+> >     
+> >     If it does, one option might be to just build separate versions of
+> >     scan.c for each endianness, since that's the critical path we care
+> >     about.
+> > 
+> > I wonder if this feature is really that important that we need to duplicate the drivers.
+> > Also, it might take some time for me to find some device that I can run the tests with and without this patch.
+> 
+> Hm?
+> 
+> # modprobe mtdram size=16384
+> # mount -tjffs2 mtd0 /mnt
+> # cp -av .git /mnt # until it fills up
+> # umount /mnt
+> # perf record mount -tjffs2 mtd0 /mnt
+> 
+> On my desktop 'perf' only gets about 12 samples from that, so it's not
+> ideal. But you can make the mtdram device bigger, use something other
+> than my shiny new laptop, and use a higher sample frequency from 'perf'
+> and you should be able to get some vaguely meaningful results.
+> 
 
-This is necessary on some hardware such as the D-Link
-DIR-685 where all flash pins are patched in/out at the same
-time, but some of the flash pins are in practice unused by
-the flash and have anyway been reused as GPIO.
+10 meg MTDRAM device baseline without any changes,
 
-This concerns specifically CE1 on the Gemini. There is only
-one flash chip, so only CE0 is used, and the line for CE1
-has been reused as chip select for the emulated SPI port
-connected to the display. If we try to use the same lines
-for flash and GPIO at the same time, one of them will loose:
-the GPIO line will disappear because it gets disconnected
-from the pin when the flash group is muxed out.
+sh-4.2# perf stat -B  mount -tjffs2 /dev/mtdblock7 /mnt
+jffs2: Flash size not aligned to erasesize, reducing to 9920KiB
 
-Fix this by introducing two pin control states named simply
-"enabled" and "disabled" and only enable the flash lines
-when absolutely necessary (during read/write/copy). This
-way, they are available for GPIO at all other times and
-the display works.
+ Performance counter stats for 'mount -tjffs2 /dev/mtdblock7 /mnt':
 
-Collect all the state variables in a struct named
-struct gemini_flash and allocate this struct at probe
-time.
+         74.922624 task-clock                #    0.820 CPUs utilized          
+                14 context-switches          #    0.187 K/sec                  
+                 0 cpu-migrations            #    0.000 K/sec                  
+                94 page-faults               #    0.001 M/sec                  
+         103274114 cycles                    #    1.378 GHz                     [ 6.65%]
+           1887555 stalled-cycles-frontend   #    1.83% frontend cycles idle   
+           1688520 stalled-cycles-backend    #    1.63% backend  cycles idle   
+         106423876 instructions              #    1.03  insns per cycle        
+                                             #    0.02  stalled cycles per insn
+          21325416 branches                  #  284.633 M/sec                   [97.41%]
+            104797 branch-misses             #    0.49% of all branches         [95.20%]
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v1->v2:
-- Rebase on latest MTD development branch
----
- drivers/mtd/maps/Kconfig          |   1 +
- drivers/mtd/maps/physmap-gemini.c | 110 +++++++++++++++++++++++++++++-
- 2 files changed, 110 insertions(+), 1 deletion(-)
+       0.091398368 seconds time elapsed
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 2edd8bcdbe1c..e0cf869c8544 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -88,6 +88,7 @@ config MTD_PHYSMAP_GEMINI
- 	bool "Cortina Gemini OF-based physical memory map handling"
- 	depends on MTD_PHYSMAP_OF
- 	depends on MFD_SYSCON
-+	select MTD_COMPLEX_MAPPINGS
- 	default ARCH_GEMINI
- 	help
- 	  This provides some extra DT physmap parsing for the Gemini
-diff --git a/drivers/mtd/maps/physmap-gemini.c b/drivers/mtd/maps/physmap-gemini.c
-index 1cf128a0526d..60775b208fc9 100644
---- a/drivers/mtd/maps/physmap-gemini.c
-+++ b/drivers/mtd/maps/physmap-gemini.c
-@@ -10,9 +10,11 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/mtd/map.h>
-+#include <linux/mtd/xip.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/bitops.h>
-+#include <linux/pinctrl/consumer.h>
- #include "physmap-gemini.h"
- 
- /*
-@@ -44,6 +46,82 @@
- 
- #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
- 
-+static const struct of_device_id syscon_match[] = {
-+	{ .compatible = "cortina,gemini-syscon" },
-+	{ },
-+};
-+
-+struct gemini_flash {
-+	struct device *dev;
-+	struct pinctrl *p;
-+	struct pinctrl_state *enabled_state;
-+	struct pinctrl_state *disabled_state;
-+};
-+
-+/* Static local state */
-+static struct gemini_flash *gf;
-+
-+static void gemini_flash_enable_pins(void)
-+{
-+	int ret;
-+
-+	if (IS_ERR(gf->enabled_state))
-+		return;
-+	ret = pinctrl_select_state(gf->p, gf->enabled_state);
-+	if (ret)
-+		dev_err(gf->dev, "failed to enable pins\n");
-+}
-+
-+static void gemini_flash_disable_pins(void)
-+{
-+	int ret;
-+
-+	if (IS_ERR(gf->disabled_state))
-+		return;
-+	ret = pinctrl_select_state(gf->p, gf->disabled_state);
-+	if (ret)
-+		dev_err(gf->dev, "failed to disable pins\n");
-+}
-+
-+static map_word __xipram gemini_flash_map_read(struct map_info *map,
-+					       unsigned long ofs)
-+{
-+	map_word __xipram ret;
-+
-+	gemini_flash_enable_pins();
-+	ret = inline_map_read(map, ofs);
-+	gemini_flash_disable_pins();
-+
-+	return ret;
-+}
-+
-+static void __xipram gemini_flash_map_write(struct map_info *map,
-+					    const map_word datum,
-+					    unsigned long ofs)
-+{
-+	gemini_flash_enable_pins();
-+	inline_map_write(map, datum, ofs);
-+	gemini_flash_disable_pins();
-+}
-+
-+static void __xipram gemini_flash_map_copy_from(struct map_info *map,
-+						void *to, unsigned long from,
-+						ssize_t len)
-+{
-+	gemini_flash_enable_pins();
-+	inline_map_copy_from(map, to, from, len);
-+	gemini_flash_disable_pins();
-+}
-+
-+static void __xipram gemini_flash_map_copy_to(struct map_info *map,
-+					      unsigned long to,
-+					      const void *from, ssize_t len)
-+{
-+	gemini_flash_enable_pins();
-+	inline_map_copy_to(map, to, from, len);
-+	gemini_flash_disable_pins();
-+}
-+
- int of_flash_probe_gemini(struct platform_device *pdev,
- 			  struct device_node *np,
- 			  struct map_info *map)
-@@ -57,6 +135,11 @@ int of_flash_probe_gemini(struct platform_device *pdev,
- 	if (!of_device_is_compatible(np, "cortina,gemini-flash"))
- 		return 0;
- 
-+	gf = devm_kzalloc(dev, sizeof(*gf), GFP_KERNEL);
-+	if (!gf)
-+		return -ENOMEM;
-+	gf->dev = dev;
-+
- 	rmap = syscon_regmap_lookup_by_phandle(np, "syscon");
- 	if (IS_ERR(rmap)) {
- 		dev_err(dev, "no syscon\n");
-@@ -91,7 +174,32 @@ int of_flash_probe_gemini(struct platform_device *pdev,
- 				 map->bankwidth * 8);
- 	}
- 
--	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
-+	gf->p = devm_pinctrl_get(dev);
-+	if (IS_ERR(gf->p)) {
-+		dev_err(dev, "no pinctrl handle\n");
-+		ret = PTR_ERR(gf->p);
-+		return ret;
-+	}
-+
-+	gf->enabled_state = pinctrl_lookup_state(gf->p, "enabled");
-+	if (IS_ERR(gf->enabled_state))
-+		dev_err(dev, "no enabled pin control state\n");
-+
-+	gf->disabled_state = pinctrl_lookup_state(gf->p, "disabled");
-+	if (IS_ERR(gf->enabled_state)) {
-+		dev_err(dev, "no disabled pin control state\n");
-+	} else {
-+		ret = pinctrl_select_state(gf->p, gf->disabled_state);
-+		if (ret)
-+			dev_err(gf->dev, "failed to disable pins\n");
-+	}
-+
-+	map->read = gemini_flash_map_read;
-+	map->write = gemini_flash_map_write;
-+	map->copy_from = gemini_flash_map_copy_from;
-+	map->copy_to = gemini_flash_map_copy_to;
-+
-+	dev_info(dev, "initialized Gemini-specific physmap control\n");
- 
- 	return 0;
- }
--- 
-2.19.1
+
+Same partition size, adding in the patch from Nikunj set to Native,
+
+sh-4.2# perf stat -B mount -t jffs2 /dev/mtdblock7 /mnt
+jffs2: Flash size not aligned to erasesize, reducing to 9920KiB
+
+ Performance counter stats for 'mount -t jffs2 /dev/mtdblock7 /mnt':
+
+         75.223488 task-clock                #    0.736 CPUs utilized          
+                17 context-switches          #    0.226 K/sec                  
+                 0 cpu-migrations            #    0.000 K/sec                  
+                94 page-faults               #    0.001 M/sec                  
+         100815917 cycles                    #    1.340 GHz                    
+          16561335 stalled-cycles-frontend   #   16.43% frontend cycles idle   
+           2991700 stalled-cycles-backend    #    2.97% backend  cycles idle   
+         106536662 instructions              #    1.06  insns per cycle        
+                                             #    0.16  stalled cycles per insn
+          10931326 branches                  #  145.318 M/sec                   [ 4.13%]
+            931410 branch-misses             #    8.52% of all branches         [ 2.87%]
+
+       0.102157784 seconds time elapsed
+
+
+I'm not sure this tells us very much. If anything it looks like not much has changes.
+
+Daniel
