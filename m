@@ -1,42 +1,32 @@
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Olof Johansson <olof@lixom.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
- <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>, Shawn Guo
- <shawnguo@kernel.org>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, Sascha Hauer <s.hauer@pengutronix.de>, "Sascha
- Hauer" <kernel@pengutronix.de>, "linux-imx@nxp.com" <linux-imx@nxp.com>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Alexandre TORGUE <alexandre.torgue@st.com>, Eric Anholt <eric@anholt.net>,
- Stefan Agner <stefan@agner.ch>, Simon Horman <horms+renesas@verge.net.au>,
- Tony Lindgren <tony@atomide.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Stefan Wahren <stefan.wahren@i2se.com>,
- "yannick.fertre@st.com" <yannick.fertre@st.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/10] ARM: defconfig: Use the new FSL QSPI driver
- under the SPI framework
-Date: Mon, 12 Nov 2018 11:24:22 +0000
-Message-ID: <7c379ee9-a9e7-e0a5-14a5-9074d6a964e7@kontron.de>
-References: <1541601809-16950-1-git-send-email-frieder.schrempf@kontron.de>
- <1541601809-16950-7-git-send-email-frieder.schrempf@kontron.de>
- <CAOesGMgPwwwmizC+R4W1aLpvgcuVOYQr2qR2Vqb6171zGfarRw@mail.gmail.com>
- <b12936f5-871d-a982-13c5-9d894f4a1521@kontron.de>
- <20181108093451.08dfe63e@bbrezillon>
- <b01d70ae-9feb-985a-8001-dba54206662d@kontron.de>
- <20181112115628.68a84b92@bbrezillon>
-In-Reply-To: <20181112115628.68a84b92@bbrezillon>
+Received: from mail-by2nam01on060d.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::60d]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMBZe-00036i-Us
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 12:44:16 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Martin Lund
+ <martin.lund@keep-it-simple.com>
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>
+Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Mon, 12 Nov 2018 12:43:30 +0000
+Message-ID: <MWHPR02MB2623C672241900608C181CD6AFC10@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <CAB7pii1WbALtH1AHjocpC976ytrCV5gM6JGXawoN--scvEx8Mw@mail.gmail.com>
+ <20181112115810.6f931cfb@bbrezillon>
+In-Reply-To: <20181112115810.6f931cfb@bbrezillon>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A38A91B4A7427142ACB8A24A9DCCAE0F@snt-world.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -47,75 +37,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMTIuMTEuMTggMTE6NTYsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24gTW9uLCAxMiBO
-b3YgMjAxOCAxMDo0Njo0NSArMDAwMA0KPiBTY2hyZW1wZiBGcmllZGVyIDxmcmllZGVyLnNjaHJl
-bXBmQGtvbnRyb24uRGU+IHdyb3RlOg0KPiANCj4+IE9uIDA4LjExLjE4IDA5OjM0LCBCb3JpcyBC
-cmV6aWxsb24gd3JvdGU6DQo+Pj4gT24gV2VkLCA3IE5vdiAyMDE4IDE2OjM2OjEzICswMDAwDQo+
-Pj4gU2NocmVtcGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLkRlPiB3cm90ZToN
-Cj4+PiAgICANCj4+Pj4gSGkgT2xvZiwNCj4+Pj4NCj4+Pj4gT24gMDcuMTEuMTggMTc6MjAsIE9s
-b2YgSm9oYW5zc29uIHdyb3RlOg0KPj4+Pj4gT24gV2VkLCBOb3YgNywgMjAxOCBhdCA2OjQ0IEFN
-IEZyaWVkZXIgU2NocmVtcGYNCj4+Pj4+IDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+IHdy
-b3RlOg0KPj4+Pj4+DQo+Pj4+Pj4gRnJvbTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5zY2hy
-ZW1wZkBleGNlZXQuZGU+DQo+Pj4+Pj4NCj4+Pj4+PiBUaGUgbmV3IGRyaXZlciBhdCBzcGkvc3Bp
-LWZzbC1xc3BpLmMgcmVwbGFjZXMgdGhlIG9sZCBTUEkgTk9SIGRyaXZlcg0KPj4+Pj4+IGF0IG10
-ZC9mc2wtcXVhZHNwaS5jLiBTd2l0Y2ggdG8gdGhlIG5ldyBkcml2ZXIgaW4gdGhlIGRlZmNvbmZp
-Z3MuDQo+Pj4+Pj4NCj4+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBGcmllZGVyIFNjaHJlbXBmIDxmcmll
-ZGVyLnNjaHJlbXBmQGV4Y2VldC5kZT4NCj4+Pj4+DQo+Pj4+PiBIaSBGcmllZGVyLA0KPj4+Pj4N
-Cj4+Pj4+IFRoaXMgcGF0Y2ggaXMgcGFydCBvZiBhIHNlcmllcyB0aGF0IEkgZGlkbid0IHNlZSB0
-aGUgcmVzdCBvZiwgYnV0IGluDQo+Pj4+PiBnZW5lcmFsIHdlIHByZWZlciB0byBtZXJnZSB0aGVz
-ZSB0aHJvdWdoIGFybS1zb2MgZXZlbiBpZiB0aGUgZHJpdmVyDQo+Pj4+PiBnb2VzIGluIHRocm91
-Z2ggYW5vdGhlciB0cmVlLiBUaGUgd2F5IHdlJ2QgcHJlZmVyIHRvIGhhbmRsZSBpdCBpcyB0aGF0
-DQo+Pj4+PiBvbmNlIHRoZSBkcml2ZXIgbGFuZHMsIHdlJ2xsIHRha2UgdGhlIGNvbmZpZyBvcHRp
-b24gY2hhbmdlIHRvIHR1cm4gaXQNCj4+Pj4+IG9uLiBUbyBhdm9pZCBvdXIgYnJhbmNoZXMgdG8g
-YnJlYWsgdW50aWwgYm90aCBzaWRlcyBoYXZlIGxhbmRlZCwgaXQNCj4+Pj4+IG1pZ2h0IGJlIGEg
-Z29vZCBpZGVhIHRvIGtlZXAgYm90aCBkcml2ZXJzIG9uIGZvciBhIHNob3J0IHdoaWxlIChvbmUN
-Cj4+Pj4+IHJlbGVhc2UpLg0KPj4+Pj4NCj4+Pj4+IFNvLCBJJ20gbm90IGdvaW5nIHRvIGFjayB0
-aGlzIHNpbmNlIHdlIGF2b2lkIHRha2luZyBkZWZjb25maWcgY2hhbmdlcw0KPj4+Pj4gdGhyb3Vn
-aCBkcml2ZXIgdHJlZXMgKHRoZXNlIHR3byBkZWZjb25maWdzIHRlbmQgdG8gY2h1cm4gYSBsb3Qg
-YW5kIHdlDQo+Pj4+PiBkb24ndCB3YW50IHRvIGNyZWF0ZSBtZXJnZSBjb25mbGljdHMgd2hlcmUg
-d2UgZG9uJ3QgaGF2ZSB0byksIGJ1dA0KPj4+Pj4gd2UnbGwgYmUgaGFwcHkgdG8gcGljayBpdCB1
-cCB3aGVuIHRoZSB0aW1lIGNvbWVzLg0KPj4+Pg0KPj4+PiBPaywgdGhhbmsgeW91IGZvciBleHBs
-YWluaW5nIHRoZSBjb21tb24gcHJhY3RpY2UuIEkgd2lsbCBkcm9wIHRoZSBjb25maWcNCj4+Pj4g
-Y2hhbmdlcyBmb3IgdGhlIG5leHQgdmVyc2lvbiBhbmQgc2VuZCBpdCBzZXBhcmF0ZWx5IHdoZW4g
-dGhlIHRpbWUgaXMgcmVhZHkuDQo+Pj4+DQo+Pj4+IEJvdGggdGhlIG9sZCBkcml2ZXIgYW5kIHRo
-ZSBuZXcgb25lIHVzZSB0aGUgc2FtZSBjb21wYXRpYmxlIHN0cmluZ3MgZm9yDQo+Pj4+IHByb2Jp
-bmcuIFdvdWxkbid0IHRoYXQgY2F1c2UgcHJvYmxlbXMgaWYgYm90aCBkcml2ZXJzIGFyZSBlbmFi
-bGVkIGZvciBhDQo+Pj4+IHdoaWxlLCBvciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nPw0KPj4+DQo+
-Pj4gT3IgbWF5YmUgd2Ugc2hvdWxkIG5vdCBpbnRyb2R1Y2UgYSBuZXcgS2NvbmZpZyBvcHRpb24g
-YW5kIGp1c3QgcmV1c2UNCj4+PiB0aGUgb2xkIG9uZS4gSXQgcHJvYmFibHkgcmVxdWlyZXMgcmUt
-b3JkZXJpbmcgcGF0Y2hlcyBhIGJpdCAocGF0Y2ggMQ0KPj4+IHNob3VsZCBiZSBtb3ZlZCBhZnRl
-ciBwYXRjaCA1KS4gVGhlbiB5b3UgaGF2ZSAyIGNob2ljZXM6DQo+Pj4NCj4+PiAxLyBtZXJnZSBw
-YXRjaCAxIGFuZCA2IHNvIHRoYXQgdGhlIG5ldyBkcml2ZXIgZWZmZWN0aXZlbHkgcmVwbGFjZXMg
-dGhlDQo+Pj4gICAgICBvbGQgb25lIGJ1dCB1c2VzIHRoZSBzYW1lIEtjb25maWcgb3B0aW9uDQo+
-Pj4gMi8gcmVtb3ZlIHRoZSBhYmlsaXR5IHRvIGNvbXBpbGUgdGhlIG9sZCBkcml2ZXIgd2hlbiB0
-aGUgbmV3IG9uZSBpcw0KPj4+ICAgICAgaW50cm9kdWNlZDogcmVtb3ZlIHRoZSBsaW5lIGZyb20g
-ZHJpdmVycy9tdGQvc3BpLW5vciBNYWtlZmlsZSBhbmQNCj4+PiAgICAgIG1vdmUgdGhlIEtjb25m
-aWcgZW50cnkgZnJvbSBkcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcgdG8NCj4+PiAgICAgIGRy
-aXZlcnMvc3BpL0tjb25maWcuIEFuZCByZW1vdmUgdGhlIG9sZCBjb2RlIGluIGEgc2VwYXJhdGUg
-cGF0Y2gNCj4+Pg0KPj4+IEknbSBmaW5lIGVpdGhlciB3YXksIGJ1dCBvcHRpb24gIzIgd2lsbCBw
-cm9iYWJseSBtYWtlIHRoZSBwYXRjaA0KPj4+IGludHJvZHVjaW5nIHRoZSBuZXcgZHJpdmVyIGJp
-Z2dlciBhbmQgaHVydCByZWFkYWJpbGl0eS4NCj4+DQo+PiBJIHRoaW5rIGhhdmluZyBib3RoIGRy
-aXZlcnMgaW4gdGhlIHRyZWUgZm9yIGEgd2hpbGUgd291bGRuJ3QgYmUgc28gYmFkLg0KPj4gU28g
-aWYgYW55IGNvbXBhdGliaWxpdHkgaXNzdWVzIGNvbWUgdXAgd2l0aCB0aGUgbmV3IGRyaXZlciwg
-cGVvcGxlIGNhbg0KPj4gc3RpbGwgdXNlIHRoZSBvbGQgb25lLg0KPiANCj4gRXhjZXB0IHRoYXQn
-cyBub3Qgd2hhdCBoYXBwZW5zIGluIHByYWN0aWNlLiBCZWxpZXZlIG1lLCBJIHRyaWVkIHRoaXMN
-Cj4gYXBwcm9hY2ggc2V2ZXJhbCB0aW1lcywgYW5kIHBlb3BsZSBrZWVwIHVzaW5nIHRoZSBvbGQg
-ZHJpdmVyIHVudGlsDQo+IHRoZXkncmUgZm9yY2VkIHRvIHN3aXRjaCB0byB0aGUgbmV3IG9uZS4g
-U28geW91IGFjdHVhbGx5IGRvbid0IGFkZHJlc3MNCj4gdGhlIHByb2JsZW0sIHlvdSBqdXN0IGRl
-bGF5IGl0IGEgYml0LCBhbmQgeW91J2xsIGhhdmUgdG8gZml4DQo+IHJlZ3Jlc3Npb25zIGFueXdh
-eS4NCg0KT2ssIEkgc2VlLg0KDQo+PiBUaGVyZWZvcmUgSSB0aGluayBJIHdpbGwgZHJvcCB0aGUg
-cGF0Y2hlcyB0aGF0IGNoYW5nZSB0aGUgZGVmY29uZmlnIGFuZA0KPj4gcmVtb3ZlIHRoZSBvbGQg
-ZHJpdmVyIGNvZGUgYW5kIGtlZXAgdGhlIGRpZmZlcmVudCBLY29uZmlnIG9wdGlvbnMuIEFuZA0K
-Pj4gbWF5YmUgYWRkIGFuIGV4Y2x1c2l2ZSBkZXBlbmRlbmN5IGluIEtjb25maWcsIHNvIGJvdGgg
-ZHJpdmVycyBjYW4gbm90IGJlDQo+PiBlbmFibGVkIGF0IHRoZSBzYW1lIHRpbWUuDQo+Pg0KPj4g
-RG9lcyB0aGlzIG1ha2Ugc2Vuc2U/DQo+IA0KPiBJJ2QgcmVhbGx5IHByZWZlciB0byBoYXZlIHRo
-ZSByZW1vdmFsIG9mIHRoZSBvbGQgZHJpdmVyIGluIHRoZSBzYW1lDQo+IHJlbGVhc2UgdGhlIG5l
-dyBkcml2ZXIgaXMgaW50cm9kdWNlZCBidXQgaWYgdGhhdCdzIG5vdCBwb3NzaWJsZSwgbGV0J3MN
-Cj4gaGF2ZSBhIGNsZWFyIHBsYW4sIGxpa2UgImludHJvZHVjZSBuZXcgZHJpdmVyIGluIHJlbGVh
-c2UgWCwgcmVtb3ZlIHRoZQ0KPiBvbGQgb25lIGluIHJlbGVhc2UgWCsxIi4NCg0KV2UgY2FuIGRv
-IGl0IGFzIHlvdSBzdWdnZXN0ZWQuIEkgd2lsbCB0aGluayBhYm91dCB3aGV0aGVyIHRvIHVzZSBv
-cHRpb24gDQojMSBvciAjMi4NCldpdGggIzEgd2Ugd2lsbCBoYXZlIHRoZSByZW1vdmFsIG9mIHRo
-ZSBvbGQgZHJpdmVyIGFuZCBhZGRpbmcgdGhlIG5ldyANCmRyaXZlciBpbiBvbmUgc2luZ2xlIHBh
-dGNoLg0KV2l0aCAjMiB3ZSB3aWxsIGhhdmUgdGhlIGRpc2FibGluZyBvZiB0aGUgb2xkIGRyaXZl
-ciB2aWEgTWFrZWZpbGUgaW4gdGhlIA0Kc2FtZSBwYXRjaCB0aGF0cyBhZGRpbmcgdGhlIG5ldyBk
-cml2ZXIu
+Hi Boris &  Martin,
+
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, November 12, 2018 4:28 PM
+> To: Martin Lund <martin.lund@keep-it-simple.com>
+> Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>; miquel.raynal@bootlin.c=
+om;
+> richard@nod.at; dwmw2@infradead.org; computersforpeace@gmail.com;
+> marek.vasut@gmail.com; Michal Simek <michals@xilinx.com>; nagasuresh12@gm=
+ail.com;
+> linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; robh@kernel.=
+org
+> Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for =
+Arasan NAND
+> Flash Controller
+>=20
+> On Mon, 12 Nov 2018 11:55:36 +0100
+> Martin Lund <martin.lund@keep-it-simple.com> wrote:
+>=20
+> > Hi Naga,
+> >
+> > Just a few review comments for the v12 version.
+> >
+> > On Fri, Nov 9, 2018 at 6:00 AM Naga Sureshkumar Relli
+> > <naga.sureshkumar.relli@xilinx.com> wrote:
+> > > +#define PKT_OFST               0x00
+> > > +#define PKT_CNT_SHIFT          12
+> > > +
+> > > +#define MEM_ADDR1_OFST         0x04
+> > > +#define MEM_ADDR2_OFST         0x08
+> >
+> > For the sake of readability I think *_OFFSET is preferred, especially
+> > since the driver already includes short macro names. I think this is
+> > similar to the EVNT vs EVENT point.
+> > The majority of drivers in the Linux kernel do not shorten OFFSET -> OF=
+ST.
+> >
+> >
+> > > +static void anfc_rw_pio_op(struct mtd_info *mtd, u8 *buf, int len,
+> > > +                          bool do_read, int prog, int pktcount, int
+> > > +pktsize) {
+> > > +       struct nand_chip *chip =3D mtd_to_nand(mtd);
+> > > +       struct anfc_nand_controller *nfc =3D to_anfc(chip->controller=
+);
+> > > +       struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
+> > > +       u32 *bufptr =3D (u32 *)buf;
+> > > +       u32 cnt =3D 0, intr =3D 0;
+> > > +
+> > > +       anfc_config_dma(nfc, 0);
+> > > +
+> > > +       if (pktsize =3D=3D 0)
+> > > +               pktsize =3D len;
+> > > +
+> > > +       anfc_setpktszcnt(nfc, pktsize, pktcount);
+> > > +
+> > > +       if (!achip->strength)
+> > > +               intr =3D MBIT_ERROR;
+> > > +
+> > > +       if (do_read)
+> > > +               intr |=3D READ_READY;
+> > > +       else
+> > > +               intr |=3D WRITE_READY;
+> > > +       anfc_enable_intrs(nfc, intr);
+> > > +       writel(prog, nfc->base + PROG_OFST);
+> > > +       while (cnt < pktcount) {
+> > > +               anfc_wait_for_event(nfc);
+> > > +               cnt++;
+> > > +               if (cnt =3D=3D pktcount)
+> > > +                       anfc_enable_intrs(nfc, XFER_COMPLETE);
+> > > +               if (do_read)
+> > > +                       ioread32_rep(nfc->base + DATA_PORT_OFST, bufp=
+tr,
+> > > +                                    pktsize / 4);
+> > > +               else
+> > > +                       iowrite32_rep(nfc->base + DATA_PORT_OFST, buf=
+ptr,
+> > > +                                     pktsize / 4);
+> > > +               bufptr +=3D (pktsize / 4);
+> > > +               if (cnt < pktcount)
+> > > +                       anfc_enable_intrs(nfc, intr);
+> > > +       }
+> > > +       anfc_wait_for_event(nfc);
+> > > +}
+> >
+> > Throughout the driver all calls to anfc_wait_for_event() ignores the
+> > timeout return value. It would be nice to see some error handling in
+> > case it times out - at minimum consider printing out an error message
+> > since timeout on NAND operations are fairly critical and should
+> > generally not occur. Perhaps even an argument can be made for
+> > returning -ETIMEDOUT in case of timeout.
+>=20
+> Yes please, check anfc_wait_for_event() return code and propagate the err=
+or to the upper layer.
+Ok, I will update
+
+Thanks,
+Naga Sureshkumar Relli
