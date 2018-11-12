@@ -1,31 +1,22 @@
-Date: Mon, 12 Nov 2018 17:13:51 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh@kernel.org>,
- Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- Jianxin Pan <jianxin.pan@amlogic.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Richard Weinberger <richard@nod.at>,
- Yixun Lan <yixun.lan@amlogic.com>, linux-kernel@vger.kernel.org, Marek
- Vasut <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>,
- linux-mtd@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>, Carlo
- Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20181112171351.4ac3506b@xps13>
-In-Reply-To: <20181106112206.65a70a81@bbrezillon>
-References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
- <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
- <20181105165321.7ea2b45f@bbrezillon>
- <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
- <20181106102851.61deb97a@bbrezillon>
- <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
- <20181106112206.65a70a81@bbrezillon>
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMF3g-0003vG-UN
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2018 16:27:30 +0000
+Received: by mail-lj1-x242.google.com with SMTP id t9-v6so8155007ljh.6
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2018 08:27:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <CGME20180823084348eucas1p2157ab1089290298cf43647e522b8be4f@eucas1p2.samsung.com>
+ <1535013819-1646-1-git-send-email-huijin.park@samsung.com>
+ <20181031150225.175ec1d4@bbrezillon>
+In-Reply-To: <20181031150225.175ec1d4@bbrezillon>
+From: Huijin Park <bbanghj.park@gmail.com>
+Date: Tue, 13 Nov 2018 01:27:05 +0900
+Message-ID: <CAMy0x0nSjhRrG913NBeood68NfYAYngg=PAL+pmy4U4=WRuJxg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: change len type from signed to unsigned type
+To: boris.brezillon@bootlin.com
+Cc: huijin.park@samsung.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,120 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Boris,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 6 Nov 2018
-11:22:06 +0100:
+On Wed, Oct 31, 2018 at 11:02 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> Hi Huijin,
+>
+> On Thu, 23 Aug 2018 04:43:39 -0400
+> Huijin Park <huijin.park@samsung.com> wrote:
+>
+> > From: "huijin.park" <huijin.park@samsung.com>
+> >
+> > assign of a signed value which has type 'int' to a variable of
+> > a bigger unsigned integer type 'uint64_t'.
+>
+> Why are you mentioning u64? AFAICT, the len passed to erase_write() is
+> always an unsigned int.
 
-> On Tue, 6 Nov 2018 18:00:37 +0800
-> Liang Yang <liang.yang@amlogic.com> wrote:
->=20
-> > On 2018/11/6 17:28, Boris Brezillon wrote: =20
-> > > On Tue, 6 Nov 2018 17:08:00 +0800
-> > > Liang Yang <liang.yang@amlogic.com> wrote:
-> > >    =20
-> > >> On 2018/11/5 23:53, Boris Brezillon wrote:   =20
-> > >>> On Fri, 2 Nov 2018 00:42:21 +0800
-> > >>> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
-> > >>>       =20
-> > >>>> +
-> > >>>> +static inline u8 meson_nfc_read_byte(struct mtd_info *mtd)
-> > >>>> +{
-> > >>>> +	struct nand_chip *nand =3D mtd_to_nand(mtd);
-> > >>>> +	struct meson_nfc *nfc =3D nand_get_controller_data(nand);
-> > >>>> +	u32 cmd;
-> > >>>> +
-> > >>>> +	cmd =3D nfc->param.chip_select | NFC_CMD_DRD | 0;
-> > >>>> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-> > >>>> +
-> > >>>> +	meson_nfc_drain_cmd(nfc);   =20
-> > >>>
-> > >>> You probably don't want to drain the FIFO every time you read a byt=
-e on
-> > >>> the bus, and I guess the INPUT FIFO is at least as big as the CMD
-> > >>> FIFO, right? If that's the case, you should queue as much DRD cmd as
-> > >>> possible and only sync when the user explicitly requests it or when
-> > >>> the INPUT/READ FIFO is full.
-> > >>>       =20
-> > >> Register 'NFC_REG_BUF' can holds only 4 bytes, also DRD sends only o=
-ne
-> > >> nand cycle to read one byte and covers the 1st byte every time readi=
-ng.
-> > >> i think nfc controller is faster than nand cycle, but really it is n=
-ot
-> > >> high efficiency when reading so many bytes once.
-> > >> Or use dma command here like read_page and read_page_raw.   =20
-> > >=20
-> > > Yep, that's also an alternative, though you'll have to make sure the
-> > > buffer passed through the nand_op_inst is DMA-safe, and use a bounce
-> > > buffer when that's not the case.
-> > >    =20
-> > ok, i will try dma here. =20
->=20
-> We should probably expose the bounce buf handling as generic helpers at
-> the rawnand level:
->=20
-> void *nand_op_get_dma_safe_input_buf(struct nand_op_instr *instr)
-> {
-> 	void *buf;
->=20
-> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_IN_INSTR))
-> 		return NULL;
->=20
-> 	if (virt_addr_valid(instr->data.in) &&
-> 	    !object_is_on_stack(instr->data.buf.in))
-> 		return instr->data.buf.in;
->=20
-> 	return kzalloc(instr->data.len, GFP_KERNEL);
-> }
->=20
-> void nand_op_put_dma_safe_input_buf(struct nand_op_instr *instr,
-> 				    void *buf)
-> {
-> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_IN_INSTR) ||
-> 	    WARN_ON(!buf))
-> 		return;
->=20
-> 	if (buf =3D=3D instr->data.buf.in)
-> 		return;
->=20
-> 	memcpy(instr->data.buf.in, buf, instr->data.len);
-> 	kfree(buf);
-> }
->=20
-> const void *nand_op_get_dma_safe_output_buf(struct nand_op_instr *instr)
-> {
-> 	void *buf;
->=20
-> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_OUT_INSTR))
-> 		return NULL;
->=20
-> 	if (virt_addr_valid(instr->data.out) &&
-> 	    !object_is_on_stack(instr->data.buf.out))
-> 		return instr->data.buf.out;
->=20
-> 	return kmemdup(instr->data.buf.out, GFP_KERNEL);
-> }
->=20
-> void nand_op_put_dma_safe_output_buf(struct nand_op_instr *instr,
-> 				    void *buf)
-> {
-> 	if (WARN_ON(instr->type !=3D NAND_OP_DATA_OUT_INSTR) ||
-> 	    WARN_ON(!buf))
-> 		return;
->=20
-> 	if (buf !=3D instr->data.buf.out)
-> 		kfree(buf);
-> }
+It's my mistake.
+Messages about u64 are not related to this patch.
 
-Not that I am against such function, but maybe they should come with
-comments stating that there is no reliable way to find if a buffer is
-DMA-able at runtime and these are just sanity checks (ie. required, but
-probably not enough). This is my understanding of Wolfram's recent talk
-at ELCE [1]. I suppose using the CONFIG_DMA_API_DEBUG option could help
-more reliably to find such issues.
+>
+> > this is ok most of the time, but can lead to unexpectedly large
+> > resulting value if the original signed value is negative.
+> > in addtion, the callers of the erase_write() pass the len parameter
+>
+>   ^In addition,
+>
+> > as unsigned type.
+> >
+> > Signed-off-by: huijin.park <huijin.park@samsung.com>
+> > ---
+> >  drivers/mtd/mtdblock.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+> > index a5b1933..b2d5ed1 100644
+> > --- a/drivers/mtd/mtdblock.c
+> > +++ b/drivers/mtd/mtdblock.c
+> > @@ -56,7 +56,7 @@ struct mtdblk_dev {
+> >   */
+> >
+> >  static int erase_write (struct mtd_info *mtd, unsigned long pos,
+> > -                     int len, const char *buf)
+> > +                     unsigned int len, const char *buf)
+>
+> The diff looks good, but the commit message is not clear at all. Can
+> you reword it?
+>
+> Thanks,
+>
+> Boris
+>
+> >  {
+> >       struct erase_info erase;
+> >       size_t retlen;
+>
 
-[1] https://www.youtube.com/watch?v=3DJDwaMClvV-s
+I will send again patch after reword the commit message.
 
-Thanks,
-Miqu=C3=A8l
+Thanks & best regards,
+
+Huijin
