@@ -1,9 +1,9 @@
 Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMZGk-0006Hx-2M
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:02:25 +0000
-Received: by mail-wr1-x441.google.com with SMTP id u5-v6so8157956wrn.9
- for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:07 -0800 (PST)
+ id 1gMZGk-0006NF-2H
+ for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:02:23 +0000
+Received: by mail-wr1-x441.google.com with SMTP id z13-v6so13445777wrs.3
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:12 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
@@ -23,10 +23,9 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
  netdev@vger.kernel.org, linux-omap@vger.kernel.org,
  devicetree@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 07/25] ARM: davinci: mityomapl138: use cell nvmem lookup
- for mac address
-Date: Tue, 13 Nov 2018 15:01:15 +0100
-Message-Id: <20181113140133.17385-8-brgl@bgdev.pl>
+Subject: [PATCH v2 10/25] net: ethernet: provide nvmem_get_mac_address()
+Date: Tue, 13 Nov 2018 15:01:18 +0100
+Message-Id: <20181113140133.17385-11-brgl@bgdev.pl>
 In-Reply-To: <20181113140133.17385-1-brgl@bgdev.pl>
 References: <20181113140133.17385-1-brgl@bgdev.pl>
 MIME-Version: 1.0
@@ -42,67 +41,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We now support nvmem lookups and cell definitions for machine code.
-Add relevant data structures for the mac-address stored in at24 EEPROM.
+We already have of_get_nvmem_mac_address() but some non-DT systems want
+to read the MAC address from NVMEM too. Implement a generalized routine
+that takes struct device as argument.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-mityomapl138.c | 29 ++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ include/linux/etherdevice.h |  1 +
+ net/ethernet/eth.c          | 38 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-index 2933e0c87cfa..8df16e81b69e 100644
---- a/arch/arm/mach-davinci/board-mityomapl138.c
-+++ b/arch/arm/mach-davinci/board-mityomapl138.c
-@@ -15,6 +15,7 @@
- #include <linux/console.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/nvmem-provider.h>
- #include <linux/regulator/machine.h>
- #include <linux/i2c.h>
- #include <linux/platform_data/at24.h>
-@@ -161,6 +162,31 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
- 	mityomapl138_cpufreq_init(partnum);
+diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+index 572e11bb8696..2c0af7b00715 100644
+--- a/include/linux/etherdevice.h
++++ b/include/linux/etherdevice.h
+@@ -32,6 +32,7 @@
+ struct device;
+ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr);
+ unsigned char *arch_get_platform_mac_address(void);
++int nvmem_get_mac_address(struct device *dev, void *addrbuf);
+ u32 eth_get_headlen(void *data, unsigned int max_len);
+ __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
+ extern const struct header_ops eth_header_ops;
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index fd8faa0dfa61..df38593d1bb4 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -47,6 +47,7 @@
+ #include <linux/inet.h>
+ #include <linux/ip.h>
+ #include <linux/netdevice.h>
++#include <linux/nvmem-consumer.h>
+ #include <linux/etherdevice.h>
+ #include <linux/skbuff.h>
+ #include <linux/errno.h>
+@@ -548,3 +549,40 @@ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+ 	return 0;
  }
- 
-+/*
-+ * We don't define a cell for factory config as it will be accessed from the
-+ * board file using the nvmem notifier chain.
+ EXPORT_SYMBOL(eth_platform_get_mac_address);
++
++/**
++ * Obtain the MAC address from an nvmem cell named 'mac-address' associated
++ * with given device.
++ *
++ * @dev:	Device with which the mac-address cell is associated.
++ * @addrbuf:	Buffer to which the MAC address will be copied on success.
++ *
++ * Returns 0 on success or a negative error number on failure.
 + */
-+static struct nvmem_cell_info mityomapl138_nvmem_cells[] = {
-+	{
-+		.name		= "macaddr",
-+		.offset		= 0x64,
-+		.bytes		= ETH_ALEN,
++int nvmem_get_mac_address(struct device *dev, void *addrbuf)
++{
++	struct nvmem_cell *cell;
++	const void *mac;
++	size_t len;
++
++	cell = nvmem_cell_get(dev, "mac-address");
++	if (IS_ERR(cell))
++		return PTR_ERR(cell);
++
++	mac = nvmem_cell_read(cell, &len);
++	nvmem_cell_put(cell);
++
++	if (IS_ERR(mac))
++		return PTR_ERR(mac);
++
++	if (len != ETH_ALEN || !is_valid_ether_addr(mac)) {
++		kfree(mac);
++		return -EINVAL;
 +	}
-+};
 +
-+static struct nvmem_cell_table mityomapl138_nvmem_cell_table = {
-+	.nvmem_name	= "1-00500",
-+	.cells		= mityomapl138_nvmem_cells,
-+	.ncells		= ARRAY_SIZE(mityomapl138_nvmem_cells),
-+};
++	ether_addr_copy(addrbuf, mac);
++	kfree(mac);
 +
-+static struct nvmem_cell_lookup mityomapl138_nvmem_cell_lookup = {
-+	.nvmem_name	= "1-00500",
-+	.cell_name	= "macaddr",
-+	.dev_id		= "davinci_emac.1",
-+	.con_id		= "mac-address",
-+};
-+
- static struct at24_platform_data mityomapl138_fd_chip = {
- 	.byte_len	= 256,
- 	.page_size	= 8,
-@@ -543,6 +569,9 @@ static void __init mityomapl138_init(void)
- 
- 	davinci_serial_init(da8xx_serial_device);
- 
-+	nvmem_add_cell_table(&mityomapl138_nvmem_cell_table);
-+	nvmem_add_cell_lookups(&mityomapl138_nvmem_cell_lookup, 1);
-+
- 	ret = da8xx_register_i2c(0, &mityomap_i2c_0_pdata);
- 	if (ret)
- 		pr_warn("i2c0 registration failed: %d\n", ret);
++	return 0;
++}
++EXPORT_SYMBOL(nvmem_get_mac_address);
 -- 
 2.19.1
