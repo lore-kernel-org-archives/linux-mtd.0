@@ -1,17 +1,7 @@
-Received: from mail-it1-x143.google.com ([2607:f8b0:4864:20::143])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMZJ7-00006h-4i
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:04:57 +0000
-Received: by mail-it1-x143.google.com with SMTP id j79-v6so18543270itb.2
- for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:04:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20181113140133.17385-1-brgl@bgdev.pl>
-In-Reply-To: <20181113140133.17385-1-brgl@bgdev.pl>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 13 Nov 2018 15:04:22 +0100
-Message-ID: <CAMRc=MfvdWMKheWfm8UnEYuvd+rs+9yVahwM+=e2zmVm_6iKJg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/25] at24: remove
-To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
+Date: Tue, 13 Nov 2018 15:07:35 +0100
+From: Wolfram Sang <wsa@the-dreams.de>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -22,18 +12,21 @@ To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  "David S . Miller" <davem@davemloft.net>,
  Grygorii Strashko <grygorii.strashko@ti.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Wolfram Sang <wsa@the-dreams.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-i2c <linux-i2c@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- netdev <netdev@vger.kernel.org>, Linux-OMAP <linux-omap@vger.kernel.org>,
- devicetree <devicetree@vger.kernel.org>,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 00/25] at24: remove
+Message-ID: <20181113140734.GA970@kunai>
+References: <20181113140133.17385-1-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Disposition: inline
+In-Reply-To: <20181113140133.17385-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,122 +36,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-wt., 13 lis 2018 o 15:01 Bartosz Golaszewski <brgl@bgdev.pl> napisa=C5=82(a=
-):
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> Now that nvmem has gained support for defining cells from board files and
-> looking them up from relevant drivers[1], it's time for a respin of the
-> previous series[2] that aims at removing struct at24_platform_data from
-> the tree.
->
-> Since I took over maintainership of the at24 driver I've been working
-> towards removing at24_platform_data in favor for device properties.
->
-> DaVinci is the only platform that's still using it - all other users
-> have already been converted.
->
-> One of the obstacles in case of DaVinci is removing the setup() callback
-> from the pdata struct, the only user of which are some davinci boards.
->
-> First we add support for nvmem to MTD in a way previously discussed with
-> Boris Brezillon and Srinivas Kandagatla.
->
-> Then, since most boards use the EEPROM to store the MAC address, we regis=
-ter
-> relevant cells for all users, implement a function that allows to read
-> the MAC address from nvmem (and also replaces the previous DT-specific
-> variant) and make davinci_emac aware of it.
->
-> Next we switch all davinci users to using at24 device properties instead
-> of platform data. While we're at it: we remove all other traces of the
-> setup callback and platform data from davinci.
->
-> Finally we remove the at24 platform data structure.
->
-> I kept the review tags in patches that haven't changed from the last
-> submission.
->
-> As far as merging of this series goes: I'd like to avoid dragging it over
-> four releases. The series is logically split into five groups:
->
-> patches 1-2: nvmem and mtd changes
-> patches 3-9: davinci arch-specific changes
-> patches 10-13: networking changes
-> patches 14-24: davinci specific again
-> patch 25: final at24 change
->
-> With that I believe we can do the following: Greg KH could pick up the
-> first two patches into his char-misc tree. Sekhar would take the second
-> group and the third would go through the networking tree since the first
-> three sets are not linked in any way. This would be merged for 4.21. Then
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Bartosz,
+
+Thanks for keeping at this!
+
 > for the next release Sekhar would pick up 14-24, provide an immutable
 > branch for me and I'd merge the final patch for at24 and send it upstream
 > through Wolfram's i2c tree (maybe we could even delay the i2c PR in the
 > merge window to avoid the immutable branch altogether).
->
-> [1] https://lkml.org/lkml/2018/9/21/293
-> [2] https://lkml.org/lkml/2018/8/8/528
->
-> Alban Bedel (1):
->   mtd: add support for reading MTD devices via the nvmem API
->
-> Bartosz Golaszewski (24):
->   nvmem: add new config option
->   ARM: davinci: dm365-evm: use cell nvmem lookup for mac address
->   ARM: davinci: dm644x-evm: use cell nvmem lookup for mac address
->   ARM: davinci: dm646x-evm: use cell nvmem lookup for mac address
->   ARM: davinci: da830-evm: use cell nvmem lookup for mac address
->   ARM: davinci: mityomapl138: use cell nvmem lookup for mac address
->   ARM: davinci: dm850-evm: use cell nvmem lookup for mac address
->   ARM: davinci: da850-evm: remove unnecessary include
->   net: ethernet: provide nvmem_get_mac_address()
->   net: cadence: switch to using nvmem_get_mac_address()
->   of: net: kill of_get_nvmem_mac_address()
->   net: davinci_emac: use nvmem_get_mac_address()
->   ARM: davinci: da850-evm: remove dead MTD code
->   ARM: davinci: mityomapl138: don't read the MAC address from machine
->     code
->   ARM: davinci: dm365-evm: use device properties for at24 eeprom
->   ARM: davinci: da830-evm: use device properties for at24 eeprom
->   ARM: davinci: dm644x-evm: use device properties for at24 eeprom
->   ARM: davinci: dm646x-evm: use device properties for at24 eeprom
->   ARM: davinci: sffsdr: fix the at24 eeprom device name
->   ARM: davinci: sffsdr: use device properties for at24 eeprom
->   ARM: davinci: remove dead code related to MAC address reading
->   ARM: davinci: mityomapl138: use nvmem notifiers
->   ARM: davinci: mityomapl138: use device properties for at24 eeprom
->   eeprom: at24: remove at24_platform_data
->
->  MAINTAINERS                                |   1 -
->  arch/arm/mach-davinci/board-da830-evm.c    |  39 ++++-
->  arch/arm/mach-davinci/board-da850-evm.c    |  58 ++++----
->  arch/arm/mach-davinci/board-dm365-evm.c    |  38 ++++-
->  arch/arm/mach-davinci/board-dm644x-evm.c   |  37 ++++-
->  arch/arm/mach-davinci/board-dm646x-evm.c   |  37 ++++-
->  arch/arm/mach-davinci/board-mityomapl138.c |  67 ++++++---
->  arch/arm/mach-davinci/board-sffsdr.c       |  13 +-
->  arch/arm/mach-davinci/common.c             |  15 --
->  drivers/misc/eeprom/at24.c                 | 162 ++++++++++-----------
->  drivers/mtd/Kconfig                        |   1 +
->  drivers/mtd/mtdcore.c                      |  56 +++++++
->  drivers/net/ethernet/cadence/macb_main.c   |   2 +-
->  drivers/net/ethernet/ti/davinci_emac.c     |  14 +-
->  drivers/nvmem/core.c                       |   3 +-
->  drivers/of/of_net.c                        |  39 -----
->  include/linux/davinci_emac.h               |   1 -
->  include/linux/etherdevice.h                |   1 +
->  include/linux/mtd/mtd.h                    |   2 +
->  include/linux/nvmem-provider.h             |   2 +
->  include/linux/of_net.h                     |   6 -
->  include/linux/platform_data/at24.h         |  60 --------
->  net/ethernet/eth.c                         |  38 +++++
->  23 files changed, 391 insertions(+), 301 deletions(-)
->  delete mode 100644 include/linux/platform_data/at24.h
->
-> --
-> 2.19.1
->
 
-Ugh the subject was supposed to be: at24: remove platform data...
+But we want linux-next coverage. So, I think an immutable branch makes
+sense.
+
+   Wolfram
+
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlvq2qIACgkQFA3kzBSg
+KbakIA//XbX4c8LZfdL5KUsFzRtMrPXALyqSS///0ymL1KJyrAFAYW0HSF6v3gQS
+jUbnocRxTANZqsNyX+rkuBAnf0erKVZC0Ond96dqjqbNlssGmXXbQU1hn5ALtQUM
+uXiisSMlPpRTbedlu6KsYCzWOpftOEW77NbqWtva5nDNPTx1IY7DuaAfJ6Y8bCF5
+2jrk2SEuFiCkTvnNH8uuuqUWm//L1lWrgfdyThH4qFh/8+hliKcoJN9KHR520M4n
+oBVChe0aAnYHmhInVs1S2SkavRmRYTWiVmuh7fX0XhrRwjy/NWxwc9M7yUWqwE6M
+0a8aL96eazWa/wh6oBkrY23Mn7CAIeLPZjWbToWSeRxzF/0xNtOPaXIv0LfWj7he
+cnBebxPh8OX8xaeXhWLemQCWwhw7Hlt5eD1eejohkSCs+TfewRt9GJnPZZ84wcPk
+25zAWm1jcbgJwbUE84Fbd7e2iOUK/ssSA7moXB0YiCdDWUPM9KXuOPRK+//jYZ1f
+qqS/jRK6lAevr0Ycovhs7KDQLcJ19XaFLh42FQb8CkEucxqleH8x9ZzFirP56WHY
+xLK6PMWAC9TyVhvuPxtXb2U/pzndjxl34Y8PnexIUUX+Q+9r0XRjyJu6KLEIDpQL
+o/GlKKLy/jQpbYDR08JxuPfBXYBR16SsKlddL02rlkibWTuCEWI=
+=//jv
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
