@@ -1,9 +1,9 @@
 Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMZH0-0005FB-1v
+ id 1gMZH0-0005FH-17
  for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:02:34 +0000
-Received: by mail-wm1-x342.google.com with SMTP id i73-v6so6745153wmd.5
- for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:21 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 124-v6so12121233wmw.0
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:22 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
@@ -23,9 +23,10 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
  netdev@vger.kernel.org, linux-omap@vger.kernel.org,
  devicetree@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 14/25] ARM: davinci: da850-evm: remove dead MTD code
-Date: Tue, 13 Nov 2018 15:01:22 +0100
-Message-Id: <20181113140133.17385-15-brgl@bgdev.pl>
+Subject: [PATCH v2 15/25] ARM: davinci: mityomapl138: don't read the MAC
+ address from machine code
+Date: Tue, 13 Nov 2018 15:01:23 +0100
+Message-Id: <20181113140133.17385-16-brgl@bgdev.pl>
 In-Reply-To: <20181113140133.17385-1-brgl@bgdev.pl>
 References: <20181113140133.17385-1-brgl@bgdev.pl>
 MIME-Version: 1.0
@@ -41,59 +42,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We no longer need to register the MTD notifier to read the MAC address
-as it's now being done in the emac driver.
+This is now done by the emac driver using a registered nvmem cell.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-da850-evm.c | 28 -------------------------
- 1 file changed, 28 deletions(-)
+ arch/arm/mach-davinci/board-mityomapl138.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-index 6a29baf0a289..128dd7d8dff6 100644
---- a/arch/arm/mach-davinci/board-da850-evm.c
-+++ b/arch/arm/mach-davinci/board-da850-evm.c
-@@ -150,32 +150,6 @@ static struct spi_board_info da850evm_spi_info[] = {
- 	},
- };
+diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
+index 8df16e81b69e..3286dc2457a5 100644
+--- a/arch/arm/mach-davinci/board-mityomapl138.c
++++ b/arch/arm/mach-davinci/board-mityomapl138.c
+@@ -121,7 +121,6 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
+ {
+ 	int ret;
+ 	const char *partnum = NULL;
+-	struct davinci_soc_info *soc_info = &davinci_soc_info;
  
--#ifdef CONFIG_MTD
--static void da850_evm_m25p80_notify_add(struct mtd_info *mtd)
--{
--	char *mac_addr = davinci_soc_info.emac_pdata->mac_addr;
--	size_t retlen;
--
--	if (!strcmp(mtd->name, "MAC-Address")) {
--		mtd_read(mtd, 0, ETH_ALEN, &retlen, mac_addr);
--		if (retlen == ETH_ALEN)
--			pr_info("Read MAC addr from SPI Flash: %pM\n",
--				mac_addr);
--	}
--}
--
--static struct mtd_notifier da850evm_spi_notifier = {
--	.add	= da850_evm_m25p80_notify_add,
--};
--
--static void da850_evm_setup_mac_addr(void)
--{
--	register_mtd_user(&da850evm_spi_notifier);
--}
--#else
--static void da850_evm_setup_mac_addr(void) { }
--#endif
--
- static struct mtd_partition da850_evm_norflash_partition[] = {
- 	{
- 		.name           = "bootloaders + env",
-@@ -1494,8 +1468,6 @@ static __init void da850_evm_init(void)
- 	if (ret)
- 		pr_warn("%s: SATA registration failed: %d\n", __func__, ret);
+ 	if (!IS_BUILTIN(CONFIG_NVMEM)) {
+ 		pr_warn("Factory Config not available without CONFIG_NVMEM\n");
+@@ -147,13 +146,6 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
+ 		goto bad_config;
+ 	}
  
--	da850_evm_setup_mac_addr();
+-	pr_info("Found MAC = %pM\n", factory_config.mac);
+-	if (is_valid_ether_addr(factory_config.mac))
+-		memcpy(soc_info->emac_pdata->mac_addr,
+-			factory_config.mac, ETH_ALEN);
+-	else
+-		pr_warn("Invalid MAC found in factory config block\n");
 -
- 	ret = da8xx_register_rproc();
- 	if (ret)
- 		pr_warn("%s: dsp/rproc registration failed: %d\n",
+ 	partnum = factory_config.partnum;
+ 	pr_info("Part Number = %s\n", partnum);
+ 
 -- 
 2.19.1
