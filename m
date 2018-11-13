@@ -1,9 +1,9 @@
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMZH2-0006m7-P7
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:02:38 +0000
-Received: by mail-wm1-x342.google.com with SMTP id 124-v6so12122011wmw.0
- for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:34 -0800 (PST)
+ id 1gMZH1-0006bk-N5
+ for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:02:42 +0000
+Received: by mail-wr1-x444.google.com with SMTP id k15-v6so13406171wre.12
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:25 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
@@ -23,10 +23,10 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
  netdev@vger.kernel.org, linux-omap@vger.kernel.org,
  devicetree@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 21/25] ARM: davinci: sffsdr: use device properties for at24
- eeprom
-Date: Tue, 13 Nov 2018 15:01:29 +0100
-Message-Id: <20181113140133.17385-22-brgl@bgdev.pl>
+Subject: [PATCH v2 16/25] ARM: davinci: dm365-evm: use device properties for
+ at24 eeprom
+Date: Tue, 13 Nov 2018 15:01:24 +0100
+Message-Id: <20181113140133.17385-17-brgl@bgdev.pl>
 In-Reply-To: <20181113140133.17385-1-brgl@bgdev.pl>
 References: <20181113140133.17385-1-brgl@bgdev.pl>
 MIME-Version: 1.0
@@ -54,42 +54,44 @@ already implies the EEPROM's size.
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- arch/arm/mach-davinci/board-sffsdr.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/arm/mach-davinci/board-dm365-evm.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
-index acd9778ffa07..ff14de1396c8 100644
---- a/arch/arm/mach-davinci/board-sffsdr.c
-+++ b/arch/arm/mach-davinci/board-sffsdr.c
-@@ -26,7 +26,7 @@
- #include <linux/init.h>
- #include <linux/platform_device.h>
+diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
+index 8703fc18dd3b..f016584285b0 100644
+--- a/arch/arm/mach-davinci/board-dm365-evm.c
++++ b/arch/arm/mach-davinci/board-dm365-evm.c
+@@ -18,7 +18,7 @@
  #include <linux/i2c.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
 -#include <linux/platform_data/at24.h>
 +#include <linux/property.h>
+ #include <linux/leds.h>
  #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
  #include <linux/mtd/partitions.h>
-@@ -92,16 +92,15 @@ static struct platform_device davinci_sffsdr_nandflash_device = {
- 	.resource	= davinci_sffsdr_nandflash_resource,
+@@ -225,18 +225,15 @@ static struct nvmem_cell_lookup davinci_nvmem_cell_lookup = {
+ 	.con_id		= "mac-address",
  };
  
 -static struct at24_platform_data eeprom_info = {
--	.byte_len	= (64*1024) / 8,
--	.page_size	= 32,
--	.flags		= AT24_FLAG_ADDR16,
+-	.byte_len       = (256*1024) / 8,
+-	.page_size      = 64,
+-	.flags          = AT24_FLAG_ADDR16,
+-	.setup          = davinci_get_mac_addr,
+-	.context	= (void *)0x7f00,
 +static const struct property_entry eeprom_properties[] = {
-+	PROPERTY_ENTRY_U32("pagesize", 32),
++	PROPERTY_ENTRY_U32("pagesize", 64),
 +	{ }
  };
  
- static struct i2c_board_info __initdata i2c_info[] =  {
+ static struct i2c_board_info i2c_info[] = {
  	{
- 		I2C_BOARD_INFO("24c64", 0x50),
+ 		I2C_BOARD_INFO("24c256", 0x50),
 -		.platform_data	= &eeprom_info,
 +		.properties = eeprom_properties,
  	},
- 	/* Other I2C devices:
- 	 * MSP430,  addr 0x23 (not used)
+ 	{
+ 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 -- 
 2.19.1
