@@ -1,31 +1,25 @@
-Received: from kirsty.vergenet.net ([202.4.237.240])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMZnS-00060E-5f
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:36:07 +0000
-Date: Tue, 13 Nov 2018 06:35:52 -0800
-From: Simon Horman <horms@verge.net.au>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>
-Subject: Re: [PATCH v2 3/3] ARM: dts: iwg23s-sbc: Add QSPI flash support
-Message-ID: <20181113143551.sxfj333de5bbf6pu@verge.net.au>
-References: <1541696684-21235-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1541696684-21235-4-git-send-email-fabrizio.castro@bp.renesas.com>
- <20181109100607.3axbfrfizs5dqtxk@verge.net.au>
+Received: from mail-he1eur04on0712.outbound.protection.outlook.com
+ ([2a01:111:f400:fe0d::712]
+ helo=EUR04-HE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMc1f-0000DE-Of
+ for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 16:59:01 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
+ Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Cristian
+ Birsan <cristian.birsan@microchip.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+Subject: [RFC] mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash
+ memories
+Date: Tue, 13 Nov 2018 16:58:22 +0000
+Message-ID: <e902a586-9e15-544c-ab4d-37d6ee28cdff@nokia.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3CB6C4CE7FA8D04F91599E488A668B5E@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181109100607.3axbfrfizs5dqtxk@verge.net.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,18 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 09, 2018 at 11:06:07AM +0100, Simon Horman wrote:
-> On Thu, Nov 08, 2018 at 05:04:43PM +0000, Fabrizio Castro wrote:
-> > This commit adds QSPI flash support to the iwg23s board specific
-> > device tree.
-> > 
-> > Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> 
-> Thanks,
-> 
-> This looks fine to me but I will wait to see if there are other reviews
-> before applying.
-
-Thanks again,
-
-applied for v4.21.
+SGVsbG8gVHVkb3IgYW5kIGFsbCwNCg0KZmlyc3Qgb2YgYWxsLCB0aGFuayB5b3UgZm9yIHlvdXIg
+d29yayBvbiBTRkRQIHN1cHBvcnQgaW4gTGludXghDQoNClVuZm9ydHVuYXRlbHksIEknbSBkZWJ1
+Z2dpbmcgYSByZWdyZXNzaW9uIGNhdXNlZCBieSA1MzkwYThkZjc2OWVjDQoibXRkOiBzcGktbm9y
+OiBhZGQgc3VwcG9ydCB0byBub24tdW5pZm9ybSBTRkRQIFNQSSBOT1IgZmxhc2ggbWVtb3JpZXMi
+DQppbiBbb3V0IG9mIHRyZWVdIHN1cHBvcnQgZm9yIFMyNUZTMTI4Uy4NCg0KVGhlIGN1bHByaXQg
+aXMgdGhlIGZvbGxvd2luZyBwYXJ0IG9mIHlvdXIgcGF0Y2g6DQoNCgkvKg0KCSAqIEZvciBub24t
+dW5pZm9ybSBTUEkgZmxhc2ggbWVtb3J5LCBzZXQgbXRkLT5lcmFzZXNpemUgdG8gdGhlDQoJICog
+bWF4aW11bSBlcmFzZSBzZWN0b3Igc2l6ZS4gTm8gbmVlZCB0byBzZXQgbm9yLT5lcmFzZV9vcGNv
+ZGUuDQoJICovDQoJZm9yIChpID0gU05PUl9FUkFTRV9UWVBFX01BWCAtIDE7IGkgPj0gMDsgaS0t
+KSB7DQoJCWlmIChtYXAtPmVyYXNlX3R5cGVbaV0uc2l6ZSkgew0KCQkJZXJhc2UgPSAmbWFwLT5l
+cmFzZV90eXBlW2ldOw0KCQkJYnJlYWs7DQoJCX0NCgl9DQoNClRoZSBwcm9ibGVtIGluIG91ciBj
+YXNlIGlzLCB3ZSBoYXZlIGV4aXN0aW5nIHBhcnRpdGlvbmluZyB3aXRoIDEyOGsgcGFydGl0aW9u
+cw0KKHRoZSBGbGFzaCBpdHNlbGYgc3VwcG9ydHMgMjU2ayBhbmQgNjRrIGVyYXNlc2l6ZSwgZGVw
+ZW5kaW5nIG9uIGNvbmZpZ3VyYXRpb24pLg0KVGhlIGNoaXAgaXMgY29uZmlndXJlZCBmb3IgNjRr
+IGVyYXNlc2l6ZSwgbm9uLXVuaWZvcm0gbWFwcGluZy4NCg0KVGhlIG1hcHBpbmcgaXRzZWxmIGlz
+IGJlaW5nIGRldGVjdGVkIGNvcnJlY3RseSwgYnV0IHdoZW4gaXQgY29tZXMgdG8gdGhlIGNvZGUN
+CnNuaXBwZXQgYWJvdmUsIGl0IHNlbGVjdHMgdGhlIGJpZ2dlc3QgZXJhc2VzaXplIGZyb20gYWxs
+IHNpemVzIGFkdmVydGlzZWQgaW4NClNGRFAsIGluY2x1ZGluZyAyNTZrLCB3aGljaCBpcyBub3Qg
+YXBwbGljYWJsZSB0byB0aGUgY3VycmVudCBjb25maWd1cmF0aW9uLg0KDQpGaW5hbGx5IHdoZW4g
+bXRkIHJlZ2lzdGVycyB0aGUgcGFydGl0aW9ucywgdGhleSBhcmUgZm9yY2VkIHJlYWQtb25seToN
+Cg0KCXBhcnRpdGlvbiAiLi4uIiBkb2Vzbid0IHN0YXJ0IG9uIGFuIGVyYXNlIGJsb2NrIGJvdW5k
+YXJ5IC0tIGZvcmNlIHJlYWQtb25seQ0KDQpTbyB0aGlzIGNoYW5nZSBpcyBub3QgYmFja3dhcmRz
+IGNvbXBhdGlibGUgdG8gdGhlIGV4aXN0aW5nIHBhcnRpdGlvbmluZ3MuDQoNCkkgY2Fubm90IGNv
+bWUgd2l0aCB0aGUganVzdGlmaWNhdGlvbiBmb3IgdGhlIGFib3ZlIGRlY2lzaW9uIG15c2VsZiwg
+c28NCkkgaGF2ZSB0byBhc2sgeW91IGd1eXMsIHdoYXQgaXMgdGhlIHJlYXNvbiBmb3Igc2V0dGlu
+ZyBtdGQtPmVyYXNlc2l6ZSB0bw0KdGhlICptYXhpbXVtKiBlcmFzZSBzZWN0b3Igc2l6ZT8NCg0K
+SSdkIGFwcHJlY2lhdGUgYW55IGlkZWFzIG9uIHRoZSBhYm92ZSwgbWF5YmUgSSBjYW4gY29udmVy
+dCB0aGVtIHRvIGEgcGF0Y2guDQoNCk9yIHNob3VsZCBtdGRwYXJ0LmMgYmUgdXBkYXRlZCB0byBo
+YW5kbGUgbm9uLXVuaWZvcm0gZXJhc2UgcmVnaW9ucz8NCkJ1dCB0aGV5IHNlZW0gdG8gYmUgc3Bp
+LW5vci5jLXNwZWNpZmljIGN1cnJlbnRseS4uLg0KDQotLSANCkJlc3QgcmVnYXJkcywNCkFsZXhh
+bmRlciBTdmVyZGxpbi4NCg==
