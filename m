@@ -1,9 +1,9 @@
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMZGn-0006P4-G6
+ id 1gMZGn-0006S9-LR
  for linux-mtd@lists.infradead.org; Tue, 13 Nov 2018 14:02:30 +0000
-Received: by mail-wm1-x342.google.com with SMTP id i73-v6so6744787wmd.5
- for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:14 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id f2-v6so11498954wme.3
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2018 06:02:17 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
@@ -23,9 +23,9 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
  netdev@vger.kernel.org, linux-omap@vger.kernel.org,
  devicetree@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 11/25] net: cadence: switch to using nvmem_get_mac_address()
-Date: Tue, 13 Nov 2018 15:01:19 +0100
-Message-Id: <20181113140133.17385-12-brgl@bgdev.pl>
+Subject: [PATCH v2 12/25] of: net: kill of_get_nvmem_mac_address()
+Date: Tue, 13 Nov 2018 15:01:20 +0100
+Message-Id: <20181113140133.17385-13-brgl@bgdev.pl>
 In-Reply-To: <20181113140133.17385-1-brgl@bgdev.pl>
 References: <20181113140133.17385-1-brgl@bgdev.pl>
 MIME-Version: 1.0
@@ -41,27 +41,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We now have a generalized helper routine to read the MAC address from
-nvmem which takes struct device as argument. The nvmem subsystem will
-then try device tree first before all other potential providers.
+We've switched all users to nvmem_get_mac_address(). Remove the now
+dead code.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/of/of_net.c    | 39 ---------------------------------------
+ include/linux/of_net.h |  6 ------
+ 2 files changed, 45 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 1d86b4d5645a..d9a208f7bb40 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4055,7 +4055,7 @@ static int macb_probe(struct platform_device *pdev)
- 	if (mac) {
- 		ether_addr_copy(bp->dev->dev_addr, mac);
- 	} else {
--		err = of_get_nvmem_mac_address(np, bp->dev->dev_addr);
-+		err = nvmem_get_mac_address(&pdev->dev, bp->dev->dev_addr);
- 		if (err) {
- 			if (err == -EPROBE_DEFER)
- 				goto err_out_free_netdev;
+diff --git a/drivers/of/of_net.c b/drivers/of/of_net.c
+index 53189d4022a6..810ab0fbcccb 100644
+--- a/drivers/of/of_net.c
++++ b/drivers/of/of_net.c
+@@ -81,42 +81,3 @@ const void *of_get_mac_address(struct device_node *np)
+ 	return of_get_mac_addr(np, "address");
+ }
+ EXPORT_SYMBOL(of_get_mac_address);
+-
+-/**
+- * Obtain the MAC address from an nvmem provider named 'mac-address' through
+- * device tree.
+- * On success, copies the new address into memory pointed to by addr and
+- * returns 0. Returns a negative error code otherwise.
+- * @np:		Device tree node containing the nvmem-cells phandle
+- * @addr:	Pointer to receive the MAC address using ether_addr_copy()
+- */
+-int of_get_nvmem_mac_address(struct device_node *np, void *addr)
+-{
+-	struct nvmem_cell *cell;
+-	const void *mac;
+-	size_t len;
+-	int ret;
+-
+-	cell = of_nvmem_cell_get(np, "mac-address");
+-	if (IS_ERR(cell))
+-		return PTR_ERR(cell);
+-
+-	mac = nvmem_cell_read(cell, &len);
+-
+-	nvmem_cell_put(cell);
+-
+-	if (IS_ERR(mac))
+-		return PTR_ERR(mac);
+-
+-	if (len < ETH_ALEN || !is_valid_ether_addr(mac)) {
+-		ret = -EINVAL;
+-	} else {
+-		ether_addr_copy(addr, mac);
+-		ret = 0;
+-	}
+-
+-	kfree(mac);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL(of_get_nvmem_mac_address);
+diff --git a/include/linux/of_net.h b/include/linux/of_net.h
+index 90d81ee9e6a0..9cd72aab76fe 100644
+--- a/include/linux/of_net.h
++++ b/include/linux/of_net.h
+@@ -13,7 +13,6 @@
+ struct net_device;
+ extern int of_get_phy_mode(struct device_node *np);
+ extern const void *of_get_mac_address(struct device_node *np);
+-extern int of_get_nvmem_mac_address(struct device_node *np, void *addr);
+ extern struct net_device *of_find_net_device_by_node(struct device_node *np);
+ #else
+ static inline int of_get_phy_mode(struct device_node *np)
+@@ -26,11 +25,6 @@ static inline const void *of_get_mac_address(struct device_node *np)
+ 	return NULL;
+ }
+ 
+-static inline int of_get_nvmem_mac_address(struct device_node *np, void *addr)
+-{
+-	return -ENODEV;
+-}
+-
+ static inline struct net_device *of_find_net_device_by_node(struct device_node *np)
+ {
+ 	return NULL;
 -- 
 2.19.1
