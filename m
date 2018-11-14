@@ -1,23 +1,22 @@
-Received: from m15-35.126.com ([220.181.15.35])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMwRW-0005FF-L2
- for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 14:47:01 +0000
-Date: Wed, 14 Nov 2018 22:46:03 +0800 (CST)
-From: "Liu Xiang" <liuxiang_1999@126.com>
-To: "Boris Brezillon" <boris.brezillon@bootlin.com>
-Cc: "Liu Xiang" <liu.xiang6@zte.com.cn>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
- "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: Re:Re: [PATCH] mtd: spi-nor: Return error when nor->addr_width not
- match the device size
-In-Reply-To: <20181114145129.568e4bb3@bbrezillon>
-References: <1542200165-3073-1-git-send-email-liu.xiang6@zte.com.cn>
- <20181114145129.568e4bb3@bbrezillon>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from mga06.intel.com ([134.134.136.31])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMx1F-00080K-DU
+ for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 15:23:54 +0000
+Reply-To: thor.thayer@linux.intel.com
+Subject: Re: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+To: Vignesh R <vigneshr@ti.com>, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1542130345-10005-1-git-send-email-thor.thayer@linux.intel.com>
+ <07a0fbce-d1fa-6ac0-0428-3123c19cd89b@ti.com>
+From: Thor Thayer <thor.thayer@linux.intel.com>
+Message-ID: <08feb671-6976-5ec8-ade1-fc2d48b8aad7@linux.intel.com>
+Date: Wed, 14 Nov 2018 09:25:08 -0600
 MIME-Version: 1.0
-Message-ID: <5a1999c4.c3d8.16712afb14d.Coremail.liuxiang_1999@126.com>
+In-Reply-To: <07a0fbce-d1fa-6ac0-0428-3123c19cd89b@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +26,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CkhpLApJZiB0aGUgY2hlY2sgaXMgbW92ZWQgdG8KWzJdaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5j
-b20vbGludXgvdjQuMjAtcmMyL3NvdXJjZS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyNM
-Mzc1OCwKdGhlIG5vci0+YWRkcl93aWR0aCBzZWxlY3Rpb24gbG9naWMgbWF5IGJlIG5lZWRlZCB0
-byByZXdvcmsuIAoKSSBoYXZlIHNlbnQgYW4gZW1haWwgdG8gSVNTSSBmb3IgdGhlIHJlZ2lzdGVy
-IHZhbHVlLCBidXQgaGF2ZW4ndCBnb3QgdGhlIHJlcGx5LgpEbyB5b3UgdGhpbmsgaXQgaXMgYmV0
-dGVyIHRvIGFkZCB0aGlzIGNoZWNrIHVudGlsIEkgZ2V0IHRoZSByaWdodCBhbnN3ZXIgZnJvbSBJ
-U1NJPwoKCgpBdCAyMDE4LTExLTE0IDIxOjUxOjI5LCAiQm9yaXMgQnJlemlsbG9uIiA8Ym9yaXMu
-YnJlemlsbG9uQGJvb3RsaW4uY29tPiB3cm90ZToKPk9uIFdlZCwgMTQgTm92IDIwMTggMjA6NTY6
-MDUgKzA4MDAKPkxpdSBYaWFuZyA8bGl1LnhpYW5nNkB6dGUuY29tLmNuPiB3cm90ZToKPgo+PiBJ
-biBpczI1bHAyNTYsIHRoZSBEV09SRDEgb2YgSkVERUMgQmFzaWMgRmxhc2ggUGFyYW1ldGVyIEhl
-YWRlcgo+PiBpcyAweGZmZjkyMGU1LiBTbyB0aGUgRFdPUkQxWzE4OjE3XSBBZGRyZXNzIEJ5dGVz
-IGJpdHMgYXJlIDBiMDAsCj4+IG1lYW5zIHRoYXQgMy1CeXRlIG9ubHkgYWRkcmVzc2luZy4KPgo+
-QWNjb3JkaW5nIHRvIHlvdXIgb3RoZXIgcGF0Y2ggdGhpcyBOT1Igc3VwcG9ydHMgNEIgb3Bjb2Rl
-LCB3aGljaCBtZWFucwo+dGhlIFNGRFAgdGFibGUgaXMgd3JvbmcuCj4KPj4gQnV0IHRoZSBkZXZp
-Y2Ugc2l6ZSBpcyBsYXJnZXIKPj4gdGhhbiAxNk1CLCBub3ItPmFkZHJfd2lkdGggbXVzdCBiZSA0
-IHRvIGFjY2VzcyB0aGUgd2hvbGUgYWRkcmVzcy4KPj4gQW4gZXJyb3Igc2hvdWxkIGJlIHJldHVy
-bmVkIHdoZW4gbm9yLT5hZGRyX3dpZHRoIG5vdCBtYXRjaAo+Cj4JCQkJCQkgICBeZG9lcyBub3QK
-Pgo+PiB0aGUgZGV2aWNlIHNpemUgaW4gc3BpX25vcl9wYXJzZV9zZmRwKCkuCj4+IAo+PiBTdWdn
-ZXN0ZWQtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPgo+
-PiBTaWduZWQtb2ZmLWJ5OiBMaXUgWGlhbmcgPGxpdS54aWFuZzZAenRlLmNvbS5jbj4KPj4gLS0t
-Cj4+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDQgKysrKwo+PiAgMSBmaWxlIGNo
-YW5nZWQsIDQgaW5zZXJ0aW9ucygrKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMKPj4gaW5kZXgg
-M2ViYTEzYS4uNzdlYWYyMiAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
-bm9yLmMKPj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMKPj4gQEAgLTI2Njks
-NiArMjY2OSwxMCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFyc2VfYmZwdChzdHJ1Y3Qgc3BpX25v
-ciAqbm9yLAo+PiAgCX0KPj4gIAlwYXJhbXMtPnNpemUgPj49IDM7IC8qIENvbnZlcnQgdG8gYnl0
-ZXMuICovCj4+ICAKPj4gKwkvKmlmIHRoZSBkZXZpY2UgZXhjZWVkcyAxNk1pQiwgYWRkcl93aWR0
-aCBtdXN0IGJlIDQqLwo+Cj5QbGVhc2UgYWRkIGEgd2hpdGUgc3BhY2UgYWZ0ZXIgJy8qJyBhbmQg
-YmVmb3JlICcqLyc6Cj4KPgkvKiBJZiB0aGUgZGV2aWNlIGV4Y2VlZHMgMTZNaUIsIC0+YWRkcl93
-aWR0aCBtdXN0IGJlIDQuICovCj4KPj4gKwlpZiAoKHBhcmFtcy0+c2l6ZSA+IDB4MTAwMDAwMCkg
-JiYgKG5vci0+YWRkcl93aWR0aCA9PSAzKSkKPgo+UGFyZW5zIGFyZSBub3QgbmVlZGVkIGFyb3Vu
-ZCBzdWItY29uZGl0aW9uczoKPgo+CWlmIChwYXJhbXMtPnNpemUgPiAweDEwMDAwMDAgJiYgbm9y
-LT5hZGRyX3dpZHRoID09IDMpCj4KPj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4+ICsKPgo+SSdtIG5v
-dCBzdXJlIHRoaXMgaXMgY29ycmVjdC4gTG9va3MgbGlrZSBzb21lIE5PUnMgb25seSBzdXBwb3J0
-IDNCCj5vcGNvZGVzIGJ1dCBoYXZlIGEgIjQtYnl0ZSBhZGRyZXNzaW5nIiBtb2RlIChzZWUgc2V0
-XzRieXRlKCkgWzFdKS4KPkRvbid0IGtub3cgd2hhdCdzIHJlcG9ydGVkIGJ5IHRoZSBCRlBUIHNl
-Y3Rpb24gaW4gdGhpcyBjYXNlIHRob3VnaAo+KEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19P
-TkxZIG9yIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80KS4KPgo+QW55d2F5LCBJIHRo
-aW5rIHRoaXMgY2hlY2sgc2hvdWxkIGJlIG1vdmVkIGhlcmUgWzJdIHRvIGNvdmVyIHRoZQo+bm9u
-LVNGRFAgY2FzZS4KPgo+PiAgCS8qIEZhc3QgUmVhZCBzZXR0aW5ncy4gKi8KPj4gIAlmb3IgKGkg
-PSAwOyBpIDwgQVJSQVlfU0laRShzZmRwX2JmcHRfcmVhZHMpOyBpKyspIHsKPj4gIAkJY29uc3Qg
-c3RydWN0IHNmZHBfYmZwdF9yZWFkICpyZCA9ICZzZmRwX2JmcHRfcmVhZHNbaV07Cj4KPlsxXWh0
-dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0LjIwLXJjMi9zb3VyY2UvZHJpdmVycy9t
-dGQvc3BpLW5vci9zcGktbm9yLmMjTDI3OAo+WzJdaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20v
-bGludXgvdjQuMjAtcmMyL3NvdXJjZS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyNMMzc1
-OAo=
+Hi Vignesh,
+
+On 11/14/18 6:00 AM, Vignesh R wrote:
+> Hi,
+> 
+> On 13/11/18 11:02 PM, thor.thayer@linux.intel.com wrote:
+>> From: Thor Thayer <thor.thayer@linux.intel.com>
+>>
+>> The current Cadence QSPI driver caused a kernel panic sporadically
+>> when writing to QSPI. The problem was caused by writing more bytes
+>> than needed because the QSPI operated on 4 bytes at a time.
+>> <snip>
+>> [   11.202044] Unable to handle kernel paging request at virtual address bffd3000
+>> [   11.209254] pgd = e463054d
+>> [   11.211948] [bffd3000] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+>> [   11.218202] Internal error: Oops: 7 [#1] SMP ARM
+>> [   11.222797] Modules linked in:
+>> [   11.225844] CPU: 1 PID: 1317 Comm: systemd-hwdb Not tainted 4.17.7-d0c45cd44a8f
+>> [   11.235796] Hardware name: Altera SOCFPGA Arria10
+>> [   11.240487] PC is at __raw_writesl+0x70/0xd4
+>> [   11.244741] LR is at cqspi_write+0x1a0/0x2cc
+>> </snip>
+>> On a page boundary limit the number of bytes copied from the tx buffer
+>> to remain within the page.
+>>
+>> This patch uses a temporary buffer to hold the 4 bytes to write and then
+>> copies only the bytes required from the tx buffer. A min() function is
+>> used to limit the length to prevent buffer indexing overflows.
+>>
+>> Reported-by: Adrian Amborzewicz <adrian.ambrozewicz@intel.com>
+>> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+>> ---
+>>   drivers/mtd/spi-nor/cadence-quadspi.c | 19 ++++++++++++++++---
+>>   1 file changed, 16 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> index d846428ef038..3659d94b4d2f 100644
+>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> @@ -644,9 +644,23 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+>>   		ndelay(cqspi->wr_delay);
+>>   
+>>   	while (remaining > 0) {
+>> +		size_t write_words, mod_bytes;
+>> +
+>>   		write_bytes = remaining > page_size ? page_size : remaining;
+>> -		iowrite32_rep(cqspi->ahb_base, txbuf,
+>> -			      DIV_ROUND_UP(write_bytes, 4));
+>> +		write_words = write_bytes / 4;
+>> +		mod_bytes = write_bytes % 4;
+>> +		/* Write 4 bytes at a time then single bytes. */
+>> +		if (write_words) {
+>> +			iowrite32_rep(cqspi->ahb_base, txbuf, write_words);
+>> +			txbuf += (write_words * 4);
+>> +		}
+>> +		if (mod_bytes) {
+>> +			unsigned int temp = 0xFFFFFFFF;
+>> +
+>> +			memcpy(&temp, txbuf, min(sizeof(temp), mod_bytes));
+> 
+> Sorry, I dont understand why min() is required here since:
+> 	mod_bytes = write_bytes % 4;
+> Doesn't that ensure mod_bytes < sizeof(temp)?
+> 
+
+Yes, good point. I was being overly cautious with the memcpy buffers. I 
+will re-spin and re-submit. Thanks!
+
+>> +			iowrite32(temp, cqspi->ahb_base);
+>> +			txbuf += mod_bytes;
+>> +		}
+>>   
+>>   		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
+>>   					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
+>> @@ -655,7 +669,6 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+>>   			goto failwr;
+>>   		}
+>>   
+>> -		txbuf += write_bytes;
+>>   		remaining -= write_bytes;
+>>   
+>>   		if (remaining > 0)
+>>
+> 
