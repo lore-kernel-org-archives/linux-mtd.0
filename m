@@ -1,37 +1,21 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMt0z-0004Mb-0E
- for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 11:07:22 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>, Han Xu
- <han.xu@nxp.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, David Wolfe
- <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Prabhakar
- Kushwaha" <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-Date: Wed, 14 Nov 2018 11:07:04 +0000
-Message-ID: <eb4b79be-c12b-16e7-e1dd-86a157cfdc7d@kontron.de>
-References: <1542116782-13118-1-git-send-email-frieder.schrempf@kontron.de>
- <1542116782-13118-4-git-send-email-frieder.schrempf@kontron.de>
- <VI1PR04MB572679944542ED6A438FD2FB99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <ce9cbfc0-3257-f117-aa21-cdee068579ce@kontron.de>
- <65577d13-b17d-8f69-313c-01d23240d1d9@kontron.de>
- <VI1PR04MB572664063A0E237D2EB7203A99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB572664063A0E237D2EB7203A99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <89687489640DA44EB6C07997A23F0A96@snt-world.com>
-Content-Transfer-Encoding: base64
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMtpj-0002iM-JV
+ for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 11:59:49 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+To: <thor.thayer@linux.intel.com>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@bootlin.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1542130345-10005-1-git-send-email-thor.thayer@linux.intel.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <07a0fbce-d1fa-6ac0-0428-3123c19cd89b@ti.com>
+Date: Wed, 14 Nov 2018 17:30:15 +0530
 MIME-Version: 1.0
+In-Reply-To: <1542130345-10005-1-git-send-email-thor.thayer@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,22 +25,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDE0LjExLjE4IDExOjQzLCBZb2dlc2ggTmFyYXlhbiBHYXVyIHdyb3RlOg0KPiBIaSBG
-cmllZGVyLA0KPiANCj4gWy4uXQ0KPj4+DQo+Pj4gT2ssIEkgd2lsbCBoYXZlIGEgbG9vayBhdCB3
-aGF0IGNvdWxkIG1ha2UgdGhlIGNoaXAgc2VsZWN0aW9uIGZhaWwgaW4NCj4+PiBjYXNlIG9mIEFI
-QiByZWFkLg0KPj4NCj4+IENvdWxkIHlvdSB0cnkgd2l0aCB0aGlzIGNoYW5nZSBhcHBsaWVkOg0K
-Pj4NCj4+IEBAIC01MDMsNyArNTAzLDcgQEAgc3RhdGljIHZvaWQgZnNsX3FzcGlfc2VsZWN0X21l
-bShzdHJ1Y3QgZnNsX3FzcGkgKnEsIHN0cnVjdA0KPj4gc3BpX2RldmljZSAqc3BpKQ0KPj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICBtYXBfYWRkciA9IHEtPm1lbW1hcF9waHk7DQo+PiAgICAg
-ICAgICAgICAgICAgICBlbHNlDQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgIG1hcF9hZGRy
-ID0gcS0+bWVtbWFwX3BoeSArDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IDIgKiBxLT5kZXZ0eXBlX2RhdGEtPmFoYl9idWZfc2l6ZTsNCj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgcS0+ZGV2dHlwZV9kYXRhLT5haGJfYnVmX3NpemU7DQo+Pg0KPj4g
-ICAgICAgICAgICAgICAgICAgcXNwaV93cml0ZWwocSwgbWFwX2FkZHIsIHEtPmlvYmFzZSArIFFV
-QURTUElfU0ZBMUFEICsNCj4+IChpICogNCkpOw0KPj4gICAgICAgICAgIH0NCj4+DQo+IA0KPiBJ
-IGhhdmUgdHJpZWQgYWJvdmUgY2hhbmdlIGFuZCBhbHNvIGhhdmUgZG9uZSBmZXcgbW9yZSBjaGFu
-Z2VzIGJ1dCBzdGlsbCBBSEIgcmVhZCBmb3IgQ1MxIGlzIGZhbGxpbmcuDQoNCk1heWJlIENTMSBp
-cyBub3Qgc2VsZWN0ZWQgYmVjYXVzZSB3ZSByZXVzZSB0aGUgc2FtZSBtZW1vcnkgb2Zmc2V0IGFz
-IGZvciANCkNTMC4gQ2FuIHlvdSB0cnkgd2l0aCBhIGZpeGVkIG1hcHBpbmcgZm9yIGFsbCBmb3Vy
-IENTIGxpbmVzLCBsaWtlIHRoaXM6IA0KaHR0cHM6Ly9wYXN0ZS5lZS9wL21Zd2pQPw0KDQpUaGFu
-a3MsDQpGcmllZGVy
+Hi,
+
+On 13/11/18 11:02 PM, thor.thayer@linux.intel.com wrote:
+> From: Thor Thayer <thor.thayer@linux.intel.com>
+> 
+> The current Cadence QSPI driver caused a kernel panic sporadically
+> when writing to QSPI. The problem was caused by writing more bytes
+> than needed because the QSPI operated on 4 bytes at a time.
+> <snip>
+> [   11.202044] Unable to handle kernel paging request at virtual address bffd3000
+> [   11.209254] pgd = e463054d
+> [   11.211948] [bffd3000] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+> [   11.218202] Internal error: Oops: 7 [#1] SMP ARM
+> [   11.222797] Modules linked in:
+> [   11.225844] CPU: 1 PID: 1317 Comm: systemd-hwdb Not tainted 4.17.7-d0c45cd44a8f
+> [   11.235796] Hardware name: Altera SOCFPGA Arria10
+> [   11.240487] PC is at __raw_writesl+0x70/0xd4
+> [   11.244741] LR is at cqspi_write+0x1a0/0x2cc
+> </snip>
+> On a page boundary limit the number of bytes copied from the tx buffer
+> to remain within the page.
+> 
+> This patch uses a temporary buffer to hold the 4 bytes to write and then
+> copies only the bytes required from the tx buffer. A min() function is
+> used to limit the length to prevent buffer indexing overflows.
+> 
+> Reported-by: Adrian Amborzewicz <adrian.ambrozewicz@intel.com>
+> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+> ---
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 19 ++++++++++++++++---
+>  1 file changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index d846428ef038..3659d94b4d2f 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -644,9 +644,23 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+>  		ndelay(cqspi->wr_delay);
+>  
+>  	while (remaining > 0) {
+> +		size_t write_words, mod_bytes;
+> +
+>  		write_bytes = remaining > page_size ? page_size : remaining;
+> -		iowrite32_rep(cqspi->ahb_base, txbuf,
+> -			      DIV_ROUND_UP(write_bytes, 4));
+> +		write_words = write_bytes / 4;
+> +		mod_bytes = write_bytes % 4;
+> +		/* Write 4 bytes at a time then single bytes. */
+> +		if (write_words) {
+> +			iowrite32_rep(cqspi->ahb_base, txbuf, write_words);
+> +			txbuf += (write_words * 4);
+> +		}
+> +		if (mod_bytes) {
+> +			unsigned int temp = 0xFFFFFFFF;
+> +
+> +			memcpy(&temp, txbuf, min(sizeof(temp), mod_bytes));
+
+Sorry, I dont understand why min() is required here since:
+	mod_bytes = write_bytes % 4;
+Doesn't that ensure mod_bytes < sizeof(temp)?
+
+> +			iowrite32(temp, cqspi->ahb_base);
+> +			txbuf += mod_bytes;
+> +		}
+>  
+>  		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
+>  					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
+> @@ -655,7 +669,6 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+>  			goto failwr;
+>  		}
+>  
+> -		txbuf += write_bytes;
+>  		remaining -= write_bytes;
+>  
+>  		if (remaining > 0)
+> 
+
+-- 
+Regards
+Vignesh
