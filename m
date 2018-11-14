@@ -1,21 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMvjh-0006bF-Kk
- for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 14:01:43 +0000
-Date: Wed, 14 Nov 2018 15:01:23 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Liu Xiang <liu.xiang6@zte.com.cn>
-Cc: linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at,
- linux-kernel@vger.kernel.org, liuxiang_1999@126.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] mtd: spi-nor: Add 4B_OPCODES flag to is25lp256
-Message-ID: <20181114150123.65623741@bbrezillon>
-In-Reply-To: <1542200118-3024-1-git-send-email-liu.xiang6@zte.com.cn>
-References: <1542200118-3024-1-git-send-email-liu.xiang6@zte.com.cn>
+Received: from m15-35.126.com ([220.181.15.35])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMwRW-0005FF-L2
+ for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 14:47:01 +0000
+Date: Wed, 14 Nov 2018 22:46:03 +0800 (CST)
+From: "Liu Xiang" <liuxiang_1999@126.com>
+To: "Boris Brezillon" <boris.brezillon@bootlin.com>
+Cc: "Liu Xiang" <liu.xiang6@zte.com.cn>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: Re:Re: [PATCH] mtd: spi-nor: Return error when nor->addr_width not
+ match the device size
+In-Reply-To: <20181114145129.568e4bb3@bbrezillon>
+References: <1542200165-3073-1-git-send-email-liu.xiang6@zte.com.cn>
+ <20181114145129.568e4bb3@bbrezillon>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <5a1999c4.c3d8.16712afb14d.Coremail.liuxiang_1999@126.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Nov 2018 20:55:18 +0800
-Liu Xiang <liu.xiang6@zte.com.cn> wrote:
-
-> The is25lp256 supports 4-byte opcodes and quad output.
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
-
-This one looks good. Tudor, can you have a look?
-
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 3e54e31..3eba13a 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1357,7 +1357,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
->  			SECT_4K | SPI_NOR_DUAL_READ) },
->  	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
-> -			SECT_4K | SPI_NOR_DUAL_READ) },
-> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
->  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
+CkhpLApJZiB0aGUgY2hlY2sgaXMgbW92ZWQgdG8KWzJdaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5j
+b20vbGludXgvdjQuMjAtcmMyL3NvdXJjZS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyNM
+Mzc1OCwKdGhlIG5vci0+YWRkcl93aWR0aCBzZWxlY3Rpb24gbG9naWMgbWF5IGJlIG5lZWRlZCB0
+byByZXdvcmsuIAoKSSBoYXZlIHNlbnQgYW4gZW1haWwgdG8gSVNTSSBmb3IgdGhlIHJlZ2lzdGVy
+IHZhbHVlLCBidXQgaGF2ZW4ndCBnb3QgdGhlIHJlcGx5LgpEbyB5b3UgdGhpbmsgaXQgaXMgYmV0
+dGVyIHRvIGFkZCB0aGlzIGNoZWNrIHVudGlsIEkgZ2V0IHRoZSByaWdodCBhbnN3ZXIgZnJvbSBJ
+U1NJPwoKCgpBdCAyMDE4LTExLTE0IDIxOjUxOjI5LCAiQm9yaXMgQnJlemlsbG9uIiA8Ym9yaXMu
+YnJlemlsbG9uQGJvb3RsaW4uY29tPiB3cm90ZToKPk9uIFdlZCwgMTQgTm92IDIwMTggMjA6NTY6
+MDUgKzA4MDAKPkxpdSBYaWFuZyA8bGl1LnhpYW5nNkB6dGUuY29tLmNuPiB3cm90ZToKPgo+PiBJ
+biBpczI1bHAyNTYsIHRoZSBEV09SRDEgb2YgSkVERUMgQmFzaWMgRmxhc2ggUGFyYW1ldGVyIEhl
+YWRlcgo+PiBpcyAweGZmZjkyMGU1LiBTbyB0aGUgRFdPUkQxWzE4OjE3XSBBZGRyZXNzIEJ5dGVz
+IGJpdHMgYXJlIDBiMDAsCj4+IG1lYW5zIHRoYXQgMy1CeXRlIG9ubHkgYWRkcmVzc2luZy4KPgo+
+QWNjb3JkaW5nIHRvIHlvdXIgb3RoZXIgcGF0Y2ggdGhpcyBOT1Igc3VwcG9ydHMgNEIgb3Bjb2Rl
+LCB3aGljaCBtZWFucwo+dGhlIFNGRFAgdGFibGUgaXMgd3JvbmcuCj4KPj4gQnV0IHRoZSBkZXZp
+Y2Ugc2l6ZSBpcyBsYXJnZXIKPj4gdGhhbiAxNk1CLCBub3ItPmFkZHJfd2lkdGggbXVzdCBiZSA0
+IHRvIGFjY2VzcyB0aGUgd2hvbGUgYWRkcmVzcy4KPj4gQW4gZXJyb3Igc2hvdWxkIGJlIHJldHVy
+bmVkIHdoZW4gbm9yLT5hZGRyX3dpZHRoIG5vdCBtYXRjaAo+Cj4JCQkJCQkgICBeZG9lcyBub3QK
+Pgo+PiB0aGUgZGV2aWNlIHNpemUgaW4gc3BpX25vcl9wYXJzZV9zZmRwKCkuCj4+IAo+PiBTdWdn
+ZXN0ZWQtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPgo+
+PiBTaWduZWQtb2ZmLWJ5OiBMaXUgWGlhbmcgPGxpdS54aWFuZzZAenRlLmNvbS5jbj4KPj4gLS0t
+Cj4+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDQgKysrKwo+PiAgMSBmaWxlIGNo
+YW5nZWQsIDQgaW5zZXJ0aW9ucygrKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMKPj4gaW5kZXgg
+M2ViYTEzYS4uNzdlYWYyMiAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
+bm9yLmMKPj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMKPj4gQEAgLTI2Njks
+NiArMjY2OSwxMCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFyc2VfYmZwdChzdHJ1Y3Qgc3BpX25v
+ciAqbm9yLAo+PiAgCX0KPj4gIAlwYXJhbXMtPnNpemUgPj49IDM7IC8qIENvbnZlcnQgdG8gYnl0
+ZXMuICovCj4+ICAKPj4gKwkvKmlmIHRoZSBkZXZpY2UgZXhjZWVkcyAxNk1pQiwgYWRkcl93aWR0
+aCBtdXN0IGJlIDQqLwo+Cj5QbGVhc2UgYWRkIGEgd2hpdGUgc3BhY2UgYWZ0ZXIgJy8qJyBhbmQg
+YmVmb3JlICcqLyc6Cj4KPgkvKiBJZiB0aGUgZGV2aWNlIGV4Y2VlZHMgMTZNaUIsIC0+YWRkcl93
+aWR0aCBtdXN0IGJlIDQuICovCj4KPj4gKwlpZiAoKHBhcmFtcy0+c2l6ZSA+IDB4MTAwMDAwMCkg
+JiYgKG5vci0+YWRkcl93aWR0aCA9PSAzKSkKPgo+UGFyZW5zIGFyZSBub3QgbmVlZGVkIGFyb3Vu
+ZCBzdWItY29uZGl0aW9uczoKPgo+CWlmIChwYXJhbXMtPnNpemUgPiAweDEwMDAwMDAgJiYgbm9y
+LT5hZGRyX3dpZHRoID09IDMpCj4KPj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4+ICsKPgo+SSdtIG5v
+dCBzdXJlIHRoaXMgaXMgY29ycmVjdC4gTG9va3MgbGlrZSBzb21lIE5PUnMgb25seSBzdXBwb3J0
+IDNCCj5vcGNvZGVzIGJ1dCBoYXZlIGEgIjQtYnl0ZSBhZGRyZXNzaW5nIiBtb2RlIChzZWUgc2V0
+XzRieXRlKCkgWzFdKS4KPkRvbid0IGtub3cgd2hhdCdzIHJlcG9ydGVkIGJ5IHRoZSBCRlBUIHNl
+Y3Rpb24gaW4gdGhpcyBjYXNlIHRob3VnaAo+KEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19P
+TkxZIG9yIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80KS4KPgo+QW55d2F5LCBJIHRo
+aW5rIHRoaXMgY2hlY2sgc2hvdWxkIGJlIG1vdmVkIGhlcmUgWzJdIHRvIGNvdmVyIHRoZQo+bm9u
+LVNGRFAgY2FzZS4KPgo+PiAgCS8qIEZhc3QgUmVhZCBzZXR0aW5ncy4gKi8KPj4gIAlmb3IgKGkg
+PSAwOyBpIDwgQVJSQVlfU0laRShzZmRwX2JmcHRfcmVhZHMpOyBpKyspIHsKPj4gIAkJY29uc3Qg
+c3RydWN0IHNmZHBfYmZwdF9yZWFkICpyZCA9ICZzZmRwX2JmcHRfcmVhZHNbaV07Cj4KPlsxXWh0
+dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0LjIwLXJjMi9zb3VyY2UvZHJpdmVycy9t
+dGQvc3BpLW5vci9zcGktbm9yLmMjTDI3OAo+WzJdaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20v
+bGludXgvdjQuMjAtcmMyL3NvdXJjZS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyNMMzc1
+OAo=
