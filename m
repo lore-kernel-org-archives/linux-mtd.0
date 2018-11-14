@@ -1,35 +1,23 @@
-Received: from skedge04.snt-world.com ([91.208.41.69])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gMr50-0003k3-CT
- for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 09:03:24 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.De>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>, Han Xu
- <han.xu@nxp.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, David Wolfe
- <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Prabhakar
- Kushwaha" <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-Date: Wed, 14 Nov 2018 09:03:09 +0000
-Message-ID: <65577d13-b17d-8f69-313c-01d23240d1d9@kontron.de>
-References: <1542116782-13118-1-git-send-email-frieder.schrempf@kontron.de>
- <1542116782-13118-4-git-send-email-frieder.schrempf@kontron.de>
- <VI1PR04MB572679944542ED6A438FD2FB99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <ce9cbfc0-3257-f117-aa21-cdee068579ce@kontron.de>
-In-Reply-To: <ce9cbfc0-3257-f117-aa21-cdee068579ce@kontron.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <12895E4EB0F7AD4789A6187064E7B09A@snt-world.com>
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMrCV-0005Q8-IU
+ for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 09:11:09 +0000
+Date: Wed, 14 Nov 2018 10:10:55 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <alexander.sverdlin@nokia.com>, <linux-mtd@lists.infradead.org>,
+ <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ <Cristian.Birsan@microchip.com>
+Subject: Re: [RFC] mtd: spi-nor: add support to non-uniform SFDP SPI NOR
+ flash memories
+Message-ID: <20181114101055.2653cd53@bbrezillon>
+In-Reply-To: <a38ad0f7-e51a-158e-e074-2b1cdabecd16@microchip.com>
+References: <e902a586-9e15-544c-ab4d-37d6ee28cdff@nokia.com>
+ <a38ad0f7-e51a-158e-e074-2b1cdabecd16@microchip.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,35 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgWW9nZXNoLA0KDQpPbiAxNC4xMS4xOCAwOTo1MCwgRnJpZWRlciBTY2hyZW1wZiB3cm90ZToN
-Cj4gSGkgWW9nZXNoLA0KPiANCj4gT24gMTQuMTEuMTggMDk6MzksIFlvZ2VzaCBOYXJheWFuIEdh
-dXIgd3JvdGU6DQo+PiBIaSBGcmllZGVyLA0KPj4NCj4+IEkgaGF2ZSB0cmllZCB2NSB2ZXJzaW9u
-IG9mIHRoZSBwYXRjaCBhbmQgaGF2ZSBvYnNlcnZlZCB0aGF0IFJlYWQgaXMgDQo+PiBmYWlsaW5n
-IGZvciBDUzEuDQo+IA0KPiBUaGFua3MgYSBsb3QgZm9yIGRvaW5nIHRoZSB0ZXN0LiBJIHJlYWxs
-eSBhcHByZWNpYXRlIGl0Lg0KPiANCj4+IEluIG15IHRhcmdldCAyIGZsYXNoIGRldmljZXMgYXJl
-IGNvbm5lY3RlZCBvbiBzYW1lIGJ1cyBpLmUuIEExIC0+IENTMCANCj4+IGFuZCBBMiAtPiBDUzEu
-DQo+Pg0KPj4gT24gaW5pdGlhbCBkZWJ1Z2dpbmcsIEkgZmlndXJlZCB0aGF0IFJlYWQgaXMgZmFp
-bGluZyBmb3IgdGhlIEFIQiBtb2RlIA0KPj4gaS5lLiBpZiBJIGF0dGVtcHQgdG8gcmVhZCBkYXRh
-IHNpemUgbGVzcyB0aGFuIHJ4ZmlmbyByZWFkIGlzIHdvcmtpbmcgDQo+PiBmaW5lIHdpdGhvdXQg
-YW55IGlzc3VlLg0KPj4NCj4+IEZvciBkYXRhIHNpemUgbW9yZSB0aGFuIHJ4ZmlmbyBSZWFkIG91
-dCBkYXRhIGlzIGNvbnRlbnQgb2Ygc2FtZSANCj4+IHJlcXVlc3RlZCBhZGRyZXNzIG9mIENTMC4N
-Cj4+IMKgwqDCoMKgbXRkX2RlYnVnIHJlYWQgL2Rldi9tdGQxIDB4ZjAwMDAwIDB4NzAgcmVhZCAt
-LT4gRGF0YSBpcyBjb3JyZWN0DQo+PiDCoMKgwqDCoG10ZF9kZWJ1ZyByZWFkIC9kZXYvbXRkMSAw
-eGYwMDAwMCAweDEwMCByZWFkIC0tPiBEYXRhIGlzIA0KPj4gaW4tY29ycmVjdCBhbmQgZGF0YSBj
-b250ZW50IGFyZSBvZiB0aGUgYWRkcmVzcyAweGYwMDAwMCBvZiBDUzAgDQo+PiBjb25uZWN0ZWQg
-Zmxhc2ggZGV2aWNlLg0KPiANCj4gT2ssIEkgd2lsbCBoYXZlIGEgbG9vayBhdCB3aGF0IGNvdWxk
-IG1ha2UgdGhlIGNoaXAgc2VsZWN0aW9uIGZhaWwgaW4gDQo+IGNhc2Ugb2YgQUhCIHJlYWQuDQoN
-CkNvdWxkIHlvdSB0cnkgd2l0aCB0aGlzIGNoYW5nZSBhcHBsaWVkOg0KDQpAQCAtNTAzLDcgKzUw
-Myw3IEBAIHN0YXRpYyB2b2lkIGZzbF9xc3BpX3NlbGVjdF9tZW0oc3RydWN0IGZzbF9xc3BpICpx
-LCANCnN0cnVjdCBzcGlfZGV2aWNlICpzcGkpDQogICAgICAgICAgICAgICAgICAgICAgICAgbWFw
-X2FkZHIgPSBxLT5tZW1tYXBfcGh5Ow0KICAgICAgICAgICAgICAgICBlbHNlDQogICAgICAgICAg
-ICAgICAgICAgICAgICAgbWFwX2FkZHIgPSBxLT5tZW1tYXBfcGh5ICsNCi0gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgMiAqIHEtPmRldnR5cGVfZGF0YS0+YWhiX2J1Zl9zaXplOw0K
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBxLT5kZXZ0eXBlX2RhdGEtPmFoYl9i
-dWZfc2l6ZTsNCg0KICAgICAgICAgICAgICAgICBxc3BpX3dyaXRlbChxLCBtYXBfYWRkciwgcS0+
-aW9iYXNlICsgUVVBRFNQSV9TRkExQUQgKyANCihpICogNCkpOw0KICAgICAgICAgfQ0KDQo+IA0K
-Pj4gT24gdGhlIHNldHVwIHdoZXJlIHlvdSBoYXZlIGRvbmUgdGVzdGluZywgZGlkIEFIQiBtb2Rl
-IHJlYWQgaXMgYmVpbmcgDQo+PiB2ZXJpZmllZCBmb3IgQ1MxPw0KPiANCj4gTm8sIEkgY3VycmVu
-dGx5IGhhdmUgb25seSBoYXJkd2FyZSB3aXRoIENTMCBjb25uZWN0ZWQuIFNvIEkgZGlkbid0IHRl
-c3QgDQo+IHdpdGggQ1MxLg0KPiANCj4+DQo+PiBJIGFtIGRvaW5nIGZ1cnRoZXIgZGVidWdnaW5n
-IG9mIHRoaXMgaXNzdWUuDQo+IA0KPiBUaGFua3MsDQo+IEZyaWVkZXI=
+On Wed, 14 Nov 2018 08:00:44 +0000
+<Tudor.Ambarus@microchip.com> wrote:
+
+> Hi, Alexander,
+> 
+> On 11/13/2018 06:58 PM, Sverdlin, Alexander (Nokia - DE/Ulm) wrote:
+> > Hello Tudor and all,
+> > 
+> > first of all, thank you for your work on SFDP support in Linux!
+> > 
+> > Unfortunately, I'm debugging a regression caused by 5390a8df769ec
+> > "mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories"
+> > in [out of tree] support for S25FS128S.
+> > 
+> > The culprit is the following part of your patch:
+> > 
+> > 	/*
+> > 	 * For non-uniform SPI flash memory, set mtd->erasesize to the
+> > 	 * maximum erase sector size. No need to set nor->erase_opcode.
+> > 	 */
+> > 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+> > 		if (map->erase_type[i].size) {
+> > 			erase = &map->erase_type[i];
+> > 			break;
+> > 		}
+> > 	}
+> > 
+> > The problem in our case is, we have existing partitioning with 128k partitions
+> > (the Flash itself supports 256k and 64k erasesize, depending on configuration).
+> > The chip is configured for 64k erasesize, non-uniform mapping.
+> > 
+> > The mapping itself is being detected correctly, but when it comes to the code
+> > snippet above, it selects the biggest erasesize from all sizes advertised in
+> > SFDP, including 256k, which is not applicable to the current configuration.  
+> 
+> The fix would be to save the supported erase types when parsing the SFDP SMPT
+> table and use those instead.
+> 
+> > 
+> > Finally when mtd registers the partitions, they are forced read-only:
+> > 
+> > 	partition "..." doesn't start on an erase block boundary -- force read-only
+> > 
+> > So this change is not backwards compatible to the existing partitionings.  
+> 
+> Maybe you have a partition that is not divisible by 256k?
+
+Yes, but apparently it was working before the non-uniform erase
+changes, so this is a regression. And I fear this is not the only thing
+that breaks when mtd->erasesize changes: UBI relies on mtd->erasesize
+to figure out its LEB/PEB size, so exiting UBI partitions won't work
+anymore on this flash.
+
+> 
+> > 
+> > I cannot come with the justification for the above decision myself, so
+> > I have to ask you guys, what is the reason for setting mtd->erasesize to
+> > the *maximum* erase sector size?  
+> 
+> "Major" _valid_ erase sector size. It's an API requirement described at the
+> mtd_info struct definition. I guess it's for performance reasons. You would like
+> to use the biggest valid erase commands instead of multiple smaller. Also, one
+> might require the erase starting address to be aligned with major erase size,
+> for performance reasons as well.
+
+I don't think this is related to perfs (at least not only), it's just
+that some flashes have different erase size across the device, and some
+MTD users don't want to deal with that, so instead, they use the
+biggest erase size assuming this biggest erasesize is a multiple of the
+smaller ones and will always work. That's typically what UBI does.
