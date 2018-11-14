@@ -1,28 +1,23 @@
-Subject: Re: [PATCH v6 0/2] mtd: rawnand: meson: add Amlogic NAND driver
- support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, Rob Herring <robh@kernel.org>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Richard Weinberger <richard@nod.at>,
- Yixun Lan <yixun.lan@amlogic.com>, <linux-kernel@vger.kernel.org>, Marek
- Vasut <marek.vasut@gmail.com>, <devicetree@vger.kernel.org>, Liang Yang
- <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>, Kevin Hilman
- <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
- <linux-amlogic@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>
-References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
- <20181111215745.07448b12@xps13>
-From: Jianxin Pan <jianxin.pan@amlogic.com>
-Message-ID: <0aa11423-c442-771f-c061-0ac86aff733d@amlogic.com>
-Date: Wed, 14 Nov 2018 14:42:16 +0800
-MIME-Version: 1.0
-In-Reply-To: <20181111215745.07448b12@xps13>
-Content-Type: text/plain; charset="utf-8"
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gMq6h-0003C1-Ce
+ for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 08:01:05 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexander.sverdlin@nokia.com>, <linux-mtd@lists.infradead.org>,
+ <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <richard@nod.at>, <Cristian.Birsan@microchip.com>
+Subject: Re: [RFC] mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash
+ memories
+Date: Wed, 14 Nov 2018 08:00:44 +0000
+Message-ID: <a38ad0f7-e51a-158e-e074-2b1cdabecd16@microchip.com>
+References: <e902a586-9e15-544c-ab4d-37d6ee28cdff@nokia.com>
+In-Reply-To: <e902a586-9e15-544c-ab4d-37d6ee28cdff@nokia.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D268615C24C90F46A2CA643F448DEDDB@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,27 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
-
-I sorry to miss you in the CC list before, I will CC you in the next version.
-Thank you very much.
-
-On 2018/11/12 4:57, Miquel Raynal wrote:
-> Hi Jianxin,
-> 
-> Jianxin Pan <jianxin.pan@amlogic.com> wrote on Fri, 2 Nov 2018 00:42:19
-> +0800:
-> 
->> These two patches try to add initial NAND driver support for Amlogic Meson
->> SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
->>
-> 
-> Would you mind Cc:'ing me when you send NAND related patches? Otherwise
-> there is a chance that it will take ages before I notice your series
-> in the middle of the MTD patches flo
-> 
-> Thanks,
-> Miquèl
-> 
-> .
-> 
+SGksIEFsZXhhbmRlciwNCg0KT24gMTEvMTMvMjAxOCAwNjo1OCBQTSwgU3ZlcmRsaW4sIEFsZXhh
+bmRlciAoTm9raWEgLSBERS9VbG0pIHdyb3RlOg0KPiBIZWxsbyBUdWRvciBhbmQgYWxsLA0KPiAN
+Cj4gZmlyc3Qgb2YgYWxsLCB0aGFuayB5b3UgZm9yIHlvdXIgd29yayBvbiBTRkRQIHN1cHBvcnQg
+aW4gTGludXghDQo+IA0KPiBVbmZvcnR1bmF0ZWx5LCBJJ20gZGVidWdnaW5nIGEgcmVncmVzc2lv
+biBjYXVzZWQgYnkgNTM5MGE4ZGY3NjllYw0KPiAibXRkOiBzcGktbm9yOiBhZGQgc3VwcG9ydCB0
+byBub24tdW5pZm9ybSBTRkRQIFNQSSBOT1IgZmxhc2ggbWVtb3JpZXMiDQo+IGluIFtvdXQgb2Yg
+dHJlZV0gc3VwcG9ydCBmb3IgUzI1RlMxMjhTLg0KPiANCj4gVGhlIGN1bHByaXQgaXMgdGhlIGZv
+bGxvd2luZyBwYXJ0IG9mIHlvdXIgcGF0Y2g6DQo+IA0KPiAJLyoNCj4gCSAqIEZvciBub24tdW5p
+Zm9ybSBTUEkgZmxhc2ggbWVtb3J5LCBzZXQgbXRkLT5lcmFzZXNpemUgdG8gdGhlDQo+IAkgKiBt
+YXhpbXVtIGVyYXNlIHNlY3RvciBzaXplLiBObyBuZWVkIHRvIHNldCBub3ItPmVyYXNlX29wY29k
+ZS4NCj4gCSAqLw0KPiAJZm9yIChpID0gU05PUl9FUkFTRV9UWVBFX01BWCAtIDE7IGkgPj0gMDsg
+aS0tKSB7DQo+IAkJaWYgKG1hcC0+ZXJhc2VfdHlwZVtpXS5zaXplKSB7DQo+IAkJCWVyYXNlID0g
+Jm1hcC0+ZXJhc2VfdHlwZVtpXTsNCj4gCQkJYnJlYWs7DQo+IAkJfQ0KPiAJfQ0KPiANCj4gVGhl
+IHByb2JsZW0gaW4gb3VyIGNhc2UgaXMsIHdlIGhhdmUgZXhpc3RpbmcgcGFydGl0aW9uaW5nIHdp
+dGggMTI4ayBwYXJ0aXRpb25zDQo+ICh0aGUgRmxhc2ggaXRzZWxmIHN1cHBvcnRzIDI1NmsgYW5k
+IDY0ayBlcmFzZXNpemUsIGRlcGVuZGluZyBvbiBjb25maWd1cmF0aW9uKS4NCj4gVGhlIGNoaXAg
+aXMgY29uZmlndXJlZCBmb3IgNjRrIGVyYXNlc2l6ZSwgbm9uLXVuaWZvcm0gbWFwcGluZy4NCj4g
+DQo+IFRoZSBtYXBwaW5nIGl0c2VsZiBpcyBiZWluZyBkZXRlY3RlZCBjb3JyZWN0bHksIGJ1dCB3
+aGVuIGl0IGNvbWVzIHRvIHRoZSBjb2RlDQo+IHNuaXBwZXQgYWJvdmUsIGl0IHNlbGVjdHMgdGhl
+IGJpZ2dlc3QgZXJhc2VzaXplIGZyb20gYWxsIHNpemVzIGFkdmVydGlzZWQgaW4NCj4gU0ZEUCwg
+aW5jbHVkaW5nIDI1NmssIHdoaWNoIGlzIG5vdCBhcHBsaWNhYmxlIHRvIHRoZSBjdXJyZW50IGNv
+bmZpZ3VyYXRpb24uDQoNClRoZSBmaXggd291bGQgYmUgdG8gc2F2ZSB0aGUgc3VwcG9ydGVkIGVy
+YXNlIHR5cGVzIHdoZW4gcGFyc2luZyB0aGUgU0ZEUCBTTVBUDQp0YWJsZSBhbmQgdXNlIHRob3Nl
+IGluc3RlYWQuDQoNCj4gDQo+IEZpbmFsbHkgd2hlbiBtdGQgcmVnaXN0ZXJzIHRoZSBwYXJ0aXRp
+b25zLCB0aGV5IGFyZSBmb3JjZWQgcmVhZC1vbmx5Og0KPiANCj4gCXBhcnRpdGlvbiAiLi4uIiBk
+b2Vzbid0IHN0YXJ0IG9uIGFuIGVyYXNlIGJsb2NrIGJvdW5kYXJ5IC0tIGZvcmNlIHJlYWQtb25s
+eQ0KPiANCj4gU28gdGhpcyBjaGFuZ2UgaXMgbm90IGJhY2t3YXJkcyBjb21wYXRpYmxlIHRvIHRo
+ZSBleGlzdGluZyBwYXJ0aXRpb25pbmdzLg0KDQpNYXliZSB5b3UgaGF2ZSBhIHBhcnRpdGlvbiB0
+aGF0IGlzIG5vdCBkaXZpc2libGUgYnkgMjU2az8NCg0KPiANCj4gSSBjYW5ub3QgY29tZSB3aXRo
+IHRoZSBqdXN0aWZpY2F0aW9uIGZvciB0aGUgYWJvdmUgZGVjaXNpb24gbXlzZWxmLCBzbw0KPiBJ
+IGhhdmUgdG8gYXNrIHlvdSBndXlzLCB3aGF0IGlzIHRoZSByZWFzb24gZm9yIHNldHRpbmcgbXRk
+LT5lcmFzZXNpemUgdG8NCj4gdGhlICptYXhpbXVtKiBlcmFzZSBzZWN0b3Igc2l6ZT8NCg0KIk1h
+am9yIiBfdmFsaWRfIGVyYXNlIHNlY3RvciBzaXplLiBJdCdzIGFuIEFQSSByZXF1aXJlbWVudCBk
+ZXNjcmliZWQgYXQgdGhlDQptdGRfaW5mbyBzdHJ1Y3QgZGVmaW5pdGlvbi4gSSBndWVzcyBpdCdz
+IGZvciBwZXJmb3JtYW5jZSByZWFzb25zLiBZb3Ugd291bGQgbGlrZQ0KdG8gdXNlIHRoZSBiaWdn
+ZXN0IHZhbGlkIGVyYXNlIGNvbW1hbmRzIGluc3RlYWQgb2YgbXVsdGlwbGUgc21hbGxlci4gQWxz
+bywgb25lDQptaWdodCByZXF1aXJlIHRoZSBlcmFzZSBzdGFydGluZyBhZGRyZXNzIHRvIGJlIGFs
+aWduZWQgd2l0aCBtYWpvciBlcmFzZSBzaXplLA0KZm9yIHBlcmZvcm1hbmNlIHJlYXNvbnMgYXMg
+d2VsbC4NCg0KQ2hlZXJzLA0KdGENCg0KPiANCj4gSSdkIGFwcHJlY2lhdGUgYW55IGlkZWFzIG9u
+IHRoZSBhYm92ZSwgbWF5YmUgSSBjYW4gY29udmVydCB0aGVtIHRvIGEgcGF0Y2guDQo+IA0KPiBP
+ciBzaG91bGQgbXRkcGFydC5jIGJlIHVwZGF0ZWQgdG8gaGFuZGxlIG5vbi11bmlmb3JtIGVyYXNl
+IHJlZ2lvbnM/DQo+IEJ1dCB0aGV5IHNlZW0gdG8gYmUgc3BpLW5vci5jLXNwZWNpZmljIGN1cnJl
+bnRseS4uLg0KPiANCg==
