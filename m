@@ -1,18 +1,16 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gN3aM-0003RZ-At
- for linux-mtd@lists.infradead.org; Wed, 14 Nov 2018 22:24:35 +0000
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.18 29/59] mtd: nand: Fix nanddev_pos_next_page()
- kernel-doc header
-Date: Wed, 14 Nov 2018 17:23:01 -0500
-Message-Id: <20181114222335.99339-29-sashal@kernel.org>
-In-Reply-To: <20181114222335.99339-1-sashal@kernel.org>
-References: <20181114222335.99339-1-sashal@kernel.org>
+Received: from mailout2.w1.samsung.com ([210.118.77.12])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gN9sU-0006eG-Rb
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 05:07:44 +0000
+From: Huijin Park <huijin.park@samsung.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Huijin Park <huijin.park@samsung.com>,
+ bbanghj.park@gmail.com
+Subject: [PATCH v2] mtd: change len type from signed to unsigned type
+Date: Thu, 15 Nov 2018 00:07:10 -0500
+Message-id: <1542258430-19885-1-git-send-email-huijin.park@samsung.com>
+References: <CGME20181115050724eucas1p169b2046c03e108035199a4481a82a560@eucas1p1.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris Brezillon <boris.brezillon@bootlin.com>
+From: "huijin.park" <huijin.park@samsung.com>
 
-[ Upstream commit 98ee3fc7ef8395f8b7a379e6608aee91efc66d48 ]
+This patch casts the "len" parameter to an unsigned int.
+The callers of erase_write() pass the "len" parameter as unsigned int.
 
-Function name is wrong in the kernel-doc header.
-
-Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAND devices")
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: huijin.park <huijin.park@samsung.com>
 ---
- include/linux/mtd/nand.h | 2 +-
+ drivers/mtd/mtdblock.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index abe975c87b90..ad8f0325c027 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -569,7 +569,7 @@ static inline void nanddev_pos_next_eraseblock(struct nand_device *nand,
- }
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index a5b1933..b2d5ed1 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -56,7 +56,7 @@ struct mtdblk_dev {
+  */
  
- /**
-- * nanddev_pos_next_eraseblock() - Move a position to the next page
-+ * nanddev_pos_next_page() - Move a position to the next page
-  * @nand: NAND device
-  * @pos: the position to update
-  *
+ static int erase_write (struct mtd_info *mtd, unsigned long pos,
+-			int len, const char *buf)
++			unsigned int len, const char *buf)
+ {
+ 	struct erase_info erase;
+ 	size_t retlen;
 -- 
-2.17.1
+1.7.9.5
