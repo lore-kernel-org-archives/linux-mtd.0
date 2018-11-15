@@ -1,25 +1,24 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNFIe-0001gS-Hz
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 10:55:05 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@bootlin.com>, <liu.xiang6@zte.com.cn>,
- <cyrille.pitchen@wedev4u.fr>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNFQb-0000Cf-RV
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 11:03:19 +0000
+Date: Thu, 15 Nov 2018 12:02:56 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <liu.xiang6@zte.com.cn>, <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
  <computersforpeace@gmail.com>, <richard@nod.at>, <liuxiang_1999@126.com>
-Subject: Re: [PATCH] mtd: spi-nor: Return error when nor->addr_width not match
- the device size
-Date: Thu, 15 Nov 2018 10:54:39 +0000
-Message-ID: <96397ec0-14de-f09a-a18d-c67396e33fba@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: Return error when nor->addr_width not
+ match the device size
+Message-ID: <20181115120256.4e1a86b2@bbrezillon>
+In-Reply-To: <96397ec0-14de-f09a-a18d-c67396e33fba@microchip.com>
 References: <1542200165-3073-1-git-send-email-liu.xiang6@zte.com.cn>
  <20181114145129.568e4bb3@bbrezillon>
-In-Reply-To: <20181114145129.568e4bb3@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BC00E32308754F4A9A1D5CCE6B4D3AEE@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <96397ec0-14de-f09a-a18d-c67396e33fba@microchip.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIExpdSwgQm9yaXMsIEN5cmlsbGUsDQoNCk9uIDExLzE0LzIwMTggMDM6NTEgUE0sIEJvcmlz
-IEJyZXppbGxvbiB3cm90ZToNCj4gT24gV2VkLCAxNCBOb3YgMjAxOCAyMDo1NjowNSArMDgwMA0K
-PiBMaXUgWGlhbmcgPGxpdS54aWFuZzZAenRlLmNvbS5jbj4gd3JvdGU6DQo+IA0KPj4gSW4gaXMy
-NWxwMjU2LCB0aGUgRFdPUkQxIG9mIEpFREVDIEJhc2ljIEZsYXNoIFBhcmFtZXRlciBIZWFkZXIN
-Cj4+IGlzIDB4ZmZmOTIwZTUuIFNvIHRoZSBEV09SRDFbMTg6MTddIEFkZHJlc3MgQnl0ZXMgYml0
-cyBhcmUgMGIwMCwNCg0KTGl1LCBjYW4geW91IHBvaW50IHVzIHRvIGEgZGF0YXNoZWV0IHRoYXQg
-aGFzIHRoZSBKRURFQyBCRlBUIHRhYmxlcyBkZXNjcmliZWQ/IEkNCmNvdWxkbid0IGZpbmQgb25l
-IC4uLg0KDQo+PiBtZWFucyB0aGF0IDMtQnl0ZSBvbmx5IGFkZHJlc3NpbmcuDQo+IA0KPiBBY2Nv
-cmRpbmcgdG8geW91ciBvdGhlciBwYXRjaCB0aGlzIE5PUiBzdXBwb3J0cyA0QiBvcGNvZGUsIHdo
-aWNoIG1lYW5zDQo+IHRoZSBTRkRQIHRhYmxlIGlzIHdyb25nLg0KPiANCj4+IEJ1dCB0aGUgZGV2
-aWNlIHNpemUgaXMgbGFyZ2VyDQo+PiB0aGFuIDE2TUIsIG5vci0+YWRkcl93aWR0aCBtdXN0IGJl
-IDQgdG8gYWNjZXNzIHRoZSB3aG9sZSBhZGRyZXNzLg0KPj4gQW4gZXJyb3Igc2hvdWxkIGJlIHJl
-dHVybmVkIHdoZW4gbm9yLT5hZGRyX3dpZHRoIG5vdCBtYXRjaA0KPiANCj4gCQkJCQkJICAgXmRv
-ZXMgbm90DQo+IA0KPj4gdGhlIGRldmljZSBzaXplIGluIHNwaV9ub3JfcGFyc2Vfc2ZkcCgpLg0K
-Pj4NCj4+IFN1Z2dlc3RlZC1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9v
-dGxpbi5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBMaXUgWGlhbmcgPGxpdS54aWFuZzZAenRlLmNv
-bS5jbj4NCj4+IC0tLQ0KPj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgNCArKysr
-DQo+PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
-LW5vci5jDQo+PiBpbmRleCAzZWJhMTNhLi43N2VhZjIyIDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVy
-cy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
-LW5vci5jDQo+PiBAQCAtMjY2OSw2ICsyNjY5LDEwIEBAIHN0YXRpYyBpbnQgc3BpX25vcl9wYXJz
-ZV9iZnB0KHN0cnVjdCBzcGlfbm9yICpub3IsDQo+PiAgCX0NCj4+ICAJcGFyYW1zLT5zaXplID4+
-PSAzOyAvKiBDb252ZXJ0IHRvIGJ5dGVzLiAqLw0KPj4gIA0KPj4gKwkvKmlmIHRoZSBkZXZpY2Ug
-ZXhjZWVkcyAxNk1pQiwgYWRkcl93aWR0aCBtdXN0IGJlIDQqLw0KPiANCj4gUGxlYXNlIGFkZCBh
-IHdoaXRlIHNwYWNlIGFmdGVyICcvKicgYW5kIGJlZm9yZSAnKi8nOg0KPiANCj4gCS8qIElmIHRo
-ZSBkZXZpY2UgZXhjZWVkcyAxNk1pQiwgLT5hZGRyX3dpZHRoIG11c3QgYmUgNC4gKi8NCj4gDQo+
-PiArCWlmICgocGFyYW1zLT5zaXplID4gMHgxMDAwMDAwKSAmJiAobm9yLT5hZGRyX3dpZHRoID09
-IDMpKQ0KPiANCj4gUGFyZW5zIGFyZSBub3QgbmVlZGVkIGFyb3VuZCBzdWItY29uZGl0aW9uczoN
-Cj4gDQo+IAlpZiAocGFyYW1zLT5zaXplID4gMHgxMDAwMDAwICYmIG5vci0+YWRkcl93aWR0aCA9
-PSAzKQ0KPiANCj4+ICsJCXJldHVybiAtRUlOVkFMOw0KPj4gKw0KPiANCj4gSSdtIG5vdCBzdXJl
-IHRoaXMgaXMgY29ycmVjdC4gTG9va3MgbGlrZSBzb21lIE5PUnMgb25seSBzdXBwb3J0IDNCDQo+
-IG9wY29kZXMgYnV0IGhhdmUgYSAiNC1ieXRlIGFkZHJlc3NpbmciIG1vZGUgKHNlZSBzZXRfNGJ5
-dGUoKSBbMV0pLg0KPiBEb24ndCBrbm93IHdoYXQncyByZXBvcnRlZCBieSB0aGUgQkZQVCBzZWN0
-aW9uIGluIHRoaXMgY2FzZSB0aG91Z2gNCj4gKEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19P
-TkxZIG9yIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80KS4NCg0KQm9yaXMsIHRoaXMg
-aXMgaW4gY2xvc2UgcmVsYXRpb24gd2l0aCB5b3VyIHNlY29uZCBwYXRjaDogW1BBVENIIHYzIDIv
-Ml0gbXRkOg0Kc3BpLW5vcjogVXNlIDRCIG9wY29kZXMgd2hlbiB0aGUgTk9SIGFkdmVydGlzZXMg
-Ym90aCAzQiBhbmQgNEIuDQoNCldoZW4gbG9va2luZyBhZ2FpbiBhdCB0aGlzLCBJIHdvdWxkIHNh
-eSB0aGF0IGZvciB0aGUgZmxhc2hlcyB0aGF0IGhhdmUgYSAiNC1ieXRlDQphZGRyZXNzaW5nIiBt
-b2RlLCBidXQganVzdCAzQiBvcGNvZGVzLCBJIHdvdWxkIGV4cGVjdCB0aGUgRFdPUkQxWzE4OjE3
-XSB0byBiZSBvZg0KdmFsdWUgQkZQVF9EV09SRDFfQUREUkVTU19CWVRFU18zX09SXzQgKGVudGVy
-cyA0LUJ5dGUgbW9kZSBvbiBjb21tYW5kIC0gdXNlcyAzQg0Kb3Bjb2RlcykuDQoNCklmIEJGUFRf
-RFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80IGFuZCA0QiBvcGNvZGVzLCB0aGVuIHdlIGNhbiBx
-dWVyeSBCRlBUDQpEV09SRDE2WzMxOjI0XTogaXQgc2hvdWxkIGhhdmUgdmFsdWUgeHgxeF94eHh4
-YiB0byBpbmRpY2F0ZSB0aGF0IDRCIG9wY29kZXMgYXJlDQpzdXBwb3J0ZWQuIEJ1dCB3aGljaCA0
-QiBvcGNvZGVzIGFyZSBzdXBwb3J0ZWQ/IERvIGFsbCAzQiBvcGNvZGVzIGhhdmUgYSA0Qg0Kb3Bj
-b2RlIGNvcnJlc3BvbmRlbnQgaWYgU0ZEUCA0LWJ5dGUgdGFibGUgaXMgbm90IGF2YWlsYWJsZT8g
-VGhpcyBtaWdodCBiZSBhIGdvb2QNCmFzc3VtcHRpb24sIGJ1dCBJIGNhbid0IHNlZSBpdCBhbnl3
-aGVyZSBpbiBqZXNkMjE2Yy4NCg0KQ3lyaWxsZSwgd2hlbiBsb29raW5nIGF0IGJhM2FlNmExZDRj
-ICgibXRkOiBzcGktbm9yOiBhZGQgYSBzdGF0ZWxlc3MgbWV0aG9kIHRvDQpzdXBwb3J0IG1lbW9y
-eSBzaXplIGFib3ZlIDEyOE1pYiIpIEkgc2VlIHRoYXQgYWxsIGZsYXNoZXMgdGhhdCBkZWNsYXJl
-DQpTUElfTk9SXzRCX09QQ09ERVMgd2lsbCBoYXZlIHRoZSAzQiBvcGNvZGVzIGNvbnZlcnRlZCB0
-byA0QiBvcGNvZGVzLCBhc3N1bWluZw0KdGhhdCBhbGwgM0Igb3Bjb2RlcyBoYXZlIGEgNEIgY29y
-cmVzcG9uZGVudC4gSXMgdGhpcyBhc3N1bXB0aW9uIGEgZ2VuZXJhbCBydWxlLA0Kb3IgaXQncyBq
-dXN0IGZvciB0aGUgU3BhbnNpb24gZmxhc2hlcz8NCg0KQ2hlZXJzLA0KdGENCg0KPiANCj4gQW55
-d2F5LCBJIHRoaW5rIHRoaXMgY2hlY2sgc2hvdWxkIGJlIG1vdmVkIGhlcmUgWzJdIHRvIGNvdmVy
-IHRoZQ0KPiBub24tU0ZEUCBjYXNlLg0KPiANCj4+ICAJLyogRmFzdCBSZWFkIHNldHRpbmdzLiAq
-Lw0KPj4gIAlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShzZmRwX2JmcHRfcmVhZHMpOyBpKysp
-IHsNCj4+ICAJCWNvbnN0IHN0cnVjdCBzZmRwX2JmcHRfcmVhZCAqcmQgPSAmc2ZkcF9iZnB0X3Jl
-YWRzW2ldOw0KPiANCj4gWzFdaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjQuMjAt
-cmMyL3NvdXJjZS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyNMMjc4DQo+IFsyXWh0dHBz
-Oi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0LjIwLXJjMi9zb3VyY2UvZHJpdmVycy9tdGQv
-c3BpLW5vci9zcGktbm9yLmMjTDM3NTgNCj4gDQo=
+On Thu, 15 Nov 2018 10:54:39 +0000
+<Tudor.Ambarus@microchip.com> wrote:
+
+> Hi, Liu, Boris, Cyrille,
+> 
+> On 11/14/2018 03:51 PM, Boris Brezillon wrote:
+> > On Wed, 14 Nov 2018 20:56:05 +0800
+> > Liu Xiang <liu.xiang6@zte.com.cn> wrote:
+> >   
+> >> In is25lp256, the DWORD1 of JEDEC Basic Flash Parameter Header
+> >> is 0xfff920e5. So the DWORD1[18:17] Address Bytes bits are 0b00,  
+> 
+> Liu, can you point us to a datasheet that has the JEDEC BFPT tables described? I
+> couldn't find one ...
+> 
+> >> means that 3-Byte only addressing.  
+> > 
+> > According to your other patch this NOR supports 4B opcode, which means
+> > the SFDP table is wrong.
+> >   
+> >> But the device size is larger
+> >> than 16MB, nor->addr_width must be 4 to access the whole address.
+> >> An error should be returned when nor->addr_width not match  
+> > 
+> > 						   ^does not
+> >   
+> >> the device size in spi_nor_parse_sfdp().
+> >>
+> >> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> >> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+> >> ---
+> >>  drivers/mtd/spi-nor/spi-nor.c | 4 ++++
+> >>  1 file changed, 4 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> >> index 3eba13a..77eaf22 100644
+> >> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >> @@ -2669,6 +2669,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >>  	}
+> >>  	params->size >>= 3; /* Convert to bytes. */
+> >>  
+> >> +	/*if the device exceeds 16MiB, addr_width must be 4*/  
+> > 
+> > Please add a white space after '/*' and before '*/':
+> > 
+> > 	/* If the device exceeds 16MiB, ->addr_width must be 4. */
+> >   
+> >> +	if ((params->size > 0x1000000) && (nor->addr_width == 3))  
+> > 
+> > Parens are not needed around sub-conditions:
+> > 
+> > 	if (params->size > 0x1000000 && nor->addr_width == 3)
+> >   
+> >> +		return -EINVAL;
+> >> +  
+> > 
+> > I'm not sure this is correct. Looks like some NORs only support 3B
+> > opcodes but have a "4-byte addressing" mode (see set_4byte() [1]).
+> > Don't know what's reported by the BFPT section in this case though
+> > (BFPT_DWORD1_ADDRESS_BYTES_3_ONLY or BFPT_DWORD1_ADDRESS_BYTES_3_OR_4).  
+> 
+> Boris, this is in close relation with your second patch: [PATCH v3 2/2] mtd:
+> spi-nor: Use 4B opcodes when the NOR advertises both 3B and 4B.
+> 
+> When looking again at this, I would say that for the flashes that have a "4-byte
+> addressing" mode, but just 3B opcodes, I would expect the DWORD1[18:17] to be of
+> value BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 (enters 4-Byte mode on command - uses 3B
+> opcodes).
+
+The NOR we have and which is exposing BFPT_DWORD1_ADDRESS_BYTES_3_OR_4
+actually supports both 3B and 4B commands, so, in this particular case,
+BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 does not mean "3B opcode+4-byte
+addressing mode"
+
+> 
+> If BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 and 4B opcodes, then we can query BFPT
+> DWORD16[31:24]: it should have value xx1x_xxxxb to indicate that 4B opcodes are
+> supported. But which 4B opcodes are supported?
+
+I hope all of them. Wouldn't make sense to have only some of them
+supported.
+
+> Do all 3B opcodes have a 4B
+> opcode correspondent if SFDP 4-byte table is not available? This might be a good
+> assumption, but I can't see it anywhere in jesd216c.
+
+I hope so...
