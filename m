@@ -1,20 +1,40 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNHmu-00062a-6t
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 13:34:29 +0000
-Date: Thu, 15 Nov 2018 14:34:17 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Huijin Park <huijin.park@samsung.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, bbanghj.park@gmail.com
-Subject: Re: [PATCH v2] mtd: change len type from signed to unsigned type
-Message-ID: <20181115143417.4e0e7dbe@bbrezillon>
-In-Reply-To: <1542258430-19885-1-git-send-email-huijin.park@samsung.com>
-References: <CGME20181115050724eucas1p169b2046c03e108035199a4481a82a560@eucas1p1.samsung.com>
- <1542258430-19885-1-git-send-email-huijin.park@samsung.com>
+Received: from skedge04.snt-world.com ([91.208.41.69])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNIDa-0006w3-R6
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 14:02:05 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.De>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>, Han Xu
+ <han.xu@nxp.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ David Wolfe <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+Date: Thu, 15 Nov 2018 14:01:42 +0000
+Message-ID: <11f45245-efc4-f1cf-3ead-578a5ca4bf29@kontron.de>
+References: <1542116782-13118-1-git-send-email-frieder.schrempf@kontron.de>
+ <1542116782-13118-4-git-send-email-frieder.schrempf@kontron.de>
+ <VI1PR04MB572679944542ED6A438FD2FB99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <ce9cbfc0-3257-f117-aa21-cdee068579ce@kontron.de>
+ <65577d13-b17d-8f69-313c-01d23240d1d9@kontron.de>
+ <VI1PR04MB572664063A0E237D2EB7203A99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <eb4b79be-c12b-16e7-e1dd-86a157cfdc7d@kontron.de>
+ <VI1PR04MB57265222E26C013D5D9C009B99DC0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <3e9aa917-cf3a-cf0e-8516-4e73d30eb2a1@kontron.de>
+ <20181115141252.52a5b32d@bbrezillon>
+In-Reply-To: <20181115141252.52a5b32d@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8AFC4BC7E3BC2943BFE1E80638A5616A@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +44,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 15 Nov 2018 00:07:10 -0500
-Huijin Park <huijin.park@samsung.com> wrote:
-
-> From: "huijin.park" <huijin.park@samsung.com>
-> 
-> This patch casts the "len" parameter to an unsigned int.
-
-Hm, that's not really what this patch actually. Actually it avoids the
-cast from an int to an unsigned int.
-
-> The callers of erase_write() pass the "len" parameter as unsigned int.
-
-That's the important part here. Callers of erase_write() always pass an
-unsigned int, so what you're trying to do here is avoid a cast to an
-int.
-
-> 
-> Signed-off-by: huijin.park <huijin.park@samsung.com>
-> ---
-
-You should have a changelog here.
-
->  drivers/mtd/mtdblock.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-> index a5b1933..b2d5ed1 100644
-> --- a/drivers/mtd/mtdblock.c
-> +++ b/drivers/mtd/mtdblock.c
-> @@ -56,7 +56,7 @@ struct mtdblk_dev {
->   */
->  
->  static int erase_write (struct mtd_info *mtd, unsigned long pos,
-> -			int len, const char *buf)
-> +			unsigned int len, const char *buf)
->  {
->  	struct erase_info erase;
->  	size_t retlen;
+SGkgWW9nZXNoLA0KDQpPbiAxNS4xMS4xOCAxNDoxMiwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0K
+PiBPbiBUaHUsIDE1IE5vdiAyMDE4IDExOjQzOjA1ICswMDAwDQo+IFNjaHJlbXBmIEZyaWVkZXIg
+PGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5EZT4gd3JvdGU6DQo+IA0KPj4gT24gMTUuMTEuMTgg
+MDc6MjIsIFlvZ2VzaCBOYXJheWFuIEdhdXIgd3JvdGU6DQo+Pj4gSGkgRnJpZWRlciwNCj4+Pg0K
+Pj4+IFdpdGggYmVsb3cgcGF0Y2ggb24gdG9wIG9mIHlvdXIgdjUsIFJlYWQvV3JpdGUvRXJhc2Ug
+b24gQ1MxIGlzIHdvcmtpbmcgZmluZSBmb3IgbWUuDQo+Pg0KPj4gT2ssIGFyZSB5b3Ugc3VyZSwg
+dGhhdCBBSEIgcmVhZCBpcyB3b3JraW5nIHRvbyB3aXRoIHRoaXMgcGF0Y2g/DQo+PiBZb3UgYXJl
+IHJlbW92aW5nIHRoZSBtZW1tYXBfcGh5IG9mZnNldCBmcm9tIFNGQVIgYW5kIHRoZSBTRlhYQUQg
+cmVnaXN0ZXINCj4+IHZhbHVlcy4NCj4+DQo+PiBJIGNhbiB1bmRlcnN0YW5kIHRoYXQgc2VsZWN0
+aW9uIG9mIHRoZSBDUyBhbmQgSVAgY29tbWFuZHMgd2lsbCB3b3JrIGxpa2UNCj4+IHRoaXMsIGJ1
+dCBJIGNhbid0IHVuZGVyc3RhbmQgaG93IEFIQiByZWFkIHNob3VsZCB3b3JrIHdpdGhvdXQgdGhl
+IGJhc2UNCj4+IGFkZHJlc3Mgb2YgdGhlIG1hcHBlZCBtZW1vcnkuDQo+Pg0KPj4gSSdtIGFmcmFp
+ZCBJIHN0aWxsIGRvbid0IGZ1bGx5IHVuZGVyc3RhbmQgdGhlIGJhY2tncm91bmQgb2YgdGhlc2UN
+Cj4+IHRoaW5ncywNCj4gDQo+IFNhbWUgaGVyZS4gWW9nZXNoLCBjYW4geW91IGdpdmUgdXMgbW9y
+ZSBkZXRhaWwgb24gd2h5IHlvdSBkZWNpZGVkIHRvDQo+IGRyb3AgdGhlIG1lbW1hcF9waHkgb2Zm
+c2V0Pw0KDQpZb3VyIGNoYW5nZXMgZG8gbm90IHdvcmsgb24gbXkgc2V0dXAgKGkuTVg2VUwpLiBJ
+dCBsb29rcyBsaWtlIHlvdXIgDQpoYXJkd2FyZSBpcyBkaWZmZXJlbnQuDQoNCkkgZm91bmQgdGhp
+cyBwYXRjaCBmb3IgTFMyMDgwQTogWzFdLiBUaGlzIHdvdWxkIGV4cGxhaW4gd2h5IHlvdSBuZWVk
+IHRvIA0KcmVtb3ZlIHRoZSBvZmZzZXQgdG8gbWFrZSBpdCB3b3JrLg0KDQpUbyB2ZXJpZnkgdGhp
+cywgY291bGQgeW91IHBsZWFzZSB0ZXN0IHlvdXIgc2V0dXAgd2l0aCB0aGUgY3VycmVudCANCnNw
+aS1ub3IgZHJpdmVyIChmc2xfcXVhZHNwaS5jKS4gSWYgb3VyIGFzc3VtcHRpb25zIGFyZSByaWdo
+dCwgaXQgc2hvdWxkIA0Kb25seSB3b3JrIG9uIENTMCBhbmQgQ1MxIHdpdGggWzFdIGFwcGxpZWQu
+DQoNClRoYW5rcywNCkZyaWVkZXINCg0KWzFdOiBodHRwOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcv
+cGF0Y2gvNjYwMzY0Lw==
