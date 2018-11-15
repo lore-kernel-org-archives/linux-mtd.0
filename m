@@ -1,17 +1,15 @@
 From: Ryder Lee <ryder.lee@mediatek.com>
 To: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
  <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>, "Weijie
- Gao" <weijie.gao@mediatek.com>, Roy Luo <cheng-hao.luo@mediatek.com>,
- "Guochun Mao" <guochun.mao@mediatek.com>, <devicetree@vger.kernel.org>,
+CC: Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>, Weijie
+ Gao <weijie.gao@mediatek.com>, Roy Luo <cheng-hao.luo@mediatek.com>,
+ Guochun Mao <guochun.mao@mediatek.com>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 2/4] mtd: spi-nor: mtk-quadspi: use ofpart for parsing
- partitions
-Date: Thu, 15 Nov 2018 14:26:24 +0800
-Message-ID: <f2ca7e285c5b48a616813f2ceb5838d8b3f136d6.1542262833.git.ryder.lee@mediatek.com>
-In-Reply-To: <1dc7b27cbad59c413d7076ff7d16b6757014d727.1542262833.git.ryder.lee@mediatek.com>
-References: <1dc7b27cbad59c413d7076ff7d16b6757014d727.1542262833.git.ryder.lee@mediatek.com>
+ <linux-mediatek@lists.infradead.org>, Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH 1/4] dt-bindings: mtd: mtk-quadspi: update bindings for MT7629
+ SoC
+Date: Thu, 15 Nov 2018 14:31:04 +0800
+Message-ID: <81d142dce539f0863c365d4657b71533ace44982.1542263446.git.ryder.lee@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,39 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Guochun Mao <guochun.mao@mediatek.com>
+This updates bindings for the MT7629 SPI-NOR controller.
 
-Replace mtd_device_register with mtd_device_parse_register for
-parsing partitions.
-Add ofpart support.
-
-Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-Tested-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 ---
- drivers/mtd/spi-nor/mtk-quadspi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mtd/mtk-quadspi.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-index 5442993..2278677 100644
---- a/drivers/mtd/spi-nor/mtk-quadspi.c
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -118,6 +118,8 @@ struct mtk_nor {
- 	struct clk *nor_clk;
- };
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+index 56d3668..a12e3b5 100644
+--- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+@@ -1,4 +1,4 @@
+-* Serial NOR flash controller for MTK MT81xx (and similar)
++* Serial NOR flash controller for MediaTek SoCs
  
-+static const char * const probes[] = { "ofpart", NULL };
-+
- static void mtk_nor_set_read_mode(struct mtk_nor *mtk_nor)
- {
- 	struct spi_nor *nor = &mtk_nor->nor;
-@@ -457,7 +459,7 @@ static int mtk_nor_init(struct mtk_nor *mtk_nor,
- 	if (ret)
- 		return ret;
- 
--	return mtd_device_register(&nor->mtd, NULL, 0);
-+	return mtd_device_parse_register(&nor->mtd, probes, NULL, NULL, 0);
- }
- 
- static int mtk_nor_drv_probe(struct platform_device *pdev)
+ Required properties:
+ - compatible: 	  For mt8173, compatible should be "mediatek,mt8173-nor",
+@@ -10,6 +10,7 @@ Required properties:
+ 		  "mediatek,mt2712-nor", "mediatek,mt8173-nor"
+ 		  "mediatek,mt7622-nor", "mediatek,mt8173-nor"
+ 		  "mediatek,mt7623-nor", "mediatek,mt8173-nor"
++		  "mediatek,mt7629-nor", "mediatek,mt8173-nor"
+ 		  "mediatek,mt8173-nor"
+ - reg: 		  physical base address and length of the controller's register
+ - clocks: 	  the phandle of the clocks needed by the nor controller
 -- 
 1.9.1
