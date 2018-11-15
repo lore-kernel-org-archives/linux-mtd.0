@@ -1,16 +1,21 @@
-Received: from a8-41.smtp-out.amazonses.com ([54.240.8.41])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNCHC-0008GJ-0s
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 07:41:24 +0000
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNDy6-0000aq-CU
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 09:29:47 +0000
+Date: Thu, 15 Nov 2018 10:29:21 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Huijin Park <huijin.park@samsung.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bbanghj.park@gmail.com
+Subject: Re: [PATCH v2] mtd: change len type from signed to unsigned type
+Message-ID: <20181115102921.5117af90@xps13>
+In-Reply-To: <1542258430-19885-1-git-send-email-huijin.park@samsung.com>
+References: <CGME20181115050724eucas1p169b2046c03e108035199a4481a82a560@eucas1p1.samsung.com>
+ <1542258430-19885-1-git-send-email-huijin.park@samsung.com>
 MIME-Version: 1.0
-Date: Thu, 15 Nov 2018 07:40:37 +0000
-Message-ID: <0100016716508fba-b77eaed3-e890-43ae-ba1e-18b14ceda3e2-000000@email.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Subject: Triumph of Ag Expo | Farm & Ranch Machinery Show 2018 Participants
-From: "Tony Hill" <tony.hill@awaresupply.com>
-Reply-To: "Tony Hill" <tony.hill@awaresupply.com>
-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+Hi Huijin,
 
-I was wondering if you would be interested in acquiring Triumph of Ag Expo =
-| Farm & Ranch Machinery Show 2018 - Participants List for Appointment Sett=
-ing, Networking and various Marketing initiatives.
-=20
-It is available as below:
-=20
-Triumph of Ag Expo | Farm & Ranch Machinery Show 2018 - Participants =E2=80=
-=93 17000 contacts at $500, this special to receive the latest decision mak=
-er contact information ends today at 5 pm PST.
- =20
-Thank you and I look forward to hearing from you.
+Huijin Park <huijin.park@samsung.com> wrote on Thu, 15 Nov 2018
+00:07:10 -0500:
 
-Best Regards
+> From: "huijin.park" <huijin.park@samsung.com>
+>=20
+> This patch casts the "len" parameter to an unsigned int.
+> The callers of erase_write() pass the "len" parameter as unsigned int.
 
-Tony Hill
+Indeed. Perhaps it is worth backporting this patch to a stable releases?
 
-Please be advised: If you received this material accidentally, please delet=
-e the material and contact the sender to make them aware of the error. Use =
-of this information or taking action based on it, including review, retrans=
-mission, and dissemination, by any person or entity other than the original=
- desired recipient is not allowed. This content is not sold to us or provid=
-ed by any entity related to Triumph of Ag Expo | Farm & Ranch Machinery Sho=
-w 2018. We are not a part of or affiliated with the Triumph of Ag Expo even=
-t manager. We preserve all ownership rights to this material, including law=
-ful authority to pursue remedies for its misuse.=20
+>=20
+> Signed-off-by: huijin.park <huijin.park@samsung.com>
+> ---
+>  drivers/mtd/mtdblock.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+> index a5b1933..b2d5ed1 100644
+> --- a/drivers/mtd/mtdblock.c
+> +++ b/drivers/mtd/mtdblock.c
+> @@ -56,7 +56,7 @@ struct mtdblk_dev {
+>   */
+> =20
+>  static int erase_write (struct mtd_info *mtd, unsigned long pos,
+> -			int len, const char *buf)
+> +			unsigned int len, const char *buf)
+>  {
+>  	struct erase_info erase;
+>  	size_t retlen;
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+
+Thanks,
+Miqu=C3=A8l
