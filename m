@@ -1,23 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNFAi-0001eG-Ed
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 10:46:53 +0000
-Date: Thu, 15 Nov 2018 11:46:20 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Cc: <alexander.sverdlin@nokia.com>, <linux-mtd@lists.infradead.org>,
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNFIe-0001gS-Hz
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2018 10:55:05 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>, <liu.xiang6@zte.com.cn>,
+ <cyrille.pitchen@wedev4u.fr>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- <Cristian.Birsan@microchip.com>
-Subject: Re: [RFC] mtd: spi-nor: add support to non-uniform SFDP SPI NOR
- flash memories
-Message-ID: <20181115114620.36ff32c7@bbrezillon>
-In-Reply-To: <a38ad0f7-e51a-158e-e074-2b1cdabecd16@microchip.com>
-References: <e902a586-9e15-544c-ab4d-37d6ee28cdff@nokia.com>
- <a38ad0f7-e51a-158e-e074-2b1cdabecd16@microchip.com>
+ <computersforpeace@gmail.com>, <richard@nod.at>, <liuxiang_1999@126.com>
+Subject: Re: [PATCH] mtd: spi-nor: Return error when nor->addr_width not match
+ the device size
+Date: Thu, 15 Nov 2018 10:54:39 +0000
+Message-ID: <96397ec0-14de-f09a-a18d-c67396e33fba@microchip.com>
+References: <1542200165-3073-1-git-send-email-liu.xiang6@zte.com.cn>
+ <20181114145129.568e4bb3@bbrezillon>
+In-Reply-To: <20181114145129.568e4bb3@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BC00E32308754F4A9A1D5CCE6B4D3AEE@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +29,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Nov 2018 08:00:44 +0000
-<Tudor.Ambarus@microchip.com> wrote:
-
-> Hi, Alexander,
-> 
-> On 11/13/2018 06:58 PM, Sverdlin, Alexander (Nokia - DE/Ulm) wrote:
-> > Hello Tudor and all,
-> > 
-> > first of all, thank you for your work on SFDP support in Linux!
-> > 
-> > Unfortunately, I'm debugging a regression caused by 5390a8df769ec
-> > "mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories"
-> > in [out of tree] support for S25FS128S.
-> > 
-> > The culprit is the following part of your patch:
-> > 
-> > 	/*
-> > 	 * For non-uniform SPI flash memory, set mtd->erasesize to the
-> > 	 * maximum erase sector size. No need to set nor->erase_opcode.
-> > 	 */
-> > 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-> > 		if (map->erase_type[i].size) {
-> > 			erase = &map->erase_type[i];
-> > 			break;
-> > 		}
-> > 	}
-> > 
-> > The problem in our case is, we have existing partitioning with 128k partitions
-> > (the Flash itself supports 256k and 64k erasesize, depending on configuration).
-> > The chip is configured for 64k erasesize, non-uniform mapping.
-> > 
-> > The mapping itself is being detected correctly, but when it comes to the code
-> > snippet above, it selects the biggest erasesize from all sizes advertised in
-> > SFDP, including 256k, which is not applicable to the current configuration.  
-> 
-> The fix would be to save the supported erase types when parsing the SFDP SMPT
-> table and use those instead.
-
-Alexander, Tudor, can one of you work on such a fix?
+SGksIExpdSwgQm9yaXMsIEN5cmlsbGUsDQoNCk9uIDExLzE0LzIwMTggMDM6NTEgUE0sIEJvcmlz
+IEJyZXppbGxvbiB3cm90ZToNCj4gT24gV2VkLCAxNCBOb3YgMjAxOCAyMDo1NjowNSArMDgwMA0K
+PiBMaXUgWGlhbmcgPGxpdS54aWFuZzZAenRlLmNvbS5jbj4gd3JvdGU6DQo+IA0KPj4gSW4gaXMy
+NWxwMjU2LCB0aGUgRFdPUkQxIG9mIEpFREVDIEJhc2ljIEZsYXNoIFBhcmFtZXRlciBIZWFkZXIN
+Cj4+IGlzIDB4ZmZmOTIwZTUuIFNvIHRoZSBEV09SRDFbMTg6MTddIEFkZHJlc3MgQnl0ZXMgYml0
+cyBhcmUgMGIwMCwNCg0KTGl1LCBjYW4geW91IHBvaW50IHVzIHRvIGEgZGF0YXNoZWV0IHRoYXQg
+aGFzIHRoZSBKRURFQyBCRlBUIHRhYmxlcyBkZXNjcmliZWQ/IEkNCmNvdWxkbid0IGZpbmQgb25l
+IC4uLg0KDQo+PiBtZWFucyB0aGF0IDMtQnl0ZSBvbmx5IGFkZHJlc3NpbmcuDQo+IA0KPiBBY2Nv
+cmRpbmcgdG8geW91ciBvdGhlciBwYXRjaCB0aGlzIE5PUiBzdXBwb3J0cyA0QiBvcGNvZGUsIHdo
+aWNoIG1lYW5zDQo+IHRoZSBTRkRQIHRhYmxlIGlzIHdyb25nLg0KPiANCj4+IEJ1dCB0aGUgZGV2
+aWNlIHNpemUgaXMgbGFyZ2VyDQo+PiB0aGFuIDE2TUIsIG5vci0+YWRkcl93aWR0aCBtdXN0IGJl
+IDQgdG8gYWNjZXNzIHRoZSB3aG9sZSBhZGRyZXNzLg0KPj4gQW4gZXJyb3Igc2hvdWxkIGJlIHJl
+dHVybmVkIHdoZW4gbm9yLT5hZGRyX3dpZHRoIG5vdCBtYXRjaA0KPiANCj4gCQkJCQkJICAgXmRv
+ZXMgbm90DQo+IA0KPj4gdGhlIGRldmljZSBzaXplIGluIHNwaV9ub3JfcGFyc2Vfc2ZkcCgpLg0K
+Pj4NCj4+IFN1Z2dlc3RlZC1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9v
+dGxpbi5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBMaXUgWGlhbmcgPGxpdS54aWFuZzZAenRlLmNv
+bS5jbj4NCj4+IC0tLQ0KPj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgNCArKysr
+DQo+PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
+LW5vci5jDQo+PiBpbmRleCAzZWJhMTNhLi43N2VhZjIyIDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVy
+cy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
+LW5vci5jDQo+PiBAQCAtMjY2OSw2ICsyNjY5LDEwIEBAIHN0YXRpYyBpbnQgc3BpX25vcl9wYXJz
+ZV9iZnB0KHN0cnVjdCBzcGlfbm9yICpub3IsDQo+PiAgCX0NCj4+ICAJcGFyYW1zLT5zaXplID4+
+PSAzOyAvKiBDb252ZXJ0IHRvIGJ5dGVzLiAqLw0KPj4gIA0KPj4gKwkvKmlmIHRoZSBkZXZpY2Ug
+ZXhjZWVkcyAxNk1pQiwgYWRkcl93aWR0aCBtdXN0IGJlIDQqLw0KPiANCj4gUGxlYXNlIGFkZCBh
+IHdoaXRlIHNwYWNlIGFmdGVyICcvKicgYW5kIGJlZm9yZSAnKi8nOg0KPiANCj4gCS8qIElmIHRo
+ZSBkZXZpY2UgZXhjZWVkcyAxNk1pQiwgLT5hZGRyX3dpZHRoIG11c3QgYmUgNC4gKi8NCj4gDQo+
+PiArCWlmICgocGFyYW1zLT5zaXplID4gMHgxMDAwMDAwKSAmJiAobm9yLT5hZGRyX3dpZHRoID09
+IDMpKQ0KPiANCj4gUGFyZW5zIGFyZSBub3QgbmVlZGVkIGFyb3VuZCBzdWItY29uZGl0aW9uczoN
+Cj4gDQo+IAlpZiAocGFyYW1zLT5zaXplID4gMHgxMDAwMDAwICYmIG5vci0+YWRkcl93aWR0aCA9
+PSAzKQ0KPiANCj4+ICsJCXJldHVybiAtRUlOVkFMOw0KPj4gKw0KPiANCj4gSSdtIG5vdCBzdXJl
+IHRoaXMgaXMgY29ycmVjdC4gTG9va3MgbGlrZSBzb21lIE5PUnMgb25seSBzdXBwb3J0IDNCDQo+
+IG9wY29kZXMgYnV0IGhhdmUgYSAiNC1ieXRlIGFkZHJlc3NpbmciIG1vZGUgKHNlZSBzZXRfNGJ5
+dGUoKSBbMV0pLg0KPiBEb24ndCBrbm93IHdoYXQncyByZXBvcnRlZCBieSB0aGUgQkZQVCBzZWN0
+aW9uIGluIHRoaXMgY2FzZSB0aG91Z2gNCj4gKEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19P
+TkxZIG9yIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80KS4NCg0KQm9yaXMsIHRoaXMg
+aXMgaW4gY2xvc2UgcmVsYXRpb24gd2l0aCB5b3VyIHNlY29uZCBwYXRjaDogW1BBVENIIHYzIDIv
+Ml0gbXRkOg0Kc3BpLW5vcjogVXNlIDRCIG9wY29kZXMgd2hlbiB0aGUgTk9SIGFkdmVydGlzZXMg
+Ym90aCAzQiBhbmQgNEIuDQoNCldoZW4gbG9va2luZyBhZ2FpbiBhdCB0aGlzLCBJIHdvdWxkIHNh
+eSB0aGF0IGZvciB0aGUgZmxhc2hlcyB0aGF0IGhhdmUgYSAiNC1ieXRlDQphZGRyZXNzaW5nIiBt
+b2RlLCBidXQganVzdCAzQiBvcGNvZGVzLCBJIHdvdWxkIGV4cGVjdCB0aGUgRFdPUkQxWzE4OjE3
+XSB0byBiZSBvZg0KdmFsdWUgQkZQVF9EV09SRDFfQUREUkVTU19CWVRFU18zX09SXzQgKGVudGVy
+cyA0LUJ5dGUgbW9kZSBvbiBjb21tYW5kIC0gdXNlcyAzQg0Kb3Bjb2RlcykuDQoNCklmIEJGUFRf
+RFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80IGFuZCA0QiBvcGNvZGVzLCB0aGVuIHdlIGNhbiBx
+dWVyeSBCRlBUDQpEV09SRDE2WzMxOjI0XTogaXQgc2hvdWxkIGhhdmUgdmFsdWUgeHgxeF94eHh4
+YiB0byBpbmRpY2F0ZSB0aGF0IDRCIG9wY29kZXMgYXJlDQpzdXBwb3J0ZWQuIEJ1dCB3aGljaCA0
+QiBvcGNvZGVzIGFyZSBzdXBwb3J0ZWQ/IERvIGFsbCAzQiBvcGNvZGVzIGhhdmUgYSA0Qg0Kb3Bj
+b2RlIGNvcnJlc3BvbmRlbnQgaWYgU0ZEUCA0LWJ5dGUgdGFibGUgaXMgbm90IGF2YWlsYWJsZT8g
+VGhpcyBtaWdodCBiZSBhIGdvb2QNCmFzc3VtcHRpb24sIGJ1dCBJIGNhbid0IHNlZSBpdCBhbnl3
+aGVyZSBpbiBqZXNkMjE2Yy4NCg0KQ3lyaWxsZSwgd2hlbiBsb29raW5nIGF0IGJhM2FlNmExZDRj
+ICgibXRkOiBzcGktbm9yOiBhZGQgYSBzdGF0ZWxlc3MgbWV0aG9kIHRvDQpzdXBwb3J0IG1lbW9y
+eSBzaXplIGFib3ZlIDEyOE1pYiIpIEkgc2VlIHRoYXQgYWxsIGZsYXNoZXMgdGhhdCBkZWNsYXJl
+DQpTUElfTk9SXzRCX09QQ09ERVMgd2lsbCBoYXZlIHRoZSAzQiBvcGNvZGVzIGNvbnZlcnRlZCB0
+byA0QiBvcGNvZGVzLCBhc3N1bWluZw0KdGhhdCBhbGwgM0Igb3Bjb2RlcyBoYXZlIGEgNEIgY29y
+cmVzcG9uZGVudC4gSXMgdGhpcyBhc3N1bXB0aW9uIGEgZ2VuZXJhbCBydWxlLA0Kb3IgaXQncyBq
+dXN0IGZvciB0aGUgU3BhbnNpb24gZmxhc2hlcz8NCg0KQ2hlZXJzLA0KdGENCg0KPiANCj4gQW55
+d2F5LCBJIHRoaW5rIHRoaXMgY2hlY2sgc2hvdWxkIGJlIG1vdmVkIGhlcmUgWzJdIHRvIGNvdmVy
+IHRoZQ0KPiBub24tU0ZEUCBjYXNlLg0KPiANCj4+ICAJLyogRmFzdCBSZWFkIHNldHRpbmdzLiAq
+Lw0KPj4gIAlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShzZmRwX2JmcHRfcmVhZHMpOyBpKysp
+IHsNCj4+ICAJCWNvbnN0IHN0cnVjdCBzZmRwX2JmcHRfcmVhZCAqcmQgPSAmc2ZkcF9iZnB0X3Jl
+YWRzW2ldOw0KPiANCj4gWzFdaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjQuMjAt
+cmMyL3NvdXJjZS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyNMMjc4DQo+IFsyXWh0dHBz
+Oi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y0LjIwLXJjMi9zb3VyY2UvZHJpdmVycy9tdGQv
+c3BpLW5vci9zcGktbm9yLmMjTDM3NTgNCj4gDQo=
