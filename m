@@ -1,25 +1,37 @@
-Received: from m15-41.126.com ([220.181.15.41])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNee1-0004Q5-72
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2018 13:58:51 +0000
-Date: Fri, 16 Nov 2018 21:24:10 +0800 (CST)
-From: "Liu Xiang" <liuxiang_1999@126.com>
-To: "Boris Brezillon" <boris.brezillon@bootlin.com>
-Cc: Tudor.Ambarus@microchip.com, liu.xiang6@zte.com.cn,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at
-Subject: Re:Re: [PATCH] mtd: spi-nor: Return error when nor->addr_width not
- match the device size
-In-Reply-To: <20181115120256.4e1a86b2@bbrezillon>
-References: <1542200165-3073-1-git-send-email-liu.xiang6@zte.com.cn>
- <20181114145129.568e4bb3@bbrezillon>
- <96397ec0-14de-f09a-a18d-c67396e33fba@microchip.com>
- <20181115120256.4e1a86b2@bbrezillon>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from martinlund.org ([173.255.130.145]
+ helo=slmp-550-86.slc.westdc.net)
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNf1Q-0005TL-1F
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2018 14:23:02 +0000
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33273)
+ by slmp-550-86.slc.westdc.net with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
+ (envelope-from <martin.lund@keep-it-simple.com>) id 1gNf1D-00ECRd-Mw
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2018 07:22:47 -0700
+Received: by mail-ot1-f46.google.com with SMTP id i20so15005121otl.0
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2018 06:22:47 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <55597875.b295.1671cb170cb.Coremail.liuxiang_1999@126.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <CAB7pii3kx75ajF=8TsU7mWrmrzoHLiy7uAb+PirGw04BH65bZg@mail.gmail.com>
+ <6ce1726a-f24d-17b8-d839-0a51c424a850@xilinx.com>
+ <MWHPR02MB26231009A82C0372F62B5292AFDD0@MWHPR02MB2623.namprd02.prod.outlook.com>
+In-Reply-To: <MWHPR02MB26231009A82C0372F62B5292AFDD0@MWHPR02MB2623.namprd02.prod.outlook.com>
+From: Martin Lund <martin.lund@keep-it-simple.com>
+Date: Fri, 16 Nov 2018 15:22:35 +0100
+Message-ID: <CAB7pii2XYoP8bejamD2Rp0gtu6u07De+io0Yh3p1b=B-wE1_Fw@mail.gmail.com>
+Subject: Re: [LINUX PATCH v12 1/3] dt-bindings: mtd: arasan: Add device tree
+ binding documentation
+To: nagasure@xilinx.com
+Cc: michals@xilinx.com, Martin Lund <martin.lund@keep-it-simple.com>,
+ naga sureshkumar <nagasuresh12@gmail.com>, boris.brezillon@bootlin.com,
+ richard@nod.at, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, robh@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,73 +41,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CkhpIFR1ZG9yLCBCb3JpcywgQ3lyaWxsZSwKVGhlcmUgaXMgbm8gSkVERUMgQkZQVCB0YWJsZXMg
-aW4gdGhlIGRhdGFzaGVldC4gCkluIG15IHRlc3QgcGxhdGZvcm0sIEkgc2VudCBSRFNGRFAgY29t
-bWFuZCB0byB0aGUgZmxhc2ggYW5kIGdvdCB0aGUKcGFyYW1ldGVycyBiYWNrLgpNeSBkZXZpY2Ug
-dHlwZSBpcyBJUzI1TFAyNTZELUpNTEEsIHdoaWNoIGlzIG5vdCBpbiBIL0UvRy9GIHNlcmllcyBv
-ZiBmbGFzaAp0aGF0IGlzIGRlc2NyaWJlZCBpbiBjaGFwdGVyIDExIG9mIHRoZSBkYXRhc2hlZXQu
-IFRoZSByZXBseSBmcm9tIElTU0kgIHN1Z2dlc3RzCm9ubHkgdGhlc2UgY2VydGFpbiBkZXZpY2Vz
-IGNhbiBzdXBwb3J0IFNGRFAgdGFibGUuCkkgYW0gY29uZnVzZWQgd2h5IG15IGRldmljZSBjYW4g
-c3VwcG9ydCBSRFNGRFAgY29tbWFuZCBhbmQgZ2l2ZSAKcGFyYW1ldGVycyBiYWNrLiBJIHdpbGwg
-YXNrIElTU0kgZm9yIG1vcmUgZGV0YWlscy4KCgoKQXQgMjAxOC0xMS0xNSAxOTowMjo1NiwgIkJv
-cmlzIEJyZXppbGxvbiIgPGJvcmlzLmJyZXppbGxvbkBib290bGluLmNvbT4gd3JvdGU6Cj5PbiBU
-aHUsIDE1IE5vdiAyMDE4IDEwOjU0OjM5ICswMDAwCj48VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAu
-Y29tPiB3cm90ZToKPgo+PiBIaSwgTGl1LCBCb3JpcywgQ3lyaWxsZSwKPj4gCj4+IE9uIDExLzE0
-LzIwMTggMDM6NTEgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToKPj4gPiBPbiBXZWQsIDE0IE5v
-diAyMDE4IDIwOjU2OjA1ICswODAwCj4+ID4gTGl1IFhpYW5nIDxsaXUueGlhbmc2QHp0ZS5jb20u
-Y24+IHdyb3RlOgo+PiA+ICAgCj4+ID4+IEluIGlzMjVscDI1NiwgdGhlIERXT1JEMSBvZiBKRURF
-QyBCYXNpYyBGbGFzaCBQYXJhbWV0ZXIgSGVhZGVyCj4+ID4+IGlzIDB4ZmZmOTIwZTUuIFNvIHRo
-ZSBEV09SRDFbMTg6MTddIEFkZHJlc3MgQnl0ZXMgYml0cyBhcmUgMGIwMCwgIAo+PiAKPj4gTGl1
-LCBjYW4geW91IHBvaW50IHVzIHRvIGEgZGF0YXNoZWV0IHRoYXQgaGFzIHRoZSBKRURFQyBCRlBU
-IHRhYmxlcyBkZXNjcmliZWQ/IEkKPj4gY291bGRuJ3QgZmluZCBvbmUgLi4uCj4+IAo+PiA+PiBt
-ZWFucyB0aGF0IDMtQnl0ZSBvbmx5IGFkZHJlc3NpbmcuICAKPj4gPiAKPj4gPiBBY2NvcmRpbmcg
-dG8geW91ciBvdGhlciBwYXRjaCB0aGlzIE5PUiBzdXBwb3J0cyA0QiBvcGNvZGUsIHdoaWNoIG1l
-YW5zCj4+ID4gdGhlIFNGRFAgdGFibGUgaXMgd3JvbmcuCj4+ID4gICAKPj4gPj4gQnV0IHRoZSBk
-ZXZpY2Ugc2l6ZSBpcyBsYXJnZXIKPj4gPj4gdGhhbiAxNk1CLCBub3ItPmFkZHJfd2lkdGggbXVz
-dCBiZSA0IHRvIGFjY2VzcyB0aGUgd2hvbGUgYWRkcmVzcy4KPj4gPj4gQW4gZXJyb3Igc2hvdWxk
-IGJlIHJldHVybmVkIHdoZW4gbm9yLT5hZGRyX3dpZHRoIG5vdCBtYXRjaCAgCj4+ID4gCj4+ID4g
-CQkJCQkJICAgXmRvZXMgbm90Cj4+ID4gICAKPj4gPj4gdGhlIGRldmljZSBzaXplIGluIHNwaV9u
-b3JfcGFyc2Vfc2ZkcCgpLgo+PiA+Pgo+PiA+PiBTdWdnZXN0ZWQtYnk6IEJvcmlzIEJyZXppbGxv
-biA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPgo+PiA+PiBTaWduZWQtb2ZmLWJ5OiBMaXUg
-WGlhbmcgPGxpdS54aWFuZzZAenRlLmNvbS5jbj4KPj4gPj4gLS0tCj4+ID4+ICBkcml2ZXJzL210
-ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDQgKysrKwo+PiA+PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5z
-ZXJ0aW9ucygrKQo+PiA+Pgo+PiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9z
-cGktbm9yLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYwo+PiA+PiBpbmRleCAzZWJh
-MTNhLi43N2VhZjIyIDEwMDY0NAo+PiA+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1u
-b3IuYwo+PiA+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYwo+PiA+PiBAQCAt
-MjY2OSw2ICsyNjY5LDEwIEBAIHN0YXRpYyBpbnQgc3BpX25vcl9wYXJzZV9iZnB0KHN0cnVjdCBz
-cGlfbm9yICpub3IsCj4+ID4+ICAJfQo+PiA+PiAgCXBhcmFtcy0+c2l6ZSA+Pj0gMzsgLyogQ29u
-dmVydCB0byBieXRlcy4gKi8KPj4gPj4gIAo+PiA+PiArCS8qaWYgdGhlIGRldmljZSBleGNlZWRz
-IDE2TWlCLCBhZGRyX3dpZHRoIG11c3QgYmUgNCovICAKPj4gPiAKPj4gPiBQbGVhc2UgYWRkIGEg
-d2hpdGUgc3BhY2UgYWZ0ZXIgJy8qJyBhbmQgYmVmb3JlICcqLyc6Cj4+ID4gCj4+ID4gCS8qIElm
-IHRoZSBkZXZpY2UgZXhjZWVkcyAxNk1pQiwgLT5hZGRyX3dpZHRoIG11c3QgYmUgNC4gKi8KPj4g
-PiAgIAo+PiA+PiArCWlmICgocGFyYW1zLT5zaXplID4gMHgxMDAwMDAwKSAmJiAobm9yLT5hZGRy
-X3dpZHRoID09IDMpKSAgCj4+ID4gCj4+ID4gUGFyZW5zIGFyZSBub3QgbmVlZGVkIGFyb3VuZCBz
-dWItY29uZGl0aW9uczoKPj4gPiAKPj4gPiAJaWYgKHBhcmFtcy0+c2l6ZSA+IDB4MTAwMDAwMCAm
-JiBub3ItPmFkZHJfd2lkdGggPT0gMykKPj4gPiAgIAo+PiA+PiArCQlyZXR1cm4gLUVJTlZBTDsK
-Pj4gPj4gKyAgCj4+ID4gCj4+ID4gSSdtIG5vdCBzdXJlIHRoaXMgaXMgY29ycmVjdC4gTG9va3Mg
-bGlrZSBzb21lIE5PUnMgb25seSBzdXBwb3J0IDNCCj4+ID4gb3Bjb2RlcyBidXQgaGF2ZSBhICI0
-LWJ5dGUgYWRkcmVzc2luZyIgbW9kZSAoc2VlIHNldF80Ynl0ZSgpIFsxXSkuCj4+ID4gRG9uJ3Qg
-a25vdyB3aGF0J3MgcmVwb3J0ZWQgYnkgdGhlIEJGUFQgc2VjdGlvbiBpbiB0aGlzIGNhc2UgdGhv
-dWdoCj4+ID4gKEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PTkxZIG9yIEJGUFRfRFdPUkQx
-X0FERFJFU1NfQllURVNfM19PUl80KS4gIAo+PiAKPj4gQm9yaXMsIHRoaXMgaXMgaW4gY2xvc2Ug
-cmVsYXRpb24gd2l0aCB5b3VyIHNlY29uZCBwYXRjaDogW1BBVENIIHYzIDIvMl0gbXRkOgo+PiBz
-cGktbm9yOiBVc2UgNEIgb3Bjb2RlcyB3aGVuIHRoZSBOT1IgYWR2ZXJ0aXNlcyBib3RoIDNCIGFu
-ZCA0Qi4KPj4gCj4+IFdoZW4gbG9va2luZyBhZ2FpbiBhdCB0aGlzLCBJIHdvdWxkIHNheSB0aGF0
-IGZvciB0aGUgZmxhc2hlcyB0aGF0IGhhdmUgYSAiNC1ieXRlCj4+IGFkZHJlc3NpbmciIG1vZGUs
-IGJ1dCBqdXN0IDNCIG9wY29kZXMsIEkgd291bGQgZXhwZWN0IHRoZSBEV09SRDFbMTg6MTddIHRv
-IGJlIG9mCj4+IHZhbHVlIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80IChlbnRlcnMg
-NC1CeXRlIG1vZGUgb24gY29tbWFuZCAtIHVzZXMgM0IKPj4gb3Bjb2RlcykuCj4KPlRoZSBOT1Ig
-d2UgaGF2ZSBhbmQgd2hpY2ggaXMgZXhwb3NpbmcgQkZQVF9EV09SRDFfQUREUkVTU19CWVRFU18z
-X09SXzQKPmFjdHVhbGx5IHN1cHBvcnRzIGJvdGggM0IgYW5kIDRCIGNvbW1hbmRzLCBzbywgaW4g
-dGhpcyBwYXJ0aWN1bGFyIGNhc2UsCj5CRlBUX0RXT1JEMV9BRERSRVNTX0JZVEVTXzNfT1JfNCBk
-b2VzIG5vdCBtZWFuICIzQiBvcGNvZGUrNC1ieXRlCj5hZGRyZXNzaW5nIG1vZGUiCj4KPj4gCj4+
-IElmIEJGUFRfRFdPUkQxX0FERFJFU1NfQllURVNfM19PUl80IGFuZCA0QiBvcGNvZGVzLCB0aGVu
-IHdlIGNhbiBxdWVyeSBCRlBUCj4+IERXT1JEMTZbMzE6MjRdOiBpdCBzaG91bGQgaGF2ZSB2YWx1
-ZSB4eDF4X3h4eHhiIHRvIGluZGljYXRlIHRoYXQgNEIgb3Bjb2RlcyBhcmUKPj4gc3VwcG9ydGVk
-LiBCdXQgd2hpY2ggNEIgb3Bjb2RlcyBhcmUgc3VwcG9ydGVkPwo+Cj5JIGhvcGUgYWxsIG9mIHRo
-ZW0uIFdvdWxkbid0IG1ha2Ugc2Vuc2UgdG8gaGF2ZSBvbmx5IHNvbWUgb2YgdGhlbQo+c3VwcG9y
-dGVkLgo+Cj4+IERvIGFsbCAzQiBvcGNvZGVzIGhhdmUgYSA0Qgo+PiBvcGNvZGUgY29ycmVzcG9u
-ZGVudCBpZiBTRkRQIDQtYnl0ZSB0YWJsZSBpcyBub3QgYXZhaWxhYmxlPyBUaGlzIG1pZ2h0IGJl
-IGEgZ29vZAo+PiBhc3N1bXB0aW9uLCBidXQgSSBjYW4ndCBzZWUgaXQgYW55d2hlcmUgaW4gamVz
-ZDIxNmMuCj4KPkkgaG9wZSBzby4uLgo=
+Yes, the clk_ prefix is kind of unnecessary. Though, all the
+clock-names in zynqmp.dtsi are still using the prefix - hopefully that
+will eventually be cleaned out.
+
+Either way, we just need to make sure the device tree doc clock-names
+are consistent with whatever is used by the driver.
+
+Br, Martin
+On Fri, Nov 16, 2018 at 2:50 PM Naga Sureshkumar Relli
+<nagasure@xilinx.com> wrote:
+>
+> Hi,
+>
+> > -----Original Message-----
+> > From: Michal Simek [mailto:michal.simek@xilinx.com]
+> > Sent: Friday, November 16, 2018 6:04 PM
+> > To: Martin Lund <martin.lund@keep-it-simple.com>; Naga Sureshkumar Rell=
+i
+> > <nagasure@xilinx.com>
+> > Cc: boris.brezillon@bootlin.com; miquel.raynal@bootlin.com; richard@nod=
+.at; David
+> > Woodhouse <dwmw2@infradead.org>; Brian Norris <computersforpeace@gmail.=
+com>; Marek
+> > Va=C5=A1ut <marek.vasut@gmail.com>; naga sureshkumar <nagasuresh12@gmai=
+l.com>; linux-
+> > mtd@lists.infradead.org; linux-kernel@vger.kernel.org; robh@kernel.org
+> > Subject: Re: [LINUX PATCH v12 1/3] dt-bindings: mtd: arasan: Add device=
+ tree binding
+> > documentation
+> >
+> > On 16. 11. 18 12:50, Martin Lund wrote:
+> > > Hi Naga,
+> > >
+> > > I've been working on running up the latest kernel (v4.20-rc2) on our
+> > > custom Xilinx hw board so that I can test the v12 version of your
+> > > Arasan nand driver.
+> > >
+> > > I've managed to get the driver successfully up and running and ready
+> > > for testing with a Micron MT29F64G08AFAAAWP device. However, setting
+> > > it up I've found a few inaccuracies in the documentation of the devic=
+e
+> > > tree bindings.
+> > >
+> > > This is the device configuration that ended up working for me with
+> > > linux v4.20-rc2:
+> > >
+> > >        nfc: nand@ff100000 {
+> > >             compatible =3D "xlnx,zynqmp-nand", "arasan,nfc-v3p10";
+> > >             reg =3D <0x0 0xff100000 0x0 0x1000>;
+> > >             clock-names =3D "clk_sys", "clk_flash";
+> > >             clocks =3D <&clk200>, <&clk100>;
+> > >             interrupt-parent =3D <&gic>;
+> > >             interrupts =3D <0 14 4>;
+> > >             #address-cells =3D <1>;
+> > >             #size-cells =3D <0>;
+> > >
+> > >             nand@0 {
+> > >                 reg =3D <0>;
+> > >                 nand-ecc-mode =3D "hw";
+> > >             };
+> > >         };
+> > >
+> > > Compared with the example you will notice that "clock-name" should be
+> > > "clock-names". reg was missing a "0x0".
+> >
+> > clock-names and even that names - you are right it is not correct and s=
+hould be fixed.
+> Clock-names I will change from "clock-name" to "clock-names".
+> But I got some review comments previously, to use "sys" instead of  "clk_=
+sys" and "flash" instead of "clk_flash".
+> And I have to change this in driver.
+> I will update that.
+>
+> Thanks,
+> Naga Sureshkumar Relli
+>
+> >
+> > Missing 0x0 in reg doesn't matter because it depends on address/size ce=
+lls.
+> >
+> > > I think it is helpful to provide a real-world working example, so you
+> > > might also consider changing the example "clocks" configuration to
+> > > clk200/clk100 since there is no clk_misc among the clock sources of
+> > > any of the xilinx zynqmp board device tree configurations.
+> >
+> > Real example is the best normally just c&p from existing dts is the way=
+ to go.
+> > But in connection to clocks it doesn't matter what exactly should be th=
+ere and I don't think
+> > there is any consistency in that. Hopefully this will be removed by yam=
+l conversion.
+> >
+> > Thanks,
+> > Michal
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
