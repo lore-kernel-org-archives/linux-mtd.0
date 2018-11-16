@@ -1,34 +1,36 @@
-Received: from mail-db5eur01on061e.outbound.protection.outlook.com
- ([2a01:111:f400:fe02::61e]
- helo=EUR01-DB5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNY2O-0001RE-Aw
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2018 06:55:34 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Mark Brown <broonie@kernel.org>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/2] mtd: spi-nor: add macros related to MICRON flash
-Date: Fri, 16 Nov 2018 06:54:57 +0000
-Message-ID: <VI1PR04MB5726042CF049FD7D90183AFC99DD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1539310881-17438-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1539310881-17438-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181012080753.2a59b75c@bbrezillon>
- <VI1PR04MB1038A3680E02FC107367E5FF99E20@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <VI1PR04MB1038969FFFCC16DD6094031599F50@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181023115634.00dd6d23@bbrezillon>
- <VI1PR04MB1038EB05135EF88B10FA1D3B99F50@VI1PR04MB1038.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB1038EB05135EF88B10FA1D3B99F50@VI1PR04MB1038.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v6 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+CC: Rob Herring <robh@kernel.org>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor
+ Wan <victor.wan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Richard Weinberger <richard@nod.at>,
+ Yixun Lan <yixun.lan@amlogic.com>, <linux-kernel@vger.kernel.org>, Marek
+ Vasut <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>,
+ <linux-mtd@lists.infradead.org>, Kevin Hilman <khilman@baylibre.com>, Carlo
+ Caione <carlo@caione.org>, <linux-amlogic@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>,
+ Wolfram Sang <wsa@the-dreams.de>
+References: <1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com>
+ <1541090542-19618-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181105165321.7ea2b45f@bbrezillon>
+ <a571904e-6296-bf62-e1fe-e25bf90040bb@amlogic.com>
+ <20181106102851.61deb97a@bbrezillon>
+ <ff02373e-c97b-182d-5b43-83d1e8f6d51a@amlogic.com>
+ <20181106112206.65a70a81@bbrezillon> <20181112171351.4ac3506b@xps13>
+ <20181112175416.247e3203@bbrezillon> <20181112184518.6c02ac6d@bbrezillon>
+ <27769252-ac5e-e787-6792-d6a06e7af0e4@amlogic.com>
+ <20181115140400.3934effe@xps13> <20181115140905.40011b4b@bbrezillon>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <7e36bf4c-69a1-a570-f086-75f8ad53d518@amlogic.com>
+Date: Fri, 16 Nov 2018 16:29:07 +0800
 MIME-Version: 1.0
+In-Reply-To: <20181115140905.40011b4b@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,78 +40,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Boris and Miquel,
 
-Please apply this patch series [1] in the coming release.
+understand. i will move helpers into nfc driver to avoid some errors 
+when sending the patch.
 
---
-Regards
-Yogesh Gaur
-[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D70384
-
-
-> -----Original Message-----
-> From: Yogesh Narayan Gaur
-> Sent: Tuesday, October 23, 2018 3:31 PM
-> To: 'Boris Brezillon' <boris.brezillon@bootlin.com>
-> Cc: Mark Brown <broonie@kernel.org>; Tudor Ambarus
-> <tudor.ambarus@microchip.com>; linux-mtd@lists.infradead.org; linux-
-> spi@vger.kernel.org; marek.vasut@gmail.com; cyrille.pitchen@wedev4u.fr;
-> computersforpeace@gmail.com; frieder.schrempf@exceet.de; linux-
-> kernel@vger.kernel.org
-> Subject: RE: [PATCH v3 1/2] mtd: spi-nor: add macros related to MICRON fl=
-ash
->=20
-> Hi Boris,
->=20
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Tuesday, October 23, 2018 3:27 PM
-> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > Cc: Mark Brown <broonie@kernel.org>; Tudor Ambarus
-> > <tudor.ambarus@microchip.com>; linux-mtd@lists.infradead.org; linux-
-> > spi@vger.kernel.org; marek.vasut@gmail.com;
-> > cyrille.pitchen@wedev4u.fr; computersforpeace@gmail.com;
-> > frieder.schrempf@exceet.de; linux- kernel@vger.kernel.org
-> > Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add macros related to MICRON
-> > flash
-> >
-> > Hi Yogesh,
-> >
-> > On Tue, 23 Oct 2018 09:39:25 +0000
-> > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> >
-> > > Hi,
-> > >
-> > > Did we have have any comments or remarks about this patch-series,
-> > > if not
-> > please apply.
-> >
-> > Sorry, but it was already too late for this release, and the merge
-> > window just started, so it will have to wait at least 2 more weeks.
-> Ok.
->=20
-> >
-> > We've been lagging with SPI NOR patches for the last couple releases
-> > because I clearly don't have time to review those contributions, and
-> > it seems Marek does not have time either.
-> >
-> > >
-> > > Both patches in the series been reviewed by Tudor.
-> >
-> > Things are improving a bit thanks to Tudor's involvement in the review
-> > process, but I'd like to remember you that you, as a regular
-> > contributor to the spi-nor subsystem, can help us with that too. That
-> > is, help review patches coming from others instead of only focusing on =
-your
-> own contributions.
-> >
-> Sure, I would start doing the review of other contributor patches.
->=20
-> --
-> Regards
-> Yogesh Gaur.
->=20
-> > Regards,
-> >
-> > Boris
+On 2018/11/15 21:09, Boris Brezillon wrote:
+> On Thu, 15 Nov 2018 14:04:00 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> 
+>> Hi Liang,
+>>
+>> Liang Yang <liang.yang@amlogic.com> wrote on Thu, 15 Nov 2018 19:25:07
+>> +0800:
+>>
+>>> Hi Boris,
+>>>
+>>> I have implemented dma access base on these helpers you provided below.
+>>> we prepare to send v7 version now, so when will these helpers be pushed?
+>>
+>> Thanks for your work. You can send the v7 so we will have a look at the
+>> overall driver; but since we raised the DMA buffers issue we had a
+>> discussion with Boris about how to handle them and I think we are going
+>> to adopt the same solution as Wolfram in the I2C subsystem: manual
+>> flagging. Sadly, this is probably the best we can do to ensure proper
+>> DMA support.
+>>
+>> There is nothing set is stone yet but I started a small rework to
+>> handle MTD operations differently (and add a DMA_SAFE flag), you can
+>> have a look there [1]. Don't base your work on it for now as it is just
+>> a preliminary version, subject to big changes.
+> 
+> In order to not block the driver, I'd suggest that you move the helper
+> I proposed directly into your driver and prefix them with 'meson_'.
+> 
+> .
+> 
