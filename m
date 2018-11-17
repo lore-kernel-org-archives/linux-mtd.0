@@ -1,36 +1,17 @@
-Received: from mail-oi1-f193.google.com ([209.85.167.193])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gNn5Q-0006lx-7E
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2018 22:59:41 +0000
-Received: by mail-oi1-f193.google.com with SMTP id t3-v6so3132201oie.7
- for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2018 14:59:30 -0800 (PST)
-Message-ID: <5bef4bcf.1c69fb81.39c0b.e18d@mx.google.com>
-Date: Fri, 16 Nov 2018 16:59:26 -0600
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 5/9] dt-bindings: spi: Adjust the bindings for the FSL
- QSPI driver
-References: <1542116782-13118-1-git-send-email-frieder.schrempf@kontron.de>
- <1542116782-13118-6-git-send-email-frieder.schrempf@kontron.de>
-In-Reply-To: <1542116782-13118-6-git-send-email-frieder.schrempf@kontron.de>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Mark Brown 	<broonie@kernel.org>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" 	<computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" 	<marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>,
- "fabio.estevam@nxp.com" 	<fabio.estevam@nxp.com>,
- "prabhakar.kushwaha@nxp.com" 	<prabhakar.kushwaha@nxp.com>,
- "yogeshnarayan.gaur@nxp.com" 	<yogeshnarayan.gaur@nxp.com>,
- "han.xu@nxp.com" <han.xu@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- Schrempf Frieder 	<frieder.schrempf@kontron.De>, ,
- Mark Rutland 	<mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" 	<devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" 	<linux-kernel@vger.kernel.org>
-To: Schrempf Frieder <frieder.schrempf@kontron.De>
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gNrWK-00031V-Sr
+ for linux-mtd@lists.infradead.org; Sat, 17 Nov 2018 03:43:48 +0000
+Received: by mail-pf1-x443.google.com with SMTP id h3so5745635pfg.1
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2018 19:43:34 -0800 (PST)
+From: Olof Johansson <olof@lixom.net>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Olof Johansson <olof@lixom.net>
+Subject: [PATCH] mtd: rawnand: qcom: Namespace prefix some commands
+Date: Fri, 16 Nov 2018 19:43:27 -0800
+Message-Id: <20181117034327.72638-1-olof@lixom.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,40 +21,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Nov 2018 13:47:37 +0000, Schrempf Frieder wrote:
-> Adjust the documentation of the new SPI memory interface based
-> driver to reflect the new drivers settings.
-> 
-> The "old" driver was using the "fsl,qspi-has-second-chip" property to
-> select one of two dual chip setups (two chips on one bus or two chips
-> on separate buses). And it used the order in which the subnodes are
-> defined in the dt to select the CS, the chip is connected to.
-> 
-> Both methods are wrong and in fact the "reg" property should be used to
-> determine which bus and CS a chip is connected to. This also enables us
-> to use different setups than just single chip, or symmetric dual chip.
-> 
-> So the porting of the driver from the MTD to the SPI framework actually
-> enforces the use of the "reg" properties and makes
-> "fsl,qspi-has-second-chip" superfluous.
-> 
-> As all boards that have "fsl,qspi-has-second-chip" set, also have
-> correct "reg" properties, the removal of this property shouldn't lead to
-> any incompatibilities.
-> 
-> The only compatibility issues I can see are with imx6sx-sdb.dts and
-> imx6sx-sdb-reva.dts, which have their reg properties set incorrectly
-> (see explanation here: [2]), all other boards should stay compatible.
-> 
-> Also the "big-endian" flag was removed, as this setting is now selected
-> by the driver, depending on which SoC is in use.
-> 
-> [2] https://patchwork.ozlabs.org/patch/922817/#1925445
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> ---
->  .../devicetree/bindings/spi/spi-fsl-qspi.txt      | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
+PAGE_READ is used by RISC-V arch code included through mm headers,
+and it makes sense to bring in a prefix on these in the driver.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+drivers/mtd/nand/raw/qcom_nandc.c:153: warning: "PAGE_READ" redefined
+ #define PAGE_READ   0x2
+In file included from include/linux/memremap.h:7,
+                 from include/linux/mm.h:27,
+                 from include/linux/scatterlist.h:8,
+                 from include/linux/dma-mapping.h:11,
+                 from drivers/mtd/nand/raw/qcom_nandc.c:17:
+arch/riscv/include/asm/pgtable.h:48: note: this is the location of the previous definition
+
+Caught by riscv allmodconfig.
+
+Signed-off-by: Olof Johansson <olof@lixom.net>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index ef75dfa62a4f8..699d3cf49c6da 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -150,15 +150,15 @@
+ #define	NAND_VERSION_MINOR_SHIFT	16
+ 
+ /* NAND OP_CMDs */
+-#define	PAGE_READ			0x2
+-#define	PAGE_READ_WITH_ECC		0x3
+-#define	PAGE_READ_WITH_ECC_SPARE	0x4
+-#define	PROGRAM_PAGE			0x6
+-#define	PAGE_PROGRAM_WITH_ECC		0x7
+-#define	PROGRAM_PAGE_SPARE		0x9
+-#define	BLOCK_ERASE			0xa
+-#define	FETCH_ID			0xb
+-#define	RESET_DEVICE			0xd
++#define	OP_PAGE_READ			0x2
++#define	OP_PAGE_READ_WITH_ECC		0x3
++#define	OP_PAGE_READ_WITH_ECC_SPARE	0x4
++#define	OP_PROGRAM_PAGE			0x6
++#define	OP_PAGE_PROGRAM_WITH_ECC	0x7
++#define	OP_PROGRAM_PAGE_SPARE		0x9
++#define	OP_BLOCK_ERASE			0xa
++#define	OP_FETCH_ID			0xb
++#define	OP_RESET_DEVICE			0xd
+ 
+ /* Default Value for NAND_DEV_CMD_VLD */
+ #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
+@@ -692,11 +692,11 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+ 
+ 	if (read) {
+ 		if (host->use_ecc)
+-			cmd = PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
++			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
+ 		else
+-			cmd = PAGE_READ | PAGE_ACC | LAST_PAGE;
++			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
+ 	} else {
+-			cmd = PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
++		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
+ 	}
+ 
+ 	if (host->use_ecc) {
+@@ -1170,7 +1170,7 @@ static int nandc_param(struct qcom_nand_host *host)
+ 	 * in use. we configure the controller to perform a raw read of 512
+ 	 * bytes to read onfi params
+ 	 */
+-	nandc_set_reg(nandc, NAND_FLASH_CMD, PAGE_READ | PAGE_ACC | LAST_PAGE);
++	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_PAGE_READ | PAGE_ACC | LAST_PAGE);
+ 	nandc_set_reg(nandc, NAND_ADDR0, 0);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+ 	nandc_set_reg(nandc, NAND_DEV0_CFG0, 0 << CW_PER_PAGE
+@@ -1224,7 +1224,7 @@ static int erase_block(struct qcom_nand_host *host, int page_addr)
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 
+ 	nandc_set_reg(nandc, NAND_FLASH_CMD,
+-		      BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
++		      OP_BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
+ 	nandc_set_reg(nandc, NAND_ADDR0, page_addr);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+ 	nandc_set_reg(nandc, NAND_DEV0_CFG0,
+@@ -1255,7 +1255,7 @@ static int read_id(struct qcom_nand_host *host, int column)
+ 	if (column == -1)
+ 		return 0;
+ 
+-	nandc_set_reg(nandc, NAND_FLASH_CMD, FETCH_ID);
++	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_FETCH_ID);
+ 	nandc_set_reg(nandc, NAND_ADDR0, column);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+ 	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
+@@ -1276,7 +1276,7 @@ static int reset(struct qcom_nand_host *host)
+ 	struct nand_chip *chip = &host->chip;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 
+-	nandc_set_reg(nandc, NAND_FLASH_CMD, RESET_DEVICE);
++	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_RESET_DEVICE);
+ 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ 
+ 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+-- 
+2.11.0
