@@ -1,32 +1,19 @@
-Date: Sat, 17 Nov 2018 09:45:31 -0600
-From: Rob Herring <robh@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- "David S . Miller" <davem@davemloft.net>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Frank Rowand <frowand.list@gmail.com>,
- Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 12/25] of: net: kill of_get_nvmem_mac_address()
-Message-ID: <20181117154531.GA7306@bogus>
-References: <20181113140133.17385-1-brgl@bgdev.pl>
- <20181113140133.17385-13-brgl@bgdev.pl>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gO8Jq-0000Ox-1s
+ for linux-mtd@lists.infradead.org; Sat, 17 Nov 2018 21:39:59 +0000
+Date: Sat, 17 Nov 2018 22:39:29 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Olof Johansson <olof@lixom.net>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: Namespace prefix some commands
+Message-ID: <20181117223929.20f6852f@xps13>
+In-Reply-To: <20181117034327.72638-1-olof@lixom.net>
+References: <20181117034327.72638-1-olof@lixom.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181113140133.17385-13-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,17 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Nov 2018 15:01:20 +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> We've switched all users to nvmem_get_mac_address(). Remove the now
-> dead code.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/of/of_net.c    | 39 ---------------------------------------
->  include/linux/of_net.h |  6 ------
->  2 files changed, 45 deletions(-)
-> 
+Hi Olof,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Olof Johansson <olof@lixom.net> wrote on Fri, 16 Nov 2018 19:43:27
+-0800:
+
+> PAGE_READ is used by RISC-V arch code included through mm headers,
+> and it makes sense to bring in a prefix on these in the driver.
+>=20
+> drivers/mtd/nand/raw/qcom_nandc.c:153: warning: "PAGE_READ" redefined
+>  #define PAGE_READ   0x2
+> In file included from include/linux/memremap.h:7,
+>                  from include/linux/mm.h:27,
+>                  from include/linux/scatterlist.h:8,
+>                  from include/linux/dma-mapping.h:11,
+>                  from drivers/mtd/nand/raw/qcom_nandc.c:17:
+> arch/riscv/include/asm/pgtable.h:48: note: this is the location of the pr=
+evious definition
+>=20
+> Caught by riscv allmodconfig.
+>=20
+> Signed-off-by: Olof Johansson <olof@lixom.net>
+> ---
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Boris, do you want to queue this as a fix?
+
+Thanks,
+Miqu=C3=A8l
