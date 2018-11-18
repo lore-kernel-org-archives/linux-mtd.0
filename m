@@ -1,15 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOKQP-0007W3-M3
- for linux-mtd@lists.infradead.org; Sun, 18 Nov 2018 10:35:34 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Olof Johansson <olof@lixom.net>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: mtd: rawnand: qcom: Namespace prefix some commands
-Date: Sun, 18 Nov 2018 11:35:19 +0100
-Message-Id: <20181118103519.25189-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181117034327.72638-1-olof@lixom.net>
+From: <Nicolas.Ferre@microchip.com>
+To: <brgl@bgdev.pl>, <nsekhar@ti.com>, <khilman@kernel.org>,
+ <linux@armlinux.org.uk>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>, <richard@nod.at>,
+ <davem@davemloft.net>, <grygorii.strashko@ti.com>,
+ <srinivas.kandagatla@linaro.org>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+ <robh+dt@kernel.org>, <frowand.list@gmail.com>, <wsa@the-dreams.de>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-i2c@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 11/25] net: cadence: switch to using
+ nvmem_get_mac_address()
+Date: Sun, 18 Nov 2018 15:42:34 +0000
+Message-ID: <bd51c2fb-9f86-450a-74d1-0cba5c9e9cee@microchip.com>
+References: <20181113140133.17385-1-brgl@bgdev.pl>
+ <20181113140133.17385-12-brgl@bgdev.pl>
+In-Reply-To: <20181113140133.17385-12-brgl@bgdev.pl>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <79F765BA4327334388470161DA7A66DE@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2018-11-17 at 03:43:27 UTC, Olof Johansson wrote:
-> PAGE_READ is used by RISC-V arch code included through mm headers,
-> and it makes sense to bring in a prefix on these in the driver.
-> 
-> drivers/mtd/nand/raw/qcom_nandc.c:153: warning: "PAGE_READ" redefined
->  #define PAGE_READ   0x2
-> In file included from include/linux/memremap.h:7,
->                  from include/linux/mm.h:27,
->                  from include/linux/scatterlist.h:8,
->                  from include/linux/dma-mapping.h:11,
->                  from drivers/mtd/nand/raw/qcom_nandc.c:17:
-> arch/riscv/include/asm/pgtable.h:48: note: this is the location of the previous definition
-> 
-> Caught by riscv allmodconfig.
-> 
-> Signed-off-by: Olof Johansson <olof@lixom.net>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Applied to http://git.infradead.org/linux-mtd.git master, thanks.
-
-Boris
+T24gMTMvMTEvMjAxOCBhdCAxNTowMSwgQmFydG9zeiBHb2xhc3pld3NraSB3cm90ZToNCj4gRnJv
+bTogQmFydG9zeiBHb2xhc3pld3NraSA8YmdvbGFzemV3c2tpQGJheWxpYnJlLmNvbT4NCj4gDQo+
+IFdlIG5vdyBoYXZlIGEgZ2VuZXJhbGl6ZWQgaGVscGVyIHJvdXRpbmUgdG8gcmVhZCB0aGUgTUFD
+IGFkZHJlc3MgZnJvbQ0KPiBudm1lbSB3aGljaCB0YWtlcyBzdHJ1Y3QgZGV2aWNlIGFzIGFyZ3Vt
+ZW50LiBUaGUgbnZtZW0gc3Vic3lzdGVtIHdpbGwNCj4gdGhlbiB0cnkgZGV2aWNlIHRyZWUgZmly
+c3QgYmVmb3JlIGFsbCBvdGhlciBwb3RlbnRpYWwgcHJvdmlkZXJzLg0KPiANCj4gU2lnbmVkLW9m
+Zi1ieTogQmFydG9zeiBHb2xhc3pld3NraSA8YmdvbGFzemV3c2tpQGJheWxpYnJlLmNvbT4NCg0K
+QWNrZWQtYnk6IE5pY29sYXMgRmVycmUgPG5pY29sYXMuZmVycmVAbWljcm9jaGlwLmNvbT4NCg0K
+PiAtLS0NCj4gICBkcml2ZXJzL25ldC9ldGhlcm5ldC9jYWRlbmNlL21hY2JfbWFpbi5jIHwgMiAr
+LQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2NhZGVuY2UvbWFjYl9tYWluLmMg
+Yi9kcml2ZXJzL25ldC9ldGhlcm5ldC9jYWRlbmNlL21hY2JfbWFpbi5jDQo+IGluZGV4IDFkODZi
+NGQ1NjQ1YS4uZDlhMjA4ZjdiYjQwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5l
+dC9jYWRlbmNlL21hY2JfbWFpbi5jDQo+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2NhZGVu
+Y2UvbWFjYl9tYWluLmMNCj4gQEAgLTQwNTUsNyArNDA1NSw3IEBAIHN0YXRpYyBpbnQgbWFjYl9w
+cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgIAlpZiAobWFjKSB7DQo+ICAg
+CQlldGhlcl9hZGRyX2NvcHkoYnAtPmRldi0+ZGV2X2FkZHIsIG1hYyk7DQo+ICAgCX0gZWxzZSB7
+DQo+IC0JCWVyciA9IG9mX2dldF9udm1lbV9tYWNfYWRkcmVzcyhucCwgYnAtPmRldi0+ZGV2X2Fk
+ZHIpOw0KPiArCQllcnIgPSBudm1lbV9nZXRfbWFjX2FkZHJlc3MoJnBkZXYtPmRldiwgYnAtPmRl
+di0+ZGV2X2FkZHIpOw0KPiAgIAkJaWYgKGVycikgew0KPiAgIAkJCWlmIChlcnIgPT0gLUVQUk9C
+RV9ERUZFUikNCj4gICAJCQkJZ290byBlcnJfb3V0X2ZyZWVfbmV0ZGV2Ow0KPiANCg0KDQotLSAN
+Ck5pY29sYXMgRmVycmUNCg==
