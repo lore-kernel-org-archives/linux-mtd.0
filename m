@@ -1,19 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOTWz-0001vJ-Uq
- for linux-mtd@lists.infradead.org; Sun, 18 Nov 2018 20:18:58 +0000
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOTyk-0003dN-QS
+ for linux-mtd@lists.infradead.org; Sun, 18 Nov 2018 20:47:42 +0000
+Date: Sun, 18 Nov 2018 21:47:17 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 2/2] mtd: fix Coverity integer handling issue
-Date: Sun, 18 Nov 2018 21:18:31 +0100
-Message-Id: <20181118201831.11636-2-miquel.raynal@bootlin.com>
-In-Reply-To: <20181118201831.11636-1-miquel.raynal@bootlin.com>
-References: <20181118201831.11636-1-miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: rawnand: sh_flctl: convert to SPDX identifiers
+Message-ID: <20181118214717.16ecfca1@xps13>
+In-Reply-To: <20181108095728.6c19b8f0@bbrezillon>
+References: <87muqkytbv.wl-kuninori.morimoto.gx@renesas.com>
+ <20181108095728.6c19b8f0@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A Coverity robot reported an integer handling issue
-(OVERFLOW_BEFORE_WIDEN) in the potentially overflowing expression:
+Hi Kuninori,
 
-    (mtd_div_by_ws(mtd->size, mtd) - mtd_div_by_ws(offs, mtd)) *
-    mtd_oobavail(mtd, ops)
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu, 8 Nov 2018
+09:57:28 +0100:
 
-While such overflow will certainly never happen due to the numbers
-handled, it is cleaner to fix this operation anyway.
+> On Thu, 8 Nov 2018 06:39:20 +0000
+> Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+>=20
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> >=20
+> > This patch updates license to use SPDX-License-Identifier
+> > instead of verbose license text.
+> >=20
+> > As original license mentioned, it is GPL-2.0 in SPDX.
+> > Then, MODULE_LICENSE() should be "GPL v2" instead of "GPL".
+> > See ${LINUX}/include/linux/module.h
+> >=20
+> > 	"GPL"		[GNU Public License v2 or later]
+> > 	"GPL v2"	[GNU Public License v2] =20
 
-The problem is that all the maths include 32-bit quantities, while the
-result is stored in an explicit 64-bit value.
+Applied to nand/next.
 
-As maxooblen will just be compared with a size_t, let's change the
-type of the variable to a size_t. This will not fix anything but will
-clarify a bit the situation. Then, do an explicit cast to fix Coverity
-warning.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/mtdcore.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 97ac219c082e..afb4b17fb670 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1136,13 +1136,13 @@ static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
- 		return -EINVAL;
- 
- 	if (ops->ooblen) {
--		u64 maxooblen;
-+		size_t maxooblen;
- 
- 		if (ops->ooboffs >= mtd_oobavail(mtd, ops))
- 			return -EINVAL;
- 
--		maxooblen = ((mtd_div_by_ws(mtd->size, mtd) -
--			      mtd_div_by_ws(offs, mtd)) *
-+		maxooblen = ((size_t)(mtd_div_by_ws(mtd->size, mtd) -
-+				      mtd_div_by_ws(offs, mtd)) *
- 			     mtd_oobavail(mtd, ops)) - ops->ooboffs;
- 		if (ops->ooblen > maxooblen)
- 			return -EINVAL;
--- 
-2.17.1
+Thanks,
+Miqu=C3=A8l
