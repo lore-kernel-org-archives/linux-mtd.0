@@ -1,28 +1,27 @@
-From: Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "alexey.brodkin@synopsys.com" <alexey.brodkin@synopsys.com>,
- "vineet.gupta1@synopsys.com" <vineet.gupta1@synopsys.com>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH v2 0/2] MTD: spi-nor: add support for sst26wf016,
- sst26wf032
-Date: Mon, 19 Nov 2018 15:25:34 +0000
-Message-ID: <1542641133.4940.5.camel@synopsys.com>
-References: <20180910114628.19156-1-Eugeniy.Paltsev@synopsys.com>
- <1540216028.19916.6.camel@synopsys.com>
- <20181022155635.2175a595@bbrezillon>
-In-Reply-To: <20181022155635.2175a595@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <792B627031D4524B90B1F069409F72FB@internal.synopsys.com>
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOqrb-0005iy-ON
+ for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 21:13:48 +0000
+Date: Mon, 19 Nov 2018 22:13:22 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org, Vignesh R <vigneshr@ti.com>, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Piotr Bugalski <bugalski.piotr@gmail.com>
+Subject: Re: [PATCH v3 0/7] spi: spi-mem: Add a direct mapping API
+Message-ID: <20181119221322.2b449570@bbrezillon>
+In-Reply-To: <20181115195640.GP2089@sirena.org.uk>
+References: <20181106160536.13415-1-boris.brezillon@bootlin.com>
+ <20181115195640.GP2089@sirena.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQm9yaXMsDQoNCkFzIDQuMjAtcmMxIGlzIGFscmVhZHkgb3V0IEkgZ3Vlc3MgeW91IGNhbiBw
-aWNrIHRoaXMgcGF0Y2hlcyB0byBzcGktbm9yL25leHQ/DQoNClRoYW5rcy4NCg0KT24gTW9uLCAy
-MDE4LTEwLTIyIGF0IDE1OjU2ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6DQo+ICtUdWRv
-cg0KPiANCj4gSGkgRXVnZW5peSwNCj4gDQo+IFNvcnJ5LCBpdCdzIGFscmVhZHkgdG9vIGxhdGUg
-Zm9yIDQuMjAsIGFuZCBJIHdvbid0IGFwcGx5IHBhdGNoZXMgdG8gdGhlDQo+IHNwaS1ub3IvbmV4
-dCBicmFuY2ggYmVmb3JlIDQuMjAtcmMxIGlzIG91dC4NCj4gDQo+IFR1ZG9yLCBNYXJlaywgY2Fu
-IEkgaGF2ZSBhIFJldmlld2VkLWJ5L0Fja2VkLWJ5IG9uIHRoaXMgcGF0Y2hzZXQ/DQo+IA0KPiBU
-aGFua3MsDQo+IA0KPiBCb3Jpcw0KPiANCj4gPiANCj4gPiBPbiBNb24sIDIwMTgtMDktMTAgYXQg
-MTQ6NDYgKzAzMDAsIEV1Z2VuaXkgUGFsdHNldiB3cm90ZToNCj4gPiA+IEFkZCBzdXBwb3J0IGZv
-ciB0aGUgU1NUIHNzdDI2d2YwMTYgYW5kIHNzdDI2d2YwMzIgZmxhc2ggSUM6DQo+ID4gPiANCj4g
-PiA+IHNzdDI2d2YqKiogZmxhc2ggc2VyaWVzIGJsb2NrIHByb3RlY3Rpb24gaW1wbGVtZW50YXRp
-b24gZGlmZmVycyBmcm9tIG90aGVyDQo+ID4gPiBTU1Qgc2VyaWVzLCBzbyB3ZSBhZGQgaW1wbGVt
-ZW50YXRpb24gZm9yIHNzdDI2d2YqKiogbG9jay91bmxvY2svaXNfbG9ja2VkDQo+ID4gPiBmdW5j
-dGlvbnMuDQo+ID4gPiANCj4gPiA+IEFkZCBzc3QyNndmMDE2IGFuZCBzc3QyNndmMDMyIGZsYXNo
-IElDIGluZm8gdG8gc3BpX2ZsYXNoX2lkcyBsaXN0Lg0KPiA+ID4gDQo+ID4gPiBFdWdlbml5IFBh
-bHRzZXYgKDIpOg0KPiA+ID4gICBtdGQ6IHNwaS1ub3I6IEFkZCBzdXBwb3J0IG9mIHNzdDI2d2Yq
-IGZsYXNoIElDcyBwcm90ZWN0aW9uIG9wcw0KPiA+ID4gICBtdGQ6IHNwaS1ub3I6IGFkZCBzdXBw
-b3J0IGZvciBzc3QyNndmMDE2LCBzc3QyNndmMDMyDQo+ID4gPiANCj4gPiA+ICBkcml2ZXJzL210
-ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDE3OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysNCj4gPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggICB8ICAgNCAr
-DQo+ID4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxODMgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gICANCj4g
-DQo+IA0KLS0gDQogRXVnZW5peSBQYWx0c2V2
+Hi Mark,
+
+On Thu, 15 Nov 2018 11:56:40 -0800
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Tue, Nov 06, 2018 at 05:05:29PM +0100, Boris Brezillon wrote:
+> > Hello,
+> > 
+> > Here is a v3 addressing the comment I received from Yogesh on the
+> > m25p80 modifications. Note that this part is still untested (I only
+> > tested on a spinand device so far), so that'd be great if someone
+> > could test it.  
+> 
+> The SPI bits are all fine FWIW, leaving for a bit longer for testing but
+> I could also just apply those bits immediately and send a branch as I
+> think it's the MTD bits that really need the testing?
+
+Feel free to apply the SPI bits.
+
+Regards,
+
+Boris
