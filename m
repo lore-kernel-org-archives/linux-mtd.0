@@ -1,16 +1,28 @@
-Received: from a3-14.smtp-out.eu-west-1.amazonses.com ([54.240.3.14])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOj0G-000091-Lv
- for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 12:50:15 +0000
+From: Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "alexey.brodkin@synopsys.com" <alexey.brodkin@synopsys.com>,
+ "vineet.gupta1@synopsys.com" <vineet.gupta1@synopsys.com>,
+ "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>
+Subject: Re: [PATCH v2 0/2] MTD: spi-nor: add support for sst26wf016,
+ sst26wf032
+Date: Mon, 19 Nov 2018 15:25:34 +0000
+Message-ID: <1542641133.4940.5.camel@synopsys.com>
+References: <20180910114628.19156-1-Eugeniy.Paltsev@synopsys.com>
+ <1540216028.19916.6.camel@synopsys.com>
+ <20181022155635.2175a595@bbrezillon>
+In-Reply-To: <20181022155635.2175a595@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <792B627031D4524B90B1F069409F72FB@internal.synopsys.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Date: Mon, 19 Nov 2018 12:49:30 +0000
-Message-ID: <010201672c04cb5b-a5d5b37c-8ab4-49d1-90c5-ef1289deefa5-000000@eu-west-1.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: Southern Farm Show 2018 Visitors
-From: "Joe Mether" <joe.mether@crystaldirectresource.com>
-Reply-To: "Joe Mether" <joe.mether@crystaldirectresource.com>
-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +32,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
-
-How many people do you have chasing leads and lost down dead ends trying to=
- communicate with market decision makers? If your answer is =E2=80=9CToo ma=
-ny=E2=80=9D we have a solution for you:
-
-Purchase the Southern Farm Show 2018 Participants =E2=80=93 37000 contacts =
-at $500
-until the end of today.
-
-We maintain the unique value of our visitors list by only selling it for a =
-short time and to a few selected number of preferred customers.=20
-
-Let me know your thoughts.!!
-
-Thanks and Regards
-
-Joe Mether
-
-Terms of use: This content is correct only for approved use by the original=
- correct recipient. Ownership rights to this content are held solely by our=
- organization and it is not permitted for unapproved users to examine, tran=
-smit, disseminate, or act on this material. If you receive or possess this =
-data and are not the original correct recipient, please delete it immediate=
-ly and notify the sender of the error. This organization holds no connectio=
-n or relationship to the organizers of the Southern Farm Show 2018 does not=
- sell or share this information with us. The data provided herein is compil=
-ed lawfully, from a combination of publicly available sources and our inter=
-nal database.
-=20
+SGkgQm9yaXMsDQoNCkFzIDQuMjAtcmMxIGlzIGFscmVhZHkgb3V0IEkgZ3Vlc3MgeW91IGNhbiBw
+aWNrIHRoaXMgcGF0Y2hlcyB0byBzcGktbm9yL25leHQ/DQoNClRoYW5rcy4NCg0KT24gTW9uLCAy
+MDE4LTEwLTIyIGF0IDE1OjU2ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6DQo+ICtUdWRv
+cg0KPiANCj4gSGkgRXVnZW5peSwNCj4gDQo+IFNvcnJ5LCBpdCdzIGFscmVhZHkgdG9vIGxhdGUg
+Zm9yIDQuMjAsIGFuZCBJIHdvbid0IGFwcGx5IHBhdGNoZXMgdG8gdGhlDQo+IHNwaS1ub3IvbmV4
+dCBicmFuY2ggYmVmb3JlIDQuMjAtcmMxIGlzIG91dC4NCj4gDQo+IFR1ZG9yLCBNYXJlaywgY2Fu
+IEkgaGF2ZSBhIFJldmlld2VkLWJ5L0Fja2VkLWJ5IG9uIHRoaXMgcGF0Y2hzZXQ/DQo+IA0KPiBU
+aGFua3MsDQo+IA0KPiBCb3Jpcw0KPiANCj4gPiANCj4gPiBPbiBNb24sIDIwMTgtMDktMTAgYXQg
+MTQ6NDYgKzAzMDAsIEV1Z2VuaXkgUGFsdHNldiB3cm90ZToNCj4gPiA+IEFkZCBzdXBwb3J0IGZv
+ciB0aGUgU1NUIHNzdDI2d2YwMTYgYW5kIHNzdDI2d2YwMzIgZmxhc2ggSUM6DQo+ID4gPiANCj4g
+PiA+IHNzdDI2d2YqKiogZmxhc2ggc2VyaWVzIGJsb2NrIHByb3RlY3Rpb24gaW1wbGVtZW50YXRp
+b24gZGlmZmVycyBmcm9tIG90aGVyDQo+ID4gPiBTU1Qgc2VyaWVzLCBzbyB3ZSBhZGQgaW1wbGVt
+ZW50YXRpb24gZm9yIHNzdDI2d2YqKiogbG9jay91bmxvY2svaXNfbG9ja2VkDQo+ID4gPiBmdW5j
+dGlvbnMuDQo+ID4gPiANCj4gPiA+IEFkZCBzc3QyNndmMDE2IGFuZCBzc3QyNndmMDMyIGZsYXNo
+IElDIGluZm8gdG8gc3BpX2ZsYXNoX2lkcyBsaXN0Lg0KPiA+ID4gDQo+ID4gPiBFdWdlbml5IFBh
+bHRzZXYgKDIpOg0KPiA+ID4gICBtdGQ6IHNwaS1ub3I6IEFkZCBzdXBwb3J0IG9mIHNzdDI2d2Yq
+IGZsYXNoIElDcyBwcm90ZWN0aW9uIG9wcw0KPiA+ID4gICBtdGQ6IHNwaS1ub3I6IGFkZCBzdXBw
+b3J0IGZvciBzc3QyNndmMDE2LCBzc3QyNndmMDMyDQo+ID4gPiANCj4gPiA+ICBkcml2ZXJzL210
+ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDE3OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysNCj4gPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggICB8ICAgNCAr
+DQo+ID4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxODMgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gICANCj4g
+DQo+IA0KLS0gDQogRXVnZW5peSBQYWx0c2V2
