@@ -1,19 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOhCz-0003g7-PJ
- for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 10:55:15 +0000
-Date: Mon, 19 Nov 2018 11:54:52 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: NAND Flash memory timings when using non-ONFI chips
-Message-ID: <20181119115452.6134c0fb@bbrezillon>
-In-Reply-To: <CAGkQfmOQZFvOdhFTvL3UtfAzBLR+dWfCpkDMv5KajjwY=KJkog@mail.gmail.com>
-References: <CAGkQfmOQZFvOdhFTvL3UtfAzBLR+dWfCpkDMv5KajjwY=KJkog@mail.gmail.com>
+Received: from a3-14.smtp-out.eu-west-1.amazonses.com ([54.240.3.14])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOj0G-000091-Lv
+ for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 12:50:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Mon, 19 Nov 2018 12:49:30 +0000
+Message-ID: <010201672c04cb5b-a5d5b37c-8ab4-49d1-90c5-ef1289deefa5-000000@eu-west-1.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: Southern Farm Show 2018 Visitors
+From: "Joe Mether" <joe.mether@crystaldirectresource.com>
+Reply-To: "Joe Mether" <joe.mether@crystaldirectresource.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Nov 2018 11:46:15 +0100
-Romain Izard <romain.izard.pro@gmail.com> wrote:
+Hi ,
 
-> Hello,
-> 
-> Having used the Microchip SAMA5D2 for some time, I have some devices that
-> work with the legacy device tree bindings for the atmel_nand controller.
-> While updating from 4.14 to 4.19, I am trying to use the updated bindings
-> instead.
-> 
-> However I have encountered a problem with the timings configured in the NAND
-> controller. When using the legacy bindings, the hardware timings that have
-> been written by the bootloader are left alone, but with the new bindings
-> they are recalculated, using the ONFI table.
-> 
-> When using non-ONFI devices (which is very common, as Toshiba, Samsung, etc.
-> don't implement ONFI), the timings are configured to the work with the
-> slowest ONFI class, which is very slow compared to the possible performance
-> of those chips.
-> 
-> For the atmel_nand driver, the root of the difference is that there is no
-> clock available in the "mck" field of the nand_controller structure in the
-> legacy binding, and as a result the setup_data_interface() hook is empty.
-> But this is a problem that could affect any NAND controller that implements
-> the setup_data_interface() hook.
-> 
-> Unfortunately, I have a hard time finding a satisfying solution to this:
-> - Adding a property to the NAND chip's device tree node, directing the NAND
->   driver to preserve the bootloader's timings is quite easy, but this is not
-> a good solution as we are adding software information to the hardware
-> description
-> - Adding a property indicating that the Flash chip is not ONFI is redundant,
->   as detecting whether a chip supports ONFI can be autodetected. But the
-> Reset command, that must be sent to ONFI chips on startup to reliably to
-> detect them, needs to be sent with the slowest ONFI timings to work
-> correctly with chips using the ONFI DDR mode. As a result, auto-detection
-> needs to change the NAND controller's timings to detect ONFI chips.
-> 
-> The 'best' answer I have for now, is to add a 'timings' subnode to the NAND
-> chip's device tree node, that explicitly encodes all the values from the
-> timing table as described in "struct nand_sdr_timings", which is derived
-> from the ONFI specification, and extend it to add the various values that
-> are present in the timing table for Toshiba NAND chips and compatibles.
-> 
-> But I am not very satisfied with this solution, as it adds a lot of code
-> for little gain.
-> 
-> What was the original plan for handling timing requirements for non-ONFI
-> chips when introducing setup_data_interface()?
+How many people do you have chasing leads and lost down dead ends trying to=
+ communicate with market decision makers? If your answer is =E2=80=9CToo ma=
+ny=E2=80=9D we have a solution for you:
 
-There's a ->onfi_default_timing_mode field in struct nand_chip. NAND
-chip drivers (in your case nand_toshiba.c) should update this field
-appropriately at detection time (in their ->init() hook) so that the
-core applies ONFI timing mode X by default.
+Purchase the Southern Farm Show 2018 Participants =E2=80=93 37000 contacts =
+at $500
+until the end of today.
 
-Hope that helps. Let me know if you have other questions or if my
-suggestion does not work.
+We maintain the unique value of our visitors list by only selling it for a =
+short time and to a few selected number of preferred customers.=20
+
+Let me know your thoughts.!!
+
+Thanks and Regards
+
+Joe Mether
+
+Terms of use: This content is correct only for approved use by the original=
+ correct recipient. Ownership rights to this content are held solely by our=
+ organization and it is not permitted for unapproved users to examine, tran=
+smit, disseminate, or act on this material. If you receive or possess this =
+data and are not the original correct recipient, please delete it immediate=
+ly and notify the sender of the error. This organization holds no connectio=
+n or relationship to the organizers of the Southern Farm Show 2018 does not=
+ sell or share this information with us. The data provided herein is compil=
+ed lawfully, from a combination of publicly available sources and our inter=
+nal database.
+=20
