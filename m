@@ -1,32 +1,18 @@
-Date: Mon, 19 Nov 2018 10:08:25 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell
- King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Nicolas
- Ferre <nicolas.ferre@microchip.com>, "David S . Miller"
- <davem@davemloft.net>, Grygorii Strashko <grygorii.strashko@ti.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Andrew Lunn
- <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Wolfram Sang
- <wsa@the-dreams.de>, devicetree <devicetree@vger.kernel.org>, netdev
- <netdev@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Bartosz Golaszewski
- <bgolaszewski@baylibre.com>, "open list:MEMORY TECHNOLOGY..."
- <linux-mtd@lists.infradead.org>, linux-i2c <linux-i2c@vger.kernel.org>,
- Linux-OMAP <linux-omap@vger.kernel.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 00/25] at24: remove
-Message-ID: <20181119100825.277b1f97@bbrezillon>
-In-Reply-To: <CAMRc=MfXWW9siNZNkocxmTU7mnoQO0KpeHQ3JmLcEfNscqCbDQ@mail.gmail.com>
-References: <20181113140133.17385-1-brgl@bgdev.pl>
- <20181118170329.788778a8@bbrezillon>
- <CAMRc=MfXWW9siNZNkocxmTU7mnoQO0KpeHQ3JmLcEfNscqCbDQ@mail.gmail.com>
+Received: from mail-qk1-x730.google.com ([2607:f8b0:4864:20::730])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOh4g-0001Xi-TY
+ for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 10:46:41 +0000
+Received: by mail-qk1-x730.google.com with SMTP id r71so47704380qkr.10
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Nov 2018 02:46:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Romain Izard <romain.izard.pro@gmail.com>
+Date: Mon, 19 Nov 2018 11:46:15 +0100
+Message-ID: <CAGkQfmOQZFvOdhFTvL3UtfAzBLR+dWfCpkDMv5KajjwY=KJkog@mail.gmail.com>
+Subject: NAND Flash memory timings when using non-ONFI chips
+To: linux-mtd <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Nov 2018 09:58:46 +0100
-Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+Hello,
 
-> niedz., 18 lis 2018 o 17:03 Boris Brezillon
-> <boris.brezillon@bootlin.com> napisa=C5=82(a):
-> >
-> > On Tue, 13 Nov 2018 15:01:08 +0100
-> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > =20
-> > > As far as merging of this series goes: I'd like to avoid dragging it =
-over
-> > > four releases. The series is logically split into five groups:
-> > >
-> > > patches 1-2: nvmem and mtd changes
-> > > patches 3-9: davinci arch-specific changes
-> > > patches 10-13: networking changes
-> > > patches 14-24: davinci specific again
-> > > patch 25: final at24 change
-> > >
-> > > With that I believe we can do the following: Greg KH could pick up the
-> > > first two patches into his char-misc tree. =20
-> >
-> > The char-misc tree? Why not the MTD or NVMEM tree?
-> > =20
->=20
-> There is no NVMEM tree - Srinivas sends his patches to Greg to be
-> applied to char-misc.
+Having used the Microchip SAMA5D2 for some time, I have some devices that
+work with the legacy device tree bindings for the atmel_nand controller.
+While updating from 4.14 to 4.19, I am trying to use the updated bindings
+instead.
 
-Okay, I didn't know that.
+However I have encountered a problem with the timings configured in the NAND
+controller. When using the legacy bindings, the hardware timings that have
+been written by the bootloader are left alone, but with the new bindings
+they are recalculated, using the ONFI table.
 
->=20
-> The second patch depends on the first one so in order to avoid more
-> merging problems I suggested that the MTD patch go through char-misc
-> as well. If you see a better solution, please let me know.
+When using non-ONFI devices (which is very common, as Toshiba, Samsung, etc.
+don't implement ONFI), the timings are configured to the work with the
+slowest ONFI class, which is very slow compared to the possible performance
+of those chips.
 
-No that's fine, as long as I have an immutable tag/branch I can pull if
-needed.
+For the atmel_nand driver, the root of the difference is that there is no
+clock available in the "mck" field of the nand_controller structure in the
+legacy binding, and as a result the setup_data_interface() hook is empty.
+But this is a problem that could affect any NAND controller that implements
+the setup_data_interface() hook.
+
+Unfortunately, I have a hard time finding a satisfying solution to this:
+- Adding a property to the NAND chip's device tree node, directing the NAND
+  driver to preserve the bootloader's timings is quite easy, but this is not
+a good solution as we are adding software information to the hardware
+description
+- Adding a property indicating that the Flash chip is not ONFI is redundant,
+  as detecting whether a chip supports ONFI can be autodetected. But the
+Reset command, that must be sent to ONFI chips on startup to reliably to
+detect them, needs to be sent with the slowest ONFI timings to work
+correctly with chips using the ONFI DDR mode. As a result, auto-detection
+needs to change the NAND controller's timings to detect ONFI chips.
+
+The 'best' answer I have for now, is to add a 'timings' subnode to the NAND
+chip's device tree node, that explicitly encodes all the values from the
+timing table as described in "struct nand_sdr_timings", which is derived
+from the ONFI specification, and extend it to add the various values that
+are present in the timing table for Toshiba NAND chips and compatibles.
+
+But I am not very satisfied with this solution, as it adds a lot of code
+for little gain.
+
+What was the original plan for handling timing requirements for non-ONFI
+chips when introducing setup_data_interface()?
+
+Best regards,
+-- 
+Romain Izard
