@@ -1,26 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOTyv-00022X-Ax
- for linux-mtd@lists.infradead.org; Sun, 18 Nov 2018 20:47:50 +0000
-Date: Sun, 18 Nov 2018 21:47:25 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+Received: from mail-dm3nam03on0616.outbound.protection.outlook.com
+ ([2a01:111:f400:fe49::616]
+ helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOcve-0007VI-NB
+ for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 06:21:04 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Han Xu
- <han.xu@nxp.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Harvey Hunt
- <harveyhuntnexus@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>, Maxim
- Levitsky <maximlevitsky@gmail.com>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>, Stefan Agner <stefan@agner.ch>, Janusz
- Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH v3 00/22] mtd: rawnand: 3rd batch of cleanup
-Message-ID: <20181118214725.63d83d25@xps13>
-In-Reply-To: <20181111075524.13123-1-boris.brezillon@bootlin.com>
-References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, "robh@kernel.org"
+ <robh@kernel.org>, Michal Simek <michals@xilinx.com>
+Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Mon, 19 Nov 2018 06:20:28 +0000
+Message-ID: <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181118204324.373ca9cc@bbrezillon>
+In-Reply-To: <20181118204324.373ca9cc@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,129 +36,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+H Boris,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Sun, 11 Nov 2018
-08:55:02 +0100:
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, November 19, 2018 1:13 AM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com; linux-mtd@lists.infra=
+dead.org; linux-
+> kernel@vger.kernel.org; nagasuresh12@gmail.com; robh@kernel.org; Michal S=
+imek
+> <michals@xilinx.com>
+> Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for =
+Arasan NAND
+> Flash Controller
+>=20
+> On Thu, 15 Nov 2018 09:34:16 +0000
+> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+>=20
+> > Hi Boris & Miquel,
+> >
+> > I am updating the driver by addressing your comments, and I have one
+> > concern,  especially in anfc_read_page_hwecc(), there I am checking for=
+ erased pages bit flips.
+> > Since Arasan NAND controller doesn't have multibit error detection
+> > beyond 24-bit( it can correct up to 24 bit), i.e. there is no indicatio=
+n from controller to detect
+> uncorrectable error beyond 24bit.
+>=20
+> Do you mean that you can't detect uncorrectable errors, or just that it's=
+ not 100% sure to detect
+> errors above max_strength?
+Yes, in Arasan NAND controller there is no way to detect uncorrectable erro=
+rs beyond 24-bit.
+>=20
+> > So I took some error count as default value(MULTI_BIT_ERR_CNT  16, I
+> > put this based on the error count that I got while reading erased page =
+on Micron device).
+> > And during a page read, will just read the error count register and
+> > compare this value with the default error count(16) and if it is more T=
+han default then I am
+> checking for erased page bit flips.
+>=20
+> Hm, that's wrong, especially if you set ecc_strength to something > 16.
+Ok
+>=20
+> > I am doubting that this will not work in all cases.
+>=20
+> It definitely doesn't.
+Ok
+>=20
+> > In my case it is just working because the error count that it got on an=
+ erased page is 16.
+> > Could you please suggest a way to do detect erased_page bit flips when =
+reading a page with
+> HW-ECC?.
+>=20
+> I'm a bit lost. Is the problem only about bitflips in erase pages, or is =
+it also impacting reads of
+> written pages that lead to uncorrectable errors.
+Yes, it is for both. But in case of read errors that we can't detect beyond=
+ 24-bit, then the answer from HW design team
+Is that the flash part is bad.
+Unfortunately till now we haven't ran into that situation(read errors of wr=
+itten pages beyond 24-bit).
+But we are hitting this because of erased page reading(needed in case of ub=
+ifs).
 
-> Hello,
 >=20
-> After the sanitization of the raw NAND API, here is a smaller
-> patchset continuing in this direction.
->=20
-> Patch 1 is just a follow-up on the "stop passing mtd_info objects
-> around" patches, except this times it takes care of internal functions.
-> There's still a lot of sanitization to do in drivers in order to get
-> rid of those mtd params, but I'll leave that to driver maintainers.
->=20
-> Patch 2 is trying to get rid of 3 forward declarations that are not
-> really needed.
->=20
-> Patch 3 is getting rid of useless test in nand_legacy_set_defaults().
->=20
-> Patch 4 is making nand_exec_op() private, so that NAND controller
-> drivers are not tempted to use it.
->=20
-> Patch 5 is getting rid of an unused flag that has been around for quite
-> some time.
->=20
-> Patches 6 to 11 are doing various cleanups/fixes/improvements in the
-> ams-delta driver.
->=20
-> Patches 12 to 20 are deprecating the ->select_chip() hook which should
-> now be replaced by internal target/die selection logic directly called
-> from the ->exec_op() and ecc.read/write_xxx() implementations. The
-> rational behind this change is that modern controller now take care of
-> asserting/deasserting the CS pin on a per-operation basis, and if we
-> ever want to implement advanced queuing logic (instead of the basic
-> serialization we currently have) we'll have to attach a CS line to the
-> operation we want to execute.
->=20
-> Finally, patches 21 and 22 are moving the controller specific methods
-> to nand_controller_ops.
->=20
-> As usual, let me know what you think of those changes.
->=20
-> Regards,
->=20
-> Boris
->=20
-> Main changes between v1 and v2:
-> - Patch the ams-delta driver
->=20
-> Main changes between v2 and v3:
-> - Fix the bug reported by Janusz
-> - Fix a bug reported by kbuild bots
->=20
-> Boris Brezillon (22):
->   mtd: rawnand: Stop passing mtd_info objects to internal functions
->   mtd: rawnand: Reorganize code to avoid forward declarations
->   mtd: rawnand: legacy: Drop useless test in nand_legacy_set_defaults()
->   mtd: rawnand: Move nand_exec_op() to internal.h
->   mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC flag
->   mtd: rawnand: ams-delta: Allow this driver to be compiled when
->     COMPILE_TEST=3Dy
->   mtd: rawnand: ams-delta: Add an SPDX tag to replace the license text
->   mtd: rawnand: ams-delta: Fix various coding style issues
->   mtd: rawnand: ams-delta: cleanup ams_delta_init() error path
->   mtd: rawnand: ams-delta: Check mtd_device_register() return code
->   mtd: rawnand: ams-delta: Explicitly inherit from nand_controller
->   mtd: rawnand: Add nand_[de]select_target() helpers
->   mtd: rawnand: Pass the CS line to be selected in struct nand_operation
->   mtd: rawnand: Make ->select_chip() optional when ->exec_op() is
->     implemented
->   mtd: rawnand: fsmc: Stop implementing ->select_chip()
->   mtd: rawnand: marvell: Stop implementing ->select_chip()
->   mtd: rawnand: tegra: Stop implementing ->select_chip()
->   mtd: rawnand: vf610: Stop implementing ->select_chip()
->   mtd: rawnand: ams-delta: Stop implementing ->select_chip()
->   mtd: rawnand: Deprecate the ->select_chip() hook
->   mtd: rawnand: Move the ->exec_op() method to nand_controller_ops
->   mtd: rawnand: Move ->setup_data_interface() to nand_controller_ops
->=20
->  drivers/mtd/nand/raw/Kconfig                  |   2 +-
->  drivers/mtd/nand/raw/ams-delta.c              |  95 ++-
->  drivers/mtd/nand/raw/atmel/nand-controller.c  |   9 +-
->  drivers/mtd/nand/raw/au1550nd.c               |   2 +-
->  .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  |   2 +-
->  drivers/mtd/nand/raw/cafe_nand.c              |   2 +-
->  drivers/mtd/nand/raw/davinci_nand.c           |   2 +-
->  drivers/mtd/nand/raw/denali.c                 |   5 +-
->  drivers/mtd/nand/raw/diskonchip.c             |   4 +-
->  drivers/mtd/nand/raw/fsl_elbc_nand.c          |   2 +-
->  drivers/mtd/nand/raw/fsl_ifc_nand.c           |   2 +-
->  drivers/mtd/nand/raw/fsl_upm.c                |   2 +-
->  drivers/mtd/nand/raw/fsmc_nand.c              |  32 +-
->  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c    |  27 +-
->  drivers/mtd/nand/raw/hisi504_nand.c           |   2 +-
->  drivers/mtd/nand/raw/internals.h              |  33 +
->  drivers/mtd/nand/raw/jz4740_nand.c            |   6 +-
->  drivers/mtd/nand/raw/jz4780_nand.c            |   2 +-
->  drivers/mtd/nand/raw/marvell_nand.c           |  32 +-
->  drivers/mtd/nand/raw/mpc5121_nfc.c            |   4 +-
->  drivers/mtd/nand/raw/mtk_nand.c               |   4 +-
->  drivers/mtd/nand/raw/mxc_nand.c               |  14 +-
->  drivers/mtd/nand/raw/nand_base.c              | 743 +++++++++---------
->  drivers/mtd/nand/raw/nand_bbt.c               | 285 +++----
->  drivers/mtd/nand/raw/nand_hynix.c             |   8 +-
->  drivers/mtd/nand/raw/nand_legacy.c            |  35 +-
->  drivers/mtd/nand/raw/ndfc.c                   |   2 +-
->  drivers/mtd/nand/raw/plat_nand.c              |   2 +-
->  drivers/mtd/nand/raw/qcom_nandc.c             |   2 +-
->  drivers/mtd/nand/raw/r852.c                   |   4 +-
->  drivers/mtd/nand/raw/s3c2410.c                |   7 +-
->  drivers/mtd/nand/raw/sh_flctl.c               |   2 +-
->  drivers/mtd/nand/raw/sunxi_nand.c             |   4 +-
->  drivers/mtd/nand/raw/tango_nand.c             |   4 +-
->  drivers/mtd/nand/raw/tegra_nand.c             |  32 +-
->  drivers/mtd/nand/raw/vf610_nfc.c              |  38 +-
->  drivers/mtd/nand/raw/xway_nand.c              |   2 +-
->  include/linux/mtd/rawnand.h                   | 150 ++--
->  38 files changed, 853 insertions(+), 752 deletions(-)
->=20
-
-Series applied to nand/next.
-
+> Don't you have a bit (or several bits) reporting when the ECC engine was =
+not able to correct
+> data? I you do, you should base the "detect bitflips in erase pages" logi=
+c on this information.
+Bit reporting for several bit errors is there only for Hamming(1bit correct=
+ion and 2bit detection) but not in BCH.
 
 Thanks,
-Miqu=C3=A8l
+Naga Sureshkumar Relli
