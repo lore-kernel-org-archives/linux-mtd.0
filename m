@@ -1,31 +1,35 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gOeWL-0005Uq-Tz
- for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 08:03:03 +0000
-Date: Mon, 19 Nov 2018 09:02:46 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
- <nagasuresh12@gmail.com>, "robh@kernel.org" <robh@kernel.org>, Michal Simek
- <michals@xilinx.com>
-Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20181119090246.49060019@bbrezillon>
-In-Reply-To: <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181118204324.373ca9cc@bbrezillon>
- <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+Received: from skedge03.snt-world.com ([91.208.41.68])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gOepS-0005GK-Fb
+ for linux-mtd@lists.infradead.org; Mon, 19 Nov 2018 08:22:48 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v5 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+Date: Mon, 19 Nov 2018 08:22:32 +0000
+Message-ID: <902ca455-9d3e-7371-fb8e-2b5cb7ad87cb@kontron.de>
+References: <1542116782-13118-1-git-send-email-frieder.schrempf@kontron.de>
+ <1542116782-13118-4-git-send-email-frieder.schrempf@kontron.de>
+ <VI1PR04MB572679944542ED6A438FD2FB99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <ce9cbfc0-3257-f117-aa21-cdee068579ce@kontron.de>
+ <65577d13-b17d-8f69-313c-01d23240d1d9@kontron.de>
+ <VI1PR04MB572664063A0E237D2EB7203A99C30@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <eb4b79be-c12b-16e7-e1dd-86a157cfdc7d@kontron.de>
+ <VI1PR04MB57265222E26C013D5D9C009B99DC0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <3e9aa917-cf3a-cf0e-8516-4e73d30eb2a1@kontron.de>
+ <20181115141252.52a5b32d@bbrezillon>
+ <11f45245-efc4-f1cf-3ead-578a5ca4bf29@kontron.de>
+ <VI1PR04MB572631414249F5941C1646D999DD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <2aa180a6-c369-0e84-b6a2-085b0a539695@kontron.de>
+ <VI1PR04MB572668C2BCD132D06E53E98C99DD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR04MB572668C2BCD132D06E53E98C99DD0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2142125E240AD243ABB8DEBC2C4FDEE4@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,75 +39,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Nov 2018 06:20:28 +0000
-Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
-
-> H Boris,
-> 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Monday, November 19, 2018 1:13 AM
-> > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> > Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> > computersforpeace@gmail.com; marek.vasut@gmail.com; linux-mtd@lists.infradead.org; linux-
-> > kernel@vger.kernel.org; nagasuresh12@gmail.com; robh@kernel.org; Michal Simek
-> > <michals@xilinx.com>
-> > Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for Arasan NAND
-> > Flash Controller
-> > 
-> > On Thu, 15 Nov 2018 09:34:16 +0000
-> > Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
-> >   
-> > > Hi Boris & Miquel,
-> > >
-> > > I am updating the driver by addressing your comments, and I have one
-> > > concern,  especially in anfc_read_page_hwecc(), there I am checking for erased pages bit flips.
-> > > Since Arasan NAND controller doesn't have multibit error detection
-> > > beyond 24-bit( it can correct up to 24 bit), i.e. there is no indication from controller to detect  
-> > uncorrectable error beyond 24bit.
-> > 
-> > Do you mean that you can't detect uncorrectable errors, or just that it's not 100% sure to detect
-> > errors above max_strength?  
-> Yes, in Arasan NAND controller there is no way to detect uncorrectable errors beyond 24-bit.
-
-So how do you detect uncorrectable errors when the strength is less than
-24bits?
-
-> >   
-> > > So I took some error count as default value(MULTI_BIT_ERR_CNT  16, I
-> > > put this based on the error count that I got while reading erased page on Micron device).
-> > > And during a page read, will just read the error count register and
-> > > compare this value with the default error count(16) and if it is more Than default then I am  
-> > checking for erased page bit flips.
-> > 
-> > Hm, that's wrong, especially if you set ecc_strength to something > 16.  
-> Ok
-> >   
-> > > I am doubting that this will not work in all cases.  
-> > 
-> > It definitely doesn't.  
-> Ok
-> >   
-> > > In my case it is just working because the error count that it got on an erased page is 16.
-> > > Could you please suggest a way to do detect erased_page bit flips when reading a page with  
-> > HW-ECC?.
-> > 
-> > I'm a bit lost. Is the problem only about bitflips in erase pages, or is it also impacting reads of
-> > written pages that lead to uncorrectable errors.  
-> Yes, it is for both. But in case of read errors that we can't detect beyond 24-bit, then the answer from HW design team
-> Is that the flash part is bad.
-> Unfortunately till now we haven't ran into that situation(read errors of written pages beyond 24-bit).
-
-Can you please run nandbiterrs (availaible in mtd-utils). I fear your
-device won't pass the test.
-
-> But we are hitting this because of erased page reading(needed in case of ubifs).
-> 
-> > 
-> > Don't you have a bit (or several bits) reporting when the ECC engine was not able to correct
-> > data? I you do, you should base the "detect bitflips in erase pages" logic on this information.  
-> Bit reporting for several bit errors is there only for Hamming(1bit correction and 2bit detection) but not in BCH.
-> 
-
-Then I tend to agree with Miquel: your ECC engine is broken, and I'm
-not even sure how to deal with that yet.
+SGkgWW9nZXNoLA0KDQpPbiAxNi4xMS4xOCAxMToxMiwgWW9nZXNoIE5hcmF5YW4gR2F1ciB3cm90
+ZToNCj4gSGkgRnJpZWRlciwNCj4gDQo+IEkgaGF2ZSBvbmUgbW9yZSBjb21tZW50LCB5b3UgbWln
+aHQgYWRkIHRoYXQgYWxzbyBpbiB5b3VyIG5leHQgdmVyc2lvbjoNCj4gDQo+IEZ1bmMgZnNsX3Fz
+cGlfaW52YWxpZGF0ZSgpIG5lZWRzIHRvIGJlIGNhbGxlZCBmb3IgY2FzZSB3aGVuIHdlIGFyZSBw
+ZXJmb3JtaW5nIEVyYXNlL1dyaXRlIG9mIGRhdGEgZnJvbSBJUCBidXMNCj4gDQo+IFNvIGluc3Rl
+YWQgb2YgY2FsbGluZyB0aGlzIGZvciBjYWxsIGNhc2UNCj4gICAgICAgICAgICAgICAgICBxc3Bp
+X3dyaXRlbChxLCBRVUFEU1BJX1JCQ1RfV01SS19NQVNLIHwNCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBRVUFEU1BJX1JCQ1RfUlhCUkRfVVNFSVBTLCBiYXNlICsgUVVBRFNQSV9SQkNU
+KTsNCj4gDQo+ICAgICAgICAgICAgICAgICAgaWYgKG9wLT5kYXRhLm5ieXRlcyAmJiBvcC0+ZGF0
+YS5kaXIgPT0gU1BJX01FTV9EQVRBX09VVCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgIGZz
+bF9xc3BpX2ZpbGxfdHhmaWZvKHEsIG9wKTsNCj4gDQo+ICAgICAgICAgICAgICAgICAgZXJyID0g
+ZnNsX3FzcGlfZG9fb3AocSwgb3ApOw0KPiAgICAgICAgICB9DQo+IA0KPiAgICAgICAgICAvKiBJ
+bnZhbGlkYXRlIHRoZSBkYXRhIGluIHRoZSBBSEIgYnVmZmVyLiAqLw0KPiAgICAgICAgICBmc2xf
+cXNwaV9pbnZhbGlkYXRlKHEpOw0KPiANCj4gICAgICAgICAgbXV0ZXhfdW5sb2NrKCZxLT5sb2Nr
+KTsNCj4gDQo+IFlvdSBjYW4gY2FsbCB0aGF0IG9ubHkgZm9yIGNhc2Ugb2Ygd3JpdGUvZXJhc2Ug
+b3BlcmF0aW9uDQo+IAkvKiBJbnZhbGlkYXRlIHRoZSBkYXRhIGluIHRoZSBBSEIgYnVmZmVyLiAq
+Lw0KPiAJaWYgKG9wLT5kYXRhLm5ieXRlcyAmJiBvcC0+ZGF0YS5kaXIgPT0gU1BJX01FTV9EQVRB
+X09VVCkNCj4gCSAgICAgICAgZnNsX3FzcGlfaW52YWxpZGF0ZShxKTsNCg0KVGhhbmsgeW91IGZv
+ciB5b3VyIGZlZWRiYWNrLg0KDQpVbmZvcnR1bmF0ZWx5IEkgY2FuJ3QgYmUgc3VyZSBpZiB0aGUg
+Y3VycmVudCBvcGVyYXRpb24gaXMgcmVhbGx5IGEgd3JpdGUgDQpvciBlcmFzZSBvcGVyYXRpb24g
+b24gdGhlIGNoaXAgYXMgdGhpcyBpbmZvcm1hdGlvbiBpcyBoaWRkZW4gYmVoaW5kIHRoZSANClNQ
+SSBtZW0gbGF5ZXIuDQoNCkFsc28gaW4gY2FzZSBvZiBTUEkgTkFORCB0aGUgQUhCIGJ1ZmZlciBu
+ZWVkcyB0byBiZSBpbnZhbGlkYXRlZCBhcyBzb29uIA0KYXMgaXRzIGNvbnRlbnQgd29uJ3QgbWF0
+Y2ggdGhlIG9uLWNoaXAgcGFnZSBidWZmZXIgYW55bW9yZS4gVGhpcyBpcyANCnVzdWFsbHkgdGhl
+IGNhc2Ugd2hlbiBhIHBhZ2UgcmVhZCBvcCBpcyBpc3N1ZWQuDQoNClNvIGN1cnJlbnRseSBpdCBp
+cyBub3QgcG9zc2libGUgdG8gZWFzaWx5IGRldGVybWluZSB3aGVuIHRvIGludmFsaWRhdGUgDQp0
+aGUgQUhCIGJ1ZmZlciBhbmQgdGhpcyBpcyB3aHkgSSBkbyBpdCBhZnRlciBlYWNoIG9wLg0KSW4g
+dGhlIGZ1dHVyZSB3ZSBtaWdodCBhZGQgc29tZSBob29rIGluIHRoZSBTUEkgbWVtIGxheWVyIHRv
+IGltcHJvdmUgDQp0aGlzIHNpdHVhdGlvbi4NCg0KQWxzbywgcGxlYXNlIGtlZXAgZGlzY3Vzc2lv
+bnMgbGlrZSB0aGlzIG9uIHRoZSBtYWlsaW5nIGxpc3QsIHNvIG90aGVycyANCmNhbiBjb21tZW50
+IGlmIG5lY2Vzc2FyeS4NCg0KVGhhbmtzLA0KRnJpZWRlcg==
