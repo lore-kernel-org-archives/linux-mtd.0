@@ -1,25 +1,22 @@
-Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP2Hn-000742-5p
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 09:25:36 +0000
-Received: by mail-ed1-x543.google.com with SMTP id z28so1264288edi.8
- for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2018 01:25:23 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2] mtd: improve calculating partition boundaries when
- checking for alignment
-Date: Tue, 20 Nov 2018 10:24:09 +0100
-Message-Id: <20181120092409.13864-1-zajec5@gmail.com>
-In-Reply-To: <20181120085612.8405-1-zajec5@gmail.com>
-References: <20181120085612.8405-1-zajec5@gmail.com>
+ id 1gP8tZ-0005X3-5R
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 16:29:05 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexander.sverdlin@nokia.com>, <linux-mtd@lists.infradead.org>
+CC: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <richard@nod.at>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for mx25u12835f
+Date: Tue, 20 Nov 2018 16:28:46 +0000
+Message-ID: <d5c30b11-31bc-0454-adce-65a0d091e493@microchip.com>
+References: <20180713130646.30523-1-alexander.sverdlin@nokia.com>
+In-Reply-To: <20180713130646.30523-1-alexander.sverdlin@nokia.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <800E9C9B3041604DADFD7BCD6DC216E7@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,57 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
-
-When checking for alignment mtd should check absolute offsets. It's
-important for subpartitions as it doesn't make sense to check their
-relative addresses.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: Switch from uint64_t to u64. I got incorrectly inspired by
-    uint64_t offset;
----
- drivers/mtd/mtdpart.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 2b6e53af47da..b6af41b04622 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -61,6 +61,15 @@ static inline struct mtd_part *mtd_to_part(const struct mtd_info *mtd)
- 	return container_of(mtd, struct mtd_part, mtd);
- }
- 
-+static u64 part_absolute_offset(struct mtd_info *mtd)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+
-+	if (!mtd_is_partition(mtd))
-+		return 0;
-+
-+	return part_absolute_offset(part->parent) + part->offset;
-+}
- 
- /*
-  * MTD methods which simply translate the effective address and pass through
-@@ -514,7 +523,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 	if (!(slave->mtd.flags & MTD_NO_ERASE))
- 		wr_alignment = slave->mtd.erasesize;
- 
--	tmp = slave->offset;
-+	tmp = part_absolute_offset(parent) + slave->offset;
- 	remainder = do_div(tmp, wr_alignment);
- 	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
- 		/* Doesn't start on a boundary of major erase size */
-@@ -525,7 +534,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 			part->name);
- 	}
- 
--	tmp = slave->mtd.size;
-+	tmp = part_absolute_offset(parent) + slave->mtd.size;
- 	remainder = do_div(tmp, wr_alignment);
- 	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
- 		slave->mtd.flags &= ~MTD_WRITEABLE;
--- 
-2.13.7
+DQoNCk9uIDA3LzEzLzIwMTggMDQ6MDYgUE0sIEFsZXhhbmRlciBTdmVyZGxpbiB3cm90ZToNCj4g
+VGhpcyBjaGlwIHN1cHBvcnRzIGR1YWwgYW5kIHF1YWQgcmVhZCBhbmQgdW5pZm9ybSA0Sy1ieXRl
+IGVyYXNlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQWxleGFuZGVyIFN2ZXJkbGluIDxhbGV4YW5k
+ZXIuc3ZlcmRsaW5Abm9raWEuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
+LW5vci5jIHwgMSArDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IEJh
+c2VkIG9uIHNwaS1ub3IvbmV4dCBicmFuY2ggb2YgZ2l0Oi8vZ2l0LmluZnJhZGVhZC5vcmcvbDIt
+bXRkLmdpdA0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5j
+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggZDljMzY4YzQ0MTk0Li5m
+OTgzMjI5M2I2ODkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5j
+DQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC0xMDg4LDYgKzEw
+ODgsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gc3BpX25vcl9pZHNbXSA9IHsN
+Cj4gIAl7ICJteDI1dTY0MzVmIiwgIElORk8oMHhjMjI1MzcsIDAsIDY0ICogMTAyNCwgMTI4LCBT
+RUNUXzRLKSB9LA0KPiAgCXsgIm14MjVsMTI4MDVkIiwgSU5GTygweGMyMjAxOCwgMCwgNjQgKiAx
+MDI0LCAyNTYsIDApIH0sDQo+ICAJeyAibXgyNWwxMjg1NWUiLCBJTkZPKDB4YzIyNjE4LCAwLCA2
+NCAqIDEwMjQsIDI1NiwgMCkgfSwNCj4gKwl7ICJteDI1dTEyODM1ZiIsIElORk8oMHhjMjI1Mzgs
+IDAsIDY0ICogMTAyNCwgMjU2LCBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfCBTUElfTk9S
+X1FVQURfUkVBRCkgfSwNCg0Kbml0IG9uIHN0eWxlOiBJIGZpbmQgZWFzaWVyIHRvIHJlYWQgdGhl
+IGRlY2xhcmF0aW9ucyB3aGVuIHRoZXkgZml0IGluIHRoZQ0KODAtY2hhcnMgbGltaXQuIFRoZXJl
+IGFyZSAyIHN0eWxlcyB0aGF0IG1lZXQgdGhpcyBpbiBzcGlfbm9yX2lkc1tdOg0KDQogICAgICAg
+IHsNCiAgICAgICAgICAgICAgICAiZ2QyNXExNiIsIElORk8oMHhjODQwMTUsIDAsIDY0ICogMTAy
+NCwgIDMyLA0KICAgICAgICAgICAgICAgICAgICAgICAgU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9S
+RUFEIHwgU1BJX05PUl9RVUFEX1JFQUQgfA0KICAgICAgICAgICAgICAgICAgICAgICAgU1BJX05P
+Ul9IQVNfTE9DSyB8IFNQSV9OT1JfSEFTX1RCKQ0KICAgICAgICB9LA0KDQphbmQNCg0KICAgICAg
+ICB7ICJpczI1bHAyNTYiLCAgSU5GTygweDlkNjAxOSwgMCwgNjQgKiAxMDI0LCA1MTIsDQogICAg
+ICAgICAgICAgICAgICAgICAgICBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQpIH0sDQoNCndl
+IHNob3VsZCBjaG9vc2Ugb25lIGFuZCBiZSBjb25zaXN0ZW50IGFjcm9zcyBmbGFzaF9pbmZvIGRl
+Y2xhcmF0aW9ucy4NCg0KVGhlIGluZm8gaW4gcGF0Y2ggaXMgZ29vZCwgc286DQpSZXZpZXdlZC1i
+eTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQo+ICAJeyAi
+bXgyNWwyNTYzNWUiLCBJTkZPKDB4YzIyMDE5LCAwLCA2NCAqIDEwMjQsIDUxMiwgU1BJX05PUl9E
+VUFMX1JFQUQgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gIAl7ICJteDI1dTI1NjM1ZiIsIElO
+Rk8oMHhjMjI1MzksIDAsIDY0ICogMTAyNCwgNTEyLCBTRUNUXzRLIHwgU1BJX05PUl80Ql9PUENP
+REVTKSB9LA0KPiAgCXsgIm14MjVsMjU2NTVlIiwgSU5GTygweGMyMjYxOSwgMCwgNjQgKiAxMDI0
+LCA1MTIsIDApIH0sDQo+IA0K
