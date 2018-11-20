@@ -1,23 +1,22 @@
-Received: from conuserg-10.nifty.com ([210.131.2.77])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP7aZ-0007FS-Nh
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 15:05:25 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-kbuild@vger.kernel.org
-Cc: Sam Ravnborg <sam@ravnborg.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
- Wim Van Sebroeck <wim@linux-watchdog.org>, linux-doc@vger.kernel.org,
- Jim Cromie <jim.cromie@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH] kbuild: announce removal of SUBDIRS if used
-Date: Wed, 21 Nov 2018 00:04:18 +0900
-Message-Id: <1542726258-8418-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP78P-0003FR-HJ
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 14:36:16 +0000
+Date: Tue, 20 Nov 2018 15:36:02 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2 v2] mtd: physmap_of_gemini: Handle pin control
+Message-ID: <20181120153602.166842f0@bbrezillon>
+In-Reply-To: <20181112210729.23580-2-linus.walleij@linaro.org>
+References: <20181112210729.23580-1-linus.walleij@linaro.org>
+ <20181112210729.23580-2-linus.walleij@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,102 +26,206 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SUBDIRS has been kept as a backward compatibility since
-commit ("[PATCH] kbuild: external module support") in 2002.
+On Mon, 12 Nov 2018 22:07:29 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-We do not need multiple ways to do the same thing, so I will remove
-SUBDIRS after the Linux 5.3 release. I cleaned up in-tree code, and
-updated the document so that nobody would try to use it.
+> This enables the complex mapping for the Gemini and kicks in
+> custom read/write functions that will wrap the existing
+> simple functions in calls to enable/disable the parallel
+> flash pins using pin controls.
+> 
+> This is necessary on some hardware such as the D-Link
+> DIR-685 where all flash pins are patched in/out at the same
+> time, but some of the flash pins are in practice unused by
+> the flash and have anyway been reused as GPIO.
+> 
+> This concerns specifically CE1 on the Gemini. There is only
+> one flash chip, so only CE0 is used, and the line for CE1
+> has been reused as chip select for the emulated SPI port
+> connected to the display. If we try to use the same lines
+> for flash and GPIO at the same time, one of them will loose:
+> the GPIO line will disappear because it gets disconnected
+> from the pin when the flash group is muxed out.
+> 
+> Fix this by introducing two pin control states named simply
+> "enabled" and "disabled" and only enable the flash lines
+> when absolutely necessary (during read/write/copy). This
+> way, they are available for GPIO at all other times and
+> the display works.
 
-Meanwhile, display the following warning if SUBDIRS is used.
+Okay, so your GPIOs might be unavailable when the flash is accessed?
+How does that work in practice? Is CE1 muxed as a GPIO on demand? What
+happens if the flash and SPI bus are accessed at the same time? Do you
+get -EBUSY? Not sure all MTD users retry when they get -EBUSY...
 
-Makefile:189: ================= WARNING ================
-Makefile:190: 'SUBDIRS' will be removed after Linux 5.3
-Makefile:191: Please use 'M=' or 'KBUILD_EXTMOD' instead
-Makefile:192: ==========================================
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
- Documentation/kbuild/kbuild.txt    | 7 +------
- Makefile                           | 4 ++++
- drivers/mtd/maps/scx200_docflash.c | 7 -------
- drivers/watchdog/scx200_wdt.c      | 7 -------
- samples/connector/Makefile         | 2 +-
- 5 files changed, 6 insertions(+), 21 deletions(-)
-
-diff --git a/Documentation/kbuild/kbuild.txt b/Documentation/kbuild/kbuild.txt
-index 8390c36..c9e3d93 100644
---- a/Documentation/kbuild/kbuild.txt
-+++ b/Documentation/kbuild/kbuild.txt
-@@ -81,12 +81,7 @@ KBUILD_EXTMOD
- --------------------------------------------------
- Set the directory to look for the kernel source when building external
- modules.
--The directory can be specified in several ways:
--1) Use "M=..." on the command line
--2) Environment variable KBUILD_EXTMOD
--3) Environment variable SUBDIRS
--The possibilities are listed in the order they take precedence.
--Using "M=..." will always override the others.
-+Setting "M=..." takes precedence over KBUILD_EXTMOD.
- 
- KBUILD_OUTPUT
- --------------------------------------------------
-diff --git a/Makefile b/Makefile
-index 370d13b..57be5fb 100644
---- a/Makefile
-+++ b/Makefile
-@@ -186,6 +186,10 @@ endif
- # Old syntax make ... SUBDIRS=$PWD is still supported
- # Setting the environment variable KBUILD_EXTMOD take precedence
- ifdef SUBDIRS
-+  $(warning ================= WARNING ================)
-+  $(warning 'SUBDIRS' will be removed after Linux 5.3)
-+  $(warning Please use 'M=' or 'KBUILD_EXTMOD' instead)
-+  $(warning ==========================================)
-   KBUILD_EXTMOD ?= $(SUBDIRS)
- endif
- 
-diff --git a/drivers/mtd/maps/scx200_docflash.c b/drivers/mtd/maps/scx200_docflash.c
-index f1c1f73..7f1a0e6 100644
---- a/drivers/mtd/maps/scx200_docflash.c
-+++ b/drivers/mtd/maps/scx200_docflash.c
-@@ -216,10 +216,3 @@ static void __exit cleanup_scx200_docflash(void)
- 
- module_init(init_scx200_docflash);
- module_exit(cleanup_scx200_docflash);
--
--/*
--    Local variables:
--        compile-command: "make -k -C ../../.. SUBDIRS=drivers/mtd/maps modules"
--        c-basic-offset: 8
--    End:
--*/
-diff --git a/drivers/watchdog/scx200_wdt.c b/drivers/watchdog/scx200_wdt.c
-index 836377c..ec4063e 100644
---- a/drivers/watchdog/scx200_wdt.c
-+++ b/drivers/watchdog/scx200_wdt.c
-@@ -262,10 +262,3 @@ static void __exit scx200_wdt_cleanup(void)
- 
- module_init(scx200_wdt_init);
- module_exit(scx200_wdt_cleanup);
--
--/*
--    Local variables:
--	compile-command: "make -k -C ../.. SUBDIRS=drivers/char modules"
--	c-basic-offset: 8
--    End:
--*/
-diff --git a/samples/connector/Makefile b/samples/connector/Makefile
-index fe3c854..6ad7162 100644
---- a/samples/connector/Makefile
-+++ b/samples/connector/Makefile
-@@ -14,4 +14,4 @@ HOSTCFLAGS_ucon.o += -I$(objtree)/usr/include
- all: modules
- 
- modules clean:
--	$(MAKE) -C ../.. SUBDIRS=$(CURDIR) $@
-+	$(MAKE) -C ../.. M=$(CURDIR) $@
--- 
-2.7.4
+> 
+> Collect all the state variables in a struct named
+> struct gemini_flash and allocate this struct at probe
+> time.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v1->v2:
+> - Rebase on latest MTD development branch
+> ---
+>  drivers/mtd/maps/Kconfig          |   1 +
+>  drivers/mtd/maps/physmap-gemini.c | 110 +++++++++++++++++++++++++++++-
+>  2 files changed, 110 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index 2edd8bcdbe1c..e0cf869c8544 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -88,6 +88,7 @@ config MTD_PHYSMAP_GEMINI
+>  	bool "Cortina Gemini OF-based physical memory map handling"
+>  	depends on MTD_PHYSMAP_OF
+>  	depends on MFD_SYSCON
+> +	select MTD_COMPLEX_MAPPINGS
+>  	default ARCH_GEMINI
+>  	help
+>  	  This provides some extra DT physmap parsing for the Gemini
+> diff --git a/drivers/mtd/maps/physmap-gemini.c b/drivers/mtd/maps/physmap-gemini.c
+> index 1cf128a0526d..60775b208fc9 100644
+> --- a/drivers/mtd/maps/physmap-gemini.c
+> +++ b/drivers/mtd/maps/physmap-gemini.c
+> @@ -10,9 +10,11 @@
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/mtd/map.h>
+> +#include <linux/mtd/xip.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/regmap.h>
+>  #include <linux/bitops.h>
+> +#include <linux/pinctrl/consumer.h>
+>  #include "physmap-gemini.h"
+>  
+>  /*
+> @@ -44,6 +46,82 @@
+>  
+>  #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
+>  
+> +static const struct of_device_id syscon_match[] = {
+> +	{ .compatible = "cortina,gemini-syscon" },
+> +	{ },
+> +};
+> +
+> +struct gemini_flash {
+> +	struct device *dev;
+> +	struct pinctrl *p;
+> +	struct pinctrl_state *enabled_state;
+> +	struct pinctrl_state *disabled_state;
+> +};
+> +
+> +/* Static local state */
+> +static struct gemini_flash *gf;
+> +
+> +static void gemini_flash_enable_pins(void)
+> +{
+> +	int ret;
+> +
+> +	if (IS_ERR(gf->enabled_state))
+> +		return;
+> +	ret = pinctrl_select_state(gf->p, gf->enabled_state);
+> +	if (ret)
+> +		dev_err(gf->dev, "failed to enable pins\n");
+> +}
+> +
+> +static void gemini_flash_disable_pins(void)
+> +{
+> +	int ret;
+> +
+> +	if (IS_ERR(gf->disabled_state))
+> +		return;
+> +	ret = pinctrl_select_state(gf->p, gf->disabled_state);
+> +	if (ret)
+> +		dev_err(gf->dev, "failed to disable pins\n");
+> +}
+> +
+> +static map_word __xipram gemini_flash_map_read(struct map_info *map,
+> +					       unsigned long ofs)
+> +{
+> +	map_word __xipram ret;
+> +
+> +	gemini_flash_enable_pins();
+> +	ret = inline_map_read(map, ofs);
+> +	gemini_flash_disable_pins();
+> +
+> +	return ret;
+> +}
+> +
+> +static void __xipram gemini_flash_map_write(struct map_info *map,
+> +					    const map_word datum,
+> +					    unsigned long ofs)
+> +{
+> +	gemini_flash_enable_pins();
+> +	inline_map_write(map, datum, ofs);
+> +	gemini_flash_disable_pins();
+> +}
+> +
+> +static void __xipram gemini_flash_map_copy_from(struct map_info *map,
+> +						void *to, unsigned long from,
+> +						ssize_t len)
+> +{
+> +	gemini_flash_enable_pins();
+> +	inline_map_copy_from(map, to, from, len);
+> +	gemini_flash_disable_pins();
+> +}
+> +
+> +static void __xipram gemini_flash_map_copy_to(struct map_info *map,
+> +					      unsigned long to,
+> +					      const void *from, ssize_t len)
+> +{
+> +	gemini_flash_enable_pins();
+> +	inline_map_copy_to(map, to, from, len);
+> +	gemini_flash_disable_pins();
+> +}
+> +
+>  int of_flash_probe_gemini(struct platform_device *pdev,
+>  			  struct device_node *np,
+>  			  struct map_info *map)
+> @@ -57,6 +135,11 @@ int of_flash_probe_gemini(struct platform_device *pdev,
+>  	if (!of_device_is_compatible(np, "cortina,gemini-flash"))
+>  		return 0;
+>  
+> +	gf = devm_kzalloc(dev, sizeof(*gf), GFP_KERNEL);
+> +	if (!gf)
+> +		return -ENOMEM;
+> +	gf->dev = dev;
+> +
+>  	rmap = syscon_regmap_lookup_by_phandle(np, "syscon");
+>  	if (IS_ERR(rmap)) {
+>  		dev_err(dev, "no syscon\n");
+> @@ -91,7 +174,32 @@ int of_flash_probe_gemini(struct platform_device *pdev,
+>  				 map->bankwidth * 8);
+>  	}
+>  
+> -	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
+> +	gf->p = devm_pinctrl_get(dev);
+> +	if (IS_ERR(gf->p)) {
+> +		dev_err(dev, "no pinctrl handle\n");
+> +		ret = PTR_ERR(gf->p);
+> +		return ret;
+> +	}
+> +
+> +	gf->enabled_state = pinctrl_lookup_state(gf->p, "enabled");
+> +	if (IS_ERR(gf->enabled_state))
+> +		dev_err(dev, "no enabled pin control state\n");
+> +
+> +	gf->disabled_state = pinctrl_lookup_state(gf->p, "disabled");
+> +	if (IS_ERR(gf->enabled_state)) {
+> +		dev_err(dev, "no disabled pin control state\n");
+> +	} else {
+> +		ret = pinctrl_select_state(gf->p, gf->disabled_state);
+> +		if (ret)
+> +			dev_err(gf->dev, "failed to disable pins\n");
+> +	}
+> +
+> +	map->read = gemini_flash_map_read;
+> +	map->write = gemini_flash_map_write;
+> +	map->copy_from = gemini_flash_map_copy_from;
+> +	map->copy_to = gemini_flash_map_copy_to;
+> +
+> +	dev_info(dev, "initialized Gemini-specific physmap control\n");
+>  
+>  	return 0;
+>  }
