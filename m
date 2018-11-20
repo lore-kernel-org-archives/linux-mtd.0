@@ -1,24 +1,23 @@
-Received: from mail-ua1-f68.google.com ([209.85.222.68])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP1EH-0005Ej-Se
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 08:17:54 +0000
-Received: by mail-ua1-f68.google.com with SMTP id p9so345610uaa.5
- for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2018 00:17:39 -0800 (PST)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP3Lr-0006ZM-8M
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 10:33:52 +0000
+Date: Tue, 20 Nov 2018 11:33:26 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Krzysztof =?UTF-8?B?S296xYJvd3NraQ==?= <k.kozlowski.k@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Janusz Krzysztofik
+ <jmkrzyszt@gmail.com>, Stefan Agner <stefan@agner.ch>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG BISECT] Missing MTD NAND partitions - mtd: rawnand: Move
+ the ->exec_op() method to nand_controller_ops
+Message-ID: <20181120113326.0d4f061e@xps13>
+In-Reply-To: <CAJKOXPdPnha1-1dCRFaPZ-CGzS1OzNcFrxuOJmWstHJcRAMZwg@mail.gmail.com>
+References: <CAJKOXPdPnha1-1dCRFaPZ-CGzS1OzNcFrxuOJmWstHJcRAMZwg@mail.gmail.com>
 MIME-Version: 1.0
-References: <CGME20181115050737eucas1p104ccec527d0713f9414bc75e0959feb6@eucas1p1.samsung.com>
- <1542258449-19930-1-git-send-email-huijin.park@samsung.com>
-In-Reply-To: <1542258449-19930-1-git-send-email-huijin.park@samsung.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 20 Nov 2018 09:17:26 +0100
-Message-ID: <CAMuHMdWwj6t6Pw==HG+jHC8y6rooWROuQjxJZNUwcXjimai8Pg@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: cast to u64 to avoid uint overflows
-To: huijin.park@samsung.com
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- bbanghj.park@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huijin,
+Hi Krzysztof,
 
-On Thu, Nov 15, 2018 at 6:08 AM Huijin Park <huijin.park@samsung.com> wrote:
-> From: "huijin.park" <huijin.park@samsung.com>
->
-> The "params->size" is defined as "u64".
-> And "info->sector_size" and "info->n_sectors" are defined as
-> unsigned int and u16.
-> Thus, u64 data might have strange data(loss data) if the result
-> overflows an unsigned int.
-> This patch casts "info->sector_size" and "info->n_sectors" to an u64.
->
-> Signed-off-by: huijin.park <huijin.park@samsung.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d9c368c..527f281 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2459,7 +2459,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
->         memset(params, 0, sizeof(*params));
->
->         /* Set SPI NOR sizes. */
-> -       params->size = info->sector_size * info->n_sectors;
-> +       params->size = (u64)info->sector_size * (u64)info->n_sectors;
+Krzysztof Koz=C5=82owski <k.kozlowski.k@gmail.com> wrote on Tue, 20 Nov 2018
+10:46:33 +0100:
 
-Adding the cast to only the first operand should be sufficient, and may lead
-to faster code, as only a 64x16 multiplication needs to be done, instead of
-a 64x64.
+> Hi all,
+>=20
+> Since few days linux-next has problem on Freescale VF500 - MTD seems
+> to be broken.
+>=20
+> Bisect pointed me to commit 7c27338c728e39ef47c83d101959aa332506969d
+> ("mtd: rawnand: Move the ->exec_op() method to nand_controller_ops")
+> as reason of failure to find MTD partitions.
+>=20
+> Toradex Colibri VF50 on Iris board (ARMv7, UP, Cortext-A5, NXP VF500,
+> 128 MB RAM, 128 MB NAND, Systemd: v232) booted from NFS root (NFSv4)
+> trying to mount UBIFS from NAND/MTD. Board uses VF610 NAND driver.
+>=20
+> The MTD partitions are missing entirely (nothing under /dev/mtd).
+> In the logs you can also see:
+> [    1.232161] UBI error: cannot open mtd ubi2, error -2
+>=20
+> Attached - dmesg.log
+>=20
+> Let me know if you need defconfig or any other information.
 
->         params->page_size = info->page_size;
->
->         /* (Fast) Read settings. */
+Thank you very much for testing and reporting the bug!
 
-Gr{oetje,eeting}s,
+Could you please test with this diff applied [1] please? We discussed
+with Boris and we think it should fix your setup (and all others also
+impacted).
 
-                        Geert
+[1] http://code.bulix.org/r1m99i-509201
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Miqu=C3=A8l
