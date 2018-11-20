@@ -1,21 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP8q9-0003ZV-U6
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 16:25:30 +0000
-Date: Tue, 20 Nov 2018 17:24:43 +0100
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP6JX-0005PV-9k
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 13:43:41 +0000
+Date: Tue, 20 Nov 2018 14:43:17 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <michals@xilinx.com>, nagasuresh12@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- robh@kernel.org
-Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20181120172443.5fb0bc14@bbrezillon>
-In-Reply-To: <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2 v2] mtd: maps: Leave assigned complex mappings
+Message-ID: <20181120144317.4661d57f@bbrezillon>
+In-Reply-To: <20181112210729.23580-1-linus.walleij@linaro.org>
+References: <20181112210729.23580-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,80 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 9 Nov 2018 10:30:41 +0530
-Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+Hi Linus,
 
-> +static int anfc_setup_data_interface(struct nand_chip *chip, int csline,
-> +				     const struct nand_data_interface *conf)
-> +{
-> +	struct anfc_nand_controller *nfc = to_anfc(chip->controller);
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	int err;
-> +	const struct nand_sdr_timings *sdr;
-> +	u32 inftimeval;
-> +	bool change_sdr_clk = false;
-> +
-> +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
-> +		return 0;
-> +
-> +	/*
-> +	 * If the controller is already in the same mode as flash device
-> +	 * then no need to change the timing mode again.
-> +	 */
-> +	sdr = nand_get_sdr_timings(conf);
-> +	if (IS_ERR(sdr))
-> +		return PTR_ERR(sdr);
-> +
-> +	if (sdr->mode < 0)
-> +		return -ENOTSUPP;
-> +
-> +	inftimeval = sdr->mode & 7;
-> +	if (sdr->mode >= 2 && sdr->mode <= 5)
-> +		change_sdr_clk = true;
-> +	/*
-> +	 * SDR timing modes 2-5 will not work for the arasan nand when
-> +	 * freq > 90 MHz, so reduce the freq in SDR modes 2-5 to < 90Mhz
+On Mon, 12 Nov 2018 22:07:28 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-What's the freq for mode 0 and 1?
-
-> +	 */
-> +	if (change_sdr_clk) {
-> +		clk_disable_unprepare(nfc->clk_sys);
-> +		err = clk_set_rate(nfc->clk_sys, SDR_MODE_DEFLT_FREQ);
-
-You should not change the clk rate here. It should be done when the
-chip is selected, so that, if you ever have 2 different chips connected
-to the same controller, you can adapt the rate when they are accessed.
-
-> +		if (err) {
-> +			dev_err(nfc->dev, "Can't set the clock rate\n");
-> +			return err;
-> +		}
-> +		err = clk_prepare_enable(nfc->clk_sys);
-> +		if (err) {
-> +			dev_err(nfc->dev, "Unable to enable sys clock.\n");
-> +			clk_disable_unprepare(nfc->clk_sys);
-> +			return err;
-> +		}
-> +	}
-> +	achip->inftimeval = inftimeval;
+> The simple_map_init() may need to be called with some
+> function pointers already assigned for complex mappings,
+> just bail out if complex handlers have already been
+> assigned.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v1->v2:
+> - Rebase on latest MTD development branch
+> - Use a new approach as the code changed under me
+> ---
+>  drivers/mtd/maps/map_funcs.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/maps/map_funcs.c b/drivers/mtd/maps/map_funcs.c
+> index 3f268370eeca..60e132293e1c 100644
+> --- a/drivers/mtd/maps/map_funcs.c
+> +++ b/drivers/mtd/maps/map_funcs.c
+> @@ -31,6 +31,10 @@ static void __xipram simple_map_copy_to(struct map_info *map, unsigned long to,
+>  
+>  void simple_map_init(struct map_info *map)
+>  {
+> +	/* Complex map functions already assigned */
+> +	if (map->read)
+> +		return;
 > +
-> +	return 0;
-> +}
-> +
-> +static int anfc_nand_attach_chip(struct nand_chip *chip)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> +	u32 ret;
-> +
-> +	if (mtd->writesize <= SZ_512)
-> +		achip->spare_caddr_cycles = 1;
-> +	else
-> +		achip->spare_caddr_cycles = 2;
-> +
-> +	chip->ecc.calc_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
-> +	chip->ecc.code_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+>  	BUG_ON(!map_bankwidth_supported(map->bankwidth));
+>  
+>  	map->read = simple_map_read;
 
-Those bufs are allocated but never freed (memleak). Also, are you sure
-you really need them.
+Can we move that to the physmap driver?
+
+--->8---
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index e8c3b250d842..043c7de39757 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -514,10 +514,16 @@ static int physmap_flash_probe(struct platform_device *dev)
+                        err = physmap_addr_gpios_map_init(&info->maps[i]);
+                        if (err)
+                                goto err_out;
+-               } else {
+-                       simple_map_init(&info->maps[i]);
+                }
+ 
++               /*
++                * Only use the simple_map implementation if map hooks are not
++                * implemented. Since map->read() is mandatory checking for its
++                * presence is enough.
++                */
++               if (map->read)
++                       simple_map_init(&info->maps[i]);
++
+                if (info->probe_type) {
+                        info->mtds[i] = do_map_probe(info->probe_type,
+                                                     &info->maps[i]);
