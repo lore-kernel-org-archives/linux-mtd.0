@@ -1,21 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP3ix-0005fS-KX
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 10:57:47 +0000
+ id 1gP1vn-0005mG-JA
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 09:02:55 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: [RFC PATCH 4/5] mtd: rawnand: Stop using chip->state in drivers
-Date: Tue, 20 Nov 2018 11:57:19 +0100
-Message-Id: <20181120105720.23081-5-boris.brezillon@bootlin.com>
-In-Reply-To: <20181120105720.23081-1-boris.brezillon@bootlin.com>
-References: <20181120105720.23081-1-boris.brezillon@bootlin.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
+ Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH 04/10] mtd: rawnand: fsmc: Stop using the dummy controller obj
+Date: Tue, 20 Nov 2018 10:02:33 +0100
+Message-Id: <20181120090239.5792-5-boris.brezillon@bootlin.com>
+In-Reply-To: <20181120090239.5792-1-boris.brezillon@bootlin.com>
+References: <20181120090239.5792-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We are about to simplify the locking in the rawnand framework, and part
-of this simplication is about getting rid of chip->state, so let's
-first patch drivers that check the state.
-
-All of them do that to get a timeout value based on the operation that
-is being executed. Since a timeout is, by definition, something that
-is here to prevent hanging on an event that might never happen,
-picking the maximum timeout value no matter the operation should be
-harmless.
+The dummy controller is kept around to support old drivers. Let's
+patch this one and declare our own nand_controller instance.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/omap2.c     | 7 ++-----
- drivers/mtd/nand/raw/r852.c      | 3 +--
- drivers/mtd/nand/raw/tmio_nand.c | 6 ++----
- 3 files changed, 5 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 086561811896..c93cf3fb46ca 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -994,12 +994,9 @@ static int omap_wait(struct nand_chip *this)
- {
- 	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(this));
- 	unsigned long timeo = jiffies;
--	int status, state = this->state;
-+	int status;
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 23d00a2c926f..db5174c336d4 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -122,6 +122,7 @@ enum access_mode {
+ /**
+  * struct fsmc_nand_data - structure for FSMC NAND device state
+  *
++ * @base:		Inherit from the nand_controller struct
+  * @pid:		Part ID on the AMBA PrimeCell format
+  * @nand:		Chip related info for a NAND flash.
+  *
+@@ -143,6 +144,7 @@ enum access_mode {
+  * @regs_va:		Registers base address for a given bank.
+  */
+ struct fsmc_nand_data {
++	struct nand_controller	base;
+ 	u32			pid;
+ 	struct nand_chip	nand;
  
--	if (state == FL_ERASING)
--		timeo += msecs_to_jiffies(400);
--	else
--		timeo += msecs_to_jiffies(20);
-+	timeo += msecs_to_jiffies(400);
+@@ -1117,10 +1119,13 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		nand->ecc.strength = 8;
+ 	}
  
- 	writeb(NAND_CMD_STATUS & 0xFF, info->reg.gpmc_nand_command);
- 	while (time_before(jiffies, timeo)) {
-diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-index c01422d953dd..86456216fb93 100644
---- a/drivers/mtd/nand/raw/r852.c
-+++ b/drivers/mtd/nand/raw/r852.c
-@@ -369,8 +369,7 @@ static int r852_wait(struct nand_chip *chip)
- 	unsigned long timeout;
- 	u8 status;
- 
--	timeout = jiffies + (chip->state == FL_ERASING ?
--		msecs_to_jiffies(400) : msecs_to_jiffies(20));
-+	timeout = jiffies + msecs_to_jiffies(400);
- 
- 	while (time_before(jiffies, timeout))
- 		if (chip->legacy.dev_ready(chip))
-diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
-index 4405273898ac..db030f1701ee 100644
---- a/drivers/mtd/nand/raw/tmio_nand.c
-+++ b/drivers/mtd/nand/raw/tmio_nand.c
-@@ -195,15 +195,13 @@ static int tmio_nand_wait(struct nand_chip *nand_chip)
- 	reinit_completion(&tmio->comp);
- 	tmio_iowrite8(0x81, tmio->fcr + FCR_IMR);
- 
--	timeout = nand_chip->state == FL_ERASING ? 400 : 20;
-+	timeout = 400;
- 	timeout = wait_for_completion_timeout(&tmio->comp,
- 					      msecs_to_jiffies(timeout));
- 
- 	if (unlikely(!tmio_nand_dev_ready(nand_chip))) {
- 		tmio_iowrite8(0x00, tmio->fcr + FCR_IMR);
--		dev_warn(&tmio->dev->dev, "still busy with %s after %d ms\n",
--			nand_chip->state == FL_ERASING ? "erase" : "program",
--			nand_chip->state == FL_ERASING ? 400 : 20);
-+		dev_warn(&tmio->dev->dev, "still busy after 400 ms\n");
- 
- 	} else if (unlikely(!timeout)) {
- 		tmio_iowrite8(0x00, tmio->fcr + FCR_IMR);
++	nand_controller_init(&host->base);
++	host->base.ops = &fsmc_nand_controller_ops;
++	nand->controller = &host->base;
++
+ 	/*
+ 	 * Scan to find existence of the device
+ 	 */
+-	nand->dummy_controller.ops = &fsmc_nand_controller_ops;
+ 	ret = nand_scan(nand, 1);
+ 	if (ret)
+ 		goto release_dma_write_chan;
 -- 
 2.17.1
