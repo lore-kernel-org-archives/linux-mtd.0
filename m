@@ -1,21 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP6JX-0005PV-9k
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 13:43:41 +0000
-Date: Tue, 20 Nov 2018 14:43:17 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2 v2] mtd: maps: Leave assigned complex mappings
-Message-ID: <20181120144317.4661d57f@bbrezillon>
-In-Reply-To: <20181112210729.23580-1-linus.walleij@linaro.org>
-References: <20181112210729.23580-1-linus.walleij@linaro.org>
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP2Hn-000742-5p
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 09:25:36 +0000
+Received: by mail-ed1-x543.google.com with SMTP id z28so1264288edi.8
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2018 01:25:23 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V2] mtd: improve calculating partition boundaries when
+ checking for alignment
+Date: Tue, 20 Nov 2018 10:24:09 +0100
+Message-Id: <20181120092409.13864-1-zajec5@gmail.com>
+In-Reply-To: <20181120085612.8405-1-zajec5@gmail.com>
+References: <20181120085612.8405-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,64 +29,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+From: Rafał Miłecki <rafal@milecki.pl>
 
-On Mon, 12 Nov 2018 22:07:28 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+When checking for alignment mtd should check absolute offsets. It's
+important for subpartitions as it doesn't make sense to check their
+relative addresses.
 
-> The simple_map_init() may need to be called with some
-> function pointers already assigned for complex mappings,
-> just bail out if complex handlers have already been
-> assigned.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v1->v2:
-> - Rebase on latest MTD development branch
-> - Use a new approach as the code changed under me
-> ---
->  drivers/mtd/maps/map_funcs.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/map_funcs.c b/drivers/mtd/maps/map_funcs.c
-> index 3f268370eeca..60e132293e1c 100644
-> --- a/drivers/mtd/maps/map_funcs.c
-> +++ b/drivers/mtd/maps/map_funcs.c
-> @@ -31,6 +31,10 @@ static void __xipram simple_map_copy_to(struct map_info *map, unsigned long to,
->  
->  void simple_map_init(struct map_info *map)
->  {
-> +	/* Complex map functions already assigned */
-> +	if (map->read)
-> +		return;
-> +
->  	BUG_ON(!map_bankwidth_supported(map->bankwidth));
->  
->  	map->read = simple_map_read;
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+V2: Switch from uint64_t to u64. I got incorrectly inspired by
+    uint64_t offset;
+---
+ drivers/mtd/mtdpart.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Can we move that to the physmap driver?
-
---->8---
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index e8c3b250d842..043c7de39757 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -514,10 +514,16 @@ static int physmap_flash_probe(struct platform_device *dev)
-                        err = physmap_addr_gpios_map_init(&info->maps[i]);
-                        if (err)
-                                goto err_out;
--               } else {
--                       simple_map_init(&info->maps[i]);
-                }
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 2b6e53af47da..b6af41b04622 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -61,6 +61,15 @@ static inline struct mtd_part *mtd_to_part(const struct mtd_info *mtd)
+ 	return container_of(mtd, struct mtd_part, mtd);
+ }
  
-+               /*
-+                * Only use the simple_map implementation if map hooks are not
-+                * implemented. Since map->read() is mandatory checking for its
-+                * presence is enough.
-+                */
-+               if (map->read)
-+                       simple_map_init(&info->maps[i]);
++static u64 part_absolute_offset(struct mtd_info *mtd)
++{
++	struct mtd_part *part = mtd_to_part(mtd);
 +
-                if (info->probe_type) {
-                        info->mtds[i] = do_map_probe(info->probe_type,
-                                                     &info->maps[i]);
++	if (!mtd_is_partition(mtd))
++		return 0;
++
++	return part_absolute_offset(part->parent) + part->offset;
++}
+ 
+ /*
+  * MTD methods which simply translate the effective address and pass through
+@@ -514,7 +523,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
+ 	if (!(slave->mtd.flags & MTD_NO_ERASE))
+ 		wr_alignment = slave->mtd.erasesize;
+ 
+-	tmp = slave->offset;
++	tmp = part_absolute_offset(parent) + slave->offset;
+ 	remainder = do_div(tmp, wr_alignment);
+ 	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+ 		/* Doesn't start on a boundary of major erase size */
+@@ -525,7 +534,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
+ 			part->name);
+ 	}
+ 
+-	tmp = slave->mtd.size;
++	tmp = part_absolute_offset(parent) + slave->mtd.size;
+ 	remainder = do_div(tmp, wr_alignment);
+ 	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+ 		slave->mtd.flags &= ~MTD_WRITEABLE;
+-- 
+2.13.7
