@@ -1,22 +1,17 @@
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+Received: from a27-123.smtp-out.us-west-2.amazonses.com ([54.240.27.123])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP8tZ-0005X3-5R
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 16:29:05 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <alexander.sverdlin@nokia.com>, <linux-mtd@lists.infradead.org>
-CC: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
- <richard@nod.at>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for mx25u12835f
-Date: Tue, 20 Nov 2018 16:28:46 +0000
-Message-ID: <d5c30b11-31bc-0454-adce-65a0d091e493@microchip.com>
-References: <20180713130646.30523-1-alexander.sverdlin@nokia.com>
-In-Reply-To: <20180713130646.30523-1-alexander.sverdlin@nokia.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <800E9C9B3041604DADFD7BCD6DC216E7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1gP5Ga-0006g4-Uk
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 12:36:35 +0000
 MIME-Version: 1.0
+Date: Tue, 20 Nov 2018 12:35:46 +0000
+Message-ID: <01010167311e92a8-1821c1dd-dbb0-42cc-8c6b-df9144a85882-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: Participants National Future Farmers of America (FFA) Annual
+ Convention & Expo 2018
+From: "Howard Wilkins" <howard.wilkins@middlefieldexports.com>
+Reply-To: "Howard Wilkins" <howard.wilkins@middlefieldexports.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDA3LzEzLzIwMTggMDQ6MDYgUE0sIEFsZXhhbmRlciBTdmVyZGxpbiB3cm90ZToNCj4g
-VGhpcyBjaGlwIHN1cHBvcnRzIGR1YWwgYW5kIHF1YWQgcmVhZCBhbmQgdW5pZm9ybSA0Sy1ieXRl
-IGVyYXNlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQWxleGFuZGVyIFN2ZXJkbGluIDxhbGV4YW5k
-ZXIuc3ZlcmRsaW5Abm9raWEuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3Bp
-LW5vci5jIHwgMSArDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IEJh
-c2VkIG9uIHNwaS1ub3IvbmV4dCBicmFuY2ggb2YgZ2l0Oi8vZ2l0LmluZnJhZGVhZC5vcmcvbDIt
-bXRkLmdpdA0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5j
-IGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggZDljMzY4YzQ0MTk0Li5m
-OTgzMjI5M2I2ODkgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5j
-DQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC0xMDg4LDYgKzEw
-ODgsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gc3BpX25vcl9pZHNbXSA9IHsN
-Cj4gIAl7ICJteDI1dTY0MzVmIiwgIElORk8oMHhjMjI1MzcsIDAsIDY0ICogMTAyNCwgMTI4LCBT
-RUNUXzRLKSB9LA0KPiAgCXsgIm14MjVsMTI4MDVkIiwgSU5GTygweGMyMjAxOCwgMCwgNjQgKiAx
-MDI0LCAyNTYsIDApIH0sDQo+ICAJeyAibXgyNWwxMjg1NWUiLCBJTkZPKDB4YzIyNjE4LCAwLCA2
-NCAqIDEwMjQsIDI1NiwgMCkgfSwNCj4gKwl7ICJteDI1dTEyODM1ZiIsIElORk8oMHhjMjI1Mzgs
-IDAsIDY0ICogMTAyNCwgMjU2LCBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfCBTUElfTk9S
-X1FVQURfUkVBRCkgfSwNCg0Kbml0IG9uIHN0eWxlOiBJIGZpbmQgZWFzaWVyIHRvIHJlYWQgdGhl
-IGRlY2xhcmF0aW9ucyB3aGVuIHRoZXkgZml0IGluIHRoZQ0KODAtY2hhcnMgbGltaXQuIFRoZXJl
-IGFyZSAyIHN0eWxlcyB0aGF0IG1lZXQgdGhpcyBpbiBzcGlfbm9yX2lkc1tdOg0KDQogICAgICAg
-IHsNCiAgICAgICAgICAgICAgICAiZ2QyNXExNiIsIElORk8oMHhjODQwMTUsIDAsIDY0ICogMTAy
-NCwgIDMyLA0KICAgICAgICAgICAgICAgICAgICAgICAgU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9S
-RUFEIHwgU1BJX05PUl9RVUFEX1JFQUQgfA0KICAgICAgICAgICAgICAgICAgICAgICAgU1BJX05P
-Ul9IQVNfTE9DSyB8IFNQSV9OT1JfSEFTX1RCKQ0KICAgICAgICB9LA0KDQphbmQNCg0KICAgICAg
-ICB7ICJpczI1bHAyNTYiLCAgSU5GTygweDlkNjAxOSwgMCwgNjQgKiAxMDI0LCA1MTIsDQogICAg
-ICAgICAgICAgICAgICAgICAgICBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQpIH0sDQoNCndl
-IHNob3VsZCBjaG9vc2Ugb25lIGFuZCBiZSBjb25zaXN0ZW50IGFjcm9zcyBmbGFzaF9pbmZvIGRl
-Y2xhcmF0aW9ucy4NCg0KVGhlIGluZm8gaW4gcGF0Y2ggaXMgZ29vZCwgc286DQpSZXZpZXdlZC1i
-eTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQo+ICAJeyAi
-bXgyNWwyNTYzNWUiLCBJTkZPKDB4YzIyMDE5LCAwLCA2NCAqIDEwMjQsIDUxMiwgU1BJX05PUl9E
-VUFMX1JFQUQgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gIAl7ICJteDI1dTI1NjM1ZiIsIElO
-Rk8oMHhjMjI1MzksIDAsIDY0ICogMTAyNCwgNTEyLCBTRUNUXzRLIHwgU1BJX05PUl80Ql9PUENP
-REVTKSB9LA0KPiAgCXsgIm14MjVsMjU2NTVlIiwgSU5GTygweGMyMjYxOSwgMCwgNjQgKiAxMDI0
-LCA1MTIsIDApIH0sDQo+IA0K
+Hello ,
+
+We've got the only mktg database you need this year, this is the one everyo=
+ne else is looking for. Do you need to reach out to participants at the rec=
+ent National Future Farmers of America (FFA) Annual Convention & Expo 2018?
+
+Purchase the National Future Farmers of America (FFA) Organization Annual C=
+onvention & Expo 2018 Participants =E2=80=93 45000 contacts at $2200
+until the end of business today.
+
+Communicate with everyone who attended 2018 National FFA Annual Convention =
+& Expo, you get complete and credible accurate contact information, includi=
+ng phone, e mail, mailing address.
+
+We are good in providing organizations just like yours the information edge=
+ needed to out-compete the rivals =E2=80=93 grab your copy of the 2018 Nati=
+onal FFA Annual Convention & Expo Visitors-List before they get theirs.
+
+Look forward to hearing from you today; we'll hold a copy for you a little =
+longer.
+
+Best Regards
+
+Howard Wilkins
+
+Terms of use: This content is correct only for approved use by the original=
+ correct recipient. Ownership rights to this content are held solely by our=
+ organization and it is not permitted for unapproved users to examine, tran=
+smit, disseminate, or act on this material. If you receive or possess this =
+data and are not the original correct recipient, please delete it immediate=
+ly and notify the sender of the error. This organization holds no connectio=
+n or relationship to the organizers of the National Future Farmers of Ameri=
+ca (FFA) Annual Convention & Expo 2018 does not sell or share this informat=
+ion with us. The data provided herein is compiled lawfully, from a combinat=
+ion of publicly available sources and our internal database.
