@@ -1,26 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP7XP-0000Yl-Jp
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 15:02:04 +0000
-Date: Tue, 20 Nov 2018 16:01:52 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Tudor.Ambarus@microchip.com
-Cc: marek.vasut@gmail.com, richard@nod.at, boris.brezillon@bootlin.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP5vo-0007uA-6g
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 13:19:09 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexandre.belloni@bootlin.com>
+CC: <marek.vasut@gmail.com>, <richard@nod.at>, <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>, <cyrille.pitchen@wedev4u.fr>,
+ <computersforpeace@gmail.com>, <dwmw2@infradead.org>
 Subject: Re: [PATCH v3 2/2] mtd: spi-nor: Use 4B opcodes when the NOR
  advertises both 3B and 4B
-Message-ID: <20181120150152.GE8367@piout.net>
+Date: Tue, 20 Nov 2018 13:18:49 +0000
+Message-ID: <210d4dff-b729-ae69-3b61-d63d6ae38604@microchip.com>
 References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
  <20181031144504.19405-2-boris.brezillon@bootlin.com>
  <bf8fe028-a9ad-56da-df3b-c4e232b5f5cb@microchip.com>
  <0b747728-0abf-7e88-0d83-3b3db1415837@microchip.com>
  <20181116134235.GD29768@piout.net>
- <210d4dff-b729-ae69-3b61-d63d6ae38604@microchip.com>
+In-Reply-To: <20181116134235.GD29768@piout.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BC8547825945684A9CF9FA7D4BF1F7E7@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <210d4dff-b729-ae69-3b61-d63d6ae38604@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,56 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20/11/2018 13:18:49+0000, Tudor.Ambarus@microchip.com wrote:
-> Hi, Alexandre,
-> 
-> On 11/16/2018 03:42 PM, Alexandre Belloni wrote:
-> > On 16/11/2018 11:57:10+0000, Tudor.Ambarus@microchip.com wrote:
-> >>
-> >>
-> >> On 11/09/2018 12:49 PM, Tudor.Ambarus@microchip.com wrote:
-> >>>
-> >>>
-> >>> On 10/31/2018 04:45 PM, Boris Brezillon wrote:
-> >>>> When the NOR supports 4 bytes opcodes we should use those instead of
-> >>>> switching the flash in 4-bytes mode. This way, we don't have to restore
-> >>>> the addressing mode when resetting the board.
-> >>>>
-> >>>> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> >>>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> >>>> Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> >>>> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> >>>
-> >>> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >>>
-> >>
-> >> I propose to stall this patch for a week or so, until we will have a clearer
-> >> view on how are defined the flashes that don't have 4B opcodes, but can enter
-> >> the 4-Byte mode on command.
-> >>
-> > 
-> > Note that this patch is badly needed for some of our boards. without it,
-> > they can't reboot properly. I would very much like to see it enter
-> > upstream and be backported sooner than later.
-> 
-> What flash do the boards use? Does your flash support SFDP 4-Byte Instruction
-> table? If yes, the following patch should solve your problem indirectly:
-> 
-
-It is a MX25L25635FMI-10G
-
-> https://lore.kernel.org/patchwork/patch/1015036/
-> 
-> You should also apply the following if you want to test it:
-> 
-> https://lore.kernel.org/patchwork/patch/1013294/
-> 
-
-Applying those two patches only doesn't fix the reboot issue.
-
-spi_nor_parse_4bait() is never called.
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+SGksIEFsZXhhbmRyZSwNCg0KT24gMTEvMTYvMjAxOCAwMzo0MiBQTSwgQWxleGFuZHJlIEJlbGxv
+bmkgd3JvdGU6DQo+IE9uIDE2LzExLzIwMTggMTE6NTc6MTArMDAwMCwgVHVkb3IuQW1iYXJ1c0Bt
+aWNyb2NoaXAuY29tIHdyb3RlOg0KPj4NCj4+DQo+PiBPbiAxMS8wOS8yMDE4IDEyOjQ5IFBNLCBU
+dWRvci5BbWJhcnVzQG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+Pj4NCj4+Pg0KPj4+IE9uIDEwLzMx
+LzIwMTggMDQ6NDUgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4+Pj4gV2hlbiB0aGUgTk9S
+IHN1cHBvcnRzIDQgYnl0ZXMgb3Bjb2RlcyB3ZSBzaG91bGQgdXNlIHRob3NlIGluc3RlYWQgb2YN
+Cj4+Pj4gc3dpdGNoaW5nIHRoZSBmbGFzaCBpbiA0LWJ5dGVzIG1vZGUuIFRoaXMgd2F5LCB3ZSBk
+b24ndCBoYXZlIHRvIHJlc3RvcmUNCj4+Pj4gdGhlIGFkZHJlc3NpbmcgbW9kZSB3aGVuIHJlc2V0
+dGluZyB0aGUgYm9hcmQuDQo+Pj4+DQo+Pj4+IFJlcG9ydGVkLWJ5OiBBbGV4YW5kcmUgQmVsbG9u
+aSA8YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb20+DQo+Pj4+IFNpZ25lZC1vZmYtYnk6IEJv
+cmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPg0KPj4+PiBUZXN0ZWQt
+Ynk6IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4NCj4+
+Pj4gUmV2aWV3ZWQtYnk6IEN5cmlsbGUgUGl0Y2hlbiA8Y3lyaWxsZS5waXRjaGVuQHdlZGV2NHUu
+ZnI+DQo+Pj4NCj4+PiBSZXZpZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0Bt
+aWNyb2NoaXAuY29tPg0KPj4+DQo+Pg0KPj4gSSBwcm9wb3NlIHRvIHN0YWxsIHRoaXMgcGF0Y2gg
+Zm9yIGEgd2VlayBvciBzbywgdW50aWwgd2Ugd2lsbCBoYXZlIGEgY2xlYXJlcg0KPj4gdmlldyBv
+biBob3cgYXJlIGRlZmluZWQgdGhlIGZsYXNoZXMgdGhhdCBkb24ndCBoYXZlIDRCIG9wY29kZXMs
+IGJ1dCBjYW4gZW50ZXINCj4+IHRoZSA0LUJ5dGUgbW9kZSBvbiBjb21tYW5kLg0KPj4NCj4gDQo+
+IE5vdGUgdGhhdCB0aGlzIHBhdGNoIGlzIGJhZGx5IG5lZWRlZCBmb3Igc29tZSBvZiBvdXIgYm9h
+cmRzLiB3aXRob3V0IGl0LA0KPiB0aGV5IGNhbid0IHJlYm9vdCBwcm9wZXJseS4gSSB3b3VsZCB2
+ZXJ5IG11Y2ggbGlrZSB0byBzZWUgaXQgZW50ZXINCj4gdXBzdHJlYW0gYW5kIGJlIGJhY2twb3J0
+ZWQgc29vbmVyIHRoYW4gbGF0ZXIuDQoNCldoYXQgZmxhc2ggZG8gdGhlIGJvYXJkcyB1c2U/IERv
+ZXMgeW91ciBmbGFzaCBzdXBwb3J0IFNGRFAgNC1CeXRlIEluc3RydWN0aW9uDQp0YWJsZT8gSWYg
+eWVzLCB0aGUgZm9sbG93aW5nIHBhdGNoIHNob3VsZCBzb2x2ZSB5b3VyIHByb2JsZW0gaW5kaXJl
+Y3RseToNCg0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3BhdGNoLzEwMTUwMzYv
+DQoNCllvdSBzaG91bGQgYWxzbyBhcHBseSB0aGUgZm9sbG93aW5nIGlmIHlvdSB3YW50IHRvIHRl
+c3QgaXQ6DQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BhdGNod29yay9wYXRjaC8xMDEzMjk0
+Lw0KDQpDaGVlcnMsDQp0YQ0K
