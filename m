@@ -1,33 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP3o9-0006rR-Mx
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 11:03:09 +0000
-Date: Tue, 20 Nov 2018 12:02:44 +0100
+ id 1gP3iy-0006o0-02
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 10:57:45 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
- <nagasuresh12@gmail.com>, "robh@kernel.org" <robh@kernel.org>, Michal Simek
- <michals@xilinx.com>
-Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20181120120244.7d2442b5@bbrezillon>
-In-Reply-To: <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181118204324.373ca9cc@bbrezillon>
- <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181119090246.49060019@bbrezillon>
- <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Xiaolei Li <xiaolei.li@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: [RFC PATCH 2/5] mtd: rawnand: tmio: Do not abuse nand_controller->wq
+Date: Tue, 20 Nov 2018 11:57:17 +0100
+Message-Id: <20181120105720.23081-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20181120105720.23081-1-boris.brezillon@bootlin.com>
+References: <20181120105720.23081-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,35 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Nov 2018 07:02:08 +0000
-Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+nand_controller->wq has never been meant to be used by NAND controller
+drivers. This waitqueue is used by the framework to serialize accesses
+to a NAND controller, and messing up with its state is a really bad
+idea.
 
+Declare a completion object in tmio_nand and use it to wait for RB
+transitions.
 
-> > 
-> > Can you please run nandbiterrs (availaible in mtd-utils). I fear your
-> > device won't pass the test.  
-> Yes, nandbiterror test is passing till 24bit, after that it is failing.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/tmio_nand.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-Can you paste the output of nandbiterrs please?
-
-> >   
-> > > But we are hitting this because of erased page reading(needed in case of ubifs).
-> > >  
-> > > >
-> > > > Don't you have a bit (or several bits) reporting when the ECC engine was not able to  
-> > correct  
-> > > > data? I you do, you should base the "detect bitflips in erase pages" logic on this information.  
-> > > Bit reporting for several bit errors is there only for Hamming(1bit correction and 2bit  
-> > detection) but not in BCH.  
-> > >  
-> > 
-> > Then I tend to agree with Miquel: your ECC engine is broken, and I'm
-> > not even sure how to deal with that yet.  
-> So as per the Miquel's suggestion, can I proceed to add the below one?
-> "you should re-read the page in raw mode and check for the number of bitflips manually (thanks to the helpers in the core). Again, if the number of BF is above 16, we can assume the page is bad and increment ->ecc.failed accordingly."
-
-But that's just partially fixing the problem. And you didn't answer my
-previous question: what happens when you configure the ECC engine in,
-say 12bit/1024 and you end up with uncorrectable errors (more than 12
-bitflips in a 1k block). What's the number reported ECC_ERR_CNT? Is it
-set to 13?
+diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
+index f3b59e649b7d..4405273898ac 100644
+--- a/drivers/mtd/nand/raw/tmio_nand.c
++++ b/drivers/mtd/nand/raw/tmio_nand.c
+@@ -104,6 +104,7 @@
+ 
+ struct tmio_nand {
+ 	struct nand_chip chip;
++	struct completion comp;
+ 
+ 	struct platform_device *dev;
+ 
+@@ -168,15 +169,11 @@ static int tmio_nand_dev_ready(struct nand_chip *chip)
+ static irqreturn_t tmio_irq(int irq, void *__tmio)
+ {
+ 	struct tmio_nand *tmio = __tmio;
+-	struct nand_chip *nand_chip = &tmio->chip;
+ 
+ 	/* disable RDYREQ interrupt */
+ 	tmio_iowrite8(0x00, tmio->fcr + FCR_IMR);
++	complete(&tmio->comp);
+ 
+-	if (unlikely(!waitqueue_active(&nand_chip->controller->wq)))
+-		dev_warn(&tmio->dev->dev, "spurious interrupt\n");
+-
+-	wake_up(&nand_chip->controller->wq);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -193,12 +190,14 @@ static int tmio_nand_wait(struct nand_chip *nand_chip)
+ 	u8 status;
+ 
+ 	/* enable RDYREQ interrupt */
++
+ 	tmio_iowrite8(0x0f, tmio->fcr + FCR_ISR);
++	reinit_completion(&tmio->comp);
+ 	tmio_iowrite8(0x81, tmio->fcr + FCR_IMR);
+ 
+-	timeout = wait_event_timeout(nand_chip->controller->wq,
+-		tmio_nand_dev_ready(nand_chip),
+-		msecs_to_jiffies(nand_chip->state == FL_ERASING ? 400 : 20));
++	timeout = nand_chip->state == FL_ERASING ? 400 : 20;
++	timeout = wait_for_completion_timeout(&tmio->comp,
++					      msecs_to_jiffies(timeout));
+ 
+ 	if (unlikely(!tmio_nand_dev_ready(nand_chip))) {
+ 		tmio_iowrite8(0x00, tmio->fcr + FCR_IMR);
+@@ -378,6 +377,8 @@ static int tmio_probe(struct platform_device *dev)
+ 	if (!tmio)
+ 		return -ENOMEM;
+ 
++	init_completion(&tmio->comp);
++
+ 	tmio->dev = dev;
+ 
+ 	platform_set_drvdata(dev, tmio);
+-- 
+2.17.1
