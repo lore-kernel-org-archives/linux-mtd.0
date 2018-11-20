@@ -1,24 +1,26 @@
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP8C7-0001Xv-MB
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 15:44:14 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <lkp@intel.com>
-CC: <kbuild-all@01.org>, <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
- <richard@nod.at>, <Cyrille.Pitchen@microchip.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
-Date: Tue, 20 Nov 2018 15:43:49 +0000
-Message-ID: <d2b4845b-8066-18a1-1b88-1f0e8fe634b9@microchip.com>
-References: <20181120115512.15958-1-tudor.ambarus@microchip.com>
- <201811202348.n7lHxFem%fengguang.wu@intel.com>
-In-Reply-To: <201811202348.n7lHxFem%fengguang.wu@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <58A6CE53FE02864A9C8378930281A1CF@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP7XP-0000Yl-Jp
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 15:02:04 +0000
+Date: Tue, 20 Nov 2018 16:01:52 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Tudor.Ambarus@microchip.com
+Cc: marek.vasut@gmail.com, richard@nod.at, boris.brezillon@bootlin.com,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: Use 4B opcodes when the NOR
+ advertises both 3B and 4B
+Message-ID: <20181120150152.GE8367@piout.net>
+References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
+ <20181031144504.19405-2-boris.brezillon@bootlin.com>
+ <bf8fe028-a9ad-56da-df3b-c4e232b5f5cb@microchip.com>
+ <0b747728-0abf-7e88-0d83-3b3db1415837@microchip.com>
+ <20181116134235.GD29768@piout.net>
+ <210d4dff-b729-ae69-3b61-d63d6ae38604@microchip.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <210d4dff-b729-ae69-3b61-d63d6ae38604@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +30,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 20/11/2018 13:18:49+0000, Tudor.Ambarus@microchip.com wrote:
+> Hi, Alexandre,
+> 
+> On 11/16/2018 03:42 PM, Alexandre Belloni wrote:
+> > On 16/11/2018 11:57:10+0000, Tudor.Ambarus@microchip.com wrote:
+> >>
+> >>
+> >> On 11/09/2018 12:49 PM, Tudor.Ambarus@microchip.com wrote:
+> >>>
+> >>>
+> >>> On 10/31/2018 04:45 PM, Boris Brezillon wrote:
+> >>>> When the NOR supports 4 bytes opcodes we should use those instead of
+> >>>> switching the flash in 4-bytes mode. This way, we don't have to restore
+> >>>> the addressing mode when resetting the board.
+> >>>>
+> >>>> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >>>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> >>>> Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >>>> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> >>>
+> >>> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >>>
+> >>
+> >> I propose to stall this patch for a week or so, until we will have a clearer
+> >> view on how are defined the flashes that don't have 4B opcodes, but can enter
+> >> the 4-Byte mode on command.
+> >>
+> > 
+> > Note that this patch is badly needed for some of our boards. without it,
+> > they can't reboot properly. I would very much like to see it enter
+> > upstream and be backported sooner than later.
+> 
+> What flash do the boards use? Does your flash support SFDP 4-Byte Instruction
+> table? If yes, the following patch should solve your problem indirectly:
+> 
 
+It is a MX25L25635FMI-10G
 
-On 11/20/2018 05:35 PM, kbuild test robot wrote:
-> Hi Cyrille,
->=20
-> Thank you for the patch! Yet something to improve:
->=20
-> [auto build test ERROR on mtd/spi-nor/next]
-> [also build test ERROR on v4.20-rc3 next-20181120]
-> [if your patch is applied to the wrong git tree, please drop us a note to=
- help improve the system]
->=20
-> url:    https://github.com/0day-ci/linux/commits/Tudor-Ambarus-microchip-=
-com/mtd-spi-nor-parse-SFDP-4-byte-Address-Instruction-Table/20181120-223821
-> base:   git://git.infradead.org/linux-mtd.git spi-nor/next
-> config: i386-randconfig-x005-201846 (attached as .config)
-> compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=3Di386=20
->=20
-> All errors (new ones prefixed by >>):
->=20
->    drivers/mtd//spi-nor/spi-nor.c: In function 'spi_nor_parse_4bait':
->>> drivers/mtd//spi-nor/spi-nor.c:3165:15: error: implicit declaration of =
-function 'spi_nor_sort_erase_mask'; did you mean 'spi_nor_set_erase_type'? =
-[-Werror=3Dimplicit-function-declaration]
->      erase_mask =3D spi_nor_sort_erase_mask(map, erase_mask);
->                   ^~~~~~~~~~~~~~~~~~~~~~~
+> https://lore.kernel.org/patchwork/patch/1015036/
+> 
+> You should also apply the following if you want to test it:
+> 
+> https://lore.kernel.org/patchwork/patch/1013294/
+> 
 
-That's fine. I already specified that this patch depends on the
-spi_nor_sort_erase_mask() function introduced in
-https://patchwork.ozlabs.org/patch/999105/
+Applying those two patches only doesn't fix the reboot issue.
 
-Thanks!
-ta
+spi_nor_parse_4bait() is never called.
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
