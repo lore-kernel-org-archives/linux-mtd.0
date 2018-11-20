@@ -1,30 +1,24 @@
-Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP8rb-0003dw-3B
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 16:26:59 +0000
-Received: by mail-pl1-x643.google.com with SMTP id z23so1244949plo.0
- for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2018 08:26:47 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Tue, 20 Nov 2018 08:25:43 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-kbuild@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-watchdog@vger.kernel.org,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- linux-doc@vger.kernel.org, Jim Cromie <jim.cromie@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- Michal Marek <michal.lkml@markovi.net>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [PATCH] kbuild: announce removal of SUBDIRS if used
-Message-ID: <20181120162543.GB4765@roeck-us.net>
-References: <1542726258-8418-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gP8q9-0003ZV-U6
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 16:25:30 +0000
+Date: Tue, 20 Nov 2018 17:24:43 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
+ <michals@xilinx.com>, nagasuresh12@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ robh@kernel.org
+Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Message-ID: <20181120172443.5fb0bc14@bbrezillon>
+In-Reply-To: <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1542726258-8418-1-git-send-email-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,109 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 21, 2018 at 12:04:18AM +0900, Masahiro Yamada wrote:
-> SUBDIRS has been kept as a backward compatibility since
-> commit ("[PATCH] kbuild: external module support") in 2002.
-> 
-> We do not need multiple ways to do the same thing, so I will remove
-> SUBDIRS after the Linux 5.3 release. I cleaned up in-tree code, and
-> updated the document so that nobody would try to use it.
-> 
-> Meanwhile, display the following warning if SUBDIRS is used.
-> 
-> Makefile:189: ================= WARNING ================
-> Makefile:190: 'SUBDIRS' will be removed after Linux 5.3
-> Makefile:191: Please use 'M=' or 'KBUILD_EXTMOD' instead
-> Makefile:192: ==========================================
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
->  Documentation/kbuild/kbuild.txt    | 7 +------
->  Makefile                           | 4 ++++
->  drivers/mtd/maps/scx200_docflash.c | 7 -------
->  drivers/watchdog/scx200_wdt.c      | 7 -------
+On Fri, 9 Nov 2018 10:30:41 +0530
+Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
 
-For watchdog:
+> +static int anfc_setup_data_interface(struct nand_chip *chip, int csline,
+> +				     const struct nand_data_interface *conf)
+> +{
+> +	struct anfc_nand_controller *nfc = to_anfc(chip->controller);
+> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
+> +	int err;
+> +	const struct nand_sdr_timings *sdr;
+> +	u32 inftimeval;
+> +	bool change_sdr_clk = false;
+> +
+> +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+> +		return 0;
+> +
+> +	/*
+> +	 * If the controller is already in the same mode as flash device
+> +	 * then no need to change the timing mode again.
+> +	 */
+> +	sdr = nand_get_sdr_timings(conf);
+> +	if (IS_ERR(sdr))
+> +		return PTR_ERR(sdr);
+> +
+> +	if (sdr->mode < 0)
+> +		return -ENOTSUPP;
+> +
+> +	inftimeval = sdr->mode & 7;
+> +	if (sdr->mode >= 2 && sdr->mode <= 5)
+> +		change_sdr_clk = true;
+> +	/*
+> +	 * SDR timing modes 2-5 will not work for the arasan nand when
+> +	 * freq > 90 MHz, so reduce the freq in SDR modes 2-5 to < 90Mhz
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+What's the freq for mode 0 and 1?
 
->  samples/connector/Makefile         | 2 +-
->  5 files changed, 6 insertions(+), 21 deletions(-)
-> 
-> diff --git a/Documentation/kbuild/kbuild.txt b/Documentation/kbuild/kbuild.txt
-> index 8390c36..c9e3d93 100644
-> --- a/Documentation/kbuild/kbuild.txt
-> +++ b/Documentation/kbuild/kbuild.txt
-> @@ -81,12 +81,7 @@ KBUILD_EXTMOD
->  --------------------------------------------------
->  Set the directory to look for the kernel source when building external
->  modules.
-> -The directory can be specified in several ways:
-> -1) Use "M=..." on the command line
-> -2) Environment variable KBUILD_EXTMOD
-> -3) Environment variable SUBDIRS
-> -The possibilities are listed in the order they take precedence.
-> -Using "M=..." will always override the others.
-> +Setting "M=..." takes precedence over KBUILD_EXTMOD.
->  
->  KBUILD_OUTPUT
->  --------------------------------------------------
-> diff --git a/Makefile b/Makefile
-> index 370d13b..57be5fb 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -186,6 +186,10 @@ endif
->  # Old syntax make ... SUBDIRS=$PWD is still supported
->  # Setting the environment variable KBUILD_EXTMOD take precedence
->  ifdef SUBDIRS
-> +  $(warning ================= WARNING ================)
-> +  $(warning 'SUBDIRS' will be removed after Linux 5.3)
-> +  $(warning Please use 'M=' or 'KBUILD_EXTMOD' instead)
-> +  $(warning ==========================================)
->    KBUILD_EXTMOD ?= $(SUBDIRS)
->  endif
->  
-> diff --git a/drivers/mtd/maps/scx200_docflash.c b/drivers/mtd/maps/scx200_docflash.c
-> index f1c1f73..7f1a0e6 100644
-> --- a/drivers/mtd/maps/scx200_docflash.c
-> +++ b/drivers/mtd/maps/scx200_docflash.c
-> @@ -216,10 +216,3 @@ static void __exit cleanup_scx200_docflash(void)
->  
->  module_init(init_scx200_docflash);
->  module_exit(cleanup_scx200_docflash);
-> -
-> -/*
-> -    Local variables:
-> -        compile-command: "make -k -C ../../.. SUBDIRS=drivers/mtd/maps modules"
-> -        c-basic-offset: 8
-> -    End:
-> -*/
-> diff --git a/drivers/watchdog/scx200_wdt.c b/drivers/watchdog/scx200_wdt.c
-> index 836377c..ec4063e 100644
-> --- a/drivers/watchdog/scx200_wdt.c
-> +++ b/drivers/watchdog/scx200_wdt.c
-> @@ -262,10 +262,3 @@ static void __exit scx200_wdt_cleanup(void)
->  
->  module_init(scx200_wdt_init);
->  module_exit(scx200_wdt_cleanup);
-> -
-> -/*
-> -    Local variables:
-> -	compile-command: "make -k -C ../.. SUBDIRS=drivers/char modules"
-> -	c-basic-offset: 8
-> -    End:
-> -*/
-> diff --git a/samples/connector/Makefile b/samples/connector/Makefile
-> index fe3c854..6ad7162 100644
-> --- a/samples/connector/Makefile
-> +++ b/samples/connector/Makefile
-> @@ -14,4 +14,4 @@ HOSTCFLAGS_ucon.o += -I$(objtree)/usr/include
->  all: modules
->  
->  modules clean:
-> -	$(MAKE) -C ../.. SUBDIRS=$(CURDIR) $@
-> +	$(MAKE) -C ../.. M=$(CURDIR) $@
-> -- 
-> 2.7.4
-> 
+> +	 */
+> +	if (change_sdr_clk) {
+> +		clk_disable_unprepare(nfc->clk_sys);
+> +		err = clk_set_rate(nfc->clk_sys, SDR_MODE_DEFLT_FREQ);
+
+You should not change the clk rate here. It should be done when the
+chip is selected, so that, if you ever have 2 different chips connected
+to the same controller, you can adapt the rate when they are accessed.
+
+> +		if (err) {
+> +			dev_err(nfc->dev, "Can't set the clock rate\n");
+> +			return err;
+> +		}
+> +		err = clk_prepare_enable(nfc->clk_sys);
+> +		if (err) {
+> +			dev_err(nfc->dev, "Unable to enable sys clock.\n");
+> +			clk_disable_unprepare(nfc->clk_sys);
+> +			return err;
+> +		}
+> +	}
+> +	achip->inftimeval = inftimeval;
+> +
+> +	return 0;
+> +}
+> +
+> +static int anfc_nand_attach_chip(struct nand_chip *chip)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
+> +	u32 ret;
+> +
+> +	if (mtd->writesize <= SZ_512)
+> +		achip->spare_caddr_cycles = 1;
+> +	else
+> +		achip->spare_caddr_cycles = 2;
+> +
+> +	chip->ecc.calc_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+> +	chip->ecc.code_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+
+Those bufs are allocated but never freed (memleak). Also, are you sure
+you really need them.
