@@ -1,22 +1,33 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gP78P-0003FR-HJ
- for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 14:36:16 +0000
-Date: Tue, 20 Nov 2018 15:36:02 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2 v2] mtd: physmap_of_gemini: Handle pin control
-Message-ID: <20181120153602.166842f0@bbrezillon>
-In-Reply-To: <20181112210729.23580-2-linus.walleij@linaro.org>
-References: <20181112210729.23580-1-linus.walleij@linaro.org>
- <20181112210729.23580-2-linus.walleij@linaro.org>
+ id 1gP5Go-0006gc-8U
+ for linux-mtd@lists.infradead.org; Tue, 20 Nov 2018 12:36:48 +0000
+Date: Tue, 20 Nov 2018 13:36:24 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, "robh@kernel.org"
+ <robh@kernel.org>, Michal Simek <michals@xilinx.com>
+Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Message-ID: <20181120133624.3fa4742d@xps13>
+In-Reply-To: <20181120120244.7d2442b5@bbrezillon>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181118204324.373ca9cc@bbrezillon>
+ <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181119090246.49060019@bbrezillon>
+ <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
+ <20181120120244.7d2442b5@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,206 +37,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Nov 2018 22:07:29 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+Hi Naga,
 
-> This enables the complex mapping for the Gemini and kicks in
-> custom read/write functions that will wrap the existing
-> simple functions in calls to enable/disable the parallel
-> flash pins using pin controls.
-> 
-> This is necessary on some hardware such as the D-Link
-> DIR-685 where all flash pins are patched in/out at the same
-> time, but some of the flash pins are in practice unused by
-> the flash and have anyway been reused as GPIO.
-> 
-> This concerns specifically CE1 on the Gemini. There is only
-> one flash chip, so only CE0 is used, and the line for CE1
-> has been reused as chip select for the emulated SPI port
-> connected to the display. If we try to use the same lines
-> for flash and GPIO at the same time, one of them will loose:
-> the GPIO line will disappear because it gets disconnected
-> from the pin when the flash group is muxed out.
-> 
-> Fix this by introducing two pin control states named simply
-> "enabled" and "disabled" and only enable the flash lines
-> when absolutely necessary (during read/write/copy). This
-> way, they are available for GPIO at all other times and
-> the display works.
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 20 Nov 2018
+12:02:44 +0100:
 
-Okay, so your GPIOs might be unavailable when the flash is accessed?
-How does that work in practice? Is CE1 muxed as a GPIO on demand? What
-happens if the flash and SPI bus are accessed at the same time? Do you
-get -EBUSY? Not sure all MTD users retry when they get -EBUSY...
+> On Tue, 20 Nov 2018 07:02:08 +0000
+> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+>=20
+>=20
+> > >=20
+> > > Can you please run nandbiterrs (availaible in mtd-utils). I fear your
+> > > device won't pass the test.   =20
+> > Yes, nandbiterror test is passing till 24bit, after that it is failing.=
+ =20
+>=20
+> Can you paste the output of nandbiterrs please?
 
-> 
-> Collect all the state variables in a struct named
-> struct gemini_flash and allocate this struct at probe
-> time.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v1->v2:
-> - Rebase on latest MTD development branch
-> ---
->  drivers/mtd/maps/Kconfig          |   1 +
->  drivers/mtd/maps/physmap-gemini.c | 110 +++++++++++++++++++++++++++++-
->  2 files changed, 110 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> index 2edd8bcdbe1c..e0cf869c8544 100644
-> --- a/drivers/mtd/maps/Kconfig
-> +++ b/drivers/mtd/maps/Kconfig
-> @@ -88,6 +88,7 @@ config MTD_PHYSMAP_GEMINI
->  	bool "Cortina Gemini OF-based physical memory map handling"
->  	depends on MTD_PHYSMAP_OF
->  	depends on MFD_SYSCON
-> +	select MTD_COMPLEX_MAPPINGS
->  	default ARCH_GEMINI
->  	help
->  	  This provides some extra DT physmap parsing for the Gemini
-> diff --git a/drivers/mtd/maps/physmap-gemini.c b/drivers/mtd/maps/physmap-gemini.c
-> index 1cf128a0526d..60775b208fc9 100644
-> --- a/drivers/mtd/maps/physmap-gemini.c
-> +++ b/drivers/mtd/maps/physmap-gemini.c
-> @@ -10,9 +10,11 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/mtd/map.h>
-> +#include <linux/mtd/xip.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/regmap.h>
->  #include <linux/bitops.h>
-> +#include <linux/pinctrl/consumer.h>
->  #include "physmap-gemini.h"
->  
->  /*
-> @@ -44,6 +46,82 @@
->  
->  #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
->  
-> +static const struct of_device_id syscon_match[] = {
-> +	{ .compatible = "cortina,gemini-syscon" },
-> +	{ },
-> +};
-> +
-> +struct gemini_flash {
-> +	struct device *dev;
-> +	struct pinctrl *p;
-> +	struct pinctrl_state *enabled_state;
-> +	struct pinctrl_state *disabled_state;
-> +};
-> +
-> +/* Static local state */
-> +static struct gemini_flash *gf;
-> +
-> +static void gemini_flash_enable_pins(void)
-> +{
-> +	int ret;
-> +
-> +	if (IS_ERR(gf->enabled_state))
-> +		return;
-> +	ret = pinctrl_select_state(gf->p, gf->enabled_state);
-> +	if (ret)
-> +		dev_err(gf->dev, "failed to enable pins\n");
-> +}
-> +
-> +static void gemini_flash_disable_pins(void)
-> +{
-> +	int ret;
-> +
-> +	if (IS_ERR(gf->disabled_state))
-> +		return;
-> +	ret = pinctrl_select_state(gf->p, gf->disabled_state);
-> +	if (ret)
-> +		dev_err(gf->dev, "failed to disable pins\n");
-> +}
-> +
-> +static map_word __xipram gemini_flash_map_read(struct map_info *map,
-> +					       unsigned long ofs)
-> +{
-> +	map_word __xipram ret;
-> +
-> +	gemini_flash_enable_pins();
-> +	ret = inline_map_read(map, ofs);
-> +	gemini_flash_disable_pins();
-> +
-> +	return ret;
-> +}
-> +
-> +static void __xipram gemini_flash_map_write(struct map_info *map,
-> +					    const map_word datum,
-> +					    unsigned long ofs)
-> +{
-> +	gemini_flash_enable_pins();
-> +	inline_map_write(map, datum, ofs);
-> +	gemini_flash_disable_pins();
-> +}
-> +
-> +static void __xipram gemini_flash_map_copy_from(struct map_info *map,
-> +						void *to, unsigned long from,
-> +						ssize_t len)
-> +{
-> +	gemini_flash_enable_pins();
-> +	inline_map_copy_from(map, to, from, len);
-> +	gemini_flash_disable_pins();
-> +}
-> +
-> +static void __xipram gemini_flash_map_copy_to(struct map_info *map,
-> +					      unsigned long to,
-> +					      const void *from, ssize_t len)
-> +{
-> +	gemini_flash_enable_pins();
-> +	inline_map_copy_to(map, to, from, len);
-> +	gemini_flash_disable_pins();
-> +}
-> +
->  int of_flash_probe_gemini(struct platform_device *pdev,
->  			  struct device_node *np,
->  			  struct map_info *map)
-> @@ -57,6 +135,11 @@ int of_flash_probe_gemini(struct platform_device *pdev,
->  	if (!of_device_is_compatible(np, "cortina,gemini-flash"))
->  		return 0;
->  
-> +	gf = devm_kzalloc(dev, sizeof(*gf), GFP_KERNEL);
-> +	if (!gf)
-> +		return -ENOMEM;
-> +	gf->dev = dev;
-> +
->  	rmap = syscon_regmap_lookup_by_phandle(np, "syscon");
->  	if (IS_ERR(rmap)) {
->  		dev_err(dev, "no syscon\n");
-> @@ -91,7 +174,32 @@ int of_flash_probe_gemini(struct platform_device *pdev,
->  				 map->bankwidth * 8);
->  	}
->  
-> -	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
-> +	gf->p = devm_pinctrl_get(dev);
-> +	if (IS_ERR(gf->p)) {
-> +		dev_err(dev, "no pinctrl handle\n");
-> +		ret = PTR_ERR(gf->p);
-> +		return ret;
-> +	}
-> +
-> +	gf->enabled_state = pinctrl_lookup_state(gf->p, "enabled");
-> +	if (IS_ERR(gf->enabled_state))
-> +		dev_err(dev, "no enabled pin control state\n");
-> +
-> +	gf->disabled_state = pinctrl_lookup_state(gf->p, "disabled");
-> +	if (IS_ERR(gf->enabled_state)) {
-> +		dev_err(dev, "no disabled pin control state\n");
-> +	} else {
-> +		ret = pinctrl_select_state(gf->p, gf->disabled_state);
-> +		if (ret)
-> +			dev_err(gf->dev, "failed to disable pins\n");
-> +	}
-> +
-> +	map->read = gemini_flash_map_read;
-> +	map->write = gemini_flash_map_write;
-> +	map->copy_from = gemini_flash_map_copy_from;
-> +	map->copy_to = gemini_flash_map_copy_to;
-> +
-> +	dev_info(dev, "initialized Gemini-specific physmap control\n");
->  
->  	return 0;
->  }
+Apparently 'nandbiterrs -i 'just crashes the kernel because of a
+segmentation fault. Please run this test (from the mtd-utils package)
+and fix this issue. Then we would like to see the output.
+
+>=20
+> > >    =20
+> > > > But we are hitting this because of erased page reading(needed in ca=
+se of ubifs).
+> > > >   =20
+> > > > >
+> > > > > Don't you have a bit (or several bits) reporting when the ECC eng=
+ine was not able to   =20
+> > > correct   =20
+> > > > > data? I you do, you should base the "detect bitflips in erase pag=
+es" logic on this information.   =20
+> > > > Bit reporting for several bit errors is there only for Hamming(1bit=
+ correction and 2bit   =20
+> > > detection) but not in BCH.   =20
+> > > >   =20
+> > >=20
+> > > Then I tend to agree with Miquel: your ECC engine is broken, and I'm
+> > > not even sure how to deal with that yet.   =20
+> > So as per the Miquel's suggestion, can I proceed to add the below one?
+> > "you should re-read the page in raw mode and check for the number of bi=
+tflips manually (thanks to the helpers in the core). Again, if the number o=
+f BF is above 16, we can assume the page is bad and increment ->ecc.failed =
+accordingly." =20
+>=20
+> But that's just partially fixing the problem. And you didn't answer my
+> previous question: what happens when you configure the ECC engine in,
+> say 12bit/1024 and you end up with uncorrectable errors (more than 12
+> bitflips in a 1k block). What's the number reported ECC_ERR_CNT? Is it
+> set to 13?
+
+Please dump this register, and eventually what's the value of the
+Packet_bound_Err_count field ([0:7]) for each iteration of nandbiterrs -i.
+If there is no way, when the status bit is set, to discriminate if the
+data is reliable or was not corrected at all, it is gonna be a real
+issue and I don't think we want to support such engine.
+
+
+Thanks,
+Miqu=C3=A8l
