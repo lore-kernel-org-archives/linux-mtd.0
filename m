@@ -1,15 +1,15 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from smail3.liguriadigitale.it ([81.23.92.55])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPNOR-0004HJ-Kn
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 07:57:53 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Robert Marko <robimarko@gmail.com>,
-	linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [v2] mtd: spi-nor: Add Winbond w25q128jv support
-Date: Wed, 21 Nov 2018 08:57:39 +0100
-Message-Id: <20181121075739.327-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20180625111748.5108-1-robimarko@gmail.com>
+ id 1gPNll-0005xd-B2
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 08:22:00 +0000
+From: <Floriana.Petrogalli@asl3.liguria.it>
+Subject: Hi
+Date: Wed, 21 Nov 2018 08:21:38 +0000
+Message-ID: <7ED0CD55082ABD47B2AE28F3B7B05E262CA980FA@scilla.usl3.it>
+Content-Language: it-IT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,16 +19,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2018-06-25 at 11:17:48 UTC, Robert Marko wrote:
-> Datasheet:
-> http://www.winbond.com/resource-files/w25q128jv%20revf%2003272018%20plus.pdf
-> 
-> Testing done on Mikrotik Routerboard  wAP R board.
-> It does not support Dual or Quad modes.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+I have an important business to discuss with you. please contact my private=
+ google email: ms.hwee.tin.kng100@gmail.com
 
-Applied to http://git.infradead.org/linux-mtd.git spi-nor/next, thanks.
 
-Boris
+Thanks with best regards,
