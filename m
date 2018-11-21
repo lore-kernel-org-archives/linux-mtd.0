@@ -1,19 +1,16 @@
-Received: from antares.kleine-koenig.org ([2a01:4f8:c0c:3a97::2])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPSdy-0005Q9-S1
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 13:34:16 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: kernel@pengutronix.de,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: spi-nor: Add support for IS25LP032/064
-Date: Wed, 21 Nov 2018 14:34:00 +0100
-Message-Id: <20181121133400.12437-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20181121132449.12149-1-u.kleine-koenig@pengutronix.de>
-References: <20181121132449.12149-1-u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPTZu-0004Rm-A6
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 14:34:08 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Tudor.Ambarus@microchip.com, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [v2] mtd: spi-nor: fix selection of uniform erase type in
+ flexible conf
+Date: Wed, 21 Nov 2018 15:33:43 +0100
+Message-Id: <20181121143343.11330-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181116174624.10817-1-tudor.ambarus@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The datasheet is publically available at
-http://www.issi.com/WW/pdf/IS25LP032-064-128.pdf. The parameters fit to
-what is already available for IS25LP128/256.
+On Fri, 2018-11-16 at 17:46:37 UTC,  wrote:
+> There are uniform, non-uniform and flexible erase flash configurations.
+> 
+> The non-uniform erase types, are the erase types that can _not_ erase
+> the entire flash by their own.
+> 
+> As the code was, in case flashes had flexible erase capabilities
+> (support both uniform and non-uniform erase types in the same flash
+> configuration) and supported multiple uniform erase type sizes, the
+> code did not sort the uniform erase types, and could select a wrong
+> erase type size.
+> 
+> Sort the uniform erase mask in case of flexible erase flash
+> configurations, in order to select the best uniform erase type size.
+> 
+> Uniform, non-uniform, and flexible configurations with just a valid
+> uniform erase type, are not affected by this change.
+> 
+> Uniform erase tested on mx25l3273fm2i-08g and sst26vf064B-104i/sn.
+> Non uniform erase tested on sst26vf064B-104i/sn.
+> 
+> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-changes since (implicit) v1:
+Applied to http://git.infradead.org/linux-mtd.git master, thanks.
 
- - don't duplicate is25lp128
- - fix email address of Pengutronix kernel team
-
- drivers/mtd/spi-nor/spi-nor.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f028277fb1ce..24ae9b2ba00f 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1062,6 +1062,10 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16,
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "is25lp032",  INFO(0x9d6016, 0, 64 * 1024,  64,
-+			SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "is25lp064",  INFO(0x9d6017, 0, 64 * 1024, 128,
-+			SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
- 			SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
--- 
-2.19.1
+Boris
