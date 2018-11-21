@@ -1,19 +1,24 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v4 3/4] mtd: rawnand: ams-delta: Use GPIO API for data I/O
-Date: Wed, 21 Nov 2018 12:08:05 +0100
-Message-Id: <20181121110806.32076-4-jmkrzyszt@gmail.com>
-In-Reply-To: <20181121110806.32076-1-jmkrzyszt@gmail.com>
-References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
- <20181121110806.32076-1-jmkrzyszt@gmail.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPS4g-0004xW-JT
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 12:57:48 +0000
+Date: Wed, 21 Nov 2018 13:57:24 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <alexandre.belloni@bootlin.com>, <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: Use 4B opcodes when the NOR
+ advertises both 3B and 4B
+Message-ID: <20181121135724.64d9e46a@bbrezillon>
+In-Reply-To: <0b747728-0abf-7e88-0d83-3b3db1415837@microchip.com>
+References: <20181031144504.19405-1-boris.brezillon@bootlin.com>
+ <20181031144504.19405-2-boris.brezillon@bootlin.com>
+ <bf8fe028-a9ad-56da-df3b-c4e232b5f5cb@microchip.com>
+ <0b747728-0abf-7e88-0d83-3b3db1415837@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,278 +28,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Don't readw()/writew() data directly from/to GPIO port which is under
-control of gpio-omap driver, use GPIO consumer API instead.
+On Fri, 16 Nov 2018 11:57:10 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-The driver should now work with any 8-bit bidirectional GPIO port, not
-only OMAP.
+> On 11/09/2018 12:49 PM, Tudor.Ambarus@microchip.com wrote:
+> > 
+> > 
+> > On 10/31/2018 04:45 PM, Boris Brezillon wrote:  
+> >> When the NOR supports 4 bytes opcodes we should use those instead of
+> >> switching the flash in 4-bytes mode. This way, we don't have to restore
+> >> the addressing mode when resetting the board.
+> >>
+> >> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> >> Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> >> Reviewed-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>  
+> > 
+> > Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >   
+> 
+> I propose to stall this patch for a week or so, until we will have a clearer
+> view on how are defined the flashes that don't have 4B opcodes, but can enter
+> the 4-Byte mode on command.
+> 
+> >> ---
+> >> Changes in v3:
+> >> - Add Alexandre R-b+T-b
+> >> - Add Cyrille R-b
+> >>
+> >> Changes in v2
+> >> - None
+> >> ---
+> >>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> >> index 798915b5c2b0..b20bc4b36f0f 100644
+> >> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >> @@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >>  		break;
+> >>  
+> >>  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+> >> +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+> >>  		nor->flags |= SNOR_F_4B_OPCODES;  
+> 
+> 
+> Maybe we will also want to check that BFPT DWORD16[31:24] has value xx1x_xxxxb -
+> it indicates that 4B opcodes are supported.
 
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mtd/nand/raw/ams-delta.c | 109 +++++++++++++++++--------------
- 1 file changed, 61 insertions(+), 48 deletions(-)
+Alexandre tested that, and it seems DWORD16 is not properly populated.
+We also considered setting the SPI_NOR_4B_OPCODES flag to the flash_id
+entry, but Macronix use the same device ID for both MX25L25635E and
+MX25L25635F, and only the F revision supports 4B opcodes.
 
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index bb50dda05654..8312182088c1 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -18,11 +18,10 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
--#include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
--#include <linux/platform_data/gpio-omap.h>
-+#include <linux/platform_device.h>
- #include <linux/sizes.h>
- 
- /*
-@@ -38,7 +37,7 @@ struct ams_delta_nand {
- 	struct gpio_desc	*gpiod_nwe;
- 	struct gpio_desc	*gpiod_ale;
- 	struct gpio_desc	*gpiod_cle;
--	void __iomem		*io_base;
-+	struct gpio_descs	*data_gpiods;
- 	bool			data_in;
- };
- 
-@@ -67,42 +66,78 @@ static const struct mtd_partition partition_info[] = {
- 	  .size		=  3 * SZ_256K },
- };
- 
--static void ams_delta_io_write(struct ams_delta_nand *priv, u8 byte)
-+static void ams_delta_write_commit(struct ams_delta_nand *priv)
- {
--	writew(byte, priv->io_base + OMAP_MPUIO_OUTPUT);
- 	gpiod_set_value(priv->gpiod_nwe, 0);
- 	ndelay(40);
- 	gpiod_set_value(priv->gpiod_nwe, 1);
- }
- 
-+static void ams_delta_io_write(struct ams_delta_nand *priv, u8 byte)
-+{
-+	struct gpio_descs *data_gpiods = priv->data_gpiods;
-+	DECLARE_BITMAP(values, BITS_PER_TYPE(byte)) = { byte, };
-+
-+	gpiod_set_raw_array_value(data_gpiods->ndescs, data_gpiods->desc,
-+				  data_gpiods->info, values);
-+
-+	ams_delta_write_commit(priv);
-+}
-+
-+static void ams_delta_dir_output(struct ams_delta_nand *priv, u8 byte)
-+{
-+	struct gpio_descs *data_gpiods = priv->data_gpiods;
-+	DECLARE_BITMAP(values, BITS_PER_TYPE(byte)) = { byte, };
-+	int i;
-+
-+	for (i = 0; i < data_gpiods->ndescs; i++)
-+		gpiod_direction_output_raw(data_gpiods->desc[i],
-+					   test_bit(i, values));
-+
-+	ams_delta_write_commit(priv);
-+
-+	priv->data_in = false;
-+}
-+
- static u8 ams_delta_io_read(struct ams_delta_nand *priv)
- {
- 	u8 res;
-+	struct gpio_descs *data_gpiods = priv->data_gpiods;
-+	DECLARE_BITMAP(values, BITS_PER_TYPE(res)) = { 0, };
- 
- 	gpiod_set_value(priv->gpiod_nre, 0);
- 	ndelay(40);
--	res = readw(priv->io_base + OMAP_MPUIO_INPUT_LATCH);
-+
-+	gpiod_get_raw_array_value(data_gpiods->ndescs, data_gpiods->desc,
-+				  data_gpiods->info, values);
-+
- 	gpiod_set_value(priv->gpiod_nre, 1);
- 
-+	res = values[0];
- 	return res;
- }
- 
--static void ams_delta_dir_input(struct ams_delta_nand *priv, bool in)
-+static void ams_delta_dir_input(struct ams_delta_nand *priv)
- {
--	writew(in ? ~0 : 0, priv->io_base + OMAP_MPUIO_IO_CNTL);
--	priv->data_in = in;
-+	struct gpio_descs *data_gpiods = priv->data_gpiods;
-+	int i;
-+
-+	for (i = 0; i < data_gpiods->ndescs; i++)
-+		gpiod_direction_input(data_gpiods->desc[i]);
-+
-+	priv->data_in = true;
- }
- 
- static void ams_delta_write_buf(struct ams_delta_nand *priv, const u8 *buf,
- 				int len)
- {
--	int i;
-+	int i = 0;
- 
--	if (priv->data_in)
--		ams_delta_dir_input(priv, false);
-+	if (len > 0 && priv->data_in)
-+		ams_delta_dir_output(priv, buf[i++]);
- 
--	for (i = 0; i < len; i++)
--		ams_delta_io_write(priv, buf[i]);
-+	while (i < len)
-+		ams_delta_io_write(priv, buf[i++]);
- }
- 
- static void ams_delta_read_buf(struct ams_delta_nand *priv, u8 *buf, int len)
-@@ -110,7 +145,7 @@ static void ams_delta_read_buf(struct ams_delta_nand *priv, u8 *buf, int len)
- 	int i;
- 
- 	if (!priv->data_in)
--		ams_delta_dir_input(priv, true);
-+		ams_delta_dir_input(priv);
- 
- 	for (i = 0; i < len; i++)
- 		buf[i] = ams_delta_io_read(priv);
-@@ -188,14 +223,9 @@ static int ams_delta_init(struct platform_device *pdev)
- 	struct ams_delta_nand *priv;
- 	struct nand_chip *this;
- 	struct mtd_info *mtd;
--	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	void __iomem *io_base;
- 	struct gpio_descs *data_gpiods;
- 	int err = 0;
- 
--	if (!res)
--		return -ENXIO;
--
- 	/* Allocate memory for MTD device structure and private data */
- 	priv = devm_kzalloc(&pdev->dev, sizeof(struct ams_delta_nand),
- 			    GFP_KERNEL);
-@@ -207,25 +237,13 @@ static int ams_delta_init(struct platform_device *pdev)
- 	mtd = nand_to_mtd(this);
- 	mtd->dev.parent = &pdev->dev;
- 
--	/*
--	 * Don't try to request the memory region from here,
--	 * it should have been already requested from the
--	 * gpio-omap driver and requesting it again would fail.
--	 */
--	io_base = ioremap(res->start, resource_size(res));
--	if (!io_base) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		return -EIO;
--	}
--
--	priv->io_base = io_base;
- 	nand_set_controller_data(this, priv);
- 
- 	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
- 	if (IS_ERR(priv->gpiod_rdy)) {
- 		err = PTR_ERR(priv->gpiod_rdy);
- 		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	this->ecc.mode = NAND_ECC_SOFT;
-@@ -238,42 +256,42 @@ static int ams_delta_init(struct platform_device *pdev)
- 	if (IS_ERR(priv->gpiod_nwp)) {
- 		err = PTR_ERR(priv->gpiod_nwp);
- 		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	priv->gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_HIGH);
- 	if (IS_ERR(priv->gpiod_nce)) {
- 		err = PTR_ERR(priv->gpiod_nce);
- 		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	priv->gpiod_nre = devm_gpiod_get(&pdev->dev, "nre", GPIOD_OUT_HIGH);
- 	if (IS_ERR(priv->gpiod_nre)) {
- 		err = PTR_ERR(priv->gpiod_nre);
- 		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	priv->gpiod_nwe = devm_gpiod_get(&pdev->dev, "nwe", GPIOD_OUT_HIGH);
- 	if (IS_ERR(priv->gpiod_nwe)) {
- 		err = PTR_ERR(priv->gpiod_nwe);
- 		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	priv->gpiod_ale = devm_gpiod_get(&pdev->dev, "ale", GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->gpiod_ale)) {
- 		err = PTR_ERR(priv->gpiod_ale);
- 		dev_err(&pdev->dev, "ALE GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	priv->gpiod_cle = devm_gpiod_get(&pdev->dev, "cle", GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->gpiod_cle)) {
- 		err = PTR_ERR(priv->gpiod_cle);
- 		dev_err(&pdev->dev, "CLE GPIO request failed (%d)\n", err);
--		goto err_unmap;
-+		return err;
- 	}
- 
- 	/* Request array of data pins, initialize them as input */
-@@ -281,8 +299,9 @@ static int ams_delta_init(struct platform_device *pdev)
- 	if (IS_ERR(data_gpiods)) {
- 		err = PTR_ERR(data_gpiods);
- 		dev_err(&pdev->dev, "data GPIO request failed: %d\n", err);
--		goto err_unmap;
-+		return err;
- 	}
-+	priv->data_gpiods = data_gpiods;
- 	priv->data_in = true;
- 
- 	/* Initialize the NAND controller object embedded in ams_delta_nand. */
-@@ -293,7 +312,7 @@ static int ams_delta_init(struct platform_device *pdev)
- 	/* Scan to find existence of the device */
- 	err = nand_scan(this, 1);
- 	if (err)
--		goto err_unmap;
-+		return err;
- 
- 	/* Register the partitions */
- 	err = mtd_device_register(mtd, partition_info,
-@@ -306,9 +325,6 @@ static int ams_delta_init(struct platform_device *pdev)
- err_nand_cleanup:
- 	nand_cleanup(this);
- 
--err_unmap:
--	iounmap(io_base);
--
- 	return err;
- }
- 
-@@ -319,13 +335,10 @@ static int ams_delta_cleanup(struct platform_device *pdev)
- {
- 	struct ams_delta_nand *priv = platform_get_drvdata(pdev);
- 	struct mtd_info *mtd = nand_to_mtd(&priv->nand_chip);
--	void __iomem *io_base = priv->io_base;
- 
--	/* Release resources, unregister device */
-+	/* Unregister device */
- 	nand_release(mtd_to_nand(mtd));
- 
--	iounmap(io_base);
--
- 	return 0;
- }
- 
--- 
-2.18.1
+Not the first time this sort of things happen, so I guess we have one
+more reason to add the ->fixup() we talked about multiple times ;-).
