@@ -1,16 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPTZu-0004Rm-A6
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 14:34:08 +0000
+ id 1gPTf0-00063u-Jm
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 14:39:24 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tudor.Ambarus@microchip.com, marek.vasut@gmail.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [v2] mtd: spi-nor: fix selection of uniform erase type in
- flexible conf
-Date: Wed, 21 Nov 2018 15:33:43 +0100
-Message-Id: <20181121143343.11330-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181116174624.10817-1-tudor.ambarus@microchip.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+Subject: Re: [v3,1/2] mtd: spi-nor: add macros related to MICRON flash
+Date: Wed, 21 Nov 2018 15:39:04 +0100
+Message-Id: <20181121143904.15449-1-boris.brezillon@bootlin.com>
+In-Reply-To: <1539310881-17438-2-git-send-email-yogeshnarayan.gaur@nxp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2018-11-16 at 17:46:37 UTC,  wrote:
-> There are uniform, non-uniform and flexible erase flash configurations.
+On Fri, 2018-10-12 at 02:23:08 UTC, Yogesh Narayan Gaur wrote:
+> Some MICRON related macros in spi-nor domain were ST.
+> Rename entries related to STMicroelectronics under macro SNOR_MFR_ST.
 > 
-> The non-uniform erase types, are the erase types that can _not_ erase
-> the entire flash by their own.
+> Added entry of MFR Id for Micron flashes, 0x002C.
 > 
-> As the code was, in case flashes had flexible erase capabilities
-> (support both uniform and non-uniform erase types in the same flash
-> configuration) and supported multiple uniform erase type sizes, the
-> code did not sort the uniform erase types, and could select a wrong
-> erase type size.
-> 
-> Sort the uniform erase mask in case of flexible erase flash
-> configurations, in order to select the best uniform erase type size.
-> 
-> Uniform, non-uniform, and flexible configurations with just a valid
-> uniform erase type, are not affected by this change.
-> 
-> Uniform erase tested on mx25l3273fm2i-08g and sst26vf064B-104i/sn.
-> Non uniform erase tested on sst26vf064B-104i/sn.
-> 
-> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Applied to http://git.infradead.org/linux-mtd.git master, thanks.
+Applied to http://git.infradead.org/linux-mtd.git spi-nor/next, thanks.
 
 Boris
