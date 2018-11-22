@@ -1,20 +1,24 @@
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPUL7-0007qK-Om
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2018 15:22:55 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <u.kleine-koenig@pengutronix.de>, <marek.vasut@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for IS25LP032/064
-Date: Wed, 21 Nov 2018 15:22:39 +0000
-Message-ID: <f175d5a9-57a6-5a80-7eb6-a7c1507d09d9@microchip.com>
-References: <20181121132449.12149-1-u.kleine-koenig@pengutronix.de>
- <20181121133400.12437-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20181121133400.12437-1-u.kleine-koenig@pengutronix.de>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v4 0/7] spi: add support for octo mode
+Date: Thu, 22 Nov 2018 05:14:25 +0000
+Message-ID: <1542863544-21257-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <24378DC11B967F4F88A0625A9984EAB8@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,27 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDExLzIxLzIwMTggMDM6MzQgUE0sIFV3ZSBLbGVpbmUtS8O2bmlnIHdyb3RlOg0KPiBU
-aGUgZGF0YXNoZWV0IGlzIHB1YmxpY2FsbHkgYXZhaWxhYmxlIGF0DQo+IGh0dHA6Ly93d3cuaXNz
-aS5jb20vV1cvcGRmL0lTMjVMUDAzMi0wNjQtMTI4LnBkZi4gVGhlIHBhcmFtZXRlcnMgZml0IHRv
-DQo+IHdoYXQgaXMgYWxyZWFkeSBhdmFpbGFibGUgZm9yIElTMjVMUDEyOC8yNTYuDQo+IA0KPiBT
-aWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJv
-bml4LmRlPg0KDQpSZXZpZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNy
-b2NoaXAuY29tPg0KDQo+IC0tLQ0KPiBjaGFuZ2VzIHNpbmNlIChpbXBsaWNpdCkgdjE6DQo+IA0K
-PiAgLSBkb24ndCBkdXBsaWNhdGUgaXMyNWxwMTI4DQo+ICAtIGZpeCBlbWFpbCBhZGRyZXNzIG9m
-IFBlbmd1dHJvbml4IGtlcm5lbCB0ZWFtDQo+IA0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
-bm9yLmMgfCA0ICsrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykNCj4gDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRk
-L3NwaS1ub3Ivc3BpLW5vci5jDQo+IGluZGV4IGYwMjgyNzdmYjFjZS4uMjRhZTliMmJhMDBmIDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiArKysgYi9kcml2
-ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiBAQCAtMTA2Miw2ICsxMDYyLDEwIEBAIHN0YXRp
-YyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyBzcGlfbm9yX2lkc1tdID0gew0KPiAgCQkJU0VDVF80
-SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ICAJeyAiaXMy
-NWxwMDgwZCIsIElORk8oMHg5ZDYwMTQsIDAsIDY0ICogMTAyNCwgIDE2LA0KPiAgCQkJU0VDVF80
-SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ICsJeyAiaXMy
-NWxwMDMyIiwgIElORk8oMHg5ZDYwMTYsIDAsIDY0ICogMTAyNCwgIDY0LA0KPiArCQkJU0VDVF80
-SyB8IFNQSV9OT1JfRFVBTF9SRUFEKSB9LA0KPiArCXsgImlzMjVscDA2NCIsICBJTkZPKDB4OWQ2
-MDE3LCAwLCA2NCAqIDEwMjQsIDEyOCwNCj4gKwkJCVNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVB
-RCkgfSwNCj4gIAl7ICJpczI1bHAxMjgiLCAgSU5GTygweDlkNjAxOCwgMCwgNjQgKiAxMDI0LCAy
-NTYsDQo+ICAJCQlTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQpIH0sDQo+ICAJeyAiaXMyNWxw
-MjU2IiwgIElORk8oMHg5ZDYwMTksIDAsIDY0ICogMTAyNCwgNTEyLA0KPiANCg==
+Add support for octo mode IO data transfer.
+Micron flash, mt35xu512aba, supports octal mode data transfer and
+NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
+
+Patch series
+* Add support for octo mode flags and parsing of same in spi driver.
+* Add parsing logic for spi-mem framework and m25p80.c device file.
+* Add opcodes for octo I/O commands in spi-nor framework, Read and Write pr=
+oto for (1-1-8/1-8-8) mode.
+  Opcodes are added as per octal data IO commands required for mt35xu512aba=
+ [1] flash.
+* Add mode bit required for octo mode in nxp-fspi driver [2].
+* Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
+
+Tested on LX2160ARDB target with nxp-fspi driver, below are
+Read performance number of 1-1-1 and 1-1-8 read protocol.
+
+ root@lxxx:~# cat /proc/mtd
+ dev:    size   erasesize  name
+ mtd0: 04000000 00001000 "spi0.0"
+ mtd1: 04000000 00001000 "spi0.1"
+ root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
+ Copied 16777216 bytes from address 0x00000000 in flash to 0read
+
+ real    0m2.792s
+ user    0m0.000s
+ sys     0m2.790s
+ root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
+ Copied 16777216 bytes from address 0x00000000 in flash to 0read
+
+ real    0m0.441s
+ user    0m0.000s
+ sys     0m0.440s
+ root@ls1012ardb:~#
+
+ Flash device MTD0 configured in 1-1-1 protocol.
+ Flash device MTD1 configured in 1-1-8 protocol.
+
+[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D70384&sta=
+te=3D*
+[2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D76402
+
+Yogesh Gaur (7):
+  spi: add support for octo mode I/O data transfer
+  spi: spi-mem: add support for octo mode I/O data transfer
+  mtd: spi-nor: add opcodes for octo Read/Write commands
+  mtd: spi-nor: add octo read flag for flash mt35xu512aba
+  mtd: m25p80: add support of octo mode I/O transfer
+  spi: nxp-fspi: add octo mode flag bit for octal support
+  arm64: dts: lx2160a: update fspi node
+
+Changes for v4:
+- Rebase on top of v4.20-rc2.
+- Modify octo entries enum value in spi.h.
+Changes for v3:
+- Add octo mode support in spi_setup().
+- Rename all patches with 'octal' string modified as 'octo'.
+Changes for v2:
+- Incorporated review comments of Boris and Vignesh.
+
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts |  4 ++++
+ drivers/mtd/devices/m25p80.c                      |  9 ++++++++-
+ drivers/mtd/spi-nor/spi-nor.c                     | 15 ++++++++++++++-
+ drivers/spi/spi-mem.c                             |  9 ++++++++-
+ drivers/spi/spi-nxp-fspi.c                        |  4 ++--
+ drivers/spi/spi.c                                 | 12 ++++++++++--
+ include/linux/mtd/spi-nor.h                       |  8 ++++++++
+ include/linux/spi/spi.h                           |  4 +++-
+ 8 files changed, 57 insertions(+), 8 deletions(-)
+
+--=20
+2.7.4
