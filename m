@@ -1,21 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPk4x-0005xO-PY
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 08:11:17 +0000
-Date: Thu, 22 Nov 2018 09:10:51 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Marek Vasut <marex@denx.de>
-Subject: [GIT PULL] mtd: Fixes for 4.20-rc4
-Message-ID: <20181122091051.70407bcd@bbrezillon>
+Received: from a6-245.smtp-out.eu-west-1.amazonses.com ([54.240.6.245])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPklP-00020G-8i
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 08:55:09 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Thu, 22 Nov 2018 08:54:54 +0000
+Message-ID: <010201673aa11639-8ee4553c-b1d5-4f5c-9d46-9d4970a7f988-000000@eu-west-1.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: 2018 North American Farm & Power Show Participants
+From: "Joe Mether" <joe.mether@crystaldirectresource.com>
+Reply-To: "Joe Mether" <joe.mether@crystaldirectresource.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+Hello ,
 
-Here is the MTD fixes PR for 4.20-rc4.
+Do you need to communicate with participants at the recent North American F=
+arm & Power Show 2018? Most people in your position do, which is why we hav=
+e a perfect offer for you:
 
-Regards,
+Purchase the North American Farm & Power Show (NAFP) 2018 Participants =E2=
+=80=93 6000 contacts at $300
+until the end of today.
 
-Boris
+We're not offering an incomplete list cobbled together from seminar sign in=
+ sheets and workshop rosters.
+=20
+This database is the result of our team working hundreds of hours to compil=
+e and verify contact information for the key decision makers at 2018 North =
+American Farm & Power Show. You can enjoy a speed line to these managers th=
+at puts you first in line for fast access... if you get back to us by the e=
+nd of the day.
 
-The following changes since commit ccda4af0f4b92f7b4c308d3acc262f4a7e3affad:
+Your rivals isn't waiting, you shouldn't either. Look forward to hearing fr=
+om you.
 
-  Linux 4.20-rc2 (2018-11-11 17:12:31 -0600)
+Best Regards
 
-are available in the Git repository at:
+Joe Mether
 
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.20-rc4
-
-for you to fetch changes up to e8828ec1c003727fc001eab06aa19bd2ca9b677e:
-
-  mtd: spi-nor: fix selection of uniform erase type in flexible conf (2018-11-20 14:26:59 +0100)
-
-----------------------------------------------------------------
-SPI NOR fixes:
-- Various fixes related to the SFDP parsing code merged in 4.20
-- Fix for a page fault in the cadence-qspi
-
-NAND fixes:
-- Fix a macro name conflict between the QCOM NAND controller driver
-  and the RISC-V asm headers
-- Fix of-node handling in the atmel driver
-
-----------------------------------------------------------------
-Johan Hovold (1):
-      mtd: rawnand: atmel: fix OF child-node lookup
-
-Olof Johansson (1):
-      mtd: rawnand: qcom: Namespace prefix some commands
-
-Thor Thayer (1):
-      mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
-
-Tudor.Ambarus@microchip.com (5):
-      mtd: spi-nor: don't drop sfdp data if optional parsers fail
-      mtd: spi-nor: fix iteration over smpt array
-      mtd: spi-nor: don't overwrite errno in spi_nor_get_map_in_use()
-      mtd: spi_nor: pass DMA-able buffer to spi_nor_read_raw()
-      mtd: spi-nor: fix selection of uniform erase type in flexible conf
-
- drivers/mtd/nand/raw/atmel/nand-controller.c |  11 +++--
- drivers/mtd/nand/raw/qcom_nandc.c            |  32 ++++++-------
- drivers/mtd/spi-nor/cadence-quadspi.c        |  19 ++++++--
- drivers/mtd/spi-nor/spi-nor.c                | 130 +++++++++++++++++++++++++++++++++++++++-------------
- 4 files changed, 137 insertions(+), 55 deletions(-)
+Terms of use: This content is correct only for approved use by the original=
+ correct recipient. Ownership rights to this content are held solely by our=
+ organization and it is not permitted for unapproved users to examine, tran=
+smit, disseminate, or act on this material. If you receive or possess this =
+data and are not the original correct recipient, please delete it immediate=
+ly and notify the sender of the error. This organization holds no connectio=
+n or relationship to the organizers of the North American Farm & Power Show=
+ 2018 does not sell or share this information with us. The data provided he=
+rein is compiled lawfully, from a combination of publicly available sources=
+ and our internal database.
