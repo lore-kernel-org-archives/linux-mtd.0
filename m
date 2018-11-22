@@ -1,27 +1,21 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v4 7/7] arm64: dts: lx2160a: update fspi node
-Date: Thu, 22 Nov 2018 05:15:06 +0000
-Message-ID: <1542863544-21257-8-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1542863544-21257-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1542863544-21257-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gPk4x-0005xO-PY
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 08:11:17 +0000
+Date: Thu, 22 Nov 2018 09:10:51 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marex@denx.de>
+Subject: [GIT PULL] mtd: Fixes for 4.20-rc4
+Message-ID: <20181122091051.70407bcd@bbrezillon>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,45 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flash mt35xu512aba connected to FlexSPI controller supports
-1-1-8/1-8-8 protocol.
-Added flag spi-rx-bus-width and spi-tx-bus-width with values as
-8 and 8 respectively for both flashes connected at CS0 and CS1.
+Hello Linus,
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Changes for v4:
-- None
-Changes for v3:
-- None
-Changes for v2:
-- None
+Here is the MTD fixes PR for 4.20-rc4.
 
- arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+Regards,
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64=
-/boot/dts/freescale/fsl-lx2160a-rdb.dts
-index 3b20c97..24cc41c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-@@ -45,6 +45,8 @@
- 		m25p,fast-read;
- 		spi-max-frequency =3D <20000000>;
- 		reg =3D <0>;
-+		spi-rx-bus-width =3D <8>;
-+		spi-tx-bus-width =3D <8>;
- 	};
-=20
- 	mt35xu512aba1: flash@1 {
-@@ -54,6 +56,8 @@
- 		m25p,fast-read;
- 		spi-max-frequency =3D <20000000>;
- 		reg =3D <1>;
-+		spi-rx-bus-width =3D <8>;
-+		spi-tx-bus-width =3D <8>;
- 	};
- };
-=20
---=20
-2.7.4
+Boris
+
+The following changes since commit ccda4af0f4b92f7b4c308d3acc262f4a7e3affad:
+
+  Linux 4.20-rc2 (2018-11-11 17:12:31 -0600)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.20-rc4
+
+for you to fetch changes up to e8828ec1c003727fc001eab06aa19bd2ca9b677e:
+
+  mtd: spi-nor: fix selection of uniform erase type in flexible conf (2018-11-20 14:26:59 +0100)
+
+----------------------------------------------------------------
+SPI NOR fixes:
+- Various fixes related to the SFDP parsing code merged in 4.20
+- Fix for a page fault in the cadence-qspi
+
+NAND fixes:
+- Fix a macro name conflict between the QCOM NAND controller driver
+  and the RISC-V asm headers
+- Fix of-node handling in the atmel driver
+
+----------------------------------------------------------------
+Johan Hovold (1):
+      mtd: rawnand: atmel: fix OF child-node lookup
+
+Olof Johansson (1):
+      mtd: rawnand: qcom: Namespace prefix some commands
+
+Thor Thayer (1):
+      mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+
+Tudor.Ambarus@microchip.com (5):
+      mtd: spi-nor: don't drop sfdp data if optional parsers fail
+      mtd: spi-nor: fix iteration over smpt array
+      mtd: spi-nor: don't overwrite errno in spi_nor_get_map_in_use()
+      mtd: spi_nor: pass DMA-able buffer to spi_nor_read_raw()
+      mtd: spi-nor: fix selection of uniform erase type in flexible conf
+
+ drivers/mtd/nand/raw/atmel/nand-controller.c |  11 +++--
+ drivers/mtd/nand/raw/qcom_nandc.c            |  32 ++++++-------
+ drivers/mtd/spi-nor/cadence-quadspi.c        |  19 ++++++--
+ drivers/mtd/spi-nor/spi-nor.c                | 130 +++++++++++++++++++++++++++++++++++++++-------------
+ 4 files changed, 137 insertions(+), 55 deletions(-)
