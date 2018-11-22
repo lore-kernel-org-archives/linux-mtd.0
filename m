@@ -1,25 +1,23 @@
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+Received: from mail-eopbgr80132.outbound.protection.outlook.com
+ ([40.107.8.132] helo=EUR04-VI1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPphH-0000Z5-Sk
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 14:11:13 +0000
-Received: by mail-lj1-x242.google.com with SMTP id n18-v6so8098127lji.7
- for <linux-mtd@lists.infradead.org>; Thu, 22 Nov 2018 06:11:01 -0800 (PST)
+ id 1gPqP0-0007zZ-T1
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 14:56:24 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: fix erase_type array to indicate current
+ map conf
+Date: Thu, 22 Nov 2018 14:56:07 +0000
+Message-ID: <70de11e0-0f49-19e4-b6c7-9177c4fd760a@nokia.com>
+References: <20181122123552.15756-1-tudor.ambarus@microchip.com>
+ <53927e56-4546-91bd-bae7-66bd049bdd9e@microchip.com>
+In-Reply-To: <53927e56-4546-91bd-bae7-66bd049bdd9e@microchip.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B4BCC37AA5BF5E428CA69D32D423EFAF@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20181112210729.23580-1-linus.walleij@linaro.org>
- <20181112210729.23580-2-linus.walleij@linaro.org>
- <20181120153602.166842f0@bbrezillon>
-In-Reply-To: <20181120153602.166842f0@bbrezillon>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 22 Nov 2018 15:10:47 +0100
-Message-ID: <CACRpkdYEp9XUEh=+ivJNMsD_vGRGb0HzDTHZC_O2c2qskTkYiQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2 v2] mtd: physmap_of_gemini: Handle pin control
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,84 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 20, 2018 at 3:36 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> On Mon, 12 Nov 2018 22:07:29 +0100
-> Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> > This enables the complex mapping for the Gemini and kicks in
-> > custom read/write functions that will wrap the existing
-> > simple functions in calls to enable/disable the parallel
-> > flash pins using pin controls.
-> >
-> > This is necessary on some hardware such as the D-Link
-> > DIR-685 where all flash pins are patched in/out at the same
-> > time, but some of the flash pins are in practice unused by
-> > the flash and have anyway been reused as GPIO.
-> >
-> > This concerns specifically CE1 on the Gemini. There is only
-> > one flash chip, so only CE0 is used, and the line for CE1
-> > has been reused as chip select for the emulated SPI port
-> > connected to the display. If we try to use the same lines
-> > for flash and GPIO at the same time, one of them will loose:
-> > the GPIO line will disappear because it gets disconnected
-> > from the pin when the flash group is muxed out.
-> >
-> > Fix this by introducing two pin control states named simply
-> > "enabled" and "disabled" and only enable the flash lines
-> > when absolutely necessary (during read/write/copy). This
-> > way, they are available for GPIO at all other times and
-> > the display works.
->
-> Okay, so your GPIOs might be unavailable when the flash is accessed?
->
-> How does that work in practice? Is CE1 muxed as a GPIO
-> on demand?
-
-Yes, well the actual pin will go into the state of CE1
-which default to a low state, the effect is
-hardware-defined.
-
-This is not a recommendable type of electronics
-engineering if that is what you wonder... it's a way to
-patch over design mistakes in the design with
-software. (Which is what the vendor tree does.)
-
-In one case (SQ201) the LED connected to them will light up
-since it is active low. So the LED goes on during flash
-access and gives a kind of "flash access flicker" on top
-of whatever it was indicating before.
-
-That LED is marked "power" and I put a heartbeat on it
-so it will be brief interruptions of steady light in the
-heartbeat. The "only" problem is in UX. The vendor
-device exhibits the same strange behavior.
-
-> What happens if the flash and SPI bus are
-> accessed at the same time? Do you
-> get -EBUSY? Not sure all MTD users retry when they
-> get -EBUSY...
-
-The way I set it up flash access "always win", so
-no worries for MTD.
-
-If I simulate SPI or any other slow bus on the GPIO
-at the same time as we have muxed it out for
-flash access, it will have to do error recovery,
-because the bytes will not get through.
-
-Ideally I would want to patch the GPIO library to
-redirect the access to this line to enable/disable
-CE1 so the pin is driven from the flash controller
-instead. But since that is essentially an address
-bit it looked pretty tricky.
-
-In practice the use cases do not overlap, so
-we are fine, I guess if problems still occur the
-path of least resistance would simply be to have the
-display driver using this SPI line delay and
-retry a few times. It's an ugly solution perfectly
-fitting the ugly electronics IMO.
-
-Yours,
-Linus Walleij
+SGVsbG8gVHVkb3IsDQoNCk9uIDIyLzExLzIwMTggMTM6MzgsIFR1ZG9yLkFtYmFydXNAbWljcm9j
+aGlwLmNvbSB3cm90ZToNCj4gQ2FuIHlvdSBwbGVhc2UgdGVzdCB0aGlzIHBhdGNoIHRvIHNlZSBp
+ZiBpdCBmaXhlcyB5b3VyIHByb2JsZW0/DQoNCnRoZSBwYXRjaCBhcHBsaWVzIG5laXRoZXIgdG8g
+TGludXMncyBtYXN0ZXIgbm9yIHRvIHNwaS1ub3IvbmV4dCAob2YgbDItbXRkIHRyZWUpIGJyYW5j
+aGVzLg0KV2hhdCBoYXZlIHlvdSB1c2VkIGFzIGEgYmFzZSBmb3IgeW91ciBwYXRjaD8NCg0KPiBP
+biAxMS8yMi8yMDE4IDAyOjM2IFBNLCBUdWRvciBBbWJhcnVzIC0gTTE4MDY0IHdyb3RlOg0KPj4g
+RnJvbTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KPj4NCj4+
+IEJ1ZyByZXBvcnRlZCBmb3IgdGhlIG91dC1vZi10cmVlIFMyNUZTMTI4UyBmbGFzaCBtZW1vcnku
+DQoNCkl0IHR1cm5lZCBvdXQgdG8gYmUgbm90IHJlbGV2YW50LCBTMjVGUzEyOFMgd29ya3Mgd2l0
+aCB1cHN0cmVhbSBMaW51eCBhcyB3ZWxsLCBqdXN0DQp0aGUgZW50cnkgaXMgbmFtZWQgczI1Zmwx
+MjlwMS4uLg0KDQo+PiBCRlBUIHRhYmxlIGFkdmVydGlzZXMgYWxsIHRoZSBlcmFzZSB0eXBlcyBz
+dXBwb3J0ZWQgYnkgYWxsIHRoZQ0KPj4gcG9zc2libGUgbWFwIGNvbmZpZ3VyYXRpb25zLiBVcGRh
+dGUgdGhlIGVyYXNlX3R5cGUgYXJyYXkgdG8gaW5kaWNhdGUNCj4+IHdoaWNoIGVyYXNlIHR5cGVz
+IGFyZSBhcHBsaWNhYmxlIHRvIHRoZSBjdXJyZW50IG1hcCBjb25maWd1cmF0aW9uLg0KPj4NCj4+
+IEJhY2t3YXJkIGNvbXBhdGliaWxpdHkgdGVzdCBkb25lIG9uIHNzdDI2dmYwNjRiLg0KPj4NCj4+
+IEZpeGVzOiBiMDM4ZThlM2JlNzIgKCJtdGQ6IHNwaS1ub3I6IHBhcnNlIFNGRFAgU2VjdG9yIE1h
+cCBQYXJhbWV0ZXIgVGFibGUiKQ0KPj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRlciBTdmVyZGxpbiA8
+YWxleGFuZGVyLnN2ZXJkbGluQG5va2lhLmNvbT4NCj4+IFNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFt
+YmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCg0KLS0gDQpCZXN0IHJlZ2FyZHMs
+DQpBbGV4YW5kZXIgU3ZlcmRsaW4uDQo=
