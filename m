@@ -1,20 +1,23 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gPoER-0000un-SN
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 12:37:21 +0000
+ id 1gPoFg-0001Pg-HY
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2018 12:38:38 +0000
 From: <Tudor.Ambarus@microchip.com>
-To: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+To: <alexander.sverdlin@nokia.com>
+CC: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
  <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
- <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <alexander.sverdlin@nokia.com>, <Tudor.Ambarus@microchip.com>
-Subject: [PATCH] mtd: spi-nor: fix erase_type array to indicate current map
- conf
-Date: Thu, 22 Nov 2018 12:36:59 +0000
-Message-ID: <20181122123552.15756-1-tudor.ambarus@microchip.com>
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: fix erase_type array to indicate current
+ map conf
+Date: Thu, 22 Nov 2018 12:38:22 +0000
+Message-ID: <53927e56-4546-91bd-bae7-66bd049bdd9e@microchip.com>
+References: <20181122123552.15756-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20181122123552.15756-1-tudor.ambarus@microchip.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A4E27BCF04708C4C89F70E82E8689F20@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,86 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-Bug reported for the out-of-tree S25FS128S flash memory.
-
-BFPT table advertises all the erase types supported by all the
-possible map configurations. Update the erase_type array to indicate
-which erase types are applicable to the current map configuration.
-
-Backward compatibility test done on sst26vf064b.
-
-Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
-Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 93c9bc8931fc..a71adcd6ddfa 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3000,7 +3000,8 @@ static int spi_nor_init_non_uniform_erase_map(struct =
-spi_nor *nor,
- 	u64 offset;
- 	u32 region_count;
- 	int i, j;
--	u8 erase_type, uniform_erase_type;
-+	u8 uniform_erase_type, save_uniform_erase_type;
-+	u8 erase_type, regions_erase_type;
-=20
- 	region_count =3D SMPT_MAP_REGION_COUNT(*smpt);
- 	/*
-@@ -3014,6 +3015,7 @@ static int spi_nor_init_non_uniform_erase_map(struct =
-spi_nor *nor,
- 	map->regions =3D region;
-=20
- 	uniform_erase_type =3D 0xff;
-+	regions_erase_type =3D 0;
- 	offset =3D 0;
- 	/* Populate regions. */
- 	for (i =3D 0; i < region_count; i++) {
-@@ -3030,13 +3032,38 @@ static int spi_nor_init_non_uniform_erase_map(struc=
-t spi_nor *nor,
- 		 */
- 		uniform_erase_type &=3D erase_type;
-=20
-+		/*
-+		 * regions_erase_type mask will indicate all the erase types
-+		 * supported in this configuration map.
-+		 */
-+		regions_erase_type |=3D erase_type;
-+
- 		offset =3D (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
- 			 region[i].size;
- 	}
-=20
-+	save_uniform_erase_type =3D map->uniform_erase_type;
- 	map->uniform_erase_type =3D spi_nor_sort_erase_mask(map,
- 							  uniform_erase_type);
-=20
-+	if (!regions_erase_type) {
-+		/*
-+		 * Roll back to the previous uniform_erase_type mask, SMPT is
-+		 * broken.
-+		 */
-+		map->uniform_erase_type =3D save_uniform_erase_type;
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * BFPT table advertises all the erase types supported by all the
-+	 * possible map configurations. Update the erase_type array to indicate
-+	 * which erase types are applicable to the current map configuration.
-+	 */
-+	for (i =3D 0; i < SNOR_ERASE_TYPE_MAX; i++)
-+		if (!(regions_erase_type & BIT(erase[i].idx)))
-+			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
-+
- 	spi_nor_region_mark_end(&region[i - 1]);
-=20
- 	return 0;
---=20
-2.9.4
+SGksIEFsZXhhbmRlciwNCg0KQ2FuIHlvdSBwbGVhc2UgdGVzdCB0aGlzIHBhdGNoIHRvIHNlZSBp
+ZiBpdCBmaXhlcyB5b3VyIHByb2JsZW0/DQoNClRoYW5rcywNCnRhDQoNCk9uIDExLzIyLzIwMTgg
+MDI6MzYgUE0sIFR1ZG9yIEFtYmFydXMgLSBNMTgwNjQgd3JvdGU6DQo+IEZyb206IFR1ZG9yIEFt
+YmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4gDQo+IEJ1ZyByZXBvcnRlZCBm
+b3IgdGhlIG91dC1vZi10cmVlIFMyNUZTMTI4UyBmbGFzaCBtZW1vcnkuDQo+IA0KPiBCRlBUIHRh
+YmxlIGFkdmVydGlzZXMgYWxsIHRoZSBlcmFzZSB0eXBlcyBzdXBwb3J0ZWQgYnkgYWxsIHRoZQ0K
+PiBwb3NzaWJsZSBtYXAgY29uZmlndXJhdGlvbnMuIFVwZGF0ZSB0aGUgZXJhc2VfdHlwZSBhcnJh
+eSB0byBpbmRpY2F0ZQ0KPiB3aGljaCBlcmFzZSB0eXBlcyBhcmUgYXBwbGljYWJsZSB0byB0aGUg
+Y3VycmVudCBtYXAgY29uZmlndXJhdGlvbi4NCj4gDQo+IEJhY2t3YXJkIGNvbXBhdGliaWxpdHkg
+dGVzdCBkb25lIG9uIHNzdDI2dmYwNjRiLg0KPiANCj4gRml4ZXM6IGIwMzhlOGUzYmU3MiAoIm10
+ZDogc3BpLW5vcjogcGFyc2UgU0ZEUCBTZWN0b3IgTWFwIFBhcmFtZXRlciBUYWJsZSIpDQo+IFJl
+cG9ydGVkLWJ5OiBBbGV4YW5kZXIgU3ZlcmRsaW4gPGFsZXhhbmRlci5zdmVyZGxpbkBub2tpYS5j
+b20+DQo+IFNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9j
+aGlwLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDI5ICsr
+KysrKysrKysrKysrKysrKysrKysrKysrKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjggaW5zZXJ0
+aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXgg
+OTNjOWJjODkzMWZjLi5hNzFhZGNkNmRkZmEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3Nw
+aS1ub3Ivc3BpLW5vci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+
+IEBAIC0zMDAwLDcgKzMwMDAsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9y
+bV9lcmFzZV9tYXAoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gIAl1NjQgb2Zmc2V0Ow0KPiAgCXUz
+MiByZWdpb25fY291bnQ7DQo+ICAJaW50IGksIGo7DQo+IC0JdTggZXJhc2VfdHlwZSwgdW5pZm9y
+bV9lcmFzZV90eXBlOw0KPiArCXU4IHVuaWZvcm1fZXJhc2VfdHlwZSwgc2F2ZV91bmlmb3JtX2Vy
+YXNlX3R5cGU7DQo+ICsJdTggZXJhc2VfdHlwZSwgcmVnaW9uc19lcmFzZV90eXBlOw0KPiAgDQo+
+ICAJcmVnaW9uX2NvdW50ID0gU01QVF9NQVBfUkVHSU9OX0NPVU5UKCpzbXB0KTsNCj4gIAkvKg0K
+PiBAQCAtMzAxNCw2ICszMDE1LDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZv
+cm1fZXJhc2VfbWFwKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICAJbWFwLT5yZWdpb25zID0gcmVn
+aW9uOw0KPiAgDQo+ICAJdW5pZm9ybV9lcmFzZV90eXBlID0gMHhmZjsNCj4gKwlyZWdpb25zX2Vy
+YXNlX3R5cGUgPSAwOw0KPiAgCW9mZnNldCA9IDA7DQo+ICAJLyogUG9wdWxhdGUgcmVnaW9ucy4g
+Ki8NCj4gIAlmb3IgKGkgPSAwOyBpIDwgcmVnaW9uX2NvdW50OyBpKyspIHsNCj4gQEAgLTMwMzAs
+MTMgKzMwMzIsMzggQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZvcm1fZXJhc2Vf
+bWFwKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICAJCSAqLw0KPiAgCQl1bmlmb3JtX2VyYXNlX3R5
+cGUgJj0gZXJhc2VfdHlwZTsNCj4gIA0KPiArCQkvKg0KPiArCQkgKiByZWdpb25zX2VyYXNlX3R5
+cGUgbWFzayB3aWxsIGluZGljYXRlIGFsbCB0aGUgZXJhc2UgdHlwZXMNCj4gKwkJICogc3VwcG9y
+dGVkIGluIHRoaXMgY29uZmlndXJhdGlvbiBtYXAuDQo+ICsJCSAqLw0KPiArCQlyZWdpb25zX2Vy
+YXNlX3R5cGUgfD0gZXJhc2VfdHlwZTsNCj4gKw0KPiAgCQlvZmZzZXQgPSAocmVnaW9uW2ldLm9m
+ZnNldCAmIH5TTk9SX0VSQVNFX0ZMQUdTX01BU0spICsNCj4gIAkJCSByZWdpb25baV0uc2l6ZTsN
+Cj4gIAl9DQo+ICANCj4gKwlzYXZlX3VuaWZvcm1fZXJhc2VfdHlwZSA9IG1hcC0+dW5pZm9ybV9l
+cmFzZV90eXBlOw0KPiAgCW1hcC0+dW5pZm9ybV9lcmFzZV90eXBlID0gc3BpX25vcl9zb3J0X2Vy
+YXNlX21hc2sobWFwLA0KPiAgCQkJCQkJCSAgdW5pZm9ybV9lcmFzZV90eXBlKTsNCj4gIA0KPiAr
+CWlmICghcmVnaW9uc19lcmFzZV90eXBlKSB7DQo+ICsJCS8qDQo+ICsJCSAqIFJvbGwgYmFjayB0
+byB0aGUgcHJldmlvdXMgdW5pZm9ybV9lcmFzZV90eXBlIG1hc2ssIFNNUFQgaXMNCj4gKwkJICog
+YnJva2VuLg0KPiArCQkgKi8NCj4gKwkJbWFwLT51bmlmb3JtX2VyYXNlX3R5cGUgPSBzYXZlX3Vu
+aWZvcm1fZXJhc2VfdHlwZTsNCj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsJfQ0KPiArDQo+ICsJ
+LyoNCj4gKwkgKiBCRlBUIHRhYmxlIGFkdmVydGlzZXMgYWxsIHRoZSBlcmFzZSB0eXBlcyBzdXBw
+b3J0ZWQgYnkgYWxsIHRoZQ0KPiArCSAqIHBvc3NpYmxlIG1hcCBjb25maWd1cmF0aW9ucy4gVXBk
+YXRlIHRoZSBlcmFzZV90eXBlIGFycmF5IHRvIGluZGljYXRlDQo+ICsJICogd2hpY2ggZXJhc2Ug
+dHlwZXMgYXJlIGFwcGxpY2FibGUgdG8gdGhlIGN1cnJlbnQgbWFwIGNvbmZpZ3VyYXRpb24uDQo+
+ICsJICovDQo+ICsJZm9yIChpID0gMDsgaSA8IFNOT1JfRVJBU0VfVFlQRV9NQVg7IGkrKykNCj4g
+KwkJaWYgKCEocmVnaW9uc19lcmFzZV90eXBlICYgQklUKGVyYXNlW2ldLmlkeCkpKQ0KPiArCQkJ
+c3BpX25vcl9zZXRfZXJhc2VfdHlwZSgmZXJhc2VbaV0sIDAsIDB4RkYpOw0KPiArDQo+ICAJc3Bp
+X25vcl9yZWdpb25fbWFya19lbmQoJnJlZ2lvbltpIC0gMV0pOw0KPiAgDQo+ICAJcmV0dXJuIDA7
+DQo+IA0K
