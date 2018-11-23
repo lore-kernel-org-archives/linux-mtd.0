@@ -1,26 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gQ8iE-0007nj-Sh
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 10:29:28 +0000
-Date: Fri, 23 Nov 2018 11:29:03 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Cc: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gQ8lW-0001Kd-Oa
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 10:32:53 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <alexander.sverdlin@nokia.com>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@bootlin.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] mtd: spi-nor: fix erase_type array to indicate current
  map conf
-Message-ID: <20181123112903.56393f28@bbrezillon>
-In-Reply-To: <20181123111729.1d5b6e57@bbrezillon>
+Date: Fri, 23 Nov 2018 10:32:33 +0000
+Message-ID: <65d03690-a475-dc5b-ab9d-14e6216ba0bd@microchip.com>
 References: <20181122123552.15756-1-tudor.ambarus@microchip.com>
  <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
- <20181123111729.1d5b6e57@bbrezillon>
+In-Reply-To: <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A734067C53B750428770EEA801C67FF1@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +28,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Nov 2018 11:17:29 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-
-> On Fri, 23 Nov 2018 09:42:55 +0000
-> "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-> wrote:
-> 
-> > Hello Tudor,
-> > 
-> > On 22/11/2018 13:36, Tudor.Ambarus@microchip.com wrote:
-> > > From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > > 
-> > > Bug reported for the out-of-tree S25FS128S flash memory.
-> > > 
-> > > BFPT table advertises all the erase types supported by all the
-> > > possible map configurations. Update the erase_type array to indicate
-> > > which erase types are applicable to the current map configuration.
-> > > 
-> > > Backward compatibility test done on sst26vf064b.
-> > > 
-> > > Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
-> > > Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> > > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>  
-> > 
-> > I've tested this patch and it fixes the erasesize for S25FS128S and
-> > our 128k partitions are writeable again with this patch.
-> > 
-> > Nevertheless, I think this is coincidence. I don't think that it
-> > makes sense to OR all the erase types from all regions in one
-> > bitmask and derive any uniform erasesize out of it.
-> > This makes little sense for me in case of non-uniform maps.
-> > 
-> > I believe, the culprit here is one level higher, in the MTD partitioning
-> > code (mtdpart.c) which has to be taught about non-uniform maps
-> > but there is no infrastructure for this currently.
-> 
-> Keep in mind that mtdpart is only one part of the issue. As I said
-> previously, some MTD users (UBI) expect a single eraseblock size, so
-> it's not only mtdpart that you'd need to fix, but basically all MTD
-> users that don't check ->eraseregions.
-
-Just checked, and it seems mtdpart already supports eraseregions [1].
-It picks the biggest erasesize of the regions covered by the partition,
-which is exactly what we want. So all we'd have to do is make spi-nor.c
-define those regions.
-
-[1]https://elixir.bootlin.com/linux/v4.20-rc3/source/drivers/mtd/mtdpart.c#L482
+SGksIEFsZXhhbmRlciwNCg0KT24gMTEvMjMvMjAxOCAxMTo0MiBBTSwgU3ZlcmRsaW4sIEFsZXhh
+bmRlciAoTm9raWEgLSBERS9VbG0pIHdyb3RlOg0KPiBIZWxsbyBUdWRvciwNCj4gDQo+IE9uIDIy
+LzExLzIwMTggMTM6MzYsIFR1ZG9yLkFtYmFydXNAbWljcm9jaGlwLmNvbSB3cm90ZToNCj4+IEZy
+b206IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4+DQo+PiBC
+dWcgcmVwb3J0ZWQgZm9yIHRoZSBvdXQtb2YtdHJlZSBTMjVGUzEyOFMgZmxhc2ggbWVtb3J5Lg0K
+Pj4NCj4+IEJGUFQgdGFibGUgYWR2ZXJ0aXNlcyBhbGwgdGhlIGVyYXNlIHR5cGVzIHN1cHBvcnRl
+ZCBieSBhbGwgdGhlDQo+PiBwb3NzaWJsZSBtYXAgY29uZmlndXJhdGlvbnMuIFVwZGF0ZSB0aGUg
+ZXJhc2VfdHlwZSBhcnJheSB0byBpbmRpY2F0ZQ0KPj4gd2hpY2ggZXJhc2UgdHlwZXMgYXJlIGFw
+cGxpY2FibGUgdG8gdGhlIGN1cnJlbnQgbWFwIGNvbmZpZ3VyYXRpb24uDQo+Pg0KPj4gQmFja3dh
+cmQgY29tcGF0aWJpbGl0eSB0ZXN0IGRvbmUgb24gc3N0MjZ2ZjA2NGIuDQo+Pg0KPj4gRml4ZXM6
+IGIwMzhlOGUzYmU3MiAoIm10ZDogc3BpLW5vcjogcGFyc2UgU0ZEUCBTZWN0b3IgTWFwIFBhcmFt
+ZXRlciBUYWJsZSIpDQo+PiBSZXBvcnRlZC1ieTogQWxleGFuZGVyIFN2ZXJkbGluIDxhbGV4YW5k
+ZXIuc3ZlcmRsaW5Abm9raWEuY29tPg0KPj4gU2lnbmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8
+dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KPiANCj4gSSd2ZSB0ZXN0ZWQgdGhpcyBwYXRj
+aCBhbmQgaXQgZml4ZXMgdGhlIGVyYXNlc2l6ZSBmb3IgUzI1RlMxMjhTIGFuZA0KPiBvdXIgMTI4
+ayBwYXJ0aXRpb25zIGFyZSB3cml0ZWFibGUgYWdhaW4gd2l0aCB0aGlzIHBhdGNoLg0KDQpHb29k
+LiBZb3Ugc2FpZCB0aGF0IHRoZSBmbGFzaCBpcyBjb25maWd1cmVkIGluIG5vbi11bmlmb3JtIG1h
+cHBpbmcgKGh5YnJpZA0Kc2VjdG9yIG9wdGlvbikuIFRoZXJlIGlzIG5vIHVuaWZvcm0gZXJhc2Ug
+dHlwZSB0aGF0IGNhbiBlcmFzZSB0aGUgZW50aXJlDQpmbGFzaCBtZW1vcnkgYnkgaXRzIG93biwg
+c28gdGhlIGVyYXNlIHNob3VsZCBiZSBkb25lIHVzaW5nIHRoZSBub24tdW5pZm9ybQ0KZXJhc2Ug
+Y29kZSAoc3BpX25vcl9oYXNfdW5pZm9ybV9lcmFzZSgpIHNob3VsZCByZXR1cm4gZmFsc2UpLiBE
+b2VzIHRoZQ0Kbm9uLXVuaWZvcm0gZXJhc2Ugd29yayBhcyBleHBlY3RlZD8gDQoNCkZvciBleGFt
+cGxlLCBpZiB0aGUgaHlicmlkIHNlY3Rpb24gaXMgYXQgdGhlIHRvcCBvZiB0aGUgYWRkcmVzcyBz
+cGFjZSwgd2hlbg0KdXNpbmcgbXRkX3V0aWxzOg0KJCBtdGRfZGVidWcgZXJhc2UgL2Rldi95b3Vy
+X210ZCA0MDk2IDEyNjk3Ng0KSSB3b3VsZCBleHBlY3QgdGhlIHVzZSBvZiB0aGUgZm9sbG93aW5n
+IGVyYXNlIHR5cGVzOiA3KjRrLCAzMmssIDY0aw0KVGhlbiB3cml0ZSBhbmQgcmVhZCBiYWNrIHRv
+IGNoZWNrIGlmIHRoZSBlcmFzZSB3YXMgZG9uZSBjb3JyZWN0bHk6DQokIGRkIGlmPS9kZXYvdXJh
+bmRvbSBvZj1pbiBicz00MDk2IGNvdW50PTMxDQokIG10ZF9kZWJ1ZyB3cml0ZSAvZGV2L3lvdXJf
+bXRkIDQwOTYgMTI2OTc2IGluDQokIG10ZF9kZWJ1ZyByZWFkIC9kZXYveW91cl9tdGQgNDA5NiAx
+MjY5NzYgb3V0DQokIHNoYTFzdW0gaW4gb3V0DQp0aGUgb3V0cHV0IHNob3VsZCBiZSB0aGUgc2Ft
+ZS4NCg0KRmVlbCBmcmVlIHRvIGFkZCBzb21lIHByaW50cyBpbiB0aGUgY29kZSB0byBiZSBzdXJl
+IHRoYXQgbm9uLXVuaWZvcm0gZXJhc2UgY29kZQ0Kc2VsZWN0cyB0aGUgY29ycmVjdCBlcmFzZSB0
+eXBlcy4NCg0KPiANCj4gTmV2ZXJ0aGVsZXNzLCBJIHRoaW5rIHRoaXMgaXMgY29pbmNpZGVuY2Uu
+IEkgZG9uJ3QgdGhpbmsgdGhhdCBpdA0KPiBtYWtlcyBzZW5zZSB0byBPUiBhbGwgdGhlIGVyYXNl
+IHR5cGVzIGZyb20gYWxsIHJlZ2lvbnMgaW4gb25lDQo+IGJpdG1hc2sgYW5kIGRlcml2ZSBhbnkg
+dW5pZm9ybSBlcmFzZXNpemUgb3V0IG9mIGl0Lg0KPiBUaGlzIG1ha2VzIGxpdHRsZSBzZW5zZSBm
+b3IgbWUgaW4gY2FzZSBvZiBub24tdW5pZm9ybSBtYXBzLg0KDQpJIGp1c3QgbWFza2VkIG91dCB0
+aGUgZXJhc2UgdHlwZXMgdGhhdCBhcmUgbm90IHN1cHBvcnRlZCBieSB0aGUgY3VycmVudA0KY29u
+ZmlndXJhdGlvbiBtYXAuIFdlIHNob3VsZCBub3QgdXNlIGFuIGVyYXNlIHR5cGUgdGhhdCBpcyBu
+b3Qgc3VwcG9ydGVkDQpieSBhbnkgb2YgdGhlIG1hcCByZWdpb25zLiBTTVBULCBpZiBwcmVzZW50
+LCBzaG91bGQgaGF2ZSBwcmVjZWRlbmNlIG92ZXINCkJGUFQgd2hlbiBpbmRpY2F0aW5nIHN1cHBv
+cnRlZCBlcmFzZSB0eXBlcy4NCg0KQ2hlZXJzLA0KdGENCg0KPiANCj4gSSBiZWxpZXZlLCB0aGUg
+Y3VscHJpdCBoZXJlIGlzIG9uZSBsZXZlbCBoaWdoZXIsIGluIHRoZSBNVEQgcGFydGl0aW9uaW5n
+DQo+IGNvZGUgKG10ZHBhcnQuYykgd2hpY2ggaGFzIHRvIGJlIHRhdWdodCBhYm91dCBub24tdW5p
+Zm9ybSBtYXBzDQo+IGJ1dCB0aGVyZSBpcyBubyBpbmZyYXN0cnVjdHVyZSBmb3IgdGhpcyBjdXJy
+ZW50bHkuDQo+IA0KPiBXaGF0IGlzIHBvc3NpYmxlIHRvIGZpeCBzdGlsbCBpcyB0byBjaG9vc2Ug
+c21hbGxlc3QsIG5vdCBiaWdnZXN0DQo+IGVyYXNlc2l6ZSBmb3IgdW5pZm9ybSBjYXNlLiBJIGhh
+dmUgc3VjaCBhIHBhdGNoLCBidXQgSSBuZWVkIGhhbmRzDQo+IG9uIG9uIGEgUzI1RlMxMjhTIGNv
+bmZpZ3VyZWQgaW4gdW5pZm9ybSBtb2RlLg0KPiANCj4gTm9uIHVuaWZvcm0gY2FzZSByZXF1aXJl
+cyBNVEQgbGF5ZXIgcmV3b3JrLiBXZSBqdXN0IGNhbm5vdCBoYW5kbGUNCj4gdGhpcyBoYXJkd2Fy
+ZSB3aXRoIGp1c3Qgb25lIGVyYXNlc2l6ZSBpbiBtaW5kLiANCj4gDQo+PiAtLS0NCj4+ICBkcml2
+ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDI5ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KystDQo+PiAgMSBmaWxlIGNoYW5nZWQsIDI4IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkN
+Cj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2
+ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPj4gaW5kZXggOTNjOWJjODkzMWZjLi5hNzFhZGNk
+NmRkZmEgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPj4g
+KysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4+IEBAIC0zMDAwLDcgKzMwMDAs
+OCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9ybV9lcmFzZV9tYXAoc3RydWN0
+IHNwaV9ub3IgKm5vciwNCj4+ICAJdTY0IG9mZnNldDsNCj4+ICAJdTMyIHJlZ2lvbl9jb3VudDsN
+Cj4+ICAJaW50IGksIGo7DQo+PiAtCXU4IGVyYXNlX3R5cGUsIHVuaWZvcm1fZXJhc2VfdHlwZTsN
+Cj4+ICsJdTggdW5pZm9ybV9lcmFzZV90eXBlLCBzYXZlX3VuaWZvcm1fZXJhc2VfdHlwZTsNCj4+
+ICsJdTggZXJhc2VfdHlwZSwgcmVnaW9uc19lcmFzZV90eXBlOw0KPj4gIA0KPj4gIAlyZWdpb25f
+Y291bnQgPSBTTVBUX01BUF9SRUdJT05fQ09VTlQoKnNtcHQpOw0KPj4gIAkvKg0KPj4gQEAgLTMw
+MTQsNiArMzAxNSw3IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9pbml0X25vbl91bmlmb3JtX2VyYXNl
+X21hcChzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPj4gIAltYXAtPnJlZ2lvbnMgPSByZWdpb247DQo+
+PiAgDQo+PiAgCXVuaWZvcm1fZXJhc2VfdHlwZSA9IDB4ZmY7DQo+PiArCXJlZ2lvbnNfZXJhc2Vf
+dHlwZSA9IDA7DQo+PiAgCW9mZnNldCA9IDA7DQo+PiAgCS8qIFBvcHVsYXRlIHJlZ2lvbnMuICov
+DQo+PiAgCWZvciAoaSA9IDA7IGkgPCByZWdpb25fY291bnQ7IGkrKykgew0KPj4gQEAgLTMwMzAs
+MTMgKzMwMzIsMzggQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZvcm1fZXJhc2Vf
+bWFwKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+PiAgCQkgKi8NCj4+ICAJCXVuaWZvcm1fZXJhc2Vf
+dHlwZSAmPSBlcmFzZV90eXBlOw0KPj4gIA0KPj4gKwkJLyoNCj4+ICsJCSAqIHJlZ2lvbnNfZXJh
+c2VfdHlwZSBtYXNrIHdpbGwgaW5kaWNhdGUgYWxsIHRoZSBlcmFzZSB0eXBlcw0KPj4gKwkJICog
+c3VwcG9ydGVkIGluIHRoaXMgY29uZmlndXJhdGlvbiBtYXAuDQo+PiArCQkgKi8NCj4+ICsJCXJl
+Z2lvbnNfZXJhc2VfdHlwZSB8PSBlcmFzZV90eXBlOw0KPj4gKw0KPj4gIAkJb2Zmc2V0ID0gKHJl
+Z2lvbltpXS5vZmZzZXQgJiB+U05PUl9FUkFTRV9GTEFHU19NQVNLKSArDQo+PiAgCQkJIHJlZ2lv
+bltpXS5zaXplOw0KPj4gIAl9DQo+PiAgDQo+PiArCXNhdmVfdW5pZm9ybV9lcmFzZV90eXBlID0g
+bWFwLT51bmlmb3JtX2VyYXNlX3R5cGU7DQo+PiAgCW1hcC0+dW5pZm9ybV9lcmFzZV90eXBlID0g
+c3BpX25vcl9zb3J0X2VyYXNlX21hc2sobWFwLA0KPj4gIAkJCQkJCQkgIHVuaWZvcm1fZXJhc2Vf
+dHlwZSk7DQo+PiAgDQo+PiArCWlmICghcmVnaW9uc19lcmFzZV90eXBlKSB7DQo+PiArCQkvKg0K
+Pj4gKwkJICogUm9sbCBiYWNrIHRvIHRoZSBwcmV2aW91cyB1bmlmb3JtX2VyYXNlX3R5cGUgbWFz
+aywgU01QVCBpcw0KPj4gKwkJICogYnJva2VuLg0KPj4gKwkJICovDQo+PiArCQltYXAtPnVuaWZv
+cm1fZXJhc2VfdHlwZSA9IHNhdmVfdW5pZm9ybV9lcmFzZV90eXBlOw0KPj4gKwkJcmV0dXJuIC1F
+SU5WQUw7DQo+PiArCX0NCj4+ICsNCj4+ICsJLyoNCj4+ICsJICogQkZQVCB0YWJsZSBhZHZlcnRp
+c2VzIGFsbCB0aGUgZXJhc2UgdHlwZXMgc3VwcG9ydGVkIGJ5IGFsbCB0aGUNCj4+ICsJICogcG9z
+c2libGUgbWFwIGNvbmZpZ3VyYXRpb25zLiBVcGRhdGUgdGhlIGVyYXNlX3R5cGUgYXJyYXkgdG8g
+aW5kaWNhdGUNCj4+ICsJICogd2hpY2ggZXJhc2UgdHlwZXMgYXJlIGFwcGxpY2FibGUgdG8gdGhl
+IGN1cnJlbnQgbWFwIGNvbmZpZ3VyYXRpb24uDQo+PiArCSAqLw0KPj4gKwlmb3IgKGkgPSAwOyBp
+IDwgU05PUl9FUkFTRV9UWVBFX01BWDsgaSsrKQ0KPj4gKwkJaWYgKCEocmVnaW9uc19lcmFzZV90
+eXBlICYgQklUKGVyYXNlW2ldLmlkeCkpKQ0KPj4gKwkJCXNwaV9ub3Jfc2V0X2VyYXNlX3R5cGUo
+JmVyYXNlW2ldLCAwLCAweEZGKTsNCj4+ICsNCj4+ICAJc3BpX25vcl9yZWdpb25fbWFya19lbmQo
+JnJlZ2lvbltpIC0gMV0pOw0KPj4gIA0KPj4gIAlyZXR1cm4gMDsNCj4gDQo=
