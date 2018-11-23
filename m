@@ -1,17 +1,27 @@
-Received: from a27-24.smtp-out.us-west-2.amazonses.com ([54.240.27.24])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gQ6eR-0003he-Gn
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 08:17:25 +0000
+Received: from mail-eopbgr80095.outbound.protection.outlook.com ([40.107.8.95]
+ helo=EUR04-VI1-obe.outbound.protection.outlook.com)
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gQ7zR-0007qv-Gz
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 09:43:16 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>, "richard@nod.at" <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: fix erase_type array to indicate current
+ map conf
+Date: Fri, 23 Nov 2018 09:42:55 +0000
+Message-ID: <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
+References: <20181122123552.15756-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20181122123552.15756-1-tudor.ambarus@microchip.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4EA63EDDC3F1D24893EFA08E4526E482@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Date: Fri, 23 Nov 2018 08:17:06 +0000
-Message-ID: <010101673fa4d4a6-40cf2912-c3ad-4925-a491-2afea6f57635-000000@us-west-2.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: American Farm Bureau Federation | Annual Convention & IDEAg Trade
- Show 2018 Visitors
-From: "Scott Hudson" <scott.hudson@firsttrustmanagement.com>
-Reply-To: "Scott Hudson" <scott.hudson@firsttrustmanagement.com>
-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +31,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
-
-I was wondering if you would be interested in acquiring American Farm Burea=
-u Federation | Annual Convention & IDEAg Trade Show 2018 - Participants Lis=
-t for Appointment Setting, Networking and various Marketing initiatives.
-=20
-It is available as below:
-=20
-2018 American Farm Bureau Federation (AFBF) Annual Convention & IDEAg Trade=
- Show - Participants =E2=80=93 5200 contacts at $250, this special to recei=
-ve the latest decision maker contact information ends today at 5 pm PST.
- =20
-Thank you and I look forward to hearing from you.
-
-Best Regards
-
-Scott Hudson
-
-Please be advised: If you received this material accidentally, please delet=
-e the material and contact the sender to make them aware of the error. Use =
-of this information or taking action based on it, including review, retrans=
-mission, and dissemination, by any person or entity other than the original=
- desired recipient is not allowed. This content is not sold to us or provid=
-ed by any entity related to American Farm Bureau Federation | Annual Conven=
-tion & IDEAg Trade Show 2018. We are not a part of or affiliated with the 2=
-018 AFBF Annual Convention & IDEAg Trade Show event manager. We preserve al=
-l ownership rights to this material, including lawful authority to pursue r=
-emedies for its misuse.=20
+SGVsbG8gVHVkb3IsDQoNCk9uIDIyLzExLzIwMTggMTM6MzYsIFR1ZG9yLkFtYmFydXNAbWljcm9j
+aGlwLmNvbSB3cm90ZToNCj4gRnJvbTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNy
+b2NoaXAuY29tPg0KPiANCj4gQnVnIHJlcG9ydGVkIGZvciB0aGUgb3V0LW9mLXRyZWUgUzI1RlMx
+MjhTIGZsYXNoIG1lbW9yeS4NCj4gDQo+IEJGUFQgdGFibGUgYWR2ZXJ0aXNlcyBhbGwgdGhlIGVy
+YXNlIHR5cGVzIHN1cHBvcnRlZCBieSBhbGwgdGhlDQo+IHBvc3NpYmxlIG1hcCBjb25maWd1cmF0
+aW9ucy4gVXBkYXRlIHRoZSBlcmFzZV90eXBlIGFycmF5IHRvIGluZGljYXRlDQo+IHdoaWNoIGVy
+YXNlIHR5cGVzIGFyZSBhcHBsaWNhYmxlIHRvIHRoZSBjdXJyZW50IG1hcCBjb25maWd1cmF0aW9u
+Lg0KPiANCj4gQmFja3dhcmQgY29tcGF0aWJpbGl0eSB0ZXN0IGRvbmUgb24gc3N0MjZ2ZjA2NGIu
+DQo+IA0KPiBGaXhlczogYjAzOGU4ZTNiZTcyICgibXRkOiBzcGktbm9yOiBwYXJzZSBTRkRQIFNl
+Y3RvciBNYXAgUGFyYW1ldGVyIFRhYmxlIikNCj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRlciBTdmVy
+ZGxpbiA8YWxleGFuZGVyLnN2ZXJkbGluQG5va2lhLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogVHVk
+b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQpJJ3ZlIHRlc3RlZCB0
+aGlzIHBhdGNoIGFuZCBpdCBmaXhlcyB0aGUgZXJhc2VzaXplIGZvciBTMjVGUzEyOFMgYW5kDQpv
+dXIgMTI4ayBwYXJ0aXRpb25zIGFyZSB3cml0ZWFibGUgYWdhaW4gd2l0aCB0aGlzIHBhdGNoLg0K
+DQpOZXZlcnRoZWxlc3MsIEkgdGhpbmsgdGhpcyBpcyBjb2luY2lkZW5jZS4gSSBkb24ndCB0aGlu
+ayB0aGF0IGl0DQptYWtlcyBzZW5zZSB0byBPUiBhbGwgdGhlIGVyYXNlIHR5cGVzIGZyb20gYWxs
+IHJlZ2lvbnMgaW4gb25lDQpiaXRtYXNrIGFuZCBkZXJpdmUgYW55IHVuaWZvcm0gZXJhc2VzaXpl
+IG91dCBvZiBpdC4NClRoaXMgbWFrZXMgbGl0dGxlIHNlbnNlIGZvciBtZSBpbiBjYXNlIG9mIG5v
+bi11bmlmb3JtIG1hcHMuDQoNCkkgYmVsaWV2ZSwgdGhlIGN1bHByaXQgaGVyZSBpcyBvbmUgbGV2
+ZWwgaGlnaGVyLCBpbiB0aGUgTVREIHBhcnRpdGlvbmluZw0KY29kZSAobXRkcGFydC5jKSB3aGlj
+aCBoYXMgdG8gYmUgdGF1Z2h0IGFib3V0IG5vbi11bmlmb3JtIG1hcHMNCmJ1dCB0aGVyZSBpcyBu
+byBpbmZyYXN0cnVjdHVyZSBmb3IgdGhpcyBjdXJyZW50bHkuDQoNCldoYXQgaXMgcG9zc2libGUg
+dG8gZml4IHN0aWxsIGlzIHRvIGNob29zZSBzbWFsbGVzdCwgbm90IGJpZ2dlc3QNCmVyYXNlc2l6
+ZSBmb3IgdW5pZm9ybSBjYXNlLiBJIGhhdmUgc3VjaCBhIHBhdGNoLCBidXQgSSBuZWVkIGhhbmRz
+DQpvbiBvbiBhIFMyNUZTMTI4UyBjb25maWd1cmVkIGluIHVuaWZvcm0gbW9kZS4NCg0KTm9uIHVu
+aWZvcm0gY2FzZSByZXF1aXJlcyBNVEQgbGF5ZXIgcmV3b3JrLiBXZSBqdXN0IGNhbm5vdCBoYW5k
+bGUNCnRoaXMgaGFyZHdhcmUgd2l0aCBqdXN0IG9uZSBlcmFzZXNpemUgaW4gbWluZC4gDQoNCj4g
+LS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDI5ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjggaW5zZXJ0aW9ucygrKSwgMSBk
+ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
+ci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggOTNjOWJjODkzMWZj
+Li5hNzFhZGNkNmRkZmEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
+ci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC0zMDAwLDcg
+KzMwMDAsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9ybV9lcmFzZV9tYXAo
+c3RydWN0IHNwaV9ub3IgKm5vciwNCj4gIAl1NjQgb2Zmc2V0Ow0KPiAgCXUzMiByZWdpb25fY291
+bnQ7DQo+ICAJaW50IGksIGo7DQo+IC0JdTggZXJhc2VfdHlwZSwgdW5pZm9ybV9lcmFzZV90eXBl
+Ow0KPiArCXU4IHVuaWZvcm1fZXJhc2VfdHlwZSwgc2F2ZV91bmlmb3JtX2VyYXNlX3R5cGU7DQo+
+ICsJdTggZXJhc2VfdHlwZSwgcmVnaW9uc19lcmFzZV90eXBlOw0KPiAgDQo+ICAJcmVnaW9uX2Nv
+dW50ID0gU01QVF9NQVBfUkVHSU9OX0NPVU5UKCpzbXB0KTsNCj4gIAkvKg0KPiBAQCAtMzAxNCw2
+ICszMDE1LDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZvcm1fZXJhc2VfbWFw
+KHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICAJbWFwLT5yZWdpb25zID0gcmVnaW9uOw0KPiAgDQo+
+ICAJdW5pZm9ybV9lcmFzZV90eXBlID0gMHhmZjsNCj4gKwlyZWdpb25zX2VyYXNlX3R5cGUgPSAw
+Ow0KPiAgCW9mZnNldCA9IDA7DQo+ICAJLyogUG9wdWxhdGUgcmVnaW9ucy4gKi8NCj4gIAlmb3Ig
+KGkgPSAwOyBpIDwgcmVnaW9uX2NvdW50OyBpKyspIHsNCj4gQEAgLTMwMzAsMTMgKzMwMzIsMzgg
+QEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZvcm1fZXJhc2VfbWFwKHN0cnVjdCBz
+cGlfbm9yICpub3IsDQo+ICAJCSAqLw0KPiAgCQl1bmlmb3JtX2VyYXNlX3R5cGUgJj0gZXJhc2Vf
+dHlwZTsNCj4gIA0KPiArCQkvKg0KPiArCQkgKiByZWdpb25zX2VyYXNlX3R5cGUgbWFzayB3aWxs
+IGluZGljYXRlIGFsbCB0aGUgZXJhc2UgdHlwZXMNCj4gKwkJICogc3VwcG9ydGVkIGluIHRoaXMg
+Y29uZmlndXJhdGlvbiBtYXAuDQo+ICsJCSAqLw0KPiArCQlyZWdpb25zX2VyYXNlX3R5cGUgfD0g
+ZXJhc2VfdHlwZTsNCj4gKw0KPiAgCQlvZmZzZXQgPSAocmVnaW9uW2ldLm9mZnNldCAmIH5TTk9S
+X0VSQVNFX0ZMQUdTX01BU0spICsNCj4gIAkJCSByZWdpb25baV0uc2l6ZTsNCj4gIAl9DQo+ICAN
+Cj4gKwlzYXZlX3VuaWZvcm1fZXJhc2VfdHlwZSA9IG1hcC0+dW5pZm9ybV9lcmFzZV90eXBlOw0K
+PiAgCW1hcC0+dW5pZm9ybV9lcmFzZV90eXBlID0gc3BpX25vcl9zb3J0X2VyYXNlX21hc2sobWFw
+LA0KPiAgCQkJCQkJCSAgdW5pZm9ybV9lcmFzZV90eXBlKTsNCj4gIA0KPiArCWlmICghcmVnaW9u
+c19lcmFzZV90eXBlKSB7DQo+ICsJCS8qDQo+ICsJCSAqIFJvbGwgYmFjayB0byB0aGUgcHJldmlv
+dXMgdW5pZm9ybV9lcmFzZV90eXBlIG1hc2ssIFNNUFQgaXMNCj4gKwkJICogYnJva2VuLg0KPiAr
+CQkgKi8NCj4gKwkJbWFwLT51bmlmb3JtX2VyYXNlX3R5cGUgPSBzYXZlX3VuaWZvcm1fZXJhc2Vf
+dHlwZTsNCj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsJfQ0KPiArDQo+ICsJLyoNCj4gKwkgKiBC
+RlBUIHRhYmxlIGFkdmVydGlzZXMgYWxsIHRoZSBlcmFzZSB0eXBlcyBzdXBwb3J0ZWQgYnkgYWxs
+IHRoZQ0KPiArCSAqIHBvc3NpYmxlIG1hcCBjb25maWd1cmF0aW9ucy4gVXBkYXRlIHRoZSBlcmFz
+ZV90eXBlIGFycmF5IHRvIGluZGljYXRlDQo+ICsJICogd2hpY2ggZXJhc2UgdHlwZXMgYXJlIGFw
+cGxpY2FibGUgdG8gdGhlIGN1cnJlbnQgbWFwIGNvbmZpZ3VyYXRpb24uDQo+ICsJICovDQo+ICsJ
+Zm9yIChpID0gMDsgaSA8IFNOT1JfRVJBU0VfVFlQRV9NQVg7IGkrKykNCj4gKwkJaWYgKCEocmVn
+aW9uc19lcmFzZV90eXBlICYgQklUKGVyYXNlW2ldLmlkeCkpKQ0KPiArCQkJc3BpX25vcl9zZXRf
+ZXJhc2VfdHlwZSgmZXJhc2VbaV0sIDAsIDB4RkYpOw0KPiArDQo+ICAJc3BpX25vcl9yZWdpb25f
+bWFya19lbmQoJnJlZ2lvbltpIC0gMV0pOw0KPiAgDQo+ICAJcmV0dXJuIDA7DQoNCi0tIA0KQmVz
+dCByZWdhcmRzLA0KQWxleGFuZGVyIFN2ZXJkbGluLg0K
