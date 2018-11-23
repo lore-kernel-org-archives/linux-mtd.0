@@ -1,27 +1,25 @@
-Received: from mail-eopbgr80095.outbound.protection.outlook.com ([40.107.8.95]
- helo=EUR04-VI1-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gQ7zR-0007qv-Gz
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 09:43:16 +0000
-From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gQ8Xf-00038k-3O
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 10:18:36 +0000
+Date: Fri, 23 Nov 2018 11:17:29 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+Cc: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
  "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "dwmw2@infradead.org"
  <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>, "richard@nod.at" <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] mtd: spi-nor: fix erase_type array to indicate current
  map conf
-Date: Fri, 23 Nov 2018 09:42:55 +0000
-Message-ID: <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
+Message-ID: <20181123111729.1d5b6e57@bbrezillon>
+In-Reply-To: <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
 References: <20181122123552.15756-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20181122123552.15756-1-tudor.ambarus@microchip.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4EA63EDDC3F1D24893EFA08E4526E482@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,70 +29,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gVHVkb3IsDQoNCk9uIDIyLzExLzIwMTggMTM6MzYsIFR1ZG9yLkFtYmFydXNAbWljcm9j
-aGlwLmNvbSB3cm90ZToNCj4gRnJvbTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNy
-b2NoaXAuY29tPg0KPiANCj4gQnVnIHJlcG9ydGVkIGZvciB0aGUgb3V0LW9mLXRyZWUgUzI1RlMx
-MjhTIGZsYXNoIG1lbW9yeS4NCj4gDQo+IEJGUFQgdGFibGUgYWR2ZXJ0aXNlcyBhbGwgdGhlIGVy
-YXNlIHR5cGVzIHN1cHBvcnRlZCBieSBhbGwgdGhlDQo+IHBvc3NpYmxlIG1hcCBjb25maWd1cmF0
-aW9ucy4gVXBkYXRlIHRoZSBlcmFzZV90eXBlIGFycmF5IHRvIGluZGljYXRlDQo+IHdoaWNoIGVy
-YXNlIHR5cGVzIGFyZSBhcHBsaWNhYmxlIHRvIHRoZSBjdXJyZW50IG1hcCBjb25maWd1cmF0aW9u
-Lg0KPiANCj4gQmFja3dhcmQgY29tcGF0aWJpbGl0eSB0ZXN0IGRvbmUgb24gc3N0MjZ2ZjA2NGIu
-DQo+IA0KPiBGaXhlczogYjAzOGU4ZTNiZTcyICgibXRkOiBzcGktbm9yOiBwYXJzZSBTRkRQIFNl
-Y3RvciBNYXAgUGFyYW1ldGVyIFRhYmxlIikNCj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRlciBTdmVy
-ZGxpbiA8YWxleGFuZGVyLnN2ZXJkbGluQG5va2lhLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogVHVk
-b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQpJJ3ZlIHRlc3RlZCB0
-aGlzIHBhdGNoIGFuZCBpdCBmaXhlcyB0aGUgZXJhc2VzaXplIGZvciBTMjVGUzEyOFMgYW5kDQpv
-dXIgMTI4ayBwYXJ0aXRpb25zIGFyZSB3cml0ZWFibGUgYWdhaW4gd2l0aCB0aGlzIHBhdGNoLg0K
-DQpOZXZlcnRoZWxlc3MsIEkgdGhpbmsgdGhpcyBpcyBjb2luY2lkZW5jZS4gSSBkb24ndCB0aGlu
-ayB0aGF0IGl0DQptYWtlcyBzZW5zZSB0byBPUiBhbGwgdGhlIGVyYXNlIHR5cGVzIGZyb20gYWxs
-IHJlZ2lvbnMgaW4gb25lDQpiaXRtYXNrIGFuZCBkZXJpdmUgYW55IHVuaWZvcm0gZXJhc2VzaXpl
-IG91dCBvZiBpdC4NClRoaXMgbWFrZXMgbGl0dGxlIHNlbnNlIGZvciBtZSBpbiBjYXNlIG9mIG5v
-bi11bmlmb3JtIG1hcHMuDQoNCkkgYmVsaWV2ZSwgdGhlIGN1bHByaXQgaGVyZSBpcyBvbmUgbGV2
-ZWwgaGlnaGVyLCBpbiB0aGUgTVREIHBhcnRpdGlvbmluZw0KY29kZSAobXRkcGFydC5jKSB3aGlj
-aCBoYXMgdG8gYmUgdGF1Z2h0IGFib3V0IG5vbi11bmlmb3JtIG1hcHMNCmJ1dCB0aGVyZSBpcyBu
-byBpbmZyYXN0cnVjdHVyZSBmb3IgdGhpcyBjdXJyZW50bHkuDQoNCldoYXQgaXMgcG9zc2libGUg
-dG8gZml4IHN0aWxsIGlzIHRvIGNob29zZSBzbWFsbGVzdCwgbm90IGJpZ2dlc3QNCmVyYXNlc2l6
-ZSBmb3IgdW5pZm9ybSBjYXNlLiBJIGhhdmUgc3VjaCBhIHBhdGNoLCBidXQgSSBuZWVkIGhhbmRz
-DQpvbiBvbiBhIFMyNUZTMTI4UyBjb25maWd1cmVkIGluIHVuaWZvcm0gbW9kZS4NCg0KTm9uIHVu
-aWZvcm0gY2FzZSByZXF1aXJlcyBNVEQgbGF5ZXIgcmV3b3JrLiBXZSBqdXN0IGNhbm5vdCBoYW5k
-bGUNCnRoaXMgaGFyZHdhcmUgd2l0aCBqdXN0IG9uZSBlcmFzZXNpemUgaW4gbWluZC4gDQoNCj4g
-LS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDI5ICsrKysrKysrKysrKysr
-KysrKysrKysrKysrKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjggaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggOTNjOWJjODkzMWZj
-Li5hNzFhZGNkNmRkZmEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC0zMDAwLDcg
-KzMwMDAsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9ybV9lcmFzZV9tYXAo
-c3RydWN0IHNwaV9ub3IgKm5vciwNCj4gIAl1NjQgb2Zmc2V0Ow0KPiAgCXUzMiByZWdpb25fY291
-bnQ7DQo+ICAJaW50IGksIGo7DQo+IC0JdTggZXJhc2VfdHlwZSwgdW5pZm9ybV9lcmFzZV90eXBl
-Ow0KPiArCXU4IHVuaWZvcm1fZXJhc2VfdHlwZSwgc2F2ZV91bmlmb3JtX2VyYXNlX3R5cGU7DQo+
-ICsJdTggZXJhc2VfdHlwZSwgcmVnaW9uc19lcmFzZV90eXBlOw0KPiAgDQo+ICAJcmVnaW9uX2Nv
-dW50ID0gU01QVF9NQVBfUkVHSU9OX0NPVU5UKCpzbXB0KTsNCj4gIAkvKg0KPiBAQCAtMzAxNCw2
-ICszMDE1LDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZvcm1fZXJhc2VfbWFw
-KHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICAJbWFwLT5yZWdpb25zID0gcmVnaW9uOw0KPiAgDQo+
-ICAJdW5pZm9ybV9lcmFzZV90eXBlID0gMHhmZjsNCj4gKwlyZWdpb25zX2VyYXNlX3R5cGUgPSAw
-Ow0KPiAgCW9mZnNldCA9IDA7DQo+ICAJLyogUG9wdWxhdGUgcmVnaW9ucy4gKi8NCj4gIAlmb3Ig
-KGkgPSAwOyBpIDwgcmVnaW9uX2NvdW50OyBpKyspIHsNCj4gQEAgLTMwMzAsMTMgKzMwMzIsMzgg
-QEAgc3RhdGljIGludCBzcGlfbm9yX2luaXRfbm9uX3VuaWZvcm1fZXJhc2VfbWFwKHN0cnVjdCBz
-cGlfbm9yICpub3IsDQo+ICAJCSAqLw0KPiAgCQl1bmlmb3JtX2VyYXNlX3R5cGUgJj0gZXJhc2Vf
-dHlwZTsNCj4gIA0KPiArCQkvKg0KPiArCQkgKiByZWdpb25zX2VyYXNlX3R5cGUgbWFzayB3aWxs
-IGluZGljYXRlIGFsbCB0aGUgZXJhc2UgdHlwZXMNCj4gKwkJICogc3VwcG9ydGVkIGluIHRoaXMg
-Y29uZmlndXJhdGlvbiBtYXAuDQo+ICsJCSAqLw0KPiArCQlyZWdpb25zX2VyYXNlX3R5cGUgfD0g
-ZXJhc2VfdHlwZTsNCj4gKw0KPiAgCQlvZmZzZXQgPSAocmVnaW9uW2ldLm9mZnNldCAmIH5TTk9S
-X0VSQVNFX0ZMQUdTX01BU0spICsNCj4gIAkJCSByZWdpb25baV0uc2l6ZTsNCj4gIAl9DQo+ICAN
-Cj4gKwlzYXZlX3VuaWZvcm1fZXJhc2VfdHlwZSA9IG1hcC0+dW5pZm9ybV9lcmFzZV90eXBlOw0K
-PiAgCW1hcC0+dW5pZm9ybV9lcmFzZV90eXBlID0gc3BpX25vcl9zb3J0X2VyYXNlX21hc2sobWFw
-LA0KPiAgCQkJCQkJCSAgdW5pZm9ybV9lcmFzZV90eXBlKTsNCj4gIA0KPiArCWlmICghcmVnaW9u
-c19lcmFzZV90eXBlKSB7DQo+ICsJCS8qDQo+ICsJCSAqIFJvbGwgYmFjayB0byB0aGUgcHJldmlv
-dXMgdW5pZm9ybV9lcmFzZV90eXBlIG1hc2ssIFNNUFQgaXMNCj4gKwkJICogYnJva2VuLg0KPiAr
-CQkgKi8NCj4gKwkJbWFwLT51bmlmb3JtX2VyYXNlX3R5cGUgPSBzYXZlX3VuaWZvcm1fZXJhc2Vf
-dHlwZTsNCj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsJfQ0KPiArDQo+ICsJLyoNCj4gKwkgKiBC
-RlBUIHRhYmxlIGFkdmVydGlzZXMgYWxsIHRoZSBlcmFzZSB0eXBlcyBzdXBwb3J0ZWQgYnkgYWxs
-IHRoZQ0KPiArCSAqIHBvc3NpYmxlIG1hcCBjb25maWd1cmF0aW9ucy4gVXBkYXRlIHRoZSBlcmFz
-ZV90eXBlIGFycmF5IHRvIGluZGljYXRlDQo+ICsJICogd2hpY2ggZXJhc2UgdHlwZXMgYXJlIGFw
-cGxpY2FibGUgdG8gdGhlIGN1cnJlbnQgbWFwIGNvbmZpZ3VyYXRpb24uDQo+ICsJICovDQo+ICsJ
-Zm9yIChpID0gMDsgaSA8IFNOT1JfRVJBU0VfVFlQRV9NQVg7IGkrKykNCj4gKwkJaWYgKCEocmVn
-aW9uc19lcmFzZV90eXBlICYgQklUKGVyYXNlW2ldLmlkeCkpKQ0KPiArCQkJc3BpX25vcl9zZXRf
-ZXJhc2VfdHlwZSgmZXJhc2VbaV0sIDAsIDB4RkYpOw0KPiArDQo+ICAJc3BpX25vcl9yZWdpb25f
-bWFya19lbmQoJnJlZ2lvbltpIC0gMV0pOw0KPiAgDQo+ICAJcmV0dXJuIDA7DQoNCi0tIA0KQmVz
-dCByZWdhcmRzLA0KQWxleGFuZGVyIFN2ZXJkbGluLg0K
+On Fri, 23 Nov 2018 09:42:55 +0000
+"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+wrote:
+
+> Hello Tudor,
+> 
+> On 22/11/2018 13:36, Tudor.Ambarus@microchip.com wrote:
+> > From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > 
+> > Bug reported for the out-of-tree S25FS128S flash memory.
+> > 
+> > BFPT table advertises all the erase types supported by all the
+> > possible map configurations. Update the erase_type array to indicate
+> > which erase types are applicable to the current map configuration.
+> > 
+> > Backward compatibility test done on sst26vf064b.
+> > 
+> > Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
+> > Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>  
+> 
+> I've tested this patch and it fixes the erasesize for S25FS128S and
+> our 128k partitions are writeable again with this patch.
+> 
+> Nevertheless, I think this is coincidence. I don't think that it
+> makes sense to OR all the erase types from all regions in one
+> bitmask and derive any uniform erasesize out of it.
+> This makes little sense for me in case of non-uniform maps.
+> 
+> I believe, the culprit here is one level higher, in the MTD partitioning
+> code (mtdpart.c) which has to be taught about non-uniform maps
+> but there is no infrastructure for this currently.
+
+Keep in mind that mtdpart is only one part of the issue. As I said
+previously, some MTD users (UBI) expect a single eraseblock size, so
+it's not only mtdpart that you'd need to fix, but basically all MTD
+users that don't check ->eraseregions.
+
+> 
+> What is possible to fix still is to choose smallest, not biggest
+> erasesize for uniform case.
+
+Yep, I agree. But we also have to be careful here, if some NORs were
+already supported and were picking the biggest erasesize, we have to
+preserve this behavior, otherwise we'll break things.
+
+> I have such a patch, but I need hands
+> on on a S25FS128S configured in uniform mode.
+> 
+> Non uniform case requires MTD layer rework.
+
+There's already the concept of ->eraseregions. Maybe I'm wrong but I
+thought it would fit the non-uniform erase scheme we have in SPI NOR. 
+
+> We just cannot handle
+> this hardware with just one erasesize in mind.
+
+We can, if we decide to always use the biggest non-uniform erasesize.
+Of course that only works if the biggest erase size is always a
+multiple of smaller ones, but I'm pretty sure this is always true.
+
+> 
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 29 ++++++++++++++++++++++++++++-
+> >  1 file changed, 28 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index 93c9bc8931fc..a71adcd6ddfa 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -3000,7 +3000,8 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+> >  	u64 offset;
+> >  	u32 region_count;
+> >  	int i, j;
+> > -	u8 erase_type, uniform_erase_type;
+> > +	u8 uniform_erase_type, save_uniform_erase_type;
+> > +	u8 erase_type, regions_erase_type;
+> >  
+> >  	region_count = SMPT_MAP_REGION_COUNT(*smpt);
+> >  	/*
+> > @@ -3014,6 +3015,7 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+> >  	map->regions = region;
+> >  
+> >  	uniform_erase_type = 0xff;
+> > +	regions_erase_type = 0;
+> >  	offset = 0;
+> >  	/* Populate regions. */
+> >  	for (i = 0; i < region_count; i++) {
+> > @@ -3030,13 +3032,38 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+> >  		 */
+> >  		uniform_erase_type &= erase_type;
+> >  
+> > +		/*
+> > +		 * regions_erase_type mask will indicate all the erase types
+> > +		 * supported in this configuration map.
+> > +		 */
+> > +		regions_erase_type |= erase_type;
+> > +
+> >  		offset = (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
+> >  			 region[i].size;
+> >  	}
+> >  
+> > +	save_uniform_erase_type = map->uniform_erase_type;
+> >  	map->uniform_erase_type = spi_nor_sort_erase_mask(map,
+> >  							  uniform_erase_type);
+> >  
+> > +	if (!regions_erase_type) {
+> > +		/*
+> > +		 * Roll back to the previous uniform_erase_type mask, SMPT is
+> > +		 * broken.
+> > +		 */
+> > +		map->uniform_erase_type = save_uniform_erase_type;
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/*
+> > +	 * BFPT table advertises all the erase types supported by all the
+> > +	 * possible map configurations. Update the erase_type array to indicate
+> > +	 * which erase types are applicable to the current map configuration.
+> > +	 */
+> > +	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
+> > +		if (!(regions_erase_type & BIT(erase[i].idx)))
+> > +			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
+> > +
+> >  	spi_nor_region_mark_end(&region[i - 1]);
+> >  
+> >  	return 0;  
+> 
