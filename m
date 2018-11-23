@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gQ8Xf-00038k-3O
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 10:18:36 +0000
-Date: Fri, 23 Nov 2018 11:17:29 +0100
+ id 1gQ8iE-0007nj-Sh
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2018 10:29:28 +0000
+Date: Fri, 23 Nov 2018 11:29:03 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
 Cc: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
@@ -13,10 +13,11 @@ Cc: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] mtd: spi-nor: fix erase_type array to indicate current
  map conf
-Message-ID: <20181123111729.1d5b6e57@bbrezillon>
-In-Reply-To: <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
+Message-ID: <20181123112903.56393f28@bbrezillon>
+In-Reply-To: <20181123111729.1d5b6e57@bbrezillon>
 References: <20181122123552.15756-1-tudor.ambarus@microchip.com>
  <3d8a2b83-282d-7cb2-3c8b-addae3c2af7f@nokia.com>
+ <20181123111729.1d5b6e57@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,131 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Nov 2018 09:42:55 +0000
-"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-wrote:
+On Fri, 23 Nov 2018 11:17:29 +0100
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Hello Tudor,
+> On Fri, 23 Nov 2018 09:42:55 +0000
+> "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+> wrote:
 > 
-> On 22/11/2018 13:36, Tudor.Ambarus@microchip.com wrote:
-> > From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > Hello Tudor,
 > > 
-> > Bug reported for the out-of-tree S25FS128S flash memory.
+> > On 22/11/2018 13:36, Tudor.Ambarus@microchip.com wrote:
+> > > From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > > 
+> > > Bug reported for the out-of-tree S25FS128S flash memory.
+> > > 
+> > > BFPT table advertises all the erase types supported by all the
+> > > possible map configurations. Update the erase_type array to indicate
+> > > which erase types are applicable to the current map configuration.
+> > > 
+> > > Backward compatibility test done on sst26vf064b.
+> > > 
+> > > Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
+> > > Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> > > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>  
 > > 
-> > BFPT table advertises all the erase types supported by all the
-> > possible map configurations. Update the erase_type array to indicate
-> > which erase types are applicable to the current map configuration.
+> > I've tested this patch and it fixes the erasesize for S25FS128S and
+> > our 128k partitions are writeable again with this patch.
 > > 
-> > Backward compatibility test done on sst26vf064b.
+> > Nevertheless, I think this is coincidence. I don't think that it
+> > makes sense to OR all the erase types from all regions in one
+> > bitmask and derive any uniform erasesize out of it.
+> > This makes little sense for me in case of non-uniform maps.
 > > 
-> > Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
-> > Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>  
+> > I believe, the culprit here is one level higher, in the MTD partitioning
+> > code (mtdpart.c) which has to be taught about non-uniform maps
+> > but there is no infrastructure for this currently.
 > 
-> I've tested this patch and it fixes the erasesize for S25FS128S and
-> our 128k partitions are writeable again with this patch.
-> 
-> Nevertheless, I think this is coincidence. I don't think that it
-> makes sense to OR all the erase types from all regions in one
-> bitmask and derive any uniform erasesize out of it.
-> This makes little sense for me in case of non-uniform maps.
-> 
-> I believe, the culprit here is one level higher, in the MTD partitioning
-> code (mtdpart.c) which has to be taught about non-uniform maps
-> but there is no infrastructure for this currently.
+> Keep in mind that mtdpart is only one part of the issue. As I said
+> previously, some MTD users (UBI) expect a single eraseblock size, so
+> it's not only mtdpart that you'd need to fix, but basically all MTD
+> users that don't check ->eraseregions.
 
-Keep in mind that mtdpart is only one part of the issue. As I said
-previously, some MTD users (UBI) expect a single eraseblock size, so
-it's not only mtdpart that you'd need to fix, but basically all MTD
-users that don't check ->eraseregions.
+Just checked, and it seems mtdpart already supports eraseregions [1].
+It picks the biggest erasesize of the regions covered by the partition,
+which is exactly what we want. So all we'd have to do is make spi-nor.c
+define those regions.
 
-> 
-> What is possible to fix still is to choose smallest, not biggest
-> erasesize for uniform case.
-
-Yep, I agree. But we also have to be careful here, if some NORs were
-already supported and were picking the biggest erasesize, we have to
-preserve this behavior, otherwise we'll break things.
-
-> I have such a patch, but I need hands
-> on on a S25FS128S configured in uniform mode.
-> 
-> Non uniform case requires MTD layer rework.
-
-There's already the concept of ->eraseregions. Maybe I'm wrong but I
-thought it would fit the non-uniform erase scheme we have in SPI NOR. 
-
-> We just cannot handle
-> this hardware with just one erasesize in mind.
-
-We can, if we decide to always use the biggest non-uniform erasesize.
-Of course that only works if the biggest erase size is always a
-multiple of smaller ones, but I'm pretty sure this is always true.
-
-> 
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 29 ++++++++++++++++++++++++++++-
-> >  1 file changed, 28 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index 93c9bc8931fc..a71adcd6ddfa 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -3000,7 +3000,8 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-> >  	u64 offset;
-> >  	u32 region_count;
-> >  	int i, j;
-> > -	u8 erase_type, uniform_erase_type;
-> > +	u8 uniform_erase_type, save_uniform_erase_type;
-> > +	u8 erase_type, regions_erase_type;
-> >  
-> >  	region_count = SMPT_MAP_REGION_COUNT(*smpt);
-> >  	/*
-> > @@ -3014,6 +3015,7 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-> >  	map->regions = region;
-> >  
-> >  	uniform_erase_type = 0xff;
-> > +	regions_erase_type = 0;
-> >  	offset = 0;
-> >  	/* Populate regions. */
-> >  	for (i = 0; i < region_count; i++) {
-> > @@ -3030,13 +3032,38 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-> >  		 */
-> >  		uniform_erase_type &= erase_type;
-> >  
-> > +		/*
-> > +		 * regions_erase_type mask will indicate all the erase types
-> > +		 * supported in this configuration map.
-> > +		 */
-> > +		regions_erase_type |= erase_type;
-> > +
-> >  		offset = (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
-> >  			 region[i].size;
-> >  	}
-> >  
-> > +	save_uniform_erase_type = map->uniform_erase_type;
-> >  	map->uniform_erase_type = spi_nor_sort_erase_mask(map,
-> >  							  uniform_erase_type);
-> >  
-> > +	if (!regions_erase_type) {
-> > +		/*
-> > +		 * Roll back to the previous uniform_erase_type mask, SMPT is
-> > +		 * broken.
-> > +		 */
-> > +		map->uniform_erase_type = save_uniform_erase_type;
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	/*
-> > +	 * BFPT table advertises all the erase types supported by all the
-> > +	 * possible map configurations. Update the erase_type array to indicate
-> > +	 * which erase types are applicable to the current map configuration.
-> > +	 */
-> > +	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
-> > +		if (!(regions_erase_type & BIT(erase[i].idx)))
-> > +			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
-> > +
-> >  	spi_nor_region_mark_end(&region[i - 1]);
-> >  
-> >  	return 0;  
-> 
+[1]https://elixir.bootlin.com/linux/v4.20-rc3/source/drivers/mtd/mtdpart.c#L482
