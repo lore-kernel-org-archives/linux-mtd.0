@@ -1,17 +1,21 @@
-Received: from mx-ginzinger.sigmacloud.services ([185.154.235.147])
+Received: from esa2.microchip.iphmx.com ([68.232.149.84])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gREII-0007FD-64
- for linux-mtd@lists.infradead.org; Mon, 26 Nov 2018 10:39:12 +0000
-From: Martin Kepplinger <martin.kepplinger@ginzinger.com>
-To: <stable@vger.kernel.org>
-CC: <dedekind1@gmail.com>, <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ubi: fastmap: Check each mapping only once
-Date: Mon, 26 Nov 2018 11:38:42 +0100
-Message-ID: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
+ id 1gRGH2-0003bx-9k
+ for linux-mtd@lists.infradead.org; Mon, 26 Nov 2018 12:46:01 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <alexander.sverdlin@nokia.com>, <Tudor.Ambarus@microchip.com>
+Subject: [PATCH v2] mtd: spi-nor: fix erase_type array to indicate current map
+ conf
+Date: Mon, 26 Nov 2018 12:45:44 +0000
+Message-ID: <20181126124531.17548-1-tudor.ambarus@microchip.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
- micalg="sha-256"; boundary="----1AE2FA8DAD0F7A380663044B75E7EC6F"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,295 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an S/MIME signed message
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-------1AE2FA8DAD0F7A380663044B75E7EC6F
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+BFPT advertises all the erase types supported by all the possible
+map configurations. Mask out the erase types that are not supported
+by the current map configuration.
 
-From: Richard Weinberger <richard@nod.at>
+Backward compatibility test done on sst26vf064b.
 
-[ Upstream commit 34653fd8c46e771585fce5975e4243f8fd401914 ]
-
-This commit got merged along with commit 781932375ffc
-("ubi: fastmap: Correctly handle interrupted erasures in EBA") upstream but
-only the latter has been applied to stable v4.14.54 as commit a23cf10d9abb.
-This resulted in a performance regression. Startup on i.MX platforms is
-delayed for up to a few seconds depending on the platform.
-This fixes ubi fastmap to be of the same performance as it has been before
-said fastmap changes.
-
-Fixes: a23cf10d9abb ("ubi: fastmap: Correctly handle interrupted erasures in EBA")
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Martin Kepplinger <martin.kepplinger@ginzinger.com>
+Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
+Reported-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
+v2:
+- drop const qualifier
+- update commit message and comment
 
-Richard, although this fixes a major slowdown regression in -stable, do you
-consider this "stable" too?
+ drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
-This applies and is tested only for the 4.14 stable tree. It seems to be
-equally relevant for 4.9 and 4.4 though.
-
-thanks
-                           martin
-
-
- drivers/mtd/ubi/build.c   |  1 +
- drivers/mtd/ubi/eba.c     |  4 ++++
- drivers/mtd/ubi/fastmap.c | 20 ++++++++++++++++++++
- drivers/mtd/ubi/ubi.h     | 11 +++++++++++
- drivers/mtd/ubi/vmt.c     |  1 +
- drivers/mtd/ubi/vtbl.c    | 16 +++++++++++++++-
- 6 files changed, 52 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 18a72da759a0..6445c693d935 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -526,6 +526,7 @@ void ubi_free_internal_volumes(struct ubi_device *ubi)
- 	for (i = ubi->vtbl_slots;
- 	     i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
- 		ubi_eba_replace_table(ubi->volumes[i], NULL);
-+		ubi_fastmap_destroy_checkmap(ubi->volumes[i]);
- 		kfree(ubi->volumes[i]);
- 	}
- }
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index d0884bd9d955..c4d4b8f07630 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -517,6 +517,9 @@ static int check_mapping(struct ubi_device *ubi, struct ubi_volume *vol, int lnu
- 	if (!ubi->fast_attach)
- 		return 0;
- 
-+	if (!vol->checkmap || test_bit(lnum, vol->checkmap))
-+		return 0;
-+
- 	vidb = ubi_alloc_vid_buf(ubi, GFP_NOFS);
- 	if (!vidb)
- 		return -ENOMEM;
-@@ -551,6 +554,7 @@ static int check_mapping(struct ubi_device *ubi, struct ubi_volume *vol, int lnu
- 		goto out_free;
- 	}
- 
-+	set_bit(lnum, vol->checkmap);
- 	err = 0;
- 
- out_free:
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 5a832bc79b1b..63e8527f7b65 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1101,6 +1101,26 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	goto out;
- }
- 
-+int ubi_fastmap_init_checkmap(struct ubi_volume *vol, int leb_count)
-+{
-+	struct ubi_device *ubi = vol->ubi;
-+
-+	if (!ubi->fast_attach)
-+		return 0;
-+
-+	vol->checkmap = kcalloc(BITS_TO_LONGS(leb_count), sizeof(unsigned long),
-+				GFP_KERNEL);
-+	if (!vol->checkmap)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+void ubi_fastmap_destroy_checkmap(struct ubi_volume *vol)
-+{
-+	kfree(vol->checkmap);
-+}
-+
- /**
-  * ubi_write_fastmap - writes a fastmap.
-  * @ubi: UBI device object
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 5fe62653995e..f5ba97c46160 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -334,6 +334,9 @@ struct ubi_eba_leb_desc {
-  * @changing_leb: %1 if the atomic LEB change ioctl command is in progress
-  * @direct_writes: %1 if direct writes are enabled for this volume
-  *
-+ * @checkmap: bitmap to remember which PEB->LEB mappings got checked,
-+ *            protected by UBI LEB lock tree.
-+ *
-  * The @corrupted field indicates that the volume's contents is corrupted.
-  * Since UBI protects only static volumes, this field is not relevant to
-  * dynamic volumes - it is user's responsibility to assure their data
-@@ -377,6 +380,10 @@ struct ubi_volume {
- 	unsigned int updating:1;
- 	unsigned int changing_leb:1;
- 	unsigned int direct_writes:1;
-+
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	unsigned long *checkmap;
-+#endif
- };
- 
- /**
-@@ -965,8 +972,12 @@ size_t ubi_calc_fm_size(struct ubi_device *ubi);
- int ubi_update_fastmap(struct ubi_device *ubi);
- int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		     struct ubi_attach_info *scan_ai);
-+int ubi_fastmap_init_checkmap(struct ubi_volume *vol, int leb_count);
-+void ubi_fastmap_destroy_checkmap(struct ubi_volume *vol);
- #else
- static inline int ubi_update_fastmap(struct ubi_device *ubi) { return 0; }
-+int static inline ubi_fastmap_init_checkmap(struct ubi_volume *vol, int leb_count) { return 0; }
-+static inline void ubi_fastmap_destroy_checkmap(struct ubi_volume *vol) {}
- #endif
- 
- /* block.c */
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 3fd8d7ff7a02..0be516780e92 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -139,6 +139,7 @@ static void vol_release(struct device *dev)
- 	struct ubi_volume *vol = container_of(dev, struct ubi_volume, dev);
- 
- 	ubi_eba_replace_table(vol, NULL);
-+	ubi_fastmap_destroy_checkmap(vol);
- 	kfree(vol);
- }
- 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 263743e7b741..94d7a865b135 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -534,7 +534,7 @@ static int init_volumes(struct ubi_device *ubi,
- 			const struct ubi_attach_info *ai,
- 			const struct ubi_vtbl_record *vtbl)
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 93c9bc8931fc..1fdd2834fbcb 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2995,12 +2995,13 @@ static int spi_nor_init_non_uniform_erase_map(struc=
+t spi_nor *nor,
+ 					      const u32 *smpt)
  {
--	int i, reserved_pebs = 0;
-+	int i, err, reserved_pebs = 0;
- 	struct ubi_ainf_volume *av;
- 	struct ubi_volume *vol;
- 
-@@ -620,6 +620,16 @@ static int init_volumes(struct ubi_device *ubi,
- 			(long long)(vol->used_ebs - 1) * vol->usable_leb_size;
- 		vol->used_bytes += av->last_data_size;
- 		vol->last_eb_bytes = av->last_data_size;
-+
+ 	struct spi_nor_erase_map *map =3D &nor->erase_map;
+-	const struct spi_nor_erase_type *erase =3D map->erase_type;
++	struct spi_nor_erase_type *erase =3D map->erase_type;
+ 	struct spi_nor_erase_region *region;
+ 	u64 offset;
+ 	u32 region_count;
+ 	int i, j;
+-	u8 erase_type, uniform_erase_type;
++	u8 uniform_erase_type, save_uniform_erase_type;
++	u8 erase_type, regions_erase_type;
+=20
+ 	region_count =3D SMPT_MAP_REGION_COUNT(*smpt);
+ 	/*
+@@ -3014,6 +3015,7 @@ static int spi_nor_init_non_uniform_erase_map(struct =
+spi_nor *nor,
+ 	map->regions =3D region;
+=20
+ 	uniform_erase_type =3D 0xff;
++	regions_erase_type =3D 0;
+ 	offset =3D 0;
+ 	/* Populate regions. */
+ 	for (i =3D 0; i < region_count; i++) {
+@@ -3030,13 +3032,38 @@ static int spi_nor_init_non_uniform_erase_map(struc=
+t spi_nor *nor,
+ 		 */
+ 		uniform_erase_type &=3D erase_type;
+=20
 +		/*
-+		 * We use ubi->peb_count and not vol->reserved_pebs because
-+		 * we want to keep the code simple. Otherwise we'd have to
-+		 * resize/check the bitmap upon volume resize too.
-+		 * Allocating a few bytes more does not hurt.
++		 * regions_erase_type mask will indicate all the erase types
++		 * supported in this configuration map.
 +		 */
-+		err = ubi_fastmap_init_checkmap(vol, ubi->peb_count);
-+		if (err)
-+			return err;
++		regions_erase_type |=3D erase_type;
++
+ 		offset =3D (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
+ 			 region[i].size;
  	}
- 
- 	/* And add the layout volume */
-@@ -645,6 +655,9 @@ static int init_volumes(struct ubi_device *ubi,
- 	reserved_pebs += vol->reserved_pebs;
- 	ubi->vol_count += 1;
- 	vol->ubi = ubi;
-+	err = ubi_fastmap_init_checkmap(vol, UBI_LAYOUT_VOLUME_EBS);
-+	if (err)
-+		return err;
- 
- 	if (reserved_pebs > ubi->avail_pebs) {
- 		ubi_err(ubi, "not enough PEBs, required %d, available %d",
-@@ -849,6 +862,7 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_attach_info *ai)
- out_free:
- 	vfree(ubi->vtbl);
- 	for (i = 0; i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
-+		ubi_fastmap_destroy_checkmap(ubi->volumes[i]);
- 		kfree(ubi->volumes[i]);
- 		ubi->volumes[i] = NULL;
- 	}
--- 
-2.19.1
-
-
-------1AE2FA8DAD0F7A380663044B75E7EC6F
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-
-MIIOHAYJKoZIhvcNAQcCoIIODTCCDgkCAQExDzANBglghkgBZQMEAgEFADALBgkq
-hkiG9w0BBwGgggshMIIF5jCCA86gAwIBAgIQapvhODv/K2ufAdXZuKdSVjANBgkq
-hkiG9w0BAQwFADCBhTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFu
-Y2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExp
-bWl0ZWQxKzApBgNVBAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNhdGlvbiBBdXRob3Jp
-dHkwHhcNMTMwMTEwMDAwMDAwWhcNMjgwMTA5MjM1OTU5WjCBlzELMAkGA1UEBhMC
-R0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9y
-ZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBS
-U0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwggEi
-MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+s55XrCh2dUAWxzgDmNPGGHYh
-UPMleQtMtaDRfTpYPpynMS6n9jR22YRq2tA9NEjk6vW7rN/5sYFLIP1of3l0NKZ6
-fLWfF2VgJ5cijKYy/qlAckY1wgOkUMgzKlWlVJGyK+UlNEQ1/5ErCsHq9x9aU/x1
-KwTdF/LCrT03Rl/FwFrf1XTCwa2QZYL55AqLPikFlgqOtzk06kb2qvGlnHJvijjI
-03BOrNpo+kZGpcHsgyO1/u1OZTaOo8wvEU17VVeP1cHWse9tGKTDyUGg2hJZjrqc
-k39UIm/nKbpDSZ0JsMoIw/JtOOg0JC56VzQgBo7ictReTQE5LFLG3yQK+xS1AgMB
-AAGjggE8MIIBODAfBgNVHSMEGDAWgBS7r34CPfqm8TyEjq3uOJjs2TIy1DAdBgNV
-HQ4EFgQUgq9sjPjF/pZhfOgfPStxSF7Ei8AwDgYDVR0PAQH/BAQDAgGGMBIGA1Ud
-EwEB/wQIMAYBAf8CAQAwEQYDVR0gBAowCDAGBgRVHSAAMEwGA1UdHwRFMEMwQaA/
-oD2GO2h0dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NPTU9ET1JTQUNlcnRpZmljYXRp
-b25BdXRob3JpdHkuY3JsMHEGCCsGAQUFBwEBBGUwYzA7BggrBgEFBQcwAoYvaHR0
-cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQWRkVHJ1c3RDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTANBgkqhkiG9w0BAQwF
-AAOCAgEAeFyygSg0TzzuX1bOn5dW7I+iaxf28/ZJCAbU2C81zd9A/tNx4+jsQgwR
-GiHjZrAYayZrrm78hOx7aEpkfNPQIHGG6Fvq3EzWf/Lvx7/hk6zSPwIal9v5IkDc
-ZoFD7f3iT7PdkHJY9B51csvU50rxpEg1OyOT8fk2zvvPBuM4qQNqbGWlnhMpIMwp
-WZT89RY0wpJO+2V6eXEGGHsROs3njeP9DqqqAJaBa4wBeKOdGCWn1/Jp2oY6dyNm
-NppI4ZNMUH4Tam85S1j6E95u4+1Nuru84OrMIzqvISE2HN/56ebTOWlcrurffade
-2022O/tUU1gb4jfWCcyvB8czm12FgX/y/lRjmDbEA08QJNB2729Y+io1IYO3ztve
-BdvUCIYZojTq/OCR6MvnzS6X72HP0PRLRTiOSEmIDsS5N5w/8IW1Hva5hEFy6fDA
-fd9yI+O+IMMAj1KcL/Zo9jzJ16HO5m60ttl1Enk8MQkz/W3JlHaeI5iKFn4UJu1/
-cP2YHXYPiWf2JyBzsLBrGk1II+3yL8aorYew6CQvdVifC3HtwlSam9V1niiCfOBe
-2C12TdKGu05LWIA3ZkFcWJGaNXOZ6Ggyh/TqvXG5v7zmEVDNXFnHn9tFpMpOUvxh
-csjycBtH0dZ0WrNw6gH+HF8TIhCnH3+zzWuDN0Rk6h9KVkfKehIwggUzMIIEG6AD
-AgECAhBNQrEzGzrZ6FVYh1EEYH4+MA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
-b3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RP
-IFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAe
-Fw0xODA3MTgwMDAwMDBaFw0yMTA3MTcyMzU5NTlaMDAxLjAsBgkqhkiG9w0BCQEW
-H21hcnRpbi5rZXBwbGluZ2VyQGdpbnppbmdlci5jb20wggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQDsMC77L0D+2D8I8X5ubnBhADLgU+HtlwMTFt/WJIhc
-kgbvnawYXWrCIpk8F6BJ0R/iFCykPdG7741EmlcHRKOJfhVxjXhwnoGFqnYmurCt
-fvZLR3+mT3FWnVv2RAdrXscXH3BpijqqWabdtTbiTvmcl86Zc6mNlVhYZSbDul/E
-voIGZotGcGIWrgZxN+8MQJQHKb0KHyWlPVPkrjvEfOJHKKLFsBNSnNMR95Ijg3Sp
-h8/8RG490/zRHflGzUlxDSlLyY9YJGzSdDzcFKoYcc4oaaUY5N3uhRna43TLUIQh
-6ybt3DKVz1Pw/ikwYJrOsulJrVr3D8KVHdGxq7HYl7jnAgMBAAGjggHfMIIB2zAf
-BgNVHSMEGDAWgBSCr2yM+MX+lmF86B89K3FIXsSLwDAdBgNVHQ4EFgQU/GtSUbHg
-14sPDlmo27eQYwtjaS0wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYD
-VR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1UdIAQ/MD0wOwYMKwYBBAGy
-MQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5uZXQv
-Q1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NP
-TU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmww
-gYsGCCsGAQUFBwEBBH8wfTBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5jb21vZG9j
-YS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMCoG
-A1UdEQQjMCGBH21hcnRpbi5rZXBwbGluZ2VyQGdpbnppbmdlci5jb20wDQYJKoZI
-hvcNAQELBQADggEBAGEuG01K1tt5i3gUdQkYem/KpbJUYBZd43QwmoTa0TGXUiYq
-b+g/TeGG9QQ1yq+73xOr8fu6oT2608C7EiJc6JmjTs485/OZmTqgYkrLfs71F1kB
-3Z59WPf5aoR/pnn5vdfkkoO29V1cKPJR4z+iOG2hOlcK/dXrX8i6mnL5DGIe8l5n
-udUPvIbUhbMavrDd6kwhs0oCjylwdKGlFkCpKMn3HPflfDeHuV9Z8Nrpeq/7+Pm0
-I/fLPkaYlULASJoJCucMYcedY9rmuro9JhV+NuVXaqLIrQPc1vyKFeRuLHh84M6c
-1h1DArdGTykXZUwjXnnHtuOtzjIAzkx2Ns43vEsxggK/MIICuwIBATCBrDCBlzEL
-MAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UE
-BxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMT
-NENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEE1CsTMbOtnoVViHUQRgfj4wDQYJYIZIAWUDBAIBBQCggeQwGAYJKoZI
-hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgxMTI2MTAzODUz
-WjAvBgkqhkiG9w0BCQQxIgQgC2DFuUbJ3v0MHdw75CMmpp3t+xLOP8y0PSzC+gWI
-c6UweQYJKoZIhvcNAQkPMWwwajALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcN
-AwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEA
-kr3lEqqszbyIeU8RzYTTUTPBrBDZcQ33NietVGLAGLISPoXOYaBqz6egDPoEtM3L
-2ZThiVna0ymFR7bWtL5wKnkPIX/Pod6f/4TPhVHg3SJx0BmKq4bk6yQIMYCvWEU0
-ud+0qObYAn5+FICKgvwpR482umhhSq1+RI7D31HY6R3XpdE1+eGoV75m4EYyKet8
-OH25FNTuN/mSlATIGJLp83KHOSqMuVwlOakA25tgum2WvSBiF5h9njxPsOdu7dpJ
-VCvwuh8ANXAhPFVYEmJPqQCJ1HtSBtlFR3+LvxEqZvDhDhoek4vpecQrOn+6ZfHR
-3JM8Kah4Udw6ZgvoW+ixiA==
-
-------1AE2FA8DAD0F7A380663044B75E7EC6F--
+=20
++	save_uniform_erase_type =3D map->uniform_erase_type;
+ 	map->uniform_erase_type =3D spi_nor_sort_erase_mask(map,
+ 							  uniform_erase_type);
+=20
++	if (!regions_erase_type) {
++		/*
++		 * Roll back to the previous uniform_erase_type mask, SMPT is
++		 * broken.
++		 */
++		map->uniform_erase_type =3D save_uniform_erase_type;
++		return -EINVAL;
++	}
++
++	/*
++	 * BFPT advertises all the erase types supported by all the possible
++	 * map configurations. Mask out the erase types that are not supported
++	 * by the current map configuration.
++	 */
++	for (i =3D 0; i < SNOR_ERASE_TYPE_MAX; i++)
++		if (!(regions_erase_type & BIT(erase[i].idx)))
++			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
++
+ 	spi_nor_region_mark_end(&region[i - 1]);
+=20
+ 	return 0;
+--=20
+2.9.4
