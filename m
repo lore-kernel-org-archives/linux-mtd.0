@@ -1,25 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRZfI-0004vs-4E
- for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 09:28:23 +0000
-Date: Tue, 27 Nov 2018 10:27:57 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, "stable@vger.kernel.org" <stable@vger.kernel.org>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Received: from skedge03.snt-world.com ([91.208.41.68])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gRaXG-0007DV-W4
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 10:24:08 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: Fix memory allocation in nanddev_bbt_init()
-Message-ID: <20181127102757.6adc5649@xps13>
-In-Reply-To: <9365718c-4993-7e3b-1519-8fef0c08c0db@kontron.de>
-References: <1543304637-27308-1-git-send-email-frieder.schrempf@kontron.de>
- <20181127092232.3a6d1661@bbrezillon>
- <9365718c-4993-7e3b-1519-8fef0c08c0db@kontron.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "david.wolfe@nxp.com" <david.wolfe@nxp.com>,
+ "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
+ <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
+ <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>, Schrempf Frieder
+ <frieder.schrempf@kontron.de>
+Subject: [PATCH v6 0/9] Port the FSL QSPI driver to the SPI framework
+Date: Tue, 27 Nov 2018 10:23:53 +0000
+Message-ID: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,54 +33,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Now that the SPI memory interface was introduced by Boris, it is
+possible to move drivers from mtd/spi-nor to the SPI framework in order
+to use them for different type of SPI memory chips.
 
-Schrempf Frieder <frieder.schrempf@kontron.de> wrote on Tue, 27 Nov
-2018 08:30:24 +0000:
+Patch 1 and 2 removes some unused properties from the devicetree and fixes =
+the
+reg properties to correctly reflect the hardware setup.
 
-> On 27.11.18 09:22, Boris Brezillon wrote:
-> > On Tue, 27 Nov 2018 07:44:52 +0000
-> > Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
-> >  =20
-> >> Fix the size of the buffer allocated to store the in-memory BBT.
-> >> This bug was previously hidden by a different bug, that was fixed in
-> >> d098093ba06e. =20
-> >=20
-> > Oops :-/.
-> >  =20
-> >>
-> >> Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with =
-NAND devices")
-> >> Cc: <stable@vger.kernel.org>
-> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> >> ---
-> >>   drivers/mtd/nand/bbt.c | 3 ++-
-> >>   1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-> >> index 56cde38..c12497f 100644
-> >> --- a/drivers/mtd/nand/bbt.c
-> >> +++ b/drivers/mtd/nand/bbt.c
-> >> @@ -27,7 +27,8 @@ int nanddev_bbt_init(struct nand_device *nand)
-> >>   	unsigned int nwords =3D DIV_ROUND_UP(nblocks * bits_per_block,
-> >>   					   BITS_PER_LONG);
-> >>  =20
-> >> -	nand->bbt.cache =3D kzalloc(nwords, GFP_KERNEL);
-> >> +	nand->bbt.cache =3D kzalloc(nwords * (BITS_PER_LONG / BITS_PER_BYTE)=
-, =20
-> >=20
-> > I prefer
-> >=20
-> > 					 * sizeof(*nand->bbt.cache)
-> > If you're okay with this change, I'll fix it when applying (no need to
-> > send a new version). =20
->=20
-> Sure, that's ok.
+Patch 3 adds the driver for the Freescale QSPI controller to the SPI
+framework. Together with m25p80.c it can be used to interface SPI
+NOR flashes just as the old driver did. This patch also disables the build
+of the old driver.
 
-I also prefer with the sizeof() operator. Thanks for fixing this!
+Patch 4 moves the bindings to the correct place and patch 5 adjusts the
+bindings for the new driver.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Patch 6 removes the code of the old driver.
 
+Patch 7 and 8 remove 'fsl,qspi-has-second-chip' from the devicetrees.
+Patch 9 adjusts the MAINTAINERS file.
 
-Thanks,
-Miqu=C3=A8l
+The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
+The read performance of the new driver is almost the same or even better
+than the old driver, depending on the block size.
+The write performance is a bit slower on average (~10-15%).
+
+The new driver was also tested with the SPI NAND framework and a
+Toshiba TC58CVG2S0H flash.
+
+---
+Changes in v6:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+* Add a quirk for LS2080A SoC to fix multi chip setup
+* Use separate area in AHB memory map for each chip
+* Add R-b tags for binding changes
+
+Changes in v5:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+* Change SoB tags and commit author to new e-mail address
+* Drop change in compatible string of bindings
+* Reset the AHB domain
+* Drop the defconfig changes and reuse the Kconfig option of the old driver
+* Remove unused read()/write() pointers from struct fsl_qspi
+* Remove unused enum fsl_qspi_devtype
+* Fix break condition for fsl_qspi_readl_poll_tout()
+
+Changes in v4:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+* Rebase on top of v4.20-rc1
+* Drop patches that were merged separately
+* Address change of company name and email address
+* Use readl_poll_timeout() instead of busy waiting
+* Revert change to use callback functions for register read/write
+* Avoid divide by zero by checking op->dummy.nbytes
+* Make big-endian setting SoC-specific and don't read it from devicetree
+* Improve some register macros and masks
+
+Changes in v3:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+* Move fix for typo in spi-mem.h to a separate patch
+* Fix documentation of spi_mem_get_name() and get_name()
+* Avoid overwriting the name of the memory device in probe of m25p80
+* Add Suggested-by tags
+
+Changes in v2:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+* Rebase on top of nand/next
+* Add a name field to struct spi_mem and fill it while probing
+* Add Yogesh Gaur and Suresh Gupta as authors
+* Use GENMASK() for generating bitmasks
+* Use callback functions for read/write of registers
+* Attach the seq variable to the selected CS
+* Avoid using conditional in read/write loop
+* Avoid infinite loop and use a timeout instead
+* Return error pointer when allocation in fsl_qspi_get_name() fails
+* Remove redundant iounmap()
+* Put suspend()/resume() in dev_pm_ops instead of platform_driver
+* Split the moving and editing of the dt-bindings in two patches
+---
+Frieder Schrempf (9):
+  ARM: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  arm64: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  spi: Add a driver for the Freescale/NXP QuadSPI controller
+  dt-bindings: spi: Move the bindings for the FSL QSPI driver
+  dt-bindings: spi: Adjust the bindings for the FSL QSPI driver
+  mtd: fsl-quadspi: Remove the driver as it was replaced by
+    spi-fsl-qspi.c
+  ARM: dts: ls1021a: Remove fsl,qspi-has-second-chip as it is not used
+  ARM64: dts: ls1046a: Remove fsl,qspi-has-second-chip as it is not used
+  MAINTAINERS: Move the Freescale QSPI driver to the SPI framework
+
+ .../fsl-quadspi.txt =3D> spi/spi-fsl-qspi.txt}    |   18 +-
+ MAINTAINERS                                     |    4 +-
+ arch/arm/boot/dts/imx6sx-sdb-reva.dts           |    8 +-
+ arch/arm/boot/dts/imx6sx-sdb.dts                |    8 +-
+ arch/arm/boot/dts/imx6ul-14x14-evk.dtsi         |    2 +
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts     |    6 +-
+ .../boot/dts/freescale/fsl-ls1043a-qds.dts      |    3 +-
+ .../boot/dts/freescale/fsl-ls1046a-qds.dts      |    4 +-
+ .../boot/dts/freescale/fsl-ls1046a-rdb.dts      |    6 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi  |    1 -
+ .../boot/dts/freescale/fsl-ls208xa-qds.dtsi     |    4 +
+ drivers/mtd/spi-nor/Kconfig                     |    9 -
+ drivers/mtd/spi-nor/Makefile                    |    1 -
+ drivers/mtd/spi-nor/fsl-quadspi.c               | 1224 ------------------
+ drivers/spi/Kconfig                             |   11 +
+ drivers/spi/Makefile                            |    1 +
+ drivers/spi/spi-fsl-qspi.c                      |  967 ++++++++++++++
+ 17 files changed, 1017 insertions(+), 1260 deletions(-)
+ rename Documentation/devicetree/bindings/{mtd/fsl-quadspi.txt =3D> spi/spi=
+-fsl-qspi.txt} (73%)
+ delete mode 100644 drivers/mtd/spi-nor/fsl-quadspi.c
+ create mode 100644 drivers/spi/spi-fsl-qspi.c
+
+--=20
+2.7.4
