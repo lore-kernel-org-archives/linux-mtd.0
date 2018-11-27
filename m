@@ -1,27 +1,18 @@
-Received: from mail-eopbgr00118.outbound.protection.outlook.com
- ([40.107.0.118] helo=EUR02-AM5-obe.outbound.protection.outlook.com)
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRGZT-0000Z5-G2
- for linux-mtd@lists.infradead.org; Mon, 26 Nov 2018 13:05:53 +0000
-From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>, "richard@nod.at" <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: fix erase_type array to indicate current
- map conf
-Date: Mon, 26 Nov 2018 13:04:45 +0000
-Message-ID: <2ae2459e-f5e7-f621-fd63-0982a1e59e86@nokia.com>
-References: <20181126124531.17548-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20181126124531.17548-1-tudor.ambarus@microchip.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <14E00832EAE7C5418B18E5F1080ED6D7@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1gRQvt-0008Dx-AM
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 00:08:54 +0000
+Received: by mail-lf1-x144.google.com with SMTP id u18so15020457lff.10
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Nov 2018 16:08:42 -0800 (PST)
 MIME-Version: 1.0
+Reply-To: worldonlinecreditunion@gmail.com
+From: Offer <financialhomeloan2020@gmail.com>
+Date: Mon, 26 Nov 2018 12:08:40 -1200
+Message-ID: <CAP_9KoTQioWvZr8SBsEXdSVUN3E8f3GkJ9QuKDH_AseQfx+H4A@mail.gmail.com>
+Subject: 
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,70 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gVHVkb3IgYW5kIGFsbCwNCg0KT24gMjYvMTEvMjAxOCAxMzo0NSwgVHVkb3IuQW1iYXJ1
-c0BtaWNyb2NoaXAuY29tIHdyb3RlOg0KPiBGcm9tOiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJh
-cnVzQG1pY3JvY2hpcC5jb20+DQo+IA0KPiBCRlBUIGFkdmVydGlzZXMgYWxsIHRoZSBlcmFzZSB0
-eXBlcyBzdXBwb3J0ZWQgYnkgYWxsIHRoZSBwb3NzaWJsZQ0KPiBtYXAgY29uZmlndXJhdGlvbnMu
-IE1hc2sgb3V0IHRoZSBlcmFzZSB0eXBlcyB0aGF0IGFyZSBub3Qgc3VwcG9ydGVkDQo+IGJ5IHRo
-ZSBjdXJyZW50IG1hcCBjb25maWd1cmF0aW9uLg0KPiANCj4gQmFja3dhcmQgY29tcGF0aWJpbGl0
-eSB0ZXN0IGRvbmUgb24gc3N0MjZ2ZjA2NGIuDQo+IA0KPiBGaXhlczogYjAzOGU4ZTNiZTcyICgi
-bXRkOiBzcGktbm9yOiBwYXJzZSBTRkRQIFNlY3RvciBNYXAgUGFyYW1ldGVyIFRhYmxlIikNCj4g
-UmVwb3J0ZWQtYnk6IEFsZXhhbmRlciBTdmVyZGxpbiA8YWxleGFuZGVyLnN2ZXJkbGluQG5va2lh
-LmNvbT4NCg0KSSd2ZSB2ZXJpZmllZCB0aGUgZXJhc2VzaXplLCBwYXJ0aXRpb25pbmcgYW5kIGVy
-YXNlIGZ1bmN0aW9uIG9mIHRoZSBTMjVGUzEyOFMNCmFuZCBhbGwgdGhlIGFib3ZlIGlzIGF0IGxl
-YXN0IGJhY2sgdG8gcHJlLVNGRFAgc3RhdGUuDQoNClNvIHRoZSBwYXRjaCB3b3JrcyBhcyBpbnRl
-bmRlZCBhbmQgaXQncw0KVGVzdGVkLWJ5OiBBbGV4YW5kZXIgU3ZlcmRsaW4gPGFsZXhhbmRlci5z
-dmVyZGxpbkBub2tpYS5jb20+DQoNClRoZXJlIGlzIHN0aWxsIGEgcmVncmVzc2lvbiB3aXRoIHdy
-aXRlIHdoZW4gUzI1RlMxMjhTIGlzIHVzZWQgd2l0aCBTRkRQDQpiZWNhdXNlIFNGRFAgb2YgdGhl
-IFMyNUZTMTI4UyBpcyBqdXN0IGJyb2tlbi4gSXQgYWR2ZXJ0aXNlcyA1MTIgYnl0ZXMNCm9mIHdy
-aXRlIHBhZ2Ugc2l6ZSBidXQgZmFjdG9yeSBkZWxpdmVyeSBjb25maWd1cmF0aW9uIHdyYXBzIHRo
-ZSBhZGRyZXNzDQpvbiAyNTYgYnl0ZXMgYm91bmRhcnkuIEkgZm91bmQgbm8gd2F5IHRvIGZldGNo
-IHRoaXMgY29uZmlndXJhdGlvbiBpbiBhDQp2ZW5kb3ItbmV1dHJhbCB3YXkgKG9yIEpFREVDLWNv
-bmZvcm0gd2F5KS4gV2hpY2ggbWVhbnMsIFMyNUZTMTI4Uw0KY291bGQgYmUgdGhlIGZpcnN0IHVz
-ZXIgb2YgU1BJX05PUl9TS0lQX1NGRFAgZmxhZyA6XA0KDQo+IFNpZ25lZC1vZmYtYnk6IFR1ZG9y
-IEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4gLS0tDQo+IHYyOg0KPiAt
-IGRyb3AgY29uc3QgcXVhbGlmaWVyDQo+IC0gdXBkYXRlIGNvbW1pdCBtZXNzYWdlIGFuZCBjb21t
-ZW50DQo+IA0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAzMSArKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjkgaW5zZXJ0aW9ucygr
-KSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9y
-L3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IGluZGV4IDkzYzli
-Yzg5MzFmYy4uMWZkZDI4MzRmYmNiIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9y
-L3NwaS1ub3IuYw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiBAQCAt
-Mjk5NSwxMiArMjk5NSwxMyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9ybV9l
-cmFzZV9tYXAoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gIAkJCQkJICAgICAgY29uc3QgdTMyICpz
-bXB0KQ0KPiAgew0KPiAgCXN0cnVjdCBzcGlfbm9yX2VyYXNlX21hcCAqbWFwID0gJm5vci0+ZXJh
-c2VfbWFwOw0KPiAtCWNvbnN0IHN0cnVjdCBzcGlfbm9yX2VyYXNlX3R5cGUgKmVyYXNlID0gbWFw
-LT5lcmFzZV90eXBlOw0KPiArCXN0cnVjdCBzcGlfbm9yX2VyYXNlX3R5cGUgKmVyYXNlID0gbWFw
-LT5lcmFzZV90eXBlOw0KPiAgCXN0cnVjdCBzcGlfbm9yX2VyYXNlX3JlZ2lvbiAqcmVnaW9uOw0K
-PiAgCXU2NCBvZmZzZXQ7DQo+ICAJdTMyIHJlZ2lvbl9jb3VudDsNCj4gIAlpbnQgaSwgajsNCj4g
-LQl1OCBlcmFzZV90eXBlLCB1bmlmb3JtX2VyYXNlX3R5cGU7DQo+ICsJdTggdW5pZm9ybV9lcmFz
-ZV90eXBlLCBzYXZlX3VuaWZvcm1fZXJhc2VfdHlwZTsNCj4gKwl1OCBlcmFzZV90eXBlLCByZWdp
-b25zX2VyYXNlX3R5cGU7DQo+ICANCj4gIAlyZWdpb25fY291bnQgPSBTTVBUX01BUF9SRUdJT05f
-Q09VTlQoKnNtcHQpOw0KPiAgCS8qDQo+IEBAIC0zMDE0LDYgKzMwMTUsNyBAQCBzdGF0aWMgaW50
-IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9ybV9lcmFzZV9tYXAoc3RydWN0IHNwaV9ub3IgKm5vciwN
-Cj4gIAltYXAtPnJlZ2lvbnMgPSByZWdpb247DQo+ICANCj4gIAl1bmlmb3JtX2VyYXNlX3R5cGUg
-PSAweGZmOw0KPiArCXJlZ2lvbnNfZXJhc2VfdHlwZSA9IDA7DQo+ICAJb2Zmc2V0ID0gMDsNCj4g
-IAkvKiBQb3B1bGF0ZSByZWdpb25zLiAqLw0KPiAgCWZvciAoaSA9IDA7IGkgPCByZWdpb25fY291
-bnQ7IGkrKykgew0KPiBAQCAtMzAzMCwxMyArMzAzMiwzOCBAQCBzdGF0aWMgaW50IHNwaV9ub3Jf
-aW5pdF9ub25fdW5pZm9ybV9lcmFzZV9tYXAoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gIAkJICov
-DQo+ICAJCXVuaWZvcm1fZXJhc2VfdHlwZSAmPSBlcmFzZV90eXBlOw0KPiAgDQo+ICsJCS8qDQo+
-ICsJCSAqIHJlZ2lvbnNfZXJhc2VfdHlwZSBtYXNrIHdpbGwgaW5kaWNhdGUgYWxsIHRoZSBlcmFz
-ZSB0eXBlcw0KPiArCQkgKiBzdXBwb3J0ZWQgaW4gdGhpcyBjb25maWd1cmF0aW9uIG1hcC4NCj4g
-KwkJICovDQo+ICsJCXJlZ2lvbnNfZXJhc2VfdHlwZSB8PSBlcmFzZV90eXBlOw0KPiArDQo+ICAJ
-CW9mZnNldCA9IChyZWdpb25baV0ub2Zmc2V0ICYgflNOT1JfRVJBU0VfRkxBR1NfTUFTSykgKw0K
-PiAgCQkJIHJlZ2lvbltpXS5zaXplOw0KPiAgCX0NCj4gIA0KPiArCXNhdmVfdW5pZm9ybV9lcmFz
-ZV90eXBlID0gbWFwLT51bmlmb3JtX2VyYXNlX3R5cGU7DQo+ICAJbWFwLT51bmlmb3JtX2VyYXNl
-X3R5cGUgPSBzcGlfbm9yX3NvcnRfZXJhc2VfbWFzayhtYXAsDQo+ICAJCQkJCQkJICB1bmlmb3Jt
-X2VyYXNlX3R5cGUpOw0KPiAgDQo+ICsJaWYgKCFyZWdpb25zX2VyYXNlX3R5cGUpIHsNCj4gKwkJ
-LyoNCj4gKwkJICogUm9sbCBiYWNrIHRvIHRoZSBwcmV2aW91cyB1bmlmb3JtX2VyYXNlX3R5cGUg
-bWFzaywgU01QVCBpcw0KPiArCQkgKiBicm9rZW4uDQo+ICsJCSAqLw0KPiArCQltYXAtPnVuaWZv
-cm1fZXJhc2VfdHlwZSA9IHNhdmVfdW5pZm9ybV9lcmFzZV90eXBlOw0KPiArCQlyZXR1cm4gLUVJ
-TlZBTDsNCj4gKwl9DQo+ICsNCj4gKwkvKg0KPiArCSAqIEJGUFQgYWR2ZXJ0aXNlcyBhbGwgdGhl
-IGVyYXNlIHR5cGVzIHN1cHBvcnRlZCBieSBhbGwgdGhlIHBvc3NpYmxlDQo+ICsJICogbWFwIGNv
-bmZpZ3VyYXRpb25zLiBNYXNrIG91dCB0aGUgZXJhc2UgdHlwZXMgdGhhdCBhcmUgbm90IHN1cHBv
-cnRlZA0KPiArCSAqIGJ5IHRoZSBjdXJyZW50IG1hcCBjb25maWd1cmF0aW9uLg0KPiArCSAqLw0K
-PiArCWZvciAoaSA9IDA7IGkgPCBTTk9SX0VSQVNFX1RZUEVfTUFYOyBpKyspDQo+ICsJCWlmICgh
-KHJlZ2lvbnNfZXJhc2VfdHlwZSAmIEJJVChlcmFzZVtpXS5pZHgpKSkNCj4gKwkJCXNwaV9ub3Jf
-c2V0X2VyYXNlX3R5cGUoJmVyYXNlW2ldLCAwLCAweEZGKTsNCj4gKw0KPiAgCXNwaV9ub3JfcmVn
-aW9uX21hcmtfZW5kKCZyZWdpb25baSAtIDFdKTsNCj4gIA0KPiAgCXJldHVybiAwOw0KDQotLSAN
-CkJlc3QgcmVnYXJkcywNCkFsZXhhbmRlciBTdmVyZGxpbi4NCg==
+Guten Tag, Wir sind eine registrierte private Geldverleiher. Wir geben
+Kredite an Firmen, Einzelpersonen, die ihre finanzielle Status auf der
+ganzen Welt aktualisieren m=C3=BCssen, mit minimalen j=C3=A4hrlichen Zinsen=
+ von
+2% .reply, wenn n=C3=B6tig.
+
+Good Day, We are a registered private money lender. We give out loans
+to firms, Individual who need to update their financial status all
+over the world, with Minimal annual Interest Rates of 2%reply if
+needed.
