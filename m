@@ -1,41 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from skedge04.snt-world.com ([91.208.41.69])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRb7z-0002Ri-Dz
- for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 11:02:11 +0000
-Date: Tue, 27 Nov 2018 12:01:34 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
- Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Li Yang <leoyang.li@nxp.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "yogeshnarayan.gaur@nxp.com" <yogeshnarayan.gaur@nxp.com>,
- "richard@nod.at" <richard@nod.at>,
- "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "han.xu@nxp.com" <han.xu@nxp.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ id 1gRbMa-0008ED-Do
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 11:17:10 +0000
+Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by skedge04.snt-world.com (Postfix) with ESMTPS id DF10667A5BB
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Nov 2018 12:16:55 +0100 (CET)
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH v6 1/9] ARM: dts: Reflect change of FSL QSPI driver and
  remove unused properties
-Message-ID: <20181127110134.7xdwo7ird44qj2ih@pengutronix.de>
+Date: Tue, 27 Nov 2018 11:16:55 +0000
+Message-ID: <dddc8370-1059-4565-5556-4baf91f7e432@kontron.de>
 References: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
  <1543314174-28580-2-git-send-email-frieder.schrempf@kontron.de>
+ <20181127110134.7xdwo7ird44qj2ih@pengutronix.de>
+In-Reply-To: <20181127110134.7xdwo7ird44qj2ih@pengutronix.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BB831274B8AE834EA8AD39C358CBB02A@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1543314174-28580-2-git-send-email-frieder.schrempf@kontron.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,32 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-On Tue, Nov 27, 2018 at 10:24:19AM +0000, Schrempf Frieder wrote:
-> The FSL QSPI driver will be moved to the SPI framework and it then
-> acts as a SPI controller. Therefore the subnodes need to set
-> spi-[rx/tx]-bus-width = <4>, so quad mode is used just as before.
-> 
-> Also the properties 'bus-num', 'fsl,spi-num-chipselects' and
-> 'fsl,spi-flash-chipselects' were never read by the driver and
-> can be removed.
-> 
-> The 'reg' properties are adjusted to reflect what bus and
-> chipselect the flash is connected to, as the new driver needs
-> this information.
-> 
-> The property 'fsl,qspi-has-second-chip' is not needed anymore
-> and will be removed after the old driver was disabled to avoid
-> breaking ls1021a-moxa-uc-8410a.dts.
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-
-do we need to change the binding document accordingly?
-
-Best regards
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+SGkgVXdlLA0KDQpPbiAyNy4xMS4xOCAxMjowMSwgVXdlIEtsZWluZS1Lw7ZuaWcgd3JvdGU6DQo+
+IEhlbGxvLA0KPiANCj4gT24gVHVlLCBOb3YgMjcsIDIwMTggYXQgMTA6MjQ6MTlBTSArMDAwMCwg
+U2NocmVtcGYgRnJpZWRlciB3cm90ZToNCj4+IFRoZSBGU0wgUVNQSSBkcml2ZXIgd2lsbCBiZSBt
+b3ZlZCB0byB0aGUgU1BJIGZyYW1ld29yayBhbmQgaXQgdGhlbg0KPj4gYWN0cyBhcyBhIFNQSSBj
+b250cm9sbGVyLiBUaGVyZWZvcmUgdGhlIHN1Ym5vZGVzIG5lZWQgdG8gc2V0DQo+PiBzcGktW3J4
+L3R4XS1idXMtd2lkdGggPSA8ND4sIHNvIHF1YWQgbW9kZSBpcyB1c2VkIGp1c3QgYXMgYmVmb3Jl
+Lg0KPj4NCj4+IEFsc28gdGhlIHByb3BlcnRpZXMgJ2J1cy1udW0nLCAnZnNsLHNwaS1udW0tY2hp
+cHNlbGVjdHMnIGFuZA0KPj4gJ2ZzbCxzcGktZmxhc2gtY2hpcHNlbGVjdHMnIHdlcmUgbmV2ZXIg
+cmVhZCBieSB0aGUgZHJpdmVyIGFuZA0KPj4gY2FuIGJlIHJlbW92ZWQuDQo+Pg0KPj4gVGhlICdy
+ZWcnIHByb3BlcnRpZXMgYXJlIGFkanVzdGVkIHRvIHJlZmxlY3Qgd2hhdCBidXMgYW5kDQo+PiBj
+aGlwc2VsZWN0IHRoZSBmbGFzaCBpcyBjb25uZWN0ZWQgdG8sIGFzIHRoZSBuZXcgZHJpdmVyIG5l
+ZWRzDQo+PiB0aGlzIGluZm9ybWF0aW9uLg0KPj4NCj4+IFRoZSBwcm9wZXJ0eSAnZnNsLHFzcGkt
+aGFzLXNlY29uZC1jaGlwJyBpcyBub3QgbmVlZGVkIGFueW1vcmUNCj4+IGFuZCB3aWxsIGJlIHJl
+bW92ZWQgYWZ0ZXIgdGhlIG9sZCBkcml2ZXIgd2FzIGRpc2FibGVkIHRvIGF2b2lkDQo+PiBicmVh
+a2luZyBsczEwMjFhLW1veGEtdWMtODQxMGEuZHRzLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IEZy
+aWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4NCj4gDQo+IGRvIHdl
+IG5lZWQgdG8gY2hhbmdlIHRoZSBiaW5kaW5nIGRvY3VtZW50IGFjY29yZGluZ2x5Pw0KDQpCaW5k
+aW5ncyBhcmUgY2hhbmdlZCBoZXJlOiBodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3BhdGNo
+LzEwMDM3NjEvDQoNClRoYW5rcywNCkZyaWVkZXI=
