@@ -1,19 +1,29 @@
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRfEE-0006oZ-IX
- for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 15:24:48 +0000
-Received: by mail-pf1-x444.google.com with SMTP id h3so8545993pfg.1
- for <linux-mtd@lists.infradead.org>; Tue, 27 Nov 2018 07:24:36 -0800 (PST)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Chuanhong Guo <gch981213@gmail.com>
-Subject: [PATCH] mtd: spinand: add support for GigaDevice GD5FxGQ4xA
-Date: Tue, 27 Nov 2018 23:23:25 +0800
-Message-Id: <20181127152325.18437-1-gch981213@gmail.com>
+ id 1gRgRB-0006Po-Do
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 16:42:16 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: spi: Add initial support for Toshiba
+ TC58CVG2S0H
+Date: Tue, 27 Nov 2018 16:41:56 +0000
+Message-ID: <1655b66f-37e2-427f-a047-8305f86fc22c@kontron.de>
+References: <1541665796-21092-1-git-send-email-frieder.schrempf@kontron.de>
+ <0fc1f198-0e87-01af-5a0e-3d21613c39f3@kontron.de>
+ <CAJiuCceD=qyasCUPqjyGQso3JGoxz4g_yg3uj18wP-2CKY9wyg@mail.gmail.com>
+In-Reply-To: <CAJiuCceD=qyasCUPqjyGQso3JGoxz4g_yg3uj18wP-2CKY9wyg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9F41DC327DD25C4AA87E128CA44484F0@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,197 +33,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for GigaDevice GD5F1G/2G/4GQ4xA SPI NAND.
-
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
- drivers/mtd/nand/spi/Makefile     |   2 +-
- drivers/mtd/nand/spi/core.c       |   1 +
- drivers/mtd/nand/spi/gigadevice.c | 142 ++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h       |   1 +
- 4 files changed, 145 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/gigadevice.c
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index be5f73512ece..753125082640 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o macronix.o micron.o toshiba.o winbond.o
-+spinand-objs := core.o gigadevice.o macronix.o micron.o toshiba.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 87bdf2a7b724..479c2f2cf17f 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -764,6 +764,7 @@ static const struct nand_ops spinand_ops = {
- };
- 
- static const struct spinand_manufacturer *spinand_manufacturers[] = {
-+	&gigadevice_spinand_manufacturer,
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&toshiba_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-new file mode 100644
-index 000000000000..f8bacde18437
---- /dev/null
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Author:
-+ *	Chuanhong Guo <gch981213@gmail.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_GIGADEVICE				0xC8
-+#define GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS	0x3
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int gd5fxgq4xa_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 8;
-+	region->length = 8;
-+
-+	return 0;
-+}
-+
-+static int gd5fxgq4xa_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 2;
-+	region->length = 6;
-+
-+	return 0;
-+}
-+
-+static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_HAS_BITFLIPS:
-+		/* 1-7 bits are flipped. return the maximum. */
-+		return 7;
-+
-+	case GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS:
-+		return 8;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct mtd_ooblayout_ops gd5fxgq4xa_ooblayout = {
-+	.ecc = gd5fxgq4xa_ooblayout_ecc,
-+	.free = gd5fxgq4xa_ooblayout_free,
-+};
-+
-+static const struct spinand_info gigadevice_spinand_table[] = {
-+	SPINAND_INFO("GD5F1GQ4xA", 0xF1,
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
-+				     gd5fxgq4xa_ecc_get_status)),
-+	SPINAND_INFO("GD5F2GQ4xA", 0xF2,
-+		     NAND_MEMORG(1, 2048, 64, 64, 2048, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
-+				     gd5fxgq4xa_ecc_get_status)),
-+	SPINAND_INFO("GD5F4GQ4xA", 0xF4,
-+		     NAND_MEMORG(1, 2048, 64, 64, 4096, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
-+				     gd5fxgq4xa_ecc_get_status)),
-+};
-+
-+static int gigadevice_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id = spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * For GD NANDs, There is an address byte needed to shift in before IDs
-+	 * are read out, so the first byte in raw_id is dummy.
-+	 */
-+	if (id[1] != SPINAND_MFR_GIGADEVICE)
-+		return 0;
-+
-+	ret = spinand_match_and_init(spinand, gigadevice_spinand_table,
-+				     ARRAY_SIZE(gigadevice_spinand_table),
-+				     id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops gigadevice_spinand_manuf_ops = {
-+	.detect = gigadevice_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer gigadevice_spinand_manufacturer = {
-+	.id = SPINAND_MFR_GIGADEVICE,
-+	.name = "GigaDevice",
-+	.ops = &gigadevice_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 816c4b00abca..b92e2aa955b6 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -194,6 +194,7 @@ struct spinand_manufacturer {
- };
- 
- /* SPI NAND manufacturers */
-+extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
--- 
-2.19.1
+SGkgQ2zDqW1lbnQsDQoNCk9uIDI3LjExLjE4IDE2OjE4LCBDbMOpbWVudCBQw6lyb24gd3JvdGU6
+DQo+IEhpIEZyaWVkZXIsDQo+IA0KPiBPbiBUdWUsIDI3IE5vdiAyMDE4IGF0IDE2OjA4LCBTY2hy
+ZW1wZiBGcmllZGVyDQo+IDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+IHdyb3RlOg0KPj4N
+Cj4+ICtDbMOpbWVudCBQw6lyb24NCj4+DQo+PiBIaSBDbMOpbWVudCwNCj4+DQo+PiBGWUksIHRo
+aXMgaGFzIGFscmVhZHkgYmVlbiBtZXJnZWQgdG8gbmFuZC9uZXh0Lg0KPiBKdXN0IHdhbnQgdG8g
+cG9pbnQgdGhlIGRpZmZlcmVuY2UgdGhhdCBJIG1hZGUgd2hlbiBJIHRyeSB0byBpbnRyb2R1Y2Ug
+bXkgZHJpdmVyLg0KPiBUaGUgZGF0YXNoZWV0IEkgdXNlZCBpcyB0aGlzIG9uZSA6DQo+IGh0dHBz
+Oi8vbWVkaWEuZGlnaWtleS5jb20vcGRmL0RhdGElMjBTaGVldHMvVG9zaGliYSUyMFBERnMvVEM1
+OENWRzJTMEh4QUl4X1JldjEuMV8yMDE2LTExLTA4LnBkZg0KPiANCj4+DQo+PiBSZWdhcmRzLA0K
+Pj4gRnJpZWRlcg0KPj4NCj4+IE9uIDA4LjExLjE4IDA5OjI5LCBGcmllZGVyIFNjaHJlbXBmIHdy
+b3RlOg0KPj4+IEFkZCBtaW5pbWFsIHN1cHBvcnQgZm9yIHRoZSBUb3NoaWJhIFRDNThDVkcyUzBI
+IFNQSSBOQU5EIGNoaXAuDQo+Pj4NCj4+PiBTaWduZWQtb2ZmLWJ5OiBGcmllZGVyIFNjaHJlbXBm
+IDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+DQo+Pj4gLS0tDQo+Pj4gICAgZHJpdmVycy9t
+dGQvbmFuZC9zcGkvTWFrZWZpbGUgIHwgICAyICstDQo+Pj4gICAgZHJpdmVycy9tdGQvbmFuZC9z
+cGkvY29yZS5jICAgIHwgICAxICsNCj4+PiAgICBkcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJh
+LmMgfCAxMzYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+Pj4gICAgaW5j
+bHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgIHwgICAxICsNCj4+PiAgICA0IGZpbGVzIGNoYW5n
+ZWQsIDEzOSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+Pj4NCj4+PiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9N
+YWtlZmlsZQ0KPj4+IGluZGV4IGI3NGUwNzQuLmJlNWY3MzUgMTAwNjQ0DQo+Pj4gLS0tIGEvZHJp
+dmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUNCj4+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Nw
+aS9NYWtlZmlsZQ0KPj4+IEBAIC0xLDMgKzEsMyBAQA0KPj4+ICAgICMgU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IEdQTC0yLjANCj4+PiAtc3BpbmFuZC1vYmpzIDo9IGNvcmUubyBtYWNyb25peC5v
+IG1pY3Jvbi5vIHdpbmJvbmQubw0KPj4+ICtzcGluYW5kLW9ianMgOj0gY29yZS5vIG1hY3Jvbml4
+Lm8gbWljcm9uLm8gdG9zaGliYS5vIHdpbmJvbmQubw0KPj4+ICAgIG9iai0kKENPTkZJR19NVERf
+U1BJX05BTkQpICs9IHNwaW5hbmQubw0KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5k
+L3NwaS9jb3JlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMNCj4+PiBpbmRleCAzMGY4
+MzY0Li44N2JkZjJhIDEwMDY0NA0KPj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUu
+Yw0KPj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYw0KPj4+IEBAIC03NjYsNiAr
+NzY2LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBuYW5kX29wcyBzcGluYW5kX29wcyA9IHsNCj4+
+PiAgICBzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyICpzcGluYW5kX21h
+bnVmYWN0dXJlcnNbXSA9IHsNCj4+PiAgICAgICAgJm1hY3Jvbml4X3NwaW5hbmRfbWFudWZhY3R1
+cmVyLA0KPj4+ICAgICAgICAmbWljcm9uX3NwaW5hbmRfbWFudWZhY3R1cmVyLA0KPj4+ICsgICAg
+ICZ0b3NoaWJhX3NwaW5hbmRfbWFudWZhY3R1cmVyLA0KPj4+ICAgICAgICAmd2luYm9uZF9zcGlu
+YW5kX21hbnVmYWN0dXJlciwNCj4+PiAgICB9Ow0KPj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEuYyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEu
+Yw0KPj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+Pj4gaW5kZXggMDAwMDAwMC4uMjk0YmNmNg0K
+Pj4+IC0tLSAvZGV2L251bGwNCj4+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJh
+LmMNCj4+PiBAQCAtMCwwICsxLDEzNiBAQA0KPj4+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
+cjogR1BMLTIuMA0KPj4+ICsvKg0KPj4+ICsgKiBDb3B5cmlnaHQgKGMpIDIwMTggZXhjZWV0IGVs
+ZWN0cm9uaWNzIEdtYkgNCj4+PiArICogQ29weXJpZ2h0IChjKSAyMDE4IEtvbnRyb24gRWxlY3Ry
+b25pY3MgR21iSA0KPj4+ICsgKg0KPj4+ICsgKiBBdXRob3I6IEZyaWVkZXIgU2NocmVtcGYgPGZy
+aWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4NCj4+PiArICovDQo+Pj4gKw0KPj4+ICsjaW5jbHVk
+ZSA8bGludXgvZGV2aWNlLmg+DQo+Pj4gKyNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCj4+PiAr
+I2luY2x1ZGUgPGxpbnV4L210ZC9zcGluYW5kLmg+DQo+Pj4gKw0KPj4+ICsjZGVmaW5lIFNQSU5B
+TkRfTUZSX1RPU0hJQkEgICAgICAgICAgMHg5OA0KPj4+ICsNCj4+PiArc3RhdGljIFNQSU5BTkRf
+T1BfVkFSSUFOVFMocmVhZF9jYWNoZV92YXJpYW50cywNCj4+PiArICAgICAgICAgICAgIFNQSU5B
+TkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfWDRfT1AoMCwgMSwgTlVMTCwgMCksDQo+Pj4gKyAgICAg
+ICAgICAgICBTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1gyX09QKDAsIDEsIE5VTEwsIDAp
+LA0KPj4+ICsgICAgICAgICAgICAgU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUCh0cnVl
+LCAwLCAxLCBOVUxMLCAwKSwNCj4+PiArICAgICAgICAgICAgIFNQSU5BTkRfUEFHRV9SRUFEX0ZS
+T01fQ0FDSEVfT1AoZmFsc2UsIDAsIDEsIE5VTEwsIDApKTsNCj4+PiArDQo+Pj4gK3N0YXRpYyBT
+UElOQU5EX09QX1ZBUklBTlRTKHdyaXRlX2NhY2hlX3ZhcmlhbnRzLA0KPj4+ICsgICAgICAgICAg
+ICAgU1BJTkFORF9QUk9HX0xPQUQodHJ1ZSwgMCwgTlVMTCwgMCkpOw0KPj4+ICsNCj4+PiArc3Rh
+dGljIFNQSU5BTkRfT1BfVkFSSUFOVFModXBkYXRlX2NhY2hlX3ZhcmlhbnRzLA0KPj4+ICsgICAg
+ICAgICAgICAgU1BJTkFORF9QUk9HX0xPQUQoZmFsc2UsIDAsIE5VTEwsIDApKTsNCj4+PiArDQo+
+Pj4gK3N0YXRpYyBpbnQgdGM1OGN2ZzJzMGhfb29ibGF5b3V0X2VjYyhzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCwgaW50IHNlY3Rpb24sDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBzdHJ1Y3QgbXRkX29vYl9yZWdpb24gKnJlZ2lvbikNCj4+PiArew0KPj4+ICsgICAgIGlmIChz
+ZWN0aW9uID4gNykNCj4+PiArICAgICAgICAgICAgIHJldHVybiAtRVJBTkdFOw0KPj4+ICsNCj4+
+PiArICAgICByZWdpb24tPm9mZnNldCA9IDEyOCArIDE2ICogc2VjdGlvbjsNCj4+PiArICAgICBy
+ZWdpb24tPmxlbmd0aCA9IDE2Ow0KPiANCj4gSGVyZSB5b3UgZXhwb3NlIHRoZSBFQ0MgYml0cyBo
+YXMgOCBzZWN0aW9ucyBvZiAxNiBieXRlcy4NCj4gQnV0IHJlZ2FyZGluZyB0aGUgZGF0YXNoZWV0
+IHRoaXMgc2hvdWxkIG5vdCBiZSBhY2Nlc3NlZCBwYWdlIDMyLg0KPiAiVGhlIEVDQyBwYXJpdHkg
+Y29kZSBnZW5lcmF0ZWQgYnkgaW50ZXJuYWwgRUNDIGlzIHN0b3JlZCBpbiBjb2x1bW4NCj4gYWRk
+cmVzc2VzIDQyMjQtNDM1MSBhbmQgdGhlIHVzZXJzIGNhbm5vdCBhY2Nlc3MgdG8gdGhlc2Ugc3Bl
+Y2lmaWMNCj4gYWRkcmVzc2VzIHdoZW4gaW50ZXJuYWwgRUNDIGlzIGVuYWJsZWQuIg0KDQpUaGlz
+IGlzIGp1c3QgdG8gbGV0IHRoZSBvdGhlciBsYXllcnMga25vdywgd2hlcmUgdGhlIGJ5dGVzIHVz
+ZWQgZm9yIEVDQyANCmFyZS4gQXMgbG9uZyBhcyB0aGUgZHJpdmVyIHVzZXMgdGhlIG9uLWNoaXAg
+RUNDIGl0IHdvbid0IHdyaXRlIHRvIHRoaXMgDQphcmVhLiBTbyB0aGlzIGlzIGNvcnJlY3QgdW5s
+ZXNzIEkgbWlzdW5kZXJzdG9vZCB0aGlzIGNvbmNlcHQuIEFsbCB0aGUgDQpvdGhlciBzdXBwb3J0
+ZWQgU1BJIE5BTkQgY2hpcHMgdXNlIHRoZSBzYW1lIGFwcHJvYWNoLg0KDQo+IA0KPj4+ICsNCj4+
+PiArDQo+Pj4gKyAgICAgcmV0dXJuIDA7DQo+Pj4gK30NCj4+PiArDQo+Pj4gK3N0YXRpYyBpbnQg
+dGM1OGN2ZzJzMGhfb29ibGF5b3V0X2ZyZWUoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0
+aW9uLA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBtdGRf
+b29iX3JlZ2lvbiAqcmVnaW9uKQ0KPj4+ICt7DQo+Pj4gKyAgICAgaWYgKHNlY3Rpb24gPiA3KQ0K
+Pj4+ICsgICAgICAgICAgICAgcmV0dXJuIC1FUkFOR0U7DQo+Pj4gKw0KPj4+ICsgICAgIHJlZ2lv
+bi0+b2Zmc2V0ID0gMiArIDE2ICogc2VjdGlvbjsNCj4+PiArICAgICByZWdpb24tPmxlbmd0aCA9
+IDE0Ow0KPiANCj4gVGhpcyByZXNlcnZlZCAyIGJ5dGVzIGZvciBCQk0gZm9yIGVhY2ggc2VjdGlv
+bi4NCj4gQnV0IG1heWJlIHdlIGNvdWxkIGRlY2xhcmUgdGhpcyBhcyAxIHNlY3Rpb24gb2YgMTI4
+Ynl0ZXM6DQo+IA0KPiBpZiAoc2VjdGlvbikNCj4gICAgICAgICAgIHJldHVybiAtRVJBTkdFOw0K
+PiANCj4gcmVnaW9uLT5vZmZzZXQgPSAyOw0KPiByZWdpb24tPmxlbmd0aCA9IDEyNjsNCg0KVGhl
+IGRhdGFzaGVldCAocC4gMzIpIGRlc2NyaWJlcyB0aGF0IHRoZSBPT0IgZGF0YSBvZiBhIHBhZ2Ug
+aXMgZGl2aWRlZCANCmludG8gOCBzZWN0aW9ucy4gU28gd2h5IHNob3VsZCB3ZSBub3QgcmVmbGVj
+dCB0aGlzIGluIHRoZSBzb2Z0d2FyZT8NClByb2JhYmx5IGl0IHdvdWxkIGJlIHN1ZmZpY2llbnQg
+dG8gcmVzZXJ2ZSB0d28gYnl0ZXMgZm9yIHRoZSBiYWQgYmxvY2sgDQptYXJrZXIgYXQgdGhlIGJl
+Z2lubmluZywgaW5zdGVhZCBvZiB0d28gYnl0ZXMgaW4gZWFjaCBzZWN0aW9uLiBCdXQgSSdtIA0K
+bm90IHN1cmUgYWJvdXQgdGhpcyBhbmQgaXQgZG9lc24ndCByZWFsbHkgaHVydC4NCg0KPiANCj4+
+PiArDQo+Pj4gKw0KPj4+ICsgICAgIHJldHVybiAwOw0KPj4+ICt9DQo+Pj4gKw0KPj4+ICtzdGF0
+aWMgY29uc3Qgc3RydWN0IG10ZF9vb2JsYXlvdXRfb3BzIHRjNThjdmcyczBoX29vYmxheW91dCA9
+IHsNCj4+PiArICAgICAuZWNjID0gdGM1OGN2ZzJzMGhfb29ibGF5b3V0X2VjYywNCj4+PiArICAg
+ICAuZnJlZSA9IHRjNThjdmcyczBoX29vYmxheW91dF9mcmVlLA0KPj4+ICt9Ow0KPj4+ICsNCj4+
+PiArc3RhdGljIGludCB0YzU4Y3ZnMnMwaF9lY2NfZ2V0X3N0YXR1cyhzdHJ1Y3Qgc3BpbmFuZF9k
+ZXZpY2UgKnNwaW5hbmQsDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+dTggc3RhdHVzKQ0KPj4+ICt7DQo+Pj4gKyAgICAgc3RydWN0IG5hbmRfZGV2aWNlICpuYW5kID0g
+c3BpbmFuZF90b19uYW5kKHNwaW5hbmQpOw0KPj4+ICsgICAgIHU4IG1iZiA9IDA7DQo+Pj4gKyAg
+ICAgc3RydWN0IHNwaV9tZW1fb3Agb3AgPSBTUElOQU5EX0dFVF9GRUFUVVJFX09QKDB4MzAsICZt
+YmYpOw0KPj4+ICsNCj4+PiArICAgICBzd2l0Y2ggKHN0YXR1cyAmIFNUQVRVU19FQ0NfTUFTSykg
+ew0KPj4+ICsgICAgIGNhc2UgU1RBVFVTX0VDQ19OT19CSVRGTElQUzoNCj4+PiArICAgICAgICAg
+ICAgIHJldHVybiAwOw0KPj4+ICsNCj4+PiArICAgICBjYXNlIFNUQVRVU19FQ0NfVU5DT1JfRVJS
+T1I6DQo+Pj4gKyAgICAgICAgICAgICByZXR1cm4gLUVCQURNU0c7DQo+Pj4gKw0KPj4+ICsgICAg
+IGNhc2UgU1RBVFVTX0VDQ19IQVNfQklURkxJUFM6DQo+Pj4gKyAgICAgICAgICAgICAvKg0KPj4+
+ICsgICAgICAgICAgICAgICogTGV0J3MgdHJ5IHRvIHJldHJpZXZlIHRoZSByZWFsIG1heGltdW0g
+bnVtYmVyIG9mIGJpdGZsaXBzDQo+Pj4gKyAgICAgICAgICAgICAgKiBpbiBvcmRlciB0byBhdm9p
+ZCBmb3JjaW5nIHRoZSB3ZWFyLWxldmVsaW5nIGxheWVyIHRvIG1vdmUNCj4+PiArICAgICAgICAg
+ICAgICAqIGRhdGEgYXJvdW5kIGlmIGl0J3Mgbm90IG5lY2Vzc2FyeS4NCj4+PiArICAgICAgICAg
+ICAgICAqLw0KPj4+ICsgICAgICAgICAgICAgaWYgKHNwaV9tZW1fZXhlY19vcChzcGluYW5kLT5z
+cGltZW0sICZvcCkpDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgIHJldHVybiBuYW5kLT5lY2Ny
+ZXEuc3RyZW5ndGg7DQo+Pj4gKw0KPj4+ICsgICAgICAgICAgICAgbWJmID4+PSA0Ow0KPj4+ICsN
+Cj4+PiArICAgICAgICAgICAgIGlmIChXQVJOX09OKG1iZiA+IG5hbmQtPmVjY3JlcS5zdHJlbmd0
+aCB8fCAhbWJmKSkNCj4+PiArICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIG5hbmQtPmVjY3Jl
+cS5zdHJlbmd0aDsNCj4+PiArDQo+Pj4gKyAgICAgICAgICAgICByZXR1cm4gbWJmOw0KPj4+ICsN
+Cj4gDQo+IFRoZXNlIHRha2UgdGFrZSBjYXJlIG9mIDAsIDB4MSBhbmQgMHgyIGJ1dCBub3QgMHgz
+IHdoaWNoIGlzIHZhbGlkDQoNCkhtLCB5b3UncmUgcmlnaHQuIFdlIGRvbid0IGNhcmUgaWYgaXQg
+aXMgMHgxIG9yIDB4MyAoYm90aCBtZWFuIHRoYXQgDQpiaXRmbGlwcyB3ZXJlIGNvcnJlY3RlZCks
+IGJ1dCB3ZSBjdXJyZW50bHkgb25seSBjaGVjayBmb3IgMHgxLg0KDQpJIHdpbGwgc2VuZCBhIGZp
+eCBmb3IgdGhpcyB0b21vcnJvdy4NCg0KVGhhbmtzLA0KRnJpZWRlcg0KDQo+IHBhZ2UgMjYgb2Yg
+dGhlIGRhdGFzaGVldCA6DQo+IA0KPiBFQ0Mgc3RhdHVzIGJpdHMgaW5kaWNhdGUgdGhlIHN0YXR1
+cyBvZiBpbnRlcm5hbCBFQ0Mgb3BlcmF0aW9uDQo+IDAwYjogTm8gYml0IGZsaXBzIHdlcmUgZGV0
+ZWN0ZWQgaW4gcHJldmlvdXMgcGFnZSByZWFkLg0KPiAwMWI6IEJpdCBmbGlwcyB3ZXJlIGRldGVj
+dGVkIGFuZCBjb3JyZWN0ZWQuIEJpdCBmbGlwIGNvdW50IGRpZCBub3QNCj4gZXhjZWVkIHRoZSBi
+aXQgZmxpcCBkZXRlY3Rpb24gdGhyZXNob2xkLiBUaGUgdGhyZXNob2xkIGlzIHNldCBieSBiaXRz
+DQo+IFs3OjRdIGluIGFkZHJlc3MgMTBoIGluIHRoZSBmZWF0dXJlIHRhYmxlLg0KPiAxMGI6IE11
+bHRpcGxlIGJpdCBmbGlwcyB3ZXJlIGRldGVjdGVkIGFuZCBub3QgY29ycmVjdGVkLg0KPiAxMWI6
+IEJpdCBmbGlwcyB3ZXJlIGRldGVjdGVkIGFuZCBjb3JyZWN0ZWQuIEJpdCBmbGlwIGNvdW50IGV4
+Y2VlZGVkDQo+IHRoZSBiaXQgZmxpcCBkZXRlY3Rpb24gdGhyZXNob2xkLiBUaGUgdGhyZXNob2xk
+IGlzIHNldCBieSBiaXRzIFs3OjRdDQo+IGluIGFkZHJlc3MgMTBoIGluIHRoZSBmZWF0dXJlIHRh
+YmxlDQo+IA0KPiBSZWdhcmRzLA0KPiBDbGVtZW50DQo+IA0KPj4+ICsgICAgIGRlZmF1bHQ6DQo+
+Pj4gKyAgICAgICAgICAgICBicmVhazsNCj4+PiArICAgICB9DQo+Pj4gKw0KPj4+ICsgICAgIHJl
+dHVybiAtRUlOVkFMOw0KPj4+ICt9DQo+Pj4gKw0KPj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNw
+aW5hbmRfaW5mbyB0b3NoaWJhX3NwaW5hbmRfdGFibGVbXSA9IHsNCj4+PiArICAgICBTUElOQU5E
+X0lORk8oIlRDNThDVkcyUzBIIiwgMHhDRCwNCj4+PiArICAgICAgICAgICAgICAgICAgTkFORF9N
+RU1PUkcoMSwgNDA5NiwgMjU2LCA2NCwgMjA0OCwgMSwgMSwgMSksDQo+Pj4gKyAgICAgICAgICAg
+ICAgICAgIE5BTkRfRUNDUkVRKDgsIDUxMiksDQo+Pj4gKyAgICAgICAgICAgICAgICAgIFNQSU5B
+TkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywNCj4+PiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZ3cml0ZV9jYWNoZV92YXJpYW50cywN
+Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZ1cGRhdGVf
+Y2FjaGVfdmFyaWFudHMpLA0KPj4+ICsgICAgICAgICAgICAgICAgICBTUElOQU5EX0hBU19RRV9C
+SVQsDQo+Pj4gKyAgICAgICAgICAgICAgICAgIFNQSU5BTkRfRUNDSU5GTygmdGM1OGN2ZzJzMGhf
+b29ibGF5b3V0LA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGM1OGN2
+ZzJzMGhfZWNjX2dldF9zdGF0dXMpKSwNCj4+PiArfTsNCj4+PiArDQo+Pj4gK3N0YXRpYyBpbnQg
+dG9zaGliYV9zcGluYW5kX2RldGVjdChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQpDQo+
+Pj4gK3sNCj4+PiArICAgICB1OCAqaWQgPSBzcGluYW5kLT5pZC5kYXRhOw0KPj4+ICsgICAgIGlu
+dCByZXQ7DQo+Pj4gKw0KPj4+ICsgICAgIC8qDQo+Pj4gKyAgICAgICogVG9zaGliYSBTUEkgTkFO
+RCByZWFkIElEIG5lZWRzIGEgZHVtbXkgYnl0ZSwNCj4+PiArICAgICAgKiBzbyB0aGUgZmlyc3Qg
+Ynl0ZSBpbiBpZCBpcyBnYXJiYWdlLg0KPj4+ICsgICAgICAqLw0KPj4+ICsgICAgIGlmIChpZFsx
+XSAhPSBTUElOQU5EX01GUl9UT1NISUJBKQ0KPj4+ICsgICAgICAgICAgICAgcmV0dXJuIDA7DQo+
+Pj4gKw0KPj4+ICsgICAgIHJldCA9IHNwaW5hbmRfbWF0Y2hfYW5kX2luaXQoc3BpbmFuZCwgdG9z
+aGliYV9zcGluYW5kX3RhYmxlLA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgQVJSQVlfU0laRSh0b3NoaWJhX3NwaW5hbmRfdGFibGUpLA0KPj4+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgaWRbMl0pOw0KPj4+ICsgICAgIGlmIChyZXQpDQo+Pj4gKyAg
+ICAgICAgICAgICByZXR1cm4gcmV0Ow0KPj4+ICsNCj4+PiArICAgICByZXR1cm4gMTsNCj4+PiAr
+fQ0KPj4+ICsNCj4+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlcl9v
+cHMgdG9zaGliYV9zcGluYW5kX21hbnVmX29wcyA9IHsNCj4+PiArICAgICAuZGV0ZWN0ID0gdG9z
+aGliYV9zcGluYW5kX2RldGVjdCwNCj4+PiArfTsNCj4+PiArDQo+Pj4gK2NvbnN0IHN0cnVjdCBz
+cGluYW5kX21hbnVmYWN0dXJlciB0b3NoaWJhX3NwaW5hbmRfbWFudWZhY3R1cmVyID0gew0KPj4+
+ICsgICAgIC5pZCA9IFNQSU5BTkRfTUZSX1RPU0hJQkEsDQo+Pj4gKyAgICAgLm5hbWUgPSAiVG9z
+aGliYSIsDQo+Pj4gKyAgICAgLm9wcyA9ICZ0b3NoaWJhX3NwaW5hbmRfbWFudWZfb3BzLA0KPj4+
+ICt9Ow0KPj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmggYi9pbmNs
+dWRlL2xpbnV4L210ZC9zcGluYW5kLmgNCj4+PiBpbmRleCAwODhmZjk2Li44MTZjNGIwIDEwMDY0
+NA0KPj4+IC0tLSBhL2luY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaA0KPj4+ICsrKyBiL2luY2x1
+ZGUvbGludXgvbXRkL3NwaW5hbmQuaA0KPj4+IEBAIC0xOTYsNiArMTk2LDcgQEAgc3RydWN0IHNw
+aW5hbmRfbWFudWZhY3R1cmVyIHsNCj4+PiAgICAvKiBTUEkgTkFORCBtYW51ZmFjdHVyZXJzICov
+DQo+Pj4gICAgZXh0ZXJuIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBtYWNyb25p
+eF9zcGluYW5kX21hbnVmYWN0dXJlcjsNCj4+PiAgICBleHRlcm4gY29uc3Qgc3RydWN0IHNwaW5h
+bmRfbWFudWZhY3R1cmVyIG1pY3Jvbl9zcGluYW5kX21hbnVmYWN0dXJlcjsNCj4+PiArZXh0ZXJu
+IGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciB0b3NoaWJhX3NwaW5hbmRfbWFudWZh
+Y3R1cmVyOw0KPj4+ICAgIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIg
+d2luYm9uZF9zcGluYW5kX21hbnVmYWN0dXJlcjsNCj4+Pg0KPj4+ICAgIC8qKg0KPj4+
