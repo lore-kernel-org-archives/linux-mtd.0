@@ -1,20 +1,21 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from skedge04.snt-world.com ([91.208.41.69])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRdtx-0004io-1k
- for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 13:59:46 +0000
-Received: by mail-wr1-x444.google.com with SMTP id c14so17163180wrr.0
- for <linux-mtd@lists.infradead.org>; Tue, 27 Nov 2018 05:59:34 -0800 (PST)
-From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [RFC] mtd: spinand: Add initial support for Toshiba TC58CVG2S0F
-Date: Tue, 27 Nov 2018 14:59:23 +0100
-Message-Id: <20181127135923.13787-1-peron.clem@gmail.com>
+ id 1gReen-0005zk-0e
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 14:48:11 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC] mtd: spinand: Add initial support for Toshiba TC58CVG2S0F
+Date: Tue, 27 Nov 2018 14:47:55 +0000
+Message-ID: <df074de0-c9cc-9e6b-19b6-140319ff5f86@kontron.de>
+References: <20181127135923.13787-1-peron.clem@gmail.com>
+In-Reply-To: <20181127135923.13787-1-peron.clem@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6A7258C0E4FC3C4E87CD6F4377443CD4@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,185 +25,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for Toshiba chip TC58CVG2S0F
-
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
-
-Hi,
-
-Thanks a lot for adding this framework to Linux it's very nice and easy to read.
-
-This is my first SPI Nand/Nand board so I'm still unfamiliar with those BBM and OOB features.
-
-In the ECC status maybe I should return the Maximum Bit Flip Count (page 34 of the DS) like it's done for Macronix.
-
-Datasheet could be found here: https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/TC58CVG2S0HxAIx_Rev1.1_2016-11-08.pdf
-
-
-Also this has not been fully tested and untested with a QuadSPI controller.
-
-Thanks,
-Clement
-
-
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   1 +
- drivers/mtd/nand/spi/toshiba.c | 112 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   1 +
- 4 files changed, 115 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/toshiba.c
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index b74e074b363a..be5f73512ece 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o macronix.o micron.o winbond.o
-+spinand-objs := core.o macronix.o micron.o toshiba.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 30f83649c481..87bdf2a7b724 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -766,6 +766,7 @@ static const struct nand_ops spinand_ops = {
- static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
-+	&toshiba_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- };
- 
-diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
-new file mode 100644
-index 000000000000..6ff65949ddd0
---- /dev/null
-+++ b/drivers/mtd/nand/spi/toshiba.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Author: Clément Péron <peron.clem@gmail.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_TOSHIBA		0x98
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int tc58_ooblayout_ecc(struct mtd_info *mtd, int section,
-+			      struct mtd_oob_region *region)
-+{
-+	/* ECC not accesible when Internal ECC is turned on. */
-+	return -ERANGE;
-+}
-+
-+static int tc58_ooblayout_free(struct mtd_info *mtd, int section,
-+			       struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = 126;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops tc58_ooblayout = {
-+	.ecc = tc58_ooblayout_ecc,
-+	.free = tc58_ooblayout_free,
-+};
-+
-+static int tc58_ecc_get_status(struct spinand_device *spinand,
-+			       u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_HAS_BITFLIPS:
-+		return 4;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	default:
-+		return 8;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info toshiba_spinand_table[] = {
-+	SPINAND_INFO("TC58CVG2S0F", 0xCD,
-+		     NAND_MEMORG(1, SZ_4K, 256, 64, 2048, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&tc58_ooblayout, tc58_ecc_get_status)),
-+};
-+/**
-+ * toshiba_spinand_detect - initialize device related part in spinand_device
-+ * struct if it is a Toshiba device.
-+ * @spinand: SPI NAND device structure
-+ */
-+static int toshiba_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id = spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * Toshiba SPI NAND read ID need a dummy byte,
-+	 * so the first byte in raw_id is dummy.
-+	 */
-+	if (id[1] != SPINAND_MFR_TOSHIBA)
-+		return 0;
-+
-+	ret = spinand_match_and_init(spinand, toshiba_spinand_table,
-+				     ARRAY_SIZE(toshiba_spinand_table), id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops toshiba_spinand_manuf_ops = {
-+	.detect = toshiba_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer toshiba_spinand_manufacturer = {
-+	.id = SPINAND_MFR_TOSHIBA,
-+	.name = "Toshiba",
-+	.ops = &toshiba_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 088ff96c3eb6..816c4b00abca 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -196,6 +196,7 @@ struct spinand_manufacturer {
- /* SPI NAND manufacturers */
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
-+extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
- 
- /**
--- 
-2.19.1
+SGVsbG8gQ2zDqW1lbnQsDQoNCk9uIDI3LjExLjE4IDE0OjU5LCBDbMOpbWVudCBQw6lyb24gd3Jv
+dGU6DQo+IEFkZCBzdXBwb3J0IGZvciBUb3NoaWJhIGNoaXAgVEM1OENWRzJTMEYNCj4gDQo+IFNp
+Z25lZC1vZmYtYnk6IENsw6ltZW50IFDDqXJvbiA8cGVyb24uY2xlbUBnbWFpbC5jb20+DQo+IC0t
+LQ0KPiANCj4gSGksDQo+IA0KPiBUaGFua3MgYSBsb3QgZm9yIGFkZGluZyB0aGlzIGZyYW1ld29y
+ayB0byBMaW51eCBpdCdzIHZlcnkgbmljZSBhbmQgZWFzeSB0byByZWFkLg0KPiANCj4gVGhpcyBp
+cyBteSBmaXJzdCBTUEkgTmFuZC9OYW5kIGJvYXJkIHNvIEknbSBzdGlsbCB1bmZhbWlsaWFyIHdp
+dGggdGhvc2UgQkJNIGFuZCBPT0IgZmVhdHVyZXMuDQo+IA0KPiBJbiB0aGUgRUNDIHN0YXR1cyBt
+YXliZSBJIHNob3VsZCByZXR1cm4gdGhlIE1heGltdW0gQml0IEZsaXAgQ291bnQgKHBhZ2UgMzQg
+b2YgdGhlIERTKSBsaWtlIGl0J3MgZG9uZSBmb3IgTWFjcm9uaXguDQo+IA0KPiBEYXRhc2hlZXQg
+Y291bGQgYmUgZm91bmQgaGVyZTogaHR0cHM6Ly9tZWRpYS5kaWdpa2V5LmNvbS9wZGYvRGF0YSUy
+MFNoZWV0cy9Ub3NoaWJhJTIwUERGcy9UQzU4Q1ZHMlMwSHhBSXhfUmV2MS4xXzIwMTYtMTEtMDgu
+cGRmDQo+IA0KPiANCj4gQWxzbyB0aGlzIGhhcyBub3QgYmVlbiBmdWxseSB0ZXN0ZWQgYW5kIHVu
+dGVzdGVkIHdpdGggYSBRdWFkU1BJIGNvbnRyb2xsZXIuDQoNCkknbSBhZnJhaWQgdGhlcmUgaXMg
+YSBiaWcgb3ZlcmxhcCBiZXR3ZWVuIHlvdXIgcGF0Y2ggYW5kIHdoYXQgSSBwb3N0ZWQgDQpzb21l
+IGRheXMgYWdvLiBTZWUgaGVyZTogUGF0Y2h3b3JrIFsxXSBvciBsaW51eC1uZXh0IFsyXS4NCg0K
+UGxlYXNlIGhhdmUgYSBsb29rIGF0IG15IHBhdGNoIGFuZCB0ZXN0IGl0IHdpdGggeW91ciBoYXJk
+d2FyZS4gWW91IHNlZW0gDQp0byB1c2UgdGhlIHNhbWUgY2hpcCBhcyBJIGFtIChleGNlcHQgZm9y
+IHRoZSBsYXN0IGxldHRlciBpbiB0aGUgcGFydCANCm51bWJlciwgd2hvc2UgbWVhbmluZyBJIGRv
+bid0IGtub3cpLg0KDQpUaGFua3MsDQpGcmllZGVyDQoNClsxXSBodHRwczovL3BhdGNod29yay5v
+emxhYnMub3JnL3BhdGNoLzk5NDY4Ny8NClsyXSANCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L25leHQvbGludXgtbmV4dC5naXQvY29tbWl0L2RyaXZlcnMv
+bXRkL25hbmQvc3BpP2g9bmV4dC0yMDE4MTEyNyZpZD1mODVmZDlhMDczZjdhMGYwNjNkMDQ2YzA3
+ZjA1NThjMDNiMWQ5MGRlDQoNCj4gDQo+IFRoYW5rcywNCj4gQ2xlbWVudA0KPiANCj4gDQo+ICAg
+ZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUgIHwgICAyICstDQo+ICAgZHJpdmVycy9tdGQv
+bmFuZC9zcGkvY29yZS5jICAgIHwgICAxICsNCj4gICBkcml2ZXJzL210ZC9uYW5kL3NwaS90b3No
+aWJhLmMgfCAxMTIgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAgaW5jbHVk
+ZS9saW51eC9tdGQvc3BpbmFuZC5oICAgIHwgICAxICsNCj4gICA0IGZpbGVzIGNoYW5nZWQsIDEx
+NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
+aXZlcnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEuYw0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL25hbmQvc3BpL01ha2VmaWxlIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUNCj4g
+aW5kZXggYjc0ZTA3NGIzNjNhLi5iZTVmNzM1MTJlY2UgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
+bXRkL25hbmQvc3BpL01ha2VmaWxlDQo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL01ha2Vm
+aWxlDQo+IEBAIC0xLDMgKzEsMyBAQA0KPiAgICMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQ
+TC0yLjANCj4gLXNwaW5hbmQtb2JqcyA6PSBjb3JlLm8gbWFjcm9uaXgubyBtaWNyb24ubyB3aW5i
+b25kLm8NCj4gK3NwaW5hbmQtb2JqcyA6PSBjb3JlLm8gbWFjcm9uaXgubyBtaWNyb24ubyB0b3No
+aWJhLm8gd2luYm9uZC5vDQo+ICAgb2JqLSQoQ09ORklHX01URF9TUElfTkFORCkgKz0gc3BpbmFu
+ZC5vDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgYi9kcml2ZXJz
+L210ZC9uYW5kL3NwaS9jb3JlLmMNCj4gaW5kZXggMzBmODM2NDljNDgxLi44N2JkZjJhN2I3MjQg
+MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYw0KPiArKysgYi9kcml2
+ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMNCj4gQEAgLTc2Niw2ICs3NjYsNyBAQCBzdGF0aWMgY29u
+c3Qgc3RydWN0IG5hbmRfb3BzIHNwaW5hbmRfb3BzID0gew0KPiAgIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgKnNwaW5hbmRfbWFudWZhY3R1cmVyc1tdID0gew0KPiAg
+IAkmbWFjcm9uaXhfc3BpbmFuZF9tYW51ZmFjdHVyZXIsDQo+ICAgCSZtaWNyb25fc3BpbmFuZF9t
+YW51ZmFjdHVyZXIsDQo+ICsJJnRvc2hpYmFfc3BpbmFuZF9tYW51ZmFjdHVyZXIsDQo+ICAgCSZ3
+aW5ib25kX3NwaW5hbmRfbWFudWZhY3R1cmVyLA0KPiAgIH07DQo+ICAgDQo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS90
+b3NoaWJhLmMNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAwMDAwMDAwLi42
+ZmY2NTk0OWRkZDANCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Nw
+aS90b3NoaWJhLmMNCj4gQEAgLTAsMCArMSwxMTIgQEANCj4gKy8vIFNQRFgtTGljZW5zZS1JZGVu
+dGlmaWVyOiBHUEwtMi4wDQo+ICsvKg0KPiArICogQXV0aG9yOiBDbMOpbWVudCBQw6lyb24gPHBl
+cm9uLmNsZW1AZ21haWwuY29tPg0KPiArICovDQo+ICsNCj4gKyNpbmNsdWRlIDxsaW51eC9kZXZp
+Y2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9t
+dGQvc3BpbmFuZC5oPg0KPiArDQo+ICsjZGVmaW5lIFNQSU5BTkRfTUZSX1RPU0hJQkEJCTB4OTgN
+Cj4gKw0KPiArc3RhdGljIFNQSU5BTkRfT1BfVkFSSUFOVFMocmVhZF9jYWNoZV92YXJpYW50cywN
+Cj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9YNF9PUCgwLCAxLCBOVUxMLCAwKSwN
+Cj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9YMl9PUCgwLCAxLCBOVUxMLCAwKSwN
+Cj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUCh0cnVlLCAwLCAxLCBOVUxMLCAw
+KSwNCj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUChmYWxzZSwgMCwgMSwgTlVM
+TCwgMCkpOw0KPiArDQo+ICtzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh3cml0ZV9jYWNoZV92
+YXJpYW50cywNCj4gKwkJU1BJTkFORF9QUk9HX0xPQUQodHJ1ZSwgMCwgTlVMTCwgMCkpOw0KPiAr
+DQo+ICtzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh1cGRhdGVfY2FjaGVfdmFyaWFudHMsDQo+
+ICsJCVNQSU5BTkRfUFJPR19MT0FEKGZhbHNlLCAwLCBOVUxMLCAwKSk7DQo+ICsNCj4gK3N0YXRp
+YyBpbnQgdGM1OF9vb2JsYXlvdXRfZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlv
+biwNCj4gKwkJCSAgICAgIHN0cnVjdCBtdGRfb29iX3JlZ2lvbiAqcmVnaW9uKQ0KPiArew0KPiAr
+CS8qIEVDQyBub3QgYWNjZXNpYmxlIHdoZW4gSW50ZXJuYWwgRUNDIGlzIHR1cm5lZCBvbi4gKi8N
+Cj4gKwlyZXR1cm4gLUVSQU5HRTsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCB0YzU4X29vYmxh
+eW91dF9mcmVlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCj4gKwkJCSAgICAg
+ICBzdHJ1Y3QgbXRkX29vYl9yZWdpb24gKnJlZ2lvbikNCj4gK3sNCj4gKwlpZiAoc2VjdGlvbikN
+Cj4gKwkJcmV0dXJuIC1FUkFOR0U7DQo+ICsNCj4gKwkvKiBSZXNlcnZlIDIgYnl0ZXMgZm9yIHRo
+ZSBCQk0uICovDQo+ICsJcmVnaW9uLT5vZmZzZXQgPSAyOw0KPiArCXJlZ2lvbi0+bGVuZ3RoID0g
+MTI2Ow0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBjb25zdCBzdHJ1
+Y3QgbXRkX29vYmxheW91dF9vcHMgdGM1OF9vb2JsYXlvdXQgPSB7DQo+ICsJLmVjYyA9IHRjNThf
+b29ibGF5b3V0X2VjYywNCj4gKwkuZnJlZSA9IHRjNThfb29ibGF5b3V0X2ZyZWUsDQo+ICt9Ow0K
+PiArDQo+ICtzdGF0aWMgaW50IHRjNThfZWNjX2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2
+aWNlICpzcGluYW5kLA0KPiArCQkJICAgICAgIHU4IHN0YXR1cykNCj4gK3sNCj4gKwlzd2l0Y2gg
+KHN0YXR1cyAmIFNUQVRVU19FQ0NfTUFTSykgew0KPiArCWNhc2UgU1RBVFVTX0VDQ19OT19CSVRG
+TElQUzoNCj4gKwkJcmV0dXJuIDA7DQo+ICsNCj4gKwljYXNlIFNUQVRVU19FQ0NfSEFTX0JJVEZM
+SVBTOg0KPiArCQlyZXR1cm4gNDsNCj4gKw0KPiArCWNhc2UgU1RBVFVTX0VDQ19VTkNPUl9FUlJP
+UjoNCj4gKwkJcmV0dXJuIC1FQkFETVNHOw0KPiArDQo+ICsJZGVmYXVsdDoNCj4gKwkJcmV0dXJu
+IDg7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIC1FSU5WQUw7DQo+ICt9DQo+ICsNCj4gK3N0YXRp
+YyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9pbmZvIHRvc2hpYmFfc3BpbmFuZF90YWJsZVtdID0gew0K
+PiArCVNQSU5BTkRfSU5GTygiVEM1OENWRzJTMEYiLCAweENELA0KPiArCQkgICAgIE5BTkRfTUVN
+T1JHKDEsIFNaXzRLLCAyNTYsIDY0LCAyMDQ4LCAxLCAxLCAxKSwNCj4gKwkJICAgICBOQU5EX0VD
+Q1JFUSg4LCA1MTIpLA0KPiArCQkgICAgIFNQSU5BTkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9j
+YWNoZV92YXJpYW50cywNCj4gKwkJCQkJICAgICAgJndyaXRlX2NhY2hlX3ZhcmlhbnRzLA0KPiAr
+CQkJCQkgICAgICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwNCj4gKwkJICAgICAwLA0KPiArCQkg
+ICAgIFNQSU5BTkRfRUNDSU5GTygmdGM1OF9vb2JsYXlvdXQsIHRjNThfZWNjX2dldF9zdGF0dXMp
+KSwNCj4gK307DQo+ICsvKioNCj4gKyAqIHRvc2hpYmFfc3BpbmFuZF9kZXRlY3QgLSBpbml0aWFs
+aXplIGRldmljZSByZWxhdGVkIHBhcnQgaW4gc3BpbmFuZF9kZXZpY2UNCj4gKyAqIHN0cnVjdCBp
+ZiBpdCBpcyBhIFRvc2hpYmEgZGV2aWNlLg0KPiArICogQHNwaW5hbmQ6IFNQSSBOQU5EIGRldmlj
+ZSBzdHJ1Y3R1cmUNCj4gKyAqLw0KPiArc3RhdGljIGludCB0b3NoaWJhX3NwaW5hbmRfZGV0ZWN0
+KHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkNCj4gK3sNCj4gKwl1OCAqaWQgPSBzcGlu
+YW5kLT5pZC5kYXRhOw0KPiArCWludCByZXQ7DQo+ICsNCj4gKwkvKg0KPiArCSAqIFRvc2hpYmEg
+U1BJIE5BTkQgcmVhZCBJRCBuZWVkIGEgZHVtbXkgYnl0ZSwNCj4gKwkgKiBzbyB0aGUgZmlyc3Qg
+Ynl0ZSBpbiByYXdfaWQgaXMgZHVtbXkuDQo+ICsJICovDQo+ICsJaWYgKGlkWzFdICE9IFNQSU5B
+TkRfTUZSX1RPU0hJQkEpDQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJcmV0ID0gc3BpbmFuZF9t
+YXRjaF9hbmRfaW5pdChzcGluYW5kLCB0b3NoaWJhX3NwaW5hbmRfdGFibGUsDQo+ICsJCQkJICAg
+ICBBUlJBWV9TSVpFKHRvc2hpYmFfc3BpbmFuZF90YWJsZSksIGlkWzJdKTsNCj4gKwlpZiAocmV0
+KQ0KPiArCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJcmV0dXJuIDE7DQo+ICt9DQo+ICsNCj4gK3N0
+YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXJfb3BzIHRvc2hpYmFfc3BpbmFu
+ZF9tYW51Zl9vcHMgPSB7DQo+ICsJLmRldGVjdCA9IHRvc2hpYmFfc3BpbmFuZF9kZXRlY3QsDQo+
+ICt9Ow0KPiArDQo+ICtjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgdG9zaGliYV9z
+cGluYW5kX21hbnVmYWN0dXJlciA9IHsNCj4gKwkuaWQgPSBTUElOQU5EX01GUl9UT1NISUJBLA0K
+PiArCS5uYW1lID0gIlRvc2hpYmEiLA0KPiArCS5vcHMgPSAmdG9zaGliYV9zcGluYW5kX21hbnVm
+X29wcywNCj4gK307DQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgg
+Yi9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgNCj4gaW5kZXggMDg4ZmY5NmMzZWI2Li44MTZj
+NGIwMGFiY2EgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaA0KPiAr
+KysgYi9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgNCj4gQEAgLTE5Niw2ICsxOTYsNyBAQCBz
+dHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgew0KPiAgIC8qIFNQSSBOQU5EIG1hbnVmYWN0dXJl
+cnMgKi8NCj4gICBleHRlcm4gY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIG1hY3Jv
+bml4X3NwaW5hbmRfbWFudWZhY3R1cmVyOw0KPiAgIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFu
+ZF9tYW51ZmFjdHVyZXIgbWljcm9uX3NwaW5hbmRfbWFudWZhY3R1cmVyOw0KPiArZXh0ZXJuIGNv
+bnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciB0b3NoaWJhX3NwaW5hbmRfbWFudWZhY3R1
+cmVyOw0KPiAgIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgd2luYm9u
+ZF9zcGluYW5kX21hbnVmYWN0dXJlcjsNCj4gICANCj4gICAvKioNCj4g
