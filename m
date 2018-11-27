@@ -1,15 +1,16 @@
 Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRaXi-0007UV-9U
+ id 1gRaXi-0007Xj-9e
  for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 10:24:42 +0000
 From: Schrempf Frieder <frieder.schrempf@kontron.de>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Marek
- Vasut" <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, "Mark
- Brown" <broonie@kernel.org>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Mark Brown
+ <broonie@kernel.org>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
  "david.wolfe@nxp.com" <david.wolfe@nxp.com>, "fabio.estevam@nxp.com"
  <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
  <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
@@ -19,10 +20,10 @@ CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
  <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 4/9] dt-bindings: spi: Move the bindings for the FSL QSPI
+Subject: [PATCH v6 5/9] dt-bindings: spi: Adjust the bindings for the FSL QSPI
  driver
-Date: Tue, 27 Nov 2018 10:24:26 +0000
-Message-ID: <1543314174-28580-5-git-send-email-frieder.schrempf@kontron.de>
+Date: Tue, 27 Nov 2018 10:24:27 +0000
+Message-ID: <1543314174-28580-6-git-send-email-frieder.schrempf@kontron.de>
 References: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
 In-Reply-To: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
 Content-Language: en-US
@@ -38,19 +39,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move the documentation of the old SPI NOR driver to the place of the new
-SPI memory interface based driver.
+Adjust the documentation of the new SPI memory interface based
+driver to reflect the new drivers settings.
+
+The "old" driver was using the "fsl,qspi-has-second-chip" property to
+select one of two dual chip setups (two chips on one bus or two chips
+on separate buses). And it used the order in which the subnodes are
+defined in the dt to select the CS, the chip is connected to.
+
+Both methods are wrong and in fact the "reg" property should be used to
+determine which bus and CS a chip is connected to. This also enables us
+to use different setups than just single chip, or symmetric dual chip.
+
+So the porting of the driver from the MTD to the SPI framework actually
+enforces the use of the "reg" properties and makes
+"fsl,qspi-has-second-chip" superfluous.
+
+As all boards that have "fsl,qspi-has-second-chip" set, also have
+correct "reg" properties, the removal of this property shouldn't lead to
+any incompatibilities.
+
+The only compatibility issues I can see are with imx6sx-sdb.dts and
+imx6sx-sdb-reva.dts, which have their reg properties set incorrectly
+(see explanation here: [2]), all other boards should stay compatible.
+
+Also the "big-endian" flag was removed, as this setting is now selected
+by the driver, depending on which SoC is in use.
+
+[2] https://patchwork.ozlabs.org/patch/922817/#1925445
 
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/{mtd/fsl-quadspi.txt =3D> spi/spi-fsl-qspi.txt}           | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
+ .../devicetree/bindings/spi/spi-fsl-qspi.txt      | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Docume=
-ntation/devicetree/bindings/spi/spi-fsl-qspi.txt
-similarity index 100%
-rename from Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-rename to Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Docum=
+entation/devicetree/bindings/spi/spi-fsl-qspi.txt
+index 483e9cf..e8f1d62 100644
+--- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
++++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+@@ -14,15 +14,13 @@ Required properties:
+   - clocks : The clocks needed by the QuadSPI controller
+   - clock-names : Should contain the name of the clocks: "qspi_en" and "qs=
+pi".
+=20
+-Optional properties:
+-  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus =
+B.
+-                              Each bus can be connected with two NOR flash=
+es.
+-			      Most of the time, each bus only has one NOR flash
+-			      connected, this is the default case.
+-			      But if there are two NOR flashes connected to the
+-			      bus, you should enable this property.
+-			      (Please check the board's schematic.)
+-  - big-endian : That means the IP register is big endian
++Required SPI slave node properties:
++  - reg: There are two buses (A and B) with two chip selects each.
++	 This encodes to which bus and CS the flash is connected:
++		<0>: Bus A, CS 0
++		<1>: Bus A, CS 1
++		<2>: Bus B, CS 0
++		<3>: Bus B, CS 1
+=20
+ Example:
+=20
+@@ -40,7 +38,7 @@ qspi0: quadspi@40044000 {
+ 	};
+ };
+=20
+-Example showing the usage of two SPI NOR devices:
++Example showing the usage of two SPI NOR devices on bus A:
+=20
+ &qspi2 {
+ 	pinctrl-names =3D "default";
 --=20
 2.7.4
