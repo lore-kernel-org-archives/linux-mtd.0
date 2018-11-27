@@ -1,29 +1,25 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRaXi-0007Xj-9e
- for linux-mtd@lists.infradead.org; Tue, 27 Nov 2018 10:24:42 +0000
 From: Schrempf Frieder <frieder.schrempf@kontron.de>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Mark Brown
- <broonie@kernel.org>
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Shawn Guo
+ <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
 CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
  <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>, "fabio.estevam@nxp.com"
- <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "david.wolfe@nxp.com" <david.wolfe@nxp.com>,
+ "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
  <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
- <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>, Schrempf Frieder
- <frieder.schrempf@kontron.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
+ <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>, "Schrempf
+ Frieder" <frieder.schrempf@kontron.de>, Rob Herring <robh+dt@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 5/9] dt-bindings: spi: Adjust the bindings for the FSL QSPI
- driver
-Date: Tue, 27 Nov 2018 10:24:27 +0000
-Message-ID: <1543314174-28580-6-git-send-email-frieder.schrempf@kontron.de>
+Subject: [PATCH v6 2/9] arm64: dts: Reflect change of FSL QSPI driver and
+ remove unused properties
+Date: Tue, 27 Nov 2018 10:24:21 +0000
+Message-ID: <1543314174-28580-3-git-send-email-frieder.schrempf@kontron.de>
 References: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
 In-Reply-To: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
 Content-Language: en-US
@@ -39,80 +35,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adjust the documentation of the new SPI memory interface based
-driver to reflect the new drivers settings.
+The FSL QSPI driver will be moved to the SPI framework and it then
+acts as a SPI controller. Therefore the subnodes need to set
+spi-[rx/tx]-bus-width =3D <4>, so quad mode is used just as before.
 
-The "old" driver was using the "fsl,qspi-has-second-chip" property to
-select one of two dual chip setups (two chips on one bus or two chips
-on separate buses). And it used the order in which the subnodes are
-defined in the dt to select the CS, the chip is connected to.
+Also the properties 'num-cs' and 'bus-num' were never read by the
+driver and can be removed.
 
-Both methods are wrong and in fact the "reg" property should be used to
-determine which bus and CS a chip is connected to. This also enables us
-to use different setups than just single chip, or symmetric dual chip.
-
-So the porting of the driver from the MTD to the SPI framework actually
-enforces the use of the "reg" properties and makes
-"fsl,qspi-has-second-chip" superfluous.
-
-As all boards that have "fsl,qspi-has-second-chip" set, also have
-correct "reg" properties, the removal of this property shouldn't lead to
-any incompatibilities.
-
-The only compatibility issues I can see are with imx6sx-sdb.dts and
-imx6sx-sdb-reva.dts, which have their reg properties set incorrectly
-(see explanation here: [2]), all other boards should stay compatible.
-
-Also the "big-endian" flag was removed, as this setting is now selected
-by the driver, depending on which SoC is in use.
-
-[2] https://patchwork.ozlabs.org/patch/922817/#1925445
+The property 'fsl,qspi-has-second-chip' is not needed anymore
+and will be removed after the old driver was disabled to avoid
+breaking fsl-ls1046a-rdb.dts.
 
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/spi/spi-fsl-qspi.txt      | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts  | 3 ++-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts  | 4 ++--
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 6 ++++--
+ arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi | 4 ++++
+ 4 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Docum=
-entation/devicetree/bindings/spi/spi-fsl-qspi.txt
-index 483e9cf..e8f1d62 100644
---- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-+++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-@@ -14,15 +14,13 @@ Required properties:
-   - clocks : The clocks needed by the QuadSPI controller
-   - clock-names : Should contain the name of the clocks: "qspi_en" and "qs=
-pi".
-=20
--Optional properties:
--  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus =
-B.
--                              Each bus can be connected with two NOR flash=
-es.
--			      Most of the time, each bus only has one NOR flash
--			      connected, this is the default case.
--			      But if there are two NOR flashes connected to the
--			      bus, you should enable this property.
--			      (Please check the board's schematic.)
--  - big-endian : That means the IP register is big endian
-+Required SPI slave node properties:
-+  - reg: There are two buses (A and B) with two chip selects each.
-+	 This encodes to which bus and CS the flash is connected:
-+		<0>: Bus A, CS 0
-+		<1>: Bus A, CS 1
-+		<2>: Bus B, CS 0
-+		<3>: Bus B, CS 1
-=20
- Example:
-=20
-@@ -40,7 +38,7 @@ qspi0: quadspi@40044000 {
- 	};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1043a-qds.dts
+index dff3d64..8a50094 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts
+@@ -135,7 +135,6 @@
  };
 =20
--Example showing the usage of two SPI NOR devices:
-+Example showing the usage of two SPI NOR devices on bus A:
+ &qspi {
+-	bus-num =3D <0>;
+ 	status =3D "okay";
 =20
- &qspi2 {
- 	pinctrl-names =3D "default";
+ 	qflash0: s25fl128s@0 {
+@@ -143,6 +142,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1046a-qds.dts
+index e58a8ca..2f220ec 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts
+@@ -163,8 +163,6 @@
+ };
+=20
+ &qspi {
+-	num-cs =3D <2>;
+-	bus-num =3D <0>;
+ 	status =3D "okay";
+=20
+ 	qflash0: s25fl128s@0 {
+@@ -172,6 +170,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1046a-rdb.dts
+index a59b482..07c665c 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
+@@ -99,8 +99,6 @@
+ };
+=20
+ &qspi {
+-	num-cs =3D <2>;
+-	bus-num =3D <0>;
+ 	status =3D "okay";
+=20
+ 	qflash0: s25fs512s@0 {
+@@ -108,6 +106,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+=20
+@@ -116,6 +116,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <1>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi b/arch/arm6=
+4/boot/dts/freescale/fsl-ls208xa-qds.dtsi
+index c11f52e..10d2fe0 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi
+@@ -134,6 +134,8 @@
+ 		#size-cells =3D <1>;
+ 		compatible =3D "st,m25p80";
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ 	flash2: s25fl256s1@2 {
+@@ -141,6 +143,8 @@
+ 		#size-cells =3D <1>;
+ 		compatible =3D "st,m25p80";
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <2>;
+ 	};
+ };
 --=20
 2.7.4
