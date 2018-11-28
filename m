@@ -1,20 +1,21 @@
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+Received: from mail-oi1-x242.google.com ([2607:f8b0:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRsOW-0004aN-5y
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 05:28:19 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@bootlin.com>,
+ id 1gRsdU-00025S-Kp
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 05:43:46 +0000
+Received: by mail-oi1-x242.google.com with SMTP id b141so21535882oii.12
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Nov 2018 21:43:34 -0800 (PST)
+MIME-Version: 1.0
+References: <20181127152325.18437-1-gch981213@gmail.com>
+In-Reply-To: <20181127152325.18437-1-gch981213@gmail.com>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Wed, 28 Nov 2018 13:43:21 +0800
+Message-ID: <CAJsYDVJL+G=M1gj49Tcr8i189SGbA7yNTa-OoDBXidPyXaJ6jg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spinand: add support for GigaDevice GD5FxGQ4xA
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 1/2] mtd: rawnand: denali: remove ->dev_ready() hook
-Date: Wed, 28 Nov 2018 14:27:36 +0900
-Message-Id: <1543382857-30827-2-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1543382857-30827-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1543382857-30827-1-git-send-email-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +25,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Denali NAND IP has no way to read out the current signal level
-of the R/B# pin. Instead, denali_dev_ready() checks if the R/B#
-transition has already happened. (The INTR__INT_ACT interrupt is
-asserted at the rising edge of the R/B# pin.) It is not a correct
-way to implement the ->dev_ready() hook.
+Chuanhong Guo <gch981213@gmail.com> =E4=BA=8E2018=E5=B9=B411=E6=9C=8827=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8811:24=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Add support for GigaDevice GD5F1G/2G/4GQ4xA SPI NAND.
+>
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> ---
+>  drivers/mtd/nand/spi/Makefile     |   2 +-
+>  drivers/mtd/nand/spi/core.c       |   1 +
+>  drivers/mtd/nand/spi/gigadevice.c | 142 ++++++++++++++++++++++++++++++
+>  include/linux/mtd/spinand.h       |   1 +
+>  4 files changed, 145 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mtd/nand/spi/gigadevice.c
+>
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefil=
+e
+> index be5f73512ece..753125082640 100644
+> --- a/drivers/mtd/nand/spi/Makefile
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -spinand-objs :=3D core.o macronix.o micron.o toshiba.o winbond.o
+> +spinand-objs :=3D core.o gigadevice.o macronix.o micron.o toshiba.o winb=
+ond.o
+>  obj-$(CONFIG_MTD_SPI_NAND) +=3D spinand.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 87bdf2a7b724..479c2f2cf17f 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -764,6 +764,7 @@ static const struct nand_ops spinand_ops =3D {
+>  };
+>
+>  static const struct spinand_manufacturer *spinand_manufacturers[] =3D {
+> +       &gigadevice_spinand_manufacturer,
+>         &macronix_spinand_manufacturer,
+>         &micron_spinand_manufacturer,
+>         &toshiba_spinand_manufacturer,
+> diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gig=
+adevice.c
+> new file mode 100644
+> index 000000000000..f8bacde18437
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/gigadevice.c
+> @@ -0,0 +1,142 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Author:
+> + *     Chuanhong Guo <gch981213@gmail.com>
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mtd/spinand.h>
+> +
+> +#define SPINAND_MFR_GIGADEVICE                         0xC8
+> +#define GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS       0x3
+> +
+> +static SPINAND_OP_VARIANTS(read_cache_variants,
+> +               SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
+> +               SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+> +               SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
+> +               SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
+> +               SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
+> +               SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
+> +
+> +static SPINAND_OP_VARIANTS(write_cache_variants,
+> +               SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
+> +               SPINAND_PROG_LOAD(true, 0, NULL, 0));
+> +
+> +static SPINAND_OP_VARIANTS(update_cache_variants,
+> +               SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+> +               SPINAND_PROG_LOAD(false, 0, NULL, 0));
+> +
+> +static int gd5fxgq4xa_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +                                 struct mtd_oob_region *region)
+> +{
+> +       if (section > 3)
+> +               return -ERANGE;
+> +
+> +       region->offset =3D (16 * section) + 8;
+> +       region->length =3D 8;
+> +
+> +       return 0;
+> +}
+> +
+> +static int gd5fxgq4xa_ooblayout_free(struct mtd_info *mtd, int section,
+> +                                  struct mtd_oob_region *region)
+> +{
+> +       if (section > 3)
+> +               return -ERANGE;
+> +
+> +       region->offset =3D (16 * section) + 2;
+> +       region->length =3D 6;
+> +
+> +       return 0;
+> +}
+> +
+> +static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
+> +                                        u8 status)
+> +{
+> +       switch (status & STATUS_ECC_MASK) {
+> +       case STATUS_ECC_NO_BITFLIPS:
+> +               return 0;
+> +
+> +       case STATUS_ECC_HAS_BITFLIPS:
+> +               /* 1-7 bits are flipped. return the maximum. */
+> +               return 7;
+> +
+> +       case GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS:
+> +               return 8;
+> +
+> +       case STATUS_ECC_UNCOR_ERROR:
+> +               return -EBADMSG;
+> +
+> +       default:
+> +               break;
+> +       }
+> +
+> +       return -EINVAL;
+> +}
+> +
+> +static const struct mtd_ooblayout_ops gd5fxgq4xa_ooblayout =3D {
+> +       .ecc =3D gd5fxgq4xa_ooblayout_ecc,
+> +       .free =3D gd5fxgq4xa_ooblayout_free,
+> +};
+> +
+> +static const struct spinand_info gigadevice_spinand_table[] =3D {
+> +       SPINAND_INFO("GD5F1GQ4xA", 0xF1,
+> +                    NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
+> +                    NAND_ECCREQ(8, 512),
+> +                    SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +                                             &write_cache_variants,
+> +                                             &update_cache_variants),
+> +                    0,
+> +                    SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+> +                                    gd5fxgq4xa_ecc_get_status)),
+> +       SPINAND_INFO("GD5F2GQ4xA", 0xF2,
+> +                    NAND_MEMORG(1, 2048, 64, 64, 2048, 1, 1, 1),
+> +                    NAND_ECCREQ(8, 512),
+> +                    SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +                                             &write_cache_variants,
+> +                                             &update_cache_variants),
+> +                    0,
+> +                    SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+> +                                    gd5fxgq4xa_ecc_get_status)),
+> +       SPINAND_INFO("GD5F4GQ4xA", 0xF4,
+> +                    NAND_MEMORG(1, 2048, 64, 64, 4096, 1, 1, 1),
+> +                    NAND_ECCREQ(8, 512),
+> +                    SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +                                             &write_cache_variants,
+> +                                             &update_cache_variants),
+> +                    0,
+> +                    SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+> +                                    gd5fxgq4xa_ecc_get_status)),
+> +};
+> +
+> +static int gigadevice_spinand_detect(struct spinand_device *spinand)
+> +{
+> +       u8 *id =3D spinand->id.data;
+> +       int ret;
+> +
+> +       /*
+> +        * For GD NANDs, There is an address byte needed to shift in befo=
+re IDs
+> +        * are read out, so the first byte in raw_id is dummy.
+> +        */
+> +       if (id[1] !=3D SPINAND_MFR_GIGADEVICE)
+> +               return 0;
+> +
+> +       ret =3D spinand_match_and_init(spinand, gigadevice_spinand_table,
+> +                                    ARRAY_SIZE(gigadevice_spinand_table)=
+,
+> +                                    id[2]);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return 1;
+> +}
+> +
+> +static const struct spinand_manufacturer_ops gigadevice_spinand_manuf_op=
+s =3D {
+> +       .detect =3D gigadevice_spinand_detect,
+> +};
+> +
+> +const struct spinand_manufacturer gigadevice_spinand_manufacturer =3D {
+> +       .id =3D SPINAND_MFR_GIGADEVICE,
+> +       .name =3D "GigaDevice",
+> +       .ops =3D &gigadevice_spinand_manuf_ops,
+> +};
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 816c4b00abca..b92e2aa955b6 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -194,6 +194,7 @@ struct spinand_manufacturer {
+>  };
+>
+>  /* SPI NAND manufacturers */
+> +extern const struct spinand_manufacturer gigadevice_spinand_manufacturer=
+;
+>  extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+>  extern const struct spinand_manufacturer micron_spinand_manufacturer;
+>  extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
+> --
+> 2.19.1
+>
 
-In fact, it has a drawback; in the nand_scan_ident phase, the chip
-detection iterates over maxchips until it fails to find a homogeneous
-chip. For the last loop, nand_reset() fails if no chip is there.
-
-If ->dev_ready hook exists, nand_command(_lp) calls nand_wait_ready()
-after NAND_CMD_RESET. However, we know denali_dev_ready() never
-returns 1 unless there exists a chip that toggles R/B# in that chip
-select. Then, nand_wait_ready() just ends up with wasting 400 msec,
-in the end, shows the "timeout while waiting for chip to become ready"
-warning.
-
-Let's remove the mis-implemented dev_ready hook, and fallback to
-sending the NAND_CMD_STATUS and nand_wait_status_ready(), which
-bails out more quickly.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v2:
-  - Rebase
-
- drivers/mtd/nand/raw/denali.c | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 830ea24..ead6e60 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -204,18 +204,6 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
- 	return denali->irq_status;
- }
- 
--static uint32_t denali_check_irq(struct denali_nand_info *denali)
--{
--	unsigned long flags;
--	uint32_t irq_status;
--
--	spin_lock_irqsave(&denali->irq_lock, flags);
--	irq_status = denali->irq_status;
--	spin_unlock_irqrestore(&denali->irq_lock, flags);
--
--	return irq_status;
--}
--
- static void denali_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-@@ -288,8 +276,7 @@ static void denali_cmd_ctrl(struct nand_chip *chip, int dat, unsigned int ctrl)
- 		return;
- 
- 	/*
--	 * Some commands are followed by chip->legacy.dev_ready or
--	 * chip->legacy.waitfunc.
-+	 * Some commands are followed by chip->legacy.waitfunc.
- 	 * irq_status must be cleared here to catch the R/B# interrupt later.
- 	 */
- 	if (ctrl & NAND_CTRL_CHANGE)
-@@ -298,13 +285,6 @@ static void denali_cmd_ctrl(struct nand_chip *chip, int dat, unsigned int ctrl)
- 	denali->host_write(denali, DENALI_BANK(denali) | type, dat);
- }
- 
--static int denali_dev_ready(struct nand_chip *chip)
--{
--	struct denali_nand_info *denali = mtd_to_denali(nand_to_mtd(chip));
--
--	return !!(denali_check_irq(denali) & INTR__INT_ACT);
--}
--
- static int denali_check_erased_page(struct mtd_info *mtd,
- 				    struct nand_chip *chip, uint8_t *buf,
- 				    unsigned long uncor_ecc_flags,
-@@ -1359,7 +1339,6 @@ int denali_init(struct denali_nand_info *denali)
- 	chip->legacy.read_byte = denali_read_byte;
- 	chip->legacy.write_byte = denali_write_byte;
- 	chip->legacy.cmd_ctrl = denali_cmd_ctrl;
--	chip->legacy.dev_ready = denali_dev_ready;
- 	chip->legacy.waitfunc = denali_waitfunc;
- 
- 	if (features & FEATURES__INDEX_ADDR) {
--- 
-2.7.4
+Sorry. This version has a incorrect oob structure and a broken indent
+at the beginning. I'll send a v2 later.
