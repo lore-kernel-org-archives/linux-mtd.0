@@ -1,22 +1,28 @@
-Received: from skedge04.snt-world.com ([91.208.41.69])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRzAq-0007yi-2j
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 12:42:38 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Chuanhong Guo <gch981213@gmail.com>, "linux-mtd@lists.infradead.org"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gRzM6-0006i5-74
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 12:54:16 +0000
+Date: Wed, 28 Nov 2018 13:53:51 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v3] mtd: spinand: add support for GigaDevice GD5FxGQ4xA
-Date: Wed, 28 Nov 2018 12:42:18 +0000
-Message-ID: <43cf1905-e44b-269b-8623-d51fd39e5981@kontron.de>
-References: <20181128112041.22387-1-gch981213@gmail.com>
-In-Reply-To: <20181128112041.22387-1-gch981213@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <96EA4BEA74E8EE4C9BDD3264C5E2A64B@snt-world.com>
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH] mtd: nand: spi: Add initial support for Toshiba
+ TC58CVG2S0H
+Message-ID: <20181128135351.488194ee@bbrezillon>
+In-Reply-To: <1655b66f-37e2-427f-a047-8305f86fc22c@kontron.de>
+References: <1541665796-21092-1-git-send-email-frieder.schrempf@kontron.de>
+ <0fc1f198-0e87-01af-5a0e-3d21613c39f3@kontron.de>
+ <CAJiuCceD=qyasCUPqjyGQso3JGoxz4g_yg3uj18wP-2CKY9wyg@mail.gmail.com>
+ <1655b66f-37e2-427f-a047-8305f86fc22c@kontron.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,133 +32,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQ2h1YW5ob25nLA0KDQpPbiAyOC4xMS4xOCAxMjoyMCwgQ2h1YW5ob25nIEd1byB3cm90ZToN
-Cj4gQWRkIHN1cHBvcnQgZm9yIEdpZ2FEZXZpY2UgR0Q1RjFHLzJHLzRHUTR4QSBTUEkgTkFORC4N
-Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IENodWFuaG9uZyBHdW8gPGdjaDk4MTIxM0BnbWFpbC5jb20+
-DQo+IC0tLQ0KPiANCj4gSSdtIHJlYWxseSBzb3JyeSBmb3Igc2VuZGluZyBicm9rZW4gcGF0Y2gg
-dHdpY2UuDQo+IA0KPiBDaGFuZ2Ugc2luY2UgdjI6DQo+ICAgZml4ZWQgaW5jb3JyZWN0IEVDQyBz
-dGF0dXMgdmFsdWVzDQo+IA0KPiBDaGFuZ2VzIHNpbmNlIHYxOg0KPiAgIGZpeGVkIGJyb2tlbiBp
-bmRlbnQgYXQgdGhlIGJlZ2lubmluZw0KPiAgIGZpeGVkIE9PQiBsYXlvdXQuIE9ubHkgdGhlIGZp
-cnN0IGJ5dGUgaXMgcmVzZXJ2ZWQgZm9yIGJhZCBibG9jayBtYXJrDQo+ICAgcmVwbGFjZWQgU1RB
-VFVTX0VDQ19IQVNfQklURkxJUFMgd2l0aCBhIGRldmljZS1zcGVjaWZpYyBkZWZpbml0aW9uDQo+
-IA0KPiAgIGRyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlICAgICB8ICAgMiArLQ0KPiAgIGRy
-aXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyAgICAgICB8ICAgMSArDQo+ICAgZHJpdmVycy9tdGQv
-bmFuZC9zcGkvZ2lnYWRldmljZS5jIHwgMTQ4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-Kw0KPiAgIGluY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaCAgICAgICB8ICAgMSArDQo+ICAgNCBm
-aWxlcyBjaGFuZ2VkLCAxNTEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiAgIGNyZWF0
-ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL3NwaS9naWdhZGV2aWNlLmMNCj4gDQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9NYWtlZmlsZSBiL2RyaXZlcnMvbXRkL25h
-bmQvc3BpL01ha2VmaWxlDQo+IGluZGV4IGJlNWY3MzUxMmVjZS4uNzUzMTI1MDgyNjQwIDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9NYWtlZmlsZQ0KPiArKysgYi9kcml2ZXJz
-L210ZC9uYW5kL3NwaS9NYWtlZmlsZQ0KPiBAQCAtMSwzICsxLDMgQEANCj4gICAjIFNQRFgtTGlj
-ZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wDQo+IC1zcGluYW5kLW9ianMgOj0gY29yZS5vIG1hY3Jv
-bml4Lm8gbWljcm9uLm8gdG9zaGliYS5vIHdpbmJvbmQubw0KPiArc3BpbmFuZC1vYmpzIDo9IGNv
-cmUubyBnaWdhZGV2aWNlLm8gbWFjcm9uaXgubyBtaWNyb24ubyB0b3NoaWJhLm8gd2luYm9uZC5v
-DQo+ICAgb2JqLSQoQ09ORklHX01URF9TUElfTkFORCkgKz0gc3BpbmFuZC5vDQo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9j
-b3JlLmMNCj4gaW5kZXggODdiZGYyYTdiNzI0Li40NzljMmYyY2YxN2YgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYw0KPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Nw
-aS9jb3JlLmMNCj4gQEAgLTc2NCw2ICs3NjQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG5hbmRf
-b3BzIHNwaW5hbmRfb3BzID0gew0KPiAgIH07DQo+ICAgDQo+ICAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBzcGluYW5kX21hbnVmYWN0dXJlciAqc3BpbmFuZF9tYW51ZmFjdHVyZXJzW10gPSB7DQo+ICsJ
-JmdpZ2FkZXZpY2Vfc3BpbmFuZF9tYW51ZmFjdHVyZXIsDQo+ICAgCSZtYWNyb25peF9zcGluYW5k
-X21hbnVmYWN0dXJlciwNCj4gICAJJm1pY3Jvbl9zcGluYW5kX21hbnVmYWN0dXJlciwNCj4gICAJ
-JnRvc2hpYmFfc3BpbmFuZF9tYW51ZmFjdHVyZXIsDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210
-ZC9uYW5kL3NwaS9naWdhZGV2aWNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9naWdhZGV2aWNl
-LmMNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAwMDAwMDAwLi4yMGYyNmNk
-YzU5OGYNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9naWdh
-ZGV2aWNlLmMNCj4gQEAgLTAsMCArMSwxNDggQEANCj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlm
-aWVyOiBHUEwtMi4wDQo+ICsvKg0KPiArICogQXV0aG9yOg0KPiArICoJQ2h1YW5ob25nIEd1byA8
-Z2NoOTgxMjEzQGdtYWlsLmNvbT4NCj4gKyAqLw0KPiArDQo+ICsjaW5jbHVkZSA8bGludXgvZGV2
-aWNlLmg+DQo+ICsjaW5jbHVkZSA8bGludXgva2VybmVsLmg+DQo+ICsjaW5jbHVkZSA8bGludXgv
-bXRkL3NwaW5hbmQuaD4NCj4gKw0KPiArI2RlZmluZSBTUElOQU5EX01GUl9HSUdBREVWSUNFCQkJ
-MHhDOA0KPiArI2RlZmluZSBHRDVGWEdRNFhBX1NUQVRVU19FQ0NfMV83X0JJVEZMSVBTCSgxIDw8
-IDQpDQo+ICsjZGVmaW5lIEdENUZYR1E0WEFfU1RBVFVTX0VDQ184X0JJVEZMSVBTCSgzIDw8IDQp
-DQo+ICsNCj4gK3N0YXRpYyBTUElOQU5EX09QX1ZBUklBTlRTKHJlYWRfY2FjaGVfdmFyaWFudHMs
-DQo+ICsJCVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfUVVBRElPX09QKDAsIDIsIE5VTEws
-IDApLA0KPiArCQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1g0X09QKDAsIDEsIE5VTEws
-IDApLA0KPiArCQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX0RVQUxJT19PUCgwLCAxLCBO
-VUxMLCAwKSwNCj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9YMl9PUCgwLCAxLCBO
-VUxMLCAwKSwNCj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUCh0cnVlLCAwLCAx
-LCBOVUxMLCAwKSwNCj4gKwkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUChmYWxzZSwg
-MCwgMSwgTlVMTCwgMCkpOw0KPiArDQo+ICtzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh3cml0
-ZV9jYWNoZV92YXJpYW50cywNCj4gKwkJU1BJTkFORF9QUk9HX0xPQURfWDQodHJ1ZSwgMCwgTlVM
-TCwgMCksDQo+ICsJCVNQSU5BTkRfUFJPR19MT0FEKHRydWUsIDAsIE5VTEwsIDApKTsNCj4gKw0K
-PiArc3RhdGljIFNQSU5BTkRfT1BfVkFSSUFOVFModXBkYXRlX2NhY2hlX3ZhcmlhbnRzLA0KPiAr
-CQlTUElOQU5EX1BST0dfTE9BRF9YNChmYWxzZSwgMCwgTlVMTCwgMCksDQo+ICsJCVNQSU5BTkRf
-UFJPR19MT0FEKGZhbHNlLCAwLCBOVUxMLCAwKSk7DQo+ICsNCj4gK3N0YXRpYyBpbnQgZ2Q1Znhn
-cTR4YV9vb2JsYXlvdXRfZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCj4g
-KwkJCQkgIHN0cnVjdCBtdGRfb29iX3JlZ2lvbiAqcmVnaW9uKQ0KPiArew0KPiArCWlmIChzZWN0
-aW9uID4gMykNCj4gKwkJcmV0dXJuIC1FUkFOR0U7DQo+ICsNCj4gKwlyZWdpb24tPm9mZnNldCA9
-ICgxNiAqIHNlY3Rpb24pICsgODsNCj4gKwlyZWdpb24tPmxlbmd0aCA9IDg7DQo+ICsNCj4gKwly
-ZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBnZDVmeGdxNHhhX29vYmxheW91dF9m
-cmVlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCj4gKwkJCQkgICBzdHJ1Y3Qg
-bXRkX29vYl9yZWdpb24gKnJlZ2lvbikNCj4gK3sNCj4gKwlpZiAoc2VjdGlvbiA+IDMpDQo+ICsJ
-CXJldHVybiAtRVJBTkdFOw0KPiArDQo+ICsJaWYoc2VjdGlvbikgew0KDQpUaGVyZSdzIGEgc3Bh
-Y2UgbWlzc2luZyBhZnRlciB0aGUgJ2lmJy4NCg0KPiArCQlyZWdpb24tPm9mZnNldCA9IDE2ICog
-c2VjdGlvbjsNCj4gKwkJcmVnaW9uLT5sZW5ndGggPSA4Ow0KPiArCX0gZWxzZSB7DQo+ICsJCS8q
-IHNlY3Rpb24gMCBoYXMgb25lIGJ5dGUgcmVzZXJ2ZWQgZm9yIGJhZCBibG9jayBtYXJrICovDQo+
-ICsJCXJlZ2lvbi0+b2Zmc2V0ID0gKDE2ICogc2VjdGlvbikgKyAxOw0KDQpKdXN0IHVzZSByZWdp
-b24tPm9mZnNldCA9IDEgaGVyZS4NCg0KSSBkaWRuJ3QgY2hlY2sgdGhlIGRhdGFzaGVldCwgdGhv
-dWdoIHRoZSByZXN0IG9mIHRoZSBwYXRjaCBsb29rcyBnb29kIHRvIG1lLg0KDQpSZXZpZXdlZC1i
-eTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLmRlPg0KDQpSZWdh
-cmRzLA0KRnJpZWRlcg0KDQo+ICsJCXJlZ2lvbi0+bGVuZ3RoID0gNzsNCj4gKwl9DQo+ICsJcmV0
-dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBpbnQgZ2Q1ZnhncTR4YV9lY2NfZ2V0X3N0YXR1
-cyhzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsDQo+ICsJCQkJCSB1OCBzdGF0dXMpDQo+
-ICt7DQo+ICsJc3dpdGNoIChzdGF0dXMgJiBTVEFUVVNfRUNDX01BU0spIHsNCj4gKwljYXNlIFNU
-QVRVU19FQ0NfTk9fQklURkxJUFM6DQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJY2FzZSBHRDVG
-WEdRNFhBX1NUQVRVU19FQ0NfMV83X0JJVEZMSVBTOg0KPiArCQkvKiAxLTcgYml0cyBhcmUgZmxp
-cHBlZC4gcmV0dXJuIHRoZSBtYXhpbXVtLiAqLw0KPiArCQlyZXR1cm4gNzsNCj4gKw0KPiArCWNh
-c2UgR0Q1RlhHUTRYQV9TVEFUVVNfRUNDXzhfQklURkxJUFM6DQo+ICsJCXJldHVybiA4Ow0KPiAr
-DQo+ICsJY2FzZSBTVEFUVVNfRUNDX1VOQ09SX0VSUk9SOg0KPiArCQlyZXR1cm4gLUVCQURNU0c7
-DQo+ICsNCj4gKwlkZWZhdWx0Og0KPiArCQlicmVhazsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4g
-LUVJTlZBTDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGRfb29ibGF5b3V0
-X29wcyBnZDVmeGdxNHhhX29vYmxheW91dCA9IHsNCj4gKwkuZWNjID0gZ2Q1ZnhncTR4YV9vb2Js
-YXlvdXRfZWNjLA0KPiArCS5mcmVlID0gZ2Q1ZnhncTR4YV9vb2JsYXlvdXRfZnJlZSwNCj4gK307
-DQo+ICsNCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9pbmZvIGdpZ2FkZXZpY2Vfc3Bp
-bmFuZF90YWJsZVtdID0gew0KPiArCVNQSU5BTkRfSU5GTygiR0Q1RjFHUTR4QSIsIDB4RjEsDQo+
-ICsJCSAgICAgTkFORF9NRU1PUkcoMSwgMjA0OCwgNjQsIDY0LCAxMDI0LCAxLCAxLCAxKSwNCj4g
-KwkJICAgICBOQU5EX0VDQ1JFUSg4LCA1MTIpLA0KPiArCQkgICAgIFNQSU5BTkRfSU5GT19PUF9W
-QVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywNCj4gKwkJCQkJICAgICAgJndyaXRlX2NhY2hl
-X3ZhcmlhbnRzLA0KPiArCQkJCQkgICAgICAmdXBkYXRlX2NhY2hlX3ZhcmlhbnRzKSwNCj4gKwkJ
-ICAgICAwLA0KPiArCQkgICAgIFNQSU5BTkRfRUNDSU5GTygmZ2Q1ZnhncTR4YV9vb2JsYXlvdXQs
-DQo+ICsJCQkJICAgICBnZDVmeGdxNHhhX2VjY19nZXRfc3RhdHVzKSksDQo+ICsJU1BJTkFORF9J
-TkZPKCJHRDVGMkdRNHhBIiwgMHhGMiwNCj4gKwkJICAgICBOQU5EX01FTU9SRygxLCAyMDQ4LCA2
-NCwgNjQsIDIwNDgsIDEsIDEsIDEpLA0KPiArCQkgICAgIE5BTkRfRUNDUkVRKDgsIDUxMiksDQo+
-ICsJCSAgICAgU1BJTkFORF9JTkZPX09QX1ZBUklBTlRTKCZyZWFkX2NhY2hlX3ZhcmlhbnRzLA0K
-PiArCQkJCQkgICAgICAmd3JpdGVfY2FjaGVfdmFyaWFudHMsDQo+ICsJCQkJCSAgICAgICZ1cGRh
-dGVfY2FjaGVfdmFyaWFudHMpLA0KPiArCQkgICAgIDAsDQo+ICsJCSAgICAgU1BJTkFORF9FQ0NJ
-TkZPKCZnZDVmeGdxNHhhX29vYmxheW91dCwNCj4gKwkJCQkgICAgIGdkNWZ4Z3E0eGFfZWNjX2dl
-dF9zdGF0dXMpKSwNCj4gKwlTUElOQU5EX0lORk8oIkdENUY0R1E0eEEiLCAweEY0LA0KPiArCQkg
-ICAgIE5BTkRfTUVNT1JHKDEsIDIwNDgsIDY0LCA2NCwgNDA5NiwgMSwgMSwgMSksDQo+ICsJCSAg
-ICAgTkFORF9FQ0NSRVEoOCwgNTEyKSwNCj4gKwkJICAgICBTUElOQU5EX0lORk9fT1BfVkFSSUFO
-VFMoJnJlYWRfY2FjaGVfdmFyaWFudHMsDQo+ICsJCQkJCSAgICAgICZ3cml0ZV9jYWNoZV92YXJp
-YW50cywNCj4gKwkJCQkJICAgICAgJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksDQo+ICsJCSAgICAg
-MCwNCj4gKwkJICAgICBTUElOQU5EX0VDQ0lORk8oJmdkNWZ4Z3E0eGFfb29ibGF5b3V0LA0KPiAr
-CQkJCSAgICAgZ2Q1ZnhncTR4YV9lY2NfZ2V0X3N0YXR1cykpLA0KPiArfTsNCj4gKw0KPiArc3Rh
-dGljIGludCBnaWdhZGV2aWNlX3NwaW5hbmRfZGV0ZWN0KHN0cnVjdCBzcGluYW5kX2RldmljZSAq
-c3BpbmFuZCkNCj4gK3sNCj4gKwl1OCAqaWQgPSBzcGluYW5kLT5pZC5kYXRhOw0KPiArCWludCBy
-ZXQ7DQo+ICsNCj4gKwkvKg0KPiArCSAqIEZvciBHRCBOQU5EcywgVGhlcmUgaXMgYW4gYWRkcmVz
-cyBieXRlIG5lZWRlZCB0byBzaGlmdCBpbiBiZWZvcmUgSURzDQo+ICsJICogYXJlIHJlYWQgb3V0
-LCBzbyB0aGUgZmlyc3QgYnl0ZSBpbiByYXdfaWQgaXMgZHVtbXkuDQo+ICsJICovDQo+ICsJaWYg
-KGlkWzFdICE9IFNQSU5BTkRfTUZSX0dJR0FERVZJQ0UpDQo+ICsJCXJldHVybiAwOw0KPiArDQo+
-ICsJcmV0ID0gc3BpbmFuZF9tYXRjaF9hbmRfaW5pdChzcGluYW5kLCBnaWdhZGV2aWNlX3NwaW5h
-bmRfdGFibGUsDQo+ICsJCQkJICAgICBBUlJBWV9TSVpFKGdpZ2FkZXZpY2Vfc3BpbmFuZF90YWJs
-ZSksDQo+ICsJCQkJICAgICBpZFsyXSk7DQo+ICsJaWYgKHJldCkNCj4gKwkJcmV0dXJuIHJldDsN
-Cj4gKw0KPiArCXJldHVybiAxOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNw
-aW5hbmRfbWFudWZhY3R1cmVyX29wcyBnaWdhZGV2aWNlX3NwaW5hbmRfbWFudWZfb3BzID0gew0K
-PiArCS5kZXRlY3QgPSBnaWdhZGV2aWNlX3NwaW5hbmRfZGV0ZWN0LA0KPiArfTsNCj4gKw0KPiAr
-Y29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIGdpZ2FkZXZpY2Vfc3BpbmFuZF9tYW51
-ZmFjdHVyZXIgPSB7DQo+ICsJLmlkID0gU1BJTkFORF9NRlJfR0lHQURFVklDRSwNCj4gKwkubmFt
-ZSA9ICJHaWdhRGV2aWNlIiwNCj4gKwkub3BzID0gJmdpZ2FkZXZpY2Vfc3BpbmFuZF9tYW51Zl9v
-cHMsDQo+ICt9Ow0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oIGIv
-aW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oDQo+IGluZGV4IDgxNmM0YjAwYWJjYS4uYjkyZTJh
-YTk1NWI2IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgNCj4gKysr
-IGIvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oDQo+IEBAIC0xOTQsNiArMTk0LDcgQEAgc3Ry
-dWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIHsNCj4gICB9Ow0KPiAgIA0KPiAgIC8qIFNQSSBOQU5E
-IG1hbnVmYWN0dXJlcnMgKi8NCj4gK2V4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFj
-dHVyZXIgZ2lnYWRldmljZV9zcGluYW5kX21hbnVmYWN0dXJlcjsNCj4gICBleHRlcm4gY29uc3Qg
-c3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIG1hY3Jvbml4X3NwaW5hbmRfbWFudWZhY3R1cmVy
-Ow0KPiAgIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgbWljcm9uX3Nw
-aW5hbmRfbWFudWZhY3R1cmVyOw0KPiAgIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51
-ZmFjdHVyZXIgdG9zaGliYV9zcGluYW5kX21hbnVmYWN0dXJlcjsNCj4g
+On Tue, 27 Nov 2018 16:41:56 +0000
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
+
+> >>> +static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info *mtd, int section,
+> >>> +                                  struct mtd_oob_region *region)
+> >>> +{
+> >>> +     if (section > 7)
+> >>> +             return -ERANGE;
+> >>> +
+> >>> +     region->offset = 128 + 16 * section;
+> >>> +     region->length = 16;  
+> > 
+> > Here you expose the ECC bits has 8 sections of 16 bytes.
+> > But regarding the datasheet this should not be accessed page 32.
+> > "The ECC parity code generated by internal ECC is stored in column
+> > addresses 4224-4351 and the users cannot access to these specific
+> > addresses when internal ECC is enabled."  
+
+'when internal ECC is enabled' means that those bytes can be accessed
+when it's disabled. We should keep exposing the ECC byte sections. Note
+that even if ECC sections are not exposed, the core will read those
+bytes. They're probably filled with garbage in this case, but we don't
+care since we won't use them.
+
+> 
+> This is just to let the other layers know, where the bytes used for ECC 
+> are. As long as the driver uses the on-chip ECC it won't write to this 
+> area. So this is correct unless I misunderstood this concept. All the 
+> other supported SPI NAND chips use the same approach.
+
+Yes, and that's the right thing to do. We want to know where the ECC
+bytes are, especially when doing raw accesses.
+
+> 
+> >   
+> >>> +
+> >>> +
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>> +static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
+> >>> +                                   struct mtd_oob_region *region)
+> >>> +{
+> >>> +     if (section > 7)
+> >>> +             return -ERANGE;
+> >>> +
+> >>> +     region->offset = 2 + 16 * section;
+> >>> +     region->length = 14;  
+> > 
+> > This reserved 2 bytes for BBM for each section.
+> > But maybe we could declare this as 1 section of 128bytes:
+> > 
+> > if (section)
+> >           return -ERANGE;
+> > 
+> > region->offset = 2;
+> > region->length = 126;  
+
+I agree with this suggestion: if the free bytes are contiguous, it's
+better to expose them as a single section.
