@@ -1,16 +1,21 @@
-Received: from mailout2.w1.samsung.com ([210.118.77.12])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRuoH-0004Ti-9J
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 08:03:03 +0000
-From: Huijin Park <huijin.park@samsung.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Huijin Park <huijin.park@samsung.com>,
- bbanghj.park@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3] mtd: spi-nor: cast to u64 to avoid uint overflows
-Date: Wed, 28 Nov 2018 03:02:14 -0500
-Message-id: <1543392134-1443-1-git-send-email-huijin.park@samsung.com>
-References: <CGME20181128080244eucas1p15d9478c4fdbb0609005a12d24703d6d8@eucas1p1.samsung.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gRuqn-00067l-U2
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 08:05:39 +0000
+Date: Wed, 28 Nov 2018 09:05:16 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Pan Bian <bianpan2016@163.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ubi: put MTD device after it is not used
+Message-ID: <20181128090516.16e89c94@bbrezillon>
+In-Reply-To: <1543373853-80379-1-git-send-email-bianpan2016@163.com>
+References: <1543373853-80379-1-git-send-email-bianpan2016@163.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "huijin.park" <huijin.park@samsung.com>
+On Wed, 28 Nov 2018 10:57:33 +0800
+Pan Bian <bianpan2016@163.com> wrote:
 
-The "params->size" is defined as "u64".
-And "info->sector_size" and "info->n_sectors" are defined as
-unsigned int and u16.
-Thus, u64 data might have strange data(loss data) if the result
-overflows an unsigned int.
-This patch casts "info->sector_size" to an u64.
+> The MTD device reference is dropped via put_mtd_device, however its
+> field ->index is read and passed to ubi_msg. To fix this, the patch
+> moves the reference dropping after calling ubi_msg.
+> 
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 
-Signed-off-by: huijin.park <huijin.park@samsung.com>
----
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Changes since v1:
- * Made commit subject and message more clear.
-Changes since v2:
- * Adding the cast to only the first operand.
----
- drivers/mtd/spi-nor/spi-nor.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  drivers/mtd/ubi/build.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index a4e3454..09170b7 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -1101,10 +1101,10 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+>  	ubi_wl_close(ubi);
+>  	ubi_free_internal_volumes(ubi);
+>  	vfree(ubi->vtbl);
+> -	put_mtd_device(ubi->mtd);
+>  	vfree(ubi->peb_buf);
+>  	vfree(ubi->fm_buf);
+>  	ubi_msg(ubi, "mtd%d is detached", ubi->mtd->index);
+> +	put_mtd_device(ubi->mtd);
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d9c368c..59a1075 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2459,7 +2459,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 	memset(params, 0, sizeof(*params));
- 
- 	/* Set SPI NOR sizes. */
--	params->size = info->sector_size * info->n_sectors;
-+	params->size = (u64)info->sector_size * info->n_sectors;
- 	params->page_size = info->page_size;
- 
- 	/* (Fast) Read settings. */
--- 
-1.7.9.5
+Maybe we should move some of these to the dev->release() or
+class->dev_release() hook.
+
+>  	put_device(&ubi->dev);
+>  	return 0;
+>  }
