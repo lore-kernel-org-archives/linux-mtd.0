@@ -1,21 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRuja-0002qZ-2t
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 07:58:12 +0000
-Date: Wed, 28 Nov 2018 08:57:45 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- <Cyrille.Pitchen@microchip.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
-Message-ID: <20181128085745.1ef607b3@bbrezillon>
-In-Reply-To: <20181120115512.15958-1-tudor.ambarus@microchip.com>
-References: <20181120115512.15958-1-tudor.ambarus@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mailout2.w1.samsung.com ([210.118.77.12])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gRuoH-0004Ti-9J
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 08:03:03 +0000
+From: Huijin Park <huijin.park@samsung.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Huijin Park <huijin.park@samsung.com>,
+ bbanghj.park@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v3] mtd: spi-nor: cast to u64 to avoid uint overflows
+Date: Wed, 28 Nov 2018 03:02:14 -0500
+Message-id: <1543392134-1443-1-git-send-email-huijin.park@samsung.com>
+References: <CGME20181128080244eucas1p15d9478c4fdbb0609005a12d24703d6d8@eucas1p1.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Nov 2018 11:55:21 +0000
-<Tudor.Ambarus@microchip.com> wrote:
+From: "huijin.park" <huijin.park@samsung.com>
 
-> +
-> +	/*
-> +	 * We set nor->addr_width here to skip spi_nor_set_4byte_opcodes()
-> +	 * later because this latest function implements a legacy quirk for
-> +	 * the erase size of Spansion memory. However this quirk is no longer
-> +	 * needed with new SFDP compliant memories.
-> +	 */
-> +	nor->addr_width = 4;
-> +	nor->flags |= SPI_NOR_4B_OPCODES;
+The "params->size" is defined as "u64".
+And "info->sector_size" and "info->n_sectors" are defined as
+unsigned int and u16.
+Thus, u64 data might have strange data(loss data) if the result
+overflows an unsigned int.
+This patch casts "info->sector_size" to an u64.
 
-You mean SNOR_F_4B_OPCODES (the one introduced here [1]), because
-SPI_NOR_4B_OPCODES should only be used for flash_info->flags and might
-soon conflict with another SNOR_F_ flag?
+Signed-off-by: huijin.park <huijin.park@samsung.com>
+---
 
-[1]http://patchwork.ozlabs.org/patch/991476/
+Changes since v1:
+ * Made commit subject and message more clear.
+Changes since v2:
+ * Adding the cast to only the first operand.
+---
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d9c368c..59a1075 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2459,7 +2459,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ 	memset(params, 0, sizeof(*params));
+ 
+ 	/* Set SPI NOR sizes. */
+-	params->size = info->sector_size * info->n_sectors;
++	params->size = (u64)info->sector_size * info->n_sectors;
+ 	params->page_size = info->page_size;
+ 
+ 	/* (Fast) Read settings. */
+-- 
+1.7.9.5
