@@ -1,23 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS11x-0002if-5u
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 14:41:34 +0000
-Date: Wed, 28 Nov 2018 15:41:04 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, "stable@vger.kernel.org" <stable@vger.kernel.org>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: Fix memory allocation in nanddev_bbt_init()
-Message-ID: <20181128154104.577d5923@bbrezillon>
-In-Reply-To: <1543304637-27308-1-git-send-email-frieder.schrempf@kontron.de>
-References: <1543304637-27308-1-git-send-email-frieder.schrempf@kontron.de>
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gS1Bc-0001Je-NG
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 14:51:34 +0000
+Received: by mail-lj1-x244.google.com with SMTP id g11-v6so23711503ljk.3
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2018 06:51:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CGME20181115050724eucas1p169b2046c03e108035199a4481a82a560@eucas1p1.samsung.com>
+ <1542258430-19885-1-git-send-email-huijin.park@samsung.com>
+ <20181115102921.5117af90@xps13>
+In-Reply-To: <20181115102921.5117af90@xps13>
+From: Huijin Park <bbanghj.park@gmail.com>
+Date: Wed, 28 Nov 2018 23:51:06 +0900
+Message-ID: <CAMy0x0=H0pwHN09Bp_eKkHFHwbURFLt3MKJvBNC51TyqiZJyGA@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: change len type from signed to unsigned type
+To: miquel.raynal@bootlin.com
+Cc: huijin.park@samsung.com, boris.brezillon@bootlin.com,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Nov 2018 07:44:52 +0000
-Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
+Hi Miqu=C3=A8l,
 
-> Fix the size of the buffer allocated to store the in-memory BBT.
-> This bug was previously hidden by a different bug, that was fixed in
-> d098093ba06e.
-> 
-> Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAND devices")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+On Thu, Nov 15, 2018 at 6:29 PM Miquel Raynal <miquel.raynal@bootlin.com> w=
+rote:
+>
+> Hi Huijin,
+>
+> Huijin Park <huijin.park@samsung.com> wrote on Thu, 15 Nov 2018
+> 00:07:10 -0500:
+>
+> > From: "huijin.park" <huijin.park@samsung.com>
+> >
+> > This patch casts the "len" parameter to an unsigned int.
+> > The callers of erase_write() pass the "len" parameter as unsigned int.
+>
+> Indeed. Perhaps it is worth backporting this patch to a stable releases?
+>
 
-Looks like your From header does not match the SoB tag
-('Frieder Schrempf' vs 'Schrempf Frieder') and checkpatch does not like
-that. I'll fix it when applying, but maybe you should fix
-your .gitconfig to make them match.
+It doesn't need backporting.
+Because this patch is for enforcing code correctness.
 
-> ---
->  drivers/mtd/nand/bbt.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-> index 56cde38..c12497f 100644
-> --- a/drivers/mtd/nand/bbt.c
-> +++ b/drivers/mtd/nand/bbt.c
-> @@ -27,7 +27,8 @@ int nanddev_bbt_init(struct nand_device *nand)
->  	unsigned int nwords = DIV_ROUND_UP(nblocks * bits_per_block,
->  					   BITS_PER_LONG);
->  
-> -	nand->bbt.cache = kzalloc(nwords, GFP_KERNEL);
-> +	nand->bbt.cache = kzalloc(nwords * (BITS_PER_LONG / BITS_PER_BYTE),
-> +				  GFP_KERNEL);
->  	if (!nand->bbt.cache)
->  		return -ENOMEM;
->  
+> >
+> > Signed-off-by: huijin.park <huijin.park@samsung.com>
+> > ---
+> >  drivers/mtd/mtdblock.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+> > index a5b1933..b2d5ed1 100644
+> > --- a/drivers/mtd/mtdblock.c
+> > +++ b/drivers/mtd/mtdblock.c
+> > @@ -56,7 +56,7 @@ struct mtdblk_dev {
+> >   */
+> >
+> >  static int erase_write (struct mtd_info *mtd, unsigned long pos,
+> > -                     int len, const char *buf)
+> > +                     unsigned int len, const char *buf)
+> >  {
+> >       struct erase_info erase;
+> >       size_t retlen;
+>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>
+>
+> Thanks,
+> Miqu=C3=A8l
+
+Thanks,
+Huijin
