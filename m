@@ -1,19 +1,25 @@
-Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRxuV-0005YH-8E
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 11:21:40 +0000
-Received: by mail-pg1-x541.google.com with SMTP id 70so9356781pgh.8
- for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2018 03:21:29 -0800 (PST)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Chuanhong Guo <gch981213@gmail.com>
-Subject: [PATCH v3] mtd: spinand: add support for GigaDevice GD5FxGQ4xA
-Date: Wed, 28 Nov 2018 19:20:41 +0800
-Message-Id: <20181128112041.22387-1-gch981213@gmail.com>
+ id 1gRyiw-0007oZ-5X
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 12:13:50 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "peron.clem@gmail.com" <peron.clem@gmail.com>, Schrempf Frieder
+ <frieder.schrempf@kontron.de>, Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spinand: Fix ECC status and OOB layout for Toshiba
+ TC58CVG2S0H
+Date: Wed, 28 Nov 2018 12:13:31 +0000
+Message-ID: <1543407135-20862-1-git-send-email-frieder.schrempf@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7A0F5D3CDE8FFD41A5A063EBB0A6A273@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,214 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for GigaDevice GD5F1G/2G/4GQ4xA SPI NAND.
-
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
-
-I'm really sorry for sending broken patch twice.
-
-Change since v2:
- fixed incorrect ECC status values
-
-Changes since v1:
- fixed broken indent at the beginning
- fixed OOB layout. Only the first byte is reserved for bad block mark
- replaced STATUS_ECC_HAS_BITFLIPS with a device-specific definition
-
- drivers/mtd/nand/spi/Makefile     |   2 +-
- drivers/mtd/nand/spi/core.c       |   1 +
- drivers/mtd/nand/spi/gigadevice.c | 148 ++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h       |   1 +
- 4 files changed, 151 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/gigadevice.c
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index be5f73512ece..753125082640 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o macronix.o micron.o toshiba.o winbond.o
-+spinand-objs := core.o gigadevice.o macronix.o micron.o toshiba.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 87bdf2a7b724..479c2f2cf17f 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -764,6 +764,7 @@ static const struct nand_ops spinand_ops = {
- };
- 
- static const struct spinand_manufacturer *spinand_manufacturers[] = {
-+	&gigadevice_spinand_manufacturer,
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&toshiba_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-new file mode 100644
-index 000000000000..20f26cdc598f
---- /dev/null
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Author:
-+ *	Chuanhong Guo <gch981213@gmail.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_GIGADEVICE			0xC8
-+#define GD5FXGQ4XA_STATUS_ECC_1_7_BITFLIPS	(1 << 4)
-+#define GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS	(3 << 4)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int gd5fxgq4xa_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 8;
-+	region->length = 8;
-+
-+	return 0;
-+}
-+
-+static int gd5fxgq4xa_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	if(section) {
-+		region->offset = 16 * section;
-+		region->length = 8;
-+	} else {
-+		/* section 0 has one byte reserved for bad block mark */
-+		region->offset = (16 * section) + 1;
-+		region->length = 7;
-+	}
-+	return 0;
-+}
-+
-+static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case GD5FXGQ4XA_STATUS_ECC_1_7_BITFLIPS:
-+		/* 1-7 bits are flipped. return the maximum. */
-+		return 7;
-+
-+	case GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS:
-+		return 8;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct mtd_ooblayout_ops gd5fxgq4xa_ooblayout = {
-+	.ecc = gd5fxgq4xa_ooblayout_ecc,
-+	.free = gd5fxgq4xa_ooblayout_free,
-+};
-+
-+static const struct spinand_info gigadevice_spinand_table[] = {
-+	SPINAND_INFO("GD5F1GQ4xA", 0xF1,
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
-+				     gd5fxgq4xa_ecc_get_status)),
-+	SPINAND_INFO("GD5F2GQ4xA", 0xF2,
-+		     NAND_MEMORG(1, 2048, 64, 64, 2048, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
-+				     gd5fxgq4xa_ecc_get_status)),
-+	SPINAND_INFO("GD5F4GQ4xA", 0xF4,
-+		     NAND_MEMORG(1, 2048, 64, 64, 4096, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
-+				     gd5fxgq4xa_ecc_get_status)),
-+};
-+
-+static int gigadevice_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id = spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * For GD NANDs, There is an address byte needed to shift in before IDs
-+	 * are read out, so the first byte in raw_id is dummy.
-+	 */
-+	if (id[1] != SPINAND_MFR_GIGADEVICE)
-+		return 0;
-+
-+	ret = spinand_match_and_init(spinand, gigadevice_spinand_table,
-+				     ARRAY_SIZE(gigadevice_spinand_table),
-+				     id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops gigadevice_spinand_manuf_ops = {
-+	.detect = gigadevice_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer gigadevice_spinand_manufacturer = {
-+	.id = SPINAND_MFR_GIGADEVICE,
-+	.name = "GigaDevice",
-+	.ops = &gigadevice_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 816c4b00abca..b92e2aa955b6 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -194,6 +194,7 @@ struct spinand_manufacturer {
- };
- 
- /* SPI NAND manufacturers */
-+extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
--- 
-2.19.1
+V2hlbiByZWFkaW5nIHRoZSBzdGF0dXMgb2YgdGhlIG9uLWNoaXAgRUNDLCB0aGUgVG9zaGliYSBj
+aGlwIHJldHVybnMNCnR3byBkaWZmZXJlbnQgc3RhdGVzIGZvciByZXBvcnRpbmcgY29ycmVjdGVk
+IGJpdGZsaXBzLiBXZSBzaG91bGQgY2hlY2sNCmZvciBib3RoIG9mIHRoZW0uDQoNCkFsc28gdGhl
+IGRhdGFzaGVldCBjbGFpbXMgdGhhdCB0aGUgRUNDIGJ5dGVzIGluIE9PQiBzaG91bGQgbm90IGJl
+DQphY2Nlc3NlZCBhdCBhbGwsIHNvIGxldCdzIGFsc28gYXZvaWQgYW55IHJlYWQgb3BlcmF0aW9u
+cyBvbiB0aGVtLg0KDQpPbmUgbW9yZSBtaW5vciBvcHRpbWl6YXRpb24gaXMgdG8gcmV0dXJuIHRo
+ZSBmcmVlIE9PQiBieXRlcyBhcyBvbmUNCmNvbnRpbnVvdXMgYXJlYSwgaW5zdGVhZCBvZiBtdWx0
+aXBsZSBzZWN0aW9ucy4NCg0KU3VnZ2VzdGVkLWJ5OiBDbMOpbWVudCBQw6lyb24gPHBlcm9uLmNs
+ZW1AZ21haWwuY29tPg0KU2lnbmVkLW9mZi1ieTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5z
+Y2hyZW1wZkBrb250cm9uLmRlPg0KLS0tDQogZHJpdmVycy9tdGQvbmFuZC9zcGkvdG9zaGliYS5j
+IHwgMTggKysrKysrLS0tLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygr
+KSwgMTIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS90
+b3NoaWJhLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMNCmluZGV4IDI5NGJjZjYu
+LjkwNDBhYTUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMNCisr
+KyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEuYw0KQEAgLTExLDYgKzExLDcgQEANCiAj
+aW5jbHVkZSA8bGludXgvbXRkL3NwaW5hbmQuaD4NCiANCiAjZGVmaW5lIFNQSU5BTkRfTUZSX1RP
+U0hJQkEJCTB4OTgNCisjZGVmaW5lIFRPU0hfU1RBVFVTX0VDQ19IQVNfQklURkxJUFNfVAkoMyA8
+PCA0KQ0KIA0KIHN0YXRpYyBTUElOQU5EX09QX1ZBUklBTlRTKHJlYWRfY2FjaGVfdmFyaWFudHMs
+DQogCQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1g0X09QKDAsIDEsIE5VTEwsIDApLA0K
+QEAgLTI3LDI1ICsyOCwxNyBAQCBzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh1cGRhdGVfY2Fj
+aGVfdmFyaWFudHMsDQogc3RhdGljIGludCB0YzU4Y3ZnMnMwaF9vb2JsYXlvdXRfZWNjKHN0cnVj
+dCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCiAJCQkJICAgICBzdHJ1Y3QgbXRkX29vYl9y
+ZWdpb24gKnJlZ2lvbikNCiB7DQotCWlmIChzZWN0aW9uID4gNykNCi0JCXJldHVybiAtRVJBTkdF
+Ow0KLQ0KLQlyZWdpb24tPm9mZnNldCA9IDEyOCArIDE2ICogc2VjdGlvbjsNCi0JcmVnaW9uLT5s
+ZW5ndGggPSAxNjsNCi0NCi0NCi0JcmV0dXJuIDA7DQorCXJldHVybiAtRVJBTkdFOw0KIH0NCiAN
+CiBzdGF0aWMgaW50IHRjNThjdmcyczBoX29vYmxheW91dF9mcmVlKHN0cnVjdCBtdGRfaW5mbyAq
+bXRkLCBpbnQgc2VjdGlvbiwNCiAJCQkJICAgICAgc3RydWN0IG10ZF9vb2JfcmVnaW9uICpyZWdp
+b24pDQogew0KLQlpZiAoc2VjdGlvbiA+IDcpDQorCWlmIChzZWN0aW9uID4gMCkNCiAJCXJldHVy
+biAtRVJBTkdFOw0KIA0KLQlyZWdpb24tPm9mZnNldCA9IDIgKyAxNiAqIHNlY3Rpb247DQotCXJl
+Z2lvbi0+bGVuZ3RoID0gMTQ7DQotDQorCXJlZ2lvbi0+b2Zmc2V0ID0gMjsNCisJcmVnaW9uLT5s
+ZW5ndGggPSAxMjY7DQogDQogCXJldHVybiAwOw0KIH0NCkBAIC03MCw2ICs2Myw3IEBAIHN0YXRp
+YyBpbnQgdGM1OGN2ZzJzMGhfZWNjX2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
+cGluYW5kLA0KIAkJcmV0dXJuIC1FQkFETVNHOw0KIA0KIAljYXNlIFNUQVRVU19FQ0NfSEFTX0JJ
+VEZMSVBTOg0KKwljYXNlIFRPU0hfU1RBVFVTX0VDQ19IQVNfQklURkxJUFNfVDoNCiAJCS8qDQog
+CQkgKiBMZXQncyB0cnkgdG8gcmV0cmlldmUgdGhlIHJlYWwgbWF4aW11bSBudW1iZXIgb2YgYml0
+ZmxpcHMNCiAJCSAqIGluIG9yZGVyIHRvIGF2b2lkIGZvcmNpbmcgdGhlIHdlYXItbGV2ZWxpbmcg
+bGF5ZXIgdG8gbW92ZQ0KLS0gDQoyLjcuNA0K
