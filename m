@@ -1,23 +1,25 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
+Received: from skedge04.snt-world.com ([91.208.41.69])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gRyiw-0007oZ-5X
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 12:13:50 +0000
+ id 1gRyq7-0003E5-1M
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 12:21:12 +0000
 From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "peron.clem@gmail.com" <peron.clem@gmail.com>, Schrempf Frieder
- <frieder.schrempf@kontron.de>, Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: spinand: Fix ECC status and OOB layout for Toshiba
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Boris
+ Brezillon" <boris.brezillon@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?=
+ <peron.clem@gmail.com>
+Subject: Re: [PATCH] mtd: nand: spi: Add initial support for Toshiba
  TC58CVG2S0H
-Date: Wed, 28 Nov 2018 12:13:31 +0000
-Message-ID: <1543407135-20862-1-git-send-email-frieder.schrempf@kontron.de>
+Date: Wed, 28 Nov 2018 12:20:56 +0000
+Message-ID: <c3811f92-a982-2fc0-f0df-f207c6ff120c@kontron.de>
+References: <1541665796-21092-1-git-send-email-frieder.schrempf@kontron.de>
+ <20181118214721.1ede9fb6@xps13>
+In-Reply-To: <20181118214721.1ede9fb6@xps13>
 Content-Language: en-US
 Content-Type: text/plain; charset="utf-8"
-Content-ID: <7A0F5D3CDE8FFD41A5A063EBB0A6A273@snt-world.com>
+Content-ID: <3FBDD1E9DA66FB42A4730FBC7B4A9F41@snt-world.com>
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,40 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-V2hlbiByZWFkaW5nIHRoZSBzdGF0dXMgb2YgdGhlIG9uLWNoaXAgRUNDLCB0aGUgVG9zaGliYSBj
-aGlwIHJldHVybnMNCnR3byBkaWZmZXJlbnQgc3RhdGVzIGZvciByZXBvcnRpbmcgY29ycmVjdGVk
-IGJpdGZsaXBzLiBXZSBzaG91bGQgY2hlY2sNCmZvciBib3RoIG9mIHRoZW0uDQoNCkFsc28gdGhl
-IGRhdGFzaGVldCBjbGFpbXMgdGhhdCB0aGUgRUNDIGJ5dGVzIGluIE9PQiBzaG91bGQgbm90IGJl
-DQphY2Nlc3NlZCBhdCBhbGwsIHNvIGxldCdzIGFsc28gYXZvaWQgYW55IHJlYWQgb3BlcmF0aW9u
-cyBvbiB0aGVtLg0KDQpPbmUgbW9yZSBtaW5vciBvcHRpbWl6YXRpb24gaXMgdG8gcmV0dXJuIHRo
-ZSBmcmVlIE9PQiBieXRlcyBhcyBvbmUNCmNvbnRpbnVvdXMgYXJlYSwgaW5zdGVhZCBvZiBtdWx0
-aXBsZSBzZWN0aW9ucy4NCg0KU3VnZ2VzdGVkLWJ5OiBDbMOpbWVudCBQw6lyb24gPHBlcm9uLmNs
-ZW1AZ21haWwuY29tPg0KU2lnbmVkLW9mZi1ieTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5z
-Y2hyZW1wZkBrb250cm9uLmRlPg0KLS0tDQogZHJpdmVycy9tdGQvbmFuZC9zcGkvdG9zaGliYS5j
-IHwgMTggKysrKysrLS0tLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygr
-KSwgMTIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS90
-b3NoaWJhLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMNCmluZGV4IDI5NGJjZjYu
-LjkwNDBhYTUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMNCisr
-KyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEuYw0KQEAgLTExLDYgKzExLDcgQEANCiAj
-aW5jbHVkZSA8bGludXgvbXRkL3NwaW5hbmQuaD4NCiANCiAjZGVmaW5lIFNQSU5BTkRfTUZSX1RP
-U0hJQkEJCTB4OTgNCisjZGVmaW5lIFRPU0hfU1RBVFVTX0VDQ19IQVNfQklURkxJUFNfVAkoMyA8
-PCA0KQ0KIA0KIHN0YXRpYyBTUElOQU5EX09QX1ZBUklBTlRTKHJlYWRfY2FjaGVfdmFyaWFudHMs
-DQogCQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1g0X09QKDAsIDEsIE5VTEwsIDApLA0K
-QEAgLTI3LDI1ICsyOCwxNyBAQCBzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh1cGRhdGVfY2Fj
-aGVfdmFyaWFudHMsDQogc3RhdGljIGludCB0YzU4Y3ZnMnMwaF9vb2JsYXlvdXRfZWNjKHN0cnVj
-dCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCiAJCQkJICAgICBzdHJ1Y3QgbXRkX29vYl9y
-ZWdpb24gKnJlZ2lvbikNCiB7DQotCWlmIChzZWN0aW9uID4gNykNCi0JCXJldHVybiAtRVJBTkdF
-Ow0KLQ0KLQlyZWdpb24tPm9mZnNldCA9IDEyOCArIDE2ICogc2VjdGlvbjsNCi0JcmVnaW9uLT5s
-ZW5ndGggPSAxNjsNCi0NCi0NCi0JcmV0dXJuIDA7DQorCXJldHVybiAtRVJBTkdFOw0KIH0NCiAN
-CiBzdGF0aWMgaW50IHRjNThjdmcyczBoX29vYmxheW91dF9mcmVlKHN0cnVjdCBtdGRfaW5mbyAq
-bXRkLCBpbnQgc2VjdGlvbiwNCiAJCQkJICAgICAgc3RydWN0IG10ZF9vb2JfcmVnaW9uICpyZWdp
-b24pDQogew0KLQlpZiAoc2VjdGlvbiA+IDcpDQorCWlmIChzZWN0aW9uID4gMCkNCiAJCXJldHVy
-biAtRVJBTkdFOw0KIA0KLQlyZWdpb24tPm9mZnNldCA9IDIgKyAxNiAqIHNlY3Rpb247DQotCXJl
-Z2lvbi0+bGVuZ3RoID0gMTQ7DQotDQorCXJlZ2lvbi0+b2Zmc2V0ID0gMjsNCisJcmVnaW9uLT5s
-ZW5ndGggPSAxMjY7DQogDQogCXJldHVybiAwOw0KIH0NCkBAIC03MCw2ICs2Myw3IEBAIHN0YXRp
-YyBpbnQgdGM1OGN2ZzJzMGhfZWNjX2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
-cGluYW5kLA0KIAkJcmV0dXJuIC1FQkFETVNHOw0KIA0KIAljYXNlIFNUQVRVU19FQ0NfSEFTX0JJ
-VEZMSVBTOg0KKwljYXNlIFRPU0hfU1RBVFVTX0VDQ19IQVNfQklURkxJUFNfVDoNCiAJCS8qDQog
-CQkgKiBMZXQncyB0cnkgdG8gcmV0cmlldmUgdGhlIHJlYWwgbWF4aW11bSBudW1iZXIgb2YgYml0
-ZmxpcHMNCiAJCSAqIGluIG9yZGVyIHRvIGF2b2lkIGZvcmNpbmcgdGhlIHdlYXItbGV2ZWxpbmcg
-bGF5ZXIgdG8gbW92ZQ0KLS0gDQoyLjcuNA0K
+SGkgTWlxdcOobCwNCg0KT24gMTguMTEuMTggMjE6NDcsIE1pcXVlbCBSYXluYWwgd3JvdGU6DQo+
+IEhpIFNjaHJlbXBmLA0KPiANCj4gU2NocmVtcGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBr
+b250cm9uLkRlPiB3cm90ZSBvbiBUaHUsIDggTm92IDIwMTgNCj4gMDg6MzI6MTEgKzAwMDA6DQo+
+IA0KPj4gQWRkIG1pbmltYWwgc3VwcG9ydCBmb3IgdGhlIFRvc2hpYmEgVEM1OENWRzJTMEggU1BJ
+IE5BTkQgY2hpcC4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBGcmllZGVyIFNjaHJlbXBmIDxmcmll
+ZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+DQo+PiAtLS0NCj4gDQo+IFdpdGggIm10ZDogc3BpbmFu
+ZDoiIGFzIHByZWZpeCwgYXBwbGllZCB0byBuYW5kL25leHQuDQoNCkNsw6ltZW50IHN1Z2dlc3Rl
+ZCBzb21lIGZpeGVzL2ltcHJvdmVtZW50cyBmb3IgdGhpcyBwYXRjaC4gWW91IGNhbiBmaW5kIA0K
+dGhlbSBpbiB0aGlzIHBhdGNoOiBodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3BhdGNoLzEw
+MDQ1MDEvLg0KDQpXaGVuIHRoZXNlIGNoYW5nZXMgYXJlIGFwcHJvdmVkLCB5b3UgY2FuIGRlY2lk
+ZSBpZiB5b3UgYXBwbHkgdGhpcyBvbiB0b3AgDQpvZiB0aGUgaW5pdGlhbCBwYXRjaCBvciBpZiB5
+b3UgY2FuL3dhbnQgdG8gc3F1YXNoIGJvdGggcGF0Y2hlcy4NCg0KVGhhbmtzLA0KRnJpZWRlcg==
