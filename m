@@ -1,19 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gS0jx-0003eZ-L0
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 14:22:59 +0000
-Date: Wed, 28 Nov 2018 15:22:45 +0100
+ id 1gS11x-0002if-5u
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2018 14:41:34 +0000
+Date: Wed, 28 Nov 2018 15:41:04 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>, <linux-mtd@lists.infradead.org>
-Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- <Cyrille.Pitchen@microchip.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
-Message-ID: <20181128152245.1bb0ccd8@bbrezillon>
-In-Reply-To: <b1052dff-e1a9-2d3f-b921-661c72e0e137@microchip.com>
-References: <20181120115512.15958-1-tudor.ambarus@microchip.com>
- <20181128085745.1ef607b3@bbrezillon>
- <b1052dff-e1a9-2d3f-b921-661c72e0e137@microchip.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, "stable@vger.kernel.org" <stable@vger.kernel.org>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: nand: Fix memory allocation in nanddev_bbt_init()
+Message-ID: <20181128154104.577d5923@bbrezillon>
+In-Reply-To: <1543304637-27308-1-git-send-email-frieder.schrempf@kontron.de>
+References: <1543304637-27308-1-git-send-email-frieder.schrempf@kontron.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,40 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 Nov 2018 14:17:12 +0000
-<Tudor.Ambarus@microchip.com> wrote:
+On Tue, 27 Nov 2018 07:44:52 +0000
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
 
-> On 11/28/2018 09:57 AM, Boris Brezillon wrote:
-> > On Tue, 20 Nov 2018 11:55:21 +0000
-> > <Tudor.Ambarus@microchip.com> wrote:
-> >   
-> >> +
-> >> +	/*
-> >> +	 * We set nor->addr_width here to skip spi_nor_set_4byte_opcodes()
-> >> +	 * later because this latest function implements a legacy quirk for
-> >> +	 * the erase size of Spansion memory. However this quirk is no longer
-> >> +	 * needed with new SFDP compliant memories.
-> >> +	 */
-> >> +	nor->addr_width = 4;
-> >> +	nor->flags |= SPI_NOR_4B_OPCODES;  
-> > 
-> > You mean SNOR_F_4B_OPCODES (the one introduced here [1]), because
-> > SPI_NOR_4B_OPCODES should only be used for flash_info->flags and might
-> > soon conflict with another SNOR_F_ flag?
-> >   
+> Fix the size of the buffer allocated to store the in-memory BBT.
+> This bug was previously hidden by a different bug, that was fixed in
+> d098093ba06e.
 > 
-> yes, you're right.
-> 
-> > [1]http://patchwork.ozlabs.org/patch/991476/
-> >   
-> 
-> Can you apply your patch? Will submit a new version afterwards.
+> Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with NAND devices")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Actually, I realized setting SNOR_F_4B_OPCODES when the BFPT advertises
-4_BYTES_ONLY is incorrect as 4bytes only can mean "use the 3B opcodes
-but pass address on 4 bytes". Here is a new version of this patch [1].
-Feel free to pick it up and send it along with your "SFDP 4-byte Address
-Instruction Table" patch (I have not reason to send it alone since the
-problem I was trying to solve is no longer fixed by [1]).
+Looks like your From header does not match the SoB tag
+('Frieder Schrempf' vs 'Schrempf Frieder') and checkpatch does not like
+that. I'll fix it when applying, but maybe you should fix
+your .gitconfig to make them match.
 
-[1]https://github.com/bbrezillon/linux-0day/commit/a953b6b435ec67bca00d6666f472db5f6dca4f63
+> ---
+>  drivers/mtd/nand/bbt.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+> index 56cde38..c12497f 100644
+> --- a/drivers/mtd/nand/bbt.c
+> +++ b/drivers/mtd/nand/bbt.c
+> @@ -27,7 +27,8 @@ int nanddev_bbt_init(struct nand_device *nand)
+>  	unsigned int nwords = DIV_ROUND_UP(nblocks * bits_per_block,
+>  					   BITS_PER_LONG);
+>  
+> -	nand->bbt.cache = kzalloc(nwords, GFP_KERNEL);
+> +	nand->bbt.cache = kzalloc(nwords * (BITS_PER_LONG / BITS_PER_BYTE),
+> +				  GFP_KERNEL);
+>  	if (!nand->bbt.cache)
+>  		return -ENOMEM;
+>  
