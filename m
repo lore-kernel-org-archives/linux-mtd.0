@@ -1,23 +1,19 @@
-Received: from mail-ve1eur02on0730.outbound.protection.outlook.com
- ([2a01:111:f400:fe06::730]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSPHw-0002UJ-B1
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 16:35:41 +0000
-From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 6/6] mtd: spi-nor: Move the nor->info assignment
- earlier in the scan func
-Date: Thu, 29 Nov 2018 16:35:25 +0000
-Message-ID: <fe3646e0-bb44-92d4-b524-e00f7db9c73e@nokia.com>
-References: <20181129141026.24892-1-boris.brezillon@bootlin.com>
- <20181129141026.24892-7-boris.brezillon@bootlin.com>
-In-Reply-To: <20181129141026.24892-7-boris.brezillon@bootlin.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BD95B85A8FC77845BEF856905CA03473@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1gSPO4-0005NM-RB
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 16:42:03 +0000
+From: Christophe Kerello <christophe.kerello@st.com>
+To: <boris.brezillon@bootlin.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <robh+dt@kernel.org>, <mark.rutland@arm.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ Christophe Kerello <christophe.kerello@st.com>
+Subject: [ v3 0/3] mtd: rawnand: add STM32 FMC2 NAND flash controller driver
+Date: Thu, 29 Nov 2018 17:41:00 +0100
+Message-ID: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,75 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMjkvMTEvMjAxOCAxNToxMCwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0KPiBTb21lIGZ1bmN0
-aW9ucyBjYWxsZWQgZnJvbSBzcGlfbm9yX3NjYW4oKSBuZWVkIGEgZmxhc2hfaW5mbyBvYmplY3Qu
-DQo+IExldCdzIGFzc2lnbiBub3ItPmluZm8gZWFybHkgb24gdG8gYXZvaWQgcGFzc2luZyBpbmZv
-IGFzIGFuIGV4dHJhDQo+IGFyZ3VtZW50IHRvIGVhY2ggb2YgdGhlc2Ugc3ViLWZ1bmN0aW9ucy4N
-Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJv
-b3RsaW4uY29tPg0KDQpSZXZpZXdlZC1ieTogQWxlYXhhbmRlciBTdmVyZGxpbiA8YWxleGFuZGVy
-LnN2ZXJkbGluQG5va2lhLmNvbT4NCg0KPiAtLS0NCj4gQ2hhbmdlcyBpbiB2MjoNCj4gLSBOZXcg
-cGF0Y2gNCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDI0ICsrKysr
-KysrKysrKysrLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyks
-IDEwIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-c3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggZDJiMDlm
-NTJiMWZiLi5jMWQ5YzJlNTBiZWUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-c3BpLW5vci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC0y
-MzgsOSArMjM4LDEwIEBAIHN0YXRpYyB1OCBzcGlfbm9yX2NvbnZlcnRfM3RvNF9lcmFzZSh1OCBv
-cGNvZGUpDQo+ICAJCQkJICAgICAgQVJSQVlfU0laRShzcGlfbm9yXzN0bzRfZXJhc2UpKTsNCj4g
-IH0NCj4gIA0KPiAtc3RhdGljIHZvaWQgc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2RlcyhzdHJ1Y3Qg
-c3BpX25vciAqbm9yLA0KPiAtCQkJCSAgICAgIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZv
-KQ0KPiArc3RhdGljIHZvaWQgc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2RlcyhzdHJ1Y3Qgc3BpX25v
-ciAqbm9yKQ0KPiAgew0KPiArCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZvID0gbm9yLT5p
-bmZvOw0KPiArDQo+ICAJLyogRG8gc29tZSBtYW51ZmFjdHVyZXIgZml4dXBzIGZpcnN0ICovDQo+
-ICAJc3dpdGNoIChKRURFQ19NRlIoaW5mbykpIHsNCj4gIAljYXNlIFNOT1JfTUZSX1NQQU5TSU9O
-Og0KPiBAQCAtMjAyMyw4ICsyMDI0LDkgQEAgc3RhdGljIGludCBzcGlfbm9yX2NoZWNrKHN0cnVj
-dCBzcGlfbm9yICpub3IpDQo+ICAJcmV0dXJuIDA7DQo+ICB9DQo+ICANCj4gLXN0YXRpYyBpbnQg
-czNhbl9ub3Jfc2Nhbihjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbywgc3RydWN0IHNwaV9u
-b3IgKm5vcikNCj4gK3N0YXRpYyBpbnQgczNhbl9ub3Jfc2NhbihzdHJ1Y3Qgc3BpX25vciAqbm9y
-KQ0KPiAgew0KPiArCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZvID0gbm9yLT5pbmZvOw0K
-PiAgCWludCByZXQ7DQo+ICAJdTggdmFsOw0KPiAgDQo+IEBAIC0zMjA0LDEwICszMjA2LDEwIEBA
-IHN0YXRpYyBpbnQgc3BpX25vcl9wYXJzZV9zZmRwKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICB9
-DQo+ICANCj4gIHN0YXRpYyBpbnQgc3BpX25vcl9pbml0X3BhcmFtcyhzdHJ1Y3Qgc3BpX25vciAq
-bm9yLA0KPiAtCQkJICAgICAgIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZvLA0KPiAgCQkJ
-ICAgICAgIHN0cnVjdCBzcGlfbm9yX2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zKQ0KPiAgew0KPiAg
-CXN0cnVjdCBzcGlfbm9yX2VyYXNlX21hcCAqbWFwID0gJm5vci0+ZXJhc2VfbWFwOw0KPiArCWNv
-bnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZvID0gbm9yLT5pbmZvOw0KPiAgCXU4IGksIGVyYXNl
-X21hc2s7DQo+ICANCj4gIAkvKiBTZXQgbGVnYWN5IGZsYXNoIHBhcmFtZXRlcnMgYXMgZGVmYXVs
-dC4gKi8NCj4gQEAgLTM0NzIsMTAgKzM0NzQsMTEgQEAgc3RhdGljIGludCBzcGlfbm9yX3NlbGVj
-dF9lcmFzZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCB1MzIgd2FudGVkX3NpemUpDQo+ICAJcmV0dXJu
-IDA7DQo+ICB9DQo+ICANCj4gLXN0YXRpYyBpbnQgc3BpX25vcl9zZXR1cChzdHJ1Y3Qgc3BpX25v
-ciAqbm9yLCBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbywNCj4gK3N0YXRpYyBpbnQgc3Bp
-X25vcl9zZXR1cChzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiAgCQkJIGNvbnN0IHN0cnVjdCBzcGlf
-bm9yX2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zLA0KPiAgCQkJIGNvbnN0IHN0cnVjdCBzcGlfbm9y
-X2h3Y2FwcyAqaHdjYXBzKQ0KPiAgew0KPiArCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZv
-ID0gbm9yLT5pbmZvOw0KPiAgCXUzMiBpZ25vcmVkX21hc2ssIHNoYXJlZF9tYXNrOw0KPiAgCWJv
-b2wgZW5hYmxlX3F1YWRfaW87DQo+ICAJaW50IGVycjsNCj4gQEAgLTM2NjQsNiArMzY2Nyw4IEBA
-IGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgY2hhciAqbmFtZSwN
-Cj4gIAkJfQ0KPiAgCX0NCj4gIA0KPiArCW5vci0+aW5mbyA9IGluZm87DQo+ICsNCj4gIAltdXRl
-eF9pbml0KCZub3ItPmxvY2spOw0KPiAgDQo+ICAJLyoNCj4gQEAgLTM2NzUsNyArMzY4MCw3IEBA
-IGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgY2hhciAqbmFtZSwN
-Cj4gIAkJbm9yLT5mbGFncyB8PSAgU05PUl9GX1JFQURZX1hTUl9SRFk7DQo+ICANCj4gIAkvKiBQ
-YXJzZSB0aGUgU2VyaWFsIEZsYXNoIERpc2NvdmVyYWJsZSBQYXJhbWV0ZXJzIHRhYmxlLiAqLw0K
-PiAtCXJldCA9IHNwaV9ub3JfaW5pdF9wYXJhbXMobm9yLCBpbmZvLCAmcGFyYW1zKTsNCj4gKwly
-ZXQgPSBzcGlfbm9yX2luaXRfcGFyYW1zKG5vciwgJnBhcmFtcyk7DQo+ICAJaWYgKHJldCkNCj4g
-IAkJcmV0dXJuIHJldDsNCj4gIA0KPiBAQCAtMzc1Miw3ICszNzU3LDcgQEAgaW50IHNwaV9ub3Jf
-c2NhbihzdHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdCBjaGFyICpuYW1lLA0KPiAgCSAqIC0gc2V0
-IHRoZSBTUEkgcHJvdG9jb2xzIGZvciByZWdpc3RlciBhbmQgbWVtb3J5IGFjY2Vzc2VzLg0KPiAg
-CSAqIC0gc2V0IHRoZSBRdWFkIEVuYWJsZSBiaXQgaWYgbmVlZGVkIChyZXF1aXJlZCBieSBTUEkg
-eC15LTQgcHJvdG9zKS4NCj4gIAkgKi8NCj4gLQlyZXQgPSBzcGlfbm9yX3NldHVwKG5vciwgaW5m
-bywgJnBhcmFtcywgaHdjYXBzKTsNCj4gKwlyZXQgPSBzcGlfbm9yX3NldHVwKG5vciwgJnBhcmFt
-cywgaHdjYXBzKTsNCj4gIAlpZiAocmV0KQ0KPiAgCQlyZXR1cm4gcmV0Ow0KPiAgDQo+IEBAIC0z
-NzY1LDcgKzM3NzAsNyBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNv
-bnN0IGNoYXIgKm5hbWUsDQo+ICAJCW5vci0+YWRkcl93aWR0aCA9IDQ7DQo+ICAJCWlmIChKRURF
-Q19NRlIoaW5mbykgPT0gU05PUl9NRlJfU1BBTlNJT04gfHwNCj4gIAkJICAgIGluZm8tPmZsYWdz
-ICYgU1BJX05PUl80Ql9PUENPREVTKQ0KPiAtCQkJc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2Rlcyhu
-b3IsIGluZm8pOw0KPiArCQkJc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2Rlcyhub3IpOw0KPiAgCX0g
-ZWxzZSB7DQo+ICAJCW5vci0+YWRkcl93aWR0aCA9IDM7DQo+ICAJfQ0KPiBAQCAtMzc3NywxMyAr
-Mzc4MiwxMiBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IGNo
-YXIgKm5hbWUsDQo+ICAJfQ0KPiAgDQo+ICAJaWYgKGluZm8tPmZsYWdzICYgU1BJX1MzQU4pIHsN
-Cj4gLQkJcmV0ID0gczNhbl9ub3Jfc2NhbihpbmZvLCBub3IpOw0KPiArCQlyZXQgPSBzM2FuX25v
-cl9zY2FuKG5vcik7DQo+ICAJCWlmIChyZXQpDQo+ICAJCQlyZXR1cm4gcmV0Ow0KPiAgCX0NCj4g
-IA0KPiAgCS8qIFNlbmQgYWxsIHRoZSByZXF1aXJlZCBTUEkgZmxhc2ggY29tbWFuZHMgdG8gaW5p
-dGlhbGl6ZSBkZXZpY2UgKi8NCj4gLQlub3ItPmluZm8gPSBpbmZvOw0KPiAgCXJldCA9IHNwaV9u
-b3JfaW5pdChub3IpOw0KPiAgCWlmIChyZXQpDQo+ICAJCXJldHVybiByZXQ7DQoNCi0tIA0KQmVz
-dCByZWdhcmRzLA0KQWxleGFuZGVyIFN2ZXJkbGluLg0K
+This patchset adds the support for the STMicroelectronics FMC2 NAND flash
+controller found on STM32MP SOCs.
+
+This patchset supports:
+  - the command sequencer feature, a hardware accelerator for read/write
+    within a page
+  - the manual mode feature, useful for debug purpose
+  - a maximum 8k page size
+  - following ECC strength and step size
+	- nand-ecc-strength = <8>, nand-ecc-step-size = <512> (BCH8)
+	- nand-ecc-strength = <4>, nand-ecc-step-size = <512> (BCH4)
+	- nand-ecc-strength = <1>, nand-ecc-step-size = <512> (Extended
+	  ecc based on HAMMING)
+    
+This patchset has been tested on Micron MT29F8G08ABACAH4 (8-bit SLC NAND)
+and MT29F8G16ABACAH4 (16-bit SLC NAND)
+
+Changes v3:
+ - modify clocks property description
+ - add NAND reg property description
+ - stm32_fmc2_nfc inherits from nand_controller structure
+ - rewrite stm32_fmc2_read_data/stm32_fmc2_write_data functions
+   to handle aligned and not aligned buffers
+ - replace uint8_t by u8
+ - use of NAND_ROW_ADDR_3 option
+
+Changes v2:
+ - separate the controller structure and the NAND chip structure
+ - remove timings description from the device tree
+ - fix typo issues
+ - fix kbuildrobot issues
+
+Christophe Kerello (3):
+  dt-bindings: mtd: stm32_fmc2: add STM32 FMC2 NAND controller
+    documentation
+  mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash controller driver
+  mtd: rawnand: stm32_fmc2: add manual mode
+
+ .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    |   61 +
+ drivers/mtd/nand/raw/Kconfig                       |    9 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c             | 2073 ++++++++++++++++++++
+ 4 files changed, 2144 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/stm32_fmc2_nand.c
+
+-- 
+1.9.1
