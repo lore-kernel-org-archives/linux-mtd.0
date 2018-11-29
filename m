@@ -1,29 +1,22 @@
-Received: from skedge04.snt-world.com ([91.208.41.69])
+Received: from mail-eopbgr80125.outbound.protection.outlook.com
+ ([40.107.8.125] helo=EUR04-VI1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSQmd-0002QL-0N
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 18:11:28 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, "stable@vger.kernel.org" <stable@vger.kernel.org>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: Fix memory allocation in nanddev_bbt_init()
-Date: Thu, 29 Nov 2018 18:11:11 +0000
-Message-ID: <fa05e203-430c-6ec4-55e9-a7f9f548e481@kontron.de>
-References: <1543304637-27308-1-git-send-email-frieder.schrempf@kontron.de>
- <20181128154104.577d5923@bbrezillon>
- <7634bb45-6167-31e8-e169-b5c9bf7e2fc5@kontron.de>
- <20181128160215.45e5162e@bbrezillon>
- <b7adc960-c81d-19c6-2122-cd6781b64a17@kontron.de>
- <20181128162810.597a7fd3@bbrezillon>
-In-Reply-To: <20181128162810.597a7fd3@bbrezillon>
+ id 1gSQqp-0004YA-EH
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 18:15:48 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: spi-nor: Provide default address width and latency for
+ map selection
+Date: Thu, 29 Nov 2018 18:15:34 +0000
+Message-ID: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <00599B8BC25BF4498569457C99E642F7@snt-world.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,55 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMjguMTEuMTggMTY6MjgsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24gV2VkLCAyOCBO
-b3YgMjAxOCAxNToxOTozNyArMDAwMA0KPiBTY2hyZW1wZiBGcmllZGVyIDxmcmllZGVyLnNjaHJl
-bXBmQGtvbnRyb24uZGU+IHdyb3RlOg0KPiANCj4+IE9uIDI4LjExLjE4IDE2OjAyLCBCb3JpcyBC
-cmV6aWxsb24gd3JvdGU6DQo+Pj4gT24gV2VkLCAyOCBOb3YgMjAxOCAxNDo1NTo0NSArMDAwMA0K
-Pj4+IFNjaHJlbXBmIEZyaWVkZXIgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4gd3JvdGU6
-DQo+Pj4gICAgDQo+Pj4+IEhpIEJvcmlzLA0KPj4+Pg0KPj4+PiBPbiAyOC4xMS4xOCAxNTo0MSwg
-Qm9yaXMgQnJlemlsbG9uIHdyb3RlOg0KPj4+Pj4gT24gVHVlLCAyNyBOb3YgMjAxOCAwNzo0NDo1
-MiArMDAwMA0KPj4+Pj4gU2NocmVtcGYgRnJpZWRlciA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9u
-LmRlPiB3cm90ZToNCj4+Pj4+ICAgICAgIA0KPj4+Pj4+IEZpeCB0aGUgc2l6ZSBvZiB0aGUgYnVm
-ZmVyIGFsbG9jYXRlZCB0byBzdG9yZSB0aGUgaW4tbWVtb3J5IEJCVC4NCj4+Pj4+PiBUaGlzIGJ1
-ZyB3YXMgcHJldmlvdXNseSBoaWRkZW4gYnkgYSBkaWZmZXJlbnQgYnVnLCB0aGF0IHdhcyBmaXhl
-ZCBpbg0KPj4+Pj4+IGQwOTgwOTNiYTA2ZS4NCj4+Pj4+Pg0KPj4+Pj4+IEZpeGVzOiA5YzM3MzZh
-M2RlMjEgKCJtdGQ6IG5hbmQ6IEFkZCBjb3JlIGluZnJhc3RydWN0dXJlIHRvIGRlYWwgd2l0aCBO
-QU5EIGRldmljZXMiKQ0KPj4+Pj4+IENjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz4NCj4+Pj4+
-PiBTaWduZWQtb2ZmLWJ5OiBGcmllZGVyIFNjaHJlbXBmIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRy
-b24uZGU+DQo+Pj4+Pg0KPj4+Pj4gTG9va3MgbGlrZSB5b3VyIEZyb20gaGVhZGVyIGRvZXMgbm90
-IG1hdGNoIHRoZSBTb0IgdGFnDQo+Pj4+PiAoJ0ZyaWVkZXIgU2NocmVtcGYnIHZzICdTY2hyZW1w
-ZiBGcmllZGVyJykgYW5kIGNoZWNrcGF0Y2ggZG9lcyBub3QgbGlrZQ0KPj4+Pj4gdGhhdC4gSSds
-bCBmaXggaXQgd2hlbiBhcHBseWluZywgYnV0IG1heWJlIHlvdSBzaG91bGQgZml4DQo+Pj4+PiB5
-b3VyIC5naXRjb25maWcgdG8gbWFrZSB0aGVtIG1hdGNoLg0KPj4+Pg0KPj4+PiBBY3R1YWxseSB0
-aGUgRnJvbSBoZWFkZXIgaW4gbXkgbG9jYWwgcGF0Y2ggaXMgY29ycmVjdCAoPGZpcnN0IG5hbWU+
-DQo+Pj4+IDxsYXN0IG5hbWU+LCBGcmllZGVyIFNjaHJlbXBmKSBhcyBpdCBjb21lcyBmcm9tIG15
-IGdpdCBjb25maWcuIEJ1dCBzaW5jZQ0KPj4+PiBvdXIgY29tcGFueSB3YXMgcmVuYW1lZCBhbmQg
-b3VyIG1haWwgc2VydmVycyB3ZXJlIHRyYW5zZmVycmVkLCBvdXINCj4+Pj4gZS1tYWlscyBhcmUg
-c2VudCB3aXRoIEZyb209PGxhc3QgbmFtZT4gPGZpcnN0IG5hbWU+Lg0KPj4+Pg0KPj4+PiBJdCBz
-ZWVtcyBsaWtlIGdpdCBzZW5kLWVtYWlsIG9yIHBhdGNod29yayBvciB3aGF0ZXZlciB1c2VzIHRo
-ZQ0KPj4+PiBpbmZvcm1hdGlvbiBmcm9tIHRoZSBlLW1haWwgaGVhZGVyIGluc3RlYWQgb2Ygd2hh
-dCBpcyBpbiB0aGUgcGF0Y2guDQo+Pj4+DQo+Pj4+IEkgd2lsbCB0cnkgdG8gcmFpc2UgdGhpcyBp
-c3N1ZSB3aXRoIG91ciBJVCBkZXBhcnRtZW50IGFzIHRoaXMgd291bGQgYmUNCj4+Pj4gYmVzdCBm
-aXhlZCBvbiB0aGVpciBzaWRlLg0KPj4+DQo+Pj4gVGhlcmUncyBhbm90aGVyIHNvbHV0aW9uOiBt
-YWtlIGdpdCBzZW5kLWVtYWlsIGFkZCBhIEZyb20gaGVhZGVyIGluIHRoZQ0KPj4+IG1lc3NhZ2Ug
-Ym9keS4NCj4+Pg0KPj4+IGdpdCBjb25maWcgLS1nbG9iYWwgc2VuZGVtYWlsLmZyb20gIlNjaHJl
-bXBmIEZyaWVkZXIgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4iDQo+Pg0KPj4gSSBkb24n
-dCBnZXQgaXQuIEhvdyB3b3VsZCB0aGF0IGNoYW5nZSB0aGluZ3M/IE15IEZyb20gc3RpbGwgd291
-bGRuJ3QNCj4+IG1hdGNoIG15IFNvQiB0YWdzLg0KPiANCj4gV2hlbiB0aGVyZSdzIGEgRnJvbSBs
-aW5lIGluIHRoZSBtZXNzYWdlIEJvZHksIGdpdCBhbSB3aWxsIHVzZSB0aGlzIG9uZQ0KPiBpbnN0
-ZWFkIG9mIHRoZSBvbmUgaW4gdGhlIGhlYWRlciBzZWN0aW9uLg0KDQpPaywgbm93IEkgZ290IGl0
-LiBJIGRpZG4ndCBrbm93IHRoYXQgZ2l0IHNlbmQtZW1haWwgYWRkcyB0aGUgRnJvbSB0YWcgaW4g
-DQp0aGUgYm9keSBpZiBzZW5kZW1haWwuZnJvbSBkaWZmZXJzIGZyb20gdGhlIGF1dGhvciwgYnV0
-IHRoYXQgbWFrZXMgc2Vuc2UgDQppbmRlZWQuDQoNCkkganVzdCBjaGVja2VkIGFuZCB3aXRoIG15
-IG9sZCBtYWlsIHNldHVwLCB0aGUgU01UUCBzZXJ2ZXIgd2FzIA0KcmVzcGVjdGluZyBteSBzZW5k
-ZXIgYWRkcmVzcyBmcm9tIHRoZSBjbGllbnQgKHNlbmQtZW1haWwsIHRodW5kZXJiaXJkKS4NCg0K
-VGhlIG5ldyBzZXR1cCB1c2VzIERhdk1haWwgR2F0ZXdheSB0byBzZW5kIHZpYSB0aGUgY29tcGFu
-aWVzIEV4Y2hhbmdlIA0Kc2VydmVyIGFuZCBpdCBqdXN0IGlnbm9yZXMgbXkgc2VuZGVyIGZyb20g
-dGhlIGNsaWVudCBhbmQgc2VuZHMgd2l0aCB0aGUgDQpyZXZlcnNlZCBuYW1lIGFzIHN0b3JlZCBp
-biB0aGUgRXhjaGFuZ2Ugc2VydmVyLg0KDQpJIGRvbid0IGxpa2Ugc2VuZGluZyBtYWlsIHdpdGgg
-cmV2ZXJzZWQgbmFtZXMgKHBlb3BsZSBzdGFydCBjYWxsaW5nIG1lIA0KYnkgbXkgbGFzdCBuYW1l
-KSwgYnV0IHVzaW5nIGEgZGlmZmVyZW50IFNNVFAgc2VydmVyIHdvdWxkIGxpa2VseSBjYXVzZSAN
-CnRyb3VibGUgd2l0aCBzb21lIHJlY2lwaWVudHMgdXNpbmcgU1BGIGZvciBzcGFtIGRldGVjdGlv
-bi4NCg0KU28gSSBndWVzcyBJIGhhdmUgdG8gY29udmluY2Ugb3VyIElUIHRvIGNoYW5nZSB0aGUg
-bmFtZXMsIGlmIGV2ZW4gDQpwb3NzaWJsZS4uLg0KT2gsIHdoeSBkbyBzdWNoIHNtYWxsIHRoaW5n
-cyBhbHdheXMgY2F1c2Ugc28gbXVjaCB0cm91YmxlPw==
+JESD216 allows "variable address length" and "variable latency" in
+Configuration Detection Command Descriptors, in other words "as-is".
+And they are still unset during Sector Map Parameter Table parsing,
+which led to "map_id" determined erroneously as 0 for, e.g. S25FS128S.
+
+Fixes: b038e8e3b ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 828d03e..5557c89 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2893,6 +2893,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_=
+nor *nor, const u32 *smpt)
+ 		nor->read_opcode =3D SMPT_CMD_OPCODE(smpt[i]);
+ 		addr =3D smpt[i + 1];
+=20
++		/*
++		 * JESD216 allows to omit particular address length or latency
++		 * specification in the header and at this point they are still
++		 * unset, so we need some heuristics. One example is S25FS128S.
++		 */
++		if (!nor->addr_width)
++			nor->addr_width =3D 3;
++		if (!nor->read_dummy)
++			nor->read_dummy =3D 8;
++
+ 		err =3D spi_nor_read_raw(nor, addr, 1, &data_byte);
+ 		if (err)
+ 			goto out;
+--=20
+2.4.6
