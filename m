@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSN1m-0003sl-0c
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 14:10:52 +0000
+ id 1gSN1m-0003si-0d
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 14:10:53 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
@@ -9,9 +9,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 3/6] mtd: spi-nor: Stop passing info to set_4byte()
-Date: Thu, 29 Nov 2018 15:10:23 +0100
-Message-Id: <20181129141026.24892-4-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 1/6] mtd: spi-nor: Drop inline on all internal helpers
+Date: Thu, 29 Nov 2018 15:10:21 +0100
+Message-Id: <20181129141026.24892-2-boris.brezillon@bootlin.com>
 In-Reply-To: <20181129141026.24892-1-boris.brezillon@bootlin.com>
 References: <20181129141026.24892-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,64 +23,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-info can be extracted from nor->info, no need to pass it as an
-argument.
+gcc should be smart enough to decide when inlining a function makes
+sense. Drop all inline specifiers.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes in v2:
 - None
 ---
- drivers/mtd/spi-nor/spi-nor.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index e1eaabf98d08..6da50684f303 100644
+index 828d03edc0a3..0aa1b1035b4b 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -274,14 +274,13 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
+@@ -159,7 +159,7 @@ static int read_cr(struct spi_nor *nor)
+  * Write status register 1 byte
+  * Returns negative if error occurred.
+  */
+-static inline int write_sr(struct spi_nor *nor, u8 val)
++static int write_sr(struct spi_nor *nor, u8 val)
+ {
+ 	nor->cmd_buf[0] = val;
+ 	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1);
+@@ -169,7 +169,7 @@ static inline int write_sr(struct spi_nor *nor, u8 val)
+  * Set write enable latch with Write Enable command.
+  * Returns negative if error occurred.
+  */
+-static inline int write_enable(struct spi_nor *nor)
++static int write_enable(struct spi_nor *nor)
+ {
+ 	return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+ }
+@@ -177,12 +177,12 @@ static inline int write_enable(struct spi_nor *nor)
+ /*
+  * Send write disable instruction to the chip.
+  */
+-static inline int write_disable(struct spi_nor *nor)
++static int write_disable(struct spi_nor *nor)
+ {
+ 	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
+ }
+ 
+-static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
++static struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+ {
+ 	return mtd->priv;
+ }
+@@ -200,7 +200,7 @@ static u8 spi_nor_convert_opcode(u8 opcode, const u8 table[][2], size_t size)
+ 	return opcode;
+ }
+ 
+-static inline u8 spi_nor_convert_3to4_read(u8 opcode)
++static u8 spi_nor_convert_3to4_read(u8 opcode)
+ {
+ 	static const u8 spi_nor_3to4_read[][2] = {
+ 		{ SPINOR_OP_READ,	SPINOR_OP_READ_4B },
+@@ -219,7 +219,7 @@ static inline u8 spi_nor_convert_3to4_read(u8 opcode)
+ 				      ARRAY_SIZE(spi_nor_3to4_read));
+ }
+ 
+-static inline u8 spi_nor_convert_3to4_program(u8 opcode)
++static u8 spi_nor_convert_3to4_program(u8 opcode)
+ {
+ 	static const u8 spi_nor_3to4_program[][2] = {
+ 		{ SPINOR_OP_PP,		SPINOR_OP_PP_4B },
+@@ -231,7 +231,7 @@ static inline u8 spi_nor_convert_3to4_program(u8 opcode)
+ 				      ARRAY_SIZE(spi_nor_3to4_program));
+ }
+ 
+-static inline u8 spi_nor_convert_3to4_erase(u8 opcode)
++static u8 spi_nor_convert_3to4_erase(u8 opcode)
+ {
+ 	static const u8 spi_nor_3to4_erase[][2] = {
+ 		{ SPINOR_OP_BE_4K,	SPINOR_OP_BE_4K_4B },
+@@ -276,8 +276,8 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
  }
  
  /* Enable/disable 4-byte addressing mode. */
--static int set_4byte(struct spi_nor *nor, const struct flash_info *info,
--		     int enable)
-+static int set_4byte(struct spi_nor *nor, int enable)
+-static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+-			    int enable)
++static int set_4byte(struct spi_nor *nor, const struct flash_info *info,
++		     int enable)
  {
  	int status;
  	bool need_wren = false;
- 	u8 cmd;
- 
--	switch (JEDEC_MFR(info)) {
-+	switch (JEDEC_MFR(nor->info)) {
- 	case SNOR_MFR_ST:
- 	case SNOR_MFR_MICRON:
- 		/* Some Micron need WREN command; all will accept it */
-@@ -298,7 +297,7 @@ static int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 			write_disable(nor);
- 
- 		if (!status && !enable &&
--		    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
-+		    JEDEC_MFR(nor->info) == SNOR_MFR_WINBOND) {
- 			/*
- 			 * On Winbond W25Q256FV, leaving 4byte mode causes
- 			 * the Extended Address Register to be set to 1, so all
-@@ -3574,7 +3573,7 @@ static int spi_nor_init(struct spi_nor *nor)
- 		 */
- 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
- 			  "enabling reset hack; may not recover from unexpected reboots\n");
--		set_4byte(nor, nor->info, 1);
-+		set_4byte(nor, 1);
- 	}
- 
- 	return 0;
-@@ -3600,7 +3599,7 @@ void spi_nor_restore(struct spi_nor *nor)
- 	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
- 	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
- 	    (nor->flags & SNOR_F_BROKEN_RESET))
--		set_4byte(nor, nor->info, 0);
-+		set_4byte(nor, 0);
+@@ -335,7 +335,7 @@ static int s3an_sr_ready(struct spi_nor *nor)
+ 	return !!(val & XSR_RDY);
  }
- EXPORT_SYMBOL_GPL(spi_nor_restore);
  
+-static inline int spi_nor_sr_ready(struct spi_nor *nor)
++static int spi_nor_sr_ready(struct spi_nor *nor)
+ {
+ 	int sr = read_sr(nor);
+ 	if (sr < 0)
+@@ -354,7 +354,7 @@ static inline int spi_nor_sr_ready(struct spi_nor *nor)
+ 	return !(sr & SR_WIP);
+ }
+ 
+-static inline int spi_nor_fsr_ready(struct spi_nor *nor)
++static int spi_nor_fsr_ready(struct spi_nor *nor)
+ {
+ 	int fsr = read_fsr(nor);
+ 	if (fsr < 0)
+@@ -2372,7 +2372,7 @@ struct sfdp_bfpt {
+ 
+ /* Fast Read settings. */
+ 
+-static inline void
++static void
+ spi_nor_set_read_settings_from_bfpt(struct spi_nor_read_command *read,
+ 				    u16 half,
+ 				    enum spi_nor_protocol proto)
 -- 
 2.17.1
