@@ -1,18 +1,19 @@
-From: Ryder Lee <ryder.lee@mediatek.com>
-To: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Rob Herring <robh+dt@kernel.org>, Weijie Gao <weijie.gao@mediatek.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, Ryder Lee <ryder.lee@mediatek.com>
-Subject: [RESEND PATCH 4/4] mtd: spi-nor: mtk-quadspi: rename config to a
- common one
-Date: Thu, 29 Nov 2018 14:29:56 +0800
-Message-ID: <d3722d3a7d410f0b47a25363f6d0dc6cd9a7a18e.1543472168.git.ryder.lee@mediatek.com>
-In-Reply-To: <235ade9c5cda19fb0c9356913e3f56ad86600f59.1543472168.git.ryder.lee@mediatek.com>
-References: <235ade9c5cda19fb0c9356913e3f56ad86600f59.1543472168.git.ryder.lee@mediatek.com>
+Received: from out4-smtp.messagingengine.com ([66.111.4.28])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gSHOE-0008Sw-Tx
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 08:09:40 +0000
+Date: Thu, 29 Nov 2018 09:09:23 +0100
+From: Greg KH <greg@kroah.com>
+To: Martin Kepplinger <martin.kepplinger@ginzinger.com>
+Cc: stable@vger.kernel.org, dedekind1@gmail.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ubi: fastmap: Check each mapping only once
+Message-ID: <20181129080923.GE13859@kroah.com>
+References: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,61 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The quadspi is a generic communication interface which could be shared
-with other MediaTek SoCs. Hence rename it to a common one.
+On Mon, Nov 26, 2018 at 11:38:42AM +0100, Martin Kepplinger wrote:
+> From: Richard Weinberger <richard@nod.at>
+> 
+> [ Upstream commit 34653fd8c46e771585fce5975e4243f8fd401914 ]
+> 
+> This commit got merged along with commit 781932375ffc
+> ("ubi: fastmap: Correctly handle interrupted erasures in EBA") upstream but
+> only the latter has been applied to stable v4.14.54 as commit a23cf10d9abb.
+> This resulted in a performance regression. Startup on i.MX platforms is
+> delayed for up to a few seconds depending on the platform.
+> This fixes ubi fastmap to be of the same performance as it has been before
+> said fastmap changes.
+> 
+> Fixes: a23cf10d9abb ("ubi: fastmap: Correctly handle interrupted erasures in EBA")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@ginzinger.com>
+> ---
+> 
+> Richard, although this fixes a major slowdown regression in -stable, do you
+> consider this "stable" too?
+> 
+> This applies and is tested only for the 4.14 stable tree. It seems to be
+> equally relevant for 4.9 and 4.4 though.
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
----
- drivers/mtd/spi-nor/Kconfig  | 16 ++++++++--------
- drivers/mtd/spi-nor/Makefile |  2 +-
- 2 files changed, 9 insertions(+), 9 deletions(-)
+Now queued up for 4.14.y, thanks.
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 6cc9c92..2062611 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -7,14 +7,6 @@ menuconfig MTD_SPI_NOR
- 
- if MTD_SPI_NOR
- 
--config MTD_MT81xx_NOR
--	tristate "Mediatek MT81xx SPI NOR flash controller"
--	depends on HAS_IOMEM
--	help
--	  This enables access to SPI NOR flash, using MT81xx SPI NOR flash
--	  controller. This controller does not support generic SPI BUS, it only
--	  supports SPI NOR Flash.
--
- config MTD_SPI_NOR_USE_4K_SECTORS
- 	bool "Use small 4096 B erase sectors"
- 	default y
-@@ -86,6 +78,14 @@ config SPI_NXP_SPIFI
- 	  Flash. Enable this option if you have a device with a SPIFI
- 	  controller and want to access the Flash as a mtd device.
- 
-+config SPI_MTK_QUADSPI
-+	tristate "MediaTek Quad SPI controller"
-+	depends on HAS_IOMEM
-+	help
-+	  This enables support for the Quad SPI controller in master mode.
-+	  This controller does not support generic SPI. It only supports
-+	  SPI NOR.
-+
- config SPI_INTEL_SPI
- 	tristate
- 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index f4c61d2..7f4b6f6 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -5,7 +5,7 @@ obj-$(CONFIG_SPI_ATMEL_QUADSPI)	+= atmel-quadspi.o
- obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
- obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
- obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
--obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
-+obj-$(CONFIG_SPI_MTK_QUADSPI)    += mtk-quadspi.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
- obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
- obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
--- 
-1.9.1
+greg k-h
