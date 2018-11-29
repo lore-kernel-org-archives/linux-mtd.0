@@ -1,26 +1,34 @@
-Received: from mail-yw1-xc41.google.com ([2607:f8b0:4864:20::c41])
+Received: from mail-eopbgr10044.outbound.protection.outlook.com ([40.107.1.44]
+ helo=EUR02-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSJ3b-0000Yp-1J
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 09:56:29 +0000
-Received: by mail-yw1-xc41.google.com with SMTP id q11so524855ywa.0
- for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2018 01:56:16 -0800 (PST)
+ id 1gSKeD-0007bw-MF
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 11:38:23 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>, Han Xu
+ <han.xu@nxp.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, David Wolfe
+ <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Prabhakar
+ Kushwaha <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v6 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+Date: Thu, 29 Nov 2018 11:38:05 +0000
+Message-ID: <VI1PR04MB572644A2AE3214356A62478799D20@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
+ <1543314174-28580-4-git-send-email-frieder.schrempf@kontron.de>
+ <3981845c-327a-bb14-2908-47dd443971bf@kontron.de>
+In-Reply-To: <3981845c-327a-bb14-2908-47dd443971bf@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1543411097-24229-1-git-send-email-frieder.schrempf@kontron.de>
-In-Reply-To: <1543411097-24229-1-git-send-email-frieder.schrempf@kontron.de>
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date: Thu, 29 Nov 2018 10:56:02 +0100
-Message-ID: <CAJiuCcdEo4-fZBCvrEJV-GLU_3izbu9VTjj-biCEKaAjeYxOrg@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: Fix ECC status and OOB layout for
- Toshiba TC58CVG2S0H
-To: frieder.schrempf@kontron.de
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@bootlin.com>, richard@nod.at,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,80 +38,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frieder,
-
-On Wed, 28 Nov 2018 at 14:18, Schrempf Frieder
-<frieder.schrempf@kontron.de> wrote:
->
-> When reading the status of the on-chip ECC, the Toshiba chip returns
-> two different states for reporting corrected bitflips. We should check
-> for both of them.
->
-> Also return the free OOB bytes as one contiguous area, instead of
-> multiple sections.
->
-> Suggested-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Acked-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> ---
->  drivers/mtd/nand/spi/toshiba.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshib=
-a.c
-> index 294bcf6..9731752 100644
-> --- a/drivers/mtd/nand/spi/toshiba.c
-> +++ b/drivers/mtd/nand/spi/toshiba.c
-> @@ -11,6 +11,7 @@
->  #include <linux/mtd/spinand.h>
->
->  #define SPINAND_MFR_TOSHIBA            0x98
-> +#define TOSH_STATUS_ECC_HAS_BITFLIPS_T (3 << 4)
->
->  static SPINAND_OP_VARIANTS(read_cache_variants,
->                 SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> @@ -33,19 +34,17 @@ static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info =
-*mtd, int section,
->         region->offset =3D 128 + 16 * section;
->         region->length =3D 16;
->
-> -
->         return 0;
->  }
->
->  static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
->                                       struct mtd_oob_region *region)
->  {
-> -       if (section > 7)
-> +       if (section > 0)
->                 return -ERANGE;
->
-> -       region->offset =3D 2 + 16 * section;
-> -       region->length =3D 14;
-> -
-
-I will just add a comment here to say that we reserve 2 bytes for BBM.
-
-Else, it's fine for me.
-
-Regards,
-Clement
-
-> +       region->offset =3D 2;
-> +       region->length =3D 126;
->
->         return 0;
->  }
-> @@ -70,6 +69,7 @@ static int tc58cvg2s0h_ecc_get_status(struct spinand_de=
-vice *spinand,
->                 return -EBADMSG;
->
->         case STATUS_ECC_HAS_BITFLIPS:
-> +       case TOSH_STATUS_ECC_HAS_BITFLIPS_T:
->                 /*
->                  * Let's try to retrieve the real maximum number of bitfl=
-ips
->                  * in order to avoid forcing the wear-leveling layer to m=
-ove
-> --
-> 2.7.4
+SGkgRnJpZWRlciwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTY2hy
+ZW1wZiBGcmllZGVyIFttYWlsdG86ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLmRlXQ0KPiBTZW50
+OiBXZWRuZXNkYXksIE5vdmVtYmVyIDI4LCAyMDE4IDE6NTggUE0NCj4gVG86IGxpbnV4LW10ZEBs
+aXN0cy5pbmZyYWRlYWQub3JnOyBib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb207IGxpbnV4LQ0K
+PiBzcGlAdmdlci5rZXJuZWwub3JnOyBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29t
+PjsgTWFyayBCcm93bg0KPiA8YnJvb25pZUBrZXJuZWwub3JnPjsgSGFuIFh1IDxoYW4ueHVAbnhw
+LmNvbT4NCj4gQ2M6IGR3bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWls
+LmNvbTsgcmljaGFyZEBub2QuYXQ7DQo+IG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb207IERhdmlk
+IFdvbGZlIDxkYXZpZC53b2xmZUBueHAuY29tPjsgRmFiaW8NCj4gRXN0ZXZhbSA8ZmFiaW8uZXN0
+ZXZhbUBueHAuY29tPjsgUHJhYmhha2FyIEt1c2h3YWhhDQo+IDxwcmFiaGFrYXIua3VzaHdhaGFA
+bnhwLmNvbT47IFlvZ2VzaCBOYXJheWFuIEdhdXINCj4gPHlvZ2VzaG5hcmF5YW4uZ2F1ckBueHAu
+Y29tPjsgc2hhd25ndW9Aa2VybmVsLm9yZzsgbGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NiAzLzldIHNwaTogQWRkIGEgZHJpdmVyIGZvciB0
+aGUgRnJlZXNjYWxlL05YUCBRdWFkU1BJDQo+IGNvbnRyb2xsZXINCj4gDQo+IE9uIDI3LjExLjE4
+IDExOjI0LCBTY2hyZW1wZiBGcmllZGVyIHdyb3RlOg0KPiA+IFRoaXMgZHJpdmVyIGlzIGRlcml2
+ZWQgZnJvbSB0aGUgU1BJIE5PUiBkcml2ZXIgYXQNCj4gPiBtdGQvc3BpLW5vci9mc2wtcXVhZHNw
+aS5jLiBJdCB1c2VzIHRoZSBuZXcgU1BJIG1lbW9yeSBpbnRlcmZhY2Ugb2YgdGhlDQo+ID4gU1BJ
+IGZyYW1ld29yayB0byBpc3N1ZSBmbGFzaCBtZW1vcnkgb3BlcmF0aW9ucyB0byB1cCB0byBmb3Vy
+IGNvbm5lY3RlZA0KPiA+IGZsYXNoIGNoaXBzICgyIGJ1c2VzIHdpdGggMiBDUyBlYWNoKS4NCj4g
+Pg0KPiA+IFRoZSBjb250cm9sbGVyIGRvZXMgbm90IHN1cHBvcnQgZ2VuZXJpYyBTUEkgbWVzc2Fn
+ZXMuDQo+ID4NCj4gPiBUaGlzIHBhdGNoIGFsc28gZGlzYWJsZXMgdGhlIGJ1aWxkIG9mIHRoZSAi
+b2xkIiBkcml2ZXIgYW5kIHJldXNlcyBpdHMNCj4gPiBLY29uZmlnIG9wdGlvbiBDT05GSUdfU1BJ
+X0ZTTF9RVUFEU1BJIHRvIHJlcGxhY2UgaXQuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBGcmll
+ZGVyIFNjaHJlbXBmIDxmcmllZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+DQo+ID4gLS0tDQo+ID4g
+ICBkcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcgIHwgICA5IC0NCj4gPiAgIGRyaXZlcnMvbXRk
+L3NwaS1ub3IvTWFrZWZpbGUgfCAgIDEgLQ0KPiA+ICAgZHJpdmVycy9zcGkvS2NvbmZpZyAgICAg
+ICAgICB8ICAxMSArDQo+ID4gICBkcml2ZXJzL3NwaS9NYWtlZmlsZSAgICAgICAgIHwgICAxICsN
+Cj4gPiAgIGRyaXZlcnMvc3BpL3NwaS1mc2wtcXNwaS5jICAgfCA5NjcNCj4gKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgIDUgZmlsZXMgY2hhbmdlZCwgOTc5IGlu
+c2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL3NwaS1ub3IvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvS2NvbmZpZw0KPiA+
+IGluZGV4IDZjYzljOTIuLmQxY2EzMDcgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tdGQvc3Bp
+LW5vci9LY29uZmlnDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnDQo+ID4g
+QEAgLTU5LDE1ICs1OSw2IEBAIGNvbmZpZyBTUElfQ0FERU5DRV9RVUFEU1BJDQo+ID4gICAJICBk
+ZXZpY2Ugd2l0aCBhIENhZGVuY2UgUVNQSSBjb250cm9sbGVyIGFuZCB3YW50IHRvIGFjY2VzcyB0
+aGUNCj4gPiAgIAkgIEZsYXNoIGFzIGFuIE1URCBkZXZpY2UuDQo+ID4NCj4gPiAtY29uZmlnIFNQ
+SV9GU0xfUVVBRFNQSQ0KPiA+IC0JdHJpc3RhdGUgIkZyZWVzY2FsZSBRdWFkIFNQSSBjb250cm9s
+bGVyIg0KPiA+IC0JZGVwZW5kcyBvbiBBUkNIX01YQyB8fCBTT0NfTFMxMDIxQSB8fCBBUkNIX0xB
+WUVSU0NBUEUgfHwNCj4gQ09NUElMRV9URVNUDQo+ID4gLQlkZXBlbmRzIG9uIEhBU19JT01FTQ0K
+PiA+IC0JaGVscA0KPiA+IC0JICBUaGlzIGVuYWJsZXMgc3VwcG9ydCBmb3IgdGhlIFF1YWQgU1BJ
+IGNvbnRyb2xsZXIgaW4gbWFzdGVyIG1vZGUuDQo+ID4gLQkgIFRoaXMgY29udHJvbGxlciBkb2Vz
+IG5vdCBzdXBwb3J0IGdlbmVyaWMgU1BJLiBJdCBvbmx5IHN1cHBvcnRzDQo+ID4gLQkgIFNQSSBO
+T1IuDQo+ID4gLQ0KPiA+ICAgY29uZmlnIFNQSV9ISVNJX1NGQw0KPiA+ICAgCXRyaXN0YXRlICJI
+aXNpbGljb24gU1BJLU5PUiBGbGFzaCBDb250cm9sbGVyKFNGQykiDQo+ID4gICAJZGVwZW5kcyBv
+biBBUkNIX0hJU0kgfHwgQ09NUElMRV9URVNUIGRpZmYgLS1naXQNCj4gPiBhL2RyaXZlcnMvbXRk
+L3NwaS1ub3IvTWFrZWZpbGUgYi9kcml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlIGluZGV4DQo+
+ID4gZjRjNjFkMi4uM2YxNjBjMmUzIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1u
+b3IvTWFrZWZpbGUNCj4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlDQo+ID4g
+QEAgLTMsNyArMyw2IEBAIG9iai0kKENPTkZJR19NVERfU1BJX05PUikJKz0gc3BpLW5vci5vDQo+
+ID4gICBvYmotJChDT05GSUdfU1BJX0FTUEVFRF9TTUMpCSs9IGFzcGVlZC1zbWMubw0KPiA+ICAg
+b2JqLSQoQ09ORklHX1NQSV9BVE1FTF9RVUFEU1BJKQkrPSBhdG1lbC1xdWFkc3BpLm8NCj4gPiAg
+IG9iai0kKENPTkZJR19TUElfQ0FERU5DRV9RVUFEU1BJKQkrPSBjYWRlbmNlLXF1YWRzcGkubw0K
+PiA+IC1vYmotJChDT05GSUdfU1BJX0ZTTF9RVUFEU1BJKQkrPSBmc2wtcXVhZHNwaS5vDQo+ID4g
+ICBvYmotJChDT05GSUdfU1BJX0hJU0lfU0ZDKQkrPSBoaXNpLXNmYy5vDQo+ID4gICBvYmotJChD
+T05GSUdfTVREX01UODF4eF9OT1IpICAgICs9IG10ay1xdWFkc3BpLm8NCj4gPiAgIG9iai0kKENP
+TkZJR19TUElfTlhQX1NQSUZJKQkrPSBueHAtc3BpZmkubw0KPiA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL3NwaS9LY29uZmlnIGIvZHJpdmVycy9zcGkvS2NvbmZpZyBpbmRleA0KPiA+IDdkM2E1Yzku
+LjhjODQxODYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zcGkvS2NvbmZpZw0KPiA+ICsrKyBi
+L2RyaXZlcnMvc3BpL0tjb25maWcNCj4gPiBAQCAtMjU5LDYgKzI1OSwxNyBAQCBjb25maWcgU1BJ
+X0ZTTF9MUFNQSQ0KPiA+ICAgCWhlbHANCj4gPiAgIAkgIFRoaXMgZW5hYmxlcyBGcmVlc2NhbGUg
+aS5NWCBMUFNQSSBjb250cm9sbGVycyBpbiBtYXN0ZXIgbW9kZS4NCj4gPg0KPiA+ICtjb25maWcg
+U1BJX0ZTTF9RVUFEU1BJDQo+ID4gKwl0cmlzdGF0ZSAiRnJlZXNjYWxlIFFTUEkgY29udHJvbGxl
+ciINCj4gPiArCWRlcGVuZHMgb24gQVJDSF9NWEMgfHwgU09DX0xTMTAyMUEgfHwgQVJDSF9MQVlF
+UlNDQVBFIHx8DQo+IENPTVBJTEVfVEVTVA0KPiA+ICsJZGVwZW5kcyBvbiBIQVNfSU9NRU0NCj4g
+PiArCWhlbHANCj4gPiArCSAgVGhpcyBlbmFibGVzIHN1cHBvcnQgZm9yIHRoZSBRdWFkIFNQSSBj
+b250cm9sbGVyIGluIG1hc3RlciBtb2RlLg0KPiA+ICsJICBVcCB0byBmb3VyIGZsYXNoIGNoaXBz
+IGNhbiBiZSBjb25uZWN0ZWQgb24gdHdvIGJ1c2VzIHdpdGggdHdvDQo+ID4gKwkgIGNoaXBzZWxl
+Y3RzIGVhY2guDQo+ID4gKwkgIFRoaXMgY29udHJvbGxlciBkb2VzIG5vdCBzdXBwb3J0IGdlbmVy
+aWMgU1BJIG1lc3NhZ2VzLiBJdCBvbmx5DQo+ID4gKwkgIHN1cHBvcnRzIHRoZSBoaWdoLWxldmVs
+IFNQSSBtZW1vcnkgaW50ZXJmYWNlLg0KPiA+ICsNClsuLi5dDQo+ID4gK3N0YXRpYyB2b2lkIGZz
+bF9xc3BpX3NlbGVjdF9tZW0oc3RydWN0IGZzbF9xc3BpICpxLCBzdHJ1Y3Qgc3BpX2RldmljZSAq
+c3BpKQ0KPiA+ICt7DQo+ID4gKwl1bnNpZ25lZCBsb25nIHJhdGUgPSBzcGktPm1heF9zcGVlZF9o
+ejsNCj4gPiArCWludCByZXQsIGk7DQo+ID4gKwl1MzIgbWFwX2FkZHI7DQo+IA0KPiBGb3Jnb3Qg
+dG8gZHJvcCBzb21lIHVudXNlZCB2YXJzIGhlcmUuIEkgd2lsbCByZW1vdmUgdGhlbSBpbiB0aGUg
+bmV4dA0KPiB2ZXJzaW9uLg0KPiANCg0KWWVzLCBiZWxvdyBhcmUgdGhlIGJ1aWxkIHdhcm5pbmdz
+IG1lc3NhZ2VzIGNvbWluZyBmb3IgdGhpcyB2ZXJzaW9uIG9mIHRoZSBwYXRjaC4NCg0KCWRyaXZl
+cnMvc3BpL3NwaS1mc2wtcXNwaS5jOiBJbiBmdW5jdGlvbiDigJhmc2xfcXNwaV9zZWxlY3RfbWVt
+4oCZOg0KCWRyaXZlcnMvc3BpL3NwaS1mc2wtcXNwaS5jOjUwMDo2OiB3YXJuaW5nOiB1bnVzZWQg
+dmFyaWFibGUg4oCYbWFwX2FkZHLigJkgWy1XdW51c2VkLXZhcmlhYmxlXQ0KCSAgdTMyIG1hcF9h
+ZGRyOw0KCSAgICAgIF4NCglkcml2ZXJzL3NwaS9zcGktZnNsLXFzcGkuYzo0OTk6MTE6IHdhcm5p
+bmc6IHVudXNlZCB2YXJpYWJsZSDigJhp4oCZIFstV3VudXNlZC12YXJpYWJsZV0NCgkgIGludCBy
+ZXQsIGk7DQoNCj4gPiArDQo+ID4gKwlpZiAocS0+c2VsZWN0ZWQgPT0gc3BpLT5jaGlwX3NlbGVj
+dCkNClsuLi5dDQoNClZlcmlmaWVkIHRoaXMgcGF0Y2ggc2VyaWVzIG9uIExheWVyU2NhcGUtMi54
+IGFyY2hpdGVjdHVyZSBib2FyZHMuDQpMUzEwODhhcmRiLCBpcyBoYXZpbmcgdHdvIGNvbm5lY3Rl
+ZCBmbGFzaCBzbGF2ZSBkZXZpY2VzIG9uIENTMCBhbmQgQ1MxLg0KDQpWZXJpZmllZCB3aXRoIHNp
+bXBsZSBSZWFkL1dyaXRlL0VyYXNlIG9wZXJhdGlvbnMgYWxvbmcgd2l0aCBKRkZTMiBtb3VudGlu
+ZyBhbmQgYm9vdGluZyBmcm9tIGZsYXNoIE1URCBwYXJ0aXRpb24gZm9yIGJvdGggc2xhdmUgZGV2
+aWNlcy4NCg0KVGhhbmtzLg0KDQotLQ0KUmVnYXJkcw0KWW9nZXNoIEdhdXINCg==
