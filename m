@@ -1,19 +1,19 @@
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSFMU-0001SQ-Np
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 05:59:45 +0000
+ id 1gSFPJ-0003NV-1G
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 06:02:38 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Thor Thayer <thor.thayer@linux.intel.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 44/68] mtd: spi-nor: Fix Cadence QSPI page fault
+Subject: [PATCH AUTOSEL 4.14 22/35] mtd: spi-nor: Fix Cadence QSPI page fault
  kernel panic
-Date: Thu, 29 Nov 2018 00:55:35 -0500
-Message-Id: <20181129055559.159228-44-sashal@kernel.org>
-In-Reply-To: <20181129055559.159228-1-sashal@kernel.org>
-References: <20181129055559.159228-1-sashal@kernel.org>
+Date: Thu, 29 Nov 2018 01:00:56 -0500
+Message-Id: <20181129060110.159878-22-sashal@kernel.org>
+In-Reply-To: <20181129060110.159878-1-sashal@kernel.org>
+References: <20181129060110.159878-1-sashal@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -56,11 +56,11 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 16 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 6e9cbd1a0b6d..0806c7a81c0f 100644
+index 8d89204b90d2..f22dd34f4f83 100644
 --- a/drivers/mtd/spi-nor/cadence-quadspi.c
 +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -644,9 +644,23 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
- 		ndelay(cqspi->wr_delay);
+@@ -625,9 +625,23 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
+ 	       reg_base + CQSPI_REG_INDIRECTWR);
  
  	while (remaining > 0) {
 +		size_t write_words, mod_bytes;
@@ -83,9 +83,9 @@ index 6e9cbd1a0b6d..0806c7a81c0f 100644
 +			txbuf += mod_bytes;
 +		}
  
- 		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
- 					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
-@@ -655,7 +669,6 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+ 		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+ 						  msecs_to_jiffies
+@@ -638,7 +652,6 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
  			goto failwr;
  		}
  
