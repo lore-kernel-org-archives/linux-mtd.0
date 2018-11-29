@@ -1,17 +1,14 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSFPJ-0003NV-1G
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 06:02:38 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Thor Thayer <thor.thayer@linux.intel.com>,
+Cc: Olof Johansson <olof@lixom.net>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.14 22/35] mtd: spi-nor: Fix Cadence QSPI page fault
- kernel panic
-Date: Thu, 29 Nov 2018 01:00:56 -0500
-Message-Id: <20181129060110.159878-22-sashal@kernel.org>
+ Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 19/35] mtd: rawnand: qcom: Namespace prefix some
+ commands
+Date: Thu, 29 Nov 2018 01:00:53 -0500
+Message-Id: <20181129060110.159878-19-sashal@kernel.org>
 In-Reply-To: <20181129060110.159878-1-sashal@kernel.org>
 References: <20181129060110.159878-1-sashal@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,75 +20,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thor Thayer <thor.thayer@linux.intel.com>
+From: Olof Johansson <olof@lixom.net>
 
-[ Upstream commit a6a66f80c85e8e20573ca03fabf32445954a88d5 ]
+[ Upstream commit 33bf5519ae5dd356b182a94e3622f42860274a38 ]
 
-The current Cadence QSPI driver caused a kernel panic sporadically
-when writing to QSPI. The problem was caused by writing more bytes
-than needed because the QSPI operated on 4 bytes at a time.
-<snip>
-[   11.202044] Unable to handle kernel paging request at virtual address bffd3000
-[   11.209254] pgd = e463054d
-[   11.211948] [bffd3000] *pgd=2fffb811, *pte=00000000, *ppte=00000000
-[   11.218202] Internal error: Oops: 7 [#1] SMP ARM
-[   11.222797] Modules linked in:
-[   11.225844] CPU: 1 PID: 1317 Comm: systemd-hwdb Not tainted 4.17.7-d0c45cd44a8f
-[   11.235796] Hardware name: Altera SOCFPGA Arria10
-[   11.240487] PC is at __raw_writesl+0x70/0xd4
-[   11.244741] LR is at cqspi_write+0x1a0/0x2cc
-</snip>
-On a page boundary limit the number of bytes copied from the tx buffer
-to remain within the page.
+PAGE_READ is used by RISC-V arch code included through mm headers,
+and it makes sense to bring in a prefix on these in the driver.
 
-This patch uses a temporary buffer to hold the 4 bytes to write and then
-copies only the bytes required from the tx buffer.
+drivers/mtd/nand/raw/qcom_nandc.c:153: warning: "PAGE_READ" redefined
+ #define PAGE_READ   0x2
+In file included from include/linux/memremap.h:7,
+                 from include/linux/mm.h:27,
+                 from include/linux/scatterlist.h:8,
+                 from include/linux/dma-mapping.h:11,
+                 from drivers/mtd/nand/raw/qcom_nandc.c:17:
+arch/riscv/include/asm/pgtable.h:48: note: this is the location of the previous definition
 
-Reported-by: Adrian Amborzewicz <adrian.ambrozewicz@intel.com>
-Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+Caught by riscv allmodconfig.
+
+Signed-off-by: Olof Johansson <olof@lixom.net>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/spi-nor/cadence-quadspi.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/qcom_nandc.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 8d89204b90d2..f22dd34f4f83 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -625,9 +625,23 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
- 	       reg_base + CQSPI_REG_INDIRECTWR);
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index b49ca02b399d..09d5f7df6023 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -149,15 +149,15 @@
+ #define	NAND_VERSION_MINOR_SHIFT	16
  
- 	while (remaining > 0) {
-+		size_t write_words, mod_bytes;
-+
- 		write_bytes = remaining > page_size ? page_size : remaining;
--		iowrite32_rep(cqspi->ahb_base, txbuf,
--			      DIV_ROUND_UP(write_bytes, 4));
-+		write_words = write_bytes / 4;
-+		mod_bytes = write_bytes % 4;
-+		/* Write 4 bytes at a time then single bytes. */
-+		if (write_words) {
-+			iowrite32_rep(cqspi->ahb_base, txbuf, write_words);
-+			txbuf += (write_words * 4);
-+		}
-+		if (mod_bytes) {
-+			unsigned int temp = 0xFFFFFFFF;
-+
-+			memcpy(&temp, txbuf, mod_bytes);
-+			iowrite32(temp, cqspi->ahb_base);
-+			txbuf += mod_bytes;
-+		}
+ /* NAND OP_CMDs */
+-#define	PAGE_READ			0x2
+-#define	PAGE_READ_WITH_ECC		0x3
+-#define	PAGE_READ_WITH_ECC_SPARE	0x4
+-#define	PROGRAM_PAGE			0x6
+-#define	PAGE_PROGRAM_WITH_ECC		0x7
+-#define	PROGRAM_PAGE_SPARE		0x9
+-#define	BLOCK_ERASE			0xa
+-#define	FETCH_ID			0xb
+-#define	RESET_DEVICE			0xd
++#define	OP_PAGE_READ			0x2
++#define	OP_PAGE_READ_WITH_ECC		0x3
++#define	OP_PAGE_READ_WITH_ECC_SPARE	0x4
++#define	OP_PROGRAM_PAGE			0x6
++#define	OP_PAGE_PROGRAM_WITH_ECC	0x7
++#define	OP_PROGRAM_PAGE_SPARE		0x9
++#define	OP_BLOCK_ERASE			0xa
++#define	OP_FETCH_ID			0xb
++#define	OP_RESET_DEVICE			0xd
  
- 		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
- 						  msecs_to_jiffies
-@@ -638,7 +652,6 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
- 			goto failwr;
- 		}
+ /* Default Value for NAND_DEV_CMD_VLD */
+ #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
+@@ -629,11 +629,11 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
  
--		txbuf += write_bytes;
- 		remaining -= write_bytes;
+ 	if (read) {
+ 		if (host->use_ecc)
+-			cmd = PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
++			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
+ 		else
+-			cmd = PAGE_READ | PAGE_ACC | LAST_PAGE;
++			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
+ 	} else {
+-			cmd = PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
++		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
+ 	}
  
- 		if (remaining > 0)
+ 	if (host->use_ecc) {
+@@ -1030,7 +1030,7 @@ static int nandc_param(struct qcom_nand_host *host)
+ 	 * in use. we configure the controller to perform a raw read of 512
+ 	 * bytes to read onfi params
+ 	 */
+-	nandc_set_reg(nandc, NAND_FLASH_CMD, PAGE_READ | PAGE_ACC | LAST_PAGE);
++	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_PAGE_READ | PAGE_ACC | LAST_PAGE);
+ 	nandc_set_reg(nandc, NAND_ADDR0, 0);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+ 	nandc_set_reg(nandc, NAND_DEV0_CFG0, 0 << CW_PER_PAGE
+@@ -1084,7 +1084,7 @@ static int erase_block(struct qcom_nand_host *host, int page_addr)
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 
+ 	nandc_set_reg(nandc, NAND_FLASH_CMD,
+-		      BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
++		      OP_BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
+ 	nandc_set_reg(nandc, NAND_ADDR0, page_addr);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+ 	nandc_set_reg(nandc, NAND_DEV0_CFG0,
+@@ -1115,7 +1115,7 @@ static int read_id(struct qcom_nand_host *host, int column)
+ 	if (column == -1)
+ 		return 0;
+ 
+-	nandc_set_reg(nandc, NAND_FLASH_CMD, FETCH_ID);
++	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_FETCH_ID);
+ 	nandc_set_reg(nandc, NAND_ADDR0, column);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+ 	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
+@@ -1136,7 +1136,7 @@ static int reset(struct qcom_nand_host *host)
+ 	struct nand_chip *chip = &host->chip;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 
+-	nandc_set_reg(nandc, NAND_FLASH_CMD, RESET_DEVICE);
++	nandc_set_reg(nandc, NAND_FLASH_CMD, OP_RESET_DEVICE);
+ 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ 
+ 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
 -- 
 2.17.1
