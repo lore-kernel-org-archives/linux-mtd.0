@@ -1,30 +1,19 @@
-Received: from mail-io1-xd33.google.com ([2607:f8b0:4864:20::d33])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSNQS-0000uN-H5
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 14:36:21 +0000
-Received: by mail-io1-xd33.google.com with SMTP id n9so1728716ioh.7
- for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2018 06:36:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20181113140133.17385-1-brgl@bgdev.pl>
- <20181113140133.17385-2-brgl@bgdev.pl>
- <CAMRc=MeRJ60gcYz00C828PBqnEdC-9onOKOadfackdzHiC1WOA@mail.gmail.com>
- <b8f08722-d3d5-6ddf-5845-15eb5079094c@linaro.org>
-In-Reply-To: <b8f08722-d3d5-6ddf-5845-15eb5079094c@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 29 Nov 2018 15:35:58 +0100
-Message-ID: <CAMRc=Md4PbYDhmBNx5Rk5F9OZw2Om3D6F21iV6za-+dq0NshYw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/25] nvmem: add new config option
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>,
- linux-i2c <linux-i2c@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Kevin Hilman <khilman@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gSNW2-0002hw-4T
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 14:42:08 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+Subject: [PATCH v4 0/3] mtd: spi-nor: mx25l25635f: Use 4B opcodes
+Date: Thu, 29 Nov 2018 15:41:40 +0100
+Message-Id: <20181129144143.26079-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,25 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-czw., 29 lis 2018 o 15:32 Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> napisa=C5=82(a):
->
->
-> >
-> > Hi Srinivas,
-> >
-> > if there are no objections - can you Ack this patch for Greg to pick
-> > up into char-misc?
->
-> Patch is fine for me. I normally send all the nvmem patches just before r=
-c5.
->
-> --srini
-> >
-> > Bart
-> >
+Hello,
 
-Boris, are you fine with Srinivas sending the MTD patch as well so
-that they stay together?
+This is another attempt at fixing the bug reported by Alexandre and
+impacting mx25l25635f flashes that do not have the reset line properly
+wired. Since mx25l25635f and mx25l25635e share the same JEDEC-ID, and
+only mx25l25635f supports 4B opcodes, the core decides to enter 4B
+mode, and when a reset occurs, the NOR stays in this mode and the ROM
+code (why only supports 3 byte addressing) can't read the flash
+anymore.
 
-Bart
+Adding broken-flash-reset in the DT fixes the reboot issue but prints
+a WARN_ON() backtrace at boot time. The proper solution is to use 4B
+opcodes when available, but we need a way to flag the F variant of the
+chip as supporting this feature.
+
+This patchset paves the way for more SFDP-related fixups hooks by
+adding a spi_nor_fixups struct which can be provided on a per-chip
+basis (and soon on a per-manufacturer basis).
+
+In this series we add a single hook called post_bfpt() to allow fixups
+just after the BFPT parsing has occurred. Thanks to the BFPT array, we
+are able to differentiate the F and E variant and add the 4B_OPCODE
+flag when appropriate.
+
+With this infrastructure in place, we'll be able to fix SFPD tables at
+runtime instead setting the SKIP_SFDP on NORs with broken SFDP.
+
+Feel free to comment on the general approach or implementation details.
+
+Regards,
+
+Boris
+
+P.S.: This series depends on [1]
+
+[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=78826
+
+Boris Brezillon (3):
+  mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
+  mtd: spi-nor: Add a post BFPT parsing fixup hook
+  mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
+
+ drivers/mtd/spi-nor/spi-nor.c | 441 +++++++++++++++++++---------------
+ include/linux/mtd/spi-nor.h   |   1 +
+ 2 files changed, 253 insertions(+), 189 deletions(-)
+
+-- 
+2.17.1
