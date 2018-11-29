@@ -1,21 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSNW2-0002i0-4W
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 14:42:09 +0000
+Date: Thu, 29 Nov 2018 15:43:14 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Subject: [PATCH v4 3/3] mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
-Date: Thu, 29 Nov 2018 15:41:43 +0100
-Message-Id: <20181129144143.26079-4-boris.brezillon@bootlin.com>
-In-Reply-To: <20181129144143.26079-1-boris.brezillon@bootlin.com>
-References: <20181129144143.26079-1-boris.brezillon@bootlin.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>,
+ linux-i2c <linux-i2c@vger.kernel.org>, "open list:MEMORY TECHNOLOGY..."
+ <linux-mtd@lists.infradead.org>, Kevin Hilman <khilman@kernel.org>, Bartosz
+ Golaszewski <bgolaszewski@baylibre.com>, Sekhar Nori <nsekhar@ti.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 01/25] nvmem: add new config option
+Message-ID: <20181129154314.1d3cd914@bbrezillon>
+In-Reply-To: <CAMRc=Md4PbYDhmBNx5Rk5F9OZw2Om3D6F21iV6za-+dq0NshYw@mail.gmail.com>
+References: <20181113140133.17385-1-brgl@bgdev.pl>
+ <20181113140133.17385-2-brgl@bgdev.pl>
+ <CAMRc=MeRJ60gcYz00C828PBqnEdC-9onOKOadfackdzHiC1WOA@mail.gmail.com>
+ <b8f08722-d3d5-6ddf-5845-15eb5079094c@linaro.org>
+ <CAMRc=Md4PbYDhmBNx5Rk5F9OZw2Om3D6F21iV6za-+dq0NshYw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MX25L25635F and MX25L25635E share the same JEDEC-ID, but the F variant
-supports 4-byte opcodes while the E variant doesn't. We need a way to
-differentiate those 2 chips and set the SNOR_F_4B_OPCODES flag only for
-the F variant.
+On Thu, 29 Nov 2018 15:35:58 +0100
+Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-Luckily, 4-byte opcode support is not the only difference: Fast Read
-4-4-4 is only supported by the F variant, and this feature is
-advertised in the BFPT table. Use this to decide when to set the
-SNOR_F_4B_OPCODES flag.
+> czw., 29 lis 2018 o 15:32 Srinivas Kandagatla
+> <srinivas.kandagatla@linaro.org> napisa=C5=82(a):
+> >
+> > =20
+> > >
+> > > Hi Srinivas,
+> > >
+> > > if there are no objections - can you Ack this patch for Greg to pick
+> > > up into char-misc? =20
+> >
+> > Patch is fine for me. I normally send all the nvmem patches just before=
+ rc5.
+> >
+> > --srini =20
+> > >
+> > > Bart
+> > > =20
+>=20
+> Boris, are you fine with Srinivas sending the MTD patch as well so
+> that they stay together?
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Changes in v4:
-- New patch
----
- drivers/mtd/spi-nor/spi-nor.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 316cd0287194..dd2a8a4f703c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1477,6 +1477,31 @@ static int macronix_quad_enable(struct spi_nor *nor)
- 		.addr_width = 3,					\
- 		.flags = SPI_NOR_NO_FR | SPI_S3AN,
- 
-+static int
-+mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
-+			    const struct sfdp_parameter_header *bfpt_header,
-+			    const struct sfdp_bfpt *bfpt,
-+			    struct spi_nor_flash_parameter *params)
-+{
-+	/*
-+	 * MX25L25635F support 4B opcodes but MX25L25635E does not.
-+	 * Unfortunately, Macronix has re-used the same JEDEC ID for both the
-+	 * variants which prevents us from defining a new entry in the parts
-+	 * table.
-+	 * We need a way to differentiate MX25L25635E and MX25L25635F, and it
-+	 * seems that the F version advertises support for Fast Read 4-4-4 in
-+	 * its BFPT table.
-+	 */
-+	if (bfpt->dwords[BFPT_DWORD(5)] & BFPT_DWORD5_FAST_READ_4_4_4)
-+		nor->flags |= SNOR_F_4B_OPCODES;
-+
-+	return 0;
-+}
-+
-+static struct spi_nor_fixups mx25l25635_fixups = {
-+	.post_bfpt = mx25l25635_post_bfpt_fixups,
-+};
-+
- /* NOTE: double check command sets and memory organization when you add
-  * more nor chips.  This current list focusses on newer chips, which
-  * have been converging on command sets which including JEDEC ID.
-@@ -1607,7 +1632,12 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
- 	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256,
- 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{
-+		"mx25l25635e",
-+		INFO(0xc22019, 0, 64 * 1024, 512,
-+		     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		.fixups = &mx25l25635_fixups,
-+	},
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
--- 
-2.17.1
+Yes, I'll just need an immutable branch/tag in case we have conflicting
+changes in the MTD tree.
