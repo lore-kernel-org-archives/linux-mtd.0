@@ -1,35 +1,17 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSKtB-0005NG-5Z
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 11:53:51 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>, Han Xu
- <han.xu@nxp.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, David Wolfe
- <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Prabhakar
- Kushwaha" <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-Date: Thu, 29 Nov 2018 11:53:32 +0000
-Message-ID: <f4c584e5-8930-bec3-0c4e-2216a89606b0@kontron.de>
-References: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
- <1543314174-28580-4-git-send-email-frieder.schrempf@kontron.de>
- <3981845c-327a-bb14-2908-47dd443971bf@kontron.de>
- <VI1PR04MB572644A2AE3214356A62478799D20@VI1PR04MB5726.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB572644A2AE3214356A62478799D20@VI1PR04MB5726.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B5BAC62A2CABF449B9747A4369E1DC82@snt-world.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gSN1l-0003sh-Vk
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2018 14:10:51 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 0/6] mtd: spi-nor: Random cleanups
+Date: Thu, 29 Nov 2018 15:10:20 +0100
+Message-Id: <20181129141026.24892-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,96 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgWW9nZXNoLA0KDQpPbiAyOS4xMS4xOCAxMjozOCwgWW9nZXNoIE5hcmF5YW4gR2F1ciB3cm90
-ZToNCj4gSGkgRnJpZWRlciwNCj4gDQo+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPj4g
-RnJvbTogU2NocmVtcGYgRnJpZWRlciBbbWFpbHRvOmZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5k
-ZV0NCj4+IFNlbnQ6IFdlZG5lc2RheSwgTm92ZW1iZXIgMjgsIDIwMTggMTo1OCBQTQ0KPj4gVG86
-IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5j
-b207IGxpbnV4LQ0KPj4gc3BpQHZnZXIua2VybmVsLm9yZzsgTWFyZWsgVmFzdXQgPG1hcmVrLnZh
-c3V0QGdtYWlsLmNvbT47IE1hcmsgQnJvd24NCj4+IDxicm9vbmllQGtlcm5lbC5vcmc+OyBIYW4g
-WHUgPGhhbi54dUBueHAuY29tPg0KPj4gQ2M6IGR3bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1dGVy
-c2ZvcnBlYWNlQGdtYWlsLmNvbTsgcmljaGFyZEBub2QuYXQ7DQo+PiBtaXF1ZWwucmF5bmFsQGJv
-b3RsaW4uY29tOyBEYXZpZCBXb2xmZSA8ZGF2aWQud29sZmVAbnhwLmNvbT47IEZhYmlvDQo+PiBF
-c3RldmFtIDxmYWJpby5lc3RldmFtQG54cC5jb20+OyBQcmFiaGFrYXIgS3VzaHdhaGENCj4+IDxw
-cmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IFlvZ2VzaCBOYXJheWFuIEdhdXINCj4+IDx5b2dl
-c2huYXJheWFuLmdhdXJAbnhwLmNvbT47IHNoYXduZ3VvQGtlcm5lbC5vcmc7IGxpbnV4LQ0KPj4g
-a2VybmVsQHZnZXIua2VybmVsLm9yZw0KPj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NiAzLzldIHNw
-aTogQWRkIGEgZHJpdmVyIGZvciB0aGUgRnJlZXNjYWxlL05YUCBRdWFkU1BJDQo+PiBjb250cm9s
-bGVyDQo+Pg0KPj4gT24gMjcuMTEuMTggMTE6MjQsIFNjaHJlbXBmIEZyaWVkZXIgd3JvdGU6DQo+
-Pj4gVGhpcyBkcml2ZXIgaXMgZGVyaXZlZCBmcm9tIHRoZSBTUEkgTk9SIGRyaXZlciBhdA0KPj4+
-IG10ZC9zcGktbm9yL2ZzbC1xdWFkc3BpLmMuIEl0IHVzZXMgdGhlIG5ldyBTUEkgbWVtb3J5IGlu
-dGVyZmFjZSBvZiB0aGUNCj4+PiBTUEkgZnJhbWV3b3JrIHRvIGlzc3VlIGZsYXNoIG1lbW9yeSBv
-cGVyYXRpb25zIHRvIHVwIHRvIGZvdXIgY29ubmVjdGVkDQo+Pj4gZmxhc2ggY2hpcHMgKDIgYnVz
-ZXMgd2l0aCAyIENTIGVhY2gpLg0KPj4+DQo+Pj4gVGhlIGNvbnRyb2xsZXIgZG9lcyBub3Qgc3Vw
-cG9ydCBnZW5lcmljIFNQSSBtZXNzYWdlcy4NCj4+Pg0KPj4+IFRoaXMgcGF0Y2ggYWxzbyBkaXNh
-YmxlcyB0aGUgYnVpbGQgb2YgdGhlICJvbGQiIGRyaXZlciBhbmQgcmV1c2VzIGl0cw0KPj4+IEtj
-b25maWcgb3B0aW9uIENPTkZJR19TUElfRlNMX1FVQURTUEkgdG8gcmVwbGFjZSBpdC4NCj4+Pg0K
-Pj4+IFNpZ25lZC1vZmYtYnk6IEZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2NocmVtcGZAa29u
-dHJvbi5kZT4NCj4+PiAtLS0NCj4+PiAgICBkcml2ZXJzL210ZC9zcGktbm9yL0tjb25maWcgIHwg
-ICA5IC0NCj4+PiAgICBkcml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlIHwgICAxIC0NCj4+PiAg
-ICBkcml2ZXJzL3NwaS9LY29uZmlnICAgICAgICAgIHwgIDExICsNCj4+PiAgICBkcml2ZXJzL3Nw
-aS9NYWtlZmlsZSAgICAgICAgIHwgICAxICsNCj4+PiAgICBkcml2ZXJzL3NwaS9zcGktZnNsLXFz
-cGkuYyAgIHwgOTY3DQo+PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0K
-Pj4+ICAgIDUgZmlsZXMgY2hhbmdlZCwgOTc5IGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygt
-KQ0KPj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvS2NvbmZpZyBiL2Ry
-aXZlcnMvbXRkL3NwaS1ub3IvS2NvbmZpZw0KPj4+IGluZGV4IDZjYzljOTIuLmQxY2EzMDcgMTAw
-NjQ0DQo+Pj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnDQo+Pj4gKysrIGIvZHJp
-dmVycy9tdGQvc3BpLW5vci9LY29uZmlnDQo+Pj4gQEAgLTU5LDE1ICs1OSw2IEBAIGNvbmZpZyBT
-UElfQ0FERU5DRV9RVUFEU1BJDQo+Pj4gICAgCSAgZGV2aWNlIHdpdGggYSBDYWRlbmNlIFFTUEkg
-Y29udHJvbGxlciBhbmQgd2FudCB0byBhY2Nlc3MgdGhlDQo+Pj4gICAgCSAgRmxhc2ggYXMgYW4g
-TVREIGRldmljZS4NCj4+Pg0KPj4+IC1jb25maWcgU1BJX0ZTTF9RVUFEU1BJDQo+Pj4gLQl0cmlz
-dGF0ZSAiRnJlZXNjYWxlIFF1YWQgU1BJIGNvbnRyb2xsZXIiDQo+Pj4gLQlkZXBlbmRzIG9uIEFS
-Q0hfTVhDIHx8IFNPQ19MUzEwMjFBIHx8IEFSQ0hfTEFZRVJTQ0FQRSB8fA0KPj4gQ09NUElMRV9U
-RVNUDQo+Pj4gLQlkZXBlbmRzIG9uIEhBU19JT01FTQ0KPj4+IC0JaGVscA0KPj4+IC0JICBUaGlz
-IGVuYWJsZXMgc3VwcG9ydCBmb3IgdGhlIFF1YWQgU1BJIGNvbnRyb2xsZXIgaW4gbWFzdGVyIG1v
-ZGUuDQo+Pj4gLQkgIFRoaXMgY29udHJvbGxlciBkb2VzIG5vdCBzdXBwb3J0IGdlbmVyaWMgU1BJ
-LiBJdCBvbmx5IHN1cHBvcnRzDQo+Pj4gLQkgIFNQSSBOT1IuDQo+Pj4gLQ0KPj4+ICAgIGNvbmZp
-ZyBTUElfSElTSV9TRkMNCj4+PiAgICAJdHJpc3RhdGUgIkhpc2lsaWNvbiBTUEktTk9SIEZsYXNo
-IENvbnRyb2xsZXIoU0ZDKSINCj4+PiAgICAJZGVwZW5kcyBvbiBBUkNIX0hJU0kgfHwgQ09NUElM
-RV9URVNUIGRpZmYgLS1naXQNCj4+PiBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvTWFrZWZpbGUgYi9k
-cml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlIGluZGV4DQo+Pj4gZjRjNjFkMi4uM2YxNjBjMmUz
-IDEwMDY0NA0KPj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvTWFrZWZpbGUNCj4+PiArKysg
-Yi9kcml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlDQo+Pj4gQEAgLTMsNyArMyw2IEBAIG9iai0k
-KENPTkZJR19NVERfU1BJX05PUikJKz0gc3BpLW5vci5vDQo+Pj4gICAgb2JqLSQoQ09ORklHX1NQ
-SV9BU1BFRURfU01DKQkrPSBhc3BlZWQtc21jLm8NCj4+PiAgICBvYmotJChDT05GSUdfU1BJX0FU
-TUVMX1FVQURTUEkpCSs9IGF0bWVsLXF1YWRzcGkubw0KPj4+ICAgIG9iai0kKENPTkZJR19TUElf
-Q0FERU5DRV9RVUFEU1BJKQkrPSBjYWRlbmNlLXF1YWRzcGkubw0KPj4+IC1vYmotJChDT05GSUdf
-U1BJX0ZTTF9RVUFEU1BJKQkrPSBmc2wtcXVhZHNwaS5vDQo+Pj4gICAgb2JqLSQoQ09ORklHX1NQ
-SV9ISVNJX1NGQykJKz0gaGlzaS1zZmMubw0KPj4+ICAgIG9iai0kKENPTkZJR19NVERfTVQ4MXh4
-X05PUikgICAgKz0gbXRrLXF1YWRzcGkubw0KPj4+ICAgIG9iai0kKENPTkZJR19TUElfTlhQX1NQ
-SUZJKQkrPSBueHAtc3BpZmkubw0KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9LY29uZmln
-IGIvZHJpdmVycy9zcGkvS2NvbmZpZyBpbmRleA0KPj4+IDdkM2E1YzkuLjhjODQxODYgMTAwNjQ0
-DQo+Pj4gLS0tIGEvZHJpdmVycy9zcGkvS2NvbmZpZw0KPj4+ICsrKyBiL2RyaXZlcnMvc3BpL0tj
-b25maWcNCj4+PiBAQCAtMjU5LDYgKzI1OSwxNyBAQCBjb25maWcgU1BJX0ZTTF9MUFNQSQ0KPj4+
-ICAgIAloZWxwDQo+Pj4gICAgCSAgVGhpcyBlbmFibGVzIEZyZWVzY2FsZSBpLk1YIExQU1BJIGNv
-bnRyb2xsZXJzIGluIG1hc3RlciBtb2RlLg0KPj4+DQo+Pj4gK2NvbmZpZyBTUElfRlNMX1FVQURT
-UEkNCj4+PiArCXRyaXN0YXRlICJGcmVlc2NhbGUgUVNQSSBjb250cm9sbGVyIg0KPj4+ICsJZGVw
-ZW5kcyBvbiBBUkNIX01YQyB8fCBTT0NfTFMxMDIxQSB8fCBBUkNIX0xBWUVSU0NBUEUgfHwNCj4+
-IENPTVBJTEVfVEVTVA0KPj4+ICsJZGVwZW5kcyBvbiBIQVNfSU9NRU0NCj4+PiArCWhlbHANCj4+
-PiArCSAgVGhpcyBlbmFibGVzIHN1cHBvcnQgZm9yIHRoZSBRdWFkIFNQSSBjb250cm9sbGVyIGlu
-IG1hc3RlciBtb2RlLg0KPj4+ICsJICBVcCB0byBmb3VyIGZsYXNoIGNoaXBzIGNhbiBiZSBjb25u
-ZWN0ZWQgb24gdHdvIGJ1c2VzIHdpdGggdHdvDQo+Pj4gKwkgIGNoaXBzZWxlY3RzIGVhY2guDQo+
-Pj4gKwkgIFRoaXMgY29udHJvbGxlciBkb2VzIG5vdCBzdXBwb3J0IGdlbmVyaWMgU1BJIG1lc3Nh
-Z2VzLiBJdCBvbmx5DQo+Pj4gKwkgIHN1cHBvcnRzIHRoZSBoaWdoLWxldmVsIFNQSSBtZW1vcnkg
-aW50ZXJmYWNlLg0KPj4+ICsNCj4gWy4uLl0NCj4+PiArc3RhdGljIHZvaWQgZnNsX3FzcGlfc2Vs
-ZWN0X21lbShzdHJ1Y3QgZnNsX3FzcGkgKnEsIHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpDQo+Pj4g
-K3sNCj4+PiArCXVuc2lnbmVkIGxvbmcgcmF0ZSA9IHNwaS0+bWF4X3NwZWVkX2h6Ow0KPj4+ICsJ
-aW50IHJldCwgaTsNCj4+PiArCXUzMiBtYXBfYWRkcjsNCj4+DQo+PiBGb3Jnb3QgdG8gZHJvcCBz
-b21lIHVudXNlZCB2YXJzIGhlcmUuIEkgd2lsbCByZW1vdmUgdGhlbSBpbiB0aGUgbmV4dA0KPj4g
-dmVyc2lvbi4NCj4+DQo+IA0KPiBZZXMsIGJlbG93IGFyZSB0aGUgYnVpbGQgd2FybmluZ3MgbWVz
-c2FnZXMgY29taW5nIGZvciB0aGlzIHZlcnNpb24gb2YgdGhlIHBhdGNoLg0KPiANCj4gCWRyaXZl
-cnMvc3BpL3NwaS1mc2wtcXNwaS5jOiBJbiBmdW5jdGlvbiDigJhmc2xfcXNwaV9zZWxlY3RfbWVt
-4oCZOg0KPiAJZHJpdmVycy9zcGkvc3BpLWZzbC1xc3BpLmM6NTAwOjY6IHdhcm5pbmc6IHVudXNl
-ZCB2YXJpYWJsZSDigJhtYXBfYWRkcuKAmSBbLVd1bnVzZWQtdmFyaWFibGVdDQo+IAkgIHUzMiBt
-YXBfYWRkcjsNCj4gCSAgICAgIF4NCj4gCWRyaXZlcnMvc3BpL3NwaS1mc2wtcXNwaS5jOjQ5OTox
-MTogd2FybmluZzogdW51c2VkIHZhcmlhYmxlIOKAmGnigJkgWy1XdW51c2VkLXZhcmlhYmxlXQ0K
-PiAJICBpbnQgcmV0LCBpOw0KPiANCj4+PiArDQo+Pj4gKwlpZiAocS0+c2VsZWN0ZWQgPT0gc3Bp
-LT5jaGlwX3NlbGVjdCkNCj4gWy4uLl0NCj4gDQo+IFZlcmlmaWVkIHRoaXMgcGF0Y2ggc2VyaWVz
-IG9uIExheWVyU2NhcGUtMi54IGFyY2hpdGVjdHVyZSBib2FyZHMuDQo+IExTMTA4OGFyZGIsIGlz
-IGhhdmluZyB0d28gY29ubmVjdGVkIGZsYXNoIHNsYXZlIGRldmljZXMgb24gQ1MwIGFuZCBDUzEu
-DQo+IA0KPiBWZXJpZmllZCB3aXRoIHNpbXBsZSBSZWFkL1dyaXRlL0VyYXNlIG9wZXJhdGlvbnMg
-YWxvbmcgd2l0aCBKRkZTMiBtb3VudGluZyBhbmQgYm9vdGluZyBmcm9tIGZsYXNoIE1URCBwYXJ0
-aXRpb24gZm9yIGJvdGggc2xhdmUgZGV2aWNlcy4NCg0KVGhhbmsgeW91IGZvciB0ZXN0aW5nISBE
-b2VzIHRoaXMgbWVhbiBJIGNhbiBhZGQgeW91ciBUZXN0ZWQtYnkgdGFnPw0KSWYgeW91IGhhdmUg
-ZG9uZSBhIHJldmlldyBvZiBhbnkgb2YgdGhlIHBhdGNoZXMgaW4gdGhpcyBzZXQsIHBsZWFzZSBh
-bHNvIA0KYWRkIGEgUmV2aWV3ZWQtYnkgdGFnLg0KDQpUaGFua3MsDQpGcmllZGVy
+Hi,
+
+The patch series is a collection of minor cleanups I have accumulated
+while working on the "SPI NOR SFDP fixups" infrastructure.
+
+I'd really like to have those patches reviewed and merged quickly
+because the 'soon to be posted' "SPI NOR SFDP fixups" patchset depends
+on it.
+
+Regards,
+
+Boris
+
+Changes in v2:
+- Drop
+  "mtd: spi-nor: Set SPI_NOR_4B_OPCODES on all >16MB Spansion NORs",
+  "mtd: spi-nor: Create a ->set_4byte() method",
+  "mtd: spi-nor: Explicitly flag all Micron NORs as supporting locking"
+  "mtd: spi-nor: Move Spansion erase related fixup to a dedicated function"
+- Add a patch adding the SPDX tag
+- Add a patch moving nor->info assignment earlier in the spi_nor_scan()
+  function
+
+Boris Brezillon (6):
+  mtd: spi-nor: Drop inline on all internal helpers
+  mtd: spi-nor: Avoid forward declaration of internal functions
+  mtd: spi-nor: Stop passing info to set_4byte()
+  mtd: spi-nor: Make the enable argument passed to set_byte() a bool
+  mtd: spi-nor: Add an SPDX tag to spi-nor.c
+  mtd: spi-nor: Move the nor->info assignment earlier in the scan func
+
+ drivers/mtd/spi-nor/spi-nor.c | 264 +++++++++++++++++-----------------
+ 1 file changed, 129 insertions(+), 135 deletions(-)
+
+-- 
+2.17.1
