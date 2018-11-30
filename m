@@ -1,19 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSgDx-00014P-7K
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 10:40:43 +0000
-Date: Fri, 30 Nov 2018 11:40:19 +0100
+ id 1gSgnw-0005j5-7d
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 11:17:54 +0000
+Date: Fri, 30 Nov 2018 12:17:30 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
- for map selection
-Message-ID: <20181130114019.175ab7ec@bbrezillon>
-In-Reply-To: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
-References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris BREZILLON
+ <boris.brezillon@free-electrons.com>, Mark Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2 v2] mtd: physmap_of_gemini: Handle pin control
+Message-ID: <20181130121730.764f8f01@bbrezillon>
+In-Reply-To: <CACRpkdYEp9XUEh=+ivJNMsD_vGRGb0HzDTHZC_O2c2qskTkYiQ@mail.gmail.com>
+References: <20181112210729.23580-1-linus.walleij@linaro.org>
+ <20181112210729.23580-2-linus.walleij@linaro.org>
+ <20181120153602.166842f0@bbrezillon>
+ <CACRpkdYEp9XUEh=+ivJNMsD_vGRGb0HzDTHZC_O2c2qskTkYiQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,51 +28,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 29 Nov 2018 18:15:34 +0000
-"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-wrote:
+On Thu, 22 Nov 2018 15:10:47 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> JESD216 allows "variable address length" and "variable latency" in
-> Configuration Detection Command Descriptors, in other words "as-is".
-> And they are still unset during Sector Map Parameter Table parsing,
-> which led to "map_id" determined erroneously as 0 for, e.g. S25FS128S.
+> On Tue, Nov 20, 2018 at 3:36 PM Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> > On Mon, 12 Nov 2018 22:07:29 +0100
+> > Linus Walleij <linus.walleij@linaro.org> wrote:
+> >  
+> > > This enables the complex mapping for the Gemini and kicks in
+> > > custom read/write functions that will wrap the existing
+> > > simple functions in calls to enable/disable the parallel
+> > > flash pins using pin controls.
+> > >
+> > > This is necessary on some hardware such as the D-Link
+> > > DIR-685 where all flash pins are patched in/out at the same
+> > > time, but some of the flash pins are in practice unused by
+> > > the flash and have anyway been reused as GPIO.
+> > >
+> > > This concerns specifically CE1 on the Gemini. There is only
+> > > one flash chip, so only CE0 is used, and the line for CE1
+> > > has been reused as chip select for the emulated SPI port
+> > > connected to the display. If we try to use the same lines
+> > > for flash and GPIO at the same time, one of them will loose:
+> > > the GPIO line will disappear because it gets disconnected
+> > > from the pin when the flash group is muxed out.
+> > >
+> > > Fix this by introducing two pin control states named simply
+> > > "enabled" and "disabled" and only enable the flash lines
+> > > when absolutely necessary (during read/write/copy). This
+> > > way, they are available for GPIO at all other times and
+> > > the display works.  
+> >
+> > Okay, so your GPIOs might be unavailable when the flash is accessed?
+> >
+> > How does that work in practice? Is CE1 muxed as a GPIO
+> > on demand?  
 > 
-> Fixes: b038e8e3b ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> Yes, well the actual pin will go into the state of CE1
+> which default to a low state, the effect is
+> hardware-defined.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 828d03e..5557c89 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2893,6 +2893,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
->  		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
->  		addr = smpt[i + 1];
->  
-> +		/*
-> +		 * JESD216 allows to omit particular address length or latency
-> +		 * specification in the header and at this point they are still
-> +		 * unset, so we need some heuristics. One example is S25FS128S.
-> +		 */
-> +		if (!nor->addr_width)
-> +			nor->addr_width = 3;
-> +		if (!nor->read_dummy)
-> +			nor->read_dummy = 8;
-> +
+> This is not a recommendable type of electronics
+> engineering if that is what you wonder... it's a way to
+> patch over design mistakes in the design with
+> software. (Which is what the vendor tree does.)
+> 
+> In one case (SQ201) the LED connected to them will light up
+> since it is active low. So the LED goes on during flash
+> access and gives a kind of "flash access flicker" on top
+> of whatever it was indicating before.
+> 
+> That LED is marked "power" and I put a heartbeat on it
+> so it will be brief interruptions of steady light in the
+> heartbeat. The "only" problem is in UX. The vendor
+> device exhibits the same strange behavior.
+> 
+> > What happens if the flash and SPI bus are
+> > accessed at the same time? Do you
+> > get -EBUSY? Not sure all MTD users retry when they
+> > get -EBUSY...  
+> 
+> The way I set it up flash access "always win", so
+> no worries for MTD.
+> 
+> If I simulate SPI or any other slow bus on the GPIO
+> at the same time as we have muxed it out for
+> flash access, it will have to do error recovery,
+> because the bytes will not get through.
 
-Looks like the same problem was reported by Yogesh here [1]. One more
-proof that parsing SFDP is not trivial. I mean, what's the point of
-defining a generic tables to describe NOR capabilities if you then
-depend on vendor/chip specific init to read those tables...
+Do you mean that the GPIO controller does not request the pins it's
+using? If it does, the pinctrl framework should complain, when the pins
+are already assigned to another dev.
 
-Anyway, I think this sort of initialization should be placed in a
-pre_sfdp() fixup hook, as getting the right values likely requires
-reading some volatile/non-volatile regs.
+> 
+> Ideally I would want to patch the GPIO library to
+> redirect the access to this line to enable/disable
+> CE1 so the pin is driven from the flash controller
+> instead. But since that is essentially an address
+> bit it looked pretty tricky.
+> 
+> In practice the use cases do not overlap, so
+> we are fine, I guess if problems still occur the
+> path of least resistance would simply be to have the
+> display driver using this SPI line delay and
+> retry a few times. It's an ugly solution perfectly
+> fitting the ugly electronics IMO.
 
->  		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
->  		if (err)
->  			goto out;
-
-[1]https://lkml.org/lkml/2018/10/22/354
+If the flash and SPI bus are never accessed concurrently and things are
+controlled from userspace, maybe it's cleaner to bind/unbind devices on
+demand, and let each driver mux the conflicting pins as they expect it
+to be muxed.
