@@ -1,11 +1,13 @@
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+Received: from mail-it1-x142.google.com ([2607:f8b0:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSp7h-0004SH-Lq
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 20:10:51 +0000
+ id 1gSp9V-0004sv-Co
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 20:12:43 +0000
+Received: by mail-it1-x142.google.com with SMTP id b5so300943iti.2
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Nov 2018 12:12:31 -0800 (PST)
 Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-To: Kees Cook <keescook@chromium.org>,
- Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
+To: Davidlohr Bueso <dave@stgolabs.net>, Kees Cook <keescook@chromium.org>
+Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
  Andrew Morton <akpm@linux-foundation.org>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Daniel Axtens <dja@axtens.net>, "David S. Miller" <davem@davemloft.net>,
@@ -33,11 +35,12 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
  Yonghong Song <yhs@fb.com>, yanjun.zhu@oracle.com
 References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
  <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <40926843-4983-fc6f-4800-df105f9595ea@physik.fu-berlin.de>
-Date: Fri, 30 Nov 2018 21:09:48 +0100
+ <20181130195652.7syqys76646kpaph@linux-r8p5>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <d7c34289-f03a-b641-cc9c-00395306511d@kernel.dk>
+Date: Fri, 30 Nov 2018 13:12:26 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
+In-Reply-To: <20181130195652.7syqys76646kpaph@linux-r8p5>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,21 +53,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/30/18 8:40 PM, Kees Cook wrote:
-> Better yet, since it's only 17 files, how about doing context-specific
-> changes? "This API is terrible", "Hateful interface", "Don't touch my
-> freakin' code", "What in the world were they thinking?" etc?
-Or just leave it as is because we're all grown up and don't freak out
-when a piece of text contains the word "fuck".
+On 11/30/18 12:56 PM, Davidlohr Bueso wrote:
+> On Fri, 30 Nov 2018, Kees Cook wrote:
+> 
+>> On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
+>> <jarkko.sakkinen@linux.intel.com> wrote:
+>>>
+>>> In order to comply with the CoC, replace **** with a hug.
+> 
+> I hope this is some kind of joke. How would anyone get offended by reading
+> technical comments? This is all beyond me...
 
-I still don't understand why people think that the word "fuck" is what
-would keep certain groups from contributing to the Linux kernel. In all
-seriousness, it doesn't.
-
-Adrian
+Agree, this is insanity.
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Jens Axboe
