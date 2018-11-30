@@ -1,15 +1,20 @@
 Received: from mx0b-0028f201.pphosted.com ([148.163.153.29])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSldO-0004f9-Bc
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 16:27:19 +0000
+ id 1gSlqz-0001Wr-D2
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 16:41:22 +0000
+Received: from pps.filterd (m0113282.ppops.net [127.0.0.1])
+ by mx0b-0028f201.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ wAUGa3lJ015535
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Nov 2018 10:41:09 -0600
+Received: from attis.cumminslocal.com (mx1.cumminsallison.com [208.73.132.233])
+ by mx0b-0028f201.pphosted.com with ESMTP id 2p0vfa1yvp-1
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Nov 2018 10:41:09 -0600
 From: "Wojtaszczyk, Piotr" <WojtaszczykP@cumminsallison.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "tglx@linutronix.de" <tglx@linutronix.de>
-Subject: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial erase
-Date: Fri, 30 Nov 2018 16:26:58 +0000
-Message-ID: <97341e577e734deeb3cdcfd4583c7ffe@Astraea.Cumminslocal.com>
-References: <mailman.5261.1543570682.2376.linux-mtd@lists.infradead.org>
-In-Reply-To: <mailman.5261.1543570682.2376.linux-mtd@lists.infradead.org>
+Subject: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial erase issue
+Date: Fri, 30 Nov 2018 16:40:50 +0000
+Message-ID: <2bcb680a37bc475eba99c2f130d86ae3@Astraea.Cumminslocal.com>
+References: <mailman.5261.1543570682.2376.linux-mtd@lists.infradead.org> 
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
