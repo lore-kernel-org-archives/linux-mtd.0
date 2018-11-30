@@ -1,8 +1,8 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSrSY-0007FP-Sj
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 22:40:32 +0000
-Date: Fri, 30 Nov 2018 14:40:19 -0800
+ id 1gSsDZ-0000sC-8y
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 23:29:06 +0000
+Date: Fri, 30 Nov 2018 15:28:54 -0800
 From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To: James Bottomley <James.Bottomley@HansenPartnership.com>
 Cc: Jonathan Corbet <corbet@lwn.net>, Davidlohr Bueso <dave@stgolabs.net>,
@@ -36,9 +36,8 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Davidlohr Bueso <dave@stgolabs.net>,
  Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>,
  yanjun.zhu@oracle.com
 Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-Message-ID: <20181130224019.GA27562@linux.intel.com>
-References: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
- <20181130195652.7syqys76646kpaph@linux-r8p5>
+Message-ID: <20181130232854.GA464@linux.intel.com>
+References: <20181130195652.7syqys76646kpaph@linux-r8p5>
  <20181130205521.GA21006@linux.intel.com>
  <1543611662.3031.20.camel@HansenPartnership.com>
  <20181130214405.GG23772@linux.intel.com>
@@ -47,10 +46,11 @@ References: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
  <20181130151459.3ca2f5c8@lwn.net>
  <20181130222605.GA26261@linux.intel.com>
  <1543617045.3031.41.camel@HansenPartnership.com>
+ <20181130224019.GA27562@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1543617045.3031.41.camel@HansenPartnership.com>
+In-Reply-To: <20181130224019.GA27562@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -60,29 +60,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 30, 2018 at 02:30:45PM -0800, James Bottomley wrote:
-> On Fri, 2018-11-30 at 14:26 -0800, Jarkko Sakkinen wrote:
-> > On Fri, Nov 30, 2018 at 03:14:59PM -0700, Jonathan Corbet wrote:
-> [...]
-> > > Have you read Documentation/process/code-of-conduct-
-> > > interpretation.rst? 
-> > > As has been pointed out, it contains a clear answer to how things
-> > > should be interpreted here.
-> > 
-> > Ugh, was not aware that there two documents.
-> > 
-> > Yeah, definitely sheds light. Why the documents could not be merged
-> > to single common sense code of conduct?
-> 
-> The fact that we've arrived at essentially an original CoC
-> reinterpreted to the point where it's effectively a new CoC has been
-> the source of much debate and recrimination over the last few months
-> ... you can read it in the ksummit-discuss archives, but I really think
-> we don't want to reopen that can of worms.
+On Fri, Nov 30, 2018 at 02:40:19PM -0800, Jarkko Sakkinen wrote:
+> Got you... Well I now read the 2nd amendment now through, and yeah, kind
+> of way I work/function anyway.
 
-Got you... Well I now read the 2nd amendment now through, and yeah, kind
-of way I work/function anyway.
-
-Thank you for the patience...
+Ugh, looked up the word from dictionary for something that makes
+additions to some guidelines because did not know the english word.
+Not meant as a political reference of any kind. Just don't know
+any better English word.
 
 /Jarkko
