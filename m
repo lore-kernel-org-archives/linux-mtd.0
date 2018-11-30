@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSfZU-0000LH-Hu
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 09:58:54 +0000
-Date: Fri, 30 Nov 2018 10:58:29 +0100
+ id 1gSgDx-00014P-7K
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 10:40:43 +0000
+Date: Fri, 30 Nov 2018 11:40:19 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Marek Vasut <marex@denx.de>
-Subject: [GIT PULL] mtd: Fixes for 4.20-rc5
-Message-ID: <20181130105829.0bbefe10@bbrezillon>
+To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
+ Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
+ for map selection
+Message-ID: <20181130114019.175ab7ec@bbrezillon>
+In-Reply-To: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
+References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,40 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+On Thu, 29 Nov 2018 18:15:34 +0000
+"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+wrote:
 
-Here is the MTD fixes PR for 4.20-rc5.
+> JESD216 allows "variable address length" and "variable latency" in
+> Configuration Detection Command Descriptors, in other words "as-is".
+> And they are still unset during Sector Map Parameter Table parsing,
+> which led to "map_id" determined erroneously as 0 for, e.g. S25FS128S.
+> 
+> Fixes: b038e8e3b ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 828d03e..5557c89 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2893,6 +2893,16 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+>  		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
+>  		addr = smpt[i + 1];
+>  
+> +		/*
+> +		 * JESD216 allows to omit particular address length or latency
+> +		 * specification in the header and at this point they are still
+> +		 * unset, so we need some heuristics. One example is S25FS128S.
+> +		 */
+> +		if (!nor->addr_width)
+> +			nor->addr_width = 3;
+> +		if (!nor->read_dummy)
+> +			nor->read_dummy = 8;
+> +
 
-Regards,
+Looks like the same problem was reported by Yogesh here [1]. One more
+proof that parsing SFDP is not trivial. I mean, what's the point of
+defining a generic tables to describe NOR capabilities if you then
+depend on vendor/chip specific init to read those tables...
 
-Boris
+Anyway, I think this sort of initialization should be placed in a
+pre_sfdp() fixup hook, as getting the right values likely requires
+reading some volatile/non-volatile regs.
 
-The following changes since commit 2e6e902d185027f8e3cb8b7305238f7e35d6a436:
+>  		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
+>  		if (err)
+>  			goto out;
 
-  Linux 4.20-rc4 (2018-11-25 14:19:31 -0800)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.20-rc5
-
-for you to fetch changes up to 40b412897ccb4b98b2cfb2a0aaabed58dd9e2086:
-
-  mtd: nand: Fix memory allocation in nanddev_bbt_init() (2018-11-28 15:41:50 +0100)
-
-----------------------------------------------------------------
-NAND fixes:
-- Fix BBT cache allocation done in nanddev_bbt_init()
-
-SPI NOR fixes:
-- Fix the erase type selection logic
-
-----------------------------------------------------------------
-Frieder Schrempf (1):
-      mtd: nand: Fix memory allocation in nanddev_bbt_init()
-
-Tudor Ambarus (1):
-      mtd: spi-nor: fix erase_type array to indicate current map conf
-
- drivers/mtd/nand/bbt.c        |  3 ++-
- drivers/mtd/spi-nor/spi-nor.c | 31 +++++++++++++++++++++++++++++--
- 2 files changed, 31 insertions(+), 3 deletions(-)	
+[1]https://lkml.org/lkml/2018/10/22/354
