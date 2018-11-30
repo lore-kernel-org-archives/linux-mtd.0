@@ -1,23 +1,21 @@
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSpqU-000701-Nw
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 20:57:08 +0000
-Date: Fri, 30 Nov 2018 12:56:54 -0800
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+ id 1gSptW-0007o6-3h
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 21:00:15 +0000
+Subject: Re: [GIT PULL] mtd: Fixes for 4.20-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20181130105829.0bbefe10@bbrezillon>
+References: <20181130105829.0bbefe10@bbrezillon>
+Message-Id: <20181130210003.10596.30491.pr-tracker-bot@pdx-korg-gitolite-1.ci.codeaurora.org>
+Date: Fri, 30 Nov 2018 21:00:03 +0000
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH RFC 09/15] mtd: replace **** with a hug
-Message-ID: <20181130205654.GA22338@linux.intel.com>
-References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
- <20181130192737.15053-10-jarkko.sakkinen@linux.intel.com>
- <20181130203906.1af0d88d@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181130203906.1af0d88d@bbrezillon>
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut <marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 30, 2018 at 08:39:06PM +0100, Boris Brezillon wrote:
-> On Fri, 30 Nov 2018 11:27:18 -0800
-> Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> 
-> > In order to comply with the CoC, replace **** with a hug.
-> > 
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> >  drivers/mtd/mtd_blkdevs.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> > index b0d44f9214b0..bdf68678fccc 100644
-> > --- a/drivers/mtd/mtd_blkdevs.c
-> > +++ b/drivers/mtd/mtd_blkdevs.c
-> > @@ -565,7 +565,7 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
-> >  	int ret;
-> >  
-> >  	/* Register the notifier if/when the first device type is
-> > -	   registered, to prevent the link/init ordering from fucking
-> > +	   registered, to prevent the link/init ordering from hugging
-> >  	   us over. */
-> 
-> Please rephrase the comment instead of this replacement.
+The pull request you sent on Fri, 30 Nov 2018 10:58:29 +0100:
 
-Will do in the next version of this patch set!
+> git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.20-rc5
 
-/Jarkko
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/da59f180d529fc78591e71acf2c67114b8eff10d
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
