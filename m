@@ -1,44 +1,47 @@
-Received: from ms.lwn.net ([45.79.88.28])
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSpxq-0001b9-N2
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 21:04:44 +0000
-Date: Fri, 30 Nov 2018 14:04:27 -0700
-From: Jonathan Corbet <corbet@lwn.net>
-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>, Kees Cook <keescook@chromium.org>,
- LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Daniel Axtens <dja@axtens.net>, "David
- S. Miller" <davem@davemloft.net>, Dominik Brodowski
- <linux@dominikbrodowski.net>, Maling list - DRI developers
- <dri-devel@lists.freedesktop.org>, Eric Dumazet <edumazet@google.com>,
- federico.vaga@vaga.pv.it, Geert Uytterhoeven <geert+renesas@glider.be>,
- Helge Deller <deller@gmx.de>, Joshua Kinard <kumba@gentoo.org>, "open
- list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ id 1gSq0t-0004vF-IY
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 21:07:52 +0000
+Date: Fri, 30 Nov 2018 13:07:39 -0800
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Daniel Axtens <dja@axtens.net>, "David S. Miller" <davem@davemloft.net>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
+ Eric Dumazet <edumazet@google.com>, federico.vaga@vaga.pv.it,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Helge Deller <deller@gmx.de>, Jonathan Corbet <corbet@lwn.net>,
+ Joshua Kinard <kumba@gentoo.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
  "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux Media
- Mailing List <linux-media@vger.kernel.org>, Linux MIPS Mailing List
- <linux-mips@linux-mips.org>, Linux mtd <linux-mtd@lists.infradead.org>,
- linux-parisc <linux-parisc@vger.kernel.org>, Linux PM list
- <linux-pm@vger.kernel.org>, linux-scsi@vger.kernel.org,
- matthias.bgg@gmail.com, Network Development <netdev@vger.kernel.org>,
- nouveau <nouveau@lists.freedesktop.org>, Paolo Abeni <pabeni@redhat.com>,
- Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rob
- Herring <robh@kernel.org>, sean.wang@mediatek.com, Sergey Senozhatsky
- <sergey.senozhatsky@gmail.com>, shannon.nelson@oracle.com, Stefano Brivio
- <sbrivio@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, "Tobin C.
- Harding" <me@tobin.cc>, makita.toshiaki@lab.ntt.co.jp, Willem de Bruijn
- <willemb@google.com>, Yonghong Song <yhs@fb.com>, yanjun.zhu@oracle.com
+ linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ linux-parisc <linux-parisc@vger.kernel.org>,
+ Linux PM list <linux-pm@vger.kernel.org>,
+ linux-scsi@vger.kernel.org, matthias.bgg@gmail.com,
+ Network Development <netdev@vger.kernel.org>,
+ nouveau <nouveau@lists.freedesktop.org>,
+ Paolo Abeni <pabeni@redhat.com>, Paul Burton <paul.burton@mips.com>,
+ Petr Mladek <pmladek@suse.com>, Rob Herring <robh@kernel.org>,
+ sean.wang@mediatek.com, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ shannon.nelson@oracle.com, Stefano Brivio <sbrivio@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ "Tobin C. Harding" <me@tobin.cc>, makita.toshiaki@lab.ntt.co.jp,
+ Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>,
+ yanjun.zhu@oracle.com
 Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-Message-ID: <20181130140427.1d4fd1c1@lwn.net>
-In-Reply-To: <20181130205521.GA21006@linux.intel.com>
+Message-ID: <20181130210739.GD22338@linux.intel.com>
 References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
  <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
- <20181130195652.7syqys76646kpaph@linux-r8p5>
- <20181130205521.GA21006@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,26 +51,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 Nov 2018 12:55:21 -0800
-Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-
-> This a direct quote from the CoC:
+On Fri, Nov 30, 2018 at 11:40:17AM -0800, Kees Cook wrote:
+> On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > In order to comply with the CoC, replace **** with a hug.
 > 
-> "Harassment includes the use of abusive, offensive or degrading
-> language, intimidation, stalking, harassing photography or recording,
-> inappropriate physical contact, sexual imagery and unwelcome sexual
-> advances or requests for sexual favors."
+> Heh. I support the replacement of the stronger language, but I find
+> "hug", "hugged", and "hugging" to be very weird replacements. Can we
+> bikeshed this to "heck", "hecked", and "hecking" (or "heckin" to
+> follow true Doggo meme style).
+> 
+> "This API is hugged" doesn't make any sense to me. "This API is
+> hecked" is better, or at least funnier (to me). "Hug this interface"
+> similarly makes no sense, but "Heck this interface" seems better.
+> "Don't touch my hecking code", "What the heck were they thinking?"
+> etc... "hug" is odd.
+> 
+> Better yet, since it's only 17 files, how about doing context-specific
+> changes? "This API is terrible", "Hateful interface", "Don't touch my
+> freakin' code", "What in the world were they thinking?" etc?
 
-...and this is from the interpretation document:
+I'm happy to refine this (thus the RFC tag)! And depending on the
+culture, hugging could fall in the harrasment category. Actually, when I
+think about it, in Finland this kind of poking of ones personal bubble
+would be such :-)
 
-> Contributions submitted for the kernel should use appropriate language.
-> Content that already exists predating the Code of Conduct will not be
-> addressed now as a violation.
+I'll refine the patch set with more context sensitive replacements,
+perhaps removing the comment altogether in some places. Thank you for
+the feedback!
 
-So existing code is explicitly not a CoC violation and need not be
-treated as such.  That said, improvements to the comments are always
-welcome, as long as they are actually improvements.
-
-Thanks,
-
-jon
+/Jarkko
