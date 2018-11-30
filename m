@@ -1,11 +1,12 @@
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gSq0t-0004vF-IY
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 21:07:52 +0000
-Date: Fri, 30 Nov 2018 13:07:39 -0800
+ id 1gSqPH-0004kc-4T
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2018 21:33:04 +0000
+Date: Fri, 30 Nov 2018 13:32:50 -0800
 From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Kees Cook <keescook@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
+ Amir Goldstein <amir73il@gmail.com>,
  Andrew Morton <akpm@linux-foundation.org>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Daniel Axtens <dja@axtens.net>, "David S. Miller" <davem@davemloft.net>,
@@ -35,13 +36,14 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>,
  Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>,
  yanjun.zhu@oracle.com
 Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-Message-ID: <20181130210739.GD22338@linux.intel.com>
+Message-ID: <20181130213250.GC23772@linux.intel.com>
 References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
  <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
+ <40926843-4983-fc6f-4800-df105f9595ea@physik.fu-berlin.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
+In-Reply-To: <40926843-4983-fc6f-4800-df105f9595ea@physik.fu-berlin.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,34 +53,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 30, 2018 at 11:40:17AM -0800, Kees Cook wrote:
-> On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > In order to comply with the CoC, replace **** with a hug.
+On Fri, Nov 30, 2018 at 09:09:48PM +0100, John Paul Adrian Glaubitz wrote:
+> Or just leave it as is because we're all grown up and don't freak out
+> when a piece of text contains the word "fuck".
 > 
-> Heh. I support the replacement of the stronger language, but I find
-> "hug", "hugged", and "hugging" to be very weird replacements. Can we
-> bikeshed this to "heck", "hecked", and "hecking" (or "heckin" to
-> follow true Doggo meme style).
-> 
-> "This API is hugged" doesn't make any sense to me. "This API is
-> hecked" is better, or at least funnier (to me). "Hug this interface"
-> similarly makes no sense, but "Heck this interface" seems better.
-> "Don't touch my hecking code", "What the heck were they thinking?"
-> etc... "hug" is odd.
-> 
-> Better yet, since it's only 17 files, how about doing context-specific
-> changes? "This API is terrible", "Hateful interface", "Don't touch my
-> freakin' code", "What in the world were they thinking?" etc?
+> I still don't understand why people think that the word "fuck" is what
+> would keep certain groups from contributing to the Linux kernel. In all
+> seriousness, it doesn't.
 
-I'm happy to refine this (thus the RFC tag)! And depending on the
-culture, hugging could fall in the harrasment category. Actually, when I
-think about it, in Finland this kind of poking of ones personal bubble
-would be such :-)
-
-I'll refine the patch set with more context sensitive replacements,
-perhaps removing the comment altogether in some places. Thank you for
-the feedback!
+Are you making a claim that your personal experience, and maybe your
+mates, is the objective truth, or am I misunderstanding something?
 
 /Jarkko
