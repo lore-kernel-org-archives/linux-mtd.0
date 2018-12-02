@@ -1,24 +1,20 @@
-Received: from mail-ot1-x343.google.com ([2607:f8b0:4864:20::343])
+Received: from galois.linutronix.de ([2a01:7a0:2:106d:700::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTQHR-0007jv-5g
- for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 11:51:22 +0000
-Received: by mail-ot1-x343.google.com with SMTP id 40so9133962oth.4
- for <linux-mtd@lists.infradead.org>; Sun, 02 Dec 2018 03:51:09 -0800 (PST)
+ id 1gTSe0-0007OO-Uk
+ for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 14:22:50 +0000
+Date: Sun, 2 Dec 2018 15:22:32 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Subject: Re: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial erase issue
+In-Reply-To: <20181202082918.3b5f303a@bbrezillon>
+Message-ID: <alpine.DEB.2.21.1812021519300.3969@nanos.tec.linutronix.de>
+References: <alpine.DEB.2.21.1811292207570.1657@nanos.tec.linutronix.de>
+ <20181202082918.3b5f303a@bbrezillon>
 MIME-Version: 1.0
-References: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
- <20181129080923.GE13859@kroah.com> <1676802.TThbbZSlzy@blindfold>
-In-Reply-To: <1676802.TThbbZSlzy@blindfold>
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Sun, 2 Dec 2018 11:50:33 +0000
-Message-ID: <CADVatmP1h7GJJRVURkinwSM44Y4iooMP-U_7zew4V+zsMva4Vw@mail.gmail.com>
-Subject: Re: [PATCH] ubi: fastmap: Check each mapping only once
-To: Richard Weinberger <richard@nod.at>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: martin.kepplinger@ginzinger.com, Stable <stable@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Juergen <juergen.lachmann@harman.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Greg,
+On Sun, 2 Dec 2018, Boris Brezillon wrote:
+> First of all, I'd like to thank you for sharing this patch. I'm
+> pretty sure this will save days of painful debug sessions to a lot of
+> people.
 
-On Sun, Dec 2, 2018 at 8:51 AM Richard Weinberger <richard@nod.at> wrote:
->
-> Greg,
->
-> Am Donnerstag, 29. November 2018, 09:09:23 CET schrieb Greg KH:
-> > On Mon, Nov 26, 2018 at 11:38:42AM +0100, Martin Kepplinger wrote:
-> > > From: Richard Weinberger <richard@nod.at>
-> > >
-> > > [ Upstream commit 34653fd8c46e771585fce5975e4243f8fd401914 ]
-> > >
-<snip>
-> >
-> > Now queued up for 4.14.y, thanks.
->
-> can you *please* slow a little down?
+Yeah. It's painful because it's a sporadic failure.
 
-True. It will really help if you can have some sort of fixed schedule
-for stable release, like maybe stablerc is ready on Thursday or Friday
-and release the stable on Monday. Having a weekend in stablerc will be
-helpful for people like me who only get the time in weekends for
-upstream or stable kernel.
+> On Thu, 29 Nov 2018 22:12:50 +0100 (CET)
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+> > P.S.: This was debugged on an older kernel version (sigh) and ported
+> >       forward without actual testing on mainline. My MTD foo is a bit
+> >       rusty, so I won't be surprised if there are better ways to do that.
+> 
+> Let's first wait for Bean's feedback before discussing implementation
+> details. BTW, do you remember the part number(s) of the flash(es)
+> impacted by this problem in your case?
 
--- 
-Regards
-Sudip
+MT29F8G08 is one of them. The other one I can't tell right now due to
+traveling.
+
+Thanks,
+
+	Thomas
