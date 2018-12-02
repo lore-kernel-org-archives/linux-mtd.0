@@ -1,25 +1,21 @@
-Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTNOB-0000ZC-Hc
- for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 08:46:08 +0000
-Received: by mail-it1-x141.google.com with SMTP id b5so4422109iti.2
- for <linux-mtd@lists.infradead.org>; Sun, 02 Dec 2018 00:45:57 -0800 (PST)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTNQB-0000vl-3c
+ for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 08:48:12 +0000
+Date: Sun, 2 Dec 2018 09:47:49 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2 v3] mtd: maps: Leave assigned complex mappings
+Message-ID: <20181202094749.07a9687e@bbrezillon>
+In-Reply-To: <20181127205358.32502-1-linus.walleij@linaro.org>
+References: <20181127205358.32502-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-References: <20181202083358.10896-1-tiny.windzz@gmail.com>
- <20181202093958.6419fd24@bbrezillon>
-In-Reply-To: <20181202093958.6419fd24@bbrezillon>
-From: Frank Lee <tiny.windzz@gmail.com>
-Date: Sun, 2 Dec 2018 16:45:28 +0800
-Message-ID: <CAEExFWvqhFBEO2eGm9UQsE9w3-cdkN7dRCk96YdBFzA6HjN0zA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: use DEFINE_SHOW_ATTRIBUTE() instead of open-coding it
-To: boris.brezillon@bootlin.com
-Cc: robert.jarzmik@free.fr, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- richard@nod.at, miquel.raynal@bootlin.com, Kees Cook <keescook@chromium.org>,
- Shreeya Patel <shreeya.patel23498@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 2, 2018 at 4:40 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> Should be [PATCH v4]
->
-> On Sun,  2 Dec 2018 03:33:58 -0500
-> Yangtao Li <tiny.windzz@gmail.com> wrote:
->
-> > DEFINE_SHOW_ATTRIBUTE macro can help us simplify the code,so change
-> > to it.And change the DEBUGFS_RO_ATTR macro defined in some file to a
-> > standard macro.
->
-> You still don't put spaces after commas or periods
->
-> >
-> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> > ---
->
-> and you miss a changelog here.
----
-Changes in v2:
--Remove a missing DEBUGFS_RO_ATTR
+On Tue, 27 Nov 2018 21:53:57 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Changes in v3:
--remove the blank line between the function
- definition and DEFINE_SHOW_ATTRIBUTE()
+> The simple_map_init() may need to be called with some
+> function pointers already assigned for complex mappings,
+> just bail out if complex handlers have already been
+> assigned.
 
-Changes in v4:
--update subject and changelog
----
+The commit message no longer matches what the patch does.
 
-Yours,
-Yangtao
->
-> Anyway, no need to send a new version, I'll fix the commit message when
-> applying the patch.
->
-> Thanks,
->
-> Boris
+How about:
+
+"
+mtd: maps: physmap: Leave assigned complex mappings
+
+SoC-specific drivers might provide their own map->xxx() implementation,
+and calling simple_map_init() unconditionally will override those
+implementations.
+
+Make sure map->read is NULL before calling simple_map_init().
+"
+
+If you're okay with this new commit message, I can fix it when applying.
+
+Regards,
+
+Boris
+
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v2->v3:
+> - Move check for pre-initialized simple map into
+>   physmap-core.c
+> ChangeLog v1->v2:
+> - Rebase on latest MTD development branch
+> - Use a new approach as the code changed under me
+> ---
+>  drivers/mtd/maps/physmap-core.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+> index e8c3b250d842..ecca7784de06 100644
+> --- a/drivers/mtd/maps/physmap-core.c
+> +++ b/drivers/mtd/maps/physmap-core.c
+> @@ -514,10 +514,16 @@ static int physmap_flash_probe(struct platform_device *dev)
+>  			err = physmap_addr_gpios_map_init(&info->maps[i]);
+>  			if (err)
+>  				goto err_out;
+> -		} else {
+> -			simple_map_init(&info->maps[i]);
+>  		}
+>  
+> +		/*
+> +		 * Only use the simple_map implementation if map hooks are not
+> +		 * implemented. Since map->read() is mandatory checking for its
+> +		 * presence is enough.
+> +		 */
+> +		if (!info->maps[i].read)
+> +			simple_map_init(&info->maps[i]);
+> +
+>  		if (info->probe_type) {
+>  			info->mtds[i] = do_map_probe(info->probe_type,
+>  						     &info->maps[i]);
