@@ -1,21 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTNQB-0000vl-3c
- for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 08:48:12 +0000
-Date: Sun, 2 Dec 2018 09:47:49 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2 v3] mtd: maps: Leave assigned complex mappings
-Message-ID: <20181202094749.07a9687e@bbrezillon>
-In-Reply-To: <20181127205358.32502-1-linus.walleij@linaro.org>
-References: <20181127205358.32502-1-linus.walleij@linaro.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTNTl-0002eI-M6
+ for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 08:51:55 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Greg KH <greg@kroah.com>
+Cc: Martin Kepplinger <martin.kepplinger@ginzinger.com>, stable@vger.kernel.org,
+ dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+ Juergen <juergen.lachmann@harman.com>
+Subject: Re: [PATCH] ubi: fastmap: Check each mapping only once
+Date: Sun, 02 Dec 2018 09:51:34 +0100
+Message-ID: <1676802.TThbbZSlzy@blindfold>
+In-Reply-To: <20181129080923.GE13859@kroah.com>
+References: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
+ <20181129080923.GE13859@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Nov 2018 21:53:57 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+Greg,
 
-> The simple_map_init() may need to be called with some
-> function pointers already assigned for complex mappings,
-> just bail out if complex handlers have already been
-> assigned.
-
-The commit message no longer matches what the patch does.
-
-How about:
-
-"
-mtd: maps: physmap: Leave assigned complex mappings
-
-SoC-specific drivers might provide their own map->xxx() implementation,
-and calling simple_map_init() unconditionally will override those
-implementations.
-
-Make sure map->read is NULL before calling simple_map_init().
-"
-
-If you're okay with this new commit message, I can fix it when applying.
-
-Regards,
-
-Boris
-
+Am Donnerstag, 29. November 2018, 09:09:23 CET schrieb Greg KH:
+> On Mon, Nov 26, 2018 at 11:38:42AM +0100, Martin Kepplinger wrote:
+> > From: Richard Weinberger <richard@nod.at>
+> > 
+> > [ Upstream commit 34653fd8c46e771585fce5975e4243f8fd401914 ]
+> > 
+> > This commit got merged along with commit 781932375ffc
+> > ("ubi: fastmap: Correctly handle interrupted erasures in EBA") upstream but
+> > only the latter has been applied to stable v4.14.54 as commit a23cf10d9abb.
+> > This resulted in a performance regression. Startup on i.MX platforms is
+> > delayed for up to a few seconds depending on the platform.
+> > This fixes ubi fastmap to be of the same performance as it has been before
+> > said fastmap changes.
+> > 
+> > Fixes: a23cf10d9abb ("ubi: fastmap: Correctly handle interrupted erasures in EBA")
+> > Signed-off-by: Richard Weinberger <richard@nod.at>
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@ginzinger.com>
+> > ---
+> > 
+> > Richard, although this fixes a major slowdown regression in -stable, do you
+> > consider this "stable" too?
+> > 
+> > This applies and is tested only for the 4.14 stable tree. It seems to be
+> > equally relevant for 4.9 and 4.4 though.
 > 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v2->v3:
-> - Move check for pre-initialized simple map into
->   physmap-core.c
-> ChangeLog v1->v2:
-> - Rebase on latest MTD development branch
-> - Use a new approach as the code changed under me
-> ---
->  drivers/mtd/maps/physmap-core.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-> index e8c3b250d842..ecca7784de06 100644
-> --- a/drivers/mtd/maps/physmap-core.c
-> +++ b/drivers/mtd/maps/physmap-core.c
-> @@ -514,10 +514,16 @@ static int physmap_flash_probe(struct platform_device *dev)
->  			err = physmap_addr_gpios_map_init(&info->maps[i]);
->  			if (err)
->  				goto err_out;
-> -		} else {
-> -			simple_map_init(&info->maps[i]);
->  		}
->  
-> +		/*
-> +		 * Only use the simple_map implementation if map hooks are not
-> +		 * implemented. Since map->read() is mandatory checking for its
-> +		 * presence is enough.
-> +		 */
-> +		if (!info->maps[i].read)
-> +			simple_map_init(&info->maps[i]);
-> +
->  		if (info->probe_type) {
->  			info->mtds[i] = do_map_probe(info->probe_type,
->  						     &info->maps[i]);
+> Now queued up for 4.14.y, thanks.
+
+can you *please* slow a little down?
+
+There are times (e.g. when I travel, visit customers on-site, being sick, etc...)
+where I don't have the resources to monitor the mailinglists
+in detail. Adding patches to stable on shout asks for trouble.
+
+As Sudip points out, this patch needs a further fix patch:
+25677478474a ("ubi: Initialize Fastmap checkmapping correctly")
+
+Thanks,
+//richard
