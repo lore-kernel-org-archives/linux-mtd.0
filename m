@@ -1,22 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTNIc-0007FU-Up
- for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 08:40:24 +0000
-Date: Sun, 2 Dec 2018 09:39:58 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yangtao Li <tiny.windzz@gmail.com>
-Cc: robert.jarzmik@free.fr, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- miquel.raynal@bootlin.com, keescook@chromium.org,
- shreeya.patel23498@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: use DEFINE_SHOW_ATTRIBUTE() instead of open-coding it
-Message-ID: <20181202093958.6419fd24@bbrezillon>
-In-Reply-To: <20181202083358.10896-1-tiny.windzz@gmail.com>
-References: <20181202083358.10896-1-tiny.windzz@gmail.com>
+Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTNOB-0000ZC-Hc
+ for linux-mtd@lists.infradead.org; Sun, 02 Dec 2018 08:46:08 +0000
+Received: by mail-it1-x141.google.com with SMTP id b5so4422109iti.2
+ for <linux-mtd@lists.infradead.org>; Sun, 02 Dec 2018 00:45:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20181202083358.10896-1-tiny.windzz@gmail.com>
+ <20181202093958.6419fd24@bbrezillon>
+In-Reply-To: <20181202093958.6419fd24@bbrezillon>
+From: Frank Lee <tiny.windzz@gmail.com>
+Date: Sun, 2 Dec 2018 16:45:28 +0800
+Message-ID: <CAEExFWvqhFBEO2eGm9UQsE9w3-cdkN7dRCk96YdBFzA6HjN0zA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: use DEFINE_SHOW_ATTRIBUTE() instead of open-coding it
+To: boris.brezillon@bootlin.com
+Cc: robert.jarzmik@free.fr, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ richard@nod.at, miquel.raynal@bootlin.com, Kees Cook <keescook@chromium.org>,
+ Shreeya Patel <shreeya.patel23498@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,179 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Should be [PATCH v4]
+On Sun, Dec 2, 2018 at 4:40 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> Should be [PATCH v4]
+>
+> On Sun,  2 Dec 2018 03:33:58 -0500
+> Yangtao Li <tiny.windzz@gmail.com> wrote:
+>
+> > DEFINE_SHOW_ATTRIBUTE macro can help us simplify the code,so change
+> > to it.And change the DEBUGFS_RO_ATTR macro defined in some file to a
+> > standard macro.
+>
+> You still don't put spaces after commas or periods
+>
+> >
+> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> > ---
+>
+> and you miss a changelog here.
+---
+Changes in v2:
+-Remove a missing DEBUGFS_RO_ATTR
 
-On Sun,  2 Dec 2018 03:33:58 -0500
-Yangtao Li <tiny.windzz@gmail.com> wrote:
+Changes in v3:
+-remove the blank line between the function
+ definition and DEFINE_SHOW_ATTRIBUTE()
 
-> DEFINE_SHOW_ATTRIBUTE macro can help us simplify the code,so change
-> to it.And change the DEBUGFS_RO_ATTR macro defined in some file to a
-> standard macro.
+Changes in v4:
+-update subject and changelog
+---
 
-You still don't put spaces after commas or periods
-
-> 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> ---
-
-and you miss a changelog here.
-
-Anyway, no need to send a new version, I'll fix the commit message when
-applying the patch.
-
-Thanks,
-
-Boris
-
->  drivers/mtd/devices/docg3.c    | 16 ++++++++--------
->  drivers/mtd/devices/docg3.h    | 11 -----------
->  drivers/mtd/mtdswap.c          | 13 +------------
->  drivers/mtd/nand/raw/nandsim.c | 17 +++--------------
->  4 files changed, 12 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-> index 512bd4c2eec0..4c94fc096696 100644
-> --- a/drivers/mtd/devices/docg3.c
-> +++ b/drivers/mtd/devices/docg3.c
-> @@ -1603,7 +1603,7 @@ static void doc_unregister_sysfs(struct platform_device *pdev,
->  /*
->   * Debug sysfs entries
->   */
-> -static int dbg_flashctrl_show(struct seq_file *s, void *p)
-> +static int flashcontrol_show(struct seq_file *s, void *p)
->  {
->  	struct docg3 *docg3 = (struct docg3 *)s->private;
->  
-> @@ -1623,9 +1623,9 @@ static int dbg_flashctrl_show(struct seq_file *s, void *p)
->  
->  	return 0;
->  }
-> -DEBUGFS_RO_ATTR(flashcontrol, dbg_flashctrl_show);
-> +DEFINE_SHOW_ATTRIBUTE(flashcontrol);
->  
-> -static int dbg_asicmode_show(struct seq_file *s, void *p)
-> +static int asic_mode_show(struct seq_file *s, void *p)
->  {
->  	struct docg3 *docg3 = (struct docg3 *)s->private;
->  
-> @@ -1660,9 +1660,9 @@ static int dbg_asicmode_show(struct seq_file *s, void *p)
->  	seq_puts(s, ")\n");
->  	return 0;
->  }
-> -DEBUGFS_RO_ATTR(asic_mode, dbg_asicmode_show);
-> +DEFINE_SHOW_ATTRIBUTE(asic_mode);
->  
-> -static int dbg_device_id_show(struct seq_file *s, void *p)
-> +static int device_id_show(struct seq_file *s, void *p)
->  {
->  	struct docg3 *docg3 = (struct docg3 *)s->private;
->  	int id;
-> @@ -1674,9 +1674,9 @@ static int dbg_device_id_show(struct seq_file *s, void *p)
->  	seq_printf(s, "DeviceId = %d\n", id);
->  	return 0;
->  }
-> -DEBUGFS_RO_ATTR(device_id, dbg_device_id_show);
-> +DEFINE_SHOW_ATTRIBUTE(device_id);
->  
-> -static int dbg_protection_show(struct seq_file *s, void *p)
-> +static int protection_show(struct seq_file *s, void *p)
->  {
->  	struct docg3 *docg3 = (struct docg3 *)s->private;
->  	int protect, dps0, dps0_low, dps0_high, dps1, dps1_low, dps1_high;
-> @@ -1726,7 +1726,7 @@ static int dbg_protection_show(struct seq_file *s, void *p)
->  		   !!(dps1 & DOC_DPS_KEY_OK));
->  	return 0;
->  }
-> -DEBUGFS_RO_ATTR(protection, dbg_protection_show);
-> +DEFINE_SHOW_ATTRIBUTE(protection);
->  
->  static void __init doc_dbg_register(struct mtd_info *floor)
->  {
-> diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
-> index e99946575398..e16dca23655b 100644
-> --- a/drivers/mtd/devices/docg3.h
-> +++ b/drivers/mtd/devices/docg3.h
-> @@ -317,17 +317,6 @@ struct docg3 {
->  #define doc_info(fmt, arg...) dev_info(docg3->dev, (fmt), ## arg)
->  #define doc_dbg(fmt, arg...) dev_dbg(docg3->dev, (fmt), ## arg)
->  #define doc_vdbg(fmt, arg...) dev_vdbg(docg3->dev, (fmt), ## arg)
-> -
-> -#define DEBUGFS_RO_ATTR(name, show_fct) \
-> -	static int name##_open(struct inode *inode, struct file *file) \
-> -	{ return single_open(file, show_fct, inode->i_private); }      \
-> -	static const struct file_operations name##_fops = { \
-> -		.owner = THIS_MODULE, \
-> -		.open = name##_open, \
-> -		.llseek = seq_lseek, \
-> -		.read = seq_read, \
-> -		.release = single_release \
-> -	};
->  #endif
->  
->  /*
-> diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-> index d9dcb2d051b4..d162d1717fad 100644
-> --- a/drivers/mtd/mtdswap.c
-> +++ b/drivers/mtd/mtdswap.c
-> @@ -1265,18 +1265,7 @@ static int mtdswap_show(struct seq_file *s, void *data)
->  
->  	return 0;
->  }
-> -
-> -static int mtdswap_open(struct inode *inode, struct file *file)
-> -{
-> -	return single_open(file, mtdswap_show, inode->i_private);
-> -}
-> -
-> -static const struct file_operations mtdswap_fops = {
-> -	.open		= mtdswap_open,
-> -	.read		= seq_read,
-> -	.llseek		= seq_lseek,
-> -	.release	= single_release,
-> -};
-> +DEFINE_SHOW_ATTRIBUTE(mtdswap);
->  
->  static int mtdswap_add_debugfs(struct mtdswap_dev *d)
->  {
-> diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-> index c452819f6123..ef8721418f2d 100644
-> --- a/drivers/mtd/nand/raw/nandsim.c
-> +++ b/drivers/mtd/nand/raw/nandsim.c
-> @@ -443,7 +443,7 @@ static unsigned long total_wear = 0;
->  /* MTD structure for NAND controller */
->  static struct mtd_info *nsmtd;
->  
-> -static int nandsim_debugfs_show(struct seq_file *m, void *private)
-> +static int nandsim_show(struct seq_file *m, void *private)
->  {
->  	unsigned long wmin = -1, wmax = 0, avg;
->  	unsigned long deciles[10], decile_max[10], tot = 0;
-> @@ -494,18 +494,7 @@ static int nandsim_debugfs_show(struct seq_file *m, void *private)
->  
->  	return 0;
->  }
-> -
-> -static int nandsim_debugfs_open(struct inode *inode, struct file *file)
-> -{
-> -	return single_open(file, nandsim_debugfs_show, inode->i_private);
-> -}
-> -
-> -static const struct file_operations dfs_fops = {
-> -	.open		= nandsim_debugfs_open,
-> -	.read		= seq_read,
-> -	.llseek		= seq_lseek,
-> -	.release	= single_release,
-> -};
-> +DEFINE_SHOW_ATTRIBUTE(nandsim);
->  
->  /**
->   * nandsim_debugfs_create - initialize debugfs
-> @@ -531,7 +520,7 @@ static int nandsim_debugfs_create(struct nandsim *dev)
->  	}
->  
->  	dent = debugfs_create_file("nandsim_wear_report", S_IRUSR,
-> -				   root, dev, &dfs_fops);
-> +				   root, dev, &nandsim_fops);
->  	if (IS_ERR_OR_NULL(dent)) {
->  		NS_ERR("cannot create \"nandsim_wear_report\" debugfs entry\n");
->  		return -1;
+Yours,
+Yangtao
+>
+> Anyway, no need to send a new version, I'll fix the commit message when
+> applying the patch.
+>
+> Thanks,
+>
+> Boris
