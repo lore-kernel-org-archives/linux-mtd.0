@@ -1,26 +1,26 @@
 From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+To: Boris Brezillon <boris.brezillon@bootlin.com>, "broonie@kernel.org"
+ <broonie@kernel.org>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
+ <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
+ <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
  "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v5 4/7] mtd: spi-nor: add octal read flag for flash
- mt35xu512aba
-Date: Mon, 3 Dec 2018 08:39:24 +0000
-Message-ID: <1543826226-30898-5-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 1/7] spi: add support for octo mode I/O data transfer
+Date: Mon, 3 Dec 2018 08:47:48 +0000
+Message-ID: <VI1PR04MB5726A8B992BF7DE2A646D20C99AE0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1542863544-21257-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1542863544-21257-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181203090444.0c37efa7@bbrezillon>
+In-Reply-To: <20181203090444.0c37efa7@bbrezillon>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,40 +32,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add octal read flag for flash mt35xu512aba.
-This flash, mt35xu512aba, is only complaint to SFDP JESD216B and does
-not seem to support newer JESD216C standard that provides auto
-detection of Octal mode capabilities and opcodes. Therefore, this
-capability is manually added using new SPI_NOR_OCTAL_READ flag.
+Hi Boris,
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Changes for v5:
-- Modified string 'octo' with 'octal'.
-Changes for v4:
-- None
-Changes for v3:
-- Modified string 'octal' with 'octo'.
-Changes for v2:
-- Incorporated review comments of Boris and Vignesh
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, December 3, 2018 1:35 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>;
+> broonie@kernel.org
+> Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; vigneshr@ti.com=
+;
+> linux-spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
+> mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
+> kernel@lists.infradead.org; computersforpeace@gmail.com;
+> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v4 1/7] spi: add support for octo mode I/O data trans=
+fer
+>=20
+> Hi Yogesh,
+>=20
+> On Thu, 22 Nov 2018 05:14:31 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+> > Add flags for Octo mode I/O data transfer Required for the SPI
+> > controller which can do the data transfer (TX/RX) on 8 data lines e.g.
+> > NXP FlexSPI controller.
+> >  SPI_TX_OCTO: transmit with 8 wires
+> >  SPI_RX_OCTO: receive with 8 wires
+> >
+> > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> > Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> > Changes for v4:
+> > - Rebase on top of v4.20-rc2
+> > Changes for v3:
+> > - Modified string 'octal' with 'octo'.
+>=20
+> When I listed the differences between your version and mine, I mentioned =
+the
+> OCTO vs OCTAL name, but I didn't say my decision was the correct one :-).=
+ Looks
+> like OCTAL is the term employed almost everywhere, and it's also consiste=
+nt
+> with DUAL. Would you mind sending a new version reverting the name to OCT=
+AL.
+>=20
+Next version of patch series send [1]
 
- drivers/mtd/spi-nor/spi-nor.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--
+Regards,
+Yogesh Gaur
+[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D79338
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 7a2176d..41ba90b 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1413,7 +1413,8 @@ static const struct flash_info spi_nor_ids[] =3D {
- 	/* Micron */
- 	{
- 		"mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
--			SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES)
-+			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
-+			SPI_NOR_4B_OPCODES)
- 	},
-=20
- 	/* PMC */
---=20
-2.7.4
+[...]
