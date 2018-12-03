@@ -1,24 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTj3T-00019G-Kv
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:54:13 +0000
-Date: Mon, 3 Dec 2018 08:53:49 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2] mtd: improve calculating partition boundaries when
- checking for alignment
-Message-ID: <20181203085349.0cc85117@bbrezillon>
-In-Reply-To: <20181120092409.13864-1-zajec5@gmail.com>
-References: <20181120085612.8405-1-zajec5@gmail.com>
- <20181120092409.13864-1-zajec5@gmail.com>
+Received: from skedge04.snt-world.com ([91.208.41.69])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTjAy-0005h1-1l
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 08:01:58 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "peron.clem@gmail.com" <peron.clem@gmail.com>, Schrempf Frieder
+ <frieder.schrempf@kontron.de>, Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3] mtd: spinand: Fix ECC status and OOB layout for Toshiba
+ TC58CVG2S0H
+Date: Mon, 3 Dec 2018 08:01:38 +0000
+Message-ID: <1543823821-18352-1-git-send-email-frieder.schrempf@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C2B1428231F9AA429728BE8353C832C6@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,65 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Nov 2018 10:24:09 +0100
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> When checking for alignment mtd should check absolute offsets. It's
-> important for subpartitions as it doesn't make sense to check their
-> relative addresses.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-
-Queued to mtd/next.
-
-> ---
-> V2: Switch from uint64_t to u64. I got incorrectly inspired by
->     uint64_t offset;
-> ---
->  drivers/mtd/mtdpart.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 2b6e53af47da..b6af41b04622 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -61,6 +61,15 @@ static inline struct mtd_part *mtd_to_part(const struc=
-t mtd_info *mtd)
->  	return container_of(mtd, struct mtd_part, mtd);
->  }
-> =20
-> +static u64 part_absolute_offset(struct mtd_info *mtd)
-> +{
-> +	struct mtd_part *part =3D mtd_to_part(mtd);
-> +
-> +	if (!mtd_is_partition(mtd))
-> +		return 0;
-> +
-> +	return part_absolute_offset(part->parent) + part->offset;
-> +}
-> =20
->  /*
->   * MTD methods which simply translate the effective address and pass thr=
-ough
-> @@ -514,7 +523,7 @@ static struct mtd_part *allocate_partition(struct mtd=
-_info *parent,
->  	if (!(slave->mtd.flags & MTD_NO_ERASE))
->  		wr_alignment =3D slave->mtd.erasesize;
-> =20
-> -	tmp =3D slave->offset;
-> +	tmp =3D part_absolute_offset(parent) + slave->offset;
->  	remainder =3D do_div(tmp, wr_alignment);
->  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
->  		/* Doesn't start on a boundary of major erase size */
-> @@ -525,7 +534,7 @@ static struct mtd_part *allocate_partition(struct mtd=
-_info *parent,
->  			part->name);
->  	}
-> =20
-> -	tmp =3D slave->mtd.size;
-> +	tmp =3D part_absolute_offset(parent) + slave->mtd.size;
->  	remainder =3D do_div(tmp, wr_alignment);
->  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
->  		slave->mtd.flags &=3D ~MTD_WRITEABLE;
+RnJvbTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLmRlPg0KDQpX
+aGVuIHJlYWRpbmcgdGhlIHN0YXR1cyBvZiB0aGUgb24tY2hpcCBFQ0MsIHRoZSBUb3NoaWJhIGNo
+aXAgcmV0dXJucw0KdHdvIGRpZmZlcmVudCBzdGF0ZXMgZm9yIHJlcG9ydGluZyBjb3JyZWN0ZWQg
+Yml0ZmxpcHMuIFdlIHNob3VsZCBjaGVjaw0KZm9yIGJvdGggb2YgdGhlbS4NCg0KQWxzbyByZXR1
+cm4gdGhlIGZyZWUgT09CIGJ5dGVzIGFzIG9uZSBjb250aWd1b3VzIGFyZWEsIGluc3RlYWQgb2YN
+Cm11bHRpcGxlIHNlY3Rpb25zLg0KDQpTdWdnZXN0ZWQtYnk6IENsw6ltZW50IFDDqXJvbiA8cGVy
+b24uY2xlbUBnbWFpbC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBGcmllZGVyIFNjaHJlbXBmIDxmcmll
+ZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+DQpBY2tlZC1ieTogQ2zDqW1lbnQgUMOpcm9uIDxwZXJv
+bi5jbGVtQGdtYWlsLmNvbT4NCi0tLQ0KQ2hhbmdlcyBmb3IgdjM6DQo9PT09PT09PT09PT09PT0N
+CiogQWRkIEFja2VkLWJ5DQoqIEFkZCBjb21tZW50IGZvciBCQk0gaW4gT09CIGxheW91dA0KDQpD
+aGFuZ2VzIGZvciB2MjoNCj09PT09PT09PT09PT09PQ0KKiBSZW1vdmUgdGhlIGNoYW5nZXMgdG8g
+dGhlIEVDQyBieXRlcyBpbiB0aGUgT09CIGxheW91dA0KLS0tDQogZHJpdmVycy9tdGQvbmFuZC9z
+cGkvdG9zaGliYS5jIHwgMTEgKysrKysrLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRp
+b25zKCspLCA1IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9z
+cGkvdG9zaGliYS5jIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvdG9zaGliYS5jDQppbmRleCAyOTRi
+Y2Y2Li4wODEyNjU1IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvdG9zaGliYS5j
+DQorKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMNCkBAIC0xMSw2ICsxMSw3IEBA
+DQogI2luY2x1ZGUgPGxpbnV4L210ZC9zcGluYW5kLmg+DQogDQogI2RlZmluZSBTUElOQU5EX01G
+Ul9UT1NISUJBCQkweDk4DQorI2RlZmluZSBUT1NIX1NUQVRVU19FQ0NfSEFTX0JJVEZMSVBTX1QJ
+KDMgPDwgNCkNCiANCiBzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyhyZWFkX2NhY2hlX3Zhcmlh
+bnRzLA0KIAkJU1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9YNF9PUCgwLCAxLCBOVUxMLCAw
+KSwNCkBAIC0zMywxOSArMzQsMTggQEAgc3RhdGljIGludCB0YzU4Y3ZnMnMwaF9vb2JsYXlvdXRf
+ZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCiAJcmVnaW9uLT5vZmZzZXQg
+PSAxMjggKyAxNiAqIHNlY3Rpb247DQogCXJlZ2lvbi0+bGVuZ3RoID0gMTY7DQogDQotDQogCXJl
+dHVybiAwOw0KIH0NCiANCiBzdGF0aWMgaW50IHRjNThjdmcyczBoX29vYmxheW91dF9mcmVlKHN0
+cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwNCiAJCQkJICAgICAgc3RydWN0IG10ZF9v
+b2JfcmVnaW9uICpyZWdpb24pDQogew0KLQlpZiAoc2VjdGlvbiA+IDcpDQorCWlmIChzZWN0aW9u
+ID4gMCkNCiAJCXJldHVybiAtRVJBTkdFOw0KIA0KLQlyZWdpb24tPm9mZnNldCA9IDIgKyAxNiAq
+IHNlY3Rpb247DQotCXJlZ2lvbi0+bGVuZ3RoID0gMTQ7DQotDQorCS8qIDIgYnl0ZXMgcmVzZXJ2
+ZWQgZm9yIEJCTSAqLw0KKwlyZWdpb24tPm9mZnNldCA9IDI7DQorCXJlZ2lvbi0+bGVuZ3RoID0g
+MTI2Ow0KIA0KIAlyZXR1cm4gMDsNCiB9DQpAQCAtNzAsNiArNzAsNyBAQCBzdGF0aWMgaW50IHRj
+NThjdmcyczBoX2VjY19nZXRfc3RhdHVzKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwN
+CiAJCXJldHVybiAtRUJBRE1TRzsNCiANCiAJY2FzZSBTVEFUVVNfRUNDX0hBU19CSVRGTElQUzoN
+CisJY2FzZSBUT1NIX1NUQVRVU19FQ0NfSEFTX0JJVEZMSVBTX1Q6DQogCQkvKg0KIAkJICogTGV0
+J3MgdHJ5IHRvIHJldHJpZXZlIHRoZSByZWFsIG1heGltdW0gbnVtYmVyIG9mIGJpdGZsaXBzDQog
+CQkgKiBpbiBvcmRlciB0byBhdm9pZCBmb3JjaW5nIHRoZSB3ZWFyLWxldmVsaW5nIGxheWVyIHRv
+IG1vdmUNCi0tIA0KMi43LjQNCg==
