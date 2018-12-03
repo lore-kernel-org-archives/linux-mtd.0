@@ -1,22 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTkRS-0005Er-9E
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:23:03 +0000
-Date: Mon, 3 Dec 2018 10:22:40 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tomer Maimon <tmaimon77@gmail.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, robh+dt@kernel.org, mark.rutland@arm.com, yuenn@google.com,
- venture@google.com, brendanhiggins@google.com, avifishman70@gmail.com,
- joel@jms.id.au, linux-mtd@lists.infradead.org, openbmc@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] SPI-NOR add NPCM FIU controller driver
-Message-ID: <20181203102240.79a86a26@bbrezillon>
-In-Reply-To: <20181203091456.454030-1-tmaimon77@gmail.com>
-References: <20181203091456.454030-1-tmaimon77@gmail.com>
+Received: from a27-50.smtp-out.us-west-2.amazonses.com ([54.240.27.50])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTkVA-0006tb-Cz
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:26:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Mon, 3 Dec 2018 09:26:38 +0000
+Message-ID: <0101016773641825-71671666-8d5a-4aa5-ac21-638a063e463c-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: Participants IDEAg Amarillo Farm & Ranch Show 2018
+From: "Scott Hudson" <scott.hudson@firsttrustmanagement.com>
+Reply-To: "Scott Hudson" <scott.hudson@firsttrustmanagement.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  3 Dec 2018 11:14:54 +0200
-Tomer Maimon <tmaimon77@gmail.com> wrote:
+Hello ,
 
-> This patch set adds Flash Interface Unit(FIU) SPI-NOR
-> support for the Nuvoton NPCM Baseboard Management 
-> Controller (BMC).
->     
-> The FIU supports single, dual or quad communication interface.
->     
-> the FIU controller can operate in following modes:
-> - User Mode Access(UMA): provides flash access by using an
->   indirect address/data mechanism.
-> - direct rd/wr mode: maps the flash memory into the core
->   address space.
-> - SPI-X mode: used for an expansion bus to an ASIC or CPLD.
-> 
-> The NPCM750/730/715/710 supports up to three FIU devices:
-> - FIU0 supports two chip select.
-> - FIU3 supports four chip select.
-> - FIUX supports two chip select.
-> 
-> The NPCM FIU driver tested on NPCM750 evaluation board.
-> 
-> Tomer Maimon (2):
->   dt-binding: mtd: add NPCM FIU controller
->   mtd: spi-nor: add NPCM FIU controller driver
-> 
->  Documentation/devicetree/bindings/mtd/npcm-fiu.txt |  64 ++
->  drivers/mtd/spi-nor/Kconfig                        |   8 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/npcm-fiu.c                     | 930 +++++++++++++++++++++
+We have for you the premier sales tool generated from the IDEAg Amarillo Fa=
+rm & Ranch Show 2018, but it's only available until the end of business tod=
+ay. This is not your standard list of participants.
 
-We are currently trying to move all SPI NOR controller drivers out of
-drivers/mtd/spi-nor. Can you try to implement the spi-mem interface [1]
-and place your driver in drivers/spi/. 
+No one else is offering a list even close to as comprehensive and up-to-dat=
+e as ours =E2=80=93 this treasure trove of marketing information is the res=
+ult of hundreds of hours of exhaustive research by our team.
 
-[1]https://elixir.bootlin.com/linux/v4.20-rc5/source/include/linux/spi/spi-mem.h#L185
+Procure the IDEAg Amarillo Farm & Ranch Show 2018 Participants =E2=80=93 20=
+000 contacts at $2000
+until the end of business today.
+
+This is the list that everyone is looking for, but we're limiting sales to =
+our preferred partners. Get your copy today =E2=80=93 this is the advantage=
+ you need to communicate with IDEAg Amarillo Farm & Ranch Show 2018 partici=
+pants before your rivals!
+
+Look forward to hearing from you, we can only make this offer for a few mor=
+e hours.
+
+Best Regards
+
+Scott Hudson
+
+Attention: If you receive or come to possess this information in error, ple=
+ase delete as soon as possible and notify the sender of the mistake. This m=
+aterial is not sold to us or shared by any persons or organizations related=
+ to the IDEAg Amarillo Farm & Ranch Show 2018, and we are not affiliated or=
+ related to the IDEAg Amarillo Farm & Ranch Show 2018 event organizer. This=
+ material should not be used by any person or entity other than the origina=
+l desired recipient, including review, retransmission, dissemination, or an=
+y action taken based on this material. All ownership rights and responsibil=
+ities to this material are held by our organization, including certain righ=
+ts (whether exercised on not) to take lawful action to address misuse. All =
+information contained here, including contact information, is acquired thro=
+ugh research with contacts in our internal database.
