@@ -1,16 +1,27 @@
-Received: from a27-50.smtp-out.us-west-2.amazonses.com ([54.240.27.50])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTkVA-0006tb-Cz
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:26:54 +0000
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTkdE-0002ID-H9
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:35:14 +0000
+Date: Mon, 3 Dec 2018 10:34:50 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
+ Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
+ for map selection
+Message-ID: <20181203103450.61a8d98f@bbrezillon>
+In-Reply-To: <20181203100814.095a12f4@bbrezillon>
+References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
+ <20181130114019.175ab7ec@bbrezillon>
+ <f11c7ab4-ee19-ad4e-7943-d6359ac58249@nokia.com>
+ <20181203092337.52817e0e@bbrezillon>
+ <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
+ <20181203100814.095a12f4@bbrezillon>
 MIME-Version: 1.0
-Date: Mon, 3 Dec 2018 09:26:38 +0000
-Message-ID: <0101016773641825-71671666-8d5a-4aa5-ac21-638a063e463c-000000@us-west-2.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: Participants IDEAg Amarillo Farm & Ranch Show 2018
-From: "Scott Hudson" <scott.hudson@firsttrustmanagement.com>
-Reply-To: "Scott Hudson" <scott.hudson@firsttrustmanagement.com>
-To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello ,
+On Mon, 3 Dec 2018 10:08:14 +0100
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-We have for you the premier sales tool generated from the IDEAg Amarillo Fa=
-rm & Ranch Show 2018, but it's only available until the end of business tod=
-ay. This is not your standard list of participants.
+> On Mon, 3 Dec 2018 08:37:17 +0000
+> "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+> wrote:
+> 
+> > Hi!
+> > 
+> > On 03/12/2018 09:23, Boris Brezillon wrote:  
+> > >> This is the same instruction 65h which is used to read regs and which
+> > >> appears in SMPT headers, it is a chicken-egg problem.    
+> > > Oh, right, I remember now. Not a smart decision from Spansion :-/.
+> > >     
+> > >> Therefore, I don't know if it's possible to provide smarter heuristics
+> > >> here.    
+> > > Maybe:
+> > > 
+> > > ref_cr1 = read_CR1_using_RDCR()
+> > > 
+> > > for_each_possible_dummy_and_addr_width
+> > > 	cr1 = read_CR1_using_RDAR()
+> > > 	if (cr1 == ref_cr1)
+> > > 		break;    
+> > 
+> > This will not work, as default value for CR1(N)V is 0 and that is the value
+> > one gets with incorrect addr_width as well.
+> >   
+> 
+> How about:
+> 
+> 	// set the WE bit in SR1 so that SR1 is not 0
+> 	write_enable()
+> 
+> 	ref_sr1 = read_SR1_using_RDSR1()
+> 	for_each_possible_dummy_and_addr_width
+> 		sr1 = read_SR1_using_RDAR()
+> 		if (sr1 == ref_sr1)
+> 			break;
 
-No one else is offering a list even close to as comprehensive and up-to-dat=
-e as ours =E2=80=93 this treasure trove of marketing information is the res=
-ult of hundreds of hours of exhaustive research by our team.
+Oh, and you should read CR2 to make sure AL and RL fields match the
+selected addr/dummy values.
 
-Procure the IDEAg Amarillo Farm & Ranch Show 2018 Participants =E2=80=93 20=
-000 contacts at $2000
-until the end of business today.
-
-This is the list that everyone is looking for, but we're limiting sales to =
-our preferred partners. Get your copy today =E2=80=93 this is the advantage=
- you need to communicate with IDEAg Amarillo Farm & Ranch Show 2018 partici=
-pants before your rivals!
-
-Look forward to hearing from you, we can only make this offer for a few mor=
-e hours.
-
-Best Regards
-
-Scott Hudson
-
-Attention: If you receive or come to possess this information in error, ple=
-ase delete as soon as possible and notify the sender of the mistake. This m=
-aterial is not sold to us or shared by any persons or organizations related=
- to the IDEAg Amarillo Farm & Ranch Show 2018, and we are not affiliated or=
- related to the IDEAg Amarillo Farm & Ranch Show 2018 event organizer. This=
- material should not be used by any person or entity other than the origina=
-l desired recipient, including review, retransmission, dissemination, or an=
-y action taken based on this material. All ownership rights and responsibil=
-ities to this material are held by our organization, including certain righ=
-ts (whether exercised on not) to take lawful action to address misuse. All =
-information contained here, including contact information, is acquired thro=
-ugh research with contacts in our internal database.
+> 
+> 	write_disable()  
