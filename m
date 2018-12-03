@@ -1,27 +1,24 @@
-Received: from mail-eopbgr00139.outbound.protection.outlook.com
- ([40.107.0.139] helo=EUR02-AM5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTjjO-0003mZ-Uz
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 08:37:32 +0000
-From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
- for map selection
-Date: Mon, 3 Dec 2018 08:37:17 +0000
-Message-ID: <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
-References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
- <20181130114019.175ab7ec@bbrezillon>
- <f11c7ab4-ee19-ad4e-7943-d6359ac58249@nokia.com>
- <20181203092337.52817e0e@bbrezillon>
-In-Reply-To: <20181203092337.52817e0e@bbrezillon>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v5 0/7] spi: add support for octal mode
+Date: Mon, 3 Dec 2018 08:39:00 +0000
+Message-ID: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D63E49B06F5638479D05D8F9992D3040@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,15 +29,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkhDQoNCk9uIDAzLzEyLzIwMTggMDk6MjMsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4+IFRo
-aXMgaXMgdGhlIHNhbWUgaW5zdHJ1Y3Rpb24gNjVoIHdoaWNoIGlzIHVzZWQgdG8gcmVhZCByZWdz
-IGFuZCB3aGljaA0KPj4gYXBwZWFycyBpbiBTTVBUIGhlYWRlcnMsIGl0IGlzIGEgY2hpY2tlbi1l
-Z2cgcHJvYmxlbS4NCj4gT2gsIHJpZ2h0LCBJIHJlbWVtYmVyIG5vdy4gTm90IGEgc21hcnQgZGVj
-aXNpb24gZnJvbSBTcGFuc2lvbiA6LS8uDQo+IA0KPj4gVGhlcmVmb3JlLCBJIGRvbid0IGtub3cg
-aWYgaXQncyBwb3NzaWJsZSB0byBwcm92aWRlIHNtYXJ0ZXIgaGV1cmlzdGljcw0KPj4gaGVyZS4N
-Cj4gTWF5YmU6DQo+IA0KPiByZWZfY3IxID0gcmVhZF9DUjFfdXNpbmdfUkRDUigpDQo+IA0KPiBm
-b3JfZWFjaF9wb3NzaWJsZV9kdW1teV9hbmRfYWRkcl93aWR0aA0KPiAJY3IxID0gcmVhZF9DUjFf
-dXNpbmdfUkRBUigpDQo+IAlpZiAoY3IxID09IHJlZl9jcjEpDQo+IAkJYnJlYWs7DQoNClRoaXMg
-d2lsbCBub3Qgd29yaywgYXMgZGVmYXVsdCB2YWx1ZSBmb3IgQ1IxKE4pViBpcyAwIGFuZCB0aGF0
-IGlzIHRoZSB2YWx1ZQ0Kb25lIGdldHMgd2l0aCBpbmNvcnJlY3QgYWRkcl93aWR0aCBhcyB3ZWxs
-Lg0KDQotLSANCkJlc3QgcmVnYXJkcywNCkFsZXhhbmRlciBTdmVyZGxpbi4NCg==
+Add support for octal mode IO data transfer.
+Micron flash, mt35xu512aba, supports octal mode data transfer and
+NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
+
+Patch series
+* Add support for octal mode flags and parsing of same in spi driver.
+* Add parsing logic for spi-mem framework and m25p80.c device file.
+* Add opcodes for octal I/O commands in spi-nor framework, Read and Write p=
+roto for (1-1-8/1-8-8) mode.
+  Opcodes are added as per octal data IO commands required for mt35xu512aba=
+ [1] flash.
+* Add mode bit required for octal mode in nxp-fspi driver [2].
+* Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
+
+Tested on LX2160ARDB target with nxp-fspi driver, below are
+Read performance number of 1-1-1 and 1-1-8 read protocol.
+
+ root@lxxx:~# cat /proc/mtd
+ dev:    size   erasesize  name
+ mtd0: 04000000 00001000 "spi0.0"
+ mtd1: 04000000 00001000 "spi0.1"
+ root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
+ Copied 16777216 bytes from address 0x00000000 in flash to 0read
+
+ real    0m2.792s
+ user    0m0.000s
+ sys     0m2.790s
+ root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
+ Copied 16777216 bytes from address 0x00000000 in flash to 0read
+
+ real    0m0.441s
+ user    0m0.000s
+ sys     0m0.440s
+ root@ls1012ardb:~#
+
+ Flash device MTD0 configured in 1-1-1 protocol.
+ Flash device MTD1 configured in 1-1-8 protocol.
+
+[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D70384&sta=
+te=3D*
+[2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D76402
+
+Yogesh Gaur (7):
+  spi: add support for octal mode I/O data transfer
+  spi: spi-mem: add support for octal mode I/O data transfer
+  mtd: spi-nor: add opcodes for octal Read/Write commands
+  mtd: spi-nor: add octal read flag for flash mt35xu512aba
+  mtd: m25p80: add support of octal mode I/O transfer
+  spi: nxp-fspi: add octal mode flag bit for octal support
+  arm64: dts: lx2160a: update fspi node
+
+Changes for v5:
+- Modified string 'octo' as 'octal' in all patches.
+Changes for v4:
+- Rebase on top of v4.20-rc2.
+- Modify octo entries enum value in spi.h.
+Changes for v3:
+- Add octo mode support in spi_setup().
+- Rename all patches with 'octal' string modified as 'octo'.
+Changes for v2:
+- Incorporated review comments of Boris and Vignesh.
+
+ drivers/mtd/devices/m25p80.c                      |  9 ++++++++-
+ drivers/mtd/spi-nor/spi-nor.c                     | 19 ++++++++++++++++---
+ drivers/spi/spi-mem.c                             |  9 ++++++++-
+ drivers/spi/spi-nxp-fspi.c                        |  4 ++--
+ drivers/spi/spi.c                                 | 12 ++++++++++--
+ include/linux/mtd/spi-nor.h                       |  8 ++++++++
+ include/linux/spi/spi.h                           |  4 +++-
+ 8 files changed, 59 insertions(+), 10 deletions(-)
+
+--=20
+2.7.4
