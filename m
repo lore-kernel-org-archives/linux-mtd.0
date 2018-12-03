@@ -1,26 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTkDU-0006Tb-Ru
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:08:38 +0000
-Date: Mon, 3 Dec 2018 10:08:14 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
- for map selection
-Message-ID: <20181203100814.095a12f4@bbrezillon>
-In-Reply-To: <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
-References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
- <20181130114019.175ab7ec@bbrezillon>
- <f11c7ab4-ee19-ad4e-7943-d6359ac58249@nokia.com>
- <20181203092337.52817e0e@bbrezillon>
- <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]
+ helo=herzl.nuvoton.co.il)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTkKl-0001Ky-2t
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:16:10 +0000
+From: Tomer Maimon <tmaimon77@gmail.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, marek.vasut@gmail.com, richard@nod.at,
+ robh+dt@kernel.org, mark.rutland@arm.com, yuenn@google.com,
+ venture@google.com, brendanhiggins@google.com, avifishman70@gmail.com,
+ joel@jms.id.au
+Cc: linux-mtd@lists.infradead.org, openbmc@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Tomer Maimon <tmaimon77@gmail.com>
+Subject: [PATCH v1 0/2] SPI-NOR add NPCM FIU controller driver
+Date: Mon,  3 Dec 2018 11:14:54 +0200
+Message-Id: <20181203091456.454030-1-tmaimon77@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 3 Dec 2018 08:37:17 +0000
-"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-wrote:
+This patch set adds Flash Interface Unit(FIU) SPI-NOR
+support for the Nuvoton NPCM Baseboard Management 
+Controller (BMC).
+    
+The FIU supports single, dual or quad communication interface.
+    
+the FIU controller can operate in following modes:
+- User Mode Access(UMA): provides flash access by using an
+  indirect address/data mechanism.
+- direct rd/wr mode: maps the flash memory into the core
+  address space.
+- SPI-X mode: used for an expansion bus to an ASIC or CPLD.
 
-> Hi!
-> 
-> On 03/12/2018 09:23, Boris Brezillon wrote:
-> >> This is the same instruction 65h which is used to read regs and which
-> >> appears in SMPT headers, it is a chicken-egg problem.  
-> > Oh, right, I remember now. Not a smart decision from Spansion :-/.
-> >   
-> >> Therefore, I don't know if it's possible to provide smarter heuristics
-> >> here.  
-> > Maybe:
-> > 
-> > ref_cr1 = read_CR1_using_RDCR()
-> > 
-> > for_each_possible_dummy_and_addr_width
-> > 	cr1 = read_CR1_using_RDAR()
-> > 	if (cr1 == ref_cr1)
-> > 		break;  
-> 
-> This will not work, as default value for CR1(N)V is 0 and that is the value
-> one gets with incorrect addr_width as well.
-> 
+The NPCM750/730/715/710 supports up to three FIU devices:
+- FIU0 supports two chip select.
+- FIU3 supports four chip select.
+- FIUX supports two chip select.
 
-How about:
+The NPCM FIU driver tested on NPCM750 evaluation board.
 
-	// set the WE bit in SR1 so that SR1 is not 0
-	write_enable()
+Tomer Maimon (2):
+  dt-binding: mtd: add NPCM FIU controller
+  mtd: spi-nor: add NPCM FIU controller driver
 
-	ref_sr1 = read_SR1_using_RDSR1()
-	for_each_possible_dummy_and_addr_width
-	sr1 = read_SR1_using_RDAR()
-	if (sr1 == ref_sr1)
-		break;
+ Documentation/devicetree/bindings/mtd/npcm-fiu.txt |  64 ++
+ drivers/mtd/spi-nor/Kconfig                        |   8 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/npcm-fiu.c                     | 930 +++++++++++++++++++++
+ 4 files changed, 1003 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/npcm-fiu.txt
+ create mode 100644 drivers/mtd/spi-nor/npcm-fiu.c
 
-	write_disable()  
+-- 
+2.14.1
