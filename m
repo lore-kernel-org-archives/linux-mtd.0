@@ -1,22 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTlZQ-0002jK-Sp
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 10:35:22 +0000
-Date: Mon, 3 Dec 2018 11:34:59 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Huijin Park <huijin.park@samsung.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Geert
- Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
- bbanghj.park@gmail.com
-Subject: Re: [v3] mtd: spi-nor: cast to u64 to avoid uint overflows
-Message-ID: <20181203113459.05f29284@bbrezillon>
-In-Reply-To: <20181203075154.28637-1-boris.brezillon@bootlin.com>
-References: <1543392134-1443-1-git-send-email-huijin.park@samsung.com>
- <20181203075154.28637-1-boris.brezillon@bootlin.com>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gToTj-0003wg-Fg
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 13:41:41 +0000
+From: David Gstir <david@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: david.oberhollenzer@sigma-star.at, richard@nod.at,
+ David Gstir <david@sigma-star.at>
+Subject: [PATCH] mkfs.ubifs: fix default cipher in help output
+Date: Mon,  3 Dec 2018 14:40:46 +0100
+Message-Id: <20181203134046.16708-1-david@sigma-star.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  3 Dec 2018 08:51:54 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+AES-256-XTS is the default since dd0d9c623e22 ("mkfs.ubifs: Use AES-256-X=
+TS as default"),
+we want that to be correctly reflected in the help output as well.
 
-> On Wed, 2018-11-28 at 08:02:14 UTC, Huijin Park wrote:
-> > From: "huijin.park" <huijin.park@samsung.com>
-> > 
-> > The "params->size" is defined as "u64".
-> > And "info->sector_size" and "info->n_sectors" are defined as
-> > unsigned int and u16.
-> > Thus, u64 data might have strange data(loss data) if the result
-> > overflows an unsigned int.
-> > This patch casts "info->sector_size" to an u64.
-> > 
-> > Signed-off-by: huijin.park <huijin.park@samsung.com>
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>  
-> 
-> Applied to http://git.infradead.org/linux-mtd.git mtd/next, thanks.
+Signed-off-by: David Gstir <david@sigma-star.at>
+---
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Oops, should I been queued to spi-nor/next. I dropped the patch and
-will soon push it to spi-nor/next.
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
+/mkfs.ubifs.c
+index 666dfe6231a2..6e11ec8649c2 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -237,7 +237,7 @@ static const char *helptext =3D
+ "-P, --padding=3DNUM        specify padding policy for encrypting filena=
+mes\n"
+ "                         (default =3D 4).\n"
+ "-C, --cipher=3DNAME        Specify cipher to use for file level encrypt=
+ion\n"
+-"                         (default is \"AES-128-CBC\").\n"
++"                         (default is \"AES-256-XTS\").\n"
+ "-h, --help               display this help text\n\n"
+ "Note, SIZE is specified in bytes, but it may also be specified in Kilob=
+ytes,\n"
+ "Megabytes, and Gigabytes if a KiB, MiB, or GiB suffix is used.\n\n"
+--=20
+2.16.4
