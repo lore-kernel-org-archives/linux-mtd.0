@@ -13,9 +13,10 @@ CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v5 7/7] arm64: dts: lx2160a: update fspi node
-Date: Mon, 3 Dec 2018 08:39:43 +0000
-Message-ID: <1543826226-30898-8-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v5 4/7] mtd: spi-nor: add octal read flag for flash
+ mt35xu512aba
+Date: Mon, 3 Dec 2018 08:39:24 +0000
+Message-ID: <1543826226-30898-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -31,47 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flash mt35xu512aba connected to FlexSPI controller supports
-1-1-8/1-8-8 protocol.
-Added flag spi-rx-bus-width and spi-tx-bus-width with values as
-8 and 8 respectively for both flashes connected at CS0 and CS1.
+Add octal read flag for flash mt35xu512aba.
+This flash, mt35xu512aba, is only complaint to SFDP JESD216B and does
+not seem to support newer JESD216C standard that provides auto
+detection of Octal mode capabilities and opcodes. Therefore, this
+capability is manually added using new SPI_NOR_OCTAL_READ flag.
 
+Signed-off-by: Vignesh R <vigneshr@ti.com>
 Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 ---
 Changes for v5:
-- None
+- Modified string 'octo' with 'octal'.
 Changes for v4:
 - None
 Changes for v3:
-- None
+- Modified string 'octal' with 'octo'.
 Changes for v2:
-- None
+- Incorporated review comments of Boris and Vignesh
 
- arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64=
-/boot/dts/freescale/fsl-lx2160a-rdb.dts
-index 3b20c97..24cc41c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-@@ -45,6 +45,8 @@
- 		m25p,fast-read;
- 		spi-max-frequency =3D <20000000>;
- 		reg =3D <0>;
-+		spi-rx-bus-width =3D <8>;
-+		spi-tx-bus-width =3D <8>;
- 	};
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 7a2176d..41ba90b 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1413,7 +1413,8 @@ static const struct flash_info spi_nor_ids[] =3D {
+ 	/* Micron */
+ 	{
+ 		"mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
+-			SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES)
++			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
++			SPI_NOR_4B_OPCODES)
+ 	},
 =20
- 	mt35xu512aba1: flash@1 {
-@@ -54,6 +56,8 @@
- 		m25p,fast-read;
- 		spi-max-frequency =3D <20000000>;
- 		reg =3D <1>;
-+		spi-rx-bus-width =3D <8>;
-+		spi-tx-bus-width =3D <8>;
- 	};
- };
-=20
+ 	/* PMC */
 --=20
 2.7.4
