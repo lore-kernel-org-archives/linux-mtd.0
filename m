@@ -13,10 +13,9 @@ CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v5 2/7] spi: spi-mem: add support for octal mode I/O data
- transfer
-Date: Mon, 3 Dec 2018 08:39:12 +0000
-Message-ID: <1543826226-30898-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v5 5/7] mtd: m25p80: add support of octal mode I/O transfer
+Date: Mon, 3 Dec 2018 08:39:31 +0000
+Message-ID: <1543826226-30898-6-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -32,10 +31,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for octal mode I/O data transfer in spi-mem framework.
+Add support for octal mode I/O data transfer based on the controller (spi)
+mode.
+Assign hw-capability mask bits for octal transfer.
 
 Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes for v5:
 - Modified string 'octo' with 'octal'.
@@ -44,38 +44,30 @@ Changes for v4:
 Changes for v3:
 - Modified string 'octal' with 'octo'.
 Changes for v2:
-- Patch added in v2 version.
+- Incorporated review comments of Boris.
 
- drivers/spi/spi-mem.c | 9 ++++++++-
+ drivers/mtd/devices/m25p80.c | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 62a7b80..5e15d62 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -12,7 +12,7 @@
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c4a1d04..651bab6 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -195,7 +195,14 @@ static int m25p_probe(struct spi_mem *spimem)
+ 	spi_mem_set_drvdata(spimem, flash);
+ 	flash->spimem =3D spimem;
 =20
- #include "internals.h"
-=20
--#define SPI_MEM_MAX_BUSWIDTH		4
-+#define SPI_MEM_MAX_BUSWIDTH		8
-=20
- /**
-  * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
-@@ -121,6 +121,13 @@ static int spi_check_buswidth_req(struct spi_mem *mem,=
- u8 buswidth, bool tx)
-=20
- 		break;
-=20
-+	case 8:
-+		if ((tx && (mode & SPI_TX_OCTAL)) ||
-+		    (!tx && (mode & SPI_RX_OCTAL)))
-+			return 0;
+-	if (spi->mode & SPI_RX_QUAD) {
++	if (spi->mode & SPI_RX_OCTAL) {
++		hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_8;
 +
-+		break;
-+
- 	default:
- 		break;
- 	}
++		if (spi->mode & SPI_TX_OCTAL)
++			hwcaps.mask |=3D (SNOR_HWCAPS_READ_1_8_8 |
++					SNOR_HWCAPS_PP_1_1_8 |
++					SNOR_HWCAPS_PP_1_8_8);
++	} else if (spi->mode & SPI_RX_QUAD) {
+ 		hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_4;
+=20
+ 		if (spi->mode & SPI_TX_QUAD)
 --=20
 2.7.4
