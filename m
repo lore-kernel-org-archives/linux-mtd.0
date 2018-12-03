@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTj3A-000131-UV
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:53:54 +0000
-Date: Mon, 3 Dec 2018 08:53:31 +0100
+ id 1gTj3T-00019G-Kv
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:54:13 +0000
+Date: Mon, 3 Dec 2018 08:53:49 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
@@ -10,10 +10,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: keep original flags for every struct mtd_info
-Message-ID: <20181203085331.0fa30fbe@bbrezillon>
-In-Reply-To: <20181120085546.8336-1-zajec5@gmail.com>
-References: <20181120085546.8336-1-zajec5@gmail.com>
+Subject: Re: [PATCH V2] mtd: improve calculating partition boundaries when
+ checking for alignment
+Message-ID: <20181203085349.0cc85117@bbrezillon>
+In-Reply-To: <20181120092409.13864-1-zajec5@gmail.com>
+References: <20181120085612.8405-1-zajec5@gmail.com>
+ <20181120092409.13864-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,71 +28,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Nov 2018 09:55:45 +0100
+On Tue, 20 Nov 2018 10:24:09 +0100
 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
 > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 >=20
-> When allocating a new partition mtd subsystem runs internal tests in the
-> allocate_partition(). They may result in modifying specified flags (e.g.
-> dropping some /features/ like write access).
->=20
-> Those constraints don't have to be necessary true for subpartitions. It
-> may happen parent partition isn't block aligned (effectively disabling
-> write access) while subpartition may fit blocks nicely. In such case all
-> checks should be run again (starting with original flags value).
+> When checking for alignment mtd should check absolute offsets. It's
+> important for subpartitions as it doesn't make sense to check their
+> relative addresses.
 >=20
 > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
 Queued to mtd/next.
 
-Thanks,
-
-Boris
-
 > ---
->  drivers/mtd/mtdcore.c   | 2 ++
->  drivers/mtd/mtdpart.c   | 3 ++-
->  include/linux/mtd/mtd.h | 1 +
->  3 files changed, 5 insertions(+), 1 deletion(-)
+> V2: Switch from uint64_t to u64. I got incorrectly inspired by
+>     uint64_t offset;
+> ---
+>  drivers/mtd/mtdpart.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 >=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 97ac219c082e..2d24701255e5 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -665,6 +665,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
->  	} else {
->  		pr_debug("mtd device won't show a device symlink in sysfs\n");
->  	}
-> +
-> +	mtd->orig_flags =3D mtd->flags;
->  }
-> =20
->  /**
 > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 99c460facd5e..2b6e53af47da 100644
+> index 2b6e53af47da..b6af41b04622 100644
 > --- a/drivers/mtd/mtdpart.c
 > +++ b/drivers/mtd/mtdpart.c
-> @@ -346,7 +346,8 @@ static struct mtd_part *allocate_partition(struct mtd=
+> @@ -61,6 +61,15 @@ static inline struct mtd_part *mtd_to_part(const struc=
+t mtd_info *mtd)
+>  	return container_of(mtd, struct mtd_part, mtd);
+>  }
+> =20
+> +static u64 part_absolute_offset(struct mtd_info *mtd)
+> +{
+> +	struct mtd_part *part =3D mtd_to_part(mtd);
+> +
+> +	if (!mtd_is_partition(mtd))
+> +		return 0;
+> +
+> +	return part_absolute_offset(part->parent) + part->offset;
+> +}
+> =20
+>  /*
+>   * MTD methods which simply translate the effective address and pass thr=
+ough
+> @@ -514,7 +523,7 @@ static struct mtd_part *allocate_partition(struct mtd=
 _info *parent,
+>  	if (!(slave->mtd.flags & MTD_NO_ERASE))
+>  		wr_alignment =3D slave->mtd.erasesize;
 > =20
->  	/* set up the MTD object for this partition */
->  	slave->mtd.type =3D parent->type;
-> -	slave->mtd.flags =3D parent->flags & ~part->mask_flags;
-> +	slave->mtd.flags =3D parent->orig_flags & ~part->mask_flags;
-> +	slave->mtd.orig_flags =3D slave->mtd.flags;
->  	slave->mtd.size =3D part->size;
->  	slave->mtd.writesize =3D parent->writesize;
->  	slave->mtd.writebufsize =3D parent->writebufsize;
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index cd0be91bdefa..b491a08e87e5 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -207,6 +207,7 @@ struct mtd_debug_info {
->  struct mtd_info {
->  	u_char type;
->  	uint32_t flags;
-> +	uint32_t orig_flags; /* Flags as before running mtd checks */
->  	uint64_t size;	 // Total size of the MTD
+> -	tmp =3D slave->offset;
+> +	tmp =3D part_absolute_offset(parent) + slave->offset;
+>  	remainder =3D do_div(tmp, wr_alignment);
+>  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+>  		/* Doesn't start on a boundary of major erase size */
+> @@ -525,7 +534,7 @@ static struct mtd_part *allocate_partition(struct mtd=
+_info *parent,
+>  			part->name);
+>  	}
 > =20
->  	/* "Major" erase size for the device. Na=C3=AFve users may take this
+> -	tmp =3D slave->mtd.size;
+> +	tmp =3D part_absolute_offset(parent) + slave->mtd.size;
+>  	remainder =3D do_div(tmp, wr_alignment);
+>  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+>  		slave->mtd.flags &=3D ~MTD_WRITEABLE;
