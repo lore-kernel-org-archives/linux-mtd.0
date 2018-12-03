@@ -1,28 +1,26 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, "broonie@kernel.org"
- <broonie@kernel.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
- <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
- <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 1/7] spi: add support for octo mode I/O data transfer
-Date: Mon, 3 Dec 2018 08:47:48 +0000
-Message-ID: <VI1PR04MB5726A8B992BF7DE2A646D20C99AE0@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1542863544-21257-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1542863544-21257-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181203090444.0c37efa7@bbrezillon>
-In-Reply-To: <20181203090444.0c37efa7@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTkDU-0006Tb-Ru
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:08:38 +0000
+Date: Mon, 3 Dec 2018 10:08:14 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
+ Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
+ for map selection
+Message-ID: <20181203100814.095a12f4@bbrezillon>
+In-Reply-To: <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
+References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
+ <20181130114019.175ab7ec@bbrezillon>
+ <f11c7ab4-ee19-ad4e-7943-d6359ac58249@nokia.com>
+ <20181203092337.52817e0e@bbrezillon>
+ <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon, 3 Dec 2018 08:37:17 +0000
+"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+wrote:
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Monday, December 3, 2018 1:35 PM
-> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>;
-> broonie@kernel.org
-> Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; vigneshr@ti.com=
-;
-> linux-spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
-> mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
-> kernel@lists.infradead.org; computersforpeace@gmail.com;
-> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH v4 1/7] spi: add support for octo mode I/O data trans=
-fer
->=20
-> Hi Yogesh,
->=20
-> On Thu, 22 Nov 2018 05:14:31 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->=20
-> > Add flags for Octo mode I/O data transfer Required for the SPI
-> > controller which can do the data transfer (TX/RX) on 8 data lines e.g.
-> > NXP FlexSPI controller.
-> >  SPI_TX_OCTO: transmit with 8 wires
-> >  SPI_RX_OCTO: receive with 8 wires
-> >
-> > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> > Changes for v4:
-> > - Rebase on top of v4.20-rc2
-> > Changes for v3:
-> > - Modified string 'octal' with 'octo'.
->=20
-> When I listed the differences between your version and mine, I mentioned =
-the
-> OCTO vs OCTAL name, but I didn't say my decision was the correct one :-).=
- Looks
-> like OCTAL is the term employed almost everywhere, and it's also consiste=
-nt
-> with DUAL. Would you mind sending a new version reverting the name to OCT=
-AL.
->=20
-Next version of patch series send [1]
+> Hi!
+> 
+> On 03/12/2018 09:23, Boris Brezillon wrote:
+> >> This is the same instruction 65h which is used to read regs and which
+> >> appears in SMPT headers, it is a chicken-egg problem.  
+> > Oh, right, I remember now. Not a smart decision from Spansion :-/.
+> >   
+> >> Therefore, I don't know if it's possible to provide smarter heuristics
+> >> here.  
+> > Maybe:
+> > 
+> > ref_cr1 = read_CR1_using_RDCR()
+> > 
+> > for_each_possible_dummy_and_addr_width
+> > 	cr1 = read_CR1_using_RDAR()
+> > 	if (cr1 == ref_cr1)
+> > 		break;  
+> 
+> This will not work, as default value for CR1(N)V is 0 and that is the value
+> one gets with incorrect addr_width as well.
+> 
 
---
-Regards,
-Yogesh Gaur
-[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D79338
+How about:
 
-[...]
+	// set the WE bit in SR1 so that SR1 is not 0
+	write_enable()
+
+	ref_sr1 = read_SR1_using_RDSR1()
+	for_each_possible_dummy_and_addr_width
+	sr1 = read_SR1_using_RDAR()
+	if (sr1 == ref_sr1)
+		break;
+
+	write_disable()  
