@@ -1,20 +1,16 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTj1d-0008KI-MO
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:52:27 +0000
+ id 1gTj1q-0008Rb-W7
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:52:47 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Colin King <colin.king@canonical.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: mtd: nftl: clean up indentation, remove extraneous tabs
-Date: Mon,  3 Dec 2018 08:52:13 +0100
-Message-Id: <20181203075213.28993-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181118163656.30698-1-colin.king@canonical.com>
+To: Daniel Santos <daniel.santos@pobox.com>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: jffs2: Fix use of uninitialized delayed_work, lockdep breakage
+Date: Mon,  3 Dec 2018 08:52:19 +0100
+Message-Id: <20181203075219.29061-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181019083020.14335-1-daniel.santos@pobox.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2018-11-18 at 16:36:56 UTC, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, 2018-10-19 at 08:30:20 UTC, Daniel Santos wrote:
+> jffs2_sync_fs makes the assumption that if CONFIG_JFFS2_FS_WRITEBUFFER
+> is defined then a write buffer is available and has been initialized.
+> However, this does is not the case when the mtd device has no
+> out-of-band buffer:
 > 
-> The hunk of code is indented too much by one level, fix this by
-> removing the extraneous tabs. Also terminate block comment using
-> the recommended coding style to clean up checkpatch warning.
+> int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
+> {
+>         if (!c->mtd->oobsize)
+>                 return 0;
+> ...
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> The resulting call to cancel_delayed_work_sync passing a uninitialized
+> (but zeroed) delayed_work struct forces lockdep to become disabled.
+> 
+> [   90.050639] overlayfs: upper fs does not support tmpfile.
+> [   90.652264] INFO: trying to register non-static key.
+> [   90.662171] the code is fine but needs lockdep annotation.
+> [   90.673090] turning off the locking correctness validator.
+> [   90.684021] CPU: 0 PID: 1762 Comm: mount_root Not tainted 4.14.63 #0
+> [   90.696672] Stack : 00000000 00000000 80d8f6a2 00000038 805f0000 80444600 8fe364f4 805dfbe7
+> [   90.713349]         80563a30 000006e2 8068370c 00000001 00000000 00000001 8e2fdc48 ffffffff
+> [   90.730020]         00000000 00000000 80d90000 00000000 00000106 00000000 6465746e 312e3420
+> [   90.746690]         6b636f6c 03bf0000 f8000000 20676e69 00000000 80000000 00000000 8e2c2a90
+> [   90.763362]         80d90000 00000001 00000000 8e2c2a90 00000003 80260dc0 08052098 80680000
+> [   90.780033]         ...
+> [   90.784902] Call Trace:
+> [   90.789793] [<8000f0d8>] show_stack+0xb8/0x148
+> [   90.798659] [<8005a000>] register_lock_class+0x270/0x55c
+> [   90.809247] [<8005cb64>] __lock_acquire+0x13c/0xf7c
+> [   90.818964] [<8005e314>] lock_acquire+0x194/0x1dc
+> [   90.828345] [<8003f27c>] flush_work+0x200/0x24c
+> [   90.837374] [<80041dfc>] __cancel_work_timer+0x158/0x210
+> [   90.847958] [<801a8770>] jffs2_sync_fs+0x20/0x54
+> [   90.857173] [<80125cf4>] iterate_supers+0xf4/0x120
+> [   90.866729] [<80158fc4>] sys_sync+0x44/0x9c
+> [   90.875067] [<80014424>] syscall_common+0x34/0x58
+> 
+> Signed-off-by: Daniel Santos <daniel.santos@pobox.com>
+> Reviewed-by: Hou Tao <houtao1@huawei.com>
 
 Applied to http://git.infradead.org/linux-mtd.git mtd/next, thanks.
 
