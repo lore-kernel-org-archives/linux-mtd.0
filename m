@@ -1,27 +1,31 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTpFS-00013w-UL
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 14:31:00 +0000
-Date: Mon, 3 Dec 2018 15:30:46 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tomer Maimon <tmaimon77@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, computersforpeace@gmail.com,
- marek.vasut@gmail.com, richard@nod.at, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Nancy Yuen <yuenn@google.com>, Patrick
- Venture <venture@google.com>, Brendan Higgins <brendanhiggins@google.com>,
- Avi Fishman <avifishman70@gmail.com>, Joel Stanley <joel@jms.id.au>,
- linux-mtd@lists.infradead.org, OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, devicetree
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v1 0/2] SPI-NOR add NPCM FIU controller driver
-Message-ID: <20181203153046.0554854f@bbrezillon>
-In-Reply-To: <CAP6Zq1ib3p=UVC8ct_gvB801_XjTwknXMKPfFCq7=d1Jxv0Dfg@mail.gmail.com>
-References: <20181203091456.454030-1-tmaimon77@gmail.com>
- <20181203102240.79a86a26@bbrezillon>
- <CAP6Zq1ib3p=UVC8ct_gvB801_XjTwknXMKPfFCq7=d1Jxv0Dfg@mail.gmail.com>
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gTpPz-0007N3-NO
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 14:41:53 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id f81so3521844wmd.4
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2018 06:41:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20181129121458.GK19305@dastard> <20181129124756.GA25945@kroah.com>
+ <20181129224019.GM19305@dastard> <20181130082203.GA26830@kroah.com>
+ <20181130101441.GA213156@sasha-vm> <20181130215005.GP19305@dastard>
+ <20181201074909.GC213156@sasha-vm>
+ <CAOQ4uxhCH3oxVWDMVRcXMZO3JSTCA1Pp5AYnHP5pDxyNktqONw@mail.gmail.com>
+ <20181202152547.GI221015@sasha-vm> <20181202161016.GA27696@infradead.org>
+ <20181202200819.GA3932@kroah.com>
+In-Reply-To: <20181202200819.GA3932@kroah.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 3 Dec 2018 15:41:27 +0100
+Message-ID: <CAFLxGvyx-n4fUbsv+PrAebAPRe=yGV1zLRA44XnOwtMaubS8cg@mail.gmail.com>
+Subject: Re: XFS patches for stable
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Christoph Hellwig <hch@infradead.org>, sashal@kernel.org,
+ amir73il@gmail.com,
+ Dave Chinner <david@fromorbit.com>, stable <stable@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, dchinner@redhat.com,
+ darrick.wong@oracle.com,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-xfs@vger.kernel.org,
+ mcgrof@kernel.org, linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,55 +35,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tomer;
+On Sun, Dec 2, 2018 at 9:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Dec 02, 2018 at 08:10:16AM -0800, Christoph Hellwig wrote:
+> > As someone who has done xfs stable backports for a while I really don't
+> > think the autoselection is helpful at all.
+>
+> autoselection for xfs patches has been turned off for a while, what
+> triggered this email thread was a core vfs patch that was backported
+> that was not obvious it was created by the xfs developers due to a
+> problem they had found.
 
-On Mon, 3 Dec 2018 16:09:19 +0200
-Tomer Maimon <tmaimon77@gmail.com> wrote:
+Sorry for hijacking this thread.
+Can you please also disable autoselection for MTD, UBI and UBIFS?
 
+fs/ubifs/
+drivers/mtd/
+include/linux/mtd/
+include/uapi/mtd/
 
-> A few comments/input:
-> 
-> 
->    1. We have been working on this driver for quite a long time to port it
->    to the latest Linux conventions, polish the code, run tests and reach high
->    quality.
->    Our partners and customers are waiting to get this driver upstream so
->    they can freely use it.
-
-Your patch prefix says "v1", so I'm assuming this is the first public
-version. I'm sure you spent a lot of time developing this driver
-internally, but no matter how long it took, it's a first version for
-us, and since we are moving away from the spi_nor controller interface,
-I'm not willing to accept new drivers using this interface.
-
-If you want more background about the spi_nor controller interface
-deprecation, you can read [1].
-
->    Since this driver is already in final stages and is in very good shape
->    we will appreciate if you can review this specific driver/interface and
->    help us to upstream it.
-
-Actually, I'd like to do it the other way around: let you rework the
-driver to implement the spi-mem interface and review this version.
-Otherwise I'll be reviewing things I don't intend to merge anyway.
-
->    2.  As for the new interface, we are open for any discussion and for
->    porting the driver as required.
->    We are unsure what is this specific interface and weather it really fits
->    a driver for a Flash Interface Controller module (rather than a SPI flash
->    device).
-
-Didn't go through the code in details, but at first glance, it looks
-like it would fit pretty well.
-
->    Is it possible to get a sample driver from another Flash Interface
->    Controller module that was ported to this new interface ?
-
-We recently converted the atmel QSPI driver [2].
-
-Regards,
-
-Boris
-
-[1]https://bootlin.com/blog/spi-mem-bringing-some-consistency-to-the-spi-memory-ecosystem/
-[2]https://patchwork.kernel.org/project/spi-devel-general/list/?series=38347&state=*
+-- 
+Thanks,
+//richard
