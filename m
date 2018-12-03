@@ -1,16 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTj1q-0008Rb-W7
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:52:47 +0000
+ id 1gTj3A-000131-UV
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 07:53:54 +0000
+Date: Mon, 3 Dec 2018 08:53:31 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Daniel Santos <daniel.santos@pobox.com>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: jffs2: Fix use of uninitialized delayed_work, lockdep breakage
-Date: Mon,  3 Dec 2018 08:52:19 +0100
-Message-Id: <20181203075219.29061-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181019083020.14335-1-daniel.santos@pobox.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH] mtd: keep original flags for every struct mtd_info
+Message-ID: <20181203085331.0fa30fbe@bbrezillon>
+In-Reply-To: <20181120085546.8336-1-zajec5@gmail.com>
+References: <20181120085546.8336-1-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2018-10-19 at 08:30:20 UTC, Daniel Santos wrote:
-> jffs2_sync_fs makes the assumption that if CONFIG_JFFS2_FS_WRITEBUFFER
-> is defined then a write buffer is available and has been initialized.
-> However, this does is not the case when the mtd device has no
-> out-of-band buffer:
-> 
-> int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
-> {
->         if (!c->mtd->oobsize)
->                 return 0;
-> ...
-> 
-> The resulting call to cancel_delayed_work_sync passing a uninitialized
-> (but zeroed) delayed_work struct forces lockdep to become disabled.
-> 
-> [   90.050639] overlayfs: upper fs does not support tmpfile.
-> [   90.652264] INFO: trying to register non-static key.
-> [   90.662171] the code is fine but needs lockdep annotation.
-> [   90.673090] turning off the locking correctness validator.
-> [   90.684021] CPU: 0 PID: 1762 Comm: mount_root Not tainted 4.14.63 #0
-> [   90.696672] Stack : 00000000 00000000 80d8f6a2 00000038 805f0000 80444600 8fe364f4 805dfbe7
-> [   90.713349]         80563a30 000006e2 8068370c 00000001 00000000 00000001 8e2fdc48 ffffffff
-> [   90.730020]         00000000 00000000 80d90000 00000000 00000106 00000000 6465746e 312e3420
-> [   90.746690]         6b636f6c 03bf0000 f8000000 20676e69 00000000 80000000 00000000 8e2c2a90
-> [   90.763362]         80d90000 00000001 00000000 8e2c2a90 00000003 80260dc0 08052098 80680000
-> [   90.780033]         ...
-> [   90.784902] Call Trace:
-> [   90.789793] [<8000f0d8>] show_stack+0xb8/0x148
-> [   90.798659] [<8005a000>] register_lock_class+0x270/0x55c
-> [   90.809247] [<8005cb64>] __lock_acquire+0x13c/0xf7c
-> [   90.818964] [<8005e314>] lock_acquire+0x194/0x1dc
-> [   90.828345] [<8003f27c>] flush_work+0x200/0x24c
-> [   90.837374] [<80041dfc>] __cancel_work_timer+0x158/0x210
-> [   90.847958] [<801a8770>] jffs2_sync_fs+0x20/0x54
-> [   90.857173] [<80125cf4>] iterate_supers+0xf4/0x120
-> [   90.866729] [<80158fc4>] sys_sync+0x44/0x9c
-> [   90.875067] [<80014424>] syscall_common+0x34/0x58
-> 
-> Signed-off-by: Daniel Santos <daniel.santos@pobox.com>
-> Reviewed-by: Hou Tao <houtao1@huawei.com>
+On Tue, 20 Nov 2018 09:55:45 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Applied to http://git.infradead.org/linux-mtd.git mtd/next, thanks.
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> When allocating a new partition mtd subsystem runs internal tests in the
+> allocate_partition(). They may result in modifying specified flags (e.g.
+> dropping some /features/ like write access).
+>=20
+> Those constraints don't have to be necessary true for subpartitions. It
+> may happen parent partition isn't block aligned (effectively disabling
+> write access) while subpartition may fit blocks nicely. In such case all
+> checks should be run again (starting with original flags value).
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+
+Queued to mtd/next.
+
+Thanks,
 
 Boris
+
+> ---
+>  drivers/mtd/mtdcore.c   | 2 ++
+>  drivers/mtd/mtdpart.c   | 3 ++-
+>  include/linux/mtd/mtd.h | 1 +
+>  3 files changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 97ac219c082e..2d24701255e5 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -665,6 +665,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+>  	} else {
+>  		pr_debug("mtd device won't show a device symlink in sysfs\n");
+>  	}
+> +
+> +	mtd->orig_flags =3D mtd->flags;
+>  }
+> =20
+>  /**
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 99c460facd5e..2b6e53af47da 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -346,7 +346,8 @@ static struct mtd_part *allocate_partition(struct mtd=
+_info *parent,
+> =20
+>  	/* set up the MTD object for this partition */
+>  	slave->mtd.type =3D parent->type;
+> -	slave->mtd.flags =3D parent->flags & ~part->mask_flags;
+> +	slave->mtd.flags =3D parent->orig_flags & ~part->mask_flags;
+> +	slave->mtd.orig_flags =3D slave->mtd.flags;
+>  	slave->mtd.size =3D part->size;
+>  	slave->mtd.writesize =3D parent->writesize;
+>  	slave->mtd.writebufsize =3D parent->writebufsize;
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index cd0be91bdefa..b491a08e87e5 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -207,6 +207,7 @@ struct mtd_debug_info {
+>  struct mtd_info {
+>  	u_char type;
+>  	uint32_t flags;
+> +	uint32_t orig_flags; /* Flags as before running mtd checks */
+>  	uint64_t size;	 // Total size of the MTD
+> =20
+>  	/* "Major" erase size for the device. Na=C3=AFve users may take this
