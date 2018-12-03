@@ -1,27 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTkdE-0002ID-H9
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 09:35:14 +0000
-Date: Mon, 3 Dec 2018 10:34:50 +0100
+ id 1gTlO9-0004OQ-5z
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2018 10:23:43 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] mtd: spi-nor: Provide default address width and latency
- for map selection
-Message-ID: <20181203103450.61a8d98f@bbrezillon>
-In-Reply-To: <20181203100814.095a12f4@bbrezillon>
-References: <20181129181519.15681-1-alexander.sverdlin@nokia.com>
- <20181130114019.175ab7ec@bbrezillon>
- <f11c7ab4-ee19-ad4e-7943-d6359ac58249@nokia.com>
- <20181203092337.52817e0e@bbrezillon>
- <fcf6d1f4-4602-719a-bfda-7950c2205a31@nokia.com>
- <20181203100814.095a12f4@bbrezillon>
+To: linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] MAINTAINERS: Update my email address
+Date: Mon,  3 Dec 2018 11:23:15 +0100
+Message-Id: <20181203102315.1163-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,48 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 3 Dec 2018 10:08:14 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Use my korg address instead of the bootlin one.
 
-> On Mon, 3 Dec 2018 08:37:17 +0000
-> "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-> wrote:
-> 
-> > Hi!
-> > 
-> > On 03/12/2018 09:23, Boris Brezillon wrote:  
-> > >> This is the same instruction 65h which is used to read regs and which
-> > >> appears in SMPT headers, it is a chicken-egg problem.    
-> > > Oh, right, I remember now. Not a smart decision from Spansion :-/.
-> > >     
-> > >> Therefore, I don't know if it's possible to provide smarter heuristics
-> > >> here.    
-> > > Maybe:
-> > > 
-> > > ref_cr1 = read_CR1_using_RDCR()
-> > > 
-> > > for_each_possible_dummy_and_addr_width
-> > > 	cr1 = read_CR1_using_RDAR()
-> > > 	if (cr1 == ref_cr1)
-> > > 		break;    
-> > 
-> > This will not work, as default value for CR1(N)V is 0 and that is the value
-> > one gets with incorrect addr_width as well.
-> >   
-> 
-> How about:
-> 
-> 	// set the WE bit in SR1 so that SR1 is not 0
-> 	write_enable()
-> 
-> 	ref_sr1 = read_SR1_using_RDSR1()
-> 	for_each_possible_dummy_and_addr_width
-> 		sr1 = read_SR1_using_RDAR()
-> 		if (sr1 == ref_sr1)
-> 			break;
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ .mailmap    | 7 ++++---
+ MAINTAINERS | 8 ++++----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-Oh, and you should read CR2 to make sure AL and RL fields match the
-selected addr/dummy values.
-
-> 
-> 	write_disable()  
+diff --git a/.mailmap b/.mailmap
+index 28fecafa6506..b4b0b0b768dd 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -36,9 +36,10 @@ Bart Van Assche <bvanassche@acm.org> <bart.vanassche@sandisk.com>
+ Ben Gardner <bgardner@wabtec.com>
+ Ben M Cahill <ben.m.cahill@intel.com>
+ Björn Steinbrink <B.Steinbrink@gmx.de>
+-Boris Brezillon <boris.brezillon@bootlin.com> <boris.brezillon@free-electrons.com>
+-Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon.dev@gmail.com>
+-Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon@overkiz.com>
++Boris Brezillon <bbrezillon@kernel.org> <boris.brezillon@bootlin.com>
++Boris Brezillon <bbrezillon@kernel.org> <boris.brezillon@free-electrons.com>
++Boris Brezillon <bbrezillon@kernel.org> <b.brezillon.dev@gmail.com>
++Boris Brezillon <bbrezillon@kernel.org> <b.brezillon@overkiz.com>
+ Brian Avery <b.avery@hp.com>
+ Brian King <brking@us.ibm.com>
+ Christoph Hellwig <hch@lst.de>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0abecc528dac..a22b0c23f419 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4821,7 +4821,7 @@ F:	Documentation/gpu/meson.rst
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ 
+ DRM DRIVERS FOR ATMEL HLCDC
+-M:	Boris Brezillon <boris.brezillon@bootlin.com>
++M:	Boris Brezillon <bbrezillon@kernel.org>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ F:	drivers/gpu/drm/atmel-hlcdc/
+@@ -8872,7 +8872,7 @@ F:	include/uapi/drm/armada_drm.h
+ F:	Documentation/devicetree/bindings/display/armada/
+ 
+ MARVELL CRYPTO DRIVER
+-M:	Boris Brezillon <boris.brezillon@bootlin.com>
++M:	Boris Brezillon <bbrezillon@kernel.org>
+ M:	Arnaud Ebalard <arno@natisbad.org>
+ F:	drivers/crypto/marvell/
+ S:	Maintained
+@@ -9576,7 +9576,7 @@ F:	mm/
+ MEMORY TECHNOLOGY DEVICES (MTD)
+ M:	David Woodhouse <dwmw2@infradead.org>
+ M:	Brian Norris <computersforpeace@gmail.com>
+-M:	Boris Brezillon <boris.brezillon@bootlin.com>
++M:	Boris Brezillon <bbrezillon@kernel.org>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+@@ -10166,7 +10166,7 @@ S:	Supported
+ F:	drivers/net/ethernet/myricom/myri10ge/
+ 
+ NAND FLASH SUBSYSTEM
+-M:	Boris Brezillon <boris.brezillon@bootlin.com>
++M:	Boris Brezillon <bbrezillon@kernel.org>
+ M:	Miquel Raynal <miquel.raynal@bootlin.com>
+ R:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+-- 
+2.17.1
