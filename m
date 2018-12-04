@@ -1,24 +1,31 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUASW-0008Lq-33
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 13:09:55 +0000
-Received: by mail-lj1-x243.google.com with SMTP id g11-v6so14842876ljk.3
- for <linux-mtd@lists.infradead.org>; Tue, 04 Dec 2018 05:09:41 -0800 (PST)
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Shawn Guo
+ <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "david.wolfe@nxp.com" <david.wolfe@nxp.com>,
+ "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
+ <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
+ <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>, "Schrempf
+ Frieder" <frieder.schrempf@kontron.de>, Rob Herring <robh+dt@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 2/9] arm64: dts: Reflect change of FSL QSPI driver and
+ remove unused properties
+Date: Tue, 4 Dec 2018 14:15:14 +0000
+Message-ID: <1543932685-15011-3-git-send-email-frieder.schrempf@kontron.de>
+References: <1543932685-15011-1-git-send-email-frieder.schrempf@kontron.de>
+In-Reply-To: <1543932685-15011-1-git-send-email-frieder.schrempf@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20181127205358.32502-1-linus.walleij@linaro.org>
- <20181202094749.07a9687e@bbrezillon>
-In-Reply-To: <20181202094749.07a9687e@bbrezillon>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 4 Dec 2018 14:09:27 +0100
-Message-ID: <CACRpkdaWR1nXSnnpojXyHrm5Qp3VRkBh_iv0f1z=tg_kzZB98Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2 v3] mtd: maps: Leave assigned complex mappings
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +35,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 2, 2018 at 9:48 AM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> On Tue, 27 Nov 2018 21:53:57 +0100
-> Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> > The simple_map_init() may need to be called with some
-> > function pointers already assigned for complex mappings,
-> > just bail out if complex handlers have already been
-> > assigned.
->
-> The commit message no longer matches what the patch does.
->
-> How about:
->
-> "
-> mtd: maps: physmap: Leave assigned complex mappings
->
-> SoC-specific drivers might provide their own map->xxx() implementation,
-> and calling simple_map_init() unconditionally will override those
-> implementations.
->
-> Make sure map->read is NULL before calling simple_map_init().
-> "
->
-> If you're okay with this new commit message, I can fix it when applying.
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Sure, go ahead Boris, thanks!
+The FSL QSPI driver will be moved to the SPI framework and it then
+acts as a SPI controller. Therefore the subnodes need to set
+spi-[rx/tx]-bus-width =3D <4>, so quad mode is used just as before.
 
-Yours,
-Linus Walleij
+Also the properties 'num-cs' and 'bus-num' were never read by the
+driver and can be removed.
+
+The property 'fsl,qspi-has-second-chip' is not needed anymore
+and will be removed after the old driver was disabled to avoid
+breaking fsl-ls1046a-rdb.dts.
+
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts  | 3 ++-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts  | 4 ++--
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 6 ++++--
+ arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi | 4 ++++
+ 4 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1043a-qds.dts
+index dff3d64..8a50094 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts
+@@ -135,7 +135,6 @@
+ };
+=20
+ &qspi {
+-	bus-num =3D <0>;
+ 	status =3D "okay";
+=20
+ 	qflash0: s25fl128s@0 {
+@@ -143,6 +142,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1046a-qds.dts
+index e58a8ca..2f220ec 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts
+@@ -163,8 +163,6 @@
+ };
+=20
+ &qspi {
+-	num-cs =3D <2>;
+-	bus-num =3D <0>;
+ 	status =3D "okay";
+=20
+ 	qflash0: s25fl128s@0 {
+@@ -172,6 +170,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1046a-rdb.dts
+index a59b482..07c665c 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
+@@ -99,8 +99,6 @@
+ };
+=20
+ &qspi {
+-	num-cs =3D <2>;
+-	bus-num =3D <0>;
+ 	status =3D "okay";
+=20
+ 	qflash0: s25fs512s@0 {
+@@ -108,6 +106,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+=20
+@@ -116,6 +116,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <1>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi b/arch/arm6=
+4/boot/dts/freescale/fsl-ls208xa-qds.dtsi
+index c11f52e..10d2fe0 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi
+@@ -134,6 +134,8 @@
+ 		#size-cells =3D <1>;
+ 		compatible =3D "st,m25p80";
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ 	flash2: s25fl256s1@2 {
+@@ -141,6 +143,8 @@
+ 		#size-cells =3D <1>;
+ 		compatible =3D "st,m25p80";
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <2>;
+ 	};
+ };
+--=20
+2.7.4
