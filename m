@@ -1,24 +1,30 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gU6cN-0003yw-Jr
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 09:03:49 +0000
-Date: Tue, 4 Dec 2018 10:03:30 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yong Qin <Yong.Qin@cypress.com>
-Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, James Tomasetta
- <James.Tomasetta@cypress.com>, Jimmy Zhao <jimmy.zhao@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: SPI-NOR FS512S incorrect CR3NV[1] value
-Message-ID: <20181204100330.28acbecd@bbrezillon>
-In-Reply-To: <DM5PR06MB322865B43A86A57E77C92F748FAF0@DM5PR06MB3228.namprd06.prod.outlook.com>
-References: <VI1PR04MB57263A8FC62719342DAB593499AE0@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181203083814.74662f38@bbrezillon>
- <DM5PR06MB322865B43A86A57E77C92F748FAF0@DM5PR06MB3228.namprd06.prod.outlook.com>
+Received: from mail-eopbgr700085.outbound.protection.outlook.com
+ ([40.107.70.85] helo=NAM04-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gU6rG-0003AN-46
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 09:19:11 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>
+Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Tue, 4 Dec 2018 09:18:53 +0000
+Message-ID: <MWHPR02MB2623DDF6C43BBBB99A52D5DFAFAF0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20181120172443.5fb0bc14@bbrezillon>
+In-Reply-To: <20181120172443.5fb0bc14@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +34,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yong,
+Hi Boris,
 
-On Tue, 4 Dec 2018 01:37:14 +0000
-Yong Qin <Yong.Qin@cypress.com> wrote:
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Tuesday, November 20, 2018 9:55 PM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
+> <michals@xilinx.com>; nagasuresh12@gmail.com; linux-mtd@lists.infradead.o=
+rg; linux-
+> kernel@vger.kernel.org; robh@kernel.org
+> Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for =
+Arasan
+> NAND Flash Controller
+>=20
+> On Fri, 9 Nov 2018 10:30:41 +0530
+> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+>=20
+> > +static int anfc_setup_data_interface(struct nand_chip *chip, int cslin=
+e,
+> > +				     const struct nand_data_interface *conf) {
+> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
+> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
+> > +	int err;
+> > +	const struct nand_sdr_timings *sdr;
+> > +	u32 inftimeval;
+> > +	bool change_sdr_clk =3D false;
+> > +
+> > +	if (csline =3D=3D NAND_DATA_IFACE_CHECK_ONLY)
+> > +		return 0;
+> > +
+> > +	/*
+> > +	 * If the controller is already in the same mode as flash device
+> > +	 * then no need to change the timing mode again.
+> > +	 */
+> > +	sdr =3D nand_get_sdr_timings(conf);
+> > +	if (IS_ERR(sdr))
+> > +		return PTR_ERR(sdr);
+> > +
+> > +	if (sdr->mode < 0)
+> > +		return -ENOTSUPP;
+> > +
+> > +	inftimeval =3D sdr->mode & 7;
+> > +	if (sdr->mode >=3D 2 && sdr->mode <=3D 5)
+> > +		change_sdr_clk =3D true;
+> > +	/*
+> > +	 * SDR timing modes 2-5 will not work for the arasan nand when
+> > +	 * freq > 90 MHz, so reduce the freq in SDR modes 2-5 to < 90Mhz
+>=20
+> What's the freq for mode 0 and 1?
+It is 100MHz in SDR mode 0 and 1.
 
-> Hi Boris,
-> 
-> Do you mean the SFDP table?
+>=20
+> > +	 */
+> > +	if (change_sdr_clk) {
+> > +		clk_disable_unprepare(nfc->clk_sys);
+> > +		err =3D clk_set_rate(nfc->clk_sys, SDR_MODE_DEFLT_FREQ);
+>=20
+> You should not change the clk rate here. It should be done when the chip =
+is selected, so that,
+> if you ever have 2 different chips connected to the same controller, you =
+can adapt the rate
+> when they are accessed.
+Ok, got it. I will update.
 
-Sorry, I meant the SMPT (Sector Map Parameter Table) section of
-the SFDP table. See page 130 of this datasheet [1].
+>=20
+> > +		if (err) {
+> > +			dev_err(nfc->dev, "Can't set the clock rate\n");
+> > +			return err;
+> > +		}
+> > +		err =3D clk_prepare_enable(nfc->clk_sys);
+> > +		if (err) {
+> > +			dev_err(nfc->dev, "Unable to enable sys clock.\n");
+> > +			clk_disable_unprepare(nfc->clk_sys);
+> > +			return err;
+> > +		}
+> > +	}
+> > +	achip->inftimeval =3D inftimeval;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int anfc_nand_attach_chip(struct nand_chip *chip) {
+> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
+> > +	u32 ret;
+> > +
+> > +	if (mtd->writesize <=3D SZ_512)
+> > +		achip->spare_caddr_cycles =3D 1;
+> > +	else
+> > +		achip->spare_caddr_cycles =3D 2;
+> > +
+> > +	chip->ecc.calc_buf =3D kmalloc(mtd->oobsize, GFP_KERNEL);
+> > +	chip->ecc.code_buf =3D kmalloc(mtd->oobsize, GFP_KERNEL);
+>=20
+> Those bufs are allocated but never freed (memleak). Also, are you sure yo=
+u really need them.
+These bufs are freed in nand_release(), which is calling from anfc_remove()=
+.
 
-> Can you please share me more detail of what is wrong, i.e., which
-> parameter, what is expect value and what you get?
+And chip->ecc.code_buf, is used in anfc_read_page_hwecc().
+What we are doing here is, extract ECC code from OOB and place it in ecv.co=
+de_buf, and passing this info to nand_check_ecc_chunk(buf, chip->ecc.size, =
+&ecc_code[i], eccbytes, NULL, 0,chip->ecc.strength).
+i.e. just to store ECC code from OOB area.
+=20
+And chip->ecc.calc_buf is no where used in the driver, I will remove it.
 
-See "Table 70. Sector Map Parameter", CR3NV[1] is always set to one,
-and when we retrieve this value at runtime we get a 0. Which means
-we won't find a matching mapid when iterating over the map table, hence
-the bug reported by Yogesh.
-
-If CR3NV[1] is always 0, then the SMPT should be fixed accordingly:
-
-CR3NV[3]  CR1NV[2]  CR3NV[1]  Index  Value Description
-0         0         0         00h    4 kB sectors at bottom with remainder 256 kB sectors
-0         1         0         02h    4 kB sectors at top with remainder 256 kB sectors
-1         0         0         04h    Uniform 256 kB sectors
-
-Regards,
-
-Boris
-
-[1]http://www.cypress.com/file/216376/download
+Thanks,
+Naga Sureshkumar Relli.
