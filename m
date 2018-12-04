@@ -1,28 +1,23 @@
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUH2L-00058F-H0
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 20:11:18 +0000
-Received: by mail-wm1-x341.google.com with SMTP id y1so10888962wmi.3
- for <linux-mtd@lists.infradead.org>; Tue, 04 Dec 2018 12:11:06 -0800 (PST)
-Sender: Mathieu Malaterre <mathieu.malaterre@gmail.com>
-From: Mathieu Malaterre <malat@debian.org>
-To: Paul Burton <paul.burton@mips.com>
-Cc: trivial@kernel.org, kernel-janitors@vger.kernel.org,
- Mathieu Malaterre <malat@debian.org>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: rawnand: jz4780: annotate implicit fall throughs
-Date: Tue,  4 Dec 2018 21:10:57 +0100
-Message-Id: <20181204201057.30733-1-malat@debian.org>
-In-Reply-To: <20181203212214.8862-1-malat@debian.org>
-References: <20181203212214.8862-1-malat@debian.org>
+ id 1gUHCY-0000nP-0b
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 20:21:51 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2 6/6] mtd: spi-nor: Move the nor->info assignment
+ earlier in the scan func
+Date: Tue, 4 Dec 2018 20:21:36 +0000
+Message-ID: <7376425b-fae3-2bce-4375-2c2c50c9e741@microchip.com>
+References: <20181129141026.24892-1-boris.brezillon@bootlin.com>
+ <20181129141026.24892-7-boris.brezillon@bootlin.com>
+In-Reply-To: <20181129141026.24892-7-boris.brezillon@bootlin.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4D80CAA16BC9BA4E835ABE56B281C9E9@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is a plan to build the kernel with -Wimplicit-fallthrough and
-these places in the code produced warnings. Fix them up.
-
-Signed-off-by: Mathieu Malaterre <malat@debian.org>
----
-v2: fix subject prefix non sense
-
- drivers/mtd/nand/raw/jz4780_bch.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/jz4780_bch.c b/drivers/mtd/nand/raw/jz4780_bch.c
-index 731c6051d91e..7201827809e9 100644
---- a/drivers/mtd/nand/raw/jz4780_bch.c
-+++ b/drivers/mtd/nand/raw/jz4780_bch.c
-@@ -136,8 +136,10 @@ static void jz4780_bch_read_parity(struct jz4780_bch *bch, void *buf,
- 	switch (size8) {
- 	case 3:
- 		dest8[2] = (val >> 16) & 0xff;
-+		/* fall through */
- 	case 2:
- 		dest8[1] = (val >> 8) & 0xff;
-+		/* fall through */
- 	case 1:
- 		dest8[0] = val & 0xff;
- 		break;
--- 
-2.19.2
+DQoNCk9uIDExLzI5LzIwMTggMDQ6MTAgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gU29t
+ZSBmdW5jdGlvbnMgY2FsbGVkIGZyb20gc3BpX25vcl9zY2FuKCkgbmVlZCBhIGZsYXNoX2luZm8g
+b2JqZWN0Lg0KPiBMZXQncyBhc3NpZ24gbm9yLT5pbmZvIGVhcmx5IG9uIHRvIGF2b2lkIHBhc3Np
+bmcgaW5mbyBhcyBhbiBleHRyYQ0KPiBhcmd1bWVudCB0byBlYWNoIG9mIHRoZXNlIHN1Yi1mdW5j
+dGlvbnMuDQoNCldoeSBub3QgdG8gc3F1YXNoIGl0IHdpdGggcGF0Y2ggMz8NCg0KPiANCj4gU2ln
+bmVkLW9mZi1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb20+
+DQo+IC0tLQ0KPiBDaGFuZ2VzIGluIHYyOg0KPiAtIE5ldyBwYXRjaA0KPiAtLS0NCj4gIGRyaXZl
+cnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgMjQgKysrKysrKysrKysrKystLS0tLS0tLS0tDQo+
+ICAxIGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2ZXJzL210
+ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiBpbmRleCBkMmIwOWY1MmIxZmIuLmMxZDljMmU1MGJlZSAx
+MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJp
+dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gQEAgLTIzOCw5ICsyMzgsMTAgQEAgc3RhdGlj
+IHU4IHNwaV9ub3JfY29udmVydF8zdG80X2VyYXNlKHU4IG9wY29kZSkNCj4gIAkJCQkgICAgICBB
+UlJBWV9TSVpFKHNwaV9ub3JfM3RvNF9lcmFzZSkpOw0KPiAgfQ0KPiAgDQo+IC1zdGF0aWMgdm9p
+ZCBzcGlfbm9yX3NldF80Ynl0ZV9vcGNvZGVzKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+IC0JCQkJ
+ICAgICAgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gKmluZm8pDQo+ICtzdGF0aWMgdm9pZCBzcGlf
+bm9yX3NldF80Ynl0ZV9vcGNvZGVzKHN0cnVjdCBzcGlfbm9yICpub3IpDQo+ICB7DQo+ICsJY29u
+c3Qgc3RydWN0IGZsYXNoX2luZm8gKmluZm8gPSBub3ItPmluZm87DQo+ICsNCj4gIAkvKiBEbyBz
+b21lIG1hbnVmYWN0dXJlciBmaXh1cHMgZmlyc3QgKi8NCj4gIAlzd2l0Y2ggKEpFREVDX01GUihp
+bmZvKSkgew0KPiAgCWNhc2UgU05PUl9NRlJfU1BBTlNJT046DQo+IEBAIC0yMDIzLDggKzIwMjQs
+OSBAQCBzdGF0aWMgaW50IHNwaV9ub3JfY2hlY2soc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gIAly
+ZXR1cm4gMDsNCj4gIH0NCj4gIA0KPiAtc3RhdGljIGludCBzM2FuX25vcl9zY2FuKGNvbnN0IHN0
+cnVjdCBmbGFzaF9pbmZvICppbmZvLCBzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiArc3RhdGljIGlu
+dCBzM2FuX25vcl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IpDQo+ICB7DQo+ICsJY29uc3Qgc3Ry
+dWN0IGZsYXNoX2luZm8gKmluZm8gPSBub3ItPmluZm87DQoNCmluZm8gaXMgdXNlZCBpbiB0aGlz
+IGZ1bmN0aW9uIGp1c3QgdG8gZ2V0IGluZm8tPm5fc2VjdG9ycy4gV2UgY2FuIGRlcmVmZXJlbmNl
+DQpuX3NlY3RvcnMgZGlyZWN0bHkuDQoNCj4gIAlpbnQgcmV0Ow0KPiAgCXU4IHZhbDsNCj4gIA0K
+PiBAQCAtMzIwNCwxMCArMzIwNiwxMCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFyc2Vfc2ZkcChz
+dHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgaW50IHNwaV9ub3JfaW5p
+dF9wYXJhbXMoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gLQkJCSAgICAgICBjb25zdCBzdHJ1Y3Qg
+Zmxhc2hfaW5mbyAqaW5mbywNCj4gIAkJCSAgICAgICBzdHJ1Y3Qgc3BpX25vcl9mbGFzaF9wYXJh
+bWV0ZXIgKnBhcmFtcykNCj4gIHsNCj4gIAlzdHJ1Y3Qgc3BpX25vcl9lcmFzZV9tYXAgKm1hcCA9
+ICZub3ItPmVyYXNlX21hcDsNCj4gKwljb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbyA9IG5v
+ci0+aW5mbzsNCj4gIAl1OCBpLCBlcmFzZV9tYXNrOw0KPiAgDQo+ICAJLyogU2V0IGxlZ2FjeSBm
+bGFzaCBwYXJhbWV0ZXJzIGFzIGRlZmF1bHQuICovDQo+IEBAIC0zNDcyLDEwICszNDc0LDExIEBA
+IHN0YXRpYyBpbnQgc3BpX25vcl9zZWxlY3RfZXJhc2Uoc3RydWN0IHNwaV9ub3IgKm5vciwgdTMy
+IHdhbnRlZF9zaXplKQ0KPiAgCXJldHVybiAwOw0KPiAgfQ0KPiAgDQo+IC1zdGF0aWMgaW50IHNw
+aV9ub3Jfc2V0dXAoc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8g
+KmluZm8sDQo+ICtzdGF0aWMgaW50IHNwaV9ub3Jfc2V0dXAoc3RydWN0IHNwaV9ub3IgKm5vciwN
+Cj4gIAkJCSBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9mbGFzaF9wYXJhbWV0ZXIgKnBhcmFtcywNCj4g
+IAkJCSBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9od2NhcHMgKmh3Y2FwcykNCj4gIHsNCj4gKwljb25z
+dCBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbyA9IG5vci0+aW5mbzsNCg0KaW5mbyBpcyB1c2VkIGlu
+IHRoaXMgZnVuY3Rpb24ganVzdCB0byBwYXNzIHRoZSBpbmZvLT5zZWN0b3Jfc2l6ZSB0bw0Kc3Bp
+X25vcl9zZWxlY3RfZXJhc2UoKS4gV2UgY2FuIGRlcmVmZXJlbmNlIHNlY3Rvcl9zaXplIGRpcmVj
+dGx5LCAgd2l0aG91dCBldmVuDQpkZWNsYXJpbmcgYSBsb2NhbCB2YXJpYWJsZS4NCg0KTG9va3Mg
+Z29vZC4gQ2hlZXJzLA0KdGENCg0K
