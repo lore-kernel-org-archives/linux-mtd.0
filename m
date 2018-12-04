@@ -1,25 +1,21 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gU5Kc-00057N-8X
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 07:41:24 +0000
-Date: Tue, 4 Dec 2018 08:41:09 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Martin Kepplinger <martin.kepplinger@ginzinger.com>
-Cc: Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
- Stable <stable@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>,
- Juergen <juergen.lachmann@harman.com>
-Subject: Re: [PATCH] ubi: fastmap: Check each mapping only once
-Message-ID: <20181204074109.GA27141@kroah.com>
-References: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
- <CADVatmP1h7GJJRVURkinwSM44Y4iooMP-U_7zew4V+zsMva4Vw@mail.gmail.com>
- <20181202143543.GE221015@sasha-vm> <1678636.EYQpd7BODG@blindfold>
- <e977dca6-60f0-ce5b-d116-30acf60058f9@ginzinger.com>
+ id 1gU5fs-0004fE-EB
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 08:03:22 +0000
+Date: Tue, 4 Dec 2018 09:02:56 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ubifs: fix a memory leak in ubifs_lpt_calc_hash()
+Message-ID: <20181204080256.4rvvgbzdupp7kr3t@pengutronix.de>
+References: <20181203144743.5p6ve64mw32y67oy@kili.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e977dca6-60f0-ce5b-d116-30acf60058f9@ginzinger.com>
+In-Reply-To: <20181203144743.5p6ve64mw32y67oy@kili.mountain>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 04, 2018 at 08:39:16AM +0100, Martin Kepplinger wrote:
-> On 02.12.18 16:02, Richard Weinberger wrote:
-> > Sasha,
-> > 
-> > Am Sonntag, 2. Dezember 2018, 15:35:43 CET schrieb Sasha Levin:
-> > > On Sun, Dec 02, 2018 at 11:50:33AM +0000, Sudip Mukherjee wrote:
-> > > > > > Now queued up for 4.14.y, thanks.
-> > > > > 
-> > > > > can you *please* slow a little down?
-> > > > 
-> > > > True. It will really help if you can have some sort of fixed schedule
-> > > > for stable release, like maybe stablerc is ready on Thursday or Friday
-> > > > and release the stable on Monday. Having a weekend in stablerc will be
-> > > > helpful for people like me who only get the time in weekends for
-> > > > upstream or stable kernel.
-> > > 
-> > > Any sort of schedule will never work for everyone (for example, if it's
-> > > part of your paid job - you don't necessarily want to review stuff over
-> > > the weekend).
-> > 
-> > a schedule is not needed, but please give maintainers at least a chance
-> > to react on stable inclusion request.
-> > In this case Martin asked for inclusion on Monday and the patch was applied
-> > two days later.
-> 
-> True, especially when the maintainer is asked a question as part of the
-> patch.
-> 
-> I've already had the feeling that we'd need the other patch too, but in this
-> case at least I should have searched for Fixes tags.
-> 
-> Greg, how about reminding people of Fixes tags in
-> Documentation/process/stable-kernel-rules.rst ?
+Hi Dan,
 
-Reminding people how?  Patches to that file are always gladly accepted :)
+On Mon, Dec 03, 2018 at 05:47:43PM +0300, Dan Carpenter wrote:
+> We need to free a couple memory allocations before returning on this
+> error path.
 
-thanks,
+Indeed, good catch.
 
-greg k-h
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+Sascha
+
+> 
+> Fixes: a1dc58140f7e ("ubifs: authentication: Authenticate LPT")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  fs/ubifs/lpt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+> index d1d5e96350dd..c162459a1e02 100644
+> --- a/fs/ubifs/lpt.c
+> +++ b/fs/ubifs/lpt.c
+> @@ -1688,7 +1688,7 @@ int ubifs_lpt_calc_hash(struct ubifs_info *c, u8 *hash)
+>  	if (!c->nroot) {
+>  		err = ubifs_read_nnode(c, NULL, 0);
+>  		if (err)
+> -			return err;
+> +			goto out;
+>  	}
+>  
+>  	cnode = (struct ubifs_cnode *)c->nroot;
+> -- 
+> 2.11.0
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
