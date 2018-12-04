@@ -1,21 +1,38 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gU5fs-0004fE-EB
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 08:03:22 +0000
-Date: Tue, 4 Dec 2018 09:02:56 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ubifs: fix a memory leak in ubifs_lpt_calc_hash()
-Message-ID: <20181204080256.4rvvgbzdupp7kr3t@pengutronix.de>
-References: <20181203144743.5p6ve64mw32y67oy@kili.mountain>
+ id 1gU5wK-0002Vr-1o
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 08:20:26 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Han Xu <han.xu@nxp.com>, Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, David Wolfe
+ <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Prabhakar
+ Kushwaha" <prabhakar.kushwaha@nxp.com>, dl-linux-imx <linux-imx@nxp.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 3/9] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+Date: Tue, 4 Dec 2018 08:20:03 +0000
+Message-ID: <f12ea437-5fa5-7ca8-a5ba-b4cc1e9b38f7@kontron.de>
+References: <1543314174-28580-1-git-send-email-frieder.schrempf@kontron.de>
+ <1543314174-28580-4-git-send-email-frieder.schrempf@kontron.de>
+ <3981845c-327a-bb14-2908-47dd443971bf@kontron.de>
+ <VI1PR04MB572644A2AE3214356A62478799D20@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <f4c584e5-8930-bec3-0c4e-2216a89606b0@kontron.de>
+ <AM6PR04MB496732760F72A0B5B5F4A5A997D20@AM6PR04MB4967.eurprd04.prod.outlook.com>
+ <1389ab35-b015-cb5d-1ae9-c8309074a5f9@kontron.de>
+ <AM6PR04MB49670EA07FC3C9FC8EF1AFB097AE0@AM6PR04MB4967.eurprd04.prod.outlook.com>
+In-Reply-To: <AM6PR04MB49670EA07FC3C9FC8EF1AFB097AE0@AM6PR04MB4967.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6C2714F5A2C98A4CBD04DE6E3244A864@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181203144743.5p6ve64mw32y67oy@kili.mountain>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +42,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dan,
-
-On Mon, Dec 03, 2018 at 05:47:43PM +0300, Dan Carpenter wrote:
-> We need to free a couple memory allocations before returning on this
-> error path.
-
-Indeed, good catch.
-
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-
-Sascha
-
-> 
-> Fixes: a1dc58140f7e ("ubifs: authentication: Authenticate LPT")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  fs/ubifs/lpt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-> index d1d5e96350dd..c162459a1e02 100644
-> --- a/fs/ubifs/lpt.c
-> +++ b/fs/ubifs/lpt.c
-> @@ -1688,7 +1688,7 @@ int ubifs_lpt_calc_hash(struct ubifs_info *c, u8 *hash)
->  	if (!c->nroot) {
->  		err = ubifs_read_nnode(c, NULL, 0);
->  		if (err)
-> -			return err;
-> +			goto out;
->  	}
->  
->  	cnode = (struct ubifs_cnode *)c->nroot;
-> -- 
-> 2.11.0
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+SGkgSGFuLA0KDQpPbiAwMy4xMi4xOCAyMTo1NCwgSGFuIFh1IHdyb3RlOg0KWy4uLl0NCj4+Pg0K
+Pj4+IEhpIFNjaHJlbXBmLCBJIGFtIHJldmlld2luZyBhbmQgdGVzdGluZyBvbiBzb21lIGkuTVgg
+cGxhdGZvcm1zLCBwbGVhc2UNCj4+IGhvbGQgb24gZm9yIGEgd2hpbGUgZm9yIHRoZSByZXN1bHQu
+DQo+Pg0KPj4gT2theSwgdGhhbmtzISBJJ20gbG9va2luZyBmb3J3YXJkIHRvIHNlZSB0aGUgcmVz
+dWx0cy4NCj4gDQo+IEhpIFNjaHJlbXBmLCBJIGFtIGdvb2Qgd2l0aCB0aGUgcGF0Y2ggc2V0KHdp
+dGggd2FybmluZyBmaXgpIGFuZCBpdCB3b3JrcyBmaW5lIG9uIGkuTVggcGxhdGZvcm1zLiBJIHdp
+bGwgYWRkIHJldmlldyBhbmQgdGVzdCB0YWdzIGZvciBuZXh0IHZlcnNpb24uDQoNCk9rLCB0aGFu
+a3MgZm9yIGRvaW5nIHRoZSB0ZXN0cy4gSSB3aWxsIHNlbmQgdGhlIG5leHQgdmVyc2lvbiBzb29u
+Lg0KDQo+IEkgaGF2ZSBvbmUgcXVlc3Rpb25zIGFib3V0IHRoZSBERFIgbW9kZSBzdXBwb3J0LCBp
+dCB0aGVyZSBhbnkgZnVydGhlciBwbGFucyBmb3IgRERSIG1vZGUgc3VwcG9ydCByYXRoZXIgdGhh
+biBTRFIgb25seT8NCkkgZGlkbid0IGxvb2sgYXQgRERSIG1vZGUgc3VwcG9ydCB5ZXQuIEkgZ3Vl
+c3Mgc29tZSBjaGFuZ2VzIGluIHRoZSBTUEkgDQpOT1IgYW5kIFNQSSBNRU0gbGF5ZXJzIGFyZSBu
+ZWNlc3NhcnksIGJlZm9yZSB0aGUgY29udHJvbGxlciBkcml2ZXJzIGNhbiANCmltcGxlbWVudCBE
+RFIgbW9kZSBzdXBwb3J0Lg0KDQpUaGFua3MsDQpGcmllZGVy
