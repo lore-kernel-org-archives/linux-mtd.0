@@ -1,25 +1,24 @@
-Received: from mail-eopbgr770102.outbound.protection.outlook.com
- ([40.107.77.102] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mx-ginzinger.sigmacloud.services ([185.154.235.147])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gTzeR-00041E-Jq
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 01:38:02 +0000
-From: Yong Qin <Yong.Qin@cypress.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, James Tomasetta <James.Tomasetta@cypress.com>,
- Jimmy Zhao <jimmy.zhao@nxp.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: SPI-NOR FS512S incorrect CR3NV[1] value
-Date: Tue, 4 Dec 2018 01:37:14 +0000
-Message-ID: <DM5PR06MB322865B43A86A57E77C92F748FAF0@DM5PR06MB3228.namprd06.prod.outlook.com>
-References: <VI1PR04MB57263A8FC62719342DAB593499AE0@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181203083814.74662f38@bbrezillon>
-In-Reply-To: <20181203083814.74662f38@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1gU5Iz-0002zV-Fn
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 07:39:43 +0000
+Subject: Re: [PATCH] ubi: fastmap: Check each mapping only once
+To: Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>
+CC: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Stable <stable@vger.kernel.org>, Artem
+ Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Juergen
+ <juergen.lachmann@harman.com>
+References: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
+ <CADVatmP1h7GJJRVURkinwSM44Y4iooMP-U_7zew4V+zsMva4Vw@mail.gmail.com>
+ <20181202143543.GE221015@sasha-vm> <1678636.EYQpd7BODG@blindfold>
+From: Martin Kepplinger <martin.kepplinger@ginzinger.com>
+Message-ID: <e977dca6-60f0-ce5b-d116-30acf60058f9@ginzinger.com>
+Date: Tue, 4 Dec 2018 08:39:16 +0100
+In-Reply-To: <1678636.EYQpd7BODG@blindfold>
 MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+ micalg="sha-256"; boundary="----4233A7273349379149481EBDB9F1FF48"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +28,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+This is an S/MIME signed message
 
-Do you mean the SFDP table? Can you please share me more detail of what is =
-wrong, i.e., which parameter, what is expect value and what you get?
+------4233A7273349379149481EBDB9F1FF48
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-Thanks,
-Yong
+On 02.12.18 16:02, Richard Weinberger wrote:
+> Sasha,
+> 
+> Am Sonntag, 2. Dezember 2018, 15:35:43 CET schrieb Sasha Levin:
+>> On Sun, Dec 02, 2018 at 11:50:33AM +0000, Sudip Mukherjee wrote:
+>>>>> Now queued up for 4.14.y, thanks.
+>>>>
+>>>> can you *please* slow a little down?
+>>>
+>>> True. It will really help if you can have some sort of fixed schedule
+>>> for stable release, like maybe stablerc is ready on Thursday or Friday
+>>> and release the stable on Monday. Having a weekend in stablerc will be
+>>> helpful for people like me who only get the time in weekends for
+>>> upstream or stable kernel.
+>>
+>> Any sort of schedule will never work for everyone (for example, if it's
+>> part of your paid job - you don't necessarily want to review stuff over
+>> the weekend).
+> 
+> a schedule is not needed, but please give maintainers at least a chance
+> to react on stable inclusion request.
+> In this case Martin asked for inclusion on Monday and the patch was applied
+> two days later.
 
------Original Message-----
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-Sent: Monday, December 3, 2018 2:38 AM
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>; cyrille.pitchen@wedev4u.fr=
-; Yong Qin <Yong.Qin@cypress.com>; James Tomasetta <James.Tomasetta@cypress=
-.com>; Jimmy Zhao <jimmy.zhao@nxp.com>; linux-mtd@lists.infradead.org
-Subject: Re: SPI-NOR FS512S incorrect CR3NV[1] value
+True, especially when the maintainer is asked a question as part of the 
+patch.
 
-On Mon, 3 Dec 2018 04:33:53 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+I've already had the feeling that we'd need the other patch too, but in 
+this case at least I should have searched for Fixes tags.
 
-> + Linux MTD mailing list group
->
-> Hi Tudor,
->
-> As confirmed by cypress team, default value of CR3NV[1] is 0 for flash FS=
-512S and this is having the 256KB uniform erase sector option.
-> There is discrepancy between FS512s datasheet and the actual shipped chip=
-.
+Greg, how about reminding people of Fixes tags in 
+Documentation/process/stable-kernel-rules.rst ?
 
-It's not only the datasheet that is wrong, the BFPT section is wrong too, a=
-nd this one can't be fixed :-/.
+                               martin
 
-This message and any attachments may contain confidential information from =
-Cypress or its subsidiaries. If it has been received in error, please advis=
-e the sender and immediately delete this message.
+------4233A7273349379149481EBDB9F1FF48
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+
+MIIOHAYJKoZIhvcNAQcCoIIODTCCDgkCAQExDzANBglghkgBZQMEAgEFADALBgkq
+hkiG9w0BBwGgggshMIIF5jCCA86gAwIBAgIQapvhODv/K2ufAdXZuKdSVjANBgkq
+hkiG9w0BAQwFADCBhTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFu
+Y2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExp
+bWl0ZWQxKzApBgNVBAMTIkNPTU9ETyBSU0EgQ2VydGlmaWNhdGlvbiBBdXRob3Jp
+dHkwHhcNMTMwMTEwMDAwMDAwWhcNMjgwMTA5MjM1OTU5WjCBlzELMAkGA1UEBhMC
+R0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9y
+ZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBS
+U0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwggEi
+MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+s55XrCh2dUAWxzgDmNPGGHYh
+UPMleQtMtaDRfTpYPpynMS6n9jR22YRq2tA9NEjk6vW7rN/5sYFLIP1of3l0NKZ6
+fLWfF2VgJ5cijKYy/qlAckY1wgOkUMgzKlWlVJGyK+UlNEQ1/5ErCsHq9x9aU/x1
+KwTdF/LCrT03Rl/FwFrf1XTCwa2QZYL55AqLPikFlgqOtzk06kb2qvGlnHJvijjI
+03BOrNpo+kZGpcHsgyO1/u1OZTaOo8wvEU17VVeP1cHWse9tGKTDyUGg2hJZjrqc
+k39UIm/nKbpDSZ0JsMoIw/JtOOg0JC56VzQgBo7ictReTQE5LFLG3yQK+xS1AgMB
+AAGjggE8MIIBODAfBgNVHSMEGDAWgBS7r34CPfqm8TyEjq3uOJjs2TIy1DAdBgNV
+HQ4EFgQUgq9sjPjF/pZhfOgfPStxSF7Ei8AwDgYDVR0PAQH/BAQDAgGGMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwEQYDVR0gBAowCDAGBgRVHSAAMEwGA1UdHwRFMEMwQaA/
+oD2GO2h0dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NPTU9ET1JTQUNlcnRpZmljYXRp
+b25BdXRob3JpdHkuY3JsMHEGCCsGAQUFBwEBBGUwYzA7BggrBgEFBQcwAoYvaHR0
+cDovL2NydC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQWRkVHJ1c3RDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTANBgkqhkiG9w0BAQwF
+AAOCAgEAeFyygSg0TzzuX1bOn5dW7I+iaxf28/ZJCAbU2C81zd9A/tNx4+jsQgwR
+GiHjZrAYayZrrm78hOx7aEpkfNPQIHGG6Fvq3EzWf/Lvx7/hk6zSPwIal9v5IkDc
+ZoFD7f3iT7PdkHJY9B51csvU50rxpEg1OyOT8fk2zvvPBuM4qQNqbGWlnhMpIMwp
+WZT89RY0wpJO+2V6eXEGGHsROs3njeP9DqqqAJaBa4wBeKOdGCWn1/Jp2oY6dyNm
+NppI4ZNMUH4Tam85S1j6E95u4+1Nuru84OrMIzqvISE2HN/56ebTOWlcrurffade
+2022O/tUU1gb4jfWCcyvB8czm12FgX/y/lRjmDbEA08QJNB2729Y+io1IYO3ztve
+BdvUCIYZojTq/OCR6MvnzS6X72HP0PRLRTiOSEmIDsS5N5w/8IW1Hva5hEFy6fDA
+fd9yI+O+IMMAj1KcL/Zo9jzJ16HO5m60ttl1Enk8MQkz/W3JlHaeI5iKFn4UJu1/
+cP2YHXYPiWf2JyBzsLBrGk1II+3yL8aorYew6CQvdVifC3HtwlSam9V1niiCfOBe
+2C12TdKGu05LWIA3ZkFcWJGaNXOZ6Ggyh/TqvXG5v7zmEVDNXFnHn9tFpMpOUvxh
+csjycBtH0dZ0WrNw6gH+HF8TIhCnH3+zzWuDN0Rk6h9KVkfKehIwggUzMIIEG6AD
+AgECAhBNQrEzGzrZ6FVYh1EEYH4+MA0GCSqGSIb3DQEBCwUAMIGXMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
+b3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RP
+IFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQTAe
+Fw0xODA3MTgwMDAwMDBaFw0yMTA3MTcyMzU5NTlaMDAxLjAsBgkqhkiG9w0BCQEW
+H21hcnRpbi5rZXBwbGluZ2VyQGdpbnppbmdlci5jb20wggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQDsMC77L0D+2D8I8X5ubnBhADLgU+HtlwMTFt/WJIhc
+kgbvnawYXWrCIpk8F6BJ0R/iFCykPdG7741EmlcHRKOJfhVxjXhwnoGFqnYmurCt
+fvZLR3+mT3FWnVv2RAdrXscXH3BpijqqWabdtTbiTvmcl86Zc6mNlVhYZSbDul/E
+voIGZotGcGIWrgZxN+8MQJQHKb0KHyWlPVPkrjvEfOJHKKLFsBNSnNMR95Ijg3Sp
+h8/8RG490/zRHflGzUlxDSlLyY9YJGzSdDzcFKoYcc4oaaUY5N3uhRna43TLUIQh
+6ybt3DKVz1Pw/ikwYJrOsulJrVr3D8KVHdGxq7HYl7jnAgMBAAGjggHfMIIB2zAf
+BgNVHSMEGDAWgBSCr2yM+MX+lmF86B89K3FIXsSLwDAdBgNVHQ4EFgQU/GtSUbHg
+14sPDlmo27eQYwtjaS0wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYD
+VR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1UdIAQ/MD0wOwYMKwYBBAGy
+MQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5uZXQv
+Q1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NP
+TU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmww
+gYsGCCsGAQUFBwEBBH8wfTBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5jb21vZG9j
+YS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuY29tb2RvY2EuY29tMCoG
+A1UdEQQjMCGBH21hcnRpbi5rZXBwbGluZ2VyQGdpbnppbmdlci5jb20wDQYJKoZI
+hvcNAQELBQADggEBAGEuG01K1tt5i3gUdQkYem/KpbJUYBZd43QwmoTa0TGXUiYq
+b+g/TeGG9QQ1yq+73xOr8fu6oT2608C7EiJc6JmjTs485/OZmTqgYkrLfs71F1kB
+3Z59WPf5aoR/pnn5vdfkkoO29V1cKPJR4z+iOG2hOlcK/dXrX8i6mnL5DGIe8l5n
+udUPvIbUhbMavrDd6kwhs0oCjylwdKGlFkCpKMn3HPflfDeHuV9Z8Nrpeq/7+Pm0
+I/fLPkaYlULASJoJCucMYcedY9rmuro9JhV+NuVXaqLIrQPc1vyKFeRuLHh84M6c
+1h1DArdGTykXZUwjXnnHtuOtzjIAzkx2Ns43vEsxggK/MIICuwIBATCBrDCBlzEL
+MAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UE
+BxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMT
+NENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEE1CsTMbOtnoVViHUQRgfj4wDQYJYIZIAWUDBAIBBQCggeQwGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgxMjA0MDczOTIx
+WjAvBgkqhkiG9w0BCQQxIgQgUXBnYQpm74wo2vPeAasq2ZWqPapxbs1AHX7DljxM
+ZGsweQYJKoZIhvcNAQkPMWwwajALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcN
+AwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEA
+1NEhxX/7frKpYvdSLNzWTqhujRWRwI/8UEXRqA5ZYz7P+dKxLASetNxqmaddeFcJ
+6Wf2735m9TKR8dOmB2Bi30XTHBndWWp9ieOeonazKReDkS7lSXsG3VPpKz2RGnWX
+F2yonCi+RVnQZg369y2eToBnxmIixYfSTj5s5xB5tKLaqpFu3ztZhEaJvMDdwn4G
+4zpv1jfFjxQp+sgWpiVvZnqPVJhbltP5rgoAyRbKuL4MY0a1LS9L79TgqB5Pjyr3
+Kfcc9dZBQSjwAIxcoZfxEjRrzO0kfDFFZcfxL3wGUaWCslNPJhBAa6ktnQ+f5UIJ
+KI7vXXPXPNhrr4In9w7+yA==
+
+------4233A7273349379149481EBDB9F1FF48--
