@@ -1,22 +1,26 @@
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUE4b-00062k-Tq
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 17:01:27 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 1/6] mtd: spi-nor: Drop inline on all internal helpers
-Date: Tue, 4 Dec 2018 17:01:10 +0000
-Message-ID: <6e3c6eb7-99f1-b236-4789-8a278acb4b1c@microchip.com>
-References: <20181129141026.24892-1-boris.brezillon@bootlin.com>
- <20181129141026.24892-2-boris.brezillon@bootlin.com>
-In-Reply-To: <20181129141026.24892-2-boris.brezillon@bootlin.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FFECAF63E0BFA445A8C06B27C23E3D78@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+From: Mark Brown <broonie@kernel.org>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org
+Subject: Applied "spi: add support for octal mode I/O data transfer" to the
+ spi tree
+In-Reply-To: <1543826226-30898-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+Message-Id: <20181204172742.10EFD11251E3@debutante.sirena.org.uk>
+Date: Tue,  4 Dec 2018 17:27:42 +0000 (GMT)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +30,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDExLzI5LzIwMTggMDQ6MTAgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gZ2Nj
-IHNob3VsZCBiZSBzbWFydCBlbm91Z2ggdG8gZGVjaWRlIHdoZW4gaW5saW5pbmcgYSBmdW5jdGlv
-biBtYWtlcw0KPiBzZW5zZS4gRHJvcCBhbGwgaW5saW5lIHNwZWNpZmllcnMuDQo+IA0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBib290bGluLmNvbT4N
-Cg0KUmV2aWV3ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNv
-bT4NCg0KPiAtLS0NCj4gQ2hhbmdlcyBpbiB2MjoNCj4gLSBOb25lDQo+IC0tLQ0KPiAgZHJpdmVy
-cy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAyNCArKysrKysrKysrKystLS0tLS0tLS0tLS0NCj4g
-IDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4gDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZlcnMvbXRk
-L3NwaS1ub3Ivc3BpLW5vci5jDQo+IGluZGV4IDgyOGQwM2VkYzBhMy4uMGFhMWIxMDM1YjRiIDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiArKysgYi9kcml2
-ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiBAQCAtMTU5LDcgKzE1OSw3IEBAIHN0YXRpYyBp
-bnQgcmVhZF9jcihzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgICogV3JpdGUgc3RhdHVzIHJlZ2lz
-dGVyIDEgYnl0ZQ0KPiAgICogUmV0dXJucyBuZWdhdGl2ZSBpZiBlcnJvciBvY2N1cnJlZC4NCj4g
-ICAqLw0KPiAtc3RhdGljIGlubGluZSBpbnQgd3JpdGVfc3Ioc3RydWN0IHNwaV9ub3IgKm5vciwg
-dTggdmFsKQ0KPiArc3RhdGljIGludCB3cml0ZV9zcihzdHJ1Y3Qgc3BpX25vciAqbm9yLCB1OCB2
-YWwpDQo+ICB7DQo+ICAJbm9yLT5jbWRfYnVmWzBdID0gdmFsOw0KPiAgCXJldHVybiBub3ItPndy
-aXRlX3JlZyhub3IsIFNQSU5PUl9PUF9XUlNSLCBub3ItPmNtZF9idWYsIDEpOw0KPiBAQCAtMTY5
-LDcgKzE2OSw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IHdyaXRlX3NyKHN0cnVjdCBzcGlfbm9yICpu
-b3IsIHU4IHZhbCkNCj4gICAqIFNldCB3cml0ZSBlbmFibGUgbGF0Y2ggd2l0aCBXcml0ZSBFbmFi
-bGUgY29tbWFuZC4NCj4gICAqIFJldHVybnMgbmVnYXRpdmUgaWYgZXJyb3Igb2NjdXJyZWQuDQo+
-ICAgKi8NCj4gLXN0YXRpYyBpbmxpbmUgaW50IHdyaXRlX2VuYWJsZShzdHJ1Y3Qgc3BpX25vciAq
-bm9yKQ0KPiArc3RhdGljIGludCB3cml0ZV9lbmFibGUoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4g
-IHsNCj4gIAlyZXR1cm4gbm9yLT53cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JFTiwgTlVMTCwg
-MCk7DQo+ICB9DQo+IEBAIC0xNzcsMTIgKzE3NywxMiBAQCBzdGF0aWMgaW5saW5lIGludCB3cml0
-ZV9lbmFibGUoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gIC8qDQo+ICAgKiBTZW5kIHdyaXRlIGRp
-c2FibGUgaW5zdHJ1Y3Rpb24gdG8gdGhlIGNoaXAuDQo+ICAgKi8NCj4gLXN0YXRpYyBpbmxpbmUg
-aW50IHdyaXRlX2Rpc2FibGUoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gK3N0YXRpYyBpbnQgd3Jp
-dGVfZGlzYWJsZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgew0KPiAgCXJldHVybiBub3ItPndy
-aXRlX3JlZyhub3IsIFNQSU5PUl9PUF9XUkRJLCBOVUxMLCAwKTsNCj4gIH0NCj4gIA0KPiAtc3Rh
-dGljIGlubGluZSBzdHJ1Y3Qgc3BpX25vciAqbXRkX3RvX3NwaV9ub3Ioc3RydWN0IG10ZF9pbmZv
-ICptdGQpDQo+ICtzdGF0aWMgc3RydWN0IHNwaV9ub3IgKm10ZF90b19zcGlfbm9yKHN0cnVjdCBt
-dGRfaW5mbyAqbXRkKQ0KPiAgew0KPiAgCXJldHVybiBtdGQtPnByaXY7DQo+ICB9DQo+IEBAIC0y
-MDAsNyArMjAwLDcgQEAgc3RhdGljIHU4IHNwaV9ub3JfY29udmVydF9vcGNvZGUodTggb3Bjb2Rl
-LCBjb25zdCB1OCB0YWJsZVtdWzJdLCBzaXplX3Qgc2l6ZSkNCj4gIAlyZXR1cm4gb3Bjb2RlOw0K
-PiAgfQ0KPiAgDQo+IC1zdGF0aWMgaW5saW5lIHU4IHNwaV9ub3JfY29udmVydF8zdG80X3JlYWQo
-dTggb3Bjb2RlKQ0KPiArc3RhdGljIHU4IHNwaV9ub3JfY29udmVydF8zdG80X3JlYWQodTggb3Bj
-b2RlKQ0KPiAgew0KPiAgCXN0YXRpYyBjb25zdCB1OCBzcGlfbm9yXzN0bzRfcmVhZFtdWzJdID0g
-ew0KPiAgCQl7IFNQSU5PUl9PUF9SRUFELAlTUElOT1JfT1BfUkVBRF80QiB9LA0KPiBAQCAtMjE5
-LDcgKzIxOSw3IEBAIHN0YXRpYyBpbmxpbmUgdTggc3BpX25vcl9jb252ZXJ0XzN0bzRfcmVhZCh1
-OCBvcGNvZGUpDQo+ICAJCQkJICAgICAgQVJSQVlfU0laRShzcGlfbm9yXzN0bzRfcmVhZCkpOw0K
-PiAgfQ0KPiAgDQo+IC1zdGF0aWMgaW5saW5lIHU4IHNwaV9ub3JfY29udmVydF8zdG80X3Byb2dy
-YW0odTggb3Bjb2RlKQ0KPiArc3RhdGljIHU4IHNwaV9ub3JfY29udmVydF8zdG80X3Byb2dyYW0o
-dTggb3Bjb2RlKQ0KPiAgew0KPiAgCXN0YXRpYyBjb25zdCB1OCBzcGlfbm9yXzN0bzRfcHJvZ3Jh
-bVtdWzJdID0gew0KPiAgCQl7IFNQSU5PUl9PUF9QUCwJCVNQSU5PUl9PUF9QUF80QiB9LA0KPiBA
-QCAtMjMxLDcgKzIzMSw3IEBAIHN0YXRpYyBpbmxpbmUgdTggc3BpX25vcl9jb252ZXJ0XzN0bzRf
-cHJvZ3JhbSh1OCBvcGNvZGUpDQo+ICAJCQkJICAgICAgQVJSQVlfU0laRShzcGlfbm9yXzN0bzRf
-cHJvZ3JhbSkpOw0KPiAgfQ0KPiAgDQo+IC1zdGF0aWMgaW5saW5lIHU4IHNwaV9ub3JfY29udmVy
-dF8zdG80X2VyYXNlKHU4IG9wY29kZSkNCj4gK3N0YXRpYyB1OCBzcGlfbm9yX2NvbnZlcnRfM3Rv
-NF9lcmFzZSh1OCBvcGNvZGUpDQo+ICB7DQo+ICAJc3RhdGljIGNvbnN0IHU4IHNwaV9ub3JfM3Rv
-NF9lcmFzZVtdWzJdID0gew0KPiAgCQl7IFNQSU5PUl9PUF9CRV80SywJU1BJTk9SX09QX0JFXzRL
-XzRCIH0sDQo+IEBAIC0yNzYsOCArMjc2LDggQEAgc3RhdGljIHZvaWQgc3BpX25vcl9zZXRfNGJ5
-dGVfb3Bjb2RlcyhzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiAgfQ0KPiAgDQo+ICAvKiBFbmFibGUv
-ZGlzYWJsZSA0LWJ5dGUgYWRkcmVzc2luZyBtb2RlLiAqLw0KPiAtc3RhdGljIGlubGluZSBpbnQg
-c2V0XzRieXRlKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICpp
-bmZvLA0KPiAtCQkJICAgIGludCBlbmFibGUpDQo+ICtzdGF0aWMgaW50IHNldF80Ynl0ZShzdHJ1
-Y3Qgc3BpX25vciAqbm9yLCBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbywNCj4gKwkJICAg
-ICBpbnQgZW5hYmxlKQ0KPiAgew0KPiAgCWludCBzdGF0dXM7DQo+ICAJYm9vbCBuZWVkX3dyZW4g
-PSBmYWxzZTsNCj4gQEAgLTMzNSw3ICszMzUsNyBAQCBzdGF0aWMgaW50IHMzYW5fc3JfcmVhZHko
-c3RydWN0IHNwaV9ub3IgKm5vcikNCj4gIAlyZXR1cm4gISEodmFsICYgWFNSX1JEWSk7DQo+ICB9
-DQo+ICANCj4gLXN0YXRpYyBpbmxpbmUgaW50IHNwaV9ub3Jfc3JfcmVhZHkoc3RydWN0IHNwaV9u
-b3IgKm5vcikNCj4gK3N0YXRpYyBpbnQgc3BpX25vcl9zcl9yZWFkeShzdHJ1Y3Qgc3BpX25vciAq
-bm9yKQ0KPiAgew0KPiAgCWludCBzciA9IHJlYWRfc3Iobm9yKTsNCj4gIAlpZiAoc3IgPCAwKQ0K
-PiBAQCAtMzU0LDcgKzM1NCw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IHNwaV9ub3Jfc3JfcmVhZHko
-c3RydWN0IHNwaV9ub3IgKm5vcikNCj4gIAlyZXR1cm4gIShzciAmIFNSX1dJUCk7DQo+ICB9DQo+
-ICANCj4gLXN0YXRpYyBpbmxpbmUgaW50IHNwaV9ub3JfZnNyX3JlYWR5KHN0cnVjdCBzcGlfbm9y
-ICpub3IpDQo+ICtzdGF0aWMgaW50IHNwaV9ub3JfZnNyX3JlYWR5KHN0cnVjdCBzcGlfbm9yICpu
-b3IpDQo+ICB7DQo+ICAJaW50IGZzciA9IHJlYWRfZnNyKG5vcik7DQo+ICAJaWYgKGZzciA8IDAp
-DQo+IEBAIC0yMzcyLDcgKzIzNzIsNyBAQCBzdHJ1Y3Qgc2ZkcF9iZnB0IHsNCj4gIA0KPiAgLyog
-RmFzdCBSZWFkIHNldHRpbmdzLiAqLw0KPiAgDQo+IC1zdGF0aWMgaW5saW5lIHZvaWQNCj4gK3N0
-YXRpYyB2b2lkDQo+ICBzcGlfbm9yX3NldF9yZWFkX3NldHRpbmdzX2Zyb21fYmZwdChzdHJ1Y3Qg
-c3BpX25vcl9yZWFkX2NvbW1hbmQgKnJlYWQsDQo+ICAJCQkJICAgIHUxNiBoYWxmLA0KPiAgCQkJ
-CSAgICBlbnVtIHNwaV9ub3JfcHJvdG9jb2wgcHJvdG8pDQo+IA0K
+The patch
+
+   spi: add support for octal mode I/O data transfer
+
+has been applied to the spi tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6b03061f882de49b83ccf44beb3a12c920a2da1b Mon Sep 17 00:00:00 2001
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Date: Mon, 3 Dec 2018 08:39:06 +0000
+Subject: [PATCH] spi: add support for octal mode I/O data transfer
+
+Add flags for Octal mode I/O data transfer
+Required for the SPI controller which can do the data transfer (TX/RX)
+on 8 data lines e.g. NXP FlexSPI controller.
+ SPI_TX_OCTAL: transmit with 8 wires
+ SPI_RX_OCTAL: receive with 8 wires
+
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/spi/spi.c       | 12 ++++++++++--
+ include/linux/spi/spi.h |  4 +++-
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index b6fd8ea8ac0d..18ebc400249c 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1633,6 +1633,9 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+ 		case 4:
+ 			spi->mode |= SPI_TX_QUAD;
+ 			break;
++		case 8:
++			spi->mode |= SPI_TX_OCTAL;
++			break;
+ 		default:
+ 			dev_warn(&ctlr->dev,
+ 				"spi-tx-bus-width %d not supported\n",
+@@ -1651,6 +1654,9 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+ 		case 4:
+ 			spi->mode |= SPI_RX_QUAD;
+ 			break;
++		case 8:
++			spi->mode |= SPI_RX_OCTAL;
++			break;
+ 		default:
+ 			dev_warn(&ctlr->dev,
+ 				"spi-rx-bus-width %d not supported\n",
+@@ -2839,7 +2845,8 @@ int spi_setup(struct spi_device *spi)
+ 	/* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
+ 	 */
+ 	if ((spi->mode & SPI_3WIRE) && (spi->mode &
+-		(SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD)))
++		(SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL |
++		 SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL)))
+ 		return -EINVAL;
+ 	/* help drivers fail *cleanly* when they need options
+ 	 * that aren't supported with their current controller
+@@ -2848,7 +2855,8 @@ int spi_setup(struct spi_device *spi)
+ 	 */
+ 	bad_bits = spi->mode & ~(spi->controller->mode_bits | SPI_CS_WORD);
+ 	ugly_bits = bad_bits &
+-		    (SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD);
++		    (SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL |
++		     SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL);
+ 	if (ugly_bits) {
+ 		dev_warn(&spi->dev,
+ 			 "setup: ignoring unsupported mode bits %x\n",
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 6be77fa5ab90..0c1ca5dedbb4 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -154,7 +154,9 @@ struct spi_device {
+ #define	SPI_TX_QUAD	0x200			/* transmit with 4 wires */
+ #define	SPI_RX_DUAL	0x400			/* receive with 2 wires */
+ #define	SPI_RX_QUAD	0x800			/* receive with 4 wires */
+-#define SPI_CS_WORD	0x1000			/* toggle cs after each word */
++#define	SPI_CS_WORD	0x1000			/* toggle cs after each word */
++#define	SPI_TX_OCTAL	0x2000			/* transmit with 8 wires */
++#define	SPI_RX_OCTAL	0x4000			/* receive with 8 wires */
+ 	int			irq;
+ 	void			*controller_state;
+ 	void			*controller_data;
+-- 
+2.19.0.rc2
