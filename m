@@ -1,30 +1,39 @@
-Received: from mail-eopbgr700085.outbound.protection.outlook.com
- ([40.107.70.85] helo=NAM04-SN1-obe.outbound.protection.outlook.com)
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gU6rG-0003AN-46
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 09:19:11 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
- <michals@xilinx.com>, "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>
-Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Tue, 4 Dec 2018 09:18:53 +0000
-Message-ID: <MWHPR02MB2623DDF6C43BBBB99A52D5DFAFAF0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20181120172443.5fb0bc14@bbrezillon>
-In-Reply-To: <20181120172443.5fb0bc14@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1gU7SA-0001YG-D0
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2018 09:57:20 +0000
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ wB49rt9m143421
+ for <linux-mtd@lists.infradead.org>; Tue, 4 Dec 2018 04:57:06 -0500
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+ by mx0b-001b2d01.pphosted.com with ESMTP id 2p5pe5asej-1
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Dec 2018 04:57:05 -0500
+Received: from localhost
+ by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
+ Tue, 4 Dec 2018 09:57:05 -0000
+From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
+Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
+ adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
+ yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
+ paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
+ deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
+ richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
+ viro@zeniv.linux.org.uk
+Subject: [PATCH V2 0/7] Remove fs specific fscrypt and fsverity build config
+ options
+Date: Tue,  4 Dec 2018 15:26:43 +0530
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20181204095650.12562-1-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,113 +43,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+In order to have a common code base for fscrypt & fsverity "post read"
+processing across filesystems which implement fscrypt/fsverity, this
+commit removes filesystem specific build config option
+(CONFIG_EXT4_FS_ENCRYPTION, CONFIG_EXT4_FS_VERITY,
+CONFIG_F2FS_FS_ENCRYPTION, CONFIG_F2FS_FS_VERITY and
+CONFIG_UBIFS_FS_ENCRYPTION) and replaces it with build options
+(CONFIG_FS_ENCRYPTION and CONFIG_FS_VERITY) whose values affect all
+the filesystems making use of fscrypt and fsverity.
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Tuesday, November 20, 2018 9:55 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
-> <michals@xilinx.com>; nagasuresh12@gmail.com; linux-mtd@lists.infradead.o=
-rg; linux-
-> kernel@vger.kernel.org; robh@kernel.org
-> Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for =
-Arasan
-> NAND Flash Controller
->=20
-> On Fri, 9 Nov 2018 10:30:41 +0530
-> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
->=20
-> > +static int anfc_setup_data_interface(struct nand_chip *chip, int cslin=
-e,
-> > +				     const struct nand_data_interface *conf) {
-> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
-> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
-> > +	int err;
-> > +	const struct nand_sdr_timings *sdr;
-> > +	u32 inftimeval;
-> > +	bool change_sdr_clk =3D false;
-> > +
-> > +	if (csline =3D=3D NAND_DATA_IFACE_CHECK_ONLY)
-> > +		return 0;
-> > +
-> > +	/*
-> > +	 * If the controller is already in the same mode as flash device
-> > +	 * then no need to change the timing mode again.
-> > +	 */
-> > +	sdr =3D nand_get_sdr_timings(conf);
-> > +	if (IS_ERR(sdr))
-> > +		return PTR_ERR(sdr);
-> > +
-> > +	if (sdr->mode < 0)
-> > +		return -ENOTSUPP;
-> > +
-> > +	inftimeval =3D sdr->mode & 7;
-> > +	if (sdr->mode >=3D 2 && sdr->mode <=3D 5)
-> > +		change_sdr_clk =3D true;
-> > +	/*
-> > +	 * SDR timing modes 2-5 will not work for the arasan nand when
-> > +	 * freq > 90 MHz, so reduce the freq in SDR modes 2-5 to < 90Mhz
->=20
-> What's the freq for mode 0 and 1?
-It is 100MHz in SDR mode 0 and 1.
+PS: Since I have access to only to x86 and ppc64le machines, I haven't tested the
+defconfig files for other architectures.
 
->=20
-> > +	 */
-> > +	if (change_sdr_clk) {
-> > +		clk_disable_unprepare(nfc->clk_sys);
-> > +		err =3D clk_set_rate(nfc->clk_sys, SDR_MODE_DEFLT_FREQ);
->=20
-> You should not change the clk rate here. It should be done when the chip =
-is selected, so that,
-> if you ever have 2 different chips connected to the same controller, you =
-can adapt the rate
-> when they are accessed.
-Ok, got it. I will update.
+Changelog:
+V1 -> V2:
+1. Address the following review comments provided by Eric Biggers,
+   - In ext4_should_use_dax(), Use ext4_test_inode_flag() to check for
+     fscrypt/fsverity status of an inode.
+   - Update documentation associated with fscrypt & fsverity to refer to
+     CONFIG_FS_ENCRYPTION and CONFIG_FS_VERITY build flags.
+   - Remove filesystem specific fscrypt build configuration from defconfig
+     files.
+   - Provide a list of supported filesystems for CONFIG_FS_ENCRYPTION and
+     CONFIG_FS_VERITY build flags.
+   - Update comment describing S_VERITY flag.
+2. Remove UBIFS specific encryption build option and make use of the generic
+   CONFIG_FS_ENCRYPTION flag.
 
->=20
-> > +		if (err) {
-> > +			dev_err(nfc->dev, "Can't set the clock rate\n");
-> > +			return err;
-> > +		}
-> > +		err =3D clk_prepare_enable(nfc->clk_sys);
-> > +		if (err) {
-> > +			dev_err(nfc->dev, "Unable to enable sys clock.\n");
-> > +			clk_disable_unprepare(nfc->clk_sys);
-> > +			return err;
-> > +		}
-> > +	}
-> > +	achip->inftimeval =3D inftimeval;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int anfc_nand_attach_chip(struct nand_chip *chip) {
-> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
-> > +	u32 ret;
-> > +
-> > +	if (mtd->writesize <=3D SZ_512)
-> > +		achip->spare_caddr_cycles =3D 1;
-> > +	else
-> > +		achip->spare_caddr_cycles =3D 2;
-> > +
-> > +	chip->ecc.calc_buf =3D kmalloc(mtd->oobsize, GFP_KERNEL);
-> > +	chip->ecc.code_buf =3D kmalloc(mtd->oobsize, GFP_KERNEL);
->=20
-> Those bufs are allocated but never freed (memleak). Also, are you sure yo=
-u really need them.
-These bufs are freed in nand_release(), which is calling from anfc_remove()=
-.
+RFC -> V1:
+1. Add a new patch to implement S_VERITY/IS_VERITY().
+2. Split code that replaces filesystem specific routines with generic
+   IS_ENCRYPTED() and IS_VERITY() calls into separate patches.
 
-And chip->ecc.code_buf, is used in anfc_read_page_hwecc().
-What we are doing here is, extract ECC code from OOB and place it in ecv.co=
-de_buf, and passing this info to nand_check_ecc_chunk(buf, chip->ecc.size, =
-&ecc_code[i], eccbytes, NULL, 0,chip->ecc.strength).
-i.e. just to store ECC code from OOB area.
-=20
-And chip->ecc.calc_buf is no where used in the driver, I will remove it.
+Chandan Rajendra (7):
+  ext4: use IS_ENCRYPTED() to check encryption status
+  f2fs: use IS_ENCRYPTED() to check encryption status
+  fscrypt: remove filesystem specific build config option
+  Add S_VERITY and IS_VERITY()
+  ext4: use IS_VERITY() to check inode's fsverity status
+  f2fs: use IS_VERITY() to check inode's fsverity status
+  fsverity: Remove filesystem specific build config option
 
-Thanks,
-Naga Sureshkumar Relli.
+ Documentation/filesystems/fscrypt.rst   |   4 +-
+ Documentation/filesystems/fsverity.rst  |   4 +-
+ arch/mips/configs/generic_defconfig     |   2 +-
+ arch/nds32/configs/defconfig            |   2 +-
+ arch/s390/configs/debug_defconfig       |   2 +-
+ arch/s390/configs/performance_defconfig |   2 +-
+ fs/crypto/Kconfig                       |   5 +-
+ fs/ext4/Kconfig                         |  35 --
+ fs/ext4/dir.c                           |  10 +-
+ fs/ext4/ext4.h                          |  23 +-
+ fs/ext4/ext4_jbd2.h                     |   2 +-
+ fs/ext4/extents.c                       |   4 +-
+ fs/ext4/file.c                          |   2 +-
+ fs/ext4/ialloc.c                        |   2 +-
+ fs/ext4/inode.c                         |  32 +-
+ fs/ext4/ioctl.c                         |   4 +-
+ fs/ext4/move_extent.c                   |   3 +-
+ fs/ext4/namei.c                         |  18 +-
+ fs/ext4/page-io.c                       |   8 +-
+ fs/ext4/readpage.c                      |  10 +-
+ fs/ext4/super.c                         |  13 +-
+ fs/ext4/sysfs.c                         |   8 +-
+ fs/f2fs/Kconfig                         |  31 --
+ fs/f2fs/data.c                          |   6 +-
+ fs/f2fs/dir.c                           |  10 +-
+ fs/f2fs/f2fs.h                          |   9 +-
+ fs/f2fs/file.c                          |  16 +-
+ fs/f2fs/inode.c                         |   4 +-
+ fs/f2fs/namei.c                         |   6 +-
+ fs/f2fs/super.c                         |  14 +-
+ fs/f2fs/sysfs.c                         |   8 +-
+ fs/ubifs/Kconfig                        |  11 -
+ fs/ubifs/Makefile                       |   2 +-
+ fs/ubifs/ioctl.c                        |   4 +-
+ fs/ubifs/sb.c                           |   2 +-
+ fs/ubifs/super.c                        |   2 +-
+ fs/ubifs/ubifs.h                        |   5 +-
+ fs/verity/Kconfig                       |   3 +-
+ include/linux/fs.h                      |  10 +-
+ include/linux/fscrypt.h                 | 416 +++++++++++++++++++++++-
+ include/linux/fscrypt_notsupp.h         | 231 -------------
+ include/linux/fscrypt_supp.h            | 204 ------------
+ include/linux/fsverity.h                |   3 +-
+ 43 files changed, 532 insertions(+), 660 deletions(-)
+ delete mode 100644 include/linux/fscrypt_notsupp.h
+ delete mode 100644 include/linux/fscrypt_supp.h
+
+-- 
+2.19.1
