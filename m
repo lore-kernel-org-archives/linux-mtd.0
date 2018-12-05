@@ -1,25 +1,34 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUZbd-0003uE-Gw
- for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:01:00 +0000
-Date: Wed, 5 Dec 2018 17:00:25 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Cc: <alexandre.belloni@bootlin.com>, <richard@nod.at>,
- <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>,
- <alexander.sverdlin@nokia.com>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
-Message-ID: <20181205170025.0ccb8837@bbrezillon>
-In-Reply-To: <1f244544-7f85-fa28-afcd-d6b7fae192fe@microchip.com>
-References: <20181129144143.26079-1-boris.brezillon@bootlin.com>
- <20181129144143.26079-2-boris.brezillon@bootlin.com>
- <b6f66057-7b7c-8e9c-1a05-71bf6611ffaa@microchip.com>
- <20181205161902.0744f562@bbrezillon>
- <1f244544-7f85-fa28-afcd-d6b7fae192fe@microchip.com>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUZlO-00083d-MO
+ for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:11:05 +0000
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com
+ [209.85.208.173])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id E1871214C1
+ for <linux-mtd@lists.infradead.org>; Wed,  5 Dec 2018 16:10:51 +0000 (UTC)
+Received: by mail-lj1-f173.google.com with SMTP id n18-v6so18855244lji.7
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2018 08:10:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAJKOXPdPnha1-1dCRFaPZ-CGzS1OzNcFrxuOJmWstHJcRAMZwg@mail.gmail.com>
+ <20181120113326.0d4f061e@xps13>
+ <CAJKOXPcrVXdCXqmxffJca7HfEV3G3agkzjWu1rfsNDDbMzc_XQ@mail.gmail.com>
+ <20181120130859.78d53da3@bbrezillon>
+ <CAJKOXPfgyw9tFTC=eZFVHz8us1+6RxEcnmLUi-umO2+N9vRzDg@mail.gmail.com>
+In-Reply-To: <CAJKOXPfgyw9tFTC=eZFVHz8us1+6RxEcnmLUi-umO2+N9vRzDg@mail.gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Wed, 5 Dec 2018 17:10:38 +0100
+Message-ID: <CAJKOXPepDpdhz2yPmdBMcncJ8noRdNTyXqP6WbUZR4Cf=BnEFA@mail.gmail.com>
+Subject: Re: [BUG BISECT] Missing MTD NAND partitions - mtd: rawnand: Move the
+ ->exec_op() method to nand_controller_ops
+To: boris.brezillon@bootlin.com
+Cc: miquel.raynal@bootlin.com, jmkrzyszt@gmail.com,
+ Stefan Agner <stefan@agner.ch>, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +38,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 Dec 2018 15:48:46 +0000
-<Tudor.Ambarus@microchip.com> wrote:
+On Tue, 20 Nov 2018 at 13:15, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Tue, 20 Nov 2018 at 13:09, Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> >
+> > On Tue, 20 Nov 2018 12:48:46 +0100
+> > Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > > On Tue, 20 Nov 2018 at 11:33, Miquel Raynal <miquel.raynal@bootlin.co=
+m> wrote:
+> > > >
+> > > > Hi Krzysztof,
+> > > >
+> > > > Krzysztof Koz=C5=82owski <k.kozlowski.k@gmail.com> wrote on Tue, 20=
+ Nov 2018
+> > > > 10:46:33 +0100:
+> > > >
+> > > > > Hi all,
+> > > > >
+> > > > > Since few days linux-next has problem on Freescale VF500 - MTD se=
+ems
+> > > > > to be broken.
+> > > > >
+> > > > > Bisect pointed me to commit 7c27338c728e39ef47c83d101959aa3325069=
+69d
+> > > > > ("mtd: rawnand: Move the ->exec_op() method to nand_controller_op=
+s")
+> > > > > as reason of failure to find MTD partitions.
+> > > > >
+> > > > > Toradex Colibri VF50 on Iris board (ARMv7, UP, Cortext-A5, NXP VF=
+500,
+> > > > > 128 MB RAM, 128 MB NAND, Systemd: v232) booted from NFS root (NFS=
+v4)
+> > > > > trying to mount UBIFS from NAND/MTD. Board uses VF610 NAND driver=
+.
+> > > > >
+> > > > > The MTD partitions are missing entirely (nothing under /dev/mtd).
+> > > > > In the logs you can also see:
+> > > > > [    1.232161] UBI error: cannot open mtd ubi2, error -2
+> > > > >
+> > > > > Attached - dmesg.log
+> > > > >
+> > > > > Let me know if you need defconfig or any other information.
+> > > >
+> > > > Thank you very much for testing and reporting the bug!
+> > > >
+> > > > Could you please test with this diff applied [1] please? We discuss=
+ed
+> > > > with Boris and we think it should fix your setup (and all others al=
+so
+> > > > impacted).
+> > > >
+> > > > [1] http://code.bulix.org/r1m99i-509201
+> > >
+> > > error: patch failed: drivers/mtd/nand/raw/nand_base.c:4399
+> > > error: drivers/mtd/nand/raw/nand_base.c: patch does not apply
+> > >
+> > > Maybe you have a git tree with this somewhere?
+> >
+> > Yep: https://github.com/bbrezillon/linux/tree/nand/next-fix
+>
+> Works fine now, thanks!
+> Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> On 12/05/2018 05:19 PM, Boris Brezillon wrote:
-> >>> @@ -3750,6 +3747,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
-> >>>  	if (info->flags & SPI_NOR_NO_FR)
-> >>>  		params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-> >>>  
-> >>> +	if (info->flags & SPI_NOR_4B_OPCODES ||
-> >>> +	    (JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M))
-> >>> +		nor->flags |= SNOR_F_4B_OPCODES;
-> >>> +    
-> >> you are potentially overwriting the SNOR_F_4B_OPCODES that may be set in SFDP. I
-> >> suggest to set SNOR_F_4B_OPCODES flag inside of the "if (mtd->size > 0x1000000)"
-> >> block.  
-> > Shouldn't we override this value anyway? I mean, I thought flash_info
-> > flags had precedence on the SFDP ones. Also, just because the flash is  
-> 
-> I tend to say that we shouldn't. We have some "JEDEC knows better" attitude in
-> the code: we are overwriting platform ID if we find a different ID in sfdp, we
-> choose addr_width from SFDP even if set in info->addr_width, and we are
-> overwriting all the settings based on flash_info when sfdp parsing succeeds in
-> spi_nor_init_params().
+Although the patch fixed the issue... but it seems it is not in
+linux-next. The next is broken since almost two weeks.
 
-Given all the "broken SFDP" problems we had, I'm not sure this was the
-right decision, but that's another topic.
-
-For this specific one, I'd really prefer to keep this code as is. Note
-that the "JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M"
-is later moved to a post SFDP fixup hook in my rework, which means we'll
-anyway override the decision taken by the SFDP parsing.
-
-> 
-> > smaller than 16MB, doesn't mean it does not support 4B opcodes. We
-> > probably won't use the 4B opcodes in that case, but still.
-> >   
-> 
-> I agree that manufacturers have a sense of humor and this might be possible. But
-> there's no need to use 4B opcodes in this case, so a post_sfdp fixup will help
-> here too.
-
-Except there's nothing to fix in this case, we just won't use 4B
-opcodes if we don't need to, that's all.
+Best regards,
+Krzysztof
