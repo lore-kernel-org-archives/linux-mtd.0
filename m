@@ -1,21 +1,21 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUa9J-0005tU-B4
- for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:35:47 +0000
+ id 1gUaEj-0008VV-0G
+ for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:41:22 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>
-CC: <alexandre.belloni@bootlin.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <alexander.sverdlin@nokia.com>
-Subject: Re: [PATCH v4 2/3] mtd: spi-nor: Add a post BFPT parsing fixup hook
-Date: Wed, 5 Dec 2018 16:35:15 +0000
-Message-ID: <6d2f2c1d-9c95-296e-6907-a8aa8b7b80ef@microchip.com>
+CC: <alexandre.belloni@bootlin.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <alexander.sverdlin@nokia.com>,
+ <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 3/3] mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
+Date: Wed, 5 Dec 2018 16:41:05 +0000
+Message-ID: <ff941bc1-8165-a188-1814-8eede77f3daf@microchip.com>
 References: <20181129144143.26079-1-boris.brezillon@bootlin.com>
- <20181129144143.26079-3-boris.brezillon@bootlin.com>
-In-Reply-To: <20181129144143.26079-3-boris.brezillon@bootlin.com>
+ <20181129144143.26079-4-boris.brezillon@bootlin.com>
+In-Reply-To: <20181129144143.26079-4-boris.brezillon@bootlin.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="utf-8"
-Content-ID: <5242D9551FC217438FC71F6DB00172BA@namprd11.prod.outlook.com>
+Content-ID: <3B7C72AC3098224F9C14260071C97392@namprd11.prod.outlook.com>
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,14 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDExLzI5LzIwMTggMDQ6NDEgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gK3N0
-cnVjdCBzcGlfbm9yX2ZpeHVwcyB7DQo+ICsJaW50ICgqcG9zdF9iZnB0KShzdHJ1Y3Qgc3BpX25v
-ciAqbm9yLA0KPiArCQkJIGNvbnN0IHN0cnVjdCBzZmRwX3BhcmFtZXRlcl9oZWFkZXIgKmJmcHRf
-aGVhZGVyLA0KPiArCQkJIGNvbnN0IHN0cnVjdCBzZmRwX2JmcHQgKmJmcHQsDQo+ICsJCQkgc3Ry
-dWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyICpwYXJhbXMpOw0KPiArfTsNCg0KSSBsaWtlIHRo
-ZSBpZGVhLiBUaGUgY29kZSBsb29rcyBnb29kLiBXaGF0IEkgbm90aWNlZCBpcyB0aGF0IHRoZSBz
-ZmRwIGxvZ2ljIGlzDQpub3cgc3BsaXQgaW4gZGlmZmVyZW50IHNlY3Rpb25zIG9mIHNwaS1ub3Ig
-ZmlsZS4gSW4gb3JkZXIgdG8gYXZvaWQgdGhlIGJ1cmRlbiBvZg0KbW92aW5nIHRoZSBzZmRwIGNv
-ZGUgaW5zaWRlIHNwaS1ub3IsIHlvdSBjYW4gaGF2ZSB0aGVzZSAzIGZvcndhcmQgZGVjbGFyYXRp
-b25zDQphbmQgZG8gdGhlIHNmZHAgbW92ZSBsYXRlciBvbiwgaW4gYSBzZXBhcmF0ZSBmaWxlLg0K
-DQp0YQ0K
+DQoNCk9uIDExLzI5LzIwMTggMDQ6NDEgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gTVgy
+NUwyNTYzNUYgYW5kIE1YMjVMMjU2MzVFIHNoYXJlIHRoZSBzYW1lIEpFREVDLUlELCBidXQgdGhl
+IEYgdmFyaWFudA0KPiBzdXBwb3J0cyA0LWJ5dGUgb3Bjb2RlcyB3aGlsZSB0aGUgRSB2YXJpYW50
+IGRvZXNuJ3QuIFdlIG5lZWQgYSB3YXkgdG8NCj4gZGlmZmVyZW50aWF0ZSB0aG9zZSAyIGNoaXBz
+IGFuZCBzZXQgdGhlIFNOT1JfRl80Ql9PUENPREVTIGZsYWcgb25seSBmb3INCj4gdGhlIEYgdmFy
+aWFudC4NCj4gDQo+IEx1Y2tpbHksIDQtYnl0ZSBvcGNvZGUgc3VwcG9ydCBpcyBub3QgdGhlIG9u
+bHkgZGlmZmVyZW5jZTogRmFzdCBSZWFkDQo+IDQtNC00IGlzIG9ubHkgc3VwcG9ydGVkIGJ5IHRo
+ZSBGIHZhcmlhbnQsIGFuZCB0aGlzIGZlYXR1cmUgaXMNCj4gYWR2ZXJ0aXNlZCBpbiB0aGUgQkZQ
+VCB0YWJsZS4gVXNlIHRoaXMgdG8gZGVjaWRlIHdoZW4gdG8gc2V0IHRoZQ0KPiBTTk9SX0ZfNEJf
+T1BDT0RFUyBmbGFnLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jp
+cy5icmV6aWxsb25AYm9vdGxpbi5jb20+DQoNCkxvb2tzIGdvb2QuIEknbSBub3QgdmVyeSBrZWVu
+IG9mIHNlZWluZyB5ZXQgYW5vdGhlciBzdHlsZSB3aGVuIGRlY2xhcmluZyBzcGkgbm9yDQppZHMs
+IGJ1dCBJIGNhbiBsaXZlIHdpdGggaXQuDQoNCnRhDQo=
