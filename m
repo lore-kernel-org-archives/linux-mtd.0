@@ -1,28 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUaRa-0006ja-9d
- for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:54:39 +0000
-Date: Wed, 5 Dec 2018 17:54:26 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Cc: <alexandre.belloni@bootlin.com>, <richard@nod.at>,
- <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>,
- <alexander.sverdlin@nokia.com>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
-Message-ID: <20181205175426.5e0216c0@bbrezillon>
-In-Reply-To: <20181205173254.15135002@bbrezillon>
-References: <20181129144143.26079-1-boris.brezillon@bootlin.com>
- <20181129144143.26079-2-boris.brezillon@bootlin.com>
- <b6f66057-7b7c-8e9c-1a05-71bf6611ffaa@microchip.com>
- <20181205161902.0744f562@bbrezillon>
- <1f244544-7f85-fa28-afcd-d6b7fae192fe@microchip.com>
- <20181205170025.0ccb8837@bbrezillon>
- <7d581ee6-df1c-da98-5eba-0337ff51c101@microchip.com>
- <20181205173254.15135002@bbrezillon>
+Received: from mail-eopbgr680133.outbound.protection.outlook.com
+ ([40.107.68.133] helo=NAM04-BN3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUckI-0005J2-RO
+ for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 19:22:08 +0000
+From: Yong Qin <Yong.Qin@cypress.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, James Tomasetta <James.Tomasetta@cypress.com>,
+ Jimmy Zhao <jimmy.zhao@nxp.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: SPI-NOR FS512S incorrect CR3NV[1] value
+Date: Wed, 5 Dec 2018 19:21:51 +0000
+Message-ID: <DM5PR06MB32285AC8B1327F52325D1AA28FA80@DM5PR06MB3228.namprd06.prod.outlook.com>
+References: <VI1PR04MB57263A8FC62719342DAB593499AE0@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181203083814.74662f38@bbrezillon>
+ <DM5PR06MB322865B43A86A57E77C92F748FAF0@DM5PR06MB3228.namprd06.prod.outlook.com>
+ <20181204100330.28acbecd@bbrezillon>
+In-Reply-To: <20181204100330.28acbecd@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 Dec 2018 17:32:54 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Hi Boris,
 
-> > >>> smaller than 16MB, doesn't mean it does not support 4B opcodes. We
-> > >>> probably won't use the 4B opcodes in that case, but still.
-> > >>>       
-> > >>
-> > >> I agree that manufacturers have a sense of humor and this might be possible. But
-> > >> there's no need to use 4B opcodes in this case, so a post_sfdp fixup will help
-> > >> here too.    
-> > > 
-> > > Except there's nothing to fix in this case, we just won't use 4B
-> > > opcodes if we don't need to, that's all.    
-> > 
-> > you'll have an extra byte of address that has a tiny impact on performance on
-> > small requests. I see it as a fix, we should do what's best to do. anyway ...  
-> 
-> No, see the checks that are done in this patch: to use 4B_CODES the
-> flag should be set and the NOR should be larger than 16MB. The flag
-> does not mean "use 4B opcodes", it meas "4B opMcodes are supported".
+Thanks for pointing this out.
 
-Maybe I should rename the flag SNOR_F_SUPPORTS_4B_OPCODES to make it
-clear.
+Confirmed with our product team, this is the part of datasheet discrepancy.=
+ Since FS512S only has 256KB sector size option, CR3NV[1] is don't care in =
+FS512S and default value is set as 0 in factory.
+
+Column 3 (CR3NV[1]) of table 70 in datasheet will be removed.
+
+For software implementation, if identified the device is FS512S, then check=
+ing the combination of CR3NV[3]  & CR1NV[2] is sufficient to decide if the =
+device has top/bottom 4KB sectors, or uniform 256KB sectors.
+
+Thanks,
+Yong
+
+-----Original Message-----
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+Sent: Tuesday, December 4, 2018 4:04 AM
+To: Yong Qin <Yong.Qin@cypress.com>
+Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; Tudor Ambarus <tudor.=
+ambarus@microchip.com>; cyrille.pitchen@wedev4u.fr; James Tomasetta <James.=
+Tomasetta@cypress.com>; Jimmy Zhao <jimmy.zhao@nxp.com>; linux-mtd@lists.in=
+fradead.org
+Subject: Re: SPI-NOR FS512S incorrect CR3NV[1] value
+
+Hi Yong,
+
+On Tue, 4 Dec 2018 01:37:14 +0000
+Yong Qin <Yong.Qin@cypress.com> wrote:
+
+> Hi Boris,
+>
+> Do you mean the SFDP table?
+
+Sorry, I meant the SMPT (Sector Map Parameter Table) section of the SFDP ta=
+ble. See page 130 of this datasheet [1].
+
+> Can you please share me more detail of what is wrong, i.e., which
+> parameter, what is expect value and what you get?
+
+See "Table 70. Sector Map Parameter", CR3NV[1] is always set to one, and wh=
+en we retrieve this value at runtime we get a 0. Which means we won't find =
+a matching mapid when iterating over the map table, hence the bug reported =
+by Yogesh.
+
+If CR3NV[1] is always 0, then the SMPT should be fixed accordingly:
+
+CR3NV[3]  CR1NV[2]  CR3NV[1]  Index  Value Description
+0         0         0         00h    4 kB sectors at bottom with remainder =
+256 kB sectors
+0         1         0         02h    4 kB sectors at top with remainder 256=
+ kB sectors
+1         0         0         04h    Uniform 256 kB sectors
+
+Regards,
+
+Boris
+
+[1]http://www.cypress.com/file/216376/download
+
+This message and any attachments may contain confidential information from =
+Cypress or its subsidiaries. If it has been received in error, please advis=
+e the sender and immediately delete this message.
