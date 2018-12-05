@@ -1,28 +1,27 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUa14-0001JF-B3
- for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:27:16 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@bootlin.com>
-CC: <alexandre.belloni@bootlin.com>, <richard@nod.at>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUa6u-0003vB-1J
+ for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 16:33:17 +0000
+Date: Wed, 5 Dec 2018 17:32:54 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <alexandre.belloni@bootlin.com>, <richard@nod.at>,
  <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>,
  <alexander.sverdlin@nokia.com>, <computersforpeace@gmail.com>,
  <dwmw2@infradead.org>
 Subject: Re: [PATCH v4 1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
-Date: Wed, 5 Dec 2018 16:26:06 +0000
-Message-ID: <7d581ee6-df1c-da98-5eba-0337ff51c101@microchip.com>
+Message-ID: <20181205173254.15135002@bbrezillon>
+In-Reply-To: <7d581ee6-df1c-da98-5eba-0337ff51c101@microchip.com>
 References: <20181129144143.26079-1-boris.brezillon@bootlin.com>
  <20181129144143.26079-2-boris.brezillon@bootlin.com>
  <b6f66057-7b7c-8e9c-1a05-71bf6611ffaa@microchip.com>
  <20181205161902.0744f562@bbrezillon>
  <1f244544-7f85-fa28-afcd-d6b7fae192fe@microchip.com>
  <20181205170025.0ccb8837@bbrezillon>
-In-Reply-To: <20181205170025.0ccb8837@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A2D6B8F073EB464CB8E57994D4D0779D@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <7d581ee6-df1c-da98-5eba-0337ff51c101@microchip.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +31,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDEyLzA1LzIwMTggMDY6MDAgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gT24g
-V2VkLCA1IERlYyAyMDE4IDE1OjQ4OjQ2ICswMDAwDQo+IDxUdWRvci5BbWJhcnVzQG1pY3JvY2hp
-cC5jb20+IHdyb3RlOg0KPiANCj4+IE9uIDEyLzA1LzIwMTggMDU6MTkgUE0sIEJvcmlzIEJyZXpp
-bGxvbiB3cm90ZToNCj4+Pj4+IEBAIC0zNzUwLDYgKzM3NDcsMTAgQEAgaW50IHNwaV9ub3Jfc2Nh
-bihzdHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdCBjaGFyICpuYW1lLA0KPj4+Pj4gIAlpZiAoaW5m
-by0+ZmxhZ3MgJiBTUElfTk9SX05PX0ZSKQ0KPj4+Pj4gIAkJcGFyYW1zLmh3Y2Fwcy5tYXNrICY9
-IH5TTk9SX0hXQ0FQU19SRUFEX0ZBU1Q7DQo+Pj4+PiAgDQo+Pj4+PiArCWlmIChpbmZvLT5mbGFn
-cyAmIFNQSV9OT1JfNEJfT1BDT0RFUyB8fA0KPj4+Pj4gKwkgICAgKEpFREVDX01GUihpbmZvKSA9
-PSBTTk9SX01GUl9TUEFOU0lPTiAmJiBtdGQtPnNpemUgPiBTWl8xNk0pKQ0KPj4+Pj4gKwkJbm9y
-LT5mbGFncyB8PSBTTk9SX0ZfNEJfT1BDT0RFUzsNCj4+Pj4+ICsgICAgDQo+Pj4+IHlvdSBhcmUg
-cG90ZW50aWFsbHkgb3ZlcndyaXRpbmcgdGhlIFNOT1JfRl80Ql9PUENPREVTIHRoYXQgbWF5IGJl
-IHNldCBpbiBTRkRQLiBJDQo+Pj4+IHN1Z2dlc3QgdG8gc2V0IFNOT1JfRl80Ql9PUENPREVTIGZs
-YWcgaW5zaWRlIG9mIHRoZSAiaWYgKG10ZC0+c2l6ZSA+IDB4MTAwMDAwMCkiDQo+Pj4+IGJsb2Nr
-LiAgDQo+Pj4gU2hvdWxkbid0IHdlIG92ZXJyaWRlIHRoaXMgdmFsdWUgYW55d2F5PyBJIG1lYW4s
-IEkgdGhvdWdodCBmbGFzaF9pbmZvDQo+Pj4gZmxhZ3MgaGFkIHByZWNlZGVuY2Ugb24gdGhlIFNG
-RFAgb25lcy4gQWxzbywganVzdCBiZWNhdXNlIHRoZSBmbGFzaCBpcyAgDQo+Pg0KPj4gSSB0ZW5k
-IHRvIHNheSB0aGF0IHdlIHNob3VsZG4ndC4gV2UgaGF2ZSBzb21lICJKRURFQyBrbm93cyBiZXR0
-ZXIiIGF0dGl0dWRlIGluDQo+PiB0aGUgY29kZTogd2UgYXJlIG92ZXJ3cml0aW5nIHBsYXRmb3Jt
-IElEIGlmIHdlIGZpbmQgYSBkaWZmZXJlbnQgSUQgaW4gc2ZkcCwgd2UNCj4+IGNob29zZSBhZGRy
-X3dpZHRoIGZyb20gU0ZEUCBldmVuIGlmIHNldCBpbiBpbmZvLT5hZGRyX3dpZHRoLCBhbmQgd2Ug
-YXJlDQo+PiBvdmVyd3JpdGluZyBhbGwgdGhlIHNldHRpbmdzIGJhc2VkIG9uIGZsYXNoX2luZm8g
-d2hlbiBzZmRwIHBhcnNpbmcgc3VjY2VlZHMgaW4NCj4+IHNwaV9ub3JfaW5pdF9wYXJhbXMoKS4N
-Cj4gDQo+IEdpdmVuIGFsbCB0aGUgImJyb2tlbiBTRkRQIiBwcm9ibGVtcyB3ZSBoYWQsIEknbSBu
-b3Qgc3VyZSB0aGlzIHdhcyB0aGUNCj4gcmlnaHQgZGVjaXNpb24sIGJ1dCB0aGF0J3MgYW5vdGhl
-ciB0b3BpYy4NCj4gDQo+IEZvciB0aGlzIHNwZWNpZmljIG9uZSwgSSdkIHJlYWxseSBwcmVmZXIg
-dG8ga2VlcCB0aGlzIGNvZGUgYXMgaXMuIE5vdGUNCj4gdGhhdCB0aGUgIkpFREVDX01GUihpbmZv
-KSA9PSBTTk9SX01GUl9TUEFOU0lPTiAmJiBtdGQtPnNpemUgPiBTWl8xNk0iDQo+IGlzIGxhdGVy
-IG1vdmVkIHRvIGEgcG9zdCBTRkRQIGZpeHVwIGhvb2sgaW4gbXkgcmV3b3JrLCB3aGljaCBtZWFu
-cyB3ZSdsbA0KPiBhbnl3YXkgb3ZlcnJpZGUgdGhlIGRlY2lzaW9uIHRha2VuIGJ5IHRoZSBTRkRQ
-IHBhcnNpbmcuDQo+IA0KPj4NCj4+PiBzbWFsbGVyIHRoYW4gMTZNQiwgZG9lc24ndCBtZWFuIGl0
-IGRvZXMgbm90IHN1cHBvcnQgNEIgb3Bjb2Rlcy4gV2UNCj4+PiBwcm9iYWJseSB3b24ndCB1c2Ug
-dGhlIDRCIG9wY29kZXMgaW4gdGhhdCBjYXNlLCBidXQgc3RpbGwuDQo+Pj4gICANCj4+DQo+PiBJ
-IGFncmVlIHRoYXQgbWFudWZhY3R1cmVycyBoYXZlIGEgc2Vuc2Ugb2YgaHVtb3IgYW5kIHRoaXMg
-bWlnaHQgYmUgcG9zc2libGUuIEJ1dA0KPj4gdGhlcmUncyBubyBuZWVkIHRvIHVzZSA0QiBvcGNv
-ZGVzIGluIHRoaXMgY2FzZSwgc28gYSBwb3N0X3NmZHAgZml4dXAgd2lsbCBoZWxwDQo+PiBoZXJl
-IHRvby4NCj4gDQo+IEV4Y2VwdCB0aGVyZSdzIG5vdGhpbmcgdG8gZml4IGluIHRoaXMgY2FzZSwg
-d2UganVzdCB3b24ndCB1c2UgNEINCj4gb3Bjb2RlcyBpZiB3ZSBkb24ndCBuZWVkIHRvLCB0aGF0
-J3MgYWxsLg0KDQp5b3UnbGwgaGF2ZSBhbiBleHRyYSBieXRlIG9mIGFkZHJlc3MgdGhhdCBoYXMg
-YSB0aW55IGltcGFjdCBvbiBwZXJmb3JtYW5jZSBvbg0Kc21hbGwgcmVxdWVzdHMuIEkgc2VlIGl0
-IGFzIGEgZml4LCB3ZSBzaG91bGQgZG8gd2hhdCdzIGJlc3QgdG8gZG8uIGFueXdheSAuLi4NCg==
+On Wed, 5 Dec 2018 16:26:06 +0000
+<Tudor.Ambarus@microchip.com> wrote:
+
+> On 12/05/2018 06:00 PM, Boris Brezillon wrote:
+> > On Wed, 5 Dec 2018 15:48:46 +0000
+> > <Tudor.Ambarus@microchip.com> wrote:
+> >   
+> >> On 12/05/2018 05:19 PM, Boris Brezillon wrote:  
+> >>>>> @@ -3750,6 +3747,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >>>>>  	if (info->flags & SPI_NOR_NO_FR)
+> >>>>>  		params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+> >>>>>  
+> >>>>> +	if (info->flags & SPI_NOR_4B_OPCODES ||
+> >>>>> +	    (JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M))
+> >>>>> +		nor->flags |= SNOR_F_4B_OPCODES;
+> >>>>> +      
+> >>>> you are potentially overwriting the SNOR_F_4B_OPCODES that may be set in SFDP. I
+> >>>> suggest to set SNOR_F_4B_OPCODES flag inside of the "if (mtd->size > 0x1000000)"
+> >>>> block.    
+> >>> Shouldn't we override this value anyway? I mean, I thought flash_info
+> >>> flags had precedence on the SFDP ones. Also, just because the flash is    
+> >>
+> >> I tend to say that we shouldn't. We have some "JEDEC knows better" attitude in
+> >> the code: we are overwriting platform ID if we find a different ID in sfdp, we
+> >> choose addr_width from SFDP even if set in info->addr_width, and we are
+> >> overwriting all the settings based on flash_info when sfdp parsing succeeds in
+> >> spi_nor_init_params().  
+> > 
+> > Given all the "broken SFDP" problems we had, I'm not sure this was the
+> > right decision, but that's another topic.
+> > 
+> > For this specific one, I'd really prefer to keep this code as is. Note
+> > that the "JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M"
+> > is later moved to a post SFDP fixup hook in my rework, which means we'll
+> > anyway override the decision taken by the SFDP parsing.
+> >   
+> >>  
+> >>> smaller than 16MB, doesn't mean it does not support 4B opcodes. We
+> >>> probably won't use the 4B opcodes in that case, but still.
+> >>>     
+> >>
+> >> I agree that manufacturers have a sense of humor and this might be possible. But
+> >> there's no need to use 4B opcodes in this case, so a post_sfdp fixup will help
+> >> here too.  
+> > 
+> > Except there's nothing to fix in this case, we just won't use 4B
+> > opcodes if we don't need to, that's all.  
+> 
+> you'll have an extra byte of address that has a tiny impact on performance on
+> small requests. I see it as a fix, we should do what's best to do. anyway ...
+
+No, see the checks that are done in this patch: to use 4B_CODES the
+flag should be set and the NOR should be larger than 16MB. The flag
+does not mean "use 4B opcodes", it meas "4B opcodes are supported".
