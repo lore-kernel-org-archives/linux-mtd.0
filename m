@@ -1,28 +1,20 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mailout2.w1.samsung.com ([210.118.77.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUKk8-00070A-HX
- for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 00:08:45 +0000
-Date: Tue, 4 Dec 2018 16:08:32 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
- linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
- corbet@lwn.net, ralf@linux-mips.org, paul.burton@mips.com,
- jhogan@kernel.org, green.hu@gmail.com, deanbo422@gmail.com,
- schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, richard@nod.at,
- dedekind1@gmail.com, adrian.hunter@intel.com, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH V2 7/7] fsverity: Remove filesystem specific build config
- option
-Message-ID: <20181205000831.GI70682@gmail.com>
-References: <20181204095650.12562-1-chandan@linux.vnet.ibm.com>
- <20181204095650.12562-8-chandan@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181204095650.12562-8-chandan@linux.vnet.ibm.com>
+ id 1gUQk0-0006WT-2y
+ for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 06:33:01 +0000
+From: Jungseung Lee <js07.lee@samsung.com>
+To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, js07.lee@samsung.com, js07.lee@gmail.com
+Subject: [RFC PATCH 2/2] mtd: spi-nor: support lock/unlock for a few Micron
+ chips
+Date: Wed, 05 Dec 2018 15:32:20 +0900
+Message-id: <20181205063220.22279-2-js07.lee@samsung.com>
+In-reply-to: <20181205063220.22279-1-js07.lee@samsung.com>
+References: <20181205063220.22279-1-js07.lee@samsung.com>
+ <CGME20181205063250eucas1p1819de50c3030fb60a704656be878fff2@eucas1p1.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,56 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chandan,
+Some Micron models are known to have lock/unlock support,
+and that also support 4bit block protection bit (bp0-3).
 
-On Tue, Dec 04, 2018 at 03:26:50PM +0530, Chandan Rajendra wrote:
-> In order to have a common code base for fsverity "post read" processing
-> for all filesystems which support fsverity, this commit removes
-> filesystem specific build config option (e.g. CONFIG_EXT4_FS_VERITY)
-> and replaces it with a build option (i.e. CONFIG_FS_VERITY) whose
-> value affects all the filesystems making use of fsverity.
-> 
-> Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-> ---
->  Documentation/filesystems/fsverity.rst |  4 ++--
->  fs/ext4/Kconfig                        | 20 --------------------
->  fs/ext4/ext4.h                         |  2 --
->  fs/ext4/readpage.c                     |  4 ++--
->  fs/ext4/super.c                        |  6 +++---
->  fs/ext4/sysfs.c                        |  4 ++--
->  fs/f2fs/Kconfig                        | 20 --------------------
->  fs/f2fs/data.c                         |  2 +-
->  fs/f2fs/f2fs.h                         |  2 --
->  fs/f2fs/super.c                        |  6 +++---
->  fs/f2fs/sysfs.c                        |  4 ++--
->  fs/verity/Kconfig                      |  3 ++-
->  include/linux/fs.h                     |  4 ++--
->  include/linux/fsverity.h               |  3 +--
->  14 files changed, 20 insertions(+), 64 deletions(-)
-> 
-[...]
-> diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-> index c30c4f6ed411..f37132c640ee 100644
-> --- a/include/linux/fsverity.h
-> +++ b/include/linux/fsverity.h
-> @@ -19,8 +19,7 @@ struct fsverity_operations {
->  	int (*get_metadata_end)(struct inode *inode, loff_t *metadata_end_ret);
->  };
->  
-> -#if __FS_HAS_VERITY
-> -
-> +#ifdef CONFIG_FS_VERITY
->  /* ioctl.c */
->  extern int fsverity_ioctl_enable(struct file *filp, const void __user *arg);
->  extern int fsverity_ioctl_measure(struct file *filp, void __user *arg);
-> -- 
-> 2.19.1
-> 
+This patch support lock/unlock feature on the flash.
 
-Can you grep for __FS_HAS_VERITY?  It's still mentioned twice in comments for
-this #ifdef (these should be changed to CONFIG_FS_VERITY), and it's still
-defined in fs/verity/fsverity_private.h (that one should be removed).
+Tested on w25q512ax3. The Other is modified following the datasheet.
 
-Thanks,
+Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-- Eric
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c261d8f7bef4..25d2abb842c0 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1438,8 +1438,16 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+-	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
++	{
++		"n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024,
++			SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BP3)
++	},
++	{
++		"n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024,
++			SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BP3)
++	},
+ 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+ 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+ 	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+-- 
+2.17.1
