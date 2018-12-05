@@ -1,26 +1,26 @@
-Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, "broonie@kernel.org"
- <broonie@kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+Date: Wed, 5 Dec 2018 13:46:18 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Vignesh R <vigneshr@ti.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
+Message-ID: <20181205134618.56223758@bbrezillon>
+In-Reply-To: <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
 References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
  <20181203101937.7b01a0ad@bbrezillon>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
-Date: Wed, 5 Dec 2018 17:25:12 +0530
+ <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20181203101937.7b01a0ad@bbrezillon>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,37 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Wed, 5 Dec 2018 17:25:12 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-On 03/12/18 2:49 PM, Boris Brezillon wrote:
-> Hi Mark,
+> >>   mtd: spi-nor: add opcodes for octal Read/Write commands
+> >>   mtd: spi-nor: add octal read flag for flash mt35xu512aba  
 > 
-> On Mon, 3 Dec 2018 08:39:00 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> 
->>
->> Yogesh Gaur (7):
->>   spi: add support for octal mode I/O data transfer
->>   spi: spi-mem: add support for octal mode I/O data transfer
-> 
-> Can you take those 2 patches in your tree for 4.21/5.0?
-> 
+> Could you consider merging these two patches alone for v4.21?
+> These can be applied independent of other patches in the series and
+> would allow supporting OSPI flash at SPI NOR level with Cadence QSPI driver.
 
->>   mtd: spi-nor: add opcodes for octal Read/Write commands
->>   mtd: spi-nor: add octal read flag for flash mt35xu512aba
+Yep, I'll queue them to spi-nor/next.
 
-Could you consider merging these two patches alone for v4.21?
-These can be applied independent of other patches in the series and
-would allow supporting OSPI flash at SPI NOR level with Cadence QSPI driver.
+> >>   spi: nxp-fspi: add octal mode flag bit for octal support  
 
->>   mtd: m25p80: add support of octal mode I/O transfer
->>   spi: nxp-fspi: add octal mode flag bit for octal support
-> 
-> I'll queue these ones after 4.21-rc1/5.0-rc1 is out (which means
-> they'll appear in 4.22/5.1).
-> 
->>   arm64: dts: lx2160a: update fspi node
-
--- 
-Regards
-Vignesh
+Mark, I think you can pick this one too.
