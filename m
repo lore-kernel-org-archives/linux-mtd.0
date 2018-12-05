@@ -1,26 +1,27 @@
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUSjw-00042C-Ai
- for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 08:41:06 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@bootlin.com>
-CC: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: Avoid forward declaration of
- internal functions
-Date: Wed, 5 Dec 2018 08:40:50 +0000
-Message-ID: <1e5479aa-78fd-3c22-4010-b7f802c7e584@microchip.com>
-References: <20181129141026.24892-1-boris.brezillon@bootlin.com>
- <20181129141026.24892-3-boris.brezillon@bootlin.com>
- <8ef2fdbf-35cd-bbe5-5fcf-d890546328da@microchip.com>
- <20181205090926.7326eaff@bbrezillon>
-In-Reply-To: <20181205090926.7326eaff@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E818B2140F7F464AAD085E869BC3C3B8@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181203101937.7b01a0ad@bbrezillon>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
+Date: Wed, 5 Dec 2018 17:25:12 +0530
 MIME-Version: 1.0
+In-Reply-To: <20181203101937.7b01a0ad@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,52 +31,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCk9uIDEyLzA1LzIwMTggMTA6MDkgQU0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCltj
-dXRdDQoNCj4+PiAtc3RhdGljIGludCBzcGlfbm9yX2h3Y2Fwc19yZWFkMmNtZCh1MzIgaHdjYXBz
-KTsNCj4+PiArc3RhdGljIGludCBzcGlfbm9yX2h3Y2FwczJjbWQodTMyIGh3Y2FwcywgY29uc3Qg
-aW50IHRhYmxlW11bMl0sIHNpemVfdCBzaXplKQ0KPj4+ICt7DQo+Pj4gKwlzaXplX3QgaTsNCj4+
-PiArDQo+Pj4gKwlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgaSsrKQ0KPj4+ICsJCWlmICh0YWJsZVtp
-XVswXSA9PSAoaW50KWh3Y2FwcykNCj4+PiArCQkJcmV0dXJuIHRhYmxlW2ldWzFdOw0KPj4+ICsN
-Cj4+PiArCXJldHVybiAtRUlOVkFMOw0KPj4+ICt9DQo+Pj4gKw0KPj4+ICtzdGF0aWMgaW50IHNw
-aV9ub3JfaHdjYXBzX3JlYWQyY21kKHUzMiBod2NhcHMpDQo+Pj4gK3sNCj4+PiArCXN0YXRpYyBj
-b25zdCBpbnQgaHdjYXBzX3JlYWQyY21kW11bMl0gPSB7DQo+Pj4gKwkJeyBTTk9SX0hXQ0FQU19S
-RUFELAkJU05PUl9DTURfUkVBRCB9LA0KPj4+ICsJCXsgU05PUl9IV0NBUFNfUkVBRF9GQVNULAlT
-Tk9SX0NNRF9SRUFEX0ZBU1QgfSwNCj4+PiArCQl7IFNOT1JfSFdDQVBTX1JFQURfMV8xXzFfRFRS
-LAlTTk9SX0NNRF9SRUFEXzFfMV8xX0RUUiB9LA0KPj4+ICsJCXsgU05PUl9IV0NBUFNfUkVBRF8x
-XzFfMiwJU05PUl9DTURfUkVBRF8xXzFfMiB9LA0KPj4+ICsJCXsgU05PUl9IV0NBUFNfUkVBRF8x
-XzJfMiwJU05PUl9DTURfUkVBRF8xXzJfMiB9LA0KPj4+ICsJCXsgU05PUl9IV0NBUFNfUkVBRF8y
-XzJfMiwJU05PUl9DTURfUkVBRF8yXzJfMiB9LA0KPj4+ICsJCXsgU05PUl9IV0NBUFNfUkVBRF8x
-XzJfMl9EVFIsCVNOT1JfQ01EX1JFQURfMV8yXzJfRFRSIH0sDQo+Pj4gKwkJeyBTTk9SX0hXQ0FQ
-U19SRUFEXzFfMV80LAlTTk9SX0NNRF9SRUFEXzFfMV80IH0sDQo+Pj4gKwkJeyBTTk9SX0hXQ0FQ
-U19SRUFEXzFfNF80LAlTTk9SX0NNRF9SRUFEXzFfNF80IH0sDQo+Pj4gKwkJeyBTTk9SX0hXQ0FQ
-U19SRUFEXzRfNF80LAlTTk9SX0NNRF9SRUFEXzRfNF80IH0sDQo+Pj4gKwkJeyBTTk9SX0hXQ0FQ
-U19SRUFEXzFfNF80X0RUUiwJU05PUl9DTURfUkVBRF8xXzRfNF9EVFIgfSwNCj4+PiArCQl7IFNO
-T1JfSFdDQVBTX1JFQURfMV8xXzgsCVNOT1JfQ01EX1JFQURfMV8xXzggfSwNCj4+PiArCQl7IFNO
-T1JfSFdDQVBTX1JFQURfMV84XzgsCVNOT1JfQ01EX1JFQURfMV84XzggfSwNCj4+PiArCQl7IFNO
-T1JfSFdDQVBTX1JFQURfOF84XzgsCVNOT1JfQ01EX1JFQURfOF84XzggfSwNCj4+PiArCQl7IFNO
-T1JfSFdDQVBTX1JFQURfMV84XzhfRFRSLAlTTk9SX0NNRF9SRUFEXzFfOF84X0RUUiB9LA0KPj4+
-ICsJfTsNCj4+PiArDQo+Pj4gKwlyZXR1cm4gc3BpX25vcl9od2NhcHMyY21kKGh3Y2FwcywgaHdj
-YXBzX3JlYWQyY21kLA0KPj4+ICsJCQkJICBBUlJBWV9TSVpFKGh3Y2Fwc19yZWFkMmNtZCkpOw0K
-Pj4+ICt9DQo+Pj4gKw0KPj4+ICtzdGF0aWMgaW50IHNwaV9ub3JfaHdjYXBzX3BwMmNtZCh1MzIg
-aHdjYXBzKQ0KPj4+ICt7DQo+Pj4gKwlzdGF0aWMgY29uc3QgaW50IGh3Y2Fwc19wcDJjbWRbXVsy
-XSA9IHsNCj4+PiArCQl7IFNOT1JfSFdDQVBTX1BQLAkJU05PUl9DTURfUFAgfSwNCj4+PiArCQl7
-IFNOT1JfSFdDQVBTX1BQXzFfMV80LAkJU05PUl9DTURfUFBfMV8xXzQgfSwNCj4+PiArCQl7IFNO
-T1JfSFdDQVBTX1BQXzFfNF80LAkJU05PUl9DTURfUFBfMV80XzQgfSwNCj4+PiArCQl7IFNOT1Jf
-SFdDQVBTX1BQXzRfNF80LAkJU05PUl9DTURfUFBfNF80XzQgfSwNCj4+PiArCQl7IFNOT1JfSFdD
-QVBTX1BQXzFfMV84LAkJU05PUl9DTURfUFBfMV8xXzggfSwNCj4+PiArCQl7IFNOT1JfSFdDQVBT
-X1BQXzFfOF84LAkJU05PUl9DTURfUFBfMV84XzggfSwNCj4+PiArCQl7IFNOT1JfSFdDQVBTX1BQ
-XzhfOF84LAkJU05PUl9DTURfUFBfOF84XzggfSwNCj4+PiArCX07DQo+Pj4gKw0KPj4+ICsJcmV0
-dXJuIHNwaV9ub3JfaHdjYXBzMmNtZChod2NhcHMsIGh3Y2Fwc19wcDJjbWQsDQo+Pj4gKwkJCQkg
-IEFSUkFZX1NJWkUoaHdjYXBzX3BwMmNtZCkpOw0KPj4+ICt9ICANCj4+DQo+PiBXb3VsZCBpdCBi
-ZSBhIGJldHRlciBwbGFjZSB0byBwdXQgdGhlc2UgaW1tZWRpYXRlbHkgYWZ0ZXINCj4+IHNwaV9u
-b3Jfc2V0X3BwX3NldHRpbmdzKCk/IEl0IHdvdWxkIGJlIGNvbnNpc3RlbnQgd2l0aCBob3cgdGhl
-eSB3ZXJlIGRlY2xhcmVkDQo+PiBiYWNrIGluIGNmYzU2MDRjNDg4Y2NkMTc5MzZiNjkwMDhhZjBj
-OWFlMDUwZjRhMDguDQo+IA0KPiBJIHRob3VnaHQgaXQgd291bGQgYmUgcHJlZmVyYWJsZSB0byBo
-YXZlIHRoZSB4eDJjbWRbXSBjb252ZXJzaW9uIHRhYmxlcw0KPiBncm91cGVkIHRvZ2V0aGVyLCBi
-dXQgSSBjYW4gbW92ZSB0aGlzIG9uZSBuZXh0IHRvDQo+IHNwaV9ub3Jfc2V0X3BwX3NldHRpbmdz
-KCkgaWYgeW91IHByZWZlci4NCj4gDQoNCkkgdGhvdWdodCBvZiBtb3ZpbmcgdGhlIGVudGlyZSBj
-aHVuayAoX2h3Y2FwczJjbWQoKSwgX3JlYWQyY21kKCksIF9wcDJjbWQoKSkNCmp1c3QgYWZ0ZXIg
-c3BpX25vcl9zZXRfcHBfc2V0dGluZ3MoKS4gWW91IGhhdmUgaW4gdGhhdCBzZWN0aW9uIG9mIGNv
-ZGUgdGhlDQpzcGlfbm9yX3JlYWQvcHBfY29tbWFuZF9pbmRleCBlbnVtcyBmb2xsb3dlZCBieSBz
-cGlfbm9yX3NldF9yZWFkL3BwX3NldHRpbmdzKCkuDQpXZSBjYW4gaGF2ZSBhbGwgdGhlIHJlYWQv
-cHAgc3R1ZmYgZ3JvdXBlZCB0b2dldGhlci4NCg0KQ2hlZXJzLA0KdGENCg==
+Hi Boris,
+
+On 03/12/18 2:49 PM, Boris Brezillon wrote:
+> Hi Mark,
+> 
+> On Mon, 3 Dec 2018 08:39:00 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> 
+>>
+>> Yogesh Gaur (7):
+>>   spi: add support for octal mode I/O data transfer
+>>   spi: spi-mem: add support for octal mode I/O data transfer
+> 
+> Can you take those 2 patches in your tree for 4.21/5.0?
+> 
+
+>>   mtd: spi-nor: add opcodes for octal Read/Write commands
+>>   mtd: spi-nor: add octal read flag for flash mt35xu512aba
+
+Could you consider merging these two patches alone for v4.21?
+These can be applied independent of other patches in the series and
+would allow supporting OSPI flash at SPI NOR level with Cadence QSPI driver.
+
+>>   mtd: m25p80: add support of octal mode I/O transfer
+>>   spi: nxp-fspi: add octal mode flag bit for octal support
+> 
+> I'll queue these ones after 4.21-rc1/5.0-rc1 is out (which means
+> they'll appear in 4.22/5.1).
+> 
+>>   arm64: dts: lx2160a: update fspi node
+
+-- 
+Regards
+Vignesh
