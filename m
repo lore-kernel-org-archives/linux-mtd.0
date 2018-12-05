@@ -1,30 +1,23 @@
-Date: Wed, 5 Dec 2018 14:18:03 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Vignesh R <vigneshr@ti.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
-Message-ID: <20181205141803.GD6205@sirena.org.uk>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181203101937.7b01a0ad@bbrezillon>
- <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
- <20181205134618.56223758@bbrezillon>
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUYnO-0001x3-Ur
+ for linux-mtd@lists.infradead.org; Wed, 05 Dec 2018 15:09:04 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>
+CC: <alexandre.belloni@bootlin.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <alexander.sverdlin@nokia.com>
+Subject: Re: [PATCH v4 1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
+Date: Wed, 5 Dec 2018 15:08:49 +0000
+Message-ID: <b6f66057-7b7c-8e9c-1a05-71bf6611ffaa@microchip.com>
+References: <20181129144143.26079-1-boris.brezillon@bootlin.com>
+ <20181129144143.26079-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20181129144143.26079-2-boris.brezillon@bootlin.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F5E190AD524E904D8964661F70F97E2C@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
-Content-Disposition: inline
-In-Reply-To: <20181205134618.56223758@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,36 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---mSxgbZZZvrAyzONB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Dec 05, 2018 at 01:46:18PM +0100, Boris Brezillon wrote:
-> Vignesh R <vigneshr@ti.com> wrote:
-
-> > >>   spi: nxp-fspi: add octal mode flag bit for octal support =20
-
-> Mark, I think you can pick this one too.
-
-I don't have this any more, it looked like this was stuck behind the
-otehr MTD changes which seemed to have problems.  If someone could
-resend?
-
---mSxgbZZZvrAyzONB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwH3hsACgkQJNaLcl1U
-h9AQ7gf/aJLlaDvMy6aZuK7FrotyfySX7CJt+US7KUsb63DCSjupYyNQDjrU+hY+
-MkA22EG1ml0RP1q5rOL+fgDnWtogzWGPApXwhT/R2prcgyK0YKqhk8eM2dAhzT6L
-JfO+E9rGSM3rBYu5XaGZ7h++3H8mgH9GwkK/GQhgdSc/rOsUJtFZWpBr0+9AYlgi
-UvQunc+4z95nlS73u7ZB+LOvC4L+h8vSp6yPIeN+TIpWc7pwSpbbCcYc3Rv81Usw
-KqmpkRh9/rgai7zX844+tqa9KqPIZ++29cZHd2vmItMO0PMLcG+fk3S0jps5q27x
-ZdLFbvdUupJ3Klk6uxPk8REewVaDog==
-=6Sez
------END PGP SIGNATURE-----
-
---mSxgbZZZvrAyzONB--
+SGksIEJvcmlzLA0KDQpPbiAxMS8yOS8yMDE4IDA0OjQxIFBNLCBCb3JpcyBCcmV6aWxsb24gd3Jv
+dGU6DQo+IFNvbWUgZmxhc2hfaW5mbyBlbnRyaWVzIGhhdmUgdGhlIFNQSV9OT1JfNEJfT1BDT0RF
+UyBmbGFnIHNldCB0byBsZXQgdGhlDQo+IGNvcmUga25vdyB0aGF0IHRoZSBmbGFzaCBzdXBwb3J0
+cyA0QiBvcGNvZGUuIFdoaWxlIHRoaXMgc29sdXRpb24gd29ya3MNCj4gZmluZSBmb3IgaWQtYmFz
+ZWQgY2FwcyBkZXRlY3Rpb24sIGl0IGRvZXNuJ3Qgd29yayB0aGF0IHdlbGwgd2hlbiByZWx5aW5n
+DQo+IG9uIFNGRFAtYmFzZWQgY2FwcyBkZXRlY3Rpb24uIExldCdzIGFkZCBhbiBTTk9SX0ZfNEJf
+T1BDT0RFUyBmbGFnIHNvDQo+IHRoYXQgdGhlIFNGRFAgcGFyc2luZyBjb2RlIGNhbiBzZXQgaXQg
+d2hlbiBhcHByb3ByaWF0ZS4NCj4gDQo+IFJlcG9ydGVkLWJ5OiBBbGV4YW5kcmUgQmVsbG9uaSA8
+YWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEJvcmlzIEJy
+ZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPg0KPiBUZXN0ZWQtYnk6IEFsZXhh
+bmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4NCj4gUmV2aWV3ZWQt
+Ynk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4gLS0tDQo+
+IENoYW5nZXMgaW4gdjQ6DQo+IC0gU2V0IFNOT1JfRl80Ql9PUENPREVTIGZsYWcgb3V0c2lkZSBv
+ZiB0aGUgaWYgKG10ZC0+c2l6ZSA+IDB4MTAwMDAwMCkNCj4gICBibG9jaw0KPiAtIERvIG5vdCBz
+ZXQgU05PUl9GXzRCX09QQ09ERVMgd2hlbiBCRlBUX0RXT1JEMV9BRERSRVNTX0JZVEVTXzRfT05M
+WSwNCj4gICBiZWNhdXNlIDRieXRlIG9ubHkgZG9lcyBub3QgaW1wbHkgNEIgb3Bjb2RlcyBhcmUg
+c3VwcG9ydGVkDQoNCmFuZCB5b3UgZ290IHJpZCBvZiB0aGUgc3VwZXJmbHVvdXMgY2hlY2sgIihK
+RURFQ19NRlIobm9yLT5pbmZvKSAhPQ0KU05PUl9NRlJfU1BBTlNJT04pIiwgd2hpY2ggaXMgZ29v
+ZCwgdGhhbmtzLg0KDQpBbmQgSSBndWVzcyB5b3Ugc2hvdWxkIGhhdmUgZHJvcHBlZCBteSByYiB0
+YWcsIGJlY2F1c2UgSSBoYXZlbid0IHJldmlld2VkIHY0DQp5ZXQuIE5vIHdvcnJpZXMsIGp1c3Qg
+c2F5aW5nIC4uLg0KDQo+IA0KPiBDaGFuZ2VzIGluIHYzOg0KPiAtIENsZWFyIFNOT1JfRl80Ql9P
+UENPREVTIGZsYWcgd2hlbiBTRkRQIGZhaWxzDQo+IC0gQWRkIEFsZXhhbmRyZSBSLWINCj4gDQo+
+IENoYW5nZXMgaW4gdjI6DQo+IC0gRml4IHRoZSBjb21taXQgbWVzc2FnZQ0KPiAtIEZpeCB0aGUg
+LT5hZGRyX3dpZHRoIGNoZWNrDQo+IC0gQWRkIGEgY29tbWEgYXQgdGhlIGVuZCBvZiB0aGUgU05P
+Ul9GXzRCX09QQ09ERVMgZGVmaW5pdGlvbg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Iv
+c3BpLW5vci5jIHwgMjIgKysrKysrKysrKysrLS0tLS0tLS0tLQ0KPiAgaW5jbHVkZS9saW51eC9t
+dGQvc3BpLW5vci5oICAgfCAgMSArDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMo
+KyksIDEwIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1u
+b3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggYzFk
+OWMyZTUwYmVlLi45OGI4ZDlhNzc4YWEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1u
+b3Ivc3BpLW5vci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBA
+IC0zMzExLDYgKzMzMTEsNyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfaW5pdF9wYXJhbXMoc3RydWN0
+IHNwaV9ub3IgKm5vciwNCj4gIA0KPiAgCQlpZiAoc3BpX25vcl9wYXJzZV9zZmRwKG5vciwgJnNm
+ZHBfcGFyYW1zKSkgew0KPiAgCQkJbm9yLT5hZGRyX3dpZHRoID0gMDsNCj4gKwkJCW5vci0+Zmxh
+Z3MgJj0gflNOT1JfRl80Ql9PUENPREVTOw0KPiAgCQkJLyogcmVzdG9yZSBwcmV2aW91cyBlcmFz
+ZSBtYXAgKi8NCj4gIAkJCW1lbWNweSgmbm9yLT5lcmFzZV9tYXAsICZwcmV2X21hcCwNCj4gIAkJ
+CSAgICAgICBzaXplb2Yobm9yLT5lcmFzZV9tYXApKTsNCj4gQEAgLTM1NjEsOSArMzU2Miw3IEBA
+IHN0YXRpYyBpbnQgc3BpX25vcl9pbml0KHN0cnVjdCBzcGlfbm9yICpub3IpDQo+ICAJCX0NCj4g
+IAl9DQo+ICANCj4gLQlpZiAoKG5vci0+YWRkcl93aWR0aCA9PSA0KSAmJg0KPiAtCSAgICAoSkVE
+RUNfTUZSKG5vci0+aW5mbykgIT0gU05PUl9NRlJfU1BBTlNJT04pICYmDQo+IC0JICAgICEobm9y
+LT5pbmZvLT5mbGFncyAmIFNQSV9OT1JfNEJfT1BDT0RFUykpIHsNCj4gKwlpZiAobm9yLT5hZGRy
+X3dpZHRoID09IDQgJiYgIShub3ItPmZsYWdzICYgU05PUl9GXzRCX09QQ09ERVMpKSB7DQo+ICAJ
+CS8qDQo+ICAJCSAqIElmIHRoZSBSRVNFVCMgcGluIGlzbid0IGhvb2tlZCB1cCBwcm9wZXJseSwg
+b3IgdGhlIHN5c3RlbQ0KPiAgCQkgKiBvdGhlcndpc2UgZG9lc24ndCBwZXJmb3JtIGEgcmVzZXQg
+Y29tbWFuZCBpbiB0aGUgYm9vdA0KPiBAQCAtMzU5NSwxMCArMzU5NCw4IEBAIHN0YXRpYyB2b2lk
+IHNwaV9ub3JfcmVzdW1lKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQ0KPiAgdm9pZCBzcGlfbm9yX3Jl
+c3RvcmUoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gIHsNCj4gIAkvKiByZXN0b3JlIHRoZSBhZGRy
+ZXNzaW5nIG1vZGUgKi8NCj4gLQlpZiAoKG5vci0+YWRkcl93aWR0aCA9PSA0KSAmJg0KPiAtCSAg
+ICAoSkVERUNfTUZSKG5vci0+aW5mbykgIT0gU05PUl9NRlJfU1BBTlNJT04pICYmDQo+IC0JICAg
+ICEobm9yLT5pbmZvLT5mbGFncyAmIFNQSV9OT1JfNEJfT1BDT0RFUykgJiYNCj4gLQkgICAgKG5v
+ci0+ZmxhZ3MgJiBTTk9SX0ZfQlJPS0VOX1JFU0VUKSkNCj4gKwlpZiAobm9yLT5hZGRyX3dpZHRo
+ID09IDQgJiYgIShub3ItPmZsYWdzICYgU05PUl9GXzRCX09QQ09ERVMpICYmDQo+ICsJICAgIG5v
+ci0+ZmxhZ3MgJiBTTk9SX0ZfQlJPS0VOX1JFU0VUKQ0KPiAgCQlzZXRfNGJ5dGUobm9yLCBmYWxz
+ZSk7DQo+ICB9DQo+ICBFWFBPUlRfU1lNQk9MX0dQTChzcGlfbm9yX3Jlc3RvcmUpOw0KPiBAQCAt
+Mzc1MCw2ICszNzQ3LDEwIEBAIGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwg
+Y29uc3QgY2hhciAqbmFtZSwNCj4gIAlpZiAoaW5mby0+ZmxhZ3MgJiBTUElfTk9SX05PX0ZSKQ0K
+PiAgCQlwYXJhbXMuaHdjYXBzLm1hc2sgJj0gflNOT1JfSFdDQVBTX1JFQURfRkFTVDsNCj4gIA0K
+PiArCWlmIChpbmZvLT5mbGFncyAmIFNQSV9OT1JfNEJfT1BDT0RFUyB8fA0KPiArCSAgICAoSkVE
+RUNfTUZSKGluZm8pID09IFNOT1JfTUZSX1NQQU5TSU9OICYmIG10ZC0+c2l6ZSA+IFNaXzE2TSkp
+DQo+ICsJCW5vci0+ZmxhZ3MgfD0gU05PUl9GXzRCX09QQ09ERVM7DQo+ICsNCg0KeW91IGFyZSBw
+b3RlbnRpYWxseSBvdmVyd3JpdGluZyB0aGUgU05PUl9GXzRCX09QQ09ERVMgdGhhdCBtYXkgYmUg
+c2V0IGluIFNGRFAuIEkNCnN1Z2dlc3QgdG8gc2V0IFNOT1JfRl80Ql9PUENPREVTIGZsYWcgaW5z
+aWRlIG9mIHRoZSAiaWYgKG10ZC0+c2l6ZSA+IDB4MTAwMDAwMCkiDQpibG9jay4NCg0KPiAgCS8q
+DQo+ICAJICogQ29uZmlndXJlIHRoZSBTUEkgbWVtb3J5Og0KPiAgCSAqIC0gc2VsZWN0IG9wIGNv
+ZGVzIGZvciAoRmFzdCkgUmVhZCwgUGFnZSBQcm9ncmFtIGFuZCBTZWN0b3IgRXJhc2UuDQo+IEBA
+IC0zNzY4LDEzICszNzY5LDE0IEBAIGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5v
+ciwgY29uc3QgY2hhciAqbmFtZSwNCj4gIAl9IGVsc2UgaWYgKG10ZC0+c2l6ZSA+IDB4MTAwMDAw
+MCkgew0KPiAgCQkvKiBlbmFibGUgNC1ieXRlIGFkZHJlc3NpbmcgaWYgdGhlIGRldmljZSBleGNl
+ZWRzIDE2TWlCICovDQo+ICAJCW5vci0+YWRkcl93aWR0aCA9IDQ7DQo+IC0JCWlmIChKRURFQ19N
+RlIoaW5mbykgPT0gU05PUl9NRlJfU1BBTlNJT04gfHwNCj4gLQkJICAgIGluZm8tPmZsYWdzICYg
+U1BJX05PUl80Ql9PUENPREVTKQ0KPiAtCQkJc3BpX25vcl9zZXRfNGJ5dGVfb3Bjb2Rlcyhub3Ip
+Ow0KPiAgCX0gZWxzZSB7DQo+ICAJCW5vci0+YWRkcl93aWR0aCA9IDM7DQo+ICAJfQ0KPiAgDQo+
+ICsJaWYgKG5vci0+YWRkcl93aWR0aCA9PSA0ICYmDQo+ICsJICAgIG5vci0+ZmxhZ3MgJiBTTk9S
+X0ZfNEJfT1BDT0RFUykNCg0KdGhlIGNvbmRpdGlvbnMgZml0IGluIGEgc2luZ2xlIGxpbmUNCg0K
+Q2hlZXJzLA0KdGENCg==
