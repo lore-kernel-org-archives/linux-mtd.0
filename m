@@ -1,27 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gV02M-00083z-LB
- for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 20:14:20 +0000
-Date: Thu, 6 Dec 2018 21:14:04 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: boris.brezillon@bootlin.com, jmkrzyszt@gmail.com, Stefan Agner
- <stefan@agner.ch>, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG BISECT] Missing MTD NAND partitions - mtd: rawnand: Move
- the ->exec_op() method to nand_controller_ops
-Message-ID: <20181206211404.39cfe07c@xps13>
-In-Reply-To: <CAJKOXPepDpdhz2yPmdBMcncJ8noRdNTyXqP6WbUZR4Cf=BnEFA@mail.gmail.com>
-References: <CAJKOXPdPnha1-1dCRFaPZ-CGzS1OzNcFrxuOJmWstHJcRAMZwg@mail.gmail.com>
- <20181120113326.0d4f061e@xps13>
- <CAJKOXPcrVXdCXqmxffJca7HfEV3G3agkzjWu1rfsNDDbMzc_XQ@mail.gmail.com>
- <20181120130859.78d53da3@bbrezillon>
- <CAJKOXPfgyw9tFTC=eZFVHz8us1+6RxEcnmLUi-umO2+N9vRzDg@mail.gmail.com>
- <CAJKOXPepDpdhz2yPmdBMcncJ8noRdNTyXqP6WbUZR4Cf=BnEFA@mail.gmail.com>
+Date: Thu, 6 Dec 2018 20:29:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Vignesh R <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
+Message-ID: <20181206202956.GG3084@sirena.org.uk>
+References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181203101937.7b01a0ad@bbrezillon>
+ <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
+ <20181205134618.56223758@bbrezillon>
+ <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206074554.0ec0aecb@bbrezillon>
+ <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Wtrm9ATX0sn6fFKv"
+Content-Disposition: inline
+In-Reply-To: <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,85 +36,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Krzysztof,
 
-Krzysztof Kozlowski <krzk@kernel.org> wrote on Wed, 5 Dec 2018 17:10:38
-+0100:
+--Wtrm9ATX0sn6fFKv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Tue, 20 Nov 2018 at 13:15, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > On Tue, 20 Nov 2018 at 13:09, Boris Brezillon
-> > <boris.brezillon@bootlin.com> wrote: =20
-> > >
-> > > On Tue, 20 Nov 2018 12:48:46 +0100
-> > > Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > =20
-> > > > On Tue, 20 Nov 2018 at 11:33, Miquel Raynal <miquel.raynal@bootlin.=
-com> wrote: =20
-> > > > >
-> > > > > Hi Krzysztof,
-> > > > >
-> > > > > Krzysztof Koz=C5=82owski <k.kozlowski.k@gmail.com> wrote on Tue, =
-20 Nov 2018
-> > > > > 10:46:33 +0100:
-> > > > > =20
-> > > > > > Hi all,
-> > > > > >
-> > > > > > Since few days linux-next has problem on Freescale VF500 - MTD =
-seems
-> > > > > > to be broken.
-> > > > > >
-> > > > > > Bisect pointed me to commit 7c27338c728e39ef47c83d101959aa33250=
-6969d
-> > > > > > ("mtd: rawnand: Move the ->exec_op() method to nand_controller_=
-ops")
-> > > > > > as reason of failure to find MTD partitions.
-> > > > > >
-> > > > > > Toradex Colibri VF50 on Iris board (ARMv7, UP, Cortext-A5, NXP =
-VF500,
-> > > > > > 128 MB RAM, 128 MB NAND, Systemd: v232) booted from NFS root (N=
-FSv4)
-> > > > > > trying to mount UBIFS from NAND/MTD. Board uses VF610 NAND driv=
-er.
-> > > > > >
-> > > > > > The MTD partitions are missing entirely (nothing under /dev/mtd=
-).
-> > > > > > In the logs you can also see:
-> > > > > > [    1.232161] UBI error: cannot open mtd ubi2, error -2
-> > > > > >
-> > > > > > Attached - dmesg.log
-> > > > > >
-> > > > > > Let me know if you need defconfig or any other information. =20
-> > > > >
-> > > > > Thank you very much for testing and reporting the bug!
-> > > > >
-> > > > > Could you please test with this diff applied [1] please? We discu=
-ssed
-> > > > > with Boris and we think it should fix your setup (and all others =
-also
-> > > > > impacted).
-> > > > >
-> > > > > [1] http://code.bulix.org/r1m99i-509201 =20
-> > > >
-> > > > error: patch failed: drivers/mtd/nand/raw/nand_base.c:4399
-> > > > error: drivers/mtd/nand/raw/nand_base.c: patch does not apply
-> > > >
-> > > > Maybe you have a git tree with this somewhere? =20
-> > >
-> > > Yep: https://github.com/bbrezillon/linux/tree/nand/next-fix =20
-> >
-> > Works fine now, thanks!
-> > Tested-by: Krzysztof Kozlowski <krzk@kernel.org> =20
->=20
-> Although the patch fixed the issue... but it seems it is not in
-> linux-next. The next is broken since almost two weeks.
->=20
-> Best regards,
-> Krzysztof
+On Thu, Dec 06, 2018 at 06:49:08AM +0000, Yogesh Narayan Gaur wrote:
 
-Sorry for the huge delay, fixup applied.
+> Sorry for ignorance. Did patches needs to be applied by Mark Brown, should I resend the patch series again?
+> Also can you please review the series [1] and add your Reviewed-by tag.
 
+As I said in my reply earlier today in the same thread:
 
-Thanks,
-Miqu=C3=A8l
-=09
+| I don't have this any more, it looked like this was stuck behind the
+| otehr MTD changes which seemed to have problems.  If someone could
+| resend?
+
+so please resend.
+
+--Wtrm9ATX0sn6fFKv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwJhsMACgkQJNaLcl1U
+h9BxUwf/VXXXtAILeX5fLDCHtNVLqX9fo3DPdIf/7DKJkI4KipztYRdwnXr1gyWL
+PR//PfTDevtSYPomTWiO4oFiJ6dq8AKfE9HZl4SYBvNVO5W5DQwfa070uPVc/jGh
+Il9aC3h1wwb1de9+Y2x+Nfy1YJ485Em7sboYr6Zqra4viyht3EqXRcNup9JKsSUN
+IU3/wVOq00MFhxhqdevBClFHBQ8O/YfDQeRRU/yUcrTnr3L+x1OGoGMtkQKb+1M5
+jhTQd97LgT0Unlh69N67ofameyu+nVtp1HkgU2JbgF9eKZUqDq3ANGpK7XFRzmpU
+hBp/WucrDVjytmprJvexzb4Fz8BDbw==
+=rcQD
+-----END PGP SIGNATURE-----
+
+--Wtrm9ATX0sn6fFKv--
