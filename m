@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUr2d-0006ZX-17
- for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 10:38:00 +0000
+ id 1gUr2d-0006ZZ-18
+ for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 10:38:01 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
@@ -11,9 +11,9 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Subject: [PATCH v5 1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
-Date: Thu,  6 Dec 2018 11:37:34 +0100
-Message-Id: <20181206103736.5957-2-boris.brezillon@bootlin.com>
+Subject: [PATCH v5 3/3] mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
+Date: Thu,  6 Dec 2018 11:37:36 +0100
+Message-Id: <20181206103736.5957-4-boris.brezillon@bootlin.com>
 In-Reply-To: <20181206103736.5957-1-boris.brezillon@bootlin.com>
 References: <20181206103736.5957-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,104 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some flash_info entries have the SPI_NOR_4B_OPCODES flag set to let the
-core know that the flash supports 4B opcode. While this solution works
-fine for id-based caps detection, it doesn't work that well when relying
-on SFDP-based caps detection. Let's add an SNOR_F_4B_OPCODES flag so
-that the SFDP parsing code can set it when appropriate.
+MX25L25635F and MX25L25635E share the same JEDEC-ID, but the F variant
+supports 4-byte opcodes while the E variant doesn't. We need a way to
+differentiate those 2 chips and set the SNOR_F_4B_OPCODES flag only for
+the F variant.
+
+Luckily, 4-byte opcode support is not the only difference: Fast Read
+4-4-4 is only supported by the F variant, and this feature is
+advertised in the BFPT table. Use this to decide when to set the
+SNOR_F_4B_OPCODES flag.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes in v5:
-- Cosmetic changes
+- Follow the flash_info entry format
 
 Changes in v4:
-- Set SNOR_F_4B_OPCODES flag outside of the if (mtd->size > 0x1000000)
-  block
-- Do not set SNOR_F_4B_OPCODES when BFPT_DWORD1_ADDRESS_BYTES_4_ONLY,
-  because 4byte only does not imply 4B opcodes are supported
-
-Changes in v3:
-- Clear SNOR_F_4B_OPCODES flag when SFDP fails
-- Add Alexandre R-b
-
-Changes in v2:
-- Fix the commit message
-- Fix the ->addr_width check
-- Add a comma at the end of the SNOR_F_4B_OPCODES definition
+- New patch
 ---
- drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++----------
- include/linux/mtd/spi-nor.h   |  1 +
- 2 files changed, 12 insertions(+), 10 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 8f07430ffffa..bea122e0d731 100644
+index 7bc9887d9c0a..fdff18cb1196 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3272,6 +3272,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+@@ -1447,6 +1447,31 @@ static int macronix_quad_enable(struct spi_nor *nor);
+ 		.addr_width = 3,					\
+ 		.flags = SPI_NOR_NO_FR | SPI_S3AN,
  
- 		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
- 			nor->addr_width = 0;
-+			nor->flags &= ~SNOR_F_4B_OPCODES;
- 			/* restore previous erase map */
- 			memcpy(&nor->erase_map, &prev_map,
- 			       sizeof(nor->erase_map));
-@@ -3572,9 +3573,7 @@ static int spi_nor_init(struct spi_nor *nor)
- 		}
- 	}
- 
--	if ((nor->addr_width == 4) &&
--	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
--	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
-+	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
- 		/*
- 		 * If the RESET# pin isn't hooked up properly, or the system
- 		 * otherwise doesn't perform a reset command in the boot
-@@ -3606,10 +3605,8 @@ static void spi_nor_resume(struct mtd_info *mtd)
- void spi_nor_restore(struct spi_nor *nor)
- {
- 	/* restore the addressing mode */
--	if ((nor->addr_width == 4) &&
--	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
--	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
--	    (nor->flags & SNOR_F_BROKEN_RESET))
-+	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
-+	    nor->flags & SNOR_F_BROKEN_RESET)
- 		set_4byte(nor, nor->info, 0);
- }
- EXPORT_SYMBOL_GPL(spi_nor_restore);
-@@ -3765,13 +3762,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	} else if (mtd->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
- 		nor->addr_width = 4;
--		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
--		    info->flags & SPI_NOR_4B_OPCODES)
--			spi_nor_set_4byte_opcodes(nor, info);
- 	} else {
- 		nor->addr_width = 3;
- 	}
- 
-+	if (info->flags & SPI_NOR_4B_OPCODES ||
-+	    (JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M))
++static int
++mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
++			    const struct sfdp_parameter_header *bfpt_header,
++			    const struct sfdp_bfpt *bfpt,
++			    struct spi_nor_flash_parameter *params)
++{
++	/*
++	 * MX25L25635F support 4B opcodes but MX25L25635E does not.
++	 * Unfortunately, Macronix has re-used the same JEDEC ID for both the
++	 * variants which prevents us from defining a new entry in the parts
++	 * table.
++	 * We need a way to differentiate MX25L25635E and MX25L25635F, and it
++	 * seems that the F version advertises support for Fast Read 4-4-4 in
++	 * its BFPT table.
++	 */
++	if (bfpt->dwords[BFPT_DWORD(5)] & BFPT_DWORD5_FAST_READ_4_4_4)
 +		nor->flags |= SNOR_F_4B_OPCODES;
 +
-+	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES)
-+		spi_nor_set_4byte_opcodes(nor, info);
++	return 0;
++}
 +
- 	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
- 		dev_err(dev, "address width is too large: %u\n",
- 			nor->addr_width);
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 8b1acf68b7ac..981d628305a2 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -237,6 +237,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_READY_XSR_RDY	= BIT(4),
- 	SNOR_F_USE_CLSR		= BIT(5),
- 	SNOR_F_BROKEN_RESET	= BIT(6),
-+	SNOR_F_4B_OPCODES	= BIT(7),
- };
- 
- /**
++static struct spi_nor_fixups mx25l25635_fixups = {
++	.post_bfpt = mx25l25635_post_bfpt_fixups,
++};
++
+ /* NOTE: double check command sets and memory organization when you add
+  * more nor chips.  This current list focusses on newer chips, which
+  * have been converging on command sets which including JEDEC ID.
+@@ -1581,7 +1606,9 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256,
+ 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
++			 SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++			 .fixups = &mx25l25635_fixups },
+ 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+ 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
 -- 
 2.17.1
