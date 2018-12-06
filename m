@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUr2d-0006ZV-14
+ id 1gUr2d-0006ZX-17
  for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 10:38:00 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
@@ -11,9 +11,11 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Subject: [PATCH v5 0/3] mtd: spi-nor: mx25l25635f: Use 4B opcodes
-Date: Thu,  6 Dec 2018 11:37:33 +0100
-Message-Id: <20181206103736.5957-1-boris.brezillon@bootlin.com>
+Subject: [PATCH v5 1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
+Date: Thu,  6 Dec 2018 11:37:34 +0100
+Message-Id: <20181206103736.5957-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20181206103736.5957-1-boris.brezillon@bootlin.com>
+References: <20181206103736.5957-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +25,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Some flash_info entries have the SPI_NOR_4B_OPCODES flag set to let the
+core know that the flash supports 4B opcode. While this solution works
+fine for id-based caps detection, it doesn't work that well when relying
+on SFDP-based caps detection. Let's add an SNOR_F_4B_OPCODES flag so
+that the SFDP parsing code can set it when appropriate.
 
-This is another attempt at fixing the bug reported by Alexandre and
-impacting mx25l25635f flashes that do not have the reset line properly
-wired. Since mx25l25635f and mx25l25635e share the same JEDEC-ID, and
-only mx25l25635f supports 4B opcodes, the core decides to enter 4B
-mode, and when a reset occurs, the NOR stays in this mode and the ROM
-code (why only supports 3 byte addressing) can't read the flash
-anymore.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Changes in v5:
+- Cosmetic changes
 
-Adding broken-flash-reset in the DT fixes the reboot issue but prints
-a WARN_ON() backtrace at boot time. The proper solution is to use 4B
-opcodes when available, but we need a way to flag the F variant of the
-chip as supporting this feature.
+Changes in v4:
+- Set SNOR_F_4B_OPCODES flag outside of the if (mtd->size > 0x1000000)
+  block
+- Do not set SNOR_F_4B_OPCODES when BFPT_DWORD1_ADDRESS_BYTES_4_ONLY,
+  because 4byte only does not imply 4B opcodes are supported
 
-This patchset paves the way for more SFDP-related fixups hooks by
-adding a spi_nor_fixups struct which can be provided on a per-chip
-basis (and soon on a per-manufacturer basis).
+Changes in v3:
+- Clear SNOR_F_4B_OPCODES flag when SFDP fails
+- Add Alexandre R-b
 
-In this series we add a single hook called post_bfpt() to allow fixups
-just after the BFPT parsing has occurred. Thanks to the BFPT array, we
-are able to differentiate the F and E variant and add the 4B_OPCODE
-flag when appropriate.
+Changes in v2:
+- Fix the commit message
+- Fix the ->addr_width check
+- Add a comma at the end of the SNOR_F_4B_OPCODES definition
+---
+ drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++----------
+ include/linux/mtd/spi-nor.h   |  1 +
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-With this infrastructure in place, we'll be able to fix SFPD tables at
-runtime instead setting the SKIP_SFDP on NORs with broken SFDP.
-
-Feel free to comment on the general approach or implementation details.
-
-Regards,
-
-Boris
-
-Boris Brezillon (3):
-  mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
-  mtd: spi-nor: Add a post BFPT parsing fixup hook
-  mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
-
- drivers/mtd/spi-nor/spi-nor.c | 437 +++++++++++++++++++---------------
- include/linux/mtd/spi-nor.h   |   1 +
- 2 files changed, 249 insertions(+), 189 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 8f07430ffffa..bea122e0d731 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -3272,6 +3272,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ 
+ 		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+ 			nor->addr_width = 0;
++			nor->flags &= ~SNOR_F_4B_OPCODES;
+ 			/* restore previous erase map */
+ 			memcpy(&nor->erase_map, &prev_map,
+ 			       sizeof(nor->erase_map));
+@@ -3572,9 +3573,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ 		}
+ 	}
+ 
+-	if ((nor->addr_width == 4) &&
+-	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+-	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
++	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
+ 		/*
+ 		 * If the RESET# pin isn't hooked up properly, or the system
+ 		 * otherwise doesn't perform a reset command in the boot
+@@ -3606,10 +3605,8 @@ static void spi_nor_resume(struct mtd_info *mtd)
+ void spi_nor_restore(struct spi_nor *nor)
+ {
+ 	/* restore the addressing mode */
+-	if ((nor->addr_width == 4) &&
+-	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+-	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
+-	    (nor->flags & SNOR_F_BROKEN_RESET))
++	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
++	    nor->flags & SNOR_F_BROKEN_RESET)
+ 		set_4byte(nor, nor->info, 0);
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_restore);
+@@ -3765,13 +3762,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	} else if (mtd->size > 0x1000000) {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ 		nor->addr_width = 4;
+-		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+-		    info->flags & SPI_NOR_4B_OPCODES)
+-			spi_nor_set_4byte_opcodes(nor, info);
+ 	} else {
+ 		nor->addr_width = 3;
+ 	}
+ 
++	if (info->flags & SPI_NOR_4B_OPCODES ||
++	    (JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M))
++		nor->flags |= SNOR_F_4B_OPCODES;
++
++	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES)
++		spi_nor_set_4byte_opcodes(nor, info);
++
+ 	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+ 		dev_err(dev, "address width is too large: %u\n",
+ 			nor->addr_width);
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 8b1acf68b7ac..981d628305a2 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -237,6 +237,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_READY_XSR_RDY	= BIT(4),
+ 	SNOR_F_USE_CLSR		= BIT(5),
+ 	SNOR_F_BROKEN_RESET	= BIT(6),
++	SNOR_F_4B_OPCODES	= BIT(7),
+ };
+ 
+ /**
 -- 
 2.17.1
