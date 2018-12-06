@@ -1,19 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gUr6R-0000YH-CJ
- for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 10:42:00 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [PATCH v3 5/5] mtd: spi-nor: Add an SPDX tag to spi-nor.{c,h}
-Date: Thu,  6 Dec 2018 11:41:20 +0100
-Message-Id: <20181206104120.6280-6-boris.brezillon@bootlin.com>
-In-Reply-To: <20181206104120.6280-1-boris.brezillon@bootlin.com>
-References: <20181206104120.6280-1-boris.brezillon@bootlin.com>
+Received: from out1-smtp.messagingengine.com ([66.111.4.25])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUrWz-0001yb-AM
+ for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 11:09:24 +0000
+Date: Thu, 6 Dec 2018 12:09:01 +0100
+From: Greg KH <greg@kroah.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Martin Kepplinger <martin.kepplinger@ginzinger.com>,
+ stable@vger.kernel.org, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+ Juergen <juergen.lachmann@harman.com>
+Subject: Re: [PATCH] ubi: fastmap: Check each mapping only once
+Message-ID: <20181206110901.GN19891@kroah.com>
+References: <20181126103842.3249-1-martin.kepplinger@ginzinger.com>
+ <20181129080923.GE13859@kroah.com> <1676802.TThbbZSlzy@blindfold>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1676802.TThbbZSlzy@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +27,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add SPDX tags to replace the license boiler-plate and fix the
-MODULE_LICENSE() definition in spi-nor.c to match the license text
-(GPL v2).
+On Sun, Dec 02, 2018 at 09:51:34AM +0100, Richard Weinberger wrote:
+> Greg,
+> 
+> Am Donnerstag, 29. November 2018, 09:09:23 CET schrieb Greg KH:
+> > On Mon, Nov 26, 2018 at 11:38:42AM +0100, Martin Kepplinger wrote:
+> > > From: Richard Weinberger <richard@nod.at>
+> > > 
+> > > [ Upstream commit 34653fd8c46e771585fce5975e4243f8fd401914 ]
+> > > 
+> > > This commit got merged along with commit 781932375ffc
+> > > ("ubi: fastmap: Correctly handle interrupted erasures in EBA") upstream but
+> > > only the latter has been applied to stable v4.14.54 as commit a23cf10d9abb.
+> > > This resulted in a performance regression. Startup on i.MX platforms is
+> > > delayed for up to a few seconds depending on the platform.
+> > > This fixes ubi fastmap to be of the same performance as it has been before
+> > > said fastmap changes.
+> > > 
+> > > Fixes: a23cf10d9abb ("ubi: fastmap: Correctly handle interrupted erasures in EBA")
+> > > Signed-off-by: Richard Weinberger <richard@nod.at>
+> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@ginzinger.com>
+> > > ---
+> > > 
+> > > Richard, although this fixes a major slowdown regression in -stable, do you
+> > > consider this "stable" too?
+> > > 
+> > > This applies and is tested only for the 4.14 stable tree. It seems to be
+> > > equally relevant for 4.9 and 4.4 though.
+> > 
+> > Now queued up for 4.14.y, thanks.
+> 
+> can you *please* slow a little down?
+> 
+> There are times (e.g. when I travel, visit customers on-site, being sick, etc...)
+> where I don't have the resources to monitor the mailinglists
+> in detail. Adding patches to stable on shout asks for trouble.
+> 
+> As Sudip points out, this patch needs a further fix patch:
+> 25677478474a ("ubi: Initialize Fastmap checkmapping correctly")
 
-Interestingly, spi-nor.h and spi-nor.c do not use the same license
-(GPL v2+ for spi-nor.h, GPL v2 for spi-nor.c).
+This is now in 4.14.86 so all should be fine now.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Changes in v3:
-- Add an SPDX tag to spi-nor.h
+As for "speed", most of the time people are complaining that I move too
+slow in getting fixes backported and to their patches.  Rarely am I told
+I am moving too fast, that's a nice change :)
 
-Changes in v2:
-- New patch
----
- drivers/mtd/spi-nor/spi-nor.c | 7 ++-----
- include/linux/mtd/spi-nor.h   | 6 +-----
- 2 files changed, 3 insertions(+), 10 deletions(-)
+As for doing releases on a "regular" schedule, I've tried it, and it
+didn't work any better/worse than what I'm doing now as everyone who
+consumes these kernels have their own cadence / acceptance process and I
+can never get in sync with _everyone_ let alone almost _anyone_.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index db31a81a68b2..2e9306e1c52a 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1,13 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Based on m25p80.c, by Mike Lavender (mike@steroidmicros.com), with
-  * influence from lart.c (Abraham Van Der Merwe) and mtd_dataflash.c
-  *
-  * Copyright (C) 2005, Intec Automation Inc.
-  * Copyright (C) 2014, Freescale Semiconductor, Inc.
-- *
-- * This code is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
- 
- #include <linux/err.h>
-@@ -3878,7 +3875,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- }
- EXPORT_SYMBOL_GPL(spi_nor_scan);
- 
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Huang Shijie <shijie8@gmail.com>");
- MODULE_AUTHOR("Mike Lavender");
- MODULE_DESCRIPTION("framework for SPI NOR");
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 981d628305a2..5f177aa39f68 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -1,10 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * Copyright (C) 2014 Freescale Semiconductor, Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-  */
- 
- #ifndef __LINUX_MTD_SPI_NOR_H
--- 
-2.17.1
+And due to travel and other things (like security issues coming up),
+trying to nail down a specific day-of-the-week doesn't work out at all
+either.
+
+thanks,
+
+greg k-h
