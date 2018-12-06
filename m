@@ -1,30 +1,19 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Vignesh R <vigneshr@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 0/7] spi: add support for octal mode
-Date: Thu, 6 Dec 2018 06:49:08 +0000
-Message-ID: <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181203101937.7b01a0ad@bbrezillon>
- <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
- <20181205134618.56223758@bbrezillon>
- <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181206074554.0ec0aecb@bbrezillon>
-In-Reply-To: <20181206074554.0ec0aecb@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mx75.dns.com.cn ([180.76.192.128])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gUoOO-0006Cu-QX
+ for linux-mtd@lists.infradead.org; Thu, 06 Dec 2018 07:48:20 +0000
+Received: from junlwz (unknown [183.12.102.239])
+ by mx75.dns.com.cn (DNS Email Server) with ESMTPA id A4ABA220445
+ for <linux-mtd@lists.infradead.org>; Thu,  6 Dec 2018 15:41:00 +0800 (CST)
+Message-ID: <20181206154114716487@hmi-original.com>
+From: "Control" <contact@hmi-original.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Siemens touch panel 2018
+Date: Thu, 6 Dec 2018 15:41:09 +0800
 MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,69 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Thursday, December 6, 2018 12:16 PM
-> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> Cc: Vignesh R <vigneshr@ti.com>; broonie@kernel.org; linux-
-> mtd@lists.infradead.org; marek.vasut@gmail.com; linux-spi@vger.kernel.org=
-;
-> devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
-> shawnguo@kernel.org; linux-arm-kernel@lists.infradead.org;
-> computersforpeace@gmail.com; frieder.schrempf@exceet.de; linux-
-> kernel@vger.kernel.org
-> Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
->=20
-> On Thu, 6 Dec 2018 04:20:26 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->=20
-> > Hi Boris,
-> >
-> > > -----Original Message-----
-> > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > > Sent: Wednesday, December 5, 2018 6:16 PM
-> > > To: Vignesh R <vigneshr@ti.com>; broonie@kernel.org
-> > > Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; linux-
-> > > mtd@lists.infradead.org; marek.vasut@gmail.com;
-> > > linux-spi@vger.kernel.org; devicetree@vger.kernel.org;
-> > > robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org;
-> > > linux-arm-kernel@lists.infradead.org;
-> > > computersforpeace@gmail.com; frieder.schrempf@exceet.de; linux-
-> > > kernel@vger.kernel.org
-> > > Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
-> > >
-> > > On Wed, 5 Dec 2018 17:25:12 +0530
-> > > Vignesh R <vigneshr@ti.com> wrote:
-> > >
-> > > > >>   mtd: spi-nor: add opcodes for octal Read/Write commands
-> > > > >>   mtd: spi-nor: add octal read flag for flash mt35xu512aba
-> > > >
-> > > > Could you consider merging these two patches alone for v4.21?
-> > > > These can be applied independent of other patches in the series
-> > > > and would allow supporting OSPI flash at SPI NOR level with Cadence=
- QSPI
-> driver.
-> > >
-> > > Yep, I'll queue them to spi-nor/next.
-> > >
-> > > > >>   spi: nxp-fspi: add octal mode flag bit for octal support
-> > >
-> > > Mark, I think you can pick this one too.
-> >
-> > This patch is dependent on the series [1] which is yet to be applied by=
- you,
-> please apply.
->=20
-> By me? I can't apply SPI patches.
-
-Sorry for ignorance. Did patches needs to be applied by Mark Brown, should =
-I resend the patch series again?
-Also can you please review the series [1] and add your Reviewed-by tag.
-
---
-Regards
-Yogesh Gaur
-
-[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D76402
+RGVhciBmcmllbmQsDQpHb29kIGRheS4NCkhvdyBhcmUgeW91Pw0KVGhpcyBpcyBjcnlzdGFsIGZy
+b20gS29sbGV3aW4gVGVjaG5vbG9neSBDby4sTGltaXRlZC4NCg0KR2xhZCB0byBoZWFyIHRoYXQg
+eW91IGFyZSBvbiB0aGUgbWFya2V0IGZvciB0aGUgU2llbWVucyBITUksIHdlIHNwZWNpYWxpemUg
+aW4gdGhpcyBmaWVsZCBmb3Igb3ZlciAxNCB5ZWFycywgd2l0aA0KDQoNCiBmdWxsIG5ldyBvcmln
+aW5hbCwxIHllYXIgd2FycmFudHkuDQpBbHNvIHdlIHJlc2VsbCBzb21lIG90aGVyIHdlbGwta25v
+d24gYXV0b21hdGlvbiBwcm9kdWN0cywgc3VjaCBhcyBBbGxlbiBCcmFkbGV5LE9tcm9uLE1pdHN1
+YmlzaGkuDQoNCkhlcmUgYXJlIHNvbWUgU2llbWVucycgSE1JIGZvciB5b3VyIHJlZjoNCg0KNkFW
+MjEyMy0yREIwMy0wQVgwLCAkMTQ5LjAwIA0KNkFWMjEyMy0yR0EwMy0wQVgwLCAkMzE5LjE2IA0K
+NkFWMjEyMy0yR0IwMy0wQVgwLCAkMzE1LjcxIA0KNkFWMjEyMy0ySkIwMy0wQVgwLCAkNDg3LjMz
+IA0KNkFWMjEyMy0yTUEwMy0wQVgwLCAkNjY2Ljg3IA0KNkFWMjEyMy0yTUIwMy0wQVgwLCAkNjY2
+Ljg3IA0KNkFWMjEyNC0yREMwMS0wQVgwLCAkMzQ1LjA0IA0KNkFWMjEyNC0xREMwMS0wQVgwLCAk
+MzYyLjI5IA0KNkFWMjEyNC0wR0MwMS0wQVgwLCAkNTc0LjQ5IA0KNkFWMjEyNC0xR0MwMS0wQVgw
+LCAkNjc3Ljg2IA0KNkFWMjEyNC0wSkMwMS0wQVgwLCAkMSwxOTYuOTUgDQo2QVYyMTI0LTFKQzAx
+LTBBWDAsICQxLDM2NC41OCANCjZBVjIxMjQtME1DMDEtMEFYMCwgJDEsMzg1LjUwIA0KNkFWMjEy
+NC0xTUMwMS0wQVgwLCAkMSw0ODMuOTcgDQo2QVYyMTI0LTBRQzAyLTBBWDAsICQyLDQ1MC4zOA0K
+DQpNb3JlIGRldGFpbHMsIHBsZWFzZSBsZXQgbWUga25vdy4gSSB3aWxsIHRyeSBteSBiZXN0IHRv
+IHNlcnZpY2UgeW91Lg0KTG9va2luZyBmb3J3YXJkIHRvIGhlYXJpbmcgZnJvbSB5b3Ugc29vbi4g
+DQoNClRoYW5rcywNCkJlc3QgcmVnYXJkcy4NCg0KQ3J5c3RhbA0KS29sbGV3aW4gVGVjaG5vbG9n
+eSBDby4sTGltaXRlZA0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0K
+DQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0K
