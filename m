@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVCPv-0001KW-Au
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:46 +0000
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVCQ4-0005hX-Vn
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:38 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
@@ -12,9 +12,9 @@ Cc: Vignesh R <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 16/34] mtd: spi-nor: Move Atmel bits out of core.c
-Date: Fri,  7 Dec 2018 10:26:19 +0100
-Message-Id: <20181207092637.18687-17-boris.brezillon@bootlin.com>
+Subject: [RFC PATCH 34/34] mtd: spi-nor: Add sfdp fixups hooks
+Date: Fri,  7 Dec 2018 10:26:37 +0100
+Message-Id: <20181207092637.18687-35-boris.brezillon@bootlin.com>
 In-Reply-To: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,156 +26,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create a SPI NOR manufacturer driver for Atmel chips, and move the
-Atmel definitions outside of core.c.
+Experience has proven that SFDP tables are sometimes wrong, and the
+parsing that is done by the core can lead ton erroneous flash config
+which can sometimes be harmful.
+
+This leaves us 2 options:
+
+1/ set the SPI_NOR_SKIP_SFDP flag and completely ignore SFDP parsing
+2/ fix SFDP tables at runtime
+
+While #1 should always work, it might implies extra work if most of the
+SFDP is correct. #2 has the benefit of keeping the generic SFDP parsing
+logic almost untouched while allowing SPI NOR manufacturer drivers to
+fix the broken bits.
+
+Add three new hooks to do that.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/spi-nor/Makefile    |  1 +
- drivers/mtd/spi-nor/atmel.c     | 47 +++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.c      | 29 +++-----------------
- drivers/mtd/spi-nor/internals.h |  3 +++
- 4 files changed, 54 insertions(+), 26 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/atmel.c
+ drivers/mtd/spi-nor/internals.h |  7 ++++
+ drivers/mtd/spi-nor/sfdp.c      | 57 +++++++++++++++++++++++++++++++--
+ 2 files changed, 62 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 0d6c4967a445..fd8454d38b17 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- spi-nor-objs			:= core.o
-+spi-nor-objs			+= atmel.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+diff --git a/drivers/mtd/spi-nor/internals.h b/drivers/mtd/spi-nor/internals.h
+index ae3eb40d7241..da71145995d9 100644
+--- a/drivers/mtd/spi-nor/internals.h
++++ b/drivers/mtd/spi-nor/internals.h
+@@ -188,6 +188,8 @@ struct sfdp_bfpt {
  
- obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-new file mode 100644
-index 000000000000..a700a17fdead
---- /dev/null
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2005, Intec Automation Inc.
-+ * Copyright (C) 2014, Freescale Semiconductor, Inc.
-+ */
-+
-+#include <linux/wait.h>
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "internals.h"
-+
-+static const struct flash_info atmel_parts[] = {
-+	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
-+	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
-+	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
-+
-+	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
-+
-+	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
-+	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
-+	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
-+	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
-+
-+	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
-+};
-+
-+static int atmel_post_sfdp_fixups(struct spi_nor *nor,
-+				  struct spi_nor_flash_parameter *params)
+ /**
+  * struct spi_nor_fixups - SPI NOR fixup hooks
++ * @sfdp_hdr: SFDP header fixups
++ * @sfdp_hdr: SFDP parameter headers fixups
+  * @post_bfpt: called after the BFPT table has been parsed
+  * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
+  *	       that do not support RDSFDP). Typically used to tweak various
+@@ -199,6 +201,11 @@ struct sfdp_bfpt {
+  * table is broken or not available.
+  */
+ struct spi_nor_fixups {
++	int (*sfdp_hdr)(struct spi_nor *nor,
++			struct sfdp_header *hdr);
++	int (*sfdp_param_hdrs)(struct spi_nor *nor,
++			       struct sfdp_header *hdr,
++			       struct sfdp_parameter_header *param_hdrs);
+ 	int (*post_bfpt)(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+ 			 const struct sfdp_bfpt *bfpt,
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 36343e3e6be0..a8cd070e4ea2 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -534,8 +534,8 @@ static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
+ static int
+ spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+ 			 const struct sfdp_parameter_header *bfpt_header,
+-			 const struct sfdp_bfpt *bfpt,
+-			 struct spi_nor_flash_parameter *params)
++                         const struct sfdp_bfpt *bfpt,
++                         struct spi_nor_flash_parameter *params)
+ {
+ 	int ret;
+ 
+@@ -748,6 +748,50 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
+ }
+ 
++static int spi_nor_sfdp_hdr_fixups(struct spi_nor *nor,
++				   struct sfdp_header *hdr)
 +{
-+	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
++	int ret;
++
++	if (nor->manufacturer && nor->manufacturer->fixups &&
++	    nor->manufacturer->fixups->sfdp_hdr) {
++		ret = nor->manufacturer->fixups->sfdp_hdr(nor, hdr);
++		if (ret)
++			return ret;
++	}
++
++	if (nor->info->fixups && nor->info->fixups->sfdp_hdr) {
++		ret = nor->info->fixups->sfdp_hdr(nor, hdr);
++		if (ret)
++			return ret;
++	}
 +
 +	return 0;
 +}
 +
-+static const struct spi_nor_fixups atmel_fixups = {
-+	.post_sfdp = atmel_post_sfdp_fixups,
-+};
++static int
++spi_nor_sfdp_param_hdrs_fixups(struct spi_nor *nor, struct sfdp_header *hdr,
++			       struct sfdp_parameter_header *param_hdrs)
++{
++	int ret;
 +
-+const struct spi_nor_manufacturer spi_nor_atmel = {
-+	.name = "atmel",
-+	.parts = atmel_parts,
-+	.nparts = ARRAY_SIZE(atmel_parts),
-+	.fixups = &atmel_fixups,
-+};
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0bdbedb464c1..28b0d46aa3a0 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1401,22 +1401,6 @@ static struct spi_nor_fixups mx25l25635_fixups = {
-  * old entries may be missing 4K flag.
-  */
- static const struct flash_info spi_nor_ids[] = {
--	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
--	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) },
--	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) },
--
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
--
--	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
--
--	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
--
- 	/* EON -- en25xxx */
- 	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64, SECT_4K) },
- 	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64, 0) },
-@@ -1714,7 +1698,9 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ },
- };
- 
--static const struct spi_nor_manufacturer *manufacturers[0];
-+static const struct spi_nor_manufacturer *manufacturers[] = {
-+	&spi_nor_atmel,
-+};
- 
- static const struct flash_info *
- spi_nor_search_part_by_id(const struct flash_info *parts, unsigned int nparts,
-@@ -3394,11 +3380,6 @@ static void intel_post_sfdp_fixups(struct spi_nor *nor)
- 	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
- }
- 
--static void atmel_post_sfdp_fixups(struct spi_nor *nor)
--{
--	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
--}
--
- static void sst_post_sfdp_fixups(struct spi_nor *nor)
- {
- 	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
-@@ -3461,10 +3442,6 @@ spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
- 		return nor->manufacturer->fixups->post_sfdp(nor, params);
- 
- 	switch (JEDEC_MFR(nor->info)) {
--	case SNOR_MFR_ATMEL:
--		atmel_post_sfdp_fixups(nor);
--		break;
--
- 	case SNOR_MFR_INTEL:
- 		intel_post_sfdp_fixups(nor);
- 		break;
-diff --git a/drivers/mtd/spi-nor/internals.h b/drivers/mtd/spi-nor/internals.h
-index 5ed65f46333d..9ad903a51846 100644
---- a/drivers/mtd/spi-nor/internals.h
-+++ b/drivers/mtd/spi-nor/internals.h
-@@ -332,6 +332,9 @@ struct spi_nor_manufacturer {
- 	const struct spi_nor_fixups *fixups;
- };
- 
-+/* Manufacturer drivers. */
-+extern const struct spi_nor_manufacturer spi_nor_atmel;
++	if (nor->manufacturer && nor->manufacturer->fixups &&
++	    nor->manufacturer->fixups->sfdp_param_hdrs) {
++		ret = nor->manufacturer->fixups->sfdp_param_hdrs(nor, hdr,
++								 param_hdrs);
++		if (ret)
++			return ret;
++	}
 +
- /* Core helpers. */
- int en4_ex4_set_4byte(struct spi_nor *nor, bool enable);
- int en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable);
++	if (nor->info->fixups && nor->info->fixups->sfdp_hdr) {
++		ret = nor->info->fixups->sfdp_param_hdrs(nor, hdr, param_hdrs);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
+ /**
+  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -777,6 +821,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 	if (err < 0)
+ 		return err;
+ 
++	err = spi_nor_sfdp_hdr_fixups(nor, &header);
++	if (err)
++		return err;
++
+ 	/* Check the SFDP header version. */
+ 	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
+ 	    header.major != SFDP_JESD216_MAJOR)
+@@ -815,6 +863,11 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			dev_err(dev, "failed to read SFDP parameter headers\n");
+ 			goto exit;
+ 		}
++
++		err = spi_nor_sfdp_param_hdrs_fixups(nor, &header,
++						     param_headers);
++		if (err)
++			return err;
+ 	}
+ 
+ 	/*
 -- 
 2.17.1
