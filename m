@@ -1,22 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVCQ0-0001T5-Ah
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:34 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: Vignesh R <vigneshr@ti.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 25/34] mtd: spi-nor: Move Micron/ST bits out of core.c
-Date: Fri,  7 Dec 2018 10:26:28 +0100
-Message-Id: <20181207092637.18687-26-boris.brezillon@bootlin.com>
-In-Reply-To: <20181207092637.18687-1-boris.brezillon@bootlin.com>
-References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
+Date: Fri, 7 Dec 2018 10:42:54 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>, Yixun
+ Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>,
+ Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+Message-ID: <20181207104254.0ecfc1e5@xps13>
+In-Reply-To: <20181207102456.1dc67e07@xps13>
+References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
+ <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181207102456.1dc67e07@xps13>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,281 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create a SPI NOR manufacturer driver for Micron/ST chips, and move the
-Micron/ST definitions outside of core.c.
+Hi Jianxin,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/spi-nor/Makefile    |   1 +
- drivers/mtd/spi-nor/core.c      |  73 +------------------
- drivers/mtd/spi-nor/internals.h |   2 +
- drivers/mtd/spi-nor/micron-st.c | 121 ++++++++++++++++++++++++++++++++
- 4 files changed, 126 insertions(+), 71 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/micron-st.c
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Fri, 7 Dec 2018
+10:24:56 +0100:
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index c8ba7009e3ac..3cbd445518e9 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -9,6 +9,7 @@ spi-nor-objs			+= gigadevice.o
- spi-nor-objs			+= intel.o
- spi-nor-objs			+= issi.o
- spi-nor-objs			+= macronix.o
-+spi-nor-objs			+= micron-st.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- 
- obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0118fafd7c65..7282c261da88 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1364,28 +1364,6 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
-  * old entries may be missing 4K flag.
-  */
- static const struct flash_info spi_nor_ids[] = {
--	/* Micron <--> ST Micro */
--	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
--	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
--	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
--	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
--	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
--	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
--	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
--
--	/* Micron */
--	{
--		"mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
--			SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES)
--	},
--
- 	/* Spansion/Cypress -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
-@@ -1433,42 +1411,6 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
- 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
--	/* ST Microelectronics -- newer production may have feature updates */
--	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
--	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
--	{ "m25p20",  INFO(0x202012,  0,  64 * 1024,   4, 0) },
--	{ "m25p40",  INFO(0x202013,  0,  64 * 1024,   8, 0) },
--	{ "m25p80",  INFO(0x202014,  0,  64 * 1024,  16, 0) },
--	{ "m25p16",  INFO(0x202015,  0,  64 * 1024,  32, 0) },
--	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
--	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
--	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
--
--	{ "m25p05-nonjedec",  INFO(0, 0,  32 * 1024,   2, 0) },
--	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, 0) },
--	{ "m25p20-nonjedec",  INFO(0, 0,  64 * 1024,   4, 0) },
--	{ "m25p40-nonjedec",  INFO(0, 0,  64 * 1024,   8, 0) },
--	{ "m25p80-nonjedec",  INFO(0, 0,  64 * 1024,  16, 0) },
--	{ "m25p16-nonjedec",  INFO(0, 0,  64 * 1024,  32, 0) },
--	{ "m25p32-nonjedec",  INFO(0, 0,  64 * 1024,  64, 0) },
--	{ "m25p64-nonjedec",  INFO(0, 0,  64 * 1024, 128, 0) },
--	{ "m25p128-nonjedec", INFO(0, 0, 256 * 1024,  64, 0) },
--
--	{ "m45pe10", INFO(0x204011,  0, 64 * 1024,    2, 0) },
--	{ "m45pe80", INFO(0x204014,  0, 64 * 1024,   16, 0) },
--	{ "m45pe16", INFO(0x204015,  0, 64 * 1024,   32, 0) },
--
--	{ "m25pe20", INFO(0x208012,  0, 64 * 1024,  4,       0) },
--	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16,       0) },
--	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K) },
--
--	{ "m25px16",    INFO(0x207115,  0, 64 * 1024, 32, SECT_4K) },
--	{ "m25px32",    INFO(0x207116,  0, 64 * 1024, 64, SECT_4K) },
--	{ "m25px32-s0", INFO(0x207316,  0, 64 * 1024, 64, SECT_4K) },
--	{ "m25px32-s1", INFO(0x206316,  0, 64 * 1024, 64, SECT_4K) },
--	{ "m25px64",    INFO(0x207117,  0, 64 * 1024, 128, 0) },
--	{ "m25px80",    INFO(0x207114,  0, 64 * 1024, 16, 0) },
--
- 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
- 	{ "w25x05", INFO(0xef3010, 0, 64 * 1024,  1,  SECT_4K) },
- 	{ "w25x10", INFO(0xef3011, 0, 64 * 1024,  2,  SECT_4K) },
-@@ -1550,6 +1492,8 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_intel,
- 	&spi_nor_issi,
- 	&spi_nor_macronix,
-+	&spi_nor_micron,
-+	&spi_nor_st,
- };
- 
- static const struct flash_info *
-@@ -3193,14 +3137,6 @@ static int winbond_set_4byte(struct spi_nor *nor, bool enable)
- 	return ret;
- }
- 
--static void st_micron_post_sfdp_fixups(struct spi_nor *nor)
--{
--	/* All ST/Micron NORs support the unlock/lock operations. */
--	nor->flags |= SNOR_F_HAS_LOCK;
--	nor->set_4byte = en4_ex4_wen_set_4byte;
--	nor->quad_enable = no_quad_enable;
--}
--
- static void winbond_post_sfdp_fixups(struct spi_nor *nor)
- {
- 	nor->set_4byte = winbond_set_4byte;
-@@ -3281,11 +3217,6 @@ spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
- 		return nor->manufacturer->fixups->post_sfdp(nor, params);
- 
- 	switch (JEDEC_MFR(nor->info)) {
--	case SNOR_MFR_ST:
--	case SNOR_MFR_MICRON:
--		st_micron_post_sfdp_fixups(nor);
--		break;
--
- 	case SNOR_MFR_SPANSION:
- 		spansion_post_sfdp_fixups(nor);
- 		break;
-diff --git a/drivers/mtd/spi-nor/internals.h b/drivers/mtd/spi-nor/internals.h
-index cb8968824098..888ef8d25f6b 100644
---- a/drivers/mtd/spi-nor/internals.h
-+++ b/drivers/mtd/spi-nor/internals.h
-@@ -342,6 +342,8 @@ extern const struct spi_nor_manufacturer spi_nor_gigadevice;
- extern const struct spi_nor_manufacturer spi_nor_intel;
- extern const struct spi_nor_manufacturer spi_nor_issi;
- extern const struct spi_nor_manufacturer spi_nor_macronix;
-+extern const struct spi_nor_manufacturer spi_nor_micron;
-+extern const struct spi_nor_manufacturer spi_nor_st;
- 
- /* Core helpers. */
- int en4_ex4_set_4byte(struct spi_nor *nor, bool enable);
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-new file mode 100644
-index 000000000000..7d9574d587a9
---- /dev/null
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2005, Intec Automation Inc.
-+ * Copyright (C) 2014, Freescale Semiconductor, Inc.
-+ */
-+
-+#include <linux/wait.h>
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "internals.h"
-+
-+static int micron_st_post_sfdp_fixups(struct spi_nor *nor,
-+				      struct spi_nor_flash_parameter *params)
-+{
-+	/* All ST/Micron NORs support the unlock/lock operations. */
-+	nor->flags |= SNOR_F_HAS_LOCK;
-+	nor->set_4byte = en4_ex4_wen_set_4byte;
-+	nor->quad_enable = no_quad_enable;
-+
-+	return 0;
-+}
-+
-+static const struct spi_nor_fixups micron_st_fixups = {
-+	.post_sfdp = micron_st_post_sfdp_fixups,
-+};
-+
-+static const struct flash_info micron_parts[] = {
-+	{
-+		"mt35xu512aba",
-+		INFO(0x2c5b1a, 0, 128 * 1024, 512,
-+		     SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES)
-+	},
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_micron = {
-+	.name = "micron",
-+	.parts = micron_parts,
-+	.nparts = ARRAY_SIZE(micron_parts),
-+	.fixups = &micron_st_fixups,
-+};
-+
-+static const struct flash_info st_parts[] = {
-+	{
-+		"n25q016a",
-+		INFO(0x20bb15, 0, 64 * 1024, 32, SECT_4K | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q032",
-+		INFO(0x20ba16, 0, 64 * 1024, 64, SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q032a",
-+		INFO(0x20bb16, 0, 64 * 1024, 64, SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q064",
-+		INFO(0x20ba17, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q064a",
-+		INFO(0x20bb17, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q128a11",
-+		INFO(0x20bb18, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q128a13",
-+		INFO(0x20ba18, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q256a",
-+		INFO(0x20ba19, 0, 64 * 1024, 512,
-+		     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q256ax1",
-+		INFO(0x20bb19, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q512a",
-+		INFO(0x20bb20, 0, 64 * 1024, 1024,
-+		     SECT_4K | USE_FSR | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q512ax3",
-+		INFO(0x20ba20, 0, 64 * 1024, 1024,
-+		     SECT_4K | USE_FSR | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"n25q00",
-+		INFO(0x20ba21, 0, 64 * 1024, 2048,
-+		     SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE)
-+	},
-+	{
-+		"n25q00a",
-+		INFO(0x20bb21, 0, 64 * 1024, 2048,
-+		     SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE)
-+	},
-+	{
-+		"mt25qu02g",
-+		INFO(0x20bb22, 0, 64 * 1024, 4096,
-+		     SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE)
-+	},
-+	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
-+	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
-+	{ "m25p20",  INFO(0x202012,  0,  64 * 1024,   4, 0) },
-+	{ "m25p40",  INFO(0x202013,  0,  64 * 1024,   8, 0) },
-+	{ "m25p80",  INFO(0x202014,  0,  64 * 1024,  16, 0) },
-+	{ "m25p16",  INFO(0x202015,  0,  64 * 1024,  32, 0) },
-+	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
-+	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
-+	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_st = {
-+	.name = "st",
-+	.parts = st_parts,
-+	.nparts = ARRAY_SIZE(st_parts),
-+	.fixups = &micron_st_fixups,
-+};
--- 
-2.17.1
+> Hi Jianxin,
+>=20
+> Looks good to me overall, a few comments inline.
+>=20
+> Jianxin Pan <jianxin.pan@amlogic.com> wrote on Sat, 17 Nov 2018
+> 00:40:38 +0800:
+>=20
+> > From: Liang Yang <liang.yang@amlogic.com>
+> >=20
+> > Add initial support for the Amlogic NAND flash controller which found
+> > in the Meson-GXBB/GXL/AXG SoCs.
+> >=20
+> > Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> > Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+> > Signed-off-by: Jianxin Pan <jianxin.pan@amlogic.com>
+> > ---
+> >  drivers/mtd/nand/raw/Kconfig      |   10 +
+> >  drivers/mtd/nand/raw/Makefile     |    1 +
+> >  drivers/mtd/nand/raw/meson_nand.c | 1417 +++++++++++++++++++++++++++++=
+++++++++
+> >  3 files changed, 1428 insertions(+)
+> >  create mode 100644 drivers/mtd/nand/raw/meson_nand.c
+> >=20
+
+I forgot to mention, Boris has done more cleanup which breaks your
+patches, please have a look at the following commits in the nand/next
+branch, they will force you to do some light rework to get the driver
+building (especially, you should not export the ->select_chip hook anymore):
+
+7a08dbaedd36 mtd: rawnand: Move ->setup_data_interface() to nand_controller=
+_ops
+f2abfeb2078b mtd: rawnand: Move the ->exec_op() method to nand_controller_o=
+ps
+7d6c37e90cf9 mtd: rawnand: Deprecate the ->select_chip() hook
+1770022ffa85 mtd: rawnand: ams-delta: Stop implementing ->select_chip()
+653c57c7da08 mtd: rawnand: vf610: Stop implementing ->select_chip()
+2ace451cae22 mtd: rawnand: tegra: Stop implementing ->select_chip()
+b25251414f6e mtd: rawnand: marvell: Stop implementing ->select_chip()
+550b9fc4e3af mtd: rawnand: fsmc: Stop implementing ->select_chip()
+02b4a52604a4 mtd: rawnand: Make ->select_chip() optional when ->exec_op() i=
+s implemented
+ae2294b10b0f mtd: rawnand: Pass the CS line to be selected in struct nand_o=
+peration
+1d0178593d14 mtd: rawnand: Add nand_[de]select_target() helpers
+
+Thanks,
+Miqu=C3=A8l
