@@ -1,18 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVAsW-0007rf-Fe
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 07:48:58 +0000
-Date: Fri, 7 Dec 2018 08:48:20 +0100
+ id 1gVB4K-0004P3-21
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 08:01:10 +0000
+Date: Fri, 7 Dec 2018 09:00:41 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Gregory Clement
- <gregory.clement@bootlin.com>
-Subject: Re: [PATCH] mtd: rawnand: marvell: fix spelling mistake in kernel doc
-Message-ID: <20181207084820.3175e8e2@xps13>
-In-Reply-To: <20181122155859.627-1-miquel.raynal@bootlin.com>
-References: <20181122155859.627-1-miquel.raynal@bootlin.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "peron.clem@gmail.com" <peron.clem@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v3] mtd: spinand: Fix ECC status and OOB layout for
+ Toshiba TC58CVG2S0H
+Message-ID: <20181207090041.6b8d9731@xps13>
+In-Reply-To: <1543823821-18352-1-git-send-email-frieder.schrempf@kontron.de>
+References: <1543823821-18352-1-git-send-email-frieder.schrempf@kontron.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,35 +28,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Schrempf, Cl=C3=A9ment,
 
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 22 Nov 2018
-16:58:59 +0100:
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote on Mon, 3 Dec 2018
+08:01:38 +0000:
 
-> Correct the spelling mistake 'Regiters' -> 'Registers'.
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
 >=20
-> Fixes: 961ba15c48dd ("mtd: rawnand: marvell: Fix clock resource by adding=
- a register clock")
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> When reading the status of the on-chip ECC, the Toshiba chip returns
+> two different states for reporting corrected bitflips. We should check
+> for both of them.
+>=20
+> Also return the free OOB bytes as one contiguous area, instead of
+> multiple sections.
+>=20
+> Suggested-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Acked-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
 > ---
->  drivers/mtd/nand/raw/marvell_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes for v3:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> * Add Acked-by
+> * Add comment for BBM in OOB layout
 >=20
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/m=
-arvell_nand.c
-> index 650f2b490a05..ce1212dd0122 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -378,7 +378,7 @@ struct marvell_nfc_caps {
->   * @dev:		Parent device (used to print error messages)
->   * @regs:		NAND controller registers
->   * @core_clk:		Core clock
-> - * @reg_clk:		Regiters clock
-> + * @reg_clk:		Registers clock
->   * @complete:		Completion object to wait for NAND controller events
->   * @assigned_cs:	Bitmask describing already assigned CS lines
->   * @chips:		List containing all the NAND chips attached to
+> Changes for v2:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> * Remove the changes to the ECC bytes in the OOB layout
+> ---
+>  drivers/mtd/nand/spi/toshiba.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshib=
+a.c
+> index 294bcf6..0812655 100644
+> --- a/drivers/mtd/nand/spi/toshiba.c
+> +++ b/drivers/mtd/nand/spi/toshiba.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/mtd/spinand.h>
+> =20
+>  #define SPINAND_MFR_TOSHIBA		0x98
+> +#define TOSH_STATUS_ECC_HAS_BITFLIPS_T	(3 << 4)
+> =20
+>  static SPINAND_OP_VARIANTS(read_cache_variants,
+>  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+> @@ -33,19 +34,18 @@ static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info =
+*mtd, int section,
+>  	region->offset =3D 128 + 16 * section;
+>  	region->length =3D 16;
+> =20
+> -
+>  	return 0;
+>  }
+> =20
+>  static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
+>  				      struct mtd_oob_region *region)
+>  {
+> -	if (section > 7)
+> +	if (section > 0)
+>  		return -ERANGE;
+> =20
+> -	region->offset =3D 2 + 16 * section;
+> -	region->length =3D 14;
+> -
+> +	/* 2 bytes reserved for BBM */
+> +	region->offset =3D 2;
+> +	region->length =3D 126;
+> =20
+>  	return 0;
+>  }
+> @@ -70,6 +70,7 @@ static int tc58cvg2s0h_ecc_get_status(struct spinand_de=
+vice *spinand,
+>  		return -EBADMSG;
+> =20
+>  	case STATUS_ECC_HAS_BITFLIPS:
+> +	case TOSH_STATUS_ECC_HAS_BITFLIPS_T:
+>  		/*
+>  		 * Let's try to retrieve the real maximum number of bitflips
+>  		 * in order to avoid forcing the wear-leveling layer to move
 
-Applied on nand/next.
+If you don't mind, I would like to squash this with the original patch.
+What about also adding Clement's Acked-by to it?
 
 
+Thanks,
 Miqu=C3=A8l
