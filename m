@@ -1,24 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVLDc-0005xJ-Mi
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 18:51:23 +0000
-Date: Fri, 7 Dec 2018 19:51:07 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mathieu Malaterre <malat@debian.org>
-Cc: Paul Burton <paul.burton@mips.com>, trivial@kernel.org,
- kernel-janitors@vger.kernel.org, Harvey Hunt <harveyhuntnexus@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: jz4780: annotate implicit fall throughs
-Message-ID: <20181207195107.1b4959e1@xps13>
-In-Reply-To: <20181204201057.30733-1-malat@debian.org>
-References: <20181203212214.8862-1-malat@debian.org>
- <20181204201057.30733-1-malat@debian.org>
+Received: from mail-ot1-f66.google.com ([209.85.210.66])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVPlo-0005vH-Qh
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 23:42:58 +0000
+Received: by mail-ot1-f66.google.com with SMTP id w25so5363123otm.13
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Dec 2018 15:42:46 -0800 (PST)
+Date: Fri, 7 Dec 2018 17:42:44 -0600
+From: Rob Herring <robh@kernel.org>
+To: Christophe Kerello <christophe.kerello@st.com>
+Cc: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ Christophe Kerello <christophe.kerello@st.com>
+Subject: Re: [ v3 1/3] dt-bindings: mtd: stm32_fmc2: add STM32 FMC2 NAND
+ controller documentation
+Message-ID: <20181207234244.GA19886@bogus>
+References: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
+ <1543509663-26128-2-git-send-email-christophe.kerello@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1543509663-26128-2-git-send-email-christophe.kerello@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mathieu,
-
-Mathieu Malaterre <malat@debian.org> wrote on Tue,  4 Dec 2018 21:10:57
-+0100:
-
-> There is a plan to build the kernel with -Wimplicit-fallthrough and
-> these places in the code produced warnings. Fix them up.
->=20
-> Signed-off-by: Mathieu Malaterre <malat@debian.org>
+On Thu, 29 Nov 2018 17:41:01 +0100, Christophe Kerello wrote:
+> This patch adds the documentation of the device tree bindings for the STM32
+> FMC2 NAND controller.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
 > ---
-> v2: fix subject prefix non sense
->=20
->  drivers/mtd/nand/raw/jz4780_bch.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/raw/jz4780_bch.c b/drivers/mtd/nand/raw/jz4=
-780_bch.c
-> index 731c6051d91e..7201827809e9 100644
-> --- a/drivers/mtd/nand/raw/jz4780_bch.c
-> +++ b/drivers/mtd/nand/raw/jz4780_bch.c
-> @@ -136,8 +136,10 @@ static void jz4780_bch_read_parity(struct jz4780_bch=
- *bch, void *buf,
->  	switch (size8) {
->  	case 3:
->  		dest8[2] =3D (val >> 16) & 0xff;
-> +		/* fall through */
->  	case 2:
->  		dest8[1] =3D (val >> 8) & 0xff;
-> +		/* fall through */
->  	case 1:
->  		dest8[0] =3D val & 0xff;
->  		break;
+>  .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    | 61 ++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+> 
 
-Applied to nand/next.
-
-
-Thanks,
-Miqu=C3=A8l
+Reviewed-by: Rob Herring <robh@kernel.org>
