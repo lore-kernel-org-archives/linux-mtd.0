@@ -1,24 +1,22 @@
-Date: Fri, 7 Dec 2018 09:04:25 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Janusz Krzysztofik
- <jmkrzyszt@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard
- Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH v4 0/4] mtd: rawnand: ams-delta: Use GPIO API
- for data I/O
-Message-ID: <20181207090425.4480d2c0@xps13>
-In-Reply-To: <20181123170333.GH53235@atomide.com>
-References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
- <20181121110806.32076-1-jmkrzyszt@gmail.com>
- <20181121155639.77873f7f@bbrezillon>
- <20181123170333.GH53235@atomide.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVBzr-00056E-NQ
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:00:33 +0000
+Date: Fri, 7 Dec 2018 10:00:09 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: <Tudor.Ambarus@microchip.com>
+Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ <Cyrille.Pitchen@microchip.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: parse SFDP 4-byte Address Instruction
+ Table
+Message-ID: <20181207100009.5e2bb49a@bbrezillon>
+In-Reply-To: <20181206144330.30860-1-tudor.ambarus@microchip.com>
+References: <20181206144330.30860-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
+Hi Tudor,
 
-Tony Lindgren <tony@atomide.com> wrote on Fri, 23 Nov 2018 09:03:33
--0800:
+On Thu, 6 Dec 2018 14:43:39 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-> * Boris Brezillon <boris.brezillon@bootlin.com> [181121 14:56]:
-> > On Wed, 21 Nov 2018 12:08:02 +0100
-> > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-> >  =20
-> > > Finalize implementation of the idea suggested by Artem Bityutskiy and
-> > > Tony Lindgren, described in commit b027274d2e3a ("mtd: ams-delta: fix
-> > > request_mem_region() failure"). Use pure GPIO consumer API, as reqest=
-ed
-> > > by Boris Brezillon.
-> > >=20
-> > > Janusz Krzysztofik (4):
-> > >       ARM: OMAP1: ams-delta: Provide GPIO lookup table for NAND data =
-port
-> > >       mtd: rawnand: ams-delta: Request data port GPIO resource
-> > >       mtd: rawnand: ams-delta: Use GPIO API for data I/O
-> > >       ARM: OMAP1: ams-delta: Drop obsolete NAND resources
-> > >=20
-> > >  arch/arm/mach-omap1/board-ams-delta.c |   22 ++----
-> > >  drivers/mtd/nand/raw/ams-delta.c      |  120 +++++++++++++++++++----=
------------
-> > >  2 files changed, 80 insertions(+), 62 deletions(-)
-> > >=20
-> > > Performance on Amstrad Delta is now acceptable after recent extensions
-> > > to GPIO API and rawnanad enhancements.
-> > >=20
-> > > Series intented to be merged via mtd tree, should not conflict with
-> > > other OMAP1 patches submitted for 4.21. =20
-> >=20
-> > We'll prepare an immutable tag, just in case. =20
->=20
-> Sounds good to me thanks:
->=20
-> Acked-by: Tony Lindgren <tony@atomide.com>
+>  /**
+>   * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+>   * @nor:		pointer to a 'struct spi_nor'
+> @@ -3276,6 +3462,10 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>  			err = spi_nor_parse_smpt(nor, param_header);
+>  			break;
+>  
+> +		case SFDP_4BAIT_ID:
+> +			err = spi_nor_parse_4bait(nor, param_header, params);
+> +			break;
+> +
+>  		default:
+>  			break;
+>  		}
+> @@ -3857,7 +4047,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	    (JEDEC_MFR(info) == SNOR_MFR_SPANSION && mtd->size > SZ_16M))
+>  		nor->flags |= SNOR_F_4B_OPCODES;
+>  
+> -	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES)
+> +	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
+> +	    !(nor->flags & SNOR_F_HAS_4BAIT))
+>  		spi_nor_set_4byte_opcodes(nor);
 
-Actually, I can't setup a topic branch with this series because it
-depends on other changes in nand/next. If a conflict happens in -next,
-I suppose we will have to send you a PR.
+The list of checks is growing. Maybe we could move those checks
+at the beginning of spi_nor_set_4byte_opcodes() so we can
+unconditionally call spi_nor_set_4byte_opcodes() here.
+Not something I ask you to fix in this patch, just thinking out loud.
 
+The rest of the patch looks good, but I'm pretty sure we'll run into
+trouble as soon as we start parsing this 4BAIT section (as has been the
+case for all other SFPD sections so far), just because vendors tend to
+get this sort of things wrong. I don't have a solution for that other
+than the proposed SFDP fixup hooks infrastructure [1] or the more
+conservative "don't parse/trust SFDP" approach. Note that, even if we
+go for the SFDP fixups approach, we might still break setups where the
+4BAIT section of the SFDP table is broken until someone comes with a
+fixup for those broken chips.
 
-Thanks,
-Miqu=C3=A8l
+Since I don't like to block inclusion of new features for purely
+theoretical issues, I'm in favor of applying this patch, but be
+prepared to receive bug reports during the 4.21-rc cycle ;-).
+
+Regards,
+
+Boris
+
+[1]http://patchwork.ozlabs.org/patch/1008687/
