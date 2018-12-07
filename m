@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVCQ2-0005hJ-M7
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:37 +0000
+ id 1gVCQ2-0005hK-Lq
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:36 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
@@ -12,9 +12,9 @@ Cc: Vignesh R <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 24/34] mtd: spi-nor: Move Macronix bits out of core.c
-Date: Fri,  7 Dec 2018 10:26:27 +0100
-Message-Id: <20181207092637.18687-25-boris.brezillon@bootlin.com>
+Subject: [RFC PATCH 27/34] mtd: spi-nor: Move SST bits out of core.c
+Date: Fri,  7 Dec 2018 10:26:30 +0100
+Message-Id: <20181207092637.18687-28-boris.brezillon@bootlin.com>
 In-Reply-To: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,150 +26,205 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create a SPI NOR manufacturer driver for Macronix chips, and move the
-Macronix definitions outside of core.c.
+Create a SPI NOR manufacturer driver for SST chips, and move the
+SST definitions outside of core.c.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
  drivers/mtd/spi-nor/Makefile    |   1 +
- drivers/mtd/spi-nor/core.c      |  63 +------------------
+ drivers/mtd/spi-nor/core.c      | 111 +--------------------------
  drivers/mtd/spi-nor/internals.h |   1 +
- drivers/mtd/spi-nor/macronix.c  | 105 ++++++++++++++++++++++++++++++++
- 4 files changed, 108 insertions(+), 62 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/macronix.c
+ drivers/mtd/spi-nor/sst.c       | 132 ++++++++++++++++++++++++++++++++
+ 4 files changed, 136 insertions(+), 109 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/sst.c
 
 diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 51399122b497..c8ba7009e3ac 100644
+index 81edb2734e90..c41804252e27 100644
 --- a/drivers/mtd/spi-nor/Makefile
 +++ b/drivers/mtd/spi-nor/Makefile
-@@ -8,6 +8,7 @@ spi-nor-objs			+= fujitsu.o
- spi-nor-objs			+= gigadevice.o
- spi-nor-objs			+= intel.o
- spi-nor-objs			+= issi.o
-+spi-nor-objs			+= macronix.o
+@@ -11,6 +11,7 @@ spi-nor-objs			+= issi.o
+ spi-nor-objs			+= macronix.o
+ spi-nor-objs			+= micron-st.o
+ spi-nor-objs			+= spansion.o
++spi-nor-objs			+= sst.o
  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
  
  obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index c1492f4c4f27..0118fafd7c65 100644
+index a7f309ffe28c..4721cf812dfe 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1352,31 +1352,6 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
- 
--static int
--mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
--			    const struct sfdp_parameter_header *bfpt_header,
--			    const struct sfdp_bfpt *bfpt,
--			    struct spi_nor_flash_parameter *params)
--{
--	/*
--	 * MX25L25635F supports 4B opcodes but MX25L25635E does not.
--	 * Unfortunately, Macronix has re-used the same JEDEC ID for both
--	 * variants which prevents us from defining a new entry in the parts
--	 * table.
--	 * We need a way to differentiate MX25L25635E and MX25L25635F, and it
--	 * seems that the F version advertises support for Fast Read 4-4-4 in
--	 * its BFPT table.
--	 */
--	if (bfpt->dwords[BFPT_DWORD(5)] & BFPT_DWORD5_FAST_READ_4_4_4)
--		nor->flags |= SNOR_F_4B_OPCODES;
--
--	return 0;
--}
--
--static struct spi_nor_fixups mx25l25635_fixups = {
--	.post_bfpt = mx25l25635_post_bfpt_fixups,
--};
--
- /* NOTE: double check command sets and memory organization when you add
-  * more nor chips.  This current list focusses on newer chips, which
-  * have been converging on command sets which including JEDEC ID.
-@@ -1389,33 +1364,6 @@ static struct spi_nor_fixups mx25l25635_fixups = {
+@@ -1364,21 +1364,6 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
   * old entries may be missing 4K flag.
   */
  static const struct flash_info spi_nor_ids[] = {
--	/* Macronix */
--	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
--	{ "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
--	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
--	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
--	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
--	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
--	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
--	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
--	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
--	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
--	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
--	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
--	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
--	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
--	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256,
--			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
--			 SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--			 .fixups = &mx25l25635_fixups },
--	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
--	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
--	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
--	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
--	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+-	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+-	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+-	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+-	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32, SECT_4K | SST_WRITE) },
+-	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64, SECT_4K | SST_WRITE) },
+-	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
+-	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1, SECT_4K | SST_WRITE) },
+-	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
+-	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
+-	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
+-	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+-	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+-	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+-	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 -
- 	/* Micron <--> ST Micro */
- 	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-@@ -1601,6 +1549,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_gigadevice,
- 	&spi_nor_intel,
- 	&spi_nor_issi,
-+	&spi_nor_macronix,
+ 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
+ 	{ "w25x05", INFO(0xef3010, 0, 64 * 1024,  1,  SECT_4K) },
+ 	{ "w25x10", INFO(0xef3011, 0, 64 * 1024,  2,  SECT_4K) },
+@@ -1462,6 +1447,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_macronix,
+ 	&spi_nor_micron,
+ 	&spi_nor_spansion,
++	&spi_nor_sst,
+ 	&spi_nor_st,
  };
  
- static const struct flash_info *
-@@ -3252,12 +3201,6 @@ static void st_micron_post_sfdp_fixups(struct spi_nor *nor)
- 	nor->quad_enable = no_quad_enable;
+@@ -1551,85 +1537,6 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	return ret;
  }
  
--static void macronix_post_sfdp_fixups(struct spi_nor *nor)
+-static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+-		size_t *retlen, const u_char *buf)
 -{
--	nor->set_4byte = en4_ex4_set_4byte;
--	nor->quad_enable = sr1_bit6_quad_enable;
+-	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	size_t actual;
+-	int ret;
+-
+-	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+-
+-	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_WRITE);
+-	if (ret)
+-		return ret;
+-
+-	write_enable(nor);
+-
+-	nor->sst_write_second = false;
+-
+-	actual = to % 2;
+-	/* Start write from odd address. */
+-	if (actual) {
+-		nor->program_opcode = SPINOR_OP_BP;
+-
+-		/* write one byte. */
+-		ret = nor->write(nor, to, 1, buf);
+-		if (ret < 0)
+-			goto sst_write_err;
+-		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
+-		     (int)ret);
+-		ret = spi_nor_wait_till_ready(nor);
+-		if (ret)
+-			goto sst_write_err;
+-	}
+-	to += actual;
+-
+-	/* Write out most of the data here. */
+-	for (; actual < len - 1; actual += 2) {
+-		nor->program_opcode = SPINOR_OP_AAI_WP;
+-
+-		/* write two bytes. */
+-		ret = nor->write(nor, to, 2, buf + actual);
+-		if (ret < 0)
+-			goto sst_write_err;
+-		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
+-		     (int)ret);
+-		ret = spi_nor_wait_till_ready(nor);
+-		if (ret)
+-			goto sst_write_err;
+-		to += 2;
+-		nor->sst_write_second = true;
+-	}
+-	nor->sst_write_second = false;
+-
+-	write_disable(nor);
+-	ret = spi_nor_wait_till_ready(nor);
+-	if (ret)
+-		goto sst_write_err;
+-
+-	/* Write out trailing byte if it exists. */
+-	if (actual != len) {
+-		write_enable(nor);
+-
+-		nor->program_opcode = SPINOR_OP_BP;
+-		ret = nor->write(nor, to, 1, buf + actual);
+-		if (ret < 0)
+-			goto sst_write_err;
+-		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
+-		     (int)ret);
+-		ret = spi_nor_wait_till_ready(nor);
+-		if (ret)
+-			goto sst_write_err;
+-		write_disable(nor);
+-		actual += 1;
+-	}
+-sst_write_err:
+-	*retlen += actual;
+-	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+-	return ret;
 -}
 -
- static void winbond_post_sfdp_fixups(struct spi_nor *nor)
- {
+ /*
+  * Write an address range to the nor chip.  Data must be written in
+  * FLASH_PAGESIZE chunks.  The address range may be any size provided
+@@ -3111,11 +3018,6 @@ static void winbond_post_sfdp_fixups(struct spi_nor *nor)
  	nor->set_4byte = winbond_set_4byte;
-@@ -3343,10 +3286,6 @@ spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
- 		st_micron_post_sfdp_fixups(nor);
- 		break;
+ }
  
--	case SNOR_MFR_MACRONIX:
--		macronix_post_sfdp_fixups(nor);
+-static void sst_post_sfdp_fixups(struct spi_nor *nor)
+-{
+-	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
+-}
+-
+ static int s3an_post_sfdp_fixups(struct spi_nor *nor)
+ {
+ 	int ret;
+@@ -3173,10 +3075,6 @@ spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
+ 		return nor->manufacturer->fixups->post_sfdp(nor, params);
+ 
+ 	switch (JEDEC_MFR(nor->info)) {
+-	case SNOR_MFR_SST:
+-		sst_post_sfdp_fixups(nor);
 -		break;
 -
- 	case SNOR_MFR_SPANSION:
- 		spansion_post_sfdp_fixups(nor);
+ 	case SNOR_MFR_WINBOND:
+ 		winbond_post_sfdp_fixups(nor);
  		break;
+@@ -3307,12 +3205,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	mtd->_erase = spi_nor_erase;
+ 	mtd->_read = spi_nor_read;
+ 	mtd->_resume = spi_nor_resume;
+-
+-	/* sst nor chips use AAI word program */
+-	if (info->flags & SST_WRITE)
+-		mtd->_write = sst_write;
+-	else
+-		mtd->_write = spi_nor_write;
++	mtd->_write = spi_nor_write;
+ 
+ 	if (info->flags & USE_FSR)
+ 		nor->flags |= SNOR_F_USE_FSR;
 diff --git a/drivers/mtd/spi-nor/internals.h b/drivers/mtd/spi-nor/internals.h
-index 7e976e12be6c..cb8968824098 100644
+index b68c16194978..298b4a855774 100644
 --- a/drivers/mtd/spi-nor/internals.h
 +++ b/drivers/mtd/spi-nor/internals.h
-@@ -341,6 +341,7 @@ extern const struct spi_nor_manufacturer spi_nor_fujitsu;
- extern const struct spi_nor_manufacturer spi_nor_gigadevice;
- extern const struct spi_nor_manufacturer spi_nor_intel;
- extern const struct spi_nor_manufacturer spi_nor_issi;
-+extern const struct spi_nor_manufacturer spi_nor_macronix;
+@@ -344,6 +344,7 @@ extern const struct spi_nor_manufacturer spi_nor_issi;
+ extern const struct spi_nor_manufacturer spi_nor_macronix;
+ extern const struct spi_nor_manufacturer spi_nor_micron;
+ extern const struct spi_nor_manufacturer spi_nor_spansion;
++extern const struct spi_nor_manufacturer spi_nor_sst;
+ extern const struct spi_nor_manufacturer spi_nor_st;
  
  /* Core helpers. */
- int en4_ex4_set_4byte(struct spi_nor *nor, bool enable);
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
 new file mode 100644
-index 000000000000..cddd9c302826
+index 000000000000..8d9a8fbfbcd9
 --- /dev/null
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -0,0 +1,105 @@
++++ b/drivers/mtd/spi-nor/sst.c
+@@ -0,0 +1,132 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2005, Intec Automation Inc.
@@ -181,99 +236,126 @@ index 000000000000..cddd9c302826
 +
 +#include "internals.h"
 +
-+static int
-+mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
-+			    const struct sfdp_parameter_header *bfpt_header,
-+			    const struct sfdp_bfpt *bfpt,
-+			    struct spi_nor_flash_parameter *params)
++static const struct flash_info sst_parts[] = {
++	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024, 8, SECT_4K | SST_WRITE) },
++	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
++	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32, SECT_4K | SST_WRITE) },
++	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64, SECT_4K | SST_WRITE) },
++	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
++	{ "sst25wf512", INFO(0xbf2501, 0, 64 * 1024, 1, SECT_4K | SST_WRITE) },
++	{ "sst25wf010", INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
++	{ "sst25wf020", INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
++	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
++	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
++	{ "sst25wf040", INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
++	{ "sst25wf080", INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
++	{
++		"sst26vf064b",
++		INFO(0xbf2643, 0, 64 * 1024, 128,
++		     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++	},
++};
++
++static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
++		     size_t *retlen, const u_char *buf)
 +{
-+	/*
-+	 * MX25L25635F supports 4B opcodes but MX25L25635E does not.
-+	 * Unfortunately, Macronix has re-used the same JEDEC ID for both the
-+	 * variants which prevents us from defining a new entry in the parts
-+	 * table.
-+	 * We need a way to differentiate MX25L25635E and MX25L25635F, and it
-+	 * seems that the F version advertises support for Fast Read 4-4-4 in
-+	 * its BFPT table.
-+	 */
-+	if (bfpt->dwords[BFPT_DWORD(5)] & BFPT_DWORD5_FAST_READ_4_4_4)
-+		nor->flags |= SNOR_F_4B_OPCODES;
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	size_t actual;
++	int ret;
++
++	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
++
++	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_WRITE);
++	if (ret)
++		return ret;
++
++	write_enable(nor);
++
++	nor->sst_write_second = false;
++
++	actual = to % 2;
++	/* Start write from odd address. */
++	if (actual) {
++		nor->program_opcode = SPINOR_OP_BP;
++
++		/* write one byte. */
++		ret = nor->write(nor, to, 1, buf);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			goto sst_write_err;
++	}
++	to += actual;
++
++	/* Write out most of the data here. */
++	for (; actual < len - 1; actual += 2) {
++		nor->program_opcode = SPINOR_OP_AAI_WP;
++
++		/* write two bytes. */
++		ret = nor->write(nor, to, 2, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
++		     (int)ret);
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			goto sst_write_err;
++		to += 2;
++		nor->sst_write_second = true;
++	}
++	nor->sst_write_second = false;
++
++	write_disable(nor);
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		goto sst_write_err;
++
++	/* Write out trailing byte if it exists. */
++	if (actual != len) {
++		write_enable(nor);
++
++		nor->program_opcode = SPINOR_OP_BP;
++		ret = nor->write(nor, to, 1, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			goto sst_write_err;
++		write_disable(nor);
++		actual += 1;
++	}
++sst_write_err:
++	*retlen += actual;
++	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
++	return ret;
++}
++
++static int sst_post_sfdp_fixups(struct spi_nor *nor,
++				struct spi_nor_flash_parameter *params)
++{
++	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
++
++	/* sst nor chips use AAI word program */
++	if (nor->info->flags & SST_WRITE)
++		nor->mtd._write = sst_write;
 +
 +	return 0;
 +}
 +
-+static struct spi_nor_fixups mx25l25635_fixups = {
-+	.post_bfpt = mx25l25635_post_bfpt_fixups,
++static const struct spi_nor_fixups sst_fixups = {
++	.post_sfdp = sst_post_sfdp_fixups,
 +};
 +
-+static const struct flash_info macronix_parts[] = {
-+	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
-+	{ "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
-+	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
-+	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
-+	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
-+	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
-+	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
-+	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-+	{
-+		"mx25u12835f",
-+		INFO(0xc22538, 0, 64 * 1024, 256,
-+		     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+	},
-+	{
-+		"mx25l25635e",
-+		INFO(0xc22019, 0, 64 * 1024, 512,
-+		     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		.fixups = &mx25l25635_fixups,
-+	},
-+	{
-+		"mx25u25635f",
-+		INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES)
-+	},
-+	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-+	{
-+		"mx66l51235l",
-+		INFO(0xc2201a, 0, 64 * 1024, 1024,
-+		     SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES)
-+	},
-+	{
-+		"mx66u51235f",
-+		INFO(0xc2253a, 0, 64 * 1024, 1024,
-+		     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+		     SPI_NOR_4B_OPCODES)
-+	},
-+	{
-+		"mx66l1g45g",
-+		INFO(0xc2201b, 0, 64 * 1024, 2048,
-+		     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+	},
-+	{ "mx66l1g55g", INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
-+};
-+
-+static int macronix_post_sfdp_fixups(struct spi_nor *nor,
-+				     struct spi_nor_flash_parameter *params)
-+{
-+        nor->set_4byte = en4_ex4_set_4byte;
-+        nor->quad_enable = sr1_bit6_quad_enable;
-+
-+	return 0;
-+}
-+
-+static const struct spi_nor_fixups macronix_fixups = {
-+	.post_sfdp = macronix_post_sfdp_fixups,
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_macronix = {
-+	.name = "macronix",
-+	.parts = macronix_parts,
-+	.nparts = ARRAY_SIZE(macronix_parts),
-+	.fixups = &macronix_fixups,
++const struct spi_nor_manufacturer spi_nor_sst = {
++	.name = "sst",
++	.parts = sst_parts,
++	.nparts = ARRAY_SIZE(sst_parts),
++	.fixups = &sst_fixups,
 +};
 -- 
 2.17.1
