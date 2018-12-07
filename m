@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVC9T-0001DT-8l
+ id 1gVC9S-00015p-Jf
  for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:10:39 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -11,10 +11,10 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  "Sverdlin, Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [v5,1/3] mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
-Date: Fri,  7 Dec 2018 10:10:26 +0100
-Message-Id: <20181207091026.17051-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181206103736.5957-2-boris.brezillon@bootlin.com>
+Subject: Re: [v5,3/3] mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
+Date: Fri,  7 Dec 2018 10:10:19 +0100
+Message-Id: <20181207091019.16907-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181206103736.5957-4-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2018-12-06 at 10:37:34 UTC, Boris Brezillon wrote:
-> Some flash_info entries have the SPI_NOR_4B_OPCODES flag set to let the
-> core know that the flash supports 4B opcode. While this solution works
-> fine for id-based caps detection, it doesn't work that well when relying
-> on SFDP-based caps detection. Let's add an SNOR_F_4B_OPCODES flag so
-> that the SFDP parsing code can set it when appropriate.
+On Thu, 2018-12-06 at 10:37:36 UTC, Boris Brezillon wrote:
+> MX25L25635F and MX25L25635E share the same JEDEC-ID, but the F variant
+> supports 4-byte opcodes while the E variant doesn't. We need a way to
+> differentiate those 2 chips and set the SNOR_F_4B_OPCODES flag only for
+> the F variant.
+> 
+> Luckily, 4-byte opcode support is not the only difference: Fast Read
+> 4-4-4 is only supported by the F variant, and this feature is
+> advertised in the BFPT table. Use this to decide when to set the
+> SNOR_F_4B_OPCODES flag.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
