@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVCQ2-0005hK-Lq
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:36 +0000
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVCPz-000102-Pp
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:28:19 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
@@ -12,9 +12,9 @@ Cc: Vignesh R <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 27/34] mtd: spi-nor: Move SST bits out of core.c
-Date: Fri,  7 Dec 2018 10:26:30 +0100
-Message-Id: <20181207092637.18687-28-boris.brezillon@bootlin.com>
+Subject: [RFC PATCH 33/34] mtd: spi-nor: Move SFDP parsing code out of core.c
+Date: Fri,  7 Dec 2018 10:26:36 +0100
+Message-Id: <20181207092637.18687-34-boris.brezillon@bootlin.com>
 In-Reply-To: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,205 +26,1028 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create a SPI NOR manufacturer driver for SST chips, and move the
-SST definitions outside of core.c.
+It make the core file a bit smaller and provide better separation
+between the SFDP parsing and core logic.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/spi-nor/Makefile    |   1 +
- drivers/mtd/spi-nor/core.c      | 111 +--------------------------
- drivers/mtd/spi-nor/internals.h |   1 +
- drivers/mtd/spi-nor/sst.c       | 132 ++++++++++++++++++++++++++++++++
- 4 files changed, 136 insertions(+), 109 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/sst.c
+ drivers/mtd/spi-nor/Makefile    |   2 +-
+ drivers/mtd/spi-nor/core.c      | 870 +-------------------------------
+ drivers/mtd/spi-nor/internals.h |  15 +
+ drivers/mtd/spi-nor/sfdp.c      | 859 +++++++++++++++++++++++++++++++
+ 4 files changed, 885 insertions(+), 861 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/sfdp.c
 
 diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 81edb2734e90..c41804252e27 100644
+index 07ded3a76623..1ae2ef1fbfc3 100644
 --- a/drivers/mtd/spi-nor/Makefile
 +++ b/drivers/mtd/spi-nor/Makefile
-@@ -11,6 +11,7 @@ spi-nor-objs			+= issi.o
- spi-nor-objs			+= macronix.o
- spi-nor-objs			+= micron-st.o
- spi-nor-objs			+= spansion.o
-+spi-nor-objs			+= sst.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- 
- obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spi-nor-objs			:= core.o
++spi-nor-objs			:= core.o sfdp.o
+ spi-nor-objs			+= atmel.o
+ spi-nor-objs			+= catalyst.o
+ spi-nor-objs			+= eon.o
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index a7f309ffe28c..4721cf812dfe 100644
+index 6ed562bddddb..9665f4d3ec19 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1364,21 +1364,6 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
-  * old entries may be missing 4K flag.
-  */
- static const struct flash_info spi_nor_ids[] = {
--	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
--	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
--	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
--	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32, SECT_4K | SST_WRITE) },
--	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64, SECT_4K | SST_WRITE) },
--	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
--	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1, SECT_4K | SST_WRITE) },
--	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
--	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
--	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
--	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
--	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
--	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
--	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--
- 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
- 	{ "w25x05", INFO(0xef3010, 0, 64 * 1024,  1,  SECT_4K) },
- 	{ "w25x10", INFO(0xef3011, 0, 64 * 1024,  2,  SECT_4K) },
-@@ -1462,6 +1447,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_macronix,
- 	&spi_nor_micron,
- 	&spi_nor_spansion,
-+	&spi_nor_sst,
- 	&spi_nor_st,
- };
+@@ -15,7 +15,6 @@
+ #include <linux/math64.h>
+ #include <linux/sizes.h>
+ #include <linux/slab.h>
+-#include <linux/sort.h>
  
-@@ -1551,85 +1537,6 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	return ret;
+ #include <linux/mtd/mtd.h>
+ #include <linux/of_platform.h>
+@@ -465,7 +464,7 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+  *
+  * Return: the next spi nor region or NULL if last region.
+  */
+-static struct spi_nor_erase_region *
++struct spi_nor_erase_region *
+ spi_nor_region_next(struct spi_nor_erase_region *region)
+ {
+ 	if (spi_nor_region_is_last(region))
+@@ -1211,7 +1210,7 @@ static int legacy_quad_enable(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int sr2_bit1_no_read_quad_enable(struct spi_nor *nor)
++int sr2_bit1_no_read_quad_enable(struct spi_nor *nor)
+ {
+ 	u8 sr_cr[2];
+ 	int ret;
+@@ -1241,7 +1240,7 @@ static int sr2_bit1_no_read_quad_enable(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int sr2_bit1_read_quad_enable(struct spi_nor *nor)
++int sr2_bit1_read_quad_enable(struct spi_nor *nor)
+ {
+ 	struct device *dev = nor->dev;
+ 	u8 sr_cr[2];
+@@ -1293,7 +1292,7 @@ static int sr2_bit1_read_quad_enable(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int sr2_bit7_quad_enable(struct spi_nor *nor)
++int sr2_bit7_quad_enable(struct spi_nor *nor)
+ {
+ 	u8 sr2;
+ 	int ret;
+@@ -1538,7 +1537,7 @@ static int spi_nor_hwcaps2cmd(u32 hwcaps, const int table[][2], size_t size)
+ 	return -EINVAL;
  }
  
--static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
--		size_t *retlen, const u_char *buf)
+-static int spi_nor_hwcaps_read2cmd(u32 hwcaps)
++int spi_nor_hwcaps_read2cmd(u32 hwcaps)
+ {
+ 	static const int hwcaps_read2cmd[][2] = {
+ 		{ SNOR_HWCAPS_READ,		SNOR_CMD_READ },
+@@ -1594,7 +1593,7 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
++int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
+ {
+ 	int ret;
+ 
+@@ -1612,189 +1611,14 @@ static int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
+ 	return 0;
+ }
+ 
+-/**
+- * spi_nor_read_sfdp() - read Serial Flash Discoverable Parameters.
+- * @nor:	pointer to a 'struct spi_nor'
+- * @addr:	offset in the SFDP area to start reading data from
+- * @len:	number of bytes to read
+- * @buf:	buffer where the SFDP data are copied into (dma-safe memory)
+- *
+- * Whatever the actual numbers of bytes for address and dummy cycles are
+- * for (Fast) Read commands, the Read SFDP (5Ah) instruction is always
+- * followed by a 3-byte address and 8 dummy clock cycles.
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+-			     size_t len, void *buf)
 -{
--	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	size_t actual;
+-	u8 addr_width, read_opcode, read_dummy;
 -	int ret;
 -
--	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+-	read_opcode = nor->read_opcode;
+-	addr_width = nor->addr_width;
+-	read_dummy = nor->read_dummy;
 -
--	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_WRITE);
--	if (ret)
--		return ret;
+-	nor->read_opcode = SPINOR_OP_RDSFDP;
+-	nor->addr_width = 3;
+-	nor->read_dummy = 8;
 -
--	write_enable(nor);
+-	ret = spi_nor_read_raw(nor, addr, len, buf);
 -
--	nor->sst_write_second = false;
+-	nor->read_opcode = read_opcode;
+-	nor->addr_width = addr_width;
+-	nor->read_dummy = read_dummy;
 -
--	actual = to % 2;
--	/* Start write from odd address. */
--	if (actual) {
--		nor->program_opcode = SPINOR_OP_BP;
--
--		/* write one byte. */
--		ret = nor->write(nor, to, 1, buf);
--		if (ret < 0)
--			goto sst_write_err;
--		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
--		     (int)ret);
--		ret = spi_nor_wait_till_ready(nor);
--		if (ret)
--			goto sst_write_err;
--	}
--	to += actual;
--
--	/* Write out most of the data here. */
--	for (; actual < len - 1; actual += 2) {
--		nor->program_opcode = SPINOR_OP_AAI_WP;
--
--		/* write two bytes. */
--		ret = nor->write(nor, to, 2, buf + actual);
--		if (ret < 0)
--			goto sst_write_err;
--		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
--		     (int)ret);
--		ret = spi_nor_wait_till_ready(nor);
--		if (ret)
--			goto sst_write_err;
--		to += 2;
--		nor->sst_write_second = true;
--	}
--	nor->sst_write_second = false;
--
--	write_disable(nor);
--	ret = spi_nor_wait_till_ready(nor);
--	if (ret)
--		goto sst_write_err;
--
--	/* Write out trailing byte if it exists. */
--	if (actual != len) {
--		write_enable(nor);
--
--		nor->program_opcode = SPINOR_OP_BP;
--		ret = nor->write(nor, to, 1, buf + actual);
--		if (ret < 0)
--			goto sst_write_err;
--		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
--		     (int)ret);
--		ret = spi_nor_wait_till_ready(nor);
--		if (ret)
--			goto sst_write_err;
--		write_disable(nor);
--		actual += 1;
--	}
--sst_write_err:
--	*retlen += actual;
--	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
 -	return ret;
 -}
 -
- /*
-  * Write an address range to the nor chip.  Data must be written in
-  * FLASH_PAGESIZE chunks.  The address range may be any size provided
-@@ -3111,11 +3018,6 @@ static void winbond_post_sfdp_fixups(struct spi_nor *nor)
- 	nor->set_4byte = winbond_set_4byte;
- }
- 
--static void sst_post_sfdp_fixups(struct spi_nor *nor)
+-/**
+- * spi_nor_read_sfdp_dma_unsafe() - read Serial Flash Discoverable Parameters.
+- * @nor:	pointer to a 'struct spi_nor'
+- * @addr:	offset in the SFDP area to start reading data from
+- * @len:	number of bytes to read
+- * @buf:	buffer where the SFDP data are copied into
+- *
+- * Wrap spi_nor_read_sfdp() using a kmalloc'ed bounce buffer as @buf is now not
+- * guaranteed to be dma-safe.
+- *
+- * Return: -ENOMEM if kmalloc() fails, the return code of spi_nor_read_sfdp()
+- *          otherwise.
+- */
+-static int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
+-					size_t len, void *buf)
 -{
--	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
+-	void *dma_safe_buf;
+-	int ret;
+-
+-	dma_safe_buf = kmalloc(len, GFP_KERNEL);
+-	if (!dma_safe_buf)
+-		return -ENOMEM;
+-
+-	ret = spi_nor_read_sfdp(nor, addr, len, dma_safe_buf);
+-	memcpy(buf, dma_safe_buf, len);
+-	kfree(dma_safe_buf);
+-
+-	return ret;
 -}
 -
- static int s3an_post_sfdp_fixups(struct spi_nor *nor)
+-/* Fast Read settings. */
+-
+-static void
+-spi_nor_set_read_settings_from_bfpt(struct spi_nor_read_command *read,
+-				    u16 half,
+-				    enum spi_nor_protocol proto)
+-{
+-	read->num_mode_clocks = (half >> 5) & 0x07;
+-	read->num_wait_states = (half >> 0) & 0x1f;
+-	read->opcode = (half >> 8) & 0xff;
+-	read->proto = proto;
+-}
+-
+-struct sfdp_bfpt_read {
+-	/* The Fast Read x-y-z hardware capability in params->hwcaps.mask. */
+-	u32			hwcaps;
+-
+-	/*
+-	 * The <supported_bit> bit in <supported_dword> BFPT DWORD tells us
+-	 * whether the Fast Read x-y-z command is supported.
+-	 */
+-	u32			supported_dword;
+-	u32			supported_bit;
+-
+-	/*
+-	 * The half-word at offset <setting_shift> in <setting_dword> BFPT DWORD
+-	 * encodes the op code, the number of mode clocks and the number of wait
+-	 * states to be used by Fast Read x-y-z command.
+-	 */
+-	u32			settings_dword;
+-	u32			settings_shift;
+-
+-	/* The SPI protocol for this Fast Read x-y-z command. */
+-	enum spi_nor_protocol	proto;
+-};
+-
+-static const struct sfdp_bfpt_read sfdp_bfpt_reads[] = {
+-	/* Fast Read 1-1-2 */
+-	{
+-		SNOR_HWCAPS_READ_1_1_2,
+-		BFPT_DWORD(1), BIT(16),	/* Supported bit */
+-		BFPT_DWORD(4), 0,	/* Settings */
+-		SNOR_PROTO_1_1_2,
+-	},
+-
+-	/* Fast Read 1-2-2 */
+-	{
+-		SNOR_HWCAPS_READ_1_2_2,
+-		BFPT_DWORD(1), BIT(20),	/* Supported bit */
+-		BFPT_DWORD(4), 16,	/* Settings */
+-		SNOR_PROTO_1_2_2,
+-	},
+-
+-	/* Fast Read 2-2-2 */
+-	{
+-		SNOR_HWCAPS_READ_2_2_2,
+-		BFPT_DWORD(5),  BIT(0),	/* Supported bit */
+-		BFPT_DWORD(6), 16,	/* Settings */
+-		SNOR_PROTO_2_2_2,
+-	},
+-
+-	/* Fast Read 1-1-4 */
+-	{
+-		SNOR_HWCAPS_READ_1_1_4,
+-		BFPT_DWORD(1), BIT(22),	/* Supported bit */
+-		BFPT_DWORD(3), 16,	/* Settings */
+-		SNOR_PROTO_1_1_4,
+-	},
+-
+-	/* Fast Read 1-4-4 */
+-	{
+-		SNOR_HWCAPS_READ_1_4_4,
+-		BFPT_DWORD(1), BIT(21),	/* Supported bit */
+-		BFPT_DWORD(3), 0,	/* Settings */
+-		SNOR_PROTO_1_4_4,
+-	},
+-
+-	/* Fast Read 4-4-4 */
+-	{
+-		SNOR_HWCAPS_READ_4_4_4,
+-		BFPT_DWORD(5), BIT(4),	/* Supported bit */
+-		BFPT_DWORD(7), 16,	/* Settings */
+-		SNOR_PROTO_4_4_4,
+-	},
+-};
+-
+-struct sfdp_bfpt_erase {
+-	/*
+-	 * The half-word at offset <shift> in DWORD <dwoard> encodes the
+-	 * op code and erase sector size to be used by Sector Erase commands.
+-	 */
+-	u32			dword;
+-	u32			shift;
+-};
+-
+-static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
+-	/* Erase Type 1 in DWORD8 bits[15:0] */
+-	{BFPT_DWORD(8), 0},
+-
+-	/* Erase Type 2 in DWORD8 bits[31:16] */
+-	{BFPT_DWORD(8), 16},
+-
+-	/* Erase Type 3 in DWORD9 bits[15:0] */
+-	{BFPT_DWORD(9), 0},
+-
+-	/* Erase Type 4 in DWORD9 bits[31:16] */
+-	{BFPT_DWORD(9), 16},
+-};
+-
+ /**
+  * spi_nor_set_erase_type() - set a SPI NOR erase type
+  * @erase:	pointer to a structure that describes a SPI NOR erase type
+  * @size:	the size of the sector/block erased by the erase type
+  * @opcode:	the SPI command op code to erase the sector/block
+  */
+-static void spi_nor_set_erase_type(struct spi_nor_erase_type *erase,
+-				   u32 size, u8 opcode)
++void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
++			    u8 opcode)
  {
- 	int ret;
-@@ -3173,10 +3075,6 @@ spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
- 		return nor->manufacturer->fixups->post_sfdp(nor, params);
+ 	erase->size = size;
+ 	erase->opcode = opcode;
+@@ -1803,82 +1627,6 @@ static void spi_nor_set_erase_type(struct spi_nor_erase_type *erase,
+ 	erase->size_mask = (1 << erase->size_shift) - 1;
+ }
  
- 	switch (JEDEC_MFR(nor->info)) {
--	case SNOR_MFR_SST:
--		sst_post_sfdp_fixups(nor);
+-/**
+- * spi_nor_set_erase_settings_from_bfpt() - set erase type settings from BFPT
+- * @erase:	pointer to a structure that describes a SPI NOR erase type
+- * @size:	the size of the sector/block erased by the erase type
+- * @opcode:	the SPI command op code to erase the sector/block
+- * @i:		erase type index as sorted in the Basic Flash Parameter Table
+- *
+- * The supported Erase Types will be sorted at init in ascending order, with
+- * the smallest Erase Type size being the first member in the erase_type array
+- * of the spi_nor_erase_map structure. Save the Erase Type index as sorted in
+- * the Basic Flash Parameter Table since it will be used later on to
+- * synchronize with the supported Erase Types defined in SFDP optional tables.
+- */
+-static void
+-spi_nor_set_erase_settings_from_bfpt(struct spi_nor_erase_type *erase,
+-				     u32 size, u8 opcode, u8 i)
+-{
+-	erase->idx = i;
+-	spi_nor_set_erase_type(erase, size, opcode);
+-}
+-
+-/**
+- * spi_nor_map_cmp_erase_type() - compare the map's erase types by size
+- * @l:	member in the left half of the map's erase_type array
+- * @r:	member in the right half of the map's erase_type array
+- *
+- * Comparison function used in the sort() call to sort in ascending order the
+- * map's erase types, the smallest erase type size being the first member in the
+- * sorted erase_type array.
+- *
+- * Return: the result of @l->size - @r->size
+- */
+-static int spi_nor_map_cmp_erase_type(const void *l, const void *r)
+-{
+-	const struct spi_nor_erase_type *left = l, *right = r;
+-
+-	return left->size - right->size;
+-}
+-
+-/**
+- * spi_nor_regions_sort_erase_types() - sort erase types in each region
+- * @map:	the erase map of the SPI NOR
+- *
+- * Function assumes that the erase types defined in the erase map are already
+- * sorted in ascending order, with the smallest erase type size being the first
+- * member in the erase_type array. It replicates the sort done for the map's
+- * erase types. Each region's erase bitmask will indicate which erase types are
+- * supported from the sorted erase types defined in the erase map.
+- * Sort the all region's erase type at init in order to speed up the process of
+- * finding the best erase command at runtime.
+- */
+-static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+-{
+-	struct spi_nor_erase_region *region = map->regions;
+-	struct spi_nor_erase_type *erase_type = map->erase_type;
+-	int i;
+-	u8 region_erase_mask, sorted_erase_mask;
+-
+-	while (region) {
+-		region_erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+-
+-		/* Replicate the sort done for the map's erase types. */
+-		sorted_erase_mask = 0;
+-		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
+-			if (erase_type[i].size &&
+-			    region_erase_mask & BIT(erase_type[i].idx))
+-				sorted_erase_mask |= BIT(i);
+-
+-		/* Overwrite erase mask. */
+-		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK) |
+-				 sorted_erase_mask;
+-
+-		region = spi_nor_region_next(region);
+-	}
+-}
+-
+ /**
+  * spi_nor_init_uniform_erase_map() - Initialize uniform erase map
+  * @map:		the erase map of the SPI NOR
+@@ -1886,8 +1634,8 @@ static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+  *			flash memory
+  * @flash_size:		the spi nor flash memory size
+  */
+-static void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+-					   u8 erase_mask, u64 flash_size)
++void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
++				    u8 erase_mask, u64 flash_size)
+ {
+ 	/* Offset 0 with erase_mask and SNOR_LAST_REGION bit set */
+ 	map->uniform_region.offset = (erase_mask & SNOR_ERASE_TYPE_MASK) |
+@@ -1897,604 +1645,6 @@ static void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+ 	map->uniform_erase_type = erase_mask;
+ }
+ 
+-static int
+-spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+-			 const struct sfdp_parameter_header *bfpt_header,
+-			 const struct sfdp_bfpt *bfpt,
+-			 struct spi_nor_flash_parameter *params)
+-{
+-	int ret;
+-
+-	if (nor->manufacturer && nor->manufacturer->fixups &&
+-	    nor->manufacturer->fixups->post_bfpt) {
+-		ret = nor->manufacturer->fixups->post_bfpt(nor, bfpt_header,
+-							   bfpt, params);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	if (nor->info->fixups && nor->info->fixups->post_bfpt) {
+-		ret = nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt,
+-						   params);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-/**
+- * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
+- * @nor:		pointer to a 'struct spi_nor'
+- * @bfpt_header:	pointer to the 'struct sfdp_parameter_header' describing
+- *			the Basic Flash Parameter Table length and version
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
+- *			filled
+- *
+- * The Basic Flash Parameter Table is the main and only mandatory table as
+- * defined by the SFDP (JESD216) specification.
+- * It provides us with the total size (memory density) of the data array and
+- * the number of address bytes for Fast Read, Page Program and Sector Erase
+- * commands.
+- * For Fast READ commands, it also gives the number of mode clock cycles and
+- * wait states (regrouped in the number of dummy clock cycles) for each
+- * supported instruction op code.
+- * For Page Program, the page size is now available since JESD216 rev A, however
+- * the supported instruction op codes are still not provided.
+- * For Sector Erase commands, this table stores the supported instruction op
+- * codes and the associated sector sizes.
+- * Finally, the Quad Enable Requirements (QER) are also available since JESD216
+- * rev A. The QER bits encode the manufacturer dependent procedure to be
+- * executed to set the Quad Enable (QE) bit in some internal register of the
+- * Quad SPI memory. Indeed the QE bit, when it exists, must be set before
+- * sending any Quad SPI command to the memory. Actually, setting the QE bit
+- * tells the memory to reassign its WP# and HOLD#/RESET# pins to functions IO2
+- * and IO3 hence enabling 4 (Quad) I/O lines.
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-static int spi_nor_parse_bfpt(struct spi_nor *nor,
+-			      const struct sfdp_parameter_header *bfpt_header,
+-			      struct spi_nor_flash_parameter *params)
+-{
+-	struct spi_nor_erase_map *map = &nor->erase_map;
+-	struct spi_nor_erase_type *erase_type = map->erase_type;
+-	struct sfdp_bfpt bfpt;
+-	size_t len;
+-	int i, cmd, err;
+-	u32 addr;
+-	u16 half;
+-	u8 erase_mask;
+-
+-	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
+-	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
+-		return -EINVAL;
+-
+-	/* Read the Basic Flash Parameter Table. */
+-	len = min_t(size_t, sizeof(bfpt),
+-		    bfpt_header->length * sizeof(u32));
+-	addr = SFDP_PARAM_HEADER_PTP(bfpt_header);
+-	memset(&bfpt, 0, sizeof(bfpt));
+-	err = spi_nor_read_sfdp_dma_unsafe(nor,  addr, len, &bfpt);
+-	if (err < 0)
+-		return err;
+-
+-	/* Fix endianness of the BFPT DWORDs. */
+-	for (i = 0; i < BFPT_DWORD_MAX; i++)
+-		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
+-
+-	/* Number of address bytes. */
+-	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
+-	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
+-		nor->addr_width = 3;
 -		break;
 -
- 	case SNOR_MFR_WINBOND:
- 		winbond_post_sfdp_fixups(nor);
- 		break;
-@@ -3307,12 +3205,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	mtd->_erase = spi_nor_erase;
- 	mtd->_read = spi_nor_read;
- 	mtd->_resume = spi_nor_resume;
+-	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+-		nor->addr_width = 4;
+-		break;
 -
--	/* sst nor chips use AAI word program */
--	if (info->flags & SST_WRITE)
--		mtd->_write = sst_write;
--	else
--		mtd->_write = spi_nor_write;
-+	mtd->_write = spi_nor_write;
- 
- 	if (info->flags & USE_FSR)
- 		nor->flags |= SNOR_F_USE_FSR;
+-	default:
+-		break;
+-	}
+-
+-	/* Flash Memory Density (in bits). */
+-	params->size = bfpt.dwords[BFPT_DWORD(2)];
+-	if (params->size & BIT(31)) {
+-		params->size &= ~BIT(31);
+-
+-		/*
+-		 * Prevent overflows on params->size. Anyway, a NOR of 2^64
+-		 * bits is unlikely to exist so this error probably means
+-		 * the BFPT we are reading is corrupted/wrong.
+-		 */
+-		if (params->size > 63)
+-			return -EINVAL;
+-
+-		params->size = 1ULL << params->size;
+-	} else {
+-		params->size++;
+-	}
+-	params->size >>= 3; /* Convert to bytes. */
+-
+-	/* Fast Read settings. */
+-	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
+-		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
+-		struct spi_nor_read_command *read;
+-
+-		if (!(bfpt.dwords[rd->supported_dword] & rd->supported_bit)) {
+-			params->hwcaps.mask &= ~rd->hwcaps;
+-			continue;
+-		}
+-
+-		params->hwcaps.mask |= rd->hwcaps;
+-		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
+-		read = &params->reads[cmd];
+-		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
+-		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
+-	}
+-
+-	/*
+-	 * Sector Erase settings. Reinitialize the uniform erase map using the
+-	 * Erase Types defined in the bfpt table.
+-	 */
+-	erase_mask = 0;
+-	memset(&nor->erase_map, 0, sizeof(nor->erase_map));
+-	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
+-		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
+-		u32 erasesize;
+-		u8 opcode;
+-
+-		half = bfpt.dwords[er->dword] >> er->shift;
+-		erasesize = half & 0xff;
+-
+-		/* erasesize == 0 means this Erase Type is not supported. */
+-		if (!erasesize)
+-			continue;
+-
+-		erasesize = 1U << erasesize;
+-		opcode = (half >> 8) & 0xff;
+-		erase_mask |= BIT(i);
+-		spi_nor_set_erase_settings_from_bfpt(&erase_type[i], erasesize,
+-						     opcode, i);
+-	}
+-	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
+-	/*
+-	 * Sort all the map's Erase Types in ascending order with the smallest
+-	 * erase size being the first member in the erase_type array.
+-	 */
+-	sort(erase_type, SNOR_ERASE_TYPE_MAX, sizeof(erase_type[0]),
+-	     spi_nor_map_cmp_erase_type, NULL);
+-	/*
+-	 * Sort the erase types in the uniform region in order to update the
+-	 * uniform_erase_type bitmask. The bitmask will be used later on when
+-	 * selecting the uniform erase.
+-	 */
+-	spi_nor_regions_sort_erase_types(map);
+-	map->uniform_erase_type = map->uniform_region.offset &
+-				  SNOR_ERASE_TYPE_MASK;
+-
+-	/* Stop here if not JESD216 rev A or later. */
+-	if (bfpt_header->length < BFPT_DWORD_MAX)
+-		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
+-						params);
+-
+-	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
+-	params->page_size = bfpt.dwords[BFPT_DWORD(11)];
+-	params->page_size &= BFPT_DWORD11_PAGE_SIZE_MASK;
+-	params->page_size >>= BFPT_DWORD11_PAGE_SIZE_SHIFT;
+-	params->page_size = 1U << params->page_size;
+-
+-	/* Quad Enable Requirements. */
+-	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
+-	case BFPT_DWORD15_QER_NONE:
+-		params->quad_enable = no_quad_enable;
+-		break;
+-
+-	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
+-	case BFPT_DWORD15_QER_SR2_BIT1_NO_RD:
+-		params->quad_enable = sr2_bit1_no_read_quad_enable;
+-		break;
+-
+-	case BFPT_DWORD15_QER_SR1_BIT6:
+-		params->quad_enable = sr1_bit6_quad_enable;
+-		break;
+-
+-	case BFPT_DWORD15_QER_SR2_BIT7:
+-		params->quad_enable = sr2_bit7_quad_enable;
+-		break;
+-
+-	case BFPT_DWORD15_QER_SR2_BIT1:
+-		params->quad_enable = sr2_bit1_read_quad_enable;
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
+-}
+-
+-#define SMPT_CMD_ADDRESS_LEN_MASK		GENMASK(23, 22)
+-#define SMPT_CMD_ADDRESS_LEN_0			(0x0UL << 22)
+-#define SMPT_CMD_ADDRESS_LEN_3			(0x1UL << 22)
+-#define SMPT_CMD_ADDRESS_LEN_4			(0x2UL << 22)
+-#define SMPT_CMD_ADDRESS_LEN_USE_CURRENT	(0x3UL << 22)
+-
+-#define SMPT_CMD_READ_DUMMY_MASK		GENMASK(19, 16)
+-#define SMPT_CMD_READ_DUMMY_SHIFT		16
+-#define SMPT_CMD_READ_DUMMY(_cmd) \
+-	(((_cmd) & SMPT_CMD_READ_DUMMY_MASK) >> SMPT_CMD_READ_DUMMY_SHIFT)
+-#define SMPT_CMD_READ_DUMMY_IS_VARIABLE		0xfUL
+-
+-#define SMPT_CMD_READ_DATA_MASK			GENMASK(31, 24)
+-#define SMPT_CMD_READ_DATA_SHIFT		24
+-#define SMPT_CMD_READ_DATA(_cmd) \
+-	(((_cmd) & SMPT_CMD_READ_DATA_MASK) >> SMPT_CMD_READ_DATA_SHIFT)
+-
+-#define SMPT_CMD_OPCODE_MASK			GENMASK(15, 8)
+-#define SMPT_CMD_OPCODE_SHIFT			8
+-#define SMPT_CMD_OPCODE(_cmd) \
+-	(((_cmd) & SMPT_CMD_OPCODE_MASK) >> SMPT_CMD_OPCODE_SHIFT)
+-
+-#define SMPT_MAP_REGION_COUNT_MASK		GENMASK(23, 16)
+-#define SMPT_MAP_REGION_COUNT_SHIFT		16
+-#define SMPT_MAP_REGION_COUNT(_header) \
+-	((((_header) & SMPT_MAP_REGION_COUNT_MASK) >> \
+-	  SMPT_MAP_REGION_COUNT_SHIFT) + 1)
+-
+-#define SMPT_MAP_ID_MASK			GENMASK(15, 8)
+-#define SMPT_MAP_ID_SHIFT			8
+-#define SMPT_MAP_ID(_header) \
+-	(((_header) & SMPT_MAP_ID_MASK) >> SMPT_MAP_ID_SHIFT)
+-
+-#define SMPT_MAP_REGION_SIZE_MASK		GENMASK(31, 8)
+-#define SMPT_MAP_REGION_SIZE_SHIFT		8
+-#define SMPT_MAP_REGION_SIZE(_region) \
+-	(((((_region) & SMPT_MAP_REGION_SIZE_MASK) >> \
+-	   SMPT_MAP_REGION_SIZE_SHIFT) + 1) * 256)
+-
+-#define SMPT_MAP_REGION_ERASE_TYPE_MASK		GENMASK(3, 0)
+-#define SMPT_MAP_REGION_ERASE_TYPE(_region) \
+-	((_region) & SMPT_MAP_REGION_ERASE_TYPE_MASK)
+-
+-#define SMPT_DESC_TYPE_MAP			BIT(1)
+-#define SMPT_DESC_END				BIT(0)
+-
+-/**
+- * spi_nor_smpt_addr_width() - return the address width used in the
+- *			       configuration detection command.
+- * @nor:	pointer to a 'struct spi_nor'
+- * @settings:	configuration detection command descriptor, dword1
+- */
+-static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
+-{
+-	switch (settings & SMPT_CMD_ADDRESS_LEN_MASK) {
+-	case SMPT_CMD_ADDRESS_LEN_0:
+-		return 0;
+-	case SMPT_CMD_ADDRESS_LEN_3:
+-		return 3;
+-	case SMPT_CMD_ADDRESS_LEN_4:
+-		return 4;
+-	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
+-		/* fall through */
+-	default:
+-		return nor->addr_width;
+-	}
+-}
+-
+-/**
+- * spi_nor_smpt_read_dummy() - return the configuration detection command read
+- *			       latency, in clock cycles.
+- * @nor:	pointer to a 'struct spi_nor'
+- * @settings:	configuration detection command descriptor, dword1
+- *
+- * Return: the number of dummy cycles for an SMPT read
+- */
+-static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
+-{
+-	u8 read_dummy = SMPT_CMD_READ_DUMMY(settings);
+-
+-	if (read_dummy == SMPT_CMD_READ_DUMMY_IS_VARIABLE)
+-		return nor->read_dummy;
+-	return read_dummy;
+-}
+-
+-/**
+- * spi_nor_get_map_in_use() - get the configuration map in use
+- * @nor:	pointer to a 'struct spi_nor'
+- * @smpt:	pointer to the sector map parameter table
+- */
+-static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
+-{
+-	const u32 *ret = NULL;
+-	u32 i, addr;
+-	int err;
+-	u8 addr_width, read_opcode, read_dummy;
+-	u8 read_data_mask, data_byte, map_id;
+-
+-	addr_width = nor->addr_width;
+-	read_dummy = nor->read_dummy;
+-	read_opcode = nor->read_opcode;
+-
+-	map_id = 0;
+-	i = 0;
+-	/* Determine if there are any optional Detection Command Descriptors */
+-	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
+-		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
+-		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
+-		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
+-		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
+-		addr = smpt[i + 1];
+-
+-		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
+-		if (err)
+-			goto out;
+-
+-		/*
+-		 * Build an index value that is used to select the Sector Map
+-		 * Configuration that is currently in use.
+-		 */
+-		map_id = map_id << 1 | !!(data_byte & read_data_mask);
+-		i = i + 2;
+-	}
+-
+-	/* Find the matching configuration map */
+-	while (SMPT_MAP_ID(smpt[i]) != map_id) {
+-		if (smpt[i] & SMPT_DESC_END)
+-			goto out;
+-		/* increment the table index to the next map */
+-		i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
+-	}
+-
+-	ret = smpt + i;
+-	/* fall through */
+-out:
+-	nor->addr_width = addr_width;
+-	nor->read_dummy = read_dummy;
+-	nor->read_opcode = read_opcode;
+-	return ret;
+-}
+-
+-/**
+- * spi_nor_region_check_overlay() - set overlay bit when the region is overlaid
+- * @region:	pointer to a structure that describes a SPI NOR erase region
+- * @erase:	pointer to a structure that describes a SPI NOR erase type
+- * @erase_type:	erase type bitmask
+- */
+-static void
+-spi_nor_region_check_overlay(struct spi_nor_erase_region *region,
+-			     const struct spi_nor_erase_type *erase,
+-			     const u8 erase_type)
+-{
+-	int i;
+-
+-	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
+-		if (!(erase_type & BIT(i)))
+-			continue;
+-		if (region->size & erase[i].size_mask) {
+-			spi_nor_region_mark_overlay(region);
+-			return;
+-		}
+-	}
+-}
+-
+-/**
+- * spi_nor_init_non_uniform_erase_map() - initialize the non-uniform erase map
+- * @nor:	pointer to a 'struct spi_nor'
+- * @smpt:	pointer to the sector map parameter table
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+-					      const u32 *smpt)
+-{
+-	struct spi_nor_erase_map *map = &nor->erase_map;
+-	const struct spi_nor_erase_type *erase = map->erase_type;
+-	struct spi_nor_erase_region *region;
+-	u64 offset;
+-	u32 region_count;
+-	int i, j;
+-	u8 erase_type;
+-
+-	region_count = SMPT_MAP_REGION_COUNT(*smpt);
+-	/*
+-	 * The regions will be freed when the driver detaches from the
+-	 * device.
+-	 */
+-	region = devm_kcalloc(nor->dev, region_count, sizeof(*region),
+-			      GFP_KERNEL);
+-	if (!region)
+-		return -ENOMEM;
+-	map->regions = region;
+-
+-	map->uniform_erase_type = 0xff;
+-	offset = 0;
+-	/* Populate regions. */
+-	for (i = 0; i < region_count; i++) {
+-		j = i + 1; /* index for the region dword */
+-		region[i].size = SMPT_MAP_REGION_SIZE(smpt[j]);
+-		erase_type = SMPT_MAP_REGION_ERASE_TYPE(smpt[j]);
+-		region[i].offset = offset | erase_type;
+-
+-		spi_nor_region_check_overlay(&region[i], erase, erase_type);
+-
+-		/*
+-		 * Save the erase types that are supported in all regions and
+-		 * can erase the entire flash memory.
+-		 */
+-		map->uniform_erase_type &= erase_type;
+-
+-		offset = (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
+-			 region[i].size;
+-	}
+-
+-	spi_nor_region_mark_end(&region[i - 1]);
+-
+-	return 0;
+-}
+-
+-/**
+- * spi_nor_parse_smpt() - parse Sector Map Parameter Table
+- * @nor:		pointer to a 'struct spi_nor'
+- * @smpt_header:	sector map parameter table header
+- *
+- * This table is optional, but when available, we parse it to identify the
+- * location and size of sectors within the main data array of the flash memory
+- * device and to identify which Erase Types are supported by each sector.
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-static int spi_nor_parse_smpt(struct spi_nor *nor,
+-			      const struct sfdp_parameter_header *smpt_header)
+-{
+-	const u32 *sector_map;
+-	u32 *smpt;
+-	size_t len;
+-	u32 addr;
+-	int i, ret;
+-
+-	/* Read the Sector Map Parameter Table. */
+-	len = smpt_header->length * sizeof(*smpt);
+-	smpt = kmalloc(len, GFP_KERNEL);
+-	if (!smpt)
+-		return -ENOMEM;
+-
+-	addr = SFDP_PARAM_HEADER_PTP(smpt_header);
+-	ret = spi_nor_read_sfdp(nor, addr, len, smpt);
+-	if (ret)
+-		goto out;
+-
+-	/* Fix endianness of the SMPT DWORDs. */
+-	for (i = 0; i < smpt_header->length; i++)
+-		smpt[i] = le32_to_cpu(smpt[i]);
+-
+-	sector_map = spi_nor_get_map_in_use(nor, smpt);
+-	if (!sector_map) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	ret = spi_nor_init_non_uniform_erase_map(nor, sector_map);
+-	if (ret)
+-		goto out;
+-
+-	spi_nor_regions_sort_erase_types(&nor->erase_map);
+-	/* fall through */
+-out:
+-	kfree(smpt);
+-	return ret;
+-}
+-
+-/**
+- * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
+- * @nor:		pointer to a 'struct spi_nor'
+- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
+- *			filled
+- *
+- * The Serial Flash Discoverable Parameters are described by the JEDEC JESD216
+- * specification. This is a standard which tends to supported by almost all
+- * (Q)SPI memory manufacturers. Those hard-coded tables allow us to learn at
+- * runtime the main parameters needed to perform basic SPI flash operations such
+- * as Fast Read, Page Program or Sector Erase commands.
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-static int spi_nor_parse_sfdp(struct spi_nor *nor,
+-			      struct spi_nor_flash_parameter *params)
+-{
+-	const struct sfdp_parameter_header *param_header, *bfpt_header;
+-	struct sfdp_parameter_header *param_headers = NULL;
+-	struct sfdp_header header;
+-	struct device *dev = nor->dev;
+-	size_t psize;
+-	int i, err;
+-
+-	/* Get the SFDP header. */
+-	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &header);
+-	if (err < 0)
+-		return err;
+-
+-	/* Check the SFDP header version. */
+-	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
+-	    header.major != SFDP_JESD216_MAJOR)
+-		return -EINVAL;
+-
+-	/*
+-	 * Verify that the first and only mandatory parameter header is a
+-	 * Basic Flash Parameter Table header as specified in JESD216.
+-	 */
+-	bfpt_header = &header.bfpt_header;
+-	if (SFDP_PARAM_HEADER_ID(bfpt_header) != SFDP_BFPT_ID ||
+-	    bfpt_header->major != SFDP_JESD216_MAJOR)
+-		return -EINVAL;
+-
+-	/*
+-	 * Allocate memory then read all parameter headers with a single
+-	 * Read SFDP command. These parameter headers will actually be parsed
+-	 * twice: a first time to get the latest revision of the basic flash
+-	 * parameter table, then a second time to handle the supported optional
+-	 * tables.
+-	 * Hence we read the parameter headers once for all to reduce the
+-	 * processing time. Also we use kmalloc() instead of devm_kmalloc()
+-	 * because we don't need to keep these parameter headers: the allocated
+-	 * memory is always released with kfree() before exiting this function.
+-	 */
+-	if (header.nph) {
+-		psize = header.nph * sizeof(*param_headers);
+-
+-		param_headers = kmalloc(psize, GFP_KERNEL);
+-		if (!param_headers)
+-			return -ENOMEM;
+-
+-		err = spi_nor_read_sfdp(nor, sizeof(header),
+-					psize, param_headers);
+-		if (err < 0) {
+-			dev_err(dev, "failed to read SFDP parameter headers\n");
+-			goto exit;
+-		}
+-	}
+-
+-	/*
+-	 * Check other parameter headers to get the latest revision of
+-	 * the basic flash parameter table.
+-	 */
+-	for (i = 0; i < header.nph; i++) {
+-		param_header = &param_headers[i];
+-
+-		if (SFDP_PARAM_HEADER_ID(param_header) == SFDP_BFPT_ID &&
+-		    param_header->major == SFDP_JESD216_MAJOR &&
+-		    (param_header->minor > bfpt_header->minor ||
+-		     (param_header->minor == bfpt_header->minor &&
+-		      param_header->length > bfpt_header->length)))
+-			bfpt_header = param_header;
+-	}
+-
+-	err = spi_nor_parse_bfpt(nor, bfpt_header, params);
+-	if (err)
+-		goto exit;
+-
+-	/* Parse other parameter headers. */
+-	for (i = 0; i < header.nph; i++) {
+-		param_header = &param_headers[i];
+-
+-		switch (SFDP_PARAM_HEADER_ID(param_header)) {
+-		case SFDP_SECTOR_MAP_ID:
+-			err = spi_nor_parse_smpt(nor, param_header);
+-			break;
+-
+-		default:
+-			break;
+-		}
+-
+-		if (err)
+-			goto exit;
+-	}
+-
+-exit:
+-	kfree(param_headers);
+-	return err;
+-}
+-
+ static int spi_nor_init_params(struct spi_nor *nor,
+ 			       struct spi_nor_flash_parameter *params)
+ {
 diff --git a/drivers/mtd/spi-nor/internals.h b/drivers/mtd/spi-nor/internals.h
-index b68c16194978..298b4a855774 100644
+index 96b08b53f8f6..ae3eb40d7241 100644
 --- a/drivers/mtd/spi-nor/internals.h
 +++ b/drivers/mtd/spi-nor/internals.h
-@@ -344,6 +344,7 @@ extern const struct spi_nor_manufacturer spi_nor_issi;
- extern const struct spi_nor_manufacturer spi_nor_macronix;
- extern const struct spi_nor_manufacturer spi_nor_micron;
- extern const struct spi_nor_manufacturer spi_nor_spansion;
-+extern const struct spi_nor_manufacturer spi_nor_sst;
- extern const struct spi_nor_manufacturer spi_nor_st;
+@@ -345,16 +345,31 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
+ int en4_ex4_set_4byte(struct spi_nor *nor, bool enable);
+ int en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable);
+ int sr1_bit6_quad_enable(struct spi_nor *nor);
++int sr2_bit7_quad_enable(struct spi_nor *nor);
++int sr2_bit1_read_quad_enable(struct spi_nor *nor);
++int sr2_bit1_no_read_quad_enable(struct spi_nor *nor);
+ int no_quad_enable(struct spi_nor *nor);
+ int write_enable(struct spi_nor *nor);
+ int write_disable(struct spi_nor *nor);
+ int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops);
+ void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops);
+ int spi_nor_wait_till_ready(struct spi_nor *nor);
++void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
++                                    u8 erase_mask, u64 flash_size);
++void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
++                            u8 opcode);
++struct spi_nor_erase_region *
++spi_nor_region_next(struct spi_nor_erase_region *region);
++int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf);
++int spi_nor_hwcaps_read2cmd(u32 hwcaps);
  
- /* Core helpers. */
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+ {
+ 	return mtd->priv;
+ }
+ 
++/* SFDP functions. */
++int spi_nor_parse_sfdp(struct spi_nor *nor,
++		       struct spi_nor_flash_parameter *params);
++
+ #endif /* __LINUX_MTD_SPI_NOR_INTERNALS_H */
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
 new file mode 100644
-index 000000000000..8d9a8fbfbcd9
+index 000000000000..36343e3e6be0
 --- /dev/null
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -0,0 +1,132 @@
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -0,0 +1,859 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2005, Intec Automation Inc.
@@ -233,129 +1056,856 @@ index 000000000000..8d9a8fbfbcd9
 +
 +#include <linux/wait.h>
 +#include <linux/mtd/spi-nor.h>
++#include <linux/slab.h>
++#include <linux/sort.h>
 +
 +#include "internals.h"
 +
-+static const struct flash_info sst_parts[] = {
-+	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024, 8, SECT_4K | SST_WRITE) },
-+	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
-+	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32, SECT_4K | SST_WRITE) },
-+	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64, SECT_4K | SST_WRITE) },
-+	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "sst25wf512", INFO(0xbf2501, 0, 64 * 1024, 1, SECT_4K | SST_WRITE) },
-+	{ "sst25wf010", INFO(0xbf2502, 0, 64 * 1024,  2, SECT_4K | SST_WRITE) },
-+	{ "sst25wf020", INFO(0xbf2503, 0, 64 * 1024,  4, SECT_4K | SST_WRITE) },
-+	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4, SECT_4K) },
-+	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
-+	{ "sst25wf040", INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
-+	{ "sst25wf080", INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
-+	{
-+		"sst26vf064b",
-+		INFO(0xbf2643, 0, 64 * 1024, 128,
-+		     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+	},
-+};
-+
-+static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
-+		     size_t *retlen, const u_char *buf)
++/**
++ * spi_nor_read_sfdp() - read Serial Flash Discoverable Parameters.
++ * @nor:	pointer to a 'struct spi_nor'
++ * @addr:	offset in the SFDP area to start reading data from
++ * @len:	number of bytes to read
++ * @buf:	buffer where the SFDP data are copied into (dma-safe memory)
++ *
++ * Whatever the actual numbers of bytes for address and dummy cycles are
++ * for (Fast) Read commands, the Read SFDP (5Ah) instruction is always
++ * followed by a 3-byte address and 8 dummy clock cycles.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
++			     size_t len, void *buf)
 +{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	size_t actual;
++	u8 addr_width, read_opcode, read_dummy;
 +	int ret;
 +
-+	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
++	read_opcode = nor->read_opcode;
++	addr_width = nor->addr_width;
++	read_dummy = nor->read_dummy;
 +
-+	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_WRITE);
-+	if (ret)
-+		return ret;
++	nor->read_opcode = SPINOR_OP_RDSFDP;
++	nor->addr_width = 3;
++	nor->read_dummy = 8;
 +
-+	write_enable(nor);
++	ret = spi_nor_read_raw(nor, addr, len, buf);
 +
-+	nor->sst_write_second = false;
++	nor->read_opcode = read_opcode;
++	nor->addr_width = addr_width;
++	nor->read_dummy = read_dummy;
 +
-+	actual = to % 2;
-+	/* Start write from odd address. */
-+	if (actual) {
-+		nor->program_opcode = SPINOR_OP_BP;
-+
-+		/* write one byte. */
-+		ret = nor->write(nor, to, 1, buf);
-+		if (ret < 0)
-+			goto sst_write_err;
-+		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
-+		     (int)ret);
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			goto sst_write_err;
-+	}
-+	to += actual;
-+
-+	/* Write out most of the data here. */
-+	for (; actual < len - 1; actual += 2) {
-+		nor->program_opcode = SPINOR_OP_AAI_WP;
-+
-+		/* write two bytes. */
-+		ret = nor->write(nor, to, 2, buf + actual);
-+		if (ret < 0)
-+			goto sst_write_err;
-+		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
-+		     (int)ret);
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			goto sst_write_err;
-+		to += 2;
-+		nor->sst_write_second = true;
-+	}
-+	nor->sst_write_second = false;
-+
-+	write_disable(nor);
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		goto sst_write_err;
-+
-+	/* Write out trailing byte if it exists. */
-+	if (actual != len) {
-+		write_enable(nor);
-+
-+		nor->program_opcode = SPINOR_OP_BP;
-+		ret = nor->write(nor, to, 1, buf + actual);
-+		if (ret < 0)
-+			goto sst_write_err;
-+		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
-+		     (int)ret);
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			goto sst_write_err;
-+		write_disable(nor);
-+		actual += 1;
-+	}
-+sst_write_err:
-+	*retlen += actual;
-+	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
 +	return ret;
 +}
 +
-+static int sst_post_sfdp_fixups(struct spi_nor *nor,
-+				struct spi_nor_flash_parameter *params)
++/**
++ * spi_nor_read_sfdp_dma_unsafe() - read Serial Flash Discoverable Parameters.
++ * @nor:	pointer to a 'struct spi_nor'
++ * @addr:	offset in the SFDP area to start reading data from
++ * @len:	number of bytes to read
++ * @buf:	buffer where the SFDP data are copied into
++ *
++ * Wrap spi_nor_read_sfdp() using a kmalloc'ed bounce buffer as @buf is now not
++ * guaranteed to be dma-safe.
++ *
++ * Return: -ENOMEM if kmalloc() fails, the return code of spi_nor_read_sfdp()
++ *          otherwise.
++ */
++static int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
++					size_t len, void *buf)
 +{
-+	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
++	void *dma_safe_buf;
++	int ret;
 +
-+	/* sst nor chips use AAI word program */
-+	if (nor->info->flags & SST_WRITE)
-+		nor->mtd._write = sst_write;
++	dma_safe_buf = kmalloc(len, GFP_KERNEL);
++	if (!dma_safe_buf)
++		return -ENOMEM;
++
++	ret = spi_nor_read_sfdp(nor, addr, len, dma_safe_buf);
++	memcpy(buf, dma_safe_buf, len);
++	kfree(dma_safe_buf);
++
++	return ret;
++}
++
++/**
++ * spi_nor_set_erase_settings_from_bfpt() - set erase type settings from BFPT
++ * @erase:	pointer to a structure that describes a SPI NOR erase type
++ * @size:	the size of the sector/block erased by the erase type
++ * @opcode:	the SPI command op code to erase the sector/block
++ * @i:		erase type index as sorted in the Basic Flash Parameter Table
++ *
++ * The supported Erase Types will be sorted at init in ascending order, with
++ * the smallest Erase Type size being the first member in the erase_type array
++ * of the spi_nor_erase_map structure. Save the Erase Type index as sorted in
++ * the Basic Flash Parameter Table since it will be used later on to
++ * synchronize with the supported Erase Types defined in SFDP optional tables.
++ */
++static void
++spi_nor_set_erase_settings_from_bfpt(struct spi_nor_erase_type *erase,
++				     u32 size, u8 opcode, u8 i)
++{
++	erase->idx = i;
++	spi_nor_set_erase_type(erase, size, opcode);
++}
++
++/**
++ * spi_nor_map_cmp_erase_type() - compare the map's erase types by size
++ * @l:	member in the left half of the map's erase_type array
++ * @r:	member in the right half of the map's erase_type array
++ *
++ * Comparison function used in the sort() call to sort in ascending order the
++ * map's erase types, the smallest erase type size being the first member in the
++ * sorted erase_type array.
++ *
++ * Return: the result of @l->size - @r->size
++ */
++static int spi_nor_map_cmp_erase_type(const void *l, const void *r)
++{
++	const struct spi_nor_erase_type *left = l, *right = r;
++
++	return left->size - right->size;
++}
++
++/**
++ * spi_nor_regions_sort_erase_types() - sort erase types in each region
++ * @map:	the erase map of the SPI NOR
++ *
++ * Function assumes that the erase types defined in the erase map are already
++ * sorted in ascending order, with the smallest erase type size being the first
++ * member in the erase_type array. It replicates the sort done for the map's
++ * erase types. Each region's erase bitmask will indicate which erase types are
++ * supported from the sorted erase types defined in the erase map.
++ * Sort the all region's erase type at init in order to speed up the process of
++ * finding the best erase command at runtime.
++ */
++static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
++{
++	struct spi_nor_erase_region *region = map->regions;
++	struct spi_nor_erase_type *erase_type = map->erase_type;
++	int i;
++	u8 region_erase_mask, sorted_erase_mask;
++
++	while (region) {
++		region_erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
++
++		/* Replicate the sort done for the map's erase types. */
++		sorted_erase_mask = 0;
++		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
++			if (erase_type[i].size &&
++			    region_erase_mask & BIT(erase_type[i].idx))
++				sorted_erase_mask |= BIT(i);
++
++		/* Overwrite erase mask. */
++		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK) |
++				 sorted_erase_mask;
++
++		region = spi_nor_region_next(region);
++	}
++}
++
++#define SMPT_CMD_ADDRESS_LEN_MASK		GENMASK(23, 22)
++#define SMPT_CMD_ADDRESS_LEN_0			(0x0UL << 22)
++#define SMPT_CMD_ADDRESS_LEN_3			(0x1UL << 22)
++#define SMPT_CMD_ADDRESS_LEN_4			(0x2UL << 22)
++#define SMPT_CMD_ADDRESS_LEN_USE_CURRENT	(0x3UL << 22)
++
++#define SMPT_CMD_READ_DUMMY_MASK		GENMASK(19, 16)
++#define SMPT_CMD_READ_DUMMY_SHIFT		16
++#define SMPT_CMD_READ_DUMMY(_cmd) \
++	(((_cmd) & SMPT_CMD_READ_DUMMY_MASK) >> SMPT_CMD_READ_DUMMY_SHIFT)
++#define SMPT_CMD_READ_DUMMY_IS_VARIABLE		0xfUL
++
++#define SMPT_CMD_READ_DATA_MASK			GENMASK(31, 24)
++#define SMPT_CMD_READ_DATA_SHIFT		24
++#define SMPT_CMD_READ_DATA(_cmd) \
++	(((_cmd) & SMPT_CMD_READ_DATA_MASK) >> SMPT_CMD_READ_DATA_SHIFT)
++
++#define SMPT_CMD_OPCODE_MASK			GENMASK(15, 8)
++#define SMPT_CMD_OPCODE_SHIFT			8
++#define SMPT_CMD_OPCODE(_cmd) \
++	(((_cmd) & SMPT_CMD_OPCODE_MASK) >> SMPT_CMD_OPCODE_SHIFT)
++
++#define SMPT_MAP_REGION_COUNT_MASK		GENMASK(23, 16)
++#define SMPT_MAP_REGION_COUNT_SHIFT		16
++#define SMPT_MAP_REGION_COUNT(_header) \
++	((((_header) & SMPT_MAP_REGION_COUNT_MASK) >> \
++	  SMPT_MAP_REGION_COUNT_SHIFT) + 1)
++
++#define SMPT_MAP_ID_MASK			GENMASK(15, 8)
++#define SMPT_MAP_ID_SHIFT			8
++#define SMPT_MAP_ID(_header) \
++	(((_header) & SMPT_MAP_ID_MASK) >> SMPT_MAP_ID_SHIFT)
++
++#define SMPT_MAP_REGION_SIZE_MASK		GENMASK(31, 8)
++#define SMPT_MAP_REGION_SIZE_SHIFT		8
++#define SMPT_MAP_REGION_SIZE(_region) \
++	(((((_region) & SMPT_MAP_REGION_SIZE_MASK) >> \
++	   SMPT_MAP_REGION_SIZE_SHIFT) + 1) * 256)
++
++#define SMPT_MAP_REGION_ERASE_TYPE_MASK		GENMASK(3, 0)
++#define SMPT_MAP_REGION_ERASE_TYPE(_region) \
++	((_region) & SMPT_MAP_REGION_ERASE_TYPE_MASK)
++
++#define SMPT_DESC_TYPE_MAP			BIT(1)
++#define SMPT_DESC_END				BIT(0)
++
++/**
++ * spi_nor_smpt_addr_width() - return the address width used in the
++ *			       configuration detection command.
++ * @nor:	pointer to a 'struct spi_nor'
++ * @settings:	configuration detection command descriptor, dword1
++ */
++static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
++{
++	switch (settings & SMPT_CMD_ADDRESS_LEN_MASK) {
++	case SMPT_CMD_ADDRESS_LEN_0:
++		return 0;
++	case SMPT_CMD_ADDRESS_LEN_3:
++		return 3;
++	case SMPT_CMD_ADDRESS_LEN_4:
++		return 4;
++	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
++		/* fall through */
++	default:
++		return nor->addr_width;
++	}
++}
++
++/**
++ * spi_nor_smpt_read_dummy() - return the configuration detection command read
++ *			       latency, in clock cycles.
++ * @nor:	pointer to a 'struct spi_nor'
++ * @settings:	configuration detection command descriptor, dword1
++ *
++ * Return: the number of dummy cycles for an SMPT read
++ */
++static u8 spi_nor_smpt_read_dummy(const struct spi_nor *nor, const u32 settings)
++{
++	u8 read_dummy = SMPT_CMD_READ_DUMMY(settings);
++
++	if (read_dummy == SMPT_CMD_READ_DUMMY_IS_VARIABLE)
++		return nor->read_dummy;
++	return read_dummy;
++}
++
++/**
++ * spi_nor_get_map_in_use() - get the configuration map in use
++ * @nor:	pointer to a 'struct spi_nor'
++ * @smpt:	pointer to the sector map parameter table
++ */
++static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
++{
++	const u32 *ret = NULL;
++	u32 i, addr;
++	int err;
++	u8 addr_width, read_opcode, read_dummy;
++	u8 read_data_mask, data_byte, map_id;
++
++	addr_width = nor->addr_width;
++	read_dummy = nor->read_dummy;
++	read_opcode = nor->read_opcode;
++
++	map_id = 0;
++	i = 0;
++	/* Determine if there are any optional Detection Command Descriptors */
++	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
++		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
++		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
++		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
++		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
++		addr = smpt[i + 1];
++
++		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
++		if (err)
++			goto out;
++
++		/*
++		 * Build an index value that is used to select the Sector Map
++		 * Configuration that is currently in use.
++		 */
++		map_id = map_id << 1 | !!(data_byte & read_data_mask);
++		i = i + 2;
++	}
++
++	/* Find the matching configuration map */
++	while (SMPT_MAP_ID(smpt[i]) != map_id) {
++		if (smpt[i] & SMPT_DESC_END)
++			goto out;
++		/* increment the table index to the next map */
++		i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
++	}
++
++	ret = smpt + i;
++	/* fall through */
++out:
++	nor->addr_width = addr_width;
++	nor->read_dummy = read_dummy;
++	nor->read_opcode = read_opcode;
++	return ret;
++}
++
++/**
++ * spi_nor_region_check_overlay() - set overlay bit when the region is overlaid
++ * @region:	pointer to a structure that describes a SPI NOR erase region
++ * @erase:	pointer to a structure that describes a SPI NOR erase type
++ * @erase_type:	erase type bitmask
++ */
++static void
++spi_nor_region_check_overlay(struct spi_nor_erase_region *region,
++			     const struct spi_nor_erase_type *erase,
++			     const u8 erase_type)
++{
++	int i;
++
++	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
++		if (!(erase_type & BIT(i)))
++			continue;
++		if (region->size & erase[i].size_mask) {
++			spi_nor_region_mark_overlay(region);
++			return;
++		}
++	}
++}
++
++/**
++ * spi_nor_init_non_uniform_erase_map() - initialize the non-uniform erase map
++ * @nor:	pointer to a 'struct spi_nor'
++ * @smpt:	pointer to the sector map parameter table
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
++					      const u32 *smpt)
++{
++	struct spi_nor_erase_map *map = &nor->erase_map;
++	const struct spi_nor_erase_type *erase = map->erase_type;
++	struct spi_nor_erase_region *region;
++	u64 offset;
++	u32 region_count;
++	int i, j;
++	u8 erase_type;
++
++	region_count = SMPT_MAP_REGION_COUNT(*smpt);
++	/*
++	 * The regions will be freed when the driver detaches from the
++	 * device.
++	 */
++	region = devm_kcalloc(nor->dev, region_count, sizeof(*region),
++			      GFP_KERNEL);
++	if (!region)
++		return -ENOMEM;
++	map->regions = region;
++
++	map->uniform_erase_type = 0xff;
++	offset = 0;
++	/* Populate regions. */
++	for (i = 0; i < region_count; i++) {
++		j = i + 1; /* index for the region dword */
++		region[i].size = SMPT_MAP_REGION_SIZE(smpt[j]);
++		erase_type = SMPT_MAP_REGION_ERASE_TYPE(smpt[j]);
++		region[i].offset = offset | erase_type;
++
++		spi_nor_region_check_overlay(&region[i], erase, erase_type);
++
++		/*
++		 * Save the erase types that are supported in all regions and
++		 * can erase the entire flash memory.
++		 */
++		map->uniform_erase_type &= erase_type;
++
++		offset = (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
++			 region[i].size;
++	}
++
++	spi_nor_region_mark_end(&region[i - 1]);
 +
 +	return 0;
 +}
 +
-+static const struct spi_nor_fixups sst_fixups = {
-+	.post_sfdp = sst_post_sfdp_fixups,
++/**
++ * spi_nor_parse_smpt() - parse Sector Map Parameter Table
++ * @nor:		pointer to a 'struct spi_nor'
++ * @smpt_header:	sector map parameter table header
++ *
++ * This table is optional, but when available, we parse it to identify the
++ * location and size of sectors within the main data array of the flash memory
++ * device and to identify which Erase Types are supported by each sector.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_parse_smpt(struct spi_nor *nor,
++			      const struct sfdp_parameter_header *smpt_header)
++{
++	const u32 *sector_map;
++	u32 *smpt;
++	size_t len;
++	u32 addr;
++	int i, ret;
++
++	/* Read the Sector Map Parameter Table. */
++	len = smpt_header->length * sizeof(*smpt);
++	smpt = kmalloc(len, GFP_KERNEL);
++	if (!smpt)
++		return -ENOMEM;
++
++	addr = SFDP_PARAM_HEADER_PTP(smpt_header);
++	ret = spi_nor_read_sfdp(nor, addr, len, smpt);
++	if (ret)
++		goto out;
++
++	/* Fix endianness of the SMPT DWORDs. */
++	for (i = 0; i < smpt_header->length; i++)
++		smpt[i] = le32_to_cpu(smpt[i]);
++
++	sector_map = spi_nor_get_map_in_use(nor, smpt);
++	if (!sector_map) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = spi_nor_init_non_uniform_erase_map(nor, sector_map);
++	if (ret)
++		goto out;
++
++	spi_nor_regions_sort_erase_types(&nor->erase_map);
++	/* fall through */
++out:
++	kfree(smpt);
++	return ret;
++}
++
++static void
++spi_nor_set_read_settings_from_bfpt(struct spi_nor_read_command *read,
++				    u16 half,
++				    enum spi_nor_protocol proto)
++{
++	read->num_mode_clocks = (half >> 5) & 0x07;
++	read->num_wait_states = (half >> 0) & 0x1f;
++	read->opcode = (half >> 8) & 0xff;
++	read->proto = proto;
++}
++
++struct sfdp_bfpt_read {
++	/* The Fast Read x-y-z hardware capability in params->hwcaps.mask. */
++	u32			hwcaps;
++
++	/*
++	 * The <supported_bit> bit in <supported_dword> BFPT DWORD tells us
++	 * whether the Fast Read x-y-z command is supported.
++	 */
++	u32			supported_dword;
++	u32			supported_bit;
++
++	/*
++	 * The half-word at offset <setting_shift> in <setting_dword> BFPT DWORD
++	 * encodes the op code, the number of mode clocks and the number of wait
++	 * states to be used by Fast Read x-y-z command.
++	 */
++	u32			settings_dword;
++	u32			settings_shift;
++
++	/* The SPI protocol for this Fast Read x-y-z command. */
++	enum spi_nor_protocol	proto;
 +};
 +
-+const struct spi_nor_manufacturer spi_nor_sst = {
-+	.name = "sst",
-+	.parts = sst_parts,
-+	.nparts = ARRAY_SIZE(sst_parts),
-+	.fixups = &sst_fixups,
++static const struct sfdp_bfpt_read sfdp_bfpt_reads[] = {
++	/* Fast Read 1-1-2 */
++	{
++		SNOR_HWCAPS_READ_1_1_2,
++		BFPT_DWORD(1), BIT(16),	/* Supported bit */
++		BFPT_DWORD(4), 0,	/* Settings */
++		SNOR_PROTO_1_1_2,
++	},
++
++	/* Fast Read 1-2-2 */
++	{
++		SNOR_HWCAPS_READ_1_2_2,
++		BFPT_DWORD(1), BIT(20),	/* Supported bit */
++		BFPT_DWORD(4), 16,	/* Settings */
++		SNOR_PROTO_1_2_2,
++	},
++
++	/* Fast Read 2-2-2 */
++	{
++		SNOR_HWCAPS_READ_2_2_2,
++		BFPT_DWORD(5),  BIT(0),	/* Supported bit */
++		BFPT_DWORD(6), 16,	/* Settings */
++		SNOR_PROTO_2_2_2,
++	},
++
++	/* Fast Read 1-1-4 */
++	{
++		SNOR_HWCAPS_READ_1_1_4,
++		BFPT_DWORD(1), BIT(22),	/* Supported bit */
++		BFPT_DWORD(3), 16,	/* Settings */
++		SNOR_PROTO_1_1_4,
++	},
++
++	/* Fast Read 1-4-4 */
++	{
++		SNOR_HWCAPS_READ_1_4_4,
++		BFPT_DWORD(1), BIT(21),	/* Supported bit */
++		BFPT_DWORD(3), 0,	/* Settings */
++		SNOR_PROTO_1_4_4,
++	},
++
++	/* Fast Read 4-4-4 */
++	{
++		SNOR_HWCAPS_READ_4_4_4,
++		BFPT_DWORD(5), BIT(4),	/* Supported bit */
++		BFPT_DWORD(7), 16,	/* Settings */
++		SNOR_PROTO_4_4_4,
++	},
 +};
++
++struct sfdp_bfpt_erase {
++	/*
++	 * The half-word at offset <shift> in DWORD <dwoard> encodes the
++	 * op code and erase sector size to be used by Sector Erase commands.
++	 */
++	u32			dword;
++	u32			shift;
++};
++
++static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
++	/* Erase Type 1 in DWORD8 bits[15:0] */
++	{BFPT_DWORD(8), 0},
++
++	/* Erase Type 2 in DWORD8 bits[31:16] */
++	{BFPT_DWORD(8), 16},
++
++	/* Erase Type 3 in DWORD9 bits[15:0] */
++	{BFPT_DWORD(9), 0},
++
++	/* Erase Type 4 in DWORD9 bits[31:16] */
++	{BFPT_DWORD(9), 16},
++};
++
++static int
++spi_nor_post_bfpt_fixups(struct spi_nor *nor,
++			 const struct sfdp_parameter_header *bfpt_header,
++			 const struct sfdp_bfpt *bfpt,
++			 struct spi_nor_flash_parameter *params)
++{
++	int ret;
++
++	if (nor->manufacturer && nor->manufacturer->fixups &&
++	    nor->manufacturer->fixups->post_bfpt) {
++		ret = nor->manufacturer->fixups->post_bfpt(nor, bfpt_header,
++							   bfpt, params);
++		if (ret)
++			return ret;
++	}
++
++	if (nor->info->fixups && nor->info->fixups->post_bfpt) {
++		ret = nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt,
++						   params);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++/**
++ * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @bfpt_header:	pointer to the 'struct sfdp_parameter_header' describing
++ *			the Basic Flash Parameter Table length and version
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
++ *			filled
++ *
++ * The Basic Flash Parameter Table is the main and only mandatory table as
++ * defined by the SFDP (JESD216) specification.
++ * It provides us with the total size (memory density) of the data array and
++ * the number of address bytes for Fast Read, Page Program and Sector Erase
++ * commands.
++ * For Fast READ commands, it also gives the number of mode clock cycles and
++ * wait states (regrouped in the number of dummy clock cycles) for each
++ * supported instruction op code.
++ * For Page Program, the page size is now available since JESD216 rev A, however
++ * the supported instruction op codes are still not provided.
++ * For Sector Erase commands, this table stores the supported instruction op
++ * codes and the associated sector sizes.
++ * Finally, the Quad Enable Requirements (QER) are also available since JESD216
++ * rev A. The QER bits encode the manufacturer dependent procedure to be
++ * executed to set the Quad Enable (QE) bit in some internal register of the
++ * Quad SPI memory. Indeed the QE bit, when it exists, must be set before
++ * sending any Quad SPI command to the memory. Actually, setting the QE bit
++ * tells the memory to reassign its WP# and HOLD#/RESET# pins to functions IO2
++ * and IO3 hence enabling 4 (Quad) I/O lines.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_parse_bfpt(struct spi_nor *nor,
++			      const struct sfdp_parameter_header *bfpt_header,
++			      struct spi_nor_flash_parameter *params)
++{
++	struct spi_nor_erase_map *map = &nor->erase_map;
++	struct spi_nor_erase_type *erase_type = map->erase_type;
++	struct sfdp_bfpt bfpt;
++	size_t len;
++	int i, cmd, err;
++	u32 addr;
++	u16 half;
++	u8 erase_mask;
++
++	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
++	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
++		return -EINVAL;
++
++	/* Read the Basic Flash Parameter Table. */
++	len = min_t(size_t, sizeof(bfpt),
++		    bfpt_header->length * sizeof(u32));
++	addr = SFDP_PARAM_HEADER_PTP(bfpt_header);
++	memset(&bfpt, 0, sizeof(bfpt));
++	err = spi_nor_read_sfdp_dma_unsafe(nor,  addr, len, &bfpt);
++	if (err < 0)
++		return err;
++
++	/* Fix endianness of the BFPT DWORDs. */
++	for (i = 0; i < BFPT_DWORD_MAX; i++)
++		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
++
++	/* Number of address bytes. */
++	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
++	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
++		nor->addr_width = 3;
++		break;
++
++	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
++		nor->addr_width = 4;
++		break;
++
++	default:
++		break;
++	}
++
++	/* Flash Memory Density (in bits). */
++	params->size = bfpt.dwords[BFPT_DWORD(2)];
++	if (params->size & BIT(31)) {
++		params->size &= ~BIT(31);
++
++		/*
++		 * Prevent overflows on params->size. Anyway, a NOR of 2^64
++		 * bits is unlikely to exist so this error probably means
++		 * the BFPT we are reading is corrupted/wrong.
++		 */
++		if (params->size > 63)
++			return -EINVAL;
++
++		params->size = 1ULL << params->size;
++	} else {
++		params->size++;
++	}
++	params->size >>= 3; /* Convert to bytes. */
++
++	/* Fast Read settings. */
++	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
++		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
++		struct spi_nor_read_command *read;
++
++		if (!(bfpt.dwords[rd->supported_dword] & rd->supported_bit)) {
++			params->hwcaps.mask &= ~rd->hwcaps;
++			continue;
++		}
++
++		params->hwcaps.mask |= rd->hwcaps;
++		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
++		read = &params->reads[cmd];
++		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
++		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
++	}
++
++	/*
++	 * Sector Erase settings. Reinitialize the uniform erase map using the
++	 * Erase Types defined in the bfpt table.
++	 */
++	erase_mask = 0;
++	memset(&nor->erase_map, 0, sizeof(nor->erase_map));
++	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
++		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
++		u32 erasesize;
++		u8 opcode;
++
++		half = bfpt.dwords[er->dword] >> er->shift;
++		erasesize = half & 0xff;
++
++		/* erasesize == 0 means this Erase Type is not supported. */
++		if (!erasesize)
++			continue;
++
++		erasesize = 1U << erasesize;
++		opcode = (half >> 8) & 0xff;
++		erase_mask |= BIT(i);
++		spi_nor_set_erase_settings_from_bfpt(&erase_type[i], erasesize,
++						     opcode, i);
++	}
++	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
++	/*
++	 * Sort all the map's Erase Types in ascending order with the smallest
++	 * erase size being the first member in the erase_type array.
++	 */
++	sort(erase_type, SNOR_ERASE_TYPE_MAX, sizeof(erase_type[0]),
++	     spi_nor_map_cmp_erase_type, NULL);
++	/*
++	 * Sort the erase types in the uniform region in order to update the
++	 * uniform_erase_type bitmask. The bitmask will be used later on when
++	 * selecting the uniform erase.
++	 */
++	spi_nor_regions_sort_erase_types(map);
++	map->uniform_erase_type = map->uniform_region.offset &
++				  SNOR_ERASE_TYPE_MASK;
++
++	/* Stop here if not JESD216 rev A or later. */
++	if (bfpt_header->length < BFPT_DWORD_MAX)
++		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
++						params);
++
++	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
++	params->page_size = bfpt.dwords[BFPT_DWORD(11)];
++	params->page_size &= BFPT_DWORD11_PAGE_SIZE_MASK;
++	params->page_size >>= BFPT_DWORD11_PAGE_SIZE_SHIFT;
++	params->page_size = 1U << params->page_size;
++
++	/* Quad Enable Requirements. */
++	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
++	case BFPT_DWORD15_QER_NONE:
++		params->quad_enable = no_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
++	case BFPT_DWORD15_QER_SR2_BIT1_NO_RD:
++		params->quad_enable = sr2_bit1_no_read_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR1_BIT6:
++		params->quad_enable = sr1_bit6_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR2_BIT7:
++		params->quad_enable = sr2_bit7_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR2_BIT1:
++		params->quad_enable = sr2_bit1_read_quad_enable;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
++}
++
++/**
++ * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
++ *			filled
++ *
++ * The Serial Flash Discoverable Parameters are described by the JEDEC JESD216
++ * specification. This is a standard which tends to supported by almost all
++ * (Q)SPI memory manufacturers. Those hard-coded tables allow us to learn at
++ * runtime the main parameters needed to perform basic SPI flash operations such
++ * as Fast Read, Page Program or Sector Erase commands.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_parse_sfdp(struct spi_nor *nor,
++		       struct spi_nor_flash_parameter *params)
++{
++	const struct sfdp_parameter_header *param_header, *bfpt_header;
++	struct sfdp_parameter_header *param_headers = NULL;
++	struct sfdp_header header;
++	struct device *dev = nor->dev;
++	size_t psize;
++	int i, err;
++
++	/* Get the SFDP header. */
++	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &header);
++	if (err < 0)
++		return err;
++
++	/* Check the SFDP header version. */
++	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
++	    header.major != SFDP_JESD216_MAJOR)
++		return -EINVAL;
++
++	/*
++	 * Verify that the first and only mandatory parameter header is a
++	 * Basic Flash Parameter Table header as specified in JESD216.
++	 */
++	bfpt_header = &header.bfpt_header;
++	if (SFDP_PARAM_HEADER_ID(bfpt_header) != SFDP_BFPT_ID ||
++	    bfpt_header->major != SFDP_JESD216_MAJOR)
++		return -EINVAL;
++
++	/*
++	 * Allocate memory then read all parameter headers with a single
++	 * Read SFDP command. These parameter headers will actually be parsed
++	 * twice: a first time to get the latest revision of the basic flash
++	 * parameter table, then a second time to handle the supported optional
++	 * tables.
++	 * Hence we read the parameter headers once for all to reduce the
++	 * processing time. Also we use kmalloc() instead of devm_kmalloc()
++	 * because we don't need to keep these parameter headers: the allocated
++	 * memory is always released with kfree() before exiting this function.
++	 */
++	if (header.nph) {
++		psize = header.nph * sizeof(*param_headers);
++
++		param_headers = kmalloc(psize, GFP_KERNEL);
++		if (!param_headers)
++			return -ENOMEM;
++
++		err = spi_nor_read_sfdp(nor, sizeof(header),
++					psize, param_headers);
++		if (err < 0) {
++			dev_err(dev, "failed to read SFDP parameter headers\n");
++			goto exit;
++		}
++	}
++
++	/*
++	 * Check other parameter headers to get the latest revision of
++	 * the basic flash parameter table.
++	 */
++	for (i = 0; i < header.nph; i++) {
++		param_header = &param_headers[i];
++
++		if (SFDP_PARAM_HEADER_ID(param_header) == SFDP_BFPT_ID &&
++		    param_header->major == SFDP_JESD216_MAJOR &&
++		    (param_header->minor > bfpt_header->minor ||
++		     (param_header->minor == bfpt_header->minor &&
++		      param_header->length > bfpt_header->length)))
++			bfpt_header = param_header;
++	}
++
++	err = spi_nor_parse_bfpt(nor, bfpt_header, params);
++	if (err)
++		goto exit;
++
++	/* Parse other parameter headers. */
++	for (i = 0; i < header.nph; i++) {
++		param_header = &param_headers[i];
++
++		switch (SFDP_PARAM_HEADER_ID(param_header)) {
++		case SFDP_SECTOR_MAP_ID:
++			err = spi_nor_parse_smpt(nor, param_header);
++			break;
++
++		default:
++			break;
++		}
++
++		if (err)
++			goto exit;
++	}
++
++exit:
++	kfree(param_headers);
++	return err;
++}
 -- 
 2.17.1
