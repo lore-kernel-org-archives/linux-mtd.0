@@ -1,20 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVC9S-00015p-Jf
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:10:39 +0000
+ id 1gVC9t-0001UH-Ay
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:11:12 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- "Sverdlin, Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
+To: Linus Walleij <linus.walleij@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [v5,3/3] mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
-Date: Fri,  7 Dec 2018 10:10:19 +0100
-Message-Id: <20181207091019.16907-1-boris.brezillon@bootlin.com>
-In-Reply-To: <20181206103736.5957-4-boris.brezillon@bootlin.com>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: Re: [2/2,v3] mtd: physmap_of_gemini: Handle pin control
+Date: Fri,  7 Dec 2018 10:10:42 +0100
+Message-Id: <20181207091042.17167-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181127205358.32502-2-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2018-12-06 at 10:37:36 UTC, Boris Brezillon wrote:
-> MX25L25635F and MX25L25635E share the same JEDEC-ID, but the F variant
-> supports 4-byte opcodes while the E variant doesn't. We need a way to
-> differentiate those 2 chips and set the SNOR_F_4B_OPCODES flag only for
-> the F variant.
+On Tue, 2018-11-27 at 20:53:58 UTC, Linus Walleij wrote:
+> This enables the complex mapping for the Gemini and kicks in
+> custom read/write functions that will wrap the existing
+> simple functions in calls to enable/disable the parallel
+> flash pins using pin controls.
 > 
-> Luckily, 4-byte opcode support is not the only difference: Fast Read
-> 4-4-4 is only supported by the F variant, and this feature is
-> advertised in the BFPT table. Use this to decide when to set the
-> SNOR_F_4B_OPCODES flag.
+> This is necessary on some hardware such as the D-Link
+> DIR-685 where all flash pins are patched in/out at the same
+> time, but some of the flash pins are in practice unused by
+> the flash and have anyway been reused as GPIO.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> This concerns specifically CE1 on the Gemini. There is only
+> one flash chip, so only CE0 is used, and the line for CE1
+> has been reused as chip select for the emulated SPI port
+> connected to the display. If we try to use the same lines
+> for flash and GPIO at the same time, one of them will loose:
+> the GPIO line will disappear because it gets disconnected
+> from the pin when the flash group is muxed out.
+> 
+> Fix this by introducing two pin control states named simply
+> "enabled" and "disabled" and only enable the flash lines
+> when absolutely necessary (during read/write/copy). This
+> way, they are available for GPIO at all other times and
+> the display works.
+> 
+> Collect all the state variables in a struct named
+> struct gemini_flash and allocate this struct at probe
+> time.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-Applied to http://git.infradead.org/linux-mtd.git spi-nor/next.
+Applied to http://git.infradead.org/linux-mtd.git mtd/next, thanks.
 
 Boris
