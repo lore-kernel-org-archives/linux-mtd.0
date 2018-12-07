@@ -1,27 +1,28 @@
-Date: Fri, 7 Dec 2018 10:42:54 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>, Yixun
- Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>,
- Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
- <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
- <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20181207104254.0ecfc1e5@xps13>
-In-Reply-To: <20181207102456.1dc67e07@xps13>
-References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
- <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
- <20181207102456.1dc67e07@xps13>
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVCfH-0007In-1i
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:43:23 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <fabrizio.castro@bp.renesas.com>, <broonie@kernel.org>,
+ <robh+dt@kernel.org>, <mark.rutland@arm.com>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@bootlin.com>, <geert+renesas@glider.be>,
+ <horms@verge.net.au>, <richard@nod.at>
+CC: <devicetree@vger.kernel.org>, <Chris.Paterson2@renesas.com>,
+ <magnus.damm@gmail.com>, <linux-spi@vger.kernel.org>,
+ <linux-renesas-soc@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <biju.das@bp.renesas.com>
+Subject: Re: [PATCH 2/4] mtd: spi-nor: Add support for is25lp016d
+Date: Fri, 7 Dec 2018 09:43:05 +0000
+Message-ID: <4996db3a-26eb-2035-3d98-7aba2bc8630c@microchip.com>
+References: <1541075705-1333-1-git-send-email-fabrizio.castro@bp.renesas.com>
+ <1541075705-1333-3-git-send-email-fabrizio.castro@bp.renesas.com>
+In-Reply-To: <1541075705-1333-3-git-send-email-fabrizio.castro@bp.renesas.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D3685F6842A18A45BBF47B11B6FC306D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,55 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jianxin,
-
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Fri, 7 Dec 2018
-10:24:56 +0100:
-
-> Hi Jianxin,
->=20
-> Looks good to me overall, a few comments inline.
->=20
-> Jianxin Pan <jianxin.pan@amlogic.com> wrote on Sat, 17 Nov 2018
-> 00:40:38 +0800:
->=20
-> > From: Liang Yang <liang.yang@amlogic.com>
-> >=20
-> > Add initial support for the Amlogic NAND flash controller which found
-> > in the Meson-GXBB/GXL/AXG SoCs.
-> >=20
-> > Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> > Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
-> > Signed-off-by: Jianxin Pan <jianxin.pan@amlogic.com>
-> > ---
-> >  drivers/mtd/nand/raw/Kconfig      |   10 +
-> >  drivers/mtd/nand/raw/Makefile     |    1 +
-> >  drivers/mtd/nand/raw/meson_nand.c | 1417 +++++++++++++++++++++++++++++=
-++++++++
-> >  3 files changed, 1428 insertions(+)
-> >  create mode 100644 drivers/mtd/nand/raw/meson_nand.c
-> >=20
-
-I forgot to mention, Boris has done more cleanup which breaks your
-patches, please have a look at the following commits in the nand/next
-branch, they will force you to do some light rework to get the driver
-building (especially, you should not export the ->select_chip hook anymore):
-
-7a08dbaedd36 mtd: rawnand: Move ->setup_data_interface() to nand_controller=
-_ops
-f2abfeb2078b mtd: rawnand: Move the ->exec_op() method to nand_controller_o=
-ps
-7d6c37e90cf9 mtd: rawnand: Deprecate the ->select_chip() hook
-1770022ffa85 mtd: rawnand: ams-delta: Stop implementing ->select_chip()
-653c57c7da08 mtd: rawnand: vf610: Stop implementing ->select_chip()
-2ace451cae22 mtd: rawnand: tegra: Stop implementing ->select_chip()
-b25251414f6e mtd: rawnand: marvell: Stop implementing ->select_chip()
-550b9fc4e3af mtd: rawnand: fsmc: Stop implementing ->select_chip()
-02b4a52604a4 mtd: rawnand: Make ->select_chip() optional when ->exec_op() i=
-s implemented
-ae2294b10b0f mtd: rawnand: Pass the CS line to be selected in struct nand_o=
-peration
-1d0178593d14 mtd: rawnand: Add nand_[de]select_target() helpers
-
-Thanks,
-Miqu=C3=A8l
+DQoNCk9uIDExLzAxLzIwMTggMDI6MzUgUE0sIEZhYnJpemlvIENhc3RybyB3cm90ZToNCj4gVGhl
+IGlzMjVscDAxNmQgaXMgZm91bmQgb24gdGhlIGl3ZzIzcyBmcm9tIGlXYXZlLCB0aGVyZWZvcmUN
+Cj4gYWRkIGRyaXZlciBzdXBwb3J0IGZvciBpdCBzbyB0aGF0IHdlIGNhbiB1cHN0cmVhbSBib2Fy
+ZCBzdXBwb3J0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogRmFicml6aW8gQ2FzdHJvIDxmYWJyaXpp
+by5jYXN0cm9AYnAucmVuZXNhcy5jb20+DQoNClJldmlld2VkLWJ5OiBUdWRvciBBbWJhcnVzIDx0
+dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQoNCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGkt
+bm9yL3NwaS1ub3IuYyB8IDIgKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykN
+Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyBiL2RyaXZl
+cnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IGluZGV4IDk0MDdjYTUuLjg1ZDg2OWIgMTAwNjQ0
+DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ICsrKyBiL2RyaXZlcnMv
+bXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC0xMzUyLDYgKzEzNTIsOCBAQCBzdGF0aWMgY29u
+c3Qgc3RydWN0IGZsYXNoX2luZm8gc3BpX25vcl9pZHNbXSA9IHsNCj4gIAl7ICJpczI1Y2Q1MTIi
+LCAgSU5GTygweDdmOWQyMCwgMCwgMzIgKiAxMDI0LCAgIDIsIFNFQ1RfNEspIH0sDQo+ICAJeyAi
+aXMyNWxxMDQwYiIsIElORk8oMHg5ZDQwMTMsIDAsIDY0ICogMTAyNCwgICA4LA0KPiAgCQkJU0VD
+VF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ICsJeyAi
+aXMyNWxwMDE2ZCIsIElORk8oMHg5ZDYwMTUsIDAsIDY0ICogMTAyNCwgIDMyLA0KPiArCQkJU0VD
+VF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ICAJeyAi
+aXMyNWxwMDgwZCIsIElORk8oMHg5ZDYwMTQsIDAsIDY0ICogMTAyNCwgIDE2LA0KPiAgCQkJU0VD
+VF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ICAJeyAi
+aXMyNWxwMTI4IiwgIElORk8oMHg5ZDYwMTgsIDAsIDY0ICogMTAyNCwgMjU2LA0KPiANCg==
