@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVCPf-0000zg-Bt
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:30 +0000
+ id 1gVCPk-0000zd-Tr
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:27:31 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
@@ -12,10 +12,10 @@ Cc: Vignesh R <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 07/34] mtd: spi-nor: Add a new flag to clear SW protection
- bits during init
-Date: Fri,  7 Dec 2018 10:26:10 +0100
-Message-Id: <20181207092637.18687-8-boris.brezillon@bootlin.com>
+Subject: [RFC PATCH 15/34] mtd: spi-nor: Expose some functions to manufacturer
+ drivers
+Date: Fri,  7 Dec 2018 10:26:18 +0100
+Message-Id: <20181207092637.18687-16-boris.brezillon@bootlin.com>
 In-Reply-To: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,100 +27,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Get rid of the last piece of code doing checks on SNOR_MFR to decide
-what to do. We add a new SNOR_F flag to explicitly ask for a SR clear
-at init time and this flag is set in spi_nor_scan() when the NOR
-supports the locking feature or directly from the SST, Intel and Atmel
-post-SFDP fixups hooks since NORs from those manufacturers always
-require clearing the protection bits.
+Some manufacturers rely on the generic quad_enable()/set_4byte()
+implementations. Remove the static specifier and expose their
+prototypes in internals.h.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 33 +++++++++++++++++++++++++++++----
- include/linux/mtd/spi-nor.h   |  1 +
- 2 files changed, 30 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/core.c      | 24 +++++++++---------------
+ drivers/mtd/spi-nor/internals.h | 16 ++++++++++++++++
+ 2 files changed, 25 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 049b67b8f986..ffea0085b4fe 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3567,10 +3567,7 @@ static int spi_nor_init(struct spi_nor *nor)
- 	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
- 	 * with the software protection bits set
- 	 */
--	if (JEDEC_MFR(nor->info) == SNOR_MFR_ATMEL ||
--	    JEDEC_MFR(nor->info) == SNOR_MFR_INTEL ||
--	    JEDEC_MFR(nor->info) == SNOR_MFR_SST ||
--	    nor->info->flags & SPI_NOR_HAS_LOCK) {
-+	if (nor->flags & SNOR_F_CLR_SW_PROT_BITS) {
- 		write_enable(nor);
- 		write_sr(nor, 0);
- 		spi_nor_wait_till_ready(nor);
-@@ -3691,11 +3688,34 @@ static void spansion_post_sfdp_fixups(struct spi_nor *nor)
- 	}
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index f3c8e4ac1158..0bdbedb464c1 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -113,7 +113,7 @@ static int write_sr(struct spi_nor *nor, u8 val)
+  * Set write enable latch with Write Enable command.
+  * Returns negative if error occurred.
+  */
+-static int write_enable(struct spi_nor *nor)
++int write_enable(struct spi_nor *nor)
+ {
+ 	return nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
+ }
+@@ -121,17 +121,11 @@ static int write_enable(struct spi_nor *nor)
+ /*
+  * Send write disable instruction to the chip.
+  */
+-static int write_disable(struct spi_nor *nor)
++int write_disable(struct spi_nor *nor)
+ {
+ 	return nor->write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
  }
  
-+static void intel_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
-+}
-+
-+static void atmel_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
-+}
-+
-+static void sst_post_sfdp_fixups(struct spi_nor *nor)
-+{
-+	nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
-+}
-+
- static int
- spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
- 				      struct spi_nor_flash_parameter *params)
+-static struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+-{
+-	return mtd->priv;
+-}
+-
+-
+ static u8 spi_nor_convert_opcode(u8 opcode, const u8 table[][2], size_t size)
  {
- 	switch (JEDEC_MFR(nor->info)) {
-+	case SNOR_MFR_ATMEL:
-+		atmel_post_sfdp_fixups(nor);
-+		break;
-+
-+	case SNOR_MFR_INTEL:
-+		intel_post_sfdp_fixups(nor);
-+		break;
-+
- 	case SNOR_MFR_ST:
- 	case SNOR_MFR_MICRON:
- 		st_micron_post_sfdp_fixups(nor);
-@@ -3709,6 +3729,10 @@ spi_nor_manufacturer_post_sfdp_fixups(struct spi_nor *nor,
- 		spansion_post_sfdp_fixups(nor);
- 		break;
+ 	size_t i;
+@@ -322,7 +316,7 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
+ 	return -ETIMEDOUT;
+ }
  
-+	case SNOR_MFR_SST:
-+		sst_post_sfdp_fixups(nor);
-+		break;
-+
- 	case SNOR_MFR_WINBOND:
- 		winbond_post_sfdp_fixups(nor);
- 		break;
-@@ -3896,6 +3920,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		mtd->_lock = spi_nor_lock;
- 		mtd->_unlock = spi_nor_unlock;
- 		mtd->_is_locked = spi_nor_is_locked;
-+		nor->flags |= SNOR_F_CLR_SW_PROT_BITS;
- 	}
+-static int spi_nor_wait_till_ready(struct spi_nor *nor)
++int spi_nor_wait_till_ready(struct spi_nor *nor)
+ {
+ 	return spi_nor_wait_till_ready_with_timeout(nor,
+ 						    DEFAULT_READY_WAIT_JIFFIES);
+@@ -340,7 +334,7 @@ static int erase_chip(struct spi_nor *nor)
+ 	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
+ }
  
- 	/*
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 56e6bf4ee823..73dad2a77455 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -235,6 +235,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_BROKEN_RESET	= BIT(6),
- 	SNOR_F_4B_OPCODES	= BIT(7),
- 	SNOR_F_HAS_LOCK		= BIT(8),
-+	SNOR_F_CLR_SW_PROT_BITS	= BIT(9),
+-static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
++int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ {
+ 	int ret = 0;
+ 
+@@ -357,7 +351,7 @@ static int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 	return ret;
+ }
+ 
+-static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
++void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ {
+ 	if (nor->unprepare)
+ 		nor->unprepare(nor, ops);
+@@ -1140,7 +1134,7 @@ static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
+ 	return 0;
+ }
+ 
+-static int no_quad_enable(struct spi_nor *nor)
++int no_quad_enable(struct spi_nor *nor)
+ {
+ 	return 0;
+ }
+@@ -1155,7 +1149,7 @@ static int no_quad_enable(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int sr1_bit6_quad_enable(struct spi_nor *nor)
++int sr1_bit6_quad_enable(struct spi_nor *nor)
+ {
+ 	int ret, val;
+ 
+@@ -3324,13 +3318,13 @@ void spi_nor_restore(struct spi_nor *nor)
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_restore);
+ 
+-static int en4_ex4_set_4byte(struct spi_nor *nor, bool enable)
++int en4_ex4_set_4byte(struct spi_nor *nor, bool enable)
+ {
+ 	return nor->write_reg(nor, enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B,
+ 			      NULL, 0);
+ }
+ 
+-static int en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable)
++int en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+diff --git a/drivers/mtd/spi-nor/internals.h b/drivers/mtd/spi-nor/internals.h
+index c442d0bfa21a..5ed65f46333d 100644
+--- a/drivers/mtd/spi-nor/internals.h
++++ b/drivers/mtd/spi-nor/internals.h
+@@ -332,4 +332,20 @@ struct spi_nor_manufacturer {
+ 	const struct spi_nor_fixups *fixups;
  };
  
- /**
++/* Core helpers. */
++int en4_ex4_set_4byte(struct spi_nor *nor, bool enable);
++int en4_ex4_wen_set_4byte(struct spi_nor *nor, bool enable);
++int sr1_bit6_quad_enable(struct spi_nor *nor);
++int no_quad_enable(struct spi_nor *nor);
++int write_enable(struct spi_nor *nor);
++int write_disable(struct spi_nor *nor);
++int spi_nor_lock_and_prep(struct spi_nor *nor, enum spi_nor_ops ops);
++void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops);
++int spi_nor_wait_till_ready(struct spi_nor *nor);
++
++static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
++{
++	return mtd->priv;
++}
++
+ #endif /* __LINUX_MTD_SPI_NOR_INTERNALS_H */
 -- 
 2.17.1
