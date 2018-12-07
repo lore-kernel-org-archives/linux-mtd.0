@@ -1,21 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVB4K-0004P3-21
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 08:01:10 +0000
-Date: Fri, 7 Dec 2018 09:00:41 +0100
+Date: Fri, 7 Dec 2018 09:04:25 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "peron.clem@gmail.com" <peron.clem@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3] mtd: spinand: Fix ECC status and OOB layout for
- Toshiba TC58CVG2S0H
-Message-ID: <20181207090041.6b8d9731@xps13>
-In-Reply-To: <1543823821-18352-1-git-send-email-frieder.schrempf@kontron.de>
-References: <1543823821-18352-1-git-send-email-frieder.schrempf@kontron.de>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Janusz Krzysztofik
+ <jmkrzyszt@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: Subject: [PATCH v4 0/4] mtd: rawnand: ams-delta: Use GPIO API
+ for data I/O
+Message-ID: <20181207090425.4480d2c0@xps13>
+In-Reply-To: <20181123170333.GH53235@atomide.com>
+References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
+ <20181121110806.32076-1-jmkrzyszt@gmail.com>
+ <20181121155639.77873f7f@bbrezillon>
+ <20181123170333.GH53235@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,86 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Schrempf, Cl=C3=A9ment,
+Hi Tony,
 
-Schrempf Frieder <frieder.schrempf@kontron.de> wrote on Mon, 3 Dec 2018
-08:01:38 +0000:
+Tony Lindgren <tony@atomide.com> wrote on Fri, 23 Nov 2018 09:03:33
+-0800:
 
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> * Boris Brezillon <boris.brezillon@bootlin.com> [181121 14:56]:
+> > On Wed, 21 Nov 2018 12:08:02 +0100
+> > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+> >  =20
+> > > Finalize implementation of the idea suggested by Artem Bityutskiy and
+> > > Tony Lindgren, described in commit b027274d2e3a ("mtd: ams-delta: fix
+> > > request_mem_region() failure"). Use pure GPIO consumer API, as reqest=
+ed
+> > > by Boris Brezillon.
+> > >=20
+> > > Janusz Krzysztofik (4):
+> > >       ARM: OMAP1: ams-delta: Provide GPIO lookup table for NAND data =
+port
+> > >       mtd: rawnand: ams-delta: Request data port GPIO resource
+> > >       mtd: rawnand: ams-delta: Use GPIO API for data I/O
+> > >       ARM: OMAP1: ams-delta: Drop obsolete NAND resources
+> > >=20
+> > >  arch/arm/mach-omap1/board-ams-delta.c |   22 ++----
+> > >  drivers/mtd/nand/raw/ams-delta.c      |  120 +++++++++++++++++++----=
+-----------
+> > >  2 files changed, 80 insertions(+), 62 deletions(-)
+> > >=20
+> > > Performance on Amstrad Delta is now acceptable after recent extensions
+> > > to GPIO API and rawnanad enhancements.
+> > >=20
+> > > Series intented to be merged via mtd tree, should not conflict with
+> > > other OMAP1 patches submitted for 4.21. =20
+> >=20
+> > We'll prepare an immutable tag, just in case. =20
 >=20
-> When reading the status of the on-chip ECC, the Toshiba chip returns
-> two different states for reporting corrected bitflips. We should check
-> for both of them.
+> Sounds good to me thanks:
 >=20
-> Also return the free OOB bytes as one contiguous area, instead of
-> multiple sections.
->=20
-> Suggested-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> Acked-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> ---
-> Changes for v3:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> * Add Acked-by
-> * Add comment for BBM in OOB layout
->=20
-> Changes for v2:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> * Remove the changes to the ECC bytes in the OOB layout
-> ---
->  drivers/mtd/nand/spi/toshiba.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshib=
-a.c
-> index 294bcf6..0812655 100644
-> --- a/drivers/mtd/nand/spi/toshiba.c
-> +++ b/drivers/mtd/nand/spi/toshiba.c
-> @@ -11,6 +11,7 @@
->  #include <linux/mtd/spinand.h>
-> =20
->  #define SPINAND_MFR_TOSHIBA		0x98
-> +#define TOSH_STATUS_ECC_HAS_BITFLIPS_T	(3 << 4)
-> =20
->  static SPINAND_OP_VARIANTS(read_cache_variants,
->  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> @@ -33,19 +34,18 @@ static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info =
-*mtd, int section,
->  	region->offset =3D 128 + 16 * section;
->  	region->length =3D 16;
-> =20
-> -
->  	return 0;
->  }
-> =20
->  static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
->  				      struct mtd_oob_region *region)
->  {
-> -	if (section > 7)
-> +	if (section > 0)
->  		return -ERANGE;
-> =20
-> -	region->offset =3D 2 + 16 * section;
-> -	region->length =3D 14;
-> -
-> +	/* 2 bytes reserved for BBM */
-> +	region->offset =3D 2;
-> +	region->length =3D 126;
-> =20
->  	return 0;
->  }
-> @@ -70,6 +70,7 @@ static int tc58cvg2s0h_ecc_get_status(struct spinand_de=
-vice *spinand,
->  		return -EBADMSG;
-> =20
->  	case STATUS_ECC_HAS_BITFLIPS:
-> +	case TOSH_STATUS_ECC_HAS_BITFLIPS_T:
->  		/*
->  		 * Let's try to retrieve the real maximum number of bitflips
->  		 * in order to avoid forcing the wear-leveling layer to move
+> Acked-by: Tony Lindgren <tony@atomide.com>
 
-If you don't mind, I would like to squash this with the original patch.
-What about also adding Clement's Acked-by to it?
+Actually, I can't setup a topic branch with this series because it
+depends on other changes in nand/next. If a conflict happens in -next,
+I suppose we will have to send you a PR.
 
 
 Thanks,
