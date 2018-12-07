@@ -1,27 +1,28 @@
-Date: Fri, 7 Dec 2018 08:10:36 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH v4 0/4] mtd: rawnand: ams-delta: Use GPIO API
- for data I/O
-Message-ID: <20181207161036.GN6707@atomide.com>
-References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
- <20181121110806.32076-1-jmkrzyszt@gmail.com>
- <20181121155639.77873f7f@bbrezillon>
- <20181123170333.GH53235@atomide.com>
- <20181207090425.4480d2c0@xps13>
+Received: from mail-eopbgr140104.outbound.protection.outlook.com
+ ([40.107.14.104] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVJ08-0005PF-KV
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 16:29:19 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Marek Vasut <marek.vasut@gmail.com>
+CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R
+ <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC PATCH 01/34] mtd: spi-nor: Add a new hook to let part
+ specific code tweak the config
+Date: Fri, 7 Dec 2018 16:29:02 +0000
+Message-ID: <a998a19b-bc82-8900-d57c-3cf39a3a2422@nokia.com>
+References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
+ <20181207092637.18687-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20181207092637.18687-2-boris.brezillon@bootlin.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F29D3930F1E24F458B77F88300ED7312@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181207090425.4480d2c0@xps13>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,50 +32,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Miquel Raynal <miquel.raynal@bootlin.com> [181207 08:04]:
-> Hi Tony,
-> 
-> Tony Lindgren <tony@atomide.com> wrote on Fri, 23 Nov 2018 09:03:33
-> -0800:
-> 
-> > * Boris Brezillon <boris.brezillon@bootlin.com> [181121 14:56]:
-> > > On Wed, 21 Nov 2018 12:08:02 +0100
-> > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-> > >   
-> > > > Finalize implementation of the idea suggested by Artem Bityutskiy and
-> > > > Tony Lindgren, described in commit b027274d2e3a ("mtd: ams-delta: fix
-> > > > request_mem_region() failure"). Use pure GPIO consumer API, as reqested
-> > > > by Boris Brezillon.
-> > > > 
-> > > > Janusz Krzysztofik (4):
-> > > >       ARM: OMAP1: ams-delta: Provide GPIO lookup table for NAND data port
-> > > >       mtd: rawnand: ams-delta: Request data port GPIO resource
-> > > >       mtd: rawnand: ams-delta: Use GPIO API for data I/O
-> > > >       ARM: OMAP1: ams-delta: Drop obsolete NAND resources
-> > > > 
-> > > >  arch/arm/mach-omap1/board-ams-delta.c |   22 ++----
-> > > >  drivers/mtd/nand/raw/ams-delta.c      |  120 +++++++++++++++++++---------------
-> > > >  2 files changed, 80 insertions(+), 62 deletions(-)
-> > > > 
-> > > > Performance on Amstrad Delta is now acceptable after recent extensions
-> > > > to GPIO API and rawnanad enhancements.
-> > > > 
-> > > > Series intented to be merged via mtd tree, should not conflict with
-> > > > other OMAP1 patches submitted for 4.21.  
-> > > 
-> > > We'll prepare an immutable tag, just in case.  
-> > 
-> > Sounds good to me thanks:
-> > 
-> > Acked-by: Tony Lindgren <tony@atomide.com>
-> 
-> Actually, I can't setup a topic branch with this series because it
-> depends on other changes in nand/next. If a conflict happens in -next,
-> I suppose we will have to send you a PR.
-
-Hmm OK I have pretty much all the stuff applied and in next
-already so if it's not conflicting now it should not conflict.
-
-Regards,
-
-Tony
+SGVsbG8gQm9yaXMsDQoNCmp1c3QgYSBjb21tZW50IGJlbG93Og0KDQpPbiAwNy8xMi8yMDE4IDEw
+OjI2LCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6DQo+IFNGRFAgdGFibGVzIGFyZSBzb21ldGltZXMg
+d3JvbmcgYW5kIHdlIG5lZWQgYSB3YXkgdG8gb3ZlcnJpZGUgdGhlDQo+IGNvbmZpZyBjaG9zZW4g
+YnkgdGhlIFNGRFAgcGFyc2luZyBsb2dpYyB3aXRob3V0IGRpc2NhcmRpbmcgYWxsIG9mIGl0Lg0K
+PiBXZSBhbHNvIG5lZWQgYSB3YXkgdG8gYWRkIGNoaXAgc3BlY2lmaWMgdHdlYWtzIHdoZW4gdGhl
+IFNQSSBOT1IgZG9lcw0KPiBub3Qgc3VwcG9ydCBSRFNGRFAuDQo+IA0KPiBBZGQgYSBuZXcgaG9v
+ayBjYWxsZWQgYWZ0ZXIgdGhlIFNGRFAgcGFyc2luZyBoYXMgdGFrZW4gcGxhY2UgdG8gZGVhbA0K
+PiB3aXRoIHN1Y2ggcHJvYmxlbXMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBCb3JpcyBCcmV6aWxs
+b24gPGJvcmlzLmJyZXppbGxvbkBib290bGluLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9z
+cGktbm9yL3NwaS1ub3IuYyB8IDI4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEg
+ZmlsZSBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9tdGQvc3BpLW5vci9zcGktbm9yLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0K
+PiBpbmRleCAyOThiYzdhMmY4OTkuLmIyYjM2YjJlYTI1MSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
+cy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
+bm9yLmMNCj4gQEAgLTIxOCw2ICsyMTgsMTEgQEAgc3RydWN0IHNmZHBfYmZwdCB7DQo+ICAvKioN
+Cj4gICAqIHN0cnVjdCBzcGlfbm9yX2ZpeHVwcyAtIFNQSSBOT1IgZml4dXAgaG9va3MNCj4gICAq
+IEBwb3N0X2JmcHQ6IGNhbGxlZCBhZnRlciB0aGUgQkZQVCB0YWJsZSBoYXMgYmVlbiBwYXJzZWQN
+Cj4gKyAqIEBwb3N0X3NmZHA6IGNhbGxlZCBhZnRlciBTRkRQIGhhcyBiZWVuIHBhcnNlZCAoaXMg
+YWxzbyBjYWxsZWQgZm9yIFNQSSBOT1JzDQo+ICsgKgkgICAgICAgdGhhdCBkbyBub3Qgc3VwcG9y
+dCBSRFNGRFApLiBUeXBpY2FsbHkgdXNlZCB0byB0d2VhayB2YXJpb3VzDQo+ICsgKgkgICAgICAg
+cGFyYW1ldGVycyB0aGF0IGNvdWxkIG5vdCBiZSBleHRyYWN0ZWQgYnkgb3RoZXIgbWVhbnMgKGku
+ZS4NCj4gKyAqCSAgICAgICB3aGVuIGluZm9ybWF0aW9uIHByb3ZpZGVkIGJ5IHRoZSBTRkRQL2Zs
+YXNoX2luZm8gdGFibGVzIGFyZQ0KPiArICoJICAgICAgIGluY29tcGxldGUgb3Igd3JvbmcpLg0K
+PiAgICoNCj4gICAqIFRob3NlIGhvb2tzIGNhbiBiZSB1c2VkIHRvIHR3ZWFrIHRoZSBTUEkgTk9S
+IGNvbmZpZ3VyYXRpb24gd2hlbiB0aGUgU0ZEUA0KPiAgICogdGFibGUgaXMgYnJva2VuIG9yIG5v
+dCBhdmFpbGFibGUuDQo+IEBAIC0yMjcsNiArMjMyLDggQEAgc3RydWN0IHNwaV9ub3JfZml4dXBz
+IHsNCj4gIAkJCSBjb25zdCBzdHJ1Y3Qgc2ZkcF9wYXJhbWV0ZXJfaGVhZGVyICpiZnB0X2hlYWRl
+ciwNCj4gIAkJCSBjb25zdCBzdHJ1Y3Qgc2ZkcF9iZnB0ICpiZnB0LA0KPiAgCQkJIHN0cnVjdCBz
+cGlfbm9yX2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zKTsNCj4gKwlpbnQgKCpwb3N0X3NmZHApKHN0
+cnVjdCBzcGlfbm9yICpub3IsDQo+ICsJCQkgc3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVy
+ICpwYXJhbXMpOw0KPiAgfTsNCj4gIA0KPiAgc3RydWN0IGZsYXNoX2luZm8gew0KPiBAQCAtMzY1
+OCw2ICszNjY1LDE1IEBAIHZvaWQgc3BpX25vcl9yZXN0b3JlKHN0cnVjdCBzcGlfbm9yICpub3Ip
+DQo+ICB9DQo+ICBFWFBPUlRfU1lNQk9MX0dQTChzcGlfbm9yX3Jlc3RvcmUpOw0KPiAgDQo+ICtz
+dGF0aWMgaW50IHNwaV9ub3JfcG9zdF9zZmRwX2ZpeHVwcyhzdHJ1Y3Qgc3BpX25vciAqbm9yLA0K
+PiArCQkJCSAgICBzdHJ1Y3Qgc3BpX25vcl9mbGFzaF9wYXJhbWV0ZXIgKnBhcmFtcykNCj4gK3sN
+Cj4gKwlpZiAobm9yLT5pbmZvLT5maXh1cHMgJiYgbm9yLT5pbmZvLT5maXh1cHMtPnBvc3Rfc2Zk
+cCkNCj4gKwkJcmV0dXJuIG5vci0+aW5mby0+Zml4dXBzLT5wb3N0X3NmZHAobm9yLCBwYXJhbXMp
+Ow0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+Zmxhc2hfaW5mbyAqc3BpX25vcl9tYXRjaF9pZChjb25zdCBjaGFyICpuYW1lKQ0KPiAgew0KPiAg
+CWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppZCA9IHNwaV9ub3JfaWRzOw0KPiBAQCAtMzgwNSw2
+ICszODIxLDE4IEBAIGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3Qg
+Y2hhciAqbmFtZSwNCj4gIAlpZiAoaW5mby0+ZmxhZ3MgJiBTUElfTk9SX05PX0ZSKQ0KPiAgCQlw
+YXJhbXMuaHdjYXBzLm1hc2sgJj0gflNOT1JfSFdDQVBTX1JFQURfRkFTVDsNCj4gIA0KPiArCS8q
+DQo+ICsJICogUG9zdCBTRkRQIGZpeHVwcy4gSGFzIHRvIGJlIGNhbGxlZCBiZWZvcmUgc3BpX25v
+cl9zZXR1cCgpIGJlY2F1c2UNCj4gKwkgKiBzb21lIGZpeHVwcyBtaWdodCBtb2RpZnkgcGFyYW1z
+IHRoYXQgYXJlIHRoZW4gdXNlZCBieQ0KPiArCSAqIHNwaV9ub3Jfc2V0dXAoKSB0byBzZWxlY3Qg
+dGhlIG9wY29kZXMuDQo+ICsJICovDQo+ICsJcmV0ID0gc3BpX25vcl9wb3N0X3NmZHBfZml4dXBz
+KG5vciwgJnBhcmFtcyk7DQo+ICsJaWYgKHJldCkgew0KPiArCQlkZXZfZXJyKGRldiwgImZhaWxl
+ZCBpbiB0aGUgcG9zdC1TRkRQIGZpeHVwcyAoZXJyICVkKVxuIiwNCj4gKwkJCXJldCk7DQoNCllv
+dSBkb24ndCByZXBvcnQgYW4gZXJyb3IgaW4gcGF0Y2ggMzQsIEkgdGhpbmsgdGhlcmUgc2hvdWxk
+IGJlIGEgY29uc2lzdGVudA0KYXBwcm9hY2ggdG8gdGhpcy4uLg0KDQo+ICsJCXJldHVybiByZXQ7
+DQo+ICsJfQ0KPiArDQo+ICAJLyoNCj4gIAkgKiBDb25maWd1cmUgdGhlIFNQSSBtZW1vcnk6DQo+
+ICAJICogLSBzZWxlY3Qgb3AgY29kZXMgZm9yIChGYXN0KSBSZWFkLCBQYWdlIFByb2dyYW0gYW5k
+IFNlY3RvciBFcmFzZS4NCj4gDQoNCi0tIA0KQmVzdCByZWdhcmRzLA0KQWxleGFuZGVyIFN2ZXJk
+bGluLg0K
