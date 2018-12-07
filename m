@@ -1,29 +1,18 @@
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVC5c-0007X8-O2
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:06:30 +0000
-Received: by mail-lf1-x144.google.com with SMTP id p17so2479383lfh.4
- for <linux-mtd@lists.infradead.org>; Fri, 07 Dec 2018 01:06:18 -0800 (PST)
-MIME-Version: 1.0
-References: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
- <1543509663-26128-3-git-send-email-christophe.kerello@st.com>
-In-Reply-To: <1543509663-26128-3-git-send-email-christophe.kerello@st.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 7 Dec 2018 10:06:03 +0100
-Message-ID: <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
-Subject: Re: [ v3 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash
- controller driver
-To: christophe.kerello@st.com
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVC9F-0000Yg-GJ
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 09:10:15 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [v3,3/5] mtd: spi-nor: Stop passing flash_info around
+Date: Fri,  7 Dec 2018 10:10:08 +0100
+Message-Id: <20181207091008.16675-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181206104120.6280-4-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christophe,
+On Thu, 2018-12-06 at 10:41:18 UTC, Boris Brezillon wrote:
+> Some functions called from spi_nor_scan() need a flash_info object.
+> Let's assign nor->info early on to avoid passing info as an extra
+> argument to each of these sub-functions.
+> 
+> We also stop passing a flash_info object to set_4byte() and use
+> nor->info directly.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-On Thu, Nov 29, 2018 at 5:42 PM Christophe Kerello
-<christophe.kerello@st.com> wrote:
+Applied to http://git.infradead.org/linux-mtd.git spi-nor/next.
 
-> +/* FMC2 Controller Registers */
-> +#define FMC2_BCR1                      0x0
-> +#define FMC2_PCR                       0x80
-(...)
-> +/* Register: FMC2_BCR1 */
-> +#define FMC2_BCR1_FMC2EN               BIT(31)
-
-Well this looks like an especially clever register map and a specific choice
-of bit 31 in the fist register to activate FMC2. Registers 0x04 thru
-0x7c are completely unused save for one bit.
-
-It's almost like this is the good old FSMC integrated in parallel with FMC2,
-so that if you don't set bit 31, this becomes something that can be used
-with drivers/mtd/nand/raw/fsmc_nand.c, and FMC2 mode is activated
-by setting this bit, activating all the new registers.
-
-It wouldn't surprise me given how HW designers like to work.
-
-Is this the case?
-
-If that is the case I think it should at least be mentioned in commit
-logs and DT bindings and possibly in a comment on the driver
-itself.
-
-Yours,
-Linus Walleij
+Boris
