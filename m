@@ -1,23 +1,46 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-it1-x142.google.com ([2607:f8b0:4864:20::142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVFwc-0004ny-BN
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 13:13:28 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Thomas Gleixner
- <tglx@linutronix.de>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>
-Subject: RE: [EXT] Re: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial
- erase issue
-Date: Fri, 7 Dec 2018 13:12:56 +0000
-Message-ID: <BYASPR01MB00310C7F883FF6E06A2DA5C5DBAA0@BYASPR01MB0031.namprd08.prod.outlook.com>
-References: <alpine.DEB.2.21.1811292207570.1657@nanos.tec.linutronix.de>
- <20181202082918.3b5f303a@bbrezillon>
-In-Reply-To: <20181202082918.3b5f303a@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1gVGMb-0006sz-4V
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 13:40:18 +0000
+Received: by mail-it1-x142.google.com with SMTP id i145so6864306ita.4
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Dec 2018 05:40:06 -0800 (PST)
 MIME-Version: 1.0
+References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
+ <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
+ <20181130195652.7syqys76646kpaph@linux-r8p5>
+ <20181130205521.GA21006@linux.intel.com>
+ <1543611662.3031.20.camel@HansenPartnership.com>
+ <20181130214405.GG23772@linux.intel.com>
+ <1543615069.3031.27.camel@HansenPartnership.com>
+ <20181130221219.GA25537@linux.intel.com>
+ <20181130151459.3ca2f5c8@lwn.net>
+ <CAMuHMdUkpLWm5NZmYj=uMgVncw6ZOb7j9KxFoDGhrnr7vzpx_w@mail.gmail.com>
+In-Reply-To: <CAMuHMdUkpLWm5NZmYj=uMgVncw6ZOb7j9KxFoDGhrnr7vzpx_w@mail.gmail.com>
+From: Eric Curtin <ericcurtin17@gmail.com>
+Date: Fri, 7 Dec 2018 13:39:54 +0000
+Message-ID: <CANpvso4ZjJkUA7+saYRR4qssvreZcm-74EPo3nrGSohFZF9akA@mail.gmail.com>
+Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
+To: geert@linux-m68k.org
+Cc: corbet@lwn.net, jarkko.sakkinen@linux.intel.com,
+ James.Bottomley@hansenpartnership.com, dave@stgolabs.net,
+ keescook@chromium.org, Kernel development list <linux-kernel@vger.kernel.org>,
+ amir73il@gmail.com,
+ akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com, dja@axtens.net,
+ davem@davemloft.net, linux@dominikbrodowski.net,
+ dri-devel@lists.freedesktop.org, edumazet@google.com,
+ federico.vaga@vaga.pv.it, geert+renesas@glider.be, deller@gmx.de,
+ kumba@gentoo.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-media@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-parisc@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org, matthias.bgg@gmail.com,
+ netdev@vger.kernel.org, nouveau@lists.freedesktop.org, pabeni@redhat.com,
+ paul.burton@mips.com, pmladek@suse.com, robh@kernel.org,
+ sean.wang@mediatek.com, sergey.senozhatsky@gmail.com,
+ shannon.nelson@oracle.com, sbrivio@redhat.com, rostedt@goodmis.org,
+ me@tobin.cc, makita.toshiaki@lab.ntt.co.jp, willemb@google.com, yhs@fb.com,
+ yanjun.zhu@oracle.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,74 +50,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->+Bean,
->
->Hi Thomas,
->
->First of all, I'd like to thank you for sharing this patch. I'm pretty sur=
-e this will
->save days of painful debug sessions to a lot of people.
->
->On Thu, 29 Nov 2018 22:12:50 +0100 (CET) Thomas Gleixner
-><tglx@linutronix.de> wrote:
->
->> On some Micron NAND chips block erase fails occasionaly despite the
->> chip claiming that it succeeded. The flash block seems to be not
->> completely erased and subsequent usage of the block results in hard to
->> decode and very subtle failures or corruption.
->>
->> The exact reason is unknown, but experimentation has shown that it is
->> only happening when erasing an erase block which is partially written.
->> Partially written erase blocks are not uncommon with UBI/UBIFS.  Note,
->> that this does not always happen. It's a rare and random, but eventually
->fatal failure.
->>
->> For now, just blindly write 6 pages to 0. Again experimentation has
->> shown that it's not sufficient to write pages at the beginning of the
->> erase block. There need to be pages written in the second half of the
->> erase block as well. So write 3 pages before and past the middle of the =
-block.
->>
->> Less than 6 pages might be sufficient, but it might even be necessary
->> to write more pages to make sure that it's completely cured. Two pages
->> still failed, but the 6 held up in a stress test scenario.
->>
->> This should be optimized by keeping track of writes, but that needs
->> proper information about the issue.
->>
->> As it's just observation and experimentation based, it's probably wise
->> to hold off on this until there is proper clarification about the root
->> cause of the problem. The patch is for reference so others can avoid
->> to decode this again, but there is no guarantee that it actually fixes
->> the issue completely.
->
->I agree. I Cc-ed Bean from Micron. Maybe he can provide more information
->on this issue.
->
->>
->> Therefore:
->>
->> Not-yet-signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->>
->> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
->> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->> Cc: Richard Weinberger <richard@nod.at>
->>
->> ---
->>
->> P.S.: This was debugged on an older kernel version (sigh) and ported
->>       forward without actual testing on mainline. My MTD foo is a bit
->>       rusty, so I won't be surprised if there are better ways to do that=
-.
->
->Let's first wait for Bean's feedback before discussing implementation deta=
-ils.
->BTW, do you remember the part number(s) of the flash(es) impacted by this
->problem in your case?
->
-Thanks, let me know this issue, I will look at this
+Hi Guys,
 
->Thanks,
+I initially thought these patches were a joke. But I guess they are
+not. I suppose 2018 is the year everything became offensive.
+
+Could we avoid the s/fuck/hug/g though? I have nothing against
+re-wording this stuff to remove the curse word, but it should at least
+make sense.
+
+What's going to happen is someone is a newbie is going to see a comment
+like "We found an mark in the idr at the right wd, but it's not the
+mark we were told to remove. eparis seriously hugged up somewhere",
+probably google the term as they are unfamiliar with it, find out it's
+an alias for "fucked" and if they are sensitive get offended anyway.
+
+On Sat, 1 Dec 2018 at 08:20, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
->Boris
+> Hi Jon,
 >
+> On Fri, Nov 30, 2018 at 11:15 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> > On Fri, 30 Nov 2018 14:12:19 -0800
+> > Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > > As a maintainer myself (and based on somewhat disturbed feedback from
+> > > other maintainers) I can only make the conclusion that nobody knows what
+> > > the responsibility part here means.
+> > >
+> > > I would interpret, if I read it like at lawyer at least, that even for
+> > > existing code you would need to do the changes postmorterm.
+> > >
+> > > Is this wrong interpretation?  Should I conclude that I made a mistake
+> > > by reading the CoC and trying to understand what it *actually* says?
+> > > After this discussion, I can say that I understand it less than before.
+> >
+> > Have you read Documentation/process/code-of-conduct-interpretation.rst?
+> > As has been pointed out, it contains a clear answer to how things should
+> > be interpreted here.
+>
+> Indeed:
+>
+> | Contributions submitted for the kernel should use appropriate language.
+> | Content that already exists predating the Code of Conduct will not be
+> | addressed now as a violation.
+>
+> However:
+>
+> | Inappropriate language can be seen as a
+> | bug, though; such bugs will be fixed more quickly if any interested
+> | parties submit patches to that effect.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
