@@ -1,32 +1,23 @@
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVJNr-0001iG-6a
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 16:53:49 +0000
-Subject: Re: [ v3 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash
- controller driver
-To: Linus Walleij <linus.walleij@linaro.org>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>,
- =?UTF-8?Q?Miqu=c3=a8l_Raynal?= <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>,
- Mark Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE BINDINGS" <devicetree@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>
-References: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
- <1543509663-26128-3-git-send-email-christophe.kerello@st.com>
- <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
-From: Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <7c295246-8756-9363-a891-856ddf7af92b@st.com>
-Date: Fri, 7 Dec 2018 17:53:00 +0100
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVLCF-00040x-Oi
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 18:49:57 +0000
+Date: Fri, 7 Dec 2018 19:49:42 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux
+ <slemieux.tyco@gmail.com>, Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH 00/10] mtd: rawnand: 4th batch of cleanups
+Message-ID: <20181207194942.298d4a39@xps13>
+In-Reply-To: <20181120090239.5792-1-boris.brezillon@bootlin.com>
+References: <20181120090239.5792-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,60 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/7/18 10:06 AM, Linus Walleij wrote:
-> Hi Christophe,
-> 
-> On Thu, Nov 29, 2018 at 5:42 PM Christophe Kerello
-> <christophe.kerello@st.com> wrote:
-> 
->> +/* FMC2 Controller Registers */
->> +#define FMC2_BCR1                      0x0
->> +#define FMC2_PCR                       0x80
-> (...)
->> +/* Register: FMC2_BCR1 */
->> +#define FMC2_BCR1_FMC2EN               BIT(31)
-> 
-> Well this looks like an especially clever register map and a specific choice
-> of bit 31 in the fist register to activate FMC2. Registers 0x04 thru
-> 0x7c are completely unused save for one bit.
-> 
-> It's almost like this is the good old FSMC integrated in parallel with FMC2,
-> so that if you don't set bit 31, this becomes something that can be used
-> with drivers/mtd/nand/raw/fsmc_nand.c, and FMC2 mode is activated
-> by setting this bit, activating all the new registers.
-> 
-> It wouldn't surprise me given how HW designers like to work.
-> 
-> Is this the case?
-> 
+Hi Boris,
 
-Hi Linus,
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 20 Nov 2018
+10:02:29 +0100:
 
-Based on FMC2 datasheet,
-The FMC2 controller includes 2 memory controllers:
-  - the NOR/PSRAM memory controller
-  - the NAND memory controller
+> Hello,
+>=20
+> This time on I deprecate the dummy controller field, as we try to force
+> people to declare their own controller instance.
+>=20
+> Patches 1 to 9 are cleanup patches for the fsmc and vf610 drivers, the
+> most important ones being patch 3 and 8 where we declare a
+> nand_controller instance instead of using the dummy one. By doing this
+> we make sure these drivers keep not using any deprecated fields and can
+> thus serve as examples to other developers.
+>=20
+> Patch 10 is deprecating the dummy_controller field by moving it to the
+> nand_legacy struct.
+>=20
+> Regards,
+>=20
+> Boris
+>=20
+> Boris Brezillon (10):
+>   mtd: rawnand: fsmc: Stop passing mtd_info objects to internal
+>     functions
+>   mtd: rawnand: fsmc: Fix the fsmc_nand_data kernel-doc
+>   mtd: rawnand: fsmc: Make conversion from chip to fsmc consistent
+>   mtd: rawnand: fsmc: Stop using the dummy controller obj
+>   mtd: rawnand: fsmc: Add an SPDX tag to replace the license text
+>   mtd: rawnand: fsmc: Fix all coding style issues reported by checkpatch
+>   mtd: rawnand: vf610: Stop passing mtd_info to internal functions
+>   mtd: rawnand: vf610: Stop using the dummy controller obj
+>   mtd: rawnand: vf610: Add an SPDX tag to replace the license text
+>   mtd: rawnand: Deprecate the dummy_controller field
+>=20
+>  drivers/mtd/nand/raw/cafe_nand.c           |   2 +-
+>  drivers/mtd/nand/raw/davinci_nand.c        |   2 +-
+>  drivers/mtd/nand/raw/denali.c              |   2 +-
+>  drivers/mtd/nand/raw/fsmc_nand.c           | 264 ++++++++++-----------
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c |   2 +-
+>  drivers/mtd/nand/raw/hisi504_nand.c        |   2 +-
+>  drivers/mtd/nand/raw/jz4740_nand.c         |   2 +-
+>  drivers/mtd/nand/raw/lpc32xx_mlc.c         |   2 +-
+>  drivers/mtd/nand/raw/lpc32xx_slc.c         |   2 +-
+>  drivers/mtd/nand/raw/mxc_nand.c            |   2 +-
+>  drivers/mtd/nand/raw/nand_base.c           |   2 +-
+>  drivers/mtd/nand/raw/nandsim.c             |   2 +-
+>  drivers/mtd/nand/raw/sh_flctl.c            |   2 +-
+>  drivers/mtd/nand/raw/sm_common.c           |   2 +-
+>  drivers/mtd/nand/raw/vf610_nfc.c           |  60 ++---
+>  include/linux/mtd/rawnand.h                |   6 +-
+>  16 files changed, 171 insertions(+), 185 deletions(-)
+>=20
 
-The NOR/PSRAM controller mapping is starting at 0.
-The NAND controller mapping is starting at 0x80.
+Applied to nand/next.
 
-We have only planned to develop a driver for the NAND memory controller.
-There is currently no customer request to develop the NOR/PSRAM memory 
-controller.
 
-The bit FMC2_BCR1_FMC2EN is not used to switch from an IP version to 
-another. After reset, the FMC2 controller is disabled. Once all the used 
-memory controllers are configured, the FMC2 controller must be enabled 
-by setting the FMC2EN bit in the FMC2_BCR1 register. If this bit is not 
-set, the controller stays in disabled state.
-
-Regards,
-Christophe Kerello.
-
-> If that is the case I think it should at least be mentioned in commit
-> logs and DT bindings and possibly in a comment on the driver
-> itself.
-> 
-> Yours,
-> Linus Walleij
-> 
+Thanks,
+Miqu=C3=A8l
