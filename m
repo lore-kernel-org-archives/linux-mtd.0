@@ -1,27 +1,32 @@
-Received: from mail-eopbgr140128.outbound.protection.outlook.com
- ([40.107.14.128] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]
+ helo=mx07-00178001.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVJ0k-0005gj-EX
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 16:29:58 +0000
-From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Marek Vasut <marek.vasut@gmail.com>
-CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R
- <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH 34/34] mtd: spi-nor: Add sfdp fixups hooks
-Date: Fri, 7 Dec 2018 16:29:41 +0000
-Message-ID: <a82791ca-6c23-3b14-a839-f979041591d7@nokia.com>
-References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
- <20181207092637.18687-35-boris.brezillon@bootlin.com>
-In-Reply-To: <20181207092637.18687-35-boris.brezillon@bootlin.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <52D23484F772A042A611DCA124C5C7DA@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1gVJNr-0001iG-6a
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2018 16:53:49 +0000
+Subject: Re: [ v3 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash
+ controller driver
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>,
+ =?UTF-8?Q?Miqu=c3=a8l_Raynal?= <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>,
+ Mark Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>
+References: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
+ <1543509663-26128-3-git-send-email-christophe.kerello@st.com>
+ <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
+From: Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <7c295246-8756-9363-a891-856ddf7af92b@st.com>
+Date: Fri, 7 Dec 2018 17:53:00 +0100
 MIME-Version: 1.0
+In-Reply-To: <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,90 +36,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gQm9yaXMsDQoNCnNvbWUgbWlub3IgaXNzdWVzIGlubGluZToNCg0KT24gMDcvMTIvMjAx
-OCAxMDoyNiwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0KPiBFeHBlcmllbmNlIGhhcyBwcm92ZW4g
-dGhhdCBTRkRQIHRhYmxlcyBhcmUgc29tZXRpbWVzIHdyb25nLCBhbmQgdGhlDQo+IHBhcnNpbmcg
-dGhhdCBpcyBkb25lIGJ5IHRoZSBjb3JlIGNhbiBsZWFkIHRvbiBlcnJvbmVvdXMgZmxhc2ggY29u
-ZmlnDQo+IHdoaWNoIGNhbiBzb21ldGltZXMgYmUgaGFybWZ1bC4NCj4gDQo+IFRoaXMgbGVhdmVz
-IHVzIDIgb3B0aW9uczoNCj4gDQo+IDEvIHNldCB0aGUgU1BJX05PUl9TS0lQX1NGRFAgZmxhZyBh
-bmQgY29tcGxldGVseSBpZ25vcmUgU0ZEUCBwYXJzaW5nDQo+IDIvIGZpeCBTRkRQIHRhYmxlcyBh
-dCBydW50aW1lDQo+IA0KPiBXaGlsZSAjMSBzaG91bGQgYWx3YXlzIHdvcmssIGl0IG1pZ2h0IGlt
-cGxpZXMgZXh0cmEgd29yayBpZiBtb3N0IG9mIHRoZQ0KPiBTRkRQIGlzIGNvcnJlY3QuICMyIGhh
-cyB0aGUgYmVuZWZpdCBvZiBrZWVwaW5nIHRoZSBnZW5lcmljIFNGRFAgcGFyc2luZw0KPiBsb2dp
-YyBhbG1vc3QgdW50b3VjaGVkIHdoaWxlIGFsbG93aW5nIFNQSSBOT1IgbWFudWZhY3R1cmVyIGRy
-aXZlcnMgdG8NCj4gZml4IHRoZSBicm9rZW4gYml0cy4NCj4gDQo+IEFkZCB0aHJlZSBuZXcgaG9v
-a3MgdG8gZG8gdGhhdC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9y
-aXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Iv
-aW50ZXJuYWxzLmggfCAgNyArKysrDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYyAgICAg
-IHwgNTcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tDQo+ICAyIGZpbGVzIGNoYW5n
-ZWQsIDYyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9tdGQvc3BpLW5vci9pbnRlcm5hbHMuaCBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvaW50
-ZXJuYWxzLmgNCj4gaW5kZXggYWUzZWI0MGQ3MjQxLi5kYTcxMTQ1OTk1ZDkgMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvaW50ZXJuYWxzLmgNCj4gKysrIGIvZHJpdmVycy9tdGQv
-c3BpLW5vci9pbnRlcm5hbHMuaA0KPiBAQCAtMTg4LDYgKzE4OCw4IEBAIHN0cnVjdCBzZmRwX2Jm
-cHQgew0KPiAgDQo+ICAvKioNCj4gICAqIHN0cnVjdCBzcGlfbm9yX2ZpeHVwcyAtIFNQSSBOT1Ig
-Zml4dXAgaG9va3MNCj4gKyAqIEBzZmRwX2hkcjogU0ZEUCBoZWFkZXIgZml4dXBzDQo+ICsgKiBA
-c2ZkcF9oZHI6IFNGRFAgcGFyYW1ldGVyIGhlYWRlcnMgZml4dXBzDQogICAgICAgXl5eXl5eXl4N
-ClNob3VsZCBiZSBzZmRwX3BhcmFtX2hkcnMNCg0KPiAgICogQHBvc3RfYmZwdDogY2FsbGVkIGFm
-dGVyIHRoZSBCRlBUIHRhYmxlIGhhcyBiZWVuIHBhcnNlZA0KPiAgICogQHBvc3Rfc2ZkcDogY2Fs
-bGVkIGFmdGVyIFNGRFAgaGFzIGJlZW4gcGFyc2VkIChpcyBhbHNvIGNhbGxlZCBmb3IgU1BJIE5P
-UnMNCj4gICAqCSAgICAgICB0aGF0IGRvIG5vdCBzdXBwb3J0IFJEU0ZEUCkuIFR5cGljYWxseSB1
-c2VkIHRvIHR3ZWFrIHZhcmlvdXMNCj4gQEAgLTE5OSw2ICsyMDEsMTEgQEAgc3RydWN0IHNmZHBf
-YmZwdCB7DQo+ICAgKiB0YWJsZSBpcyBicm9rZW4gb3Igbm90IGF2YWlsYWJsZS4NCj4gICAqLw0K
-PiAgc3RydWN0IHNwaV9ub3JfZml4dXBzIHsNCj4gKwlpbnQgKCpzZmRwX2hkcikoc3RydWN0IHNw
-aV9ub3IgKm5vciwNCj4gKwkJCXN0cnVjdCBzZmRwX2hlYWRlciAqaGRyKTsNCj4gKwlpbnQgKCpz
-ZmRwX3BhcmFtX2hkcnMpKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICsJCQkgICAgICAgc3RydWN0
-IHNmZHBfaGVhZGVyICpoZHIsDQo+ICsJCQkgICAgICAgc3RydWN0IHNmZHBfcGFyYW1ldGVyX2hl
-YWRlciAqcGFyYW1faGRycyk7DQo+ICAJaW50ICgqcG9zdF9iZnB0KShzdHJ1Y3Qgc3BpX25vciAq
-bm9yLA0KPiAgCQkJIGNvbnN0IHN0cnVjdCBzZmRwX3BhcmFtZXRlcl9oZWFkZXIgKmJmcHRfaGVh
-ZGVyLA0KPiAgCQkJIGNvbnN0IHN0cnVjdCBzZmRwX2JmcHQgKmJmcHQsDQo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5j
-DQo+IGluZGV4IDM2MzQzZTNlNmJlMC4uYThjZDA3MGU0ZWEyIDEwMDY0NA0KPiAtLS0gYS9kcml2
-ZXJzL210ZC9zcGktbm9yL3NmZHAuYw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAu
-Yw0KPiBAQCAtNTM0LDggKzUzNCw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc2ZkcF9iZnB0X2Vy
-YXNlIHNmZHBfYmZwdF9lcmFzZXNbXSA9IHsNCj4gIHN0YXRpYyBpbnQNCj4gIHNwaV9ub3JfcG9z
-dF9iZnB0X2ZpeHVwcyhzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiAgCQkJIGNvbnN0IHN0cnVjdCBz
-ZmRwX3BhcmFtZXRlcl9oZWFkZXIgKmJmcHRfaGVhZGVyLA0KPiAtCQkJIGNvbnN0IHN0cnVjdCBz
-ZmRwX2JmcHQgKmJmcHQsDQo+IC0JCQkgc3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyICpw
-YXJhbXMpDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IHNmZHBfYmZw
-dCAqYmZwdCwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc3BpX25vcl9mbGFz
-aF9wYXJhbWV0ZXIgKnBhcmFtcykNCg0KVGhhdCdzIHdoZXJlIGNoZWNrcGF0Y2gucGwgd291bGQg
-d2FybiB5b3UNCg0KPiAgew0KPiAgCWludCByZXQ7DQo+ICANCj4gQEAgLTc0OCw2ICs3NDgsNTAg
-QEAgc3RhdGljIGludCBzcGlfbm9yX3BhcnNlX2JmcHQoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4g
-IAlyZXR1cm4gc3BpX25vcl9wb3N0X2JmcHRfZml4dXBzKG5vciwgYmZwdF9oZWFkZXIsICZiZnB0
-LCBwYXJhbXMpOw0KPiAgfQ0KPiAgDQo+ICtzdGF0aWMgaW50IHNwaV9ub3Jfc2ZkcF9oZHJfZml4
-dXBzKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICsJCQkJICAgc3RydWN0IHNmZHBfaGVhZGVyICpo
-ZHIpDQo+ICt7DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCWlmIChub3ItPm1hbnVmYWN0dXJlciAm
-JiBub3ItPm1hbnVmYWN0dXJlci0+Zml4dXBzICYmDQo+ICsJICAgIG5vci0+bWFudWZhY3R1cmVy
-LT5maXh1cHMtPnNmZHBfaGRyKSB7DQo+ICsJCXJldCA9IG5vci0+bWFudWZhY3R1cmVyLT5maXh1
-cHMtPnNmZHBfaGRyKG5vciwgaGRyKTsNCj4gKwkJaWYgKHJldCkNCj4gKwkJCXJldHVybiByZXQ7
-DQo+ICsJfQ0KPiArDQo+ICsJaWYgKG5vci0+aW5mby0+Zml4dXBzICYmIG5vci0+aW5mby0+Zml4
-dXBzLT5zZmRwX2hkcikgew0KPiArCQlyZXQgPSBub3ItPmluZm8tPmZpeHVwcy0+c2ZkcF9oZHIo
-bm9yLCBoZHIpOw0KPiArCQlpZiAocmV0KQ0KPiArCQkJcmV0dXJuIHJldDsNCj4gKwl9DQo+ICsN
-Cj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludA0KPiArc3BpX25vcl9zZmRw
-X3BhcmFtX2hkcnNfZml4dXBzKHN0cnVjdCBzcGlfbm9yICpub3IsIHN0cnVjdCBzZmRwX2hlYWRl
-ciAqaGRyLA0KPiArCQkJICAgICAgIHN0cnVjdCBzZmRwX3BhcmFtZXRlcl9oZWFkZXIgKnBhcmFt
-X2hkcnMpDQo+ICt7DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCWlmIChub3ItPm1hbnVmYWN0dXJl
-ciAmJiBub3ItPm1hbnVmYWN0dXJlci0+Zml4dXBzICYmDQo+ICsJICAgIG5vci0+bWFudWZhY3R1
-cmVyLT5maXh1cHMtPnNmZHBfcGFyYW1faGRycykgew0KPiArCQlyZXQgPSBub3ItPm1hbnVmYWN0
-dXJlci0+Zml4dXBzLT5zZmRwX3BhcmFtX2hkcnMobm9yLCBoZHIsDQo+ICsJCQkJCQkJCSBwYXJh
-bV9oZHJzKTsNCj4gKwkJaWYgKHJldCkNCj4gKwkJCXJldHVybiByZXQ7DQo+ICsJfQ0KPiArDQo+
-ICsJaWYgKG5vci0+aW5mby0+Zml4dXBzICYmIG5vci0+aW5mby0+Zml4dXBzLT5zZmRwX2hkcikg
-ew0KPiArCQlyZXQgPSBub3ItPmluZm8tPmZpeHVwcy0+c2ZkcF9wYXJhbV9oZHJzKG5vciwgaGRy
-LCBwYXJhbV9oZHJzKTsNCj4gKwkJaWYgKHJldCkNCj4gKwkJCXJldHVybiByZXQ7DQo+ICsJfQ0K
-PiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gIC8qKg0KPiAgICogc3BpX25vcl9wYXJz
-ZV9zZmRwKCkgLSBwYXJzZSB0aGUgU2VyaWFsIEZsYXNoIERpc2NvdmVyYWJsZSBQYXJhbWV0ZXJz
-Lg0KPiAgICogQG5vcjoJCXBvaW50ZXIgdG8gYSAnc3RydWN0IHNwaV9ub3InDQo+IEBAIC03Nzcs
-NiArODIxLDEwIEBAIGludCBzcGlfbm9yX3BhcnNlX3NmZHAoc3RydWN0IHNwaV9ub3IgKm5vciwN
-Cj4gIAlpZiAoZXJyIDwgMCkNCj4gIAkJcmV0dXJuIGVycjsNCj4gIA0KPiArCWVyciA9IHNwaV9u
-b3Jfc2ZkcF9oZHJfZml4dXBzKG5vciwgJmhlYWRlcik7DQo+ICsJaWYgKGVycikNCj4gKwkJcmV0
-dXJuIGVycjsNCj4gKw0KPiAgCS8qIENoZWNrIHRoZSBTRkRQIGhlYWRlciB2ZXJzaW9uLiAqLw0K
-PiAgCWlmIChsZTMyX3RvX2NwdShoZWFkZXIuc2lnbmF0dXJlKSAhPSBTRkRQX1NJR05BVFVSRSB8
-fA0KPiAgCSAgICBoZWFkZXIubWFqb3IgIT0gU0ZEUF9KRVNEMjE2X01BSk9SKQ0KPiBAQCAtODE1
-LDYgKzg2MywxMSBAQCBpbnQgc3BpX25vcl9wYXJzZV9zZmRwKHN0cnVjdCBzcGlfbm9yICpub3Is
-DQo+ICAJCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byByZWFkIFNGRFAgcGFyYW1ldGVyIGhlYWRl
-cnNcbiIpOw0KPiAgCQkJZ290byBleGl0Ow0KPiAgCQl9DQo+ICsNCj4gKwkJZXJyID0gc3BpX25v
-cl9zZmRwX3BhcmFtX2hkcnNfZml4dXBzKG5vciwgJmhlYWRlciwNCj4gKwkJCQkJCSAgICAgcGFy
-YW1faGVhZGVycyk7DQo+ICsJCWlmIChlcnIpDQo+ICsJCQlyZXR1cm4gZXJyOw0KPiAgCX0NCj4g
-IA0KPiAgCS8qDQo+IA0KDQotLSANCkJlc3QgcmVnYXJkcywNCkFsZXhhbmRlciBTdmVyZGxpbi4N
-Cg==
+On 12/7/18 10:06 AM, Linus Walleij wrote:
+> Hi Christophe,
+> 
+> On Thu, Nov 29, 2018 at 5:42 PM Christophe Kerello
+> <christophe.kerello@st.com> wrote:
+> 
+>> +/* FMC2 Controller Registers */
+>> +#define FMC2_BCR1                      0x0
+>> +#define FMC2_PCR                       0x80
+> (...)
+>> +/* Register: FMC2_BCR1 */
+>> +#define FMC2_BCR1_FMC2EN               BIT(31)
+> 
+> Well this looks like an especially clever register map and a specific choice
+> of bit 31 in the fist register to activate FMC2. Registers 0x04 thru
+> 0x7c are completely unused save for one bit.
+> 
+> It's almost like this is the good old FSMC integrated in parallel with FMC2,
+> so that if you don't set bit 31, this becomes something that can be used
+> with drivers/mtd/nand/raw/fsmc_nand.c, and FMC2 mode is activated
+> by setting this bit, activating all the new registers.
+> 
+> It wouldn't surprise me given how HW designers like to work.
+> 
+> Is this the case?
+> 
+
+Hi Linus,
+
+Based on FMC2 datasheet,
+The FMC2 controller includes 2 memory controllers:
+  - the NOR/PSRAM memory controller
+  - the NAND memory controller
+
+The NOR/PSRAM controller mapping is starting at 0.
+The NAND controller mapping is starting at 0x80.
+
+We have only planned to develop a driver for the NAND memory controller.
+There is currently no customer request to develop the NOR/PSRAM memory 
+controller.
+
+The bit FMC2_BCR1_FMC2EN is not used to switch from an IP version to 
+another. After reset, the FMC2 controller is disabled. Once all the used 
+memory controllers are configured, the FMC2 controller must be enabled 
+by setting the FMC2EN bit in the FMC2_BCR1 register. If this bit is not 
+set, the controller stays in disabled state.
+
+Regards,
+Christophe Kerello.
+
+> If that is the case I think it should at least be mentioned in commit
+> logs and DT bindings and possibly in a comment on the driver
+> itself.
+> 
+> Yours,
+> Linus Walleij
+> 
