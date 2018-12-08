@@ -1,41 +1,42 @@
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVWUg-0002cT-6H
- for linux-mtd@lists.infradead.org; Sat, 08 Dec 2018 06:54:03 +0000
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wB86mNjd020799
- for <linux-mtd@lists.infradead.org>; Sat, 8 Dec 2018 01:53:31 -0500
-Received: from e17.ny.us.ibm.com (e17.ny.us.ibm.com [129.33.205.207])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2p8909851p-1
+ id 1gVWi9-0007ok-Rp
+ for linux-mtd@lists.infradead.org; Sat, 08 Dec 2018 07:07:39 +0000
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ wB86wNCS035635
+ for <linux-mtd@lists.infradead.org>; Sat, 8 Dec 2018 02:07:27 -0500
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2p87e9kkdj-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2018 01:53:31 -0500
+ for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2018 02:07:26 -0500
 Received: from localhost
- by e17.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Sat, 8 Dec 2018 06:53:30 -0000
+ Sat, 8 Dec 2018 07:07:24 -0000
 From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
  linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
- adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
- yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
- paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
- deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
- richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- viro@zeniv.linux.org.uk
-Subject: [PATCH V3 9/9] fsverity: Move verity status check to
- fsverity_prepare_setattr
-Date: Sat,  8 Dec 2018 12:21:44 +0530
-In-Reply-To: <20181208065144.19486-1-chandan@linux.vnet.ibm.com>
-References: <20181208065144.19486-1-chandan@linux.vnet.ibm.com>
+ linux-fsdevel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ jaegeuk@kernel.org, yuchao0@huawei.com, corbet@lwn.net,
+ ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org,
+ green.hu@gmail.com, deanbo422@gmail.com, schwidefsky@de.ibm.com,
+ heiko.carstens@de.ibm.com, richard@nod.at, dedekind1@gmail.com,
+ adrian.hunter@intel.com, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH V2 3/7] fscrypt: remove filesystem specific build config
+ option
+Date: Sat, 08 Dec 2018 12:37:20 +0530
+In-Reply-To: <20181204234320.GC70682@gmail.com>
+References: <20181204095650.12562-1-chandan@linux.vnet.ibm.com>
+ <20181204095650.12562-4-chandan@linux.vnet.ibm.com>
+ <20181204234320.GC70682@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20181208065144.19486-10-chandan@linux.vnet.ibm.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Message-Id: <2062340.ny9MuQaG0V@localhost.localdomain>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,67 +46,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of conditionally checking for verity status of an inode before
-invoking fsverity_prepare_setattr(), this commit moves the check inside the
-definition of fsverity_prepare_setattr().
+On Wednesday, December 5, 2018 5:13:21 AM IST Eric Biggers wrote:
+> Hi Chandan,
+> 
+> On Tue, Dec 04, 2018 at 03:26:46PM +0530, Chandan Rajendra wrote:
+> > In order to have a common code base for fscrypt "post read" processing
+> > for all filesystems which support encryption, this commit removes
+> > filesystem specific build config option (e.g. CONFIG_EXT4_FS_ENCRYPTION)
+> > and replaces it with a build option (i.e. CONFIG_FS_ENCRYPTION) whose
+> > value affects all the filesystems making use of fscrypt.
+> > 
+> > Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+> [...]
+> > -config F2FS_FS_ENCRYPTION
+> > -	bool "F2FS Encryption"
+> > -	depends on F2FS_FS
+> > -	depends on F2FS_FS_XATTR
+> > -	select FS_ENCRYPTION
+> > -	help
+> > -	  Enable encryption of f2fs files and directories.  This
+> > -	  feature is similar to ecryptfs, but it is more memory
+> > -	  efficient since it avoids caching the encrypted and
+> > -	  decrypted pages in the page cache.
+> > -
+> [...]
+> > -config UBIFS_FS_ENCRYPTION
+> > -	bool "UBIFS Encryption"
+> > -	depends on UBIFS_FS && UBIFS_FS_XATTR && BLOCK
+> > -	select FS_ENCRYPTION
+> > -	default n
+> > -	help
+> > -	  Enable encryption of UBIFS files and directories. This
+> > -	  feature is similar to ecryptfs, but it is more memory
+> > -	  efficient since it avoids caching the encrypted and
+> > -	  decrypted pages in the page cache.
+> 
+> Will it cause problems that now f2fs encryption can be "enabled" without
+> F2FS_FS_XATTR, and ubifs encryption without UBIFS_FS_XATTR && BLOCK?
+> 
+> Otherwise I think this patch looks fine.  I'm a bit concerned about the bloat
+> from making FS_ENCRYPTION non-modular, but given that it will make sharing I/O
+> code much easier, it's probably worthwhile.
+> 
+> It would help to strip down the dependencies of FS_ENCRYPTION to just the stuff
+> needed for just AES-256-XTS and AES-256-CTS.  I already sent out a patch a
+> couple months ago (https://patchwork.kernel.org/patch/10589319/) to remove
+> CONFIG_CTR which isn't used at all; I'll remind Ted to apply that.  But we could
+> also drop CONFIG_SHA256, which is only needed for AES-128-CBC contents
+> encryption.  If we do that, it should be a separate patch, though.
 
-Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
----
- fs/ext4/inode.c   | 8 +++-----
- fs/f2fs/file.c    | 8 +++-----
- fs/verity/setup.c | 2 +-
- 3 files changed, 7 insertions(+), 11 deletions(-)
+Hi Eric,
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 703f55635824..44561e68886b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5510,11 +5510,9 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (error)
- 		return error;
- 
--	if (IS_VERITY(inode)) {
--		error = fsverity_prepare_setattr(dentry, attr);
--		if (error)
--			return error;
--	}
-+	error = fsverity_prepare_setattr(dentry, attr);
-+	if (error)
-+		return error;
- 
- 	if (is_quota_modification(inode, attr)) {
- 		error = dquot_initialize(inode);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 925c0d9608da..422907ca37c6 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -798,11 +798,9 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
- 
--	if (IS_VERITY(inode)) {
--		err = fsverity_prepare_setattr(dentry, attr);
--		if (err)
--			return err;
--	}
-+	err = fsverity_prepare_setattr(dentry, attr);
-+	if (err)
-+		return err;
- 
- 	if (is_quota_modification(inode, attr)) {
- 		err = dquot_initialize(inode);
-diff --git a/fs/verity/setup.c b/fs/verity/setup.c
-index bc463dc601b1..154556d72691 100644
---- a/fs/verity/setup.c
-+++ b/fs/verity/setup.c
-@@ -796,7 +796,7 @@ EXPORT_SYMBOL_GPL(fsverity_file_open);
-  */
- int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
- {
--	if (attr->ia_valid & ATTR_SIZE) {
-+	if (IS_VERITY(d_inode(dentry)) && (attr->ia_valid & ATTR_SIZE)) {
- 		pr_debug("Denying truncate of verity file (ino %lu)\n",
- 			 d_inode(dentry)->i_ino);
- 		return -EPERM;
+fscrypt_valid_enc_modes() allows FS_ENCRYPTION_MODE_AES_128_CBC to be used for
+encryption of file's contents. This is consistent with what you had mentioned
+above.
+
+static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+                                           u32 filenames_mode)
+{
+        if (contents_mode == FS_ENCRYPTION_MODE_AES_128_CBC &&
+            filenames_mode == FS_ENCRYPTION_MODE_AES_128_CTS)
+                return true;
+
+        if (contents_mode == FS_ENCRYPTION_MODE_AES_256_XTS &&
+            filenames_mode == FS_ENCRYPTION_MODE_AES_256_CTS)
+                return true;
+
+        return false;
+}
+
+Hence FS_ENCRYPTION does need to have AES-128-CBC and by extension SHA256 code
+compiled in right? 
+
 -- 
-2.19.1
+chandan
