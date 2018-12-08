@@ -1,39 +1,17 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVWUI-0001QT-5V
- for linux-mtd@lists.infradead.org; Sat, 08 Dec 2018 06:53:19 +0000
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wB86mQNg133839
- for <linux-mtd@lists.infradead.org>; Sat, 8 Dec 2018 01:53:03 -0500
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2p83agbap7-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Sat, 08 Dec 2018 01:53:02 -0500
-Received: from localhost
- by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Sat, 8 Dec 2018 06:53:01 -0000
-From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
- linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
- adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
- yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
- paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
- deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
- richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- viro@zeniv.linux.org.uk
-Subject: [PATCH V3 6/9] f2fs: use IS_VERITY() to check inode's fsverity status
-Date: Sat,  8 Dec 2018 12:21:41 +0530
-In-Reply-To: <20181208065144.19486-1-chandan@linux.vnet.ibm.com>
-References: <20181208065144.19486-1-chandan@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20181208065144.19486-7-chandan@linux.vnet.ibm.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVbkt-0001g8-Ve
+ for linux-mtd@lists.infradead.org; Sat, 08 Dec 2018 12:30:50 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Tudor.Ambarus@microchip.com, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at,
+ Cyrille.Pitchen@microchip.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [v2] mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
+Date: Sat,  8 Dec 2018 13:30:35 +0100
+Message-Id: <20181208123035.9924-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181206144330.30860-1-tudor.ambarus@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,101 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit removes the f2fs specific f2fs_verity_file() and makes use
-of the generic IS_VERITY() macro or file_is_verity() to check for the
-verity status of an inode.
+On Thu, 2018-12-06 at 14:43:39 UTC,  wrote:
+> From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+> 
+> Add support for SFDP (JESD216B) 4-byte Address Instruction Table. This
+> table is optional but when available, we parse it to get the 4-byte
+> address op codes supported by the memory.
+> Using these op codes is stateless as opposed to entering the 4-byte
+> address mode or setting the Base Address Register (BAR).
+> 
+> Flashes that have the 4BAIT table declared can now support
+> SPINOR_OP_PP_1_1_4_4B and SPINOR_OP_PP_1_4_4_4B opcodes.
+> 
+> Tested on MX25L25673G.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+> [tudor.ambarus@microchip.com:
+> - rework erase and page program logic,
+> - pass DMA-able buffer to spi_nor_read_sfdp(),
+> - introduce SPI_NOR_HAS_4BAIT
+> - various minor updates.]
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
----
- fs/f2fs/f2fs.h  | 7 +------
- fs/f2fs/file.c  | 6 +++---
- fs/f2fs/inode.c | 4 +++-
- fs/f2fs/super.c | 1 +
- 4 files changed, 8 insertions(+), 10 deletions(-)
+Applied to http://git.infradead.org/linux-mtd.git spi-nor/next, thanks.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index f9c8b0afc1de..54bd93c7b630 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3448,18 +3448,13 @@ static inline void f2fs_set_encrypted_inode(struct inode *inode)
- #endif
- }
- 
--static inline bool f2fs_verity_file(struct inode *inode)
--{
--	return file_is_verity(inode);
--}
--
- /*
-  * Returns true if the reads of the inode's data need to undergo some
-  * postprocessing step, like decryption or authenticity verification.
-  */
- static inline bool f2fs_post_read_required(struct inode *inode)
- {
--	return f2fs_encrypted_file(inode) || f2fs_verity_file(inode);
-+	return f2fs_encrypted_file(inode) || IS_VERITY(inode);
- }
- 
- #define F2FS_FEATURE_FUNCS(name, flagname) \
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 6c7ad15000b9..2eb4821d95d1 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -491,7 +491,7 @@ static int f2fs_file_open(struct inode *inode, struct file *filp)
- 	if (err)
- 		return err;
- 
--	if (f2fs_verity_file(inode)) {
-+	if (IS_VERITY(inode)) {
- 		err = fsverity_file_open(inode, filp);
- 		if (err)
- 			return err;
-@@ -701,7 +701,7 @@ int f2fs_getattr(const struct path *path, struct kstat *stat,
- 	struct f2fs_inode *ri;
- 	unsigned int flags;
- 
--	if (f2fs_verity_file(inode)) {
-+	if (IS_VERITY(inode)) {
- 		/*
- 		 * For fs-verity we need to override i_size with the original
- 		 * data i_size.  This requires I/O to the file which with
-@@ -800,7 +800,7 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
- 
--	if (f2fs_verity_file(inode)) {
-+	if (IS_VERITY(inode)) {
- 		err = fsverity_prepare_setattr(dentry, attr);
- 		if (err)
- 			return err;
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index d731d23aedee..ff9126616d65 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -45,9 +45,11 @@ void f2fs_set_inode_flags(struct inode *inode)
- 		new_fl |= S_DIRSYNC;
- 	if (file_is_encrypt(inode))
- 		new_fl |= S_ENCRYPTED;
-+	if (file_is_verity(inode))
-+		new_fl |= S_VERITY;
- 	inode_set_flags(inode, new_fl,
- 			S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC|
--			S_ENCRYPTED);
-+			S_ENCRYPTED|S_VERITY);
- }
- 
- static void __get_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 4287cf348d3c..73320202bd01 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2207,6 +2207,7 @@ static int f2fs_set_verity(struct inode *inode, loff_t data_i_size)
- 		return err;
- 
- 	file_set_verity(inode);
-+	f2fs_set_inode_flags(inode);
- 	f2fs_mark_inode_dirty_sync(inode, true);
- 	return 0;
- }
--- 
-2.19.1
+Boris
