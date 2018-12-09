@@ -1,19 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVsxh-0005rj-LJ
- for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 06:53:11 +0000
-Date: Sun, 9 Dec 2018 07:52:56 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Hou Tao <houtao1@huawei.com>
-Cc: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
- <linux-kernel@vger.kernel.org>, <richard.weinberger@gmail.com>
-Subject: Re: [PATCH] jffs2: fix invocations of dbg_xattr() for dead
- jffs2_xattr_ref
-Message-ID: <20181209075256.43ca759f@bbrezillon>
-In-Reply-To: <20181020110753.98407-1-houtao1@huawei.com>
-References: <20181020110753.98407-1-houtao1@huawei.com>
+Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Marek Vasut
+ <marek.vasut@gmail.com>
+CC: Rob Herring <robh+dt@kernel.org>, Brian Norris
+ <computersforpeace@gmail.com>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <0e4286ea-85d1-a909-17c0-47f9506b3e5a@ti.com>
+Date: Sun, 9 Dec 2018 14:17:18 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181003165603.2579-1-vigneshr@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,51 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 20 Oct 2018 19:07:53 +0800
-Hou Tao <houtao1@huawei.com> wrote:
+Hi Boris,
 
-> When jffs2_xattr_ref is dead, xref->ic or xref->xd will be invalid
-> because these fields will be reused as xref->ino or xref->xid,
-> so access xref->ic->ino or xref->xd->xid will lead to Oops.
+On 03/10/18 10:26 PM, Vignesh R wrote:
+> This series adds support for octal mode of mt35x flash. Also, adds
+> support for OSPI version of Cadence QSPI controller.
 > 
-> Fix the problem by checking whether or not it is a dead xref.
+> Based on top of patches adding basic support for mt35xu512aba here:
+> https://patchwork.ozlabs.org/cover/971437/
 > 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  fs/jffs2/xattr.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+> Vignesh R (3):
+>   mtd: spi-nor: Add Octal mode support for mt35xu512aba
+
+
+>   dt-bindings: cadence-quadspi: Add new compatible for AM654 SoC
+>   mtd: spi-nor: cadence-quadspi: Add support for Octal SPI controller
+
+Could you consider above two patches for v4.21 once [1][2] are merged?
+
+[1] https://patchwork.ozlabs.org/patch/1006717/
+[2] https://patchwork.ozlabs.org/patch/1006715/
+
+Let me know if this needs to be re-posted.
+
 > 
-> diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-> index 3d40fe02b003..0c4c7891556d 100644
-> --- a/fs/jffs2/xattr.c
-> +++ b/fs/jffs2/xattr.c
-> @@ -550,7 +550,8 @@ static int save_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
->  	ref->xseqno = xseqno;
->  	jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, PAD(sizeof(rr)), (void *)ref);
->  
-> -	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n", ref->ic->ino, ref->xd->xid);
-> +	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n",
-> +			je32_to_cpu(rr.ino), je32_to_cpu(rr.xid));
+>  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
+>  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++
+>  drivers/mtd/spi-nor/spi-nor.c                         | 11 ++++++++++-
+>  include/linux/mtd/spi-nor.h                           |  2 ++
+>  4 files changed, 22 insertions(+), 1 deletion(-)
+> 
 
-Nit: align the second line on the open parens (same applies to the
-other chunk).
-
-Sorry, I can't comment on the actual change. I'll let Richard look
-at it.
-
->  
->  	return 0;
->  }
-> @@ -1329,7 +1330,11 @@ int jffs2_garbage_collect_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_
->  	rc = save_xattr_ref(c, ref);
->  	if (!rc)
->  		dbg_xattr("xref (ino=%u, xid=%u) GC'ed from %#08x to %08x\n",
-> -			  ref->ic->ino, ref->xd->xid, old_ofs, ref_offset(ref->node));
-> +				is_xattr_ref_dead(ref) ?
-> +					ref->ino : ref->ic->ino,
-> +				is_xattr_ref_dead(ref) ?
-> +					ref->xid : ref->xd->xid,
-> +				old_ofs, ref_offset(ref->node));
->   out:
->  	if (!rc)
->  		jffs2_mark_node_obsolete(c, raw);
+-- 
+Regards
+Vignesh
