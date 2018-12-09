@@ -1,17 +1,18 @@
 Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVsgS-0000wL-3A
- for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 06:35:23 +0000
-Subject: Re: [PATCH] jffs2: ensure wbuf_verify is valid before using it.
+ id 1gVsgS-0000cl-39
+ for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 06:35:24 +0000
+Subject: Re: [PATCH] jffs2: fix invocations of dbg_xattr() for dead
+ jffs2_xattr_ref
 From: Hou Tao <houtao1@huawei.com>
 To: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>
 CC: <richard.weinberger@gmail.com>, <boris.brezillon@bootlin.com>,
- <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20181020120849.65708-1-houtao1@huawei.com>
-Message-ID: <df5b520c-bc32-e550-4c58-2c79d5e09893@huawei.com>
-Date: Sun, 9 Dec 2018 14:35:08 +0800
+ <linux-kernel@vger.kernel.org>
+References: <20181020110753.98407-1-houtao1@huawei.com>
+Message-ID: <bbd62e07-99f7-e198-fc26-8b4a8470b8e9@huawei.com>
+Date: Sun, 9 Dec 2018 14:34:59 +0800
 MIME-Version: 1.0
-In-Reply-To: <20181020120849.65708-1-houtao1@huawei.com>
+In-Reply-To: <20181020110753.98407-1-houtao1@huawei.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -26,56 +27,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 ping ?
 
-On 2018/10/20 20:08, Hou Tao wrote:
-> Now MTD emulated by UBI volumn doesn't allocate wbuf_verify in
-> jffs2_ubivol_setup(), because UBI can do the verifcation itself,
-> so when CONFIG_JFFS2_FS_WBUF_VERIFY is enabled and a MTD device
-> emulated by UBI volumn is used, a Oops will occur as show in the
-> following trace:
+On 2018/10/20 19:07, Hou Tao wrote:
+> When jffs2_xattr_ref is dead, xref->ic or xref->xd will be invalid
+> because these fields will be reused as xref->ino or xref->xid,
+> so access xref->ic->ino or xref->xd->xid will lead to Oops.
 > 
->     general protection fault: 0000 [#1] SMP KASAN PTI
->     CPU: 6 PID: 404 Comm: kworker/6:1 Not tainted 4.19.0-rc8
->     Workqueue: events_long delayed_wbuf_sync
->     RIP: 0010:ubi_io_read+0x156/0x650
->     Call Trace:
->      ubi_eba_read_leb+0x57d/0xba0
->      ubi_leb_read+0xe5/0x1b0
->      gluebi_read+0x10c/0x1a0
->      mtd_read+0x112/0x340
->      jffs2_verify_write+0xef/0x440
->      __jffs2_flush_wbuf+0x3fa/0x3540
->      jffs2_flush_wbuf_gc+0x1b1/0x2e0
->      process_one_work+0x58b/0x11e0
->      worker_thread+0x8f/0xfe0
->      kthread+0x2ae/0x3a0
->      ret_from_fork+0x35/0x40
+> Fix the problem by checking whether or not it is a dead xref.
 > 
-> Fix the problem by checking the validity of wbuf_verify before
-> using it in jffs2_verify_write().
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 0029da3bf430 ("JFFS2: add UBI support")
 > Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
->  fs/jffs2/wbuf.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  fs/jffs2/xattr.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-> index c6821a509481..3de45f4559d1 100644
-> --- a/fs/jffs2/wbuf.c
-> +++ b/fs/jffs2/wbuf.c
-> @@ -234,6 +234,13 @@ static int jffs2_verify_write(struct jffs2_sb_info *c, unsigned char *buf,
->  	size_t retlen;
->  	char *eccstr;
+> diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+> index 3d40fe02b003..0c4c7891556d 100644
+> --- a/fs/jffs2/xattr.c
+> +++ b/fs/jffs2/xattr.c
+> @@ -550,7 +550,8 @@ static int save_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
+>  	ref->xseqno = xseqno;
+>  	jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, PAD(sizeof(rr)), (void *)ref);
 >  
-> +	/*
-> +	 * MTD emulated by UBI volume doesn't allocate wbuf_verify,
-> +	 * because it can do the verification itself.
-> +	 */
-> +	if (!c->wbuf_verify)
-> +		return 0;
-> +
->  	ret = mtd_read(c->mtd, ofs, c->wbuf_pagesize, &retlen, c->wbuf_verify);
->  	if (ret && ret != -EUCLEAN && ret != -EBADMSG) {
->  		pr_warn("%s(): Read back of page at %08x failed: %d\n",
+> -	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n", ref->ic->ino, ref->xd->xid);
+> +	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n",
+> +			je32_to_cpu(rr.ino), je32_to_cpu(rr.xid));
+>  
+>  	return 0;
+>  }
+> @@ -1329,7 +1330,11 @@ int jffs2_garbage_collect_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_
+>  	rc = save_xattr_ref(c, ref);
+>  	if (!rc)
+>  		dbg_xattr("xref (ino=%u, xid=%u) GC'ed from %#08x to %08x\n",
+> -			  ref->ic->ino, ref->xd->xid, old_ofs, ref_offset(ref->node));
+> +				is_xattr_ref_dead(ref) ?
+> +					ref->ino : ref->ic->ino,
+> +				is_xattr_ref_dead(ref) ?
+> +					ref->xid : ref->xd->xid,
+> +				old_ofs, ref_offset(ref->node));
+>   out:
+>  	if (!rc)
+>  		jffs2_mark_node_obsolete(c, raw);
 > 
