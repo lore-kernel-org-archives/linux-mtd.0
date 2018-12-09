@@ -1,21 +1,16 @@
-Received: from mx2a.mailbox.org ([2001:67c:2050:104:0:2:25:2]
- helo=mx2.mailbox.org)
+Received: from mx2.mailbox.org ([80.241.60.215])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gW2V2-0007z7-CG
- for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 17:04:14 +0000
+ id 1gW2dE-0003Di-CG
+ for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 17:12:41 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
-To: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Andr=C3=A9=20Valentin?= <avalentin@marcant.net>
-Subject: [PATCH 2/2] mtd: spi-nor: Add support for mx25u3235f
-Date: Sun,  9 Dec 2018 18:03:42 +0100
-Message-Id: <20181209170342.9554-3-hauke@hauke-m.de>
-In-Reply-To: <20181209170342.9554-1-hauke@hauke-m.de>
-References: <20181209170342.9554-1-hauke@hauke-m.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To: richard@nod.at,
+	dedekind1@gmail.com,
+	adrian.hunter@intel.com
+Cc: linux-mtd@lists.infradead.org, hauke@hauke-m.de,
+ Gabor Juhos <juhosg@openwrt.org>
+Subject: [PATCH] ubifs: fix default compression selection in ubifs
+Date: Sun,  9 Dec 2018 18:12:13 +0100
+Message-Id: <20181209171213.26264-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +20,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: André Valentin <avalentin@marcant.net>
+From: Gabor Juhos <juhosg@openwrt.org>
 
-This flash chip was found on the ZyXEL NBG6817
+When ubifs is build without the LZO compressor and no compressor is
+given the creation of the default file system will fail. before
+selection the LZO compressor check if it is present and if not fall back
+to the zlib or none.
 
-The datasheet can be found here:
-http://www.macronix.com/Lists/Datasheet/Attachments/7438/MX25U3235F,%201.8V,%2032Mb,%20v1.6.pdf
-
-Signed-off-by: André Valentin <avalentin@marcant.net>
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ubifs/sb.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index a21b1a26130d..9925760339ba 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1375,6 +1375,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
- 	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
- 	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 75a69dd26d6e..3da90c951c23 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -63,6 +63,17 @@
+ /* Default time granularity in nanoseconds */
+ #define DEFAULT_TIME_GRAN 1000000000
+ 
++static int get_default_compressor(struct ubifs_info *c)
++{
++	if (ubifs_compr_present(c, UBIFS_COMPR_LZO))
++		return UBIFS_COMPR_LZO;
++
++	if (ubifs_compr_present(c, UBIFS_COMPR_ZLIB))
++		return UBIFS_COMPR_ZLIB;
++
++	return UBIFS_COMPR_NONE;
++}
++
+ /**
+  * create_default_filesystem - format empty UBI volume.
+  * @c: UBIFS file-system description object
+@@ -207,7 +218,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	if (c->mount_opts.override_compr)
+ 		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
+ 	else
+-		sup->default_compr = cpu_to_le16(UBIFS_COMPR_LZO);
++		sup->default_compr = cpu_to_le16(get_default_compressor(c));
+ 
+ 	generate_random_uuid(sup->uuid);
+ 
 -- 
 2.11.0
