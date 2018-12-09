@@ -1,20 +1,19 @@
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gVsgS-0000cl-39
- for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 06:35:24 +0000
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gVsxh-0005rj-LJ
+ for linux-mtd@lists.infradead.org; Sun, 09 Dec 2018 06:53:11 +0000
+Date: Sun, 9 Dec 2018 07:52:56 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Hou Tao <houtao1@huawei.com>
+Cc: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>,
+ <linux-kernel@vger.kernel.org>, <richard.weinberger@gmail.com>
 Subject: Re: [PATCH] jffs2: fix invocations of dbg_xattr() for dead
  jffs2_xattr_ref
-From: Hou Tao <houtao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>, <dwmw2@infradead.org>
-CC: <richard.weinberger@gmail.com>, <boris.brezillon@bootlin.com>,
- <linux-kernel@vger.kernel.org>
-References: <20181020110753.98407-1-houtao1@huawei.com>
-Message-ID: <bbd62e07-99f7-e198-fc26-8b4a8470b8e9@huawei.com>
-Date: Sun, 9 Dec 2018 14:34:59 +0800
-MIME-Version: 1.0
+Message-ID: <20181209075256.43ca759f@bbrezillon>
 In-Reply-To: <20181020110753.98407-1-houtao1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+References: <20181020110753.98407-1-houtao1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,9 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ping ?
+On Sat, 20 Oct 2018 19:07:53 +0800
+Hou Tao <houtao1@huawei.com> wrote:
 
-On 2018/10/20 19:07, Hou Tao wrote:
 > When jffs2_xattr_ref is dead, xref->ic or xref->xd will be invalid
 > because these fields will be reused as xref->ino or xref->xid,
 > so access xref->ic->ino or xref->xd->xid will lead to Oops.
@@ -50,6 +49,13 @@ On 2018/10/20 19:07, Hou Tao wrote:
 > -	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n", ref->ic->ino, ref->xd->xid);
 > +	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n",
 > +			je32_to_cpu(rr.ino), je32_to_cpu(rr.xid));
+
+Nit: align the second line on the open parens (same applies to the
+other chunk).
+
+Sorry, I can't comment on the actual change. I'll let Richard look
+at it.
+
 >  
 >  	return 0;
 >  }
@@ -66,4 +72,3 @@ On 2018/10/20 19:07, Hou Tao wrote:
 >   out:
 >  	if (!rc)
 >  		jffs2_mark_node_obsolete(c, raw);
-> 
