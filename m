@@ -1,30 +1,34 @@
-Date: Mon, 10 Dec 2018 15:50:57 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
- <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
- <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>,
- Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
- <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
- <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20181210155057.38788656@xps13>
-In-Reply-To: <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
-References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
- <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
- <20181207102456.1dc67e07@xps13>
- <823825a3-86fb-9a20-ae29-85cc52d44093@amlogic.com>
- <20181210123809.5ade45c4@bbrezillon>
- <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
+Date: Mon, 10 Dec 2018 15:29:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Vignesh R <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
+Message-ID: <20181210152910.GD6307@sirena.org.uk>
+References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181203101937.7b01a0ad@bbrezillon>
+ <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
+ <20181205134618.56223758@bbrezillon>
+ <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206074554.0ec0aecb@bbrezillon>
+ <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206202956.GG3084@sirena.org.uk>
+ <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="EP0wieDxd4TSJjHq"
+Content-Disposition: inline
+In-Reply-To: <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,42 +38,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Liang,
 
-Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
-+0800:
+--EP0wieDxd4TSJjHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On 2018/12/10 19:38, Boris Brezillon wrote:
-> > On Mon, 10 Dec 2018 19:23:46 +0800
-> > Liang Yang <liang.yang@amlogic.com> wrote:
-> >  =20
-> >>>> +			mtd->ecc_stats.failed++;
-> >>>> +			continue;
-> >>>> +		}
-> >>>> +		mtd->ecc_stats.corrected +=3D ECC_ERR_CNT(*info);
-> >>>> +		bitflips =3D max_t(u32, bitflips, ECC_ERR_CNT(*info));
-> >>>> +	} =20
-> >>>
-> >>> Are you sure you handle correctly empty pages with bf? =20
-> >>>    >> if scramble is enable, i would say yes here. =20
-> >> when scramble is disabled, i am considering how to use the helper
-> >> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
-> >> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
-> >> out the ecc parity bytes. =20
-> >=20
-> > Even if the ECC engine is disabled?
-> >  =20
-> No.
-> When ECC engine is disabled, it can read the ecc parity bytes ; but there=
- is another problem that i need to consider how code struct looks better wh=
-en reading error with ecc opened and then try to raw read.
-> Is there a good idea?
+On Mon, Dec 10, 2018 at 04:13:28AM +0000, Yogesh Narayan Gaur wrote:
+> Hi Mark,
 
-When reading with ECC enabled, in case of uncorrectable error you
-must re-read without ECC, then check if the page is empty or not with
-the core helpers (nand_check_erased_*()).
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-Is this what you meant?
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
-Thanks,
-Miqu=C3=A8l
+> Patch has been resend [1], this patch is depends on the series of patch[2] and this series has been applied by Boris already.
+
+> [1] https://patchwork.ozlabs.org/patch/1010253/
+
+This appears to be an MTD patch?  The subject is "mtd: m25p80: add
+support of octal mode I/O transfer".  MTD patches normally go via the
+MTD tree which is maintained by a group of people including Boris but
+not me.
+
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
+
+--EP0wieDxd4TSJjHq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwOhkYACgkQJNaLcl1U
+h9DaAggAgMIj2uA8VF9Qi0kkEVSIw7B37/YFo61hD2F7zvfEngJRLcXPAj7gXTTf
+j/1X087Iwy6uvnV/XIPsTeweEo5owcyM3Jy8yrxCPu6fAnnTjoxUfj2oO54kCF3x
+btBB54tpee+QdVruBpoVU1JmiMKcA6iH74ZwWCk4BQ2KyqNuBStbmWn7pEccma0u
+W8QGy1OVb0q+5awlZX7bcbOiGJJr83fehVF9eYluel8DMI1rBbYrBRnaDAZwKSp/
+kqSrcAoV51pWSJVViPrTF0LF4gUuqvKu+p6yfj12Aou2+/HwNhiP9N2R7BFUoiB0
+0xvXGFSlSL32blPB5L3m51UqYogIBQ==
+=/KqO
+-----END PGP SIGNATURE-----
+
+--EP0wieDxd4TSJjHq--
