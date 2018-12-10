@@ -1,19 +1,28 @@
-From: <Tudor.Ambarus@microchip.com>
-To: <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
- <Ludovic.Desroches@microchip.com>, <robh+dt@kernel.org>,
- <mark.rutland@arm.com>, <Cyrille.Pitchen@microchip.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <Tudor.Ambarus@microchip.com>
-Subject: [PATCH] ARM: dts: at91: sama5d2 Xplained: add QSPI0 + SPI NOR memory
- nodes
-Date: Mon, 10 Dec 2018 17:15:29 +0000
-Message-ID: <20181210171511.21002-1-tudor.ambarus@microchip.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWPK5-0003fv-64
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 17:26:26 +0000
+Date: Mon, 10 Dec 2018 09:26:11 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, tytso@mit.edu,
+ adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
+ corbet@lwn.net, ralf@linux-mips.org, paul.burton@mips.com,
+ jhogan@kernel.org, green.hu@gmail.com, deanbo422@gmail.com,
+ schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, richard@nod.at,
+ dedekind1@gmail.com, adrian.hunter@intel.com, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH V3 8/9] fsverity: Move verity status check to
+ fsverity_file_open
+Message-ID: <20181210172610.GA92174@gmail.com>
+References: <20181208065144.19486-1-chandan@linux.vnet.ibm.com>
+ <20181208065144.19486-9-chandan@linux.vnet.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181208065144.19486-9-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +32,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+Hi Chandan,
 
-This patch configures the QSPI0 controller pin muxing and declares
-a jedec,spi-nor memory.
+On Sat, Dec 08, 2018 at 12:21:43PM +0530, Chandan Rajendra wrote:
+> Instead of conditionally checking for verity status of an inode before
+> invoking fsverity_file_open(), this commit moves the check inside the
+> definition of fsverity_file_open().
+> 
+> Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+> ---
+>  fs/ext4/file.c    | 8 +++-----
+>  fs/f2fs/file.c    | 8 +++-----
+>  fs/verity/setup.c | 3 +++
+>  3 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 30fbd663354f..b404a857cd48 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -444,11 +444,9 @@ static int ext4_file_open(struct inode * inode, struct file * filp)
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (IS_VERITY(inode)) {
+> -		ret = fsverity_file_open(inode, filp);
+> -		if (ret)
+> -			return ret;
+> -	}
+> +	ret = fsverity_file_open(inode, filp);
+> +	if (ret)
+> +		return ret;
+>  
+>  	/*
+>  	 * Set up the jbd2_inode if we are opening the inode for
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 2eb4821d95d1..925c0d9608da 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -491,11 +491,9 @@ static int f2fs_file_open(struct inode *inode, struct file *filp)
+>  	if (err)
+>  		return err;
+>  
+> -	if (IS_VERITY(inode)) {
+> -		err = fsverity_file_open(inode, filp);
+> -		if (err)
+> -			return err;
+> -	}
+> +	err = fsverity_file_open(inode, filp);
+> +	if (err)
+> +		return err;
+>  
+>  	filp->f_mode |= FMODE_NOWAIT;
+>  
+> diff --git a/fs/verity/setup.c b/fs/verity/setup.c
+> index 08b609127531..bc463dc601b1 100644
+> --- a/fs/verity/setup.c
+> +++ b/fs/verity/setup.c
+> @@ -771,6 +771,9 @@ static int setup_fsverity_info(struct inode *inode)
+>   */
+>  int fsverity_file_open(struct inode *inode, struct file *filp)
+>  {
+> +	if (!IS_VERITY(inode))
+> +		return 0;
+> +
+>  	if (filp->f_mode & FMODE_WRITE) {
+>  		pr_debug("Denying opening verity file (ino %lu) for write\n",
+>  			 inode->i_ino);
+> -- 
+> 2.19.1
+> 
 
-sama5d2 Xplained RevB and RevC use the Macronix MX25L25673G flash
-memory which advertises a maximum frequency of 80MHz for Quad IO
-Fast Read. Set the spi-max-frequency to 80MHz knowing that actually
-the QSPI drver will set the SPI bus clock to 166MHz / 3 =3D 55.3MHz.
+This will break ext4 and f2fs when !CONFIG_FS_VERITY because then:
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-[tudor.ambarus@microchip.com:
-- drop partitions,
-- add spi-rx/tx-bus-width
-- change spi-max-frequency to match the 80MHz limit advertised by
-  MX25L25673G for Quad IO Fast Read,
-- reword commit message and subject.]
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d2_xplained.dts | 31 +++++++++++++++++++++++++=
-++++
- 1 file changed, 31 insertions(+)
+static inline int fsverity_file_open(struct inode *inode, struct file *filp)
+{
+	return -EOPNOTSUPP;
+}
 
-diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dt=
-s/at91-sama5d2_xplained.dts
-index 518e2b095ccf..171bc82cfbbf 100644
---- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-@@ -108,6 +108,21 @@
- 		};
-=20
- 		apb {
-+			qspi0: spi@f0020000 {
-+				pinctrl-names =3D "default";
-+				pinctrl-0 =3D <&pinctrl_qspi0_default>;
-+				/* status =3D "okay"; */ /* conflict with sdmmc1 */
-+
-+				flash@0 {
-+					compatible =3D "jedec,spi-nor";
-+					reg =3D <0>;
-+					spi-max-frequency =3D <80000000>;
-+					spi-tx-bus-width =3D <4>;
-+					spi-rx-bus-width =3D <4>;
-+					m25p,fast-read;
-+				};
-+			};
-+
- 			spi0: spi@f8000000 {
- 				pinctrl-names =3D "default";
- 				pinctrl-0 =3D <&pinctrl_spi0_default>;
-@@ -485,6 +500,22 @@
- 					bias-disable;
- 				};
-=20
-+				pinctrl_qspi0_default: qspi0_default {
-+					sck_cs {
-+						pinmux =3D <PIN_PA22__QSPI0_SCK>,
-+							 <PIN_PA23__QSPI0_CS>;
-+						bias-disable;
-+					};
-+
-+					data {
-+						pinmux =3D <PIN_PA24__QSPI0_IO0>,
-+							 <PIN_PA25__QSPI0_IO1>,
-+							 <PIN_PA26__QSPI0_IO2>,
-+							 <PIN_PA27__QSPI0_IO3>;
-+						bias-pull-up;
-+					};
-+				};
-+
- 				pinctrl_sdmmc0_default: sdmmc0_default {
- 					cmd_data {
- 						pinmux =3D <PIN_PA1__SDMMC0_CMD>,
---=20
-2.9.4
+Can you please make it like fscrypt_file_open()?
+
+static inline int fsverity_file_open(struct inode *inode, struct file *filp)
+{
+	if (IS_VERITY(inode))
+		return -EOPNOTSUPP;
+	return 0;
+}
+
+Same with fsverity_prepare_setattr().
+
+- Eric
