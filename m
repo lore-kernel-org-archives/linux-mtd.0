@@ -1,23 +1,24 @@
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWGxU-0004Ve-T5
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 08:30:34 +0000
-Subject: Re: [RFC PATCH 09/34] mtd: spi-nor: Add a flag to skip spi_nor_setup()
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Marek Vasut <marek.vasut@gmail.com>
-CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWH2g-0006TS-DF
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 08:35:57 +0000
+Date: Mon, 10 Dec 2018 09:35:32 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC PATCH 13/34] mtd: spi-nor: Add the concept of SPI NOR
+ manufacturer driver
+Message-ID: <20181210093532.5b3de67a@bbrezillon>
+In-Reply-To: <e0db2bce-df36-9068-cc41-149e9c919b1e@ti.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
- <20181207092637.18687-10-boris.brezillon@bootlin.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <b87690f8-b793-4500-b97c-ded302c97964@ti.com>
-Date: Mon, 10 Dec 2018 14:00:59 +0530
+ <20181207092637.18687-14-boris.brezillon@bootlin.com>
+ <e0db2bce-df36-9068-cc41-149e9c919b1e@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20181207092637.18687-10-boris.brezillon@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,57 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Vignesh,
 
+On Mon, 10 Dec 2018 13:50:03 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-On 07/12/18 2:56 PM, Boris Brezillon wrote:
-> Some manufacturers select the opcode to use in their fixups()
-> method, and they don't want the generic selection logic to override
-> their values. Add a flag to allow that.
+> >  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+> >  {
+> >  	int			tmp;
+> > @@ -1734,13 +1751,21 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+> >  		return ERR_PTR(tmp);
+> >  	}
+> >  
+> > -	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+> > -		info = &spi_nor_ids[tmp];
+> > -		if (info->id_len) {
+> > -			if (!memcmp(info->id, id, info->id_len))
+> > -				return &spi_nor_ids[tmp];
+> > +	for (tmp = 0; tmp < ARRAY_SIZE(manufacturers); tmp++) {
+> > +		info = spi_nor_search_part_by_id(manufacturers[tmp]->parts,
+> > +						 manufacturers[tmp]->nparts,
+> > +						 id);  
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 7 +++++++
->  include/linux/mtd/spi-nor.h   | 1 +
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f6b1c9b8079a..30dbddabec74 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -3502,6 +3502,13 @@ static int spi_nor_setup(struct spi_nor *nor,
->  	u32 ignored_mask, shared_mask;
->  	int err;
->  
-> +	/*
-> +	 * Some manufacturers select the opcode to use in their fixups()
-> +	 * method, and explicitly ask to skip the generic selection logic.
-> +	 */
-> +	if (nor->flags & SNOR_F_SKIP_SETUP)
-> +		return 0;
-> +
+> This could probably be optimized a bit by comparing manufacturer ID and
+> then looking through parts list of that particular manufacturer only.
+> (with expection of winbond manufacturer ID, where will have to go
+> through spansion parts list as well)
 
-Nit, I would suggest moving above check to the place where
-spi_nor_setup() is called in spi_nor_scan(). That way, its easier to
-know that setup is skipped when SNOR_F_SKIP_SETUP is set when reading
-spi_nor_scan() code. I am fine otherwise too.
+That's what I did at first, but it doesn't work. Some manufacturer IDs
+are prefixed by one or several continuation codes (0x7F). That was done
+to extend the 256 IDs space (see spec JEP106AX). We could have the
+manufacturer ID encoded with an array of byte instead of a single byte,
+but there's more: some flashes that are supposed to used continuation
+codes, just output the last (non-continuation) byte (see the ISSI IDs
+here [1] if you need a proof ;-)). So we're screwed.
 
->  	/*
->  	 * Keep only the hardware capabilities supported by both the SPI
->  	 * controller and the SPI flash memory.
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 2c8fbd5d614d..8c64f1dcd35e 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -235,6 +235,7 @@ enum spi_nor_option_flags {
->  	SNOR_F_4B_OPCODES	= BIT(6),
->  	SNOR_F_HAS_LOCK		= BIT(7),
->  	SNOR_F_CLR_SW_PROT_BITS	= BIT(8),
-> +	SNOR_F_SKIP_SETUP	= BIT(9),
->  };
->  
->  /**
-> 
+Regards,
 
--- 
-Regards
-Vignesh
+Boris
+
+[1]https://elixir.bootlin.com/linux/v4.20-rc6/source/drivers/mtd/spi-nor/spi-nor.c#L1351
