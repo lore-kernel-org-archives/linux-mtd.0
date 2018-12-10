@@ -1,16 +1,30 @@
-Received: from a8-41.smtp-out.amazonses.com ([54.240.8.41])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWLu4-0007sd-9e
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 13:47:21 +0000
+Date: Mon, 10 Dec 2018 15:50:57 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
+ <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>,
+ Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+Message-ID: <20181210155057.38788656@xps13>
+In-Reply-To: <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
+References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
+ <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181207102456.1dc67e07@xps13>
+ <823825a3-86fb-9a20-ae29-85cc52d44093@amlogic.com>
+ <20181210123809.5ade45c4@bbrezillon>
+ <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
 MIME-Version: 1.0
-Date: Mon, 10 Dec 2018 13:47:07 +0000
-Message-ID: <01000167985f1385-3bb94bf7-196d-455a-87a3-482549a1b50a-000000@email.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Subject: IDEAg Dakotafest Show 2018 Meeters
-From: "Bob Hostetler" <bob.hostetler@challengerresources.com>
-Reply-To: "Bob Hostetler" <bob.hostetler@challengerresources.com>
-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +34,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+Hi Liang,
 
-Today's your Great chance to sell directly to participants of the recent ID=
-EAg Dakotafest Show 2018:
+Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
++0800:
 
-Purchase the IDEAg Dakotafest Show 2018 Participants =E2=80=93 29000 contac=
-ts at $1500
-until the end of today.
+> On 2018/12/10 19:38, Boris Brezillon wrote:
+> > On Mon, 10 Dec 2018 19:23:46 +0800
+> > Liang Yang <liang.yang@amlogic.com> wrote:
+> >  =20
+> >>>> +			mtd->ecc_stats.failed++;
+> >>>> +			continue;
+> >>>> +		}
+> >>>> +		mtd->ecc_stats.corrected +=3D ECC_ERR_CNT(*info);
+> >>>> +		bitflips =3D max_t(u32, bitflips, ECC_ERR_CNT(*info));
+> >>>> +	} =20
+> >>>
+> >>> Are you sure you handle correctly empty pages with bf? =20
+> >>>    >> if scramble is enable, i would say yes here. =20
+> >> when scramble is disabled, i am considering how to use the helper
+> >> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
+> >> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
+> >> out the ecc parity bytes. =20
+> >=20
+> > Even if the ECC engine is disabled?
+> >  =20
+> No.
+> When ECC engine is disabled, it can read the ecc parity bytes ; but there=
+ is another problem that i need to consider how code struct looks better wh=
+en reading error with ecc opened and then try to raw read.
+> Is there a good idea?
 
-This resource provides the info you need to communicate with company decisi=
-on makers, without wasting time on dead ends and fighting through gatekeepe=
-rs.=20
+When reading with ECC enabled, in case of uncorrectable error you
+must re-read without ECC, then check if the page is empty or not with
+the core helpers (nand_check_erased_*()).
 
-Get yourself connected and beat your rivals to the punch!
+Is this what you meant?
 
-Best Wishes
-
-Bob Hostetler
-
-Notice of use: This data contained herein is not provided to us or shared b=
-y anyone related to the IDEAg Dakotafest Show 2018. Furthermore, our organi=
-zation is not a part of or affiliated with the IDEAg Dakotafest Show 2018 e=
-vent organizers. If you are not the original desired recipient of this tran=
-smission, please does not review, retransmit, disseminate, or take any acti=
-on based on it. If this was sent to you accidentally, please delete it as s=
-oon as possible from all storage media and contact the sender to inform the=
-m of the mistake. We reserve all ownership rights to this material, as well=
- as all lawful recourse available to seek remedy for its misuse. All data c=
-ontained herein is compiled lawfully, using public reference materials and =
-our own database.
+Thanks,
+Miqu=C3=A8l
