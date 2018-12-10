@@ -1,26 +1,21 @@
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWJjX-00040x-86
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 11:28:20 +0000
-Subject: Re: [RFC PATCH 13/34] mtd: spi-nor: Add the concept of SPI NOR
- manufacturer driver
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
- <marek.vasut@gmail.com>, Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
- <20181207092637.18687-14-boris.brezillon@bootlin.com>
- <e0db2bce-df36-9068-cc41-149e9c919b1e@ti.com>
- <20181210093532.5b3de67a@bbrezillon>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <ff61eec3-0f4c-2de1-b73d-23fc2396737b@ti.com>
-Date: Mon, 10 Dec 2018 16:58:39 +0530
+Date: Mon, 10 Dec 2018 12:28:18 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] mtd: spi-nor: cadence-quadspi: Add support for
+ Octal SPI controller
+Message-ID: <20181210122818.15de3232@bbrezillon>
+In-Reply-To: <f6c3a649-f580-513d-644d-5010b3b5cf0b@ti.com>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+ <20181003165603.2579-4-vigneshr@ti.com>
+ <20181210094513.6282d55e@bbrezillon>
+ <f6c3a649-f580-513d-644d-5010b3b5cf0b@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20181210093532.5b3de67a@bbrezillon>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,53 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/12/18 2:05 PM, Boris Brezillon wrote:
-> Hi Vignesh,
-> 
-> On Mon, 10 Dec 2018 13:50:03 +0530
-> Vignesh R <vigneshr@ti.com> wrote:
-> 
->>>  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>>  {
->>>  	int			tmp;
->>> @@ -1734,13 +1751,21 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>>  		return ERR_PTR(tmp);
->>>  	}
->>>  
->>> -	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->>> -		info = &spi_nor_ids[tmp];
->>> -		if (info->id_len) {
->>> -			if (!memcmp(info->id, id, info->id_len))
->>> -				return &spi_nor_ids[tmp];
->>> +	for (tmp = 0; tmp < ARRAY_SIZE(manufacturers); tmp++) {
->>> +		info = spi_nor_search_part_by_id(manufacturers[tmp]->parts,
->>> +						 manufacturers[tmp]->nparts,
->>> +						 id);  
->>
->> This could probably be optimized a bit by comparing manufacturer ID and
->> then looking through parts list of that particular manufacturer only.
->> (with expection of winbond manufacturer ID, where will have to go
->> through spansion parts list as well)
-> 
-> That's what I did at first, but it doesn't work. Some manufacturer IDs
-> are prefixed by one or several continuation codes (0x7F). That was done
-> to extend the 256 IDs space (see spec JEP106AX). We could have the
-> manufacturer ID encoded with an array of byte instead of a single byte,
-> but there's more: some flashes that are supposed to used continuation
-> codes, just output the last (non-continuation) byte (see the ISSI IDs
-> here [1] if you need a proof ;-)). So we're screwed.
-> 
+On Mon, 10 Dec 2018 16:49:29 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-Thats bad.. Few ISSI IDs are in conflict with company that does not have
-Continuation Code. Thanks for the information!
+> On 10/12/18 2:15 PM, Boris Brezillon wrote:
+> > On Wed, 3 Oct 2018 22:26:03 +0530
+> > Vignesh R <vigneshr@ti.com> wrote:
+> >   
+> >> Cadence OSPI controller IP supports Octal IO (x8 IO lines),
+> >> It also has an integrated PHY. IP register layout is very
+> >> similar to existing QSPI IP except for additional bits to support Octal
+> >> and Octal DDR mode. Therefore, extend current driver to support Octal
+> >> mode.
+> >>
+> >> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> >> ---
+> >>  drivers/mtd/spi-nor/cadence-quadspi.c | 9 +++++++++
+> >>  1 file changed, 9 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> >> index e24db817154e..48b00e75a879 100644
+> >> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> >> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> >> @@ -101,6 +101,7 @@ struct cqspi_st {
+> >>  #define CQSPI_INST_TYPE_SINGLE			0
+> >>  #define CQSPI_INST_TYPE_DUAL			1
+> >>  #define CQSPI_INST_TYPE_QUAD			2
+> >> +#define CQSPI_INST_TYPE_OCTAL			3
+> >>  
+> >>  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
+> >>  #define CQSPI_DUMMY_BYTES_MAX			4
+> >> @@ -898,6 +899,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
+> >>  		case SNOR_PROTO_1_1_4:
+> >>  			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
+> >>  			break;
+> >> +		case SNOR_PROTO_1_1_8:
+> >> +			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
+> >> +			break;
+> >>  		default:
+> >>  			return -EINVAL;
+> >>  		}
+> >> @@ -1205,6 +1209,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+> >>  			SNOR_HWCAPS_READ_FAST |
+> >>  			SNOR_HWCAPS_READ_1_1_2 |
+> >>  			SNOR_HWCAPS_READ_1_1_4 |
+> >> +			SNOR_HWCAPS_READ_1_1_8 |  
+> > 
+> > Is this really supported on qspi versions of this IP? I guess not given
+> > the description in the commit message and the name of the new
+> > compatible (ospi instead of qspi).  
+> 
+> No, qspi version does not support Octal mode. I guess you are pointing
+> out its logically wrong for driver with "*-qspi" compatible to declare
+> SNOR_HWCAPS_READ_1_1_8 capability.
 
-> Regards,
-> 
-> Boris
-> 
-> [1]https://elixir.bootlin.com/linux/v4.20-rc6/source/drivers/mtd/spi-nor/spi-nor.c#L1351
-> 
+Exactly.
 
--- 
-Regards
-Vignesh
+> Will update patch to declare SNOR_HWCAPS_READ_1_1_8 based on compatible.
+
+Thanks.
