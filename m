@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWHWk-0000Dq-T1
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 09:07:00 +0000
-Date: Mon, 10 Dec 2018 10:06:37 +0100
+ id 1gWHcw-0003tE-Cm
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 09:13:24 +0000
+Date: Mon, 10 Dec 2018 10:12:44 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
 Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
@@ -11,13 +11,12 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Miquel
  Raynal <miquel.raynal@bootlin.com>, Brian Norris
  <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH 01/34] mtd: spi-nor: Add a new hook to let part
- specific code tweak the config
-Message-ID: <20181210100637.3229b425@bbrezillon>
-In-Reply-To: <a998a19b-bc82-8900-d57c-3cf39a3a2422@nokia.com>
+Subject: Re: [RFC PATCH 34/34] mtd: spi-nor: Add sfdp fixups hooks
+Message-ID: <20181210101244.66864d91@bbrezillon>
+In-Reply-To: <a82791ca-6c23-3b14-a839-f979041591d7@nokia.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
- <20181207092637.18687-2-boris.brezillon@bootlin.com>
- <a998a19b-bc82-8900-d57c-3cf39a3a2422@nokia.com>
+ <20181207092637.18687-35-boris.brezillon@bootlin.com>
+ <a82791ca-6c23-3b14-a839-f979041591d7@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,39 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 7 Dec 2018 16:29:02 +0000
+On Fri, 7 Dec 2018 16:29:41 +0000
 "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
 wrote:
 
-> >  static const struct flash_info *spi_nor_match_id(const char *name)
-> >  {
-> >  	const struct flash_info *id = spi_nor_ids;
-> > @@ -3805,6 +3821,18 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
-> >  	if (info->flags & SPI_NOR_NO_FR)
-> >  		params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
 > >  
-> > +	/*
-> > +	 * Post SFDP fixups. Has to be called before spi_nor_setup() because
-> > +	 * some fixups might modify params that are then used by
-> > +	 * spi_nor_setup() to select the opcodes.
-> > +	 */
-> > +	ret = spi_nor_post_sfdp_fixups(nor, &params);
-> > +	if (ret) {
-> > +		dev_err(dev, "failed in the post-SFDP fixups (err %d)\n",
-> > +			ret);  
-> 
-> You don't report an error in patch 34, I think there should be a consistent
-> approach to this...
+> >  /**
+> >   * struct spi_nor_fixups - SPI NOR fixup hooks
+> > + * @sfdp_hdr: SFDP header fixups
+> > + * @sfdp_hdr: SFDP parameter headers fixups  
+>        ^^^^^^^^
+> Should be sfdp_param_hdrs
 
-Patch 34 shouldn't have been part of this series :), but I agree, we
-should be consistent.
+Oops.
 
 > 
-> > +		return ret;
-> > +	}
-> > +
-> >  	/*
-> >  	 * Configure the SPI memory:
-> >  	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
-> >   
+> >   * @post_bfpt: called after the BFPT table has been parsed
+> >   * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
+> >   *	       that do not support RDSFDP). Typically used to tweak various
+> > @@ -199,6 +201,11 @@ struct sfdp_bfpt {
+> >   * table is broken or not available.
+> >   */
+> >  struct spi_nor_fixups {
+> > +	int (*sfdp_hdr)(struct spi_nor *nor,
+> > +			struct sfdp_header *hdr);
+> > +	int (*sfdp_param_hdrs)(struct spi_nor *nor,
+> > +			       struct sfdp_header *hdr,
+> > +			       struct sfdp_parameter_header *param_hdrs);
+> >  	int (*post_bfpt)(struct spi_nor *nor,
+> >  			 const struct sfdp_parameter_header *bfpt_header,
+> >  			 const struct sfdp_bfpt *bfpt,
+> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> > index 36343e3e6be0..a8cd070e4ea2 100644
+> > --- a/drivers/mtd/spi-nor/sfdp.c
+> > +++ b/drivers/mtd/spi-nor/sfdp.c
+> > @@ -534,8 +534,8 @@ static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
+> >  static int
+> >  spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+> >  			 const struct sfdp_parameter_header *bfpt_header,
+> > -			 const struct sfdp_bfpt *bfpt,
+> > -			 struct spi_nor_flash_parameter *params)
+> > +                         const struct sfdp_bfpt *bfpt,
+> > +                         struct spi_nor_flash_parameter *params)  
 > 
+> That's where checkpatch.pl would warn you
+
+Didn't run checkpatch on this series (I tend to not run checkpatch
+on big RFC series where I'm expecting feedback on the general
+approach).
+
+Anyway, this patch should be dropped since those hooks are not used,
+and I don't think we should add new fixup hooks if we don't have a user.
