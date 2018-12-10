@@ -1,23 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWNfY-0007Oa-A9
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 15:40:30 +0000
-Date: Mon, 10 Dec 2018 16:40:16 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Thomas Gleixner
- <tglx@linutronix.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>
-Subject: Re: [EXT] Re: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial
- erase issue
-Message-ID: <20181210164016.0a3cf27a@xps13>
-In-Reply-To: <BYASPR01MB00310C7F883FF6E06A2DA5C5DBAA0@BYASPR01MB0031.namprd08.prod.outlook.com>
-References: <alpine.DEB.2.21.1811292207570.1657@nanos.tec.linutronix.de>
- <20181202082918.3b5f303a@bbrezillon>
- <BYASPR01MB00310C7F883FF6E06A2DA5C5DBAA0@BYASPR01MB0031.namprd08.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
+ <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "broonie@kernel.org" <broonie@kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, Schrempf Frieder <frieder.schrempf@kontron.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] Prepare devicetrees for the new FSL QSPI driver
+Date: Mon, 10 Dec 2018 16:28:47 +0000
+Message-ID: <1544459182-23655-1-git-send-email-frieder.schrempf@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,81 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote on Fri, 7 Dec 2018
-13:12:56 +0000:
+We have prepared a new driver for the FSL QSPI controller that works under
+the SPI framework. The current devicetrees are broken because they use an
+inconsistent scheme for assigning the reg properties.
 
-> >+Bean,
-> >
-> >Hi Thomas,
-> >
-> >First of all, I'd like to thank you for sharing this patch. I'm pretty s=
-ure this will
-> >save days of painful debug sessions to a lot of people.
-> >
-> >On Thu, 29 Nov 2018 22:12:50 +0100 (CET) Thomas Gleixner
-> ><tglx@linutronix.de> wrote:
-> > =20
-> >> On some Micron NAND chips block erase fails occasionaly despite the
-> >> chip claiming that it succeeded. The flash block seems to be not
-> >> completely erased and subsequent usage of the block results in hard to
-> >> decode and very subtle failures or corruption.
-> >>
-> >> The exact reason is unknown, but experimentation has shown that it is
-> >> only happening when erasing an erase block which is partially written.
-> >> Partially written erase blocks are not uncommon with UBI/UBIFS.  Note,
-> >> that this does not always happen. It's a rare and random, but eventual=
-ly =20
-> >fatal failure. =20
-> >>
-> >> For now, just blindly write 6 pages to 0. Again experimentation has
-> >> shown that it's not sufficient to write pages at the beginning of the
-> >> erase block. There need to be pages written in the second half of the
-> >> erase block as well. So write 3 pages before and past the middle of th=
-e block.
-> >>
-> >> Less than 6 pages might be sufficient, but it might even be necessary
-> >> to write more pages to make sure that it's completely cured. Two pages
-> >> still failed, but the 6 held up in a stress test scenario.
-> >>
-> >> This should be optimized by keeping track of writes, but that needs
-> >> proper information about the issue.
-> >>
-> >> As it's just observation and experimentation based, it's probably wise
-> >> to hold off on this until there is proper clarification about the root
-> >> cause of the problem. The patch is for reference so others can avoid
-> >> to decode this again, but there is no guarantee that it actually fixes
-> >> the issue completely. =20
-> >
-> >I agree. I Cc-ed Bean from Micron. Maybe he can provide more information
-> >on this issue.
-> > =20
-> >>
-> >> Therefore:
-> >>
-> >> Not-yet-signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> >>
-> >> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-> >> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> >> Cc: Richard Weinberger <richard@nod.at>
-> >>
-> >> ---
-> >>
-> >> P.S.: This was debugged on an older kernel version (sigh) and ported
-> >>       forward without actual testing on mainline. My MTD foo is a bit
-> >>       rusty, so I won't be surprised if there are better ways to do th=
-at. =20
-> >
-> >Let's first wait for Bean's feedback before discussing implementation de=
-tails.
-> >BTW, do you remember the part number(s) of the flash(es) impacted by this
-> >problem in your case?
-> > =20
-> Thanks, let me know this issue, I will look at this
+As, in contrast to the current driver, the new driver will use the reg
+properties to select the correct chip, we need to fix them.
 
-I think it's time for you to comment on the situation.
+We also add spi-[tx/rx]-bus-width to make sure the full buswidth will be us=
+ed
+and while at it clean up and remove some unused properties.
 
+Frieder Schrempf (5):
+  arm64: dts: Remove unused properties from FSL QSPI driver nodes
+  ARM: dts: Remove unused properties from FSL QSPI driver nodes
+  ARM: dts: imx6sx-sdb: Fix the reg properties for the FSL QSPI nodes
+  arm64: dts: Add spi-[tx/rx]-bus-width for the FSL QSPI controller
+  ARM: dts: Add spi-[tx/rx]-bus-width for the FSL QSPI controller
 
-Thanks,
-Miqu=C3=A8l
+ arch/arm/boot/dts/imx6sx-sdb-reva.dts              | 8 ++++++--
+ arch/arm/boot/dts/imx6sx-sdb.dts                   | 8 ++++++--
+ arch/arm/boot/dts/imx6ul-14x14-evk.dtsi            | 2 ++
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts        | 5 ++---
+ arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts  | 3 ++-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts  | 4 ++--
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 6 ++++--
+ arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi | 4 ++++
+ 8 files changed, 28 insertions(+), 12 deletions(-)
+
+--=20
+2.7.4
