@@ -1,18 +1,21 @@
 From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
+To: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
+ <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Li Yang
+ <leoyang.li@nxp.com>
 CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "broonie@kernel.org" <broonie@kernel.org>, "linux-spi@vger.kernel.org"
  <linux-spi@vger.kernel.org>, Schrempf Frieder <frieder.schrempf@kontron.de>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4/5] arm64: dts: Add spi-[tx/rx]-bus-width for the FSL QSPI
+Subject: [PATCH 5/5] ARM: dts: Add spi-[tx/rx]-bus-width for the FSL QSPI
  controller
-Date: Mon, 10 Dec 2018 16:28:49 +0000
-Message-ID: <1544459182-23655-5-git-send-email-frieder.schrempf@kontron.de>
+Date: Mon, 10 Dec 2018 16:28:50 +0000
+Message-ID: <1544459182-23655-6-git-send-email-frieder.schrempf@kontron.de>
 References: <1544459182-23655-1-git-send-email-frieder.schrempf@kontron.de>
 In-Reply-To: <1544459182-23655-1-git-send-email-frieder.schrempf@kontron.de>
 Content-Language: en-US
@@ -36,85 +39,84 @@ the current driver), let's add the right properties.
 
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts  | 2 ++
- arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts  | 2 ++
- arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 4 ++++
- arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi | 4 ++++
+ arch/arm/boot/dts/imx6sx-sdb-reva.dts       | 4 ++++
+ arch/arm/boot/dts/imx6sx-sdb.dts            | 4 ++++
+ arch/arm/boot/dts/imx6ul-14x14-evk.dtsi     | 2 ++
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts | 2 ++
  4 files changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts b/arch/arm64=
-/boot/dts/freescale/fsl-ls1043a-qds.dts
-index d2c06ad4..8a50094 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts
-@@ -142,6 +142,8 @@
- 		#address-cells =3D <1>;
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-reva.dts b/arch/arm/boot/dts/imx6=
+sx-sdb-reva.dts
+index 344abc2..9997156 100644
+--- a/arch/arm/boot/dts/imx6sx-sdb-reva.dts
++++ b/arch/arm/boot/dts/imx6sx-sdb-reva.dts
+@@ -132,6 +132,8 @@
  		#size-cells =3D <1>;
- 		spi-max-frequency =3D <20000000>;
+ 		compatible =3D "spansion,s25fl128s", "jedec,spi-nor";
+ 		spi-max-frequency =3D <66000000>;
 +		spi-rx-bus-width =3D <4>;
 +		spi-tx-bus-width =3D <4>;
- 		reg =3D <0>;
  	};
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts b/arch/arm64=
-/boot/dts/freescale/fsl-ls1046a-qds.dts
-index 6ec1adb..2f220ec 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts
-@@ -170,6 +170,8 @@
- 		#address-cells =3D <1>;
+=20
+ 	flash1: s25fl128s@2 {
+@@ -140,5 +142,7 @@
  		#size-cells =3D <1>;
- 		spi-max-frequency =3D <20000000>;
+ 		compatible =3D "spansion,s25fl128s", "jedec,spi-nor";
+ 		spi-max-frequency =3D <66000000>;
 +		spi-rx-bus-width =3D <4>;
 +		spi-tx-bus-width =3D <4>;
- 		reg =3D <0>;
  	};
  };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts b/arch/arm64=
-/boot/dts/freescale/fsl-ls1046a-rdb.dts
-index 17f1298..07c665c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts
-@@ -106,6 +106,8 @@
- 		#address-cells =3D <1>;
+diff --git a/arch/arm/boot/dts/imx6sx-sdb.dts b/arch/arm/boot/dts/imx6sx-sd=
+b.dts
+index 5a39703..9acfda8 100644
+--- a/arch/arm/boot/dts/imx6sx-sdb.dts
++++ b/arch/arm/boot/dts/imx6sx-sdb.dts
+@@ -117,6 +117,8 @@
  		#size-cells =3D <1>;
- 		spi-max-frequency =3D <20000000>;
+ 		compatible =3D "micron,n25q256a", "jedec,spi-nor";
+ 		spi-max-frequency =3D <29000000>;
 +		spi-rx-bus-width =3D <4>;
 +		spi-tx-bus-width =3D <4>;
  		reg =3D <0>;
  	};
 =20
-@@ -114,6 +116,8 @@
- 		#address-cells =3D <1>;
+@@ -125,6 +127,8 @@
  		#size-cells =3D <1>;
- 		spi-max-frequency =3D <20000000>;
-+		spi-rx-bus-width =3D <4>;
-+		spi-tx-bus-width =3D <4>;
- 		reg =3D <1>;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi b/arch/arm6=
-4/boot/dts/freescale/fsl-ls208xa-qds.dtsi
-index c11f52e..10d2fe0 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa-qds.dtsi
-@@ -134,6 +134,8 @@
- 		#size-cells =3D <1>;
- 		compatible =3D "st,m25p80";
- 		spi-max-frequency =3D <20000000>;
-+		spi-rx-bus-width =3D <4>;
-+		spi-tx-bus-width =3D <4>;
- 		reg =3D <0>;
- 	};
- 	flash2: s25fl256s1@2 {
-@@ -141,6 +143,8 @@
- 		#size-cells =3D <1>;
- 		compatible =3D "st,m25p80";
- 		spi-max-frequency =3D <20000000>;
+ 		compatible =3D "micron,n25q256a", "jedec,spi-nor";
+ 		spi-max-frequency =3D <29000000>;
 +		spi-rx-bus-width =3D <4>;
 +		spi-tx-bus-width =3D <4>;
  		reg =3D <2>;
  	};
  };
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi b/arch/arm/boot/dts/im=
+x6ul-14x14-evk.dtsi
+index 32a0723..c2c9a2a 100644
+--- a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
+@@ -176,6 +176,8 @@
+ 		#size-cells =3D <1>;
+ 		compatible =3D "micron,n25q256a";
+ 		spi-max-frequency =3D <29000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts b/arch/arm/boot/dt=
+s/ls1021a-moxa-uc-8410a.dts
+index 6bb7ce0..6a83f30 100644
+--- a/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
++++ b/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
+@@ -211,6 +211,8 @@
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		spi-max-frequency =3D <20000000>;
++		spi-rx-bus-width =3D <4>;
++		spi-tx-bus-width =3D <4>;
+ 		reg =3D <0>;
+=20
+ 		partitions@0 {
 --=20
 2.7.4
