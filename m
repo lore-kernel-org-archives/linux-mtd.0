@@ -1,24 +1,34 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWH4k-0006nO-Fr
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 08:38:03 +0000
-Date: Mon, 10 Dec 2018 09:37:41 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
- <marek.vasut@gmail.com>, Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC PATCH 09/34] mtd: spi-nor: Add a flag to skip spi_nor_setup()
-Message-ID: <20181210093741.76fd0234@bbrezillon>
-In-Reply-To: <b87690f8-b793-4500-b97c-ded302c97964@ti.com>
-References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
- <20181207092637.18687-10-boris.brezillon@bootlin.com>
- <b87690f8-b793-4500-b97c-ded302c97964@ti.com>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 0/7] spi: add support for octal mode
+Date: Mon, 10 Dec 2018 08:39:20 +0000
+Message-ID: <VI1PR04MB572609DBC52F7496A656915E99A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181203101937.7b01a0ad@bbrezillon>
+ <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
+ <20181205134618.56223758@bbrezillon>
+ <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206074554.0ec0aecb@bbrezillon>
+ <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206202956.GG3084@sirena.org.uk>
+ <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181210092208.0971c3be@bbrezillon>
+In-Reply-To: <20181210092208.0971c3be@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +38,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Dec 2018 14:00:59 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+Hi Boris,
 
-> On 07/12/18 2:56 PM, Boris Brezillon wrote:
-> > Some manufacturers select the opcode to use in their fixups()
-> > method, and they don't want the generic selection logic to override
-> > their values. Add a flag to allow that.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 7 +++++++
-> >  include/linux/mtd/spi-nor.h   | 1 +
-> >  2 files changed, 8 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index f6b1c9b8079a..30dbddabec74 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -3502,6 +3502,13 @@ static int spi_nor_setup(struct spi_nor *nor,
-> >  	u32 ignored_mask, shared_mask;
-> >  	int err;
-> >  
-> > +	/*
-> > +	 * Some manufacturers select the opcode to use in their fixups()
-> > +	 * method, and explicitly ask to skip the generic selection logic.
-> > +	 */
-> > +	if (nor->flags & SNOR_F_SKIP_SETUP)
-> > +		return 0;
-> > +  
-> 
-> Nit, I would suggest moving above check to the place where
-> spi_nor_setup() is called in spi_nor_scan(). That way, its easier to
-> know that setup is skipped when SNOR_F_SKIP_SETUP is set when reading
-> spi_nor_scan() code.
+Sorry for confusion.
 
-I agree. Will change that in v2.
+My intention was just to point to the correct patch number only. Earlier yo=
+u have asked Mark to pick the patch [1] but that patch number was not corre=
+ct.
+
+[1] https://lkml.org/lkml/2018/12/5/758
+
+--
+Regards
+Yogesh Gaur
+
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, December 10, 2018 1:52 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: Mark Brown <broonie@kernel.org>; Vignesh R <vigneshr@ti.com>; linux-
+> mtd@lists.infradead.org; marek.vasut@gmail.com; linux-spi@vger.kernel.org=
+;
+> devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
+> shawnguo@kernel.org; linux-arm-kernel@lists.infradead.org;
+> computersforpeace@gmail.com; frieder.schrempf@exceet.de; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
+>=20
+> Hi Yogesh,
+>=20
+> On Mon, 10 Dec 2018 04:13:28 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+> > Hi Mark,
+> >
+> > Patch has been resend [1], this patch is depends on the series of patch=
+[2] and
+> this series has been applied by Boris already.
+>=20
+> You're still not asking the right person. Every patches touching things i=
+n
+> drivers/mtd/ should be taken by me (or another MTD maintainer), and patch=
+es
+> touching things in drivers/spi/ should be taken by Mark. So, the patch yo=
+u're
+> pointing to should be applied by me. Plus, I told you I would apply it af=
+ter 4.21-
+> rc1 because I don't want to deal with the mtd -> spi dependency.
+>=20
+> Please be patient.
+>=20
+> Regards,
+>=20
+> Boris
