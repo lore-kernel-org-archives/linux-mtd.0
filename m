@@ -1,17 +1,32 @@
-Date: Mon, 10 Dec 2018 09:45:44 +0100
+Date: Mon, 10 Dec 2018 09:50:42 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
-Message-ID: <20181210094544.3843e782@bbrezillon>
-In-Reply-To: <0e4286ea-85d1-a909-17c0-47f9506b3e5a@ti.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <0e4286ea-85d1-a909-17c0-47f9506b3e5a@ti.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
+Message-ID: <20181210095042.354d422f@bbrezillon>
+In-Reply-To: <VI1PR04MB572609DBC52F7496A656915E99A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181203101937.7b01a0ad@bbrezillon>
+ <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
+ <20181205134618.56223758@bbrezillon>
+ <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206074554.0ec0aecb@bbrezillon>
+ <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181206202956.GG3084@sirena.org.uk>
+ <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181210092208.0971c3be@bbrezillon>
+ <VI1PR04MB572609DBC52F7496A656915E99A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,41 +39,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 9 Dec 2018 14:17:18 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+On Mon, 10 Dec 2018 08:39:20 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
 > Hi Boris,
 > 
-> On 03/10/18 10:26 PM, Vignesh R wrote:
-> > This series adds support for octal mode of mt35x flash. Also, adds
-> > support for OSPI version of Cadence QSPI controller.
-> > 
-> > Based on top of patches adding basic support for mt35xu512aba here:
-> > https://patchwork.ozlabs.org/cover/971437/
-> > 
-> > Vignesh R (3):
-> >   mtd: spi-nor: Add Octal mode support for mt35xu512aba  
+> Sorry for confusion.
 > 
-> 
-> >   dt-bindings: cadence-quadspi: Add new compatible for AM654 SoC
-> >   mtd: spi-nor: cadence-quadspi: Add support for Octal SPI controller  
-> 
-> Could you consider above two patches for v4.21 once [1][2] are merged?
-> 
-> [1] https://patchwork.ozlabs.org/patch/1006717/
-> [2] https://patchwork.ozlabs.org/patch/1006715/
+> My intention was just to point to the correct patch number only. Earlier you have asked Mark to pick the patch [1] but that patch number was not correct.
 
-I asked Tudor to have a look at those patches. I'll apply them once I
-have his R-b.
+Look at the context in [1] (we have good reasons to reply inline instead
+of top-posting). I asked Mark to pick "spi: nxp-fspi: add octal mode
+flag bit for octal support", not the m25p80 changes. I was wrong
+though, as the patch I pointed to depends on your nxp-fspi patchset
+which as not been merged yet.
 
 > 
-> Let me know if this needs to be re-posted.
-> 
-> > 
-> >  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
-> >  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++
-> >  drivers/mtd/spi-nor/spi-nor.c                         | 11 ++++++++++-
-> >  include/linux/mtd/spi-nor.h                           |  2 ++
-> >  4 files changed, 22 insertions(+), 1 deletion(-)
-> >   
-> 
+> [1] https://lkml.org/lkml/2018/12/5/758
