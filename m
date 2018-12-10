@@ -1,32 +1,23 @@
-Date: Mon, 10 Dec 2018 09:50:42 +0100
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWHWk-0000Dq-T1
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 09:07:00 +0000
+Date: Mon, 10 Dec 2018 10:06:37 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
-Message-ID: <20181210095042.354d422f@bbrezillon>
-In-Reply-To: <VI1PR04MB572609DBC52F7496A656915E99A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181203101937.7b01a0ad@bbrezillon>
- <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
- <20181205134618.56223758@bbrezillon>
- <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181206074554.0ec0aecb@bbrezillon>
- <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181206202956.GG3084@sirena.org.uk>
- <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181210092208.0971c3be@bbrezillon>
- <VI1PR04MB572609DBC52F7496A656915E99A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+To: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ Vignesh R <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC PATCH 01/34] mtd: spi-nor: Add a new hook to let part
+ specific code tweak the config
+Message-ID: <20181210100637.3229b425@bbrezillon>
+In-Reply-To: <a998a19b-bc82-8900-d57c-3cf39a3a2422@nokia.com>
+References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
+ <20181207092637.18687-2-boris.brezillon@bootlin.com>
+ <a998a19b-bc82-8900-d57c-3cf39a3a2422@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -39,20 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Dec 2018 08:39:20 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+On Fri, 7 Dec 2018 16:29:02 +0000
+"Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+wrote:
 
-> Hi Boris,
+> >  static const struct flash_info *spi_nor_match_id(const char *name)
+> >  {
+> >  	const struct flash_info *id = spi_nor_ids;
+> > @@ -3805,6 +3821,18 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >  	if (info->flags & SPI_NOR_NO_FR)
+> >  		params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+> >  
+> > +	/*
+> > +	 * Post SFDP fixups. Has to be called before spi_nor_setup() because
+> > +	 * some fixups might modify params that are then used by
+> > +	 * spi_nor_setup() to select the opcodes.
+> > +	 */
+> > +	ret = spi_nor_post_sfdp_fixups(nor, &params);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed in the post-SFDP fixups (err %d)\n",
+> > +			ret);  
 > 
-> Sorry for confusion.
-> 
-> My intention was just to point to the correct patch number only. Earlier you have asked Mark to pick the patch [1] but that patch number was not correct.
+> You don't report an error in patch 34, I think there should be a consistent
+> approach to this...
 
-Look at the context in [1] (we have good reasons to reply inline instead
-of top-posting). I asked Mark to pick "spi: nxp-fspi: add octal mode
-flag bit for octal support", not the m25p80 changes. I was wrong
-though, as the patch I pointed to depends on your nxp-fspi patchset
-which as not been merged yet.
+Patch 34 shouldn't have been part of this series :), but I agree, we
+should be consistent.
 
 > 
-> [1] https://lkml.org/lkml/2018/12/5/758
+> > +		return ret;
+> > +	}
+> > +
+> >  	/*
+> >  	 * Configure the SPI memory:
+> >  	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
+> >   
+> 
