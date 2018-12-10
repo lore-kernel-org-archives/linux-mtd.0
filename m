@@ -1,32 +1,23 @@
-Date: Mon, 10 Dec 2018 09:22:08 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/7] spi: add support for octal mode
-Message-ID: <20181210092208.0971c3be@bbrezillon>
-In-Reply-To: <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181203101937.7b01a0ad@bbrezillon>
- <214dadd9-859c-ca88-1aff-1c83fcfa3c0b@ti.com>
- <20181205134618.56223758@bbrezillon>
- <VI1PR04MB572646B71C6CB7BAAB4A1E1999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181206074554.0ec0aecb@bbrezillon>
- <VI1PR04MB572620BB57CB01A352904BB999A90@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <20181206202956.GG3084@sirena.org.uk>
- <VI1PR04MB572641541BB83E587541BBD099A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWGxU-0004Ve-T5
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 08:30:34 +0000
+Subject: Re: [RFC PATCH 09/34] mtd: spi-nor: Add a flag to skip spi_nor_setup()
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Marek Vasut <marek.vasut@gmail.com>
+CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
+ <20181207092637.18687-10-boris.brezillon@bootlin.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <b87690f8-b793-4500-b97c-ded302c97964@ti.com>
+Date: Mon, 10 Dec 2018 14:00:59 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181207092637.18687-10-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,24 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
 
-On Mon, 10 Dec 2018 04:13:28 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-> Hi Mark,
+On 07/12/18 2:56 PM, Boris Brezillon wrote:
+> Some manufacturers select the opcode to use in their fixups()
+> method, and they don't want the generic selection logic to override
+> their values. Add a flag to allow that.
 > 
-> Patch has been resend [1], this patch is depends on the series of patch[2] and this series has been applied by Boris already.
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 7 +++++++
+>  include/linux/mtd/spi-nor.h   | 1 +
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index f6b1c9b8079a..30dbddabec74 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -3502,6 +3502,13 @@ static int spi_nor_setup(struct spi_nor *nor,
+>  	u32 ignored_mask, shared_mask;
+>  	int err;
+>  
+> +	/*
+> +	 * Some manufacturers select the opcode to use in their fixups()
+> +	 * method, and explicitly ask to skip the generic selection logic.
+> +	 */
+> +	if (nor->flags & SNOR_F_SKIP_SETUP)
+> +		return 0;
+> +
 
-You're still not asking the right person. Every patches touching
-things in drivers/mtd/ should be taken by me (or another MTD
-maintainer), and patches touching things in drivers/spi/ should be
-taken by Mark. So, the patch you're pointing to should be applied by
-me. Plus, I told you I would apply it after 4.21-rc1 because I don't
-want to deal with the mtd -> spi dependency.
+Nit, I would suggest moving above check to the place where
+spi_nor_setup() is called in spi_nor_scan(). That way, its easier to
+know that setup is skipped when SNOR_F_SKIP_SETUP is set when reading
+spi_nor_scan() code. I am fine otherwise too.
 
-Please be patient.
+>  	/*
+>  	 * Keep only the hardware capabilities supported by both the SPI
+>  	 * controller and the SPI flash memory.
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 2c8fbd5d614d..8c64f1dcd35e 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -235,6 +235,7 @@ enum spi_nor_option_flags {
+>  	SNOR_F_4B_OPCODES	= BIT(6),
+>  	SNOR_F_HAS_LOCK		= BIT(7),
+>  	SNOR_F_CLR_SW_PROT_BITS	= BIT(8),
+> +	SNOR_F_SKIP_SETUP	= BIT(9),
+>  };
+>  
+>  /**
+> 
 
-Regards,
-
-Boris
+-- 
+Regards
+Vignesh
