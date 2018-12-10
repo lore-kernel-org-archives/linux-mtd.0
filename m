@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWH2g-0006TS-DF
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 08:35:57 +0000
-Date: Mon, 10 Dec 2018 09:35:32 +0100
+ id 1gWH4k-0006nO-Fr
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2018 08:38:03 +0000
+Date: Mon, 10 Dec 2018 09:37:41 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Vignesh R <vigneshr@ti.com>
 Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
@@ -10,13 +10,12 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Marek Vasut
  Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
  Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC PATCH 13/34] mtd: spi-nor: Add the concept of SPI NOR
- manufacturer driver
-Message-ID: <20181210093532.5b3de67a@bbrezillon>
-In-Reply-To: <e0db2bce-df36-9068-cc41-149e9c919b1e@ti.com>
+Subject: Re: [RFC PATCH 09/34] mtd: spi-nor: Add a flag to skip spi_nor_setup()
+Message-ID: <20181210093741.76fd0234@bbrezillon>
+In-Reply-To: <b87690f8-b793-4500-b97c-ded302c97964@ti.com>
 References: <20181207092637.18687-1-boris.brezillon@bootlin.com>
- <20181207092637.18687-14-boris.brezillon@bootlin.com>
- <e0db2bce-df36-9068-cc41-149e9c919b1e@ti.com>
+ <20181207092637.18687-10-boris.brezillon@bootlin.com>
+ <b87690f8-b793-4500-b97c-ded302c97964@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,43 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh,
-
-On Mon, 10 Dec 2018 13:50:03 +0530
+On Mon, 10 Dec 2018 14:00:59 +0530
 Vignesh R <vigneshr@ti.com> wrote:
 
-> >  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
-> >  {
-> >  	int			tmp;
-> > @@ -1734,13 +1751,21 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
-> >  		return ERR_PTR(tmp);
-> >  	}
+> On 07/12/18 2:56 PM, Boris Brezillon wrote:
+> > Some manufacturers select the opcode to use in their fixups()
+> > method, and they don't want the generic selection logic to override
+> > their values. Add a flag to allow that.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 7 +++++++
+> >  include/linux/mtd/spi-nor.h   | 1 +
+> >  2 files changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index f6b1c9b8079a..30dbddabec74 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -3502,6 +3502,13 @@ static int spi_nor_setup(struct spi_nor *nor,
+> >  	u32 ignored_mask, shared_mask;
+> >  	int err;
 > >  
-> > -	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
-> > -		info = &spi_nor_ids[tmp];
-> > -		if (info->id_len) {
-> > -			if (!memcmp(info->id, id, info->id_len))
-> > -				return &spi_nor_ids[tmp];
-> > +	for (tmp = 0; tmp < ARRAY_SIZE(manufacturers); tmp++) {
-> > +		info = spi_nor_search_part_by_id(manufacturers[tmp]->parts,
-> > +						 manufacturers[tmp]->nparts,
-> > +						 id);  
+> > +	/*
+> > +	 * Some manufacturers select the opcode to use in their fixups()
+> > +	 * method, and explicitly ask to skip the generic selection logic.
+> > +	 */
+> > +	if (nor->flags & SNOR_F_SKIP_SETUP)
+> > +		return 0;
+> > +  
 > 
-> This could probably be optimized a bit by comparing manufacturer ID and
-> then looking through parts list of that particular manufacturer only.
-> (with expection of winbond manufacturer ID, where will have to go
-> through spansion parts list as well)
+> Nit, I would suggest moving above check to the place where
+> spi_nor_setup() is called in spi_nor_scan(). That way, its easier to
+> know that setup is skipped when SNOR_F_SKIP_SETUP is set when reading
+> spi_nor_scan() code.
 
-That's what I did at first, but it doesn't work. Some manufacturer IDs
-are prefixed by one or several continuation codes (0x7F). That was done
-to extend the 256 IDs space (see spec JEP106AX). We could have the
-manufacturer ID encoded with an array of byte instead of a single byte,
-but there's more: some flashes that are supposed to used continuation
-codes, just output the last (non-continuation) byte (see the ISSI IDs
-here [1] if you need a proof ;-)). So we're screwed.
-
-Regards,
-
-Boris
-
-[1]https://elixir.bootlin.com/linux/v4.20-rc6/source/drivers/mtd/spi-nor/spi-nor.c#L1351
+I agree. Will change that in v2.
