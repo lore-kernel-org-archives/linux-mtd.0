@@ -1,22 +1,31 @@
-Date: Mon, 10 Dec 2018 12:28:18 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] mtd: spi-nor: cadence-quadspi: Add support for
- Octal SPI controller
-Message-ID: <20181210122818.15de3232@bbrezillon>
-In-Reply-To: <f6c3a649-f580-513d-644d-5010b3b5cf0b@ti.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003165603.2579-4-vigneshr@ti.com>
- <20181210094513.6282d55e@bbrezillon>
- <f6c3a649-f580-513d-644d-5010b3b5cf0b@ti.com>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
+ <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 3/7] mtd: spi-nor: add opcodes for octal Read/Write
+ commands
+Date: Mon, 10 Dec 2018 11:28:45 +0000
+Message-ID: <VI1PR04MB5726B7F4D7B25843144EA04299A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1543826226-30898-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181210115717.01ad2e60@bbrezillon>
+ <VI1PR04MB5726164D7E52B013FF2F135B99A50@VI1PR04MB5726.eurprd04.prod.outlook.com>
+ <20181210122707.3416095c@bbrezillon>
+In-Reply-To: <20181210122707.3416095c@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +35,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Dec 2018 16:49:29 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+Hi,
 
-> On 10/12/18 2:15 PM, Boris Brezillon wrote:
-> > On Wed, 3 Oct 2018 22:26:03 +0530
-> > Vignesh R <vigneshr@ti.com> wrote:
-> >   
-> >> Cadence OSPI controller IP supports Octal IO (x8 IO lines),
-> >> It also has an integrated PHY. IP register layout is very
-> >> similar to existing QSPI IP except for additional bits to support Octal
-> >> and Octal DDR mode. Therefore, extend current driver to support Octal
-> >> mode.
-> >>
-> >> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> >> ---
-> >>  drivers/mtd/spi-nor/cadence-quadspi.c | 9 +++++++++
-> >>  1 file changed, 9 insertions(+)
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-> >> index e24db817154e..48b00e75a879 100644
-> >> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> >> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> >> @@ -101,6 +101,7 @@ struct cqspi_st {
-> >>  #define CQSPI_INST_TYPE_SINGLE			0
-> >>  #define CQSPI_INST_TYPE_DUAL			1
-> >>  #define CQSPI_INST_TYPE_QUAD			2
-> >> +#define CQSPI_INST_TYPE_OCTAL			3
-> >>  
-> >>  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
-> >>  #define CQSPI_DUMMY_BYTES_MAX			4
-> >> @@ -898,6 +899,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
-> >>  		case SNOR_PROTO_1_1_4:
-> >>  			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
-> >>  			break;
-> >> +		case SNOR_PROTO_1_1_8:
-> >> +			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
-> >> +			break;
-> >>  		default:
-> >>  			return -EINVAL;
-> >>  		}
-> >> @@ -1205,6 +1209,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
-> >>  			SNOR_HWCAPS_READ_FAST |
-> >>  			SNOR_HWCAPS_READ_1_1_2 |
-> >>  			SNOR_HWCAPS_READ_1_1_4 |
-> >> +			SNOR_HWCAPS_READ_1_1_8 |  
-> > 
-> > Is this really supported on qspi versions of this IP? I guess not given
-> > the description in the commit message and the name of the new
-> > compatible (ospi instead of qspi).  
-> 
-> No, qspi version does not support Octal mode. I guess you are pointing
-> out its logically wrong for driver with "*-qspi" compatible to declare
-> SNOR_HWCAPS_READ_1_1_8 capability.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, December 10, 2018 4:57 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: linux-mtd@lists.infradead.org; broonie@kernel.org;
+> marek.vasut@gmail.com; vigneshr@ti.com; linux-spi@vger.kernel.org;
+> devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
+> shawnguo@kernel.org; linux-arm-kernel@lists.infradead.org;
+> computersforpeace@gmail.com; frieder.schrempf@exceet.de; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH v5 3/7] mtd: spi-nor: add opcodes for octal Read/Writ=
+e
+> commands
+>=20
+> On Mon, 10 Dec 2018 11:17:20 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+> > Hi Boris,
+> >
+> > > -----Original Message-----
+> > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > > Sent: Monday, December 10, 2018 4:27 PM
+> > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> > > Cc: linux-mtd@lists.infradead.org; broonie@kernel.org;
+> > > marek.vasut@gmail.com; vigneshr@ti.com; linux-spi@vger.kernel.org;
+> > > devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
+> > > shawnguo@kernel.org; linux-arm-kernel@lists.infradead.org;
+> > > computersforpeace@gmail.com; frieder.schrempf@exceet.de; linux-
+> > > kernel@vger.kernel.org
+> > > Subject: Re: [PATCH v5 3/7] mtd: spi-nor: add opcodes for octal
+> > > Read/Write commands
+> > >
+> > > On Mon, 3 Dec 2018 08:39:18 +0000
+> > > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> > >
+> > > > - Add opcodes for octal I/O commands
+> > > >   * Read  : 1-1-8 and 1-8-8 protocol
+> > > >   * Write : 1-1-8 and 1-8-8 protocol
+> > > >   * opcodes for 4-byte address mode command
+> > > >
+> > > > - Entry of macros in _convert_3to4_xxx function
+> > > >
+> > > > - Add flag specifying flash support octal read commands.
+> > > >
+> > > > Signed-off-by: Vignesh R <vigneshr@ti.com>
+> > > > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> > >
+> > > Looks like the SoB and Author lines do not match
+> > >
+> > > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> vs Yogesh Gaur
+> > > <yogeshnarayan.gaur@nxp.com>
+> > >
+> > > Can you find a way to make them match?
+> > I am sending the patches with my smtp server of OutlookOffice and in th=
+at my
+> user name is "Yogesh Narayan Gaur" and in gitconfig of my Linux machine I=
+ set
+> user name as "Yogesh Gaur".
+> > Is it mandatory to have same Author name in SoB and Author lines, if ye=
+s I
+> would change the settings in gitconfig file.
+>=20
+> We have scripts that check that the author/committer has its SoB, dependi=
+ng on
+> how strict the check is, it might complaint that SoB an author/committer =
+do not
+> match, so yes, please change gitconfig to make them match.
+>=20
+Ok, sure. In all other future patches would modify my Author name.
 
-Exactly.
-
-> Will update patch to declare SNOR_HWCAPS_READ_1_1_8 based on compatible.
-
-Thanks.
+> Thanks,
+>=20
+> Boris
