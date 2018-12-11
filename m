@@ -1,20 +1,32 @@
-Date: Mon, 10 Dec 2018 22:35:53 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Tudor.Ambarus@microchip.com
-Cc: Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
- robh+dt@kernel.org, mark.rutland@arm.com,
- Cyrille.Pitchen@microchip.com, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- boris.brezillon@bootlin.com, linux-mtd@lists.infradead.org,
- broonie@kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: at91: sama5d2 Xplained: add QSPI0 + SPI NOR
- memory nodes
-Message-ID: <20181210213553.GK8952@piout.net>
-References: <20181210171511.21002-1-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
+ <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
+ <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181207102456.1dc67e07@xps13>
+ <823825a3-86fb-9a20-ae29-85cc52d44093@amlogic.com>
+ <20181210123809.5ade45c4@bbrezillon>
+ <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
+ <20181210155057.38788656@xps13>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <d60bac6f-732d-0ddc-2644-17f650dfa885@amlogic.com>
+Date: Tue, 11 Dec 2018 09:56:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181210171511.21002-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20181210155057.38788656@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,88 +36,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Miquel,
 
-On 10/12/2018 17:15:29+0000, Tudor.Ambarus@microchip.com wrote:
-> From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+On 2018/12/10 22:50, Miquel Raynal wrote:
+> Hi Liang,
 > 
-> This patch configures the QSPI0 controller pin muxing and declares
-> a jedec,spi-nor memory.
+> Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
+> +0800:
 > 
-> sama5d2 Xplained RevB and RevC use the Macronix MX25L25673G flash
-> memory which advertises a maximum frequency of 80MHz for Quad IO
-> Fast Read. Set the spi-max-frequency to 80MHz knowing that actually
-> the QSPI drver will set the SPI bus clock to 166MHz / 3 = 55.3MHz.
+>> On 2018/12/10 19:38, Boris Brezillon wrote:
+>>> On Mon, 10 Dec 2018 19:23:46 +0800
+>>> Liang Yang <liang.yang@amlogic.com> wrote:
+>>>    
+>>>>>> +			mtd->ecc_stats.failed++;
+>>>>>> +			continue;
+>>>>>> +		}
+>>>>>> +		mtd->ecc_stats.corrected += ECC_ERR_CNT(*info);
+>>>>>> +		bitflips = max_t(u32, bitflips, ECC_ERR_CNT(*info));
+>>>>>> +	}
+>>>>>
+>>>>> Are you sure you handle correctly empty pages with bf?
+>>>>>     >> if scramble is enable, i would say yes here.
+>>>> when scramble is disabled, i am considering how to use the helper
+>>>> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
+>>>> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
+>>>> out the ecc parity bytes.
+>>>
+>>> Even if the ECC engine is disabled?
+>>>    
+>> No.
+>> When ECC engine is disabled, it can read the ecc parity bytes ; but there is another problem that i need to consider how code struct looks better when reading error with ecc opened and then try to raw read.
+>> Is there a good idea?
 > 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-> [tudor.ambarus@microchip.com:
-> - drop partitions,
-> - add spi-rx/tx-bus-width
-> - change spi-max-frequency to match the 80MHz limit advertised by
->   MX25L25673G for Quad IO Fast Read,
-> - reword commit message and subject.]
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 31 +++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
+> When reading with ECC enabled, in case of uncorrectable error you
+> must re-read without ECC, then check if the page is empty or not with
+> the core helpers (nand_check_erased_*()).
 > 
-> diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-> index 518e2b095ccf..171bc82cfbbf 100644
-> --- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-> +++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-> @@ -108,6 +108,21 @@
->  		};
->  
->  		apb {
-> +			qspi0: spi@f0020000 {
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&pinctrl_qspi0_default>;
-> +				/* status = "okay"; */ /* conflict with sdmmc1 */
+> Is this what you meant?
+> 
+yes. when uncorrectable ECC error, i need firstly read out the ECC bytes 
+without ECC engine and then use the helper nand_check_erased_ecc_chunk 
+to check if blank page.
+Of course, the precondition is without scrambler, or the bland page can 
+be detected by meson NFC.
 
-Isn't that conflicting then because I think the default is okay.
-
-> +
-> +				flash@0 {
-> +					compatible = "jedec,spi-nor";
-> +					reg = <0>;
-> +					spi-max-frequency = <80000000>;
-> +					spi-tx-bus-width = <4>;
-> +					spi-rx-bus-width = <4>;
-> +					m25p,fast-read;
-> +				};
-> +			};
-> +
->  			spi0: spi@f8000000 {
->  				pinctrl-names = "default";
->  				pinctrl-0 = <&pinctrl_spi0_default>;
-> @@ -485,6 +500,22 @@
->  					bias-disable;
->  				};
->  
-> +				pinctrl_qspi0_default: qspi0_default {
-> +					sck_cs {
-> +						pinmux = <PIN_PA22__QSPI0_SCK>,
-> +							 <PIN_PA23__QSPI0_CS>;
-> +						bias-disable;
-> +					};
-> +
-> +					data {
-> +						pinmux = <PIN_PA24__QSPI0_IO0>,
-> +							 <PIN_PA25__QSPI0_IO1>,
-> +							 <PIN_PA26__QSPI0_IO2>,
-> +							 <PIN_PA27__QSPI0_IO3>;
-> +						bias-pull-up;
-> +					};
-> +				};
-> +
->  				pinctrl_sdmmc0_default: sdmmc0_default {
->  					cmd_data {
->  						pinmux = <PIN_PA1__SDMMC0_CMD>,
-> -- 
-> 2.9.4
+> Thanks,
+> Miquèl
 > 
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> .
+> 
