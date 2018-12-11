@@ -1,36 +1,23 @@
-Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
- <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
- <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, Neil
- Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
- Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
- <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
- <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
- <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
- <20181207102456.1dc67e07@xps13>
- <823825a3-86fb-9a20-ae29-85cc52d44093@amlogic.com>
- <20181210123809.5ade45c4@bbrezillon>
- <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
- <20181210155057.38788656@xps13>
- <d60bac6f-732d-0ddc-2644-17f650dfa885@amlogic.com>
- <20181211085445.68e57e0e@xps13>
- <356aed95-518d-7cd0-4337-184f181472ad@amlogic.com>
- <20181211100718.51d2cd6c@xps13>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <ce821991-423b-837a-a936-699716791aad@amlogic.com>
-Date: Tue, 11 Dec 2018 17:43:11 +0800
-MIME-Version: 1.0
-In-Reply-To: <20181211100718.51d2cd6c@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+From: <Tudor.Ambarus@microchip.com>
+To: <alexandre.belloni@bootlin.com>
+CC: <Nicolas.Ferre@microchip.com>, <Ludovic.Desroches@microchip.com>,
+ <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+ <Cyrille.Pitchen@microchip.com>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <boris.brezillon@bootlin.com>, <linux-mtd@lists.infradead.org>,
+ <broonie@kernel.org>, <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH] ARM: dts: at91: sama5d2 Xplained: add QSPI0 + SPI NOR
+ memory nodes
+Date: Tue, 11 Dec 2018 12:32:40 +0000
+Message-ID: <22730de3-55f0-df21-312a-560a02f02dc7@microchip.com>
+References: <20181210171511.21002-1-tudor.ambarus@microchip.com>
+ <20181210213553.GK8952@piout.net>
+In-Reply-To: <20181210213553.GK8952@piout.net>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FDD38498AEBB3547A3FAB81144C33D0F@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,78 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
-
-On 2018/12/11 17:07, Miquel Raynal wrote:
-> Hi Liang,
-> 
-> Liang Yang <liang.yang@amlogic.com> wrote on Tue, 11 Dec 2018 16:36:47
-> +0800:
-> 
->> Hi Miquel,
->>
->> Thanks for your quickly reply.
->>
->> On 2018/12/11 15:54, Miquel Raynal wrote:
->>> Hi Liang,
->>>
->>> Liang Yang <liang.yang@amlogic.com> wrote on Tue, 11 Dec 2018 09:56:25
->>> +0800:
->>>    
->>>> Hi Miquel,
->>>>
->>>> On 2018/12/10 22:50, Miquel Raynal wrote:
->>>>> Hi Liang,
->>>>>
->>>>> Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
->>>>> +0800:
->>>>>     >>>> On 2018/12/10 19:38, Boris Brezillon wrote:
->>>>>>> On Mon, 10 Dec 2018 19:23:46 +0800
->>>>>>> Liang Yang <liang.yang@amlogic.com> wrote:
->>>>>>>      >>>>>> +			mtd->ecc_stats.failed++;
->>>>>>>>>> +			continue;
->>>>>>>>>> +		}
->>>>>>>>>> +		mtd->ecc_stats.corrected += ECC_ERR_CNT(*info);
->>>>>>>>>> +		bitflips = max_t(u32, bitflips, ECC_ERR_CNT(*info));
->>>>>>>>>> +	}
->>>>>>>>>
->>>>>>>>> Are you sure you handle correctly empty pages with bf?
->>>>>>>>>       >> if scramble is enable, i would say yes here.
->>>>>>>> when scramble is disabled, i am considering how to use the helper
->>>>>>>> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
->>>>>>>> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
->>>>>>>> out the ecc parity bytes.
->>>>>>>
->>>>>>> Even if the ECC engine is disabled?
->>>>>>>      >> No.
->>>>>> When ECC engine is disabled, it can read the ecc parity bytes ; but there is another problem that i need to consider how code struct looks better when reading error with ecc opened and then try to raw read.
->>>>>> Is there a good idea?
->>>>>
->>>>> When reading with ECC enabled, in case of uncorrectable error you
->>>>> must re-read without ECC, then check if the page is empty or not with
->>>>> the core helpers (nand_check_erased_*()).
->>>>>
->>>>> Is this what you meant?
->>>>>     >> yes. when uncorrectable ECC error, i need firstly read out the ECC bytes without ECC engine and then use the helper nand_check_erased_ecc_chunk to check if blank page.
->>>> Of course, the precondition is without scrambler, or the bland page can be detected by meson NFC.
->>>
->>> A suppose you meant "blank page"? If yes, then you don't need the
->>> helper to check for only-0xFF pages. If the controller tells you if the
->>> page was blank, then just check for that bit.
->>>    
->>
->> i think not. we need to return back the previous problem that how i can get the bitflips of one blank page. i think i need the helper.
-> 
-> You are right, I suppose the "blank page" flag is only triggered if
-> there is no bitflip. In this case you can assume there are no
-> bitflips. Otherwise the controller will trigger an
-> uncorrectable error event and you will have to re-read the page
-> without ECC and check for bitflips with the helper.
-> 
-yes, that is right. i will do the "re-read" process.
-> 
-> Thanks,
-> Miquèl
-> 
-> .
-> 
+SGksIEFsZXhhbmRyZSwNCg0KT24gMTIvMTAvMjAxOCAxMTozNSBQTSwgQWxleGFuZHJlIEJlbGxv
+bmkgd3JvdGU6DQo+IEhpLA0KPiANCj4gT24gMTAvMTIvMjAxOCAxNzoxNToyOSswMDAwLCBUdWRv
+ci5BbWJhcnVzQG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+PiBGcm9tOiBDeXJpbGxlIFBpdGNoZW4g
+PGN5cmlsbGUucGl0Y2hlbkBtaWNyb2NoaXAuY29tPg0KPj4NCj4+IFRoaXMgcGF0Y2ggY29uZmln
+dXJlcyB0aGUgUVNQSTAgY29udHJvbGxlciBwaW4gbXV4aW5nIGFuZCBkZWNsYXJlcw0KPj4gYSBq
+ZWRlYyxzcGktbm9yIG1lbW9yeS4NCj4+DQo+PiBzYW1hNWQyIFhwbGFpbmVkIFJldkIgYW5kIFJl
+dkMgdXNlIHRoZSBNYWNyb25peCBNWDI1TDI1NjczRyBmbGFzaA0KPj4gbWVtb3J5IHdoaWNoIGFk
+dmVydGlzZXMgYSBtYXhpbXVtIGZyZXF1ZW5jeSBvZiA4ME1IeiBmb3IgUXVhZCBJTw0KPj4gRmFz
+dCBSZWFkLiBTZXQgdGhlIHNwaS1tYXgtZnJlcXVlbmN5IHRvIDgwTUh6IGtub3dpbmcgdGhhdCBh
+Y3R1YWxseQ0KPj4gdGhlIFFTUEkgZHJ2ZXIgd2lsbCBzZXQgdGhlIFNQSSBidXMgY2xvY2sgdG8g
+MTY2TUh6IC8gMyA9IDU1LjNNSHouDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogQ3lyaWxsZSBQaXRj
+aGVuIDxjeXJpbGxlLnBpdGNoZW5AbWljcm9jaGlwLmNvbT4NCj4+IFt0dWRvci5hbWJhcnVzQG1p
+Y3JvY2hpcC5jb206DQo+PiAtIGRyb3AgcGFydGl0aW9ucywNCj4+IC0gYWRkIHNwaS1yeC90eC1i
+dXMtd2lkdGgNCj4+IC0gY2hhbmdlIHNwaS1tYXgtZnJlcXVlbmN5IHRvIG1hdGNoIHRoZSA4ME1I
+eiBsaW1pdCBhZHZlcnRpc2VkIGJ5DQo+PiAgIE1YMjVMMjU2NzNHIGZvciBRdWFkIElPIEZhc3Qg
+UmVhZCwNCj4+IC0gcmV3b3JkIGNvbW1pdCBtZXNzYWdlIGFuZCBzdWJqZWN0Ll0NCj4+IFNpZ25l
+ZC1vZmYtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4+
+IC0tLQ0KPj4gIGFyY2gvYXJtL2Jvb3QvZHRzL2F0OTEtc2FtYTVkMl94cGxhaW5lZC5kdHMgfCAz
+MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAzMSBp
+bnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2F0OTEt
+c2FtYTVkMl94cGxhaW5lZC5kdHMgYi9hcmNoL2FybS9ib290L2R0cy9hdDkxLXNhbWE1ZDJfeHBs
+YWluZWQuZHRzDQo+PiBpbmRleCA1MThlMmIwOTVjY2YuLjE3MWJjODJjZmJiZiAxMDA2NDQNCj4+
+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2F0OTEtc2FtYTVkMl94cGxhaW5lZC5kdHMNCj4+ICsr
+KyBiL2FyY2gvYXJtL2Jvb3QvZHRzL2F0OTEtc2FtYTVkMl94cGxhaW5lZC5kdHMNCj4+IEBAIC0x
+MDgsNiArMTA4LDIxIEBADQo+PiAgCQl9Ow0KPj4gIA0KPj4gIAkJYXBiIHsNCj4+ICsJCQlxc3Bp
+MDogc3BpQGYwMDIwMDAwIHsNCj4+ICsJCQkJcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4+
+ICsJCQkJcGluY3RybC0wID0gPCZwaW5jdHJsX3FzcGkwX2RlZmF1bHQ+Ow0KPj4gKwkJCQkvKiBz
+dGF0dXMgPSAib2theSI7ICovIC8qIGNvbmZsaWN0IHdpdGggc2RtbWMxICovDQo+IA0KPiBJc24n
+dCB0aGF0IGNvbmZsaWN0aW5nIHRoZW4gYmVjYXVzZSBJIHRoaW5rIHRoZSBkZWZhdWx0IGlzIG9r
+YXkuDQpxc3BpMCBpcyBkaXNhYmxlZCBpbiBzYW1hNWQyLmR0c2kuDQoNClRoYW5rcywNCnRhDQo=
