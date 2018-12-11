@@ -1,25 +1,22 @@
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]
- helo=mo-csw.securemx.jp)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWiip-0003eM-8E
- for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 14:09:19 +0000
-Received: from s24c61.dm1.oii.oki.co.jp (localhost.localdomain [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id A5FAFFBC3EF
- for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:08:57 +0900 (JST)
-Received: from APC01-HK2-obe.outbound.protection.outlook.com
- (mail-hk2apc01lp2052.outbound.protection.outlook.com [104.47.124.52])
- by s24c61.dm1.oii.oki.co.jp (Postfix) with ESMTP id 58FC7FBC384
- for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:08:57 +0900 (JST)
-From: =?iso-2022-jp?B?GyRCSXAwZhsoQiAbJEI5bkxAGyhC?= <takei744@oki.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: =?iso-2022-jp?B?GyRCSXAwZhsoQiAbJEI5bkxAGyhC?= <takei744@oki.com>
-Subject: Questions about ubifs,ubi and mtd?
-Date: Tue, 11 Dec 2018 14:08:56 +0000
-Message-ID: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 11 Dec 2018 15:35:45 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Tudor.Ambarus@microchip.com
+Cc: Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+ robh+dt@kernel.org, mark.rutland@arm.com,
+ Cyrille.Pitchen@microchip.com, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ boris.brezillon@bootlin.com, linux-mtd@lists.infradead.org,
+ broonie@kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: at91: sama5d2 Xplained: add QSPI0 + SPI NOR
+ memory nodes
+Message-ID: <20181211143545.GR8952@piout.net>
+References: <20181210171511.21002-1-tudor.ambarus@microchip.com>
+ <20181210213553.GK8952@piout.net>
+ <22730de3-55f0-df21-312a-560a02f02dc7@microchip.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22730de3-55f0-df21-312a-560a02f02dc7@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On 11/12/2018 12:32:40+0000, Tudor.Ambarus@microchip.com wrote:
+> Hi, Alexandre,
+> 
+> On 12/10/2018 11:35 PM, Alexandre Belloni wrote:
+> > Hi,
+> > 
+> > On 10/12/2018 17:15:29+0000, Tudor.Ambarus@microchip.com wrote:
+> >> From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+> >>
+> >> This patch configures the QSPI0 controller pin muxing and declares
+> >> a jedec,spi-nor memory.
+> >>
+> >> sama5d2 Xplained RevB and RevC use the Macronix MX25L25673G flash
+> >> memory which advertises a maximum frequency of 80MHz for Quad IO
+> >> Fast Read. Set the spi-max-frequency to 80MHz knowing that actually
+> >> the QSPI drver will set the SPI bus clock to 166MHz / 3 = 55.3MHz.
+> >>
+> >> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+> >> [tudor.ambarus@microchip.com:
+> >> - drop partitions,
+> >> - add spi-rx/tx-bus-width
+> >> - change spi-max-frequency to match the 80MHz limit advertised by
+> >>   MX25L25673G for Quad IO Fast Read,
+> >> - reword commit message and subject.]
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >> ---
+> >>  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 31 +++++++++++++++++++++++++++++
+> >>  1 file changed, 31 insertions(+)
+> >>
+> >> diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+> >> index 518e2b095ccf..171bc82cfbbf 100644
+> >> --- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+> >> +++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+> >> @@ -108,6 +108,21 @@
+> >>  		};
+> >>  
+> >>  		apb {
+> >> +			qspi0: spi@f0020000 {
+> >> +				pinctrl-names = "default";
+> >> +				pinctrl-0 = <&pinctrl_qspi0_default>;
+> >> +				/* status = "okay"; */ /* conflict with sdmmc1 */
+> > 
+> > Isn't that conflicting then because I think the default is okay.
+> qspi0 is disabled in sama5d2.dtsi.
+> 
 
-We are developing the product using file system using ubi, ubifs on hardwar=
-e with NAND flash memory.
+Ok, then maybe that comment is not necessary at all.
 
-Although the development of the product was completed, we are seeking your =
-help as the customer who is using it is having trouble with it.
-
-The product we have developed has 6 MTD partitions for NAND flash memory.
-These consist of 6 MTDs named 'kernel-a' 'kernel-b', 'rootfs-a', 'rootfs-b'=
-, 'data-1', 'data-2', and online program only accesses 'data-1' and 'data-2=
-' for write access.
-Nevertheless, when loading our program from 'rootfs-a', trying to read the =
-inode with the ubifs_read_node() function will result in "bad node type" (e=
-x: 193 but expected 9) and the LEB can not be read with the expected value.=
- (Even though you do not have write access to rootfs)
-In addition, the file size may be 0 byte in some cases.
-
-Is there anyone who encountered such a problem? Is there patch?
-
-Please let me know, if you have any questions.
-
-Best regards,
-Katsuaki Takei/Oki Electric Industry Co., Ltd./JP
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
