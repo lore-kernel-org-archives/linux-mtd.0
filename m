@@ -1,23 +1,16 @@
-Date: Tue, 11 Dec 2018 15:50:03 +0100
-From: Ludovic Desroches <ludovic.desroches@microchip.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC: <Tudor.Ambarus@microchip.com>, <Nicolas.Ferre@microchip.com>,
- <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <Cyrille.Pitchen@microchip.com>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <boris.brezillon@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <broonie@kernel.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH] ARM: dts: at91: sama5d2 Xplained: add QSPI0 + SPI NOR
- memory nodes
-Message-ID: <20181211145003.7bwd5yknm5cegtdj@M43218.corp.atmel.com>
-References: <20181210171511.21002-1-tudor.ambarus@microchip.com>
- <20181210213553.GK8952@piout.net>
- <22730de3-55f0-df21-312a-560a02f02dc7@microchip.com>
- <20181211143545.GR8952@piout.net>
+Received: from a27-192.smtp-out.us-west-2.amazonses.com ([54.240.27.192])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWkHJ-0001VY-Ku
+ for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 15:48:59 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20181211143545.GR8952@piout.net>
+Date: Tue, 11 Dec 2018 15:48:44 +0000
+Message-ID: <010101679df4cadc-3988d142-693f-4ed8-afd6-d670e7cf8e6a-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: IDEAg Minnesota Farmfest show 2018 Meeters
+From: "Johanna Lewis" <johanna.lewis@firststaradvertising.com>
+Reply-To: "Johanna Lewis" <johanna.lewis@firststaradvertising.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 11, 2018 at 03:35:45PM +0100, Alexandre Belloni wrote:
-> On 11/12/2018 12:32:40+0000, Tudor.Ambarus@microchip.com wrote:
-> > Hi, Alexandre,
-> > 
-> > On 12/10/2018 11:35 PM, Alexandre Belloni wrote:
-> > > Hi,
-> > > 
-> > > On 10/12/2018 17:15:29+0000, Tudor.Ambarus@microchip.com wrote:
-> > >> From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-> > >>
-> > >> This patch configures the QSPI0 controller pin muxing and declares
-> > >> a jedec,spi-nor memory.
-> > >>
-> > >> sama5d2 Xplained RevB and RevC use the Macronix MX25L25673G flash
-> > >> memory which advertises a maximum frequency of 80MHz for Quad IO
-> > >> Fast Read. Set the spi-max-frequency to 80MHz knowing that actually
-> > >> the QSPI drver will set the SPI bus clock to 166MHz / 3 = 55.3MHz.
-> > >>
-> > >> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-> > >> [tudor.ambarus@microchip.com:
-> > >> - drop partitions,
-> > >> - add spi-rx/tx-bus-width
-> > >> - change spi-max-frequency to match the 80MHz limit advertised by
-> > >>   MX25L25673G for Quad IO Fast Read,
-> > >> - reword commit message and subject.]
-> > >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > >> ---
-> > >>  arch/arm/boot/dts/at91-sama5d2_xplained.dts | 31 +++++++++++++++++++++++++++++
-> > >>  1 file changed, 31 insertions(+)
-> > >>
-> > >> diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-> > >> index 518e2b095ccf..171bc82cfbbf 100644
-> > >> --- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-> > >> +++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
-> > >> @@ -108,6 +108,21 @@
-> > >>  		};
-> > >>  
-> > >>  		apb {
-> > >> +			qspi0: spi@f0020000 {
-> > >> +				pinctrl-names = "default";
-> > >> +				pinctrl-0 = <&pinctrl_qspi0_default>;
-> > >> +				/* status = "okay"; */ /* conflict with sdmmc1 */
-> > > 
-> > > Isn't that conflicting then because I think the default is okay.
-> > qspi0 is disabled in sama5d2.dtsi.
-> > 
-> 
-> Ok, then maybe that comment is not necessary at all.
+Hi ,
 
-Usually we do it the other way around:
-status = "disabled"; /* conflict with ... */
+There's one and only one must-have resource for the recent IDEAg Minnesota =
+Farmfest show 2018 and we're happy to offer it to you for a short time:
 
-Regards
+Purchase the IDEAg Minnesota Farmfest show 2018 Participants =E2=80=93 32,0=
+00 contacts at $900, until the end of today.
 
-Ludovic
+We're offering this list to you first because it's uniquely designed to hel=
+p you reach your marketing audience faster and focus on sales more efficien=
+tly.=20
+
+Look forward to hearing from you soon.
+
+Thanks and Regards
+
+Johanna Lewis
+
+Advisory: Rights of ownership to the data contained in this transmission ar=
+e held solely by our organization. This includes the lawful right to seek r=
+emedy for its misuse. This data is only to be used by the original desired =
+recipient and is not to be reviewed, retransmitted, disseminated, or acted =
+upon by any other individual or entity. Please delete this data if you are =
+not the original desired recipient and notify the sender of the error as so=
+on as possible. The IDEAg Minnesota Farmfest show 2018 does not sell or pro=
+vide this data to us, and our organization is not affiliated with the event=
+ organizers for the IDEAg Minnesota Farmfest show 2018. This data is source=
+d through public records and information sources, as well as our internal d=
+atabase.
