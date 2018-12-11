@@ -1,7 +1,7 @@
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWcoO-0004zX-7g
- for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 07:50:38 +0000
+ id 1gWcoQ-0004zZ-4B
+ for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 07:50:39 +0000
 From: Vignesh R <vigneshr@ti.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>, Marek Vasut
  <marek.vasut@gmail.com>
@@ -10,9 +10,12 @@ CC: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
  <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Vignesh R
  <vigneshr@ti.com>
-Subject: [PATCH v2 0/2] cadence-quadspi: Add Octal mode support
-Date: Tue, 11 Dec 2018 13:21:04 +0530
-Message-ID: <20181211075106.21317-1-vigneshr@ti.com>
+Subject: [PATCH v2 1/2] dt-bindings: cadence-quadspi: Add new compatible for
+ AM654 SoC
+Date: Tue, 11 Dec 2018 13:21:05 +0530
+Message-ID: <20181211075106.21317-2-vigneshr@ti.com>
+In-Reply-To: <20181211075106.21317-1-vigneshr@ti.com>
+References: <20181211075106.21317-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -25,24 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series adds support for OSPI version of Cadence QSPI controller IP.
-Based on top of [1][2] that add Octal mode support in spi-nor core:
+AM654 SoC has Cadence Octal SPI controller, which is similar to Cadence
+QSPI controller but supports Octal IO(x8 data lines) and Double Data
+Rate(DDR) mode. Add new compatible to support OSPI controller on TI's
+AM654 SoCs.
 
-[1] https://patchwork.ozlabs.org/patch/1006717/
-[2] https://patchwork.ozlabs.org/patch/1006715/
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+v2
+Collect Reviewed-by's
 
-Changes:
-v2:
-spi-nor core patches dropped, are now part of Yogesh's series [1]
-Declare Octal mode capability based on compatible.
+ Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Vignesh R (2):
-  dt-bindings: cadence-quadspi: Add new compatible for AM654 SoC
-  mtd: spi-nor: cadence-quadspi: Add support for Octal SPI controller
-
- .../bindings/mtd/cadence-quadspi.txt          |  1 +
- drivers/mtd/spi-nor/cadence-quadspi.c         | 54 ++++++++++++++-----
- 2 files changed, 43 insertions(+), 12 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+index bb2075df9b38..4345c3a6f530 100644
+--- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+@@ -4,6 +4,7 @@ Required properties:
+ - compatible : should be one of the following:
+ 	Generic default - "cdns,qspi-nor".
+ 	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
++	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
+ - reg : Contains two entries, each of which is a tuple consisting of a
+ 	physical address and length. The first entry is the address and
+ 	length of the controller register set. The second entry is the
 -- 
 2.19.2
