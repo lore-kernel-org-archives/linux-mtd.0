@@ -1,7 +1,7 @@
 Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic NAND
  flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Jianxin Pan
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
  <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
  <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
@@ -20,15 +20,17 @@ References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
  <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
  <20181210155057.38788656@xps13>
  <d60bac6f-732d-0ddc-2644-17f650dfa885@amlogic.com>
- <20181211093933.2fab8cc3@bbrezillon>
+ <20181211085445.68e57e0e@xps13>
+ <356aed95-518d-7cd0-4337-184f181472ad@amlogic.com>
+ <20181211100718.51d2cd6c@xps13>
 From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <6abef955-5ce0-6213-b616-67a306d1fb31@amlogic.com>
-Date: Tue, 11 Dec 2018 17:39:51 +0800
+Message-ID: <ce821991-423b-837a-a936-699716791aad@amlogic.com>
+Date: Tue, 11 Dec 2018 17:43:11 +0800
 MIME-Version: 1.0
-In-Reply-To: <20181211093933.2fab8cc3@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20181211100718.51d2cd6c@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,63 +40,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Miquel,
 
-On 2018/12/11 16:39, Boris Brezillon wrote:
-> On Tue, 11 Dec 2018 09:56:25 +0800
-> Liang Yang <liang.yang@amlogic.com> wrote:
+On 2018/12/11 17:07, Miquel Raynal wrote:
+> Hi Liang,
+> 
+> Liang Yang <liang.yang@amlogic.com> wrote on Tue, 11 Dec 2018 16:36:47
+> +0800:
 > 
 >> Hi Miquel,
 >>
->> On 2018/12/10 22:50, Miquel Raynal wrote:
+>> Thanks for your quickly reply.
+>>
+>> On 2018/12/11 15:54, Miquel Raynal wrote:
 >>> Hi Liang,
 >>>
->>> Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
+>>> Liang Yang <liang.yang@amlogic.com> wrote on Tue, 11 Dec 2018 09:56:25
 >>> +0800:
 >>>    
->>>> On 2018/12/10 19:38, Boris Brezillon wrote:
->>>>> On Mon, 10 Dec 2018 19:23:46 +0800
->>>>> Liang Yang <liang.yang@amlogic.com> wrote:
->>>>>       
->>>>>>>> +			mtd->ecc_stats.failed++;
->>>>>>>> +			continue;
->>>>>>>> +		}
->>>>>>>> +		mtd->ecc_stats.corrected += ECC_ERR_CNT(*info);
->>>>>>>> +		bitflips = max_t(u32, bitflips, ECC_ERR_CNT(*info));
->>>>>>>> +	}
->>>>>>>
->>>>>>> Are you sure you handle correctly empty pages with bf?
->>>>>>>      >> if scramble is enable, i would say yes here.
->>>>>> when scramble is disabled, i am considering how to use the helper
->>>>>> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
->>>>>> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
->>>>>> out the ecc parity bytes.
+>>>> Hi Miquel,
+>>>>
+>>>> On 2018/12/10 22:50, Miquel Raynal wrote:
+>>>>> Hi Liang,
 >>>>>
->>>>> Even if the ECC engine is disabled?
->>>>>       
->>>> No.
->>>> When ECC engine is disabled, it can read the ecc parity bytes ; but there is another problem that i need to consider how code struct looks better when reading error with ecc opened and then try to raw read.
->>>> Is there a good idea?
+>>>>> Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
+>>>>> +0800:
+>>>>>     >>>> On 2018/12/10 19:38, Boris Brezillon wrote:
+>>>>>>> On Mon, 10 Dec 2018 19:23:46 +0800
+>>>>>>> Liang Yang <liang.yang@amlogic.com> wrote:
+>>>>>>>      >>>>>> +			mtd->ecc_stats.failed++;
+>>>>>>>>>> +			continue;
+>>>>>>>>>> +		}
+>>>>>>>>>> +		mtd->ecc_stats.corrected += ECC_ERR_CNT(*info);
+>>>>>>>>>> +		bitflips = max_t(u32, bitflips, ECC_ERR_CNT(*info));
+>>>>>>>>>> +	}
+>>>>>>>>>
+>>>>>>>>> Are you sure you handle correctly empty pages with bf?
+>>>>>>>>>       >> if scramble is enable, i would say yes here.
+>>>>>>>> when scramble is disabled, i am considering how to use the helper
+>>>>>>>> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
+>>>>>>>> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
+>>>>>>>> out the ecc parity bytes.
+>>>>>>>
+>>>>>>> Even if the ECC engine is disabled?
+>>>>>>>      >> No.
+>>>>>> When ECC engine is disabled, it can read the ecc parity bytes ; but there is another problem that i need to consider how code struct looks better when reading error with ecc opened and then try to raw read.
+>>>>>> Is there a good idea?
+>>>>>
+>>>>> When reading with ECC enabled, in case of uncorrectable error you
+>>>>> must re-read without ECC, then check if the page is empty or not with
+>>>>> the core helpers (nand_check_erased_*()).
+>>>>>
+>>>>> Is this what you meant?
+>>>>>     >> yes. when uncorrectable ECC error, i need firstly read out the ECC bytes without ECC engine and then use the helper nand_check_erased_ecc_chunk to check if blank page.
+>>>> Of course, the precondition is without scrambler, or the bland page can be detected by meson NFC.
 >>>
->>> When reading with ECC enabled, in case of uncorrectable error you
->>> must re-read without ECC, then check if the page is empty or not with
->>> the core helpers (nand_check_erased_*()).
->>>
->>> Is this what you meant?
+>>> A suppose you meant "blank page"? If yes, then you don't need the
+>>> helper to check for only-0xFF pages. If the controller tells you if the
+>>> page was blank, then just check for that bit.
 >>>    
->> yes. when uncorrectable ECC error, i need firstly read out the ECC bytes
->> without ECC engine and then use the helper nand_check_erased_ecc_chunk
->> to check if blank page.
->> Of course, the precondition is without scrambler, or the bland page can
->> be detected by meson NFC.
+>>
+>> i think not. we need to return back the previous problem that how i can get the bitflips of one blank page. i think i need the helper.
 > 
-> Yep, raw accessors should disable both the scrambler and the ECC
-> engine (see what's done in sunxi_nand.c).
+> You are right, I suppose the "blank page" flag is only triggered if
+> there is no bitflip. In this case you can assume there are no
+> bitflips. Otherwise the controller will trigger an
+> uncorrectable error event and you will have to re-read the page
+> without ECC and check for bitflips with the helper.
 > 
-
-i see sunxi_nfc_hw_ecc_read_chunk and it will re-read the data for 
-bitflips with scrambler off when ECC failed.
-also we can do the same implementation and it seems to be the only answer.
-
+yes, that is right. i will do the "re-read" process.
+> 
+> Thanks,
+> Miquèl
+> 
 > .
 > 
