@@ -1,24 +1,34 @@
-From: <Tudor.Ambarus@microchip.com>
-To: <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
- <boris.brezillon@bootlin.com>, <broonie@kernel.org>, <marek.vasut@gmail.com>,
- <vigneshr@ti.com>, <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC: <robh@kernel.org>, <mark.rutland@arm.com>, <shawnguo@kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <computersforpeace@gmail.com>,
- <frieder.schrempf@exceet.de>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 3/7] mtd: spi-nor: add opcodes for octal Read/Write
- commands
-Date: Tue, 11 Dec 2018 08:09:40 +0000
-Message-ID: <141c6d79-ae7a-60aa-865a-f6b6997f8da9@microchip.com>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1543826226-30898-4-git-send-email-yogeshnarayan.gaur@nxp.com>
- <ac569071-3c69-ebc8-2c18-ea1399210549@microchip.com>
- <VI1PR04MB57264CBB25E2984DF221ED2E99A60@VI1PR04MB5726.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB57264CBB25E2984DF221ED2E99A60@VI1PR04MB5726.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1348CB47DA43624A9189A93FFB3DF89A@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
+ <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
+ <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181207102456.1dc67e07@xps13>
+ <823825a3-86fb-9a20-ae29-85cc52d44093@amlogic.com>
+ <20181210123809.5ade45c4@bbrezillon>
+ <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
+ <20181210155057.38788656@xps13>
+ <d60bac6f-732d-0ddc-2644-17f650dfa885@amlogic.com>
+ <20181211085445.68e57e0e@xps13>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <356aed95-518d-7cd0-4337-184f181472ad@amlogic.com>
+Date: Tue, 11 Dec 2018 16:36:47 +0800
 MIME-Version: 1.0
+In-Reply-To: <20181211085445.68e57e0e@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +38,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCk9uIDEyLzExLzIwMTggMDY6NTUgQU0sIFlvZ2VzaCBOYXJheWFuIEdhdXIgd3JvdGU6
-DQo+IFRodXMgd291bGQgZ29pbmcgdG8gbW9kaWZ5IHRoZSBjb25kaXRpb24gY2hlY2sgYXMgYmVs
-b3csIHNvIHRoYXQgU0ZEUCBwYXJzaW5nIHdvdWxkIGFsc28gYmUgcGVyZm9ybWVkIHdoZW4gU1BJ
-X05PUl9PQ1RBTF9SRUFEIGlzIHNldC4gQ29ycmVjdD8NCj4gDQo+ICAgICAgICAgaWYgKChpbmZv
-LT5mbGFncyAmIChTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEIHwNCj4gICAg
-ICAgICAgICAgIFNQSV9OT1JfT0NUQUxfUkVBRCkpICYmICEoaW5mby0+ZmxhZ3MgJiBTUElfTk9S
-X1NLSVBfU0ZEUCkpIHsNCg0KWWVzLCB0aGlzIGlzIHdoYXQgSSB3YXMgc3VnZ2VzdGluZy4gT24g
-YSBzZWNvbmQgdGhvdWdodCwgd2UgaGF2ZW4ndCBhZGRlZCB5ZXQNCnN1cHBvcnQgZm9yIHBhcnNp
-bmcgc2ZkcCB0byBnZXQgdGhlIG9jdGFsIG1vZGUgaW5mbywgc28gdGhlIHBhcnNpbmcgd2lsbCBi
-ZSBkb25lDQpncmF0dWl0b3VzbHkuIExldCdzIGRyb3AgdGhpcyBjaGFuZ2UgYW5kIGFkZCBpdCB3
-aGVuIGFkZGluZyBzdXBwb3J0IGZvciBwYXJzaW5nDQpvY3RhbCBtb2RlIGluZm8gZnJvbSBzZmRw
-LiBJJ2xsIHByZXBhcmUgYSBwYXRjaCBmb3IgdGhpcy4NCg0KUGxlYXNlIHJlYmFzZSBvbiB0b3Ag
-b2Ygc3BpLW5vci9uZXh0LCBzL29jdG8vb2N0YWwgaW4gc3BpLW5vci5oIGFuZCBjb3JyZWN0IHlv
-dXINClMtby1iIHRhZyBhbmQgeW91J2xsIGhhdmUgbXkgUi1iIHRhZy4NCg0KVGhhbmtzIFlvZ2Vz
-aCwNCnRhDQo=
+Hi Miquel,
+
+Thanks for your quickly reply.
+
+On 2018/12/11 15:54, Miquel Raynal wrote:
+> Hi Liang,
+> 
+> Liang Yang <liang.yang@amlogic.com> wrote on Tue, 11 Dec 2018 09:56:25
+> +0800:
+> 
+>> Hi Miquel,
+>>
+>> On 2018/12/10 22:50, Miquel Raynal wrote:
+>>> Hi Liang,
+>>>
+>>> Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
+>>> +0800:
+>>>    
+>>>> On 2018/12/10 19:38, Boris Brezillon wrote:
+>>>>> On Mon, 10 Dec 2018 19:23:46 +0800
+>>>>> Liang Yang <liang.yang@amlogic.com> wrote:
+>>>>>     >>>>>> +			mtd->ecc_stats.failed++;
+>>>>>>>> +			continue;
+>>>>>>>> +		}
+>>>>>>>> +		mtd->ecc_stats.corrected += ECC_ERR_CNT(*info);
+>>>>>>>> +		bitflips = max_t(u32, bitflips, ECC_ERR_CNT(*info));
+>>>>>>>> +	}
+>>>>>>>
+>>>>>>> Are you sure you handle correctly empty pages with bf?
+>>>>>>>      >> if scramble is enable, i would say yes here.
+>>>>>> when scramble is disabled, i am considering how to use the helper
+>>>>>> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
+>>>>>> bytes which is caculated by ecc engine.by the way, nfc dma doesn't send
+>>>>>> out the ecc parity bytes.
+>>>>>
+>>>>> Even if the ECC engine is disabled?
+>>>>>     >> No.
+>>>> When ECC engine is disabled, it can read the ecc parity bytes ; but there is another problem that i need to consider how code struct looks better when reading error with ecc opened and then try to raw read.
+>>>> Is there a good idea?
+>>>
+>>> When reading with ECC enabled, in case of uncorrectable error you
+>>> must re-read without ECC, then check if the page is empty or not with
+>>> the core helpers (nand_check_erased_*()).
+>>>
+>>> Is this what you meant?
+>>>    
+>> yes. when uncorrectable ECC error, i need firstly read out the ECC bytes without ECC engine and then use the helper nand_check_erased_ecc_chunk to check if blank page.
+>> Of course, the precondition is without scrambler, or the bland page can be detected by meson NFC.
+> 
+> A suppose you meant "blank page"? If yes, then you don't need the
+> helper to check for only-0xFF pages. If the controller tells you if the
+> page was blank, then just check for that bit.
+> 
+
+i think not. we need to return back the previous problem that how i can 
+get the bitflips of one blank page. i think i need the helper.
+
+> 
+> Thanks,
+> Miquèl
+> 
+> .
+> 
