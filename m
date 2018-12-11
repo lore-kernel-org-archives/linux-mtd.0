@@ -1,16 +1,20 @@
-Received: from a27-192.smtp-out.us-west-2.amazonses.com ([54.240.27.192])
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWkHJ-0001VY-Ku
- for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 15:48:59 +0000
+ id 1gWlYJ-0002Eh-O0
+ for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 17:10:37 +0000
+Received: by mail-wr1-x430.google.com with SMTP id 96so14916036wrb.2
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 09:10:24 -0800 (PST)
 MIME-Version: 1.0
-Date: Tue, 11 Dec 2018 15:48:44 +0000
-Message-ID: <010101679df4cadc-3988d142-693f-4ed8-afd6-d670e7cf8e6a-000000@us-west-2.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 11 Dec 2018 18:10:11 +0100
+Message-ID: <CAFLxGvzp_FmaoADzLG0HnBSJsz45NDU3kH+YPr6eUAzOo4uJrw@mail.gmail.com>
+Subject: Re: Questions about ubifs,ubi and mtd?
+To: takei744@oki.com
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: IDEAg Minnesota Farmfest show 2018 Meeters
-From: "Johanna Lewis" <johanna.lewis@firststaradvertising.com>
-Reply-To: "Johanna Lewis" <johanna.lewis@firststaradvertising.com>
-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+On Tue, Dec 11, 2018 at 3:09 PM =E6=AD=A6=E4=BA=95 =E5=85=8B=E6=98=8E <take=
+i744@oki.com> wrote:
+>
+> Hi all,
+>
+> We are developing the product using file system using ubi, ubifs on hardw=
+are with NAND flash memory.
+>
+> Although the development of the product was completed, we are seeking you=
+r help as the customer who is using it is having trouble with it.
+>
+> The product we have developed has 6 MTD partitions for NAND flash memory.
+> These consist of 6 MTDs named 'kernel-a' 'kernel-b', 'rootfs-a', 'rootfs-=
+b', 'data-1', 'data-2', and online program only accesses 'data-1' and 'data=
+-2' for write access.
+> Nevertheless, when loading our program from 'rootfs-a', trying to read th=
+e inode with the ubifs_read_node() function will result in "bad node type" =
+(ex: 193 but expected 9) and the LEB can not be read with the expected valu=
+e. (Even though you do not have write access to rootfs)
+> In addition, the file size may be 0 byte in some cases.
+>
+> Is there anyone who encountered such a problem? Is there patch?
 
-There's one and only one must-have resource for the recent IDEAg Minnesota =
-Farmfest show 2018 and we're happy to offer it to you for a short time:
-
-Purchase the IDEAg Minnesota Farmfest show 2018 Participants =E2=80=93 32,0=
-00 contacts at $900, until the end of today.
-
-We're offering this list to you first because it's uniquely designed to hel=
-p you reach your marketing audience faster and focus on sales more efficien=
-tly.=20
-
-Look forward to hearing from you soon.
-
-Thanks and Regards
-
-Johanna Lewis
-
-Advisory: Rights of ownership to the data contained in this transmission ar=
-e held solely by our organization. This includes the lawful right to seek r=
-emedy for its misuse. This data is only to be used by the original desired =
-recipient and is not to be reviewed, retransmitted, disseminated, or acted =
-upon by any other individual or entity. Please delete this data if you are =
-not the original desired recipient and notify the sender of the error as so=
-on as possible. The IDEAg Minnesota Farmfest show 2018 does not sell or pro=
-vide this data to us, and our organization is not affiliated with the event=
- organizers for the IDEAg Minnesota Farmfest show 2018. This data is source=
-d through public records and information sources, as well as our internal d=
-atabase.
+Well, are you using a recent kernel?
