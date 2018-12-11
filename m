@@ -1,24 +1,32 @@
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWcoQ-0004za-4D
- for linux-mtd@lists.infradead.org; Tue, 11 Dec 2018 07:50:40 +0000
-From: Vignesh R <vigneshr@ti.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, Tudor Ambarus <tudor.ambarus@microchip.com>, Rob Herring
- <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Vignesh R
- <vigneshr@ti.com>
-Subject: [PATCH v2 2/2] mtd: spi-nor: cadence-quadspi: Add support for Octal
- SPI controller
-Date: Tue, 11 Dec 2018 13:21:06 +0530
-Message-ID: <20181211075106.21317-3-vigneshr@ti.com>
-In-Reply-To: <20181211075106.21317-1-vigneshr@ti.com>
-References: <20181211075106.21317-1-vigneshr@ti.com>
+Date: Tue, 11 Dec 2018 08:54:45 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>, Yixun Lan
+ <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>,
+ Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+Message-ID: <20181211085445.68e57e0e@xps13>
+In-Reply-To: <d60bac6f-732d-0ddc-2644-17f650dfa885@amlogic.com>
+References: <1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com>
+ <1542386439-30166-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181207102456.1dc67e07@xps13>
+ <823825a3-86fb-9a20-ae29-85cc52d44093@amlogic.com>
+ <20181210123809.5ade45c4@bbrezillon>
+ <79a797c2-f37f-7f7c-e907-2d3c2283ec2d@amlogic.com>
+ <20181210155057.38788656@xps13>
+ <d60bac6f-732d-0ddc-2644-17f650dfa885@amlogic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,140 +36,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cadence OSPI controller IP supports Octal IO (x8 IO lines),
-It also has an integrated PHY. IP register layout is very
-similar to existing QSPI IP except for additional bits to support Octal
-and Octal DDR mode. Therefore, extend current driver to support Octal
-mode.
+Hi Liang,
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
----
-v2:
-Declare Octal mode capability based on compatible.
+Liang Yang <liang.yang@amlogic.com> wrote on Tue, 11 Dec 2018 09:56:25
++0800:
 
- drivers/mtd/spi-nor/cadence-quadspi.c | 54 +++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 12 deletions(-)
+> Hi Miquel,
+>=20
+> On 2018/12/10 22:50, Miquel Raynal wrote:
+> > Hi Liang,
+> >=20
+> > Liang Yang <liang.yang@amlogic.com> wrote on Mon, 10 Dec 2018 20:12:39
+> > +0800:
+> >  =20
+> >> On 2018/12/10 19:38, Boris Brezillon wrote: =20
+> >>> On Mon, 10 Dec 2018 19:23:46 +0800
+> >>> Liang Yang <liang.yang@amlogic.com> wrote: =20
+> >>>    >>>>>> +			mtd->ecc_stats.failed++; =20
+> >>>>>> +			continue;
+> >>>>>> +		}
+> >>>>>> +		mtd->ecc_stats.corrected +=3D ECC_ERR_CNT(*info);
+> >>>>>> +		bitflips =3D max_t(u32, bitflips, ECC_ERR_CNT(*info));
+> >>>>>> +	} =20
+> >>>>>
+> >>>>> Are you sure you handle correctly empty pages with bf? =20
+> >>>>>     >> if scramble is enable, i would say yes here. =20
+> >>>> when scramble is disabled, i am considering how to use the helper
+> >>>> nand_check_erased_ecc_chunk, but it seems that i can't get the ecc
+> >>>> bytes which is caculated by ecc engine.by the way, nfc dma doesn't s=
+end
+> >>>> out the ecc parity bytes. =20
+> >>>
+> >>> Even if the ECC engine is disabled? =20
+> >>>    >> No. =20
+> >> When ECC engine is disabled, it can read the ecc parity bytes ; but th=
+ere is another problem that i need to consider how code struct looks better=
+ when reading error with ecc opened and then try to raw read.
+> >> Is there a good idea? =20
+> >=20
+> > When reading with ECC enabled, in case of uncorrectable error you
+> > must re-read without ECC, then check if the page is empty or not with
+> > the core helpers (nand_check_erased_*()).
+> >=20
+> > Is this what you meant?
+> >  =20
+> yes. when uncorrectable ECC error, i need firstly read out the ECC bytes =
+without ECC engine and then use the helper nand_check_erased_ecc_chunk to c=
+heck if blank page.
+> Of course, the precondition is without scrambler, or the bland page can b=
+e detected by meson NFC.
 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 04cedd3a2bf6..31ed50f78972 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -93,6 +93,11 @@ struct cqspi_st {
- 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
- };
- 
-+struct cqspi_driver_platdata {
-+	u32 hwcaps_mask;
-+	u8 quirks;
-+};
-+
- /* Operation timeout value */
- #define CQSPI_TIMEOUT_MS			500
- #define CQSPI_READ_TIMEOUT_MS			10
-@@ -101,6 +106,7 @@ struct cqspi_st {
- #define CQSPI_INST_TYPE_SINGLE			0
- #define CQSPI_INST_TYPE_DUAL			1
- #define CQSPI_INST_TYPE_QUAD			2
-+#define CQSPI_INST_TYPE_OCTAL			3
- 
- #define CQSPI_DUMMY_CLKS_PER_BYTE		8
- #define CQSPI_DUMMY_BYTES_MAX			4
-@@ -911,6 +917,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
- 		case SNOR_PROTO_1_1_4:
- 			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
- 			break;
-+		case SNOR_PROTO_1_1_8:
-+			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
-@@ -1213,21 +1222,19 @@ static void cqspi_request_mmap_dma(struct cqspi_st *cqspi)
- 
- static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
- {
--	const struct spi_nor_hwcaps hwcaps = {
--		.mask = SNOR_HWCAPS_READ |
--			SNOR_HWCAPS_READ_FAST |
--			SNOR_HWCAPS_READ_1_1_2 |
--			SNOR_HWCAPS_READ_1_1_4 |
--			SNOR_HWCAPS_PP,
--	};
- 	struct platform_device *pdev = cqspi->pdev;
- 	struct device *dev = &pdev->dev;
-+	struct cqspi_driver_platdata *ddata;
-+	struct spi_nor_hwcaps hwcaps;
- 	struct cqspi_flash_pdata *f_pdata;
- 	struct spi_nor *nor;
- 	struct mtd_info *mtd;
- 	unsigned int cs;
- 	int i, ret;
- 
-+	ddata = (struct cqspi_driver_platdata *)of_device_get_match_data(dev);
-+	hwcaps.mask = ddata->hwcaps_mask;
-+
- 	/* Get flash device data */
- 	for_each_available_child_of_node(dev->of_node, np) {
- 		ret = of_property_read_u32(np, "reg", &cs);
-@@ -1310,7 +1317,7 @@ static int cqspi_probe(struct platform_device *pdev)
- 	struct cqspi_st *cqspi;
- 	struct resource *res;
- 	struct resource *res_ahb;
--	unsigned long data;
-+	struct cqspi_driver_platdata *ddata;
- 	int ret;
- 	int irq;
- 
-@@ -1377,8 +1384,8 @@ static int cqspi_probe(struct platform_device *pdev)
- 	}
- 
- 	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
--	data  = (unsigned long)of_device_get_match_data(dev);
--	if (data & CQSPI_NEEDS_WR_DELAY)
-+	ddata  = (struct cqspi_driver_platdata *)of_device_get_match_data(dev);
-+	if (ddata && (ddata->quirks & CQSPI_NEEDS_WR_DELAY))
- 		cqspi->wr_delay = 5 * DIV_ROUND_UP(NSEC_PER_SEC,
- 						   cqspi->master_ref_clk_hz);
- 
-@@ -1460,14 +1467,37 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
- #define CQSPI_DEV_PM_OPS	NULL
- #endif
- 
-+#define cqspi_base_hwcaps_mask					\
-+	(SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST |		\
-+	SNOR_HWCAPS_READ_1_1_2 | SNOR_HWCAPS_READ_1_1_4 |	\
-+	SNOR_HWCAPS_PP)
-+
-+static const struct cqspi_driver_platdata cdns_qspi = {
-+	.hwcaps_mask = cqspi_base_hwcaps_mask,
-+};
-+
-+static const struct cqspi_driver_platdata k2g_qspi = {
-+	.hwcaps_mask = cqspi_base_hwcaps_mask,
-+	.quirks = CQSPI_NEEDS_WR_DELAY,
-+};
-+
-+static const struct cqspi_driver_platdata am654_ospi = {
-+	.hwcaps_mask = cqspi_base_hwcaps_mask | SNOR_HWCAPS_READ_1_1_8,
-+	.quirks = CQSPI_NEEDS_WR_DELAY,
-+};
-+
- static const struct of_device_id cqspi_dt_ids[] = {
- 	{
- 		.compatible = "cdns,qspi-nor",
--		.data = (void *)0,
-+		.data = (void *)&cdns_qspi,
- 	},
- 	{
- 		.compatible = "ti,k2g-qspi",
--		.data = (void *)CQSPI_NEEDS_WR_DELAY,
-+		.data = (void *)&k2g_qspi,
-+	},
-+	{
-+		.compatible = "ti,am654-ospi",
-+		.data = (void *)&am654_ospi,
- 	},
- 	{ /* end of table */ }
- };
--- 
-2.19.2
+A suppose you meant "blank page"? If yes, then you don't need the
+helper to check for only-0xFF pages. If the controller tells you if the
+page was blank, then just check for that bit.
+
+
+Thanks,
+Miqu=C3=A8l
