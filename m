@@ -1,16 +1,41 @@
-Received: from a27-42.smtp-out.us-west-2.amazonses.com ([54.240.27.42])
+Received: from mail-bl2nam02on0616.outbound.protection.outlook.com
+ ([2a01:111:f400:fe46::616]
+ helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1vk-0003IX-Fp
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:39:54 +0000
+ id 1gX4F4-0007FF-H1
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 13:08:07 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
+ <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Wed, 12 Dec 2018 13:07:42 +0000
+Message-ID: <MWHPR02MB2623EDA15BE59304795F3034AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181118204324.373ca9cc@bbrezillon>
+ <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181119090246.49060019@bbrezillon>
+ <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
+ <20181120120244.7d2442b5@bbrezillon>	<20181120133624.3fa4742d@xps13>
+ <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181212091135.1d0cc9a6@xps13>
+ <MWHPR02MB26236CEF8A2110B20C825198AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181212100931.149b0cac@xps13>
+In-Reply-To: <20181212100931.149b0cac@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Date: Wed, 12 Dec 2018 10:39:39 +0000
-Message-ID: <01010167a2002bec-c2ba4889-ef8c-48b8-b1c9-58416cb092b8-000000@us-west-2.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: AmericanHort | Cultivate'18 Exposition and Convention Meeters
-From: "John Delaunay" <john.delaunay@kingswayaccess.com>
-Reply-To: "John Delaunay" <john.delaunay@kingswayaccess.com>
-To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +45,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
-
-Stop wasting time and resources trying to chase leads, let us do the work f=
-or you! We have everything you need in one simple AmericanHort | Cultivate'=
-18 Exposition and Convention resource:
-
-Purchase the AmericanHort | Cultivate'18 Exposition and Convention Particip=
-ants =E2=80=93 11000 contacts at $500
-until the end of today.
-
-Buy now and take your marketing outreach to the next level!
-
-Thanks and Regards
-
-John Delaunay
-
-Notice of use: If you are not the original desired recipient of this transm=
-ission, please does not review, retransmit, disseminate, or take any action=
- based on it. If this was sent to you accidentally, please delete it as soo=
-n as possible from all storage media and contact the sender to inform them =
-of the mistake. This data contained herein is not provided to us or shared =
-by anyone related to the AmericanHort | Cultivate'18 Exposition and Convent=
-ion. Furthermore, our organization is not a part of or affiliated with the =
-AmericanHort | Cultivate'18 Exposition and Convention event organizers. We =
-reserve all ownership rights to this material, as well as all lawful recour=
-se available to seek remedy for its misuse. All data contained herein is co=
-mpiled lawfully, using public reference materials and our own database.
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBXZWRu
+ZXNkYXksIERlY2VtYmVyIDEyLCAyMDE4IDI6NDAgUE0NCj4gVG86IE5hZ2EgU3VyZXNoa3VtYXIg
+UmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
+LmJyZXppbGxvbkBib290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsgcmljaGFyZEBub2QuYXQ7
+IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBtYXJlay52YXN1dEBnbWFpbC5jb207
+IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBuYWdhc3VyZXNoMTJAZ21haWwuY29t
+OyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+IGNvbXB1dGVyc2ZvcnBlYWNl
+QGdtYWlsLmNvbTsgZHdtdzJAaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogW0xJTlVYIFBB
+VENIIHYxMiAzLzNdIG10ZDogcmF3bmFuZDogYXJhc2FuOiBBZGQgc3VwcG9ydCBmb3IgQXJhc2Fu
+DQo+IE5BTkQgRmxhc2ggQ29udHJvbGxlcg0KPiANCj4gSGkgTmFnYSwNCj4gDQo+IE5hZ2EgU3Vy
+ZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+IHdyb3RlIG9uIFdlZCwgMTIgRGVj
+IDIwMTgNCj4gMDk6MDQ6MTYgKzAwMDA6DQo+IA0KPiA+IEhpIE1pcXVlbCwNCj4gPg0KPiA+ID4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IE1pcXVlbCBSYXluYWwgW21h
+aWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiA+ID4gU2VudDogV2VkbmVzZGF5LCBE
+ZWNlbWJlciAxMiwgMjAxOCAxOjQyIFBNDQo+ID4gPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
+aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gPiA+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
+LmJyZXppbGxvbkBib290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsNCj4gPiA+IHJpY2hhcmRA
+bm9kLmF0OyBsaW51eC0ga2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gPiA+IG1hcmVrLnZhc3V0
+QGdtYWlsLmNvbTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+ID4gPiBuYWdhc3Vy
+ZXNoMTJAZ21haWwuY29tOyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+ID4g
+PiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gPiA+
+IFN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggdjEyIDMvM10gbXRkOiByYXduYW5kOiBhcmFzYW46
+IEFkZCBzdXBwb3J0DQo+ID4gPiBmb3IgQXJhc2FuIE5BTkQgRmxhc2ggQ29udHJvbGxlcg0KPiA+
+ID4NCj4gPiA+IEhpIE5hZ2EsDQo+ID4gPg0KPiA+ID4gTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8
+bmFnYXN1cmVAeGlsaW54LmNvbT4gd3JvdGUgb24gV2VkLCAxMiBEZWMNCj4gPiA+IDIwMTgNCj4g
+PiA+IDA1OjI3OjAzICswMDAwOg0KPiA+ID4NCj4gPiA+ID4gSGkgQm9yaXMgJiBNaXF1ZWwsDQo+
+ID4gPiA+DQo+ID4gPiA+IEFuIHVwZGF0ZSB0byBteSBjb21tZW50cyBvbiB0aHJlYWQgaHR0cHM6
+Ly9sa21sLm9yZy9sa21sLzIwMTgvMTEvMTUvNjU2Lg0KPiA+ID4gPiBJbiB0aGlzIEkgc2FpZCwg
+d2lsbCB0YWtlIGEgZGVmYXVsdCBlcnJvciBjb3VudCB2YWx1ZSBhcyAxNiBhbmQNCj4gPiA+ID4g
+ZHVyaW5nIHBhZ2UgcmVhZCwgd2lsbCBjaGVjayB0aGUgZXJyb3IgY291bnQgUmVnaXN0ZXIgdmFs
+dWUgd2l0aA0KPiA+ID4gPiB0aGlzIGFuZCBpZiBpdCBpcyBlcXVhbCB0byBvciBncmVhdGVyIHRo
+YW4gdGhlIGRlZmF1bHQgY291bnQoMTYpIHRoZW4gSSBhbSBjaGVja2luZyBmb3INCj4gRXJhc2Vk
+IHBhZ2VzLg0KPiA+ID4gPiBCdXQgYml0Wzc6MF0gaW4gRUNDX0Vycm9yX0NvdW50X1JlZ2lzdGVy
+KDB4MzgpIHdpbGwgdXBkYXRlIGZvciBlYWNoIGVycm9yIG9jY3VycmVkLg0KPiA+ID4gPiBMaW5r
+Og0KPiA+ID4gPiBodHRwczovL3d3dy54aWxpbnguY29tL2h0bWxfZG9jcy9yZWdpc3RlcnMvdWcx
+MDg3L3VnMTA4Ny16eW5xLXVsdHINCj4gPiA+ID4gYXNjYWxlLQ0KPiA+ID4gcmVnaXN0ZXJzLmh0
+bWwgYW5kIGNoZWNrIGZvciBOQU5EIG1vZHVsZSwgRUNDX0Vycm9yX0NvdW50X1JlZ2lzdGVyLg0K
+PiA+ID4gPg0KPiA+ID4gPiBJIG1lYW4gcHJldmlvdXNseSBJIGRlcGVuZGVudCBvbiBUb3RhbCBl
+cnJvciBjb3VudCB2YWx1ZQ0KPiA+ID4gPiAoYml0WzE2OjhdKSwgYnV0IHdlIGNhbiBzaW1wbHkg
+Y2hlY2sgZm9yIGJpdFs3OjBdIFRvIHNlZSB0aGUgZXJyb3Igb2NjdXJyZWQgb3Igbm90Lg0KPiA+
+ID4gPiBJIHRyaWVkIHdpdGggdGhpcyBhcHByb2FjaCBhbmQgSSBkb24ndCBzZWUgYW55IGlzc3Vl
+cyB3aXRoIHRoYXQuDQo+ID4gPiA+IEkgcmFuIHViaWZzIHdpdGggdGhpcyBhbmQgSSBhbSBhYmxl
+IHRvIHNlZSB0aGUgYml0Wzc6MF0gY291bnQgaXMNCj4gPiA+ID4gdXBkYXRlZCBmb3IgZXJhc2Vk
+IHBhZ2UgcmVhZCBhbmQgdGhlbiB3aWxsIFVzZQ0KPiA+ID4gPiBuYW5kX2NoZWNoX2VyYXNlZF9l
+Y2NfY2h1bmsoKSB0byBzZWUgdGhlDQo+ID4gPiBiaXRmbGlwcy4NCj4gPiA+ID4NCj4gPiA+ID4g
+SWYgaXQgaXMgb2ssIEkgd2lsbCB1cGRhdGUgdGhlIGRyaXZlciBhbmQgd2lsbCBzZW5kIG5ldyBw
+YXRjaCwgYnV0DQo+ID4gPiA+IGRvIHlvdSBoYXZlIGFueSBvdGhlcg0KPiA+ID4gY29tbWVudHMg
+b24gdjEyPw0KPiA+ID4NCj4gPiA+IElzICduYW5kYml0ZXJycyAtaScgcnVubmluZyBjb3JyZWN0
+bHkgbm93Pw0KPiA+IFllcywgYnV0IHdpdGggc29tZSBjaGFuZ2VzIGluIGRyaXZlci4NCj4gPiBJ
+IGhhdmUgYWRkZWQgdGhlIGxvZyBhbmQgY2hhbmdlcyBkb25lIGluIGh0dHBzOi8vbGttbC5vcmcv
+bGttbC8yMDE4LzExLzIzLzcwNS4NCj4gDQo+IE5vLCBJIGRvbid0IHNlZSBhIHdvcmtpbmcgbmFu
+ZGJpdGVycnMgdGhlcmUsIHNvcnJ5Lg0KVGhlIGxvZyB0aGF0IEkgaGF2ZSBhdHRhY2hlZCBpcyBm
+cm9tIG10ZF9uYW5kYml0ZXJycyB0ZXN0DQpTbyBhcyBwZXIgQVJBU0FOIGNvbnRyb2xsZXIgRUND
+IG1lY2hhbmlzbSwgaXQgd2lsbCBjb3JyZWN0IHVwdG8gMjQtYml0LiBBZnRlciB0aGF0IHRoZSB0
+ZXN0IHdpbGwgZmFpbC4NCg0KSSBhbSBydW5uaW5nIG10ZC11dGlscyBuYW5kYml0ZXJyIHRlc3Qg
+bm93LiBXaWxsIGxldCB5b3Uga25vdyBvbmNlIEkgY29tcGxldGVkIHRoYXQuDQoNClRoYW5rcywN
+Ck5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkNCj4gDQo+IA0KPiBUaGFua3MsDQo+IE1pcXXDqGwNCg==
