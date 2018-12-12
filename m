@@ -1,21 +1,21 @@
-Date: Tue, 11 Dec 2018 16:45:33 -0600
-From: Rob Herring <robh@kernel.org>
-To: Ryder Lee <ryder.lee@mediatek.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Weijie Gao <weijie.gao@mediatek.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Ryder Lee <ryder.lee@mediatek.com>
-Subject: Re: [RESEND PATCH 1/4] dt-bindings: mtd: mtk-quadspi: update
- bindings for MT7629 SoC
-Message-ID: <20181211224533.GA2363@bogus>
-References: <235ade9c5cda19fb0c9356913e3f56ad86600f59.1543472168.git.ryder.lee@mediatek.com>
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]
+ helo=mo-csw.securemx.jp)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWt0H-0001IX-G2
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 01:07:59 +0000
+From: =?utf-8?B?5q2m5LqVIOWFi+aYjg==?= <takei744@oki.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Questions about ubifs,ubi and mtd?
+Date: Wed, 12 Dec 2018 01:07:33 +0000
+Message-ID: <TY2PR01MB270060F7EC282F9C7C705D409DA70@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <CAFLxGvzp_FmaoADzLG0HnBSJsz45NDU3kH+YPr6eUAzOo4uJrw@mail.gmail.com>
+In-Reply-To: <CAFLxGvzp_FmaoADzLG0HnBSJsz45NDU3kH+YPr6eUAzOo4uJrw@mail.gmail.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <235ade9c5cda19fb0c9356913e3f56ad86600f59.1543472168.git.ryder.lee@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 29 Nov 2018 14:29:53 +0800, Ryder Lee wrote:
-> This updates bindings for the MT7629 SPI-NOR controller.
-> 
-> Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mtd/mtk-quadspi.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+RGVhciBSaWNoYXJkLA0KIFRoYW5rIHlvdSBmb3IgeW91ciBjb21tZW50Lg0KIFdlIGFyZSB1c2lu
+ZyBrZXJuZWwgMy4yLjI2IGZvciByZWFzb25zLg0KIEkgY2FuIG5vdCB1cGRhdGUgdGhlIGtlcm5l
+bCByaWdodCBub3cuDQoNClRvIGV2ZXJ5b25lDQpJcyB0aGVyZSBhIGxvdCBvZiBmaXhlcyBhbmQg
+cGF0Y2hlcyBmb3IgcHJvY2Vzc2luZyB0aGF0IGNhdXNlcyBhYm5vcm1hbCBiZWhhdmlvciBhcyBJ
+IGFza2VkIHlvdT8NCldlIGhvcGUgdG8gc29sdmUgdGhlIHByb2JsZW0gYnkgcGF0Y2ggdG8ga2Vy
+bmVsIDMuMi4yNi4gaWYgcG9zc2libGUuDQpTaHlseSwgSSBoYXZlIGxpdHRsZSBleHBlcmllbmNl
+IG9mIGRldmVsb3BpbmcgdWJpZnMgb3IgdWJpLCBhbmQgSSBjYW4gbm90IHlldCBmaWd1cmUgb3V0
+IHdoaWNoIHByb2dyYW0gaXMgbGlrZWx5IHRvIGJlIGludm9sdmVkIGluIHRoaXMgYWJub3JtYWwg
+b3BlcmF0aW9uKHJlZi4gTm90ZSopLg0KDQpOb3RlKjoNCk5ldmVydGhlbGVzcywgd2hlbiBsb2Fk
+aW5nIG91ciBwcm9ncmFtIGZyb20gJ3Jvb3Rmcy1hJywgdHJ5aW5nIHRvIHJlYWQgdGhlIGlub2Rl
+IHdpdGggdGhlIHViaWZzX3JlYWRfbm9kZSgpIGZ1bmN0aW9uIHdpbGwgcmVzdWx0IGluICJiYWQg
+bm9kZSB0eXBlIiAoZXg6IDE5MyBidXQgZXhwZWN0ZWQgOSkgYW5kIHRoZSBMRUIgY2FuIG5vdCBi
+ZSByZWFkIHdpdGggdGhlIGV4cGVjdGVkIHZhbHVlLiAoRXZlbiB0aG91Z2ggeW91IGRvIG5vdCBo
+YXZlIHdyaXRlIGFjY2VzcyB0byByb290ZnMpIEluIGFkZGl0aW9uLCB0aGUgZmlsZSBzaXplIG1h
+eSBiZSAwIGJ5dGUgaW4gc29tZSBjYXNlcy4NCg0KQmVzdCByZWdhcmRzLA0KS2F0c3Vha2kgVGFr
+ZWkvT2tpIEVsZWN0cmljIEluZHVzdHJ5IENvLiwgTHRkLi9KUA0KDQoNCj4gLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkLndlaW5i
+ZXJnZXJAZ21haWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIERlY2VtYmVyIDEyLCAyMDE4IDI6
+MTAgQU0NCj4gVG86IOatpuS6lSDlhYvmmI4gPHRha2VpNzQ0QG9raS5jb20+DQo+IENjOiBsaW51
+eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogUXVlc3Rpb25zIGFib3V0
+IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gT24gVHVlLCBEZWMgMTEsIDIwMTggYXQgMzowOSBQ
+TSDmrabkupUg5YWL5piOIDx0YWtlaTc0NEBva2kuY29tPiB3cm90ZToNCj4gPg0KPiA+IEhpIGFs
+bCwNCj4gPg0KPiA+IFdlIGFyZSBkZXZlbG9waW5nIHRoZSBwcm9kdWN0IHVzaW5nIGZpbGUgc3lz
+dGVtIHVzaW5nIHViaSwgdWJpZnMgb24gaGFyZHdhcmUNCj4gd2l0aCBOQU5EIGZsYXNoIG1lbW9y
+eS4NCj4gPg0KPiA+IEFsdGhvdWdoIHRoZSBkZXZlbG9wbWVudCBvZiB0aGUgcHJvZHVjdCB3YXMg
+Y29tcGxldGVkLCB3ZSBhcmUgc2Vla2luZw0KPiB5b3VyIGhlbHAgYXMgdGhlIGN1c3RvbWVyIHdo
+byBpcyB1c2luZyBpdCBpcyBoYXZpbmcgdHJvdWJsZSB3aXRoIGl0Lg0KPiA+DQo+ID4gVGhlIHBy
+b2R1Y3Qgd2UgaGF2ZSBkZXZlbG9wZWQgaGFzIDYgTVREIHBhcnRpdGlvbnMgZm9yIE5BTkQgZmxh
+c2gNCj4gbWVtb3J5Lg0KPiA+IFRoZXNlIGNvbnNpc3Qgb2YgNiBNVERzIG5hbWVkICdrZXJuZWwt
+YScgJ2tlcm5lbC1iJywgJ3Jvb3Rmcy1hJywgJ3Jvb3Rmcy1iJywNCj4gJ2RhdGEtMScsICdkYXRh
+LTInLCBhbmQgb25saW5lIHByb2dyYW0gb25seSBhY2Nlc3NlcyAnZGF0YS0xJyBhbmQgJ2RhdGEt
+MicgZm9yDQo+IHdyaXRlIGFjY2Vzcy4NCj4gPiBOZXZlcnRoZWxlc3MsIHdoZW4gbG9hZGluZyBv
+dXIgcHJvZ3JhbSBmcm9tICdyb290ZnMtYScsIHRyeWluZyB0byByZWFkDQo+ID4gdGhlIGlub2Rl
+IHdpdGggdGhlIHViaWZzX3JlYWRfbm9kZSgpIGZ1bmN0aW9uIHdpbGwgcmVzdWx0IGluICJiYWQg
+bm9kZSB0eXBlIg0KPiAoZXg6IDE5MyBidXQgZXhwZWN0ZWQgOSkgYW5kIHRoZSBMRUIgY2FuIG5v
+dCBiZSByZWFkIHdpdGggdGhlIGV4cGVjdGVkIHZhbHVlLg0KPiAoRXZlbiB0aG91Z2ggeW91IGRv
+IG5vdCBoYXZlIHdyaXRlIGFjY2VzcyB0byByb290ZnMpIEluIGFkZGl0aW9uLCB0aGUgZmlsZSBz
+aXplDQo+IG1heSBiZSAwIGJ5dGUgaW4gc29tZSBjYXNlcy4NCj4gPg0KPiA+IElzIHRoZXJlIGFu
+eW9uZSB3aG8gZW5jb3VudGVyZWQgc3VjaCBhIHByb2JsZW0/IElzIHRoZXJlIHBhdGNoPw0KPiAN
+Cj4gV2VsbCwgYXJlIHlvdSB1c2luZyBhIHJlY2VudCBrZXJuZWw/DQo=
