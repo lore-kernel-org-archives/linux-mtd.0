@@ -1,43 +1,36 @@
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWxzo-0005Mg-DO
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 06:27:50 +0000
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wBC6OH0j094731
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 01:27:37 -0500
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2paummu9pp-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 01:27:37 -0500
-Received: from localhost
- by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Wed, 12 Dec 2018 06:27:34 -0000
-From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
- linux-mips@linux-mips.org, linux-s390@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
- yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
- paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
- deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
- richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- viro@zeniv.linux.org.uk
-Subject: Re: [PATCH V2 3/7] fscrypt: remove filesystem specific build config
- option
-Date: Wed, 12 Dec 2018 11:57:31 +0530
-In-Reply-To: <20181212024811.GB722@sol.localdomain>
-References: <20181204095650.12562-1-chandan@linux.vnet.ibm.com>
- <20181212015211.GA23905@roeck-us.net> <20181212024811.GB722@sol.localdomain>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWzcc-0008OH-87
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 08:12:01 +0000
+Date: Wed, 12 Dec 2018 09:11:35 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
+ <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Message-ID: <20181212091135.1d0cc9a6@xps13>
+In-Reply-To: <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181118204324.373ca9cc@bbrezillon>
+ <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181119090246.49060019@bbrezillon>
+ <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
+ <20181120120244.7d2442b5@bbrezillon>
+ <20181120133624.3fa4742d@xps13>
+ <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Message-Id: <5001320.eMptl8WvNp@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,60 +40,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, December 12, 2018 8:18:12 AM IST Eric Biggers wrote:
-> On Tue, Dec 11, 2018 at 05:52:11PM -0800, Guenter Roeck wrote:
-> > Hi,
-> > 
-> > On Tue, Dec 04, 2018 at 03:26:46PM +0530, Chandan Rajendra wrote:
-> > > In order to have a common code base for fscrypt "post read" processing
-> > > for all filesystems which support encryption, this commit removes
-> > > filesystem specific build config option (e.g. CONFIG_EXT4_FS_ENCRYPTION)
-> > > and replaces it with a build option (i.e. CONFIG_FS_ENCRYPTION) whose
-> > > value affects all the filesystems making use of fscrypt.
-> > > 
-> > > Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-> > 
-> > this patch causes a recursive dependency when trying to build ia64 images.
-> > 
-> > make ARCH=ia64 allnoconfig:
-> > 
-> > scripts/kconfig/conf  --allnoconfig Kconfig
-> > arch/ia64/Kconfig:126:error: recursive dependency detected!
-> > arch/ia64/Kconfig:126:	choice <choice> contains symbol IA64_HP_SIM
-> > arch/ia64/Kconfig:200:	symbol IA64_HP_SIM is part of choice PM
-> > kernel/power/Kconfig:144:	symbol PM is selected by PM_SLEEP
-> > kernel/power/Kconfig:104:	symbol PM_SLEEP depends on HIBERNATE_CALLBACKS
-> > kernel/power/Kconfig:31:	symbol HIBERNATE_CALLBACKS is selected by HIBERNATION
-> > kernel/power/Kconfig:34:	symbol HIBERNATION depends on SWAP
-> > init/Kconfig:250:	symbol SWAP depends on BLOCK
-> > block/Kconfig:5:	symbol BLOCK is selected by UBIFS_FS
-> > fs/ubifs/Kconfig:1:	symbol UBIFS_FS depends on MISC_FILESYSTEMS
-> > fs/Kconfig:220:	symbol MISC_FILESYSTEMS is selected by ACPI_APEI
-> > drivers/acpi/apei/Kconfig:8:	symbol ACPI_APEI depends on ACPI
-> > drivers/acpi/Kconfig:9:	symbol ACPI depends on ARCH_SUPPORTS_ACPI
-> > drivers/acpi/Kconfig:6:	symbol ARCH_SUPPORTS_ACPI is selected by IA64_HP_SIM
-> > arch/ia64/Kconfig:200:	symbol IA64_HP_SIM is part of choice <choice>
-> > For a resolution refer to Documentation/kbuild/kconfig-language.txt
-> > subsection "Kconfig recursive dependency limitations"
-> > 
-> > scripts/kconfig/Makefile:69: recipe for target 'allnoconfig' failed
-> > 
-> > Reverting the patch fixes the problem.
-> > 
-> 
-> Thanks for the report.  Chandan, it appears the problem is UBIFS_FS selecting
-> BLOCK.  It's actually not necessary because now the parts of fs/crypto/ that
-> depend on BLOCK are separated out into a separate file fs/crypto/bio.c that is
-> only compiled with CONFIG_BLOCK.  So how about just removing the selection of
-> BLOCK from fs/ubifs/Kconfig:
-> 
-> 	select BLOCK if FS_ENCRYPTION
-> 
+Hi Naga,
 
-Yes, I will do that.
+Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Wed, 12 Dec 2018
+05:27:03 +0000:
 
-Also, Apologies for sending V4 of the patchset without checking for newer
-responses from you.
+> Hi Boris & Miquel,
+>=20
+> An update to my comments on thread https://lkml.org/lkml/2018/11/15/656.
+> In this I said, will take a default error count value as 16 and during pa=
+ge read, will check the error count
+> Register value with this and if it is equal to or greater than the defaul=
+t count(16) then I am checking for
+> Erased pages.
+> But bit[7:0] in ECC_Error_Count_Register(0x38) will update for each error=
+ occurred.
+> Link: https://www.xilinx.com/html_docs/registers/ug1087/ug1087-zynq-ultra=
+scale-registers.html and
+> check for NAND module, ECC_Error_Count_Register.
+>=20
+> I mean previously I dependent on Total error count value (bit[16:8]), but=
+ we can simply check for bit[7:0]
+> To see the error occurred or not.=20
+> I tried with this approach and I don't see any issues with that.
+> I ran ubifs with this and I am able to see the bit[7:0] count is updated =
+for erased page read and then will
+> Use nand_chech_erased_ecc_chunk() to see the bitflips.
+>=20
+> If it is ok, I will update the driver and will send new patch, but do you=
+ have any other comments on v12?
 
--- 
-chandan
+Is 'nandbiterrs -i' running correctly now?
+
+Thanks,
+Miqu=C3=A8l
