@@ -1,19 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1uj-0002wH-Ex
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:38:52 +0000
-Date: Wed, 12 Dec 2018 11:38:27 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Boris
- Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: Raw NAND bad block marker positions
-Message-ID: <20181212113827.4e371302@xps13>
-In-Reply-To: <e937e18d-5099-5969-3b17-1f2d9ffa3a44@kontron.de>
-References: <e937e18d-5099-5969-3b17-1f2d9ffa3a44@kontron.de>
+Received: from a27-42.smtp-out.us-west-2.amazonses.com ([54.240.27.42])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gX1vk-0003IX-Fp
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:39:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Date: Wed, 12 Dec 2018 10:39:39 +0000
+Message-ID: <01010167a2002bec-c2ba4889-ef8c-48b8-b1c9-58416cb092b8-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+Subject: AmericanHort | Cultivate'18 Exposition and Convention Meeters
+From: "John Delaunay" <john.delaunay@kingswayaccess.com>
+Reply-To: "John Delaunay" <john.delaunay@kingswayaccess.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frieder,
+Hi ,
 
-Schrempf Frieder <frieder.schrempf@kontron.de> wrote on Wed, 12 Dec
-2018 10:32:04 +0000:
+Stop wasting time and resources trying to chase leads, let us do the work f=
+or you! We have everything you need in one simple AmericanHort | Cultivate'=
+18 Exposition and Convention resource:
 
-> Hi,
->=20
-> the current implementation for checking/setting the bad block markers in=
-=20
-> raw NAND flash devices supports three setups for the position of the=20
-> markers within the bad block:
->=20
-> * BBM in first page only
-> * BBM in last page only
-> * BBM in first or second page
->=20
-> This is controlled by the flags NAND_BBT_SCANLASTPAGE and=20
-> NAND_BBT_SCAN2NDPAGE. It is not supported to set both flags to check=20
-> first, second and last page.
->=20
-> Though some devices seem to require this kind of setup. We know of some=20
-> ESMT SLC NANDs, that were accidentally shipped with BBM in the first or=20
-> last page, instead of first or second page as claimed in the datasheet.
->=20
-> Also the documents for Cypress/Spansion/AMD NANDs claim that the=20
-> software needs to check first, second and last page for BBMs (e.g. [1]).
->=20
-> It doesn't look like it would be difficult to make NAND_BBT_SCANLASTPAGE=
-=20
-> and NAND_BBT_SCAN2NDPAGE work together, but I wanted to ask if someone=20
-> already stumbled upon this problem or if someone has any comments or=20
-> suggestions, before trying to patch this?
+Purchase the AmericanHort | Cultivate'18 Exposition and Convention Particip=
+ants =E2=80=93 11000 contacts at $500
+until the end of today.
 
-I don't, but I would welcome such change, I don't think it is very
-invasive anyway.
+Buy now and take your marketing outreach to the next level!
 
+Thanks and Regards
 
-Thanks,
-Miqu=C3=A8l
+John Delaunay
+
+Notice of use: If you are not the original desired recipient of this transm=
+ission, please does not review, retransmit, disseminate, or take any action=
+ based on it. If this was sent to you accidentally, please delete it as soo=
+n as possible from all storage media and contact the sender to inform them =
+of the mistake. This data contained herein is not provided to us or shared =
+by anyone related to the AmericanHort | Cultivate'18 Exposition and Convent=
+ion. Furthermore, our organization is not a part of or affiliated with the =
+AmericanHort | Cultivate'18 Exposition and Convention event organizers. We =
+reserve all ownership rights to this material, as well as all lawful recour=
+se available to seek remedy for its misuse. All data contained herein is co=
+mpiled lawfully, using public reference materials and our own database.
