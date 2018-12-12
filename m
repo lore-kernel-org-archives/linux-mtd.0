@@ -1,36 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWzcc-0008OH-87
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 08:12:01 +0000
-Date: Wed, 12 Dec 2018 09:11:35 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
- <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+From: Pankaj Bansal <pankaj.bansal@nxp.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
- <michals@xilinx.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20181212091135.1d0cc9a6@xps13>
-In-Reply-To: <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181118204324.373ca9cc@bbrezillon>
- <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181119090246.49060019@bbrezillon>
- <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
- <20181120120244.7d2442b5@bbrezillon>
- <20181120133624.3fa4742d@xps13>
- <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
- <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@kontron.de"
+ <frieder.schrempf@kontron.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: RE: [PATCH v5 3/5] arm64: dts: lx2160a: add FlexSPI node property
+Date: Wed, 12 Dec 2018 08:15:40 +0000
+Message-ID: <HE1PR0402MB332315D53C681D842865B6B5F1A70@HE1PR0402MB3323.eurprd04.prod.outlook.com>
+References: <1542366701-16065-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1542366701-16065-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1542366701-16065-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,37 +33,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
 
-Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Wed, 12 Dec 2018
-05:27:03 +0000:
 
-> Hi Boris & Miquel,
+> -----Original Message-----
+> From: devicetree-owner@vger.kernel.org [mailto:devicetree-
+> owner@vger.kernel.org] On Behalf Of Yogesh Narayan Gaur
+> Sent: Friday, November 16, 2018 4:44 PM
+> To: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
+> marek.vasut@gmail.com; broonie@kernel.org; linux-spi@vger.kernel.org;
+> devicetree@vger.kernel.org
+> Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
+> arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
+> frieder.schrempf@kontron.de; linux-kernel@vger.kernel.org; Yogesh Narayan
+> Gaur <yogeshnarayan.gaur@nxp.com>
+> Subject: [PATCH v5 3/5] arm64: dts: lx2160a: add FlexSPI node property
 >=20
-> An update to my comments on thread https://lkml.org/lkml/2018/11/15/656.
-> In this I said, will take a default error count value as 16 and during pa=
-ge read, will check the error count
-> Register value with this and if it is equal to or greater than the defaul=
-t count(16) then I am checking for
-> Erased pages.
-> But bit[7:0] in ECC_Error_Count_Register(0x38) will update for each error=
- occurred.
-> Link: https://www.xilinx.com/html_docs/registers/ug1087/ug1087-zynq-ultra=
-scale-registers.html and
-> check for NAND module, ECC_Error_Count_Register.
+> Add fspi node property for LX2160A SoC for FlexSPI driver.
+> Property added for the FlexSPI controller and for the connected slave dev=
+ice for
+> the LX2160ARDB target.
+> This is having two SPI-NOR flash device, mt35xu512aba, connected at CS0 a=
+nd
+> CS1.
 >=20
-> I mean previously I dependent on Total error count value (bit[16:8]), but=
- we can simply check for bit[7:0]
-> To see the error occurred or not.=20
-> I tried with this approach and I don't see any issues with that.
-> I ran ubifs with this and I am able to see the bit[7:0] count is updated =
-for erased page read and then will
-> Use nand_chech_erased_ecc_chunk() to see the bitflips.
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> ---
+> Changes for v5:
+> - None
+> Changes for v4:
+> - Incorporated Rob review comments.
+> Changes for v3:
+> - None.
+> Changes for v2:
+> - - Incorporated Shawn review comments.
+> ---
+>  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 22
+> ++++++++++++++++++++++
+>  arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi    | 13 +++++++++++++
+>  2 files changed, 35 insertions(+)
 >=20
-> If it is ok, I will update the driver and will send new patch, but do you=
- have any other comments on v12?
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> index 1483071..3b20c97 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> @@ -35,6 +35,28 @@
+>  	status =3D "okay";
+>  };
+>=20
+> +&fspi {
+> +	status =3D "okay";
+> +
+> +	mt35xu512aba0: flash@0 {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		compatible =3D "spansion,m25p80";
+> +		m25p,fast-read;
+> +		spi-max-frequency =3D <20000000>;
 
-Is 'nandbiterrs -i' running correctly now?
+The SPI flash supports 50MHz frequency. Please update to 50Mhz
 
-Thanks,
-Miqu=C3=A8l
+> +		reg =3D <0>;
+> +	};
+> +
+> +	mt35xu512aba1: flash@1 {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		compatible =3D "spansion,m25p80";
+> +		m25p,fast-read;
+> +		spi-max-frequency =3D <20000000>;
+> +		reg =3D <1>;
+> +	};
+> +};
+> +
+>  &i2c0 {
+>  	status =3D "okay";
+>  	i2c-mux@77 {
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+> b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+> index c758268..5d0025a 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+> @@ -698,5 +698,18 @@
+>  			interrupts =3D <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+>  			timeout-sec =3D <30>;
+>  		};
+> +
+> +		fspi: spi@20c0000 {
+> +			compatible =3D "nxp,lx2160a-fspi";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0x0 0x20c0000 0x0 0x10000>,
+> +				<0x0 0x20000000 0x0 0x10000000>;
+> +			reg-names =3D "fspi_base", "fspi_mmap";
+> +			interrupts =3D <0 25 0x4>; /* Level high type */
+> +			clocks =3D <&clockgen 4 3>, <&clockgen 4 3>;
+> +			clock-names =3D "fspi_en", "fspi";
+> +			status =3D "disabled";
+> +		};
+>  	};
+>  };
+> --
+> 2.7.4
