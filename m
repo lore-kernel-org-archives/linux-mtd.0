@@ -1,21 +1,32 @@
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]
- helo=mo-csw.securemx.jp)
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWt0H-0001IX-G2
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 01:07:59 +0000
-From: =?utf-8?B?5q2m5LqVIOWFi+aYjg==?= <takei744@oki.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Questions about ubifs,ubi and mtd?
-Date: Wed, 12 Dec 2018 01:07:33 +0000
-Message-ID: <TY2PR01MB270060F7EC282F9C7C705D409DA70@TY2PR01MB2700.jpnprd01.prod.outlook.com>
-References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <CAFLxGvzp_FmaoADzLG0HnBSJsz45NDU3kH+YPr6eUAzOo4uJrw@mail.gmail.com>
-In-Reply-To: <CAFLxGvzp_FmaoADzLG0HnBSJsz45NDU3kH+YPr6eUAzOo4uJrw@mail.gmail.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gWthJ-0007nS-Fk
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 01:52:27 +0000
+Received: by mail-pl1-x644.google.com with SMTP id t13so7783855ply.13
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 17:52:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 11 Dec 2018 17:52:11 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, tytso@mit.edu,
+ adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
+ yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
+ paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
+ deanbo422@gmail.com, schwidefsky@de.ibm.com,
+ heiko.carstens@de.ibm.com, richard@nod.at, dedekind1@gmail.com,
+ adrian.hunter@intel.com, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH V2 3/7] fscrypt: remove filesystem specific build config
+ option
+Message-ID: <20181212015211.GA23905@roeck-us.net>
+References: <20181204095650.12562-1-chandan@linux.vnet.ibm.com>
+ <20181204095650.12562-4-chandan@linux.vnet.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181204095650.12562-4-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +36,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBSaWNoYXJkLA0KIFRoYW5rIHlvdSBmb3IgeW91ciBjb21tZW50Lg0KIFdlIGFyZSB1c2lu
-ZyBrZXJuZWwgMy4yLjI2IGZvciByZWFzb25zLg0KIEkgY2FuIG5vdCB1cGRhdGUgdGhlIGtlcm5l
-bCByaWdodCBub3cuDQoNClRvIGV2ZXJ5b25lDQpJcyB0aGVyZSBhIGxvdCBvZiBmaXhlcyBhbmQg
-cGF0Y2hlcyBmb3IgcHJvY2Vzc2luZyB0aGF0IGNhdXNlcyBhYm5vcm1hbCBiZWhhdmlvciBhcyBJ
-IGFza2VkIHlvdT8NCldlIGhvcGUgdG8gc29sdmUgdGhlIHByb2JsZW0gYnkgcGF0Y2ggdG8ga2Vy
-bmVsIDMuMi4yNi4gaWYgcG9zc2libGUuDQpTaHlseSwgSSBoYXZlIGxpdHRsZSBleHBlcmllbmNl
-IG9mIGRldmVsb3BpbmcgdWJpZnMgb3IgdWJpLCBhbmQgSSBjYW4gbm90IHlldCBmaWd1cmUgb3V0
-IHdoaWNoIHByb2dyYW0gaXMgbGlrZWx5IHRvIGJlIGludm9sdmVkIGluIHRoaXMgYWJub3JtYWwg
-b3BlcmF0aW9uKHJlZi4gTm90ZSopLg0KDQpOb3RlKjoNCk5ldmVydGhlbGVzcywgd2hlbiBsb2Fk
-aW5nIG91ciBwcm9ncmFtIGZyb20gJ3Jvb3Rmcy1hJywgdHJ5aW5nIHRvIHJlYWQgdGhlIGlub2Rl
-IHdpdGggdGhlIHViaWZzX3JlYWRfbm9kZSgpIGZ1bmN0aW9uIHdpbGwgcmVzdWx0IGluICJiYWQg
-bm9kZSB0eXBlIiAoZXg6IDE5MyBidXQgZXhwZWN0ZWQgOSkgYW5kIHRoZSBMRUIgY2FuIG5vdCBi
-ZSByZWFkIHdpdGggdGhlIGV4cGVjdGVkIHZhbHVlLiAoRXZlbiB0aG91Z2ggeW91IGRvIG5vdCBo
-YXZlIHdyaXRlIGFjY2VzcyB0byByb290ZnMpIEluIGFkZGl0aW9uLCB0aGUgZmlsZSBzaXplIG1h
-eSBiZSAwIGJ5dGUgaW4gc29tZSBjYXNlcy4NCg0KQmVzdCByZWdhcmRzLA0KS2F0c3Vha2kgVGFr
-ZWkvT2tpIEVsZWN0cmljIEluZHVzdHJ5IENvLiwgTHRkLi9KUA0KDQoNCj4gLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkLndlaW5i
-ZXJnZXJAZ21haWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIERlY2VtYmVyIDEyLCAyMDE4IDI6
-MTAgQU0NCj4gVG86IOatpuS6lSDlhYvmmI4gPHRha2VpNzQ0QG9raS5jb20+DQo+IENjOiBsaW51
-eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogUXVlc3Rpb25zIGFib3V0
-IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gT24gVHVlLCBEZWMgMTEsIDIwMTggYXQgMzowOSBQ
-TSDmrabkupUg5YWL5piOIDx0YWtlaTc0NEBva2kuY29tPiB3cm90ZToNCj4gPg0KPiA+IEhpIGFs
-bCwNCj4gPg0KPiA+IFdlIGFyZSBkZXZlbG9waW5nIHRoZSBwcm9kdWN0IHVzaW5nIGZpbGUgc3lz
-dGVtIHVzaW5nIHViaSwgdWJpZnMgb24gaGFyZHdhcmUNCj4gd2l0aCBOQU5EIGZsYXNoIG1lbW9y
-eS4NCj4gPg0KPiA+IEFsdGhvdWdoIHRoZSBkZXZlbG9wbWVudCBvZiB0aGUgcHJvZHVjdCB3YXMg
-Y29tcGxldGVkLCB3ZSBhcmUgc2Vla2luZw0KPiB5b3VyIGhlbHAgYXMgdGhlIGN1c3RvbWVyIHdo
-byBpcyB1c2luZyBpdCBpcyBoYXZpbmcgdHJvdWJsZSB3aXRoIGl0Lg0KPiA+DQo+ID4gVGhlIHBy
-b2R1Y3Qgd2UgaGF2ZSBkZXZlbG9wZWQgaGFzIDYgTVREIHBhcnRpdGlvbnMgZm9yIE5BTkQgZmxh
-c2gNCj4gbWVtb3J5Lg0KPiA+IFRoZXNlIGNvbnNpc3Qgb2YgNiBNVERzIG5hbWVkICdrZXJuZWwt
-YScgJ2tlcm5lbC1iJywgJ3Jvb3Rmcy1hJywgJ3Jvb3Rmcy1iJywNCj4gJ2RhdGEtMScsICdkYXRh
-LTInLCBhbmQgb25saW5lIHByb2dyYW0gb25seSBhY2Nlc3NlcyAnZGF0YS0xJyBhbmQgJ2RhdGEt
-MicgZm9yDQo+IHdyaXRlIGFjY2Vzcy4NCj4gPiBOZXZlcnRoZWxlc3MsIHdoZW4gbG9hZGluZyBv
-dXIgcHJvZ3JhbSBmcm9tICdyb290ZnMtYScsIHRyeWluZyB0byByZWFkDQo+ID4gdGhlIGlub2Rl
-IHdpdGggdGhlIHViaWZzX3JlYWRfbm9kZSgpIGZ1bmN0aW9uIHdpbGwgcmVzdWx0IGluICJiYWQg
-bm9kZSB0eXBlIg0KPiAoZXg6IDE5MyBidXQgZXhwZWN0ZWQgOSkgYW5kIHRoZSBMRUIgY2FuIG5v
-dCBiZSByZWFkIHdpdGggdGhlIGV4cGVjdGVkIHZhbHVlLg0KPiAoRXZlbiB0aG91Z2ggeW91IGRv
-IG5vdCBoYXZlIHdyaXRlIGFjY2VzcyB0byByb290ZnMpIEluIGFkZGl0aW9uLCB0aGUgZmlsZSBz
-aXplDQo+IG1heSBiZSAwIGJ5dGUgaW4gc29tZSBjYXNlcy4NCj4gPg0KPiA+IElzIHRoZXJlIGFu
-eW9uZSB3aG8gZW5jb3VudGVyZWQgc3VjaCBhIHByb2JsZW0/IElzIHRoZXJlIHBhdGNoPw0KPiAN
-Cj4gV2VsbCwgYXJlIHlvdSB1c2luZyBhIHJlY2VudCBrZXJuZWw/DQo=
+Hi,
+
+On Tue, Dec 04, 2018 at 03:26:46PM +0530, Chandan Rajendra wrote:
+> In order to have a common code base for fscrypt "post read" processing
+> for all filesystems which support encryption, this commit removes
+> filesystem specific build config option (e.g. CONFIG_EXT4_FS_ENCRYPTION)
+> and replaces it with a build option (i.e. CONFIG_FS_ENCRYPTION) whose
+> value affects all the filesystems making use of fscrypt.
+> 
+> Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+
+this patch causes a recursive dependency when trying to build ia64 images.
+
+make ARCH=ia64 allnoconfig:
+
+scripts/kconfig/conf  --allnoconfig Kconfig
+arch/ia64/Kconfig:126:error: recursive dependency detected!
+arch/ia64/Kconfig:126:	choice <choice> contains symbol IA64_HP_SIM
+arch/ia64/Kconfig:200:	symbol IA64_HP_SIM is part of choice PM
+kernel/power/Kconfig:144:	symbol PM is selected by PM_SLEEP
+kernel/power/Kconfig:104:	symbol PM_SLEEP depends on HIBERNATE_CALLBACKS
+kernel/power/Kconfig:31:	symbol HIBERNATE_CALLBACKS is selected by HIBERNATION
+kernel/power/Kconfig:34:	symbol HIBERNATION depends on SWAP
+init/Kconfig:250:	symbol SWAP depends on BLOCK
+block/Kconfig:5:	symbol BLOCK is selected by UBIFS_FS
+fs/ubifs/Kconfig:1:	symbol UBIFS_FS depends on MISC_FILESYSTEMS
+fs/Kconfig:220:	symbol MISC_FILESYSTEMS is selected by ACPI_APEI
+drivers/acpi/apei/Kconfig:8:	symbol ACPI_APEI depends on ACPI
+drivers/acpi/Kconfig:9:	symbol ACPI depends on ARCH_SUPPORTS_ACPI
+drivers/acpi/Kconfig:6:	symbol ARCH_SUPPORTS_ACPI is selected by IA64_HP_SIM
+arch/ia64/Kconfig:200:	symbol IA64_HP_SIM is part of choice <choice>
+For a resolution refer to Documentation/kbuild/kconfig-language.txt
+subsection "Kconfig recursive dependency limitations"
+
+scripts/kconfig/Makefile:69: recipe for target 'allnoconfig' failed
+
+Reverting the patch fixes the problem.
+
+Guenter
+
+---
+bisect log:
+
+# bad: [60bec71b5acb0b469d07e73a348f6610236ae7fa] Add linux-next specific files for 20181211
+# good: [40e020c129cfc991e8ab4736d2665351ffd1468d] Linux 4.20-rc6
+git bisect start 'HEAD' 'v4.20-rc6'
+# bad: [9d9400c203d670e3b002336bf3a70a34c8023853] Merge remote-tracking branch 'spi-nor/spi-nor/next'
+git bisect bad 9d9400c203d670e3b002336bf3a70a34c8023853
+# bad: [98d439a801d02e313d762fa08368b680e4c0d961] Merge remote-tracking branch 'vfs/for-next'
+git bisect bad 98d439a801d02e313d762fa08368b680e4c0d961
+# good: [79271eb86e6aca36f962657ea4efa248fc84e2fa] Merge remote-tracking branch 'samsung-krzk/for-next'
+git bisect good 79271eb86e6aca36f962657ea4efa248fc84e2fa
+# good: [b506abfb5f33d7358cfc9818054e3a834813f7af] Merge remote-tracking branch 'mips/mips-next'
+git bisect good b506abfb5f33d7358cfc9818054e3a834813f7af
+# bad: [d58e2b0647688a51a96e373589c0597f493ba066] Merge remote-tracking branch 'befs/for-next'
+git bisect bad d58e2b0647688a51a96e373589c0597f493ba066
+# good: [39f8d343f04868e14abdf1c7ca31d53855bf6f81] Merge remote-tracking branch 'risc-v/for-next'
+git bisect good 39f8d343f04868e14abdf1c7ca31d53855bf6f81
+# good: [e2f3efdaf1b66f9ac1a5ae16a99a1ff5b0956515] Merge branch 'xtensa-cleanups' into xtensa-for-next
+git bisect good e2f3efdaf1b66f9ac1a5ae16a99a1ff5b0956515
+# bad: [25da54f1d777ac4a612d9b036f8ac41baf746674] fsverity: Move verity status check to fsverity_prepare_setattr
+git bisect bad 25da54f1d777ac4a612d9b036f8ac41baf746674
+# good: [a391d6149e706be54aeed8757769910f1b2445d4] fs-verity: add CRC-32C support
+git bisect good a391d6149e706be54aeed8757769910f1b2445d4
+# good: [848a010287e6a02f1e46c344bbffeb987ed2a0aa] f2fs: use IS_ENCRYPTED() to check encryption status
+git bisect good 848a010287e6a02f1e46c344bbffeb987ed2a0aa
+# bad: [9f55ada08b452bde55c02ae9bc97c19990ff5c36] ext4: use IS_VERITY() to check inode's fsverity status
+git bisect bad 9f55ada08b452bde55c02ae9bc97c19990ff5c36
+# bad: [824834dc4a5e595ef24ba44086efa56b97ad4990] Add S_VERITY and IS_VERITY()
+git bisect bad 824834dc4a5e595ef24ba44086efa56b97ad4990
+# bad: [6956097c429aae498d26b8603b2dec39250b8940] fscrypt: remove filesystem specific build config option
+git bisect bad 6956097c429aae498d26b8603b2dec39250b8940
+# first bad commit: [6956097c429aae498d26b8603b2dec39250b8940] fscrypt: remove filesystem specific build config option
