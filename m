@@ -1,19 +1,19 @@
-Received: from skedge04.snt-world.com ([91.208.41.69])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1oT-00089Y-Cx
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:32:25 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: Raw NAND bad block marker positions
-Date: Wed, 12 Dec 2018 10:32:04 +0000
-Message-ID: <e937e18d-5099-5969-3b17-1f2d9ffa3a44@kontron.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <570BE9393CDDE54ABA7AC92EDA6D41CF@snt-world.com>
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gX1tB-0001yw-9t
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:37:15 +0000
+Date: Wed, 12 Dec 2018 11:36:49 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>
+Subject: Re: Raw NAND bad block marker positions
+Message-ID: <20181212113649.3202f758@bbrezillon>
+In-Reply-To: <e937e18d-5099-5969-3b17-1f2d9ffa3a44@kontron.de>
+References: <e937e18d-5099-5969-3b17-1f2d9ffa3a44@kontron.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCnRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uIGZvciBjaGVja2luZy9zZXR0aW5nIHRo
-ZSBiYWQgYmxvY2sgbWFya2VycyBpbiANCnJhdyBOQU5EIGZsYXNoIGRldmljZXMgc3VwcG9ydHMg
-dGhyZWUgc2V0dXBzIGZvciB0aGUgcG9zaXRpb24gb2YgdGhlIA0KbWFya2VycyB3aXRoaW4gdGhl
-IGJhZCBibG9jazoNCg0KKiBCQk0gaW4gZmlyc3QgcGFnZSBvbmx5DQoqIEJCTSBpbiBsYXN0IHBh
-Z2Ugb25seQ0KKiBCQk0gaW4gZmlyc3Qgb3Igc2Vjb25kIHBhZ2UNCg0KVGhpcyBpcyBjb250cm9s
-bGVkIGJ5IHRoZSBmbGFncyBOQU5EX0JCVF9TQ0FOTEFTVFBBR0UgYW5kIA0KTkFORF9CQlRfU0NB
-TjJORFBBR0UuIEl0IGlzIG5vdCBzdXBwb3J0ZWQgdG8gc2V0IGJvdGggZmxhZ3MgdG8gY2hlY2sg
-DQpmaXJzdCwgc2Vjb25kIGFuZCBsYXN0IHBhZ2UuDQoNClRob3VnaCBzb21lIGRldmljZXMgc2Vl
-bSB0byByZXF1aXJlIHRoaXMga2luZCBvZiBzZXR1cC4gV2Uga25vdyBvZiBzb21lIA0KRVNNVCBT
-TEMgTkFORHMsIHRoYXQgd2VyZSBhY2NpZGVudGFsbHkgc2hpcHBlZCB3aXRoIEJCTSBpbiB0aGUg
-Zmlyc3Qgb3IgDQpsYXN0IHBhZ2UsIGluc3RlYWQgb2YgZmlyc3Qgb3Igc2Vjb25kIHBhZ2UgYXMg
-Y2xhaW1lZCBpbiB0aGUgZGF0YXNoZWV0Lg0KDQpBbHNvIHRoZSBkb2N1bWVudHMgZm9yIEN5cHJl
-c3MvU3BhbnNpb24vQU1EIE5BTkRzIGNsYWltIHRoYXQgdGhlIA0Kc29mdHdhcmUgbmVlZHMgdG8g
-Y2hlY2sgZmlyc3QsIHNlY29uZCBhbmQgbGFzdCBwYWdlIGZvciBCQk1zIChlLmcuIFsxXSkuDQoN
-Ckl0IGRvZXNuJ3QgbG9vayBsaWtlIGl0IHdvdWxkIGJlIGRpZmZpY3VsdCB0byBtYWtlIE5BTkRf
-QkJUX1NDQU5MQVNUUEFHRSANCmFuZCBOQU5EX0JCVF9TQ0FOMk5EUEFHRSB3b3JrIHRvZ2V0aGVy
-LCBidXQgSSB3YW50ZWQgdG8gYXNrIGlmIHNvbWVvbmUgDQphbHJlYWR5IHN0dW1ibGVkIHVwb24g
-dGhpcyBwcm9ibGVtIG9yIGlmIHNvbWVvbmUgaGFzIGFueSBjb21tZW50cyBvciANCnN1Z2dlc3Rp
-b25zLCBiZWZvcmUgdHJ5aW5nIHRvIHBhdGNoIHRoaXM/DQoNClRoYW5rcywNCkZyaWVkZXINCg0K
-WzFdOiBodHRwczovL2NvbW11bml0eS5jeXByZXNzLmNvbS9kb2NzL0RPQy0xMDQ2NA==
+On Wed, 12 Dec 2018 10:32:04 +0000
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
+
+> Hi,
+> 
+> the current implementation for checking/setting the bad block markers in 
+> raw NAND flash devices supports three setups for the position of the 
+> markers within the bad block:
+> 
+> * BBM in first page only
+> * BBM in last page only
+> * BBM in first or second page
+> 
+> This is controlled by the flags NAND_BBT_SCANLASTPAGE and 
+> NAND_BBT_SCAN2NDPAGE. It is not supported to set both flags to check 
+> first, second and last page.
+> 
+> Though some devices seem to require this kind of setup. We know of some 
+> ESMT SLC NANDs, that were accidentally shipped with BBM in the first or 
+> last page, instead of first or second page as claimed in the datasheet.
+> 
+> Also the documents for Cypress/Spansion/AMD NANDs claim that the 
+> software needs to check first, second and last page for BBMs (e.g. [1]).
+> 
+> It doesn't look like it would be difficult to make NAND_BBT_SCANLASTPAGE 
+> and NAND_BBT_SCAN2NDPAGE work together, but I wanted to ask if someone 
+> already stumbled upon this problem or if someone has any comments or 
+> suggestions, before trying to patch this?
+
+Your suggestion sounds reasonable.
