@@ -1,34 +1,38 @@
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWv0V-0002j2-Tu
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 03:16:21 +0000
-Received: by mail-pg1-x543.google.com with SMTP id w7so7610458pgp.13
- for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 19:16:09 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH V2 3/7] fscrypt: remove filesystem specific build config
- option
-To: Eric Biggers <ebiggers@kernel.org>,
- Chandan Rajendra <chandan@linux.vnet.ibm.com>
-Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ id 1gWvoY-0008Ga-3F
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 04:08:03 +0000
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ wBC3xBDf044093
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:07:49 -0500
+Received: from e15.ny.us.ibm.com (e15.ny.us.ibm.com [129.33.205.205])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2paqh4763p-1
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:07:49 -0500
+Received: from localhost
+ by e15.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
+ Wed, 12 Dec 2018 04:07:47 -0000
+From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
  linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jaegeuk@kernel.org, yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
+ linux-fsdevel@vger.kernel.org
+Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
+ adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
+ yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
  paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
  deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
  richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
  viro@zeniv.linux.org.uk
-References: <20181204095650.12562-1-chandan@linux.vnet.ibm.com>
- <20181204095650.12562-4-chandan@linux.vnet.ibm.com>
- <20181212015211.GA23905@roeck-us.net> <20181212024811.GB722@sol.localdomain>
-From: Guenter Roeck <linux@roeck-us.net>
-Message-ID: <a006332b-a5cd-188b-d0bf-f2b7da6bad3b@roeck-us.net>
-Date: Tue, 11 Dec 2018 19:16:04 -0800
+Subject: [PATCH V4 0/9] Remove fs specific fscrypt and fsverity build config
+ options
+Date: Wed, 12 Dec 2018 09:37:27 +0530
 MIME-Version: 1.0
-In-Reply-To: <20181212024811.GB722@sol.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Message-Id: <20181212040736.2849-1-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,55 +42,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/11/18 6:48 PM, Eric Biggers wrote:
-> On Tue, Dec 11, 2018 at 05:52:11PM -0800, Guenter Roeck wrote:
->> Hi,
->>
->> On Tue, Dec 04, 2018 at 03:26:46PM +0530, Chandan Rajendra wrote:
->>> In order to have a common code base for fscrypt "post read" processing
->>> for all filesystems which support encryption, this commit removes
->>> filesystem specific build config option (e.g. CONFIG_EXT4_FS_ENCRYPTION)
->>> and replaces it with a build option (i.e. CONFIG_FS_ENCRYPTION) whose
->>> value affects all the filesystems making use of fscrypt.
->>>
->>> Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
->>
->> this patch causes a recursive dependency when trying to build ia64 images.
->>
->> make ARCH=ia64 allnoconfig:
->>
->> scripts/kconfig/conf  --allnoconfig Kconfig
->> arch/ia64/Kconfig:126:error: recursive dependency detected!
->> arch/ia64/Kconfig:126:	choice <choice> contains symbol IA64_HP_SIM
->> arch/ia64/Kconfig:200:	symbol IA64_HP_SIM is part of choice PM
->> kernel/power/Kconfig:144:	symbol PM is selected by PM_SLEEP
->> kernel/power/Kconfig:104:	symbol PM_SLEEP depends on HIBERNATE_CALLBACKS
->> kernel/power/Kconfig:31:	symbol HIBERNATE_CALLBACKS is selected by HIBERNATION
->> kernel/power/Kconfig:34:	symbol HIBERNATION depends on SWAP
->> init/Kconfig:250:	symbol SWAP depends on BLOCK
->> block/Kconfig:5:	symbol BLOCK is selected by UBIFS_FS
->> fs/ubifs/Kconfig:1:	symbol UBIFS_FS depends on MISC_FILESYSTEMS
->> fs/Kconfig:220:	symbol MISC_FILESYSTEMS is selected by ACPI_APEI
->> drivers/acpi/apei/Kconfig:8:	symbol ACPI_APEI depends on ACPI
->> drivers/acpi/Kconfig:9:	symbol ACPI depends on ARCH_SUPPORTS_ACPI
->> drivers/acpi/Kconfig:6:	symbol ARCH_SUPPORTS_ACPI is selected by IA64_HP_SIM
->> arch/ia64/Kconfig:200:	symbol IA64_HP_SIM is part of choice <choice>
->> For a resolution refer to Documentation/kbuild/kconfig-language.txt
->> subsection "Kconfig recursive dependency limitations"
->>
->> scripts/kconfig/Makefile:69: recipe for target 'allnoconfig' failed
->>
->> Reverting the patch fixes the problem.
->>
-> 
-> Thanks for the report.  Chandan, it appears the problem is UBIFS_FS selecting
-> BLOCK.  It's actually not necessary because now the parts of fs/crypto/ that
-> depend on BLOCK are separated out into a separate file fs/crypto/bio.c that is
-> only compiled with CONFIG_BLOCK.  So how about just removing the selection of
-> BLOCK from fs/ubifs/Kconfig:
-> 
-> 	select BLOCK if FS_ENCRYPTION
-> 
-The recursion is gone if I make this change.
+In order to have a common code base for fscrypt & fsverity "post read"
+processing across filesystems which implement fscrypt/fsverity, this
+commit removes filesystem specific build config option
+(CONFIG_EXT4_FS_ENCRYPTION, CONFIG_EXT4_FS_VERITY,
+CONFIG_F2FS_FS_ENCRYPTION, CONFIG_F2FS_FS_VERITY and
+CONFIG_UBIFS_FS_ENCRYPTION) and replaces it with build options
+(CONFIG_FS_ENCRYPTION and CONFIG_FS_VERITY) whose values affect all
+the filesystems making use of fscrypt and fsverity.
 
-Guenter
+The Kconfig recursive dependency issue reported by kbuild test bot for
+IA64 architecture still needs to be fixed. I should be able to fix the
+problem and post the next verison of patches by today.
+
+PS: Since I have access to only to x86 and ppc64le machines, I haven't tested the
+defconfig files for other architectures.
+
+Changelog:
+V3 -> V4:
+1. For non-fsverity supported kernels, return success when fsverity_file_open()
+   is invoked for non-fsverity files.
+
+V2 -> V3:
+1. Remove unnecessary line breaks.
+2. Remove the definition of f2fs_encrypted_inode().
+3. Fix Kconfig dependencies for fscrypt w.r.t F2FS and UBIFS. If F2FS is enabled
+   in the kernel build configuration, F2FS_FS_XATTR is selected if FS_ENCRYPTION
+   is enabled. Similarly, if UBIFS is enabled in the kernel build configuration,
+   UBIFS_FS_XATTR and BLOCK is selected if FS_ENCRYPTION is enabled.
+4. Two new patches have been added to move verity status check to
+   fsverity_file_open() and fsverity_prepare_setattr().
+5. For patch "f2fs: use IS_VERITY() to check inode's fsverity status", the
+   acked-by tag given by Chao Yu has been removed since I added an invocation to
+   f2fs_set_inode_flags() inside f2fs_set_verity(). This is needed to have
+   S_VERITY flag set on the corresponding VFS inode.
+
+V1 -> V2:
+1. Address the following review comments provided by Eric Biggers,
+   - In ext4_should_use_dax(), Use ext4_test_inode_flag() to check for
+     fscrypt/fsverity status of an inode.
+   - Update documentation associated with fscrypt & fsverity to refer to
+     CONFIG_FS_ENCRYPTION and CONFIG_FS_VERITY build flags.
+   - Remove filesystem specific fscrypt build configuration from defconfig
+     files.
+   - Provide a list of supported filesystems for CONFIG_FS_ENCRYPTION and
+     CONFIG_FS_VERITY build flags.
+   - Update comment describing S_VERITY flag.
+2. Remove UBIFS specific encryption build option and make use of the generic
+   CONFIG_FS_ENCRYPTION flag.
+
+RFC -> V1:
+1. Add a new patch to implement S_VERITY/IS_VERITY().
+2. Split code that replaces filesystem specific routines with generic
+   IS_ENCRYPTED() and IS_VERITY() calls into separate patches.
+
+Chandan Rajendra (9):
+  ext4: use IS_ENCRYPTED() to check encryption status
+  f2fs: use IS_ENCRYPTED() to check encryption status
+  fscrypt: remove filesystem specific build config option
+  Add S_VERITY and IS_VERITY()
+  ext4: use IS_VERITY() to check inode's fsverity status
+  f2fs: use IS_VERITY() to check inode's fsverity status
+  fsverity: Remove filesystem specific build config option
+  fsverity: Move verity status check to fsverity_file_open
+  fsverity: Move verity status check to fsverity_prepare_setattr
+
+ Documentation/filesystems/fscrypt.rst   |   4 +-
+ Documentation/filesystems/fsverity.rst  |   4 +-
+ arch/mips/configs/generic_defconfig     |   2 +-
+ arch/nds32/configs/defconfig            |   2 +-
+ arch/s390/configs/debug_defconfig       |   2 +-
+ arch/s390/configs/performance_defconfig |   2 +-
+ fs/crypto/Kconfig                       |   5 +-
+ fs/crypto/fscrypt_private.h             |   1 -
+ fs/ext4/Kconfig                         |  35 --
+ fs/ext4/dir.c                           |  10 +-
+ fs/ext4/ext4.h                          |  23 +-
+ fs/ext4/ext4_jbd2.h                     |   2 +-
+ fs/ext4/extents.c                       |   4 +-
+ fs/ext4/file.c                          |   8 +-
+ fs/ext4/ialloc.c                        |   2 +-
+ fs/ext4/inode.c                         |  40 ++-
+ fs/ext4/ioctl.c                         |   4 +-
+ fs/ext4/move_extent.c                   |   3 +-
+ fs/ext4/namei.c                         |  18 +-
+ fs/ext4/page-io.c                       |   9 +-
+ fs/ext4/readpage.c                      |  10 +-
+ fs/ext4/super.c                         |  13 +-
+ fs/ext4/sysfs.c                         |   8 +-
+ fs/f2fs/Kconfig                         |  32 +-
+ fs/f2fs/data.c                          |   6 +-
+ fs/f2fs/dir.c                           |  10 +-
+ fs/f2fs/f2fs.h                          |  23 +-
+ fs/f2fs/file.c                          |  28 +-
+ fs/f2fs/inode.c                         |   8 +-
+ fs/f2fs/namei.c                         |   6 +-
+ fs/f2fs/super.c                         |  15 +-
+ fs/f2fs/sysfs.c                         |   8 +-
+ fs/ubifs/Kconfig                        |  13 +-
+ fs/ubifs/Makefile                       |   2 +-
+ fs/ubifs/ioctl.c                        |   4 +-
+ fs/ubifs/sb.c                           |   2 +-
+ fs/ubifs/super.c                        |   2 +-
+ fs/ubifs/ubifs.h                        |   5 +-
+ fs/verity/Kconfig                       |   3 +-
+ fs/verity/fsverity_private.h            |   1 -
+ fs/verity/setup.c                       |   5 +-
+ include/linux/fs.h                      |  10 +-
+ include/linux/fscrypt.h                 | 416 +++++++++++++++++++++++-
+ include/linux/fscrypt_notsupp.h         | 231 -------------
+ include/linux/fscrypt_supp.h            | 204 ------------
+ include/linux/fsverity.h                |  17 +-
+ 46 files changed, 562 insertions(+), 700 deletions(-)
+ delete mode 100644 include/linux/fscrypt_notsupp.h
+ delete mode 100644 include/linux/fscrypt_supp.h
+
+-- 
+2.19.1
