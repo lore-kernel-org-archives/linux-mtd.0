@@ -1,20 +1,19 @@
-Received: from mailout1.w1.samsung.com ([210.118.77.11])
+Received: from skedge04.snt-world.com ([91.208.41.69])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1i3-0004Fx-3u
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:25:45 +0000
-From: Jungseung Lee <js07.lee@samsung.com>
-To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, js07.lee@gmail.com,
- js07.lee@samsung.com
-Subject: [PATCH 2/2 v2] mtd: spi-nor: support lock/unlock for a few Micron
- chips
-Date: Wed, 12 Dec 2018 19:25:15 +0900
-Message-id: <20181212102515.7296-2-js07.lee@samsung.com>
-In-reply-to: <20181212102515.7296-1-js07.lee@samsung.com>
-References: <20181212102515.7296-1-js07.lee@samsung.com>
- <CGME20181212102527eucas1p16f75c4c7a3e90a4a2ebec03a3dc0a4f3@eucas1p1.samsung.com>
+ id 1gX1oT-00089Y-Cx
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:32:25 +0000
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+Subject: Raw NAND bad block marker positions
+Date: Wed, 12 Dec 2018 10:32:04 +0000
+Message-ID: <e937e18d-5099-5969-3b17-1f2d9ffa3a44@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <570BE9393CDDE54ABA7AC92EDA6D41CF@snt-world.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some Micron models are known to have lock/unlock support,
-and that also support 4bit block protection bit (bp0-3).
-
-This patch support lock/unlock feature on the flash.
-
-Tested on w25q512ax3.
-The Other is modified following the datasheet.
-
-Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
----
-ChangeLog v1->v2:
- - Rebase on latest MTD development branch
----
- drivers/mtd/spi-nor/spi-nor.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c33b72eeae12..b94e0909efcf 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1904,8 +1904,16 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
--	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-+	{
-+		"n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024,
-+			SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
-+			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BP3)
-+	},
-+	{
-+		"n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024,
-+			SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
-+			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BP3)
-+	},
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
- 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
- 	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
--- 
-2.17.1
+SGksDQoNCnRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uIGZvciBjaGVja2luZy9zZXR0aW5nIHRo
+ZSBiYWQgYmxvY2sgbWFya2VycyBpbiANCnJhdyBOQU5EIGZsYXNoIGRldmljZXMgc3VwcG9ydHMg
+dGhyZWUgc2V0dXBzIGZvciB0aGUgcG9zaXRpb24gb2YgdGhlIA0KbWFya2VycyB3aXRoaW4gdGhl
+IGJhZCBibG9jazoNCg0KKiBCQk0gaW4gZmlyc3QgcGFnZSBvbmx5DQoqIEJCTSBpbiBsYXN0IHBh
+Z2Ugb25seQ0KKiBCQk0gaW4gZmlyc3Qgb3Igc2Vjb25kIHBhZ2UNCg0KVGhpcyBpcyBjb250cm9s
+bGVkIGJ5IHRoZSBmbGFncyBOQU5EX0JCVF9TQ0FOTEFTVFBBR0UgYW5kIA0KTkFORF9CQlRfU0NB
+TjJORFBBR0UuIEl0IGlzIG5vdCBzdXBwb3J0ZWQgdG8gc2V0IGJvdGggZmxhZ3MgdG8gY2hlY2sg
+DQpmaXJzdCwgc2Vjb25kIGFuZCBsYXN0IHBhZ2UuDQoNClRob3VnaCBzb21lIGRldmljZXMgc2Vl
+bSB0byByZXF1aXJlIHRoaXMga2luZCBvZiBzZXR1cC4gV2Uga25vdyBvZiBzb21lIA0KRVNNVCBT
+TEMgTkFORHMsIHRoYXQgd2VyZSBhY2NpZGVudGFsbHkgc2hpcHBlZCB3aXRoIEJCTSBpbiB0aGUg
+Zmlyc3Qgb3IgDQpsYXN0IHBhZ2UsIGluc3RlYWQgb2YgZmlyc3Qgb3Igc2Vjb25kIHBhZ2UgYXMg
+Y2xhaW1lZCBpbiB0aGUgZGF0YXNoZWV0Lg0KDQpBbHNvIHRoZSBkb2N1bWVudHMgZm9yIEN5cHJl
+c3MvU3BhbnNpb24vQU1EIE5BTkRzIGNsYWltIHRoYXQgdGhlIA0Kc29mdHdhcmUgbmVlZHMgdG8g
+Y2hlY2sgZmlyc3QsIHNlY29uZCBhbmQgbGFzdCBwYWdlIGZvciBCQk1zIChlLmcuIFsxXSkuDQoN
+Ckl0IGRvZXNuJ3QgbG9vayBsaWtlIGl0IHdvdWxkIGJlIGRpZmZpY3VsdCB0byBtYWtlIE5BTkRf
+QkJUX1NDQU5MQVNUUEFHRSANCmFuZCBOQU5EX0JCVF9TQ0FOMk5EUEFHRSB3b3JrIHRvZ2V0aGVy
+LCBidXQgSSB3YW50ZWQgdG8gYXNrIGlmIHNvbWVvbmUgDQphbHJlYWR5IHN0dW1ibGVkIHVwb24g
+dGhpcyBwcm9ibGVtIG9yIGlmIHNvbWVvbmUgaGFzIGFueSBjb21tZW50cyBvciANCnN1Z2dlc3Rp
+b25zLCBiZWZvcmUgdHJ5aW5nIHRvIHBhdGNoIHRoaXM/DQoNClRoYW5rcywNCkZyaWVkZXINCg0K
+WzFdOiBodHRwczovL2NvbW11bml0eS5jeXByZXNzLmNvbS9kb2NzL0RPQy0xMDQ2NA==
