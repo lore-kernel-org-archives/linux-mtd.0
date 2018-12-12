@@ -1,39 +1,17 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1FD-0007AS-0j
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 09:56:06 +0000
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wBC9r6lI115241
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:55:44 -0500
-Received: from e36.co.us.ibm.com (e36.co.us.ibm.com [32.97.110.154])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2pb03c846e-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:55:44 -0500
-Received: from localhost
- by e36.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Wed, 12 Dec 2018 09:50:43 -0000
-From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
- linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
- adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
- yuchao0@huawei.com, corbet@lwn.net, ralf@linux-mips.org,
- paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
- deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
- richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- viro@zeniv.linux.org.uk
-Subject: [PATCH V5 1/9] ext4: use IS_ENCRYPTED() to check encryption status
-Date: Wed, 12 Dec 2018 15:20:10 +0530
-In-Reply-To: <20181212095018.12648-1-chandan@linux.vnet.ibm.com>
-References: <20181212095018.12648-1-chandan@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-Id: <20181212095018.12648-2-chandan@linux.vnet.ibm.com>
+Received: from mailout2.w1.samsung.com ([210.118.77.12])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gX1i1-00076v-MT
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 10:25:43 +0000
+From: Jungseung Lee <js07.lee@samsung.com>
+To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, js07.lee@gmail.com,
+ js07.lee@samsung.com
+Subject: [PATCH 1/2 v2] mtd: spi-nor: add 4bit block protection support
+Date: Wed, 12 Dec 2018 19:25:14 +0900
+Message-id: <20181212102515.7296-1-js07.lee@samsung.com>
+References: <CGME20181212102523eucas1p16be703ce8b995b9a5d490b31d0496ecc@eucas1p1.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,278 +21,204 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit removes the ext4 specific ext4_encrypted_inode() and makes
-use of the generic IS_ENCRYPTED() macro to check for the encryption
-status of an inode.
+Currently, we are supporting block protection only for
+flash chips with 3 block protection bits in the SR register.
+This patch enables block protection support for some flash with
+4 block protection bits (bp0-3).
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+Because this feature is not universal to all flash that support
+lock/unlock, control it via a new flag.
+
+Signed-off-by: Jungseung Lee <js07.lee@samsung.com>
 ---
- fs/ext4/dir.c         |  8 ++++----
- fs/ext4/ext4.h        |  5 -----
- fs/ext4/ext4_jbd2.h   |  2 +-
- fs/ext4/extents.c     |  4 ++--
- fs/ext4/ialloc.c      |  2 +-
- fs/ext4/inode.c       | 16 +++++++---------
- fs/ext4/move_extent.c |  3 +--
- fs/ext4/namei.c       |  8 ++++----
- fs/ext4/page-io.c     |  3 +--
- fs/ext4/readpage.c    |  2 +-
- 10 files changed, 22 insertions(+), 31 deletions(-)
+ChangeLog v1->v2:
+- Rebase on latest MTD development branch
+---
+ drivers/mtd/spi-nor/spi-nor.c | 61 ++++++++++++++++++++++++++++++-----
+ include/linux/mtd/spi-nor.h   |  4 +++
+ 2 files changed, 57 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index f93f9881ec18..fb7a64ea5679 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -111,7 +111,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 	int dir_has_error = 0;
- 	struct fscrypt_str fstr = FSTR_INIT(NULL, 0);
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 6e13bbd1aaa5..c33b72eeae12 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -96,6 +96,7 @@ enum spi_nor_pp_command_index {
+ struct spi_nor_flash_parameter {
+ 	u64				size;
+ 	u32				page_size;
++	u16				n_sectors;
  
--	if (ext4_encrypted_inode(inode)) {
-+	if (IS_ENCRYPTED(inode)) {
- 		err = fscrypt_get_encryption_info(inode);
- 		if (err && err != -ENOKEY)
- 			return err;
-@@ -138,7 +138,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 			return err;
+ 	struct spi_nor_hwcaps		hwcaps;
+ 	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+@@ -278,6 +279,7 @@ struct flash_info {
+ #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
+ #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
+ #define USE_CLSR		BIT(14)	/* use CLSR command */
++#define SPI_NOR_HAS_BP3		BIT(15)	/* use 4 bits field for block protect */
+ 
+ 	/* Part specific fixup hooks. */
+ 	const struct spi_nor_fixups *fixups;
+@@ -1087,18 +1089,36 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 	int shift = ffs(mask) - 1;
+ 	int pow;
+ 
++	if (nor->flags & SNOR_F_HAS_SR_BP3)
++		mask |= SR_BP3;
++
+ 	if (!(sr & mask)) {
+ 		/* No protection */
+ 		*ofs = 0;
+ 		*len = 0;
++		return;
++	}
++
++	if (nor->flags & SNOR_F_HAS_SR_BP3) {
++		u8 temp = sr & mask;
++
++		if (temp & SR_BP3)
++			temp = (temp & ~SR_BP3) | BIT(5);
++
++		pow = ilog2(nor->n_sectors) + 1 - (temp >> shift);
++		if (pow > 0)
++			*len = mtd->size >> pow;
++		else
++			*len = mtd->size;
+ 	} else {
+ 		pow = ((sr & mask) ^ mask) >> shift;
+ 		*len = mtd->size >> pow;
+-		if (nor->flags & SNOR_F_HAS_SR_TB && sr & SR_TB)
+-			*ofs = 0;
+-		else
+-			*ofs = mtd->size - *len;
  	}
- 
--	if (ext4_encrypted_inode(inode)) {
-+	if (IS_ENCRYPTED(inode)) {
- 		err = fscrypt_fname_alloc_buffer(inode, EXT4_NAME_LEN, &fstr);
- 		if (err < 0)
- 			return err;
-@@ -245,7 +245,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 			offset += ext4_rec_len_from_disk(de->rec_len,
- 					sb->s_blocksize);
- 			if (le32_to_cpu(de->inode)) {
--				if (!ext4_encrypted_inode(inode)) {
-+				if (!IS_ENCRYPTED(inode)) {
- 					if (!dir_emit(ctx, de->name,
- 					    de->name_len,
- 					    le32_to_cpu(de->inode),
-@@ -613,7 +613,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
- 
- static int ext4_dir_open(struct inode * inode, struct file * filp)
- {
--	if (ext4_encrypted_inode(inode))
-+	if (IS_ENCRYPTED(inode))
- 		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
- 	return 0;
++
++	if (nor->flags & SNOR_F_HAS_SR_TB && sr & SR_TB)
++		*ofs = 0;
++	else
++		*ofs = mtd->size - *len;
  }
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 80957f9d3cbe..2ae6ab88f218 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2297,11 +2297,6 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- 					      struct ext4_group_desc *gdp);
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
  
--static inline bool ext4_encrypted_inode(struct inode *inode)
--{
--	return ext4_test_inode_flag(inode, EXT4_INODE_ENCRYPT);
--}
--
- static inline bool ext4_verity_inode(struct inode *inode)
- {
- #ifdef CONFIG_EXT4_FS_VERITY
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 15b6dd733780..a1ac7e9245ec 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -411,7 +411,7 @@ static inline int ext4_inode_journal_mode(struct inode *inode)
- 	    (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
- 	    !test_opt(inode->i_sb, DELALLOC))) {
- 		/* We do not support data journalling for encrypted data */
--		if (S_ISREG(inode->i_mode) && ext4_encrypted_inode(inode))
-+		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode))
- 			return EXT4_INODE_ORDERED_DATA_MODE;  /* ordered */
- 		return EXT4_INODE_JOURNAL_DATA_MODE;	/* journal data */
- 	}
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 240b6dea5441..79d986dbf5af 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3631,7 +3631,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
- 		max_zeroout = sbi->s_extent_max_zeroout_kb >>
- 			(inode->i_sb->s_blocksize_bits - 10);
+ /*
+@@ -1178,6 +1198,9 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
  
--	if (ext4_encrypted_inode(inode))
-+	if (IS_ENCRYPTED(inode))
- 		max_zeroout = 0;
- 
- 	/*
-@@ -4818,7 +4818,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
- 	 * leave it disabled for encrypted inodes for now.  This is a
- 	 * bug we should fix....
++	if (nor->flags & SNOR_F_HAS_SR_BP3)
++		mask |= SR_BP3;
++
+ 	status_old = read_sr(nor);
+ 	if (status_old < 0)
+ 		return status_old;
+@@ -1217,7 +1240,16 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	 *   pow = ceil(log2(size / len)) = log2(size) - floor(log2(len))
  	 */
--	if (ext4_encrypted_inode(inode) &&
-+	if (IS_ENCRYPTED(inode) &&
- 	    (mode & (FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_INSERT_RANGE |
- 		     FALLOC_FL_ZERO_RANGE)))
- 		return -EOPNOTSUPP;
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 2addcb8730e1..3002f110eb4f 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -771,7 +771,7 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
- 	if (unlikely(ext4_forced_shutdown(sbi)))
- 		return ERR_PTR(-EIO);
+ 	pow = ilog2(mtd->size) - ilog2(lock_len);
+-	val = mask - (pow << shift);
++
++	if (nor->flags & SNOR_F_HAS_SR_BP3) {
++		val = ilog2(nor->n_sectors) + 1 - pow;
++		val = val << shift;
++		if (val & BIT(5))
++			val = (val & ~BIT(5)) | SR_BP3;
++	} else {
++		val = mask - (pow << shift);
++	}
++
+ 	if (val & ~mask)
+ 		return -EINVAL;
+ 	/* Don't "lock" with no region! */
+@@ -1258,6 +1290,9 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
  
--	if ((ext4_encrypted_inode(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) &&
-+	if ((IS_ENCRYPTED(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) &&
- 	    (S_ISREG(mode) || S_ISDIR(mode) || S_ISLNK(mode)) &&
- 	    !(i_flags & EXT4_EA_INODE_FL)) {
- 		err = fscrypt_get_encryption_info(dir);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d7019f5dca6f..0efa30f921b0 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -415,7 +415,7 @@ int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t lblk, ext4_fsblk_t pblk,
- {
- 	int ret;
- 
--	if (ext4_encrypted_inode(inode))
-+	if (IS_ENCRYPTED(inode))
- 		return fscrypt_zeroout_range(inode, lblk, pblk, len);
- 
- 	ret = sb_issue_zeroout(inode->i_sb, pblk, len, GFP_NOFS);
-@@ -1217,8 +1217,7 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
- 		    (block_start < from || block_end > to)) {
- 			ll_rw_block(REQ_OP_READ, 0, 1, &bh);
- 			*wait_bh++ = bh;
--			decrypt = ext4_encrypted_inode(inode) &&
--				S_ISREG(inode->i_mode);
-+			decrypt = IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
- 		}
- 	}
- 	/*
-@@ -3880,7 +3879,7 @@ static ssize_t ext4_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	ssize_t ret;
- 
- #ifdef CONFIG_EXT4_FS_ENCRYPTION
--	if (ext4_encrypted_inode(inode) && S_ISREG(inode->i_mode))
-+	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
- 		return 0;
- #endif
- 
-@@ -4067,8 +4066,7 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 		/* Uhhuh. Read error. Complain and punt. */
- 		if (!buffer_uptodate(bh))
- 			goto unlock;
--		if (S_ISREG(inode->i_mode) &&
--		    ext4_encrypted_inode(inode)) {
-+		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode)) {
- 			/* We expect the key to be set. */
- 			BUG_ON(!fscrypt_has_encryption_key(inode));
- 			BUG_ON(blocksize != PAGE_SIZE);
-@@ -4144,7 +4142,7 @@ static int ext4_block_truncate_page(handle_t *handle,
- 	struct inode *inode = mapping->host;
- 
- 	/* If we are processing an encrypted inode during orphan list handling */
--	if (ext4_encrypted_inode(inode) && !fscrypt_has_encryption_key(inode))
-+	if (IS_ENCRYPTED(inode) && !fscrypt_has_encryption_key(inode))
- 		return 0;
- 
- 	blocksize = inode->i_sb->s_blocksize;
-@@ -4724,7 +4722,7 @@ static bool ext4_should_use_dax(struct inode *inode)
- 		return false;
- 	if (ext4_has_inline_data(inode))
- 		return false;
--	if (ext4_encrypted_inode(inode))
-+	if (ext4_test_inode_flag(inode, EXT4_INODE_ENCRYPT))
- 		return false;
- 	if (ext4_verity_inode(inode))
- 		return false;
-@@ -5050,7 +5048,7 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
- 			ret = -EFSCORRUPTED;
- 			goto bad_inode;
- 		}
--		if (ext4_encrypted_inode(inode)) {
-+		if (IS_ENCRYPTED(inode)) {
- 			inode->i_op = &ext4_encrypted_symlink_inode_operations;
- 			ext4_set_aops(inode);
- 		} else if (ext4_inode_is_fast_symlink(inode)) {
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 2f5be02fc6f6..1083a9f3f16a 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -592,8 +592,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
- 		return -EOPNOTSUPP;
++	if (nor->flags & SNOR_F_HAS_SR_BP3)
++		mask |= SR_BP3;
++
+ 	status_old = read_sr(nor);
+ 	if (status_old < 0)
+ 		return status_old;
+@@ -1299,13 +1334,19 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	pow = ilog2(mtd->size) - order_base_2(lock_len);
+ 	if (lock_len == 0) {
+ 		val = 0; /* fully unlocked */
++	} else if (nor->flags & SNOR_F_HAS_SR_BP3) {
++		val = ilog2(nor->n_sectors) + 1 - pow;
++		val = val << shift;
++		if (val & BIT(5))
++			val = (val & ~BIT(5)) | SR_BP3;
+ 	} else {
+ 		val = mask - (pow << shift);
+-		/* Some power-of-two sizes are not supported */
+-		if (val & ~mask)
+-			return -EINVAL;
  	}
  
--	if (ext4_encrypted_inode(orig_inode) ||
--	    ext4_encrypted_inode(donor_inode)) {
-+	if (IS_ENCRYPTED(orig_inode) || IS_ENCRYPTED(donor_inode)) {
- 		ext4_msg(orig_inode->i_sb, KERN_ERR,
- 			 "Online defrag not supported for encrypted files");
- 		return -EOPNOTSUPP;
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 67a38532032a..0de60207a963 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -620,7 +620,7 @@ static struct stats dx_show_leaf(struct inode *dir,
++	/* Some power-of-two sizes are not supported */
++	if (val & ~mask)
++		return -EINVAL;
++
+ 	status_new = (status_old & ~mask & ~SR_TB) | val;
  
- 				name  = de->name;
- 				len = de->name_len;
--				if (ext4_encrypted_inode(dir))
-+				if (IS_ENCRYPTED(dir))
- 					res = fscrypt_get_encryption_info(dir);
- 				if (res) {
- 					printk(KERN_WARNING "Error setting up"
-@@ -985,7 +985,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
- 					   EXT4_DIR_REC_LEN(0));
- #ifdef CONFIG_EXT4_FS_ENCRYPTION
- 	/* Check if the directory is encrypted */
--	if (ext4_encrypted_inode(dir)) {
-+	if (IS_ENCRYPTED(dir)) {
- 		err = fscrypt_get_encryption_info(dir);
- 		if (err < 0) {
- 			brelse(bh);
-@@ -1014,7 +1014,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
- 			continue;
- 		if (de->inode == 0)
- 			continue;
--		if (!ext4_encrypted_inode(dir)) {
-+		if (!IS_ENCRYPTED(dir)) {
- 			tmp_str.name = de->name;
- 			tmp_str.len = de->name_len;
- 			err = ext4_htree_store_dirent(dir_file,
-@@ -1577,7 +1577,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
- 					 ino);
- 			return ERR_PTR(-EFSCORRUPTED);
- 		}
--		if (!IS_ERR(inode) && ext4_encrypted_inode(dir) &&
-+		if (!IS_ERR(inode) && IS_ENCRYPTED(dir) &&
- 		    (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode)) &&
- 		    !fscrypt_has_permitted_context(dir, inode)) {
- 			ext4_warning(inode->i_sb,
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 2aa62d58d8dd..c398b55da854 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -477,8 +477,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 	/* Don't protect status register if we're fully unlocked */
+@@ -3563,6 +3604,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ 	/* Set SPI NOR sizes. */
+ 	params->size = (u64)info->sector_size * info->n_sectors;
+ 	params->page_size = info->page_size;
++	params->n_sectors = info->n_sectors;
  
- 	bh = head = page_buffers(page);
+ 	/* (Fast) Read settings. */
+ 	params->hwcaps.mask |= SNOR_HWCAPS_READ;
+@@ -4065,12 +4107,15 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+ 	if (info->flags & USE_CLSR)
+ 		nor->flags |= SNOR_F_USE_CLSR;
++	if (info->flags & SPI_NOR_HAS_BP3)
++		nor->flags |= SNOR_F_HAS_SR_BP3;
  
--	if (ext4_encrypted_inode(inode) && S_ISREG(inode->i_mode) &&
--	    nr_to_submit) {
-+	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode) && nr_to_submit) {
- 		gfp_t gfp_flags = GFP_NOFS;
+ 	if (info->flags & SPI_NOR_NO_ERASE)
+ 		mtd->flags |= MTD_NO_ERASE;
  
- 	retry_encrypt:
-diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-index d3dd1ff745db..45e707fb9749 100644
---- a/fs/ext4/readpage.c
-+++ b/fs/ext4/readpage.c
-@@ -156,7 +156,7 @@ static struct bio_post_read_ctx *get_bio_post_read_ctx(struct inode *inode,
- 	unsigned int post_read_steps = 0;
- 	struct bio_post_read_ctx *ctx = NULL;
+ 	mtd->dev.parent = dev;
+ 	nor->page_size = params.page_size;
++	nor->n_sectors = params.n_sectors;
+ 	mtd->writebufsize = nor->page_size;
  
--	if (ext4_encrypted_inode(inode) && S_ISREG(inode->i_mode))
-+	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
- 		post_read_steps |= 1 << STEP_DECRYPT;
- #ifdef CONFIG_EXT4_FS_VERITY
- 	if (inode->i_verity_info != NULL &&
+ 	if (np) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index fa2d89e38e40..b00ae7c6ecab 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -119,6 +119,7 @@
+ #define SR_BP1			BIT(3)	/* Block protect 1 */
+ #define SR_BP2			BIT(4)	/* Block protect 2 */
+ #define SR_TB			BIT(5)	/* Top/Bottom protect */
++#define SR_BP3			BIT(6)	/* Block protect 3 */
+ #define SR_SRWD			BIT(7)	/* SR write protect */
+ /* Spansion/Cypress specific status bits */
+ #define SR_E_ERR		BIT(5)
+@@ -235,6 +236,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_BROKEN_RESET	= BIT(6),
+ 	SNOR_F_4B_OPCODES	= BIT(7),
+ 	SNOR_F_HAS_4BAIT	= BIT(8),
++	SNOR_F_HAS_SR_BP3	= BIT(9),
+ };
+ 
+ /**
+@@ -338,6 +340,7 @@ struct flash_info;
+  * @dev:		point to a spi device, or a spi nor controller device.
+  * @info:		spi-nor part JDEC MFR id and other info
+  * @page_size:		the page size of the SPI NOR
++ * @n_sectors:		number of sector
+  * @addr_width:		number of address bytes
+  * @erase_opcode:	the opcode for erasing a sector
+  * @read_opcode:	the read opcode
+@@ -374,6 +377,7 @@ struct spi_nor {
+ 	struct device		*dev;
+ 	const struct flash_info	*info;
+ 	u32			page_size;
++	u16			n_sectors;
+ 	u8			addr_width;
+ 	u8			erase_opcode;
+ 	u8			read_opcode;
 -- 
-2.19.1
+2.17.1
