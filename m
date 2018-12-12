@@ -1,28 +1,37 @@
-From: Pankaj Bansal <pankaj.bansal@nxp.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+Received: from mail-eopbgr740082.outbound.protection.outlook.com
+ ([40.107.74.82] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gX0RS-0006BL-5E
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 09:04:32 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
+ <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "broonie@kernel.org"
- <broonie@kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@kontron.de"
- <frieder.schrempf@kontron.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>
-Subject: RE: [PATCH v5 3/5] arm64: dts: lx2160a: add FlexSPI node property
-Date: Wed, 12 Dec 2018 08:15:40 +0000
-Message-ID: <HE1PR0402MB332315D53C681D842865B6B5F1A70@HE1PR0402MB3323.eurprd04.prod.outlook.com>
-References: <1542366701-16065-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1542366701-16065-4-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1542366701-16065-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Wed, 12 Dec 2018 09:04:16 +0000
+Message-ID: <MWHPR02MB26236CEF8A2110B20C825198AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181118204324.373ca9cc@bbrezillon>
+ <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181119090246.49060019@bbrezillon>
+ <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
+ <20181120120244.7d2442b5@bbrezillon>	<20181120133624.3fa4742d@xps13>
+ <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181212091135.1d0cc9a6@xps13>
+In-Reply-To: <20181212091135.1d0cc9a6@xps13>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,105 +42,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-> -----Original Message-----
-> From: devicetree-owner@vger.kernel.org [mailto:devicetree-
-> owner@vger.kernel.org] On Behalf Of Yogesh Narayan Gaur
-> Sent: Friday, November 16, 2018 4:44 PM
-> To: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
-> marek.vasut@gmail.com; broonie@kernel.org; linux-spi@vger.kernel.org;
-> devicetree@vger.kernel.org
-> Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
-> arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
-> frieder.schrempf@kontron.de; linux-kernel@vger.kernel.org; Yogesh Narayan
-> Gaur <yogeshnarayan.gaur@nxp.com>
-> Subject: [PATCH v5 3/5] arm64: dts: lx2160a: add FlexSPI node property
->=20
-> Add fspi node property for LX2160A SoC for FlexSPI driver.
-> Property added for the FlexSPI controller and for the connected slave dev=
-ice for
-> the LX2160ARDB target.
-> This is having two SPI-NOR flash device, mt35xu512aba, connected at CS0 a=
-nd
-> CS1.
->=20
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
-> Changes for v5:
-> - None
-> Changes for v4:
-> - Incorporated Rob review comments.
-> Changes for v3:
-> - None.
-> Changes for v2:
-> - - Incorporated Shawn review comments.
-> ---
->  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 22
-> ++++++++++++++++++++++
->  arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi    | 13 +++++++++++++
->  2 files changed, 35 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> index 1483071..3b20c97 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> @@ -35,6 +35,28 @@
->  	status =3D "okay";
->  };
->=20
-> +&fspi {
-> +	status =3D "okay";
-> +
-> +	mt35xu512aba0: flash@0 {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <1>;
-> +		compatible =3D "spansion,m25p80";
-> +		m25p,fast-read;
-> +		spi-max-frequency =3D <20000000>;
-
-The SPI flash supports 50MHz frequency. Please update to 50Mhz
-
-> +		reg =3D <0>;
-> +	};
-> +
-> +	mt35xu512aba1: flash@1 {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <1>;
-> +		compatible =3D "spansion,m25p80";
-> +		m25p,fast-read;
-> +		spi-max-frequency =3D <20000000>;
-> +		reg =3D <1>;
-> +	};
-> +};
-> +
->  &i2c0 {
->  	status =3D "okay";
->  	i2c-mux@77 {
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> index c758268..5d0025a 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> @@ -698,5 +698,18 @@
->  			interrupts =3D <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
->  			timeout-sec =3D <30>;
->  		};
-> +
-> +		fspi: spi@20c0000 {
-> +			compatible =3D "nxp,lx2160a-fspi";
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <0>;
-> +			reg =3D <0x0 0x20c0000 0x0 0x10000>,
-> +				<0x0 0x20000000 0x0 0x10000000>;
-> +			reg-names =3D "fspi_base", "fspi_mmap";
-> +			interrupts =3D <0 25 0x4>; /* Level high type */
-> +			clocks =3D <&clockgen 4 3>, <&clockgen 4 3>;
-> +			clock-names =3D "fspi_en", "fspi";
-> +			status =3D "disabled";
-> +		};
->  	};
->  };
-> --
-> 2.7.4
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBXZWRu
+ZXNkYXksIERlY2VtYmVyIDEyLCAyMDE4IDE6NDIgUE0NCj4gVG86IE5hZ2EgU3VyZXNoa3VtYXIg
+UmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
+LmJyZXppbGxvbkBib290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsgcmljaGFyZEBub2QuYXQ7
+IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBtYXJlay52YXN1dEBnbWFpbC5jb207
+IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBuYWdhc3VyZXNoMTJAZ21haWwuY29t
+OyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+IGNvbXB1dGVyc2ZvcnBlYWNl
+QGdtYWlsLmNvbTsgZHdtdzJAaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogW0xJTlVYIFBB
+VENIIHYxMiAzLzNdIG10ZDogcmF3bmFuZDogYXJhc2FuOiBBZGQgc3VwcG9ydCBmb3IgQXJhc2Fu
+DQo+IE5BTkQgRmxhc2ggQ29udHJvbGxlcg0KPiANCj4gSGkgTmFnYSwNCj4gDQo+IE5hZ2EgU3Vy
+ZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+IHdyb3RlIG9uIFdlZCwgMTIgRGVj
+IDIwMTgNCj4gMDU6Mjc6MDMgKzAwMDA6DQo+IA0KPiA+IEhpIEJvcmlzICYgTWlxdWVsLA0KPiA+
+DQo+ID4gQW4gdXBkYXRlIHRvIG15IGNvbW1lbnRzIG9uIHRocmVhZCBodHRwczovL2xrbWwub3Jn
+L2xrbWwvMjAxOC8xMS8xNS82NTYuDQo+ID4gSW4gdGhpcyBJIHNhaWQsIHdpbGwgdGFrZSBhIGRl
+ZmF1bHQgZXJyb3IgY291bnQgdmFsdWUgYXMgMTYgYW5kIGR1cmluZw0KPiA+IHBhZ2UgcmVhZCwg
+d2lsbCBjaGVjayB0aGUgZXJyb3IgY291bnQgUmVnaXN0ZXIgdmFsdWUgd2l0aCB0aGlzIGFuZCBp
+Zg0KPiA+IGl0IGlzIGVxdWFsIHRvIG9yIGdyZWF0ZXIgdGhhbiB0aGUgZGVmYXVsdCBjb3VudCgx
+NikgdGhlbiBJIGFtIGNoZWNraW5nIGZvciBFcmFzZWQgcGFnZXMuDQo+ID4gQnV0IGJpdFs3OjBd
+IGluIEVDQ19FcnJvcl9Db3VudF9SZWdpc3RlcigweDM4KSB3aWxsIHVwZGF0ZSBmb3IgZWFjaCBl
+cnJvciBvY2N1cnJlZC4NCj4gPiBMaW5rOg0KPiA+IGh0dHBzOi8vd3d3LnhpbGlueC5jb20vaHRt
+bF9kb2NzL3JlZ2lzdGVycy91ZzEwODcvdWcxMDg3LXp5bnEtdWx0cmFzY2FsZS0NCj4gcmVnaXN0
+ZXJzLmh0bWwgYW5kIGNoZWNrIGZvciBOQU5EIG1vZHVsZSwgRUNDX0Vycm9yX0NvdW50X1JlZ2lz
+dGVyLg0KPiA+DQo+ID4gSSBtZWFuIHByZXZpb3VzbHkgSSBkZXBlbmRlbnQgb24gVG90YWwgZXJy
+b3IgY291bnQgdmFsdWUgKGJpdFsxNjo4XSksDQo+ID4gYnV0IHdlIGNhbiBzaW1wbHkgY2hlY2sg
+Zm9yIGJpdFs3OjBdIFRvIHNlZSB0aGUgZXJyb3Igb2NjdXJyZWQgb3Igbm90Lg0KPiA+IEkgdHJp
+ZWQgd2l0aCB0aGlzIGFwcHJvYWNoIGFuZCBJIGRvbid0IHNlZSBhbnkgaXNzdWVzIHdpdGggdGhh
+dC4NCj4gPiBJIHJhbiB1YmlmcyB3aXRoIHRoaXMgYW5kIEkgYW0gYWJsZSB0byBzZWUgdGhlIGJp
+dFs3OjBdIGNvdW50IGlzDQo+ID4gdXBkYXRlZCBmb3IgZXJhc2VkIHBhZ2UgcmVhZCBhbmQgdGhl
+biB3aWxsIFVzZSBuYW5kX2NoZWNoX2VyYXNlZF9lY2NfY2h1bmsoKSB0byBzZWUgdGhlDQo+IGJp
+dGZsaXBzLg0KPiA+DQo+ID4gSWYgaXQgaXMgb2ssIEkgd2lsbCB1cGRhdGUgdGhlIGRyaXZlciBh
+bmQgd2lsbCBzZW5kIG5ldyBwYXRjaCwgYnV0IGRvIHlvdSBoYXZlIGFueSBvdGhlcg0KPiBjb21t
+ZW50cyBvbiB2MTI/DQo+IA0KPiBJcyAnbmFuZGJpdGVycnMgLWknIHJ1bm5pbmcgY29ycmVjdGx5
+IG5vdz8NClllcywgYnV0IHdpdGggc29tZSBjaGFuZ2VzIGluIGRyaXZlci4NCkkgaGF2ZSBhZGRl
+ZCB0aGUgbG9nIGFuZCBjaGFuZ2VzIGRvbmUgaW4gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTgv
+MTEvMjMvNzA1Lg0KRG8geW91IHNlZSBhbnkgaXNzdWVzIHdpdGggdGhhdCBhcHByb2FjaD8NCg0K
+VGhhbmtzLA0KTmFnYSBTdXJlc2hrdW1hciBSZWxsaS4NCg==
