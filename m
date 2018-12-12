@@ -1,21 +1,20 @@
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1BE-0003h4-Bo
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 09:51:57 +0000
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wBC9nKRZ016806
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:51:37 -0500
-Received: from e34.co.us.ibm.com (e34.co.us.ibm.com [32.97.110.152])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2pay29u3q3-1
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gX1Bh-0006oh-NH
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 09:52:18 +0000
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ wBC9ndJd056653
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:52:05 -0500
+Received: from e36.co.us.ibm.com (e36.co.us.ibm.com [32.97.110.154])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2pax8254kk-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:51:37 -0500
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:52:04 -0500
 Received: from localhost
- by e34.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e36.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Wed, 12 Dec 2018 09:51:36 -0000
+ Wed, 12 Dec 2018 09:52:03 -0000
 From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
 To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
@@ -27,14 +26,15 @@ Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
  paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
  deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
  richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- viro@zeniv.linux.org.uk
-Subject: [PATCH V5 6/9] f2fs: use IS_VERITY() to check inode's fsverity status
-Date: Wed, 12 Dec 2018 15:20:15 +0530
+ viro@zeniv.linux.org.uk, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH V5 8/9] fsverity: Move verity status check to
+ fsverity_file_open
+Date: Wed, 12 Dec 2018 15:20:17 +0530
 In-Reply-To: <20181212095018.12648-1-chandan@linux.vnet.ibm.com>
 References: <20181212095018.12648-1-chandan@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20181212095018.12648-7-chandan@linux.vnet.ibm.com>
+Message-Id: <20181212095018.12648-9-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,102 +44,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit removes the f2fs specific f2fs_verity_file() and makes use
-of the generic IS_VERITY() macro or file_is_verity() to check for the
-verity status of an inode.
+Instead of conditionally checking for verity status of an inode before
+invoking fsverity_file_open(), this commit moves the check inside the
+definition of fsverity_file_open().
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
+(EB: fix the !CONFIG_FS_VERITY case and inline the IS_VERITY() check)
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/f2fs.h  | 7 +------
- fs/f2fs/file.c  | 6 +++---
- fs/f2fs/inode.c | 4 +++-
- fs/f2fs/super.c | 1 +
- 4 files changed, 8 insertions(+), 10 deletions(-)
+ fs/ext4/file.c           |  8 +++-----
+ fs/f2fs/file.c           |  8 +++-----
+ fs/verity/setup.c        | 18 ++----------------
+ include/linux/fsverity.h | 25 +++++++++++++++++++++++--
+ 4 files changed, 31 insertions(+), 28 deletions(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index f9c8b0afc1de..54bd93c7b630 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3448,18 +3448,13 @@ static inline void f2fs_set_encrypted_inode(struct inode *inode)
- #endif
- }
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 30fbd663354f..b404a857cd48 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -444,11 +444,9 @@ static int ext4_file_open(struct inode * inode, struct file * filp)
+ 	if (ret)
+ 		return ret;
  
--static inline bool f2fs_verity_file(struct inode *inode)
--{
--	return file_is_verity(inode);
--}
--
- /*
-  * Returns true if the reads of the inode's data need to undergo some
-  * postprocessing step, like decryption or authenticity verification.
-  */
- static inline bool f2fs_post_read_required(struct inode *inode)
- {
--	return f2fs_encrypted_file(inode) || f2fs_verity_file(inode);
-+	return f2fs_encrypted_file(inode) || IS_VERITY(inode);
- }
+-	if (IS_VERITY(inode)) {
+-		ret = fsverity_file_open(inode, filp);
+-		if (ret)
+-			return ret;
+-	}
++	ret = fsverity_file_open(inode, filp);
++	if (ret)
++		return ret;
  
- #define F2FS_FEATURE_FUNCS(name, flagname) \
+ 	/*
+ 	 * Set up the jbd2_inode if we are opening the inode for
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 6c7ad15000b9..2eb4821d95d1 100644
+index 2eb4821d95d1..925c0d9608da 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -491,7 +491,7 @@ static int f2fs_file_open(struct inode *inode, struct file *filp)
+@@ -491,11 +491,9 @@ static int f2fs_file_open(struct inode *inode, struct file *filp)
  	if (err)
  		return err;
  
--	if (f2fs_verity_file(inode)) {
-+	if (IS_VERITY(inode)) {
- 		err = fsverity_file_open(inode, filp);
- 		if (err)
- 			return err;
-@@ -701,7 +701,7 @@ int f2fs_getattr(const struct path *path, struct kstat *stat,
- 	struct f2fs_inode *ri;
- 	unsigned int flags;
+-	if (IS_VERITY(inode)) {
+-		err = fsverity_file_open(inode, filp);
+-		if (err)
+-			return err;
+-	}
++	err = fsverity_file_open(inode, filp);
++	if (err)
++		return err;
  
--	if (f2fs_verity_file(inode)) {
-+	if (IS_VERITY(inode)) {
- 		/*
- 		 * For fs-verity we need to override i_size with the original
- 		 * data i_size.  This requires I/O to the file which with
-@@ -800,7 +800,7 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
+ 	filp->f_mode |= FMODE_NOWAIT;
  
--	if (f2fs_verity_file(inode)) {
-+	if (IS_VERITY(inode)) {
- 		err = fsverity_prepare_setattr(dentry, attr);
- 		if (err)
- 			return err;
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index d731d23aedee..ff9126616d65 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -45,9 +45,11 @@ void f2fs_set_inode_flags(struct inode *inode)
- 		new_fl |= S_DIRSYNC;
- 	if (file_is_encrypt(inode))
- 		new_fl |= S_ENCRYPTED;
-+	if (file_is_verity(inode))
-+		new_fl |= S_VERITY;
- 	inode_set_flags(inode, new_fl,
- 			S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC|
--			S_ENCRYPTED);
-+			S_ENCRYPTED|S_VERITY);
- }
- 
- static void __get_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 4287cf348d3c..73320202bd01 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2207,6 +2207,7 @@ static int f2fs_set_verity(struct inode *inode, loff_t data_i_size)
- 		return err;
- 
- 	file_set_verity(inode);
-+	f2fs_set_inode_flags(inode);
- 	f2fs_mark_inode_dirty_sync(inode, true);
+diff --git a/fs/verity/setup.c b/fs/verity/setup.c
+index 08b609127531..4ecaeb89166b 100644
+--- a/fs/verity/setup.c
++++ b/fs/verity/setup.c
+@@ -755,21 +755,7 @@ static int setup_fsverity_info(struct inode *inode)
  	return 0;
  }
+ 
+-/**
+- * fsverity_file_open - prepare to open a verity file
+- * @inode: the inode being opened
+- * @filp: the struct file being set up
+- *
+- * When opening a verity file, deny the open if it is for writing.  Otherwise,
+- * set up the inode's ->i_verity_info (if not already done) by parsing the
+- * verity metadata at the end of the file.
+- *
+- * When combined with fscrypt, this must be called after fscrypt_file_open().
+- * Otherwise, we won't have the key set up to decrypt the verity metadata.
+- *
+- * Return: 0 on success, -errno on failure
+- */
+-int fsverity_file_open(struct inode *inode, struct file *filp)
++int __fsverity_file_open(struct inode *inode, struct file *filp)
+ {
+ 	if (filp->f_mode & FMODE_WRITE) {
+ 		pr_debug("Denying opening verity file (ino %lu) for write\n",
+@@ -779,7 +765,7 @@ int fsverity_file_open(struct inode *inode, struct file *filp)
+ 
+ 	return setup_fsverity_info(inode);
+ }
+-EXPORT_SYMBOL_GPL(fsverity_file_open);
++EXPORT_SYMBOL_GPL(__fsverity_file_open);
+ 
+ /**
+  * fsverity_prepare_setattr - prepare to change a verity inode's attributes
+diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
+index ea8c418bd7d5..0ce170c2c167 100644
+--- a/include/linux/fsverity.h
++++ b/include/linux/fsverity.h
+@@ -25,7 +25,7 @@ extern int fsverity_ioctl_enable(struct file *filp, const void __user *arg);
+ extern int fsverity_ioctl_measure(struct file *filp, void __user *arg);
+ 
+ /* setup.c */
+-extern int fsverity_file_open(struct inode *inode, struct file *filp);
++extern int __fsverity_file_open(struct inode *inode, struct file *filp);
+ extern int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr);
+ extern int fsverity_prepare_getattr(struct inode *inode);
+ extern void fsverity_cleanup_inode(struct inode *inode);
+@@ -58,7 +58,7 @@ static inline int fsverity_ioctl_measure(struct file *filp, void __user *arg)
+ 
+ /* setup.c */
+ 
+-static inline int fsverity_file_open(struct inode *inode, struct file *filp)
++static inline int __fsverity_file_open(struct inode *inode, struct file *filp)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -108,4 +108,25 @@ static inline bool fsverity_check_hole(struct inode *inode, struct page *page)
+ 
+ #endif	/* ! CONFIG_FS_VERITY */
+ 
++/**
++ * fsverity_file_open - prepare to open a verity file
++ * @inode: the inode being opened
++ * @filp: the struct file being set up
++ *
++ * When opening a verity file, deny the open if it is for writing.  Otherwise,
++ * set up the inode's ->i_verity_info (if not already done) by parsing the
++ * verity metadata at the end of the file.
++ *
++ * When combined with fscrypt, this must be called after fscrypt_file_open().
++ * Otherwise, we won't have the key set up to decrypt the verity metadata.
++ *
++ * Return: 0 on success, -errno on failure
++ */
++static inline int fsverity_file_open(struct inode *inode, struct file *filp)
++{
++	if (IS_VERITY(inode))
++		return __fsverity_file_open(inode, filp);
++	return 0;
++}
++
+ #endif	/* _LINUX_FSVERITY_H */
 -- 
 2.19.1
