@@ -1,20 +1,20 @@
 Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gX1Bs-0006ow-K0
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 09:52:29 +0000
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gX1Bg-0000Gl-JE
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 09:52:18 +0000
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wBC9oVa4089503
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:52:17 -0500
-Received: from e36.co.us.ibm.com (e36.co.us.ibm.com [32.97.110.154])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2pax80w5f4-1
+ wBC9pxs6062357
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:52:04 -0500
+Received: from e33.co.us.ibm.com (e33.co.us.ibm.com [32.97.110.151])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2paycx25ny-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:52:16 -0500
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2018 04:52:00 -0500
 Received: from localhost
- by e36.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e33.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Wed, 12 Dec 2018 09:52:15 -0000
+ Wed, 12 Dec 2018 09:50:53 -0000
 From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
 To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
@@ -26,15 +26,14 @@ Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
  paul.burton@mips.com, jhogan@kernel.org, green.hu@gmail.com,
  deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
  richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- viro@zeniv.linux.org.uk, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH V5 9/9] fsverity: Move verity status check to
- fsverity_prepare_setattr
-Date: Wed, 12 Dec 2018 15:20:18 +0530
+ viro@zeniv.linux.org.uk
+Subject: [PATCH V5 2/9] f2fs: use IS_ENCRYPTED() to check encryption status
+Date: Wed, 12 Dec 2018 15:20:11 +0530
 In-Reply-To: <20181212095018.12648-1-chandan@linux.vnet.ibm.com>
 References: <20181212095018.12648-1-chandan@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20181212095018.12648-10-chandan@linux.vnet.ibm.com>
+Message-Id: <20181212095018.12648-3-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,137 +43,214 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of conditionally checking for verity status of an inode before
-invoking fsverity_prepare_setattr(), this commit moves the check inside the
-definition of fsverity_prepare_setattr().
+This commit removes the f2fs specific f2fs_encrypted_inode() and makes
+use of the generic IS_ENCRYPTED() macro to check for the encryption
+status of an inode.
 
+Acked-by: Chao Yu <yuchao0@huawei.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
-(EB: fix the !CONFIG_FS_VERITY case and inline the IS_VERITY() check)
-Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/inode.c          |  8 +++-----
- fs/f2fs/file.c           |  8 +++-----
- fs/verity/setup.c        | 14 ++------------
- include/linux/fsverity.h | 25 ++++++++++++++++++++++---
- 4 files changed, 30 insertions(+), 25 deletions(-)
+ fs/f2fs/data.c  |  4 ++--
+ fs/f2fs/dir.c   | 10 +++++-----
+ fs/f2fs/f2fs.h  |  7 +------
+ fs/f2fs/file.c  | 10 +++++-----
+ fs/f2fs/inode.c |  4 ++--
+ fs/f2fs/namei.c |  6 +++---
+ 6 files changed, 18 insertions(+), 23 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 703f55635824..44561e68886b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5510,11 +5510,9 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (error)
- 		return error;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 09d9fc1676a7..844ec573263e 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1491,7 +1491,7 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 	}
  
--	if (IS_VERITY(inode)) {
--		error = fsverity_prepare_setattr(dentry, attr);
--		if (error)
--			return error;
--	}
-+	error = fsverity_prepare_setattr(dentry, attr);
-+	if (error)
-+		return error;
+ 	if (size) {
+-		if (f2fs_encrypted_inode(inode))
++		if (IS_ENCRYPTED(inode))
+ 			flags |= FIEMAP_EXTENT_DATA_ENCRYPTED;
  
- 	if (is_quota_modification(inode, attr)) {
- 		error = dquot_initialize(inode);
+ 		ret = fiemap_fill_next_extent(fieinfo, logical,
+@@ -1764,7 +1764,7 @@ static inline bool check_inplace_update_policy(struct inode *inode,
+ 	if (policy & (0x1 << F2FS_IPU_ASYNC) &&
+ 			fio && fio->op == REQ_OP_WRITE &&
+ 			!(fio->op_flags & REQ_SYNC) &&
+-			!f2fs_encrypted_inode(inode))
++			!IS_ENCRYPTED(inode))
+ 		return true;
+ 
+ 	/* this is only set during fdatasync */
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index bacc667950b6..cf9e2564388d 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -385,7 +385,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
+ 		if (err)
+ 			goto put_error;
+ 
+-		if ((f2fs_encrypted_inode(dir) || dummy_encrypt) &&
++		if ((IS_ENCRYPTED(dir) || dummy_encrypt) &&
+ 					f2fs_may_encrypt(inode)) {
+ 			err = fscrypt_inherit_context(dir, inode, page, false);
+ 			if (err)
+@@ -399,7 +399,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
+ 
+ 	if (new_name) {
+ 		init_dent_inode(new_name, page);
+-		if (f2fs_encrypted_inode(dir))
++		if (IS_ENCRYPTED(dir))
+ 			file_set_enc_name(inode);
+ 	}
+ 
+@@ -808,7 +808,7 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
+ 		de_name.name = d->filename[bit_pos];
+ 		de_name.len = le16_to_cpu(de->name_len);
+ 
+-		if (f2fs_encrypted_inode(d->inode)) {
++		if (IS_ENCRYPTED(d->inode)) {
+ 			int save_len = fstr->len;
+ 
+ 			err = fscrypt_fname_disk_to_usr(d->inode,
+@@ -852,7 +852,7 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
+ 	struct fscrypt_str fstr = FSTR_INIT(NULL, 0);
+ 	int err = 0;
+ 
+-	if (f2fs_encrypted_inode(inode)) {
++	if (IS_ENCRYPTED(inode)) {
+ 		err = fscrypt_get_encryption_info(inode);
+ 		if (err && err != -ENOKEY)
+ 			goto out;
+@@ -914,7 +914,7 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
+ 
+ static int f2fs_dir_open(struct inode *inode, struct file *filp)
+ {
+-	if (f2fs_encrypted_inode(inode))
++	if (IS_ENCRYPTED(inode))
+ 		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
+ 	return 0;
+ }
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index dadb5f468f20..368c7e78fe6b 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3436,14 +3436,9 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi);
+ /*
+  * crypto support
+  */
+-static inline bool f2fs_encrypted_inode(struct inode *inode)
+-{
+-	return file_is_encrypt(inode);
+-}
+-
+ static inline bool f2fs_encrypted_file(struct inode *inode)
+ {
+-	return f2fs_encrypted_inode(inode) && S_ISREG(inode->i_mode);
++	return IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
+ }
+ 
+ static inline void f2fs_set_encrypted_inode(struct inode *inode)
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 925c0d9608da..422907ca37c6 100644
+index 87794b2a45ff..6c7ad15000b9 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -798,11 +798,9 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
+@@ -585,7 +585,7 @@ static int truncate_partial_data_page(struct inode *inode, u64 from,
+ 	zero_user(page, offset, PAGE_SIZE - offset);
  
--	if (IS_VERITY(inode)) {
--		err = fsverity_prepare_setattr(dentry, attr);
--		if (err)
--			return err;
--	}
-+	err = fsverity_prepare_setattr(dentry, attr);
-+	if (err)
-+		return err;
+ 	/* An encrypted inode should have a key and truncate the last page. */
+-	f2fs_bug_on(F2FS_I_SB(inode), cache_only && f2fs_encrypted_inode(inode));
++	f2fs_bug_on(F2FS_I_SB(inode), cache_only && IS_ENCRYPTED(inode));
+ 	if (!cache_only)
+ 		set_page_dirty(page);
+ 	f2fs_put_page(page, 1);
+@@ -730,7 +730,7 @@ int f2fs_getattr(const struct path *path, struct kstat *stat,
+ 		stat->attributes |= STATX_ATTR_APPEND;
+ 	if (flags & F2FS_COMPR_FL)
+ 		stat->attributes |= STATX_ATTR_COMPRESSED;
+-	if (f2fs_encrypted_inode(inode))
++	if (IS_ENCRYPTED(inode))
+ 		stat->attributes |= STATX_ATTR_ENCRYPTED;
+ 	if (flags & F2FS_IMMUTABLE_FL)
+ 		stat->attributes |= STATX_ATTR_IMMUTABLE;
+@@ -1587,7 +1587,7 @@ static long f2fs_fallocate(struct file *file, int mode,
+ 	if (!S_ISREG(inode->i_mode))
+ 		return -EINVAL;
  
- 	if (is_quota_modification(inode, attr)) {
- 		err = dquot_initialize(inode);
-diff --git a/fs/verity/setup.c b/fs/verity/setup.c
-index 4ecaeb89166b..2b707589999c 100644
---- a/fs/verity/setup.c
-+++ b/fs/verity/setup.c
-@@ -767,17 +767,7 @@ int __fsverity_file_open(struct inode *inode, struct file *filp)
- }
- EXPORT_SYMBOL_GPL(__fsverity_file_open);
+-	if (f2fs_encrypted_inode(inode) &&
++	if (IS_ENCRYPTED(inode) &&
+ 		(mode & (FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_INSERT_RANGE)))
+ 		return -EOPNOTSUPP;
  
--/**
-- * fsverity_prepare_setattr - prepare to change a verity inode's attributes
-- * @dentry: dentry through which the inode is being changed
-- * @attr: attributes to change
-- *
-- * Verity files are immutable, so deny truncates.  This isn't covered by the
-- * open-time check because sys_truncate() takes a path, not a file descriptor.
-- *
-- * Return: 0 on success, -errno on failure
-- */
--int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
-+int __fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
- {
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		pr_debug("Denying truncate of verity file (ino %lu)\n",
-@@ -786,7 +776,7 @@ int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
+@@ -1671,7 +1671,7 @@ static int f2fs_ioc_getflags(struct file *filp, unsigned long arg)
+ 	struct f2fs_inode_info *fi = F2FS_I(inode);
+ 	unsigned int flags = fi->i_flags;
+ 
+-	if (f2fs_encrypted_inode(inode))
++	if (IS_ENCRYPTED(inode))
+ 		flags |= F2FS_ENCRYPT_FL;
+ 	if (f2fs_has_inline_data(inode) || f2fs_has_inline_dentry(inode))
+ 		flags |= F2FS_INLINE_DATA_FL;
+@@ -2430,7 +2430,7 @@ static int f2fs_move_file_range(struct file *file_in, loff_t pos_in,
+ 	if (!S_ISREG(src->i_mode) || !S_ISREG(dst->i_mode))
+ 		return -EINVAL;
+ 
+-	if (f2fs_encrypted_inode(src) || f2fs_encrypted_inode(dst))
++	if (IS_ENCRYPTED(src) || IS_ENCRYPTED(dst))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (src == dst) {
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index ddef483ad689..d731d23aedee 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -43,7 +43,7 @@ void f2fs_set_inode_flags(struct inode *inode)
+ 		new_fl |= S_NOATIME;
+ 	if (flags & F2FS_DIRSYNC_FL)
+ 		new_fl |= S_DIRSYNC;
+-	if (f2fs_encrypted_inode(inode))
++	if (file_is_encrypt(inode))
+ 		new_fl |= S_ENCRYPTED;
+ 	inode_set_flags(inode, new_fl,
+ 			S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC|
+@@ -453,7 +453,7 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+ 		inode->i_mapping->a_ops = &f2fs_dblock_aops;
+ 		inode_nohighmem(inode);
+ 	} else if (S_ISLNK(inode->i_mode)) {
+-		if (f2fs_encrypted_inode(inode))
++		if (file_is_encrypt(inode))
+ 			inode->i_op = &f2fs_encrypted_symlink_inode_operations;
+ 		else
+ 			inode->i_op = &f2fs_symlink_inode_operations;
+diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+index 99299ede7429..6ae37e0cf6e3 100644
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -75,7 +75,7 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+ 	set_inode_flag(inode, FI_NEW_INODE);
+ 
+ 	/* If the directory encrypted, then we should encrypt the inode. */
+-	if ((f2fs_encrypted_inode(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) &&
++	if ((IS_ENCRYPTED(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) &&
+ 				f2fs_may_encrypt(inode))
+ 		f2fs_set_encrypted_inode(inode);
+ 
+@@ -476,7 +476,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
+ 		if (err)
+ 			goto out_iput;
  	}
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(fsverity_prepare_setattr);
-+EXPORT_SYMBOL_GPL(__fsverity_prepare_setattr);
+-	if (f2fs_encrypted_inode(dir) &&
++	if (IS_ENCRYPTED(dir) &&
+ 	    (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode)) &&
+ 	    !fscrypt_has_permitted_context(dir, inode)) {
+ 		f2fs_msg(inode->i_sb, KERN_WARNING,
+@@ -803,7 +803,7 @@ static int f2fs_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
+ 	if (unlikely(f2fs_cp_error(sbi)))
+ 		return -EIO;
  
- /**
-  * fsverity_prepare_getattr - prepare to get a verity inode's attributes
-diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index 0ce170c2c167..099fc34936fa 100644
---- a/include/linux/fsverity.h
-+++ b/include/linux/fsverity.h
-@@ -26,7 +26,8 @@ extern int fsverity_ioctl_measure(struct file *filp, void __user *arg);
- 
- /* setup.c */
- extern int __fsverity_file_open(struct inode *inode, struct file *filp);
--extern int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr);
-+extern int __fsverity_prepare_setattr(struct dentry *dentry,
-+				      struct iattr *attr);
- extern int fsverity_prepare_getattr(struct inode *inode);
- extern void fsverity_cleanup_inode(struct inode *inode);
- extern loff_t fsverity_full_i_size(const struct inode *inode);
-@@ -63,8 +64,8 @@ static inline int __fsverity_file_open(struct inode *inode, struct file *filp)
- 	return -EOPNOTSUPP;
- }
- 
--static inline int fsverity_prepare_setattr(struct dentry *dentry,
--					   struct iattr *attr)
-+static inline int __fsverity_prepare_setattr(struct dentry *dentry,
-+					     struct iattr *attr)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -129,4 +130,22 @@ static inline int fsverity_file_open(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+/**
-+ * fsverity_prepare_setattr - prepare to change a verity inode's attributes
-+ * @dentry: dentry through which the inode is being changed
-+ * @attr: attributes to change
-+ *
-+ * Verity files are immutable, so deny truncates.  This isn't covered by the
-+ * open-time check because sys_truncate() takes a path, not a file descriptor.
-+ *
-+ * Return: 0 on success, -errno on failure
-+ */
-+static inline int fsverity_prepare_setattr(struct dentry *dentry,
-+					   struct iattr *attr)
-+{
-+	if (IS_VERITY(d_inode(dentry)))
-+		return __fsverity_prepare_setattr(dentry, attr);
-+	return 0;
-+}
-+
- #endif	/* _LINUX_FSVERITY_H */
+-	if (f2fs_encrypted_inode(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) {
++	if (IS_ENCRYPTED(dir) || DUMMY_ENCRYPTION_ENABLED(sbi)) {
+ 		int err = fscrypt_get_encryption_info(dir);
+ 		if (err)
+ 			return err;
 -- 
 2.19.1
