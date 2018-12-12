@@ -1,21 +1,20 @@
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gWvpt-0000wn-3R
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 04:09:42 +0000
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- wBC3xAtk001274
- for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:09:14 -0500
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2pasjs2sbh-1
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gWvpj-00089y-M9
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2018 04:09:17 +0000
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ wBC43pxC137408
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:09:04 -0500
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2parc1deg4-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:09:13 -0500
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Dec 2018 23:09:04 -0500
 Received: from localhost
- by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <chandan@linux.vnet.ibm.com>;
- Wed, 12 Dec 2018 04:09:13 -0000
+ Wed, 12 Dec 2018 04:09:02 -0000
 From: Chandan Rajendra <chandan@linux.vnet.ibm.com>
 To: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-doc@vger.kernel.org, linux-mips@linux-mips.org,
@@ -28,14 +27,14 @@ Cc: Chandan Rajendra <chandan@linux.vnet.ibm.com>, tytso@mit.edu,
  deanbo422@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
  richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
  viro@zeniv.linux.org.uk
-Subject: [PATCH V4 9/9] fsverity: Move verity status check to
- fsverity_prepare_setattr
-Date: Wed, 12 Dec 2018 09:37:36 +0530
+Subject: [PATCH V4 8/9] fsverity: Move verity status check to
+ fsverity_file_open
+Date: Wed, 12 Dec 2018 09:37:35 +0530
 In-Reply-To: <20181212040736.2849-1-chandan@linux.vnet.ibm.com>
 References: <20181212040736.2849-1-chandan@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20181212040736.2849-10-chandan@linux.vnet.ibm.com>
+Message-Id: <20181212040736.2849-9-chandan@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,83 +45,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Instead of conditionally checking for verity status of an inode before
-invoking fsverity_prepare_setattr(), this commit moves the check inside the
-definition of fsverity_prepare_setattr().
+invoking fsverity_file_open(), this commit moves the check inside the
+definition of fsverity_file_open().
 
 Signed-off-by: Chandan Rajendra <chandan@linux.vnet.ibm.com>
 ---
- fs/ext4/inode.c          | 8 +++-----
+ fs/ext4/file.c           | 8 +++-----
  fs/f2fs/file.c           | 8 +++-----
- fs/verity/setup.c        | 2 +-
+ fs/verity/setup.c        | 3 +++
  include/linux/fsverity.h | 5 ++++-
- 4 files changed, 11 insertions(+), 12 deletions(-)
+ 4 files changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 703f55635824..44561e68886b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5510,11 +5510,9 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (error)
- 		return error;
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 30fbd663354f..b404a857cd48 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -444,11 +444,9 @@ static int ext4_file_open(struct inode * inode, struct file * filp)
+ 	if (ret)
+ 		return ret;
  
 -	if (IS_VERITY(inode)) {
--		error = fsverity_prepare_setattr(dentry, attr);
--		if (error)
--			return error;
+-		ret = fsverity_file_open(inode, filp);
+-		if (ret)
+-			return ret;
 -	}
-+	error = fsverity_prepare_setattr(dentry, attr);
-+	if (error)
-+		return error;
++	ret = fsverity_file_open(inode, filp);
++	if (ret)
++		return ret;
  
- 	if (is_quota_modification(inode, attr)) {
- 		error = dquot_initialize(inode);
+ 	/*
+ 	 * Set up the jbd2_inode if we are opening the inode for
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 925c0d9608da..422907ca37c6 100644
+index 2eb4821d95d1..925c0d9608da 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -798,11 +798,9 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
+@@ -491,11 +491,9 @@ static int f2fs_file_open(struct inode *inode, struct file *filp)
  	if (err)
  		return err;
  
 -	if (IS_VERITY(inode)) {
--		err = fsverity_prepare_setattr(dentry, attr);
+-		err = fsverity_file_open(inode, filp);
 -		if (err)
 -			return err;
 -	}
-+	err = fsverity_prepare_setattr(dentry, attr);
++	err = fsverity_file_open(inode, filp);
 +	if (err)
 +		return err;
  
- 	if (is_quota_modification(inode, attr)) {
- 		err = dquot_initialize(inode);
+ 	filp->f_mode |= FMODE_NOWAIT;
+ 
 diff --git a/fs/verity/setup.c b/fs/verity/setup.c
-index bc463dc601b1..154556d72691 100644
+index 08b609127531..bc463dc601b1 100644
 --- a/fs/verity/setup.c
 +++ b/fs/verity/setup.c
-@@ -796,7 +796,7 @@ EXPORT_SYMBOL_GPL(fsverity_file_open);
+@@ -771,6 +771,9 @@ static int setup_fsverity_info(struct inode *inode)
   */
- int fsverity_prepare_setattr(struct dentry *dentry, struct iattr *attr)
+ int fsverity_file_open(struct inode *inode, struct file *filp)
  {
--	if (attr->ia_valid & ATTR_SIZE) {
-+	if (IS_VERITY(d_inode(dentry)) && (attr->ia_valid & ATTR_SIZE)) {
- 		pr_debug("Denying truncate of verity file (ino %lu)\n",
- 			 d_inode(dentry)->i_ino);
- 		return -EPERM;
++	if (!IS_VERITY(inode))
++		return 0;
++
+ 	if (filp->f_mode & FMODE_WRITE) {
+ 		pr_debug("Denying opening verity file (ino %lu) for write\n",
+ 			 inode->i_ino);
 diff --git a/include/linux/fsverity.h b/include/linux/fsverity.h
-index c770025606e1..9ccc8ad9652a 100644
+index ea8c418bd7d5..c770025606e1 100644
 --- a/include/linux/fsverity.h
 +++ b/include/linux/fsverity.h
-@@ -69,7 +69,10 @@ static inline int fsverity_file_open(struct inode *inode, struct file *filp)
- static inline int fsverity_prepare_setattr(struct dentry *dentry,
- 					   struct iattr *attr)
+@@ -60,7 +60,10 @@ static inline int fsverity_ioctl_measure(struct file *filp, void __user *arg)
+ 
+ static inline int fsverity_file_open(struct inode *inode, struct file *filp)
  {
 -	return -EOPNOTSUPP;
-+	if (IS_VERITY(d_inode(dentry)))
++	if (IS_VERITY(inode))
 +		return -EOPNOTSUPP;
 +
 +	return 0;
  }
  
- static inline int fsverity_prepare_getattr(struct inode *inode)
+ static inline int fsverity_prepare_setattr(struct dentry *dentry,
 -- 
 2.19.1
