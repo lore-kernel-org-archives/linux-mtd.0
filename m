@@ -1,26 +1,21 @@
-Received: from mail-oi1-x22d.google.com ([2607:f8b0:4864:20::22d])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXQ9q-0008IL-Dg
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 12:32:03 +0000
-Received: by mail-oi1-x22d.google.com with SMTP id v6so1486099oif.2
- for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 04:31:52 -0800 (PST)
-Subject: Re: Fwd: ubifs: fix page_count in ->ubifs_migrate_page()
-To: Richard Weinberger <richard@nod.at>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org
+ id 1gXRu3-0001D7-LE
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 14:23:53 +0000
+From: Richard Weinberger <richard@nod.at>
+To: zhangjun <openzhangj@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com, hch@lst.de,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: ubifs: fix page_count in ->ubifs_migrate_page()
+Date: Thu, 13 Dec 2018 15:23:37 +0100
+Message-ID: <5829763.q4qAXljTxb@blindfold>
+In-Reply-To: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
 References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
- <3016163.RH3ZIBrMym@blindfold>
- <c4f70535-63ba-4c4b-9e79-3ec48a406f52@gmail.com>
- <7521140.D8HW8ZckG7@blindfold>
-From: zhangjun <openzhangj@gmail.com>
-Message-ID: <b0c16c62-57a2-8e47-6003-a4a088fd07f5@gmail.com>
-Date: Thu, 13 Dec 2018 20:31:45 +0800
 MIME-Version: 1.0
-In-Reply-To: <7521140.D8HW8ZckG7@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello zhangjun,
 
-On 2018/12/13 下午8:22, Richard Weinberger wrote:
-> Am Donnerstag, 13. Dezember 2018, 13:10:19 CET schrieb zhangjun:
->> On 2018/12/13 下午4:30, Richard Weinberger wrote:
->>> Am Donnerstag, 13. Dezember 2018, 03:59:50 CET schrieb zhangjun:
->>>> hello
->>>>        I test several kernel version from your commit
->>>> 4ac1c17b2044a1b4b2fbed74451947e905fc2992,
->>>> there is a bug when migrateing,the following fix i test ok and require
->>>> your confirmation.
->>> Please keep the CC list intact and give us at least some time to review
->>> your patch.
->>> Also explain what kind of problem you're facing.
->>> In other words, is this a theoretical fix or not?
->>>
->>> Thanks,
->>> //richard
->> This's my first time to patch upstream,thank you very much for your
->> suggestion.
->> My problem is my driver to call alloc_cma(),it fail.
->> But i find that memory and cma maxchunk is enougth.
->> So i building environmentto find what the reason is,test and verify my
->> guess.
->> i think it not just a theoretical fix but i actually tested it.
-> Why are you sending this mail now for the third time?
->
-> Thanks,
-> //richard
->
->
+thanks a lot for bringing this up!
 
-I was rejected by linux-mtd@lists.infradead.org,stable@vger.kernel.org,
-I thought you didn't receive it.
+Am Mittwoch, 12. Dezember 2018, 15:13:57 CET schrieb zhangjun:
+> Because the PagePrivate() in UBIFS is different meanings,
+> alloc_cma() will fail when one dirty page cache located in
+> the type of MIGRATE_CMA
+> 
+> If not adjust the 'extra_count' for dirty page,
+> ubifs_migrate_page() -> migrate_page_move_mapping() will
+> always return -EAGAIN for:
+> 	expected_count += page_has_private(page)
+> This causes the migration to fail until the page cache is cleaned
+> 
+> In general, PagePrivate() indicates that buff_head is already bound
+> to this page, and at the same time page_count() will also increase.
+> But UBIFS set private flag when the cache is dirty, and page_count()
+> not increase.
+> Therefore, the expected_count of UBIFS is different from the general
+> case.
+
+As you noted, UBIFS uses PG_private a little different.
+It uses it as marker and when set, the page counter is not incremented,
+since no private data is attached.
+The migration code assumes that PG_private indicates a counter of +1.
+So, we have to pass a extra count of -1 to migrate_page_move_mapping() if
+the flag is set.
+Just like F2FS does. Not really nice but hey...
+
+> Signed-off-by: zhangjun <openzhangj@gmail.com>
+
+Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
+
+> ---
+>  fs/ubifs/file.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index 1b78f2e..2136a5c 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1480,8 +1480,15 @@ static int ubifs_migrate_page(struct address_space *mapping,
+>  		struct page *newpage, struct page *page, enum migrate_mode mode)
+>  {
+>  	int rc;
+> +	int extra_count;
+>  
+> -	rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
+> +	/*
+> +	 * UBIFS is using PagePrivate() which can have different meanings across
+> +	 * filesystems. So here adjusting the 'extra_count' make it work.
+> +	 */
+
+Please rewrite that comment.
+/*
+ * UBIFS uses PG_private as marker and does not raise the page counter.
+ * migrate_page_move_mapping() expects a incremented counter if PG_private
+ * is set. Therefore pass -1 as extra_count for this case.
+ */
+
+> +	extra_count = 0 - page_has_private(page);
+
+if (page_has_private(page))
+	extra_count = -1;
+
+That way this corner is much more obvious.
 
 Thanks,
-//zhangjun
+//richard
