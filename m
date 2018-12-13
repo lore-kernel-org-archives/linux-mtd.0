@@ -1,21 +1,21 @@
 Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXYLJ-0005Uy-L0
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 21:16:27 +0000
+ id 1gXYfE-0005Mv-9m
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 21:37:01 +0000
 From: Richard Weinberger <richard@nod.at>
-To: Steve deRosier <derosier@gmail.com>
-Cc: takei744@oki.com, linux-mtd@lists.infradead.org,
- "goliath@sigma-star.at" <goliath@sigma-star.at>
-Subject: Re: Questions about ubifs,ubi and mtd?
-Date: Thu, 13 Dec 2018 22:16:11 +0100
-Message-ID: <4423535.My00vEhdVK@blindfold>
-In-Reply-To: <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
-References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <1818742.2b902yA6mZ@blindfold>
- <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
+To: zhangjun <openzhangj@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com, hch@lst.de,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] ubifs: fix page_count in ->ubifs_migrate_page()
+Date: Thu, 13 Dec 2018 22:36:47 +0100
+Message-ID: <8239265.3QN2sXB6kY@blindfold>
+In-Reply-To: <1544728817-2870-1-git-send-email-openzhangj@gmail.com>
+References: <1544728817-2870-1-git-send-email-openzhangj@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Steve,
+Am Donnerstag, 13. Dezember 2018, 20:20:17 CET schrieb zhangjun:
+> Because the PagePrivate() in UBIFS is different meanings,
 
-Am Donnerstag, 13. Dezember 2018, 18:18:49 CET schrieb Steve deRosier:
-> On Thu, Dec 13, 2018 at 3:36 AM Richard Weinberger <richard@nod.at> wrote:
-> >
-> > Hello Katsuaki Takei,
-> >
-> > Am Donnerstag, 13. Dezember 2018, 11:45:36 CET schrieb =E6=AD=A6=E4=BA=
-=95 =E5=85=8B=E6=98=8E:
-> > > Dear Richard,
-> > >
-> > > We appreciate your precious advice.
-> > > We understood the quality status of kernel 3.2.26.
-> > > From now on, we would like to backport from the latest UBI and UBIFS.
-> > > Do you think that it is enough to backport the next part?
-> > >  - drivers/mtd
-> > >  - drivers/mtd/ubi
-> > >  - fs/ubifs
-> >
-> > Under the assumption that the root of the problem is the MTD/UBI stack,
-> > your problem should go away.
-> >
->=20
-> Katsuaki Takei,
->=20
-> Note that the MTD/UBI stack being at fault is an assumption. There's
-> other things that might be at fault, and in my experience, you usually
-> have multiple problems that all need to be solved.  Here's some other
-> possible issues (might not be everything):
->=20
-> 1. Does your hardware work? Are you meeting all the setup and hold
-> times on all signals at all times.
-> 2. Does the driver work? Could be a bug, especially a subtle one where
-> it usually works fine, but a missed command makes it unstable.
-> 3. Does the rest of the MTD/UBI stack work?
-> 4. Is your ECC on the NAND setup right and working?
-> 5. Does whatever hardware or software you're using calculate the ECC
-> bits correctly? For example, on some Atmel processors, there's a bug
-> in the in-ROM PMECC algos so updated software does it in software
-> instead of using the ROM code, but older bootstraps used the ROM algo
-> and thus were bugged.
-> 6. Are you flashing your NAND base image correctly (including getting
-> all the ECC bits in the right place and correct)?
-> 7. When you flash updated images, is that done correctly?
-> 8. During your writing of the filesystem that goes bad, do you write
-> it correctly and sync after each write? Note that 0-size files when
-> you know you wrote something is a key indicator of this problem.
-> 9. When erasing the NAND, you do retain and honor the bad-block markers, =
-yes?
->=20
-> Only if the problem's root is in cases 2 and 3 will backporting
-> patches even help. And for the driver case, only if the relevant fix
-> is there.
-=20
-Thanks a lot for your great summary!
-IMHO it makes sense to put this in form of a checklist to the MTD website.
-What do you think?
+...has different meanings...
+
+I'll fix up that myself after applying your patch. No need to send a v3.
+
+> alloc_cma() will fail when one dirty page cache located in
+> the type of MIGRATE_CMA
+> 
+> If not adjust the 'extra_count' for dirty page,
+> ubifs_migrate_page() -> migrate_page_move_mapping() will
+> always return -EAGAIN for:
+> 	expected_count += page_has_private(page)
+> This causes the migration to fail until the page cache is cleaned
+> 
+> In general, PagePrivate() indicates that buff_head is already bound
+> to this page, and at the same time page_count() will also increase.
+> But UBIFS set private flag when the cache is dirty, and page_count()
+> not increase.
+> Therefore, the expected_count of UBIFS is different from the general
+> case.
+> 
+> Signed-off-by: zhangjun <openzhangj@gmail.com>
+
+Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
+
+> ---
+>  fs/ubifs/file.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index 1b78f2e..890dfce 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1480,8 +1480,17 @@ static int ubifs_migrate_page(struct address_space *mapping,
+>  		struct page *newpage, struct page *page, enum migrate_mode mode)
+>  {
+>  	int rc;
+> +	int extra_count = 0;
+>  
+> -	rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
+> +	/*
+> +	 * UBIFS uses PG_private as marker and does not raise the page counter.
+> +	 * migrate_page_move_mapping() expects a incremented counter if
+> +	 * PG_private is set. Therefore pass -1 as extra_count for this case.
+> +	 */
+> +	if (page_has_private(page))
+> +		extra_count = -1;
+> +	rc = migrate_page_move_mapping(mapping, newpage, page,
+> +			NULL, mode, extra_count);
+>  	if (rc != MIGRATEPAGE_SUCCESS)
+>  		return rc;
+>  
+
+Let's wait a few days to give Kirill a chance to review, then I'll apply the patch.
 
 Thanks,
-//richard
+//richard 
