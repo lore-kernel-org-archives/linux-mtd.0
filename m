@@ -1,19 +1,21 @@
-From: <Tudor.Ambarus@microchip.com>
-To: <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
- <Ludovic.Desroches@microchip.com>, <robh+dt@kernel.org>,
- <mark.rutland@arm.com>, <Claudiu.Beznea@microchip.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 1/2] ARM: dts: at91: at91-sama5d27_som1: add QSPI1 + SPI NOR
- memory nodes
-Date: Wed, 12 Dec 2018 16:31:08 +0000
-Message-ID: <20181212163057.22183-1-tudor.ambarus@microchip.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gXMO9-0007yq-Ue
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 08:30:36 +0000
+From: Richard Weinberger <richard@nod.at>
+To: zhangjun <openzhangj@gmail.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: Fwd: ubifs: fix page_count in ->ubifs_migrate_page()
+Date: Thu, 13 Dec 2018 09:30:17 +0100
+Message-ID: <3016163.RH3ZIBrMym@blindfold>
+In-Reply-To: <257284e1-ae0c-1652-2edf-64cf8e35187c@gmail.com>
+References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
+ <257284e1-ae0c-1652-2edf-64cf8e35187c@gmail.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+Am Donnerstag, 13. Dezember 2018, 03:59:50 CET schrieb zhangjun:
+> hello
+>      I test several kernel version from your commit 
+> 4ac1c17b2044a1b4b2fbed74451947e905fc2992,
+> there is a bug when migrateing,the following fix i test ok and require 
+> your confirmation.
 
-Configure the QSPI1 controller pin muxing and declare the
-jedec,spi-nor memory (SST26VF064).
+Please keep the CC list intact and give us at least some time to review
+your patch.
+Also explain what kind of problem you're facing.
+In other words, is this a theoretical fix or not?
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-[tudor.ambarus@microchip.com: add spi-rx/tx-bus-width, drop partitions,
-reword commit.]
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d27_som1.dtsi | 30 +++++++++++++++++++++++++++=
-+++
- 1 file changed, 30 insertions(+)
-
-diff --git a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi b/arch/arm/boot/dts/=
-at91-sama5d27_som1.dtsi
-index cf0087b4c9e1..33a159c0163f 100644
---- a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-+++ b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-@@ -62,6 +62,20 @@
-=20
- 	ahb {
- 		apb {
-+			qspi1: spi@f0024000 {
-+				pinctrl-names =3D "default";
-+				pinctrl-0 =3D <&pinctrl_qspi1_default>;
-+
-+				flash@0 {
-+					compatible =3D "jedec,spi-nor";
-+					reg =3D <0>;
-+					spi-max-frequency =3D <80000000>;
-+					spi-tx-bus-width =3D <4>;
-+					spi-rx-bus-width =3D <4>;
-+					m25p,fast-read;
-+				};
-+			};
-+
- 			macb0: ethernet@f8008000 {
- 				pinctrl-names =3D "default";
- 				pinctrl-0 =3D <&pinctrl_macb0_default>;
-@@ -78,6 +92,22 @@
-=20
- 			pinctrl@fc038000 {
-=20
-+				pinctrl_qspi1_default: qspi1_default {
-+					sck_cs {
-+						pinmux =3D <PIN_PB5__QSPI1_SCK>,
-+							 <PIN_PB6__QSPI1_CS>;
-+						bias-disable;
-+					};
-+
-+					data {
-+						pinmux =3D <PIN_PB7__QSPI1_IO0>,
-+							 <PIN_PB8__QSPI1_IO1>,
-+							 <PIN_PB9__QSPI1_IO2>,
-+							 <PIN_PB10__QSPI1_IO3>;
-+						bias-pull-up;
-+					};
-+				};
-+
- 				pinctrl_macb0_default: macb0_default {
- 					pinmux =3D <PIN_PD9__GTXCK>,
- 						 <PIN_PD10__GTXEN>,
---=20
-2.9.4
+Thanks,
+//richard
+ 
+> -------- Forwarded Message --------
+> Subject: 	ubifs: fix page_count in ->ubifs_migrate_page()
+> Date: 	Wed, 12 Dec 2018 09:13:57 -0500
+> From: 	zhangjun <openzhangj@gmail.com>
+> To: 	Richard Weinberger <richard@nod.at>, Artem Bityutskiy 
+> <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>
+> CC: 	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+> zhangjun <openzhangj@gmail.com>
+> 
+> 
+> 
+> Because the PagePrivate() in UBIFS is different meanings,
+> alloc_cma() will fail when one dirty page cache located in
+> the type of MIGRATE_CMA
+> 
+> If not adjust the 'extra_count' for dirty page,
+> ubifs_migrate_page() -> migrate_page_move_mapping() will
+> always return -EAGAIN for:
+> expected_count += page_has_private(page)
+> This causes the migration to fail until the page cache is cleaned
+> 
+> In general, PagePrivate() indicates that buff_head is already bound
+> to this page, and at the same time page_count() will also increase.
+> But UBIFS set private flag when the cache is dirty, and page_count()
+> not increase.
+> Therefore, the expected_count of UBIFS is different from the general
+> case.
+> 
+> Signed-off-by: zhangjun <openzhangj@gmail.com>
+> ---
+> fs/ubifs/file.c | 9 ++++++++-
+> 1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index 1b78f2e..2136a5c 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1480,8 +1480,15 @@ static int ubifs_migrate_page(struct 
+> address_space *mapping,
+> struct page *newpage, struct page *page, enum migrate_mode mode)
+> {
+> int rc;
+> + int extra_count;
+> - rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
+> + /*
+> + * UBIFS is using PagePrivate() which can have different meanings across
+> + * filesystems. So here adjusting the 'extra_count' make it work.
+> + */
+> + extra_count = 0 - page_has_private(page);
+> + rc = migrate_page_move_mapping(mapping, newpage,
+> + page, NULL, mode, extra_count);
+> if (rc != MIGRATEPAGE_SUCCESS)
+> return rc;
+> 
+> 
