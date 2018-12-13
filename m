@@ -1,18 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXWX8-0004RV-1z
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 19:20:31 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: Pass the parent of pdev to dma_request_chan()
-Date: Thu, 13 Dec 2018 20:19:44 +0100
-Message-Id: <20181213191944.3585-1-boris.brezillon@bootlin.com>
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gXWXB-0004Rd-9n
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 19:20:37 +0000
+Received: by mail-pl1-x643.google.com with SMTP id p8so1514532plo.2
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 11:20:23 -0800 (PST)
+From: zhangjun <openzhangj@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, zhangjun <openzhangj@gmail.com>
+Subject: [PATCH v2] ubifs: fix page_count in ->ubifs_migrate_page()
+Date: Thu, 13 Dec 2018 14:20:17 -0500
+Message-Id: <1544728817-2870-1-git-send-email-openzhangj@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit e1e6255c311b ("mtd: rawnand: omap2: convert driver to
-nand_scan()") moved part of the init code in the ->attach_chip hook
-and at the same time changed the struct device object passed to
-dma_request_chan() (&pdev->dev instead of pdev->dev.parent).
+Because the PagePrivate() in UBIFS is different meanings,
+alloc_cma() will fail when one dirty page cache located in
+the type of MIGRATE_CMA
 
-Fixes: e1e6255c311b ("mtd: rawnand: omap2: convert driver to nand_scan()")
-Reported-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+If not adjust the 'extra_count' for dirty page,
+ubifs_migrate_page() -> migrate_page_move_mapping() will
+always return -EAGAIN for:
+	expected_count += page_has_private(page)
+This causes the migration to fail until the page cache is cleaned
+
+In general, PagePrivate() indicates that buff_head is already bound
+to this page, and at the same time page_count() will also increase.
+But UBIFS set private flag when the cache is dirty, and page_count()
+not increase.
+Therefore, the expected_count of UBIFS is different from the general
+case.
+
+Signed-off-by: zhangjun <openzhangj@gmail.com>
 ---
- drivers/mtd/nand/raw/omap2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/file.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 886d05c391ef..68e8b9f7f372 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -1944,7 +1944,7 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 	case NAND_OMAP_PREFETCH_DMA:
- 		dma_cap_zero(mask);
- 		dma_cap_set(DMA_SLAVE, mask);
--		info->dma = dma_request_chan(dev, "rxtx");
-+		info->dma = dma_request_chan(dev->parent, "rxtx");
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 1b78f2e..890dfce 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1480,8 +1480,17 @@ static int ubifs_migrate_page(struct address_space *mapping,
+ 		struct page *newpage, struct page *page, enum migrate_mode mode)
+ {
+ 	int rc;
++	int extra_count = 0;
  
- 		if (IS_ERR(info->dma)) {
- 			dev_err(dev, "DMA engine request failed\n");
+-	rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
++	/*
++	 * UBIFS uses PG_private as marker and does not raise the page counter.
++	 * migrate_page_move_mapping() expects a incremented counter if
++	 * PG_private is set. Therefore pass -1 as extra_count for this case.
++	 */
++	if (page_has_private(page))
++		extra_count = -1;
++	rc = migrate_page_move_mapping(mapping, newpage, page,
++			NULL, mode, extra_count);
+ 	if (rc != MIGRATEPAGE_SUCCESS)
+ 		return rc;
+ 
 -- 
-2.17.1
+2.7.4
