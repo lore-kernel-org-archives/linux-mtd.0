@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXVrm-0006DS-LL
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 18:37:48 +0000
-Date: Thu, 13 Dec 2018 19:37:25 +0100
+ id 1gXWK7-0007Wr-RH
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 19:07:05 +0000
+Date: Thu, 13 Dec 2018 20:06:41 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
@@ -12,7 +12,7 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  linux-mtd@lists.infradead.org
 Subject: Re: [v5,04/17] mtd: rawnand: omap2: convert driver to nand_scan()
-Message-ID: <20181213193725.4c1771c5@bbrezillon>
+Message-ID: <20181213200641.7b9f7531@bbrezillon>
 In-Reply-To: <20181213190111.2f32cfaffa5ea26f77bae520@gmail.com>
 References: <20180725133152.30898-5-miquel.raynal@bootlin.com>
  <20181213190111.2f32cfaffa5ea26f77bae520@gmail.com>
@@ -31,6 +31,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Thu, 13 Dec 2018 19:01:11 +0100
 Alexander Sverdlin <alexander.sverdlin@gmail.com> wrote:
 
+> > +static int omap_nand_attach_chip(struct nand_chip *chip)
+> > +{
+> > +	struct mtd_info *mtd = nand_to_mtd(chip);
+> > +	struct omap_nand_info *info = mtd_to_omap(mtd);
+> > +	struct device *dev = &info->pdev->dev;
+> > +	int min_oobbytes = BADBLOCK_MARKER_LENGTH;
+> > +	int oobbytes_per_step;
+> > +	dma_cap_mask_t mask;
+> > +	int err;
+> > +
+> > +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+> > +		chip->bbt_options |= NAND_BBT_NO_OOB;
+> > +	else
+> > +		chip->options |= NAND_SKIP_BBTSCAN;
+> > +
 > > +	/* Re-populate low-level callbacks based on xfer modes */
 > > +	switch (info->xfer_type) {
 > > +	case NAND_OMAP_PREFETCH_POLLED:
@@ -47,7 +62,9 @@ Alexander Sverdlin <alexander.sverdlin@gmail.com> wrote:
 > > +		dma_cap_set(DMA_SLAVE, mask);
 > > +		info->dma = dma_request_chan(dev, "rxtx");
 > > +
-> > +		if (IS_ERR(info->dma)) {
-> > +			dev_err(dev, "DMA engine request failed\n");
 
-Can you print the error code here?
+Can you try with
+
+		info->dma = dma_request_chan(dev->parent, "rxtx");
+
+?
