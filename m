@@ -1,25 +1,23 @@
-Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
+Received: from mail-io1-xd2e.google.com ([2607:f8b0:4864:20::d2e])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXShf-0007ws-9y
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 15:15:08 +0000
-Received: by mail-oi1-x241.google.com with SMTP id t204so1876314oie.7
- for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 07:14:56 -0800 (PST)
-Subject: Re: ubifs: fix page_count in ->ubifs_migrate_page()
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com, hch@lst.de,
- linux-fsdevel@vger.kernel.org
-References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
- <5829763.q4qAXljTxb@blindfold>
-From: zhangjun <openzhangj@gmail.com>
-Message-ID: <16c76437-d331-ac37-9c08-148189f9d98f@gmail.com>
-Date: Thu, 13 Dec 2018 23:14:37 +0800
+ id 1gXUeB-0005Ke-Ol
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 17:19:46 +0000
+Received: by mail-io1-xd2e.google.com with SMTP id l14so2217812ioj.5
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 09:19:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5829763.q4qAXljTxb@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <3417318.kOS8JojacP@blindfold>
+ <TY2PR01MB2700C1902D91862C39D966E79DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <1818742.2b902yA6mZ@blindfold>
+In-Reply-To: <1818742.2b902yA6mZ@blindfold>
+From: Steve deRosier <derosier@gmail.com>
+Date: Thu, 13 Dec 2018 09:18:49 -0800
+Message-ID: <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
+Subject: Re: Questions about ubifs,ubi and mtd?
+To: takei744@oki.com
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,89 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Dec 13, 2018 at 3:36 AM Richard Weinberger <richard@nod.at> wrote:
+>
+> Hello Katsuaki Takei,
+>
+> Am Donnerstag, 13. Dezember 2018, 11:45:36 CET schrieb =E6=AD=A6=E4=BA=95=
+ =E5=85=8B=E6=98=8E:
+> > Dear Richard,
+> >
+> > We appreciate your precious advice.
+> > We understood the quality status of kernel 3.2.26.
+> > From now on, we would like to backport from the latest UBI and UBIFS.
+> > Do you think that it is enough to backport the next part?
+> >  - drivers/mtd
+> >  - drivers/mtd/ubi
+> >  - fs/ubifs
+>
+> Under the assumption that the root of the problem is the MTD/UBI stack,
+> your problem should go away.
+>
 
-On 2018/12/13 下午10:23, Richard Weinberger wrote:
-> Hello zhangjun,
->
-> thanks a lot for bringing this up!
->
-> Am Mittwoch, 12. Dezember 2018, 15:13:57 CET schrieb zhangjun:
->> Because the PagePrivate() in UBIFS is different meanings,
->> alloc_cma() will fail when one dirty page cache located in
->> the type of MIGRATE_CMA
->>
->> If not adjust the 'extra_count' for dirty page,
->> ubifs_migrate_page() -> migrate_page_move_mapping() will
->> always return -EAGAIN for:
->> 	expected_count += page_has_private(page)
->> This causes the migration to fail until the page cache is cleaned
->>
->> In general, PagePrivate() indicates that buff_head is already bound
->> to this page, and at the same time page_count() will also increase.
->> But UBIFS set private flag when the cache is dirty, and page_count()
->> not increase.
->> Therefore, the expected_count of UBIFS is different from the general
->> case.
-> As you noted, UBIFS uses PG_private a little different.
-> It uses it as marker and when set, the page counter is not incremented,
-> since no private data is attached.
-> The migration code assumes that PG_private indicates a counter of +1.
-> So, we have to pass a extra count of -1 to migrate_page_move_mapping() if
-> the flag is set.
-> Just like F2FS does. Not really nice but hey...
->
->> Signed-off-by: zhangjun <openzhangj@gmail.com>
-> Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
->
->> ---
->>   fs/ubifs/file.c | 9 ++++++++-
->>   1 file changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
->> index 1b78f2e..2136a5c 100644
->> --- a/fs/ubifs/file.c
->> +++ b/fs/ubifs/file.c
->> @@ -1480,8 +1480,15 @@ static int ubifs_migrate_page(struct address_space *mapping,
->>   		struct page *newpage, struct page *page, enum migrate_mode mode)
->>   {
->>   	int rc;
->> +	int extra_count;
->>   
->> -	rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
->> +	/*
->> +	 * UBIFS is using PagePrivate() which can have different meanings across
->> +	 * filesystems. So here adjusting the 'extra_count' make it work.
->> +	 */
-> Please rewrite that comment.
-> /*
->   * UBIFS uses PG_private as marker and does not raise the page counter.
->   * migrate_page_move_mapping() expects a incremented counter if PG_private
->   * is set. Therefore pass -1 as extra_count for this case.
->   */
->
->> +	extra_count = 0 - page_has_private(page);
-> if (page_has_private(page))
-> 	extra_count = -1;
->
-> That way this corner is much more obvious.
->
-> Thanks,
-> //richard
->
->
-Hello Richard.
+Katsuaki Takei,
 
-Thank you very much for your help.
+Note that the MTD/UBI stack being at fault is an assumption. There's
+other things that might be at fault, and in my experience, you usually
+have multiple problems that all need to be solved.  Here's some other
+possible issues (might not be everything):
 
-1. Can i use your description for comment? like this:
+1. Does your hardware work? Are you meeting all the setup and hold
+times on all signals at all times.
+2. Does the driver work? Could be a bug, especially a subtle one where
+it usually works fine, but a missed command makes it unstable.
+3. Does the rest of the MTD/UBI stack work?
+4. Is your ECC on the NAND setup right and working?
+5. Does whatever hardware or software you're using calculate the ECC
+bits correctly? For example, on some Atmel processors, there's a bug
+in the in-ROM PMECC algos so updated software does it in software
+instead of using the ROM code, but older bootstraps used the ROM algo
+and thus were bugged.
+6. Are you flashing your NAND base image correctly (including getting
+all the ECC bits in the right place and correct)?
+7. When you flash updated images, is that done correctly?
+8. During your writing of the filesystem that goes bad, do you write
+it correctly and sync after each write? Note that 0-size files when
+you know you wrote something is a key indicator of this problem.
+9. When erasing the NAND, you do retain and honor the bad-block markers, ye=
+s?
 
-/*
-  * UBIFS uses PG_private a little different.
-  * It uses it as marker and when set, the page counter is not incremented,
-  * since no private data is attached.
-  * The migration code assumes that PG_private indicates a counter of +1.
-  * So, we have to pass a extra count of -1 to migrate_page_move_mapping() if
-  * the flag is set.
-  */
+Only if the problem's root is in cases 2 and 3 will backporting
+patches even help. And for the driver case, only if the relevant fix
+is there.
 
-2. It's more obvious, but the branch may break the cpu pipeline?
+(getting on my soapbox)
+IMHO, the effort to backport the entire subsystem from HEAD will
+actually be more effort than just upgrading your kernel to the most
+recent LTS kernel. It is exceptionally rare that a kernel _can't_ be
+upgraded, so it's likely more correct in referring to not wanting to
+or your bosses not wanting you to, or not understanding how to upgrade
+the kernel. And in any case, even _can't_ is an artificial existence
+caused by external forces (loosing certifications or similar) and can
+always be overcome. But doing so is an engineering tradeoff either
+way. Staying on a kernel that is seven years old is a huge risk.
+Upgrading your kernel is a huge benefit in security and bug fixes. But
+more than that, once you get current (and it is a big effort), you can
+simply stay current and everything gets easier going forward from
+there. You end up leveraging all the work the community does in giving
+you one of the highest quality and most complex code bases anywhere.
+(stepping off)
+
+In any case, I highly recommend you check all the other things too.
+You might have multiple problems, and some of them may be easy to fix.
+
+Good luck,
+- Steve
