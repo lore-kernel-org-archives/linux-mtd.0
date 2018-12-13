@@ -1,21 +1,26 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXMO9-0007yq-Ue
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 08:30:36 +0000
-From: Richard Weinberger <richard@nod.at>
-To: zhangjun <openzhangj@gmail.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: Fwd: ubifs: fix page_count in ->ubifs_migrate_page()
-Date: Thu, 13 Dec 2018 09:30:17 +0100
-Message-ID: <3016163.RH3ZIBrMym@blindfold>
-In-Reply-To: <257284e1-ae0c-1652-2edf-64cf8e35187c@gmail.com>
-References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
- <257284e1-ae0c-1652-2edf-64cf8e35187c@gmail.com>
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
+ <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH 0/5] Prepare devicetrees for the new FSL QSPI driver
+Date: Thu, 13 Dec 2018 09:45:04 +0000
+Message-ID: <1ad93cdf-7ba1-ff49-f330-6bbd0f6c6972@kontron.de>
+References: <1544459182-23655-1-git-send-email-frieder.schrempf@kontron.de>
+ <ce1442f3-357b-d647-958e-cc4a89282b79@kontron.de>
+In-Reply-To: <ce1442f3-357b-d647-958e-cc4a89282b79@kontron.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C1B04C5ECA6D974FBFDB5AE84BF4749D@snt-world.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 13. Dezember 2018, 03:59:50 CET schrieb zhangjun:
-> hello
->      I test several kernel version from your commit 
-> 4ac1c17b2044a1b4b2fbed74451947e905fc2992,
-> there is a bug when migrateing,the following fix i test ok and require 
-> your confirmation.
-
-Please keep the CC list intact and give us at least some time to review
-your patch.
-Also explain what kind of problem you're facing.
-In other words, is this a theoretical fix or not?
-
-Thanks,
-//richard
- 
-> -------- Forwarded Message --------
-> Subject: 	ubifs: fix page_count in ->ubifs_migrate_page()
-> Date: 	Wed, 12 Dec 2018 09:13:57 -0500
-> From: 	zhangjun <openzhangj@gmail.com>
-> To: 	Richard Weinberger <richard@nod.at>, Artem Bityutskiy 
-> <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>
-> CC: 	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-> zhangjun <openzhangj@gmail.com>
-> 
-> 
-> 
-> Because the PagePrivate() in UBIFS is different meanings,
-> alloc_cma() will fail when one dirty page cache located in
-> the type of MIGRATE_CMA
-> 
-> If not adjust the 'extra_count' for dirty page,
-> ubifs_migrate_page() -> migrate_page_move_mapping() will
-> always return -EAGAIN for:
-> expected_count += page_has_private(page)
-> This causes the migration to fail until the page cache is cleaned
-> 
-> In general, PagePrivate() indicates that buff_head is already bound
-> to this page, and at the same time page_count() will also increase.
-> But UBIFS set private flag when the cache is dirty, and page_count()
-> not increase.
-> Therefore, the expected_count of UBIFS is different from the general
-> case.
-> 
-> Signed-off-by: zhangjun <openzhangj@gmail.com>
-> ---
-> fs/ubifs/file.c | 9 ++++++++-
-> 1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index 1b78f2e..2136a5c 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1480,8 +1480,15 @@ static int ubifs_migrate_page(struct 
-> address_space *mapping,
-> struct page *newpage, struct page *page, enum migrate_mode mode)
-> {
-> int rc;
-> + int extra_count;
-> - rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
-> + /*
-> + * UBIFS is using PagePrivate() which can have different meanings across
-> + * filesystems. So here adjusting the 'extra_count' make it work.
-> + */
-> + extra_count = 0 - page_has_private(page);
-> + rc = migrate_page_move_mapping(mapping, newpage,
-> + page, NULL, mode, extra_count);
-> if (rc != MIGRATEPAGE_SUCCESS)
-> return rc;
-> 
-> 
+KyBTaGF3biwgU2FzY2hhDQoNCk9uIDEwLjEyLjE4IDE3OjMxLCBTY2hyZW1wZiBGcmllZGVyIHdy
+b3RlOg0KPiBIaSBGU0wvQVJNIG1haW50YWluZXJzLA0KPiANCj4gT24gMTAuMTIuMTggMTc6MjYs
+IFNjaHJlbXBmIEZyaWVkZXIgd3JvdGU6DQo+PiBGcm9tOiBGcmllZGVyIFNjaHJlbXBmIDxmcmll
+ZGVyLnNjaHJlbXBmQGtvbnRyb24uZGU+DQo+Pg0KPj4gV2UgaGF2ZSBwcmVwYXJlZCBhIG5ldyBk
+cml2ZXIgZm9yIHRoZSBGU0wgUVNQSSBjb250cm9sbGVyIHRoYXQgd29ya3MgdW5kZXINCj4+IHRo
+ZSBTUEkgZnJhbWV3b3JrLiBUaGUgY3VycmVudCBkZXZpY2V0cmVlcyBhcmUgYnJva2VuIGJlY2F1
+c2UgdGhleSB1c2UgYW4NCj4+IGluY29uc2lzdGVudCBzY2hlbWUgZm9yIGFzc2lnbmluZyB0aGUg
+cmVnIHByb3BlcnRpZXMuDQo+Pg0KPj4gQXMsIGluIGNvbnRyYXN0IHRvIHRoZSBjdXJyZW50IGRy
+aXZlciwgdGhlIG5ldyBkcml2ZXIgd2lsbCB1c2UgdGhlIHJlZw0KPj4gcHJvcGVydGllcyB0byBz
+ZWxlY3QgdGhlIGNvcnJlY3QgY2hpcCwgd2UgbmVlZCB0byBmaXggdGhlbS4NCj4+DQo+PiBXZSBh
+bHNvIGFkZCBzcGktW3R4L3J4XS1idXMtd2lkdGggdG8gbWFrZSBzdXJlIHRoZSBmdWxsIGJ1c3dp
+ZHRoIHdpbGwgYmUgdXNlZA0KPj4gYW5kIHdoaWxlIGF0IGl0IGNsZWFuIHVwIGFuZCByZW1vdmUg
+c29tZSB1bnVzZWQgcHJvcGVydGllcy4NCj4gDQo+IGNvdWxkIHlvdSBwbGVhc2UgY29uc2lkZXIg
+dGhlc2UgZGV2aWNldHJlZSBwYXRjaGVzIGZvciB2NC4yMT8NCg0KQW55IGNoYW5jZSB0byBnZXQg
+dGhpcyBtZXJnZWQ/IE90aGVyd2lzZSB3ZSB3b3VsZCBuZWVkIHRvIHBvc3Rwb25lIHRoZSANCm5l
+dyBkcml2ZXIgZXZlbiBmdXJ0aGVyLg0KDQpBbGwgdGhlIGNoYW5nZXMgdG8gdGhlIGRldmljZXRy
+ZWVzIGluIHRoaXMgc2VyaWVzIGFyZSBub24taW50cnVzaXZlIGFuZCANCnVuY3JpdGljYWwsIGFu
+eXdheS4NCg0KVGhhbmtzLA0KRnJpZWRlcg0KDQo+IA0KPiBXZSBoYXZlIHRoZSBuZXcgRlNMIFFT
+UEkgZHJpdmVyIHVuZGVyIHRoZSBTUEkgZnJhbWV3b3JrIChbMV0pIHJlYWR5LCBidXQNCj4gd2Ug
+bmVlZCBzb21lIHNtYWxsIGZpeGVzIHRvIHRoZSBkZXZpY2V0cmVlcyB0aGF0IGFyZSBjdXJyZW50
+bHkgYnJva2VuLg0KPiANCj4gQXMgdGhlIG5ldyBkcml2ZXIgZGVwZW5kcyBvbiB0aGVzZSBjaGFu
+Z2VzIChtYWlubHkgdGhlIGNoYW5nZSB0byB0aGUgcmVnDQo+IHByb3BlcnRpZXMpIGFuZCBpdCBp
+cyBub3QgcG9zc2libGUgdG8gYWRkIGNvbXBhdGliaWxpdHkgZm9yIHRoZSBvbGQNCj4gYmluZGlu
+Z3MsIGl0IHdvdWxkIGJlIHJlYWxseSBuaWNlIHRvIGhhdmUgdGhlbSBpbiB2NC4yMSwgc28gd2Ug
+Y2FuIHF1ZXVlDQo+IHRoZSBkcml2ZXIgZm9yIHY0LjIyIG9yIHdoYXRldmVyIHRoZSBuZXh0IHJl
+bGVhc2Ugd2lsbCBiZSBjYWxsZWQuDQo+IA0KPiBQbGVhc2UgYWxzbyBzZWUgWzJdIGZvciBzb21l
+IG1vcmUgZXhwbGFuYXRpb24uDQo+IA0KPiBUaGFua3MsDQo+IEZyaWVkZXINCj4gDQo+IFsxXSBo
+dHRwczovL3BhdGNod29yay5vemxhYnMub3JnL2NvdmVyLzEwMDc2NDEvDQo+IFsyXSBodHRwczov
+L3BhdGNod29yay5vemxhYnMub3JnL3BhdGNoLzkyMjgxNy8jMTkyNTQ0NQ0KPiANCj4+DQo+PiBG
+cmllZGVyIFNjaHJlbXBmICg1KToNCj4+ICAgICBhcm02NDogZHRzOiBSZW1vdmUgdW51c2VkIHBy
+b3BlcnRpZXMgZnJvbSBGU0wgUVNQSSBkcml2ZXIgbm9kZXMNCj4+ICAgICBBUk06IGR0czogUmVt
+b3ZlIHVudXNlZCBwcm9wZXJ0aWVzIGZyb20gRlNMIFFTUEkgZHJpdmVyIG5vZGVzDQo+PiAgICAg
+QVJNOiBkdHM6IGlteDZzeC1zZGI6IEZpeCB0aGUgcmVnIHByb3BlcnRpZXMgZm9yIHRoZSBGU0wg
+UVNQSSBub2Rlcw0KPj4gICAgIGFybTY0OiBkdHM6IEFkZCBzcGktW3R4L3J4XS1idXMtd2lkdGgg
+Zm9yIHRoZSBGU0wgUVNQSSBjb250cm9sbGVyDQo+PiAgICAgQVJNOiBkdHM6IEFkZCBzcGktW3R4
+L3J4XS1idXMtd2lkdGggZm9yIHRoZSBGU0wgUVNQSSBjb250cm9sbGVyDQo+Pg0KPj4gICAgYXJj
+aC9hcm0vYm9vdC9kdHMvaW14NnN4LXNkYi1yZXZhLmR0cyAgICAgICAgICAgICAgfCA4ICsrKysr
+Ky0tDQo+PiAgICBhcmNoL2FybS9ib290L2R0cy9pbXg2c3gtc2RiLmR0cyAgICAgICAgICAgICAg
+ICAgICB8IDggKysrKysrLS0NCj4+ICAgIGFyY2gvYXJtL2Jvb3QvZHRzL2lteDZ1bC0xNHgxNC1l
+dmsuZHRzaSAgICAgICAgICAgIHwgMiArKw0KPj4gICAgYXJjaC9hcm0vYm9vdC9kdHMvbHMxMDIx
+YS1tb3hhLXVjLTg0MTBhLmR0cyAgICAgICAgfCA1ICsrLS0tDQo+PiAgICBhcmNoL2FybTY0L2Jv
+b3QvZHRzL2ZyZWVzY2FsZS9mc2wtbHMxMDQzYS1xZHMuZHRzICB8IDMgKystDQo+PiAgICBhcmNo
+L2FybTY0L2Jvb3QvZHRzL2ZyZWVzY2FsZS9mc2wtbHMxMDQ2YS1xZHMuZHRzICB8IDQgKystLQ0K
+Pj4gICAgYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvZnNsLWxzMTA0NmEtcmRiLmR0cyAg
+fCA2ICsrKystLQ0KPj4gICAgYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvZnNsLWxzMjA4
+eGEtcWRzLmR0c2kgfCA0ICsrKysNCj4+ICAgIDggZmlsZXMgY2hhbmdlZCwgMjggaW5zZXJ0aW9u
+cygrKSwgMTIgZGVsZXRpb25zKC0pDQo+Pg0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0DQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLw0KPiA=
