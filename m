@@ -1,24 +1,25 @@
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]
- helo=mo-csw.securemx.jp)
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXPk5-0006IY-1A
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 12:05:26 +0000
-From: =?utf-8?B?5q2m5LqVIOWFi+aYjg==?= <takei744@oki.com>
-To: Richard Weinberger <richard@nod.at>, Martin Lund
- <martin.lund@keep-it-simple.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Questions about ubifs,ubi and mtd?
-Date: Thu, 13 Dec 2018 12:04:13 +0000
-Message-ID: <TY2PR01MB2700E4EE202EB1EBCF4947D89DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
-References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <TY2PR01MB2700C1902D91862C39D966E79DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <CAB7pii3ayyPK=trs=wV_Egs+Lt1GMMeh_g_=D82MNefgqqE00A@mail.gmail.com>
- <3057355.peyXOFjNrj@blindfold>
-In-Reply-To: <3057355.peyXOFjNrj@blindfold>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gXPpH-0000ie-Hs
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 12:10:48 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id s198so992245pgs.2
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 04:10:37 -0800 (PST)
+Subject: Re: Fwd: ubifs: fix page_count in ->ubifs_migrate_page()
+To: Richard Weinberger <richard@nod.at>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
+ <257284e1-ae0c-1652-2edf-64cf8e35187c@gmail.com>
+ <3016163.RH3ZIBrMym@blindfold>
+From: zhangjun <openzhangj@gmail.com>
+Message-ID: <c4f70535-63ba-4c4b-9e79-3ec48a406f52@gmail.com>
+Date: Thu, 13 Dec 2018 20:10:19 +0800
 MIME-Version: 1.0
+In-Reply-To: <3016163.RH3ZIBrMym@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBSaWNoYXJkLA0KRGVyYSBNYXJ0aW4sDQoNCldlIGFyZSB2ZXJ5IGdyYXRlZnVsIGZvciB0
-aGUgYWR2aWNlIHRoYXQgbWFkZSB5b3Ugd2VsbC4NCldlIHdvdWxkIGxpa2UgdG8gaW52ZXN0aWdh
-dGUgZnVydGhlciBhbmQgZGVjaWRlIHRoZSBiZXN0IHBhdGggYWZ0ZXIgY29uc2lkZXJpbmcgaXQu
-DQpJZiB5b3UgaGF2ZSBhbnl0aGluZyB0byBub3RpY2UgaW4gdGhlIGZ1dHVyZSwgZmVlbCBmcmVl
-IHRvIGFkdmlzZSBhbmQgY29tbWVudC4NCg0KVGhhbmsgeW91IGFnYWluIGZvciBldmVyeXRoaW5n
-IHlvdSBoYXZlIGRvbmUuDQoNCj09PT09DQpLYXRzdWFraSBUYWtlaS9Pa2kgRWxlY3RyaWMgSW5k
-dXN0cnkgQ28uLCBMdGQuL0pQDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBG
-cm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiBTZW50OiBUaHVyc2Rh
-eSwgRGVjZW1iZXIgMTMsIDIwMTggODozOCBQTQ0KPiBUbzogTWFydGluIEx1bmQgPG1hcnRpbi5s
-dW5kQGtlZXAtaXQtc2ltcGxlLmNvbT4NCj4gQ2M6IOatpuS6lSDlhYvmmI4gPHRha2VpNzQ0QG9r
-aS5jb20+OyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogUXVl
-c3Rpb25zIGFib3V0IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gTWFydGluLA0KPiANCj4gQW0g
-RG9ubmVyc3RhZywgMTMuIERlemVtYmVyIDIwMTgsIDEyOjMyOjQzIENFVCBzY2hyaWViIE1hcnRp
-biBMdW5kOg0KPiA+IE9uIFRodSwgRGVjIDEzLCAyMDE4IGF0IDExOjQ1IEFNIOatpuS6lSDlhYvm
-mI4gPHRha2VpNzQ0QG9raS5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IERlYXIgUmljaGFyZCwN
-Cj4gPiA+DQo+ID4gPiBXZSBhcHByZWNpYXRlIHlvdXIgcHJlY2lvdXMgYWR2aWNlLg0KPiA+ID4g
-V2UgdW5kZXJzdG9vZCB0aGUgcXVhbGl0eSBzdGF0dXMgb2Yga2VybmVsIDMuMi4yNi4NCj4gPiA+
-IEZyb20gbm93IG9uLCB3ZSB3b3VsZCBsaWtlIHRvIGJhY2twb3J0IGZyb20gdGhlIGxhdGVzdCBV
-QkkgYW5kIFVCSUZTLg0KPiA+ID4gRG8geW91IHRoaW5rIHRoYXQgaXQgaXMgZW5vdWdoIHRvIGJh
-Y2twb3J0IHRoZSBuZXh0IHBhcnQ/DQo+ID4gPiAgLSBkcml2ZXJzL210ZA0KPiA+ID4gIC0gZHJp
-dmVycy9tdGQvdWJpDQo+ID4gPiAgLSBmcy91Ymlmcw0KPiA+ID4NCj4gPg0KPiA+IEkgcmVjb21t
-ZW5kIHlvdSBmaXJzdCB0YWtlIGEgY2xvc2UgbG9vayBhdCB0aGUgZ2l0IGhpc3Rvcnkgb2YgTGlu
-dXgNCj4gPiAzLjIuMjYgYW5kIG9ud2FyZCB0byBzZWUgaWYgdGhlcmUgYXJlIGFueSBpbW1lZGlh
-dGUgVUJJL1VCSUZTIGZpeGVzDQo+ID4gYXZhaWxhYmxlIHRoYXQgbWlnaHQgcmVsYXRlL3NvbHZl
-IHRoZSBpc3N1ZSB5b3UgYXJlIHNlZWluZy4gSXQgbWlnaHQNCj4gPiBiZSBhbiBlYXNpZXIgcGF0
-aCB0aGFuIGp1bXBpbmcgaW50byBhIGJpZyB0YXNrIGxpa2UgYmFjayBwb3J0aW5nDQo+ID4gbGF0
-ZXN0IFVCSS9VQklGUyB0byBzdWNoIGFuIG9sZCBrZXJuZWwuDQo+IA0KPiBHaXZlbiB0aGUgYWdl
-IG9mIHRoaXMga2VybmVsIGl0IHdpbGwgYmUgbWFzc2l2ZSBwYWluIGluIGFueSBjYXNlLg0KPiBE
-aWdnaW5nIHRocm91Z2ggdGhlIGhpc3RvcnksIGlkZW50aWZ5aW5nIGFuZCBiYWNrcG9ydGluZyBm
-aXhlcyBzb3VuZHMgbW9yZQ0KPiBlYXNpZXIgdGhhbiBpdCBhY3R1YWxseSBpcy4NCj4gU21hbGwg
-Zml4ZXMgb2Z0ZW4gZGVwZW5kIG9uIGxhcmdlciBwYXRjaGVzIHdoaWNoIGFyZSBoYXJkIHRvIGFw
-cGx5IHRvIG9sZA0KPiBrZXJuZWxzLg0KPiANCj4gVGhhbmtzLA0KPiAvL3JpY2hhcmQNCj4gDQoN
-Cg==
+On 2018/12/13 下午4:30, Richard Weinberger wrote:
+> Am Donnerstag, 13. Dezember 2018, 03:59:50 CET schrieb zhangjun:
+>> hello
+>>       I test several kernel version from your commit
+>> 4ac1c17b2044a1b4b2fbed74451947e905fc2992,
+>> there is a bug when migrateing,the following fix i test ok and require
+>> your confirmation.
+> Please keep the CC list intact and give us at least some time to review
+> your patch.
+> Also explain what kind of problem you're facing.
+> In other words, is this a theoretical fix or not?
+>
+> Thanks,
+> //richard
+
+This's my first time to patch upstream,thank you very much for your 
+suggestion.
+My problem is my driver to call alloc_cma(),it fail.
+But i find that memory and cma maxchunk is enougth.
+So i building environmentto find what the reason is,test and verify my 
+guess.
+i think it not just a theoretical fix but i actually tested it.
+
+thanks,
+//zhangjun
