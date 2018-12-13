@@ -1,17 +1,31 @@
-Received: from mail.obedovekarty.cz ([80.211.117.20] helo=obedovekarty.cz)
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXODg-0000pH-EW
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 10:27:53 +0000
-Received: by mail.obedovekarty.cz for <linux-mtd@lists.infradead.org>;
- Thu, 13 Dec 2018 10:22:43 GMT
-Message-ID: <20181213112119-0.1.1r.9dda.0.h141u6fgib@obedovekarty.cz>
-Date: Thu, 13 Dec 2018 10:22:43 GMT
-From: "Martin Kaspar" <martin.kaspar@obedovekarty.cz>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Ob=C4=9Bdov=C3=A9_karty?=
+ id 1gXOVD-0001mP-Iv
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 10:46:00 +0000
+Received: by mail-lj1-x244.google.com with SMTP id s5-v6so1319071ljd.12
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 02:45:49 -0800 (PST)
 MIME-Version: 1.0
+References: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
+ <1543509663-26128-3-git-send-email-christophe.kerello@st.com>
+ <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
+ <7c295246-8756-9363-a891-856ddf7af92b@st.com>
+In-Reply-To: <7c295246-8756-9363-a891-856ddf7af92b@st.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 13 Dec 2018 11:45:35 +0100
+Message-ID: <CACRpkdbiX=9tDnE+tR7Jj-QEY_=_MvS9v8Jg8X7MzQcX7aPp-Q@mail.gmail.com>
+Subject: Re: [ v3 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash
+ controller driver
+To: christophe.kerello@st.com
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +35,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dobr=C3=BD den,
-=20
-modern=C3=AD p=C5=99=C3=ADsp=C4=9Bvek na stravov=C3=A1n=C3=AD v podob=C4=9B=
- ob=C4=9Bdov=C3=A9 karty, kterou lze pou=C5=BE=C3=ADt ve v=C3=ADce ne=C5=BE=
- 15 000 restaurac=C3=ADch a gastronomick=C3=BDch za=C5=99=C3=ADzen=C3=AD =
-po cel=C3=A9 zemi, je n=C3=A1stroj, kter=C3=BD V=C3=A1m pom=C5=AF=C5=BEe =
-poskytnout sv=C3=BDm zam=C4=9Bstnanc=C5=AFm nej=C5=BE=C3=A1dan=C4=9Bj=C5=A1=
-=C3=AD benefit v =C4=8CR.
+On Fri, Dec 7, 2018 at 5:53 PM Christophe Kerello
+<christophe.kerello@st.com> wrote:
+> On 12/7/18 10:06 AM, Linus Walleij wrote:
 
-V=C3=BDzkum Sv=C4=9Btov=C3=A9 zdravotnick=C3=A9 organizace WHO nazna=C4=8D=
-uje, =C5=BEe zam=C4=9Bstnanec, kter=C3=BD dost=C3=A1v=C3=A1  od sv=C3=A9h=
-o zam=C4=9Bstnavatele p=C5=99=C3=ADsp=C4=9Bvek na j=C3=ADdlo, je efektivn=
-=C4=9Bj=C5=A1=C3=AD o 20 % a po=C4=8Det absenc=C3=AD kles=C3=A1 o 27 %.
+> Based on FMC2 datasheet,
+> The FMC2 controller includes 2 memory controllers:
+>   - the NOR/PSRAM memory controller
+>   - the NAND memory controller
+>
+> The NOR/PSRAM controller mapping is starting at 0.
+> The NAND controller mapping is starting at 0x80.
+>
+> We have only planned to develop a driver for the NAND memory controller.
+> There is currently no customer request to develop the NOR/PSRAM memory
+> controller.
 
-V=C3=BDb=C4=9Brem na=C5=A1ich ob=C4=9Bdov=C3=BDch karet jako formy v=C3=BD=
-hod zam=C4=9Bstnavatel z=C3=ADsk=C3=A1 nejen produktivn=C4=9Bj=C5=A1=C3=AD=
- a k pr=C3=A1ci v=C3=ADce motivovan=C3=A9 zam=C4=9Bstnance, ale tak=C3=A9=
- finan=C4=8Dn=C3=AD v=C3=BDhody, proto=C5=BEe hodnota prost=C5=99edk=C5=AF=
- na kart=C4=9B znamen=C3=A1 =C3=BAsporu 34 % p=C5=99i odvodech na soci=C3=
-=A1ln=C3=ADm a zdravotn=C3=ADm poji=C5=A1t=C4=9Bn=C3=AD zam=C4=9Bstnance =
-a na dani z p=C5=99=C3=ADjmu. Nav=C3=ADc je p=C5=99=C3=ADsp=C4=9Bvek na o=
-b=C4=9Bdovou kartu zam=C4=9Bstnanci o 48 % v=C3=BDhodn=C4=9Bj=C5=A1=C3=AD=
- ne=C5=BE p=C5=99=C3=ADsp=C4=9Bvek do mzdy.
-=20
-Mohli bych V=C3=A1m poskytnout v=C3=ADce informac=C3=AD o na=C5=A1=C3=AD =
-ob=C4=9Bdov=C3=A9 kart=C4=9B?
+OK I get it, so there is no FSMC (v1), but a NOR controller, thanks!
 
+If people need to access the NOR controller I think they can just patch
+your driver to handle both or have a second driver on the side
+(I suspect the pins are anyways set up such that you can just
+use either NOR or NAND.)
 
-Martin Kaspar
-Project Manager=20
-www.obedovekarty.cz
+Yours,
+Linus Walleij
