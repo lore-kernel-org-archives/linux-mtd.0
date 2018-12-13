@@ -1,20 +1,24 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mo-csw1515.securemx.jp ([210.130.202.154]
+ helo=mo-csw.securemx.jp)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXPKC-0000Hx-8X
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 11:38:41 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Martin Lund <martin.lund@keep-it-simple.com>
-Cc: takei744@oki.com, linux-mtd@lists.infradead.org
-Subject: Re: Questions about ubifs,ubi and mtd?
-Date: Thu, 13 Dec 2018 12:38:27 +0100
-Message-ID: <3057355.peyXOFjNrj@blindfold>
-In-Reply-To: <CAB7pii3ayyPK=trs=wV_Egs+Lt1GMMeh_g_=D82MNefgqqE00A@mail.gmail.com>
+ id 1gXPk5-0006IY-1A
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 12:05:26 +0000
+From: =?utf-8?B?5q2m5LqVIOWFi+aYjg==?= <takei744@oki.com>
+To: Richard Weinberger <richard@nod.at>, Martin Lund
+ <martin.lund@keep-it-simple.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Questions about ubifs,ubi and mtd?
+Date: Thu, 13 Dec 2018 12:04:13 +0000
+Message-ID: <TY2PR01MB2700E4EE202EB1EBCF4947D89DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
 References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
  <TY2PR01MB2700C1902D91862C39D966E79DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
  <CAB7pii3ayyPK=trs=wV_Egs+Lt1GMMeh_g_=D82MNefgqqE00A@mail.gmail.com>
+ <3057355.peyXOFjNrj@blindfold>
+In-Reply-To: <3057355.peyXOFjNrj@blindfold>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Martin,
-
-Am Donnerstag, 13. Dezember 2018, 12:32:43 CET schrieb Martin Lund:
-> On Thu, Dec 13, 2018 at 11:45 AM =E6=AD=A6=E4=BA=95 =E5=85=8B=E6=98=8E <t=
-akei744@oki.com> wrote:
-> >
-> > Dear Richard,
-> >
-> > We appreciate your precious advice.
-> > We understood the quality status of kernel 3.2.26.
-> > From now on, we would like to backport from the latest UBI and UBIFS.
-> > Do you think that it is enough to backport the next part?
-> >  - drivers/mtd
-> >  - drivers/mtd/ubi
-> >  - fs/ubifs
-> >
->=20
-> I recommend you first take a close look at the git history of Linux
-> 3.2.26 and onward to see if there are any immediate UBI/UBIFS fixes
-> available that might relate/solve the issue you are seeing. It might
-> be an easier path than jumping into a big task like back porting
-> latest UBI/UBIFS to such an old kernel.
-
-Given the age of this kernel it will be massive pain in any case.
-Digging through the history, identifying and backporting fixes sounds
-more easier than it actually is.
-Small fixes often depend on larger patches which are hard to apply
-to old kernels.
-
-Thanks,
-//richard=20
+RGVhciBSaWNoYXJkLA0KRGVyYSBNYXJ0aW4sDQoNCldlIGFyZSB2ZXJ5IGdyYXRlZnVsIGZvciB0
+aGUgYWR2aWNlIHRoYXQgbWFkZSB5b3Ugd2VsbC4NCldlIHdvdWxkIGxpa2UgdG8gaW52ZXN0aWdh
+dGUgZnVydGhlciBhbmQgZGVjaWRlIHRoZSBiZXN0IHBhdGggYWZ0ZXIgY29uc2lkZXJpbmcgaXQu
+DQpJZiB5b3UgaGF2ZSBhbnl0aGluZyB0byBub3RpY2UgaW4gdGhlIGZ1dHVyZSwgZmVlbCBmcmVl
+IHRvIGFkdmlzZSBhbmQgY29tbWVudC4NCg0KVGhhbmsgeW91IGFnYWluIGZvciBldmVyeXRoaW5n
+IHlvdSBoYXZlIGRvbmUuDQoNCj09PT09DQpLYXRzdWFraSBUYWtlaS9Pa2kgRWxlY3RyaWMgSW5k
+dXN0cnkgQ28uLCBMdGQuL0pQDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBG
+cm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiBTZW50OiBUaHVyc2Rh
+eSwgRGVjZW1iZXIgMTMsIDIwMTggODozOCBQTQ0KPiBUbzogTWFydGluIEx1bmQgPG1hcnRpbi5s
+dW5kQGtlZXAtaXQtc2ltcGxlLmNvbT4NCj4gQ2M6IOatpuS6lSDlhYvmmI4gPHRha2VpNzQ0QG9r
+aS5jb20+OyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogUXVl
+c3Rpb25zIGFib3V0IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gTWFydGluLA0KPiANCj4gQW0g
+RG9ubmVyc3RhZywgMTMuIERlemVtYmVyIDIwMTgsIDEyOjMyOjQzIENFVCBzY2hyaWViIE1hcnRp
+biBMdW5kOg0KPiA+IE9uIFRodSwgRGVjIDEzLCAyMDE4IGF0IDExOjQ1IEFNIOatpuS6lSDlhYvm
+mI4gPHRha2VpNzQ0QG9raS5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IERlYXIgUmljaGFyZCwN
+Cj4gPiA+DQo+ID4gPiBXZSBhcHByZWNpYXRlIHlvdXIgcHJlY2lvdXMgYWR2aWNlLg0KPiA+ID4g
+V2UgdW5kZXJzdG9vZCB0aGUgcXVhbGl0eSBzdGF0dXMgb2Yga2VybmVsIDMuMi4yNi4NCj4gPiA+
+IEZyb20gbm93IG9uLCB3ZSB3b3VsZCBsaWtlIHRvIGJhY2twb3J0IGZyb20gdGhlIGxhdGVzdCBV
+QkkgYW5kIFVCSUZTLg0KPiA+ID4gRG8geW91IHRoaW5rIHRoYXQgaXQgaXMgZW5vdWdoIHRvIGJh
+Y2twb3J0IHRoZSBuZXh0IHBhcnQ/DQo+ID4gPiAgLSBkcml2ZXJzL210ZA0KPiA+ID4gIC0gZHJp
+dmVycy9tdGQvdWJpDQo+ID4gPiAgLSBmcy91Ymlmcw0KPiA+ID4NCj4gPg0KPiA+IEkgcmVjb21t
+ZW5kIHlvdSBmaXJzdCB0YWtlIGEgY2xvc2UgbG9vayBhdCB0aGUgZ2l0IGhpc3Rvcnkgb2YgTGlu
+dXgNCj4gPiAzLjIuMjYgYW5kIG9ud2FyZCB0byBzZWUgaWYgdGhlcmUgYXJlIGFueSBpbW1lZGlh
+dGUgVUJJL1VCSUZTIGZpeGVzDQo+ID4gYXZhaWxhYmxlIHRoYXQgbWlnaHQgcmVsYXRlL3NvbHZl
+IHRoZSBpc3N1ZSB5b3UgYXJlIHNlZWluZy4gSXQgbWlnaHQNCj4gPiBiZSBhbiBlYXNpZXIgcGF0
+aCB0aGFuIGp1bXBpbmcgaW50byBhIGJpZyB0YXNrIGxpa2UgYmFjayBwb3J0aW5nDQo+ID4gbGF0
+ZXN0IFVCSS9VQklGUyB0byBzdWNoIGFuIG9sZCBrZXJuZWwuDQo+IA0KPiBHaXZlbiB0aGUgYWdl
+IG9mIHRoaXMga2VybmVsIGl0IHdpbGwgYmUgbWFzc2l2ZSBwYWluIGluIGFueSBjYXNlLg0KPiBE
+aWdnaW5nIHRocm91Z2ggdGhlIGhpc3RvcnksIGlkZW50aWZ5aW5nIGFuZCBiYWNrcG9ydGluZyBm
+aXhlcyBzb3VuZHMgbW9yZQ0KPiBlYXNpZXIgdGhhbiBpdCBhY3R1YWxseSBpcy4NCj4gU21hbGwg
+Zml4ZXMgb2Z0ZW4gZGVwZW5kIG9uIGxhcmdlciBwYXRjaGVzIHdoaWNoIGFyZSBoYXJkIHRvIGFw
+cGx5IHRvIG9sZA0KPiBrZXJuZWxzLg0KPiANCj4gVGhhbmtzLA0KPiAvL3JpY2hhcmQNCj4gDQoN
+Cg==
