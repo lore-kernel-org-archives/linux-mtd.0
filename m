@@ -1,31 +1,23 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mo-csw1115.securemx.jp ([210.130.202.157]
+ helo=mo-csw.securemx.jp)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXOVD-0001mP-Iv
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 10:46:00 +0000
-Received: by mail-lj1-x244.google.com with SMTP id s5-v6so1319071ljd.12
- for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 02:45:49 -0800 (PST)
+ id 1gXOVd-0001x5-7M
+ for linux-mtd@lists.infradead.org; Thu, 13 Dec 2018 10:46:32 +0000
+From: =?utf-8?B?5q2m5LqVIOWFi+aYjg==?= <takei744@oki.com>
+To: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: Questions about ubifs,ubi and mtd?
+Date: Thu, 13 Dec 2018 10:45:36 +0000
+Message-ID: <TY2PR01MB2700C1902D91862C39D966E79DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <CAFLxGvzp_FmaoADzLG0HnBSJsz45NDU3kH+YPr6eUAzOo4uJrw@mail.gmail.com>
+ <TY2PR01MB270060F7EC282F9C7C705D409DA70@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <3417318.kOS8JojacP@blindfold>
+In-Reply-To: <3417318.kOS8JojacP@blindfold>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1543509663-26128-1-git-send-email-christophe.kerello@st.com>
- <1543509663-26128-3-git-send-email-christophe.kerello@st.com>
- <CACRpkdb83-kEwrip+t8g2VVFiREXspfWKQa2=Zd1ah1sSLNHjQ@mail.gmail.com>
- <7c295246-8756-9363-a891-856ddf7af92b@st.com>
-In-Reply-To: <7c295246-8756-9363-a891-856ddf7af92b@st.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 13 Dec 2018 11:45:35 +0100
-Message-ID: <CACRpkdbiX=9tDnE+tR7Jj-QEY_=_MvS9v8Jg8X7MzQcX7aPp-Q@mail.gmail.com>
-Subject: Re: [ v3 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash
- controller driver
-To: christophe.kerello@st.com
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 7, 2018 at 5:53 PM Christophe Kerello
-<christophe.kerello@st.com> wrote:
-> On 12/7/18 10:06 AM, Linus Walleij wrote:
-
-> Based on FMC2 datasheet,
-> The FMC2 controller includes 2 memory controllers:
->   - the NOR/PSRAM memory controller
->   - the NAND memory controller
->
-> The NOR/PSRAM controller mapping is starting at 0.
-> The NAND controller mapping is starting at 0x80.
->
-> We have only planned to develop a driver for the NAND memory controller.
-> There is currently no customer request to develop the NOR/PSRAM memory
-> controller.
-
-OK I get it, so there is no FSMC (v1), but a NOR controller, thanks!
-
-If people need to access the NOR controller I think they can just patch
-your driver to handle both or have a second driver on the side
-(I suspect the pins are anyways set up such that you can just
-use either NOR or NAND.)
-
-Yours,
-Linus Walleij
+RGVhciBSaWNoYXJkLA0KDQpXZSBhcHByZWNpYXRlIHlvdXIgcHJlY2lvdXMgYWR2aWNlLg0KV2Ug
+dW5kZXJzdG9vZCB0aGUgcXVhbGl0eSBzdGF0dXMgb2Yga2VybmVsIDMuMi4yNi4NCkZyb20gbm93
+IG9uLCB3ZSB3b3VsZCBsaWtlIHRvIGJhY2twb3J0IGZyb20gdGhlIGxhdGVzdCBVQkkgYW5kIFVC
+SUZTLg0KRG8geW91IHRoaW5rIHRoYXQgaXQgaXMgZW5vdWdoIHRvIGJhY2twb3J0IHRoZSBuZXh0
+IHBhcnQ/DQogLSBkcml2ZXJzL210ZA0KIC0gZHJpdmVycy9tdGQvdWJpDQogLSBmcy91Ymlmcw0K
+DQpCZXN0IHJlZ2FyZHMsDQpLYXRzdWFraSBUYWtlaS9Pa2kgRWxlY3RyaWMgSW5kdXN0cnkgQ28u
+LCBMdGQuL0pQDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSaWNo
+YXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiBTZW50OiBXZWRuZXNkYXksIERlY2Vt
+YmVyIDEyLCAyMDE4IDY6MjAgUE0NCj4gVG86IOatpuS6lSDlhYvmmI4gPHRha2VpNzQ0QG9raS5j
+b20+OyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogUXVlc3Rp
+b25zIGFib3V0IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gSGVsbG8gS2F0c3Vha2kgVGFrZWks
+DQo+IA0KPiBBbSBNaXR0d29jaCwgMTIuIERlemVtYmVyIDIwMTgsIDAyOjA3OjMzIENFVCBzY2hy
+aWViIOatpuS6lSDlhYvmmI46DQo+ID4gRGVhciBSaWNoYXJkLA0KPiA+ICBUaGFuayB5b3UgZm9y
+IHlvdXIgY29tbWVudC4NCj4gPiAgV2UgYXJlIHVzaW5nIGtlcm5lbCAzLjIuMjYgZm9yIHJlYXNv
+bnMuDQo+ID4gIEkgY2FuIG5vdCB1cGRhdGUgdGhlIGtlcm5lbCByaWdodCBub3cuDQo+IA0KPiAz
+LjIueCBpcyBkZWFkLg0KPiBJdCBjb250YWlucyBidWdzLCBzZWN1cml0eSBwcm9ibGVtcywgaXMg
+dW5tYWludGFpbmVkLCBldGMuLi4NCj4gU2hpcHBpbmcgd2l0aCAzLjIueCBpcyBhIHZlcnkgYmFk
+IGlkZWEuDQo+IA0KPiA+IFRvIGV2ZXJ5b25lDQo+ID4gSXMgdGhlcmUgYSBsb3Qgb2YgZml4ZXMg
+YW5kIHBhdGNoZXMgZm9yIHByb2Nlc3NpbmcgdGhhdCBjYXVzZXMgYWJub3JtYWwNCj4gYmVoYXZp
+b3IgYXMgSSBhc2tlZCB5b3U/DQo+ID4gV2UgaG9wZSB0byBzb2x2ZSB0aGUgcHJvYmxlbSBieSBw
+YXRjaCB0byBrZXJuZWwgMy4yLjI2LiBpZiBwb3NzaWJsZS4NCj4gPiBTaHlseSwgSSBoYXZlIGxp
+dHRsZSBleHBlcmllbmNlIG9mIGRldmVsb3BpbmcgdWJpZnMgb3IgdWJpLCBhbmQgSSBjYW4gbm90
+IHlldA0KPiBmaWd1cmUgb3V0IHdoaWNoIHByb2dyYW0gaXMgbGlrZWx5IHRvIGJlIGludm9sdmVk
+IGluIHRoaXMgYWJub3JtYWwgb3BlcmF0aW9uKHJlZi4NCj4gTm90ZSopLg0KPiA+DQo+ID4gTm90
+ZSo6DQo+ID4gTmV2ZXJ0aGVsZXNzLCB3aGVuIGxvYWRpbmcgb3VyIHByb2dyYW0gZnJvbSAncm9v
+dGZzLWEnLCB0cnlpbmcgdG8gcmVhZCB0aGUNCj4gaW5vZGUgd2l0aCB0aGUgdWJpZnNfcmVhZF9u
+b2RlKCkgZnVuY3Rpb24gd2lsbCByZXN1bHQgaW4gImJhZCBub2RlIHR5cGUiIChleDogMTkzDQo+
+IGJ1dCBleHBlY3RlZCA5KSBhbmQgdGhlIExFQiBjYW4gbm90IGJlIHJlYWQgd2l0aCB0aGUgZXhw
+ZWN0ZWQgdmFsdWUuIChFdmVuDQo+IHRob3VnaCB5b3UgZG8gbm90IGhhdmUgd3JpdGUgYWNjZXNz
+IHRvIHJvb3RmcykgSW4gYWRkaXRpb24sIHRoZSBmaWxlIHNpemUgbWF5IGJlIDANCj4gYnl0ZSBp
+biBzb21lIGNhc2VzLg0KPiANCj4gVGhlIHByb2JsZW0gY291bGQgYmUgYW55dGhpbmcuDQo+IEJv
+dGggVUJJIGFuZCBVQklGUyBmYWNlZCB0b25zIG9mIGZpeGVzIG92ZXIgdGhlIGxhc3QgeWVhcnMu
+DQo+IE1heWJlIGl0IGlzIGFsc28gYnVnIHNvbWV3aGVyZSBlbHNlLg0KPiANCj4gWW91IGNvdWxk
+IHRyeSBiYWNrcG9ydGluZyB0aGUgd2hvbGUgVUJJIGFuZCBVQklGUyBzdWJzeXN0ZW1zIHRvIHlv
+dXIga2VybmVsLg0KPiANCj4gVGhhbmtzLA0KPiAvL3JpY2hhcmQNCj4gDQoNCg==
