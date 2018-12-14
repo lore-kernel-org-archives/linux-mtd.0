@@ -1,24 +1,24 @@
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]
- helo=mo-csw.securemx.jp)
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXgoZ-0001fL-SV
- for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 06:19:13 +0000
-From: Katsuaki Takei/OKI/JP <takei744@oki.com>
-To: Richard Weinberger <richard@nod.at>, Steve deRosier <derosier@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "goliath@sigma-star.at" <goliath@sigma-star.at>
-Subject: RE: Questions about ubifs,ubi and mtd?
-Date: Fri, 14 Dec 2018 06:18:49 +0000
-Message-ID: <TY2PR01MB27001D55C9EF14DA1A149EFD9DA10@TY2PR01MB2700.jpnprd01.prod.outlook.com>
-References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <1818742.2b902yA6mZ@blindfold>
- <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
- <4423535.My00vEhdVK@blindfold>
-In-Reply-To: <4423535.My00vEhdVK@blindfold>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gXjWw-0003Mr-35
+ for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 09:13:12 +0000
+Subject: Re: ubifs: fix page_count in ->ubifs_migrate_page()
+To: zhangjun <openzhangj@gmail.com>, Dave Chinner <david@fromorbit.com>,
+ Richard Weinberger <richard@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <kirill.shutemov@linux.intel.com>,
+ <hch@lst.de>, <linux-fsdevel@vger.kernel.org>
+References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
+ <5829763.q4qAXljTxb@blindfold> <20181213225736.GF29416@dastard>
+ <e477c69a-082b-586b-a45a-50dee2b530ca@gmail.com>
+From: Gao Xiang <gaoxiang25@huawei.com>
+Message-ID: <583fba27-cbd7-1f90-8bf0-a3b49e75b0f6@huawei.com>
+Date: Fri, 14 Dec 2018 17:12:47 +0800
 MIME-Version: 1.0
+In-Reply-To: <e477c69a-082b-586b-a45a-50dee2b530ca@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +28,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBNci5SaWNoYXJkLCBNci5NYXJ0aW4sIGFuZCBNci5TdGV2ZQ0KDQogVGhhbmtzIHRvIHlv
-dXIgZmlyc3QgYWR2aWNlLCB3ZSB3ZXJlIGFibGUgdG8gZ2V0IGEgbG90IG9mIHZhbHVhYmxlIGlu
-Zm9ybWF0aW9uLg0KIEFuZCBhZ2FpbiwgSSB0aGFuayBSaWNoYXJkLCBNYXJ0aW4sIGFuZCBTdGV2
-ZS4NCg0KQmVzdCByZWdhcmRzLA0KS2F0c3Vha2kgVGFrZWkvT2tpIEVsZWN0cmljIEluZHVzdHJ5
-IENvLiwgTHRkLi9KUA0KDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9t
-OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiBTZW50OiBGcmlkYXksIERl
-Y2VtYmVyIDE0LCAyMDE4IDY6MTYgQU0NCj4gVG86IFN0ZXZlIGRlUm9zaWVyIDxkZXJvc2llckBn
-bWFpbC5jb20+DQo+IENjOiDmrabkupUg5YWL5piOIDx0YWtlaTc0NEBva2kuY29tPjsgbGludXgt
-bXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+IGdvbGlhdGhAc2lnbWEtc3Rhci5hdA0KPiBTdWJq
-ZWN0OiBSZTogUXVlc3Rpb25zIGFib3V0IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gU3RldmUs
-DQo+IA0KPiBBbSBEb25uZXJzdGFnLCAxMy4gRGV6ZW1iZXIgMjAxOCwgMTg6MTg6NDkgQ0VUIHNj
-aHJpZWIgU3RldmUgZGVSb3NpZXI6DQo+ID4gT24gVGh1LCBEZWMgMTMsIDIwMTggYXQgMzozNiBB
-TSBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiB3cm90ZToNCj4gPiA+DQo+
-ID4gPiBIZWxsbyBLYXRzdWFraSBUYWtlaSwNCj4gPiA+DQo+ID4gPiBBbSBEb25uZXJzdGFnLCAx
-My4gRGV6ZW1iZXIgMjAxOCwgMTE6NDU6MzYgQ0VUIHNjaHJpZWIg5q2m5LqVIOWFi+aYjjoNCj4g
-PiA+ID4gRGVhciBSaWNoYXJkLA0KPiA+ID4gPg0KPiA+ID4gPiBXZSBhcHByZWNpYXRlIHlvdXIg
-cHJlY2lvdXMgYWR2aWNlLg0KPiA+ID4gPiBXZSB1bmRlcnN0b29kIHRoZSBxdWFsaXR5IHN0YXR1
-cyBvZiBrZXJuZWwgMy4yLjI2Lg0KPiA+ID4gPiBGcm9tIG5vdyBvbiwgd2Ugd291bGQgbGlrZSB0
-byBiYWNrcG9ydCBmcm9tIHRoZSBsYXRlc3QgVUJJIGFuZCBVQklGUy4NCj4gPiA+ID4gRG8geW91
-IHRoaW5rIHRoYXQgaXQgaXMgZW5vdWdoIHRvIGJhY2twb3J0IHRoZSBuZXh0IHBhcnQ/DQo+ID4g
-PiA+ICAtIGRyaXZlcnMvbXRkDQo+ID4gPiA+ICAtIGRyaXZlcnMvbXRkL3ViaQ0KPiA+ID4gPiAg
-LSBmcy91Ymlmcw0KPiA+ID4NCj4gPiA+IFVuZGVyIHRoZSBhc3N1bXB0aW9uIHRoYXQgdGhlIHJv
-b3Qgb2YgdGhlIHByb2JsZW0gaXMgdGhlIE1URC9VQkkNCj4gPiA+IHN0YWNrLCB5b3VyIHByb2Js
-ZW0gc2hvdWxkIGdvIGF3YXkuDQo+ID4gPg0KPiA+DQo+ID4gS2F0c3Vha2kgVGFrZWksDQo+ID4N
-Cj4gPiBOb3RlIHRoYXQgdGhlIE1URC9VQkkgc3RhY2sgYmVpbmcgYXQgZmF1bHQgaXMgYW4gYXNz
-dW1wdGlvbi4gVGhlcmUncw0KPiA+IG90aGVyIHRoaW5ncyB0aGF0IG1pZ2h0IGJlIGF0IGZhdWx0
-LCBhbmQgaW4gbXkgZXhwZXJpZW5jZSwgeW91IHVzdWFsbHkNCj4gPiBoYXZlIG11bHRpcGxlIHBy
-b2JsZW1zIHRoYXQgYWxsIG5lZWQgdG8gYmUgc29sdmVkLiAgSGVyZSdzIHNvbWUgb3RoZXINCj4g
-PiBwb3NzaWJsZSBpc3N1ZXMgKG1pZ2h0IG5vdCBiZSBldmVyeXRoaW5nKToNCj4gPg0KPiA+IDEu
-IERvZXMgeW91ciBoYXJkd2FyZSB3b3JrPyBBcmUgeW91IG1lZXRpbmcgYWxsIHRoZSBzZXR1cCBh
-bmQgaG9sZA0KPiA+IHRpbWVzIG9uIGFsbCBzaWduYWxzIGF0IGFsbCB0aW1lcy4NCj4gPiAyLiBE
-b2VzIHRoZSBkcml2ZXIgd29yaz8gQ291bGQgYmUgYSBidWcsIGVzcGVjaWFsbHkgYSBzdWJ0bGUg
-b25lIHdoZXJlDQo+ID4gaXQgdXN1YWxseSB3b3JrcyBmaW5lLCBidXQgYSBtaXNzZWQgY29tbWFu
-ZCBtYWtlcyBpdCB1bnN0YWJsZS4NCj4gPiAzLiBEb2VzIHRoZSByZXN0IG9mIHRoZSBNVEQvVUJJ
-IHN0YWNrIHdvcms/DQo+ID4gNC4gSXMgeW91ciBFQ0Mgb24gdGhlIE5BTkQgc2V0dXAgcmlnaHQg
-YW5kIHdvcmtpbmc/DQo+ID4gNS4gRG9lcyB3aGF0ZXZlciBoYXJkd2FyZSBvciBzb2Z0d2FyZSB5
-b3UncmUgdXNpbmcgY2FsY3VsYXRlIHRoZSBFQ0MNCj4gPiBiaXRzIGNvcnJlY3RseT8gRm9yIGV4
-YW1wbGUsIG9uIHNvbWUgQXRtZWwgcHJvY2Vzc29ycywgdGhlcmUncyBhIGJ1Zw0KPiA+IGluIHRo
-ZSBpbi1ST00gUE1FQ0MgYWxnb3Mgc28gdXBkYXRlZCBzb2Z0d2FyZSBkb2VzIGl0IGluIHNvZnR3
-YXJlDQo+ID4gaW5zdGVhZCBvZiB1c2luZyB0aGUgUk9NIGNvZGUsIGJ1dCBvbGRlciBib290c3Ry
-YXBzIHVzZWQgdGhlIFJPTSBhbGdvDQo+ID4gYW5kIHRodXMgd2VyZSBidWdnZWQuDQo+ID4gNi4g
-QXJlIHlvdSBmbGFzaGluZyB5b3VyIE5BTkQgYmFzZSBpbWFnZSBjb3JyZWN0bHkgKGluY2x1ZGlu
-ZyBnZXR0aW5nDQo+ID4gYWxsIHRoZSBFQ0MgYml0cyBpbiB0aGUgcmlnaHQgcGxhY2UgYW5kIGNv
-cnJlY3QpPw0KPiA+IDcuIFdoZW4geW91IGZsYXNoIHVwZGF0ZWQgaW1hZ2VzLCBpcyB0aGF0IGRv
-bmUgY29ycmVjdGx5Pw0KPiA+IDguIER1cmluZyB5b3VyIHdyaXRpbmcgb2YgdGhlIGZpbGVzeXN0
-ZW0gdGhhdCBnb2VzIGJhZCwgZG8geW91IHdyaXRlDQo+ID4gaXQgY29ycmVjdGx5IGFuZCBzeW5j
-IGFmdGVyIGVhY2ggd3JpdGU/IE5vdGUgdGhhdCAwLXNpemUgZmlsZXMgd2hlbg0KPiA+IHlvdSBr
-bm93IHlvdSB3cm90ZSBzb21ldGhpbmcgaXMgYSBrZXkgaW5kaWNhdG9yIG9mIHRoaXMgcHJvYmxl
-bS4NCj4gPiA5LiBXaGVuIGVyYXNpbmcgdGhlIE5BTkQsIHlvdSBkbyByZXRhaW4gYW5kIGhvbm9y
-IHRoZSBiYWQtYmxvY2sgbWFya2VycywNCj4geWVzPw0KPiA+DQo+ID4gT25seSBpZiB0aGUgcHJv
-YmxlbSdzIHJvb3QgaXMgaW4gY2FzZXMgMiBhbmQgMyB3aWxsIGJhY2twb3J0aW5nDQo+ID4gcGF0
-Y2hlcyBldmVuIGhlbHAuIEFuZCBmb3IgdGhlIGRyaXZlciBjYXNlLCBvbmx5IGlmIHRoZSByZWxl
-dmFudCBmaXgNCj4gPiBpcyB0aGVyZS4NCj4gDQo+IFRoYW5rcyBhIGxvdCBmb3IgeW91ciBncmVh
-dCBzdW1tYXJ5IQ0KPiBJTUhPIGl0IG1ha2VzIHNlbnNlIHRvIHB1dCB0aGlzIGluIGZvcm0gb2Yg
-YSBjaGVja2xpc3QgdG8gdGhlIE1URCB3ZWJzaXRlLg0KPiBXaGF0IGRvIHlvdSB0aGluaz8NCj4g
-DQo+IFRoYW5rcywNCj4gLy9yaWNoYXJkDQo+IA0KDQo=
+Hi,
+
+On 2018/12/14 14:15, zhangjun wrote:
+> On 2018/12/14 上午6:57, Dave Chinner wrote:
+>> On Thu, Dec 13, 2018 at 03:23:37PM +0100, Richard Weinberger wrote:
+>>> Hello zhangjun,
+>>>
+>>> thanks a lot for bringing this up!
+>>>
+>>> Am Mittwoch, 12. Dezember 2018, 15:13:57 CET schrieb zhangjun:
+>>>> Because the PagePrivate() in UBIFS is different meanings,
+>>>> alloc_cma() will fail when one dirty page cache located in
+>>>> the type of MIGRATE_CMA
+>>>>
+>>>> If not adjust the 'extra_count' for dirty page,
+>>>> ubifs_migrate_page() -> migrate_page_move_mapping() will
+>>>> always return -EAGAIN for:
+>>>>     expected_count += page_has_private(page)
+>>>> This causes the migration to fail until the page cache is cleaned
+>>>>
+>>>> In general, PagePrivate() indicates that buff_head is already bound
+>>>> to this page, and at the same time page_count() will also increase.
+>>
+>> That's an invalid assumption.
+>>
+>> We should not be trying to infer what PagePrivate() means in code
+>> that has no business using looking at it i.e. page->private is private
+>> information for the owner of the page, and it's life cycle and
+>> intent are unknown to anyone other than the page owner.
+>>
+>> e.g. on XFS, a page cache page's page->private /might/ contain a
+>> struct iomap_page, or it might be NULL. Assigning a struct
+>> iomap_page to the page does not change the reference count on the
+>> page.  IOWs, the page needs to be handled exactly the same
+>> way by external code regardless of whether there is somethign
+>> attached to page->private or not.
+>>
+>> Hence it looks to me like the migration code is making invalid
+>> assumptions about PagePrivate inferring reference counts and so the
+>> migration code needs to be fixed. Requiring filesystems to work
+>> around invalid assumptions in the migration code is a sure recipe
+>> for problems with random filesystems using page->private for their
+>> own internal purposes....
+>>
+>> Cheers,
+>>
+>> Dave.
+> I agree with your main point of view, but for the buffer_head based file system this assumption is no problem,
+> and the parameters and comments from the migrate_page_move_mapping() function:
+>   * 3 for pages with a mapping and PagePrivate/PagePrivate2 set.
+> This assumption has been explained.
+> Or to accurately say that the migrate system does not currently have a generic function for this case.
+> Since you call the function implemented for buffer_head, you should follow its rules.
+> 
+
+This restriction also exists in the reclaim code. If PagePrivate is set, this page should be with an extra reference (==3) to be freeable
+at the moment.
+
+ 571 static inline int is_page_cache_freeable(struct page *page)
+ 572 {
+ 573         /*
+ 574          * A freeable page cache page is referenced only by the caller
+ 575          * that isolated the page, the page cache radix tree and
+ 576          * optional buffer heads at page->private.
+ 577          */
+ 578         return page_count(page) - page_has_private(page) == 2;
+ 579 }
+
+And I personally think this restriction is good for race-free code (at least erofs doesn't use buffer_head, but it also follows
+the rule to avoid race because an extra pointer to the PagePrivate page) since it indicates that some pointer also points to the page
+but the page can be freeable at the moment, an extra reference is preferred to keep the relationship.
+
+I think it is what PagePrivate implys (some other pointer to the page) but not the page->private. Those are two slightly different fields...
+
+My personal thought...
+
+Thanks,
+Gao Xiang
