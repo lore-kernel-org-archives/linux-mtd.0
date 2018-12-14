@@ -1,25 +1,25 @@
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]
- helo=mo-csw.securemx.jp)
+Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXghs-0006oZ-TC
- for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 06:12:18 +0000
-From: Katsuaki Takei/OKI/JP <takei744@oki.com>
-To: Steve deRosier <derosier@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>
-Subject: RE: Questions about ubifs,ubi and mtd?
-Date: Fri, 14 Dec 2018 06:11:49 +0000
-Message-ID: <TY2PR01MB2700E3B2C12D6E0D4397A3CA9DA10@TY2PR01MB2700.jpnprd01.prod.outlook.com>
-References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <3417318.kOS8JojacP@blindfold>
- <TY2PR01MB2700C1902D91862C39D966E79DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
- <1818742.2b902yA6mZ@blindfold>
- <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
-In-Reply-To: <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gXgl5-0000MC-O8
+ for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 06:15:37 +0000
+Received: by mail-pl1-x641.google.com with SMTP id e5so2238343plb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Dec 2018 22:15:25 -0800 (PST)
+Subject: Re: ubifs: fix page_count in ->ubifs_migrate_page()
+To: Dave Chinner <david@fromorbit.com>, Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com, hch@lst.de,
+ linux-fsdevel@vger.kernel.org
+References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
+ <5829763.q4qAXljTxb@blindfold> <20181213225736.GF29416@dastard>
+From: zhangjun <openzhangj@gmail.com>
+Message-ID: <e477c69a-082b-586b-a45a-50dee2b530ca@gmail.com>
+Date: Fri, 14 Dec 2018 14:15:18 +0800
 MIME-Version: 1.0
+In-Reply-To: <20181213225736.GF29416@dastard>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,73 +29,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBTdGV2ZSwNCg0KIEkgYW0gdmVyeSB0aGFua2Z1bCBmb3IgeW91ciBhZHZpY2UuDQogSSB3
-b3VsZCBsaWtlIHRvIHJlYWQgeW91ciBhZHZpY2UgY2FyZWZ1bGx5LCB1bmRlcnN0YW5kIHdoYXQg
-dG8gZG8gYW5kIHJlc3BvbmQuDQoNCkJlc3QgcmFnYXJkcywNCkthdHN1YWtpIFRha2VpL09raSBF
-bGVjdHJpYyBJbmR1c3RyeSBDby4sIEx0ZC4vSlANCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2Fn
-ZS0tLS0tDQo+IEZyb206IFN0ZXZlIGRlUm9zaWVyIDxkZXJvc2llckBnbWFpbC5jb20+DQo+IFNl
-bnQ6IEZyaWRheSwgRGVjZW1iZXIgMTQsIDIwMTggMjoxOSBBTQ0KPiBUbzog5q2m5LqVIOWFi+aY
-jiA8dGFrZWk3NDRAb2tpLmNvbT4NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
-OyBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiBTdWJqZWN0OiBSZTogUXVl
-c3Rpb25zIGFib3V0IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gT24gVGh1LCBEZWMgMTMsIDIw
-MTggYXQgMzozNiBBTSBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiB3cm90ZToN
-Cj4gPg0KPiA+IEhlbGxvIEthdHN1YWtpIFRha2VpLA0KPiA+DQo+ID4gQW0gRG9ubmVyc3RhZywg
-MTMuIERlemVtYmVyIDIwMTgsIDExOjQ1OjM2IENFVCBzY2hyaWViIOatpuS6lSDlhYvmmI46DQo+
-ID4gPiBEZWFyIFJpY2hhcmQsDQo+ID4gPg0KPiA+ID4gV2UgYXBwcmVjaWF0ZSB5b3VyIHByZWNp
-b3VzIGFkdmljZS4NCj4gPiA+IFdlIHVuZGVyc3Rvb2QgdGhlIHF1YWxpdHkgc3RhdHVzIG9mIGtl
-cm5lbCAzLjIuMjYuDQo+ID4gPiBGcm9tIG5vdyBvbiwgd2Ugd291bGQgbGlrZSB0byBiYWNrcG9y
-dCBmcm9tIHRoZSBsYXRlc3QgVUJJIGFuZCBVQklGUy4NCj4gPiA+IERvIHlvdSB0aGluayB0aGF0
-IGl0IGlzIGVub3VnaCB0byBiYWNrcG9ydCB0aGUgbmV4dCBwYXJ0Pw0KPiA+ID4gIC0gZHJpdmVy
-cy9tdGQNCj4gPiA+ICAtIGRyaXZlcnMvbXRkL3ViaQ0KPiA+ID4gIC0gZnMvdWJpZnMNCj4gPg0K
-PiA+IFVuZGVyIHRoZSBhc3N1bXB0aW9uIHRoYXQgdGhlIHJvb3Qgb2YgdGhlIHByb2JsZW0gaXMg
-dGhlIE1URC9VQkkNCj4gPiBzdGFjaywgeW91ciBwcm9ibGVtIHNob3VsZCBnbyBhd2F5Lg0KPiA+
-DQo+IA0KPiBLYXRzdWFraSBUYWtlaSwNCj4gDQo+IE5vdGUgdGhhdCB0aGUgTVREL1VCSSBzdGFj
-ayBiZWluZyBhdCBmYXVsdCBpcyBhbiBhc3N1bXB0aW9uLiBUaGVyZSdzIG90aGVyDQo+IHRoaW5n
-cyB0aGF0IG1pZ2h0IGJlIGF0IGZhdWx0LCBhbmQgaW4gbXkgZXhwZXJpZW5jZSwgeW91IHVzdWFs
-bHkgaGF2ZSBtdWx0aXBsZQ0KPiBwcm9ibGVtcyB0aGF0IGFsbCBuZWVkIHRvIGJlIHNvbHZlZC4g
-IEhlcmUncyBzb21lIG90aGVyIHBvc3NpYmxlIGlzc3VlcyAobWlnaHQNCj4gbm90IGJlIGV2ZXJ5
-dGhpbmcpOg0KPiANCj4gMS4gRG9lcyB5b3VyIGhhcmR3YXJlIHdvcms/IEFyZSB5b3UgbWVldGlu
-ZyBhbGwgdGhlIHNldHVwIGFuZCBob2xkIHRpbWVzIG9uIGFsbA0KPiBzaWduYWxzIGF0IGFsbCB0
-aW1lcy4NCj4gMi4gRG9lcyB0aGUgZHJpdmVyIHdvcms/IENvdWxkIGJlIGEgYnVnLCBlc3BlY2lh
-bGx5IGEgc3VidGxlIG9uZSB3aGVyZSBpdCB1c3VhbGx5DQo+IHdvcmtzIGZpbmUsIGJ1dCBhIG1p
-c3NlZCBjb21tYW5kIG1ha2VzIGl0IHVuc3RhYmxlLg0KPiAzLiBEb2VzIHRoZSByZXN0IG9mIHRo
-ZSBNVEQvVUJJIHN0YWNrIHdvcms/DQo+IDQuIElzIHlvdXIgRUNDIG9uIHRoZSBOQU5EIHNldHVw
-IHJpZ2h0IGFuZCB3b3JraW5nPw0KPiA1LiBEb2VzIHdoYXRldmVyIGhhcmR3YXJlIG9yIHNvZnR3
-YXJlIHlvdSdyZSB1c2luZyBjYWxjdWxhdGUgdGhlIEVDQyBiaXRzDQo+IGNvcnJlY3RseT8gRm9y
-IGV4YW1wbGUsIG9uIHNvbWUgQXRtZWwgcHJvY2Vzc29ycywgdGhlcmUncyBhIGJ1ZyBpbiB0aGUg
-aW4tUk9NDQo+IFBNRUNDIGFsZ29zIHNvIHVwZGF0ZWQgc29mdHdhcmUgZG9lcyBpdCBpbiBzb2Z0
-d2FyZSBpbnN0ZWFkIG9mIHVzaW5nIHRoZSBST00NCj4gY29kZSwgYnV0IG9sZGVyIGJvb3RzdHJh
-cHMgdXNlZCB0aGUgUk9NIGFsZ28gYW5kIHRodXMgd2VyZSBidWdnZWQuDQo+IDYuIEFyZSB5b3Ug
-Zmxhc2hpbmcgeW91ciBOQU5EIGJhc2UgaW1hZ2UgY29ycmVjdGx5IChpbmNsdWRpbmcgZ2V0dGlu
-ZyBhbGwgdGhlDQo+IEVDQyBiaXRzIGluIHRoZSByaWdodCBwbGFjZSBhbmQgY29ycmVjdCk/DQo+
-IDcuIFdoZW4geW91IGZsYXNoIHVwZGF0ZWQgaW1hZ2VzLCBpcyB0aGF0IGRvbmUgY29ycmVjdGx5
-Pw0KPiA4LiBEdXJpbmcgeW91ciB3cml0aW5nIG9mIHRoZSBmaWxlc3lzdGVtIHRoYXQgZ29lcyBi
-YWQsIGRvIHlvdSB3cml0ZSBpdCBjb3JyZWN0bHkNCj4gYW5kIHN5bmMgYWZ0ZXIgZWFjaCB3cml0
-ZT8gTm90ZSB0aGF0IDAtc2l6ZSBmaWxlcyB3aGVuIHlvdSBrbm93IHlvdSB3cm90ZQ0KPiBzb21l
-dGhpbmcgaXMgYSBrZXkgaW5kaWNhdG9yIG9mIHRoaXMgcHJvYmxlbS4NCj4gOS4gV2hlbiBlcmFz
-aW5nIHRoZSBOQU5ELCB5b3UgZG8gcmV0YWluIGFuZCBob25vciB0aGUgYmFkLWJsb2NrIG1hcmtl
-cnMsDQo+IHllcz8NCj4gDQo+IE9ubHkgaWYgdGhlIHByb2JsZW0ncyByb290IGlzIGluIGNhc2Vz
-IDIgYW5kIDMgd2lsbCBiYWNrcG9ydGluZyBwYXRjaGVzIGV2ZW4gaGVscC4NCj4gQW5kIGZvciB0
-aGUgZHJpdmVyIGNhc2UsIG9ubHkgaWYgdGhlIHJlbGV2YW50IGZpeCBpcyB0aGVyZS4NCj4gDQo+
-IChnZXR0aW5nIG9uIG15IHNvYXBib3gpDQo+IElNSE8sIHRoZSBlZmZvcnQgdG8gYmFja3BvcnQg
-dGhlIGVudGlyZSBzdWJzeXN0ZW0gZnJvbSBIRUFEIHdpbGwgYWN0dWFsbHkgYmUNCj4gbW9yZSBl
-ZmZvcnQgdGhhbiBqdXN0IHVwZ3JhZGluZyB5b3VyIGtlcm5lbCB0byB0aGUgbW9zdCByZWNlbnQg
-TFRTIGtlcm5lbC4gSXQgaXMNCj4gZXhjZXB0aW9uYWxseSByYXJlIHRoYXQgYSBrZXJuZWwgX2Nh
-bid0XyBiZSB1cGdyYWRlZCwgc28gaXQncyBsaWtlbHkgbW9yZSBjb3JyZWN0DQo+IGluIHJlZmVy
-cmluZyB0byBub3Qgd2FudGluZyB0byBvciB5b3VyIGJvc3NlcyBub3Qgd2FudGluZyB5b3UgdG8s
-IG9yIG5vdA0KPiB1bmRlcnN0YW5kaW5nIGhvdyB0byB1cGdyYWRlIHRoZSBrZXJuZWwuIEFuZCBp
-biBhbnkgY2FzZSwgZXZlbiBfY2FuJ3RfIGlzIGFuDQo+IGFydGlmaWNpYWwgZXhpc3RlbmNlIGNh
-dXNlZCBieSBleHRlcm5hbCBmb3JjZXMgKGxvb3NpbmcgY2VydGlmaWNhdGlvbnMgb3Igc2ltaWxh
-cikNCj4gYW5kIGNhbiBhbHdheXMgYmUgb3ZlcmNvbWUuIEJ1dCBkb2luZyBzbyBpcyBhbiBlbmdp
-bmVlcmluZyB0cmFkZW9mZiBlaXRoZXIgd2F5Lg0KPiBTdGF5aW5nIG9uIGEga2VybmVsIHRoYXQg
-aXMgc2V2ZW4geWVhcnMgb2xkIGlzIGEgaHVnZSByaXNrLg0KPiBVcGdyYWRpbmcgeW91ciBrZXJu
-ZWwgaXMgYSBodWdlIGJlbmVmaXQgaW4gc2VjdXJpdHkgYW5kIGJ1ZyBmaXhlcy4gQnV0IG1vcmUg
-dGhhbg0KPiB0aGF0LCBvbmNlIHlvdSBnZXQgY3VycmVudCAoYW5kIGl0IGlzIGEgYmlnIGVmZm9y
-dCksIHlvdSBjYW4gc2ltcGx5IHN0YXkgY3VycmVudA0KPiBhbmQgZXZlcnl0aGluZyBnZXRzIGVh
-c2llciBnb2luZyBmb3J3YXJkIGZyb20gdGhlcmUuIFlvdSBlbmQgdXAgbGV2ZXJhZ2luZyBhbGwN
-Cj4gdGhlIHdvcmsgdGhlIGNvbW11bml0eSBkb2VzIGluIGdpdmluZyB5b3Ugb25lIG9mIHRoZSBo
-aWdoZXN0IHF1YWxpdHkgYW5kIG1vc3QNCj4gY29tcGxleCBjb2RlIGJhc2VzIGFueXdoZXJlLg0K
-PiAoc3RlcHBpbmcgb2ZmKQ0KPiANCj4gSW4gYW55IGNhc2UsIEkgaGlnaGx5IHJlY29tbWVuZCB5
-b3UgY2hlY2sgYWxsIHRoZSBvdGhlciB0aGluZ3MgdG9vLg0KPiBZb3UgbWlnaHQgaGF2ZSBtdWx0
-aXBsZSBwcm9ibGVtcywgYW5kIHNvbWUgb2YgdGhlbSBtYXkgYmUgZWFzeSB0byBmaXguDQo+IA0K
-PiBHb29kIGx1Y2ssDQo+IC0gU3RldmUNCg==
+On 2018/12/14 上午6:57, Dave Chinner wrote:
+> On Thu, Dec 13, 2018 at 03:23:37PM +0100, Richard Weinberger wrote:
+>> Hello zhangjun,
+>>
+>> thanks a lot for bringing this up!
+>>
+>> Am Mittwoch, 12. Dezember 2018, 15:13:57 CET schrieb zhangjun:
+>>> Because the PagePrivate() in UBIFS is different meanings,
+>>> alloc_cma() will fail when one dirty page cache located in
+>>> the type of MIGRATE_CMA
+>>>
+>>> If not adjust the 'extra_count' for dirty page,
+>>> ubifs_migrate_page() -> migrate_page_move_mapping() will
+>>> always return -EAGAIN for:
+>>> 	expected_count += page_has_private(page)
+>>> This causes the migration to fail until the page cache is cleaned
+>>>
+>>> In general, PagePrivate() indicates that buff_head is already bound
+>>> to this page, and at the same time page_count() will also increase.
+>
+> That's an invalid assumption.
+>
+> We should not be trying to infer what PagePrivate() means in code
+> that has no business using looking at it i.e. page->private is private
+> information for the owner of the page, and it's life cycle and
+> intent are unknown to anyone other than the page owner.
+>
+> e.g. on XFS, a page cache page's page->private /might/ contain a
+> struct iomap_page, or it might be NULL. Assigning a struct
+> iomap_page to the page does not change the reference count on the
+> page.  IOWs, the page needs to be handled exactly the same
+> way by external code regardless of whether there is somethign
+> attached to page->private or not.
+>
+> Hence it looks to me like the migration code is making invalid
+> assumptions about PagePrivate inferring reference counts and so the
+> migration code needs to be fixed. Requiring filesystems to work
+> around invalid assumptions in the migration code is a sure recipe
+> for problems with random filesystems using page->private for their
+> own internal purposes....
+>
+> Cheers,
+>
+> Dave.
+I agree with your main point of view, but for the buffer_head based file 
+system this assumption is no problem,
+and the parameters and comments from the migrate_page_move_mapping() 
+function:
+   * 3 for pages with a mapping and PagePrivate/PagePrivate2 set.
+This assumption has been explained.
+Or to accurately say that the migrate system does not currently have a 
+generic function for this case.
+Since you call the function implemented for buffer_head, you should 
+follow its rules.
