@@ -1,24 +1,23 @@
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]
+ helo=mx07-00178001.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXjWw-0003Mr-35
- for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 09:13:12 +0000
-Subject: Re: ubifs: fix page_count in ->ubifs_migrate_page()
-To: zhangjun <openzhangj@gmail.com>, Dave Chinner <david@fromorbit.com>,
- Richard Weinberger <richard@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter
- <adrian.hunter@intel.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <kirill.shutemov@linux.intel.com>,
- <hch@lst.de>, <linux-fsdevel@vger.kernel.org>
-References: <1544624037-3436-1-git-send-email-openzhangj@gmail.com>
- <5829763.q4qAXljTxb@blindfold> <20181213225736.GF29416@dastard>
- <e477c69a-082b-586b-a45a-50dee2b530ca@gmail.com>
-From: Gao Xiang <gaoxiang25@huawei.com>
-Message-ID: <583fba27-cbd7-1f90-8bf0-a3b49e75b0f6@huawei.com>
-Date: Fri, 14 Dec 2018 17:12:47 +0800
+ id 1gXkFE-00036S-TL
+ for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 09:58:59 +0000
+From: Christophe Kerello <christophe.kerello@st.com>
+To: <boris.brezillon@bootlin.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <robh+dt@kernel.org>, <mark.rutland@arm.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ Christophe Kerello <christophe.kerello@st.com>
+Subject: [PATCH v4 1/3] dt-bindings: mtd: stm32_fmc2: add STM32 FMC2 NAND
+ controller documentation
+Date: Fri, 14 Dec 2018 10:58:06 +0100
+Message-ID: <1544781488-18723-2-git-send-email-christophe.kerello@st.com>
+In-Reply-To: <1544781488-18723-1-git-send-email-christophe.kerello@st.com>
+References: <1544781488-18723-1-git-send-email-christophe.kerello@st.com>
 MIME-Version: 1.0
-In-Reply-To: <e477c69a-082b-586b-a45a-50dee2b530ca@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,81 +27,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This patch adds the documentation of the device tree bindings for the STM32
+FMC2 NAND controller.
 
-On 2018/12/14 14:15, zhangjun wrote:
-> On 2018/12/14 上午6:57, Dave Chinner wrote:
->> On Thu, Dec 13, 2018 at 03:23:37PM +0100, Richard Weinberger wrote:
->>> Hello zhangjun,
->>>
->>> thanks a lot for bringing this up!
->>>
->>> Am Mittwoch, 12. Dezember 2018, 15:13:57 CET schrieb zhangjun:
->>>> Because the PagePrivate() in UBIFS is different meanings,
->>>> alloc_cma() will fail when one dirty page cache located in
->>>> the type of MIGRATE_CMA
->>>>
->>>> If not adjust the 'extra_count' for dirty page,
->>>> ubifs_migrate_page() -> migrate_page_move_mapping() will
->>>> always return -EAGAIN for:
->>>>     expected_count += page_has_private(page)
->>>> This causes the migration to fail until the page cache is cleaned
->>>>
->>>> In general, PagePrivate() indicates that buff_head is already bound
->>>> to this page, and at the same time page_count() will also increase.
->>
->> That's an invalid assumption.
->>
->> We should not be trying to infer what PagePrivate() means in code
->> that has no business using looking at it i.e. page->private is private
->> information for the owner of the page, and it's life cycle and
->> intent are unknown to anyone other than the page owner.
->>
->> e.g. on XFS, a page cache page's page->private /might/ contain a
->> struct iomap_page, or it might be NULL. Assigning a struct
->> iomap_page to the page does not change the reference count on the
->> page.  IOWs, the page needs to be handled exactly the same
->> way by external code regardless of whether there is somethign
->> attached to page->private or not.
->>
->> Hence it looks to me like the migration code is making invalid
->> assumptions about PagePrivate inferring reference counts and so the
->> migration code needs to be fixed. Requiring filesystems to work
->> around invalid assumptions in the migration code is a sure recipe
->> for problems with random filesystems using page->private for their
->> own internal purposes....
->>
->> Cheers,
->>
->> Dave.
-> I agree with your main point of view, but for the buffer_head based file system this assumption is no problem,
-> and the parameters and comments from the migrate_page_move_mapping() function:
->   * 3 for pages with a mapping and PagePrivate/PagePrivate2 set.
-> This assumption has been explained.
-> Or to accurately say that the migrate system does not currently have a generic function for this case.
-> Since you call the function implemented for buffer_head, you should follow its rules.
-> 
+Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+---
+ .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    | 61 ++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
 
-This restriction also exists in the reclaim code. If PagePrivate is set, this page should be with an extra reference (==3) to be freeable
-at the moment.
-
- 571 static inline int is_page_cache_freeable(struct page *page)
- 572 {
- 573         /*
- 574          * A freeable page cache page is referenced only by the caller
- 575          * that isolated the page, the page cache radix tree and
- 576          * optional buffer heads at page->private.
- 577          */
- 578         return page_count(page) - page_has_private(page) == 2;
- 579 }
-
-And I personally think this restriction is good for race-free code (at least erofs doesn't use buffer_head, but it also follows
-the rule to avoid race because an extra pointer to the PagePrivate page) since it indicates that some pointer also points to the page
-but the page can be freeable at the moment, an extra reference is preferred to keep the relationship.
-
-I think it is what PagePrivate implys (some other pointer to the page) but not the page->private. Those are two slightly different fields...
-
-My personal thought...
-
-Thanks,
-Gao Xiang
+diff --git a/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt b/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+new file mode 100644
+index 0000000..ad2bef8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+@@ -0,0 +1,61 @@
++STMicroelectronics Flexible Memory Controller 2 (FMC2)
++NAND Interface
++
++Required properties:
++- compatible: Should be one of:
++              * st,stm32mp15-fmc2
++- reg: NAND flash controller memory areas.
++       First region contains the register location.
++       Regions 2 to 4 respectively contain the data, command,
++       and address space for CS0.
++       Regions 5 to 7 contain the same areas for CS1.
++- interrupts: The interrupt number
++- pinctrl-0: Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
++- clocks: The clock needed by the NAND flash controller
++
++Optional properties:
++- resets: Reference to a reset controller asserting the FMC controller
++- dmas: DMA specifiers (see: dma/stm32-mdma.txt)
++- dma-names: Must be "tx", "rx" and "ecc"
++
++* NAND device bindings:
++
++Required properties:
++- reg: describes the CS lines assigned to the NAND device.
++
++Optional properties:
++- nand-on-flash-bbt: see nand.txt
++- nand-ecc-strength: see nand.txt
++- nand-ecc-step-size: see nand.txt
++
++The following ECC strength and step size are currently supported:
++ - nand-ecc-strength = <1>, nand-ecc-step-size = <512> (Hamming)
++ - nand-ecc-strength = <4>, nand-ecc-step-size = <512> (BCH4)
++ - nand-ecc-strength = <8>, nand-ecc-step-size = <512> (BCH8) (default)
++
++Example:
++
++	fmc: nand-controller@58002000 {
++		compatible = "st,stm32mp15-fmc2";
++		reg = <0x58002000 0x1000>,
++		      <0x80000000 0x1000>,
++		      <0x88010000 0x1000>,
++		      <0x88020000 0x1000>,
++		      <0x81000000 0x1000>,
++		      <0x89010000 0x1000>,
++		      <0x89020000 0x1000>;
++		interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&rcc FMC_K>;
++		resets = <&rcc FMC_R>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&fmc_pins_a>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		nand@0 {
++			reg = <0>;
++			nand-on-flash-bbt;
++			#address-cells = <1>;
++			#size-cells = <1>;
++		};
++	};
+-- 
+1.9.1
