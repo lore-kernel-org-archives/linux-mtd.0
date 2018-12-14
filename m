@@ -1,19 +1,25 @@
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from mo-csw1516.securemx.jp ([210.130.202.155]
+ helo=mo-csw.securemx.jp)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gXd0v-00062Y-4K
- for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 02:15:42 +0000
-From: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
-To: Fred Bloggs <f.blogs@napier.co.nz>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Purna Chandra Mandal <purna.chandra.mandal@intel.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: spi-nor: cadence-quadspi: write upto 8-bytes data in
- STIG mode
-Date: Thu, 13 Dec 2018 18:15:16 -0800
-Message-Id: <20181214021516.43609-1-purna.chandra.mandal@intel.com>
+ id 1gXghs-0006oZ-TC
+ for linux-mtd@lists.infradead.org; Fri, 14 Dec 2018 06:12:18 +0000
+From: Katsuaki Takei/OKI/JP <takei744@oki.com>
+To: Steve deRosier <derosier@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>
+Subject: RE: Questions about ubifs,ubi and mtd?
+Date: Fri, 14 Dec 2018 06:11:49 +0000
+Message-ID: <TY2PR01MB2700E3B2C12D6E0D4397A3CA9DA10@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+References: <TY2PR01MB27000DE339F2C8C63CBEF4C49DA60@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <3417318.kOS8JojacP@blindfold>
+ <TY2PR01MB2700C1902D91862C39D966E79DA00@TY2PR01MB2700.jpnprd01.prod.outlook.com>
+ <1818742.2b902yA6mZ@blindfold>
+ <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
+In-Reply-To: <CALLGbRLERrPHXbs9QJ4sVnqjC_0to7r0w+NkYqzAU8A7YPd1Ew@mail.gmail.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +29,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-cadence-quadspi controller allows upto eight bytes of data to be transferred
-in software Triggered Instruction generator (STIG) mode of operation. Lower
-4 bytes are written through writedatalower and upper 4 bytes by
-writedataupper register.
-
-This patch allows all the 8 bytes to be written.
-
-Signed-off-by: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
----
-
- drivers/mtd/spi-nor/cadence-quadspi.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 04cedd3a2bf6..990934387fea 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -420,7 +420,7 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
- 	unsigned int data;
- 	int ret;
- 
--	if (n_tx > 4 || (n_tx && !txbuf)) {
-+	if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
- 		dev_err(nor->dev,
- 			"Invalid input argument, cmdlen %d txbuf 0x%p\n",
- 			n_tx, txbuf);
-@@ -435,8 +435,13 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
- 		data = 0;
- 		memcpy(&data, txbuf, n_tx);
- 		writel(data, reg_base + CQSPI_REG_CMDWRITEDATALOWER);
--	}
- 
-+		if (n_tx > 4) {
-+			data = 0;
-+			memcpy(&data, txbuf + 4, n_tx - 4);
-+			writel(data, reg_base + CQSPI_REG_CMDWRITEDATAUPPER);
-+		}
-+	}
- 	ret = cqspi_exec_flash_cmd(cqspi, reg);
- 	return ret;
- }
--- 
-2.13.0
+RGVhciBTdGV2ZSwNCg0KIEkgYW0gdmVyeSB0aGFua2Z1bCBmb3IgeW91ciBhZHZpY2UuDQogSSB3
+b3VsZCBsaWtlIHRvIHJlYWQgeW91ciBhZHZpY2UgY2FyZWZ1bGx5LCB1bmRlcnN0YW5kIHdoYXQg
+dG8gZG8gYW5kIHJlc3BvbmQuDQoNCkJlc3QgcmFnYXJkcywNCkthdHN1YWtpIFRha2VpL09raSBF
+bGVjdHJpYyBJbmR1c3RyeSBDby4sIEx0ZC4vSlANCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2Fn
+ZS0tLS0tDQo+IEZyb206IFN0ZXZlIGRlUm9zaWVyIDxkZXJvc2llckBnbWFpbC5jb20+DQo+IFNl
+bnQ6IEZyaWRheSwgRGVjZW1iZXIgMTQsIDIwMTggMjoxOSBBTQ0KPiBUbzog5q2m5LqVIOWFi+aY
+jiA8dGFrZWk3NDRAb2tpLmNvbT4NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
+OyBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiBTdWJqZWN0OiBSZTogUXVl
+c3Rpb25zIGFib3V0IHViaWZzLHViaSBhbmQgbXRkPw0KPiANCj4gT24gVGh1LCBEZWMgMTMsIDIw
+MTggYXQgMzozNiBBTSBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiB3cm90ZToN
+Cj4gPg0KPiA+IEhlbGxvIEthdHN1YWtpIFRha2VpLA0KPiA+DQo+ID4gQW0gRG9ubmVyc3RhZywg
+MTMuIERlemVtYmVyIDIwMTgsIDExOjQ1OjM2IENFVCBzY2hyaWViIOatpuS6lSDlhYvmmI46DQo+
+ID4gPiBEZWFyIFJpY2hhcmQsDQo+ID4gPg0KPiA+ID4gV2UgYXBwcmVjaWF0ZSB5b3VyIHByZWNp
+b3VzIGFkdmljZS4NCj4gPiA+IFdlIHVuZGVyc3Rvb2QgdGhlIHF1YWxpdHkgc3RhdHVzIG9mIGtl
+cm5lbCAzLjIuMjYuDQo+ID4gPiBGcm9tIG5vdyBvbiwgd2Ugd291bGQgbGlrZSB0byBiYWNrcG9y
+dCBmcm9tIHRoZSBsYXRlc3QgVUJJIGFuZCBVQklGUy4NCj4gPiA+IERvIHlvdSB0aGluayB0aGF0
+IGl0IGlzIGVub3VnaCB0byBiYWNrcG9ydCB0aGUgbmV4dCBwYXJ0Pw0KPiA+ID4gIC0gZHJpdmVy
+cy9tdGQNCj4gPiA+ICAtIGRyaXZlcnMvbXRkL3ViaQ0KPiA+ID4gIC0gZnMvdWJpZnMNCj4gPg0K
+PiA+IFVuZGVyIHRoZSBhc3N1bXB0aW9uIHRoYXQgdGhlIHJvb3Qgb2YgdGhlIHByb2JsZW0gaXMg
+dGhlIE1URC9VQkkNCj4gPiBzdGFjaywgeW91ciBwcm9ibGVtIHNob3VsZCBnbyBhd2F5Lg0KPiA+
+DQo+IA0KPiBLYXRzdWFraSBUYWtlaSwNCj4gDQo+IE5vdGUgdGhhdCB0aGUgTVREL1VCSSBzdGFj
+ayBiZWluZyBhdCBmYXVsdCBpcyBhbiBhc3N1bXB0aW9uLiBUaGVyZSdzIG90aGVyDQo+IHRoaW5n
+cyB0aGF0IG1pZ2h0IGJlIGF0IGZhdWx0LCBhbmQgaW4gbXkgZXhwZXJpZW5jZSwgeW91IHVzdWFs
+bHkgaGF2ZSBtdWx0aXBsZQ0KPiBwcm9ibGVtcyB0aGF0IGFsbCBuZWVkIHRvIGJlIHNvbHZlZC4g
+IEhlcmUncyBzb21lIG90aGVyIHBvc3NpYmxlIGlzc3VlcyAobWlnaHQNCj4gbm90IGJlIGV2ZXJ5
+dGhpbmcpOg0KPiANCj4gMS4gRG9lcyB5b3VyIGhhcmR3YXJlIHdvcms/IEFyZSB5b3UgbWVldGlu
+ZyBhbGwgdGhlIHNldHVwIGFuZCBob2xkIHRpbWVzIG9uIGFsbA0KPiBzaWduYWxzIGF0IGFsbCB0
+aW1lcy4NCj4gMi4gRG9lcyB0aGUgZHJpdmVyIHdvcms/IENvdWxkIGJlIGEgYnVnLCBlc3BlY2lh
+bGx5IGEgc3VidGxlIG9uZSB3aGVyZSBpdCB1c3VhbGx5DQo+IHdvcmtzIGZpbmUsIGJ1dCBhIG1p
+c3NlZCBjb21tYW5kIG1ha2VzIGl0IHVuc3RhYmxlLg0KPiAzLiBEb2VzIHRoZSByZXN0IG9mIHRo
+ZSBNVEQvVUJJIHN0YWNrIHdvcms/DQo+IDQuIElzIHlvdXIgRUNDIG9uIHRoZSBOQU5EIHNldHVw
+IHJpZ2h0IGFuZCB3b3JraW5nPw0KPiA1LiBEb2VzIHdoYXRldmVyIGhhcmR3YXJlIG9yIHNvZnR3
+YXJlIHlvdSdyZSB1c2luZyBjYWxjdWxhdGUgdGhlIEVDQyBiaXRzDQo+IGNvcnJlY3RseT8gRm9y
+IGV4YW1wbGUsIG9uIHNvbWUgQXRtZWwgcHJvY2Vzc29ycywgdGhlcmUncyBhIGJ1ZyBpbiB0aGUg
+aW4tUk9NDQo+IFBNRUNDIGFsZ29zIHNvIHVwZGF0ZWQgc29mdHdhcmUgZG9lcyBpdCBpbiBzb2Z0
+d2FyZSBpbnN0ZWFkIG9mIHVzaW5nIHRoZSBST00NCj4gY29kZSwgYnV0IG9sZGVyIGJvb3RzdHJh
+cHMgdXNlZCB0aGUgUk9NIGFsZ28gYW5kIHRodXMgd2VyZSBidWdnZWQuDQo+IDYuIEFyZSB5b3Ug
+Zmxhc2hpbmcgeW91ciBOQU5EIGJhc2UgaW1hZ2UgY29ycmVjdGx5IChpbmNsdWRpbmcgZ2V0dGlu
+ZyBhbGwgdGhlDQo+IEVDQyBiaXRzIGluIHRoZSByaWdodCBwbGFjZSBhbmQgY29ycmVjdCk/DQo+
+IDcuIFdoZW4geW91IGZsYXNoIHVwZGF0ZWQgaW1hZ2VzLCBpcyB0aGF0IGRvbmUgY29ycmVjdGx5
+Pw0KPiA4LiBEdXJpbmcgeW91ciB3cml0aW5nIG9mIHRoZSBmaWxlc3lzdGVtIHRoYXQgZ29lcyBi
+YWQsIGRvIHlvdSB3cml0ZSBpdCBjb3JyZWN0bHkNCj4gYW5kIHN5bmMgYWZ0ZXIgZWFjaCB3cml0
+ZT8gTm90ZSB0aGF0IDAtc2l6ZSBmaWxlcyB3aGVuIHlvdSBrbm93IHlvdSB3cm90ZQ0KPiBzb21l
+dGhpbmcgaXMgYSBrZXkgaW5kaWNhdG9yIG9mIHRoaXMgcHJvYmxlbS4NCj4gOS4gV2hlbiBlcmFz
+aW5nIHRoZSBOQU5ELCB5b3UgZG8gcmV0YWluIGFuZCBob25vciB0aGUgYmFkLWJsb2NrIG1hcmtl
+cnMsDQo+IHllcz8NCj4gDQo+IE9ubHkgaWYgdGhlIHByb2JsZW0ncyByb290IGlzIGluIGNhc2Vz
+IDIgYW5kIDMgd2lsbCBiYWNrcG9ydGluZyBwYXRjaGVzIGV2ZW4gaGVscC4NCj4gQW5kIGZvciB0
+aGUgZHJpdmVyIGNhc2UsIG9ubHkgaWYgdGhlIHJlbGV2YW50IGZpeCBpcyB0aGVyZS4NCj4gDQo+
+IChnZXR0aW5nIG9uIG15IHNvYXBib3gpDQo+IElNSE8sIHRoZSBlZmZvcnQgdG8gYmFja3BvcnQg
+dGhlIGVudGlyZSBzdWJzeXN0ZW0gZnJvbSBIRUFEIHdpbGwgYWN0dWFsbHkgYmUNCj4gbW9yZSBl
+ZmZvcnQgdGhhbiBqdXN0IHVwZ3JhZGluZyB5b3VyIGtlcm5lbCB0byB0aGUgbW9zdCByZWNlbnQg
+TFRTIGtlcm5lbC4gSXQgaXMNCj4gZXhjZXB0aW9uYWxseSByYXJlIHRoYXQgYSBrZXJuZWwgX2Nh
+bid0XyBiZSB1cGdyYWRlZCwgc28gaXQncyBsaWtlbHkgbW9yZSBjb3JyZWN0DQo+IGluIHJlZmVy
+cmluZyB0byBub3Qgd2FudGluZyB0byBvciB5b3VyIGJvc3NlcyBub3Qgd2FudGluZyB5b3UgdG8s
+IG9yIG5vdA0KPiB1bmRlcnN0YW5kaW5nIGhvdyB0byB1cGdyYWRlIHRoZSBrZXJuZWwuIEFuZCBp
+biBhbnkgY2FzZSwgZXZlbiBfY2FuJ3RfIGlzIGFuDQo+IGFydGlmaWNpYWwgZXhpc3RlbmNlIGNh
+dXNlZCBieSBleHRlcm5hbCBmb3JjZXMgKGxvb3NpbmcgY2VydGlmaWNhdGlvbnMgb3Igc2ltaWxh
+cikNCj4gYW5kIGNhbiBhbHdheXMgYmUgb3ZlcmNvbWUuIEJ1dCBkb2luZyBzbyBpcyBhbiBlbmdp
+bmVlcmluZyB0cmFkZW9mZiBlaXRoZXIgd2F5Lg0KPiBTdGF5aW5nIG9uIGEga2VybmVsIHRoYXQg
+aXMgc2V2ZW4geWVhcnMgb2xkIGlzIGEgaHVnZSByaXNrLg0KPiBVcGdyYWRpbmcgeW91ciBrZXJu
+ZWwgaXMgYSBodWdlIGJlbmVmaXQgaW4gc2VjdXJpdHkgYW5kIGJ1ZyBmaXhlcy4gQnV0IG1vcmUg
+dGhhbg0KPiB0aGF0LCBvbmNlIHlvdSBnZXQgY3VycmVudCAoYW5kIGl0IGlzIGEgYmlnIGVmZm9y
+dCksIHlvdSBjYW4gc2ltcGx5IHN0YXkgY3VycmVudA0KPiBhbmQgZXZlcnl0aGluZyBnZXRzIGVh
+c2llciBnb2luZyBmb3J3YXJkIGZyb20gdGhlcmUuIFlvdSBlbmQgdXAgbGV2ZXJhZ2luZyBhbGwN
+Cj4gdGhlIHdvcmsgdGhlIGNvbW11bml0eSBkb2VzIGluIGdpdmluZyB5b3Ugb25lIG9mIHRoZSBo
+aWdoZXN0IHF1YWxpdHkgYW5kIG1vc3QNCj4gY29tcGxleCBjb2RlIGJhc2VzIGFueXdoZXJlLg0K
+PiAoc3RlcHBpbmcgb2ZmKQ0KPiANCj4gSW4gYW55IGNhc2UsIEkgaGlnaGx5IHJlY29tbWVuZCB5
+b3UgY2hlY2sgYWxsIHRoZSBvdGhlciB0aGluZ3MgdG9vLg0KPiBZb3UgbWlnaHQgaGF2ZSBtdWx0
+aXBsZSBwcm9ibGVtcywgYW5kIHNvbWUgb2YgdGhlbSBtYXkgYmUgZWFzeSB0byBmaXguDQo+IA0K
+PiBHb29kIGx1Y2ssDQo+IC0gU3RldmUNCg==
