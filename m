@@ -1,17 +1,20 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gY9uA-0006ru-U9
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 13:22:56 +0000
+ id 1gY9uf-000753-NQ
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 13:23:27 +0000
+Subject: Re: [PATCH] jffs2: make the overwritten xattr invisible after remount
 From: Hou Tao <houtao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>
+To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
 CC: <richard.weinberger@gmail.com>, <boris.brezillon@bootlin.com>,
- <dwmw2@infradead.org>
-Subject: [PATCH v2] jffs2: fix invocations of dbg_xattr() for dead
- jffs2_xattr_ref
-Date: Sat, 15 Dec 2018 21:25:47 +0800
-Message-ID: <20181215132547.27405-1-houtao1@huawei.com>
+ <linux-kernel@vger.kernel.org>
+References: <20181209062133.106781-1-houtao1@huawei.com>
+Message-ID: <ae0156e3-82f7-1ae1-c8dc-2ccf4648fc57@huawei.com>
+Date: Sat, 15 Dec 2018 21:23:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20181209062133.106781-1-houtao1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +24,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When jffs2_xattr_ref is dead, xref->ic or xref->xd will be invalid
-because these fields will be reused as xref->ino or xref->xid,
-so access xref->ic->ino or xref->xd->xid will lead to oops.
+ping ?
 
-Fix the problem by using two new helper functions to get ino or xid
-in xref and checking whether the xref is dead or not in these helpers.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v2:
-  * fix the alignment during line wrapping
-  * add two new helper functions to access ino or xid in xref
----
- fs/jffs2/xattr.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index da3e18503c65..e21a1677ad75 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -25,6 +25,17 @@
- #include <linux/posix_acl_xattr.h>
- #include <linux/mtd/mtd.h>
- #include "nodelist.h"
-+
-+static inline uint32_t xattr_ref_ino(struct jffs2_xattr_ref *ref)
-+{
-+	return is_xattr_ref_dead(ref) ? ref->ino : ref->ic->ino;
-+}
-+
-+static inline uint32_t xattr_ref_xid(struct jffs2_xattr_ref *ref)
-+{
-+	return is_xattr_ref_dead(ref) ? ref->xid : ref->xd->xid;
-+}
-+
- /* -------- xdatum related functions ----------------
-  * xattr_datum_hashkey(xprefix, xname, xvalue, xsize)
-  *   is used to calcurate xdatum hashkey. The reminder of hashkey into XATTRINDEX_HASHSIZE is
-@@ -542,7 +553,8 @@ static int save_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
- 	ref->xseqno = xseqno;
- 	jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, PAD(sizeof(rr)), (void *)ref);
- 
--	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n", ref->ic->ino, ref->xd->xid);
-+	dbg_xattr("success on saving xref (ino=%u, xid=%u)\n",
-+		  xattr_ref_ino(ref), xattr_ref_xid(ref));
- 
- 	return 0;
- }
-@@ -1278,7 +1290,8 @@ int jffs2_garbage_collect_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_
- 	rc = save_xattr_ref(c, ref);
- 	if (!rc)
- 		dbg_xattr("xref (ino=%u, xid=%u) GC'ed from %#08x to %08x\n",
--			  ref->ic->ino, ref->xd->xid, old_ofs, ref_offset(ref->node));
-+			  xattr_ref_ino(ref), xattr_ref_xid(ref),
-+			  old_ofs, ref_offset(ref->node));
-  out:
- 	if (!rc)
- 		jffs2_mark_node_obsolete(c, raw);
--- 
-2.16.2.dirty
+On 2018/12/9 14:21, Hou Tao wrote:
+> For xattr modification, we do not write a new jffs2_raw_xref with
+> delete marker into flash, so if a xattr is modified then removed,
+> and the old xref & xdatum are not erased by GC, after reboot or
+> remount, the new xattr xref will be dead but the old xattr xref
+> will be alive, and we will get the overwritten xattr instead of
+> non-existent error when reading the removed xattr.
+> 
+> Fix it by writing the deletion mark for xattr overwrite.
+> 
+> Fixes: 8a13695cbe4e ("[JFFS2][XATTR] rid unnecessary writing of delete marker.")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  fs/jffs2/xattr.c | 55 +++++++++++++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 49 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+> index da3e18503c65..b2d6072f34af 100644
+> --- a/fs/jffs2/xattr.c
+> +++ b/fs/jffs2/xattr.c
+> @@ -573,6 +573,15 @@ static struct jffs2_xattr_ref *create_xattr_ref(struct jffs2_sb_info *c, struct
+>  	return ref; /* success */
+>  }
+>  
+> +static void move_xattr_ref_to_dead_list(struct jffs2_sb_info *c,
+> +		struct jffs2_xattr_ref *ref)
+> +{
+> +	spin_lock(&c->erase_completion_lock);
+> +	ref->next = c->xref_dead_list;
+> +	c->xref_dead_list = ref;
+> +	spin_unlock(&c->erase_completion_lock);
+> +}
+> +
+>  static void delete_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
+>  {
+>  	/* must be called under down_write(xattr_sem) */
+> @@ -582,10 +591,7 @@ static void delete_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *re
+>  	ref->xseqno |= XREF_DELETE_MARKER;
+>  	ref->ino = ref->ic->ino;
+>  	ref->xid = ref->xd->xid;
+> -	spin_lock(&c->erase_completion_lock);
+> -	ref->next = c->xref_dead_list;
+> -	c->xref_dead_list = ref;
+> -	spin_unlock(&c->erase_completion_lock);
+> +	move_xattr_ref_to_dead_list(c, ref);
+>  
+>  	dbg_xattr("xref(ino=%u, xid=%u, xseqno=%u) was removed.\n",
+>  		  ref->ino, ref->xid, ref->xseqno);
+> @@ -1090,6 +1096,40 @@ int do_jffs2_getxattr(struct inode *inode, int xprefix, const char *xname,
+>  	return rc;
+>  }
+>  
+> +static void do_jffs2_delete_xattr_ref(struct jffs2_sb_info *c,
+> +		struct jffs2_xattr_ref *ref)
+> +{
+> +	uint32_t request, length;
+> +	int err;
+> +	struct jffs2_xattr_datum *xd;
+> +
+> +	request = PAD(sizeof(struct jffs2_raw_xref));
+> +	err = jffs2_reserve_space(c, request, &length,
+> +			ALLOC_NORMAL, JFFS2_SUMMARY_XREF_SIZE);
+> +	down_write(&c->xattr_sem);
+> +	if (err) {
+> +		JFFS2_WARNING("jffs2_reserve_space()=%d, request=%u\n",
+> +				err, request);
+> +		delete_xattr_ref(c, ref);
+> +		up_write(&c->xattr_sem);
+> +		return;
+> +	}
+> +
+> +	xd = ref->xd;
+> +	ref->ino = ref->ic->ino;
+> +	ref->xid = xd->xid;
+> +	ref->xseqno |= XREF_DELETE_MARKER;
+> +	save_xattr_ref(c, ref);
+> +
+> +	move_xattr_ref_to_dead_list(c, ref);
+> +	dbg_xattr("xref(ino=%u, xid=%u, xseqno=%u) was removed.\n",
+> +		  ref->ino, ref->xid, ref->xseqno);
+> +	unrefer_xattr_datum(c, xd);
+> +
+> +	up_write(&c->xattr_sem);
+> +	jffs2_complete_reservation(c);
+> +}
+> +
+>  int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
+>  		      const char *buffer, size_t size, int flags)
+>  {
+> @@ -1097,7 +1137,7 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
+>  	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+>  	struct jffs2_inode_cache *ic = f->inocache;
+>  	struct jffs2_xattr_datum *xd;
+> -	struct jffs2_xattr_ref *ref, *newref, **pref;
+> +	struct jffs2_xattr_ref *ref, *newref, *oldref, **pref;
+>  	uint32_t length, request;
+>  	int rc;
+>  
+> @@ -1113,6 +1153,7 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
+>  		return rc;
+>  	}
+>  
+> +	oldref = NULL;
+>  	/* Find existing xattr */
+>  	down_write(&c->xattr_sem);
+>   retry:
+> @@ -1196,11 +1237,13 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
+>  		rc = PTR_ERR(newref);
+>  		unrefer_xattr_datum(c, xd);
+>  	} else if (ref) {
+> -		delete_xattr_ref(c, ref);
+> +		oldref = ref;
+>  	}
+>   out:
+>  	up_write(&c->xattr_sem);
+>  	jffs2_complete_reservation(c);
+> +	if (oldref)
+> +		do_jffs2_delete_xattr_ref(c, oldref);
+>  	return rc;
+>  }
+>  
+> 
