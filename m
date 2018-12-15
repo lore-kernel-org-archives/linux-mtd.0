@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gY79e-0007uK-U0
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 10:26:44 +0000
-Date: Sat, 15 Dec 2018 11:26:28 +0100
+ id 1gY7AX-00089B-Td
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 10:27:39 +0000
+Date: Sat, 15 Dec 2018 11:27:25 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: Fix JEDEC detection
-Message-ID: <20181215112628.2181054e@xps13>
-In-Reply-To: <20181213105526.30871-1-boris.brezillon@bootlin.com>
-References: <20181213105526.30871-1-boris.brezillon@bootlin.com>
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: omap2: Pass the parent of pdev to
+ dma_request_chan()
+Message-ID: <20181215112725.3bea4f68@xps13>
+In-Reply-To: <20181213192227.3815-1-boris.brezillon@bootlin.com>
+References: <20181213192227.3815-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,37 +29,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Boris,
 
 Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu, 13 Dec 2018
-11:55:26 +0100:
+20:22:27 +0100:
 
-> nand_jedec_detect() should return 1 when the PARAM page parsing
-> succeeds, otherwise the core considers JEDEC detection failed and falls
-> back to ID-based detection.
+> Commit e1e6255c311b ("mtd: rawnand: omap2: convert driver to
+> nand_scan()") moved part of the init code in the ->attach_chip hook
+> and at the same time changed the struct device object passed to
+> dma_request_chan() (&pdev->dev instead of pdev->dev.parent).
 >=20
-> Fixes: 480139d9229e ("mtd: rawnand: get rid of the JEDEC parameter page i=
-n nand_chip")
+> Fixes: e1e6255c311b ("mtd: rawnand: omap2: convert driver to nand_scan()")
+> Reported-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 > Cc: <stable@vger.kernel.org>
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
->  drivers/mtd/nand/raw/nand_jedec.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nan=
-d_jedec.c
-> index 5c26492c841d..38b5dc22cb30 100644
-> --- a/drivers/mtd/nand/raw/nand_jedec.c
-> +++ b/drivers/mtd/nand/raw/nand_jedec.c
-> @@ -107,6 +107,8 @@ int nand_jedec_detect(struct nand_chip *chip)
->  		pr_warn("Invalid codeword size\n");
->  	}
-> =20
-> +	ret =3D 1;
-> +
->  free_jedec_param_page:
->  	kfree(p);
->  	return ret;
 
-Applied on nand/next.
-
+Applied on nand/next,
 
 Thanks,
 Miqu=C3=A8l
