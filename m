@@ -1,16 +1,16 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYCjZ-0004Aj-9J
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 16:24:11 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, dwmw2@infradead.org,
- Richard Weinberger <richard@nod.at>, stable@vger.kernel.org
-Subject: [PATCH] jffs2: Fix integer underflow in jffs2_rtime_compress
-Date: Sat, 15 Dec 2018 17:23:50 +0100
-Message-Id: <20181215162350.12489-1-richard@nod.at>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gYE3j-0004Cj-7x
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 17:49:05 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: MAINTAINERS: Update my email address
+Date: Sat, 15 Dec 2018 18:48:37 +0100
+Message-Id: <20181215174837.12180-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20181203102315.1163-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +20,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The rtime compressor assumes that at least two bytes are
-compressed.
-If we try to compress just one byte, the loop condition will
-wrap around and an out-of-bounds write happens.
+On Mon, 2018-12-03 at 10:23:15 UTC, Boris Brezillon wrote:
+> Use my korg address instead of the bootlin one.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/jffs2/compr_rtime.c | 3 +++
- 1 file changed, 3 insertions(+)
+Applied to http://git.infradead.org/linux-mtd.git mtd/next.
 
-diff --git a/fs/jffs2/compr_rtime.c b/fs/jffs2/compr_rtime.c
-index 406d9cc84ba8..cbf700001fc9 100644
---- a/fs/jffs2/compr_rtime.c
-+++ b/fs/jffs2/compr_rtime.c
-@@ -39,6 +39,9 @@ static int jffs2_rtime_compress(unsigned char *data_in,
-=20
- 	memset(positions,0,sizeof(positions));
-=20
-+	if (*dstlen < 2)
-+		return -1;
-+
- 	while (pos < (*sourcelen) && outpos <=3D (*dstlen)-2) {
- 		int backpos, runlen=3D0;
- 		unsigned char value;
---=20
-2.20.0
+Boris
