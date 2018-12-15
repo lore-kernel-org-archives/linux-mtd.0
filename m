@@ -1,22 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gY9Gb-0001Ml-Ud
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 12:42:03 +0000
-Date: Sat, 15 Dec 2018 13:41:37 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, Nadav Haklai
- <nadavh@marvell.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: marvell: prevent timeouts on a loaded
- machine
-Message-ID: <20181215134137.44a79f14@bbrezillon>
-In-Reply-To: <20181211173828.6619-1-miquel.raynal@bootlin.com>
-References: <20181211173828.6619-1-miquel.raynal@bootlin.com>
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gY9ox-0004wm-KR
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 13:17:33 +0000
+Subject: Re: [PATCH] jffs2: fix invocations of dbg_xattr() for dead
+ jffs2_xattr_ref
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ <boris.brezillon@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20181020110753.98407-1-houtao1@huawei.com>
+ <20181209075256.43ca759f@bbrezillon>
+ <CAFLxGvyfM4tKH8hVoWDuYcojcHOQABvvDKZd1Mwbc8TMC5R5Jw@mail.gmail.com>
+From: Hou Tao <houtao1@huawei.com>
+Message-ID: <39d00539-7845-4f1e-d95c-d6f14cde3905@huawei.com>
+Date: Sat, 15 Dec 2018 21:17:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAFLxGvyfM4tKH8hVoWDuYcojcHOQABvvDKZd1Mwbc8TMC5R5Jw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,86 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 Dec 2018 18:38:28 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> marvell_nfc_wait_op() waits for completion during 'timeout_ms'
-> milliseconds before throwing an error. While the logic is fine, the
-> value of 'timeout_ms' is given by the core and actually correspond to
-> the maximum time the NAND chip will take to complete the
-> operation. Assuming there is no overhead in the propagation of the
-> interrupt signal to the the NAND controller (through the Ready/Busy
-> line), this delay does not take into account the latency of the
-> operating system. For instance, for a page write, the delay given by
-> the core is rounded up to 1ms. Hence, when the machine is over loaded,
-> there is chances that this timeout will be reached.
+
+On 2018/12/14 5:53, Richard Weinberger wrote:
+> On Sun, Dec 9, 2018 at 7:52 AM Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+>>
+>> On Sat, 20 Oct 2018 19:07:53 +0800
+>> Hou Tao <houtao1@huawei.com> wrote:
+>>
+>>> When jffs2_xattr_ref is dead, xref->ic or xref->xd will be invalid
+>>> because these fields will be reused as xref->ino or xref->xid,
+>>> so access xref->ic->ino or xref->xd->xid will lead to Oops.
+>>>
+>>> Fix the problem by checking whether or not it is a dead xref.
+>>>
+>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>> ---
+>>>  fs/jffs2/xattr.c | 9 +++++++--
+>>>  1 file changed, 7 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+>>> index 3d40fe02b003..0c4c7891556d 100644
+>>> --- a/fs/jffs2/xattr.c
+>>> +++ b/fs/jffs2/xattr.c
+>>> @@ -550,7 +550,8 @@ static int save_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
+>>>       ref->xseqno = xseqno;
+>>>       jffs2_add_physical_node_ref(c, phys_ofs | REF_PRISTINE, PAD(sizeof(rr)), (void *)ref);
+>>>
+>>> -     dbg_xattr("success on saving xref (ino=%u, xid=%u)\n", ref->ic->ino, ref->xd->xid);
+>>> +     dbg_xattr("success on saving xref (ino=%u, xid=%u)\n",
+>>> +                     je32_to_cpu(rr.ino), je32_to_cpu(rr.xid));
+>>
+>> Nit: align the second line on the open parens (same applies to the
+>> other chunk).
+
+Thanks for pointing it out, I will fix them.
+
+>> Sorry, I can't comment on the actual change. I'll let Richard look
+>> at it.
+>>
+>>>
+>>>       return 0;
+>>>  }
+>>> @@ -1329,7 +1330,11 @@ int jffs2_garbage_collect_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_
+>>>       rc = save_xattr_ref(c, ref);
+>>>       if (!rc)
+>>>               dbg_xattr("xref (ino=%u, xid=%u) GC'ed from %#08x to %08x\n",
+>>> -                       ref->ic->ino, ref->xd->xid, old_ofs, ref_offset(ref->node));
+>>> +                             is_xattr_ref_dead(ref) ?
+>>> +                                     ref->ino : ref->ic->ino,
+>>> +                             is_xattr_ref_dead(ref) ?
+>>> +                                     ref->xid : ref->xd->xid,
+>>> +                             old_ofs, ref_offset(ref->node));
+>>>   out:
+>>>       if (!rc)
+>>>               jffs2_mark_node_obsolete(c, raw);
+>>
 > 
-> There are two ways to solve this issue that are not incompatible:
-> 1/ Enlarge the timeout value (if so, how much?).
-> 2/ Check after the waiting method if we did not miss any interrupt
-> because of the OS latency (an interrupt is still pending). In this
-> case, we assume the operation exited successfully.
+> Since is_xattr_ref_dead() is cheap, can you please add two macros.
+> Something like:
+> static inline uint32_t xattr_ref_ino(struct jffs2_xattr_ref *ref) {
+>  if (is_xattr_ref_dead(ref))
+>   return ref>ino;
+>  else
+>   return ref->ic->ino;
+> }
 > 
-> We choose the second approach that is a must in all cases, with the
-> possibility to also modify the timeout value to be, e.g. at least 1
-> second in all cases.
+> Same for xid.
 > 
-> Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/marvell_nand.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index e6c3739cea73..bc0eef4ade4f 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -514,9 +514,14 @@ static void marvell_nfc_enable_int(struct marvell_nfc *nfc, u32 int_mask)
->  	writel_relaxed(reg & ~int_mask, nfc->regs + NDCR);
->  }
->  
-> -static void marvell_nfc_clear_int(struct marvell_nfc *nfc, u32 int_mask)
-> +static int marvell_nfc_clear_int(struct marvell_nfc *nfc, u32 int_mask)
+Yes, there would be better, will do that.
 
-	  ^ u32 ?
-
-With this fixed:
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-
->  {
-> +	u32 reg;
-> +
-> +	reg = readl_relaxed(nfc->regs + NDSR);
->  	writel_relaxed(int_mask, nfc->regs + NDSR);
-> +
-> +	return reg & int_mask;
->  }
->  
->  static void marvell_nfc_force_byte_access(struct nand_chip *chip,
-> @@ -683,6 +688,7 @@ static int marvell_nfc_wait_cmdd(struct nand_chip *chip)
->  static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
->  {
->  	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-> +	int pending;
->  	int ret;
->  
->  	/* Timeout is expressed in ms */
-> @@ -695,8 +701,13 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
->  	ret = wait_for_completion_timeout(&nfc->complete,
->  					  msecs_to_jiffies(timeout_ms));
->  	marvell_nfc_disable_int(nfc, NDCR_RDYM);
-> -	marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
-> -	if (!ret) {
-> +	pending = marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
-> +
-> +	/*
-> +	 * In case the interrupt was not served in the required time frame,
-> +	 * check if the ISR was not served or if something went actually wrong.
-> +	 */
-> +	if (ret && !pending) {
->  		dev_err(nfc->dev, "Timeout waiting for RB signal\n");
->  		return -ETIMEDOUT;
->  	}
+Thanks,
+Tao
