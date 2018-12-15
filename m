@@ -1,21 +1,24 @@
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gY9z3-0000VL-2Q
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 13:27:58 +0000
-Received: by mail-wr1-x442.google.com with SMTP id c14so8001015wrr.0
- for <linux-mtd@lists.infradead.org>; Sat, 15 Dec 2018 05:27:46 -0800 (PST)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gYAOW-0008Gp-G8
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 13:54:18 +0000
+Date: Sat, 15 Dec 2018 14:54:03 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, Nadav Haklai
+ <nadavh@marvell.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: marvell: prevent timeouts on a loaded
+ machine
+Message-ID: <20181215145403.5d4897a2@xps13>
+In-Reply-To: <20181215134137.44a79f14@bbrezillon>
+References: <20181211173828.6619-1-miquel.raynal@bootlin.com>
+ <20181215134137.44a79f14@bbrezillon>
 MIME-Version: 1.0
-References: <20181209062133.106781-1-houtao1@huawei.com>
- <ae0156e3-82f7-1ae1-c8dc-2ccf4648fc57@huawei.com>
-In-Reply-To: <ae0156e3-82f7-1ae1-c8dc-2ccf4648fc57@huawei.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sat, 15 Dec 2018 14:27:33 +0100
-Message-ID: <CAFLxGvyR+WNfYPn8Yj_i-1mtvwde4zwiS9he1M8iczEFhZZhjA@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: make the overwritten xattr invisible after remount
-To: houtao1@huawei.com
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- boris.brezillon@bootlin.com, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,138 +28,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 15, 2018 at 2:23 PM Hou Tao <houtao1@huawei.com> wrote:
->
-> ping ?
+Hi Boris,
 
-Sorry for the delay.
-I'll try now to review all the pending jffs2 patches.
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Sat, 15 Dec 2018
+13:41:37 +0100:
 
-> On 2018/12/9 14:21, Hou Tao wrote:
-> > For xattr modification, we do not write a new jffs2_raw_xref with
-> > delete marker into flash, so if a xattr is modified then removed,
-> > and the old xref & xdatum are not erased by GC, after reboot or
-> > remount, the new xattr xref will be dead but the old xattr xref
-> > will be alive, and we will get the overwritten xattr instead of
-> > non-existent error when reading the removed xattr.
-> >
-> > Fix it by writing the deletion mark for xattr overwrite.
-> >
-> > Fixes: 8a13695cbe4e ("[JFFS2][XATTR] rid unnecessary writing of delete marker.")
-> > Signed-off-by: Hou Tao <houtao1@huawei.com>
+> On Tue, 11 Dec 2018 18:38:28 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>=20
+> > marvell_nfc_wait_op() waits for completion during 'timeout_ms'
+> > milliseconds before throwing an error. While the logic is fine, the
+> > value of 'timeout_ms' is given by the core and actually correspond to
+> > the maximum time the NAND chip will take to complete the
+> > operation. Assuming there is no overhead in the propagation of the
+> > interrupt signal to the the NAND controller (through the Ready/Busy
+> > line), this delay does not take into account the latency of the
+> > operating system. For instance, for a page write, the delay given by
+> > the core is rounded up to 1ms. Hence, when the machine is over loaded,
+> > there is chances that this timeout will be reached.
+> >=20
+> > There are two ways to solve this issue that are not incompatible:
+> > 1/ Enlarge the timeout value (if so, how much?).
+> > 2/ Check after the waiting method if we did not miss any interrupt
+> > because of the OS latency (an interrupt is still pending). In this
+> > case, we assume the operation exited successfully.
+> >=20
+> > We choose the second approach that is a must in all cases, with the
+> > possibility to also modify the timeout value to be, e.g. at least 1
+> > second in all cases.
+> >=20
+> > Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller d=
+river")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > > ---
-> >  fs/jffs2/xattr.c | 55 +++++++++++++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 49 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-> > index da3e18503c65..b2d6072f34af 100644
-> > --- a/fs/jffs2/xattr.c
-> > +++ b/fs/jffs2/xattr.c
-> > @@ -573,6 +573,15 @@ static struct jffs2_xattr_ref *create_xattr_ref(struct jffs2_sb_info *c, struct
-> >       return ref; /* success */
+> >  drivers/mtd/nand/raw/marvell_nand.c | 17 ++++++++++++++---
+> >  1 file changed, 14 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw=
+/marvell_nand.c
+> > index e6c3739cea73..bc0eef4ade4f 100644
+> > --- a/drivers/mtd/nand/raw/marvell_nand.c
+> > +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> > @@ -514,9 +514,14 @@ static void marvell_nfc_enable_int(struct marvell_=
+nfc *nfc, u32 int_mask)
+> >  	writel_relaxed(reg & ~int_mask, nfc->regs + NDCR);
 > >  }
-> >
-> > +static void move_xattr_ref_to_dead_list(struct jffs2_sb_info *c,
-> > +             struct jffs2_xattr_ref *ref)
-> > +{
-> > +     spin_lock(&c->erase_completion_lock);
-> > +     ref->next = c->xref_dead_list;
-> > +     c->xref_dead_list = ref;
-> > +     spin_unlock(&c->erase_completion_lock);
-> > +}
-> > +
-> >  static void delete_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *ref)
-> >  {
-> >       /* must be called under down_write(xattr_sem) */
-> > @@ -582,10 +591,7 @@ static void delete_xattr_ref(struct jffs2_sb_info *c, struct jffs2_xattr_ref *re
-> >       ref->xseqno |= XREF_DELETE_MARKER;
-> >       ref->ino = ref->ic->ino;
-> >       ref->xid = ref->xd->xid;
-> > -     spin_lock(&c->erase_completion_lock);
-> > -     ref->next = c->xref_dead_list;
-> > -     c->xref_dead_list = ref;
-> > -     spin_unlock(&c->erase_completion_lock);
-> > +     move_xattr_ref_to_dead_list(c, ref);
-> >
-> >       dbg_xattr("xref(ino=%u, xid=%u, xseqno=%u) was removed.\n",
-> >                 ref->ino, ref->xid, ref->xseqno);
-> > @@ -1090,6 +1096,40 @@ int do_jffs2_getxattr(struct inode *inode, int xprefix, const char *xname,
-> >       return rc;
-> >  }
-> >
-> > +static void do_jffs2_delete_xattr_ref(struct jffs2_sb_info *c,
-> > +             struct jffs2_xattr_ref *ref)
-> > +{
-> > +     uint32_t request, length;
-> > +     int err;
-> > +     struct jffs2_xattr_datum *xd;
-> > +
-> > +     request = PAD(sizeof(struct jffs2_raw_xref));
-> > +     err = jffs2_reserve_space(c, request, &length,
-> > +                     ALLOC_NORMAL, JFFS2_SUMMARY_XREF_SIZE);
-> > +     down_write(&c->xattr_sem);
-> > +     if (err) {
-> > +             JFFS2_WARNING("jffs2_reserve_space()=%d, request=%u\n",
-> > +                             err, request);
-> > +             delete_xattr_ref(c, ref);
-> > +             up_write(&c->xattr_sem);
-> > +             return;
-> > +     }
-> > +
-> > +     xd = ref->xd;
-> > +     ref->ino = ref->ic->ino;
-> > +     ref->xid = xd->xid;
-> > +     ref->xseqno |= XREF_DELETE_MARKER;
-> > +     save_xattr_ref(c, ref);
-> > +
-> > +     move_xattr_ref_to_dead_list(c, ref);
-> > +     dbg_xattr("xref(ino=%u, xid=%u, xseqno=%u) was removed.\n",
-> > +               ref->ino, ref->xid, ref->xseqno);
-> > +     unrefer_xattr_datum(c, xd);
-> > +
-> > +     up_write(&c->xattr_sem);
-> > +     jffs2_complete_reservation(c);
-> > +}
-> > +
-> >  int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
-> >                     const char *buffer, size_t size, int flags)
-> >  {
-> > @@ -1097,7 +1137,7 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
-> >       struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-> >       struct jffs2_inode_cache *ic = f->inocache;
-> >       struct jffs2_xattr_datum *xd;
-> > -     struct jffs2_xattr_ref *ref, *newref, **pref;
-> > +     struct jffs2_xattr_ref *ref, *newref, *oldref, **pref;
-> >       uint32_t length, request;
-> >       int rc;
-> >
-> > @@ -1113,6 +1153,7 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
-> >               return rc;
-> >       }
-> >
-> > +     oldref = NULL;
-> >       /* Find existing xattr */
-> >       down_write(&c->xattr_sem);
-> >   retry:
-> > @@ -1196,11 +1237,13 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
-> >               rc = PTR_ERR(newref);
-> >               unrefer_xattr_datum(c, xd);
-> >       } else if (ref) {
-> > -             delete_xattr_ref(c, ref);
-> > +             oldref = ref;
-> >       }
-> >   out:
-> >       up_write(&c->xattr_sem);
-> >       jffs2_complete_reservation(c);
-> > +     if (oldref)
-> > +             do_jffs2_delete_xattr_ref(c, oldref);
-> >       return rc;
-> >  }
-> >
-> >
->
+> > =20
+> > -static void marvell_nfc_clear_int(struct marvell_nfc *nfc, u32 int_mas=
+k)
+> > +static int marvell_nfc_clear_int(struct marvell_nfc *nfc, u32 int_mask=
+) =20
+>=20
+> 	  ^ u32 ?
+>=20
+> With this fixed:
+>=20
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
+Applied with your change to nand/next.
 
--- 
 Thanks,
-//richard
+Miqu=C3=A8l
