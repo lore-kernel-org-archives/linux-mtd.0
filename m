@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gY53m-0001po-3l
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 08:12:33 +0000
+ id 1gY53m-0001pl-S4
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 08:12:34 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -9,9 +9,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 5/5] mtd: rawnand: sunxi: Add an SPDX tag
-Date: Sat, 15 Dec 2018 09:12:14 +0100
-Message-Id: <20181215081214.4935-5-boris.brezillon@bootlin.com>
+Subject: [PATCH 2/5] mtd: rawnand: sunxi: Use struct_size()
+Date: Sat, 15 Dec 2018 09:12:11 +0100
+Message-Id: <20181215081214.4935-2-boris.brezillon@bootlin.com>
 In-Reply-To: <20181215081214.4935-1-boris.brezillon@bootlin.com>
 References: <20181215081214.4935-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,48 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the license text by an SPDX tag and fix MODULE_LICENSE() to
-match GPL-2.0+.
+Use struct_size() to calculate sunxi_nand object size.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index fb02603ab227..9b09c7083d76 100644
+index 9139fc003b1a..1453392a53e7 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0+
- /*
-  * Copyright (C) 2013 Boris BREZILLON <b.brezillon.dev@gmail.com>
-  *
-@@ -10,16 +11,6 @@
-  *
-  *	Copyright (C) 2013 Dmitriy B. <rzk333@gmail.com>
-  *	Copyright (C) 2013 Sergey Lapin <slapin@ossfans.org>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-  */
+@@ -1871,9 +1871,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 		return -EINVAL;
+ 	}
  
- #include <linux/dma-mapping.h>
-@@ -2107,7 +2098,7 @@ static struct platform_driver sunxi_nfc_driver = {
- };
- module_platform_driver(sunxi_nfc_driver);
- 
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Boris BREZILLON");
- MODULE_DESCRIPTION("Allwinner NAND Flash Controller driver");
- MODULE_ALIAS("platform:sunxi_nand");
+-	sunxi_nand = devm_kzalloc(dev,
+-				  sizeof(*sunxi_nand) +
+-				  (nsels * sizeof(struct sunxi_nand_chip_sel)),
++	sunxi_nand = devm_kzalloc(dev, struct_size(sunxi_nand, sels, nsels),
+ 				  GFP_KERNEL);
+ 	if (!sunxi_nand) {
+ 		dev_err(dev, "could not allocate chip\n");
 -- 
 2.17.1
