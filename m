@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gY5Fw-0006sv-Mr
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 08:25:12 +0000
+ id 1gY5Fw-0006sx-MS
+ for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 08:25:15 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -9,9 +9,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v2 5/7] mtd: rawnand: sunxi: Add an SPDX tag
-Date: Sat, 15 Dec 2018 09:24:35 +0100
-Message-Id: <20181215082437.9175-6-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 7/7] mtd: rawnand: sunxi: Fix kernel doc headers
+Date: Sat, 15 Dec 2018 09:24:37 +0100
+Message-Id: <20181215082437.9175-8-boris.brezillon@bootlin.com>
 In-Reply-To: <20181215082437.9175-1-boris.brezillon@bootlin.com>
 References: <20181215082437.9175-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,48 +23,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the license text by an SPDX tag and fix MODULE_LICENSE() to
-match GPL-2.0+.
+Fix the struct description and use standard kernel-doc header format
+(even if the file is not parsed by the doc generator).
+
+We also replace tabs by a single space.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/sunxi_nand.c | 60 +++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index fb02603ab227..9b09c7083d76 100644
+index d6b07067ed26..93e18f48f1e1 100644
 --- a/drivers/mtd/nand/raw/sunxi_nand.c
 +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0+
- /*
-  * Copyright (C) 2013 Boris BREZILLON <b.brezillon.dev@gmail.com>
+@@ -154,37 +154,36 @@
+ 
+ #define NFC_MAX_CS		7
+ 
+-/*
+- * Chip Select structure: stores information related to NAND Chip Select
++/**
++ * struct sunxi_nand_chip_sel - stores information related to NAND Chip Select
   *
-@@ -10,16 +11,6 @@
-  *
-  *	Copyright (C) 2013 Dmitriy B. <rzk333@gmail.com>
-  *	Copyright (C) 2013 Sergey Lapin <slapin@ossfans.org>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
+- * @cs:		the NAND CS id used to communicate with a NAND Chip
+- * @rb:		the Ready/Busy pin ID. -1 means no R/B pin connected to the
+- *		NFC
++ * @cs: the NAND CS id used to communicate with a NAND Chip
++ * @rb: the Ready/Busy pin ID. -1 means no R/B pin connected to the NFC
   */
- 
- #include <linux/dma-mapping.h>
-@@ -2107,7 +2098,7 @@ static struct platform_driver sunxi_nfc_driver = {
+ struct sunxi_nand_chip_sel {
+ 	u8 cs;
+ 	s8 rb;
  };
- module_platform_driver(sunxi_nfc_driver);
  
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Boris BREZILLON");
- MODULE_DESCRIPTION("Allwinner NAND Flash Controller driver");
- MODULE_ALIAS("platform:sunxi_nand");
+-/*
+- * sunxi HW ECC infos: stores information related to HW ECC support
++/**
++ * struct sunxi_nand_hw_ecc - stores information related to HW ECC support
+  *
+- * @mode:	the sunxi ECC mode field deduced from ECC requirements
++ * @mode: the sunxi ECC mode field deduced from ECC requirements
+  */
+ struct sunxi_nand_hw_ecc {
+ 	int mode;
+ };
+ 
+-/*
+- * NAND chip structure: stores NAND chip device related information
++/**
++ * struct sunxi_nand_chip - stores NAND chip device related information
+  *
+- * @node:		used to store NAND chips into a list
+- * @nand:		base NAND chip structure
+- * @mtd:		base MTD structure
+- * @clk_rate:		clk_rate required for this NAND chip
+- * @timing_cfg		TIMING_CFG register value for this NAND chip
+- * @nsels:		number of CS lines required by the NAND chip
+- * @sels:		array of CS lines descriptions
++ * @node: used to store NAND chips into a list
++ * @nand: base NAND chip structure
++ * @clk_rate: clk_rate required for this NAND chip
++ * @timing_cfg: TIMING_CFG register value for this NAND chip
++ * @timing_ctl: TIMING_CTL register value for this NAND chip
++ * @nsels: number of CS lines required by the NAND chip
++ * @sels: array of CS lines descriptions
+  */
+ struct sunxi_nand_chip {
+ 	struct list_head node;
+@@ -201,20 +200,21 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
+ 	return container_of(nand, struct sunxi_nand_chip, nand);
+ }
+ 
+-/*
+- * NAND Controller structure: stores sunxi NAND controller information
++/**
++ * struct sunxi_nfc - stores sunxi NAND controller information
+  *
+- * @controller:		base controller structure
+- * @dev:		parent device (used to print error messages)
+- * @regs:		NAND controller registers
+- * @ahb_clk:		NAND Controller AHB clock
+- * @mod_clk:		NAND Controller mod clock
+- * @assigned_cs:	bitmask describing already assigned CS lines
+- * @clk_rate:		NAND controller current clock rate
+- * @chips:		a list containing all the NAND chips attached to
+- *			this NAND controller
+- * @complete:		a completion object used to wait for NAND
+- *			controller events
++ * @controller: base controller structure
++ * @dev: parent device (used to print error messages)
++ * @regs: NAND controller registers
++ * @ahb_clk: NAND controller AHB clock
++ * @mod_clk: NAND controller mod clock
++ * @reset: NAND controller reset line
++ * @assigned_cs: bitmask describing already assigned CS lines
++ * @clk_rate: NAND controller current clock rate
++ * @chips: a list containing all the NAND chips attached to this NAND
++ *	   controller
++ * @complete: a completion object used to wait for NAND controller events
++ * @dmac: the DMA channel attached to the NAND controller
+  */
+ struct sunxi_nfc {
+ 	struct nand_controller controller;
 -- 
 2.17.1
