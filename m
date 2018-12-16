@@ -1,20 +1,27 @@
-Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYIZA-0001cg-UP
- for linux-mtd@lists.infradead.org; Sat, 15 Dec 2018 22:37:50 +0000
-Received: by mail-wm1-x341.google.com with SMTP id q26so9051208wmf.5
- for <linux-mtd@lists.infradead.org>; Sat, 15 Dec 2018 14:37:37 -0800 (PST)
+Date: Sun, 16 Dec 2018 15:51:23 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH 0/5] Prepare devicetrees for the new FSL QSPI driver
+Message-ID: <20181216075121.GH13243@dragon>
+References: <1544459182-23655-1-git-send-email-frieder.schrempf@kontron.de>
+ <ce1442f3-357b-d647-958e-cc4a89282b79@kontron.de>
+ <1ad93cdf-7ba1-ff49-f330-6bbd0f6c6972@kontron.de>
+ <20181214004251.GA15775@dragon>
+ <937b0f34e3eb485aaae45cd649cdeb4f@kontron.de>
 MIME-Version: 1.0
-References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
-In-Reply-To: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sat, 15 Dec 2018 23:37:24 +0100
-Message-ID: <CAFLxGvy4NbfHHoHXaH=sR-3e10+EAbDwLsdM1_Eyk_gT5=HE8Q@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-To: Kyeong Yoo <kyeong.yoo@alliedtelesis.co.nz>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <937b0f34e3eb485aaae45cd649cdeb4f@kontron.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,144 +31,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 4, 2017 at 6:23 AM Kyeong Yoo
-<kyeong.yoo@alliedtelesis.co.nz> wrote:
->
-> GC task can deadlock in read_cache_page() because it may attempt
-> to release a page that is actually allocated by another task in
-> jffs2_write_begin().
-> The reason is that in jffs2_write_begin() there is a small window
-> a cache page is allocated for use but not set Uptodate yet.
->
-> This ends up with a deadlock between two tasks:
-> 1) A task (e.g. file copy)
->    - jffs2_write_begin() locks a cache page
->    - jffs2_write_end() tries to lock "alloc_sem" from
->          jffs2_reserve_space() <-- STUCK
-> 2) GC task (jffs2_gcd_mtd3)
->    - jffs2_garbage_collect_pass() locks "alloc_sem"
->    - try to lock the same cache page in read_cache_page() <-- STUCK
->
-> So to avoid this deadlock, hold "alloc_sem" in jffs2_write_begin()
-> while reading data in a cache page.
->
-> Signed-off-by: Kyeong Yoo <kyeong.yoo@alliedtelesis.co.nz>
-> ---
->
-> Note: I'm resending this patch to linux-mtd.
->
->  fs/jffs2/file.c |   40 +++++++++++++++++++++++++---------------
->  1 file changed, 25 insertions(+), 15 deletions(-)
->
-> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-> index c12476e309c6..eb4e4d784d26 100644
-> --- a/fs/jffs2/file.c
-> +++ b/fs/jffs2/file.c
-> @@ -135,20 +135,15 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
->         struct page *pg;
->         struct inode *inode = mapping->host;
->         struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
-> +       struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
->         pgoff_t index = pos >> PAGE_SHIFT;
->         uint32_t pageofs = index << PAGE_SHIFT;
->         int ret = 0;
->
-> -       pg = grab_cache_page_write_begin(mapping, index, flags);
-> -       if (!pg)
-> -               return -ENOMEM;
-> -       *pagep = pg;
-> -
->         jffs2_dbg(1, "%s()\n", __func__);
->
->         if (pageofs > inode->i_size) {
->                 /* Make new hole frag from old EOF to new page */
-> -               struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
->                 struct jffs2_raw_inode ri;
->                 struct jffs2_full_dnode *fn;
->                 uint32_t alloc_len;
-> @@ -159,7 +154,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
->                 ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
->                                           ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
->                 if (ret)
-> -                       goto out_page;
-> +                       goto out_err;
->
->                 mutex_lock(&f->sem);
->                 memset(&ri, 0, sizeof(ri));
-> @@ -189,7 +184,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
->                         ret = PTR_ERR(fn);
->                         jffs2_complete_reservation(c);
->                         mutex_unlock(&f->sem);
-> -                       goto out_page;
-> +                       goto out_err;
->                 }
->                 ret = jffs2_add_full_dnode_to_inode(c, f, fn);
->                 if (f->metadata) {
-> @@ -204,7 +199,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
->                         jffs2_free_full_dnode(fn);
->                         jffs2_complete_reservation(c);
->                         mutex_unlock(&f->sem);
-> -                       goto out_page;
-> +                       goto out_err;
->                 }
->                 jffs2_complete_reservation(c);
->                 inode->i_size = pageofs;
-> @@ -212,6 +207,19 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
->         }
->
->         /*
-> +        * While getting a page and reading data in, lock c->alloc_sem until
-> +        * the page is Uptodate. Otherwise GC task may attempt to read the same
-> +        * page in read_cache_page(), which causes a deadlock.
-> +        */
-> +       mutex_lock(&c->alloc_sem);
-> +       pg = grab_cache_page_write_begin(mapping, index, flags);
-> +       if (!pg) {
-> +               ret = -ENOMEM;
-> +               goto release_sem;
-> +       }
-> +       *pagep = pg;
-> +
-> +       /*
->          * Read in the page if it wasn't already present. Cannot optimize away
->          * the whole page write case until jffs2_write_end can handle the
->          * case of a short-copy.
-> @@ -220,15 +228,17 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
->                 mutex_lock(&f->sem);
->                 ret = jffs2_do_readpage_nolock(inode, pg);
->                 mutex_unlock(&f->sem);
-> -               if (ret)
-> -                       goto out_page;
-> +               if (ret) {
-> +                       unlock_page(pg);
-> +                       put_page(pg);
-> +                       goto release_sem;
-> +               }
->         }
->         jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
-> -       return ret;
->
-> -out_page:
-> -       unlock_page(pg);
-> -       put_page(pg);
-> +release_sem:
-> +       mutex_unlock(&c->alloc_sem);
-> +out_err:
->         return ret;
->  }
+On Sat, Dec 15, 2018 at 10:04:55AM +0000, Schrempf Frieder wrote:
+> I can confirm, that the series does only remove or add properties to the
+> devicetree, that are currently not used by the driver. Therefore it won't break
+> anything.
 
-Kyeong,
+Okay, applied the series.
 
-first of all, sorry for the massive delay!
-
-Right now I'm trying to get jffs2 back in shape and stumbled across your patch.
-My test suite can actually trigger this deadlock and I think your
-patch is likely the
-right solution. I'm still reviewing and try to make very sure that it
-works as expected.
-
-David, unless you have objections I'd carry this patch via the MTD tree.
-
--- 
-Thanks,
-//richard
+Shawn
