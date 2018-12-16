@@ -1,17 +1,17 @@
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYg3B-0002op-Cp
- for linux-mtd@lists.infradead.org; Sun, 16 Dec 2018 23:42:22 +0000
-Received: by mail-wm1-x344.google.com with SMTP id y139so10579564wmc.5
- for <linux-mtd@lists.infradead.org>; Sun, 16 Dec 2018 15:42:10 -0800 (PST)
+ id 1gYg5B-0003Mq-KB
+ for linux-mtd@lists.infradead.org; Sun, 16 Dec 2018 23:44:27 +0000
+Received: by mail-wm1-x341.google.com with SMTP id y185so3446726wmd.1
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Dec 2018 15:44:15 -0800 (PST)
 MIME-Version: 1.0
 References: <cover.1524823321.git.h.grohne@intenta.de>
- <95327ddd01e86d0160c2d678f4306a737cb6a085.1524823321.git.h.grohne@intenta.de>
-In-Reply-To: <95327ddd01e86d0160c2d678f4306a737cb6a085.1524823321.git.h.grohne@intenta.de>
+ <a8e9cd4537484541828fbd63f3fa853b4fb95726.1524823321.git.h.grohne@intenta.de>
+In-Reply-To: <a8e9cd4537484541828fbd63f3fa853b4fb95726.1524823321.git.h.grohne@intenta.de>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 17 Dec 2018 00:41:57 +0100
-Message-ID: <CAFLxGvwTi+bRE3iApMrxR-Ua_99=uoxLUZunsOmFzFBHWPmGsg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] jffs2: jffs2_iget defer f->sem acquisition
+Date: Mon, 17 Dec 2018 00:44:02 +0100
+Message-ID: <CAFLxGvzfapYR9yE8FS6hOOP7CbXk3qN_dsxsKF-sjRzOst08Cw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] jffs2: avoid unnecessarily taking f->sem
 To: h.grohne@intenta.de
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Peter Zijlstra <peterz@infradead.org>
@@ -25,19 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 27, 2018 at 12:37 PM Helmut Grohne <h.grohne@intenta.de> wrote:
+On Fri, Apr 27, 2018 at 12:38 PM Helmut Grohne <h.grohne@intenta.de> wrote:
 >
-> At the point where f->sem is taken, we know that we have a locked I_NEW
-> inode. Since jffs2_iget is the only function processing I_NEW inodes and
-> iget_locked blocks on I_NEW inodes, we know that we are the only user of
-> the inode until we unlock_new_inode it. Since 7aaea7605c0 ("jffs2: fix
-> unbalanced locking"), jffs2_do_read_inode no longer touches f->sem and
-> does not make the inode visible to others either. Thus we can call it
-> without f->sem acquired. Nextup, inode->i_mode is protected until
-> unlock_new_inode.
+> jffs2_xattr_do_crccheck_inode creates a temporary struct
+> jffs2_inode_info for handling it to jffs2_do_read_inode_internal.
+> Formerly, jffs2_do_read_inode_internal released f->sem in the error path
+> and that was why it had to be initialized, taken and released. As part
+> of 7aaea7605c0 ("jffs2: fix unbalanced locking") locking was moved out
+> of it.
 >
-> After deferring the locking, we can decide upon the proper lock class
-> depending on inode->i_mode.
+> In the relevant jffs2_xattr_do_crccheck_inode we own the only reference
+> to f as we allocate it with kmalloc. Since nothing else has knowledge of
+> it, there is no need to lock it. In particular, that saves us from
+> thinking about the correct locking class.
+>
+> We still need to initialize the mutex as jffs2_do_clear_inode insists on
+> acquiring it.
 >
 > Signed-off-by: Helmut Grohne <h.grohne@intenta.de>
 > Cc: Peter Zijlstra <peterz@infradead.org>
