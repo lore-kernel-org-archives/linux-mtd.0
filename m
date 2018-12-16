@@ -1,27 +1,18 @@
-Date: Sun, 16 Dec 2018 15:51:23 +0800
-From: Shawn Guo <shawnguo@kernel.org>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH 0/5] Prepare devicetrees for the new FSL QSPI driver
-Message-ID: <20181216075121.GH13243@dragon>
-References: <1544459182-23655-1-git-send-email-frieder.schrempf@kontron.de>
- <ce1442f3-357b-d647-958e-cc4a89282b79@kontron.de>
- <1ad93cdf-7ba1-ff49-f330-6bbd0f6c6972@kontron.de>
- <20181214004251.GA15775@dragon>
- <937b0f34e3eb485aaae45cd649cdeb4f@kontron.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <937b0f34e3eb485aaae45cd649cdeb4f@kontron.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gYRsp-00005D-Rz
+ for linux-mtd@lists.infradead.org; Sun, 16 Dec 2018 08:34:45 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH] mtd: rawnand: sunxi: Write pageprog related opcodes to
+ WCMD_SET
+Date: Sun, 16 Dec 2018 09:34:17 +0100
+Message-Id: <20181216083417.19100-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 15, 2018 at 10:04:55AM +0000, Schrempf Frieder wrote:
-> I can confirm, that the series does only remove or add properties to the
-> devicetree, that are currently not used by the driver. Therefore it won't break
-> anything.
+The opcodes used by the controller when doing batched page prog should
+be written in NFC_REG_WCMD_SET not FC_REG_RCMD_SET. Luckily, the
+default NFC_REG_WCMD_SET value matches the one we set in the driver
+which explains why we didn't notice the problem.
 
-Okay, applied the series.
+Fixes: 614049a8d904 ("mtd: nand: sunxi: add support for DMA assisted operations")
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Shawn
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index a5c83cbe4897..e828ee50a201 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -1393,7 +1393,7 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct nand_chip *chip,
+ 	sunxi_nfc_randomizer_enable(mtd);
+ 
+ 	writel((NAND_CMD_RNDIN << 8) | NAND_CMD_PAGEPROG,
+-	       nfc->regs + NFC_REG_RCMD_SET);
++	       nfc->regs + NFC_REG_WCMD_SET);
+ 
+ 	dma_async_issue_pending(nfc->dmac);
+ 
+-- 
+2.17.1
