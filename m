@@ -1,42 +1,20 @@
-Received: from mail-eopbgr760081.outbound.protection.outlook.com
- ([40.107.76.81] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from mail-oi1-f194.google.com ([209.85.167.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYspk-0000dh-RY
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 13:21:22 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
- <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
- <michals@xilinx.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Mon, 17 Dec 2018 13:21:04 +0000
-Message-ID: <MWHPR02MB26235AE6567A06EF4C6362E6AFBC0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1541739641-17789-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181118204324.373ca9cc@bbrezillon>
- <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181119090246.49060019@bbrezillon>
- <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
- <20181120120244.7d2442b5@bbrezillon>	<20181120133624.3fa4742d@xps13>
- <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
- <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212091135.1d0cc9a6@xps13>
- <MWHPR02MB26236CEF8A2110B20C825198AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212100931.149b0cac@xps13>
- <MWHPR02MB2623EDA15BE59304795F3034AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212141825.69711c57@xps13>
-In-Reply-To: <20181212141825.69711c57@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gYtAN-0000Hl-Eo
+ for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 13:42:40 +0000
+Received: by mail-oi1-f194.google.com with SMTP id y23so10165717oia.4
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2018 05:42:28 -0800 (PST)
 MIME-Version: 1.0
+References: <20181215101329.16246-1-richard@nod.at>
+In-Reply-To: <20181215101329.16246-1-richard@nod.at>
+From: Andreas Gruenbacher <agruenba@redhat.com>
+Date: Mon, 17 Dec 2018 14:42:16 +0100
+Message-ID: <CAHc6FU73Cx=KengB8R=am_d0fGvQjaRrog9tqBC8TJaa+F296g@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: Fix retry handling jffs2_listxattr
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ dwmw2@infradead.org, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,136 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
-bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBXZWRu
-ZXNkYXksIERlY2VtYmVyIDEyLCAyMDE4IDY6NDggUE0NCj4gVG86IE5hZ2EgU3VyZXNoa3VtYXIg
-UmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
-LmJyZXppbGxvbkBib290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsgcmljaGFyZEBub2QuYXQ7
-IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBtYXJlay52YXN1dEBnbWFpbC5jb207
-IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBuYWdhc3VyZXNoMTJAZ21haWwuY29t
-OyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+IGNvbXB1dGVyc2ZvcnBlYWNl
-QGdtYWlsLmNvbTsgZHdtdzJAaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogW0xJTlVYIFBB
-VENIIHYxMiAzLzNdIG10ZDogcmF3bmFuZDogYXJhc2FuOiBBZGQgc3VwcG9ydCBmb3IgQXJhc2Fu
-DQo+IE5BTkQgRmxhc2ggQ29udHJvbGxlcg0KPiANCj4gSGkgTmFnYSwNCj4gDQo+IE5hZ2EgU3Vy
-ZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+IHdyb3RlIG9uIFdlZCwgMTIgRGVj
-IDIwMTgNCj4gMTM6MDc6NDIgKzAwMDA6DQo+IA0KPiA+IEhpIE1pcXVlbCwNCj4gPg0KPiA+ID4g
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IE1pcXVlbCBSYXluYWwgW21h
-aWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiA+ID4gU2VudDogV2VkbmVzZGF5LCBE
-ZWNlbWJlciAxMiwgMjAxOCAyOjQwIFBNDQo+ID4gPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gPiA+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
-LmJyZXppbGxvbkBib290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsNCj4gPiA+IHJpY2hhcmRA
-bm9kLmF0OyBsaW51eC0ga2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gPiA+IG1hcmVrLnZhc3V0
-QGdtYWlsLmNvbTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+ID4gPiBuYWdhc3Vy
-ZXNoMTJAZ21haWwuY29tOyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+ID4g
-PiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gPiA+
-IFN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggdjEyIDMvM10gbXRkOiByYXduYW5kOiBhcmFzYW46
-IEFkZCBzdXBwb3J0DQo+ID4gPiBmb3IgQXJhc2FuIE5BTkQgRmxhc2ggQ29udHJvbGxlcg0KPiA+
-ID4NCj4gPiA+IEhpIE5hZ2EsDQo+ID4gPg0KPiA+ID4gTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8
-bmFnYXN1cmVAeGlsaW54LmNvbT4gd3JvdGUgb24gV2VkLCAxMiBEZWMNCj4gPiA+IDIwMTgNCj4g
-PiA+IDA5OjA0OjE2ICswMDAwOg0KPiA+ID4NCj4gPiA+ID4gSGkgTWlxdWVsLA0KPiA+ID4gPg0K
-PiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiA+ID4gRnJvbTogTWlx
-dWVsIFJheW5hbCBbbWFpbHRvOm1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb21dDQo+ID4gPiA+ID4g
-U2VudDogV2VkbmVzZGF5LCBEZWNlbWJlciAxMiwgMjAxOCAxOjQyIFBNDQo+ID4gPiA+ID4gVG86
-IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+ID4gPiA+ID4g
-Q2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPjsNCj4gPiA+
-ID4gPiByb2JoQGtlcm5lbC5vcmc7IHJpY2hhcmRAbm9kLmF0OyBsaW51eC0ga2VybmVsQHZnZXIu
-a2VybmVsLm9yZzsNCj4gPiA+ID4gPiBtYXJlay52YXN1dEBnbWFpbC5jb207IGxpbnV4LW10ZEBs
-aXN0cy5pbmZyYWRlYWQub3JnOw0KPiA+ID4gPiA+IG5hZ2FzdXJlc2gxMkBnbWFpbC5jb207IE1p
-Y2hhbCBTaW1layA8bWljaGFsc0B4aWxpbnguY29tPjsNCj4gPiA+ID4gPiBjb21wdXRlcnNmb3Jw
-ZWFjZUBnbWFpbC5jb207IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gPiA+ID4gPiBTdWJqZWN0OiBS
-ZTogW0xJTlVYIFBBVENIIHYxMiAzLzNdIG10ZDogcmF3bmFuZDogYXJhc2FuOiBBZGQNCj4gPiA+
-ID4gPiBzdXBwb3J0IGZvciBBcmFzYW4gTkFORCBGbGFzaCBDb250cm9sbGVyDQo+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiBIaSBOYWdhLA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gTmFnYSBTdXJlc2hrdW1h
-ciBSZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4gd3JvdGUgb24gV2VkLCAxMg0KPiA+ID4gPiA+
-IERlYw0KPiA+ID4gPiA+IDIwMTgNCj4gPiA+ID4gPiAwNToyNzowMyArMDAwMDoNCj4gPiA+ID4g
-Pg0KPiA+ID4gPiA+ID4gSGkgQm9yaXMgJiBNaXF1ZWwsDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
-ID4gQW4gdXBkYXRlIHRvIG15IGNvbW1lbnRzIG9uIHRocmVhZCBodHRwczovL2xrbWwub3JnL2xr
-bWwvMjAxOC8xMS8xNS82NTYuDQo+ID4gPiA+ID4gPiBJbiB0aGlzIEkgc2FpZCwgd2lsbCB0YWtl
-IGEgZGVmYXVsdCBlcnJvciBjb3VudCB2YWx1ZSBhcyAxNg0KPiA+ID4gPiA+ID4gYW5kIGR1cmlu
-ZyBwYWdlIHJlYWQsIHdpbGwgY2hlY2sgdGhlIGVycm9yIGNvdW50IFJlZ2lzdGVyDQo+ID4gPiA+
-ID4gPiB2YWx1ZSB3aXRoIHRoaXMgYW5kIGlmIGl0IGlzIGVxdWFsIHRvIG9yIGdyZWF0ZXIgdGhh
-biB0aGUNCj4gPiA+ID4gPiA+IGRlZmF1bHQgY291bnQoMTYpIHRoZW4gSSBhbSBjaGVja2luZyBm
-b3INCj4gPiA+IEVyYXNlZCBwYWdlcy4NCj4gPiA+ID4gPiA+IEJ1dCBiaXRbNzowXSBpbiBFQ0Nf
-RXJyb3JfQ291bnRfUmVnaXN0ZXIoMHgzOCkgd2lsbCB1cGRhdGUgZm9yIGVhY2ggZXJyb3INCj4g
-b2NjdXJyZWQuDQo+ID4gPiA+ID4gPiBMaW5rOg0KPiA+ID4gPiA+ID4gaHR0cHM6Ly93d3cueGls
-aW54LmNvbS9odG1sX2RvY3MvcmVnaXN0ZXJzL3VnMTA4Ny91ZzEwODctenlucS0NCj4gPiA+ID4g
-PiA+IHVsdHINCj4gPiA+ID4gPiA+IGFzY2FsZS0NCj4gPiA+ID4gPiByZWdpc3RlcnMuaHRtbCBh
-bmQgY2hlY2sgZm9yIE5BTkQgbW9kdWxlLCBFQ0NfRXJyb3JfQ291bnRfUmVnaXN0ZXIuDQo+ID4g
-PiA+ID4gPg0KPiA+ID4gPiA+ID4gSSBtZWFuIHByZXZpb3VzbHkgSSBkZXBlbmRlbnQgb24gVG90
-YWwgZXJyb3IgY291bnQgdmFsdWUNCj4gPiA+ID4gPiA+IChiaXRbMTY6OF0pLCBidXQgd2UgY2Fu
-IHNpbXBseSBjaGVjayBmb3IgYml0Wzc6MF0gVG8gc2VlIHRoZSBlcnJvciBvY2N1cnJlZCBvciBu
-b3QuDQo+ID4gPiA+ID4gPiBJIHRyaWVkIHdpdGggdGhpcyBhcHByb2FjaCBhbmQgSSBkb24ndCBz
-ZWUgYW55IGlzc3VlcyB3aXRoIHRoYXQuDQo+ID4gPiA+ID4gPiBJIHJhbiB1YmlmcyB3aXRoIHRo
-aXMgYW5kIEkgYW0gYWJsZSB0byBzZWUgdGhlIGJpdFs3OjBdIGNvdW50DQo+ID4gPiA+ID4gPiBp
-cyB1cGRhdGVkIGZvciBlcmFzZWQgcGFnZSByZWFkIGFuZCB0aGVuIHdpbGwgVXNlDQo+ID4gPiA+
-ID4gPiBuYW5kX2NoZWNoX2VyYXNlZF9lY2NfY2h1bmsoKSB0byBzZWUgdGhlDQo+ID4gPiA+ID4g
-Yml0ZmxpcHMuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gSWYgaXQgaXMgb2ssIEkgd2lsbCB1
-cGRhdGUgdGhlIGRyaXZlciBhbmQgd2lsbCBzZW5kIG5ldyBwYXRjaCwNCj4gPiA+ID4gPiA+IGJ1
-dCBkbyB5b3UgaGF2ZSBhbnkgb3RoZXINCj4gPiA+ID4gPiBjb21tZW50cyBvbiB2MTI/DQo+ID4g
-PiA+ID4NCj4gPiA+ID4gPiBJcyAnbmFuZGJpdGVycnMgLWknIHJ1bm5pbmcgY29ycmVjdGx5IG5v
-dz8NCj4gPiA+ID4gWWVzLCBidXQgd2l0aCBzb21lIGNoYW5nZXMgaW4gZHJpdmVyLg0KPiA+ID4g
-PiBJIGhhdmUgYWRkZWQgdGhlIGxvZyBhbmQgY2hhbmdlcyBkb25lIGluIGh0dHBzOi8vbGttbC5v
-cmcvbGttbC8yMDE4LzExLzIzLzcwNS4NCj4gPiA+DQo+ID4gPiBObywgSSBkb24ndCBzZWUgYSB3
-b3JraW5nIG5hbmRiaXRlcnJzIHRoZXJlLCBzb3JyeS4NCj4gPiBUaGUgbG9nIHRoYXQgSSBoYXZl
-IGF0dGFjaGVkIGlzIGZyb20gbXRkX25hbmRiaXRlcnJzIHRlc3QgU28gYXMgcGVyDQo+ID4gQVJB
-U0FOIGNvbnRyb2xsZXIgRUNDIG1lY2hhbmlzbSwgaXQgd2lsbCBjb3JyZWN0IHVwdG8gMjQtYml0
-LiBBZnRlciB0aGF0IHRoZSB0ZXN0IHdpbGwgZmFpbC4NCj4gDQo+IFRoZXJlIGlzIGEgZGlzdGlu
-Y3Rpb24gYmV0d2VlbjoNCj4gMS8gVGhlIGRyaXZlciBmYWlscyB0byBjb3JyZWN0IG1vcmUgdGhh
-biAyNC1iaXQgYW5kIGFkdmVydGlzZSB0aGUNCj4gICAgY2FsbGVyIHRoYXQgdGhlIHBhZ2UgcmVh
-ZCBpcyBzb21laG93IGNvcnJ1cHRlZC4NCj4gMi8gVGhlIGRyaXZlciBmYWlscyB0byBjb3JyZWN0
-IG1vcmUgdGhhbiAyNC1iaXQgYnV0IGRvZXMgbm90IGNvbXBsYWluDQo+ICAgIGFib3V0IGl0LiBJ
-biBvdXIgY2FzZSwgdGhlIGNhbGxlciAodGhlIHRlc3QgdG9vbCkgd2lsbCBjb21wYXJlIHRoZQ0K
-PiAgICBwYWdlIHdyaXR0ZW4gYW5kIHJlYWQ6IGlmIGl0IGRvIG5vdCBtYXRjaCBpdCBtZWFucyB0
-aGUgZHJpdmVyIGlzDQo+ICAgIGJyb2tlbiBiZWNhdXNlIHRoZSBkcml2ZXIgcmVwb3J0ZWQgYSBz
-dWNjZXNzZnVsIG9wZXJhdGlvbiBkZXNwaXRlDQo+ICAgIHRoZSBmYWN0IHRoYXQgaXQgcmV0dXJu
-ZWQgYSBjb3JydXB0ZWQgcGFnZS4NCj4gDQo+IFlvdSBhcmUgaW4gdGhlIHNlY29uZCBjYXNlLCB3
-ZSBleHBlY3QgdGhlIGRyaXZlciB0byBiZWhhdmUgbGlrZSBpbiAxLy4NCkkgdHJpZWQgd2l0aCBt
-dGQtdXRpbHMobmFuZGJpdGVyciB0ZXN0KSBhbmQgaGVyZSBpcyB0aGUgb3V0cHV0IG9mIHRoYXQN
-CnJvb3RAeGlsaW54LXpjMTc1MS1kYzItMjAxOF8xOn4jIG5hbmRiaXRlcnJzIC1pIC9kZXYvbXRk
-MA0KaW5jcmVtZW50YWwgYml0ZXJyb3JzIHRlc3QNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMCBi
-aXQgZXJyb3JzIHBlciBzdWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDEvNw0KU3VjY2Vzc2Z1
-bGx5IGNvcnJlY3RlZCAxIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJpdGVycm9y
-IEAgMy83DQpTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDIgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0K
-SW5zZXJ0ZWRiaXRlcnJvciBAIDUvNw0KU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAzIGJpdCBlcnJv
-cnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJpdGVycm9yIEAgNy83DQpTdWNjZXNzZnVsbHkgY29y
-cmVjdGVkIDQgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCA4LzcN
-ClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgNSBiaXQgZXJyb3JzIHBlciBzdWJwYWdlDQpJbnNlcnRl
-ZCBiaXRlcnJvciBAIDEwLzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgNiBiaXQgZXJyb3JzIHBl
-ciBzdWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDEyLzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0
-ZWQgNyBiaXQgZXJyb3JzIHBlciBzdWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDE0LzcNClN1
-Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgOCBiaXQgZXJyb3JzIHBlciBzdWJwYWdlDQpJbnNlcnRlZCBi
-aXRlcnJvciBAIDE3LzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgOSBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDE5LzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
-MTAgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCAyMS83DQpTdWNj
-ZXNzZnVsbHkgY29ycmVjdGVkIDExIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJp
-dGVycm9yIEAgMjMvNw0KU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAxMiBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDI0LzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
-MTMgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCAyNi83DQpTdWNj
-ZXNzZnVsbHkgY29ycmVjdGVkIDE0IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJp
-dGVycm9yIEAgMjgvNw0KU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAxNSBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDMwLzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
-MTYgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCAzMi83DQpTdWNj
-ZXNzZnVsbHkgY29ycmVjdGVkIDE3IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJp
-dGVycm9yIEAgMzQvNw0KU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAxOCBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDM2LzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
-MTkgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCAzOC83DQpTdWNj
-ZXNzZnVsbHkgY29ycmVjdGVkIDIwIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJp
-dGVycm9yIEAgNDEvNw0KU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAyMSBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDQzLzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
-MjIgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCA0NS83DQpTdWNj
-ZXNzZnVsbHkgY29ycmVjdGVkIDIzIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UNCkluc2VydGVkIGJp
-dGVycm9yIEAgNDcvNw0KU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAyNCBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlDQpJbnNlcnRlZCBiaXRlcnJvciBAIDQ4LzcNClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQg
-MjUgYml0IGVycm9ycyBwZXIgc3VicGFnZQ0KSW5zZXJ0ZWQgYml0ZXJyb3IgQCA1MC83DQpFQ0Mg
-ZmFpbHVyZSwgaW52YWxpZCBkYXRhIGRlc3BpdGUgcmVhZCBzdWNjZXNzDQpyb290QHhpbGlueC16
-YzE3NTEtZGMyLTIwMThfMTp+Iw0KDQpCdXQgZXZlbiBpbiB0aGlzIGNhc2UgYWxzbywgZHJpdmVy
-IGlzIHNheWluZyBFQ0MgZmFpbHVyZSBidXQgcmVhZCBzdWNjZXNzLg0KVGhhdCBtZWFucyBjb250
-cm9sbGVyIGlzIGFibGUgdG8gZGV0ZWN0IGVycm9ycyBvbiByZWFkIHBhZ2UgdXAgdG8gMjQgYml0
-IG9ubHkuDQpBZnRlciB0aGF0IHRoZXJlIGlzIG5vIHdheSB0byBzYXkgdG8gdGhlIHVwcGVyIGxh
-eWVycyB0aGF0IHRoZSBwYWdlIGlzIGJhZCBiZWNhdXNlIG9mIHRoZSBsaW1pdGF0aW9uIGluIHRo
-ZSBjb250cm9sbGVyLg0KQ291bGQgeW91IHBsZWFzZSBzdWdnZXN0IGFueSBhbHRlcm5hdGl2ZSB0
-byByZXBvcnQgdGhlIGVycm9ycyBpbiB0aGF0IGNhc2U/DQoNClRoYW5rcywNCk5hZ2EgU3VyZXNo
-a3VtYXIgUmVsbGkNCg0KPiANCj4gPg0KPiA+IEkgYW0gcnVubmluZyBtdGQtdXRpbHMgbmFuZGJp
-dGVyciB0ZXN0IG5vdy4gV2lsbCBsZXQgeW91IGtub3cgb25jZSBJIGNvbXBsZXRlZCB0aGF0Lg0K
-PiANCj4gWWVzIHBsZWFzZSwgcHJlZmVyIHVzaW5nIHRoZSB1c2Vyc3BhY2UgdG9vbHMuDQo+IA0K
-PiANCj4gVGhhbmtzLA0KPiBNaXF1w6hsDQo=
+Hi Richard,
+
+On Sat, 15 Dec 2018 at 11:22, Richard Weinberger <richard@nod.at> wrote:
+> When jffs2 has to retry reading xattrs we need to reset
+> the buffer pointer. Otherwise we return old xattrs from the
+> previous iteration which leads to a inconsistency between
+> the number of bytes we return and the real list size.
+>
+> Cc: <stable@vger.kernel.org>
+> Cc: Andreas Gruenbacher <agruenba@redhat.com>
+> Fixes: 764a5c6b1fa4 ("xattr handlers: Simplify list operation")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+
+Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+
+> ---
+> Andreas,
+>
+> since you maintain the attr package too, I report it right here. :-)
+> This jffs2 bug lead to a crash in attr_list().
+>
+> for() will loop to crash when there is no trailing \0 in the
+> list of xattrs.
+>
+> for (l = lbuf; l != lbuf + length; l = strchr(l, '\0') + 1) {
+>         if (api_unconvert(name, l, flags))
+>                 continue;
+>
+> ...
+> }
+>
+> I suggest changing the loop condition to something like l < lbuf + length.
+
+With that change alone, strchr would still go beyond the buffer. Let's
+just append a null character at the end instead.
+
+Thanks,
+Andreas
+
+> Thanks,
+> //richard
+> ---
+>  fs/jffs2/xattr.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+> index da3e18503c65..0cb322eb9516 100644
+> --- a/fs/jffs2/xattr.c
+> +++ b/fs/jffs2/xattr.c
+> @@ -967,6 +967,7 @@ ssize_t jffs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
+>         struct jffs2_xattr_ref *ref, **pref;
+>         struct jffs2_xattr_datum *xd;
+>         const struct xattr_handler *xhandle;
+> +       char *orig_buffer = buffer;
+>         const char *prefix;
+>         ssize_t prefix_len, len, rc;
+>         int retry = 0;
+> @@ -977,6 +978,7 @@ ssize_t jffs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
+>
+>         down_read(&c->xattr_sem);
+>   retry:
+> +       buffer = orig_buffer;
+>         len = 0;
+>         for (ref=ic->xref, pref=&ic->xref; ref; pref=&ref->next, ref=ref->next) {
+>                 BUG_ON(ref->ic != ic);
+> --
+> 2.20.0
+>
