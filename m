@@ -1,26 +1,17 @@
-Received: from mail-ot1-f65.google.com ([209.85.210.65])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZ0Pn-00065n-Fl
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 21:27:04 +0000
-Received: by mail-ot1-f65.google.com with SMTP id t5so13671867otk.1
- for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2018 13:26:52 -0800 (PST)
-Date: Mon, 17 Dec 2018 15:26:50 -0600
-From: Rob Herring <robh@kernel.org>
-To: Christophe Kerello <christophe.kerello@st.com>
-Cc: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v4 1/3] dt-bindings: mtd: stm32_fmc2: add STM32 FMC2 NAND
- controller documentation
-Message-ID: <20181217212650.GA20603@bogus>
-References: <1544781488-18723-1-git-send-email-christophe.kerello@st.com>
- <1544781488-18723-2-git-send-email-christophe.kerello@st.com>
+ id 1gZ0mj-0006ZY-TU
+ for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 21:50:47 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, marek.vasut@gmail.com, richard@nod.at,
+ miquel.raynal@bootlin.com, bkenward@solarflare.com
+Subject: [PATCH] mtdram: Expose module parameters
+Date: Mon, 17 Dec 2018 22:50:15 +0100
+Message-Id: <20181217215015.32392-1-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1544781488-18723-2-git-send-email-christophe.kerello@st.com>
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 14, 2018 at 10:58:06AM +0100, Christophe Kerello wrote:
-> This patch adds the documentation of the device tree bindings for the STM32
-> FMC2 NAND controller.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> ---
->  .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    | 61 ++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+Since we can set module parameters also when a driver is built in,
+it makes no sense to protect module parameter with #ifdef MODULE.
+Now the mtdram sizes can also set when the module is not a loadable
+module.
 
-Please add acks/reviewed-bys when posting new versions.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/devices/mtdram.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Rob
+diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+index 222cc347ce5d..3669d67cacb8 100644
+--- a/drivers/mtd/devices/mtdram.c
++++ b/drivers/mtd/devices/mtdram.c
+@@ -25,14 +25,12 @@ static unsigned long writebuf_size =3D 64;
+ #define MTDRAM_TOTAL_SIZE (total_size * 1024)
+ #define MTDRAM_ERASE_SIZE (erase_size * 1024)
+=20
+-#ifdef MODULE
+ module_param(total_size, ulong, 0);
+ MODULE_PARM_DESC(total_size, "Total device size in KiB");
+ module_param(erase_size, ulong, 0);
+ MODULE_PARM_DESC(erase_size, "Device erase block size in KiB");
+ module_param(writebuf_size, ulong, 0);
+ MODULE_PARM_DESC(writebuf_size, "Device write buf size in Bytes (Default=
+: 64)");
+-#endif
+=20
+ // We could store these in the mtd structure, but we only support 1 devi=
+ce..
+ static struct mtd_info *mtd_info;
+--=20
+2.20.1
