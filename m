@@ -1,26 +1,41 @@
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYv92-0003h4-2M
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 15:49:25 +0000
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Schrempf
- Frieder" <frieder.schrempf@kontron.de>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 2/3] mtd: rawnand: ESMT: Also use the last page for bad block
- markers
-Date: Mon, 17 Dec 2018 15:49:11 +0000
-Message-ID: <1545061693-29216-3-git-send-email-frieder.schrempf@kontron.de>
-References: <1545061693-29216-1-git-send-email-frieder.schrempf@kontron.de>
-In-Reply-To: <1545061693-29216-1-git-send-email-frieder.schrempf@kontron.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gYvxY-0002eF-AL
+ for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 16:41:37 +0000
+Date: Mon, 17 Dec 2018 17:41:14 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
+ <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Message-ID: <20181217174114.24196d17@xps13>
+In-Reply-To: <MWHPR02MB26235AE6567A06EF4C6362E6AFBC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181118204324.373ca9cc@bbrezillon>
+ <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181119090246.49060019@bbrezillon>
+ <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
+ <20181120120244.7d2442b5@bbrezillon>
+ <20181120133624.3fa4742d@xps13>
+ <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181212091135.1d0cc9a6@xps13>
+ <MWHPR02MB26236CEF8A2110B20C825198AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181212100931.149b0cac@xps13>
+ <MWHPR02MB2623EDA15BE59304795F3034AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20181212141825.69711c57@xps13>
+ <MWHPR02MB26235AE6567A06EF4C6362E6AFBC0@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +45,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+Hi Naga,
 
-It is known that some ESMT SLC NANDs have been shipped
-with the factory bad block markers in the first or last page
-of the block, instead of the first or second page. To be on
-the safe side, let's check all three locations.
+[...]
 
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
- drivers/mtd/nand/raw/nand_esmt.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+> Inserted biterror @ 48/7
+> Successfully corrected 25 bit errors per subpage
+> Inserted biterror @ 50/7
+> ECC failure, invalid data despite read success
+> root@xilinx-zc1751-dc2-2018_1:~#
+>=20
+> But even in this case also, driver is saying ECC failure but read success.
+> That means controller is able to detect errors on read page up to 24 bit =
+only.
+> After that there is no way to say to the upper layers that the page is ba=
+d because of the limitation in the controller.
 
-diff --git a/drivers/mtd/nand/raw/nand_esmt.c b/drivers/mtd/nand/raw/nand_e=
-smt.c
-index 96f039a..275bc8e 100644
---- a/drivers/mtd/nand/raw/nand_esmt.c
-+++ b/drivers/mtd/nand/raw/nand_esmt.c
-@@ -36,7 +36,14 @@ static void esmt_nand_decode_id(struct nand_chip *chip)
- static int esmt_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
--		chip->bbt_options |=3D NAND_BBT_SCAN2NDPAGE;
-+		/*
-+		 * It is known that some ESMT SLC NANDs have been shipped
-+		 * with the factory bad block markers in the first or last page
-+		 * of the block, instead of the first or second page. To be on
-+		 * the safe side, let's check all three locations.
-+		 */
-+		chip->bbt_options |=3D NAND_BBT_SCAN2NDPAGE |
-+				     NAND_BBT_SCANLASTPAGE;
-=20
- 	return 0;
- }
---=20
-2.7.4
+This is more than a "limitation", the design is broken. I am not sure
+how to support such controller, and I am not sure if we even want to.
+
+> Could you please suggest any alternative to report the errors in that cas=
+e?
+
+Shall we support the controller without the hw ECC engine? Boris, any
+thoughts?
+
+
+Thanks,
+Miqu=C3=A8l
