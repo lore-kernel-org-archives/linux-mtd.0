@@ -1,21 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYq4q-000500-CG
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 10:24:46 +0000
-Date: Mon, 17 Dec 2018 11:24:18 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] mtd: implement proper partition handling
-Message-ID: <20181217112418.754d37ee@bbrezillon>
-In-Reply-To: <20181211174302.9913-1-miquel.raynal@bootlin.com>
-References: <20181211174302.9913-1-miquel.raynal@bootlin.com>
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gYqcz-0001Co-Ga
+ for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 11:00:03 +0000
+Received: by mail-pf1-x442.google.com with SMTP id u6so6182536pfh.11
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2018 02:59:50 -0800 (PST)
+Date: Mon, 17 Dec 2018 13:59:44 +0300
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, hsiangkao@mail.ru,
+ kirill.shutemov@linux.intel.com, stable@vger.kernel.org,
+ zhangjun <openzhangj@gmail.com>
+Subject: Re: [PATCH] ubifs: Get/put page when changing PG_private
+Message-ID: <20181217105944.a7eylrxi5pni4mqq@kshutemo-mobl1>
+References: <20181215150130.19381-1-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181215150130.19381-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 Dec 2018 18:43:02 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Sat, Dec 15, 2018 at 04:01:30PM +0100, Richard Weinberger wrote:
+> The page migration code assumes that a page with PG_private
+> set has its page count elevated by 1.
+> UBIFS never did this and therefore the migration code was unable
+> to migrate some pages owned by UBIFS.
+> The lead to situations where the CMA memory allocator failed to
+> allocate memory.
+> 
+> Fix this by using get/put_page when changing PG_private.
 
->  /* Returns the size of the entire flash chip */
->  uint64_t mtd_get_device_size(const struct mtd_info *mtd)
->  {
->  	if (!mtd_is_partition(mtd))
->  		return mtd->size;
->  
-> -	return mtd_get_device_size(mtd_to_part(mtd)->parent);
-> +	return mtd_get_device_size(mtd->parent);
+Looks good to me.
 
-Not really related to the patch, but this function only works if you
-have a single level of partitioning. If we want it to work for
-recursive partitioning we should have something like this:
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-u64 mtd_get_device_size(const struct mtd_info *mtd)
-{
-	while (mtd->parent)
-		mtd = mtd->parent;
+> Cc: <stable@vger.kernel.org>
+> Cc: zhangjun <openzhangj@gmail.com>
+> Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
 
-	return mtd->size;
-}
+It is fair to reference the commit here. But I believe the bug itself
+predates the commit and relevant not only for migration.
+
+We might make it clear in the commit message.
+
+-- 
+ Kirill A. Shutemov
