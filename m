@@ -1,22 +1,21 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gYr8Q-0006x7-BZ
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 11:32:32 +0000
-From: Richard Weinberger <richard@nod.at>
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, hsiangkao@mail.ru,
- kirill.shutemov@linux.intel.com, stable@vger.kernel.org,
- zhangjun <openzhangj@gmail.com>
-Subject: Re: [PATCH] ubifs: Get/put page when changing PG_private
-Date: Mon, 17 Dec 2018 12:32:04 +0100
-Message-ID: <1605618.KFvAoLHJ4l@blindfold>
-In-Reply-To: <20181217105944.a7eylrxi5pni4mqq@kshutemo-mobl1>
-References: <20181215150130.19381-1-richard@nod.at>
- <20181217105944.a7eylrxi5pni4mqq@kshutemo-mobl1>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gYrQ4-000761-O8
+ for linux-mtd@lists.infradead.org; Mon, 17 Dec 2018 11:50:46 +0000
+Date: Mon, 17 Dec 2018 12:50:31 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] mtd: implement proper partition handling
+Message-ID: <20181217125031.4ebe9542@bbrezillon>
+In-Reply-To: <20181211174302.9913-1-miquel.raynal@bootlin.com>
+References: <20181211174302.9913-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 17. Dezember 2018, 11:59:44 CET schrieb Kirill A. Shutemov:
-> On Sat, Dec 15, 2018 at 04:01:30PM +0100, Richard Weinberger wrote:
-> > The page migration code assumes that a page with PG_private
-> > set has its page count elevated by 1.
-> > UBIFS never did this and therefore the migration code was unable
-> > to migrate some pages owned by UBIFS.
-> > The lead to situations where the CMA memory allocator failed to
-> > allocate memory.
-> > 
-> > Fix this by using get/put_page when changing PG_private.
-> 
-> Looks good to me.
-> 
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> 
-> > Cc: <stable@vger.kernel.org>
-> > Cc: zhangjun <openzhangj@gmail.com>
-> > Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
-> 
-> It is fair to reference the commit here. But I believe the bug itself
-> predates the commit and relevant not only for migration.
+On Tue, 11 Dec 2018 18:43:02 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-My intention was not blaming you. :)
-IMHO backporting the fix makes only sense up to that commit.
- 
-> We might make it clear in the commit message.
+>  int del_mtd_partitions(struct mtd_info *mtd)
+>  {
+> -	struct mtd_part *slave, *next;
+> -	int ret, err = 0;
+> +	int ret;
+> +
+> +	pr_info("Deleting MTD partitions on \"%s\":\n", mtd->name);
+>  
+>  	mutex_lock(&mtd_partitions_mutex);
 
-Fair point, I'll rephrase.
+Can we find a way to turn this global lock into a per-mtd-object lock?
+It probably requires reworking the implementation to make lockdep
+happy, but that should be doable.
 
-Thanks,
-//richard
+> -	list_for_each_entry_safe(slave, next, &mtd_partitions, list)
+> -		if (slave->parent == mtd) {
+> -			ret = __mtd_del_partition(slave);
+> -			if (ret < 0)
+> -				err = ret;
+> -		}
+> +	ret = __del_mtd_partitions(mtd);
+>  	mutex_unlock(&mtd_partitions_mutex);
+>  
+> -	return err;
+> +	return ret;
+>  }
+>  
+
+Do you have a good reason for creating __del_mtd_partitions()? Looks
+like it's only used by del_mtd_partitions().
