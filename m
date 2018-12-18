@@ -1,44 +1,22 @@
-Received: from mail-sn1nam04on0616.outbound.protection.outlook.com
- ([2a01:111:f400:fe4c::616]
- helo=NAM04-SN1-obe.outbound.protection.outlook.com)
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZ81D-0006Wz-Ci
- for linux-mtd@lists.infradead.org; Tue, 18 Dec 2018 05:34:13 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
- <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
- <michals@xilinx.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Tue, 18 Dec 2018 05:33:53 +0000
-Message-ID: <MWHPR02MB26237B932D7F3CCEE0476FE0AFBD0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB26234433484426F333E9B60EAFDC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181118204324.373ca9cc@bbrezillon>
- <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181119090246.49060019@bbrezillon>
- <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
- <20181120120244.7d2442b5@bbrezillon>	<20181120133624.3fa4742d@xps13>
- <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
- <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212091135.1d0cc9a6@xps13>
- <MWHPR02MB26236CEF8A2110B20C825198AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212100931.149b0cac@xps13>
- <MWHPR02MB2623EDA15BE59304795F3034AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212141825.69711c57@xps13>
- <MWHPR02MB26235AE6567A06EF4C6362E6AFBC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181217174114.24196d17@xps13>
-In-Reply-To: <20181217174114.24196d17@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gZ9yU-0002hO-SU
+ for linux-mtd@lists.infradead.org; Tue, 18 Dec 2018 07:39:32 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Hou Tao <houtao1@huawei.com>
+Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [bug report] Got "read_pnode: error -22 reading pnode" during
+ ubifs mount
+Date: Tue, 18 Dec 2018 08:39:13 +0100
+Message-ID: <1573903.SDKNkj1vxS@blindfold>
+In-Reply-To: <762a7385-0caf-9a5a-ff62-603452fb1bd1@huawei.com>
+References: <402695c6-7ba9-abe9-4ccd-ea598ea2511e@huawei.com>
+ <1744858.UbCnKIVnxf@blindfold>
+ <762a7385-0caf-9a5a-ff62-603452fb1bd1@huawei.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,38 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
-bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBNb25k
-YXksIERlY2VtYmVyIDE3LCAyMDE4IDEwOjExIFBNDQo+IFRvOiBOYWdhIFN1cmVzaGt1bWFyIFJl
-bGxpIDxuYWdhc3VyZUB4aWxpbnguY29tPg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5i
-cmV6aWxsb25AYm9vdGxpbi5jb20+OyByb2JoQGtlcm5lbC5vcmc7IHJpY2hhcmRAbm9kLmF0OyBs
-aW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBs
-aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gbmFnYXN1cmVzaDEyQGdtYWlsLmNvbTsg
-TWljaGFsIFNpbWVrIDxtaWNoYWxzQHhpbGlueC5jb20+Ow0KPiBjb21wdXRlcnNmb3JwZWFjZUBn
-bWFpbC5jb207IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFtMSU5VWCBQQVRD
-SCB2MTIgMy8zXSBtdGQ6IHJhd25hbmQ6IGFyYXNhbjogQWRkIHN1cHBvcnQgZm9yIEFyYXNhbg0K
-PiBOQU5EIEZsYXNoIENvbnRyb2xsZXINCj4gDQo+IEhpIE5hZ2EsDQo+IA0KPiBbLi4uXQ0KPiAN
-Cj4gPiBJbnNlcnRlZCBiaXRlcnJvciBAIDQ4LzcNCj4gPiBTdWNjZXNzZnVsbHkgY29ycmVjdGVk
-IDI1IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UgSW5zZXJ0ZWQgYml0ZXJyb3IgQA0KPiA+IDUwLzcg
-RUNDIGZhaWx1cmUsIGludmFsaWQgZGF0YSBkZXNwaXRlIHJlYWQgc3VjY2Vzcw0KPiA+IHJvb3RA
-eGlsaW54LXpjMTc1MS1kYzItMjAxOF8xOn4jDQo+ID4NCj4gPiBCdXQgZXZlbiBpbiB0aGlzIGNh
-c2UgYWxzbywgZHJpdmVyIGlzIHNheWluZyBFQ0MgZmFpbHVyZSBidXQgcmVhZCBzdWNjZXNzLg0K
-PiA+IFRoYXQgbWVhbnMgY29udHJvbGxlciBpcyBhYmxlIHRvIGRldGVjdCBlcnJvcnMgb24gcmVh
-ZCBwYWdlIHVwIHRvIDI0IGJpdCBvbmx5Lg0KPiA+IEFmdGVyIHRoYXQgdGhlcmUgaXMgbm8gd2F5
-IHRvIHNheSB0byB0aGUgdXBwZXIgbGF5ZXJzIHRoYXQgdGhlIHBhZ2UgaXMgYmFkIGJlY2F1c2Ug
-b2YgdGhlDQo+IGxpbWl0YXRpb24gaW4gdGhlIGNvbnRyb2xsZXIuDQo+IA0KPiBUaGlzIGlzIG1v
-cmUgdGhhbiBhICJsaW1pdGF0aW9uIiwgdGhlIGRlc2lnbiBpcyBicm9rZW4uIEkgYW0gbm90IHN1
-cmUgaG93IHRvIHN1cHBvcnQgc3VjaA0KPiBjb250cm9sbGVyLCBhbmQgSSBhbSBub3Qgc3VyZSBp
-ZiB3ZSBldmVuIHdhbnQgdG8uDQoNClRoZSBudW1iZXIgb2YgZXJyb3JzIHRoYXQgYXJlIGNvcnJl
-Y3RhYmxlIGlzIGxpbWl0ZWQgYnkgYSBwYXJhbWV0ZXIgJ3QnKHRvdGFsIG51bWJlciBvZiBlcnJv
-cnMpLA0KSWYgdGhlcmUgaXMgYSBjb25kaXRpb24gdGhhdCB0aGUgbnVtYmVyIG9mIGVycm9ycyBn
-cmVhdGVyIHRoYW4gJ3QnLCB0aGVuIHRoZSBjb250cm9sbGVyIHdvbid0IGJlIGFibGUgdG8gZGV0
-ZWN0IHRoYXQuDQpJIGd1ZXNzIHRoaXMgY29uY2VwdCBpcyBzYW1lIGZvciBvdGhlciBjb250cm9s
-bGVycyBhcyB3ZWxsLg0KSW4gQXJhc2FuIGl0IGlzIGxpbWl0ZWQgdG8gMjQtYml0Lg0KDQpFdmVu
-LCBpbiBjYXNlIG9mIEhhbW1pbmcsIGl0IGlzIDEtYml0IGVycm9yIGNvcnJlY3Rpb24gYW5kIDIt
-Yml0IGVycm9yIGRldGVjdGlvbi4NCldoYXQgd2lsbCBoYXBwZW4gaWYgdGhlcmUgYXJlIG11bHRp
-cGxlIGVycm9ycyhncmVhdGVyIHRoYW4gMi1iaXQpPw0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1
-bWFyIFJlbGxpDQo+IA0KPiA+IENvdWxkIHlvdSBwbGVhc2Ugc3VnZ2VzdCBhbnkgYWx0ZXJuYXRp
-dmUgdG8gcmVwb3J0IHRoZSBlcnJvcnMgaW4gdGhhdCBjYXNlPw0KPiANCj4gU2hhbGwgd2Ugc3Vw
-cG9ydCB0aGUgY29udHJvbGxlciB3aXRob3V0IHRoZSBodyBFQ0MgZW5naW5lPyBCb3JpcywgYW55
-IHRob3VnaHRzPw0KPiANCj4gDQo+IFRoYW5rcywNCj4gTWlxdcOobA0K
+Am Dienstag, 18. Dezember 2018, 02:18:22 CET schrieb Hou Tao:
+> > The thing is, a fsck.ubifs cannot recover a failed filesystem (failed due to a bug).
+> > It may be able to bring it back in a mountable shape but user data will be lost
+> > in any case.
+> > In your case, the corrupt LPT is not the root cause, recreating it from scratch
+> > will not solve anything.
+> > 
+> Recreating it may will not solve anything, but how about making its space free again
+> or trimming the dirty space to a legal valid. I think loss of some data is much more
+> acceptable than making the system stop working.
+
+This sounds much more easier than it is.
+How can you know that only the LPT is bad?
+
+Such a tool will never provide a fix, all it does it delaying the time until your QA
+notices that something is odd.
+
+> >> We have checked ubifs_change_lp() and found it doesn't check whether or not
+> >> the new free space or dirty space is less the leb_size, and we will add these
+> >> checks during reproduction first.
+> >>
+> >> So any direction or suggestion for the reproduction & the solution ?
+> > 
+> > If you are using xattrs, please give the attached patch series a try.
+> > This is my current work.
+> > 
+> > Patchs 1/4 and 2/4 fix the xattr problem. 3/4 and 4/4 enforce new rules
+> > for xattrs. Before that, UBIFS supported up to 2^16 xattrs per inode and tried
+> > to be smart. It assumed that upon journal replay it can lookup the position of
+> > all xattr inodes from the TNC. Since these TNC entries can get garbage collected
+> > in the mean while, it fails to find them and the free-space accounting (LPT)
+> > goes nuts.
+> > 
+> I found another fix related with xattr and journal replay: 1cb51a15b576
+> "ubifs: Fix journal replay wrt. xattr nodes". It seems that both this fix
+> and your new patches are fixing the same problem, right ?
+
+No, these are completely different issues.
+
+> I still don't understand how the free-space accounting is influenced by
+> the GC-ed index nodes, could you elaborate on the procedure ?
+
+If you look at the journal reply code you'll see that UBIFS fixes up the free space
+accounting.
+This is because the counters are allowed to be incorrect, as long UBIFS can fix them
+upon replay.
+As far as I understood the problem, the fixup code will fail if xattrs can no longer be
+located.
+
+> > One solution is to insert xattr inodes also to the journal.
+> > Hence the number of xattrs is now stricter limited.
+> > On a typical NAND still more than 100...
+> > I plan also to add a new xattr-deltion-inode to support deleting xattr inodes
+> > in bulk, but this needs changes to the on-disk format.
+> >Yes, it will a write-incompatible fix, but can we make the old kernel mounts
+> the new images as read-only ?
+
+Sure can we. But this will users still unhappy.
+
+> > One open question is, what to do with UBIFS filesystem which have already more xattrs
+> > per inode than the new limit allows?
+> Maybe the user can be instructed to use a user-space utility to remove these extra xattrs ?
+
+How would you do this in the field?
+
+Thanks,
+//richard
