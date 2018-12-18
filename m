@@ -1,20 +1,16 @@
-Received: from mail.intenta.de ([178.249.25.132])
+Received: from a27-33.smtp-out.us-west-2.amazonses.com ([54.240.27.33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZC3W-0002EC-Nu
- for linux-mtd@lists.infradead.org; Tue, 18 Dec 2018 09:53:03 +0000
-Date: Tue, 18 Dec 2018 10:52:36 +0100
-From: Helmut Grohne <helmut.grohne@intenta.de>
-To: David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard.weinberger@gmail.com>
-CC: Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v3 3/3] jffs2: put directories f->sem on a separate lockdep
- class
-Message-ID: <c578ea017c7bc73a5b3b0025f049a3c90efc1bd2.1545126261.git.helmut.grohne@intenta.de>
-References: <cover.1545126261.git.helmut.grohne@intenta.de>
+ id 1gZCpS-0000RF-Uh
+ for linux-mtd@lists.infradead.org; Tue, 18 Dec 2018 10:42:24 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1545126261.git.helmut.grohne@intenta.de>
+Date: Tue, 18 Dec 2018 10:42:11 +0000
+Message-ID: <01010167c0e8a3b4-d5b9de75-577d-488e-a2a8-9af09b6162ea-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: Meeters Farm Progress Show 2018
+From: "Karl Foxx" <karl.foxx@reservoirassociation.com>
+Reply-To: "Karl Foxx" <karl.foxx@reservoirassociation.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,95 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We get a lockdep warning if we read a directory (e.g. ls) and fault a
-page on a regular file:
+Hello ,
 
-[  181.206207] mmaptest/392 is trying to acquire lock:
-[  181.211066]  (&f->sem){+.+.}, at: [<c01ff7d8>] jffs2_readpage+0x30/0x5c
-[  181.217663]
-[  181.217663] but task is already holding lock:
-[  181.223477]  (&mm->mmap_sem){++++}, at: [<c04928e8>] do_page_fault+0xa8/0x454
-[  181.230596]
-[  181.230596] which lock already depends on the new lock.
-[  181.230596]
-[  181.238755]
-[  181.238755] the existing dependency chain (in reverse order) is:
-[  181.246219]
-[  181.246219] -> #1 (&mm->mmap_sem){++++}:
-[  181.251614]        __might_fault+0x90/0xc0
-[  181.255694]        filldir+0xa4/0x1f4
-[  181.259334]        jffs2_readdir+0xd8/0x1d4
-[  181.263499]        iterate_dir+0x78/0x128
-[  181.267490]        SyS_getdents+0x8c/0x12c
-[  181.271576]        ret_fast_syscall+0x0/0x28
-[  181.275818]
-[  181.275818] -> #0 (&f->sem){+.+.}:
-[  181.280690]        lock_acquire+0xfc/0x2b0
-[  181.284763]        __mutex_lock+0x8c/0xb0c
-[  181.288842]        mutex_lock_nested+0x2c/0x34
-[  181.293272]        jffs2_readpage+0x30/0x5c
-[  181.297438]        filemap_fault+0x600/0x73c
-[  181.301690]        __do_fault+0x28/0xb8
-[  181.305510]        handle_mm_fault+0x854/0xec0
-[  181.309937]        do_page_fault+0x384/0x454
-[  181.314188]        do_DataAbort+0x4c/0xc8
-[  181.318181]        __dabt_usr+0x44/0x60
-[  181.321999]        0xb6dffb02
+We've got the only marketing list you need this year, this is the one every=
+one else is looking for. But we're only offering it to a few selected group=
+ of organizations and until end of business today:
 
-Like with inode->i_rwsem, we recognize that this can never result in a
-dead lock, because we cannot page fault directory inodes and we cannot
-call getdents on non-directories. Thus we need different lockdep classes
-depending on the mode. This mirrors what
-lockdep_annotate_inode_mutex_key does to inodes.
+Purchase the Farm Progress Show 2018 Participants =E2=80=93 40000 contacts =
+at $900
+until the end of business today.
 
-Link: https://www.spinics.net/lists/linux-rt-users/msg07644.html
-Signed-off-by: Helmut Grohne <helmut.grohne@intenta.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- fs/jffs2/fs.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+Communicate with everyone who attended Farm Progress Show 2018, you get com=
+plete and credible accurate contact information, including phone, e mail, m=
+ailing address.
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 89a10b398d00..d4d691488a19 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -26,6 +26,9 @@
- #include <linux/crc32.h>
- #include "nodelist.h"
- 
-+static struct lock_class_key jffs2_inode_info_sem_key,
-+	 jffs2_inode_info_sem_dir_key;
-+
- static int jffs2_flash_setup(struct jffs2_sb_info *c);
- 
- int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
-@@ -277,6 +280,13 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
- 
- 	inode->i_mode = jemode_to_cpu(latest_node.mode);
- 
-+	/* Mirror lock class of inode->i_rwsem, see
-+	 * lockdep_annotate_inode_mutex_key.
-+	 */
-+	if (S_ISDIR(inode->i_mode))
-+		lockdep_set_class(&f->sem, &jffs2_inode_info_sem_dir_key);
-+	else
-+		lockdep_set_class(&f->sem, &jffs2_inode_info_sem_key);
- 	mutex_lock(&f->sem);
- 
- 	i_uid_write(inode, je16_to_cpu(latest_node.uid));
-@@ -439,6 +449,13 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
- 
- 	f = JFFS2_INODE_INFO(inode);
- 	jffs2_init_inode_info(f);
-+	/* Mirror lock class of inode->i_rwsem, see
-+	 * lockdep_annotate_inode_mutex_key.
-+	 */
-+	if (S_ISDIR(inode->i_mode))
-+		lockdep_set_class(&f->sem, &jffs2_inode_info_sem_dir_key);
-+	else
-+		lockdep_set_class(&f->sem, &jffs2_inode_info_sem_key);
- 	mutex_lock(&f->sem);
- 
- 	memset(ri, 0, sizeof(*ri));
--- 
-2.11.0
+We are known for providing organizations just like yours the information ed=
+ge needed to out-compete the rivals =E2=80=93 get your copy of the Farm Pro=
+gress Show 2018 Visitors-List before they get theirs.
+
+Look forward to hearing from you today; we'll hold a copy for you a little =
+longer.
+
+Best Regards
+
+Karl Foxx
+
+Notice: Ownership rights to this material are held solely by our organizati=
+on, including lawful rights to pursue remedy for its misuse. This transmiss=
+ion and the information contained within should not be used by any person o=
+r entity other than the original desired recipient =E2=80=93 this includes =
+review, retransmission, or dissemination of this information, as well as ta=
+king any action based upon it. If you receive or otherwise possess this tra=
+nsmission inappropriately or by error, please delete as soon as possible an=
+d notify the sender of the error. The Farm Progress Show 2018 does not sell=
+ or share this information with us, nor are we affiliated with the event or=
+ganizer for the Farm Progress Show 2018. All data is sourced lawfully, thro=
+ugh research and contacts contained within our internal database.
