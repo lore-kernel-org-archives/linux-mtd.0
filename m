@@ -1,21 +1,26 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-ot1-f65.google.com ([209.85.210.65])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZcpF-0008MB-Uk
- for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 14:27:55 +0000
-From: Richard Weinberger <richard@nod.at>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- "Zoltan Szubbocsev (zszubbocsev)" <zszubbocsev@micron.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>
-Subject: Re: [PATCH V1] mtd: core: Micron SLC NAND filling block
-Date: Wed, 19 Dec 2018 15:27:32 +0100
-Message-ID: <2816846.emhzHigZ4F@blindfold>
-In-Reply-To: <BYAPR08MB4533AC4A07E48EC37576C060DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
-References: <BYAPR08MB4533AC4A07E48EC37576C060DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
+ id 1gZeAx-0003c6-GE
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 15:54:25 +0000
+Received: by mail-ot1-f65.google.com with SMTP id 32so19479551ota.12
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2018 07:54:12 -0800 (PST)
+Date: Wed, 19 Dec 2018 09:54:10 -0600
+From: Rob Herring <robh@kernel.org>
+To: Tomer Maimon <tmaimon77@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, marek.vasut@gmail.com, richard@nod.at,
+ mark.rutland@arm.com, yuenn@google.com, venture@google.com,
+ brendanhiggins@google.com, avifishman70@gmail.com, joel@jms.id.au,
+ linux-mtd@lists.infradead.org, openbmc@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-binding: mtd: add NPCM FIU controller
+Message-ID: <20181219155410.GA3925@bogus>
+References: <20181203091456.454030-1-tmaimon77@gmail.com>
+ <20181203091456.454030-2-tmaimon77@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181203091456.454030-2-tmaimon77@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +30,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 19. Dezember 2018, 12:03:06 CET schrieb Bean Huo (beanhuo):
-> +#define PARTIAL_FILLING_CHECKUP 1 /* Used to turn on/off partial filling
-> +		 block checkup before erasing this block.*/
-> +#define LAST_CHECKPU_PAGE 13
-> +struct ubifs_filling_head {
-> +	__le32 magic;
-> +	__le32 crc;
-> +	__le64 sqnum;
-> +	__le32 len;
-> +	__u8 node_type;
-> +	__u8 group_type;
-> +	__u8 padding[2];
-> +	__le32 pad_len;
-> +} __packed;
+On Mon, Dec 03, 2018 at 11:14:55AM +0200, Tomer Maimon wrote:
+> Added device tree binding documentation for Nuvoton BMC
+> NPCM Flash Interface Unit(FIU) SPI-NOR controller.
+> 
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/npcm-fiu.txt | 64 ++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/npcm-fiu.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/npcm-fiu.txt b/Documentation/devicetree/bindings/mtd/npcm-fiu.txt
+> new file mode 100644
+> index 000000000000..9746cb5b1ced
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/npcm-fiu.txt
+> @@ -0,0 +1,64 @@
+> +* Nuvoton FLASH Interface Unit (FIU) SPI Controller
+> +
+> +NPCM FIU supports single, dual and quad communication interface.
+> +
+> +The NPCM7XX supports three FIU modules,
+> +FIU0 and FIUx supports two chip selects,
+> +FIU3 support four chip select.
+> +
+> +Required properties:
+> +  - compatible : "nuvoton,npcm750-fiu" for the NPCM7XX BMC
+> +  - #address-cells : should be 1.
+> +  - #size-cells : should be 0.
+> +  - reg : the first contains the register location and length,
+> +          the second contains the memory mapping address and length
+> +  - reg-names: Should contain the reg names "control" and "memory"
+> +  - clocks : phandle of F reference clock.
+> +
+> +Required properties in case the pins can be muxed:
+> +  - pinctrl-names : a pinctrl state named "default" must be defined.
+> +  - pinctrl-0 : phandle referencing pin configuration of the device.
+> +
+> +Optional property:
+> +  - spix-mode: enable spix-mode for an expansion bus to an ASIC or CPLD.
 
-I don't think this is needed anymore.
+Needs a vendor prefix. Unless this is some standard SPI thing (which 
+I've never heard of).
 
-If you overwrite (sub)pages 0 and 1, UBI EC and VID headers are gone.
-In case of a power-cut before the erase operation, UBI will detect the
-corrupted EC and VID headers and re-erase the block.
-For a fastmap attach the story is different, it does not track unmap/erase
-operations. Therefore it will not notice that the block was scheduled for
-erase and got corrupted by overwriting the first pages.
-Users on top of UBIFS will face either ECC errors or UBIFS complains
-about corrupted empty space.
-This fastmap issue got fixed with:
-781932375ffc ("ubi: fastmap: Correctly handle interrupted erasures in EBA")
+> +
+> +The SPI device must be a child of the FIU node and must have a
+> +compatible property as specified in bindings/mtd/jedec,spi-nor.txt
+> +
+> +Required property:
+> +- reg: chip select number.
+> +
+> +Optional property:
+> +- spi-rx-bus-width: see ../spi/spi-bus.txt for the description.
+> +
+> +Aliases:
+> +- All the FIU controller nodes should be represented in the aliases node using
+> +  the following format 'fiu{n}' where n is a unique number for the alias.
+> +  In the NPCM7XX BMC:
+> +  		fiu0 represent fiu 0 controller
+> +  		fiu1 represent fiu 3 controller
+> +  		fiu2 represent fiu x controller
 
-So your ubifs_filling_head struct seems to work around an already fixed UBI
-bug. :-)
+Please don't make up your own aliases. Use 'spiX' if anything, but 
+really, why do you need aliases in the first place?
 
-Thanks,
-//richard
+> +
+> +Example:
+> +fiu3: fiu@c00000000 {
+
+spi@...
+
+> +	compatible = "nuvoton,npcm750-fiu";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	reg = <0xfb000000 0x1000>, <0x80000000 0x10000000>;
+> +	reg-names = "control", "memory";
+> +	clocks = <&clk NPCM7XX_CLK_AHB>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&spi3_pins>;
+> +	spi-nor@0 {
+> +		compatible = "jedec,spi-nor";
+> +		spi-rx-bus-width = <2>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		reg = <0>;
+> +		partition@0 {
+> +			label = "flash_data";
+> +			reg = <0x0 0x800000>;
+> +		};
+> +	};
+> +};
+> +
+> -- 
+> 2.14.1
+> 
