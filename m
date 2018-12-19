@@ -1,17 +1,16 @@
-Received: from mail.ella-juwelen.de ([185.3.232.75] helo=ella-juwelen.de)
+Received: from a27-27.smtp-out.us-west-2.amazonses.com ([54.240.27.27])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZNdY-0006rR-Dq
- for linux-mtd@lists.infradead.org; Tue, 18 Dec 2018 22:14:50 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+ id 1gZXuq-000866-1Q
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 09:13:21 +0000
 MIME-Version: 1.0
+Date: Wed, 19 Dec 2018 09:13:07 +0000
+Message-ID: <01010167c5bd7883-028d6faf-1579-4e64-9444-0597629f78eb-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: I Need Your Help.
-To: Recipients <sarahmoris@aol.com>
-From: "Sarah Morris" <sarahmoris@aol.com>
-Date: Tue, 18 Dec 2018 22:50:34 +0100
-Reply-To: sarah.morris7@yandex.com
-Message-Id: <20181218215048.07B974497502@ella-juwelen.de>
+Subject: Pennsylvania Farm Show 2019 Participants
+From: "Bill Skyer" <bill.skyer@fairwestpress.com>
+Reply-To: "Bill Skyer" <bill.skyer@fairwestpress.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My Name is Sarah Morris from California, USA. I am a former Director and In=
-vestor with British Petroleum but presently diagnosed with Leukemia (Cancer=
- of the Blood), which according to the medical team handling my case, I do =
-not have a chance of surviving this ailment. =
+Hi ,
 
+We've reserved for you the outstanding mktg value take away from the Pennsy=
+lvania Farm Show 2019, but it's only available until the end of business to=
+day. Everyone wants to communicate quickly with the most relevant decision =
+makers at Pennsylvania Farm Show 2019, we put that ability in your hands:
 
-However, I have decided to set up a Charitable Foundation, to create awaren=
-ess about CANCER related disease, helping the disable and less privileged i=
-n the society as a way of keeping a legacy not for myself, but for the worl=
-d in general that after my demise I will be remembered for good.
+Purchase the Pennsylvania Farm Show 2019 Pre-Participants =E2=80=93 10000 c=
+ontacts at $1000
+until the end of business today.
 
-Consequently, I have decided to put all of my life earnings running into Mi=
-llions of Dollars for setting up this memorial foundation and would love yo=
-u to chair and head it in the capacity of handling and administering the da=
-y-to-day running of this foundation after my demise.
+Why is this p.roduct in such high demand? Because it's the only list of its=
+ kind anywhere.
 
-I wait to hear from you, to give you further detail regarding this and to d=
-irect you to my lawyer who will perfect all documents to formally declare a=
-nd present you as the beneficiary and administrator of this fund.
+Look forward to hearing from you, we can only make this offer for a few mor=
+e hours.
 
-best regards
+Best Regards
 
-Please do email me on my private Email: sarah.morrisneedu@gmail.com =
+Bill Skyer
 
-
-Sarah Morris
+Terms of use: This content is correct only for approved use by the original=
+ correct recipient. Ownership rights to this content are held solely by our=
+ organization and it is not permitted for unapproved users to examine, tran=
+smit, disseminate, or act on this material. If you receive or possess this =
+data and are not the original correct recipient, please delete it immediate=
+ly and notify the sender of the error. This organization holds no connectio=
+n or relationship to the organizers of the Pennsylvania Farm Show 2019 does=
+ not sell or share this information with us. The data provided herein is co=
+mpiled lawfully, from a combination of publicly available sources and our i=
+nternal database.
