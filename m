@@ -14,10 +14,10 @@ CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v6 2/7] spi: spi-mem: add support for octal mode I/O data
- transfer
-Date: Wed, 19 Dec 2018 10:11:55 +0000
-Message-ID: <1545214186-16987-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v6 4/7] mtd: spi-nor: add octal read flag for flash
+ mt35xu512aba
+Date: Wed, 19 Dec 2018 10:12:08 +0000
+Message-ID: <1545214186-16987-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1545214186-16987-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1545214186-16987-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -33,10 +33,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for octal mode I/O data transfer in spi-mem framework.
+Add octal read flag for flash mt35xu512aba.
+This flash, mt35xu512aba, is only complaint to SFDP JESD216B and does
+not seem to support newer JESD216C standard that provides auto
+detection of Octal mode capabilities and opcodes. Therefore, this
+capability is manually added using new SPI_NOR_OCTAL_READ flag.
 
+Signed-off-by: Vignesh R <vigneshr@ti.com>
 Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 Changes for v6:
 - Correct S-o-b tag with full author name as 'Yogesh Narayan Gaur'.
@@ -47,38 +51,24 @@ Changes for v4:
 Changes for v3:
 - Modified string 'octal' with 'octo'.
 Changes for v2:
-- Patch added in v2 version.
+- Incorporated review comments of Boris and Vignesh
 
- drivers/spi/spi-mem.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/spi-nor.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 62a7b80..5e15d62 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -12,7 +12,7 @@
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 872d707..53a3bcc 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1877,7 +1877,8 @@ static const struct flash_info spi_nor_ids[] =3D {
+ 	/* Micron */
+ 	{
+ 		"mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
+-			SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES)
++			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
++			SPI_NOR_4B_OPCODES)
+ 	},
 =20
- #include "internals.h"
-=20
--#define SPI_MEM_MAX_BUSWIDTH		4
-+#define SPI_MEM_MAX_BUSWIDTH		8
-=20
- /**
-  * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
-@@ -121,6 +121,13 @@ static int spi_check_buswidth_req(struct spi_mem *mem,=
- u8 buswidth, bool tx)
-=20
- 		break;
-=20
-+	case 8:
-+		if ((tx && (mode & SPI_TX_OCTAL)) ||
-+		    (!tx && (mode & SPI_RX_OCTAL)))
-+			return 0;
-+
-+		break;
-+
- 	default:
- 		break;
- 	}
+ 	/* PMC */
 --=20
 2.7.4
