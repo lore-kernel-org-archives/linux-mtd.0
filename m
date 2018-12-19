@@ -1,16 +1,20 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZZdY-0006E8-Rx
- for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 11:03:42 +0000
+ id 1gZZf9-0007Un-HP
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 11:05:18 +0000
 From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Miquel
  Raynal" <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
  "Zoltan Szubbocsev (zszubbocsev)" <zszubbocsev@micron.com>,
  "tglx@linutronix.de" <tglx@linutronix.de>
 CC: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Subject: [PATCH V1] mtd: core: Micron SLC NAND filling block
-Date: Wed, 19 Dec 2018 11:03:06 +0000
-Message-ID: <BYAPR08MB4533AC4A07E48EC37576C060DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
+Subject: RE: [EXT] Re: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial
+ erase issue
+Date: Wed, 19 Dec 2018 11:04:52 +0000
+Message-ID: <BYAPR08MB453360A544C088573ED01A72DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
+References: <alpine.DEB.2.21.1811292207570.1657@nanos.tec.linutronix.de>
+ <20181202082918.3b5f303a@bbrezillon>
+In-Reply-To: <20181202082918.3b5f303a@bbrezillon>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -24,206 +28,229 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On some legacy planar 2D Micron NAND devices when a
-block erase command is issued, occasionally even though
-a block erase operation successfully completes and returns
-a pass status, the flash block may not be completely erased.
-Subsequent operations to this block on very rare cases can
-result in subtle failures or corruption. These extremely rare
-cases should nevertheless be considered.
+Hi, all
+Micron developed one patch related to what mentioned here. which is based o=
+n v4.2.
+I just submitted it here http://lists.infradead.org/pipermail/linux-mtd/201=
+8-December/086446.html
+, please review. And I will update that later based on your comments.
 
-These rare occurrences have been observed on partially written
-blocks. Partially written blocks are not uncommon with UBI/UBIFS.=20
-
-To avoid this rare occurrence, we make sure that at least 15 pages
-have been programmed to a block before it is erased. In case we
-find that less than 15 pages have been programmed, additional
-pages are programmed in the block. The observation is that additional
-pages rarely need to be written and most of the time UBI/UBIFS erases
-blocks that contain more programmed pages.=20
-
-Signed-off-by: beanhuo <beanhuo@micron.com>
-Reviewed-by:  ZOLTAN SZUBBOCSEV < zszubbocsev@micron.com>
----
- drivers/mtd/mtdcore.c | 125 ++++++++++++++++++++++++++++++++++++++++++++++=
-++++
- drivers/mtd/mtdcore.h |  16 +++++++
- 2 files changed, 141 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 8bbbb75..b3879b5 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -801,6 +801,127 @@ void __put_mtd_device(struct mtd_info *mtd)
- }
- EXPORT_SYMBOL_GPL(__put_mtd_device);
-=20
-+static int mtd_check_pattern(const void *buf, uint8_t patt, int size)
-+{
-+	int i;
-+
-+	for (i =3D 0; i < size; i++)
-+		if (((const uint8_t *)buf)[i] !=3D patt)
-+			return 0;
-+	return 1;
-+}
-+
-+static int checkup_partial_filling(struct mtd_info *mtd, struct erase_info=
- *instr)
-+{
-+	int retlen;
-+	int ret;
-+	u_char * data_buf, * oob_buf;
-+	uint32_t empty_page_mask =3D 0;
-+	uint32_t programmed_page =3D 0;
-+	loff_t addr;
-+	int nextpage =3D LAST_CHECKPU_PAGE; /* We defined the maximum page to che=
-ck is page14,
-+	                      first page is page0*/
-+	int cur_page =3D 0;
-+	ret =3D 0;
-+
-+	if ((mtd->type !=3D MTD_NANDFLASH) && (mtd->type !=3D MTD_MLCNANDFLASH))
-+		return 0; /* Only works on NAND */
-+
-+	data_buf =3D kmalloc(mtd->writesize, GFP_KERNEL);
-+	oob_buf =3D kmalloc(mtd->oobsize, GFP_KERNEL);
-+	addr =3D instr->addr; /* this is page0 address*/
-+
-+	if (data_buf)
-+	    memset(data_buf, 0xff, mtd->writesize);
-+	else
-+	    goto end;
-+	if (oob_buf)
-+	    memset(oob_buf, 0x00, mtd->oobsize);
-+	else
-+	    goto end;
-+
-+	for( ; nextpage > 0; ) {
-+		ret =3D mtd_read(mtd, addr, mtd->writesize, &retlen, data_buf);
-+		if ((ret) || (retlen !=3D mtd->writesize))
-+			goto next; /* Read error, currently, we directly skip it */
-+
-+		if (mtd_check_pattern(data_buf, 0xff, retlen)) {
-+			if (cur_page =3D=3D 0)
-+			    break; /* page 0 is empty, skip block filling checkup */
-+
-+			/* Mark page need to program later */
-+			empty_page_mask |=3D (1 << cur_page);
-+		} else {
-+			programmed_page |=3D (1 << cur_page);
-+			if (LAST_CHECKPU_PAGE !=3D nextpage)
-+		/*
-+		 * Because we checked page0 firstly, at this time the nextpage
-+		 * is page13. And if page0 is programmed, then we start to
-+		 * check from page13,page11,page9...,page3,respectively.
-+		 * We olny check odd page. So if the nextpage is not page13
-+		 * and cur_page is programmed, we consider that the current
-+		 * cur_page is the last programmed page since the pages of PEB
-+		 * are programmed sequentially.
-+		*/
-+			break;
-+		}
-+next:
-+		addr =3D instr->addr + mtd->writesize * nextpage;
-+		cur_page =3D nextpage;
-+		if (nextpage > 1)
-+			nextpage =3D ((nextpage % 2) ? (nextpage - 2) : (nextpage - 1));
-+		else
-+			break;
-+	}
-+
-+	if (empty_page_mask =3D=3D 0x00)
-+		goto end;
-+
-+	int i;
-+	struct ubifs_filling_head * filling =3D data_buf;
-+	filling->magic =3D 0x00000000;
-+	filling->sqnum =3D 0;
-+	filling->node_type =3D 0xCE;
-+	filling->group_type =3D 0;
-+	filling->padding[0] =3D filling->padding[1] =3D 0xAA;
-+	filling->len =3D cpu_to_le32(UBIFS_PEB_PAD_NODE_SZ);
-+	int pad  =3D mtd->writesize - UBIFS_PEB_PAD_NODE_SZ;
-+	filling->pad_len =3D cpu_to_le32(pad);
-+	filling->crc =3D 0x00000000;
-+	memset(data_buf + UBIFS_PEB_PAD_NODE_SZ, 0xAA, pad);
-+
-+    struct mtd_oob_ops ops;
-+    ops.mode =3D MTD_OPS_RAW;
-+    ops.len =3D 0;
-+    ops.ooblen =3D mtd->oobsize - 16;
-+    ops.ooboffs =3D 16;
-+    ops.datbuf =3D NULL;
-+    ops.oobbuf =3D oob_buf;
-+=20
-+	empty_page_mask|=3D0x3;
-+	/* Always over-write EC and VID pages with a wrong EC/VID magic bytes. */
-+
-+	for ( i =3D 0; i <=3D LAST_CHECKPU_PAGE ; ) {
-+        /* Start to program  filling data into empty page,
-+	   we only program the odd page. */
-+		if (empty_page_mask & (1 << i)) {
-+			addr =3D instr->addr + mtd->writesize * i;
-+            if ((i =3D=3D 0) || (i =3D=3D 1)) {
-+            ret =3D mtd_write(mtd, addr, mtd->writesize, &retlen, data_buf=
-);
-+            ret =3D mtd->_write_oob(mtd, addr, &ops); /* clear OOB */
-+            } else
-+            ret =3D mtd_write(mtd, addr, mtd->writesize, &retlen, data_buf=
-);
-+		}
-+		if (i =3D=3D 0)
-+		i =3D 1;
-+		else
-+		i +=3D 2;
-+	}
-+end:
-+	kfree(data_buf);
-+	kfree(oob_buf);
-+	return 0;
-+}
- /*
-  * Erase is an asynchronous operation.  Device drivers are supposed
-  * to call instr->callback() whenever the operation completes, even
-@@ -820,6 +941,10 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info =
-*instr)
- 		mtd_erase_callback(instr);
- 		return 0;
- 	}
-+
-+#ifdef PARTIAL_FILLING_CHECKUP
-+    checkup_partial_filling(mtd, instr);
-+#endif
- 	return mtd->_erase(mtd, instr);
- }
- EXPORT_SYMBOL_GPL(mtd_erase);
-diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-index 7b03533..0e5ad67 100644
---- a/drivers/mtd/mtdcore.h
-+++ b/drivers/mtd/mtdcore.h
-@@ -5,6 +5,22 @@
-=20
- extern struct mutex mtd_table_mutex;
-=20
-+#define PARTIAL_FILLING_CHECKUP 1 /* Used to turn on/off partial filling
-+		 block checkup before erasing this block.*/
-+#define LAST_CHECKPU_PAGE 13
-+struct ubifs_filling_head {
-+	__le32 magic;
-+	__le32 crc;
-+	__le64 sqnum;
-+	__le32 len;
-+	__u8 node_type;
-+	__u8 group_type;
-+	__u8 padding[2];
-+	__le32 pad_len;
-+} __packed;
-+
-+#define UBIFS_PEB_PAD_NODE_SZ  sizeof(struct ubifs_filling_head)
-+
- struct mtd_info *__mtd_next_device(int i);
- int add_mtd_device(struct mtd_info *mtd);
- int del_mtd_device(struct mtd_info *mtd);
---=20
-2.7.4
+>+Bean,
+>
+>Hi Thomas,
+>
+>First of all, I'd like to thank you for sharing this patch. I'm pretty sur=
+e this will
+>save days of painful debug sessions to a lot of people.
+>
+>On Thu, 29 Nov 2018 22:12:50 +0100 (CET) Thomas Gleixner
+><tglx@linutronix.de> wrote:
+>
+>> On some Micron NAND chips block erase fails occasionaly despite the
+>> chip claiming that it succeeded. The flash block seems to be not
+>> completely erased and subsequent usage of the block results in hard to
+>> decode and very subtle failures or corruption.
+>>
+>> The exact reason is unknown, but experimentation has shown that it is
+>> only happening when erasing an erase block which is partially written.
+>> Partially written erase blocks are not uncommon with UBI/UBIFS.  Note,
+>> that this does not always happen. It's a rare and random, but eventually
+>fatal failure.
+>>
+>> For now, just blindly write 6 pages to 0. Again experimentation has
+>> shown that it's not sufficient to write pages at the beginning of the
+>> erase block. There need to be pages written in the second half of the
+>> erase block as well. So write 3 pages before and past the middle of the =
+block.
+>>
+>> Less than 6 pages might be sufficient, but it might even be necessary
+>> to write more pages to make sure that it's completely cured. Two pages
+>> still failed, but the 6 held up in a stress test scenario.
+>>
+>> This should be optimized by keeping track of writes, but that needs
+>> proper information about the issue.
+>>
+>> As it's just observation and experimentation based, it's probably wise
+>> to hold off on this until there is proper clarification about the root
+>> cause of the problem. The patch is for reference so others can avoid
+>> to decode this again, but there is no guarantee that it actually fixes
+>> the issue completely.
+>
+>I agree. I Cc-ed Bean from Micron. Maybe he can provide more information
+>on this issue.
+>
+>>
+>> Therefore:
+>>
+>> Not-yet-signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>>
+>> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>>
+>> ---
+>>
+>> P.S.: This was debugged on an older kernel version (sigh) and ported
+>>       forward without actual testing on mainline. My MTD foo is a bit
+>>       rusty, so I won't be surprised if there are better ways to do that=
+.
+>
+>Let's first wait for Bean's feedback before discussing implementation deta=
+ils.
+>BTW, do you remember the part number(s) of the flash(es) impacted by this
+>problem in your case?
+>
+>Thanks,
+>
+>Boris
+>
+>>
+>> ---
+>>  drivers/mtd/nand/raw/nand_base.c   |   89
+>+++++++++++++++++++++++++++++++++++++
+>>  drivers/mtd/nand/raw/nand_micron.c |    6 ++
+>>  include/linux/mtd/rawnand.h        |    3 +
+>>  3 files changed, 98 insertions(+)
+>>
+>> --- a/drivers/mtd/nand/raw/nand_base.c
+>> +++ b/drivers/mtd/nand/raw/nand_base.c
+>> @@ -4122,6 +4122,91 @@ static int nand_erase(struct mtd_info *m
+>>  	return nand_erase_nand(mtd_to_nand(mtd), instr, 0);  }
+>>
+>> +static bool page_empty(char *buf, int len) {
+>> +	unsigned int *p =3D (unsigned int *) buf;
+>> +	int i;
+>> +
+>> +	for (i =3D 0; i < len >> 2; i++, p++) {
+>> +		if (*p !=3D UINT_MAX)
+>> +			return false;
+>> +	}
+>> +	return true;
+>> +}
+>> +
+>> +#define NAND_ERASE_QUIRK_PAGES		6
+>> +
+>> +/**
+>> + * nand_erase_quirk - [INTERN] Work around partial erase issues
+>> + * @chip:	NAND chip object
+>> + * @page:	Eraseblock base page number
+>> + *
+>> + * On some Micron NAND chips block erase fails occasionaly despite
+>> +the chip
+>> + * claiming that it succeeded. The flash block seems to be not
+>> +completely
+>> + * erased and subsequent usage of the block results in hard to decode
+>> +and
+>> + * very subtle failures or corruption.
+>> + *
+>> + * The exact reason is unknown, but experimentation has shown that it
+>> +is
+>> + * only happening when erasing an erase block which is only partially
+>> + * written. Partially written erase blocks are not uncommon with UBI/UB=
+IFS.
+>> + * Note, that this does not always happen. It's a rare and random,
+>> +but
+>> + * eventually fatal failure.
+>> + *
+>> + * For now, just blindly write 6 pages to 0. Again experimentation
+>> +has
+>> + * shown that it's not sufficient to write pages at the beginning of
+>> +the
+>> + * erase block. There need to be pages written in the second half of
+>> +the
+>> + * erase block as well. So write 3 pages before and past the middle
+>> +of the
+>> + * block.
+>> + *
+>> + * Less than 6 pages might be sufficient, but it might even be
+>> +necessary to
+>> + * write more pages to make sure that it's completely cured. 2 pages
+>> +still
+>> + * failed, but the 6 held up in a stress test scenario.
+>> + *
+>> + * FIXME: This should be optimized by keeping track of writes, but
+>> +that
+>> + * needs proper information about the issue.
+>> + */
+>> +static int nand_erase_quirk(struct mtd_info *mtd, int page) {
+>> +	struct nand_chip *chip =3D mtd->priv;
+>> +	unsigned int i, offs;
+>> +	u8 *buf;
+>> +
+>> +	if (!(chip->options & NAND_ERASE_QUIRK))
+>> +		return 0;
+>> +
+>> +	buf =3D kmalloc(mtd->writesize, GFP_KERNEL);
+>> +	if (!buf)
+>> +		return -ENOMEM;
+>> +
+>> +	/* Start at (pages_per_block / 2) - 3 */
+>> +	offs =3D 1 << (chip->phys_erase_shift - chip->page_shift);
+>> +	offs =3D (offs >> 1) - (NAND_ERASE_QUIRK_PAGES / 2);
+>> +	page =3D page + offs;
+>> +
+>> +	for (i =3D 0; i < NAND_ERASE_QUIRK_PAGES; i++, page++ ) {
+>> +		struct mtd_oob_ops ops =3D {
+>> +			.datbuf	=3D buf,
+>> +			.len	=3D mtd->writesize,
+>> +		};
+>> +
+>> +		/*
+>> +		 * Read the page back and check whether it is completely
+>> +		 * empty.
+>> +		 */
+>> +		nand_do_read_ops(mtd, page << chip->page_shift, &ops);
+>> +		if (page_empty(buf, mtd->writesize))
+>> +			continue;
+>> +		memset(buf, 0, mtd->writesize);
+>> +		/*
+>> +		 * Fill page with zeros. Ignore write failure as there
+>> +		 * is no way to recover here.
+>> +		 */
+>> +		nand_do_write_ops(mtd, page << chip->page_shift, &ops);
+>> +	}
+>> +	kfree(buf);
+>> +	return 0;
+>> +}
+>> +
+>>  /**
+>>   * nand_erase_nand - [INTERN] erase block(s)
+>>   * @chip: NAND chip object
+>> @@ -4186,6 +4271,10 @@ int nand_erase_nand(struct nand_chip *ch
+>>  		    (page + pages_per_block))
+>>  			chip->pagebuf =3D -1;
+>>
+>> +		ret =3D nand_erase_quirk(mtd, page);
+>> +		if (ret)
+>> +			goto erase_exit;
+>> +
+>>  		if (chip->legacy.erase)
+>>  			status =3D chip->legacy.erase(chip,
+>>  						    page & chip->pagemask);
+>> --- a/drivers/mtd/nand/raw/nand_micron.c
+>> +++ b/drivers/mtd/nand/raw/nand_micron.c
+>> @@ -447,6 +447,12 @@ static int micron_nand_init(struct nand_
+>>  	if (ret)
+>>  		goto err_free_manuf_data;
+>>
+>> +	/*
+>> +	 * FIXME: Mark all Micron flash with the ERASE QUIRK bit for now as
+>> +	 * it is unclear which flash types are affected/
+>> +	 */
+>> +	chip->options |=3D NAND_ERASE_QUIRK;
+>> +
+>>  	if (mtd->writesize =3D=3D 2048)
+>>  		chip->bbt_options |=3D NAND_BBT_SCAN2NDPAGE;
+>>
+>> --- a/include/linux/mtd/rawnand.h
+>> +++ b/include/linux/mtd/rawnand.h
+>> @@ -163,6 +163,9 @@ enum nand_ecc_algo {
+>>  /* Device needs 3rd row address cycle */
+>>  #define NAND_ROW_ADDR_3		0x00004000
+>>
+>> +/* Device requires erase quirk */
+>> +#define NAND_ERASE_QUIRK	0x00008000
+>> +
+>>  /* Options valid for Samsung large page devices */  #define
+>> NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
+>>
