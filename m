@@ -1,24 +1,28 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZZf9-0007Un-HP
- for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 11:05:18 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- "Zoltan Szubbocsev (zszubbocsev)" <zszubbocsev@micron.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>
-CC: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Subject: RE: [EXT] Re: [PATCH RFC] mtd: rawnand: Cure MICRON NAND partial
- erase issue
-Date: Wed, 19 Dec 2018 11:04:52 +0000
-Message-ID: <BYAPR08MB453360A544C088573ED01A72DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
-References: <alpine.DEB.2.21.1811292207570.1657@nanos.tec.linutronix.de>
- <20181202082918.3b5f303a@bbrezillon>
-In-Reply-To: <20181202082918.3b5f303a@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v6 0/7] spi: add support for octal mode
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+References: <1545214186-16987-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <10b25865-b93d-382a-aa4d-b21fbd9c3ba9@ti.com>
+Date: Wed, 19 Dec 2018 18:13:42 +0530
 MIME-Version: 1.0
+In-Reply-To: <1545214186-16987-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,229 +32,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, all
-Micron developed one patch related to what mentioned here. which is based o=
-n v4.2.
-I just submitted it here http://lists.infradead.org/pipermail/linux-mtd/201=
-8-December/086446.html
-, please review. And I will update that later based on your comments.
+Hi,
 
->+Bean,
->
->Hi Thomas,
->
->First of all, I'd like to thank you for sharing this patch. I'm pretty sur=
-e this will
->save days of painful debug sessions to a lot of people.
->
->On Thu, 29 Nov 2018 22:12:50 +0100 (CET) Thomas Gleixner
-><tglx@linutronix.de> wrote:
->
->> On some Micron NAND chips block erase fails occasionaly despite the
->> chip claiming that it succeeded. The flash block seems to be not
->> completely erased and subsequent usage of the block results in hard to
->> decode and very subtle failures or corruption.
->>
->> The exact reason is unknown, but experimentation has shown that it is
->> only happening when erasing an erase block which is partially written.
->> Partially written erase blocks are not uncommon with UBI/UBIFS.  Note,
->> that this does not always happen. It's a rare and random, but eventually
->fatal failure.
->>
->> For now, just blindly write 6 pages to 0. Again experimentation has
->> shown that it's not sufficient to write pages at the beginning of the
->> erase block. There need to be pages written in the second half of the
->> erase block as well. So write 3 pages before and past the middle of the =
-block.
->>
->> Less than 6 pages might be sufficient, but it might even be necessary
->> to write more pages to make sure that it's completely cured. Two pages
->> still failed, but the 6 held up in a stress test scenario.
->>
->> This should be optimized by keeping track of writes, but that needs
->> proper information about the issue.
->>
->> As it's just observation and experimentation based, it's probably wise
->> to hold off on this until there is proper clarification about the root
->> cause of the problem. The patch is for reference so others can avoid
->> to decode this again, but there is no guarantee that it actually fixes
->> the issue completely.
->
->I agree. I Cc-ed Bean from Micron. Maybe he can provide more information
->on this issue.
->
->>
->> Therefore:
->>
->> Not-yet-signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->>
->> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
->> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->> Cc: Richard Weinberger <richard@nod.at>
->>
->> ---
->>
->> P.S.: This was debugged on an older kernel version (sigh) and ported
->>       forward without actual testing on mainline. My MTD foo is a bit
->>       rusty, so I won't be surprised if there are better ways to do that=
-.
->
->Let's first wait for Bean's feedback before discussing implementation deta=
-ils.
->BTW, do you remember the part number(s) of the flash(es) impacted by this
->problem in your case?
->
->Thanks,
->
->Boris
->
->>
->> ---
->>  drivers/mtd/nand/raw/nand_base.c   |   89
->+++++++++++++++++++++++++++++++++++++
->>  drivers/mtd/nand/raw/nand_micron.c |    6 ++
->>  include/linux/mtd/rawnand.h        |    3 +
->>  3 files changed, 98 insertions(+)
->>
->> --- a/drivers/mtd/nand/raw/nand_base.c
->> +++ b/drivers/mtd/nand/raw/nand_base.c
->> @@ -4122,6 +4122,91 @@ static int nand_erase(struct mtd_info *m
->>  	return nand_erase_nand(mtd_to_nand(mtd), instr, 0);  }
->>
->> +static bool page_empty(char *buf, int len) {
->> +	unsigned int *p =3D (unsigned int *) buf;
->> +	int i;
->> +
->> +	for (i =3D 0; i < len >> 2; i++, p++) {
->> +		if (*p !=3D UINT_MAX)
->> +			return false;
->> +	}
->> +	return true;
->> +}
->> +
->> +#define NAND_ERASE_QUIRK_PAGES		6
->> +
->> +/**
->> + * nand_erase_quirk - [INTERN] Work around partial erase issues
->> + * @chip:	NAND chip object
->> + * @page:	Eraseblock base page number
->> + *
->> + * On some Micron NAND chips block erase fails occasionaly despite
->> +the chip
->> + * claiming that it succeeded. The flash block seems to be not
->> +completely
->> + * erased and subsequent usage of the block results in hard to decode
->> +and
->> + * very subtle failures or corruption.
->> + *
->> + * The exact reason is unknown, but experimentation has shown that it
->> +is
->> + * only happening when erasing an erase block which is only partially
->> + * written. Partially written erase blocks are not uncommon with UBI/UB=
-IFS.
->> + * Note, that this does not always happen. It's a rare and random,
->> +but
->> + * eventually fatal failure.
->> + *
->> + * For now, just blindly write 6 pages to 0. Again experimentation
->> +has
->> + * shown that it's not sufficient to write pages at the beginning of
->> +the
->> + * erase block. There need to be pages written in the second half of
->> +the
->> + * erase block as well. So write 3 pages before and past the middle
->> +of the
->> + * block.
->> + *
->> + * Less than 6 pages might be sufficient, but it might even be
->> +necessary to
->> + * write more pages to make sure that it's completely cured. 2 pages
->> +still
->> + * failed, but the 6 held up in a stress test scenario.
->> + *
->> + * FIXME: This should be optimized by keeping track of writes, but
->> +that
->> + * needs proper information about the issue.
->> + */
->> +static int nand_erase_quirk(struct mtd_info *mtd, int page) {
->> +	struct nand_chip *chip =3D mtd->priv;
->> +	unsigned int i, offs;
->> +	u8 *buf;
->> +
->> +	if (!(chip->options & NAND_ERASE_QUIRK))
->> +		return 0;
->> +
->> +	buf =3D kmalloc(mtd->writesize, GFP_KERNEL);
->> +	if (!buf)
->> +		return -ENOMEM;
->> +
->> +	/* Start at (pages_per_block / 2) - 3 */
->> +	offs =3D 1 << (chip->phys_erase_shift - chip->page_shift);
->> +	offs =3D (offs >> 1) - (NAND_ERASE_QUIRK_PAGES / 2);
->> +	page =3D page + offs;
->> +
->> +	for (i =3D 0; i < NAND_ERASE_QUIRK_PAGES; i++, page++ ) {
->> +		struct mtd_oob_ops ops =3D {
->> +			.datbuf	=3D buf,
->> +			.len	=3D mtd->writesize,
->> +		};
->> +
->> +		/*
->> +		 * Read the page back and check whether it is completely
->> +		 * empty.
->> +		 */
->> +		nand_do_read_ops(mtd, page << chip->page_shift, &ops);
->> +		if (page_empty(buf, mtd->writesize))
->> +			continue;
->> +		memset(buf, 0, mtd->writesize);
->> +		/*
->> +		 * Fill page with zeros. Ignore write failure as there
->> +		 * is no way to recover here.
->> +		 */
->> +		nand_do_write_ops(mtd, page << chip->page_shift, &ops);
->> +	}
->> +	kfree(buf);
->> +	return 0;
->> +}
->> +
->>  /**
->>   * nand_erase_nand - [INTERN] erase block(s)
->>   * @chip: NAND chip object
->> @@ -4186,6 +4271,10 @@ int nand_erase_nand(struct nand_chip *ch
->>  		    (page + pages_per_block))
->>  			chip->pagebuf =3D -1;
->>
->> +		ret =3D nand_erase_quirk(mtd, page);
->> +		if (ret)
->> +			goto erase_exit;
->> +
->>  		if (chip->legacy.erase)
->>  			status =3D chip->legacy.erase(chip,
->>  						    page & chip->pagemask);
->> --- a/drivers/mtd/nand/raw/nand_micron.c
->> +++ b/drivers/mtd/nand/raw/nand_micron.c
->> @@ -447,6 +447,12 @@ static int micron_nand_init(struct nand_
->>  	if (ret)
->>  		goto err_free_manuf_data;
->>
->> +	/*
->> +	 * FIXME: Mark all Micron flash with the ERASE QUIRK bit for now as
->> +	 * it is unclear which flash types are affected/
->> +	 */
->> +	chip->options |=3D NAND_ERASE_QUIRK;
->> +
->>  	if (mtd->writesize =3D=3D 2048)
->>  		chip->bbt_options |=3D NAND_BBT_SCAN2NDPAGE;
->>
->> --- a/include/linux/mtd/rawnand.h
->> +++ b/include/linux/mtd/rawnand.h
->> @@ -163,6 +163,9 @@ enum nand_ecc_algo {
->>  /* Device needs 3rd row address cycle */
->>  #define NAND_ROW_ADDR_3		0x00004000
->>
->> +/* Device requires erase quirk */
->> +#define NAND_ERASE_QUIRK	0x00008000
->> +
->>  /* Options valid for Samsung large page devices */  #define
->> NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
->>
+On 19/12/18 3:41 PM, Yogesh Narayan Gaur wrote:
+> Add support for octal mode IO data transfer.
+> Micron flash, mt35xu512aba, supports octal mode data transfer and
+> NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
+> 
+> Patch series
+> * Add support for octal mode flags and parsing of same in spi driver.
+> * Add parsing logic for spi-mem framework and m25p80.c device file.
+> * Add opcodes for octal I/O commands in spi-nor framework, Read and Write proto for (1-1-8/1-8-8) mode.
+>   Opcodes are added as per octal data IO commands required for mt35xu512aba [1] flash.
+> * Add mode bit required for octal mode in nxp-fspi driver [2].
+> * Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
+> 
+> Tested on LX2160ARDB target with nxp-fspi driver, below are
+> Read performance number of 1-1-1 and 1-1-8 read protocol.
+> 
+>  root@lxxx:~# cat /proc/mtd
+>  dev:    size   erasesize  name
+>  mtd0: 04000000 00001000 "spi0.0"
+>  mtd1: 04000000 00001000 "spi0.1"
+>  root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
+>  Copied 16777216 bytes from address 0x00000000 in flash to 0read
+> 
+>  real    0m2.792s
+>  user    0m0.000s
+>  sys     0m2.790s
+>  root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
+>  Copied 16777216 bytes from address 0x00000000 in flash to 0read
+> 
+>  real    0m0.441s
+>  user    0m0.000s
+>  sys     0m0.440s
+>  root@ls1012ardb:~#
+> 
+> 
+>  Flash device MTD0 configured in 1-1-1 protocol.
+>  Flash device MTD1 configured in 1-1-8 protocol.
+> 
+> [1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=70384&state=*
+> [2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=76402
+> 
+> Yogesh Gaur (7):
+>   spi: add support for octal mode I/O data transfer
+>   spi: spi-mem: add support for octal mode I/O data transfer
+
+
+These two patches are already merged and is now part of linux-next[1].
+Its preferred to send patches based on top of latest linux-next so as to
+avoid resending patches that have already been picked up by the maintainer.
+
+[1]
+commit 6b03061f882de49b83ccf44beb3a12c920a2da1b
+Author: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Date:   Mon Dec 3 08:39:06 2018 +0000
+
+    spi: add support for octal mode I/O data transfer
+
+commit b12a084c8729ef423089bb9a5a143eed39cd94e7
+Author: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Date:   Mon Dec 3 08:39:12 2018 +0000
+
+    spi: spi-mem: add support for octal mode I/O data transfer
+
+
+Regards
+Vignesh
+
+>   mtd: spi-nor: add opcodes for octal Read/Write commands
+>   mtd: spi-nor: add octal read flag for flash mt35xu512aba
+>   mtd: m25p80: add support of octal mode I/O transfer
+>   spi: nxp-fspi: add octal mode flag bit for octal support
+>   arm64: dts: lx2160a: update fspi node
+> 
+> Changes for v6:
+> - Correct S-o-b tag with full author name as 'Yogesh Narayan Gaur'.
+> - Rebase on top of v4.20-rc5.
+> Changes for v5:
+> - Modified string 'octo' as 'octal' in all patches.
+> Changes for v4:
+> - Rebase on top of v4.20-rc2.
+> - Modify octo entries enum value in spi.h.
+> Changes for v3:
+> - Add octo mode support in spi_setup().
+> - Rename all patches with 'octal' string modified as 'octo'.
+> Changes for v2:
+> - Incorporated review comments of Boris and Vignesh.
+> 
+> Yogesh Gaur (7):
+>   spi: add support for octal mode I/O data transfer
+>   spi: spi-mem: add support for octal mode I/O data transfer
+>   mtd: spi-nor: add opcodes for octal Read/Write commands
+>   mtd: spi-nor: add octal read flag for flash mt35xu512aba
+>   mtd: m25p80: add support of octal mode I/O transfer
+>   spi: nxp-fspi: add octal mode flag bit for octal support
+>   arm64: dts: lx2160a: update fspi node
+> 
+>  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts |  4 ++++
+>  drivers/mtd/devices/m25p80.c                      |  9 ++++++++-
+>  drivers/mtd/spi-nor/spi-nor.c                     | 19 ++++++++++++++++---
+>  drivers/spi/spi-mem.c                             |  9 ++++++++-
+>  drivers/spi/spi-nxp-fspi.c                        |  4 ++--
+>  drivers/spi/spi.c                                 | 12 ++++++++++--
+>  include/linux/mtd/spi-nor.h                       | 16 ++++++++++++----
+>  include/linux/spi/spi.h                           |  4 +++-
+>  8 files changed, 63 insertions(+), 14 deletions(-)
+> 
+
+-- 
+Regards
+Vignesh
