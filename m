@@ -1,22 +1,15 @@
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZgrR-00059t-J4
- for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 18:46:27 +0000
-Date: Wed, 19 Dec 2018 19:46:06 +0100
+ id 1gZh1b-0000bF-GM
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 18:56:56 +0000
+Date: Wed, 19 Dec 2018 19:56:38 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, "Zoltan Szubbocsev
- (zszubbocsev)" <zszubbocsev@micron.com>, Richard Weinberger
- <richard@nod.at>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH V1] mtd: core: Micron SLC NAND filling block
-Message-ID: <20181219194606.7d059723@bbrezillon>
-In-Reply-To: <BYAPR08MB45331E5653451102C61BAC54DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
-References: <BYAPR08MB4533AC4A07E48EC37576C060DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
- <20181219141732.3e09bdc9@bbrezillon>
- <SN6PR08MB502421AE43E6824C3CC5C1E4CBBE0@SN6PR08MB5024.namprd08.prod.outlook.com>
- <20181219151751.74931b39@xps13>
- <BYAPR08MB45331E5653451102C61BAC54DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
+To: Emil Lenngren <emil.lenngren@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd: spinand: wait on erase success in spinand_markbad?
+Message-ID: <20181219195619.64f62b8e@bbrezillon>
+In-Reply-To: <CAO1O6sd-JZBfGnAB7tOnsJeJSLXTguLHGdSEokOYq9n=bY5jPA@mail.gmail.com>
+References: <CAO1O6sd-JZBfGnAB7tOnsJeJSLXTguLHGdSEokOYq9n=bY5jPA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,15 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Dec 2018 17:19:43 +0000
-"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
+On Wed, 19 Dec 2018 14:27:51 +0100
+Emil Lenngren <emil.lenngren@gmail.com> wrote:
 
-> Hi, Boris and Miquel
-> Thanks for your email.
-> Since the patch is based on v4.2 which doesn't separate specific NAND vendor
-> driver into vendor specific chip driver file. I will rebase my patch to latest linux kernel,
-> and implement  a specific hook funciton in the nand_micron.c as you suggested.
-> After testing well, you will see the version 2.
+> Hi,
+> 
+> I was just reading the spinand driver and found this piece of code:
+> static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+> {
+>     struct spinand_device *spinand = nand_to_spinand(nand);
+>     struct nand_page_io_req req = {
+>         .pos = *pos,
+>         .ooboffs = 0,
+>         .ooblen = 2,
+>         .oobbuf.out = spinand->oobbuf,
+>     };
+>     int ret;
+> 
+>     /* Erase block before marking it bad. */
+>     ret = spinand_select_target(spinand, pos->target);
+>     if (ret)
+>         return ret;
+> 
+>     ret = spinand_write_enable_op(spinand);
+>     if (ret)
+>         return ret;
+> 
+>     spinand_erase_op(spinand, pos);
+> 
+>     memset(spinand->oobbuf, 0, 2);
+>     return spinand_write_page(spinand, &req);
+> }
+> 
+> Shouldn't there be spinand_wait call after spinand_erase_op and before
+> spinand_write_page?
 > 
 
-Oops, didn't see this reply. Please ignore my previous email.
+Absolutely. Can you send a patch to fix that?
+
+Thanks,
+
+Boris
