@@ -1,26 +1,21 @@
-Received: from mail-ot1-f65.google.com ([209.85.210.65])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZeAx-0003c6-GE
- for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 15:54:25 +0000
-Received: by mail-ot1-f65.google.com with SMTP id 32so19479551ota.12
- for <linux-mtd@lists.infradead.org>; Wed, 19 Dec 2018 07:54:12 -0800 (PST)
-Date: Wed, 19 Dec 2018 09:54:10 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tomer Maimon <tmaimon77@gmail.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, marek.vasut@gmail.com, richard@nod.at,
- mark.rutland@arm.com, yuenn@google.com, venture@google.com,
- brendanhiggins@google.com, avifishman70@gmail.com, joel@jms.id.au,
- linux-mtd@lists.infradead.org, openbmc@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] dt-binding: mtd: add NPCM FIU controller
-Message-ID: <20181219155410.GA3925@bogus>
-References: <20181203091456.454030-1-tmaimon77@gmail.com>
- <20181203091456.454030-2-tmaimon77@gmail.com>
+ id 1gZeNl-0003JH-FX
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 16:07:39 +0000
+Date: Wed, 19 Dec 2018 17:07:22 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marex@denx.de>, David Woodhouse <dwmw2@infradead.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>
+Subject: [GIT PULL] mtd: Changes for 4.21
+Message-ID: <20181219170722.349d7b61@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181203091456.454030-2-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,97 +25,427 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 03, 2018 at 11:14:55AM +0200, Tomer Maimon wrote:
-> Added device tree binding documentation for Nuvoton BMC
-> NPCM Flash Interface Unit(FIU) SPI-NOR controller.
-> 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> ---
->  Documentation/devicetree/bindings/mtd/npcm-fiu.txt | 64 ++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/npcm-fiu.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/npcm-fiu.txt b/Documentation/devicetree/bindings/mtd/npcm-fiu.txt
-> new file mode 100644
-> index 000000000000..9746cb5b1ced
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/npcm-fiu.txt
-> @@ -0,0 +1,64 @@
-> +* Nuvoton FLASH Interface Unit (FIU) SPI Controller
-> +
-> +NPCM FIU supports single, dual and quad communication interface.
-> +
-> +The NPCM7XX supports three FIU modules,
-> +FIU0 and FIUx supports two chip selects,
-> +FIU3 support four chip select.
-> +
-> +Required properties:
-> +  - compatible : "nuvoton,npcm750-fiu" for the NPCM7XX BMC
-> +  - #address-cells : should be 1.
-> +  - #size-cells : should be 0.
-> +  - reg : the first contains the register location and length,
-> +          the second contains the memory mapping address and length
-> +  - reg-names: Should contain the reg names "control" and "memory"
-> +  - clocks : phandle of F reference clock.
-> +
-> +Required properties in case the pins can be muxed:
-> +  - pinctrl-names : a pinctrl state named "default" must be defined.
-> +  - pinctrl-0 : phandle referencing pin configuration of the device.
-> +
-> +Optional property:
-> +  - spix-mode: enable spix-mode for an expansion bus to an ASIC or CPLD.
+Hello Linus,
 
-Needs a vendor prefix. Unless this is some standard SPI thing (which 
-I've never heard of).
+Here is the MTD PR for 4.21 coming a bit earlier than usual (hope this
+is not a problem).
 
-> +
-> +The SPI device must be a child of the FIU node and must have a
-> +compatible property as specified in bindings/mtd/jedec,spi-nor.txt
-> +
-> +Required property:
-> +- reg: chip select number.
-> +
-> +Optional property:
-> +- spi-rx-bus-width: see ../spi/spi-bus.txt for the description.
-> +
-> +Aliases:
-> +- All the FIU controller nodes should be represented in the aliases node using
-> +  the following format 'fiu{n}' where n is a unique number for the alias.
-> +  In the NPCM7XX BMC:
-> +  		fiu0 represent fiu 0 controller
-> +  		fiu1 represent fiu 3 controller
-> +  		fiu2 represent fiu x controller
+Regards,
 
-Please don't make up your own aliases. Use 'spiX' if anything, but 
-really, why do you need aliases in the first place?
+Boris
 
-> +
-> +Example:
-> +fiu3: fiu@c00000000 {
+The following changes since commit 2595646791c319cadfdbf271563aac97d0843dc7:
 
-spi@...
+  Linux 4.20-rc5 (2018-12-02 15:07:55 -0800)
 
-> +	compatible = "nuvoton,npcm750-fiu";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	reg = <0xfb000000 0x1000>, <0x80000000 0x10000000>;
-> +	reg-names = "control", "memory";
-> +	clocks = <&clk NPCM7XX_CLK_AHB>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&spi3_pins>;
-> +	spi-nor@0 {
-> +		compatible = "jedec,spi-nor";
-> +		spi-rx-bus-width = <2>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		reg = <0>;
-> +		partition@0 {
-> +			label = "flash_data";
-> +			reg = <0x0 0x800000>;
-> +		};
-> +	};
-> +};
-> +
-> -- 
-> 2.14.1
-> 
+are available in the Git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/for-4.21
+
+for you to fetch changes up to f366d3854ec0fec0f9949dac46431598614a956b:
+
+  Merge tag 'spi-nor/for-4.21' of git://git.infradead.org/linux-mtd into mt=
+d/next (2018-12-18 20:00:52 +0100)
+
+----------------------------------------------------------------
+SPI NOR Changes
+  Core changes:
+  - Parse the 4BAIT SFDP section
+  - Add a bunch of SPI NOR entries to the flash_info table
+  - Add the concept of SFDP fixups and use it to fix a bug on MX25L25635F
+  - A bunch of minor cleanups/comestic changes
+
+NAND changes:
+  NAND core changes:
+  - kernel-doc miscellaneous fixes.
+  - Third batch of fixes/cleanup to the raw NAND core impacting various
+    controller drivers (ams-delta, marvell, fsmc, denali, tegra, vf610):
+    * Stopping to pass mtd_info objects to internal functions
+    * Reorganizing code to avoid forward declarations
+    * Dropping useless test in nand_legacy_set_defaults()
+    * Moving nand_exec_op() to internal.h
+    * Adding nand_[de]select_target() helpers
+    * Passing the CS line to be selected in struct nand_operation
+    * Making ->select_chip() optional when ->exec_op() is implemented
+    * Deprecating the ->select_chip() hook
+    * Moving the ->exec_op() method to nand_controller_ops
+    * Moving ->setup_data_interface() to nand_controller_ops
+    * Deprecating the dummy_controller field
+    * Fixing JEDEC detection
+    * Providing a helper for polling GPIO R/B pin
+
+  Raw NAND chip drivers changes:
+  - Macronix:
+    * Flagging 1.8V AC chips with a broken GET_FEATURES(TIMINGS)
+
+  Raw NAND controllers drivers changes:
+  - Ams-delta:
+    * Fixing the error path
+    * SPDX tag added
+    * May be compiled with COMPILE_TEST=3Dy
+    * Conversion to ->exec_op() interface
+    * Dropping .IOADDR_R/W use
+    * Use GPIO API for data I/O
+  - Denali:
+    * Removing denali_reset_banks()
+    * Removing ->dev_ready() hook
+    * Including <linux/bits.h> instead of <linux/bitops.h>
+    * Changes to comply with the above fixes/cleanup done in the core.
+  - FSMC:
+    * Adding an SPDX tag to replace the license text
+    * Making conversion from chip to fsmc consistent
+    * Fixing unchecked return value in fsmc_read_page_hwecc
+    * Changes to comply with the above fixes/cleanup done in the core.
+  - Marvell:
+    * Preventing timeouts on a loaded machine (fix)
+    * Changes to comply with the above fixes/cleanup done in the core.
+  - OMAP2:
+    * Pass the parent of pdev to dma_request_chan() (fix)
+  - R852:
+    * Use generic DMA API
+  - sh_flctl:
+    * Converting to SPDX identifiers
+  - Sunxi:
+    * Write pageprog related opcodes to the right register: WCMD_SET (fix)
+  - Tegra:
+    * Stop implementing ->select_chip()
+  - VF610:
+    * Adding an SPDX tag to replace the license text
+    * Changes to comply with the above fixes/cleanup done in the core.
+  - Various trivial/spelling/coding style fixes.
+
+  SPI-NAND drivers changes:
+  - Removing the depreacated mt29f_spinand driver from staging.
+  - Adding support for:
+    * Toshiba TC58CVG2S0H
+    * GigaDevice GD5FxGQ4xA
+    * Winbond W25N01GV
+
+JFFS2 changes:
+- Fix a lockdep issue
+
+MTD changes:
+- Rework the physmap driver to merge gpio-addr-flash and physmap_of
+  in it
+- Add a new compatible for RedBoot partitions
+- Make sub-partitions RW if the parent partition was RO because of a
+  mis-alignment
+- Add pinctrl support to the
+- Addition of /* fall-through */ comments where appropriate
+- Various minor fixes and cleanups
+
+Other changes:
+- Update my email address
+
+----------------------------------------------------------------
+Alexander Sverdlin (1):
+      mtd: spi-nor: Add support for mx25u12835f
+
+Boris Brezillon (61):
+      mtd: maps: physmap: Add SPDX header
+      mtd: maps: physmap: Rename ->map and ->mtd into ->maps and ->mtds
+      mtd: maps: physmap: Use platform_get_resource() to retrieve iomem res=
+ources
+      mtd: maps: physmap: Use dev_notice() and a %pR specifier
+      mtd: maps: physmap: Use devm_ioremap_resource()
+      mtd: maps: physmap: Remove the MAX_RESOURCES limitation
+      mtd: maps: physmap: Check mtd_device_{parse_register, unregister}() r=
+et code
+      mtd: maps: physmap: Return -ENOMEM directly when info allocation fails
+      mtd: maps: physmap: Fix coding style issues reported by checkpatch
+      mtd: maps: Prepare merging of physmap and physmap_of
+      mtd: maps: Merge physmap_of.c into physmap-core.c
+      mtd: maps: Rename physmap_of_{versatile, gemini} into physmap-{versat=
+ile, gemini}
+      mtd: maps: Merge gpio-addr-flash.c into physmap-core.c
+      staging: Remove the mt29f_spinand driver
+      mtd: maps: Get rid of the latch-addr-flash driver
+      mtd: rawnand: Stop passing mtd_info objects to internal functions
+      mtd: rawnand: Reorganize code to avoid forward declarations
+      mtd: rawnand: legacy: Drop useless test in nand_legacy_set_defaults()
+      mtd: rawnand: Move nand_exec_op() to internal.h
+      mtd: rawnand: Remove unused NAND_CONTROLLER_ALLOC flag
+      mtd: rawnand: ams-delta: Allow this driver to be compiled when COMPIL=
+E_TEST=3Dy
+      mtd: rawnand: ams-delta: Add an SPDX tag to replace the license text
+      mtd: rawnand: ams-delta: Fix various coding style issues
+      mtd: rawnand: ams-delta: cleanup ams_delta_init() error path
+      mtd: rawnand: ams-delta: Check mtd_device_register() return code
+      mtd: rawnand: ams-delta: Explicitly inherit from nand_controller
+      mtd: rawnand: Add nand_[de]select_target() helpers
+      mtd: rawnand: Pass the CS line to be selected in struct nand_operation
+      mtd: rawnand: Make ->select_chip() optional when ->exec_op() is imple=
+mented
+      mtd: rawnand: fsmc: Stop implementing ->select_chip()
+      mtd: rawnand: marvell: Stop implementing ->select_chip()
+      mtd: rawnand: tegra: Stop implementing ->select_chip()
+      mtd: rawnand: vf610: Stop implementing ->select_chip()
+      mtd: rawnand: ams-delta: Stop implementing ->select_chip()
+      mtd: rawnand: Deprecate the ->select_chip() hook
+      mtd: rawnand: Move the ->exec_op() method to nand_controller_ops
+      mtd: rawnand: Move ->setup_data_interface() to nand_controller_ops
+      mtd: rawnand: fsmc: Stop passing mtd_info objects to internal functio=
+ns
+      mtd: rawnand: fsmc: Fix the fsmc_nand_data kernel-doc
+      mtd: rawnand: fsmc: Make conversion from chip to fsmc consistent
+      mtd: rawnand: fsmc: Stop using the dummy controller obj
+      mtd: rawnand: fsmc: Add an SPDX tag to replace the license text
+      mtd: rawnand: fsmc: Fix all coding style issues reported by checkpatch
+      mtd: rawnand: vf610: Stop passing mtd_info to internal functions
+      mtd: rawnand: vf610: Stop using the dummy controller obj
+      mtd: rawnand: vf610: Add an SPDX tag to replace the license text
+      mtd: rawnand: Deprecate the dummy_controller field
+      mtd: spi-nor: Add the SNOR_F_4B_OPCODES flag
+      mtd: spi-nor: Add a post BFPT parsing fixup hook
+      mtd: spi-nor: Add a post BFPT fixup for MX25L25635E
+      mtd: spi-nor: Drop inline on all internal helpers
+      mtd: spi-nor: Avoid forward declaration of internal functions
+      mtd: spi-nor: Stop passing flash_info around
+      mtd: spi-nor: Make the enable argument passed to set_byte() a bool
+      mtd: spi-nor: Add an SPDX tag to spi-nor.{c,h}
+      mtd: rawnand: Fix JEDEC detection
+      mtd: rawnand: omap2: Pass the parent of pdev to dma_request_chan()
+      MAINTAINERS: Update my email address
+      mtd: rawnand: sunxi: Write pageprog related opcodes to WCMD_SET
+      Merge tag 'nand/for-4.21' of git://git.infradead.org/linux-mtd into m=
+td/next
+      Merge tag 'spi-nor/for-4.21' of git://git.infradead.org/linux-mtd int=
+o mtd/next
+
+Christoph Hellwig (1):
+      mtd: rawnand: r852: use generic DMA API
+
+Chuanhong Guo (1):
+      mtd: spinand: add support for GigaDevice GD5FxGQ4xA
+
+Colin Ian King (2):
+      mtd: Kconfig: fix spelling mistake "partions" -> "partition"
+      mtd: nftl: clean up indentation, remove extraneous tabs
+
+Cyrille Pitchen (1):
+      mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
+
+Daniel Santos (1):
+      jffs2: Fix use of uninitialized delayed_work, lockdep breakage
+
+Fabrizio Castro (1):
+      mtd: spi-nor: Add support for is25lp016d
+
+Gustavo A. R. Silva (3):
+      mtd: rawnand: fsmc: Fix unchecked return value in fsmc_read_page_hwecc
+      mtd: block2mtd: mark expected switch fall-throughs
+      mtd: cfi_cmdset_0020: Mark expected switch fall-throughs
+
+Janusz Krzysztofik (7):
+      mtd: rawnand: Provide helper for polling GPIO R/B pin
+      mtd: rawnand: ams-delta: Stop using legacy .IOADDR_R/W
+      mtd: rawnand: ams-delta: Convert the driver to ->exec_op()
+      ARM: OMAP1: ams-delta: Provide GPIO lookup table for NAND data port
+      mtd: rawnand: ams-delta: Request data port GPIO resource
+      mtd: rawnand: ams-delta: Use GPIO API for data I/O
+      ARM: OMAP1: ams-delta: Drop obsolete NAND resources
+
+Kuninori Morimoto (1):
+      mtd: rawnand: sh_flctl: convert to SPDX identifiers
+
+Linus Walleij (5):
+      mtd: Move Redboot partition parser
+      mtd: partitions: Add RedBoot FIS DT bindings
+      mtd: partitions: Add OF support to RedBoot partitions
+      mtd: maps: physmap: Leave assigned complex mappings
+      mtd: physmap_of_gemini: Handle pin control
+
+Liu Xiang (1):
+      mtd: spi-nor: Add 4B_OPCODES flag to is25lp256
+
+Masahiro Yamada (3):
+      mtd: rawnand: denali: include <linux/bits.h> instead of <linux/bitops=
+.h>
+      mtd: rawnand: denali: remove ->dev_ready() hook
+      mtd: rawnand: denali: remove denali_reset_banks()
+
+Mason Yang (1):
+      mtd: rawnand: Flag 1.8V AC chips with a broken GET_FEATURES(TIMINGS)
+
+Mathieu Malaterre (1):
+      mtd: rawnand: jz4780: annotate implicit fall throughs
+
+Miquel Raynal (5):
+      Merge tag 'v4.20-rc2' of git://git.kernel.org/.../torvalds/linux into=
+ nand/next
+      mtd: fix mtd_oobavail() incoherent returned value
+      mtd: fix Coverity integer handling issue
+      mtd: rawnand: marvell: fix spelling mistake in kernel doc
+      mtd: rawnand: marvell: prevent timeouts on a loaded machine
+
+Rafa=C5=82 Mi=C5=82ecki (2):
+      mtd: keep original flags for every struct mtd_info
+      mtd: improve calculating partition boundaries when checking for align=
+ment
+
+Ricardo Ribalda Delgado (2):
+      dt-binding: mtd: physmap: Document the addr-gpios property
+      mtd: maps: physmap: Invert logic on if/else branch
+
+Robert Marko (2):
+      mtd: spinand: winbond: Add support for W25N01GV
+      mtd: spi-nor: Add Winbond w25q128jv support
+
+Schrempf Frieder (1):
+      mtd: spinand: Add initial support for Toshiba TC58CVG2S0H
+
+Tudor.Ambarus@microchip.com (2):
+      mtd: spi-nor: remove unneeded smpt zeroization
+      mtd: spi-nor: mark desirable switch case fall through
+
+Uwe Kleine-K=C3=B6nig (1):
+      mtd: spi-nor: Add support for IS25LP032/064
+
+Yangtao Li (1):
+      mtd: use DEFINE_SHOW_ATTRIBUTE() instead of open-coding it
+
+Yogesh Narayan Gaur (2):
+      mtd: spi-nor: add macros related to MICRON flash
+      mtd: spi-nor: add entry for mt35xu512aba flash
+
+huijin.park (2):
+      mtd: change len type from signed to unsigned type
+      mtd: spi-nor: cast to u64 to avoid uint overflows
+
+ .mailmap                                                         |    7 +-
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt            |    2 +
+ Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt |   27 +
+ MAINTAINERS                                                      |    8 +-
+ arch/arm/mach-omap1/board-ams-delta.c                            |   22 +-
+ drivers/mtd/Kconfig                                              |   52 +-
+ drivers/mtd/Makefile                                             |    1 -
+ drivers/mtd/chips/cfi_cmdset_0020.c                              |    6 +
+ drivers/mtd/devices/block2mtd.c                                  |    2 +
+ drivers/mtd/devices/docg3.c                                      |   16 +-
+ drivers/mtd/devices/docg3.h                                      |   11 -
+ drivers/mtd/maps/Kconfig                                         |   37 +-
+ drivers/mtd/maps/Makefile                                        |   11 +-
+ drivers/mtd/maps/gpio-addr-flash.c                               |  281 --=
+-----
+ drivers/mtd/maps/latch-addr-flash.c                              |  229 --=
+----
+ drivers/mtd/maps/physmap-core.c                                  |  665 ++=
++++++++++++++
+ drivers/mtd/maps/{physmap_of_gemini.c =3D> physmap-gemini.c}       |  112 =
+++-
+ drivers/mtd/maps/{physmap_of_gemini.h =3D> physmap-gemini.h}       |    2 =
++-
+ drivers/mtd/maps/{physmap_of_versatile.c =3D> physmap-versatile.c} |    2 =
++-
+ drivers/mtd/maps/{physmap_of_versatile.h =3D> physmap-versatile.h} |    2 =
++-
+ drivers/mtd/maps/physmap.c                                       |  280 --=
+-----
+ drivers/mtd/maps/physmap_of_core.c                               |  368 --=
+-------
+ drivers/mtd/mtdblock.c                                           |    2 +-
+ drivers/mtd/mtdcore.c                                            |    8 +-
+ drivers/mtd/mtdpart.c                                            |   16 +-
+ drivers/mtd/mtdswap.c                                            |   13 +-
+ drivers/mtd/nand/raw/Kconfig                                     |    2 +-
+ drivers/mtd/nand/raw/ams-delta.c                                 |  267 ++=
++---
+ drivers/mtd/nand/raw/atmel/nand-controller.c                     |    9 +-
+ drivers/mtd/nand/raw/au1550nd.c                                  |    2 +-
+ drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c                 |    2 +-
+ drivers/mtd/nand/raw/cafe_nand.c                                 |    4 +-
+ drivers/mtd/nand/raw/davinci_nand.c                              |    4 +-
+ drivers/mtd/nand/raw/denali.c                                    |   59 +-
+ drivers/mtd/nand/raw/denali.h                                    |    2 +-
+ drivers/mtd/nand/raw/diskonchip.c                                |    4 +-
+ drivers/mtd/nand/raw/fsl_elbc_nand.c                             |    2 +-
+ drivers/mtd/nand/raw/fsl_ifc_nand.c                              |    2 +-
+ drivers/mtd/nand/raw/fsl_upm.c                                   |    2 +-
+ drivers/mtd/nand/raw/fsmc_nand.c                                 |  303 ++=
+++---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c                       |   29 +-
+ drivers/mtd/nand/raw/hisi504_nand.c                              |    4 +-
+ drivers/mtd/nand/raw/internals.h                                 |   33 +
+ drivers/mtd/nand/raw/jz4740_nand.c                               |    8 +-
+ drivers/mtd/nand/raw/jz4780_bch.c                                |    2 +
+ drivers/mtd/nand/raw/jz4780_nand.c                               |    2 +-
+ drivers/mtd/nand/raw/lpc32xx_mlc.c                               |    2 +-
+ drivers/mtd/nand/raw/lpc32xx_slc.c                               |    2 +-
+ drivers/mtd/nand/raw/marvell_nand.c                              |   51 +-
+ drivers/mtd/nand/raw/mpc5121_nfc.c                               |    4 +-
+ drivers/mtd/nand/raw/mtk_nand.c                                  |    4 +-
+ drivers/mtd/nand/raw/mxc_nand.c                                  |   16 +-
+ drivers/mtd/nand/raw/nand_base.c                                 |  771 ++=
+++++++++--------
+ drivers/mtd/nand/raw/nand_bbt.c                                  |  285 ++=
++----
+ drivers/mtd/nand/raw/nand_hynix.c                                |    8 +-
+ drivers/mtd/nand/raw/nand_jedec.c                                |    2 +
+ drivers/mtd/nand/raw/nand_legacy.c                               |   35 +-
+ drivers/mtd/nand/raw/nand_macronix.c                             |    7 +
+ drivers/mtd/nand/raw/nandsim.c                                   |   19 +-
+ drivers/mtd/nand/raw/ndfc.c                                      |    2 +-
+ drivers/mtd/nand/raw/omap2.c                                     |    2 +-
+ drivers/mtd/nand/raw/plat_nand.c                                 |    2 +-
+ drivers/mtd/nand/raw/qcom_nandc.c                                |    2 +-
+ drivers/mtd/nand/raw/r852.c                                      |   30 +-
+ drivers/mtd/nand/raw/s3c2410.c                                   |    7 +-
+ drivers/mtd/nand/raw/sh_flctl.c                                  |   21 +-
+ drivers/mtd/nand/raw/sm_common.c                                 |    2 +-
+ drivers/mtd/nand/raw/sunxi_nand.c                                |    6 +-
+ drivers/mtd/nand/raw/tango_nand.c                                |    4 +-
+ drivers/mtd/nand/raw/tegra_nand.c                                |   34 +-
+ drivers/mtd/nand/raw/vf610_nfc.c                                 |   98 ++-
+ drivers/mtd/nand/raw/xway_nand.c                                 |    2 +-
+ drivers/mtd/nand/spi/Makefile                                    |    2 +-
+ drivers/mtd/nand/spi/core.c                                      |    2 +
+ drivers/mtd/nand/spi/gigadevice.c                                |  148 ++=
+++
+ drivers/mtd/nand/spi/toshiba.c                                   |  137 ++=
+++
+ drivers/mtd/nand/spi/winbond.c                                   |    8 +
+ drivers/mtd/nftlmount.c                                          |   33 +-
+ drivers/mtd/parsers/Kconfig                                      |   50 ++
+ drivers/mtd/parsers/Makefile                                     |    1 +
+ drivers/mtd/{ =3D> parsers}/redboot.c                              |   32 =
++-
+ drivers/mtd/spi-nor/spi-nor.c                                    | 1342 ++=
+++++++++++++++++-------------
+ drivers/staging/Kconfig                                          |    2 -
+ drivers/staging/Makefile                                         |    1 -
+ drivers/staging/mt29f_spinand/Kconfig                            |   16 -
+ drivers/staging/mt29f_spinand/Makefile                           |    1 -
+ drivers/staging/mt29f_spinand/TODO                               |   13 -
+ drivers/staging/mt29f_spinand/mt29f_spinand.c                    |  980 --=
+--------------------
+ drivers/staging/mt29f_spinand/mt29f_spinand.h                    |  106 ---
+ fs/jffs2/super.c                                                 |    3 +-
+ include/linux/mtd/cfi.h                                          |    1 +
+ include/linux/mtd/mtd.h                                          |    3 +-
+ include/linux/mtd/rawnand.h                                      |  158 ++=
+--
+ include/linux/mtd/sh_flctl.h                                     |   16 +-
+ include/linux/mtd/spi-nor.h                                      |   11 +-
+ include/linux/mtd/spinand.h                                      |    2 +
+ 96 files changed, 3302 insertions(+), 4108 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboo=
+t-fis.txt
+ delete mode 100644 drivers/mtd/maps/gpio-addr-flash.c
+ delete mode 100644 drivers/mtd/maps/latch-addr-flash.c
+ create mode 100644 drivers/mtd/maps/physmap-core.c
+ rename drivers/mtd/maps/{physmap_of_gemini.c =3D> physmap-gemini.c} (50%)
+ rename drivers/mtd/maps/{physmap_of_gemini.h =3D> physmap-gemini.h} (90%)
+ rename drivers/mtd/maps/{physmap_of_versatile.c =3D> physmap-versatile.c} =
+(99%)
+ rename drivers/mtd/maps/{physmap_of_versatile.h =3D> physmap-versatile.h} =
+(90%)
+ delete mode 100644 drivers/mtd/maps/physmap.c
+ delete mode 100644 drivers/mtd/maps/physmap_of_core.c
+ create mode 100644 drivers/mtd/nand/spi/gigadevice.c
+ create mode 100644 drivers/mtd/nand/spi/toshiba.c
+ rename drivers/mtd/{ =3D> parsers}/redboot.c (92%)
+ delete mode 100644 drivers/staging/mt29f_spinand/Kconfig
+ delete mode 100644 drivers/staging/mt29f_spinand/Makefile
+ delete mode 100644 drivers/staging/mt29f_spinand/TODO
+ delete mode 100644 drivers/staging/mt29f_spinand/mt29f_spinand.c
+ delete mode 100644 drivers/staging/mt29f_spinand/mt29f_spinand.h
