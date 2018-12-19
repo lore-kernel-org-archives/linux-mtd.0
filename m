@@ -1,24 +1,22 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZfW0-000871-1I
- for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 17:20:32 +0000
+ id 1gZgJz-0005kx-FU
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 18:11:52 +0000
 From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, "Zoltan Szubbocsev
- (zszubbocsev)" <zszubbocsev@micron.com>, Boris Brezillon
- <bbrezillon@kernel.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Richard
- Weinberger" <richard@nod.at>, "tglx@linutronix.de" <tglx@linutronix.de>
+To: Richard Weinberger <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Zoltan Szubbocsev (zszubbocsev)"
+ <zszubbocsev@micron.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "Boris
+ Brezillon" <boris.brezillon@bootlin.com>
 Subject: RE: [EXT] Re: [PATCH V1] mtd: core: Micron SLC NAND filling block
-Date: Wed, 19 Dec 2018 17:19:43 +0000
-Message-ID: <BYAPR08MB45331E5653451102C61BAC54DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
+Date: Wed, 19 Dec 2018 18:11:25 +0000
+Message-ID: <BYAPR08MB4533FD42451BCEB47D46FEEDDBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
 References: <BYAPR08MB4533AC4A07E48EC37576C060DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
- <20181219141732.3e09bdc9@bbrezillon>
- <SN6PR08MB502421AE43E6824C3CC5C1E4CBBE0@SN6PR08MB5024.namprd08.prod.outlook.com>
- <20181219151751.74931b39@xps13>
-In-Reply-To: <20181219151751.74931b39@xps13>
+ <2816846.emhzHigZ4F@blindfold>
+In-Reply-To: <2816846.emhzHigZ4F@blindfold>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,22 +27,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIEJvcmlzIGFuZCBNaXF1ZWwNClRoYW5rcyBmb3IgeW91ciBlbWFpbC4NClNpbmNlIHRoZSBw
-YXRjaCBpcyBiYXNlZCBvbiB2NC4yIHdoaWNoIGRvZXNuJ3Qgc2VwYXJhdGUgc3BlY2lmaWMgTkFO
-RCB2ZW5kb3INCmRyaXZlciBpbnRvIHZlbmRvciBzcGVjaWZpYyBjaGlwIGRyaXZlciBmaWxlLiBJ
-IHdpbGwgcmViYXNlIG15IHBhdGNoIHRvIGxhdGVzdCBsaW51eCBrZXJuZWwsDQphbmQgaW1wbGVt
-ZW50ICBhIHNwZWNpZmljIGhvb2sgZnVuY2l0b24gaW4gdGhlIG5hbmRfbWljcm9uLmMgYXMgeW91
-IHN1Z2dlc3RlZC4NCkFmdGVyIHRlc3Rpbmcgd2VsbCwgeW91IHdpbGwgc2VlIHRoZSB2ZXJzaW9u
-IDIuDQoNCi8vQmVhbiBIdW8NCg0KPj4gQm9yaXMsDQo+Pg0KPj4gQXJlIHRoZXJlICBub24gVUJJ
-L1VCSUZTIGNhc2VzPw0KPj4gQ2FuIHlvdSBwbGVhc2UgYmUgc3BlY2lmaWM/DQo+DQo+VUJJIGlz
-IG9uZSB1c2VyIG9mIE1URC4NCj4NCj5XaGF0IGFib3V0IGRpcmVjdCBhY2Nlc3NlcyB0byBNVEQg
-ZGV2aWNlcz8gU3F1YXNoZnM/DQo+DQo+SW4gYW55IGNhc2UsIEkgZG9uJ3QgdGhpbmsgaXQgaXMg
-ZXhhZ2dlcmF0ZWQgdG8gc2F5IHRoYXQgTGludXggaGFzIGJlZW4gYnVpbHQgb24NCj4ibGF5ZXJp
-bmciLiBUaGlzIGlzc3VlIGlzIE5BTkQgY2hpcCBzcGVjaWZpYywgaGVuY2UgbXVzdCBiZSBoYW5k
-bGVkIGF0IHRoZQ0KPk5BTkQgY29yZSBsZXZlbC4gSW4gdGhlIE5BTkQgZXJhc2UgcGF0aCBJIHdv
-dWxkIGxpa2UgdG8gc2VlIGEgY2FsbCB0byBhIHZlbmRvcg0KPnNwZWNpZmljIGhvb2sgdGhhdDoN
-Cj4xLyBjaGVja3MgaWYgdGhlIHBhcnQgaXMgYWZmZWN0ZWQgYnkgY29tcGFyaW5nIGl0cyBJRCB0
-byBhIGxpc3QsIDIvIGlmIHllcywgY2hlY2tzIGlmDQo+dGhlIGJsb2NrIG11c3QgYmUgZmlsbGVk
-IGJlZm9yZSBlcmFzaW5nLg0KPg0KPlRoZSBsb2dpYyBvZiAxLyBhbmQgMi8gc2hvdWxkIHByb2Jh
-Ymx5IHJlc2lkZSBpbg0KPmRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfbWljcm9uLmMNCj4NCj4N
-Cj5UaGFua3MsDQo+TWlxdcOobA0K
+Hi, Richard
+thanks for your review.
+
+>Am Mittwoch, 19. Dezember 2018, 12:03:06 CET schrieb Bean Huo (beanhuo):
+>> +#define PARTIAL_FILLING_CHECKUP 1 /* Used to turn on/off partial fillin=
+g
+>> +		 block checkup before erasing this block.*/ #define
+>> +LAST_CHECKPU_PAGE 13 struct ubifs_filling_head {
+>> +	__le32 magic;
+>> +	__le32 crc;
+>> +	__le64 sqnum;
+>> +	__le32 len;
+>> +	__u8 node_type;
+>> +	__u8 group_type;
+>> +	__u8 padding[2];
+>> +	__le32 pad_len;
+>> +} __packed;
+>
+>I don't think this is needed anymore.
+>
+
+Thanks, I agree with you, and will be removed in next version.
+
+>If you overwrite (sub)pages 0 and 1, UBI EC and VID headers are gone.
+>In case of a power-cut before the erase operation, UBI will detect the
+>corrupted EC and VID headers and re-erase the block.
+
+This is actually what I want. Means always overwrite EC and VID headers, in=
+ order to=20
+let UBI to re-erase this block just because of this block contains my filli=
+ng data (resulting from one power-cut after filling pages).
+Otherwise, for the next boot, during attach stage, UBIFS will consider this=
+ block to be a corrupted block.
+
+let me take one example, eg, the last programmed page is page8, and after t=
+he filling pages,=20
+before mtd->_erase, power-cut hits, so in this block, there will be below d=
+ata layout,=20
+
+Page0 : EC header
+Page1: VID header
+Page2: not empty, valid data=20
+Page3: not empty, valid data
+Page4: not empty, valid data
+Page5: not empty, valid data
+Page6: not empty, valid data
+Page7: not empty, valid data
+Page8: not empty, valid data
+
+Page9: filled with padding data by the patch
+Page10: empty, keep all 0xff
+Page11: filled with padding data by the patch
+Page12: empty, keep all 0xff
+Page13: filled with padding data by the patch
+
+As for the older UBIFS (eg, v4.2), there will result in attach failure, but=
+ for the latest
+UBIFS, if I don't overwrite EC and VID header, will this condition happen?
+
+>For a fastmap attach the story is different, it does not track unmap/erase
+>operations. Therefore it will not notice that the block was scheduled for =
+erase
+>and got corrupted by overwriting the first pages.
+>Users on top of UBIFS will face either ECC errors or UBIFS complains about
+>corrupted empty space.
+>This fastmap issue got fixed with:
+>781932375ffc ("ubi: fastmap: Correctly handle interrupted erasures in EBA"=
+)
+>
+>So your ubifs_filling_head struct seems to work around an already fixed UB=
+I
+>bug. :-)
+>
+
+Thanks for your info.
+"ubi: fastmap: Correctly handle interrupted erasures in EBA" patch is merge=
+d from v4.18.
+So, I still need to firstly rebase patch to latest kernel, then let's have =
+a look.
+
+>Thanks,
+>//richard
+>
+
+//Bean
