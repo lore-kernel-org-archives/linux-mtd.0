@@ -1,31 +1,19 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 3/7] mtd: spi-nor: add opcodes for octal Read/Write
- commands
-Date: Wed, 19 Dec 2018 10:15:00 +0000
-Message-ID: <VI1PR04MB5726FBFD2CBEB7A3F0454A5999BE0@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1543826226-30898-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1543826226-30898-4-git-send-email-yogeshnarayan.gaur@nxp.com>
- <ac569071-3c69-ebc8-2c18-ea1399210549@microchip.com>
- <VI1PR04MB57264CBB25E2984DF221ED2E99A60@VI1PR04MB5726.eurprd04.prod.outlook.com>
- <141c6d79-ae7a-60aa-865a-f6b6997f8da9@microchip.com>
-In-Reply-To: <141c6d79-ae7a-60aa-865a-f6b6997f8da9@microchip.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gZZdY-0006E8-Rx
+ for linux-mtd@lists.infradead.org; Wed, 19 Dec 2018 11:03:42 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ "Zoltan Szubbocsev (zszubbocsev)" <zszubbocsev@micron.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>
+CC: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Subject: [PATCH V1] mtd: core: Micron SLC NAND filling block
+Date: Wed, 19 Dec 2018 11:03:06 +0000
+Message-ID: <BYAPR08MB4533AC4A07E48EC37576C060DBBE0@BYAPR08MB4533.namprd08.prod.outlook.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,34 +24,206 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgVHVkb3IsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVHVkb3Iu
-QW1iYXJ1c0BtaWNyb2NoaXAuY29tIFttYWlsdG86VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29t
-XQ0KPiBTZW50OiBUdWVzZGF5LCBEZWNlbWJlciAxMSwgMjAxOCAxOjQwIFBNDQo+IFRvOiBZb2dl
-c2ggTmFyYXlhbiBHYXVyIDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT47IGxpbnV4LQ0KPiBt
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgYm9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tOyBicm9v
-bmllQGtlcm5lbC5vcmc7DQo+IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsgdmlnbmVzaHJAdGkuY29t
-OyBsaW51eC1zcGlAdmdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9y
-Zw0KPiBDYzogcm9iaEBrZXJuZWwub3JnOyBtYXJrLnJ1dGxhbmRAYXJtLmNvbTsgc2hhd25ndW9A
-a2VybmVsLm9yZzsgbGludXgtDQo+IGFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgY29t
-cHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiBmcmllZGVyLnNjaHJlbXBmQGV4Y2VldC5kZTsg
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY1IDMv
-N10gbXRkOiBzcGktbm9yOiBhZGQgb3Bjb2RlcyBmb3Igb2N0YWwgUmVhZC9Xcml0ZQ0KPiBjb21t
-YW5kcw0KPiANCj4gSGksDQo+IA0KPiBPbiAxMi8xMS8yMDE4IDA2OjU1IEFNLCBZb2dlc2ggTmFy
-YXlhbiBHYXVyIHdyb3RlOg0KPiA+IFRodXMgd291bGQgZ29pbmcgdG8gbW9kaWZ5IHRoZSBjb25k
-aXRpb24gY2hlY2sgYXMgYmVsb3csIHNvIHRoYXQgU0ZEUA0KPiBwYXJzaW5nIHdvdWxkIGFsc28g
-YmUgcGVyZm9ybWVkIHdoZW4gU1BJX05PUl9PQ1RBTF9SRUFEIGlzIHNldC4gQ29ycmVjdD8NCj4g
-Pg0KPiA+ICAgICAgICAgaWYgKChpbmZvLT5mbGFncyAmIChTUElfTk9SX0RVQUxfUkVBRCB8IFNQ
-SV9OT1JfUVVBRF9SRUFEIHwNCj4gPiAgICAgICAgICAgICAgU1BJX05PUl9PQ1RBTF9SRUFEKSkg
-JiYgIShpbmZvLT5mbGFncyAmDQo+ID4gU1BJX05PUl9TS0lQX1NGRFApKSB7DQo+IA0KPiBZZXMs
-IHRoaXMgaXMgd2hhdCBJIHdhcyBzdWdnZXN0aW5nLiBPbiBhIHNlY29uZCB0aG91Z2h0LCB3ZSBo
-YXZlbid0IGFkZGVkIHlldA0KPiBzdXBwb3J0IGZvciBwYXJzaW5nIHNmZHAgdG8gZ2V0IHRoZSBv
-Y3RhbCBtb2RlIGluZm8sIHNvIHRoZSBwYXJzaW5nIHdpbGwgYmUgZG9uZQ0KPiBncmF0dWl0b3Vz
-bHkuIExldCdzIGRyb3AgdGhpcyBjaGFuZ2UgYW5kIGFkZCBpdCB3aGVuIGFkZGluZyBzdXBwb3J0
-IGZvciBwYXJzaW5nDQo+IG9jdGFsIG1vZGUgaW5mbyBmcm9tIHNmZHAuIEknbGwgcHJlcGFyZSBh
-IHBhdGNoIGZvciB0aGlzLg0KPiANCj4gUGxlYXNlIHJlYmFzZSBvbiB0b3Agb2Ygc3BpLW5vci9u
-ZXh0LCBzL29jdG8vb2N0YWwgaW4gc3BpLW5vci5oIGFuZCBjb3JyZWN0IHlvdXINCj4gUy1vLWIg
-dGFnIGFuZCB5b3UnbGwgaGF2ZSBteSBSLWIgdGFnLg0KPiANCk5leHQgdmVyc2lvbiwgdjYsIHNl
-bnQgZm9yIHJldmlld1sxXS4NClNvcnJ5IGZvciBsYXRlIHJlcGx5LCB3YXMgb24gbGVhdmUuDQoN
-Ci0tDQpSZWdhcmRzDQpZb2dlc2ggR2F1cg0KDQpbMV0gaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJz
-Lm9yZy9wcm9qZWN0L2xpbnV4LW10ZC9saXN0Lz9zZXJpZXM9ODI4MTUNCg0KPiBUaGFua3MgWW9n
-ZXNoLA0KPiB0YQ0K
+On some legacy planar 2D Micron NAND devices when a
+block erase command is issued, occasionally even though
+a block erase operation successfully completes and returns
+a pass status, the flash block may not be completely erased.
+Subsequent operations to this block on very rare cases can
+result in subtle failures or corruption. These extremely rare
+cases should nevertheless be considered.
+
+These rare occurrences have been observed on partially written
+blocks. Partially written blocks are not uncommon with UBI/UBIFS.=20
+
+To avoid this rare occurrence, we make sure that at least 15 pages
+have been programmed to a block before it is erased. In case we
+find that less than 15 pages have been programmed, additional
+pages are programmed in the block. The observation is that additional
+pages rarely need to be written and most of the time UBI/UBIFS erases
+blocks that contain more programmed pages.=20
+
+Signed-off-by: beanhuo <beanhuo@micron.com>
+Reviewed-by:  ZOLTAN SZUBBOCSEV < zszubbocsev@micron.com>
+---
+ drivers/mtd/mtdcore.c | 125 ++++++++++++++++++++++++++++++++++++++++++++++=
+++++
+ drivers/mtd/mtdcore.h |  16 +++++++
+ 2 files changed, 141 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 8bbbb75..b3879b5 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -801,6 +801,127 @@ void __put_mtd_device(struct mtd_info *mtd)
+ }
+ EXPORT_SYMBOL_GPL(__put_mtd_device);
+=20
++static int mtd_check_pattern(const void *buf, uint8_t patt, int size)
++{
++	int i;
++
++	for (i =3D 0; i < size; i++)
++		if (((const uint8_t *)buf)[i] !=3D patt)
++			return 0;
++	return 1;
++}
++
++static int checkup_partial_filling(struct mtd_info *mtd, struct erase_info=
+ *instr)
++{
++	int retlen;
++	int ret;
++	u_char * data_buf, * oob_buf;
++	uint32_t empty_page_mask =3D 0;
++	uint32_t programmed_page =3D 0;
++	loff_t addr;
++	int nextpage =3D LAST_CHECKPU_PAGE; /* We defined the maximum page to che=
+ck is page14,
++	                      first page is page0*/
++	int cur_page =3D 0;
++	ret =3D 0;
++
++	if ((mtd->type !=3D MTD_NANDFLASH) && (mtd->type !=3D MTD_MLCNANDFLASH))
++		return 0; /* Only works on NAND */
++
++	data_buf =3D kmalloc(mtd->writesize, GFP_KERNEL);
++	oob_buf =3D kmalloc(mtd->oobsize, GFP_KERNEL);
++	addr =3D instr->addr; /* this is page0 address*/
++
++	if (data_buf)
++	    memset(data_buf, 0xff, mtd->writesize);
++	else
++	    goto end;
++	if (oob_buf)
++	    memset(oob_buf, 0x00, mtd->oobsize);
++	else
++	    goto end;
++
++	for( ; nextpage > 0; ) {
++		ret =3D mtd_read(mtd, addr, mtd->writesize, &retlen, data_buf);
++		if ((ret) || (retlen !=3D mtd->writesize))
++			goto next; /* Read error, currently, we directly skip it */
++
++		if (mtd_check_pattern(data_buf, 0xff, retlen)) {
++			if (cur_page =3D=3D 0)
++			    break; /* page 0 is empty, skip block filling checkup */
++
++			/* Mark page need to program later */
++			empty_page_mask |=3D (1 << cur_page);
++		} else {
++			programmed_page |=3D (1 << cur_page);
++			if (LAST_CHECKPU_PAGE !=3D nextpage)
++		/*
++		 * Because we checked page0 firstly, at this time the nextpage
++		 * is page13. And if page0 is programmed, then we start to
++		 * check from page13,page11,page9...,page3,respectively.
++		 * We olny check odd page. So if the nextpage is not page13
++		 * and cur_page is programmed, we consider that the current
++		 * cur_page is the last programmed page since the pages of PEB
++		 * are programmed sequentially.
++		*/
++			break;
++		}
++next:
++		addr =3D instr->addr + mtd->writesize * nextpage;
++		cur_page =3D nextpage;
++		if (nextpage > 1)
++			nextpage =3D ((nextpage % 2) ? (nextpage - 2) : (nextpage - 1));
++		else
++			break;
++	}
++
++	if (empty_page_mask =3D=3D 0x00)
++		goto end;
++
++	int i;
++	struct ubifs_filling_head * filling =3D data_buf;
++	filling->magic =3D 0x00000000;
++	filling->sqnum =3D 0;
++	filling->node_type =3D 0xCE;
++	filling->group_type =3D 0;
++	filling->padding[0] =3D filling->padding[1] =3D 0xAA;
++	filling->len =3D cpu_to_le32(UBIFS_PEB_PAD_NODE_SZ);
++	int pad  =3D mtd->writesize - UBIFS_PEB_PAD_NODE_SZ;
++	filling->pad_len =3D cpu_to_le32(pad);
++	filling->crc =3D 0x00000000;
++	memset(data_buf + UBIFS_PEB_PAD_NODE_SZ, 0xAA, pad);
++
++    struct mtd_oob_ops ops;
++    ops.mode =3D MTD_OPS_RAW;
++    ops.len =3D 0;
++    ops.ooblen =3D mtd->oobsize - 16;
++    ops.ooboffs =3D 16;
++    ops.datbuf =3D NULL;
++    ops.oobbuf =3D oob_buf;
++=20
++	empty_page_mask|=3D0x3;
++	/* Always over-write EC and VID pages with a wrong EC/VID magic bytes. */
++
++	for ( i =3D 0; i <=3D LAST_CHECKPU_PAGE ; ) {
++        /* Start to program  filling data into empty page,
++	   we only program the odd page. */
++		if (empty_page_mask & (1 << i)) {
++			addr =3D instr->addr + mtd->writesize * i;
++            if ((i =3D=3D 0) || (i =3D=3D 1)) {
++            ret =3D mtd_write(mtd, addr, mtd->writesize, &retlen, data_buf=
+);
++            ret =3D mtd->_write_oob(mtd, addr, &ops); /* clear OOB */
++            } else
++            ret =3D mtd_write(mtd, addr, mtd->writesize, &retlen, data_buf=
+);
++		}
++		if (i =3D=3D 0)
++		i =3D 1;
++		else
++		i +=3D 2;
++	}
++end:
++	kfree(data_buf);
++	kfree(oob_buf);
++	return 0;
++}
+ /*
+  * Erase is an asynchronous operation.  Device drivers are supposed
+  * to call instr->callback() whenever the operation completes, even
+@@ -820,6 +941,10 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info =
+*instr)
+ 		mtd_erase_callback(instr);
+ 		return 0;
+ 	}
++
++#ifdef PARTIAL_FILLING_CHECKUP
++    checkup_partial_filling(mtd, instr);
++#endif
+ 	return mtd->_erase(mtd, instr);
+ }
+ EXPORT_SYMBOL_GPL(mtd_erase);
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index 7b03533..0e5ad67 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -5,6 +5,22 @@
+=20
+ extern struct mutex mtd_table_mutex;
+=20
++#define PARTIAL_FILLING_CHECKUP 1 /* Used to turn on/off partial filling
++		 block checkup before erasing this block.*/
++#define LAST_CHECKPU_PAGE 13
++struct ubifs_filling_head {
++	__le32 magic;
++	__le32 crc;
++	__le64 sqnum;
++	__le32 len;
++	__u8 node_type;
++	__u8 group_type;
++	__u8 padding[2];
++	__le32 pad_len;
++} __packed;
++
++#define UBIFS_PEB_PAD_NODE_SZ  sizeof(struct ubifs_filling_head)
++
+ struct mtd_info *__mtd_next_device(int i);
+ int add_mtd_device(struct mtd_info *mtd);
+ int del_mtd_device(struct mtd_info *mtd);
+--=20
+2.7.4
