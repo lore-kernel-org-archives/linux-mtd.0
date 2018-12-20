@@ -1,19 +1,23 @@
-MIME-Version: 1.0
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Arnd Bergmann <arnd@arndb.de>
+CC: Shawn Guo <shawnguo@kernel.org>, arm-soc <arm@kernel.org>, Fabio Estevam
+ <fabio.estevam@nxp.com>, Sascha Hauer <kernel@pengutronix.de>,
+ "linux-imx@nxp.com" <linux-imx@nxp.com>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>, linux-mtd
+ <linux-mtd@lists.infradead.org>, linux-spi <linux-spi@vger.kernel.org>
+Subject: Re: [GIT PULL] FSL QSPI device tree cleanup for 4.21
+Date: Thu, 20 Dec 2018 16:23:33 +0000
+Message-ID: <6dde2248-da0d-7bd3-801b-b42b2974c038@kontron.de>
 References: <20181216084854.GJ13243@dragon>
  <CAK8P3a34R+Gv+H8_jjGP452i2kSqq+u0PsE-4pDnRRtY14SG0w@mail.gmail.com>
  <a73f86ff-15ce-9512-bbf0-be852cf39a35@kontron.de>
-In-Reply-To: <a73f86ff-15ce-9512-bbf0-be852cf39a35@kontron.de>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 20 Dec 2018 17:11:36 +0100
-Message-ID: <CAK8P3a1PMoR-WWcb_G8sTVW9HKUKvKfUZmcinkOEy9mJ5c=Lxw@mail.gmail.com>
-Subject: Re: [GIT PULL] FSL QSPI device tree cleanup for 4.21
-To: frieder.schrempf@kontron.de
-Cc: Shawn Guo <shawnguo@kernel.org>, arm-soc <arm@kernel.org>,
- Fabio Estevam <fabio.estevam@nxp.com>, Sascha Hauer <kernel@pengutronix.de>,
- linux-imx@nxp.com, Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ <CAK8P3a1PMoR-WWcb_G8sTVW9HKUKvKfUZmcinkOEy9mJ5c=Lxw@mail.gmail.com>
+In-Reply-To: <CAK8P3a1PMoR-WWcb_G8sTVW9HKUKvKfUZmcinkOEy9mJ5c=Lxw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <759984B36602BB4590685922A5C16E7E@snt-world.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 20, 2018 at 5:03 PM Schrempf Frieder
-<frieder.schrempf@kontron.de> wrote:
->
-> Hi Arnd,
->
-> On 20.12.18 16:50, Arnd Bergmann wrote:
-> > On Sun, Dec 16, 2018 at 9:50 AM Shawn Guo <shawnguo@kernel.org> wrote:
-> >>
-> >> Hi,
-> >>
-> >> As the series cleans up both i.MX/Freescale arm32 and arm64 device
-> >> trees, the pull request is based on a merge of tag imx-dt-4.21 and
-> >> imx-dt64-4.21 that have already been pulled into arm-soc next/dt branch.
-> >> This comes a bit late, and we appreciate it if you can pull it for 4.21,
-> >> as it paves the way for new QSPI driver under SPI framework to land in
-> >> the next release cycle.  Thanks.
-> >
-> > Pulled into next/dt. For my understanding, what is going to happen
-> > with the fsl-quadspi mtd driver? Will it remain as part of the kernel
-> > to support old DTB files, or will that transitions mean those stop
-> > working with new kernels and have to be updated the same way?
->
-> Thanks for pulling these late changes. The old SPI NOR driver
-> (fsl-quadspi.c) will be replaced by the new SPI driver. Old dtb files
-> will work with the new driver if they already have the reg properties
-> set up correctly (which should be the case, but who knows what setups
-> exist out-of-tree).
-
-Ok, good.
-
-> There will be a performance penalty though if you do not set
-> spi-[tx/rx]-bus-width to 4.
-
-I guess that's acceptable, but what is the reason for requiring
-this? Would it be possible to have the qspi driver add those
-properties and print a warning whenever the dtb doesn't
-already contain them?
-
-     Arnd
+T24gMjAuMTIuMTggMTc6MTEsIEFybmQgQmVyZ21hbm4gd3JvdGU6DQo+IE9uIFRodSwgRGVjIDIw
+LCAyMDE4IGF0IDU6MDMgUE0gU2NocmVtcGYgRnJpZWRlcg0KPiA8ZnJpZWRlci5zY2hyZW1wZkBr
+b250cm9uLmRlPiB3cm90ZToNCj4+DQo+PiBIaSBBcm5kLA0KPj4NCj4+IE9uIDIwLjEyLjE4IDE2
+OjUwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0KPj4+IE9uIFN1biwgRGVjIDE2LCAyMDE4IGF0IDk6
+NTAgQU0gU2hhd24gR3VvIDxzaGF3bmd1b0BrZXJuZWwub3JnPiB3cm90ZToNCj4+Pj4NCj4+Pj4g
+SGksDQo+Pj4+DQo+Pj4+IEFzIHRoZSBzZXJpZXMgY2xlYW5zIHVwIGJvdGggaS5NWC9GcmVlc2Nh
+bGUgYXJtMzIgYW5kIGFybTY0IGRldmljZQ0KPj4+PiB0cmVlcywgdGhlIHB1bGwgcmVxdWVzdCBp
+cyBiYXNlZCBvbiBhIG1lcmdlIG9mIHRhZyBpbXgtZHQtNC4yMSBhbmQNCj4+Pj4gaW14LWR0NjQt
+NC4yMSB0aGF0IGhhdmUgYWxyZWFkeSBiZWVuIHB1bGxlZCBpbnRvIGFybS1zb2MgbmV4dC9kdCBi
+cmFuY2guDQo+Pj4+IFRoaXMgY29tZXMgYSBiaXQgbGF0ZSwgYW5kIHdlIGFwcHJlY2lhdGUgaXQg
+aWYgeW91IGNhbiBwdWxsIGl0IGZvciA0LjIxLA0KPj4+PiBhcyBpdCBwYXZlcyB0aGUgd2F5IGZv
+ciBuZXcgUVNQSSBkcml2ZXIgdW5kZXIgU1BJIGZyYW1ld29yayB0byBsYW5kIGluDQo+Pj4+IHRo
+ZSBuZXh0IHJlbGVhc2UgY3ljbGUuICBUaGFua3MuDQo+Pj4NCj4+PiBQdWxsZWQgaW50byBuZXh0
+L2R0LiBGb3IgbXkgdW5kZXJzdGFuZGluZywgd2hhdCBpcyBnb2luZyB0byBoYXBwZW4NCj4+PiB3
+aXRoIHRoZSBmc2wtcXVhZHNwaSBtdGQgZHJpdmVyPyBXaWxsIGl0IHJlbWFpbiBhcyBwYXJ0IG9m
+IHRoZSBrZXJuZWwNCj4+PiB0byBzdXBwb3J0IG9sZCBEVEIgZmlsZXMsIG9yIHdpbGwgdGhhdCB0
+cmFuc2l0aW9ucyBtZWFuIHRob3NlIHN0b3ANCj4+PiB3b3JraW5nIHdpdGggbmV3IGtlcm5lbHMg
+YW5kIGhhdmUgdG8gYmUgdXBkYXRlZCB0aGUgc2FtZSB3YXk/DQo+Pg0KPj4gVGhhbmtzIGZvciBw
+dWxsaW5nIHRoZXNlIGxhdGUgY2hhbmdlcy4gVGhlIG9sZCBTUEkgTk9SIGRyaXZlcg0KPj4gKGZz
+bC1xdWFkc3BpLmMpIHdpbGwgYmUgcmVwbGFjZWQgYnkgdGhlIG5ldyBTUEkgZHJpdmVyLiBPbGQg
+ZHRiIGZpbGVzDQo+PiB3aWxsIHdvcmsgd2l0aCB0aGUgbmV3IGRyaXZlciBpZiB0aGV5IGFscmVh
+ZHkgaGF2ZSB0aGUgcmVnIHByb3BlcnRpZXMNCj4+IHNldCB1cCBjb3JyZWN0bHkgKHdoaWNoIHNo
+b3VsZCBiZSB0aGUgY2FzZSwgYnV0IHdobyBrbm93cyB3aGF0IHNldHVwcw0KPj4gZXhpc3Qgb3V0
+LW9mLXRyZWUpLg0KPiANCj4gT2ssIGdvb2QuDQo+IA0KPj4gVGhlcmUgd2lsbCBiZSBhIHBlcmZv
+cm1hbmNlIHBlbmFsdHkgdGhvdWdoIGlmIHlvdSBkbyBub3Qgc2V0DQo+PiBzcGktW3R4L3J4XS1i
+dXMtd2lkdGggdG8gNC4NCj4gDQo+IEkgZ3Vlc3MgdGhhdCdzIGFjY2VwdGFibGUsIGJ1dCB3aGF0
+IGlzIHRoZSByZWFzb24gZm9yIHJlcXVpcmluZw0KPiB0aGlzPyBXb3VsZCBpdCBiZSBwb3NzaWJs
+ZSB0byBoYXZlIHRoZSBxc3BpIGRyaXZlciBhZGQgdGhvc2UNCj4gcHJvcGVydGllcyBhbmQgcHJp
+bnQgYSB3YXJuaW5nIHdoZW5ldmVyIHRoZSBkdGIgZG9lc24ndA0KPiBhbHJlYWR5IGNvbnRhaW4g
+dGhlbT8NCg0KQXMgdGhlIG5ldyBkcml2ZXIgaXMgYSBTUEkgZHJpdmVyLCB0aGUgY29tbW9uIHJ1
+bGVzIGluIA0KRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktYnVzLnR4
+dCBhcHBseSBhbmQgDQpzcGktW3R4L3J4XS1idXMtd2lkdGggYXJlIGRlZmluZWQgdG8gZGVmYXVs
+dCB0byAxIGlmIG5vdCBzcGVjaWZpZWQuDQpTbyB3ZSBjYW4ndCBzZXQgdGhvc2UgcHJvcGVydGll
+cyBpbiB0aGUgZHJpdmVyIGlmIHRoZXkgYXJlIG1pc3NpbmcgaW4gDQp0aGUgZHRiIGFzIHdlIHdv
+dWxkIGRldmlhdGUgZnJvbSB0aGUgc3RhbmRhcmQsIGFsdGhvdWdoIGl0IHdvdWxkIG1ha2UgDQpt
+b3JlIHNlbnNlIGZvciBhICpRdWFkKi1TUEkgZHJpdmVyIHRvIGRlZmF1bHQgdG8gNC4=
