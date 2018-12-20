@@ -1,20 +1,17 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga0TU-0002u3-0c
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 15:43:03 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Martin Townsend <mtownsend1973@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: hung task detected in ubifs
-Date: Thu, 20 Dec 2018 16:42:46 +0100
-Message-ID: <1722601.NPUxFaVKW8@blindfold>
-In-Reply-To: <CABatt_yRNnfrkysYwWuPJ=80nTa5ePNrpmvAq=B=bkcHvA5yig@mail.gmail.com>
-References: <CABatt_wvwVuzAMp6JX4yUireb3wAuiiF5i+=7FRGDPx3fwxrKA@mail.gmail.com>
- <3974794.HFKrkWXeJj@blindfold>
- <CABatt_yRNnfrkysYwWuPJ=80nTa5ePNrpmvAq=B=bkcHvA5yig@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20181216084854.GJ13243@dragon>
+In-Reply-To: <20181216084854.GJ13243@dragon>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 20 Dec 2018 16:50:49 +0100
+Message-ID: <CAK8P3a34R+Gv+H8_jjGP452i2kSqq+u0PsE-4pDnRRtY14SG0w@mail.gmail.com>
+Subject: Re: [GIT PULL] FSL QSPI device tree cleanup for 4.21
+To: Shawn Guo <shawnguo@kernel.org>
+Cc: arm-soc <arm@kernel.org>, frieder.schrempf@kontron.de,
+ Fabio Estevam <fabio.estevam@nxp.com>, Sascha Hauer <kernel@pengutronix.de>,
+ linux-imx@nxp.com, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 20. Dezember 2018, 16:04:10 CET schrieb Martin Townsend:
-> > Basically we need to figure why and where exactly cma_alloc() hangs.
-> > And of course also we need to know if it is really cma_alloc().
-> >
-> > Can you please dig into that?
-> Will do, would CMA_DEBUG help or would it produce too much log information?
+On Sun, Dec 16, 2018 at 9:50 AM Shawn Guo <shawnguo@kernel.org> wrote:
+>
+> Hi,
+>
+> As the series cleans up both i.MX/Freescale arm32 and arm64 device
+> trees, the pull request is based on a merge of tag imx-dt-4.21 and
+> imx-dt64-4.21 that have already been pulled into arm-soc next/dt branch.
+> This comes a bit late, and we appreciate it if you can pull it for 4.21,
+> as it paves the way for new QSPI driver under SPI framework to land in
+> the next release cycle.  Thanks.
 
-I don't know. I'd first try to figure where exactly it hangs and why.
+Pulled into next/dt. For my understanding, what is going to happen
+with the fsl-quadspi mtd driver? Will it remain as part of the kernel
+to support old DTB files, or will that transitions mean those stop
+working with new kernels and have to be updated the same way?
 
 Thanks,
-//richard
+
+      Arnd
