@@ -1,18 +1,20 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZxzf-000804-TK
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 13:04:09 +0000
-Date: Thu, 20 Dec 2018 14:03:48 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Emil Lenngren <emil.lenngren@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] mtd: spinand: Fix Macronix ECC Status Read
-Message-ID: <20181220140341.16e7c518@bbrezillon>
-In-Reply-To: <20181220124658.11565-1-emil.lenngren@gmail.com>
-References: <20181220124658.11565-1-emil.lenngren@gmail.com>
+ id 1gZy3d-0001Fv-2u
+ for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 13:08:14 +0000
+Received: by mail-lj1-x22b.google.com with SMTP id t18-v6so1501501ljd.4
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Dec 2018 05:07:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CABatt_wvwVuzAMp6JX4yUireb3wAuiiF5i+=7FRGDPx3fwxrKA@mail.gmail.com>
+ <CAFLxGvzaZythh+u93Tq4Eqrdr7gN4v6sdoy3WP67qpBfpoxOmw@mail.gmail.com>
+In-Reply-To: <CAFLxGvzaZythh+u93Tq4Eqrdr7gN4v6sdoy3WP67qpBfpoxOmw@mail.gmail.com>
+From: Martin Townsend <mtownsend1973@gmail.com>
+Date: Thu, 20 Dec 2018 13:07:45 +0000
+Message-ID: <CABatt_yNxPpHMN98Jt1rcjHLHDSyz7XAjY=jdberVT3EiP=_Ag@mail.gmail.com>
+Subject: Re: hung task detected in ubifs
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Miquel
+Hi Richard,
 
-Hi Emil,
+On Thu, Dec 20, 2018 at 10:54 AM Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Thu, Dec 20, 2018 at 10:49 AM Martin Townsend
+> <mtownsend1973@gmail.com> wrote:
+> > 5 locks held by programmingapp/930:>  #0:  (&mm->mmap_sem){......}, at: [<80113ef0>] do_page_fault+0xb8/0x350
+> >  #1:  (&le->mutex){......}, at: [<80568150>] ubi_eba_read_leb+0x34/0x438
+> >  #2:  (of_dma_lock){......}, at: [<804ab890>]
+> > of_dma_request_slave_channel+0x140/0x228
+> >  #3:  (dma_list_mutex){......}, at: [<804a9d3c>] __dma_request_channel+0x24/0x8c
+> >  #4:  (cma_mutex){......}, at: [<80246814>] cma_alloc+0xc8/0x29c
+>
+> The system seems to block in CMA, therefore make_reservation() does not make any
+> progress and all write back blocks too.
+> Do you have CONFIG_MIGRATION enabled?
+>
+> If possible, enable LOCKDEP, it can give us more details what is going on.
+>
+> --
+> Thanks,
+> //richard
 
-Can you please Cc the NAND and MTD maintainers next time?
+I just checked and CONFIG_MIGRATION=y.
+Interesting that it seems to block in the CMA, could it be that the
+programmingapp process has used up all the CMA memory?  I'll ask for a
+complete log file.
+I'll ask them to enable LOCKDEP and hope that the i.MX6 UL can handle it :)
 
-On Thu, 20 Dec 2018 13:46:58 +0100
-Emil Lenngren <emil.lenngren@gmail.com> wrote:
-
-> The datasheet specifies the upper four bits are reserved.
-> Testing on real hardware shows that these bits can indeed be nonzero.
-> 
-> Signed-off-by: Emil Lenngren <emil.lenngren@gmail.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-> ---
->  drivers/mtd/nand/spi/macronix.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-> index 98f6b9c4b6..d16b57081c 100644
-> --- a/drivers/mtd/nand/spi/macronix.c
-> +++ b/drivers/mtd/nand/spi/macronix.c
-> @@ -10,6 +10,7 @@
->  #include <linux/mtd/spinand.h>
->  
->  #define SPINAND_MFR_MACRONIX		0xC2
-> +#define MACRONIX_ECCSR_MASK		0x0F
->  
->  static SPINAND_OP_VARIANTS(read_cache_variants,
->  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> @@ -55,7 +56,12 @@ static int mx35lf1ge4ab_get_eccsr(struct spinand_device *spinand, u8 *eccsr)
->  					  SPI_MEM_OP_DUMMY(1, 1),
->  					  SPI_MEM_OP_DATA_IN(1, eccsr, 1));
->  
-> -	return spi_mem_exec_op(spinand->spimem, &op);
-> +	int ret = spi_mem_exec_op(spinand->spimem, &op);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*eccsr &= MACRONIX_ECCSR_MASK;
-> +	return 0;
->  }
->  
->  static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
+Cheers, Martin.
