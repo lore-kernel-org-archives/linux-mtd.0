@@ -1,25 +1,17 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZyzG-0006e3-JJ
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 14:07:44 +0000
-Date: Thu, 20 Dec 2018 15:07:26 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: "richard@nod.at" <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/3] mtd: rawnand: Support bad block markers in first,
- second or last page
-Message-ID: <20181220150715.5b19f480@bbrezillon>
-In-Reply-To: <20181220145954.55ae36e9@bbrezillon>
-References: <1545061693-29216-1-git-send-email-frieder.schrempf@kontron.de>
- <1545061693-29216-2-git-send-email-frieder.schrempf@kontron.de>
- <20181220145954.55ae36e9@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gZz2c-0000Cj-72
+ for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 14:11:11 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH] mtd: rawnand: sunxi: Handle the tREA > tRC / 2 case
+Date: Thu, 20 Dec 2018 15:10:47 +0100
+Message-Id: <20181220141047.31733-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +21,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Dec 2018 14:59:54 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+In non-EDO, tREA should be less than tRP to guarantee that the
+controller does not sample the IO lines too early. Unfortunately, the
+sunxi NAND controller does not allow us to have different values for
+tRP and tREH (tRP = tREH = tRW / 2).
 
-> >  
-> >  /**
-> > + * nand_bbm_page_offset - Get the page offsets for bad block markers
-> > + * @chip: NAND chip object
-> > + * @index: Index for the page offset  
-> 
-> Hm, the meaning of index is far from obvious. How about passing the
-> current page instead (and return 1 if there are more pages to scan 0
-> otherwise)?
-> 
-> Something like:
-> 
-> static int nand_bbm_get_next_page(struct nand_chip *chip, int page)
-> {
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
-> 	int last_page = ((mtd->erasesize - mtd->writesize) >>
-> 			 chip->page_shift) & chip->pagemask;
-> 
-> 	if (page < 0 && chip->bbt_options & NAND_BBT_SCANFIRSTPAGE)
-> 		return 0;
-> 	else if (page < 1 && chip->bbt_options & NAND_BBT_SCAN2NDPAGE)
-> 		return 1;
-> 	else if (page < last_page &&
-> 		 chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-> 		return last_page;
-> 
-> 	return -1;
-> }
-> 
-> And yes, that means defining NAND_BBT_SCANFIRSTPAGE and setting it when
-> appropriate.
-> 
+We have 2 options to overcome this limitation:
 
-Oh, and you'll have to define NAND_BBT_SCANFIRST2PAGES like this
+1/ Extend tRC to fulfil the tREA <= tRC / 2 constraint
+2/ Use EDO mode (only works if timings->tRLOH > 0)
 
-#define NAND_BBT_SCANFIRST2PAGES NAND_BBT_SCAN1STPAGE |	\
-				 NAND_BBT_SCAN2NDPAGE
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/sunxi_nand.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-and then patch all users of NAND_BBT_SCAN2NDPAGE to use
-NAND_BBT_SCANFIRST2PAGES instead.
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 4fd1f8da6906..4282bc477761 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -1442,6 +1442,20 @@ static int sunxi_nfc_setup_data_interface(struct nand_chip *nand, int csline,
+ 	if (timings->tRHW_min > (min_clk_period * 20))
+ 		min_clk_period = DIV_ROUND_UP(timings->tRHW_min, 20);
+ 
++	/*
++	 * In non-EDO, tREA should be less than tRP to guarantee that the
++	 * controller does not sample the IO lines too early. Unfortunately,
++	 * the sunxi NAND controller does not allow us to have different
++	 * values for tRP and tREH (tRP = tREH = tRW / 2).
++	 *
++	 * We have 2 options to overcome this limitation:
++	 *
++	 * 1/ Extend tRC to fulfil the tREA <= tRC / 2 constraint
++	 * 2/ Use EDO mode (only works if timings->tRLOH > 0)
++	 */
++	if (timings->tREA_max > min_clk_period && !timings->tRLOH_min)
++		min_clk_period = timings->tREA_max;
++
+ 	tWB  = sunxi_nand_lookup_timing(tWB_lut, timings->tWB_max,
+ 					min_clk_period);
+ 	if (tWB < 0) {
+@@ -1497,14 +1511,16 @@ static int sunxi_nfc_setup_data_interface(struct nand_chip *nand, int csline,
+ 		return -EINVAL;
+ 	}
+ 
++	sunxi_nand->timing_ctl = 0;
++
+ 	/*
+ 	 * ONFI specification 3.1, paragraph 4.15.2 dictates that EDO data
+ 	 * output cycle timings shall be used if the host drives tRC less than
+-	 * 30 ns.
++	 * 30 ns. We should also use EDO mode if tREA is bigger than tRP.
+ 	 */
+ 	min_clk_period = NSEC_PER_SEC / real_clk_rate;
+-	sunxi_nand->timing_ctl = ((min_clk_period * 2) < 30) ?
+-				 NFC_TIMING_CTL_EDO : 0;
++	if (min_clk_period * 2 < 30 || min_clk_period * 1000 < timings->tREA_max)
++		sunxi_nand->timing_ctl = NFC_TIMING_CTL_EDO;
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
