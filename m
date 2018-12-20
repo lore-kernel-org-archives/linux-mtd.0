@@ -1,16 +1,24 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ga4nj-0003yw-7j
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 20:20:12 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [GIT PULL] UBI/UBIFS fixes for 4.20-rc7
-Date: Thu, 20 Dec 2018 21:19:58 +0100
-Message-ID: <2752856.A3Cxyq1uY3@blindfold>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20181216084854.GJ13243@dragon>
+ <CAK8P3a34R+Gv+H8_jjGP452i2kSqq+u0PsE-4pDnRRtY14SG0w@mail.gmail.com>
+ <a73f86ff-15ce-9512-bbf0-be852cf39a35@kontron.de>
+ <CAK8P3a1PMoR-WWcb_G8sTVW9HKUKvKfUZmcinkOEy9mJ5c=Lxw@mail.gmail.com>
+ <6dde2248-da0d-7bd3-801b-b42b2974c038@kontron.de>
+ <CAK8P3a0WCOcVjSegBKRPw3kkokE8S4JEXManqBkq4CjfcBRSMg@mail.gmail.com>
+ <CAMuHMdW1NsqEHWBBn77wTAYnXi068iT2Lo8rxUUSvbo5UHDTkA@mail.gmail.com>
+In-Reply-To: <CAMuHMdW1NsqEHWBBn77wTAYnXi068iT2Lo8rxUUSvbo5UHDTkA@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 20 Dec 2018 23:41:37 +0100
+Message-ID: <CAK8P3a0QxoNyq=5LzQObFnq2i7mVRJDj73j7ur+cQ9rmoKZpMQ@mail.gmail.com>
+Subject: Re: [GIT PULL] FSL QSPI device tree cleanup for 4.21
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: frieder.schrempf@kontron.de, linux-spi <linux-spi@vger.kernel.org>,
+ arm-soc <arm@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-imx@nxp.com,
+ Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+On Thu, Dec 20, 2018 at 7:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Dec 20, 2018 at 5:33 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Thu, Dec 20, 2018 at 5:23 PM Schrempf Frieder
+> > > As the new driver is a SPI driver, the common rules in
+> > > Documentation/devicetree/bindings/spi/spi-bus.txt apply and
+> > > spi-[tx/rx]-bus-width are defined to default to 1 if not specified.
+> > > So we can't set those properties in the driver if they are missing in
+> > > the dtb as we would deviate from the standard, although it would make
+> > > more sense for a *Quad*-SPI driver to default to 4.
+> >
+> > Right, I guess that makes sense.
+> >
+> > Now, you could change the binding for the fsl-quadspi driver to
+> > require the bus-width properties, which would then just make
+> > the old dtb files invalid, and you give us an excuse to override
+> > the properties by adding the =4 ones, once that is documented
+> > in the driver specific binding.
+> >
+> > Since it's only a performance difference, I suppose we can live
+> > with the limitation and stay a little closer to the normal binding.
+>
+> Please note that a quad-capable SPI FLASH may be physically wired
+> to a quad-capable SPI controller using only 2 wires, so defaulting to
+> 4 may cause issues.  Defaulting to 2 may work, if the device is
+> dual-capable.
 
-The following changes since commit 40e020c129cfc991e8ab4736d2665351ffd1468d:
+Right, this would only work because the old driver used 4 wires
+in the absence of the DT property, and the driver would warn
+when it's not there for new dtb files.
 
-  Linux 4.20-rc6 (2018-12-09 15:31:00 -0800)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.20-rc7
-
-for you to fetch changes up to e58725d51fa8da9133f3f1c54170aa2e43056b91:
-
-  ubifs: Handle re-linking of inodes correctly while recovery (2018-12-13 22:18:24 +0100)
-
-----------------------------------------------------------------
-This pull request contains fixes for both UBI and UBIFS:
-
-- Kconfig dependency fixes for our new auth feature
-- Fix for selecting the right compressor when creating a fs
-- Bugfix for a bug in UBIFS's O_TMPFILE implementation
-- Refcounting fixes for UBI
-
-----------------------------------------------------------------
-Arnd Bergmann (2):
-      ubifs: replay: Fix high stack usage
-      ubifs: auth: Add CONFIG_KEYS dependency
-
-Gabor Juhos (1):
-      ubifs: Fix default compression selection in ubifs
-
-Garry McNulty (1):
-      ubifs: Fix memory leak on error condition
-
-Geert Uytterhoeven (1):
-      ubifs: CONFIG_UBIFS_FS_AUTHENTICATION should depend on UBIFS_FS
-
-Pan Bian (2):
-      ubi: Put MTD device after it is not used
-      ubi: Do not drop UBI device reference before using
-
-Richard Weinberger (1):
-      ubifs: Handle re-linking of inodes correctly while recovery
-
- drivers/mtd/ubi/build.c |  2 +-
- drivers/mtd/ubi/kapi.c  |  2 +-
- fs/ubifs/Kconfig        | 16 +++++------
- fs/ubifs/lpt.c          | 12 ++++-----
- fs/ubifs/replay.c       | 72 +++++++++++++++++++++++++++++++++++++++++--------
- fs/ubifs/sb.c           | 13 ++++++++-
- 6 files changed, 89 insertions(+), 28 deletions(-)
+      Arnd
