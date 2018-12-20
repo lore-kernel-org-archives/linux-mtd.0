@@ -1,23 +1,20 @@
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ga41I-0001JQ-5U
+ for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 19:30:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Martin Townsend <mtownsend1973@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: hung task detected in ubifs
+Date: Thu, 20 Dec 2018 20:29:53 +0100
+Message-ID: <2900296.1h8GnzAD1c@blindfold>
+In-Reply-To: <CABatt_ygjLLSUWkt5X5W2P3dL2E8zm-71OHaTyKya2Vgj9iwNg@mail.gmail.com>
+References: <CABatt_wvwVuzAMp6JX4yUireb3wAuiiF5i+=7FRGDPx3fwxrKA@mail.gmail.com>
+ <1722601.NPUxFaVKW8@blindfold>
+ <CABatt_ygjLLSUWkt5X5W2P3dL2E8zm-71OHaTyKya2Vgj9iwNg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20181216084854.GJ13243@dragon>
- <CAK8P3a34R+Gv+H8_jjGP452i2kSqq+u0PsE-4pDnRRtY14SG0w@mail.gmail.com>
- <a73f86ff-15ce-9512-bbf0-be852cf39a35@kontron.de>
- <CAK8P3a1PMoR-WWcb_G8sTVW9HKUKvKfUZmcinkOEy9mJ5c=Lxw@mail.gmail.com>
- <6dde2248-da0d-7bd3-801b-b42b2974c038@kontron.de>
- <CAK8P3a0WCOcVjSegBKRPw3kkokE8S4JEXManqBkq4CjfcBRSMg@mail.gmail.com>
-In-Reply-To: <CAK8P3a0WCOcVjSegBKRPw3kkokE8S4JEXManqBkq4CjfcBRSMg@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 20 Dec 2018 19:23:34 +0100
-Message-ID: <CAMuHMdW1NsqEHWBBn77wTAYnXi068iT2Lo8rxUUSvbo5UHDTkA@mail.gmail.com>
-Subject: Re: [GIT PULL] FSL QSPI device tree cleanup for 4.21
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: frieder.schrempf@kontron.de, linux-spi <linux-spi@vger.kernel.org>,
- arm-soc <arm@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- linux-imx@nxp.com,
- Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>,
- Shawn Guo <shawnguo@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,75 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+Am Donnerstag, 20. Dezember 2018, 18:03:46 CET schrieb Martin Townsend:
+> I'm starting to think that MTD/UBI is a victim here.  I tried to
+> reproduce what the client was seeing with no luck then on one boot I
+> triggered a lockup really early in the boot:
 
-On Thu, Dec 20, 2018 at 5:33 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Dec 20, 2018 at 5:23 PM Schrempf Frieder
-> <frieder.schrempf@kontron.de> wrote:
-> > On 20.12.18 17:11, Arnd Bergmann wrote:
-> > > On Thu, Dec 20, 2018 at 5:03 PM Schrempf Frieder
-> > > <frieder.schrempf@kontron.de> wrote:
-> > >>
-> > >> On 20.12.18 16:50, Arnd Bergmann wrote:
-> > >>> On Sun, Dec 16, 2018 at 9:50 AM Shawn Guo <shawnguo@kernel.org> wrote:
-> > >>>> As the series cleans up both i.MX/Freescale arm32 and arm64 device
-> > >>>> trees, the pull request is based on a merge of tag imx-dt-4.21 and
-> > >>>> imx-dt64-4.21 that have already been pulled into arm-soc next/dt branch.
-> > >>>> This comes a bit late, and we appreciate it if you can pull it for 4.21,
-> > >>>> as it paves the way for new QSPI driver under SPI framework to land in
-> > >>>> the next release cycle.  Thanks.
-> > >>>
-> > >>> Pulled into next/dt. For my understanding, what is going to happen
-> > >>> with the fsl-quadspi mtd driver? Will it remain as part of the kernel
-> > >>> to support old DTB files, or will that transitions mean those stop
-> > >>> working with new kernels and have to be updated the same way?
-> > >>
-> > >> Thanks for pulling these late changes. The old SPI NOR driver
-> > >> (fsl-quadspi.c) will be replaced by the new SPI driver. Old dtb files
-> > >> will work with the new driver if they already have the reg properties
-> > >> set up correctly (which should be the case, but who knows what setups
-> > >> exist out-of-tree).
-> > >
-> > > Ok, good.
-> > >
-> > >> There will be a performance penalty though if you do not set
-> > >> spi-[tx/rx]-bus-width to 4.
-> > >
-> > > I guess that's acceptable, but what is the reason for requiring
-> > > this? Would it be possible to have the qspi driver add those
-> > > properties and print a warning whenever the dtb doesn't
-> > > already contain them?
-> >
-> > As the new driver is a SPI driver, the common rules in
-> > Documentation/devicetree/bindings/spi/spi-bus.txt apply and
-> > spi-[tx/rx]-bus-width are defined to default to 1 if not specified.
-> > So we can't set those properties in the driver if they are missing in
-> > the dtb as we would deviate from the standard, although it would make
-> > more sense for a *Quad*-SPI driver to default to 4.
->
-> Right, I guess that makes sense.
->
-> Now, you could change the binding for the fsl-quadspi driver to
-> require the bus-width properties, which would then just make
-> the old dtb files invalid, and you give us an excuse to override
-> the properties by adding the =4 ones, once that is documented
-> in the driver specific binding.
->
-> Since it's only a performance difference, I suppose we can live
-> with the limitation and stay a little closer to the normal binding.
+Yes, this can be.
+Maybe your CMA setup is odd or some other bug triggers.
+Are other parts heavily using CMA? (hint: GPU stuff).
+Maybe a different cma= setting helps.
+See:
+Documentation/admin-guide/kernel-parameters.txt
 
-Please note that a quad-capable SPI FLASH may be physically wired
-to a quad-capable SPI controller using only 2 wires, so defaulting to
-4 may cause issues.  Defaulting to 2 may work, if the device is
-dual-capable.
+> Showing all locks held in the system:
+> 5 locks held by systemd/1:
+>  #0:  (&mm->mmap_sem){......}, at: [<80113ef0>] do_page_fault+0xb8/0x350
+>  #1:  (&le->mutex){......}, at: [<80568150>] ubi_eba_read_leb+0x34/0x438
+>  #2:  (of_dma_lock){......}, at: [<804ab890>]
+> of_dma_request_slave_channel+0x140/0x228
+>  #3:  (dma_list_mutex){......}, at: [<804a9d3c>] __dma_request_channel+0x24/0x8c
+>  #4:  (cma_mutex){......}, at: [<80246814>] cma_alloc+0xc8/0x29c
+> 2 locks held by khungtaskd/14:
+>  #0:  (rcu_read_lock){......}, at: [<801b7920>] watchdog+0xdc/0x4b0
+>  #1:  (tasklist_lock){......}, at: [<80162208>] debug_show_all_locks+0x38/0x1ac
+> 
+> This does point to some lockup in the CMA allocator when migrating
+> pages for a contiguous allocation.  Out of interest do you know why
+> do_DataAbort ends up calling filemap_fault and hence ending up in the
+> ubifs layer?
 
-Gr{oetje,eeting}s,
+Well, if you open and mmap a file, access to the memory will trigger a page
+fault. This page fault is resolved by reading the pages from disk into memory.
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+//richard
