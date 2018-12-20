@@ -1,16 +1,20 @@
-Received: from mail-it1-x12f.google.com ([2607:f8b0:4864:20::12f])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZuxa-00050I-7r
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 09:49:43 +0000
-Received: by mail-it1-x12f.google.com with SMTP id p197so1943832itp.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Dec 2018 01:49:30 -0800 (PST)
+ id 1gZvbc-0004t4-K9
+ for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 10:31:06 +0000
+Date: Thu, 20 Dec 2018 11:30:50 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Emil Lenngren <emil.lenngren@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd: spinand: wait on erase success in spinand_markbad?
+Message-ID: <20181220113050.7202bc22@bbrezillon>
+In-Reply-To: <CAO1O6scbGZwf_ZiG66zQuoeXHKuHLgmNHz_TjKaJi84Y7xV-ng@mail.gmail.com>
+References: <CAO1O6sd-JZBfGnAB7tOnsJeJSLXTguLHGdSEokOYq9n=bY5jPA@mail.gmail.com>
+ <20181219195619.64f62b8e@bbrezillon>
+ <CAO1O6scbGZwf_ZiG66zQuoeXHKuHLgmNHz_TjKaJi84Y7xV-ng@mail.gmail.com>
 MIME-Version: 1.0
-From: Martin Townsend <mtownsend1973@gmail.com>
-Date: Thu, 20 Dec 2018 09:49:17 +0000
-Message-ID: <CABatt_wvwVuzAMp6JX4yUireb3wAuiiF5i+=7FRGDPx3fwxrKA@mail.gmail.com>
-Subject: hung task detected in ubifs
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,88 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 19 Dec 2018 20:54:33 +0100
+Emil Lenngren <emil.lenngren@gmail.com> wrote:
 
-A client has just reported this lock up that I thought I would pass on
-in case it's already been fixed and a patch is available or the trace
-can help identify a potential deadlock. They are running a vendor
-specific 4.9.88 kernel for an i.MX6 UL but as far as I know there are
-no modifications to the UBI/MTD layers:
+> Den ons 19 dec. 2018 kl 19:56 skrev Boris Brezillon <bbrezillon@kernel.org>:
+> >
+> > On Wed, 19 Dec 2018 14:27:51 +0100
+> > Emil Lenngren <emil.lenngren@gmail.com> wrote:
+> >  
+> > > Hi,
+> > >
+> > > I was just reading the spinand driver and found this piece of code:
+> > > static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+> > > {
+> > >     struct spinand_device *spinand = nand_to_spinand(nand);
+> > >     struct nand_page_io_req req = {
+> > >         .pos = *pos,
+> > >         .ooboffs = 0,
+> > >         .ooblen = 2,
+> > >         .oobbuf.out = spinand->oobbuf,
+> > >     };
+> > >     int ret;
+> > >
+> > >     /* Erase block before marking it bad. */
+> > >     ret = spinand_select_target(spinand, pos->target);
+> > >     if (ret)
+> > >         return ret;
+> > >
+> > >     ret = spinand_write_enable_op(spinand);
+> > >     if (ret)
+> > >         return ret;
+> > >
+> > >     spinand_erase_op(spinand, pos);
+> > >
+> > >     memset(spinand->oobbuf, 0, 2);
+> > >     return spinand_write_page(spinand, &req);
+> > > }
+> > >
+> > > Shouldn't there be spinand_wait call after spinand_erase_op and before
+> > > spinand_write_page?
+> > >  
+> >
+> > Absolutely. Can you send a patch to fix that?
+> >  
+> 
+> Sure, although I'm a bit unsure how the error handling should be done.
+> In the u-boot version
+> (https://github.com/u-boot/u-boot/blob/9e5c2a755a6ca5f3931de548f43101d0d18ac003/drivers/mtd/nand/spi/core.c#L718),
+> if the spinand_erase_op spi transfer fails, the function quits without
+> writing the bad block marker, while the linux version ignores the
+> error. Is the intention that the bad block marker should be written
+> regardless if the erase spi transfer fails or not, or is it just a
+> mistake?
 
-INFO: task kworker/u2:1:92 blocked for more than 120 seconds.
-      Tainted: G           O    4.9.88-1.0.0+g6507266 #1
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[<80912e44>] (__schedule) from [<80913484>] (schedule+0x48/0xb0)
-[<80913484>] (schedule) from [<80913830>] (schedule_preempt_disabled+0x14/0x20)
-[<80913830>] (schedule_preempt_disabled) from [<80914644>]
-(mutex_lock_nested+0x1b8/0x3f8)
-[<80914644>] (mutex_lock_nested) from [<8038c788>] (make_reservation+0xa0/0x43c)
-[<8038c788>] (make_reservation) from [<8038d614>]
-(ubifs_jnl_write_inode+0x78/0x224)
-[<8038d614>] (ubifs_jnl_write_inode) from [<80395170>]
-(ubifs_write_inode+0x90/0x114)
-[<80395170>] (ubifs_write_inode) from [<80391348>] (ubifs_writepage+0x168/0x1c4)
-[<80391348>] (ubifs_writepage) from [<8020094c>] (__writepage+0x14/0x5c)
-[<8020094c>] (__writepage) from [<80200104>] (write_cache_pages+0x1f4/0x558)
-[<80200104>] (write_cache_pages) from [<80202968>] (do_writepages+0x90/0xa4)
-[<80202968>] (do_writepages) from [<8027c46c>]
-(__writeback_single_inode+0x84/0x61c)
-[<8027c46c>] (__writeback_single_inode) from [<8027d00c>]
-(writeback_sb_inodes+0x1dc/0x4f0)
-[<8027d00c>] (writeback_sb_inodes) from [<8027d378>]
-(__writeback_inodes_wb+0x58/0x9c)
-[<8027d378>] (__writeback_inodes_wb) from [<8027d714>]
-(wb_writeback+0x358/0x438)
-[<8027d714>] (wb_writeback) from [<8027e210>] (wb_workfn+0x1fc/0x5bc)
-[<8027e210>] (wb_workfn) from [<8013f298>] (process_one_work+0x2b4/0x6a8)
-[<8013f298>] (process_one_work) from [<8013f6dc>] (worker_thread+0x50/0x5a8)
-[<8013f6dc>] (worker_thread) from [<80145270>] (kthread+0x124/0x12c)
-[<80145270>] (kthread) from [<80107d30>] (ret_from_fork+0x14/0x24)
-
-Showing all locks held in the system:
-6 locks held by kworker/u2:0/6:
- #0:  ("writeback"){......}, at: [<8013f1d0>] process_one_work+0x1ec/0x6a8
- #1:  ((&(&wb->dwork)->work)){......}, at: [<8013f1d0>]
-process_one_work+0x1ec/0x6a8
- #2:  (&type->s_umount_key#25){......}, at: [<8024dcac>] trylock_super+0x14/0x58
- #3:  (&ui->ui_mutex){......}, at: [<80395124>] ubifs_write_inode+0x44/0x114
- #4:  (&c->commit_sem){......}, at: [<8038c758>] make_reservation+0x70/0x43c
- #5:  (&wbuf->io_mutex/1){......}, at: [<8038c788>] make_reservation+0xa0/0x43c
-2 locks held by khungtaskd/14:
- #0:  (rcu_read_lock){......}, at: [<801b7920>] watchdog+0xdc/0x4b0
- #1:  (tasklist_lock){......}, at: [<80162208>] debug_show_all_locks+0x38/0x1ac
-6 locks held by kworker/u2:1/92:
- #0:  ("writeback"){......}, at: [<8013f1d0>] process_one_work+0x1ec/0x6a8
- #1:  ((&(&wb->dwork)->work)){......}, at: [<8013f1d0>]
-process_one_work+0x1ec/0x6a8
- #2:  (&type->s_umount_key#25){......}, at: [<8024dcac>] trylock_super+0x14/0x58
- #3:  (&ui->ui_mutex){......}, at: [<80395124>] ubifs_write_inode+0x44/0x114
- #4:  (&c->commit_sem){......}, at: [<8038c758>] make_reservation+0x70/0x43c
- #5:  (&wbuf->io_mutex/1){......}, at: [<8038c788>] make_reservation+0xa0/0x43c
-2 locks held by ubifs_bgt0_2/241:
- #0:  (&wbuf->io_mutex/1){......}, at: [<8039a1a8>]
-ubifs_bg_wbufs_sync+0x110/0x1b0
- #1:  (&le->mutex){......}, at: [<805686b4>] ubi_eba_write_leb+0x40/0x7a4
-2 locks held by ubifs_bgt0_0/720:
- #0:  (&wbuf->io_mutex/1){......}, at: [<8039a1a8>]
-ubifs_bg_wbufs_sync+0x110/0x1b0
- #1:  (&le->mutex){......}, at: [<805686b4>] ubi_eba_write_leb+0x40/0x7a4
-5 locks held by programmingapp/930:
- #0:  (&mm->mmap_sem){......}, at: [<80113ef0>] do_page_fault+0xb8/0x350
- #1:  (&le->mutex){......}, at: [<80568150>] ubi_eba_read_leb+0x34/0x438
- #2:  (of_dma_lock){......}, at: [<804ab890>]
-of_dma_request_slave_channel+0x140/0x228
- #3:  (dma_list_mutex){......}, at: [<804a9d3c>] __dma_request_channel+0x24/0x8c
- #4:  (cma_mutex){......}, at: [<80246814>] cma_alloc+0xc8/0x29c
-3 locks held by ls/938:
- #0:  (&type->i_mutex_dir_key){......}, at: [<8025e924>] iterate_dir+0x40/0x188
- #1:  (&c->tnc_mutex){......}, at: [<8039f3ac>] ubifs_tnc_next_ent+0x4c/0x1f8
- #2:  (&le->mutex){......}, at: [<80568150>] ubi_eba_read_leb+0x34/0x438
-2 locks held by ls/941:
- #0:  (&type->i_mutex_dir_key){......}, at: [<80254d28>] lookup_slow+0x84/0x198
- #1:  (&le->mutex){......}, at: [<80568150>] ubi_eba_read_leb+0x34/0x438
-
-=============================================
-
-Best Regards,
-Martin.
+To be honest, I don't think the erase operation is needed (we just
+want to write 0 in the BBM), so we don't really care if it fails, which
+means Linux version is correct and u-boot is probably buggy. Note that
+you're unlikely to hit a failure on the erase operation anyway, so
+it's more a theoretical bug than a real one.
