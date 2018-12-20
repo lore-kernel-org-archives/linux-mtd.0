@@ -1,20 +1,19 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gZvpv-0001bd-CG
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 10:45:53 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Hou Tao <houtao1@huawei.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] jffs2: Fix integer underflow in jffs2_rtime_compress
-Date: Thu, 20 Dec 2018 11:45:37 +0100
-Message-ID: <2142335.HPRDAJu19m@blindfold>
-In-Reply-To: <cae86ca1-91f9-6728-df64-40580145220d@huawei.com>
-References: <20181215162350.12489-1-richard@nod.at>
- <cae86ca1-91f9-6728-df64-40580145220d@huawei.com>
+ id 1gZvys-0003nv-9h
+ for linux-mtd@lists.infradead.org; Thu, 20 Dec 2018 10:55:07 +0000
+Received: by mail-wr1-x443.google.com with SMTP id v13so1237485wrw.5
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Dec 2018 02:54:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <CABatt_wvwVuzAMp6JX4yUireb3wAuiiF5i+=7FRGDPx3fwxrKA@mail.gmail.com>
+In-Reply-To: <CABatt_wvwVuzAMp6JX4yUireb3wAuiiF5i+=7FRGDPx3fwxrKA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 20 Dec 2018 11:54:42 +0100
+Message-ID: <CAFLxGvzaZythh+u93Tq4Eqrdr7gN4v6sdoy3WP67qpBfpoxOmw@mail.gmail.com>
+Subject: Re: hung task detected in ubifs
+To: Martin Townsend <mtownsend1973@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 20. Dezember 2018, 11:43:08 CET schrieb Hou Tao:
-> 
-> On 2018/12/16 0:23, Richard Weinberger wrote:
-> > The rtime compressor assumes that at least two bytes are
-> > compressed.
-> > If we try to compress just one byte, the loop condition will
-> > wrap around and an out-of-bounds write happens.
-> > 
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Richard Weinberger <richard@nod.at>
-> > ---
-> >  fs/jffs2/compr_rtime.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > It seems that it doesn't incur any harm because the minimal allocated
-> size will be 8-bytes and jffs2_rtime_compress() will write 2-bytes into
-> the allocated buffer.
+On Thu, Dec 20, 2018 at 10:49 AM Martin Townsend
+<mtownsend1973@gmail.com> wrote:
+> 5 locks held by programmingapp/930:>  #0:  (&mm->mmap_sem){......}, at: [<80113ef0>] do_page_fault+0xb8/0x350
+>  #1:  (&le->mutex){......}, at: [<80568150>] ubi_eba_read_leb+0x34/0x438
+>  #2:  (of_dma_lock){......}, at: [<804ab890>]
+> of_dma_request_slave_channel+0x140/0x228
+>  #3:  (dma_list_mutex){......}, at: [<804a9d3c>] __dma_request_channel+0x24/0x8c
+>  #4:  (cma_mutex){......}, at: [<80246814>] cma_alloc+0xc8/0x29c
 
-Are you sure about that? I saw odd kernel behavior and KASAN complained too.
+The system seems to block in CMA, therefore make_reservation() does not make any
+progress and all write back blocks too.
+Do you have CONFIG_MIGRATION enabled?
 
+If possible, enable LOCKDEP, it can give us more details what is going on.
+
+-- 
 Thanks,
 //richard
