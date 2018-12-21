@@ -1,24 +1,23 @@
-Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gaI9i-0006RS-UY
- for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 10:35:48 +0000
-Received: by mail-pf1-x441.google.com with SMTP id q1so2424079pfi.5
- for <linux-mtd@lists.infradead.org>; Fri, 21 Dec 2018 02:35:36 -0800 (PST)
-Date: Fri, 21 Dec 2018 13:35:30 +0300
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, hsiangkao@mail.ru,
- kirill.shutemov@linux.intel.com, stable@vger.kernel.org,
- zhangjun <openzhangj@gmail.com>
-Subject: Re: [PATCH] ubifs: Get/put page when changing PG_private
-Message-ID: <20181221103530.zahcs4gm5mlknhug@kshutemo-mobl1>
-References: <20181215150130.19381-1-richard@nod.at>
- <386368225.TvJUPtmGVW@blindfold>
+From: Jianxin Pan <jianxin.pan@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+CC: Jianxin Pan <jianxin.pan@amlogic.com>, David Woodhouse
+ <dwmw2@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Liang Yang
+ <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH RESEND v8 0/2] mtd: rawnand: meson: add Amlogic NAND driver
+ support
+Date: Fri, 21 Dec 2018 19:45:22 +0800
+Message-ID: <1545392724-6637-1-git-send-email-jianxin.pan@amlogic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <386368225.TvJUPtmGVW@blindfold>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +27,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 21, 2018 at 09:56:25AM +0100, Richard Weinberger wrote:
-> Am Samstag, 15. Dezember 2018, 16:01:30 CET schrieb Richard Weinberger:
-> > The page migration code assumes that a page with PG_private
-> > set has its page count elevated by 1.
-> > UBIFS never did this and therefore the migration code was unable
-> > to migrate some pages owned by UBIFS.
-> > The lead to situations where the CMA memory allocator failed to
-> > allocate memory.
-> > 
-> > Fix this by using get/put_page when changing PG_private.
-> > 
-> > Cc: <stable@vger.kernel.org>
-> > Cc: zhangjun <openzhangj@gmail.com>
-> > Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
-> > Reported-by: zhangjun <openzhangj@gmail.com>
-> > Signed-off-by: Richard Weinberger <richard@nod.at>
-> 
-> FYI, on the XFS side a similar change caused a regression.
-> https://marc.info/?l=linux-fsdevel&m=154530861202448&w=2
-> 
-> Until this regression is not fully understood, including the implications
-> for UBIFS, I'll not merge this patch.
+These two patches try to add initial NAND driver support for Amlogic Meson
+SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
 
-This looks like a reasonable resolution to me:
+Changes since V6 at [8]
+ - fix bitflips checking for blank pages
+ - trace the latest commit with nand/next branch
+ - checking the return of meson_nand_op_get_dma_safe_*input/output*_buf
+ - add .detach_chip for free meson_nand.data_buf/info_buf
 
-http://lkml.kernel.org/r/20181221093919.GA2337@lst.de
+Changes since V6 at [7]
+ - use timings->tBERS_max as the maximum time out, delete NFC_CMD_RB_TIMEOUT
+ - fix nand_rw_cmd and support small block flash and which row address less than 3
+ - fix coding style
+ - replace readl/writel_* with readl/writel_relaxed*
+ - delete ECC_SET_PROTECTED_OOB_BYTE and ECC_GET_PROTECTED_OOB_BYTE
+ - implement dma access for read_buf and write_buf, more efficient.
+ - delete waiting dma finish in write process and let NAND_CMD_PAGEPROG and
+RB command go on queuing
+ - add waiting the completed flag of last ecc page be set, for more strict
 
-But let's wait the inclusion (or objection).
+Changes since v5 at [6]:
+ - use instr->delay_ns in exec_op() to caculate the delay cycle
+ - delete struct meson_nfc_info_format and use macros instead
+ - delete "is_scramble" in struct meson_nfc_nand_chip
+ - add WARN_ON_ONCE() for chip > MAX_CE_NUM
+ - drop param *mtd* or struct *nfc* if param *nand exist
+ - substitute set_data_oob and get_data_oob for prase_data_oob and format_data_oob
+ - split timings caculating and setting timings
+ - move info_buf and data_buf to struct meson_nfc_nand_chip
+
+Changes since v4 at [5]:
+ - remove the initial default divider(CLK_DIV_MASK) in meson_nfc_clk_init()
+ - dt-bindings: remove staus, add "rx" and "tx" clock, and node rename
+
+Changes since v3 at [4]:
+ - remove partition table and some used props from dt-bindings 
+
+Changes since v2 at [3]:
+ - remove some hardcode time value, like twb
+ - use dev wait R/B instead of nand_soft_waitrdy
+ - implement nfc ecc init by ecc helper
+ - rework nfc buffer init to register the maximun buffer when several chips
+ - free nfc buffer when error and cleanup
+ - add variable to teack all the already assigned CS lines
+ - fix mtd->name use the first cs line only
+ - remove dt "nand-enable-scrambler" and use NAND_NEED_SCRAMBLING instead.
+ - move setuping ECC fileds after the identification phase
+ - use nand_scan() and attach_chip()
+ - check one event to return IRQ_NONE
+ - delete cast when of_device_get_match_data
+ - use nand_controller_init() helper
+ - remove nfc driver complains when calling devm_ioremap_resource
+ - clear irqs before setting up irq handler
+
+Changes since v1 at [1]:
+ - adopt property amlogic,nand-enable-scrambler - thanks Martin
+ - drop nand pins in DT
+ - convert clk access to emmc clkc model 
+ - fix regiser field definition alignment
+ - drop nand-user-mode 
+ - parse cs id from DT
+ - rework n2m, m2n function
+ - explain why insert two "IDLE" command
+ - implement exec_op()
+ - drop meson_nfc_get_nand_chip_dts()
+ - release resource once error occur in meson_nfc_nand_chips_init(), 
+ - call nand_cleanup(nand) once mtd_device_register fail
+
+Items not addressed ( or confirmed ) in this version:
+ - convert to ECC conf helper() 
+ - convert to dma coherent API
+ - how to construct mtd->name
+
+[1] https://lkml.kernel.org/r/20180613161314.14894-1-yixun.lan@amlogic.com
+[2] https://lkml.kernel.org/r/20180712211244.11428-1-yixun.lan@amlogic.com
+[3] https://lkml.kernel.org/r/20180719094612.5833-1-yixun.lan@amlogic.com
+[4] https://lkml.kernel.org/r/1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com/
+[5] https://lore.kernel.org/r/1537433449-65213-2-git-send-email-jianxin.pan@amlogic.com/
+[6] https://lore.kernel.org/r/1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com
+[7] https://lore.kernel.org/r/1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com
+[8] http://lkml.kernel.org/r/1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com
+
+Liang Yang (2):
+  dt-bindings: nand: meson: add Amlogic NAND controller driver
+  mtd: rawnand: meson: add support for Amlogic NAND flash controller
+
+ .../devicetree/bindings/mtd/amlogic,meson-nand.txt |   60 +
+ drivers/mtd/nand/raw/Kconfig                       |   10 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/meson_nand.c                  | 1468 ++++++++++++++++++++
+ 4 files changed, 1539 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/meson_nand.c
 
 -- 
- Kirill A. Shutemov
+1.9.1
