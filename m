@@ -1,24 +1,15 @@
-MIME-Version: 1.0
-References: <20181216084854.GJ13243@dragon>
- <CAK8P3a34R+Gv+H8_jjGP452i2kSqq+u0PsE-4pDnRRtY14SG0w@mail.gmail.com>
- <a73f86ff-15ce-9512-bbf0-be852cf39a35@kontron.de>
- <CAK8P3a1PMoR-WWcb_G8sTVW9HKUKvKfUZmcinkOEy9mJ5c=Lxw@mail.gmail.com>
- <6dde2248-da0d-7bd3-801b-b42b2974c038@kontron.de>
- <CAK8P3a0WCOcVjSegBKRPw3kkokE8S4JEXManqBkq4CjfcBRSMg@mail.gmail.com>
- <CAMuHMdW1NsqEHWBBn77wTAYnXi068iT2Lo8rxUUSvbo5UHDTkA@mail.gmail.com>
-In-Reply-To: <CAMuHMdW1NsqEHWBBn77wTAYnXi068iT2Lo8rxUUSvbo5UHDTkA@mail.gmail.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 20 Dec 2018 23:41:37 +0100
-Message-ID: <CAK8P3a0QxoNyq=5LzQObFnq2i7mVRJDj73j7ur+cQ9rmoKZpMQ@mail.gmail.com>
-Subject: Re: [GIT PULL] FSL QSPI device tree cleanup for 4.21
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: frieder.schrempf@kontron.de, linux-spi <linux-spi@vger.kernel.org>,
- arm-soc <arm@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- linux-imx@nxp.com,
- Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>,
- Shawn Guo <shawnguo@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from smtpbg298.qq.com ([184.105.67.102])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gaCKY-000094-NC
+ for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 04:22:36 +0000
+From: Ding Tao <miyatsu@qq.com>
+To: marek.vasut@gmail.com
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Ding Tao <miyatsu@qq.com>
+Subject: [PATCH] mtd: spi-nor: Add support for Macronix mx25u3235f
+Date: Fri, 21 Dec 2018 12:19:57 +0800
+Message-Id: <20181221041957.84474-1-miyatsu@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 20, 2018 at 7:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Dec 20, 2018 at 5:33 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Thu, Dec 20, 2018 at 5:23 PM Schrempf Frieder
-> > > As the new driver is a SPI driver, the common rules in
-> > > Documentation/devicetree/bindings/spi/spi-bus.txt apply and
-> > > spi-[tx/rx]-bus-width are defined to default to 1 if not specified.
-> > > So we can't set those properties in the driver if they are missing in
-> > > the dtb as we would deviate from the standard, although it would make
-> > > more sense for a *Quad*-SPI driver to default to 4.
-> >
-> > Right, I guess that makes sense.
-> >
-> > Now, you could change the binding for the fsl-quadspi driver to
-> > require the bus-width properties, which would then just make
-> > the old dtb files invalid, and you give us an excuse to override
-> > the properties by adding the =4 ones, once that is documented
-> > in the driver specific binding.
-> >
-> > Since it's only a performance difference, I suppose we can live
-> > with the limitation and stay a little closer to the normal binding.
->
-> Please note that a quad-capable SPI FLASH may be physically wired
-> to a quad-capable SPI controller using only 2 wires, so defaulting to
-> 4 may cause issues.  Defaulting to 2 may work, if the device is
-> dual-capable.
+Some ESPRESSObin board from GlobalScale have mx25u3235f spi nor flash
+attached, add support for it.
 
-Right, this would only work because the old driver used 4 wires
-in the absence of the DT property, and the driver would warn
-when it's not there for new dtb files.
+Minimal tested with u-boot tools fw_printenv/fw_setenv on GlobalScale
+ESPRESSObin v5 board.
 
-      Arnd
+Signed-off-by: Ding Tao <miyatsu@qq.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1fdd2834fbcb..f3e337c61621 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1377,6 +1377,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
+ 	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
+ 	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
++	{ "mx25u3235f",  INFO(0xc22536, 0, 64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+-- 
+2.17.1
