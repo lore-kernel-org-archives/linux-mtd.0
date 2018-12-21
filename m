@@ -1,44 +1,18 @@
-Received: from mail-eopbgr800042.outbound.protection.outlook.com
- ([40.107.80.42] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+Received: from a6-247.smtp-out.eu-west-1.amazonses.com ([54.240.6.247])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gaFM3-00022O-Pl
- for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 07:36:21 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, "robh@kernel.org"
- <robh@kernel.org>, "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>, Michal Simek
- <michals@xilinx.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "martin.lund@keep-it-simple.com" <martin.lund@keep-it-simple.com>
-Subject: RE: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Fri, 21 Dec 2018 07:36:02 +0000
-Message-ID: <MWHPR02MB262396FFF946A95D7821D61BAFB80@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1541739641-17789-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB2623AAEC160F40F061E23194AFD80@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181119090246.49060019@bbrezillon>
- <BN6PR02MB2610C7D048E4A192E041BE14AFD90@BN6PR02MB2610.namprd02.prod.outlook.com>
- <20181120120244.7d2442b5@bbrezillon>	<20181120133624.3fa4742d@xps13>
- <MWHPR02MB26238A2271B33470ABFA1023AFD40@MWHPR02MB2623.namprd02.prod.outlook.com>
- <MWHPR02MB26239C2B2A7050310BEF1E9CAFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212091135.1d0cc9a6@xps13>
- <MWHPR02MB26236CEF8A2110B20C825198AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212100931.149b0cac@xps13>
- <MWHPR02MB2623EDA15BE59304795F3034AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212141825.69711c57@xps13>
- <MWHPR02MB26235AE6567A06EF4C6362E6AFBC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181217174114.24196d17@xps13>
- <MWHPR02MB26237B932D7F3CCEE0476FE0AFBD0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181219152647.76f77711@xps13>
-In-Reply-To: <20181219152647.76f77711@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1gaFvx-0005Vq-0l
+ for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 08:13:26 +0000
 MIME-Version: 1.0
+Date: Fri, 21 Dec 2018 08:13:10 +0000
+Message-ID: <01020167cfd34b8c-a6079ae1-05ed-4909-9433-5c9b68d15bc4-000000@eu-west-1.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: Husker Harvest Days 2018 Farm Show Meeters
+From: "kevin.norman@skyridgefinancing.com (M)"
+ <kevin.norman@skyridgefinancing.com>
+Reply-To: "kevin.norman@skyridgefinancing.com (M)"
+ <kevin.norman@skyridgefinancing.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,77 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
-bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBXZWRu
-ZXNkYXksIERlY2VtYmVyIDE5LCAyMDE4IDc6NTcgUE0NCj4gVG86IE5hZ2EgU3VyZXNoa3VtYXIg
-UmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
-LmJyZXppbGxvbkBib290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsgcmljaGFyZEBub2QuYXQ7
-DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsg
-bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+IG5hZ2FzdXJlc2gxMkBnbWFpbC5jb207
-IE1pY2hhbCBTaW1layA8bWljaGFsc0B4aWxpbnguY29tPjsNCj4gY29tcHV0ZXJzZm9ycGVhY2VA
-Z21haWwuY29tOyBkd213MkBpbmZyYWRlYWQub3JnOyBtYXJ0aW4ubHVuZEBrZWVwLWl0LXNpbXBs
-ZS5jb20NCj4gU3ViamVjdDogUmU6IFtMSU5VWCBQQVRDSCB2MTIgMy8zXSBtdGQ6IHJhd25hbmQ6
-IGFyYXNhbjogQWRkIHN1cHBvcnQgZm9yIEFyYXNhbg0KPiBOQU5EIEZsYXNoIENvbnRyb2xsZXIN
-Cj4gDQo+IEhpIE5hZ2EsDQo+IA0KPiArIE1hcnRpbg0KPiANCj4gTmFnYSBTdXJlc2hrdW1hciBS
-ZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4gd3JvdGUgb24gVHVlLCAxOCBEZWMgMjAxOA0KPiAw
-NTozMzo1MyArMDAwMDoNCj4gDQo+ID4gSGkgTWlxdWVsLA0KPiA+DQo+ID4gPiAtLS0tLU9yaWdp
-bmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogTWlxdWVsIFJheW5hbCBbbWFpbHRvOm1pcXVl
-bC5yYXluYWxAYm9vdGxpbi5jb21dDQo+ID4gPiBTZW50OiBNb25kYXksIERlY2VtYmVyIDE3LCAy
-MDE4IDEwOjExIFBNDQo+ID4gPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8bmFnYXN1cmVA
-eGlsaW54LmNvbT4NCj4gPiA+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBi
-b290bGluLmNvbT47IHJvYmhAa2VybmVsLm9yZzsNCj4gPiA+IHJpY2hhcmRAbm9kLmF0OyBsaW51
-eC0ga2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gPiA+IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsg
-bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+ID4gPiBuYWdhc3VyZXNoMTJAZ21haWwu
-Y29tOyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+ID4gPiBjb21wdXRlcnNm
-b3JwZWFjZUBnbWFpbC5jb207IGR3bXcyQGluZnJhZGVhZC5vcmcNCj4gPiA+IFN1YmplY3Q6IFJl
-OiBbTElOVVggUEFUQ0ggdjEyIDMvM10gbXRkOiByYXduYW5kOiBhcmFzYW46IEFkZCBzdXBwb3J0
-DQo+ID4gPiBmb3IgQXJhc2FuIE5BTkQgRmxhc2ggQ29udHJvbGxlcg0KPiA+ID4NCj4gPiA+IEhp
-IE5hZ2EsDQo+ID4gPg0KPiA+ID4gWy4uLl0NCj4gPiA+DQo+ID4gPiA+IEluc2VydGVkIGJpdGVy
-cm9yIEAgNDgvNw0KPiA+ID4gPiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDI1IGJpdCBlcnJvcnMg
-cGVyIHN1YnBhZ2UgSW5zZXJ0ZWQgYml0ZXJyb3INCj4gPiA+ID4gQA0KPiA+ID4gPiA1MC83IEVD
-QyBmYWlsdXJlLCBpbnZhbGlkIGRhdGEgZGVzcGl0ZSByZWFkIHN1Y2Nlc3MNCj4gPiA+ID4gcm9v
-dEB4aWxpbngtemMxNzUxLWRjMi0yMDE4XzE6fiMNCj4gPiA+ID4NCj4gPiA+ID4gQnV0IGV2ZW4g
-aW4gdGhpcyBjYXNlIGFsc28sIGRyaXZlciBpcyBzYXlpbmcgRUNDIGZhaWx1cmUgYnV0IHJlYWQg
-c3VjY2Vzcy4NCj4gPiA+ID4gVGhhdCBtZWFucyBjb250cm9sbGVyIGlzIGFibGUgdG8gZGV0ZWN0
-IGVycm9ycyBvbiByZWFkIHBhZ2UgdXAgdG8gMjQgYml0IG9ubHkuDQo+ID4gPiA+IEFmdGVyIHRo
-YXQgdGhlcmUgaXMgbm8gd2F5IHRvIHNheSB0byB0aGUgdXBwZXIgbGF5ZXJzIHRoYXQgdGhlDQo+
-ID4gPiA+IHBhZ2UgaXMgYmFkIGJlY2F1c2Ugb2YgdGhlDQo+ID4gPiBsaW1pdGF0aW9uIGluIHRo
-ZSBjb250cm9sbGVyLg0KPiA+ID4NCj4gPiA+IFRoaXMgaXMgbW9yZSB0aGFuIGEgImxpbWl0YXRp
-b24iLCB0aGUgZGVzaWduIGlzIGJyb2tlbi4gSSBhbSBub3QNCj4gPiA+IHN1cmUgaG93IHRvIHN1
-cHBvcnQgc3VjaCBjb250cm9sbGVyLCBhbmQgSSBhbSBub3Qgc3VyZSBpZiB3ZSBldmVuIHdhbnQg
-dG8uDQo+ID4NCj4gPiBUaGUgbnVtYmVyIG9mIGVycm9ycyB0aGF0IGFyZSBjb3JyZWN0YWJsZSBp
-cyBsaW1pdGVkIGJ5IGEgcGFyYW1ldGVyDQo+ID4gJ3QnKHRvdGFsIG51bWJlciBvZiBlcnJvcnMp
-LCBJZiB0aGVyZSBpcyBhIGNvbmRpdGlvbiB0aGF0IHRoZSBudW1iZXIgb2YgZXJyb3JzIGdyZWF0
-ZXIgdGhhbiAndCcsDQo+IHRoZW4gdGhlIGNvbnRyb2xsZXIgd29uJ3QgYmUgYWJsZSB0byBkZXRl
-Y3QgdGhhdC4NCj4gPiBJIGd1ZXNzIHRoaXMgY29uY2VwdCBpcyBzYW1lIGZvciBvdGhlciBjb250
-cm9sbGVycyBhcyB3ZWxsLg0KPiA+IEluIEFyYXNhbiBpdCBpcyBsaW1pdGVkIHRvIDI0LWJpdC4N
-Cj4gPg0KPiA+IEV2ZW4sIGluIGNhc2Ugb2YgSGFtbWluZywgaXQgaXMgMS1iaXQgZXJyb3IgY29y
-cmVjdGlvbiBhbmQgMi1iaXQgZXJyb3IgZGV0ZWN0aW9uLg0KPiA+IFdoYXQgd2lsbCBoYXBwZW4g
-aWYgdGhlcmUgYXJlIG11bHRpcGxlIGVycm9ycyhncmVhdGVyIHRoYW4gMi1iaXQpPw0KPiANCj4g
-T2sgbGV0J3MgdXNlIHRoZSBIYW1taW5nIGNvbXBhcmlzb24gaW4geW91ciBFQ0MgZW5naW5lIGNh
-c2UuDQo+IA0KPiAtPiBoYW1taW5nOg0KPiAgKiAwIGJmOiBldmVyeXRoaW5nIGlzIGZpbmUNCj4g
-ICogMSBiZjogd2lsbCBiZSBkZXRlY3RlZCwgY29ycmVjdGVkLCBzaWduYWxlZA0KPiAgKiAyIGJm
-OiB3aWxsIGJlIGRldGVjdGVkLCBub3QgY29ycmVjdGVkLCBzaWduYWxlZA0KPiAgKiAzKyBiZjog
-ZG9uJ3QgY2FyZQ0KPiANCj4gLT4gQkNIOg0KPiAgKiAwIGJmOiBldmVyeXRoaW5nIGlzIGZpbmUN
-Cj4gICogMS0yNCBiZjogd2lsbCBiZSBkZXRlY3RlZCwgY29ycmVjdGVkLCBzaWduYWxlZA0KPiAg
-KiAyNSBiZjogZXZlcnl0aGluZyBpcyBmaW5lDQo+ICAqIDI2KyBiZjogZG9uJ3QgY2FyZQ0KPiAN
-Cj4gRG8geW91IHNlZSB0aGUgcHJvYmxlbT8NCk5vLg0KPiANCj4gSW4gdGhlIDI1IGJmIGNhc2Us
-IHRoZSBjb250cm9sbGVyIGlzIHJlcG9ydGluZyB0aGF0IGV2ZXJ5dGhpbmcgd2VudCBmaW5lIHdo
-aWxlIGl0IHNob3VsZCByZXBvcnQNCj4gdGhhdCBpdCBkZXRlY3RlZCBhbiB1bmNvcnJlY3RhYmxl
-IHNpdHVhdGlvbi4NCj4gDQo+IEhlcmUgYXJlIHR3byBsZWFkcyB0byBzb2x2ZSB0aGlzIGlzc3Vl
-LCBwbGVhc2UgaW52ZXN0aWdhdGUgdGhlbSBib3RoOg0KPiAxLyBUYWxrIHRvIHlvdXIgY29sbGVh
-Z3VlcyB0aGF0IGRldmVsb3BlZCB0aGUgUlRMLCBhc2sgaWYgdGhlcmUgaXMgYQ0KPiAgICBoaWRk
-ZW4vcmVzZXJ2ZWQgYml0IGZvciB0aGF0IHB1cnBvc2UgdGhhdCBpcyBub3QgZG9jdW1lbnRlZC4N
-Ckkgc3Bva2UgdG8gUlRMIGd1eXMsIHRoZXJlIGlzIG5vdGhpbmcgaGlkZGVuL3Jlc2VydmVkIGJp
-dCBmb3IgdGhpcyBwdXJwb3NlLg0KSSB0cmllZCByZWFkaW5nIHRoZSBzdGF0dXMgcmVnaXN0ZXJz
-IHJlc2VydmVkIGJpdHMsIGJ1dCB0aGV5IGFyZSByYXoocmVhZCBhcyB6ZXJvKQ0KDQo+IDIvIFNl
-YXJjaCBmb3IgYSBzdGF0dXMgaW4gdGhlIHJlZ2lzdGVycyB0aGF0IG1pZ2h0IGluZGljYXRlIHRo
-YXQgYW4NCj4gICAgZXJyb3Igb2NjdXJyZWQsIGZvciBpbnN0YW5jZSAiMCBiZiBjb3JyZWN0ZWQi
-IGFuZCAiYmYgaGF2ZSBiZWVuDQo+ICAgIGRldGVjdGVkIi4NCkkgdHJpZWQgcmVhZGluZyBzdGF0
-dXMgcmVnaXN0ZXJzIGFuZCBvdGhlciByZWdpc3RlcnMgYXMgd2VsbCwgYnV0IG5vIGx1Y2suDQo+
-IA0KPiBOQjogSSBrbm93IHRoYXQsIHdpdGggYSBCQ0ggRUNDIGVuZ2luZSwgZXJyb3IgZGV0ZWN0
-aW9uIGF0IChzdHJlbmd0aCArDQo+IDEpIGlzIG5vdCAxMDAlIHN1cmUgYnV0IHN0YXRpc3RpY2Fs
-bHkgaXQgd2lsbCBhbG1vc3QgYWx3YXlzIGJlIGRldGVjdGVkIGFuZCBpbiB0aGlzIGNhc2Ugd2UN
-Cj4gbmVlZCB0aGUgY29udHJvbGxlciB0byB3YXJuIHRoZSB1c2VyIQ0KT2ssIEkgdW5kZXJzdG9v
-ZCBub3cuDQoNClRoYW5rcywNCk5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkNCj4gDQo+IA0KPiBUaGFu
-a3MsDQo+IE1pcXXDqGwNCg==
+Hi ,
+
+If you missed communicating with any decision makers or need to get in touc=
+h with an visitors of Husker Harvest Days 2018 Farm Show, then we have the =
+ultimate resource available for you:
+
+Purchase the Husker Harvest Days 2018 Farm Show Participants =E2=80=93 4000=
+0 contacts at $1500, until the end of today.
+
+This is the only contact compilation resource of its kind available, with n=
+ame, phone number, e mail and mailing address for thousands of participants=
+ and organizations. All information has been checked and double-checked.
+
+Get this can't-miss marketing tool while it's available!
+
+Thanks and Regards
+
+Kevin Norman
+
+Advisory: Please delete this data if you are not the original desired recip=
+ient and notify the sender of the error as soon as possible. This data is o=
+nly to be used by the original desired recipient and is not to be reviewed,=
+ retransmitted, disseminated, or acted upon by any other individual or enti=
+ty. Rights of ownership to the data contained in this transmission are held=
+ solely by our organization. This includes the lawful right to seek remedy =
+for its misuse. The Husker Harvest Days 2018 Farm Show does not sell or pro=
+vide this data to us, and our organization is not affiliated with the event=
+ organizers for the Husker Harvest Days 2018 Farm Show. This data is source=
+d through public records and information sources, as well as our internal d=
+atabase.
