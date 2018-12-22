@@ -1,19 +1,28 @@
-Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gacUN-0001Tr-Hj
- for linux-mtd@lists.infradead.org; Sat, 22 Dec 2018 08:18:29 +0000
-Received: by mail-wr1-x434.google.com with SMTP id p4so7391348wrt.7
- for <linux-mtd@lists.infradead.org>; Sat, 22 Dec 2018 00:18:14 -0800 (PST)
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gaeNx-0006Qm-I7
+ for linux-mtd@lists.infradead.org; Sat, 22 Dec 2018 10:19:59 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23991063AbeLVKTjunMsP (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Sat, 22 Dec 2018 11:19:39 +0100
+Date: Sat, 22 Dec 2018 11:19:38 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v6 13/14] mtd: onenand: omap2: Configure driver from DT
+Message-ID: <20181222101938.GA30696@lenoch>
+References: <20180112131105.GA13810@lenoch> <20180112131725.GN13810@lenoch>
+ <20181222010246.GA27785@darkstar.musicnaut.iki.fi>
 MIME-Version: 1.0
-References: <E1gaMcy-000082-OR@filer.kenjo.org>
-In-Reply-To: <E1gaMcy-000082-OR@filer.kenjo.org>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sat, 22 Dec 2018 09:18:01 +0100
-Message-ID: <CAFLxGvx-uzrgnktn4hYU0S9Hkay7KYR+LMOuipEr350i34HX5g@mail.gmail.com>
-Subject: Re:
-To: kenneth johansson <kenjo@kenjo.org>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181222010246.GA27785@darkstar.musicnaut.iki.fi>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +32,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 21, 2018 at 4:24 PM kenneth johansson <kenjo@kenjo.org> wrote:
->
-> From 9815710fa078241c683de1b49d9a0c9631502e17 Mon Sep 17 00:00:00 2001
-> From: Kenneth Johansson <kenjo@kenjo.org>
-> Date: Fri, 21 Dec 2018 15:46:24 +0100
-> Subject: [PATCH] mtd: rawnand: nandsim: Add support to disable subpage writes.
-> X-IMAPbase: 1545405463 2
-> Status: O
-> X-UID: 1
->
-> This is needed if you try to use an already existing ubifs image that
-> is created for hardware that do not support subpage write.
->
-> It is not enough that you can select what nandchip to emulate as the
-> subpage support might not exist in the actual nand driver.
+Hi Aaro,
 
-Is this really needed? Usually using ubiattach's -O parameter does the trick.
+On Sat, Dec 22, 2018 at 03:02:46AM +0200, Aaro Koskinen wrote:
+> Hi,
+> 
+> On Fri, Jan 12, 2018 at 02:17:25PM +0100, Ladislav Michl wrote:
+> > Move away from platform data configuration and use pure DT approach.
+> 
+> Unfortunately this patch (now commit a758f50f10cf) has broken onenand
+> probe on N9/N950:
+> 
+> [    3.129364] OneNAND Manufacturer: Unknown (0xa0)
+> 
+> The init order was changed so that onenand_scan() is called before the
+> timings are configured:
 
--- 
-Thanks,
-//richard
+That is intentional, as stated in cover letter:
+"
+Please note that unlike previous driver version, which basically ignored
+DT specified timings, this one relies on it, so it is important to get
+it right in your DT (dumping it from previous kernel version).
+
+In case synchronous timings is requested, it is okay to specify timings
+for the slowest chip ever used for you board as it is evetually optimized
+after chip probe.
+"
+
+> >  	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+> >  		goto err_release_dma;
+> >  
+> > +	freq = omap2_onenand_get_freq(c->onenand.version_id);
+> > +	if (freq > 0) {
+> > +		switch (freq) {
+> > +		case 104:
+> > +			latency = 7;
+> > +			break;
+> > +		case 83:
+> > +			latency = 6;
+> > +			break;
+> > +		case 66:
+> > +			latency = 5;
+> > +			break;
+> > +		case 56:
+> > +			latency = 4;
+> > +			break;
+> > +		default:	/* 40 MHz or lower */
+> > +			latency = 3;
+> > +			break;
+> > +		}
+> > +
+> > +		r = gpmc_omap_onenand_set_timings(dev, c->gpmc_cs,
+> > +						  freq, latency, &info);
+> > +		if (r)
+> > +			goto err_release_onenand;
+> > +
+> > +		r = omap2_onenand_set_cfg(c, info.sync_read, info.sync_write,
+> > +					  latency, info.burst_len);
+> > +		if (r)
+> > +			goto err_release_onenand;
+> > +
+> > +		if (info.sync_read || info.sync_write)
+> > +			dev_info(dev, "optimized timings for %d MHz\n", freq);
+> > +	}
+> 
+> But looks like on N9/N950 we need to do the configuration for the
+> onenand_scan() to succeed. I guess the order has to be this because we
+> have no other way to know "version_id".
+> 
+> I tested by changing this other way round (and hardcoding the freq manually)
+> and it seems to work.
+
+Well, DT timings for onenand node seems to be copied over without actually
+verifying correctness. I do not know which chip comes with N950, so please
+verify timings in you DT according chip used. Idea is to use timings for
+slowest chip used and driver will ask for faster one if possible.
+
+Best regards,
+	ladis
