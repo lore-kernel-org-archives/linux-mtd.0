@@ -1,23 +1,22 @@
-Received: from mail74c50.megamailservers.eu ([91.136.10.84]
- helo=mail92c50.megamailservers.eu)
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gaMdF-0008Bp-TY
- for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 15:22:41 +0000
-Received: from mail.kenjo.org (c-4b63235c.042-336-73746f34.bbcust.telenor.se
- [92.35.99.75]) (authenticated bits=0)
- by mail92c50.megamailservers.eu (8.14.9/8.13.1) with ESMTP id wBLFMHRv011516
- for <linux-mtd@lists.infradead.org>; Fri, 21 Dec 2018 15:22:19 +0000
-Received: from filer.kenjo.org ([172.16.2.6])
- by mail.kenjo.org with esmtp (Exim 4.89)
- (envelope-from <kenjo@kenjo.org>) id 1gaMcz-00045A-1n
- for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 16:22:17 +0100
-Received: from kenjo by filer.kenjo.org with local (Exim 4.89)
- (envelope-from <kenjo@filer.kenjo.org>) id 1gaMcy-000082-OR
- for linux-mtd@lists.infradead.org; Fri, 21 Dec 2018 16:22:16 +0100
-To: <linux-mtd@lists.infradead.org>
-Message-Id: <E1gaMcy-000082-OR@filer.kenjo.org>
-From: kenneth johansson <kenjo@kenjo.org>
-Date: Fri, 21 Dec 2018 16:22:16 +0100
+ id 1gaVh5-0004WN-7u
+ for linux-mtd@lists.infradead.org; Sat, 22 Dec 2018 01:03:09 +0000
+Date: Sat, 22 Dec 2018 03:02:46 +0200
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v6 13/14] mtd: onenand: omap2: Configure driver from DT
+Message-ID: <20181222010246.GA27785@darkstar.musicnaut.iki.fi>
+References: <20180112131105.GA13810@lenoch>
+ <20180112131725.GN13810@lenoch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180112131725.GN13810@lenoch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 9815710fa078241c683de1b49d9a0c9631502e17 Mon Sep 17 00:00:00 2001
-From: Kenneth Johansson <kenjo@kenjo.org>
-Date: Fri, 21 Dec 2018 15:46:24 +0100
-Subject: [PATCH] mtd: rawnand: nandsim: Add support to disable subpage writes.
-X-IMAPbase: 1545405463 2
-Status: O
-X-UID: 1
+Hi,
 
-This is needed if you try to use an already existing ubifs image that
-is created for hardware that do not support subpage write.
+On Fri, Jan 12, 2018 at 02:17:25PM +0100, Ladislav Michl wrote:
+> Move away from platform data configuration and use pure DT approach.
 
-It is not enough that you can select what nandchip to emulate as the
-subpage support might not exist in the actual nand driver.
+Unfortunately this patch (now commit a758f50f10cf) has broken onenand
+probe on N9/N950:
 
-Signed-off-by: Kenneth Johansson <ken@kenjo.org>
----
- drivers/mtd/nand/raw/nandsim.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+[    3.129364] OneNAND Manufacturer: Unknown (0xa0)
 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index c452819..858ef30b 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -110,6 +110,7 @@ static unsigned int overridesize = 0;
- static char *cache_file = NULL;
- static unsigned int bbt;
- static unsigned int bch;
-+static unsigned int no_subpage;
- static u_char id_bytes[8] = {
- 	[0] = CONFIG_NANDSIM_FIRST_ID_BYTE,
- 	[1] = CONFIG_NANDSIM_SECOND_ID_BYTE,
-@@ -142,6 +143,7 @@ module_param(overridesize,   uint, 0400);
- module_param(cache_file,     charp, 0400);
- module_param(bbt,	     uint, 0400);
- module_param(bch,	     uint, 0400);
-+module_param(no_subpage,     uint, 0400);
- 
- MODULE_PARM_DESC(id_bytes,       "The ID bytes returned by NAND Flash 'read ID' command");
- MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID) (obsolete)");
-@@ -177,6 +179,7 @@ MODULE_PARM_DESC(cache_file,     "File to use to cache nand pages instead of mem
- MODULE_PARM_DESC(bbt,		 "0 OOB, 1 BBT with marker in OOB, 2 BBT with marker in data area");
- MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
- 				 "be correctable in 512-byte blocks");
-+MODULE_PARM_DESC(no_subpage,	 "Disable use of subpage write");
- 
- /* The largest possible page size */
- #define NS_LARGEST_PAGE_SIZE	4096
-@@ -2260,6 +2263,10 @@ static int __init ns_init_module(void)
- 	/* and 'badblocks' parameters to work */
- 	chip->options   |= NAND_SKIP_BBTSCAN;
- 
-+	/* turn off subpage to be able to read ubifs images created for hardware without subpage support */
-+	if (no_subpage)
-+		chip->options   |= NAND_NO_SUBPAGE_WRITE;
-+
- 	switch (bbt) {
- 	case 2:
- 		 chip->bbt_options |= NAND_BBT_NO_OOB;
--- 
-2.7.4
+The init order was changed so that onenand_scan() is called before the
+timings are configured:
+
+>  	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+>  		goto err_release_dma;
+>  
+> +	freq = omap2_onenand_get_freq(c->onenand.version_id);
+> +	if (freq > 0) {
+> +		switch (freq) {
+> +		case 104:
+> +			latency = 7;
+> +			break;
+> +		case 83:
+> +			latency = 6;
+> +			break;
+> +		case 66:
+> +			latency = 5;
+> +			break;
+> +		case 56:
+> +			latency = 4;
+> +			break;
+> +		default:	/* 40 MHz or lower */
+> +			latency = 3;
+> +			break;
+> +		}
+> +
+> +		r = gpmc_omap_onenand_set_timings(dev, c->gpmc_cs,
+> +						  freq, latency, &info);
+> +		if (r)
+> +			goto err_release_onenand;
+> +
+> +		r = omap2_onenand_set_cfg(c, info.sync_read, info.sync_write,
+> +					  latency, info.burst_len);
+> +		if (r)
+> +			goto err_release_onenand;
+> +
+> +		if (info.sync_read || info.sync_write)
+> +			dev_info(dev, "optimized timings for %d MHz\n", freq);
+> +	}
+
+But looks like on N9/N950 we need to do the configuration for the
+onenand_scan() to succeed. I guess the order has to be this because we
+have no other way to know "version_id".
+
+I tested by changing this other way round (and hardcoding the freq manually)
+and it seems to work.
+
+A.
