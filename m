@@ -1,27 +1,21 @@
-MIME-Version: 1.0
-References: <1545392724-6637-1-git-send-email-jianxin.pan@amlogic.com>
- <1545392724-6637-3-git-send-email-jianxin.pan@amlogic.com>
-In-Reply-To: <1545392724-6637-3-git-send-email-jianxin.pan@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Sat, 22 Dec 2018 18:07:12 +0100
-Message-ID: <CAFBinCAeDtu-KTy=4bmAtBY9hGK8rRo=OW70tgEOyRBnQcdz1g@mail.gmail.com>
-Subject: Re: [PATCH RESEND v8 2/2] mtd: rawnand: meson: add support for
- Amlogic NAND flash controller
-To: Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org,
- Liang Yang <liang.yang@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
- David Woodhouse <dwmw2@infradead.org>,
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gargD-00023p-NC
+ for linux-mtd@lists.infradead.org; Sun, 23 Dec 2018 00:31:43 +0000
+Received: by mail-wm1-x342.google.com with SMTP id y139so8467973wmc.5
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Dec 2018 16:31:30 -0800 (PST)
+From: Christian Lamparter <chunkeey@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Abhishek Sahu <absahu@codeaurora.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>, Carlo Caione <carlo@caione.org>,
- Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>,
- Jian Hu <jian.hu@amlogic.com>,
- Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: [PATCH] mtd: rawnand: qcom: fix memory corruption that causes panic
+Date: Sun, 23 Dec 2018 01:31:26 +0100
+Message-Id: <20181223003126.1704-1-chunkeey@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,55 +25,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jianxin, Hi Liang,
+This patch fixes a memory corruption that occurred in the
+qcom-nandc driver since it was converted to nand_scan().
 
-On Fri, Dec 21, 2018 at 12:45 PM Jianxin Pan <jianxin.pan@amlogic.com> wrote:
->
-> From: Liang Yang <liang.yang@amlogic.com>
->
-> Add initial support for the Amlogic NAND flash controller which found
-> in the Meson-GXBB/GXL/AXG SoCs.
->
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
-> Signed-off-by: Jianxin Pan <jianxin.pan@amlogic.com>
-> ---
->  drivers/mtd/nand/raw/Kconfig      |   10 +
->  drivers/mtd/nand/raw/Makefile     |    1 +
->  drivers/mtd/nand/raw/meson_nand.c | 1468 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 1479 insertions(+)
->  create mode 100644 drivers/mtd/nand/raw/meson_nand.c
->
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index 1a55d3e..d05ff20 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -541,4 +541,14 @@ config MTD_NAND_TEGRA
->           is supported. Extra OOB bytes when using HW ECC are currently
->           not supported.
->
-> +config MTD_NAND_MESON
-> +       tristate "Support for NAND controller on Amlogic's Meson SoCs"
-> +       depends on ARCH_MESON || COMPILE_TEST
-> +       depends on COMMON_CLK_AMLOGIC
-> +       select COMMON_CLK_REGMAP_MESON
-I believe that "depends on COMMON_CLK_AMLOGIC" and "select
-COMMON_CLK_REGMAP_MESON" are not necessary:
-the driver should build fine without them because it's only
-interfacing with the common clock framework.
-the common clock framework is enabled by ARCH_MESON and for the
-COMPILE_TEST case the common clock framework provides stub
-implementations inside the headers.
+On boot, an affected device will panic from a NPE at a weird place:
+| Unable to handle kernel NULL pointer dereference at virtual address 0
+| pgd = (ptrval)
+| [00000000] *pgd=00000000
+| Internal error: Oops: 80000005 [#1] SMP ARM
+| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.19.9 #0
+| Hardware name: Generic DT based system
+| PC is at   (null)
+| LR is at nand_block_isbad+0x90/0xa4
+| pc : [<00000000>]    lr : [<c0592240>]    psr: 80000013
+| sp : cf839d40  ip : 00000000  fp : cfae9e20
+| r10: cf815810  r9 : 00000000  r8 : 00000000
+| r7 : 00000000  r6 : 00000000  r5 : 00000001  r4 : cf815810
+| r3 : 00000000  r2 : cfae9810  r1 : ffffffff  r0 : cf815810
+| Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+| Control: 10c5387d  Table: 8020406a  DAC: 00000051
+| Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+| [<c0592240>] (nand_block_isbad) from [<c0580a94>]
+| [<c0580a94>] (allocate_partition) from [<c05811e4>]
+| [<c05811e4>] (add_mtd_partitions) from [<c0581164>]
+| [<c0581164>] (parse_mtd_partitions) from [<c057def4>]
+| [<c057def4>] (mtd_device_parse_register) from [<c059d274>]
+| [<c059d274>] (qcom_nandc_probe) from [<c0567f00>]
 
-> +       select MFD_SYSCON
-> +       help
-> +         Enables support for NAND controller on Amlogic's Meson SoCs.
-> +         This controller is found on Meson GXBB, GXL, AXG SoCs.
-you are explicitly mentioning GXBB here but you don't add a "GXBB" compatible.
-I suggest to shorten this sentence ("This controller is found on Meson
-SoCs.") because this driver can also support the 32-bit
-Meson8/Meson8b/Meson8m2 SoCs with minor adjustments.
+The problem is that the nand_scan()'s qcom_nand_attach_chip callback
+is updating the nandc->max_cwperpage from 1 to 4. This causes the
+sg_init_table of clear_bam_transaction() in the driver's
+qcom_nandc_block_bad() to memset much more than what was initially
+allocated by alloc_bam_transaction().
 
+This patch restores the old behavior by reallocating the shared bam
+transaction alloc_bam_transaction() after the chip was identified,
+but before mtd_device_parse_register() (which is an alias for
+mtd_device_register() - see panic) gets called. This fixes the
+corruption and the driver is working again.
 
-Regards
-Martin
+Cc: stable@vger.kernel.org
+Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 699d3cf49c6d..7c42a57aca1f 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2833,6 +2833,16 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 	if (ret)
+ 		return ret;
+ 
++	if (nandc->props->is_bam) {
++		free_bam_transaction(nandc);
++		nandc->bam_txn = alloc_bam_transaction(nandc);
++		if (!nandc->bam_txn) {
++			dev_err(nandc->dev,
++				"failed to allocate bam transaction\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret)
+ 		nand_cleanup(chip);
+@@ -2847,16 +2857,6 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 	struct qcom_nand_host *host;
+ 	int ret;
+ 
+-	if (nandc->props->is_bam) {
+-		free_bam_transaction(nandc);
+-		nandc->bam_txn = alloc_bam_transaction(nandc);
+-		if (!nandc->bam_txn) {
+-			dev_err(nandc->dev,
+-				"failed to allocate bam transaction\n");
+-			return -ENOMEM;
+-		}
+-	}
+-
+ 	for_each_available_child_of_node(dn, child) {
+ 		host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
+ 		if (!host) {
+-- 
+2.20.1
