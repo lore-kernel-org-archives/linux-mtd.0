@@ -1,21 +1,23 @@
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gargD-00023p-NC
- for linux-mtd@lists.infradead.org; Sun, 23 Dec 2018 00:31:43 +0000
-Received: by mail-wm1-x342.google.com with SMTP id y139so8467973wmc.5
- for <linux-mtd@lists.infradead.org>; Sat, 22 Dec 2018 16:31:30 -0800 (PST)
-From: Christian Lamparter <chunkeey@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Abhishek Sahu <absahu@codeaurora.org>, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH] mtd: rawnand: qcom: fix memory corruption that causes panic
-Date: Sun, 23 Dec 2018 01:31:26 +0100
-Message-Id: <20181223003126.1704-1-chunkeey@gmail.com>
+ id 1gb3F2-0005t0-95
+ for linux-mtd@lists.infradead.org; Sun, 23 Dec 2018 12:52:26 +0000
+Date: Sun, 23 Dec 2018 14:51:50 +0200
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v6 13/14] mtd: onenand: omap2: Configure driver from DT
+Message-ID: <20181223125149.GE27785@darkstar.musicnaut.iki.fi>
+References: <20180112131105.GA13810@lenoch> <20180112131725.GN13810@lenoch>
+ <20181222010246.GA27785@darkstar.musicnaut.iki.fi>
+ <20181222101938.GA30696@lenoch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181222101938.GA30696@lenoch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,89 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes a memory corruption that occurred in the
-qcom-nandc driver since it was converted to nand_scan().
+Hi,
 
-On boot, an affected device will panic from a NPE at a weird place:
-| Unable to handle kernel NULL pointer dereference at virtual address 0
-| pgd = (ptrval)
-| [00000000] *pgd=00000000
-| Internal error: Oops: 80000005 [#1] SMP ARM
-| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.19.9 #0
-| Hardware name: Generic DT based system
-| PC is at   (null)
-| LR is at nand_block_isbad+0x90/0xa4
-| pc : [<00000000>]    lr : [<c0592240>]    psr: 80000013
-| sp : cf839d40  ip : 00000000  fp : cfae9e20
-| r10: cf815810  r9 : 00000000  r8 : 00000000
-| r7 : 00000000  r6 : 00000000  r5 : 00000001  r4 : cf815810
-| r3 : 00000000  r2 : cfae9810  r1 : ffffffff  r0 : cf815810
-| Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-| Control: 10c5387d  Table: 8020406a  DAC: 00000051
-| Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
-| [<c0592240>] (nand_block_isbad) from [<c0580a94>]
-| [<c0580a94>] (allocate_partition) from [<c05811e4>]
-| [<c05811e4>] (add_mtd_partitions) from [<c0581164>]
-| [<c0581164>] (parse_mtd_partitions) from [<c057def4>]
-| [<c057def4>] (mtd_device_parse_register) from [<c059d274>]
-| [<c059d274>] (qcom_nandc_probe) from [<c0567f00>]
+On Sat, Dec 22, 2018 at 11:19:38AM +0100, Ladislav Michl wrote:
+> Well, DT timings for onenand node seems to be copied over without actually
+> verifying correctness. I do not know which chip comes with N950, so please
+> verify timings in you DT according chip used. Idea is to use timings for
+> slowest chip used and driver will ask for faster one if possible.
 
-The problem is that the nand_scan()'s qcom_nand_attach_chip callback
-is updating the nandc->max_cwperpage from 1 to 4. This causes the
-sg_init_table of clear_bam_transaction() in the driver's
-qcom_nandc_block_bad() to memset much more than what was initially
-allocated by alloc_bam_transaction().
+Hmm, right. I thought we had some dumped values in the DT, but apparently
+wrong ones. What is the method for dumping the "right" values? If I just
+enable GPMC debug with old kernel, it's dumping the DT entries twice,
+but neither set works with the new kernel.
 
-This patch restores the old behavior by reallocating the shared bam
-transaction alloc_bam_transaction() after the chip was identified,
-but before mtd_device_parse_register() (which is an alias for
-mtd_device_register() - see panic) gets called. This fixes the
-corruption and the driver is working again.
+Then I tried the "before" values from the new kernel, and they seem to
+work (patch below)...
 
-Cc: stable@vger.kernel.org
-Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+A.
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 699d3cf49c6d..7c42a57aca1f 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2833,6 +2833,16 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 	if (ret)
- 		return ret;
+diff --git a/arch/arm/boot/dts/omap3-n950-n9.dtsi b/arch/arm/boot/dts/omap3-n950-n9.dtsi
+index 0d9b85317529..6323a6d21e4a 100644
+--- a/arch/arm/boot/dts/omap3-n950-n9.dtsi
++++ b/arch/arm/boot/dts/omap3-n950-n9.dtsi
+@@ -379,25 +379,25 @@
+ 		gpmc,device-width = <2>;
+ 		gpmc,mux-add-data = <2>;
+ 		gpmc,cs-on-ns = <0>;
+-		gpmc,cs-rd-off-ns = <87>;
+-		gpmc,cs-wr-off-ns = <87>;
++		gpmc,cs-rd-off-ns = <122>;
++		gpmc,cs-wr-off-ns = <122>;
+ 		gpmc,adv-on-ns = <0>;
+-		gpmc,adv-rd-off-ns = <10>;
+-		gpmc,adv-wr-off-ns = <10>;
+-		gpmc,oe-on-ns = <15>;
+-		gpmc,oe-off-ns = <87>;
++		gpmc,adv-rd-off-ns = <15>;
++		gpmc,adv-wr-off-ns = <15>;
++		gpmc,oe-on-ns = <20>;
++		gpmc,oe-off-ns = <122>;
+ 		gpmc,we-on-ns = <0>;
+-		gpmc,we-off-ns = <87>;
+-		gpmc,rd-cycle-ns = <112>;
+-		gpmc,wr-cycle-ns = <112>;
+-		gpmc,access-ns = <81>;
++		gpmc,we-off-ns = <122>;
++		gpmc,rd-cycle-ns = <148>;
++		gpmc,wr-cycle-ns = <148>;
++		gpmc,access-ns = <117>;
+ 		gpmc,page-burst-access-ns = <15>;
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,wait-monitoring-ns = <0>;
+-		gpmc,clk-activation-ns = <5>;
+-		gpmc,wr-data-mux-bus-ns = <30>;
+-		gpmc,wr-access-ns = <81>;
++		gpmc,clk-activation-ns = <10>;
++		gpmc,wr-data-mux-bus-ns = <40>;
++		gpmc,wr-access-ns = <117>;
+ 		gpmc,sync-clk-ps = <15000>;
  
-+	if (nandc->props->is_bam) {
-+		free_bam_transaction(nandc);
-+		nandc->bam_txn = alloc_bam_transaction(nandc);
-+		if (!nandc->bam_txn) {
-+			dev_err(nandc->dev,
-+				"failed to allocate bam transaction\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret)
- 		nand_cleanup(chip);
-@@ -2847,16 +2857,6 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 	struct qcom_nand_host *host;
- 	int ret;
- 
--	if (nandc->props->is_bam) {
--		free_bam_transaction(nandc);
--		nandc->bam_txn = alloc_bam_transaction(nandc);
--		if (!nandc->bam_txn) {
--			dev_err(nandc->dev,
--				"failed to allocate bam transaction\n");
--			return -ENOMEM;
--		}
--	}
--
- 	for_each_available_child_of_node(dn, child) {
- 		host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
- 		if (!host) {
--- 
-2.20.1
+ 		/*
