@@ -1,23 +1,29 @@
-Received: from mail-ot1-x341.google.com ([2607:f8b0:4864:20::341])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gbcgJ-0002EN-CC
- for linux-mtd@lists.infradead.org; Tue, 25 Dec 2018 02:42:59 +0000
-Received: by mail-ot1-x341.google.com with SMTP id a11so11771449otr.10
- for <linux-mtd@lists.infradead.org>; Mon, 24 Dec 2018 18:42:44 -0800 (PST)
-Subject: Re: [PATCH] ubifs: Get/put page when changing PG_private
-To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- hsiangkao@mail.ru, kirill.shutemov@linux.intel.com, stable@vger.kernel.org
-References: <20181215150130.19381-1-richard@nod.at>
- <386368225.TvJUPtmGVW@blindfold>
-From: zhangjun <openzhangj@gmail.com>
-Message-ID: <b9def265-5e93-a451-0f7b-91c0edac0b00@gmail.com>
-Date: Tue, 25 Dec 2018 10:42:37 +0800
+From: Liang Yang <liang.yang@amlogic.com>
+Subject: Re: [PATCH RESEND v8 2/2] mtd: rawnand: meson: add support for
+ Amlogic NAND flash controller
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>, Yixun Lan <yixun.lan@amlogic.com>, David
+ Woodhouse <dwmw2@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
+ <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Carlo
+ Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+References: <1545392724-6637-1-git-send-email-jianxin.pan@amlogic.com>
+ <1545392724-6637-3-git-send-email-jianxin.pan@amlogic.com>
+ <CAFBinCAeDtu-KTy=4bmAtBY9hGK8rRo=OW70tgEOyRBnQcdz1g@mail.gmail.com>
+Message-ID: <081f7986-0f8e-bd42-bae2-17058c7da301@amlogic.com>
+Date: Tue, 25 Dec 2018 15:55:16 +0800
 MIME-Version: 1.0
-In-Reply-To: <386368225.TvJUPtmGVW@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFBinCAeDtu-KTy=4bmAtBY9hGK8rRo=OW70tgEOyRBnQcdz1g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +33,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018/12/21 下午4:56, Richard Weinberger wrote:
-> Am Samstag, 15. Dezember 2018, 16:01:30 CET schrieb Richard Weinberger:
->> The page migration code assumes that a page with PG_private
->> set has its page count elevated by 1.
->> UBIFS never did this and therefore the migration code was unable
->> to migrate some pages owned by UBIFS.
->> The lead to situations where the CMA memory allocator failed to
->> allocate memory.
+Hi Martin,
+On 2018/12/23 1:07, Martin Blumenstingl wrote:
+> Hi Jianxin, Hi Liang,
+> 
+> On Fri, Dec 21, 2018 at 12:45 PM Jianxin Pan <jianxin.pan@amlogic.com> wrote:
 >>
->> Fix this by using get/put_page when changing PG_private.
+>> From: Liang Yang <liang.yang@amlogic.com>
 >>
->> Cc: <stable@vger.kernel.org>
->> Cc: zhangjun <openzhangj@gmail.com>
->> Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
->> Reported-by: zhangjun <openzhangj@gmail.com>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
-> FYI, on the XFS side a similar change caused a regression.
-> https://marc.info/?l=linux-fsdevel&m=154530861202448&w=2
->
-> Until this regression is not fully understood, including the implications
-> for UBIFS, I'll not merge this patch.
->
-> Thanks,
-> //richard
->
->
-Hello,richard
+>> Add initial support for the Amlogic NAND flash controller which found
+>> in the Meson-GXBB/GXL/AXG SoCs.
+>>
+>> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+>> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+>> Signed-off-by: Jianxin Pan <jianxin.pan@amlogic.com>
+>> ---
+>>   drivers/mtd/nand/raw/Kconfig      |   10 +
+>>   drivers/mtd/nand/raw/Makefile     |    1 +
+>>   drivers/mtd/nand/raw/meson_nand.c | 1468 +++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 1479 insertions(+)
+>>   create mode 100644 drivers/mtd/nand/raw/meson_nand.c
+>>
+>> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+>> index 1a55d3e..d05ff20 100644
+>> --- a/drivers/mtd/nand/raw/Kconfig
+>> +++ b/drivers/mtd/nand/raw/Kconfig
+>> @@ -541,4 +541,14 @@ config MTD_NAND_TEGRA
+>>            is supported. Extra OOB bytes when using HW ECC are currently
+>>            not supported.
+>>
+>> +config MTD_NAND_MESON
+>> +       tristate "Support for NAND controller on Amlogic's Meson SoCs"
+>> +       depends on ARCH_MESON || COMPILE_TEST
+>> +       depends on COMMON_CLK_AMLOGIC
+>> +       select COMMON_CLK_REGMAP_MESON
+> I believe that "depends on COMMON_CLK_AMLOGIC" and "select
+> COMMON_CLK_REGMAP_MESON" are not necessary:
+> the driver should build fine without them because it's only
+> interfacing with the common clock framework.
+> the common clock framework is enabled by ARCH_MESON and for the
+> COMPILE_TEST case the common clock framework provides stub
+> implementations inside the headers.
+> 
+>> +       select MFD_SYSCON
+>> +       help
+>> +         Enables support for NAND controller on Amlogic's Meson SoCs.
+>> +         This controller is found on Meson GXBB, GXL, AXG SoCs.
+> you are explicitly mentioning GXBB here but you don't add a "GXBB" compatible.
+> I suggest to shorten this sentence ("This controller is found on Meson
+> SoCs.") because this driver can also support the 32-bit
+> Meson8/Meson8b/Meson8m2 SoCs with minor adjustments.
+> 
+we only have tested on Meson GXL and AXG platform, but it should support 
+GXBB and Meson8/Meson8b/Meson8m2 and the differences between these 
+controllers are only the base address of register and some SD_EMMC_CLOCK 
+control bits.
 
+i think "This controller is found on Meson SoCs." is ok.
 
-Before fully understanding this regression, in order to fix the bug of 
-cma_alloc(),
-submit a conservative patch that modifies count in iomap_migrate_page().
-Can you consider merging first?
-
-https://marc.info/?l=linux-kernel&m=154473132332661&w=2
-
-
-Thanks
-//zhangjun
+> Regards
+> Martin
+> 
+> .
+> 
