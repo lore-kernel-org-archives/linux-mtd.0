@@ -1,16 +1,23 @@
-Received: from a8-54.smtp-out.amazonses.com ([54.240.8.54])
+Received: from mail-ot1-x341.google.com ([2607:f8b0:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gbRmL-0002qb-HQ
- for linux-mtd@lists.infradead.org; Mon, 24 Dec 2018 15:04:27 +0000
+ id 1gbcgJ-0002EN-CC
+ for linux-mtd@lists.infradead.org; Tue, 25 Dec 2018 02:42:59 +0000
+Received: by mail-ot1-x341.google.com with SMTP id a11so11771449otr.10
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Dec 2018 18:42:44 -0800 (PST)
+Subject: Re: [PATCH] ubifs: Get/put page when changing PG_private
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ hsiangkao@mail.ru, kirill.shutemov@linux.intel.com, stable@vger.kernel.org
+References: <20181215150130.19381-1-richard@nod.at>
+ <386368225.TvJUPtmGVW@blindfold>
+From: zhangjun <openzhangj@gmail.com>
+Message-ID: <b9def265-5e93-a451-0f7b-91c0edac0b00@gmail.com>
+Date: Tue, 25 Dec 2018 10:42:37 +0800
 MIME-Version: 1.0
-Date: Mon, 24 Dec 2018 15:04:11 +0000
-Message-ID: <01000167e0bead8c-cadd2cd4-4316-48b9-8701-8467ae5a09c7-000000@email.amazonses.com>
+In-Reply-To: <386368225.TvJUPtmGVW@blindfold>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: 2018 Annual TULSA Farm Show Participants
-From: "Greta Taylor" <greta.taylor@bluebasemedia.com>
-Reply-To: "Greta Taylor" <greta.taylor@bluebasemedia.com>
-To: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+On 2018/12/21 下午4:56, Richard Weinberger wrote:
+> Am Samstag, 15. Dezember 2018, 16:01:30 CET schrieb Richard Weinberger:
+>> The page migration code assumes that a page with PG_private
+>> set has its page count elevated by 1.
+>> UBIFS never did this and therefore the migration code was unable
+>> to migrate some pages owned by UBIFS.
+>> The lead to situations where the CMA memory allocator failed to
+>> allocate memory.
+>>
+>> Fix this by using get/put_page when changing PG_private.
+>>
+>> Cc: <stable@vger.kernel.org>
+>> Cc: zhangjun <openzhangj@gmail.com>
+>> Fixes: 4ac1c17b2044 ("UBIFS: Implement ->migratepage()")
+>> Reported-by: zhangjun <openzhangj@gmail.com>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+> FYI, on the XFS side a similar change caused a regression.
+> https://marc.info/?l=linux-fsdevel&m=154530861202448&w=2
+>
+> Until this regression is not fully understood, including the implications
+> for UBIFS, I'll not merge this patch.
+>
+> Thanks,
+> //richard
+>
+>
+Hello,richard
 
-We limit sales to keep this information relevant and in-demand, but I can r=
-eserve a copy for you a little longer. Let me know if you want access to TU=
-LSA Farm Show 2018:
 
-Purchase the Oklahoma=E2=80=99s Premier Agricultural and Ranching Event | T=
-ULSA Farm Show 2018 Attendees =E2=80=93 30,000 contacts at $2200, until the=
- end of today.
+Before fully understanding this regression, in order to fix the bug of 
+cma_alloc(),
+submit a conservative patch that modifies count in iomap_migrate_page().
+Can you consider merging first?
 
-As a preferred customer, you get first opportunity to receive this... befor=
-e your competition has a chance!
+https://marc.info/?l=linux-kernel&m=154473132332661&w=2
 
-I look forward to hearing from you.
 
-Thanks and Regards
-
-Greta Taylor
-
-Attention: All ownership rights and responsibilities to this material are h=
-eld by our organization, including certain rights (whether exercised on not=
-) to take legal action to address misuse. This material is not sold to us o=
-r shared by any persons or organizations related to the 2018 Annual TULSA F=
-arm Show and we are not affiliated or related to the TULSA Farm Show 2018 e=
-vent organizer. This material should not be used by any person or entity ot=
-her than the original intended recipient, including review, retransmission,=
- dissemination, or any action taken based on this material. If you receive =
-or come to possess this information in error, please delete as soon as poss=
-ible and notify the sender of the mistake. All information contained here, =
-including attendee information, is acquired through research with contacts =
-in our internal database.
+Thanks
+//zhangjun
