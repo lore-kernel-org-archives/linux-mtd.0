@@ -1,18 +1,17 @@
-Received: from a3-28.smtp-out.eu-west-1.amazonses.com ([54.240.3.28])
+Received: from smtp1.guifi.net ([2a00:1508:1000::6d45:935]
+ helo=smtp1.elserrat.org)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gcUS0-0001Zp-A7
- for linux-mtd@lists.infradead.org; Thu, 27 Dec 2018 12:07:46 +0000
-MIME-Version: 1.0
-Date: Thu, 27 Dec 2018 12:07:31 +0000
-Message-ID: <01020167ef9001a6-a1339a11-4c94-4fc1-a774-2100e45df6d5-000000@eu-west-1.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: =?utf-8?B?U3VuYmVsdCBBZyBFeHBvIDIw?=
- =?utf-8?B?MTggLSBOb3J0aCBBbWVyaWNh?=
- =?utf-8?B?4oCZcyBQcmVtaWVyIEZhcm0gU2g=?= =?utf-8?B?b3cgVmlzaXRvcnM=?=
-From: "Andrea Strotz" <andrea.strotz@walkerexports.com>
-Reply-To: "Andrea Strotz" <andrea.strotz@walkerexports.com>
+ id 1gcXDA-0002KQ-JU
+ for linux-mtd@lists.infradead.org; Thu, 27 Dec 2018 15:04:40 +0000
+From: Roger Pueyo Centelles <roger.pueyo@guifi.net>
 To: linux-mtd@lists.infradead.org
+Cc: marek.vasut@gmail.com,
+	Roger Pueyo Centelles <roger.pueyo@guifi.net>
+Subject: [PATCH] mtd: spi-nor: Add support for en25qh64
+Date: Thu, 27 Dec 2018 16:03:48 +0100
+Message-Id: <20181227150348.12093-1-roger.pueyo@guifi.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+The Eon EN25QH64 is a 64 Mbit SPI NOR flash memory chip found
+on recent wireless routers. Its 32, 128 and 256 Mbit siblings
+are alredy supported.
 
-We have the complete, cross-checked and verified Visitors-List from the Sun=
-belt Agricultural Expo and Trade Show 2018, but there's one catch: it's onl=
-y available until the end of the day.
+Tested on a COMFAST CF-E120A v3 board.
 
-Purchase the Sunbelt Ag Expo 2018 - North America=E2=80=99s Premier Farm Sh=
-ow Participants =E2=80=93 43000 contacts at $1000
-until the end of today.
+Signed-off-by: Roger Pueyo Centelles <roger.pueyo@guifi.net>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-This information isn't publicly available in one place. Sunbelt Ag Expo 201=
-8 Visitors-List is a one-of-a-kind resource that helps you communicate with=
- people who can say =E2=80=9CYes!=E2=80=9D
-
-Get this can't-miss marketing tool while it's available!
-
-Best Wishes
-
-Andrea Strotz
-
-Please be advised of the following:  This material is meant only for the or=
-iginal recipient and may not be reviewed, retransmitted, disseminated, or a=
-cted upon by any other person or entity. If by error you receive this trans=
-mission, please report the mistake to the original sender and delete this m=
-aterial immediately. Ownership of this material is reserved wholly by this =
-organization, and includes certain lawful rights to seek remedies for misus=
-e. Our organization is not related to or affiliated with the Sunbelt Agricu=
-ltural Expo and Trade Show 2018 event organizers, nor is the data contained=
- in this material vended to us or shared by anyone related to the Sunbelt A=
-g Expo 2018. All visitors-data compiled in this document is acquired lawful=
-ly, using public materials and data from our internal database.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 6e13bbd1aaa5..4bb6f4d203dc 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1741,6 +1741,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
+ 	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
+ 	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64, 0) },
++	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128, 0) },
+ 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256, 0) },
+ 	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
+ 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
+-- 
+2.19.2
