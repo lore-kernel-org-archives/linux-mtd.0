@@ -1,19 +1,18 @@
-Received: from mout.kundenserver.de ([212.227.126.133])
+Received: from a3-28.smtp-out.eu-west-1.amazonses.com ([54.240.3.28])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gc8Xs-0006tD-TF
- for linux-mtd@lists.infradead.org; Wed, 26 Dec 2018 12:44:22 +0000
-Received: from infong480.kundenserver.de ([82.165.80.11]) by
- mrelayeu.kundenserver.de (mreue009 [172.19.35.7]) with ESMTPA (Nemesis) id
- 1N63NQ-1hQl803PNQ-016O5f for <linux-mtd@lists.infradead.org>; Wed, 26 Dec
- 2018 13:44:04 +0100
-To: linux-mtd@lists.infradead.org
-Subject: Enquiry At The Expert Wealth Management Website
-Date: Wed, 26 Dec 2018 12:44:04 +0000
-From: Expert Wealth Management <advice@expertwealth.co.uk>
-Reply-To: advice@expertwealth.co.uk
-Message-ID: <2427fa6fcd528751795ee02533c668e6@expertwealthmanagement.co.uk>
+ id 1gcUS0-0001Zp-A7
+ for linux-mtd@lists.infradead.org; Thu, 27 Dec 2018 12:07:46 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Date: Thu, 27 Dec 2018 12:07:31 +0000
+Message-ID: <01020167ef9001a6-a1339a11-4c94-4fc1-a774-2100e45df6d5-000000@eu-west-1.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: =?utf-8?B?U3VuYmVsdCBBZyBFeHBvIDIw?=
+ =?utf-8?B?MTggLSBOb3J0aCBBbWVyaWNh?=
+ =?utf-8?B?4oCZcyBQcmVtaWVyIEZhcm0gU2g=?= =?utf-8?B?b3cgVmlzaXRvcnM=?=
+From: "Andrea Strotz" <andrea.strotz@walkerexports.com>
+Reply-To: "Andrea Strotz" <andrea.strotz@walkerexports.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,8 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thank you for your enquiry at the Expert Wealth Management Website. We'll come back to you as soon as we can.
+Hi ,
 
-Kind Regards,
+We have the complete, cross-checked and verified Visitors-List from the Sun=
+belt Agricultural Expo and Trade Show 2018, but there's one catch: it's onl=
+y available until the end of the day.
 
-The Team At Expert Wealth Management
+Purchase the Sunbelt Ag Expo 2018 - North America=E2=80=99s Premier Farm Sh=
+ow Participants =E2=80=93 43000 contacts at $1000
+until the end of today.
+
+This information isn't publicly available in one place. Sunbelt Ag Expo 201=
+8 Visitors-List is a one-of-a-kind resource that helps you communicate with=
+ people who can say =E2=80=9CYes!=E2=80=9D
+
+Get this can't-miss marketing tool while it's available!
+
+Best Wishes
+
+Andrea Strotz
+
+Please be advised of the following:  This material is meant only for the or=
+iginal recipient and may not be reviewed, retransmitted, disseminated, or a=
+cted upon by any other person or entity. If by error you receive this trans=
+mission, please report the mistake to the original sender and delete this m=
+aterial immediately. Ownership of this material is reserved wholly by this =
+organization, and includes certain lawful rights to seek remedies for misus=
+e. Our organization is not related to or affiliated with the Sunbelt Agricu=
+ltural Expo and Trade Show 2018 event organizers, nor is the data contained=
+ in this material vended to us or shared by anyone related to the Sunbelt A=
+g Expo 2018. All visitors-data compiled in this document is acquired lawful=
+ly, using public materials and data from our internal database.
