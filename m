@@ -1,25 +1,16 @@
-Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
+Received: from a27-29.smtp-out.us-west-2.amazonses.com ([54.240.27.29])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1geiDQ-0006LP-Bs
- for linux-mtd@lists.infradead.org; Wed, 02 Jan 2019 15:13:53 +0000
-Received: by mail-it1-x141.google.com with SMTP id p197so39035282itp.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Jan 2019 07:13:51 -0800 (PST)
+ id 1geijU-0002Ai-7r
+ for linux-mtd@lists.infradead.org; Wed, 02 Jan 2019 15:47:02 +0000
 MIME-Version: 1.0
-References: <20190102143654.24362-1-bbrezillon@kernel.org>
-In-Reply-To: <20190102143654.24362-1-bbrezillon@kernel.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 2 Jan 2019 16:13:39 +0100
-Message-ID: <CAMRc=MdOSHShSaQ5zmhJeevp+XTnQo8188CjVHSimRJ+MnzYiA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: Fix the check on nvmem_register() ret code
-To: Boris Brezillon <bbrezillon@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Alban Bedel <albeu@free.fr>
-Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 2 Jan 2019 15:46:56 +0000
+Message-ID: <010101680f3f0a54-44edf0ad-e9f2-4440-a9c7-6d8a100b09a8-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+Subject: 2018 Nebraska Power Farming Show Participants
+From: "Ashley Mahaney" <ashley.mahaney@frontiersdirect.com>
+Reply-To: "Ashley Mahaney" <ashley.mahaney@frontiersdirect.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=C5=9Br., 2 sty 2019 o 15:37 Boris Brezillon <bbrezillon@kernel.org> napisa=
-=C5=82(a):
->
-> Commit 20167b70c894 ("nvmem: use EOPNOTSUPP instead of ENOSYS") changed
-> the nvmem_register() ret code from ENOSYS to EOPNOTSUPP when
-> CONFIG_NVMEM is not enabled, but the check in mtd_nvmem_add() was not
-> adjusted accordingly.
->
-> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-> Cc: Alban Bedel <albeu@free.fr>
-> Fixes: c4dfa25ab307 ("mtd: add support for reading MTD devices via the nv=
-mem API")
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
-> ---
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 21e3cdc04036..999b705769a8 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -522,7 +522,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
->         mtd->nvmem =3D nvmem_register(&config);
->         if (IS_ERR(mtd->nvmem)) {
->                 /* Just ignore if there is no NVMEM support in the kernel=
- */
-> -               if (PTR_ERR(mtd->nvmem) =3D=3D -ENOSYS) {
-> +               if (PTR_ERR(mtd->nvmem) =3D=3D -EOPNOTSUPP) {
->                         mtd->nvmem =3D NULL;
->                 } else {
->                         dev_err(&mtd->dev, "Failed to register NVMEM devi=
-ce\n");
-> --
-> 2.17.1
->
+Hi ,
 
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+The recent Nebraska Power Farming Show 2018 can be a huge marketing success=
+ for your organization if you have access to the people that matter!
+
+Purchase the Nebraska Power Farming Show 2018 Attendees =E2=80=93 11000 con=
+tacts at $1100
+until the end of today.
+
+Locate and connect directly with the most relevant decision makers for your=
+ services. Our list includes full contact information for each attendee and=
+ all info has been verified and updated within the last 10 days.
+
+Get in the door first and connect with your target decision makers.
+
+Best Wishes
+
+Ashley Mahaney
+
+Please be advised of the following: If by error you receive this transmissi=
+on, please report the mistake to the original sender and delete this materi=
+al immediately. This material is intended only for the original recipient a=
+nd may not be reviewed, retransmitted, disseminated, or acted upon by any o=
+ther person or entity. Ownership of this material is reserved wholly by thi=
+s organization, and includes certain legal rights to seek remedies for misu=
+se. Our organization is not related to or affiliated with the Nebraska Powe=
+r Farming Show 2018 event organizers, nor is the data contained in this mat=
+erial vended to us or shared by anyone related to the Nebraska Power Farmin=
+g Show 2018. All data compiled in this document is acquired lawfully, using=
+ public materials and data from our internal database.
