@@ -1,22 +1,26 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from gateway36.websitewelcome.com ([50.116.127.2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfLM7-0003bk-Hr
- for linux-mtd@lists.infradead.org; Fri, 04 Jan 2019 09:01:29 +0000
-Date: Fri, 4 Jan 2019 10:01:17 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: Kenneth Johansson <ken@kenjo.org>, linux-mtd@lists.infradead.org, Miquel
- Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2] mtd: rawnand: nandsim: Add support to disable
- subpage writes.
-Message-ID: <20190104100117.394876ec@bbrezillon>
-In-Reply-To: <20190104095302.236a19dc@bbrezillon>
-References: <20181222124008.28046-1-ken@kenjo.org>
- <10756fcb-b284-5465-ed5c-8251cb00d9c2@kenjo.org>
- <6672633.KqxhzBgVKO@blindfold> <20190104095302.236a19dc@bbrezillon>
+ id 1gfTF8-0004CK-DC
+ for linux-mtd@lists.infradead.org; Fri, 04 Jan 2019 17:26:47 +0000
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+ by gateway36.websitewelcome.com (Postfix) with ESMTP id EAF9F400C8B6A
+ for <linux-mtd@lists.infradead.org>; Fri,  4 Jan 2019 10:38:30 -0600 (CST)
+Date: Fri, 4 Jan 2019 11:26:37 -0600
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Boris Brezillon <bbrezillon@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: rawnand: sunxi: Use struct_size() in devm_kzalloc()
+Message-ID: <20190104172637.GA28084@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +30,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Miquel
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-Kenneth, please Cc the NAND maintainers next time.
+struct foo {
+    int stuff;
+    void *entry[];
+};
 
-On Fri, 4 Jan 2019 09:53:02 +0100
-Boris Brezillon <bbrezillon@kernel.org> wrote:
+instance = devm_kzalloc(dev, sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 
-> Hi Richard,
-> 
-> On Thu, 03 Jan 2019 21:43:13 +0100
-> Richard Weinberger <richard@nod.at> wrote:
-> 
-> > > It's true that you could change the vid offset with ubiattach but that 
-> > > require you know that the LEB missmatch error you get is fixed by a 
-> > > different vid offset and you need to understand what that value should be.
-> > > This way you only need to match the basic mtd parameters and the rest 
-> > > will just work automatically.    
-> > 
-> > I agree that adding a parameter to nandsim to control subpage behavior
-> > is nice.
-> > But please keep in mind that nandsim will never perfectly match your hardware.
-> > 
-> > Boris, unless you have objections I'm fine to control NAND_NO_SUBPAGE_WRITE
-> > in nandsim using a module parameter.  
-> 
-> Hm, I'd really like to have nandsim replaced by something more generic
-> at some point (mtdsim or MTD/NAND emulation in qemu using a virtio
-> iface), so adding new features/option to this driver is something I'd
-> like to avoid. This being said, this new MTD/NAND emulation
-> infrastructure is not there yet, and I don't think I'll have time to
-> work on it (I started working on mtdsim a while back, and someone took
-> over this work, but it stopped at some point).
-> 
-> To sum-up, if you think this is absolutely necessary (given the
-> discussion I'm not convinced it is) I'm okay to add this module param,
-> but I'd prefer if people were working on a solution to replace all
-> those emulation layers we have right now (mtdram, nandsim, ...).
-> 
-> Regards,
-> 
-> Boris
+Instead of leaving these open-coded and prone to type mistakes, we can
+now use the new struct_size() helper:
+
+instance = devm_kzalloc(dev, struct_size(instance, entry, count), GFP_KERNEL);
+
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/nand/raw/sunxi_nand.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index e828ee50a201..f66fffe663bf 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -1870,10 +1870,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
+ 		return -EINVAL;
+ 	}
+ 
+-	chip = devm_kzalloc(dev,
+-			    sizeof(*chip) +
+-			    (nsels * sizeof(struct sunxi_nand_chip_sel)),
+-			    GFP_KERNEL);
++	chip = devm_kzalloc(dev, struct_size(chip, sels, nsels), GFP_KERNEL);
+ 	if (!chip) {
+ 		dev_err(dev, "could not allocate chip\n");
+ 		return -ENOMEM;
+-- 
+2.20.1
