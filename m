@@ -1,22 +1,16 @@
-Received: from mail-lf1-f44.google.com ([209.85.167.44])
+Received: from a8-29.smtp-out.amazonses.com ([54.240.8.29])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfCPZ-0003QW-CF
- for linux-mtd@lists.infradead.org; Thu, 03 Jan 2019 23:28:27 +0000
-Received: by mail-lf1-f44.google.com with SMTP id z13so24279764lfe.11
- for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2019 15:28:24 -0800 (PST)
+ id 1gfImp-0002vM-7d
+ for linux-mtd@lists.infradead.org; Fri, 04 Jan 2019 06:16:52 +0000
 MIME-Version: 1.0
-References: <CANNa7-XH1Qm8A5fzUM29pDsmLke4SP-+=PoJtumai8jv1nqFBg@mail.gmail.com>
- <7370989.dTfg6tCZom@blindfold>
- <CANNa7-WA3PQDQJr+OB1G1rf9rcRq50hH53_UXBwh8rEnFAv4oA@mail.gmail.com>
- <11295148.y3O6aSSZPf@blindfold>
-In-Reply-To: <11295148.y3O6aSSZPf@blindfold>
-From: Ron Bowes <ron@skullsecurity.net>
-Date: Thu, 3 Jan 2019 15:28:09 -0800
-Message-ID: <CANNa7-Wc4+cvPZBMWvVjPBkhMjQ-yV8iWXXqA+J-gzDvZjZ-Hg@mail.gmail.com>
-Subject: Re: Having trouble with a UBI filesystem
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 4 Jan 2019 06:16:47 +0000
+Message-ID: <010001681781c703-39655298-f0de-4d09-9f73-14143c07c30e-000000@email.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: IDEAg Northern Illinois Farm Show 2019 Participants
+From: "Javier Hanson" <javier.hanson@readytosuccess.com>
+Reply-To: "Javier Hanson" <javier.hanson@readytosuccess.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey folks,
+Hi ,
 
-Thanks for the pointers! I removed all the OOB data, which gave me a
-pristine dump. I was able to extract other stuff (like the kernel and
-boot image) once that was all removed. I also grabbed a clean dump of
-the UBI filesystem, without all the OOB stuff.
+We've reserved for you the outstanding mktg value take away from the IDEAg =
+Northern Illinois Farm Show 2019, but it's only available until the end of =
+business today. Everyone wants to communicate quickly with the most relevan=
+t decision makers at IDEAg Northern Illinois Farm Show 2019, we put that ab=
+ility in your hands:
 
-Once that was done, I used ubi_reader to convert it to a ubifs (I'm
-sure I could have done that with mtdtools as well).
+Purchase the IDEAg Northern Illinois Farm Show 2019 Participants =E2=80=93 =
+5000 contacts at $500
+until the end of business today.
 
-Then I used this guide, pretty much as-is, to mount it:
+Why is this p.roduct in such high demand? Because it's the only list of its=
+ kind anywhere.
 
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_extract
+All contacts info are assured and up-to-date within the last 10 days, and y=
+ou receive unlimited access to our database.
 
-Thanks so much for your help!
+Optimized for ultra-efficient marketing outreach, Fast, simple and accurate=
+, with the connections you need to focus on selling! Grab it today.
 
+Best Regards
 
-Ron
+Javier Hanson
 
-On Thu, Jan 3, 2019 at 12:41 PM Richard Weinberger <richard@nod.at> wrote:
->
-> Ron,
->
-> Am Donnerstag, 3. Januar 2019, 21:35:46 CET schrieb Ron Bowes:
-> > I hadn't heard of nandsim, I'll take a look!
-> >
-> > I was using -O for the VID header, but ubiattach was complaining about
-> > data_offset being unusual.
->
-> Yeah, I bet this was due to the simulated NOR chip. NOR does not have OOB.
->
-> > It's probably the OOB data, though, so nandsim may fix all my problems.
->
-> :-)
->
-> Thanks,
-> //richard
->
->
+Advisory: Content contained in this transmission is not approved for use by=
+ any person or entity other than the original desired recipient. This mater=
+ial and all rights to its ownership are held exclusively by this organizati=
+on =E2=80=93 unauthorized review, transmission, dissemination, or actions t=
+aken based on this material by unauthorized entities are expressly forbidde=
+n and we reserve full lawful right to pursue remedies for misuse. If you re=
+ceive this information in error, please delete immediately and notify the s=
+ender of the mistake. We are not affiliated with the organizers of the IDEA=
+g Northern Illinois Farm Show 2019, nor does IDEAg Northern Illinois Farm S=
+how 2019 sell or share this information with us. All data contained here is=
+ compiled lawfully by us, using contacts contained in our internal database=
+=2E
