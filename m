@@ -1,30 +1,24 @@
-Received: from gateway32.websitewelcome.com ([192.185.145.171])
+Received: from gateway31.websitewelcome.com ([192.185.144.97])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gfU7e-0001Zf-B9
- for linux-mtd@lists.infradead.org; Fri, 04 Jan 2019 18:23:07 +0000
+ id 1gfUJh-00005J-OO
+ for linux-mtd@lists.infradead.org; Fri, 04 Jan 2019 18:35:35 +0000
 Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
- by gateway32.websitewelcome.com (Postfix) with ESMTP id 734395E3020
- for <linux-mtd@lists.infradead.org>;
- Fri,  4 Jan 2019 12:23:04 -0600 (CST)
-Subject: Re: [PATCH] mtd: rawnand: sunxi: Use struct_size() in devm_kzalloc()
-To: Boris Brezillon <bbrezillon@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ by gateway31.websitewelcome.com (Postfix) with ESMTP id 5C8F6B710
+ for <linux-mtd@lists.infradead.org>; Fri,  4 Jan 2019 12:20:55 -0600 (CST)
+Date: Fri, 4 Jan 2019 12:20:51 -0600
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20190104172637.GA28084@embeddedor>
- <20190104191415.126e4a07@bbrezillon>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <02580805-17f7-1cc1-936c-5c73f00fe819@embeddedor.com>
-Date: Fri, 4 Jan 2019 12:22:55 -0600
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: rawnand: marvell: use struct_size() in devm_kzalloc()
+Message-ID: <20190104182051.GA3603@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20190104191415.126e4a07@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,22 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey Boris,
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-On 1/4/19 12:14 PM, Boris Brezillon wrote:
+struct foo {
+    int stuff;
+    void *entry[];
+};
 
-> 
-> I posted the same patch a few days back [1].
-> 
-> [1]http://patchwork.ozlabs.org/patch/1013855/
-> 
+instance = devm_kzalloc(dev, sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 
-Oh, that's great.
+Instead of leaving these open-coded and prone to type mistakes, we can
+now use the new struct_size() helper:
 
-It's good to see people adopting the struct_size helper. :)
+instance = devm_kzalloc(dev, struct_size(instance, entry, count), GFP_KERNEL);
 
-Happy new year.
+This code was detected with the help of Coccinelle.
 
-Thanks
---
-Gustavo
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 84283c6bb0ff..f38e5c1b87e4 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2550,9 +2550,8 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+ 	}
+ 
+ 	/* Alloc the nand chip structure */
+-	marvell_nand = devm_kzalloc(dev, sizeof(*marvell_nand) +
+-				    (nsels *
+-				     sizeof(struct marvell_nand_chip_sel)),
++	marvell_nand = devm_kzalloc(dev,
++				    struct_size(marvell_nand, sels, nsels),
+ 				    GFP_KERNEL);
+ 	if (!marvell_nand) {
+ 		dev_err(dev, "could not allocate chip structure\n");
+-- 
+2.20.1
