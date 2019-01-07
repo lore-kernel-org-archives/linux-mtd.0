@@ -1,16 +1,23 @@
-Received: from a8-20.smtp-out.amazonses.com ([54.240.8.20])
+Received: from mail157c50.megamailservers.eu ([91.136.10.167]
+ helo=mail51c50.megamailservers.eu)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggOMO-0005wm-OM
- for linux-mtd@lists.infradead.org; Mon, 07 Jan 2019 06:26:06 +0000
+ id 1ggOYo-0000rz-4r
+ for linux-mtd@lists.infradead.org; Mon, 07 Jan 2019 06:38:56 +0000
+Subject: Re: [PATCH v2] mtd: rawnand: nandsim: Add support to disable subpage
+ writes.
+To: Richard Weinberger <richard@nod.at>, bbrezillon@kernel.org
+Cc: linux-mtd@lists.infradead.org
+References: <20181222124008.28046-1-ken@kenjo.org>
+ <10756fcb-b284-5465-ed5c-8251cb00d9c2@kenjo.org>
+ <6672633.KqxhzBgVKO@blindfold>
+From: Kenneth Johansson <ken@kenjo.org>
+Message-ID: <0663db61-e9f9-9b10-b1e0-9068cfa0c367@kenjo.org>
+Date: Mon, 7 Jan 2019 07:38:42 +0100
 MIME-Version: 1.0
-Date: Mon, 7 Jan 2019 06:26:01 +0000
-Message-ID: <0100016826fd4f92-e812f00f-54ef-40b5-beca-ccb855472158-000000@email.amazonses.com>
+In-Reply-To: <6672633.KqxhzBgVKO@blindfold>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: Dakota Farm Show 2019 - Vermillion Visitors
-From: "Javier Hanson" <javier.hanson@readytosuccess.com>
-Reply-To: "Javier Hanson" <javier.hanson@readytosuccess.com>
-To: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+On 2019-01-03 21:43, Richard Weinberger wrote:
+> Kenneth,
+>
+> Am Samstag, 22. Dezember 2018, 13:53:39 CET schrieb Kenneth Johansson:
+>> So there was a comment from Richard on the original patch that got
+>> mangled so it did not even have a subject line.
+>>
+>> The original intent for this patch was to make it possible to setup the
+>> simulator with the same parameters as some real hardware.
+>> That is the command "mtdinfo /dev/mtdX" would show the same on the
+>> simulator as the real hardware.
+> Just to make sure: nandsim simulates a given NAND chip but the simulated
+> NAND flash controller will always be different.
+> Think of ECC layout.
 
-I was wondering if you would be interested in acquiring Dakota Farm Show 20=
-19 - Vermillion - Participants List for Appointment Setting, Networking and=
- various Marketing initiatives.
-=20
-It is available as below:
-=20
-Dakota Farm Show 2019 - Participants =E2=80=93 26000 contacts at $2200, thi=
-s special to receive the latest decision maker contact information ends tod=
-ay at 5 pm PST.
- =20
-Thank you and I look forward to hearing from you.
-
-Best Regards
-
-Javier Hanson
-
-Please be advised: If you received this material accidentally, please delet=
-e the material and contact the sender to make them aware of the error. Use =
-of this information or taking action based on it, including review, retrans=
-mission, and dissemination, by any person or entity other than the original=
- desired recipient is not allowed. This content is not sold to us or provid=
-ed by any entity related to Dakota Farm Show 2019 - Vermillion. We are not =
-a part of or affiliated with the Dakota Farm Show 2019 event manager. We pr=
-eserve all ownership rights to this material, including lawful authority to=
- pursue remedies for its misuse.
+Yes but ecc layout is generally not visible to layers on top of MTD in 
+the same way that the smallest writeable block size(sub page) is. It 
+just feels strange that the simulator could not simulate lack of subpage 
+writes as it do exist on quite a few nand controllers. And in real life 
+there is always going to be a controller in front of the nand chip so 
+any simulator really should take that into account.
