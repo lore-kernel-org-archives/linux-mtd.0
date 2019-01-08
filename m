@@ -1,11 +1,11 @@
-Received: from gateway21.websitewelcome.com ([192.185.45.163])
+Received: from gateway22.websitewelcome.com ([192.185.46.126])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggtQH-0001ws-V7
- for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 15:36:11 +0000
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
- by gateway21.websitewelcome.com (Postfix) with ESMTP id 29471400C7430
- for <linux-mtd@lists.infradead.org>; Tue,  8 Jan 2019 09:36:08 -0600 (CST)
-Date: Tue, 8 Jan 2019 09:36:01 -0600
+ id 1ggtgO-0001r3-Fx
+ for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 15:52:49 +0000
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+ by gateway22.websitewelcome.com (Postfix) with ESMTP id 93B3C6756
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Jan 2019 09:52:47 -0600 (CST)
+Date: Tue, 8 Jan 2019 09:52:44 -0600
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -13,8 +13,8 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] mtd: gen_probe: Use struct_size() in kmalloc()
-Message-ID: <20190108153601.GA11557@embeddedor>
+Subject: [PATCH] mtd: cfi: cmdset_0001: Use struct_size() in kmalloc()
+Message-ID: <20190108155244.GA15339@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -47,21 +47,22 @@ This code was detected with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- drivers/mtd/chips/gen_probe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-index 837b04ab96a9..839ed40625d6 100644
---- a/drivers/mtd/chips/gen_probe.c
-+++ b/drivers/mtd/chips/gen_probe.c
-@@ -135,7 +135,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
- 	 * our caller, and copy the appropriate data into them.
- 	 */
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 6e8e7b1bb34b..79a53cb8507b 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -756,7 +756,8 @@ static int cfi_intelext_partition_fixup(struct mtd_info *mtd,
+ 		}
  
--	retcfi = kmalloc(sizeof(struct cfi_private) + cfi.numchips * sizeof(struct flchip), GFP_KERNEL);
-+	retcfi = kmalloc(struct_size(retcfi, chips, cfi.numchips), GFP_KERNEL);
- 
- 	if (!retcfi) {
- 		kfree(cfi.cfiq);
+ 		numvirtchips = cfi->numchips * numparts;
+-		newcfi = kmalloc(sizeof(struct cfi_private) + numvirtchips * sizeof(struct flchip), GFP_KERNEL);
++		newcfi = kmalloc(struct_size(newcfi, chips, numvirtchips),
++				 GFP_KERNEL);
+ 		if (!newcfi)
+ 			return -ENOMEM;
+ 		shared = kmalloc_array(cfi->numchips,
 -- 
 2.20.1
