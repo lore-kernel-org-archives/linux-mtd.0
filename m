@@ -1,20 +1,20 @@
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggubE-0000nO-Gi
- for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 16:51:34 +0000
-Date: Tue, 8 Jan 2019 16:51:25 +0000
-From: Przemyslaw Sobon <psobon@amazon.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon <bbrezillon@kernel.org>,
- "Marek Vasut" <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-CC: <psobon@amazon.com>
-Subject: [PATCH] Fixed endless loop problem in CFI when value was written but
- corrupted.
-Message-ID: <20190108165125.GA95492@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+Date: Tue, 8 Jan 2019 19:14:15 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Tudor.Ambarus@microchip.com
+Cc: Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+ robh+dt@kernel.org, mark.rutland@arm.com,
+ Claudiu.Beznea@microchip.com, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ boris.brezillon@bootlin.com, linux-mtd@lists.infradead.org,
+ broonie@kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH 1/2] ARM: dts: at91: at91-sama5d27_som1: add QSPI1 + SPI
+ NOR memory nodes
+Message-ID: <20190108181415.GE10218@piout.net>
+References: <20181212163057.22183-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20181212163057.22183-1-tudor.ambarus@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There was an endless loop in CFI Flash driver when a value was written
-incorrectly. In such case chip_ready returns true but chip_good returns
-false and we never get out of the loop.
+On 12/12/2018 16:31:08+0000, Tudor.Ambarus@microchip.com wrote:
+> From: Claudiu Beznea <claudiu.beznea@microchip.com>
+> 
+> Configure the QSPI1 controller pin muxing and declare the
+> jedec,spi-nor memory (SST26VF064).
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> [tudor.ambarus@microchip.com: add spi-rx/tx-bus-width, drop partitions,
+> reword commit.]
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  arch/arm/boot/dts/at91-sama5d27_som1.dtsi | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+Applied, thanks.
 
-The solution was to break the loop in 2 cases, either device is ready or
-device is not ready and timeout elapsed. The correctness of the write is
-checked after the loop ended. That way we ensure the loop always ends.
-
-Signed-off-by: Przemyslaw Sobon <psobon@amazon.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 72428b6bfc47..6cc31d2057e9 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1879,15 +1879,18 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
- 			break;
- 
--		if (chip_good(map, adr, datum)) {
--			xip_enable(map, chip, adr);
--			goto op_done;
--		}
-+		if (chip_ready(map, adr))
-+			break;
- 
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1);
- 	}
- 
-+	if (chip_good(map, adr, datum)) {
-+		xip_enable(map, chip, adr);
-+		goto op_done;
-+	}
-+
- 	/*
- 	 * Recovery from write-buffer programming failures requires
- 	 * the write-to-buffer-reset sequence.  Since the last part
 -- 
-2.16.5
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
