@@ -1,17 +1,23 @@
-Received: from a4-14.smtp-out.eu-west-1.amazonses.com ([54.240.4.14])
+Received: from gateway21.websitewelcome.com ([192.185.45.163])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggq6R-0004zA-65
- for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 12:03:28 +0000
+ id 1ggtQH-0001ws-V7
+ for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 15:36:11 +0000
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+ by gateway21.websitewelcome.com (Postfix) with ESMTP id 29471400C7430
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Jan 2019 09:36:08 -0600 (CST)
+Date: Tue, 8 Jan 2019 09:36:01 -0600
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: gen_probe: Use struct_size() in kmalloc()
+Message-ID: <20190108153601.GA11557@embeddedor>
 MIME-Version: 1.0
-Date: Tue, 8 Jan 2019 12:03:24 +0000
-Message-ID: <010201682d588e1a-00c6ddc3-63b5-4995-abb8-54edf1827edd-000000@eu-west-1.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Subject: American Farm Bureau Federation | Annual Convention & IDEAg Trade
- Show 2019 Meeters
-From: "Bob Welch" <bob.welch@saturnrealtors.com>
-Reply-To: "Bob Welch" <bob.welch@saturnrealtors.com>
-To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-Our Visitors List for American Farm Bureau Federation | Annual Convention &=
- IDEAg Trade Show 2019 is the market high standard, used by thousands of or=
-ganizations to track and contact key decision makers.
+struct foo {
+    int stuff;
+    void *entry[];
+};
 
-You can Make the most of your time, money and resources =E2=80=93 get the l=
-ist that puts you in front of the market people who matter to your projects=
- and sales.=20
+instance = kmalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 
-This is Available only for a short while longer.
+Instead of leaving these open-coded and prone to type mistakes, we can
+now use the new struct_size() helper:
 
-Purchase the 2019 American Farm Bureau Federation (AFBF) Annual Convention =
-& IDEAg Trade Show Participants =E2=80=93 5500 contacts at $550, until the =
-end of today.
+instance = kmalloc(struct_size(instance, entry, count), GFP_KERNEL);
 
-With thousands of key decision makers at your fingertips, you'll have an un=
-beatable advantage over your rivals.
+This code was detected with the help of Coccinelle.
 
-looking forward to hearing from you.
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/chips/gen_probe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-With Best wishes,
-
-Bob Welch
-
-Please be noticed: Use of this information or taking action based on it, in=
-cluding review, retransmission, and dissemination, by any person or entity =
-other than the original desired recipient is not allowed. If you received t=
-his material accidentally, please delete the material and contact the sende=
-r to make them aware of the error. This content is not sold to us or provid=
-ed by any entity related to American Farm Bureau Federation | Annual Conven=
-tion & IDEAg Trade Show 2019. We are not a part of or affiliated with the 2=
-019 AFBF Annual Convention & IDEAg Trade Show event manager. We preserve al=
-l ownership rights to this material, including lawful authority to pursue r=
-emedies for its misuse.=20
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 837b04ab96a9..839ed40625d6 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -135,7 +135,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
+ 	 * our caller, and copy the appropriate data into them.
+ 	 */
+ 
+-	retcfi = kmalloc(sizeof(struct cfi_private) + cfi.numchips * sizeof(struct flchip), GFP_KERNEL);
++	retcfi = kmalloc(struct_size(retcfi, chips, cfi.numchips), GFP_KERNEL);
+ 
+ 	if (!retcfi) {
+ 		kfree(cfi.cfiq);
+-- 
+2.20.1
