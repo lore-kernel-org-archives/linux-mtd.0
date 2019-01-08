@@ -1,21 +1,24 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from gateway34.websitewelcome.com ([192.185.148.214])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggxA2-0003cI-SD
- for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 19:35:40 +0000
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Daniel Santos <daniel.santos@pobox.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 3.18 03/19] jffs2: Fix use of uninitialized
- delayed_work, lockdep breakage
-Date: Tue,  8 Jan 2019 14:35:15 -0500
-Message-Id: <20190108193534.124555-3-sashal@kernel.org>
-In-Reply-To: <20190108193534.124555-1-sashal@kernel.org>
-References: <20190108193534.124555-1-sashal@kernel.org>
+ id 1ggydQ-0004I9-Mz
+ for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 21:10:06 +0000
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id F049195657E
+ for <linux-mtd@lists.infradead.org>;
+ Tue,  8 Jan 2019 15:09:48 -0600 (CST)
+Date: Tue, 8 Jan 2019 15:09:46 -0600
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: lpddr: Use struct_size() in kzalloc()
+Message-ID: <20190108210946.GA4014@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Daniel Santos <daniel.santos@pobox.com>
+One of the more common cases of allocation size calculations is finding the
+size of a structure that has a zero-sized array at the end, along with memory
+for some number of elements for that array. For example:
 
-[ Upstream commit a788c5272769ddbcdbab297cf386413eeac04463 ]
+struct foo {
+    int stuff;
+    void *entry[];
+};
 
-jffs2_sync_fs makes the assumption that if CONFIG_JFFS2_FS_WRITEBUFFER
-is defined then a write buffer is available and has been initialized.
-However, this does is not the case when the mtd device has no
-out-of-band buffer:
+instance = kzalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 
-int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
-{
-        if (!c->mtd->oobsize)
-                return 0;
-...
+Instead of leaving these open-coded and prone to type mistakes, we can now
+use the new struct_size() helper:
 
-The resulting call to cancel_delayed_work_sync passing a uninitialized
-(but zeroed) delayed_work struct forces lockdep to become disabled.
+instance = kzalloc(struct_size(instance, entry, count), GFP_KERNEL);
 
-[   90.050639] overlayfs: upper fs does not support tmpfile.
-[   90.652264] INFO: trying to register non-static key.
-[   90.662171] the code is fine but needs lockdep annotation.
-[   90.673090] turning off the locking correctness validator.
-[   90.684021] CPU: 0 PID: 1762 Comm: mount_root Not tainted 4.14.63 #0
-[   90.696672] Stack : 00000000 00000000 80d8f6a2 00000038 805f0000 80444600 8fe364f4 805dfbe7
-[   90.713349]         80563a30 000006e2 8068370c 00000001 00000000 00000001 8e2fdc48 ffffffff
-[   90.730020]         00000000 00000000 80d90000 00000000 00000106 00000000 6465746e 312e3420
-[   90.746690]         6b636f6c 03bf0000 f8000000 20676e69 00000000 80000000 00000000 8e2c2a90
-[   90.763362]         80d90000 00000001 00000000 8e2c2a90 00000003 80260dc0 08052098 80680000
-[   90.780033]         ...
-[   90.784902] Call Trace:
-[   90.789793] [<8000f0d8>] show_stack+0xb8/0x148
-[   90.798659] [<8005a000>] register_lock_class+0x270/0x55c
-[   90.809247] [<8005cb64>] __lock_acquire+0x13c/0xf7c
-[   90.818964] [<8005e314>] lock_acquire+0x194/0x1dc
-[   90.828345] [<8003f27c>] flush_work+0x200/0x24c
-[   90.837374] [<80041dfc>] __cancel_work_timer+0x158/0x210
-[   90.847958] [<801a8770>] jffs2_sync_fs+0x20/0x54
-[   90.857173] [<80125cf4>] iterate_supers+0xf4/0x120
-[   90.866729] [<80158fc4>] sys_sync+0x44/0x9c
-[   90.875067] [<80014424>] syscall_common+0x34/0x58
+This code was detected with the help of Coccinelle.
 
-Signed-off-by: Daniel Santos <daniel.santos@pobox.com>
-Reviewed-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- fs/jffs2/super.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/lpddr/qinfo_probe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index f3194e5147fd..0bbc31d10857 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -101,7 +101,8 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+diff --git a/drivers/mtd/lpddr/qinfo_probe.c b/drivers/mtd/lpddr/qinfo_probe.c
+index 69f2112340b1..175bdc3b72f4 100644
+--- a/drivers/mtd/lpddr/qinfo_probe.c
++++ b/drivers/mtd/lpddr/qinfo_probe.c
+@@ -181,8 +181,8 @@ static struct lpddr_private *lpddr_probe_chip(struct map_info *map)
+ 	lpddr.numchips = 1;
  
- #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
--	cancel_delayed_work_sync(&c->wbuf_dwork);
-+	if (jffs2_is_writebuffered(c))
-+		cancel_delayed_work_sync(&c->wbuf_dwork);
- #endif
+ 	numvirtchips = lpddr.numchips * lpddr.qinfo->HWPartsNum;
+-	retlpddr = kzalloc(sizeof(struct lpddr_private) +
+-			numvirtchips * sizeof(struct flchip), GFP_KERNEL);
++	retlpddr = kzalloc(struct_size(retlpddr, chips, numvirtchips),
++			   GFP_KERNEL);
+ 	if (!retlpddr)
+ 		return NULL;
  
- 	mutex_lock(&c->alloc_sem);
 -- 
-2.19.1
+2.20.1
