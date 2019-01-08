@@ -1,23 +1,17 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from a4-14.smtp-out.eu-west-1.amazonses.com ([54.240.4.14])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggpto-0000RX-DI
- for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 11:50:25 +0000
-Date: Tue, 8 Jan 2019 12:50:14 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Przemyslaw Sobon <psobon@amazon.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, "Marek Vasut" <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Tokunori Ikegami
- <ikegami@allied-telesis.co.jp>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] Fixed a endless loop problem in CFI when value was
- written but corrupted.
-Message-ID: <20190108124955.23ad471d@bbrezillon>
-In-Reply-To: <20190107213407.GA103132@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
-References: <20190107213407.GA103132@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+ id 1ggq6R-0004zA-65
+ for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 12:03:28 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Date: Tue, 8 Jan 2019 12:03:24 +0000
+Message-ID: <010201682d588e1a-00c6ddc3-63b5-4995-abb8-54edf1827edd-000000@eu-west-1.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Subject: American Farm Bureau Federation | Annual Convention & IDEAg Trade
+ Show 2019 Meeters
+From: "Bob Welch" <bob.welch@saturnrealtors.com>
+Reply-To: "Bob Welch" <bob.welch@saturnrealtors.com>
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+MTD ML and Tokunori who fixed something similar IIRC.
+Hi ,
 
-Hi Przemyslaw,
+Our Visitors List for American Farm Bureau Federation | Annual Convention &=
+ IDEAg Trade Show 2019 is the market high standard, used by thousands of or=
+ganizations to track and contact key decision makers.
 
-Can you resend the patch with the ML in Cc please (so that the patch
-appears in our patchwork)?
+You can Make the most of your time, money and resources =E2=80=93 get the l=
+ist that puts you in front of the market people who matter to your projects=
+ and sales.=20
 
-Thanks,
+This is Available only for a short while longer.
 
-Boris
+Purchase the 2019 American Farm Bureau Federation (AFBF) Annual Convention =
+& IDEAg Trade Show Participants =E2=80=93 5500 contacts at $550, until the =
+end of today.
 
-On Mon, 7 Jan 2019 21:34:07 +0000
-Przemyslaw Sobon <psobon@amazon.com> wrote:
+With thousands of key decision makers at your fingertips, you'll have an un=
+beatable advantage over your rivals.
 
-> There was an endless loop in CFI Flash driver when a value was written
-> incorrectly. In such case chip_ready returns true but chip_good returns
-> false and we never get out of the loop.
-> 
-> The solution was to break the loop in 2 cases, either device is ready or
-> device is not ready and timeout elapsed. The correctness of the write is
-> checked after the loop ended. That way we ensure the loop always ends.
-> 
-> Signed-off-by: Przemyslaw Sobon <psobon@amazon.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 72428b6bfc47..6cc31d2057e9 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -1879,15 +1879,18 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
->  			break;
->  
-> -		if (chip_good(map, adr, datum)) {
-> -			xip_enable(map, chip, adr);
-> -			goto op_done;
-> -		}
-> +		if (chip_ready(map, adr))
-> +			break;
->  
->  		/* Latency issues. Drop the lock, wait a while and retry */
->  		UDELAY(map, chip, adr, 1);
->  	}
->  
-> +	if (chip_good(map, adr, datum)) {
-> +		xip_enable(map, chip, adr);
-> +		goto op_done;
-> +	}
-> +
->  	/*
->  	 * Recovery from write-buffer programming failures requires
->  	 * the write-to-buffer-reset sequence.  Since the last part
+looking forward to hearing from you.
+
+With Best wishes,
+
+Bob Welch
+
+Please be noticed: Use of this information or taking action based on it, in=
+cluding review, retransmission, and dissemination, by any person or entity =
+other than the original desired recipient is not allowed. If you received t=
+his material accidentally, please delete the material and contact the sende=
+r to make them aware of the error. This content is not sold to us or provid=
+ed by any entity related to American Farm Bureau Federation | Annual Conven=
+tion & IDEAg Trade Show 2019. We are not a part of or affiliated with the 2=
+019 AFBF Annual Convention & IDEAg Trade Show event manager. We preserve al=
+l ownership rights to this material, including lawful authority to pursue r=
+emedies for its misuse.=20
