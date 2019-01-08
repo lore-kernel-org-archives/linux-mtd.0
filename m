@@ -1,19 +1,19 @@
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ggx5L-0000pS-BD
- for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 19:30:49 +0000
+ id 1ggx7K-0001S4-Ql
+ for linux-mtd@lists.infradead.org; Tue, 08 Jan 2019 19:32:52 +0000
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Daniel Santos <daniel.santos@pobox.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 33/97] jffs2: Fix use of uninitialized
+Subject: [PATCH AUTOSEL 4.14 15/53] jffs2: Fix use of uninitialized
  delayed_work, lockdep breakage
-Date: Tue,  8 Jan 2019 14:28:42 -0500
-Message-Id: <20190108192949.122407-33-sashal@kernel.org>
-In-Reply-To: <20190108192949.122407-1-sashal@kernel.org>
-References: <20190108192949.122407-1-sashal@kernel.org>
+Date: Tue,  8 Jan 2019 14:31:43 -0500
+Message-Id: <20190108193222.123316-15-sashal@kernel.org>
+In-Reply-To: <20190108193222.123316-1-sashal@kernel.org>
+References: <20190108193222.123316-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -75,7 +75,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 902a7dd10e5c..bb6ae387469f 100644
+index bc00cc385b77..83340496645b 100644
 --- a/fs/jffs2/super.c
 +++ b/fs/jffs2/super.c
 @@ -101,7 +101,8 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
