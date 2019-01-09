@@ -1,28 +1,23 @@
-Date: Wed, 9 Jan 2019 22:34:01 +0100
-From: Lukasz Majewski <lukma@denx.de>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Yogesh Narayan
- Gaur <yogeshnarayan.gaur@nxp.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>, "robh@kernel.org"
- <robh@kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 0/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Message-ID: <20190109223401.32a957c3@jawa>
-In-Reply-To: <33797571-8456-0b18-087b-71330901f3a8@kontron.de>
-References: <1546939346-20181-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <7188c406-3dd2-88a6-b6ed-d5e8bf678df8@kontron.de>
- <20190109155630.3ec34c60@jawa>
- <33797571-8456-0b18-087b-71330901f3a8@kontron.de>
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ghLaX-0007gQ-2i
+ for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 21:40:38 +0000
+Received: by mail-lf1-x143.google.com with SMTP id y14so6757435lfg.13
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Jan 2019 13:40:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/1tZn.EhU2u0toM7wDxle.ut"; protocol="application/pgp-signature"
+References: <20190109205530.5158-1-linus.walleij@linaro.org>
+ <20190109222125.73171ae9@bbrezillon>
+In-Reply-To: <20190109222125.73171ae9@bbrezillon>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 9 Jan 2019 22:40:22 +0100
+Message-ID: <CACRpkdaouj-0gC4p1Ymx+guxDLO7R0FzQZncgNQjaHkGuiAhLQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: fsmc: Keep CE enabled fix mb() drain
+To: Boris Brezillon <bbrezillon@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,174 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/1tZn.EhU2u0toM7wDxle.ut
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 9, 2019 at 10:21 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> On Wed,  9 Jan 2019 21:55:30 +0100
+> Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Hi Frieder,
+> > This patch keeps the CE (chip enable, the only chip select)
+> > signal from the FSMC block enabled from the first command
+> > after probe() or resume() until the driver either suspend()
+> > or remove(). Create a state variable to track this.
+>
+> I just read the Spear600 reference manual, and I'm not sure the
+> BANK_ENABLE bit controls the CE line. My understanding is that it just
+> marks the bank as active and CE line is asserted when you actually
+> access the AHB mem bank range (probably after making sure the FSMC bus
+> is idle).
 
-> Hi Lukasz,
->=20
-> On 09.01.19 15:56, Lukasz Majewski wrote:
-> > Hi Schrempf,
-> >  =20
-> >> On 08.01.19 10:24, Yogesh Narayan Gaur wrote: =20
-> >>> - Add driver for NXP FlexSPI host controller
-> >>>
-> >>>    FlexSPI is a flexsible SPI host controller [1], Chapter 30 page
-> >>> 1475, which supports two SPI channels and up to 4 external
-> >>> devices. Each channel supports Single/Dual/Quad/Octal mode data
-> >>> transfer (1/2/4/8 bidirectional data lines) i.e. FlexSPI acts as
-> >>> an interface to external devices, maximum 4, each with up to 8
-> >>> bidirectional data lines.
-> >>>
-> >>> - Tested this driver with mtd_debug(Erase/Write/Read) utility and
-> >>> JFFS2 filesystem mounting and booting on NXP LX2160ARDB[2] and
-> >>> LX2160AQDS targets. LX2160ARDB is having two NOR slave device
-> >>> connected on single bus A i.e. A0 and A1 (CS0 and CS1).
-> >>>    LX2160AQDS is having two NOR slave device connected on separate
-> >>> buses one flash on A0 and second on B1 i.e. (CS0 and CS3).
-> >>>    Verified this driver on following SPI NOR flashes:
-> >>>      Micron, mt35xu512aba, [Read - 1 bit mode]
-> >>>      Cypress, s25fl512s, [Read - 1/2/4 bit mode]
-> >>>
-> >>> [1] https://www.nxp.com/docs/en/reference-manual/IMXRT1050RM.pdf
-> >>> [2]
-> >>> https://patchwork.kernel.org/project/linux-arm-kernel/list/?submitter=
-=3D182097
-> >>>
-> >>> Yogesh Narayan Gaur (5):
-> >>>     spi: spi-mem: Add driver for NXP FlexSPI controller
-> >>>     dt-bindings: spi: add binding file for NXP FlexSPI controller
-> >>>     arm64: dts: lx2160a: add FlexSPI node property
-> >>>     arm64: defconfig: enable NXP FlexSPI driver
-> >>>     MAINTAINERS: add maintainers for the NXP FlexSPI driver
-> >>>
-> >>> Changes for v6:
-> >>> - Rebase on top of v5.0-rc1. =20
-> >>
-> >> Your patches don't apply to v5.0-rc1. It seems like you have
-> >> instead rebased onto the for-5.1 or for-next branch of the SPI
-> >> tree. I guess this is okay, but you should have pointed that out
-> >> correctly here. =20
-> >=20
-> > If I may ask for a few (1-2) days, so I can test this code on vf610
-> > NXP SoC.
-> >=20
-> > As fair as I remember there were some issues when I tested it a few
-> > months back. =20
->=20
-> You're probably mixing that up. This series is about the FlexSPI=20
-> controller in the Layerscape SOCs.
+The Nomadik STn8815 says (for this bit):
 
-Thanks for the explanation - I've indeed mixed up things a bit :-).
+PBKEN PC-card/NAND-Flash chip-select enable.
+Enables the corresponding chip-select.
+If a disabled chip-select is accessed, an HRESP = ERROR is generated
+on the AHB bus.
+0: disabled (default after reset)
+1: enabled
 
-I was of course thinking about the QuadSPI driver - as in [1].
+The same for Nomadik STn8820 and the Ux500 variants.
 
->=20
-> The QuadSPI driver is already in linux-next to be merged in 5.1 [1].
-> The issues with vf610 existed in the old SPI-NOR driver and probably
-> still exist in the new SPI driver. You are welcome to test the new
-> driver and come up with some fixes.
+So "enable" might very well have the meaning you say above,
+it's just very unclear and confusing.
 
-I've posted some questions on NXP community, but no reply so far.=20
+> If I'm correct, I'd recommend dropping fsmc_ce_ctrl() and marking the
+> bank enabled at probe time.
 
->=20
-> Sooner or later, there will probably also be other changes coming up,=20
-> such as implementation of the dirmap API.
->=20
-> Thanks,
-> Frieder
->=20
-> [1]:=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commi=
-t/drivers/spi?h=3Dnext-20190109&id=3D84d043185dbe0d1b4f6db575bd91c834d37e2f=
-78
->=20
-> >  =20
-> >> =20
-> >>> - Incorporated review comments for
-> >>>     patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
-> >>> - Updated s-b tag in all patches.
-> >>> Changes for v5:
-> >>> - Rebase on top of v4.20-rc2
-> >>> - Incorporated review comments for
-> >>>     patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
-> >>> Changes for v4:
-> >>> - Incorporated review comments for
-> >>>     patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
-> >>> - Incorporated binding file review comments.
-> >>> Changes for v3:
-> >>> - Incorporated review comments for
-> >>>     patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
-> >>> Changes for v2:
-> >>> - Incorporated Boris review comments and drop below patches as per
-> >>> the comments.
-> >>>    - Patch 'spi: add slave device size in spi_device struct'
-> >>>    - Patch 'spi: add flags for octal I/O data transfer'
-> >>> - Incorporated DTS and Binding file review comments of Shawn Guo
-> >>> and Rob Herring.
-> >>>
-> >>>    .../devicetree/bindings/spi/spi-nxp-fspi.txt  |   39 +
-> >>>    MAINTAINERS                                   |    7 +
-> >>>    .../boot/dts/freescale/fsl-lx2160a-rdb.dts    |   22 +
-> >>>    .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi |   13 +
-> >>>    arch/arm64/configs/defconfig                  |    1 +
-> >>>    drivers/spi/Kconfig                           |   10 +
-> >>>    drivers/spi/Makefile                          |    1 +
-> >>>    drivers/spi/spi-nxp-fspi.c                    | 1095
-> >>> +++++++++++++++++ 8 files changed, 1188 insertions(+)
-> >>>    create mode 100644
-> >>> Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt create mode
-> >>> 100644 drivers/spi/spi-nxp-fspi.c =20
-> >> ______________________________________________________
-> >> Linux MTD discussion mailing list
-> >> http://lists.infradead.org/mailman/listinfo/linux-mtd/ =20
-> >=20
-> >=20
-> >=20
-> >=20
-> > Best regards,
-> >=20
-> > Lukasz Majewski
-> >=20
-> > --
-> >=20
-> > DENX Software Engineering GmbH,      Managing Director: Wolfgang
-> > Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
-> > Germany Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email:
-> > lukma@denx.de=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+This already happens in fsmc_nand_setup() so we just
+need to delete some code then.
 
+But maybe we should disable it during remove()
+at least?
 
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/1tZn.EhU2u0toM7wDxle.ut
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAlw2aMoACgkQAR8vZIA0
-zr318AgAzCL/X8/xbMQ3yo2gDaKHZoKn7yVT7V8l2rP7yPLmzzt5idLkSovh7rHW
-DBIAfYaE4ZXoUDC1MkzMn+fjxkuRWXFAmy59wrfQC/QvEfxpEAxORwuQ3jDUYBJ1
-QpXS/mOTk81ltTAu7igDd5ngSeeObUbcIE0xlI7g4+vzTezhsBUdygawpMCGMdGO
-gEGTmZ0d1pJDStgAsSscKNtvhqFPH55C7PYhXTobMfPWfBZwYhLSUj+wWrIOdGhk
-wMDtduklwxS4Zl+KNcU02CeTSiRQY4tF04zJIPjqxqac1PRpgBC07REmK8Jpyeb/
-sS850q9fMLipJNVHVqZMw0gczf83tg==
-=no86
------END PGP SIGNATURE-----
-
---Sig_/1tZn.EhU2u0toM7wDxle.ut--
+Yours,
+Linus Walleij
