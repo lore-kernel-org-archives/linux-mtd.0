@@ -1,19 +1,17 @@
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghLyg-0000oz-Lc
- for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 22:05:36 +0000
-Date: Wed, 9 Jan 2019 23:05:25 +0100
+ id 1ghM60-0003ND-Lv
+ for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 22:13:10 +0000
+Date: Wed, 9 Jan 2019 23:12:59 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Linus Walleij <linus.walleij@linaro.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
  Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Keep CE enabled fix mb() drain
-Message-ID: <20190109230525.62038898@bbrezillon>
-In-Reply-To: <CACRpkdaouj-0gC4p1Ymx+guxDLO7R0FzQZncgNQjaHkGuiAhLQ@mail.gmail.com>
-References: <20190109205530.5158-1-linus.walleij@linaro.org>
- <20190109222125.73171ae9@bbrezillon>
- <CACRpkdaouj-0gC4p1Ymx+guxDLO7R0FzQZncgNQjaHkGuiAhLQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: fsmc: Keep bank enable bit set
+Message-ID: <20190109231259.1ef5d31a@bbrezillon>
+In-Reply-To: <20190109215144.15749-1-linus.walleij@linaro.org>
+References: <20190109215144.15749-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,46 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 9 Jan 2019 22:40:22 +0100
+On Wed,  9 Jan 2019 22:51:44 +0100
 Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> On Wed, Jan 9, 2019 at 10:21 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
-> > On Wed,  9 Jan 2019 21:55:30 +0100
-> > Linus Walleij <linus.walleij@linaro.org> wrote:  
+> Hammering the "bank enable" (PBKEN) bit on and off between
+> every command crashes the Nomadik NHK15 with this message:
 > 
-> > > This patch keeps the CE (chip enable, the only chip select)
-> > > signal from the FSMC block enabled from the first command
-> > > after probe() or resume() until the driver either suspend()
-> > > or remove(). Create a state variable to track this.  
-> >
-> > I just read the Spear600 reference manual, and I'm not sure the
-> > BANK_ENABLE bit controls the CE line. My understanding is that it just
-> > marks the bank as active and CE line is asserted when you actually
-> > access the AHB mem bank range (probably after making sure the FSMC bus
-> > is idle).  
+> Scanning device for bad blocks
+> Unhandled fault: external abort on non-linefetch (0x008) at 0xcc95e000
+> pgd = (ptrval)
+> [cc95e000] *pgd=0b808811, *pte=40000653, *ppte=40000552
+> Internal error: : 8 [#1] PREEMPT ARM
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper Not tainted 4.20.0-rc2+ #72
+> Hardware name: Nomadik STn8815
+> PC is at fsmc_exec_op+0x194/0x204
+> (...)
 > 
-> The Nomadik STn8815 says (for this bit):
-> 
-> PBKEN PC-card/NAND-Flash chip-select enable.
-> Enables the corresponding chip-select.
-> If a disabled chip-select is accessed, an HRESP = ERROR is generated
-> on the AHB bus.
-> 0: disabled (default after reset)
-> 1: enabled
-> 
-> The same for Nomadik STn8820 and the Ux500 variants.
-> 
-> So "enable" might very well have the meaning you say above,
-> it's just very unclear and confusing.
-> 
-> > If I'm correct, I'd recommend dropping fsmc_ce_ctrl() and marking the
-> > bank enabled at probe time.  
-> 
-> This already happens in fsmc_nand_setup() so we just
-> need to delete some code then.
-> 
-> But maybe we should disable it during remove()
-> at least?
+> After a discussion we (me and Boris Brezillion) start to suspect
 
-Yep, and set it again at resume time, just in case regs content is lost
-at suspend time.
+				      ^ Brezillon :-)
+
+> that this bit does not immediately control the chip select line
+> at all, it rather enables access to the bank and the hardware
+> will drive the CS autonomously. If there is a NAND chip connected,
+> we should keep this enabled.
+> 
+> As fsmc_nand_setup() sets this bit, we can simply remove the
+> offending code.
+> 
+> Fixes: 550b9fc4e3af ("mtd: rawnand: fsmc: Stop implementing ->select_chip()")
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+
+Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+
+Would be great if someone could validate our assumption with a scope.
+This being said, given the description of the FSMC logic, I have little
+doubt that this bit does not directly controls the CE line, otherwise
+concurrent accesses to different memories on the same bus wouldn't work
+or would require a lot more synchronization than we currently have in
+Linux.
