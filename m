@@ -1,19 +1,33 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghM60-0003ND-Lv
- for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 22:13:10 +0000
-Date: Wed, 9 Jan 2019 23:12:59 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Keep bank enable bit set
-Message-ID: <20190109231259.1ef5d31a@bbrezillon>
-In-Reply-To: <20190109215144.15749-1-linus.walleij@linaro.org>
-References: <20190109215144.15749-1-linus.walleij@linaro.org>
+ id 1ghME5-0006mT-Vw
+ for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 22:21:31 +0000
+Subject: Re: [PATCH v3 15/22] mtd: rawnand: fsmc: Stop implementing
+ ->select_chip()
+To: Boris Brezillon <bbrezillon@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Will Deacon <will.deacon@arm.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Richard Weinberger <richard@nod.at>, Janusz Krzysztofik
+ <jmkrzyszt@gmail.com>, Stefan Agner <stefan@agner.ch>,
+ Marek Vasut <marek.vasut@gmail.com>, Harvey Hunt
+ <harveyhuntnexus@gmail.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
+ <20181111075524.13123-16-boris.brezillon@bootlin.com>
+ <CACRpkdYTXO4AXt79Ny-EsbWvd0kR7=auz_73UF6f+nEXfZ_HmA@mail.gmail.com>
+ <20190109204441.6aeab463@bbrezillon>
+From: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Message-ID: <c642fe39-8109-f4fd-9cb8-88cc7262472d@free.fr>
+Date: Wed, 9 Jan 2019 23:20:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20190109204441.6aeab463@bbrezillon>
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,43 +38,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  9 Jan 2019 22:51:44 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+On 09/01/2019 20:44, Boris Brezillon wrote:
 
-> Hammering the "bank enable" (PBKEN) bit on and off between
-> every command crashes the Nomadik NHK15 with this message:
+> Might be caused by a missing barrier: when de-asserting the CE line, we
+> must make sure all accesses to the ->data_va range have been done.
+> Can you try with the following diff applied?
 > 
-> Scanning device for bad blocks
-> Unhandled fault: external abort on non-linefetch (0x008) at 0xcc95e000
-> pgd = (ptrval)
-> [cc95e000] *pgd=0b808811, *pte=40000653, *ppte=40000552
-> Internal error: : 8 [#1] PREEMPT ARM
-> Modules linked in:
-> CPU: 0 PID: 1 Comm: swapper Not tainted 4.20.0-rc2+ #72
-> Hardware name: Nomadik STn8815
-> PC is at fsmc_exec_op+0x194/0x204
-> (...)
-> 
-> After a discussion we (me and Boris Brezillion) start to suspect
+> --->8---
+> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+> index 325b4414dccc..264d809c2d37 100644
+> --- a/drivers/mtd/nand/raw/fsmc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
+> @@ -598,16 +598,21 @@ static void fsmc_ce_ctrl(struct fsmc_nand_data *host, bool assert)
+>  {
+>         u32 pc = readl(host->regs_va + FSMC_PC);
+>  
+> -       if (!assert)
+> +       if (!assert) {
+> +               /*
+> +                * Make sure all previous read/write have been done before
+> +                * de-asserting the CE line.
+> +                */
+> +               mb();
+>                 writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
+> -       else
+> +       } else {
+>                 writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
+> -
+> -       /*
+> -        * nCE line changes must be applied before returning from this
+> -        * function.
+> -        */
+> -       mb();
+> +               /*
+> +                * nCE assertion must be applied before returning from this
+> +                * function.
+> +                */
+> +               mb();
+> +       }
 
-				      ^ Brezillon :-)
++ Will Deacon, an expert on arm mmio shenanigans.
+e.g. https://elinux.org/images/a/a8/Uh-oh-Its-IO-Ordering-Will-Deacon-Arm.pdf
 
-> that this bit does not immediately control the chip select line
-> at all, it rather enables access to the bank and the hardware
-> will drive the CS autonomously. If there is a NAND chip connected,
-> we should keep this enabled.
-> 
-> As fsmc_nand_setup() sets this bit, we can simply remove the
-> offending code.
-> 
-> Fixes: 550b9fc4e3af ("mtd: rawnand: fsmc: Stop implementing ->select_chip()")
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+As far as I understand (which isn't very far), a memory barrier (however
+strong) cannot guarantee that all (posted) writes have reached a device
+(unless the underlying bus explicitly provides such guarantees?)
 
-Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+At best, a memory barrier guarantees that the mmio writes have "left" the CPU
+and its "coherency fabric" (shared LLC). Thus subsequent accesses are
+guaranteed to appear "later" on the bus. (Much hand-waving sorry)
 
-Would be great if someone could validate our assumption with a scope.
-This being said, given the description of the FSMC logic, I have little
-doubt that this bit does not directly controls the CE line, otherwise
-concurrent accesses to different memories on the same bus wouldn't work
-or would require a lot more synchronization than we currently have in
-Linux.
+I've been told that the one true way to ensure that a posted write has reached
+a device is simply to read the value back, i.e. writel+readl.
+
+If I'm wrong, I'd like to be schooled :-)
+
+Regards.
