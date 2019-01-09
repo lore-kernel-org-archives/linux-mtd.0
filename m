@@ -1,21 +1,33 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghLlO-0003hP-VF
- for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 21:51:52 +0000
-Received: by mail-lj1-x243.google.com with SMTP id g11-v6so7854372ljk.3
- for <linux-mtd@lists.infradead.org>; Wed, 09 Jan 2019 13:51:50 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] mtd: rawnand: fsmc: Keep bank enable bit set
-Date: Wed,  9 Jan 2019 22:51:44 +0100
-Message-Id: <20190109215144.15749-1-linus.walleij@linaro.org>
+ id 1ghLlt-0003wH-OV
+ for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 21:52:23 +0000
+Date: Wed, 9 Jan 2019 22:52:08 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger
+ <richard@nod.at>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Janusz
+ Krzysztofik <jmkrzyszt@gmail.com>, Stefan Agner <stefan@agner.ch>, Marek
+ Vasut <marek.vasut@gmail.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Han Xu <han.xu@nxp.com>, Xiaolei Li <xiaolei.li@mediatek.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v3 15/22] mtd: rawnand: fsmc: Stop implementing
+ ->select_chip()
+Message-ID: <20190109225208.47d95771@bbrezillon>
+In-Reply-To: <CACRpkdbijrpG_r1X+-cNQmyusVC_879az5V2Hiv_Aa-yAz0iow@mail.gmail.com>
+References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
+ <20181111075524.13123-16-boris.brezillon@bootlin.com>
+ <CACRpkdYTXO4AXt79Ny-EsbWvd0kR7=auz_73UF6f+nEXfZ_HmA@mail.gmail.com>
+ <20190109204441.6aeab463@bbrezillon>
+ <CACRpkdaw-=RujxNa8Dk2VsW=RGwrgRZNiZ7P9PRDe3g71TJbWA@mail.gmail.com>
+ <20190109215443.67cec30c@bbrezillon>
+ <CACRpkdbijrpG_r1X+-cNQmyusVC_879az5V2Hiv_Aa-yAz0iow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +37,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hammering the "bank enable" (PBKEN) bit on and off between
-every command crashes the Nomadik NHK15 with this message:
+On Wed, 9 Jan 2019 22:30:18 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Scanning device for bad blocks
-Unhandled fault: external abort on non-linefetch (0x008) at 0xcc95e000
-pgd = (ptrval)
-[cc95e000] *pgd=0b808811, *pte=40000653, *ppte=40000552
-Internal error: : 8 [#1] PREEMPT ARM
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper Not tainted 4.20.0-rc2+ #72
-Hardware name: Nomadik STn8815
-PC is at fsmc_exec_op+0x194/0x204
-(...)
+> On Wed, Jan 9, 2019 at 9:54 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> > [Me]  
+> > > I guess that is normal for FSMC: only one CS. It seems a bit
+> > > aggressive to toggle CS on/off between every command like this,
+> > > I suspect the FSMC isn't really built for that but shakes apart
+> > > or something.  
+> >
+> > Hm, that would be weird. There's indeed timing constraints on the NAND
+> > chip side, but none infringing those constraints should not trigger an
+> > external abort exception.  
+> 
+> The manual contains this (the same bit, just another name than
+> in the driver):
+> 
+> PBKEN PC-card/NAND-Flash chip-select enable.
+> Enables the corresponding chip-select.
+> If a disabled chip-select is accessed, an HRESP = ERROR is generated
+> on the AHB bus.
+> 0: disabled (default after reset)
+> 1: enabled
 
-After a discussion we (me and Boris Brezillion) start to suspect
-that this bit does not immediately control the chip select line
-at all, it rather enables access to the bank and the hardware
-will drive the CS autonomously. If there is a NAND chip connected,
-we should keep this enabled.
+It's still not clear what this bit does. Do you have access to the CS
+pin on the board?
 
-As fsmc_nand_setup() sets this bit, we can simply remove the
-offending code.
+> 
+> > Can you check which phys range is remapped at
+> > 0xcc960000?  
+> 
+> No idea how to do that but I'll see if I can figure it out...
 
-Fixes: 550b9fc4e3af ("mtd: rawnand: fsmc: Stop implementing ->select_chip()")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mtd/nand/raw/fsmc_nand.c | 21 ---------------------
- 1 file changed, 21 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 325b4414dccc..c9149a37f8f0 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -593,23 +593,6 @@ static void fsmc_write_buf_dma(struct fsmc_nand_data *host, const u8 *buf,
- 	dma_xfer(host, (void *)buf, len, DMA_TO_DEVICE);
- }
- 
--/* fsmc_select_chip - assert or deassert nCE */
--static void fsmc_ce_ctrl(struct fsmc_nand_data *host, bool assert)
--{
--	u32 pc = readl(host->regs_va + FSMC_PC);
--
--	if (!assert)
--		writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
--	else
--		writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
--
--	/*
--	 * nCE line changes must be applied before returning from this
--	 * function.
--	 */
--	mb();
--}
--
- /*
-  * fsmc_exec_op - hook called by the core to execute NAND operations
-  *
-@@ -627,8 +610,6 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 
- 	pr_debug("Executing operation [%d instructions]:\n", op->ninstrs);
- 
--	fsmc_ce_ctrl(host, true);
--
- 	for (op_id = 0; op_id < op->ninstrs; op_id++) {
- 		instr = &op->instrs[op_id];
- 
-@@ -686,8 +667,6 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 		}
- 	}
- 
--	fsmc_ce_ctrl(host, false);
--
- 	return ret;
- }
- 
--- 
-2.19.2
+print the __iomem values returned by devm_ioremap_resource() and find
+the one that matches this address.
