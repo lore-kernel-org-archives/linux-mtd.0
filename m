@@ -1,31 +1,21 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghKsK-0007AJ-6Q
- for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 20:54:57 +0000
-Date: Wed, 9 Jan 2019 21:54:43 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Maxim Levitsky
- <maximlevitsky@gmail.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger
- <richard@nod.at>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Janusz
- Krzysztofik <jmkrzyszt@gmail.com>, Stefan Agner <stefan@agner.ch>, Marek
- Vasut <marek.vasut@gmail.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Han Xu <han.xu@nxp.com>, Xiaolei Li <xiaolei.li@mediatek.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v3 15/22] mtd: rawnand: fsmc: Stop implementing
- ->select_chip()
-Message-ID: <20190109215443.67cec30c@bbrezillon>
-In-Reply-To: <CACRpkdaw-=RujxNa8Dk2VsW=RGwrgRZNiZ7P9PRDe3g71TJbWA@mail.gmail.com>
-References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
- <20181111075524.13123-16-boris.brezillon@bootlin.com>
- <CACRpkdYTXO4AXt79Ny-EsbWvd0kR7=auz_73UF6f+nEXfZ_HmA@mail.gmail.com>
- <20190109204441.6aeab463@bbrezillon>
- <CACRpkdaw-=RujxNa8Dk2VsW=RGwrgRZNiZ7P9PRDe3g71TJbWA@mail.gmail.com>
+ id 1ghKsz-0000Ne-Vi
+ for linux-mtd@lists.infradead.org; Wed, 09 Jan 2019 20:55:39 +0000
+Received: by mail-lf1-x143.google.com with SMTP id e26so6708935lfc.2
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Jan 2019 12:55:37 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] mtd: rawnand: fsmc: Keep CE enabled fix mb() drain
+Date: Wed,  9 Jan 2019 21:55:30 +0100
+Message-Id: <20190109205530.5158-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,49 +25,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 9 Jan 2019 21:41:24 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+Hammering the chip enable on and off between every command
+crashes the Nomadik NHK15 with this message:
 
-> On Wed, Jan 9, 2019 at 8:45 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
-> > [Me]  
-> > > I will experiment with some delay valued and try to read some data
-> > > sheets but if you already have hints on how to deal with this I'd
-> > > like to hear!  
-> >
-> > Might be caused by a missing barrier: when de-asserting the CE line, we
-> > must make sure all accesses to the ->data_va range have been done.
-> > Can you try with the following diff applied?  
-> 
-> Tried it, but it sadly does not help :/
-> 
-> The machine crashes at the same place when doing ther first
-> 64 bytes read.
-> 
-> I suppose the old code would hold CE enabled across all the
-> commands?
+Scanning device for bad blocks
+Unhandled fault: external abort on non-linefetch (0x008) at 0xcc95e000
+pgd = (ptrval)
+[cc95e000] *pgd=0b808811, *pte=40000653, *ppte=40000552
+Internal error: : 8 [#1] PREEMPT ARM
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 4.20.0-rc2+ #72
+Hardware name: Nomadik STn8815
+PC is at fsmc_exec_op+0x194/0x204
+(...)
 
-For a read/write page accesses, yes.
+This patch keeps the CE (chip enable, the only chip select)
+signal from the FSMC block enabled from the first command
+after probe() or resume() until the driver either suspend()
+or remove(). Create a state variable to track this.
 
-> 
-> Since the old code contained this:
-> 
->        /* Support only one CS */
->        if (chipnr > 0)
->                return;
-> 
-> I guess that is normal for FSMC: only one CS. It seems a bit
-> aggressive to toggle CS on/off between every command like this,
-> I suspect the FSMC isn't really built for that but shakes apart
-> or something.
+Runtime PM can possibly be used on top of this approach if
+we want to disable the CE line when no flash read/write is
+going on for a prolonged time, but for now it stabilizes
+the platform by simply keeping CE asserted as it used to
+be.
 
-Hm, that would be weird. There's indeed timing constraints on the NAND
-chip side, but none infringing those constraints should not trigger an
-external abort exception. Can you check which phys range is remapped at
-0xcc960000?
+While we're at it also fix the mb() memory barrier drain
+order (patch folded in from Boris Brezillion).
 
-> 
-> I will send a version of your patch that keeps CS enabled
-> for your consideration. (worksforme).
+Fixes: 550b9fc4e3af ("mtd: rawnand: fsmc: Stop implementing ->select_chip()")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/mtd/nand/raw/fsmc_nand.c | 41 ++++++++++++++++++++++++--------
+ 1 file changed, 31 insertions(+), 10 deletions(-)
 
-I guess that's fine to keep CE enabled if the bus is not shared with
-other memories.
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 325b4414dccc..442fda905489 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -118,6 +118,7 @@ enum access_mode {
+  * @dev:		Parent device
+  * @mode:		Access mode
+  * @clk:		Clock structure for FSMC.
++ * @ce_asserted:	CE (chip enable) is asserted
+  *
+  * @read_dma_chan:	DMA channel for read access
+  * @write_dma_chan:	DMA channel for write access to NAND
+@@ -140,6 +141,7 @@ struct fsmc_nand_data {
+ 	struct device		*dev;
+ 	enum access_mode	mode;
+ 	struct clk		*clk;
++	bool			ce_asserted;
+ 
+ 	/* DMA related objects */
+ 	struct dma_chan		*read_dma_chan;
+@@ -598,16 +600,27 @@ static void fsmc_ce_ctrl(struct fsmc_nand_data *host, bool assert)
+ {
+ 	u32 pc = readl(host->regs_va + FSMC_PC);
+ 
+-	if (!assert)
++	/* Shortcut */
++	if (host->ce_asserted)
++		return;
++
++	if (!assert) {
++		/*
++		 * Make sure all previous read/write have been done before
++		 * de-asserting the CE line.
++		 */
++		mb();
+ 		writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
+-	else
++		host->ce_asserted = false;
++	} else {
+ 		writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
+-
+-	/*
+-	 * nCE line changes must be applied before returning from this
+-	 * function.
+-	 */
+-	mb();
++		/*
++		 * nCE line changes must be applied before returning from this
++		 * function.
++		 */
++		mb();
++		host->ce_asserted = true;
++	}
+ }
+ 
+ /*
+@@ -627,6 +640,12 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
+ 
+ 	pr_debug("Executing operation [%d instructions]:\n", op->ninstrs);
+ 
++	if (op->cs != 0) {
++		pr_err("illegal chip select\n");
++		fsmc_ce_ctrl(host, false);
++		return -EINVAL;
++	}
++
+ 	fsmc_ce_ctrl(host, true);
+ 
+ 	for (op_id = 0; op_id < op->ninstrs; op_id++) {
+@@ -686,8 +705,6 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
+ 		}
+ 	}
+ 
+-	fsmc_ce_ctrl(host, false);
+-
+ 	return ret;
+ }
+ 
+@@ -1153,6 +1170,8 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ {
+ 	struct fsmc_nand_data *host = platform_get_drvdata(pdev);
+ 
++	fsmc_ce_ctrl(host, false);
++
+ 	if (host) {
+ 		nand_release(&host->nand);
+ 
+@@ -1171,6 +1190,8 @@ static int fsmc_nand_suspend(struct device *dev)
+ {
+ 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
+ 
++	fsmc_ce_ctrl(host, false);
++
+ 	if (host)
+ 		clk_disable_unprepare(host->clk);
+ 
+-- 
+2.19.2
