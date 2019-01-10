@@ -1,27 +1,20 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "broonie@kernel.org"
- <broonie@kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 0/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Date: Thu, 10 Jan 2019 05:12:45 +0000
-Message-ID: <VI1PR04MB5726A7CD5886403774D870B999840@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <1546939346-20181-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <7188c406-3dd2-88a6-b6ed-d5e8bf678df8@kontron.de>
-In-Reply-To: <7188c406-3dd2-88a6-b6ed-d5e8bf678df8@kontron.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ghVep-0003mC-6K
+ for linux-mtd@lists.infradead.org; Thu, 10 Jan 2019 08:25:44 +0000
+Date: Thu, 10 Jan 2019 09:25:31 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [GIT PULL] mtd: Fixes for 5.0-rc2
+Message-ID: <20190110092531.766738a0@bbrezillon>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,95 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRnJpZWRlciwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTY2hy
-ZW1wZiBGcmllZGVyIFttYWlsdG86ZnJpZWRlci5zY2hyZW1wZkBrb250cm9uLmRlXQ0KPiBTZW50
-OiBXZWRuZXNkYXksIEphbnVhcnkgOSwgMjAxOSA3OjQ5IFBNDQo+IFRvOiBZb2dlc2ggTmFyYXlh
-biBHYXVyIDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT47IGxpbnV4LQ0KPiBtdGRAbGlzdHMu
-aW5mcmFkZWFkLm9yZzsgYm9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tOyBtYXJlay52YXN1dEBn
-bWFpbC5jb207DQo+IGJyb29uaWVAa2VybmVsLm9yZzsgbGludXgtc3BpQHZnZXIua2VybmVsLm9y
-ZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IHJvYmhAa2VybmVsLm9yZzsgbWFy
-ay5ydXRsYW5kQGFybS5jb207IHNoYXduZ3VvQGtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBhcm0ta2Vy
-bmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbGlu
-dXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NiAw
-LzVdIHNwaTogc3BpLW1lbTogQWRkIGRyaXZlciBmb3IgTlhQIEZsZXhTUEkgY29udHJvbGxlcg0K
-PiANCj4gT24gMDguMDEuMTkgMTA6MjQsIFlvZ2VzaCBOYXJheWFuIEdhdXIgd3JvdGU6DQo+ID4g
-LSBBZGQgZHJpdmVyIGZvciBOWFAgRmxleFNQSSBob3N0IGNvbnRyb2xsZXINCj4gPg0KPiA+ICAg
-RmxleFNQSSBpcyBhIGZsZXhzaWJsZSBTUEkgaG9zdCBjb250cm9sbGVyIFsxXSwgQ2hhcHRlciAz
-MCBwYWdlIDE0NzUsDQo+ID4gICB3aGljaCBzdXBwb3J0cyB0d28gU1BJIGNoYW5uZWxzIGFuZCB1
-cCB0byA0IGV4dGVybmFsIGRldmljZXMuDQo+ID4gICBFYWNoIGNoYW5uZWwgc3VwcG9ydHMgU2lu
-Z2xlL0R1YWwvUXVhZC9PY3RhbCBtb2RlIGRhdGEgdHJhbnNmZXIgKDEvMi80LzgNCj4gYmlkaXJl
-Y3Rpb25hbCBkYXRhIGxpbmVzKQ0KPiA+ICAgaS5lLiBGbGV4U1BJIGFjdHMgYXMgYW4gaW50ZXJm
-YWNlIHRvIGV4dGVybmFsIGRldmljZXMsIG1heGltdW0gNCwgZWFjaCB3aXRoIHVwDQo+IHRvIDgN
-Cj4gPiAgIGJpZGlyZWN0aW9uYWwgZGF0YSBsaW5lcy4NCj4gPg0KPiA+IC0gVGVzdGVkIHRoaXMg
-ZHJpdmVyIHdpdGggbXRkX2RlYnVnKEVyYXNlL1dyaXRlL1JlYWQpIHV0aWxpdHkgYW5kIEpGRlMy
-DQo+ID4gICBmaWxlc3lzdGVtIG1vdW50aW5nIGFuZCBib290aW5nIG9uIE5YUCBMWDIxNjBBUkRC
-WzJdIGFuZCBMWDIxNjBBUURTDQo+IHRhcmdldHMuDQo+ID4gICBMWDIxNjBBUkRCIGlzIGhhdmlu
-ZyB0d28gTk9SIHNsYXZlIGRldmljZSBjb25uZWN0ZWQgb24gc2luZ2xlIGJ1cyBBDQo+ID4gICBp
-LmUuIEEwIGFuZCBBMSAoQ1MwIGFuZCBDUzEpLg0KPiA+ICAgTFgyMTYwQVFEUyBpcyBoYXZpbmcg
-dHdvIE5PUiBzbGF2ZSBkZXZpY2UgY29ubmVjdGVkIG9uIHNlcGFyYXRlIGJ1c2VzDQo+ID4gICBv
-bmUgZmxhc2ggb24gQTAgYW5kIHNlY29uZCBvbiBCMSBpLmUuIChDUzAgYW5kIENTMykuDQo+ID4g
-ICBWZXJpZmllZCB0aGlzIGRyaXZlciBvbiBmb2xsb3dpbmcgU1BJIE5PUiBmbGFzaGVzOg0KPiA+
-ICAgICBNaWNyb24sIG10MzV4dTUxMmFiYSwgW1JlYWQgLSAxIGJpdCBtb2RlXQ0KPiA+ICAgICBD
-eXByZXNzLCBzMjVmbDUxMnMsIFtSZWFkIC0gMS8yLzQgYml0IG1vZGVdDQo+ID4NCj4gPiBbMV0N
-Cj4gPiBodHRwczovL2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJs
-PWh0dHBzJTNBJTJGJTJGd3d3DQo+ID4gLm54cC5jb20lMkZkb2NzJTJGZW4lMkZyZWZlcmVuY2Ut
-DQo+IG1hbnVhbCUyRklNWFJUMTA1MFJNLnBkZiZhbXA7ZGF0YT0wMiUNCj4gPg0KPiA3QzAxJTdD
-eW9nZXNobmFyYXlhbi5nYXVyJTQwbnhwLmNvbSU3Qzc5MTU3MGVkNmQ5MTRmOTIyYTZjMDhkNjc2
-Mw0KPiBkNmM5Ng0KPiA+ICU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1JTdDMCU3
-QzElN0M2MzY4MjY0MDM1MjQyOTQ0DQo+IDMwJmFtcDtzDQo+ID4NCj4gZGF0YT1XVFBkZDFXNFRu
-NGc2T09WZVZWUXlsWjFZNzJLVW9oV1E1UU14Q2x3Y2djJTNEJmFtcDtyZXNlcg0KPiB2ZWQ9MA0K
-PiA+IFsyXQ0KPiA+IGh0dHBzOi8vZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2su
-Y29tLz91cmw9aHR0cHMlM0ElMkYlMkZwYXQNCj4gPiBjaHdvcmsua2VybmVsLm9yZyUyRnByb2pl
-Y3QlMkZsaW51eC1hcm0ta2VybmVsJTJGbGlzdCUyRiUzRnN1Ym1pdHRlciUzDQo+ID4NCj4gRDE4
-MjA5NyZhbXA7ZGF0YT0wMiU3QzAxJTdDeW9nZXNobmFyYXlhbi5nYXVyJTQwbnhwLmNvbSU3Qzc5
-MTU3MA0KPiBlZDZkOTENCj4gPg0KPiA0ZjkyMmE2YzA4ZDY3NjNkNmM5NiU3QzY4NmVhMWQzYmMy
-YjRjNmZhOTJjZDk5YzVjMzAxNjM1JTdDMCU3QzElDQo+IDdDNjM2OA0KPiA+DQo+IDI2NDAzNTI0
-Mjk0NDMwJmFtcDtzZGF0YT1Rb0FONEh0aVRURDZVbVRvVndENkNmUHlXTjBDOW5TUVRCTzMNCj4g
-YllTWEp0WSUzDQo+ID4gRCZhbXA7cmVzZXJ2ZWQ9MA0KPiA+DQo+ID4gWW9nZXNoIE5hcmF5YW4g
-R2F1ciAoNSk6DQo+ID4gICAgc3BpOiBzcGktbWVtOiBBZGQgZHJpdmVyIGZvciBOWFAgRmxleFNQ
-SSBjb250cm9sbGVyDQo+ID4gICAgZHQtYmluZGluZ3M6IHNwaTogYWRkIGJpbmRpbmcgZmlsZSBm
-b3IgTlhQIEZsZXhTUEkgY29udHJvbGxlcg0KPiA+ICAgIGFybTY0OiBkdHM6IGx4MjE2MGE6IGFk
-ZCBGbGV4U1BJIG5vZGUgcHJvcGVydHkNCj4gPiAgICBhcm02NDogZGVmY29uZmlnOiBlbmFibGUg
-TlhQIEZsZXhTUEkgZHJpdmVyDQo+ID4gICAgTUFJTlRBSU5FUlM6IGFkZCBtYWludGFpbmVycyBm
-b3IgdGhlIE5YUCBGbGV4U1BJIGRyaXZlcg0KPiA+DQo+ID4gQ2hhbmdlcyBmb3IgdjY6DQo+ID4g
-LSBSZWJhc2Ugb24gdG9wIG9mIHY1LjAtcmMxLg0KPiANCj4gWW91ciBwYXRjaGVzIGRvbid0IGFw
-cGx5IHRvIHY1LjAtcmMxLiBJdCBzZWVtcyBsaWtlIHlvdSBoYXZlIGluc3RlYWQgcmViYXNlZA0K
-PiBvbnRvIHRoZSBmb3ItNS4xIG9yIGZvci1uZXh0IGJyYW5jaCBvZiB0aGUgU1BJIHRyZWUuIEkg
-Z3Vlc3MgdGhpcyBpcyBva2F5LCBidXQgeW91DQo+IHNob3VsZCBoYXZlIHBvaW50ZWQgdGhhdCBv
-dXQgY29ycmVjdGx5IGhlcmUuDQo+IA0KWWVzLCB0aGFua3MgZm9yIHBvaW50aW5nIG91dC4NClRo
-aXMgcGF0Y2ggc2VyaWVzIGlzIGJhc2VkIG9uICdmb3ItbmV4dCcgYnJhbmNoIG9mIFNQSSB0cmVl
-IHJlcG8gWzFdLg0KQWN0dWFsbHksIEkgZ290IGNvbmZ1c2VkIHdpdGggdGhlIE1ha2VmaWxlIGNv
-bnRlbnQgYW5kIHRoYXQncyB3aHkgbWVudGlvbmVkIGluIGNvbW1lbnQgYXMgIlJlYmFzZSBvbiB0
-b3Agb2YgdjUuMC1yYzEiLCBzb3JyeSBmb3IgY29uZnVzaW9uLg0KCVZFUlNJT04gPSA1DQoJUEFU
-Q0hMRVZFTCA9IDANCglTVUJMRVZFTCA9IDANCglFWFRSQVZFUlNJT04gPSAtcmMxDQoNCi0tDQpS
-ZWdhcmRzDQpZb2dlc2ggR2F1cg0KWzFdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9s
-aW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc3BpLmdpdC8NCg0KPiA+IC0gSW5jb3Jwb3JhdGVkIHJl
-dmlldyBjb21tZW50cyBmb3INCj4gPiAgICBwYXRjaCAnc3BpOiBzcGktbWVtOiBBZGQgZHJpdmVy
-IGZvciBOWFAgRmxleFNQSSBjb250cm9sbGVyJy4NCj4gPiAtIFVwZGF0ZWQgcy1iIHRhZyBpbiBh
-bGwgcGF0Y2hlcy4NCj4gPiBDaGFuZ2VzIGZvciB2NToNCj4gPiAtIFJlYmFzZSBvbiB0b3Agb2Yg
-djQuMjAtcmMyDQo+ID4gLSBJbmNvcnBvcmF0ZWQgcmV2aWV3IGNvbW1lbnRzIGZvcg0KPiA+ICAg
-IHBhdGNoICdzcGk6IHNwaS1tZW06IEFkZCBkcml2ZXIgZm9yIE5YUCBGbGV4U1BJIGNvbnRyb2xs
-ZXInLg0KPiA+IENoYW5nZXMgZm9yIHY0Og0KPiA+IC0gSW5jb3Jwb3JhdGVkIHJldmlldyBjb21t
-ZW50cyBmb3INCj4gPiAgICBwYXRjaCAnc3BpOiBzcGktbWVtOiBBZGQgZHJpdmVyIGZvciBOWFAg
-RmxleFNQSSBjb250cm9sbGVyJy4NCj4gPiAtIEluY29ycG9yYXRlZCBiaW5kaW5nIGZpbGUgcmV2
-aWV3IGNvbW1lbnRzLg0KPiA+IENoYW5nZXMgZm9yIHYzOg0KPiA+IC0gSW5jb3Jwb3JhdGVkIHJl
-dmlldyBjb21tZW50cyBmb3INCj4gPiAgICBwYXRjaCAnc3BpOiBzcGktbWVtOiBBZGQgZHJpdmVy
-IGZvciBOWFAgRmxleFNQSSBjb250cm9sbGVyJy4NCj4gPiBDaGFuZ2VzIGZvciB2MjoNCj4gPiAt
-IEluY29ycG9yYXRlZCBCb3JpcyByZXZpZXcgY29tbWVudHMgYW5kIGRyb3AgYmVsb3cgcGF0Y2hl
-cyBhcyBwZXIgdGhlDQo+IGNvbW1lbnRzLg0KPiA+ICAgLSBQYXRjaCAnc3BpOiBhZGQgc2xhdmUg
-ZGV2aWNlIHNpemUgaW4gc3BpX2RldmljZSBzdHJ1Y3QnDQo+ID4gICAtIFBhdGNoICdzcGk6IGFk
-ZCBmbGFncyBmb3Igb2N0YWwgSS9PIGRhdGEgdHJhbnNmZXInDQo+ID4gLSBJbmNvcnBvcmF0ZWQg
-RFRTIGFuZCBCaW5kaW5nIGZpbGUgcmV2aWV3IGNvbW1lbnRzIG9mIFNoYXduIEd1byBhbmQgUm9i
-DQo+IEhlcnJpbmcuDQo+ID4NCj4gPiAgIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGkt
-bnhwLWZzcGkudHh0ICB8ICAgMzkgKw0KPiA+ICAgTUFJTlRBSU5FUlMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgICAgNyArDQo+ID4gICAuLi4vYm9vdC9kdHMvZnJlZXNjYWxl
-L2ZzbC1seDIxNjBhLXJkYi5kdHMgICAgfCAgIDIyICsNCj4gPiAgIC4uLi9hcm02NC9ib290L2R0
-cy9mcmVlc2NhbGUvZnNsLWx4MjE2MGEuZHRzaSB8ICAgMTMgKw0KPiA+ICAgYXJjaC9hcm02NC9j
-b25maWdzL2RlZmNvbmZpZyAgICAgICAgICAgICAgICAgIHwgICAgMSArDQo+ID4gICBkcml2ZXJz
-L3NwaS9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEwICsNCj4gPiAgIGRy
-aXZlcnMvc3BpL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDEgKw0KPiA+
-ICAgZHJpdmVycy9zcGkvc3BpLW54cC1mc3BpLmMgICAgICAgICAgICAgICAgICAgIHwgMTA5NSAr
-KysrKysrKysrKysrKysrKw0KPiA+ICAgOCBmaWxlcyBjaGFuZ2VkLCAxMTg4IGluc2VydGlvbnMo
-KykNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3Mvc3BpL3NwaS1ueHAtZnNwaS50eHQNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2
-ZXJzL3NwaS9zcGktbnhwLWZzcGkuYw0KPiA+DQo=
+Hello Linus,
+
+Here is the MTD fixes PR for 5.0-rc2.
+
+Regards,
+
+Boris 
+
+The following changes since commit bfeffd155283772bbe78c6a05dec7c0128ee500c:
+
+  Linux 5.0-rc1 (2019-01-06 17:08:20 -0800)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-5.0-rc2
+
+for you to fetch changes up to 81d9bdf59092e4755fc4307c93c4589ef0fe2e0f:
+
+  mtd: rawnand: qcom: fix memory corruption that causes panic (2019-01-08 12:33:24 +0100)
+
+----------------------------------------------------------------
+MTD Fixes:
+- Fix a bug introduced when exposing MTD devs as NVMEM providers and
+  check for add_mtd_device() return code everywhere
+
+raw NAND fixes:
+- Fix a memory corruption in the QCOM driver
+
+----------------------------------------------------------------
+Boris Brezillon (2):
+      mtd: Fix the check on nvmem_register() ret code
+      mtd: Check add_mtd_device() ret code
+
+Christian Lamparter (1):
+      mtd: rawnand: qcom: fix memory corruption that causes panic
+
+ drivers/mtd/mtdcore.c             |  2 +-
+ drivers/mtd/mtdcore.h             |  2 +-
+ drivers/mtd/mtdpart.c             | 36 +++++++++++++++++++++++++++++++-----
+ drivers/mtd/nand/raw/qcom_nandc.c | 20 ++++++++++----------
+ 4 files changed, 43 insertions(+), 17 deletions(-)
