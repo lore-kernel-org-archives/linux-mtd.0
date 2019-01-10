@@ -1,17 +1,30 @@
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghVep-0003mC-6K
- for linux-mtd@lists.infradead.org; Thu, 10 Jan 2019 08:25:44 +0000
-Date: Thu, 10 Jan 2019 09:25:31 +0100
+ id 1ghVlZ-0006vO-RJ
+ for linux-mtd@lists.infradead.org; Thu, 10 Jan 2019 08:32:43 +0000
+Date: Thu, 10 Jan 2019 09:32:27 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>,
+To: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Will Deacon
+ <will.deacon@arm.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Maxim
+ Levitsky <maximlevitsky@gmail.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, Richard Weinberger <richard@nod.at>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Stefan Agner <stefan@agner.ch>,
+ Marek Vasut <marek.vasut@gmail.com>, Harvey Hunt
+ <harveyhuntnexus@gmail.com>, linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>, Xiaolei Li
+ <xiaolei.li@mediatek.com>, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Subject: [GIT PULL] mtd: Fixes for 5.0-rc2
-Message-ID: <20190110092531.766738a0@bbrezillon>
+Subject: Re: [PATCH v3 15/22] mtd: rawnand: fsmc: Stop implementing
+ ->select_chip()
+Message-ID: <20190110093227.674832ce@bbrezillon>
+In-Reply-To: <c642fe39-8109-f4fd-9cb8-88cc7262472d@free.fr>
+References: <20181111075524.13123-1-boris.brezillon@bootlin.com>
+ <20181111075524.13123-16-boris.brezillon@bootlin.com>
+ <CACRpkdYTXO4AXt79Ny-EsbWvd0kR7=auz_73UF6f+nEXfZ_HmA@mail.gmail.com>
+ <20190109204441.6aeab463@bbrezillon>
+ <c642fe39-8109-f4fd-9cb8-88cc7262472d@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,44 +37,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+On Wed, 9 Jan 2019 23:20:40 +0100
+Marc Gonzalez <marc.w.gonzalez@free.fr> wrote:
 
-Here is the MTD fixes PR for 5.0-rc2.
+> On 09/01/2019 20:44, Boris Brezillon wrote:
+> 
+> > Might be caused by a missing barrier: when de-asserting the CE line, we
+> > must make sure all accesses to the ->data_va range have been done.
+> > Can you try with the following diff applied?
+> >   
+> > --->8---  
+> > diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+> > index 325b4414dccc..264d809c2d37 100644
+> > --- a/drivers/mtd/nand/raw/fsmc_nand.c
+> > +++ b/drivers/mtd/nand/raw/fsmc_nand.c
+> > @@ -598,16 +598,21 @@ static void fsmc_ce_ctrl(struct fsmc_nand_data *host, bool assert)
+> >  {
+> >         u32 pc = readl(host->regs_va + FSMC_PC);
+> >  
+> > -       if (!assert)
+> > +       if (!assert) {
+> > +               /*
+> > +                * Make sure all previous read/write have been done before
+> > +                * de-asserting the CE line.
+> > +                */
+> > +               mb();
+> >                 writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
+> > -       else
+> > +       } else {
+> >                 writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
+> > -
+> > -       /*
+> > -        * nCE line changes must be applied before returning from this
+> > -        * function.
+> > -        */
+> > -       mb();
+> > +               /*
+> > +                * nCE assertion must be applied before returning from this
+> > +                * function.
+> > +                */
+> > +               mb();
+> > +       }  
+> 
+> + Will Deacon, an expert on arm mmio shenanigans.
+> e.g. https://elinux.org/images/a/a8/Uh-oh-Its-IO-Ordering-Will-Deacon-Arm.pdf
+> 
+> As far as I understand (which isn't very far), a memory barrier (however
+> strong) cannot guarantee that all (posted) writes have reached a device
+> (unless the underlying bus explicitly provides such guarantees?)
+> 
+> At best, a memory barrier guarantees that the mmio writes have "left" the CPU
+> and its "coherency fabric" (shared LLC). Thus subsequent accesses are
+> guaranteed to appear "later" on the bus. (Much hand-waving sorry)
 
-Regards,
-
-Boris 
-
-The following changes since commit bfeffd155283772bbe78c6a05dec7c0128ee500c:
-
-  Linux 5.0-rc1 (2019-01-06 17:08:20 -0800)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-5.0-rc2
-
-for you to fetch changes up to 81d9bdf59092e4755fc4307c93c4589ef0fe2e0f:
-
-  mtd: rawnand: qcom: fix memory corruption that causes panic (2019-01-08 12:33:24 +0100)
-
-----------------------------------------------------------------
-MTD Fixes:
-- Fix a bug introduced when exposing MTD devs as NVMEM providers and
-  check for add_mtd_device() return code everywhere
-
-raw NAND fixes:
-- Fix a memory corruption in the QCOM driver
-
-----------------------------------------------------------------
-Boris Brezillon (2):
-      mtd: Fix the check on nvmem_register() ret code
-      mtd: Check add_mtd_device() ret code
-
-Christian Lamparter (1):
-      mtd: rawnand: qcom: fix memory corruption that causes panic
-
- drivers/mtd/mtdcore.c             |  2 +-
- drivers/mtd/mtdcore.h             |  2 +-
- drivers/mtd/mtdpart.c             | 36 +++++++++++++++++++++++++++++++-----
- drivers/mtd/nand/raw/qcom_nandc.c | 20 ++++++++++----------
- 4 files changed, 43 insertions(+), 17 deletions(-)
+Yes, that's what I was trying to enforce.
