@@ -1,20 +1,16 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-it1-x131.google.com ([2607:f8b0:4864:20::131])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ghwPN-0008Ov-Ii
- for linux-mtd@lists.infradead.org; Fri, 11 Jan 2019 12:59:35 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Shibin George <george.shibin1993@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: gluebi vs. ubi-volume mapping
-Date: Fri, 11 Jan 2019 13:59:31 +0100
-Message-ID: <6975898.auTVdOOYFa@blindfold>
-In-Reply-To: <CAGu8XfShQkmshMMgP24ee_Csf6rcdEoG4p2o1kLhAW8JL+CX-w@mail.gmail.com>
-References: <CAGu8XfRpjW9hv918BOoh6jEA1rZ9v-Dngra7cjMi3KegyXOvSQ@mail.gmail.com>
- <1835331.mx3o4XuZP5@blindfold>
- <CAGu8XfShQkmshMMgP24ee_Csf6rcdEoG4p2o1kLhAW8JL+CX-w@mail.gmail.com>
+ id 1gi2SV-00053C-EH
+ for linux-mtd@lists.infradead.org; Fri, 11 Jan 2019 19:27:12 +0000
+Received: by mail-it1-x131.google.com with SMTP id h65so4375530ith.3
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2019 11:27:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+From: Zachary Graham <zack.graham@gmail.com>
+Date: Fri, 11 Jan 2019 11:27:17 -0800
+Message-ID: <CAMawHmDZj-Ht4PKtB72B8fPOSiPVefAwt=hkaiu8bhyOeUAG8A@mail.gmail.com>
+Subject: Bad block detection question
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, 11. Januar 2019, 13:54:22 CET schrieb Shibin George:
-> On Fri, Jan 11, 2019 at 6:14 PM Richard Weinberger <richard@nod.at> wrote:
-> >
-> > > ubiblock, being read-only, didn't satisfy my requirement.
-> > > The device I am working on needs to have block-level software upgrade
-> > > capability.
-> > > So gluebi was the best solution that I could find that can run block-based
-> > > filesystem.
-> >
-> > Usually you don't want such a deep stacking on an embedded system.
-> > But you are aware of ubiupdatevol?
-> 
-> Yes, ubiupdatevol was one of the candidates. However, I needed the capability
-> to upgrade software incrementally instead of packing the entire ubifs image
-> (This is because I can't afford to reserve storage for large software-upgrade
-> packages).
-> I had posted this query about ubiupdatevol @
-> https://stackoverflow.com/questions/50699945/apply-incremental-patches-on-ubifs-volume
-> and finally had to discard ubifs for my purpose for the same reason.
-> That and the fact the current software-upgrade solution that I have works well
-> with block-based filesystems.
+Hello,
 
-I have no idea what this has to do with squashfs.
+I'm working with a Linux system that, for the most part, uses
+UBI/UBIFS save for one small MTD that is used for boot-time
+information. I'm currently working on our tool to manipulate data on
+this disk and want to ensure it is robust to bad blocks.
 
-Instead of updating the squashfs via mtdblock->glubi->ubivolume->ubi,
-just use ubiupdatevol to update the ubivolume.
+Looking at the UBI code, the wear-leveling subsystem marks blocks as
+bad after an erase failure. Which is what I've been doing so far.
 
-Thanks,
-//richard
+At a high level, the program does the following when we determine a
+write is needed:
+
+1. Erase PEB
+2a. If erase fails, mark as bad, move to next good PEB, continue.
+2b. If erase succeeds, continue
+3. Write data structure.
+
+Looking at the nandtest.c I see two paths for marking bad blocks,
+First is on a failed erase, the next is on a failed write. I'm curious
+if it is recommended to also mark a block as bad an erase succeeds and
+a subsequent write fails.
+
+Regards,
+ZG
