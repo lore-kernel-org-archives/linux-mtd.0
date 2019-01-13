@@ -1,12 +1,10 @@
-Date: Sun, 13 Jan 2019 11:31:19 +0800
+Date: Sun, 13 Jan 2019 11:32:32 +0800
 From: Shawn Guo <shawnguo@kernel.org>
 To: Schrempf Frieder <frieder.schrempf@kontron.de>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, Li Yang <leoyang.li@nxp.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
@@ -16,19 +14,20 @@ Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "fabio.estevam@nxp.com" <fabio.estevam@nxp.com>,
  "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
  "yogeshnarayan.gaur@nxp.com" <yogeshnarayan.gaur@nxp.com>,
- "han.xu@nxp.com" <han.xu@nxp.com>,
+ "han.xu@nxp.com" <han.xu@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 5/7] ARM: dts: ls1021a: Remove
+Subject: Re: [PATCH v8 6/7] ARM64: dts: ls1046a: Remove
  fsl,qspi-has-second-chip as it is not used
-Message-ID: <20190113033117.GG11426@dragon>
+Message-ID: <20190113033231.GH11426@dragon>
 References: <20190107092823.11188-1-frieder.schrempf@kontron.de>
- <20190107092823.11188-6-frieder.schrempf@kontron.de>
+ <20190107092823.11188-7-frieder.schrempf@kontron.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190107092823.11188-6-frieder.schrempf@kontron.de>
+In-Reply-To: <20190107092823.11188-7-frieder.schrempf@kontron.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,7 +37,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 07, 2019 at 09:29:54AM +0000, Schrempf Frieder wrote:
+On Mon, Jan 07, 2019 at 09:29:55AM +0000, Schrempf Frieder wrote:
 > From: Frieder Schrempf <frieder.schrempf@kontron.de>
 > 
 > After switching to the new FSL QSPI driver the property
@@ -49,4 +48,7 @@ On Mon, Jan 07, 2019 at 09:29:54AM +0000, Schrempf Frieder wrote:
 > 
 > Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Applied, thanks.
+Different from arm dts files, we use prefix 'arm64: dts: ...'.
+I fixed it up and applied the patch.
+
+Shawn
