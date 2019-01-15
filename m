@@ -1,25 +1,26 @@
 From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+To: Boris Brezillon <bbrezillon@kernel.org>, Schrempf Frieder
+ <frieder.schrempf@kontron.de>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
  "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "broonie@kernel.org"
  <broonie@kernel.org>, "linux-spi@vger.kernel.org"
  <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@kontron.de"
- <frieder.schrempf@kontron.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v7 3/5] arm64: dts: lx2160a: add FlexSPI node property
-Date: Tue, 15 Jan 2019 09:50:40 +0000
-Message-ID: <1547545697-4042-4-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1547545697-4042-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1547545697-4042-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <devicetree@vger.kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "robh@kernel.org" <robh@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v6 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
+Date: Tue, 15 Jan 2019 09:54:27 +0000
+Message-ID: <VI1PR04MB572615130C849F1B8A807F9A99810@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1546939346-20181-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1546939346-20181-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <dbb6ddc8-5939-3d4b-7031-931afa79fccb@kontron.de>
+ <20190114093759.2ce51b55@bbrezillon>
+In-Reply-To: <20190114093759.2ce51b55@bbrezillon>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,88 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add fspi node property for LX2160A SoC for FlexSPI driver.
-Property added for the FlexSPI controller and for the connected
-slave device for the LX2160ARDB target.
-This is having two SPI-NOR flash device, mt35xu512aba, connected
-at CS0 and CS1.
+Hi Boris,
 
-Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
----
-Changes for v7:
-- None
-Changes for v6:
-- None
-Changes for v5:
-- None
-Changes for v4:
-- Incorporated Rob review comments.
-Changes for v3:
-- None.
-Changes for v2:
-- Incorporated Shawn review comments.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:bbrezillon@kernel.org]
+> Sent: Monday, January 14, 2019 2:08 PM
+> To: Schrempf Frieder <frieder.schrempf@kontron.de>
+> Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; linux-
+> mtd@lists.infradead.org; boris.brezillon@bootlin.com; marek.vasut@gmail.c=
+om;
+> broonie@kernel.org; linux-spi@vger.kernel.org; devicetree@vger.kernel.org=
+;
+> mark.rutland@arm.com; robh@kernel.org; linux-kernel@vger.kernel.org;
+> computersforpeace@gmail.com; shawnguo@kernel.org; linux-arm-
+> kernel@lists.infradead.org
+> Subject: Re: [PATCH v6 1/5] spi: spi-mem: Add driver for NXP FlexSPI cont=
+roller
+>=20
+> On Thu, 10 Jan 2019 17:28:57 +0000
+> Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
+>=20
+> > Hi Yogesh,
+> >
+> > my comments below are mainly about things I already mentioned in my
+> > review for v5 and about removing or simplifying some unnecessary or
+> > complex code.
+> >
+[...]
+> >
+>=20
+> Once you've addressed all of Frieder's comments you can add
+>=20
+> Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+>=20
+Thanks.
+I have send next version, v7, of the patch series having added code changes=
+ as per Frieder's comments. [1]
+Based on the feedback from Frieder, would add yours r-o-b tag.
 
- .../boot/dts/freescale/fsl-lx2160a-rdb.dts    | 22 +++++++++++++++++++
- .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 13 +++++++++++
- 2 files changed, 35 insertions(+)
+--
+Regards
+Yogesh Gaur
+[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D86130
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64=
-/boot/dts/freescale/fsl-lx2160a-rdb.dts
-index 6481e5f20e69..70658946fbbe 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-@@ -50,6 +50,28 @@
- 	status =3D "okay";
- };
-=20
-+&fspi {
-+	status =3D "okay";
-+
-+	mt35xu512aba0: flash@0 {
-+		#address-cells =3D <1>;
-+		#size-cells =3D <1>;
-+		compatible =3D "spansion,m25p80";
-+		m25p,fast-read;
-+		spi-max-frequency =3D <50000000>;
-+		reg =3D <0>;
-+	};
-+
-+	mt35xu512aba1: flash@1 {
-+		#address-cells =3D <1>;
-+		#size-cells =3D <1>;
-+		compatible =3D "spansion,m25p80";
-+		m25p,fast-read;
-+		spi-max-frequency =3D <50000000>;
-+		reg =3D <1>;
-+	};
-+};
-+
- &i2c0 {
- 	status =3D "okay";
-=20
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/bo=
-ot/dts/freescale/fsl-lx2160a.dtsi
-index a79f5c1ea56d..e3ff86201f73 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-@@ -762,5 +762,18 @@
- 				     <GIC_SPI 209 IRQ_TYPE_LEVEL_HIGH>;
- 			dma-coherent;
- 		};
-+
-+		fspi: spi@20c0000 {
-+			compatible =3D "nxp,lx2160a-fspi";
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+			reg =3D <0x0 0x20c0000 0x0 0x10000>,
-+				<0x0 0x20000000 0x0 0x10000000>;
-+			reg-names =3D "fspi_base", "fspi_mmap";
-+			interrupts =3D <0 25 0x4>; /* Level high type */
-+			clocks =3D <&clockgen 4 3>, <&clockgen 4 3>;
-+			clock-names =3D "fspi_en", "fspi";
-+			status =3D "disabled";
-+		};
- 	};
- };
---=20
-2.17.1
+> Regards,
+>=20
+> Boris
