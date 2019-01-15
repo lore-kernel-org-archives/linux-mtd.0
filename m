@@ -1,17 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjSuR-0002d3-DU
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 17:53:57 +0000
-Date: Tue, 15 Jan 2019 18:53:41 +0100
+ id 1gjSyH-0004Ph-71
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 17:57:54 +0000
+Date: Tue, 15 Jan 2019 18:57:39 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Cc: <marek.vasut@gmail.com>, <boris.brezillon@bootlin.co>, <richard@nod.at>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: add myself as SPI NOR co-maintainer
-Message-ID: <20190115185341.3abadd3c@xps13>
-In-Reply-To: <20190115165740.32450-1-tudor.ambarus@microchip.com>
-References: <20190115165740.32450-1-tudor.ambarus@microchip.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: sunxi: Handle the tREA > tRC / 2 case
+Message-ID: <20190115185739.3dbad9c3@xps13>
+In-Reply-To: <20181220141047.31733-1-boris.brezillon@bootlin.com>
+References: <20181220141047.31733-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -24,21 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tudor,
+Hi Boris,
 
-<Tudor.Ambarus@microchip.com> wrote on Tue, 15 Jan 2019 16:57:52 +0000:
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu, 20 Dec 2018
+15:10:47 +0100:
 
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> In non-EDO, tREA should be less than tRP to guarantee that the
+> controller does not sample the IO lines too early. Unfortunately, the
+> sunxi NAND controller does not allow us to have different values for
+> tRP and tREH (tRP =3D tREH =3D tRW / 2).
 >=20
-> I have been reviewing and contributing to the SPI NOR subsystem
-> for the last few months and I'm willing to continue doing so.
-> Volunteer as a maintainer for the SPI NOR part of the MTD subsystem.
+> We have 2 options to overcome this limitation:
 >=20
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 1/ Extend tRC to fulfil the tREA <=3D tRC / 2 constraint
+> 2/ Use EDO mode (only works if timings->tRLOH > 0)
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
 
-Welcome :)
-
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Applied to nand/next.
 
 
 Thanks,
