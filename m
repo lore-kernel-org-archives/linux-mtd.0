@@ -1,21 +1,21 @@
-From: <Tudor.Ambarus@microchip.com>
-To: <ryder.lee@mediatek.com>, <marek.vasut@gmail.com>,
- <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>
-CC: <robh+dt@kernel.org>, <weijie.gao@mediatek.com>,
+Message-ID: <1547538297.10234.4.camel@mhfsdcap03>
+Subject: Re: [PATCH v1 2/3] mtd: spi-nor: mtk-quadspi: add SNOR_HWCAPS_READ
+ for capcity setting
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <ryder.lee@mediatek.com>, <marek.vasut@gmail.com>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <robh+dt@kernel.org>, <weijie.gao@mediatek.com>,
  <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v1 3/3] mtd: spi-nor: mtk-quadspi: rename config to a
- common one
-Date: Tue, 15 Jan 2019 07:34:41 +0000
-Message-ID: <fc95a69a-6a2e-fc98-d047-b0c93843fc56@microchip.com>
+Date: Tue, 15 Jan 2019 15:44:57 +0800
+In-Reply-To: <8afdb25c-894b-0a89-b7a8-b754fb4ba905@microchip.com>
 References: <67e650ca4fcaaddbbc98bf4e1cbe04647c990dc3.1547442452.git.ryder.lee@mediatek.com>
- <45dc2817e7f4baf5113de247b1a2cb30bf252d93.1547442452.git.ryder.lee@mediatek.com>
-In-Reply-To: <45dc2817e7f4baf5113de247b1a2cb30bf252d93.1547442452.git.ryder.lee@mediatek.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C85364684AEA374885282766A0730D1B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <54bb8a9d517e2ee35018d78457c6aa6a4970e644.1547442452.git.ryder.lee@mediatek.com>
+ <8afdb25c-894b-0a89-b7a8-b754fb4ba905@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,46 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIFJ5ZGVyLA0KDQpPbiAwMS8xNC8yMDE5IDA3OjEyIEFNLCBSeWRlciBMZWUgd3JvdGU6DQo+
-IFRoZSBxdWFkc3BpIGlzIGEgZ2VuZXJpYyBjb21tdW5pY2F0aW9uIGludGVyZmFjZSB3aGljaCBj
-b3VsZCBiZSBzaGFyZWQNCj4gd2l0aCBvdGhlciBNZWRpYVRlayBTb0NzLiBIZW5jZSByZW5hbWUg
-aXQgdG8gYSBjb21tb24gb25lLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogUnlkZXIgTGVlIDxyeWRl
-ci5sZWVAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gQ2hhbmdlcyBzaW5jZSB2MTogcmViYXNlIHRv
-IHY1LjAtcmMxLiANCg0KVGhlIHBhdGNoIGRvZXNuJ3QgYXBwbHkgb24gdjUuMC1yYzEgb3IgcmMy
-Lg0KDQo+IC0tLQ0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnICB8IDE2ICsrKysrKysr
-LS0tLS0tLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvTWFrZWZpbGUgfCAgMiArLQ0KPiAgMiBm
-aWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9LY29uZmlnIGIvZHJpdmVycy9tdGQvc3BpLW5v
-ci9LY29uZmlnDQo+IGluZGV4IGI0MzNlNWYuLjk5ZDlkNTMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3IvS2NvbmZpZw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL0tjb25m
-aWcNCj4gQEAgLTcsMTQgKzcsNiBAQCBtZW51Y29uZmlnIE1URF9TUElfTk9SDQo+ICANCj4gIGlm
-IE1URF9TUElfTk9SDQo+ICANCj4gLWNvbmZpZyBNVERfTVQ4MXh4X05PUg0KPiAtCXRyaXN0YXRl
-ICJNZWRpYXRlayBNVDgxeHggU1BJIE5PUiBmbGFzaCBjb250cm9sbGVyIg0KPiAtCWRlcGVuZHMg
-b24gSEFTX0lPTUVNDQo+IC0JaGVscA0KPiAtCSAgVGhpcyBlbmFibGVzIGFjY2VzcyB0byBTUEkg
-Tk9SIGZsYXNoLCB1c2luZyBNVDgxeHggU1BJIE5PUiBmbGFzaA0KPiAtCSAgY29udHJvbGxlci4g
-VGhpcyBjb250cm9sbGVyIGRvZXMgbm90IHN1cHBvcnQgZ2VuZXJpYyBTUEkgQlVTLCBpdCBvbmx5
-DQo+IC0JICBzdXBwb3J0cyBTUEkgTk9SIEZsYXNoLg0KPiAtDQo+ICBjb25maWcgTVREX1NQSV9O
-T1JfVVNFXzRLX1NFQ1RPUlMNCj4gIAlib29sICJVc2Ugc21hbGwgNDA5NiBCIGVyYXNlIHNlY3Rv
-cnMiDQo+ICAJZGVmYXVsdCB5DQo+IEBAIC02OCw2ICs2MCwxNCBAQCBjb25maWcgU1BJX05YUF9T
-UElGSQ0KPiAgCSAgRmxhc2guIEVuYWJsZSB0aGlzIG9wdGlvbiBpZiB5b3UgaGF2ZSBhIGRldmlj
-ZSB3aXRoIGEgU1BJRkkNCj4gIAkgIGNvbnRyb2xsZXIgYW5kIHdhbnQgdG8gYWNjZXNzIHRoZSBG
-bGFzaCBhcyBhIG10ZCBkZXZpY2UuDQo+ICANCj4gK2NvbmZpZyBTUElfTVRLX1FVQURTUEkNCg0K
-U2luY2UgeW91IGFyZSBtb3ZpbmcgdGhlIGNvbmZpZyBpbnRvIHRoZSBmaWxlLCB3b3VsZCB5b3Ug
-bWluZCB0byBwdXQgeW91ciBjb25maWcNCmluIGFuIGFscGhhYmV0aWNhbCBvcmRlcj8NCg0KVGhh
-bmtzLA0KdGENCg0KPiArCXRyaXN0YXRlICJNZWRpYVRlayBRdWFkIFNQSSBjb250cm9sbGVyIg0K
-PiArCWRlcGVuZHMgb24gSEFTX0lPTUVNDQo+ICsJaGVscA0KPiArCSAgVGhpcyBlbmFibGVzIHN1
-cHBvcnQgZm9yIHRoZSBRdWFkIFNQSSBjb250cm9sbGVyIGluIG1hc3RlciBtb2RlLg0KPiArCSAg
-VGhpcyBjb250cm9sbGVyIGRvZXMgbm90IHN1cHBvcnQgZ2VuZXJpYyBTUEkuIEl0IG9ubHkgc3Vw
-cG9ydHMNCj4gKwkgIFNQSSBOT1IuDQo+ICsNCj4gIGNvbmZpZyBTUElfSU5URUxfU1BJDQo+ICAJ
-dHJpc3RhdGUNCj4gIA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9NYWtlZmls
-ZSBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvTWFrZWZpbGUNCj4gaW5kZXggMmFkZWRiZS4uMTg5YTE1
-YyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9NYWtlZmlsZQ0KPiArKysgYi9k
-cml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlDQo+IEBAIC0zLDcgKzMsNyBAQCBvYmotJChDT05G
-SUdfTVREX1NQSV9OT1IpCSs9IHNwaS1ub3Iubw0KPiAgb2JqLSQoQ09ORklHX1NQSV9BU1BFRURf
-U01DKQkrPSBhc3BlZWQtc21jLm8NCj4gIG9iai0kKENPTkZJR19TUElfQ0FERU5DRV9RVUFEU1BJ
-KQkrPSBjYWRlbmNlLXF1YWRzcGkubw0KPiAgb2JqLSQoQ09ORklHX1NQSV9ISVNJX1NGQykJKz0g
-aGlzaS1zZmMubw0KPiAtb2JqLSQoQ09ORklHX01URF9NVDgxeHhfTk9SKSAgICArPSBtdGstcXVh
-ZHNwaS5vDQo+ICtvYmotJChDT05GSUdfU1BJX01US19RVUFEU1BJKSAgICArPSBtdGstcXVhZHNw
-aS5vDQo+ICBvYmotJChDT05GSUdfU1BJX05YUF9TUElGSSkJKz0gbnhwLXNwaWZpLm8NCj4gIG9i
-ai0kKENPTkZJR19TUElfSU5URUxfU1BJKQkrPSBpbnRlbC1zcGkubw0KPiAgb2JqLSQoQ09ORklH
-X1NQSV9JTlRFTF9TUElfUENJKQkrPSBpbnRlbC1zcGktcGNpLm8NCj4gDQo=
+On Tue, 2019-01-15 at 06:59 +0000, Tudor.Ambarus@microchip.com wrote:
+> Hi, Ryder,
+> 
+> On 01/14/2019 07:12 AM, Ryder Lee wrote:
+> > From: Guochun Mao <guochun.mao@mediatek.com>
+> > 
+> > SNOR_HWCAPS_READ is a basic read mode for both flash and controller,
+> > it should be supported, so add the capcity for mtk-quadspi.
+> 
+> Since I couldn't find a datasheet for mt8173, I tend to share your assumption -
+> SNOR_HWCAPS_READ should be supported by this controller. However, it's always
+> better to test it and not rely on assumptions. You can test it by forcing the
+> mask to have just SNOR_HWCAPS_READ | SNOR_HWCAPS_PP set. Or you already tested it?
+
+Our IPs all support SNOR_HWCAPS_READ, Ryedr and I have test it.
+
+> 
+> You have a typo in capcity. Maybe substitute it with capability or "add this
+> flag to spi_nor_hwcaps mask"
+
+Ok, we'll correct it next version.
+
+Thanks.
+Guochun
+> 
+> > 
+> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> 
+> You should add your SoB tag, because you are sending a patch that is not yours.
+> 
+> Cheers,
+> ta
+> 
+> > ---
+> > Changes since v1: none. 
+> > ---
+> >  drivers/mtd/spi-nor/mtk-quadspi.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+> > index 5442993..d9eed68 100644
+> > --- a/drivers/mtd/spi-nor/mtk-quadspi.c
+> > +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+> > @@ -431,7 +431,8 @@ static int mtk_nor_init(struct mtk_nor *mtk_nor,
+> >  			struct device_node *flash_node)
+> >  {
+> >  	const struct spi_nor_hwcaps hwcaps = {
+> > -		.mask = SNOR_HWCAPS_READ_FAST |
+> > +		.mask = SNOR_HWCAPS_READ |
+> > +			SNOR_HWCAPS_READ_FAST |
+> >  			SNOR_HWCAPS_READ_1_1_2 |
+> >  			SNOR_HWCAPS_PP,
+> >  	};
+> > 
