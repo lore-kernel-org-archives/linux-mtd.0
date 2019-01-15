@@ -1,28 +1,21 @@
-Received: from mail-db5eur03on060e.outbound.protection.outlook.com
- ([2a01:111:f400:fe0a::60e]
- helo=EUR03-DB5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1giyBl-0002QZ-GZ
- for linux-mtd@lists.infradead.org; Mon, 14 Jan 2019 09:05:48 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Mark Brown
- <broonie@kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-CC: Vignesh R <vigneshr@ti.com>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Piotr Bugalski <bugalski.piotr@gmail.com>
-Subject: RE: [PATCH v3 5/7] mtd: devices: m25p80: Use the spi-mem dirmap API
-Date: Mon, 14 Jan 2019 09:05:40 +0000
-Message-ID: <VI1PR04MB5726BC9D689A7A300E49082299800@VI1PR04MB5726.eurprd04.prod.outlook.com>
-References: <20181106160536.13415-1-boris.brezillon@bootlin.com>
- <20181106160536.13415-6-boris.brezillon@bootlin.com>
-In-Reply-To: <20181106160536.13415-6-boris.brezillon@bootlin.com>
+From: <Tudor.Ambarus@microchip.com>
+To: <ryder.lee@mediatek.com>, <marek.vasut@gmail.com>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>
+CC: <robh+dt@kernel.org>, <weijie.gao@mediatek.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <guochun.mao@mediatek.com>
+Subject: Re: [PATCH v1 2/3] mtd: spi-nor: mtk-quadspi: add SNOR_HWCAPS_READ
+ for capcity setting
+Date: Tue, 15 Jan 2019 06:59:11 +0000
+Message-ID: <8afdb25c-894b-0a89-b7a8-b754fb4ba905@microchip.com>
+References: <67e650ca4fcaaddbbc98bf4e1cbe04647c990dc3.1547442452.git.ryder.lee@mediatek.com>
+ <54bb8a9d517e2ee35018d78457c6aa6a4970e644.1547442452.git.ryder.lee@mediatek.com>
+In-Reply-To: <54bb8a9d517e2ee35018d78457c6aa6a4970e644.1547442452.git.ryder.lee@mediatek.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A3F225B418569B4D909CFCF3A5EB32D1@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,203 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Tuesday, November 6, 2018 9:36 PM
-> To: David Woodhouse <dwmw2@infradead.org>; Brian Norris
-> <computersforpeace@gmail.com>; Boris Brezillon
-> <boris.brezillon@bootlin.com>; Marek Vasut <marek.vasut@gmail.com>;
-> Richard Weinberger <richard@nod.at>; linux-mtd@lists.infradead.org; Mark
-> Brown <broonie@kernel.org>; linux-spi@vger.kernel.org
-> Cc: Vignesh R <vigneshr@ti.com>; Cyrille Pitchen
-> <cyrille.pitchen@microchip.com>; Tudor Ambarus
-> <tudor.ambarus@microchip.com>; Yogesh Narayan Gaur
-> <yogeshnarayan.gaur@nxp.com>; Frieder Schrempf
-> <frieder.schrempf@exceet.de>; Miquel Raynal <miquel.raynal@bootlin.com>;
-> Piotr Bugalski <bugalski.piotr@gmail.com>
-> Subject: [PATCH v3 5/7] mtd: devices: m25p80: Use the spi-mem dirmap API
->=20
-> Make use of the spi-mem direct mapping API to let advanced controllers
-> optimize read/write operations when they support direct mapping.
->=20
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-
-> ---
-> Changes in v3:
-> - Make nor->read/write() functional before the direct mappings have been
->   created
-> - Add Miquel's R-b
->=20
-> Changes in v2:
-> - Rename the dirmap fields
-> - Return directly after calling dirmap_read/write() and let the spi-nor
->   framework call us again if those functions returned less than the
->   requested length
-> ---
->  drivers/mtd/devices/m25p80.c | 102 +++++++++++++++++++++++++++++++++--
->  1 file changed, 99 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index c4a1d04b8c80..847188e8a99e 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -31,8 +31,70 @@
->  struct m25p {
->  	struct spi_mem		*spimem;
->  	struct spi_nor		spi_nor;
-> +	struct {
-> +		struct spi_mem_dirmap_desc *rdesc;
-> +		struct spi_mem_dirmap_desc *wdesc;
-> +	} dirmap;
->  };
->=20
-> +static int m25p_create_write_dirmap(struct m25p *flash) {
-> +	struct spi_nor *nor =3D &flash->spi_nor;
-> +	struct spi_mem_dirmap_info info =3D {
-> +		.op_tmpl =3D SPI_MEM_OP(SPI_MEM_OP_CMD(nor-
-> >program_opcode, 1),
-> +				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-> +				      SPI_MEM_OP_NO_DUMMY,
-> +				      SPI_MEM_OP_DATA_OUT(0, NULL, 1)),
-> +		.offset =3D 0,
-> +		.length =3D flash->spi_nor.mtd.size,
-> +	};
-> +	struct spi_mem_op *op =3D &info.op_tmpl;
-> +
-> +	/* get transfer protocols. */
-> +	op->cmd.buswidth =3D spi_nor_get_protocol_inst_nbits(nor-
-> >write_proto);
-> +	op->addr.buswidth =3D spi_nor_get_protocol_addr_nbits(nor-
-> >write_proto);
-> +	op->dummy.buswidth =3D op->addr.buswidth;
-> +	op->data.buswidth =3D spi_nor_get_protocol_data_nbits(nor-
-> >write_proto);
-> +
-> +	if (nor->program_opcode =3D=3D SPINOR_OP_AAI_WP && nor-
-> >sst_write_second)
-> +		op->addr.nbytes =3D 0;
-> +
-> +	flash->dirmap.wdesc =3D spi_mem_dirmap_create(flash->spimem, &info);
-> +	if (IS_ERR(flash->dirmap.wdesc))
-> +		return PTR_ERR(flash->dirmap.wdesc);
-> +
-> +	return 0;
-> +}
-> +
-> +static int m25p_create_read_dirmap(struct m25p *flash) {
-> +	struct spi_nor *nor =3D &flash->spi_nor;
-> +	struct spi_mem_dirmap_info info =3D {
-> +		.op_tmpl =3D SPI_MEM_OP(SPI_MEM_OP_CMD(nor-
-> >read_opcode, 1),
-> +				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-> +				      SPI_MEM_OP_DUMMY(nor->read_dummy,
-> 1),
-> +				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
-> +		.offset =3D 0,
-> +		.length =3D flash->spi_nor.mtd.size,
-> +	};
-> +	struct spi_mem_op *op =3D &info.op_tmpl;
-> +
-> +	/* get transfer protocols. */
-> +	op->cmd.buswidth =3D spi_nor_get_protocol_inst_nbits(nor->read_proto);
-> +	op->addr.buswidth =3D spi_nor_get_protocol_addr_nbits(nor-
-> >read_proto);
-> +	op->dummy.buswidth =3D op->addr.buswidth;
-> +	op->data.buswidth =3D spi_nor_get_protocol_data_nbits(nor-
-> >read_proto);
-> +
-> +	/* convert the dummy cycles to the number of bytes */
-> +	op->dummy.nbytes =3D (nor->read_dummy * op->dummy.buswidth) / 8;
-> +
-> +	flash->dirmap.rdesc =3D spi_mem_dirmap_create(flash->spimem, &info);
-> +	if (IS_ERR(flash->dirmap.rdesc))
-> +		return PTR_ERR(flash->dirmap.rdesc);
-> +
-> +	return 0;
-> +}
-> +
->  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int le=
-n)  {
->  	struct m25p *flash =3D nor->priv;
-> @@ -92,6 +154,9 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_=
-t to,
-> size_t len,
->  				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
->  	int ret;
->=20
-> +	if (flash->dirmap.wdesc)
-> +		return spi_mem_dirmap_write(flash->dirmap.wdesc, to, len,
-> buf);
-> +
->  	/* get transfer protocols. */
->  	op.cmd.buswidth =3D spi_nor_get_protocol_inst_nbits(nor->write_proto);
->  	op.addr.buswidth =3D spi_nor_get_protocol_addr_nbits(nor->write_proto);
-> @@ -128,6 +193,9 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_=
-t
-> from, size_t len,
->  	size_t remaining =3D len;
->  	int ret;
->=20
-> +	if (flash->dirmap.rdesc)
-> +		return spi_mem_dirmap_read(flash->dirmap.rdesc, from, len,
-> buf);
-> +
->  	/* get transfer protocols. */
->  	op.cmd.buswidth =3D spi_nor_get_protocol_inst_nbits(nor->read_proto);
->  	op.addr.buswidth =3D spi_nor_get_protocol_addr_nbits(nor->read_proto);
-> @@ -231,19 +299,47 @@ static int m25p_probe(struct spi_mem *spimem)
->  	if (ret)
->  		return ret;
->=20
-> -	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-> -				   data ? data->nr_parts : 0);
-> +	ret =3D m25p_create_write_dirmap(flash);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D m25p_create_read_dirmap(flash);
-> +	if (ret)
-> +		goto err_destroy_write_dirmap;
-> +
-> +	ret =3D mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-> +				  data ? data->nr_parts : 0);
-> +	if (ret)
-> +		goto err_destroy_read_dirmap;
-> +
-> +	return 0;
-> +
-> +err_destroy_read_dirmap:
-> +	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-> +
-> +err_destroy_write_dirmap:
-> +	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-> +
-> +	return ret;
->  }
->=20
->=20
->  static int m25p_remove(struct spi_mem *spimem)  {
->  	struct m25p	*flash =3D spi_mem_get_drvdata(spimem);
-> +	int ret;
->=20
->  	spi_nor_restore(&flash->spi_nor);
->=20
->  	/* Clean up MTD stuff. */
-> -	return mtd_device_unregister(&flash->spi_nor.mtd);
-> +	ret =3D mtd_device_unregister(&flash->spi_nor.mtd);
-> +	if (ret)
-> +		return ret;
-> +
-> +	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-> +	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-> +
-> +	return 0;
->  }
->=20
->  static void m25p_shutdown(struct spi_mem *spimem)
-> --
-> 2.17.1
+SGksIFJ5ZGVyLA0KDQpPbiAwMS8xNC8yMDE5IDA3OjEyIEFNLCBSeWRlciBMZWUgd3JvdGU6DQo+
+IEZyb206IEd1b2NodW4gTWFvIDxndW9jaHVuLm1hb0BtZWRpYXRlay5jb20+DQo+IA0KPiBTTk9S
+X0hXQ0FQU19SRUFEIGlzIGEgYmFzaWMgcmVhZCBtb2RlIGZvciBib3RoIGZsYXNoIGFuZCBjb250
+cm9sbGVyLA0KPiBpdCBzaG91bGQgYmUgc3VwcG9ydGVkLCBzbyBhZGQgdGhlIGNhcGNpdHkgZm9y
+IG10ay1xdWFkc3BpLg0KDQpTaW5jZSBJIGNvdWxkbid0IGZpbmQgYSBkYXRhc2hlZXQgZm9yIG10
+ODE3MywgSSB0ZW5kIHRvIHNoYXJlIHlvdXIgYXNzdW1wdGlvbiAtDQpTTk9SX0hXQ0FQU19SRUFE
+IHNob3VsZCBiZSBzdXBwb3J0ZWQgYnkgdGhpcyBjb250cm9sbGVyLiBIb3dldmVyLCBpdCdzIGFs
+d2F5cw0KYmV0dGVyIHRvIHRlc3QgaXQgYW5kIG5vdCByZWx5IG9uIGFzc3VtcHRpb25zLiBZb3Ug
+Y2FuIHRlc3QgaXQgYnkgZm9yY2luZyB0aGUNCm1hc2sgdG8gaGF2ZSBqdXN0IFNOT1JfSFdDQVBT
+X1JFQUQgfCBTTk9SX0hXQ0FQU19QUCBzZXQuIE9yIHlvdSBhbHJlYWR5IHRlc3RlZCBpdD8NCg0K
+WW91IGhhdmUgYSB0eXBvIGluIGNhcGNpdHkuIE1heWJlIHN1YnN0aXR1dGUgaXQgd2l0aCBjYXBh
+YmlsaXR5IG9yICJhZGQgdGhpcw0KZmxhZyB0byBzcGlfbm9yX2h3Y2FwcyBtYXNrIg0KDQo+IA0K
+PiBTaWduZWQtb2ZmLWJ5OiBHdW9jaHVuIE1hbyA8Z3VvY2h1bi5tYW9AbWVkaWF0ZWsuY29tPg0K
+DQpZb3Ugc2hvdWxkIGFkZCB5b3VyIFNvQiB0YWcsIGJlY2F1c2UgeW91IGFyZSBzZW5kaW5nIGEg
+cGF0Y2ggdGhhdCBpcyBub3QgeW91cnMuDQoNCkNoZWVycywNCnRhDQoNCj4gLS0tDQo+IENoYW5n
+ZXMgc2luY2UgdjE6IG5vbmUuIA0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvbXRrLXF1
+YWRzcGkuYyB8IDMgKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRl
+bGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9tdGstcXVh
+ZHNwaS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9tdGstcXVhZHNwaS5jDQo+IGluZGV4IDU0NDI5
+OTMuLmQ5ZWVkNjggMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvbXRrLXF1YWRz
+cGkuYw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL210ay1xdWFkc3BpLmMNCj4gQEAgLTQz
+MSw3ICs0MzEsOCBAQCBzdGF0aWMgaW50IG10a19ub3JfaW5pdChzdHJ1Y3QgbXRrX25vciAqbXRr
+X25vciwNCj4gIAkJCXN0cnVjdCBkZXZpY2Vfbm9kZSAqZmxhc2hfbm9kZSkNCj4gIHsNCj4gIAlj
+b25zdCBzdHJ1Y3Qgc3BpX25vcl9od2NhcHMgaHdjYXBzID0gew0KPiAtCQkubWFzayA9IFNOT1Jf
+SFdDQVBTX1JFQURfRkFTVCB8DQo+ICsJCS5tYXNrID0gU05PUl9IV0NBUFNfUkVBRCB8DQo+ICsJ
+CQlTTk9SX0hXQ0FQU19SRUFEX0ZBU1QgfA0KPiAgCQkJU05PUl9IV0NBUFNfUkVBRF8xXzFfMiB8
+DQo+ICAJCQlTTk9SX0hXQ0FQU19QUCwNCj4gIAl9Ow0KPiANCg==
