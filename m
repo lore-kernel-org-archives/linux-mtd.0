@@ -1,20 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjJzV-0005hT-Hs
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 08:22:34 +0000
-Date: Tue, 15 Jan 2019 09:22:29 +0100
+Date: Tue, 15 Jan 2019 09:49:11 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@bootlin.com>, Brian Norris <computersforpeace@gmail.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Boris
- Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: rawnand: denali_dt: remove single anonymous clock
+To: Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
+ <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Liang Yang <liang.yang@amlogic.com>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v8 0/2] mtd: rawnand: meson: add Amlogic NAND driver
  support
-Message-ID: <20190115092229.59e09c2d@xps13>
-In-Reply-To: <1547539894-12898-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1547539894-12898-1-git-send-email-yamada.masahiro@socionext.com>
+Message-ID: <20190115094911.75f4edc9@xps13>
+In-Reply-To: <1544973463-59523-1-git-send-email-jianxin.pan@amlogic.com>
+References: <1544973463-59523-1-git-send-email-jianxin.pan@amlogic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,23 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Masahiro,
+Hi Jianxin,
 
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 15 Jan
-2019 17:11:34 +0900:
+Jianxin Pan <jianxin.pan@amlogic.com> wrote on Sun, 16 Dec 2018
+23:17:41 +0800:
 
-> Commit 6f1fe97bec34 ("mtd: rawnand: denali_dt: add more clocks based
-> on IP datasheet") introduced a more correct binding that requires
-> three named clocks.
+> These two patches try to add initial NAND driver support for Amlogic Meson
+> SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
 >=20
-> Now that all upstream DT files migrated over to it, remove the single
-> anonymous clock support.
+> Changes since V6 at [8]
+>  - fix bitflips checking for blank pages
+>  - trace the latest commit with nand/next branch
+>  - checking the return of meson_nand_op_get_dma_safe_*input/output*_buf
+>  - add .detach_chip for free meson_nand.data_buf/info_buf
+>=20
 
-I would love to do that but I think this is against the "DT backward
-compatibility rule". Anyway, IIRC it is accepted that this kind of
-rule might be broken if decided per the arch-maintainer (in this
-case, you I suppose). So if this is really what you want, I'll queue
-it.
+Can you send a v9 with the build failre (object_is_on_stack pb) fixed
+and the Kconfig entry updated (the Meson common clock thing) as
+suggested by Martin?
 
 
 Thanks,
