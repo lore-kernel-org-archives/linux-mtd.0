@@ -14,10 +14,9 @@ CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v7 2/5] mtd: spi-nor: add octal read flag for flash
- mt35xu512aba
-Date: Tue, 15 Jan 2019 10:05:16 +0000
-Message-ID: <1547546584-5254-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v7 3/5] mtd: m25p80: add support of octal mode I/O transfer
+Date: Tue, 15 Jan 2019 10:05:22 +0000
+Message-ID: <1547546584-5254-4-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -33,31 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add octal read flag for flash mt35xu512aba.
-This flash, mt35xu512aba, is only complaint to SFDP JESD216B and does
-not seem to support newer JESD216C standard that provides auto
-detection of Octal mode capabilities and opcodes. Therefore, this
-capability is manually added using new SPI_NOR_OCTAL_READ flag.
+Add support for octal mode I/O data transfer based on the controller (spi)
+mode.
+Assign hw-capability mask bits for octal transfer.
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
 Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/m25p80.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 872d70722672..53a3bcc6a55b 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1877,7 +1877,8 @@ static const struct flash_info spi_nor_ids[] =3D {
- 	/* Micron */
- 	{
- 		"mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
--			SECT_4K | USE_FSR | SPI_NOR_4B_OPCODES)
-+			SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
-+			SPI_NOR_4B_OPCODES)
- 	},
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c4a1d04b8c80..651bab6d4e31 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -195,7 +195,14 @@ static int m25p_probe(struct spi_mem *spimem)
+ 	spi_mem_set_drvdata(spimem, flash);
+ 	flash->spimem =3D spimem;
 =20
- 	/* PMC */
+-	if (spi->mode & SPI_RX_QUAD) {
++	if (spi->mode & SPI_RX_OCTAL) {
++		hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_8;
++
++		if (spi->mode & SPI_TX_OCTAL)
++			hwcaps.mask |=3D (SNOR_HWCAPS_READ_1_8_8 |
++					SNOR_HWCAPS_PP_1_1_8 |
++					SNOR_HWCAPS_PP_1_8_8);
++	} else if (spi->mode & SPI_RX_QUAD) {
+ 		hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_4;
+=20
+ 		if (spi->mode & SPI_TX_QUAD)
 --=20
 2.17.1
