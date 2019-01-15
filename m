@@ -1,21 +1,19 @@
-Message-ID: <1547539075.18705.3.camel@mtkswgap22>
-Subject: Re: [PATCH v1 3/3] mtd: spi-nor: mtk-quadspi: rename config to a
- common one
-From: Ryder Lee <ryder.lee@mediatek.com>
-To: <Tudor.Ambarus@microchip.com>
-CC: <marek.vasut@gmail.com>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <robh+dt@kernel.org>,
- <weijie.gao@mediatek.com>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Date: Tue, 15 Jan 2019 15:57:55 +0800
-In-Reply-To: <fc95a69a-6a2e-fc98-d047-b0c93843fc56@microchip.com>
-References: <67e650ca4fcaaddbbc98bf4e1cbe04647c990dc3.1547442452.git.ryder.lee@mediatek.com>
- <45dc2817e7f4baf5113de247b1a2cb30bf252d93.1547442452.git.ryder.lee@mediatek.com>
- <fc95a69a-6a2e-fc98-d047-b0c93843fc56@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
+Received: from conuserg-07.nifty.com ([210.131.2.74])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gjJpT-0002H3-Eu
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 08:12:13 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <bbrezillon@kernel.org>
+Subject: [PATCH] mtd: rawnand: denali_dt: remove single anonymous clock support
+Date: Tue, 15 Jan 2019 17:11:34 +0900
+Message-Id: <1547539894-12898-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2019-01-15 at 07:34 +0000, Tudor.Ambarus@microchip.com wrote:
-> Hi, Ryder,
-> 
-> On 01/14/2019 07:12 AM, Ryder Lee wrote:
-> > The quadspi is a generic communication interface which could be shared
-> > with other MediaTek SoCs. Hence rename it to a common one.
-> > 
-> > Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-> > ---
-> > Changes since v1: rebase to v5.0-rc1. 
-> 
-> The patch doesn't apply on v5.0-rc1 or rc2.
-> > ---
-> >  drivers/mtd/spi-nor/Kconfig  | 16 ++++++++--------
-> >  drivers/mtd/spi-nor/Makefile |  2 +-
-> >  2 files changed, 9 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> > index b433e5f..99d9d53 100644
-> > --- a/drivers/mtd/spi-nor/Kconfig
-> > +++ b/drivers/mtd/spi-nor/Kconfig
-> > @@ -7,14 +7,6 @@ menuconfig MTD_SPI_NOR
-> >  
-> >  if MTD_SPI_NOR
-> >  
-> > -config MTD_MT81xx_NOR
-> > -	tristate "Mediatek MT81xx SPI NOR flash controller"
-> > -	depends on HAS_IOMEM
-> > -	help
-> > -	  This enables access to SPI NOR flash, using MT81xx SPI NOR flash
-> > -	  controller. This controller does not support generic SPI BUS, it only
-> > -	  supports SPI NOR Flash.
-> > -
-> >  config MTD_SPI_NOR_USE_4K_SECTORS
-> >  	bool "Use small 4096 B erase sectors"
-> >  	default y
-> > @@ -68,6 +60,14 @@ config SPI_NXP_SPIFI
-> >  	  Flash. Enable this option if you have a device with a SPIFI
-> >  	  controller and want to access the Flash as a mtd device.
-> >  
-> > +config SPI_MTK_QUADSPI
-> 
-> Since you are moving the config into the file, would you mind to put your config
-> in an alphabetical order?
-> 
-> Thanks,
-> ta
+Commit 6f1fe97bec34 ("mtd: rawnand: denali_dt: add more clocks based
+on IP datasheet") introduced a more correct binding that requires
+three named clocks.
 
-Okay, I will send a new one to fix them.
+Now that all upstream DT files migrated over to it, remove the single
+anonymous clock support.
 
-Thanks,
-Ryder
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-> > +	tristate "MediaTek Quad SPI controller"
-> > +	depends on HAS_IOMEM
-> > +	help
-> > +	  This enables support for the Quad SPI controller in master mode.
-> > +	  This controller does not support generic SPI. It only supports
-> > +	  SPI NOR.
-> > +
-> >  config SPI_INTEL_SPI
-> >  	tristate
-> >  
-> > diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> > index 2adedbe..189a15c 100644
-> > --- a/drivers/mtd/spi-nor/Makefile
-> > +++ b/drivers/mtd/spi-nor/Makefile
-> > @@ -3,7 +3,7 @@ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
-> >  obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
-> >  obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
-> >  obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
-> > -obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
-> > +obj-$(CONFIG_SPI_MTK_QUADSPI)    += mtk-quadspi.o
-> >  obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
-> >  obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
-> >  obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
-> > 
+ drivers/mtd/nand/raw/denali_dt.c | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+index 7c6a8a4..0b5ae24 100644
+--- a/drivers/mtd/nand/raw/denali_dt.c
++++ b/drivers/mtd/nand/raw/denali_dt.c
+@@ -109,25 +109,17 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(denali->host))
+ 		return PTR_ERR(denali->host);
+ 
+-	/*
+-	 * A single anonymous clock is supported for the backward compatibility.
+-	 * New platforms should support all the named clocks.
+-	 */
+ 	dt->clk = devm_clk_get(dev, "nand");
+ 	if (IS_ERR(dt->clk))
+-		dt->clk = devm_clk_get(dev, NULL);
+-	if (IS_ERR(dt->clk)) {
+-		dev_err(dev, "no clk available\n");
+ 		return PTR_ERR(dt->clk);
+-	}
+ 
+ 	dt->clk_x = devm_clk_get(dev, "nand_x");
+ 	if (IS_ERR(dt->clk_x))
+-		dt->clk_x = NULL;
++		return PTR_ERR(dt->clk_x);
+ 
+ 	dt->clk_ecc = devm_clk_get(dev, "ecc");
+ 	if (IS_ERR(dt->clk_ecc))
+-		dt->clk_ecc = NULL;
++		return PTR_ERR(dt->clk_ecc);
+ 
+ 	ret = clk_prepare_enable(dt->clk);
+ 	if (ret)
+@@ -141,19 +133,8 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto out_disable_clk_x;
+ 
+-	if (dt->clk_x) {
+-		denali->clk_rate = clk_get_rate(dt->clk);
+-		denali->clk_x_rate = clk_get_rate(dt->clk_x);
+-	} else {
+-		/*
+-		 * Hardcode the clock rates for the backward compatibility.
+-		 * This works for both SOCFPGA and UniPhier.
+-		 */
+-		dev_notice(dev,
+-			   "necessary clock is missing. default clock rates are used.\n");
+-		denali->clk_rate = 50000000;
+-		denali->clk_x_rate = 200000000;
+-	}
++	denali->clk_rate = clk_get_rate(dt->clk);
++	denali->clk_x_rate = clk_get_rate(dt->clk_x);
+ 
+ 	ret = denali_init(denali);
+ 	if (ret)
+-- 
+2.7.4
