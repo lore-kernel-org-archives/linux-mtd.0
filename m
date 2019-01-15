@@ -14,10 +14,9 @@ CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v7 4/5] spi: nxp-fspi: add octal mode flag bit for octal
- support
-Date: Tue, 15 Jan 2019 10:05:29 +0000
-Message-ID: <1547546584-5254-5-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v7 5/5] arm64: dts: lx2160a: update fspi node
+Date: Tue, 15 Jan 2019 10:05:35 +0000
+Message-ID: <1547546584-5254-6-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -33,28 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add octal mode flags for octal I/O data transfer support.
-NXP FlexSPI controller supports 8 lines Rx/Tx data transfer.
+Flash mt35xu512aba connected to FlexSPI controller supports
+1-1-8/1-8-8 protocol.
+Added flag spi-rx-bus-width and spi-tx-bus-width with values as
+8 and 8 respectively for both flashes connected at CS0 and CS1.
 
 Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 ---
- drivers/spi/spi-nxp-fspi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes for v6:
+- Correct S-o-b tag with full author name as 'Yogesh Narayan Gaur'.
+Changes for v5:
+- None
+Changes for v4:
+- None
+Changes for v3:
+- None
+Changes for v2:
+- None
+---
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-index e23ad9ef028e..adc3c0e14f38 100644
---- a/drivers/spi/spi-nxp-fspi.c
-+++ b/drivers/spi/spi-nxp-fspi.c
-@@ -952,8 +952,8 @@ static int nxp_fspi_probe(struct platform_device *pdev)
- 	if (!ctlr)
- 		return -ENOMEM;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64=
+/boot/dts/freescale/fsl-lx2160a-rdb.dts
+index 70658946fbbe..9df37b159415 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+@@ -60,6 +60,8 @@
+ 		m25p,fast-read;
+ 		spi-max-frequency =3D <50000000>;
+ 		reg =3D <0>;
++		spi-rx-bus-width =3D <8>;
++		spi-tx-bus-width =3D <8>;
+ 	};
 =20
--	ctlr->mode_bits =3D SPI_RX_DUAL | SPI_RX_QUAD |
--			  SPI_TX_DUAL | SPI_TX_QUAD;
-+	ctlr->mode_bits =3D SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL |
-+			  SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL;
+ 	mt35xu512aba1: flash@1 {
+@@ -69,6 +71,8 @@
+ 		m25p,fast-read;
+ 		spi-max-frequency =3D <50000000>;
+ 		reg =3D <1>;
++		spi-rx-bus-width =3D <8>;
++		spi-tx-bus-width =3D <8>;
+ 	};
+ };
 =20
- 	f =3D spi_controller_get_devdata(ctlr);
- 	f->dev =3D dev;
 --=20
 2.17.1
