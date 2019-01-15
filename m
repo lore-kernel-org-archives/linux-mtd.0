@@ -1,37 +1,22 @@
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Shawn Guo <shawnguo@kernel.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "broonie@kernel.org"
- <broonie@kernel.org>, Li Yang <leoyang.li@nxp.com>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "david.wolfe@nxp.com" <david.wolfe@nxp.com>, "fabio.estevam@nxp.com"
- <fabio.estevam@nxp.com>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "yogeshnarayan.gaur@nxp.com"
- <yogeshnarayan.gaur@nxp.com>, "han.xu@nxp.com" <han.xu@nxp.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 5/7] ARM: dts: ls1021a: Remove fsl, qspi-has-second-chip
- as it is not used
-Date: Tue, 15 Jan 2019 15:24:01 +0000
-Message-ID: <7ffa6d92-3fdd-f838-ab6d-185ea5f1c103@kontron.de>
-References: <20190107092823.11188-1-frieder.schrempf@kontron.de>
- <20190107092823.11188-6-frieder.schrempf@kontron.de>
- <20190113033117.GG11426@dragon>
- <ee3eb5d5-4b04-002e-5e49-d4b766138ec5@kontron.de>
- <20190115151818.GD13895@dragon>
-In-Reply-To: <20190115151818.GD13895@dragon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A70D2C538BB6254E8E263CC9273AD2A0@snt-world.com>
-Content-Transfer-Encoding: base64
+From: Jianxin Pan <jianxin.pan@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+CC: Jianxin Pan <jianxin.pan@amlogic.com>, David Woodhouse
+ <dwmw2@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Liang Yang
+ <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v9 0/2]  mtd: rawnand: meson: add Amlogic NAND driver support
+Date: Tue, 15 Jan 2019 23:38:02 +0800
+Message-ID: <1547566684-57472-1-git-send-email-jianxin.pan@amlogic.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,21 +26,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMTUuMDEuMTkgMTY6MTgsIFNoYXduIEd1byB3cm90ZToNCj4gT24gTW9uLCBKYW4gMTQsIDIw
-MTkgYXQgMDg6MTg6NDlBTSArMDAwMCwgU2NocmVtcGYgRnJpZWRlciB3cm90ZToNCj4+IEhpIFNo
-YXduLA0KPj4NCj4+IE9uIDEzLjAxLjE5IDA0OjMxLCBTaGF3biBHdW8gd3JvdGU6DQo+Pj4gT24g
-TW9uLCBKYW4gMDcsIDIwMTkgYXQgMDk6Mjk6NTRBTSArMDAwMCwgU2NocmVtcGYgRnJpZWRlciB3
-cm90ZToNCj4+Pj4gRnJvbTogRnJpZWRlciBTY2hyZW1wZiA8ZnJpZWRlci5zY2hyZW1wZkBrb250
-cm9uLmRlPg0KPj4+Pg0KPj4+PiBBZnRlciBzd2l0Y2hpbmcgdG8gdGhlIG5ldyBGU0wgUVNQSSBk
-cml2ZXIgdGhlIHByb3BlcnR5DQo+Pj4+ICdmc2wscXNwaS1oYXMtc2Vjb25kLWNoaXAnIGlzIG5v
-dCBuZWVkZWQgYW55bW9yZS4NCj4+Pj4NCj4+Pj4gVGhlIGRyaXZlciBub3cgdXNlcyB0aGUgJ3Jl
-ZycgcHJvcGVydHkgdG8gZGV0ZXJtaW5lIHRoZSBidXMgYW5kDQo+Pj4+IHRoZSBjaGlwc2VsZWN0
-Lg0KPj4+Pg0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBGcmllZGVyIFNjaHJlbXBmIDxmcmllZGVyLnNj
-aHJlbXBmQGtvbnRyb24uZGU+DQo+Pj4NCj4+PiBBcHBsaWVkLCB0aGFua3MuDQo+Pg0KPj4gSSBq
-dXN0IG5vdGljZWQsIHRoYXQgdGhpcyBhbmQgdGhlIGFybTY0IHBhdGNoIGRlcGVuZCBvbiB0aGUg
-ZHJpdmVyDQo+PiBjaGFuZ2VzIGZvciA1LjEgdGhhdCBnbyB0aHJvdWdoIHRoZSBTUEkgdHJlZS4g
-U28gSSBndWVzcyB3ZSBjYW4ndCBiZQ0KPj4gc3VyZSB0aGF0IHRoaXMgd2lsbCBiZSBtZXJnZWQg
-aW4gdGhlIHJpZ2h0IG9yZGVyIGFuZCB3ZSBuZWVkIHRvIGRlbGF5DQo+PiB0aGlzIGNsZWFudXAg
-dG8gNS4yLCBvciBhbSBJIHdyb25nPw0KPiANCj4gWW91IGFyZSByaWdodC4gIEkganVzdCBkcm9w
-cGVkIHRoZSBib3RoIHBhdGNoZXMuICBQaW5nIG1lIG9yIHJlc2VuZCB3aGVuDQo+IHRoZXkgYXJl
-IHJlYWR5IHRvIGdvLg0KDQpUaGFua3MsIHdpbGwgZG8gc28uDQoNCkZyaWVkZXI=
+These two patches try to add initial NAND driver support for Amlogic Meson
+SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
+
+Changes since V8 at [9]
+ - fix build failre at object_is_on_stack
+ - update Kconfig as Martin's suggested
+
+Changes since V7 at [8]
+ - fix bitflips checking for blank pages
+ - trace the latest commit with nand/next branch
+ - checking the return of meson_nand_op_get_dma_safe_*input/output*_buf
+ - add .detach_chip for free meson_nand.data_buf/info_buf
+
+Changes since V6 at [7]
+ - use timings->tBERS_max as the maximum time out, delete NFC_CMD_RB_TIMEOUT
+ - fix nand_rw_cmd and support small block flash and which row address less than 3
+ - fix coding style
+ - replace readl/writel_* with readl/writel_relaxed*
+ - delete ECC_SET_PROTECTED_OOB_BYTE and ECC_GET_PROTECTED_OOB_BYTE
+ - implement dma access for read_buf and write_buf, more efficient.
+ - delete waiting dma finish in write process and let NAND_CMD_PAGEPROG and
+RB command go on queuing
+ - add waiting the completed flag of last ecc page be set, for more strict
+
+Changes since v5 at [6]:
+ - use instr->delay_ns in exec_op() to caculate the delay cycle
+ - delete struct meson_nfc_info_format and use macros instead
+ - delete "is_scramble" in struct meson_nfc_nand_chip
+ - add WARN_ON_ONCE() for chip > MAX_CE_NUM
+ - drop param *mtd* or struct *nfc* if param *nand exist
+ - substitute set_data_oob and get_data_oob for prase_data_oob and format_data_oob
+ - split timings caculating and setting timings
+ - move info_buf and data_buf to struct meson_nfc_nand_chip
+
+Changes since v4 at [5]:
+ - remove the initial default divider(CLK_DIV_MASK) in meson_nfc_clk_init()
+ - dt-bindings: remove staus, add "rx" and "tx" clock, and node rename
+
+Changes since v3 at [4]:
+ - remove partition table and some used props from dt-bindings 
+
+Changes since v2 at [3]:
+ - remove some hardcode time value, like twb
+ - use dev wait R/B instead of nand_soft_waitrdy
+ - implement nfc ecc init by ecc helper
+ - rework nfc buffer init to register the maximun buffer when several chips
+ - free nfc buffer when error and cleanup
+ - add variable to teack all the already assigned CS lines
+ - fix mtd->name use the first cs line only
+ - remove dt "nand-enable-scrambler" and use NAND_NEED_SCRAMBLING instead.
+ - move setuping ECC fileds after the identification phase
+ - use nand_scan() and attach_chip()
+ - check one event to return IRQ_NONE
+ - delete cast when of_device_get_match_data
+ - use nand_controller_init() helper
+ - remove nfc driver complains when calling devm_ioremap_resource
+ - clear irqs before setting up irq handler
+
+Changes since v1 at [1]:
+ - adopt property amlogic,nand-enable-scrambler - thanks Martin
+ - drop nand pins in DT
+ - convert clk access to emmc clkc model 
+ - fix regiser field definition alignment
+ - drop nand-user-mode 
+ - parse cs id from DT
+ - rework n2m, m2n function
+ - explain why insert two "IDLE" command
+ - implement exec_op()
+ - drop meson_nfc_get_nand_chip_dts()
+ - release resource once error occur in meson_nfc_nand_chips_init(), 
+ - call nand_cleanup(nand) once mtd_device_register fail
+
+Items not addressed ( or confirmed ) in this version:
+ - convert to ECC conf helper() 
+ - convert to dma coherent API
+ - how to construct mtd->name
+
+[1] https://lkml.kernel.org/r/20180613161314.14894-1-yixun.lan@amlogic.com
+[2] https://lkml.kernel.org/r/20180712211244.11428-1-yixun.lan@amlogic.com
+[3] https://lkml.kernel.org/r/20180719094612.5833-1-yixun.lan@amlogic.com
+[4] https://lkml.kernel.org/r/1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com/
+[5] https://lore.kernel.org/r/1537433449-65213-2-git-send-email-jianxin.pan@amlogic.com/
+[6] https://lore.kernel.org/r/1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com
+[7] https://lore.kernel.org/r/1541090542-19618-1-git-send-email-jianxin.pan@amlogic.com
+[8] http://lkml.kernel.org/r/1542386439-30166-1-git-send-email-jianxin.pan@amlogic.com
+[9] http://lkml.kernel.org/r/1544973463-59523-1-git-send-email-jianxin.pan@amlogic.com
+
+Liang Yang (2):
+  dt-bindings: nand: meson: add Amlogic NAND controller driver
+  mtd: rawnand: meson: add support for Amlogic NAND flash controller
+
+ .../devicetree/bindings/mtd/amlogic,meson-nand.txt |   60 +
+ drivers/mtd/nand/raw/Kconfig                       |    8 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/meson_nand.c                  | 1468 ++++++++++++++++++++
+ 4 files changed, 1537 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/meson_nand.c
+
+-- 
+1.9.1
