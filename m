@@ -14,9 +14,10 @@ CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v7 3/5] mtd: m25p80: add support of octal mode I/O transfer
-Date: Tue, 15 Jan 2019 10:05:22 +0000
-Message-ID: <1547546584-5254-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v7 4/5] spi: nxp-fspi: add octal mode flag bit for octal
+ support
+Date: Tue, 15 Jan 2019 10:05:29 +0000
+Message-ID: <1547546584-5254-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -32,34 +33,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for octal mode I/O data transfer based on the controller (spi)
-mode.
-Assign hw-capability mask bits for octal transfer.
+Add octal mode flags for octal I/O data transfer support.
+NXP FlexSPI controller supports 8 lines Rx/Tx data transfer.
 
 Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 ---
- drivers/mtd/devices/m25p80.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/spi/spi-nxp-fspi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c4a1d04b8c80..651bab6d4e31 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -195,7 +195,14 @@ static int m25p_probe(struct spi_mem *spimem)
- 	spi_mem_set_drvdata(spimem, flash);
- 	flash->spimem =3D spimem;
+diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
+index e23ad9ef028e..adc3c0e14f38 100644
+--- a/drivers/spi/spi-nxp-fspi.c
++++ b/drivers/spi/spi-nxp-fspi.c
+@@ -952,8 +952,8 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 	if (!ctlr)
+ 		return -ENOMEM;
 =20
--	if (spi->mode & SPI_RX_QUAD) {
-+	if (spi->mode & SPI_RX_OCTAL) {
-+		hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_8;
-+
-+		if (spi->mode & SPI_TX_OCTAL)
-+			hwcaps.mask |=3D (SNOR_HWCAPS_READ_1_8_8 |
-+					SNOR_HWCAPS_PP_1_1_8 |
-+					SNOR_HWCAPS_PP_1_8_8);
-+	} else if (spi->mode & SPI_RX_QUAD) {
- 		hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_4;
+-	ctlr->mode_bits =3D SPI_RX_DUAL | SPI_RX_QUAD |
+-			  SPI_TX_DUAL | SPI_TX_QUAD;
++	ctlr->mode_bits =3D SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL |
++			  SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL;
 =20
- 		if (spi->mode & SPI_TX_QUAD)
+ 	f =3D spi_controller_get_devdata(ctlr);
+ 	f->dev =3D dev;
 --=20
 2.17.1
