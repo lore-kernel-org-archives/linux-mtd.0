@@ -1,26 +1,20 @@
-Received: from gateway30.websitewelcome.com ([192.185.168.15])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjT5A-0006zR-Dy
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 18:05:02 +0000
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
- by gateway30.websitewelcome.com (Postfix) with ESMTP id 199737026
- for <linux-mtd@lists.infradead.org>; Tue, 15 Jan 2019 12:04:47 -0600 (CST)
-Subject: Re: [PATCH] mtd: rawnand: marvell: use struct_size() in devm_kzalloc()
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20190104182051.GA3603@embeddedor> <20190115185804.75e482c3@xps13>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <fade8039-cfd8-18f2-8f1e-8e84661beb4e@embeddedor.com>
-Date: Tue, 15 Jan 2019 12:04:40 -0600
+ id 1gjTFM-0003kQ-Qg
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 18:15:37 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Tudor.Ambarus@microchip.com
+Cc: marek.vasut@gmail.com, boris.brezillon@bootlin.co, dwmw2@infradead.org,
+ computersforpeace@gmail.com, miquel.raynal@bootlin.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add myself as SPI NOR co-maintainer
+Date: Tue, 15 Jan 2019 19:15:19 +0100
+Message-ID: <8417216.IRI4OqamiK@blindfold>
+In-Reply-To: <20190115165740.32450-1-tudor.ambarus@microchip.com>
+References: <20190115165740.32450-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20190115185804.75e482c3@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 1/15/19 11:58 AM, Miquel Raynal wrote:
-
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
->> ---
+Am Dienstag, 15. Januar 2019, 17:57:52 CET schrieb Tudor.Ambarus@microchip.com:
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> Applied to nand/next.
+> I have been reviewing and contributing to the SPI NOR subsystem
+> for the last few months and I'm willing to continue doing so.
+> Volunteer as a maintainer for the SPI NOR part of the MTD subsystem.
 > 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6682420421c1..7deb0e91e3ed 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14081,6 +14081,7 @@ F:	arch/arm/mach-spear/
+>  
+>  SPI NOR SUBSYSTEM
+>  M:	Marek Vasut <marek.vasut@gmail.com>
+> +M:	Tudor Ambarus <tudor.ambarus@microchip.com>
+>  L:	linux-mtd@lists.infradead.org
+>  W:	http://www.linux-mtd.infradead.org/
+>  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
 
-Thanks, Miquèl.
+Nice to have you on board! :-)
 
---
-Gustavo
+Acked-by: Richard Weinberger <richard@nod.at>
+
+Thanks,
+//richard
