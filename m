@@ -1,4 +1,4 @@
-Date: Tue, 15 Jan 2019 17:52:32 +0100
+Date: Tue, 15 Jan 2019 17:53:22 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Jianxin Pan <jianxin.pan@amlogic.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -15,9 +15,10 @@ Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
  <devicetree@vger.kernel.org>
 Subject: Re: [PATCH v9 0/2]  mtd: rawnand: meson: add Amlogic NAND driver
  support
-Message-ID: <20190115175232.3d82d4a9@xps13>
-In-Reply-To: <1547566684-57472-1-git-send-email-jianxin.pan@amlogic.com>
+Message-ID: <20190115175322.4aa4b5db@xps13>
+In-Reply-To: <20190115175232.3d82d4a9@xps13>
 References: <1547566684-57472-1-git-send-email-jianxin.pan@amlogic.com>
+ <20190115175232.3d82d4a9@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -30,23 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jianxin,
 
-Jianxin Pan <jianxin.pan@amlogic.com> wrote on Tue, 15 Jan 2019
-23:38:02 +0800:
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Tue, 15 Jan 2019
+17:52:32 +0100:
 
-> These two patches try to add initial NAND driver support for Amlogic Meson
-> SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
+> Hi Jianxin,
 >=20
-> Changes since V8 at [9]
->  - fix build failre at object_is_on_stack
->  - update Kconfig as Martin's suggested
+> Jianxin Pan <jianxin.pan@amlogic.com> wrote on Tue, 15 Jan 2019
+> 23:38:02 +0800:
+>=20
+> > These two patches try to add initial NAND driver support for Amlogic Me=
+son
+> > SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
+> >=20
+> > Changes since V8 at [9]
+> >  - fix build failre at object_is_on_stack
+> >  - update Kconfig as Martin's suggested
+>=20
+> Thanks for this last version, looks good to me. Could you please send a
+> patch to add a MAINTAINERS entry?
 
-Thanks for this last version, looks good to me. Could you please send a
-patch to add a MAINTAINERS entry?
-
-Also, can we face any deadly failure if someone compiles this driver
-without the MMC clock driver updated?
+Just to be clear, no need to resend the series.
 
 Thanks,
 Miqu=C3=A8l
