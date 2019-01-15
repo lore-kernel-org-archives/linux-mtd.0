@@ -13,9 +13,9 @@ CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
  <frieder.schrempf@kontron.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v7 5/5] MAINTAINERS: add maintainers for the NXP FlexSPI driver
-Date: Tue, 15 Jan 2019 09:50:53 +0000
-Message-ID: <1547545697-4042-6-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v7 4/5] arm64: defconfig: enable NXP FlexSPI driver
+Date: Tue, 15 Jan 2019 09:50:47 +0000
+Message-ID: <1547545697-4042-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1547545697-4042-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1547545697-4042-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -31,7 +31,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add maintainers for the NXP FlexSPI driver
+Enable driver support of NXP FlexSPI controller.
 
 Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 ---
@@ -40,7 +40,7 @@ Changes for v7:
 Changes for v6:
 - None
 Changes for v5:
-- Add maintainers for binding file
+- None
 Changes for v4:
 - None
 Changes for v3:
@@ -48,26 +48,20 @@ Changes for v3:
 Changes for v2:
 - None
 
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8b6c0d454d7e..c393b590e56d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10927,6 +10927,13 @@ F:	lib/objagg.c
- F:	lib/test_objagg.c
- F:	include/linux/objagg.h
-=20
-+NXP FSPI DRIVER
-+M:	Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-+L:	linux-spi@vger.kernel.org
-+S:	Maintained
-+F:	drivers/spi/spi-nxp-fspi.c
-+F:	Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-+
- OBJTOOL
- M:	Josh Poimboeuf <jpoimboe@redhat.com>
- M:	Peter Zijlstra <peterz@infradead.org>
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 3ef443cfbab6..fe7f35824a79 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -362,6 +362,7 @@ CONFIG_SPI_ROCKCHIP=3Dy
+ CONFIG_SPI_QUP=3Dy
+ CONFIG_SPI_S3C64XX=3Dy
+ CONFIG_SPI_SPIDEV=3Dm
++CONFIG_SPI_NXP_FLEXSPI=3Dy
+ CONFIG_SPMI=3Dy
+ CONFIG_PINCTRL_SINGLE=3Dy
+ CONFIG_PINCTRL_MAX77620=3Dy
 --=20
 2.17.1
