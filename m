@@ -1,20 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjRzM-0005OU-SA
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 16:54:58 +0000
-Date: Tue, 15 Jan 2019 17:54:42 +0100
+ id 1gjRzr-0006uD-SE
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 16:55:29 +0000
+Date: Tue, 15 Jan 2019 17:55:14 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe Kerello <christophe.kerello@st.com>
-Cc: <boris.brezillon@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v4 0/3] mtd: rawnand: add STM32 FMC2 NAND flash
- controller driver
-Message-ID: <20190115175442.6b553a84@xps13>
-In-Reply-To: <1544781488-18723-1-git-send-email-christophe.kerello@st.com>
-References: <1544781488-18723-1-git-send-email-christophe.kerello@st.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH v2 0/7] mtd: rawnand: sunxi: Random cleanups + exec_op
+Message-ID: <20190115175514.10c1926e@xps13>
+In-Reply-To: <20181215082437.9175-1-boris.brezillon@bootlin.com>
+References: <20181215082437.9175-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,30 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christophe,
+Hi Boris,
 
-Christophe Kerello <christophe.kerello@st.com> wrote on Fri, 14 Dec
-2018 10:58:05 +0100:
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Sat, 15 Dec 2018
+09:24:30 +0100:
 
-> This patchset adds the support for the STMicroelectronics FMC2 NAND flash
-> controller found on STM32MP SOCs.
+> Hello,
 >=20
-> This patchset supports:
->   - the command sequencer feature, a hardware accelerator for read/write
->     within a page
->   - the manual mode feature, useful for debug purpose
->   - a maximum 8k page size
->   - following ECC strength and step size
-> 	- nand-ecc-strength =3D <8>, nand-ecc-step-size =3D <512> (BCH8)
-> 	- nand-ecc-strength =3D <4>, nand-ecc-step-size =3D <512> (BCH4)
-> 	- nand-ecc-strength =3D <1>, nand-ecc-step-size =3D <512> (Extended
-> 	  ecc based on HAMMING)
->    =20
-> This patchset has been tested on Micron MT29F8G08ABACAH4 (8-bit SLC NAND)
-> and MT29F8G16ABACAH4 (16-bit SLC NAND)
+> This series converts the sunxi NAND controller driver to exec_op and
+> cleans a few things up.
+>=20
 
 Series applied on nand/next.
-
 
 Thanks,
 Miqu=C3=A8l
