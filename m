@@ -1,27 +1,26 @@
-From: Jianxin Pan <jianxin.pan@amlogic.com>
-Subject: Re: [PATCH v8 0/2] mtd: rawnand: meson: add Amlogic NAND driver
- support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
- Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Liang Yang
- <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <1544973463-59523-1-git-send-email-jianxin.pan@amlogic.com>
- <20190115094911.75f4edc9@xps13>
-Message-ID: <18ad7184-3bbe-4bd1-826a-fce5d31c215c@amlogic.com>
-Date: Tue, 15 Jan 2019 23:44:08 +0800
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gjRtw-0002FT-L0
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 16:49:22 +0000
+Date: Tue, 15 Jan 2019 17:45:38 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Mark Brown
+ <broonie@kernel.org>, linux-spi@vger.kernel.org, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Piotr Bugalski <bugalski.piotr@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>
+Subject: Re: [PATCH v3 6/7] mtd: spinand: Use the spi-mem dirmap API
+Message-ID: <20190115174538.0922e193@xps13>
+In-Reply-To: <20181106160536.13415-7-boris.brezillon@bootlin.com>
+References: <20181106160536.13415-1-boris.brezillon@bootlin.com>
+ <20181106160536.13415-7-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20190115094911.75f4edc9@xps13>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
+Hi Boris,
 
-On 2019/1/15 16:49, Miquel Raynal wrote:
-> Hi Jianxin,
-> 
-> Jianxin Pan <jianxin.pan@amlogic.com> wrote on Sun, 16 Dec 2018
-> 23:17:41 +0800:
-> 
->> These two patches try to add initial NAND driver support for Amlogic Meson
->> SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
->>
->> Changes since V6 at [8]
->>  - fix bitflips checking for blank pages
->>  - trace the latest commit with nand/next branch
->>  - checking the return of meson_nand_op_get_dma_safe_*input/output*_buf
->>  - add .detach_chip for free meson_nand.data_buf/info_buf
->>
-> 
-> Can you send a v9 with the build failre (object_is_on_stack pb) fixed
-> and the Kconfig entry updated (the Meson common clock thing) as
-> suggested by Martin?
-I sent v9 just now, object_is_on_stack build fail is fixed and Kconfig is updated as Martin suggested.
-Thank you for your time.
-> 
-> 
-> Thanks,
-> Miquèl
-> 
-> .
-> 
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  6 Nov 2018
+17:05:35 +0100:
+
+> Make use of the spi-mem direct mapping API to let advanced controllers
+> optimize read/write operations when they support direct mapping.
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+
+Applied to nand/next.
+
+Thanks,
+Miqu=C3=A8l
