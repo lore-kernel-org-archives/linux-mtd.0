@@ -1,53 +1,67 @@
-From: malat@debian.org (Mathieu Malaterre)
-Date: Wed, 16 Jan 2019 20:50:04 +0100
-Subject: [PATCH 2/2] mtd: Annotate implicit fall through in nand_scan_tail
-In-Reply-To: <20190116195004.2499-1-malat@debian.org>
-References: <20190116195004.2499-1-malat@debian.org>
-Message-ID: <20190116195004.2499-2-malat@debian.org>
+From: hauke@hauke-m.de (Hauke Mehrtens)
+Date: Wed, 16 Jan 2019 23:38:48 +0100
+Subject: [PATCH 2/2] mtd: spi-nor: Add support for mx25u3235f
+In-Reply-To: <271e02fa-8ace-b59c-1f74-14231cd883e8@microchip.com>
+References: <20181209170342.9554-1-hauke@hauke-m.de>
+ <20181209170342.9554-3-hauke@hauke-m.de>
+ <271e02fa-8ace-b59c-1f74-14231cd883e8@microchip.com>
+Message-ID: <55443ea0-2ef8-cd2a-152e-0398dc086e13@hauke-m.de>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-There is a plan to build the kernel with -Wimplicit-fallthrough and
-these places in the code produced warnings (W=1).
+On 1/11/19 9:54 AM, Tudor.Ambarus at microchip.com wrote:
+> Hi, Hauke,
+> 
+> On 12/09/2018 07:03 PM, Hauke Mehrtens wrote:
+>> From: Andr? Valentin <avalentin@marcant.net>
+>>
+>> This flash chip was found on the ZyXEL NBG6817
+>>
+>> The datasheet can be found here:
+>> http://www.macronix.com/Lists/Datasheet/Attachments/7438/MX25U3235F,%201.8V,%2032Mb,%20v1.6.pdf
+> 
+> Did you test the flash to see if it works correctly? You should specify this in
+> the commit message.
 
-This commit removes the following warnings:
+Sorry I do not have a device with this flash chip, this patch was
+shipped in OpenWrt for a long time and I wanted to reduce the number of
+patches we carry in OpenWrt.
 
-  drivers/mtd/nand/raw/nand_base.c:5556:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  drivers/mtd/nand/raw/nand_base.c:5575:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  drivers/mtd/nand/raw/nand_base.c:5613:13: warning: this statement may fall through [-Wimplicit-fallthrough=]
+Andr? can you please confirm that this works for you on your device.
 
-Signed-off-by: Mathieu Malaterre <malat@debian.org>
----
- drivers/mtd/nand/raw/nand_base.c | 3 +++
- 1 file changed, 3 insertions(+)
+>>
+>> Signed-off-by: Andr? Valentin <avalentin@marcant.net>
+> 
+> You should add your Signed-off-by tag as you are sending a patch that is not
+> from you.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index cca4b24d2ffa..da344c276088 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5555,6 +5555,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 		}
- 		if (!ecc->read_page)
- 			ecc->read_page = nand_read_page_hwecc_oob_first;
-+		/* fall through */
- 
- 	case NAND_ECC_HW:
- 		/* Use standard hwecc read page function? */
-@@ -5574,6 +5575,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 			ecc->read_subpage = nand_read_subpage;
- 		if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
- 			ecc->write_subpage = nand_write_subpage_hwecc;
-+		/* fall through */
- 
- 	case NAND_ECC_HW_SYNDROME:
- 		if ((!ecc->calculate || !ecc->correct || !ecc->hwctl) &&
-@@ -5611,6 +5613,7 @@ static int nand_scan_tail(struct nand_chip *chip)
- 			ecc->size, mtd->writesize);
- 		ecc->mode = NAND_ECC_SOFT;
- 		ecc->algo = NAND_ECC_HAMMING;
-+		/* fall through */
- 
- 	case NAND_ECC_SOFT:
- 		ret = nand_set_ecc_soft_ops(chip);
--- 
-2.19.2
+No Problem I can add this.
+
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index a21b1a26130d..9925760339ba 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1375,6 +1375,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+>>  	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+>>  	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
+>> +	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64, SECT_4K) },
+>>  	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
+> 
+> It's nicer to order this alphabetically, the entry should be added here.
+
+Ok will change this.
+
+> 
+> The flash supports Fast Read 1-1-2 (3Bh) and Fast Read 1-1-4 (6Bh) hence both
+> SPI_NOR_DUAL_READ and SPI_NOR_QUAD_READ flags should be set too. Can you please
+> test with these flags and if all ok, submit a new patch?
+
+I do not know if the controller in the ZyXEL NBG6817 and the board is
+capable of dual and quad reads.
+
+Hauke
