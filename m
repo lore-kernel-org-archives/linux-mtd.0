@@ -1,15 +1,31 @@
-Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjZV0-00039V-MJ
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 00:56:08 +0000
-From: Hou Tao <houtao1@huawei.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <richard@nod.at>, <dedekind1@gmail.com>, <boris.brezillon@bootlin.com>
-Subject: [PATCH] ubi: account the fastmap data blocks when checking found_pebs
-Date: Wed, 16 Jan 2019 08:59:35 +0800
-Message-ID: <20190116005935.141529-1-houtao1@huawei.com>
+ id 1gja0C-0004I0-Mk
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 01:28:22 +0000
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com
+ [209.85.217.42]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id x0G1Rlop004127
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Jan 2019 10:27:48 +0900
+Received: by mail-vs1-f42.google.com with SMTP id h78so2913850vsi.6
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Jan 2019 17:27:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1547539894-12898-1-git-send-email-yamada.masahiro@socionext.com>
+ <20190115092229.59e09c2d@xps13>
+In-Reply-To: <20190115092229.59e09c2d@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 16 Jan 2019 10:27:11 +0900
+Message-ID: <CAK7LNATnfTQXHrXJQp7732-e7hvd8ORcYubyDmz0KHaRXRMDqQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: denali_dt: remove single anonymous clock
+ support
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,68 +35,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now the data blocks used by current fastmap are not tracked by
-wear-leveling subsystem. So taking these blocks into account
-when checking found_pebs in ubi_wl_init(), else there will
-be ubi assertion as shown below when fastmap is enabled on
-a large NAND Flash (e.g. 2GB):
+(+CC Dinh Nguyen)
 
-[  335.877389] UBI assert failed in ubi_wl_init at 1705 (pid 2349)
-[  335.878315] CPU: 7 PID: 2349 Comm: ubiattach Not tainted 4.20.0-10912-gd5d655675196-dirty #1
-[  335.879436] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
-[  335.881012] Call Trace:
-[  335.881402]  dump_stack+0x5b/0x8b
-[  335.881869]  ubi_wl_init+0xf8b/0x1500
-[  335.882960]  ubi_attach+0x63b/0xaa0
-[  335.883889]  ubi_attach_mtd_dev+0x107f/0x2e50
-[  335.887300]  ctrl_cdev_ioctl+0x13e/0x1d0
-[  335.888910]  do_vfs_ioctl+0x197/0xe60
-[  335.893337]  ksys_ioctl+0x66/0x70
-[  335.893788]  __x64_sys_ioctl+0x6f/0xb0
-[  335.894309]  do_syscall_64+0x91/0x270
-[  335.895337]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Tue, Jan 15, 2019 at 5:22 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Hi Masahiro,
+>
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 15 Jan
+> 2019 17:11:34 +0900:
+>
+> > Commit 6f1fe97bec34 ("mtd: rawnand: denali_dt: add more clocks based
+> > on IP datasheet") introduced a more correct binding that requires
+> > three named clocks.
+> >
+> > Now that all upstream DT files migrated over to it, remove the single
+> > anonymous clock support.
+>
+> I would love to do that but I think this is against the "DT backward
+> compatibility rule".
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- drivers/mtd/ubi/ubi.h | 13 +++++++++++++
- drivers/mtd/ubi/wl.c  |  3 ++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+Yeah, I know this rule, but we break DT binding from time to time.
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index d47b9e436e67..90c28522aa07 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -1235,4 +1235,17 @@ static inline struct ubi_wl_entry *ubi_find_fm_block(const struct ubi_device *ub
- 	return NULL;
- }
- 
-+/**
-+ * ubi_fm_data_blocks - return the number of data blocks used by fastmap
-+ * @ubi: UBI device description object
-+ *
-+ * This function returns zero if fastmap is not available.
-+ */
-+static inline int ubi_fm_data_blocks(struct ubi_device *ubi)
-+{
-+	/* the first block is the super block of fastmap */
-+	if (ubi->fm)
-+		return ubi->fm->used_blocks - 1;
-+	return 0;
-+}
- #endif /* !__UBI_UBI_H__ */
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 6f2ac865ff05..1b8f37ed8063 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1702,7 +1702,8 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 
- 	dbg_wl("found %i PEBs", found_pebs);
- 
--	ubi_assert(ubi->good_peb_count == found_pebs);
-+	ubi_assert(ubi->good_peb_count ==
-+		   found_pebs + ubi_fm_data_blocks(ubi));
- 
- 	reserved_pebs = WL_RESERVED_PEBS;
- 	ubi_fastmap_init(ubi, &reserved_pebs);
+
+
+> Anyway, IIRC it is accepted that this kind of
+> rule might be broken if decided per the arch-maintainer (in this
+> case, you I suppose). So if this is really what you want, I'll queue
+> it.
+
+My platform is fine, but this driver is used by SOCFPGA boards as well.
+
+I CCed the SOCFPGA maintainer, Dinh Nguyen.
+
+
+
 -- 
-2.16.2.dirty
+Best Regards
+Masahiro Yamada
