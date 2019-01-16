@@ -1,87 +1,73 @@
-From: richard@nod.at (Richard Weinberger)
-Date: Wed, 16 Jan 2019 09:00:26 +0100
-Subject: [PATCH] ubi: account the fastmap data blocks when checking
- found_pebs
-In-Reply-To: <20190116005935.141529-1-houtao1@huawei.com>
-References: <20190116005935.141529-1-houtao1@huawei.com>
-Message-ID: <1729890.X3pJ5IsDyS@blindfold>
+From: Joakim.Tjernlund@infinera.com (Joakim Tjernlund)
+Date: Wed, 16 Jan 2019 08:33:13 +0000
+Subject: [PATCH] mtd: cfi: Fixed endless loop problem in CFI when value
+ was written but corrupted.
+In-Reply-To: <20190116003211.GA57460@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+References: <20190116003211.GA57460@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+Message-ID: <acd7f2257808f78aa76840e6789c7f65c08986ef.camel@infinera.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Am Mittwoch, 16. Januar 2019, 01:59:35 CET schrieb Hou Tao:
-> Now the data blocks used by current fastmap are not tracked by
-> wear-leveling subsystem. So taking these blocks into account
-> when checking found_pebs in ubi_wl_init(), else there will
-> be ubi assertion as shown below when fastmap is enabled on
-> a large NAND Flash (e.g. 2GB):
+On Wed, 2019-01-16 at 00:32 +0000, Przemyslaw Sobon wrote:
 > 
-> [  335.877389] UBI assert failed in ubi_wl_init at 1705 (pid 2349)
-> [  335.878315] CPU: 7 PID: 2349 Comm: ubiattach Not tainted 4.20.0-10912-gd5d655675196-dirty #1
-> [  335.879436] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
-> [  335.881012] Call Trace:
-> [  335.881402]  dump_stack+0x5b/0x8b
-> [  335.881869]  ubi_wl_init+0xf8b/0x1500
-> [  335.882960]  ubi_attach+0x63b/0xaa0
-> [  335.883889]  ubi_attach_mtd_dev+0x107f/0x2e50
-> [  335.887300]  ctrl_cdev_ioctl+0x13e/0x1d0
-> [  335.888910]  do_vfs_ioctl+0x197/0xe60
-> [  335.893337]  ksys_ioctl+0x66/0x70
-> [  335.893788]  __x64_sys_ioctl+0x6f/0xb0
-> [  335.894309]  do_syscall_64+0x91/0x270
-> [  335.895337]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> There was an endless loop in CFI Flash driver when a value was written
+> incorrectly. In such case chip_ready returns true but chip_good returns
+> false and we never get out of the loop.
+> 
+> The solution was to break the loop in 2 cases, either device is ready or
+> device is not ready and timeout elapsed. The correctness of the write is
+> checked after the loop ended. That way we ensure the loop always ends.
+> 
+> Signed-off-by: Przemyslaw Sobon <psobon@amazon.com>
+
+
+hmm, current code was introduced by Tokunori Ikegami <ikegami@allied-telesis.co.jp> to address another problem he had.
+See 
+   mtd: cfi_cmdset_0002: Change write buffer to check correct value
+and
+   mtd: cfi_cmdset_0002: Change erase functions to check chip good only
+
+I wonder if you need to wrap an extra loop with retries around chip_good to adress the problem Tokunori had.
+
+Tokunori, what do you think ?
+
+Jocke
 > ---
->  drivers/mtd/ubi/ubi.h | 13 +++++++++++++
->  drivers/mtd/ubi/wl.c  |  3 ++-
->  2 files changed, 15 insertions(+), 1 deletion(-)
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-> index d47b9e436e67..90c28522aa07 100644
-> --- a/drivers/mtd/ubi/ubi.h
-> +++ b/drivers/mtd/ubi/ubi.h
-> @@ -1235,4 +1235,17 @@ static inline struct ubi_wl_entry *ubi_find_fm_block(const struct ubi_device *ub
->  	return NULL;
->  }
->  
-> +/**
-> + * ubi_fm_data_blocks - return the number of data blocks used by fastmap
-> + * @ubi: UBI device description object
-> + *
-> + * This function returns zero if fastmap is not available.
-> + */
-> +static inline int ubi_fm_data_blocks(struct ubi_device *ubi)
-> +{
-> +	/* the first block is the super block of fastmap */
-> +	if (ubi->fm)
-> +		return ubi->fm->used_blocks - 1;
-> +	return 0;
-> +}
->  #endif /* !__UBI_UBI_H__ */
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 6f2ac865ff05..1b8f37ed8063 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -1702,7 +1702,8 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
->  
->  	dbg_wl("found %i PEBs", found_pebs);
->  
-> -	ubi_assert(ubi->good_peb_count == found_pebs);
-> +	ubi_assert(ubi->good_peb_count ==
-> +		   found_pebs + ubi_fm_data_blocks(ubi));
->  
->  	reserved_pebs = WL_RESERVED_PEBS;
->  	ubi_fastmap_init(ubi, &reserved_pebs);
-
-This should get accounted in the loop above.
-         list_for_each_entry(aeb, &ai->fastmap, u.list) {
-
-I agree that this logic needs a redesign.
-Please see this patch series I sent last year but had no time to further work
-on it:
-https://lkml.org/lkml/2018/6/13/755
-
-I'd highly appreciate if you could revive it. :-)
-
-Thanks,
-//richard
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 72428b6bfc47..6cc31d2057e9 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1879,15 +1879,18 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+>                 if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+>                         break;
+> 
+> -               if (chip_good(map, adr, datum)) {
+> -                       xip_enable(map, chip, adr);
+> -                       goto op_done;
+> -               }
+> +               if (chip_ready(map, adr))
+> +                       break;
+> 
+>                 /* Latency issues. Drop the lock, wait a while and retry */
+>                 UDELAY(map, chip, adr, 1);
+>         }
+> 
+> +       if (chip_good(map, adr, datum)) {
+> +               xip_enable(map, chip, adr);
+> +               goto op_done;
+> +       }
+> +
+>         /*
+>          * Recovery from write-buffer programming failures requires
+>          * the write-to-buffer-reset sequence.  Since the last part
+> --
+> 2.16.5
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> https://na01.safelinks.protection.outlook.com/?url=http%3A%2F%2Flists.infradead.org%2Fmailman%2Flistinfo%2Flinux-mtd%2F&amp;data=02%7C01%7Cjoakim.tjernlund%40infinera.com%7C35b64c743938427ffa7208d67b4a2a60%7C285643de5f5b4b03a1530ae2dc8aaf77%7C1%7C1%7C636831955813341722&amp;sdata=TgI7aw8Qv57MY%2B62KWS87kyfte2A8qQY5OFjQc9Vhwc%3D&amp;reserved=0
