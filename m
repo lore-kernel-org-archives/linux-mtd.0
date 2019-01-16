@@ -1,19 +1,15 @@
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25])
+Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjZ8M-0001EZ-0D
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 00:32:43 +0000
-Date: Wed, 16 Jan 2019 00:32:11 +0000
-From: Przemyslaw Sobon <psobon@amazon.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "Richard Weinberger" <richard@nod.at>, <linux-mtd@lists.infradead.org>
-CC: <psobon@amazon.com>
-Subject: [PATCH] mtd: cfi: Fixed endless loop problem in CFI when value was
- written but corrupted.
-Message-ID: <20190116003211.GA57460@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+ id 1gjZV0-00039V-MJ
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 00:56:08 +0000
+From: Hou Tao <houtao1@huawei.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <richard@nod.at>, <dedekind1@gmail.com>, <boris.brezillon@bootlin.com>
+Subject: [PATCH] ubi: account the fastmap data blocks when checking found_pebs
+Date: Wed, 16 Jan 2019 08:59:35 +0800
+Message-ID: <20190116005935.141529-1-houtao1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +19,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There was an endless loop in CFI Flash driver when a value was written
-incorrectly. In such case chip_ready returns true but chip_good returns
-false and we never get out of the loop.
+Now the data blocks used by current fastmap are not tracked by
+wear-leveling subsystem. So taking these blocks into account
+when checking found_pebs in ubi_wl_init(), else there will
+be ubi assertion as shown below when fastmap is enabled on
+a large NAND Flash (e.g. 2GB):
 
-The solution was to break the loop in 2 cases, either device is ready or
-device is not ready and timeout elapsed. The correctness of the write is
-checked after the loop ended. That way we ensure the loop always ends.
+[  335.877389] UBI assert failed in ubi_wl_init at 1705 (pid 2349)
+[  335.878315] CPU: 7 PID: 2349 Comm: ubiattach Not tainted 4.20.0-10912-gd5d655675196-dirty #1
+[  335.879436] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+[  335.881012] Call Trace:
+[  335.881402]  dump_stack+0x5b/0x8b
+[  335.881869]  ubi_wl_init+0xf8b/0x1500
+[  335.882960]  ubi_attach+0x63b/0xaa0
+[  335.883889]  ubi_attach_mtd_dev+0x107f/0x2e50
+[  335.887300]  ctrl_cdev_ioctl+0x13e/0x1d0
+[  335.888910]  do_vfs_ioctl+0x197/0xe60
+[  335.893337]  ksys_ioctl+0x66/0x70
+[  335.893788]  __x64_sys_ioctl+0x6f/0xb0
+[  335.894309]  do_syscall_64+0x91/0x270
+[  335.895337]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Przemyslaw Sobon <psobon@amazon.com>
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/ubi.h | 13 +++++++++++++
+ drivers/mtd/ubi/wl.c  |  3 ++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 72428b6bfc47..6cc31d2057e9 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1879,15 +1879,18 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
- 			break;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index d47b9e436e67..90c28522aa07 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -1235,4 +1235,17 @@ static inline struct ubi_wl_entry *ubi_find_fm_block(const struct ubi_device *ub
+ 	return NULL;
+ }
  
--		if (chip_good(map, adr, datum)) {
--			xip_enable(map, chip, adr);
--			goto op_done;
--		}
-+		if (chip_ready(map, adr))
-+			break;
++/**
++ * ubi_fm_data_blocks - return the number of data blocks used by fastmap
++ * @ubi: UBI device description object
++ *
++ * This function returns zero if fastmap is not available.
++ */
++static inline int ubi_fm_data_blocks(struct ubi_device *ubi)
++{
++	/* the first block is the super block of fastmap */
++	if (ubi->fm)
++		return ubi->fm->used_blocks - 1;
++	return 0;
++}
+ #endif /* !__UBI_UBI_H__ */
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 6f2ac865ff05..1b8f37ed8063 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1702,7 +1702,8 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
  
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1);
- 	}
+ 	dbg_wl("found %i PEBs", found_pebs);
  
-+	if (chip_good(map, adr, datum)) {
-+		xip_enable(map, chip, adr);
-+		goto op_done;
-+	}
-+
- 	/*
- 	 * Recovery from write-buffer programming failures requires
- 	 * the write-to-buffer-reset sequence.  Since the last part
+-	ubi_assert(ubi->good_peb_count == found_pebs);
++	ubi_assert(ubi->good_peb_count ==
++		   found_pebs + ubi_fm_data_blocks(ubi));
+ 
+ 	reserved_pebs = WL_RESERVED_PEBS;
+ 	ubi_fastmap_init(ubi, &reserved_pebs);
 -- 
-2.16.5
+2.16.2.dirty
