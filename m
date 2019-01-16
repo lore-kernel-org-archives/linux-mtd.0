@@ -1,31 +1,19 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gja0C-0004I0-Mk
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 01:28:22 +0000
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com
- [209.85.217.42]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id x0G1Rlop004127
- for <linux-mtd@lists.infradead.org>; Wed, 16 Jan 2019 10:27:48 +0900
-Received: by mail-vs1-f42.google.com with SMTP id h78so2913850vsi.6
- for <linux-mtd@lists.infradead.org>; Tue, 15 Jan 2019 17:27:48 -0800 (PST)
+From: Ryder Lee <ryder.lee@mediatek.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Rob Herring <robh+dt@kernel.org>, Weijie Gao <weijie.gao@mediatek.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, Guochun Mao <guochun.mao@mediatek.com>,
+ Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH v2 2/3] mtd: spi-nor: mtk-quadspi: add SNOR_HWCAPS_READ to
+ spi_nor_hwcaps mask
+Date: Wed, 16 Jan 2019 10:12:04 +0800
+Message-ID: <2afa18c0c898259fc244f15844c5319f71e811df.1547538621.git.ryder.lee@mediatek.com>
+In-Reply-To: <74d710ed89fd505a49bce53b51f6cb489e313dbb.1547538621.git.ryder.lee@mediatek.com>
+References: <74d710ed89fd505a49bce53b51f6cb489e313dbb.1547538621.git.ryder.lee@mediatek.com>
 MIME-Version: 1.0
-References: <1547539894-12898-1-git-send-email-yamada.masahiro@socionext.com>
- <20190115092229.59e09c2d@xps13>
-In-Reply-To: <20190115092229.59e09c2d@xps13>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Wed, 16 Jan 2019 10:27:11 +0900
-Message-ID: <CAK7LNATnfTQXHrXJQp7732-e7hvd8ORcYubyDmz0KHaRXRMDqQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: denali_dt: remove single anonymous clock
- support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,40 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(+CC Dinh Nguyen)
+From: Guochun Mao <guochun.mao@mediatek.com>
 
-On Tue, Jan 15, 2019 at 5:22 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Masahiro,
->
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 15 Jan
-> 2019 17:11:34 +0900:
->
-> > Commit 6f1fe97bec34 ("mtd: rawnand: denali_dt: add more clocks based
-> > on IP datasheet") introduced a more correct binding that requires
-> > three named clocks.
-> >
-> > Now that all upstream DT files migrated over to it, remove the single
-> > anonymous clock support.
->
-> I would love to do that but I think this is against the "DT backward
-> compatibility rule".
+SNOR_HWCAPS_READ should be supported by this controller, so add this
+flag to spi_nor_hwcaps mask.
 
-Yeah, I know this rule, but we break DT binding from time to time.
+Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+---
+Changes since v2: Revise commit msg. 
+Changes since v1: none. 
+---
+ drivers/mtd/spi-nor/mtk-quadspi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
-
-> Anyway, IIRC it is accepted that this kind of
-> rule might be broken if decided per the arch-maintainer (in this
-> case, you I suppose). So if this is really what you want, I'll queue
-> it.
-
-My platform is fine, but this driver is used by SOCFPGA boards as well.
-
-I CCed the SOCFPGA maintainer, Dinh Nguyen.
-
-
-
+diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+index 5442993..d9eed68 100644
+--- a/drivers/mtd/spi-nor/mtk-quadspi.c
++++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+@@ -431,7 +431,8 @@ static int mtk_nor_init(struct mtk_nor *mtk_nor,
+ 			struct device_node *flash_node)
+ {
+ 	const struct spi_nor_hwcaps hwcaps = {
+-		.mask = SNOR_HWCAPS_READ_FAST |
++		.mask = SNOR_HWCAPS_READ |
++			SNOR_HWCAPS_READ_FAST |
+ 			SNOR_HWCAPS_READ_1_1_2 |
+ 			SNOR_HWCAPS_PP,
+ 	};
 -- 
-Best Regards
-Masahiro Yamada
+1.9.1
