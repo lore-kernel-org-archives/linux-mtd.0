@@ -1,18 +1,17 @@
-From: Ryder Lee <ryder.lee@mediatek.com>
-To: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Rob Herring <robh+dt@kernel.org>, Weijie Gao <weijie.gao@mediatek.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, Ryder Lee <ryder.lee@mediatek.com>
-Subject: [PATCH v2 3/3] mtd: spi-nor: mtk-quadspi: rename config to a common
- one
-Date: Wed, 16 Jan 2019 10:12:05 +0800
-Message-ID: <761c9a0a482795dbc48949e982ab46987b737e08.1547538621.git.ryder.lee@mediatek.com>
-In-Reply-To: <74d710ed89fd505a49bce53b51f6cb489e313dbb.1547538621.git.ryder.lee@mediatek.com>
-References: <74d710ed89fd505a49bce53b51f6cb489e313dbb.1547538621.git.ryder.lee@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]
+ helo=mo-csw.securemx.jp)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gje7d-0004qF-1m
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 05:52:19 +0000
+From: Yoshio Furuyama <tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
+To: bbrezillon@kernel.org, miquel.raynal@bootlin.com
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, frieder.schrempf@kontron.De,
+ peron.clem@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, tmcmc-mb-yfuruyama7@ml.toshiba.co.jp
+Subject: [PATCH] mtd: spinand: Add support for all Toshiba Memory products
+Date: Wed, 16 Jan 2019 14:53:19 +0900
+Message-Id: <20190116055319.2755-1-tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +21,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The quadspi is a generic communication interface which could be shared
-with other MediaTek SoCs. Hence rename it to a common one.
+Add device table for Toshiba Memory products.
+Also, generalize OOB layout structure and function names.
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Yoshio Furuyama <tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
+
 ---
-Changes since v2:
--rebase to v5.0-rc1.
--sort the config in an alphabetical order.
+ drivers/mtd/nand/spi/toshiba.c |   79 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 65 insertions(+), 14 deletions(-)
 
-Changes since v1: none. 
----
- drivers/mtd/spi-nor/Kconfig  | 16 ++++++++--------
- drivers/mtd/spi-nor/Makefile |  2 +-
- 2 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 44fe801..414e887 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -7,14 +7,6 @@ menuconfig MTD_SPI_NOR
+diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
+index 0812655..0916962 100644
+--- a/drivers/mtd/nand/spi/toshiba.c
++++ b/drivers/mtd/nand/spi/toshiba.c
+@@ -25,19 +25,19 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
+ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
  
- if MTD_SPI_NOR
+-static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info *mtd, int section,
++static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				     struct mtd_oob_region *region)
+ {
+-	if (section > 7)
++	if (section > 0)
+ 		return -ERANGE;
  
--config MTD_MT81xx_NOR
--	tristate "Mediatek MT81xx SPI NOR flash controller"
--	depends on HAS_IOMEM
--	help
--	  This enables access to SPI NOR flash, using MT81xx SPI NOR flash
--	  controller. This controller does not support generic SPI BUS, it only
--	  supports SPI NOR Flash.
--
- config MTD_SPI_NOR_USE_4K_SECTORS
- 	bool "Use small 4096 B erase sectors"
- 	default y
-@@ -66,6 +58,14 @@ config SPI_HISI_SFC
- 	help
- 	  This enables support for hisilicon SPI-NOR flash controller.
+-	region->offset = 128 + 16 * section;
+-	region->length = 16;
++	region->offset = mtd->oobsize / 2;
++	region->length = mtd->oobsize / 2;
  
-+config SPI_MTK_QUADSPI
-+	tristate "MediaTek Quad SPI controller"
-+	depends on HAS_IOMEM
-+	help
-+	  This enables support for the Quad SPI controller in master mode.
-+	  This controller does not support generic SPI. It only supports
-+	  SPI NOR.
-+
- config SPI_NXP_SPIFI
- 	tristate "NXP SPI Flash Interface (SPIFI)"
- 	depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index a552efd..4e4d400 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
- obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
- obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
- obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
--obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
-+obj-$(CONFIG_SPI_MTK_QUADSPI)    += mtk-quadspi.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
- obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
- obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
+ 	return 0;
+ }
+ 
+-static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
++static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
+ 				      struct mtd_oob_region *region)
+ {
+ 	if (section > 0)
+@@ -45,17 +45,17 @@ static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
+ 
+ 	/* 2 bytes reserved for BBM */
+ 	region->offset = 2;
+-	region->length = 126;
++	region->length = mtd->oobsize / 2 - 2;
+ 
+ 	return 0;
+ }
+ 
+-static const struct mtd_ooblayout_ops tc58cvg2s0h_ooblayout = {
+-	.ecc = tc58cvg2s0h_ooblayout_ecc,
+-	.free = tc58cvg2s0h_ooblayout_free,
++static const struct mtd_ooblayout_ops tc58cxgxsx_ooblayout = {
++	.ecc = tc58cxgxsx_ooblayout_ecc,
++	.free = tc58cxgxsx_ooblayout_free,
+ };
+ 
+-static int tc58cvg2s0h_ecc_get_status(struct spinand_device *spinand,
++static int tc58cxgxsx_ecc_get_status(struct spinand_device *spinand,
+ 				      u8 status)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+@@ -94,15 +94,66 @@ static int tc58cvg2s0h_ecc_get_status(struct spinand_device *spinand,
+ }
+ 
+ static const struct spinand_info toshiba_spinand_table[] = {
+-	SPINAND_INFO("TC58CVG2S0H", 0xCD,
++	/* 3.3V 1Gb */
++	SPINAND_INFO("TC58CVG0S3", 0xC2,
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
++				     tc58cxgxsx_ecc_get_status)),
++	/* 3.3V 2Gb */
++	SPINAND_INFO("TC58CVG1S3", 0xCB,
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
++				     tc58cxgxsx_ecc_get_status)),
++	/* 3.3V 4Gb */
++	SPINAND_INFO("TC58CVG2S0", 0xCD,
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
++				     tc58cxgxsx_ecc_get_status)),
++	/* 1.8V 1Gb */
++	SPINAND_INFO("TC58CYG0S3", 0xB2,
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
++				     tc58cxgxsx_ecc_get_status)),
++	/* 1.8V 2Gb */
++	SPINAND_INFO("TC58CYG1S3", 0xBB,
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
++				     tc58cxgxsx_ecc_get_status)),
++	/* 1.8V 4Gb */
++	SPINAND_INFO("TC58CYG2S0", 0xBD,
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     SPINAND_HAS_QE_BIT,
+-		     SPINAND_ECCINFO(&tc58cvg2s0h_ooblayout,
+-				     tc58cvg2s0h_ecc_get_status)),
++		     0,
++		     SPINAND_ECCINFO(&tc58cxgxsx_ooblayout,
++				     tc58cxgxsx_ecc_get_status)),
+ };
+ 
+ static int toshiba_spinand_detect(struct spinand_device *spinand)
 -- 
-1.9.1
+1.7.9.5
