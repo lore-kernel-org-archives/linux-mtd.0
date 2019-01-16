@@ -1,14 +1,8 @@
-From: info@communionmarketing.com (Communion Marketing Communication)
-Date: Wed, 16 Jan 2019 18:08:03 -0500
-Subject: =?utf-8?Q?Copie_de_:_Comment_utiliseriez-vous_3000_=D0=B2=E2=80=9A=C2=AC_?=
- =?utf-8?Q?pour_gagner_plus_d'argent?=
-Message-ID: <4d49d6b04cb3e3d37b8ea6592ede3e44@communionmarketing.com>
+From: noreply@outlook.com (shane missler)
+Date: Thu, 17 Jan 2019 01:26:04 +0200
+Subject: SPENDE VON 5 MILLIONEN EURO
+Message-ID: <mailman.1.1547684398.2373.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Ceci est une copie du message que vous avez envoy? ? Communion Communication Marketing via Communion Communication Marketing "Sante au Naturel"
-
-Ceci est un message exp?di? via http://communionmarketing.com/ par :
-ThomasTig <linux-mtd@lists.infradead.org>
-
-Comment gagner 10 000 ??? par jour FAST: https://e13.co/bestinvestsystem97117
+ Dies ist eine pers?nliche Mail, die ich an Sie adressiert habe. Ich bin SHANE MISSLER, aus Florida, USA. Wie Sie bereits wissen, habe ich im Januar 2018 Lotto Jackpot in H?he von $ 451 Millionen (? 330 Millionen) gewonnen und das Geld hat mein Leben und mein Familienleben ver?ndert, aber es wird mein Herz nicht ?ndern, wie ich an dem Tag sagte, an dem ich mein Geld habe. Ich werde dieses Geld f?r die Hilfe der Menschheit verwenden. Ich habe beschlossen, Ihnen die Summe von 5 Millionen Euro an Sie und Ihre Gemeinschaft zu spenden, um diese Spende per E-Mail zu erhalten (shanemissler0 at gmail.com).
