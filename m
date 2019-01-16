@@ -1,68 +1,37 @@
-From: miquel.raynal@bootlin.com (Miquel Raynal)
-Date: Wed, 16 Jan 2019 11:04:57 +0100
-Subject: [PATCH] mtd: spinand: Add support for all Toshiba Memory products
-In-Reply-To: <20190116055319.2755-1-tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
-References: <20190116055319.2755-1-tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
-Message-ID: <20190116110457.6ca57d77@xps13>
+From: vigneshr@ti.com (Vignesh R)
+Date: Wed, 16 Jan 2019 16:00:26 +0530
+Subject: [PATCH v3 1/2] dt-bindings: cadence-quadspi: Add new compatible for
+ AM654 SoC
+In-Reply-To: <20190116103027.22657-1-vigneshr@ti.com>
+References: <20190116103027.22657-1-vigneshr@ti.com>
+Message-ID: <20190116103027.22657-2-vigneshr@ti.com>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Hi Yoshio,
+AM654 SoC has Cadence Octal SPI controller, which is similar to Cadence
+QSPI controller but supports Octal IO(x8 data lines) and Double Data
+Rate(DDR) mode. Add new compatible to support OSPI controller on TI's
+AM654 SoCs.
 
-Yoshio Furuyama <tmcmc-mb-yfuruyama7@ml.toshiba.co.jp> wrote on Wed, 16
-Jan 2019 14:53:19 +0900:
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+v3: No changes
 
-> Add device table for Toshiba Memory products.
-> Also, generalize OOB layout structure and function names.
-> 
-> Signed-off-by: Yoshio Furuyama <tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
-> 
-> ---
->  drivers/mtd/nand/spi/toshiba.c |   79 +++++++++++++++++++++++++++++++++-------
->  1 file changed, 65 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
-> index 0812655..0916962 100644
-> --- a/drivers/mtd/nand/spi/toshiba.c
-> +++ b/drivers/mtd/nand/spi/toshiba.c
-> @@ -25,19 +25,19 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
->  static SPINAND_OP_VARIANTS(update_cache_variants,
->  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
->  
-> -static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
->  				     struct mtd_oob_region *region)
->  {
-> -	if (section > 7)
-> +	if (section > 0)
->  		return -ERANGE;
->  
-> -	region->offset = 128 + 16 * section;
-> -	region->length = 16;
-> +	region->offset = mtd->oobsize / 2;
-> +	region->length = mtd->oobsize / 2;
->  
->  	return 0;
->  }
->  
-> -static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
-> +static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
->  				      struct mtd_oob_region *region)
->  {
->  	if (section > 0)
-> @@ -45,17 +45,17 @@ static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
->  
->  	/* 2 bytes reserved for BBM */
->  	region->offset = 2;
-> -	region->length = 126;
-> +	region->length = mtd->oobsize / 2 - 2;
+ Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-I know this is valid C but I am always puzzled when reading such
-mathematical operation, I would prefer (mtd->oobsize / 2) - 2.
-
-I'm fine with the rest so if there is no other comment I will fix when
-applying.
-
-
-Thanks,
-Miqu?l
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+index bb2075df9b38..4345c3a6f530 100644
+--- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+@@ -4,6 +4,7 @@ Required properties:
+ - compatible : should be one of the following:
+ 	Generic default - "cdns,qspi-nor".
+ 	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
++	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
+ - reg : Contains two entries, each of which is a tuple consisting of a
+ 	physical address and length. The first entry is the address and
+ 	length of the controller register set. The second entry is the
+-- 
+2.20.1
