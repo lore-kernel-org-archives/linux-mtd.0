@@ -1,40 +1,68 @@
-From: richard@nod.at (Richard Weinberger)
-Date: Wed, 16 Jan 2019 10:43:10 +0100
-Subject: [PATCH] ubi: account the fastmap data blocks when checking
- found_pebs
-In-Reply-To: <d43d7cf7-54a9-da64-a1e6-699c6cc20e11@huawei.com>
-References: <20190116005935.141529-1-houtao1@huawei.com>
- <3735706.oOp81Q8WGZ@blindfold>
- <d43d7cf7-54a9-da64-a1e6-699c6cc20e11@huawei.com>
-Message-ID: <2376510.TSDP2SaCWW@blindfold>
+From: miquel.raynal@bootlin.com (Miquel Raynal)
+Date: Wed, 16 Jan 2019 11:04:57 +0100
+Subject: [PATCH] mtd: spinand: Add support for all Toshiba Memory products
+In-Reply-To: <20190116055319.2755-1-tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
+References: <20190116055319.2755-1-tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
+Message-ID: <20190116110457.6ca57d77@xps13>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Am Mittwoch, 16. Januar 2019, 10:38:56 CET schrieb Hou Tao:
-> Hi Richard,
-> 
-> On 2019/1/16 17:17, Richard Weinberger wrote:
-> > Tao,
-> > 
-> > Am Mittwoch, 16. Januar 2019, 10:12:47 CET schrieb Hou Tao:
-> >>> This should get accounted in the loop above.
-> >>>          list_for_each_entry(aeb, &ai->fastmap, u.list) {
-> >>>
-> >> I have considered to add these data blocks into the fastmap list in ubi_scan_fastmap(), but
-> >> it seems nobody will try to find the data block in fastmap list, so I choose a quick fix for
-> >> the assertion.
-> > 
-> > Please fix it properly. Fastmap is already a way too complicated.
-> > BTW: What NAND is this? How many blocks does fastmap need?
-> > Usually on huge NANDs the whole fastmap fits into one block.
-> >  
-> It is just a 2GB-sized NAND flash simulated by nandsim, and two blocks (one super block and
-> one data block) are used by fast-map.
+Hi Yoshio,
 
-Ah, a nandsim zombie. I guessed so.
-So far no real NAND I came across needed more than one block for fastmap.
-In fact, the only reason why I added support for multiple fastmap blocks was
-simulated NANDs. :-)
+Yoshio Furuyama <tmcmc-mb-yfuruyama7@ml.toshiba.co.jp> wrote on Wed, 16
+Jan 2019 14:53:19 +0900:
+
+> Add device table for Toshiba Memory products.
+> Also, generalize OOB layout structure and function names.
+> 
+> Signed-off-by: Yoshio Furuyama <tmcmc-mb-yfuruyama7@ml.toshiba.co.jp>
+> 
+> ---
+>  drivers/mtd/nand/spi/toshiba.c |   79 +++++++++++++++++++++++++++++++++-------
+>  1 file changed, 65 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/toshiba.c b/drivers/mtd/nand/spi/toshiba.c
+> index 0812655..0916962 100644
+> --- a/drivers/mtd/nand/spi/toshiba.c
+> +++ b/drivers/mtd/nand/spi/toshiba.c
+> @@ -25,19 +25,19 @@ static SPINAND_OP_VARIANTS(write_cache_variants,
+>  static SPINAND_OP_VARIANTS(update_cache_variants,
+>  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+>  
+> -static int tc58cvg2s0h_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +static int tc58cxgxsx_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  				     struct mtd_oob_region *region)
+>  {
+> -	if (section > 7)
+> +	if (section > 0)
+>  		return -ERANGE;
+>  
+> -	region->offset = 128 + 16 * section;
+> -	region->length = 16;
+> +	region->offset = mtd->oobsize / 2;
+> +	region->length = mtd->oobsize / 2;
+>  
+>  	return 0;
+>  }
+>  
+> -static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
+> +static int tc58cxgxsx_ooblayout_free(struct mtd_info *mtd, int section,
+>  				      struct mtd_oob_region *region)
+>  {
+>  	if (section > 0)
+> @@ -45,17 +45,17 @@ static int tc58cvg2s0h_ooblayout_free(struct mtd_info *mtd, int section,
+>  
+>  	/* 2 bytes reserved for BBM */
+>  	region->offset = 2;
+> -	region->length = 126;
+> +	region->length = mtd->oobsize / 2 - 2;
+
+I know this is valid C but I am always puzzled when reading such
+mathematical operation, I would prefer (mtd->oobsize / 2) - 2.
+
+I'm fine with the rest so if there is no other comment I will fix when
+applying.
+
 
 Thanks,
-//richard
+Miqu?l
