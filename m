@@ -1,16 +1,16 @@
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90])
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gjW5I-0006CD-1Y
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2019 21:17:21 +0000
-Date: Tue, 15 Jan 2019 21:16:30 +0000
+ id 1gjZ8M-0001EZ-0D
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2019 00:32:43 +0000
+Date: Wed, 16 Jan 2019 00:32:11 +0000
 From: Przemyslaw Sobon <psobon@amazon.com>
 To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
  "Richard Weinberger" <richard@nod.at>, <linux-mtd@lists.infradead.org>
 CC: <psobon@amazon.com>
-Subject: [PATCH] Fixed endless loop problem in CFI when value was written but
- corrupted.
-Message-ID: <20190115211630.GA11437@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+Subject: [PATCH] mtd: cfi: Fixed endless loop problem in CFI when value was
+ written but corrupted.
+Message-ID: <20190116003211.GA57460@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
