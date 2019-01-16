@@ -1,29 +1,29 @@
 From: bbrezillon@kernel.org (Boris Brezillon)
-Date: Wed, 16 Jan 2019 09:40:26 +0100
-Subject: mtd: lpddr: Use struct_size() in kzalloc()
-In-Reply-To: <20190108210946.GA4014@embeddedor>
-Message-ID: <20190116084026.29622-1-bbrezillon@kernel.org>
+Date: Wed, 16 Jan 2019 09:40:40 +0100
+Subject: mtd: cfi: cmdset_0001: Use struct_size() in kmalloc()
+In-Reply-To: <20190108155244.GA15339@embeddedor>
+Message-ID: <20190116084040.29707-1-bbrezillon@kernel.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 
-On Tue, 2019-01-08 at 21:09:46 UTC, "Gustavo A. R. Silva" wrote:
-> One of the more common cases of allocation size calculations is finding the
-> size of a structure that has a zero-sized array at the end, along with memory
-> for some number of elements for that array. For example:
+On Tue, 2019-01-08 at 15:52:44 UTC, "Gustavo A. R. Silva" wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
 > 
 > struct foo {
 >     int stuff;
 >     void *entry[];
 > };
 > 
-> instance = kzalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
+> instance = kmalloc(sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
 > 
-> Instead of leaving these open-coded and prone to type mistakes, we can now
-> use the new struct_size() helper:
+> Instead of leaving these open-coded and prone to type mistakes, we can
+> now use the new struct_size() helper:
 > 
-> instance = kzalloc(struct_size(instance, entry, count), GFP_KERNEL);
+> instance = kmalloc(struct_size(instance, entry, count), GFP_KERNEL);
 > 
 > This code was detected with the help of Coccinelle.
 > 
