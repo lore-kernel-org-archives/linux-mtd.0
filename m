@@ -1,49 +1,87 @@
-From: <Tudor.Ambarus@microchip.com>
-To: <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
- <boris.brezillon@bootlin.com>, <broonie@kernel.org>, <marek.vasut@gmail.com>,
- <vigneshr@ti.com>, <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC: <robh@kernel.org>, <mark.rutland@arm.com>, <shawnguo@kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <computersforpeace@gmail.com>,
- <frieder.schrempf@exceet.de>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 2/5] mtd: spi-nor: add octal read flag for flash
- mt35xu512aba
-Date: Wed, 16 Jan 2019 06:19:20 +0000
-Message-ID: <cb800292-a732-f6f4-650e-00bffe760e5a@microchip.com>
-References: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1547546584-5254-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1547546584-5254-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <94D5D15A0F9C1B4FA92B2F87B7A562AA@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: richard@nod.at (Richard Weinberger)
+Date: Wed, 16 Jan 2019 09:00:26 +0100
+Subject: [PATCH] ubi: account the fastmap data blocks when checking
+ found_pebs
+In-Reply-To: <20190116005935.141529-1-houtao1@huawei.com>
+References: <20190116005935.141529-1-houtao1@huawei.com>
+Message-ID: <1729890.X3pJ5IsDyS@blindfold>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-DQoNCk9uIDAxLzE1LzIwMTkgMTI6MDUgUE0sIFlvZ2VzaCBOYXJheWFuIEdhdXIgd3JvdGU6DQo+
-IEFkZCBvY3RhbCByZWFkIGZsYWcgZm9yIGZsYXNoIG10MzV4dTUxMmFiYS4NCj4gVGhpcyBmbGFz
-aCwgbXQzNXh1NTEyYWJhLCBpcyBvbmx5IGNvbXBsYWludCB0byBTRkRQIEpFU0QyMTZCIGFuZCBk
-b2VzDQo+IG5vdCBzZWVtIHRvIHN1cHBvcnQgbmV3ZXIgSkVTRDIxNkMgc3RhbmRhcmQgdGhhdCBw
-cm92aWRlcyBhdXRvDQo+IGRldGVjdGlvbiBvZiBPY3RhbCBtb2RlIGNhcGFiaWxpdGllcyBhbmQg
-b3Bjb2Rlcy4gVGhlcmVmb3JlLCB0aGlzDQo+IGNhcGFiaWxpdHkgaXMgbWFudWFsbHkgYWRkZWQg
-dXNpbmcgbmV3IFNQSV9OT1JfT0NUQUxfUkVBRCBmbGFnLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-VmlnbmVzaCBSIDx2aWduZXNockB0aS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFlvZ2VzaCBOYXJh
-eWFuIEdhdXIgPHlvZ2VzaG5hcmF5YW4uZ2F1ckBueHAuY29tPg0KDQpSZXZpZXdlZC1ieTogVHVk
-b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQo+IC0tLQ0KPiAgZHJp
-dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCAzICsrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bXRkL3NwaS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4g
-aW5kZXggODcyZDcwNzIyNjcyLi41M2EzYmNjNmE1NWIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
-bXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jDQo+IEBAIC0xODc3LDcgKzE4NzcsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2lu
-Zm8gc3BpX25vcl9pZHNbXSA9IHsNCj4gIAkvKiBNaWNyb24gKi8NCj4gIAl7DQo+ICAJCSJtdDM1
-eHU1MTJhYmEiLCBJTkZPKDB4MmM1YjFhLCAwLCAxMjggKiAxMDI0LCA1MTIsDQo+IC0JCQlTRUNU
-XzRLIHwgVVNFX0ZTUiB8IFNQSV9OT1JfNEJfT1BDT0RFUykNCj4gKwkJCVNFQ1RfNEsgfCBVU0Vf
-RlNSIHwgU1BJX05PUl9PQ1RBTF9SRUFEIHwNCj4gKwkJCVNQSV9OT1JfNEJfT1BDT0RFUykNCj4g
-IAl9LA0KPiAgDQo+ICAJLyogUE1DICovDQo+IA0K
+Am Mittwoch, 16. Januar 2019, 01:59:35 CET schrieb Hou Tao:
+> Now the data blocks used by current fastmap are not tracked by
+> wear-leveling subsystem. So taking these blocks into account
+> when checking found_pebs in ubi_wl_init(), else there will
+> be ubi assertion as shown below when fastmap is enabled on
+> a large NAND Flash (e.g. 2GB):
+> 
+> [  335.877389] UBI assert failed in ubi_wl_init at 1705 (pid 2349)
+> [  335.878315] CPU: 7 PID: 2349 Comm: ubiattach Not tainted 4.20.0-10912-gd5d655675196-dirty #1
+> [  335.879436] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+> [  335.881012] Call Trace:
+> [  335.881402]  dump_stack+0x5b/0x8b
+> [  335.881869]  ubi_wl_init+0xf8b/0x1500
+> [  335.882960]  ubi_attach+0x63b/0xaa0
+> [  335.883889]  ubi_attach_mtd_dev+0x107f/0x2e50
+> [  335.887300]  ctrl_cdev_ioctl+0x13e/0x1d0
+> [  335.888910]  do_vfs_ioctl+0x197/0xe60
+> [  335.893337]  ksys_ioctl+0x66/0x70
+> [  335.893788]  __x64_sys_ioctl+0x6f/0xb0
+> [  335.894309]  do_syscall_64+0x91/0x270
+> [  335.895337]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  drivers/mtd/ubi/ubi.h | 13 +++++++++++++
+>  drivers/mtd/ubi/wl.c  |  3 ++-
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index d47b9e436e67..90c28522aa07 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -1235,4 +1235,17 @@ static inline struct ubi_wl_entry *ubi_find_fm_block(const struct ubi_device *ub
+>  	return NULL;
+>  }
+>  
+> +/**
+> + * ubi_fm_data_blocks - return the number of data blocks used by fastmap
+> + * @ubi: UBI device description object
+> + *
+> + * This function returns zero if fastmap is not available.
+> + */
+> +static inline int ubi_fm_data_blocks(struct ubi_device *ubi)
+> +{
+> +	/* the first block is the super block of fastmap */
+> +	if (ubi->fm)
+> +		return ubi->fm->used_blocks - 1;
+> +	return 0;
+> +}
+>  #endif /* !__UBI_UBI_H__ */
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 6f2ac865ff05..1b8f37ed8063 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -1702,7 +1702,8 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+>  
+>  	dbg_wl("found %i PEBs", found_pebs);
+>  
+> -	ubi_assert(ubi->good_peb_count == found_pebs);
+> +	ubi_assert(ubi->good_peb_count ==
+> +		   found_pebs + ubi_fm_data_blocks(ubi));
+>  
+>  	reserved_pebs = WL_RESERVED_PEBS;
+>  	ubi_fastmap_init(ubi, &reserved_pebs);
+
+This should get accounted in the loop above.
+         list_for_each_entry(aeb, &ai->fastmap, u.list) {
+
+I agree that this logic needs a redesign.
+Please see this patch series I sent last year but had no time to further work
+on it:
+https://lkml.org/lkml/2018/6/13/755
+
+I'd highly appreciate if you could revive it. :-)
+
+Thanks,
+//richard
