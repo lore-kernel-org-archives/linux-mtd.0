@@ -1,181 +1,120 @@
-From: nagasure@xilinx.com (Naga Sureshkumar Relli)
-Date: Thu, 17 Jan 2019 11:01:26 +0000
-Subject: [LINUX PATCH v12] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-In-Reply-To: <CABgxDoKgC_oYkKf5hsyDnH6USeqbjSFGV6R4rxpTDAYUiQcBkg@mail.gmail.com>
-References: <1533620414-3332-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20181221091750.GA19470@hp-probook-450> <20190102093338.3b4a8c69@xps13>
- <MWHPR02MB26237BE35B07E8930B5E2AB2AF8C0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <CABgxDoKgC_oYkKf5hsyDnH6USeqbjSFGV6R4rxpTDAYUiQcBkg@mail.gmail.com>
-Message-ID: <DM5PR02MB2617E518DC7148ABE27A85C4AF830@DM5PR02MB2617.namprd02.prod.outlook.com>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	aws-us-west-2-korg-lkml-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 353BFC43387
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jan 2019 20:16:30 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail.kernel.org (Postfix) with ESMTPS id 0003420859
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jan 2019 20:16:29 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hUodLC5n";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZF39qcHo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0003420859
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:To:Subject:From:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1ocSQ4lnBXNwnnYGziWettt3GkmqEAf4PXap9GZnNLo=; b=hUodLC5nSwWLwn
+	FfG1kYx4InFUcuJdEpWdyN3VDKqLgb/vSGfSoYmUaiW2jiI/vohi5vcUxaPBxAOva4wEF2wrwz81d
+	Bk3TMg/eHb8MMNTULYN6X9MRjD196jneF7Qh/0meWpeWgbrBSa567xfFYfMb8se6CrWvZz1mTVggJ
+	cUj/3E+nix0EajdQEhKT3qWKIddM1/tHjr4Y17qjhxjycLgX0iTImrzMDOfwj5QUosEiIILHU0/Vc
+	93xXxJdI4dZWC/0aa4UyfiNtDwIsDmepqxh9vBsqeHgv6oH8ymgOVafzjK3JjhWa6gcYsUDBGhTWy
+	xQJvXISd9b3UtDG7P4xw==;
+Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+	id 1gkE5U-0002he-7g; Thu, 17 Jan 2019 20:16:28 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gkE5Q-0002hA-3A
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2019 20:16:26 +0000
+Received: by mail-lf1-x130.google.com with SMTP id c16so8789291lfj.8
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Jan 2019 12:16:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:subject:to:message-id:date:user-agent:mime-version
+ :content-transfer-encoding:content-language;
+ bh=extqXWphiYmhUmCZ4Wm4zERC8vJAc6Gmd+medFIf0MI=;
+ b=ZF39qcHolsqO3lgMLh5d9iueLsuVyT4OYJoFnRNK/9QFUF5Sofl5imR10BAYZypyEr
+ 3cIyYogQ9hgvt1k2JckLqTN2z/rKd8JXTlbblEJ1PvI9kg1Cq4Z13G+X6Hq0feVOZ5rv
+ i6XiVVu8mE+0YHQLB9DP3e0B9462JhstT80U8RJJG3bUNlz8aquKylyyA9BaIvoXNILd
+ oucxZE9AVN/JHwNET/rUA9QkaAaZBo2UFK6k5DGWuKYUj5Amxi+JTfHnXCrMTFwJ8Esg
+ trglG2gMTXMCmGgvX4d5dz0DrkT/bXvjaC+8SYe5TbhyCm2FP0kXTjuxrbDEpc0mEDap
+ BXpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:subject:to:message-id:date:user-agent
+ :mime-version:content-transfer-encoding:content-language;
+ bh=extqXWphiYmhUmCZ4Wm4zERC8vJAc6Gmd+medFIf0MI=;
+ b=RW8CkzYSqG0oTd9Wt9hPH07pyGsvi8Fw+feM70tcGUdA78QF0lxS7La//xnS6jIKMB
+ Z49wyKrf3HxRcAByMeMqe/rBIAGo8/4X2RZPZmPvvV9V6Vkr5Xh2UT0tUmPL6NcSBZ9h
+ fDmJ5JekHto3uPhye6XWzd6XxiCxYaQOscHpv4momLbDc6O9AcUEWr5AezedCdbqYGuC
+ RnnhQJv2q2iHXGZfaWPz8BQwZzET0F0RiJqsmyBhE5kCQ5I7Uku2N5GgyuKSr2Iv7AbC
+ k7QQCIoyF+XFVJKdQ8b9zlnrdG/ML9G/HgbYjHGeOz2d3HWNThsaMKZeMzclPG3gvqOu
+ H8aA==
+X-Gm-Message-State: AJcUukfD+PGwLSoyeqj/39kAOD1bcKltoPAaFtyYe2yZcNaHtpKM+9Q4
+ laLkuCKMxfgzh8rJebyec2YUr1+9
+X-Google-Smtp-Source: ALg8bN75qgF7hU2Ag9Gl5alnXkJxBmKJKM9kv6OR+aORtfBzSQGMYqs9fS99oHJPrjL3wyUljPgJFg==
+X-Received: by 2002:a19:2d16:: with SMTP id k22mr10772519lfj.12.1547756180850; 
+ Thu, 17 Jan 2019 12:16:20 -0800 (PST)
+Received: from [192.168.75.106] (staticline-31-182-180-253.toya.net.pl.
+ [31.182.180.253])
+ by smtp.gmail.com with ESMTPSA id d2sm462172lfg.16.2019.01.17.12.16.19
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 17 Jan 2019 12:16:20 -0800 (PST)
+From: =?UTF-8?Q?Marcin_Krzemi=c5=84ski?= <mar.krzeminski@gmail.com>
+Subject: VIRTIO iface in mtd
+To: Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org
+Message-ID: <7f5ad942-3857-2cbb-5c54-e27a4613cae8@gmail.com>
+Date: Thu, 17 Jan 2019 21:16:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
+MIME-Version: 1.0
+Content-Language: en-GB
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20190117_121624_889059_80885CFB 
+X-CRM114-Status: UNSURE (   9.30  )
+X-CRM114-Notice: Please train this message.
+X-BeenThere: linux-mtd@lists.infradead.org
+X-Mailman-Version: 2.1.21
+Precedence: list
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Romain,
+Hello,
 
-> -----Original Message-----
-> From: Romain Perier [mailto:romain.perier at gmail.com]
-> Sent: Monday, January 7, 2019 3:56 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Boris Brezillon
-> <bbrezillon@kernel.org>; linux-mtd at lists.infradead.org; peterpandong at micron.com;
-> linux-kernel at vger.kernel.org
-> Subject: Re: [LINUX PATCH v12] mtd: rawnand: pl353: Add basic driver for arm pl353
-> smc nand interface
-> 
-> Hi,
-> 
-> Le mer. 2 janv. 2019 ? 10:23, Naga Sureshkumar Relli <nagasure@xilinx.com> a ?crit :
-> >
-> > Hi,
-> >
-> > > -----Original Message-----
-> > > From: Miquel Raynal [mailto:miquel.raynal at bootlin.com]
-> > > Sent: Wednesday, January 2, 2019 2:04 PM
-> > > To: Romain Perier <romain.perier@gmail.com>
-> > > Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>; Boris Brezillon
-> > > <bbrezillon@kernel.org>; linux-mtd at lists.infradead.org;
-> > > peterpandong at micron.com; linux-kernel at vger.kernel.org
-> > > Subject: Re: [LINUX PATCH v12] mtd: rawnand: pl353: Add basic driver
-> > > for arm pl353 smc nand interface
-> > >
-> > > Hi Romain,
-> > >
-> > > Switching Boris address.
-> > >
-> > > Romain Perier <romain.perier@gmail.com> wrote on Fri, 21 Dec 2018
-> > > 10:17:50 +0100:
-> > >
-> > > > Hello,
-> > > >
-> > > > I have rebased this patch onto 4.19.11. I use it on a
-> > > > Zynq7000-based board with a NAND chip Micron MT29F4G08ABADAH4, since ~2
-> weeks now.
-> > > > The only problem I have to report is that when I boot with an
-> > > > unchanged driver on my board, I get the following logs:
-> > > >
-> > > > [    1.988797] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
-> > > > [    1.995184] nand: Micron MT29F4G08ABADAH4
-> > > > [    1.999187] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> > > > [    2.402661] nand: timeout while waiting for chip to become ready
-> > > > [    2.408665] nand: timing mode 5 not acknowledged by the NAND chip
-> > > > [    2.416251] Bad block table not found for chip 0
-> > > > [    2.422278] Bad block table not found for chip 0
-> > > > [    2.426903] Scanning device for bad blocks
-> > > > [    2.431024] Bad eraseblock 0 at 0x000000000000
-> > > > [    2.435509] Bad eraseblock 1 at 0x000000020000
-> > > > [    2.439978] Bad eraseblock 2 at 0x000000040000
-> > > > [    2.444465] Bad eraseblock 3 at 0x000000060000
-> > > > [    2.448936] Bad eraseblock 4 at 0x000000080000
-> > > > [    2.453423] Bad eraseblock 5 at 0x0000000a0000
-> > > > [    2.457893] Bad eraseblock 6 at 0x0000000c0000
-> > > > [    2.462354] Bad eraseblock 7 at 0x0000000e0000
-> > > > [    2.466841] Bad eraseblock 8 at 0x000000100000
-> > > > [    2.471304] Bad eraseblock 9 at 0x000000120000
-> > > > [    2.475793] Bad eraseblock 10 at 0x000000140000
-> > > > [    2.480349] Bad eraseblock 11 at 0x000000160000
-> > > >
-> > > > [...]
-> > > >
-> > > >
-> > > > After investigation, it seems that during the nand_scan phase, the
-> > > > NAND subsystem tests different timing modes on the NAND chip (mode
-> > > > 0 seems to be apply during reset, and then it tries to detect the
-> > > > best mode supported by the NAND chip). Only the mode 0 works here,
-> > > > trying the use the mode 5 resuls in an error (as you can see in
-> > > > the log) and a bad BBT detection. Both modes are supported by the
-> > > > NAND chip. In order to fix this, I had to put the nfc timing into
-> > > > the device node of the nfc, inside the DT
-> > > (that's not a real fix, ihmo).
-> > >
-> > > Thanks for testing! Indeed, the ->setup_data_interface() callback should be fixed.
-> > Ok, let me check.
-> > Meanwhile, can you share the timings that you put inside the DT?
-> 
-> Sure, I have simply added an array in the DT:
-> 
-> pl353,nand-controller-timings=<4 4 2 2 1 1 2>;
-But the below values are not matching with sdr mode 5 timings.
-The value at index 3, represents tWP_min and as per SDR mode5 timings this value is 1 (expressed in clock cycles).
-And also value at index 1 represents tWC_min and as per SDR mode5 timings this value is 2.
-I will also cross check the setup_data_interface() hook.
+recently I have spoken with Boris regarding new MTD driver
+that will use VIRTIO interface to communicate with Qemu.
+To specify how should this look like exactly I am bringing the topic
+on ML.
+My understanding is that this driver will use VIRTIO to communicate
+with Qemu. From Qemu side at the end there will be a file that will
+simulate NAND/NOR. Is it correct?
+What use cases do you have in mind for this?
 
-Miqual, this version of driver is rebased on top of 4.19, I will send next version on top of 4.20
+Bast regards,
+Marcin
 
-Thanks,
-Naga Sureshkumar Relli
-> 
-> Then, I pass this array directly to pl353_smc_set_cycles().  (I got these value from the hdf
-> originally, then I ported the DT to a mainline format, written by hand).
-> 
-> Hope this helps,
-> Regards,
-> Romain
-> 
-> > >
-> > > > Except this, everything is working as expected. Everything is
-> > > > stable with correct performances.
-> > > >
-> > > > If I can provide more informations, feel free to ask.
-> > >
-> > > [...]
-> > >
-> > > > > +static int pl353_setup_data_interface(struct mtd_info *mtd, int csline,
-> > > > > +                                const struct
-> > > > > +nand_data_interface *conf) {  struct nand_chip *chip =
-> > > > > +mtd_to_nand(mtd);  struct pl353_nand_controller *xnfc =
-> > > > > +         container_of(chip, struct pl353_nand_controller,
-> > > > > +chip);  const struct nand_sdr_timings *sdr;
-> > > > > + u32 timings[7], mckperiodps;
-> > > > > +
-> > > > > + if (csline == NAND_DATA_IFACE_CHECK_ONLY)
-> > > > > +         return 0;
-> > > > > +
-> > > > > + sdr = nand_get_sdr_timings(conf); if (IS_ERR(sdr))
-> > > > > +         return PTR_ERR(sdr);
-> > > > > +
-> > > > > + /*
-> > > > > +  * SDR timings are given in pico-seconds while NFC timings
-> > > > > + must be
-> > > > > +  * expressed in NAND controller clock cycles.
-> > > > > +  */
-> > > > > + mckperiodps = NSEC_PER_SEC / clk_get_rate(xnfc->mclk);
-> > > > > + mckperiodps *= 1000; if (sdr->tRC_min <= 20000)
-> > > > > +         /*
-> > > > > +          * PL353 SMC needs one extra read cycle in SDR Mode 5
-> > > > > +          * This is not written anywhere in the datasheet but
-> > > > > +          * the results observed during testing.
-> > > > > +          */
-> > > > > +         timings[0] = DIV_ROUND_UP(sdr->tRC_min, mckperiodps) +
-> > > > > + 1; else
-> > > > > +         timings[0] = DIV_ROUND_UP(sdr->tRC_min, mckperiodps);
-> > > > > +
-> > > > > + timings[1] = DIV_ROUND_UP(sdr->tWC_min, mckperiodps);
-> > > > > + /*
-> > > > > +  * For all SDR modes, PL353 SMC needs tREA max value as 1,
-> > > > > +  * Results observed during testing.
-> > > > > +  */
-> > > > > + timings[2] = PL353_TREA_MAX_VALUE; timings[3] =
-> > > > > + DIV_ROUND_UP(sdr->tWP_min, mckperiodps); timings[4] =
-> > > > > + DIV_ROUND_UP(sdr->tCLR_min, mckperiodps); timings[5] =
-> > > > > + DIV_ROUND_UP(sdr->tAR_min, mckperiodps); timings[6] =
-> > > > > + DIV_ROUND_UP(sdr->tRR_min, mckperiodps);
-> > > > > + pl353_smc_set_cycles(timings);
-> > > > > +
-> > > > > + return 0;
-> > > > > +}
-> > > >
-> > > > If I hack this function in order to limit the timings only to mode
-> > > > 0, everything works. Otherwise it hangs when it tries to apply mode 5.
-> > > >
-> > >
-> > > Maybe Naga is not using a chip compatible with mode 5 and did not ran into this issue?
-> > No, these are the chips I am using, S34ML01G1 and MT29F2G16ABAEAWP.
-> > These are up to mode 5 compatible.
-> >
-> > Thanks,
-> > Naga Sureshkumar Relli
-> > >
-> > >
-> > > Thanks,
-> > > Miqu?l
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
