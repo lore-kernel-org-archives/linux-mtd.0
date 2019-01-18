@@ -1,80 +1,67 @@
-Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=FXe4=P2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D487C43612
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jan 2019 21:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DA67C43612
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jan 2019 01:07:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A2BA20855
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Jan 2019 21:33:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3DCBF2086D
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jan 2019 01:07:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NLfwf0zc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="YAyGB+jQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A2BA20855
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FWCRnsst";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="LBB25re8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DCBF2086D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Pls0KfUmutocxC7GePZBc5u3z2JKxvKDn9SHSmeZcQc=; b=NLfwf0zctyTqSS
-	cjGDDbleT7EymKyEORXieeEr/tZmtQUhscquqw8votTp2fW1IJDCjHZBpVDt8wAX/tEXPpsE2h0CA
-	apJ7E/OILWYD0/guJEVllb/S1yIGnIAz+SzMNHjcAyi1T67ds9wjEos7YoiSp301SV/8P0fRAJk2Y
-	NqcJHafUZc9tknrO50NOSsYwVBo9EpZY9MaeYHePebkOxepHv3nkQe3xCWwgdsPySHHrIX6KqodN4
-	P57GeK0Lf9uN9/OpdX8junHqG48+jZREU6bvZZj/5wzTYvENIBl/HzAZR/vCTpXvZMnc7JeerhDqD
-	r5eG2B6zKQtDJoa9dchw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=8UF2hmFMTjT8PQCoJFZw+VP2NA3uyrEra0MSKB1A6cs=; b=FWC
+	RnsstAJfHlg9rMJyv28TP/VphW0nGoRRbCzp1Xr7Nhxg09rRpD9C0I1OOGTO+5jQDc8lNUNtdElLp
+	6RejvjMVtHIKoxWjNL2o9yzQ+ejus82fk5y8nR44W3MZEkj+obWqrEXiENQySe/4iD9Jezepw4IQn
+	W4vA/n4zVcVWSu8VD/oKiZs1Tkb/Z57XL45tdHth+tXB69UIQjP0BxkhmdFQrFr2yWdIjb9F0iRS/
+	Lzjy4mVtwBxOSY/dsVR6tPIZCPuT16d2L2A5TNuTCiLZSI3P8J/hgN3qM9gW44ufp8ngcdmHLk8LI
+	VVDf0amyk0kC9Xl/lh9iBnMmw9pF2IA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gkFHs-0002D9-S1; Thu, 17 Jan 2019 21:33:20 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1gkIcg-0006t3-0O; Fri, 18 Jan 2019 01:07:02 +0000
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gkFHp-0002Bj-36
- for linux-mtd@lists.infradead.org; Thu, 17 Jan 2019 21:33:18 +0000
-Received: by mail-lj1-x244.google.com with SMTP id v1-v6so9894453ljd.0
- for <linux-mtd@lists.infradead.org>; Thu, 17 Jan 2019 13:33:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=3KzpGTUBYfVEE84/bfTUQnsJTc8Kj1xe3XYFA3kFhTg=;
- b=YAyGB+jQrH+HoleolPj1PEUSG4QVMLgIZWNFrsid/7HVu94/LrvcW+BpIkZsUl9i/R
- yJ3DnniB5jS4RV1nsajyXWkoBtuHxfOUVg/pRh5zMrq+28Hxq27BLytb20wtfKzd0fo7
- UsvN07EH42zzUINWpt1vkfY7uYfx/mxC8PvFs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=3KzpGTUBYfVEE84/bfTUQnsJTc8Kj1xe3XYFA3kFhTg=;
- b=EeTywRF9paQaN4fSjG5JZOik2sOsT48krrnc854g1emvUoXzHr70gi8jY6VNSVuwIN
- kiaot5m1reenuCn5gstYyk2RnM+mG0/GkMh+OKO0GWTsqRMKqbvrQ6LlRVIasvC7xbFB
- 0m7dI/scBQQkshq/EcWLuUCzxuS+oNjclGfgzvaycxzDQKOr93UB3BnpxuE+l+SzYW5Q
- j3TajmECBr3COsf8WZ7/HUm7zxtVT2xymlPrtuE54QluXe8oMmyL71uOjd2HI1fFsdG8
- yZFQOJR3+Lzx3sAV6wIHA9xtbjupQZK8DarrfeSn4u+OXSqhlzOkMhsXtI+wIqw/LzuW
- U9sg==
-X-Gm-Message-State: AJcUukcZX9yStGDGW5I6kXm6au+wNP51mOO1i0gk3W43GbyH++WNjXw+
- KsnvTxobD9BNggUrDEj/d3i8UEOZ60DL5UTySpbf9g==
-X-Google-Smtp-Source: ALg8bN6CnZgsKGvucrnm+LP+nhPiZbV2+ol+zcDsvvMY7kAXsjv+EDiGdVEl+IGYeaC0sJJXgXN29h+NJnzG8VWduFg=
-X-Received: by 2002:a2e:9c7:: with SMTP id
- 190-v6mr9870796ljj.120.1547760794006; 
- Thu, 17 Jan 2019 13:33:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20190109215144.15749-1-linus.walleij@linaro.org>
- <20190114095105.4e2b5c5a@bbrezillon>
-In-Reply-To: <20190114095105.4e2b5c5a@bbrezillon>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 17 Jan 2019 22:33:01 +0100
-Message-ID: <CACRpkdY22HjSFZxCHpSz6S6C0jx9g-AwBF6+CKZjKt5zy0O3uQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Keep bank enable bit set
-To: Boris Brezillon <bbrezillon@kernel.org>
+ id 1gkIcd-0006ro-9j
+ for linux-mtd@lists.infradead.org; Fri, 18 Jan 2019 01:07:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1547773608; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:content-type:
+ content-transfer-encoding:in-reply-to:references;
+ bh=XkFGTck7gvRx9HDUa+mp6ZYQi5+zkGojqrDNp5DwBA8=;
+ b=LBB25re8p1wwRvrmIVbXYDfref05JGqKyrdwTqxwagAgX9eQ4q72Wnt9kGP3GG1+dt0IKl
+ NBeT/XJWgVH18ZTDaJ/hOCB3fHN1QW93FnvCIp/8U2DU63fWda4afzSUDMhACXkfUSdB+l
+ SrRBGF6mi/SpZG0VFhIvujQyNC0dSfE=
+From: Paul Cercueil <paul@crapouillou.net>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>,
+ James Hogan <jhogan@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>
+Subject: [PATCH 1/8] MIPS: DTS: CI20: Set BCH clock to 200 MHz
+Date: Thu, 17 Jan 2019 22:06:27 -0300
+Message-Id: <20190118010634.27399-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190117_133317_152217_8BA50356 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20190117_170659_523339_9DB3DA8C 
+X-CRM114-Status: GOOD (  10.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,47 +73,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>
+Cc: Paul Cercueil <paul@crapouillou.net>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 14, 2019 at 9:51 AM Boris Brezillon <bbrezillon@kernel.org> wrote:
+This is currently done inside the jz4780-bch driver, but it really
+should be done here instead.
 
-> Not related to this patch, but I think we're missing a nand_reset()
-> call in the ->resume() path. Without it FSMC timings might be wrong
-> after a suspend if they're not defined in the DT. Would you mind sending
-> another patch to fix that,
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ arch/mips/boot/dts/ingenic/ci20.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I looked into it, It looks like this:
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index 50cff3cbcc6d..aa892ec54d0a 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -111,6 +111,9 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pins_nemc>;
+ 
++		assigned-clocks = <&cgu JZ4780_CLK_BCH>;
++		assigned-clock-rates = <200000000>;
++
+ 		nand@1 {
+ 			reg = <1>;
+ 
+-- 
+2.11.0
 
-static int fsmc_nand_resume(struct device *dev)
-{
-    struct fsmc_nand_data *host = dev_get_drvdata(dev);
-
-    if (host) {
-        clk_prepare_enable(host->clk);
-        if (host->dev_timings)
-            fsmc_nand_setup(host, host->dev_timings);
-    }
-
-    return 0;
-}
-
-fsmc_nand_setup() will set up the timings if we have any.
-
-> and maybe an extra patch to clear
-> FSMC_ENABLE in the ->remove() path and the ->probe()'s error path as
-> you suggested?
-
-That I can fix. I will resend this patch with that as another patch.
-
-Yours,
-Linus Walleij
 
 ______________________________________________________
 Linux MTD discussion mailing list
