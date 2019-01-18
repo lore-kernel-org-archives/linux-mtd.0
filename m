@@ -4,20 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 988ACC43387
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jan 2019 01:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E79D1C43387
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jan 2019 01:08:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 458AB2086D
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jan 2019 01:08:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B29D92086D
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Jan 2019 01:08:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="R/cY9VwD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="CL8FJ+Zk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 458AB2086D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u/xdXWzG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="xMnQQ4R7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B29D92086D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,27 +26,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=DY1RZUlX6QIGJHApix7VoRGIwCjoMRL0Rn7HYGk/MpI=; b=R/cY9VwDbY76YzDMAiE+Xi8MVO
-	XbbpVhbB/RXJnrFByeB3UvcoQtjVxNxE48evXBmIoiwF7D+tpPfKNy7juP7kGweBEGyHLak6HPXq3
-	9FVSLA//AzeWIEVjBxje50FNdTpgQZ0Ej7YJZcp67+MwziUwfAPi3PwxWYhh59L9oHWGAFnaKyvQ7
-	eDTGLExM1BWziEn/cQkgFK2CaEA0DFOL0uyIebiONOyq3Wns08+VKuDJNVRQ7t21TK4NJec8ubVgd
-	IgEZCO+q6h3wYFLcLOWnRrHP8YEQ8RzjEE+IZcvWS38gsP9WsxcoIpfGiWAFKihu7eaKHz5jS0QIg
-	Y3dydVKw==;
+	bh=6Bve6AwyJbDTT2z/5qa+r8Pr70d0sndxG0YKCaXwKu8=; b=u/xdXWzGaYT5aPmqiNb1UTzC3P
+	snL/OYWwimv0Y8LBy8z49gz2L/ZseUmlACozOkHLS/mBT9CNr3ZzFo20yHiPK8mU4VvQ7nu/b+TUJ
+	uEqPEDFWAOctO6EErwSoTWOi6kC52oa0ZJWp5Y/L2dFWu/57ZyRvb75u4IqztQCVPv8R1q3lrUN2P
+	AHOTBQWtCuVi4J7WdD/l0l8lN4WxlV7z5fJ0yjoJNoAfC7ilRmODUs7CTEfxCY6sKP7fcUuM8Jo0J
+	Ajqqs3T5s3A0cvmwIcZyprpTTx33Panx0HwowNOGOADEv3iewc25Ewh8QWHmQehEQ1jpPLDW77Zkl
+	sY7lgJ3w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gkIdc-0007tQ-2b; Fri, 18 Jan 2019 01:08:00 +0000
+	id 1gkIe9-0008NJ-DL; Fri, 18 Jan 2019 01:08:33 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gkIcs-00079R-HU
- for linux-mtd@lists.infradead.org; Fri, 18 Jan 2019 01:07:18 +0000
+ id 1gkIcx-0007Fz-W3
+ for linux-mtd@lists.infradead.org; Fri, 18 Jan 2019 01:07:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1547773632; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1547773638; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:content-type:
  content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=MG3f0Whzo3apr/Ozy+5iOfPwXocl1tPsCT+XjhaScyg=;
- b=CL8FJ+ZkQFDfCSzLbqBM8n0Z9tXCur3CbwONW/C2SE27Hn+PPv4m4nnAmoQ6r0XqEZU+Ra
- mMg6FUGBqWyoT3oBQFHVVFaBDN+jLTQikz+r5+zWQKHcNjXbCEjrSUlywzhKmnjwoZ/QS0
- l8MCYxYXT140VBibaHy5faIS67j/D4U=
+ bh=LdKmC0sOyR3V2mJtKk2VStVW2W3EwccGJghrjd+po30=;
+ b=xMnQQ4R7KuLpk2Pch64tLORPLEPzAbzc/74NPOr6Q58I4KDHyQKIAsOmUaA/FOEVOhmClP
+ AUmWlALF0ITh/YudOx8GruETDwiKOyxEL44oicuNTdQ0dMFlAIWPnenhpEf87cs58rKER2
+ guDy0iWYulVghW66ZFfoqyA1EF+JMro=
 From: Paul Cercueil <paul@crapouillou.net>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -57,14 +56,14 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>,
  James Hogan <jhogan@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>
-Subject: [PATCH 5/8] mtd: rawnand: jz4780: Add ooblayout for the JZ4725B
-Date: Thu, 17 Jan 2019 22:06:31 -0300
-Message-Id: <20190118010634.27399-5-paul@crapouillou.net>
+Subject: [PATCH 6/8] mtd: rawnand: jz4780-bch: Don't set clock rate in driver
+Date: Thu, 17 Jan 2019 22:06:32 -0300
+Message-Id: <20190118010634.27399-6-paul@crapouillou.net>
 In-Reply-To: <20190118010634.27399-1-paul@crapouillou.net>
 References: <20190118010634.27399-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190117_170715_113514_C4CCD61C 
-X-CRM114-Status: GOOD (  14.59  )
+X-CRM114-CacheID: sfid-20190117_170720_274770_E77715C3 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,90 +84,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The boot ROM of the JZ4725B SoC expects a specific OOB layout on the
-NAND, so it makes sense to use this OOB layout unconditionally on this
-SoC.
+This should be done in devicetree. Besides, it prevents us from
+supporting other SoCs which don't use the same clock frequency for the
+BCH hardware.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/mtd/nand/raw/jz4780_nand.c | 40 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/jz4780_bch.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-index cf24bf12884f..073b3da5c3f7 100644
---- a/drivers/mtd/nand/raw/jz4780_nand.c
-+++ b/drivers/mtd/nand/raw/jz4780_nand.c
-@@ -34,6 +34,7 @@ struct jz_soc_info {
- 	unsigned long data_offset;
- 	unsigned long addr_offset;
- 	unsigned long cmd_offset;
-+	const struct mtd_ooblayout_ops *oob_layout;
- };
+diff --git a/drivers/mtd/nand/raw/jz4780_bch.c b/drivers/mtd/nand/raw/jz4780_bch.c
+index 7e4e5e627603..161d3821e1c4 100644
+--- a/drivers/mtd/nand/raw/jz4780_bch.c
++++ b/drivers/mtd/nand/raw/jz4780_bch.c
+@@ -57,8 +57,6 @@
+ #define BCH_BHINT_UNCOR			BIT(1)
+ #define BCH_BHINT_ERR			BIT(0)
  
- struct jz4780_nand_cs {
-@@ -208,7 +209,7 @@ static int jz4780_nand_attach_chip(struct nand_chip *chip)
- 		return -EINVAL;
+-#define BCH_CLK_RATE			(200 * 1000 * 1000)
+-
+ /* Timeout for BCH calculation/correction. */
+ #define BCH_TIMEOUT_US			100000
+ 
+@@ -348,8 +346,6 @@ static int jz4780_bch_probe(struct platform_device *pdev)
+ 		return PTR_ERR(bch->clk);
  	}
  
--	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-+	mtd_set_ooblayout(mtd, nfc->soc_info->oob_layout);
+-	clk_set_rate(bch->clk, BCH_CLK_RATE);
+-
+ 	mutex_init(&bch->lock);
  
- 	return 0;
- }
-@@ -398,16 +399,53 @@ static int jz4780_nand_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int jz4725b_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	if (section || !ecc->total)
-+		return -ERANGE;
-+
-+	oobregion->length = ecc->total;
-+	oobregion->offset = 3;
-+
-+	return 0;
-+}
-+
-+static int jz4725b_ooblayout_free(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->length = mtd->oobsize - ecc->total - 3;
-+	oobregion->offset = 3 + ecc->total;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops jz4725b_ooblayout_ops = {
-+	.ecc = jz4725b_ooblayout_ecc,
-+	.free = jz4725b_ooblayout_free,
-+};
-+
- static const struct jz_soc_info jz4725b_soc_info = {
- 	.data_offset = 0x00000000,
- 	.cmd_offset  = 0x00008000,
- 	.addr_offset = 0x00010000,
-+	.oob_layout  = &jz4725b_ooblayout_ops,
- };
- 
- static const struct jz_soc_info jz4780_soc_info = {
- 	.data_offset = 0x00000000,
- 	.cmd_offset  = 0x00400000,
- 	.addr_offset = 0x00800000,
-+	.oob_layout  = &nand_ooblayout_lp_ops,
- };
- 
- static const struct of_device_id jz4780_nand_dt_match[] = {
+ 	bch->dev = dev;
 -- 
 2.11.0
 
