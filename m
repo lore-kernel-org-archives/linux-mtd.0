@@ -2,84 +2,56 @@ Return-Path: <SRS0=0QAq=P3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AAC1C61CE4
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jan 2019 16:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15FABC61CE4
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jan 2019 17:03:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 355B5205C9
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jan 2019 16:05:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D825F2087E
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Jan 2019 17:03:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CkYph8ye";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="leyXj9uh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UA0vWOEA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 355B5205C9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rdWaqGO0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D825F2087E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=UpmZ0m33Gy4o4kmXE1aBhTZRucAmPFePS8UyYjH9Mvs=; b=CkY
-	ph8yeP0xAW9Y45LaOV7ttKGnN3lgt4ZeHg2Xqlp+Qf4VZsGsrjcITG2lFQCxfVCR1HvYnyawJ1rcE
-	K2dRxssGQdz5wVebry/8mgqHbaI+vx2g9iSeI8p08PIIzZSXAbHROZ3NCGWpwM2ZpQHiSqEmLreTH
-	bqUb9RWRKiA008jVsLs4c9hOaIH0vrp+TeoKKP+S5O4M3Eb3TPo4bfkTLWQr0VCm/YAmlVPxUa0JY
-	tIuozgJ8k8NIjsH7c35OVJrFOa/jTvhIjTkjHXZRp9OLNZLwQQxf2v2t0Ek4cMT0hY8YyIjxfYtJO
-	dV3SGHo06XrJ+tdNBtxlPyGi4cDMzMw==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=RStArxmfwqttO904ZLJ/vuJP1M5/6DaI7URCAeN3gxA=; b=rdWaqGO05WShWO
+	1lXRhBNIVHkwhSSIkmgvR49FDuiHjeJ/qhPRppLeBe3j8ML+5Jv+UeyuPgd4IcxIpoNWN5U4e0TMr
+	YHtWUEvKhQeIwXYbUq7DTs4ias0jdxUXIrDfWfb3uQbxPK3DEq4uF6uBwtMdYlr1Tc8d+zXwiOuBh
+	h/wZfoOBFt53xji52URcRCeIvIPJQ+D1EuskZaVSr7PSi24dx0w0AuQ+pXXt9ftleh1A7EFgfGzFV
+	Y9brXWBA25vv6t51OXUdE/I4Oeyv2Cdq3tRLOtAT63PTJwz4Rjj/0noatFJLF2YLOQyugiSgxyk3Z
+	SkNaY8W/u6Dji2VASAHw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gkt7e-0000EM-At; Sat, 19 Jan 2019 16:05:26 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1gku1T-0001JH-Ji; Sat, 19 Jan 2019 17:03:07 +0000
+Received: from mail-sh.amlogic.com ([58.32.228.43])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gkt7S-0007Ev-PS; Sat, 19 Jan 2019 16:05:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Message-Id:Date:Subject:Cc:
- To:From:Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID:References:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=z2Q+R94QVkSDTLwPgb79AdkY4t8QWFO8r8J7/+v/k50=; b=leyXj9uh+Z2lC4A1mt8GHSNena
- fm4cHjP9Sq2+i3446UXGfqdExY2pBJd+yzWK+fArTwr3ZVi3kxA0mcspNbaLdiBz7SYhp3F885bph
- OstOVNgGWUS6Sh3a3vt4ghnkx0KwLVkvqglRsj2AZq7+EJBFj6IES4CXdm5G2vw5X8DrVd0qiduRO
- NxCxqZS9IfJKmH0jeV++37HAIY/KFwziRMckdfsbkzRe/EwbDIPsI+mt6e67ohIVtwGLnlOvM+ACa
- QPBr4cO2XeQK+uQoFshpdDllw6hxn1diDLUxVHC86966cu5C6wKVRx9UNwCt5dyEjULt1F6g2RvfO
- sF5nXJOg==;
-Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gksm7-0004sv-I9; Sat, 19 Jan 2019 15:43:16 +0000
-Received: from localhost.localdomain (unknown [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 153072084C;
- Sat, 19 Jan 2019 15:43:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1547912587;
- bh=Ml4Mkp8nCS2/c0cy7Su8HYrB29V+abYd6Obw4Icabyw=;
- h=From:To:Cc:Subject:Date:In-Reply-To:From;
- b=UA0vWOEAo34kgKohSzHFcTreZPxnQ3WJ33q/R21HO6Q0dxiuBOHWqBOZUkzo08pvf
- 1WtBcpxKik88tOWfq8rnmr+IZkz8FrDazvxQBLJrTYCjIlEZ8IRnhsMACm6z8q04ab
- P+HWnwBhWwfGBAjw41lyhgInPkxPYb5f9EF4xzvw=
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Ryder Lee <ryder.lee@mediatek.com>, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [v2,
- 1/3] dt-bindings: mtd: mtk-quadspi: update bindings for MT7629 SoC
-Date: Sat, 19 Jan 2019 16:43:01 +0100
-Message-Id: <20190119154301.3800-1-bbrezillon@kernel.org>
-X-Mailer: git-send-email 2.17.1
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 4a09a91e5efd3759d28ae4708a7bcef11bee4416
-In-Reply-To: <74d710ed89fd505a49bce53b51f6cb489e313dbb.1547538621.git.ryder.lee@mediatek.com>
+ id 1gku1G-00019J-OO; Sat, 19 Jan 2019 17:02:56 +0000
+Received: from localhost.localdomain (10.18.11.217) by mail-sh.amlogic.com
+ (10.18.11.5) with Microsoft SMTP Server id 15.1.1591.10; Sun, 20 Jan 2019
+ 01:03:30 +0800
+From: Jianxin Pan <jianxin.pan@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: [PATCH] MAINTAINERS: Add entry for Amlogic NAND controller driver
+Date: Sun, 20 Jan 2019 01:02:35 +0800
+Message-ID: <1547917355-13179-1-git-send-email-jianxin.pan@amlogic.com>
+X-Mailer: git-send-email 1.9.1
+MIME-Version: 1.0
+X-Originating-IP: [10.18.11.217]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190119_154311_738249_17A38ED2 
-X-CRM114-Status: UNSURE (   7.32  )
+X-CRM114-CacheID: sfid-20190119_090254_793755_F665CD76 
+X-CRM114-Status: UNSURE (   7.23  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -92,25 +64,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Boris Brezillon <bbrezillon@kernel.org>,
- Weijie Gao <weijie.gao@mediatek.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
+Cc: Rob Herring <robh@kernel.org>, Hanjie Lin <hanjie.lin@amlogic.com>,
+ Victor Wan <victor.wan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, devicetree@vger.kernel.org,
+ Liang Yang <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>,
+ Kevin Hilman <khilman@baylibre.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ Jerome Brunet <jbrunet@baylibre.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2019-01-16 at 02:12:03 UTC, Ryder Lee wrote:
-> This updates bindings for the MT7629 SPI-NOR controller.
-> 
-> Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Add entry for Amlogic NAND controller driver and its bindings[0].
 
-Applied to http://git.infradead.org/linux-mtd.git spi-nor/next, thanks.
+[0] https://lore.kernel.org/lkml/1547566684-57472-1-git-send-email-jianxin.pan@amlogic.com/
 
-Boris
+Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+Signed-off-by: Jianxin Pan <jianxin.pan@amlogic.com>
+---
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0abecc5..7d976a1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9628,6 +9628,13 @@ F:	drivers/media/platform/meson/ao-cec.c
+ F:	Documentation/devicetree/bindings/media/meson-ao-cec.txt
+ T:	git git://linuxtv.org/media_tree.git
+ 
++MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
++M:	Liang Yang <liang.yang@amlogic.com>
++L:	linux-mtd@lists.infradead.org
++S:	Maintained
++F:	drivers/mtd/nand/raw/meson_*
++F:	Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
++
+ MICROBLAZE ARCHITECTURE
+ M:	Michal Simek <monstr@monstr.eu>
+ W:	http://www.monstr.eu/fdt/
+-- 
+1.9.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
