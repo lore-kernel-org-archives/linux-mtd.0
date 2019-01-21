@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B934C31D63
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 06:25:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32CE3C31D63
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 06:32:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EC7A217F4
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 06:25:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E494A21773
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 06:32:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mpfOPUb1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="pqr1ZMJQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EC7A217F4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qMZwxmJi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="BZDt5m8Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E494A21773
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,46 +26,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=EtCQlBvzeywXRhQKzadurHSNprgoUgue+mLZ/bpQqoQ=; b=mpf
-	OPUb1ukpf3c6Dbi4lC5ZoGvIjkSAqYHtL1GMsLjrmMfy5ewPs0RVpImcSjKLgeNAjmpmQ/VXx9oZu
-	fqbFvoGEhtog6bATJyYwF97BO6quz+OjyF4Vff2KXpZD3z0kK0aGlO/HCnxRptJ2vlJD/FREpBdnR
-	uI3ZHL4viPm/i8YjpteW8o2YTAB4Xs19N8kHj1qmOCIWuZ5GTGiEn8QVoHQMGpGcGtLC9AemaI9S4
-	plzLWoAkYisb+n/kFxxWPd6opZCBEfJgxuS4IF3pwoEwUYHNR7KSdyxrVe8I/jMutLRVDNUW+N4MJ
-	xUsOyDXRmNuirR7sHZmSJ1UYSh78lVg==;
+	References:List-Owner; bh=p2ObmwWUMD3kBMeXqFB6T8j9+k/rEU6ksyM0YRaLJtk=; b=qMZ
+	wxmJiDCXNv4vjngyFMWxvXvrWq94gZ+ni41UtiVu//dfzkl1ERyu2TuSfGraWTjMZ29shhVWOR1gn
+	I31H+ZsqryEv49PTcJYTOVGjEWebWW/Jf37K/d5AVDTE6v8omOQVRvdAw3vjfdYZLtsTrfwRPamLX
+	q/R8r+rHyHj5MEH32qN7vKFV79mF0Fs+OQz9MzJq2rCl8KRGa8lp2AKXlbfE9WaCpb4Csow4RXSOo
+	QfxaaEnK79YkbYYfnkh/As+P52BBOdDz3bo/ft1uA3LknSLqg/VjGDQ6WKwuIoIxthj9kjQ/YX6HM
+	zJatXhSwLCfbBD8w9HVeF3Y3iIIr3VA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glT1L-0007Ey-AI; Mon, 21 Jan 2019 06:25:19 +0000
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+	id 1glT8P-0000Xz-HS; Mon, 21 Jan 2019 06:32:37 +0000
+Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glT1I-0007EX-47
- for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 06:25:18 +0000
+ id 1glT8J-0000XX-CU
+ for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 06:32:33 +0000
 Received: from pug.e01.socionext.com (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id x0L6OouF008453;
- Mon, 21 Jan 2019 15:24:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x0L6OouF008453
+ by conuserg-07.nifty.com with ESMTP id x0L6WCPC003098;
+ Mon, 21 Jan 2019 15:32:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x0L6WCPC003098
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1548051891;
- bh=3LVT/OIOW3XpkTEn5pOcQFDy+pugI4n0eFXqWzDArxM=;
+ s=dec2015msa; t=1548052333;
+ bh=qrh/ZcVeEBRczMZx/DNnPsCU/3ppDsvTOZXlUv3uS90=;
  h=From:To:Cc:Subject:Date:From;
- b=pqr1ZMJQPNp+jAzHuRd71HwbVpEvindzk6ns5XzeREQ4g6qcsNTOjJ8RgCQREdhgG
- 3/1iO8MBGfrxEnHJBsD6CHCa+IZdZt4HfAflVvBvGZk3lp3nPqGxBG+CfxEo3aFszf
- KjXHHa5Y6iEFxhQ/rQqPNjBISHBTaJEEZ2Odu+SHAnAsTSijxkUD5yjMDAnJti/J2U
- eqZX0m/EqiMk1k4nyQM2g6c80JW8FDK0Tz9ddouM91mwMVJTvJ0sV7HPawImNPmgfN
- VhXFypo5+GMVWW6bRVEG8mgEvkBHeNb03LKuExfCpMcni+0k1e9jkAdN8pULV0Qeyo
- zZxLdQ1zIRkCQ==
+ b=BZDt5m8ZX+oGTcNyNLj6dly8ZyqgwpbvGocWGu5X8myzZosRQGKmXE5hp+6CFcyKG
+ sjovxM/VtDF+Pqe3U4dDOQ7JDYm/cKuuoLElr4hb36/B3w2Rn1avvFPB8jesJzrEbU
+ enEuwao6qwfXcErDo18UjbMFYRaCQVQQ8yHVsb7S4yIkJ5RvcRFRKg5fj6oKNoVnVg
+ 2CXMYsZuKTCMMJlBJRKFqZTlXMZj/2bW8AmABLpwuui0EwyEa5DsEbiYZLVPu7iVAf
+ xTWhyFyiTdx6DANV8NzwxZHAnnK+4VVG5qwIk+TjPcfA3SNu275K658A7MzyNA7xqT
+ j/BgSva9Sjv+w==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: rawnand: remove ->legacy.erase and single_erase()
-Date: Mon, 21 Jan 2019 15:24:43 +0900
-Message-Id: <1548051883-8309-1-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2] mtd: rawnand: remove ->legacy.erase and single_erase()
+Date: Mon, 21 Jan 2019 15:32:07 +0900
+Message-Id: <1548052327-26483-1-git-send-email-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190120_222516_508246_19A9E8AF 
-X-CRM114-Status: GOOD (  14.25  )
+X-CRM114-CacheID: sfid-20190120_223231_655670_813084FF 
+X-CRM114-Status: GOOD (  15.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -105,12 +105,15 @@ This depends on the denali patch:
 http://patchwork.ozlabs.org/patch/1028264/
 
 
- drivers/mtd/nand/raw/nand_base.c | 32 +++++---------------------------
+Changes in v2:
+  - I noticed the masking by chip->pagemask is still needed
+
+ drivers/mtd/nand/raw/nand_base.c | 31 ++++---------------------------
  include/linux/mtd/rawnand.h      |  2 --
- 2 files changed, 5 insertions(+), 29 deletions(-)
+ 2 files changed, 4 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index cca4b24..690900b 100644
+index cca4b24..7ea3f10 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
 @@ -4155,23 +4155,6 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
@@ -146,7 +149,7 @@ index cca4b24..690900b 100644
  	loff_t len;
  
  	pr_debug("%s: start = 0x%012llx, len = %llu\n",
-@@ -4246,17 +4229,12 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+@@ -4246,17 +4229,11 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
  		    (page + pages_per_block))
  			chip->pagebuf = -1;
  
@@ -158,9 +161,8 @@ index cca4b24..690900b 100644
 -
 -		/* See if block erase succeeded */
 -		if (status) {
-+		ret = nand_erase_op(chip,
-+				    page >> (chip->phys_erase_shift -
-+					     chip->page_shift));
++		ret = nand_erase_op(chip, (page & chip->pagemask) >>
++				    (chip->phys_erase_shift - chip->page_shift));
 +		if (ret) {
  			pr_debug("%s: failed erase, page 0x%08x\n",
  					__func__, page);
