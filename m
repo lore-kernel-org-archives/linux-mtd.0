@@ -3,21 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25ECDC282DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:18:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2131CC282F4
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:20:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6FDF20855
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDE9F2084A
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:20:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IMdamVuW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IepIvyV8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUqP+x95"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6FDF20855
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I8fENFir";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fwuvTAUc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDE9F2084A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sYY8MZMGzkGddemYVYWIA6uOY040o+b9r8WIh9x3uh8=; b=IMdamVuWuk0L6O
-	QCbMjaH1WV6W1FFY326NX+PLbYQ9ffO5C1ZnwaWIkvr/z3K2uyGJljjUZ5dYU7858ZFe1eDU1rUIS
-	e6J2FJ+tbM2vnG+xZBJWfK2h0dDLQ8xdzvGokOPfxaI2rvYNCoH5lcpk3nvuJS3U10zPdlT6acGTJ
-	mR7yd07TjfR2BvzCXFlSO+NarLwwBDRvwf6ULG/Owdr2FEUnvVFk1wHsp4O97Rer6oDe/qP3uSH/H
-	jCILup/Wr62H6dL/vwZ7Pg+dRl7KQD+gZO/shXQq3drtkYplI5KJpqK/5PuJtJ3obL/EdG1xHNnSf
-	lkR/qiBiZa5pJxOsKy3g==;
+	List-Owner; bh=jRXRKrPWMX/W6qzhYfVUx3madWeA8q2hFHnKKBxi4ho=; b=I8fENFirlXRVp0
+	pUYKozEgJUbQ8aSYyos6IZqGTBl/gW+sL56G3ZiiTYxQsgqTdI2Dm08wyc8wp5NLeFOycn2u8mcVC
+	VZCR0WXCkrmkIEZihZI9/bOC2lSCGe/SAm6KnfErQeADs5D94p1JZF/wGDbnVJQxnThF62jFqxMSm
+	fDTg0Cy+AXwL/6CryTYRTgxAxqcXr1HnRSzR4+dfjXOxHdwqG6d6oG2zYtaQrxwMq0bHFbg0VA1a/
+	gLMD9uKO5FKnJSthLbEp6hV2WUymv8slxqUdglat4ohZg7pUuK3x99bJbrEblnOUJnKWK5rX0mc3p
+	3v0eUgktXFKDR43BdTww==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glUn2-00061u-Sb; Mon, 21 Jan 2019 08:18:40 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glUn0-0005uo-ML
- for linux-mtd@bombadil.infradead.org; Mon, 21 Jan 2019 08:18:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=xxBuHiU7Uak6x/GnL2VQ99MEOwgfzEOl7DuvRFdEkzg=; b=IepIvyV8+5ON+0sRp5H/pK33Jc
- 0P4JNg2fZJuwiqBL18afknrdQ/Rcykckoz1hPusXgRjJ39RQbJ+8wr+Ya1eWsDGwGkYeWt7HOHW++
- Ta7yxQPDv4UZcUlaNp1nCXPVMW7FAwfesDoO+HQgr2yUnk2d3wo4nx/Ik0RR0HIWuA5DaP9pShFFq
- 8Pt2AGevPSfHiILDsdzPMI0FaOtaH/UitcFUNcRDDfpoIxC2PUNY2v5NBQfFk7jC2zH+Htq8NonT8
- S74FT7Rf4bD0vwTHM6rBaJOVHyRq5E/cfpHf5w7i8ZLFPx1wHN/IkX1S3FS47KUufHBHj087+foRV
- FY+MjwPg==;
+	id 1glUp4-0000Zp-45; Mon, 21 Jan 2019 08:20:46 +0000
 Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glUf4-00033H-Ll
- for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 08:10:28 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1glUp1-0000ZV-75
+ for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 08:20:44 +0000
 Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4390120823;
- Mon, 21 Jan 2019 08:10:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4289920855;
+ Mon, 21 Jan 2019 08:20:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548058223;
- bh=CDRG7Y7DEjMUWnDIU9dXSY+scfnXpjjIKacUStsfXaM=;
+ s=default; t=1548058842;
+ bh=MJkhogmuL5zxjpl6vNApkWRVH7AW21+otVh6ZbeENRU=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=IUqP+x95oZ62BYTRTfWYTGAeUhPhVvJtSS2vTjTYF8LLyQDertppR4v42eB/Uvw2t
- rrawqwJDddfzy2SSyoDd5x89VoF+Tf0Z+ORb+dTW1uI8DMLUCgHMyTytid+G4U7nOE
- V0UdaaIkWYewPgfHxaMsd8DXZpkxzIO3V2V9LIYE=
-Date: Mon, 21 Jan 2019 09:10:13 +0100
+ b=fwuvTAUcNBT/JDhzNCaO5ee+L0Y+eXRGTY85IswygpzJfQ5aGvNy10EaZZcesMuFM
+ BNOSwTeiHal4mb1fj3pZ80OPZODXlWU1QUMxUx+7RVHs6CmDcDaJqRSn2tAxSb9FOz
+ f/Plt1I24mi4NAt5MmThHwVLq6LRlEvInLL6ugog=
+Date: Mon, 21 Jan 2019 09:20:33 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH] mtd: rawnand: denali: remove ->erase hook
-Message-ID: <20190121091013.4a6f55a2@bbrezillon>
-In-Reply-To: <1548046326-26776-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1548046326-26776-1-git-send-email-yamada.masahiro@socionext.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 1/2] mtd: rawnand: fsmc: Reset NAND timings on resume()
+Message-ID: <20190121092033.68d5a2ed@bbrezillon>
+In-Reply-To: <20190118210604.8231-1-linus.walleij@linaro.org>
+References: <20190118210604.8231-1-linus.walleij@linaro.org>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190121_081026_859959_34177882 
-X-CRM114-Status: GOOD (  23.18  )
+X-CRM114-CacheID: sfid-20190121_002043_278919_979F0569 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,85 +73,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 21 Jan 2019 13:52:06 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Fri, 18 Jan 2019 22:06:04 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> Commit f9ebd1bb4103 ("mtd: rawnand: Deprecate ->erase()") discouraged
-> the use of this hook, so I am happy to follow the suggestion.
-> 
-> Although the Denali IP provides a special MAP10 command for erasing,
-> using it would not buy us much. The Denali IP actually works with the
-> generic erasing by single_erase() + ->cmdfunc hook (nand_command_lp)
-> + ->cmd_ctrl hook (denali_cmd_ctrl).
-> 
-> This method is also deprecated, but denali_erase() can go away
-> irrespective of ->exec_op conversion.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> When we go through a suspend/resume cycle the NAND
+> timings may have been lost so reset the chip.
 
-Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+Actually, it's not only about resetting the timings (even if the side
+effect of calling nand_reset() is that the core re-applies the
+correct timings through ->setup_data_interface()). We need it to start
+in a known working state.
 
+> 
+> This hardware will autonomously enable/disable the
+> chip selects depending on what memory is accessed and
+> chip selects are not software controlled, so we
+> only lass chip select "0" for "all chips".
+
+The FSMC driver only supports single CS chips which explain why you
+only have to call nand_reset(chip, 0).
+
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
+>  drivers/mtd/nand/raw/fsmc_nand.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->  drivers/mtd/nand/raw/denali.c | 21 ---------------------
->  1 file changed, 21 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> index 6e8edc9..21320b1 100644
-> --- a/drivers/mtd/nand/raw/denali.c
-> +++ b/drivers/mtd/nand/raw/denali.c
-> @@ -37,9 +37,6 @@
->  #define DENALI_MAP11_ADDR	((DENALI_MAP11) | 1)	/* address cycle */
->  #define DENALI_MAP11_DATA	((DENALI_MAP11) | 2)	/* data cycle */
+> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+> index c9149a37f8f0..4050843dd35e 100644
+> --- a/drivers/mtd/nand/raw/fsmc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
+> @@ -1164,6 +1164,7 @@ static int fsmc_nand_resume(struct device *dev)
+>  		clk_prepare_enable(host->clk);
+>  		if (host->dev_timings)
+>  			fsmc_nand_setup(host, host->dev_timings);
+> +		nand_reset(&host->nand, 0);
+>  	}
 >  
-> -/* MAP10 commands */
-> -#define DENALI_ERASE		0x01
-> -
->  #define DENALI_BANK(denali)	((denali)->active_bank << 24)
->  
->  #define DENALI_INVALID_BANK	-1
-> @@ -903,23 +900,6 @@ static int denali_waitfunc(struct nand_chip *chip)
->  	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
->  }
->  
-> -static int denali_erase(struct nand_chip *chip, int page)
-> -{
-> -	struct denali_nand_info *denali = mtd_to_denali(nand_to_mtd(chip));
-> -	uint32_t irq_status;
-> -
-> -	denali_reset_irq(denali);
-> -
-> -	denali->host_write(denali, DENALI_MAP10 | DENALI_BANK(denali) | page,
-> -			   DENALI_ERASE);
-> -
-> -	/* wait for erase to complete or failure to occur */
-> -	irq_status = denali_wait_for_irq(denali,
-> -					 INTR__ERASE_COMP | INTR__ERASE_FAIL);
-> -
-> -	return irq_status & INTR__ERASE_COMP ? 0 : -EIO;
-> -}
-> -
->  static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
->  				       const struct nand_data_interface *conf)
->  {
-> @@ -1244,7 +1224,6 @@ static int denali_attach_chip(struct nand_chip *chip)
->  	chip->ecc.write_page_raw = denali_write_page_raw;
->  	chip->ecc.read_oob = denali_read_oob;
->  	chip->ecc.write_oob = denali_write_oob;
-> -	chip->legacy.erase = denali_erase;
->  
->  	ret = denali_multidev_fixup(denali);
->  	if (ret)
+>  	return 0;
 
 
 ______________________________________________________
