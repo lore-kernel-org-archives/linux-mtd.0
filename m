@@ -2,68 +2,71 @@ Return-Path: <SRS0=TRF+=P5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C77AC2F3A6
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 12:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA59DC2F3A0
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 13:06:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A6FD20861
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 12:44:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 772E920861
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 13:06:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ad6V9/P3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DrE+GK6t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A6FD20861
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u8CWEeM0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="wXCI3GF6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 772E920861
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oWRbqO4gfklT0ZO2TnztT/E/DMBwAg6Ve4HG5nb7T0s=; b=Ad6V9/P3qNekl/
-	MqPce6E4rqvyJrDX9TP4t0fpyeT26J5OzJpgM6SGiikaIt/5fDdjJ+ncdz1BvooQp87Niyira36sk
-	VMt0v6vs3F5M4lLplVEzE3xBZvTAncWxTy1c3fIrdizR0owSriJ5rivYQhJyT86j3WPM7t9aOTZSO
-	ifnOJ+s3tF/7hx30zBS52ezSZVQvYveqk0aDfvX1dXttV8mtwbGqcEA4Z2xf32IHjf0A/j9taI0Wc
-	kusTxn5Uh7VWskiF6rPlQN7U1h4C6By7nnZDKkufNvmt3V55qQ1mYVu4jGY1QQI9Qqik69vKPgKKJ
-	XJ8TQ++CCbOi9tAsLtTg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=8vKSWJJxdAubic2Wvnbzgv4+cwXt89KnOAHhmoANWt8=; b=u8C
+	WEeM0b5b5uEwXDbqW5lK50Kuhtf6cyX7M5BfJgUDYPGOcJh3UAVoQmH0VQK63BFTqoILPr0FR12uu
+	MHpusKlOV87txgG9UX8hk5FL5sea2Cus2fJAFRGBkA2CL9l6FWz9PUHP24yfkLSsjmsz4tNlep2Mq
+	TF3JjMj02hzxJ7fasVSXPcADCI++rBW1Z4TLjVqcF+Q8/laNuvGo3sI+N5JK5lruXsnXYmL1T2Gxa
+	aTi54dTQ4L2SWJKPghKUN8tTMD4Qlg7Ydgl7F4yO8Qg8hColAfZkwGbc5vZbmbbOLtDzlJq/o5bQ8
+	AkPL8+febA0lQqI7lXU/tCDR6oXPeSw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glYwQ-0006ba-8x; Mon, 21 Jan 2019 12:44:38 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1glZHL-0007q9-Rc; Mon, 21 Jan 2019 13:06:15 +0000
+Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glYwM-0006ad-SI
- for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 12:44:37 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E5CD62085A;
- Mon, 21 Jan 2019 12:44:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548074673;
- bh=7P1LlYlCrBTvkwD909s74ARuzLFAWWg40f3d7uIwRgg=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=DrE+GK6tsoXemzdIFesaHxpdRcJUkKhSJmeDsa3WbtlEeWWO3fK06nj6urfkg45Vk
- 9AVH2U57GiUv6ax2UHWAE4TWpa9sWEAm6pcVfvRsV0kAcxobWIw2tEWNOjanXLmZuX
- Yojz7EuS0NQn53sQaqWrfzBEPU2mnUVbOiCrUP3I=
-Date: Mon, 21 Jan 2019 13:44:23 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Subject: Re: [EXT] Re: [RESEND PATCH V2 2/2] mtd: core: NAND filling block
-Message-ID: <20190121134423.6c1765a3@bbrezillon>
-In-Reply-To: <BYAPR08MB4533ADDA97A62DF732E565B1DB9F0@BYAPR08MB4533.namprd08.prod.outlook.com>
-References: <BYAPR08MB4533401FB969CA9A8D254F34DB9C0@BYAPR08MB4533.namprd08.prod.outlook.com>
- <20190118233943.5f003eef@bbrezillon>
- <BYAPR08MB4533ADDA97A62DF732E565B1DB9F0@BYAPR08MB4533.namprd08.prod.outlook.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1glZHI-0007po-MZ
+ for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 13:06:14 +0000
+Received: from pug.e01.socionext.com (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
+ [153.142.97.92]) (authenticated)
+ by conuserg-12.nifty.com with ESMTP id x0LD5exQ027454;
+ Mon, 21 Jan 2019 22:05:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com x0LD5exQ027454
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1548075941;
+ bh=oDS6K478k8S9TuIPdGCS0e12SPNRa7vs+WnpfNLNJ18=;
+ h=From:To:Cc:Subject:Date:From;
+ b=wXCI3GF6HAanitgdyzFucM1iCB+qgXsVG5mMXCrqtHocFPjGYFN91iGSNnyR5Goph
+ FuipL0/OXmon/BTB5PeReDS9a/F1UN6xu8cLrBaUoGA6YIr+CTk4JLXwtrlVyU39z4
+ rQQD8Ml/CRJkECI4rgQ1tJcNuizXUYEYixqDNEmyzS6HvameSpqzklX2TN8k7JI2qP
+ o6yLJwbwVga/1N+KoJTTCjObWjlpnKbnS1QW8o/m/Sp7SatvVnsjURI9+5WlvG/NKd
+ QKTLUJ2hjMCWTP2wCVc/QAZbeldjWrbqXDR813seBx8bARje5IPUHU/PZ8oq8TkcOd
+ Qac5lPE9EP05g==
+X-Nifty-SrcIP: [153.142.97.92]
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: check return code of nand_reset() and
+ nand_readid_op()
+Date: Mon, 21 Jan 2019 22:05:34 +0900
+Message-Id: <1548075934-19963-1-git-send-email-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190121_044435_177098_34314D1D 
-X-CRM114-Status: GOOD (  23.82  )
+X-CRM114-CacheID: sfid-20190121_050613_086311_56D2F06E 
+X-CRM114-Status: GOOD (  14.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,121 +78,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "richard@nod.at" <richard@nod.at>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "Zoltan Szubbocsev \(zszubbocsev\)" <zszubbocsev@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 21 Jan 2019 12:28:17 +0000
-"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
+nand_scan_ident() iterates over maxchips to find as many homogeneous
+chips as possible.
 
-> Hi, Boris
-> 
-> >> +
-> >> +	 /* Only for legacy planar 2D parallels NAND. */
-> >> +	if ((mtd->type != MTD_NANDFLASH) || (chip->bits_per_cell != 1))
-> >> +		return 0;  
-> >
-> >Are you implying that all your SLC chips are impacted by this issue, really?
-> >  
-> 
-> In principle, all SLC NAND devices can show a sensitivity of the erase operation 
-> to block filling prior to erase. On certain devices it is almost undetectable.
+Currently, this loop bails out only when manufacturer or device ID
+unmatches. The reason of unmatch is most likely no chip is connected
+to that chip select. In this case, nand_reset() has already failed,
+and the following nand_readid_op() is pointless.
 
-Can you point me to docs/papers describing this effect? It's still
-something I do not understand so I'd like to have more background on
-what this effect is and what makes it more likely to happen on modern
-SLC NANDs.
+Before ->exec_op hook was introduced, drivers had no way to tell
+the failure of NAND_CMD_RESET to the framework because the legacy
+->cmdfunc() has void return type. Now drivers implementing ->exec_op
+hook can return the error code. You can save nand_readid_op() by
+checking the return value of nand_reset(). The return value of
+nand_readid_op() should be checked as well. If it fails, probably
+id[0] and id[1] are undefined values.
+
+Just for consistency, it should be sensible to check the return
+code in nand_do_write_oob() as well.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ drivers/mtd/nand/raw/nand_base.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 7ea3f10..3407523 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -457,7 +457,7 @@ static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
+ 			     struct mtd_oob_ops *ops)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	int chipnr, page, status, len;
++	int chipnr, page, status, len, ret;
  
-> Nonetheless, given the expected improvement in robustness and the negligible impact
-> of the patch on performance, we recommend it to be applied to all SLC NAND devices.
-
-Again, the impact will vary greatly depending on how efficient the
-controller is WRT to data transfer on the bus, so saying the impact is
-negligible is a lie. I do agree on the "reliability is more important
-than perf" aspect though.
-
-> This will simplify maintenance and minimize the risk of mistakes with parts requiring
-> the patch not getting it.
-
-That's also true.
-
-> 
-> >> +
-> >> +	data_buf =  kmalloc(mtd->writesize, GFP_KERNEL);
-> >> +	if (!data_buf)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	memset(data_buf, 0xFF, mtd->writesize);
-> >> +	/*
-> >> +	 * pgs[] contains pages need to be checked. We firstly check
-> >> +	 * page13,because, for the most of cases, PEB being erased is
-> >> +	 * not partially programmed. If page13 contains data, we directly
-> >> +	 * return since it is not a partially programmed PEB.  
-> >
-> >So now you say the minimum amount of written pages is 14 not 15? In your
-> >previous patch, the magic number was 15 (and the commit log says 15 too).
-> >  
-> it is still 15 pages, page0~page14. But it is now odd pages, there will one less odd pages than
-> even pages.
-
-Why only odd pages? You did not reply to this question yet, and I
-really want to understand why.
-
-> >> +	 */
-> >> +
-> >> +	char pgs[] = {13, 0, 11, 9, 7, 5, 3};
-> >> +	int  c = ARRAY_SIZE(pgs) - 1;
-> >> +	int i;
-> >> +
-> >> +	for (i = 0 ; i <=  c; i++) {
-> >> +		ret = nand_read_page_raw(chip, data_buf, 1, page + pgs[i]);
-> >> +		if (ret)
-> >> +			continue; /* Read error, we just skip it now. */
-> >> +		if (check_page_if_emtpy(chip, data_buf) == true) {
-> >> +			if (pgs[i] == 0)
-> >> +			/* page0 is not programmed. */
-> >> +				goto free_buf;
-> >> +
-> >> +			/* Mark page need to program later */
-> >> +			empty_page_mask |= (1 << pgs[i]);
-> >> +		} else {
-> >> +			if (pgs[i] == LAST_CHECKPU_PAGE)
-> >> +			/*
-> >> +			 * If page13 is programmed, this block has
-> >> +			 * met the requirement of robust erase.
-> >> +			 */
-> >> +				goto free_buf;
-> >> +		}
-> >> +	}
-> >> +	/* Corrupt page0 and page1, in order to simulate an
-> >> +	 * uncompleted eraseing scenario. Just for case of
-> >> +	 * power loss hits while below programming. in this
-> >> +	 * way, the PEB will be re-erased again.  
-> >
-> >Looks like the "erase the first 2 pages" thing is here to corrupt UBI's VID and EC
-> >headers. Is this really needed? We should definitely not assume the NAND user is
-> >UBI, and that's exactly what you're doing here.
-> >  
-> We must deal with all sorts of power loss, if other NAND based file systems
-> Have the same behavior with UBIFS to deal with un-completed erasing.
-> This is not just for UBIFS.
-
-I do agree with that, except you're doing exactly the opposite: assuming
-UBI is used and corrupting the first 2 pages is enough. That's just
-wrong, and it's a typical example of UBI behavior leaking into the lower
-layers of the MTD stack. To make it clear, incomplete erase can happen,
-and wear-leveling/FS layers should be able to deal with that without
-expecting the NAND driver to corrupt the first 2 pages of the block.
-
-> 
-> //Bean
+ 	pr_debug("%s: to = 0x%08x, len = %i\n",
+ 			 __func__, (unsigned int)to, (int)ops->ooblen);
+@@ -479,7 +479,9 @@ static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
+ 	 * if we don't do this. I have no clue why, but I seem to have 'fixed'
+ 	 * it in the doc2000 driver in August 1999.  dwmw2.
+ 	 */
+-	nand_reset(chip, chipnr);
++	ret = nand_reset(chip, chipnr);
++	if (ret)
++		return ret;
+ 
+ 	nand_select_target(chip, chipnr);
+ 
+@@ -5037,11 +5039,15 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 		u8 id[2];
+ 
+ 		/* See comment in nand_get_flash_type for reset */
+-		nand_reset(chip, i);
++		ret = nand_reset(chip, i);
++		if (ret)
++			break;
+ 
+ 		nand_select_target(chip, i);
+ 		/* Send the command for reading device ID */
+-		nand_readid_op(chip, 0, id, sizeof(id));
++		ret = nand_readid_op(chip, 0, id, sizeof(id));
++		if (ret)
++			break;
+ 		/* Read manufacturer and device IDs */
+ 		if (nand_maf_id != id[0] || nand_dev_id != id[1]) {
+ 			nand_deselect_target(chip);
+-- 
+2.7.4
 
 
 ______________________________________________________
