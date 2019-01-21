@@ -2,21 +2,21 @@ Return-Path: <SRS0=TRF+=P5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E16F1C282E9
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19E54C282E9
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:13:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD6E320823
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:11:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE8A62085A
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Jan 2019 08:13:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aiwqXYYk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIy0hrHh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD6E320823
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="shMNlxLx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2TR12+jl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE8A62085A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,46 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lQMvtRJqn0rFVBb5gvhJo7vwdXRmYO26fMoBzkpq3jM=; b=aiwqXYYkoFOdE6
-	d6p7q+kYf7BDOK8sl1q+Yoajm3HWfesJuLE2Qr0xhWT1mLuUUYmC6+ZBQR52kSMM+kLVUKJnCFXzC
-	XWsiC2/OQOz1HpgZnCAAa0hVDt69mN1GuV2yjOPsm6F8w/Sv/bcDSxR6zN+vYu0On0EXjZVH/3vi8
-	aQAu3b7aNmWNEadzoqw5uLSXEhkrYEeJcFyod1fl1nHbcrnII6y0gLjtw8bzgN0dibLwj1eKO3D+t
-	eC3qY+2xAMsqFqG5aeo69YkbsElOJuGBTjNT6Xst/UXPcbrlYsqVFOKuHfaQmipkQIgUkkzhsQm14
-	4hkIlmILtBysE0CEbH6Q==;
+	List-Owner; bh=am6xstYm7bEzVlnGmUfznPbwqplnSWIyyek47uOEv7U=; b=shMNlxLxUeR4Nh
+	7zqth/ty/adrc5ANJa05hnpESYX80r3zK0sJ+ObsLANFfY8rOjf35zMqjiztDLzv2wjBkINcba5Wi
+	dl9kP43tSRGF51mH+mQSVh8GaUlZCBekhHFdEOIaQJsLi+R8ykcnnU/ntZq/bXsAlnLtqWcCWZs6y
+	xS96rhzFRGzhjXhwQuxtf71EVIgaikF9DLoqBsVBGzPF/VGuGrHENYFVvz0j9Ns6yg5GnCy52+Q2X
+	sUHXn0K03rfRGkLbJSiulVEnNvCiaj2cVctb32IFMUwjuZkTB0gGxyiCiwpQQ6pwdjX7njet8sl+a
+	Di4uuReMSW7py5UAySow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glUff-0002vw-EX; Mon, 21 Jan 2019 08:11:03 +0000
+	id 1glUhr-0003vd-JV; Mon, 21 Jan 2019 08:13:19 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glUcq-0007v7-RN
- for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 08:08:52 +0000
+ id 1glUhn-0003nM-SP
+ for linux-mtd@lists.infradead.org; Mon, 21 Jan 2019 08:13:18 +0000
 Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2173420823;
- Mon, 21 Jan 2019 08:08:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 730DB20855;
+ Mon, 21 Jan 2019 08:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548058088;
- bh=CgeMYW80Oo1CQC2iSnjN480wYtond2I550y06ebKW7E=;
+ s=default; t=1548058395;
+ bh=djyfNTCllQpKBZzzvuMRvitbEHsIQegNt3mk5IAXHhQ=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=hIy0hrHhorZRxa+B21njKGkJyEe1eC6t1fBDm8uaBlnKqri8p953SMoHDn0zHaCzd
- 5eVkNoCaS6fllUe3REggfJOP+RezYLpOTYR21h1htp6DGpCjYQx2BhOUdBBMUFSCe6
- QRZW79CChFBR/cvB7NqYHk+n9w5VlV0ufvbA97Sw=
-Date: Mon, 21 Jan 2019 09:07:59 +0100
+ b=2TR12+jlu6L2TkPPPeeu3MjyIyi10TixwG3/7fjlCbnQ8XCPUZ0NJScoctesW06S2
+ ttid3jFlBfO4C/xM/6L/KY2Vm1ryJi418KOKiiqOk0jRBmtyG9bNQ9vSGrM9nu+mn2
+ 23I1e7BopQ4wdEQtwGXKNsp7AjvyDKtTLaIprruU=
+Date: Mon, 21 Jan 2019 09:13:04 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: Marcin =?UTF-8?B?S3J6ZW1pxYRza2k=?= <mar.krzeminski@gmail.com>
-Subject: Re: VIRTIO iface in mtd
-Message-ID: <20190121090743.3b343c2a@bbrezillon>
-In-Reply-To: <a978c3ac-83fb-04e7-4143-f16c2e5ca5c3@gmail.com>
-References: <7f5ad942-3857-2cbb-5c54-e27a4613cae8@gmail.com>
- <f53fe2ac-c1a1-1e64-1f4c-046b8e9daa2b@gmail.com>
- <20190118214455.18345232@bbrezillon> <2945987.RD84OsBdxl@blindfold>
- <a978c3ac-83fb-04e7-4143-f16c2e5ca5c3@gmail.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v2] mtd: rawnand: remove ->legacy.erase and single_erase()
+Message-ID: <20190121091304.63673375@bbrezillon>
+In-Reply-To: <1548052327-26483-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1548052327-26483-1-git-send-email-yamada.masahiro@socionext.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190121_000809_182836_2ED976EC 
-X-CRM114-Status: GOOD (  32.66  )
+X-CRM114-CacheID: sfid-20190121_001316_325005_B3CF424F 
+X-CRM114-Status: GOOD (  25.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,110 +73,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyY2luLAoKT24gU3VuLCAyMCBKYW4gMjAxOSAyMDo0OTo0NiArMDEwMApNYXJjaW4gS3J6
-ZW1pxYRza2kgPG1hci5rcnplbWluc2tpQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IE9uIDE4LjAxLjIw
-MTkgMjI6MjUsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPiA+IEhpIQo+ID4KPiA+IFNvcnJ5
-IGZvciBqb2luaW5nIHRoaXMgZGlzY3Vzc2lvbiBzbyBsYXRlLgo+ID4gSSBkaWRuJ3Qgbm90aWNl
-IHRoZSBwcml2YXRlIG1haWxzLiA7LVwgIAo+IE5vIHByb2JsZW0gOikKPiA+Cj4gPiBBbSBGcmVp
-dGFnLCAxOC4gSmFudWFyIDIwMTksIDIxOjQ0OjU1IENFVCBzY2hyaWViIEJvcmlzIEJyZXppbGxv
-bjogIAo+ID4+IE9uIEZyaSwgMTggSmFuIDIwMTkgMjE6MDM6MTcgKzAxMDAKPiA+PiBNYXJjaW4g
-S3J6ZW1pxYRza2kgPG1hci5rcnplbWluc2tpQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPj4gIAo+ID4+
-Pj4gICAgIAo+ID4+Pj4+IE15IHVuZGVyc3RhbmRpbmcgaXMgdGhhdCB0aGlzIGRyaXZlciB3aWxs
-IHVzZSBWSVJUSU8gdG8gY29tbXVuaWNhdGUKPiA+Pj4+PiB3aXRoIFFlbXUuIEZyb20gUWVtdSBz
-aWRlIGF0IHRoZSBlbmQgdGhlcmUgd2lsbCBiZSBhIGZpbGUgdGhhdCB3aWxsCj4gPj4+Pj4gc2lt
-dWxhdGUgTkFORC9OT1IuIElzIGl0IGNvcnJlY3Q/ICAKPiA+Pj4+IFRoYXQncyBteSB1bmRlcnN0
-YW5kaW5nLCBidXQgSSdtIG5vdCByZWFsbHkgYSB2aXJ0aW8gb3IgcWVtdSBleHBlcnQgc28KPiA+
-Pj4+IEkgbWlnaHQgYmUgd3JvbmcuCj4gPj4+PiAgICAgCj4gPj4+Pj4gV2hhdCB1c2UgY2FzZXMg
-ZG8geW91IGhhdmUgaW4gbWluZCBmb3IgdGhpcz8gIAo+ID4+Pj4gSSBoYXZlIG9uZSBpbiBtaW5k
-OiBzaW11bGF0ZSBOQU5EIChpbiBwYXJ0aWN1bGFyIE1MQyBOQU5EKSBiZWhhdmlvciBpbgo+ID4+
-Pj4gYSBwc2V1ZG8tcmVhbGlzdGljIHdheSB0byB2YWxpZGF0ZSBVQkkvVUJJRlMgY29kZSAob3Ig
-YW55IG90aGVyCj4gPj4+PiBGUy93ZWFyLWxldmVsaW5nL0ZUTCBjb2RlKSB3ZSBtaWdodCB3YW50
-IHRvIHVzZSBvbiB0b3Agb2Ygc3VjaCBkZXZpY2VzICAKPiA+Pj4gSW4gdGhpcyBwbGFjZSBteSBx
-dWVzdGlvbiBpcyB3aGF0IHdlIHJlbW92ZSBmcm9tIGVtdWxhdGlvbj8KPiA+Pj4gSSB1bmRlcnN0
-YW5kIHRoYXQgY29tbXVuaWNhdGlvbiBsYXllciBpcyByZW1vdmVkLCBob3dldmVyIGNvbW11bmlj
-YXRpb24KPiA+Pj4gcHJvdG9jb2wKPiA+Pj4gbmVlZCB0IG8gc3RheT8gRWcuIGJlY2F1c2UgTkFO
-RCBhbmQgT09CLiAgCj4gPj4gSWYgYnkgcHJvdG9jb2wgeW91IG1lYW4gdGhlIGZhY3QgdGhhdCBh
-IE5BTkQgaGFzIGFuIG91dC1vZi1iYW5kIGFuZCBhbgo+ID4+IGluLWJhbmQgYXJlYSwgdGhlbiB5
-ZXMsIHdlIHdhbnQgdG8gZW11bGF0ZSB0aGF0LiBXaGF0IEkgbWVhbnQgYnkKPiA+PiAicHJvdG9j
-b2wiIHdhcyB0aGUgaG93IHlvdSBpbnRlcmFjdCB3aXRoIGEgcGFyYWxsZWwgb3IgU1BJIE5BTkQg
-KCJzZW5kCj4gPj4gdGhpcyBvcGNvZGUgdG8gZG8gdGhpcyBvciB0aGF0IiksIGFuZCB3ZSBkZWZp
-bml0ZWx5IGRvbid0IHdhbnQgdG8KPiA+PiBlbXVsYXRlIHRoYXQgcGFydC4KPiA+PiAgCj4gPj4+
-PiBJJ2QgYWxzbyBsaWtlIHRvIHJlcGxhY2UgbmFuZHNpbSBieSB0aGlzIGVtdWxhdGlvbiBhcHBy
-b2FjaC4gSW5kZWVkLAo+ID4+Pj4gbmFuZHNpbSBpcyBlbXVsYXRpbmcgdGhlIHBhcmFsbGVsIE5B
-TkQgcHJvdG9jb2wgbW9yZSB0aGFuIGFueXRoaW5nCj4gPj4+PiBlbHNlLCB3aGljaCB3ZSBkb24n
-dCByZWFsbHkgY2FyZSBhYm91dCB1bmxlc3Mgd2UgbmVlZCB0byB0ZXN0IHRoZSByYXcKPiA+Pj4+
-IE5BTkQgZnJhbWV3b3JrIChhbmQgSSB0aGluayB0aGVyZSBhcmUgYmV0dGVyIHNvbHV0aW9ucyB0
-byBkbyB0aGF0KS4gT24KPiA+Pj4+IHRoZSBvdGhlciBoYW5kLCBiZWNhdXNlIG5hbmRzaW0gdHJp
-ZXMgdG8gdXNlIHRoZSBmdWxsIHJhdyBOQU5EIHN0YWNrLAo+ID4+Pj4gaXQncyBvZnRlbiBoYXJk
-IHRvIGVtdWxhdGUgcmVhbCBkZXZpY2VzIChJRC1iYXNlZCBkZXRlY3Rpb24gZG9lcyBub3QKPiA+
-Pj4+IHdvcmsgZm9yIE9ORkkvSkVERUMgY29tcGF0aWJsZSBkZXZpY2VzKS4gQWxsIG9mIHRoaXMg
-bWFrZXMgbmFuZHNpbSBhCj4gPj4+PiBwb29yIGNob2ljZSB3aGVuIHRoZSB1c2VyIHdhbnRzIHRv
-IGVtdWxhdGUgYSBOQU5EIGRldmljZSB0byBkbwo+ID4+Pj4gcG9zdC1tb3J0ZW0gYW5hbHlzaXMg
-dXNpbmcgYSBOQU5EIGR1bXAuICAKPiA+Pj4gVGhpcyBJIG5lZWQgdG8gdW5kZXJzdGFuZCBiZXR0
-ZXIuIElmIHdlIGVnLiBoYXZlIE5BTkQgZHVtcCwgZG8gd2UgY2FyZQo+ID4+PiB3aXRoIE9PQiBv
-ciBFQ0MsCj4gPj4+IG9yIG5vdD8gIAo+ID4+IFllcyB3ZSBzaG91bGQuIEZvciB0aGUgRUNDIHBh
-cnQsIGl0IHdpbGwgYmUgaGFyZCB0byBlbXVsYXRlIEhXIEVDQwo+ID4+IGVuZ2luZSwgYnV0IHdl
-IGNhbiBhdCBsZWFzdCBzcGVjaWZ5IHRoZSBsYXlvdXQgaW4gdXNlIG9uIHRoZSBib2FyZAo+ID4+
-ICh3aGljaCBPT0IgcG9ydGlvbnMgYXJlIHVzZWQgdG8gc3RvcmUgRUNDIGJ5dGVzIGFuZCB3aGlj
-aCBvbmVzIGFyZQo+ID4+IGNvbnRhaW5pbmcgdXNlciBkYXRhIG9yIGJhZCBibG9jayBtYXJrZXJz
-KS4KPiA+PiAgCj4gPj4+IEF0IHRoZSBlbmQgSSBhbHNvIG5lZWQgdG8gYWRkLCB0aGF0IEkgdW5k
-ZXJzdGFuZCBOT1IgZGV2aWNlcywgYnV0Cj4gPj4+IHVuZm9ydHVuYXRlbHkKPiA+Pj4gSSBoYXZl
-IGxvdyBleHBlcmllbmNlIHdpdGggTkFORHMuIFRoaXMgY291bGQgbGVhZCB0byBzb21lIG1pc3Vu
-ZGVyc3RhbmRzIDooICAKPiA+PiBXZSBjYW4gaGVscCB3aXRoIHRoYXQuICAKPiA+IFllcywgSSds
-bCBoYXBwaWx5IGhlbHAuCj4gPgo+ID4gSSdtIHVuaGFwcHkgd2l0aCBuYW5kc2ltIG1vc3RseSBi
-ZWNhdXNlIGl0IGVtdWxhdGVzIHRoZSBjaGlwIGl0c2VsZiwgd2hpY2ggaXMKPiA+IHRoZXNlIGRh
-eXMgYWxtb3N0IHVzZWxlc3MgYW5kIGluZWZmaWNpZW50Lgo+ID4gVG8gZmluZCBidWdzIGluIG5h
-bmRfYmFzZS5jIGl0IGhlbHBzIG9ubHkgaW4gdGhlb3J5LCBpbiByZWFsaXR5IHdlIHRyaWdnZXIK
-PiA+IGJ1Z3MgaW4gbmFuZHNpbSdzIE5BTkQgZW11bGF0aW9uLiAgCj4gSSBndWVzcyBpdCBjb3Vs
-ZCBoZWxwIHRvIGNhdGNoIHJlZ3Jlc3Npb24uLi4KCkluIHByYWN0aWNlIG5hbmRzaW0gZG9lcyBu
-b3QgY2F0Y2ggbW9zdCByZWdyZXNzaW9ucywgc2ltcGx5IGJlY2F1c2UKaXQncyBvbmx5IHVzaW5n
-IGEgc21hbGwgcGFydCBvZiB0aGUgcmF3IE5BTkQgY29kZSBiYXNlLgoKPiA+Cj4gPiBJIHRyaWVk
-IHRvIG92ZXJoYXVsIG5hbmRzaW0gc29tZSB0aW1lIGFnbzoKPiA+IGh0dHBzOi8vbGttbC5vcmcv
-bGttbC8yMDE2LzgvMzEvNjcKPiA+IEJ1dCBCb3JpcyBjb252aW5jZWQgbWUgdGhhdCBJIHNob3Vs
-ZCBub3QgcmlkZSBhIGRlYWQgaG9yc2UuIDstKQo+ID4KPiA+IFNvLCB0aGUgYmFzaWMgaWRlYSBp
-cyBoYXZpbmcgYSBzaW1wbGUgYW5kIHN0dXBpZCBrZXJuZWwtZHJpdmVyIHdoaWNoIGltcGxlbWVu
-dHMKPiA+IHRoZSBNVEQgaW50ZXJmYWNlIGFuZCBjYW4gYWN0IGxpa2Ugd2hhdGV2ZXIgd2Ugd2Fu
-dC4KPiA+IFRoZSBsb2dpYyBzaGFsbCBoYXBwZW4gaW4gYW4gZW11bGF0b3IgbGlrZSBxZW11Lgo+
-ID4gVGhpbmsgb2YgdmlydGlvLWJsayBvciB2aXJ0aW8tc2NzaS4gIAo+IFRoYXQgc2VlbSB0byBi
-ZSByZWFzb25hYmxlIGFuZCBtYWNoIG15IHVuZGVyc3RhbmQgb2YgdGhlIHRvcGljLgo+IE1URCBk
-cml2ZXIgd291bGQgYmUgbm90aGluZyBtb3JlIHRoYXQgdHJhbnNsYXRvciBiZXR3ZWVuIE1URCBh
-bmQgUWVtdSAKPiAob3ZlciB2aXJ0aW8pLgo+IEFzIEJvcmlzIHN1Z2dlc3RlZCBhbmQgYWRkaXRp
-b25hbCBjaGFubmVsIHRvIG1vZGlmeSBRZW11cyBiZWhhdmlvciBmcm9tIAo+IGd1ZXN0IChlZy4g
-aW5zZXJ0aW5nIEVDQyBlcnJvcnMpPwoKQWN0dWFsbHksIEkgd2FzIGV4cGVjdGluZyB0byBpbnNl
-cnQgYml0ZmxpcHMsIGVyYXNlL3Byb2dyYW0gZXJyb3JzLApiYWRibG9jaywgLi4uIG9uIHRoZSBo
-b3N0IHNpZGUuIFRoZSBzaWRlIGNoYW5uZWwgd291bGQgYWxsb3cgdXMgdG8KaW5mb3JtIHRoZSBn
-dWVzdCBhYm91dCB0aG9zZSBlcnJvcnMuCgo+IEVnLiBmcm9tIHN5c2Y/Cj4gCj4gUmVhbCB1bmtu
-b3duIGZvciBtZSBpcyBRZW11IHBhcnQuIEVnLiBiYXNpYyBxdWVzdGlvbiBob3cgZG9lcyBOQU5E
-IGR1bXBzIAo+IHNob3VsZCBsb29rIGxpa2U/Cj4gSXQgc2hvdWxkIGNvbnNpc3Qgb25seSByZWFs
-IGRhdGEgb3Igc2VjdG9ycyBpbWFnZXMod2l0aCBPT0IpLiBPciBib3RoPwoKTm90IHN1cmUgd2hh
-dCB5b3UgbWVhbiBieSAicmVhbCBkYXRhIiBhbmQgInNlY3RvcnMgaW1hZ2VzIiwgYnV0IHFlbXUK
-TkFORCBpbWFnZXMgc2hvdWxkIGRlZmluaXRlbHkgY29udGFpbiBPT0Igd2hlbiBhcHBsaWNhYmxl
-IChJT1csCndoZW4gZW11bGF0aW5nIE5BTkQgZGV2aWNlcykuIEhvdyB5b3Ugc3RvcmUgaXQgaXMg
-dXAgdG8geW91IChjYW4gYmUKaW50ZXJsZWF2ZWQgd2l0aCBpbi1iYW5kIGRhdGEgbGlrZSBvZiBh
-IHJlYWwgZGV2aWNlIG9yIHN0b3JlZCBpbiBhCnNlcGFyYXRlIHNlY3Rpb24gb2YgdGhlIHFlbXUg
-TkFORCBpbWFnZSBmaWxlLCBvciBldmVuIHN0b3JlZCBpbiBhCnNlcGFyYXRlIGZpbGUpLiBPaCwg
-YW5kIHlvdSdsbCBoYXZlIHRvIHN0b3JlIG1ldGFkYXRhIHRvbywgbGlrZSB3aGljaApibG9jayBp
-cyBiYWQsIHRoZSBwb3NpdGlvbiBvZiB0aGUgZW11bGF0ZWQgYml0ZmxpcHMgaW4gZWFjaCBwYWdl
-LCB0aGUKcGFnZXMvYmxvY2tzIHlvdSB3YW50IHRvIGdlbmVyYXRlIGVycm9ycyBvbiB3aGVuIGEg
-d3JpdGUvZXJhc2UgaXQKZXhlY3V0ZWQsIC4uLgoKQWxzbywgSSB0aGluayBvbmUgZmVhdHVyZSBS
-aWNoYXJkIHdvdWxkIGxvdmUgaXMgYSB3YXkgdG8gcmVjb3JkIGVhY2gKd3JpdGUvZXJhc2Ugb3Bl
-cmF0aW9uIGluIG9yZGVyIHNvIHRoYW4geW91IGNhbiBlYXNpbHkgcmVwbGF5IGEKc2VxdWVuY2Ug
-c3RlcCBieSBzdGVwIGFuZCBzZWUgaWYgRlMvV2Vhci1sZXZlbGluZyBsYXllciBpcyBhYm91dCB0
-bwptb3VudC9yZWNvdmVyIGZyb20gZXJyb3JzIGluIGJldHdlZW4gZWFjaCBvZiB0aG9zZSBpbnRl
-cm1lZGlhdGUKc3RhdGVzLiBUaGlzIHdvdWxkIHJlcXVpcmUgaGF2aW5nIGEgZXh0cmEgZmlsZSB3
-aGVyZSB5b3Ugc3RvcmUKb3BlcmF0aW9uIGFuZCBhc3NvY2lhdGVkIG1ldGFkYXRhIChsaWtlIHRo
-ZSBkYXRhIHdyaXR0ZW4gaW4gY2FzZSBvZiBhCndyaXRlKSBpbiBhIHNlcGFyYXRlIGZpbGUuCgpB
-bnl3YXksIHRoaXMgaXMgYWxyZWFkeSBhbiBhZHZhbmNlZCBmZWF0dXJlLCBhbmQgSSB0aGluayB3
-ZSBzaG91bGQKc3RhcnQgc21hbGw6IGVtdWxhdGUgTk9SL05BTkQgZGV2aWNlcyB3aXRob3V0IGFu
-eSB3YXkgdG8gZW11bGF0ZQpiaXRmbGlwcyBvciBlcmFzZS9wcm9ncmFtIGVycm9ycy4gT25jZSB3
-ZSBoYXZlIHRoYXQgaW4gcGxhY2UsIHdlIGNhbgpzdGFydCBhZGRpbmcgZmFuY3kgZmVhdHVyZXMg
-b24gdG9wLgoKUmVnYXJkcywKCkJvcmlzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Mon, 21 Jan 2019 15:32:07 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+
+> Now that the last user of this hook, denali.c, stopped using it,
+> we can remove the erase hook from nand_legacy.
+> 
+> I squashed single_erase() because only the difference between
+> single_erase() and nand_erase_op() is the number of bit shifts.
+> 
+> The status/ret conversion in nand_erase_nand() is unneeded since
+> commit eb94555e9e97 ("mtd: nand: use usual return values for the
+> ->erase() hook"). Cleaned it up now.
+
+Yeah! One less field in nand_legacy :-). 
+
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+
+Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+
+> ---
+> 
+> This depends on the denali patch:
+> http://patchwork.ozlabs.org/patch/1028264/
+> 
+> 
+> Changes in v2:
+>   - I noticed the masking by chip->pagemask is still needed
+> 
+>  drivers/mtd/nand/raw/nand_base.c | 31 ++++---------------------------
+>  include/linux/mtd/rawnand.h      |  2 --
+>  2 files changed, 4 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index cca4b24..7ea3f10 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -4155,23 +4155,6 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+>  }
+>  
+>  /**
+> - * single_erase - [GENERIC] NAND standard block erase command function
+> - * @chip: NAND chip object
+> - * @page: the page address of the block which will be erased
+> - *
+> - * Standard erase command for NAND chips. Returns NAND status.
+> - */
+> -static int single_erase(struct nand_chip *chip, int page)
+> -{
+> -	unsigned int eraseblock;
+> -
+> -	/* Send commands to erase a block */
+> -	eraseblock = page >> (chip->phys_erase_shift - chip->page_shift);
+> -
+> -	return nand_erase_op(chip, eraseblock);
+> -}
+> -
+> -/**
+>   * nand_erase - [MTD Interface] erase block(s)
+>   * @mtd: MTD device structure
+>   * @instr: erase instruction
+> @@ -4194,7 +4177,7 @@ static int nand_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+>  		    int allowbbt)
+>  {
+> -	int page, status, pages_per_block, ret, chipnr;
+> +	int page, pages_per_block, ret, chipnr;
+>  	loff_t len;
+>  
+>  	pr_debug("%s: start = 0x%012llx, len = %llu\n",
+> @@ -4246,17 +4229,11 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+>  		    (page + pages_per_block))
+>  			chip->pagebuf = -1;
+>  
+> -		if (chip->legacy.erase)
+> -			status = chip->legacy.erase(chip,
+> -						    page & chip->pagemask);
+> -		else
+> -			status = single_erase(chip, page & chip->pagemask);
+> -
+> -		/* See if block erase succeeded */
+> -		if (status) {
+> +		ret = nand_erase_op(chip, (page & chip->pagemask) >>
+> +				    (chip->phys_erase_shift - chip->page_shift));
+> +		if (ret) {
+>  			pr_debug("%s: failed erase, page 0x%08x\n",
+>  					__func__, page);
+> -			ret = -EIO;
+>  			instr->fail_addr =
+>  				((loff_t)page << chip->page_shift);
+>  			goto erase_exit;
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 33e240a..5e37534 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -936,7 +936,6 @@ static inline void nand_controller_init(struct nand_controller *nfc)
+>   * @waitfunc: hardware specific function for wait on ready.
+>   * @block_bad: check if a block is bad, using OOB markers
+>   * @block_markbad: mark a block bad
+> - * @erase: erase function
+>   * @set_features: set the NAND chip features
+>   * @get_features: get the NAND chip features
+>   * @chip_delay: chip dependent delay for transferring data from array to read
+> @@ -962,7 +961,6 @@ struct nand_legacy {
+>  	int (*waitfunc)(struct nand_chip *chip);
+>  	int (*block_bad)(struct nand_chip *chip, loff_t ofs);
+>  	int (*block_markbad)(struct nand_chip *chip, loff_t ofs);
+> -	int (*erase)(struct nand_chip *chip, int page);
+>  	int (*set_features)(struct nand_chip *chip, int feature_addr,
+>  			    u8 *subfeature_para);
+>  	int (*get_features)(struct nand_chip *chip, int feature_addr,
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
