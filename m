@@ -2,82 +2,110 @@ Return-Path: <SRS0=3GE2=P6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBF97C282C3
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 08:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECDFEC282C4
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:00:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB4A22084C
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 08:56:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDA5720854
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:00:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cm6uz1rr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="ubwnKfx0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB4A22084C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dFmUM9lZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="PgpATUnx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDA5720854
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cOi3HacL9Bmhhyal0StogoaPNZDgunnN6NSO9XjJR+k=; b=Cm6uz1rr9AKSYV
-	aFduNunfkn7AiiXQw6HL3ze0U3iLeFK8D30cAQMlNC+y2a0VxZQPO+uBMfJRNDHpzOr5eU5H2B0D+
-	lemsmNRACVuG26PH0QG6/GIgykxznZZpamx/bPCcUALHkMjtaCVP0Dkq+m3Hrsj7tzlgmBhNZf6Pb
-	zLHKs38yJyUrwl6DRk6Qu8tRd5bbAPxNBdbUQcRoQKT1egAMsYF6HRaTGNwyg1t3cHg4S/2p2wGaH
-	zXum0qvTdd6nDX4fuc9KZ3I7ismnKWNV9c7mqtdkqQaDXyyPkEJ+3zoTKLzl1E8fpCfA7loKmb7sv
-	3pVoBqj4AnjiX6gMrOdQ==;
+	List-Owner; bh=0KTX0fQi50vyifuHWIbPbE+6jcwDV+opADwtH+NVGe0=; b=dFmUM9lZqzVLXR
+	IEsn4cKMOs2ZlnimFJWsJ3aw7UVxtmcM1Idlv5ExhEKsh2oVCxDQHYdI+vuUW8zg8liUciZUHrEZX
+	9KbwEX2MiX0zXA2C3JmxxZ8x+f7bLGmMX8cQCuVQxS4Vz6/y5eNCWDDouCuWJfWsPujLxNcilaJbI
+	nDCD5Aj4UWmXUN7kFlfc4VabtnFeinuZSPiaoSx6pXr7IB+a9+ebkJerHwjcHjJnDGwbxnm/oL9fB
+	tr2MRtVMqtDJVyLQA9K0H5NifUxLXSfB+h8V6JzUIiFhFQpcZaFbXE64tOlRbH83M29uZN7t58+/i
+	xCwwY++X36Pv0Ae54XIw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glrrI-0003fL-K0; Tue, 22 Jan 2019 08:56:36 +0000
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
+	id 1glrvB-0007Hl-Ck; Tue, 22 Jan 2019 09:00:37 +0000
+Received: from mail-eopbgr50080.outbound.protection.outlook.com ([40.107.5.80]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glrrF-0003et-4R
- for linux-mtd@lists.infradead.org; Tue, 22 Jan 2019 08:56:35 +0000
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com
- [209.85.221.181]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id x0M8uH2x003932
- for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2019 17:56:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com x0M8uH2x003932
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1548147378;
- bh=smsVEI+nS4GxdebYfz+g3FYvtIn8efSFFYmFzJSH/do=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=ubwnKfx0rlazLULIFSuZIkpvDWOSd1vSiHAhadJEnHQSXablUiH+iG/0dy0FXJuBi
- 41F3Op9X65/LKRaBq8ABpSvnhCKHwaf92W3V6PQwAsVBeHq/skwdSbb+mwgDZCciI2
- 5azSOdr05tA/J9HCYbHmw7QJyI6Z2BZDo3Y6o/n5s+oCgsa+AXRPtJQAaayWrc5Bn5
- lhhx2ix+4eiQbjRwHSm2+i9ZzLLeslDwPOuEkKm9rWefE2ojy7kwejUciMl2aAF/+c
- y3RXPjNS7Ct1Ruc5BFxODKtKTD5nRqj0PQZn9sK8En6QX4CQjwc+sho8QF4LYRvx42
- iLcIdtaZOZsFw==
-X-Nifty-SrcIP: [209.85.221.181]
-Received: by mail-vk1-f181.google.com with SMTP id o130so5175991vke.10
- for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2019 00:56:17 -0800 (PST)
-X-Gm-Message-State: AJcUukdnydqQbKtCDrqXgkD4Rqu3QdRjFGWYiwo239oDHh3vChM7XLRO
- UoWceFgZwKb2IoXB/KgT/SJ8YzddV+VjlmaDz8o=
-X-Google-Smtp-Source: ALg8bN61wQ6e4LPjiM6HUfkbwIQw6hzkjHKsGZzfbRDO/Q02YlklZz6OTqn+3zZGxGfpXCy1KmD1H+bMCFppn4WFr8c=
-X-Received: by 2002:a1f:91cb:: with SMTP id t194mr12819882vkd.74.1548147376729; 
- Tue, 22 Jan 2019 00:56:16 -0800 (PST)
+ id 1glrut-0006vR-72; Tue, 22 Jan 2019 09:00:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9qYIIYTOOznDQ4/3HghsaBaj0pY9Qq5+Lw31HEGnjMg=;
+ b=PgpATUnxxQ1lfx0BtFBoYaP0ZUXqh+gNQyAelhwBXLuwpf9avu/0HJLuWuvdFpzXfzBU7YMleANnhM21tgCjsPFPzveAh8ivHhMTDdLsQmAsXa4ZWmof+9etZcaancl2s8cNwYrMe8qYmunHVq1nOrJHRqO8xTv6lsvOOlMZMgk=
+Received: from VI1PR04MB5726.eurprd04.prod.outlook.com (20.178.127.24) by
+ VI1PR04MB5597.eurprd04.prod.outlook.com (20.178.125.74) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1537.29; Tue, 22 Jan 2019 09:00:15 +0000
+Received: from VI1PR04MB5726.eurprd04.prod.outlook.com
+ ([fe80::a1c2:cc79:80f3:3bcb]) by VI1PR04MB5726.eurprd04.prod.outlook.com
+ ([fe80::a1c2:cc79:80f3:3bcb%5]) with mapi id 15.20.1537.031; Tue, 22 Jan 2019
+ 09:00:15 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: "robh@kernel.org" <robh@kernel.org>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>
+Subject: RE: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
+ controller
+Thread-Topic: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP
+ FlexSPI controller
+Thread-Index: AQHUrMnj2HaRDCPgY0i5ihL9RBjnkaW7Bz/Q
+Date: Tue, 22 Jan 2019 09:00:14 +0000
+Message-ID: <VI1PR04MB57266D861937B99899F3C1C699980@VI1PR04MB5726.eurprd04.prod.outlook.com>
+References: <1547553487-9936-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1547553487-9936-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1547553487-9936-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=yogeshnarayan.gaur@nxp.com; 
+x-originating-ip: [92.120.0.7]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; VI1PR04MB5597;
+ 6:R0LWJS49JyXQtBN4Immo8TGvYoR+7eijCH/5L1iuhIXmKfoLS00IFfocPhArSHq8l84bwOAMXlptaNTapCB1545zkv4vv8WOGU8I8zGkgIY5TCtZSmqTUKZ91Q62aE3ZmnUS5Ww6KYw+knXD3gUc0CLytNWRF7cI/UBcug/qRuO9m4wnHFNcx5V99WdYVv69HSBi9HlKufWi/qclY92Tm0PtG5zLo/X4eX41Tv3cYUwwqsSEkz5LOZhVADzml7yf9NBKC+t7C6jxISk+kMOefWVnm4O1YRnFKDLcy3MRTx+nNYHR/LqxT9K1sSK3wJ3j+IQymh7VP2hGjEkJ7JVP1+KxFXHzcXdNvq8QFoGnDgRpJwH/DjO5bGOHtJSobEV6/At/iSOtVFf4HXIj/M+YIk27mt6XaiyR5DZY2naQ44u2SU0Zb5L+cFpCVH485qfDdcq2u73vsMXXOQ8fW5ZUtg==;
+ 5:U0Zqb2P4ej/c7PT/Xv8AkXoyBcy029rCjRkreU3Hmori3nzEEh41tzZ9CxxfbqwYh1m7T5w6n4En4H3sgigasIlZ1OFbo9PfZC8hZ8cqT2S8xTo7C9E+CqUrdCDcrwCn8zAlrj0zn4M+H4eOuAyffssAlYI1485md1clZGcazg+6edfM+kiPhTmF4ag4MScGN2IcVW7Y/O2imMadbMar0A==;
+ 7:Zt7KJdCTAYCiiUkp5n6WTlohkem7D07sAn4pMndDvIzY0+vMTrxTsFmAjU4DkkZxNiq/G5btrVNJFZQoCL8ooBSbcbmEGb5BO3NuPZ1B/SYJPac4No8pSMRc/q86XD3n1EeYgrnF6CA10gzpsY8gLg==
+x-ms-exchange-antispam-srfa-diagnostics: SOS;
+x-ms-office365-filtering-correlation-id: a579b8b5-3618-406c-910e-08d68048064e
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600109)(711020)(4618075)(2017052603328)(7153060)(7193020);
+ SRVR:VI1PR04MB5597; 
+x-ms-traffictypediagnostic: VI1PR04MB5597:
+x-microsoft-antispam-prvs: <VI1PR04MB55972372CEDAD8CEFB5881AD99980@VI1PR04MB5597.eurprd04.prod.outlook.com>
+x-forefront-prvs: 0925081676
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(376002)(366004)(39860400002)(396003)(136003)(346002)(13464003)(189003)(199004)(26005)(68736007)(97736004)(186003)(476003)(102836004)(4326008)(39060400002)(6246003)(53936002)(7416002)(74316002)(71200400001)(71190400001)(25786009)(256004)(229853002)(76176011)(11346002)(86362001)(2501003)(446003)(6436002)(53546011)(6506007)(7696005)(2906002)(55016002)(81156014)(81166006)(7736002)(305945005)(66066001)(8936002)(105586002)(33656002)(3846002)(99286004)(478600001)(486006)(8676002)(316002)(110136005)(54906003)(14454004)(966005)(106356001)(6116002)(6306002)(9686003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB5597;
+ H:VI1PR04MB5726.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: +LiDDg5r7Cf5vIEkfsKD0fqHYxGRnAimV37SF6owSiJnxGYkEDet5eRVbCU9B8QQe8tHANLkwENmlzwRtJ0CProisl5nxssjA73FWGnemdlkduj2z2V2ath1D9K0nkRGphn7gpsTVOZv1l2Bi7fC0V1IpdXXrvZ6wblbtEd1i7l0Q1wuNCQU1xxCyYWwiIff2GPkiNhD4w33/jcadSSh7Q3dArDheNwnGJsHr9DtsjA4Odel/+E2a75w+ey7CePnJGp7vzFOW6T3HzLImFemOCtd9dNXI8BdcR+TiXXqr8bgd7zPLO+dV9WqWsJGuKrYkQ9wRzCxox7iuu8ReA0Fz+RaMe8M14gnVbTzuepbUigMzF8jRcnpuqXpp2VEWoPP54eG6EBMwYgA3wM3EvioZHU/NGqyXne1bsx9GuRxUE8=
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
 MIME-Version: 1.0
-References: <1548142975-14219-1-git-send-email-yamada.masahiro@socionext.com>
- <1548142975-14219-3-git-send-email-yamada.masahiro@socionext.com>
- <20190122084944.420fcd4a@xps13>
- <CAK7LNAQvD03By1PQJ8KZG-UqX+NVQcL6JU-5a-2ZVVovdgBpEQ@mail.gmail.com>
- <20190122090830.118eb6be@xps13> <20190122093313.67375948@bbrezillon>
-In-Reply-To: <20190122093313.67375948@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Tue, 22 Jan 2019 17:55:40 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARAbJ01n9+oh-VNAPP9Tt7NSBX8a-teSbDDhADF-bKAKw@mail.gmail.com>
-Message-ID: <CAK7LNARAbJ01n9+oh-VNAPP9Tt7NSBX8a-teSbDDhADF-bKAKw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: rawnand: use unnamed union in struct
- nand_op_parser_pattern_elem
-To: Boris Brezillon <bbrezillon@kernel.org>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a579b8b5-3618-406c-910e-08d68048064e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2019 09:00:14.9755 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5597
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190122_005633_517939_F4592A67 
-X-CRM114-Status: GOOD (  27.78  )
+X-CRM114-CacheID: sfid-20190122_010019_264504_4F04DA93 
+X-CRM114-Status: GOOD (  18.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,133 +117,122 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Lucas Stach <dev@lynxeye.de>, Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Linus Walleij <linus.walleij@linaro.org>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Stefan Agner <stefan@agner.ch>, Jonathan Hunter <jonathanh@nvidia.com>,
- Marek Vasut <marek.vasut@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-tegra@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 22, 2019 at 5:33 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
->
-> On Tue, 22 Jan 2019 09:08:30 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> > Hi Masahiro,
-> >
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 22 Jan
-> > 2019 17:00:54 +0900:
-> >
-> > > On Tue, Jan 22, 2019 at 4:50 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > >
-> > > > Hi Masahiro,
-> > > >
-> > > > Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 22 Jan
-> > > > 2019 16:42:55 +0900:
-> > > >
-> > > > > Although drivers do not directly get access to the private data of
-> > > > > instruction patterns, let's use unnamed union field to be consistent
-> > > > > with nand_op_instr.
-> > > > >
-> > > >
-> > > > Actually this is how we wrote it the first time. Then we got robots
-> > > > reporting that anonymous unions where not allowed with older (still
-> > > > supported) GCC versions and I had to do this:
-> > > >
-> > > >
-> > > > commit c1a72e2dbb4abb90bd408480d7c48ba40cb799ce
-> > > > Author: Miquel Raynal <miquel.raynal@free-electrons.com>
-> > > > Date:   Fri Jan 19 19:11:27 2018 +0100
-> > > >
-> > > >     mtd: nand: Fix build issues due to an anonymous union
-> > > >
-> > > >     GCC-4.4.4 raises errors when assigning a parameter in an anonymous
-> > > >     union, leading to this kind of failure:
-> > > >
-> > > >     drivers/mtd/nand/marvell_nand.c:1936:
-> > > >         warning: missing braces around initializer
-> > > >         warning: (near initialization for '(anonymous)[1].<anonymous>')
-> > > >         error: unknown field 'data' specified in initializer
-> > > >         error: unknown field 'addr' specified in initializer
-> > > >
-> > > >     Work around the situation by naming these unions.
-> > > >
-> > > >     Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-> > > >     Reported-by: Andrew Morton <akpm@linux-foundation.org>
-> > > >     Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> > > >     Tested-by: Andrew Morton <akpm@linux-foundation.org>
-> > > >     Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > > >
-> > >
-> > >
-> > > Hmm, how come Andrew's compiler was fine with the following?
-> > >
-> > > struct nand_flash_dev {
-> > >         char *name;
-> > >         union {
-> > >                 struct {
-> > >                         uint8_t mfr_id;
-> > >                         uint8_t dev_id;
-> > >                 };
-> > >                 uint8_t id[NAND_MAX_ID_LEN];
-> > >         };
-> > >         unsigned int pagesize;
-> > >         ...
-> > > };
-> > >
-> >
-> > It is probably not :)
->
-> It was compile fine. I don't know all the subtleties, but maybe it's
-> because ->id[] is a base type and not a struct.
->
-> >
-> > >
-> > >
-> > > The current minimum version is GCC 4.6
-> > > (commit cafa0010cd51fb7)
-> > > but I am not sure if this restriction is remaining.
-> > >
-> >
-> > That's right, can you please test if this limitation is still
-> > ongoing wit GCC 4.6?
->
-> I have a more important question: why should we go bad back to unnamed
-> unions? Why is that a problem to have a named union? Sure, we initially
-> started with an unnamed ones because it made lines shorter, but now that
-> we switched to named unions I don't see the point of going back and
-> patching all drivers again (at the risk of seeing this problem appear
-> again when compiled with an old compiler version).
+Hi Rob / Shawn,
 
-
-I did not know commit c1a72e2dbb4.
-
-We can drop the union name if and only if we are "100% sure" about the safety.
-I cannot prove it.
-
-Generally, 0day bot helps us.
-Last time, nobody noticed the build error until Andrew reported it.
-So, we cannot count on the 0day bot.
-
-
-Less praise for this work.
-Lots of criticism once I break it.
-
-So, I have no reason to take the risk.
-
-
+Can you please apply patches [1] [2].
 
 --
-Best Regards
-Masahiro Yamada
+Regards,
+Yogesh Gaur
+
+[1] https://patchwork.ozlabs.org/patch/1025136/
+[2] https://patchwork.ozlabs.org/patch/1025137/
+
+
+
+> -----Original Message-----
+> From: Yogesh Narayan Gaur
+> Sent: Tuesday, January 15, 2019 5:30 PM
+> To: linux-mtd@lists.infradead.org; bbrezillon@kernel.org;
+> marek.vasut@gmail.com; broonie@kernel.org; linux-spi@vger.kernel.org;
+> devicetree@vger.kernel.org
+> Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
+> arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
+> frieder.schrempf@kontron.de; linux-kernel@vger.kernel.org; Yogesh Narayan
+> Gaur <yogeshnarayan.gaur@nxp.com>
+> Subject: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
+> controller
+> 
+> Add binding file for NXP FlexSPI controller
+> 
+> Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> Changes for v8:
+> - None
+> Changes for v7:
+> - None
+> Changes for v6:
+> - None
+> Changes for v5:
+> - None
+> Changes for v4:
+> - Incorporated Rob review comments.
+> Changes for v3:
+> - Removed node property 'big-endian'.
+> Changes for v2:
+> - Incorporated Rob review comments.
+> 
+>  .../devicetree/bindings/spi/spi-nxp-fspi.txt  | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> new file mode 100644
+> index 000000000000..2cd67eb727d4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> @@ -0,0 +1,39 @@
+> +* NXP Flex Serial Peripheral Interface (FSPI)
+> +
+> +Required properties:
+> +  - compatible : Should be "nxp,lx2160a-fspi"
+> +  - reg :        First contains the register location and length,
+> +                 Second contains the memory mapping address and length
+> +  - reg-names :  Should contain the resource reg names:
+> +	         - fspi_base: configuration register address space
+> +                 - fspi_mmap: memory mapped address space
+> +  - interrupts : Should contain the interrupt for the device
+> +
+> +Required SPI slave node properties:
+> +  - reg :        There are two buses (A and B) with two chip selects each.
+> +                 This encodes to which bus and CS the flash is connected:
+> +                 - <0>: Bus A, CS 0
+> +                 - <1>: Bus A, CS 1
+> +                 - <2>: Bus B, CS 0
+> +                 - <3>: Bus B, CS 1
+> +
+> +Example showing the usage of two SPI NOR slave devices on bus A:
+> +
+> +fspi0: spi@20c0000 {
+> +	compatible = "nxp,lx2160a-fspi";
+> +	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0
+> 0x10000000>;
+> +	reg-names = "fspi_base", "fspi_mmap";
+> +	interrupts = <0 25 0x4>; /* Level high type */
+> +	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+> +	clock-names = "fspi_en", "fspi";
+> +
+> +	mt35xu512aba0: flash@0 {
+> +		reg = <0>;
+> +		....
+> +	};
+> +
+> +	mt35xu512aba1: flash@1 {
+> +		reg = <1>;
+> +		....
+> +	};
+> +};
+> --
+> 2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
