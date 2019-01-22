@@ -2,96 +2,68 @@ Return-Path: <SRS0=3GE2=P6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56990C282C3
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 15:49:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47E0AC282C3
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 16:27:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2676620855
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 15:49:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 17E5620870
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 16:27:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Us8gjkQi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="ITxNgtC3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2676620855
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yahoo.co.jp
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BOWUVhHL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TO5Gf2/O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17E5620870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:
-	In-Reply-To:References:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wJkw7cYdaPchMuA56d2+jvglKqnzvN64OXLOWfY+C6M=; b=Us8gjkQimDHgy+
-	BXNSm7mBGcftz4Nim2eiCLzse0MjPlKC1ih4lRP6JGfVEs8gnPEM5nKRv92mtijvXHRa/iAuFeUhi
-	6HY/dUcoCv93Q0z+czOS0f0NYupeD3jCTz9JcJFfheyWqWmGM1Igjiv2KRGM8q1hLsfJKrsE7Lpzh
-	699w/0Dyze/T3n3F04uIPjPvrUbj0FhiflrgoR8apTEPTWQ3nuEtwKISwD3so5jxcgO7FMytrJrvG
-	lRxnwW9B1q/x3F1bf5fPvfOQOKC7jkRZpiIgmdydWAR8Sc1p/8UC0iBOkPflZKIrWuRtzicca6fqw
-	Yqjt37ppwE2GVgaf+gXw==;
+	List-Owner; bh=zXWbophewEG6XXR6/49vn3I8fjxWxQzayWgwMo/98o0=; b=BOWUVhHLeHwYX5
+	tMdXB1qwqv81RQlKC1Lwb7CihK7uRw5Hj68AtUWlRtWA/DXZG7ZHlxdCVOUZvGt6Ajp1QQbMiw6G2
+	3UOhWFa7Vr7eP2agpED2aMvhinTGQHXMfKb3F5J77u2eQGp19rMZhiamDkw1TzbnyqJtaan/HOpL2
+	7uWd8wshaLaFFCZF0h/GCAsrhzcb5d/f4U1Aaj6HV/YYdSBRE7lcS7B7shLMfLb3EVFZxI+YV27nM
+	j6OCyNFE1sUu7YZ0FYNWT7qfTkZ97HjsXqdGjaLWTzmw+wem3O4HfeNOv1QQj0UQWZTxRKQalQNM1
+	Rgpf372p+Tr8HTuFkyQA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glyJ7-0002KJ-Gd; Tue, 22 Jan 2019 15:49:45 +0000
-Received: from nh601-vm3.bullet.mail.ssk.yahoo.co.jp ([182.22.90.12])
- by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glyJ2-0002Jo-Vv
- for linux-mtd@lists.infradead.org; Tue, 22 Jan 2019 15:49:44 +0000
-Received: from [182.22.66.103] by nh601.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 22 Jan 2019 15:49:25 -0000
-Received: from [182.22.91.206] by t601.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 22 Jan 2019 15:49:25 -0000
-Received: from [127.0.0.1] by omp609.mail.ssk.yahoo.co.jp with NNFMP;
- 22 Jan 2019 15:49:25 -0000
-X-Yahoo-Newman-Property: ymail-3
-X-Yahoo-Newman-Id: 410820.64118.bm@omp609.mail.ssk.yahoo.co.jp
-Received: (qmail 28059 invoked by alias); 22 Jan 2019 15:49:25 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.jp;
- s=yj20110701; t=1548172165; bh=D3oT48hXyvM/T/RA7xIbyf9xbMpTZRHo/7jzplYTE9s=;
- h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Mailer:Thread-Index:Content-Language;
- b=ITxNgtC3T2UFMXRClozV4Fswe1IPe6iNbuLF3UvpLsTZwxLd54EufOduHufyMehIlaFXzT9WsNRSJQnKmZHkuQw978Ln/+8m/Ln2Al1MYShYoL/wHV8dAe17L1X9YMWNAtLjkZNClL5njMFafnCOJOL55+AzaVF3Rge22KPVy7c=
-DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; s=yj20110701; d=yahoo.co.jp;
- h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Mailer:Thread-Index:Content-Language;
- b=NzRRvImWObUOG/p7rxK8T+zijIGVPIpLHomQE/bmrsDPQV0ysR/GhEfBTnfkwa8ySiHjFoY4PBGf+Seh8J+oepyk9KC5rkb2U9/sXQkhVWu8oHXf4PQy31YvovZTmp/TQfn8zDCSZNfuH4wpAX4NvVIQzosjLX0c4z90rytLrBI=
- ; 
-Received: from unknown (HELO ikegamiPC) (106.72.39.32 with login)
- by smtp5010.mail.kks.ynwp.yahoo.co.jp with SMTP; 22 Jan 2019 15:49:24 -0000
-X-YMail-JAS: u0Uz.Q0VM1nqaxUREaUEF7w7YbeQQdK39TfXRMNZMtdTB4Y_KL7SoSDtvB0iXe9rouvUl5AgUfusCJeZbjSq9eKUCZCip4wcYtQZ99I5aynflKqhxJylB7aW3mMa5zoEWSHDpMWkag--
-X-Apparently-From: <ikegami_to@yahoo.co.jp>
-X-YMail-OSG: .Wc36jsVM1nZZmEmecOLtHnF5fdLmoLUXtZ68CaebOKAcZH
- BFYJYBVhZErSrCJYyPOG2tQN2.vODM6zlZCnTFRb8J8mOQ.IwL4gEVQa5GzA
- TJ_wc.Jd8uuiGT8HX2iSKTjDeli_etFSpO4Nwilbe6qu8NpP.r.dcCYBFuN_
- NaX8dLg6tamQsuqaayeZqgD3VwFtucmXMOOsgX_V5lAHF2W.G.4QnWoTbUKa
- 4b7m3.ojE3wjLxpqapaPEeKRXBBRUml7b5eG26FYgg31HVDzvIob4rVo9U2B
- 8urJb6gu5KQjkrgl0aAHY7oqdXgNzc_ReINSxYpaZaElTKzxpgSw9YiPnt59
- s1rBa2YC14J62Ny89nM2l4rheuYphkK_9gfSoSf4Esuivz1m6kbS3HcpijO4
- EdsNeIK9c4HKGqtoXifENGop3OT_fVSqq_TywlNUPmb9bBE9OPqUeneTKZMH
- hmP1KyITpSegmzYaTmSOGPWHT30Kqyjc9Lj.YWyZTWv0XAAwKpN0be_dcQcc
- z91.88bxQBzSOqMdwft53el5hhy2.rjWyj6Ddq2kU7Kkb87l_8ssL.uTgNSv
- EcPZUX4hR4v9AM2sV2bPVIb9B7aUAt8WexqUmygK0_fsqg1tF.rhH
-From: "Tokunori Ikegami" <ikegami_to@yahoo.co.jp>
-To: "'Boris Brezillon'" <boris.brezillon@bootlin.com>
-References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>
- <20181025163219.25788-2-ikegami@allied-telesis.co.jp>
- <20181105111544.4e511ed9@bbrezillon>
- <TYAPR01MB217579A7E16A687FE04B90E5DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>
- <20181106093334.35864341@bbrezillon>
- <TYAPR01MB217508219EA8AEAA2071A018DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYAPR01MB217508219EA8AEAA2071A018DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>
-Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change do_write_oneword()
- to use chip_good()
-Date: Wed, 23 Jan 2019 00:49:22 +0900
-Message-ID: <002c01d4b26a$0bbcff40$2336fdc0$@yahoo.co.jp>
+	id 1glyt6-00040S-Qw; Tue, 22 Jan 2019 16:26:56 +0000
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1glyt3-000407-5Z
+ for linux-mtd@lists.infradead.org; Tue, 22 Jan 2019 16:26:54 +0000
+Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 28CC621726;
+ Tue, 22 Jan 2019 16:26:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548174412;
+ bh=uNOI/dnFI5om+2ahYkWSzmIbJe82Yj46cOMQJSSHOZo=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=TO5Gf2/O7fqRoeAPMwH1yQH8lTNXzUBIFEY2VtFukNu+LKzpVPJ9Uvxe9YgEJEB7Q
+ YSqJNuh5Rf40KiiakMyFJbapv0zh+z+y4m2iIBJcYs6iqMGQOevoV6j+JtefzewTiU
+ z6fv0XyFi9QTMgMbr8y4GkZjX9CwJImyZ4M2mWo0=
+Date: Tue, 22 Jan 2019 17:26:40 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Subject: Re: [PATCH v2 2/4] mtd: rawnand: Support bad block markers in
+ first, second or last page
+Message-ID: <20190122172640.6114537f@bbrezillon>
+In-Reply-To: <20190122112258.20042-3-frieder.schrempf@kontron.de>
+References: <20190122112258.20042-1-frieder.schrempf@kontron.de>
+ <20190122112258.20042-3-frieder.schrempf@kontron.de>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQEc1iUTWNEuvW9CQnMWsmZI/tQqOQDV8xlaAXO9f/QCW1agNgFMmV8lAnyJYc6m56qfAA==
-Content-Language: ja
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190122_074941_446423_2CDBD10B 
-X-CRM114-Status: GOOD (  48.79  )
+X-CRM114-CacheID: sfid-20190122_082653_245158_5CD43439 
+X-CRM114-Status: GOOD (  28.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -103,308 +75,256 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: boris.brezillon@free-electrons.com, 'Hauke Mehrtens' <hauke@hauke-m.de>,
- stable@vger.kernel.org, 'Joakim Tjernlund' <Joakim.Tjernlund@infinera.com>,
- 'PACKHAM Chris' <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org,
- 'Koen Vandeputte' <koen.vandeputte@ncentric.com>,
- 'Fabio Bettoni' <fbettoni@gmail.com>, 'Felix Fietkau' <nbd@nbd.name>
+Cc: Marek Vasut <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris-san,
+On Tue, 22 Jan 2019 11:23:31 +0000
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
 
-Very sorry for too late to update about this.
-But could you please let me consult below about this patch?
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> 
+> Currently supported bad block marker positions within the block are:
+> * in first page only
+> * in last page only
+> * in first or second page
+> 
+> Some ESMT NANDs are known to have been shipped by the manufacturer
+> with bad block markers in the first or last page, instead of the
+> first or second page.
+> 
+> Also the datasheets for Cypress/Spansion/AMD NANDs claim that the
+> first, second *and* last page needs to be checked.
+> 
+> Therefore we make it possible to set NAND_BBM_FIRSTPAGE,
+> NAND_BBM_SECONDPAGE and NAND_BBM_LASTPAGE independently in any
+> combination.
+> 
+> To simplify the code, the logic to evaluate the flags is moved to a
+> a new function nand_bbm_get_next_page().
+> 
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-I have tried to investigate the issue root cause and confirmed below but
-still the root cause seems not clear.
+Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
 
-  1. Without the change the write oneword is retried and recovered by the
-current existing chip_good() checking.
-     But after the 1,001 times recovery it was continued to fail recovery
-with the 3 times retry.
-
-  2. By the patch change the recovery failure can be avoided and the write
-oneword works correctly without any failure.
-     There are different from the original chip_good() checking as the
-original code resets the chip before the retry.
-     The patch change wait the chip_good() status until the timeout expiry
-without the chip reset.
-       Note: There is a different from the original OpenWrt patch and needed
-to be changed as same and it will be done by the next v4 patch.
-
-  3. To narrow down the cause I have added some delays into the original
-code to check the chip ready and good status.
-     But the failure behavior was not changed so it seems that the issue is
-not depended to the timing. (But not sure)
-
-  4. On the OpenWrt the write buffer is disabled but to narrow down the
-issue I have changed to enable the write buffer.
-     Then the flash error was not happened by the write buffer operation so
-it seems that the flash driver works correctly.
-     But another issue was caused and it is similar issue with the original
-OpenWrt behavior with the patch change.
-       Note: On the original OpenWrt needs to wait the file system
-completion to build but it was not finished with the write buffer. (But not
-sure about this behavior)
-
-Do you have any comment about this result?
-
-If you can agree about the patch change basically with the current situation
-I will do send the v4 patch set later with fix for the comments.
-
-But it seems that it is difficult to investigate the root cause more at this
-moment to me.
-Since but the behavior looks depended on the flash chip hardware behavior
-and I cannot debug the hardware behavior more I think.
-  Note: Now I can reproduce the flash error issue behavior on the OpenWrt
-unit.
-
-> > >     It is depended on the actual flash chip behavior so the root cause
-> > is
-> > >     unknown.
-> >
-> > Yes, and that's what I'd like you to figure out, or at least have a
-> > good idea why this doesn't work on some chips but works on others.
+> ---
+>  drivers/mtd/nand/raw/internals.h |  1 +
+>  drivers/mtd/nand/raw/nand_base.c | 62 ++++++++++++++++++++++++-----------
+>  drivers/mtd/nand/raw/nand_bbt.c  | 29 +++++++---------
+>  3 files changed, 55 insertions(+), 37 deletions(-)
 > 
-> I see.
-> But it is a little bit difficult situation since I do not have the failure
-> environment locally at this moment.
-> But if needed I may ask to get the help for this to Fabio-san.
-
-Regards,
-Ikegami
-
-> -----Original Message-----
-> From: IKEGAMI Tokunori [mailto:ikegami@allied-telesis.co.jp]
-> Sent: Tuesday, November 6, 2018 6:47 PM
-> To: Boris Brezillon; ikegami_to@yahoo.co.jp
-> Cc: boris.brezillon@free-electrons.com; Felix Fietkau; Hauke Mehrtens;
-> stable@vger.kernel.org; Joakim Tjernlund; PACKHAM Chris;
-> linux-mtd@lists.infradead.org; Koen Vandeputte; Fabio Bettoni
-> Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
-> do_write_oneword() to use chip_good()
-> 
-> Sorry let me resend the mail below by changing the email address of
-> Felix-san.
-> 
-> -----Original Message-----
-> From: IKEGAMI Tokunori
-> Sent: Tuesday, November 06, 2018 6:37 PM
-> To: 'Boris Brezillon'; 'ikegami_to@yahoo.co.jp'
-> Cc: boris.brezillon@free-electrons.com; Felix Fietkau; Hauke Mehrtens;
-> stable@vger.kernel.org; Joakim Tjernlund; PACKHAM Chris;
-> linux-mtd@lists.infradead.org; Koen Vandeputte; Fabio Bettoni
-> Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
-> do_write_oneword() to use chip_good()
-> 
-> Hi Boris-san,
-> 
-> > -----Original Message-----
-> > From: stable-owner@vger.kernel.org
-> > [mailto:stable-owner@vger.kernel.org] On Behalf Of Boris Brezillon
-> > Sent: Tuesday, November 06, 2018 5:34 PM
-> > To: IKEGAMI Tokunori
-> > Cc: boris.brezillon@free-electrons.com; Felix Fietkau; Hauke Mehrtens;
-> > stable@vger.kernel.org; Joakim Tjernlund; PACKHAM Chris;
-> > linux-mtd@lists.infradead.org; Koen Vandeputte; Fabio Bettoni
-> > Subject: Re: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
-> > do_write_oneword() to use chip_good()
-> >
-> > Hi IKEGAMI,
-> >
-> > On Tue, 6 Nov 2018 00:25:43 +0000
-> > IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
-> >
-> > > > > Also the issue can be fixed by using chip_good() instead of
-> > chip_ready().
-> > > > > The chip_ready() just checks the value from flash memory twice.
-> > > > > And the chip_good() checks the value with the expected value.
-> > > > > Probably the issue can be fixed as checked correctly by the
-> chip_good().
-> > > > > So change to use chip_good() instead of chip_ready().
-> > > >
-> > > > Well, that's not really explaining why you think chip_good() should
-> > be
-> > > > used instead of chip_ready(). So I went on and looked at the
-> > > > chip_good(), chip_ready() and do_write_oneword() implementation, and
-> > > > also looked at users of do_write_oneword(). It seems this function
-> is
-> > > > used to write data to the flash, and apparently the "one bit should
-> > > > toggle to reflect a busy state" does not apply when writing things
-> to
-> > > > the memory array (it's probably working for other CFI commands, but
-> > I
-> > > > guess it takes more time to actually change the level of a NOR cell,
-> > > > hence the result of 2 identical reads does not mean that the write
-> is
-> > > > done).
-> > > >
-> > > > Also, it seems that cmdset_0001 is not implementing chip_ready() the
-> > > > same way, and I wonder if cmdset_0002 implementation is correct to
-> > > > start with. Or maybe I don't get what chip_ready() is for.
-> > > >
-> > > > Anyway, this is the sort of clarification I'd like to have.
-> > >
-> > > I am thinking to update the commit message as below.
-> > >
-> > >     mtd: cfi_cmdset_0002: Use chip_good() to retry in
-> do_write_oneword()
-> > >
-> > >     As reported by the OpenWRT team, write requests sometimes fail on
-> > some
-> > >     platforms.
-> > >     Currently to check the state chip_ready() is used correctly as
-> > described by
-> > >     the flash memory S29GL256P11TFI01 datasheet.
-> >
-> > I had a look at the S29GL256P datasheet here [1], and if I'm correct,
-> > it's using cmdset 0001.
-> 
-> No actually the cmdset 0002 is used on the flash chip.
-> The manufacturer ID xx01h and Device ID 2201h are used to decide.
-> 
-> There is information from Fobis-san below also about this.
-> 
-> On forum thread musashino posted picture of flash chip:
-> https://forum.openwrt.org/t/impossible-to-install-update-any-packages-
-> on-wzr-hp-g300nh-18-06-1
-> http://www.cypress.com/part/s29gl256p11tfi010
-> 
-> [    0.862264] physmap platform flash device: 02000000 at 1e000000
-> [    0.868331] physmap-flash: Found 1 x16 devices at 0x0 in 16-bit
-> bank. Manufacturer ID 0x000001 Chip ID 0x002201
-> [    0.878493] Amd/Fujitsu Extended Query Table at 0x0040
-> [    0.883668]   Amd/Fujitsu Extended Query version 1.3.
-> [    0.888768] number of CFI chips: 1
-> [    0.894557] Searching for RedBoot partition table in physmap-flash
-> at offset 0x1fc0000
-> [    0.918009] Searching for RedBoot partition table in physmap-flash
-> at offset 0x1fe0000
-> [    0.941464] No RedBoot partition table detected in physmap-flash
-> [    0.947926] Creating 5 MTD partitions on "physmap-flash":
-> [    0.953384] 0x000000000000-0x000000040000 : "u-boot"
-> [    0.960853] 0x000000040000-0x000000060000 : "u-boot-env"
-> [    0.968803] 0x000000060000-0x000001fc0000 : "firmware"
-> [    0.981859] 2 uimage-fw partitions found on MTD device firmware
-> [    0.987900] 0x000000060000-0x0000001b5706 : "kernel"
-> [    0.994916] 0x0000001b5706-0x000001fc0000 : "rootfs"
-> [    1.001986] mtd: device 4 (rootfs) set to be root filesystem
-> [    1.007789] 1 squashfs-split partitions found on MTD device rootfs
-> [    1.014014] 0x0000003c0000-0x000001fc0000 : "rootfs_data"
-> [    1.022093] 0x000001fc0000-0x000001fe0000 : "user_property"
-> [    1.030283] 0x000001fe0000-0x000002000000 : "art"
-> 
-> Maybe you could post links to forum thread, and data sheet.
-> 
-> >
-> > >     Also chip_good() is used to check if the write is succeeded and
-> it
-> > was
-> > >     implemented by the commit fb4a90bfcd6d8 ("[MTD] CFI-0002 - Improve
-> > error
-> > >     checking").
-> > >     But actually the write failure is caused on some platforms and
-also
-> > it can
-> > >     be fixed by using chip_good() to check the state and retry
-instead.
-> >
-> > Do you know on which NOR chips this happens? Do you have access to the
-> > datasheet?
-> 
-> But it looks SST49LF008A [3] from the changes below but I am not sure at
-> this moment and probably it should be confirmed to the authr Eric W.
-> Biedermann <ebiederman@lnxi.com> to make sure.
-> 
-> +#define SST49LF008A            0x005a
-> 
->  static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *,
-> u_char *);
->  static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t,
-> size_t *, const u_char *);
-> @@ -191,6 +192,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
->  };
->  static struct cfi_fixup jedec_fixup_table[] = {
->         { MANUFACTURER_SST, SST49LF004B, fixup_use_fwh_lock, NULL, },
-> +       { MANUFACTURER_SST, SST49LF008A, fixup_use_fwh_lock, NULL, },
-> 
-> >
-> > >     It is depended on the actual flash chip behavior so the root cause
-> > is
-> > >     unknown.
-> >
-> > Yes, and that's what I'd like you to figure out, or at least have a
-> > good idea why this doesn't work on some chips but works on others.
-> 
-> I see.
-> But it is a little bit difficult situation since I do not have the failure
-> environment locally at this moment.
-> But if needed I may ask to get the help for this to Fabio-san.
-> 
-> >
-> > >
-> > > If any comment please let me know.
-> > >
-> > > >
-> > > > >
-> > > > > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> > > > > Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> > > > > Signed-off-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> > > > > Signed-off-by: Fabio Bettoni <fbettoni@gmail.com>
-> > > >
-> > > > Has the patch really gone through all those people? SoB is used when
-> > you
-> > > > apply a patch in your tree or when you're the original author.
-> > >
-> > > I have just checked the OpenWRT git log again and it looks that it was
-> > originally
-> > > implemented by Felix Fietkau <nbd@openwrt.org> by the patch below so
-> I
-> > will update the Signed-off-by tag as so.
-> > >
-> >
-> <https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=2530640
-> > f07cd2b3b14fe9ec03fa63a586452cc5f>
-> > >
-> > > >
-> > > > > Co-Developed-by: Hauke Mehrtens <hauke@hauke-m.de>
-> > > > > Co-Developed-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> > > > > Co-Developed-by: Fabio Bettoni <fbettoni@gmail.com>
-> > > >
-> > > > Not sure we want to add new undocumented tags, but you can mention
-> > > > that all those people helped you find/debug the issue. They can also
-> > > > add their Reviewed-by/Tested-by if they like.
-> >
-> > My bad, I just noticed these are valid flags [2], so you can keep them,
-> > and according to the doc, you should also keep the SoB.
-> 
-> I see.
-> Yes I had also checked it.
-> 
-> By the way in near future my company email address will be not able to
-use.
-> So I will change the mail address to my personal email address [4] after
-> that or before.
-> 
-> Regards,
-> Ikegami
-> 
-> >
-> > Regards,
-> >
-> > Boris
-> >
-> > [1]http://www.cypress.com/file/219926/download
-> >
-> [2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/
-> > tree/Documentation/process/submitting-patches.rst?h=v4.20-rc1#n546
-> 
-> [3]https://www.microchip.com/wwwproducts/en/SST49LF008A
-> [4]ikegami_to@yahoo.co.jp
+> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+> index fbf6ca015cd7..97ae67e009d5 100644
+> --- a/drivers/mtd/nand/raw/internals.h
+> +++ b/drivers/mtd/nand/raw/internals.h
+> @@ -76,6 +76,7 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
+>  
+>  /* Core functions */
+>  const struct nand_manufacturer *nand_get_manufacturer(u8 id);
+> +int nand_bbm_get_next_page(struct nand_chip *chip, int page);
+>  int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
+>  int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+>  		    int allowbbt);
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 9ef7b86cdc42..7bc20c1fe23c 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -285,6 +285,31 @@ static void nand_release_device(struct nand_chip *chip)
+>  	spin_unlock(&chip->controller->lock);
+>  }
+>  
+> +/**
+> + * nand_bbm_get_next_page - Get the next page for bad block markers
+> + * @chip: NAND chip object
+> + * @index: Current page, only pages beyond this will be considered
+> + *
+> + * Returns an integer that corresponds to the page offset within a block, for
+> + * a page that is used to store bad block markers. If no more pages are
+> + * available, -1 is returned.
+> + */
+> +int nand_bbm_get_next_page(struct nand_chip *chip, int page)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	int last_page = ((mtd->erasesize - mtd->writesize) >>
+> +			 chip->page_shift) & chip->pagemask;
+> +
+> +	if (page < 0 && chip->options & NAND_BBM_FIRSTPAGE)
+> +		return 0;
+> +	else if (page < 1 && chip->options & NAND_BBM_SECONDPAGE)
+> +		return 1;
+> +	else if (page < last_page && chip->options & NAND_BBM_LASTPAGE)
+> +		return last_page;
+> +
+> +	return -1;
+> +}
+> +
+>  /**
+>   * nand_block_bad - [DEFAULT] Read bad block marker from the chip
+>   * @chip: NAND chip object
+> @@ -294,19 +319,14 @@ static void nand_release_device(struct nand_chip *chip)
+>   */
+>  static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+>  {
+> -	struct mtd_info *mtd = nand_to_mtd(chip);
+> -	int page, page_end, res;
+> +	int page_offset;
+> +	int res, first_page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+>  	u8 bad;
+>  
+> -	if (chip->options & NAND_BBM_LASTPAGE)
+> -		ofs += mtd->erasesize - mtd->writesize;
+> +	page_offset = nand_bbm_get_next_page(chip, -1);
+>  
+> -	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+> -	page_end = page + (((chip->options & NAND_BBM_FIRSTPAGE) &&
+> -			    (chip->options & NAND_BBM_SECONDPAGE)) ? 2 : 1);
+> -
+> -	for (; page < page_end; page++) {
+> -		res = chip->ecc.read_oob(chip, page);
+> +	while (page_offset != -1) {
+> +		res = chip->ecc.read_oob(chip, first_page + page_offset);
+>  		if (res < 0)
+>  			return res;
+>  
+> @@ -318,6 +338,8 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+>  			res = hweight8(bad) < chip->badblockbits;
+>  		if (res)
+>  			return res;
+> +
+> +		page_offset = nand_bbm_get_next_page(chip, page_offset);
+>  	}
+>  
+>  	return 0;
+> @@ -528,7 +550,7 @@ static int nand_default_block_markbad(struct nand_chip *chip, loff_t ofs)
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	struct mtd_oob_ops ops;
+>  	uint8_t buf[2] = { 0, 0 };
+> -	int ret = 0, res, i = 0;
+> +	int ret = 0, res, page_offset;
+>  
+>  	memset(&ops, 0, sizeof(ops));
+>  	ops.oobbuf = buf;
+> @@ -541,18 +563,18 @@ static int nand_default_block_markbad(struct nand_chip *chip, loff_t ofs)
+>  	}
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  
+> -	/* Write to first/last page(s) if necessary */
+> -	if (chip->options & NAND_BBM_LASTPAGE)
+> -		ofs += mtd->erasesize - mtd->writesize;
+> -	do {
+> -		res = nand_do_write_oob(chip, ofs, &ops);
+> +	page_offset = nand_bbm_get_next_page(chip, -1);
+> +
+> +	while (page_offset != -1) {
+> +		res = nand_do_write_oob(chip,
+> +					ofs + page_offset * mtd->writesize,
+> +					&ops);
+> +
+>  		if (!ret)
+>  			ret = res;
+>  
+> -		i++;
+> -		ofs += mtd->writesize;
+> -	} while ((chip->options & NAND_BBM_FIRSTPAGE) &&
+> -		 (chip->options & NAND_BBM_SECONDPAGE) && i < 2);
+> +		page_offset = nand_bbm_get_next_page(chip, page_offset);
+> +	}
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+> index c095c04d566d..09603c502931 100644
+> --- a/drivers/mtd/nand/raw/nand_bbt.c
+> +++ b/drivers/mtd/nand/raw/nand_bbt.c
+> @@ -415,11 +415,12 @@ static void read_abs_bbts(struct nand_chip *this, uint8_t *buf,
+>  
+>  /* Scan a given block partially */
+>  static int scan_block_fast(struct nand_chip *this, struct nand_bbt_descr *bd,
+> -			   loff_t offs, uint8_t *buf, int numpages)
+> +			   loff_t offs, uint8_t *buf)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> +
+>  	struct mtd_oob_ops ops;
+> -	int j, ret;
+> +	int ret, page_offset;
+>  
+>  	ops.ooblen = mtd->oobsize;
+>  	ops.oobbuf = buf;
+> @@ -427,12 +428,15 @@ static int scan_block_fast(struct nand_chip *this, struct nand_bbt_descr *bd,
+>  	ops.datbuf = NULL;
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  
+> -	for (j = 0; j < numpages; j++) {
+> +	page_offset = nand_bbm_get_next_page(this, -1);
+> +
+> +	while (page_offset != -1) {
+>  		/*
+>  		 * Read the full oob until read_oob is fixed to handle single
+>  		 * byte reads for 16 bit buswidth.
+>  		 */
+> -		ret = mtd_read_oob(mtd, offs, &ops);
+> +		ret = mtd_read_oob(mtd, offs + page_offset * mtd->writesize,
+> +				   &ops);
+>  		/* Ignore ECC errors when checking for BBM */
+>  		if (ret && !mtd_is_bitflip_or_eccerr(ret))
+>  			return ret;
+> @@ -440,8 +444,9 @@ static int scan_block_fast(struct nand_chip *this, struct nand_bbt_descr *bd,
+>  		if (check_short_pattern(buf, bd))
+>  			return 1;
+>  
+> -		offs += mtd->writesize;
+> +		page_offset = nand_bbm_get_next_page(this, page_offset);
+>  	}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -460,18 +465,11 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
+>  		      struct nand_bbt_descr *bd, int chip)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	int i, numblocks, numpages;
+> -	int startblock;
+> +	int i, numblocks, startblock;
+>  	loff_t from;
+>  
+>  	pr_info("Scanning device for bad blocks\n");
+>  
+> -	if ((this->options & NAND_BBM_FIRSTPAGE) &&
+> -	    (this->options & NAND_BBM_SECONDPAGE))
+> -		numpages = 2;
+> -	else
+> -		numpages = 1;
+> -
+>  	if (chip == -1) {
+>  		numblocks = mtd->size >> this->bbt_erase_shift;
+>  		startblock = 0;
+> @@ -488,15 +486,12 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
+>  		from = (loff_t)startblock << this->bbt_erase_shift;
+>  	}
+>  
+> -	if (this->bbt_options & NAND_BBM_LASTPAGE)
+> -		from += mtd->erasesize - (mtd->writesize * numpages);
+> -
+>  	for (i = startblock; i < numblocks; i++) {
+>  		int ret;
+>  
+>  		BUG_ON(bd->options & NAND_BBT_NO_OOB);
+>  
+> -		ret = scan_block_fast(this, bd, from, buf, numpages);
+> +		ret = scan_block_fast(this, bd, from, buf);
+>  		if (ret < 0)
+>  			return ret;
+>  
 
 
 ______________________________________________________
