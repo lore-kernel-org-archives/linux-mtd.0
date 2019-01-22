@@ -3,68 +3,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBE5C282C3
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:17:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B815C282C4
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:19:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EE9B20823
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:17:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D711F21019
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:19:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mW6Pxh94";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YS3jVl+v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EE9B20823
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DGfwTt9Y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Pk+Gqj7u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D711F21019
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nrJZACPKVMXm8ATG3sSA/ceqVbNQ7wf/JOwxvH2PaVU=; b=mW6Pxh94sZiImu
-	a4vKTrIrNCWGhfw97qc0CTTZfaE8qlaKZnsHMYYb8kkGooWaPtjYZdKBV42b5Pz1b5h3QyN8lX3zp
-	ZYGJkjVkrwbYqfCO2Hd8BOAlTgVbtPsFlQ5eeD5+5OhuXrDBfSv+qpH3FdjU7ONndxZwgZoMILmEe
-	iCrsGv8NHc1l2XiYCobd5kDU80f4UV5s2ma/TN0SykVdW4i3NY69FsF7S3M79XysxocY2GOe349dz
-	/dFJHMN0JYsfMhIc4MdPnOHoftdWtgKpA3wUtHIzg868iDDYjEAvwtqWR9SnI7V291GkO3n0z5aDO
-	JufvmWtWckJh8I+O7mGQ==;
+	List-Owner; bh=4A6XxvcZyuPoXvpYmfGEbkvd8M9OUhuYaeFUL+O1uLA=; b=DGfwTt9YDQe7tj
+	uAI5jjRK9ffv3sKEgv8QndSbI42XbYwLD3/ZYaeiwu83Lujpbjd7gFtQUmtccjtCw4V9N7GclWnBA
+	xa9rSvxZoUeWqLlP44Mva/EYlD2uS71nFnCqRy5UAruoZg2wqpAa1Hws+YwY7vL/iptgwjuhh/KqE
+	X4OVv9lujTHDBMiiGjbhxcrFLse01eRqMz5cw6kPMwApZ7f9d4vKdvpISJGWoeR5I9Ec8RP4HhknU
+	d8NY4oyglyNPVKEBUntV5oMOh8odv+LlC9JMlSsvsti0xzeslfNynIGzesRjw1I16akgQz9NNl27c
+	qOAxEMGXZYrYXgP9RKhA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glsBN-0007XU-Bt; Tue, 22 Jan 2019 09:17:21 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1glsDn-0008RV-AS; Tue, 22 Jan 2019 09:19:51 +0000
+Received: from mail-db5eur03on062b.outbound.protection.outlook.com
+ ([2a01:111:f400:fe0a::62b]
+ helo=EUR03-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glsBC-0007NM-5o; Tue, 22 Jan 2019 09:17:11 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6F3BC20823;
- Tue, 22 Jan 2019 09:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548148629;
- bh=riPfo+PaYom+qfXiEE/IofcK17wWSJ7PkzfeJ/8x54c=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=YS3jVl+v6tyxmwrUIIY6Oh8XaRLakz5CrUCT3W4H1Wjd9XPd/L3wR7QkF8LD4XMCp
- Yipwj1SWWLu6ICaBZNrrErXsWRosFsoyi2tsv5/pzXFicJT27+1bQU6rRWipUzaZg5
- khTD9423TYFBpJEiRGhxKpQHIsUHSlSEy+8/UYH8=
-Date: Tue, 22 Jan 2019 10:16:58 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: Re: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP
+ id 1glsDj-0008Qv-Jy; Tue, 22 Jan 2019 09:19:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DiXDEs58VOu2qtPTiLuymU+8l2mM8Dfrurz2jvV6HrE=;
+ b=Pk+Gqj7udMShUlNf5H70rxzrodH4yDJ8C91ligrWsHbVkcB/ZRUR+LmNdqXvXoBFKDGxgnY3bN3BzgXY0M/zRixfE9qxp39UiOP+ZccihAy/eMPyjiHtS8trDxIErvRjm8EmdJOsqJAUUSFtna1jWO2PgMXbtM3tvc1PuQX0l4c=
+Received: from VI1PR04MB5726.eurprd04.prod.outlook.com (20.178.127.24) by
+ VI1PR04MB4957.eurprd04.prod.outlook.com (20.177.49.210) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1537.27; Tue, 22 Jan 2019 09:19:42 +0000
+Received: from VI1PR04MB5726.eurprd04.prod.outlook.com
+ ([fe80::a1c2:cc79:80f3:3bcb]) by VI1PR04MB5726.eurprd04.prod.outlook.com
+ ([fe80::a1c2:cc79:80f3:3bcb%5]) with mapi id 15.20.1537.031; Tue, 22 Jan 2019
+ 09:19:42 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <bbrezillon@kernel.org>
+Subject: RE: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
+ controller
+Thread-Topic: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP
  FlexSPI controller
-Message-ID: <20190122101658.6bb89d54@bbrezillon>
-In-Reply-To: <VI1PR04MB57266D861937B99899F3C1C699980@VI1PR04MB5726.eurprd04.prod.outlook.com>
+Thread-Index: AQHUrMnj2HaRDCPgY0i5ihL9RBjnkaW7Bz/QgAAFoACAAABwoA==
+Date: Tue, 22 Jan 2019 09:19:41 +0000
+Message-ID: <VI1PR04MB57266B148D07519F26574FFA99980@VI1PR04MB5726.eurprd04.prod.outlook.com>
 References: <1547553487-9936-1-git-send-email-yogeshnarayan.gaur@nxp.com>
  <1547553487-9936-3-git-send-email-yogeshnarayan.gaur@nxp.com>
  <VI1PR04MB57266D861937B99899F3C1C699980@VI1PR04MB5726.eurprd04.prod.outlook.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20190122101658.6bb89d54@bbrezillon>
+In-Reply-To: <20190122101658.6bb89d54@bbrezillon>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=yogeshnarayan.gaur@nxp.com; 
+x-originating-ip: [92.120.0.7]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; VI1PR04MB4957;
+ 6:rRHcTb8EXu2CJtlh7sQLh5A5xvqhLVC63r9M6nYb6yhoIYr0pTzUlhgTQ0vUR534ZWq2Wu+owE4pItVJjHJ0uGQa3TSEMBYKyUxNh/+wyJ2gbDJQ36RZIgfBpw4L7/jh7HatSgOiy6r4qnDXJilSx/s0WDlob8owuD+clj7oJOC6vTHtaDzTbwKLLJUxp6e9aMfPtKK6rPANtWy5sBGpib1pkC5IyGUOlQLZTYarMVH3m+Alg/p6tG0lhjgD10qEye9qi2Ba6Wgpv0/cBlk7oSJVnE4KAK9JBWISAXMZZbvkNgS7IiKOUAmz5T+2fhWFAfE+xk/ObnZQFA81GKJ39nEL94idxkYWcmdQJuHYOCiZhbpKjUriY3ZjHcvKb2v5Z0jR0zOwEK3eDFDyrC3DPes4q+KPZKWO2kitvKwvS4aH8fchnibmHqUySdhZTiXk5C6FxtqRuBe4RWkZRXJlBg==;
+ 5:nfCnfwNdhCQPzO7V7a445GP6NDbmeghWmjjvBuoD/wuazObiND/RYVqmJ3uh1j5nSeWatJl0RqzOnOhKRq+RuF/n8AiY6/7+v4C+UNrZyqkE2DJP64DIQ0/+hH4icI3gZYEqU1/UKk1tsXoHNu1lVz4wsCTug7EHD24AHeGdTGdYiB7n4U/TFiaM7OSx6vub253KXwk1RYINRTuDGVR5Qw==;
+ 7:W9TD2tk5lXcKPpQMMLjik42/MmYckSIQaryO2wX6AejvHODXifroJttF26zXDEUp3Go7dioB88PKgIYJ92x2uGkU1zxnuFi3VH/3uFmDW5kliFB/D8mgRHLJ4UPkXe+kVk74+SW5Y81zNvxhXT45mA==
+x-ms-exchange-antispam-srfa-diagnostics: SOS;
+x-ms-office365-filtering-correlation-id: db6712fd-1ed3-453f-fa2e-08d6804abdd4
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600109)(711020)(4618075)(2017052603328)(7153060)(7193020);
+ SRVR:VI1PR04MB4957; 
+x-ms-traffictypediagnostic: VI1PR04MB4957:
+x-microsoft-antispam-prvs: <VI1PR04MB49574F55BAD1B75FBE6D424499980@VI1PR04MB4957.eurprd04.prod.outlook.com>
+x-forefront-prvs: 0925081676
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(396003)(366004)(346002)(376002)(39860400002)(136003)(189003)(199004)(13464003)(7416002)(55016002)(9686003)(8936002)(229853002)(8676002)(76176011)(97736004)(53936002)(81166006)(81156014)(6506007)(25786009)(53546011)(7736002)(2906002)(6436002)(39060400002)(256004)(74316002)(14454004)(68736007)(305945005)(54906003)(186003)(86362001)(33656002)(102836004)(6916009)(11346002)(66066001)(446003)(486006)(99286004)(4326008)(316002)(71200400001)(71190400001)(106356001)(476003)(93886005)(6246003)(7696005)(4744005)(478600001)(3846002)(6116002)(26005)(105586002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB4957;
+ H:VI1PR04MB5726.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: hKYlhc/UVCM5ITinNh+Y2W5a5jtMJyO5Sckk84s7QggvA1SC9dUOMqQJx2FqbSSvWhq1cL1yVItKUVBa9LYuEMfBb9v9L/tkYZvhtUbCbFQGb5FjJ2hoKmdKVOblSXGU6zDPxZcvyvYAQMgDv3vnp/Blw8FzqPWqLNzDcZV4VEr3klRxldvgwof2iWOeTFTsww1FnNCtim9M8KbgVTHP78RtJ8J6VVo/8rXoVH20Xi67R07ix4lBKx88NAjdTlAjXz8ajZI8/WyhtDIxIN7UnKRjw3Z550d95tEZ6ZosxRAO0oecJbgNBthHA0lKYE6raLvhiNoXQvTg4ooOIedKLaAUjgJzEx1LNyn3nJZt/ShJwEVGUAxSOL9Fw/jrUMhe8CyroMtq3K/AmWx4n5eKNOvJvb135X/x74fiCw+/dkE=
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
 MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db6712fd-1ed3-453f-fa2e-08d6804abdd4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2019 09:19:41.8609 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4957
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190122_011710_231782_95B1FA84 
-X-CRM114-Status: UNSURE (   6.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190122_011947_661405_B61E211F 
+X-CRM114-Status: GOOD (  11.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,14 +135,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 22 Jan 2019 09:00:14 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Hi Boris,
 
-> Hi Rob / Shawn,
+> -----Original Message-----
+> From: Boris Brezillon [mailto:bbrezillon@kernel.org]
+> Sent: Tuesday, January 22, 2019 2:47 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: robh@kernel.org; shawnguo@kernel.org; mark.rutland@arm.com;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> frieder.schrempf@kontron.de; linux-spi@vger.kernel.org;
+> marek.vasut@gmail.com; broonie@kernel.org; linux-mtd@lists.infradead.org;
+> computersforpeace@gmail.com; linux-arm-kernel@lists.infradead.org
+> Subject: Re: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
+> controller
 > 
-> Can you please apply patches [1] [2].
+> On Tue, 22 Jan 2019 09:00:14 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> 
+> > Hi Rob / Shawn,
+> >
+> > Can you please apply patches [1] [2].
+> 
+> No, DT bindings should go through Mark's tree. Just wait a bit please.
 
-No, DT bindings should go through Mark's tree. Just wait a bit please.
+Ok, thanks.
+
+--
+Regards
+Yogesh Gaur
 
 ______________________________________________________
 Linux MTD discussion mailing list
