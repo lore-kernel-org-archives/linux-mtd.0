@@ -2,110 +2,69 @@ Return-Path: <SRS0=3GE2=P6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECDFEC282C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:00:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBE5C282C3
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:17:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDA5720854
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:00:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8EE9B20823
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 09:17:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dFmUM9lZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="PgpATUnx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDA5720854
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mW6Pxh94";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YS3jVl+v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EE9B20823
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0KTX0fQi50vyifuHWIbPbE+6jcwDV+opADwtH+NVGe0=; b=dFmUM9lZqzVLXR
-	IEsn4cKMOs2ZlnimFJWsJ3aw7UVxtmcM1Idlv5ExhEKsh2oVCxDQHYdI+vuUW8zg8liUciZUHrEZX
-	9KbwEX2MiX0zXA2C3JmxxZ8x+f7bLGmMX8cQCuVQxS4Vz6/y5eNCWDDouCuWJfWsPujLxNcilaJbI
-	nDCD5Aj4UWmXUN7kFlfc4VabtnFeinuZSPiaoSx6pXr7IB+a9+ebkJerHwjcHjJnDGwbxnm/oL9fB
-	tr2MRtVMqtDJVyLQA9K0H5NifUxLXSfB+h8V6JzUIiFhFQpcZaFbXE64tOlRbH83M29uZN7t58+/i
-	xCwwY++X36Pv0Ae54XIw==;
+	List-Owner; bh=nrJZACPKVMXm8ATG3sSA/ceqVbNQ7wf/JOwxvH2PaVU=; b=mW6Pxh94sZiImu
+	a4vKTrIrNCWGhfw97qc0CTTZfaE8qlaKZnsHMYYb8kkGooWaPtjYZdKBV42b5Pz1b5h3QyN8lX3zp
+	ZYGJkjVkrwbYqfCO2Hd8BOAlTgVbtPsFlQ5eeD5+5OhuXrDBfSv+qpH3FdjU7ONndxZwgZoMILmEe
+	iCrsGv8NHc1l2XiYCobd5kDU80f4UV5s2ma/TN0SykVdW4i3NY69FsF7S3M79XysxocY2GOe349dz
+	/dFJHMN0JYsfMhIc4MdPnOHoftdWtgKpA3wUtHIzg868iDDYjEAvwtqWR9SnI7V291GkO3n0z5aDO
+	JufvmWtWckJh8I+O7mGQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1glrvB-0007Hl-Ck; Tue, 22 Jan 2019 09:00:37 +0000
-Received: from mail-eopbgr50080.outbound.protection.outlook.com ([40.107.5.80]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+	id 1glsBN-0007XU-Bt; Tue, 22 Jan 2019 09:17:21 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1glrut-0006vR-72; Tue, 22 Jan 2019 09:00:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9qYIIYTOOznDQ4/3HghsaBaj0pY9Qq5+Lw31HEGnjMg=;
- b=PgpATUnxxQ1lfx0BtFBoYaP0ZUXqh+gNQyAelhwBXLuwpf9avu/0HJLuWuvdFpzXfzBU7YMleANnhM21tgCjsPFPzveAh8ivHhMTDdLsQmAsXa4ZWmof+9etZcaancl2s8cNwYrMe8qYmunHVq1nOrJHRqO8xTv6lsvOOlMZMgk=
-Received: from VI1PR04MB5726.eurprd04.prod.outlook.com (20.178.127.24) by
- VI1PR04MB5597.eurprd04.prod.outlook.com (20.178.125.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1537.29; Tue, 22 Jan 2019 09:00:15 +0000
-Received: from VI1PR04MB5726.eurprd04.prod.outlook.com
- ([fe80::a1c2:cc79:80f3:3bcb]) by VI1PR04MB5726.eurprd04.prod.outlook.com
- ([fe80::a1c2:cc79:80f3:3bcb%5]) with mapi id 15.20.1537.031; Tue, 22 Jan 2019
- 09:00:15 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "robh@kernel.org" <robh@kernel.org>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>
-Subject: RE: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
- controller
-Thread-Topic: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP
+ id 1glsBC-0007NM-5o; Tue, 22 Jan 2019 09:17:11 +0000
+Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6F3BC20823;
+ Tue, 22 Jan 2019 09:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548148629;
+ bh=riPfo+PaYom+qfXiEE/IofcK17wWSJ7PkzfeJ/8x54c=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=YS3jVl+v6tyxmwrUIIY6Oh8XaRLakz5CrUCT3W4H1Wjd9XPd/L3wR7QkF8LD4XMCp
+ Yipwj1SWWLu6ICaBZNrrErXsWRosFsoyi2tsv5/pzXFicJT27+1bQU6rRWipUzaZg5
+ khTD9423TYFBpJEiRGhxKpQHIsUHSlSEy+8/UYH8=
+Date: Tue, 22 Jan 2019 10:16:58 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: Re: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP
  FlexSPI controller
-Thread-Index: AQHUrMnj2HaRDCPgY0i5ihL9RBjnkaW7Bz/Q
-Date: Tue, 22 Jan 2019 09:00:14 +0000
-Message-ID: <VI1PR04MB57266D861937B99899F3C1C699980@VI1PR04MB5726.eurprd04.prod.outlook.com>
+Message-ID: <20190122101658.6bb89d54@bbrezillon>
+In-Reply-To: <VI1PR04MB57266D861937B99899F3C1C699980@VI1PR04MB5726.eurprd04.prod.outlook.com>
 References: <1547553487-9936-1-git-send-email-yogeshnarayan.gaur@nxp.com>
  <1547553487-9936-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1547553487-9936-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=yogeshnarayan.gaur@nxp.com; 
-x-originating-ip: [92.120.0.7]
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; VI1PR04MB5597;
- 6:R0LWJS49JyXQtBN4Immo8TGvYoR+7eijCH/5L1iuhIXmKfoLS00IFfocPhArSHq8l84bwOAMXlptaNTapCB1545zkv4vv8WOGU8I8zGkgIY5TCtZSmqTUKZ91Q62aE3ZmnUS5Ww6KYw+knXD3gUc0CLytNWRF7cI/UBcug/qRuO9m4wnHFNcx5V99WdYVv69HSBi9HlKufWi/qclY92Tm0PtG5zLo/X4eX41Tv3cYUwwqsSEkz5LOZhVADzml7yf9NBKC+t7C6jxISk+kMOefWVnm4O1YRnFKDLcy3MRTx+nNYHR/LqxT9K1sSK3wJ3j+IQymh7VP2hGjEkJ7JVP1+KxFXHzcXdNvq8QFoGnDgRpJwH/DjO5bGOHtJSobEV6/At/iSOtVFf4HXIj/M+YIk27mt6XaiyR5DZY2naQ44u2SU0Zb5L+cFpCVH485qfDdcq2u73vsMXXOQ8fW5ZUtg==;
- 5:U0Zqb2P4ej/c7PT/Xv8AkXoyBcy029rCjRkreU3Hmori3nzEEh41tzZ9CxxfbqwYh1m7T5w6n4En4H3sgigasIlZ1OFbo9PfZC8hZ8cqT2S8xTo7C9E+CqUrdCDcrwCn8zAlrj0zn4M+H4eOuAyffssAlYI1485md1clZGcazg+6edfM+kiPhTmF4ag4MScGN2IcVW7Y/O2imMadbMar0A==;
- 7:Zt7KJdCTAYCiiUkp5n6WTlohkem7D07sAn4pMndDvIzY0+vMTrxTsFmAjU4DkkZxNiq/G5btrVNJFZQoCL8ooBSbcbmEGb5BO3NuPZ1B/SYJPac4No8pSMRc/q86XD3n1EeYgrnF6CA10gzpsY8gLg==
-x-ms-exchange-antispam-srfa-diagnostics: SOS;
-x-ms-office365-filtering-correlation-id: a579b8b5-3618-406c-910e-08d68048064e
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600109)(711020)(4618075)(2017052603328)(7153060)(7193020);
- SRVR:VI1PR04MB5597; 
-x-ms-traffictypediagnostic: VI1PR04MB5597:
-x-microsoft-antispam-prvs: <VI1PR04MB55972372CEDAD8CEFB5881AD99980@VI1PR04MB5597.eurprd04.prod.outlook.com>
-x-forefront-prvs: 0925081676
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(366004)(39860400002)(396003)(136003)(346002)(13464003)(189003)(199004)(26005)(68736007)(97736004)(186003)(476003)(102836004)(4326008)(39060400002)(6246003)(53936002)(7416002)(74316002)(71200400001)(71190400001)(25786009)(256004)(229853002)(76176011)(11346002)(86362001)(2501003)(446003)(6436002)(53546011)(6506007)(7696005)(2906002)(55016002)(81156014)(81166006)(7736002)(305945005)(66066001)(8936002)(105586002)(33656002)(3846002)(99286004)(478600001)(486006)(8676002)(316002)(110136005)(54906003)(14454004)(966005)(106356001)(6116002)(6306002)(9686003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB5597;
- H:VI1PR04MB5726.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: +LiDDg5r7Cf5vIEkfsKD0fqHYxGRnAimV37SF6owSiJnxGYkEDet5eRVbCU9B8QQe8tHANLkwENmlzwRtJ0CProisl5nxssjA73FWGnemdlkduj2z2V2ath1D9K0nkRGphn7gpsTVOZv1l2Bi7fC0V1IpdXXrvZ6wblbtEd1i7l0Q1wuNCQU1xxCyYWwiIff2GPkiNhD4w33/jcadSSh7Q3dArDheNwnGJsHr9DtsjA4Odel/+E2a75w+ey7CePnJGp7vzFOW6T3HzLImFemOCtd9dNXI8BdcR+TiXXqr8bgd7zPLO+dV9WqWsJGuKrYkQ9wRzCxox7iuu8ReA0Fz+RaMe8M14gnVbTzuepbUigMzF8jRcnpuqXpp2VEWoPP54eG6EBMwYgA3wM3EvioZHU/NGqyXne1bsx9GuRxUE8=
-spamdiagnosticoutput: 1:99
-spamdiagnosticmetadata: NSPM
+ <VI1PR04MB57266D861937B99899F3C1C699980@VI1PR04MB5726.eurprd04.prod.outlook.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a579b8b5-3618-406c-910e-08d68048064e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2019 09:00:14.9755 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5597
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190122_010019_264504_4F04DA93 
-X-CRM114-Status: GOOD (  18.79  )
+X-CRM114-CacheID: sfid-20190122_011710_231782_95B1FA84 
+X-CRM114-Status: UNSURE (   6.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -118,8 +77,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "robh@kernel.org" <robh@kernel.org>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
@@ -127,112 +86,21 @@ Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
  "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob / Shawn,
+On Tue, 22 Jan 2019 09:00:14 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-Can you please apply patches [1] [2].
-
---
-Regards,
-Yogesh Gaur
-
-[1] https://patchwork.ozlabs.org/patch/1025136/
-[2] https://patchwork.ozlabs.org/patch/1025137/
-
-
-
-> -----Original Message-----
-> From: Yogesh Narayan Gaur
-> Sent: Tuesday, January 15, 2019 5:30 PM
-> To: linux-mtd@lists.infradead.org; bbrezillon@kernel.org;
-> marek.vasut@gmail.com; broonie@kernel.org; linux-spi@vger.kernel.org;
-> devicetree@vger.kernel.org
-> Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
-> arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
-> frieder.schrempf@kontron.de; linux-kernel@vger.kernel.org; Yogesh Narayan
-> Gaur <yogeshnarayan.gaur@nxp.com>
-> Subject: [PATCH v8 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
-> controller
+> Hi Rob / Shawn,
 > 
-> Add binding file for NXP FlexSPI controller
-> 
-> Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
-> Changes for v8:
-> - None
-> Changes for v7:
-> - None
-> Changes for v6:
-> - None
-> Changes for v5:
-> - None
-> Changes for v4:
-> - Incorporated Rob review comments.
-> Changes for v3:
-> - Removed node property 'big-endian'.
-> Changes for v2:
-> - Incorporated Rob review comments.
-> 
->  .../devicetree/bindings/spi/spi-nxp-fspi.txt  | 39 +++++++++++++++++++
->  1 file changed, 39 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> new file mode 100644
-> index 000000000000..2cd67eb727d4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> @@ -0,0 +1,39 @@
-> +* NXP Flex Serial Peripheral Interface (FSPI)
-> +
-> +Required properties:
-> +  - compatible : Should be "nxp,lx2160a-fspi"
-> +  - reg :        First contains the register location and length,
-> +                 Second contains the memory mapping address and length
-> +  - reg-names :  Should contain the resource reg names:
-> +	         - fspi_base: configuration register address space
-> +                 - fspi_mmap: memory mapped address space
-> +  - interrupts : Should contain the interrupt for the device
-> +
-> +Required SPI slave node properties:
-> +  - reg :        There are two buses (A and B) with two chip selects each.
-> +                 This encodes to which bus and CS the flash is connected:
-> +                 - <0>: Bus A, CS 0
-> +                 - <1>: Bus A, CS 1
-> +                 - <2>: Bus B, CS 0
-> +                 - <3>: Bus B, CS 1
-> +
-> +Example showing the usage of two SPI NOR slave devices on bus A:
-> +
-> +fspi0: spi@20c0000 {
-> +	compatible = "nxp,lx2160a-fspi";
-> +	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0
-> 0x10000000>;
-> +	reg-names = "fspi_base", "fspi_mmap";
-> +	interrupts = <0 25 0x4>; /* Level high type */
-> +	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-> +	clock-names = "fspi_en", "fspi";
-> +
-> +	mt35xu512aba0: flash@0 {
-> +		reg = <0>;
-> +		....
-> +	};
-> +
-> +	mt35xu512aba1: flash@1 {
-> +		reg = <1>;
-> +		....
-> +	};
-> +};
-> --
-> 2.17.1
+> Can you please apply patches [1] [2].
 
+No, DT bindings should go through Mark's tree. Just wait a bit please.
 
 ______________________________________________________
 Linux MTD discussion mailing list
