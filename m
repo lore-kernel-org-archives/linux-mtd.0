@@ -2,71 +2,67 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71979C282C0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 18:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E321C282C0
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 20:49:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D6B321855
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 18:11:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C371721872
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 20:49:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dN5kNCoe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D6B321855
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f1gEMiaU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C371721872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=free.fr
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MU4Dk145wnPA2D5auu+5j3GaUyOVktHua7Tuq8g55mU=; b=dN5kNCoejCRL3I
-	6G7exl1lwrzin+kUtcI4HlWITkGXDe1kMhbGPaZHAT8dfbmuZu0CJafsMHQASVlJp+iWmhSg+kUlI
-	Bzzw3ywEzv4n0CK5Gd+gbgZ1+knnm79QtC4DbMyEvSVsu0gfFbMLBgxG21wVTiQZAXtU22KiAPcYt
-	bFRhYwyH9LlxwOkd9kYwofA20l6VI9nQ2EaZtQ7T2UUCuWd5PChrzRGgVM+oCiK76izz/qp2qbZJV
-	JbKgjrBXg5f/cMQ6ohgE+KgakxjlHb36/SfHbPGRPhe6phgni7Tn3gOZPdXZEGtW6d/+xIQTGYkVa
-	igBZ5tRYuzKJgTE1XzEg==;
+	List-Owner; bh=bY6tx98UMkS2KH8JnVfxa+PY+K7BVjTTS/FOZVEIgYI=; b=f1gEMiaUADsawx
+	t4x7N2/lq5wAmdbmI9MVIkhdiW5NKrdSV+CXpIzKGP1DN8f2XA4anHx/PTZjmmRQbGD9negcr5lVv
+	UuV+pDKBneOBJS5aRQNHhdqZ9GQY4qE7EjfwrB4UbksDmnKOYlwWZ+oCHDJU10Jad+6BLGfoMf5eO
+	2TJWxMc8kqb0t6J51SIUty3BLmlnhIbfZwS4pIousuzvcxg9bEQlgenLhmPUvNiTGa0i7JL8Fq10d
+	8YqGplgqBzHy3gaGF43qyPx3wpEH4JG1OcOgddD3+YFMzvSArehLbxjE9+eYXN83kf5ne6Qp6kPJ+
+	t9zMoj7N9oajyFZD7I1g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmMza-0005zb-Fq; Wed, 23 Jan 2019 18:11:14 +0000
-Received: from mail-vs1-f68.google.com ([209.85.217.68])
+	id 1gmPSp-0001F0-PZ; Wed, 23 Jan 2019 20:49:35 +0000
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmMzW-0005zA-UW
- for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 18:11:12 +0000
-Received: by mail-vs1-f68.google.com with SMTP id t17so1864378vsc.8
- for <linux-mtd@lists.infradead.org>; Wed, 23 Jan 2019 10:11:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Lar/7CirLLuwgN7QjrkipPVg9UnJ8H/ir6GU33xHxvc=;
- b=lAJUWsk3FJijoKzVf//+tuz0LG/FVBpeSWNdi/1wJrh527dG4xj+fxQ3EpiwI5jUB+
- w68JlkB878cFAveTH9hGclU6gCnpNJMkLM+dWtx3131mq4JYmWL5lADgao+Kecr1/koc
- jDwf7GaKIrYkcvRHlRmT6B/wySz/ahlP+bJsnTQg0b87YvaZ8JT8AjZOIZKVmNplEYuZ
- l1luZn8hoCeUzxBuy13jCQo8352koeaI4X5dR4DQ8vBrCp8idlmsgY918xOlLm12pI69
- McT3LWiuilCqkCzqZZR9ldRvlbfgSifiq8kXsU4yEMBrI4d88mEIbcTJlL1gZYbjLpdH
- 7Jlg==
-X-Gm-Message-State: AJcUukddyN0hFJAjYjZiWfpKHRH3uSqdC1giqweMJ8B+w+yFNQOtLCpu
- hSo/NF7/VyPdlXxBXK9uBXydyl1BmFuVSv1ok/0=
-X-Google-Smtp-Source: ALg8bN5566f0rXYuWl8e+cbAWmCn2WrWy84SUq0jLilszABY0OIU5GtWW6UAvSB0/TmF3OC/VqRb1bqwrHUqG4Muya4=
-X-Received: by 2002:a67:c202:: with SMTP id i2mr1277005vsj.11.1548267069275;
- Wed, 23 Jan 2019 10:11:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20190118140525.29189-1-geert+renesas@glider.be>
- <20190118230740.44239fcf@bbrezillon>
-In-Reply-To: <20190118230740.44239fcf@bbrezillon>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 23 Jan 2019 19:10:56 +0100
-Message-ID: <CAMuHMdUWqcB7cTOenASWt6HXZhGsr9cH9B55Sh-+rmWmAkm4Fg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] eeprom: at25: SPI transfer improvements
+ id 1gmPSl-0001E6-8K
+ for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 20:49:33 +0000
+Received: from belgarion ([86.206.19.74]) by mwinf5d65 with ME
+ id TwpF1z0071btlZA03wpNuL; Wed, 23 Jan 2019 21:49:24 +0100
+X-ME-Helo: belgarion
+X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
+X-ME-Date: Wed, 23 Jan 2019 21:49:24 +0100
+X-ME-IP: 86.206.19.74
+From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Boris Brezillon <bbrezillon@kernel.org>
+Subject: Re: [PATCH -next] mtd: docg3: Fix passing zero to 'PTR_ERR' warning
+ in doc_probe_device
+References: <20190123065827.16748-1-yuehaibing@huawei.com>
+ <20190123101253.243add9d@bbrezillon>
+ <86533285-e800-5cc0-f495-88fff8326b5a@huawei.com>
+ <20190123105253.1f4487f2@bbrezillon>
+X-URL: http://belgarath.falguerolles.org/
+Date: Wed, 23 Jan 2019 21:49:15 +0100
+In-Reply-To: <20190123105253.1f4487f2@bbrezillon> (Boris Brezillon's message
+ of "Wed, 23 Jan 2019 10:52:53 +0100")
+Message-ID: <87va2fyu9g.fsf@belgarion.home>
+User-Agent: Gnus/5.130008 (Ma Gnus v0.8) Emacs/26 (gnu/linux)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190123_101110_986830_23580FB0 
-X-CRM114-Status: GOOD (  17.66  )
+X-CRM114-CacheID: sfid-20190123_124931_612602_9C6C23B9 
+X-CRM114-Status: GOOD (  18.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,63 +74,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Nguyen An Hoan <na-hoan@jinso.co.jp>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: richard@nod.at, YueHaibing <yuehaibing@huawei.com>,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+Boris Brezillon <bbrezillon@kernel.org> writes:
 
-On Fri, Jan 18, 2019 at 11:07 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
-> On Fri, 18 Jan 2019 15:05:23 +0100
-> Geert Uytterhoeven <geert+renesas@glider.be> wrote:
-> > This patch series contains two improvements for the AT25 SPI EEPROM
-> > driver, related to SPI transfers.
-> >
-> > Changes compared to v1:
-> >   - Merge "off" and "offset" into a single variable instead of just
-> >     killing the cast, as suggested by Arnd,
-> >   - Add Acked-by,
-> >   - Dropped "[PATCH 3/3] eeprom: at25: Split writes in two SPI transfers
-> >     to optimize DMA", as this is better implemented in the SPI
-> >     controller driver (cfr. e.g. "[v2 PATCH 2/2] spi: sh-msiof: Use DMA
-> >     if possible",
-> >     https://lore.kernel.org/linux-renesas-soc/1547803771-9564-2-git-send-email-na-hoan@jinso.co.jp/)
-> >
-> > Tested on a Renesas Ebisu development board with R-Car E3 using MSIOF
-> > and a 25LC040 EEPROM.
+> On Wed, 23 Jan 2019 17:43:58 +0800
+> YueHaibing <yuehaibing@huawei.com> wrote:
 >
-> Did you consider converting this driver to spimem? Looks like the
-> protocol used to communicate with the memory resembles the one used on
-> SPI NANDs/NORs and fits pretty well in the spi_mem_op representation.
-
-No, I hadn't considered doing that ;-)
-
-> By doing this conversion you'd allow people to connect an AT25 EEPROM
-> to an advanced SPI controller that does not support regular SPI
-> transfers and you wouldn't have to forge SPI messages manually.
+>> On 2019/1/23 17:12, Boris Brezillon wrote:
+>> > On Wed, 23 Jan 2019 14:58:27 +0800
+>> > YueHaibing <yuehaibing@huawei.com> wrote:
+>> >   
+>> >> Fix a static code checker warning:
+>> >> drivers/mtd/devices/docg3.c:1875
+>> >>  doc_probe_device() warn: passing zero to 'ERR_PTR'
+>> >>
+>> >> Fixes: ae9d4934b2d7 ("mtd: docg3: add multiple floor support")
+>> >> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> >> ---
+>> >>  drivers/mtd/devices/docg3.c | 2 +-
+>> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+>> >> index 4c94fc0..60ddc38 100644
+>> >> --- a/drivers/mtd/devices/docg3.c
+>> >> +++ b/drivers/mtd/devices/docg3.c
+>> >> @@ -1872,7 +1872,7 @@ doc_probe_device(struct docg3_cascade *cascade, int floor, struct device *dev)
+>> >>  nomem2:
+>> >>  	kfree(docg3);
+>> >>  nomem1:
+>> >> -	return ERR_PTR(ret);
+>> >> +	return ret ? ERR_PTR(ret) : NULL;
+>> >>  }
+>> >>    
+>> > 
+>> > This is not the right fix, you should instead set ret to -EINVAL:  
+>> 
+>> Thanks , will fix it in v2.
+>> 
+>> And seems doc_probe_device cannot return NULL. The NULL check of doc_probe_device
+>> in docg3_probe also can been removed, right?
 >
-> Here is a patch (only compile tested) doing that. The diffstat is not in
-> favor of this conversion, but I find the resulting code cleaner and more
-> future proof.
+> Hm, looks like the ret = 0 was intentional (to identify when ID is
+> invalid). Let's just keep your initial patch.
+Indeed, that's for the multiple floor configuration if I remember correctly.
 
-Thanks, will give it a try, eventually...
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Gr{oetje,eeting}s,
-
-                        Geert
+Cheers.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Robert
 
 ______________________________________________________
 Linux MTD discussion mailing list
