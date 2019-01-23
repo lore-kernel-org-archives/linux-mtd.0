@@ -2,72 +2,75 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46E5DC282C0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 09:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7B9CC282C0
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 09:43:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1836021019
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 09:35:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5F4620861
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 09:43:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iqpP/ZA9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fy20WmOm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1836021019
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pr6IMDj2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5F4620861
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iPPssHM1fpthJ0di0GSDTfzN43vwOGN5PZ/mib5/hUk=; b=iqpP/ZA9nPpx8d
-	llcs3KgNJSdxHsvmD7Bh3FeXrE7P1EBrnDSkGy93zxtLUjieNpR6yKlxMl1+73emQRAZ9opN+hson
-	lXr4euenwqyi3/amwwbVRMgpO1QlfE2jrKN7w+jD5UCjD6cN6UrfNAVols+TfwxH2He/l4H0nZ6aY
-	AArqbsryjt0RUGkcPtSoRwTnGaNSUXVxTTQy/Pk9viZqbl9rRALOqgIXk7etaYF2ryRpOIFO9H82e
-	QE2GOnBIAcr1L1r5kTrXJrUhQJeg9UZD0Hr9B3/5W6gENjI7ZvVYgUQ5nc/JmtJMWH6uOgrWn1yUi
-	Z8Osw+66E5B1jZDzVf7A==;
+	List-Owner; bh=HgJMMkWJZmTwaTmjqIRZVn+hWaEtxlyy9yzMIwmuDgY=; b=Pr6IMDj2aHV9fp
+	TqFko9EbhkcNG5xhwmKgsl2MiaMUbX0Vb192bwtazLIydCcp5bL1np9+2VgzgFKrqIjJpQ84vEVrn
+	Hs6OtIzrUxFgcfyd84I5jQYdobeWz2Xpfb+aJs3BsYiWi2GeLihS+Nlkvw0SPMjZDe8fgT79xoiwT
+	V4QFaWKhSi9J1vsx/bqCqSk1NaqlaM3B4IsUbSeUkC+9pSKq9ra1KROXG5+GVZhuDXdwkY4nHPcxZ
+	G0+3kJ4RWBZfYOroLcYdyA2PXADPccPnwY1wjCBCbQuo3mnrQ43f4xo5G4ZVADpGQGwQgedGMC8zN
+	nHyG4VpzKv/O/gdxWepg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmEwO-0002Re-5D; Wed, 23 Jan 2019 09:35:24 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gmF42-00069F-JH; Wed, 23 Jan 2019 09:43:18 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmEwL-0002RJ-Pc
- for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 09:35:23 +0000
-Received: from bbrezillon (unknown [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0DAB221019;
- Wed, 23 Jan 2019 09:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548236121;
- bh=1k8Ct7Gt6fdSWfNoe6koBozddllg4ccDneAiz++4mA4=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=Fy20WmOmRvYZXiJZVHTkSwdN3OVw4B0e35KU5j+km8q90ebNHDmONjBS7y/R26Q6U
- K+PXTJitx93ZfWr/ZoWZlA53q2PjuM4063R7wOahshpSDRA4U/mzI3AjNmeRLTWs32
- aTagS/UnTBnkxs3qNRSW21gH+04YjQSerMsUtgRs=
-Date: Wed, 23 Jan 2019 10:35:12 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] mtd: spinand: Add support for GigaDevice GD5F1GQ4UC
-Message-ID: <20190123103512.722095cd@bbrezillon>
-In-Reply-To: <a350a884-f531-353d-31bc-d51be8f6eb83@denx.de>
-References: <20190122145632.17547-1-sr@denx.de>
- <20190122175346.602894e4@bbrezillon>
- <263cbd32-b7d4-e440-c92d-4f24f5af27a0@denx.de>
- <20190123085202.0db528ac@bbrezillon>
- <870af691-e8d3-cd91-5a55-6478ef885446@denx.de>
- <20190123095504.7857ca34@bbrezillon>
- <a350a884-f531-353d-31bc-d51be8f6eb83@denx.de>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1gmF3z-00068v-Iu
+ for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 09:43:17 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gmF3r-00018i-Mr; Wed, 23 Jan 2019 10:43:07 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gmF3p-0000nX-TB; Wed, 23 Jan 2019 10:43:05 +0100
+Date: Wed, 23 Jan 2019 10:43:05 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: UBIFS quota support
+Message-ID: <20190123094305.7owpfwzgtzz2snat@pengutronix.de>
+References: <20190110114448.vcx6w76ibmxwvlh3@pengutronix.de>
+ <CAFLxGvyrNaq6ya9TNr-tdEEbV=qsi8qEko6R7oJ-DtkxPJMk0g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvyrNaq6ya9TNr-tdEEbV=qsi8qEko6R7oJ-DtkxPJMk0g@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:16:59 up 1 day, 20:30, 57 users,  load average: 0.27, 0.23, 0.20
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190123_013521_851646_5EF83CBA 
-X-CRM114-Status: GOOD (  14.57  )
+X-CRM114-CacheID: sfid-20190123_014315_780542_9D6F328C 
+X-CRM114-Status: GOOD (  25.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -79,69 +82,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Chuanhong Guo <gch981213@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, Jan Kara <jack@suse.cz>,
+ Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@infradead.org>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 23 Jan 2019 10:06:59 +0100
-Stefan Roese <sr@denx.de> wrote:
-
-> On 23.01.19 09:55, Boris Brezillon wrote:
-> > On Wed, 23 Jan 2019 09:23:47 +0100
-> > Stefan Roese <sr@denx.de> wrote:
-> >   
-> >>> This one doesn't, incremental mode (-i) should.  
-> >>
-> >> Here you go:
-> >>
-> >> # ./nandbiterrs /dev/mtd5 -k -i
-> >> incremental biterrors test
-> >> Failed to recover 1 bitflips
-> >> Read error after 0 bit errors per page
-> >>
-> >> I'm still unsure how this helps here.  
-> > 
-> > It helps, it tells us the ECC doesn't work properly (fails to recover
-> > one bitflip), or maybe it's the raw accessors that don't don't work.
-> >   
-> >> Is there anything else I should test?  
-> > 
-> > Add traces to the get_ecc_status() func and print the status value.  
+On Wed, Jan 23, 2019 at 12:07:12AM +0100, Richard Weinberger wrote:
+> On Thu, Jan 10, 2019 at 12:45 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >
+> > Hi all,
+> >
+> > I'm currently working on resurrecting the UBIFS quota patches posted back in
+> > 2015 by Dongsheng Yang, last posted here:
+> >
+> > http://lists.infradead.org/pipermail/linux-mtd/2015-September/061812.html
+> >
+> > First of all I think work stopped there, there is no newer UBIFS quota
+> > support I am missing, right?
+> >
+> > One problem with this series was that the quotactl systemcall expects a
+> > path to a block device. UBIFS doesn't work on a block device but on a
+> > character device instead.
+> > The solution in this series was to pass the path to the cdev in
+> > quotactl.  A struct cdev * member was added to struct super_block which
+> > was used to identify the superblock for a given cdev. This approach was
+> > rejected by Christoph ("I don't think the cdev has any business in core
+> > VFS code.").  Apart from that UBIFS can not only be mounted with a path
+> > to the character device (mount -t ubifs /dev/ubix_y /mnt) but also in
+> > the form ubix:volname (mount -t ubifs ubix:volname /mnt) in which case
+> > userspace doesn't have any valid path it could pass in quotactl.
+> >
+> > An idea out of this would be to allow to pass the mountpoint instead of
+> > the path to the block device in quotactl which would work with nfs or
+> > even tmpfs aswell. Would that be acceptable? Any other ideas?
 > 
-> # ./nandbiterrs /dev/mtd5 -k -i
-> [   22.098436] gd5f1gq4u_ecc_get_status (124): status=0x00 status2=0x00
-> [   22.117184] gd5f1gq4u_ecc_get_status (124): status=0x00 status2=0x00
+> *kind ping*
 > 
-> <snip many identical lines>
-> 
-> [   23.085412] gd5f1gq4u_ecc_get_status (124): status=0x00 status2=0x00
-> incremental biterrors test
-> [   23.102973] gd5f1gq4u_ecc_get_status (124): status=0x20 status2=0x00
-> Failed to recover 1 bitflips
+> Jan, another thing Sascha and I are not sure about, what are the consistency
+> constraints of the quota file?
+> If I read the code correctly, quota just writes to the quota file and
+> assumes that
+> the file system makes sure about consistency. Either by fsckfixing the quota
+> file or having a data journal for the quota file.
+> In case of UBIFS where we have a data journal this should be doable.
+> Is it okay when the quota file has S_SYNC set?
 
-Hm, looks like the ECC reports error as soon as you start writing to
-the NAND. Maybe we have a problem in the write path...
+S_SYNC won't help us. We need to make sure that a change of an inode and
+the corresponding update to the quota file is done atomically. Otherwise
+it may happen that we only change the size of an inode, but miss the
+corresponding quota updates, or depending on the implementation, maybe
+the other way round.
 
-> Read error after 0 bit errors per page
-> 
-> Strange, this does not seem to match what the datasheet tells us. Any
-> further ideas what I should test?
+ext4 does this with transactions. As an example with ext4_setattr():
 
-Erase a block (save data before if you need to), write random data with
-the ECC enabled and dump it back (once in raw mode, once with ECC
-enabled):
+ext4_setattr()
+	-> handle = ext4_journal_start(inode, EXT4_HT_QUOTA, ...)
+	-> dquot_transfer(inode, attr);
+		-> After going through the quota code with several calls
+		   back into ext4 ends up in ext4_quota_write() which
+		   updates the quota file
+	-> change inode
+	-> ext4_mark_inode_dirty(handle, inode)
+	-> ext4_journal_stop(handle);
 
-# flash_erase /dev/mtdX 0 1
-# nandwrite --input-size=<pagesize> /dev/mtdX /dev/urandom
-# nanddump -f /tmp/dump-ecc -l <pagesize> -o /dev/mtdX
-# nanddump -f /tmp/dump-raw -l <pagesize> -o -n /dev/mtdX
+Everything between ext4_journal_start() and ext4_journal_stop() is
+either done or not.
 
-Send me both dumps (plus the console output), and we'll see how it
-looks.
+The analogy in UBIFS is the grouped nodes, but these are not very well
+suited to be initialized in one function and arbitrarily extended
+somewhere further down the call stack.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
