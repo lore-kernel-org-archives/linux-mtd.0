@@ -3,67 +3,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E090CC282C0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 08:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50BBFC282C0
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 08:46:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0A3C217F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 08:24:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1F2C121019
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 08:46:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="efspnTrg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0A3C217F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I5gAVEgA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CJiBsy5s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F2C121019
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=WS5sHRRoZodGQhJoNNCd5kOH+qtQLOaOyKcp1ZBkb3k=; b=efspnTrgVevI5c2mxjHBlEoPO
-	grTuUlkbDWqpr+lrzTaxABqORKexcW0Ad78gLOkyDrHNaIRKr2Tt+MtYO7uK3TuukLEkq7y4jUAfQ
-	UMVhVpkMp+arruPHQUHKlA3b9zkl7AQqcyISJp43aBEK9wObSGDqfHRWBvotBzwU6anf6OLvZ679b
-	yZQjQELtfyUs/rpA9jfEt8FYCmhNdXxVgI2PJlV/T7I0H6NLPzDTESE4F490B+6TUPCaz6y0U7O6S
-	q9AaCp1Ez9ww2nLNXYN6AUpsST9BpzJtQ1DtsIf2BII8t9NA6wyG4uDkBRciO7OGZYbWMrQ86DMJF
-	Npqq6iK3g==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BDoin91NWNSgiPI9vHEBbcjPKyDMTqbXW2TRIEevRpg=; b=I5gAVEgAUhq1sl
+	+FAaxqRqrbxuCFXg1SJ1Dv4cJcS65AOfOjdbtcMJv9PTJFlIfwk1bj7ESYISui/G3Zozhl0CQXRPB
+	NMkQEzGIBsX0eXsHljoFJMLBxSlcAvZqfHAS7yj9/9eexCD6ZmEItc7Ej+kiP7UuI8O+CVMYM6+q1
+	p0q7ooxOow8pD/XgI1KlBdft1+Sl5yTcUBVP9C5F/9G1ETwVlcfsi+NIdIe2VPOyyccEA3ptYsQc3
+	l6ImQRlBCZ1lBdleXgW/PrjDFN5sw4PcvX5HKVBAeK/0BSPwjJhLdHR//9oKv4370ZiaJhaojq593
+	1DOECOs9iWYv97sMU1+Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmDpJ-00087Y-7h; Wed, 23 Jan 2019 08:24:01 +0000
-Received: from mx2.mailbox.org ([80.241.60.215])
+	id 1gmEAg-0008RR-5e; Wed, 23 Jan 2019 08:46:06 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmDpF-00087D-38
- for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 08:23:59 +0000
-Received: from smtp1.mailbox.org (smtp1.mailbox.org
- [IPv6:2001:67c:2050:105:465:1:1:0])
- (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+ id 1gmEAb-0008Qa-Kz
+ for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 08:46:04 +0000
+Received: from bbrezillon (unknown [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mx2.mailbox.org (Postfix) with ESMTPS id 979F3A1316;
- Wed, 23 Jan 2019 09:23:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
- by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de
- [80.241.56.116]) (amavisd-new, port 10030)
- with ESMTP id CnptdBK-BkHj; Wed, 23 Jan 2019 09:23:50 +0100 (CET)
-Subject: Re: [PATCH] mtd: spinand: Add support for GigaDevice GD5F1GQ4UC
-To: Boris Brezillon <bbrezillon@kernel.org>
-References: <20190122145632.17547-1-sr@denx.de>
- <20190122175346.602894e4@bbrezillon>
- <263cbd32-b7d4-e440-c92d-4f24f5af27a0@denx.de>
- <20190123085202.0db528ac@bbrezillon>
-From: Stefan Roese <sr@denx.de>
-Message-ID: <870af691-e8d3-cd91-5a55-6478ef885446@denx.de>
-Date: Wed, 23 Jan 2019 09:23:47 +0100
+ by mail.kernel.org (Postfix) with ESMTPSA id 4E95721019;
+ Wed, 23 Jan 2019 08:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548233161;
+ bh=ybNY4yrApg4SJFEO0q+sJn4O5cGX8ghkI9ETNmwf4Qg=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=CJiBsy5suBMnRjVvqMv4YraZfv3+DNaNg+6HTHSwcoFh9PJweMJRmQOr0HjeOYJ6w
+ PrZmLgzmTFK9JMMjZdaA6llgNR+3fA/Tszzat+pNoUfrnklcByJHcKVwTIT8Py1HxN
+ KfDE7aXnYfna9Vf5vfNLFPA9qNtaPoKY24HbZ8BY=
+Date: Wed, 23 Jan 2019 09:45:52 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Vignesh R <vigneshr@ti.com>
+Subject: Re: [PATCH v4 2/2] mtd: spi-nor: cadence-quadspi: Add support for
+ Octal SPI controller
+Message-ID: <20190123094552.57665d2e@bbrezillon>
+In-Reply-To: <20190122064137.17114-3-vigneshr@ti.com>
+References: <20190122064137.17114-1-vigneshr@ti.com>
+ <20190122064137.17114-3-vigneshr@ti.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190123085202.0db528ac@bbrezillon>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190123_002357_437590_85CB680A 
-X-CRM114-Status: GOOD (  27.01  )
+X-CRM114-CacheID: sfid-20190123_004601_733600_D2DCE467 
+X-CRM114-Status: GOOD (  19.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,202 +75,169 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Chuanhong Guo <gch981213@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: devicetree@vger.kernel.org, Tudor.Ambarus@microchip.com,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 23.01.19 08:52, Boris Brezillon wrote:
-> On Wed, 23 Jan 2019 07:57:23 +0100
-> Stefan Roese <sr@denx.de> wrote:
+On Tue, 22 Jan 2019 12:11:37 +0530
+Vignesh R <vigneshr@ti.com> wrote:
+
+> Cadence OSPI controller IP supports Octal IO (x8 IO lines),
+> It also has an integrated PHY. IP register layout is very
+> similar to existing QSPI IP except for additional bits to support Octal
+> and Octal DDR mode. Therefore, extend current driver to support Octal
+> mode. Only Octal SDR read (1-1-8)mode is supported for now.
 > 
->> On 22.01.19 17:54, Boris Brezillon wrote:
->>> On Tue, 22 Jan 2019 15:56:32 +0100
->>> Stefan Roese <sr@denx.de> wrote:
->>>    
->>>> Add support for GigaDevice GD5F1GQ4UC SPI NAND chip.
->>>>
->>>> Signed-off-by: Stefan Roese <sr@denx.de>
->>>> Cc: Chuanhong Guo <gch981213@gmail.com>
->>>> Cc: Frieder Schrempf <frieder.schrempf@kontron.de>
->>>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->>>
->>> You forgot to Cc me on this one ;-).
->>
->> Ah, sorry about that.
->>    
->>>> ---
->>>> Frankly, I'm a bit unsure, if these new ooblayout_foo functions are
->>>> needed for this device. I was unable to find a datasheet for the
->>>> already supported devices (GD5F1G/2G/4GQ4xA), so I couldn't compare
->>>> the OOB area values here with the ones for my SPI NAND chip.
->>>
->>> Looks like it's using a different layout.
->>
->> Thanks. Can you please point me to a datasheet for the
->> GD5F1G/2G/4GQ4xA?
+> Tested with mt35xu512aba Octal flash on TI's AM654 EVM.
 > 
-> I don't have it, I just looked at the code.
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> ---
 > 
->>    
->>>>
->>>> I'm also not 100% sure, if I should use NAND_ECCREQ(8, 2048) or
->>>> NAND_ECCREQ(8, 512) for this device.
->>>
->>> Given the size reserved to store ECC bytes I'd say 8bits/512bytes.
->>> There's an easy way to validate that => nandbiterrs (in mtd-utils).
->>
->> How so. Here some output of this test tool:
->>
->> # ./nandbiterrs /dev/mtd5 -k -o
+> v4: Fix comments by Tudor on v3
+> v3: No changes
+> v2: Declare Octal mode capability based on compatible.
 > 
-> use the -i instead of -o.
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 53 +++++++++++++++++++++------
+>  1 file changed, 41 insertions(+), 12 deletions(-)
 > 
->> overwrite biterrors test
->> Read reported 7 corrected bit errors
->> Read reported 8 corrected bit errors
->> Failed to recover 1 bitflips
->> Bit error histogram (669 operations total):
->> Page reads with   0 corrected bit errors: 80
->> Page reads with   1 corrected bit errors: 0
->> Page reads with   2 corrected bit errors: 0
->> Page reads with   3 corrected bit errors: 0
->> Page reads with   4 corrected bit errors: 0
->> Page reads with   5 corrected bit errors: 0
->> Page reads with   6 corrected bit errors: 0
->> Page reads with   7 corrected bit errors: 500
->>
->> How does this tell me, if it's 8bits/512bytes or some other
->> value?
-> 
-> This one doesn't, incremental mode (-i) should.
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 04cedd3a2bf6..2091addc45a3 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -44,6 +44,12 @@
+>  /* Quirks */
+>  #define CQSPI_NEEDS_WR_DELAY		BIT(0)
+>  
+> +/* Capabilities mask */
+> +#define cqspi_base_hwcaps_mask					\
 
-Here you go:
+Nit: we usually use upper cases for such definitions.
 
-# ./nandbiterrs /dev/mtd5 -k -i
-incremental biterrors test
-Failed to recover 1 bitflips
-Read error after 0 bit errors per page
+> +	(SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST |		\
+> +	SNOR_HWCAPS_READ_1_1_2 | SNOR_HWCAPS_READ_1_1_4 |	\
+> +	SNOR_HWCAPS_PP)
+> +
+>  struct cqspi_st;
+>  
+>  struct cqspi_flash_pdata {
+> @@ -93,6 +99,11 @@ struct cqspi_st {
+>  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+>  };
+>  
+> +struct cqspi_driver_platdata {
+> +	u32 hwcaps_mask;
+> +	u8 quirks;
+> +};
+> +
+>  /* Operation timeout value */
+>  #define CQSPI_TIMEOUT_MS			500
+>  #define CQSPI_READ_TIMEOUT_MS			10
+> @@ -101,6 +112,7 @@ struct cqspi_st {
+>  #define CQSPI_INST_TYPE_SINGLE			0
+>  #define CQSPI_INST_TYPE_DUAL			1
+>  #define CQSPI_INST_TYPE_QUAD			2
+> +#define CQSPI_INST_TYPE_OCTAL			3
+>  
+>  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
+>  #define CQSPI_DUMMY_BYTES_MAX			4
+> @@ -911,6 +923,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
+>  		case SNOR_PROTO_1_1_4:
+>  			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
+>  			break;
+> +		case SNOR_PROTO_1_1_8:
+> +			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
+> +			break;
+>  		default:
+>  			return -EINVAL;
+>  		}
+> @@ -1213,21 +1228,22 @@ static void cqspi_request_mmap_dma(struct cqspi_st *cqspi)
+>  
+>  static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+>  {
+> -	const struct spi_nor_hwcaps hwcaps = {
+> -		.mask = SNOR_HWCAPS_READ |
+> -			SNOR_HWCAPS_READ_FAST |
+> -			SNOR_HWCAPS_READ_1_1_2 |
+> -			SNOR_HWCAPS_READ_1_1_4 |
+> -			SNOR_HWCAPS_PP,
+> -	};
+>  	struct platform_device *pdev = cqspi->pdev;
+>  	struct device *dev = &pdev->dev;
+> +	const struct cqspi_driver_platdata *ddata;
+> +	struct spi_nor_hwcaps hwcaps;
+>  	struct cqspi_flash_pdata *f_pdata;
+>  	struct spi_nor *nor;
+>  	struct mtd_info *mtd;
+>  	unsigned int cs;
+>  	int i, ret;
+>  
+> +	ddata = of_device_get_match_data(dev);
+> +	if (!ddata)
+> +		hwcaps.mask = cqspi_base_hwcaps_mask;
+> +	else
+> +		hwcaps.mask = ddata->hwcaps_mask;
+> +
+>  	/* Get flash device data */
+>  	for_each_available_child_of_node(dev->of_node, np) {
+>  		ret = of_property_read_u32(np, "reg", &cs);
+> @@ -1310,7 +1326,7 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	struct cqspi_st *cqspi;
+>  	struct resource *res;
+>  	struct resource *res_ahb;
+> -	unsigned long data;
+> +	const struct cqspi_driver_platdata *ddata;
+>  	int ret;
+>  	int irq;
+>  
+> @@ -1377,8 +1393,8 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
+> -	data  = (unsigned long)of_device_get_match_data(dev);
+> -	if (data & CQSPI_NEEDS_WR_DELAY)
+> +	ddata  = of_device_get_match_data(dev);
+> +	if (ddata && (ddata->quirks & CQSPI_NEEDS_WR_DELAY))
+>  		cqspi->wr_delay = 5 * DIV_ROUND_UP(NSEC_PER_SEC,
+>  						   cqspi->master_ref_clk_hz);
+>  
+> @@ -1460,14 +1476,27 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
+>  #define CQSPI_DEV_PM_OPS	NULL
+>  #endif
+>  
+> +static const struct cqspi_driver_platdata k2g_qspi = {
+> +	.hwcaps_mask = cqspi_base_hwcaps_mask,
+> +	.quirks = CQSPI_NEEDS_WR_DELAY,
+> +};
+> +
+> +static const struct cqspi_driver_platdata am654_ospi = {
+> +	.hwcaps_mask = cqspi_base_hwcaps_mask | SNOR_HWCAPS_READ_1_1_8,
+> +	.quirks = CQSPI_NEEDS_WR_DELAY,
+> +};
+> +
+>  static const struct of_device_id cqspi_dt_ids[] = {
+>  	{
+>  		.compatible = "cdns,qspi-nor",
+> -		.data = (void *)0,
 
-I'm still unsure how this helps here. Is there anything else I should
-test?
-  
->>    
->>>>
->>>> So comments welcome.
->>>>
->>>> Thanks,
->>>> Stefan
->>>>
->>>>    drivers/mtd/nand/spi/gigadevice.c | 39 +++++++++++++++++++++++++++++++
->>>>    1 file changed, 39 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
->>>> index e4141c20947a..a9d256fa2577 100644
->>>> --- a/drivers/mtd/nand/spi/gigadevice.c
->>>> +++ b/drivers/mtd/nand/spi/gigadevice.c
->>>> @@ -57,6 +57,31 @@ static int gd5fxgq4xa_ooblayout_free(struct mtd_info *mtd, int section,
->>>>    	return 0;
->>>>    }
->>>>    
->>>> +static int gd5f1gq4u_ooblayout_ecc(struct mtd_info *mtd, int section,
->>>> +				   struct mtd_oob_region *region)
->>>> +{
->>>> +	if (section)
->>>> +		return -ERANGE;
->>>> +
->>>> +	region->offset = 64;
->>>> +	region->length = 64;
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static int gd5f1gq4u_ooblayout_free(struct mtd_info *mtd, int section,
->>>> +				    struct mtd_oob_region *region)
->>>> +{
->>>> +	if (section)
->>>> +		return -ERANGE;
->>>> +
->>>> +	/* Reserve 2 bytes for the BBM. */
->>>> +	region->offset = 2;
->>>
->>> According to the datasheet, the BBM is only one byte large.
->>
->> Yes, will change in v2.
->>
->>>    
->>>> +	region->length = 62;
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>>    static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
->>>>    					 u8 status)
->>>>    {
->>>> @@ -86,6 +111,11 @@ static const struct mtd_ooblayout_ops gd5fxgq4xa_ooblayout = {
->>>>    	.free = gd5fxgq4xa_ooblayout_free,
->>>>    };
->>>>    
->>>> +static const struct mtd_ooblayout_ops gd5f1gq4u_ooblayout = {
->>>> +	.ecc = gd5f1gq4u_ooblayout_ecc,
->>>> +	.free = gd5f1gq4u_ooblayout_free,
->>>> +};
->>>> +
->>>>    static const struct spinand_info gigadevice_spinand_table[] = {
->>>>    	SPINAND_INFO("GD5F1GQ4xA", 0xF1,
->>>>    		     NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
->>>> @@ -114,6 +144,15 @@ static const struct spinand_info gigadevice_spinand_table[] = {
->>>>    		     0,
->>>>    		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
->>>>    				     gd5fxgq4xa_ecc_get_status)),
->>>> +	SPINAND_INFO("GD5F1GQ4UC", 0xd1,
->>>> +		     NAND_MEMORG(1, 2048, 128, 64, 1024, 1, 1, 1),
->>>> +		     NAND_ECCREQ(8, 2048),
->>>> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
->>>> +					      &write_cache_variants,
->>>> +					      &update_cache_variants),
->>>> +		     0,
->>>> +		     SPINAND_ECCINFO(&gd5f1gq4u_ooblayout,
->>>> +				     gd5fxgq4xa_ecc_get_status)),
->>>
->>> The gd5fxgq4xa_ecc_get_status() func does not work for this chip.
->>
->> Why not? Using the ECCS0/1 bits are also defined as bits 4/5 in the
->> status byte (addr 0xc0). The ECCSE0/1 bits would provide a more
->> fine grained info though.
->>
->>> Something like that should do the trick:
->>>
->>> #define GD5F1GQ4U_ECC_STATUS_MASK	GENMASK(6, 4)
->>
->> Bit 6 is reserved in my datasheet version. Which version are you
->> referring to?
-> 
-> http://cn.gigadevice.com/product/detail/30/469.html?locale=en_US
-> 
-> and the datasheet I downloaded says GD5FxGQ4xC, which seems to match
-> the GD5F1GQ4UC part you mention in your commit message.
+Can't we have a cqspi_driver_platdata instance for that one too?
 
-Yes, but it does not show the device ID 0xd1 which I'm reading to
-detect the chip. Here the datasheet that I'm using right now:
+>  	},
+>  	{
+>  		.compatible = "ti,k2g-qspi",
+> -		.data = (void *)CQSPI_NEEDS_WR_DELAY,
+> +		.data = &k2g_qspi,
+> +	},
+> +	{
+> +		.compatible = "ti,am654-ospi",
+> +		.data = &am654_ospi,
+>  	},
+>  	{ /* end of table */ }
+>  };
 
-www.gigadevice.com/datasheet/gd5f1gq4xexxg/
-
-Looking again, its "GD5F1GQ4UExxG" on the GigaDevice webpage and
-in the datasheet, 0xd1 references "GD5F1GQ4U". So I should change
-the chip name to "GD5F1GQ4UExxG" instead.
-
-Sorry for the confusion here.
-
-I'll try to enhance the ecc_get_status() function to also read the
-status register at addr 0xf0 for the ECCSE0/1 bits to determine a
-more fine grained ECC information for this chip.
-
-Thanks,
-Stefan
 
 ______________________________________________________
 Linux MTD discussion mailing list
