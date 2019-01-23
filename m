@@ -1,82 +1,69 @@
-Return-Path: <SRS0=3GE2=P6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EF3EC282C3
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 23:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40D0AC282C3
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 00:23:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F4C021726
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Jan 2019 23:07:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0525821726
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Jan 2019 00:22:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sZu7mdBG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gkea2C5Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F4C021726
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P4wO2hQ7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dgBONZkE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0525821726
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Sw7ds6BJ+DZJI9kjAjMKmgKyToPABae3gHu1DChFLy0=; b=sZu7mdBGoACkl8
-	e5G+ya0kOR0lDV5JADgj1GHd2Gf6vT/SJ4jBHGqxrj2HByDvy3DZy+sjEs9l3VVjHosJly1dLvlqq
-	D4Ilbvq/ZEDIFYrEu0oJ6lZhe/rBfLwDXX8onEhU8dW7rOtt7YajEsbsx39uo5zsfopYR1H0OIvZY
-	4NsYvpzqbJm2HLdEbimMVlVpNtKcjzCTZ6qG5sHmQA0qrAmIRMMBGKCO0mmOfbGOxGqPCXlrcaSsQ
-	xCJeWwv8lCrFw8hHX57fsKnqaBdeVQ2T+GwRDheaPGEquZEnOYBKGSV4qk22m8D8DJeBtrp6C7vHq
-	l3/87UDy63nZE15aworg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0czqdQYoQJVlxSAdnOAPR6zKwRydu22s5VhrHpWIoMY=; b=P4wO2hQ7aPsHUc
+	2DlFusc2ulm4PzFisN7Ms4gq6ejkSGHw3S/Fg+0JeNEbZWQDWcA/m2nanqm0MPSSMepMzZePU/u02
+	wxSodabvzEc5jVSyilFMwtnqeN4OZZimmKET+bqbR6aG34t8vYMakCGuekpo7dX2d5bsgO7rSVPHm
+	dUWTC+zbCoBdyiFIOu1WrASOgldVnZ0MXCAoZJL00bO26BAefWagp5v9uI+tlj2k5s0w6mbdx6heE
+	u3tq0HvYoHKnaSnitzK/1aU1MKv1Mu8NvMOAMYfUysrHoTBfDwL4/qytxz0aOAReVpURYUSM8aWhE
+	uQysp41UxQb9IIynVvMg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gm58o-0003PR-BT; Tue, 22 Jan 2019 23:07:34 +0000
-Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
+	id 1gm6Jk-0007pl-9x; Wed, 23 Jan 2019 00:22:56 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gm58g-0003Ol-Sa
- for linux-mtd@lists.infradead.org; Tue, 22 Jan 2019 23:07:28 +0000
-Received: by mail-wm1-x343.google.com with SMTP id p6so236410wmc.1
- for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2019 15:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=dgr9nKB2ggzdhcJYsf7bbonrKoS23TOX081W2mVZulA=;
- b=Gkea2C5Qh611fDjojh7Rmy/seUBxc1j+phR9mm9Ntx+5OQiark8sKFRVGQrvd6Q6mz
- nECDilhYywBuzGqE3ZAFqEowCDT1R0etWLFVHwMajNBxsWKvnARWMaKqyb2dm3H8N+/e
- fTftIwwgBOlil/IUbkNixbhWGWnUhXBxaARqL9fGUfn21WtETLNz+hSUUn9vtDob/e4e
- U59IdDFPyD8EvMEtqaJVW1FcNOhsxZ8Ik0koZz+zJCeKDk4WrdbMGiN02q5FZgoE6eIa
- hKlKb7AjlhMuV+rAIAs4aLiw2y7PZaqpnjqTqNUn+vCeeUovYlVudCEaNOIUYpGWDMO4
- L/FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=dgr9nKB2ggzdhcJYsf7bbonrKoS23TOX081W2mVZulA=;
- b=qzD0k78YTYk+A0RpzHSl8IDz3NN28gZnShj4DUGSY1QDHd6eb4lA40Gs7CsN0k3zpf
- mcHikSPBxQq6+AU6f6drigSWFjn5Cijbm3d1vYtxmSZzyC66/5IR0XAvpwZfM0Nn7ONN
- xZWwbjRgEdee54jtD0W0iHVfgNK0STkOJtkFn1c+KI3XTjh11UQDdhKdbor6b7umGyWO
- 9o7iAzE3JRTUrRZL/9xw2K4b3ZtrQ4h0MvcFuN8lBlMMRpkJtArObuhxRxh3zIo9Fn+B
- vKhVqyf9/BMG6NQBbivS9QcTq2dRCeRugx+sKAaP7W4II2nz1UjYOaDnsleu0mGueWRO
- BZQg==
-X-Gm-Message-State: AJcUukcJQVXMTM+9aeW2Oh5S9AvUTOrRHTY/K++JAgqwLGePn3aSd3n4
- xBZKmuyNvxCWpJnFVBJ+Wuwa/4IjdgdPIRzvLp0=
-X-Google-Smtp-Source: ALg8bN4Iu+99oEFrjUNshJRc47VAgR1OZom3QObQYLYfxIIjZQo3IQvwYUgt5a5gzAI+Vas0alCwZ21AXqSXdCMYHOQ=
-X-Received: by 2002:a7b:ce8e:: with SMTP id q14mr396410wmj.10.1548198444592;
- Tue, 22 Jan 2019 15:07:24 -0800 (PST)
+ id 1gm6Jg-0007p0-LF
+ for linux-mtd@lists.infradead.org; Wed, 23 Jan 2019 00:22:54 +0000
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
+ [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0D27E21726;
+ Wed, 23 Jan 2019 00:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548202971;
+ bh=zoWyEPnO4Fn7+NBvxhRG1SMFboA+cfWOFrDStSBzZ/c=;
+ h=From:To:Cc:Subject:Date:From;
+ b=dgBONZkE6vkaUEBSdvOJ5XPUDE3mg9CoDlV/vdAmfDSwSYMHPBA9R0LVx7HtVfh6B
+ EGYJH44MnqdvFRUP8tLYNsOQIgHwJ1zt2eonsAMRQgVoHlEG7Y8sxh9FRh3gNJq6zS
+ 39pZd0DrW2FxmGl4oFgYqMaw1BLnTMA7+tDt10cI=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] fscrypt: return -EXDEV for incompatible rename or link into
+ encrypted dir
+Date: Tue, 22 Jan 2019 16:21:56 -0800
+Message-Id: <20190123002156.116601-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.20.1.321.g9e740568ce-goog
 MIME-Version: 1.0
-References: <20190110114448.vcx6w76ibmxwvlh3@pengutronix.de>
-In-Reply-To: <20190110114448.vcx6w76ibmxwvlh3@pengutronix.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 23 Jan 2019 00:07:12 +0100
-Message-ID: <CAFLxGvyrNaq6ya9TNr-tdEEbV=qsi8qEko6R7oJ-DtkxPJMk0g@mail.gmail.com>
-Subject: Re: UBIFS quota support
-To: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190122_150726_925422_7F5AC976 
-X-CRM114-Status: GOOD (  16.76  )
+X-CRM114-CacheID: sfid-20190122_162252_743008_1FAC137E 
+X-CRM114-Status: GOOD (  20.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,57 +75,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: Joe Richey <joerichey@google.com>, Michael Halcrow <mhalcrow@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 10, 2019 at 12:45 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
->
-> Hi all,
->
-> I'm currently working on resurrecting the UBIFS quota patches posted back in
-> 2015 by Dongsheng Yang, last posted here:
->
-> http://lists.infradead.org/pipermail/linux-mtd/2015-September/061812.html
->
-> First of all I think work stopped there, there is no newer UBIFS quota
-> support I am missing, right?
->
-> One problem with this series was that the quotactl systemcall expects a
-> path to a block device. UBIFS doesn't work on a block device but on a
-> character device instead.
-> The solution in this series was to pass the path to the cdev in
-> quotactl.  A struct cdev * member was added to struct super_block which
-> was used to identify the superblock for a given cdev. This approach was
-> rejected by Christoph ("I don't think the cdev has any business in core
-> VFS code.").  Apart from that UBIFS can not only be mounted with a path
-> to the character device (mount -t ubifs /dev/ubix_y /mnt) but also in
-> the form ubix:volname (mount -t ubifs ubix:volname /mnt) in which case
-> userspace doesn't have any valid path it could pass in quotactl.
->
-> An idea out of this would be to allow to pass the mountpoint instead of
-> the path to the block device in quotactl which would work with nfs or
-> even tmpfs aswell. Would that be acceptable? Any other ideas?
+From: Eric Biggers <ebiggers@google.com>
 
-*kind ping*
+Currently, trying to rename or link a regular file, directory, or
+symlink into an encrypted directory fails with EPERM when the source
+file is unencrypted or is encrypted with a different encryption policy,
+and is on the same mountpoint.  It is correct for the operation to fail,
+but the choice of EPERM breaks tools like 'mv' that know to copy rather
+than rename if they see EXDEV, but don't know what to do with EPERM.
 
-Jan, another thing Sascha and I are not sure about, what are the consistency
-constraints of the quota file?
-If I read the code correctly, quota just writes to the quota file and
-assumes that
-the file system makes sure about consistency. Either by fsck fixing the quota
-file or having a data journal for the quota file.
-In case of UBIFS where we have a data journal this should be doable.
-Is it okay when the quota file has S_SYNC set?
+Our original motivation for EPERM was to encourage users to securely
+handle their data.  Encrypting files by "moving" them into an encrypted
+directory can be insecure because the unencrypted data may remain in
+free space on disk, where it can later be recovered by an attacker.
+It's much better to encrypt the data from the start, or at least try to
+securely delete the source data e.g. using the 'shred' program.
 
+However, the current behavior hasn't been effective at achieving its
+goal because users tend to be confused, hack around it, and complain;
+see e.g. https://github.com/google/fscrypt/issues/76.  And in some cases
+it's actually inconsistent or unnecessary.  For example, 'mv'-ing files
+between differently encrypted directories doesn't work even in cases
+where it can be secure, such as when in userspace the same passphrase
+protects both directories.  Yet, you *can* already 'mv' unencrypted
+files into an encrypted directory if the source files are on a different
+mountpoint, even though doing so is often insecure.
+
+There are probably better ways to teach users to securely handle their
+files.  For example, the 'fscrypt' userspace tool could provide a
+command that migrates unencrypted files into an encrypted directory,
+acting like 'shred' on the source files and providing appropriate
+warnings depending on the type of the source filesystem and disk.
+
+Receiving errors on unimportant files might also force some users to
+disable encryption, thus making the behavior counterproductive.  It's
+desirable to make encryption as unobtrusive as possible.
+
+Therefore, change the error code from EPERM to EXDEV so that tools
+looking for EXDEV will fall back to a copy.
+
+This, of course, doesn't prevent users from still doing the right things
+to securely manage their files.  Note that this also matches the
+behavior when a file is renamed between two project quota hierarchies;
+so there's precedent for using EXDEV for things other than mountpoints.
+
+xfstests generic/398 will require an update with this change.
+
+[Rewritten from an earlier patch series by Michael Halcrow.]
+
+Cc: Michael Halcrow <mhalcrow@google.com>
+Cc: Joe Richey <joerichey@google.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ Documentation/filesystems/fscrypt.rst | 12 ++++++++++--
+ fs/crypto/hooks.c                     |  6 +++---
+ fs/crypto/policy.c                    |  3 +--
+ include/linux/fscrypt.h               |  4 ++--
+ 4 files changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 43dd989e2a3f..08c23b60e016 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -451,10 +451,18 @@ astute users may notice some differences in behavior:
+ - Unencrypted files, or files encrypted with a different encryption
+   policy (i.e. different key, modes, or flags), cannot be renamed or
+   linked into an encrypted directory; see `Encryption policy
+-  enforcement`_.  Attempts to do so will fail with EPERM.  However,
++  enforcement`_.  Attempts to do so will fail with EXDEV.  However,
+   encrypted files can be renamed within an encrypted directory, or
+   into an unencrypted directory.
+ 
++  Note: "moving" an unencrypted file into an encrypted directory, e.g.
++  with the `mv` program, is implemented in userspace by a copy
++  followed by a delete.  Be aware that the original unencrypted data
++  may remain recoverable from free space on the disk; prefer to keep
++  all files encrypted from the very beginning.  The `shred` program
++  may be used to overwrite the source files but isn't guaranteed to be
++  effective on all filesystems and storage devices.
++
+ - Direct I/O is not supported on encrypted files.  Attempts to use
+   direct I/O on such files will fall back to buffered I/O.
+ 
+@@ -541,7 +549,7 @@ not be encrypted.
+ Except for those special files, it is forbidden to have unencrypted
+ files, or files encrypted with a different encryption policy, in an
+ encrypted directory tree.  Attempts to link or rename such a file into
+-an encrypted directory will fail with EPERM.  This is also enforced
++an encrypted directory will fail with EXDEV.  This is also enforced
+ during ->lookup() to provide limited protection against offline
+ attacks that try to disable or downgrade encryption in known locations
+ where applications may later write sensitive data.  It is recommended
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index 926e5df20ec3..56debb1fcf5e 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -58,7 +58,7 @@ int __fscrypt_prepare_link(struct inode *inode, struct inode *dir)
+ 		return err;
+ 
+ 	if (!fscrypt_has_permitted_context(dir, inode))
+-		return -EPERM;
++		return -EXDEV;
+ 
+ 	return 0;
+ }
+@@ -82,13 +82,13 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		if (IS_ENCRYPTED(new_dir) &&
+ 		    !fscrypt_has_permitted_context(new_dir,
+ 						   d_inode(old_dentry)))
+-			return -EPERM;
++			return -EXDEV;
+ 
+ 		if ((flags & RENAME_EXCHANGE) &&
+ 		    IS_ENCRYPTED(old_dir) &&
+ 		    !fscrypt_has_permitted_context(old_dir,
+ 						   d_inode(new_dentry)))
+-			return -EPERM;
++			return -EXDEV;
+ 	}
+ 	return 0;
+ }
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index f490de921ce8..bd7eaf9b3f00 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -151,8 +151,7 @@ EXPORT_SYMBOL(fscrypt_ioctl_get_policy);
+  * malicious offline violations of this constraint, while the link and rename
+  * checks are needed to prevent online violations of this constraint.
+  *
+- * Return: 1 if permitted, 0 if forbidden.  If forbidden, the caller must fail
+- * the filesystem operation with EPERM.
++ * Return: 1 if permitted, 0 if forbidden.
+  */
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ {
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index eec604840568..e5194fc3983e 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -489,7 +489,7 @@ static inline int fscrypt_require_key(struct inode *inode)
+  * in an encrypted directory tree use the same encryption policy.
+  *
+  * Return: 0 on success, -ENOKEY if the directory's encryption key is missing,
+- * -EPERM if the link would result in an inconsistent encryption policy, or
++ * -EXDEV if the link would result in an inconsistent encryption policy, or
+  * another -errno code.
+  */
+ static inline int fscrypt_prepare_link(struct dentry *old_dentry,
+@@ -519,7 +519,7 @@ static inline int fscrypt_prepare_link(struct dentry *old_dentry,
+  * We also verify that the rename will not violate the constraint that all files
+  * in an encrypted directory tree use the same encryption policy.
+  *
+- * Return: 0 on success, -ENOKEY if an encryption key is missing, -EPERM if the
++ * Return: 0 on success, -ENOKEY if an encryption key is missing, -EXDEV if the
+  * rename would cause inconsistent encryption policies, or another -errno code.
+  */
+ static inline int fscrypt_prepare_rename(struct inode *old_dir,
 -- 
-Thanks,
-//richard
+2.20.1.321.g9e740568ce-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
