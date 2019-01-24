@@ -2,86 +2,68 @@ Return-Path: <SRS0=xpfJ=QA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F398C282C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 13:59:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CEC5C282C3
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 14:20:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EDE421855
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 13:59:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DE4A21872
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 14:20:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="he3ZAMDJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EDE421855
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m54HZc69";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ob6DblVU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DE4A21872
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zHEaT2rvZ7JoI9OzgfMs+v0l0bL3cqvpWnltks+lXdc=; b=he3ZAMDJ9A/vQ3Pae1izldFyM
-	PIg61SZbwTOQ+DGMoomZdwyyXTrETDCF8hrvuifXV1t5WYdeMSn7isaNrBQjMl2sa11kqSziHJYTK
-	Vx/WTAq5nE6jzrTEoQZo4c42isEtW/+MUEPW4imwT4B+VHWSaixPGWjeQMq0TvMN5eOPnJGM9qIH0
-	hWMwUhIzEMvN3DEUozSVLxA/4Jpz9T8fk3soTXpuIXltYoGydVXKrAvqbrMFTEMZaN1vglwYlufW7
-	zFq9M7zqXw0D7aDgc9iy58doy9qYlbj7VQwJ5j6nhIMMhm08RTa2lC43SyrEbewLE6/qDw8Mj3YX0
-	jpk5qoeLw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=wu6NW2kxKJjUS5wT0huCyV+UDsvk06vYenyMy6AtvwU=; b=m54
+	HZc69UOJJ8ZQdD2eFavD0Ma2RYfFF9a+421JdjWzo8HwGXgSt6fftdIpvL/Qk+l5a6IeLEfykNcH0
+	M2Kvfgwi93fK2cDteLbSBJPA3yg5CIJrQRD2rcws2YC7uazXcsAq9imkf5H646mByfaY8PI5j2IQm
+	YDJ/RsLECI4VNFpiyqR7G/Ss+kcbaMc4iWUX0T3mxXKguDQYIEEUje/FBJnVlg/1Jaf0/Cn3SCk2K
+	DmUdN7TsiBvyBrWvUjIOeG1nZGrWqK2Vx7vzjL1zrBFbC2h4KCW6UwncWJRcnul32KjGGE+e/etdo
+	xwsmohoGmMI7VxtVeqOvXx/PC7ubYGw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmfXm-0001Ih-Co; Thu, 24 Jan 2019 13:59:46 +0000
-Received: from mx2a.mailbox.org ([2001:67c:2050:104:0:2:25:2]
- helo=mx2.mailbox.org)
+	id 1gmfrh-0005Su-Ag; Thu, 24 Jan 2019 14:20:21 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmfXi-0001I0-8p
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 13:59:44 +0000
-Received: from smtp1.mailbox.org (smtp1.mailbox.org
- [IPv6:2001:67c:2050:105:465:1:1:0])
- (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+ id 1gmfre-0005Sa-6T
+ for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 14:20:19 +0000
+Received: from localhost.localdomain (91-160-177-164.subs.proxad.net
+ [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mx2.mailbox.org (Postfix) with ESMTPS id 00383A132E;
- Thu, 24 Jan 2019 14:59:38 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
- by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de
- [80.241.56.116]) (amavisd-new, port 10030)
- with ESMTP id N3dLwMHU5eez; Thu, 24 Jan 2019 14:59:37 +0100 (CET)
-Subject: Re: [PATCH] mtd: spinand: Add support for GigaDevice GD5F1GQ4UC
-To: Boris Brezillon <bbrezillon@kernel.org>
-References: <20190122145632.17547-1-sr@denx.de>
- <20190123095504.7857ca34@bbrezillon>
- <a350a884-f531-353d-31bc-d51be8f6eb83@denx.de>
- <20190123103512.722095cd@bbrezillon>
- <adedc307-dc10-3200-84fa-36313b858dbf@denx.de>
- <20190123122514.0db87887@bbrezillon>
- <4f630269-5562-b795-63ca-92989d6c5059@denx.de>
- <20190123132249.2e7f65a2@bbrezillon>
- <358c78d9-6507-3998-a065-ddd18809d02b@denx.de>
- <20190123134050.7efe59a6@bbrezillon> <20190123135735.358fc9a6@bbrezillon>
- <0786ffac-ec46-f924-002a-5324c76bcb89@denx.de>
- <20190124085018.2ad33dab@bbrezillon>
- <39d6edd9-14ad-8110-b618-6454f6840b28@denx.de>
- <20190124091459.11cb2912@bbrezillon>
- <6dadd565-aa59-82ba-757f-db0a1c03656d@denx.de>
- <20190124101901.7b44c5c5@bbrezillon>
- <29f49243-6b52-5c98-29a6-81f9a32697b9@denx.de>
- <20190124121435.4ed6069d@bbrezillon>
- <d504c576-d2f8-c325-528e-e4ba71ab1361@denx.de>
- <20190124131808.11165b42@bbrezillon>
- <bde33ebf-dd3d-d237-68a8-9eeb43c22368@denx.de>
- <20190124134136.7fb975ac@bbrezillon>
-From: Stefan Roese <sr@denx.de>
-Message-ID: <93819bce-b03e-c3f4-e22e-f7e63b14003b@denx.de>
-Date: Thu, 24 Jan 2019 14:59:36 +0100
-MIME-Version: 1.0
-In-Reply-To: <20190124134136.7fb975ac@bbrezillon>
-Content-Language: en-US
+ by mail.kernel.org (Postfix) with ESMTPSA id 7576021872;
+ Thu, 24 Jan 2019 14:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548339617;
+ bh=ycveM8/CD+BQXXGkRLzRxuy/fx2MRf2LiPdlWMTCsQc=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Ob6DblVUJkxRgBeZtP6+QoptwGuvAlsLY76oDvWVH8Bmi1npZtSLXX4D5Ceqzk6tG
+ 9caXnXkwP/uHFgnPPGLxWNAeM16l/TOdaQxDbYVufKZsEjhCY5ZhyONy7kSj5mBYfq
+ MHC3XaITmRDD3/gL2A4y5dprbMwPnaMPqCF3GQhw=
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spinand: Handle the case where PROGRAM LOAD does not
+ reset the cache
+Date: Thu, 24 Jan 2019 15:20:07 +0100
+Message-Id: <20190124142007.11607-1-bbrezillon@kernel.org>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190124_055942_483953_04EF6E1B 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20190124_062018_271351_7D81E39B 
+X-CRM114-Status: GOOD (  15.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,39 +75,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Chuanhong Guo <gch981213@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Stefan Roese <sr@denx.de>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24.01.19 13:41, Boris Brezillon wrote:
-> On Thu, 24 Jan 2019 13:28:36 +0100
-> Stefan Roese <sr@denx.de> wrote:
-> 
->> This one works as well. Feel free to add my:
->>
->> Reviewed-by: Stefan Roese <sr@denx.de>
->> Tested-by: Stefan Roese <sr@denx.de>
->>
->> tags if appropriate.
-> 
-> I will.
-> 
->>
->> Another question though regarding older kernel versions (e.g. v4.19 LTS).
->> Could you perhaps push your fix [1] from yesterday as well?
-> 
-> Yep, will send a separate patch with Fixes+stable tags and queue it to
-> the mtd/fixes branch after you have reviewed/tested it.
+Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
+the cache content to 0xFF (depends on vendor implementation), so we
+must fill the page cache entirely even if we only want to program the
+data portion of the page, otherwise we might corrupt the BBM or user
+data previously programmed in OOB area.
 
-Thanks. Could you perhaps also check if the U-Boot implementation also
-needs a fix/change in this area?
+Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+Reported-by: Stefan Roese <sr@denx.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+---
+ drivers/mtd/nand/spi/core.c | 42 ++++++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 22 deletions(-)
 
-Thanks,
-Stefan
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 479c2f2cf17f..8bf37da19663 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -304,24 +304,30 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+ 	struct mtd_info *mtd = nanddev_to_mtd(nand);
+ 	struct nand_page_io_req adjreq = *req;
+-	unsigned int nbytes = 0;
+-	void *buf = NULL;
++	void *buf = spinand->databuf;
++	unsigned int nbytes;
+ 	u16 column = 0;
+ 	int ret;
+ 
+-	memset(spinand->databuf, 0xff,
+-	       nanddev_page_size(nand) +
+-	       nanddev_per_page_oobsize(nand));
++	/*
++	 * Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
++	 * the cache content to 0xFF (depends on vendor implementation), so we
++	 * must fill the page cache entirely even if we only want to program
++	 * the data portion of the page, otherwise we might corrupt the BBM or
++	 * user data previously programmed in OOB area.
++	 */
++	nbytes = nanddev_page_size(nand) + nanddev_per_page_oobsize(nand);
++	memset(spinand->databuf, 0xff, nbytes);
++	adjreq.dataoffs = 0;
++	adjreq.datalen = nanddev_page_size(nand);
++	adjreq.databuf.out = spinand->databuf;
++	adjreq.ooblen = nanddev_per_page_oobsize(nand);
++	adjreq.ooboffs = 0;
++	adjreq.oobbuf.out = spinand->oobbuf;
+ 
+-	if (req->datalen) {
++	if (req->datalen)
+ 		memcpy(spinand->databuf + req->dataoffs, req->databuf.out,
+ 		       req->datalen);
+-		adjreq.dataoffs = 0;
+-		adjreq.datalen = nanddev_page_size(nand);
+-		adjreq.databuf.out = spinand->databuf;
+-		nbytes = adjreq.datalen;
+-		buf = spinand->databuf;
+-	}
+ 
+ 	if (req->ooblen) {
+ 		if (req->mode == MTD_OPS_AUTO_OOB)
+@@ -332,14 +338,6 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+ 		else
+ 			memcpy(spinand->oobbuf + req->ooboffs, req->oobbuf.out,
+ 			       req->ooblen);
+-
+-		adjreq.ooblen = nanddev_per_page_oobsize(nand);
+-		adjreq.ooboffs = 0;
+-		nbytes += nanddev_per_page_oobsize(nand);
+-		if (!buf) {
+-			buf = spinand->oobbuf;
+-			column = nanddev_page_size(nand);
+-		}
+ 	}
+ 
+ 	spinand_cache_op_adjust_colum(spinand, &adjreq, &column);
+@@ -370,8 +368,8 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+ 
+ 		/*
+ 		 * We need to use the RANDOM LOAD CACHE operation if there's
+-		 * more than one iteration, because the LOAD operation resets
+-		 * the cache to 0xff.
++		 * more than one iteration, because the LOAD operation might
++		 * reset the cache to 0xff.
+ 		 */
+ 		if (nbytes) {
+ 			column = op.addr.val;
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
