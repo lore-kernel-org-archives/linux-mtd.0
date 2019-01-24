@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B151C282C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 14:51:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23073C282C3
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 14:57:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3937A218A2
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 14:51:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2272218A2
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 14:57:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YdldbT/z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XluSWKTW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3937A218A2
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EO5NfPKw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XusuIbWN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2272218A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=KVAN+YMzqVYo7o2tb+i2dAgVSRgbHZ2KUIhoCQwHHJQ=; b=Ydl
-	dbT/zXC5/L6N4zmxHRxs0k+UMG/k4h84KHxGJgKRDZxQGP7fpCRpwLBxPAzasoRPzqYv6VLNq5Swm
-	meiIYVpDN8co2weR/1hyVHeZI7fQnlaOhvnL9NkFfK+wrS7rLVypGiAkIztV586ci9qKVhwBugcKY
-	VWv7yiuUmttsb90ap0J7WNJ5QrKKD9LYQww98oVJI8jzzCWD2jWNcsY1wDhR+VkEjMhJ44pkNrT8Z
-	zRYElSV8ZbN4RjwqH7BUOhMcmxx1mLppMdzrYzI99wotT495fM752LHyG22k9e9oxhJvm76M9kRcd
-	SA1SVBT3vwSF9QLqECiEUjpYcwFAl2g==;
+	References:List-Owner; bh=cEYM0vfY4FTPfEq/7pUxz2lL1IwrWASLsT7yA63Oceg=; b=EO5
+	NfPKwWnhbo9Gas3VxGHgJsPQI5KH/GIR17n1xiyG3m3mSo7VakZzxVWCpXJRbMtt5bvpucrfzIDnB
+	S0m+AB24AOi+0WayCKmjcNMjZeBt/p8nkxwcyMRz7RDNGtOshuUQOXt4RzzMoay7R6Ov8KVWt0tTr
+	QzXDIll2vJrFJBV8yNt8N9TDpvAMyUwuaMrBu8ekH/ePYdG3pd0hsjIK58yX79NYZsYjz6lg8gXOq
+	qC0JWXm8/AqluQWsOrenlK+6pKV6pnakD9uRYdpga+cWCfebSVSX+cAu2j2Tq+6Tj5yp4Ca24xqM5
+	qmFDAGPyUMfvKamHw5qB5g+q9X3Cc3g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmgLv-0008KS-DT; Thu, 24 Jan 2019 14:51:35 +0000
+	id 1gmgR6-0002jg-L4; Thu, 24 Jan 2019 14:56:56 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmgLr-0008K4-VP
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 14:51:34 +0000
+ id 1gmgR2-0002fZ-LV
+ for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 14:56:54 +0000
 Received: from localhost.localdomain (91-160-177-164.subs.proxad.net
  [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8E76A218A2;
- Thu, 24 Jan 2019 14:51:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 39629218A2;
+ Thu, 24 Jan 2019 14:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548341491;
- bh=60HdcI4yRvLAyyJUEqjuWGNIo8MNM32GHVdMNqwyByc=;
+ s=default; t=1548341812;
+ bh=gv5ut8yUASa9VSBmy58QBwtbjdLd5yaxcCAbhmUOTco=;
  h=From:To:Cc:Subject:Date:From;
- b=XluSWKTWI5Gncn0jjvWMK8RpfVK/QEZOq/F9FpdnSSVqMMz+PTu5ykv+DHOo2nNtq
- ZebmmWRAQWUwgosG393QEk9krEV1Y8apo7xKEvfEAvYFyD4NNKLXoBEOhTdUc/woQN
- Ozldyi5qJ/Fds46LZyqNsHLTxVvPZxnl3iXFvs2E=
+ b=XusuIbWNA0d/OL/E64tS5ZbwYBqHgX28RDstEAWVgWP8xLHNkBe1m+F/8zYGE1bcR
+ yiWhksjXNsZiGJXkw3Mi8N9fk/KnkE+a5WFLKDINYQITcjLOQ+vtTdkmvylbbl4F1P
+ 8g6ceKRQxd4/DCvCvPEVc5h26Z0DLOczt7Yp3gTM=
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v4] mtd: spinand: Use the spi-mem dirmap API
-Date: Thu, 24 Jan 2019 15:51:21 +0100
-Message-Id: <20190124145121.28089-1-bbrezillon@kernel.org>
+Subject: [PATCH v5] mtd: spinand: Use the spi-mem dirmap API
+Date: Thu, 24 Jan 2019 15:56:43 +0100
+Message-Id: <20190124145643.3195-1-bbrezillon@kernel.org>
 X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190124_065132_054629_D31394C1 
-X-CRM114-Status: GOOD (  22.58  )
+X-CRM114-CacheID: sfid-20190124_065652_741171_F90EBCC1 
+X-CRM114-Status: GOOD (  22.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,20 +75,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Stefan Roese <sr@denx.de>, Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>
+ David Woodhouse <dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-
 Make use of the spi-mem direct mapping API to let advanced controllers
 optimize read/write operations when they support direct mapping.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Cc: Stefan Roese <sr@denx.de>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
@@ -97,6 +94,9 @@ queued for 5.1 but for 5.2.
 
 [1]https://patchwork.kernel.org/patch/10772067/
 [2]http://patchwork.ozlabs.org/patch/1030479/
+
+Changes in v5:
+- Update my email address in the SoB and Author fields
 
 Changes in v4:
 - Fix various bugs reported by Stefan
