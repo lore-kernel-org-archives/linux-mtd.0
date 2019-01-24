@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10BD0C282C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 09:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1930AC282C3
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 09:19:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D60EC20854
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 09:05:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB7C9217D4
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 09:19:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eB/uytil";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MjivZAfd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D60EC20854
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LAjryOu6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="z973bvcI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB7C9217D4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=88235R4luvLCis0ntu3FfHt+vHAoTzURp6tlR4+M/8Q=; b=eB/uytil4MURPb
-	Jw+4txJsdlMLiSYW8xz+qZmZWzKzTGAongZHKrSksTrnlStnAinbOS4AGL/vsMEZPP5lrNHwBhqdq
-	DFWarP0Noie3xIMSRMp8RGhnbEeP4B++5+SBTxDUZHSBuRAv6eXkvVUydjAGrmsSjmF/ZcaAd8hpn
-	6y+30s6z2TKnBVVxPwukFSLyIDZX0TnEF7tg6fltoOtSPiLp04DmRteSQy65uAjjeECC9yD4ntt1/
-	Tj2M0eYHFdh9r1VHX5nOH96Aef8yPE12MPJ2VqCO3iGQm19FG/JxWkZEWpwmPccLoh23FqK71bWTJ
-	YKvv21NdY4f+POcH2Xow==;
+	List-Owner; bh=9QXAAjJ1PeNFAtMmByGhAhi7eXrSfLR+zpc9LPTtzs8=; b=LAjryOu66bjGXa
+	PKNb39ywsmlPODqbJTEgQD3YvAGUXIB9K96YjAPyBnqbsp+pqaw1uv1p71T2+4/RCFqUVKHsQGRED
+	vuE1SaOdUtQC9CvYxub/q0PXI2ewaoo/eAtGZfHsmW+Kel2qy4ks6mqMilSFf6QWwEE3qCitREXjv
+	9+zjn2TiUJt1psbzrzZRifJvbPWnlE/2/rKnxLnPfKdA+QQd7WUewkupnqdUZHXHxr3haffCH1jbm
+	d+EtaBXxAESPcoOj5fKJI0fiZ+JResU/QbZEzGUzemYgBT76AbtTyo2TwC5XaMVdEK4tc+gcYy//b
+	YckA8mD+87HypWvDWeTA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmawX-0004Qs-Hd; Thu, 24 Jan 2019 09:05:01 +0000
+	id 1gmbAJ-0002BS-2M; Thu, 24 Jan 2019 09:19:15 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmawV-0004Q8-29
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 09:05:00 +0000
+ id 1gmbAF-0002Az-I6
+ for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 09:19:13 +0000
 Received: from bbrezillon (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DB27920854;
- Thu, 24 Jan 2019 09:04:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id F230C217D4;
+ Thu, 24 Jan 2019 09:19:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548320698;
- bh=KL+TaVYEpq/+VzosX5WxiMm+GX9nRi23JQ144G9t6ro=;
+ s=default; t=1548321551;
+ bh=aMTmdjRxpFWwSu8C7fMeUIjuADoALfk4BkQqvBH8UVs=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=MjivZAfdHYHYCGzQM7egoWG+zsvHEU7YeFiw/ZXVIYpM6bwC9T2iK0ehnHSIlwnb+
- NJ7ZRGnhmLpMLxqqUPnWoT5s9737G3qqvV7UBlQHyq7a/rrc6jJmCvijW5O4mHHzit
- iayqEtAyhlYVgPxjYXb4NQcmIvCiS4mz7+Sap8uo=
-Date: Thu, 24 Jan 2019 10:04:48 +0100
+ b=z973bvcI/AzzxN4yDhqcR0YzUiGnzvfrn3cZmMezCpaRvu8ve302YoiknUTbbesoT
+ BTZDItguN/5xGTVM+Jj9R+RY+tEM+JNJT67XpHqRkEBLDP6hmsh6pfTVK+HK4rx9nS
+ 8FGz6YJktYPaxM0U9vqxPWc1ptN4L242b1EAZDKw=
+Date: Thu, 24 Jan 2019 10:19:01 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Stefan Roese <sr@denx.de>
 Subject: Re: [PATCH] mtd: spinand: Add support for GigaDevice GD5F1GQ4UC
-Message-ID: <20190124100448.39197d63@bbrezillon>
+Message-ID: <20190124101901.7b44c5c5@bbrezillon>
 In-Reply-To: <6dadd565-aa59-82ba-757f-db0a1c03656d@denx.de>
 References: <20190122145632.17547-1-sr@denx.de>
  <20190122175346.602894e4@bbrezillon>
@@ -79,8 +79,8 @@ References: <20190122145632.17547-1-sr@denx.de>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190124_010459_143225_4EF2A05E 
-X-CRM114-Status: GOOD (  23.05  )
+X-CRM114-CacheID: sfid-20190124_011911_635895_FFA8F48A 
+X-CRM114-Status: GOOD (  26.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -155,24 +155,12 @@ Stefan Roese <sr@denx.de> wrote:
 > @@ -298,9 +298,11 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
 >          while (nbytes) {
 >                  ret = spi_mem_dirmap_read(wdesc, column, nbytes,
-
-					^write(
-
 >                                            spinand->databuf + column);
-
-
 > +               printk("%s (%d): ret=%d nbytes=%d\n", __func__, __LINE__, ret, nbytes); // test-only
 >                  if (!ret || ret > nbytes)
-
-Looks like this comparison between signed and unsigned int is broken,
-because you start with -EINVAL...
-
 >                          ret = -EIO;
 >   
 > +               printk("%s (%d): ret=%d nbytes=%d\n", __func__, __LINE__, ret, nbytes); // test-only
-
-and end up with -EIO here.
-
 >                  if (ret < 0)
 >                          return ret;
 >   
@@ -210,10 +198,57 @@ and end up with -EIO here.
 > 
 > So spi_mem_dirmap_read() returns -EINVAL to spinand_write_to_cache_op()
 > which then returns -EIO.
-> 
-> Thanks,
-> Stefan
 
+Can you try with the following diff applied?
+--->8---
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 52f17fc42daa..67c568f0c47f 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -238,7 +238,7 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+ 
+        while (nbytes) {
+                ret = spi_mem_dirmap_read(rdesc, column, nbytes, buf);
+-               if (!ret || ret > nbytes)
++               if (!ret || (ret > 0 && ret > nbytes))
+                        ret = -EIO;
+ 
+                if (ret < 0)
+@@ -296,9 +296,9 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+        wdesc = spinand->dirmaps[req->pos.plane].wdesc;
+ 
+        while (nbytes) {
+-               ret = spi_mem_dirmap_read(wdesc, column, nbytes,
+-                                         spinand->databuf + column);
+-               if (!ret || ret > nbytes)
++               ret = spi_mem_dirmap_write(wdesc, column, nbytes,
++                                          spinand->databuf + column);
++               if (!ret || (ret > 0 && ret > nbytes))
+                        ret = -EIO;
+ 
+                if (ret < 0)
+@@ -761,21 +761,6 @@ static void spinand_destroy_dirmaps(struct spinand_device *spinand)
+                spinand_destroy_dirmap(spinand, i);
+ }
+ 
+-const struct spi_mem_op *
+-spinand_find_supported_op(struct spinand_device *spinand,
+-                         const struct spi_mem_op *ops,
+-                         unsigned int nops)
+-{
+-       unsigned int i;
+-
+-       for (i = 0; i < nops; i++) {
+-               if (spi_mem_supports_op(spinand->spimem, &ops[i]))
+-                       return &ops[i];
+-       }
+-
+-       return NULL;
+-}
+-
+ static const struct nand_ops spinand_ops = {
+        .erase = spinand_erase,
+        .markbad = spinand_markbad,
 
 ______________________________________________________
 Linux MTD discussion mailing list
