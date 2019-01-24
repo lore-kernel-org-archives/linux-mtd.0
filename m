@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC0F0C282C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 07:52:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 584B2C282C3
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 07:52:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 852EA218A3
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 07:52:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E4D5218A3
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 07:52:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="e2UfYKJE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="K1KvCwhl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 852EA218A3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oiVuOXpo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xuSB/G2F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E4D5218A3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xB3JaAzakKu9ibw48wvdn2mdStzZlK7QNe/4ZL/69hI=; b=e2UfYKJEeN214W
-	f6TPD1fp4xD1jNf3c5Rkf5aNhCnNwDQySz41xJ7vLovg5SL92OuYGEUSWPocT89ewGIBDh0Fx5yXE
-	3dwVyh4A90jh/eQUjy+dpZB2YhD9xqM+tKpKLJudJMBFdv4pxexcmbiHmWoY8yPJwAnjX5hsTDCd6
-	7E4emeRrxcrBQv5lbEO4/SwaW3jkkEMva/CQhzlo+hMumJ3dtcpAMyWdI9qmQKvMolOG1HzefEDfb
-	y9roU5p17iQQDi0N8yprAynYMu5JRADDXJNIt2uXaVPRBTwKg6THqg+7CL6sxcnhjiVLGca6W+/pL
-	cVqFuMKVzJGbTTKnQPqQ==;
+	List-Owner; bh=0PSh3byNIq5hTBR0IlunrsIavkCi04w6xgUoirJj1MA=; b=oiVuOXpodt0d58
+	S9xHqMwMRHapo9hHi4gCplErzRWCrg5DoiYdZjH6c1yxPWcBHFZOQ4cfAWMYwCMfAV2kc4nrK1GIC
+	eBit5I+squLa4PKQCpJsYa5HyIxHZEh72AFv3kibe+/6P0QdI8vL1tw+Nzc5pIMm7Q++3cZfOte3l
+	U0UZPvvHvvMqW7st7Bao1iBeTBae7K80fLwLnu8l0ccaVkWDfv64gdo5xgc8fUnkDM10QiMGTqXy4
+	xznjLk6lmU9CW9591a/i0G3R0LbDyRS0xygBVIoBFihAZmmAING2ZZATTjPIR3d8gJpzMkBr/Gpiz
+	pIyqj3t+YhBXzmrDUx+A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmZoJ-00040A-9o; Thu, 24 Jan 2019 07:52:27 +0000
+	id 1gmZol-0004QD-H0; Thu, 24 Jan 2019 07:52:55 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmZmP-0001wW-BZ
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 07:50:36 +0000
+ id 1gmZoX-0004Fc-81
+ for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 07:52:48 +0000
 Received: from bbrezillon (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8B0B8218A3;
- Thu, 24 Jan 2019 07:50:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4854C218A3;
+ Thu, 24 Jan 2019 07:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548316228;
- bh=R9PXZjB918e9/fMT2QJNUDlVAuLNrFmMwqgdGq0l6xg=;
+ s=default; t=1548316360;
+ bh=qGnW0jLAuiuJSL/ABckGgMOD8uJiJr8jDYefYNDz34U=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=K1KvCwhlH5TjneCN94LVONyk5MM10kWA6kPd4DUDnyv8sOX5h9gitkLE32y1g9ggC
- +WUaKgSfUwK7bE11hSSh/P+PxNheL2kze6zoO3z318dcdsJ0LxLfKZ93a6vNjopZDb
- qPL5TB7ZqtG/TYpF5DhH2t9UoSbNu7sgbguKfHX0=
-Date: Thu, 24 Jan 2019 08:50:18 +0100
+ b=xuSB/G2FOs1ILwonpv3qbvybKt2zwzNeNecs3z8OAsBS2h0+QHoZTc2Ilntz4o6ft
+ K2DalxMXwN9AF6QUyJBk22JeYCQKSr1T1Rh4kQ9n/nTvSeav8DJywvieE7E/ttgBRt
+ Y3+khSbIFcPmH8PpRZAKo0hB67zOIYtuzhgtPHU8=
+Date: Thu, 24 Jan 2019 08:52:31 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Stefan Roese <sr@denx.de>
 Subject: Re: [PATCH] mtd: spinand: Add support for GigaDevice GD5F1GQ4UC
-Message-ID: <20190124085018.2ad33dab@bbrezillon>
+Message-ID: <20190124085231.6f9ef74d@bbrezillon>
 In-Reply-To: <0786ffac-ec46-f924-002a-5324c76bcb89@denx.de>
 References: <20190122145632.17547-1-sr@denx.de>
  <20190122175346.602894e4@bbrezillon>
@@ -75,8 +75,8 @@ References: <20190122145632.17547-1-sr@denx.de>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190123_235029_986633_00596082 
-X-CRM114-Status: GOOD (  18.12  )
+X-CRM114-CacheID: sfid-20190123_235241_509901_28214DDF 
+X-CRM114-Status: GOOD (  18.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -118,11 +118,7 @@ Stefan Roese <sr@denx.de> wrote:
 > 
 > Unfortunately this does not seem to work. I was unable to boot my
 > platform from this branch directly so I rebased all MTD/NAND related
-> patches on top of the latest kernel.org tree for this.
-
-You mean linux-next?
-
-> Here a log
+> patches on top of the latest kernel.org tree for this. Here a log
 > with this version (new error this time):
 > 
 > root@mt7688:~# ./nandbiterrs /dev/mtd5 -i
@@ -140,10 +136,6 @@ You mean linux-next?
 > libmtd: error!: cannot write 2048 bytes to mtd5 (eraseblock 0, offset 0)
 >          error 5 (Input/output error)
 > Erasing failed write from 00000000 to 0x01ffff
-
-Weird, I wasn't expecting ERASE to fail (nothing changed in the erase
-path).
-
 > Writing data to block 1 at offset 0x20000
 > libmtd: error!: cannot write 2048 bytes to mtd5 (eraseblock 1, offset 0)
 >          error 5 (Input/output error)
@@ -156,7 +148,7 @@ path).
 > 
 > Any ideas on this?
 
-Try to revert b47b307ac23d ("mtd: spinand: Use the spi-mem dirmap API").
+BTW, what's the SPI controller connected to this chip?
 
 ______________________________________________________
 Linux MTD discussion mailing list
