@@ -2,87 +2,111 @@ Return-Path: <SRS0=xpfJ=QA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80AFEC282C3
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 11:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF556C282C3
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 11:21:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49E9B21872
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 11:14:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7CD3121872
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Jan 2019 11:21:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Uy7wpevA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="A8MN7A2C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49E9B21872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vo7qiLHN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="UyYeilFc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CD3121872
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lH0hXFJ0YFBaB1X3vMXaHjORnHWryN0opiW1u9GiZxA=; b=Uy7wpevABPjiyV
-	YAM9dWsbVAIQmGFSOVyKFH40utAxJZ07dR6ieJghYv/N27/aMQnB39c2Mt0Nw6jJg4rKZ6cFRaeQQ
-	YIFyDOY7NcsNAl+DQCMiM81SLPm+TMX2KSuOqWUsJ3htFITAaAnS72gc0cFmFMnF2yh5AeBClEf45
-	ZcVIEVEF3YiAROGAuC8ElDNf4tPVMYk14b8zV6QK+jQTQo00zkCP2JGAm8VgrP58WMh9ZHvn3XGvY
-	dqU5mfsMVE5BKmeu2/slBGBhDDVbHpH8Vm1Wp1IFIpDzAjp0x2YXSjEH/iIAyFqQXVcz7i94WR+yh
-	8McQxsesnvYJkFlrR7Xg==;
+	List-Owner; bh=XisO1w+AbhbSXyld9NHd476BpieVryFWYj7ARfew81k=; b=Vo7qiLHNSH4lwa
+	18p7c/O+oYafwej9eaBunZ2cwqMjMn5Iou9/6eTikW7h87k3Sht2Q1mrol7IN5HUJ9ernP7gJQB00
+	OFP1ZxTS9AZQEK7tKWrjRGEUDsJWgloew+8Qe9DhvnVEAq3LMP0Xm3Uf5erv7v/Lx93zPPf+S9Ffy
+	V3gKXzMqTUfRXkvkQE99zude/dYsTQZa/hAqvHXin1NS55Z9MVQ6zhM0oubGwj7UW8bSk1H3xYsHk
+	F6xQalmw9yZRqfwuO87fMIDNLH9kwg2kHP8zJHtcgUu1j3GbfbtY9nEJO5CvKNaio7/YgmzK02dKJ
+	qXuT734FBU9jawybG24w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmcy9-0002eN-KN; Thu, 24 Jan 2019 11:14:49 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gmd4H-0006d2-UW; Thu, 24 Jan 2019 11:21:09 +0000
+Received: from mail-eopbgr50139.outbound.protection.outlook.com
+ ([40.107.5.139] helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmcy5-0002e0-LS
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 11:14:47 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0518821872;
- Thu, 24 Jan 2019 11:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548328485;
- bh=MbSaXvAL9DCL89m8yB/GD44Ve5oTa6Wm+/wJPan7VOc=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=A8MN7A2C4rwDJ5glyApfvRnp64nd++vco9XXg2xFPND0B6Y8ifHP/IubVeidqpgoc
- QqR3MHIz/NHmrbhAnNwEWdzDuODYJZSoqMlNuSE/Tlpp0HjP6jv9wP1kywYCP2X1ZO
- GcC8EFVkX4C01lsFMm4NiL+FxHnHMqldSVUZO1hg=
-Date: Thu, 24 Jan 2019 12:14:35 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] mtd: spinand: Add support for GigaDevice GD5F1GQ4UC
-Message-ID: <20190124121435.4ed6069d@bbrezillon>
-In-Reply-To: <29f49243-6b52-5c98-29a6-81f9a32697b9@denx.de>
-References: <20190122145632.17547-1-sr@denx.de>
- <20190122175346.602894e4@bbrezillon>
- <263cbd32-b7d4-e440-c92d-4f24f5af27a0@denx.de>
- <20190123085202.0db528ac@bbrezillon>
- <870af691-e8d3-cd91-5a55-6478ef885446@denx.de>
- <20190123095504.7857ca34@bbrezillon>
- <a350a884-f531-353d-31bc-d51be8f6eb83@denx.de>
- <20190123103512.722095cd@bbrezillon>
- <adedc307-dc10-3200-84fa-36313b858dbf@denx.de>
- <20190123122514.0db87887@bbrezillon>
- <4f630269-5562-b795-63ca-92989d6c5059@denx.de>
- <20190123132249.2e7f65a2@bbrezillon>
- <358c78d9-6507-3998-a065-ddd18809d02b@denx.de>
- <20190123134050.7efe59a6@bbrezillon>
- <20190123135735.358fc9a6@bbrezillon>
- <0786ffac-ec46-f924-002a-5324c76bcb89@denx.de>
- <20190124085018.2ad33dab@bbrezillon>
- <39d6edd9-14ad-8110-b618-6454f6840b28@denx.de>
- <20190124091459.11cb2912@bbrezillon>
- <6dadd565-aa59-82ba-757f-db0a1c03656d@denx.de>
- <20190124101901.7b44c5c5@bbrezillon>
- <29f49243-6b52-5c98-29a6-81f9a32697b9@denx.de>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1gmd4E-0006cY-UX
+ for linux-mtd@lists.infradead.org; Thu, 24 Jan 2019 11:21:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2D0+bG2cW/wCbDt8Nz0+wnutqJh2/TefNixGjKQOag4=;
+ b=UyYeilFcZEvdo64JbKtx3GCa6jNYEmkFc4og2D1s2wNYN+lN/A8cT2biZWcOJdtCzskmrYzu+z2IbbiL/Z4vX7s0yf3bTX1oKcLj9s4m4BzH9PYrbMfYov6HzK6RRjwdG0LPHGSVEsiylwt6wbIyfsURxANPJaKMaVT1fom/Y3A=
+Received: from DB6PR0701MB2998.eurprd07.prod.outlook.com (10.168.84.136) by
+ DB6PR0701MB2984.eurprd07.prod.outlook.com (10.168.84.22) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1580.6; Thu, 24 Jan 2019 11:21:04 +0000
+Received: from DB6PR0701MB2998.eurprd07.prod.outlook.com
+ ([fe80::2843:5379:602c:d03]) by DB6PR0701MB2998.eurprd07.prod.outlook.com
+ ([fe80::2843:5379:602c:d03%6]) with mapi id 15.20.1580.007; Thu, 24 Jan 2019
+ 11:21:04 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/2] mtd: spi-nor: Always use biggest erase size
+Thread-Topic: [PATCH 2/2] mtd: spi-nor: Always use biggest erase size
+Thread-Index: AQHUs9bk77RvlSJjREa6El1S6pHNPw==
+Date: Thu, 24 Jan 2019 11:21:03 +0000
+Message-ID: <20190124112014.20167-3-alexander.sverdlin@nokia.com>
+References: <20190124112014.20167-1-alexander.sverdlin@nokia.com>
+In-Reply-To: <20190124112014.20167-1-alexander.sverdlin@nokia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [131.228.2.12]
+x-mailer: git-send-email 2.19.2
+x-clientproxiedby: HE1PR05CA0141.eurprd05.prod.outlook.com
+ (2603:10a6:7:28::28) To DB6PR0701MB2998.eurprd07.prod.outlook.com
+ (2603:10a6:4:73::8)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=alexander.sverdlin@nokia.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; DB6PR0701MB2984;
+ 6:kgIMa1tn6eDjRqs37CqxUP946PxtDoSOh3UBW+DunQvOll6Nh+HWyhVLAcagLaLksf1GwAlAtPxUhlD02JBt9waJOfK05zQPAJLYvtSF/E33p1fdFF0cWLow7iHfEPiHcGIM7oDTGYJXE0W6ixZprj0BhpoHpplOc6brDAGfx6eYdY1gSflgjh9sS8ZTGahYvcMVM8IVJkPH2IzGp2mJYyks8eKpwazgbtfJ5Ot4AUcJ/jdvrts8b6AMlzIx+bjlIF7MAAp66rqplXXfMoN8qs7758FuqtdW0AzuI5MX1aI6k5GaQAe23fIWVot1akDpVB0t/c2BLY44dIAwnHM6Mcxx0adKZrf+b9CaPDLjDdVwjguORnUe3VUU7+wVglN2yUGwPP3uEFAuaSwUx1kK3IqBcvMZSCP+d8HB66DJlmNEgC7/x+TtTpYIoY1FMzWyBvOsRldWv/gP/evq1LAv9g==;
+ 5:yi7lqCO6fmmm5aIUea4rIIKgCh+sy5NMcohPBo+RZ3f2QVTLNZtfPOUpnY2lRBXOSmOmSmZYTuIlX+B8gIHmKoQmmVO54gn8lAmjcbuKbtBfZs2LkfrqkmtQrjC0pZtMupgbDjR9QixS9/pr3TRT/bn7UtY5ws3YON17F8VZxxUD11Feh9usA0JBsJRwqb327IGxedj5tnuJO1pI0ThrEQ==;
+ 7:M/tZsSTl7btRk6h7HEg7kKSS107zPYdLv/WvJ4+6gpQOv978kN7KQSubUmIZ/gqMsXrInt5C1draEp6C+qoguGPoXh7+2pzHExpY/xBTJZaPe5Qax7nFtkjJ4+4PmJBFToxG5EoidpMOvublp8ffCw==
+x-ms-office365-filtering-correlation-id: 92654740-71a7-4976-b01f-08d681ee06bf
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(4618075)(2017052603328)(7193020);
+ SRVR:DB6PR0701MB2984; 
+x-ms-traffictypediagnostic: DB6PR0701MB2984:
+x-microsoft-antispam-prvs: <DB6PR0701MB2984DC575211494DCB0AE12E889A0@DB6PR0701MB2984.eurprd07.prod.outlook.com>
+x-forefront-prvs: 0927AA37C7
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(39860400002)(376002)(396003)(136003)(346002)(366004)(199004)(189003)(6916009)(14444005)(50226002)(105586002)(8936002)(256004)(81166006)(81156014)(8676002)(66066001)(36756003)(68736007)(86362001)(97736004)(25786009)(39060400002)(53936002)(4326008)(2906002)(5640700003)(14454004)(2351001)(6486002)(106356001)(6436002)(478600001)(6116002)(3846002)(7736002)(305945005)(1076003)(99286004)(2501003)(102836004)(54906003)(486006)(186003)(6506007)(386003)(446003)(316002)(26005)(11346002)(71200400001)(2616005)(476003)(76176011)(52116002)(71190400001)(6512007);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:DB6PR0701MB2984;
+ H:DB6PR0701MB2998.eurprd07.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: nokia.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: jWTINFfnDb1M4wNSo1XKFPzN3g9xI45C0ByGtLA2MXlCwJjTXFdOhhFpu3YuYiGPOhR9T7Ja/ZQHSfRbVWyMOD/QaGVxQY2zGUEEvjw0RNamVSx23pONauuh3G0Tsvl6W92AqAM3IZaER2GvgwRlGOxl6T8j52uS04RWg+i0xkeC1aNqt0FRTM6j4UtXc1k106X8XtMnYiA7/ejnzHhj2NGXZfkiY8x5vLbN5tKsTQ5lm+7ViuxcMMWtM+yFJZhm5/vD/mQK+t8XdN/u7fXCMtaXtfkU97URIFdeCx7f3H+3CFxXyfuafbhY2c5lugmZe8Y/Rcc0/+fqitKHA2syVcHwp/mOQckaMfxOX4MJ9gSRUyYCKbbI59+NH3tnFQihJSb4PEJ+6yUzebTqwO6B7wV5R4SBJpd3NfyV7jb11+4=
 MIME-Version: 1.0
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92654740-71a7-4976-b01f-08d681ee06bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2019 11:21:02.3219 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0701MB2984
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190124_031445_738089_520EA659 
-X-CRM114-Status: GOOD (  19.63  )
+X-CRM114-CacheID: sfid-20190124_032106_980961_5AD41BF6 
+X-CRM114-Status: GOOD (  15.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,155 +118,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Chuanhong Guo <gch981213@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>, "Sverdlin,
+ Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 24 Jan 2019 11:57:33 +0100
-Stefan Roese <sr@denx.de> wrote:
+Optimize erase time by always using biggest erase size for given erase
+request. Do it by removing "sector"-at-a-time erase code.
+spi_nor_erase_multi_sectors() seems to be mature enough to handle all
+the cases better.
 
-> On 24.01.19 10:19, Boris Brezillon wrote:
-> 
-> <snip>
-> 
-> >> So spi_mem_dirmap_read() returns -EINVAL to spinand_write_to_cache_op()
-> >> which then returns -EIO.  
-> > 
-> > Can you try with the following diff applied?  
-> > --->8---  
-> > diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> > index 52f17fc42daa..67c568f0c47f 100644
-> > --- a/drivers/mtd/nand/spi/core.c
-> > +++ b/drivers/mtd/nand/spi/core.c
-> > @@ -238,7 +238,7 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
-> >   
-> >          while (nbytes) {
-> >                  ret = spi_mem_dirmap_read(rdesc, column, nbytes, buf);
-> > -               if (!ret || ret > nbytes)
-> > +               if (!ret || (ret > 0 && ret > nbytes))
-> >                          ret = -EIO;
-> >   
-> >                  if (ret < 0)
-> > @@ -296,9 +296,9 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
-> >          wdesc = spinand->dirmaps[req->pos.plane].wdesc;
-> >   
-> >          while (nbytes) {
-> > -               ret = spi_mem_dirmap_read(wdesc, column, nbytes,
-> > -                                         spinand->databuf + column);
-> > -               if (!ret || ret > nbytes)
-> > +               ret = spi_mem_dirmap_write(wdesc, column, nbytes,
-> > +                                          spinand->databuf + column);
-> > +               if (!ret || (ret > 0 && ret > nbytes))
-> >                          ret = -EIO;
-> >   
-> >                  if (ret < 0)
-> > @@ -761,21 +761,6 @@ static void spinand_destroy_dirmaps(struct spinand_device *spinand)
-> >                  spinand_destroy_dirmap(spinand, i);
-> >   }
-> >   
-> > -const struct spi_mem_op *
-> > -spinand_find_supported_op(struct spinand_device *spinand,
-> > -                         const struct spi_mem_op *ops,
-> > -                         unsigned int nops)
-> > -{
-> > -       unsigned int i;
-> > -
-> > -       for (i = 0; i < nops; i++) {
-> > -               if (spi_mem_supports_op(spinand->spimem, &ops[i]))
-> > -                       return &ops[i];
-> > -       }
-> > -
-> > -       return NULL;
-> > -}
-> > -
-> >   static const struct nand_ops spinand_ops = {
-> >          .erase = spinand_erase,
-> >          .markbad = spinand_markbad,
-> >   
-> 
-> Sure. Here some logs:
-> 
-> root@mt7688:~# ./nandbiterrs /dev/mtd5 -i
-> incremental biterrors test
-> ECC failure, invalid data despite read success
+For the above to work backwards-compatible regarding 4-bytes commands
+spi_nor_set_4byte_opcodes() has to prepare them always, independent of
+spi_nor_has_uniform_erase() flag.
 
-Okay, so now we're back to a problem in the read path. Looks like the
-buf pointer passed to spi_mem_dirmap_read() is only valid for the first
-iteration of the "while (nbytes)" loop.
+Remainder check in spi_nor_erase() becomes superfluous because
+spi_nor_erase_multi_sectors() performs it anyway.
 
-Can you try with this diff (and sorry for asking you to debug/test that,
-but I no longer have access to a device with a SPI NAND)?
+The trigger for this change was n25q128a13: enabling SECT_4K increased
+erase time of 128k block from 1.763s to 11.335s.
 
---->8---
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 52f17fc42daa..90da21b52bb5 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -237,13 +237,14 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
-        rdesc = spinand->dirmaps[req->pos.plane].rdesc;
+Fixes: 4607777c71 ("mtd: spi-nor: add subsector flag to n25q128a")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 46 ++++++-----------------------------
+ 1 file changed, 7 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c3598f0571cc..a25324a52eae 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -434,6 +434,10 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
  
-        while (nbytes) {
--               ret = spi_mem_dirmap_read(rdesc, column, nbytes, buf);
--               if (!ret || ret > nbytes)
--                       ret = -EIO;
+ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+ {
++	struct spi_nor_erase_map *map = &nor->erase_map;
++	struct spi_nor_erase_type *erase;
++	int i;
++
+ 	/* Do some manufacturer fixups first */
+ 	switch (JEDEC_MFR(nor->info)) {
+ 	case SNOR_MFR_SPANSION:
+@@ -450,16 +454,9 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+ 	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
+ 	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
+ 
+-	if (!spi_nor_has_uniform_erase(nor)) {
+-		struct spi_nor_erase_map *map = &nor->erase_map;
+-		struct spi_nor_erase_type *erase;
+-		int i;
 -
-+               ret = spi_mem_dirmap_read(rdesc, column, nbytes, buf + column);
-                if (ret < 0)
-                        return ret;
- 
-+               if (!ret || ret > nbytes)
-+                       return -EIO;
-+
-+
-                nbytes -= ret;
-                column += ret;
-        }
-@@ -296,14 +297,14 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
-        wdesc = spinand->dirmaps[req->pos.plane].wdesc;
- 
-        while (nbytes) {
--               ret = spi_mem_dirmap_read(wdesc, column, nbytes,
--                                         spinand->databuf + column);
--               if (!ret || ret > nbytes)
--                       ret = -EIO;
--
-+               ret = spi_mem_dirmap_write(wdesc, column, nbytes,
-+                                          spinand->databuf + column);
-                if (ret < 0)
-                        return ret;
- 
-+               if (!ret || ret > nbytes)
-+                       return -EIO;
-+
-                nbytes -= ret;
-                column += ret;
-        }
-@@ -761,21 +762,6 @@ static void spinand_destroy_dirmaps(struct spinand_device *spinand)
-                spinand_destroy_dirmap(spinand, i);
+-		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
+-			erase = &map->erase_type[i];
+-			erase->opcode =
+-				spi_nor_convert_3to4_erase(erase->opcode);
+-		}
++	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
++		erase = &map->erase_type[i];
++		erase->opcode = spi_nor_convert_3to4_erase(erase->opcode);
+ 	}
  }
  
--const struct spi_mem_op *
--spinand_find_supported_op(struct spinand_device *spinand,
--                         const struct spi_mem_op *ops,
--                         unsigned int nops)
--{
--       unsigned int i;
+@@ -978,18 +975,11 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	u32 addr, len;
+-	uint32_t rem;
+ 	int ret;
+ 
+ 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+ 			(long long)instr->len);
+ 
+-	if (spi_nor_has_uniform_erase(nor)) {
+-		div_u64_rem(instr->len, mtd->erasesize, &rem);
+-		if (rem)
+-			return -EINVAL;
+-	}
 -
--       for (i = 0; i < nops; i++) {
--               if (spi_mem_supports_op(spinand->spimem, &ops[i]))
--                       return &ops[i];
--       }
+ 	addr = instr->addr;
+ 	len = instr->len;
+ 
+@@ -1021,28 +1011,6 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		if (ret)
+ 			goto erase_err;
+ 
+-	/* REVISIT in some cases we could speed up erasing large regions
+-	 * by using SPINOR_OP_SE instead of SPINOR_OP_BE_4K.  We may have set up
+-	 * to use "small sector erase", but that's not always optimal.
+-	 */
 -
--       return NULL;
--}
+-	/* "sector"-at-a-time erase */
+-	} else if (spi_nor_has_uniform_erase(nor)) {
+-		while (len) {
+-			write_enable(nor);
 -
- static const struct nand_ops spinand_ops = {
-        .erase = spinand_erase,
-        .markbad = spinand_markbad,
+-			ret = spi_nor_erase_sector(nor, addr);
+-			if (ret)
+-				goto erase_err;
+-
+-			addr += mtd->erasesize;
+-			len -= mtd->erasesize;
+-
+-			ret = spi_nor_wait_till_ready(nor);
+-			if (ret)
+-				goto erase_err;
+-		}
+-
+ 	/* erase multiple sectors */
+ 	} else {
+ 		ret = spi_nor_erase_multi_sectors(nor, addr, len);
+-- 
+2.19.2
 
 
 ______________________________________________________
