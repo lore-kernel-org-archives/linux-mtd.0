@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34DB1C282C0
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 10:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 741D4C282C0
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 11:04:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03A3820881
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 10:55:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D5E32184B
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 11:04:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s7ldjWAH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norrbonn-se.20150623.gappssmtp.com header.i=@norrbonn-se.20150623.gappssmtp.com header.b="yWcsLctJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03A3820881
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sJ0L9/ne";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norrbonn-se.20150623.gappssmtp.com header.i=@norrbonn-se.20150623.gappssmtp.com header.b="qfeP7iav"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D5E32184B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=norrbonn.se
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3hktHWszNWIDaSA+1fKevm0r9tyZFVJ0L7s3rVx+bLg=; b=s7ldjWAHkNfWjI
-	ij/sT4g18qdgo4GpiUc5IfENMvkGEn4EVFoDWwG30IbePZxVTj2VhlvL2yox/5kRG5GMPxYextIws
-	zX2+U+r29sAcSXB5ASyS7okKVntTOOWpBxNIQvU36rZonP7TPsYyOlLjGd9uMYNhEjiT71IW+kvqy
-	zy1xtiKj0EKrb2uRyo1ixs2XQ7wdWmuqtI02INWYjBLY5+KrujIZP+nNf8SrNPG8v/EKfaQfGQZH8
-	zK8th7n0+KbJWl6+N5GEz6Wf+uDQkQvCDxMRLF46BBC0XHoOFQGMBLWeX4g7Ro9DOZ6NVW071+EM+
-	zRcgMmpYHgzoo8Yx78bA==;
+	List-Owner; bh=1XVvDSyAyHdHQ16rIl4i3qldY0+/RNkppF7ezM9JlE4=; b=sJ0L9/nelohowa
+	QMAW2sl1WsTJouB3c/Zi6ug8MYIN9tLBvqikqTUbKgw4ZAPn8wviueFz3p+KK0RXzu/sas7jqiP0c
+	5DiLurI+YC1AFlc0NMkR17oZNgJiYjpnyFWQ23J945mv8s2Pw34jbEhUach+sATeRn8J498TsULYr
+	Iaadg47ErqWa6m1IB2sFjoesp814QNFc0nY2AMomYbeVeUzhJIDqL0a2f9F2AynuFpTQJZE0dvplN
+	SCtbS59bsaWNtjDQZ2erqfdxrBbYLnD6X9bj0Zp/MH/cAuDnfbH3P+NwutoW8T4y1sxGZZuRjZvux
+	uXl0d6/llPVc9DgAOpuQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gmz8n-0006Kf-Qy; Fri, 25 Jan 2019 10:55:17 +0000
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+	id 1gmzHV-0001Uj-Be; Fri, 25 Jan 2019 11:04:17 +0000
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gmz8k-0006K4-6h
- for linux-mtd@lists.infradead.org; Fri, 25 Jan 2019 10:55:16 +0000
-Received: by mail-lf1-x141.google.com with SMTP id i26so6642569lfc.0
- for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2019 02:55:13 -0800 (PST)
+ id 1gmzHS-0001UI-Ej
+ for linux-mtd@lists.infradead.org; Fri, 25 Jan 2019 11:04:15 +0000
+Received: by mail-lj1-x242.google.com with SMTP id l15-v6so8027909lja.9
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2019 03:04:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=norrbonn-se.20150623.gappssmtp.com; s=20150623;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=/bqEREUNQF0lnHixYiWX5TuONOArgR+FJLmGNjXRqiU=;
- b=yWcsLctJT6Nb5vAUj5CbqC4ha9zM7VOsn0uD61e9fsWQ+Q8wkOEY6SJ5TbSSA38Veg
- GlxTyFYmsR4slBR8o4SxPtPDI/pSg8OKq5yuhOY+gvYLgZv/xuTfpcVVqS8tVe6zyxkX
- nwWjryJLF+d4vCkYfRL5zcmKhPv5SK6SEQqUpjsK7ckzNCPwmN0sNBa6s92ujZjP3V25
- uYqa7t+EF4iqk2Qz5myQ8FUlxW/23TTdmccnjA9R42HHy9d3Kg9rnTlfHUdyuxOtafR7
- ZVq0PVmha0DxF+vIDCyJ8z4in5ALZRaGqdn39XNOooxJN6fzk2cdoD7hNLnl+egWnewO
- 6e9w==
+ bh=BFwQ9Uc+RMzfvTqW37RxvKqIi88RNAVDwfx5KC3LSgM=;
+ b=qfeP7iavRdrNcEkyIJLuP4y4KzLNqoei+b57Mv9h0lHfkiabTbksm50huLWE0fRKpg
+ Qm+ntNxS3Gb35ZK5mZ1SZbTtqzG8zeyHhJS2zFJkDNBfYgnhVR6pJb41RR8nveURoFvm
+ 3VOusGgV7WnFBLi8WsTY+b8IRlfjWZA9kb3xta8pe9hOolvT2cQqCfSYt0UvRC49OaDu
+ bNya8FQTAijLiYcVDGQi5hjZ9Mi2lZeBvr8cUfAQwFQmlmlx7PmmHBMS6hozH7iXw04q
+ jsaehd8lfvZgPKoxmYXlDvO2FEOaK/efj1mosMUCrOu+FTNA1dJhIObxO7ffpbgooPi7
+ 7CjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=/bqEREUNQF0lnHixYiWX5TuONOArgR+FJLmGNjXRqiU=;
- b=LorhAixQnmVXr0BQALQZHgY/x0+/e6IriugtpzANVnm46Kxmlw/rsmYK1oYkgtkoUJ
- fRE28z990/jhkgKBVPgHawfE1jg+vp6rIKSLDbk/cpzZCl+aevuNbCSunOCh3+jBRWM/
- zIpNdoY5j1PlY5LP65AqOyXlYsKX480oEVAgBpZ3xDoOljqksz9Yq7FCg2UwJS4xuvFT
- 1b2wwYzIGk8rXfaxuMb/rGq2XSdpJIRtsUcJ8tRkOEGZrE6oSKh2LUJ1JrOYNVatNPCk
- bTqW/lDmUnDa0G/7OEhq1K5JS1kGhAcOUlBccgPrEV7+Fu4xKMMvsNqRwe/HYxdP6S3n
- PshQ==
-X-Gm-Message-State: AJcUukdOWvCLtEapTVcE47yv9d920C5+nVmbkPWXpYs0tf7TRdykYU6O
- vsXIEIvN35npYSpwebakT8maew==
-X-Google-Smtp-Source: ALg8bN72lQAgHijsMPAXbC2JYyfDqOKTT6xpQcEFO/wNyj/7XjyWuoyJNJGMFoCGeV4abP8ov4cz6A==
-X-Received: by 2002:a19:5394:: with SMTP id h20mr7964276lfl.75.1548413711504; 
- Fri, 25 Jan 2019 02:55:11 -0800 (PST)
+ bh=BFwQ9Uc+RMzfvTqW37RxvKqIi88RNAVDwfx5KC3LSgM=;
+ b=TPKSngLmpiWxdmDjzzm+mkPqh1FumGNy29WAK0+xBe+Oc4LAR8k6Gi/SC5Aw1TZwFV
+ rDnCVphOZs51u5OdJBRgbXEd8HJYaXixx48zYAC04asGXghR9FtPRPHNChH1if174rah
+ FUM+A2Ze+SbND8nFhiR1xDpvJC5tZJs6yTGyzQ5DQm98GLcWgoGuOhT8Zj7RYT2XLz6K
+ W+j0ZB8JwZMZGl0dKKxWjCoJc7GMSY/MxDrOxixiBCGeb+V1hjtBHff173a/zdkDwLLn
+ AxRXlVYxYKvBoihVFKkgBgwJtItvsRPw6D7wcu80bEvcltzRnNxZWCZ1SxKVSkfLG38X
+ xjTA==
+X-Gm-Message-State: AJcUukcF3toMwXcGGHx7cU+/98yAvXsVvPlnuwUfxtvoYORmVOHY9hj1
+ uQ6aTMew17cDbu4hao9sVYKFyQ==
+X-Google-Smtp-Source: ALg8bN40OSYemWclv0yn1OYMp7N0caZNyVQJ/a5+6M/j1jv8c3PpO7MkRjSRKUF2/0ARMBNrjVr8sA==
+X-Received: by 2002:a2e:b04f:: with SMTP id d15-v6mr8720356ljl.3.1548414252331; 
+ Fri, 25 Jan 2019 03:04:12 -0800 (PST)
 Received: from mimer.lan (h-29-16.A159.priv.bahnhof.se. [79.136.29.16])
- by smtp.gmail.com with ESMTPSA id a62sm1424257lfa.37.2019.01.25.02.55.10
+ by smtp.gmail.com with ESMTPSA id 11sm1426088lfq.89.2019.01.25.03.04.11
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 25 Jan 2019 02:55:10 -0800 (PST)
+ Fri, 25 Jan 2019 03:04:11 -0800 (PST)
 From: Jonas Bonn <jonas@norrbonn.se>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] spi-nor: always respect write-protect input
-Date: Fri, 25 Jan 2019 11:55:07 +0100
-Message-Id: <20190125105507.2733-1-jonas@norrbonn.se>
+Subject: [PATCH 1/1] spi-nor: s25fl512s supports region locking
+Date: Fri, 25 Jan 2019 12:04:08 +0100
+Message-Id: <20190125110408.8941-1-jonas@norrbonn.se>
 X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190125_025514_301715_04F38AC0 
-X-CRM114-Status: GOOD (  17.52  )
+X-CRM114-CacheID: sfid-20190125_030414_522372_2AC39EF0 
+X-CRM114-Status: GOOD (  13.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -103,22 +103,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The status register bit SRWD (status register write disable) is
-described in many words in the datasheets but effectively boils down to:
-
-i) if set, respect WP# when trying to change protection bits;
-ii) if unset, ignore WP# when trying to change protection bits
-
-In short, the bit determines whether the WP# signal is honored or not.
-
-It's difficult to imagine the use-case where the WP# is connected and
-asserted but the user doesn't want to respect its setting.  As such,
-this patch sets the SRWD bit unconditionally so that the WP# is _always_
-respected; hardware that doesn't care about WP# normally won't even have
-it connected.
-
-Tested on a Cypress s25fl512s.  With this patch, the WP# is always
-respected, irregardless of whether any flash protection bits are set.
+Both the BP0-2 bits and the TBPROT bit are supported on this chip.
 
 Signed-off-by: Jonas Bonn <jonas@norrbonn.se>
 CC: Marek Vasut <marek.vasut@gmail.com>
@@ -128,59 +113,22 @@ CC: Boris Brezillon <bbrezillon@kernel.org>
 CC: Richard Weinberger <richard@nod.at>
 CC: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/spi-nor/spi-nor.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c6064479b614..c960c097e0bc 100644
+index c80225029165..b819b12fafcf 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1230,9 +1230,6 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 
- 	status_new = (status_old & ~mask & ~SR_TB) | val;
- 
--	/* Disallow further writes if WP pin is asserted */
--	status_new |= SR_SRWD;
--
- 	if (!use_top)
- 		status_new |= SR_TB;
- 
-@@ -1312,10 +1309,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 
- 	status_new = (status_old & ~mask & ~SR_TB) | val;
- 
--	/* Don't protect status register if we're fully unlocked */
--	if (lock_len == 0)
--		status_new &= ~SR_SRWD;
--
- 	if (!use_top)
- 		status_new |= SR_TB;
- 
-@@ -3918,6 +3911,7 @@ static int spi_nor_setup(struct spi_nor *nor,
- static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
-+	int sr;
- 
- 	/*
- 	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
-@@ -3953,6 +3947,16 @@ static int spi_nor_init(struct spi_nor *nor)
- 		set_4byte(nor, true);
- 	}
- 
-+	/* Always respect the WP# (write-protect) input */
-+	sr = read_sr(nor);
-+	if (sr < 0) {
-+		dev_err(nor->dev, "error while reading status register\n");
-+		return -EINVAL;
-+	}
-+	sr |= SR_SRWD;
-+	return write_sr_and_check(nor, sr, SR_SRWD);
-+
-+
- 	return 0;
- }
- 
+@@ -1880,7 +1880,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR) },
+ 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+-	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
++	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | USE_CLSR) },
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
 -- 
 2.19.1
 
