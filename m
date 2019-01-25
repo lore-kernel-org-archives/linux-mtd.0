@@ -2,86 +2,60 @@ Return-Path: <SRS0=EMkS=QB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76B1DC282C0
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 12:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41822C282C2
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 12:37:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43B452146E
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 12:37:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F3A922146E
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Jan 2019 12:37:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EALJi7Bi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norrbonn-se.20150623.gappssmtp.com header.i=@norrbonn-se.20150623.gappssmtp.com header.b="pcSab4X3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43B452146E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=norrbonn.se
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LVOQADvF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3A922146E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3agpIxOpmgMGagBpdW3xfdL1hf7ZlNVDF1YnHz5VkR0=; b=EALJi7Bi1I8HZy
-	WyLpOI28NaVeVQlQWj8UDH0nCqbQfVqc0GxDbc3mWpMC7n3w+hBq+aXtmozMsrPUWiw3rpCh6VN29
-	6ukund/85PgetmhAvCuweN5mz9j5AJrdyKGHMtZDnTVW6LGqYT1NCwQaHNKFM3f2oSLfVVLiU50wE
-	Rs5bC7Nqi3QX3Gw3IewZVr8RlLL7vGQ0yasZAWXxNKrHtdMPjS+226aDQ4Esoc+rWD+asH4tuGwBB
-	1xWhGe3Y1ZzVe/ZFIiSN7lH4t+ptKjjaYS0qpR7EGpItvMQJbN2/qSwr20x2un+0TuyGIbPbc3CEe
-	dS/JcBXjumyjsj+OU10A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Q+j7lVgEXvgGQ5TCkKgR/qfNVAFFjwf6x/tQCEbfhNQ=; b=LVOQADvFW51ehU
+	JzWpvIMiD/5tc2C7wISjzKzpqMfaNp1i7ArBY5Nn66XKhtZdfU2nBr5f2eIODG3muHObSGgp+zpeD
+	dVPIGdV6RqOxFmpSh3aswks3UPohFLLQW35B45IkawlTPaUtMJ+1D1/MmNP6d6LbLsSZal+gGBU5T
+	ndDw9D9RV7E25PqeJa0zcZhL1Mjg+DYosSXrEDekiEjLUdZ5HP8sTZylk5wGu43/fCLMBfJeoNJ4g
+	mV9SDULMR+d0rm2uVM21MSicpKAaUV1MolXKcpfvyyUewr9SwZ7WCauVokyGDhVXfdmEnvp/3v1/8
+	b0D3NvKBYSP3lAHdwMuQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gn0jq-00065b-Oe; Fri, 25 Jan 2019 12:37:38 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gn0jn-00064e-5F
- for linux-mtd@lists.infradead.org; Fri, 25 Jan 2019 12:37:37 +0000
-Received: by mail-lf1-x143.google.com with SMTP id y11so6825519lfj.4
- for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2019 04:37:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=norrbonn-se.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=/VhZ+784RV1v5pTFCPCy7Q4ULT9fiRZPvud4Y3Kgl1I=;
- b=pcSab4X3EGzcyJeOR660pdHEMGhTcHpOtSdXZ/p8MG9Jpq42fP7ho7ppeoctTiin/p
- y40iAwtk5hFrx8UJfaaUyV96emj91b4Va0uyNS4gj0M4rjfk7JCKw4TZ5ZIDOwApoZSo
- Fih/Fv+PlIGFV/mHP5ALL1Usp85y8w7efYmKfczFt1WCoXq2Tv4vATGr58sbEmKaa4u4
- pPy3V+kCxCVZuyT/+RUbhj8FhL//P7/sbiKheeN13rmD9jx4alZCcQLEkUhl/w2R5GEu
- svAeeNtB7PMmbxvcdhTaLX1BKBZ12IUI85yBx4TxdC30rNlUgGoDbMK8BSRkh9HAEOgF
- Phqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=/VhZ+784RV1v5pTFCPCy7Q4ULT9fiRZPvud4Y3Kgl1I=;
- b=aiYd2ijYCbAdgJriRaG5YzI7rsOr7Zl+ubKXxh6yWKnMjBkGUVBuivcUxY2WHjKQm8
- dEH8/BQyxFVLpghDpi8Sqrl/PLJ9H3sb/Qpacs+xTzaz1XF6u0LN15PYGhNHNuNZxzGO
- PpEdwJr0yOvEMcYvTb4sHuCv0JLi9oVziiKw46wTHBDSPWQXKxFJtaLrHYlFqpIlMwfc
- Kzs4KqJ1aSpksrZUezyU8EYfLo6EEfdT22Ygr+4PzCOQpI/Tc/k4YqGNI5aQBAUqQsu8
- yNEdawTrrWS0rtIO0mY1HZ5VYSFwXkBvx7NQ2DcaC/sV3gkLtnlQSebGvEwJY04bPz/x
- nxsA==
-X-Gm-Message-State: AJcUukeqAeeqjoOpF7b+n6DKKnKuQDbOytdFG7yHyItdW5pnLprjpRBY
- AOuLySYS5hcIxFFNC2f9pvB8+Q==
-X-Google-Smtp-Source: ALg8bN75UpBxZRFnBIkPDaonR1Jo1f4LJ/5B1jWoYLbG1WZ/7TSpgDw0C1hqayHHrul9hioY3mdmTw==
-X-Received: by 2002:a19:6719:: with SMTP id b25mr8565012lfc.38.1548419852884; 
- Fri, 25 Jan 2019 04:37:32 -0800 (PST)
-Received: from mimer.lan (h-29-16.A159.priv.bahnhof.se. [79.136.29.16])
- by smtp.gmail.com with ESMTPSA id 12-v6sm1446545ljf.96.2019.01.25.04.37.31
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 25 Jan 2019 04:37:32 -0800 (PST)
-From: Jonas Bonn <jonas@norrbonn.se>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] spi-nor: allow setting the BPNV (default locked) bit
-Date: Fri, 25 Jan 2019 13:37:26 +0100
-Message-Id: <20190125123726.31122-1-jonas@norrbonn.se>
-X-Mailer: git-send-email 2.19.1
+	id 1gn0k0-0006GB-ML; Fri, 25 Jan 2019 12:37:48 +0000
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gn0jr-00066A-Na
+ for linux-mtd@lists.infradead.org; Fri, 25 Jan 2019 12:37:42 +0000
+Received: by mail.bootlin.com (Postfix, from userid 110)
+ id 55474209BE; Fri, 25 Jan 2019 13:37:38 +0100 (CET)
+Received: from xps13 (aaubervilliers-681-1-87-206.w90-88.abo.wanadoo.fr
+ [90.88.29.206])
+ by mail.bootlin.com (Postfix) with ESMTPSA id 13225207AD;
+ Fri, 25 Jan 2019 13:37:28 +0100 (CET)
+Date: Fri, 25 Jan 2019 13:37:28 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v2] mtd: rawnand: remove ->legacy.erase and single_erase()
+Message-ID: <20190125133728.07ad39a7@xps13>
+In-Reply-To: <1548052327-26483-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1548052327-26483-1-git-send-email-yamada.masahiro@socionext.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190125_043735_611844_88CB0BF9 
-X-CRM114-Status: GOOD (  23.84  )
+X-CRM114-CacheID: sfid-20190125_043740_328547_EA6A6734 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,274 +67,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Jonas Bonn <jonas@norrbonn.se>, linux-mtd@lists.infradead.org,
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Setting the BPNV bit defaults the block protection bits BP0-2 to 1 at
-reset.  This means that all the flash sectors are protected until they
-are explicity unlocked by the user.
-
-Together with protection of the status register via the SRWD bit and the
-WP# signal, this allows a flash device to be effectively protected from
-erasure by unauthorized actors.
-
-The patch has been tested with a Cypress s25fl512s and works as
-advertised.  The concern that I have with this, though, is that the BPNV
-bit is "write once":  if somebody inadvertently sets this feature on the
-device, it is irrevocable!  Whether or not this actually belongs in the
-mainline kernel is therefore up for debate...
-
-Signed-off-by: Jonas Bonn <jonas@norrbonn.se>
-CC: Marek Vasut <marek.vasut@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>
-CC: Brian Norris <computersforpeace@gmail.com>
-CC: Boris Brezillon <bbrezillon@kernel.org>
-CC: Richard Weinberger <richard@nod.at>
-CC: linux-mtd@lists.infradead.org
----
- drivers/mtd/mtdchar.c         |  6 +++
- drivers/mtd/mtdcore.c         |  8 +++
- drivers/mtd/spi-nor/spi-nor.c | 98 ++++++++++++++++++++++++-----------
- include/linux/mtd/mtd.h       |  2 +
- include/linux/mtd/spi-nor.h   |  1 +
- include/uapi/mtd/mtd-abi.h    |  1 +
- 6 files changed, 86 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 02389528f622..72842308087b 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -800,6 +800,12 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		break;
- 	}
- 
-+	case MEMSETDEFAULTLOCKED:
-+	{
-+		ret = mtd_set_default_locked(mtd);
-+		break;
-+	}
-+
- 	case MEMLOCK:
- 	{
- 		struct erase_info_user einfo;
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 999b705769a8..b5d555e1373a 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1715,6 +1715,14 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
- }
- EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
- 
-+int mtd_set_default_locked(struct mtd_info *mtd)
-+{
-+	if (!mtd->_set_default_locked)
-+		return -EOPNOTSUPP;
-+	return mtd->_set_default_locked(mtd);
-+}
-+EXPORT_SYMBOL_GPL(mtd_set_default_locked);
-+
- /* Chip-supported device locking */
- int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index b819b12fafcf..c960c097e0bc 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -278,6 +278,10 @@ struct flash_info {
- #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
- #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
- #define USE_CLSR		BIT(14)	/* use CLSR command */
-+#define SPI_NOR_HAS_BPNV	BIT(15) /* Block protection bits can be set
-+					 * non-volatile, meaning all blocks
-+					 * are protected by default at reset
-+					 */
- 
- 	/* Part specific fixup hooks. */
- 	const struct spi_nor_fixups *fixups;
-@@ -1319,6 +1323,36 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	return write_sr_and_check(nor, status_new, mask);
- }
- 
-+/*
-+ * Write status Register and configuration register with 2 bytes
-+ * The first byte will be written to the status register, while the
-+ * second byte will be written to the configuration register.
-+ * Return negative if error occurred.
-+ */
-+static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
-+{
-+	int ret;
-+
-+	write_enable(nor);
-+
-+	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
-+	if (ret < 0) {
-+		dev_err(nor->dev,
-+			"error while writing configuration register\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret) {
-+		dev_err(nor->dev,
-+			"timeout while writing configuration register\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+
- /*
-  * Check if a region of the flash is (completely) locked. See stm_lock() for
-  * more info.
-@@ -1337,6 +1371,35 @@ static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	return stm_is_locked_sr(nor, ofs, len, status);
- }
- 
-+static int spi_nor_set_default_locked(struct mtd_info *mtd)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	struct device *dev = nor->dev;
-+	u8 sr_cr[2];
-+	int ret;
-+
-+	ret = read_cr(nor);
-+	if (ret < 0) {
-+		dev_err(dev, "error while reading configuration register\n");
-+		return -EINVAL;
-+	}
-+
-+	if (ret & CR_BPNV)
-+		return 0;
-+
-+	sr_cr[1] = ret | CR_BPNV;
-+
-+	/* Keep the current value of the Status Register. */
-+	ret = read_sr(nor);
-+	if (ret < 0) {
-+		dev_err(dev, "error while reading status register\n");
-+		return -EINVAL;
-+	}
-+	sr_cr[0] = ret;
-+
-+	return write_sr_cr(nor, sr_cr);
-+}
-+
- static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-@@ -1382,35 +1445,6 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	return ret;
- }
- 
--/*
-- * Write status Register and configuration register with 2 bytes
-- * The first byte will be written to the status register, while the
-- * second byte will be written to the configuration register.
-- * Return negative if error occurred.
-- */
--static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
--{
--	int ret;
--
--	write_enable(nor);
--
--	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
--	if (ret < 0) {
--		dev_err(nor->dev,
--			"error while writing configuration register\n");
--		return -EINVAL;
--	}
--
--	ret = spi_nor_wait_till_ready(nor);
--	if (ret) {
--		dev_err(nor->dev,
--			"timeout while writing configuration register\n");
--		return ret;
--	}
--
--	return 0;
--}
--
- /**
-  * macronix_quad_enable() - set QE bit in Status Register.
-  * @nor:	pointer to a 'struct spi_nor'
-@@ -1880,7 +1914,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
--	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | USE_CLSR) },
-+	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BPNV | USE_CLSR) },
- 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-@@ -4055,6 +4089,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		mtd->_is_locked = spi_nor_is_locked;
- 	}
- 
-+	if (info->flags & SPI_NOR_HAS_BPNV) {
-+		mtd->_set_default_locked = spi_nor_set_default_locked;
-+	}
-+
- 	/* sst nor chips use AAI word program */
- 	if (info->flags & SST_WRITE)
- 		mtd->_write = sst_write;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 677768b21a1d..30ee6f1c1142 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -313,6 +313,7 @@ struct mtd_info {
- 	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
- 			unsigned long count, loff_t to, size_t *retlen);
- 	void (*_sync) (struct mtd_info *mtd);
-+	int (*_set_default_locked) (struct mtd_info *mtd);
- 	int (*_lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
- 	int (*_unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
- 	int (*_is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
-@@ -451,6 +452,7 @@ static inline void mtd_sync(struct mtd_info *mtd)
- int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+int mtd_set_default_locked(struct mtd_info *mtd);
- int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs);
- int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs);
- int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index fa2d89e38e40..4fcf4077cf2a 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -136,6 +136,7 @@
- #define FSR_PT_ERR		BIT(1)	/* Protection error bit */
- 
- /* Configuration Register bits. */
-+#define CR_BPNV			BIT(3)	/* Block protection non-volatile */
- #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
- 
- /* Status Register 2 bits. */
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index aff5b5e59845..27b752796efa 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -204,6 +204,7 @@ struct otp_info {
-  * without OOB, e.g., NOR flash.
-  */
- #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
-+#define MEMSETDEFAULTLOCKED	_IO('M', 25)
- 
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
--- 
-2.19.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFzYWhpcm8sCgpNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQu
+Y29tPiB3cm90ZSBvbiBNb24sIDIxIEphbgoyMDE5IDE1OjMyOjA3ICswOTAwOgoKPiBOb3cgdGhh
+dCB0aGUgbGFzdCB1c2VyIG9mIHRoaXMgaG9vaywgZGVuYWxpLmMsIHN0b3BwZWQgdXNpbmcgaXQs
+Cj4gd2UgY2FuIHJlbW92ZSB0aGUgZXJhc2UgaG9vayBmcm9tIG5hbmRfbGVnYWN5Lgo+IAo+IEkg
+c3F1YXNoZWQgc2luZ2xlX2VyYXNlKCkgYmVjYXVzZSBvbmx5IHRoZSBkaWZmZXJlbmNlIGJldHdl
+ZW4KPiBzaW5nbGVfZXJhc2UoKSBhbmQgbmFuZF9lcmFzZV9vcCgpIGlzIHRoZSBudW1iZXIgb2Yg
+Yml0IHNoaWZ0cy4KPiAKPiBUaGUgc3RhdHVzL3JldCBjb252ZXJzaW9uIGluIG5hbmRfZXJhc2Vf
+bmFuZCgpIGlzIHVubmVlZGVkIHNpbmNlCj4gY29tbWl0IGViOTQ1NTVlOWU5NyAoIm10ZDogbmFu
+ZDogdXNlIHVzdWFsIHJldHVybiB2YWx1ZXMgZm9yIHRoZQo+IC0+ZXJhc2UoKSBob29rIikuIENs
+ZWFuZWQgaXQgdXAgbm93LiAgCj4gCj4gU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDx5
+YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNvbT4KPiAtLS0KCkFwcGxpZWQgdG8gbmFuZC9uZXh0
+LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
