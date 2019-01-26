@@ -2,90 +2,130 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F593C282C7
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Jan 2019 13:11:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12820C282C7
+	for <linux-mtd@archiver.kernel.org>; Sat, 26 Jan 2019 13:49:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F9CD21872
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Jan 2019 13:11:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7FCE21872
+	for <linux-mtd@archiver.kernel.org>; Sat, 26 Jan 2019 13:49:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dXvZiWfg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="PF0jWI4J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F9CD21872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cO7LePTu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7FCE21872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jNaat2iFGIoAawO5LYSQms+YzOnhFCzZ132S/MukUGc=; b=dXvZiWfgkkFWDb
-	XuEuKFCFOJ7+H/oKwCRd8sha5DX9QntN5QVRVF7WT4kw4s3w0rRjNIUPLhbGrt2DjtmQAui98yQHp
-	uYflUfnjRQqw3ZWX4+IgDYxyX2FGhw7Zt0mvSz97/sOt8E40AN89G5RQDH4er4+qYVqD80peaqkhS
-	dn6SuP6VXxo+Bc7h97O5x3qfqhpB54jegoly5A2uFfQCd1A6nAXu6M93R2ChzL0fH4JD0rJZ3W25Q
-	4VdC5EvZi3lGA5LkkfLLqOTY7oyy53VwU9dV7lK2bC01zyv5lUWxVlvIByyP1E3/So7bsncmJtPHE
-	GGKs7VRczAHLWZqjCpTw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kx8PRzQLlQst7XjSy1/Tnh1nZqJDkFBjOHyKiVJpvgE=; b=cO7LePTuWwphjO
+	5MX62xDjQhzOAO565Z+efl/ROEcgkoA19h9GljgUMo2NQL+fK2xTaCDRqiSeutCOyGK/AXFDSFCqr
+	L1b1T44BgRnnNItq49QMApaX69FsjZraeV3e7e+g0AHntJurx5l7NZ9XFJXPt1mC5j/yoT8khPnBw
+	e9zXFaJe/+e43BIePp7oha9nQRlFUB5esVs1P+i3UkuC2iUTeeffHq6ZPyN3MkXxF6YVAuWmEXgcX
+	YZuE01IKJBGZvZiwwIrfjcYGyYhcNvSuU/nws83r1rDQu7fedRcQ18xreOYfkFcIQfpJ6h7LmgLa9
+	Qjx5+eflCwRAYXhQ5NIw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gnNk2-0003rf-6I; Sat, 26 Jan 2019 13:11:22 +0000
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+	id 1gnOKi-0005tV-A9; Sat, 26 Jan 2019 13:49:16 +0000
+Received: from gateway30.websitewelcome.com ([192.185.149.4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gnNjq-0003gE-EU
- for linux-mtd@lists.infradead.org; Sat, 26 Jan 2019 13:11:11 +0000
-Received: by mail-lj1-x243.google.com with SMTP id s5-v6so10549141ljd.12
- for <linux-mtd@lists.infradead.org>; Sat, 26 Jan 2019 05:11:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=C/3TY6rq/0PZRVa0c05fWF4DRikwplDxAw+KXls7E4o=;
- b=PF0jWI4JGa7MljDBKfcZ3OLncwcKdnFTYk4oThgzI2HVPi04fE51hJJKeV4isxJ3nU
- HNeRz887zKi/VT2pdj5cU1TeYEu7ZzzjtAoNyHWekkVOzhTDbZ8b2QAgkEWfB4Ukk687
- frN3FCracex0vBbf7Ead2sVV8TiHJNVZ4X/vQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=C/3TY6rq/0PZRVa0c05fWF4DRikwplDxAw+KXls7E4o=;
- b=gGCnCgtQay6CF9eLhk9HMx7eRJDtt/S31YdPiGEuIUOmGhkfqUuB/6axuPqWWK65HY
- WG5Iqj41xV6G4X4781yKG7IyAaZeu7DN+8ZHV3qkJZxiSvO3bH7Ri/O5eQRR8pQSc0tU
- /P9EHaHUwosli8yU6U26BP6p1drzzgkbrOnNerXiB7J6HKkNj4dJFY3SNI/fsG9B0VLi
- sH5sM1xe0hp3X2yujm6K+xYjsqwk6R5Hnd02T0i1zpkI8W1OtAn85UNufYiKIOIrR7qd
- 8d1BS1GyjpFP6Dbsr9dTU9J+ibH3wmI94p6es3+YFiF3yk2z7Vl1/75isAd0Lxb4oyEb
- JMEQ==
-X-Gm-Message-State: AJcUukcthbERss/wLRCVB7pIDwkmN7YAwpNgFmK5QqmwABZAf5bjIt7E
- JPccXw6i2V6rYQbc5hd2BAEhP1J5XkQ=
-X-Google-Smtp-Source: ALg8bN6zalftc/zMSsEIvBPOe9nCRAxzEh/Cg5rBHW4KGFaLsVMrXLFm4XtsQFry3X3ecAUFH64SMw==
-X-Received: by 2002:a2e:2d11:: with SMTP id
- t17-v6mr11994173ljt.159.1548508268449; 
- Sat, 26 Jan 2019 05:11:08 -0800 (PST)
-Received: from linux.local (c-ae7b71d5.014-348-6c756e10.bbcust.telenor.se.
- [213.113.123.174])
- by smtp.gmail.com with ESMTPSA id s127sm2109390lfe.8.2019.01.26.05.11.06
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Sat, 26 Jan 2019 05:11:07 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2 v2] mtd: rawnand: fsmc: Disable NAND on remove()
-Date: Sat, 26 Jan 2019 14:10:56 +0100
-Message-Id: <20190126131056.11364-2-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190126131056.11364-1-linus.walleij@linaro.org>
-References: <20190126131056.11364-1-linus.walleij@linaro.org>
+ id 1gnOKe-0005sr-S4
+ for linux-mtd@lists.infradead.org; Sat, 26 Jan 2019 13:49:14 +0000
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+ by gateway30.websitewelcome.com (Postfix) with ESMTP id EE5C12075EC
+ for <linux-mtd@lists.infradead.org>;
+ Sat, 26 Jan 2019 07:49:10 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
+ id nOKcgal9L2PzOnOKcgAQn3; Sat, 26 Jan 2019 07:49:10 -0600
+X-Authority-Reason: nr=8
+Received: from [189.250.130.205] (port=48338 helo=[192.168.1.76])
+ by gator4166.hostgator.com with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
+ (envelope-from <gustavo@embeddedor.com>)
+ id 1gnOKK-003YwO-7n; Sat, 26 Jan 2019 07:49:10 -0600
+Subject: Re: [PATCH] mtd: rawnand: mark expected switch fall-throughs
+To: Boris Brezillon <bbrezillon@kernel.org>
+References: <20190125210950.GA27855@embeddedor>
+ <20190126105208.221a2051@bbrezillon>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Message-ID: <853a267c-807b-c613-6662-93730a0b4c33@embeddedor.com>
+Date: Sat, 26 Jan 2019 07:48:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
+In-Reply-To: <20190126105208.221a2051@bbrezillon>
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - lists.infradead.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.250.130.205
+X-Source-L: No
+X-Exim-ID: 1gnOKK-003YwO-7n
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.76]) [189.250.130.205]:48338
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190126_051110_485797_C679C5D8 
-X-CRM114-Status: GOOD (  17.02  )
+X-CRM114-CacheID: sfid-20190126_054912_993013_7504ED47 
+X-CRM114-Status: GOOD (  12.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -97,69 +137,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Kees Cook <keescook@chromium.org>, Wan ZongShun <mcuos.com@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, Kyungmin Park <kyungmin.park@samsung.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This disables the NAND on remove() and the errorpath,
-making sure the chipselect gets deasserted when the
-NAND is not in use.
+Hey Boris,
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v1->v2:
-- Break out NAND bank disable code into its own function.
----
- drivers/mtd/nand/raw/fsmc_nand.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On 1/26/19 3:52 AM, Boris Brezillon wrote:
+> On Fri, 25 Jan 2019 15:09:50 -0600
+> "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
+> 
+>> diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+>> index 933d1a629c51..d33e15dc4cdc 100644
+>> --- a/drivers/mtd/nand/raw/nandsim.c
+>> +++ b/drivers/mtd/nand/raw/nandsim.c
+>> @@ -2251,9 +2251,10 @@ static int __init ns_init_module(void)
+>>  
+>>  	switch (bbt) {
+>>  	case 2:
+>> -		 chip->bbt_options |= NAND_BBT_NO_OOB;
+>> +		chip->bbt_options |= NAND_BBT_NO_OOB;
+>> +		/* fall through */
+>>  	case 1:
+>> -		 chip->bbt_options |= NAND_BBT_USE_FLASH;
+>> +		chip->bbt_options |= NAND_BBT_USE_FLASH;
+> 
+> You miss a '/* fall through */' here.
+> 
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 4050843dd35e..6c7ca41354be 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -965,6 +965,19 @@ static const struct nand_controller_ops fsmc_nand_controller_ops = {
- 	.setup_data_interface = fsmc_setup_data_interface,
- };
- 
-+/**
-+ * fsmc_nand_disable() - Disables the NAND bank
-+ * @host: The instance to disable
-+ */
-+static void fsmc_nand_disable(struct fsmc_nand_data *host)
-+{
-+	u32 val;
-+
-+	val = readl(host->regs_va + FSMC_PC);
-+	val &= ~FSMC_ENABLE;
-+	writel(val, host->regs_va + FSMC_PC);
-+}
-+
- /*
-  * fsmc_nand_probe - Probe function
-  * @pdev:       platform device structure
-@@ -1120,6 +1133,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	if (host->mode == USE_DMA_ACCESS)
- 		dma_release_channel(host->read_dma_chan);
- disable_clk:
-+	fsmc_nand_disable(host);
- 	clk_disable_unprepare(host->clk);
- 
- 	return ret;
-@@ -1134,6 +1148,7 @@ static int fsmc_nand_remove(struct platform_device *pdev)
- 
- 	if (host) {
- 		nand_release(&host->nand);
-+		fsmc_nand_disable(host);
- 
- 		if (host->mode == USE_DMA_ACCESS) {
- 			dma_release_channel(host->write_dma_chan);
--- 
-2.20.1
+Not really.  Notice that in this case the code falls through
+to a break statement.
 
+>>  	case 0:
+>>  		break;
+>>  	default:
+
+Thanks
+--
+Gustavo
 
 ______________________________________________________
 Linux MTD discussion mailing list
