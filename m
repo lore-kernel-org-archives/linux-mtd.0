@@ -2,73 +2,71 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBA9FC282C8
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 12:31:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55800C282C8
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 12:36:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1FB32087F
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 12:31:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2627520880
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 12:36:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WGvInw7l";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="UfdSblx+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1FB32087F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nyfsbob/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="O3rM4aou"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2627520880
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=34VIgRQZStirOGs6NaYzgN7Kfidl5+nGE/9wxB5JIXk=; b=WGvInw7lvM/thmnbNb65x4KBR
-	3jASOJASfjcc7U4b2uZ5ueR29vlTO5fx41+hc6U7Ky3Qw0R0az6Swjdc2uF4lfUHZzNb7mgjVsF7L
-	cv56vBFdZHWR8LeBwMIqNc07BQlZ9s4YERH43UlnPbgt00CeVbcXr0wJKpKhs4+xoLsFLH1ZSsIHX
-	8ApjXSmCRKH0YclEVcOiwNJmSthqlVQgNSFH+z1c1/R7BNfxjv2W7BlYYeKTdtInAgTuDEeFWQJAh
-	lkptioIzoCqA6RmWTH3/FfwsgamNKfUMoaSvKwqLVRH+vWavMAT/Cpp1k2/cDkfwFgU7FNqJa9lVc
-	THioHu05w==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
+	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	References:List-Owner; bh=rwqxyw1BFjFP5tY4Hrw+Yib7exBonoNO/1u/PIIvoKM=; b=nyf
+	sbob/ICaHvp4sDEfZbwU/dDBcRfukCGJMbVC1lmASdFUEndeQJO6hqRTpqlv5ugshXY2njWIkIqFj
+	H1foFRGhc44tvI52jxp3uHTHlXaMjEkjiinkllNaTtQ0+HVN91zlSrHkHrO9Elu+y8XeTqqrwEEBD
+	hcMDYMYgd86HFX12U8ezpcoMia3IimcaS60eOrv2KkePylnzrksUgFpubtg0QzwOLx78V3G+/6jQP
+	FcnfoZMfflw2VDyHPbqP54Rq+BVzawisYzVSp48MlHerOUvImCQGNWRYt3b3AdaaYUI7P5Wfzdsms
+	NrEN7yx9AxEmGic9eUk8ur+xVxfdOWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1go64A-00060u-In; Mon, 28 Jan 2019 12:31:06 +0000
+	id 1go69M-00089k-0L; Mon, 28 Jan 2019 12:36:28 +0000
 Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1go63z-0005rG-25; Mon, 28 Jan 2019 12:30:56 +0000
+ id 1go699-0007z1-6h; Mon, 28 Jan 2019 12:36:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=cXAyeWFIpMOGgCIqLGzeDp4ajkXjIWJQ3xqRqloXnbQ=; b=UfdSblx+k6fhF5uBftq4r8EzE
- 2IAqiYQCHw+f0xizLEWqBqY5KEEkNg9bJUKQqxzLfnNpYCk4vX9TyqgH/wZ0OPbQoDkvkfEn2kygG
- qWiePjM73nA3PL/Z6KlDqncIJ8xwLMvJrnaddOTsi694ZWbXRGlS601R5mA6cytskHLy8=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=ssq7PrBnwKvktPZbjkTclsAqRfHWNYmxUlpKAfHPHjE=; b=O3rM4aousyjW
+ atyGti837Tacwol4KD/l6Nn6t+HRYBmDn0agJpa5bFJiXN+rOOvpSTiB21RdKI+LFU7MT3nJsgEk7
+ xjCTGkmMsCN6t5w0eljbuG7DaqG/uOE9VLFjMYlnes4cQkrgLr2w/qblSrAvKMPrN6a2yAbzSbPwQ
+ JiSGE=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=debutante.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpa (Exim 4.89)
  (envelope-from <broonie@sirena.org.uk>)
- id 1go63u-0002RV-NE; Mon, 28 Jan 2019 12:30:50 +0000
+ id 1go695-0002U8-M4; Mon, 28 Jan 2019 12:36:11 +0000
 Received: by debutante.sirena.org.uk (Postfix, from userid 1000)
- id 5021F1127D29; Mon, 28 Jan 2019 12:30:50 +0000 (GMT)
-Date: Mon, 28 Jan 2019 12:30:50 +0000
+ id 2F8641127D29; Mon, 28 Jan 2019 12:36:06 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: Re: [PATCH v7 4/5] spi: nxp-fspi: add octal mode flag bit for octal
- support
-Message-ID: <20190128123050.GE11699@sirena.org.uk>
-References: <1547546584-5254-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1547546584-5254-5-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20190128122631.GD11699@sirena.org.uk>
-MIME-Version: 1.0
-In-Reply-To: <20190128122631.GD11699@sirena.org.uk>
-X-Cookie: I think we're in trouble.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Subject: Applied "MAINTAINERS: add maintainers for the NXP FlexSPI driver" to
+ the spi tree
+In-Reply-To: <1547553487-9936-6-git-send-email-yogeshnarayan.gaur@nxp.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190128123606.2F8641127D29@debutante.sirena.org.uk>
+Date: Mon, 28 Jan 2019 12:36:06 +0000 (GMT)
+X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190128_043055_246835_87C75239 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20190128_043615_415238_10078358 
+X-CRM114-Status: GOOD (  10.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,77 +80,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "vigneshr@ti.com" <vigneshr@ti.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+ linux-spi@vger.kernel.org, "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "shawnguo@kernel.org" <shawnguo@kernel.org>,
  "robh@kernel.org" <robh@kernel.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: multipart/mixed; boundary="===============8382425334206115787=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The patch
 
---===============8382425334206115787==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="r7U+bLA8boMOj+mD"
-Content-Disposition: inline
+   MAINTAINERS: add maintainers for the NXP FlexSPI driver
 
+has been applied to the spi tree at
 
---r7U+bLA8boMOj+mD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
 
-On Mon, Jan 28, 2019 at 12:26:31PM +0000, Mark Brown wrote:
-> On Tue, Jan 15, 2019 at 10:05:29AM +0000, Yogesh Narayan Gaur wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-> > index e23ad9ef028e..adc3c0e14f38 100644
-> > --- a/drivers/spi/spi-nxp-fspi.c
-> > +++ b/drivers/spi/spi-nxp-fspi.c
-> > @@ -952,8 +952,8 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> This does not apply against current code, the above file is not present
-> upstream.  Please do not submit patches to out of tree code upstream.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-So it turns out your other series was adding that driver.  Please if
-you're doing this make sure you call out any interdependencies in either
-the patch itself or the cover letter, if you're sending separate patch
-serieses you should expect them to be handled separately.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---r7U+bLA8boMOj+mD
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+From c71f9fd4503addcfa306f9bec95c3e7deade7ce1 Mon Sep 17 00:00:00 2001
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Date: Tue, 15 Jan 2019 12:00:37 +0000
+Subject: [PATCH] MAINTAINERS: add maintainers for the NXP FlexSPI driver
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxO9fkACgkQJNaLcl1U
-h9BsYQf6A45qVJRvph5tyVH50pk3XTa/3pcow8e2pPLdqTbQDypz5tpGQaDC4jqB
-nsGIHXjKMru6xRvC49DPoKm4XGOpdHyW/qWGvaZmVnbGK2YX61L8BHQyfkN5LEGo
-NsW89904eo5ycNYgapwwDwpUoUoE8Vj/9oYI/mDpW9Nr1QqyyIOHsh7yRXrZTdEV
-S6pR/iU+KWgAFP3zrEXxkZqm8mdjwA5SEuAJ6oNl78Lz+Vtt3TleiLSnG2K+enTQ
-WJYfS3mvVCjI6XQILWXracX0HmeC9T58GiyKyr8V4l8JEJS0YJI/zqb6b9ccSjgb
-2YJA6Gp3Bh4MozVa3Dq+m2WFYN3giw==
-=llBo
------END PGP SIGNATURE-----
+Add maintainers for the NXP FlexSPI driver
 
---r7U+bLA8boMOj+mD--
+Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8b6c0d454d7e..5e7ec7cda3bb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10927,6 +10927,14 @@ F:	lib/objagg.c
+ F:	lib/test_objagg.c
+ F:	include/linux/objagg.h
+ 
++NXP FSPI DRIVER
++R:	Yogesh Gaur <yogeshgaur.83@gmail.com>
++M:	Ashish Kumar <ashish.kumar@nxp.com>
++L:	linux-spi@vger.kernel.org
++S:	Maintained
++F:	drivers/spi/spi-nxp-fspi.c
++F:	Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
++
+ OBJTOOL
+ M:	Josh Poimboeuf <jpoimboe@redhat.com>
+ M:	Peter Zijlstra <peterz@infradead.org>
+-- 
+2.20.1
 
---===============8382425334206115787==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8382425334206115787==--
-
