@@ -7,58 +7,77 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3D71C282CB
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 05:02:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04D13C282CC
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 05:48:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6EE120870
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 05:02:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C863D2148E
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 05:48:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D0aLDG+r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6EE120870
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mW3xToEe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="C31ZumDm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C863D2148E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=YEs+DKybWV+jcjNJ7Uu7Q60l3wQ+F4lPJ+qbLBz5Oag=; b=D0a
-	LDG+r2LBbuiNgf+KEhRxYUfDn4UBAR9wSwwwh6MOX5ehS9PwrWeyy6CNq5k2IWAKYJf1FEAjezkVt
-	o8tprXj3GFQ+kfXNL0j9ILA6VHEDMkt7AUE34HBXAPHsGIb3rBpXuJ55sS0AAdfeByHfu7KjIKwaH
-	QlDdoplEwwtaRDJiPeTw/OOeaWy06XFRO2mw5R7eE3YYEom4eINTccAmb+dKnF/DGGHkJUslILbX1
-	/rrO989G1GpBc+zXmIixBtArQxSP1j34hH5s/ieJDcNvTJ+7YZyGudbqGL9VFKfmSivULEW3P16gw
-	KNd7WTKioI0Yx4QJv4P6524+RMuwpYA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=N7Dqa/QPzqlJHtcXOG143+hoBikOoSDvrCQZ7gVNvo0=; b=mW3xToEeGHpCpD
+	qvF2X7fA/SCESG68k2o5raY8BwGbmXeYkuJXHVcKT9hf3SXvzzGcvxOOEKrJ+qTewMp1ZkYwi2rhm
+	daKxDlSh0VvOLn8w/zNhPzkuBwEXpMtKk0jyXmwUklzhDevsisNzsPuT/PBvUuJXuPzAIpSE1ORg6
+	dVLWkFaEq3cnenY/X3610nw7ZS0goy7H3i/4QsCpOYpLaO0N0NdXc+ajNIUDqWbhFj4LU6b/bYo1v
+	9fviF+CjGw7MZDWum+59K0gL8eAl8QLmjhZtljdr5rs+8YIvaiEQ26W8zXnrTzi8PTpV00FusERug
+	VYp+RK/HF3nOMw1KoAgg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gnz48-0007Aw-Ma; Mon, 28 Jan 2019 05:02:36 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1gnzmp-0003UD-IG; Mon, 28 Jan 2019 05:48:47 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gnz45-0007AV-RN
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2019 05:02:35 +0000
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2019 21:02:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.56,532,1539673200"; d="scan'208";a="141880827"
-Received: from unknown (HELO dev03.ndswc.sj.intel.com) ([10.233.132.114])
- by fmsmga001.fm.intel.com with ESMTP; 27 Jan 2019 21:02:32 -0800
-From: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
-To: Fred Bloggs <f.blogs@napier.co.nz>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH] mtd: spi-nor: cadence-quadspi: write upto 8-bytes data in
- STIG mode
-Date: Sun, 27 Jan 2019 21:02:29 -0800
-Message-Id: <20190128050229.44965-1-purna.chandra.mandal@intel.com>
-X-Mailer: git-send-email 2.13.0
+ id 1gnzmm-0003TM-AN
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2019 05:48:45 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x0S5mf4F005721;
+ Sun, 27 Jan 2019 23:48:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1548654521;
+ bh=KK01tLeo1wnuqXlbcK1QwtqAIlEyKApp9qRygZsj9/U=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=C31ZumDmm6Z0zaodWKt33uplQ9gJhY3ZC5B+mlg/LxDxO6e4aWumy1VrZAnkdIFMF
+ N2GtwAQvjYHRiO6mP31KeNkAjLsJ3CngMAmP0zBPlr3gHhbWzxJoGjsldc3Z3wo3E/
+ q8yC4XDoNnakDgTEJfhtOBJpcJofrzo5/cqCq8MI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x0S5mfC0005278
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Sun, 27 Jan 2019 23:48:41 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Sun, 27
+ Jan 2019 23:48:40 -0600
+Received: from dflp33.itg.ti.com (10.64.6.16) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
+ Sun, 27 Jan 2019 23:48:41 -0600
+Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dflp33.itg.ti.com (8.14.3/8.13.8) with ESMTP id x0S5mW5Q020800;
+ Sun, 27 Jan 2019 23:48:38 -0600
+From: Vignesh R <vigneshr@ti.com>
+To: Boris Brezillon <bbrezillon@kernel.org>, <Tudor.Ambarus@microchip.com>
+Subject: [PATCH v5 2/2] mtd: spi-nor: cadence-quadspi: Add support for Octal
+ SPI controller
+Date: Mon, 28 Jan 2019 11:19:35 +0530
+Message-ID: <20190128054935.4972-3-vigneshr@ti.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190128054935.4972-1-vigneshr@ti.com>
+References: <20190128054935.4972-1-vigneshr@ti.com>
+MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190127_210233_926715_FED2FC9B 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20190127_214844_467476_7D798579 
+X-CRM114-Status: GOOD (  16.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -70,69 +89,171 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- Purna Chandra Mandal <purna.chandra.mandal@intel.com>,
+Cc: devicetree@vger.kernel.org, Vignesh R <vigneshr@ti.com>,
  linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-MIME-Version: 1.0
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-cadence-quadspi controller allows upto eight bytes of data to
-be written in software Triggered Instruction generator (STIG) mode
-of operation. Lower 4 bytes are written through writedatalower and
-upper 4 bytes by writedataupper register.
+Cadence OSPI controller IP supports Octal IO (x8 IO lines),
+It also has an integrated PHY. IP register layout is very
+similar to existing QSPI IP except for additional bits to support Octal
+and Octal DDR mode. Therefore, extend current driver to support Octal
+mode. Only Octal SDR read (1-1-8)mode is supported for now.
 
-This patch allows all the 8 bytes to be written.
+Tested with mt35xu512aba Octal flash on TI's AM654 EVM.
 
-Signed-off-by: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
 
- drivers/mtd/spi-nor/cadence-quadspi.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+v5:
+s/cqsi_base_hwcaps_mask/CQSPI_BASE_HWCAPS_MASK/g
+Add back cqspi_driver_platdata definition for base compatible.
+
+v4: Fix comments by Tudor on v3
+v3: No changes
+v2: Declare Octal mode capability based on compatible.
+
+ drivers/mtd/spi-nor/cadence-quadspi.c | 58 +++++++++++++++++++++------
+ 1 file changed, 46 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 04cedd3a2bf6..7f78f9409ddd 100644
+index 04cedd3a2bf6..c8113ebe44fd 100644
 --- a/drivers/mtd/spi-nor/cadence-quadspi.c
 +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -418,9 +418,10 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
- 	void __iomem *reg_base = cqspi->iobase;
- 	unsigned int reg;
- 	unsigned int data;
-+	u32 write_len;
+@@ -44,6 +44,12 @@
+ /* Quirks */
+ #define CQSPI_NEEDS_WR_DELAY		BIT(0)
+ 
++/* Capabilities mask */
++#define CQSPI_BASE_HWCAPS_MASK					\
++	(SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST |		\
++	SNOR_HWCAPS_READ_1_1_2 | SNOR_HWCAPS_READ_1_1_4 |	\
++	SNOR_HWCAPS_PP)
++
+ struct cqspi_st;
+ 
+ struct cqspi_flash_pdata {
+@@ -93,6 +99,11 @@ struct cqspi_st {
+ 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
+ };
+ 
++struct cqspi_driver_platdata {
++	u32 hwcaps_mask;
++	u8 quirks;
++};
++
+ /* Operation timeout value */
+ #define CQSPI_TIMEOUT_MS			500
+ #define CQSPI_READ_TIMEOUT_MS			10
+@@ -101,6 +112,7 @@ struct cqspi_st {
+ #define CQSPI_INST_TYPE_SINGLE			0
+ #define CQSPI_INST_TYPE_DUAL			1
+ #define CQSPI_INST_TYPE_QUAD			2
++#define CQSPI_INST_TYPE_OCTAL			3
+ 
+ #define CQSPI_DUMMY_CLKS_PER_BYTE		8
+ #define CQSPI_DUMMY_BYTES_MAX			4
+@@ -911,6 +923,9 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
+ 		case SNOR_PROTO_1_1_4:
+ 			f_pdata->data_width = CQSPI_INST_TYPE_QUAD;
+ 			break;
++		case SNOR_PROTO_1_1_8:
++			f_pdata->data_width = CQSPI_INST_TYPE_OCTAL;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -1213,21 +1228,22 @@ static void cqspi_request_mmap_dma(struct cqspi_st *cqspi)
+ 
+ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+ {
+-	const struct spi_nor_hwcaps hwcaps = {
+-		.mask = SNOR_HWCAPS_READ |
+-			SNOR_HWCAPS_READ_FAST |
+-			SNOR_HWCAPS_READ_1_1_2 |
+-			SNOR_HWCAPS_READ_1_1_4 |
+-			SNOR_HWCAPS_PP,
+-	};
+ 	struct platform_device *pdev = cqspi->pdev;
+ 	struct device *dev = &pdev->dev;
++	const struct cqspi_driver_platdata *ddata;
++	struct spi_nor_hwcaps hwcaps;
+ 	struct cqspi_flash_pdata *f_pdata;
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+ 	unsigned int cs;
+ 	int i, ret;
+ 
++	ddata = of_device_get_match_data(dev);
++	if (!ddata)
++		hwcaps.mask = CQSPI_BASE_HWCAPS_MASK;
++	else
++		hwcaps.mask = ddata->hwcaps_mask;
++
+ 	/* Get flash device data */
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		ret = of_property_read_u32(np, "reg", &cs);
+@@ -1310,7 +1326,7 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	struct cqspi_st *cqspi;
+ 	struct resource *res;
+ 	struct resource *res_ahb;
+-	unsigned long data;
++	const struct cqspi_driver_platdata *ddata;
  	int ret;
+ 	int irq;
  
--	if (n_tx > 4 || (n_tx && !txbuf)) {
-+	if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
- 		dev_err(nor->dev,
- 			"Invalid input argument, cmdlen %d txbuf 0x%p\n",
- 			n_tx, txbuf);
-@@ -433,10 +434,18 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
- 		reg |= ((n_tx - 1) & CQSPI_REG_CMDCTRL_WR_BYTES_MASK)
- 			<< CQSPI_REG_CMDCTRL_WR_BYTES_LSB;
- 		data = 0;
--		memcpy(&data, txbuf, n_tx);
-+		write_len = (n_tx > 4) ? 4 : n_tx;
-+		memcpy(&data, txbuf, write_len);
-+		txbuf += write_len;
- 		writel(data, reg_base + CQSPI_REG_CMDWRITEDATALOWER);
--	}
+@@ -1377,8 +1393,8 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	}
  
-+		if (n_tx > 4) {
-+			data = 0;
-+			write_len = n_tx - 4;
-+			memcpy(&data, txbuf, write_len);
-+			writel(data, reg_base + CQSPI_REG_CMDWRITEDATAUPPER);
-+		}
-+	}
- 	ret = cqspi_exec_flash_cmd(cqspi, reg);
- 	return ret;
- }
+ 	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
+-	data  = (unsigned long)of_device_get_match_data(dev);
+-	if (data & CQSPI_NEEDS_WR_DELAY)
++	ddata  = of_device_get_match_data(dev);
++	if (ddata && (ddata->quirks & CQSPI_NEEDS_WR_DELAY))
+ 		cqspi->wr_delay = 5 * DIV_ROUND_UP(NSEC_PER_SEC,
+ 						   cqspi->master_ref_clk_hz);
+ 
+@@ -1460,14 +1476,32 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
+ #define CQSPI_DEV_PM_OPS	NULL
+ #endif
+ 
++static const struct cqspi_driver_platdata cdns_qspi = {
++	.hwcaps_mask = CQSPI_BASE_HWCAPS_MASK,
++};
++
++static const struct cqspi_driver_platdata k2g_qspi = {
++	.hwcaps_mask = CQSPI_BASE_HWCAPS_MASK,
++	.quirks = CQSPI_NEEDS_WR_DELAY,
++};
++
++static const struct cqspi_driver_platdata am654_ospi = {
++	.hwcaps_mask = CQSPI_BASE_HWCAPS_MASK | SNOR_HWCAPS_READ_1_1_8,
++	.quirks = CQSPI_NEEDS_WR_DELAY,
++};
++
+ static const struct of_device_id cqspi_dt_ids[] = {
+ 	{
+ 		.compatible = "cdns,qspi-nor",
+-		.data = (void *)0,
++		.data = &cdns_qspi,
+ 	},
+ 	{
+ 		.compatible = "ti,k2g-qspi",
+-		.data = (void *)CQSPI_NEEDS_WR_DELAY,
++		.data = &k2g_qspi,
++	},
++	{
++		.compatible = "ti,am654-ospi",
++		.data = &am654_ospi,
+ 	},
+ 	{ /* end of table */ }
+ };
 -- 
-2.13.0
+2.20.1
 
 
 ______________________________________________________
