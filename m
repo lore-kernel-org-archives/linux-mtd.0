@@ -1,68 +1,69 @@
-Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33BCFC282C7
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Jan 2019 16:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B043C282CC
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 02:22:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC74921872
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Jan 2019 16:55:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 323D220C01
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 02:22:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QlZDSG1f";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DGeHc5v5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC74921872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ek29BSVq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ajwfC0Lh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 323D220C01
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NYsRl2QYKjp+hgBxKOJMUyeG4ySoFpIN8JbsK9GfSKc=; b=QlZDSG1fAVYhFF
-	5Ag/PR5ZYXmIdzM94UOSKJQ2tax7al3WLE7juIVt8W+m6j63wyO0LhXQcZGxb+Im///2lwNMt+UdD
-	+n9fam3Mq2958HdJ7V4kIJ27Pl31I2E9MHz+iIR8WR0nAu9W87X4CEdWt+TJKwK1uQwBYO+v2X6n8
-	krkUIYgLtk0XV8ZzaSLgZkVfPKcyBM4wLMy9vfvxOV7BNTqPANE/tdF+fnUsRdVvswkQ+L+CmWLA5
-	viYDUCiApkF7TpQaFnxYmcc+vYb3krpWLiE+dsZOG8udi6hMlbUrH7AlGS+EPSjVdLkDMVjm7BhU5
-	4kJVQzq8VEgPh94zbNeg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
+	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=p1BJ/3PAu+0pDmnprK5XepMvmi2k+wVjzgupybhRg/U=; b=ek29BSVqQShWV5
+	l2vLQ787YVVQrgOPeK/U/tcpzaVbAvTDJXfZy2VYyrbPHar50Kfj7pI/MN1Dfeu9JZ/9NAfvX5Zc6
+	dkLHFmsbRZWRBLMQjo/xnfKDGeG9hOtkW5fUHhqXDwrDImFmsJJtpjSfN7E3jf1paPtw581Oekpdz
+	VJFg1qqdm3zbuwhRwwWi5BE5aZeEYOIaqeChZ3q6GGEZwgThbS70F/mUfdtt6+WOOG9S1dYD+8v2T
+	yxVxx8gt0ixljgcW69AnAHuXvNx3esDb+cYSqLjl7Y3d5sc3RoL9nHk2bL9wBc55QYEoeIno9c5ux
+	ZM5neJq+/5EKgLQ66meg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gnREQ-0007YN-3h; Sat, 26 Jan 2019 16:54:58 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gnwYl-0008If-5X; Mon, 28 Jan 2019 02:22:03 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gnREC-0007NN-A6; Sat, 26 Jan 2019 16:54:45 +0000
-Received: from bbrezillon (unknown [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 66E9621872;
- Sat, 26 Jan 2019 16:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548521681;
- bh=U97JhAc67TlIoQxUSKMiEuA/BMeDSBdzpp3PIvkto18=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=DGeHc5v5OwpsLrtBKuw5LKAZtnbOM1h3gUlVB+JpQVIoI9ZFI388RiN1YZs2GYCUc
- NH1xt5YrV0NkoLod8XeOTNgAUbQM66STTm60psyzC9xptsRDww83fVfCdNNjACkiOa
- k87uIPS9qbh24NlaJ9ZDpSTWSCC5Bxu3pFRuRvlo=
-Date: Sat, 26 Jan 2019 17:54:29 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] mtd: rawnand: mark expected switch fall-throughs
-Message-ID: <20190126175429.65e6bfd8@bbrezillon>
-In-Reply-To: <853a267c-807b-c613-6662-93730a0b4c33@embeddedor.com>
-References: <20190125210950.GA27855@embeddedor>
- <20190126105208.221a2051@bbrezillon>
- <853a267c-807b-c613-6662-93730a0b4c33@embeddedor.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1gnwYf-0008IY-9v
+ for linux-mtd@bombadil.infradead.org; Mon, 28 Jan 2019 02:21:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+ List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=ibtxGouiTmsRJl/wbEcaH90zmmh7s2shyU3KNUF+GGQ=; b=ajwfC0Lhk3a9UM9W+20EE6k9zM
+ Wa5tGhv0A5yN5uoNXkRwnLYSFss/x2vRQFuY5tLWKVA1Ile4akw8QGHk2dLSWvvJMPh/DKF4IZpQ/
+ 3m6/5xRG58a1GDShzRaXsTekdrZSFRJ2tEn3eoHeKupCt9S5yD5Xjs8S6c1eAkl25Gjb+3GvMFmU9
+ F6piMVjt6QGFiP7XLeZkrL8ZCz1FKaQ24LOBHlY++LNRK2JaZwOcchYPC+htDc257q5pg10udezsD
+ VC4/2zqUImi+PM7l1Ry7q6Bd2+LIvSRPG5nhOIOhP/xNIhyT2w23FAYyT8InASbaroHjLvxt1asVM
+ HE9QC77Q==;
+Received: from static-50-53-52-16.bvtn.or.frontiernet.net ([50.53.52.16]
+ helo=midway.dunlab)
+ by merlin.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gnwYb-0002xR-6O; Mon, 28 Jan 2019 02:21:53 +0000
+To: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] mtd: nand: fix kernel-doc warnings
+Message-ID: <21d5edd7-1335-2731-6d53-5b15d053462c@infradead.org>
+Date: Sun, 27 Jan 2019 18:21:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190126_085444_366529_B1C7853A 
-X-CRM114-Status: GOOD (  14.58  )
+Content-Language: en-US
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,62 +75,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Kees Cook <keescook@chromium.org>, Wan ZongShun <mcuos.com@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Kyungmin Park <kyungmin.park@samsung.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 26 Jan 2019 07:48:50 -0600
-"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> Hey Boris,
-> 
-> On 1/26/19 3:52 AM, Boris Brezillon wrote:
-> > On Fri, 25 Jan 2019 15:09:50 -0600
-> > "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
-> >   
-> >> diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-> >> index 933d1a629c51..d33e15dc4cdc 100644
-> >> --- a/drivers/mtd/nand/raw/nandsim.c
-> >> +++ b/drivers/mtd/nand/raw/nandsim.c
-> >> @@ -2251,9 +2251,10 @@ static int __init ns_init_module(void)
-> >>  
-> >>  	switch (bbt) {
-> >>  	case 2:
-> >> -		 chip->bbt_options |= NAND_BBT_NO_OOB;
-> >> +		chip->bbt_options |= NAND_BBT_NO_OOB;
-> >> +		/* fall through */
-> >>  	case 1:
-> >> -		 chip->bbt_options |= NAND_BBT_USE_FLASH;
-> >> +		chip->bbt_options |= NAND_BBT_USE_FLASH;  
-> > 
-> > You miss a '/* fall through */' here.
-> >   
-> 
-> Not really.  Notice that in this case the code falls through
-> to a break statement.
+Fix kernel-doc warnings in drivers/mtd/nand/raw:
 
-Still find it weird to mandate fall through comments in all cases but
-this one...
+../drivers/mtd/nand/raw/nand_base.c:420: warning: Function parameter or member 'chip' not described in 'nand_fill_oob'
+../drivers/mtd/nand/raw/nand_bbt.c:173: warning: Function parameter or member 'this' not described in 'read_bbt'
+../drivers/mtd/nand/raw/nand_bbt.c:173: warning: Excess function parameter 'chip' description in 'read_bbt'
 
-> 
-> >>  	case 0:
-> >>  		break;
-> >>  	default:  
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+---
+Do you want Fixes: tags for these:
+
+Fixes: 0813621ba898a ("mtd: rawnand: Stop passing mtd_info objects to internal functions")
+Fixes: 99f3351a6d6e0 ("mtd: rawnand: Reorganize code to avoid forward declarations")
+
+ drivers/mtd/nand/raw/nand_base.c |    1 +
+ drivers/mtd/nand/raw/nand_bbt.c  |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+--- lnx-50-rc4.orig/drivers/mtd/nand/raw/nand_base.c
++++ lnx-50-rc4/drivers/mtd/nand/raw/nand_base.c
+@@ -410,6 +410,7 @@ static int nand_check_wp(struct nand_chi
+ 
+ /**
+  * nand_fill_oob - [INTERN] Transfer client buffer to oob
++ * @chip: NAND chip object
+  * @oob: oob data buffer
+  * @len: oob data write length
+  * @ops: oob ops structure
+--- lnx-50-rc4.orig/drivers/mtd/nand/raw/nand_bbt.c
++++ lnx-50-rc4/drivers/mtd/nand/raw/nand_bbt.c
+@@ -158,7 +158,7 @@ static u32 add_marker_len(struct nand_bb
+ 
+ /**
+  * read_bbt - [GENERIC] Read the bad block table starting from page
+- * @chip: NAND chip object
++ * @this: NAND chip object
+  * @buf: temporary buffer
+  * @page: the starting page
+  * @num: the number of bbt descriptors to read
+
 
 
 ______________________________________________________
