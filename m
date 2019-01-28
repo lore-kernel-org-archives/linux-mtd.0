@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E03FC282C8
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 13:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E660C282C8
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 13:55:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E37D20449
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 13:55:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B84B20449
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 13:55:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pIHOBKt3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="FcJNsc+1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E37D20449
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ME2VQ8RS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="jofZ87qy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B84B20449
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,65 +26,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6pNKEvb+zIK1zzkJPdwE73I1GcIhybBR4Tz+aLFuKK4=; b=pIHOBKt334edFo
-	w+5EivmzVe14ajI6O+7MkWGivX2cZtFoGecUaLFnGG2Vp2O3X+63YDktjetzVUsB2GyXKnMLbA07D
-	+Mn53HdrrOEoLDLxnqnc1NrKE7O/GHcyH7dDq+ajXr33Yqu5cykag07KTFwKauu4GzhHHm8G1LwoV
-	kkI1YcmVM6MVCt/Yb3dc8hLaTp0wzekobam0uRDhO/FFMU1xW+SC9DYzL8+oTCfi0pTTNjNE6P/mg
-	/pNgRD2in2I6oEVixS9x79FQfToLQ+cbx8dyrF6/nuviC9MK6O3+TGR0vVVj4k/266eHbGbp4+GjZ
-	dCUagkf+w7bGKcJlkqXg==;
+	List-Owner; bh=MKXedS5IYS1lONMMRTD+CVJWxMtCZHZzjMP4zuhr5gQ=; b=ME2VQ8RSM3pJIf
+	6SKG7mgxZOXZTv1IpUOSMyViKsZGVbRaQ079V7mGcQ+hfgZjp1IO4a+sey3bDEPLHL+ot6NTczDrH
+	MBpOGsNESqgrMq5hD/6Gm9AhJETJ5KO+41e1GAcDkXq4v2jgvANTdGK+GAnyGiBhJO+PcJNkut5TK
+	B4a6Pn2b6S6bIr646FgCvz6rWmhALuYMiwFcFOiJXjH90EpyHNBaz2izqZlksKV26IQbPBvsjhTth
+	3y4Jkrd09tVhiKrPVobNj92lFn0afxAdxTUpZhEokeISuV5irXmE6fJ3/LJjxuBmQb2dKxKeCnfoU
+	4kVSaSNVXacW0sFg5Hxg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1go7Nq-00013l-Ml; Mon, 28 Jan 2019 13:55:30 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1go7O3-0001I3-Po; Mon, 28 Jan 2019 13:55:43 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1go7NV-0008UU-Q8
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2019 13:55:15 +0000
-Received: by mail-lj1-x244.google.com with SMTP id k15-v6so14264501ljc.8
- for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2019 05:55:09 -0800 (PST)
+ id 1go7Na-0000TA-Dm
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2019 13:55:21 +0000
+Received: by mail-lj1-x241.google.com with SMTP id n18-v6so14274056lji.7
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2019 05:55:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=rK8cIESwiOWv9aGmz6Jj/RiNPyMVDDtZglSyhCaz9xI=;
- b=FcJNsc+16HPm8u7fBLdGIfnyu4j5eGMs7ipFBAsPOk9wkYodNbRAdv7tF1dhgesTGh
- SlMQmeEehJoF7Dh1BVZsPUwAGtzftskeSq0pfzraY+MFh16qiYXd8M32wKoSP01zfH+T
- mj5R25Wu4QXBE2L1RtktZI31vwwwAv2dVgMRU=
+ bh=OWmZxsQVuMIf2AkP/1PkW+ARHBWjvKhuF5HT3GrzPJc=;
+ b=jofZ87qy0FvOkvCkbIV9gynM1Px1dX3tehlorXzgYUwOsCBJ9waU3OKpZVAlNvIrj+
+ l9c0Hy9jbYNPbIH3vQ7UgaQZ3uy/HaQM7VRA4P/l+9bV8wG9OAsNy/WUJNWFdzdpy5/i
+ cLJZSM2tR235N9vb+pzOhnEYzWLGNjnAOfSxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=rK8cIESwiOWv9aGmz6Jj/RiNPyMVDDtZglSyhCaz9xI=;
- b=mWiq+mldrznS0bN2/7B3idNfd5ex3+szBVvzK/281lry3FcYPN2o0g9yqfmwyHs+b4
- do7wO5Gw2f+9qhquxgidjDM9q+zWSrle5+wz72lcWX1wssHU/etYV2xrFuRStbHRplyb
- o8Rfuom8s3YfJYE2CiDN1hvcp2y+5IENqhTB1jvfzeCMsfkCUEztXw8nZCIPt6syrXm+
- Nq+GyKPmpUboXOIR9HjM7G9LT7RYkLieRXQwr74n32iiijBrXTjyQgyKwGqPbzxKHETF
- K8tCdn5836o6BPKnX7jVa77pfh0Y08jZHUb+9VuRk3dI1lgVuECWcFBooA3bVL5Cu1Op
- 4ohA==
-X-Gm-Message-State: AJcUuke3PTY+ZtKejp9/LLycGdkqEmhIGhsAwe0LgrdMaqrhtWyXbMqe
- BKfagVi3dcPFYWaKNaAT4cQVXg==
-X-Google-Smtp-Source: ALg8bN5soItK2sixqFIOrt/+OiXysrlki/WPEboWEAYdmp56jPacjhd5pXeHbl0n7b8gLBDsr1yrwQ==
-X-Received: by 2002:a2e:9ad0:: with SMTP id
- p16-v6mr17828699ljj.102.1548683707792; 
- Mon, 28 Jan 2019 05:55:07 -0800 (PST)
+ bh=OWmZxsQVuMIf2AkP/1PkW+ARHBWjvKhuF5HT3GrzPJc=;
+ b=j/uHDYlgbTbhJbCDdaOyJp5jZhzxWhdaHVXkI2Al3JN6zykjccnjO2XVyPwecX08RK
+ wralcoeeTO5nRZmvMoJWmcOZ1X0YXLIs7jd8HRekO3gBsbGtFWOMxgR1NDD4jGD98n9j
+ 9TaKmqyTBuWNWX+171kdvqu2bzLwYyG7wmmgSuztvwbrmqLD3hSwD0iGxs3eHLut+zBW
+ 7Od/ciJg4jWKA0QdVgn8tREt1S31iBSaomm4/XndXaEUQb4fex27NbOItEAxEt/NZbmQ
+ GlaxaogxixQewfrMWoFCo9UuTB7SRAmVbW80riq+Gs8pL5v2VOcotjJ1PsNNBoSb1qW6
+ DsrA==
+X-Gm-Message-State: AHQUAubPI0rEwrrfaXqp749kGRDRTbcOqk4RCvD2ePnjj9d1AbxGVezp
+ sHVe/S6q93cFZ48T83ByS58FyA==
+X-Google-Smtp-Source: AHgI3Ia2z/1DyMSUiI86tmxlqH+51skPqyaIohc8dKHKksLtuyYPuAx9gdmssoJn6hvWWIZnlU69eA==
+X-Received: by 2002:a2e:8786:: with SMTP id
+ n6-v6mr6574348lji.100.1548683712405; 
+ Mon, 28 Jan 2019 05:55:12 -0800 (PST)
 Received: from genomnajs.ideon.se ([85.235.10.227])
- by smtp.gmail.com with ESMTPSA id a2-v6sm3050503lji.13.2019.01.28.05.55.06
+ by smtp.gmail.com with ESMTPSA id a2-v6sm3050503lji.13.2019.01.28.05.55.10
  (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 28 Jan 2019 05:55:06 -0800 (PST)
+ Mon, 28 Jan 2019 05:55:11 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 2/6] mtd: afs: simplify partition detection
-Date: Mon, 28 Jan 2019 14:54:45 +0100
-Message-Id: <20190128135449.15555-3-linus.walleij@linaro.org>
+Subject: [PATCH 3/6] mtd: factor out v1 partition parsing
+Date: Mon, 28 Jan 2019 14:54:46 +0100
+Message-Id: <20190128135449.15555-4-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190128135449.15555-1-linus.walleij@linaro.org>
 References: <20190128135449.15555-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190128_055510_272338_5570E7DC 
-X-CRM114-Status: GOOD (  19.96  )
+X-CRM114-CacheID: sfid-20190128_055515_006450_6D9B9DB5 
+X-CRM114-Status: GOOD (  22.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -103,70 +103,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Instead of reading out the AFS footers twice, create a separate
-function to just check if there is a footer or not. Rids a few
-local variables and prepare us to join the actual parser into
-one function.
+This breaks out the parsing of v1 partitions so we can later add
+a v2 partition parser.
 
 Cc: Ryan Harkin <ryan.harkin@linaro.org>
 Cc: Liviu Dudau <liviu.dudau@arm.com>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/mtd/parsers/afs.c | 33 ++++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
+ drivers/mtd/parsers/afs.c | 88 ++++++++++++++++++++++-----------------
+ 1 file changed, 50 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/mtd/parsers/afs.c b/drivers/mtd/parsers/afs.c
-index c489938cd665..ccc198818057 100644
+index ccc198818057..32ded91ae66c 100644
 --- a/drivers/mtd/parsers/afs.c
 +++ b/drivers/mtd/parsers/afs.c
-@@ -68,6 +68,26 @@ static u32 word_sum(void *words, int num)
- 	return sum;
+@@ -181,14 +181,18 @@ afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
+ 	return ret;
  }
  
-+static bool afs_is_v1(struct mtd_info *mtd, u_int off)
-+{
-+	/* The magic is 12 bytes from the end of the erase block */
-+	u_int ptr = off + mtd->erasesize - 12;
-+	u32 magic;
-+	size_t sz;
+-static int parse_afs_partitions(struct mtd_info *mtd,
+-				const struct mtd_partition **pparts,
+-				struct mtd_part_parser_data *data)
++static int afs_parse_v1_partition(struct mtd_info *mtd,
++				  u_int off, struct mtd_partition *part)
+ {
+-	struct mtd_partition *parts;
+-	u_int mask, off, sz;
+-	int ret = 0;
+-	int i;
++	struct image_info_v1 iis;
++	u_int mask;
++	/*
++	 * Static checks cannot see that we bail out if we have an error
++	 * reading the footer.
++	 */
++	u_int uninitialized_var(iis_ptr);
++	u_int uninitialized_var(img_ptr);
 +	int ret;
-+
-+	ret = mtd_read(mtd, ptr, 4, &sz, (u_char *)&magic);
-+	if (ret < 0) {
-+		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
-+		       ptr, ret);
-+		return false;
-+	}
-+	if (ret >= 0 && sz != 4)
-+		return false;
-+
-+	return (magic == AFSV1_FOOTER_MAGIC);
-+}
-+
- static int
- afs_read_footer_v1(struct mtd_info *mtd, u_int *img_start, u_int *iis_start,
- 		   u_int off, u_int mask)
-@@ -176,18 +196,9 @@ static int parse_afs_partitions(struct mtd_info *mtd,
+ 
+ 	/*
+ 	 * This is the address mask; we use this to mask off out of
+@@ -196,6 +200,39 @@ static int parse_afs_partitions(struct mtd_info *mtd,
  	 */
  	mask = mtd->size - 1;
  
--	/*
--	 * First, calculate the size of the array we need for the
--	 * partition information.  We include in this the size of
--	 * the strings.
--	 */
-+	/* Count the partitions by looping over all erase blocks */
++	ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
++	if (ret < 0)
++		return ret;
++
++	/* Read the image info block */
++	ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
++	if (ret < 0)
++		return ret;
++
++	part->name = kstrdup(iis.name, GFP_KERNEL);
++	if (!part->name)
++		return -ENOMEM;
++
++	part->size = (iis.length + mtd->erasesize - 1) & ~(mtd->erasesize - 1);
++	part->offset = img_ptr;
++	part->mask_flags = 0;
++
++	printk("  mtd: at 0x%08x, %5lluKiB, %8u, %s\n",
++	       img_ptr, part->size / 1024,
++	       iis.imageNumber, part->name);
++
++	return 0;
++}
++
++static int parse_afs_partitions(struct mtd_info *mtd,
++				const struct mtd_partition **pparts,
++				struct mtd_part_parser_data *data)
++{
++	struct mtd_partition *parts;
++	u_int off, sz;
++	int ret = 0;
++	int i;
++
+ 	/* Count the partitions by looping over all erase blocks */
  	for (i = off = sz = 0; off < mtd->size; off += mtd->erasesize) {
+ 		if (afs_is_v1(mtd, off)) {
+@@ -215,38 +252,13 @@ static int parse_afs_partitions(struct mtd_info *mtd,
+ 	 * Identify the partitions
+ 	 */
+ 	for (i = off = 0; off < mtd->size; off += mtd->erasesize) {
+-		struct image_info_v1 iis;
 -		u_int iis_ptr, img_ptr;
 -
+-		/* Read the footer. */
 -		ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
 -		if (ret < 0)
--			return ret;
--		if (ret) {
+-			goto out_free_parts;
+-		if (ret == 0)
+-			continue;
+-
+-		/* Read the image info block */
+-		ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
+-		if (ret < 0)
+-			goto out_free_parts;
+-		if (ret == 0)
+-			continue;
+-
+-		parts[i].name = kstrdup(iis.name, GFP_KERNEL);
+-		if (!parts[i].name) {
+-			ret = -ENOMEM;
+-			goto out_free_parts;
+-		}
+ 
+-		parts[i].size		= (iis.length + mtd->erasesize - 1) & ~(mtd->erasesize - 1);
+-		parts[i].offset	= img_ptr;
+-		parts[i].mask_flags	= 0;
+-
+-		printk("  mtd%d: at 0x%08x, %5lluKiB, %8u, %s\n",
+-			i, img_ptr, parts[i].size / 1024,
+-			iis.imageNumber, parts[i].name);
+-
+-		i += 1;
 +		if (afs_is_v1(mtd, off)) {
- 			sz += sizeof(struct mtd_partition);
- 			i += 1;
- 		}
++			ret = afs_parse_v1_partition(mtd, off, &parts[i]);
++			if (ret)
++				goto out_free_parts;
++			i++;
++		}
+ 	}
+ 
+ 	*pparts = parts;
 -- 
 2.20.1
 
