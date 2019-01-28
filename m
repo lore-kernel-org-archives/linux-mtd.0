@@ -2,68 +2,69 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B043C282CC
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 02:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E3FC282C8
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 04:57:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 323D220C01
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 02:22:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A83A20870
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Jan 2019 04:57:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ek29BSVq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ajwfC0Lh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 323D220C01
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sVPGZow/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A83A20870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=p1BJ/3PAu+0pDmnprK5XepMvmi2k+wVjzgupybhRg/U=; b=ek29BSVqQShWV5
-	l2vLQ787YVVQrgOPeK/U/tcpzaVbAvTDJXfZy2VYyrbPHar50Kfj7pI/MN1Dfeu9JZ/9NAfvX5Zc6
-	dkLHFmsbRZWRBLMQjo/xnfKDGeG9hOtkW5fUHhqXDwrDImFmsJJtpjSfN7E3jf1paPtw581Oekpdz
-	VJFg1qqdm3zbuwhRwwWi5BE5aZeEYOIaqeChZ3q6GGEZwgThbS70F/mUfdtt6+WOOG9S1dYD+8v2T
-	yxVxx8gt0ixljgcW69AnAHuXvNx3esDb+cYSqLjl7Y3d5sc3RoL9nHk2bL9wBc55QYEoeIno9c5ux
-	ZM5neJq+/5EKgLQ66meg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=N7Nx0UOnvhIzdQF+0XNfygaR+oL8fFo8IDd4fcm8SzM=; b=sVPGZow/zdlmndYB6Fyd62qLJ
+	kNk0lpaHhI1aMfUKOBU3ZhqxQas6T0c9/xBBzwBoLDwcvmCqsdZRLKtjl+Rqp94+c+SM6KZEAtCw+
+	uLsRKXWwaqziJbal9T+ZBLkwFs0U/+ZXrQwS+wvPsboa3c5I/s9lq4OANUGFw0vgNrSh3HsGLZo0r
+	saXT1zWs7TBhws/+q0aISAZUcCOfhSG6oOTXEVpXbmFTNLBYIdeuPIOPGdj83chphh5ULHmAnaShb
+	mlq0yOO5lDjNclq2/dO0PqHlljOByEqUYtKF0ORnFlkGAS6H+/tjNiy1H+SkLU9PnW6BkMwOc8tQi
+	26MqB8Sfg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gnwYl-0008If-5X; Mon, 28 Jan 2019 02:22:03 +0000
-Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
+	id 1gnyzC-0005Lt-DQ; Mon, 28 Jan 2019 04:57:30 +0000
+Received: from mga12.intel.com ([192.55.52.136])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gnwYf-0008IY-9v
- for linux-mtd@bombadil.infradead.org; Mon, 28 Jan 2019 02:21:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
- List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=ibtxGouiTmsRJl/wbEcaH90zmmh7s2shyU3KNUF+GGQ=; b=ajwfC0Lhk3a9UM9W+20EE6k9zM
- Wa5tGhv0A5yN5uoNXkRwnLYSFss/x2vRQFuY5tLWKVA1Ile4akw8QGHk2dLSWvvJMPh/DKF4IZpQ/
- 3m6/5xRG58a1GDShzRaXsTekdrZSFRJ2tEn3eoHeKupCt9S5yD5Xjs8S6c1eAkl25Gjb+3GvMFmU9
- F6piMVjt6QGFiP7XLeZkrL8ZCz1FKaQ24LOBHlY++LNRK2JaZwOcchYPC+htDc257q5pg10udezsD
- VC4/2zqUImi+PM7l1Ry7q6Bd2+LIvSRPG5nhOIOhP/xNIhyT2w23FAYyT8InASbaroHjLvxt1asVM
- HE9QC77Q==;
-Received: from static-50-53-52-16.bvtn.or.frontiernet.net ([50.53.52.16]
- helo=midway.dunlab)
- by merlin.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gnwYb-0002xR-6O; Mon, 28 Jan 2019 02:21:53 +0000
-To: LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] mtd: nand: fix kernel-doc warnings
-Message-ID: <21d5edd7-1335-2731-6d53-5b15d053462c@infradead.org>
-Date: Sun, 27 Jan 2019 18:21:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+ id 1gnyz9-0005La-B8
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2019 04:57:28 +0000
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2019 20:57:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.56,532,1539673200"; d="scan'208";a="113155840"
+Received: from mandalpu-mobl.gar.corp.intel.com (HELO [10.66.97.14])
+ ([10.66.97.14])
+ by orsmga008.jf.intel.com with ESMTP; 27 Jan 2019 20:57:22 -0800
+Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: write upto 8-bytes data in
+ STIG mode
+To: Tudor.Ambarus@microchip.com, f.blogs@napier.co.nz,
+ boris.brezillon@bootlin.com
+References: <20181214021516.43609-1-purna.chandra.mandal@intel.com>
+ <c627314d-fdf6-7e69-7c54-03a513f563fc@microchip.com>
+From: "Mandal, Purna Chandra" <purna.chandra.mandal@intel.com>
+Message-ID: <76066a83-1cd2-5baf-1930-c290f66e73ba@intel.com>
+Date: Mon, 28 Jan 2019 10:27:20 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.3
 MIME-Version: 1.0
+In-Reply-To: <c627314d-fdf6-7e69-7c54-03a513f563fc@microchip.com>
 Content-Language: en-US
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20190127_205727_400461_08D5E199 
+X-CRM114-Status: GOOD (  21.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,59 +76,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-Fix kernel-doc warnings in drivers/mtd/nand/raw:
-
-../drivers/mtd/nand/raw/nand_base.c:420: warning: Function parameter or member 'chip' not described in 'nand_fill_oob'
-../drivers/mtd/nand/raw/nand_bbt.c:173: warning: Function parameter or member 'this' not described in 'read_bbt'
-../drivers/mtd/nand/raw/nand_bbt.c:173: warning: Excess function parameter 'chip' description in 'read_bbt'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
----
-Do you want Fixes: tags for these:
-
-Fixes: 0813621ba898a ("mtd: rawnand: Stop passing mtd_info objects to internal functions")
-Fixes: 99f3351a6d6e0 ("mtd: rawnand: Reorganize code to avoid forward declarations")
-
- drivers/mtd/nand/raw/nand_base.c |    1 +
- drivers/mtd/nand/raw/nand_bbt.c  |    2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
---- lnx-50-rc4.orig/drivers/mtd/nand/raw/nand_base.c
-+++ lnx-50-rc4/drivers/mtd/nand/raw/nand_base.c
-@@ -410,6 +410,7 @@ static int nand_check_wp(struct nand_chi
- 
- /**
-  * nand_fill_oob - [INTERN] Transfer client buffer to oob
-+ * @chip: NAND chip object
-  * @oob: oob data buffer
-  * @len: oob data write length
-  * @ops: oob ops structure
---- lnx-50-rc4.orig/drivers/mtd/nand/raw/nand_bbt.c
-+++ lnx-50-rc4/drivers/mtd/nand/raw/nand_bbt.c
-@@ -158,7 +158,7 @@ static u32 add_marker_len(struct nand_bb
- 
- /**
-  * read_bbt - [GENERIC] Read the bad block table starting from page
-- * @chip: NAND chip object
-+ * @this: NAND chip object
-  * @buf: temporary buffer
-  * @page: the starting page
-  * @num: the number of bbt descriptors to read
-
-
+On 21-Jan-19 3:07 PM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Purna,
+> 
+> On 12/14/2018 04:15 AM, Purna Chandra Mandal wrote:
+>> cadence-quadspi controller allows upto eight bytes of data to be transferred
+>> in software Triggered Instruction generator (STIG) mode of operation. Lower
+>> 4 bytes are written through writedatalower and upper 4 bytes by
+>> writedataupper register.
+> 
+> Is this supported by all versions of the IP?
+> 
+Yes, it is supported on all versions of IP.
+>>
+>> This patch allows all the 8 bytes to be written.
+>>
+>> Signed-off-by: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
+>> ---
+>>
+>>   drivers/mtd/spi-nor/cadence-quadspi.c | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> index 04cedd3a2bf6..990934387fea 100644
+>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> @@ -420,7 +420,7 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
+>>   	unsigned int data;
+> 
+> I know that this is not your change, but data should be u32 and not unsigned
+> int. reg too ... probably one should submit a patch to change this, I see that
+> the same error is done in cqspi_command_read().
+ack. will be done in separate patch.
+> 
+>>   	int ret;
+>>   
+>> -	if (n_tx > 4 || (n_tx && !txbuf)) {
+>> +	if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
+>>   		dev_err(nor->dev,
+>>   			"Invalid input argument, cmdlen %d txbuf 0x%p\n",
+>>   			n_tx, txbuf);
+>> @@ -435,8 +435,13 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
+>>   		data = 0;>  		memcpy(&data, txbuf, n_tx);
+> 
+> You should limit what is copied in data, similar to what is done in
+> cqspi_command_read():
+> 
+> write_len = (n_tx > 4) ? 4 : n_tx;
+> memcpy(&data, txbuf, write_len);
+> txbuf += write_len;
+ack.
+> 
+> 
+> 
+>>   		writel(data, reg_base + CQSPI_REG_CMDWRITEDATALOWER);
+>> -	}
+>>   
+>> +		if (n_tx > 4) {
+>> +			data = 0;
+> and then:
+> write_len = n_tx - 4;
+> memcpy(&data, txbuf, write_len);
+> 
+ack.
+> Cheers,
+> ta
+> 
+>> +			memcpy(&data, txbuf + 4, n_tx - 4);
+>> +			writel(data, reg_base + CQSPI_REG_CMDWRITEDATAUPPER);
+>> +		}
+>> +	}
+>>   	ret = cqspi_exec_flash_cmd(cqspi, reg);
+>>   	return ret;
+>>   }
+>>
 
 ______________________________________________________
 Linux MTD discussion mailing list
