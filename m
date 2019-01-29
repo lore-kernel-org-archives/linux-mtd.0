@@ -2,71 +2,88 @@ Return-Path: <SRS0=oh1H=QF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C10D8C282C7
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 19:02:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFC2EC282C7
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 21:47:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92AFA21848
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 19:02:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D27D20882
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 21:47:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MndsXRdp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92AFA21848
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pM+zkvtn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O1Z2U+FF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D27D20882
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RKwbNhSJLioAqORvGzhHAeQVtmXUksw9OOCvdB+bjD8=; b=MndsXRdpecxeSZ
-	/ACsP6xPffYGNszz3V3iU6N0DyzRfSMvc9EwzY0ooYjZzNTD4FVw5ApKGNZdihsaBeD2FvZER1wts
-	Sa2GZcSiDvwjuqoTXDa+spRdGVFq9IYcktvWg7BZHicrA4C1K2j+sIpAApoxIANLPzbjzEdYSbjBG
-	FgdveaDWbDREClilj4fnIZLCj08zLKk9qVsdKM2eCq/JBlR+/g0Aovn4ItVysmpOj3OI0AOnxmJT+
-	0WDC79E8/2jdqUNlrjQM7rwdMJsVHfo8e2LF0AickbvQN2VfecUc4DqVSzwxCSXMgEWXnAK7c0X3S
-	JEZRLT/GoB+6HRjS9eRg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wf5FwaIbbh9MKGiUnQjiaNmyOk2UnVJAvejY+f3e8rU=; b=pM+zkvtnxPFZNy
+	7UQXBo2CCRm9SH9zdaX86iTsBlS3gHGFllnzYITL8GTW9yRmStGybjt2Yx44LAez01tVNZq6tMlCx
+	LNm3KtARl46m4ONA7KuUzn2utIRILSqeg8kCMB7hXmf9sFFOfoVvNiz+poMVon7IXonFMs63FQ6gH
+	X6kNiYAVKfvYG3TNBxwkR7bscV7OdI1+Y/CoDtPbEy83lm65WRRhoMMYgCfu9Lnqe5+rKUT9Wq5IJ
+	Kgt1TJX2/oV56swfmVrlEkhpHfg99CXvW5Bf9crEXPJPqA7kqMWHYT+CEMw3pAHS49pLmBJUV2JJE
+	Pwk4t1dYa7a5CFn5X/Gw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1goYer-0001dN-Uv; Tue, 29 Jan 2019 19:02:53 +0000
-Received: from mail-ua1-f65.google.com ([209.85.222.65])
+	id 1gobDq-0000P8-2x; Tue, 29 Jan 2019 21:47:10 +0000
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goYeo-0001cp-Nq
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 19:02:52 +0000
-Received: by mail-ua1-f65.google.com with SMTP id v24so7211043uap.13
- for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2019 11:02:50 -0800 (PST)
+ id 1gobDn-0000Nc-4m; Tue, 29 Jan 2019 21:47:08 +0000
+Received: by mail-ed1-x544.google.com with SMTP id b3so17372731ede.1;
+ Tue, 29 Jan 2019 13:47:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=n8XV4iq9rA+fxnqZgdrOpJNvxbAjFgBIFBi+69D7N30=;
+ b=O1Z2U+FFs/xXdhyfCIX4vQ/y60cjlT6HDkQbbCzsFOYaAYRvGEkqWzMxH11eUvLywW
+ gBC+m1/yoJuwnGH7V1gi5rIVNPCWa+nNl1hC7Sd+KBIMIbbX5SBL+9onypPIPsR2noru
+ HnKTU1rdKKgFWt+ypI5KA39EYIQyXaSjgBiBKTTmFcXMgPw5MJCzTEJs+z790N1/x+8t
+ +S2rcqQ3F+CTQvGHasCuk7VWgQGkoerq+fzYx2HRoIETjKXC/Lq6o+vIH07RMxm/o1b9
+ m7r70uUp9Gw+59LBw9u7Q5j8kOD7XcvLQlSqTqs3L8PuLVaZqZ0rPG10CIHFAtvwhSXD
+ +BAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=JGbalnbWK1BdJsVh4SfasEI2KSz1Xmm2olQ96cpZjL4=;
- b=r9SFLo/acQn4m4XpVLAIAaw6nDqnIi2NKIkizDtdfJYl0rhnzOXaLclOlK4ws3Aeda
- gp7AaG/chEar3tA2U33PMzfBBJ6h2x6H2FtmghsL9KJlqqRu5b+2bSU3Fm1wFEg13ciE
- oTnRHRDyGJgBdOuSLGT+wKCiycazEPFp751xQX5Mmuo0EOUv6HHXgRnXoWeMzpel+PvJ
- FHsbD4rnnuXSEqOtpYh72vo0WFP1oEHM26yTtOURYFxUMbNOk0fvnvQxwCSqeEga3Bml
- 7BXBR59QULdWBl/HfIFoAchmsZBzpsxsYx+9NDuGGAYO/ABa8kbabvfxI0xDbFTkfr3g
- I42w==
-X-Gm-Message-State: AJcUuke5QTWEHuY7AD5uoRYHFJh96MERur/vNAU5B5uWn9uFpL3nSoby
- cfRo0kb7OK/g5RFlbnxbWwUMLTEdcaiKiCN00X0=
-X-Google-Smtp-Source: ALg8bN5FS3RLjkNTwLmFTA7F/tmoskPNe5LD48gPWZdscGmSAlTxrvIZagAeda33RcHwvrapJ/Opo7+7zVU+JiJhfTw=
-X-Received: by 2002:ab0:7251:: with SMTP id d17mr11815650uap.0.1548788569395; 
- Tue, 29 Jan 2019 11:02:49 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=n8XV4iq9rA+fxnqZgdrOpJNvxbAjFgBIFBi+69D7N30=;
+ b=GuZrZwNsowWznfwlPWjsmHOzPTOqCFjOIOx2lUQrQUtgLOnmURCkxhhjjwaJK1kn8R
+ u8bOYtsIVP+uXVj+6eJqILFCxZ5Fakhw0Dmf8QqndBKtjru5wmWOseTZCtszzJapRzmF
+ W3QlPf0sggnqfQA1xPa4nnoQjQAapezEhJZuLNnsU6P7+bCNWNrrYl1aFusoP2gMSMen
+ YiHCL4iZ0Nydq+j0Fr5FBJ1uPrYoFfU7C3aIzTTak5Lv11iAcq7A0xA5R3UuX3DlVmOH
+ UfSjpw7Ciniu8gnEmtrC6v+/t3l3mS6GMV30a0109SmPmx1tyRPFBWUxHRGyQLpLUo7G
+ 7ZTw==
+X-Gm-Message-State: AJcUukfHWa+0OJ0UKhaIM2b9mI6gZjC8Vqg7gdOQyBIbsHWIuZFATCHF
+ q6hvHcz3VL8NanH/hhCQbHY=
+X-Google-Smtp-Source: ALg8bN47o6Rqe+uaZF9wFXjaoxci4e+cXndEnBBvjiH+TT4ecdA3X+dxfIjNsZrcwc7TRCDv49DITw==
+X-Received: by 2002:a50:8d12:: with SMTP id s18mr27666403eds.32.1548798424905; 
+ Tue, 29 Jan 2019 13:47:04 -0800 (PST)
+Received: from localhost.localdomain ([2a01:4f9:2a:1fae::2])
+ by smtp.gmail.com with ESMTPSA id y16sm8342edb.41.2019.01.29.13.47.03
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 29 Jan 2019 13:47:03 -0800 (PST)
+From: Nathan Chancellor <natechancellor@gmail.com>
+To: Liang Yang <liang.yang@amlogic.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: meson: Fix linking error on 32-bit platforms
+Date: Tue, 29 Jan 2019 14:46:57 -0700
+Message-Id: <20190129214657.5877-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20190118140525.29189-1-geert+renesas@glider.be>
- <20190118230740.44239fcf@bbrezillon>
-In-Reply-To: <20190118230740.44239fcf@bbrezillon>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 29 Jan 2019 20:02:37 +0100
-Message-ID: <CAMuHMdVfVHUQnjwvFikqQJ8HBD+0A7DSCTcdDN4e7V4c=4Usug@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] eeprom: at25: SPI transfer improvements
-To: Boris Brezillon <bbrezillon@kernel.org>
+X-Patchwork-Bot: notify
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190129_110250_770669_2FB2C09B 
-X-CRM114-Status: GOOD (  13.50  )
+X-CRM114-CacheID: sfid-20190129_134707_202230_E9690B4F 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,48 +95,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Nguyen An Hoan <na-hoan@jinso.co.jp>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>,
+ linux-amlogic@lists.infradead.org,
+ Nathan Chancellor <natechancellor@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+On arm little endian allyesconfig:
 
-On Fri, Jan 18, 2019 at 11:07 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
-> Did you consider converting this driver to spimem? Looks like the
-> protocol used to communicate with the memory resembles the one used on
-> SPI NANDs/NORs and fits pretty well in the spi_mem_op representation.
->
-> By doing this conversion you'd allow people to connect an AT25 EEPROM
-> to an advanced SPI controller that does not support regular SPI
-> transfers and you wouldn't have to forge SPI messages manually.
->
-> Here is a patch (only compile tested) doing that. The diffstat is not in
-> favor of this conversion, but I find the resulting code cleaner and more
-> future proof.
+  ld.lld: error: undefined symbol: __aeabi_uldivmod
+  >>> referenced by meson_nand.c
+  >>> mtd/nand/raw/meson_nand.o:(meson_nfc_setup_data_interface) in archive drivers/built-in.a
 
-Thanks, seems to work fine, with the 512-byte 25LC040 I have!
+The dividend tBERS_max is u64, meaning we need to use DIV_ROUND_UP_ULL
+(which wraps do_div) to prevent the compiler from emitting
+__aebi_uldivmod.
 
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 2d570b34b41a ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I did notice that the first two-byte transfer (command+offset) of each
-message is now split in two one-byte transfers, though.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index e858d58d97b0..6f12a96195d1 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -1116,8 +1116,8 @@ int meson_nfc_setup_data_interface(struct nand_chip *nand, int csline,
+ 				       div * NFC_CLK_CYCLE);
+ 	meson_chip->tadl = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tADL_min),
+ 					div * NFC_CLK_CYCLE);
+-	tbers_clocks = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tBERS_max),
+-				    div * NFC_CLK_CYCLE);
++	tbers_clocks = DIV_ROUND_UP_ULL(PSEC_TO_NSEC(timings->tBERS_max),
++					div * NFC_CLK_CYCLE);
+ 	meson_chip->tbers_max = ilog2(tbers_clocks);
+ 	if (!is_power_of_2(tbers_clocks))
+ 		meson_chip->tbers_max++;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.20.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
