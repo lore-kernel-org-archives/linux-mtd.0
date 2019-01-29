@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57DC4C282C7
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 09:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B574C169C4
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 09:55:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25C222177E
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 09:49:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0609C20870
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 09:55:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P1GqOXGq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="dd0a2umI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25C222177E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uenHygD7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="VIgwn3Oh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0609C20870
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LZnZYUo5apeCn0sPLiLsbO6ZZrYyBxmXPYqEINsJaZY=; b=P1GqOXGqlXUWhV
-	jbFyDK6HfoWoK3Yq+olFH3G+JdlE5pbOBl65WOkivlVSNj7kIfrML6K9EkVXlErb29YGsaZSCAHD3
-	Z1rALQagZk13QR3FdQHcaTBi1E6BLU1pWGEf5EG8U+QyqCVGu1hV8MaCWgsEyX4ky8H//yK4Xo/qv
-	6gS3ZWCmNKIvlCoU7VVCft5K+F1bCpBL6wHZgNTMrHK3VouaYSUEhaDrFFOeUv2D8PLNfUeNZf9vx
-	0pCpIH74ZjhFPLKogZe4dtaePboIqPv23VOw+/5dPIeuRxar9eOwWQZkE/fifYAtYWZcwQzjW6H8u
-	Xw1gyMHUIAB2TUpGsIFw==;
+	List-Owner; bh=vfJzPnpT9pwbs3Md1MLRmudsZOvUuU8lOc+3nHNUbNo=; b=uenHygD7mLwFfm
+	B51npVc6uK9CGGr+/o39IJUx9nSK6N2BNVxdYvmYyZGI/1C7tqPbkdUlRH5t2mOJ48CIUbnBY/wYb
+	eLLnZOJjz1JKpV4ocrZMdyIRtLZCQbo73MqseCbInNRimNzUe3Q/sSw3Qv0ZPntFGTmOGjMqrmKXf
+	JaVCZgNcTL05aLo4QOLAThAqGQ2ykbYobEAbU0V7oZA3Wj76nEr0ZzREnDyw1fxDSxDlN63RdsGGP
+	SAXiPjVF2uIsM+Rdajft69AYgFz0nLsYDvPo/njrTbFXSvww8FCg6vYsUe/sMIwb0qm0AACi09Tzm
+	9b3psW7ItJY16WjiX5Gg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1goQ1J-0001km-OO; Tue, 29 Jan 2019 09:49:29 +0000
-Received: from mail-eopbgr30054.outbound.protection.outlook.com ([40.107.3.54]
- helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+	id 1goQ7B-0005BU-My; Tue, 29 Jan 2019 09:55:33 +0000
+Received: from mail-eopbgr140074.outbound.protection.outlook.com
+ ([40.107.14.74] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goQ1G-0001kI-9T
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 09:49:28 +0000
+ id 1goQ78-0005Ag-Sb
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 09:55:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4FU0zrbAbKa57Fitc3b9C6D9KS41z+nyW5e2tfGe1ik=;
- b=dd0a2umIaO942Ix2K0w9ECdkVb0tPjSCeRZuEKtcpMA6LBnQPFxuO9N8e6vfOR23hY+O0W8ZVhGlp0kqIRXsJsfQUc7QOAimkDKG9vjCvr6H9AN8yVgqV6ggoK+TAQwbiieFj5YoVGsXmxbnPHllh+toq5rOsVWgV2EcsWxMkLg=
+ bh=MLlUmvU6YtVSP3dvL1aXrY1wWUoJOzqTVgC+ni8onvE=;
+ b=VIgwn3Ohp1w0X3E07azEbo5QpkaJHKmdosdAyu1qp3Gcultfr0ff0Gx7hq8puj46JphofKiv9aEf/LhLWj+Q7YjxSCPQmjNQ0u3dhYpcPfQ4N3mukHxjKBD459TQdvByYuBXFdkaoclDMOsDEG9+tk2BSPze+isfaKicogI3jd0=
 Received: from VI1PR04MB5726.eurprd04.prod.outlook.com (20.178.127.24) by
- VI1PR04MB4240.eurprd04.prod.outlook.com (52.134.31.27) with Microsoft SMTP
+ VI1PR04MB6079.eurprd04.prod.outlook.com (20.179.25.81) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1558.21; Tue, 29 Jan 2019 09:49:22 +0000
+ 15.20.1558.17; Tue, 29 Jan 2019 09:55:27 +0000
 Received: from VI1PR04MB5726.eurprd04.prod.outlook.com
  ([fe80::a1c2:cc79:80f3:3bcb]) by VI1PR04MB5726.eurprd04.prod.outlook.com
  ([fe80::a1c2:cc79:80f3:3bcb%5]) with mapi id 15.20.1558.023; Tue, 29 Jan 2019
- 09:49:22 +0000
+ 09:55:27 +0000
 From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "marek.vasut@gmail.com"
  <marek.vasut@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: [PATCH v2] spi: spi-mem: spi-nxp-fspi: add module license info
-Thread-Topic: [PATCH v2] spi: spi-mem: spi-nxp-fspi: add module license info
-Thread-Index: AQHUt7fpYyKJev1QqU2j2/cYy8Wrpg==
-Date: Tue, 29 Jan 2019 09:49:22 +0000
-Message-ID: <1548755240-27319-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
+Thread-Topic: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
+Thread-Index: AQHUt7jCop3Mc0YUEkGW97blapUdPA==
+Date: Tue, 29 Jan 2019 09:55:27 +0000
+Message-ID: <1548755607-27544-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: SG2PR06CA0126.apcprd06.prod.outlook.com
- (2603:1096:1:1d::28) To VI1PR04MB5726.eurprd04.prod.outlook.com
+x-clientproxiedby: SG2PR04CA0185.apcprd04.prod.outlook.com
+ (2603:1096:4:14::23) To VI1PR04MB5726.eurprd04.prod.outlook.com
  (2603:10a6:803:e4::24)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=yogeshnarayan.gaur@nxp.com; 
@@ -75,37 +75,37 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 1.9.1
 x-originating-ip: [92.120.1.66]
 x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; VI1PR04MB4240;
- 6:ERQC5TJrEBog0Xd7qfdJTXASP+LwH39c6XVY9PsjFK3MW8R+ZtzmCJpPC9Z2NUSyMSoLCf0Q5TSD9a5N+7eyVTbOYCwciWpeQXcNNxV9SO+jLc0JigvKJHWstIb8/0LGiny1zZ60TxTep8MkKOGL/vD42kesLRtecdSGlKm0jNaRAfOsi1+4ZHiN8Es/sWBe+xNNynPdfEQlhuVdrMGRoJT7ILp2eospRdJu0eyRRFTsenytsfLXCnrLKvwrgqkFdCqdrmd0hNLNaZER51YVk67S3+SvYkyNpZKV9w6lo7oiDAjZUcd4iKCwAmU5IxwlHizu1dEZnzM9zNjqAwsxHg7ikDW+crwY8b9ZaywSKbp4QNw4hSINUQ/SWOAeHsgyiyaBQVUF8vEcMdxUUeTn48BtI7c8dh+yDp1h3GlgQ+AFgcNf9WZ2oUV55OJqlM2bylTUjjBStCfOLlCVT23i0A==;
- 5:xrMpFWsfwTbl8sWOkuxwmI+PUjbnVcDlV2WG+aLi8NNBchOqoqgff/3VhhumVjb9WFTVk7UFqwT3olXv9IB2gLRlUA/ynp3MpnuSWjW4O6GavBglo1kFhuE+A6FOu20p4kwwlr5MDwPdGePL/SM0mXkRriZwx9tzaLwSsKY9rfka+3hwtyDQkvIwMQCYTF7GZ3ff4Sa5T7Im5+ZdRKcZ4Q==;
- 7:pYOJ9aq5B6GTe6GBgx0GLJH5q87D7DQOw62Cw6h65vkH+YqJcDCm67IFW7mRS2Xwqz34TDxF/vjZ79RZMn6aPPBlBjvY4exejDsOeQUZB8vKOilN2GAArU4VkuQICSMqRS85qHHKvJCd2+2kRmqJFw==
-x-ms-office365-filtering-correlation-id: 7bacb5f0-4813-4395-cdf4-08d685cf0bd5
+x-microsoft-exchange-diagnostics: 1; VI1PR04MB6079;
+ 6:hJlG1r+Dda+3s15JU8ex7pp9Ykqa7oFGruH5BlqjFBVRuAdt3uCyN3cWcGaEXKoz6jl0m5xeX/G1JXjEKkMTUOAk7AXrif4KGTyMOTu+CZrNFhgcf1GNkUIcXt9pkBDfyXB+U9ojK6GeX01KFlMmahpLKdLs0scVEhEBDYovChrBW5GtPGxSchtrBidSRQzj9lACA49tHhGyZBh95a8KGUXcO1CKrDjRoylf5JUS89Pf3iVB5DDrOUt7z1X5G/4fZWwxECvDd0nRx34WDmAXp3J4nFTsVnSatzMPcq1SyeQ0WaYvSFpln9lP5ce3RqkvcheUTSNB7qgaMmWM+WvHa7AjzCq6JRLOmnhm+pcbBPXOUiX8Lm8mKDJuzOyg7vlKZEsoyFhkH6MddKdns2RbWKv6at2FBbeDAijYys9Eirz1XUTiKNrYOMVPwM7hzBticLyffHZof++eNwlhjz0wnw==;
+ 5:PQQADW+lc9hOMCWLqUGRckCKjq2PeWnYZJOesEGoS6vdJUymKDTAGD6BAF21VfP1mH6a/xG9RwgQxGzCUGA0HqaTeOVsglLPX06wI4SlWkcm1Y5nDDysYjBw+GonffgAaFBmXQeu0eKBl6vdyiFsfin2LjuWkSN+DfZoWJM+VIlBEYTAr6d3dNVgmn5TQraaT1Gtdi4rfPctWjWDJ1iEVQ==;
+ 7:mzauu1lbbA8kJJCcIi/BARtKEXgXr0Tte9ak0jshrJuYyIRfYbGjckhB1FIuJgWM7yBMUc943g58LxL3gesjRYkko6s4aidzsMywgL/nBijr4RyE3QTRqH3vK+RtxxFbceMXZm54UYEg6o4sbG4vTQ==
+x-ms-office365-filtering-correlation-id: ab2a15a4-801e-441e-6e46-08d685cfe525
 x-ms-office365-filtering-ht: Tenant
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(4618075)(2017052603328)(7153060)(7193020);
- SRVR:VI1PR04MB4240; 
-x-ms-traffictypediagnostic: VI1PR04MB4240:
-x-microsoft-antispam-prvs: <VI1PR04MB4240C20950FC8BFADC15BAEE99970@VI1PR04MB4240.eurprd04.prod.outlook.com>
+ SRVR:VI1PR04MB6079; 
+x-ms-traffictypediagnostic: VI1PR04MB6079:
+x-microsoft-antispam-prvs: <VI1PR04MB60792315E01B8D4C1927506D99970@VI1PR04MB6079.eurprd04.prod.outlook.com>
 x-forefront-prvs: 093290AD39
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(376002)(39860400002)(396003)(136003)(366004)(199004)(189003)(4326008)(52116002)(110136005)(2616005)(25786009)(2201001)(476003)(81156014)(102836004)(2906002)(8676002)(81166006)(478600001)(316002)(105586002)(39060400002)(86362001)(14444005)(53936002)(99286004)(106356001)(256004)(54906003)(7736002)(14454004)(186003)(7416002)(71190400001)(66066001)(50226002)(71200400001)(36756003)(97736004)(486006)(6486002)(3846002)(6436002)(6506007)(68736007)(2501003)(305945005)(386003)(6116002)(26005)(8936002)(6512007);
- DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB4240;
+ SFS:(10009020)(346002)(376002)(39860400002)(396003)(366004)(136003)(189003)(199004)(4326008)(68736007)(6486002)(486006)(14454004)(2501003)(305945005)(2906002)(476003)(2616005)(66066001)(14444005)(7736002)(71200400001)(71190400001)(86362001)(36756003)(52116002)(105586002)(256004)(53936002)(25786009)(26005)(2201001)(8676002)(81166006)(81156014)(6116002)(106356001)(6512007)(3846002)(6436002)(102836004)(8936002)(39060400002)(97736004)(186003)(478600001)(316002)(50226002)(110136005)(99286004)(6506007)(54906003)(386003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB6079;
  H:VI1PR04MB5726.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
+ PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: nxp.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: S9aIYsrz51l+/7fLUQK6r3bOKyVUFEGvLu5DeENHlKAirNQGarXXwygLU+noHHuqdKtlwpHtnpTnO2yo4pgjh/PIef10CMp1cuev93MhYrFUyqZiJbp6FRwRsRJkyS1Q8ERRdPOklEvNXdLmI4w5o10KyT//kfL9UfVbojyG2wEXlfQlxUv+O98oa7/5yp68Jo196mAeItuBgk18e1/FcouEEOHJwERg7oyDIGwg76U9nYsIZqtbU1ueIJ0BUW4AjxxmJ1/sSBvNBiUVE5/K+7pKzxNWZBeXC3Qch10lmJXNqfqT37UEwtjYdL+t8FrpLbgGUma5WA1AfKLmnVUHqKi7e6pDxptUfBLr9og2vyEa5XQWWpVMfpbnXeUaiA3yKsBtY8PhHFbzVImZDF19WoazALvoq48uY/oQN2jjl10=
+x-microsoft-antispam-message-info: 51mdcFn0OOt6J1L8G+G2dM2BGlGEKMu+1G90lhV/ig4DtChyaKK60/4BSemEUlzGmFtz1J85E+i4ug6tzlMnTq1wLkM29MnggPz+BM4udslFJW70STulJ9mL6RV3OqgSFfu+QIaARZsRrgqzVDXne4htD0/7S9kv4YjZEC9K7VtkUnVA4syLLSfkuuweQ08JaNUzaPmhHNJv6vF2i3AhYtRHHw3FHcbmhxVgsc/z/NDHS33oGDuPvMJi49TWWtiHZ3AY3LZALgOJERozVufRemCQ/EsJA7Oz3yP4H5XfVvGAimvhLlHQAHtHfofRxe1F6VCp44Bse1YGSDm0lnS8JFEx5sQvl5YpPaZAEz9GmsDZWOrNnvalAytULC4zqfXvVnJdv3fMbr7iK1AAmSJ3kdZ4aUE6CUGniLDWhCEHWqg=
 MIME-Version: 1.0
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bacb5f0-4813-4395-cdf4-08d685cf0bd5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2019 09:49:18.3021 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab2a15a4-801e-441e-6e46-08d685cfe525
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2019 09:55:23.5390 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4240
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6079
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190129_014926_329731_DFF58E79 
-X-CRM114-Status: UNSURE (   8.87  )
+X-CRM114-CacheID: sfid-20190129_015530_928288_74F11ECB 
+X-CRM114-Status: UNSURE (   7.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -118,54 +118,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add MODULE_LICENSE info to fix below warning:
-WARNING: modpost: missing MODULE_LICENSE() in drivers/spi/spi-nxp-fspi.o
+Typo fix in Author Boris Brezillon last name and update with new
+email address.
 
-Typo fix in Boris Brezillon last name.
-
-Fixes: a5356aef6a90 ("spi: spi-mem: Add driver for NXP FlexSPI controller")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 ---
-Changes for v2:
-- Added Reported-by and Fixes tag.
-- Typo fix in Boris Brezillon last name.
+ drivers/spi/spi-fsl-qspi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/spi/spi-nxp-fspi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-index 0327216ef7aa..8894f98cc99c 100644
---- a/drivers/spi/spi-nxp-fspi.c
-+++ b/drivers/spi/spi-nxp-fspi.c
-@@ -26,7 +26,7 @@
+diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
+index f0a340026ba4..6a713f78a62e 100644
+--- a/drivers/spi/spi-fsl-qspi.c
++++ b/drivers/spi/spi-fsl-qspi.c
+@@ -10,7 +10,7 @@
   *
-  * Author:
-  *     Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-- *     Boris Brezillion <bbrezillon@kernel.org>
+  * Transition to SPI MEM interface:
+  * Authors:
+- *     Boris Brezillion <boris.brezillon@bootlin.com>
 + *     Boris Brezillon <bbrezillon@kernel.org>
   *     Frieder Schrempf <frieder.schrempf@kontron.de>
-  */
+  *     Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+  *     Suresh Gupta <suresh.gupta@nxp.com>
+@@ -959,7 +959,7 @@ module_platform_driver(fsl_qspi_driver);
  
-@@ -1101,5 +1101,6 @@ module_platform_driver(nxp_fspi_driver);
- MODULE_DESCRIPTION("NXP FSPI Controller Driver");
- MODULE_AUTHOR("NXP Semiconductor");
- MODULE_AUTHOR("Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>");
--MODULE_AUTHOR("Boris Brezillion <bbrezillon@kernel.org>");
+ MODULE_DESCRIPTION("Freescale QuadSPI Controller Driver");
+ MODULE_AUTHOR("Freescale Semiconductor Inc.");
+-MODULE_AUTHOR("Boris Brezillion <boris.brezillon@bootlin.com>");
 +MODULE_AUTHOR("Boris Brezillon <bbrezillon@kernel.org>");
  MODULE_AUTHOR("Frieder Schrempf <frieder.schrempf@kontron.de>");
-+MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Yogesh Gaur <yogeshnarayan.gaur@nxp.com>");
+ MODULE_AUTHOR("Suresh Gupta <suresh.gupta@nxp.com>");
 -- 
 2.17.1
 
