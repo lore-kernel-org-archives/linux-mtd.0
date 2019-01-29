@@ -2,192 +2,100 @@ Return-Path: <SRS0=oh1H=QF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAD_ENC_HEADER,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDB4C169C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 16:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E7CBC169C4
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 17:15:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 645F821852
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 16:11:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 264CD2087E
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 17:15:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tYWsS5d9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="CiZCCDjy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="CxmtwTXl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 645F821852
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hqL5cjj0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="CINnN9jD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 264CD2087E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yahoo.co.jp
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:
+	In-Reply-To:References:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=twEPv/7ghFaRKu06AOrhcyzbi+kEbFpUHgQtFrLMDV8=; b=tYWsS5d9lKwUWj
-	FlLG4op2Pyjx9uZrDnxcw8+sMGBfDV8/DbhZYaIn9fFd5PhGXaSgrI9/6msqJb00lvHZ9Vlm4LTYk
-	Krmzdyyk8KLtw3Mc1edij8VLuj8qQvhMAKD9AC5p4LzKz9/5gNVRQIQnWw7HkReygPPBCXngHOYql
-	dzqenNsUKNu/1a6rCwOMZtOl1SN30nLeU0WPRL1t64/m4ay2DJzY9cX8a0QHoBwpDx5TJgv5RUGXm
-	ZJPLu8I0zTu+Hkv4PGNR5WHaPcjCoarZvyKE4TOxlvijfL3qbUBBLyAV6aIOcu14mhomBkMxfvax+
-	ZE6ubWOswHkXnaguFLdA==;
+	List-Owner; bh=w6YLiI+AjjLB1vu3ICyC+auFtfVYt6h2Mcray4bh7uI=; b=hqL5cjj0oapGxa
+	qDQ0vk7byhPrNsT5nvCS6c+IfrvTofWA1mOE4oSjjJCUXEgY6BpIlmCwzUwDOrZ1xe6Y9XWeVyZAM
+	5McgjEL0UyadHdyu5eRhvVeGCvUeMATrrj6/mFnoep4SWLEOfwroMTi4i853db7POqIT7cs700ARU
+	lMimE4U1uIZLn2e80vX3upuveWqSpxVxgeDZXKLEgjYnbuhBODPpARyMQW+vhwdHD5glpNiI8ugpA
+	xgn9vnkIe+cwbEYHhguJLdVc41JOUoWOexHvwuItuV9Y3bcGRJrrs2GxrMF0LTer8lKwGpyK6WT3Q
+	QLcOgWUZ/IgOodedSnPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1goVyq-0004cx-4s; Tue, 29 Jan 2019 16:11:20 +0000
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]
- helo=mx0a-0014ca01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goVyn-0004cb-7q
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 16:11:18 +0000
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
- by mx0b-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
- x0TG3qFr011852; Tue, 29 Jan 2019 08:11:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=dfRplkXefM/jteoLrzUWB6081VwjJvZ4gcJQE2eDMDw=;
- b=CiZCCDjyDDpSyqUPThI5K7bWReQ1oS+DlcblhvbFXfnozIZcmadPaD+IEYS+3CjHTrax
- 01Ip+lkjvigmPA/otk81WEdSGM5dhYO1WRjBB9WP6HNBgmv9QwvCdPXdN9/Qbgyql7Qp
- 1Yuf1yQdW8PzzL6D/bzzyq0KvQGRcH1MswZ6ObmGalpnvuKTrbx53TwGfHVoBXjO4ReC
- RYISEXzs1s95651nXylAzpqc1sXOjTBPW5gWtXL9LJ3YNSXhX3bZ/mR/XKUKovshqYrg
- cfAgs9phLhzC3NvRnbo0sA8dJJFZu0gg6PZi8+ptyiAwscI0SsuQRQpJzWFkNDv2BXi4 ng== 
-Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
-Received: from nam04-bn3-obe.outbound.protection.outlook.com
- (mail-bn3nam04lp2054.outbound.protection.outlook.com [104.47.46.54])
- by mx0b-0014ca01.pphosted.com with ESMTP id 2qa81749sf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
- Tue, 29 Jan 2019 08:11:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dfRplkXefM/jteoLrzUWB6081VwjJvZ4gcJQE2eDMDw=;
- b=CxmtwTXlcdPGli6/YtW0lIFfB6GPk9YcYF4+sLHo8RqajM+lMgWmxbQ7jRFGfliRYyRsY05WFDKjgQkGbXJlke45zjju/8pS01qnwaQj6S1TRnRMsXCt8nbs1/rkLdEAIjeb21KAwufM4JV5SPZHxW+UhUm6ctG4zSU0KqlHssA=
-Received: from BYAPR07CA0055.namprd07.prod.outlook.com (2603:10b6:a03:60::32)
- by SN1PR07MB2255.namprd07.prod.outlook.com (2a01:111:e400:c456::21)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1558.21; Tue, 29 Jan
- 2019 16:11:04 +0000
-Received: from BY2NAM05FT047.eop-nam05.prod.protection.outlook.com
- (2a01:111:f400:7e52::204) by BYAPR07CA0055.outlook.office365.com
- (2603:10b6:a03:60::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1558.17 via Frontend
- Transport; Tue, 29 Jan 2019 16:11:03 +0000
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- cadence.com discourages use of 199.43.4.28 as permitted sender)
-Received: from rmmaillnx1.cadence.com (199.43.4.28) by
- BY2NAM05FT047.mail.protection.outlook.com (10.152.100.184) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.1580.2 via Frontend Transport; Tue, 29 Jan 2019 16:11:01 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
- by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id
- x0TGAuAe007778
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Tue, 29 Jan 2019 11:10:58 -0500
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Tue, 29 Jan 2019 17:10:55 +0100
-Received: from lvlogina.cadence.com (10.165.176.102) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 29 Jan 2019 17:10:55 +0100
-Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
- by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x0TGAtbc021268;
- Tue, 29 Jan 2019 16:10:55 GMT
-Received: (from piotrs@localhost)
- by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x0TGAtgf021170;
- Tue, 29 Jan 2019 16:10:55 GMT
-From: Piotr Sroka <piotrs@cadence.com>
-To: <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] dt-bindings: nand: Add Cadence NAND controller driver
-Date: Tue, 29 Jan 2019 16:10:40 +0000
-Message-ID: <20190129161040.20299-1-piotrs@cadence.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20190129160337.24350-1-piotrs@cadence.com>
-References: <20190129160337.24350-1-piotrs@cadence.com>
+	id 1goWyr-0007MX-Fv; Tue, 29 Jan 2019 17:15:25 +0000
+Received: from nh505-vm4.bullet.mail.kks.yahoo.co.jp ([183.79.57.106])
+ by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1goWym-0007M4-Ax
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 17:15:24 +0000
+Received: from [183.79.100.140] by nh505.bullet.mail.kks.yahoo.co.jp with
+ NNFMP; 29 Jan 2019 17:15:17 -0000
+Received: from [183.79.101.123] by t503.bullet.mail.kks.yahoo.co.jp with NNFMP;
+ 29 Jan 2019 17:15:17 -0000
+Received: from [127.0.0.1] by omp510.mail.kks.yahoo.co.jp with NNFMP;
+ 29 Jan 2019 17:15:17 -0000
+X-Yahoo-Newman-Property: ymail-3
+X-Yahoo-Newman-Id: 218230.13846.bm@omp510.mail.kks.yahoo.co.jp
+Received: (qmail 38045 invoked by alias); 29 Jan 2019 17:15:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.jp;
+ s=yj20110701; t=1548782116; bh=118V3vrgNoZyl4PJ0e0YLrpVU+yIyMvIYRa+TwSaMj8=;
+ h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Mailer:Thread-Index:Content-Language;
+ b=CINnN9jD0eRduN71y8LlJzU0p2VNwmBK3G1y7fVUd3WmgH/A7ifIMg4k4N0IXPQ8+TiIRMy/fkXXlOQFf9+7ZWUI1AuSysIyLx84JpAe6UpkyPJNiVo+nk8Q3XufccuPcfbPT3w2ZVZKB603EwfGvPdneV9oD0i/wqPAjj7Opmg=
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; s=yj20110701; d=yahoo.co.jp;
+ h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:X-Mailer:Thread-Index:Content-Language;
+ b=t7BHOajLo/6KkKBV2Bma4Dh12BNY6/KSJGqC8c3Qgs0Bz38AcSI9++wi9PAlfNb7hUSZY774Rtj4gYWnny88cA1s8Vvj8ZGhKoLzlVZnyhNwoEeuS0wZK6oRP+mmD78ducUUOjrq5KzwRS17mmo+59B3+xpWf2Jp33dH9y0rb8c=
+ ; 
+Received: from unknown (HELO ikegamiPC) (106.72.39.32 with login)
+ by smtp6007.mail.ssk.ynwp.yahoo.co.jp with SMTP; 29 Jan 2019 17:15:16 -0000
+X-YMail-JAS: FVy1bLoVM1k47qqQBwcURCK1b9OmLPfBNkRApzTDyutkSYSwSlx.kTcPB3uwXalgEbVDEQi0ExHuvwsyL2AEMLGOfRFi5YybgSx27Klu9PsGgP3X00zncXh0HO60vycEOjlr9VMhZw--
+X-Apparently-From: <ikegami_to@yahoo.co.jp>
+X-YMail-OSG: 42H908sVM1nSl3Yk9Nvw4bRkjNkkTZw9WfXNbcscblmXSt.
+ LQroVi2UXq2C7K_rZ_KO55lT0qhfn.nmsZkrfNFPJ5YjDjWIIOHiUiO_49rO
+ yzyZVoSxUvGXZCO.Cf2GKS73KCveG2hgHMhoPWaTAHstAICXhsIdvwJ8lWNn
+ E9paf4ALhRGTn63ZvjctO7xT0St0Hh_gUhgtOQWWwKOnC7IbCjrsauCAZmV0
+ Y9y7aB8gOAgG9rPCgMeOoPa1WXTHi5WGa1XcXUI0FBRFPy_g4iQiWeJ7n41x
+ PLdnz2Noz8ykmPoYHlpzTWlCAAHmrbpdqWecYdB2d6ps0PxDsr4UdACOBB4s
+ aXGjs2nF7tRgoq9NecWNOOQNlOA4VgwZb8pLUr4MEa.sZ_SoxttHSy.ZRVR4
+ aEXDwk3IAx078kzhrxcizzAbN4N8Dkvep3EZSi6OvrI6iQGYmsqtTORgSpNZ
+ 0.hjDgxTCVyoCu_60MRjixO7piJGhg3Egm3m_qJBQkkuKNXIrIbmgMwk1hjS
+ ezaMF13XuMp4ohVEXxRqHcRzS2zus8ckGLRgYhpv7yT9p34oxvlL2EyafP4a
+ hFJYckRSZBhZxq.oCa4hiNTst0vmAigcUoWF0iVXs4IJUJukR_w--
+From: "Tokunori Ikegami" <ikegami_to@yahoo.co.jp>
+To: "'Joakim Tjernlund'" <Joakim.Tjernlund@infinera.com>,
+ <boris.brezillon@bootlin.com>
+References: <20181025163219.25788-1-ikegami@allied-telesis.co.jp>	
+ <20181025163219.25788-2-ikegami@allied-telesis.co.jp>	
+ <20181105111544.4e511ed9@bbrezillon>	
+ <TYAPR01MB217579A7E16A687FE04B90E5DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>	
+ <20181106093334.35864341@bbrezillon>	
+ <TYAPR01MB217508219EA8AEAA2071A018DCCB0@TYAPR01MB2175.jpnprd01.prod.outlook.com>	
+ <002c01d4b26a$0bbcff40$2336fdc0$@yahoo.co.jp>	
+ <887991de8450f59b9019cc8e541c1026f109fad5.camel@infinera.com>	
+ <002001d4b312$bd3a12f0$37ae38d0$@yahoo.co.jp>
+ <3b1ec08265d0d1929369075971d0c8d73d714cf1.camel@infinera.com> 
+In-Reply-To: 
+Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change do_write_oneword()
+ to use chip_good()
+Date: Wed, 30 Jan 2019 02:15:15 +0900
+Message-ID: <005301d4b7f6$33be3bd0$9b3ab370$@yahoo.co.jp>
 MIME-Version: 1.0
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:199.43.4.28; IPV:CAL; SCL:-1; CTRY:US; EFV:NLI;
- SFV:NSPM;
- SFS:(10009020)(376002)(346002)(396003)(39860400002)(136003)(2980300002)(189003)(199004)(36092001)(1076003)(6916009)(105596002)(11346002)(2351001)(106466001)(107886003)(7416002)(356004)(6666004)(336012)(36756003)(97736004)(2616005)(476003)(126002)(86362001)(2906002)(63370400001)(486006)(50466002)(426003)(48376002)(8936002)(81166006)(81156014)(8676002)(50226002)(39060400002)(4326008)(305945005)(16586007)(446003)(316002)(54906003)(53936002)(42186006)(51416003)(76176011)(478600001)(26826003)(26005)(47776003)(87636003)(69596002)(186003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:SN1PR07MB2255; H:rmmaillnx1.cadence.com; FPR:;
- SPF:SoftFail; LANG:en; PTR:ErrorRetry; MX:1; A:1; 
-X-Microsoft-Exchange-Diagnostics: 1; BY2NAM05FT047;
- 1:2Zs+dQcoeNfdDHFcNUMejDVDZTIbkGGdZKeht0/BOsRkMXs1wzqBwDhegceV579rUzu0tZK0xS/AaIbOBGsRtyVmiO2UNoVvKWGc4XAExakCk1dNLhxFY3TnJgvVKmv92tdrNVrFqUNlutvmYwcLkw==
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 18a5379f-d4d2-4a62-237e-08d686045d24
-X-Microsoft-Antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060);
- SRVR:SN1PR07MB2255; 
-X-Microsoft-Exchange-Diagnostics: 1; SN1PR07MB2255;
- 3:4GPB1ndYQrMLif4dVJuOA7vMxTg9j9LeVeQfZITrn0sYydBQ0ciPQDSDv3EI+VK5De6hpY7OlpCWtej4wEeR2gh3Ar1AeL4hEmv+qp+L6djeiWJiHI7H+rwZDlEo+uUIrlgOFxs35FRitc51UtYjesehWl9wigFeGileiYIctdGmr34zt+pFXRdKMGHcFZ7mCoVbYs7ndpd2O9ZMWbSjWvGDB/pg+0W0X5KoePEa0BkWSRYulw3XR8XAs0Zy9q7/nYghe0CbAhffGuVPhAaZYcMdP5dvQP78mO2bRZhkrMfXiRIDgZRnKFVtYHpwTNjuB32XYAP1xZtZSJ2Gpudspe2umqBQxSEcNPwNow4G4l0VH1YGjK6Ueosv4FRwB7Px;
- 25:E/SaYwVW+yBxoClP/Y7mlTrmgr35AAAi05bg8CQOJ6OtH5WaCsCM9+mMEf06sr9t49yfpiluiVBbYWdQn7NOqylZLEpMGh5XCh51AcxtamZ3WciWiKP0KyFpDkryskow28BIs3O/6oGY4UVSV/74ZGQ+QAr7vMZHFErmTwfD+AE3NljnOMI/XX/azlzChUrKc2rLIrgX84yzBlkuWmmdkE90RJ57hwZyn1kNFyT8Q1ApAY1zK8NSt5EzG/Z86hL+Cds1H+gEw8UWmGb1vn4RRMI1jySvHgZzmeDHUT+IEOK6unb2I2L2raLQP03hW/AVCIH/5RBM+m3c/Ox29ilnuA==
-X-MS-TrafficTypeDiagnostic: SN1PR07MB2255:
-X-Microsoft-Exchange-Diagnostics: 1; SN1PR07MB2255;
- 31:nYcmbcVIDQysV54YG3/Hir7MUMtizour60TmtLD3HuTAhr288mUy1rrwE9OV65c3SHv7EM1Z7gToDsQ+Kcyf/xL97jMnei2Fek+txgvzM8LeIjVlkiX0jcYLlvh4KKjZQ34V1NJOEBqFMpsIZQbePEBRZVlMHVhVlGBM96tQUgQrQOVJJS/JGBR3ImS6X/twtipm9MgdCV5XwT5Jch7PZowk1cbMNVW9a52nTgH5Nh8=;
- 20:kjJ+cnOSjFHHeP45LIdqNbupUvCSfapFLHoUpa8z2wRLzsetrFmSpBYnteDKvEuMci6vbpGgJCjiB9UZmOCZEFzWFwTJGNVeDYDJahSYDS2YFvM3TMxUdowFxlLjZqeIExu2XG91SVMCPhwpY/9ssNXeoEEBsTft5UFSeBoNk5LB4KPiXAxrGZOFoPgs/rtiwuT1PpR9XgJWUcoRkijrNseLiptlU9GN+QExI5DBa1NJGedABtBInOKbV6Qafyfu4n1IajeGrUtmOHaY4N09nDauuuBOuEtv865fJ57ujSF6QTeRJUsLCkjLw6IrRBBgIrF4SKK22cgojIwJh5yHiVkmtBrqsvB5jFNy+3T86/Zd4h3gSLXA1GRStXlzJUoG1L/PUf3wWPOANSPfO4C5omMN/cuepX9Mckjg6w3oBRXjZxqOVaFutew2BEN9MXUc6gKj1kef6bEZQ31Rh4j4G1FzxA7S+mmZItrVKfzXgiZNO0iel+XOdbO3W7iS9OlG
-X-Microsoft-Antispam-PRVS: <SN1PR07MB22557A1F309096F408F3BAF0DD970@SN1PR07MB2255.namprd07.prod.outlook.com>
-X-Microsoft-Exchange-Diagnostics: 1; SN1PR07MB2255;
- 4:B3VkRdFiqWaMhOH1YqOGHlAIjgJvGtl9fBzuGF7Yrzg+oo0Kpbdx8QEujU6hD5+g8SoUUIiPSHvHiStmZCocrPKoa9pxSBOFUMzc+WtFGSR1f23ALMiomF8BrHVg8gSD8DVweSJrkrf4uRqVM4fQU1aN/7TPywsahZCEqiBINgyTtaEFPzESstUTsMpm4hXj++EtT3ghxOVTF0C0L3NPHV+wSjRhYa42Byt774Kt6p/6KbApyx41SGvmQNYrtLtdrNE6yyi7drc7hfgcFCzIBSzNXO4n6+YvliQkSFPyCO8=
-X-Forefront-PRVS: 093290AD39
-X-Microsoft-Exchange-Diagnostics: =?us-ascii?Q?1; SN1PR07MB2255;
- 23:xDmu+reXKvl22qP1SZaYmBbrSpXPiBVUbHI/DXf8J?=
- =?us-ascii?Q?++MJnjkTEKSfAGZQXnRlF7M/5LrCgQYQ8SyPmRfGS2h9rZIklWroIbbHLjLc?=
- =?us-ascii?Q?DbZW87P6J3uOh2jYU0HxF8+LFzMlbfa1e5vHFsrL1JzMIW+WDE23qSARY/aU?=
- =?us-ascii?Q?Nvuo7xED9TU/M01IqeUWSHsTdgsh55m5imuvDdYAAYtHdIcrTspvNSpgUpdI?=
- =?us-ascii?Q?4PFT6v0bD4nJ1Gnp2pkoYojrgXuNycjJ7mGZSEbHDmBhzRoHqRemjGx5C/od?=
- =?us-ascii?Q?SC8eRZFGcLHGpBuVjS2HvFr5K6VAOi4SFIXpHnnDpAuML9WjVupV4AAOWdCZ?=
- =?us-ascii?Q?UFyseTBK7z0P8rOjeizWEdIg3csVBKplPbmldc6ljpukbqvfpFszzqoJ3V+Y?=
- =?us-ascii?Q?URrKHq6PiuGAkToo/SrDZeZYBcq2fyRLO0oVdwT2nOFf8fUMrH/Rd8kFXUmi?=
- =?us-ascii?Q?dU4M9XDFOjLpRrESk0Lq65BkmiG3tgJUusaz/tMXr45DzTvnlTPgMRFNAZPQ?=
- =?us-ascii?Q?qrmJZX8PH9oOhWR85zM+WhYiW5OQUFo7d5nauxL5O8EL++LrYBhvcDaLuaqt?=
- =?us-ascii?Q?u96tbnnVyDWOH0YLbhNCMSNyc319t/Cqe4/BXWgJTmTbbsAXAoOShoV38tc3?=
- =?us-ascii?Q?AIlmUmygYR/f4UvVwqf+llwpHeAFAucEjLkiAKeXc+UmEFhlnvbNOjZ3gsvN?=
- =?us-ascii?Q?guQWOopE39BzJlN8osaPWJeZeRmhsSc4rb9LhiQKcGxKnLl1TZdcck79rwTg?=
- =?us-ascii?Q?pybwYRiwLlDtbGvQiS96pWv6n41Nr5KLNQE8JZ187TGnQDoUUDyqs0ijSJwJ?=
- =?us-ascii?Q?TJQt/XqO9q8ROex0Pwms+cQdw21Bos2FidT7EVXK+oLdchyeQ1zbvCFGT+DU?=
- =?us-ascii?Q?u6XCCXNN/LGMM4L4Yv4WEFWwdFBO8Tkh3FzTLUBIpg47y8gwNFbb8g+jd+yr?=
- =?us-ascii?Q?u6YMts3Hr+qZefBqODul+B9T9zEAAoWVfOTmnVOQGAg2NTaW53T9OhcBfqkZ?=
- =?us-ascii?Q?wg4VGXt/GnVFUonSl4YDrxDFBNmiDeEKysQl4BibcUHaApP+5LH50ASiYNMW?=
- =?us-ascii?Q?2DoMBgr/yr7/HGMeAciBs+i9PTHddDscqQDCZwMvYiZouMd5/OuKav6YBYnF?=
- =?us-ascii?Q?Ct/fM/9UFAi4i8+VzVLdm9HfBc2nAIjCauslvZId3tgda4wFG8eMhlNoRgZe?=
- =?us-ascii?Q?Ohxgg92Oy9fACVg+0Gttk6XjQiog8HAaRn5WA0E5WVcEWIPt8lDKJvt5g=3D?=
- =?us-ascii?Q?=3D?=
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: lY5xBwzGknaJyV2Fr4YXVmOaetMywVCqnGuGtuAfBJtsziK04oP941PDMxwC6FHXSsAACqlSKbNAxmKcrdocxtFNa2sOLtGv/Nd+O8QF1pxnyYD5IQ0fjEBvLD3RwgPPuvxpR2zpFRqBla7+nl6RLEkf/rwp5ogGDPPPFmKLlrQ2zecRmBQVHqa9q9eNdIikk20CLsNEeOLMx5RlY7IDdEjW8lcbGOGLtXRaNK4q05dxqDP3pKW55+Tsl9i/kMAabHuUWxzLgVGTFGTRen+FP8cY0PZlulFl43r+NcGcKzoshTT3ojl5zT2TDTBSlE+peqKHuSUVJXrAurueJGWQibaglGds4Ubcf849dBT5soX+40ygDD6DZFbT9NgjrboWhdnvgM1cThx+Z0ACvOJNxTOEiBc20OVrJiWmrcg6lgE=
-X-Microsoft-Exchange-Diagnostics: 1; SN1PR07MB2255;
- 6:ohQ46NavDPPZvklzKxBKlDCWFPzdrF0sz9ur9fr3syEKapL/1SzECYZ8Q5gtFmI/HZ7prR4fUyxdrj5sFRHVQ0xakCNUFsWFXWpEK2qFkozfBtZDAHlm5f5z2eoxx/EyHAazvoYfHbtBH9uzbtHV1b9dzTACHyqZdjDCD4gyXU+i/gW3SLmddtxpHS4GmVOUrlQZxvsfjYsSI5rDhjzkvmOaTTNBrC9Is96kGd7pQW9EbWDu8d8h9hovPCZddkQPXlXiYf6/Z/EWPMJbbwlgXaKROkl0gRia3EVLTCcc8yfu98M3qGOVFjnp9jNXIa02QD2QkPm5GXaejD2R0LWtG5OjKC3Ow5b6BtfAOozeLVVODYH2LXMZBWDwGWkUtr23esg9NljM92kk4aCnvw9vv/KUrKOroSv1TmNY+WZ6EBtwsPSSVIQcqSeJJDhstgo+M1U87tBdF5yTCecqwnWBHg==;
- 5:+liPymEBhCxer1vAvjRnOSlnLaGQckL6kpOOGYsoPOXrKLGPgahKISolGWCHlg/SM7CblSqYTt/zactMJ1HWqPk/mggHbDIgypLAwX4V6YrxngqEQ5gKxveWtaeXWv7hrDP4BCpL5hz61lUEcFKFH22G/OyFhX9pP2g3Pn7RH31sH7ICiSuygUzj+QrIyTV/VBwUyhAbst7YqIAlPvLJEg==;
- 7:RAjaBxgGYx1PIG4i2yohTezC/S+y0aU3FrXS4+EIxe4IHgFs2e0KrWP7/iayccaFfaM0EPVgVureCeoxkn0UlLjB74sCRn0QD4KLffrFVzyNhSc5mThcXlCU5T+KskG5MYfmus2AC5HD9o/69CaR8g==
-X-Microsoft-Exchange-Diagnostics: 1; SN1PR07MB2255;
- 20:KqvzKh7UssVOEyKUVnjxdLCNDpTL98Vs4M5UF1OXHtXvc4bUfMbtSzpP+URELl4G7M7c/YR8HdRqCpFnzosdpTD8akTeHIcL44DCrDJUvk3K8Ft03sVQ/kH7HwVElAItLzfgmm7r7razAGJjvhBj1rDPQDjEYL/8HD4L6LDDseGudX1uNCEN9lvvG/xb0SgxFIhAZoaD3VL3PuS4Ukd+mkOmT6CYySYSOUXwnEXx5+hrY4vKSfDTKSIs6TxMmx9N
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2019 16:11:01.7622 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18a5379f-d4d2-4a62-237e-08d686045d24
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[199.43.4.28];
- Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR07MB2255
-X-Proofpoint-SPF-Result: pass
-X-Proofpoint-SPF-Record: v=spf1 include:_spf.salesforce.com
- include:mktomail.com
- include:spf-0014ca01.pphosted.com include:spf.protection.outlook.com
- include:auth.msgapp.com include:spf.mandrillapp.com ~all
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
- definitions=2019-01-29_12:, , signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
- score=0
- priorityscore=1501 malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0
- spamscore=0 clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=643 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1901290121
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQEc1iUTWNEuvW9CQnMWsmZI/tQqOQDV8xlaAXO9f/QCW1agNgFMmV8lAnyJYc4CWJHD1QLIy+T2Aj3KNWMCCG1qcKad1R2QgAmw4RA=
+Content-Language: ja
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190129_081117_403788_3C6D1E66 
-X-CRM114-Status: GOOD (  16.47  )
+X-CRM114-CacheID: sfid-20190129_091520_899330_72E4F1DE 
+X-CRM114-Status: GOOD (  46.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -199,65 +107,585 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, BrianNorris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Piotr Sroka <piotrs@cadence.com>
+Cc: boris.brezillon@free-electrons.com, hauke@hauke-m.de,
+ stable@vger.kernel.org, chris.packham@alliedtelesis.co.nz,
+ linux-mtd@lists.infradead.org, koen.vandeputte@ncentric.com,
+ fbettoni@gmail.com, nbd@nbd.name
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Signed-off-by: Piotr Sroka <piotrs@cadence.com>
----
- .../devicetree/bindings/mtd/cadence-nand.txt       | 35 ++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand.txt
+Hi Jocke-san,
 
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand.txt b/Documentation/devicetree/bindings/mtd/cadence-nand.txt
-new file mode 100644
-index 000000000000..82afa34d5652
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cadence-nand.txt
-@@ -0,0 +1,35 @@
-+* Cadence NAND controller
-+
-+Required properties:
-+  - compatible : "cdns,hpnfc-nand"
-+  - reg : Contains two entries, each of which is a tuple consisting of a
-+	  physical address and length. The first entry is the address and
-+	  length of the controller register set. The second entry is the
-+	  address and length of the Slave DMA data port.
-+  - interrupts : The interrupt number.
-+  - clocks: phandle of the controller core clock (nf_clk).
-+
-+Optional properties:
-+Driver calculates controller timings base on NAND flash memory timings and
-+the following delays in picoseconds.
-+  - cdns,if-skew : Skew value of the output signals of the NAND Flash interface
-+  - cdns,nand2-delay : Delay value of one NAND2 gate from which
-+    the delay element is build
-+  - cdns,board-delay : Estimated Board delay. The value includes the total
-+    round trip delay for the signals and is used for deciding on values
-+    associated with data read capture. The example formula for SDR mode is
-+    the following:
-+    board_delay = RE#PAD_delay + PCB trace to device + PCB trace from device
-+    + DQ PAD delay
-+
-+Example
-+
-+nand: nand@60000000 {
-+	  compatible = "cdns,hpnfc-nand";
-+	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
-+	  clocks = <&nf_clk>;
-+	  cdns,if-skew = <50>;
-+	  cdns,nand2-delay = <37>;
-+	  cdns,board-delay = <4830>;
-+	  interrupts = <2 0>;
-+};
--- 
-2.15.0
+I have just confirmed the issue behavior again below as based on your advice.
+So it seems that the issue behavior is not depended on the maximum suspend and resume cycles number mentioned by you.
+
+1. On OpenWrt code the erasing state is not suspended since it is changed to sleep always for the erasing state in get_chip().
+     Note: The issue behavior is caused by reverting the change to sleep for the erasing.
+2. Additionally tried to change to not suspend for the writing state also but still the issue has been caused.
+3. Added 1 us delay after the reset to retry to write one word but the issue is caused.
+4. Added the unlock bypass reset to retry to write one word to make sure the issue behavior situation but the issue is caused.
+
+It seems that the reset to retry to write one word causes the write error issue behavior that seems not able to be recovered.
+Also the current checking for chip ready seems not enough so the reset is repeated about 1,000 times then the issue happened.
+
+Now still the chip good checking seems correct to use until the time out to write one word.
+
+> > > > I have lost track of all the details regarding this issue. I just
+> want
+> > to
+> > > > add:
+> > > >
+> > > > There is a max number of suspend/resume cycles one can do during an
+> > > > erase(possibly also for write)
+> > > > and once that number is hit you get an error. One way to avoid this
+> > could
+> > > > be to
+> > > > wait after each resume until the erase has started again(look in status
+> > > > register)
+> > > > before continuing.
+> > > >
+> > > > If this has anything to do with this problem, I do not know.
+
+Regards,
+Ikegami
+
+> -----Original Message-----
+> From: Tokunori Ikegami [mailto:ikegami_to@yahoo.co.jp]
+> Sent: Wednesday, January 23, 2019 9:34 PM
+> To: 'Joakim Tjernlund'; 'boris.brezillon@bootlin.com'
+> Cc: 'linux-mtd@lists.infradead.org';
+> 'chris.packham@alliedtelesis.co.nz'; 'fbettoni@gmail.com';
+> 'nbd@nbd.name'; 'stable@vger.kernel.org'; 'hauke@hauke-m.de';
+> 'koen.vandeputte@ncentric.com'; 'boris.brezillon@free-electrons.com'
+> Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
+> do_write_oneword() to use chip_good()
+> 
+> Thanks for your quick response.
+> Noted it so I will try to confirm your advice.
+> 
+> Regards,
+> Ikegami
+> 
+> > -----Original Message-----
+> > From: Joakim Tjernlund [mailto:Joakim.Tjernlund@infinera.com]
+> > Sent: Wednesday, January 23, 2019 9:13 PM
+> > To: boris.brezillon@bootlin.com; ikegami_to@yahoo.co.jp
+> > Cc: linux-mtd@lists.infradead.org; chris.packham@alliedtelesis.co.nz;
+> > fbettoni@gmail.com; nbd@nbd.name; stable@vger.kernel.org;
+> > hauke@hauke-m.de; koen.vandeputte@ncentric.com;
+> > boris.brezillon@free-electrons.com
+> > Subject: Re: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
+> > do_write_oneword() to use chip_good()
+> >
+> > On Wed, 2019-01-23 at 20:56 +0900, Tokunori Ikegami wrote:
+> > >
+> > >
+> > > Hi Jocke-san,
+> > >
+> > > Thanks for your advice.
+> > >
+> > > To make sure let me confirm below.
+> > >
+> > > The OpenWrt code includes your patch below.
+> > >
+> > >   f69cd2d30a80 2018-05-01 12:58:18 -0700 mtd: cfi: cmdset_0002: Do not
+> > allow read/write to suspend erase block.  [Joakim Tjernlund]
+> > >
+> > > Do you mean that it is possible to be needed an additional change more
+> > based on this?
+> >
+> > That patch resolves another problem. I have not sent a patch for problem
+> > I mentioned in this mail.
+> >
+> > > Or is it not related to the patch fixed by you?
+> > >   Note: Sorry now I am not able to check the patches to try sent by
+> you
+> > before.
+> >
+> > NP
+> >    Jocke
+> >
+> > >
+> > > > I have lost track of all the details regarding this issue. I just
+> want
+> > to
+> > > > add:
+> > > >
+> > > > There is a max number of suspend/resume cycles one can do during an
+> > > > erase(possibly also for write)
+> > > > and once that number is hit you get an error. One way to avoid this
+> > could
+> > > > be to
+> > > > wait after each resume until the erase has started again(look in status
+> > > > register)
+> > > > before continuing.
+> > > >
+> > > > If this has anything to do with this problem, I do not know.
+> > > >
+> > > >  Jocke
+> > >
+> > > Regards,
+> > > Ikegami
+> > >
+> > > > -----Original Message-----
+> > > > From: Joakim Tjernlund [mailto:Joakim.Tjernlund@infinera.com]
+> > > > Sent: Wednesday, January 23, 2019 1:58 AM
+> > > > To: boris.brezillon@bootlin.com; ikegami_to@yahoo.co.jp
+> > > > Cc: linux-mtd@lists.infradead.org;
+> > chris.packham@alliedtelesis.co.nz;
+> > > > fbettoni@gmail.com; nbd@nbd.name; stable@vger.kernel.org;
+> > > > hauke@hauke-m.de; koen.vandeputte@ncentric.com;
+> > > > boris.brezillon@free-electrons.com
+> > > > Subject: Re: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
+> > > > do_write_oneword() to use chip_good()
+> > > >
+> > > > On Wed, 2019-01-23 at 00:49 +0900, Tokunori Ikegami wrote:
+> > > > >
+> > > > > Hi Boris-san,
+> > > > >
+> > > > > Very sorry for too late to update about this.
+> > > > > But could you please let me consult below about this patch?
+> > > > >
+> > > > > I have tried to investigate the issue root cause and confirmed below
+> > but
+> > > > > still the root cause seems not clear.
+> > > > >
+> > > > >   1. Without the change the write oneword is retried and recovered
+> > by
+> > > > the
+> > > > > current existing chip_good() checking.
+> > > > >      But after the 1,001 times recovery it was continued to fail
+> > recovery
+> > > > > with the 3 times retry.
+> > > >
+> > > > I have lost track of all the details regarding this issue. I just
+> want
+> > to
+> > > > add:
+> > > >
+> > > > There is a max number of suspend/resume cycles one can do during an
+> > > > erase(possibly also for write)
+> > > > and once that number is hit you get an error. One way to avoid this
+> > could
+> > > > be to
+> > > > wait after each resume until the erase has started again(look in status
+> > > > register)
+> > > > before continuing.
+> > > >
+> > > > If this has anything to do with this problem, I do not know.
+> > > >
+> > > >  Jocke
+> > > >
+> > > > >   2. By the patch change the recovery failure can be avoided and
+> the
+> > write
+> > > > > oneword works correctly without any failure.
+> > > > >      There are different from the original chip_good() checking
+> as
+> > the
+> > > > > original code resets the chip before the retry.
+> > > > >      The patch change wait the chip_good() status until the timeout
+> > expiry
+> > > > > without the chip reset.
+> > > > >        Note: There is a different from the original OpenWrt patch
+> > and
+> > > > needed
+> > > > > to be changed as same and it will be done by the next v4 patch.
+> > > > >
+> > > > >   3. To narrow down the cause I have added some delays into the
+> original
+> > > > > code to check the chip ready and good status.
+> > > > >      But the failure behavior was not changed so it seems that the
+> > issue
+> > > > is
+> > > > > not depended to the timing. (But not sure)
+> > > > >
+> > > > >   4. On the OpenWrt the write buffer is disabled but to narrow down
+> > the
+> > > > > issue I have changed to enable the write buffer.
+> > > > >      Then the flash error was not happened by the write buffer
+> > operation
+> > > > so
+> > > > > it seems that the flash driver works correctly.
+> > > > >      But another issue was caused and it is similar issue with the
+> > original
+> > > > > OpenWrt behavior with the patch change.
+> > > > >        Note: On the original OpenWrt needs to wait the file system
+> > > > > completion to build but it was not finished with the write buffer.
+> > (But
+> > > > not
+> > > > > sure about this behavior)
+> > > > >
+> > > > > Do you have any comment about this result?
+> > > > >
+> > > > > If you can agree about the patch change basically with the current
+> > > > situation
+> > > > > I will do send the v4 patch set later with fix for the comments.
+> > > > >
+> > > > > But it seems that it is difficult to investigate the root cause
+> more
+> > at
+> > > > this
+> > > > > moment to me.
+> > > > > Since but the behavior looks depended on the flash chip hardware
+> > behavior
+> > > > > and I cannot debug the hardware behavior more I think.
+> > > > >   Note: Now I can reproduce the flash error issue behavior on the
+> > OpenWrt
+> > > > > unit.
+> > > > >
+> > > > > > > >     It is depended on the actual flash chip behavior so the
+> > root
+> > > > cause
+> > > > > > > is
+> > > > > > > >     unknown.
+> > > > > > >
+> > > > > > > Yes, and that's what I'd like you to figure out, or at least
+> have
+> > > > a
+> > > > > > > good idea why this doesn't work on some chips but works on others.
+> > > > > >
+> > > > > > I see.
+> > > > > > But it is a little bit difficult situation since I do not have
+> the
+> > failure
+> > > > > > environment locally at this moment.
+> > > > > > But if needed I may ask to get the help for this to Fabio-san.
+> > > > >
+> > > > > Regards,
+> > > > > Ikegami
+> > > > >
+> > > > > > -----Original Message-----
+> > > > > > From: IKEGAMI Tokunori [mailto:ikegami@allied-telesis.co.jp]
+> > > > > > Sent: Tuesday, November 6, 2018 6:47 PM
+> > > > > > To: Boris Brezillon; ikegami_to@yahoo.co.jp
+> > > > > > Cc: boris.brezillon@free-electrons.com; Felix Fietkau; Hauke
+> > Mehrtens;
+> > > > > > stable@vger.kernel.org; Joakim Tjernlund; PACKHAM Chris;
+> > > > > > linux-mtd@lists.infradead.org; Koen Vandeputte; Fabio Bettoni
+> > > > > > Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
+> > > > > > do_write_oneword() to use chip_good()
+> > > > > >
+> > > > > > Sorry let me resend the mail below by changing the email address
+> > of
+> > > > > > Felix-san.
+> > > > > >
+> > > > > > -----Original Message-----
+> > > > > > From: IKEGAMI Tokunori
+> > > > > > Sent: Tuesday, November 06, 2018 6:37 PM
+> > > > > > To: 'Boris Brezillon'; 'ikegami_to@yahoo.co.jp'
+> > > > > > Cc: boris.brezillon@free-electrons.com; Felix Fietkau; Hauke
+> > Mehrtens;
+> > > > > > stable@vger.kernel.org; Joakim Tjernlund; PACKHAM Chris;
+> > > > > > linux-mtd@lists.infradead.org; Koen Vandeputte; Fabio Bettoni
+> > > > > > Subject: RE: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
+> > > > > > do_write_oneword() to use chip_good()
+> > > > > >
+> > > > > > Hi Boris-san,
+> > > > > >
+> > > > > > > -----Original Message-----
+> > > > > > > From: stable-owner@vger.kernel.org
+> > > > > > > [mailto:stable-owner@vger.kernel.org] On Behalf Of Boris
+> Brezillon
+> > > > > > > Sent: Tuesday, November 06, 2018 5:34 PM
+> > > > > > > To: IKEGAMI Tokunori
+> > > > > > > Cc: boris.brezillon@free-electrons.com; Felix Fietkau; Hauke
+> > > > Mehrtens;
+> > > > > > > stable@vger.kernel.org; Joakim Tjernlund; PACKHAM Chris;
+> > > > > > > linux-mtd@lists.infradead.org; Koen Vandeputte; Fabio Bettoni
+> > > > > > > Subject: Re: [PATCH v3 01/11] mtd: cfi_cmdset_0002: Change
+> > > > > > > do_write_oneword() to use chip_good()
+> > > > > > >
+> > > > > > > Hi IKEGAMI,
+> > > > > > >
+> > > > > > > On Tue, 6 Nov 2018 00:25:43 +0000
+> > > > > > > IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
+> > > > > > >
+> > > > > > > > > > Also the issue can be fixed by using chip_good() instead
+> > of
+> > > > > > > chip_ready().
+> > > > > > > > > > The chip_ready() just checks the value from flash memory
+> > twice.
+> > > > > > > > > > And the chip_good() checks the value with the expected
+> value.
+> > > > > > > > > > Probably the issue can be fixed as checked correctly by
+> > the
+> > > > > > chip_good().
+> > > > > > > > > > So change to use chip_good() instead of chip_ready().
+> > > > > > > > >
+> > > > > > > > > Well, that's not really explaining why you think chip_good()
+> > should
+> > > > > > > be
+> > > > > > > > > used instead of chip_ready(). So I went on and looked at
+> the
+> > > > > > > > > chip_good(), chip_ready() and do_write_oneword()
+> > implementation,
+> > > > and
+> > > > > > > > > also looked at users of do_write_oneword(). It seems this
+> > function
+> > > > > > is
+> > > > > > > > > used to write data to the flash, and apparently the "one
+> bit
+> > should
+> > > > > > > > > toggle to reflect a busy state" does not apply when writing
+> > things
+> > > > > > to
+> > > > > > > > > the memory array (it's probably working for other CFI commands,
+> > > > but
+> > > > > > > I
+> > > > > > > > > guess it takes more time to actually change the level of
+> a
+> > NOR
+> > > > cell,
+> > > > > > > > > hence the result of 2 identical reads does not mean that
+> the
+> > write
+> > > > > > is
+> > > > > > > > > done).
+> > > > > > > > >
+> > > > > > > > > Also, it seems that cmdset_0001 is not implementing
+> chip_ready()
+> > > > the
+> > > > > > > > > same way, and I wonder if cmdset_0002 implementation is
+> correct
+> > > > to
+> > > > > > > > > start with. Or maybe I don't get what chip_ready() is for.
+> > > > > > > > >
+> > > > > > > > > Anyway, this is the sort of clarification I'd like to have.
+> > > > > > > >
+> > > > > > > > I am thinking to update the commit message as below.
+> > > > > > > >
+> > > > > > > >     mtd: cfi_cmdset_0002: Use chip_good() to retry in
+> > > > > > do_write_oneword()
+> > > > > > > >     As reported by the OpenWRT team, write requests sometimes
+> > fail
+> > > > on
+> > > > > > > some
+> > > > > > > >     platforms.
+> > > > > > > >     Currently to check the state chip_ready() is used correctly
+> > > > as
+> > > > > > > described by
+> > > > > > > >     the flash memory S29GL256P11TFI01 datasheet.
+> > > > > > >
+> > > > > > > I had a look at the S29GL256P datasheet here [1], and if I'm
+> correct,
+> > > > > > > it's using cmdset 0001.
+> > > > > >
+> > > > > > No actually the cmdset 0002 is used on the flash chip.
+> > > > > > The manufacturer ID xx01h and Device ID 2201h are used to decide.
+> > > > > >
+> > > > > > There is information from Fobis-san below also about this.
+> > > > > >
+> > > > > > On forum thread musashino posted picture of flash chip:
+> > > > > >
+> > > >
+> >
+> https://na01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fforum
+> > >
+> >
+> > .openwrt.org%2Ft%2Fimpossible-to-install-update-any-packages-&amp;da
+> > ta
+> > > >
+> >
+> =02%7C01%7Cjoakim.tjernlund%40infinera.com%7C916af968b27a402da8cf08d68
+> > > >
+> >
+> 0812fce%7C285643de5f5b4b03a1530ae2dc8aaf77%7C1%7C1%7C63683768968012655
+> > > >
+> >
+> 7&amp;sdata=NNGSYgq1VTuofPPMMlyKIm9W1DJHQFw0s94Ernq5cts%3D&amp;reserve
+> > > > d=0
+> > > > > > on-wzr-hp-g300nh-18-06-1
+> > > > > >
+> > > >
+> >
+> https://na01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.cy
+> > > >
+> >
+> press.com%2Fpart%2Fs29gl256p11tfi010&amp;data=02%7C01%7Cjoakim.tjernlu
+> > > >
+> >
+> nd%40infinera.com%7C916af968b27a402da8cf08d680812fce%7C285643de5f5b4b0
+> > > >
+> >
+> 3a1530ae2dc8aaf77%7C1%7C1%7C636837689680126557&amp;sdata=Twk1VUEESz14U
+> > > > pdJjU4ohuhiQ5jN1uHLh0cAhlAznW0%3D&amp;reserved=0
+> > > > > > [    0.862264] physmap platform flash device: 02000000 at 1e000000
+> > > > > > [    0.868331] physmap-flash: Found 1 x16 devices at 0x0 in 16-bit
+> > > > > > bank. Manufacturer ID 0x000001 Chip ID 0x002201
+> > > > > > [    0.878493] Amd/Fujitsu Extended Query Table at 0x0040
+> > > > > > [    0.883668]   Amd/Fujitsu Extended Query version 1.3.
+> > > > > > [    0.888768] number of CFI chips: 1
+> > > > > > [    0.894557] Searching for RedBoot partition table in
+> > physmap-flash
+> > > > > > at offset 0x1fc0000
+> > > > > > [    0.918009] Searching for RedBoot partition table in
+> > physmap-flash
+> > > > > > at offset 0x1fe0000
+> > > > > > [    0.941464] No RedBoot partition table detected in physmap-flash
+> > > > > > [    0.947926] Creating 5 MTD partitions on "physmap-flash":
+> > > > > > [    0.953384] 0x000000000000-0x000000040000 : "u-boot"
+> > > > > > [    0.960853] 0x000000040000-0x000000060000 : "u-boot-env"
+> > > > > > [    0.968803] 0x000000060000-0x000001fc0000 : "firmware"
+> > > > > > [    0.981859] 2 uimage-fw partitions found on MTD device firmware
+> > > > > > [    0.987900] 0x000000060000-0x0000001b5706 : "kernel"
+> > > > > > [    0.994916] 0x0000001b5706-0x000001fc0000 : "rootfs"
+> > > > > > [    1.001986] mtd: device 4 (rootfs) set to be root filesystem
+> > > > > > [    1.007789] 1 squashfs-split partitions found on MTD device
+> rootfs
+> > > > > > [    1.014014] 0x0000003c0000-0x000001fc0000 : "rootfs_data"
+> > > > > > [    1.022093] 0x000001fc0000-0x000001fe0000 : "user_property"
+> > > > > > [    1.030283] 0x000001fe0000-0x000002000000 : "art"
+> > > > > >
+> > > > > > Maybe you could post links to forum thread, and data sheet.
+> > > > > >
+> > > > > > > >     Also chip_good() is used to check if the write is succeeded
+> > > > and
+> > > > > > it
+> > > > > > > was
+> > > > > > > >     implemented by the commit fb4a90bfcd6d8 ("[MTD] CFI-0002
+> > -
+> > > > Improve
+> > > > > > > error
+> > > > > > > >     checking").
+> > > > > > > >     But actually the write failure is caused on some platforms
+> > and
+> > > > > also
+> > > > > > > it can
+> > > > > > > >     be fixed by using chip_good() to check the state and retry
+> > > > > instead.
+> > > > > > > Do you know on which NOR chips this happens? Do you have access
+> > to
+> > > > the
+> > > > > > > datasheet?
+> > > > > >
+> > > > > > But it looks SST49LF008A [3] from the changes below but I am not
+> > sure
+> > > > at
+> > > > > > this moment and probably it should be confirmed to the authr Eric
+> > W.
+> > > > > > Biedermann <ebiederman@lnxi.com> to make sure.
+> > > > > >
+> > > > > > +#define SST49LF008A            0x005a
+> > > > > >
+> > > > > >  static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t,
+> > size_t
+> > > > *,
+> > > > > > u_char *);
+> > > > > >  static int cfi_amdstd_write_words(struct mtd_info *, loff_t,
+> > size_t,
+> > > > > > size_t *, const u_char *);
+> > > > > > @@ -191,6 +192,7 @@ static struct cfi_fixup cfi_fixup_table[]
+> =
+> > {
+> > > > > >  };
+> > > > > >  static struct cfi_fixup jedec_fixup_table[] = {
+> > > > > >         { MANUFACTURER_SST, SST49LF004B, fixup_use_fwh_lock,
+> > NULL, },
+> > > > > > +       { MANUFACTURER_SST, SST49LF008A, fixup_use_fwh_lock,
+> > NULL, },
+> > > > > >
+> > > > > > > >     It is depended on the actual flash chip behavior so the
+> > root
+> > > > cause
+> > > > > > > is
+> > > > > > > >     unknown.
+> > > > > > >
+> > > > > > > Yes, and that's what I'd like you to figure out, or at least
+> have
+> > > > a
+> > > > > > > good idea why this doesn't work on some chips but works on others.
+> > > > > >
+> > > > > > I see.
+> > > > > > But it is a little bit difficult situation since I do not have
+> the
+> > failure
+> > > > > > environment locally at this moment.
+> > > > > > But if needed I may ask to get the help for this to Fabio-san.
+> > > > > >
+> > > > > > > > If any comment please let me know.
+> > > > > > > >
+> > > > > > > > > > Signed-off-by: Tokunori Ikegami
+> > <ikegami@allied-telesis.co.jp>
+> > > > > > > > > > Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> > > > > > > > > > Signed-off-by: Koen Vandeputte
+> > <koen.vandeputte@ncentric.com>
+> > > > > > > > > > Signed-off-by: Fabio Bettoni <fbettoni@gmail.com>
+> > > > > > > > >
+> > > > > > > > > Has the patch really gone through all those people? SoB
+> is
+> > used
+> > > > when
+> > > > > > > you
+> > > > > > > > > apply a patch in your tree or when you're the original author.
+> > > > > > > >
+> > > > > > > > I have just checked the OpenWRT git log again and it looks
+> that
+> > > > it was
+> > > > > > > originally
+> > > > > > > > implemented by Felix Fietkau <nbd@openwrt.org> by the patch
+> > below
+> > > > so
+> > > > > > I
+> > > > > > > will update the Signed-off-by tag as so.
+> > > >
+> >
+> <https://na01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.
+> > > >
+> >
+> openwrt.org%2F%3Fp%3Dopenwrt%2Fopenwrt.git%3Ba%3Dcommitdiff%3Bh%3D2530
+> > > >
+> >
+> 640&amp;data=02%7C01%7Cjoakim.tjernlund%40infinera.com%7C916af968b27a4
+> > > >
+> >
+> 02da8cf08d680812fce%7C285643de5f5b4b03a1530ae2dc8aaf77%7C1%7C1%7C63683
+> > > >
+> >
+> 7689680126557&amp;sdata=w13ZTKwD1NiUQzxQfUou92KVDlW80qGUiZVIcjU%2BGPA%
+> > > > 3D&amp;reserved=0
+> > > > > > > f07cd2b3b14fe9ec03fa63a586452cc5f>
+> > > > > > > > > > Co-Developed-by: Hauke Mehrtens <hauke@hauke-m.de>
+> > > > > > > > > > Co-Developed-by: Koen Vandeputte
+> > <koen.vandeputte@ncentric.com>
+> > > > > > > > > > Co-Developed-by: Fabio Bettoni <fbettoni@gmail.com>
+> > > > > > > > >
+> > > > > > > > > Not sure we want to add new undocumented tags, but you can
+> > mention
+> > > > > > > > > that all those people helped you find/debug the issue. They
+> > can
+> > > > also
+> > > > > > > > > add their Reviewed-by/Tested-by if they like.
+> > > > > > >
+> > > > > > > My bad, I just noticed these are valid flags [2], so you can
+> keep
+> > > > them,
+> > > > > > > and according to the doc, you should also keep the SoB.
+> > > > > >
+> > > > > > I see.
+> > > > > > Yes I had also checked it.
+> > > > > >
+> > > > > > By the way in near future my company email address will be not
+> able
+> > > > to
+> > > > > use.
+> > > > > > So I will change the mail address to my personal email address
+> [4]
+> > after
+> > > > > > that or before.
+> > > > > >
+> > > > > > Regards,
+> > > > > > Ikegami
+> > > > > >
+> > > > > > > Regards,
+> > > > > > >
+> > > > > > > Boris
+> > > > > > >
+> > > > > > >
+> > >
+
 
 
 ______________________________________________________
