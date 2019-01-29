@@ -7,106 +7,58 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B574C169C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 09:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E17CC4151A
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 10:58:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0609C20870
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 09:55:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 220BA214DA
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 10:58:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uenHygD7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="VIgwn3Oh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0609C20870
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J0Oy9e4e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 220BA214DA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vfJzPnpT9pwbs3Md1MLRmudsZOvUuU8lOc+3nHNUbNo=; b=uenHygD7mLwFfm
-	B51npVc6uK9CGGr+/o39IJUx9nSK6N2BNVxdYvmYyZGI/1C7tqPbkdUlRH5t2mOJ48CIUbnBY/wYb
-	eLLnZOJjz1JKpV4ocrZMdyIRtLZCQbo73MqseCbInNRimNzUe3Q/sSw3Qv0ZPntFGTmOGjMqrmKXf
-	JaVCZgNcTL05aLo4QOLAThAqGQ2ykbYobEAbU0V7oZA3Wj76nEr0ZzREnDyw1fxDSxDlN63RdsGGP
-	SAXiPjVF2uIsM+Rdajft69AYgFz0nLsYDvPo/njrTbFXSvww8FCg6vYsUe/sMIwb0qm0AACi09Tzm
-	9b3psW7ItJY16WjiX5Gg==;
+	List-Owner; bh=eoOTXp8qeqQ971n0vN0URhZ89TdMHlLa52iXW39hmek=; b=J0Oy9e4e/Sr/hW
+	TMOFlrQ3l3RT5Kkng+DZtM6QtEmNoBSa4bjKodGl0ISUYnzE0qg/JgtrffhOOUxcP3Uw3TjFJu+Ah
+	syOfnLYmZKdtzTz/uh780W7jsuwz8xryXbpAXv63WXXBxqN30j1qz8DVEF/7GkE3G1xZzOBJuC9Oa
+	pd0TN9Du4U45+Nwi1dpG65TXHxRpp73iXjgGrlWL9VUguVGo7LztNB55dsq6urv1o9Wdw/WqKnXDQ
+	/9CFGKq5Rdxbxtepr8WapkATvJA6H7TXWQbKr/+Hc2RossN7e2zq11ThEBn0yDUqd2u2htGlT6Svh
+	JdpIyKD2NVM8mSDTevig==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1goQ7B-0005BU-My; Tue, 29 Jan 2019 09:55:33 +0000
-Received: from mail-eopbgr140074.outbound.protection.outlook.com
- ([40.107.14.74] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+	id 1goR5r-00084C-H9; Tue, 29 Jan 2019 10:58:15 +0000
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goQ78-0005Ag-Sb
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 09:55:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MLlUmvU6YtVSP3dvL1aXrY1wWUoJOzqTVgC+ni8onvE=;
- b=VIgwn3Ohp1w0X3E07azEbo5QpkaJHKmdosdAyu1qp3Gcultfr0ff0Gx7hq8puj46JphofKiv9aEf/LhLWj+Q7YjxSCPQmjNQ0u3dhYpcPfQ4N3mukHxjKBD459TQdvByYuBXFdkaoclDMOsDEG9+tk2BSPze+isfaKicogI3jd0=
-Received: from VI1PR04MB5726.eurprd04.prod.outlook.com (20.178.127.24) by
- VI1PR04MB6079.eurprd04.prod.outlook.com (20.179.25.81) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1558.17; Tue, 29 Jan 2019 09:55:27 +0000
-Received: from VI1PR04MB5726.eurprd04.prod.outlook.com
- ([fe80::a1c2:cc79:80f3:3bcb]) by VI1PR04MB5726.eurprd04.prod.outlook.com
- ([fe80::a1c2:cc79:80f3:3bcb%5]) with mapi id 15.20.1558.023; Tue, 29 Jan 2019
- 09:55:27 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
-Thread-Topic: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
-Thread-Index: AQHUt7jCop3Mc0YUEkGW97blapUdPA==
-Date: Tue, 29 Jan 2019 09:55:27 +0000
-Message-ID: <1548755607-27544-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SG2PR04CA0185.apcprd04.prod.outlook.com
- (2603:1096:4:14::23) To VI1PR04MB5726.eurprd04.prod.outlook.com
- (2603:10a6:803:e4::24)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=yogeshnarayan.gaur@nxp.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 1.9.1
-x-originating-ip: [92.120.1.66]
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; VI1PR04MB6079;
- 6:hJlG1r+Dda+3s15JU8ex7pp9Ykqa7oFGruH5BlqjFBVRuAdt3uCyN3cWcGaEXKoz6jl0m5xeX/G1JXjEKkMTUOAk7AXrif4KGTyMOTu+CZrNFhgcf1GNkUIcXt9pkBDfyXB+U9ojK6GeX01KFlMmahpLKdLs0scVEhEBDYovChrBW5GtPGxSchtrBidSRQzj9lACA49tHhGyZBh95a8KGUXcO1CKrDjRoylf5JUS89Pf3iVB5DDrOUt7z1X5G/4fZWwxECvDd0nRx34WDmAXp3J4nFTsVnSatzMPcq1SyeQ0WaYvSFpln9lP5ce3RqkvcheUTSNB7qgaMmWM+WvHa7AjzCq6JRLOmnhm+pcbBPXOUiX8Lm8mKDJuzOyg7vlKZEsoyFhkH6MddKdns2RbWKv6at2FBbeDAijYys9Eirz1XUTiKNrYOMVPwM7hzBticLyffHZof++eNwlhjz0wnw==;
- 5:PQQADW+lc9hOMCWLqUGRckCKjq2PeWnYZJOesEGoS6vdJUymKDTAGD6BAF21VfP1mH6a/xG9RwgQxGzCUGA0HqaTeOVsglLPX06wI4SlWkcm1Y5nDDysYjBw+GonffgAaFBmXQeu0eKBl6vdyiFsfin2LjuWkSN+DfZoWJM+VIlBEYTAr6d3dNVgmn5TQraaT1Gtdi4rfPctWjWDJ1iEVQ==;
- 7:mzauu1lbbA8kJJCcIi/BARtKEXgXr0Tte9ak0jshrJuYyIRfYbGjckhB1FIuJgWM7yBMUc943g58LxL3gesjRYkko6s4aidzsMywgL/nBijr4RyE3QTRqH3vK+RtxxFbceMXZm54UYEg6o4sbG4vTQ==
-x-ms-office365-filtering-correlation-id: ab2a15a4-801e-441e-6e46-08d685cfe525
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(4618075)(2017052603328)(7153060)(7193020);
- SRVR:VI1PR04MB6079; 
-x-ms-traffictypediagnostic: VI1PR04MB6079:
-x-microsoft-antispam-prvs: <VI1PR04MB60792315E01B8D4C1927506D99970@VI1PR04MB6079.eurprd04.prod.outlook.com>
-x-forefront-prvs: 093290AD39
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(376002)(39860400002)(396003)(366004)(136003)(189003)(199004)(4326008)(68736007)(6486002)(486006)(14454004)(2501003)(305945005)(2906002)(476003)(2616005)(66066001)(14444005)(7736002)(71200400001)(71190400001)(86362001)(36756003)(52116002)(105586002)(256004)(53936002)(25786009)(26005)(2201001)(8676002)(81166006)(81156014)(6116002)(106356001)(6512007)(3846002)(6436002)(102836004)(8936002)(39060400002)(97736004)(186003)(478600001)(316002)(50226002)(110136005)(99286004)(6506007)(54906003)(386003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB6079;
- H:VI1PR04MB5726.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 51mdcFn0OOt6J1L8G+G2dM2BGlGEKMu+1G90lhV/ig4DtChyaKK60/4BSemEUlzGmFtz1J85E+i4ug6tzlMnTq1wLkM29MnggPz+BM4udslFJW70STulJ9mL6RV3OqgSFfu+QIaARZsRrgqzVDXne4htD0/7S9kv4YjZEC9K7VtkUnVA4syLLSfkuuweQ08JaNUzaPmhHNJv6vF2i3AhYtRHHw3FHcbmhxVgsc/z/NDHS33oGDuPvMJi49TWWtiHZ3AY3LZALgOJERozVufRemCQ/EsJA7Oz3yP4H5XfVvGAimvhLlHQAHtHfofRxe1F6VCp44Bse1YGSDm0lnS8JFEx5sQvl5YpPaZAEz9GmsDZWOrNnvalAytULC4zqfXvVnJdv3fMbr7iK1AAmSJ3kdZ4aUE6CUGniLDWhCEHWqg=
+ id 1goR5o-00083F-M5; Tue, 29 Jan 2019 10:58:14 +0000
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.76) (envelope-from <colin.king@canonical.com>)
+ id 1goR5a-0007Ug-Ax; Tue, 29 Jan 2019 10:57:58 +0000
+From: Colin King <colin.king@canonical.com>
+To: Liang Yang <liang.yang@amlogic.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Kevin Hilman <khilman@baylibre.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org
+Subject: [PATCH][next] mtd: rawnand: meson: fix missing assignment of ret on a
+ call to meson_chip_buffer_init
+Date: Tue, 29 Jan 2019 10:57:57 +0000
+Message-Id: <20190129105757.19138-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab2a15a4-801e-441e-6e46-08d685cfe525
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2019 09:55:23.5390 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6079
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190129_015530_928288_74F11ECB 
-X-CRM114-Status: UNSURE (   7.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190129_025812_855246_4C9A2A91 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -118,47 +70,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Typo fix in Author Boris Brezillon last name and update with new
-email address.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+The call to meson_chip_buffer_init is not assigning ret, however, ret
+is being checked for failure. Fix this by adding in the missing assignment.
+
+Fixes: 2d570b34b41a ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/spi/spi-fsl-qspi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/meson_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
-index f0a340026ba4..6a713f78a62e 100644
---- a/drivers/spi/spi-fsl-qspi.c
-+++ b/drivers/spi/spi-fsl-qspi.c
-@@ -10,7 +10,7 @@
-  *
-  * Transition to SPI MEM interface:
-  * Authors:
-- *     Boris Brezillion <boris.brezillon@bootlin.com>
-+ *     Boris Brezillon <bbrezillon@kernel.org>
-  *     Frieder Schrempf <frieder.schrempf@kontron.de>
-  *     Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-  *     Suresh Gupta <suresh.gupta@nxp.com>
-@@ -959,7 +959,7 @@ module_platform_driver(fsl_qspi_driver);
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index e858d58d97b0..b9c543d1054c 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -1206,7 +1206,7 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
+ 		dev_err(nfc->dev, "16bits bus width not supported");
+ 		return -EINVAL;
+ 	}
+-	meson_chip_buffer_init(nand);
++	ret = meson_chip_buffer_init(nand);
+ 	if (ret)
+ 		return -ENOMEM;
  
- MODULE_DESCRIPTION("Freescale QuadSPI Controller Driver");
- MODULE_AUTHOR("Freescale Semiconductor Inc.");
--MODULE_AUTHOR("Boris Brezillion <boris.brezillon@bootlin.com>");
-+MODULE_AUTHOR("Boris Brezillon <bbrezillon@kernel.org>");
- MODULE_AUTHOR("Frieder Schrempf <frieder.schrempf@kontron.de>");
- MODULE_AUTHOR("Yogesh Gaur <yogeshnarayan.gaur@nxp.com>");
- MODULE_AUTHOR("Suresh Gupta <suresh.gupta@nxp.com>");
 -- 
-2.17.1
+2.19.1
 
 
 ______________________________________________________
