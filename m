@@ -3,68 +3,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D5B6C169C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 11:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4D67C282D0
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 11:46:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5574F20663
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 11:03:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A573218A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 11:46:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DWjYd3DM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kuXBMDH2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5574F20663
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s6nqqOVy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A573218A3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UUWAkEarEPJRfZ4Q/JVWsg0oeev8icceUcRg4RuN9/w=; b=DWjYd3DMFBnUi4
-	TZnLiK5P31//iOxs6beUVGtnm9aof6Uhe2U7NBHiCHIAeJh+d/D/wwpdmjj1HJK+9X88gfWJbhd84
-	dXqL8ey6NRijRebZwZexsJEWmkHEwPpZP49bKSfKfj28HNf3GKx/D3NYeRmr4PFZcHxdOcCUnJRwp
-	ZT19+RZQHDhNMp4pJXhpH3tMaFEOepXeqG34VbQxP7+ytsD/pcxDK/L5Xrt9g7gXCkPi+5Q0vIual
-	MgaRCoK4Me6IyH+/uEmGT7D3N9IeFLLCAwtFIga1xmdPuq9vDq65ykq728N8duZMYhZprGYABflwh
-	Tbbvt0gv3ub/Pfa+TQ+A==;
+	List-Owner; bh=I7opdCUu4NsiwPQ7j0NaoVCtLmZ49S11M8aUkB5XXKY=; b=s6nqqOVy/EMePT
+	PxV5SCrgqCtFbADVxrTtNazbG4cXVLXLKGVbNCiNUidq9fXJ+nW75dsG2XzREdZlFUd4e3Z7ZCFlb
+	yWuHT4r24LLk9zS9NfRSN7Q7Qnmy/+3PP7oz7QLc01V2J9ugDlIaMra8OwQ5NHkKu2ZlqZP3w/m8w
+	T5jAPTYJy7B1SIlFjqy3XbtcJEwhu0ew84pP1tO7fLvTgHcOf7/d9zRv5Y6nUw/9hIJavKW9FT7ee
+	nci4Kp9rzs68GXVuFY9YEyb0gETLdEJ0FwyWG4+i1o02f/WinrPKFr8cOtcSl92yPoqmmmV8WYGw4
+	7jP5Y1309vApXShDmRXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1goRBH-0002jF-23; Tue, 29 Jan 2019 11:03:51 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1goRqi-0004d0-7m; Tue, 29 Jan 2019 11:46:40 +0000
+Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goRBE-0002ir-8y
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 11:03:50 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1goRqY-0004V0-Py
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 11:46:33 +0000
+Received: from sntmail11s.snt-is.com (unknown [10.203.32.181])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6F1D82084C;
- Tue, 29 Jan 2019 11:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548759827;
- bh=qogCilSMdb+JJwCEwzXw2TVqCLLM9/qOQclOS/lBnBg=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=kuXBMDH2YQxVx1T1+OSkmcTLcFBJlXr6Ewo8lULMW01vOie2pEYpqCRXOuyoL5PuM
- ruUsROV41XI1ev1rtoucro4xjBCjJrjpuCEzSZAXOfa6j0ZJcWmdKTVX45ctR0/vmC
- fR1+9e8LoEwc58qFZ7/sX29nLpF4BEnW/Pz5XVEg=
-Date: Tue, 29 Jan 2019 12:03:37 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] mtd: Check add_mtd_device() ret code
-Message-ID: <20190129120337.08754bac@bbrezillon>
-In-Reply-To: <20190122133159.2033844c@bbrezillon>
-References: <20190102143654.24362-1-bbrezillon@kernel.org>
- <20190102143654.24362-2-bbrezillon@kernel.org>
- <CAMuHMdV-=_0htu9w1xK25RVWgnRaXVR-R-oXc7f-Y_cC9SR25A@mail.gmail.com>
- <20190122133159.2033844c@bbrezillon>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ by skedge03.snt-world.com (Postfix) with ESMTPS id 88CC467A6F2;
+ Tue, 29 Jan 2019 12:46:03 +0100 (CET)
+Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail11s.snt-is.com
+ (10.203.32.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Tue, 29 Jan
+ 2019 12:46:03 +0100
+Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
+ sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%5]) with mapi id
+ 15.01.1466.003; Tue, 29 Jan 2019 12:46:03 +0100
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
+Thread-Topic: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
+Thread-Index: AQHUt7jCop3Mc0YUEkGW97blapUdPKXGEDYA
+Date: Tue, 29 Jan 2019 11:46:02 +0000
+Message-ID: <4759d7a9-71a2-70a7-2704-0ef7fa37b2ca@kontron.de>
+References: <1548755607-27544-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1548755607-27544-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.25.9.43]
+x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
+Content-ID: <E72C4CE49EAAC148BF6512A7604DC5F6@snt-world.com>
 MIME-Version: 1.0
+X-SnT-MailScanner-Information: Please contact the ISP for more information
+X-SnT-MailScanner-ID: 88CC467A6F2.AFE61
+X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
+ Provider for details
+X-SnT-MailScanner-SpamCheck: 
+X-SnT-MailScanner-From: frieder.schrempf@kontron.de
+X-SnT-MailScanner-To: bbrezillon@kernel.org, broonie@kernel.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-next@vger.kernel.org, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, yogeshnarayan.gaur@nxp.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190129_030348_359107_106BFAD3 
-X-CRM114-Status: GOOD (  30.80  )
+X-CRM114-CacheID: sfid-20190129_034631_171902_2E54C81C 
+X-CRM114-Status: GOOD (  12.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,153 +95,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Geert,
-
-On Tue, 22 Jan 2019 13:31:59 +0100
-Boris Brezillon <bbrezillon@kernel.org> wrote:
-
-> On Tue, 22 Jan 2019 12:21:11 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On 29.01.19 10:55, Yogesh Narayan Gaur wrote:
+> Typo fix in Author Boris Brezillon last name and update with new
+> email address.
 > 
-> > Hi Boris,
-> > 
-> > On Wed, Jan 2, 2019 at 3:37 PM Boris Brezillon <bbrezillon@kernel.org> wrote:  
-> > > add_mtd_device() can fail. We should always check its return value
-> > > and gracefully handle the failure case. Fix the call sites where this
-> > > not done (in mtdpart.c) and add a __must_check attribute to the
-> > > prototype to avoid this kind of mistakes.
-> > >
-> > > Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
-> > > ---
-> > > No Fixes or Cc-stable tag here, as this seems to have worked just fine
-> > > without checking add_mtd_device() ret code until we started to expose
-> > > MTD devices as NVMEM providers (queued for 4.21).    
-> > 
-> > Oh yes ;-)
-> > 
-> > https://lore.kernel.org/lkml/87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com/t/
-> > 
-> > Your patch is very similar to mine, so the crash is gone.  
-> 
-> Oops, sorry about that. I completely forgot about this patch. It seems
-> the discussion led to a different conclusion though (patch
-> allocate_partitions() to reject wrong parts early) and the v2 was never
-> sent (or I missed it). Anyway, I guess we should have done both (check
-> add_mtd_device() ret code everywhere and patch allocate_partitions() to
-> reject bad parts early).
-> 
-> > However, the warning is still there:
-> > 
-> >     m25p80 spi0.0: s25sl032p (4096 Kbytes)
-> >     3 fixed-partitions partitions found on MTD device spi0.0
-> >     Creating 3 MTD partitions on "spi0.0":
-> >     0x000000000000-0x000000080000 : "loader"
-> >     0x000000080000-0x000000600000 : "user"
-> >     mtd: partition "user" extends beyond the end of device "spi0.0" --
-> > size truncated to 0x380000
-> >     0x000000600000-0x000004000000 : "flash"
-> >     mtd: partition "flash" is out of reach -- disabled
-> >     ------------[ cut here ]------------
-> >     WARNING: CPU: 0 PID: 1 at drivers/mtd/mtdcore.c:571
-> > add_mtd_device+0x90/0x3b0
-> > 
-> > Interestingly, only one partition is created, covering the full size of the
-> > device:
-> > 
-> >     # cat /proc/partitions
-> >     major minor  #blocks  name
-> > 
-> >       31        0       4096 mtdblock0
-> > 
-> > While I would expect two partitions, "loader" and truncated "user":
-> > 
-> >       31        0        512 mtdblock0
-> >       31        1       3584 mtdblock1  
-> 
-> Yes, makes sense, I guess your patch was better than mine :-/. Can you
-> try with the following diff applied and let me know if it solves the
-> problem?
+> Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 
-Gentle ping: is this diff fixing your problem, and do you want me to
-send a proper patch for it or should I let you send one?
+Oh, so this was my typo in the first place and you just copied it ;)
+Thanks for sending the patch.
 
+Mark, could you please squash this with the original commit 
+(84d043185dbe spi: Add a driver for the Freescale/NXP QuadSPI 
+controller) in spi-next?
+
+Acked-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+> ---
+>   drivers/spi/spi-fsl-qspi.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> --->8---  
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 60104e1079c5..aefd3344991f 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -724,16 +724,14 @@ int add_mtd_partitions(struct mtd_info *master,
->  {
->         struct mtd_part *slave;
->         uint64_t cur_offset = 0;
-> -       int i, ret;
-> +       int i, ret, actual_nbparts = 0;
->  
->         printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
->  
->         for (i = 0; i < nbparts; i++) {
->                 slave = allocate_partition(master, parts + i, i, cur_offset);
-> -               if (IS_ERR(slave)) {
-> -                       ret = PTR_ERR(slave);
-> -                       goto err_del_partitions;
-> -               }
-> +               if (IS_ERR(slave))
-> +                       continue;
->  
->                 mutex_lock(&mtd_partitions_mutex);
->                 list_add(&slave->list, &mtd_partitions);
-> @@ -746,7 +744,7 @@ int add_mtd_partitions(struct mtd_info *master,
->                         mutex_unlock(&mtd_partitions_mutex);
->  
->                         free_partition(slave);
-> -                       goto err_del_partitions;
-> +                       continue;
->                 }
->  
->                 mtd_add_partition_attrs(slave);
-> @@ -754,14 +752,10 @@ int add_mtd_partitions(struct mtd_info *master,
->                 parse_mtd_partitions(&slave->mtd, parts[i].types, NULL);
->  
->                 cur_offset = slave->offset + slave->mtd.size;
-> +               actual_nbparts++;
->         }
->  
-> -       return 0;
-> -
-> -err_del_partitions:
-> -       del_mtd_partitions(master);
-> -
-> -       return ret;
-> +       return actual_nbparts;
->  }
->  
->  static DEFINE_SPINLOCK(part_parser_lock);
-> @@ -1003,10 +997,10 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
->                 }
->                 /* Found partitions! */
->                 if (ret > 0) {
-> -                       err = add_mtd_partitions(master, pparts.parts,
-> +                       ret = add_mtd_partitions(master, pparts.parts,
->                                                  pparts.nr_parts);
->                         mtd_part_parser_cleanup(&pparts);
-> -                       return err ? err : pparts.nr_parts;
-> +                       return ret;
->                 }
->                 /*
->                  * Stash the first error we see; only report it if no parser
-
-
+> diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
+> index f0a340026ba4..6a713f78a62e 100644
+> --- a/drivers/spi/spi-fsl-qspi.c
+> +++ b/drivers/spi/spi-fsl-qspi.c
+> @@ -10,7 +10,7 @@
+>    *
+>    * Transition to SPI MEM interface:
+>    * Authors:
+> - *     Boris Brezillion <boris.brezillon@bootlin.com>
+> + *     Boris Brezillon <bbrezillon@kernel.org>
+>    *     Frieder Schrempf <frieder.schrempf@kontron.de>
+>    *     Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+>    *     Suresh Gupta <suresh.gupta@nxp.com>
+> @@ -959,7 +959,7 @@ module_platform_driver(fsl_qspi_driver);
+>   
+>   MODULE_DESCRIPTION("Freescale QuadSPI Controller Driver");
+>   MODULE_AUTHOR("Freescale Semiconductor Inc.");
+> -MODULE_AUTHOR("Boris Brezillion <boris.brezillon@bootlin.com>");
+> +MODULE_AUTHOR("Boris Brezillon <bbrezillon@kernel.org>");
+>   MODULE_AUTHOR("Frieder Schrempf <frieder.schrempf@kontron.de>");
+>   MODULE_AUTHOR("Yogesh Gaur <yogeshnarayan.gaur@nxp.com>");
+>   MODULE_AUTHOR("Suresh Gupta <suresh.gupta@nxp.com>");
+> 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
