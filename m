@@ -2,75 +2,72 @@ Return-Path: <SRS0=oh1H=QF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33911C169C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 12:12:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E899C282D0
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 12:14:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDAA62086C
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 12:12:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1B192177E
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Jan 2019 12:14:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EDeUd77n";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="TEUiruac"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDAA62086C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CqFAOni/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="KaAkZvBP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1B192177E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=2Lt3ohHU1V8QdA8R1g0TcAqpDmF+tiPExNigaohzJ0E=; b=EDeUd77nrMt7d2oJ9wgShDbE7
-	sf/DZOFkTJTx7dTj4ND10UKlVgg75pkjOf6HcW/etIPYQgz72+KWbOGbYuZulxLO0StTO0l6cmOnq
-	eZg2MlfcWJeiktXCzay+xftBby0HeQOELF79aF33lso2mPhWpZK6qBhOLkDbS1FukYQ/Aw88SRABC
-	6So0BXc0SV9Uv6t5KsCQOTKZX0Ghp9qWHXPvg4Cr5P3+1JPA+c6p/0yruqxNhC7qkl4cDXSLDMCrq
-	C+P+cC86ANB2JPYg6jmxl6OgfxbO7ByiZEJNHNPG9X8Ozs4q52d2/kcdK+kuUYNTy0R11uHPo6Ghd
-	Gx7IdBWRw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
+	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	References:List-Owner; bh=GANbN8g1akxE4+Dv9cO2r84MSvOdnHJ748PBVNGDM8A=; b=CqF
+	AOni/x9HYxSRF/DolsBQKQBLzV0C5ueh8QA1hurh0UdFxPsNuDXzN9PaYCDyVBtDAp9Lji9KOqWWg
+	HlSkaqn2D9OTdhwqqSBBQgB4rlVkCvm/ayaXzjc7B8Kp9tapWW2eoMfjncY/ofLaduYDmQrgO891/
+	6QW20d3Fbh540/GlmQghdidwY/y0UfdeLAq5sETng+bV1YpXo9P7KymKFn3a8cF83bpfQqM4CkN9D
+	O5n23Oh/+L79eEGlDVoEo4tD3ZoiQEe/RXaYaHFU2EZT4M6IkAE9kV+yF5ai4/J6+w1ZD2W+UJGSL
+	ED2wXHBzdtFaEIf9LeO150+zy0GHTNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1goSFt-0007rd-96; Tue, 29 Jan 2019 12:12:41 +0000
+	id 1goSHZ-0008Hk-Vj; Tue, 29 Jan 2019 12:14:25 +0000
 Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1goSFp-0007rG-B8
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 12:12:38 +0000
+ id 1goSHW-0008HM-MY
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2019 12:14:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=EtI5AvujGGY5/RaznJQSRoZrtFEhMB1fNYQ/ErtBaXM=; b=TEUiruacTseUmmq+bfsaLUYk6
- A4WGkeBRYslJ5YF4tvlvLsfcfCxS0Abeqbnxvl2N1VRxHSPnH9jVlCzqxe55Ig9l5YPwELnLAP/GX
- IfnVX1bYsRZf5EsBYoMtbVpdqF/5s8Q/2fBSptjaE2ESzPh0zzjetpVj7bKy+VAYsuQGk=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=PSjp0GErO0GNC/ycgfVz5U6G4bsI+4ZCjEj6nxYRKWY=; b=KaAkZvBPdoYF
+ HXq9ooeS/wm8Yrsi/NguRSqXH7T8nOw6zeiy5zTlfMYEszsBH1UQEJH2+f4lv/InLufXbwJRBQXCc
+ U2+olsdfLcdaTI94TK6S2pVVEEPSO/BGfjshaYMMEJ7oJmiTrhKjpwwahcQbqPRnBEYOK06Q46DXr
+ ucZRM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=debutante.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpa (Exim 4.89)
  (envelope-from <broonie@sirena.org.uk>)
- id 1goSFm-0008AE-FV; Tue, 29 Jan 2019 12:12:34 +0000
+ id 1goSHU-0008Ai-AM; Tue, 29 Jan 2019 12:14:20 +0000
 Received: by debutante.sirena.org.uk (Postfix, from userid 1000)
- id EB0751127D50; Tue, 29 Jan 2019 12:12:33 +0000 (GMT)
-Date: Tue, 29 Jan 2019 12:12:33 +0000
+ id E61F61127D50; Tue, 29 Jan 2019 12:14:19 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>
-Subject: Re: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
-Message-ID: <20190129121233.GC10524@sirena.org.uk>
-References: <1548755607-27544-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <4759d7a9-71a2-70a7-2704-0ef7fa37b2ca@kontron.de>
- <20190129115937.GB10524@sirena.org.uk>
- <24c8ce00-5a7c-cec0-df5b-fca6e13bccb0@kontron.de>
-MIME-Version: 1.0
-In-Reply-To: <24c8ce00-5a7c-cec0-df5b-fca6e13bccb0@kontron.de>
-X-Cookie: What foods these morsels be!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: Applied "spi: spi-mem: spi-fsl-qspi: typo fix in author name" to the
+ spi tree
+In-Reply-To: <1548755607-27544-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190129121419.E61F61127D50@debutante.sirena.org.uk>
+Date: Tue, 29 Jan 2019 12:14:19 +0000 (GMT)
+X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190129_041237_531523_7FF1A1EF 
-X-CRM114-Status: UNSURE (   6.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190129_041422_883501_6FB9FE65 
+X-CRM114-Status: GOOD (  11.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,68 +79,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+ linux-spi@vger.kernel.org, "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Content-Type: multipart/mixed; boundary="===============2338167772557171242=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The patch
 
---===============2338167772557171242==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tqI+Z3u+9OQ7kwn0"
-Content-Disposition: inline
+   spi: spi-mem: spi-fsl-qspi: typo fix in author name
 
+has been applied to the spi tree at
 
---tqI+Z3u+9OQ7kwn0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
 
-On Tue, Jan 29, 2019 at 12:08:26PM +0000, Schrempf Frieder wrote:
-> On 29.01.19 12:59, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > That'd mean a rebase unfortunately.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Ah, ok no problem. Then please just apply it with:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> Fixes: 84d043185dbe ("spi: Add a driver for the Freescale/NXP QuadSPI=20
-> controller")
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Yes, that's what I've done already.
+Thanks,
+Mark
 
---tqI+Z3u+9OQ7kwn0
-Content-Type: application/pgp-signature; name="signature.asc"
+From c55d0e8c543bfd21f0dce73024e5f6a9a306b834 Mon Sep 17 00:00:00 2001
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Date: Tue, 29 Jan 2019 09:55:27 +0000
+Subject: [PATCH] spi: spi-mem: spi-fsl-qspi: typo fix in author name
 
------BEGIN PGP SIGNATURE-----
+Typo fix in Author Boris Brezillon last name and update with new
+email address.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxQQzEACgkQJNaLcl1U
-h9DMcwf+KKr/ECVMpHPmbzMnvYy5tmCK8+f3G7YcVEOCr3+D4MEKm351tKbNM+rm
-RsDaghI4Rembs/uE6pYjdOyuGD3yAKcAzM0Pljd4P5/L4Gg3zC4jJoLIP8N2yeaJ
-SuwOJ6YxEW7NJdoQIvO1h7vaZ5rhMkV8UZJ9YSWczmygcjUhtFE8aAXpz6g70NTz
-DuGIFum5YgZbdAeRF1C8GesdLxvmonmMNiLxtgq1qJv7rxoMzB0UOKbs4Vvh8Ue3
-24eM1MjseMTFrWHhUYcSKksUTEiMZ/C+I2pEXpYP8A7hzojKxP3BdiFYRryYIYi6
-VBnom7LI2OySeVRHOe6ZvxzTqfRfxw==
-=JkNH
------END PGP SIGNATURE-----
+Fixes: 84d043185dbe ("spi: Add a driver for the Freescale/NXP QuadSPI controller")
+Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/spi/spi-fsl-qspi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---tqI+Z3u+9OQ7kwn0--
+diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
+index f0a340026ba4..6a713f78a62e 100644
+--- a/drivers/spi/spi-fsl-qspi.c
++++ b/drivers/spi/spi-fsl-qspi.c
+@@ -10,7 +10,7 @@
+  *
+  * Transition to SPI MEM interface:
+  * Authors:
+- *     Boris Brezillion <boris.brezillon@bootlin.com>
++ *     Boris Brezillon <bbrezillon@kernel.org>
+  *     Frieder Schrempf <frieder.schrempf@kontron.de>
+  *     Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+  *     Suresh Gupta <suresh.gupta@nxp.com>
+@@ -959,7 +959,7 @@ module_platform_driver(fsl_qspi_driver);
+ 
+ MODULE_DESCRIPTION("Freescale QuadSPI Controller Driver");
+ MODULE_AUTHOR("Freescale Semiconductor Inc.");
+-MODULE_AUTHOR("Boris Brezillion <boris.brezillon@bootlin.com>");
++MODULE_AUTHOR("Boris Brezillon <bbrezillon@kernel.org>");
+ MODULE_AUTHOR("Frieder Schrempf <frieder.schrempf@kontron.de>");
+ MODULE_AUTHOR("Yogesh Gaur <yogeshnarayan.gaur@nxp.com>");
+ MODULE_AUTHOR("Suresh Gupta <suresh.gupta@nxp.com>");
+-- 
+2.20.1
 
-
---===============2338167772557171242==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2338167772557171242==--
-
