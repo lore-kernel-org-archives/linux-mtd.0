@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68EEAC282D5
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:52:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0978DC282D5
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:55:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3172A21473
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:52:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C74F621473
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:55:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f0fz8J+p";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VinStadV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3172A21473
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cSJiS2wL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WhqNCv38"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C74F621473
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,36 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OYIFphNKjTVh9wJpd9DkNbQMx2UVMKrpJwPTIfyT8SY=; b=f0fz8J+pUkSkUK
-	8trr2AJMjOk3kej2kG79lorGStTnrA/JIy8LTMQCdRep0fRZZ9etgsvTytZKlPBs4hBmESJBCFQuJ
-	6dWQqpXFXJUZaZ4PTrLRTrizxmThmWIfzYsQm03l5YfK9GpeKp5MCbicZeFoQXlLq8O02doAFfkRa
-	ZLMx6qjItNczabzVULa7GqaN8/BWpDObxnJhUbKOBBOJqR/O0e7xeiKpz1iIwA87Aa4gzqcGlh98b
-	yp2HPTHTsN7NAlA9pSXTd3TAVA7mkVcSW9eT8Z6DYqwqa9QHiRAobJXIZaFSGv1sExq7Ksq1eC3ok
-	OTeNz9ejeT0/FC48Xptg==;
+	List-Owner; bh=gvxn1t4pjkVpks+/g6ybk6lYLxyJTWRDUpQVnd5ydGk=; b=cSJiS2wLNrNUCz
+	rs5X5NsVoSIfwtJnqm2sPphTJAH7yNYHe3qW65Tk4PCJP1e4gO4nqxDATmHM6jpcnMYtZdMMjvI3B
+	3A8dyznPSAh+sLNOLTqE3XVkDTNPMjevtuAKNlBKOqaMN2Hl1Ky3a9hkp4LLjV0NXAWwWoXOrz0iq
+	r/KDA61D3jOvV/mNTsmJPjhO/MyIGXvrHk5WKdikyh1dNeu19VNRhP0IEz5ovUWbGEdtW7T4Mi4lM
+	FhRg88zfq4P/FXmeuTUpD16P5VhthSX1LIqUMHlsaXUAkesDcLdFhdDMLcfJL38Dwuf2/zoH3QH6Y
+	6qIeR833JdIQ34LM78yg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1golc1-0000dY-Dh; Wed, 30 Jan 2019 08:52:49 +0000
+	id 1golep-00029O-6j; Wed, 30 Jan 2019 08:55:43 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1golbx-0000dC-SD
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 08:52:47 +0000
+ id 1golem-000294-0p
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 08:55:41 +0000
 Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B9DA621473;
- Wed, 30 Jan 2019 08:52:42 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D6DB921473;
+ Wed, 30 Jan 2019 08:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548838365;
- bh=cS8kCrk2MGvCtzKlCxpKETvAw1JusUi9qLHXKuUK0HE=;
+ s=default; t=1548838539;
+ bh=uyU0ky0OFcK2Qah7tKtByn0ET5zVB4HXUo054UqNosE=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=VinStadV7Pihl+n/lTpedS8dvxJAmtQSkt1bcmCnM8LxFeLdTN6bFREFaslTlyn3F
- PP3MYhVk8065KzHJiZyEE6BQxJoSPGnF35Q/z1B7j+zIxdSt+sIbu25BYnNfOAZBKA
- 5/cltPesSFIP0B2jKqUX/MweikijLnLSeEwTXfQ8=
-Date: Wed, 30 Jan 2019 09:52:37 +0100
+ b=WhqNCv38gQkMXOK82ZREzxZpg4639b1DMOhdEhuKB+ZUiYriAvus6X2kQIzqEkVll
+ ahqwQbVilCR80SfKG0Ne7I0iFukWvAL8JmHZPxIThHAM7SBvuWq4Ruh4VGZXPFTZ7P
+ iPaGHWvbl6Oh7XZ1Rc/JzY7aBf/e5iT4M30em7M4=
+Date: Wed, 30 Jan 2019 09:55:30 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH 2/2] mtd: Check add_mtd_device() ret code
-Message-ID: <20190130095237.1a6a598f@bbrezillon>
+Message-ID: <20190130095530.44e7fe8a@bbrezillon>
 In-Reply-To: <CAMuHMdXVszyR_fkjmy5RpEDW3L-Ewr_tOK3o07OEm2uh4_aSRA@mail.gmail.com>
 References: <20190102143654.24362-1-bbrezillon@kernel.org>
  <20190102143654.24362-2-bbrezillon@kernel.org>
@@ -65,8 +65,8 @@ References: <20190102143654.24362-1-bbrezillon@kernel.org>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_005245_947195_B90ECDA0 
-X-CRM114-Status: GOOD (  27.79  )
+X-CRM114-CacheID: sfid-20190130_005540_093412_2F1BE919 
+X-CRM114-Status: GOOD (  28.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -163,8 +163,8 @@ Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 > 
 > Note that the warning is still there, but that's probably OK.
 
-You mean the pr_warn() or the WARN_ON() backtrace? The former is
-expected not the latter.
+Just out of curiosity, why do you need to define parts that do not fit
+in the flash?
 
 ______________________________________________________
 Linux MTD discussion mailing list
