@@ -2,68 +2,115 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DE6FC282D8
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 14:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE31C282D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 15:08:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5827020882
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 14:55:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D8992083B
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 15:08:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SqbGrpcu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qYrh5hlh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5827020882
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HVtEBBCJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="b7a4LgX3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D8992083B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=je4OAxIkPX/O+NfbnfXRD0Yp6Oo0iFhji/bFbrlsTWI=; b=SqbGrpcuLuR8Z2
-	ige8J01OuhVh/pUIG536B0l4cD/CkAydkdAdigwudh9fekOy+G6wLAdOT8e6lZ12aDJWpGoFdcOBZ
-	/lKGYrwJHYw8ubZot2Nb8q090kI84WDZPNGxJgOvQ+hvmDwTcYXj+M4RMZKuvN5y9vDh4vUSAbzHQ
-	kEBWSqPYkGjDuYFkf7ZhHZqWn0q3DXetmcmbze1iun6ztox0/4fZKKw3V3pnMsHi1U5SgD2uuWvi6
-	5JSlx/xvX68t1bMXDOtcrzywyE9Gv0CPH/NlgmnspKk4ZUvTIgJC9MvdanGUJq1yRNI+uzk827IR9
-	eIhw0Gl8rHqWLlZuwY/A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=AZ/ETEWpPZPnIEXvJIDdpRRaCbKqrS2hT5EK/qMr0Uo=; b=HVtEBBCJF/HYkT
+	jms/2xJ5vrASyzt28lxSy7KftlpinQDmQqoB/YVptuNZ5dAMxbqILbohvErB/OhGssbjJKQ1dQy9i
+	EyXNDDZh06NEmovUu46PfgMsJFiE6c8wKvcaJv/vO+3YlaxYrwefXUN3brhrBVUvRXL6Ya52xQitV
+	/qpE5DStkkAtRDm9mPinP78x8XgbxtTtz8q61I3Qmbeu3zmBEAzZxDiQeblrXbvwX1iGSkexIaH0O
+	p6lYE4Fb1eNtCQOzC32k4pe/d2Zty5X8SXf0ZQMsTYnKyXQdWAJcEeRPbXYnWCHr4zw+XPtZZyWpf
+	al75OavpoC6Y0puK3PDg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gorHQ-0002CP-9h; Wed, 30 Jan 2019 14:55:56 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gorTt-0006pG-Vd; Wed, 30 Jan 2019 15:08:49 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gorHN-0002C2-In
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 14:55:54 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 26E6720882;
- Wed, 30 Jan 2019 14:55:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548860153;
- bh=7G5T/KsM8XC2WiSdPDQavJovP2/zcBe1Um2PBAdj+3U=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=qYrh5hlh2iq0rXjNpgxGqwFfe9+n0Q19rZ5e+wKjmh5QIhPMaXcuVuFbSBk/3FuvK
- Fnvwybt9jQXos2z9hGma+lbCo+R52J7f1m/uVb3zORhES0EJtEUxNuLeQ2VnS9MZ90
- m57b0AF9SbonKN69LhTV7QsYGSpIO6amJ3+I6f48=
-Date: Wed, 30 Jan 2019 15:55:43 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 0/2] eeprom: at25: SPI transfer improvements
-Message-ID: <20190130155543.5ab749b5@bbrezillon>
-In-Reply-To: <CAMuHMdVfVHUQnjwvFikqQJ8HBD+0A7DSCTcdDN4e7V4c=4Usug@mail.gmail.com>
-References: <20190118140525.29189-1-geert+renesas@glider.be>
- <20190118230740.44239fcf@bbrezillon>
- <CAMuHMdVfVHUQnjwvFikqQJ8HBD+0A7DSCTcdDN4e7V4c=4Usug@mail.gmail.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1gorTd-0006ZC-1W; Wed, 30 Jan 2019 15:08:34 +0000
+X-IronPort-AV: E=Sophos;i="5.56,540,1539673200"; d="scan'208";a="27058550"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 30 Jan 2019 08:08:31 -0700
+Received: from NAM05-BY2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.107) with Microsoft SMTP Server (TLS)
+ id 14.3.352.0; Wed, 30 Jan 2019 08:08:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rpXbS9OZRX3oWgUoUuC0hMNL2D8csIhtfbn1sFcKWgQ=;
+ b=b7a4LgX3NracZaDFYQvG5I9K0t7xh/xC0xx3lvVRT1+vyOX1WaCadrMZS2cNgu1+uyB4YkXw/uau2n6E6u4DVkmMKK5GZ1wrZOW2Khpx3T6bLRZHLk1lSNpXLvZEHrV5O6vE0SXC+I+kHSk+qIvnriaj/TJfMBiYuhwvybKMcIY=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1796.namprd11.prod.outlook.com (10.175.99.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1558.17; Wed, 30 Jan 2019 15:08:27 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.017; Wed, 30 Jan 2019
+ 15:08:27 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <broonie@kernel.org>, <Nicolas.Ferre@microchip.com>,
+ <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>
+Subject: [PATCH 0/9] spi: atmel-quadspi: introduce sam9x60 qspi contoller
+Thread-Topic: [PATCH 0/9] spi: atmel-quadspi: introduce sam9x60 qspi contoller
+Thread-Index: AQHUuK2nvvFYiCpvqUCIN9CcSw7iEg==
+Date: Wed, 30 Jan 2019 15:08:27 +0000
+Message-ID: <20190130150818.24902-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1P189CA0019.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:802:2a::32) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; BN6PR11MB1796;
+ 6:TDMbpK3ecsZXTP5hcI3mXxmDniV3YMdSwgCG3Zn03XmRGVUl4OJHn/StKGk/lxFcAN/vc9aiACRnPqd6+AQXMCna2gC/0zw07X/Qcvpjd0S/E2EWUKAN6a0tSWE/+v/B7b//3jXkhvgk4StaiasJOQ65NG23t72FBSwOAiuuJCuBmdNHwUyIZD2O7u0jWKRYZ742WrgJdfl7Ro/6x8TPDGZdn7/aJX0Cb7fGjv7sEd+OEczmCH2BXTZnq9xtMSoDftGoPNwfQz38YUX5jmWkjyWtsruaHbErLsbKXsmWvAFmEkSU3drENxFOH76G06Evj8/zeFE3i4pX4MqA9Wqk5DQ9jlhS/tDTLNgnYwD01c+rxa/YAftYm01ES2YydH8Dh852kiVDJwVXLBk1kbYFlPZrbLFvbInCBiPKplnGDe1vtYnSXX1UcUaVQNZOWH/mQcAxbFzyxAbvefbbj2d0YA==;
+ 5:j5HEPE2wHzoXRXS8qrrXZrdHe5hy+MxHgl63WOy5dLr8jYUgGo70hhHMq3hOTqlTAFy+IQb/HIRNjkNISBtroRW3BtebgmHykiBZE3kRFhu8daztt7fEJS2ghxFm4OlYZx5EsEPVrRCm39FFwa5Cqixx5Q+Nemy9eCmxPOt8TrBSKEtvxVRpNxwIRPhHI8Kk0FG5MHEp+ki7kMAAQd1sQQ==;
+ 7:A8jcXRJgl4q96tRT1C5Ok/wmALfyyJ1Yb8sg6va8htmG8yrVx9RTDjBR+a/gJd+yJJSS4oTtbBayuFrCXJRpuvV4KNPRlYTf9JCmls6z0IZYr0AXFl1Kvvf+2Zq48fxW9CuSYmb3kNFd5IRmxObHQQ==
+x-ms-office365-filtering-correlation-id: 4f585e8c-6eb1-4a2e-8dcd-08d686c4c949
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
+ SRVR:BN6PR11MB1796; 
+x-ms-traffictypediagnostic: BN6PR11MB1796:
+x-microsoft-antispam-prvs: <BN6PR11MB17965591C0733DFF281730B5F0900@BN6PR11MB1796.namprd11.prod.outlook.com>
+x-forefront-prvs: 0933E9FD8D
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(39860400002)(376002)(366004)(346002)(136003)(396003)(199004)(189003)(386003)(316002)(81156014)(2501003)(72206003)(81166006)(486006)(14454004)(476003)(110136005)(1076003)(8936002)(6116002)(4326008)(50226002)(52116002)(6506007)(2616005)(36756003)(3846002)(68736007)(6486002)(6436002)(53936002)(8676002)(54906003)(66066001)(6512007)(478600001)(99286004)(186003)(71200400001)(97736004)(86362001)(2906002)(256004)(71190400001)(14444005)(305945005)(6636002)(102836004)(105586002)(25786009)(7736002)(26005)(106356001)(107886003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1796;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: dxhKBzKH3aEVidoszXmiLZ1IwuQwKyMHXkAdScoufvxVK7TsXqFRg5eAL5IQpU8RSx55mtEK9lF0ZMKzJHAEpCdNl3c3L/Jz6ARRcA37VQNqLxiwdkJT9e+jvznzMctjWef3QC2yMViW+VUK/VljDCI8uEmwRH6LbETiehv/MEJaNRgBNcCSxZOuhK7uLCCFBfIxGrTA0nkqBz6S2QllicOnTSyphWMzaLsFh7H+oqungiw2+xyg3zUsWzZAW0ST7Y8u5ksra/cnQSV9CySZ6mMneP4mYAr6IQ0/DVCJFmXXQ29n2jktqXH8eg6nbnGuTmq9/s1hkygPo0s8IC8hYhkz8wL/+J3KBYauXJ2kYmY3ZZobHsFYNORzYS0uz73sCQ2UlUU2HqKquseP+uLx38DQ8eYabBGBUZwPpD2HQws=
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f585e8c-6eb1-4a2e-8dcd-08d686c4c949
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2019 15:08:25.4265 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1796
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_065553_636825_C28E0055 
-X-CRM114-Status: GOOD (  17.02  )
+X-CRM114-CacheID: sfid-20190130_070833_202545_A45F3391 
+X-CRM114-Status: UNSURE (   4.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,43 +122,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Nguyen An Hoan <na-hoan@jinso.co.jp>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 29 Jan 2019 20:02:37 +0100
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-> Hi Boris,
-> 
-> On Fri, Jan 18, 2019 at 11:07 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
-> > Did you consider converting this driver to spimem? Looks like the
-> > protocol used to communicate with the memory resembles the one used on
-> > SPI NANDs/NORs and fits pretty well in the spi_mem_op representation.
-> >
-> > By doing this conversion you'd allow people to connect an AT25 EEPROM
-> > to an advanced SPI controller that does not support regular SPI
-> > transfers and you wouldn't have to forge SPI messages manually.
-> >
-> > Here is a patch (only compile tested) doing that. The diffstat is not in
-> > favor of this conversion, but I find the resulting code cleaner and more
-> > future proof.  
-> 
-> Thanks, seems to work fine, with the 512-byte 25LC040 I have!
-> 
-> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> I did notice that the first two-byte transfer (command+offset) of each
-> message is now split in two one-byte transfers, though.
+Patches from 1 to 7 are minor fixes or cosmetics.
+Patches 8 and 9 introduce the sam9x60 qspi controller.
 
-That's something we can optimize in drivers/spi/spi-mem.c if you think
-it makes a difference.
+sam9x60 qspi controller tested with sst26vf064b jedec,spi-nor flash.
+Backward compatibility test done on sama5d2 qspi controller and
+mx25l25635e jedec,spi-nor flash.
+
+The patches are generated on top of for-next branch.
+
+Tudor Ambarus (9):
+  spi: atmel-quadspi: optimize qspi init
+  spi: atmel-quadspi: order header files inclusion alphabetically
+  spi: atmel-quadspi: fix naming scheme
+  spi: atmel-quadspi: remove unnecessary cast
+  spi: atmel-quadspi: return appropriate error code
+  spi: atmel-quadspi: switch to SPDX license identifiers
+  dt-bindings: spi: atmel-quadspi: update example to new clock binding
+  dt-bindings: spi: atmel-quadspi: QuadSPI driver for Microchip SAM9X60
+  spi: atmel-quadspi: add support for sam9x60 qspi controller
+
+ .../devicetree/bindings/spi/atmel-quadspi.txt      |  30 +-
+ drivers/spi/atmel-quadspi.c                        | 406 ++++++++++++++++-----
+ 2 files changed, 336 insertions(+), 100 deletions(-)
+
+-- 
+2.9.5
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
