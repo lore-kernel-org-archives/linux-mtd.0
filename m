@@ -2,68 +2,71 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFFABC282D5
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68EEAC282D5
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:52:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD5E321473
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:47:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3172A21473
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 08:52:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sqF4Y3Cg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZQZ92By"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD5E321473
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f0fz8J+p";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VinStadV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3172A21473
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:
-	From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PkV6UnEpi/72APfiBW58d9cOUE7pFmP7QwQHLD3dODY=; b=sqF4Y3CgXG/uhV
-	qQirAVc07zbu+QS4tteFEZCCzz6dJpyh7dLISDQZ3FWqZGieqghDAdcjy9QanF00UxfQ3Psd9DjWp
-	GHWhnFFeAWXDKTwmcsgIUDPipJda7h2KWT3nBqFoyJ25+RgLraqs5lHvZi/9zIF6VVr7xj6C3gHJd
-	31Dok/53lAq+HRmS3WMfIeonju9pZvJapyuxf8/xHC+ic+HU25WMyDe0LiMq9ksxOBZvO9WG1bA6y
-	C2v3mybU9r/IcbhvZzZQPJoKvwo5kPeDSN28boSoVhM/Nl0xm9hxaZng4/W3NBs5kLsCEV/VMgJEz
-	/13XrY42w4kh9skw84kQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OYIFphNKjTVh9wJpd9DkNbQMx2UVMKrpJwPTIfyT8SY=; b=f0fz8J+pUkSkUK
+	8trr2AJMjOk3kej2kG79lorGStTnrA/JIy8LTMQCdRep0fRZZ9etgsvTytZKlPBs4hBmESJBCFQuJ
+	6dWQqpXFXJUZaZ4PTrLRTrizxmThmWIfzYsQm03l5YfK9GpeKp5MCbicZeFoQXlLq8O02doAFfkRa
+	ZLMx6qjItNczabzVULa7GqaN8/BWpDObxnJhUbKOBBOJqR/O0e7xeiKpz1iIwA87Aa4gzqcGlh98b
+	yp2HPTHTsN7NAlA9pSXTd3TAVA7mkVcSW9eT8Z6DYqwqa9QHiRAobJXIZaFSGv1sExq7Ksq1eC3ok
+	OTeNz9ejeT0/FC48Xptg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1golWf-0006Oz-Rg; Wed, 30 Jan 2019 08:47:17 +0000
+	id 1golc1-0000dY-Dh; Wed, 30 Jan 2019 08:52:49 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1golWX-0006Of-NJ
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 08:47:10 +0000
-Received: from localhost.localdomain (91-160-177-164.subs.proxad.net
- [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1golbx-0000dC-SD
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 08:52:47 +0000
+Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A999C21473;
- Wed, 30 Jan 2019 08:47:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B9DA621473;
+ Wed, 30 Jan 2019 08:52:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548838029;
- bh=ViobS3Rrq90H2vAnWOxd0O05jt4ZtDsQ14/LPuykNR0=;
- h=From:To:Subject:Date:From;
- b=IZQZ92ByDKRqi/C8nLTaXfut2o88TIdRzbdd+xker7NR/ocVxEy5eLtlyHSunqjNb
- l7iDS23X1jtqRiclLZv3HMos0fUozzxDggj+WNKRwDH+K55i9wjjoosKUy4PkQl7QT
- A2JbJksKtqw6UP7s8Ctpjh1GfS8vf3rsIR1Vz9Sg=
+ s=default; t=1548838365;
+ bh=cS8kCrk2MGvCtzKlCxpKETvAw1JusUi9qLHXKuUK0HE=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=VinStadV7Pihl+n/lTpedS8dvxJAmtQSkt1bcmCnM8LxFeLdTN6bFREFaslTlyn3F
+ PP3MYhVk8065KzHJiZyEE6BQxJoSPGnF35Q/z1B7j+zIxdSt+sIbu25BYnNfOAZBKA
+ 5/cltPesSFIP0B2jKqUX/MweikijLnLSeEwTXfQ8=
+Date: Wed, 30 Jan 2019 09:52:37 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Remove a debug trace in mtdpart.c
-Date: Wed, 30 Jan 2019 09:47:00 +0100
-Message-Id: <20190130084700.6290-1-bbrezillon@kernel.org>
-X-Mailer: git-send-email 2.17.1
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/2] mtd: Check add_mtd_device() ret code
+Message-ID: <20190130095237.1a6a598f@bbrezillon>
+In-Reply-To: <CAMuHMdXVszyR_fkjmy5RpEDW3L-Ewr_tOK3o07OEm2uh4_aSRA@mail.gmail.com>
+References: <20190102143654.24362-1-bbrezillon@kernel.org>
+ <20190102143654.24362-2-bbrezillon@kernel.org>
+ <CAMuHMdV-=_0htu9w1xK25RVWgnRaXVR-R-oXc7f-Y_cC9SR25A@mail.gmail.com>
+ <20190122133159.2033844c@bbrezillon>
+ <20190129120337.08754bac@bbrezillon>
+ <CAMuHMdXVszyR_fkjmy5RpEDW3L-Ewr_tOK3o07OEm2uh4_aSRA@mail.gmail.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_004709_773866_E1509E43 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20190130_005245_947195_B90ECDA0 
+X-CRM114-Status: GOOD (  27.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,37 +78,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 2b6f0090a333 ("mtd: Check add_mtd_device() ret code") contained
-a leftover of the debug session that led to this bug fix. Remove this
-pr_info().
+On Tue, 29 Jan 2019 16:29:55 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Fixes: 2b6f0090a333 ("mtd: Check add_mtd_device() ret code")
-Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
----
- drivers/mtd/mtdpart.c | 1 -
- 1 file changed, 1 deletion(-)
+> Hi Boris,
+> 
+> On Tue, Jan 29, 2019 at 12:03 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> > On Tue, 22 Jan 2019 13:31:59 +0100
+> > Boris Brezillon <bbrezillon@kernel.org> wrote:  
+> > > On Tue, 22 Jan 2019 12:21:11 +0100
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
+> > > > On Wed, Jan 2, 2019 at 3:37 PM Boris Brezillon <bbrezillon@kernel.org> wrote:  
+> > > > > add_mtd_device() can fail. We should always check its return value
+> > > > > and gracefully handle the failure case. Fix the call sites where this
+> > > > > not done (in mtdpart.c) and add a __must_check attribute to the
+> > > > > prototype to avoid this kind of mistakes.
+> > > > >
+> > > > > Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+> > > > > ---
+> > > > > No Fixes or Cc-stable tag here, as this seems to have worked just fine
+> > > > > without checking add_mtd_device() ret code until we started to expose
+> > > > > MTD devices as NVMEM providers (queued for 4.21).  
+> > > >
+> > > > Oh yes ;-)
+> > > >
+> > > > https://lore.kernel.org/lkml/87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com/t/
+> > > >
+> > > > Your patch is very similar to mine, so the crash is gone.  
+> > >
+> > > Oops, sorry about that. I completely forgot about this patch. It seems
+> > > the discussion led to a different conclusion though (patch
+> > > allocate_partitions() to reject wrong parts early) and the v2 was never
+> > > sent (or I missed it). Anyway, I guess we should have done both (check
+> > > add_mtd_device() ret code everywhere and patch allocate_partitions() to
+> > > reject bad parts early).
+> > >  
+> > > > However, the warning is still there:
+> > > >
+> > > >     m25p80 spi0.0: s25sl032p (4096 Kbytes)
+> > > >     3 fixed-partitions partitions found on MTD device spi0.0
+> > > >     Creating 3 MTD partitions on "spi0.0":
+> > > >     0x000000000000-0x000000080000 : "loader"
+> > > >     0x000000080000-0x000000600000 : "user"
+> > > >     mtd: partition "user" extends beyond the end of device "spi0.0" --
+> > > > size truncated to 0x380000
+> > > >     0x000000600000-0x000004000000 : "flash"
+> > > >     mtd: partition "flash" is out of reach -- disabled
+> > > >     ------------[ cut here ]------------
+> > > >     WARNING: CPU: 0 PID: 1 at drivers/mtd/mtdcore.c:571
+> > > > add_mtd_device+0x90/0x3b0
+> > > >
+> > > > Interestingly, only one partition is created, covering the full size of the
+> > > > device:
+> > > >
+> > > >     # cat /proc/partitions
+> > > >     major minor  #blocks  name
+> > > >
+> > > >       31        0       4096 mtdblock0
+> > > >
+> > > > While I would expect two partitions, "loader" and truncated "user":
+> > > >
+> > > >       31        0        512 mtdblock0
+> > > >       31        1       3584 mtdblock1  
+> > >
+> > > Yes, makes sense, I guess your patch was better than mine :-/. Can you
+> > > try with the following diff applied and let me know if it solves the
+> > > problem?  
+> >
+> > Gentle ping: is this diff fixing your problem, and do you want me to
+> > send a proper patch for it or should I let you send one?  
+> 
+> Yes, the diff below fixes the partitions for me, so
+> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> 
+> Note that the warning is still there, but that's probably OK.
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 60104e1079c5..e6d9467f6be0 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -632,7 +632,6 @@ int mtd_add_partition(struct mtd_info *parent, const char *name,
- 	mutex_unlock(&mtd_partitions_mutex);
- 
- 	free_partition(new);
--	pr_info("%s:%i\n", __func__, __LINE__);
- 
- 	return ret;
- }
--- 
-2.17.1
-
+You mean the pr_warn() or the WARN_ON() backtrace? The former is
+expected not the latter.
 
 ______________________________________________________
 Linux MTD discussion mailing list
