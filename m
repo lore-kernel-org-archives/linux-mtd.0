@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75569C282D7
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 17:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D150C282D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 17:17:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17AD72087F
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 17:15:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3DEDD2087F
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 17:17:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="R/dgpf8X";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YO2hnQZa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17AD72087F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MVk8wOCm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tCZqGIjc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DEDD2087F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YG39sbhtDTfmwZrJXV0LSL6ySgBjphr1EXwWFM8FVs8=; b=R/dgpf8XZGxx9N
-	aGYGLNvUOWma4roNgehRIuri7ddHX7JR2MMTj27kvB8gSulN+tiSg3lxpfP8qg9q0MY9ruhZ9WUXx
-	K3ViBj1YZYJtELBqlBCyRMos3CdEWsl4jA/p93v+dPL9WWE/AMoikiwI3jnrdIni3I6cZBYD6g2iD
-	7GaJaEs7zc+iuzTdsSAaiD48Cv3HyxMV8L6PswvHiZ+3ytj7othDyANWHnu7HaWgiN9d2H+n7/3IF
-	ysQoI+77fESWVvSncB5kdcE0jYYHi19o/YWaMOJrQqtp6nz0d/AQOvAe4AGITgd3exzlnl7gtJqaN
-	9CztfGQFm51tNdalsjwA==;
+	List-Owner; bh=SeZu8D34J0Jqy9C62K5eGoaZXePoUgtH5LMqx5eJTxQ=; b=MVk8wOCmfDtmWm
+	4i7lewjdWvVj1yhAaL4DuC9i9SHfn56OUcfOyFO0xPcCYqADxp1bTLnrIo9IsN5S6I49LE8OUguNM
+	IhOA7ZyqPjY07rQV7OH2jlQgRHfkFQY6fkC8UiscVi1PNeE7tq9bnNZgDlN+LMWc7/EfS7LvYBe/R
+	hZTKBpV4Gx+kJvzCW6svf7TiPVgff5r5XlwLHnCo8ZL9O/V52i0GCdgVh0OjAjuLyc6dAg/+Kdz+y
+	zTT8+aqAqyXIboJ056UxVs3vX5XL7JrCCe0sKvXWgZiWZw/hNGUDBXmhfZRNklVRyVs9AL+APfTJR
+	fRyaMJAu1wSU6Rya+GRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gotSd-0001Qk-2e; Wed, 30 Jan 2019 17:15:39 +0000
+	id 1gotTo-0001vR-M7; Wed, 30 Jan 2019 17:16:52 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gotSQ-0001Go-KY; Wed, 30 Jan 2019 17:15:28 +0000
+ id 1gotTd-0001lU-H7; Wed, 30 Jan 2019 17:16:42 +0000
 Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7A9502087F;
- Wed, 30 Jan 2019 17:15:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D4E4B2087F;
+ Wed, 30 Jan 2019 17:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548868525;
- bh=rL8MOHGzlA9uP8ZVfBxcHv6afRZ6IvHg9FHRaOPcosk=;
+ s=default; t=1548868601;
+ bh=Oatp8hHzMKUaCp26kUxlwj8i5yYQCiqot1zlvVr2AE0=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=YO2hnQZac79tNmomIgsJVI8OVsrSL2Qx3EndLyD28MP07Ics+sQpM5I9hBgLBYUZZ
- K9hT1fGkj+1ZQOHuJ11Ae1pH69bglZxftA/ej4r/u60uibd4BZ83hKrqUhu9plKZz4
- z5dw4Av/dwlRfgAnpzErEbFw5xiMb+ev/WpIDOlU=
-Date: Wed, 30 Jan 2019 18:15:15 +0100
+ b=tCZqGIjcOgaTCj9ogJHGm3d7Ov8jJuPhwUZVJIaLsXpihDzQ2B1+qclis+/W1wkNe
+ lpwadyRvoU96DWncXa/btn+bIp9ebgahJVKysWxslc/yDKJnt2OvHzFOXJbLfymFJF
+ HPw51pP9OkpBWSh/l0/h0NVnoc6IzL8U3wVshOTY=
+Date: Wed, 30 Jan 2019 18:16:32 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH 1/9] spi: atmel-quadspi: optimize qspi init
-Message-ID: <20190130181505.4f495d3a@bbrezillon>
-In-Reply-To: <20190130150818.24902-2-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH 2/9] spi: atmel-quadspi: order header files inclusion
+ alphabetically
+Message-ID: <20190130181616.175206b8@bbrezillon>
+In-Reply-To: <20190130150818.24902-3-tudor.ambarus@microchip.com>
 References: <20190130150818.24902-1-tudor.ambarus@microchip.com>
- <20190130150818.24902-2-tudor.ambarus@microchip.com>
+ <20190130150818.24902-3-tudor.ambarus@microchip.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_091526_806740_2CB908D7 
-X-CRM114-Status: GOOD (  14.90  )
+X-CRM114-CacheID: sfid-20190130_091641_579877_1046E75B 
+X-CRM114-Status: GOOD (  11.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,48 +83,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 30 Jan 2019 15:08:29 +0000
+On Wed, 30 Jan 2019 15:08:31 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> Set the QSPI controller in Serial Memory Mode at init and not
-> at each exec_op() call.
-
-If you ever want to support regular SPI you'll have to put it back to
-atmel_qspi_exec_op(), so I'm not sure this is a good move. Another
-approach would be to cache the MR value to avoid doing a write access
-on the bus when the value hasn't changed.
-
+> Cosmetic change, no functional change.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Reviewed-by: Boris Brezillon <bbrezillon@kernel.com>
+
 > ---
->  drivers/spi/atmel-quadspi.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  drivers/spi/atmel-quadspi.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
 > diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-> index ddc712410812..f79b17792a11 100644
+> index f79b17792a11..64475ad16c83 100644
 > --- a/drivers/spi/atmel-quadspi.c
 > +++ b/drivers/spi/atmel-quadspi.c
-> @@ -238,8 +238,6 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
->  	icr = QSPI_ICR_INST(op->cmd.opcode);
->  	ifr = QSPI_IFR_INSTEN;
+> @@ -22,16 +22,15 @@
+>   * This driver is based on drivers/mtd/spi-nor/fsl-quadspi.c from Freescale.
+>   */
 >  
-> -	qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
+> -#include <linux/kernel.h>
+>  #include <linux/clk.h>
+> -#include <linux/module.h>
+> -#include <linux/platform_device.h>
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/of.h>
 > -
->  	mode = find_mode(op);
->  	if (mode < 0)
->  		return -ENOTSUPP;
-> @@ -381,6 +379,9 @@ static int atmel_qspi_init(struct atmel_qspi *aq)
->  	/* Reset the QSPI controller */
->  	qspi_writel(aq, QSPI_CR, QSPI_CR_SWRST);
+>  #include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+>  #include <linux/spi/spi-mem.h>
 >  
-> +	/* Set the QSPI controller in Serial Memory Mode */
-> +	qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
-> +
->  	/* Enable the QSPI controller */
->  	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIEN);
->  
+>  /* QSPI register offsets */
 
 
 ______________________________________________________
