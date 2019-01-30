@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0DA2C282D7
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 15:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A6F1C282D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 15:09:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8005B20989
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 15:09:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0B26920989
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 15:09:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fONgS0NL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="R8Pjid+2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8005B20989
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AcM0yCdy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="tmY1OPdI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B26920989
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,50 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r9Uf4PDclYgP8Vf9uWXSBihbkIfy9zJYiziUu+ePZF4=; b=fONgS0NL++pIem
-	qLzmCFCIPM9XlTMyhjJcoXnfqHOtyKgEw6tTin9OKjX0VCJHIlfOwUjl4pf9uNL94o2gm9XOUCZ33
-	aGCrLPjvBEJbOmWFPbfItUSFMaXPTWZrOYyX2yWFirzwuXq3YYClcKnTuu8NWgpJ1m5F/sjbD4PhK
-	zQDfEnCGtrlUXAqPqmkryEXgPELegx0LpRQ/9TkfvTaz1edq4moCIIeCrErkiYCngTfBI59zRL2uF
-	tkwdnh5CeT0Z5tEjYAaWAnQ2eou2WuB3SsDkNGEpvoke6CSbmdkSvfN2f49xVozKPgkrruX4H/Fq8
-	ZLu+/pDP2uCTvrDAOjDQ==;
+	List-Owner; bh=5846C9E+JGxZ15UDIBssrADuXB5jzCtKDzS5mvoAw9E=; b=AcM0yCdy798O1d
+	DiA2ga8O3VQ4/5mrBMdGs8cpj5+bHeuD7c9DuOlhs7lh5UHB7jI4pPr7cEzAr33Rr6yYbssJuebFP
+	ENSeqJALbeIKsndWPt+O65+QL1eJh5XlftSBUOm6R1LSKdtG7ORXnECfxKZwiuiOFeO4aDqIwubXU
+	ximU4Nk3PXZ7ctb46HI6zPRtFim7B7Vw3N9TGn+XcVGm9IthfEfujxa8jS3udJgan96x+4NGKhf9H
+	jcad8JAWsGqXZEBb9VZvm2sKYsXlYw0DMRoFg5sZv4N0c95Kqco/0g8kyLrtZYq/e9T5C6+nXt3ao
+	xno5t5Zjrzqj3ZSRXl8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gorUN-0007Lh-W2; Wed, 30 Jan 2019 15:09:20 +0000
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
+	id 1gorUi-0007h7-F0; Wed, 30 Jan 2019 15:09:40 +0000
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gorTf-0006ZC-5J; Wed, 30 Jan 2019 15:08:36 +0000
-X-IronPort-AV: E=Sophos;i="5.56,540,1539673200"; d="scan'208";a="27058551"
+ id 1gorTg-0006ZI-Mt; Wed, 30 Jan 2019 15:08:43 +0000
+X-IronPort-AV: E=Sophos;i="5.56,540,1539673200"; d="scan'208";a="26094015"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 30 Jan 2019 08:08:34 -0700
+ by esa3.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 30 Jan 2019 08:08:36 -0700
 Received: from NAM05-BY2-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.76.107) with Microsoft SMTP Server (TLS)
- id 14.3.352.0; Wed, 30 Jan 2019 08:08:34 -0700
+ id 14.3.352.0; Wed, 30 Jan 2019 08:08:35 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector1-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C7Keb5XM0YwP+J1+nSKhb0zOxAuAd2DRuVWY9PteKmo=;
- b=R8Pjid+2mGYIPgJDvcHO8Pw9NXxpMOJHSFrCTEHPamNmQgbuVi38ZpDNI1IsRyMPd41kaMDJ5Aqqcf4cpxb4k5XdFnxQuoinGhWNFponms5aQFobPLzUPQRxKf50eX1L0apYonDFcvjaCaMQxcI1ntnTLdWQVEAMFiwaH/3bsSY=
+ bh=H6wQ6dQ7wO44QDdSxR25CKR0+gZu+1+vP5anujzgEEs=;
+ b=tmY1OPdId8ET3tJn87sXdphy+Dn5FjvozrL8zSdRuEDaJeeVkxq2BOb9hwoQwIWEKhfT59HEVgqIDdDUVU9SNmGjhPCspYEDyOdLSrTg4JiILGk5hcmFKKU+LS7O3vAhOk5DbpDOBoqUCAJUhxI5QUBG2ZzHtZR50er3KShEoYI=
 Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
  BN6PR11MB1796.namprd11.prod.outlook.com (10.175.99.136) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1558.17; Wed, 30 Jan 2019 15:08:31 +0000
+ 15.20.1558.17; Wed, 30 Jan 2019 15:08:33 +0000
 Received: from BN6PR11MB1842.namprd11.prod.outlook.com
  ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
  ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.017; Wed, 30 Jan 2019
- 15:08:31 +0000
+ 15:08:33 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <broonie@kernel.org>, <Nicolas.Ferre@microchip.com>,
  <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>
-Subject: [PATCH 2/9] spi: atmel-quadspi: order header files inclusion
- alphabetically
-Thread-Topic: [PATCH 2/9] spi: atmel-quadspi: order header files inclusion
- alphabetically
-Thread-Index: AQHUuK2pIHfKRE2XhEm6S4eXsvSP5Q==
-Date: Wed, 30 Jan 2019 15:08:31 +0000
-Message-ID: <20190130150818.24902-3-tudor.ambarus@microchip.com>
+Subject: [PATCH 3/9] spi: atmel-quadspi: fix naming scheme
+Thread-Topic: [PATCH 3/9] spi: atmel-quadspi: fix naming scheme
+Thread-Index: AQHUuK2rht/7ZFEtQkGJmNLPHPLPUQ==
+Date: Wed, 30 Jan 2019 15:08:33 +0000
+Message-ID: <20190130150818.24902-4-tudor.ambarus@microchip.com>
 References: <20190130150818.24902-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20190130150818.24902-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -86,36 +84,35 @@ x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.154]
 x-ms-publictraffictype: Email
 x-microsoft-exchange-diagnostics: 1; BN6PR11MB1796;
- 6:AD8+FnLymURF/ILr6d0bqhz/a7e3478ZLBEDAil8Gr1j0CTGzaiLwxuBFg8zFevdJWELGouqlQC7nrGv++S5pmcvEim5obhRCJrjVa9oepTvuR1LopzyO8QmH4R9goKPy2F8WGDfh8p82VQDHQkYGV7B2VRF61aHttT5v1ZEQb2lKNepLq9MK/ax2mzztV0o3sOJOrYml/BplIG3Ip9F+eyXgNAH6QlqcO45OmMtycqZEl8ejg7iAtCVNGO9MbRa1E85bNBqWYG+8sHWKuQFTOQc60ddTtb67uUF5PF3WEcLwbtPU4het2Gc/ekZM1g3FsgI8+Te6SXN3aup6m3TIEWh7OWJnq/5Jr7V/fAmb3SVw9cfTkuXg84yMxMKTqKpnAcJZ6C3EOrnN7poC+k0rSPvLSGuNxpSENQ1XBKraWipVy3rcVcPjJvrNXkMyY3uN8WXvL7PiSXzjqj/qX6knw==;
- 5:i3588m+DafUo7sP0QZn9ugfRZJXdHnGj+UHDEF02LfdGKFj4TmmnFO7L/mRiBSuMNOQAaDCXJyUG8eGyJutBhXxEtZMhIRvIvhZGUzDLjS2NcZ3JTrsWCl5MIF0Yr2DaVIv5wWBbCn1DExU1OiNTy+Ln+Zh4VchD0C4BnldN6FgnmfFSTB5kSgrDneG7kCzJ09jAwYqTCjwDbvOR1/p5TQ==;
- 7:o5GSZipg9iH3xQN3+8vb0xg7OlFjOaqQSEJ0fp0aA8NysXg73x8BVXK6+KtF3hqZKzYwOAgapripfwL1CJhu+jwrE3I9a8P/7DJd/grZlTsEZERI7aaD3f6Q0bqV3BgyqrTs4zf/htDyQL8/h6y0Ig==
-x-ms-office365-filtering-correlation-id: 28717ec4-e49e-4dc6-6247-08d686c4cc0b
+ 6:AEPj0GcsKJNgOaRfDioSNq5qA8Jb2kIK1NLrz1xJ+rd9+eGMXhvBx/7/UvYfwhnshgU0E48a/YhezjY6ZynMRius0b4uvyqnTFPW2n4MFH59H5bcWF/jpkGFuuftK8SiZqNxfOBpuE4hYfLFpBVfmMO7vXJKb5z8mx5H/nZUh8TZ3jTyAdRP2gXyXabNV4W3IeLL2qKz91koQFKFPV8p/357bwJ2ZCrrWP88MNWkbirRfZarjVGXXROOmbNwf3dEct0/29W7d/AlFpTm1Y5qYS/npvu/RLyLqaZBNFRWHTILbzPY/spv3gN3S3++mu9psX75UkBw9sNIdORdYpwrQuNJqwYdwqqb4ne6iv9akN7H0AxVd9vOc2Fzq3i6WPJECc8ThKPkaJ8/Ty0N//XHzDCIwdKJrcOwxoc+PRbThqclqCcnVAHKamyN65iRpauLMwbPnWE1fd7xjIUwnftm2Q==;
+ 5:Sm1QUxs8Xr2IHGRWTvVsVc2skHfRr31kIawScPgIzrXQSJPRZbkqnh8CLbizVMWtap6msHVm/XTdoB/fVbgQ85rpz/Evb7xcMVsj21Fm/3hg94iuBmWIlOG+nxHxV9JPhQYFSa5kFF1gzaK+UaO9yZDOAuBzDNLAHtjbbjE74jHZ/Witcutj4DPcF8nzmxfHSZCTo7KUAPhNsOW98SLjVg==;
+ 7:e9xyZOeprdmjqrdyh0XxoHrCbdqsuSE5FfmFnS+q6bCRKJqVTP7L22rHTHs/HpNmoZacceNQzeGwd7abhatHmKx+YiXGfYE9uhJhhcUriniF8gEpR1et0AQds93q0e2dBjmyEEVOoTk08TUcaWjD2A==
+x-ms-office365-filtering-correlation-id: d6b057bd-2828-4ced-2f7a-08d686c4cd52
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
  SRVR:BN6PR11MB1796; 
 x-ms-traffictypediagnostic: BN6PR11MB1796:
-x-microsoft-antispam-prvs: <BN6PR11MB1796B4E1CA936EF4A908FB71F0900@BN6PR11MB1796.namprd11.prod.outlook.com>
+x-microsoft-antispam-prvs: <BN6PR11MB17966341683AD0C562201B03F0900@BN6PR11MB1796.namprd11.prod.outlook.com>
 x-forefront-prvs: 0933E9FD8D
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(979002)(39860400002)(376002)(366004)(346002)(136003)(396003)(199004)(189003)(386003)(316002)(81156014)(2501003)(72206003)(81166006)(4744005)(486006)(14454004)(476003)(110136005)(1076003)(8936002)(6116002)(4326008)(11346002)(50226002)(52116002)(6506007)(2616005)(36756003)(3846002)(68736007)(6486002)(6436002)(53936002)(8676002)(54906003)(66066001)(6512007)(478600001)(99286004)(186003)(71200400001)(97736004)(86362001)(2906002)(256004)(71190400001)(305945005)(446003)(6636002)(102836004)(105586002)(25786009)(7736002)(26005)(106356001)(107886003)(76176011)(969003)(989001)(999001)(1009001)(1019001);
+ SFS:(10009020)(39860400002)(376002)(366004)(346002)(136003)(396003)(199004)(189003)(386003)(316002)(81156014)(2501003)(72206003)(81166006)(486006)(14454004)(476003)(110136005)(1076003)(8936002)(6116002)(4326008)(11346002)(50226002)(52116002)(6506007)(2616005)(36756003)(3846002)(68736007)(6486002)(6436002)(53936002)(8676002)(54906003)(66066001)(6512007)(478600001)(99286004)(186003)(71200400001)(97736004)(86362001)(2906002)(256004)(71190400001)(14444005)(305945005)(446003)(6636002)(102836004)(105586002)(25786009)(7736002)(26005)(106356001)(107886003)(76176011);
  DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1796;
  H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; A:1; MX:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: OL5nIY6LbYQeOtRdRWe7wtZdecL1vIruQp1rvCx2/lxPItEeWRYSslfTNiZsI10EjFeEBZv7uCNwRanoh6cIOGIac7ZsFFRYT0dA+T0o91YXj/vagZwPiDf9OeHBHQ0qfxoZzxCB/t2g0mCNxGG9bvZvjbB4i6WRTwNEtahJuVlyr5aeQgsDW1hNl9MsO5ieweR+ABaDksYt4y2gxT9s4ZebE1GxvkkYlByAzG+PJ6kYKBSz99Na6vr7pKB38N9BOyxwfMdxiaBfwa9Tp/kSOAVM+u3dcfpHJ4GMSjkLqgP9IgVy/Jp3aOozgShcoDDTu2R99GXTQTRxUfbgZ/DWgUsUxg0KVPBnwGF3QHHIHZlCHYEjpKptsT/RiNEGXtprvgOFDb7dh/cx549CR8KzpDQs6VR/noGlCQZmunb9bd4=
+x-microsoft-antispam-message-info: lRIAurCRc51BV6LQDcYknX4ZLsTm7V9QqmAHF4YPdLv2mRloO/8UXp7ehnompQ54Kaw5+w0F61ocems5WsDZuPVk2vKFbzGXg7razATVcZBoS+HMB5Zwlax+MgJwdWUrbiccF0p3rwVLj8he7Z2kRADaOGz2OWKdsl9rCgBZDL/OKc9YKnCCG5bXKaBH+OuNn896ahqOXak1lWnku1HS+7wDX+eq/GwurDUguPCSgHhkGN/hkBWfrfRuW/N5K55gMQBNl8j3pqtGyjbW+cDtpZHpYzFwFMqZqPd31bhYUuxVLmwnNb/jwr7uc0nGWw2RlpxWSnN7dOnKu9FqNbgy/2SFN8BPUItKQ0ACEcQFP7hwJ0jyS8aHLG8+eXd2/UneE3YKee66otCJza9nxC0Lz8/0DNLg2cHKwYxTM53YT9U=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28717ec4-e49e-4dc6-6247-08d686c4cc0b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2019 15:08:29.9261 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6b057bd-2828-4ced-2f7a-08d686c4cd52
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2019 15:08:32.0999 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1796
 X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_070835_366529_5C8C1D30 
-X-CRM114-Status: UNSURE (   7.21  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190130_070837_086408_54A24B1A 
+X-CRM114-Status: GOOD (  12.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -137,38 +134,186 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Cosmetic change, no functional change.
+Let general names to core drivers.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/spi/atmel-quadspi.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/spi/atmel-quadspi.c | 52 ++++++++++++++++++++++-----------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-index f79b17792a11..64475ad16c83 100644
+index 64475ad16c83..e156c345705b 100644
 --- a/drivers/spi/atmel-quadspi.c
 +++ b/drivers/spi/atmel-quadspi.c
-@@ -22,16 +22,15 @@
-  * This driver is based on drivers/mtd/spi-nor/fsl-quadspi.c from Freescale.
-  */
+@@ -157,14 +157,14 @@ struct atmel_qspi {
+ 	struct completion	cmd_completion;
+ };
  
--#include <linux/kernel.h>
- #include <linux/clk.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
--#include <linux/of.h>
--
- #include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/spi/spi-mem.h>
+-struct qspi_mode {
++struct atmel_qspi_mode {
+ 	u8 cmd_buswidth;
+ 	u8 addr_buswidth;
+ 	u8 data_buswidth;
+ 	u32 config;
+ };
  
- /* QSPI register offsets */
+-static const struct qspi_mode sama5d2_qspi_modes[] = {
++static const struct atmel_qspi_mode sama5d2_qspi_modes[] = {
+ 	{ 1, 1, 1, QSPI_IFR_WIDTH_SINGLE_BIT_SPI },
+ 	{ 1, 1, 2, QSPI_IFR_WIDTH_DUAL_OUTPUT },
+ 	{ 1, 1, 4, QSPI_IFR_WIDTH_QUAD_OUTPUT },
+@@ -175,18 +175,18 @@ static const struct qspi_mode sama5d2_qspi_modes[] = {
+ };
+ 
+ /* Register access functions */
+-static inline u32 qspi_readl(struct atmel_qspi *aq, u32 reg)
++static inline u32 atmel_qspi_readl(struct atmel_qspi *aq, u32 reg)
+ {
+ 	return readl_relaxed(aq->regs + reg);
+ }
+ 
+-static inline void qspi_writel(struct atmel_qspi *aq, u32 reg, u32 value)
++static inline void atmel_qspi_writel(struct atmel_qspi *aq, u32 reg, u32 value)
+ {
+ 	writel_relaxed(value, aq->regs + reg);
+ }
+ 
+-static inline bool is_compatible(const struct spi_mem_op *op,
+-				 const struct qspi_mode *mode)
++static inline bool atmel_qspi_is_compatible(const struct spi_mem_op *op,
++					    const struct atmel_qspi_mode *mode)
+ {
+ 	if (op->cmd.buswidth != mode->cmd_buswidth)
+ 		return false;
+@@ -200,12 +200,12 @@ static inline bool is_compatible(const struct spi_mem_op *op,
+ 	return true;
+ }
+ 
+-static int find_mode(const struct spi_mem_op *op)
++static int atmel_qspi_find_mode(const struct spi_mem_op *op)
+ {
+ 	u32 i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sama5d2_qspi_modes); i++)
+-		if (is_compatible(op, &sama5d2_qspi_modes[i]))
++		if (atmel_qspi_is_compatible(op, &sama5d2_qspi_modes[i]))
+ 			return i;
+ 
+ 	return -1;
+@@ -214,7 +214,7 @@ static int find_mode(const struct spi_mem_op *op)
+ static bool atmel_qspi_supports_op(struct spi_mem *mem,
+ 				   const struct spi_mem_op *op)
+ {
+-	if (find_mode(op) < 0)
++	if (atmel_qspi_find_mode(op) < 0)
+ 		return false;
+ 
+ 	/* special case not supported by hardware */
+@@ -237,7 +237,7 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	icr = QSPI_ICR_INST(op->cmd.opcode);
+ 	ifr = QSPI_IFR_INSTEN;
+ 
+-	mode = find_mode(op);
++	mode = atmel_qspi_find_mode(op);
+ 	if (mode < 0)
+ 		return -ENOTSUPP;
+ 
+@@ -293,17 +293,17 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		ifr |= QSPI_IFR_TFRTYP_TRSFR_WRITE;
+ 
+ 	/* Clear pending interrupts */
+-	(void)qspi_readl(aq, QSPI_SR);
++	(void)atmel_qspi_readl(aq, QSPI_SR);
+ 
+ 	/* Set QSPI Instruction Frame registers */
+-	qspi_writel(aq, QSPI_IAR, iar);
+-	qspi_writel(aq, QSPI_ICR, icr);
+-	qspi_writel(aq, QSPI_IFR, ifr);
++	atmel_qspi_writel(aq, QSPI_IAR, iar);
++	atmel_qspi_writel(aq, QSPI_ICR, icr);
++	atmel_qspi_writel(aq, QSPI_IFR, ifr);
+ 
+ 	/* Skip to the final steps if there is no data */
+ 	if (op->data.nbytes) {
+ 		/* Dummy read of QSPI_IFR to synchronize APB and AHB accesses */
+-		(void)qspi_readl(aq, QSPI_IFR);
++		(void)atmel_qspi_readl(aq, QSPI_IFR);
+ 
+ 		/* Send/Receive data */
+ 		if (op->data.dir == SPI_MEM_DATA_IN)
+@@ -314,22 +314,22 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 				op->data.buf.out, op->data.nbytes);
+ 
+ 		/* Release the chip-select */
+-		qspi_writel(aq, QSPI_CR, QSPI_CR_LASTXFER);
++		atmel_qspi_writel(aq, QSPI_CR, QSPI_CR_LASTXFER);
+ 	}
+ 
+ 	/* Poll INSTRuction End status */
+-	sr = qspi_readl(aq, QSPI_SR);
++	sr = atmel_qspi_readl(aq, QSPI_SR);
+ 	if ((sr & QSPI_SR_CMD_COMPLETED) == QSPI_SR_CMD_COMPLETED)
+ 		return err;
+ 
+ 	/* Wait for INSTRuction End interrupt */
+ 	reinit_completion(&aq->cmd_completion);
+ 	aq->pending = sr & QSPI_SR_CMD_COMPLETED;
+-	qspi_writel(aq, QSPI_IER, QSPI_SR_CMD_COMPLETED);
++	atmel_qspi_writel(aq, QSPI_IER, QSPI_SR_CMD_COMPLETED);
+ 	if (!wait_for_completion_timeout(&aq->cmd_completion,
+ 					 msecs_to_jiffies(1000)))
+ 		err = -ETIMEDOUT;
+-	qspi_writel(aq, QSPI_IDR, QSPI_SR_CMD_COMPLETED);
++	atmel_qspi_writel(aq, QSPI_IDR, QSPI_SR_CMD_COMPLETED);
+ 
+ 	return err;
+ }
+@@ -368,7 +368,7 @@ static int atmel_qspi_setup(struct spi_device *spi)
+ 		scbr--;
+ 
+ 	scr = QSPI_SCR_SCBR(scbr);
+-	qspi_writel(aq, QSPI_SCR, scr);
++	atmel_qspi_writel(aq, QSPI_SCR, scr);
+ 
+ 	return 0;
+ }
+@@ -376,13 +376,13 @@ static int atmel_qspi_setup(struct spi_device *spi)
+ static int atmel_qspi_init(struct atmel_qspi *aq)
+ {
+ 	/* Reset the QSPI controller */
+-	qspi_writel(aq, QSPI_CR, QSPI_CR_SWRST);
++	atmel_qspi_writel(aq, QSPI_CR, QSPI_CR_SWRST);
+ 
+ 	/* Set the QSPI controller in Serial Memory Mode */
+-	qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
++	atmel_qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
+ 
+ 	/* Enable the QSPI controller */
+-	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIEN);
++	atmel_qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIEN);
+ 
+ 	return 0;
+ }
+@@ -392,8 +392,8 @@ static irqreturn_t atmel_qspi_interrupt(int irq, void *dev_id)
+ 	struct atmel_qspi *aq = (struct atmel_qspi *)dev_id;
+ 	u32 status, mask, pending;
+ 
+-	status = qspi_readl(aq, QSPI_SR);
+-	mask = qspi_readl(aq, QSPI_IMR);
++	status = atmel_qspi_readl(aq, QSPI_SR);
++	mask = atmel_qspi_readl(aq, QSPI_IMR);
+ 	pending = status & mask;
+ 
+ 	if (!pending)
+@@ -499,7 +499,7 @@ static int atmel_qspi_remove(struct platform_device *pdev)
+ 	struct atmel_qspi *aq = spi_controller_get_devdata(ctrl);
+ 
+ 	spi_unregister_controller(ctrl);
+-	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIDIS);
++	atmel_qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIDIS);
+ 	clk_disable_unprepare(aq->clk);
+ 	return 0;
+ }
 -- 
 2.9.5
 
