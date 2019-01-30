@@ -2,92 +2,77 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99924C282D7
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 09:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89EC5C282D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 09:16:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 682AE2184D
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 09:13:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F8EE2083B
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 09:16:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="agw6/k8X";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bRuwJuIZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 682AE2184D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EYJPYR91"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F8EE2083B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MvJEu1k4gQR0/ZTRadhjnZ6dD7o36VOsZg0aL+6nJ/Q=; b=agw6/k8XXQgkzI
-	l9xks7aH/Ix9YBWvNmKW1wutpF5+wNgqbZNShBxw9w7ZRsQ9GWUdcziZyTYwr3UP6STMS4Kooh1N3
-	aQIpqjGxHHwB69aUSGxFLX6D69MXR2kXya+G/3zfMn9isHCRIuIPlpaIg9FAbvm7fB4fW3kScsAAH
-	PIyu03qkqvHv0a9+lmUj9p1MwEXjrq+B4aJRndbTq+R+qvXF41NE6DZ4iSnrGMaenlhOECC/gIfte
-	TQ8HAs0jWrF95ab3t5gSVxP5ptQx/9QIX7Gr8THawyiN1rwWjMp3Wc30/4gaApOdMIPiuOlpczGb1
-	5d27r0d58mAwLYRl+xGQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Q/JLhXmtvEbXMcapUUJbpRJ70IOnM0pTDu5YxV8IjEs=; b=EYJPYR91IN0V5K
+	+D1UyXwTVyEIQ5yyDDcgskYNs58itmKwK1ALwdwpVUgUvW9oA3H0ZdoX5upivUJB0SW1MsOxglUH8
+	zb/hlsE6iK9Savvi6IQn4xBivwS075Q814bGVjTruy416q0ANNRmvvMS/hSIgsNZlYqzewL7a6H5F
+	c4pQgAzWWv+R9rxj52RzeozMopekkiAWTtV9UhR+0D1Ueo7tQtMDLkJe1BCfsMFEnsILy5ei59eeY
+	V22REc9Go2G7eFF9R59xSVO3ghVNxP1mF59pSY4Bp1HB4VB0K/yE+Qmgofqyuh6CGR+ux6A/GK+du
+	gJpF9D4nFx1WZX90nt8Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1golw4-0001L7-CG; Wed, 30 Jan 2019 09:13:32 +0000
-Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
+	id 1golzF-0003xX-Ju; Wed, 30 Jan 2019 09:16:49 +0000
+Received: from mail-ua1-f66.google.com ([209.85.222.66])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1golvz-0001KO-7J
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 09:13:30 +0000
-Received: by mail-wr1-x434.google.com with SMTP id x10so25107668wrs.8
- for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2019 01:13:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:references:cc:from:openpgp:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=w6L6/MQaaJ92RffYD3U7oPSvhvJyuSc8C16R8E77xeM=;
- b=bRuwJuIZJLdXS5H76UWMj/tc2x0BTZOUVWJfJXWT6yDqdJgcHiKbQbsjKfZRz4MEgl
- aHPEpscys7uxl7RIZTcK/dgkWRKuH5EngLtXV7kginLg/QA4Aje6elrgTH9WLBN8579l
- 3LUMEmIAaLRR1bsnbV6WGCZubSRY4iDlDNhiqBtMBxZ5lTNUUGOlNDyfDg1kkUS9w1Cb
- CoIBgwkQoUbZ0JTX616bB2iPyjP4hZZ0rAOETPYKRkxo8ImGNl0jMVULo89+0c8FnBIr
- 9iXlzUY1fNgBADOQxfv1h5sd8fobc8MWS3skgMmk0SNPWefs/gTOjCEoVl7pOB/DJmKC
- tGRA==
+ id 1golzD-0003xD-3B
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 09:16:48 +0000
+Received: by mail-ua1-f66.google.com with SMTP id d21so7827336uap.9
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2019 01:16:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:references:cc:from:openpgp:message-id
- :date:user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=w6L6/MQaaJ92RffYD3U7oPSvhvJyuSc8C16R8E77xeM=;
- b=LyU4w7yzx6SjfrqXTcS722dju4gDg8YwnhNZtUeIjNk3PMCP/kQEq/85UaStDjbrKF
- xz3kIaE90OpZkba0wRdowg5p+bSzap+X1jDYPU8Ry4W7vJW2NqIz/TdzPys78gLwAado
- Xlgxs5ZF0gbG2GLgi2vy0lXJALtnqMzLrc7dmhHkPi91Ow37mDIWvr5AY/7V8BHIUtIJ
- 9luRWk4vwxnkLQM+YM9VMIiKXXx6M3+pqOC0lh7qPCUFpq2GwfHL9Sh8wN9/oOylAkA4
- DHWAhyts1JAt4p+AiDfSIX2z8dqo7tpRl5atJoz8eE/CbTIj7rCgWg2AnFn4H8qkmJcE
- AOFg==
-X-Gm-Message-State: AJcUukfDa0LoJep/jle9hl+vLcssdD8YnyYCUhUdWv/Y+co/dISM2iOm
- pYbvShbWVaoikgv6zTNmkds=
-X-Google-Smtp-Source: ALg8bN5SqZW17/2fQc61ni3Y4N7d5AwxCf6QCOHmTAoxi0EnYl7QeF9edwSMN0nNXnSUEq47GFtCwQ==
-X-Received: by 2002:a5d:6710:: with SMTP id o16mr30230322wru.152.1548839605132; 
- Wed, 30 Jan 2019 01:13:25 -0800 (PST)
-Received: from [192.168.1.4] (ip-86-49-110-70.net.upcbroadband.cz.
- [86.49.110.70])
- by smtp.gmail.com with ESMTPSA id c14sm1487016wme.13.2019.01.30.01.13.23
- (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
- Wed, 30 Jan 2019 01:13:23 -0800 (PST)
-Subject: Re: PATCH: s25fl128s
-To: "A. Celenk" <ahmet.celenk@procenne.com>
-References: <5458abc1-ada0-615c-32a4-7fcd99fa42b9@procenne.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Openpgp: preference=signencrypt
-Message-ID: <d729fe39-f9a3-2c2d-58ff-08437075d90b@gmail.com>
-Date: Wed, 30 Jan 2019 10:13:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Zq71VOQyCpJkBSaNxeCAxELVj8oIKZ1ChH202NARRcw=;
+ b=cVV/pSfm3UOr5GRQuZAoFM/nqEwMQAgXJ1VIcpw37tXEvYsU3Aq2rYSruXWdP7zuzy
+ 4m/CQ8azaFdwXx5DWhs1MeZBkkU+HMU1Ozn7cScIu8bFy3s2986DCudcu/PHlPlvxl6m
+ pfKgZYusNlShlCoxuunp2X+2H6wZiSE7+ftBhbNuP/vfomG2mX4psJhtPWcArOHlBYzI
+ jfJL6H8M38r6hnGUPuWwDxcDCbIIuQhN4pQBed5sRNkMnLdP+wUvLDriwnhPKqLPjdNH
+ 27GGR7XZN8dUk0fez02zgq34kGZy10+Sl7h9rQdOXau9G2z9qU0ayHBItqLa756sPDTI
+ R0aA==
+X-Gm-Message-State: AJcUukfBxmXy7073z4/kMBJMh/zVhoMWrMVAgtfH2vTlZZbe4gRitLY5
+ r/68JkHz0i8Rrdm4d5An/NF2ZNkztBZ2p5+NaBY=
+X-Google-Smtp-Source: ALg8bN55/YGXlHLMSe8lcOZ0UgunJy+2d8OOPoAFK8LODHyn2mKO1OrpHLEOR3bVxqfA439gCNiGX7QdJAjzvJz3rDQ=
+X-Received: by 2002:a9f:364a:: with SMTP id s10mr11723095uad.78.1548839805746; 
+ Wed, 30 Jan 2019 01:16:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5458abc1-ada0-615c-32a4-7fcd99fa42b9@procenne.com>
-Content-Language: en-US
+References: <20190102143654.24362-1-bbrezillon@kernel.org>
+ <20190102143654.24362-2-bbrezillon@kernel.org>
+ <CAMuHMdV-=_0htu9w1xK25RVWgnRaXVR-R-oXc7f-Y_cC9SR25A@mail.gmail.com>
+ <20190122133159.2033844c@bbrezillon> <20190129120337.08754bac@bbrezillon>
+ <CAMuHMdXVszyR_fkjmy5RpEDW3L-Ewr_tOK3o07OEm2uh4_aSRA@mail.gmail.com>
+ <20190130095237.1a6a598f@bbrezillon>
+ <CAMuHMdUgcgayOo=bhEZsuWMcRavjsweFPo1=KmcGa=PYxEoRNQ@mail.gmail.com>
+ <20190130101036.0e63fec6@bbrezillon>
+In-Reply-To: <20190130101036.0e63fec6@bbrezillon>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 30 Jan 2019 10:16:33 +0100
+Message-ID: <CAMuHMdWsYnLZP7=rO=xaDE4TbPr=XTphad6vaaRi=WrdOMSn8A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: Check add_mtd_device() ret code
+To: Boris Brezillon <bbrezillon@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_011327_282869_080D8FD4 
-X-CRM114-Status: GOOD (  12.23  )
+X-CRM114-CacheID: sfid-20190130_011647_134883_BA9B9033 
+X-CRM114-Status: GOOD (  30.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -99,58 +84,123 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/30/19 8:51 AM, A. Celenk wrote:
-> Hello Marek,
+Hi Boris,
 
-Hi,
+On Wed, Jan 30, 2019 at 10:10 AM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> On Wed, 30 Jan 2019 10:05:29 +0100
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Jan 30, 2019 at 9:52 AM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> > > On Tue, 29 Jan 2019 16:29:55 +0100
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Tue, Jan 29, 2019 at 12:03 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> > > > > On Tue, 22 Jan 2019 13:31:59 +0100
+> > > > > Boris Brezillon <bbrezillon@kernel.org> wrote:
+> > > > > > On Tue, 22 Jan 2019 12:21:11 +0100
+> > > > > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > > On Wed, Jan 2, 2019 at 3:37 PM Boris Brezillon <bbrezillon@kernel.org> wrote:
+> > > > > > > > add_mtd_device() can fail. We should always check its return value
+> > > > > > > > and gracefully handle the failure case. Fix the call sites where this
+> > > > > > > > not done (in mtdpart.c) and add a __must_check attribute to the
+> > > > > > > > prototype to avoid this kind of mistakes.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+> > > > > > > > ---
+> > > > > > > > No Fixes or Cc-stable tag here, as this seems to have worked just fine
+> > > > > > > > without checking add_mtd_device() ret code until we started to expose
+> > > > > > > > MTD devices as NVMEM providers (queued for 4.21).
+> > > > > > >
+> > > > > > > Oh yes ;-)
+> > > > > > >
+> > > > > > > https://lore.kernel.org/lkml/87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com/t/
+> > > > > > >
+> > > > > > > Your patch is very similar to mine, so the crash is gone.
+> > > > > >
+> > > > > > Oops, sorry about that. I completely forgot about this patch. It seems
+> > > > > > the discussion led to a different conclusion though (patch
+> > > > > > allocate_partitions() to reject wrong parts early) and the v2 was never
+> > > > > > sent (or I missed it). Anyway, I guess we should have done both (check
+> > > > > > add_mtd_device() ret code everywhere and patch allocate_partitions() to
+> > > > > > reject bad parts early).
+> > > > > >
+> > > > > > > However, the warning is still there:
+> > > > > > >
+> > > > > > >     m25p80 spi0.0: s25sl032p (4096 Kbytes)
+> > > > > > >     3 fixed-partitions partitions found on MTD device spi0.0
+> > > > > > >     Creating 3 MTD partitions on "spi0.0":
+> > > > > > >     0x000000000000-0x000000080000 : "loader"
+> > > > > > >     0x000000080000-0x000000600000 : "user"
+> > > > > > >     mtd: partition "user" extends beyond the end of device "spi0.0" --
+> > > > > > > size truncated to 0x380000
+> > > > > > >     0x000000600000-0x000004000000 : "flash"
+> > > > > > >     mtd: partition "flash" is out of reach -- disabled
+> > > > > > >     ------------[ cut here ]------------
+> > > > > > >     WARNING: CPU: 0 PID: 1 at drivers/mtd/mtdcore.c:571
+> > > > > > > add_mtd_device+0x90/0x3b0
+> > > > > > >
+> > > > > > > Interestingly, only one partition is created, covering the full size of the
+> > > > > > > device:
+> > > > > > >
+> > > > > > >     # cat /proc/partitions
+> > > > > > >     major minor  #blocks  name
+> > > > > > >
+> > > > > > >       31        0       4096 mtdblock0
+> > > > > > >
+> > > > > > > While I would expect two partitions, "loader" and truncated "user":
+> > > > > > >
+> > > > > > >       31        0        512 mtdblock0
+> > > > > > >       31        1       3584 mtdblock1
+> > > > > >
+> > > > > > Yes, makes sense, I guess your patch was better than mine :-/. Can you
+> > > > > > try with the following diff applied and let me know if it solves the
+> > > > > > problem?
+> > > > >
+> > > > > Gentle ping: is this diff fixing your problem, and do you want me to
+> > > > > send a proper patch for it or should I let you send one?
+> > > >
+> > > > Yes, the diff below fixes the partitions for me, so
+> > > > Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > >
+> > > > Note that the warning is still there, but that's probably OK.
+> > >
+> > > You mean the pr_warn() or the WARN_ON() backtrace? The former is
+> > > expected not the latter.
+> >
+> > The WARN_ON() backtrace is still there.
+>
+> I don't see a WARN_ON() at drivers/mtd/mtdcore.c:571. Which branch are
+> you using for your tests?
 
-> In spi-nor.c, Spansion s25fl128s shall be seperated into s25fl128s0 and
-> s25fl128s1;due to two different versions of the chip: S25FL128SAGBHI200
-> and S25FL128SAGBHI210. Patch attached.
-> 
-> Related thread: https://community.cypress.com/message/183016#183016
-> 
-> Excuse me for the mailing style, I've checked out "how to commit to
-> kernel" for a while, and seems it'll take lots of hours for me to patch
-> just 2 lines. I hope this doesn't offend the pathcing rules so much.
+A tree based on last week's l2-mtd/master, i.e. lacking commit f7fd818cca0cea3d
+("mtd: Remove empty lines at end of sysfs related functions").
 
-Take the patch, apply to linux-next/master [1], then
-$ git add -u
-$ git commit -s
-<write the commit message, e.g.:
-mtd: spi-nor: Split something somehow
+This is the one triggering:
 
-Blah blah description of the change ...
+        if (WARN_ON((!mtd->erasesize || !mtd->_erase) &&
+                    !(mtd->flags & MTD_NO_ERASE)))
+                return -EINVAL;
 
-Signed-of-by:...
-Cc: Boris <email address>
-Cc: Marek <email address>
+Thanks!
 
-Save, exit
+Gr{oetje,eeting}s,
 
-$ git format-patch -1 -o /tmp/
-$ ./scripts/checkpatch.pl /tmp/000*patch
-< fix checkpatch issues>
-$ git send-email --annotate --to=linux-mtd@lists.infradead.org -1 HEAD
-
-That's roughly the process. You should follow it, because maintainers
-are overloaded as they are already, and cannot fix up ever single one
-patch. Please follow the process to make it easier for maintainers and
-prevent burnouts, which can lead to unpleasant experiences while working
-with upstream etc.
-
-[1] https://www.kernel.org/doc/man-pages/linux-next.html
+                        Geert
 
 -- 
-Best regards,
-Marek Vasut
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
