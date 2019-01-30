@@ -2,120 +2,117 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C286C282D7
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 16:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 251A7C282D8
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 16:20:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 648A22086C
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 16:09:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CECDD218A4
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Jan 2019 16:20:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W3M/GYg1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="lSI6EUjf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 648A22086C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d7xOQmRH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F5LvEntl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CECDD218A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZOt5ufD4G1A4/XmxahpXnyrp9eSQVs26miWGvRViUjs=; b=W3M/GYg1GbMFL+
-	v+yjqXeoSP7CllME2dDespFumEMzVohUjoC2hd1nBP2xhszhM1eDhwC6br23sEpQi/0rikLDq6l6A
-	nwFUeoOEYlZ7p5McJnN0qx1dwcq+K1L6TVS0MWP4jxqqfYU0bTGeC+XoqQSfMcn9AvRVMfGV8ZPvO
-	uH8GsHOmaas7Ip4IdGsFn1s7FN/NpR/vTL0/TjdrhdYVjdaeYcq31zTqbwdphbzeygNVAsllsJ0zz
-	URpneeTMGPVxQnqjvCWQq8fTzB1jklurelSbqM693BSC9lNT7iQtsRHBJEVHhypNlFV+AJux6pV8N
-	YCka/mieAE12ioOya8kQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=E91uhNvdrf/NNAT62+p7NsDbPmuuItGLQkYhkSypHEE=; b=d7xOQmRH0k+v4T
+	lUDrS3AAloHT6JwDirTdU+o2BuIm8W3c9MOswynGL5gucqSt1oAtFOs1phMsD93M+AcTFodVvAV+j
+	XvveFAqBFv1DLb5nF0uKsGASomka/xwssnFBIxEQ96tisHJynYjaNIPpqnNrHuqrRKhnQ5YwdRgPf
+	rZvdelWnu8Ztn6dFI7dn3j5AxEKy97RKSo5Z+ugypuwTVLwGz7rgCWYJYz3h5EDLhsrjj5W0mreRJ
+	PnBbdkWbDhYTHcgdGNSuI0WN6woqUoKR/ftxenMExpiJRI+HB0eRyS+LyddZKXK7GUIx31Csy26Ss
+	MukuFsDoNIOM9F3B/Ueg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gosQw-0004s1-1F; Wed, 30 Jan 2019 16:09:50 +0000
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+	id 1gosbZ-0003ws-0m; Wed, 30 Jan 2019 16:20:49 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gosQp-0004ra-3Y
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 16:09:48 +0000
-X-IronPort-AV: E=Sophos;i="5.56,541,1539673200"; d="scan'208";a="23211486"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 30 Jan 2019 09:09:39 -0700
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.106) with Microsoft SMTP Server (TLS)
- id 14.3.352.0; Wed, 30 Jan 2019 09:09:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pGNVnga6sDEqJZx99Nu0Hy3rIuwl02n4471vWzjLsGE=;
- b=lSI6EUjfaQ0GDyp+TMP/Ln6rnUTB85PLMwC48Zfc77VsEmSNvIwXCunplAU9HGbhs0YaLB+GyaJANRF4NYF7EZWw/QfOQgQC8PMhAwFiusB+9l+Xl6oS9+5T1IxdO67b1cgtD6pHz11sGQx2AN04wDxu7FIhNKQY6T5+jMIdxes=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1924.namprd11.prod.outlook.com (10.175.100.137) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1580.16; Wed, 30 Jan 2019 16:09:24 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.017; Wed, 30 Jan 2019
- 16:09:24 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <roger.pueyo@guifi.net>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for en25qh64
-Thread-Topic: [PATCH] mtd: spi-nor: Add support for en25qh64
-Thread-Index: AQHUnfW1X1Q6EcLfDkWNyBpY9Z4zOqWo1dQAgB9AnACAABnwAA==
-Date: Wed, 30 Jan 2019 16:09:24 +0000
-Message-ID: <fe18a70e-ef22-a91a-7379-55fadb7c0b5c@microchip.com>
-References: <20181227150348.12093-1-roger.pueyo@guifi.net>
- <2ecd524a-9ba7-aef0-0846-5db9ed2cef01@microchip.com>
- <3fae6459-66d2-363d-adc5-d3f3758dd82d@guifi.net>
-In-Reply-To: <3fae6459-66d2-363d-adc5-d3f3758dd82d@guifi.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1P194CA0011.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:800:be::21) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; BN6PR11MB1924;
- 6:sUJ86tRNIykN+TfLY8ZtTv/9SDyCkcQQLCXqMsjtYl93LyTaQVrfHHj16UHDDh9Pa9eHgNVi+kJuL74kWAPSKXQeN8eGWY3EBJQgCx2HN/6T+xYeagjSGRtsvULFetsNfQCjm+Ny2qMh6XvVj8nwnm5AkqVoESRmZWu6b4UEQFlCjyqI2ouIblLsp3mA2NIUlS0YI+pDpX3wytObVwIo+wSPfucs9uywBrq6awhMI6khzqDph6BwcrgTER9F+UhLZf2s3MDfNfeqIJcrFkceG29V04q43i/anKIKRltginrJMP09qwp5ShD2sx40EntC97Q30Ze3OBGpr6Ri73ImmFsAQFyYIsam6rQ5Lj/gjyv4pEh2u4+W5DzjOlOZ37YcjYPbeA6g3p+E8tbk3tgFUoY333myr1hQdC4TtvitlOD8h6EYPitAaVAbtsrXNqCFv3Zq8yNzGYYlPMhC857H8w==;
- 5:6hGNaTTA7x8C+Bo+rAxhyKwPc0k4RyXQhBnJFkyl7Z9TInVkm6EXZ3CC7dHCHqMYxqeO+fRb5STbw3/w8xPuzZHNEoqMy4bWKYiL+eHG+Qpoi2gUPpDIh4H/Y0OQhOQLd55S3+P+Uqp517IJXmzruVIYWQho+FTgyh9rX1YpITYlJmKYyIavKG/M/oemi1axIx0TK/ylcdDtBMt8jCoCDA==;
- 7:2TMNu5hc3euZMMzkYSgnmDfpp1XZMAVgWE6lI+qLmBgWd8o/391RQxvQBqM6BkzzX7XEJMT8pvXko50ZLeYnvle020iz40FsWfOJuEx3LxDi4wDN2Y3pdBD/9ix8KExJmtqrbI2/FsWb0HPPyreC4w==
-x-ms-office365-filtering-correlation-id: 1980f180-4d15-4b26-e83b-08d686cd4d0c
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB1924; 
-x-ms-traffictypediagnostic: BN6PR11MB1924:
-x-microsoft-antispam-prvs: <BN6PR11MB1924A66614820F949415D3BFF0900@BN6PR11MB1924.namprd11.prod.outlook.com>
-x-forefront-prvs: 0933E9FD8D
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(366004)(136003)(346002)(396003)(376002)(39860400002)(189003)(199004)(72206003)(68736007)(53546011)(97736004)(99286004)(2906002)(6506007)(478600001)(386003)(8676002)(8936002)(26005)(81156014)(81166006)(6246003)(39060400002)(186003)(14454004)(31686004)(66066001)(446003)(102836004)(36756003)(3846002)(6116002)(476003)(11346002)(25786009)(52116002)(4326008)(305945005)(486006)(105586002)(229853002)(106356001)(6512007)(53936002)(31696002)(110136005)(316002)(71200400001)(256004)(6436002)(86362001)(6486002)(2501003)(71190400001)(76176011)(14444005)(2616005)(7736002)(138113003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1924;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 77PoangOwxyTyI/I6PJyM7v42d6EbIapRKQFXO5c+pJ+F7qB2nABvQv3GV+u3f1p2rx9RHtYDabGXCq8PtrkCtu8XogmbEnYp1bnUiK3HG7tRW7qF2UaN4BWZ6+jKTzwf5sn/cMcHMVkH+9WYDY306Po6qg4Irpfd58SsblSDxE46Keywsdok168eihXkpzkdDka8LZH7KOqpaVxE6w4pkRt3NEp5OFwLH4YABSFpOuJI9CNacryGM54zvXx0CgeRuRsTjGqRFg7hF2QARPZUUeTyA7bjWZ/LjHXQxGDcT9UANfP9NblsZYqbHlqbhNl6R7ZaRv8EVfZrJHAoTwWmCQs70VtlRorifIIiLhttbzBv1XsnitWttSzBbqD1iV3ekbpcAUs9PuOmi4rQUvtyLffnrxqO7qfPfHqRCiqQZI=
-Content-ID: <3752B23B11F31245858F142B5A683376@namprd11.prod.outlook.com>
+ id 1gosbW-0003wO-1Y
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2019 16:20:47 +0000
+Received: from [192.168.1.31] (cpe-70-114-128-244.austin.res.rr.com
+ [70.114.128.244])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C7C4520989;
+ Wed, 30 Jan 2019 16:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548865245;
+ bh=RohCd0lxHnX1A7Rw77DyLrvqmrbVDfs2dXOkeRkFna0=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=F5LvEntlxnqi1GpMGlUFz5EI2yvDDAjsJC3ElWWbDGEIyeYNlCmxiTDQHC7i+EoRw
+ 1H2R6LAz36pPc0+v8j2w77NcHxTmjacSG1w6pr3mw4QSWlTiMCZpOrNblDYcYPtRfC
+ vROJ/ikv1Ap9V9Ca0L2wrfXnkGKui9FyOPD00oHo=
+Subject: Re: [PATCH] mtd: rawnand: denali_dt: remove single anonymous clock
+ support
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+References: <1547539894-12898-1-git-send-email-yamada.masahiro@socionext.com>
+ <20190115092229.59e09c2d@xps13>
+ <CAK7LNATnfTQXHrXJQp7732-e7hvd8ORcYubyDmz0KHaRXRMDqQ@mail.gmail.com>
+ <20190128112007.440046e6@xps13>
+From: Dinh Nguyen <dinguyen@kernel.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e78d9b9e-05e3-aa47-8e66-14f35334a873@kernel.org>
+Date: Wed, 30 Jan 2019 10:20:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1980f180-4d15-4b26-e83b-08d686cd4d0c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2019 16:09:23.0196 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1924
-X-OriginatorOrg: microchip.com
+In-Reply-To: <20190128112007.440046e6@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_080943_253127_3A7B623A 
-X-CRM114-Status: GOOD (  15.32  )
+X-CRM114-CacheID: sfid-20190130_082046_201923_97580D57 
+X-CRM114-Status: GOOD (  16.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -127,72 +124,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marek.vasut@gmail.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Roger,
-
-On 01/30/2019 04:36 PM, Roger Pueyo Centelles | Guifi.net wrote:
-> Hi Tudor,
-> 
-> El 10/1/19 a les 18:21, Tudor.Ambarus@microchip.com ha escrit:
->> Hi, Roger,
->>
->> On 12/27/2018 05:03 PM, Roger Pueyo Centelles wrote:
->>> The Eon EN25QH64 is a 64 Mbit SPI NOR flash memory chip found
->>> on recent wireless routers. Its 32, 128 and 256 Mbit siblings
->>> are alredy supported.
->> s/alredy/already
->>
->>> Tested on a COMFAST CF-E120A v3 board.
->>>
->>> Signed-off-by: Roger Pueyo Centelles <roger.pueyo@guifi.net>
->>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index 6e13bbd1aaa5..4bb6f4d203dc 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -1741,6 +1741,7 @@ static const struct flash_info spi_nor_ids[] = {
->>>  	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
->>>  	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
->>>  	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64, 0) },
->>> +	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128, 0) },
->> The flash supports 4KiB erase type, so you'll have to set SECT_4K. One can use
->> larger sectors, when available, by disabling CONFIG_MTD_SPI_NOR_USE_4K_SECTORS.
-> 
-> You're right, I'm setting it.
-> 
->>
->> Also, the flash supports SPINOR_OP_READ_1_1_2, so it's better to set
->> SPI_NOR_DUAL_READ in order to trigger the bfpt parsing. Note that at bfpt
->> parsing, SPINOR_OP_PP_1_4_4 will be enabled and the reads should be done with
->> the ebh command. Please test if these assumptions are valid, and if correct,
->> submit a new patch.
-> 
-> Do you mean that I just have to add SPI_NOR_DUAL_READ, and not
-> SPI_NOR_QUAD_READ also? The chip's datasheet [1] says it supports both
-
-yes, just SPI_NOR_DUAL_READ.
-
-> DUAL and QUAD modes; I tried setting both flags, and it works fine.
-
-The flash supports SPINOR_OP_READ_1_4_4 (0xeb), but it doesn't support
-SPINOR_OP_READ_1_1_4 (0x6b). In  spi_nor_init_params(), when SPI_NOR_QUAD_READ
-is set, we assume that SNOR_HWCAPS_READ_1_1_4 is supported. If for whatever
-reason the parsing of sfdp fails, your flash will wrongly advertise that
-SNOR_HWCAPS_READ_1_1_4 is supported.
-
-You'll have to set SECT_4K and SPI_NOR_DUAL_READ. The latter triggers the bfpt
-parsing which will enable SPINOR_OP_PP_1_4_4.
-
-Cheers,
-ta
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKTGV0IG1lIHJldmlldyB0aGlzIHRvZGF5LgoKVGhhbmtzLApEaW5oCgpPbiAx
+LzI4LzE5IDQ6MjAgQU0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGkgRGluaCwKPiAKPiBNYXNh
+aGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPiB3cm90ZSBvbiBXZWQs
+IDE2IEphbgo+IDIwMTkgMTA6Mjc6MTEgKzA5MDA6Cj4gCj4+ICgrQ0MgRGluaCBOZ3V5ZW4pCj4+
+Cj4+IE9uIFR1ZSwgSmFuIDE1LCAyMDE5IGF0IDU6MjIgUE0gTWlxdWVsIFJheW5hbCA8bWlxdWVs
+LnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4+Pgo+Pj4gSGkgTWFzYWhpcm8sCj4+Pgo+Pj4g
+TWFzYWhpcm8gWWFtYWRhIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNvbT4gd3JvdGUgb24g
+VHVlLCAxNSBKYW4KPj4+IDIwMTkgMTc6MTE6MzQgKzA5MDA6Cj4+PiAgCj4+Pj4gQ29tbWl0IDZm
+MWZlOTdiZWMzNCAoIm10ZDogcmF3bmFuZDogZGVuYWxpX2R0OiBhZGQgbW9yZSBjbG9ja3MgYmFz
+ZWQKPj4+PiBvbiBJUCBkYXRhc2hlZXQiKSBpbnRyb2R1Y2VkIGEgbW9yZSBjb3JyZWN0IGJpbmRp
+bmcgdGhhdCByZXF1aXJlcwo+Pj4+IHRocmVlIG5hbWVkIGNsb2Nrcy4KPj4+Pgo+Pj4+IE5vdyB0
+aGF0IGFsbCB1cHN0cmVhbSBEVCBmaWxlcyBtaWdyYXRlZCBvdmVyIHRvIGl0LCByZW1vdmUgdGhl
+IHNpbmdsZQo+Pj4+IGFub255bW91cyBjbG9jayBzdXBwb3J0LiAgCj4+Pgo+Pj4gSSB3b3VsZCBs
+b3ZlIHRvIGRvIHRoYXQgYnV0IEkgdGhpbmsgdGhpcyBpcyBhZ2FpbnN0IHRoZSAiRFQgYmFja3dh
+cmQKPj4+IGNvbXBhdGliaWxpdHkgcnVsZSIuICAKPj4KPj4gWWVhaCwgSSBrbm93IHRoaXMgcnVs
+ZSwgYnV0IHdlIGJyZWFrIERUIGJpbmRpbmcgZnJvbSB0aW1lIHRvIHRpbWUuCj4+Cj4+Cj4+Cj4+
+PiBBbnl3YXksIElJUkMgaXQgaXMgYWNjZXB0ZWQgdGhhdCB0aGlzIGtpbmQgb2YKPj4+IHJ1bGUg
+bWlnaHQgYmUgYnJva2VuIGlmIGRlY2lkZWQgcGVyIHRoZSBhcmNoLW1haW50YWluZXIgKGluIHRo
+aXMKPj4+IGNhc2UsIHlvdSBJIHN1cHBvc2UpLiBTbyBpZiB0aGlzIGlzIHJlYWxseSB3aGF0IHlv
+dSB3YW50LCBJJ2xsIHF1ZXVlCj4+PiBpdC4gIAo+Pgo+PiBNeSBwbGF0Zm9ybSBpcyBmaW5lLCBi
+dXQgdGhpcyBkcml2ZXIgaXMgdXNlZCBieSBTT0NGUEdBIGJvYXJkcyBhcyB3ZWxsLgo+Pgo+PiBJ
+IENDZWQgdGhlIFNPQ0ZQR0EgbWFpbnRhaW5lciwgRGluaCBOZ3V5ZW4uCj4+Cj4gCj4gR2VudGxl
+IHBpbmcgb24gdGhpcyB0b3BpYy4KPiAKPiAKPiBUaGFua3MsCj4gTWlxdcOobAo+IAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
