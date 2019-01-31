@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D36DCC169C4
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:11:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34409C169C4
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:14:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2C47218AC
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:11:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D2AAC218AC
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:14:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gWKV/8/2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XDVZGtb/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2C47218AC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IEneoMWi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDhbWuSn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2AAC218AC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DtAT3y4vxPMsYw2ayQUmg7qyHwZ03BirntI1GVxZCWc=; b=gWKV/8/2fIpEvs
-	paUQd+6zLPyOx2UF0Yzz8p3Zy02uVvO+VdA68pscuISBUNdkMytlEzYW1GjTvO604kgmEVjCFHWof
-	xrlD40EO1uzOGxL25QMp/UYGU1Nqtp8xdL3BK65Rp1NhGKKNiE5SBaYWmnBrvuJho2JsfIFbNRJQw
-	gX8X+p6vcLjOUnaRIgcXsHgpjl2UewZR0qUVHApicZRpV4tT7cUO1TnN42cG/z2MmAg8nNYWDybpy
-	0aTYRfK+x4tSjz0y/VZYa4ouqV6vmvZZN6TG8C4Y92CTXBK9e03mNSlapq7pa64J6cotG9nBbTRi6
-	i64ppOMOoDNTBXLAVC8g==;
+	List-Owner; bh=sFhaXreTxexbLwVrWJagJ1FjOaM3ttb6X4qbkYu46Vg=; b=IEneoMWiwLaLT5
+	6GjQxiJdUJMdDBVE8XMnMPqE2jRjIqHi3P5IF5ApdlqMSrL7Av0hBlMppuKP2QUVscxNYHKt2w0nl
+	TyyY/7V9Bs9E62KYthzI8aOR9Z+YjL5dZGlZK7YExY1IR5OwcXKZEWXdvWTsNnkbaFBI/NHvCHeII
+	T/SDOKCho4BAoDtSC3rsIzNS8eKKDNZTGUOlOD3t5NH8MEnbnp4+REp6hRyBGvoXx1LjtQEHnAKg+
+	Tpd84bg7C/TkzAas39kQMcF/4VjY/DK7ZL535IRABUFB690Hh9eD6q7dXI1n6OkhCT1KDtQ0mWJzl
+	fU3olcjcPf4vDwYLL4ow==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpEwR-0000un-Pc; Thu, 31 Jan 2019 16:11:51 +0000
+	id 1gpEyw-0001Ry-Hy; Thu, 31 Jan 2019 16:14:26 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpEwO-0000uS-I6
- for linux-mtd@lists.infradead.org; Thu, 31 Jan 2019 16:11:50 +0000
+ id 1gpEyu-0001Rc-6I
+ for linux-mtd@lists.infradead.org; Thu, 31 Jan 2019 16:14:25 +0000
 Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D67822085B;
- Thu, 31 Jan 2019 16:11:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EBAB02085B;
+ Thu, 31 Jan 2019 16:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548951106;
- bh=vpOrg23ugN8RVXk1qKcEYWZUDNkmrc1oQABwXdavE5k=;
+ s=default; t=1548951263;
+ bh=d5dMmPZX0JvYX0cQYDAQiTE/tL0LQiTLZcQVeMovYMM=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=XDVZGtb/40BwT22m0lbAaPVFj7xPnoRoAMRy3tmvP5aUgcKGA5+GOj7ZrsblA4xJ9
- sTXJLemdk/cXSQNGt6Jq9wSAOEQbO13MXcVVJ5DomfE60Qulinv3qf7L1+XPF/iufN
- Ru/9UdyJJ01wm/48j6xU2UZtHJBKQn2F+Z768D8o=
-Date: Thu, 31 Jan 2019 17:11:37 +0100
+ b=FDhbWuSnFqeI3xnFiE4BNPv8Qhrj5ujFb6NJQSK4RKvCgy/o+AatOHO9QnxqBL+/E
+ 9WnQJTsjrOFOOTdX2jPaN8sz2cpXGqAN6e97p1lmxhUT6BsgVwqxesW8BUO+JRbAA3
+ OkTt+YdOV6ziJPi9KbnSk258Eiz+f3F7AXKDKfYA=
+Date: Thu, 31 Jan 2019 17:14:14 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 Subject: Re: subpage reads/writes with fsl_elbc_nand driver
-Message-ID: <20190131165558.59ed85ea@bbrezillon>
+Message-ID: <20190131171330.221e200c@bbrezillon>
 In-Reply-To: <add8754e-e044-a6d7-2ead-067777afbde4@prevas.dk>
 References: <add8754e-e044-a6d7-2ead-067777afbde4@prevas.dk>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190131_081148_633536_921D1721 
-X-CRM114-Status: GOOD (  20.70  )
+X-CRM114-CacheID: sfid-20190131_081424_249077_4A1689FA 
+X-CRM114-Status: GOOD (  16.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -128,44 +128,9 @@ Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
 > error, unsupported command 0x5.
 >     [    0.841822] fsl,elbc-fcm-nand fff00000.nand: read_buf beyond end
 > of buffer (14 requested, 0 available)
-> 
-> and then an endless loop of errors. With that hunk, I get a little
-> longer, but without the former the boot stops at
-> 
->     [    0.918927] ubi0 error: validate_ec_hdr: bad VID header offset
-> 2048, expected 512
->     [    0.926549] ubi0 error: validate_ec_hdr: bad EC header
->     [    0.931745] Erase counter header dump:
->     [    0.935547]        magic          0x55424923
->     [    0.939344]        version        1
->     [    0.942359]        ec             9
->     [    0.945373]        vid_hdr_offset 2048
->     [    0.948610]        data_offset    4096
->     [    0.951879]        image_seq      1882958541
->     [    0.955678]        hdr_crc        0x1a47f3d3
->     ...
->     [    1.059976] ubi0 error: ubi_io_read_ec_hdr: validation failed for
-> PEB 0
->     [    1.066669] ubi0 error: ubi_attach_mtd_dev: failed to attach
-> mtd0, error -22
->     [    1.073824] UBI error: cannot attach mtd0
->     [    1.083983] VFS: Cannot open root device "ubi0:rootfs" or
-> unknown-block(0,0): error -19
-> 
-> I have
-> 
->        nand-ecc-mode = "soft";
->        nand-ecc-algo = "bch";
->        nand-ecc-strength = <4>;
->        nand-ecc-step-size = <512>;
-> 
-> in .dts. Is there some device-tree setting/quirk I can use to avoid the
-> above hacks? Alternatively, can someone provide some hints on how a
-> mainlinable patch achieving the above would look?
 
-Just pass ubi.mtd=<part-name>,<page-size> on the command line. This way
-the VID header will be read/written from/to the second page instead of
-the 2nd subpage of the first page.
+For that part of the problem, you should consider converting the driver
+to ->exec_op().
 
 ______________________________________________________
 Linux MTD discussion mailing list
