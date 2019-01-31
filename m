@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E64C7C282D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:32:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CC33C169C4
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:32:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9DB9218AF
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:32:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2F71218DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:32:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tbVdq+lR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="swMG2U+e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9DB9218AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DoB7TkF6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVwzWd+Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2F71218DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,46 +25,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=xf10AVrlxOWg3bnsE6zPxqQ69PQ5X6oKOPpd91QU2/8=; b=tbV
-	dq+lRQuc0GfxbOhWkC5woK78CM3L3KHn7NJ16kyBbQVclYJbOAxX7m6tXRlxhrPfcpkvWwz0mYfQI
-	PaQiv4m2iM31kpingQm4awxmo849WS0NNE6NMS+qhAvI6S6wXrX/9OYp8kIFLKrAmICLdmnvQat1E
-	hpDFrcHvB214sItgVi6INvvZN2A4JcWQWh6d0Pb4MaCC9rIVsJWqcPt/ezfb1mVtyIeB5QHt1OOP3
-	1ZlPdMfyLlo5C3bzjk/GDvdhQFzRjIKdSHyB3Nw1dTSlpjZVSqtAp/+YfvbOz9iQvLqgCRIRaAia4
-	8TMaU6iPCwfIEzs4y2ChWn465OML90w==;
+	References:List-Owner; bh=3M510maCmf6s8AgzgVjRVwafK98hmtaJxF7C/3Vezv0=; b=DoB
+	7TkF6NZq3WYiKfOsdh2w015X+yB1vUELiGCLvfwmX6KqaY1CrsuZ/UdueTbE3VyDWuWiP2eEMLlqt
+	UHyt3wNKYsbHzjjWYzAttfpBhj9RV0O4JDNmT+/Lu2KXk/1iLvSn0z6mfen2fQvFkAxZqtMuSD2wT
+	aVaAHt3aHxpp3yPRBDEHSlO0yWQmh5RyAdXYE4ayEgS3CkSCn7VQfp3wUHjTtyuKaXucrN4OxOjo4
+	c3J1N51LMV32rirOy1JXz8w8TzUlYZdx2akoFFDhD/JeYpmXTrAAgVe3n89M7Lsr0RJE7qkksZaOG
+	1mw4L5ObyUGSUINqrVTApGBe+9qTcrw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpAZb-0004zf-IK; Thu, 31 Jan 2019 11:31:59 +0000
+	id 1gpAZq-0005Pq-MR; Thu, 31 Jan 2019 11:32:14 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpAZY-0004zG-Tb
- for linux-mtd@lists.infradead.org; Thu, 31 Jan 2019 11:31:58 +0000
+ id 1gpAZl-0005AN-4U
+ for linux-mtd@lists.infradead.org; Thu, 31 Jan 2019 11:32:12 +0000
 Received: from localhost.localdomain (91-160-177-164.subs.proxad.net
  [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3E921218AF;
- Thu, 31 Jan 2019 11:31:51 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9CADD218AF;
+ Thu, 31 Jan 2019 11:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548934316;
- bh=CFNbtJd+HTIcAODO15KHtEXEDRLG5gvGDaSJGKxRtQo=;
+ s=default; t=1548934327;
+ bh=VuPBdMdl2enp/OWXjzCQAcDddf9/S7Xs6KG8Cy9nI9A=;
  h=From:To:Cc:Subject:Date:In-Reply-To:From;
- b=swMG2U+eYiKpOIJ5IIzZfqxj/JckfF3BCKo3CE9zmVtrVxh2t8AaO/dO3vTbcCrdU
- zN1Kk5gkojHtnjlW2yKPrLLbG8rY1k1KwYa2IuSr4CvgjO6j0pPdLTu+ic42C1ku/7
- gsWkjLTCKbMX5x4U9w78aPqg7FuUvFLcurpn1zWg=
+ b=KVwzWd+YzkRGg01luGoEHE0fKvNm1GR7eLh8I5WnjmiZEvJqNVF69mNnC13MKuebK
+ K7cHob7wHtv2PvyMesB5OW0l1Ngd9rPjN/WyzSlEu5Cqe7zNkoMd+22XQaqMJuO4Hb
+ fC+cyj1f7NJhKlq1G1RHV4R3EhUdV3VF4JZYYJuc=
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: mtd: nand: fix kernel-doc warnings
-Date: Thu, 31 Jan 2019 12:31:47 +0100
-Message-Id: <20190131113147.18826-1-bbrezillon@kernel.org>
+To: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Subject: Re: mtd: spinand: Fix the error/cleanup path in spinand_init()
+Date: Thu, 31 Jan 2019 12:32:00 +0100
+Message-Id: <20190131113200.18894-1-bbrezillon@kernel.org>
 X-Mailer: git-send-email 2.17.1
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b79bbbfec3a0b70f7f5c460ba58458baa499332e
-In-Reply-To: <21d5edd7-1335-2731-6d53-5b15d053462c@infradead.org>
+X-linux-mtd-patch-commit: 481981251714f23c9bc2e25d5a220c60281db4ab
+In-Reply-To: <20190124144654.27626-1-bbrezillon@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190131_033156_973847_85AEACCA 
-X-CRM114-Status: UNSURE (   7.62  )
+X-CRM114-CacheID: sfid-20190131_033209_962345_2EE9B94E 
+X-CRM114-Status: UNSURE (   8.51  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -77,31 +77,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <bbrezillon@kernel.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2019-01-28 at 02:21:42 UTC, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
+On Thu, 2019-01-24 at 14:46:54 UTC, Boris Brezillon wrote:
+> The manufacturer specific initialization has already been done when
+> block unlocking takes place, and if anything goes wrong during this
+> procedure we should call spinand_manufacturer_cleanup().
 > 
-> Fix kernel-doc warnings in drivers/mtd/nand/raw:
-> 
-> ../drivers/mtd/nand/raw/nand_base.c:420: warning: Function parameter or member 'chip' not described in 'nand_fill_oob'
-> ../drivers/mtd/nand/raw/nand_bbt.c:173: warning: Function parameter or member 'this' not described in 'read_bbt'
-> ../drivers/mtd/nand/raw/nand_bbt.c:173: warning: Excess function parameter 'chip' description in 'read_bbt'
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: linux-mtd@lists.infradead.org
+> Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Applied to http://git.infradead.org/linux-mtd.git mtd/fixes, thanks.
+Applied to http://git.infradead.org/linux-mtd.git mtd/fixes.
 
 Boris
 
