@@ -2,122 +2,67 @@ Return-Path: <SRS0=cI5g=QH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D22C169C4
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED1FC169C4
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:33:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 184FA2082F
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:19:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FCDF20869
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 16:33:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Wdb+Mlnj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Ff6jWJyu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 184FA2082F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J34rzbjN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mLf2SAvj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FCDF20869
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gYnUfTSxX5ZuMAPIWVpqO9+6lKuNGVA0SQgLe6b66iE=; b=Wdb+MlnjNhF99D
-	0JIJMj6f9F186ayuTfT8HmMV5xr/WVo3fVAR5Ml9VyOWHLwxKzyHsLzwWJNfQwxYL/aFeHQ5I6IJd
-	1jTKkCG1l0QRuAaIeq3LZhKB5zVY9yX2nuO8QSQzTsGKRvzsTF5iI4Tth4GBU7/pq/r7/JqVz3xes
-	HDew9Td10N0XTrBqmLXuoE9ORN+n2Ku6t0M0otm6zmDwSF1pmfe54IOoQKcWRF1BQI9csYTGUFs1i
-	tL66LiB4X6WnsYyP6c9VVh4LYYfkiMXpW9/yRonONkyiyTC8fANDeZfl6Sz9T1sOE+BLVdDuAFk2W
-	dn0SJE9cIPOCu0CD+j2Q==;
+	List-Owner; bh=i5cwmWkkaW7yISrpqIOovvT9OWryVBZ3/RTlpSZrDJo=; b=J34rzbjNk/PABb
+	F/sEjvMPzgPaUSVAaw1d6o5mEi/B+EmjoeGkzAs+PXdT/UMzNRsqGig/ZqxILoEaCHucIapfMhcF8
+	k+SlTTFODTxU6ESVmi3Mjy1/sewxps7m+e9QV4S1x5Rn8fsaBtLJCK7BAUHdEjXZnWW/cfOC0B1IL
+	Tnx2xYiH2Ne37spd84bQd+OkGHqbnWwCDcfLTQYxaQKoQFb+cKle0MVhM7bzunnqNZZo5gMrtmJ8Q
+	FjUqPwN6g2i3Acd/KLff+YPRVaNV4SiV5NkFRXpYlV0HjAd2o/8lFK+Nm9cHduZlRjXJmQtzhmrE1
+	gvDX78c15pW6sxw8Ubyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpF3Y-0006Ia-Pl; Thu, 31 Jan 2019 16:19:12 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1gpFH7-0000Db-TW; Thu, 31 Jan 2019 16:33:13 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpF0T-0003TZ-AR; Thu, 31 Jan 2019 16:16:16 +0000
-X-IronPort-AV: E=Sophos;i="5.56,545,1539673200"; d="scan'208";a="24072857"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES128-SHA;
- 31 Jan 2019 09:15:49 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.37) with Microsoft SMTP Server (TLS) id
- 14.3.352.0; Thu, 31 Jan 2019 09:15:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pYISt+mUq8a2y/52ynnDii37D8+VlIQlpqZskupf4Es=;
- b=Ff6jWJyuRg4VjWUPX7arYnKPGY4P8H7H1PrWpIqR90BvFKqlssNSZ2tFdP205p/lUQgzR2k8X4OVaNCu82Cn/cE8uEX79thMF3F5YX2Gof5Md0iVTUKMgHGLytmkgaYy/qnON02zt1HKC1Zf9ibte60FivonNoZC9jL1okEIOqQ=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1315.namprd11.prod.outlook.com (10.173.32.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1580.16; Thu, 31 Jan 2019 16:15:46 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.017; Thu, 31 Jan 2019
- 16:15:46 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
- <Ludovic.Desroches@microchip.com>, <bbrezillon@kernel.org>
-Subject: [PATCH v2 08/10] dt-bindings: spi: atmel-quadspi: update example to
- new clock binding
-Thread-Topic: [PATCH v2 08/10] dt-bindings: spi: atmel-quadspi: update example
- to new clock binding
-Thread-Index: AQHUuYA4pheU0uoMGEKsRDfKD/gBUQ==
-Date: Thu, 31 Jan 2019 16:15:46 +0000
-Message-ID: <20190131161515.21605-9-tudor.ambarus@microchip.com>
+ id 1gpFGH-000899-TZ; Thu, 31 Jan 2019 16:32:49 +0000
+Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 35C8D20869;
+ Thu, 31 Jan 2019 16:32:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1548952341;
+ bh=pRYtaMupNVk7LlJRNrlcw0o3kLDpKQgPy4Dr4Yi+nz0=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=mLf2SAvj0TcyNWwcKHM1AEZ4Te6b5fGC2PFPQ5ukNRYOShN7tYn5f/d4GUItfzN77
+ Q2bfFs1wZbYxFiBbLppwNn/6lVc4cgjjevJzwuOlr7//kVU/qQRYf7jOP3H1z8UBh4
+ 0U2uTGwGVSZPq2/Hh7H13KEu2dQZvjKmK9h/a8xc=
+Date: Thu, 31 Jan 2019 17:32:07 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v2 10/10] spi: atmel-quadspi: add support for sam9x60
+ qspi controller
+Message-ID: <20190131173207.56481a42@bbrezillon>
+In-Reply-To: <20190131161515.21605-11-tudor.ambarus@microchip.com>
 References: <20190131161515.21605-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20190131161515.21605-1-tudor.ambarus@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR02CA0046.eurprd02.prod.outlook.com
- (2603:10a6:802:14::17) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.9.5
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; BN6PR11MB1315;
- 6:qKtka8aPh4HvszfxUIimPbgusA2/CTM5tlN2ULoLXFDgeWKS2ZT9hhTJe2K/7wsRwe4Be8gqjcQe/YpLOyILxlj7x5+iOeFlAav5mndq2tbN/pU6Xc25ig5/cnxW76LbbMvIUvBn70zOtteo9piX7foCpPD+0K4xRFbMD2JOGmhfRUaTmRf8WeRe+a/Jk7B4LNkYvuh7uAh7ouM2TCHgQJ482ViR2KbFvmO+IogfJ0n0mEc6N0tVRCAfwDRwyiEVFbMuKFQvPaNGU43KpTtqNQYMXtuo951BvAyq5BDE7d4J8oDyPpXOvH2kc8akDWQmKsm+QbwVmOD3P0o7ZDSxOrnFfIdzYfjhRMxhtVAxICRPLfTUfFC1X3WMDhso4bEZGRGWOO7Hu4kXGw6oM5o8oHfyDcLaNu2gGQPdpte4dalf6pcwcIUMrbrdoRzGgWoKxMoB4hQoXPWo0hTNiMf5Jg==;
- 5:bhv9DqCzBZvTEDiIn8weHNNybYhkNWnFNNOwGvcLqeKwNsFwdQB5LHMasYp5nCHt9Frz1xzfwkhc/PEjnmLuyDxU5xkqo6j2QESIPFkQeutZrsdLNLiIEgBpZgWzHsDjMzRC5Hz4myb6OD0BfLXzAVVqqabf/a+455sOcMl7Sh1PoLCbZeFd1mp+cdvKF9/ikwiaPf3/eJHXkMAoOdS/Hg==;
- 7:+DOcmcSfssXr6YVJo7dSe5Z4g6H+kd73DqB/OtNqj0aLkCT/wRazsX6Ku22+R18oH4nw6yJ5q7l2UHPNXpCXq2KjB8FI4vyR68n/8cQmQ1QpNJzsqKyAR+rG8myRBJmAx3D3QDbmthLU8RH0LG5ZZQ==
-x-ms-office365-filtering-correlation-id: 76625ff3-56cc-4c6d-25ac-08d687975b4b
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB1315; 
-x-ms-traffictypediagnostic: BN6PR11MB1315:
-x-microsoft-antispam-prvs: <BN6PR11MB1315211F4E5C66896DA3CFBBF0910@BN6PR11MB1315.namprd11.prod.outlook.com>
-x-forefront-prvs: 09347618C4
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(346002)(376002)(39860400002)(136003)(366004)(199004)(189003)(6116002)(186003)(3846002)(107886003)(68736007)(386003)(6436002)(7736002)(76176011)(305945005)(105586002)(86362001)(256004)(14444005)(6506007)(52116002)(4326008)(106356001)(102836004)(26005)(99286004)(50226002)(8936002)(6486002)(2501003)(72206003)(1076003)(2906002)(446003)(11346002)(2616005)(97736004)(476003)(316002)(486006)(14454004)(54906003)(53936002)(110136005)(25786009)(4744005)(8676002)(81166006)(81156014)(71190400001)(66066001)(71200400001)(7416002)(478600001)(6512007)(36756003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1315;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: BU15//hhVB9fmXj+PwB6XF0mQN1fep8iPxqHwQzV5ywpl/fhJf+9AIOK9WvpgQTTj7QT5xxYA+jvvY54l28UEmuCA6XCpq9lzes685Z6Sq9dfOQ+51h3jbcHCGXlcVkz/mmZ0el/oj8dxNN4rhDNaFxxt/iDY6+VddvERxJSE5KP6l8Wr/lpmveQWumunOIAl2iipQUiK/ZroEz5GJAFnqvhwbSsRx3FRjuz5BeS0SH4xHZyDbtl0i8pP7ODJmQc6nADv5DV2moFAuiCFPq69V/or351R1trOaOIsYfXCse82Crhg2w5bZvgjvKdOWDwBj1ulE7wvGNqKvPFb9UuY/9isWBNK0qS2u+jWV9pKVqFIFwbCze+7yCYPT0YIhWaD9ttNpAZws9AmVq+WKM2mHHLykli1GI/XeHkYvqR5PA=
+ <20190131161515.21605-11-tudor.ambarus@microchip.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76625ff3-56cc-4c6d-25ac-08d687975b4b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2019 16:15:44.1530 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1315
-X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190131_081603_073897_C2BF72F4 
-X-CRM114-Status: UNSURE (   8.61  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190131_083222_850022_AAEA5876 
+X-CRM114-Status: GOOD (  22.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -129,43 +74,256 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tudor.Ambarus@microchip.com,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
+ Nicolas.Ferre@microchip.com, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+ Ludovic.Desroches@microchip.com, broonie@kernel.org,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+On Thu, 31 Jan 2019 16:15:51 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-Introduced in:
-commit b60557876849 ("ARM: dts: at91: sama5d2: switch to new clock binding")
+> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+> The sam9x60 qspi controller uses 2 clocks, one for the peripheral register
+> access, the other for the qspi core and phy. Both are mandatory. It uses
+> dedicated register for Read Instruction Code Register (RICR) and
+> Write Instruction Code Register (WICR). ICR/RICR/WICR have identical
+> fields.
+> 
+> Tested with sst26vf064b jedec,spi-nor flash. Backward compatibility test
+> done on sama5d2 qspi controller and mx25l25635e jedec,spi-nor flash.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+> v2:
+> - rework clock handling
+> - reorder setting of register values in set_cfg() calls -> move functions
+>   that can fail in the upper part of the function body.
+> 
+>  drivers/spi/atmel-quadspi.c | 296 +++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 239 insertions(+), 57 deletions(-)
+> 
+> diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+> index d3e76acf8517..80c934f3e479 100644
+> --- a/drivers/spi/atmel-quadspi.c
+> +++ b/drivers/spi/atmel-quadspi.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> +#include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/spi/spi-mem.h>
+>  
+> @@ -35,7 +36,9 @@
+>  
+>  #define QSPI_IAR     0x0030  /* Instruction Address Register */
+>  #define QSPI_ICR     0x0034  /* Instruction Code Register */
+> +#define QSPI_WICR    0x0034  /* Write Instruction Code Register */
+>  #define QSPI_IFR     0x0038  /* Instruction Frame Register */
+> +#define QSPI_RICR    0x003C  /* Read Instruction Code Register */
+>  
+>  #define QSPI_SMR     0x0040  /* Scrambling Mode Register */
+>  #define QSPI_SKR     0x0044  /* Scrambling Key Register */
+> @@ -88,7 +91,7 @@
+>  #define QSPI_SCR_DLYBS_MASK             GENMASK(23, 16)
+>  #define QSPI_SCR_DLYBS(n)               (((n) << 16) & QSPI_SCR_DLYBS_MASK)
+>  
+> -/* Bitfields in QSPI_ICR (Instruction Code Register) */
+> +/* Bitfields in QSPI_ICR (Read/Write Instruction Code Register) */
+>  #define QSPI_ICR_INST_MASK              GENMASK(7, 0)
+>  #define QSPI_ICR_INST(inst)             (((inst) << 0) & QSPI_ICR_INST_MASK)
+>  #define QSPI_ICR_OPT_MASK               GENMASK(23, 16)
+> @@ -113,6 +116,8 @@
+>  #define QSPI_IFR_OPTL_4BIT              (2 << 8)
+>  #define QSPI_IFR_OPTL_8BIT              (3 << 8)
+>  #define QSPI_IFR_ADDRL                  BIT(10)
+> +#define QSPI_IFR_TFRTYP_TRSFR_MEM	BIT(12)
+> +#define QSPI_IFR_TFRTYP_TRSFR_REG	(0 << 12)
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
----
-v2: collect R-b
+You don't need to define TRSFR_REG, just set QSPI_IFR_TFRTYP_TRSFR_MEM
+when you do a mem transfer and do nothing when this is a regular
+transfer.
 
- Documentation/devicetree/bindings/spi/atmel-quadspi.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  #define QSPI_IFR_TFRTYP_MASK            GENMASK(13, 12)
+>  #define QSPI_IFR_TFRTYP_TRSFR_READ      (0 << 12)
+>  #define QSPI_IFR_TFRTYP_TRSFR_READ_MEM  (1 << 12)
 
-diff --git a/Documentation/devicetree/bindings/spi/atmel-quadspi.txt b/Documentation/devicetree/bindings/spi/atmel-quadspi.txt
-index b93c1e2f25dd..e9dae6264d89 100644
---- a/Documentation/devicetree/bindings/spi/atmel-quadspi.txt
-+++ b/Documentation/devicetree/bindings/spi/atmel-quadspi.txt
-@@ -19,7 +19,7 @@ spi@f0020000 {
- 	reg = <0xf0020000 0x100>, <0xd0000000 0x8000000>;
- 	reg-names = "qspi_base", "qspi_mmap";
- 	interrupts = <52 IRQ_TYPE_LEVEL_HIGH 7>;
--	clocks = <&spi0_clk>;
-+	clocks = <&pmc PMC_TYPE_PERIPHERAL 52>;
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	pinctrl-names = "default";
--- 
-2.9.5
+Looks like the read/write flag is on bit 13. Can we just add
 
+#define QSPI_IFR_TFRTYP_TRSFR_WRITE	BIT(13)
+
+and drop all others def? This way the implementation is consistent
+between sam9x60 and sama5d2.
+
+> @@ -121,6 +126,8 @@
+>  #define QSPI_IFR_CRM                    BIT(14)
+>  #define QSPI_IFR_NBDUM_MASK             GENMASK(20, 16)
+>  #define QSPI_IFR_NBDUM(n)               (((n) << 16) & QSPI_IFR_NBDUM_MASK)
+> +#define QSPI_IFR_APBTFRTYP_WRITE	(0 << 24)
+
+As for the other defs, I don't think you need to define _WRITE.
+
+> +#define QSPI_IFR_APBTFRTYP_READ		BIT(24)
+>  
+>  /* Bitfields in QSPI_SMR (Scrambling Mode Register) */
+>  #define QSPI_SMR_SCREN                  BIT(0)
+> @@ -137,16 +144,37 @@
+>  #define QSPI_WPSR_WPVSRC(src)           (((src) << 8) & QSPI_WPSR_WPVSRC)
+>  
+>  
+> +/* Describes register values. */
+> +struct atmel_qspi_cfg {
+> +	u32 icr;
+> +	u32 iar;
+> +	u32 ifr;
+> +};
+> +
+> +struct atmel_qspi_caps;
+> +
+>  struct atmel_qspi {
+>  	void __iomem		*regs;
+>  	void __iomem		*mem;
+>  	struct clk		*clk;
+
+Can we rename that on pclk?
+
+> +	struct clk		*qspick;
+>  	struct platform_device	*pdev;
+> +	const struct atmel_qspi_caps *caps;
+>  	u32			pending;
+>  	u32			mr;
+>  	struct completion	cmd_completion;
+>  };
+>  
+
+...
+
+> +
+> +static int atmel_sam9x60_qspi_set_cfg(void __iomem *base,
+> +				      const struct spi_mem_op *op,
+> +				      struct atmel_qspi_cfg *cfg)
+> +{
+> +	int ret = atmel_qspi_set_mode(cfg, op);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = atmel_qspi_set_address_mode(cfg, op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	cfg->ifr |= QSPI_IFR_INSTEN;
+> +	cfg->icr |= QSPI_ICR_INST(op->cmd.opcode);
+> +
+> +	/* Set data enable */
+> +	if (op->data.nbytes)
+> +		cfg->ifr |= QSPI_IFR_DATAEN;
+> +
+> +	if (!op->addr.nbytes) {
+> +		cfg->ifr |= QSPI_IFR_TFRTYP_TRSFR_REG;
+> +		if (op->data.dir == SPI_MEM_DATA_OUT)
+> +			cfg->ifr |= QSPI_IFR_APBTFRTYP_WRITE;
+> +		else
+> +			cfg->ifr |= QSPI_IFR_APBTFRTYP_READ;
+> +	} else {
+> +		cfg->ifr |= QSPI_IFR_TFRTYP_TRSFR_MEM;
+
+Can you try doing only regular transfers and let me know if it still
+works. Support for mem transfers can then be added along with dirmap
+support.
+
+> +	}
+>  
+>  	/* Clear pending interrupts */
+>  	(void)readl_relaxed(base + QSPI_SR);
+>  
+>  	/* Set QSPI Instruction Frame registers */
+> -	writel_relaxed(iar, base + QSPI_IAR);
+> -	writel_relaxed(icr, base + QSPI_ICR);
+> -	writel_relaxed(ifr, base + QSPI_IFR);
+> +	writel_relaxed(cfg->iar, base + QSPI_IAR);
+> +	if (op->data.dir == SPI_MEM_DATA_OUT)
+> +		writel_relaxed(cfg->icr, base + QSPI_ICR);
+> +	else
+> +		writel_relaxed(cfg->icr, base + QSPI_RICR);
+> +	writel_relaxed(cfg->ifr, base + QSPI_IFR);
+> +
+> +	return 0;
+> +}
+> +
+
+...
+
+> @@ -443,32 +578,52 @@ static int atmel_qspi_probe(struct platform_device *pdev)
+>  	/* Enable the peripheral clock */
+>  	err = clk_prepare_enable(aq->clk);
+>  	if (err) {
+> -		dev_err(&pdev->dev, "failed to enable the peripheral clock\n");
+> +		dev_err(dev, "failed to enable the peripheral clock\n");
+>  		goto exit;
+>  	}
+>  
+> +	if (caps->has_qspick) {
+> +		/* Get the QSPI system clock */
+> +		aq->qspick = devm_clk_get(dev, "qspick");
+> +		if (IS_ERR(aq->qspick)) {
+> +			dev_err(dev, "missing system clock\n");
+> +			err = PTR_ERR(aq->qspick);
+> +			goto disable_clk;
+> +		}
+> +
+> +		/* Enable the QSPI system clock */
+> +		err = clk_prepare_enable(aq->qspick);
+> +		if (err) {
+> +			dev_err(dev,
+> +				"failed to enable the QSPI system clock\n");
+> +			goto disable_clk;
+> +		}
+> +	}
+> +
+>  	/* Request the IRQ */
+>  	irq = platform_get_irq(pdev, 0);
+>  	if (irq < 0) {
+> -		dev_err(&pdev->dev, "missing IRQ\n");
+> +		dev_err(dev, "missing IRQ\n");
+>  		err = irq;
+> -		goto disable_clk;
+> +		goto disable_qspick;
+>  	}
+> -	err = devm_request_irq(&pdev->dev, irq, atmel_qspi_interrupt,
+> -			       0, dev_name(&pdev->dev), aq);
+> +	err = devm_request_irq(dev, irq, atmel_qspi_interrupt, 0,
+> +			       dev_name(dev), aq);
+>  	if (err)
+> -		goto disable_clk;
+> +		goto disable_qspick;
+>  
+>  	err = atmel_qspi_init(aq);
+>  	if (err)
+> -		goto disable_clk;
+> +		goto disable_qspick;
+>  
+>  	err = spi_register_controller(ctrl);
+>  	if (err)
+> -		goto disable_clk;
+> +		goto disable_qspick;
+>  
+>  	return 0;
+>  
+> +disable_qspick:
+> +	clk_disable_unprepare(aq->qspick);
+>  disable_clk:
+
+We should probably rename this label disable_pclk.
+
+>  	clk_disable_unprepare(aq->clk);
+>  exit:
 
 ______________________________________________________
 Linux MTD discussion mailing list
