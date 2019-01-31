@@ -2,71 +2,67 @@ Return-Path: <SRS0=cI5g=QH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDC05C282DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3493C4151A
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:55:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90D80218AF
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:32:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2A33218DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 11:55:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MFt2z73M";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bQfZjtSL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90D80218AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bVqEl1F5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="c6AEIqJ3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2A33218DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=ggSi6Up/d0tbvu9vkOoqn5k6hI8DFXkp6N4A4PyrZkQ=; b=MFt
-	2z73Mfas/v5oa2nqBcyR4v1AyTP1JcE4K0lwRL01FL7r/JBU6brz1uPu7VLRjjsaT2Hsw28gHm0wB
-	UN8uuZdX68AlWWW6t+lfYsuFakoJrUEdotfLv8VcwOlFT1eTK2t6qlcGcku5x/aSz+Xna2hdvOW3L
-	inapEtQTmTw3kOJvDYzceY4RiInj2fxF/3L3fDe+h48fVM+15CIEicDnfTGF5/0c8hwKm5jDIzlj0
-	foOAuFLIw3G8GLw6YNPcS268HOt1K2sipb905NZFl2Hdr2wksZdpGC+5wr13UfHzNZtpV4nSg7Ird
-	CZfGDtGsnFrR6Pk6w5cIV7fcd17W3yg==;
+	List-Owner; bh=7So45/fNmUY99Iiqe6xNeoYh0qmwbDIAkJbJ3C3gc6w=; b=bVqEl1F53+nL8i
+	jYpF/R2RRJ/sLU1Fzu6fyFQJYJ/ynylaQrUV9S+lt98T7Jla+PUmWH29n4s/1I34HnIQl52lQCgDE
+	drT/Nq/iLCk+6yfpx3sb8DvNSTytTnf28YKQz4uNYh0UYaaKuKGB1DEejgvVtY/llF4ns55YBnl15
+	UVWBqRSvqzjMS7kydDdRa22WoXdJqfYcXdZUbnR/Mksk7c75b+pZu/IOqwZTcy60I5K/MmvPsdzMA
+	LY6wP5KVCkF1SEuExXa4ZjSiOHuoXZ/wssFjpvKuF6A7HlhZ9VULZD8o+cpzJ2tYZ93vcUXfpvxmf
+	7Mq+NtM9ZaykUiGL9JUw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpAa9-0005kn-EQ; Thu, 31 Jan 2019 11:32:33 +0000
+	id 1gpAwX-0006rO-BD; Thu, 31 Jan 2019 11:55:41 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpAZx-0005YO-B9
- for linux-mtd@lists.infradead.org; Thu, 31 Jan 2019 11:32:29 +0000
-Received: from localhost.localdomain (91-160-177-164.subs.proxad.net
- [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1gpAwL-0006gi-Jq; Thu, 31 Jan 2019 11:55:30 +0000
+Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9B9BC218AF;
- Thu, 31 Jan 2019 11:32:16 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9549B2087F;
+ Thu, 31 Jan 2019 11:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548934340;
- bh=KECHgUR8XvASzwFoOH0pgfo8wYu6oNyH2r9iyNsW2SM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:From;
- b=bQfZjtSLMzxmKEOCNuTEn1/72Edpt/6/EJLWx4Q9y7o7xDYCHXTeJwjb1DLYPOAwE
- PEvu1xb41+//zsDSka9bSN2L63tTHfaTQk+K0HEZgnxgEWZEfhJJWb0UpPTo+uqliB
- y65Mb1mHeT0JKsEGBRJcvS2FAsywpEUavcBYaKhY=
+ s=default; t=1548935729;
+ bh=ljvHK5+CxgCaWGa66nNZEVCCE59QxWDz8dsWIFaljuM=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=c6AEIqJ3TZw6xN3zH5OQzsXGnZXJBbnJlBoMsHzcIydnfNwRLu6a4SfdZ60MeiBtS
+ 4jKAaqUtyjZ9EDCGSW0OIaUUoXsOi+qiVciXQKQNEawdpwrGkF8HxK+ZNIL4gdtsDL
+ SLFggB2qZEg2X1oXRQxTneON4QGU490KviGVV7Tk=
+Date: Thu, 31 Jan 2019 12:55:19 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Subject: Re: mtd: spinand: Handle the case where PROGRAM LOAD does not reset
- the cache
-Date: Thu, 31 Jan 2019 12:32:12 +0100
-Message-Id: <20190131113212.18961-1-bbrezillon@kernel.org>
-X-Mailer: git-send-email 2.17.1
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: d4363fc4cbb327e87fd98daff55acf2be30ac63b
-In-Reply-To: <20190124142007.11607-1-bbrezillon@kernel.org>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH 9/9] spi: atmel-quadspi: add support for sam9x60 qspi
+ controller
+Message-ID: <20190131125504.3eff449d@bbrezillon>
+In-Reply-To: <20190130150818.24902-10-tudor.ambarus@microchip.com>
+References: <20190130150818.24902-1-tudor.ambarus@microchip.com>
+ <20190130150818.24902-10-tudor.ambarus@microchip.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190131_033222_296256_1E1537A9 
-X-CRM114-Status: UNSURE (   9.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190131_035529_673891_9601403D 
+X-CRM114-Status: GOOD (  10.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,32 +74,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Stefan Roese <sr@denx.de>,
- David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org
-MIME-Version: 1.0
+Cc: alexandre.belloni@bootlin.com, Nicolas.Ferre@microchip.com,
+ linux-kernel@vger.kernel.org, Ludovic.Desroches@microchip.com,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2019-01-24 at 14:20:07 UTC, Boris Brezillon wrote:
-> Looks like PROGRAM LOAD (AKA write cache) does not necessarily reset
-> the cache content to 0xFF (depends on vendor implementation), so we
-> must fill the page cache entirely even if we only want to program the
-> data portion of the page, otherwise we might corrupt the BBM or user
-> data previously programmed in OOB area.
-> 
-> Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-> Reported-by: Stefan Roese <sr@denx.de>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
-> Tested-by: Stefan Roese <sr@denx.de>
-> Reviewed-by: Stefan Roese <sr@denx.de>
+On Wed, 30 Jan 2019 15:08:47 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-Applied to http://git.infradead.org/linux-mtd.git mtd/fixes.
+> +
+> +static int atmel_sam9x60_qspi_set_cfg(struct atmel_qspi *aq,
+> +				      const struct spi_mem_op *op,
+> +				      struct atmel_qspi_cfg *cfg)
+> +{
+> +	int ret = atmel_qspi_set_mode(cfg, op);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	cfg->icr = QSPI_ICR_INST(op->cmd.opcode);
+> +
+> +	if (!op->addr.nbytes) {
+> +		cfg->ifr |= QSPI_IFR_TFRTYP_TRSFR_REG;
+> +		if (op->data.dir == SPI_MEM_DATA_OUT)
+> +			cfg->ifr |= QSPI_IFR_APBTFRTYP_WRITE;
+> +		else
+> +			cfg->ifr |= QSPI_IFR_APBTFRTYP_READ;
+> +	} else {
+> +		cfg->ifr |= QSPI_IFR_TFRTYP_TRSFR_MEM;
 
-Boris
+Why do you use a MEM transfer here? What's the difference with a
+regular transfer?
+
+> +	}
+> +
+> +	/* Set data enable */
+> +	if (op->data.nbytes)
+> +		cfg->ifr |= QSPI_IFR_DATAEN;
+> +
+> +	ret = atmel_qspi_set_address_mode(cfg, op);
+> +	if (ret)
+> +		return ret;
+>  
+>  	/* Clear pending interrupts */
+>  	(void)atmel_qspi_readl(aq, QSPI_SR);
+>  
+>  	/* Set QSPI Instruction Frame registers */
+> -	atmel_qspi_writel(aq, QSPI_IAR, iar);
+> -	atmel_qspi_writel(aq, QSPI_ICR, icr);
+> -	atmel_qspi_writel(aq, QSPI_IFR, ifr);
+> +	atmel_qspi_writel(aq, QSPI_IAR, cfg->iar);
+> +	if (op->data.dir == SPI_MEM_DATA_OUT)
+> +		atmel_qspi_writel(aq, QSPI_ICR, cfg->icr);
+> +	else
+> +		atmel_qspi_writel(aq, QSPI_RICR, cfg->icr);
+> +	atmel_qspi_writel(aq, QSPI_IFR, cfg->ifr);
+> +
+> +	return 0;
+> +}
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
