@@ -2,77 +2,118 @@ Return-Path: <SRS0=cI5g=QH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_NEOMUTT autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 178FAC169C4
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 07:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA515C169C4
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 10:43:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E745220881
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 07:37:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E4C220B1F
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Jan 2019 10:43:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GIR1OcbG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E745220881
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Hah5TgcR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="iO63x+Ah"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E4C220B1F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SRM49h6LTcphjwVcF4JNMrvMfv4DY4JLcwk+Db3fPm4=; b=GIR1OcbGhseTcI
-	XFOVAaAVDn4EQm+X5j17SFEu7qSSQpCjyMwq5FN+xrGIfIAgreXXIHae4HPTGAcsBYOWQeAswra8N
-	rGpaxmDbwQzkbREBgU3qZXvovM45jyTQS4CEdyR8AAHmU5RjjNNyQ4O6kd9bLl+tmSYoaAM3b0F4X
-	SJTNkd7BLeJCpcTbYKwrSEcHjiPPgIaZBzF4AQdXtA+YEmp7qd1nvwdH8p0C/ZG9i1x9Aknq8ineg
-	kqGrIprxrw3Fvt2S/n6uEO2O8Nn4XwMBbZRZwghqbhqmaVNCRfGupizp8deaHvmW2p8Xd6qBTgLr+
-	I5PVdO7+JY8PImeLMicA==;
+	List-Owner; bh=wcSXcKfWV0+8OUAw5aUO76Z3LXiZdBWZJIuUh1bSLdg=; b=Hah5TgcRZWsqCQ
+	FFoL6dwVC5ekvhv3B0I71Nbq7+A8Lb6FmwG3qJGVcglas8egkBFVrRRJmaOT1yBxxUIaxIeDCAZpe
+	v5ktu7+f/b8/oJMQtKm4FPMSlALCe0CmjZHkHbJHhmdmAFZ6PNMKYM/S/Pg6WSj0l/vF9i4rQWHg/
+	GnaNTXuSJQJstIftYpoCvYzKc/60vMUTfjTSbIz9oUuzW8fIBPsyVVrxGpakXjVWCH6vo9QO6+u7M
+	Ez5pOZCh2scUwQjjDzLJogws1hgRYyY4jlfuoD3ylD8o2cFJoaNIbjOVttfNZF9XKUXpKcRSlOiRm
+	gZTdgu7GNJ4u1V0pW7fg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gp6ua-0002Nn-UB; Thu, 31 Jan 2019 07:37:24 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1gp9oA-0007ua-E4; Thu, 31 Jan 2019 10:42:58 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gp6uX-0002N7-6v
- for linux-mtd@lists.infradead.org; Thu, 31 Jan 2019 07:37:23 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1gp6uO-0005T6-84; Thu, 31 Jan 2019 08:37:12 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1gp6uM-00058d-8A; Thu, 31 Jan 2019 08:37:10 +0100
-Date: Thu, 31 Jan 2019 08:37:10 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Jan Kara <jack@suse.cz>
-Subject: Re: UBIFS quota support
-Message-ID: <20190131073710.2tpg5vx6fhfumou7@pengutronix.de>
-References: <20190110114448.vcx6w76ibmxwvlh3@pengutronix.de>
- <CAFLxGvyrNaq6ya9TNr-tdEEbV=qsi8qEko6R7oJ-DtkxPJMk0g@mail.gmail.com>
- <20190123154743.GL13149@quack2.suse.cz>
- <20190125092156.ck77sdqainmmewuz@pengutronix.de>
- <20190130124535.GE30203@quack2.suse.cz>
+ id 1gp9o2-0007tm-7f; Thu, 31 Jan 2019 10:42:52 +0000
+X-IronPort-AV: E=Sophos;i="5.56,544,1539673200"; d="scan'208";a="27102416"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 31 Jan 2019 03:42:46 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.108) with Microsoft SMTP Server (TLS)
+ id 14.3.352.0; Thu, 31 Jan 2019 03:42:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MYDv8bmVeIcOyx64riWKiG1necLkZPll10wPuBKIIXg=;
+ b=iO63x+AhmaCA4k/jQkxJcTL6e2qLi9S7U7DCdei4oNgpzSZyiqmmLnKNOKkzieyRM7EyAjoECql9/QmYDkNKtFx5jpXrqK/tm6BbLX/AHBfqVW98L4GMTH9RWHsGLCogRo57NFMg6qfq1pUFjE1s19wTURQvPlr+T31wZvk9rTw=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1556.namprd11.prod.outlook.com (10.172.22.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1580.16; Thu, 31 Jan 2019 10:42:45 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.017; Thu, 31 Jan 2019
+ 10:42:45 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <bbrezillon@kernel.org>
+Subject: Re: [PATCH 1/9] spi: atmel-quadspi: optimize qspi init
+Thread-Topic: [PATCH 1/9] spi: atmel-quadspi: optimize qspi init
+Thread-Index: AQHUuK2oYIgYi2Phc0CCu9Nb5y7hkaXIDV+AgAEkngA=
+Date: Thu, 31 Jan 2019 10:42:45 +0000
+Message-ID: <3ae8f1c2-b201-f7ee-5715-e49f39b9cdc1@microchip.com>
+References: <20190130150818.24902-1-tudor.ambarus@microchip.com>
+ <20190130150818.24902-2-tudor.ambarus@microchip.com>
+ <20190130181505.4f495d3a@bbrezillon>
+In-Reply-To: <20190130181505.4f495d3a@bbrezillon>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR04CA0069.eurprd04.prod.outlook.com
+ (2603:10a6:802:2::40) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; BN6PR11MB1556;
+ 6:l4WUwBNkbLF3l5lrsr27sR2py3qlhKoIuTjHugy28rUlgZj41u7G27MIh7ySkfX+cWlNLyvokHnh5zowmeYm+bV1Bp7prMXoeE7AKazQO0A8IGvteMmqDE7NqQfJdHpzVhTlOAjpnpY9bcLhCcA0D02nxi3YzCYA+o57asQhOzgaBO9MtBogRwjXfjN69urDSrE1i4Mx//ehbQMam7n9tljFhUdgc0RVmtrHvNQztzYdA538nQ+DiWO+PXibrPwHVuYWrQkMpinW9/iGg0O3j+r9M/p7humBXZEgutdJ+EnQpq9CjjDPcJwwO1lEDIhmIl7WPjEzESA4tQ3+dvcov5jrCcQWlEv7a7fFlcrEJas7rIfBlnfo2Xl6hDHXxxY90JbtQvJhXwKTjWFJl2svye3SnNDibnsmvcmShyg1NkPBs9JhgZe11NEBu9uXtALTM7xHqO32H/2ecToi0zPkGA==;
+ 5:3xufTaZ7TE17rEAnBm4Ms14ZVkExu4F3q/XFwdMbeRDZgVLLX+o+BF8/lU9JKUoe60CYxcbEb6AaCAkl5vvN+7FE4Ppae51ypI21YGcpKEXyF/OvduJEUYiDNjoUxHKKclkVsXURg9V/3B8+bsR83ZanDkSBDVLZPoUYLIS583wiqTAR7RkRCgxU5P6NB6GoTLIJqbXY87GZjoMkdPsI6Q==;
+ 7:5uTs8KxsOYtGf8L+FNs41soYFOPgDGkIsjXYwBUzg+BiNwU1M7cyjj7Xz5SN4GrVPDRpELfdC3wfH+aQK2o24N5BVvpqvqWb7Gy2qH0P602bG5+B2PHmDUIETb1QeZNSb7kV375jPHPbU1sYtEf5Gg==
+x-ms-office365-filtering-correlation-id: 6fc078e9-e918-4fee-dc69-08d68768d585
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
+ SRVR:BN6PR11MB1556; 
+x-ms-traffictypediagnostic: BN6PR11MB1556:
+x-microsoft-antispam-prvs: <BN6PR11MB15564A9DAA23F7580A14BE8FF0910@BN6PR11MB1556.namprd11.prod.outlook.com>
+x-forefront-prvs: 09347618C4
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(396003)(136003)(346002)(376002)(366004)(39860400002)(189003)(199004)(54906003)(86362001)(105586002)(31696002)(6486002)(102836004)(316002)(66066001)(52116002)(229853002)(99286004)(53546011)(72206003)(6436002)(2906002)(14454004)(6116002)(478600001)(3846002)(106356001)(4744005)(4326008)(76176011)(25786009)(53936002)(6246003)(36756003)(386003)(6512007)(6506007)(8936002)(81156014)(7736002)(8676002)(476003)(446003)(305945005)(11346002)(2616005)(14444005)(68736007)(71200400001)(26005)(256004)(31686004)(486006)(71190400001)(6916009)(186003)(97736004)(81166006);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1556;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: E4Yyj/t8qAQ8yX9P2hvGmjey8hHHQhdWSBZct+Hj2hPcTWUmcx/rTh+j9EYPjsC07Y/qxp8GFwDOFk8Dgiv5gB2+iN9w18TkOWjXgdH4QuvXAKuZ3eMSDDXnf7q7UxYkBLo3A3g0RSEohx8tiXDQf2PM7mILWj4MS0VVcrsbonLTjXjTHxjF1r4GTE6MEGL47lp9p9NKNm/VtcJgHNwv8Ph/N7trYUYwa2PW3mILMxOgc/pHS53djaZGH/DY/H5KStbW9cNHTcFUB+9nqB7dVoMj5tCtP5zwMUrx6dM0e2TYM9G+kUIaRBgku86Cb6PA3UI4siQZ8Q+n3iiRQB/IPSyYgcImpMMnryEkHCKCTDFOtEGuU8GAb9vmYPjGz61psB31ExPHfLgiB0DVFZX6IyH/m7SPoI/mbNYQ0PH6sec=
+Content-ID: <762667507B21874EA0F1817206AD37BD@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190130124535.GE30203@quack2.suse.cz>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 20:14:39 up 9 days, 6:27, 45 users, load average: 0.01, 0.12, 0.15
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fc078e9-e918-4fee-dc69-08d68768d585
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2019 10:42:39.9761 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1556
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190130_233721_406321_E93CF9A7 
-X-CRM114-Status: GOOD (  28.25  )
+X-CRM114-CacheID: sfid-20190131_024250_431660_A8A56A96 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,93 +125,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@infradead.org>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: alexandre.belloni@bootlin.com, Nicolas.Ferre@microchip.com,
+ linux-kernel@vger.kernel.org, Ludovic.Desroches@microchip.com,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 30, 2019 at 01:45:35PM +0100, Jan Kara wrote:
-> Hello,
+
+
+On 01/30/2019 07:15 PM, Boris Brezillon wrote:
+> On Wed, 30 Jan 2019 15:08:29 +0000
+> <Tudor.Ambarus@microchip.com> wrote:
 > 
-> > UBIFS has no idea of transactions and works a little different from
-> > ext4. In UBIFS all filesystem data and metadata are stored in the leaf
-> > nodes of a b+tree. These leaf nodes are constantly written to flash and
-> > would be enough to reconstruct the FS. From time to time UBIFS does a
-> > commit and writes the index nodes to flash. During recovery the tree can
-> > be read from the index nodes from the last commit. The remaining leaf
-> > nodes that were written after the last commit are then scanned and added
-> > to the tree during replay.
-> > 
-> > Quota seems to work in the way that it has callbacks into the FS to read
-> > and update dqblks. This is not very suitable for UBIFS. Instead it would
+>> From: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>
+>> Set the QSPI controller in Serial Memory Mode at init and not
+>> at each exec_op() call.
 > 
-> Yes, generally it works by requesting loading / storing of quota
-> information for a particular user from the filesystem.
-> 
-> > be nicer to read the full quota data from flash and hand it over to
-> > quota. When UBIFS does a commit it would then request a consistent view
-> > of the quota data and write it back to flash. During replay of an
-> > uncleanly mounted FS UBIFS could read the quota data from the last
-> > commit and update it with the remaining leaf nodes that need to be
-> > replayed anyway.
-> 
-> Well, I don't think writing all quota data for each commit is a good
-> design. That will write out lot of unnecessary stuff that didn't change
-> since last time. It is like if you rewrite the whole file to update
-> one block in it... Similarly loading all quota data doesn't look great for
-> performance. There can be thousands or tens of thousands different users of
-> the filesystem (yes, I've seen such deployments) and you don't want to read
-> and keep in memory information you don't currently need. But I guess UBIFS
-> is targetted at smaller deployments?
+> If you ever want to support regular SPI you'll have to put it back to
+> atmel_qspi_exec_op(), so I'm not sure this is a good move. Another
+> approach would be to cache the MR value to avoid doing a write access
+> on the bus when the value hasn't changed.
 
-It seems our perspective to quota is quite different ;)
-UBIFS targets embedded systems, in a typical usecase I wouldn't expect
-more than a handful of users and certainly not more users than we fit
-dqblks in a single page. From my perspective it adds overhead that we
-have a tree at all and that the current quota formats constantly changes
-the single page that we have all our quota data in, instead of writing
-the whole data at once every once in a while.
+I'll cache MR value, thanks!
 
-> 
-> Anyway, what is easily doable is that you would just ignore requests for
-> update from quota subsystem (just let quota subsystem mark dquot as dirty)
-> and then on commit call dquot_writeback_dquots() that will call
-> ->write_dquot callback for each dquot that is dirty. That way you'd get
-> full dump of dquots that changed since last commit. You'd need to somehow
-> make sure this gets merged with information from previous commit. Then on
-> crash recovery you'd load quota information from commit and update it with
-> the changes that happened since that last commit.
-
-Yes, something like that should work.
-
-> 
-> Honestly loading quota limits by init scripts looks like a hack to me. Note
-> that quota limits rarely change so you can easily store them separately
-> from usage information and load them on mount. Since setting of limits does
-> not have to be crash-safe (well, it needs to keep the quota information in
-> a state that is recoverable by mount but it doesn't need to coordinate with
-> any other filesystem operations), I don't think implementing that would be
-> hard...
-
-It's not my goal to put quota limits into init scripts, still I think it
-could be a nice stopover to divide the whole thing into more managable
-parts. I think I'll just implement it up to that point and post the
-result. Then we can still see if it's enough to merge or if I have to
-implement the rest before merging.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
+ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
