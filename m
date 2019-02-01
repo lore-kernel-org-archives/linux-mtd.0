@@ -2,22 +2,21 @@ Return-Path: <SRS0=9lEF=QI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E073EC169C4
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 02:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F75AC169C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 02:56:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0F7720863
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 02:54:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0269A20863
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 02:56:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B4Lq3F4z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7BWOEbn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0F7720863
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dO1mO1He";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jp6u8k4n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0269A20863
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wWn7l3aSGRh4dm+dU32PTwqt8cN8I7EtlwUmSK6wH/g=; b=B4Lq3F4zcwenvO
-	SbNbSaP+udKAe7vtrr5AXLhJ/cn/iU1j0w5ElusREYzGv3ks5TuM7F3ccja2XgKLdj+zQirli0wWm
-	pPuFqEk+ItYy3YbRdrCG0JRPArOxhMPEEE+mIQmy3pfgZShLqWLsv0YAeiAgwVAGTXvJ8021YWUem
-	ufRx4vrsA8Lh8+Dqa5MZQrS4/MC0g4oD+JvdKEscwTK67kNQpUQCOtEB6SkbmDzlEBHzXZ+6OcWpv
-	rbzzcbahuv6/yrHYw+BhZfV5LlZB5jlKExn62iFc8/qWTAy1JDkea+zgQcrGlcgM6pD+FNOZB3cUJ
-	J82m3pDzTybO8aNvzPyQ==;
+	List-Owner; bh=V6fVtyzcUi+OiJe3a7so1lwkP/du7q1gVZ8Ns/bS+M0=; b=dO1mO1HefrPyi7
+	CuJJBhhLloUS82Xho4wjNt609tQ6MMgGJGlcu2Vl/6pR+NASjMwEs9OiBpykiajhfAtLn95L4bOHg
+	SFUtgxpvkYn4fECtCgxk7iVf8+57uIZfquaJYBrR2dER3BOxuFnwRvwUj0W+HpJuyZLOCH8RJZx4k
+	naoLbiP8orduOUVunKsVoTp8ENhQkOTVzM5r7d3U1Z1wb0QdjenALApDjEZc353Pe7RJFpURvmoc+
+	+hWyYwrukZRQ0cDM83gogCVCqPsBeoQlFtxlBih7dqLYave9CsH1wpKcL2QUFezs0C82plQvNhc1c
+	Lc87dSusWm2sT0NAiq+A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpOyQ-0004p3-0I; Fri, 01 Feb 2019 02:54:34 +0000
+	id 1gpP0M-0006cS-AD; Fri, 01 Feb 2019 02:56:34 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpOyC-0004eS-N7; Fri, 01 Feb 2019 02:54:22 +0000
+ id 1gpP09-0006SF-U4; Fri, 01 Feb 2019 02:56:23 +0000
 Received: from dragon (61-216-91-114.HINET-IP.hinet.net [61.216.91.114])
  (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6EB6720863;
- Fri,  1 Feb 2019 02:54:14 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0C50120863;
+ Fri,  1 Feb 2019 02:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1548989659;
- bh=8RCVc/UR6RQLUvQQQztdVUBfDTbSQz/Ra9DMj49JNqU=;
+ s=default; t=1548989781;
+ bh=3UlvWOx2LV4KzLdHPnGFxIy+KFeK2cJa5/p692Bwadc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=p7BWOEbn/9OIQs+CILDKvZ8zwagUsVRXIQWJ/Q06cwIG+Ggq95/AExJS/4GLxw5Th
- NEenY/+eKCv73QR11RpDeI3goTknhZo5yphL90+/05TgFjLoFN2tPkKeWfVRdduUaW
- PpdtofQUD6W53M35qG+VpOcyh3zlRG//VnAPhvac=
-Date: Fri, 1 Feb 2019 10:54:07 +0800
+ b=jp6u8k4noNELMfik0OyRQb/W0H8kmr6/AtBUJ5YtRczZA0fysm2hYamLt8ZZ/Km1G
+ OVTX90WAViMR5Rq3f1SSzaxP/L+LOmaYVBXheHXLcMKQnr1I5d3fNb++/P1VEzNCA+
+ isi8prq4Xc2s7bBebXffzUquEX8Gn+QqDyIRPBK0=
+Date: Fri, 1 Feb 2019 10:56:08 +0800
 From: Shawn Guo <shawnguo@kernel.org>
 To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: Re: [PATCH v8 3/5] arm64: dts: lx2160a: add FlexSPI node property
-Message-ID: <20190201025405.GA19882@dragon>
+Subject: Re: [PATCH v8 4/5] arm64: defconfig: enable NXP FlexSPI driver
+Message-ID: <20190201025607.GB19882@dragon>
 References: <1547553487-9936-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1547553487-9936-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1547553487-9936-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1547553487-9936-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1547553487-9936-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190131_185420_790753_FD77A5B5 
-X-CRM114-Status: GOOD (  16.20  )
+X-CRM114-CacheID: sfid-20190131_185621_980230_B97468D7 
+X-CRM114-Status: UNSURE (   6.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,113 +92,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 15, 2019 at 12:00:26PM +0000, Yogesh Narayan Gaur wrote:
-> Add fspi node property for LX2160A SoC for FlexSPI driver.
-> Property added for the FlexSPI controller and for the connected
-> slave device for the LX2160ARDB target.
-> This is having two SPI-NOR flash device, mt35xu512aba, connected
-> at CS0 and CS1.
+On Tue, Jan 15, 2019 at 12:00:31PM +0000, Yogesh Narayan Gaur wrote:
+> Enable driver support of NXP FlexSPI controller.
 > 
 > Signed-off-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
-> Changes for v8:
-> - None
-> Changes for v7:
-> - None
-> Changes for v6:
-> - None
-> Changes for v5:
-> - None
-> Changes for v4:
-> - Incorporated Rob review comments.
-> Changes for v3:
-> - None.
-> Changes for v2:
-> - Incorporated Shawn review comments.
-> 
->  .../boot/dts/freescale/fsl-lx2160a-rdb.dts    | 22 +++++++++++++++++++
->  .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 13 +++++++++++
->  2 files changed, 35 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> index 6481e5f20e69..70658946fbbe 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> @@ -50,6 +50,28 @@
->  	status = "okay";
->  };
->  
-> +&fspi {
-> +	status = "okay";
-> +
-> +	mt35xu512aba0: flash@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "spansion,m25p80";
-> +		m25p,fast-read;
-> +		spi-max-frequency = <50000000>;
-> +		reg = <0>;
-> +	};
-> +
-> +	mt35xu512aba1: flash@1 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "spansion,m25p80";
-> +		m25p,fast-read;
-> +		spi-max-frequency = <50000000>;
-> +		reg = <1>;
-> +	};
-> +};
-> +
->  &i2c0 {
->  	status = "okay";
->  
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> index a79f5c1ea56d..e3ff86201f73 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> @@ -762,5 +762,18 @@
->  				     <GIC_SPI 209 IRQ_TYPE_LEVEL_HIGH>;
->  			dma-coherent;
->  		};
-> +
-> +		fspi: spi@20c0000 {
 
-To keep the nodes sorted in unit-address, it should go after
-i2c@2070000.
-
-> +			compatible = "nxp,lx2160a-fspi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0x0 0x20c0000 0x0 0x10000>,
-> +				<0x0 0x20000000 0x0 0x10000000>;
-
-I would align the indentation with the above.
-
-> +			reg-names = "fspi_base", "fspi_mmap";
-> +			interrupts = <0 25 0x4>; /* Level high type */
-
-interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>; so that we can save the
-comment there.
-
-I fixed up all these small things and applied the patch.
-
-Shawn
-
-> +			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-> +			clock-names = "fspi_en", "fspi";
-> +			status = "disabled";
-> +		};
->  	};
->  };
-> -- 
-> 2.17.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Applied, thanks.
 
 ______________________________________________________
 Linux MTD discussion mailing list
