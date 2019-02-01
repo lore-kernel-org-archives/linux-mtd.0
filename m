@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B91AEC282D8
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 10:03:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D71C282D8
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 10:04:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76FB121872
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 10:03:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C34A721872
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 10:04:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EKhuRo4u";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ld2i02Jx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76FB121872
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KaLIEiYL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="QCQRNF5e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C34A721872
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,50 +26,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=QoecdzOCKkCtn7gKnawi0OhuVNT5PtbdYNEWAxq827U=; b=EKhuRo4uZwLUBN
-	U+ybJ3j0sSwXCRZY2bcLey+z2TwhBYoA7ZkFCcAe6lBRyHNex89130awy6rb1cK3N3FIGi1LTR3Tc
-	YtJFmzEZZzp23UYvwZDkZwwXnJ1/AmDtWTmnbYyyUkceCgdhaynalfMSLaVxcEveIHv6E/YGoSOPf
-	aQ9WvmDjAaxjLevw0oHcyp5xjVCGygtOr4XM7xfgmwwlIMe3YZXNxxiVj50sj9sgCQMJ66TxCiBb8
-	A/S0BVWIbT14JtkMwdHPHr/xBu42VnofstY4M1M9tw8Pwf3o9Oq2EZhKDi3SIEMpEH/pwFw+RbFKS
-	yHWz5UDVwF/w+unRSJqQ==;
+	List-Owner; bh=1sveRMtozLobtwix/43GG9x5DFuDvUoIHhp4+UcnaGs=; b=KaLIEiYLl+zb/2
+	JJhCMz9ym8IjpbRQHJfb8K+QtIoshYGh+dhaGSyJzYFMZp3rKXP0TJcRNuQnChZExcTYpFknx64k7
+	6/Cp0+s9ssMyM6QBzY+Df6lPAltWJMt30w5I+BwqfGShseScvXLsz6kubn6F2Lmoik8+YVmu79fWU
+	dAItM10Tg56/c0U+hBZ9PDH14SWWozyBg4CfDRfAbxRowSxptuDjcZX/BNa3Vk41cERT/u9jVg9T5
+	Wg/kljfOpUXfDjubXYXfuz++PzjZX3rFbPUIQOVZyvswSXux093p07DgAxRHUO/JraE+sFOEoSNE7
+	DyvG+1kQIx0c07vFIiKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpVfj-0007WM-Ai; Fri, 01 Feb 2019 10:03:43 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1gpVgV-0007ny-GI; Fri, 01 Feb 2019 10:04:31 +0000
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpVff-0007Vv-IQ
- for linux-mtd@lists.infradead.org; Fri, 01 Feb 2019 10:03:41 +0000
-Received: by mail-lj1-x244.google.com with SMTP id k15-v6so5276142ljc.8
- for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2019 02:03:38 -0800 (PST)
+ id 1gpVgS-0007n6-0c
+ for linux-mtd@lists.infradead.org; Fri, 01 Feb 2019 10:04:29 +0000
+Received: by mail-lj1-x242.google.com with SMTP id n18-v6so5271371lji.7
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2019 02:04:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=Pdryh2qZln/mdEKeX6uKOdno711aZXsOFM/PptAooIE=;
- b=Ld2i02JxerTHK8gv+TC29wu/uzRXQu0lKV4b3d93GT4ZCFuSctXynbqWAucZ1CaVE/
- mzgoOjNKBwJpJDy73eO5i1ePR+Vtv02u2d8DNQkXBt+SCCmdhqkDuAPvTctDa0Fd8ucO
- hoK5q2ro4IoBnNNmtXPGZOPhClFgdaRrf+HXM=
+ bh=qTqjDdI4/9bt0VuW3/iTUWoBQxKuywYtQ/zFacF4SdY=;
+ b=QCQRNF5eHPezUaOigAdJv7iwUUf6HEfwl06sNifS1sw697q/1aB9qx6mD9vf5pxcnH
+ mrIY+58Z/GOsMbOedQ+BTB5HsIT2rlfBsqtlJvLk6pqk0fnX/PW10DJ3gE+WvRZmpseu
+ 1OpL4UCOE1vRgB/SldWhcn1WIBv8Qx95n53R4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=Pdryh2qZln/mdEKeX6uKOdno711aZXsOFM/PptAooIE=;
- b=NXKOFgxVAF3Yv/BhFd325E0AGZaQifp8gxXH75S+uv7aobp+/HGhpHUehHcufqGL5v
- AcOWr0Tdrm+jAMNFH6ZBCIIBkUedgDomjcAwnKSl449MNj/Qi4ATCksGGhLNpxhVxrkt
- Bu89TcWHLij6LYRpisy8yHHqcWd/MIBf83j0o2luP2QQ/b1MfTIBm5qumb5OrwfhqbYb
- z7OhlJbTKdgKoIE/gRd60KCGDv38M7rxPwWrGHDoTHZnUYQbl3/8Ehgr4u8XcYQkFq8w
- r2+WsBPJiWU2gu2Yh/qUyDwvZhFpyuFYun1C0vxhxn4TPzTFLeT2kQsWhzbj/JzzMcxY
- gYUw==
-X-Gm-Message-State: AJcUukfcIUQnHxfFG5loLeYW1ks/jbfY1mtItul2wyEVk2/qcbZ08YAb
- Um5Uz+c4/ogRgYmaDmhxsNKOAA==
-X-Google-Smtp-Source: ALg8bN6kR3Twvu1jUYjR23Ey/jdEpMTfh2vU5MUUx2FuvzZfTfiJ2mx/JKSDQl59taLQKtmGIxWeWg==
-X-Received: by 2002:a2e:5d12:: with SMTP id
- r18-v6mr30306956ljb.89.1549015416783; 
- Fri, 01 Feb 2019 02:03:36 -0800 (PST)
+ bh=qTqjDdI4/9bt0VuW3/iTUWoBQxKuywYtQ/zFacF4SdY=;
+ b=ZcVNztWeyoWTpzkQvQuRKJOTnpk3N8hB+90YIBD4PmSmbC0Grqqztmr/foskyZjQtd
+ zNlDOnP5APYTtIw0Wz/D+jcbTJB0P5o/pjwwQq98lYgdBD9nEzCtaEtTgDNBzO/npCBQ
+ uwr5O71gG6R+6L5zXjV0O62DdKrOrtR5B85cM0DkyceaVouFIkwvtrbOkZGK75/EZxc/
+ BLOMOjn3y0PPBs1zEhlOFNM2Jx7cJzXVg/62rlXqe2sXYVoDublcXP8KzkQTNjAimJZz
+ ysekakHJVh4MA9Xw7M9p3O0DjRN0JZG8+fBy6jqog7JwtQAtz6bIhk0ly4Fqwd2ddFsr
+ s2dA==
+X-Gm-Message-State: AHQUAuZQRpn5h4Hp1lqN+lMXgEK1SOpBAvQXnV519dxn8qsoYZb2Fomn
+ W/8CHmbRk3jyxE9u9+GIIqSaTA==
+X-Google-Smtp-Source: AHgI3IbQSApkksOIXi/mGhx0LQDLd5QCsNnPi1rnzHbH7SVzvlYQg7q39OMnGZtTAoxSbWsdOSLGjg==
+X-Received: by 2002:a2e:3a10:: with SMTP id
+ h16-v6mr26574711lja.184.1549015465123; 
+ Fri, 01 Feb 2019 02:04:25 -0800 (PST)
 Received: from linux.local (c-ae7b71d5.014-348-6c756e10.bbcust.telenor.se.
  [213.113.123.174])
- by smtp.gmail.com with ESMTPSA id r1-v6sm1223897ljb.64.2019.02.01.02.03.35
+ by smtp.gmail.com with ESMTPSA id g15sm1279197lfb.1.2019.02.01.02.04.23
  (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 01 Feb 2019 02:03:35 -0800 (PST)
+ Fri, 01 Feb 2019 02:04:24 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -77,13 +77,13 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-mtd@lists.infradead.org
 Subject: [PATCH 1/2] mtd: add DT bindings for the Intel IXP4xx Flash
-Date: Fri,  1 Feb 2019 11:03:30 +0100
-Message-Id: <20190201100331.27224-1-linus.walleij@linaro.org>
+Date: Fri,  1 Feb 2019 11:04:20 +0100
+Message-Id: <20190201100421.27504-1-linus.walleij@linaro.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190201_020339_607714_2A9D4709 
-X-CRM114-Status: GOOD (  14.80  )
+X-CRM114-CacheID: sfid-20190201_020428_107115_C34B39C3 
+X-CRM114-Status: GOOD (  14.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -95,7 +95,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: devicetree@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -106,6 +106,7 @@ flash controller, a simple physmap which however need a
 specific big-endian or mixed-endian access pattern to the
 memory.
 
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
  .../bindings/mtd/intel,ixp4xx-flash.txt       | 22 +++++++++++++++++++
