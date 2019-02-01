@@ -2,79 +2,88 @@ Return-Path: <SRS0=9lEF=QI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE8FC282D8
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 09:03:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B91AEC282D8
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 10:03:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFF2520863
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 09:03:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76FB121872
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Feb 2019 10:03:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LkAgENsR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFF2520863
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EKhuRo4u";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ld2i02Jx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76FB121872
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HcZbPhewAWvExgLU/jqZcnJ1LJXkVToidBZ/ZqCBaMg=; b=LkAgENsRxnQpDm
-	o708x7F/W/GYg+IlZ9ALIxn2kH23tdtSSa5zS+Az6CaAZi8KB+SzPUQPsrrF/+chRbP11j/Xj6iwn
-	mLAsDFObfgELEvtnBcutyD7WuMs0PdUhnhyW9VzD7HcgLZfRy2LBh5aPwn6uGQMj6cSKhiI+RFA3l
-	djPh65NtHRY9HRl60IIiWyLloVZzfQNQ3E8YMmAwuxW3grjKmrZUTz0AU52989ND6FDevahy6t2uH
-	EELJdUjjIlsyuSdWKikMYBYZ5aUaJu9SofmJyXv7ODRXj4m1uD9TMzkGfYFVmryOAtwLJg4j9LND6
-	jYSdTI2KnnvA2jKvexug==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=QoecdzOCKkCtn7gKnawi0OhuVNT5PtbdYNEWAxq827U=; b=EKhuRo4uZwLUBN
+	U+ybJ3j0sSwXCRZY2bcLey+z2TwhBYoA7ZkFCcAe6lBRyHNex89130awy6rb1cK3N3FIGi1LTR3Tc
+	YtJFmzEZZzp23UYvwZDkZwwXnJ1/AmDtWTmnbYyyUkceCgdhaynalfMSLaVxcEveIHv6E/YGoSOPf
+	aQ9WvmDjAaxjLevw0oHcyp5xjVCGygtOr4XM7xfgmwwlIMe3YZXNxxiVj50sj9sgCQMJ66TxCiBb8
+	A/S0BVWIbT14JtkMwdHPHr/xBu42VnofstY4M1M9tw8Pwf3o9Oq2EZhKDi3SIEMpEH/pwFw+RbFKS
+	yHWz5UDVwF/w+unRSJqQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpUj3-0008Ar-Vs; Fri, 01 Feb 2019 09:03:05 +0000
-Received: from mail-ua1-f67.google.com ([209.85.222.67])
+	id 1gpVfj-0007WM-Ai; Fri, 01 Feb 2019 10:03:43 +0000
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpUj0-0008AT-9x
- for linux-mtd@lists.infradead.org; Fri, 01 Feb 2019 09:03:03 +0000
-Received: by mail-ua1-f67.google.com with SMTP id t8so1995961uap.0
- for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2019 01:03:00 -0800 (PST)
+ id 1gpVff-0007Vv-IQ
+ for linux-mtd@lists.infradead.org; Fri, 01 Feb 2019 10:03:41 +0000
+Received: by mail-lj1-x244.google.com with SMTP id k15-v6so5276142ljc.8
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2019 02:03:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Pdryh2qZln/mdEKeX6uKOdno711aZXsOFM/PptAooIE=;
+ b=Ld2i02JxerTHK8gv+TC29wu/uzRXQu0lKV4b3d93GT4ZCFuSctXynbqWAucZ1CaVE/
+ mzgoOjNKBwJpJDy73eO5i1ePR+Vtv02u2d8DNQkXBt+SCCmdhqkDuAPvTctDa0Fd8ucO
+ hoK5q2ro4IoBnNNmtXPGZOPhClFgdaRrf+HXM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=I3qJljro1nVkVo2DsSAgty5BGY0HtgwQrfjOKnGzE8s=;
- b=Cy+7Dw52z6UNfq4TvsBMwn1Qd4wYBGpBqN7fLcqd1uI+5QFDM2xepr5A51Dprfqphs
- 8OYHEXc9ZMy5fFTX4cMUswqaJzd6c+4ynSe6GiQ9zXQZJrAYfvGp8w9Awqf/gGKlbqB6
- 1O602rxdrjNrCKFJMdMbCw5QTBJyRxFg5Dl4LOlNsisRlUMj1reQaj+MISj6VSXpoEyy
- cmrBNTTyyNVSDJ0OwSzAi602UaY4oz+w2mk5m+67IaWFJdPPM/ZfugQ3A4gP97f716Sn
- Om2Gqdf6o3F4Cr2XR5pI5fQouNsZ9DiHeHwEr2ouKg+lakDSeNulrecTrsEjZV3bhblc
- kt2w==
-X-Gm-Message-State: AJcUukc/0ENRO5JMuPbdvBxYv2JDBKkClIjg79TZ3lCVZcsPpodIQW/h
- t5sFSSlGiV9SZu4wnDnvoT8w/eI2gNv0nY7ZFQI=
-X-Google-Smtp-Source: ALg8bN6LXc0VsbZteK97HwhPHZRCofooOad8p9IWqMlT88KS3WZVNUSmwjZ7XTRArRIayk5fdVnbjVv4BetnGVnQEDI=
-X-Received: by 2002:ab0:7251:: with SMTP id d17mr16344929uap.0.1549011779854; 
- Fri, 01 Feb 2019 01:02:59 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Pdryh2qZln/mdEKeX6uKOdno711aZXsOFM/PptAooIE=;
+ b=NXKOFgxVAF3Yv/BhFd325E0AGZaQifp8gxXH75S+uv7aobp+/HGhpHUehHcufqGL5v
+ AcOWr0Tdrm+jAMNFH6ZBCIIBkUedgDomjcAwnKSl449MNj/Qi4ATCksGGhLNpxhVxrkt
+ Bu89TcWHLij6LYRpisy8yHHqcWd/MIBf83j0o2luP2QQ/b1MfTIBm5qumb5OrwfhqbYb
+ z7OhlJbTKdgKoIE/gRd60KCGDv38M7rxPwWrGHDoTHZnUYQbl3/8Ehgr4u8XcYQkFq8w
+ r2+WsBPJiWU2gu2Yh/qUyDwvZhFpyuFYun1C0vxhxn4TPzTFLeT2kQsWhzbj/JzzMcxY
+ gYUw==
+X-Gm-Message-State: AJcUukfcIUQnHxfFG5loLeYW1ks/jbfY1mtItul2wyEVk2/qcbZ08YAb
+ Um5Uz+c4/ogRgYmaDmhxsNKOAA==
+X-Google-Smtp-Source: ALg8bN6kR3Twvu1jUYjR23Ey/jdEpMTfh2vU5MUUx2FuvzZfTfiJ2mx/JKSDQl59taLQKtmGIxWeWg==
+X-Received: by 2002:a2e:5d12:: with SMTP id
+ r18-v6mr30306956ljb.89.1549015416783; 
+ Fri, 01 Feb 2019 02:03:36 -0800 (PST)
+Received: from linux.local (c-ae7b71d5.014-348-6c756e10.bbcust.telenor.se.
+ [213.113.123.174])
+ by smtp.gmail.com with ESMTPSA id r1-v6sm1223897ljb.64.2019.02.01.02.03.35
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Fri, 01 Feb 2019 02:03:35 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: add DT bindings for the Intel IXP4xx Flash
+Date: Fri,  1 Feb 2019 11:03:30 +0100
+Message-Id: <20190201100331.27224-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20190102143654.24362-1-bbrezillon@kernel.org>
- <20190102143654.24362-2-bbrezillon@kernel.org>
- <CAMuHMdV-=_0htu9w1xK25RVWgnRaXVR-R-oXc7f-Y_cC9SR25A@mail.gmail.com>
- <20190122133159.2033844c@bbrezillon> <20190129120337.08754bac@bbrezillon>
- <CAMuHMdXVszyR_fkjmy5RpEDW3L-Ewr_tOK3o07OEm2uh4_aSRA@mail.gmail.com>
- <20190130095237.1a6a598f@bbrezillon>
- <CAMuHMdUgcgayOo=bhEZsuWMcRavjsweFPo1=KmcGa=PYxEoRNQ@mail.gmail.com>
- <20190130101036.0e63fec6@bbrezillon>
- <CAMuHMdWsYnLZP7=rO=xaDE4TbPr=XTphad6vaaRi=WrdOMSn8A@mail.gmail.com>
- <20190201095004.65763e0c@bbrezillon>
-In-Reply-To: <20190201095004.65763e0c@bbrezillon>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 1 Feb 2019 10:02:47 +0100
-Message-ID: <CAMuHMdW32jVG8p8+9XwDE=Uyu1eEdG261TSd2onZeaVXmPjehw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: Check add_mtd_device() ret code
-To: Boris Brezillon <bbrezillon@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190201_010302_340832_468FC540 
-X-CRM114-Status: GOOD (  14.72  )
+X-CRM114-CacheID: sfid-20190201_020339_607714_2A9D4709 
+X-CRM114-Status: GOOD (  14.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,48 +95,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+This adds device tree bindings for the Intel IXP4xx
+flash controller, a simple physmap which however need a
+specific big-endian or mixed-endian access pattern to the
+memory.
 
-On Fri, Feb 1, 2019 at 9:50 AM Boris Brezillon <bbrezillon@kernel.org> wrote:
-> On Wed, 30 Jan 2019 10:16:33 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > A tree based on last week's l2-mtd/master, i.e. lacking commit f7fd818cca0cea3d
-> > ("mtd: Remove empty lines at end of sysfs related functions").
-> >
-> > This is the one triggering:
-> >
-> >         if (WARN_ON((!mtd->erasesize || !mtd->_erase) &&
-> >                     !(mtd->flags & MTD_NO_ERASE)))
-> >                 return -EINVAL;
->
-> Do you think you'll have time to test [1]? I'd like to make that patch
-> part of my fixes PR if possible. If you can't, that's fine, just let me
-> know.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ .../bindings/mtd/intel,ixp4xx-flash.txt       | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,ixp4xx-flash.txt
 
-Sure, I will, after FOSDEM ;-)
-
-> [1]http://patchwork.ozlabs.org/patch/1033458/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Documentation/devicetree/bindings/mtd/intel,ixp4xx-flash.txt b/Documentation/devicetree/bindings/mtd/intel,ixp4xx-flash.txt
+new file mode 100644
+index 000000000000..4bdcb92ae381
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/intel,ixp4xx-flash.txt
+@@ -0,0 +1,22 @@
++Flash device on Intel IXP4xx SoC
++
++This flash is regular CFI compatible (Intel or AMD extended) flash chips with
++specific big-endian or mixed-endian memory access pattern.
++
++Required properties:
++- compatible : must be "intel,ixp4xx-flash", "cfi-flash";
++- reg : memory address for the flash chip
++- bank-width : width in bytes of flash interface, should be <2>
++
++For the rest of the properties, see mtd-physmap.txt.
++
++The device tree may optionally contain sub-nodes describing partitions of the
++address space. See partition.txt for more detail.
++
++Example:
++
++flash@50000000 {
++	compatible = "intel,ixp4xx-flash", "cfi-flash";
++	reg = <0x50000000 0x01000000>;
++	bank-width = <2>;
++};
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.20.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
