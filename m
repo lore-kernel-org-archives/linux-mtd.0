@@ -2,63 +2,123 @@ Return-Path: <SRS0=Axir=QJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4818C282D8
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 03:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B09FC282D7
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 04:07:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD06820855
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 03:01:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5DC7620870
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 04:07:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="h7BSXGf4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD06820855
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eB9Igo5C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="k5ec38+x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DC7620870
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=QYPalkR8xzsdxxWUGDwfN2XW5C0xhVzwLJDMIpOzCec=; b=h7BSXGf4BQv31aR1fzUXKscSv
-	hPUGZZqd56BK2uJFvKCYyefw+cclUlvaWLWH5xCwRxspeBftVIbxyn82iKx9CTt/nCmFnbeTDhPGv
-	VzBAE7nLPdbkSohzh6JtLDAJKR3S0fbIuzUPDMev92jGb7euU1uZzb/1/POZA///bFmxb7IPBaVP7
-	TmDbP8yQnvILfr7qW0MDfhcnXiD2X6/WY/lIwJntiqkgPFI15zMfyEPSdpx77oyM1pRj/SDD1POYF
-	OBBInW7hkxQoh2gVfw3ZjFddmGdw92+pujx7UxsiU/+AerMVMgZdR6Woi6Xmkoamz2kB0u/S+M/VH
-	RmUM75CCw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kLQDEqLKDRFWRRxmJjs5pxXlSx6KBCdx1UXZcAxHIJc=; b=eB9Igo5CL+Q2mg
+	aMSHpsYFM0aHPrMLv94MvexaiPqPIMuALQAPe/tCO+GjFh3XWnjwOj3z7G5H1IN5lT4AmQo/26cAb
+	YTZDfEXswRf5QVTGiNPqfyg9Q2zE3kjgRlZwIkTRsJXVcVX8FA6vyAeTL6rxMr/kaBnu0fBxIH08f
+	6JQNo9Pqdsw5tucUzF89EyTQMQSfIwNDfLkR0RH0JR9Wog3RJmcZ6RAw1NOKSIU1sAqtXbKGC+5qu
+	f7z4ad0eaEgTS4XL9f+vHcqGWfDoWXmXonPOmoosU8QjL4hLZpp7fTFBdFHwhzB0R78X2YzTh6UTB
+	a2ijXjrhre21C2+OlZRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gplYJ-0006Aj-JP; Sat, 02 Feb 2019 03:01:07 +0000
-Received: from mail-sz.amlogic.com ([211.162.65.117])
+	id 1gpmaa-0000a8-DC; Sat, 02 Feb 2019 04:07:32 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gplY7-00060b-GC; Sat, 02 Feb 2019 03:01:04 +0000
-Received: from [10.28.18.236] (10.28.18.236) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Sat, 2 Feb
- 2019 11:01:45 +0800
-Subject: Re: [PATCH 2/3] mtd: rawnand: meson: fix a loop in
- meson_nand_bch_mode()
-To: Dan Carpenter <dan.carpenter@oracle.com>
-References: <20190201083009.GD8459@kadam>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <6afa6288-cbad-9d43-002a-5f44348e9e1a@amlogic.com>
-Date: Sat, 2 Feb 2019 11:01:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
-MIME-Version: 1.0
-In-Reply-To: <20190201083009.GD8459@kadam>
+ id 1gpmaL-0000NK-7n; Sat, 02 Feb 2019 04:07:18 +0000
+X-IronPort-AV: E=Sophos;i="5.56,550,1539673200"; d="scan'208";a="23335987"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 01 Feb 2019 21:07:15 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.107) with Microsoft SMTP Server (TLS)
+ id 14.3.352.0; Fri, 1 Feb 2019 21:07:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1rxlCOv40W7jFAfqNY4lvVhJcaiajAM9zDTOjWkm6sU=;
+ b=k5ec38+xq9fHgAlYGfhCq1aQpoQYz72qgmhebRdpmSyCKzUxbED2bs1CsMtSXeHGnvjeNJrolMthPFWHSFtQMNMTFP1seVrEMxXfrWm3KdH1QwsNuzvdJ9GJUi4KnsaNHthbZQw9umeyy2z5eRGSxmlDtz7lo+nSuO/oqgG00Jk=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1300.namprd11.prod.outlook.com (10.173.26.9) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1580.17; Sat, 2 Feb 2019 04:07:13 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.017; Sat, 2 Feb 2019
+ 04:07:13 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+ <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+ <Ludovic.Desroches@microchip.com>, <bbrezillon@kernel.org>,
+ <Cyrille.Pitchen@microchip.com>, <bugalski.piotr@gmail.com>
+Subject: [PATCH v3 01/13] spi: atmel-quadspi: cache MR value to avoid a write
+ access
+Thread-Topic: [PATCH v3 01/13] spi: atmel-quadspi: cache MR value to avoid a
+ write access
+Thread-Index: AQHUuqzGfGfknscimE6zODgQQX/E9w==
+Date: Sat, 2 Feb 2019 04:07:13 +0000
+Message-ID: <20190202040653.1217-2-tudor.ambarus@microchip.com>
+References: <20190202040653.1217-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20190202040653.1217-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [10.28.18.236]
-X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
- (10.28.11.5)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR09CA0062.eurprd09.prod.outlook.com
+ (2603:10a6:802:28::30) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [188.25.201.137]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; BN6PR11MB1300;
+ 6:FjPg9bQQXdLxRWflJHRzEwnZVvhzor/SCAoI86QAqjTHIUiG9/vQHO4fXIhCTbA4f21fGCZAWUFZA6Z1q77rmPGf8NLoL5IKrcwhg8DsBYIGWyX/3J0Bs7BTXXy+xQDTelmF2EmEDXqf9tU+yzoo006O4+myo1+aZMk0S2Yl9xkTeBUbdwETcO6XmYeFLIWL+o5Cfm40BB+iToEL9+1bP4vhtdx4TDtSMbZG4f70jGTuklfNV44Qz2Ef6Y1dFghmkW6NBYciogwAOx/8EzM57xuDSQpYwySKgNY9wjXKAjkC7reRGOyMVfnop+TwMLnDxSY3rcZBsL8mwVOIxRa8jQbKYWDgmu7nlBEhZVhRGkIg5hu7nzhXH3pQj3nhp9n6IQ5yqa0awHks+l8GrKAGzCa9DeLkcCtoGXMJVSxX89qGoTTO4SWbaWWJkWzAvbSXTNzZySX1UILhqnRUGRseoQ==;
+ 5:ZAInrhYkqmGNH3MF6MTbcgREKWZ6I0SYPVqcN8USTR+H5wu2n4oRFIyoOeEHiDVS27LbaRU29eZlaJD534FkGBuLurmJbm4a+XNCLeu2jdkxlWts5sOg8qs1rCg+sGauWfRSwf71XrZvt1HSuO5AZu+wi856TEWj2DfOn469U9JSljeFc2jyB9kCFVgyTzNuYns7ZVTHiKdKlT8p2Xe1Aw==;
+ 7:dW6uFLFtCbzxb2btsK/FiedtQP06khDo4+LdrdxJJFNfWHGLmHPDGRYGHFZvIwZkW+WHLUndx+taw8tuV0PxO963m+klAvgija08KAQIDy5CXkkQ4s9N/miKIvlgdcgRBhE+ZShdF0kWeIUoYYAKuw==
+x-ms-office365-filtering-correlation-id: 01cc9d58-3a81-42a3-abe7-08d688c3e927
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
+ SRVR:BN6PR11MB1300; 
+x-ms-traffictypediagnostic: BN6PR11MB1300:
+x-microsoft-antispam-prvs: <BN6PR11MB13001EC8308535D2CBDF0D81F0930@BN6PR11MB1300.namprd11.prod.outlook.com>
+x-forefront-prvs: 09368DB063
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(39860400002)(376002)(366004)(346002)(136003)(396003)(199004)(189003)(14454004)(52116002)(50226002)(105586002)(6436002)(102836004)(72206003)(81156014)(81166006)(2906002)(26005)(7736002)(478600001)(3846002)(6116002)(53936002)(256004)(14444005)(106356001)(8936002)(68736007)(36756003)(97736004)(76176011)(107886003)(4326008)(39060400002)(2616005)(99286004)(476003)(446003)(86362001)(66066001)(71200400001)(11346002)(7416002)(71190400001)(6486002)(6512007)(316002)(110136005)(1076003)(305945005)(186003)(8676002)(2501003)(25786009)(486006)(54906003)(386003)(6506007);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1300;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: kVHmo5wh59+ZPJbuyFsGJiwrDhgzUre3FdP9PF44cXK5oejCu6wSGXHQ4YhOplSWmnhC3iJz2/wduUAMpwJT75is+uC1eVuU02EsiqvWAc9i5wa/Fb5pcw6+iE/qI9Av8LFPtv7IEWu2Nv4qFePfY/jpdehhsFuniN9Roe77pmY+3baD/r7cbBMqmC1Td8tXt11gCP7tmHLpPJbWA4bS9/zuNNUs6A0xTjqN8Jo1FLcVn1s/m99nU1kizQUrKhzs31WnOp4y9X49LIVrorRZeMm3ao60Evf2Z5o20LZYpDobvcaW+z1Gs/IAtgw+BwvsYYwr83GOu3B4uQ+Z0SQBg2YgDBLGd1VOp5ZB2CF98YS8fnfvHkDiTUvhtAcVXvI+la+ArSWFKSaOaI3z9JbMmWEVtWVrow8jqdRRwpxTfAI=
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01cc9d58-3a81-42a3-abe7-08d688c3e927
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2019 04:07:11.0518 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1300
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190201_190056_312634_16607FDD 
-X-CRM114-Status: GOOD (  14.87  )
+X-CRM114-CacheID: sfid-20190201_200717_360638_4DC4A7C3 
+X-CRM114-Status: UNSURE (   9.61  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -70,48 +130,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, kernel-janitors@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Kevin Hilman <khilman@baylibre.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-amlogic@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: devicetree@vger.kernel.org, Tudor.Ambarus@microchip.com,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-On 2019/2/1 16:30, Dan Carpenter wrote:
-> There is a sizeof() vs ARRAY_SIZE() bug here.  We want the number of
-> elements in the array, not the number of bytes.  It means we potentially
-> read beyond the end of the array.
-> 
-> Fixes: 2d570b34b41a ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->   drivers/mtd/nand/raw/meson_nand.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> index 94c90be7e1e0..0d93d0b9c1af 100644
-> --- a/drivers/mtd/nand/raw/meson_nand.c
-> +++ b/drivers/mtd/nand/raw/meson_nand.c
-> @@ -1143,7 +1143,7 @@ static int meson_nand_bch_mode(struct nand_chip *nand)
->   	if (nand->ecc.strength > 60 || nand->ecc.strength < 8)
->   		return -EINVAL;
->   
-> -	for (i = 0; i < sizeof(meson_ecc); i++) {
-> +	for (i = 0; i < ARRAY_SIZE(meson_ecc); i++) {
+Cache Serial Memory Mode (SMM) value to avoid write access when
+setting the controller in serial memory mode. SMM is set in
+exec_op() and not at probe time, to let room for future regular
+SPI support.
 
-ok.
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+v3: update smm value when different. rename mr/smm
+v2: cache MR value instead of moving the write access at probe
 
-Acked-by: Liang Yang <liang.yang@amlogic.com>
+ drivers/spi/atmel-quadspi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
->   		if (meson_ecc[i].strength == nand->ecc.strength) {
->   			meson_chip->bch_mode = meson_ecc[i].bch;
->   			return 0;
-> 
+diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+index ddc712410812..645284c6ec9a 100644
+--- a/drivers/spi/atmel-quadspi.c
++++ b/drivers/spi/atmel-quadspi.c
+@@ -155,6 +155,7 @@ struct atmel_qspi {
+ 	struct clk		*clk;
+ 	struct platform_device	*pdev;
+ 	u32			pending;
++	u32			smm;
+ 	struct completion	cmd_completion;
+ };
+ 
+@@ -238,7 +239,11 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 	icr = QSPI_ICR_INST(op->cmd.opcode);
+ 	ifr = QSPI_IFR_INSTEN;
+ 
+-	qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
++	/* Set the QSPI controller in Serial Memory Mode */
++	if (aq->smm != QSPI_MR_SMM) {
++		qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
++		aq->smm = QSPI_MR_SMM;
++	}
+ 
+ 	mode = find_mode(op);
+ 	if (mode < 0)
+-- 
+2.9.5
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
