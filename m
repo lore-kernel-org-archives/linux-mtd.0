@@ -3,68 +3,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B35EC282D7
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 13:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13A99C282DA
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 23:20:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51E1720869
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 13:31:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7A4E218A6
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 Feb 2019 23:20:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qaT9E+sV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="GhmfSMSF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51E1720869
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OCUqTnol";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="eNRjaBEA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7A4E218A6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9WvOCbEyLtfJKJrAnsTZ677m85AKuB9bTZov0p/WYEg=; b=qaT9E+sVNJgFI2
-	QkYFhrdn0c4fWGFrbZ21jDJVYlwn4db2q5HpaSBIwrwKccgY6Eg0xlKd2A4zgHJdTpedBYLM9WvUk
-	kFhyOuA9OKQ7MQTNu0SznpoAqIEFW9kGrRPTvxwpXHQd+Ae27Ivq/uvLEATgJ6NWcVjFGr1IxW1Y/
-	d6rXM5cjXBqdQT1Ga3vkdLRU81atUMDy/Se6OWeQqamZMg3adLPwTY/r7ZUJDR9HwU6rpyU4o5IQz
-	V+2zJ9MH1Z9pUUHdaScwQVxAu7P178Kib3ubh6p3GCBzwk2i5teJhvDxx12i8AzdoEczrFujSGBNw
-	AgLKHBbFUjLdpjUsaAmA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=/zu6MglwH177gPG6FhfM3XIJrgbK58+xSPYXK0I9+o4=; b=OCU
+	qTnol9YeofkkcznyTtKqXgUKu0d3MkqdojPaRmXv+7oweQQT1C2cZLGr9nGfDxS2y6QDvjkim9Jb2
+	9WNQN7neXjUDVNu8+Vk8jIoof9MZbMpg3fAvQ93ckaDM1+3S1Yo2/ksfhC9dOy4Fw5UiPFCO4pYNX
+	AKuKM+bJNI/LKlp3+Mch957KPTjkcuuo7p39cd+z8a3x+ZVnoa1O+tjesCyydR3tn91CuzovuQDm/
+	Trl/Sh2P5SPUCmk+e1VEi72K/XCi4b6LnGWJtEScB+qTRkRHU1QHVXT4nAiMGab43obsiX5tOJhjn
+	uETMxAqqc/AuoaapVdt6+Hb+ZtnGG5g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gpvOE-0000IC-AS; Sat, 02 Feb 2019 13:31:22 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gq4Zx-0006KY-UQ; Sat, 02 Feb 2019 23:20:05 +0000
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gpvNy-0008WO-QP; Sat, 02 Feb 2019 13:31:09 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7188320869;
- Sat,  2 Feb 2019 13:31:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549114265;
- bh=1gY2hOeLHhSzQ5G894my2ziGlBHN6TYeMJr5fQWQMg4=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=GhmfSMSFU83ARO6wJmCvItpVnqdbGiZmxSzmVotq2qAG87o2Z8m/J5f2yvi8+C3Kz
- tqr6dkqHJ9JQd1Njq5XTNPBnAbGyQp2B4TWC0TSiB3vaNNpLaSj6oaol4i31hMcNuZ
- Ycar7kFJCA6WwkirF5nNUcEc7Mnzf0Iuxd7CC83U=
-Date: Sat, 2 Feb 2019 14:30:54 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v3 13/13] spi: atmel-quadspi: add support for sam9x60
- qspi controller
-Message-ID: <20190202143054.4db7c465@bbrezillon>
-In-Reply-To: <57d4d4b2-e765-1255-0b89-a4fd61f6c1e0@microchip.com>
-References: <20190202040653.1217-1-tudor.ambarus@microchip.com>
- <20190202040653.1217-14-tudor.ambarus@microchip.com>
- <20190202082910.0e60a757@bbrezillon>
- <57d4d4b2-e765-1255-0b89-a4fd61f6c1e0@microchip.com>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1gq4Zp-0006Iv-Mf
+ for linux-mtd@lists.infradead.org; Sat, 02 Feb 2019 23:19:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1549149583; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:content-type:
+ content-transfer-encoding:in-reply-to:references;
+ bh=kHFNaBMJjrQPd5BXuqAmkwVDhqX1yrvQGdQDiBFNjms=;
+ b=eNRjaBEAuxOhVuL10DANDCjfN2FsQMbBmhEIKFEb8LNZuzT2ObgRuOHIFJhAcyFr0W1UP9
+ 6Oyqtqi9lwnVHpG6/CS62wGbS3xn3Em9Ho9TMCIt2DzLJ9WOXhTRihFhHrTGOnoLxMqsz9
+ q/URvldHSImufwy51ZFvuegJctHCXlE=
+From: Paul Cercueil <paul@crapouillou.net>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>
+Subject: [PATCH v2 0/9] Ingenic JZ4780 NAND patchset v2
+Date: Sat,  2 Feb 2019 20:19:17 -0300
+Message-Id: <20190202231926.2444-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190202_053106_986294_AA08633F 
-X-CRM114-Status: GOOD (  14.47  )
+X-CRM114-CacheID: sfid-20190202_151957_946626_F87E4C8C 
+X-CRM114-Status: UNSURE (   8.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,56 +72,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- alexandre.belloni@bootlin.com, broonie@kernel.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, Nicolas.Ferre@microchip.com,
- Ludovic.Desroches@microchip.com, Cyrille.Pitchen@microchip.com,
- linux-mtd@lists.infradead.org, bugalski.piotr@gmail.com,
- linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Mathieu Malaterre <malat@debian.org>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2 Feb 2019 08:58:25 +0000
-<Tudor.Ambarus@microchip.com> wrote:
+Hi,
 
-> >> @@ -117,6 +120,7 @@
-> >>  #define QSPI_IFR_CRM                    BIT(14)
-> >>  #define QSPI_IFR_NBDUM_MASK             GENMASK(20, 16)
-> >>  #define QSPI_IFR_NBDUM(n)               (((n) << 16) & QSPI_IFR_NBDUM_MASK)
-> >> +#define QSPI_IFR_APBTFRTYP_READ		BIT(24)  
-> > 
-> > Maybe add a comment saying it's only available on SAM9X60 or prefix it
-> > with SAM9X60.  
-> 
-> I'll add a comment. The macro name is more generic how it is now and can be used
-> by future versions of the IP. Hypothetically speaking, if we rename it to
-> QSPI_IFR_SAM9x60_TFSFR_READ and other sam9x will come out, then I'll have to
-> rename this macro again, to make it more generic.	
+As requested by Boris, I added a patch to move all the Ingenic NAND
+drivers to their own directory.
 
-Okay.
+In this V2 I added support for the JZ4740 SoC. The combo of the
+jz4780-nemc, jz4780-nand and jz4740-bch now obsolete the old and dusty
+jz4740-nand driver.
 
+To support the only upstream JZ4740-based board we have, the Ben
+Nanonote, I added an option to specify the OOB layout of that device
+from a device property string.
 
-> >> +static int atmel_qspi_set_cfg(struct atmel_qspi *aq,
-> >> +			      const struct spi_mem_op *op,
-> >> +			      struct atmel_qspi_cfg *cfg)
-> >> +{
-> >> +	void __iomem *base = aq->regs;
-> >> +	int ret;
-> >> +
-> >> +	/* Set the QSPI controller in Serial Memory Mode */
-> >> +	if (aq->smm != QSPI_MR_SMM) {
-> >> +		writel_relaxed(QSPI_MR_SMM, base + QSPI_MR);  
-> > 
-> > 					    aq->reqs +
-> > 
-> > and you can get rid of base.  
-> 
-> I will wait your reasons on this, see 3/13
+Finally, I dropped the last two patches that moved the platform NAND
+code to devicetree; I will upstream them as part of a different
+patchset.
 
-ad->regs is only dereferenced once in this function, so there's even
-less reasons to add a local var. 
+Cheers,
+-Paul
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
