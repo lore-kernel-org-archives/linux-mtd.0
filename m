@@ -2,67 +2,117 @@ Return-Path: <SRS0=velq=QK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F3CC169C4
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 08:35:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF019C169C4
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 09:52:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DEA22082F
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 08:35:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5860D2083B
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 09:52:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lGKDKIr4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDHpiiy2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DEA22082F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z3IOAfhl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="ggZEe2YB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5860D2083B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=09e2EfMMXGZM8LC33loUGF8Ecz5O7JpH43s6UjaLTxw=; b=lGKDKIr4c37nqc
-	cUBVO45MsYYz3/HK/rewO5sAf8X/jW1mswxNLTi6lqwKokMb1msElBpk0SuQroegNKyuQ+tYAaYOg
-	hsCbtMDCnNY7aE9gYldON6A7pPg7jW7OOKIp9SpX9RfMLPkuhoA20MQjLSCr7EjORPFCU1ln4/Gxu
-	Yo52MGVdyJ1GFWgcvYcS/hyuFG4o9CUkzwIYI2B7k5lwtnfCEtabV7RNBG8+VJssmz4rh21WyGkYK
-	n/FZtzEuB4EzJpPLaKafGi4r5Z3kuuWjNGF5ZHQA7v5RfA+X6NakTkRMfOQEYV+PCBK6AkeHbUdeC
-	hKeIlmGsOV0wVTdQUEbw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UUpMrfAB2gRG8izYwe3gSYxP7Vy9J3YruIpKBFq84ns=; b=Z3IOAfhlCg1r19
+	ORobPHyb3MqO6SY0oAGmahw9EWjZOYzVbgpApKgCxTCpgBuMB6QTYaAYFcbvj796NneqX9ANkgIVb
+	PMuwoIaSau9JJ3vuLzlWHE6CUv27LnVinSLOwS5/QwuUONQX/qlv9SavmII42M8ONc8+I5Am6X7aw
+	Xcc8SrX3m3758Fu682UaIHJ2fGlB9HUnZH0xe1lIEcO3g7KTHBuij9ciZLD2TwI3LpzT/nzspX0qA
+	NQ9KGl03f5pTcApzhp9w3+Yznllx9nLwi9YCj7/WAvVqP/mdGhKKR+QiWIr9QTawkhHpvTDqvX6Oe
+	Pe8eKI7lvzgyVuBmVizA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqDFL-000779-5h; Sun, 03 Feb 2019 08:35:23 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gqERc-00089z-Eu; Sun, 03 Feb 2019 09:52:08 +0000
+Received: from mail-oln040092255060.outbound.protection.outlook.com
+ ([40.92.255.60] helo=APC01-HK2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqDFI-00076n-FD
- for linux-mtd@lists.infradead.org; Sun, 03 Feb 2019 08:35:22 +0000
-Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 253652082F;
- Sun,  3 Feb 2019 08:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549182920;
- bh=vRWB5RhHRTXvGL85gHEuG5jXta4dJ+fDhuM9kZ/+Xys=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=FDHpiiy2+Wga/FXzcgrJt6t40Z0XLG60xXqGedfvg/8sWzC3LZQQTFgWdpm2HMtac
- dlLIQQXZRJv39RtqNZzA6D9Mi/YSMFmRv537UcMNqQB0y1KzN8n2X6qRKi/AGUwsuW
- rxqfTo3AG94cW6sgAbGvNhjZaqgB6uheOVNB1Ntk=
-Date: Sun, 3 Feb 2019 09:35:09 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Liu Jian <liujian56@huawei.com>, <ikegami@allied-telesis.co.jp>
-Subject: Re: [PATCH] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
-Message-ID: <20190203093509.269bf1e1@bbrezillon>
-In-Reply-To: <20190203092645.18d1495b@bbrezillon>
-References: <1548977439-318904-1-git-send-email-liujian56@huawei.com>
- <20190203092645.18d1495b@bbrezillon>
-X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1gqERY-00089U-HA; Sun, 03 Feb 2019 09:52:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OsOGHoZCBHKeLioDqBuJWhdrggR2B4Ru5mb/y4c3Dn0=;
+ b=ggZEe2YBK1qMqEWHyn2oCGmUwl5r96tZtPY1wsgam/Ya0pzDYAD6xfObVZgEnFVTDcDtKWkMpV6LtM2znnuWFcgfbNTY8c4K6P739KgP01EYY5fA7w4DDXMQILyWMBV1pwxFeLJNb0/Ket6Ux993I1tgn0Bn+qWVsZlHRoAedw4JNjowxgIBaiihCCYoCDJQdquyPJePkfJNFqAsH3ZI5qwgnNwvrP+95GZ7WWH+24ohSJy45MjWlonlMukQpV2k5cHqLziHaYVv+cgFdGgiM4tkXy/Akq8qZ8a23zjKEh77+FwEusRAITHS+XYR1YlrHVTTY0ZD19qZ4vWrUKTXlA==
+Received: from SG2APC01FT007.eop-APC01.prod.protection.outlook.com
+ (10.152.250.57) by SG2APC01HT012.eop-APC01.prod.protection.outlook.com
+ (10.152.250.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1580.10; Sun, 3 Feb
+ 2019 09:37:32 +0000
+Received: from HK0PR02MB3634.apcprd02.prod.outlook.com (10.152.250.60) by
+ SG2APC01FT007.mail.protection.outlook.com (10.152.250.84) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.1580.10 via Frontend Transport; Sun, 3 Feb 2019 09:37:32 +0000
+Received: from HK0PR02MB3634.apcprd02.prod.outlook.com
+ ([fe80::d582:b3ef:f46a:4735]) by HK0PR02MB3634.apcprd02.prod.outlook.com
+ ([fe80::d582:b3ef:f46a:4735%3]) with mapi id 15.20.1580.019; Sun, 3 Feb 2019
+ 09:37:32 +0000
+From: wen yang <yellowriver2010@hotmail.com>
+To: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
+Subject: [PATCH] mtd: nand: fix object reference leaks in
+ atmel_pmecc_get_by_node
+Thread-Topic: [PATCH] mtd: nand: fix object reference leaks in
+ atmel_pmecc_get_by_node
+Thread-Index: AQHUu6QW1hp5GxOqlU6hrzuVnOgjPw==
+Date: Sun, 3 Feb 2019 09:37:31 +0000
+Message-ID: <HK0PR02MB363421DE59A282A65E86E589B26C0@HK0PR02MB3634.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: HK0PR03CA0007.apcprd03.prod.outlook.com
+ (2603:1096:203:2e::19) To HK0PR02MB3634.apcprd02.prod.outlook.com
+ (2603:1096:203:97::14)
+x-incomingtopheadermarker: OriginalChecksum:AD436C5779D63736AE9FEA071DFAF7B63881ABD2A802EB24CA101EC4042B8151;
+ UpperCasedChecksum:FB9ECEE4A450C254388C9C8B3C68D44E322089F58F0725D3E6717EA0E65F03E6;
+ SizeAsReceived:9226; Count:63
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.7.4
+x-tmn: [NsFHbQ3kPTWZ7whdhR7X3rTgQAZzsYFd]
+x-microsoft-original-message-id: <1549186481-31235-1-git-send-email-yellowriver2010@hotmail.com>
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; SG2APC01HT012;
+ 6:XP+py1XSqFsc8KXEW6SK+7xyyqlm4xXVLc3p2JV4WuAzLimUUmDXwcT1i6KX7CcGKi6lrLFyGDZPEx5iiMFQTkTq9ABqkxPhQiemSvfdVvouDmEfRuiXpkp2Y+xA8U4J7RSGmQIGJgsI0kFiu6X+/6bg/waT7FD/Yc91VyZobY4MZQ1tuWq7x3u3VpU1Er05keS+vKCH6Qpcr71iS7Y1FwPzUi+midD7OCPmK8bYTjXGrqzl06VjzJ8SVqP+rw8cUwEiWZH8M7z/gqlNk2LgW11KfU2hWsFKL9/371b7D5PJHmDlDJPiAdRAUxJp9l06J7lppn88fSw6R2nfJtvrBqE+fuD4Ee6pAnx2kGnvCm5it7htkLhdEVDBoqrcOvLc5+iozTtgKhBnhiCmlqdojj2+aCG71cyCpNiZyA56LDpkq1q3mnYdayIfg5fJN5VBK1tkz2t2tBtlRHaW+CCSyA==;
+ 5:Jt1WksaaXdKSoatYnjV/ClKPAz4g7xzQ9gzawvvFcEf0IAPMuW+j+mWkDlPlCDRQzmmkc1j6/+pNUVSC/ZjlZTUceCcLG0B1RJhFeaJcoluHHab/OaxfrjM75qgZ4KaAZUVaQ7oESBYYFSomXzXsT1J5X6xglTho7UfwejTgcoRKUFq1qmAESVdOfOt8BXJM5Zu+AT4H/pE01on8kvCRvg==;
+ 7:YquqLJXB2Bc2ShJzRHEn8eqbRgS0RlLm7Wv8RjSVBI/KU+5aX3yKvpkoE02mWB84Xvf/Y1xGfX3ZCQUgEShHSPkEA3e/c08q0M/gmCZ8uf3guVHpcolBFYxo5KvHglsWDnFSrFgKC2j6kg+koEOqcg==
+x-incomingheadercount: 63
+x-eopattributedmessage: 0
+x-ms-exchange-slblob-mailprops: 7MJMDUNTCtxkjFtUxgCqo8gi/CJsqRdX2SaDzWJSJPKVggcx59wNIq7/u2Nvk4ERFykMFbvUleNIXh35u1iaXPW7pAs6l2Q0MXN/sxrctCxl1w/AMNr5oCk18bqjfAL1YIorlfccwkXrlwAjJ1Flp+TZkNA3cVZdPuWGQEZAlB15Q+MJl5ZiwfrvFoDxEOlX1jhsKTDo9UTcTzko6JGM24f1YAhVRvfo1XCaPeyZf5MJSHDGwv37pZB1HeNDgkQeUtGpAOtrl+Gc8UOgAqFS4ZRhmHtZhusUbgQBgAZ0gSHg7eS+KgZynP5mGblyF9NqJGU5e38EyeIolamYz5ElglDRDuv4hX/0wuRZ/IeM2u63tITiabwxSZqa+1wqmju4ZTYtfPadma7Mc4VZuxJy9a24bKWb6agq03LQqY1Ke/4egaeTt5tAOTO3HUj66sctPyrmKufNVuyTdPeyihN50rmpjcY08j2lZ3+bHhnKRjomPUxO1pEZdxqQJ/H3t38X7XWI5sWTSJAoV/zsJjjuhLcOMiwQ6xWdzf12wKTzZcI1X2lJ1EyMlJdPxt8YCDitvk5b0X3+6jfc2aOVW1SEiOlrp3uw8d9MXN7P2CSglGOqf/xeRyHTWkw6dSGQdLg/RehWAT0nd+UAwnJWdjSz/lNKvaf5CHQh+F7PV4YcgwpNRULivdqkXR1/QoeaVyO+BRz7hNvW/CqrTHSQ9H2jb/kSQpzzseFSqtICX09pD8dXUOK1cnQE4A==
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(20181119070)(201702061078)(5061506573)(5061507331)(1603103135)(2017031320274)(201702181274)(2017031323274)(2017031324274)(2017031322404)(1601125500)(1603101475)(1701031045);
+ SRVR:SG2APC01HT012; 
+x-ms-traffictypediagnostic: SG2APC01HT012:
+x-exchange-antispam-report-cfa-test: BCL:0; PCL:0; RULEID:(4566010)(82015058);
+ SRVR:SG2APC01HT012; BCL:0; PCL:0; RULEID:; SRVR:SG2APC01HT012; 
+x-microsoft-antispam-message-info: AmyBA4ztjPFqEWM23ffIKckyZLHXPfLgyCn/lsBLNkTx7/lMW+LWoVY+jRbFNFbY
 MIME-Version: 1.0
+X-OriginatorOrg: hotmail.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 9a4e3081-9524-43cf-bfc3-dcaef82d5da1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77f0245e-cb10-442f-886e-08d689bb3824
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 9a4e3081-9524-43cf-bfc3-dcaef82d5da1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2019 09:37:30.4405 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Internet
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2APC01HT012
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190203_003520_541103_CC62F7BB 
-X-CRM114-Status: GOOD (  19.58  )
+X-CRM114-CacheID: sfid-20190203_015204_637893_3BD68AD5 
+X-CRM114-Status: GOOD (  13.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,78 +124,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: keescook@chromium.org, Przemyslaw Sobon <psobon@amazon.com>,
- joakim.tjernlund@infinera.com, richard@nod.at, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+ wen yang <yellowriver2010@hotmail.com>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 3 Feb 2019 09:26:45 +0100
-Boris Brezillon <bbrezillon@kernel.org> wrote:
+of_find_device_by_node() takes a reference to the struct device
+when it finds a match via get_device, there is no need to call
+get_device() twice.
+We also should make sure to drop the reference to the device
+taken by of_find_device_by_node() on driver unbind.
 
-> +Przemyslaw
-> 
-> On Fri, 1 Feb 2019 07:30:39 +0800
-> Liu Jian <liujian56@huawei.com> wrote:
-> 
-> > In function do_write_buffer(), in the for loop, there is a case
-> > chip_ready() returns 1 while chip_good() returns 0, so it never
-> > break the loop.
-> > To fix this, chip_good() is enough and it should timeout if it stay
-> > bad for a while.  
-> 
-> Looks like Przemyslaw reported and fixed the same problem.
-> 
-> > 
-> > Fixes: dfeae1073583(mtd: cfi_cmdset_0002: Change write buffer to check
-> > correct value)  
-> 
-> Can you put the Fixes tag on a single, and the format is
-> 
-> Fixes: <hash> ("message")
-> 
-> > Signed-off-by: Yi Huaijie <yihuaijie@huawei.com>
-> > Signed-off-by: Liu Jian <liujian56@huawei.com>  
-> 
-> [1]http://patchwork.ozlabs.org/patch/1025566/
-> 
-> > ---
-> >  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > index 72428b6..818e94b 100644
-> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -1876,14 +1876,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
-> >  			continue;
-> >  		}
-> >  
-> > -		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
-> > -			break;
-> > -
-> >  		if (chip_good(map, adr, datum)) {
-> >  			xip_enable(map, chip, adr);
-> >  			goto op_done;
-> >  		}
-> >  
-> > +		if (time_after(jiffies, timeo))
-> > +			break;
-> > +
-> >  		/* Latency issues. Drop the lock, wait a while and retry */
-> >  		UDELAY(map, chip, adr, 1);
-> >  	}  
-> 
+Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/mtd/nand/raw/atmel/pmecc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-BTW, the patch itself looks good to me. Ikegami, can you confirm it
-does the right thing?
+diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
+index 555a74e..bee6551 100644
+--- a/drivers/mtd/nand/raw/atmel/pmecc.c
++++ b/drivers/mtd/nand/raw/atmel/pmecc.c
+@@ -878,14 +878,17 @@ static struct atmel_pmecc *atmel_pmecc_get_by_node(struct device *userdev,
+ 	struct atmel_pmecc *pmecc, **ptr;
+ 
+ 	pdev = of_find_device_by_node(np);
+-	if (!pdev || !platform_get_drvdata(pdev))
++	if (!pdev)
+ 		return ERR_PTR(-EPROBE_DEFER);
++	if (!platform_get_drvdata(pdev)) {
++		put_device(&pdev->dev);
++		return ERR_PTR(-EPROBE_DEFER);
++	}
+ 
+ 	ptr = devres_alloc(devm_atmel_pmecc_put, sizeof(*ptr), GFP_KERNEL);
+ 	if (!ptr)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	get_device(&pdev->dev);
+ 	pmecc = platform_get_drvdata(pdev);
+ 
+ 	*ptr = pmecc;
+-- 
+2.7.4
 
-Thanks,
-
-Boris
 
 ______________________________________________________
 Linux MTD discussion mailing list
