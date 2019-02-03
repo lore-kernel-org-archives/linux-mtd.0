@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89D7AC169C4
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 07:22:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D67BC169C4
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 07:30:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B0C02084A
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 07:22:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B97F2082E
+	for <linux-mtd@archiver.kernel.org>; Sun,  3 Feb 2019 07:30:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bepwwQ6F";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IBMwKNRN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B0C02084A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OsYJNTfB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vt6nDFvj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B97F2082E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,44 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7DtBaoYAVs9UanYocDUZoJ7YN8CutTxzi0obb/VYaog=; b=bepwwQ6F+75Vhl
-	dMgEtWWNJFtelbx3Rs7KKoAlJ2Ewk9kLkq/cUvGeLONmtMiRwX+8HXzw00qnmaqX9FrS3KdAgUc18
-	VzLuu4z+p8wouWUydR3pbN07HOwDNk51joTi3L25/yr70p+9yqVv2VgRnQU0sULqfSYX28CD8gXtD
-	r18WSy83dkZlumPTj7Y2I/eUbpv8lqF0j8BMzaGfK/pXefQhE7L0SbK21oCGkN4bDMhRrApuNAUR0
-	xbSK4qzKmd3rtCvk9AxBTfLSCH6XHs07wim0Qobck+lYMZ55hBmRs9JxI+t5gOan7iPggw+cLcBe3
-	VyPTHOThENRvLppxtvwQ==;
+	List-Owner; bh=mOPKCnQSEslqlgh6rWnepvxVpKRvXQGamBmoY5NLMyE=; b=OsYJNTfBQ45hXT
+	0zTdA8nnOKWjVdn5zyi0xzbZo4zdHw7uxHHwCAUe2rPyL8Mfpf6MKDr33AKpZlDcQzwA8mJ29c6Jw
+	gctP9wuv5YVFMKRcPogzaXm4koY3UlRZbBJpNkKY12GuvhKnirnPy8Psl9V6gk/K/yRutPuf7181Q
+	UALQ1fm4p+xNCTTYz/glEX9YD4acT1AXAtzFmBKroReMjSbql+26PO2K0wnCfL6AJ6yq9Dq3EA1Qu
+	Yomyze+1z89cOtaqeQUHpJ0uvFQTdawW/sD4eLvhyhmhuZUW6gMp4JQLDGtBKTYxEoCstQxf17e/x
+	gx6urUXa57IBHlkV/kzA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqC6Y-0000Fl-9Y; Sun, 03 Feb 2019 07:22:14 +0000
+	id 1gqCEP-0003BZ-Fy; Sun, 03 Feb 2019 07:30:21 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqC6V-0000FH-70
- for linux-mtd@lists.infradead.org; Sun, 03 Feb 2019 07:22:12 +0000
+ id 1gqCEL-0003BF-Tt
+ for linux-mtd@lists.infradead.org; Sun, 03 Feb 2019 07:30:19 +0000
 Received: from bbrezillon (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 40A5C2084A;
- Sun,  3 Feb 2019 07:22:04 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 145EA2082E;
+ Sun,  3 Feb 2019 07:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549178530;
- bh=gHloOzVHPPKiRq0SgesrRgOpATymhPMRTzMqZ3qMGYA=;
+ s=default; t=1549179017;
+ bh=ks2ipiHZO/uli19qRFyFeK4eQsVOw+M0yb9vwKcyKyU=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=IBMwKNRNgvzUdDCZxNJG+M1b4FLMCOb252xyfrxE9mrPlC545O+3S80T/5+8NYF0F
- /SVBDovOG+q/JNJH0iL8qBzJPSFKE5iyQ15mxL4XwADSU4nkUr+1RIpvtFkZ4v2t8b
- yEAm0ZUf+9rVz+J1C0GD1ziWbTmAldBV1Ob2Z75M=
-Date: Sun, 3 Feb 2019 08:21:58 +0100
+ b=vt6nDFvjM/1AJfkvoon46cXaIwEVMxEnXrDG4pAFEWPjSR1B+cTUWDpYRVjo7yMQ1
+ GdpWKGgJ99PR4RCuyQ4X5Zi5zLQA5nn9wwYbFLT3g0z0hNLhmuf2a3D5o7g119EGtA
+ +9x3wLZYs7w0t8RR2rR85VEG4X6tsqSkNiFrJIT4=
+Date: Sun, 3 Feb 2019 08:30:04 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 5/9] mtd: rawnand: jz4780: Add ooblayout for the JZ4725B
-Message-ID: <20190203082158.205b6e38@bbrezillon>
-In-Reply-To: <20190202231926.2444-6-paul@crapouillou.net>
+Subject: Re: [PATCH v2 6/9] mtd: rawnand: jz4780: Add ooblayout for the Qi
+ Ben Nanonote
+Message-ID: <20190203083004.390b96be@bbrezillon>
+In-Reply-To: <20190202231926.2444-7-paul@crapouillou.net>
 References: <20190202231926.2444-1-paul@crapouillou.net>
- <20190202231926.2444-6-paul@crapouillou.net>
+ <20190202231926.2444-7-paul@crapouillou.net>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190202_232211_287532_9AD3FFE2 
-X-CRM114-Status: GOOD (  24.33  )
+X-CRM114-CacheID: sfid-20190202_233017_999110_B62DD18C 
+X-CRM114-Status: GOOD (  20.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,17 +88,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat,  2 Feb 2019 20:19:22 -0300
+On Sat,  2 Feb 2019 20:19:23 -0300
 Paul Cercueil <paul@crapouillou.net> wrote:
 
-> The boot ROM of the JZ4725B SoC expects a specific OOB layout on the
-> NAND.
-> 
-> Add an optional "ingenic,oob-layout" device property. When set to
-> "ingenic,jz4725b", this specific OOB layout is used.
+> The Ben Nanonote from Qi Hardware expects a specific OOB layout on its
+> NAND. If the "ingenic,oob-layout" device property is set to "qi,lb60",
+> this specific OOB layout is used.
 
-It's a SoC-specific layout, please add a compatible for ingenic,jz4725b
-and use it to determine the layout to use.
+I'm really not a big fan of this ingenic,oob-layout property, it
+encourages people to use new custom layouts which is just a pain to
+maintain. I understand that we don't have the choice for this board as
+it's already upstream, but maybe we can avoid adding this prop and
+check the root compat (which should contain the board name). 
 
 > 
 > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
@@ -105,39 +107,20 @@ and use it to determine the layout to use.
 > 
 > Changes:
 > 
-> v2: Instead of forcing the OOB layout, leave it to the board code or
->     devicetree to decide if the jz4725b-specific layout should be used
->     or not.
+> v2: New patch
 > 
->  drivers/mtd/nand/raw/ingenic/jz4780_nand.c | 51 +++++++++++++++++++++-
->  1 file changed, 50 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/raw/ingenic/jz4780_nand.c | 37 ++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
 > 
 > diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_nand.c b/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
-> index c0855fef7735..baebb9a5c7c8 100644
+> index baebb9a5c7c8..4b304eceae8d 100644
 > --- a/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
 > +++ b/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
-> @@ -44,6 +44,7 @@ struct jz4780_nand_cs {
->  struct jz4780_nand_controller {
->  	struct device *dev;
->  	const struct jz_soc_info *soc_info;
-> +	const struct mtd_ooblayout_ops *oob_layout;
->  	struct jz4780_bch *bch;
->  	struct nand_controller controller;
->  	unsigned int num_banks;
-> @@ -213,7 +214,7 @@ static int jz4780_nand_attach_chip(struct nand_chip *chip)
->  		return -EINVAL;
->  	}
->  
-> -	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-> +	mtd_set_ooblayout(mtd, nfc->oob_layout);
->  
->  	return 0;
->  }
-> @@ -345,11 +346,47 @@ static int jz4780_nand_init_chips(struct jz4780_nand_controller *nfc,
+> @@ -346,6 +346,41 @@ static int jz4780_nand_init_chips(struct jz4780_nand_controller *nfc,
 >  	return 0;
 >  }
 >  
-> +static int jz4725b_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +static int qi_lb60_ooblayout_ecc(struct mtd_info *mtd, int section,
 > +				 struct mtd_oob_region *oobregion)
 > +{
 > +	struct nand_chip *chip = mtd_to_nand(mtd);
@@ -147,12 +130,12 @@ and use it to determine the layout to use.
 > +		return -ERANGE;
 > +
 > +	oobregion->length = ecc->total;
-> +	oobregion->offset = 3;
+> +	oobregion->offset = 12;
 > +
 > +	return 0;
 > +}
 > +
-> +static int jz4725b_ooblayout_free(struct mtd_info *mtd, int section,
+> +static int qi_lb60_ooblayout_free(struct mtd_info *mtd, int section,
 > +				  struct mtd_oob_region *oobregion)
 > +{
 > +	struct nand_chip *chip = mtd_to_nand(mtd);
@@ -161,45 +144,29 @@ and use it to determine the layout to use.
 > +	if (section)
 > +		return -ERANGE;
 > +
-> +	oobregion->length = mtd->oobsize - ecc->total - 3;
-> +	oobregion->offset = 3 + ecc->total;
+> +	oobregion->length = mtd->oobsize - ecc->total - 12;
+> +	oobregion->offset = 12 + ecc->total;
 > +
 > +	return 0;
 > +}
 > +
-> +const struct mtd_ooblayout_ops jz4725b_ooblayout_ops = {
-> +	.ecc = jz4725b_ooblayout_ecc,
-> +	.free = jz4725b_ooblayout_free,
+> +const struct mtd_ooblayout_ops qi_lb60_ooblayout_ops = {
+> +	.ecc = qi_lb60_ooblayout_ecc,
+> +	.free = qi_lb60_ooblayout_free,
 > +};
 > +
->  static int jz4780_nand_probe(struct platform_device *pdev)
+>  static int jz4725b_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  				 struct mtd_oob_region *oobregion)
 >  {
->  	struct device *dev = &pdev->dev;
->  	unsigned int num_banks;
->  	struct jz4780_nand_controller *nfc;
-> +	const char *layout;
->  	int ret;
->  
->  	num_banks = jz4780_nemc_num_banks(dev);
-> @@ -366,6 +403,18 @@ static int jz4780_nand_probe(struct platform_device *pdev)
->  	if (!nfc->soc_info)
->  		return -EINVAL;
->  
-> +	nfc->oob_layout = &nand_ooblayout_lp_ops;
-> +
-> +	ret = device_property_read_string(dev, "ingenic,oob-layout", &layout);
-> +	if (!ret) {
-> +		if (!strcmp(layout, "ingenic,jz4725b")) {
-> +			nfc->oob_layout  = &jz4725b_ooblayout_ops;
-> +		} else {
-> +			dev_err(dev, "Unrecognized OOB layout %s\n", layout);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
->  	/*
->  	 * Check for BCH HW before we call nand_scan_ident, to prevent us from
->  	 * having to call it again if the BCH driver returns -EPROBE_DEFER.
+> @@ -409,6 +444,8 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+>  	if (!ret) {
+>  		if (!strcmp(layout, "ingenic,jz4725b")) {
+>  			nfc->oob_layout  = &jz4725b_ooblayout_ops;
+> +		} else if (!strcmp(layout, "qi,lb60")) {
+> +			nfc->oob_layout = &qi_lb60_ooblayout_ops;
+>  		} else {
+>  			dev_err(dev, "Unrecognized OOB layout %s\n", layout);
+>  			return -EINVAL;
 
 
 ______________________________________________________
