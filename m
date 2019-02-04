@@ -2,21 +2,21 @@ Return-Path: <SRS0=dO6W=QL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07BA0C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:02:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2617CC282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:17:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79D752082F
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:02:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E89002082E
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:17:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QncSm3GH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKh2xoBo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79D752082F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Or/SMVP6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJv0ESeq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E89002082E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZmLL0ItLF7hlx3n0Vl7bOyfOsg3afSTMWOxTGpa7tbg=; b=QncSm3GHLbsX2w
-	QOOn+I1ks/7U5lgOYpF92nGDqikjJQpe5jGJDXCU2jyr41n2JMMPIpovGI7pMkkuEIV6wsKUsUoNH
-	wl/bf9ho1DCcHBz1wgXN3oEORZwqwTGI3I58gOG+iuzdLqe6QmTAa1sNe+PtlG48ZSlDM6u9Fi63b
-	Oz4aUCt42rjuayXt9FcaEna2b8Ve2y+YR+kj0MCSSpSyvXsvD0Kg3n0ma7mTOzCAv4dXDz7eQmhxv
-	YWgh1c5+TV+5fh6P2Q/Ud4LgNumIwW/4TifTu8YxhmCamYNVy+jnjLH22QKTDnLYBvLG7IoE6yY3R
-	pXqWo4iSiWEYXeHEVXVQ==;
+	List-Owner; bh=pl2TqEJU5/rXKLtKWNUin+cJVrdaIPgNB43QYTN7NC0=; b=Or/SMVP6U4+YQG
+	W398zZrZmFkIsFupg2LjJMTj8XafCaUiieuvXmGcnjPQhvzr+Siy294tILhGq4iU8Diq/ul5vor6V
+	YIowb8UF8AevLgyQ9DJw/v5d4IhaToRFCxV/O3yKl/Hf4O2vDGIVqWq+I4jcZ/w5zH2ewFxBTCM7I
+	HQhcfseNbczaZ/4EbWdc4vFAkIy7ZVjw6RH9qWh2p6PEgs7bqWdUKwmn0urG0ZXOks1n7xPTSC1AT
+	nBFUm2FHYbZ1ZcfT5uBINsbLwp+Nmc5lJueC0dq/ay2T/N2YmHv+/n41B3tBfoHShPGExVKRYHHyI
+	tjgILZEJ2yLMf3bhdd1w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqeox-0000iB-En; Mon, 04 Feb 2019 14:01:59 +0000
+	id 1gqf3X-0006Xr-MJ; Mon, 04 Feb 2019 14:17:03 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqeog-0000Za-Ut; Mon, 04 Feb 2019 14:01:49 +0000
+ id 1gqf3L-0006MN-Ap; Mon, 04 Feb 2019 14:16:52 +0000
 Received: from bbrezillon (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4BACA2082F;
- Mon,  4 Feb 2019 14:01:40 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2B3F62082E;
+ Mon,  4 Feb 2019 14:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549288902;
- bh=3KNwqHnHGZNCWkch9CrjOjSh+cKQ+OW5kIx/iou8hsk=;
+ s=default; t=1549289810;
+ bh=59B7Fg/2o4Q9e4KH7S+tznSA4OHF6+depqmX3mzbg+A=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=EKh2xoBo4ZacXyPGZI9QCUvf4sv2duUHecD7SFeuuOMxbLdHBl0YrcDDjO+muuxGP
- Lel8MDvrwy5GqsX8Lyt+DrHPxiCkPhJoP9RwCAZqKU8fAkFHm5GVMd6B1KDiQpGVAy
- EU4EqBuw+nXxWOGdkcEyJInQGzIyG5N0Hn2COmus=
-Date: Mon, 4 Feb 2019 15:01:36 +0100
+ b=JJv0ESeqQZgbulbEEIH2pFrDz2c0tp5Vy69CrMIymAhDgJ6KL7yzjw73LlOjEUnrK
+ cVQdYZxqXQZTvQZym/CZh+7JVXi9u1tuclD8H4hRE+PlrZPrBDkTqikpyEl9BfABI6
+ 3rwR6+WuACsbarZP3DmXdBVSvBW5OHhf9YkKcWjw=
+Date: Mon, 4 Feb 2019 15:16:43 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v4 08/13] spi: atmel-quadspi: rework transfer macros
-Message-ID: <20190204150136.519060ff@bbrezillon>
-In-Reply-To: <20190204100910.26701-9-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v4 13/13] spi: atmel-quadspi: add support for sam9x60
+ qspi controller
+Message-ID: <20190204151643.0354180d@bbrezillon>
+In-Reply-To: <20190204100910.26701-14-tudor.ambarus@microchip.com>
 References: <20190204100910.26701-1-tudor.ambarus@microchip.com>
- <20190204100910.26701-9-tudor.ambarus@microchip.com>
+ <20190204100910.26701-14-tudor.ambarus@microchip.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_060143_732237_512F4EE6 
-X-CRM114-Status: GOOD (  13.60  )
+X-CRM114-CacheID: sfid-20190204_061651_384523_921D177F 
+X-CRM114-Status: UNSURE (   8.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,66 +86,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 4 Feb 2019 10:09:53 +0000
+On Mon, 4 Feb 2019 10:10:21 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
-> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> Split the TFRTYP_TRSFR_ bitfields in 2: one bit encoding the
-> mem/reg transfer type and one bit encoding the direction of
-> the transfer (read/write).
-> 
-> Remove NOP when setting read transfer type. Remove useless
-> setting of write transfer type when
-> op->data.dir == SPI_MEM_DATA_IN && !op->data.nbytes.
-> 
-> QSPI_IFR_TFRTYP_TRSFR_WRITE is specific just to sama5d2 qspi,
-> rename it to QSPI_IFR_SAMA5D2_WRITE_TRSFR.
-> 
-> Suggested-by: Boris Brezillon <bbrezillon@kernel.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> +
+> +static void atmel_qspi_sam9x60_write_regs(const struct atmel_qspi *aq,
+> +					  const struct spi_mem_op *op,
+> +					  const struct atmel_qspi_cfg *cfg)
+> +{
+> +	/* Clear pending interrupts */
+> +	(void)readl_relaxed(aq->regs + QSPI_SR);
+> +
+> +	/* Set QSPI Instruction Frame registers */
+> +	writel_relaxed(cfg->iar, aq->regs + QSPI_IAR);
+> +	if (op->data.dir == SPI_MEM_DATA_IN)
+> +		writel_relaxed(cfg->icr, aq->regs + QSPI_RICR);
+> +	else
+> +		writel_relaxed(cfg->icr, aq->regs + QSPI_ICR);
 
-Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
+Can you use WICR here (even if ICR == WICR)?
 
-> ---
-> v4: introduce QSPI_IFR_TFRTYP_MEM, reword commit
-> v3: new patch
-> 
->  drivers/spi/atmel-quadspi.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-> index ce4f8a648f45..19a3980775ad 100644
-> --- a/drivers/spi/atmel-quadspi.c
-> +++ b/drivers/spi/atmel-quadspi.c
-> @@ -113,11 +113,8 @@
->  #define QSPI_IFR_OPTL_4BIT              (2 << 8)
->  #define QSPI_IFR_OPTL_8BIT              (3 << 8)
->  #define QSPI_IFR_ADDRL                  BIT(10)
-> -#define QSPI_IFR_TFRTYP_MASK            GENMASK(13, 12)
-> -#define QSPI_IFR_TFRTYP_TRSFR_READ      (0 << 12)
-> -#define QSPI_IFR_TFRTYP_TRSFR_READ_MEM  (1 << 12)
-> -#define QSPI_IFR_TFRTYP_TRSFR_WRITE     (2 << 12)
-> -#define QSPI_IFR_TFRTYP_TRSFR_WRITE_MEM (3 << 13)
-> +#define QSPI_IFR_TFRTYP_MEM		BIT(12)
-> +#define QSPI_IFR_SAMA5D2_WRITE_TRSFR	BIT(13)
->  #define QSPI_IFR_CRM                    BIT(14)
->  #define QSPI_IFR_NBDUM_MASK             GENMASK(20, 16)
->  #define QSPI_IFR_NBDUM(n)               (((n) << 16) & QSPI_IFR_NBDUM_MASK)
-> @@ -275,10 +272,8 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
->  	if (op->data.nbytes)
->  		ifr |= QSPI_IFR_DATAEN;
->  
-> -	if (op->data.dir == SPI_MEM_DATA_IN && op->data.nbytes)
-> -		ifr |= QSPI_IFR_TFRTYP_TRSFR_READ;
-> -	else
-> -		ifr |= QSPI_IFR_TFRTYP_TRSFR_WRITE;
-> +	if (op->data.dir == SPI_MEM_DATA_OUT)
-> +		ifr |= QSPI_IFR_SAMA5D2_WRITE_TRSFR;
->  
->  	/* Clear pending interrupts */
->  	(void)readl_relaxed(aq->regs + QSPI_SR);
+> +	writel_relaxed(cfg->ifr, aq->regs + QSPI_IFR);
+> +}
 
+Hm, so the only difference we have is the RICR vs ICR reg and the
+APBTFRTYP_READ vs SAMA5D2_WRITE_TRSFR bit. Not sure it deserves
+creating 2 hooks for that. Can we have something like ->has_ricr in
+the caps and then have an if/else block directly in
+atmel_qspi_set_cfg()?
 
 ______________________________________________________
 Linux MTD discussion mailing list
