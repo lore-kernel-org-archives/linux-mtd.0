@@ -4,20 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48AC0C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 19:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2325C282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 19:07:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 065AF2082E
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 19:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACD112082E
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 19:07:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bXowMxWA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="F5D0EsZt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 065AF2082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lkbXiWzm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="iUJbw0mf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACD112082E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,27 +26,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=yYna7a3ZXO572gqwuIaWv9dNQI0lnmBmKiLQ09NkQfg=; b=bXowMxWAJJBT0qQVIiNfLRbWps
-	8IVbNXYWVAejXWtkRH9PFB5f/wJuBx6SHHiBdFeir1q/AhMr4fWvrGjScDPYYixAlAzcpmaUp+fBI
-	3zO2FA8AlMzdxekzylgVvx7NN40HeCyF5CjgLoZtd7La7SzD1NMGRCFNTWgavazqe0txJ5v1iQ/6D
-	nab9ReJ+r8R07JkfEMchSeRo1bz2fViItL7vO7gp8eH1R+GxYABSPT69X4DiNhQNZcLeaOG8U+uUU
-	Tqctsn+sIzGmou6Z+Ls8ba0EhvUxoGlBvevGKARRY9B3ZEt2Z5VhOPG5VMVcV0HLY4UHKgHBPaCeN
-	EWOmUfeQ==;
+	bh=6Z9kxm25yEHO2eC+fsvwQNWhIz0byBwg+Aa8ZumTwbw=; b=lkbXiWzm6K1A0RzUm8VKejL/t4
+	Sfy5JerpkLVCTIcaLQ8i+UvQ84X/gd88en9vTrAptRupjU09UcaNybGjAucy011TMRTfUo3OsQR7Q
+	6Aq68Jc/dscCpmH84wqMSB+Tb2/2CoMlIy/8JYuuJxrXbBx5TzM/XjZ70hFPxTcC4fU8J5hrgVqoA
+	nnhRAxJ/1rcX7JKqkFkbrAuoqGt+TOUPSrs3NEKHzzyj19FPJwDh97PlXDm8FbY6zTmsu055qw9Sl
+	w0ZdITc2QnD500zZ03X1pazoWcPWqQ7Cy3j3M86xefrPmbLmRA2kjmndg0OD8U0FH99kTtZRz1lkh
+	JN+rCiqQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqjZx-0007eI-Fn; Mon, 04 Feb 2019 19:06:49 +0000
+	id 1gqjaC-0007vI-4G; Mon, 04 Feb 2019 19:07:04 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqjY9-0004YI-7D
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 19:05:02 +0000
+ id 1gqjYF-0004g1-Lb
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 19:05:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1549307095; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1549307101; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:content-type:
  content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=YOVweLdKPP1UGsk6bTtQtI/ZsWm9bhxN6paKADUKynQ=;
- b=F5D0EsZtWPsEdZnkLl54TsFc8PsS6BMec113q5hKfMZqYD2krqybbiaq4PHBVctAgy1KPQ
- GmlONQYziRLlhVo7mp/acvgIdBXjpz7XmJd5/aPFzaXpSZBJEZInGmepKyVpfCskhDOY9y
- 9a9rhinZ0f5D3d0DW+T9NWXj2b4s7Cs=
+ bh=1JzVqBXMD62bivjuvB6sca49QxI6J7Xn8zPJvy3LrMQ=;
+ b=iUJbw0mfrrBhJg2Yo8wqpEjTkMlpXYEkimJhDOC82bB2s4FpSgLFq9DLhULGu3g4114auU
+ HBhPsH5pVHpcJPxxVpv3rLfn0CSUvK1G5IhoVYztdW36BzT+Q7XQW3skQg4FwayUHitthS
+ RRDAZAGzbbCU6K5+GywWDGQInXOofQI=
 From: Paul Cercueil <paul@crapouillou.net>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -56,14 +55,15 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>
-Subject: [PATCH v3 4/9] mtd: rawnand: ingenic: Use SPDX license notifiers
-Date: Mon,  4 Feb 2019 16:04:21 -0300
-Message-Id: <20190204190426.11618-4-paul@crapouillou.net>
+Subject: [PATCH v3 5/9] mtd: rawnand: ingenic: Rename jz4780_nand driver to
+ ingenic_nand
+Date: Mon,  4 Feb 2019 16:04:22 -0300
+Message-Id: <20190204190426.11618-5-paul@crapouillou.net>
 In-Reply-To: <20190204190426.11618-1-paul@crapouillou.net>
 References: <20190204190426.11618-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_110458_105272_596DD3F5 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20190204_110504_643748_7E592D6F 
+X-CRM114-Status: GOOD (  18.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,77 +84,380 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use SPDX license notifiers instead of GPLv2 license text in the headers.
+The jz4780_nand driver will be modified to handle all the Ingenic
+JZ47xx SoCs that the upstream Linux kernel supports (JZ4740, JZ4725B,
+JZ4770, JZ4780), so it makes sense to rename it.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
 ---
 
 Changes:
 
-v2: No changes
+v3: New patch
 
-v3: No changes
+ drivers/mtd/nand/raw/ingenic/Makefile              |   2 +-
+ .../raw/ingenic/{jz4780_nand.c => ingenic_nand.c}  | 146 ++++++++++-----------
+ 2 files changed, 74 insertions(+), 74 deletions(-)
+ rename drivers/mtd/nand/raw/ingenic/{jz4780_nand.c => ingenic_nand.c} (63%)
 
- drivers/mtd/nand/raw/ingenic/jz4780_bch.c  | 5 +----
- drivers/mtd/nand/raw/ingenic/jz4780_bch.h  | 5 +----
- drivers/mtd/nand/raw/ingenic/jz4780_nand.c | 5 +----
- 3 files changed, 3 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-index 7201827809e9..7e4e5e627603 100644
---- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-+++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-@@ -1,12 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * JZ4780 BCH controller
-  *
-  * Copyright (c) 2015 Imagination Technologies
-  * Author: Alex Smith <alex.smith@imgtec.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License version 2 as published
-- * by the Free Software Foundation.
-  */
- 
- #include <linux/bitops.h>
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.h b/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-index bf4718088a3a..451e0c770160 100644
---- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-+++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-@@ -1,12 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * JZ4780 BCH controller
-  *
-  * Copyright (c) 2015 Imagination Technologies
-  * Author: Alex Smith <alex.smith@imgtec.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License version 2 as published
-- * by the Free Software Foundation.
-  */
- 
- #ifndef __DRIVERS_MTD_NAND_JZ4780_BCH_H__
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_nand.c b/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
-index 22e58975f0d5..7f55358b860f 100644
+diff --git a/drivers/mtd/nand/raw/ingenic/Makefile b/drivers/mtd/nand/raw/ingenic/Makefile
+index 44c2ca053d24..af2d5de21f60 100644
+--- a/drivers/mtd/nand/raw/ingenic/Makefile
++++ b/drivers/mtd/nand/raw/ingenic/Makefile
+@@ -1,2 +1,2 @@
+ obj-$(CONFIG_MTD_NAND_JZ4740) += jz4740_nand.o
+-obj-$(CONFIG_MTD_NAND_JZ4780) += jz4780_nand.o jz4780_bch.o
++obj-$(CONFIG_MTD_NAND_JZ4780) += ingenic_nand.o jz4780_bch.o
+diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_nand.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
+similarity index 63%
+rename from drivers/mtd/nand/raw/ingenic/jz4780_nand.c
+rename to drivers/mtd/nand/raw/ingenic/ingenic_nand.c
+index 7f55358b860f..8c73f7c5be9a 100644
 --- a/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
-+++ b/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
-@@ -1,12 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
  /*
-  * JZ4780 NAND driver
+- * JZ4780 NAND driver
++ * Ingenic JZ47xx NAND driver
   *
   * Copyright (c) 2015 Imagination Technologies
   * Author: Alex Smith <alex.smith@imgtec.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License version 2 as published
-- * by the Free Software Foundation.
-  */
+@@ -24,7 +24,7 @@
  
- #include <linux/delay.h>
+ #include "jz4780_bch.h"
+ 
+-#define DRV_NAME	"jz4780-nand"
++#define DRV_NAME	"ingenic-nand"
+ 
+ #define OFFSET_DATA	0x00000000
+ #define OFFSET_CMD	0x00400000
+@@ -33,22 +33,22 @@
+ /* Command delay when there is no R/B pin. */
+ #define RB_DELAY_US	100
+ 
+-struct jz4780_nand_cs {
++struct ingenic_nand_cs {
+ 	unsigned int bank;
+ 	void __iomem *base;
+ };
+ 
+-struct jz4780_nand_controller {
++struct ingenic_nfc {
+ 	struct device *dev;
+ 	struct jz4780_bch *bch;
+ 	struct nand_controller controller;
+ 	unsigned int num_banks;
+ 	struct list_head chips;
+ 	int selected;
+-	struct jz4780_nand_cs cs[];
++	struct ingenic_nand_cs cs[];
+ };
+ 
+-struct jz4780_nand_chip {
++struct ingenic_nand {
+ 	struct nand_chip chip;
+ 	struct list_head chip_list;
+ 
+@@ -57,22 +57,21 @@ struct jz4780_nand_chip {
+ 	unsigned int reading: 1;
+ };
+ 
+-static inline struct jz4780_nand_chip *to_jz4780_nand_chip(struct mtd_info *mtd)
++static inline struct ingenic_nand *to_ingenic_nand(struct mtd_info *mtd)
+ {
+-	return container_of(mtd_to_nand(mtd), struct jz4780_nand_chip, chip);
++	return container_of(mtd_to_nand(mtd), struct ingenic_nand, chip);
+ }
+ 
+-static inline struct jz4780_nand_controller
+-*to_jz4780_nand_controller(struct nand_controller *ctrl)
++static inline struct ingenic_nfc *to_ingenic_nfc(struct nand_controller *ctrl)
+ {
+-	return container_of(ctrl, struct jz4780_nand_controller, controller);
++	return container_of(ctrl, struct ingenic_nfc, controller);
+ }
+ 
+-static void jz4780_nand_select_chip(struct nand_chip *chip, int chipnr)
++static void ingenic_nand_select_chip(struct nand_chip *chip, int chipnr)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
+-	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
+-	struct jz4780_nand_cs *cs;
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
++	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
++	struct ingenic_nand_cs *cs;
+ 
+ 	/* Ensure the currently selected chip is deasserted. */
+ 	if (chipnr == -1 && nfc->selected >= 0) {
+@@ -83,12 +82,12 @@ static void jz4780_nand_select_chip(struct nand_chip *chip, int chipnr)
+ 	nfc->selected = chipnr;
+ }
+ 
+-static void jz4780_nand_cmd_ctrl(struct nand_chip *chip, int cmd,
+-				 unsigned int ctrl)
++static void ingenic_nand_cmd_ctrl(struct nand_chip *chip, int cmd,
++				  unsigned int ctrl)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
+-	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
+-	struct jz4780_nand_cs *cs;
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
++	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
++	struct ingenic_nand_cs *cs;
+ 
+ 	if (WARN_ON(nfc->selected < 0))
+ 		return;
+@@ -106,25 +105,25 @@ static void jz4780_nand_cmd_ctrl(struct nand_chip *chip, int cmd,
+ 		writeb(cmd, cs->base + OFFSET_CMD);
+ }
+ 
+-static int jz4780_nand_dev_ready(struct nand_chip *chip)
++static int ingenic_nand_dev_ready(struct nand_chip *chip)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
+ 
+ 	return !gpiod_get_value_cansleep(nand->busy_gpio);
+ }
+ 
+-static void jz4780_nand_ecc_hwctl(struct nand_chip *chip, int mode)
++static void ingenic_nand_ecc_hwctl(struct nand_chip *chip, int mode)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
+ 
+ 	nand->reading = (mode == NAND_ECC_READ);
+ }
+ 
+-static int jz4780_nand_ecc_calculate(struct nand_chip *chip, const u8 *dat,
+-				     u8 *ecc_code)
++static int ingenic_nand_ecc_calculate(struct nand_chip *chip, const u8 *dat,
++				      u8 *ecc_code)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
+-	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
++	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
+ 	struct jz4780_bch_params params;
+ 
+ 	/*
+@@ -141,11 +140,11 @@ static int jz4780_nand_ecc_calculate(struct nand_chip *chip, const u8 *dat,
+ 	return jz4780_bch_calculate(nfc->bch, &params, dat, ecc_code);
+ }
+ 
+-static int jz4780_nand_ecc_correct(struct nand_chip *chip, u8 *dat,
+-				   u8 *read_ecc, u8 *calc_ecc)
++static int ingenic_nand_ecc_correct(struct nand_chip *chip, u8 *dat,
++				    u8 *read_ecc, u8 *calc_ecc)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
+-	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
++	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
++	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
+ 	struct jz4780_bch_params params;
+ 
+ 	params.size = nand->chip.ecc.size;
+@@ -155,10 +154,10 @@ static int jz4780_nand_ecc_correct(struct nand_chip *chip, u8 *dat,
+ 	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+ }
+ 
+-static int jz4780_nand_attach_chip(struct nand_chip *chip)
++static int ingenic_nand_attach_chip(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
++	struct ingenic_nfc *nfc = to_ingenic_nfc(chip->controller);
+ 	int eccbytes;
+ 
+ 	chip->ecc.bytes = fls((1 + 8) * chip->ecc.size)	*
+@@ -167,14 +166,13 @@ static int jz4780_nand_attach_chip(struct nand_chip *chip)
+ 	switch (chip->ecc.mode) {
+ 	case NAND_ECC_HW:
+ 		if (!nfc->bch) {
+-			dev_err(nfc->dev,
+-				"HW BCH selected, but BCH controller not found\n");
++			dev_err(nfc->dev, "HW BCH selected, but BCH controller not found\n");
+ 			return -ENODEV;
+ 		}
+ 
+-		chip->ecc.hwctl = jz4780_nand_ecc_hwctl;
+-		chip->ecc.calculate = jz4780_nand_ecc_calculate;
+-		chip->ecc.correct = jz4780_nand_ecc_correct;
++		chip->ecc.hwctl = ingenic_nand_ecc_hwctl;
++		chip->ecc.calculate = ingenic_nand_ecc_calculate;
++		chip->ecc.correct = ingenic_nand_ecc_correct;
+ 		/* fall through */
+ 	case NAND_ECC_SOFT:
+ 		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
+@@ -209,18 +207,18 @@ static int jz4780_nand_attach_chip(struct nand_chip *chip)
+ 	return 0;
+ }
+ 
+-static const struct nand_controller_ops jz4780_nand_controller_ops = {
+-	.attach_chip = jz4780_nand_attach_chip,
++static const struct nand_controller_ops ingenic_nand_controller_ops = {
++	.attach_chip = ingenic_nand_attach_chip,
+ };
+ 
+-static int jz4780_nand_init_chip(struct platform_device *pdev,
+-				struct jz4780_nand_controller *nfc,
+-				struct device_node *np,
+-				unsigned int chipnr)
++static int ingenic_nand_init_chip(struct platform_device *pdev,
++				  struct ingenic_nfc *nfc,
++				  struct device_node *np,
++				  unsigned int chipnr)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct jz4780_nand_chip *nand;
+-	struct jz4780_nand_cs *cs;
++	struct ingenic_nand *nand;
++	struct ingenic_nand_cs *cs;
+ 	struct resource *res;
+ 	struct nand_chip *chip;
+ 	struct mtd_info *mtd;
+@@ -253,7 +251,7 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+ 		dev_err(dev, "failed to request busy GPIO: %d\n", ret);
+ 		return ret;
+ 	} else if (nand->busy_gpio) {
+-		nand->chip.legacy.dev_ready = jz4780_nand_dev_ready;
++		nand->chip.legacy.dev_ready = ingenic_nand_dev_ready;
+ 	}
+ 
+ 	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
+@@ -276,13 +274,13 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+ 	chip->legacy.IO_ADDR_W = cs->base + OFFSET_DATA;
+ 	chip->legacy.chip_delay = RB_DELAY_US;
+ 	chip->options = NAND_NO_SUBPAGE_WRITE;
+-	chip->legacy.select_chip = jz4780_nand_select_chip;
+-	chip->legacy.cmd_ctrl = jz4780_nand_cmd_ctrl;
++	chip->legacy.select_chip = ingenic_nand_select_chip;
++	chip->legacy.cmd_ctrl = ingenic_nand_cmd_ctrl;
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->controller = &nfc->controller;
+ 	nand_set_flash_node(chip, np);
+ 
+-	chip->controller->ops = &jz4780_nand_controller_ops;
++	chip->controller->ops = &ingenic_nand_controller_ops;
+ 	ret = nand_scan(chip, 1);
+ 	if (ret)
+ 		return ret;
+@@ -298,19 +296,20 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
+-static void jz4780_nand_cleanup_chips(struct jz4780_nand_controller *nfc)
++static void ingenic_nand_cleanup_chips(struct ingenic_nfc *nfc)
+ {
+-	struct jz4780_nand_chip *chip;
++	struct ingenic_nand *chip;
+ 
+ 	while (!list_empty(&nfc->chips)) {
+-		chip = list_first_entry(&nfc->chips, struct jz4780_nand_chip, chip_list);
++		chip = list_first_entry(&nfc->chips,
++					struct ingenic_nand, chip_list);
+ 		nand_release(&chip->chip);
+ 		list_del(&chip->chip_list);
+ 	}
+ }
+ 
+-static int jz4780_nand_init_chips(struct jz4780_nand_controller *nfc,
+-				  struct platform_device *pdev)
++static int ingenic_nand_init_chips(struct ingenic_nfc *nfc,
++				   struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np;
+@@ -319,14 +318,15 @@ static int jz4780_nand_init_chips(struct jz4780_nand_controller *nfc,
+ 	int num_chips = of_get_child_count(dev->of_node);
+ 
+ 	if (num_chips > nfc->num_banks) {
+-		dev_err(dev, "found %d chips but only %d banks\n", num_chips, nfc->num_banks);
++		dev_err(dev, "found %d chips but only %d banks\n",
++			num_chips, nfc->num_banks);
+ 		return -EINVAL;
+ 	}
+ 
+ 	for_each_child_of_node(dev->of_node, np) {
+-		ret = jz4780_nand_init_chip(pdev, nfc, np, i);
++		ret = ingenic_nand_init_chip(pdev, nfc, np, i);
+ 		if (ret) {
+-			jz4780_nand_cleanup_chips(nfc);
++			ingenic_nand_cleanup_chips(nfc);
+ 			return ret;
+ 		}
+ 
+@@ -336,11 +336,11 @@ static int jz4780_nand_init_chips(struct jz4780_nand_controller *nfc,
+ 	return 0;
+ }
+ 
+-static int jz4780_nand_probe(struct platform_device *pdev)
++static int ingenic_nand_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	unsigned int num_banks;
+-	struct jz4780_nand_controller *nfc;
++	struct ingenic_nfc *nfc;
+ 	int ret;
+ 
+ 	num_banks = jz4780_nemc_num_banks(dev);
+@@ -367,7 +367,7 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+ 	nand_controller_init(&nfc->controller);
+ 	INIT_LIST_HEAD(&nfc->chips);
+ 
+-	ret = jz4780_nand_init_chips(nfc, pdev);
++	ret = ingenic_nand_init_chips(nfc, pdev);
+ 	if (ret) {
+ 		if (nfc->bch)
+ 			jz4780_bch_release(nfc->bch);
+@@ -378,35 +378,35 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int jz4780_nand_remove(struct platform_device *pdev)
++static int ingenic_nand_remove(struct platform_device *pdev)
+ {
+-	struct jz4780_nand_controller *nfc = platform_get_drvdata(pdev);
++	struct ingenic_nfc *nfc = platform_get_drvdata(pdev);
+ 
+ 	if (nfc->bch)
+ 		jz4780_bch_release(nfc->bch);
+ 
+-	jz4780_nand_cleanup_chips(nfc);
++	ingenic_nand_cleanup_chips(nfc);
+ 
+ 	return 0;
+ }
+ 
+-static const struct of_device_id jz4780_nand_dt_match[] = {
++static const struct of_device_id ingenic_nand_dt_match[] = {
+ 	{ .compatible = "ingenic,jz4780-nand" },
+ 	{},
+ };
+-MODULE_DEVICE_TABLE(of, jz4780_nand_dt_match);
++MODULE_DEVICE_TABLE(of, ingenic_nand_dt_match);
+ 
+-static struct platform_driver jz4780_nand_driver = {
+-	.probe		= jz4780_nand_probe,
+-	.remove		= jz4780_nand_remove,
++static struct platform_driver ingenic_nand_driver = {
++	.probe		= ingenic_nand_probe,
++	.remove		= ingenic_nand_remove,
+ 	.driver	= {
+ 		.name	= DRV_NAME,
+-		.of_match_table = of_match_ptr(jz4780_nand_dt_match),
++		.of_match_table = of_match_ptr(ingenic_nand_dt_match),
+ 	},
+ };
+-module_platform_driver(jz4780_nand_driver);
++module_platform_driver(ingenic_nand_driver);
+ 
+ MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
+ MODULE_AUTHOR("Harvey Hunt <harveyhuntnexus@gmail.com>");
+-MODULE_DESCRIPTION("Ingenic JZ4780 NAND driver");
++MODULE_DESCRIPTION("Ingenic JZ47xx NAND driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.11.0
 
