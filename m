@@ -2,23 +2,22 @@ Return-Path: <SRS0=dO6W=QL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1BF5C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA424C282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B08F2176F
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA6A32176F
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O6e1KRYK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="VasNLSKu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B08F2176F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cmigr6Ap";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="VRzdI0Fx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA6A32176F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yahoo.co.jp
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,64 +27,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=FN16h+sWsVo5rtW/cNJvy/m/e55hs8svdjmvvkv1Ifc=; b=O6e1KRYKr61Q/MCUFTa63PrMeT
-	wZOMMFWueRpXhWjqDZN5wheN4GZzTrjqOL9fDDPAUhWHMhEj4bIEUIM2O/OuN6OG35ddyD31IdYSk
-	X6JxQ8mPM5fcH33J+q8y4lBNsH+csTi+tmFnXjdLWTWKBDM3A809vNELSPm/J1AjMvhHFBDZthLD/
-	mm2fM9P+tK6rtLbY6jjCRUSn5WTzCifvOJUsVkBymxBynXvVBVzV4fudoWhJvcvHuEdDMsvEcD+FS
-	/C4xRguNvelBpR39HCkOX9VnmlmZelIJjEkLqkcb12JRMaDiIS4XCqLIiKFtpZSPXrHjMFWrnPKN+
-	e2UonZJQ==;
+	bh=u8nsNlSOw2HD3YosuJSUrOkf/cxsTF8CklGdyE7DamQ=; b=cmigr6Apn0+IogI+H/E+ZhXyhL
+	CLZdLsElNJq7zilPs7OLZtUvD/JNmWeziDzUMikshsjDaldf5UxDM6C/2ejwI1YlRjyEH81NQ1+U6
+	F3d6ZngehwcMhRFGgz9cF88q6/uVmec/kjfiXNhhTiqPufEIInPQvp7Hw5ia7QJHXXakUXiglktt/
+	rO3aiz8WukIPlIUoxIEt4EjMqv+EVBzLuSCZkEFiLrH01RLkFakyNmSwHzqVq0iEL1ZV7spwDdpyg
+	zcsJdVFFnnaRBDesjqUPENBqt6wjGswccJ09iCl7W9ari0oqvmqc/TM8uQobrBxuNV2AZChw6DEZb
+	49l4fTQQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqisa-0007RY-UA; Mon, 04 Feb 2019 18:22:00 +0000
-Received: from nh605-vm3.bullet.mail.ssk.yahoo.co.jp ([182.22.90.76])
+	id 1gqisp-0007eH-5C; Mon, 04 Feb 2019 18:22:15 +0000
+Received: from nh501-vm2.bullet.mail.kks.yahoo.co.jp ([183.79.56.132])
  by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqiqs-0005kN-Bv
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:20:25 +0000
-Received: from [182.22.66.104] by nh605.bullet.mail.ssk.yahoo.co.jp with NNFMP;
+ id 1gqiqs-0005k9-3y
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:20:26 +0000
+Received: from [183.79.100.139] by nh501.bullet.mail.kks.yahoo.co.jp with
+ NNFMP; 04 Feb 2019 18:20:12 -0000
+Received: from [183.79.101.120] by t502.bullet.mail.kks.yahoo.co.jp with NNFMP;
  04 Feb 2019 18:20:12 -0000
-Received: from [182.22.91.128] by t602.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 18:20:12 -0000
-Received: from [127.0.0.1] by omp601.mail.ssk.yahoo.co.jp with NNFMP;
+Received: from [127.0.0.1] by omp507.mail.kks.yahoo.co.jp with NNFMP;
  04 Feb 2019 18:20:12 -0000
 X-Yahoo-Newman-Property: ymail-3
-X-Yahoo-Newman-Id: 731656.85735.bm@omp601.mail.ssk.yahoo.co.jp
-Received: (qmail 42100 invoked by alias); 4 Feb 2019 18:20:12 -0000
+X-Yahoo-Newman-Id: 116496.18248.bm@omp507.mail.kks.yahoo.co.jp
+Received: (qmail 42082 invoked by alias); 4 Feb 2019 18:20:11 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.jp;
- s=yj20110701; t=1549304412; bh=Ctocki519CGWOKTh4AZPWW5e1p4OwWUFX64A4n6E9B4=;
+ s=yj20110701; t=1549304411; bh=BadGgwCfMX3MjWz1WsInKqpgqXFex3PoMwLLq1FQe1M=;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=VasNLSKuB2HR1XvGTB3jpTwqVdLAmfhWcELxKMUOpJc2Lk9c6fNYcxzh9oXTN0vur1e2uE4BzOK/YUjRv22exVfGClGB7pgQT2rpkZj0WKDFuBAr7leuXvboa0SolopLBT6VAY4KM49GP0e/DKzFca56o7DhoYzRcAW7siFWetg=
+ b=VRzdI0FxjZ4ywM83J2cNrcaryuz8WhUXyMjCWAGiZ1bJvPxBHII+FqmzLf3ETSdekeQ6zuNxUJ1C2uyIEMfPr7BJ6/LDpjS2t8U3ES+y9aqdC72cjqk+8Y4zA/FMezrbmqkkife8Sguh6+91+88RmztXI5F2W0XYnlCx2k7SU7Y=
 DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; s=yj20110701; d=yahoo.co.jp;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=PlNXf4N/ck3aqGCN04kgmhr/YihgbbXs5yQppuhJowolvjWu8+Nz8ZFJE3HxfTXjY3NDqv4LSHmx7Cv4gNmUW6o/J/kOqeHcTN2XL8DHsRKnlfjxdiT3iVn1omnuK+hTRQZ5RrDp34wtzXpfuf0CYdEl3SwThtulGJNRn4qlZVo=
+ b=WVM7OTpywIh29HJiB2xCtb0Qa2gpfxnTDs5/bGZzDYerWJ1xbXqgwIHAUgD26vWuGFdd63tYOu1C8fXTHRFRQsBKBo0JbKB2jX5vZY+4OPKu0TryvHuVboODMDtmE7/aoMmwxpSJiHabF61r7x5rn6cDfyCfGpCtpBI6P5xa2fA=
  ; 
 Received: from unknown (HELO localhost.localdomain) (106.72.39.32 with login)
  by smtp6006.mail.ssk.ynwp.yahoo.co.jp with SMTP;
- 4 Feb 2019 18:20:12 -0000
-X-YMail-JAS: p9oCtvkVM1kVekpC3xOvNaXPAPSgZcVmvQp71RDkr_MBJi4ZN6gY9y..AHMl.tW8uvftk.I0.GsYn_ReLCWp5oOwWlwNw4dDjgoBHSFvdQQuROuKMHwIQ_Ot3WEDX9xWBcCyoGsP0Q--
+ 4 Feb 2019 18:20:11 -0000
+X-YMail-JAS: UzMMa0gVM1mWms_LOl6Zur2Kd7FJjO1dtmucjlx3VPnMFohZJJBpwhNNUTjtyGrQseGx1dZo8LzS7fTtRmDluG09.qhgo2f9LTFydxl.SWHc81Q70xOwwE0gppefZq0Zj2Ljfj2Mrg--
 X-Apparently-From: <ikegami_to@yahoo.co.jp>
-X-YMail-OSG: 6ElaUk8VM1nhQStATUxxsUmTsZhffUJIpRBUO6U.G.ENfS8
- oS2WDskfMm9A_cCTyR2Q44YY0IsPjKHarQz8jg2cyiMyYx0AEEwVzf2pTply
- UL.Mt30kOH4wMwjtsRM0NC.T3DdZVWv8CQVD6YG7yMzFgf2XBJEGyldf4397
- WNwhcPn0MzqfqPSvf8j3nGHh9U7XeEGiOk.7JOH34e1.t0_oq4fNCwcMxSwo
- orp.VIop_cYYYMungsLFkS8Hite7B.lM2BgA9TCdV.CjnuzLl7ifkeS4SGDJ
- JwhHahb52nWO.fifoV1lrubW9Vtpm47QUL3_GjQQ0Wq7jUTxkmaj93g.W6Hk
- b_IVVOevrZAMDOU5ZX51vw2c6B68r4tTFQ8ITRkkriwdr8wdND8Tf.WuvP0M
- psul4FPlleNQC778I4fePoVYCLq3LDWfarNxdIN2RNitrUY2BaZTOMWjjP.t
- tfnFtSj6rJSK2tvf8kVbTf8tvoYnLam7sT0x2VwQvtohwBZX4vXMzQkbkW9T
- YSD9dkNplJVczgvGyOdnG27rIvrYtMtPxwR.8VfbiT2wnRYbiYEwzAs8pp1.
- ldmyePklyuQKReqoCq5xauT3ZqHL61c6vddBKc36yF5exBpql
+X-YMail-OSG: 2go2.BEVM1lnC4.UyTpBnLrLSWgKx4570eLPxCtx1fX9Z5L
+ EG1JJw84nykuyhhX6rhB7PmLhrsZEjldci_nR9go_74PEvd9cI6kfkTa34pH
+ 6aElIZ60sfKYwk9uDbvZ2AMF2cjTEn_gafg62i9nxQa.WZ1cvhxDH3a1kTjk
+ rS3knGDRKUT3QvwP91RFMOv.1rM9shrg1d3.Pel7uDfDgplWAVon0XY_9.x9
+ bP_DnC7XFYP7zse3HzuV4CKsgrSKpHehZK4G7FbC_zaoCWvDRifjvQu6pg6r
+ 0ecpDqTpgwoXBLAP.R2uOTzaL7wGYvTqncdUsqhqpJDnPXbixDFKt.DSRmFa
+ Lt6xYJv0gH_RFeKiAQDM5nRkeuyQ5wddCMVtSv7xsYTyBQp8vSm9inLpAPxZ
+ q4IqyskrT2M6kou5xiWKiEqSQFzxSSoZG89eBURm.GkqvCDlpKyomEOx_tDO
+ J8yXr8PbBzY74kL.Hoyi79lP_9TjWhSp9egfYTB33KyD90HFsqxXY6ikRVWy
+ m7fRTUUWRnneTzzhffI1iZRqnU0pC0cM2a8VVEqGfPQUAsCQrKq8QHuFaoKt
+ cXuIXI._tMxeCdAQbN4XqYCOrM9Tdx9KacFVPo5cAwaXZbWlL
 From: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 To: Boris Brezillon <bbrezillon@kernel.org>
-Subject: [RESEND v4 11/11] mtd: cfi_cmdset_0002: Split do_write_oneword() to
- reduce exit paths
-Date: Tue,  5 Feb 2019 03:20:04 +0900
-Message-Id: <20190204182004.29894-12-ikegami_to@yahoo.co.jp>
+Subject: [RESEND v4 09/11] mtd: cfi_cmdset_0002: Split write-to-buffer-reset
+ sequence
+Date: Tue,  5 Feb 2019 03:20:02 +0900
+Message-Id: <20190204182004.29894-10-ikegami_to@yahoo.co.jp>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190204182004.29894-1-ikegami_to@yahoo.co.jp>
 References: <20190204182004.29894-1-ikegami_to@yahoo.co.jp>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_102014_900056_077F7C3D 
-X-CRM114-Status: GOOD (  13.46  )
+X-CRM114-CacheID: sfid-20190204_102014_620006_17DF9AFC 
+X-CRM114-Status: GOOD (  12.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -107,8 +106,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The do_write_oneword_done() is called twice at the exit paths.
-By splitting the retry functionality it can be reduced to call once.
+Just refactor to split the sequence from do_write_buffer().
 
 Signed-off-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -122,81 +120,70 @@ Changes since v3:
 - Just change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
 
 Changes since v2:
+- None.
+
+Changes since v1:
 - Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 39 ++++++++++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 38 +++++++++++++++++++++----------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index da48b4c..21ba6d6 100755
+index 81f5e5e..d5954bf 100755
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1643,25 +1643,16 @@ static void __xipram do_write_oneword_done(struct map_info *map,
- 	mutex_unlock(&chip->mutex);
+@@ -1820,6 +1820,27 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return 0;
  }
  
--static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
--				     unsigned long adr, map_word datum,
--				     int mode)
-+static int __xipram do_write_oneword_retry(struct map_info *map,
++static void __xipram do_write_buffer_reset(struct map_info *map,
 +					   struct flchip *chip,
-+					   unsigned long adr, map_word datum,
-+					   int mode)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	int ret = 0;
- 	map_word oldd;
- 	int retry_cnt = 0;
- 
--	adr += chip->start;
--
--	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n", __func__, adr,
--		 datum.x[0]);
--
--	ret = do_write_oneword_start(map, chip, adr, mode);
--	if (ret) {
--		return ret;
--	}
--
- 	/*
- 	 * Check for a NOP for the case when the datum to write is already
- 	 * present - it saves time and works around buggy chips that corrupt
-@@ -1671,7 +1662,6 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	oldd = map_read(map, adr);
- 	if (map_word_equal(map, oldd, datum)) {
- 		pr_debug("MTD %s(): NOP\n", __func__);
--		do_write_oneword_done(map, chip, adr, mode);
- 		return ret;
- 	}
- 
-@@ -1691,6 +1681,27 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	}
- 	xip_enable(map, chip, adr);
- 
-+	return ret;
-+}
-+
-+static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
-+				     unsigned long adr, map_word datum,
-+				     int mode)
++					   struct cfi_private *cfi)
 +{
-+	int ret = 0;
++	/*
++	 * Recovery from write-buffer programming failures requires
++	 * the write-to-buffer-reset sequence.  Since the last part
++	 * of the sequence also works as a normal reset, we can run
++	 * the same commands regardless of why we are here.
++	 * See e.g.
++	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
++	 */
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
 +
-+	adr += chip->start;
-+
-+	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n", __func__, adr,
-+		 datum.x[0]);
-+
-+	ret = do_write_oneword_start(map, chip, adr, mode);
-+	if (ret) {
-+		return ret;
-+	}
-+
-+	ret = do_write_oneword_retry(map, chip, adr, datum, mode);
-+
- 	do_write_oneword_done(map, chip, adr, mode);
++	/* FIXME - should have reset delay before continuing */
++}
  
- 	return ret;
+ /*
+  * FIXME: interleaved mode not tested, and probably not supported!
+@@ -1922,22 +1943,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 	}
+ 
+ 	if (ret) {
+-		/*
+-		 * Recovery from write-buffer programming failures requires
+-		 * the write-to-buffer-reset sequence.  Since the last part
+-		 * of the sequence also works as a normal reset, we can run
+-		 * the same commands regardless of why we are here.
+-		 * See e.g.
+-		 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
+-		 */
+-		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
+-				 cfi->device_type, NULL);
+-		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
+-				 cfi->device_type, NULL);
+-		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
+-				 cfi->device_type, NULL);
+-		/* FIXME - should have reset delay before continuing */
+-
++		do_write_buffer_reset(map, chip, cfi);
+ 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
+ 		       __func__, adr);
+ 	}
 -- 
 2.11.0
 
