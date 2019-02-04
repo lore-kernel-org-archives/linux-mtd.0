@@ -5,19 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C980BC282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 17:39:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8B6BC282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 17:51:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F3E720818
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 17:39:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CFC02080A
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 17:51:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oDYp0krr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="U079N04b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F3E720818
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YjlvFmnv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="ZtWNcnPJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CFC02080A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yahoo.co.jp
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,64 +28,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=a4GvOC5ah3hIpLyh1inzSwdioTksjCCdcwcXCj6O8bA=; b=oDYp0krrgfYpjJ75tZdtusqW2R
-	gG8NLHHSr+Od7RtQygqcF9peia17y8bnuQfQswCPMx70zMKmd0Qf6IL7OCbhKp6U1DIHl5CYBWLnL
-	PQxXCZAvhPFkHWkLAAEGCCsdibxAycWEgZZrMMqvClMyaXx0bVvBV87HtBB+iKg7dqHNagbT2is+B
-	KEMmvcu767Au7LlHM4rDN32c3A0wAsfZzf5X7+q82vY/xZH+c0HFmzUsj73/inZ2taVpbTsJ3UlKM
-	WGiqlYhm/KiX2igPM0OWexsA6gzu7zeyZd+A9+b1p9Q2ZOmdtc2fVw5JtVr31sdftNf0cuE61G4P8
-	u+KaG28A==;
+	bh=CQoEdKKo6U65Rem6yVAjsC9NxKxYH65aa41ycOBeCxM=; b=YjlvFmnvHNpNdb2ja64PXljoAC
+	/uOJC6vAcXtQAXVaXjZft28iBH1KNuWGurdTLocf713lEHMo/Fwb8GpaocCUHBUpB+WPG/AxZ17S3
+	DxFYBvMg97JbNh9swePLzpcNFA6vgeWn4COAmRpw6VfbB0OJQlQPTxoWt1P2tLp/UxKm7EBajjIGQ
+	036ZcT/ivSCYeqQaeVXvkrHOS/y8Ne020XINvI43+RtX36ru9pPcfYq4LLaOuMNKeFog/APXfiMwj
+	E4dPbF+/RDQnk7PtD8X6hXE59elOvTSIQcGNNdjw2hrQjWwX6nSdxDi94VQLVy7zju9JkbCoUMv31
+	a2t4paWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqiD4-0004fj-Md; Mon, 04 Feb 2019 17:39:06 +0000
-Received: from nh604-vm11.bullet.mail.ssk.yahoo.co.jp ([182.22.90.68])
+	id 1gqiPN-00013B-T6; Mon, 04 Feb 2019 17:51:49 +0000
+Received: from nh502-vm7.bullet.mail.kks.yahoo.co.jp ([183.79.56.152])
  by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqiAn-0002Qm-4i
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 17:36:52 +0000
-Received: from [182.22.66.105] by nh604.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 17:36:43 -0000
-Received: from [182.22.91.206] by t603.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 17:36:43 -0000
-Received: from [127.0.0.1] by omp609.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 17:36:43 -0000
+ id 1gqiAo-0002Ra-TK
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 17:36:54 +0000
+Received: from [183.79.100.138] by nh502.bullet.mail.kks.yahoo.co.jp with
+ NNFMP; 04 Feb 2019 17:36:42 -0000
+Received: from [183.79.101.121] by t501.bullet.mail.kks.yahoo.co.jp with NNFMP;
+ 04 Feb 2019 17:36:42 -0000
+Received: from [127.0.0.1] by omp508.mail.kks.yahoo.co.jp with NNFMP;
+ 04 Feb 2019 17:36:42 -0000
 X-Yahoo-Newman-Property: ymail-3
-X-Yahoo-Newman-Id: 264155.14461.bm@omp609.mail.ssk.yahoo.co.jp
-Received: (qmail 78258 invoked by alias); 4 Feb 2019 17:36:43 -0000
+X-Yahoo-Newman-Id: 223765.59179.bm@omp508.mail.kks.yahoo.co.jp
+Received: (qmail 78212 invoked by alias); 4 Feb 2019 17:36:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.jp;
- s=yj20110701; t=1549301803; bh=z9g6QKg/BOEgpLT02uEWJrxw675rWoZ/FfHUE+Pf6YQ=;
+ s=yj20110701; t=1549301802; bh=ywmKhGC8bfvMf1RR+wF3qWzFRROCd0GEqpd6O1YcSdc=;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=U079N04bpznHGkRcwo8hTnscal/x2hfTuW7R8xHGF1ACkFTlysqMmxdr4MLD53R9+MHKwv9hbzUHeTebYKrTpwMTpWEP0B1fABn28ibCAtKJI6+W4jp6sDHPucKesg+FLaVt/ji2Cb3HwyJifihMFNRyrxKcMrk9peEuTbIVO/U=
+ b=ZtWNcnPJVrfhUuyewopRg/uHxoNqDKXSSc+pUtFJ3oihz6/ATL0A+6JgRNmngqu+/EuawxzQZYieQ/SQfHnxoZiD0IZER2j1UrhxFIuYP+WhHaRKbpXiFToeThDYog178TR31bPevQNS4H5bqfxPx8wan9AENdOcFqmapbkWmK4=
 DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; s=yj20110701; d=yahoo.co.jp;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=b64MdGkeKox//cXB6ytbf6L23/LHlE+YdriQtBLCB6NP/ZQAZPfVQkzJpPAdDw2StWIR415P2qjaLXl1VCJBIzvSzvctVsdloJeoTCwLRrJcZy0BkLIzOEz44zVWFlk0SqVPvFrLO9TW61JDfYwpbr5OlinoTOHtYaIS64HOit8=
+ b=deha2SwArCkG7HN9JPv/qYjiDbEidSJyps5k4uwgOn1Mej6zVMItDFDShO07n+Qjf/DiSL7JYQm22uL4qbnUk4l62XFcFzBT7l8M2QCc+J13RxTP0n8JNFvc5Pzbb0/Z3jhHEarr0bSs2jpJvFLRoIngA0HLBVJ01EElNqJf+dQ=
  ; 
 Received: from unknown (HELO localhost.localdomain) (106.72.39.32 with login)
  by smtp5002.mail.kks.ynwp.yahoo.co.jp with SMTP;
  4 Feb 2019 17:36:42 -0000
 X-YMail-JAS: 8bTrFDUVM1kjI8eAiCJW66ghnSqZxAUn197J7xv_aRxMXZz_qmckdhSZXo69KWOHqZNZAWRxMyzWMin9u1dqYJYz5m_ZoB1RavjQd653k04jGN5ZqZ.PxyzSGESKInZD_R6kD_RFag--
 X-Apparently-From: <ikegami_to@yahoo.co.jp>
-X-YMail-OSG: ayUxB30VM1lHf9bxXHnyEk6T1thNwgWY6WovBGOIOFqc1dj
- G78_PVFKQQYi2IpyGFhTiDAIJqOa1WRpSaI6eT7d1be6zOO06.lEId.HiBnm
- FcGRBSuH9p.vuYrrQ29HOLSpFcEsFxaMp7ZrvC8OOZVDbCfXmCjCNHYPJ3xr
- GlEv.qzcbPaFA0mVLsKtF0c3barpFmbtUAQnQ.zCaX5ODabhJl95i2Na8Fei
- Xo7wrwAXizMSDZaJ4QCfEymt86Wpu1cmNHE44WVxk_t_QI6W5kpD9eCuSrt6
- 26ak7QNt4u3FYsqcLugF0aFfu9GYi3FISmW9p26TkEEzjyk3Unr3EZtbhYjh
- 3e5n7k_s1ZhMN5rD7YNR1sP8NDIKl5b8n36a6_jlKvXjaUrUPooay.wxbiII
- KbHDgaKgBia5nRCtS1WInqqlNnS8.72cQcUw7RxMVGCmIFPYc1YOhg_4LWDP
- BD2nwKf.o72Fs0Jtth9ZV7xmFhDbIrlBpCkpppHnzLrDG9JIcvSmHTvF2tvC
- Y8Fn.AtcQL1MNlrEQVKH.0nafIy6IgsLQMmzwTGlCJmYBOfdbEiVkGz7_CRb
- j0ScMQnjSDF46UdHz1xJSL5.zaqcMJUA2SbZxe3ZzJ3WGeTjy
+X-YMail-OSG: dmyzCLMVM1np6hEilfLEM1BTlFnRMsWP_nONcK40NjtaJpY
+ ugXUJ7x7lh3HqKjx9w3cFIvK.gB.Up9Cz4IcmChuDi0jyfhsjwiAaxpuSjMi
+ W35xOhAwFYQOJrCr840PUophi3KBAt6V7.H3tJkZ0L3Wj_NHOxZZPkob0YEd
+ jRkb6RvK4fEAEmIBiTJEe_ZDDOPylEI825wwIZJuwVe5jXEBHYjuluQQnkFE
+ lBFg7kbGp.M4Lo1dwep3lm_LZrV4hek_EqOqOc5N6BqQah6XpuoKHH8kLq_z
+ tZvEw99b_GievZnvw9KNIWsU.3CQH27ajHh.o3KzNrljergYUai_wGiXQNaE
+ USpVbfAsMcvc6jNeURnSBFc3PELgkG1yGehC__vmaL2Zf0ugxhEUkAw99WZQ
+ bFfzYHPQruPXHXXPAnqJiUOqJhGhE8MAdg9zx7WvaQ5_akKrOq0Csk1CjrIV
+ cnwBuVaiYyGi.kb0ZA.D3RZaBFZF6e7DZHY7IkLLJFiYjD2ZxceXuR_F..WO
+ frOp8ZjbmgOXLhtZrgVkeLuiqjNfInqph.reGAWMtkxGVxyQw0C_YIr7gOpW
+ _mRStL6aYwoouSCPGyLyK0otYcfgvkfGVsZnweQHpYIcHc0gN
 From: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 09/11] mtd: cfi_cmdset_0002: Split write-to-buffer-reset
- sequence
-Date: Tue,  5 Feb 2019 02:35:48 +0900
-Message-Id: <20190204173550.29703-10-ikegami_to@yahoo.co.jp>
+Subject: [PATCH v4 07/11] mtd: cfi_cmdset_0002: Remove op_done goto statement
+ from do_write_oneword()
+Date: Tue,  5 Feb 2019 02:35:46 +0900
+Message-Id: <20190204173550.29703-8-ikegami_to@yahoo.co.jp>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190204173550.29703-1-ikegami_to@yahoo.co.jp>
 References: <20190204173550.29703-1-ikegami_to@yahoo.co.jp>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_093645_580196_7B2B399D 
-X-CRM114-Status: GOOD (  12.58  )
+X-CRM114-CacheID: sfid-20190204_093647_645216_342E2F33 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -106,7 +107,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just refactor to split the sequence from do_write_buffer().
+This is just to refactor the function by removing the goto statement.
 
 Signed-off-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -118,73 +119,41 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org
 ---
 Changes since v3:
-- Just change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
+- Rebased on the patch v4 01/11.
+- Change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
 
 Changes since v2:
-- None.
+- Just rebased.
 
 Changes since v1:
 - Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 38 +++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 81f5e5e..d5954bf 100755
+index a11dc40..a5513bd 100755
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1820,6 +1820,27 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
- 	return 0;
- }
+@@ -1671,7 +1671,8 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	oldd = map_read(map, adr);
+ 	if (map_word_equal(map, oldd, datum)) {
+ 		pr_debug("MTD %s(): NOP\n", __func__);
+-		goto op_done;
++		do_write_oneword_done(map, chip, adr, mode);
++		return ret;
+ 	}
  
-+static void __xipram do_write_buffer_reset(struct map_info *map,
-+					   struct flchip *chip,
-+					   struct cfi_private *cfi)
-+{
-+	/*
-+	 * Recovery from write-buffer programming failures requires
-+	 * the write-to-buffer-reset sequence.  Since the last part
-+	 * of the sequence also works as a normal reset, we can run
-+	 * the same commands regardless of why we are here.
-+	 * See e.g.
-+	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
-+	 */
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
+ 	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
+@@ -1691,7 +1692,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 		}
+ 	}
+ 	xip_enable(map, chip, adr);
+- op_done:
 +
-+	/* FIXME - should have reset delay before continuing */
-+}
+ 	do_write_oneword_done(map, chip, adr, mode);
  
- /*
-  * FIXME: interleaved mode not tested, and probably not supported!
-@@ -1922,22 +1943,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	}
- 
- 	if (ret) {
--		/*
--		 * Recovery from write-buffer programming failures requires
--		 * the write-to-buffer-reset sequence.  Since the last part
--		 * of the sequence also works as a normal reset, we can run
--		 * the same commands regardless of why we are here.
--		 * See e.g.
--		 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
--		 */
--		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		/* FIXME - should have reset delay before continuing */
--
-+		do_write_buffer_reset(map, chip, cfi);
- 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
- 		       __func__, adr);
- 	}
+ 	return ret;
 -- 
 2.11.0
 
