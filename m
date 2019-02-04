@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53720C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2027BC282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:16:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 251382082E
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:15:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E73E42082E
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:16:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sgb6D8Sq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="KKUDvDa9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 251382082E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fDIopSEy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="LjxdMmuc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E73E42082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yahoo.co.jp
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,64 +27,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=+EXJG++2Ev+mcf2h8F7/Srk0o1wxz/NvN295/VGLz50=; b=sgb6D8Sq68nndQniFTv0IfcRGi
-	9JSjah7zmy6hPkjUuYObSbXF/tHSM8cC+MY8vou8Xf3Q/IKpaYSYCwxdRxcxHEtVvnlmmLMt+3nKY
-	7LIUNBl7BXFA+PVJixkDtK6zEuMVAtVRzlDQj5f2cHZuDj9qH2EVv3nXOpD2XFjHi9OV3x9Zdn4R6
-	tXM9J6kO6zRQhKoqHWMuIwJi8wZWzM6rpjW+e+qE2GMMzsujMlWDO1kmQcxaQY1J8vRmS2Ixmzgur
-	NST49Mr1zopGHd672lluER+XZM8prHb2uYz3megHzT3wAyqPLRD4Jv/PMyWNyk7J1RoMeBrK6LVoA
-	ohO+tlEQ==;
+	bh=ybhHiSZdz3Wk+Nm0XSMafx531lPqONUB+MWC8ZRtfg0=; b=fDIopSEygaLgGshzRhSaQQT4JG
+	OV8cFhEj4zakPUwouNdcpDysCnnJ9d9iiBvUIXzb8KEcsB3RVIE5kNfjOI6PBLVq8R3k3xlr3m4LR
+	31eDb1on6b1Pta5eHMi81MVA8AfkjHy/b84j040u4b3NVxsfKTYN3iriH2DrimFWbeVyPgV0c7epk
+	jqiUSVMxI0WKpoqJM93cR/sRONgTVahbFbf7wzUWV190CMoK7Ncv2qyuU2+FvnqF4EpmsJnA+TlXy
+	hxQtcor7QLuCynFj6TZBhjeOWS7UDqxpXny5ULOCsbyInXGGoW8gqv7052GUxKsFJmSevAr7P829k
+	Q5hDzg1A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqimg-000220-0u; Mon, 04 Feb 2019 18:15:54 +0000
-Received: from nh605-vm5.bullet.mail.ssk.yahoo.co.jp ([182.22.90.78])
+	id 1gqimt-0002Gc-Hk; Mon, 04 Feb 2019 18:16:07 +0000
+Received: from nh503-vm11.bullet.mail.kks.yahoo.co.jp ([183.79.56.197])
  by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqimA-0001W7-HE
+ id 1gqimB-0001WA-Mi
  for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:15:26 +0000
-Received: from [182.22.66.105] by nh605.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 18:15:18 -0000
-Received: from [182.22.91.207] by t603.bullet.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 18:15:18 -0000
-Received: from [127.0.0.1] by omp610.mail.ssk.yahoo.co.jp with NNFMP;
- 04 Feb 2019 18:15:18 -0000
+Received: from [183.79.100.141] by nh503.bullet.mail.kks.yahoo.co.jp with
+ NNFMP; 04 Feb 2019 18:15:19 -0000
+Received: from [183.79.100.134] by t504.bullet.mail.kks.yahoo.co.jp with NNFMP;
+ 04 Feb 2019 18:15:19 -0000
+Received: from [127.0.0.1] by omp503.mail.kks.yahoo.co.jp with NNFMP;
+ 04 Feb 2019 18:15:19 -0000
 X-Yahoo-Newman-Property: ymail-3
-X-Yahoo-Newman-Id: 796639.24368.bm@omp610.mail.ssk.yahoo.co.jp
-Received: (qmail 96988 invoked by alias); 4 Feb 2019 18:15:18 -0000
+X-Yahoo-Newman-Id: 541749.85057.bm@omp503.mail.kks.yahoo.co.jp
+Received: (qmail 97021 invoked by alias); 4 Feb 2019 18:15:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.jp;
- s=yj20110701; t=1549304118; bh=r1NOxrm1fye5ZsOQOG2rvKKSUvIFic4BvlecvMQq64A=;
+ s=yj20110701; t=1549304119; bh=rh+LHwxFvJ0kO4P71+9Ieo+0h9Jy/qqHUQvFkOL8TtA=;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=KKUDvDa9UDN3hLJi0W1nUUl3bVXrJPFw2yIz8hCGW4AplznQVI9+pWT2G9EN5cl/0xGyoQvVgNwm7rG3G0talQFZGkQtjZejDdj507SovKVVRYseQCy4Y0+u3YatdlPxiHbnw1AOAQFM3/Zok9LPBYaS6ruS7u9V59j1fVm0gVE=
+ b=LjxdMmuc7h5CE2vz+4bLuKLQh0b8udfNQBjrYjsB6NwyogSmsyfMka3Nv7DixGlVteirY8TQlR6PHC03n1ut5aMJ68CQ0l4g9Y+A02ygYt/0wXL1InHIIoXf64KA7Cb6UnsJr0x/T3N2oxkPF8xgpKThkl2H5g0Z13vcFxKuYZI=
 DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; s=yj20110701; d=yahoo.co.jp;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=KQotSf1L8Hu0UAm/X9bvKGqea8h6TGs8uYrh2HG47vrmzji2mo9yumKYnmBzw+igspl+XfLoktiBIwWZhL1eACl+hLtKS2t5aUBJnfQjhfYgI9l67eRHekLyp6bu9w9QyMX/1gaBjJ1J4uhm0nTvBIU0CKt9f+iVZwQSkrYv3wA=
+ b=iADhKClRmJEdpNie+uq1sCQCmPn/SrOnMToimvhHinlHVGUpLEou/JRZ54cTiVZ8vfR2rcCSAMw1M2nyDu9YcNwTEVIgivpJVoQCvric4LEHytpxS8VIpyx1YI4kJxIMdPl3C4OaYPJ5VweYl8vMBOMKErd2IhIFRCf7uX7xC8M=
  ; 
 Received: from unknown (HELO localhost.localdomain) (106.72.39.32 with login)
  by smtp6010.mail.ssk.ynwp.yahoo.co.jp with SMTP;
- 4 Feb 2019 18:15:18 -0000
-X-YMail-JAS: SxUIEoEVM1kg.X1K7qTcT_HMhgZoIs7r6OzRa95lDEVIPy0a4H7eHvxmgyg4Pp4vaMMaukzpTSVBm5FQY9J3kiNxRMoExvpU2QWoVjKk4p8bvA9yQiL3QXub_5yJEdFKeJ3ERf.scw--
+ 4 Feb 2019 18:15:19 -0000
+X-YMail-JAS: T18F8y0VM1kX8Lut44qNDqRKqQXOtlWEgnYz4OPQqrKh_GnZATKBXc4qMcXkmcMq1BNYy.6HEqavlP2iK_Z7GN2Ji2egLfrgr7deoXOm7g3_TisNhStvOHJsKJwkvAISLswWgb1h2Q--
 X-Apparently-From: <ikegami_to@yahoo.co.jp>
-X-YMail-OSG: dbqjjQAVM1keUbA9W2iGnUuFk4uT1WFSenNsbYRDExid.F.
- AazBzYygigNOTUOueKQVP615dfBArTpCux2W4fYTb0EzAGnKdcRVB.VoXhyi
- Ps35sDxZFqmWYrOno9N1xsrDCnZVuSXMG_RLxoLw_Xevctildg51TuBWRruu
- 18n.uhQ1Ko1EHDWVT4G4fTmq8hTUC_GqGpZcZArnvQa5fl27m6mid5QSutHW
- 69uDunlfi8TZtUgkSgBd.hYwvZ9DrxAo74AvH.qFJsQavYZxbP6SKVdUpru.
- tCzpKIogjRbB9tx27S9nGES6LM7exW4ErqfQO.zeStggIA4dk_NfMoFADEbQ
- of2sW.xEwNwEbWeLJk91Ch3.6hBivWijrB52Iy2pp4Ny54vk3D.ZMqPD_qDs
- 3vRa4DJiROwDxpjEhVZg9szHtdyzx6eD090Sl0RRXuy2x3yDvzP6Cgw6sAPE
- uvs3nI63_zZ8rY2qOaH5HfwC1iBQzf2bCU6mzDarIu2eKxOFoTHh1B1lYgGO
- q8YSNnC2DprJ2V.aqhi.ClqaIBTCtnGJ5NI8V8.p89aBq8pChTkD1dTXpMhG
- rsH119nX_vCTst4sEamUBNTWqclmhNn894iLSzjxWleQQ7XGe
+X-YMail-OSG: z7KVlQAVM1nxQhsXhvRxNrvyroAFLppvHZcRQu8mQW1koIr
+ k6oGnRm4_eXMIbreToZtieJ0BwYaJmkw5pwdoCdM7hKUpX7F1bMUKszVqKGW
+ s0ddzKhiyoiS6aWZDOnCDHMT_VegSFy9lOhIn0MR_S0hnqFAOFYbnx8Izsdv
+ O_oKSaS2paw.HFsDUnKq99R_VMkJYQPMlimFVtzL6byFQbntEAWeeH27u3tW
+ i_j9DK6xMdIzM_V6EcIli5iuFAkJY0JseeymEBze2V.XnB.p7SUeXQJU5D1i
+ 6M8SCXvpwLNmD_zk8rVn3Hwl9TRp6GNzKFAuM0qft90EsjYKSRpsvZNH2Xf3
+ F6Em5Q4DfozjGUfQckHVSCB4CaQX5m2etG8IbP1q9mY_.27eIwEVAckJuU.v
+ GGZlY8aEeoU.yAAfHu2SBXb.IPgC_BkD41UVk7fLw0i9LyBtoosJ5gtd.Rxp
+ 5Zbdvo_CtEqTLJyvzfX7.jr59nkldEelBFtOaGtqQgQ3v56um1AysLmPF6Re
+ Lf.6ngRh_dEwWcU5qjsZuSiqbE_dss1I50O5.uId_eExmrOxITxk9X3XSEG1
+ CmUM3NpNtzV6d7fKvaM4ZJqwDA3phE2P4qawdU2d38McI1XjB
 From: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [RESEND v4 02/11] mtd: cfi_cmdset_0002: Remove chip_ready() from
- do_write_buffer()
-Date: Tue,  5 Feb 2019 03:14:56 +0900
-Message-Id: <20190204181505.29841-3-ikegami_to@yahoo.co.jp>
+Subject: [RESEND v4 04/11] mtd: cfi_cmdset_0002: Call xip_enable() once only
+ in do_write_buffer().
+Date: Tue,  5 Feb 2019 03:14:58 +0900
+Message-Id: <20190204181505.29841-5-ikegami_to@yahoo.co.jp>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190204181505.29841-1-ikegami_to@yahoo.co.jp>
 References: <20190204181505.29841-1-ikegami_to@yahoo.co.jp>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_101522_843675_F72A9E52 
-X-CRM114-Status: GOOD (  14.41  )
+X-CRM114-CacheID: sfid-20190204_101524_009318_61BA948B 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -107,13 +107,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It is enough to use chip_good() only so chip_ready() is not necessary.
-Since chip_good() is doing the same check chip_ready() is doing plus an extra
-check to make sure we end up with the data we wrote.
-
-For this change the order to check timeout also will be changed at same time.
-The order is not a hard requirement, it's just better to avoid the case where
-the data update happens just after the timeout has expired.
+By the removed goto statement it can be called xip_enable() once.
+Also for a maintainability refactor it to call the function only once.
 
 Signed-off-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -125,40 +120,49 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org
 ---
 Changes since v3:
-- Update the commit message for the comment.
-- Change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
+- Just change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
 
 Changes since v2:
 - None.
 
 Changes since v1:
-- None.
+- Split from the patch v1 3/3.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 91a491b..ca9d5fa 100755
+index 1aacf22..92d3e82 100755
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1878,14 +1878,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+@@ -1878,10 +1878,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
  			continue;
  		}
  
--		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
--			break;
--
- 		if (chip_good(map, adr, datum)) {
- 			xip_enable(map, chip, adr);
- 			goto op_done;
- 		}
+-		if (chip_good(map, adr, datum)) {
+-			xip_enable(map, chip, adr);
++		if (chip_good(map, adr, datum))
+ 			break;
+-		}
  
-+		if (time_after(jiffies, timeo))
-+			break;
-+
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1);
+ 		if (time_after(jiffies, timeo)) {
+ 			ret = -EIO;
+@@ -1907,13 +1905,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 				 cfi->device_type, NULL);
+ 		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
+ 				 cfi->device_type, NULL);
+-		xip_enable(map, chip, adr);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+ 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
+ 		       __func__, adr);
  	}
+ 
++	xip_enable(map, chip, adr);
++
+ 	chip->state = FL_READY;
+ 	DISABLE_VPP(map);
+ 	put_chip(map, chip, adr);
 -- 
 2.11.0
 
