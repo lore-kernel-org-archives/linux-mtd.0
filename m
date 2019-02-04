@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89726C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07BA0C282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:02:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5735A2087C
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:00:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 79D752082F
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 14:02:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AKY0Suf9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UOMvXWSV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5735A2087C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QncSm3GH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKh2xoBo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79D752082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,44 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yStMRC8LjR5bGwTVH8oz+WbqbDb7bgjdV8jalbuSsHo=; b=AKY0Suf94DxjmR
-	ODcE/fvFkc8+I2Xm5GUfwBSdJZh6P5NrqGYoev8HW7jCabmFxn1v6JbnAqJqmTPG739JRnOk0o3W/
-	5j3LBvt4dZPp0m+j1UIt4fobuLwHQTM7Szgd+alN3NkFlRtOldCfBKdrNQpjUZR8g/hlA2sntnEaN
-	YM9pRLYCd6VG3Z+UQazygmCz4GUiW5YxKB5evb61663TnX9TWd/fbGqggS5qUMwbnQjININOYZhJ0
-	SZ2Xal6NkomqOkxSom312JCKP8+dxRvRPg+4DXGaPd071VTcWw5XOMy6bSmFSUfVJTsj7yRxirQNP
-	+0gxJOK6IM0sIYP6D5hg==;
+	List-Owner; bh=ZmLL0ItLF7hlx3n0Vl7bOyfOsg3afSTMWOxTGpa7tbg=; b=QncSm3GHLbsX2w
+	QOOn+I1ks/7U5lgOYpF92nGDqikjJQpe5jGJDXCU2jyr41n2JMMPIpovGI7pMkkuEIV6wsKUsUoNH
+	wl/bf9ho1DCcHBz1wgXN3oEORZwqwTGI3I58gOG+iuzdLqe6QmTAa1sNe+PtlG48ZSlDM6u9Fi63b
+	Oz4aUCt42rjuayXt9FcaEna2b8Ve2y+YR+kj0MCSSpSyvXsvD0Kg3n0ma7mTOzCAv4dXDz7eQmhxv
+	YWgh1c5+TV+5fh6P2Q/Ud4LgNumIwW/4TifTu8YxhmCamYNVy+jnjLH22QKTDnLYBvLG7IoE6yY3R
+	pXqWo4iSiWEYXeHEVXVQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqenR-0008OB-TB; Mon, 04 Feb 2019 14:00:25 +0000
+	id 1gqeox-0000iB-En; Mon, 04 Feb 2019 14:01:59 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqenG-0008ER-3K; Mon, 04 Feb 2019 14:00:15 +0000
+ id 1gqeog-0000Za-Ut; Mon, 04 Feb 2019 14:01:49 +0000
 Received: from bbrezillon (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BAB872082F;
- Mon,  4 Feb 2019 14:00:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4BACA2082F;
+ Mon,  4 Feb 2019 14:01:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549288813;
- bh=rWhYzT7UjHT4ejUyjxjI9R2JCrNUWzH8DfYNDXDEMWQ=;
+ s=default; t=1549288902;
+ bh=3KNwqHnHGZNCWkch9CrjOjSh+cKQ+OW5kIx/iou8hsk=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=UOMvXWSVLM1sjqhzgedjrPZL37SAyM1KYnh7VZyQg2PSGoYC3sDIuu5cIEP1vQ9DR
- +fY4kuf+1qOBbEBxOmhTEaM/tCGhPUCcTc3iENUI8ThCz9bxr/07wH+/+oV5gD+5EF
- w/E25sENpGxO2KcI583sv9xwcFWozi2YpC8Gll5A=
-Date: Mon, 4 Feb 2019 15:00:05 +0100
+ b=EKh2xoBo4ZacXyPGZI9QCUvf4sv2duUHecD7SFeuuOMxbLdHBl0YrcDDjO+muuxGP
+ Lel8MDvrwy5GqsX8Lyt+DrHPxiCkPhJoP9RwCAZqKU8fAkFHm5GVMd6B1KDiQpGVAy
+ EU4EqBuw+nXxWOGdkcEyJInQGzIyG5N0Hn2COmus=
+Date: Mon, 4 Feb 2019 15:01:36 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v4 01/13] spi: atmel-quadspi: cache MR value to avoid a
- write access
-Message-ID: <20190204150005.3567bf29@bbrezillon>
-In-Reply-To: <20190204100910.26701-2-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v4 08/13] spi: atmel-quadspi: rework transfer macros
+Message-ID: <20190204150136.519060ff@bbrezillon>
+In-Reply-To: <20190204100910.26701-9-tudor.ambarus@microchip.com>
 References: <20190204100910.26701-1-tudor.ambarus@microchip.com>
- <20190204100910.26701-2-tudor.ambarus@microchip.com>
+ <20190204100910.26701-9-tudor.ambarus@microchip.com>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_060014_159222_B632C2ED 
-X-CRM114-Status: GOOD (  16.50  )
+X-CRM114-CacheID: sfid-20190204_060143_732237_512F4EE6 
+X-CRM114-Status: GOOD (  13.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,66 +84,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 4 Feb 2019 10:09:22 +0000
+On Mon, 4 Feb 2019 10:09:53 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> Set the controller by default in Serial Memory Mode (SMM) at probe.
-> Cache Mode Register (MR) value to avoid write access when setting
-> the controller in serial memory mode at exec_op().
+> Split the TFRTYP_TRSFR_ bitfields in 2: one bit encoding the
+> mem/reg transfer type and one bit encoding the direction of
+> the transfer (read/write).
 > 
+> Remove NOP when setting read transfer type. Remove useless
+> setting of write transfer type when
+> op->data.dir == SPI_MEM_DATA_IN && !op->data.nbytes.
+> 
+> QSPI_IFR_TFRTYP_TRSFR_WRITE is specific just to sama5d2 qspi,
+> rename it to QSPI_IFR_SAMA5D2_WRITE_TRSFR.
+> 
+> Suggested-by: Boris Brezillon <bbrezillon@kernel.org>
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
 Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
 
 > ---
-> v4: s/smm/mr, init controller in serial memory mode by default
-> v3: update smm value when different. rename mr/smm
-> v2: cache MR value instead of moving the write access at probe
+> v4: introduce QSPI_IFR_TFRTYP_MEM, reword commit
+> v3: new patch
 > 
->  drivers/spi/atmel-quadspi.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+>  drivers/spi/atmel-quadspi.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
 > 
 > diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
-> index ddc712410812..d6864d29f294 100644
+> index ce4f8a648f45..19a3980775ad 100644
 > --- a/drivers/spi/atmel-quadspi.c
 > +++ b/drivers/spi/atmel-quadspi.c
-> @@ -155,6 +155,7 @@ struct atmel_qspi {
->  	struct clk		*clk;
->  	struct platform_device	*pdev;
->  	u32			pending;
-> +	u32			mr;
->  	struct completion	cmd_completion;
->  };
+> @@ -113,11 +113,8 @@
+>  #define QSPI_IFR_OPTL_4BIT              (2 << 8)
+>  #define QSPI_IFR_OPTL_8BIT              (3 << 8)
+>  #define QSPI_IFR_ADDRL                  BIT(10)
+> -#define QSPI_IFR_TFRTYP_MASK            GENMASK(13, 12)
+> -#define QSPI_IFR_TFRTYP_TRSFR_READ      (0 << 12)
+> -#define QSPI_IFR_TFRTYP_TRSFR_READ_MEM  (1 << 12)
+> -#define QSPI_IFR_TFRTYP_TRSFR_WRITE     (2 << 12)
+> -#define QSPI_IFR_TFRTYP_TRSFR_WRITE_MEM (3 << 13)
+> +#define QSPI_IFR_TFRTYP_MEM		BIT(12)
+> +#define QSPI_IFR_SAMA5D2_WRITE_TRSFR	BIT(13)
+>  #define QSPI_IFR_CRM                    BIT(14)
+>  #define QSPI_IFR_NBDUM_MASK             GENMASK(20, 16)
+>  #define QSPI_IFR_NBDUM(n)               (((n) << 16) & QSPI_IFR_NBDUM_MASK)
+> @@ -275,10 +272,8 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>  	if (op->data.nbytes)
+>  		ifr |= QSPI_IFR_DATAEN;
 >  
-> @@ -238,7 +239,14 @@ static int atmel_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
->  	icr = QSPI_ICR_INST(op->cmd.opcode);
->  	ifr = QSPI_IFR_INSTEN;
+> -	if (op->data.dir == SPI_MEM_DATA_IN && op->data.nbytes)
+> -		ifr |= QSPI_IFR_TFRTYP_TRSFR_READ;
+> -	else
+> -		ifr |= QSPI_IFR_TFRTYP_TRSFR_WRITE;
+> +	if (op->data.dir == SPI_MEM_DATA_OUT)
+> +		ifr |= QSPI_IFR_SAMA5D2_WRITE_TRSFR;
 >  
-> -	qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
-> +	/*
-> +	 * If the QSPI controller is set in regular SPI mode, set it in
-> +	 * Serial Memory Mode (SMM).
-> +	 */
-> +	if (aq->mr != QSPI_MR_SMM) {
-> +		qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
-> +		aq->mr = QSPI_MR_SMM;
-> +	}
->  
->  	mode = find_mode(op);
->  	if (mode < 0)
-> @@ -381,6 +389,10 @@ static int atmel_qspi_init(struct atmel_qspi *aq)
->  	/* Reset the QSPI controller */
->  	qspi_writel(aq, QSPI_CR, QSPI_CR_SWRST);
->  
-> +	/* Set the QSPI controller by default in Serial Memory Mode */
-> +	qspi_writel(aq, QSPI_MR, QSPI_MR_SMM);
-> +	aq->mr = QSPI_MR_SMM;
-> +
->  	/* Enable the QSPI controller */
->  	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIEN);
->  
+>  	/* Clear pending interrupts */
+>  	(void)readl_relaxed(aq->regs + QSPI_SR);
 
 
 ______________________________________________________
