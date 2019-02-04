@@ -5,19 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA424C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B351C282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA6A32176F
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 497B42175B
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:22:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cmigr6Ap";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="VRzdI0Fx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA6A32176F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cI6ofGhw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yahoo.co.jp header.i=@yahoo.co.jp header.b="ghpTopxh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 497B42175B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=yahoo.co.jp
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,64 +28,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=u8nsNlSOw2HD3YosuJSUrOkf/cxsTF8CklGdyE7DamQ=; b=cmigr6Apn0+IogI+H/E+ZhXyhL
-	CLZdLsElNJq7zilPs7OLZtUvD/JNmWeziDzUMikshsjDaldf5UxDM6C/2ejwI1YlRjyEH81NQ1+U6
-	F3d6ZngehwcMhRFGgz9cF88q6/uVmec/kjfiXNhhTiqPufEIInPQvp7Hw5ia7QJHXXakUXiglktt/
-	rO3aiz8WukIPlIUoxIEt4EjMqv+EVBzLuSCZkEFiLrH01RLkFakyNmSwHzqVq0iEL1ZV7spwDdpyg
-	zcsJdVFFnnaRBDesjqUPENBqt6wjGswccJ09iCl7W9ari0oqvmqc/TM8uQobrBxuNV2AZChw6DEZb
-	49l4fTQQ==;
+	bh=Y11XCwuCkftQWrw4TKpVYY4x2rNlJf2Q2zFnS0mJxCY=; b=cI6ofGhwZW688Z2G4/4wZsYeKU
+	7KQzziP15H0fTvsb710gxaCjRJPJtOFcqUF1Awssf5K+fxZ9rA1LN3P5PVVRgiRE4O3usCoYDYDmC
+	UxFTo3FD/dt7b2h9Cw8s1FhYu/3ZWcAk9AwmYNo+lBFaCCJd9ZhyLzBD5nUCkLw6ghrMRQ3Kr54o4
+	nstTf6br+IgO7k18HkLv0uLWIiZ0uhr6pNJ11UbhnQ1KLklqoFMlpjkxXDi/TNoJrHjY6ukSuSYZy
+	ObdBH9R5oaNQKtGnrpbeZkrd+bney14JLRdl9/l0MrRFUWOUUo31CH36w9JOBKkcTcRBtD4PsdLYq
+	cTIGvNgg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqisp-0007eH-5C; Mon, 04 Feb 2019 18:22:15 +0000
-Received: from nh501-vm2.bullet.mail.kks.yahoo.co.jp ([183.79.56.132])
+	id 1gqit3-0007wu-9W; Mon, 04 Feb 2019 18:22:29 +0000
+Received: from nh601-vm9.bullet.mail.ssk.yahoo.co.jp ([182.22.90.18])
  by bombadil.infradead.org with smtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqiqs-0005k9-3y
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:20:26 +0000
-Received: from [183.79.100.139] by nh501.bullet.mail.kks.yahoo.co.jp with
- NNFMP; 04 Feb 2019 18:20:12 -0000
-Received: from [183.79.101.120] by t502.bullet.mail.kks.yahoo.co.jp with NNFMP;
+ id 1gqiqr-0005hJ-L0
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:20:25 +0000
+Received: from [182.22.66.104] by nh601.bullet.mail.ssk.yahoo.co.jp with NNFMP;
  04 Feb 2019 18:20:12 -0000
-Received: from [127.0.0.1] by omp507.mail.kks.yahoo.co.jp with NNFMP;
+Received: from [182.22.91.206] by t602.bullet.mail.ssk.yahoo.co.jp with NNFMP;
+ 04 Feb 2019 18:20:12 -0000
+Received: from [127.0.0.1] by omp609.mail.ssk.yahoo.co.jp with NNFMP;
  04 Feb 2019 18:20:12 -0000
 X-Yahoo-Newman-Property: ymail-3
-X-Yahoo-Newman-Id: 116496.18248.bm@omp507.mail.kks.yahoo.co.jp
-Received: (qmail 42082 invoked by alias); 4 Feb 2019 18:20:11 -0000
+X-Yahoo-Newman-Id: 312292.36526.bm@omp609.mail.ssk.yahoo.co.jp
+Received: (qmail 42092 invoked by alias); 4 Feb 2019 18:20:12 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.jp;
- s=yj20110701; t=1549304411; bh=BadGgwCfMX3MjWz1WsInKqpgqXFex3PoMwLLq1FQe1M=;
+ s=yj20110701; t=1549304412; bh=y8HG0B/ptt1aiNktBMHs1kKs2PfbqW2y3J0jNa4aB04=;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=VRzdI0FxjZ4ywM83J2cNrcaryuz8WhUXyMjCWAGiZ1bJvPxBHII+FqmzLf3ETSdekeQ6zuNxUJ1C2uyIEMfPr7BJ6/LDpjS2t8U3ES+y9aqdC72cjqk+8Y4zA/FMezrbmqkkife8Sguh6+91+88RmztXI5F2W0XYnlCx2k7SU7Y=
+ b=ghpTopxhmCaRuiYm5oBEfL4XckIovcOsQ+fuxKo7wYNr5NPMgZfImAAJALrV9aNRZFop1rAz4BSkwtAwmdR6eNuaOhxgD8t6mP3BDyFLyrTgTxYJ+WGQnnur9ZPphIs75q5XhafxehkS7RxUco2rWASbrDM92w8Z/59HD3yqNW0=
 DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; s=yj20110701; d=yahoo.co.jp;
  h=Received:X-YMail-JAS:X-Apparently-From:X-YMail-OSG:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References;
- b=WVM7OTpywIh29HJiB2xCtb0Qa2gpfxnTDs5/bGZzDYerWJ1xbXqgwIHAUgD26vWuGFdd63tYOu1C8fXTHRFRQsBKBo0JbKB2jX5vZY+4OPKu0TryvHuVboODMDtmE7/aoMmwxpSJiHabF61r7x5rn6cDfyCfGpCtpBI6P5xa2fA=
+ b=Moy+A+eMMLdgvht/dT/F+hhC2358y0anQ3KgKzqpOg77zIQ8bJZ7VOp9y8EWF/0t6I80QQ5tpNwiHZeJSMBKltJq3QXjAG7j/bWGnC1yMX2A73QXpWF5lciO8L5rrqIr7rq4sIrKC3sUo1wCHJ5K4N7FycTcF7hmQxVMsWZkZMQ=
  ; 
 Received: from unknown (HELO localhost.localdomain) (106.72.39.32 with login)
  by smtp6006.mail.ssk.ynwp.yahoo.co.jp with SMTP;
- 4 Feb 2019 18:20:11 -0000
-X-YMail-JAS: UzMMa0gVM1mWms_LOl6Zur2Kd7FJjO1dtmucjlx3VPnMFohZJJBpwhNNUTjtyGrQseGx1dZo8LzS7fTtRmDluG09.qhgo2f9LTFydxl.SWHc81Q70xOwwE0gppefZq0Zj2Ljfj2Mrg--
+ 4 Feb 2019 18:20:12 -0000
+X-YMail-JAS: p9oCtvkVM1kVekpC3xOvNaXPAPSgZcVmvQp71RDkr_MBJi4ZN6gY9y..AHMl.tW8uvftk.I0.GsYn_ReLCWp5oOwWlwNw4dDjgoBHSFvdQQuROuKMHwIQ_Ot3WEDX9xWBcCyoGsP0Q--
 X-Apparently-From: <ikegami_to@yahoo.co.jp>
-X-YMail-OSG: 2go2.BEVM1lnC4.UyTpBnLrLSWgKx4570eLPxCtx1fX9Z5L
- EG1JJw84nykuyhhX6rhB7PmLhrsZEjldci_nR9go_74PEvd9cI6kfkTa34pH
- 6aElIZ60sfKYwk9uDbvZ2AMF2cjTEn_gafg62i9nxQa.WZ1cvhxDH3a1kTjk
- rS3knGDRKUT3QvwP91RFMOv.1rM9shrg1d3.Pel7uDfDgplWAVon0XY_9.x9
- bP_DnC7XFYP7zse3HzuV4CKsgrSKpHehZK4G7FbC_zaoCWvDRifjvQu6pg6r
- 0ecpDqTpgwoXBLAP.R2uOTzaL7wGYvTqncdUsqhqpJDnPXbixDFKt.DSRmFa
- Lt6xYJv0gH_RFeKiAQDM5nRkeuyQ5wddCMVtSv7xsYTyBQp8vSm9inLpAPxZ
- q4IqyskrT2M6kou5xiWKiEqSQFzxSSoZG89eBURm.GkqvCDlpKyomEOx_tDO
- J8yXr8PbBzY74kL.Hoyi79lP_9TjWhSp9egfYTB33KyD90HFsqxXY6ikRVWy
- m7fRTUUWRnneTzzhffI1iZRqnU0pC0cM2a8VVEqGfPQUAsCQrKq8QHuFaoKt
- cXuIXI._tMxeCdAQbN4XqYCOrM9Tdx9KacFVPo5cAwaXZbWlL
+X-YMail-OSG: ZV9aKLQVM1mwByp9QicFvqGDGqmGOW4ala8rZIgIe447_Sb
+ RZzAw68iQHUlLofaBUM85ndIJpEPYkY2vd4L2uQRwU8O2Q3E0kYaOZb2lSU4
+ FqZVjZN.K4.BqxAAzbBRpesmG.bLFD3mHIVAzfwvPgAlHKFueCIly3u8Ei_X
+ k75UUQvuDTKfd_5_NkmLyx8TDdpDTrEHwCs_wKxgrKI8Goji3653ne2mmlbe
+ 6CtAi4zO8XeW2L5wF0bo791IRpjGwkzkFsIPssoj8JAt1GV8XFOH0yc3uq4q
+ MhN4pEgN220Mh0NTHtSdvNmOiRpQwwP3HzuzjXJs1EWGDpU9.3K1.PTuf11I
+ LdZNhTj8gm4UjnQJKiymK2Eiu7ER1LFwxpxQztgAhMMrpxVBykds7kIQOWOK
+ 8Z90ye7laYFqpugyBmhA_.R9dnD.YEfXxupuHiFZH_66Eoh_WxEVp5kRWLNG
+ vG9Xozl59AeIaMq4Dr2oqPI4NvxZO7bTAuQrYeTzjPx1irzqW7VDi0O0B5cj
+ 5td2qcelq.RQ7mxZYpbmArwmTqL9W8yQli0nbft2du0fJDPYHhvI4C2kn7cB
+ MIbb4lgfShSzoxwXedpNJHI9pjTXvV5CrJ1x6uTpImPuZS7WX
 From: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 To: Boris Brezillon <bbrezillon@kernel.org>
-Subject: [RESEND v4 09/11] mtd: cfi_cmdset_0002: Split write-to-buffer-reset
- sequence
-Date: Tue,  5 Feb 2019 03:20:02 +0900
-Message-Id: <20190204182004.29894-10-ikegami_to@yahoo.co.jp>
+Subject: [RESEND v4 10/11] mtd: cfi_cmdset_0002: Split to wait write buffer to
+ check if completed
+Date: Tue,  5 Feb 2019 03:20:03 +0900
+Message-Id: <20190204182004.29894-11-ikegami_to@yahoo.co.jp>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190204182004.29894-1-ikegami_to@yahoo.co.jp>
 References: <20190204182004.29894-1-ikegami_to@yahoo.co.jp>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_102014_620006_17DF9AFC 
-X-CRM114-Status: GOOD (  12.46  )
+X-CRM114-CacheID: sfid-20190204_102014_064149_E543404E 
+X-CRM114-Status: GOOD (  14.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -106,7 +107,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just refactor to split the sequence from do_write_buffer().
+Just refactor to split the wait from do_write_buffer().
 
 Signed-off-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -125,65 +126,115 @@ Changes since v2:
 Changes since v1:
 - Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 38 +++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 81 +++++++++++++++++++++----------------
+ 1 file changed, 46 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 81f5e5e..d5954bf 100755
+index d5954bf..da48b4c 100755
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1820,6 +1820,27 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -1820,6 +1820,51 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
  	return 0;
  }
  
-+static void __xipram do_write_buffer_reset(struct map_info *map,
-+					   struct flchip *chip,
-+					   struct cfi_private *cfi)
++static int __xipram do_write_buffer_wait(struct map_info *map,
++					 struct flchip *chip, unsigned long adr,
++					 map_word datum)
 +{
-+	/*
-+	 * Recovery from write-buffer programming failures requires
-+	 * the write-to-buffer-reset sequence.  Since the last part
-+	 * of the sequence also works as a normal reset, we can run
-+	 * the same commands regardless of why we are here.
-+	 * See e.g.
-+	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
-+	 */
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
++	unsigned long timeo;
++	unsigned long uWriteTimeout;
++	int ret = 0;
 +
-+	/* FIXME - should have reset delay before continuing */
++	/*
++	 * Timeout is calculated according to CFI data, if available.
++	 * See more comments in cfi_cmdset_0002().
++	 */
++	uWriteTimeout = usecs_to_jiffies(chip->buffer_write_time_max);
++	timeo = jiffies + uWriteTimeout;
++
++	for (;;) {
++		if (chip->state != FL_WRITING) {
++			/* Someone's suspended the write. Sleep */
++			DECLARE_WAITQUEUE(wait, current);
++
++			set_current_state(TASK_UNINTERRUPTIBLE);
++			add_wait_queue(&chip->wq, &wait);
++			mutex_unlock(&chip->mutex);
++			schedule();
++			remove_wait_queue(&chip->wq, &wait);
++			timeo = jiffies + (HZ / 2); /* FIXME */
++			mutex_lock(&chip->mutex);
++			continue;
++		}
++
++		if (chip_good(map, adr, datum))
++			break;
++
++		if (time_after(jiffies, timeo)) {
++			ret = -EIO;
++			break;
++		}
++
++		/* Latency issues. Drop the lock, wait a while and retry */
++		UDELAY(map, chip, adr, 1);
++	}
++
++	return ret;
 +}
++
+ static void __xipram do_write_buffer_reset(struct map_info *map,
+ 					   struct flchip *chip,
+ 					   struct cfi_private *cfi)
+@@ -1850,13 +1895,6 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 				    int len)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long timeo = jiffies + HZ;
+-	/*
+-	 * Timeout is calculated according to CFI data, if available.
+-	 * See more comments in cfi_cmdset_0002().
+-	 */
+-	unsigned long uWriteTimeout =
+-				usecs_to_jiffies(chip->buffer_write_time_max);
+ 	int ret = -EIO;
+ 	unsigned long cmd_adr;
+ 	int z, words;
+@@ -1913,34 +1951,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 				adr, map_bankwidth(map),
+ 				chip->word_write_time);
  
- /*
-  * FIXME: interleaved mode not tested, and probably not supported!
-@@ -1922,22 +1943,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	}
+-	timeo = jiffies + uWriteTimeout;
+-
+-	for (;;) {
+-		if (chip->state != FL_WRITING) {
+-			/* Someone's suspended the write. Sleep */
+-			DECLARE_WAITQUEUE(wait, current);
+-
+-			set_current_state(TASK_UNINTERRUPTIBLE);
+-			add_wait_queue(&chip->wq, &wait);
+-			mutex_unlock(&chip->mutex);
+-			schedule();
+-			remove_wait_queue(&chip->wq, &wait);
+-			timeo = jiffies + (HZ / 2); /* FIXME */
+-			mutex_lock(&chip->mutex);
+-			continue;
+-		}
+-
+-		if (chip_good(map, adr, datum))
+-			break;
+-
+-		if (time_after(jiffies, timeo)) {
+-			ret = -EIO;
+-			break;
+-		}
+-
+-		/* Latency issues. Drop the lock, wait a while and retry */
+-		UDELAY(map, chip, adr, 1);
+-	}
++	ret = do_write_buffer_wait(map, chip, adr, datum);
  
  	if (ret) {
--		/*
--		 * Recovery from write-buffer programming failures requires
--		 * the write-to-buffer-reset sequence.  Since the last part
--		 * of the sequence also works as a normal reset, we can run
--		 * the same commands regardless of why we are here.
--		 * See e.g.
--		 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
--		 */
--		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		/* FIXME - should have reset delay before continuing */
--
-+		do_write_buffer_reset(map, chip, cfi);
- 		printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
- 		       __func__, adr);
- 	}
+ 		do_write_buffer_reset(map, chip, cfi);
 -- 
 2.11.0
 
