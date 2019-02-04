@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AA6AC282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA736C282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:05:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69EC4217D6
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:02:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9520F2082E
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 18:05:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sDBf3TGQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="h6s/eTQM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69EC4217D6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CxXSFdhF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aldXwTmK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9520F2082E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,44 +25,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Jnivq21u2uQ2/XPauNqiYmGbHrjVo2hffQIHYZC0Lh8=; b=sDBf3TGQtH/mho
-	K00APPZ/DxzGdyIPFCUiAELhZf4kPZ50lOhykFk0yRUnPAdtkIrB8jVgeJsHDq9BPZ5KiQjVl/FJn
-	l3S9bkWI4H58czR2oNFrCFyHyBglb+yFKrxxEuxnq7rNPt0Tah3NIb3ayUjoW1SZ35plrnBEWhbBL
-	x7fpy2uDVsMc/qKevAiVqumAfn9uUq+/zSBHWniVDcQ1H4jlkP9czwRFRLVLdDuBf3Km+MAeHSOo5
-	HpyHOhATUbBUckS6cvqousavecdr0ZgwlsBmA6mbnKpXQM7+OorJHxf3Lgnw4U0GF27lHRMaeLJdI
-	lTum+BuRMc1hdzKUWCAg==;
+	List-Owner; bh=+uc4KsWfxnpBr3TIAHJmbtjhutH7bNWV5uXDv+L/XyA=; b=CxXSFdhFL8sQcc
+	7kKm3ilMdkReWueJdDs8asypBgjZ00iKjyju8hlJ4fWBuFJVIPZbgUCePEj8V2e/QVs9+MOjx+9oB
+	ABk3ZomQFYOxRylhrdAHJyECxu2/K2FtkRLsbUJhnWXUMACdL1AV4EsqUWY0mjURnUVGvG5FPCTo6
+	HEaEWYloNusg9451vvThJzlzCHsond6DEGaDp4KZGrz3fnMPmNXJEA629cQAKfIw6XCzc2ZK5tavT
+	cpyhPWAmd8DnhlcFpo/ixDUIhWaZgZeQkXcuAUXfekg2ZM9xRX03IQz5YF5mcgRLuZ+L3ePkHCsQq
+	1whv9chsuOIeRMaeW56g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqiZH-0004WR-9S; Mon, 04 Feb 2019 18:02:03 +0000
+	id 1gqicy-0006lX-DW; Mon, 04 Feb 2019 18:05:52 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqiZE-0004W4-0C
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:02:01 +0000
+ id 1gqicv-0006lC-4p
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 18:05:50 +0000
 Received: from bbrezillon (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B2DD320820;
- Mon,  4 Feb 2019 18:01:55 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 8A2DA2082E;
+ Mon,  4 Feb 2019 18:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549303318;
- bh=TjG4HUkAADk42AAK27ZRSoEg2BgJhIuaDibAYBZ2v4c=;
+ s=default; t=1549303548;
+ bh=c5+TyIJxBL/i7gzWS+Obq8HCkhQjP7W6QvPGBw6zdfw=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=h6s/eTQMxygcrrtkDftsR4y9kMUVk9kAicTwYz52ddCpuNBmmemtp+8gxiPPWGeIh
- /kp1rAekG+wHl2UuTJawTRJWftd6H9pmse9jw+WlH+nZkxsz16gqzQIzMbqHbucE1e
- OdUP43rsP1NEChqFdisC0ncfEZZGx2IrA/suHnxc=
-Date: Mon, 4 Feb 2019 19:01:51 +0100
+ b=aldXwTmKeaD8bkhUeLrGGCxWard1w2rFqhk7jRMCnuKjYmMM1NmcUcA2lqvPOTcQh
+ JeXBfj2P13kC7aUGfiqbKvwpJSaUG7uGqqBcHbsaAgPIjCVWhAmZpmBAdT7eyFczc7
+ QsnaViBLGEn5jlhz5lTz1LnFX+g309KTowAY4HSQ=
+Date: Mon, 4 Feb 2019 19:05:43 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-Subject: Re: [PATCH 2/2] mtd: spinand: micron: Support for all Micron SPI
- NAND flashes
-Message-ID: <20190204190151.2c7987b7@bbrezillon>
-In-Reply-To: <MN2PR08MB5951FD3B8244ABBA72FF7430B86D0@MN2PR08MB5951.namprd08.prod.outlook.com>
-References: <MN2PR08MB5951FD3B8244ABBA72FF7430B86D0@MN2PR08MB5951.namprd08.prod.outlook.com>
+To: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
+Subject: Re: [PATCH v4 02/11] mtd: cfi_cmdset_0002: Remove chip_ready() from
+ do_write_buffer()
+Message-ID: <20190204190534.456d7bb4@bbrezillon>
+In-Reply-To: <20190204173550.29703-3-ikegami_to@yahoo.co.jp>
+References: <20190204173550.29703-1-ikegami_to@yahoo.co.jp>
+ <20190204173550.29703-3-ikegami_to@yahoo.co.jp>
 X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_100200_122646_0DD4301E 
-X-CRM114-Status: GOOD (  29.39  )
+X-CRM114-CacheID: sfid-20190204_100549_210819_004E97EB 
+X-CRM114-Status: GOOD (  21.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,408 +75,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Schrempf Frieder <frieder.schrempf@kontron.De>,
- Marek Vasut <marek.vasut@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Chuanhong Guo <gch981213@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ linux-mtd@lists.infradead.org, Fabio Bettoni <fbettoni@gmail.com>,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Shivamurthy,
+On Tue,  5 Feb 2019 02:35:41 +0900
+Tokunori Ikegami <ikegami_to@yahoo.co.jp> wrote:
 
-On Mon, 4 Feb 2019 11:17:51 +0000
-"Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com> wrote:
-
-> Driver is redesigned using parameter page to support all the Micron
-> SPI NAND flashes.
-
-Do all Micron SPI NANDs really expose a valid ONFI param page? If
-that's not the case, then relying on ONFi parsing only sounds like a
-bad idea.
-
+> It is enough to use chip_good() only so chip_ready() is not necessary.
+> Since chip_good() is doing the same check chip_ready() is doing plus an extra
+> check to make sure we end up with the data we wrote.
 > 
-> Parameter page of Micron flashes is similar to ONFI parameter table and
-> functionality is same, so copied some of the common functions like crc16
-> and bit_wise_majority from nand_onfi.c.
-
-Most of the code is generic and does not depend on the spinand layer,
-plus, we already have ONFI param page parsing code in
-drivers/mtd/nand/raw/ which you're intentionally duplicating in a
-version that will not be re-usable by the raw NAND layer even after
-converting it to use the generic NAND layer.
-
-Please move ONFi parsing code to drivers/mtd/nand/onfi.c and make it
-generic.
-
+> For this change the order to check timeout also will be changed at same time.
+> The order is not a hard requirement, it's just better to avoid the case where
+> the data update happens just after the timeout has expired.
 > 
-> This driver is tested using MT29F2G01ABXGD, MT29F4G01ABXFD, MT29F8G01ADXFD,
-> MT29F1G01ABXFD.
-> 
-> Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-> Reviewed-by: Bean Huo <beanhuo@micron.com>
+> Signed-off-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
 
-I wish this code review had happened publicly.
+This patch actually fixes a bug (as reported in the other thread), so
+please add Fixes and Cc-stable tags and explain why it might cause
+an infinite loop in the commit message.
 
+> Cc: Fabio Bettoni <fbettoni@gmail.com>
+> Co: Hauke Mehrtens <hauke@hauke-m.de>
+> Co: Koen Vandeputte <koen.vandeputte@ncentric.com>
+> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: linux-mtd@lists.infradead.org
 > ---
->  drivers/mtd/nand/spi/micron.c | 172 +++++++++++++++++++++++++++-------
->  drivers/mtd/nand/spi/micron.h |  83 ++++++++++++++++
->  2 files changed, 221 insertions(+), 34 deletions(-)
->  create mode 100644 drivers/mtd/nand/spi/micron.h
+> Changes since v3:
+> - Update the commit message for the comment.
+> - Change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
 > 
-> diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-> index 9c4381d6847b..c9c53fd0aa01 100644
-> --- a/drivers/mtd/nand/spi/micron.c
-> +++ b/drivers/mtd/nand/spi/micron.c
-> @@ -10,13 +10,7 @@
->  #include <linux/kernel.h>
->  #include <linux/mtd/spinand.h>
+> Changes since v2:
+> - None.
+> 
+> Changes since v1:
+> - None.
+> 
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 91a491b..ca9d5fa 100755
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1878,14 +1878,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+>  			continue;
+>  		}
 >  
-> -#define SPINAND_MFR_MICRON		0x2c
+> -		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+> -			break;
 > -
-> -#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
-> -#define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-> -#define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
-> -#define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-> -#define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-> +#include "micron.h"
+>  		if (chip_good(map, adr, datum)) {
+>  			xip_enable(map, chip, adr);
+>  			goto op_done;
+>  		}
 >  
->  static SPINAND_OP_VARIANTS(read_cache_variants,
->  		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-> @@ -34,38 +28,38 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
->  		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
->  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
->  
-> -static int mt29f2g01abagd_ooblayout_ecc(struct mtd_info *mtd, int section,
-> -					struct mtd_oob_region *region)
-> +static int ooblayout_ecc(struct mtd_info *mtd, int section,
-> +			 struct mtd_oob_region *region)
->  {
->  	if (section)
->  		return -ERANGE;
->  
-> -	region->offset = 64;
-> -	region->length = 64;
-> +	region->offset = mtd->oobsize / 2;
-> +	region->length = mtd->oobsize / 2;
->  
->  	return 0;
->  }
->  
-> -static int mt29f2g01abagd_ooblayout_free(struct mtd_info *mtd, int section,
-> -					 struct mtd_oob_region *region)
-> +static int ooblayout_free(struct mtd_info *mtd, int section,
-> +			  struct mtd_oob_region *region)
->  {
->  	if (section)
->  		return -ERANGE;
->  
->  	/* Reserve 2 bytes for the BBM. */
->  	region->offset = 2;
-> -	region->length = 62;
-> +	region->length = (mtd->oobsize / 2) - 2;
->  
->  	return 0;
->  }
->  
-> -static const struct mtd_ooblayout_ops mt29f2g01abagd_ooblayout = {
-> -	.ecc = mt29f2g01abagd_ooblayout_ecc,
-> -	.free = mt29f2g01abagd_ooblayout_free,
-> +static const struct mtd_ooblayout_ops ooblayout = {
-> +	.ecc = ooblayout_ecc,
-> +	.free = ooblayout_free,
->  };
->  
-> -static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
-> -					 u8 status)
-> +static int ecc_get_status(struct spinand_device *spinand,
-> +			  u8 status)
->  {
->  	switch (status & MICRON_STATUS_ECC_MASK) {
->  	case STATUS_ECC_NO_BITFLIPS:
-> @@ -90,22 +84,53 @@ static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
->  	return -EINVAL;
->  }
->  
-> -static const struct spinand_info micron_spinand_table[] = {
-> -	SPINAND_INFO("MT29F2G01ABAGD", 0x24,
-> -		     NAND_MEMORG(1, 2048, 128, 64, 2048, 2, 1, 1),
-> -		     NAND_ECCREQ(8, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> -		     0,
-> -		     SPINAND_ECCINFO(&mt29f2g01abagd_ooblayout,
-> -				     mt29f2g01abagd_ecc_get_status)),
-> -};
-> +static u16 spinand_crc16(u16 crc, u8 const *p, size_t len)
-> +{
-> +	int i;
-> +
-> +	while (len--) {
-> +		crc ^= *p++ << 8;
-> +		for (i = 0; i < 8; i++)
-> +			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
-> +	}
-> +
-> +	return crc;
-> +}
-> +
-> +static void bit_wise_majority(const void **srcbufs,
-> +			      unsigned int nsrcbufs,
-> +				   void *dstbuf,
-> +				   unsigned int bufsize)
-> +{
-> +	int i, j, k;
-> +
-> +	for (i = 0; i < bufsize; i++) {
-> +		u8 val = 0;
-> +
-> +		for (j = 0; j < 8; j++) {
-> +			unsigned int cnt = 0;
-> +
-> +			for (k = 0; k < nsrcbufs; k++) {
-> +				const u8 *srcbuf = srcbufs[k];
-> +
-> +				if (srcbuf[i] & BIT(j))
-> +					cnt++;
-> +			}
-> +
-> +			if (cnt > nsrcbufs / 2)
-> +				val |= BIT(j);
-> +		}
-> +
-> +		((u8 *)dstbuf)[i] = val;
-> +	}
-> +}
->  
->  static int micron_spinand_detect(struct spinand_device *spinand)
->  {
-> +	struct spinand_info deviceinfo;
-> +	struct micron_spinand_params *params;
->  	u8 *id = spinand->id.data;
-> -	int ret;
-> +	int ret, i;
->  
->  	/*
->  	 * Micron SPI NAND read ID need a dummy byte,
-> @@ -114,16 +139,95 @@ static int micron_spinand_detect(struct spinand_device *spinand)
->  	if (id[1] != SPINAND_MFR_MICRON)
->  		return 0;
->  
-> -	ret = spinand_match_and_init(spinand, micron_spinand_table,
-> -				     ARRAY_SIZE(micron_spinand_table), id[2]);
-> +	params = kzalloc(sizeof(*params) * 3, GFP_KERNEL);
-> +	if (!params)
-> +		return -ENOMEM;
-> +
-> +	ret = spinand_parameter_page_read(spinand, PARAMETER_PAGE, params,
-> +					  sizeof(*params) * 3);
->  	if (ret)
-> -		return ret;
-> +		goto free_params;
-> +
-> +	for (i = 0; i < 3; i++) {
-> +		if (spinand_crc16(0x4F4E, (u8 *)&params[i], 254) ==
-> +				le16_to_cpu(params->crc)) {
-> +			if (i)
-> +				memcpy(params, &params[i], sizeof(*params));
+> +		if (time_after(jiffies, timeo))
 > +			break;
-> +		}
-> +	}
 > +
-> +	if (i == 3) {
-> +		const void *srcbufs[3] = {params, params + 1, params + 2};
-> +
-> +		pr_warn("No valid parameter page, trying bit-wise majority to recover it\n");
-> +		bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), params,
-> +				  sizeof(*params));
-> +
-> +		if (spinand_crc16(0x4F4E, (u8 *)params, 254) !=
-> +				le16_to_cpu(params->crc)) {
-> +			pr_err("Parameter page recovery failed, aborting\n");
-> +			goto free_params;
-> +		}
-> +	}
-> +
-> +	params->model[sizeof(params->model) - 1] = 0;
-> +	strim(params->model);
-> +
-> +	deviceinfo.model = kstrdup(params->model, GFP_KERNEL);
-> +	if (!deviceinfo.model) {
-> +		ret = -ENOMEM;
-> +		goto free_params;
-> +	}
-> +
-> +	deviceinfo.devid = id[2];
-> +	deviceinfo.flags = 0;
-> +	deviceinfo.memorg.bits_per_cell = params->bits_per_cell;
-> +	deviceinfo.memorg.pagesize = params->byte_per_page;
-> +	deviceinfo.memorg.oobsize = params->spare_bytes_per_page;
-> +	deviceinfo.memorg.pages_per_eraseblock = params->pages_per_block;
-> +	deviceinfo.memorg.eraseblocks_per_lun =
-> +		params->blocks_per_lun * params->lun_count;
-> +	deviceinfo.memorg.planes_per_lun = params->lun_count;
+>  		/* Latency issues. Drop the lock, wait a while and retry */
+>  		UDELAY(map, chip, adr, 1);
+>  	}
 
-As pointed by Emil, this is wrong, params->lun_count should be used to
-fill luns_per_target. ->planes_per_lun should be extracted from
-->interleaved_bits.
-
-> +	deviceinfo.memorg.luns_per_target = 1;
-> +	deviceinfo.memorg.ntargets = 1;
-> +	deviceinfo.eccreq.strength = params->ecc_max_correct_ability;
-> +	deviceinfo.eccreq.step_size = 512;
-> +	deviceinfo.eccinfo.get_status = ecc_get_status;
-> +	deviceinfo.eccinfo.ooblayout = &ooblayout;
-
-Are all devices really using the same get_status method and the same
-layout. Sounds risky to me to assume this is the case.
-
-> +	deviceinfo.op_variants.read_cache = &read_cache_variants;
-> +	deviceinfo.op_variants.write_cache = &write_cache_variants;
-> +	deviceinfo.op_variants.update_cache = &update_cache_variants;
-> +
-> +	ret = spinand_match_and_init(spinand, &deviceinfo,
-> +				     1, id[2]);
-
-Please don't abuse the spinand_match_and_init() function. Fill the
-nand_device object directly instead of creating a temporary spinand_info
-instance with the expected id.
-
-> +	if (ret)
-> +		goto free_model;
-> +
-> +	kfree(params);
->  
->  	return 1;
-> +
-> +free_model:
-> +	kfree(deviceinfo.model);
-> +free_params:
-> +	kfree(params);
-> +
-> +	return ret;
-> +}
-> +
-> +static int micron_spinand_init(struct spinand_device *spinand)
-> +{
-> +	/*
-> +	 * Some of the Micron flashes enable this BIT by default,
-> +	 * and there is a chance of read failure due to this.
-> +	 */
-> +	return spinand_upd_cfg(spinand, CFG_QUAD_ENABLE, 0);
->  }
->  
->  static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
->  	.detect = micron_spinand_detect,
-> +	.init = micron_spinand_init,
->  };
->  
->  const struct spinand_manufacturer micron_spinand_manufacturer = {
-> diff --git a/drivers/mtd/nand/spi/micron.h b/drivers/mtd/nand/spi/micron.h
-> new file mode 100644
-> index 000000000000..c2cf3bee6f7e
-> --- /dev/null
-> +++ b/drivers/mtd/nand/spi/micron.h
-> @@ -0,0 +1,83 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2019 Micron Technology, Inc.
-> + *
-> + * Authors:
-> + *	Shivamurthy Shastri <sshivamurthy@micron.com>
-> + */
-> +
-> +#ifndef __MICRON_H
-> +#define __MICRON_H
-> +
-> +#define SPINAND_MFR_MICRON		0x2c
-> +
-> +#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
-> +#define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-> +#define MICRON_STATUS_ECC_1TO3_BITFLIPS	BIT(4)
-> +#define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-> +#define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-> +
-> +#define UNIQUE_ID_PAGE	0x00
-> +#define PARAMETER_PAGE	0x01
-> +
-> +/*
-> + * Micron SPI NAND has parameter table similar to ONFI
-> + */
-> +struct micron_spinand_params {
-> +	/* rev info and features block */
-> +	u8 sig[4];
-> +	__le16 revision;
-> +	__le16 features;
-> +	__le16 opt_cmd;
-> +	u8 reserved0[22];
-> +
-> +	/* manufacturer information block */
-> +	char manufacturer[12];
-> +	char model[20];
-> +	u8 manufact_id;
-> +	__le16 date_code;
-> +	u8 reserved1[13];
-> +
-> +	/* memory organization block */
-> +	__le32 byte_per_page;
-> +	__le16 spare_bytes_per_page;
-> +	__le32 data_bytes_per_ppage;
-> +	__le16 spare_bytes_per_ppage;
-> +	__le32 pages_per_block;
-> +	__le32 blocks_per_lun;
-> +	u8 lun_count;
-> +	u8 addr_cycles;
-> +	u8 bits_per_cell;
-> +	__le16 bb_per_lun;
-> +	__le16 block_endurance;
-> +	u8 guaranteed_good_blocks;
-> +	__le16 guaranteed_block_endurance;
-> +	u8 programs_per_page;
-> +	u8 ppage_attr;
-> +	u8 ecc_bits;
-> +	u8 interleaved_bits;
-> +	u8 interleaved_ops;
-> +	u8 reserved2[13];
-> +
-> +	/* electrical parameter block */
-> +	u8 io_pin_capacitance_max;
-> +	__le16 async_timing_mode;
-> +	__le16 program_cache_timing_mode;
-> +	__le16 t_prog;
-> +	__le16 t_bers;
-> +	__le16 t_r;
-> +	__le16 t_ccs;
-> +	u8 reserved3[23];
-> +
-> +	/* vendor */
-> +	__le16 vendor_revision;
-> +	u8 vendor_specific[14];
-> +	u8 reserved4[68];
-> +	u8 ecc_max_correct_ability;
-> +	u8 die_select_feature;
-> +	u8 reserved5[4];
-> +
-> +	__le16 crc;
-> +} __packed;
-> +
-
-Please use the nand_onfi_params definition (include/linux/mtd/onfi.h).
-
-> +#endif /* __MICRON_H */
-
-
-Regards,
-
-Boris
 
 ______________________________________________________
 Linux MTD discussion mailing list
