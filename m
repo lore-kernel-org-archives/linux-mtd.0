@@ -2,83 +2,110 @@ Return-Path: <SRS0=dO6W=QL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21337C282C4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 12:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 010C2C282C4
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 12:42:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3DC92082F
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 12:33:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C1ACC2087C
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Feb 2019 12:42:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iOgIl8s/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRsDgUA8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3DC92082F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aSI2JGNJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=prevas.se header.i=@prevas.se header.b="RcUol1NA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1ACC2087C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=prevas.dk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3sJO4XZCf0JauZVf5TAWvIqFCX6Bc8LnHPWkMnXwJxg=; b=iOgIl8s/v7aCSA
-	jWHKzbTnlQ+Y5CR0oweZzsDY911dy4fTeRCMrCseULZp1oXqzFXepvkYf1W8FTeepa51UNXhpih+z
-	6LnVuQ4CE3FKzg1pzZ1xcu/qdt2JUdxi2inkOChiPpL7RLejgtFyrcoLs4Icu/bY06MxKVWnzT8tM
-	c/D7rXb37lofZmG6f6mub8FFJdOyEe5H+3Ur4vkXBR/mGWANTXPHkovbf+KTBGV3qRHqiIEDV1qPV
-	X0ZccvnE+3ojvjq2UY0fuYFwhabj01UczNyP7sFqW5vo0iGdqyI020uk/yDIvnCtir5SEBQy7Aox6
-	dRFy6PvU/3EQuzTOs/5A==;
+	List-Owner; bh=0sGV1xLpbBh6LMc5Z8H50flW7Z6NqiTE4Q3NzM4c/1o=; b=aSI2JGNJShGk8e
+	KNP3QOQaCpo7jd4LrR8kHD3ymnYDLn8YJntb/GV+6CJJh7DAU47+jxDjKI7+3yKEe/xBTU5CnGQoy
+	RcUIDnzACFXgcn/hmn7tfs8f1UpnMUsHWtSZurqzG41xl70wD4BcLN52XmyGqlbuE4joySgPxBHkZ
+	7w0ZDrF6pJZ2jkeqdL6sHsYQ+zNf/eMKUW2F6Uybkb9izFr9x0bw45vrXj0wGaHvH7Qp3fSUSqgUk
+	PHoK/ttzI7GyL6cnHtT8vNbWf+gAvMen7icHYV4ptkQ6H7m4ChV9lgjyR/790iDrc/XLL+HdVtSVw
+	N/4E/bQd2IxW24ooTqyw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqdQx-0001hq-6e; Mon, 04 Feb 2019 12:33:07 +0000
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+	id 1gqdaL-0004gM-IC; Mon, 04 Feb 2019 12:42:49 +0000
+Received: from mail-ve1eur01on072c.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1f::72c]
+ helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqdQt-0001hN-Ih
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 12:33:05 +0000
-Received: by mail-pf1-x443.google.com with SMTP id g62so6676057pfd.12
- for <linux-mtd@lists.infradead.org>; Mon, 04 Feb 2019 04:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=wB9H8jqgyz2EUqzphuqcub7WdveCpX3EBCAZf+vLVx4=;
- b=GRsDgUA85radMr1fM2vbdJcXWXvtABynpRRs/x6Oeuap4jre1TrUXoWEAg/ZxGcQdE
- 9gM4+IO2UzQYIP0TBy9gOG0d+E5DHvU+5UX4AObEK2YpaZ9r3UuedO8lWSLc9uTNOLCZ
- OzfuIEmylIfE/dVnKRUOTehkTw5WylYnk0sBgD7SnG6W9fI8BvkaND3VGOCafAiFRxHx
- rudWzpUGTvt227tBJC6XxoVlkFvGPtYDJ4EKxApLvRI1XTo0M4IWn/DRqHkn792SwK/U
- S9TCbLOddmbFLXhn7ic0hzSrdylwB401xKHRYyCnTzBt+pLajVRBhiPcbCzfyHTJshGD
- PV0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=wB9H8jqgyz2EUqzphuqcub7WdveCpX3EBCAZf+vLVx4=;
- b=I8LkKmXTfWVyImk1lmeNcXJ4hwstCbAJoslld7jN6KA/6Zt11s+RZbUOVC4VVx1KsV
- Mve0oD4DESl8z8WJyNXY5hE228MhIgA5FpDovB9Tk+qe4yOsGNXPeamksm21/61UxPcq
- 6LnWHn8soUQexOpuiZeGw7okYBqtwcrUOmICfER4SqkrCH7pIsbluZhO7n0ul7Go5ZaN
- ANKJByJYsPK7Zs+dwe5H/l1Jher9vpgsMXT9QMymiQ4gJY+y8YrNlAtIWZRWhiNLuBxF
- iuauol451dbL5s3o4Ur6titulLgW5/mcW7Uc6gcyvOSookKYK9TBWiecwCzd+/uf7bGb
- 7pkQ==
-X-Gm-Message-State: AHQUAuZg/Go3pU9dP5XozK9nlTpEbaEVR7Z72RbAvId7aYhx5xy12Jap
- 2yrL25AZQfISbQB4vhjUC9R/EcuqSsprT3LS0Ug=
-X-Google-Smtp-Source: AHgI3IZSw1rIjh/+ufuN3We3ogfDte1s/L8oXUlOybDpy/1F438xeubtYnQse8LbOYWrH5uzptcGmePrZtze9LvtdQQ=
-X-Received: by 2002:a63:ac1a:: with SMTP id v26mr12925120pge.293.1549283582574; 
- Mon, 04 Feb 2019 04:33:02 -0800 (PST)
+ id 1gqdaI-0004fx-JN
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2019 12:42:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.se; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IG/ho2lmuNFaYUBQLbDo0+S83MznYbnBf2GnI+H3bqs=;
+ b=RcUol1NAkkUwyEgdyzU+O02EqfOBpVgtSF466qVZlrU2R9bH4DmIQFDA6eJSHF6PrqVJz8FjhnNUBFXTqxv8M3IvnKcqT/HlgY0pSgvU/LQ8Wxp1UABtWEZICjFWZj3mWdyp35+U5Jf5rLGMlaEU+pgGNVBXZl/PMGesRIkRlhw=
+Received: from VI1PR10MB2672.EURPRD10.PROD.OUTLOOK.COM (20.178.126.212) by
+ VI1PR10MB2239.EURPRD10.PROD.OUTLOOK.COM (20.177.62.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1580.22; Mon, 4 Feb 2019 12:42:40 +0000
+Received: from VI1PR10MB2672.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d49:d85b:58bf:cd5b]) by VI1PR10MB2672.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d49:d85b:58bf:cd5b%6]) with mapi id 15.20.1580.019; Mon, 4 Feb 2019
+ 12:42:40 +0000
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To: Boris Brezillon <bbrezillon@kernel.org>
+Subject: Re: subpage reads/writes with fsl_elbc_nand driver
+Thread-Topic: subpage reads/writes with fsl_elbc_nand driver
+Thread-Index: AQHUuXCmx5juTY/djEmkcxSv7BQPyqXJjGeAgAYO7oA=
+Date: Mon, 4 Feb 2019 12:42:40 +0000
+Message-ID: <0e9a5c9f-03ba-79e0-f170-39b6ffb353d8@prevas.dk>
+References: <add8754e-e044-a6d7-2ead-067777afbde4@prevas.dk>
+ <20190131165558.59ed85ea@bbrezillon>
+In-Reply-To: <20190131165558.59ed85ea@bbrezillon>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: HE1P191CA0003.EURP191.PROD.OUTLOOK.COM (2603:10a6:3:cf::13)
+ To VI1PR10MB2672.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:803:e3::20)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Rasmus.Villemoes@prevas.se; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [81.216.59.226]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; VI1PR10MB2239;
+ 6:VYT1TsSul3VckdboMYIt2SRsoQUgO0Et4PqN2zexNgVJ7RhzF7zVhJNPZ4wuma9G1F0yuOrEm2Z5CJv0uF4rVjf09HpfWG2f0foJFfzCssO+36aJL/sMOrZVa5YMyiv2TeUrksNieXy06rZ8ac/3Gvo9kd+5WiU/RqAETXWizt0fRhyKfOc4dmFCVill979kZ7QQUpT7McaVgJPQCaLajgS9NEFnepQDY4WT0wxvAp+YjV9rj6fTrhKJP5cY2+k4ZWBnSTnST9pA/zgzpFUlXFXR3o9onWq1kQ94ca+sMW0X5BaGkj+BPNHXIWITsNb7GCcmUOwyWd1VxXFXr7M4/+t9THY3CYK/ZhI6NQ0wzvvzq6ayFAM3jUVzRyt177jgmH/V6bszdQu/VfPgFcAAX/bPRwwEz0Sd53VEPBlbMe6BNWo/vvbVeW6KHtEMsF4Qg+/MVWRv4AF+WDBLnuhSfQ==;
+ 5:xLqAA/5Y9mnd+mEQrAPySSpCJjvxOlMwvw7t73EN56Qlx2E/bIOC+Edn8VZ0eDtPrINmKmODvspIXIfjKGIc/9Q1/pqW+UP0t6pUtYt8ES6vilAyMhQK3Pzkk4tf7OkVDvMTGfSokNA3Ixp4F8AfitjJxWJk1ptBGXz53hjR3DPmevBfhwDzjND1D44IiQEsRQxWU/klIwROFAKBr3Tn8w==;
+ 7:a5XPQ8+3aHbX0huX0JCp+g3wcupaHADBeaH34nzLJdZbAueisqSNALVz77ZBqC6cLWTARArjBULOVnvZgvf03t3XNSFQacE7/GT+n2DvYTAdRb920qMyNV5RgDLp0f7tFpNe9405FqQBMhiOAm11TQ==
+x-ms-office365-filtering-correlation-id: d6814e85-340b-4d57-6ffd-08d68a9e3fde
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
+ SRVR:VI1PR10MB2239; 
+x-ms-traffictypediagnostic: VI1PR10MB2239:
+x-microsoft-antispam-prvs: <VI1PR10MB2239FEB0C8868190660155378A6D0@VI1PR10MB2239.EURPRD10.PROD.OUTLOOK.COM>
+x-forefront-prvs: 0938781D02
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(136003)(39850400004)(396003)(376002)(366004)(346002)(51914003)(199004)(189003)(6916009)(256004)(14444005)(11346002)(66066001)(31686004)(42882007)(186003)(26005)(316002)(8676002)(31696002)(2906002)(81156014)(6506007)(386003)(54906003)(36756003)(305945005)(7736002)(105586002)(102836004)(106356001)(6116002)(3846002)(72206003)(6486002)(44832011)(76176011)(6246003)(478600001)(6512007)(68736007)(14454004)(81166006)(71190400001)(52116002)(6436002)(71200400001)(8976002)(53936002)(229853002)(25786009)(74482002)(8936002)(4326008)(476003)(99286004)(2616005)(97736004)(446003)(5024004)(486006);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:VI1PR10MB2239;
+ H:VI1PR10MB2672.EURPRD10.PROD.OUTLOOK.COM; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: prevas.se does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: c8CggkIeHnGc0nwx9dwW+hAea18gmFQ0XYp1XyjOP4FmXAicHuA6IEqr9WLAUS9xidPickaDfX8833E9HHIznj/1rmJzvO4yq78a/HIVEkBc13E9uOcYkg17ycsbxA5m5qDMfEi1OljJ5GJg9oOxne1Ju8h29DYZOy1ErQT/LLs+hWXiXM9aw1YmPnosXunrnvGXzQlmXfLWO18d1alf5fIeTQWmB71AmQ3vWArTMIL7E0M1BbO9yS6GMA/nAqC30pPk9qb32LVGmcs8TSt6G23Mplgsm4zYKUvMxQd86/Yzan7oMFApIQEIIoj56nwv50A/LBI51EKejIIlrgAT1ewSz86H5bvDFq04NKNl3N7Ua11C0JLmlxaqT5ZdpiE7MBUhTb01FQ/UYPRsJUt15W89MFol3rRfCj8YyVUeOGw=
+Content-ID: <1E8E69C28DEE4E40AC7DEEE7150EE60C@EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-References: <MN2PR08MB5951FD3B8244ABBA72FF7430B86D0@MN2PR08MB5951.namprd08.prod.outlook.com>
-In-Reply-To: <MN2PR08MB5951FD3B8244ABBA72FF7430B86D0@MN2PR08MB5951.namprd08.prod.outlook.com>
-From: Emil Lenngren <emil.lenngren@gmail.com>
-Date: Mon, 4 Feb 2019 13:32:50 +0100
-Message-ID: <CAO1O6sejw4zYeh7iewT3gRZz=C5K3iOXhY-kO6FgSJNRHOBuKA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: spinand: micron: Support for all Micron SPI NAND
- flashes
-To: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6814e85-340b-4d57-6ffd-08d68a9e3fde
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2019 12:42:39.6399 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB2239
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_043303_641300_F06C6398 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20190204_044246_686977_73C3F6EA 
+X-CRM114-Status: GOOD (  12.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,64 +117,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Schrempf Frieder <frieder.schrempf@kontron.de>,
- Marek Vasut <marek.vasut@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
+Cc: Esben Haabendal <eha@deif.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Chuanhong Guo <gch981213@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ "Per N. Christensen" <pnc@deif.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpEZW4gbcOlbiA0IGZlYi4gMjAxOSBrbCAxMjoxOCBza3JldiBTaGl2YW11cnRoeSBTaGFz
-dHJpIChzc2hpdmFtdXJ0aHkpCjxzc2hpdmFtdXJ0aHlAbWljcm9uLmNvbT46Cj4KPiBEcml2ZXIg
-aXMgcmVkZXNpZ25lZCB1c2luZyBwYXJhbWV0ZXIgcGFnZSB0byBzdXBwb3J0IGFsbCB0aGUgTWlj
-cm9uCj4gU1BJIE5BTkQgZmxhc2hlcy4KPgo+IFBhcmFtZXRlciBwYWdlIG9mIE1pY3JvbiBmbGFz
-aGVzIGlzIHNpbWlsYXIgdG8gT05GSSBwYXJhbWV0ZXIgdGFibGUgYW5kCj4gZnVuY3Rpb25hbGl0
-eSBpcyBzYW1lLCBzbyBjb3BpZWQgc29tZSBvZiB0aGUgY29tbW9uIGZ1bmN0aW9ucyBsaWtlIGNy
-YzE2Cj4gYW5kIGJpdF93aXNlX21ham9yaXR5IGZyb20gbmFuZF9vbmZpLmMuCj4KPiBUaGlzIGRy
-aXZlciBpcyB0ZXN0ZWQgdXNpbmcgTVQyOUYyRzAxQUJYR0QsIE1UMjlGNEcwMUFCWEZELCBNVDI5
-RjhHMDFBRFhGRCwKPiBNVDI5RjFHMDFBQlhGRC4KPgoKPiAtc3RhdGljIGNvbnN0IHN0cnVjdCBz
-cGluYW5kX2luZm8gbWljcm9uX3NwaW5hbmRfdGFibGVbXSA9IHsKPiAtICAgICAgIFNQSU5BTkRf
-SU5GTygiTVQyOUYyRzAxQUJBR0QiLCAweDI0LAo+IC0gICAgICAgICAgICAgICAgICAgIE5BTkRf
-TUVNT1JHKDEsIDIwNDgsIDEyOCwgNjQsIDIwNDgsIDIsIDEsIDEpLAoKPiArICAgICAgIGRldmlj
-ZWluZm8ubWVtb3JnLmVyYXNlYmxvY2tzX3Blcl9sdW4gPQo+ICsgICAgICAgICAgICAgICBwYXJh
-bXMtPmJsb2Nrc19wZXJfbHVuICogcGFyYW1zLT5sdW5fY291bnQ7Cj4gKyAgICAgICBkZXZpY2Vp
-bmZvLm1lbW9yZy5wbGFuZXNfcGVyX2x1biA9IHBhcmFtcy0+bHVuX2NvdW50Owo+ICsgICAgICAg
-ZGV2aWNlaW5mby5tZW1vcmcubHVuc19wZXJfdGFyZ2V0ID0gMTsKPiArICAgICAgIGRldmljZWlu
-Zm8ubWVtb3JnLm50YXJnZXRzID0gMTsKCj4gKyAgICAgICBfX2xlMzIgYmxvY2tzX3Blcl9sdW47
-Cj4gKyAgICAgICB1OCBsdW5fY291bnQ7Cj4gKyAgICAgICB1OCBhZGRyX2N5Y2xlczsKPiArICAg
-ICAgIHU4IGJpdHNfcGVyX2NlbGw7Cj4gKyAgICAgICBfX2xlMTYgYmJfcGVyX2x1bjsKCkkgaGF2
-ZSBhIHF1ZXN0aW9uIGFib3V0IHRoZSBsdW5fY291bnQuIEFzIGl0IGlzIG5vdywgdGhlCnBsYW5l
-c19wZXJfbHVuIHBhcmFtZXRlciBpcyBpbml0aWFsaXplZCB0byAyIGluIE5BTkRfTUVNT1JHLiBJ
-biB5b3VyCnBhdGNoLCBpdCBpcyBpbnN0ZWFkIGluaXRpYWxpemVkIGZyb20gdGhlICJsdW5fY291
-bnQiIHByb3BlcnR5IGZyb20KdGhlIHBhcmFtZXRlciB0YWJsZS4gQnV0IEkgbG9va2VkIGF0IGEg
-ZGF0YXNoZWV0IEkgZm91bmQgYnkgYSBzaW1wbGUKR29vZ2xlIHNlYXJjaCAoaHR0cHM6Ly93d3cu
-Z29vZ2xlLnNlL3NlYXJjaD9xPW1pY3JvbituYW5kK3NwaStkYXRhc2hlZXQpLAp0aGUgZmlyc3Qg
-aGl0IGlzIHRvIHRoZSAxIEdiIGZsYXNoIE1UMjlGMUcwMUFBQURELiBUaGF0IGRldmljZSBjbGVh
-cmx5CmhhcyB0d28gcGxhbmVzIHBlciBsdW4gKHlvdSBuZWVkIHRoZSAicGxhbmUgc2VsZWN0IiBi
-aXQgaW4gdGhlCnJlcXVlc3RzKSwgYnV0IHN0aWxsLCBhY2NvcmRpbmcgdG8gdGhlIHBhcmFtZXRl
-ciBwYWdlIGRhdGEgc3RydWN0dXJlLApieXRlIDEwMCwgTnVtYmVyIG9mIGxvZ2ljYWwgdW5pdHMg
-aXMgc2V0IHRvIDAxaC4gQWxzbywgdGhlICJibG9ja3MgcGVyCmx1biIgY291bnQsIHdoaWNoIGlz
-IGNhbGxlZCAiYmxvY2tzIHBlciB1bml0IiBpcyAxMDI0LCB3aGljaCBzaG91bGQgYmUKNTEyIGlm
-IHRoaXMgcGFyYW1ldGVyIHJlYWxseSBtZWFudCAiYmxvY2tzIHBlciBwbGFuZSIgYW5kIHRoZQpj
-YWxjdWxhdGlvbiBpbiB0aGUgcGF0Y2ggd2FzIGNvcnJlY3QuCgpBcyBhIHJlZmVyZW5jZSwgdGhl
-IDIgR2IgdmVyc2lvbiBvZiB0aGUgTWFjcm9uaXggZmxhc2gKKGh0dHA6Ly93d3cubWFjcm9uaXgu
-Y29tL0xpc3RzL0RhdGFzaGVldC9BdHRhY2htZW50cy82ODY2L01YMzVMRjJHRTRBQiwlMjAzViwl
-MjAyR2IsJTIwdjEuNS5wZGYpLAphbHNvIGhhcyB0d28gcGxhbmVzIHBlciBsdW4uIEl0IGFsc28g
-c2V0cyBieXRlIDEwMCwgTnVtYmVyIG9mIGxvZ2ljYWwKdW5pdHMgdG8gMDFoLgoKU28gd2hhdCBJ
-J20gd29uZGVyaW5nIGlzIG9mIGNvdXJzZSBpZiB0aGlzIHBhcmFtZXRlciBpcyB0aGUgY29ycmVj
-dApvbmUgdG8gdXNlIGZvciBwbGFuZXNfcGVyX2x1bi4gSSB0cmllZCB0byBsb2NhdGUgdGhlIGNv
-cnJlY3QgInBsYW5lcwpwZXIgbHVuIiBwYXJhbWV0ZXIgaW4gdGhlIHRhYmxlLCBidXQgZGlkbid0
-IGZpbmQgYW55b25lLiBNYXliZSBpdCdzCnRoZSB1bmZvcnR1bmF0ZSBmYWN0IHRoYXQgInBsYW5l
-cyBwZXIgbHVuIiBpc24ndCBleHBvc2VkIGluIHRoZQpwYXJhbWV0ZXIgdGFibGU/CgovRW1pbAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
-bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 31/01/2019 17.11, Boris Brezillon wrote:
+> On Thu, 31 Jan 2019 14:24:15 +0000
+> Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
+> 
+>> --- a/drivers/mtd/nand/raw/nand_base.c
+>> +++ b/drivers/mtd/nand/raw/nand_base.c
+>> @@ -6657,6 +6657,11 @@ static int nand_scan_tail(struct mtd_info *mtd)
+>>                 pr_warn("WARNING: %s: the ECC used on your system is too
+>> weak compared to the one required by the NAND chip\n",
+>>                         mtd->name);
+>>
+>> +       if (IS_ENABLED(CONFIG_ML300PCM31)) {
+>> +               pr_warn("setting NAND_NO_SUBPAGE_WRITE bit\n");
+>> +               chip->ecc.write_subpage = NULL;
+>> +               chip->options |= NAND_NO_SUBPAGE_WRITE;
+>> +       }
+>>         /* Allow subpage writes up to ecc.steps. Not possible for MLC
+>> flash */
+>> longer, but without the former the boot stops at
+>>
+>>     [    0.918927] ubi0 error: validate_ec_hdr: bad VID header offset
+>> 2048, expected 512
+>>     [    0.926549] ubi0 error: validate_ec_hdr: bad EC header
+>>     [    0.931745] Erase counter header dump:
+>>     [    0.935547]        magic          0x55424923
+>>     [    0.939344]        version        1
+>>     [    0.942359]        ec             9
+>>     [    0.945373]        vid_hdr_offset 2048
+>>     [    0.948610]        data_offset    4096
+>>     [    0.951879]        image_seq      1882958541
+>>     [    0.955678]        hdr_crc        0x1a47f3d3
+>>     ...
+>>     [    1.059976] ubi0 error: ubi_io_read_ec_hdr: validation failed for
+>> PEB 0
+>>     [    1.066669] ubi0 error: ubi_attach_mtd_dev: failed to attach
+>> mtd0, error -22
+>>     [    1.073824] UBI error: cannot attach mtd0
+>>     [    1.083983] VFS: Cannot open root device "ubi0:rootfs" or
+>> unknown-block(0,0): error -19
+>>
+> Just pass ubi.mtd=<part-name>,<page-size> on the command line. This way
+> the VID header will be read/written from/to the second page instead of
+> the 2nd subpage of the first page.
+> 
+
+Thanks for the quick response. I tried this, and the board does seem to
+boot without the hunk above applied. Unfortunately, it seems to get
+bricked after I write anything to the rootfs and reboot. I'll
+investigate more thoroughly later, and also look into the conversion to
+->exec_op, but for now I need to look into getting other parts of the
+board working with a new kernel.
+
+Thanks,
+Rasmus
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
