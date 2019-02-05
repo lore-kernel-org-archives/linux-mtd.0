@@ -2,194 +2,119 @@ Return-Path: <SRS0=GMtL=QM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C21E1C282CB
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 17:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2A72C282CB
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 17:33:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89031217F9
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 17:08:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83193217F9
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 17:33:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bK9rr6y5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="F8MARENk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="bHGZdUD1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89031217F9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XfPq7Jpm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="V2BvUpK+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83193217F9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7CgEtD7eFSCgiEU7JlU1f5FE+2iEZ/W30j4g6AsyBjI=; b=bK9rr6y5I92Z9KFxxjrtQmx05
-	k4J51iLLxmPDAxosfhgD4EHymc6wGEubxmlde6b5QXwXd+wGktkl3niEmpM2Mw6N+/NpGstUt+g9J
-	fUBLZZQR8dQ2JocE9T5zf6MmLTA6kCu2sLCg51xKGX0tJKyI/sVjVzGEDmxkbOgH9qO/WqqwbdBGN
-	n89lY94hXVjBgqV2vBxZ9JobezJ2dXhMOia/19IfMkG1JvtdFSAPrFqLdM3ba6seBRz+b2w/BLEun
-	UscHuWcAj5ixgdZTgohlObJEz+Kvk4YzIQdr2RXgj+Un8cUhAkfezIFAhSwcWV8o3di/MDt0ausIc
-	DIIKGLmdQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KPGtpJICe6aciYJScnQVUL8MMgwrysHItN3avcJGXss=; b=XfPq7JpmqjBHb1
+	rvjA3cdUeqKaqJIkgIS3LDPBeIHEHAfV7y40plDMsKYRHiVJMWEVuvNuV/SO7731TFk5J6bXOO2xD
+	3LpKtxnJjxVI5qdgPK4bh202q6b5YQBjM0eDIRg2/eDZH6Dic8LKtkIpzppiE1BVvThxe+9BPIXM8
+	jrm4K43VKLwlbDtvqtpJpgh8RBc7I/K9Otswg2Z8kD0lMJip1hSvHFjxNHoDFIWZALYtIc3qzzbAl
+	wuhvR1AEEIjFzvTYGbyAuZCXsCF9UTBloriSZ1bFMC9HyfTaJaDZw3H75KfzGGhE6MwXeNwx8fptA
+	cSksi3tGuRMoJuVMTzCg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gr4DP-0002IX-Si; Tue, 05 Feb 2019 17:08:55 +0000
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
+	id 1gr4bP-000347-Bb; Tue, 05 Feb 2019 17:33:43 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gr4DM-0002I9-B7
- for linux-mtd@lists.infradead.org; Tue, 05 Feb 2019 17:08:54 +0000
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
- by mx0a-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
- x15H26qN003188; Tue, 5 Feb 2019 09:08:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=proofpoint;
- bh=wl3/61dRHk+U1MDJpSGKdQhqqWeRJbRFnnW91i2wGr0=;
- b=F8MARENkLhu+y5PTe7pCBU+Wrh1bRI+C4QVN0EosIzvcvAseNHbUSDqsPPUG1REt/5y7
- APZH4x/NIkHoP8gPpHASevMU57R4AArWQNVL6BlMrSSIG/f3KSBCivqkDmCwVs9JqC5m
- PAc9iVYIWKslJTMAUiV5mhEeTFmZe4VnK06Fjs0bgWy4dvaRv6WXEOLS42KH5tBQFQWs
- KHG0STZdfsOCXFBbGYqWROxJtvD1xnLbcKzeYuqJ5yWIGDL9/vELgS59aXcEc6LfmEyO
- VCC9igHMRUcxkqgYkYSMd/ti1QTLH9kNVC9+KOSjTXuJK0n/y/H2BfVrifcQ7QHHUK5D dg== 
-Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
-Received: from nam04-bn3-obe.outbound.protection.outlook.com
- (mail-bn3nam04lp2051.outbound.protection.outlook.com [104.47.46.51])
- by mx0a-0014ca01.pphosted.com with ESMTP id 2qfagt8ybe-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
- Tue, 05 Feb 2019 09:08:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector1;
+ id 1gr4as-0002XZ-S4; Tue, 05 Feb 2019 17:33:13 +0000
+X-IronPort-AV: E=Sophos;i="5.56,564,1539673200"; d="scan'208";a="23466280"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 05 Feb 2019 10:33:06 -0700
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.38) with Microsoft SMTP Server (TLS) id
+ 14.3.352.0; Tue, 5 Feb 2019 10:33:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wl3/61dRHk+U1MDJpSGKdQhqqWeRJbRFnnW91i2wGr0=;
- b=bHGZdUD1JL6KycAW1ytgegRAgsUQVNXnhUAXewBDv6PSatf3ar5NntS0Dz4GEycEFSqgCub/fbOlLK+EQqpbeFpBheUF976TA/qra6GFDSp2nwXI2uO0Mf8Q053Zgly/2azChWeVavLgi9YdtL1hbjFcqCzPCiXPF6ZNYS6ebEE=
-Received: from DM5PR07CA0100.namprd07.prod.outlook.com (2603:10b6:4:ae::29) by
- CY4PR07MB3096.namprd07.prod.outlook.com (2603:10b6:903:ce::10) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1558.21; Tue, 5 Feb 2019 17:08:27 +0000
-Received: from CO1NAM05FT027.eop-nam05.prod.protection.outlook.com
- (2a01:111:f400:7e50::207) by DM5PR07CA0100.outlook.office365.com
- (2603:10b6:4:ae::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1580.22 via Frontend
- Transport; Tue, 5 Feb 2019 17:08:26 +0000
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- cadence.com discourages use of 158.140.1.28 as permitted sender)
-Received: from sjmaillnx1.cadence.com (158.140.1.28) by
- CO1NAM05FT027.mail.protection.outlook.com (10.152.96.137) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.1580.2 via Frontend Transport; Tue, 5 Feb 2019 17:08:26 +0000
-Received: from mailsj6.global.cadence.com (mailsj6.cadence.com
- [158.140.32.112])
- by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id x15H8N9v013891
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Tue, 5 Feb 2019 09:08:23 -0800
-X-CrossPremisesHeadersFilteredBySendConnector: mailsj6.global.cadence.com
-Received: from global.cadence.com (158.140.32.37) by
- mailsj6.global.cadence.com (158.140.32.112) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 5 Feb 2019 09:08:20 -0800
-Date: Tue, 5 Feb 2019 17:08:14 +0000
-From: Piotr Sroka <piotrs@cadence.com>
-To: Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: nand: Add Cadence NAND controller driver
-Message-ID: <20190205170812.GA18748@global.cadence.com>
-References: <20190129160337.24350-1-piotrs@cadence.com>
- <20190129161040.20299-1-piotrs@cadence.com>
- <20190129182100.2fcb4e9f@bbrezillon>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190129182100.2fcb4e9f@bbrezillon>
-User-Agent: Mutt/1.5.20 (2009-12-10)
-X-Originating-IP: [158.140.32.37]
-X-ClientProxiedBy: mailsj7.global.cadence.com (158.140.32.114) To
- mailsj6.global.cadence.com (158.140.32.112)
-X-OrganizationHeadersPreserved: mailsj6.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:158.140.1.28; IPV:CAL; SCL:-1; CTRY:US;
- EFV:NLI; SFV:NSPM;
- SFS:(10009020)(136003)(346002)(376002)(396003)(39850400004)(2980300002)(36092001)(189003)(199004)(67846002)(16526019)(26005)(7636002)(186003)(106466001)(2486003)(50466002)(386003)(55016002)(6116002)(336012)(229853002)(6916009)(3846002)(316002)(54906003)(1076003)(86362001)(7416002)(23676004)(246002)(356004)(16586007)(478600001)(58126008)(305945005)(7696005)(476003)(486006)(11346002)(8936002)(53416004)(126002)(8676002)(2906002)(426003)(5024004)(6666004)(105596002)(6246003)(26826003)(33656002)(47776003)(7736002)(956004)(6286002)(66066001)(76176011)(4326008)(446003)(18370500001);
- DIR:OUT; SFP:1101; SCL:1; SRVR:CY4PR07MB3096; H:sjmaillnx1.cadence.com; FPR:;
- SPF:SoftFail; LANG:en; PTR:corp.cadence.com; MX:1; A:1; 
-X-Microsoft-Exchange-Diagnostics: 1; CO1NAM05FT027;
- 1:PLUoBFBbmG0fpaOqzMIOncw239/C7LIkNyHs9zDJMJnu9cEPSa4jiobPdj7tcXPlPak9WZJh5c4cP+h7rPGtBbCsDVH3YUxZvumpPVrWIScxM94PjrWN+Rt5b1VeqGIOtjeNJliSrAXXqGTU/CoJh/AjqlX7hxSQaQLQRsx/vCQ=
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: faf2b02f-b621-431b-8e23-08d68b8c8b15
-X-Microsoft-Antispam: BCL:0; PCL:0;
+ bh=MTqer/p01Qcl/l2aqwRseP0Rr+LSsp2kdn/8t3gKRmE=;
+ b=V2BvUpK+1ooM0IQfhP9GHRY1Tb11iIgUOznzhjJnZfpNh2HDJcbyxYjH2zoZSXzECyE59O6KIcdMFUowR8YxrblqpIKsYr3hUFwwnaz6mk1DV6HW3+BqF9mIuuLsEUaHfbAiUgHJkI23+dBHjAudVD6MB3uqloCVHZy8o0AJ4V8=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1681.namprd11.prod.outlook.com (10.173.26.151) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1580.17; Tue, 5 Feb 2019 17:33:03 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.019; Tue, 5 Feb 2019
+ 17:33:03 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+ <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+ <Ludovic.Desroches@microchip.com>, <bbrezillon@kernel.org>,
+ <Cyrille.Pitchen@microchip.com>, <bugalski.piotr@gmail.com>
+Subject: [PATCH v6 00/13] spi: atmel-quadspi: introduce sam9x60 qspi controller
+Thread-Topic: [PATCH v6 00/13] spi: atmel-quadspi: introduce sam9x60 qspi
+ controller
+Thread-Index: AQHUvXjZDfiqbsVfBEmeDdSid1Uihw==
+Date: Tue, 5 Feb 2019 17:33:03 +0000
+Message-ID: <20190205173254.16388-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR07CA0128.eurprd07.prod.outlook.com
+ (2603:10a6:802:16::15) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; BN6PR11MB1681;
+ 6:sNpmi7UHzfQy5Oao3TTpCh5J8OhgSMGD16+RU0EX+SEBy5AuYz9yVOH9yK/5g758f4D7YuQ1q3uucXP7JwUxwk6kf2BayeCr4azmYPIXvEU/IPqHBRxdGpv/l30FhNxVgVbJ/eyTkkDjlB9nqRODQDVedEAUj5dUuDEg8NzR3msGVECMD00vbOtovmA1zAW2BA6eb/SKktc/w8HAexgJhKnXoLWd47ghB+Cj+h3Gwd7RE0w8Z9kZp/3/YbdmBDDx2kvbYMZt/tJ3uHjTfvWE9ZbAoYx4OcabJpqYIILVPiZPQcOoM1vGXqDX5MdupOXGv/CmWqm2KYH/emRvGG02uZUEG0XnnU7P6A/5pdbmAANfRMoUKerWDFWu7gRR2kunzzEmzOmNi6HLGfkEOHzSc7TpTHRpx08w+K9ibeehxGZp1jJAmpwsQo43/tMVQYzczjkeILcWfX/xv35mwuekcA==;
+ 5:UVqBACtT4ja0Am9IHINu4eyAL81zCe8WmskdM5BxwHgVOkq8CL8F8LUO6bEnc7cT1c/2H8ykwjTussAaD7J3/EEQqy7rag3hTx/6ENUauNh6wURpmmalbRYro4F4bRHt+KHVSqoAtqouqhimKxe8elczpYR9qrznGb/zM+d/28yNpC5/hd1YS7dFE3Whl5cRr/BuXfmBQGwQaoxNSG/WKg==;
+ 7:TfR6t/DdPrP851jiupBH6kJ5qpXNh5AK7F+GNvOBFoW5E1skVlgiGYU7yULXIlGbqHRchxlvri2MT8SAZVuoXQFgUywvpAilij3hkid5TOq0ia/47xYpHA2lX+lkfzSq3NPhR4NHSVDCUAets+SMkw==
+x-ms-office365-filtering-correlation-id: 5a2fc2c9-f24c-4a22-e74f-08d68b8ffb58
+x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
- SRVR:CY4PR07MB3096; 
-X-Microsoft-Exchange-Diagnostics: 1; CY4PR07MB3096;
- 3:CN/3vK0DfSAzz1lHtb9hB+KoE90X9G621GmLprAGcHS3s+1K/MA5g0Lt3zWmqXnU7QYLHqTwx9ePMUZ+wapF+dQkpy0NldV/KSRVdQKcvmTa5+osrLg/1XHOknGYQ6pFUOpI+KTxLfS9iEaj6O4z8IxCUfEm5jzqNnbrHvIRJIIfaq3/m9joxP0u9DahK1KFun7x6njtqAN9ibZU/z5vPTkIdwH593qGErUte4SF0pMPIjRxN/t/m5XfUzDNBfCV/eb8/2KBX3bcIGhgPLtCEkNa+YXeu0Wpk7CZi/qBsWOLjjtAoG/7BNV8vjTs4OaAsald/KS8jqTORqRBlt5fyqMpmpTSN1LTiw/yTP/+9XuGr4dSSlQVABX2aWva7rW+;
- 25:2o6CzxEAymwzUO5Z5t/durrLdgmT8OkXnpWyqPIWhm794sdEOXKOVHfOwqvdI2huostDoXWF3G/cWPHNL9c2DICMDJod+rvuf2BjXkz3OTQtH7WkxTNh6eEac3FiPE3tb7dQukK4Fg+8AvGYHQ05wnY6+GiuSqrpqzka3lrVSpk3mgLCmjl756W2Y+03wVBXdMcco8Yj7obNkns5pN+wbYh9uLYTzML/29sYFDOFxiGWNewwYtruZsTO4KGEAH/vg76u16GuovbzNisDPuuN/yR+xpUopmJIa+2uTqdzuA2wrhaCp9pHy+v1T1Q438D4TLtuXjdAt30mwz6Fi2K4nw==
-X-MS-TrafficTypeDiagnostic: CY4PR07MB3096:
-X-Microsoft-Exchange-Diagnostics: 1; CY4PR07MB3096;
- 31:qTH9yVcBtOrs04Dquryr3jB4VwJ8hjk7YHn0J4glc68AhcG37J7rPB11hKBu1Pe+nXQJI00Wb9ysxTAmLTdKvoAaZ87vKu9oagmkqoF9IyO6a7untJ34n2Ot4KXKrH0ChxWjrJ3JzV6eF6klwuAlhPQ4gvuL5B4nVKq9CUCTB4+vHzImYWphUTngCv7XruGXUv4915SRqEdTo+zaK2moDcSxvmsH9ZgSIj+z3EvGQII=;
- 20:vIcavCp6CFAXol1b45OBvuuEVauvP65omJgZMZ5DwCTqltf5BwlwXJLE5/VQM5XXR15baz/DAx7KBKtvzj72cW0QUc5cyezUynq9sJP21Ibo7NXV28/CkxYXLIhBNnQsO5MHgSidPpVWMYlvDJUQK4bLrUjCWhHOYmYWGig6rLrL3kwynJnZ5maH2oId5pYvXcPCItZx/9kYlHo6dCou1VV2e3AvUDVGD41bUfFjL2y28PuP85eJSmEL04zsPRgz1xvZuj4HV6i1RxkTWqthig7/bCui4Mf27PskhTZquywOoExAYlLdBe2He4jMIOkTMxKvCOGbA6UIkz+B6dHS9d8/LZ5PH5UGk53pMy3pxhuNmHIgNqmoLuqTaWP0bRw2jOtYW4xUyPdt7YQmHQFzB0AcuGdJ0MsdUN4hgmQ96NsDsEy6QSusiwhnqo3pYK7YbwB/W+m0+ZSE/D8CjUZeDkUu1lblQstDUI2MC1cqXNyYwHIaaVbUAKLj6SikYaw/
-X-Microsoft-Antispam-PRVS: <CY4PR07MB309656087A0355A3A5751671DD6E0@CY4PR07MB3096.namprd07.prod.outlook.com>
-X-Microsoft-Exchange-Diagnostics: 1; CY4PR07MB3096;
- 4:zOE1wT9BKYn9rjlfXNjkYpxCJepS1a0AeZOWRHZ8z452DEZ7wXt5d6OAKhkay6qj691RFdCSGbH2GKhkxysbNce7s/ZAxhH8ahE0vX4Qa4rPlgdewboMwg7xOrfWsFEdqWM/NIDTS1O0SaxOJcqiNnDhRIYmo1fZWsC2vAp9P9GMbp6ayk+jcKW0+CDbpjpB9cLZ5vEWfrzSjcpwMQP02oUi+r8cA0ZUswy0VMBQnvAemRQYfQ8Jt06v6eKN+RjFETjFaKdhJJFMcVLw86ZPwpNgtHJM3EDbZvK7zSb24/M=
-X-Forefront-PRVS: 0939529DE2
-X-Microsoft-Exchange-Diagnostics: =?utf-8?B?MTtDWTRQUjA3TUIzMDk2OzIzOm84TXdWMDlCREZoSFBoV3NsVWpJSG9IU2Ir?=
- =?utf-8?B?b0c1WG5LT2tpbHBHYTVtTU1CT1IyWXB5VThWZGdVd0ZGeGV0SEw0dGYzMFdq?=
- =?utf-8?B?Q2FISGZleDlVdzVPanFNdFlQSllHc1l4d1B4VE8vYktKRnN4RDlBUUhxTmc1?=
- =?utf-8?B?UEtCcTgvbnlCdklEM1JCeHRzY3NXY1pITzBSMGdzdkEvekxKNGRqNDM4SC8y?=
- =?utf-8?B?dGlGc1liSDQ0UGpVeEx4T3RHK3hCZEU2YkQvNXVCTGxWTSs3RzZHUU1NbW9C?=
- =?utf-8?B?ZS9wSmFZS0pXaXhXc1EzclQycHR4ZjNNUStCYk82RHRyNGFRWVBYQ2kwZitM?=
- =?utf-8?B?QitXRTRvRnhXdkZLOFduOVZlbG9neFVkLzFGYUFiV2JPTXJITEdwM1RMc250?=
- =?utf-8?B?M0hYZUJaV3dGdjBnZHN6S3c5aDdZUmtKSzk4ankrVS9DdDI1eUpiTXNNOFFR?=
- =?utf-8?B?a0pieTVFR0xEdzFUNUZ5YTkrREdkSkVqTDVhcnZlRlREUnJDRm96N3VCZVlJ?=
- =?utf-8?B?OXk5bEwzUG5OVWh6aEVJczVvRmdUNTlQNTdlSTdONjlMZFgzaG9icDdaNTRF?=
- =?utf-8?B?L1QxelA5TnZvdEtqRzlJaGhZNlNNNS8yajJTMXZXeHdPaXhTUGJHZTQ4NEp5?=
- =?utf-8?B?dmU5SnU4TlBCc3JieEtuVmZKVjg4eGZsd1pBUWkzbHlLWU5DSE1ocW0zTURv?=
- =?utf-8?B?RHBnMkVNdDRFZTZYS1cyeUlFc3ZYYU1namN5OVIvdm1TZGRLb0E0QU9xNkQ3?=
- =?utf-8?B?NmljcS80bU1XMXZidnJEWTZaQmxnNjBpMTcrSkpZdTJMODIvZks3aTBiKzNo?=
- =?utf-8?B?TUdyN1dEUWZDVmhibmlrbVpLT0ExQ2xMaG5RWTk1N0RYOEZBNUdhVS9rT0xv?=
- =?utf-8?B?cVNJcFEzcTRhWGtTOCs5UkZ3dUdFVko0VHpGZXlENVJxQVZOS2ZnR0lXR3hD?=
- =?utf-8?B?WENNR3FVcXlMWlByYyt0bCt2MFdCQnB5M0NQdUJ6YUtJVmVHOGJSUXZGWndQ?=
- =?utf-8?B?Y3JuVVF0ZCtrYjBlY25FZXZVQnFFYkZxS21SM0xrUWkxU0FWdXNua0lKNmlu?=
- =?utf-8?B?eWJERzNwRkZuVUVFay8wcTQ1RUpmSXFaaGJaYVIwcDhYVjYybUZiQXlkNGtq?=
- =?utf-8?B?NHZLcklvc2paL2lLZHh5UWdkczRCM3NXdDVlR0NOZlE4S1UvbFgrYnRVZlhD?=
- =?utf-8?B?QktONFR1Mm5kbE83aWxRUytQbTVaWEdZMkFxckVuUGxhZ0pTMlhieC82YSs4?=
- =?utf-8?B?SE1CdURxeTNIdjRvRU5yQ2M4RG4wYTRDaWFBNTM1ZUZwZ0FRcnIzTmY3bmI4?=
- =?utf-8?B?M2pIb1NlQXEyRmpKclRCa2tzaEEzUWsvVXpuTENTSFZKMFEvYkJINFdBbEVG?=
- =?utf-8?B?SzhDY25TNlF1eDc1K3BKdHhRZzJmN0RJRHUvVUY1bm5Jdjc0dU5FVnM1bDhm?=
- =?utf-8?B?Y3BiRlVTZ0VSejlpUVUveDJ2OEJXY09KbzE5ZlVMditQZ2JrNG9HNXNVelZB?=
- =?utf-8?B?RzFiRkVoL2tWUDhhYmlDWVk4WjdnWExLWVhwU2xoTlVMMkVRLzNJTEhmdXpm?=
- =?utf-8?B?d1pJQk43bDVCUTdZeDd1a2ZENko4Q3VyMmVZeUxnbFVLUko3SDNRUHVtTk1I?=
- =?utf-8?B?bVNBeFpTZkh2OWVWdTdXS2NmZUZ5dTNMTDlyZ3laRWpyZ0FuTUFiSWxaNlZY?=
- =?utf-8?B?SnZGSlNJRlRtem1Tdmx1VUJrRjVKd2xZbXhFSnBlT05MTVhjd25HdkxnQWRS?=
- =?utf-8?Q?izncVycYVrvgGwdv8IfYkh6RYi3e+98cWUQWE=3D?=
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: IWmYJ4unIgJfk+QiugP6Dpc9RVksLqOmMaj0hjTQvQB6F6H8nQN6F33gxV471A3kgV3/Qckv87vghTFUEAV+mRMjjQ9aPvblGKnoqPayg2d1Angql79gX8G60GoUl/6/brt2q/0kiMupPwL1oXmQA1+Z9eA0PNLB+a9hRuXCPaFdtx2cUawmicBtnqFMSba1zDZbW+xf8cXHf+x8FSqKIM4Bdd3Pw/lwZI8kmMqI1vpybNHjnQXEtl71jHKPuShtJq5+BWgL3+Lf4ju4C+9pLDoLTN3yKxoT5foLzQqTzUpa6M8lqj7Bati66W5hGv2/mXVBTjAGibn6NWJNW4FbCYjl+JelyCLn52hFhQssk+utwrVYEbGnDDy1/1HqzD4OruayS81BHPsbpTt+T0EN5DuYLSQilSfbowOjcT91l/w=
-X-Microsoft-Exchange-Diagnostics: 1; CY4PR07MB3096;
- 6:T4ElQccVHUn0GclZYdNlAoiVZWlTs+S8F6kmV3XK/YXok90sAPmlMmRFAjB9s5qFojdWz6w9Fuug2YvWZBVj5jdd3Utf4AV5kvasCGoNSmGelgTN5ycnniCLdJY1xhZFq03TFLQvrCkfrSVeoZSfR+OnFCh9UREEOW6f+KQlXbzukLtZ2z0QQOqAo+Mu4BjblAcra1WtekqIuUVcW188in+7uib3aauAVB9IjYw3NbOsed1p1Bns+W/666gsou8BWl3ReClADeQo3KVoAI5H9H6KdV63ABSctrJ1sCvqODdkQfixRGTMfELTvsPqG1xhVSvpVV7oLvIUJDS5R0DjQU3dBB7tfoubEuIRcuZeVbjQxw0FfYcjO+i+jrwRGxiX57PE1nD9dVEsfnt/2v0V+4jZz+wGZ48Iyfy2oCfDocd0KYdKhKb3afJXIz9W+VKQw9+hP9yaJfQNZAZKLCGB8A==;
- 5:vABkw5R0aadmS+Gkw+1zZlPBkfFuiTIAXtnMKsJbbrr+qpYFl6KeQljmOh28qcbd6zT5NRMvivPYxuGWyApm+Z/WBwNYgvrtM9b3U2MSnLv+wabam39j5jWKdik8WeFTZW6Fr2JbangCNguO8uJaYG4eaTZSo2eJOrKy2GOoSPAKbwyzYFdF+1yPltOmPfFYSg0Sc07uXTAjXpx2YonC0w==;
- 7:VozvnjK6xCFj+samTp2AQU17nG1TemvIYMt/2VkUoS9b5Nxk2ufuIVboDTWWuNCHJxw4qtP2/ndaLUAuK6BVbZQwUmMsszsQUoalTbC65luYnvWU5kD7h9e8Iy8Mu8XN0NzhnCunOCZ64AwdP5qR2g==
-X-Microsoft-Exchange-Diagnostics: 1; CY4PR07MB3096;
- 20:QhogYrgaQ1kKTR7gd74BH9DVPB/taoat5Rpp46uXIl5La9Qm43ErcaxOgs1N8yGtcK/kOc3QfGvZ6IB+ROdpb7BYjkGc9n816Vi3kjRVgvlt9Ox+KsC0M+JL1DIBqbmt/HFu8NEj0pl0SmNOR+UKDDM5eAv5/i/H3udCpe3mbJysqXnvfqIb1g9JiKC1xJGtYrWhu+tZ39Ga44HgqPg7JNAf6e+OdiEB92lsH282ka3BxPyJlk0sXFarEkckVIE/
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2019 17:08:26.1138 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: faf2b02f-b621-431b-8e23-08d68b8c8b15
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[158.140.1.28];
- Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR07MB3096
-X-Proofpoint-SPF-Result: pass
-X-Proofpoint-SPF-Record: v=spf1 include:_spf.salesforce.com
- include:mktomail.com
- include:spf-0014ca01.pphosted.com include:spf.protection.outlook.com
- include:auth.msgapp.com include:spf.mandrillapp.com ~all
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
- definitions=2019-02-05_07:, , signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
- score=0
- priorityscore=1501 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
- spamscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=604 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1902050131
+ SRVR:BN6PR11MB1681; 
+x-ms-traffictypediagnostic: BN6PR11MB1681:
+x-microsoft-antispam-prvs: <BN6PR11MB1681FBC4BC087977517FFDB3F06E0@BN6PR11MB1681.namprd11.prod.outlook.com>
+x-forefront-prvs: 0939529DE2
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(346002)(136003)(396003)(39860400002)(376002)(366004)(189003)(199004)(4326008)(186003)(1076003)(36756003)(26005)(110136005)(25786009)(6512007)(316002)(476003)(7416002)(54906003)(486006)(2616005)(86362001)(6486002)(6436002)(66066001)(478600001)(71200400001)(7736002)(97736004)(14454004)(71190400001)(14444005)(256004)(52116002)(3846002)(2501003)(305945005)(99286004)(6116002)(53936002)(72206003)(386003)(107886003)(8936002)(106356001)(81156014)(81166006)(105586002)(102836004)(50226002)(68736007)(6506007)(2906002)(8676002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1681;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 6nW60DvoU/I3XbVOp9qxMksFrdsCEyQb26C+7duc0NNbRBISRYxhLR3gKB3MqYwSlDhoa4qQvxaoa64NECvFhn5eBojFBRAf1qjM4BDRZWggFYntxFiReU8hbSegbmdehA7GR/lqoSP+3L54Bx66294ROphb9X8gmVNe6mr6R8NriDOSRBoHlWXQ7ZUtkhyMoTBd5vJEYCfcr53WsoIScRpQxEP7ejG/G5ybmS0omULvlGyi0ZjGKK5gHIkAiggZ7dn6/ZzvNW7jsvIP6QJu8vmZy6QOfN+q5iK4iRmw99uYdT1vpaRUpOTNZVDYlMCFBOIub9F09MzoEiZOHAWWvKry6RveWZqk1L3QQF20ECz3LoqP/FPH+dDEdPbxrAd7CtSd5GJEX5+WFg6I5CUXhJEZqKrTMkpwrZRfVusPUQA=
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a2fc2c9-f24c-4a22-e74f-08d68b8ffb58
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2019 17:33:01.1527 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1681
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190205_090852_711855_BB5C6E27 
-X-CRM114-Status: GOOD (  12.05  )
+X-CRM114-CacheID: sfid-20190205_093310_984329_2336E12C 
+X-CRM114-Status: UNSURE (   7.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -201,44 +126,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, BrianNorris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: devicetree@vger.kernel.org, Tudor.Ambarus@microchip.com,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The 01/29/2019 18:21, Boris Brezillon wrote:
-  
->> +Optional properties:
->> +Driver calculates controller timings base on NAND flash memory timings and
->> +the following delays in picoseconds.
->> +  - cdns,if-skew : Skew value of the output signals of the NAND Flash interface
->> +  - cdns,nand2-delay : Delay value of one NAND2 gate from which
->> +    the delay element is build
->> +  - cdns,board-delay : Estimated Board delay. The value includes the total
->> +    round trip delay for the signals and is used for deciding on values
->> +    associated with data read capture. The example formula for SDR mode is
->> +    the following:
->> +    board_delay = RE#PAD_delay + PCB trace to device + PCB trace from device
->> +    + DQ PAD delay
->
->The unit of those props is not defined, and if possible I'd like to
->avoid specifying custom timing adjustment values in the DT. Looks like
->some of these values are SoC specific (depends on the integration of
->this IP in a SoC) and others are board specific. For SoC specific
->values, this should be attached to the SoC specific compatible at the
->driver level. For board-specific values, I'd prefer to have a generic
->way to describe boards constraints.
-Moving SoC specific delays from DTS to the driver data is clear for me. I do not know how to handle a board delay. Could you give me an example how it may be implemented? Where this board related stuff could be placed?
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Patches from 1 to 11 are minor fixes or cosmetics.
+Patches 12 and 13 introduce the sam9x60 qspi controller.
+
+sam9x60 qspi controller tested with sst26vf064b jedec,spi-nor flash.
+Backward compatibility test done on sama5d2 qspi controller and
+mx25l25635e jedec,spi-nor flash.
+
+v6: patch 13/13: add a caps instance to the sama5d2 entry instead of
+allowing caps to be NULL
+
+v5:
+- use WICR for sam9x60
+- remove ops hooks and introduce caps->has_ricr
+- get rid of the cfg struct
+- group IO accesses together in atmel_qspi_set_cfg()
+
+v4:
+- s/smm/mr, init controller in serial memory mode by default
+- drop local variables that kept aq->regs and &pdev->dev, the compiler
+  should be smart enough to store them in a register
+- introduce QSPI_IFR_TFRTYP_MEM
+- add comment saying QSPI_IFR_APBTFRTYP_READ is defined in sam9x60
+- s/sama5d2_qspi_modes/atmel_qspi_modes, modes are the same both
+  controllers
+- fix kernel doc header
+- move comment in function body
+- collect R-b tags
+
+v3:
+- update smm value when different.
+- treat just regular spi transfers when introducing sam9x60 qspi IP.
+  Mem transfers will be added together with dirmap support.
+- reorganize the code and change ops functions pointers to avoid code
+  duplication.
+- rename aq->clk to aq->pclk to indicate that it's a peripheral clock.
+- drop unused and NOP transfer macros.
+- add Suggested-by tags, reword some commits.
+
+v2:
+- cache MR value,
+- drop iomem wrappers,
+- make "pclk" clock-name mandatory even for sama5d2,
+- rework clock handling,
+- reorder setting of register values in set_cfg() calls,
+- collect R-b tags.
+
+Tudor Ambarus (13):
+  spi: atmel-quadspi: cache MR value to avoid a write access
+  spi: atmel-quadspi: order header files inclusion alphabetically
+  spi: atmel-quadspi: drop wrappers for iomem accesses
+  spi: atmel-quadspi: fix naming scheme
+  spi: atmel-quadspi: remove unnecessary cast
+  spi: atmel-quadspi: return appropriate error code
+  spi: atmel-quadspi: switch to SPDX license identifiers
+  spi: atmel-quadspi: rework transfer macros
+  dt-bindings: spi: atmel-quadspi: update example to new clock binding
+  dt-bindings: spi: atmel-quadspi: make "pclk" mandatory
+  spi: atmel-quadspi: add support for named peripheral clock
+  dt-bindings: spi: atmel-quadspi: QuadSPI driver for Microchip SAM9X60
+  spi: atmel-quadspi: add support for sam9x60 qspi controller
+
+ .../devicetree/bindings/spi/atmel-quadspi.txt      |  12 +-
+ drivers/spi/atmel-quadspi.c                        | 270 +++++++++++++--------
+ 2 files changed, 184 insertions(+), 98 deletions(-)
 
 -- 
---
-Regards
-Piotr Sroka
+2.9.5
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
