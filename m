@@ -2,86 +2,72 @@ Return-Path: <SRS0=GMtL=QM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C502C282CB
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 06:12:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46B58C282CB
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 07:01:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD8BC20821
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 06:12:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13FF120821
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 07:01:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HlS9c3G8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qlsgVb4j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD8BC20821
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PigRjfdY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13FF120821
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WzlFTamQntMxjToEt3uFbHwuK3k1mBNSYMb7k15ABKc=; b=HlS9c3G8sUt0M3
-	jC7r5Bz+DB0NPEGq1DDu81BFVhEMiolQWBiVC+aqbvn0oSFQErIW2Z9w+wRj8UZhNlKKUk9ZP/jwB
-	Kp0pN6eR90T1DaHCXG4Pwi37K9JvXs92UPDcZvdB2YzVr0Zs59EZFbYTIgd2fJ0kE+ymMHWcaOslR
-	w3nC5pVCU72dLXKxPlzNb6xHxkxYV9Plw5nS5QuLQWmd+jV/r0Nzolxs9ljfpMQZWcKBsuiQlLr2U
-	m7+UbsJOXwxR4pGkT3+cH1q+4sR6ZBj97dSttpJ9UwjeIv1brHYv+b9hiGh44pA2v+Vx8IPSO0F56
-	0cqJXoIakjBtohXcDO4g==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=e5Dtr9CBeMwqhEyXTpplTvlRT5f8FyCrc5OpYAMxOWY=; b=PigRjfdY8sjkt3boT55OocDey
+	bzdr8jjuMKkj2P+/YnRQvqzlWEONHIab5SB/iHQ16v5XzG/WlLHx9WpsruooGPRQnLuk8cgzea99r
+	JN8f6dgW9m69fYyd19v37qcZQHMOf7EqZDe4Ps+7FrMI2h/+UCbIFK/+DTz3oWgTs4JZTSgv4Jrx7
+	1Lbql+xZcoYEANb3COUoB2ceTKzjSgi6jGII5EaBus8N9MG25LDLkbyl25yaXdYEfOn7v+2ydANnO
+	AIer9eF5PpTST7mKVjf0pMZVSzQrAB/FKaVeP4B77Gn+AL+ZuS1ALAnPElxWUEVoz1VPU4x0pq/jl
+	EXirCsxvg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqtyX-0003XH-FG; Tue, 05 Feb 2019 06:12:53 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1gqujD-00037P-7x; Tue, 05 Feb 2019 07:01:07 +0000
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqtyU-0003Wt-PB
- for linux-mtd@lists.infradead.org; Tue, 05 Feb 2019 06:12:52 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x156CmP0012807;
- Tue, 5 Feb 2019 00:12:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1549347168;
- bh=9v+CvJHNEejPdkPT+bew0mG1fE0HjBsVYX6dhp5IiAA=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=qlsgVb4jhOF5uEsNWAyA2cmjXFsLKzJgfjIrdhISN0Q+COTwY7y+LEMbvqVG0ZAGG
- 68yRC7UrYOeLnqyYXUh9A0z9r2fy0KV7iN3D/A0zxxgIryG26NeHLDJ1ZoWsjG3iND
- XWtU1K/aB9xb4sGj0F91BzKFZEbNfcULG9oaYYVE=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x156CmJX118534
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 5 Feb 2019 00:12:48 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Tue, 5
- Feb 2019 00:12:48 -0600
-Received: from dflp32.itg.ti.com (10.64.6.15) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
- Tue, 5 Feb 2019 00:12:48 -0600
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x156CjGV024616;
- Tue, 5 Feb 2019 00:12:46 -0600
-Subject: Re: [PATCH v5 2/2] mtd: spi-nor: cadence-quadspi: Add support for
- Octal SPI controller
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>
-References: <20190128054935.4972-1-vigneshr@ti.com>
- <20190128054935.4972-3-vigneshr@ti.com>
- <2efbca08-c4ab-34ea-0e34-05aed7168df8@microchip.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <daa35c21-195e-eeb5-8aa2-cf42eff6a554@ti.com>
-Date: Tue, 5 Feb 2019 11:43:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+ id 1gquj5-00036c-ON
+ for linux-mtd@lists.infradead.org; Tue, 05 Feb 2019 07:01:01 +0000
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2019 23:00:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.56,562,1539673200"; d="scan'208";a="120043642"
+Received: from mandalpu-mobl.gar.corp.intel.com (HELO [10.252.77.33])
+ ([10.252.77.33])
+ by fmsmga007.fm.intel.com with ESMTP; 04 Feb 2019 23:00:53 -0800
+Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: write upto 8-bytes data in
+ STIG mode
+To: Vignesh R <vigneshr@ti.com>,
+ "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+ "f.blogs@napier.co.nz" <f.blogs@napier.co.nz>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>
+References: <20190128050229.44965-1-purna.chandra.mandal@intel.com>
+ <82eafaf8-803e-36a9-49ca-83d84c55537a@microchip.com>
+ <7655324a-9cd2-7ffe-56bb-83c44740265c@ti.com>
+From: "Mandal, Purna Chandra" <purna.chandra.mandal@intel.com>
+Message-ID: <56748733-74f9-50a6-bcb7-ff4fd878a597@intel.com>
+Date: Tue, 5 Feb 2019 12:30:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.3
 MIME-Version: 1.0
-In-Reply-To: <2efbca08-c4ab-34ea-0e34-05aed7168df8@microchip.com>
+In-Reply-To: <7655324a-9cd2-7ffe-56bb-83c44740265c@ti.com>
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190204_221250_942864_CF9467B2 
-X-CRM114-Status: GOOD (  23.30  )
+X-CRM114-CacheID: sfid-20190204_230059_838268_A1149D95 
+X-CRM114-Status: GOOD (  20.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,146 +80,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-On 29/01/19 9:02 PM, Tudor.Ambarus@microchip.com wrote:
+
+On 04-Feb-19 7:07 PM, Vignesh R wrote:
+> Hi,
 > 
+> On 03/02/19 5:50 PM, Tudor.Ambarus@microchip.com wrote:
+>> + Vignesh
+>>
 > 
-> On 01/28/2019 07:49 AM, Vignesh R wrote:
->> Cadence OSPI controller IP supports Octal IO (x8 IO lines),
->> It also has an integrated PHY. IP register layout is very
->> similar to existing QSPI IP except for additional bits to support Octal
->> and Octal DDR mode. Therefore, extend current driver to support Octal
->> mode. Only Octal SDR read (1-1-8)mode is supported for now.
+> Thanks for looping in.
+> 
+>> On 01/28/2019 07:02 AM, Purna Chandra Mandal wrote:
+>>> cadence-quadspi controller allows upto eight bytes of data to
+>>> be written in software Triggered Instruction generator (STIG) mode
+>>> of operation. Lower 4 bytes are written through writedatalower and
+>>> upper 4 bytes by writedataupper register.
+>>>
+>>> This patch allows all the 8 bytes to be written.
+>>>
+> 
+> Code as such looks fine. But, how was this tested? How can I trigger
+> this new code path with current linux-next? AFAICS, STIG mode write is
+> used to in nor->write_reg() path, and I dont see any nor->write_reg()
+> call with >4bytes len.
+Currently there is no linux user of write_reg() for write_len > 4byte.
+
+For volatile and non-volatile sector locking [1], we have one out of 
+tree implementation and that is specific to flash chip "mt25qu02g". In 
+this implementation we need additional sector address (4 byte) to be 
+provided for each lock-bit write/erase operation. So total write len in 
+write_reg() will be 6 bytes (=1 for opcode, 4 for sect addr, 1 for 
+data). We are finalizing the patch for review.
+
+Since cadence qspi controller do support the 8-byte read/write in STIG 
+mode, I have tried here to enable that in write_reg(), similar to 
+read_reg().
+
+[1] 
+https://www.micron.com/~/media/documents/products/data-sheet/nor-flash/serial-nor/n25q/n25q_128mb_3v_65nm.pdf
+
+> 
+>>> Signed-off-by: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
 >>
->> Tested with mt35xu512aba Octal flash on TI's AM654 EVM.
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
+>> Looks good for me:
 >> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->> ---
 >>
->> v5:
->> s/cqsi_base_hwcaps_mask/CQSPI_BASE_HWCAPS_MASK/g
->> Add back cqspi_driver_platdata definition for base compatible.
+>> Vignesh, can we have your R-b or T-b tag?
 >>
->> v4: Fix comments by Tudor on v3
->> v3: No changes
->> v2: Declare Octal mode capability based on compatible.
+>> Cheers,
+>> ta
 >>
->>  drivers/mtd/spi-nor/cadence-quadspi.c | 58 +++++++++++++++++++++------
->>  1 file changed, 46 insertions(+), 12 deletions(-)
-[...]
->>  
->>  static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->>  {
->> -	const struct spi_nor_hwcaps hwcaps = {
->> -		.mask = SNOR_HWCAPS_READ |
->> -			SNOR_HWCAPS_READ_FAST |
->> -			SNOR_HWCAPS_READ_1_1_2 |
->> -			SNOR_HWCAPS_READ_1_1_4 |
->> -			SNOR_HWCAPS_PP,
->> -	};
->>  	struct platform_device *pdev = cqspi->pdev;
->>  	struct device *dev = &pdev->dev;
->> +	const struct cqspi_driver_platdata *ddata;
->> +	struct spi_nor_hwcaps hwcaps;
->>  	struct cqspi_flash_pdata *f_pdata;
->>  	struct spi_nor *nor;
->>  	struct mtd_info *mtd;
->>  	unsigned int cs;
->>  	int i, ret;
->>  
->> +	ddata = of_device_get_match_data(dev);
->> +	if (!ddata)
->> +		hwcaps.mask = CQSPI_BASE_HWCAPS_MASK;
+>>> ---
+>>>
+>>>   drivers/mtd/spi-nor/cadence-quadspi.c | 15 ++++++++++++---
+>>>   1 file changed, 12 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>>> index 04cedd3a2bf6..7f78f9409ddd 100644
+>>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>>> @@ -418,9 +418,10 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
+>>>   	void __iomem *reg_base = cqspi->iobase;
+>>>   	unsigned int reg;
+>>>   	unsigned int data;
+>>> +	u32 write_len;
+>>>   	int ret;
+>>>   
+>>> -	if (n_tx > 4 || (n_tx && !txbuf)) {
+>>> +	if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
+>>>   		dev_err(nor->dev,
+>>>   			"Invalid input argument, cmdlen %d txbuf 0x%p\n",
+>>>   			n_tx, txbuf);
+>>> @@ -433,10 +434,18 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
+>>>   		reg |= ((n_tx - 1) & CQSPI_REG_CMDCTRL_WR_BYTES_MASK)
+>>>   			<< CQSPI_REG_CMDCTRL_WR_BYTES_LSB;
+>>>   		data = 0;
+>>> -		memcpy(&data, txbuf, n_tx);
+>>> +		write_len = (n_tx > 4) ? 4 : n_tx;
+>>> +		memcpy(&data, txbuf, write_len);
+>>> +		txbuf += write_len;
+>>>   		writel(data, reg_base + CQSPI_REG_CMDWRITEDATALOWER);
+>>> -	}
+>>>   
+>>> +		if (n_tx > 4) {
+>>> +			data = 0;
+>>> +			write_len = n_tx - 4;
+>>> +			memcpy(&data, txbuf, write_len);
+>>> +			writel(data, reg_base + CQSPI_REG_CMDWRITEDATAUPPER);
+>>> +		}
+>>> +	}
+>>>   	ret = cqspi_exec_flash_cmd(cqspi, reg);
+>>>   	return ret;
+>>>   }
+>>>
 > 
-> Now that .data is set in all cqspi_dt_ids[], maybe it's better to print a
-> message and return an error here. But I guess it's a matter of taste, so not a
-> show stopper.
-
-Since, driver data is kernel internal field, I guess there is little
-help in printing out the error to the user when its missing. I prefer to
-keep this as is, as basic Quad mode is supported by all versions of the IP.
-
-Regards
-Vignesh
-
-> 
->> +	else
->> +		hwcaps.mask = ddata->hwcaps_mask;
->> +
->>  	/* Get flash device data */
->>  	for_each_available_child_of_node(dev->of_node, np) {
->>  		ret = of_property_read_u32(np, "reg", &cs);
->> @@ -1310,7 +1326,7 @@ static int cqspi_probe(struct platform_device *pdev)
->>  	struct cqspi_st *cqspi;
->>  	struct resource *res;
->>  	struct resource *res_ahb;
->> -	unsigned long data;
->> +	const struct cqspi_driver_platdata *ddata;
->>  	int ret;
->>  	int irq;
->>  
->> @@ -1377,8 +1393,8 @@ static int cqspi_probe(struct platform_device *pdev)
->>  	}
->>  
->>  	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
->> -	data  = (unsigned long)of_device_get_match_data(dev);
->> -	if (data & CQSPI_NEEDS_WR_DELAY)
->> +	ddata  = of_device_get_match_data(dev);
->> +	if (ddata && (ddata->quirks & CQSPI_NEEDS_WR_DELAY))
->>  		cqspi->wr_delay = 5 * DIV_ROUND_UP(NSEC_PER_SEC,
->>  						   cqspi->master_ref_clk_hz);
->>  
->> @@ -1460,14 +1476,32 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
->>  #define CQSPI_DEV_PM_OPS	NULL
->>  #endif
->>  
->> +static const struct cqspi_driver_platdata cdns_qspi = {
->> +	.hwcaps_mask = CQSPI_BASE_HWCAPS_MASK,
->> +};
->> +
->> +static const struct cqspi_driver_platdata k2g_qspi = {
->> +	.hwcaps_mask = CQSPI_BASE_HWCAPS_MASK,
->> +	.quirks = CQSPI_NEEDS_WR_DELAY,
->> +};
->> +
->> +static const struct cqspi_driver_platdata am654_ospi = {
->> +	.hwcaps_mask = CQSPI_BASE_HWCAPS_MASK | SNOR_HWCAPS_READ_1_1_8,
->> +	.quirks = CQSPI_NEEDS_WR_DELAY,
->> +};
->> +
->>  static const struct of_device_id cqspi_dt_ids[] = {
->>  	{
->>  		.compatible = "cdns,qspi-nor",
->> -		.data = (void *)0,
->> +		.data = &cdns_qspi,
->>  	},
->>  	{
->>  		.compatible = "ti,k2g-qspi",
->> -		.data = (void *)CQSPI_NEEDS_WR_DELAY,
->> +		.data = &k2g_qspi,
->> +	},
->> +	{
->> +		.compatible = "ti,am654-ospi",
->> +		.data = &am654_ospi,
->>  	},
->>  	{ /* end of table */ }
->>  };
->>
-
--- 
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
