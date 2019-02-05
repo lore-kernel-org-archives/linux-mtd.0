@@ -2,91 +2,117 @@ Return-Path: <SRS0=GMtL=QM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76973C282CB
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 10:00:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77E54C282CC
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 10:20:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4671920844
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 10:00:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3CF0E2083B
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Feb 2019 10:20:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UpxTHclH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="T0sQ+RuN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4671920844
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MoXuMAgd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="tGJP9Wba"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CF0E2083B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YI5NbSxb3n6mEqb/n8r+z4/ioICFMcyZLt/WDWgTKO8=; b=UpxTHclHcaygSa
-	xyhdUIrzRete/h73Sz563EeSBMh7P8Ge4209h6TWxsTRDBF/Q/3P8O+vkmLDS3KJCMkcEMBmhOEpd
-	YlTTP+v6Omf5vuGNRKqoe0uJLa3qpNR/BYHSv5uHgV/r32Qmsxb071n8RbcLhVOZoV4nt8Gf3MBLE
-	RBMuOiOMYBvexJzqLTd2RciGIRAjBANb5uvSg5m2oUaZ3KuliB9eVNHIhw1acFe8a6/NAhzslhQ0a
-	caft9kLJGgOnqMS0m0U6nzBDCLO71LplZA/MTfwGBpOAvzegf+N+toy+bVqz0GPl94r8XU5jrUi5r
-	NrjdqaHaHmiB12sx6oHA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=uML7d+yLHkrnGkdaPXAQRJktDkbUjj7qWmkxgcBb940=; b=MoXuMAgdakO8LI
+	c519g0xuGJZkq4mRFgtz1dVmTlHuI79G7KJzoTWKermdFtksnV+SPLS3VhlbPrvve+kwkcMmg/NY2
+	qIJIWG3f7k7w27yIrVzhxlqBPUhPNGm7n8bJiZYrn8Wbq2yu7/7h68LjDooNyERUIn9vCtQZ93sCo
+	0KG8bbqOf0f8ZviECJPKAhnF/aoQ0zQ0PNxNDO/RAoueB4hY0CLzQrbDcWo6ifVL4HzwSimiqg0a8
+	1Mz3MRYQ1+FkZprnmGg7Ie58XNJQp1MWlP3z9d4uiCQaKe3vtP3kx/kxQpMfWaPhaH6JruAvgTIUC
+	pKXrahVBNt2S94g36Akw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gqxWd-0005kb-DJ; Tue, 05 Feb 2019 10:00:19 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1gqxq1-0004w2-FJ; Tue, 05 Feb 2019 10:20:21 +0000
+Received: from mail-hk2apc01olkn0818.outbound.protection.outlook.com
+ ([2a01:111:f400:febc::818]
+ helo=APC01-HK2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gqxWV-0005kE-Nm
- for linux-mtd@lists.infradead.org; Tue, 05 Feb 2019 10:00:17 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x159xu9V092050;
- Tue, 5 Feb 2019 03:59:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1549360796;
- bh=GQDSa+m2VTFC7pzPJkt3vUeKc4/yQT6OnZ4VhbB1hfk=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=T0sQ+RuNr9eU8XdtWrEIeuqz6aeEfmxqO/tcuXztV90HknRwcFNOPC7GyGC8EcZcN
- 0OF7t1DO4J8j3IdrjKeIhfzY6qyUYapBXuCbT+y6fTbu3GQ4l+HUXuyfNYhjOxvb45
- 20BG2fDrLWaRHEEyAIfrwvbytiaNCnn0FXDPYfjw=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x159xu6N105264
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 5 Feb 2019 03:59:56 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Tue, 5
- Feb 2019 03:59:56 -0600
-Received: from dflp33.itg.ti.com (10.64.6.16) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
- Tue, 5 Feb 2019 03:59:56 -0600
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by dflp33.itg.ti.com (8.14.3/8.13.8) with ESMTP id x159xquT007749;
- Tue, 5 Feb 2019 03:59:53 -0600
-Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: write upto 8-bytes data in
- STIG mode
-To: "Mandal, Purna Chandra" <purna.chandra.mandal@intel.com>,
- "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "f.blogs@napier.co.nz" <f.blogs@napier.co.nz>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "richard@nod.at" <richard@nod.at>
-References: <20190128050229.44965-1-purna.chandra.mandal@intel.com>
- <82eafaf8-803e-36a9-49ca-83d84c55537a@microchip.com>
- <7655324a-9cd2-7ffe-56bb-83c44740265c@ti.com>
- <56748733-74f9-50a6-bcb7-ff4fd878a597@intel.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <b86ebccd-148e-730e-db5f-b3cc2d4c3a23@ti.com>
-Date: Tue, 5 Feb 2019 15:30:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
-MIME-Version: 1.0
-In-Reply-To: <56748733-74f9-50a6-bcb7-ff4fd878a597@intel.com>
+ id 1gqxpy-0004vU-Pz; Tue, 05 Feb 2019 10:20:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qfj+jJayxxicgLmGKbp8S5bfkRNHMzZjrFwKqW9BCG8=;
+ b=tGJP9WbaUlEU41epI3BtPtNIJvnpNVhkB62kv2BlmRcqeYkOCrHI5X0pjekJWFYK6KG/kWOUf0XDYd1lqUPU2eYGVcbP7Mmz3h0qy+g51tl6ucESFTXfPwhf7XXYEY23y0lMZTGraLQT9PikRip80V63/ssIvvD4NjLsgVWUwRbrQEDKuLFnXzMox2RwLGusMYzvEPQwhd8DJksoofN2uErOx0zb+bbzUqDbKGKZ8NSKua9Ej0eEeCuTj1/uJQxAXWmVY4ZWE0G+acXaF4uTdFtA+3rjHyggB8C625ohLQkzgQ8X7CDe2zreQusCRVWv/WeXONXlwF9hPfy5fix6pg==
+Received: from HK2APC01FT053.eop-APC01.prod.protection.outlook.com
+ (10.152.248.59) by HK2APC01HT156.eop-APC01.prod.protection.outlook.com
+ (10.152.248.255) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1580.10; Tue, 5 Feb
+ 2019 10:05:46 +0000
+Received: from HK0PR02MB3634.apcprd02.prod.outlook.com (10.152.248.59) by
+ HK2APC01FT053.mail.protection.outlook.com (10.152.249.8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.1580.10 via Frontend Transport; Tue, 5 Feb 2019 10:05:46 +0000
+Received: from HK0PR02MB3634.apcprd02.prod.outlook.com
+ ([fe80::d582:b3ef:f46a:4735]) by HK0PR02MB3634.apcprd02.prod.outlook.com
+ ([fe80::d582:b3ef:f46a:4735%3]) with mapi id 15.20.1580.019; Tue, 5 Feb 2019
+ 10:05:46 +0000
+From: wen yang <yellowriver2010@hotmail.com>
+To: "xiaolei.li@mediatek.com" <xiaolei.li@mediatek.com>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
+Subject: [PATCH] mtd: rawnand: mtk: fix object reference leaks in mtk_ecc_get
+Thread-Topic: [PATCH] mtd: rawnand: mtk: fix object reference leaks in
+ mtk_ecc_get
+Thread-Index: AQHUvTpcgk0GGSTopEWAqFwy/qe0ng==
+Date: Tue, 5 Feb 2019 10:05:46 +0000
+Message-ID: <HK0PR02MB36345BDC344D1A6FE77B4576B26E0@HK0PR02MB3634.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR05CA0063.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::40) To HK0PR02MB3634.apcprd02.prod.outlook.com
+ (2603:1096:203:97::14)
+x-incomingtopheadermarker: OriginalChecksum:885F2515CCC5ACF4577544D00C6ACB530656D87FB39CBED03E0496C3A69F267F;
+ UpperCasedChecksum:163C92EFA9364B480C9327502F766FF0B7B2D26326D0F0095006614B71F08329;
+ SizeAsReceived:9207; Count:63
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.7.4
+x-tmn: [j6wsPK5VJVoYRyvH0IZTOxWwAKv+7F5H]
+x-microsoft-original-message-id: <1549360963-32387-1-git-send-email-yellowriver2010@hotmail.com>
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; HK2APC01HT156;
+ 6:upoEE1Ykh6Ih2+Y4VdFqln30KkdBTiGYuX5td18IDIEnqUo3J8L6sCwSq60J60EhQBRTk1OswePlzp5X4hY+jcQNIURKYs2EaqFzRjx0eTIuQEQVeGvcdvrkE4hvvLvL3Ltzu8OtbpgyVIUjq+ZBJUOsiqZ5ag6CbYAvZF5zrPGY9s6XaoPqGF/0nSJUYGo03A3XnNZcPmsHHvkgo4k6diocOgvqoRm7X9cJHdPt7cP9lmuXgyucJGFMSYZInM4/UlDz4/BMmrJghfaRiMhnlXrFfYuqFaHzSqFBWf73VIQguMsfMmDSOAx7v0I/L0RepEkQdegBoG9UJJA8Tm+3CDmt38kCOthv6UTniN531wnUYFfQVTnof5WfY/qpbLRKmqm2JomSrZ92bH8BGlja0y1boTdwGwjErwbMwzu7knG0TfRnCITw4Lqj8l4Xk0HQVRsXtLB2Mn6+twpR/Ldq4g==;
+ 5:62vINVlDS8nuQaqyYF/+hp4E6S69QX1RtKCKe9ggKMrpwj8gmAkJ3v790B7VWv1ZoGXMnl1mz2t70lhs8Pukot9hmO/0n9OMp/dx/omH5WHlZo6ZeZFE1iKo+UJhBpzFevBGajVAnznjy9Hf1iZ+IcllSe8+t0X8DjKWUgOrDnesAYqjqtPNPFRSACdTgEBhU6dXWXD+jQlurmNn+F5RkQ==;
+ 7:f+vdR5zFj6atmR3e4hYaBsivft+gMeHvIIcxbP1MbNxroSq9E3MzRNwA8l+t7K52uR4HlqFNIoDS77FdD5phRcHb1RqRQADHk5T7fNznEOANRzdu9+CXnhPxEXnpWR2z1wMYLUrZ8HKlL9bcdL6yqQ==
+x-incomingheadercount: 63
+x-eopattributedmessage: 0
+x-ms-exchange-slblob-mailprops: 7MJMDUNTCtyrRYFWDI6RhBZbjdSntUejTzf/lYeAY0uoIgxkR4i4MwrU4Ag0BcbTKV5S9Wo2UN1qctTwdsFbgmiaLmh1ejY3dD+/oa5prfbPxHFm0BAO079/sHqK/KUpiH5J9Y0/Mkk4vwevxU7Vc8Ryq/bkT6ggqmGoCGqbEUJAV3OothjDbEphMAyuEGNVy0Wwmd5nzS4TC5Li2iBkxRKVFr3DmLGNe5ZsOVgAHklB9AfBAkA1g+xmHUhx+lmRH31HMEqm9P6pXe4dI01YLKvJ1C3ZzozXGRVC9OORs0yHiEw7pKE6BOwTsZooP+vHI0SSGDwTN4PE4mKmBWpdIPYj5sOcU7z3/TtSz1VawF1hJHi2FvxjyqZsQX8bH38WGufyJA/+0GKN56GWjQPxbIXQlrTA4AmKsssD6f7KY/42aGhLgK9ZEHmZdj2sZGYnUrteyOZQqqAXfvHchrbLu0W+K8W2HBATzcIA8mVsOdlJWwp9wNrT6GrClCEh+0uMqN6PBEGyjVpdbrvSdMd9M4BMDiumFUTes17BqBtTwhdnOrSPFxSuFK8AOJAcCGdqISFJNnhvZrzN0mf5/Ll8jtm8FOAf69Tbk4mWwud4wSWA3TelvDalbB7qVIwTABDkHgWY8SKgrWp30tGMpvkIv3PtDNjiS+YXD5i/DRV6VQo6EF1IgyYI5iCT3q7EDU8GYibgYeYMAvlYyZ4S+7wkcz9QZl1IXpUqsCILP/RhsS3t6Oxv5IsTJA==
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(201702061078)(5061506573)(5061507331)(1603103135)(2017031320274)(201702181274)(2017031323274)(2017031324274)(2017031322404)(1601125500)(1603101475)(1701031045);
+ SRVR:HK2APC01HT156; 
+x-ms-traffictypediagnostic: HK2APC01HT156:
+x-exchange-antispam-report-cfa-test: BCL:0; PCL:0; RULEID:(4566010)(82015058);
+ SRVR:HK2APC01HT156; BCL:0; PCL:0; RULEID:; SRVR:HK2APC01HT156; 
+x-microsoft-antispam-message-info: V8Z2eOIsKHRUA/Uz46+TYSIBjYLb5HKclp1cLuXd/owaiEi2bdEr08aSIRkjV1j9
+MIME-Version: 1.0
+X-OriginatorOrg: hotmail.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 9a4e3081-9524-43cf-bfc3-dcaef82d5da1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69afa0ad-2c1d-4d02-c921-08d68b517ecd
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 9a4e3081-9524-43cf-bfc3-dcaef82d5da1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2019 10:05:39.7293 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Internet
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2APC01HT156
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190205_020011_857254_8A1884CA 
-X-CRM114-Status: GOOD (  21.61  )
+X-CRM114-CacheID: sfid-20190205_022018_902576_CE88CC38 
+X-CRM114-Status: GOOD (  14.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -98,123 +124,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+Cc: wen yang <yellowriver2010@hotmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+of_find_device_by_node() takes a reference to the struct device
+when it finds a match via get_device, there is no need to call
+get_device() twice.
+We also should make sure to drop the reference to the device
+taken by of_find_device_by_node() on driver unbind.
 
+Fixes: 1d6b1e464950 ("mtd: mediatek: driver for MTK Smart Device")
+Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
+Suggested-by: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Xiaolei Li <xiaolei.li@mediatek.com>
+Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/mtd/nand/raw/mtk_ecc.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-On 05/02/19 12:30 PM, Mandal, Purna Chandra wrote:
-> 
-> 
-> On 04-Feb-19 7:07 PM, Vignesh R wrote:
->> Hi,
->>
->> On 03/02/19 5:50 PM, Tudor.Ambarus@microchip.com wrote:
->>> + Vignesh
->>>
->>
->> Thanks for looping in.
->>
->>> On 01/28/2019 07:02 AM, Purna Chandra Mandal wrote:
->>>> cadence-quadspi controller allows upto eight bytes of data to
->>>> be written in software Triggered Instruction generator (STIG) mode
->>>> of operation. Lower 4 bytes are written through writedatalower and
->>>> upper 4 bytes by writedataupper register.
->>>>
->>>> This patch allows all the 8 bytes to be written.
->>>>
->>
->> Code as such looks fine. But, how was this tested? How can I trigger
->> this new code path with current linux-next? AFAICS, STIG mode write is
->> used to in nor->write_reg() path, and I dont see any nor->write_reg()
->> call with >4bytes len.
-> Currently there is no linux user of write_reg() for write_len > 4byte.
-> 
-> For volatile and non-volatile sector locking [1], we have one out of 
-> tree implementation and that is specific to flash chip "mt25qu02g". In 
-> this implementation we need additional sector address (4 byte) to be 
-> provided for each lock-bit write/erase operation. So total write len in 
-> write_reg() will be 6 bytes (=1 for opcode, 4 for sect addr, 1 for 
-> data). We are finalizing the patch for review.
-> 
-> Since cadence qspi controller do support the 8-byte read/write in STIG 
-> mode, I have tried here to enable that in write_reg(), similar to 
-> read_reg().
-> 
-
-Sounds good.
-
-Reviewed-by: Vignesh R <vigneshr@ti.com>
-
-> [1] 
-> https://www.micron.com/~/media/documents/products/data-sheet/nor-flash/serial-nor/n25q/n25q_128mb_3v_65nm.pdf
-> 
->>
->>>> Signed-off-by: Purna Chandra Mandal <purna.chandra.mandal@intel.com>
->>>
->>> Looks good for me:
->>> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->>>
->>> Vignesh, can we have your R-b or T-b tag?
->>>
->>> Cheers,
->>> ta
->>>
->>>> ---
->>>>
->>>>   drivers/mtd/spi-nor/cadence-quadspi.c | 15 ++++++++++++---
->>>>   1 file changed, 12 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
->>>> index 04cedd3a2bf6..7f78f9409ddd 100644
->>>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
->>>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
->>>> @@ -418,9 +418,10 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
->>>>   	void __iomem *reg_base = cqspi->iobase;
->>>>   	unsigned int reg;
->>>>   	unsigned int data;
->>>> +	u32 write_len;
->>>>   	int ret;
->>>>   
->>>> -	if (n_tx > 4 || (n_tx && !txbuf)) {
->>>> +	if (n_tx > CQSPI_STIG_DATA_LEN_MAX || (n_tx && !txbuf)) {
->>>>   		dev_err(nor->dev,
->>>>   			"Invalid input argument, cmdlen %d txbuf 0x%p\n",
->>>>   			n_tx, txbuf);
->>>> @@ -433,10 +434,18 @@ static int cqspi_command_write(struct spi_nor *nor, const u8 opcode,
->>>>   		reg |= ((n_tx - 1) & CQSPI_REG_CMDCTRL_WR_BYTES_MASK)
->>>>   			<< CQSPI_REG_CMDCTRL_WR_BYTES_LSB;
->>>>   		data = 0;
->>>> -		memcpy(&data, txbuf, n_tx);
->>>> +		write_len = (n_tx > 4) ? 4 : n_tx;
->>>> +		memcpy(&data, txbuf, write_len);
->>>> +		txbuf += write_len;
->>>>   		writel(data, reg_base + CQSPI_REG_CMDWRITEDATALOWER);
->>>> -	}
->>>>   
->>>> +		if (n_tx > 4) {
->>>> +			data = 0;
->>>> +			write_len = n_tx - 4;
->>>> +			memcpy(&data, txbuf, write_len);
->>>> +			writel(data, reg_base + CQSPI_REG_CMDWRITEDATAUPPER);
->>>> +		}
->>>> +	}
->>>>   	ret = cqspi_exec_flash_cmd(cqspi, reg);
->>>>   	return ret;
->>>>   }
->>>>
->>
-
+diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
+index 6432bd7..25bdc15 100644
+--- a/drivers/mtd/nand/raw/mtk_ecc.c
++++ b/drivers/mtd/nand/raw/mtk_ecc.c
+@@ -265,17 +265,25 @@ static struct mtk_ecc *mtk_ecc_get(struct device_node *np)
+ {
+ 	struct platform_device *pdev;
+ 	struct mtk_ecc *ecc;
++	int ret;
+ 
+ 	pdev = of_find_device_by_node(np);
+-	if (!pdev || !platform_get_drvdata(pdev))
++	if (!pdev)
+ 		return ERR_PTR(-EPROBE_DEFER);
++	if (!platform_get_drvdata(pdev)) {
++		ret = -EPROBE_DEFER;
++		goto err_put_device;
++	}
+ 
+-	get_device(&pdev->dev);
+ 	ecc = platform_get_drvdata(pdev);
+ 	clk_prepare_enable(ecc->clk);
+ 	mtk_ecc_hw_init(ecc);
+ 
+ 	return ecc;
++
++err_put_device:
++	put_device(&pdev->dev);
++	return ERR_PTR(ret);
+ }
+ 
+ struct mtk_ecc *of_mtk_ecc_get(struct device_node *of_node)
 -- 
-Regards
-Vignesh
+2.7.4
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
