@@ -2,62 +2,65 @@ Return-Path: <SRS0=F8YS=QN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39A75C169C4
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Feb 2019 06:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AB20C169C4
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Feb 2019 08:35:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE8DE2175B
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Feb 2019 06:40:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 347F32075B
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Feb 2019 08:35:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kILuWbLa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE8DE2175B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G3DE0nG8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 347F32075B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4oNz0r0U42i7qTC+xECcRQhSRAIsMF6IoxLhxV6DL6U=; b=kILuWbLaca4W3G
-	tKGdhUwFcdWVYGOu0osBZ/p5RruykUduN9GBZ8tRctdAJzA4exuAIPe8LRNkeTx9jqiOYJxrPM+ep
-	gGKd2+3m/2BKt6+0xo1Ph/o03NOhUFBjj46rJQf2iAqNdCPbhJYkyLyR0RkXhej02f34V6ZziORPn
-	pjeMmLuRV2kNNq3/hR5I8v5/Bl9ze/EsmUP8ioc03//GKzG+KKzQbfzYdoo5MumeTNC2DN9tBcn7m
-	iFkxtcDHT2qKqXm3k1L2ar28soZ4dcLM2YWN+dZfURB5tHJPKWe13iAl7656QGI7dA6Pv1uoq+Ldt
-	k4cm67WPDUPmyb3I3ffQ==;
+	List-Owner; bh=UOd7BZHNwYqtA/t96LHyO826FQVC51glLxKHwyBASh0=; b=G3DE0nG8MgFKah
+	RaVLFOq8oEz2wRsDS2CUjQAMPAYpfQ3opypvINATm+qqiI5SWig4ksv/XEbDPod/dUpcfLle5hyy3
+	xrG7cmkx71U36RPA9Jgg0mgy1lg6aMGQ0u31s6rvPYw+K3SgNgGlv0PzaPOe9W8zOJqHuQVzSY9bv
+	ZeZSjgx14/w9HKmYYLZic+XjJxO0+3jSi0xCXUf9++aQOwW5MruDC1qVZs3GW2vj3vX30kGBluIUk
+	pnfWiDAuWz9Vl85e9QhvdPssdjlmq7cFj9uVNj/gm4UzemtqZzDW2r6/F8fBiHibzWwf+5t0tObt8
+	k55/NU6rGV3rgrI18mvw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1grGt3-0006Xt-CI; Wed, 06 Feb 2019 06:40:45 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1grIgU-0001yE-IR; Wed, 06 Feb 2019 08:35:54 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grGt0-0006XW-2l
- for linux-mtd@lists.infradead.org; Wed, 06 Feb 2019 06:40:44 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EB33F27D79A;
- Wed,  6 Feb 2019 06:40:36 +0000 (GMT)
-Date: Wed, 6 Feb 2019 07:40:34 +0100
+ id 1grIgK-0001xW-RS
+ for linux-mtd@lists.infradead.org; Wed, 06 Feb 2019 08:35:46 +0000
+Received: from localhost.localdomain (unknown
+ [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 53BD827D9D7;
+ Wed,  6 Feb 2019 08:35:42 +0000 (GMT)
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH] drivers/mtd: Fix device registration error
-Message-ID: <20190206074034.431db6f8@collabora.com>
-In-Reply-To: <87k1idv7pw.fsf@linux.ibm.com>
-References: <20190205090547.8418-1-aneesh.kumar@linux.ibm.com>
- <20190205234805.5558ef98@gmail.com> <87k1idv7pw.fsf@linux.ibm.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+To: Martin Kepplinger <martin.kepplinger@ginzinger.com>, han.xu@nxp.com,
+ bbrezillon@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [v2] mtd: rawnand: gpmi: fix MX28 bus master lockup problem
+Date: Wed,  6 Feb 2019 09:35:33 +0100
+Message-Id: <20190206083533.14104-1-boris.brezillon@collabora.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190205155251.18733-1-martin.kepplinger@ginzinger.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: 803f4316fb74bf46a268d53bd1d95e7bf20e7350
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190205_224042_414098_3F9C3476 
-X-CRM114-Status: GOOD (  20.19  )
+X-CRM114-CacheID: sfid-20190206_003545_013786_CB924D84 
+X-CRM114-Status: GOOD (  12.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -69,105 +72,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, Alban Bedel <albeu@free.fr>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Manfred Schlaegl <manfred.schlaegl@ginzinger.com>,
+ Fabio Estevam <festevam@gmail.com>,
+ Your Name <patch-notifications@your-domain.com>, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 06 Feb 2019 10:22:59 +0530
-"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
-
-> Boris Brezillon <boris.brezillon@collabora.com> writes:
-> 
-> > Hello Aneesh,
-> >
-> > On Tue,  5 Feb 2019 14:35:47 +0530
-> > "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
-> >  
-> >> This change helps me to get multiple mtd device registered. Without this
-> >> I get
-> >> 
-> >> sysfs: cannot create duplicate filename '/bus/nvmem/devices/flash0'
-> >> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.0.0-rc2-00557-g1ef20ef21f22 #13
-> >> Call Trace:
-> >> [c0000000b38e3220] [c000000000b58fe4] dump_stack+0xe8/0x164 (unreliable)
-> >> [c0000000b38e3270] [c0000000004cf074] sysfs_warn_dup+0x84/0xb0
-> >> [c0000000b38e32f0] [c0000000004cf6c4] sysfs_do_create_link_sd.isra.0+0x114/0x150
-> >> [c0000000b38e3340] [c000000000726a84] bus_add_device+0x94/0x1e0
-> >> [c0000000b38e33c0] [c0000000007218f0] device_add+0x4d0/0x830
-> >> [c0000000b38e3480] [c0000000009d54a8] nvmem_register.part.2+0x1c8/0xb30
-> >> [c0000000b38e3560] [c000000000834530] mtd_nvmem_add+0x90/0x120
-> >> [c0000000b38e3650] [c000000000835bc8] add_mtd_device+0x198/0x4e0
-> >> [c0000000b38e36f0] [c00000000083619c] mtd_device_parse_register+0x11c/0x280
-> >> [c0000000b38e3780] [c000000000840830] powernv_flash_probe+0x180/0x250
-> >> [c0000000b38e3820] [c00000000072c120] platform_drv_probe+0x60/0xf0
-> >> [c0000000b38e38a0] [c0000000007283c8] really_probe+0x138/0x4d0
-> >> [c0000000b38e3930] [c000000000728acc] driver_probe_device+0x13c/0x1b0
-> >> [c0000000b38e39b0] [c000000000728c7c] __driver_attach+0x13c/0x1c0
-> >> [c0000000b38e3a30] [c000000000725130] bus_for_each_dev+0xa0/0x120
-> >> [c0000000b38e3a90] [c000000000727b2c] driver_attach+0x2c/0x40
-> >> [c0000000b38e3ab0] [c0000000007270f8] bus_add_driver+0x228/0x360
-> >> [c0000000b38e3b40] [c00000000072a2e0] driver_register+0x90/0x1a0
-> >> [c0000000b38e3bb0] [c00000000072c020] __platform_driver_register+0x50/0x70
-> >> [c0000000b38e3bd0] [c00000000105c984] powernv_flash_driver_init+0x24/0x38
-> >> [c0000000b38e3bf0] [c000000000010904] do_one_initcall+0x84/0x464
-> >> [c0000000b38e3cd0] [c000000001004548] kernel_init_freeable+0x530/0x634
-> >> [c0000000b38e3db0] [c000000000011154] kernel_init+0x1c/0x168
-> >> [c0000000b38e3e20] [c00000000000bed4] ret_from_kernel_thread+0x5c/0x68
-> >> mtd mtd1: Failed to register NVMEM device
-> >> 
-> >> With the change we now have
-> >> 
-> >> /sys/bus/nvmem/devices# ls -al
-> >> total 0
-> >> drwxr-xr-x 2 root root 0 Feb  5 12:21 .
-> >> drwxr-xr-x 4 root root 0 Feb  5 12:21 ..
-> >> lrwxrwxrwx 1 root root 0 Feb  5 12:21 flash0 -> ../../../devices/platform/ibm,opal:flash@0/mtd/mtd0/flash0
-> >> lrwxrwxrwx 1 root root 0 Feb  5 12:21 flash1 -> ../../../devices/platform/ibm,opal:flash@1/mtd/mtd1/flash1
-> >> 
-> >> Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> >> ---
-> >>  drivers/mtd/mtdcore.c | 5 +++--
-> >>  1 file changed, 3 insertions(+), 2 deletions(-)
-> >> 
-> >> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> >> index 999b705769a8..90035da3423c 100644
-> >> --- a/drivers/mtd/mtdcore.c
-> >> +++ b/drivers/mtd/mtdcore.c
-> >> @@ -503,10 +503,11 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
-> >>  	return retlen == bytes ? 0 : -EIO;
-> >>  }
-> >>  
-> >> -static int mtd_nvmem_add(struct mtd_info *mtd)
-> >> +static int mtd_nvmem_add(struct mtd_info *mtd, int i)
-> >>  {
-> >>  	struct nvmem_config config = {};
-> >>  
-> >> +	config.id = i;
-> >>  	config.dev = &mtd->dev;
-> >>  	config.name = mtd->name;  
-> >
-> > mtd->name should be unique in the first place, otherwise mtdparts
-> > parsing won't work (it's using mtd->name to match the device
-> > partitions should be applied to) and I guess there might be other
-> > issues. I know it's currently not enforced, but this kind of
-> > situation makes me realize we should enforce it.
-> >
-> > So the right fix would be to have config.id = -1 and ensure mtd->name
-> > is unique at MTD registration time.
-> >
-> > Back to your specific powernv case, using DT node name doesn't work, as
-> > the @<id> suffix is dropped, which means all your flash devices are
-> > named 'flash'.  
-> 
-> How about 
-> 	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%pOFP", dev->of_node);
-> 
-> That gives me flash@0 name. Is that ok?
-
-It should work.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogWW91ciBOYW1lIDxwYXRjaC1ub3RpZmljYXRpb25zQHlvdXItZG9tYWluLmNvbT4KCk9u
+IFR1ZSwgMjAxOS0wMi0wNSBhdCAxNTo1Mjo1MSBVVEMsIE1hcnRpbiBLZXBwbGluZ2VyIHdyb3Rl
+Ogo+IERpc2FibGUgQkNIIHNvZnQgcmVzZXQgYWNjb3JkaW5nIHRvIE1YMjMgZXJyYXR1bSAjMjg0
+NyAoIkJDSCBzb2Z0Cj4gcmVzZXQgbWF5IGNhdXNlIGJ1cyBtYXN0ZXIgbG9jayB1cCIpIGZvciBN
+WDI4IHRvby4gSXQgaGFzIHRoZSBzYW1lCj4gcHJvYmxlbS4KPiAKPiBPYnNlcnZlZCBwcm9ibGVt
+OiBvbmNlIHBlciAxMDAsMDAwKyBNWDI4IHJlYm9vdHMgTkFORCByZWFkIGZhaWxlZCBvbgo+IERN
+QSB0aW1lb3V0IGVycm9yczoKPiBbICAgIDEuNzcwODIzXSBVQkk6IGF0dGFjaGluZyBtdGQzIHRv
+IHViaTAKPiBbICAgIDIuNzY4MDg4XSBncG1pX25hbmQ6IERNQSB0aW1lb3V0LCBsYXN0IERNQSA6
+MQo+IFsgICAgMy45NTgwODddIGdwbWlfbmFuZDogQkNIIHRpbWVvdXQsIGxhc3QgRE1BIDoxCj4g
+WyAgICA0LjE1NjAzM10gZ3BtaV9uYW5kOiBFcnJvciBpbiBFQ0MtYmFzZWQgcmVhZDogLTExMAo+
+IFsgICAgNC4xNjExMzZdIFVCSSB3YXJuaW5nOiB1YmlfaW9fcmVhZDogZXJyb3IgLTExMCB3aGls
+ZSByZWFkaW5nIDY0Cj4gYnl0ZXMgZnJvbSBQRUIgMDowLCByZWFkIG9ubHkgMCBieXRlcywgcmV0
+cnkKPiBbICAgIDQuMTcxMjgzXSBzdGVwIDEgZXJyb3IKPiBbICAgIDQuMTczODQ2XSBncG1pX25h
+bmQ6IENoaXA6IDAsIEVycm9yIC0xCj4gCj4gV2l0aG91dCBCQ0ggc29mdCByZXNldCB3ZSBzdWNj
+ZXNzZnVsbHkgZXhlY3V0ZWQgMSwwMDAsMDAwIE1YMjggcmVib290cy4KPiAKPiBJIGhhdmUgYSBx
+dW90ZSBmcm9tIE5YUCByZWdhcmRpbmcgdGhpcyBwcm9ibGVtLCBmcm9tIEp1bHkgMTh0aCAyMDE2
+Ogo+IAo+ICJBcyB0aGUgaS5NWDIzIGFuZCBpLk1YMjggYXJlIG9mIHRoZSBzYW1lIGdlbmVyYXRp
+b24sIHRoZXkgc2hhcmUgbWFueQo+IGNoYXJhY3RlcmlzdGljcy4gVW5mb3J0dW5hdGVseSwgYWxz
+byB0aGUgZXJyYXRhcyBtYXkgYmUgc2hhcmVkLgo+IEluIGNhc2Ugb2YgdGhlIGRvY3VtZW50ZWQg
+ZXJyYXRhcyBhbmQgdGhlIHdvcmthcm91bmRzLCB5b3UgY2FuIGFsc28KPiBhcHBseSB0aGUgd29y
+a2Fyb3VuZCBzb2x1dGlvbiBvZiBvbmUgZGV2aWNlIG9uIHRoZSBvdGhlciBvbmUuIFRoaXMgaGF2
+ZQo+IGJlZW4gcmVwb3J0ZWQsIGJ1dCBJ4oCZbSBhZnJhaWQgdGhhdCB0aGVyZSBhcmUgbm90IGFu
+IGVzdGltYXRlZCBkYXRlIGZvcgo+IHVwZGF0aW5nIHRoZSBFcnJhdGEgZG9jdW1lbnRzLgo+IFBs
+ZWFzZSBhY2NlcHQgb3VyIGFwb2xvZ2llcyBmb3IgYW55IGluY29udmVuaWVuY2VzIHRoaXMgbWF5
+IGNhdXNlLiIKPiAKPiBGaXhlczogNmYyYTZhNTI1NjBhICgibXRkOiBuYW5kOiBncG1pOiByZXNl
+dCBCQ0ggZWFybGllciwgdG9vLCB0byBhdm9pZAo+IE5BTkQgc3RhcnR1cCBwcm9ibGVtcyIpCj4g
+Q2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiBTaWduZWQtb2ZmLWJ5OiBNYW5mcmVkIFNjaGxh
+ZWdsIDxtYW5mcmVkLnNjaGxhZWdsQGdpbnppbmdlci5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFy
+dGluIEtlcHBsaW5nZXIgPG1hcnRpbi5rZXBwbGluZ2VyQGdpbnppbmdlci5jb20+Cj4gUmV2aWV3
+ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gUmV2aWV3
+ZWQtYnk6IEZhYmlvIEVzdGV2YW0gPGZlc3RldmFtQGdtYWlsLmNvbT4KPiBBY2tlZC1ieTogSGFu
+IFh1IDxoYW4ueHVAbnhwLmNvbT4KCkFwcGxpZWQgdG8gaHR0cDovL2dpdC5pbmZyYWRlYWQub3Jn
+L2xpbnV4LW10ZC5naXQgbXRkL2ZpeGVzLCB0aGFua3MuCgp5J2FsbCBjb21lIGJhY2sgbm93IQoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
+bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
