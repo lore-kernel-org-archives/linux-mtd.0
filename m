@@ -2,60 +2,71 @@ Return-Path: <SRS0=ZMJ0=QO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 839C6C282C2
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 09:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27F64C282C2
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 09:58:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BAFD20844
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 09:23:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB77D21721
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 09:58:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="c8EroWyv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BAFD20844
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XhYKLdvh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="BoFeItFZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB77D21721
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0BFXjXfUZI1vFV/8YH4t2AUpE/jwk+ugBvU3QX9E6RU=; b=c8EroWyvNSokQZ
-	E6a8VflTLdP+9RqE6psnC56NIq5MG8rkzktf/FReKvomBtvWiFAIhy0EcbWwvDsourEy8Sgx4Iv3o
-	j1wESjwRp+5n13NC86WsFnduQMRSENJDEY1qxd7agWAoWFB41tk5PlU02IfqoMr7it7pzxu9dPgpd
-	zzEpNeWxRBVVWQGBhNyZSSXotir56SX5IjpVguEChLw1KG7JdgmRyfmtwvtILBc9301mCcNvjU2Mv
-	/C3oIr4jABqybteWb2R/+NooO4o8LcUtB0mdSIvVbDrhqCHkbzgaPpd9nMjzJIPiZOCCktQPml5yS
-	usOkSOpkAkOV2Ni9NDkA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=vfGNJAjEtSswSLz/xX8qHJ2SFGoqhGxT+YHLxTRj8Oo=; b=XhY
+	KLdvhFet+HVG+zU4WXMs3MDqw8S3I57QzDoFKYTqiXY9B0TFsemhnDp0P+lnlj49aK5+akVXGUgMx
+	bx1UJwTeVSWUUMBv9nSOj2GNHp0SPryd9i84R+qtwkfo9XbqvM+vcJZfjBoX4bi4yHRUIhLqfuIr+
+	6vBHN1zO5IYTpSP1ILFTBkwgeTPop2R+2AHNnH3fwRLO8xj8ge8TSl++fIVsGiP1iDLhmE1bLB51l
+	fTPsxHRXCsLyOLz/GP0rsQOrMRcWZZvTQ+1/3V63EVnfEkzroKHne3GA/gxBaP2iHWt58Cqu/ouyG
+	Nv4x9fDXADkc7SGtv0HrIgd/vUqayeg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1grfuQ-0000b1-77; Thu, 07 Feb 2019 09:23:50 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1grgRq-00042O-G8; Thu, 07 Feb 2019 09:58:22 +0000
+Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grfuC-0000PW-GG; Thu, 07 Feb 2019 09:23:38 +0000
-X-Originating-IP: 90.88.22.177
-Received: from xps13 (aaubervilliers-681-1-80-177.w90-88.abo.wanadoo.fr
- [90.88.22.177]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id ED4991BF206;
- Thu,  7 Feb 2019 09:23:29 +0000 (UTC)
-Date: Thu, 7 Feb 2019 10:23:29 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Wen Yang <yellowriver2010@hotmail.com>
-Subject: Re: [PATCH v4 1/3] mtd: rawnand: atmel: fix possible object
- reference leak
-Message-ID: <20190207102329.1b137198@xps13>
-In-Reply-To: <HK0PR02MB363495256F9ADB049C795D7DB2680@HK0PR02MB3634.apcprd02.prod.outlook.com>
-References: <HK0PR02MB363495256F9ADB049C795D7DB2680@HK0PR02MB3634.apcprd02.prod.outlook.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1grgRm-00041W-7W
+ for linux-mtd@lists.infradead.org; Thu, 07 Feb 2019 09:58:20 +0000
+Received: from pug.e01.socionext.com (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
+ [153.142.97.92]) (authenticated)
+ by conuserg-10.nifty.com with ESMTP id x179vwEV007618;
+ Thu, 7 Feb 2019 18:57:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com x179vwEV007618
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1549533479;
+ bh=iw6uQDkF1w+n1nuxwJnEKZ11rxlAfTizSmtetXPuvzE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=BoFeItFZaWOYa+ARb66rUQVHzlgBVIkJe69Q1SVtImEfpDPJKKDp2BNu0jEo3Gpq/
+ qwch6dfKYrzbw2ZTWMPeQQAFdNpFot13waP4cMHsFz/pueGID3mok/VTMEVGnLgLIb
+ IvqF9dYqylY0V4tWjEb6xwzWQFYOl+GxH5kc2FjUHGBfrnJDnTIkxYWrA4TTALbOt3
+ FOhPLiY2cOs7L4xK3t7d6xh7e2eUVjCRqEWxLWi7H/XtYWbMXHS4N/1ODxdNAXR47M
+ MqlnAc2rwWJo9tsG0M3kai+8Dhv+iXlGalKcHiXG9PiS1IADQs7T+gYrrrkt5ZvtGQ
+ z1r2zVPOVCvxw==
+X-Nifty-SrcIP: [153.142.97.92]
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: call onfi_fill_data_interface() once again
+ after nand_detect
+Date: Thu,  7 Feb 2019 18:57:56 +0900
+Message-Id: <1549533476-3742-1-git-send-email-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190207_012336_875719_3F5FF0F8 
-X-CRM114-Status: GOOD (  20.80  )
+X-CRM114-CacheID: sfid-20190207_015818_617703_1427F1C3 
+X-CRM114-Status: GOOD (  10.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -67,80 +78,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "richard@nod.at" <richard@nod.at>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgV2VuLAoKV2VuIFlhbmcgPHllbGxvd3JpdmVyMjAxMEBob3RtYWlsLmNvbT4gd3JvdGUgb24g
-VGh1LCA3IEZlYiAyMDE5CjAzOjUwOjU1ICswMDAwOgoKPiBvZl9maW5kX2RldmljZV9ieV9ub2Rl
-KCkgdGFrZXMgYSByZWZlcmVuY2UgdG8gdGhlIHN0cnVjdCBkZXZpY2UKPiB3aGVuIGl0IGZpbmRz
-IGEgbWF0Y2ggdmlhIGdldF9kZXZpY2UsIHRoZXJlIGlzIG5vIG5lZWQgdG8gY2FsbAo+IGdldF9k
-ZXZpY2UoKSB0d2ljZS4KPiBXZSBhbHNvIHNob3VsZCBtYWtlIHN1cmUgdG8gZHJvcCB0aGUgcmVm
-ZXJlbmNlIHRvIHRoZSBkZXZpY2UKPiB0YWtlbiBieSBvZl9maW5kX2RldmljZV9ieV9ub2RlKCkg
-b24gZHJpdmVyIHVuYmluZC4KPiAKPiBGaXhlczogZjg4ZmMxMjJjYzM0ICgibXRkOiBuYW5kOiBD
-bGVhbnVwL3Jld29yayB0aGUgYXRtZWxfbmFuZCBkcml2ZXIiKQo+IFNpZ25lZC1vZmYtYnk6IFdl
-biBZYW5nIDx5ZWxsb3dyaXZlcjIwMTBAaG90bWFpbC5jb20+Cj4gU3VnZ2VzdGVkLWJ5OiBCb3Jp
-cyBCcmV6aWxsb24gPGJicmV6aWxsb25Aa2VybmVsLm9yZz4KClN1Z2dlc3RlZC1ieSBtZWFucyB0
-aGF0IEJvcmlzIHN1Z2dlc3RlZCB5b3UgdG8gd3JpdGUgdGhpcyBwYXRjaCBpbiB0aGUKZmlyc3Qg
-cGxhY2UuIElmIGhlIGp1c3QgbWFkZSBhIHJldmlldywgeW91IHNob3VsZCBkcm9wIHRoaXMgdGFn
-LgoKPiBSZXZpZXdlZC1ieTogQm9yaXMgQnJlemlsbG9uIDxiYnJlemlsbG9uQGtlcm5lbC5vcmc+
-Cj4gUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+
-CgpOb25lIG9mIHVzIGdhdmUgb3VyIFJldmlld2VkLWJ5IG9mZmljaWFsbHksIHNvIHlvdSBjYW4g
-ZHJvcCB0aGVzZSBsaW5lcy4KCj4gQWNrZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXlu
-YWxAYm9vdGxpbi5jb20+CgpJIGdhdmUgbXkgQWNrZWQtYnkgYmVjYXVzZSBJIHRob3VnaCBCb3Jp
-cyB3b3VsZCB0YWtlIHRoZSBwYXRjaCwgYnV0CmFjdHVhbGx5IGhlIHdpbGwgbm90LCBzbyB5b3Ug
-Y2FuIGRyb3AgdGhlIEFjay4KCj4gQ2M6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWlj
-cm9jaGlwLmNvbT4KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxiYnJlemlsbG9uQGtlcm5lbC5vcmc+
-Cj4gQ2M6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gQ2M6IFJp
-Y2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Cj4gQ2M6IERhdmlkIFdvb2Rob3VzZSA8
-ZHdtdzJAaW5mcmFkZWFkLm9yZz4KPiBDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFj
-ZUBnbWFpbC5jb20+Cj4gQ2M6IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+Cj4g
-Q2M6IE5pY29sYXMgRmVycmUgPG5pY29sYXMuZmVycmVAbWljcm9jaGlwLmNvbT4KPiBDYzogQWxl
-eGFuZHJlIEJlbGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPgo+IENjOiBMdWRv
-dmljIERlc3JvY2hlcyA8bHVkb3ZpYy5kZXNyb2NoZXNAbWljcm9jaGlwLmNvbT4KPiBDYzogbGlu
-dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBDYzogbGludXgtYXJtLWtlcm5lbEBsaXN0cy5p
-bmZyYWRlYWQub3JnCj4gQ2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKClBsZWFzZSBh
-ZGQgcGVvcGxlIGluIENjIHdoZW4geW91IHNlbmQgdGhlIHNlcmllcyBhbmQgcmVtb3ZlIGFsbCB0
-aGVzZQpDYzogbGluZXMuCgo+IC0tLQo+IHY0LT52MzogQXZvaWQgdHdvIHRpbWVzIG9mIGNhbGxp
-bmcgZ3J0Zm9ybV9nZXRfZHJ2ZGF0YSgpCj4gdjMtPnYyOiBDaGFuZ2UgdGhlIGNvbW1pdCBtZXNz
-YWdlLgo+IHYyLT52MTogQWRkIG1pc3NpbmcgRml4ZXMgdGFnCj4gCj4gIGRyaXZlcnMvbXRkL25h
-bmQvcmF3L2F0bWVsL3BtZWNjLmMgfCAyMSArKysrKysrKysrKysrKystLS0tLS0KPiAgMSBmaWxl
-IGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2F0bWVsL3BtZWNjLmMgYi9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9hdG1lbC9wbWVjYy5jCj4gaW5kZXggNTU1YTc0ZS4uOWQzOTk3OCAxMDA2NDQKPiAtLS0g
-YS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9wbWVjYy5jCj4gKysrIGIvZHJpdmVycy9tdGQv
-bmFuZC9yYXcvYXRtZWwvcG1lY2MuYwo+IEBAIC04NzYsMjMgKzg3NiwzMiBAQCBzdGF0aWMgc3Ry
-dWN0IGF0bWVsX3BtZWNjICphdG1lbF9wbWVjY19nZXRfYnlfbm9kZShzdHJ1Y3QgZGV2aWNlICp1
-c2VyZGV2LAo+ICB7Cj4gIAlzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2Owo+ICAJc3RydWN0
-IGF0bWVsX3BtZWNjICpwbWVjYywgKipwdHI7Cj4gKwlpbnQgcmV0Owo+ICAKPiAgCXBkZXYgPSBv
-Zl9maW5kX2RldmljZV9ieV9ub2RlKG5wKTsKPiAtCWlmICghcGRldiB8fCAhcGxhdGZvcm1fZ2V0
-X2RydmRhdGEocGRldikpCj4gKwlpZiAoIXBkZXYpCj4gIAkJcmV0dXJuIEVSUl9QVFIoLUVQUk9C
-RV9ERUZFUik7CgpOZXcgbGluZSBtaXNzaW5nIGhlcmUKCj4gKwlwbWVjYyA9IHBsYXRmb3JtX2dl
-dF9kcnZkYXRhKHBkZXYpOwo+ICsJaWYgKCFwbWVjYykgewo+ICsJCXJldCA9IC1FUFJPQkVfREVG
-RVI7Cj4gKwkJZ290byBlcnJfcHV0X2RldmljZTsKPiArCX0KPiAgCj4gIAlwdHIgPSBkZXZyZXNf
-YWxsb2MoZGV2bV9hdG1lbF9wbWVjY19wdXQsIHNpemVvZigqcHRyKSwgR0ZQX0tFUk5FTCk7Cj4g
-LQlpZiAoIXB0cikKPiAtCQlyZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsKPiAtCj4gLQlnZXRfZGV2
-aWNlKCZwZGV2LT5kZXYpOwo+IC0JcG1lY2MgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsK
-PiArCWlmICghcHRyKSB7Cj4gKwkJcmV0ID0gLUVOT01FTTsKPiArCQlnb3RvIGVycl9wdXRfZGV2
-aWNlOwo+ICsJfQo+ICAKPiAgCSpwdHIgPSBwbWVjYzsKPiAgCj4gIAlkZXZyZXNfYWRkKHVzZXJk
-ZXYsIHB0cik7Cj4gIAo+ICAJcmV0dXJuIHBtZWNjOwo+ICsKPiArZXJyX3B1dF9kZXZpY2U6Cj4g
-KwlwdXRfZGV2aWNlKCZwZGV2LT5kZXYpOwo+ICsJcmV0dXJuIEVSUl9QVFIocmV0KTsKPiAgfQo+
-ICAKPiAgc3RhdGljIGNvbnN0IGludCBhdG1lbF9wbWVjY19zdHJlbmd0aHNbXSA9IHsgMiwgNCwg
-OCwgMTIsIDI0LCAzMiB9OwoKQWxsIHRoZSBjb21tZW50cyBhcHBseSB0byB0aGUgdHdvIG90aGVy
-IHBhdGNoZXMuCgpPdGhlcndpc2UgbG9va3MgZ29vZC4KCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+nand_scan_ident() calls onfi_fill_data_interface() at its entry
+to set up the initial timing parameters.
+
+The timing parameters are needed not only for ->setup_data_interface(),
+but also for giving the correct delay to NAND_OP_WAIT_RDY, for example.
+
+If the driver sets the NAND_KEEP_TIMINGS flag, or does not support
+->setup_data_interface() hook, those parameters will never updated.
+
+Before nand_detect(), we never know whether the chip is ONFi or not.
+So, onfi_fill_data_interface() has to assume the worst case, i.e.
+non-ONFi.
+
+After nand_detect(), if the chip turns out to be ONFi-compliant,
+we can optimize tPROG_max, tBERS_max, etc.
+
+Call onfi_fill_data_interface() once again.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ drivers/mtd/nand/raw/nand_base.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 9b3d7ff..35e543c 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5040,6 +5040,9 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 
+ 	nand_deselect_target(chip);
+ 
++	/* If the chip turns out ONFi, we can optimize timing parameters. */
++	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
++
+ 	/* Check for a chip array */
+ 	for (i = 1; i < maxchips; i++) {
+ 		u8 id[2];
+-- 
+2.7.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
