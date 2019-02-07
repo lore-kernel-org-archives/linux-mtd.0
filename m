@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 574E5C282C2
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 08:38:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC6E5C282C2
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 08:56:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CA7C2147C
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 08:38:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B75F20818
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 08:56:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rh95acut"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CA7C2147C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X90AEKF/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B75F20818
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KXxYUSou8MtoWPI61USuGxdFD8ESh6RJTpY9rqQzSU4=; b=rh95acutMzaOMt
-	8Xe4eZuZFM79YpUCtYuI1IogW8CgsRMy0qIeuVyaBm56m4U8pHEac7LkWAPgNYxbDHdtqPzuEptZE
-	WM+K9+7N6UUfCyD/exJXHBpG0iyeeSbNzK+TPeuqXZ1LPPS1v0vMmW7lYAIUja5uX6SH6weLP7O7G
-	HDUskaSSGbaVNhWjxa7r5546O8ou3Ag2STRu4CaYYotL6R2Ncs4FMCfb/6F5PhZdorNNTOoMTILhw
-	bcemwVsw5PSAR/s39kFXtQgejU7ifZvDraZ5joGBz/bGq9nWDx6jxjr9uXwzBGibkar6QqQDL/oZy
-	YIB0W+ADyTKiYPrZyYvQ==;
+	List-Owner; bh=cYOiRtX5tXTPFqO5f+ICTfIni2Ybxzt1llSR1aM2RQQ=; b=X90AEKF/6uYlt8
+	2v9LlBCklsS2g28g06kvAdrHEubgA1/hIYdgs03Bjk7cby5vSz5Rd75G2Ncmd4hrjp2jtkixV+JrM
+	T4Nrj/SQG93L6HLDm1TuaiuogwzUAy3JvYYrrulCdgP63FHQJcQJpKueyCJO1NJ5DYfiF9JL5KPoS
+	cI1BIaFz5G6OVlzDZS41dk/VxO+Qh7vCwE2Zrts0/kvH/2UrSoWDOfRQIStnZsFn85/5dlLKG7z4t
+	Jx8J8o5FIZRne51S8hjNWjEeNdCRM3vX39ybCu/IPDSsm1vt2hsnniPbXbs7+3joZxAxb51Hvz6y1
+	5Ve0N5D4HPMah4D+h7Hg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1grfCP-0005Ts-Dd; Thu, 07 Feb 2019 08:38:21 +0000
+	id 1grfUM-0004n4-DW; Thu, 07 Feb 2019 08:56:54 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grfBj-0004xw-K9
- for linux-mtd@lists.infradead.org; Thu, 07 Feb 2019 08:38:15 +0000
+ id 1grfUJ-0004mW-TS
+ for linux-mtd@lists.infradead.org; Thu, 07 Feb 2019 08:56:53 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 995792798E5;
- Thu,  7 Feb 2019 08:37:37 +0000 (GMT)
-Date: Thu, 7 Feb 2019 09:37:34 +0100
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1BB2227DFBF;
+ Thu,  7 Feb 2019 08:56:50 +0000 (GMT)
+Date: Thu, 7 Feb 2019 09:56:47 +0100
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Joel Stanley <joel@jms.id.au>
-Subject: Re: [PATCH] mtd: powernv: SPDX and comment fixups
-Message-ID: <20190207093734.400875cd@collabora.com>
-In-Reply-To: <20190206003659.27107-1-joel@jms.id.au>
-References: <20190206003659.27107-1-joel@jms.id.au>
+To: "Sobon, Przemyslaw" <psobon@amazon.com>
+Subject: Re: [PATCH] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
+Message-ID: <20190207095635.0fc3b411@kernel.org>
+In-Reply-To: <acd16b85676e4d1d89f3acfbeda30107@EX13D07UWA001.ant.amazon.com>
+References: <1548977439-318904-1-git-send-email-liujian56@huawei.com>
+ <20190203092645.18d1495b@bbrezillon>
+ <20190203093509.269bf1e1@bbrezillon>
+ <acd16b85676e4d1d89f3acfbeda30107@EX13D07UWA001.ant.amazon.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190207_003740_692236_5748F08D 
-X-CRM114-Status: GOOD (  25.80  )
+X-CRM114-CacheID: sfid-20190207_005652_216337_97506487 
+X-CRM114-Status: GOOD (  26.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -68,78 +71,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: "keescook@chromium.org" <keescook@chromium.org>,
+ "joakim.tjernlund@infinera.com" <joakim.tjernlund@infinera.com>,
+ "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
+ "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, Liu Jian <liujian56@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Joel,
+Hi Sobon,
 
-On Wed,  6 Feb 2019 11:06:58 +1030
-Joel Stanley <joel@jms.id.au> wrote:
+On Tue, 5 Feb 2019 22:28:44 +0000
+"Sobon, Przemyslaw" <psobon@amazon.com> wrote:
 
-> This converts the powernv flash driver to use SPDX, and adds some
-> clarifying comments that came out of a discussion on how the mtd driver
-> works.
+> > From: Boris Brezillon <bbrezillon@kernel.org> 
+> > Sent: Sunday, February 3, 2019 12:35 AM  
+> > > +Przemyslaw
+> > > 
+> > > On Fri, 1 Feb 2019 07:30:39 +0800
+> > > Liu Jian <liujian56@huawei.com> wrote:
+> > >   
+> > > > In function do_write_buffer(), in the for loop, there is a case
+> > > > chip_ready() returns 1 while chip_good() returns 0, so it never 
+> > > > break the loop.
+> > > > To fix this, chip_good() is enough and it should timeout if it stay 
+> > > > bad for a while.  
+> > > 
+> > > Looks like Przemyslaw reported and fixed the same problem.
+> > >   
+> > > > 
+> > > > Fixes: dfeae1073583(mtd: cfi_cmdset_0002: Change write buffer to 
+> > > > check correct value)  
+> > > 
+> > > Can you put the Fixes tag on a single, and the format is
+> > > 
+> > > Fixes: <hash> ("message")
+> > >   
+> > > > Signed-off-by: Yi Huaijie <yihuaijie@huawei.com>
+> > > > Signed-off-by: Liu Jian <liujian56@huawei.com>  
+> > > 
+> > > [1]http://patchwork.ozlabs.org/patch/1025566/
+> > >   
+> > > > ---
+> > > >  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c 
+> > > > b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > > index 72428b6..818e94b 100644
+> > > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > > @@ -1876,14 +1876,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+> > > >  			continue;
+> > > >  		}
+> > > >  
+> > > > -		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+> > > > -			break;
+> > > > -
+> > > >  		if (chip_good(map, adr, datum)) {
+> > > >  			xip_enable(map, chip, adr);
+> > > >  			goto op_done;
+> > > >  		}
+> > > >  
+> > > > +		if (time_after(jiffies, timeo))
+> > > > +			break;
+> > > > +
+> > > >  		/* Latency issues. Drop the lock, wait a while and retry */
+> > > >  		UDELAY(map, chip, adr, 1);
+> > > >  	}  
+> > >   
+> > 
+> > BTW, the patch itself looks good to me. Ikegami, can you confirm it does the right thing?
+> > 
+> > Thanks,
+> > 
+> > Boris
+> >   
+> 
+> One comment to this patch. If value is written incorrectly quickly we will be
+> stuck in the loop even though nothing is going to change. For example a value was
+> written incorrectly after 1us, the loop was set to 1ms, function will return
+> after 1ms, this solution is not optimized for performance. I considered same
+> when working on this change and decided to do it different way.
 
-Can you split that in 2 patches, one adding the SPDX header, and the
-other one clarifying the driver behavior.
+Seems like you're right if we assume that checking for GOOD state does
+not require a delay after the READY check, but if that's not the case
+and an extra delay is actually required, you might end up with a BAD
+status while it could have turned GOOD at some point with the 'check
+only for GOOD state until we timeout' approach.
 
-Thanks,
+TBH, I don't know how CFI flashes work, so I'll let you guys sort this
+out.
+
+Regards,
 
 Boris
-
-> 
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
-> ---
->  drivers/mtd/devices/powernv_flash.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-> index 22f753e555ac..0bf43336c3f7 100644
-> --- a/drivers/mtd/devices/powernv_flash.c
-> +++ b/drivers/mtd/devices/powernv_flash.c
-> @@ -1,17 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
->  /*
->   * OPAL PNOR flash MTD abstraction
->   *
->   * Copyright IBM 2015
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
->   */
->  
->  #include <linux/kernel.h>
-> @@ -261,6 +253,14 @@ static int powernv_flash_probe(struct platform_device *pdev)
->  	 * The current flash that skiboot exposes is one contiguous flash chip
->  	 * with an ffs partition at the start, it should prove easier for users
->  	 * to deal with partitions or not as they see fit
-> +	 *
-> +	 * When developing the skiboot MTD driver an experiment with FFS
-> +	 * parsing in the kernel, and exposing a seperate /dev/mtdX for each
-> +	 * partition (eg BOOTKERNEL, PAYLOAD, NVRAM, etc), was done.
-> +	 *
-> +	 * We didn't go with that as it meant users couldn't do a full flash
-> +	 * re-write, as this can cause a partition to change size, and there
-> +	 * wasn't a way to tell the MTD layer that a device has shrunk/grown.
->  	 */
->  	return mtd_device_register(&data->mtd, NULL, 0);
->  }
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
