@@ -2,80 +2,59 @@ Return-Path: <SRS0=ZMJ0=QO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EB02C282CC
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 10:52:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DED85C282C2
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 11:02:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C35E21872
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 10:52:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD523218FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 11:02:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uEYZM68J";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="1vOCd98m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C35E21872
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Sp/hagKR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD523218FE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s2+TEYxzbFR105eTTr/LDIlhnu47yWoyIfMx5qdxTYk=; b=uEYZM68JU0Zvgs
-	WyxNcOvR8MHuLOCGpcK/ENrTptGiVyypDSvUWwCNdeKzMai2Q9WFRJ1XDZcmMd7/uDt5UNY2fTnpR
-	LSQHk3fm7mGwrbUT7g9udSkwt7khA+YnHf6IyNBnlc1hG/dHucH39ddwhMEbw2fQ//BwvMcx8gj19
-	cKwGxrOZ8gdc5YHXuInSSNH5Xt989azItfD5TuNSN7yssTrALNtQ7Snj8MMQkt1KfpJCTf9oX9vRg
-	6XsuF+jJoNqg32Tyiop5rrW78zSlGjyv3neCkxUdr7TEiIk7XSnkXYyGFf9BPrcqHb4e3k7LzYeHO
-	0F5JOzIzA9KHDstwxsYA==;
+	List-Owner; bh=gkImwa992xIjCvoekqu/CqwI32KxAG8HhcjSTz0Rwi8=; b=Sp/hagKRtqa7cY
+	pNbxaLCHhC+1DOnCbHxGg2mb8knPeHaa2WuOPs3kJavnXYD8IhFR4BpF3uS55XabEq32QYy06M7Wh
+	Q3c6vkYX3bI5+Q1otzTF6o1icGRrALPJZh41tMko50Jn+/SY8r7CkPo/UoFDGSe0r9kSR7Dqk5/UM
+	CqIS2APHpM2f8I0oYtMNo1MJc7r3xYIMTP+1VzRrgZ13hVlhi3ajF0FEzM73q17rdGSMzIS6Fd+Bg
+	tizhz/M+ieWd9BMHlP3Pplim6JE3lpyk0Os/jWgLn18Dmw88zGlF0SK3Ct6h1wOiB0pXwN2oFK6UI
+	jyRC1DOZ580ANapvGe7w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1grhIb-0006Ff-7K; Thu, 07 Feb 2019 10:52:53 +0000
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
+	id 1grhRW-000238-2y; Thu, 07 Feb 2019 11:02:06 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grhIY-0006FJ-96
- for linux-mtd@lists.infradead.org; Thu, 07 Feb 2019 10:52:52 +0000
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com
- [209.85.222.51]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id x17AqYxf009772
- for <linux-mtd@lists.infradead.org>; Thu, 7 Feb 2019 19:52:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com x17AqYxf009772
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1549536755;
- bh=tp5hPxpdOTL0M9fI0rFqN9RTOyPm39PjBpdl2kMLPRs=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=1vOCd98mgVXOfQ6PKRtY4731x+vOBf7XVT6Kx0Sp2pEt0rmW0vltNQQTOK7mdMW+w
- QRzFcVLCh9pi4WHfnn5A6ryMDpS5xHkGmDECs0ypSA36fv0wxxKbFyF9ZtlBvlnSjs
- fKEFKCxfcZ/zxqYEsC/SbKbVz42j0uuzesGsM5oj7RTifSpgm/M/YvSUFnd/Egp6tX
- YJ7RkTe7WC7el4BmpwwIyIQkWIYEez3SEBnyCOlO0DfDzP/rRiAB8BQO8CwID770pk
- e2TXK1qifCAJGqcF1ExlFW0kCAbpQLnGBr3HGkvBQ0OtP/ljwMrAP8jDHL/v1l8fvz
- yr0PDz7EJG2gw==
-X-Nifty-SrcIP: [209.85.222.51]
-Received: by mail-ua1-f51.google.com with SMTP id u19so3299853uae.4
- for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2019 02:52:35 -0800 (PST)
-X-Gm-Message-State: AHQUAuazkWEeX68SXBjc+J9rDER4hGhU8GHQoPYf/4yxA40QmYBNTyP/
- SqojYb46j+tZpmbKFZ02eQiM0Ch3E2NZpTyj6Po=
-X-Google-Smtp-Source: AHgI3IYhwsF+N0VInuOQiPghIM+VBrPUGdVnCy1tH4q9L0fGVW2mnDaSxgG2oC1O1ecqHXjUnKJVEfv01UZqLcYPlx8=
-X-Received: by 2002:a9f:3f41:: with SMTP id i1mr5339535uaj.42.1549536754472;
- Thu, 07 Feb 2019 02:52:34 -0800 (PST)
+ id 1grhRR-00022J-Kz
+ for linux-mtd@lists.infradead.org; Thu, 07 Feb 2019 11:02:04 +0000
+Received: from xps13 (aaubervilliers-681-1-80-177.w90-88.abo.wanadoo.fr
+ [90.88.22.177]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 3E450240014;
+ Thu,  7 Feb 2019 11:01:52 +0000 (UTC)
+Date: Thu, 7 Feb 2019 12:01:51 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: gpmi: Introduce GPMI_IS_MXS() macro
+Message-ID: <20190207120151.37b7bbd3@xps13>
+In-Reply-To: <20190207105055.10860-1-festevam@gmail.com>
+References: <20190207105055.10860-1-festevam@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1549533476-3742-1-git-send-email-yamada.masahiro@socionext.com>
- <20190207111606.6b72dc34@xps13>
- <CAK7LNASEvAUeJsBcp4eh+XW+gaVp921SU-d1m-DEs+Hs+YA8TA@mail.gmail.com>
-In-Reply-To: <CAK7LNASEvAUeJsBcp4eh+XW+gaVp921SU-d1m-DEs+Hs+YA8TA@mail.gmail.com>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 7 Feb 2019 19:51:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT-QR3tYJMOLfTssD+tbrsy3G-DZtUvx4g7aC=sxgxtgQ@mail.gmail.com>
-Message-ID: <CAK7LNAT-QR3tYJMOLfTssD+tbrsy3G-DZtUvx4g7aC=sxgxtgQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: call onfi_fill_data_interface() once again
- after nand_detect
-To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190207_025250_531655_698B8CE6 
-X-CRM114-Status: GOOD (  17.39  )
+X-CRM114-CacheID: sfid-20190207_030201_836762_93953188 
+X-CRM114-Status: GOOD (  15.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,82 +66,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: han.xu@nxp.com, martin.kepplinger@ginzinger.com,
+ linux-mtd@lists.infradead.org, bbrezillon@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 7, 2019 at 7:46 PM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
-> On Thu, Feb 7, 2019 at 7:16 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >
-> > Hi Masahiro,
-> >
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Thu,  7 Feb
-> > 2019 18:57:56 +0900:
-> >
-> > > nand_scan_ident() calls onfi_fill_data_interface() at its entry
-> > > to set up the initial timing parameters.
-> > >
-> > > The timing parameters are needed not only for ->setup_data_interface(),
-> > > but also for giving the correct delay to NAND_OP_WAIT_RDY, for example.
-> > >
-> > > If the driver sets the NAND_KEEP_TIMINGS flag, or does not support
-> > > ->setup_data_interface() hook, those parameters will never updated.
-> >
-> >                                                             ^ be
->
-> Will fix (if v2 is welcome)
->
->
-> > >
-> > > Before nand_detect(), we never know whether the chip is ONFi or not.
-> > > So, onfi_fill_data_interface() has to assume the worst case, i.e.
-> > > non-ONFi.
-> >
-> > s/ONFi/ONFI/?
->
-> Will fix.
->
-> Looks like I was misunderstanding
-> maybe because the letter 'I' in the logo
-> (http://www.onfi.org/)
-> looks like a lowercase...
-
-
-http://www.onfi.org/ says
-
-"Discover the advantages of an ONFi world"
-
-
-Perhaps, is ONFi also correct??
-
-Anyway, I will align with the majority.
-
-There are only three instances in the kernel tree.
-
-
-$ git grep ONFi
-drivers/mtd/nand/raw/nand_legacy.c:      * a byte. The ONFi spec
-(Revision 3.1; 2012-09-19, Section 2.16) reads:
-drivers/mtd/nand/raw/nand_legacy.c:             /* EZ-NAND can take
-upto 250ms as per ONFi v4.0 */
-drivers/mtd/nand/raw/nand_legacy.c:             /* EZ-NAND can take
-upto 250ms as per ONFi v4.0 */
-
-
--- 
-Best Regards
-Masahiro Yamada
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRmFiaW8sCgpGYWJpbyBFc3RldmFtIDxmZXN0ZXZhbUBnbWFpbC5jb20+IHdyb3RlIG9uIFRo
+dSwgIDcgRmViIDIwMTkgMDg6NTA6NTQKLTAyMDA6Cgo+IEludHJvZHVjZSBhIEdQTUlfSVNfTVhT
+KCkgbWFjcm8gdG8gdGFrZSBpbnRvIGFjY291bnQgdGhlIGNhc2VzCj4gd2hlbiBteDIzIG9yIG14
+MjggYXJlIHVzZWQsIHdoaWNoIGhlbHBzIHJlYWRhYmlsaXR5Lgo+IAo+IFNpZ25lZC1vZmYtYnk6
+IEZhYmlvIEVzdGV2YW0gPGZlc3RldmFtQGdtYWlsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQv
+bmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbGliLmMgIHwgNiArKy0tLS0KPiAgZHJpdmVycy9tdGQv
+bmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jIHwgMiArLQo+ICBkcml2ZXJzL210ZC9uYW5k
+L3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmggfCAxICsKPiAgMyBmaWxlcyBjaGFuZ2VkLCA0IGlu
+c2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
+L25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLWxpYi5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3Bt
+aS1uYW5kL2dwbWktbGliLmMKPiBpbmRleCBhNDc2OGRmNTA4M2YuLmE4YjI2ZDJlNzkzYyAxMDA2
+NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1saWIuYwo+ICsr
+KyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLWxpYi5jCj4gQEAgLTE1Nyw4
+ICsxNTcsNyBAQCBpbnQgZ3BtaV9pbml0KHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykKPiAg
+CSAqIFJlc2V0IEJDSCBoZXJlLCB0b28uIFdlIGdvdCBmYWlsdXJlcyBvdGhlcndpc2UgOigKPiAg
+CSAqIFNlZSBsYXRlciBCQ0ggcmVzZXQgZm9yIGV4cGxhbmF0aW9uIG9mIE1YMjMgYW5kIE1YMjgg
+aGFuZGxpbmcKPiAgCSAqLwo+IC0JcmV0ID0gZ3BtaV9yZXNldF9ibG9jayhyLT5iY2hfcmVncywK
+PiAtCQkJICAgICAgIEdQTUlfSVNfTVgyMyh0aGlzKSB8fCBHUE1JX0lTX01YMjgodGhpcykpOwo+
+ICsJcmV0ID0gZ3BtaV9yZXNldF9ibG9jayhyLT5iY2hfcmVncywgR1BNSV9JU19NWFModGhpcykp
+Owo+ICAJaWYgKHJldCkKPiAgCQlnb3RvIGVycl9vdXQ7Cj4gIAo+IEBAIC0yNjYsOCArMjY1LDcg
+QEAgaW50IGJjaF9zZXRfZ2VvbWV0cnkoc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzKQo+ICAJ
+KiBjaGlwLCBvdGhlcndpc2UgaXQgd2lsbCBsb2NrIHVwLiBTbyB3ZSBza2lwIHJlc2V0dGluZyBC
+Q0ggb24gdGhlIE1YMjMuCj4gIAkqIGFuZCBNWDI4Lgo+ICAJKi8KPiAtCXJldCA9IGdwbWlfcmVz
+ZXRfYmxvY2soci0+YmNoX3JlZ3MsCj4gLQkJCSAgICAgICBHUE1JX0lTX01YMjModGhpcykgfHwg
+R1BNSV9JU19NWDI4KHRoaXMpKTsKPiArCXJldCA9IGdwbWlfcmVzZXRfYmxvY2soci0+YmNoX3Jl
+Z3MsIEdQTUlfSVNfTVhTKHRoaXMpKTsKPiAgCWlmIChyZXQpCj4gIAkJZ290byBlcnJfb3V0Owo+
+ICAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFu
+ZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jCj4gaW5kZXgg
+ZWQ0MDVjOTQzNGZlLi5iY2Y1MzI4Y2YyMzkgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcv
+Z3BtaS1uYW5kL2dwbWktbmFuZC5jCj4gQEAgLTE3MSw3ICsxNzEsNyBAQCBzdGF0aWMgaW5saW5l
+IGJvb2wgZ3BtaV9jaGVja19lY2Moc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzKQo+ICAJc3Ry
+dWN0IGJjaF9nZW9tZXRyeSAqZ2VvID0gJnRoaXMtPmJjaF9nZW9tZXRyeTsKPiAgCj4gIAkvKiBE
+byB0aGUgc2FuaXR5IGNoZWNrLiAqLwo+IC0JaWYgKEdQTUlfSVNfTVgyMyh0aGlzKSB8fCBHUE1J
+X0lTX01YMjgodGhpcykpIHsKPiArCWlmIChHUE1JX0lTX01YUyh0aGlzKSkgewo+ICAJCS8qIFRo
+ZSBteDIzL214Mjggb25seSBzdXBwb3J0IHRoZSBHRjEzLiAqLwo+ICAJCWlmIChnZW8tPmdmX2xl
+biA9PSAxNCkKPiAgCQkJcmV0dXJuIGZhbHNlOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
+YW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmggYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1p
+LW5hbmQvZ3BtaS1uYW5kLmgKPiBpbmRleCBkMGI3OWJhYzI3MjguLmE4MDRhNGE1YmQ0NiAxMDA2
+NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmgKPiAr
+KysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmgKPiBAQCAtMjA3
+LDQgKzIwNyw1IEBAIHZvaWQgZ3BtaV9jb3B5X2JpdHModTggKmRzdCwgc2l6ZV90IGRzdF9iaXRf
+b2ZmLAo+ICAKPiAgI2RlZmluZSBHUE1JX0lTX01YNih4KQkJKEdQTUlfSVNfTVg2USh4KSB8fCBH
+UE1JX0lTX01YNlNYKHgpIHx8IFwKPiAgCQkJCSBHUE1JX0lTX01YN0QoeCkpCj4gKyNkZWZpbmUg
+R1BNSV9JU19NWFMoeCkJCShHUE1JX0lTX01YMjMoeCkgfHwgR1BNSV9JU19NWDI4KHgpKQo+ICAj
+ZW5kaWYKCkknbSBmaW5lIHdpdGggdGhlIHBhdGNoIGJ1dCBhcyB0aGlzIGRlcGVuZHMgb24gdGhl
+IGZpeCBCb3JpcyBqdXN0IHRvb2sgSQp3aWxsIGFwcGx5IGl0IGZvciA1LjIuCgoKVGhhbmtzLApN
+aXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
