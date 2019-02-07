@@ -2,117 +2,74 @@ Return-Path: <SRS0=ZMJ0=QO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AC9C282C2
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 03:53:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C80E9C282C2
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 05:44:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B416218FE
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 03:53:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D6F82147C
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Feb 2019 05:44:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Mvx/7aLm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="IQaphxE2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B416218FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lQU2hV07";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=procenne.com header.i=@procenne.com header.b="WY37MVvA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D6F82147C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=procenne.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G1woY7kT7Jy2mxN2SXjV01NuI/i+elO98g2SOy2YeyY=; b=Mvx/7aLmabo9vT
-	QHV8oPTacQyv4Dlq8Uv/js0gR/0kCF1PuHVf8fD0YVf92rIeDbOSqklCu4NNjvz9UyYr2lhxMoRFs
-	BvVOJ7EUnGpso/xp5TT2Di0+Fy8Ep6tvl3zD9kycKFzWRCrm8d8NDUpqSt/cy+K54GLkdAnnkNffT
-	2G3jTWNoTGZDbSEcYN9M5hJ+SG4hHjlJ/P1LnsMe1McjPP5rVQZMOX00yE5qnLO6uF5TEAvZ1lSLB
-	/R5B8BSbytCW+/ToE2M5OhvCKg+zHbq/t5sHjbCtdowQ8Lgh8pJSXpNhAOceU0KjEOTFmdUhhmyJ4
-	f/0PLN+nE3t36BVmcPsA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=Ctwl3qROHm3bKaXHeoyVBxBiN4rlPtR4skYBYhVSUo4=; b=lQU
+	2hV07MLFoN/WHvSw9uspHL52oB/NRcog0QepVfzdqhyBziTbMnHf8XtaPB/nhqeiB83jGuVXx1GgS
+	pk2phwmXt8NP3+KxavVpQshy8kPrRWd5oIMGtv9uL4aTsMXB07P9GkBOcP2a+ISYQRlTaCoWyZDg4
+	iSghoDL8WnY0NdkRWfxzXDN6xwGqrJQ6ZR7Kw0329fzielkhFOjSSnC4eUZ5I8TEli1jzbV6vS9lV
+	R7UhR5G/4uXjzwc6nfCE+B4972zyvPoxoQU2FRfQzt0S5SFdDYd+T7//l0tM60ObLTwo13gkwAk78
+	R/RMNsRxqQt3ZCWzdDTXfW9UJxsXn9g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1grakU-0002hi-Az; Thu, 07 Feb 2019 03:53:14 +0000
-Received: from mail-oln040092253105.outbound.protection.outlook.com
- ([40.92.253.105] helo=APC01-SG2-obe.outbound.protection.outlook.com)
+	id 1grcTw-0005Yt-E4; Thu, 07 Feb 2019 05:44:16 +0000
+Received: from forward100o.mail.yandex.net ([2a02:6b8:0:1a2d::600])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1grak4-0002Ec-Pe; Thu, 07 Feb 2019 03:52:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qkZMwuPzKdN5R8UcT7Nk9+VpsvWIElZZzEFty4Z1bM8=;
- b=IQaphxE2WSmJLkSO+E/2ZiyjYkdDD2YLcj3EhIK5RYM7DSqTd+qMEa35v9sYfFa7qm8LGsUkIbANfQEVTMMWin2t4pVCH+ZdS4tah1Q6RBFveh97+5Yz0X0+EZa+7lrij/B8B8e5ew3rA/T6+AwhZrcE9DYWgg2FuSotKjdR92gJNOZzaXIzpdxe/h8LsDURjuZUINAlRQBrh1fzt8ZhtRPS/auVwnElHWfmR7ZGTPoon1zE5a9lrnfJqoTE6A6i3eD6F6kYktGIbyjisXcDJNCp4lueqZOXP4li554KZteWvuUHOnX/A1XDqJ71zmlnFZDvcpuhIrTvrxB0qdrCXg==
-Received: from PU1APC01FT039.eop-APC01.prod.protection.outlook.com
- (10.152.252.60) by PU1APC01HT108.eop-APC01.prod.protection.outlook.com
- (10.152.253.86) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1580.10; Thu, 7 Feb
- 2019 03:52:42 +0000
-Received: from HK0PR02MB3634.apcprd02.prod.outlook.com (10.152.252.59) by
- PU1APC01FT039.mail.protection.outlook.com (10.152.253.127) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.1580.10 via Frontend Transport; Thu, 7 Feb 2019 03:52:42 +0000
-Received: from HK0PR02MB3634.apcprd02.prod.outlook.com
- ([fe80::d582:b3ef:f46a:4735]) by HK0PR02MB3634.apcprd02.prod.outlook.com
- ([fe80::d582:b3ef:f46a:4735%3]) with mapi id 15.20.1580.019; Thu, 7 Feb 2019
- 03:52:42 +0000
-From: Wen Yang <yellowriver2010@hotmail.com>
-To: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>
-Subject: [PATCH v3 3/3] mtd: rawnand: mtk: fix possible object reference leak
-Thread-Topic: [PATCH v3 3/3] mtd: rawnand: mtk: fix possible object reference
- leak
-Thread-Index: AQHUvpiT+gkconwcbkWrejekCB9OlA==
-Date: Thu, 7 Feb 2019 03:52:42 +0000
-Message-ID: <HK0PR02MB363405B62123937DC17F33B6B2680@HK0PR02MB3634.apcprd02.prod.outlook.com>
-References: <1549511278-7735-1-git-send-email-yellowriver2010@hotmail.com>
-In-Reply-To: <1549511278-7735-1-git-send-email-yellowriver2010@hotmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: HK2PR06CA0022.apcprd06.prod.outlook.com
- (2603:1096:202:2e::34) To HK0PR02MB3634.apcprd02.prod.outlook.com
- (2603:1096:203:97::14)
-x-incomingtopheadermarker: OriginalChecksum:361AA1EB720F0733318E5CD7056265887E0520BE2086C4999FBC86236F781A22;
- UpperCasedChecksum:A0808C66A0B291309FC5B80425C088053D2CC236DDE14E614059F819840114E0;
- SizeAsReceived:9511; Count:65
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.7.4
-x-tmn: [QGLXG1TyMlNYWTx4lK+rJ4UI6mBmMBFS]
-x-microsoft-original-message-id: <1549511278-7735-3-git-send-email-yellowriver2010@hotmail.com>
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; PU1APC01HT108;
- 6:iuGVgwt7fzvK8oiMVWhLpYRi5JgO7bQRNwtMxPzCDXPWV8qnumXTcq/8APFvdOmg5lZUh1eDzzhsxRnIP5R4RAwJ4AnfElL7JL0E28dWp6IU6DhVZg/jgo10UgFjfzrnDbJge+zChlOkQg/FzjkKq/x7+tA4Vvv4vDHtbWP+MOcIIyXPolQfFErmdHWLOneD67F0yRm0aBLRV2DDiLBkDSXybuOAz81QaPuINnqyXomKtqO4wPR6GLFGDKcIPro6kz6zo5CjhBM1qd9yDFxCyLo8DIbu77hsvbSOZIMzoEk5/Bn08AHQY4ZvxPdM/ElJNVKVbgsxu5Kbd8C9yM1bPz7GsQE1tvmcBGnYCrs/Y5FhIFA0C7vHrJo0axFZg8ppIjhh/RZ+GnAM1eEZ1VGqXpq2B/hodUc3dHeWJeXJyRivLQu7CwJqBePS5fvDDDojyq0j5x9pJ8ttMPdx1pA2YA==;
- 5:kuMM0ud7sGG8j8AMGGxaumJhXfG04pW1/hrjzyPOIu/duxswgqAQX5nDVCQmj8QXLRSShSr0vJfEIbw6B49RC+rQnvQ6W29rfKXnSvUjp6E3WOCVIWSJndO2Kn7D+kXDI5cwW1FCjKg/jJvxUQpYOHMK9RHZzv+zoyU59Fyx4jpq7Xl0+gr9BknrkUzo1Oh1IBQK4w+XjHKW9MQRpbTTgw==;
- 7:c6ev/aGc4fGSY/kRz9x+Lw22VHQV6MvvHpik7mR5fg3m+2G6zbu8mxBqIqSo2dXeUs7zAdJLxaHCu+sQYxHdlkuPKlgx7HVI5Iz/3AioRyiDvgTLMzTmVUsca7Yxcg6e7glLnElDbwi7jsmDkW8vyQ==
-x-incomingheadercount: 65
-x-eopattributedmessage: 0
-x-ms-exchange-slblob-mailprops: b0omxY8GwpZtOL5FmEVprcShgOktBSYZhzsJHgWxUBcl6hp5DuB1KqnEwQT/8+7WAdkZdcHLwsD77b6i1UUB29G664+axEa5FWKVfkb+V6ACkpPGg7aww84cVz11ukPbdus3y5FjM4eqZ54KJiqI4q+91dENDz3oXeHoh2ORXW2REE0ls+NUasuFkuL+CXaSuBBnYazG2x+9yC9RJC3DLcIewbREjTjH+g+2mXatx0ES4CB03dxl1Dxgds/mG/K6tI7h4kFiw6AFmXjchqiwcYVugwmi0vUkbGwKK1pjUu9J+IwGlgwmlmV+5Sd/oqteIFLbCiFggF6xlIr/+yRJ6htsMS04LxyiYd4jSF7tnktYNZar/LIOzj0u2yO48jX8EGletC6DchEPYK704yawoihh3JTCWKb7DsmBJSj3fKGBpu+LR6traAyKubPASgppuLcAv84oQ9VmDSr4Ezqry7mVQ2+clHI4Q7Y3aPk3SqKtsL3FgqzgyLiMFProYslUI1H6eGgBjx4/FwuiiNywskDDRssYUgTR01UaCZwmEXqaB53TJNt1vuQOJMQV2/IAMRv4uhL5sexejOgOGyYWxeywSIK95P6Oxqz8OFx7wby6zCDU2RMAcWceymzLW8YpXyG6Sfgtyu9/IyaflzWXal7MNWsrv9P5mzlfQLkIpKufBraOCxXhUlH5HB9H6uOuQt1yZdUg+nDuvt6jziDjqE/YePCa1CuPBqi2CfTa4MF9R+skH5nAKJ3XKGVPla8K
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(201702061078)(5061506573)(5061507331)(1603103135)(2017031320274)(201702181274)(2017031322404)(2017031323274)(2017031324274)(1601125500)(1603101475)(1701031045);
- SRVR:PU1APC01HT108; 
-x-ms-traffictypediagnostic: PU1APC01HT108:
-x-exchange-antispam-report-cfa-test: BCL:0; PCL:0; RULEID:(4566010)(82015058);
- SRVR:PU1APC01HT108; BCL:0; PCL:0; RULEID:; SRVR:PU1APC01HT108; 
-x-microsoft-antispam-message-info: nGX87+Af1EaC0RQYf9b8AHqKBarSjFsBS4Rm5hGlf7zGv0GakdI0LPw3k+yaNPop
-MIME-Version: 1.0
-X-OriginatorOrg: hotmail.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 9a4e3081-9524-43cf-bfc3-dcaef82d5da1
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85f0d5b7-bc82-4f09-5762-08d68cafb5ad
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 9a4e3081-9524-43cf-bfc3-dcaef82d5da1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Feb 2019 03:52:34.8852 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU1APC01HT108
+ id 1grcTs-0005YM-Aj
+ for linux-mtd@lists.infradead.org; Thu, 07 Feb 2019 05:44:15 +0000
+Received: from mxback17j.mail.yandex.net (mxback17j.mail.yandex.net
+ [IPv6:2a02:6b8:0:1619::93])
+ by forward100o.mail.yandex.net (Yandex) with ESMTP id 849964AC1245;
+ Thu,  7 Feb 2019 08:44:04 +0300 (MSK)
+Received: from smtp4o.mail.yandex.net (smtp4o.mail.yandex.net
+ [2a02:6b8:0:1a2d::28])
+ by mxback17j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id x0YAZ7Nq4X-i4neRGSg;
+ Thu, 07 Feb 2019 08:44:04 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=procenne.com; s=mail;
+ t=1549518244; bh=zsvQw5Mogmx0MDcDc5fdigiUZVjJfWbwl23GkBinuU4=;
+ h=From:To:Cc:Subject:Date:Message-Id;
+ b=WY37MVvANbm3I13l6WG7nHEuGI2lu0MCMWjL+tuLaPFj7ccc2RCT1Zlq1bLLjq5EE
+ IUNrg60PYlK7zsDiMZwzWMx52ezEoj/4luvCQxwo3yBzPwl2GBLXRc/3g7vlotZYP1
+ e319vJFTB9/BY38i1xXmzn/CJX3l9rjSeAlmXo/4=
+Authentication-Results: mxback17j.mail.yandex.net;
+ dkim=pass header.i=@procenne.com
+Received: by smtp4o.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id
+ noQZNymWGT-i2HG39fY; Thu, 07 Feb 2019 08:44:02 +0300
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (Client certificate not present)
+From: "A. Celenk" <ahmet.celenk@procenne.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH V3] mtd: spi-nor: split s25fl128s into s25fl128s0 and
+ s25fl128s1
+Date: Thu,  7 Feb 2019 08:43:54 +0300
+Message-Id: <1549518234-15211-1-git-send-email-ahmet.celenk@procenne.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190206_195249_297539_2AD7EAE0 
-X-CRM114-Status: GOOD (  14.89  )
+X-CRM114-CacheID: sfid-20190206_214412_630075_CDAA235A 
+X-CRM114-Status: UNSURE (   8.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -124,71 +81,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- Wen Yang <yellowriver2010@hotmail.com>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- Xiaolei Li <xiaolei.li@mediatek.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ahmet Celenk <ahmet.celenk@procenne.com>, Marek Vasut <marek.vasut@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-of_find_device_by_node() takes a reference to the struct device
-when it finds a match via get_device, there is no need to call
-get_device() twice.
-We also should make sure to drop the reference to the device
-taken by of_find_device_by_node() on driver unbind.
+From: "Ahmet Celenk" <ahmet.celenk@procenne.com>
 
-Fixes: 1d6b1e464950 ("mtd: mediatek: driver for MTK Smart Device")
-Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
-Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
+Due to two different versions (S25FL128SAGBHI200 and S25FL128SAGBHI210) of
+the s25fl128s qspi memory, the single "s25fl128s" device entry must be
+split into two to match the correct JEDEC ID's for each version. Solves
+paging related issues of S25FL128SAGBHI210 chips.
+
+Signed-off-by: Ahmet Celenk <ahmet.celenk@procenne.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
 ---
-v3->v2: Avoid two times of calling grtform_get_drvdata()
-v2->v1: Since there is the only one user, let's remove the err_put_device label.
+V3: Added missing SPI_NOR_DUAL_READ flags to new entries
+V2: Removed the old s25fl128s entry
 
- drivers/mtd/nand/raw/mtk_ecc.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
-index 6432bd7..db804fe 100644
---- a/drivers/mtd/nand/raw/mtk_ecc.c
-+++ b/drivers/mtd/nand/raw/mtk_ecc.c
-@@ -267,11 +267,14 @@ static struct mtk_ecc *mtk_ecc_get(struct device_node *np)
- 	struct mtk_ecc *ecc;
- 
- 	pdev = of_find_device_by_node(np);
--	if (!pdev || !platform_get_drvdata(pdev))
-+	if (!pdev)
- 		return ERR_PTR(-EPROBE_DEFER);
--
--	get_device(&pdev->dev);
- 	ecc = platform_get_drvdata(pdev);
-+	if (!ecc) {
-+		put_device(&pdev->dev);
-+		return ERR_PTR(-EPROBE_DEFER);
-+	}
-+
- 	clk_prepare_enable(ecc->clk);
- 	mtk_ecc_hw_init(ecc);
- 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 6e13bbd..3cd9052 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1891,7 +1891,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+-	{ "s25fl128s",  INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
++	{ "s25fl128s0", INFO6(0x012018, 0x4d0080, 256 * 1024, 64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
++	{ "s25fl128s1", INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
 -- 
 2.7.4
 
