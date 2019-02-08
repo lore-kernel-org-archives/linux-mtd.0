@@ -2,128 +2,100 @@ Return-Path: <SRS0=BWs3=QP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B61CC169C4
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA6EC169C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:46:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA6CF2081B
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:43:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 98E9C2081B
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:46:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AlWxR7yB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=MicronCorp.onmicrosoft.com header.i=@MicronCorp.onmicrosoft.com header.b="N8KAeQD0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA6CF2081B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pTBUajZK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3e4H6un"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98E9C2081B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xUNqzpXD+Ut7DQCTViXx1KtmgFPjBhMOJKoDqwWzC8E=; b=AlWxR7yBdzA4sh
-	3CQG9G9CyYWwXITYAoLqdZK6v65TKWodLk7aJj3CQ6c/ommrK0utpi/6RpyccC0eut9NTT0Kaaj6V
-	83JcX3xz8rVpXY0JQinFyAM0nvZsLGw8Tv/iqMM8OFimhu3ukXx+9HaGgR9vdU0okgQiooS+kw1oG
-	MIa6eHJv7ztsW2LGRStap+bswTCXII9cpZ+eIViZMz/s2i01iv2a94dZXBMixNf9mQ/yblWTt0ubS
-	AqYoCdivWXvgnraDdXiuh6CkAWss/6ABNxswH762ArbxNIljCTfHL4oPIIrnPxXvv5GqufnA3f8J0
-	cCkkT8CKPuqdvaAg54xA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+BdOrYpTeBSZtcT/SC+Cxk05PaipoP53agWW8W14bpA=; b=pTBUajZKviQunI
+	pOY4O+mJTlfLRpFgmwjGFqXDVfJf+b60RZebNHjL1dfc0XOlk0ZhjO8rMhrA71SDI06g86+4NmZqf
+	9/EN1l4jEOgn4ap5llCmaPnmFt3hs6b2K0syJfRteJNRRHDIoWN1VClz9Fqs+i1k0Nk5mNgY0nBP2
+	tCztrvfWNIOt8AprJrMJXJm284+mPJ0AdR9kbipbpFChXt2VUgq7SK6gFM+x0ZYHicA6Krrnpp5BM
+	A+imsHlUaj4pD42kasWKTNmzr1Zi0TXYm3pSwfpBM/EEvWJcSWGWNYk88ud1juetbIa1i8+hcFaVQ
+	WP7vVuA0Xrkz/ulnP6SQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gsB7i-0001sl-FU; Fri, 08 Feb 2019 18:43:38 +0000
-Received: from mailout.micron.com ([137.201.242.129])
+	id 1gsBAW-0003gb-Cu; Fri, 08 Feb 2019 18:46:32 +0000
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gsB7e-0001rp-Ds
- for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 18:43:36 +0000
-Received: from mail.micron.com (bowex17h.micron.com [137.201.20.32])
- by mailout.micron.com (8.14.4/8.14.6) with ESMTP id x18IhSt8023636;
- Fri, 8 Feb 2019 11:43:28 -0700
-Received: from BOWEX36H.micron.com (137.201.84.179) by BOWEX17H.micron.com
- (137.201.20.32) with Microsoft SMTP Server (TLS) id 15.0.1365.1; Fri, 8 Feb
- 2019 11:43:28 -0700
-Received: from NAM05-BY2-obe.outbound.protection.outlook.com (137.201.84.23)
- by BOWEX36H.micron.com (137.201.84.179) with Microsoft SMTP Server (TLS) id
- 15.0.1365.1 via Frontend Transport; Fri, 8 Feb 2019 11:43:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=MicronCorp.onmicrosoft.com; s=selector1-micron-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w0F0rx2QylR4ITi6AVSiVJYUDFxsI7ZeEsAczGF4UZc=;
- b=N8KAeQD0CEzqPuzX9fCq2o1guNFexh0kfiDO0r+rMZeBSPofJ89Wz21D8wLrLOtZz3blAlXY6D+H7yaKsGywegZEZ+kMrbRIGm5MMgCEjRtSqyItXOeAr+Izpt54P+oSm/GrJwsnC5a2V5Ei/GY0fwgnl/RYhG8FBI++8XJqbTY=
-Received: from BYAPR08MB4533.namprd08.prod.outlook.com (52.135.234.15) by
- BYAPR08MB6104.namprd08.prod.outlook.com (20.178.52.17) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1580.20; Fri, 8 Feb 2019 18:43:26 +0000
-Received: from BYAPR08MB4533.namprd08.prod.outlook.com
- ([fe80::911c:eb84:5e0d:c669]) by BYAPR08MB4533.namprd08.prod.outlook.com
- ([fe80::911c:eb84:5e0d:c669%3]) with mapi id 15.20.1601.016; Fri, 8 Feb 2019
- 18:43:26 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: Boris Brezillon <bbrezillon@kernel.org>
-Subject: RE: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Topic: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Index: AdS/uVD1jG3UvCBSRuC2oJ8LRRcc4gAA03cAAAFVpvAAAQltAAACntYgAAFvxgAAAWkB8A==
-Date: Fri, 8 Feb 2019 18:43:26 +0000
-Message-ID: <BYAPR08MB453327FB53F7DFE50C55C1B4DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+ id 1gsBAU-0003gK-1f
+ for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 18:46:31 +0000
+Received: by mail-wm1-x343.google.com with SMTP id v26so4735671wmh.3
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2019 10:46:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=tkvry6DhbzfjyBca+lSPtgCkSaDPcnAkTuoWxDH6XYw=;
+ b=Z3e4H6unAQw+B3d197hzsZRn7vAaX+FZUvva8drgLh/YZBVcIC6wF1cNu53U1HlZP1
+ a6Re7OXV7gjgdk/rAHRSSPLEILXPbBFCHJKEo+gHnO3MJsnOQNQEqQxEesk98d4+5Cxg
+ VdgU5ivzrh8YU3IOXPUd2vOlrXyY/vY1bg9JxzX1RqHQA005Xq86IcuxJe3CVvlMs21w
+ qqQEcijTld6BLFKxWonX0sk3tYks1XoS+xteV93GnUvOYTzEPb50SUdA5CP+b8CRgWT9
+ B6/b9rgus6iyvRAmS2hwMrDyGscXj4kMd9uRnC0kLApt7TT+74BWhjjGsXBIJ7Gw+9qj
+ Mamw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+ :date:user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=tkvry6DhbzfjyBca+lSPtgCkSaDPcnAkTuoWxDH6XYw=;
+ b=rMs2UdSkGusUomo7NdA61WVRuihyVwG/P9+7Wy1H1VdfMJXryhyuhIPhKy/UZHgZjv
+ dTmJHaVuDf+hrtXdvroqS2nXbkLT/J9ebfw1weV7F77rHai5ac8AtOSMk488LAiWonam
+ 26IGJgH4Md6Svf8JDSENx3ome7qP5wfPPxZPXaLa2ekOKafoZGC0gJWSthoKcjpHdvbF
+ JNRyOt5Fc5SvrHFC5+nQL9Nayc3BOMHxQLlHQZGzNDDQ0MPpSJlEoGJtMxM1/qPdVZ3l
+ 47itOKyCd64Wcijd2Z5zKdicFbOLivVILEKX2LKloqWT6nZgf8UAlgk6NntxlSMQC/d3
+ seJg==
+X-Gm-Message-State: AHQUAuaVjpJsvHuRal9EExi+V7SVVl2lPUuOx3P1CEfzE+Qid+cs7Z/D
+ rJnFqIVkd0cGJ5MKb+Y6Mr8=
+X-Google-Smtp-Source: AHgI3IZ/Ilbjoy05oU4ZhxiEw/59BpCgKWq4fL32woPQ8K8TJUIhEj6rfdeYNqEF9iKvx2sF93oDJQ==
+X-Received: by 2002:a7b:cd14:: with SMTP id f20mr11846055wmj.93.1549651587886; 
+ Fri, 08 Feb 2019 10:46:27 -0800 (PST)
+Received: from [192.168.1.4] (ip-86-49-110-70.net.upcbroadband.cz.
+ [86.49.110.70])
+ by smtp.gmail.com with ESMTPSA id y12sm3002105wmi.7.2019.02.08.10.46.26
+ (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+ Fri, 08 Feb 2019 10:46:27 -0800 (PST)
+Subject: Re: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+To: "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+ Boris Brezillon <bbrezillon@kernel.org>
 References: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
  <298d18cf-094b-d5d0-45d1-39c7b75ba309@microchip.com>
  <BYAPR08MB45335415CC3690816C1FD603DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
  <a83a9655-0ce7-da15-ec17-80ef88764e21@microchip.com>
  <BYAPR08MB4533DB0A7F4E30543750C83FDB690@BYAPR08MB4533.namprd08.prod.outlook.com>
  <20190208184718.3c488d0d@kernel.org>
-In-Reply-To: <20190208184718.3c488d0d@kernel.org>
-Accept-Language: en-150, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=beanhuo@micron.com; 
-x-originating-ip: [165.225.81.73]
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; BYAPR08MB6104;
- 6:zEcYamUxx08ggiQwlT+MKgK/mV/RRblTJVIXgA4YaYo8hRvIb8EwpfVFgpvtfuWiWhR8WudFBOOv30DuM+hj+wdk4eMBR31LRxaLqm1+0osU09vsCtTzABJM4ROjBg4CqA3tR5h4urTqtPH4TAj8qRcbhFtju0gThx3yMCh0p0jYXz55QqmL35xhTs2OKXzGfxxbmqdeq3bxO70XMWVuQS8r5y2tdPpIi2zhG2d2m5MRCxBA3AgZXypTY2TLAR/y4PlvgQBp6SPYogqqxOWHFo11dKe9GrFBVBYGvBQ+Z2kabZQvOHtXD1jHwfrpAUBIIfSjGxKlQOIYdGlgMOhZDLYZeLJN0Oh35ulCvI20gjMzb/iWZSh+KWbWjnrAEOE5E3OsCXNldUAdUeckWxncOj9fRcmguXUyy33p+bPMmDK5voJ/OAl1fRHhYCXXBMo1BAgODUYfEJo5EnHhglzcZw==;
- 5:eNPMRWJ1d9hAGs3zsKLBmr6gLbjP9xhA7pYHaFyN0zbEKeft9BUdhccMQtEPlBov7Y2oG5hZcbaQvIamhcl/4P6vlWY65VDGD6dTteeNUBmyTnU7b17jnK5V++vJCxj7eEJodpLC5KywhkiAqMgS/JuZkZIjBI3tXcHJ2+2uY5BqmKkOwnmcbaGuvbh/sAM1DUOyJMr71GQZ1xgST8AZ8Q==;
- 7:80X8JBMHQVsfix1UnX1aqlpronDkPw0aXxU1GMYka7Tu7J5xpeUMpoum2h5lPtkfTs1xSJQC3eH3UHmno+xM6ffoqW1ps9cV+DnQsHD0UBpHW6wglCX1VHgywukox9JbLzaHCJ/5sSsciAxldg1ncQ==
-x-ms-office365-filtering-correlation-id: 7387386b-cbc8-4e91-a164-08d68df54ff0
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
- SRVR:BYAPR08MB6104; 
-x-ms-traffictypediagnostic: BYAPR08MB6104:|BYAPR08MB6104:
-x-microsoft-antispam-prvs: <BYAPR08MB610460A918BF7AC59DCDA552DB690@BYAPR08MB6104.namprd08.prod.outlook.com>
-x-forefront-prvs: 094213BFEA
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(39860400002)(136003)(366004)(346002)(376002)(189003)(199004)(71200400001)(6436002)(26005)(86362001)(6916009)(99286004)(6246003)(7696005)(76176011)(446003)(4326008)(8936002)(55016002)(66066001)(476003)(25786009)(14444005)(54906003)(316002)(53936002)(9686003)(97736004)(71190400001)(229853002)(256004)(68736007)(3846002)(478600001)(6506007)(6116002)(102836004)(93886005)(2906002)(81156014)(74316002)(7736002)(106356001)(305945005)(81166006)(486006)(186003)(8676002)(33656002)(105586002)(11346002)(14454004)(55236004);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BYAPR08MB6104;
- H:BYAPR08MB4533.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: micron.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 7nvIwH9WeLOVKYQHOwn5YL/x8nzfWd2j7TByciTKJpZH77UKzv1Z2hFJhVsuC46XIgt3Rv2AnXFBtEwQDzZ/ohRIlfy7pyXBwCTeuvNaGJhCnzVV+rMQKNgwKQlV4jY12e/gwkwrXp07Y3xCRj1O74NDLh4MP6bx2PMN/9/60xT0pwJSt3GCH1C0yKpXjU9HWPnLf3z8tzJqnJC9PZiRYfJfDC5lXhdzYhR1tNh8GhZD6+teQ2+UwsfqrXQi31TZrEOQESZZQFLAsTVdkymxguPZt/ReObrQmOhs+xlSWocYNeiXJU9WscVaEJ6wmNeqkADmvBWiH6b/Bd/IA+8pvhR7xPzfq/QCniZiYxS+hqzT9UZOVM+j1x0P6GFT+Cag37DjTB6wjc4pH5mTp9fbWmsUx7Z7TQNgY9S2nwZAMWY=
+ <BYAPR08MB453327FB53F7DFE50C55C1B4DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <7278fa87-bfe4-3d95-9a9a-5ef4c0277d78@gmail.com>
+Date: Fri, 8 Feb 2019 19:46:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7387386b-cbc8-4e91-a164-08d68df54ff0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 18:43:26.5226 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR08MB6104
-X-OriginatorOrg: micron.com
-X-TM-AS-Product-Ver: SMEX-12.0.0.1782-8.200.1013-24416.005
-X-TM-AS-Result: No--13.683100-0.000000-31
-X-TM-AS-MatchedID: 150567-701837-105250-780014-705178-703283-702050-700648-7
- 03523-700476-706719-851106-700074-187165-711518-701005-701618-702609-700782
- -701702-707788-706249-121113-701305-703355-139010-700075-700107-701928-7014
- 61-705388-703747-700752-702020-705518-106230-701236-700546-703788-701499-70
- 1471-148004-148007-148020-148050-20043-36048-42000-42003-63
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-MT-CheckInternalSenderRule: True
-X-Scanned-By: MIMEDefang 2.78 on 137.201.130.65
+In-Reply-To: <BYAPR08MB453327FB53F7DFE50C55C1B4DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190208_104334_531119_638F594A 
-X-CRM114-Status: GOOD (  10.76  )
+X-CRM114-CacheID: sfid-20190208_104630_094989_131E71BC 
+X-CRM114-Status: UNSURE (   8.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -138,7 +110,6 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
  "richard@nod.at" <richard@nod.at>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>
@@ -147,83 +118,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,Boris 
-I sent three times, seems last time is successful. would you check that is correct?
+On 2/8/19 7:43 PM, Bean Huo (beanhuo) wrote:
+> Hi,Boris 
+> I sent three times, seems last time is successful. would you check that is correct?
+> 
+> git send-email 0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
+> 0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
 
-git send-email 0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
-0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
-To whom should the emails be sent (if anyone)? linux-mtd@lists.infradead.org,Tudor.Ambarus@microchip.com,bbrezillon@kernel.org,linux-kernel@vger.kernel.org
-Message-ID to be used as In-Reply-To for the first email (if any)? 
-(mbox) Adding cc: Bean Huo <beanhuo@micron.com> from line 'From: Bean Huo <beanhuo@micron.com>'
-(body) Adding cc: Bean Huo <beanhuo@micron.com> from line 'Signed-off-by: Bean Huo <beanhuo@micron.com>'
+git send-email --annotate --to=... --cc=... --cc=... 000*patch
 
-From: Bean Huo <beanhuo@micron.com>
-To: linux-mtd@lists.infradead.org,
-        Tudor.Ambarus@microchip.com,
-        bbrezillon@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: Bean Huo <beanhuo@micron.com>
-Subject: [PATCH] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Date: Fri,  8 Feb 2019 18:00:12 +0000
-Message-Id: <20190208180012.25852-1-beanhuo@micron.com>
-X-Mailer: git-send-email 2.17.1
+This will likely make your life easier, rather than having to paste
+various email addresses to git send-email queries.
 
-    The Cc list above has been expanded by additional
-    addresses found in the patch commit message. By default
-    send-email prompts before sending whenever this occurs.
-    This behavior is controlled by the sendemail.confirm
-    configuration setting.
+[...]
 
-    For additional information, run 'git send-email --help'.
-    To retain the current behavior, but squelch this message,
-    run 'git config --global sendemail.confirm auto'.
-
-Send this email? ([y]es|[n]o|[q]uit|[a]ll): y
-OK. Log says:
-Sendmail: /usr/sbin/sendmail -i linux-mtd@lists.infradead.org Tudor.Ambarus@microchip.com bbrezillon@kernel.org linux-kernel@vger.kernel.org beanhuo@micron.com
-From: Bean Huo <beanhuo@micron.com>
-To: linux-mtd@lists.infradead.org,
-        Tudor.Ambarus@microchip.com,
-        bbrezillon@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: Bean Huo <beanhuo@micron.com>
-Subject: [RESEND PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Date: Fri,  8 Feb 2019 18:00:12 +0000
-Message-Id: <20190208180012.25852-1-beanhuo@micron.com>
-X-Mailer: git-send-email 2.17.1
-
-Result: OK
-
->
->Hi Bean,
->
->On Fri, 8 Feb 2019 17:13:52 +0000
->"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
->
->> Hi, Tutor
->> Thanks. unfortunately, it doesn't work on my side. Problem is on our email
->server side, not my local setting.
->> I followed your configuration, then git-email failed.
->
->Can you paste the output of git send-email and the [sendemail] section of
->your .gitconfig so we can check.
->It shouldn't fail, really, because the server shouldn't check the body section of
->your email, and this is where the extra
->
->	From: First Last <foo@bar.com>
->
->line is placed.
->
->> Please just change my S-o-b to 'Bean Huo (beanhuo) <beanhuo@micron.com>'
->in my patch to please checkpacth.pl.  It is not huge change.
->
->It's not a problem when an drive-by contributor posts a patch, but if you don't
->patch it that means we'll have to do it manually every time we apply one of your
->patch, so please find a solution.
->
->Thanks,
->
->Boris
+-- 
+Best regards,
+Marek Vasut
 
 ______________________________________________________
 Linux MTD discussion mailing list
