@@ -2,76 +2,78 @@ Return-Path: <SRS0=BWs3=QP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D048BC282CC
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B61CC169C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:43:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AD3B20863
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:34:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA6CF2081B
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 18:43:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l0X7RBEU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=MicronCorp.onmicrosoft.com header.i=@MicronCorp.onmicrosoft.com header.b="trzhEdCt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AD3B20863
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AlWxR7yB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=MicronCorp.onmicrosoft.com header.i=@MicronCorp.onmicrosoft.com header.b="N8KAeQD0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA6CF2081B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XJ8ClNvqjIA0HJq0FkdgHnAnmkuQ6+hdIf6Iy5cQWFg=; b=l0X7RBEUdbShsK
-	KKpDqixUZp9mXCdEAz/Dez6MhrTxb0WqivY3U+qMU/AR4mmxnCKnyQ+nVmaLW8z9dfetJv1Z84/Je
-	SwzrfMXjoZC9IMBEKIKpctejNp9wv/cO/3jtIvT5498CYvm06WQ7f84Q89Eg/k7VjDNU3eY00qonR
-	nrgYiRjty1PRhIuWYrzGiMykMkTKzX2gK6cTx/h/J0IxboNmGxdNBRvuITP35sidam8IpBPLpB2Tb
-	5nT/wpmzcOjtGoI4MuyD/vxekSfYwgZ9bvQouO4p3VTTL8uXuKuARmQ7K22Hw5DBObwx0KAgG/d6i
-	ndA0jSLVSrItp25e+/dA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xUNqzpXD+Ut7DQCTViXx1KtmgFPjBhMOJKoDqwWzC8E=; b=AlWxR7yBdzA4sh
+	3CQG9G9CyYWwXITYAoLqdZK6v65TKWodLk7aJj3CQ6c/ommrK0utpi/6RpyccC0eut9NTT0Kaaj6V
+	83JcX3xz8rVpXY0JQinFyAM0nvZsLGw8Tv/iqMM8OFimhu3ukXx+9HaGgR9vdU0okgQiooS+kw1oG
+	MIa6eHJv7ztsW2LGRStap+bswTCXII9cpZ+eIViZMz/s2i01iv2a94dZXBMixNf9mQ/yblWTt0ubS
+	AqYoCdivWXvgnraDdXiuh6CkAWss/6ABNxswH762ArbxNIljCTfHL4oPIIrnPxXvv5GqufnA3f8J0
+	cCkkT8CKPuqdvaAg54xA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gsAz0-0006k0-OS; Fri, 08 Feb 2019 18:34:38 +0000
+	id 1gsB7i-0001sl-FU; Fri, 08 Feb 2019 18:43:38 +0000
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gsAyx-0006jE-EW
- for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 18:34:36 +0000
-Received: from mail.micron.com (bowex36a.micron.com [137.201.85.222])
- by mailout.micron.com (8.14.4/8.14.6) with ESMTP id x18IYYZb004735;
- Fri, 8 Feb 2019 11:34:34 -0700
-Received: from bowex17d.micron.com (137.201.21.212) by bowex36a.micron.com
- (137.201.85.222) with Microsoft SMTP Server (TLS) id 15.0.1365.1; Fri, 8 Feb
- 2019 11:34:33 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (137.201.20.7) by
- bowex17d.micron.com (137.201.21.212) with Microsoft SMTP Server
- (TLS) id
- 15.0.1365.1 via Frontend Transport; Fri, 8 Feb 2019 11:34:33 -0700
+ id 1gsB7e-0001rp-Ds
+ for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 18:43:36 +0000
+Received: from mail.micron.com (bowex17h.micron.com [137.201.20.32])
+ by mailout.micron.com (8.14.4/8.14.6) with ESMTP id x18IhSt8023636;
+ Fri, 8 Feb 2019 11:43:28 -0700
+Received: from BOWEX36H.micron.com (137.201.84.179) by BOWEX17H.micron.com
+ (137.201.20.32) with Microsoft SMTP Server (TLS) id 15.0.1365.1; Fri, 8 Feb
+ 2019 11:43:28 -0700
+Received: from NAM05-BY2-obe.outbound.protection.outlook.com (137.201.84.23)
+ by BOWEX36H.micron.com (137.201.84.179) with Microsoft SMTP Server (TLS) id
+ 15.0.1365.1 via Frontend Transport; Fri, 8 Feb 2019 11:43:27 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=MicronCorp.onmicrosoft.com; s=selector1-micron-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MYUqHwYOg39fJkjzFVt8rYZp4S2azcfYyUWOOOZr32g=;
- b=trzhEdCt4eg/DSgK9Pwlup8sVA45B6OHH7PSGz7p4Xqx0LuKmVr4ybcfhq4gN/MPwNZiFoqFXWEL8+cnbsqJIYGFnDCsDoMzSf26XdG0U1EExdwWILVhegbuAeeheo46DzG17HpJ4lpqZcONP9mMhj/NTN8ruF1DWu1vmUDzMOM=
+ bh=w0F0rx2QylR4ITi6AVSiVJYUDFxsI7ZeEsAczGF4UZc=;
+ b=N8KAeQD0CEzqPuzX9fCq2o1guNFexh0kfiDO0r+rMZeBSPofJ89Wz21D8wLrLOtZz3blAlXY6D+H7yaKsGywegZEZ+kMrbRIGm5MMgCEjRtSqyItXOeAr+Izpt54P+oSm/GrJwsnC5a2V5Ei/GY0fwgnl/RYhG8FBI++8XJqbTY=
 Received: from BYAPR08MB4533.namprd08.prod.outlook.com (52.135.234.15) by
  BYAPR08MB6104.namprd08.prod.outlook.com (20.178.52.17) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1580.20; Fri, 8 Feb 2019 18:34:32 +0000
+ 15.20.1580.20; Fri, 8 Feb 2019 18:43:26 +0000
 Received: from BYAPR08MB4533.namprd08.prod.outlook.com
  ([fe80::911c:eb84:5e0d:c669]) by BYAPR08MB4533.namprd08.prod.outlook.com
  ([fe80::911c:eb84:5e0d:c669%3]) with mapi id 15.20.1601.016; Fri, 8 Feb 2019
- 18:34:32 +0000
+ 18:43:26 +0000
 From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Topic: [RESEND PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Index: AdS/3OnQZjj8XegeT+KSU6BShrHJ9Q==
-Date: Fri, 8 Feb 2019 18:34:31 +0000
-Message-ID: <BYAPR08MB4533F6B01EF90FC66BFB5C87DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+To: Boris Brezillon <bbrezillon@kernel.org>
+Subject: RE: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+Thread-Topic: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+Thread-Index: AdS/uVD1jG3UvCBSRuC2oJ8LRRcc4gAA03cAAAFVpvAAAQltAAACntYgAAFvxgAAAWkB8A==
+Date: Fri, 8 Feb 2019 18:43:26 +0000
+Message-ID: <BYAPR08MB453327FB53F7DFE50C55C1B4DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+References: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+ <298d18cf-094b-d5d0-45d1-39c7b75ba309@microchip.com>
+ <BYAPR08MB45335415CC3690816C1FD603DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+ <a83a9655-0ce7-da15-ec17-80ef88764e21@microchip.com>
+ <BYAPR08MB4533DB0A7F4E30543750C83FDB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+ <20190208184718.3c488d0d@kernel.org>
+In-Reply-To: <20190208184718.3c488d0d@kernel.org>
 Accept-Language: en-150, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -81,45 +83,47 @@ authentication-results: spf=none (sender IP is )
 x-originating-ip: [165.225.81.73]
 x-ms-publictraffictype: Email
 x-microsoft-exchange-diagnostics: 1; BYAPR08MB6104;
- 6:gztZPuTWN53QtFFBQvQ0AxgmjtQLeGKlpTC9YdLkpRbs6YozczN6Y/ykqKfglwGeA3x62Yh55LJ9JF7+Zwbg2wHJ/wpqftOuNIkCPJ+mw1vqqr0Lq9KMKlTwqPWh08IeYqqp3+Ane1Ydw5lOvOL8rYfksTiKya92joKapAZk2wbxWx08x6DO84Gc/CoT/6Y58s2Ur1tP6nGiwMjg/x4mL1P8reR2+7N+GGI+sXYAt+rHHLA8HpP5UjndE/12YgUnSWMWWVeOGJdCimY6wnBXv0ub1FR5lqLoGMxl0PvKjs3iM7CEskGFVuW/lVBe84zG6czz+MRVf+HKjkHhqr50k2bxZlOZE3hJZRzCpCdMj0TYAKZY9sy8/fzoAO/mllVrmJ2Wsu076weHwog22LdHxDFIhQXF1QV0nmUotPIjLRS83KwNotfhxyo0tF0AbHxI+b/kaVX0e6odWaRkexx3TQ==;
- 5:0kOOFbxSmHqqTxUgT/TqJdrNAenAmdUzNqLcb0bY6dvJEAHyY5RvYlD12TYF8tj8PtANfGbNU7/ayUas19IMgLmql+pIuG58EyWKasWyGyhRE4t2OHZDyWuH51c/l5e8LY+urXqWF0LrfsRvSb3HWdla8AlMwm+Lvsl6/Cf+4PPcgHETCs0PMf/2X+yxmxtXXTgiclypyFCWCT+ajZuXKg==;
- 7:FbQJ5kCByaFzrp7NB4Mo7Gh5G4VZsEHXFZzVUaPI1az7g16EO3VztQEv3IznICpyHEq7jiyMEN7l57D6wY2QcYCMoC2lxKhzcgA1HY5SWKW3JGUX+nKUWruSToHGmkEaF1oxQ2+QJBHwpF8mU0RHag==
-x-ms-office365-filtering-correlation-id: 2df24423-0095-41bb-be92-08d68df4113f
+ 6:zEcYamUxx08ggiQwlT+MKgK/mV/RRblTJVIXgA4YaYo8hRvIb8EwpfVFgpvtfuWiWhR8WudFBOOv30DuM+hj+wdk4eMBR31LRxaLqm1+0osU09vsCtTzABJM4ROjBg4CqA3tR5h4urTqtPH4TAj8qRcbhFtju0gThx3yMCh0p0jYXz55QqmL35xhTs2OKXzGfxxbmqdeq3bxO70XMWVuQS8r5y2tdPpIi2zhG2d2m5MRCxBA3AgZXypTY2TLAR/y4PlvgQBp6SPYogqqxOWHFo11dKe9GrFBVBYGvBQ+Z2kabZQvOHtXD1jHwfrpAUBIIfSjGxKlQOIYdGlgMOhZDLYZeLJN0Oh35ulCvI20gjMzb/iWZSh+KWbWjnrAEOE5E3OsCXNldUAdUeckWxncOj9fRcmguXUyy33p+bPMmDK5voJ/OAl1fRHhYCXXBMo1BAgODUYfEJo5EnHhglzcZw==;
+ 5:eNPMRWJ1d9hAGs3zsKLBmr6gLbjP9xhA7pYHaFyN0zbEKeft9BUdhccMQtEPlBov7Y2oG5hZcbaQvIamhcl/4P6vlWY65VDGD6dTteeNUBmyTnU7b17jnK5V++vJCxj7eEJodpLC5KywhkiAqMgS/JuZkZIjBI3tXcHJ2+2uY5BqmKkOwnmcbaGuvbh/sAM1DUOyJMr71GQZ1xgST8AZ8Q==;
+ 7:80X8JBMHQVsfix1UnX1aqlpronDkPw0aXxU1GMYka7Tu7J5xpeUMpoum2h5lPtkfTs1xSJQC3eH3UHmno+xM6ffoqW1ps9cV+DnQsHD0UBpHW6wglCX1VHgywukox9JbLzaHCJ/5sSsciAxldg1ncQ==
+x-ms-office365-filtering-correlation-id: 7387386b-cbc8-4e91-a164-08d68df54ff0
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
  SRVR:BYAPR08MB6104; 
 x-ms-traffictypediagnostic: BYAPR08MB6104:|BYAPR08MB6104:
-x-microsoft-antispam-prvs: <BYAPR08MB6104B84837332375336A2B5ADB690@BYAPR08MB6104.namprd08.prod.outlook.com>
+x-microsoft-antispam-prvs: <BYAPR08MB610460A918BF7AC59DCDA552DB690@BYAPR08MB6104.namprd08.prod.outlook.com>
 x-forefront-prvs: 094213BFEA
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(979002)(396003)(39860400002)(136003)(366004)(346002)(376002)(189003)(199004)(71200400001)(6436002)(26005)(86362001)(2201001)(4744005)(99286004)(217873002)(7696005)(8936002)(55016002)(66066001)(476003)(25786009)(14444005)(316002)(53936002)(9686003)(97736004)(71190400001)(110136005)(256004)(68736007)(3846002)(478600001)(6506007)(6116002)(2501003)(102836004)(2906002)(81156014)(74316002)(7736002)(106356001)(305945005)(81166006)(486006)(186003)(8676002)(33656002)(105586002)(14454004)(55236004)(969003)(989001)(999001)(1009001)(1019001);
+ SFS:(10009020)(396003)(39860400002)(136003)(366004)(346002)(376002)(189003)(199004)(71200400001)(6436002)(26005)(86362001)(6916009)(99286004)(6246003)(7696005)(76176011)(446003)(4326008)(8936002)(55016002)(66066001)(476003)(25786009)(14444005)(54906003)(316002)(53936002)(9686003)(97736004)(71190400001)(229853002)(256004)(68736007)(3846002)(478600001)(6506007)(6116002)(102836004)(93886005)(2906002)(81156014)(74316002)(7736002)(106356001)(305945005)(81166006)(486006)(186003)(8676002)(33656002)(105586002)(11346002)(14454004)(55236004);
  DIR:OUT; SFP:1101; SCL:1; SRVR:BYAPR08MB6104;
  H:BYAPR08MB4533.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: micron.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 5KJ3Jk+Mzgb7s9cJ+trH8/aJlqSfYt7HD5KlNRN64YZosKB4lFf4e3iuPrM/wPEsTPMl/MJp3AKJMhv5sJ8QBqdIcSoV5qTv6XQwtLmZWX+bl+qoiXDo6gZ99RHCGa9uTNi1d4W9ST1TPzLjuY9IFWnnqbsXo55Q4M1IhFfk6scuvpchW9c7J31HxvVlZPDdufD3SFXcTp4wCBd7LqcX2aNQE7mmEGV580oIlL9SaeT7IQZ7Ygbu+K2T/ckBab8VwCHN6GlxvkuoNtYVZ2R7neAb5bDc4LbkjmkU774F0jsYcxAW/7/QkaSNH5E2TUyO/FVNMQ2+PcT4AqpwKg9LAdPkcMZzWVXL4RN1M4VxopEgy/EJ3R+8rsUIdkcA5IhdWAGsuo+2KCGvZEDICKeZVpb/vKUWX+fLkY7i+5zUcOY=
+x-microsoft-antispam-message-info: 7nvIwH9WeLOVKYQHOwn5YL/x8nzfWd2j7TByciTKJpZH77UKzv1Z2hFJhVsuC46XIgt3Rv2AnXFBtEwQDzZ/ohRIlfy7pyXBwCTeuvNaGJhCnzVV+rMQKNgwKQlV4jY12e/gwkwrXp07Y3xCRj1O74NDLh4MP6bx2PMN/9/60xT0pwJSt3GCH1C0yKpXjU9HWPnLf3z8tzJqnJC9PZiRYfJfDC5lXhdzYhR1tNh8GhZD6+teQ2+UwsfqrXQi31TZrEOQESZZQFLAsTVdkymxguPZt/ReObrQmOhs+xlSWocYNeiXJU9WscVaEJ6wmNeqkADmvBWiH6b/Bd/IA+8pvhR7xPzfq/QCniZiYxS+hqzT9UZOVM+j1x0P6GFT+Cag37DjTB6wjc4pH5mTp9fbWmsUx7Z7TQNgY9S2nwZAMWY=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2df24423-0095-41bb-be92-08d68df4113f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 18:34:31.8789 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7387386b-cbc8-4e91-a164-08d68df54ff0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 18:43:26.5226 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR08MB6104
 X-OriginatorOrg: micron.com
 X-TM-AS-Product-Ver: SMEX-12.0.0.1782-8.200.1013-24416.005
-X-TM-AS-Result: No-1.129200-0.000000-31
-X-TM-AS-MatchedID: 851106-701236-700648-700270-188019-148004-148007-148020-1
- 48050-10019-41000-42000-42003-63
+X-TM-AS-Result: No--13.683100-0.000000-31
+X-TM-AS-MatchedID: 150567-701837-105250-780014-705178-703283-702050-700648-7
+ 03523-700476-706719-851106-700074-187165-711518-701005-701618-702609-700782
+ -701702-707788-706249-121113-701305-703355-139010-700075-700107-701928-7014
+ 61-705388-703747-700752-702020-705518-106230-701236-700546-703788-701499-70
+ 1471-148004-148007-148020-148050-20043-36048-42000-42003-63
 X-TM-AS-User-Approved-Sender: Yes
 X-TM-AS-User-Blocked-Sender: No
 X-MT-CheckInternalSenderRule: True
-X-Scanned-By: MIMEDefang 2.78 on 137.201.82.98
+X-Scanned-By: MIMEDefang 2.78 on 137.201.130.65
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190208_103435_607220_2D653C26 
-X-CRM114-Status: UNSURE (   6.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190208_104334_531119_638F594A 
+X-CRM114-Status: GOOD (  10.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -131,34 +135,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,Boris 
+I sent three times, seems last time is successful. would you check that is correct?
+
+git send-email 0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
+0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
+To whom should the emails be sent (if anyone)? linux-mtd@lists.infradead.org,Tudor.Ambarus@microchip.com,bbrezillon@kernel.org,linux-kernel@vger.kernel.org
+Message-ID to be used as In-Reply-To for the first email (if any)? 
+(mbox) Adding cc: Bean Huo <beanhuo@micron.com> from line 'From: Bean Huo <beanhuo@micron.com>'
+(body) Adding cc: Bean Huo <beanhuo@micron.com> from line 'Signed-off-by: Bean Huo <beanhuo@micron.com>'
+
 From: Bean Huo <beanhuo@micron.com>
+To: linux-mtd@lists.infradead.org,
+        Tudor.Ambarus@microchip.com,
+        bbrezillon@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: Bean Huo <beanhuo@micron.com>
+Subject: [PATCH] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+Date: Fri,  8 Feb 2019 18:00:12 +0000
+Message-Id: <20190208180012.25852-1-beanhuo@micron.com>
+X-Mailer: git-send-email 2.17.1
 
-Change SNOR_HWCPAS_READ_OCTAL to SNOR_HWCAPS_READ_OCTAL.
+    The Cc list above has been expanded by additional
+    addresses found in the patch commit message. By default
+    send-email prompts before sending whenever this occurs.
+    This behavior is controlled by the sendemail.confirm
+    configuration setting.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- include/linux/mtd/spi-nor.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    For additional information, run 'git send-email --help'.
+    To retain the current behavior, but squelch this message,
+    run 'git config --global sendemail.confirm auto'.
 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h index 2353af8..b3d360b 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -487,7 +487,7 @@ struct spi_nor_hwcaps {
- #define SNOR_HWCAPS_READ_4_4_4		BIT(9)
- #define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
- 
--#define SNOR_HWCPAS_READ_OCTAL		GENMASK(14, 11)
-+#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
- #define SNOR_HWCAPS_READ_1_1_8		BIT(11)
- #define SNOR_HWCAPS_READ_1_8_8		BIT(12)
- #define SNOR_HWCAPS_READ_8_8_8		BIT(13)
---
-2.7.4
+Send this email? ([y]es|[n]o|[q]uit|[a]ll): y
+OK. Log says:
+Sendmail: /usr/sbin/sendmail -i linux-mtd@lists.infradead.org Tudor.Ambarus@microchip.com bbrezillon@kernel.org linux-kernel@vger.kernel.org beanhuo@micron.com
+From: Bean Huo <beanhuo@micron.com>
+To: linux-mtd@lists.infradead.org,
+        Tudor.Ambarus@microchip.com,
+        bbrezillon@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: Bean Huo <beanhuo@micron.com>
+Subject: [RESEND PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+Date: Fri,  8 Feb 2019 18:00:12 +0000
+Message-Id: <20190208180012.25852-1-beanhuo@micron.com>
+X-Mailer: git-send-email 2.17.1
+
+Result: OK
+
+>
+>Hi Bean,
+>
+>On Fri, 8 Feb 2019 17:13:52 +0000
+>"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
+>
+>> Hi, Tutor
+>> Thanks. unfortunately, it doesn't work on my side. Problem is on our email
+>server side, not my local setting.
+>> I followed your configuration, then git-email failed.
+>
+>Can you paste the output of git send-email and the [sendemail] section of
+>your .gitconfig so we can check.
+>It shouldn't fail, really, because the server shouldn't check the body section of
+>your email, and this is where the extra
+>
+>	From: First Last <foo@bar.com>
+>
+>line is placed.
+>
+>> Please just change my S-o-b to 'Bean Huo (beanhuo) <beanhuo@micron.com>'
+>in my patch to please checkpacth.pl.  It is not huge change.
+>
+>It's not a problem when an drive-by contributor posts a patch, but if you don't
+>patch it that means we'll have to do it manually every time we apply one of your
+>patch, so please find a solution.
+>
+>Thanks,
+>
+>Boris
 
 ______________________________________________________
 Linux MTD discussion mailing list
