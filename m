@@ -2,119 +2,95 @@ Return-Path: <SRS0=BWs3=QP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1DFCC169C4
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 14:43:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14CAEC169C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 15:02:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B20A72075C
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 14:43:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D056D20863
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 15:02:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A17eFBog";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Fsc+cFoJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B20A72075C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lG1KDH/A";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sdG8nuAs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D056D20863
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:
+	In-Reply-To:References:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C8sZVqZnjJAU63XnFQ4Omr8x960vLg7ouQJJXHz+Efw=; b=A17eFBogiyMypC
-	PppvwDChAIdEAIcCpqFypb4zQ2jdhLzYrAyz/kHahZ55FsDnCEwNrVBb32xcOXkqF7vLlMjDkrcG3
-	IZhoBoFT4vlvFaZxyzQC3V4C9X+2lGRHwLnklRsos2gzBkyu0HmE7ZtuWYkpAPtrkyWHK4gg+nTmg
-	+37gIL/LmUs+0Ce+d71WACa/GCFhXWFIdzcgZvcAeSqKgd3SAWRXGZlJ9O8SVB3TrAPY9252sA84K
-	F+sF+07UNjRhiJpe8tHcr840CsV7ukkiMq/eanNojPDu1xSmJxgwaFzB8WK9PyIpLD8BDkuTfMCe5
-	qhxwm15Nb/WMr5RIBh6Q==;
+	List-Owner; bh=aMX4Ww7GhnzKUGdV6FUK8j0I7O1QCI5Iatr5pL7quuM=; b=lG1KDH/AAniLOn
+	jIIRA1Gqqj9WGIe+mzWowt46Qi5AiiaijooAuxMGQk68PV3ZobCJ3DW1T/tsmMEOqjHSlwtNB1aZb
+	ryuM0lx6O6iAUpgb2NoN+O2r+ZSwKFRegqfen+44qDu3ZgV7izVocXXKmAkuCkNpkxfvRbrs51fXv
+	avSGxKkPA1iMH+RU9Y33aBirxiL0/f1hvTIaDWD2wGdfIsHuH8ZtgL8vcCl6QNEjBvVXqK/ylURMa
+	2BGjR80EWLzhtK7I7I2RDiJXOz/FJ0kWThQcqpS/tzbll+GJzFRdCH5I7x17lFDLzwxdjBHVSCrqx
+	Gd/CLUSSX+WCYGHmNLxw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gs7NT-0006SJ-A6; Fri, 08 Feb 2019 14:43:39 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1gs7fj-0005kS-SQ; Fri, 08 Feb 2019 15:02:31 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs7NH-0006Fj-L1
- for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 14:43:37 +0000
-X-IronPort-AV: E=Sophos;i="5.58,347,1544511600"; d="scan'208";a="25999748"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 08 Feb 2019 07:43:24 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.38) with Microsoft SMTP Server (TLS) id
- 14.3.352.0; Fri, 8 Feb 2019 07:43:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lv6DRGM0cQteB3o5C6tZrCEjMxkVk+LmDOfhW4yu4fE=;
- b=Fsc+cFoJU/D4KJrEua+MghIALhntDdaNT6j1uZU/zkv2287px5NfM6OxTz0haprXrR1LmZvo7NLSyhs8+Q7c4DyTVu4lQ86oH5qMeqvbyOjzXv4Tf0JJcnonOlvpdWsbNS4sMb2ZWtjDB9kCJiG4V328k2L2JQv5wPMYwf8/U40=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1538.namprd11.prod.outlook.com (10.172.23.19) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1601.21; Fri, 8 Feb 2019 14:43:22 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.019; Fri, 8 Feb 2019
- 14:43:22 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <beanhuo@micron.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Topic: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Index: AdS/uVD1jG3UvCBSRuC2oJ8LRRcc4gAA03cA
-Date: Fri, 8 Feb 2019 14:43:22 +0000
-Message-ID: <298d18cf-094b-d5d0-45d1-39c7b75ba309@microchip.com>
-References: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
-In-Reply-To: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1P195CA0082.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:59::35) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; BN6PR11MB1538;
- 6:AqW4o09fnN4qSyXxF1UzVzrG32nVayo0dCZ+S5GefrE34mobwmwwaXmOnzSBPGZtFU5h/DmkDVHRCdbZQNsAVGb5P/r+lvzTfqdmkaLFwYg7e8rWDQSgY2/UXxhlMRMdtWc84FbwcTRX3oD2P6P4V3KSzUowIMYA8X3eDH2LzlUYILFPQzPe36OxUOsmTnSCdB61Z69jk2kOQAV8xzYw6Er9Bo90oXNfuEi1NaUKKsbOZ+orfVx5/0x1eueUDiaO+BNB9AZiu+9rfOKiXcCXeLWWNE4D7ILjgKSp1DP+A3No9TnBXJWbe86nzVXJuhzddiTdfwEgECZRpX2cxQ/AHvanRNO621RkJZLJYEQHoPyyB39qlvehArcv5nkc4CkYSqgq08z3od5qucFsJ1JzEZJW/3FAWIz1Qsy7QyrF4P1mZihxKnaaKxOXlfIDCLHgCy9B7cHQ8StgYvoEHy6gPw==;
- 5:yZhE2ZWupMRJU/TkZRlmiGvjXwKlU83YnzDmFIy2uDw51ZRD1J2Iq6yyajSRGNpMSEmSGws6lX+nQoaMHlKJUNNPfg3klgjHArIzgV/0gB3J9gq+748MLY1Kxj6x4TZMV3tib/oSld4/9OQiBJ9aZkzf6yBBDtePQAUycTrkggcP7RNQ3R6QfyFoHWZJ1LEijzbfwrNt4PLKAzK/94dSyg==;
- 7:gX34kBXVMmvI7czuBc/39scQRIngpJO522F1GgSWQKlgULKEWjmM7PsZP2acbB9gxG3jvWDgKMgOLYltlNsxLsLoHkx985KE4xdYWWg9vn9eb3I/B1CMsVoleAKIzMTgV0HBZ/Ur082UhRzl3mB5bg==
-x-ms-office365-filtering-correlation-id: ec8c72b1-f8b7-4a55-8bd0-08d68dd3c5fe
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB1538; 
-x-ms-traffictypediagnostic: BN6PR11MB1538:
-x-microsoft-antispam-prvs: <BN6PR11MB1538E2A38F9AE168EE98FF0CF0690@BN6PR11MB1538.namprd11.prod.outlook.com>
-x-forefront-prvs: 094213BFEA
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(376002)(346002)(136003)(366004)(39860400002)(199004)(189003)(476003)(66066001)(6486002)(229853002)(486006)(97736004)(186003)(8676002)(3846002)(2616005)(6436002)(14454004)(81166006)(81156014)(105586002)(72206003)(106356001)(6512007)(6116002)(386003)(478600001)(6506007)(53546011)(446003)(11346002)(36756003)(68736007)(31686004)(305945005)(102836004)(8936002)(7736002)(31696002)(6246003)(14444005)(2201001)(76176011)(71190400001)(86362001)(2906002)(71200400001)(316002)(52116002)(110136005)(54906003)(53936002)(25786009)(256004)(2501003)(19627235002)(99286004)(4326008)(26005);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1538;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: EwygdxNQMwHtE4Qe0jV9hVyW+gB+Xg7V+KKrpmetOIHB5Blna9tgo3gIcH3W9VvbjJazdNegSiqZ7qlalO7F5ozVq4mX5McRi76M/aYhXfIZh0dXmPHJdI8YogZh5vYCZf+gEfZJx83RA6k6HbaVeYYKGIGB15/GAKTToBi5o/MK+hlHsGyT6nKDNsnhhYKJJdHkC5ZaaGhInGjFvvu0IhF1pW+fALXK4+M/NsBe8lG4680PB8jmrUr96MEwMa2vQKH3D3b+qjNdEITmpcb9wo68Xi2qMexpV0sDOSDx3q9mIiYJnes5JqcYqHUQW7eHSK5sCEOsPhe5DDIuROTpL/jUdqIvAY4BYFgk8ybcJ4HHBZGBQDWskUqdVWQLFY4/oenJk6S5yvI5AbpSuqv8XhN+rbgHzufMX/F1TCh6A20=
-Content-ID: <9C9729E30C3E1E499579A21793CD15CB@namprd11.prod.outlook.com>
+ id 1gs7fb-0005je-JO
+ for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 15:02:30 +0000
+Received: by mail-pg1-x544.google.com with SMTP id g189so1687920pgc.5
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2019 07:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:references:in-reply-to:subject:date:message-id
+ :mime-version:content-transfer-encoding:thread-index
+ :content-language;
+ bh=hl9ktiyvc1ENr8K02r+Swhtcq4AMQdumuNiKDXxZ4P4=;
+ b=sdG8nuAssPysQ7qM522IR68jrkB8kHILpIIEgU3pvuwCpZ+yowRh8JKYg56oOgKPm3
+ yMtXDYV2uhs0k2tcvwlZV/zoRg4kwOgq/7L2/EJ2c6ZTNYSseulwnJbA8/O7WR6Epjzd
+ vLqYyqk+0H6a/3USsw0Q8tkNuD0Jk0P0zKd9uHyNegDhZsLoS014ZXHRCyssSBEcAwUp
+ XHao/orq/LnCMauUsHddbbzhGUCvMqDzziTFdVwDhgTArYyltz3pZObaqld+df9nuzbI
+ dhKSkmz3u68C9d1WB8Hw1c6zqrDatJOMQAu73svGmSBsGqw/4WM1ovtsd4LYQk476r/n
+ YoUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+ :message-id:mime-version:content-transfer-encoding:thread-index
+ :content-language;
+ bh=hl9ktiyvc1ENr8K02r+Swhtcq4AMQdumuNiKDXxZ4P4=;
+ b=Z3SbLZcrE4xNyZfz8psqIJgSHxJty/FLCFAbTI8/m7eoGqkHDat1otV/i1DEIVsLQN
+ gpfDLfFAcDwTve9mhIs8ljodgnD8Ez2w/9MJrSgevGCtQAOBa0oxReDqUDvIfS9RYJ/e
+ Jr0gNIHKJPqDke+bD1Ls+QVQK9vlfzGBMtSbTWEWvY4I1bfWlE6Ez7SZLf9NsIni93sw
+ WHlsWBIUdWGd7H3V63ibIPDwkj6LevFpYDrPl4RVVcpO2gwHdNQqbrs2pW3EJj+6G4an
+ qb7BCLFdyE2TPmxTVx8CvPgg372jH7J7UzU2AfGTEwIm92iTXACzZ3PoJ3UTQs2T5hDT
+ Fe/g==
+X-Gm-Message-State: AHQUAubR4GyKxSVl6yLAtNAGk8UCHSQbyQIrS5d8xAX07h1B9Zzlb1fC
+ 9JGQFJHH2BYnnzhHGvQ3/X+6nvKValI=
+X-Google-Smtp-Source: AHgI3Ib/XSV/tcyzwHZxeDLO+eHBC0Y+60StM1VmHgtgivSbScQ7OO3hRpGJYwO91OBNztOxcK9Ung==
+X-Received: by 2002:a63:5e43:: with SMTP id s64mr20878299pgb.101.1549638142811; 
+ Fri, 08 Feb 2019 07:02:22 -0800 (PST)
+Received: from ikegamiPC (M106072039032.v4.enabler.ne.jp. [106.72.39.32])
+ by smtp.gmail.com with ESMTPSA id 125sm4142845pfx.159.2019.02.08.07.02.19
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 08 Feb 2019 07:02:21 -0800 (PST)
+From: "Tokunori Ikegami" <ikegami.t@gmail.com>
+To: "'Przemyslaw Sobon'" <psobon@amazon.com>, <bbrezillon@kernel.org>,
+ <Joakim.Tjernlund@infinera.com>, <linux-mtd@lists.infradead.org>,
+ <chris.packham@alliedtelesis.co.nz>, <fbettoni@gmail.com>,
+ <liujian56@huawei.com>
+References: <20190207235806.GA39580@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+In-Reply-To: <20190207235806.GA39580@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
+Subject: RE: [PATCH] mtd: cfi: Fixed endless loop problem in CFI when value
+ was written but corrupted.
+Date: Sat, 9 Feb 2019 00:01:53 +0900
+Message-ID: <149301d4bfbf$48c4c1e0$da4e45a0$@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec8c72b1-f8b7-4a55-8bd0-08d68dd3c5fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 14:43:20.5472 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1538
-X-OriginatorOrg: microchip.com
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQJeWmda6DUkX+lv07W4kMdS1MinT6TCwXJw
+Content-Language: ja
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190208_064328_388258_E636A410 
-X-CRM114-Status: GOOD (  11.96  )
+X-CRM114-CacheID: sfid-20190208_070223_647996_A140178C 
+X-CRM114-Status: GOOD (  24.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -126,46 +102,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marek.vasut@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- richard@nod.at, bbrezillon@kernel.org
+Cc: ikegami_to@yahoo.co.jp
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Przemek-san,
 
-On 02/08/2019 04:23 PM, Bean Huo (beanhuo) wrote:
-> Change SNOR_HWCPAS_READ_OCTAL to SNOR_HWCAPS_READ_OCTAL.
+I think that for the error case it should be done to retry at first.
+It can be implemented separately but it is possible to be not enough.
+
+Since the flash write error causes the user data corruption I think.
+File systems and applications do not execute any recovery usually.
+In the past I saw a similar write error actually and fixed as below.
+
+  dfeae1073583d ("mtd: cfi_cmdset_0002: Change write buffer to check correct
+value")
+
+I am also seeing a similar flash write error for the word write case.
+In the case the retry with the reset recovery does not work fully.
+After the repeated retry with the reset the flash is not able to work.
+There is a possibility for the buffer write also but sorry not sure.
+Since there is a difference to execute the recovery command.
+
+As Jocke-san mentioned I also think the chip_ready() does not work.
+It is followed correctly basically the flash chip specification.
+But actually it does not check the chip state correctly I think.
+So for the flash write error cases I saw the chip_good() is necessary.
+
+Regards,
+Ikegami
+
+> -----Original Message-----
+> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
+> Of Przemyslaw Sobon
+> Sent: Friday, February 8, 2019 8:58 AM
+> To: bbrezillon@kernel.org; Joakim.Tjernlund@infinera.com;
+> linux-mtd@lists.infradead.org; chris.packham@alliedtelesis.co.nz;
+> fbettoni@gmail.com; ikegami@allied-telesis.co.jp; liujian56@huawei.com
+> Cc: psobon@amazon.com
+> Subject: [PATCH] mtd: cfi: Fixed endless loop problem in CFI when value
+> was written but corrupted.
 > 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-
-$ ./scripts/checkpatch.pl --strict
-v2-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
-WARNING: Missing Signed-off-by: line by nominal patch author 'Bean Huo (beanhuo)
-<beanhuo@micron.com>'
-
-There are scripts that check that the author/committer has its SoB, depending on
-how strict the check is, it might complaint that SoB an author/committer do not
-match, so please change gitconfig to make them match.
-
+> Fixes: dfeae1073583(mtd: cfi_cmdset_0002: Change write buffer to
+>        check correct value)
+> 
+> There was an endless loop in CFI Flash driver when a value was written
+> incorrectly. In such case chip_ready returns true but chip_good returns
+> false and we never get out of the loop.
+> 
+> The solution was to break the loop in 2 cases, either device is ready or
+> device is not ready and timeout elapsed. The correctness of the write is
+> checked after the loop ended. That way we ensure the loop always ends.
+> 
+> Signed-off-by: Przemyslaw Sobon <psobon@amazon.com>
 > ---
->  include/linux/mtd/spi-nor.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 2353af8..b3d360b 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -487,7 +487,7 @@ struct spi_nor_hwcaps {
->  #define SNOR_HWCAPS_READ_4_4_4		BIT(9)
->  #define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
->  
-> -#define SNOR_HWCPAS_READ_OCTAL		GENMASK(14, 11)
-> +#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
->  #define SNOR_HWCAPS_READ_1_1_8		BIT(11)
->  #define SNOR_HWCAPS_READ_1_8_8		BIT(12)
->  #define SNOR_HWCAPS_READ_8_8_8		BIT(13)
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+> b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 72428b6bfc47..6cc31d2057e9 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1879,15 +1879,18 @@ static int __xipram do_write_buffer(struct
+map_info
+> *map, struct flchip *chip,
+>  		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+>  			break;
 > 
+> -		if (chip_good(map, adr, datum)) {
+> -			xip_enable(map, chip, adr);
+> -			goto op_done;
+> -		}
+> +		if (chip_ready(map, adr))
+> +			break;
+> 
+>  		/* Latency issues. Drop the lock, wait a while and retry
+> */
+>  		UDELAY(map, chip, adr, 1);
+>  	}
+> 
+> +	if (chip_good(map, adr, datum)) {
+> +		xip_enable(map, chip, adr);
+> +		goto op_done;
+> +	}
+> +
+>  	/*
+>  	 * Recovery from write-buffer programming failures requires
+>  	 * the write-to-buffer-reset sequence.  Since the last part
+> --
+> 2.16.5
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
