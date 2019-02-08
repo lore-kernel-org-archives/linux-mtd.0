@@ -2,22 +2,22 @@ Return-Path: <SRS0=BWs3=QP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 772B9C282CB
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 08:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD0F4C282CB
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 08:10:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 346E421920
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 08:10:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 978AA21924
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 08:10:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AcEEKRfk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="rxsLx+JI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 346E421920
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hX6xHaoh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="tP1BdhGb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 978AA21924
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,47 +27,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=YZKcEYw5RGosJOHnb+wpYnozeVflKDck3xGc7s7bDlU=; b=AcEEKRfkAlSWKowOW+ko9RXcBT
-	/Q6Sgu5QyeCijoiHoULnkhCqOslxea6p5zUcEszcTLtIpSkLF7RnCkb9mQt4FxFrEJQ2I3OJiYEoY
-	dBP6DZAXmLI5P7rOai2xgHD7c56vOkhm8RtQwzzlauv4I5QI0/0IuwHkLrUkhqe50CUVnR/W3xcUW
-	w/N0h3mtRBDTibP4xg16G9crnWsUB26GM2DpGlPtZ7vH6huCh3yVMjC/eMe0fwlzLOScbumyd04WU
-	ORUz9Dl9rLMMN+EDRc8iOtcri64sUf1dR+yyKRizzcYxDUGOu8Lf8PYw9inMgsRoNvnIGCbExGrSK
-	F/ypgg+w==;
+	bh=jfGegQlDLXEdFAKoZv4lXg/hWgDJgZsKsFyrEY82sbg=; b=hX6xHaohClC1tmLuWCnrbJyetZ
+	09b4hZ+RKGQoyozhpYqwALJi6QLpFw1y46HDmL3zjQMrWcq98Zn2VX9HlWFnf0bneruMFLBsVh2vu
+	93AOVpbqyHjVCzhlYQCmYnsVVFDeLuz10T22ircXgplsNl3lnpyc1+3BBfF63JRMOzSOrsetTzW8T
+	i0/IIkXowjJNIuP9OPDj4yRPHzAa3YXQY9yTDLKUGOoeQOZdo9KGfTv6oM4SaM+q+HJseNBHp9bUN
+	0t1Nf7XdrmJ+h7NlxkQdlY2VCqX2xfDxviL7i+an/hbPdRc0prhgSyr84Iuh3VSBLnfyzz/Z//H1S
+	YHEbb2zw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gs1F9-0000R6-FI; Fri, 08 Feb 2019 08:10:39 +0000
+	id 1gs1FN-0000h6-Ji; Fri, 08 Feb 2019 08:10:53 +0000
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs1Dt-0006P2-Tv
+ id 1gs1Dt-0006P4-Tu
  for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 08:09:26 +0000
 Received: from pug.e01.socionext.com (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-07.nifty.com with ESMTP id x188902G007241;
- Fri, 8 Feb 2019 17:09:07 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x188902G007241
+ by conuserg-07.nifty.com with ESMTP id x188902B007241;
+ Fri, 8 Feb 2019 17:09:03 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x188902B007241
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1549613348;
- bh=ws0rfNY0AqZ3Gauy1XWKRiE8n2TnorcpmKdkHThTkHk=;
+ s=dec2015msa; t=1549613343;
+ bh=fsbAy+mNjv6UN7W3uZeIwWQhvQaZQGjUQy8lvIRZ8wo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rxsLx+JIjfJicShCqTX0Jz73s0MTfV43OGVjEN4xxS3ctswj6f/NpiPw3bhGSGNsw
- OChqCR/uuJlonTMWoFBMoAKk9uFI9VKLvpVBry9k/jGBUyW3ToogsnoaTsG+8rgCEk
- YsOaI6P6t5QuceXjJc+2Dyl+QBTEy/nVbVDkQO3VSC26/X77KZD3TwwcBULD2u6vhd
- RbPQOX69zuiDbQqVM/I+I2/lo+Qmhpev/9XVCIruTOrbumYeKIqIk244Uv73NbIrsp
- FW3V6kb+Xn19LYaCbFj6jZkNYDnc6cKmiPhjDwnwcP4CF2CMQupAxo7efjRZsU8ywI
- nBp5rN7aGhYkA==
+ b=tP1BdhGbS/YxDLaXdHvSFTkuNrMLLO44by59iKNGytXi8IS3q1WwIpgOnwD7yBDTv
+ /rLfbVwoMhuN2+7X0rHSAQIQDbjHR6tbfwFTGe1KHxEr9c6y5Tumim8DETob9Odwf/
+ Nheg4xKXyGaGh5+kd+mGZzvjZL/gyJeTAzh15VnSpKB2l8IUx5EuFpsZ/HQUrv1Kvw
+ oaaMtSEJDWkg4p9x7C9N0hJiEd7AaPlByl5h9aLnbxThYBs3+6G5EOx8yq+482kbgT
+ PwFKQI/kLBv4s1bsnRUHG9HBXAWiLhaisJLA3YCvbOTd3QDJ2jSpksFbi27MR8h7UM
+ /XfU/3bfoLmpw==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 07/11] mtd: rawnand: denali: use bool type instead of int
- where appropriate
-Date: Fri,  8 Feb 2019 17:08:51 +0900
-Message-Id: <1549613335-30319-8-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 02/11] mtd: rawnand: denali: refactor syndrome layout handling
+ for raw access
+Date: Fri,  8 Feb 2019 17:08:46 +0900
+Message-Id: <1549613335-30319-3-git-send-email-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1549613335-30319-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1549613335-30319-1-git-send-email-yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190208_000922_428873_FF0FAFE2 
-X-CRM114-Status: GOOD (  14.28  )
+X-CRM114-CacheID: sfid-20190208_000922_382350_89461F83 
+X-CRM114-Status: GOOD (  18.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,144 +90,448 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use 'bool' type for some function arguments.
+The Denali IP adopts the syndrome page layout (payload and ECC are
+interleaved). The *_page_raw() and *_oob() callbacks are complicated
+because they must hide the underlying layout used by the hardware,
+and always return contiguous in-band and out-of-band data.
 
- - write (write or read?)
- - raw (the raw access mode or not?)
+Currently, similar code is duplicated to reorganize the data layout.
+For example, denali_read_page_raw() and denali_write_page_raw() look
+almost the same.
 
-It is true that denali_nand_info::dma_avail is also boolean, but
-I am keeping it as 'int' because 'scripts/checkpatch --strict' would
-report the following:
+The idea for refactoring is to split the code into two parts:
+  [1] conversion of page layout
+  [2] what to do at every ECC chunk boundary
 
-CHECK: Avoid using bool structure members because of possible alignment issues
-  - see: https://lkml.org/lkml/2017/11/21/384
+For [1], I wrote denali_raw_payload_op() and denali_raw_oob_op().
+They manipulate data for the Denali controller's specific page layout
+of in-band, out-of-band, respectively.
 
-I do not think it is a matter here, but I am sticking to the suggestion.
+The difference between write and read is just the operation at
+ECC chunk boundaries. For example, denali_read_oob() calls
+nand_change_read_column_op(), whereas denali_write_oob() calls
+nand_change_write_column_op(). So, I implemented [2] as a callback
+passed into [1].
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/raw/denali.c | 23 ++++++++++++-----------
- drivers/mtd/nand/raw/denali.h |  2 +-
- 2 files changed, 13 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/denali.c | 354 +++++++++++++++++++-----------------------
+ 1 file changed, 163 insertions(+), 191 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 514d189..748711e 100644
+index 4ac1314..9287f4f 100644
 --- a/drivers/mtd/nand/raw/denali.c
 +++ b/drivers/mtd/nand/raw/denali.c
-@@ -357,7 +357,7 @@ static int denali_sw_ecc_fixup(struct nand_chip *chip,
+@@ -608,159 +608,210 @@ static int denali_data_xfer(struct nand_chip *chip, void *buf, size_t size,
+ 		return denali_pio_xfer(denali, buf, size, page, write);
  }
  
- static void denali_setup_dma64(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int write)
-+			       dma_addr_t dma_addr, int page, bool write)
+-static void denali_oob_xfer(struct mtd_info *mtd, struct nand_chip *chip,
+-			    int page, int write)
++typedef int denali_change_column_callback(void *buf, unsigned int offset,
++					  unsigned int len, void *priv);
++
++static int denali_raw_payload_op(struct nand_chip *chip, void *buf,
++				 denali_change_column_callback *cb, void *priv)
  {
- 	uint32_t mode;
- 	const int page_count = 1;
-@@ -371,7 +371,8 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- 	 *    burst len = 64 bytes, the number of pages
- 	 */
- 	denali->host_write(denali, mode,
--			   0x01002000 | (64 << 16) | (write << 8) | page_count);
-+			   0x01002000 | (64 << 16) |
-+			   (write ? BIT(8) : 0) | page_count);
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	struct denali_nand_info *denali = to_denali(chip);
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++	int writesize = mtd->writesize;
++	int oob_skip = denali->oob_skip_bytes;
++	int ret, i, pos, len;
++
++	for (i = 0; i < ecc->steps; i++) {
++		pos = i * (ecc->size + ecc->bytes);
++		len = ecc->size;
++
++		if (pos >= writesize) {
++			pos += oob_skip;
++		} else if (pos + len > writesize) {
++			/* This chunk overwraps the BBM area. Must be split */
++			ret = cb(buf, pos, writesize - pos, priv);
++			if (ret)
++				return ret;
++
++			buf += writesize - pos;
++			len -= writesize - pos;
++			pos = writesize + oob_skip;
++		}
++
++		ret = cb(buf, pos, len, priv);
++		if (ret)
++			return ret;
++
++		buf += len;
++	}
++
++	return 0;
++}
++
++static int denali_raw_oob_op(struct nand_chip *chip, void *buf,
++			     denali_change_column_callback *cb, void *priv)
++{
++	struct denali_nand_info *denali = to_denali(chip);
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	int writesize = mtd->writesize;
+ 	int oobsize = mtd->oobsize;
+-	uint8_t *bufpoi = chip->oob_poi;
+-	int ecc_steps = chip->ecc.steps;
+-	int ecc_size = chip->ecc.size;
+-	int ecc_bytes = chip->ecc.bytes;
+ 	int oob_skip = denali->oob_skip_bytes;
+-	size_t size = writesize + oobsize;
+-	int i, pos, len;
++	int ret, i, pos, len;
  
- 	/* 2. set memory low address */
- 	denali->host_write(denali, mode, lower_32_bits(dma_addr));
-@@ -381,7 +382,7 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
+ 	/* BBM at the beginning of the OOB area */
+-	if (write)
+-		nand_prog_page_begin_op(chip, page, writesize, bufpoi,
+-					oob_skip);
+-	else
+-		nand_read_page_op(chip, page, writesize, bufpoi, oob_skip);
+-	bufpoi += oob_skip;
++	ret = cb(buf, writesize, oob_skip, priv);
++	if (ret)
++		return ret;
+ 
+-	/* OOB ECC */
+-	for (i = 0; i < ecc_steps; i++) {
+-		pos = ecc_size + i * (ecc_size + ecc_bytes);
+-		len = ecc_bytes;
++	buf += oob_skip;
+ 
+-		if (pos >= writesize)
+-			pos += oob_skip;
+-		else if (pos + len > writesize)
+-			len = writesize - pos;
++	for (i = 0; i < ecc->steps; i++) {
++		pos = ecc->size + i * (ecc->size + ecc->bytes);
+ 
+-		if (write)
+-			nand_change_write_column_op(chip, pos, bufpoi, len,
+-						    false);
++		if (i == ecc->steps - 1)
++			/* The last chunk includes OOB free */
++			len = writesize + oobsize - pos - oob_skip;
+ 		else
+-			nand_change_read_column_op(chip, pos, bufpoi, len,
+-						   false);
+-		bufpoi += len;
+-		if (len < ecc_bytes) {
+-			len = ecc_bytes - len;
+-			if (write)
+-				nand_change_write_column_op(chip, writesize +
+-							    oob_skip, bufpoi,
+-							    len, false);
+-			else
+-				nand_change_read_column_op(chip, writesize +
+-							   oob_skip, bufpoi,
+-							   len, false);
+-			bufpoi += len;
++			len = ecc->bytes;
++
++		if (pos >= writesize) {
++			pos += oob_skip;
++		} else if (pos + len > writesize) {
++			/* This chunk overwraps the BBM area. Must be split */
++			ret = cb(buf, pos, writesize - pos, priv);
++			if (ret)
++				return ret;
++
++			buf += writesize - pos;
++			len -= writesize - pos;
++			pos = writesize + oob_skip;
+ 		}
++
++		ret = cb(buf, pos, len, priv);
++		if (ret)
++			return ret;
++
++		buf += len;
+ 	}
+ 
+-	/* OOB free */
+-	len = oobsize - (bufpoi - chip->oob_poi);
+-	if (write)
+-		nand_change_write_column_op(chip, size - len, bufpoi, len,
+-					    false);
+-	else
+-		nand_change_read_column_op(chip, size - len, bufpoi, len,
+-					   false);
++	return 0;
++}
++
++static int denali_memcpy_in(void *buf, unsigned int offset, unsigned int len,
++			    void *priv)
++{
++	memcpy(buf, priv + offset, len);
++	return 0;
  }
  
- static void denali_setup_dma32(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int write)
-+			       dma_addr_t dma_addr, int page, bool write)
+ static int denali_read_page_raw(struct nand_chip *chip, uint8_t *buf,
+ 				int oob_required, int page)
  {
- 	uint32_t mode;
- 	const int page_count = 1;
-@@ -392,7 +393,7 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
++	struct denali_nand_info *denali = to_denali(chip);
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-	int writesize = mtd->writesize;
+-	int oobsize = mtd->oobsize;
+-	int ecc_steps = chip->ecc.steps;
+-	int ecc_size = chip->ecc.size;
+-	int ecc_bytes = chip->ecc.bytes;
+ 	void *tmp_buf = denali->buf;
+-	int oob_skip = denali->oob_skip_bytes;
+-	size_t size = writesize + oobsize;
+-	int ret, i, pos, len;
++	size_t size = mtd->writesize + mtd->oobsize;
++	int ret;
++
++	if (!buf)
++		return -EINVAL;
  
- 	/* 1. setup transfer type and # of pages */
- 	denali->host_write(denali, mode | page,
--			   0x2000 | (write << 8) | page_count);
-+			   0x2000 | (write ? BIT(8) : 0) | page_count);
- 
- 	/* 2. set memory high address bits 23:8 */
- 	denali->host_write(denali, mode | ((dma_addr >> 16) << 8), 0x2200);
-@@ -453,7 +454,7 @@ static int denali_pio_write(struct denali_nand_info *denali, const u32 *buf,
- }
- 
- static int denali_pio_xfer(struct denali_nand_info *denali, void *buf,
--			   size_t size, int page, int write)
-+			   size_t size, int page, bool write)
- {
- 	if (write)
- 		return denali_pio_write(denali, buf, size, page);
-@@ -462,7 +463,7 @@ static int denali_pio_xfer(struct denali_nand_info *denali, void *buf,
- }
- 
- static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
--			   size_t size, int page, int write)
-+			   size_t size, int page, bool write)
- {
- 	dma_addr_t dma_addr;
- 	u32 irq_mask, irq_stat, ecc_err_mask;
-@@ -519,7 +520,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- }
- 
- static int denali_data_xfer(struct nand_chip *chip, void *buf, size_t size,
--			    int page, int raw, int write)
-+			    int page, bool raw, bool write)
- {
- 	struct denali_nand_info *denali = to_denali(chip);
- 
-@@ -644,7 +645,7 @@ static int denali_read_page_raw(struct nand_chip *chip, uint8_t *buf,
- 	if (!buf)
- 		return -EINVAL;
- 
--	ret = denali_data_xfer(chip, tmp_buf, size, page, 1, 0);
-+	ret = denali_data_xfer(chip, tmp_buf, size, page, true, false);
+ 	ret = denali_data_xfer(chip, tmp_buf, size, page, 1, 0);
  	if (ret)
  		return ret;
  
-@@ -700,7 +701,7 @@ static int denali_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
- 			return ret;
+-	/* Arrange the buffer for syndrome payload/ecc layout */
+-	if (buf) {
+-		for (i = 0; i < ecc_steps; i++) {
+-			pos = i * (ecc_size + ecc_bytes);
+-			len = ecc_size;
+-
+-			if (pos >= writesize)
+-				pos += oob_skip;
+-			else if (pos + len > writesize)
+-				len = writesize - pos;
+-
+-			memcpy(buf, tmp_buf + pos, len);
+-			buf += len;
+-			if (len < ecc_size) {
+-				len = ecc_size - len;
+-				memcpy(buf, tmp_buf + writesize + oob_skip,
+-				       len);
+-				buf += len;
+-			}
+-		}
+-	}
++	ret = denali_raw_payload_op(chip, buf, denali_memcpy_in, tmp_buf);
++	if (ret)
++		return ret;
+ 
+ 	if (oob_required) {
+-		uint8_t *oob = chip->oob_poi;
+-
+-		/* BBM at the beginning of the OOB area */
+-		memcpy(oob, tmp_buf + writesize, oob_skip);
+-		oob += oob_skip;
+-
+-		/* OOB ECC */
+-		for (i = 0; i < ecc_steps; i++) {
+-			pos = ecc_size + i * (ecc_size + ecc_bytes);
+-			len = ecc_bytes;
+-
+-			if (pos >= writesize)
+-				pos += oob_skip;
+-			else if (pos + len > writesize)
+-				len = writesize - pos;
+-
+-			memcpy(oob, tmp_buf + pos, len);
+-			oob += len;
+-			if (len < ecc_bytes) {
+-				len = ecc_bytes - len;
+-				memcpy(oob, tmp_buf + writesize + oob_skip,
+-				       len);
+-				oob += len;
+-			}
+-		}
+-
+-		/* OOB free */
+-		len = oobsize - (oob - chip->oob_poi);
+-		memcpy(oob, tmp_buf + size - len, len);
++		ret = denali_raw_oob_op(chip, chip->oob_poi, denali_memcpy_in,
++					tmp_buf);
++		if (ret)
++			return ret;
  	}
  
--	return denali_data_xfer(chip, tmp_buf, size, page, 1, 1);
-+	return denali_data_xfer(chip, tmp_buf, size, page, true, true);
+ 	return 0;
  }
  
- static int denali_change_read_column_op(void *buf, unsigned int offset,
-@@ -752,7 +753,7 @@ static int denali_read_page(struct nand_chip *chip, uint8_t *buf,
- 	int stat = 0;
- 	int ret;
- 
--	ret = denali_data_xfer(chip, buf, mtd->writesize, page, 0, 0);
-+	ret = denali_data_xfer(chip, buf, mtd->writesize, page, false, false);
- 	if (ret && ret != -EBADMSG)
- 		return ret;
- 
-@@ -782,7 +783,7 @@ static int denali_write_page(struct nand_chip *chip, const uint8_t *buf,
+-static int denali_read_oob(struct nand_chip *chip, int page)
++static int denali_memcpy_out(void *buf, unsigned int offset, unsigned int len,
++			     void *priv)
++{
++	memcpy(priv + offset, buf, len);
++	return 0;
++}
++
++static int denali_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
++				 int oob_required, int page)
+ {
++	struct denali_nand_info *denali = to_denali(chip);
  	struct mtd_info *mtd = nand_to_mtd(chip);
++	void *tmp_buf = denali->buf;
++	size_t size = mtd->writesize + mtd->oobsize;
++	int ret;
  
- 	return denali_data_xfer(chip, (void *)buf, mtd->writesize, page,
--				0, 1);
-+				false, true);
+-	denali_oob_xfer(mtd, chip, page, 0);
++	if (!buf)
++		return -EINVAL;
+ 
+-	return 0;
++	/*
++	 * Fill the buffer with 0xff first except the full page transfer.
++	 * This simplifies the logic.
++	 */
++	if (!oob_required)
++		memset(tmp_buf, 0xff, size);
++
++	ret = denali_raw_payload_op(chip, (void *)buf, denali_memcpy_out,
++				    tmp_buf);
++	if (ret)
++		return ret;
++
++	if (oob_required) {
++		ret = denali_raw_oob_op(chip, chip->oob_poi, denali_memcpy_out,
++					tmp_buf);
++		if (ret)
++			return ret;
++	}
++
++	return denali_data_xfer(chip, tmp_buf, size, page, 1, 1);
++}
++
++static int denali_change_read_column_op(void *buf, unsigned int offset,
++					unsigned int len, void *priv)
++{
++	return nand_change_read_column_op(priv, offset, buf, len, false);
++}
++
++static int denali_read_oob(struct nand_chip *chip, int page)
++{
++	int ret;
++
++	ret = nand_read_page_op(chip, page, 0, NULL, 0);
++	if (ret)
++		return ret;
++
++	return denali_raw_oob_op(chip, chip->oob_poi,
++				 denali_change_read_column_op, chip);
++}
++
++static int denali_change_write_column_op(void *buf, unsigned int offset,
++					 unsigned int len, void *priv)
++{
++	return nand_change_write_column_op(priv, offset, buf, len, false);
  }
  
- static int denali_setup_data_interface(struct nand_chip *chip, int chipnr,
-diff --git a/drivers/mtd/nand/raw/denali.h b/drivers/mtd/nand/raw/denali.h
-index 46296f2..8e91438 100644
---- a/drivers/mtd/nand/raw/denali.h
-+++ b/drivers/mtd/nand/raw/denali.h
-@@ -314,7 +314,7 @@ struct denali_nand_info {
- 	u32 (*host_read)(struct denali_nand_info *denali, u32 addr);
- 	void (*host_write)(struct denali_nand_info *denali, u32 addr, u32 data);
- 	void (*setup_dma)(struct denali_nand_info *denali, dma_addr_t dma_addr,
--			  int page, int write);
-+			  int page, bool write);
- };
+ static int denali_write_oob(struct nand_chip *chip, int page)
+ {
+-	struct mtd_info *mtd = nand_to_mtd(chip);
++	int ret;
  
- #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+-	denali_oob_xfer(mtd, chip, page, 1);
++	ret = nand_prog_page_begin_op(chip, page, 0, NULL, 0);
++	if (ret)
++		return ret;
++
++	ret = denali_raw_oob_op(chip, chip->oob_poi,
++				denali_change_write_column_op, chip);
++	if (ret)
++		return ret;
+ 
+ 	return nand_prog_page_end_op(chip);
+ }
+@@ -798,85 +849,6 @@ static int denali_read_page(struct nand_chip *chip, uint8_t *buf,
+ 	return stat;
+ }
+ 
+-static int denali_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
+-				 int oob_required, int page)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-	int writesize = mtd->writesize;
+-	int oobsize = mtd->oobsize;
+-	int ecc_steps = chip->ecc.steps;
+-	int ecc_size = chip->ecc.size;
+-	int ecc_bytes = chip->ecc.bytes;
+-	void *tmp_buf = denali->buf;
+-	int oob_skip = denali->oob_skip_bytes;
+-	size_t size = writesize + oobsize;
+-	int i, pos, len;
+-
+-	/*
+-	 * Fill the buffer with 0xff first except the full page transfer.
+-	 * This simplifies the logic.
+-	 */
+-	if (!buf || !oob_required)
+-		memset(tmp_buf, 0xff, size);
+-
+-	/* Arrange the buffer for syndrome payload/ecc layout */
+-	if (buf) {
+-		for (i = 0; i < ecc_steps; i++) {
+-			pos = i * (ecc_size + ecc_bytes);
+-			len = ecc_size;
+-
+-			if (pos >= writesize)
+-				pos += oob_skip;
+-			else if (pos + len > writesize)
+-				len = writesize - pos;
+-
+-			memcpy(tmp_buf + pos, buf, len);
+-			buf += len;
+-			if (len < ecc_size) {
+-				len = ecc_size - len;
+-				memcpy(tmp_buf + writesize + oob_skip, buf,
+-				       len);
+-				buf += len;
+-			}
+-		}
+-	}
+-
+-	if (oob_required) {
+-		const uint8_t *oob = chip->oob_poi;
+-
+-		/* BBM at the beginning of the OOB area */
+-		memcpy(tmp_buf + writesize, oob, oob_skip);
+-		oob += oob_skip;
+-
+-		/* OOB ECC */
+-		for (i = 0; i < ecc_steps; i++) {
+-			pos = ecc_size + i * (ecc_size + ecc_bytes);
+-			len = ecc_bytes;
+-
+-			if (pos >= writesize)
+-				pos += oob_skip;
+-			else if (pos + len > writesize)
+-				len = writesize - pos;
+-
+-			memcpy(tmp_buf + pos, oob, len);
+-			oob += len;
+-			if (len < ecc_bytes) {
+-				len = ecc_bytes - len;
+-				memcpy(tmp_buf + writesize + oob_skip, oob,
+-				       len);
+-				oob += len;
+-			}
+-		}
+-
+-		/* OOB free */
+-		len = oobsize - (oob - chip->oob_poi);
+-		memcpy(tmp_buf + size - len, oob, len);
+-	}
+-
+-	return denali_data_xfer(chip, tmp_buf, size, page, 1, 1);
+-}
+-
+ static int denali_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 			     int oob_required, int page)
+ {
 -- 
 2.7.4
 
