@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7DB7C282CB
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 15:08:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7ADBC169C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 15:28:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8711E2177B
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 15:08:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 74B902075C
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 15:28:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qv1fEenY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=MicronCorp.onmicrosoft.com header.i=@MicronCorp.onmicrosoft.com header.b="MxibuHe9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8711E2177B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OkHKmNPy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=MicronCorp.onmicrosoft.com header.i=@MicronCorp.onmicrosoft.com header.b="S0xQTteS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74B902075C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,50 +25,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yR74Hb3mD/ixCEiuMl8H1cq82NSImYydtyqvGu8FHF4=; b=qv1fEenY0xBYNf
-	jwRbyZSU6uuS4tEzkNaHzhGEigy5B5jivh9fm8fGMr0piZmL7wdbd/hjz+ujMZ+nuMkHAah6Nnsnh
-	K+znfW2W6eu+JAg2pkrmo3UFJXC0/PHl7nZq/3l8UWi+hNLNnrFQnIVYkP8kypmp77Ukl+6sGKl/f
-	TY/0BVyqaoiLDgJvcmBeSnfblQK9snULfrdSLsYlmjuqfTwqwjP51UjNoB8QZrAA5lDSDTkWVw9Kq
-	gAgO7lu8RTq+9SV0c/a6Bw5yPeHqfFzkrtbkaSdm6GHM8svh4hYLdj2bb9s0LYgTm3k4EovUi+4RN
-	bFRgZx/vPz550GAaxehg==;
+	List-Owner; bh=wxgk7z2x6C6Bdd7+Obpu5b0kcqMP+t1eHxxK+bwzm3s=; b=OkHKmNPySlDVXO
+	tGA/w1tJfCQI8ZD4kbyC4BpkV36NbdiUZs1bsadQ0rN6buRqFob3poUx6EzWcHhh5F0jhf5Qk2fCU
+	LkaKe5PTjzxKUw/prbd+lq58SurvlFlI+aNtffDHw+lRsgWb9gSf3y5Cc+mWpLrGmhsUB95TDHyyT
+	mEMVsV47vVtHtQUTtpGYRRjtI9gjFTX4THFEsYLQH04B15Pzx8rkx7djTeeAqzbtfX08RT5ciJ83C
+	4cRoV9uCKJur7cWoTUIwtCsbb1t7Cg2YYatNFuqmiIo00y1WzDVe0VOYfoIMSSGsHJ9xLbMCcIpGb
+	wEB71urK9X0oY6vrQU8w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gs7l0-000840-Pe; Fri, 08 Feb 2019 15:07:58 +0000
+	id 1gs84P-00049n-8p; Fri, 08 Feb 2019 15:28:01 +0000
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs7ky-00083g-0k
- for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 15:07:57 +0000
-Received: from mail.micron.com (bowex17d.micron.com [137.201.21.212])
- by mailout.micron.com (8.14.4/8.14.6) with ESMTP id x18F7oWI011213;
- Fri, 8 Feb 2019 08:07:50 -0700
-Received: from BOWEX17G.micron.com (137.201.20.31) by bowex17d.micron.com
- (137.201.21.212) with Microsoft SMTP Server (TLS) id 15.0.1365.1; Fri, 8 Feb
- 2019 08:07:50 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (137.201.20.7) by
- BOWEX17G.micron.com (137.201.20.31) with Microsoft SMTP Server (TLS)
- id 15.0.1365.1 via Frontend Transport; Fri, 8 Feb 2019 08:07:49 -0700
+ id 1gs84N-00049F-2L
+ for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 15:28:00 +0000
+Received: from mail.micron.com (bowex36e.micron.com [137.201.85.221])
+ by mailout.micron.com (8.14.4/8.14.6) with ESMTP id x18FRrpd009333;
+ Fri, 8 Feb 2019 08:27:53 -0700
+Received: from BOWEX36F.micron.com (137.201.84.51) by bowex36e.micron.com
+ (137.201.85.221) with Microsoft SMTP Server (TLS) id 15.0.1365.1; Fri, 8 Feb
+ 2019 08:27:52 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (137.201.84.23)
+ by BOWEX36F.micron.com (137.201.84.51) with Microsoft SMTP Server (TLS) id
+ 15.0.1365.1 via Frontend Transport; Fri, 8 Feb 2019 08:27:52 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=MicronCorp.onmicrosoft.com; s=selector1-micron-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YAn2kUel33oSx2NIO3/e2HhGmh8vmuMvi933uFct184=;
- b=MxibuHe9KKYzq0XI6zAapA4A7Nmq9v6CRLO06sDcMeaNZML1Pyxc9zaCWbe/J2Xl2nzT+qwz8Sry09+UEkM8xfEZsL+dS8vcJxO184hfqOhB5ay8Q/Xd+qPGU/0dpmy5twdkSVQkJQ0E0NmX0KPlb14CADfnNU4kFgKJ+3/BiNE=
+ bh=o8yyIRqNnH7q+UNBX+bxcAycfk2NpFkHWSY1UdOoY6I=;
+ b=S0xQTteSnxgnGNDJ64TuzqruMkiXA4SOeqXgWcZ4oNB39xuw2O1pFam9YeDaIb9px5AikIWZil7h17xz4lh8knFEHSjePVASIwx5ntQpDgRrdnAL0JT5yBiymXUVfeb6HsHvTwWmdCYZjJRrJB7Q4pTpuRJ+SIvbOfzD2XdRv+A=
 Received: from BYAPR08MB4533.namprd08.prod.outlook.com (52.135.234.15) by
- BYAPR08MB4341.namprd08.prod.outlook.com (52.135.211.138) with Microsoft SMTP
+ BYAPR08MB4487.namprd08.prod.outlook.com (52.135.211.160) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1601.21; Fri, 8 Feb 2019 15:07:47 +0000
+ 15.20.1601.19; Fri, 8 Feb 2019 15:27:49 +0000
 Received: from BYAPR08MB4533.namprd08.prod.outlook.com
  ([fe80::911c:eb84:5e0d:c669]) by BYAPR08MB4533.namprd08.prod.outlook.com
  ([fe80::911c:eb84:5e0d:c669%3]) with mapi id 15.20.1601.016; Fri, 8 Feb 2019
- 15:07:47 +0000
+ 15:27:49 +0000
 From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
 To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: RE: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
 Thread-Topic: [EXT] Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
-Thread-Index: AdS/uVD1jG3UvCBSRuC2oJ8LRRcc4gAA03cAAAC603A=
-Date: Fri, 8 Feb 2019 15:07:46 +0000
-Message-ID: <BYAPR08MB45337F022B1E38B34EE1202FDB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+Thread-Index: AdS/uVD1jG3UvCBSRuC2oJ8LRRcc4gAA03cAAAFVpvA=
+Date: Fri, 8 Feb 2019 15:27:49 +0000
+Message-ID: <BYAPR08MB45335415CC3690816C1FD603DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
 References: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
  <298d18cf-094b-d5d0-45d1-39c7b75ba309@microchip.com>
 In-Reply-To: <298d18cf-094b-d5d0-45d1-39c7b75ba309@microchip.com>
@@ -80,46 +80,46 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=beanhuo@micron.com; 
 x-originating-ip: [165.225.81.73]
 x-ms-publictraffictype: Email
-x-microsoft-exchange-diagnostics: 1; BYAPR08MB4341;
- 6:8V5qaRQ49i9Rk2ph/Bkd3JKk2ORT+wOIPp7A2DSj4SgvbpMzxCayZF90FyaT1oxCzhztKCjaHLx60vhBosNCVwBbMSkh53nRC8t00ywXvahBFHRL2pO5RaeENtHQ9MYVne0VNiKgCK5wR9uIK/2cbNdyHpJShCBEpz5MLjxKcXjSmsGwWTKm0WxGbi1SnvTTc9FixJoVHI+uCqVK1dwIffto7zJLLRpptmI+d7CrLFFDjvXQZaNec9YBMqW6FykZNelAoCbdr+gCKrGo9+WJjgCI9imC+yg6wvtksWCXCytLJffaLr+TmipLU9YUgSppgFy7w18bFxPWHK2i1SFZFuCIh2mu84RzsteSQvCInpPpdCw87j428op072VkEymfyoxYkNNncE9utVEXaVAsIxZ2X40Tp7+GloMpRiZu9a/ffOzauYv1am8or0RkIy6QhuyMmyVqKN1y6ZOaJBKmnQ==;
- 5:xvWvm6GnspIRQdHg0K0oFzf4aSHs76Sd7Ti+mJ+oj1p09TepGMv9a5d2QE/ZZIQTJEyVqARz9evViwUTT1MAL39LmUSs5LdylXA4GhHTACG42mDIn0EtCZ7dcEbbLNINi4xjsBLODXn0H0WxwPrNNk+ESJRSJm5zczMZ4gbMJ036QGjwas3tHL0J4ge1wHFjVwXA/tyJbSR6beKgwR6L2A==;
- 7:e07F/C3Ipv16MQjF46EkynOWKbuo+OzVmyKkZKv88UWaxprZroSTcOJkhzkMHt4A15Pd5q7k9aJ+7RRtAGHaj6XR36l49w4RFafmhpSIEyJkDjLZt9/5DEsNCe6wRoZ+4bVVC1+Qa4mDwSi72RvT4w==
-x-ms-office365-filtering-correlation-id: 45cea562-212e-4a9b-4db9-08d68dd72f46
+x-microsoft-exchange-diagnostics: 1; BYAPR08MB4487;
+ 6:XgZyR5VP0zNDhCau4/58SybKZNDYntdRwY5ICF1PR3E+mu3BvBpNeLm2hrJNUixd8HWDzL5JbLjHayz9ex77D6osr0wxSQ+J16Y30VDWdcZMjH6MU1v7O9iZwEZRL64sXPfw4YQgEVo95K33BTVjoGegw+vDGL078MSip93ryteMK/4r0YtQKELJ8rdXfddNsWJYRCWPeh7Rwox49OjAac231e0NLa11XnaGaa7sZZ5PIcXzwvEzSu1EDuXTbGTwv94INyrirExvJxxXqNZbbld90s8tFi7BbYBLetMqiUyZ/aTsjS5hhgHBJHQRdkluYeVMC262crUHOLVbv15VcOVLgAO1uzGni8jXF8G/CRynw+wuOBmP+4kEw7oGhB1vrfsJ44kfb+cW91xjFdPoBcl1+8d5e1z+yYBmypiIao2wxBoc91KI1SeOp6cG3NIHw3AIGL3TOHicZQYju3IWyw==;
+ 5:EA2yfNnadfMBRYPWwy3UGdH15UPLHiUYKTYPxUohZekmYpIzjL6MkbeQOh92Fh8MHyM0vGlIxISf6zSXKJjM/vjSoCwm1Ox60MCsauDg97TzpI7PBLYvbgHS8X2iQgQY82YQg19SKHP7AOMnJ6ObpxyhdX3EHz2+1Saw+39hzLsg6SLwOvUB/laUSfrzpOhOUEu4uHqaD0N8+l6cWToMPA==;
+ 7:T7oWKO+O074qcfC35sI8BzWExh2LQ44XM+6x1HEfOfxs0sOU98SCmTVx0jgNHYCJhptDaMHMc6zUoV3ipiOisfErtNs/9Pm95XJXy8DU1m2IOtRPl3dA7OGSjX/NuOPYWXaJ+NpDah7o+Yq9dailCw==
+x-ms-office365-filtering-correlation-id: 9a9c0b1e-5c59-4fbc-21c9-08d68dd9fc05
 x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
- SRVR:BYAPR08MB4341; 
-x-ms-traffictypediagnostic: BYAPR08MB4341:|BYAPR08MB4341:
-x-microsoft-antispam-prvs: <BYAPR08MB4341186FC75D373DECA472A6DB690@BYAPR08MB4341.namprd08.prod.outlook.com>
+ RULEID:(2390118)(7020095)(4652040)(8989299)(5600110)(711020)(4605077)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);
+ SRVR:BYAPR08MB4487; 
+x-ms-traffictypediagnostic: BYAPR08MB4487:|BYAPR08MB4487:
+x-microsoft-antispam-prvs: <BYAPR08MB44878021F26251D6FB721C15DB690@BYAPR08MB4487.namprd08.prod.outlook.com>
 x-forefront-prvs: 094213BFEA
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(366004)(39860400002)(396003)(136003)(346002)(199004)(189003)(446003)(9686003)(14444005)(2501003)(102836004)(81156014)(81166006)(8676002)(55016002)(305945005)(4326008)(256004)(186003)(7736002)(478600001)(71190400001)(110136005)(71200400001)(8936002)(74316002)(6436002)(2201001)(11346002)(476003)(14454004)(486006)(25786009)(4744005)(26005)(53936002)(6246003)(68736007)(316002)(86362001)(97736004)(54906003)(33656002)(229853002)(7696005)(106356001)(105586002)(66066001)(2906002)(76176011)(3846002)(6116002)(6506007)(55236004)(99286004);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BYAPR08MB4341;
+ SFS:(10009020)(366004)(396003)(376002)(39860400002)(346002)(136003)(189003)(199004)(8936002)(81156014)(81166006)(71200400001)(86362001)(6506007)(2201001)(9686003)(71190400001)(102836004)(55236004)(256004)(14444005)(26005)(76176011)(99286004)(33656002)(3846002)(2501003)(6116002)(68736007)(186003)(8676002)(229853002)(105586002)(7696005)(106356001)(11346002)(14454004)(4744005)(2906002)(446003)(53936002)(486006)(316002)(476003)(97736004)(110136005)(54906003)(25786009)(478600001)(6436002)(305945005)(66066001)(74316002)(4326008)(6246003)(7736002)(55016002)(21314003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BYAPR08MB4487;
  H:BYAPR08MB4533.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
+ PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: micron.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 8+QoKhBoYC0iq39027CSD1dtseAWl6sdf5x9I3f4X13Dus2kxrSF3u2WPUdxNgziv93UYrYrXmjV9ajL6aUwRwpN/Di2V1NbTPtWD284C7YJD0Iytjxx8A5M5Vm9jYkei4ZAGfrSiyGG4dFgbfnDX+bKShG4ASLKMvgB+jXqgXcb0l9q7Iinrbyu7b/gKjct0qdB88Qn9olD6cMip3ajTp2ZYHkf9zZcfYCMt8w7c8yQ0Nz9A9JxXoUfgq/KxisIeEayXt8MFt16FLoqOnUIACYfo+ouOJAbNVLbCxJl0H4luMzuRILP58f3FAsj14Jm8M1kXJJVCXLie3KbLP6loLqDrR4Miexczzv0K5RbIGaJGNBZ+ZQsOwNbig7iWMHSmAyeNKQYu8NPhHHWxCbRexW9H0SAECVFEeCm4Ct70mk=
+x-microsoft-antispam-message-info: 0JMdaqx9SjXok5wIkKcbYFDrmb76MwrffbF23c+Y8FLFrGvGFptlerTSc3OJfGbsZNEnrcb86pUnSjz0PECIyp87z1H1F9HQKWhA6cBzRhWS3nhFkb+dzAsTpJbl3C2JsogXpVUOqmPkWVIsJPw412BdR8gkvGhtiHbHXQvYgwr0mgg2CtyKaq06T8OyJ5auSdhrZYWfB4RHKSHPxIKqAu5YBF0xgArqGD99SKz/cmH9Le70tEIcpBnvU9zwLIO9yGiMCsFX6Ad3FK8ouBJFVcTiJVcs4JEIcRccfcSiHSVsf37Zq21VHENh4l5xFtg6v9Ldmb/knQqpObqHlVfVKncgcgxFmiuoeqahnQtcnlpAtDaZ4vEPVHip9KvEgHfwRcnPmOceJb4l8Ue4MpepeLl//W85R/Km/j30NP1Q0Fg=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45cea562-212e-4a9b-4db9-08d68dd72f46
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 15:07:46.9615 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a9c0b1e-5c59-4fbc-21c9-08d68dd9fc05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 15:27:49.4708 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR08MB4341
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR08MB4487
 X-OriginatorOrg: micron.com
 X-TM-AS-Product-Ver: SMEX-12.0.0.1782-8.200.1013-24416.005
-X-TM-AS-Result: No--3.691000-0.000000-31
-X-TM-AS-MatchedID: 150567-706159-705178-703283-703440-701670-705718-701177-1
- 39010-851106-700075-701236-703179-703969-704034-106230-148004-148007-148020
- -148050-10019-41000-42000-42003-63
+X-TM-AS-Result: No--2.406400-0.000000-31
+X-TM-AS-MatchedID: 150567-139010-706159-705178-703283-703179-703969-851106-7
+ 00752-780014-700756-106230-707210-701236-700107-148004-148007-148020-148050
+ -41000-42000-42003-63
 X-TM-AS-User-Approved-Sender: Yes
 X-TM-AS-User-Blocked-Sender: No
 X-MT-CheckInternalSenderRule: True
-X-Scanned-By: MIMEDefang 2.78 on 137.201.82.98
+X-Scanned-By: MIMEDefang 2.78 on 137.201.130.65
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190208_070756_173356_CB4A4F42 
-X-CRM114-Status: UNSURE (   4.28  )
+X-CRM114-CacheID: sfid-20190208_072759_166501_BB4F3526 
+X-CRM114-Status: UNSURE (   3.87  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -142,27 +142,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Tudor
+Hi, Tutor
 
-./scripts/checkpatch.pl --strict 0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch 
-total: 0 errors, 0 warnings, 0 checks, 8 lines checked
-
-0001-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch has no obvious style problems and is ready for submission.
-
->
->On 02/08/2019 04:23 PM, Bean Huo (beanhuo) wrote:
->> Change SNOR_HWCPAS_READ_OCTAL to SNOR_HWCAPS_READ_OCTAL.
->>
->> Signed-off-by: Bean Huo <beanhuo@micron.com>
->
 >$ ./scripts/checkpatch.pl --strict
 >v2-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
 >WARNING: Missing Signed-off-by: line by nominal patch author 'Bean Huo
 >(beanhuo) <beanhuo@micron.com>'
-> 
-'Bean Huo (beanhuo) <beanhuo@micron.com>' is wrong.
- If you prefer to 'Bean Huo (beanhuo) <beanhuo@micron.com>, would you please change that.
-
+>
+I think, this is because of our email system, it always adds '(xxx)' between user name 
+and email address.
+If you are convenient, please help fix since it is not such hug change.
+Thanks,
 //Bean
 
 ______________________________________________________
