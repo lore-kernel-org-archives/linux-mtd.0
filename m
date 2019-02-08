@@ -2,97 +2,119 @@ Return-Path: <SRS0=BWs3=QP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE801C282D7
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 14:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1DFCC169C4
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 14:43:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F28D20863
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 14:24:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B20A72075C
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Feb 2019 14:43:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="itQob527";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nz/j3uMD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F28D20863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A17eFBog";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Fsc+cFoJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B20A72075C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:
-	In-Reply-To:References:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HxT3vbBROapXb/pkSavW+ImjQXj66zWxAYJBWZNtn6o=; b=itQob52768Z9JI
-	WYvh/lchsPPM0kJ5rHEAsQuht62XP5omPgmkWq2GF/6sEDXilsrm9YKsYWGHUdU0Q0FoUeTQmt3ij
-	ZMGTyTg65y63IeZkKIivC5CKAbBF3ltO+kWnbww3aAKj9SU5Tfe9FTR21w5grhxz16BOyvNorv2l1
-	RjdOGb5d/oproZYVSCx8k1koqzaVsPgR9/xKJXcR+l7ZLYm/a8vaaXmlRJSI/w7GcApy2tt37sdBj
-	qp/ijl/yQvnD0ZdV/acnyaa9Adlmgqye0VUeEDvtTW82XHuqL9PXICPIzp6ePoHgjOufxzsqjCorM
-	ys2GFKFIJIaPFcxmfzJA==;
+	List-Owner; bh=C8sZVqZnjJAU63XnFQ4Omr8x960vLg7ouQJJXHz+Efw=; b=A17eFBogiyMypC
+	PppvwDChAIdEAIcCpqFypb4zQ2jdhLzYrAyz/kHahZ55FsDnCEwNrVBb32xcOXkqF7vLlMjDkrcG3
+	IZhoBoFT4vlvFaZxyzQC3V4C9X+2lGRHwLnklRsos2gzBkyu0HmE7ZtuWYkpAPtrkyWHK4gg+nTmg
+	+37gIL/LmUs+0Ce+d71WACa/GCFhXWFIdzcgZvcAeSqKgd3SAWRXGZlJ9O8SVB3TrAPY9252sA84K
+	F+sF+07UNjRhiJpe8tHcr840CsV7ukkiMq/eanNojPDu1xSmJxgwaFzB8WK9PyIpLD8BDkuTfMCe5
+	qhxwm15Nb/WMr5RIBh6Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gs753-0005T5-0V; Fri, 08 Feb 2019 14:24:37 +0000
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+	id 1gs7NT-0006SJ-A6; Fri, 08 Feb 2019 14:43:39 +0000
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gs74w-0005S8-Sv
- for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 14:24:34 +0000
-Received: by mail-pf1-x444.google.com with SMTP id j3so1721415pfi.12
- for <linux-mtd@lists.infradead.org>; Fri, 08 Feb 2019 06:24:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:references:in-reply-to:subject:date:message-id
- :mime-version:content-transfer-encoding:thread-index
- :content-language;
- bh=x+4xnTqcwhgr98uo5XuFLhUJxPlaJMi636SG2kQk7Gc=;
- b=Nz/j3uMDOKKjlKfg8XkmSjsG+hq2GR57pmu0ELyhtTHaop/CIhVuBiNmxAs7/l4tAN
- IH7DDFeg2O3lQoH2msMZB5B/Sv3dSO44F6NfISmiVVc7i9K5li5IFXUSL7dPPHAUnBjv
- jHyoBdO8IFrRB80q/A2jg0qitDMXVHmjY4Ez3kpFaSd3gxAJ/Nvk1nYi1eGg++1lnmJt
- MrI3kFS/n2Txb5QmiVQ2LNf0Vr6jmxZOshrL9lUmPxHBd4g0MYkMnfBQNjK+QzeZHrNz
- JIu0KcWGIax+ElLWafh0ggLLr1yya+MvO4fdqhuyfebBHtxJa4pd3ifXt4wMsLODY4Cf
- +ArQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
- :message-id:mime-version:content-transfer-encoding:thread-index
- :content-language;
- bh=x+4xnTqcwhgr98uo5XuFLhUJxPlaJMi636SG2kQk7Gc=;
- b=TN/sfwLeZ2tkFYTampBMnhfbykTQtczuOq+ttlrjH+cL0yZr/hBXU5xf805HVf7TuX
- bEFjj3xOkEfDujpSh8lI8vrYHrW7Cy/0fF6kvPy3CVpXYgfxVJr7/ZQ4dTT6PqFA461+
- O5BfHnHu7nQm1eV1m61XScWVnaRfVQtl2qy100y3hKrTw08fcuK1pHAUQhD9/YVM/w+4
- 35a/AYIgC9/IvjBkr/cSAKsOJW68hTrhGRXxLtT7W6Y7s7tlAO5P74ht3X686bZU50Qc
- HaCOA7ZNacaA0nGapx/7rYV+2TtubIbbeg0KbQwPH4L4VpUw7DQ97GU1KVUOFWDETccp
- uEAQ==
-X-Gm-Message-State: AHQUAuYDUCj17xARuXP1CH2QGt94korsi64Tn+kGLwXsQX2jsVk2cttY
- 5YO4+zkI2M77rsuU+L1jTlY=
-X-Google-Smtp-Source: AHgI3IY4R6s1tLE+JvJyuE1UiIUeBdRtoYeDhXLsW1itG54bMV7XXx3OOKwfh+GIO/qb+YohauwqiA==
-X-Received: by 2002:a62:1c86:: with SMTP id c128mr23246203pfc.54.1549635869414; 
- Fri, 08 Feb 2019 06:24:29 -0800 (PST)
-Received: from ikegamiPC (M106072039032.v4.enabler.ne.jp. [106.72.39.32])
- by smtp.gmail.com with ESMTPSA id f12sm2680980pgo.13.2019.02.08.06.24.25
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 08 Feb 2019 06:24:28 -0800 (PST)
-From: "Tokunori Ikegami" <ikegami.t@gmail.com>
-To: "'Sobon, Przemyslaw'" <psobon@amazon.com>,
- "'Boris Brezillon'" <boris.brezillon@collabora.com>
-References: <1548977439-318904-1-git-send-email-liujian56@huawei.com>
- <20190203092645.18d1495b@bbrezillon> <20190203093509.269bf1e1@bbrezillon>
- <acd16b85676e4d1d89f3acfbeda30107@EX13D07UWA001.ant.amazon.com>
- <20190207095635.0fc3b411@kernel.org>
- <193621849.44066.1549580387922.JavaMail.yahoo@mail.yahoo.co.jp>
- <632ed76bd3844ceab75066d1f30a7115@EX13D07UWA001.ant.amazon.com>
-In-Reply-To: <632ed76bd3844ceab75066d1f30a7115@EX13D07UWA001.ant.amazon.com>
-Subject: RE: Re: [PATCH] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
-Date: Fri, 8 Feb 2019 23:23:59 +0900
-Message-ID: <149101d4bfb9$fdc5a330$f950e990$@gmail.com>
+ id 1gs7NH-0006Fj-L1
+ for linux-mtd@lists.infradead.org; Fri, 08 Feb 2019 14:43:37 +0000
+X-IronPort-AV: E=Sophos;i="5.58,347,1544511600"; d="scan'208";a="25999748"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 08 Feb 2019 07:43:24 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.38) with Microsoft SMTP Server (TLS) id
+ 14.3.352.0; Fri, 8 Feb 2019 07:43:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lv6DRGM0cQteB3o5C6tZrCEjMxkVk+LmDOfhW4yu4fE=;
+ b=Fsc+cFoJU/D4KJrEua+MghIALhntDdaNT6j1uZU/zkv2287px5NfM6OxTz0haprXrR1LmZvo7NLSyhs8+Q7c4DyTVu4lQ86oH5qMeqvbyOjzXv4Tf0JJcnonOlvpdWsbNS4sMb2ZWtjDB9kCJiG4V328k2L2JQv5wPMYwf8/U40=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1538.namprd11.prod.outlook.com (10.172.23.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1601.21; Fri, 8 Feb 2019 14:43:22 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1580.019; Fri, 8 Feb 2019
+ 14:43:22 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <beanhuo@micron.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+Thread-Topic: [PATCH v2] mtd: spi-nor: Fix wrong abbreviation HWCPAS
+Thread-Index: AdS/uVD1jG3UvCBSRuC2oJ8LRRcc4gAA03cA
+Date: Fri, 8 Feb 2019 14:43:22 +0000
+Message-ID: <298d18cf-094b-d5d0-45d1-39c7b75ba309@microchip.com>
+References: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+In-Reply-To: <BYAPR08MB4533C8EA6B775C7514FA7F82DB690@BYAPR08MB4533.namprd08.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1P195CA0082.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:802:59::35) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; BN6PR11MB1538;
+ 6:AqW4o09fnN4qSyXxF1UzVzrG32nVayo0dCZ+S5GefrE34mobwmwwaXmOnzSBPGZtFU5h/DmkDVHRCdbZQNsAVGb5P/r+lvzTfqdmkaLFwYg7e8rWDQSgY2/UXxhlMRMdtWc84FbwcTRX3oD2P6P4V3KSzUowIMYA8X3eDH2LzlUYILFPQzPe36OxUOsmTnSCdB61Z69jk2kOQAV8xzYw6Er9Bo90oXNfuEi1NaUKKsbOZ+orfVx5/0x1eueUDiaO+BNB9AZiu+9rfOKiXcCXeLWWNE4D7ILjgKSp1DP+A3No9TnBXJWbe86nzVXJuhzddiTdfwEgECZRpX2cxQ/AHvanRNO621RkJZLJYEQHoPyyB39qlvehArcv5nkc4CkYSqgq08z3od5qucFsJ1JzEZJW/3FAWIz1Qsy7QyrF4P1mZihxKnaaKxOXlfIDCLHgCy9B7cHQ8StgYvoEHy6gPw==;
+ 5:yZhE2ZWupMRJU/TkZRlmiGvjXwKlU83YnzDmFIy2uDw51ZRD1J2Iq6yyajSRGNpMSEmSGws6lX+nQoaMHlKJUNNPfg3klgjHArIzgV/0gB3J9gq+748MLY1Kxj6x4TZMV3tib/oSld4/9OQiBJ9aZkzf6yBBDtePQAUycTrkggcP7RNQ3R6QfyFoHWZJ1LEijzbfwrNt4PLKAzK/94dSyg==;
+ 7:gX34kBXVMmvI7czuBc/39scQRIngpJO522F1GgSWQKlgULKEWjmM7PsZP2acbB9gxG3jvWDgKMgOLYltlNsxLsLoHkx985KE4xdYWWg9vn9eb3I/B1CMsVoleAKIzMTgV0HBZ/Ur082UhRzl3mB5bg==
+x-ms-office365-filtering-correlation-id: ec8c72b1-f8b7-4a55-8bd0-08d68dd3c5fe
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
+ SRVR:BN6PR11MB1538; 
+x-ms-traffictypediagnostic: BN6PR11MB1538:
+x-microsoft-antispam-prvs: <BN6PR11MB1538E2A38F9AE168EE98FF0CF0690@BN6PR11MB1538.namprd11.prod.outlook.com>
+x-forefront-prvs: 094213BFEA
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(396003)(376002)(346002)(136003)(366004)(39860400002)(199004)(189003)(476003)(66066001)(6486002)(229853002)(486006)(97736004)(186003)(8676002)(3846002)(2616005)(6436002)(14454004)(81166006)(81156014)(105586002)(72206003)(106356001)(6512007)(6116002)(386003)(478600001)(6506007)(53546011)(446003)(11346002)(36756003)(68736007)(31686004)(305945005)(102836004)(8936002)(7736002)(31696002)(6246003)(14444005)(2201001)(76176011)(71190400001)(86362001)(2906002)(71200400001)(316002)(52116002)(110136005)(54906003)(53936002)(25786009)(256004)(2501003)(19627235002)(99286004)(4326008)(26005);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1538;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: EwygdxNQMwHtE4Qe0jV9hVyW+gB+Xg7V+KKrpmetOIHB5Blna9tgo3gIcH3W9VvbjJazdNegSiqZ7qlalO7F5ozVq4mX5McRi76M/aYhXfIZh0dXmPHJdI8YogZh5vYCZf+gEfZJx83RA6k6HbaVeYYKGIGB15/GAKTToBi5o/MK+hlHsGyT6nKDNsnhhYKJJdHkC5ZaaGhInGjFvvu0IhF1pW+fALXK4+M/NsBe8lG4680PB8jmrUr96MEwMa2vQKH3D3b+qjNdEITmpcb9wo68Xi2qMexpV0sDOSDx3q9mIiYJnes5JqcYqHUQW7eHSK5sCEOsPhe5DDIuROTpL/jUdqIvAY4BYFgk8ybcJ4HHBZGBQDWskUqdVWQLFY4/oenJk6S5yvI5AbpSuqv8XhN+rbgHzufMX/F1TCh6A20=
+Content-ID: <9C9729E30C3E1E499579A21793CD15CB@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQKzD+8bzTNJb3fYn6g+Txlclt4a6gHKPVnTAnthz5oB7umc8AJnC6FFAd0fx9ABvvwx96O3jtDw
-Content-Language: ja
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec8c72b1-f8b7-4a55-8bd0-08d68dd3c5fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2019 14:43:20.5472 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1538
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190208_062431_079708_77EF88E6 
-X-CRM114-Status: GOOD (  36.34  )
+X-CRM114-CacheID: sfid-20190208_064328_388258_E636A410 
+X-CRM114-Status: GOOD (  11.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -104,197 +126,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: keescook@chromium.org, joakim.tjernlund@infinera.com, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com, ikegami_to@yahoo.co.jp,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, 'Liu Jian' <liujian56@huawei.com>
+Cc: marek.vasut@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ richard@nod.at, bbrezillon@kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Przemek-san,
 
-Thank you so much for your explanation.
-
-> I have seen a case myself where a value was written, chip changed
-> state to "ready" but when I was reading the value was incorrect.
-
-I also know the similar issues for the both buffer and word write.
-Both issues were able to reproduce the write error behavior.
-  Note: The word write issue is able to reproduce now also.
-
-Those were resolved by using chip_good() instead to check the state.
-
-> This can happen as result of intermittent issue with flash. It is
-> hard to fall into scenario when testing on limited number of devices
-> but with large enough population you can see that.
-
-If possible I would like to know the issue detail and its cause also.
-
-> Another situation
-> is when a flash chip reaches its maximum number of writes. So for
-> example a chip is designed for 100k writes to a page. Once you
-> reach that number of writes you can have invalid data written to
-> flash but chip itself reports everything was good and switches to
-> "ready" state.
-
-Yes I see.
-
-Regards,
-Ikegami
-
-> -----Original Message-----
-> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
-> Of Sobon, Przemyslaw
-> Sent: Friday, February 8, 2019 8:51 AM
-> To: ikegami_to@yahoo.co.jp; Boris Brezillon
-> Cc: keescook@chromium.org; marek.vasut@gmail.com;
-> ikegami@allied-telesis.co.jp; richard@nod.at;
-> linux-kernel@vger.kernel.org; joakim.tjernlund@infinera.com;
-> linux-mtd@lists.infradead.org; computersforpeace@gmail.com;
-> dwmw2@infradead.org; Liu Jian
-> Subject: RE: Re: [PATCH] cfi: fix deadloop in cfi_cmdset_0002.c
-> do_write_buffer
+On 02/08/2019 04:23 PM, Bean Huo (beanhuo) wrote:
+> Change SNOR_HWCPAS_READ_OCTAL to SNOR_HWCAPS_READ_OCTAL.
 > 
-> Hi Ikegami,
-> 
-> I have seen a case myself where a value was written, chip changed
-> state to "ready" but when I was reading the value was incorrect.
-> This can happen as result of intermittent issue with flash. It is
-> hard to fall into scenario when testing on limited number of devices
-> but with large enough population you can see that. Another situation
-> is when a flash chip reaches its maximum number of writes. So for
-> example a chip is designed for 100k writes to a page. Once you
-> reach that number of writes you can have invalid data written to
-> flash but chip itself reports everything was good and switches to
-> "ready" state.
-> 
-> Hope this explanation is clear. Please let me know.
-> 
-> Regards,
-> Przemek
-> 
-> > -----Original Message-----
-> > From: ikegami_to@yahoo.co.jp <ikegami_to@yahoo.co.jp>
-> > Sent: Thursday, February 7, 2019 3:00 PM
-> >
-> > Hi Przemek-san,
-> >
-> > Could you please explain the case detail that the value is written
-> incorrectly?
-> > I think that the value is only written correctly except a bug.
-> >
-> > Regards,
-> > Ikegami
-> >
-> > --- boris.brezillon@collabora.com wrote --- :
-> > > Hi Sobon,
-> > >
-> > > On Tue, 5 Feb 2019 22:28:44 +0000
-> > > "Sobon, Przemyslaw" <psobon@amazon.com> wrote:
-> > >
-> > > > > From: Boris Brezillon <bbrezillon@kernel.org>
-> > > > > Sent: Sunday, February 3, 2019 12:35 AM
-> > > > > > +Przemyslaw
-> > > > > >
-> > > > > > On Fri, 1 Feb 2019 07:30:39 +0800 Liu Jian
-> > > > > > <liujian56@huawei.com> wrote:
-> > > > > >
-> > > > > > > In function do_write_buffer(), in the for loop, there is a
-> > > > > > > case
-> > > > > > > chip_ready() returns 1 while chip_good() returns 0, so it
-> > > > > > > never break the loop.
-> > > > > > > To fix this, chip_good() is enough and it should timeout if
-> it
-> > > > > > > stay bad for a while.
-> > > > > >
-> > > > > > Looks like Przemyslaw reported and fixed the same problem.
-> > > > > >
-> > > > > > >
-> > > > > > > Fixes: dfeae1073583(mtd: cfi_cmdset_0002: Change write buffer
-> > > > > > > to check correct value)
-> > > > > >
-> > > > > > Can you put the Fixes tag on a single, and the format is
-> > > > > >
-> > > > > > Fixes: <hash> ("message")
-> > > > > >
-> > > > > > > Signed-off-by: Yi Huaijie <yihuaijie@huawei.com>
-> > > > > > > Signed-off-by: Liu Jian <liujian56@huawei.com>
-> > > > > >
-> > > > > > [1]http://patchwork.ozlabs.org/patch/1025566/
-> > > > > >
-> > > > > > > ---
-> > > > > > >  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
-> > > > > > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > > > > > > b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > > > > > > index 72428b6..818e94b 100644
-> > > > > > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > > > > > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > > > > > > @@ -1876,14 +1876,14 @@ static int __xipram
-> do_write_buffer(struct map_info *map, struct flchip *chip,
-> > > > > > >              continue;
-> > > > > > >          }
-> > > > > > >
-> > > > > > > -        if (time_after(jiffies, timeo) && !chip_ready(map,
-> adr))
-> > > > > > > -            break;
-> > > > > > > -
-> > > > > > >          if (chip_good(map, adr, datum)) {
-> > > > > > >              xip_enable(map, chip, adr);
-> > > > > > >              goto op_done;
-> > > > > > >          }
-> > > > > > >
-> > > > > > > +        if (time_after(jiffies, timeo))
-> > > > > > > +            break;
-> > > > > > > +
-> > > > > > >          /* Latency issues. Drop the lock, wait a while and
-> retry */
-> > > > > > >          UDELAY(map, chip, adr, 1);
-> > > > > > >      }
-> > > > > >
-> > > > >
-> > > > > BTW, the patch itself looks good to me. Ikegami, can you confirm
-> it does the right thing?
-> > > > >
-> > > > > Thanks,
-> > > > >
-> > > > > Boris
-> > > > >
-> > > >
-> > > > One comment to this patch. If value is written incorrectly quickly
-> > > > we will be stuck in the loop even though nothing is going to change.
-> > > > For example a value was written incorrectly after 1us, the loop was
-> > > > set to 1ms, function will return after 1ms, this solution is not
-> > > > optimized for performance. I considered same when working on this
-> change and decided to do it different way.
-> > >
-> > > Seems like you're right if we assume that checking for GOOD state does
-> > > not require a delay after the READY check, but if that's not the case
-> > > and an extra delay is actually required, you might end up with a BAD
-> > > status while it could have turned GOOD at some point with the 'check
-> > > only for GOOD state until we timeout' approach.
-> > >
-> > > TBH, I don't know how CFI flashes work, so I'll let you guys sort this
-> > > out.
-> > >
-> > > Regards,
-> > >
-> > > Boris
-> > >
-> > > ______________________________________________________
-> > > Linux MTD discussion mailing list
-> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > >
-> >
-> >
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
+$ ./scripts/checkpatch.pl --strict
+v2-mtd-spi-nor-Fix-wrong-abbreviation-HWCPAS.patch
+WARNING: Missing Signed-off-by: line by nominal patch author 'Bean Huo (beanhuo)
+<beanhuo@micron.com>'
 
+There are scripts that check that the author/committer has its SoB, depending on
+how strict the check is, it might complaint that SoB an author/committer do not
+match, so please change gitconfig to make them match.
+
+> ---
+>  include/linux/mtd/spi-nor.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 2353af8..b3d360b 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -487,7 +487,7 @@ struct spi_nor_hwcaps {
+>  #define SNOR_HWCAPS_READ_4_4_4		BIT(9)
+>  #define SNOR_HWCAPS_READ_1_4_4_DTR	BIT(10)
+>  
+> -#define SNOR_HWCPAS_READ_OCTAL		GENMASK(14, 11)
+> +#define SNOR_HWCAPS_READ_OCTAL		GENMASK(14, 11)
+>  #define SNOR_HWCAPS_READ_1_1_8		BIT(11)
+>  #define SNOR_HWCAPS_READ_1_8_8		BIT(12)
+>  #define SNOR_HWCAPS_READ_8_8_8		BIT(13)
+> 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
