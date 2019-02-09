@@ -2,59 +2,65 @@ Return-Path: <SRS0=3nsT=QQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29BE3C282C4
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Feb 2019 10:15:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A6ABC282C4
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Feb 2019 19:23:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F059920863
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Feb 2019 10:15:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B1A7217D8
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Feb 2019 19:23:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n5U9M0ek"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F059920863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ecGZGxu6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ffFRBbhx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B1A7217D8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xX/esem/Ccrw26FfLm34d6Mh5UPalKa80Uwv0UQ+0a4=; b=n5U9M0ekCKhGNm
-	paZlKDpacGHY9kGY5Tvp40MesvMdpRAHqaFZKssXLPgyfHADx8lp24pVha8JOZVNl/yig5j6bur9N
-	CqDYHoGZxktiCZDXOQPMOs4arGht5darIJJP3Te3LcFMuabX8iiaInN8PTgUEUmgyzrP6G3rGpqhs
-	I/vOR7QOwSfFVu9jzMmOofgsYOpvHusmcyTsmC/0NJoou6ZHFOumsRbwKiCJIbxlgwp8wutQQbLIf
-	o8Q83ameXy7apLhff+E8Ley/ReFflacGIeEyGtf8sC8LNJno8Pm64zNl7pFytx7exkSKk7INmU99w
-	hbDuA/Q/2NG4t6PTCsyA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=W0clEnlwbhToPtIDgnlWxaC8BO8jGJ9YkQ1eYL6vfiw=; b=ecG
+	ZGxu606b4SxgYfHL41lhoJApyZZgrYnmYf/gFt5UqMCOcSiV3nJGNEXsf4R6itjOkNM25AawbFWqn
+	Sd+3AJxjqyqfsxRl3KfmMZf5eju6PDikxn2r8YN0uGNcLOy5J+n9V+kIDHeboW0nE/pSrdGoU2e1f
+	FNdluN7ew5fse9MWyIfFxPXU0OEFpnkUxMX3tQGFxbdVs6o/vuGQh2zAzj7WCDn2LzSHWi6wlQAXS
+	i9r2UxuA6FcLsPPTQoRKWSUNepW8KeG7qP9rmM80UJUarQUQ8vFiWjjQPTBp/E2pwC1RtplOOgO4w
+	SKW2vFVitmVJullaRI2Jla+3jURs88w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gsPfJ-0002h2-KJ; Sat, 09 Feb 2019 10:15:17 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1gsYDt-0002yh-Di; Sat, 09 Feb 2019 19:23:33 +0000
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gsPfF-0002T8-U6
- for linux-mtd@lists.infradead.org; Sat, 09 Feb 2019 10:15:15 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3979A269D48;
- Sat,  9 Feb 2019 10:14:57 +0000 (GMT)
-Date: Sat, 9 Feb 2019 11:14:54 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [GIT PULL] mtd: Fixes for 5.0-rc6
-Message-ID: <20190209111454.21c8c23b@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+ id 1gsYDq-0002wr-6A
+ for linux-mtd@lists.infradead.org; Sat, 09 Feb 2019 19:23:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1549740201; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:content-type:
+ content-transfer-encoding:in-reply-to:references;
+ bh=S1Pa9hHYN53VO9TRcP0oLj8m47PH1PYHNlFXTlSRajQ=;
+ b=ffFRBbhxBzQFr9Kkvi1IBwcz7gcoirxshh8RORPzjx0dJ5c0ZAD/ToRboD8w+H2G/3kh5f
+ zdvdtrB/TYPEOhFvbIE8llhuHo7CvSNCWchcn27b7JwjXbK/o+rAtPzec5PGb3fnsfElM+
+ 7jXpXFVT0HMwmkEtmVpZsjbVXouvYzc=
+From: Paul Cercueil <paul@crapouillou.net>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>
+Subject: [PATCH v4 1/9] dt-bindings: mtd: ingenic: Add compatible strings for
+ JZ4740 and JZ4725B
+Date: Sat,  9 Feb 2019 16:22:57 -0300
+Message-Id: <20190209192305.4434-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190209_021514_152139_77396B34 
-X-CRM114-Status: GOOD (  12.83  )
+X-CRM114-CacheID: sfid-20190209_112330_453164_170FA414 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -66,68 +72,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Paul Cercueil <paul@crapouillou.net>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Linus,
+Add compatible strings to probe the jz4780-nand and jz4780-bch drivers
+from devicetree on the JZ4725B and JZ4740 SoCs from Ingenic.
 
-Here is the MTD fixes PR for 5.0-rc6.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
 
-Regards,
+Changes:
 
-Boris
+v2: - Change 'ingenic,jz4725b-nand' compatible string to
+      'ingenic,jz4740-nand' to reflect driver change
+    - Add 'ingenic,jz4740-bch' compatible string
+    - Document 'ingenic,oob-layout' property
 
-The following changes since commit 49a57857aeea06ca831043acbb0fa5e0f50602fd:
+v3: - Removed 'ingenic,oob-layout' property
+    - Update compatible strings to what the driver supports
 
-  Linux 5.0-rc3 (2019-01-21 13:14:44 +1300)
+v4: No change
 
-are available in the Git repository at:
+ Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-5.0-rc6
+diff --git a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+index 29ea5853ca91..a5b940f18bf6 100644
+--- a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+@@ -6,7 +6,10 @@ memory-controllers/ingenic,jz4780-nemc.txt), and thus NAND device nodes must
+ be children of the NEMC node.
+ 
+ Required NAND controller device properties:
+-- compatible: Should be set to "ingenic,jz4780-nand".
++- compatible: Should be one of:
++  * ingenic,jz4740-nand
++  * ingenic,jz4725b-nand
++  * ingenic,jz4780-nand
+ - reg: For each bank with a NAND chip attached, should specify a bank number,
+   an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC bank).
+ 
+@@ -72,7 +75,10 @@ NAND devices. The following is a description of the device properties for a
+ BCH controller.
+ 
+ Required BCH properties:
+-- compatible: Should be set to "ingenic,jz4780-bch".
++- compatible: Should be one of:
++  * ingenic,jz4740-ecc
++  * ingenic,jz4725b-bch
++  * ingenic,jz4780-bch
+ - reg: Should specify the BCH controller registers location and length.
+ - clocks: Clock for the BCH controller.
+ 
+-- 
+2.11.0
 
-for you to fetch changes up to d5d27fd9826b59979b184ec288e4812abac0e988:
-
-  mtd: rawnand: gpmi: fix MX28 bus master lockup problem (2019-02-06 09:39:22 +0100)
-
-----------------------------------------------------------------
-- Fix a problem with the imx28 ECC engine
-- Remove a debug trace introduced in 2b6f0090a333 ("mtd: Check
-  add_mtd_device() ret code")
-- Make sure partitions of size 0 can be registered
-- Fix kernel-doc warning in the rawnand core
-- Fix the error path of spinand_init() (missing manufacturer cleanup
-  in a few places)
-- Address a problem with the SPI NAND PROGRAM LOAD operation which
-  does not work as expected on some parts.
-
-----------------------------------------------------------------
-Boris Brezillon (4):
-      mtd: spinand: Handle the case where PROGRAM LOAD does not reset the cache
-      mtd: spinand: Fix the error/cleanup path in spinand_init()
-      mtd: Remove a debug trace in mtdpart.c
-      mtd: Make sure mtd->erasesize is valid even if the partition is of size 0
-
-Martin Kepplinger (1):
-      mtd: rawnand: gpmi: fix MX28 bus master lockup problem
-
-Randy Dunlap (1):
-      mtd: rawnand: fix kernel-doc warnings
-
- drivers/mtd/mtdpart.c                     |  5 ++++-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c | 13 ++++++-------
- drivers/mtd/nand/raw/nand_base.c          |  1 +
- drivers/mtd/nand/raw/nand_bbt.c           |  2 +-
- drivers/mtd/nand/spi/core.c               | 46 ++++++++++++++++++++++------------------------
- 5 files changed, 34 insertions(+), 33 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
