@@ -1,69 +1,62 @@
-Return-Path: <SRS0=3nsT=QQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=jA3O=QR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85093C282C4
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Feb 2019 20:45:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3300CC282C2
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Feb 2019 12:56:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 527C921939
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Feb 2019 20:45:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB33621841
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Feb 2019 12:56:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qzmLyjaI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="W3CzS/3b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 527C921939
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BLbCTMLA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB33621841
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KclWreY/p6+2Y+so1+2PqjsDcZsaHzm3rmHOoFeHlGI=; b=qzmLyjaIvYms/N
-	Fo+C8QmYjV10XUddxloOb0pvSDAS0AkmD4UpHDFjZtvPqiOe4/9POtYQWsHEFHm8TxaUgS2g3db5j
-	Mz+FM6jzvY5oBORHpRkj0iAYRm3UHCDDPmtITIc+XyxEJ/0bUO6fzNSPHglat0/MuGZcf4+EjBYuh
-	fzVizd0a0DC/btjpjmkrmJVOTZZXVX8yTIYmcf0EVlsYduOQv5XuPgHVgqdiEa3czrYixY1oNX3Xr
-	iSvJIVbtFpV+DVjaCva0OTC6v+WLfKX2l5+IsgytAJcWAM2orBSzpwcYpku2Jk0JIEATbzIX/Ayz7
-	n13/kEoPJ4yGyxcH6zyw==;
+	List-Owner; bh=4cO9n5d1YCBct9iZLXftQ5RfIkB4TEfmVZIHQKHSLtQ=; b=BLbCTMLAutqAeo
+	hAkSIiG+p0S2nGfywp7XyEQ0DihvdXNqw3y8UUEyYkVyK5ylDkzd+Nvcdu/6iD1bpMAeW6JLZXPgX
+	YhtZEGGEW5v2YYUpJw19eixkzca+33LYvNwQLSSoaAPryTkDykpMfDjFHQKhe9XPslCVP4UpLTLiw
+	uk0LO13I3Kyzf5ep9HdYZ/gNR0PmSPFt38pKj+9I/5DOyOzDDki6nB38Dd9gamBz3DG8WxSdn939y
+	qKC10aYrdgIRw5Epc5Drn9Ywga2JhTZurTfl/F92nBEafXK2QA2biwBex+lAoi3dMW3OoCoklTUCN
+	lSNRI1PLy8cjWT57TyqA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gsZUt-0004b4-Da; Sat, 09 Feb 2019 20:45:11 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gsoeh-0000uV-9b; Sun, 10 Feb 2019 12:56:19 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gsZUq-0003bV-SY
- for linux-mtd@lists.infradead.org; Sat, 09 Feb 2019 20:45:10 +0000
-Subject: Re: [GIT PULL] mtd: Fixes for 5.0-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1549745104;
- bh=EVYCy6QS5YVZQv7jZl6zXGGo5jz2PnUNXUN8pSXSt0w=;
- h=From:In-Reply-To:References:Date:To:Cc:From;
- b=W3CzS/3bjRBoqOtKTj5LwJvYWgsePq68ehnJlTEvK77ySiJBXnW3hbyZyh1nvkEVn
- oEgpzxNHvH6mgPWp103ye+HUtus4p9uEQrv0DqjV2/Wo1MJ91DDa6d4KuE4pa/8CfA
- vdSKy6bxC3nwef5ziQ4p4MnW9ZFEuKxldUn6UYP4=
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20190209111454.21c8c23b@collabora.com>
-References: <20190209111454.21c8c23b@collabora.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190209111454.21c8c23b@collabora.com>
-X-PR-Tracked-Remote: git://git.infradead.org/linux-mtd.git
- tags/mtd/fixes-for-5.0-rc6
-X-PR-Tracked-Commit-Id: d5d27fd9826b59979b184ec288e4812abac0e988
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5610789ad08dacfd96fd684b53d7acd9e628ca20
-Message-Id: <154974510394.20101.11534030725064580087.pr-tracker-bot@kernel.org>
-Date: Sat, 09 Feb 2019 20:45:03 +0000
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1gsoeS-0000u3-E4
+ for linux-mtd@lists.infradead.org; Sun, 10 Feb 2019 12:56:06 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D3B062779F0;
+ Sun, 10 Feb 2019 12:55:56 +0000 (GMT)
+Date: Sun, 10 Feb 2019 13:55:52 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v3 1/2] drivers/mtd: Use mtd->name when registering
+ nvmem device
+Message-ID: <20190210135552.65f532bb@collabora.com>
+In-Reply-To: <20190208151419.1800-1-aneesh.kumar@linux.ibm.com>
+References: <20190208151419.1800-1-aneesh.kumar@linux.ibm.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190209_124508_949834_1F4C419E 
-X-CRM114-Status: UNSURE (   2.17  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190210_045604_612937_0B095410 
+X-CRM114-Status: GOOD (  15.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,32 +68,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>
-MIME-Version: 1.0
+Cc: linuxppc-dev@lists.ozlabs.org, Alban Bedel <albeu@free.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Sat, 9 Feb 2019 11:14:54 +0100:
+Hello Aneesh,
 
-> git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-5.0-rc6
+On Fri,  8 Feb 2019 20:44:18 +0530
+"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5610789ad08dacfd96fd684b53d7acd9e628ca20
+> With this patch, we use the mtd->name instead of concatenating the name with '0'
+> 
+> Fixes: c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem API")
+> Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-Thank you!
+You forgot to Cc the MTD ML and maintainers. Can you please send a new
+version?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Thanks,
+
+Boris
+
+> ---
+>  drivers/mtd/mtdcore.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 999b705769a8..3ef01baef9b6 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -507,6 +507,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+>  {
+>  	struct nvmem_config config = {};
+>  
+> +	config.id = -1;
+>  	config.dev = &mtd->dev;
+>  	config.name = mtd->name;
+>  	config.owner = THIS_MODULE;
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
