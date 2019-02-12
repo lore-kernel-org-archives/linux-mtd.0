@@ -2,64 +2,60 @@ Return-Path: <SRS0=ca8F=QT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92F73C169C4
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Feb 2019 00:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0DB5C169C4
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Feb 2019 00:25:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ECEA2184A
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Feb 2019 00:04:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87BE420842
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Feb 2019 00:25:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NXjiArMH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ECEA2184A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=fromorbit.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z82NW94G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87BE420842
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rockwellcollins.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/uWJ9W1TA0WNLpCx69OinDoDiUAGN7cXTa9YnspXhWw=; b=NXjiArMHzkZakw
-	edsTdYJLxFWjBsnubSf2pE3YL88CcEBm6ZaK4ZdDVmhCW5CkoWjvjOn902gT7TBuIQz0nqyejaHZ2
-	ymltiXc94T3VCq6dIW1mXi7tNYUrgNkXLvfcXaFMv154nZjG0OLsHlom4ycsOF40+33d99caFdvAA
-	t0k5y975Hbmx6bCq17G7583HzD2kKW7u65sTL5sNCdtzQSj5RrJ+ziKKWHydiInvbRqpyllS075Q3
-	J/s1eRxZxR6kqDpQYT/JwSdZyV02gQEp4ZrCrbGfQhoEqu1UgKiatWgcCMGfils4SmIVQpig/ouOr
-	MHtuDPzzUDuMwooltTIQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=d/RrXnPXRdrfO7Q3LgyAiHXK/c8XCt3iPmKBtSqjPpg=; b=Z82NW94GW18FYB
+	sTeBQM1dsuH1ydo3mx6Zz/F+5JIHbIyMCAtyT7iDbq0IKjdk2Sh0I98ARBy4diObsioG6dmAQ6il3
+	E+DVOcseVH29Qivpmjapo8ZFUZ6Q2R/lf2aMZ3jmdEdO9A6QBgYr87QIhTzGgeWDRSLvQzdm/V1zv
+	hPw24YHNlbBqDyUytYKoEuoo38R40C8YtyZm5DDOfU4cMI0K5iV2+0tkHR/+DJJnAaMrsUlItw9oS
+	Y5gQGpg1cjvXQU7R8BtQhAx28SgeB0FhDNGSUdA3l6yEbr/pAs83UtijFFSVV4u7k0Ppab2jtuV/l
+	hjRDZUnChF/hOQ2fugrw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gtLYX-0007Ae-60; Tue, 12 Feb 2019 00:04:09 +0000
-Received: from ipmail01.adl6.internode.on.net ([150.101.137.136])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtLYT-0007AJ-M1
- for linux-mtd@lists.infradead.org; Tue, 12 Feb 2019 00:04:07 +0000
-Received: from ppp59-167-129-252.static.internode.on.net (HELO dastard)
- ([59.167.129.252])
- by ipmail01.adl6.internode.on.net with ESMTP; 12 Feb 2019 10:33:57 +1030
-Received: from dave by dastard with local (Exim 4.80)
- (envelope-from <david@fromorbit.com>)
- id 1gtLYL-0002P2-4h; Tue, 12 Feb 2019 11:03:57 +1100
-Date: Tue, 12 Feb 2019 11:03:57 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [RFC PATCH v2 11/20] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY
- ioctl
-Message-ID: <20190212000357.GI20493@dastard>
-References: <20190211172738.4633-1-ebiggers@kernel.org>
- <20190211172738.4633-12-ebiggers@kernel.org>
- <20190211221249.GH20493@dastard>
- <20190211233128.GB226227@gmail.com>
+	id 1gtLt5-0006on-1L; Tue, 12 Feb 2019 00:25:23 +0000
+Received: from da1vs02.rockwellcollins.com ([205.175.227.29])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gtLt1-0006oA-JJ
+ for linux-mtd@lists.infradead.org; Tue, 12 Feb 2019 00:25:21 +0000
+Received: from ofwda1n02.rockwellcollins.com (HELO
+ crulimr01.rockwellcollins.com) ([205.175.227.14])
+ by da1vs02.rockwellcollins.com with ESMTP; 11 Feb 2019 18:25:17 -0600
+X-Received: from righttwix.rockwellcollins.com (righttwix.rockwellcollins.com
+ [192.168.141.218])
+ by crulimr01.rockwellcollins.com (Postfix) with ESMTP id 9B6296011F;
+ Mon, 11 Feb 2019 18:25:16 -0600 (CST)
+From: Brandon Maier <brandon.maier@rockwellcollins.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] jffs2: Fix use of uninitialized erase_completion_lcok
+Date: Mon, 11 Feb 2019 18:25:01 -0600
+Message-Id: <20190212002501.96725-1-brandon.maier@rockwellcollins.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190211233128.GB226227@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190211_160406_212367_92B750EE 
-X-CRM114-Status: GOOD (  23.60  )
+X-CRM114-CacheID: sfid-20190211_162519_724664_DB88A624 
+X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -71,113 +67,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Satya Tangirala <satyat@google.com>, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+Cc: Brandon Maier <brandon.maier@rockwellcollins.com>,
+ linux-mtd@lists.infradead.org,
+ Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 11, 2019 at 03:31:29PM -0800, Eric Biggers wrote:
-> Hi Dave,
-> 
-> On Tue, Feb 12, 2019 at 09:12:49AM +1100, Dave Chinner wrote:
-> > On Mon, Feb 11, 2019 at 09:27:29AM -0800, Eric Biggers wrote:
-> > 
-> > Indeed, this is exactly what ->drop_inode() is for.
-> > 
-> > Take this function:
-> > 
-> > > +static void evict_dentries_for_decrypted_inodes(struct fscrypt_master_key *mk)
-> > > +{
-> > > +	struct fscrypt_info *ci;
-> > > +	struct inode *inode;
-> > > +	struct inode *toput_inode = NULL;
-> > > +
-> > > +	spin_lock(&mk->mk_decrypted_inodes_lock);
-> > > +
-> > > +	list_for_each_entry(ci, &mk->mk_decrypted_inodes, ci_master_key_link) {
-> > > +		inode = ci->ci_inode;
-> > > +		spin_lock(&inode->i_lock);
-> > > +		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
-> > > +			spin_unlock(&inode->i_lock);
-> > > +			continue;
-> > > +		}
-> > > +		__iget(inode);
-> > > +		spin_unlock(&inode->i_lock);
-> > > +		spin_unlock(&mk->mk_decrypted_inodes_lock);
-> > > +
-> > > +		shrink_dcache_inode(inode);
-> > > +		iput(toput_inode);
-> > > +		toput_inode = inode;
-> > > +
-> > > +		spin_lock(&mk->mk_decrypted_inodes_lock);
-> > > +	}
-> > > +
-> > > +	spin_unlock(&mk->mk_decrypted_inodes_lock);
-> > > +	iput(toput_inode);
-> > > +}
-> > 
-> > It takes a new reference to each decrypted inode, and then drops it
-> > again after all the dentry cache references have been killed and
-> > we've got a reference to the next inode in the list.  Killing the
-> > dentry references to the inode means it should only have in-use
-> > references and the reference this function holds on it.
-> > 
-> > If the inode is not in use then there will be only one, and so it
-> > will fall into iput_final() and the ->drop_inode() function
-> > determines if the inode should be evicted from the cache and
-> > destroyed immediately.  IOWs, implement fscrypt_drop_inode() to do
-> > the right thing when the key has been destroyed, and you can get rid
-> > of all this crazy inode cache walk-and-invalidate hackery.
-> > 
-> 
-> Thanks for the feedback!  If I understand correctly, your suggestion is:
-> 
-> - Keep evict_dentries_for_decrypted_inodes() as-is, i.e. fscrypt would still
->   evict the dentries for all inodes in ->mk_decrypted_inodes.
->   (I don't see how it could work otherwise.)
-> 
-> - However, evict_decrypted_inodes() would be removed and fscrypt would not
->   directly evict the list of inodes.  Instead, the filesystem's ->drop_inode()
->   would be made to return 1 if the inode's master key has been removed.  Thus
->   each inode, if no longer in use, would end up getting evicted during the
->   iput() in evict_dentries_for_decrypted_inodes().
+From: Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
 
-*nod*
+If jffs2_fill_super() detects a bad option, it will error out. But it
+leaves a pointer to the uninitialized jffs2_sb_info in the super block.
+It gets passed to jffs2_kill_sb() which attempts to use the spinlock,
+generating the following warning:
 
-> I hadn't thought of this, and I think it would work; I'll try implementing it.
-> It would also have the advantage that if a key is removed while an inode is
-> still in-use, that inode will be evicted as soon as it's no longer in use rather
-> than waiting around until another FS_IOC_REMOVE_ENCRYPTION_KEY.
+[root@hostname tmp]# mount -t jffs2 -o 'bogus' /dev/mtdblock12 /mnt
+[  354.060743] jffs2: Error: unrecognized mount option 'bogus' or missing value
+[  354.067932] INFO: trying to register non-static key.
+[  354.072847] the code is fine but needs lockdep annotation.
+[  354.078315] turning off the locking correctness validator.
+[  354.083804] CPU: 0 PID: 313 Comm: mount Not tainted 4.14.87 #1
+[  354.089599] Hardware name: Xilinx Zynq Platform
+[  354.094167] [<c0125e80>] (unwind_backtrace) from [<c0122080>] (show_stack+0x20/0x24)
+[  354.101867] [<c0122080>] (show_stack) from [<c078f368>] (dump_stack+0xbc/0xe8)
+[  354.109076] [<c078f368>] (dump_stack) from [<c0187b68>] (register_lock_class+0x27c/0x624)
+[  354.117227] [<c0187b68>] (register_lock_class) from [<c018b334>] (__lock_acquire+0xa4/0x1c60)
+[  354.125726] [<c018b334>] (__lock_acquire) from [<c018d92c>] (lock_acquire+0xd0/0x2b0)
+[  354.133550] [<c018d92c>] (lock_acquire) from [<c07af704>] (_raw_spin_lock+0x54/0x64)
+[  354.141271] [<c07af704>] (_raw_spin_lock) from [<c03d5ee8>] (jffs2_stop_garbage_collect_thread+0x24/0x5c)
+[  354.150814] [<c03d5ee8>] (jffs2_stop_garbage_collect_thread) from [<c03d7278>] (jffs2_kill_sb+0x38/0x4c)
+[  354.160276] [<c03d7278>] (jffs2_kill_sb) from [<c0287248>] (deactivate_locked_super+0x6c/0x90)
+[  354.168878] [<c0287248>] (deactivate_locked_super) from [<c050ffcc>] (mount_mtd_aux+0x11c/0x124)
+[  354.177623] [<c050ffcc>] (mount_mtd_aux) from [<c0510034>] (mount_mtd_nr+0x60/0x90)
+[  354.185262] [<c0510034>] (mount_mtd_nr) from [<c05101d0>] (mount_mtd+0x16c/0x238)
+[  354.192737] [<c05101d0>] (mount_mtd) from [<c03d72b4>] (jffs2_mount+0x28/0x30)
+[  354.199946] [<c03d72b4>] (jffs2_mount) from [<c0288bd8>] (mount_fs+0x24/0xb8)
+[  354.207073] [<c0288bd8>] (mount_fs) from [<c02aba34>] (vfs_kern_mount+0x64/0x138)
+[  354.214528] [<c02aba34>] (vfs_kern_mount) from [<c02afb78>] (do_mount+0x198/0xce0)
+[  354.222064] [<c02afb78>] (do_mount) from [<c02b0a5c>] (SyS_mount+0x84/0xac)
+[  354.229028] [<c02b0a5c>] (SyS_mount) from [<c011cfc0>] (ret_fast_syscall+0x0/0x28)
+mount: mounting /dev/mtdblock12 on /mnt failed: Invalid argument
 
-*nod*
+Signed-off-by: Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
+Signed-off-by: Brandon Maier <brandon.maier@rockwellcollins.com>
+---
+ fs/jffs2/super.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> The ioctl will need a different way to determine whether any inodes couldn't be
-> evicted, but simply checking whether ->mk_decrypted_inodes ended up empty or not
-> should work.
-
-*nod*
-
-> FWIW, originally I also considered leaving the inodes in the inode cache and
-> instead only freeing ->i_crypt_info and truncating the pagecache.  But I don't
-> see a way to do it even with this new idea; for one, ->drop_inode() is called
-> under ->i_lock.  So it seems that eviction is still the way to go.
-
-Yeah, eviction is by far the easiest way to deal with this. If it's
-being frequently referenced/written, the backing buffer should be in
-memory anyway and the next access simply has to re-instantiate the
-inode cache from the buffer and won't need to do IO.
-
-Cheers,
-
-Dave.
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index bb6ae387469f..34f9a1c21620 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -286,8 +286,11 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_fs_info = c;
+ 
+ 	ret = jffs2_parse_options(c, data);
+-	if (ret)
++	if (ret) {
++		sb->s_fs_info = NULL;
++		kfree(c);
+ 		return -EINVAL;
++	}
+ 
+ 	/* Initialize JFFS2 superblock locks, the further initialization will
+ 	 * be done later */
 -- 
-Dave Chinner
-david@fromorbit.com
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
