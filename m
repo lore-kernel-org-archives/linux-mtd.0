@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAD_ENC_HEADER,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D7D0C282C2
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 09:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F318C282CA
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 09:01:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28CBA222BB
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 09:00:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D9E1222BB
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 09:01:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TW89Z9US";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="OQymV7ck"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28CBA222BB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nstm2R6B";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="QZ+V9uTk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D9E1222BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,40 +26,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PKvcXVmHLFnXUxIOLa0QzHXekaUW5Zv6hvZMS3UAqm8=; b=TW89Z9USm9yc/x
-	4MYwpp2jJ6fi+f4z5v/qMCBc/npgIeQAoDkdbu1jz58bVz/IgNWiG2yzMaWJGB4SG81EpJgV7s+ms
-	/CsS15JdaQPDph4TXbVBnMKwGAf8RjITx/Jl2DG9pLSQQRglLCuI5L5VPy2b7vG0sFFyHRTVUczmZ
-	LtYAmNdLsKMprNSZ+e9cfPEX6t6WSV9hlVPq/A+c/0SIPSLZJ9r2B04zPY2xs9H161blCXNpkpTcN
-	p3e2zYe9W/QpmdnrNocKM+z4Ic4mvdqO4jIo06GcCqLRsm6VZF2Gw8ymkpkQJ6YjzAngy8NvZ2TuH
-	Ycnd13uLBWIIumMkGi7Q==;
+	List-Owner; bh=CdZdZomDKBNp/2W+Zr/xKgmh0iYkGdNEBOqVBU3iX1o=; b=nstm2R6BrsFkqc
+	Y6P17c+BA2A43H74HrFQjB+qgUduz2V5Sp4cTCoLNRp9O4fWtpnj/h0/30l0uIfi4sQPNhqVihJPN
+	F24BqleJug65nj8ueLGRYPbfKspDYjdQTKbz8SEGVIUNrtiPmouv7tLM6SVMmOCr6jjpnth5PcIRS
+	1Q0ADNKYg26KBUQD0o/48B/8UW57ds0GB8x+gO9y47Ma7fnyuJEElBQiHZWT71ek1MXvJYijamNLr
+	oYO04j3+HTDzEtUVYp4kXgToa5b1MHFD3bUY6VhTXkyVT8LkOoVfMlSvoqApels/xWrU0aW28cDB4
+	lhvxByjfgQrYXM2HS2Vg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gtqP6-0007Ey-Bo; Wed, 13 Feb 2019 09:00:28 +0000
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+	id 1gtqPd-0007yH-AE; Wed, 13 Feb 2019 09:01:01 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtqOV-0005Hm-Mr; Wed, 13 Feb 2019 08:59:55 +0000
-X-IronPort-AV: E=Sophos;i="5.58,365,1544511600"; d="scan'208";a="23778136"
+ id 1gtqOb-0005OY-SO; Wed, 13 Feb 2019 09:00:01 +0000
+X-IronPort-AV: E=Sophos;i="5.58,365,1544511600"; d="scan'208";a="27631549"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 13 Feb 2019 01:59:51 -0700
+ by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 13 Feb 2019 01:59:55 -0700
 Received: from NAM05-BY2-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.76.105) with Microsoft SMTP Server (TLS)
- id 14.3.352.0; Wed, 13 Feb 2019 01:59:50 -0700
+ id 14.3.352.0; Wed, 13 Feb 2019 01:59:54 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector1-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hc4nV9jdLKYNjIUT+gRpNFusDLGZhRyZ8ciEoFGPcx0=;
- b=OQymV7ckweMKp+j8tid0b2UoC/XDJpijDFAt3zyxeJVFQiWdqsj361CQuuIKLf9vqx3E2RpUEl5qCwWcZlZbqAql44j/aT+s0TNf2gX6xK1FCyQUiflzAoYt7O69kYtA5JPbHh2BekE+pH5sXTpV26CagcClYwXagHoUJkLW03k=
+ bh=xPw2T2m6kmmj4wWbdyHd+t0TGyg9Z/DkqW49vDPvr2k=;
+ b=QZ+V9uTkD58VjJcSvNCcGifdaRoReed2vvvXHxAQJvtHOvhGq9p5L88ynatUr68nU9mSZcm3Y9WBviUONH0BAS84B8ONt7FZ0rqttHHSrPDlrS4uemHOJAI3yfFcdTyI9cyCKUwvMB1GXLKUEsb0+Wa/qOQoT7l9Vu2Lxc5+kFw=
 Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
  BN6PR11MB0019.namprd11.prod.outlook.com (10.161.155.139) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1622.16; Wed, 13 Feb 2019 08:59:48 +0000
+ 15.20.1622.16; Wed, 13 Feb 2019 08:59:52 +0000
 Received: from BN6PR11MB1842.namprd11.prod.outlook.com
  ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
  ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1601.023; Wed, 13 Feb 2019
- 08:59:48 +0000
+ 08:59:52 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -67,11 +67,12 @@ To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <computersforpeace@gmail.com>, <bbrezillon@kernel.org>,
  <marek.vasut@gmail.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
  <lee.jones@linaro.org>
-Subject: [PATCH 02/11] memory: atmel-ebi: add generic name for ebi regmap
-Thread-Topic: [PATCH 02/11] memory: atmel-ebi: add generic name for ebi regmap
-Thread-Index: AQHUw3p49S/sYBbl10WTjl6hIGDc8A==
-Date: Wed, 13 Feb 2019 08:59:48 +0000
-Message-ID: <20190213085930.31578-3-tudor.ambarus@microchip.com>
+Subject: [PATCH 03/11] dt-bindings: memory: atmel-ebi: add sam9x60 compatible
+Thread-Topic: [PATCH 03/11] dt-bindings: memory: atmel-ebi: add sam9x60
+ compatible
+Thread-Index: AQHUw3p7x3NpzSUXUEKSSlFHsgR+5w==
+Date: Wed, 13 Feb 2019 08:59:52 +0000
+Message-ID: <20190213085930.31578-4-tudor.ambarus@microchip.com>
 References: <20190213085930.31578-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20190213085930.31578-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -87,58 +88,59 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.154]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ae6e05dd-e7e6-40c8-ef9f-08d691919b13
+x-ms-office365-filtering-correlation-id: 9b264240-f6d1-4766-f97c-08d691919d86
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
  SRVR:BN6PR11MB0019; 
 x-ms-traffictypediagnostic: BN6PR11MB0019:
 x-microsoft-exchange-diagnostics: =?iso-8859-1?Q?1; BN6PR11MB0019;
- 23:557XpDeJbzlhl/SeyL9HDqRRS80Xvci+V6bqinC?=
- =?iso-8859-1?Q?oCwpWXF6bKiFV3sOD9aO9kDjdBCngbtnkzm3L80tesAErSbPhByIpbYk+f?=
- =?iso-8859-1?Q?NppboWGXgVYhhgU7dxnc+C+rxiaFaziDHFKKshZCmJa6CXFHDKsuowLN5S?=
- =?iso-8859-1?Q?CEigv4kCWrzP3BaQNqNTIjGyCPQs5ZpR8kn+8ZPsdZz0OzvLfrVVcnPVcB?=
- =?iso-8859-1?Q?/NILJhfwuNKqDyE+e9aV7Ueri5vfq+6ansD4ROuHvYtcOnZ/DIwkx/vNsl?=
- =?iso-8859-1?Q?pZoI1YN1EKZJ6GWEqzoXfyrrmoHj/AHtbXfYU7kZdvY0C/0mTv3hnjXPK+?=
- =?iso-8859-1?Q?vwWQKs9EXXkWJIAKhUVta8oJFVjutJ+xyLcmll/cwzOgNYS9ZuRBaEVB+I?=
- =?iso-8859-1?Q?qvczZ9ngzB8KHbfQcIlChbP5qeFgXuHKmQbRrZxuncMQjsene0X2SNskrG?=
- =?iso-8859-1?Q?BC2rSbn6aeDh0Y6NDfkfBOIGPzgvyOx2jyXPWHTUL0q/fD2FCANR1yo2fD?=
- =?iso-8859-1?Q?9GucYungafDRVU4HxJfeWKGc4WAlCjLka9l3NW22c7+kn2EFfF/BXScmyN?=
- =?iso-8859-1?Q?5lxix4IZGZ2kgAhyo1G+ybMQhpnee3DwvKxRdmka+EiBJZu0NsNxYD2P56?=
- =?iso-8859-1?Q?bGcbPNZ/dxWDyqVgcH/+z/4DdgWmjyb1IZxtROyGJV3XQi59LZYJZ4IVpE?=
- =?iso-8859-1?Q?g6J7Hp+I/BeeDBc3gsbN9Bgu5pRZoRga3GxG3WwokVuEkwGb8gH5/2Biq5?=
- =?iso-8859-1?Q?eoir4n3LHgZ+WoX8QmpUWPEip5M3cBDks6xWPsrV5l/0tNcvJ/q469gOYN?=
- =?iso-8859-1?Q?1scseswZQ+fWoatBHkrAEw0rMDalgQSigRDCdq3YEHgv0Frkwg8oSQSHFO?=
- =?iso-8859-1?Q?z6zN7ponRm7AsQKwUn/nQ+Jr8YHi5WvZyFAVj7pZrIrMm+3KnmB6IU7Tff?=
- =?iso-8859-1?Q?Zzt8FyofuHaZgb0w0sM/jw2/U9NwqaUEeqzfgiUrkLyan161jlSLWnGZTZ?=
- =?iso-8859-1?Q?TSXG5Z/4ByCceptFK0VBiIN+i/r/z8QMQSYFkAt49AWIHtr087X9bCHRjE?=
- =?iso-8859-1?Q?YMKancDE5ns/rbKubqgH/Eih9qaRM57ovOaLQdi0R+RsyFwrfuoH736lm4?=
- =?iso-8859-1?Q?rE4gCWL/+xzn/mt33oYw6Sudcb8I2R9q55eR08ithKRM909PL1UFLHDKhQ?=
- =?iso-8859-1?Q?vpHQXxcOW8L1qtBMJOAevJmQ4pLrYSjnwkjgd9VhkTmUq0PSrgCNJrf1rG?=
- =?iso-8859-1?Q?C3hiOyFeuCm01GcljKoxOYVtrpMJJIVNBvoLj34aHJ1EDqlM9e3Ong6c64?=
- =?iso-8859-1?Q?iJMt3m9os/NyUHYQwPHls3KDYl+WMwVvWZSn/MyYwPMjN4tBjWewUcCQcp?=
- =?iso-8859-1?Q?czjehuH2lCvSlPdeGDT5IPvEWYs6zjMnq9JxXUEsgO7xSFLerRA=3D=3D?=
-x-microsoft-antispam-prvs: <BN6PR11MB00198D1B6F2B17A7333019B2F0660@BN6PR11MB0019.namprd11.prod.outlook.com>
+ 23:oM+PIxryIfvU/dSZ77DLdGJGtEAEsnebLl7oIVP?=
+ =?iso-8859-1?Q?60xqxtwl6A71Jq7OWUFvwT06fZoCUsUJzX/Pih5LCmOGKbmizi3WYtPtPe?=
+ =?iso-8859-1?Q?QQp4GeT3wFALL4hYg6P3Ht6GqayHX3INmjR4jftaF8QZrsyWrQXTAbc9te?=
+ =?iso-8859-1?Q?rQBZHKV6hPotbGKGYOw3OiVbPbXDcOYni+fnkp6bI7V4heTpw+2f6w4jea?=
+ =?iso-8859-1?Q?02CWMeXs6T7exTZJ5NlIcDrjj8kl+Ej263sKLT0B5sw4NwkiVxSjS+E81N?=
+ =?iso-8859-1?Q?nS7bRzUXVNjRZE0RMzvf1TuH+aFbFCZVG8pTF3PIxF/EKZwWlt/DpvHbz+?=
+ =?iso-8859-1?Q?bfsJEnDKfjWNBnGGmNx7nUXD+s7t1Wy3LHoDNh2iouos7bA9kTFYqSqSCg?=
+ =?iso-8859-1?Q?X6BYsUVSdNv4vGT463CjmL84DKN/qfaqHM2GEfjIntWZmlDbvu0UrZzX7i?=
+ =?iso-8859-1?Q?IakEf14zaqjEuIxYEWGnKG3V8IP3/tV3HispnKRKKmRUXJtv9u/KLjXcWP?=
+ =?iso-8859-1?Q?lxSQHjy/+Xvi5mHvAspV/g58k7SWV5Ce5PaorchxjM4A91GO9YfW1gkJ3E?=
+ =?iso-8859-1?Q?z076e8cKJ+nRN/pbjxG/03yjcANevunwxhI9qAr93BUaZCG7ilhumMco22?=
+ =?iso-8859-1?Q?leVww1XUKZ2eBE1X2Ta8HMaXdaVAOp/RGsVZliUXBAkYhb1w++h9ibzeUm?=
+ =?iso-8859-1?Q?PU+ENzQg23/I9LBGa0yX7LbPHlzXTWVAmfqBDeIRuD4DOhXnCfHGum2KPM?=
+ =?iso-8859-1?Q?zdOCQtzb6j/IUE6MHKHpBzJv0XT0abuis3kdDqTIQhPWts+pt6G0tU2Rmm?=
+ =?iso-8859-1?Q?yYZMqi3iQMNZH9s5SjOkZWsku1hPfJ5wMebHeXZz+hrBWcj4ZXsQbsIepL?=
+ =?iso-8859-1?Q?IN9VCbJ4JvkZ0LX65hy2g6uvcYXa+EUDORrjb28niRBgQYQwTp2ozHn0hh?=
+ =?iso-8859-1?Q?AvYjOFoRONPjEqy04/yJts8W5eW0JkTKX7H+jXCLENFKn+RKkCn6HlophK?=
+ =?iso-8859-1?Q?mIR2h/Xmppy5UgTyNSI2JnAxrV/2SQoAcCZ4PSb51Zmzo2D6cE4iGIBpS+?=
+ =?iso-8859-1?Q?sl+7wrD6oQ/akwS8flOuNMJVT0GC5hufN8wX+t16FIxRJowhfrqbsu5dy5?=
+ =?iso-8859-1?Q?kNym0y0QNdlwnQnm+McYj43D3KW4yv3lKidR+ufCTHoFiAS/ozG1hjYXZj?=
+ =?iso-8859-1?Q?ZaYavDkXG/Apw5/FK2a9ZqxrT/NdmX7UGCqxD9ZFYAGsfkfITyMUd8ut5Z?=
+ =?iso-8859-1?Q?ZJqt+J6nYhhwEv/9sJO3FByHWqjHga2Mms3xHmqOuhhIU9VECMM1EteBko?=
+ =?iso-8859-1?Q?h1xhkl2nYzxiHdV5rxMsM/uIntXinsXB0owlGzih9ow6aA6E/uBCI4QqjO?=
+ =?iso-8859-1?Q?2XO1IjRYdIdXbIElq7JuEsjxxONgv?=
+x-microsoft-antispam-prvs: <BN6PR11MB00195B9E22BF818C4B56A33DF0660@BN6PR11MB0019.namprd11.prod.outlook.com>
 x-forefront-prvs: 094700CA91
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(346002)(366004)(136003)(376002)(39860400002)(189003)(199004)(81166006)(50226002)(106356001)(7416002)(6436002)(54906003)(2201001)(1076003)(81156014)(26005)(110136005)(476003)(102836004)(107886003)(8936002)(6512007)(6486002)(4326008)(446003)(2616005)(316002)(8676002)(105586002)(99286004)(66066001)(486006)(6116002)(3846002)(186003)(11346002)(86362001)(2906002)(72206003)(71190400001)(14454004)(76176011)(53936002)(71200400001)(478600001)(68736007)(6506007)(386003)(2501003)(52116002)(97736004)(14444005)(7736002)(305945005)(256004)(25786009)(36756003)(41533002)(921003)(1121003);
+ SFS:(10009020)(396003)(346002)(366004)(136003)(376002)(39860400002)(189003)(199004)(81166006)(50226002)(106356001)(7416002)(6436002)(54906003)(2201001)(1076003)(81156014)(26005)(110136005)(476003)(102836004)(107886003)(8936002)(6512007)(6486002)(4326008)(446003)(2616005)(316002)(8676002)(4744005)(105586002)(99286004)(66066001)(486006)(6116002)(3846002)(186003)(11346002)(86362001)(2906002)(72206003)(71190400001)(14454004)(76176011)(53936002)(71200400001)(478600001)(68736007)(6506007)(386003)(2501003)(52116002)(97736004)(7736002)(305945005)(256004)(25786009)(36756003)(921003)(1121003);
  DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB0019;
  H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 9IhWswPpxidizIm7BL911oEu48ryQUJdhvfB1rQp94+beokjqxVT+EsFRKqDRIOgKW4e3F78KorxMF6V07VgUnIWvuqnOTIyI8jvQ6Vf18tiSNq2eGOiFcxfGTjVWnaR2mnXn74y1drIOGmlHaVgBJzBuM3I2wIaZoq/FjxBeUuk507YZ5KnsFkunM/eLhYXD9LXbqoAvUXGSGPysiaCCzqMoMXavFIozB2AKKcYiR1Tu99x029Id9F81D3BWphqCpQisqgPINjdTFfQdwAR4z3duBgVh9Y9PpkeiuC7DSAzePUMsuhQ00LNUZJEFs4U/uWfk5c42KmCGTsf3G7olz1UQ7EQGNH6SnkWPjR71IIY7eyRmpdHTRQwTX6+fIW4npIxTJ4R/TgdSyu8/Mk5pXDADsYTHK9bd+B47fq2OAM=
+x-microsoft-antispam-message-info: Kd/z2F+zVrmGXZITwz35dJUF/5DvymGbn7RHJaAZ+46UWX9NccTIbtt3RhCLJ8z9GSS/RFRvOgE/LWhBGOxhCwArf+oniiECTs+IJn7b836PvN0vuPiVBPahDgbuVEKd+9htRvNnLH8qACRz/OmNz195QYFgwEMZsljHEVmEhIQx6f5BPa23WIcaQgA+XvhR6STPJsAoTx3SIb5r3y9sqC4vBi1sUmKylzHDo+oyywC+iPQgs6gk+G5LRK509lERvYzEEVnUn51mWgOTI22Ry8TN31N/DPdA/CFWzsX2xD0uSkQ2e8HTSJnEEDjFHUOWUmaRyGtn9QcfCTSvUUWEMZRJWj1OuP7+oguAs6pOeXbFHK3sOFo8UUnOJLrpfgXbQvBaS1Sp77dAdzLKNKoPj7VXTOnsE7/dPMZ3MZFptYU=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae6e05dd-e7e6-40c8-ef9f-08d691919b13
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2019 08:59:45.2083 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b264240-f6d1-4766-f97c-08d691919d86
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2019 08:59:48.8363 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB0019
 X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190213_005952_111393_BBBC386B 
-X-CRM114-Status: GOOD (  14.03  )
+X-CRM114-CacheID: sfid-20190213_005958_299125_32983AB1 
+X-CRM114-Status: UNSURE (   8.50  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -160,122 +162,25 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-The sam9x60 board defines the CCFG_EBICSA register under SFR,
-and not as a MATRIX register, as previous boards do. Add a
-more generic name for the EBI regmap as a prerequisite for
-sam9x60 ebi support.
+Add compatibility string for the sam9x60 EBI.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/memory/atmel-ebi.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/memory/atmel-ebi.c b/drivers/memory/atmel-ebi.c
-index c3748b414c27..b45914cfa212 100644
---- a/drivers/memory/atmel-ebi.c
-+++ b/drivers/memory/atmel-ebi.c
-@@ -36,6 +36,7 @@ struct atmel_ebi_dev {
- struct atmel_ebi_caps {
- 	unsigned int available_cs;
- 	unsigned int ebi_csa_offs;
-+	const char *regmap_name;
- 	void (*get_config)(struct atmel_ebi_dev *ebid,
- 			   struct atmel_ebi_dev_config *conf);
- 	int (*xlate_config)(struct atmel_ebi_dev *ebid,
-@@ -47,7 +48,7 @@ struct atmel_ebi_caps {
+diff --git a/Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt b/Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt
+index 9bb5f57e2066..94bf7896a688 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt
++++ b/Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt
+@@ -15,6 +15,7 @@ Required properties:
+ 			"atmel,at91sam9g45-ebi"
+ 			"atmel,at91sam9x5-ebi"
+ 			"atmel,sama5d3-ebi"
++			"microchip,sam9x60-ebi"
  
- struct atmel_ebi {
- 	struct clk *clk;
--	struct regmap *matrix;
-+	struct regmap *regmap;
- 	struct  {
- 		struct regmap *regmap;
- 		struct clk *clk;
-@@ -357,7 +358,7 @@ static int atmel_ebi_dev_setup(struct atmel_ebi *ebi, struct device_node *np,
- 		 * one "atmel,smc-" property is present.
- 		 */
- 		if (ebi->caps->ebi_csa_offs && apply)
--			regmap_update_bits(ebi->matrix,
-+			regmap_update_bits(ebi->regmap,
- 					   ebi->caps->ebi_csa_offs,
- 					   BIT(cs), 0);
- 
-@@ -372,6 +373,7 @@ static int atmel_ebi_dev_setup(struct atmel_ebi *ebi, struct device_node *np,
- static const struct atmel_ebi_caps at91sam9260_ebi_caps = {
- 	.available_cs = 0xff,
- 	.ebi_csa_offs = AT91SAM9260_MATRIX_EBICSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -380,6 +382,7 @@ static const struct atmel_ebi_caps at91sam9260_ebi_caps = {
- static const struct atmel_ebi_caps at91sam9261_ebi_caps = {
- 	.available_cs = 0xff,
- 	.ebi_csa_offs = AT91SAM9261_MATRIX_EBICSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -388,6 +391,7 @@ static const struct atmel_ebi_caps at91sam9261_ebi_caps = {
- static const struct atmel_ebi_caps at91sam9263_ebi0_caps = {
- 	.available_cs = 0x3f,
- 	.ebi_csa_offs = AT91SAM9263_MATRIX_EBI0CSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -396,6 +400,7 @@ static const struct atmel_ebi_caps at91sam9263_ebi0_caps = {
- static const struct atmel_ebi_caps at91sam9263_ebi1_caps = {
- 	.available_cs = 0x7,
- 	.ebi_csa_offs = AT91SAM9263_MATRIX_EBI1CSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -404,6 +409,7 @@ static const struct atmel_ebi_caps at91sam9263_ebi1_caps = {
- static const struct atmel_ebi_caps at91sam9rl_ebi_caps = {
- 	.available_cs = 0x3f,
- 	.ebi_csa_offs = AT91SAM9RL_MATRIX_EBICSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -412,6 +418,7 @@ static const struct atmel_ebi_caps at91sam9rl_ebi_caps = {
- static const struct atmel_ebi_caps at91sam9g45_ebi_caps = {
- 	.available_cs = 0x3f,
- 	.ebi_csa_offs = AT91SAM9G45_MATRIX_EBICSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -420,6 +427,7 @@ static const struct atmel_ebi_caps at91sam9g45_ebi_caps = {
- static const struct atmel_ebi_caps at91sam9x5_ebi_caps = {
- 	.available_cs = 0x3f,
- 	.ebi_csa_offs = AT91SAM9X5_MATRIX_EBICSA,
-+	.regmap_name = "atmel,matrix",
- 	.get_config = at91sam9_ebi_get_config,
- 	.xlate_config = atmel_ebi_xslate_smc_config,
- 	.apply_config = at91sam9_ebi_apply_config,
-@@ -543,13 +551,14 @@ static int atmel_ebi_probe(struct platform_device *pdev)
- 
- 	/*
- 	 * The sama5d3 does not provide an EBICSA register and thus does need
--	 * to access the matrix registers.
-+	 * to access it.
- 	 */
- 	if (ebi->caps->ebi_csa_offs) {
--		ebi->matrix =
--			syscon_regmap_lookup_by_phandle(np, "atmel,matrix");
--		if (IS_ERR(ebi->matrix))
--			return PTR_ERR(ebi->matrix);
-+		ebi->regmap =
-+			syscon_regmap_lookup_by_phandle(np,
-+							ebi->caps->regmap_name);
-+		if (IS_ERR(ebi->regmap))
-+			return PTR_ERR(ebi->regmap);
- 	}
- 
- 	ret = of_property_read_u32(np, "#address-cells", &val);
+ - reg:			Contains offset/length value for EBI memory mapping.
+ 			This property might contain several entries if the EBI
 -- 
 2.9.5
 
