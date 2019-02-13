@@ -2,63 +2,64 @@ Return-Path: <SRS0=N2Dg=QU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAD_ENC_HEADER,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98FB6C282C2
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 08:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CE12C282CA
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 09:00:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 686F4222BB
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 08:59:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BCE9222BB
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 09:00:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mplH/GxW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="IB+buRlZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 686F4222BB
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NJaF1Zea";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="ifDZRPto"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BCE9222BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
-	:Subject:To:From:Reply-To:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=L25mR0BVibUcuwmzNBqyH35YxydCRkCUSPPpbpQcfx8=; b=mplH/GxWHOSyhL
-	mb9+Apgg/eDmaNBVL1JC9m9Ud8sH2wWt+rleAPtFZsyZszXfWhcN2O+PKry+L0FlOaVP5mRWk0t1+
-	XcX+jjBkf1A+8O6eWmY3jb/8v+BdnFM+evIxQlSrD9RbYYy4tsH1qv4Ua8HQpH6bKo4tTiqEp3PwR
-	Wn02MCEvKGOVr7EQbGdpcYfk0xsBZ24mlG3YCPHIfKGCUEB0aMOSuKriDx2y/hLFxQkG6LVYCc9DS
-	c1XYB6+GqLUZ5ckXrDCYxMJBBVB8VCQ8yCEigcoziPudodkqGDZGdXX9WI1WvWDX33w3+/4MuyxbN
-	sErDadpsyEB6wwKD+bGQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LXWQsS9ZWHAUW8oK3TCzSrJo6LUcxVYHjlbkD+9ZK10=; b=NJaF1Zeaap7r5L
+	4LQvTzESnm7RQBaR5oDY/0VRwhdtxS8Xjs99ApMImdpZ/Prk8yRrcbhFUUyC7S60bEPZupaIWsHs5
+	PWk0fvuSmhZg1lo4NBOwtR8NJeZp8fTf7wecLG9XrB298OVMRNQtSIaxhefiXGUpwRD2xw042qzfF
+	/EN2bEn9bPAKmTwqIpYkNHzWyJpyp7globKVVFqzmqd2nJeiN21e8psa03Kx1MetBW/V+aDpSc/iS
+	fkK6+AvQaZYaQ7bW80I6nNwxbcQbTWIlHFOeH4/Rm5w7cC2CLYfNPGIrppOZ2Sm04L1dzhCM7lSpQ
+	XeOE3wcwbv2ce4Pk1kSw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gtqOV-0005I8-4D; Wed, 13 Feb 2019 08:59:51 +0000
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+	id 1gtqOs-0006XM-U9; Wed, 13 Feb 2019 09:00:14 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gtqOR-0005HJ-Mt; Wed, 13 Feb 2019 08:59:49 +0000
-X-IronPort-AV: E=Sophos;i="5.58,365,1544511600"; d="scan'208";a="26473920"
+ id 1gtqOT-0005Hm-HW; Wed, 13 Feb 2019 08:59:51 +0000
+X-IronPort-AV: E=Sophos;i="5.58,365,1544511600"; d="scan'208";a="23778134"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 13 Feb 2019 01:59:45 -0700
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES128-SHA;
+ 13 Feb 2019 01:59:47 -0700
 Received: from NAM05-BY2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.108) with Microsoft SMTP Server (TLS)
- id 14.3.352.0; Wed, 13 Feb 2019 01:59:45 -0700
+ email.microchip.com (10.10.76.37) with Microsoft SMTP Server (TLS) id
+ 14.3.352.0; Wed, 13 Feb 2019 01:59:47 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector1-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lcip/Rj9yUXjV1cOac0dIELXXE3/ecdWWaSMUGzD8LM=;
- b=IB+buRlZ7zPGrHiez0xHBFc+3jTXaSEZCfAHzwC38cKdX2PvbiuXi4fyrf6XAeSTGHn0OO7/lNJ4msmqIc25qyBR3T/n9dsqKs57AIpXBZ2jYcEDTRsO+P5aWxVppzEBqUevmw9NzVgopAJGwCZeZV5+NW96wM3TYBUUVRKFs5Y=
+ bh=OY3mtMmnD9cseNMymdV/VsZoqf3XBJ/9J7higqgrd7I=;
+ b=ifDZRPto/btI/cv1RaHs5GbnteEH5fsHqHRRJ8zW73Ff4BXv8nFQg1M1lp6qP9k1VBhdQpWyojpppwflXJVptSJtNHmzJ8B29m1w/BbAgyXnwTJfKzt9WLBNHtxVUUS2w8ykrsUHStXSlEz03nwK9xZqYbvlAlTpK3BOCTMqnrA=
 Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
  BN6PR11MB0019.namprd11.prod.outlook.com (10.161.155.139) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1622.16; Wed, 13 Feb 2019 08:59:41 +0000
+ 15.20.1622.16; Wed, 13 Feb 2019 08:59:45 +0000
 Received: from BN6PR11MB1842.namprd11.prod.outlook.com
  ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
  ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1601.023; Wed, 13 Feb 2019
- 08:59:41 +0000
+ 08:59:45 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -66,11 +67,13 @@ To: <robh+dt@kernel.org>, <mark.rutland@arm.com>,
  <computersforpeace@gmail.com>, <bbrezillon@kernel.org>,
  <marek.vasut@gmail.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
  <lee.jones@linaro.org>
-Subject: [PATCH 00/11] add support for sam9x60 nand controller
-Thread-Topic: [PATCH 00/11] add support for sam9x60 nand controller
-Thread-Index: AQHUw3p0Qk7j4Mv+b0SI+TmizsqHdw==
-Date: Wed, 13 Feb 2019 08:59:41 +0000
-Message-ID: <20190213085930.31578-1-tudor.ambarus@microchip.com>
+Subject: [PATCH 01/11] ARM: at91: add sam9x60 SFR definitions
+Thread-Topic: [PATCH 01/11] ARM: at91: add sam9x60 SFR definitions
+Thread-Index: AQHUw3p2o3oeiLqtBEORedY4SOk1lg==
+Date: Wed, 13 Feb 2019 08:59:44 +0000
+Message-ID: <20190213085930.31578-2-tudor.ambarus@microchip.com>
+References: <20190213085930.31578-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20190213085930.31578-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -84,65 +87,59 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.154]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 14bf4e33-50cf-4c51-cce7-08d691919719
+x-ms-office365-filtering-correlation-id: 6c45e8f4-873d-4782-4292-08d691919920
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600110)(711020)(4605077)(2017052603328)(7153060)(7193020);
  SRVR:BN6PR11MB0019; 
 x-ms-traffictypediagnostic: BN6PR11MB0019:
-x-ms-exchange-purlcount: 1
-x-microsoft-exchange-diagnostics: =?utf-8?B?MTtCTjZQUjExTUIwMDE5OzIzOnl6U3pjQlVEdGFHMWJ1MTZuS0o5TUlzZk5a?=
- =?utf-8?B?Zkc3amszNW1tbjNsR3FhcXI0K1BocnoxcnlSWGNlSEdoajBlUVMzTGlxenBs?=
- =?utf-8?B?T3ZZWVpKNHBTVmFHOWgrZFJRdjhaNlRQWXdTYmdkTU5zRDB0NnFlNWZKSVJL?=
- =?utf-8?B?cHRDTGhObFFsRW0zUWhBcEFtemdVTENySW1sNGo1dEpabWNVOUdSQm51cmkv?=
- =?utf-8?B?MUdGbEZ6U2RpQUVNV2M2QjRWRTBZZCtzR1YwcEYraUVhSGp5WW9kbGk5bVY0?=
- =?utf-8?B?U2wyYUNRcXc2MzdJQ1k5ckxYT1VMY0oxdHRDZ0hwdjF3d0hndlYvY3N1SjRn?=
- =?utf-8?B?enZGOFZaS0VTaGtwU2tpQzBZRnhCRGZMNE96Z2JnQmhtZkZ2Y1AremwvOURk?=
- =?utf-8?B?UnF1TXFMOXJQbk9EZGo2aHRhN0V3eDNBZDBheGJ4WFJ5RllOTW03dUx6NXNw?=
- =?utf-8?B?YVppU0Z0aEZIU00wYmoyVkVHQ0Z0RGhqV0pYUWdTQlhPMytEQnZPbDdjNmFZ?=
- =?utf-8?B?Rm95cm5WUituWXBzWUdud0dkRE5jZ0h3QlNxL2FmbVpNaXpkZWZRYTM2blR3?=
- =?utf-8?B?ZDNXYTA3ZVBUVVRIZmdHUm50RVRlUCtIWHBCb1VodXd5T1NWQmwvbW5DYUN4?=
- =?utf-8?B?TUc3UGNNZHhseTZrWXVrNHp0bWRZSGhoczBwMDUvZlNva0hETEprVGJQTnNR?=
- =?utf-8?B?OVJySm1VbVVPSXNOTm02YytrVzhGNmVrNUM2V2NETERtQ0tnY1E0Q3MrYm8r?=
- =?utf-8?B?eDFZTWdrRVYyaXhwa1hEdVNXeENZL0JvQldZOGo4Nm5seXUvQ0tpdUVsM2hQ?=
- =?utf-8?B?emtxSFlKVzJSZFFtOUFDRjNpWmc0T1FnMjR2MnhndW96MFJxNWRJdTVMNnQ2?=
- =?utf-8?B?NFVxT3h4cGRLdkdzSmdSS1pXMjJRNjFGMU95L2prWlBpTXU2MEIyZG5nUzF4?=
- =?utf-8?B?VERHejVlb2h4RVN0Y2orRXZwRVdGbEtaWUl5NFZpb0RJMnFlL2hrbWRYb0pN?=
- =?utf-8?B?QXBmemJ3MEgrKzdJaVhIbmZMUnBqaUVzRU01ZWl3RTBVWktZNnNXb1ZyNGYr?=
- =?utf-8?B?dkZNcWl2Z1d3WTUyQTg4WHJLMGluTGVObTJMRXJ5TW5EbHFGb3VxWkRwNU1r?=
- =?utf-8?B?eXo1Ty9ZZGhlRmNjMmF6enYzZitoL2hoWXppemhxZ2Y3Q2drSWtZclhmTmxV?=
- =?utf-8?B?dit6V1dLbFVQaHpYZ0FXcWNJcWpmcnl6Q1UrNnQ2VkcwdFEzcTY2UTUxcEFz?=
- =?utf-8?B?eUp3UWlRdFc1Q09sSWdXQUgzbUJXOGROdDBFdnRQSDZkSDFXMHJabXlKQzNG?=
- =?utf-8?B?V2RDK2pMbjJRb294dzRKbVRyR2ZzLzZyU3JTS2lqWWtrQXIvcWFXZTJPTlkv?=
- =?utf-8?B?U3FCN2JsTjdub3N1TDRxNmZsc2FESUk4dFEwNTNHVFVCMjFmRS9NNzJmaHpC?=
- =?utf-8?B?UkJpRXZadndpK2gzRENXSUhNWHBwN09tcE9URHQxU3lrTUs1UVAyZVZCL0Ni?=
- =?utf-8?B?YjJMTXF6WTl6RnlmS2drLzd3TERMOFRNb3ZPb3dBbFpmQ1NWd2FORmZHeHk3?=
- =?utf-8?B?MHpuNVlyUFpsd20wZ1JTQkw3aEFjQ29USDhuUzJFMkcvVkJLVXQxbVM3UnND?=
- =?utf-8?B?S1pGRDVXYkRHYnliQllOcEkzdlNESDQ0azhDN2UxelB1d0dLU1RIemwxTm1D?=
- =?utf-8?B?a0JTSUJXTVo3VTY5TnY4anJNUTZNYlpWdVp4TFU0U3YzKzFSSzZSVnFiMDhS?=
- =?utf-8?B?VWxHTG5WZ1BBNExmc0NxQT09?=
-x-microsoft-antispam-prvs: <BN6PR11MB00195F5A992F717D304E787BF0660@BN6PR11MB0019.namprd11.prod.outlook.com>
+x-microsoft-exchange-diagnostics: =?iso-8859-1?Q?1; BN6PR11MB0019;
+ 23:bsnb4tT4Z52Nz5HCeef55QLWwYqM6axbicSNtDx?=
+ =?iso-8859-1?Q?BFCaq3ZngDdzhewFJbt9vgihiyVCYh+eTWjwwrLCc3byTzs11kWjEMfe4y?=
+ =?iso-8859-1?Q?9j80qFjKuxN3B6/A44ecC1zBJZXz+JR2NqlvM00i1P03xtDRCEaY5pQR0P?=
+ =?iso-8859-1?Q?Vuz2Z5ncVubobyI34F1KKBb3Ibk96WVBHrAyMYZKyjIiWyDiiGJQH/mwHm?=
+ =?iso-8859-1?Q?6ondfgeFTj5Pxq6lckVCD/NRcYaI7oBt3MfIEcNMII9a6M7Acw6F0lcDxn?=
+ =?iso-8859-1?Q?txHRl4fdByVJf+0TSJR2lTeFYUuLcn8BFukNE4/PPMJDTgUdpSj6M60gMu?=
+ =?iso-8859-1?Q?D70l1UF7Jt+uxMdMgzhOg8q3FZ9IRweTHQZbXNFFlb8XR3UyX0GB3uz3o9?=
+ =?iso-8859-1?Q?VZp7/Iw1fI5xSC3rfqGlKSS6S4JQQDvpe+SS4+bvE7ZlsJAn8YeW3w0bcn?=
+ =?iso-8859-1?Q?VPvlP4ChX3RN5GzulIELF0TdKXQavx/LYAsgUA8Z2CxMpEQVfkiu6TIxOG?=
+ =?iso-8859-1?Q?GF334l9YZMrdqI7j4T/vPU/EDFojK600IyFR+AzdIP05LAQ4ragErvtsvb?=
+ =?iso-8859-1?Q?ODX29h47tT6roV3B2oIFdMefirhKOLgXhvyamWRPWNHfrolm0V4Rwr3V2J?=
+ =?iso-8859-1?Q?qRgD1HNIMpm4xNmq+7yI7sbZKQqLcSsaothGuvzWAuzeuuHFJuRmTPVoQN?=
+ =?iso-8859-1?Q?s+FizUv9eUkRXP1N2V3dYsPwyhWVkSnpAIy+KNv2tsx7RkPCPE8tIT56Md?=
+ =?iso-8859-1?Q?M/GJ97xQcnWjbVYu36goa2tm/kKrYo37O/YL8rdBDWNiFr8v2RWwSLwYdj?=
+ =?iso-8859-1?Q?f5oByt51SaRXA7tEePkdgcNfAug8vtvkLdV3BXzSVyU0+Kssv70xW+J/jP?=
+ =?iso-8859-1?Q?0dyLUITxassx3vqTmo3pDm+nnTw63sJ24zAz76octRQKEM4rn6jWlKSQog?=
+ =?iso-8859-1?Q?cfrbc3vpf45+sSd9l+6PyNOHt33bJ0colzPCpGCOXdrWd1ZLPkQhyvnq8d?=
+ =?iso-8859-1?Q?9zx7YNhm1CHMaUHGnlGg7RNzkVStjBYUhyYl8N8bTo71SHwZFNAvTa2P/j?=
+ =?iso-8859-1?Q?kM546+t803mCigOFWhicIDe/VE6rhKOReNox9wVxYfMv5jF3VZV+3+no+O?=
+ =?iso-8859-1?Q?ALoOrmZ/lwuOdMaAJ3TodVJTHYO5LJPOMcbdiGnkGbnRQpW7hv0nwVWZit?=
+ =?iso-8859-1?Q?hbF0A8opZrdpq71El8dXtT0SA2HmVwOjcv3Az+6yFhDBbKRwP8Ff+5G6Um?=
+ =?iso-8859-1?Q?rj+aRyT/usTr9YUtLo5MC5Hain8aAQGKhAN3hfRog6Xmls8UbnfuCbIOWZ?=
+ =?iso-8859-1?Q?7c3YWOFfa4fY89cP3vwNA+A7K6P9WZTDJley6z7cH9n9dLkI7AWHbs+alt?=
+ =?iso-8859-1?Q?BZqKXACeqrXVvMNdH/VZrmwEO6oAc?=
+x-microsoft-antispam-prvs: <BN6PR11MB00193E96369D292E0882C537F0660@BN6PR11MB0019.namprd11.prod.outlook.com>
 x-forefront-prvs: 094700CA91
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(346002)(366004)(136003)(376002)(39860400002)(189003)(199004)(81166006)(50226002)(106356001)(7416002)(6436002)(54906003)(2201001)(1076003)(81156014)(26005)(110136005)(476003)(102836004)(107886003)(8936002)(6512007)(6486002)(4326008)(2616005)(316002)(8676002)(105586002)(99286004)(66066001)(486006)(6116002)(3846002)(186003)(86362001)(2906002)(72206003)(71190400001)(14454004)(966005)(53936002)(71200400001)(478600001)(68736007)(6506007)(386003)(2501003)(52116002)(97736004)(7736002)(305945005)(6306002)(256004)(25786009)(36756003)(921003)(1121003);
+ SFS:(10009020)(396003)(346002)(366004)(136003)(376002)(39860400002)(189003)(199004)(81166006)(50226002)(106356001)(7416002)(6436002)(54906003)(2201001)(1076003)(81156014)(26005)(110136005)(476003)(102836004)(107886003)(8936002)(6512007)(6486002)(4326008)(446003)(2616005)(316002)(8676002)(105586002)(99286004)(66066001)(486006)(6116002)(3846002)(186003)(11346002)(86362001)(2906002)(72206003)(71190400001)(14454004)(76176011)(53936002)(71200400001)(478600001)(68736007)(6506007)(386003)(2501003)(52116002)(97736004)(14444005)(7736002)(305945005)(256004)(25786009)(36756003)(921003)(1121003);
  DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB0019;
  H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: GbMDcmv/Y/ahwS/4aoZYmoBFmahqvV4oIlyiHMgb4Y+QZrJDsQp8XhsK39Xa7X9bgMiEUUJltlfcw421GNJF76aj/zz4ToOFI9lBEchCpIvbKPwQk+h2GTS9pPHDNdtUTWrtS4IG06U9ehm1Nn4NAUH/q06RwkTbFNpHAadRwSgd+FcrTbfN7Brg5FMk5fMJZ7UMjdAIEhJTMubHvmyQHmNY5vcazVYAwBQ3kniKhIGL8GRB+Oni+YMnqnirEA9TEekzoFn5KZvXauBccqf/kesQoFnRLEAf9nreWIPZ9Y/wDrMXPTYHm2vr/BXU4HC+oIRLN5lpVC0MWeCCgTE7C5nFIxLIDluJwz9gPr14C3+5YFWiyVL7Bg/nuWfIgULdqmbNJtoUYVOQoNsj6jLQUKYijzvEVbGunNrF01vgRUM=
-Content-ID: <53771A0CC529EC419819DE0424FC4221@namprd11.prod.outlook.com>
+x-microsoft-antispam-message-info: 1tJHhf5WCnkFrdvsOF3MrqwM5CoO8oP4vA8eSmYucAosizNOd/d0Zucgc28Mnnl2OCmaBldGHWVOnV0I5lQbeS0Cc31w49JYAKGY8X6lGRzWwMB6DIdVtKmQ1SkpEh8XjeAMykqcA0cw3N1tmpwWNbPC1hAvuv4tvOxDUNRF5n/vkkLLT3TluQtqPeUrbZYcrS7OZWeO3682XigilIUfjuTCEOtL/ONx8Zn8osyCYwDUxMz00gPBhmka9tIza/A89Ms57Vq3WaGGalu6Kzbyq2tv4fRp0k60hGmLSL1xWVFZwLu2qHucs7zrFbYVeK1WK6On3ID0zU4FvUWsD+q7/aTcaSNw+UcBLv7HiRRqUxOR+FQb17eQjRN84z/BBAD1xe3lk+X08yR/sYNcr93TmnskQLvfcRtm2yap8ans5jA=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14bf4e33-50cf-4c51-cce7-08d691919719
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2019 08:59:38.4918 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c45e8f4-873d-4782-4292-08d691919920
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2019 08:59:41.6324 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB0019
 X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190213_005947_780660_F10FAF9C 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20190213_005949_614471_D868E66B 
+X-CRM114-Status: UNSURE (   8.42  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -157,49 +154,82 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  Tudor.Ambarus@microchip.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KDQpUaGUg
-c2FtOXg2MCBib2FyZCBkZWZpbmVzIHRoZSBDQ0ZHX0VCSUNTQSByZWdpc3RlciB1bmRlciBTRlIs
-DQphbmQgbm90IGFzIGEgTUFUUklYIHJlZ2lzdGVyLCBhcyBwcmV2aW91cyBib2FyZHMgZG8uDQpO
-QU5EIEZsYXNoIEkvT3MgYXJlIGNvbm5lY3RlZCB0byBEMTbigJNEMjMsIHRodXMNClNGUl9DQ0ZH
-X0VCSUNTQS5ORkQwX09OX0QxNiBpcyBzZXQgdG8gMS4NCg0KVGVzdGVkIHVzaW5nIG10ZC11dGls
-cy4NCg0KLSBwYXRjaGVzIFsxLCA3XSBhZGQgc3VwcG9ydCBmb3IgdGhlIHNhbTl4NjAgbmFuZCBj
-b250cm9sbGVyLiBJIHdvdWxkDQogIHN1Z2dlc3QgdG8gZ2V0IHRoZW0gdGhyb3VnaCBsaW51eC1t
-dGQgdHJlZSwgaWYgYWxsIGFncmVlLg0KLSBwYXRjaCA4IGNhbiBiZSB0YWtlbiBieSBBbGV4YW5k
-cmUNCi0gcGF0Y2ggOSAtIFNQRFggY2hhbmdlLCBjYW4gYmUgdGFrZW4gYnkgTGVlDQotIHBhdGNo
-IDEwIC0gU1BEWCBjaGFuZ2UsIGNhbiBiZSB0YWtlbiBieSBBbGV4YW5kcmUNCi0gcGF0Y2ggMTEg
-LSBTUERYIGNoYW5nZSwgc2hvdWxkIGdvIHRocm91Z2ggbGludXgtbXRkDQoNCmR0IGNvbXBhdGli
-bGUgc3RyaW5nIGZvciAibWljcm9jaGlwLHNhbTl4NjAtc2ZyIiBoYXMgYWxyZWFkeSBiZWVuDQpz
-dWJtaXRlZCBhdCBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEwNzk5ODMxLw0K
-DQpUdWRvciBBbWJhcnVzICgxMSk6DQogIEFSTTogYXQ5MTogYWRkIHNhbTl4NjAgU0ZSIGRlZmlu
-aXRpb25zDQogIG1lbW9yeTogYXRtZWwtZWJpOiBhZGQgZ2VuZXJpYyBuYW1lIGZvciBlYmkgcmVn
-bWFwDQogIGR0LWJpbmRpbmdzOiBtZW1vcnk6IGF0bWVsLWViaTogYWRkIHNhbTl4NjAgY29tcGF0
-aWJsZQ0KICBtZW1vcnk6IGF0bWVsLWViaTogYWRkIHNhbTl4NjAgRUJJIHN1cHBvcnQNCiAgbXRk
-OiByYXduYW5kOiBhdG1lbDogYWRkIGdlbmVyaWMgbmFtZSBmb3IgRUJJQ1NBIHJlZ21hcA0KICBk
-dC1iaW5kaW5nczogbXRkOiBhdG1lbC1uYW5kOiBhZGQgc2FtOXg2MCBjb21wYXRpYmxlDQogIG10
-ZDogcmF3bmFuZDogYXRtZWw6IGFkZCBzYW05eDYwIG5hbmQgY29udHJvbGxlciBzdXBwb3J0DQog
-IG1lbW9yeTogYXRtZWwtZWJpOiBtb3ZlIE5VTV9DUyBkZWZpbml0aW9uIGluc2lkZSBhdG1lbC1l
-YmkNCiAgbWZkOiBzeXNjb246IGF0bWVsOiBzd2l0Y2ggdG8gU1BEWCBsaWNlbnNlIGlkZW50aWZp
-ZXJzDQogIG1lbW9yeTogYXRtZWwtZWJpOiBzd2l0Y2ggdG8gU1BEWCBsaWNlbnNlIGlkZW50aWZp
-ZXJzDQogIG10ZDogcmF3bmFuZDogYXRtZWw6IHN3aXRjaCB0byBTUERYIGxpY2Vuc2UgaWRlbnRp
-ZmllcnMNCg0KIC4uLi9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvYXRtZWwsZWJpLnR4dCAg
-ICAgIHwgICAxICsNCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXRtZWwtbmFuZC50eHQg
-ICAgICAgICB8ICAgMSArDQogZHJpdmVycy9tZW1vcnkvYXRtZWwtZWJpLmMgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgNDggKysrKysrLS0tDQogZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwv
-bmFuZC1jb250cm9sbGVyLmMgICAgICAgfCAxMTcgKysrKysrKysrKysrKysrKy0tLS0tDQogZHJp
-dmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvcG1lY2MuYyAgICAgICAgICAgICAgICAgfCAgIDUgKy0N
-CiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9wbWVjYy5oICAgICAgICAgICAgICAgICB8ICAg
-NiArLQ0KIGluY2x1ZGUvbGludXgvbWZkL3N5c2Nvbi9hdG1lbC1tYXRyaXguaCAgICAgICAgICAg
-IHwgICA3ICstDQogaW5jbHVkZS9saW51eC9tZmQvc3lzY29uL2F0bWVsLW1jLmggICAgICAgICAg
-ICAgICAgfCAgIDYgKy0NCiBpbmNsdWRlL2xpbnV4L21mZC9zeXNjb24vYXRtZWwtc21jLmggICAg
-ICAgICAgICAgICB8ICAgNSArLQ0KIGluY2x1ZGUvbGludXgvbWZkL3N5c2Nvbi9hdG1lbC1zdC5o
-ICAgICAgICAgICAgICAgIHwgICA2ICstDQogaW5jbHVkZS9zb2MvYXQ5MS9hdG1lbC1zZnIuaCAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgMzQgKysrKy0tDQogMTEgZmlsZXMgY2hhbmdlZCwgMTYx
-IGluc2VydGlvbnMoKyksIDc1IGRlbGV0aW9ucygtKQ0KDQotLSANCjIuOS41DQoNCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Keep generic names, as there are no conflicts with previous
+SFR definitions.
+
+While touching bits, update AT91_OHCIICR_USB_SUSPEND to use
+GENMASK, replace unused AT91_OHCIICR_SUSPEND_A/B/C with a more
+generic macro, align values on tab-width.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ include/soc/at91/atmel-sfr.h | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
+
+diff --git a/include/soc/at91/atmel-sfr.h b/include/soc/at91/atmel-sfr.h
+index 482337af06b8..532fd784e86c 100644
+--- a/include/soc/at91/atmel-sfr.h
++++ b/include/soc/at91/atmel-sfr.h
+@@ -14,21 +14,41 @@
+ #define _LINUX_MFD_SYSCON_ATMEL_SFR_H
+ 
+ #define AT91_SFR_DDRCFG		0x04	/* DDR Configuration Register */
++#define AT91_SFR_CCFG_EBICSA	0x04	/* EBI Chip Select Register */
+ /* 0x08 ~ 0x0c: Reserved */
+ #define AT91_SFR_OHCIICR	0x10	/* OHCI INT Configuration Register */
+ #define AT91_SFR_OHCIISR	0x14	/* OHCI INT Status Register */
+ #define AT91_SFR_UTMICKTRIM	0x30	/* UTMI Clock Trimming Register */
++#define AT91_SFR_UTMISWAP	0x3c	/* UTMI DP/DM Pin Swapping Register */
++#define AT91_SFR_LS		0x7c	/* Light Sleep Register */
+ #define AT91_SFR_I2SCLKSEL	0x90	/* I2SC Register */
++#define AT91_SFR_WPMR		0xe4	/* Write Protection Mode Register */
+ 
+ /* Field definitions */
+-#define AT91_OHCIICR_SUSPEND_A	BIT(8)
+-#define AT91_OHCIICR_SUSPEND_B	BIT(9)
+-#define AT91_OHCIICR_SUSPEND_C	BIT(10)
++#define AT91_SFR_CCFG_EBI_CSA(cs, val)		((val) << (cs))
++#define AT91_SFR_CCFG_EBI_DBPUC			BIT(8)
++#define AT91_SFR_CCFG_EBI_DBPDC			BIT(9)
++#define AT91_SFR_CCFG_EBI_DRIVE			BIT(17)
++#define AT91_SFR_CCFG_NFD0_ON_D16		BIT(24)
++#define AT91_SFR_CCFG_DDR_MP_EN			BIT(25)
+ 
+-#define AT91_OHCIICR_USB_SUSPEND	(AT91_OHCIICR_SUSPEND_A | \
+-					 AT91_OHCIICR_SUSPEND_B | \
+-					 AT91_OHCIICR_SUSPEND_C)
++#define AT91_SFR_OHCIICR_RES(x)			BIT(x)
++#define AT91_SFR_OHCIICR_ARIE			BIT(4)
++#define AT91_SFR_OHCIICR_APPSTART		BIT(5)
++#define AT91_SFR_OHCIICR_USB_SUSP(x)		BIT(8 + (x))
++#define AT91_SFR_OHCIICR_UDPPUDIS		BIT(23)
++#define AT91_OHCIICR_USB_SUSPEND		GENMASK(10, 8)
+ 
+-#define AT91_UTMICKTRIM_FREQ	GENMASK(1, 0)
++#define AT91_SFR_OHCIISR_RIS(x)			BIT(x)
++
++#define AT91_UTMICKTRIM_FREQ			GENMASK(1, 0)
++
++#define AT91_SFR_UTMISWAP_PORT(x)		BIT(x)
++
++#define AT91_SFR_LS_VALUE(x)			BIT(x)
++#define AT91_SFR_LS_MEM_POWER_GATING_ULP1_EN	BIT(16)
++
++#define AT91_SFR_WPMR_WPEN			BIT(0)
++#define AT91_SFR_WPMR_WPKEY_MASK		GENMASK(31, 8)
+ 
+ #endif /* _LINUX_MFD_SYSCON_ATMEL_SFR_H */
+-- 
+2.9.5
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
