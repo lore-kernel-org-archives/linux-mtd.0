@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F041EC282C2
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 10:53:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A751C282C2
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 10:53:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1E2221901
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 10:53:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0951E21901
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Feb 2019 10:53:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PJ0DzC2P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1E2221901
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AxSPj84P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0951E21901
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CQL9Quc2MoxQBoGgo1aO6rHQeXWAYmSL7FCy8GbsSzE=; b=PJ0DzC2PgavYUK
-	htvDCrC9UWtpGc4SWSlUxsd/tCkJeiG/j5Fh/8PZjqUiHEerJg7w13C3Ap+E6XauYoDa1PAjl06tp
-	dlPddoUpkiKJmuawZRNSjctb7aK8kzqTZpqABDxumnrUSN5UrHheXvg1SN8586dM5Xwy9wnqLYipm
-	Eq5NGHjGq3LtOk0+qtu8VW15M2EFQe/lKoC+ruXl1YuGxMW89JjJF2rQzsPrdblz6jS/bD0IgVwbI
-	mnGuSHcjILennflULjNsk/7lV713z4DV4dbZzllLeSQHoZp2xykUuz6v9xFk203o78VtUtF6zHh+8
-	SKR+PYPlitmIxH6XiBaA==;
+	List-Owner; bh=+L1EwDoCEEmcPyGMG4ND5GNZ3QkVG5xd+MQ2Yw44tp4=; b=AxSPj84Pp9mZHv
+	cVOa2u33z8V0Ig8I9YDQoeV8/UoA/S61RPk4DiF47AiMFRVzDLFHhhRNiHDvgG9uO5H5w8HKI3uJJ
+	TDgXXiONn4wQqea7Q9q+FQG2QR5+/QbxmbfIe68YYiwsYcOphgYWOQDsJv36NxC173qv4zpUMjaMc
+	G+IMWBTG8iKOxAULeirKA75ge2b9FQO9/ZpDHlhtXq/nwxp1HgQ0QodJHsFme7j7kxk8wWbkPNIKs
+	bPkuF9wgVl6Xe872FOW4LszpjNBskCJHMDv+zltxjDjSbjLVs3CTAWl+J/dlxqBQF6Gmaqv6EVP6u
+	keRUCLo5OcO7gCGel1EA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gtsA1-00049F-T3; Wed, 13 Feb 2019 10:53:01 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1gtsAY-0004eA-0G; Wed, 13 Feb 2019 10:53:34 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gts9r-0003zm-LC; Wed, 13 Feb 2019 10:52:53 +0000
+ id 1gtsAK-0004Ss-AC; Wed, 13 Feb 2019 10:53:24 +0000
 X-Originating-IP: 90.53.137.203
 Received: from localhost (alyon-652-1-306-203.w90-53.abo.wanadoo.fr
  [90.53.137.203])
  (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BB21420006;
- Wed, 13 Feb 2019 10:52:38 +0000 (UTC)
-Date: Wed, 13 Feb 2019 11:52:38 +0100
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id BEEB21BF20C;
+ Wed, 13 Feb 2019 10:53:08 +0000 (UTC)
+Date: Wed, 13 Feb 2019 11:53:08 +0100
 From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH 01/11] ARM: at91: add sam9x60 SFR definitions
-Message-ID: <20190213105238.GI10129@piout.net>
+Subject: Re: [PATCH 02/11] memory: atmel-ebi: add generic name for ebi regmap
+Message-ID: <20190213105308.GJ10129@piout.net>
 References: <20190213085930.31578-1-tudor.ambarus@microchip.com>
- <20190213085930.31578-2-tudor.ambarus@microchip.com>
+ <20190213085930.31578-3-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190213085930.31578-2-tudor.ambarus@microchip.com>
+In-Reply-To: <20190213085930.31578-3-tudor.ambarus@microchip.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190213_025251_990450_17E65CCC 
-X-CRM114-Status: GOOD (  12.20  )
+X-CRM114-CacheID: sfid-20190213_025320_747004_30C2C60C 
+X-CRM114-Status: GOOD (  18.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -79,76 +79,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 13/02/2019 08:59:44+0000, Tudor.Ambarus@microchip.com wrote:
+On 13/02/2019 08:59:48+0000, Tudor.Ambarus@microchip.com wrote:
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> Keep generic names, as there are no conflicts with previous
-> SFR definitions.
-> 
-> While touching bits, update AT91_OHCIICR_USB_SUSPEND to use
-> GENMASK, replace unused AT91_OHCIICR_SUSPEND_A/B/C with a more
-> generic macro, align values on tab-width.
+> The sam9x60 board defines the CCFG_EBICSA register under SFR,
+> and not as a MATRIX register, as previous boards do. Add a
+> more generic name for the EBI regmap as a prerequisite for
+> sam9x60 ebi support.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
 > ---
->  include/soc/at91/atmel-sfr.h | 34 +++++++++++++++++++++++++++-------
->  1 file changed, 27 insertions(+), 7 deletions(-)
+>  drivers/memory/atmel-ebi.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
 > 
-> diff --git a/include/soc/at91/atmel-sfr.h b/include/soc/at91/atmel-sfr.h
-> index 482337af06b8..532fd784e86c 100644
-> --- a/include/soc/at91/atmel-sfr.h
-> +++ b/include/soc/at91/atmel-sfr.h
-> @@ -14,21 +14,41 @@
->  #define _LINUX_MFD_SYSCON_ATMEL_SFR_H
+> diff --git a/drivers/memory/atmel-ebi.c b/drivers/memory/atmel-ebi.c
+> index c3748b414c27..b45914cfa212 100644
+> --- a/drivers/memory/atmel-ebi.c
+> +++ b/drivers/memory/atmel-ebi.c
+> @@ -36,6 +36,7 @@ struct atmel_ebi_dev {
+>  struct atmel_ebi_caps {
+>  	unsigned int available_cs;
+>  	unsigned int ebi_csa_offs;
+> +	const char *regmap_name;
+>  	void (*get_config)(struct atmel_ebi_dev *ebid,
+>  			   struct atmel_ebi_dev_config *conf);
+>  	int (*xlate_config)(struct atmel_ebi_dev *ebid,
+> @@ -47,7 +48,7 @@ struct atmel_ebi_caps {
 >  
->  #define AT91_SFR_DDRCFG		0x04	/* DDR Configuration Register */
-> +#define AT91_SFR_CCFG_EBICSA	0x04	/* EBI Chip Select Register */
->  /* 0x08 ~ 0x0c: Reserved */
->  #define AT91_SFR_OHCIICR	0x10	/* OHCI INT Configuration Register */
->  #define AT91_SFR_OHCIISR	0x14	/* OHCI INT Status Register */
->  #define AT91_SFR_UTMICKTRIM	0x30	/* UTMI Clock Trimming Register */
-> +#define AT91_SFR_UTMISWAP	0x3c	/* UTMI DP/DM Pin Swapping Register */
-> +#define AT91_SFR_LS		0x7c	/* Light Sleep Register */
->  #define AT91_SFR_I2SCLKSEL	0x90	/* I2SC Register */
-> +#define AT91_SFR_WPMR		0xe4	/* Write Protection Mode Register */
+>  struct atmel_ebi {
+>  	struct clk *clk;
+> -	struct regmap *matrix;
+> +	struct regmap *regmap;
+>  	struct  {
+>  		struct regmap *regmap;
+>  		struct clk *clk;
+> @@ -357,7 +358,7 @@ static int atmel_ebi_dev_setup(struct atmel_ebi *ebi, struct device_node *np,
+>  		 * one "atmel,smc-" property is present.
+>  		 */
+>  		if (ebi->caps->ebi_csa_offs && apply)
+> -			regmap_update_bits(ebi->matrix,
+> +			regmap_update_bits(ebi->regmap,
+>  					   ebi->caps->ebi_csa_offs,
+>  					   BIT(cs), 0);
 >  
->  /* Field definitions */
-> -#define AT91_OHCIICR_SUSPEND_A	BIT(8)
-> -#define AT91_OHCIICR_SUSPEND_B	BIT(9)
-> -#define AT91_OHCIICR_SUSPEND_C	BIT(10)
-> +#define AT91_SFR_CCFG_EBI_CSA(cs, val)		((val) << (cs))
-> +#define AT91_SFR_CCFG_EBI_DBPUC			BIT(8)
-> +#define AT91_SFR_CCFG_EBI_DBPDC			BIT(9)
-> +#define AT91_SFR_CCFG_EBI_DRIVE			BIT(17)
-> +#define AT91_SFR_CCFG_NFD0_ON_D16		BIT(24)
-> +#define AT91_SFR_CCFG_DDR_MP_EN			BIT(25)
+> @@ -372,6 +373,7 @@ static int atmel_ebi_dev_setup(struct atmel_ebi *ebi, struct device_node *np,
+>  static const struct atmel_ebi_caps at91sam9260_ebi_caps = {
+>  	.available_cs = 0xff,
+>  	.ebi_csa_offs = AT91SAM9260_MATRIX_EBICSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -380,6 +382,7 @@ static const struct atmel_ebi_caps at91sam9260_ebi_caps = {
+>  static const struct atmel_ebi_caps at91sam9261_ebi_caps = {
+>  	.available_cs = 0xff,
+>  	.ebi_csa_offs = AT91SAM9261_MATRIX_EBICSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -388,6 +391,7 @@ static const struct atmel_ebi_caps at91sam9261_ebi_caps = {
+>  static const struct atmel_ebi_caps at91sam9263_ebi0_caps = {
+>  	.available_cs = 0x3f,
+>  	.ebi_csa_offs = AT91SAM9263_MATRIX_EBI0CSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -396,6 +400,7 @@ static const struct atmel_ebi_caps at91sam9263_ebi0_caps = {
+>  static const struct atmel_ebi_caps at91sam9263_ebi1_caps = {
+>  	.available_cs = 0x7,
+>  	.ebi_csa_offs = AT91SAM9263_MATRIX_EBI1CSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -404,6 +409,7 @@ static const struct atmel_ebi_caps at91sam9263_ebi1_caps = {
+>  static const struct atmel_ebi_caps at91sam9rl_ebi_caps = {
+>  	.available_cs = 0x3f,
+>  	.ebi_csa_offs = AT91SAM9RL_MATRIX_EBICSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -412,6 +418,7 @@ static const struct atmel_ebi_caps at91sam9rl_ebi_caps = {
+>  static const struct atmel_ebi_caps at91sam9g45_ebi_caps = {
+>  	.available_cs = 0x3f,
+>  	.ebi_csa_offs = AT91SAM9G45_MATRIX_EBICSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -420,6 +427,7 @@ static const struct atmel_ebi_caps at91sam9g45_ebi_caps = {
+>  static const struct atmel_ebi_caps at91sam9x5_ebi_caps = {
+>  	.available_cs = 0x3f,
+>  	.ebi_csa_offs = AT91SAM9X5_MATRIX_EBICSA,
+> +	.regmap_name = "atmel,matrix",
+>  	.get_config = at91sam9_ebi_get_config,
+>  	.xlate_config = atmel_ebi_xslate_smc_config,
+>  	.apply_config = at91sam9_ebi_apply_config,
+> @@ -543,13 +551,14 @@ static int atmel_ebi_probe(struct platform_device *pdev)
 >  
-> -#define AT91_OHCIICR_USB_SUSPEND	(AT91_OHCIICR_SUSPEND_A | \
-> -					 AT91_OHCIICR_SUSPEND_B | \
-> -					 AT91_OHCIICR_SUSPEND_C)
-> +#define AT91_SFR_OHCIICR_RES(x)			BIT(x)
-> +#define AT91_SFR_OHCIICR_ARIE			BIT(4)
-> +#define AT91_SFR_OHCIICR_APPSTART		BIT(5)
-> +#define AT91_SFR_OHCIICR_USB_SUSP(x)		BIT(8 + (x))
-> +#define AT91_SFR_OHCIICR_UDPPUDIS		BIT(23)
-> +#define AT91_OHCIICR_USB_SUSPEND		GENMASK(10, 8)
+>  	/*
+>  	 * The sama5d3 does not provide an EBICSA register and thus does need
+> -	 * to access the matrix registers.
+> +	 * to access it.
+>  	 */
+>  	if (ebi->caps->ebi_csa_offs) {
+> -		ebi->matrix =
+> -			syscon_regmap_lookup_by_phandle(np, "atmel,matrix");
+> -		if (IS_ERR(ebi->matrix))
+> -			return PTR_ERR(ebi->matrix);
+> +		ebi->regmap =
+> +			syscon_regmap_lookup_by_phandle(np,
+> +							ebi->caps->regmap_name);
+> +		if (IS_ERR(ebi->regmap))
+> +			return PTR_ERR(ebi->regmap);
+>  	}
 >  
-> -#define AT91_UTMICKTRIM_FREQ	GENMASK(1, 0)
-> +#define AT91_SFR_OHCIISR_RIS(x)			BIT(x)
-> +
-> +#define AT91_UTMICKTRIM_FREQ			GENMASK(1, 0)
-> +
-> +#define AT91_SFR_UTMISWAP_PORT(x)		BIT(x)
-> +
-> +#define AT91_SFR_LS_VALUE(x)			BIT(x)
-> +#define AT91_SFR_LS_MEM_POWER_GATING_ULP1_EN	BIT(16)
-> +
-> +#define AT91_SFR_WPMR_WPEN			BIT(0)
-> +#define AT91_SFR_WPMR_WPKEY_MASK		GENMASK(31, 8)
->  
->  #endif /* _LINUX_MFD_SYSCON_ATMEL_SFR_H */
+>  	ret = of_property_read_u32(np, "#address-cells", &val);
 > -- 
 > 2.9.5
 > 
