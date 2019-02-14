@@ -3,106 +3,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3155C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 04:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C87B2C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 07:25:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F5C920700
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 04:24:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96603222A1
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 07:25:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WrCfeWzN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F5C920700
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.ibm.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hZDekoLe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="WUdG77Eg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96603222A1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-Id:In-Reply-To:MIME-Version:Date:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=nexvo7pga6OiSzUGFu/fbU7ZouFDq0Du0i0U8RHLRjg=; b=WrCfeWzN27PKWhMpRhibBgY8Y
-	71ue9d75uw6Zev4Hi+6aNkhmXe3IDCMh2o8mQoqnM+fhsaqwnOiAfkbXhmUUo/bPCW1u/uQYLNTno
-	+87wJ8HX04LF+9OvT61YE9j1ARvZ1UdqhaTO9iAEzk4kS83tjJorm/lyn9iMC7mMcyDsYnG1xo9Bq
-	IdwQYHxlT5J5gyzwa3deGV4zASRc1cnmCBaCH2IRvKCElP+pUA5SE+osG8X76GfxcoLTyegyfQ8Bt
-	inqhl1rINF/8uCuLpXm4mF0LatG6ixBe41ry0ZIxfa/gcRHi/WfECHACYtQXlWbVuQ0Vnq41CNYtR
-	8tlB7uqtw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jpIGOhqFXym5r4UTktKhpTjOzwEoxRt+qKbEbJjAK4w=; b=hZDekoLe6uFDFe
+	O7LD36GNYGJabTLL5E+QgN3jorfe+zpQlEGRglhhJXxF7U5P8xvNOiD7xcJj+JWVd+GtVt28KyW+4
+	A5mFIguSLipzirQ4N5VytW+n1Ggoix4/sccwEQ1NbBwIB0p8bphrDhTn0jaDdpG1beCFJCnRFxmKR
+	Fl0n5P2JzpJ7CIPn9GVUxmV9oEojPyAojujVrjtzpSOeKqNhTubQtAIVZUAP4g7NYpAZpBbi8yh8c
+	aD01YEbncYDJwrqmp6leyE4MHsl1Lkra15FNx1SrT93WpPEnCF2ewneOVDvYNs7PPaYXp9zViTp2B
+	hjwabwZAtyGA7V2+lkKg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gu8Z3-000581-Dx; Thu, 14 Feb 2019 04:23:57 +0000
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
+	id 1guBOn-0008Qt-8i; Thu, 14 Feb 2019 07:25:33 +0000
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gu8Z0-00057G-Qh
- for linux-mtd@lists.infradead.org; Thu, 14 Feb 2019 04:23:56 +0000
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
- x1E4NSj7062975
- for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2019 23:23:52 -0500
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2qn05w29u0-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2019 23:23:51 -0500
-Received: from localhost
- by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <aneesh.kumar@linux.ibm.com>;
- Thu, 14 Feb 2019 04:23:51 -0000
-Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
- by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized
- Use Only! Violators will be prosecuted; 
- (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
- Thu, 14 Feb 2019 04:23:47 -0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com
- [9.57.199.108])
- by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- x1E4NkSD23592984
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 14 Feb 2019 04:23:46 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9979FB2065;
- Thu, 14 Feb 2019 04:23:46 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1AC99B205F;
- Thu, 14 Feb 2019 04:23:45 +0000 (GMT)
-Received: from [9.199.48.88] (unknown [9.199.48.88])
- by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
- Thu, 14 Feb 2019 04:23:44 +0000 (GMT)
-Subject: Re: [PATCH v3 2/2] drivers/mtd: Fix device registration error
-To: Boris Brezillon <boris.brezillon@collabora.com>
-References: <20190211133338.30399-1-aneesh.kumar@linux.ibm.com>
- <20190211133338.30399-2-aneesh.kumar@linux.ibm.com>
- <20190213142833.2b2999fd@collabora.com>
-From: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Date: Thu, 14 Feb 2019 09:53:43 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
-MIME-Version: 1.0
-In-Reply-To: <20190213142833.2b2999fd@collabora.com>
+ id 1guBOj-0008Q3-Tx; Thu, 14 Feb 2019 07:25:31 +0000
+X-IronPort-AV: E=Sophos;i="5.58,367,1544511600"; d="scan'208";a="26258688"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 14 Feb 2019 00:25:26 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.49) with Microsoft SMTP Server (TLS) id
+ 14.3.352.0; Thu, 14 Feb 2019 00:25:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xk8YeZ0UUm6L+hSrX6uSRtuPDeFHLgSm8/beYT8YKQM=;
+ b=WUdG77Eg0sEA5h+6rrnKzooRJdXBe+4pI6BWQrAE+VpJetIxdXxctdUokS5A23+tbET7dgozFNJnbsh+Laie4tQ68vVpQL04EgYQC/325pYEK5e/M8kw0WlV+Fx/txRgMvB8dSgReV1QCsfTxshBi6B2b3OekrcmVghMaKLVzaI=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1460.namprd11.prod.outlook.com (10.172.21.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1622.16; Thu, 14 Feb 2019 07:25:22 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1601.023; Thu, 14 Feb 2019
+ 07:25:22 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <bbrezillon@kernel.org>, <richard@nod.at>
+Subject: Re: [PATCH 1/3] mtd: spi-nor: add Global Block Unlock support
+Thread-Topic: [PATCH 1/3] mtd: spi-nor: add Global Block Unlock support
+Thread-Index: AQHUxDZy/wu2R+oU006WVu2d37ZAMw==
+Date: Thu, 14 Feb 2019 07:25:22 +0000
+Message-ID: <3626dadf-9fb1-b16d-d516-7e1e3056bc54@microchip.com>
+References: <20180717162831.17947-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20180717162831.17947-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-x-cbid: 19021404-0072-0000-0000-000003F9C2EC
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010592; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000279; SDB=6.01160759; UDB=6.00605854; IPR=6.00941315; 
- MB=3.00025572; MTD=3.00000008; XFM=3.00000015; UTC=2019-02-14 04:23:49
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19021404-0073-0000-0000-00004B2CDC83
-Message-Id: <62e6e593-0a39-0210-d114-5b76e9acee3d@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
- definitions=2019-02-14_02:, , signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1902140030
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR0302CA0003.eurprd03.prod.outlook.com
+ (2603:10a6:800:e9::13) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 45dba986-2b93-4c39-3b53-08d6924d9485
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(5600110)(711020)(4605077)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);
+ SRVR:BN6PR11MB1460; 
+x-ms-traffictypediagnostic: BN6PR11MB1460:
+x-ms-exchange-purlcount: 1
+x-microsoft-exchange-diagnostics: =?utf-8?B?MTtCTjZQUjExTUIxNDYwOzIzOndwUFZ6M1p0NXNIUjNaYlNtR3JzQk1LcldN?=
+ =?utf-8?B?TUNyOGhaVHhjQkdZNmpZRmorMkNjNGtPODJtcEZWcHE2ZGltekF2VnBiQ2Rm?=
+ =?utf-8?B?a3pBYXRIaTdQU3dtRzJVMUFCdFFrcFRpWmlYVTlDRXpONFB5WVk2dW9GWHNH?=
+ =?utf-8?B?aGUrNjFiSk4yNTR4WWxJeUU3OHNHUFpvY3V3a2h6a2tTRml4a3pZekVwcVc4?=
+ =?utf-8?B?WmFPa2YwMENOL1MyKzZBbWlIYnc3aWYwV3JuREFJdm5VODBGc1pCcnhxZkVI?=
+ =?utf-8?B?TzN6VEp2UUVWODZiSGJVcjkyRFgreWZiajUwblMvWktSbTFaWWxTdmpMMUlZ?=
+ =?utf-8?B?eUVrRk85NXpsN1pLaWwzcjduZ1hWY0swTHNXRHI2K25rSXNCTFlDMktpaEhE?=
+ =?utf-8?B?bWsxWUhDeFJyOE1FWGxwejN3akhCZW1kU2Jmd0RzTkE1RU1UbEdMV0g0TUZU?=
+ =?utf-8?B?NndSa0hiYjNXWXh2Q3ZQTWkyK0txdGhZajlkd0p6a2c5eE93T1JabEltWTlV?=
+ =?utf-8?B?YmJseEFqOHI0eW5UU2E0enJXdHQzNnhGRGplTm5iYkRIZWgwOUdTNmcyR0xu?=
+ =?utf-8?B?TGlCYW52ekVyQjYydEI4aVJZSDlzQTIvQnZONXNsSFJ0b3duaUJvbGJablNq?=
+ =?utf-8?B?QnN5clAwSTNZSm9kN0ZKTjB1N3ZjS0JkT3RDWjlwRWxzVlBIWjE1ZEkzTndV?=
+ =?utf-8?B?bDdCZVVzb2s3WnJqWmZsaWJKL2JJZFBBTC9XeGtYVmhmMm1CSWovR1R0ZFBt?=
+ =?utf-8?B?c0tINno5T3RCbFI4NzQ3YkplNG1EQnpoTktXMFNwa1NYTFJwVy9yK1dhK1Iz?=
+ =?utf-8?B?ZjBlMGNJOWNPR0VNbSs4NlFZQnNscVZwNmR6ZHlUZS9mV1ovU2dvT2VCeWha?=
+ =?utf-8?B?VUVsWFVyZmhRTzkra3JGZWJZNGZlV29FMUxvYTJ4ZDlpaEh5eVVQMllGT0xL?=
+ =?utf-8?B?cVNhUUVLbGw1Z0lOZUlrbkpUOEFyd01uRlg4R3BiSVRGL1IzMWpRSll2OWJ1?=
+ =?utf-8?B?eXNUV2d0MXlIU05MU2M4NEdNSzREVXpSWjNVMTB5elJnNXNIOHEyc1M0WHV4?=
+ =?utf-8?B?S2V3UUlYTFB0Z0ZUS0QzejNsNjRseUdBNU5vdzhxNkhVUEJmQUF6YmVlbk5v?=
+ =?utf-8?B?dXdlTEdjanhXb3dldGdHY2YwY2xDK0pFZzdTdWdwSHFlNU1kdGZQazJtZlcz?=
+ =?utf-8?B?R0ZNZ3ZqQ1VvOGoyU0JNZXNkU1RXNWhsRHFuWVNMN2pwcVNheVB1TmFNeVo4?=
+ =?utf-8?B?QnFJeEdnWS9rcTZKaG1ub3N0bDRtdWlTRWhaQzB6THJFV1cxNUVmOTZsN2th?=
+ =?utf-8?B?Tmk3dFFvNC9EZ2lHRnplaW1IeW1JZXFBYnVsaHE2NzJYRVNCSjNjdDRzc0Ji?=
+ =?utf-8?B?YXNMY3pHUzdYckFvWVR1Zmpja000QWhJVk80TGpZT2xiRndGZ2lnSndVTlEy?=
+ =?utf-8?B?c1E2NGVTSGJGWEsrTEloWlNFYWYyaWJFQTZqZE1mNXBoU2tWRDdMOXV5QVRQ?=
+ =?utf-8?B?em14bFZCejV3WlkvVTJOejFMeUJFLzM0RDFUZk44d2hKS21RQ056QW5DdEtk?=
+ =?utf-8?B?TWZWRDhPMStadncxRVpFTXh4YWpoTG1jblRPOEdrV3pROFgydHVMb0tqQjcz?=
+ =?utf-8?B?dlRneUs4bHhwMDVuSkFBNkE0ajlwVmY0Q1B4U09IVXRrMUNWNDhDRGpZbE5O?=
+ =?utf-8?B?MmZXTUhEdk9rZG5ZSDgxS3JDdnc5NTBBL2FwZjJhMUpackx3MG0xUVR0cmxC?=
+ =?utf-8?B?NC9TQS9pKzdLSFVCOVRxYU5YMEtxbFpxZjZLMUx6SGNMcW1iNFVza0U3Uysx?=
+ =?utf-8?B?ZjRuR0Jva0oxMkVSTnNpbURCZ0RvSG9SVDB2RDRkNVFNSzh3ZlNieGl4UlpP?=
+ =?utf-8?B?MjkzSm1sRFF6MkVvRjkwMkx3SHVIZkR5djFya05LbWJtOTV2L1dpOFFPK29M?=
+ =?utf-8?B?Qk5mNkFzZE9nPT0=?=
+x-microsoft-antispam-prvs: <BN6PR11MB1460C47DD4406C1772B100FCF0670@BN6PR11MB1460.namprd11.prod.outlook.com>
+x-forefront-prvs: 09480768F8
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(346002)(136003)(366004)(376002)(396003)(39860400002)(189003)(199004)(51444003)(6116002)(86362001)(476003)(110136005)(31686004)(36756003)(31696002)(316002)(53546011)(6506007)(386003)(102836004)(186003)(2201001)(26005)(106356001)(72206003)(966005)(6436002)(99286004)(14454004)(105586002)(11346002)(2616005)(6512007)(229853002)(2906002)(3846002)(54906003)(6306002)(256004)(14444005)(446003)(6486002)(7736002)(478600001)(4326008)(305945005)(68736007)(2501003)(25786009)(8936002)(4744005)(71200400001)(71190400001)(76176011)(52116002)(97736004)(53936002)(6246003)(107886003)(8676002)(81156014)(81166006)(486006)(66066001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1460;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 6Dh9Gx9xYTr7jMHFKPHIxHBG06+X6zC9LmajsQIEzmBUmHsiMkgzJSNyVGcK2cR0i0LTYbbN6GrCPwcQKzKktlcmqjAB+kxSKmfqpnLmAYJsIXTuiKCKJMPyZY2ID5IvuR3jUsoeD/eUJBEtlyEftQmZPJ6RKyeeojHLLmKTTzdAAtirqYu+YWR9oqIE48Xg2hq96icPRPgDBj5RtKUcGPp9jE4oxLCPnyXScGB0XToyyyYhfnqz/tyAedewQneb9KWzCIYS/2xCPTpLmXDFNY1lDqeGM9omnF6UbBcgxfoh0k+bmDYkFUIJ9PBQ3GJyZNE93MbBgSLJpHwE57P/kNk+CPPGTgY7btd7v3AeLHt5c3BANnDSfpsEaqNCOtXBBRtu6xdXtFVnhWpwG3pOMgZZ04JwFdcRv39rgcjsvzU=
+Content-ID: <B0ED9B39C33B574E8551CC30BB8EF148@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45dba986-2b93-4c39-3b53-08d6924d9485
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2019 07:25:20.3735 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1460
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190213_202354_985974_27067A87 
-X-CRM114-Status: GOOD (  23.44  )
+X-CRM114-CacheID: sfid-20190213_232530_049284_30CEAC39 
+X-CRM114-Status: UNSURE (   9.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -114,76 +155,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linuxppc-dev@lists.ozlabs.org, Alban Bedel <albeu@free.fr>,
- linux-mtd@lists.infradead.org
+Cc: anuragku@xilinx.com, linux-kernel@vger.kernel.org,
+ Nicolas.Ferre@microchip.com, Cyrille.Pitchen@microchip.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2/13/19 6:58 PM, Boris Brezillon wrote:
-> Subject prefix should be "mtd: powernv_flash: "
-> 
-> On Mon, 11 Feb 2019 19:03:38 +0530
-> "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
-> 
->> This change helps me to get multiple mtd device registered. Without this
->> I get
->>
->> sysfs: cannot create duplicate filename '/bus/nvmem/devices/flash0'
->> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.0.0-rc2-00557-g1ef20ef21f22 #13
->> Call Trace:
->> [c0000000b38e3220] [c000000000b58fe4] dump_stack+0xe8/0x164 (unreliable)
->> [c0000000b38e3270] [c0000000004cf074] sysfs_warn_dup+0x84/0xb0
->> [c0000000b38e32f0] [c0000000004cf6c4] sysfs_do_create_link_sd.isra.0+0x114/0x150
->> [c0000000b38e3340] [c000000000726a84] bus_add_device+0x94/0x1e0
->> [c0000000b38e33c0] [c0000000007218f0] device_add+0x4d0/0x830
->> [c0000000b38e3480] [c0000000009d54a8] nvmem_register.part.2+0x1c8/0xb30
->> [c0000000b38e3560] [c000000000834530] mtd_nvmem_add+0x90/0x120
->> [c0000000b38e3650] [c000000000835bc8] add_mtd_device+0x198/0x4e0
->> [c0000000b38e36f0] [c00000000083619c] mtd_device_parse_register+0x11c/0x280
->> [c0000000b38e3780] [c000000000840830] powernv_flash_probe+0x180/0x250
->> [c0000000b38e3820] [c00000000072c120] platform_drv_probe+0x60/0xf0
->> [c0000000b38e38a0] [c0000000007283c8] really_probe+0x138/0x4d0
->> [c0000000b38e3930] [c000000000728acc] driver_probe_device+0x13c/0x1b0
->> [c0000000b38e39b0] [c000000000728c7c] __driver_attach+0x13c/0x1c0
->> [c0000000b38e3a30] [c000000000725130] bus_for_each_dev+0xa0/0x120
->> [c0000000b38e3a90] [c000000000727b2c] driver_attach+0x2c/0x40
->> [c0000000b38e3ab0] [c0000000007270f8] bus_add_driver+0x228/0x360
->> [c0000000b38e3b40] [c00000000072a2e0] driver_register+0x90/0x1a0
->> [c0000000b38e3bb0] [c00000000072c020] __platform_driver_register+0x50/0x70
->> [c0000000b38e3bd0] [c00000000105c984] powernv_flash_driver_init+0x24/0x38
->> [c0000000b38e3bf0] [c000000000010904] do_one_initcall+0x84/0x464
->> [c0000000b38e3cd0] [c000000001004548] kernel_init_freeable+0x530/0x634
->> [c0000000b38e3db0] [c000000000011154] kernel_init+0x1c/0x168
->> [c0000000b38e3e20] [c00000000000bed4] ret_from_kernel_thread+0x5c/0x68
->> mtd mtd1: Failed to register NVMEM device
->>
->> With the change we now have
->>
->> root@(none):/sys/bus/nvmem/devices# ls -al
->> total 0
->> drwxr-xr-x 2 root root 0 Feb  6 20:49 .
->> drwxr-xr-x 4 root root 0 Feb  6 20:49 ..
->> lrwxrwxrwx 1 root root 0 Feb  6 20:49 flash@0 -> ../../../devices/platform/ibm,opal:flash@0/mtd/mtd0/flash@0
->> lrwxrwxrwx 1 root root 0 Feb  6 20:49 flash@1 -> ../../../devices/platform/ibm,opal:flash@1/mtd/mtd1/flash@1
->>
->> Fixes: acfe63ec1c59 ("mtd: Convert to using %pOFn instead of device_node.name")
-> 
-> Actually it's not this commit that is at fault as mtd->name was already
-> given the value of device_node->name before that. I think you're
-> actually fixing 1cbb4a1c433a ("mtd: powernv: Add powernv flash MTD
-> abstraction driver").
-> 
-> No need to send a new version, I can fix that when applying, just let
-> me know if you're okay with the changes I suggested.
-> 
 
-The suggested changes looks good.
 
-Thanks
--aneesh
+On 07/17/2018 07:28 PM, Tudor Ambarus wrote:
+> We can't determine this purely by manufacturer type and it's not
+> autodetectable by anything like SFDP, so make a new flag for it:
+> UNLOCK_GLOBAL_BLOCK.
+> 
+> Note that the Global Block Unlock command has different names
+> depending on the manufacturer, but always the same command value:
+> 0x98. Macronix's MX25U12835F names it Gang Block Unlock,
+> Winbound's W25Q128FV names it Global Block Unlock and
+> Microchip's SST26VF064B names it Global Block Protection Unlock.
+> 
+> Based on initial work done by Anurag Kumar Vulisha:
+> https://patchwork.kernel.org/patch/7611271/
 
+Time passed and now I think that this should be part of the individual block
+lock support, as an optimization when one wants to unlock the entire flash
+memory. Will rework it.
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
