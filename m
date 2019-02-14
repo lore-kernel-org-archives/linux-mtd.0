@@ -3,144 +3,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36835C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 09:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCE8C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 09:42:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F156420818
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 09:33:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1CD5A222A4
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Feb 2019 09:42:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D+qLHvys";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="rEpqOpba"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F156420818
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XDalvJP5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norrbonn-se.20150623.gappssmtp.com header.i=@norrbonn-se.20150623.gappssmtp.com header.b="Kf9cdMzo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CD5A222A4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=norrbonn.se
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uywis6MGaeqOB9bvXGfzhC4GM3UZJDaNNyfgdOgc040=; b=D+qLHvystZKZ3A
-	+mzmuO5LRshzD83T885sIEPbzU31KS93IcVjCKDcwoW6tmQCk0hORWp5TFg9fvx+dwn9yTxbgifOO
-	88lnf6VfvxUqkIj7TVQnUlZmZQsaLiBfQBcPbKVBazqFXyupGStT/hegmENuMI42kkUWElnGdFEo0
-	YNPzbi1zFTEhSXHYaWln7KulXristwWoR8FA4j6CKucNSZJ4ybpj3pBaMsexM3txs312VdsE/+JzI
-	CgXe2M0t1JeTkeDzidH8gK7qX678J/EeH3Mg3pUCncRJEjuZ+pMIo53mEV9TTdLpLILFEVWt4MHP0
-	4e1XPDv9gCHo2A3X1FAg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=1IHAlT61scmecoujYgdLuJKaZYvgT/ZUqfRYmEOVJ5Q=; b=XDalvJP5/vXPrg/NKdgxpyKfM
+	oTk4I/f+pIB0AUqjSDnhJkLILJdlWJxuot+PJprta1OI1glhsrboepAPuOM7iGfPJiCFbsXtxfv3M
+	NwGjGDQhxzlenOhEylfXq0kzGphM3kCUR/Oihu9792gDFvpsAHMWL6/CZAXL/9S71qw6M+VaIqLYR
+	3OFI4ofht2RV888aFdAX+QCL7L8g5m3KBGHROXMaydEJ6TxkENy5tEMIkd3xukqg5fdivoYlo/AAD
+	2mQXKmB3T7K0N6ykXecohZXc55+cNqiR4D5/BnDO6oU/WCT9Dwkf+IiyG2mHT+2I+0S1Nqvn7/R6G
+	Kbhj65PwQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1guDOJ-0002sl-Kg; Thu, 14 Feb 2019 09:33:11 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1guDDX-0007Dm-OR; Thu, 14 Feb 2019 09:22:03 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1guDOF-0002sK-7D
- for linux-mtd@lists.infradead.org; Thu, 14 Feb 2019 09:33:09 +0000
-X-IronPort-AV: E=Sophos;i="5.58,368,1544511600"; d="scan'208";a="26725366"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 14 Feb 2019 02:33:04 -0700
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.108) with Microsoft SMTP Server (TLS)
- id 14.3.352.0; Thu, 14 Feb 2019 02:33:03 -0700
+ id 1guDDU-0007DI-17
+ for linux-mtd@lists.infradead.org; Thu, 14 Feb 2019 09:22:01 +0000
+Received: by mail-lj1-x241.google.com with SMTP id l7-v6so4572587ljg.9
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Feb 2019 01:21:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g0R5MT6Bdn93A+i0idqNSID8TVhi1eFFQm9Cm076euw=;
- b=rEpqOpbaOGWzLNUD/eDubzxYxEUNRooblcEZKYRNclOp3/gf2uKpya29ChZV5nDIB65twGdYQUF3QjtI3jC4qYphLkYib8omHjqcov/w+TsBzODfC8+O4N5r2Snzj/58jsGqbxh5ZQY5NVXyGcWnf/QEnG55s/0eJy21/L3I6K0=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1970.namprd11.prod.outlook.com (10.175.95.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1601.22; Thu, 14 Feb 2019 09:33:02 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::847:4296:13b9:fc9f%8]) with mapi id 15.20.1601.023; Thu, 14 Feb 2019
- 09:33:02 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <jonas@norrbonn.se>, <linux-mtd@lists.infradead.org>
+ d=norrbonn-se.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:references:from:message-id:date:user-agent:mime-version
+ :in-reply-to:content-language:content-transfer-encoding;
+ bh=tbFzBsl6nLbhx+TOjcO5ItkrdnuRmcp3LiHIMbdh6C8=;
+ b=Kf9cdMzoqCsVlLDngC0Xs8yYE21J2FXvRAgDB6K+IFP4fdgXZHygau/sYEGsxj2igD
+ XIOa6Zlwt24LldyEmOvgi916FNUzRGMAFcZmNJH/2Q9Xb+qgEl7wLoei6T+HvNlqXplJ
+ GJZiCjgfK9POoNHhTupSiTUiy1RreFRThTA9WHWRyVFtfEmJZv3D6FTLOHe5Mtye0zX5
+ giPzyGKSB3Zbpwrc5P9E8Qgj4vBuIbkmLRlJSixrxIedSzUW8XJAfiUB1UYgts4YhPGY
+ iWDN74d3SzOvxSuW2j9BSBhECI6q2d0zxRYdKWW+K8eb053W1rTkkvk4hNqen2U6c+Nn
+ 6/zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=tbFzBsl6nLbhx+TOjcO5ItkrdnuRmcp3LiHIMbdh6C8=;
+ b=hhelhlSErCMApS+zQHccVQ3L5zfq+NfXks87+TR1tx+yfElWAii341eUSHsTWIFBk3
+ RywXQrSSmSgywAO2Ot4omzrzrR3Y6wv8OMcygaGm4T/6NXCIlFLm7ccrUb1syhHmfPwi
+ xY2tg/3bMbCXFStQLmgv4byzVbkPLf8aIHqXqrKwg644gD7U2NFfX7y3pE7fACgv+y1V
+ U0RRQpThI/0JS+4MIogLjc1ecLerBhrbK8quCMz0ExoFU5/81m729dY9Q4wgHZKD/Cf6
+ iwpzjtj9tmXeBQgT/B1aqbEa4v3gZq23JLxc6SpWvt/zgxXe1r323M8rtyY5ZXuss315
+ Vz2g==
+X-Gm-Message-State: AHQUAuanUR4Qimr43FrutKhq00Fe3oZxxZSnOVVMPw6cTlD8x463yyGj
+ 4SEkqbHcczfTLYkZJac9taOWHpGSzMk=
+X-Google-Smtp-Source: AHgI3IbkhIcl73h3M928po4le/F3priDGhBxeYhHNSrsOqUwjL6bDSsZmjV/XhnMZgCWAS8THLmfUA==
+X-Received: by 2002:a2e:8585:: with SMTP id b5mr1663789lji.125.1550136116123; 
+ Thu, 14 Feb 2019 01:21:56 -0800 (PST)
+Received: from [192.168.1.169] (h-29-16.A159.priv.bahnhof.se. [79.136.29.16])
+ by smtp.gmail.com with ESMTPSA id
+ a127sm351927lfe.73.2019.02.14.01.21.55
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 14 Feb 2019 01:21:55 -0800 (PST)
 Subject: Re: [PATCH v2 0/3] spi-nor block protection
-Thread-Topic: [PATCH v2 0/3] spi-nor block protection
-Thread-Index: AQHUuB8xSth1ixPvcEybGxvQLEP/LqXfHTQAgAAC4IA=
-Date: Thu, 14 Feb 2019 09:33:02 +0000
-Message-ID: <3f4916d5-45e1-fc7a-96f4-1dd6cbecbbc9@microchip.com>
+To: linux-mtd@lists.infradead.org
 References: <20190129220705.5143-1-jonas@norrbonn.se>
- <a46cd605-efa0-7f3a-9887-43f58c646f65@norrbonn.se>
-In-Reply-To: <a46cd605-efa0-7f3a-9887-43f58c646f65@norrbonn.se>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR08CA0101.eurprd08.prod.outlook.com
- (2603:10a6:800:d3::27) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c2d4bb79-9f9f-44c0-cbd8-08d6925f6a0d
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(5600110)(711020)(4605077)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB1970; 
-x-ms-traffictypediagnostic: BN6PR11MB1970:
-x-microsoft-exchange-diagnostics: =?utf-8?B?MTtCTjZQUjExTUIxOTcwOzIzOm9vY2IwMTNhR1p2c2g0VTN0ZlFSVlFEZkFJ?=
- =?utf-8?B?WHNWa3lOdWJ1dWZ4N01CNk43VjZacEkxM3VNUzl0cXVHV0swTEZIN0c0b3Ax?=
- =?utf-8?B?dmlRWUlqN2FtcGt4K1ZzNkdhK2UwZlJUM1laeFlOY1h6UVloNi9xSCtWSXpW?=
- =?utf-8?B?M1I2aFJXUzloRUp6WnRZZVhXZGN2RkZZZEJTM0p2T1V4NGJjVlkwSXVLWlg3?=
- =?utf-8?B?REI1TzRwaVovS2lRQkdUWllaN0RBaW00azlUcUdHOUJ5UkxZcWFWTVJ0aEpL?=
- =?utf-8?B?UjNhd1c2YVBQL0trczgwcnhndXBMYWVObVpYSi9SSUxTTVNObFNtM1ZQV1Y3?=
- =?utf-8?B?Ui9QUjhnWjdNZ0pZa1NTYjVrYW1zeUNyQmVndXRDL1RKYWNCZEpkdHVhdDBL?=
- =?utf-8?B?Z3hzdU1TZHdBcldDalRaNUVxak9vMUFnSjM0Z3EzS0JhSHNBT0tnSmdQUko4?=
- =?utf-8?B?c1VLWkZUN0JhWnMweGt2U3lZQUYrVU1vODZwZ2pDdGd6N2dvOGFCaEpad2dR?=
- =?utf-8?B?cklJbmd0SEsrOFVqYWNhUXJMaFNadUlEcmZZeE5mdGE0ZE9Xang2Sk56Rkxk?=
- =?utf-8?B?UVM0Qm5lZno2b1lkMWMrcFhJZnV0UUQ0YWpETDlWcHdJUU9NN1VCRGtzTGR4?=
- =?utf-8?B?YnJ6bDdNeTFvUWxZUzFMQXlEOHZHNEhvb0g5TGxCWCtJckNZeDk1b3IxTjJM?=
- =?utf-8?B?dWs4VGVvb0RpWDlnT1ZsWFdSWWl6dXFjSVVicUFSN29DNTdQUkRZZTRhNExs?=
- =?utf-8?B?SzFRZUloT2F2UHRUNHNTb2tTc0NGcDlYSTVpencyK0dHUDhxQ1pCanJEOW9s?=
- =?utf-8?B?ek8yQnJZa2d2YzhGWXNIN1k1Z2M5N0NveVN4bmZETXZwL1BwOGE4aiszN0t2?=
- =?utf-8?B?S05MZkg1bVBXRmhyVjR4ODVYSGRZRlJkczhrSW16Qk1naDVkZEtQOXVhcGtl?=
- =?utf-8?B?M0JJZmN3UjhzRVMyMXkwOVBtT2hJa3l0eUsxMDEySzRMOGdVZlUxaDVFdkFz?=
- =?utf-8?B?STI5SWVmUXU5UEpGcUtUVnN3WFFkZFRkT0xMZ1BOQk1acENPQWZ5eE5RM3Yx?=
- =?utf-8?B?Vjk4RzM0amQxbEtreXlucDliQjNZQ1ptSlVyekc1czZlRmVsZTZURktuckdy?=
- =?utf-8?B?aTNpWlRRNk8wWDM1M3VwUnpBWDJYZlA2V2tIOExrMzNuQS9FQ0hNVEpwbU1H?=
- =?utf-8?B?SnNHQ2ZFNXlOajB1TTNhTDBGVy9wQkZUYitLTXZDL0IrcGFoVzNESGY4WFVY?=
- =?utf-8?B?YlJXZE4vdjVycG9CTUZEV09SSnN5YkZaUzBsUUZGOURLK0dyMDNSTWg2UjZx?=
- =?utf-8?B?WHhEOXo2cjllQW9TNjM4cFRVSnU5TDdBTU1rOGtXUTlITUFPZ2I1OWdDZVRB?=
- =?utf-8?B?S1pBU0hlRGxWOURDYkVqdFRUMVBRN1g1WUM5RmROOXU2VlZvL2htUmFySDRw?=
- =?utf-8?B?eGZNZE9hayt3U1UybEJmd251NlVIR0JvdzVlYUxTYXhwbUIxTzgwNlViWGhX?=
- =?utf-8?B?NlhidXVMUkg4WlhlQy9Jb0ZJazJDQTBqQVpmYVY2SkhGL2JmMG1qK2ZsTXQ1?=
- =?utf-8?B?ZHhHRTVmOE1ETlVlYVZsbzFqUG9URGRHeGxQVVd4N29yTVd6VkVYYm1VWmFv?=
- =?utf-8?B?aVUzUEV2dE8wcExQdnlXTG9qMTU5TUl1UTRSMXk2T1Yyc0R3TGc3ZHdtQVpF?=
- =?utf-8?B?Zm4zblozTjRCQ0VmSk5oZEl3dkZJZGQ5bXcvUXVzajBzTUliUjVRS1lQSUU3?=
- =?utf-8?Q?gr7HgMwTLSv+2KoGrpsgCIqmbGfkDq8aVWCBA=3D?=
-x-microsoft-antispam-prvs: <BN6PR11MB1970F0D8C16F23E56082664AF0670@BN6PR11MB1970.namprd11.prod.outlook.com>
-x-forefront-prvs: 09480768F8
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(39860400002)(366004)(396003)(136003)(346002)(376002)(199004)(189003)(558084003)(8676002)(66066001)(81156014)(68736007)(386003)(53936002)(71190400001)(71200400001)(6506007)(53546011)(3846002)(6436002)(110136005)(2906002)(99286004)(6116002)(6346003)(2501003)(316002)(6486002)(102836004)(8936002)(6512007)(76176011)(81166006)(52116002)(2616005)(11346002)(229853002)(476003)(36756003)(486006)(97736004)(14444005)(446003)(26005)(305945005)(106356001)(31686004)(6246003)(186003)(105586002)(478600001)(86362001)(72206003)(14454004)(31696002)(7736002)(256004)(25786009);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1970;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: FZqyvgkYAMA52+TDknhfdyRLiWAYS0wxlW2BwVXRDUCNCQjlINMiHOlNP/6FMJtZjBiPqTbpRV/rzlbFMYscO+5nc6DXVOKW4QRJJ2QiEFOxITGP7fEdcxNxByPai+QIaxRhN42kOcWFlLFzfvwmZS+wsvxzq+TUGdK7GK9C9/sDAwxZ4QdcQiitW317MO5aaL3/U5XF4fATDB6/WOeSVtSilPymtose+aIiuv7eHR4TxaLvaLQ9L+EOw/OoYjY0gMxaqwrqRgEYHeXnT4gmXYqDyvS8U31TE/8pbcyu0CXNudynu7PEtg34DqaP3h6+G40fM+CMypwRrJ1nex2gfebUv3j/72rEVBT8IjGeasgNC+MZBW4mDgAOB+esgzgDYVDHydXjS4nQzP2nOdwZ9rac3geiZ/pm3UTjrikU2fk=
-Content-ID: <FA9EA0C3A65F0D4F87706EA11C83B1BB@namprd11.prod.outlook.com>
+From: Jonas Bonn <jonas@norrbonn.se>
+Message-ID: <a46cd605-efa0-7f3a-9887-43f58c646f65@norrbonn.se>
+Date: Thu, 14 Feb 2019 10:21:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2d4bb79-9f9f-44c0-cbd8-08d6925f6a0d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2019 09:33:01.3046 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1970
-X-OriginatorOrg: microchip.com
+In-Reply-To: <20190129220705.5143-1-jonas@norrbonn.se>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190214_013308_116712_F77578E0 
-X-CRM114-Status: UNSURE (   8.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190214_012200_120814_86E25AA2 
+X-CRM114-Status: GOOD (  18.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -152,25 +99,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 02/14/2019 11:21 AM, Jonas Bonn wrote:
-> Hi,
-
 Hi,
 
+Just a gentle reminder that I'd like some feedback on these patches.
+
+Thanks,
+Jonas
+
+On 29/01/2019 23:07, Jonas Bonn wrote:
+> Changed in v2:
+> * Provide the below cover letter
+> * Rebase patches so they apply cleanly on linux-next
 > 
-> Just a gentle reminder that I'd like some feedback on these patches.
+> 
+> In order to make device that's effectively read-only except to an
+> authorized user we need:
+> 
+> i)  Some way of defaulting block-protection to on when device is first
+> powered
+> ii)  Some way of controlling the write-protect signal so that the BP
+> (block protect) bits can't be changed
+> 
+> Some SPI flashes support the BPNV configuration register bit:  block
+> protect non-volatile.  When this bit is set, the block protection bits
+> BP0, BP1, and BP2 default to 1, effectively causing the flash memory to
+> becomes read-only at power on.  If we can set this bit, we solve problem
+> i) above.
+> 
+> Controlling the write-protect input is a matter for something external
+> to the flash itself.  Unfortunately, the WP# signal is only honoured if
+> the status register bit SRWD (status register write disable) is set.  If
+> we can have this bit always set, then we solve problem ii) above.
+> 
+> This short patch series provides the above bits, allowing for the
+> creation of a device that's effectively read-only to any actor who isn't
+> able to control the WP# signal.
+> 
+> Jonas Bonn (3):
+>    mtd: spi-nor: always respect write-protect input
+>    mtd: spi-nor: s25fl512s supports region locking
+>    mtd: spi-nor: allow setting the BPNV (default locked) bit
+> 
+>   drivers/mtd/mtdchar.c         |   6 ++
+>   drivers/mtd/mtdcore.c         |   8 +++
+>   drivers/mtd/spi-nor/spi-nor.c | 119 ++++++++++++++++++++++------------
+>   include/linux/mtd/mtd.h       |   2 +
+>   include/linux/mtd/spi-nor.h   |   1 +
+>   include/uapi/mtd/mtd-abi.h    |   1 +
+>   6 files changed, 97 insertions(+), 40 deletions(-)
+> 
 
-yep, I'm going to review them these days, I still have few in my queue.
-
-Cheers,
-ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
