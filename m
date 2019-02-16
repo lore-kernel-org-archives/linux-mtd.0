@@ -1,95 +1,67 @@
-Return-Path: <SRS0=Utib=QW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=oTjV=QX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7739C10F02
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Feb 2019 22:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11595C43381
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Feb 2019 08:54:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6057222D9
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Feb 2019 22:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D22A2206B6
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Feb 2019 08:54:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kbGP7OFz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DlWuhRsQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6057222D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DBQ5bSLE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D22A2206B6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/O5g4YFNBqGLEVGfAKH4wjqoUrskmX1mgXcoZr5uDaE=; b=kbGP7OFzcMIcd6
-	rLC17I/gwv9+F7Eei+UVRU366kSFujdoT5H4kUQJt8bt2OQBujJ7Gy1ZccslU6gZlEYHni01e6t5f
-	QlCzkJbH4Cnab78caL7qX3/quiAmR5zE4cCxXbCtd/oHePxYx7LzrjyUQWohHwWH4SkVUXFcSIQ4M
-	dxl7fUAFbawqybGwiPBqlx1LXEw3irye6tqDDOKSeQ8CAl/QGpFCRyEs2RJ3K7wjPwV2CrsRiG4xu
-	uCeSlogxkP/lXJ/sDh3HlYgYE5w46LkrJIJjJG17MWBXVoAtAn/NdrFI4fvrRhk2lOXoSxiktfyFy
-	jx1EMSk3KmWc6KNliOJA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=jc8khjauSvotFUWSs4UEF4JY3yortoggnJiaz6Kq8hs=; b=DBQ5bSLEbYg8+qBMI5vpWksDO
+	ZTRNnzk1BaOWiswh/yfiGkk9Y++v+udgdWiSHQpNEl61pF+7qaFeCWKc7TGLKRxV2SFsK6v9vKAKS
+	WGg3z8Ow4h9QyutMgxCPFqdaQWyUAHgyXh6utGZndMVD/tTxFcCzlAWIHbSNpPEBt17VEXi0g2PbN
+	Ae1qCbbf+AzrKO/lDQmurdxWVeDVIJPziO6jFFyOMoIofOLMPCBalLfcuD+WquphTD80IGUg1JzRP
+	JNxAkz8hLKp1kboczT5DtMED7RGrV4IGTdAnfTDElBbfs1Mhzsz4PhzKuqSA8bQ4d63zirK/nbLts
+	ABwPfy5ww==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gum9V-0000rA-5i; Fri, 15 Feb 2019 22:40:13 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1guvjY-0000B3-3z; Sat, 16 Feb 2019 08:54:04 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gum9L-0008VY-D7
- for linux-mtd@lists.infradead.org; Fri, 15 Feb 2019 22:40:05 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x1FMcxWe146163;
- Fri, 15 Feb 2019 22:39:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=rFBuPAUp3qyHrOOVnWy4HHWdGelJ0ySma1MEojBeK4Y=;
- b=DlWuhRsQN5kmw/90osRqZIUez1X7TeWVRLI7Kmo3JJLaKkBIv/m6V3c1AfzbcvH/Fbv+
- Pat6xx5UMyo9oCVRyHCxwxWw36YcaWzwhLQybvwJNUtbYmWmiDXFFunEW33PVOvPUoXA
- QXGfkWN/0Z9F0oJjJtCSx3wAragBKmNc9NDTbsAQzGrHgvDE+dmf6X1MnccK3sZSLsqd
- y414B1CWKpfaaRFfeNsWyrhr3YsdHnUhXpCyIumo1j6uZgNE0s/q0K3/QUb07LBRYli/
- hXX4XlAFW5Ylxq3u/f3kV4GyW9T6f6uyQXsPYlFhYDrSG1WTLIp47m4Jj7sPgUTCu9mn 5A== 
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
- by userp2130.oracle.com with ESMTP id 2qhrem0cbf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 15 Feb 2019 22:39:36 +0000
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by userv0022.oracle.com (8.14.4/8.14.4) with ESMTP id x1FMdTnq026520
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 15 Feb 2019 22:39:30 GMT
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x1FMdR7l015082;
- Fri, 15 Feb 2019 22:39:28 GMT
-Received: from localhost (/10.145.178.102)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Fri, 15 Feb 2019 14:39:27 -0800
-Date: Fri, 15 Feb 2019 14:39:25 -0800
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
- viro@zeniv.linux.org.uk, jack@suse.com, tytso@mit.edu,
- adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
- hughd@google.com, hch@infradead.org
-Subject: [PATCH v2] vfs: don't decrement i_nlink in d_tmpfile
-Message-ID: <20190215223925.GO32253@magnolia>
-References: <20190214234908.GA6474@magnolia>
+ id 1guvjT-00009J-3E
+ for linux-mtd@lists.infradead.org; Sat, 16 Feb 2019 08:54:01 +0000
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id 12750E41A7AE799CBAE7;
+ Sat, 16 Feb 2019 16:53:46 +0800 (CST)
+Received: from [127.0.0.1] (10.177.219.49) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.408.0; Sat, 16 Feb 2019
+ 16:53:37 +0800
+Subject: Re: [PATCH v2] jffs2: safely remove obsolete dirent from the f->dents
+ list
+From: yuyufen <yuyufen@huawei.com>
+To: <dwmw2@infradead.org>, <richard.weinberger@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+References: <20190123072249.103847-1-yuyufen@huawei.com>
+Message-ID: <d2697496-c7db-94a1-4292-03625b47cf63@huawei.com>
+Date: Sat, 16 Feb 2019 16:53:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190214234908.GA6474@magnolia>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9168
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=831 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1902150147
+In-Reply-To: <20190123072249.103847-1-yuyufen@huawei.com>
+Content-Language: en-US
+X-Originating-IP: [10.177.219.49]
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190215_144003_580060_405C6724 
-X-CRM114-Status: GOOD (  21.68  )
+X-CRM114-CacheID: sfid-20190216_005359_482662_795C7CC3 
+X-CRM114-Status: GOOD (  29.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -101,208 +73,241 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: dedekind1@gmail.com, richard@nod.at, amir73il@gmail.com,
- adrian.hunter@intel.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, linux-mm@kvack.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+Cc: Joakim.Tjernlund@infinera.com, viro@zeniv.linux.org.uk,
+ linux-kernel@vger.kernel.org, houtao1@huawei.com
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+ping?
 
-d_tmpfile was introduced to instantiate an inode in the dentry cache as
-a temporary file.  This helper decrements the inode's nlink count and
-dirties the inode, presumably so that filesystems could call new_inode
-to create a new inode with nlink == 1 and then call d_tmpfile which will
-decrement nlink.
 
-However, this doesn't play well with XFS, which needs to allocate,
-initialize, and insert a tempfile inode on its unlinked list in a single
-transaction.  In order to maintain referential integrity of the XFS
-metadata, we cannot have an inode on the unlinked list with nlink >= 1.
+On 2019/1/23 15:22, Yufen Yu wrote:
+> We may delete a bunch of directory entries, operating such as:
+> getdents(), unlink(), getdents()..., until the end of the directory.
+> jffs2 handles f_pos on the directory merely as the position on the
+> f->dents list. So, the next getdents() may skip some entries
+> before f_pos, if we remove some entries from the list between two
+> getdents(), resulting in some entries of the directory cannot be deleted.
+>
+> Commit 15953580e79b is introduced to resolve this bug by not
+> removing delete entries from the list immediately.
+>
+> However, when CONFIG_JFFS2_SUMMARY is not set, it can cause the
+> following issues:
+>
+> * 'deletion' dirents is always in the f->dents list, wasting memory
+>      resource. For example:
+>          There is a file named 'file1'. Then we rename it:
+>          mv file1 file2;
+>          mv file2 file3;
+>          ...
+>          mv file99999 file1000000
+>
+>      All of file1~file1000000 dirents always in the f->dents list.
+>
+> * Though, the list we're traversing is already ordered by CRC,
+> it could waste much CPU time when the list is very long.
+>
+> To fix, we define two variables in struct jffs2_inode_info: nr_dir_opening,
+> obsolete_count, and two new functions: jffs2_dir_open(), jffs2_dir_release().
+>
+> When open a directory, jffs2_dir_open() will increase nr_dir_opening,
+> which will be decreased by jffs2_dir_release(). if the value is 0,
+> it means nobody open the dir and nobody in getdents()/seek() semantics.
+> Thus, we can remove all obsolete dirent from the list.
+>
+> When delete a file, jffs2_do_unlink() can remove the dirent directly if
+> nobody open the directory(i.e. nr_dir_opending == 0). Otherwise, it just
+> increase obsolete_count, denoting obsolete dirent count of the list.
+>
+> Fixes: 15953580e79b ("[JFFS2] Improve getdents vs. f_pos handling on NOR flash.")
+> Signed-off-by: Yufen Yu <yuyufen@huawei.com>
+> ---
+>   fs/jffs2/dir.c             | 49 ++++++++++++++++++++++++++++++++++++++++++++++
+>   fs/jffs2/jffs2_fs_i.h      |  7 +++++++
+>   fs/jffs2/super.c           |  4 ++++
+>   fs/jffs2/write.c           | 30 +++++++++++++++++++---------
+>   include/uapi/linux/jffs2.h |  4 ++++
+>   5 files changed, 85 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+> index f20cff1194bb..aed872dcd0ca 100644
+> --- a/fs/jffs2/dir.c
+> +++ b/fs/jffs2/dir.c
+> @@ -37,6 +37,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,umode_t,dev_t);
+>   static int jffs2_rename (struct inode *, struct dentry *,
+>   			 struct inode *, struct dentry *,
+>   			 unsigned int);
+> +static int jffs2_dir_release (struct inode *, struct file *);
+> +static int jffs2_dir_open (struct inode *, struct file *);
+>   
+>   const struct file_operations jffs2_dir_operations =
+>   {
+> @@ -45,6 +47,8 @@ const struct file_operations jffs2_dir_operations =
+>   	.unlocked_ioctl=jffs2_ioctl,
+>   	.fsync =	jffs2_fsync,
+>   	.llseek =	generic_file_llseek,
+> +	.open =		jffs2_dir_open,
+> +	.release =	jffs2_dir_release,
+>   };
+>   
+>   
+> @@ -865,3 +869,48 @@ static int jffs2_rename (struct inode *old_dir_i, struct dentry *old_dentry,
+>   	return 0;
+>   }
+>   
+> +static int jffs2_dir_open(struct inode *dir_i, struct file *filp)
+> +{
+> +#ifndef CONFIG_JFFS2_SUMMARY
+> +	struct jffs2_inode_info *dir_f = JFFS2_INODE_INFO(dir_i);
+> +	atomic_inc(&dir_f->nr_dir_opening);
+> +#endif
+> +
+> +	return 0;
+> +}
+> +
+> +static int jffs2_dir_release(struct inode *dir_i, struct file *filp)
+> +{
+> +#ifndef CONFIG_JFFS2_SUMMARY
+> +	struct jffs2_inode_info *dir_f = JFFS2_INODE_INFO(dir_i);
+> +
+> +	BUG_ON(atomic_read(&dir_f->nr_dir_opening) <= 0);
+> +
+> +	mutex_lock(&dir_f->sem);
+> +	/* jffs2_dir_open may increase nr_dir_opening after
+> +	 * atomic_dec_and_test() returning true.
+> +	 * However, it cannot traverse the list until hold
+> +	 * mutex dir_f->sem lock, so that we can go on
+> +	 * removing.*/
+> +	if (atomic_dec_and_test(&dir_f->nr_dir_opening) &&
+> +			dir_f->obsolete_count > JFFS2_OBS_DIRENT_LIMIT) {
+> +		struct jffs2_full_dirent **prev = &dir_f->dents;
+> +
+> +		/* remove all obsolete dirent from the list, which
+> +		 * can save memory space and reduce CPU time for
+> +		 * traverse the list */
+> +		while(*prev) {
+> +			if ((*prev)->raw == NULL && (*prev)->ino == 0) {
+> +				struct jffs2_full_dirent *this = *prev;
+> +				*prev = this->next;
+> +				jffs2_free_full_dirent(this);
+> +			} else
+> +				prev = &((*prev)->next);
+> +		}
+> +		dir_f->obsolete_count = 0;
+> +	}
+> +	mutex_unlock(&dir_f->sem);
+> +#endif
+> +
+> +	return 0;
+> +}
+> diff --git a/fs/jffs2/jffs2_fs_i.h b/fs/jffs2/jffs2_fs_i.h
+> index 2e4a86763c07..a4da25d16cb4 100644
+> --- a/fs/jffs2/jffs2_fs_i.h
+> +++ b/fs/jffs2/jffs2_fs_i.h
+> @@ -50,6 +50,13 @@ struct jffs2_inode_info {
+>   
+>   	uint16_t flags;
+>   	uint8_t usercompr;
+> +
+> +	/* obsolete dirent count in the list of 'dents' */
+> +	uint8_t  obsolete_count;
+> +
+> +	/* Directory open refcount */
+> +	atomic_t nr_dir_opening;
+> +
+>   	struct inode vfs_inode;
+>   };
+>   
+> diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+> index 87bdf0f4cba1..bf181b0ade9c 100644
+> --- a/fs/jffs2/super.c
+> +++ b/fs/jffs2/super.c
+> @@ -41,6 +41,10 @@ static struct inode *jffs2_alloc_inode(struct super_block *sb)
+>   	f = kmem_cache_alloc(jffs2_inode_cachep, GFP_KERNEL);
+>   	if (!f)
+>   		return NULL;
+> +
+> +	atomic_set(&f->nr_dir_opening, 0);
+> +	f->obsolete_count = 0;
+> +
+>   	return &f->vfs_inode;
+>   }
+>   
+> diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
+> index cda9a361368e..780b4fd9af51 100644
+> --- a/fs/jffs2/write.c
+> +++ b/fs/jffs2/write.c
+> @@ -600,29 +600,41 @@ int jffs2_do_unlink(struct jffs2_sb_info *c, struct jffs2_inode_info *dir_f,
+>   	} else {
+>   		uint32_t nhash = full_name_hash(NULL, name, namelen);
+>   
+> -		fd = dir_f->dents;
+> +		struct jffs2_full_dirent **prev = &dir_f->dents;
+> +
+>   		/* We don't actually want to reserve any space, but we do
+>   		   want to be holding the alloc_sem when we write to flash */
+>   		mutex_lock(&c->alloc_sem);
+>   		mutex_lock(&dir_f->sem);
+>   
+> -		for (fd = dir_f->dents; fd; fd = fd->next) {
+> -			if (fd->nhash == nhash &&
+> -			    !memcmp(fd->name, name, namelen) &&
+> -			    !fd->name[namelen]) {
+> +		while((*prev) && (*prev)->nhash <= nhash) {
+> +			if ((*prev)->nhash == nhash &&
+> +			    !memcmp((*prev)->name, name, namelen) &&
+> +			    !(*prev)->name[namelen]) {
+>   
+> +				fd = *prev;
+>   				jffs2_dbg(1, "Marking old dirent node (ino #%u) @%08x obsolete\n",
+>   					  fd->ino, ref_offset(fd->raw));
+>   				jffs2_mark_node_obsolete(c, fd->raw);
+> -				/* We don't want to remove it from the list immediately,
+> -				   because that screws up getdents()/seek() semantics even
+> -				   more than they're screwed already. Turn it into a
+> -				   node-less deletion dirent instead -- a placeholder */
+>   				fd->raw = NULL;
+>   				fd->ino = 0;
+> +
+> +				/* if nr_dir_openning is 0, we think nobody open the dir, and
+> +				 * nobody being in getdents()/seek() semantics. Thus, we can
+> +				 * safely remove this obsolete dirent from the list. Otherwise,
+> +				 * we just increase obsolete_count, and finally delete it in
+> +				 * jffs2_dir_release() */
+> +				if (atomic_read(&dir_f->nr_dir_opening) == 0) {
+> +					*prev = fd->next;
+> +					jffs2_free_full_dirent(fd);
+> +				} else
+> +					dir_f->obsolete_count++;
+> +
+>   				break;
+>   			}
+> +			prev = &((*prev)->next);
+>   		}
+> +
+>   		mutex_unlock(&dir_f->sem);
+>   	}
+>   
+> diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
+> index a18b719f49d4..dff3ac2d6b0c 100644
+> --- a/include/uapi/linux/jffs2.h
+> +++ b/include/uapi/linux/jffs2.h
+> @@ -35,6 +35,10 @@
+>   */
+>   #define JFFS2_MAX_NAME_LEN 254
+>   
+> +/* The obsolete dirent of dents list limit. When the number over
+> + * this limit, we can remove the obsoleted dents. */
+> +#define JFFS2_OBS_DIRENT_LIMIT 64
+> +
+>   /* How small can we sensibly write nodes? */
+>   #define JFFS2_MIN_DATA_LEN 128
+>   
 
-XFS and btrfs hack around d_tmpfile's behavior by creating the inode
-with nlink == 0 and then incrementing it just prior to calling
-d_tmpfile, anticipating that it will be reset to 0.
 
-Everywhere else, it appears that nlink updates and persistence is
-the responsibility of individual filesystems.  Therefore, move the nlink
-decrement out of d_tmpfile into the callers, and require that callers
-only pass in inodes with nlink already set to 0.
-
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
-v2: convert BUG_ON to WARN_ON per review comment
----
- fs/btrfs/inode.c  |    8 --------
- fs/dcache.c       |   10 ++++++----
- fs/ext2/namei.c   |    2 +-
- fs/ext4/namei.c   |    1 +
- fs/f2fs/namei.c   |    1 +
- fs/minix/namei.c  |    2 +-
- fs/ubifs/dir.c    |    1 +
- fs/udf/namei.c    |    2 +-
- fs/xfs/xfs_iops.c |   13 ++-----------
- mm/shmem.c        |    1 +
- 10 files changed, 15 insertions(+), 26 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5c349667c761..bd189fc50f83 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10382,14 +10382,6 @@ static int btrfs_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
- 	if (ret)
- 		goto out;
- 
--	/*
--	 * We set number of links to 0 in btrfs_new_inode(), and here we set
--	 * it to 1 because d_tmpfile() will issue a warning if the count is 0,
--	 * through:
--	 *
--	 *    d_tmpfile() -> inode_dec_link_count() -> drop_nlink()
--	 */
--	set_nlink(inode, 1);
- 	d_tmpfile(dentry, inode);
- 	unlock_new_inode(inode);
- 	mark_inode_dirty(inode);
-diff --git a/fs/dcache.c b/fs/dcache.c
-index aac41adf4743..bb349d423055 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -3042,12 +3042,14 @@ void d_genocide(struct dentry *parent)
- 
- EXPORT_SYMBOL(d_genocide);
- 
-+/*
-+ * Instantiate an inode in the dentry cache as a temporary file.  Callers must
-+ * ensure that @inode has a zero link count.
-+ */
- void d_tmpfile(struct dentry *dentry, struct inode *inode)
- {
--	inode_dec_link_count(inode);
--	BUG_ON(dentry->d_name.name != dentry->d_iname ||
--		!hlist_unhashed(&dentry->d_u.d_alias) ||
--		!d_unlinked(dentry));
-+	WARN_ON(dentry->d_name.name != dentry->d_iname ||
-+		!d_unlinked(dentry) || inode->i_nlink != 0);
- 	spin_lock(&dentry->d_parent->d_lock);
- 	spin_lock_nested(&dentry->d_lock, DENTRY_D_LOCK_NESTED);
- 	dentry->d_name.len = sprintf(dentry->d_iname, "#%llu",
-diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
-index 0c26dcc5d850..8542e9ce9677 100644
---- a/fs/ext2/namei.c
-+++ b/fs/ext2/namei.c
-@@ -117,7 +117,7 @@ static int ext2_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
- 		return PTR_ERR(inode);
- 
- 	ext2_set_file_ops(inode);
--	mark_inode_dirty(inode);
-+	inode_dec_link_count(inode);
- 	d_tmpfile(dentry, inode);
- 	unlock_new_inode(inode);
- 	return 0;
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 2b928eb07fa2..7502432f9816 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2517,6 +2517,7 @@ static int ext4_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
- 		inode->i_op = &ext4_file_inode_operations;
- 		inode->i_fop = &ext4_file_operations;
- 		ext4_set_aops(inode);
-+		inode_dec_link_count(inode);
- 		d_tmpfile(dentry, inode);
- 		err = ext4_orphan_add(handle, inode);
- 		if (err)
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 62d9829f3a6a..31a556af5f3a 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -780,6 +780,7 @@ static int __f2fs_tmpfile(struct inode *dir, struct dentry *dentry,
- 		f2fs_i_links_write(inode, false);
- 		*whiteout = inode;
- 	} else {
-+		inode_dec_link_count(inode);
- 		d_tmpfile(dentry, inode);
- 	}
- 	/* link_count was changed by d_tmpfile as well. */
-diff --git a/fs/minix/namei.c b/fs/minix/namei.c
-index 1a6084d2b02e..3249f86c476a 100644
---- a/fs/minix/namei.c
-+++ b/fs/minix/namei.c
-@@ -57,7 +57,7 @@ static int minix_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
- 	struct inode *inode = minix_new_inode(dir, mode, &error);
- 	if (inode) {
- 		minix_set_inode(inode, 0);
--		mark_inode_dirty(inode);
-+		inode_dec_link_count(inode);
- 		d_tmpfile(dentry, inode);
- 	}
- 	return error;
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 5767b373a8ff..7187e4fd7561 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -419,6 +419,7 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 		drop_nlink(inode);
- 		*whiteout = inode;
- 	} else {
-+		inode_dec_link_count(inode);
- 		d_tmpfile(dentry, inode);
- 	}
- 	ubifs_assert(c, ui->dirty);
-diff --git a/fs/udf/namei.c b/fs/udf/namei.c
-index 58cc2414992b..38bd021f9673 100644
---- a/fs/udf/namei.c
-+++ b/fs/udf/namei.c
-@@ -652,7 +652,7 @@ static int udf_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
- 		inode->i_data.a_ops = &udf_aops;
- 	inode->i_op = &udf_file_inode_operations;
- 	inode->i_fop = &udf_file_operations;
--	mark_inode_dirty(inode);
-+	inode_dec_link_count(inode);
- 	d_tmpfile(dentry, inode);
- 	unlock_new_inode(inode);
- 	return 0;
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 1efef69a7f1c..f48ffd7a8d3e 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -191,18 +191,9 @@ xfs_generic_create(
- 
- 	xfs_setup_iops(ip);
- 
--	if (tmpfile) {
--		/*
--		 * The VFS requires that any inode fed to d_tmpfile must have
--		 * nlink == 1 so that it can decrement the nlink in d_tmpfile.
--		 * However, we created the temp file with nlink == 0 because
--		 * we're not allowed to put an inode with nlink > 0 on the
--		 * unlinked list.  Therefore we have to set nlink to 1 so that
--		 * d_tmpfile can immediately set it back to zero.
--		 */
--		set_nlink(inode, 1);
-+	if (tmpfile)
- 		d_tmpfile(dentry, inode);
--	} else
-+	else
- 		d_instantiate(dentry, inode);
- 
- 	xfs_finish_inode_setup(ip);
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 6ece1e2fe76e..4a7810093561 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2818,6 +2818,7 @@ shmem_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
- 		error = simple_acl_create(dir, inode);
- 		if (error)
- 			goto out_iput;
-+		inode_dec_link_count(inode);
- 		d_tmpfile(dentry, inode);
- 	}
- 	return error;
 
 ______________________________________________________
 Linux MTD discussion mailing list
