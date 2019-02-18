@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68CE9C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 10:43:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9466C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 10:44:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3960A2147A
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 10:43:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71CD12147A
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 10:44:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fu1xpbIH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3960A2147A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uw1IjCyB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71CD12147A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vWpih5RJ2db01TkfQJBZHNeuqG79r16SCVHGcHMZIoE=; b=Fu1xpbIHGnYyWE
-	2znVMfsEBkmXrhopva0O2rwYkXAMwKs/noDQ419jUdVLQ8hWDEBijf1KqIDbPQUmbx1t/FpdMhnbc
-	9r8govFu+wCwq0uHtC4sQ3rOWayNlSoFGTggvZGdymUE0tlwCKCOZBoUUQRb11rzO+kkRzEpm1ObF
-	vhzloD11vIEwqFy2akaRa8rQxqR6lesmr4Ig8DlSQtuzngPHn84ja+6YwHQCqzwBCDgJTtzPrAEEY
-	Ma6dFx7AvBojLOWEsyfxNQxqkNr1onGvOBPLFNM+QCVq92/IUAGw4U40Gu5CDdKcZGK3hyFRvC6ki
-	h20cs9q3ImWC2pzEpDGQ==;
+	List-Owner; bh=CV5BDud2lrZctXTIRGd/0FOe9sHmTUg9DP8mdJZcvTA=; b=uw1IjCyBzFD+m2
+	iCb7b+G9Ri/S+NY2hVWlYa6kW+6nyEtIFkcGqKhjkg19PGCaPkS7guIyvLHy4QxplfmP3GOnW6vIi
+	voMpnCJTliOzVYSdpJOF2YKBL8+1T57L7NcqcVxZpFTb0+gjxN8qfwUYU/jQZGb9TOHZSD8iCdahy
+	cQ1snVP/+VyQ9MJBDhKn/4HUWSwByQ21jox98AhGVWsd46IudRdQgVPCa7Wu7gpBbbLa1qah4c1lf
+	Cy9OCmRyrSZdeyWzo2ktsI7VbtpDr9e3DGbY0kuiPDiiySRUmLQ9A3QOS1M2WsyZ1mMJSSDw3r0gF
+	WDA4ItpjvaMIMVpi/NYQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gvgOb-0004uR-2N; Mon, 18 Feb 2019 10:43:33 +0000
+	id 1gvgPK-0005XU-MB; Mon, 18 Feb 2019 10:44:18 +0000
 Received: from skedge03.snt-world.com ([91.208.41.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gvgNt-0003rY-5g
- for linux-mtd@lists.infradead.org; Mon, 18 Feb 2019 10:42:55 +0000
-Received: from sntmail10s.snt-is.com (unknown [10.203.32.183])
+ id 1gvgNt-0003rb-7z
+ for linux-mtd@lists.infradead.org; Mon, 18 Feb 2019 10:42:56 +0000
+Received: from sntmail11s.snt-is.com (unknown [10.203.32.181])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by skedge03.snt-world.com (Postfix) with ESMTPS id 9AFDF603768;
+ by skedge03.snt-world.com (Postfix) with ESMTPS id E571E603769;
  Mon, 18 Feb 2019 11:42:46 +0100 (CET)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail10s.snt-is.com
- (10.203.32.183) with Microsoft SMTP Server (version=TLS1_2,
+Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail11s.snt-is.com
+ (10.203.32.181) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 18 Feb
  2019 11:42:46 +0100
 Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
@@ -55,13 +55,13 @@ To: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
  "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
  <richard@nod.at>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 6/7] mtd: rawnand: ESMT: Also use the last page for bad
+Subject: [PATCH v4 7/7] mtd: rawnand: AMD: Also use the last page for bad
  block markers
-Thread-Topic: [PATCH v4 6/7] mtd: rawnand: ESMT: Also use the last page for
- bad block markers
-Thread-Index: AQHUx3avvmy6NK5LnkqXCtbnQbpnMQ==
-Date: Mon, 18 Feb 2019 10:42:45 +0000
-Message-ID: <20190218104122.18788-7-frieder.schrempf@kontron.de>
+Thread-Topic: [PATCH v4 7/7] mtd: rawnand: AMD: Also use the last page for bad
+ block markers
+Thread-Index: AQHUx3av5nN+rA7yBUm0nQr4UWWfjQ==
+Date: Mon, 18 Feb 2019 10:42:46 +0000
+Message-ID: <20190218104122.18788-8-frieder.schrempf@kontron.de>
 References: <20190218104122.18788-1-frieder.schrempf@kontron.de>
 In-Reply-To: <20190218104122.18788-1-frieder.schrempf@kontron.de>
 Accept-Language: de-DE, en-US
@@ -72,7 +72,7 @@ x-originating-ip: [172.25.9.43]
 x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
 MIME-Version: 1.0
 X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 9AFDF603768.AF9B0
+X-SnT-MailScanner-ID: E571E603769.AE56B
 X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
  Provider for details
 X-SnT-MailScanner-SpamCheck: 
@@ -82,8 +82,8 @@ X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
  miquel.raynal@bootlin.com, richard@nod.at
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190218_024249_689900_C697804E 
-X-CRM114-Status: GOOD (  10.17  )
+X-CRM114-CacheID: sfid-20190218_024249_719475_EA5331B6 
+X-CRM114-Status: GOOD (  10.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -106,31 +106,29 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-It is known that some ESMT SLC NANDs have been shipped
-with the factory bad block markers in the first or last page
-of the block, instead of the first or second page. To be on
-the safe side, let's check all three locations.
+According to the datasheet of some Cypress SLC NANDs, the bad
+block markers can be in the first, second or last page of a block.
+So let's check all three locations.
 
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 Reviewed-by: Boris Brezillon <bbrezillon@kernel.org>
 ---
- drivers/mtd/nand/raw/nand_esmt.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_amd.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_esmt.c b/drivers/mtd/nand/raw/nand_esmt.c
-index 99a8092969a7..b37e0b5af5ae 100644
---- a/drivers/mtd/nand/raw/nand_esmt.c
-+++ b/drivers/mtd/nand/raw/nand_esmt.c
-@@ -36,7 +36,14 @@ static void esmt_nand_decode_id(struct nand_chip *chip)
- static int esmt_nand_init(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/raw/nand_amd.c b/drivers/mtd/nand/raw/nand_amd.c
+index 6202cbf7ee8d..2ffcddff3e27 100644
+--- a/drivers/mtd/nand/raw/nand_amd.c
++++ b/drivers/mtd/nand/raw/nand_amd.c
+@@ -40,7 +40,13 @@ static void amd_nand_decode_id(struct nand_chip *chip)
+ static int amd_nand_init(struct nand_chip *chip)
  {
  	if (nand_is_slc(chip))
 -		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE;
 +		/*
-+		 * It is known that some ESMT SLC NANDs have been shipped
-+		 * with the factory bad block markers in the first or last page
-+		 * of the block, instead of the first or second page. To be on
-+		 * the safe side, let's check all three locations.
++		 * According to the datasheet of some Cypress SLC NANDs,
++		 * the bad block markers can be in the first, second or last
++		 * page of a block. So let's check all three locations.
 +		 */
 +		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE |
 +				 NAND_BBM_LASTPAGE;
