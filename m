@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5BDBC43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 19:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA84C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 20:01:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7549F21773
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 19:20:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C4ED217F9
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Feb 2019 20:01:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kPIdio23"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7549F21773
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OOnU6EUy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C4ED217F9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,57 +24,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DKZRnBePub4pWqmJAB6HuiOkYRNmvLgXRj3VpNDh1KQ=; b=kPIdio23hNtgv3
-	frgilzy4tPQrbM+9yf1FeVIvGSfcRFyCzuKSKEeADyIBEKrNDy/bLjKgMGKATqOGV/5VaqdZGRm4i
-	VI45+MW1FvkYFqHiBtMVbEqILKvlSbviVgGejQw04+Vi2augiM4rEV+i2dAXulNiI7724s8TNg/ia
-	o2VSj/VeKVC5wX2iJOTVuUksPrbCz1yhIIn3HO3ZZZou76qVts/xsEBCovyNHnyGymBrwdzNAsMbp
-	DwfIaqXkTI/6tV3RwaNVXl6rP1D20sHWqKxxIiBhMVWcnD2ZMFFtd/z1WOAI3BItnqDLXBGTaw7iF
-	UTdM7YjLeFLO0dO2vxZQ==;
+	List-Owner; bh=lnq5/l+qPd4mtdalblU648+7puHsPnqe/2Mz7qJou5Y=; b=OOnU6EUyqyKSCk
+	5mDj0zpRDUxRFtzpf84zNKNE5QnNjmNSCJh99itxEotyCQ0VN2VYbRgAGDrAGrMVdLkMTFvtIuLVN
+	jDzmDZnyJOG2RwlHb1KQv6Wk2cAetoSI2oKFfq2k6lTp7qNeZ1Da0/C1XKRm/Oo3F3M6efJO/KivB
+	C6dUioTisww+9stjfv+VxtR/fqwcEu2fa9L9JRuRdj/NPtvOWHFLcVQgWsJK0ygrQQWtBVjejFQ7A
+	eCV9485oG9e4M1Jp0jnLLBEewmi5oevnVXfOtm1FqYfOgdv0eCM3GzIThwFaKBilF7NC98AUtHgqK
+	0avbgdTGy+UuOM1YEjeA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gvoTD-0008Mr-M4; Mon, 18 Feb 2019 19:20:51 +0000
-Received: from mail-ot1-f65.google.com ([209.85.210.65])
+	id 1gvp6b-0005vx-KX; Mon, 18 Feb 2019 20:01:33 +0000
+Received: from mail-ot1-f66.google.com ([209.85.210.66])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gvoTA-0008MP-T9
- for linux-mtd@lists.infradead.org; Mon, 18 Feb 2019 19:20:50 +0000
-Received: by mail-ot1-f65.google.com with SMTP id v62so21296219otb.3
- for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2019 11:20:48 -0800 (PST)
+ id 1gvp6P-0005sh-Oj
+ for linux-mtd@lists.infradead.org; Mon, 18 Feb 2019 20:01:30 +0000
+Received: by mail-ot1-f66.google.com with SMTP id g1so30245837otj.11
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2019 12:01:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=q5PP/fqqcw8lPXLf7c7x4bNqQ7ZyZBNggjfmpsk5TuA=;
- b=f7vhPHoYhUEgenbZwF5OVSZYlMSfPb/bmfG0AtbJkk55kCL2Q+XvFku8x4Y5Sl2e1X
- Ztm9M0QK5Nzh8XTt3NdU2yZjyB9xHfhs4oftZSomcuy78jO6FL5oBz5TdPLEjokz2cZ4
- NeY3vR+SKLbMpwY5RxaPoyi9ucyYYCHw3/a3isMw9ZoMJDd4B22+j5UE4NhS+QrHndXw
- XV+B72cJsYHsZVNucBPwKFpyA9E+yePkCyVXaTJiCnWptRDtduQdNKG6R9LeBQtWIjLn
- Z2SKuH2YD1yKkTNzdgma9NyFxEJwWu4V7uzncZCz7jLdBhCU49MDXZicGbEZarrwpnDg
- woBQ==
-X-Gm-Message-State: AHQUAuadgoGrL3BBV8b9Vu3dOWEZBbaDROMgKRL0JHqa3iTTrNCaNBj+
- RL7GbCpNmXZRn2KtHZlgLQ==
-X-Google-Smtp-Source: AHgI3Iamy8mpSiY+fCQWkRDykm8Z7Jt88LCZ+RiawaIm/zRUQFF51d03jDXbUQZCC+u3pD6ZtSzpRg==
-X-Received: by 2002:aca:4c8c:: with SMTP id z134mr244587oia.158.1550517647652; 
- Mon, 18 Feb 2019 11:20:47 -0800 (PST)
+ bh=Y3fBCzVJ+IFAl2IKW///XvVmMSodPHdurOmaqMNQlQw=;
+ b=LGYu4C6E15iZa8ci49UjitVH3Ba1SNSeie/fC1PJrC5yQCqAtL/LfX0s+IFRwDrl8b
+ OcgvcGg4YdAdGVgte/NvuLMRfEALYsV2DTt4NMQtxhlfRTBf+YTxPqhZ0Sgvwv9KqUjZ
+ wiJN+wBi30v5fNUm349mBk75dHWKETnckLgBxRxp7xc1ixYwAKQ7bzLPPyy+A46P0Pt0
+ ZkcZBdGHtynURp0DB35wtH221NMhrwxBUFpA1CZBuR7xLlbyisMkkrQtToG7c2LxdeuS
+ UWnJCdDP28+f1Gkv7lmAeQsj283oWDOeC9tmfZyIdOpxIzoHWbwByfMxIZyJx3z9IRjJ
+ +h0Q==
+X-Gm-Message-State: AHQUAuZC3ESdh6U3wNKheMDV0KaGZviPMdhY3NshSo4DRQO+MoLGRm8a
+ 2gbSuM/CM5Gx9gnZtMu9lw==
+X-Google-Smtp-Source: AHgI3IY1ToZXEDJTkjotJ6MF47OA0T72HTuLMZuH0FXGF+bENDzzOp3azBkgtpg04QWcHYfiaufiHA==
+X-Received: by 2002:aca:4cc3:: with SMTP id z186mr323944oia.90.1550520081033; 
+ Mon, 18 Feb 2019 12:01:21 -0800 (PST)
 Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
  [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id s186sm6368090oif.0.2019.02.18.11.20.46
+ by smtp.gmail.com with ESMTPSA id 88sm2901580otx.57.2019.02.18.12.01.20
  (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 18 Feb 2019 11:20:46 -0800 (PST)
-Date: Mon, 18 Feb 2019 13:20:46 -0600
+ Mon, 18 Feb 2019 12:01:20 -0800 (PST)
+Date: Mon, 18 Feb 2019 14:01:19 -0600
 From: Rob Herring <robh@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 2/9] dt-bindings: mtd: ingenic: Add compatible strings
- for the JZ4740
-Message-ID: <20190218192046.GA27154@bogus>
-References: <20190202231926.2444-1-paul@crapouillou.net>
- <20190202231926.2444-3-paul@crapouillou.net>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v2 08/10] mtd: rawnand: denali: decouple controller and
+ NAND chips
+Message-ID: <20190218200119.GA27213@bogus>
+References: <1549955582-30346-1-git-send-email-yamada.masahiro@socionext.com>
+ <1549955582-30346-9-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190202231926.2444-3-paul@crapouillou.net>
+In-Reply-To: <1549955582-30346-9-git-send-email-yamada.masahiro@socionext.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190218_112048_942010_F5363D51 
-X-CRM114-Status: GOOD (  15.80  )
+X-CRM114-CacheID: sfid-20190218_120121_945201_D7CBEAA9 
+X-CRM114-Status: GOOD (  17.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,11 +87,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Boris Brezillon <bbrezillon@kernel.org>, Mathieu Malaterre <malat@debian.org>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marek.vasut@gmail.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -99,25 +97,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat,  2 Feb 2019 20:19:19 -0300, Paul Cercueil wrote:
-> Add compatible strings to probe the jz4780-nand and jz4780-bch drivers
-> from devicetree on the JZ4725B and JZ4740 SoCs from Ingenic.
+On Tue, Feb 12, 2019 at 04:13:00PM +0900, Masahiro Yamada wrote:
+> Currently, this driver sticks to the legacy NAND model because it was
+> upstreamed before commit 2d472aba15ff ("mtd: nand: document the NAND
+> controller/NAND chip DT representation"). However, relying on the
+> dummy_controller is already deprecated.
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Switch over to the new controller/chip representation.
+> 
+> The struct denali_nand_info has been split into denali_controller
+> and denali_chip, to contain the controller data, per-chip data,
+> respectively.
+> 
+> One problem is, this commit changes the DT binding. So, as always,
+> the backward compatibility must be taken into consideration.
+> 
+> In the new binding, the controller node expects
+> 
+>   #address-cells = <1>;
+>   #size-cells = <0>;
+> 
+> ... since the child nodes represent NAND chips.
+> 
+> In the old binding, the controller node may have subnodes, but they
+> are MTD partitions.
+> 
+> The denali_dt_is_legacy_binding() exploits it to distinguish old/new
+> platforms.
+> 
+> Going forward, the old binding is only allowed for existing DT files.
+> I updated the binding document.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > ---
 > 
-> Changes:
+> Changes in v2: None
 > 
-> v2: - Change 'ingenic,jz4725b-nand' compatible string to
->       'ingenic,jz4740-nand' to reflect driver change
->     - Add 'ingenic,jz4740-bch' compatible string
->     - Document 'ingenic,oob-layout' property
-> 
->  .../devicetree/bindings/mtd/ingenic,jz4780-nand.txt | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
+>  .../devicetree/bindings/mtd/denali-nand.txt        |  39 +-
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+
+>  drivers/mtd/nand/raw/denali.c                      | 453 ++++++++++++---------
+>  drivers/mtd/nand/raw/denali.h                      | 117 +++++-
+>  drivers/mtd/nand/raw/denali_dt.c                   |  98 ++++-
+>  drivers/mtd/nand/raw/denali_pci.c                  |  30 +-
+>  5 files changed, 500 insertions(+), 237 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
