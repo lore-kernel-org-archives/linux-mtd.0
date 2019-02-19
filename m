@@ -4,82 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69E6BC43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Feb 2019 07:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E90FBC10F00
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Feb 2019 07:52:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 339F021903
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Feb 2019 07:23:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8F1721905
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Feb 2019 07:52:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ETlGS7y8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ycwVFAP/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 339F021903
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iVwJ7HlM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8F1721905
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PTETc/8L2voQjFxusC5sCE5w+svgkS3yqEYWFCWwcu0=; b=ETlGS7y8+kX9AG
-	7NLKYFX8a3pQrDspt3igfAT2us+IED+zYKYYyf9Y7tWG38lW8o76+lMAs3SUHTeJzswYda1ahEdvj
-	kMYWBfPRaluqwi4WfjvzRDlo3eM/AJ54ZdosbraTXogxIBKvIggKL6L/PzIcVnF7cFyowktWVIZ5J
-	22p+JmWg4KVQ/t8AxPHEF2bG5wNCwYZAdvDi+wNcdCGMVMtCilLPKiLb/HIe6+ucNt6LSPXS0LmMq
-	b1qLVJ9EImM2d+d2uSxJonT75Y3TvU7t9w/H4LR5p4F91BMpxh0xnm1s44UoKFmCmX6Ym1WvnaMzu
-	SXBa12jgBV106kBUgsvw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=aEPavds8RezUimUVgmtvINk1bpY1PrXiv/Gd8UT7LrE=; b=iVwJ7HlM/2dN7z
+	0ZDPsVa95v1cXqRQGYv6g5ATDD6IATCcOAL92FVVhvNLpwjRBrcsff71uEOIncOTUYYSwNIhYzVjZ
+	EMreuOlGK9MnrP70B2e+/zQKUIcZcGI3QCZY6gqJ82yXCCTtb+CqlESJd9S8AafYFyK5SNxzD1T0W
+	6KYVMqV1zDFSJWlKqMTOkJAc2358AQBDE79ufd3qW+4OH6ViX9KSjv+j6QuJaIsS6HK8QJzChpEJx
+	ZT8uDb2VASla+mpLBswFs24bcHzNw9pmC3kfylRRDZ7cS2ThQTE5jwZMFIQABddUh45DNWR5RqN2a
+	7bTH84paKVsRr1LMgs7g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gvzkt-0002Lj-DW; Tue, 19 Feb 2019 07:23:51 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1gw0Cn-00082i-3q; Tue, 19 Feb 2019 07:52:41 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gvzkq-0002LI-Db; Tue, 19 Feb 2019 07:23:50 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x1J7Ndtg040491;
- Tue, 19 Feb 2019 01:23:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1550561019;
- bh=RJ/ssE7i7ZV21iek2H9iOK7v6JGeQReTmBrQkJA9y4I=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=ycwVFAP/JYASxmbD/IrwNuQpQz+lJLsMROYj6egak0TkfWjoM1gzMLSqVtlIELNSj
- MG7EJ1SZkqXwBcOfKHIm4XzqNy5a+KCA8puX76zwE5ecKSiFtXuR6Ehes+2mhCZlvT
- YL7QVuIsxpwRBEHtgFQBxMZUVj5oDl5oXzMm7OdU=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x1J7NdvS055001
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 19 Feb 2019 01:23:39 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Tue, 19
- Feb 2019 01:23:38 -0600
-Received: from dflp32.itg.ti.com (10.64.6.15) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
- Tue, 19 Feb 2019 01:23:39 -0600
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x1J7NXaG024750;
- Tue, 19 Feb 2019 01:23:34 -0600
+ id 1gw0Cd-0007ua-BV; Tue, 19 Feb 2019 07:52:33 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C76BD26DA90;
+ Tue, 19 Feb 2019 07:52:27 +0000 (GMT)
+Date: Tue, 19 Feb 2019 08:52:24 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Vignesh R <vigneshr@ti.com>
 Subject: Re: [RFC PATCH 0/5] MTD: Add Initial Hyperbus support
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon <bbrezillon@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-References: <20190219063607.29949-1-vigneshr@ti.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <a843dbb2-054a-2afd-863f-2d1822b3ca33@ti.com>
-Date: Tue, 19 Feb 2019 12:54:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
-MIME-Version: 1.0
+Message-ID: <20190219085212.355921e5@kernel.org>
 In-Reply-To: <20190219063607.29949-1-vigneshr@ti.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20190219063607.29949-1-vigneshr@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190218_232348_536254_F84F269A 
-X-CRM114-Status: GOOD (  21.95  )
+X-CRM114-CacheID: sfid-20190218_235231_658600_9112AC7C 
+X-CRM114-Status: GOOD (  21.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,29 +66,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, Mason Yang <masonccyang@mxic.com.tw>,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Arnd Bergmann <arnd@arndb.de>, tudor.ambarus@microchip.com,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
++Sergei and Mason who recently worked on an HyperFlash controller.
 
+On Tue, 19 Feb 2019 12:06:02 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-On 19/02/19 12:06 PM, Vignesh R wrote:
-[...]
+> Cypress HyperBus is Low Signal Count, High Performance Double Data Rate Bus
+> interface between a host system master and one or more slave interfaces.
+> HyperBus is used to connect microprocessor, microcontroller, or ASIC
+> devices with random access NOR flash memory(called HyperFlash) or
+> self refresh DRAM(called HyperRAM).
+> 
+> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+> signal and either Single-ended clock(3.0V parts) or Differential clock
+> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+> At bus level, it follows a separate protocol described in HyperBus
+> specification[1].
+> 
+> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+> to that of existing parallel NORs. Since Hyperbus is x8 DDR bus,
+> its equivalent to x16 parallel NOR flash wrt bits per clk. But Hyperbus
+> operates at >166MHz frequencies.
+> HyperRAM provides direct random read/write access to flash memory
+> array.
+> Framework is modelled along the lines of spi-nor framework. HyperBus
+> memory controller(HBMC) drivers call hb_register_device() to register a
+> single HyperFlash device. HyperFlash core parses MMIO access
+> information from DT, sets up the map_info struct, probes CFI flash and
+> registers it with MTD framework.
+> 
+> This is an early RFC, to know if its okay to use maps framework and existing
+> CFI compliant flash support code to support Hyperflash
+> Also would like input on different types of HBMC master IPs out there
+> and their programming sequences.
+> Would appreciate any testing/review.
 > 
 > Tested on modified TI AM654 EVM with Cypress Hyperflash S26KS512 by
 > creating a UBIFS partition and writing and reading files to it.
 > Stress tested by writing/reading 16MB flash repeatedly at different
 > offsets using dd commmand.
 > 
-
-Here is the enumeration log from dmesg:
-https://pastebin.ubuntu.com/p/Vd5jYQT4FH/
-
 > HyperBus specification can be found at[1]
 > HyperFlash datasheet can be found at[2]
 > TI's HBMC controller details at[3]
@@ -154,9 +160,6 @@ https://pastebin.ubuntu.com/p/Vd5jYQT4FH/
 >  create mode 100644 include/linux/mtd/hyperbus.h
 > 
 
--- 
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
