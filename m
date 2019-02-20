@@ -2,85 +2,87 @@ Return-Path: <SRS0=2MvH=Q3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FC0C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A962C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:18:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C24020449
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:11:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AF622146E
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:18:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NfewsCXK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jJMz70Un";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uXLuDOZ5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C24020449
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I4LBLx2E";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dilger-ca.20150623.gappssmtp.com header.i=@dilger-ca.20150623.gappssmtp.com header.b="rYCPOjRG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AF622146E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oa5fbxhQYtVqb31a4sGnQef3oOuv/xfbABBBzFURQ5k=; b=NfewsCXKL6V2TY
-	JcjL9tJdlBVeSjPtkSSqlic37fxUVeCndcSj11sZhuQSncAtHtK0Ck5b5FOBl3RfJzaDqzp27kiim
-	lf4TCfcy4Bo8CO0e+EIHR4UAvWdcxUnkVQNE+d9i7Q0EVRoI+YH67WcPAQmrFqPQaQUDy2XwRsHXA
-	h1XYOMUB3bAxFk8xtxNhYNeBNFjYP7JjELTB3lux++XwnX6rGlAXw5cq0mNrDHp4mCOFUE+eNzY1B
-	5X8VOp6m9uAr8rRObJdaqAMxThj+QTaaQwEW+tjqlQLwi+cgiP2a25weeRQvYXxKeR8lsnhkUGLxC
-	u5o1KGkX7joYO2Z4sIXA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	References:To:In-Reply-To:Date:Subject:Mime-Version:Message-Id:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=KRLJVQFdQy4Hvn98QLTEAyjVGuhFKgYH7kmxkXhDa2I=; b=I4LBLx2EP2iHZjenzvVTpzyo1
+	nOms3aLn0VSZqsxORlfY6/P6N2iSua6UHcYgD78RkLTMudQJI8y7ME7xsEQ4LAZNJ8ARsxctvuRpe
+	CrNtdT0zHQp7Ld5FZjncZ0xYyYXs9SjfDR3vP2ZvLzCOzvUQsLNEhYFtlnYYwPAmkNGtKCp6pu1n3
+	RB3LCYnhRFNOIVFAsv+6lzxcgBTK3L34+8oArev8sFy9KQKPCcA4dOEK9ehdU4PM4fzmUr/Wl/mMS
+	BbuS3flsq2HZ6PiUjO/P+SDzUHo6QQNyZoZXvgBvOMzR3wovCgGx6qUyrdoYR7X2t3XCug61tL+Zo
+	K/HOSoK4Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwM29-0005rp-VC; Wed, 20 Feb 2019 07:11:10 +0000
-Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
+	id 1gwM8w-0007tX-KD; Wed, 20 Feb 2019 07:18:10 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwM1n-0005R1-92
- for linux-mtd@bombadil.infradead.org; Wed, 20 Feb 2019 07:10:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=qpNnpP8EDzbaYcaM9oFK8LLvAreNWmbZj+rNdgoQ+zU=; b=jJMz70UnWvlVwnei2z4UpUC632
- dlFawaaNNkErxZypMmr2K3/QtwddWNkymwBjO46ZmUNL9LtfWZCLxtjXEDSsA1sPVZNDCDdj1xBKb
- wEM83G1hbzcLzdG/245G2ORvj13wwBHhI1K/ArSB8Tam/Ifdw0pyIk6TWMS84YpFolw16rcXRdErU
- fhsyGbM4GA5fEy8XiEXDUfwW7NEXVJPbB44LoXOtlJHJ3yFoAUWRvNjxBst/E206g4JhbLs7R9kEW
- Yga4bFiHIBPQuTKZhFH1Gpr21SdXhMqACqujN3Gzm5rKXTDNGrXFJpn6VBFwI3wQgiGS9jR5+E61I
- VJHFAQNw==;
-Received: from mail.kernel.org ([198.145.29.99])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwLmJ-0003ml-3O
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 06:54:48 +0000
-Received: from sol.localdomain (c-107-3-167-184.hsd1.ca.comcast.net
- [107.3.167.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A71B32196F;
- Wed, 20 Feb 2019 06:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550645683;
- bh=6wITDHkKCD2vVxskyRHycH8wt4kPh2KV3XiDU2eSKPA=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=uXLuDOZ5cgD3g7iCEwuaZYf+tIwcugspR2OEGJkICBwclV75E7EY5ezIHQAARy/2L
- R9CCtsco7hWr9DAd7r3ahGciwPVIgkks3EDNnf8IM/MJzHcRaDblvG9x8NElMeutPL
- edDtYt6a43TT7Eww3shZ/9n55qigQS52PfntSvbA=
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Subject: [RFC PATCH v3 16/18] f2fs: wire up new fscrypt ioctls
-Date: Tue, 19 Feb 2019 22:52:47 -0800
-Message-Id: <20190220065249.32099-17-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.20.1
+ id 1gwM8s-0007tE-JB
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 07:18:08 +0000
+Received: by mail-pg1-x544.google.com with SMTP id r124so11415580pgr.3
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2019 23:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+ h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+ :references; bh=GEUQKOpjPupCXwnbUjr5UznGaYKveqEGyssxABGyJ0k=;
+ b=rYCPOjRGItW9t2FeK5tt7lK1rD840Re4S4+ZIweTD+0zu+ofchQlh/Vk0y4GSXHWcZ
+ Yf0rKrYU+5Tv6xWdZ/18miqGAYPZ6RFgONZ/vsvKKzeiO1OylJzehO0tzXB6Og8ClhRw
+ k2SnmMijU1HIROXJzODoLAEw104rdu9RieJ9UAOTwxm0jsR2P6kxrcGfUxBecLWlIvf0
+ /XQjtLrnRnwlN0XFPT++DloSgj2RhsHKLBuqCQ94I3uHHggOHcBJvcb8Mh9m6pBH2cKt
+ g7srqtPR51YwXPWWftkOBTs1bCUf9Fd4hZ16OUpRuWBu7vgcmRi0SgXeADSb39QP1fco
+ fbIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:message-id:mime-version:subject:date
+ :in-reply-to:cc:to:references;
+ bh=GEUQKOpjPupCXwnbUjr5UznGaYKveqEGyssxABGyJ0k=;
+ b=R7CW7RE8iphThoaKjtf/ayy7g2GAN9dS3ainzHKciKeR/V4YpNBcLv1XQ1fKIhiNbP
+ NF+eHa+5Ati7GsTyVgeZKDCRAQFQQBRwty4ypCyY5l6Vj2MNbP9n+EFhwPfESh5m3Jc3
+ 5SSJHTR4u94qleVheK+hlupKRZ1BwfuL4ifDO0Yl48cfMsW/wYTEoiRBm8lBPtqcRaqc
+ kCWWromGT8kemTZt9DWW9JCjXTgobeSk53h49DDAJvD6eBOlXgzO/vvYUPCMT3J92KCB
+ XEDe4c2Nwaq4B9f9YCrbfHN/mLXvxmSr8yQW+P1oouYb/L43xEooArABDTEhW+HNKa5h
+ uHlA==
+X-Gm-Message-State: AHQUAubquCFAoZvBCtTc6DSU3S4H8LXfavFI7W1OauZry9HCifT1Hxo6
+ hlJKf+GH32e9COnapcI1qSxPFQlVGQ4=
+X-Google-Smtp-Source: AHgI3IabwllYWizAYxTL1+aeL8d/ybCUkKAK1xAVvCV+ql42FNQJtchFEEvenNAHl2w+2z+vqOOh0A==
+X-Received: by 2002:a62:f5c8:: with SMTP id b69mr27882076pfm.128.1550647085444; 
+ Tue, 19 Feb 2019 23:18:05 -0800 (PST)
+Received: from cabot.frontierlocal.net ([47.158.158.91])
+ by smtp.gmail.com with ESMTPSA id i14sm14315075pgt.82.2019.02.19.23.18.03
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 19 Feb 2019 23:18:04 -0800 (PST)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <1660609D-3525-4485-9652-57976DB020F4@dilger.ca>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [RFC PATCH v3 00/18] fscrypt: key management improvements
+Date: Tue, 19 Feb 2019 23:18:21 -0800
 In-Reply-To: <20190220065249.32099-1-ebiggers@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
 References: <20190220065249.32099-1-ebiggers@kernel.org>
-MIME-Version: 1.0
+X-Mailer: Apple Mail (2.3273)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190220_015447_295045_529633D2 
-X-CRM114-Status: GOOD (  12.20  )
+X-CRM114-CacheID: sfid-20190219_231806_632669_DF487FA8 
+X-CRM114-Status: GOOD (  30.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,120 +95,283 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
- Paul Crowley <paulcrowley@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
+ keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Satya Tangirala <satyat@google.com>, Paul Crowley <paulcrowley@google.com>
+Content-Type: multipart/mixed; boundary="===============4928510563471635485=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Wire up the new ioctls for adding and removing fscrypt keys to/from the
-filesystem, and the new ioctl for retrieving v2 encryption policies.
+--===============4928510563471635485==
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_BF861CC0-6F7D-45E4-A4DC-D77A4C3AE913";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-FS_IOC_REMOVE_ENCRYPTION_KEY also required making f2fs_drop_inode() call
-fscrypt_drop_inode().
 
-For more details see Documentation/filesystems/fscrypt.rst, as well as
-the fscrypt patches that added the implementation of these ioctls.
+--Apple-Mail=_BF861CC0-6F7D-45E4-A4DC-D77A4C3AE913
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/file.c  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/f2fs/super.c |  2 ++
- 2 files changed, 48 insertions(+)
+On Feb 19, 2019, at 10:52 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> Hello,
+>=20
+> This patchset makes major improvements to how keys are added, removed,
+> and derived in fscrypt, aka ext4/f2fs/ubifs encryption.  It does this =
+by
+> adding new ioctls that add and remove encryption keys directly to/from
+> the filesystem, and by adding a new encryption policy version ("v2")
+> where the user-provided keys are only used as input to HKDF-SHA512 and
+> are identified by their cryptographic hash.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index ba5954f41e14..3e6da48e0530 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2093,6 +2093,40 @@ static int f2fs_ioc_get_encryption_pwsalt(struct file *filp, unsigned long arg)
- 	return err;
- }
- 
-+static int f2fs_ioc_get_encryption_policy_ex(struct file *filp,
-+					     unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_get_policy_ex(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_add_encryption_key(struct file *filp, unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_add_key(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_remove_encryption_key(struct file *filp, unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_remove_key(filp, (const void __user *)arg);
-+}
-+
-+static int f2fs_ioc_get_encryption_key_status(struct file *filp,
-+					      unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
-+}
-+
- static int f2fs_ioc_gc(struct file *filp, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
-@@ -2998,6 +3032,14 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return f2fs_ioc_get_encryption_policy(filp, arg);
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 		return f2fs_ioc_get_encryption_pwsalt(filp, arg);
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+		return f2fs_ioc_get_encryption_policy_ex(filp, arg);
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+		return f2fs_ioc_add_encryption_key(filp, arg);
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+		return f2fs_ioc_remove_encryption_key(filp, arg);
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-+		return f2fs_ioc_get_encryption_key_status(filp, arg);
- 	case F2FS_IOC_GARBAGE_COLLECT:
- 		return f2fs_ioc_gc(filp, arg);
- 	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
-@@ -3117,6 +3159,10 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case F2FS_IOC_SET_ENCRYPTION_POLICY:
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 	case F2FS_IOC_GET_ENCRYPTION_POLICY:
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
- 	case F2FS_IOC_GARBAGE_COLLECT:
- 	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
- 	case F2FS_IOC_WRITE_CHECKPOINT:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 0f3db3a8e5cb..1dcfe55ee1d4 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -927,6 +927,8 @@ static int f2fs_drop_inode(struct inode *inode)
- 		return 0;
- 	}
- 	ret = generic_drop_inode(inode);
-+	if (!ret)
-+		ret = fscrypt_drop_inode(inode);
- 	trace_f2fs_drop_inode(inode, ret);
- 	return ret;
- }
--- 
-2.20.1
+Just to confirm for the layman reader - the fact that the crypto keys
+are registered with the filesystem and not with the user process doesn't
+prevent user(s) from having different crypto keys for different subdirs
+in a single filesystem?
 
+Secondly, does this progress fscrypt toward allowing multiple master =
+keys
+to decrypt a single per-file key?
+
+Cheers, Andreas
+
+> All new APIs and all cryptosystem changes are documented in
+> Documentation/filesystems/fscrypt.rst.  Userspace can use the new key
+> management ioctls with existing encrypted directories, but migrating =
+to
+> v2 encryption policies is needed for the full benefits.
+>=20
+> These changes solve four interrelated problems:
+>=20
+> (1) Providing fscrypt keys via process-subscribed keyrings is abusing
+>    encryption as an OS-level access control mechanism, causing many
+>    bugs where processes don't get access to the keys they need -- =
+e.g.,
+>    when a 'sudo' command or a system service needs to access encrypted
+>    files.  It's also inconsistent with the filesystem/VFS "view" of
+>    encrypted files which is global, so sometimes things randomly =
+happen
+>    to work anyway due to caching.  Regardless, currently almost all
+>    fscrypt users actually do need global keys, so they're having to =
+use
+>    workarounds that heavily abuse the session or user keyrings, e.g.
+>    Android and Chromium OS both use a systemwide "session keyring" and
+>    the 'fscrypt' tool links all user keyrings into root's user =
+keyring.
+>=20
+> (2) Currently there's no way to securely and efficiently remove a
+>    fscrypt key such that not only is the original key wiped, but also
+>    all files and directories protected by that key are "locked" and
+>    their per-file keys wiped.  Many users want this and are using
+>    'echo 2 > /proc/sys/vm/drop_caches' as a workaround, but this is
+>    root-only, and also is overkill so can be a performance disaster.
+>=20
+> (3) The key derivation function (KDF) that fscrypt uses to derive
+>    per-file keys is nonstandard, inflexible, and has some weaknesses
+>    such as being reversible and not evenly distributing the entropy
+>    from the user-provided keys.
+>=20
+> (4) fscrypt doesn't check that the correct key was supplied.  This can
+>    be a security vulnerability, since it allows malicious local users
+>    to associate the wrong key with files to which they have read-only
+>    access, causing other users' processes to read/write the wrong =
+data.
+>=20
+> Ultimately, the solutions to these problems all tie into each other.  =
+By
+> adding a filesystem-level encryption keyring with ioctls to add/remove
+> keys to/from it, the keys are made usable filesystem-wide (solves
+> problem #1).  It also becomes easy to track the inodes that were
+> "unlocked" with each key, so they can be evicted when the key is =
+removed
+> (solves problem #2).  Moreover, the filesystem-level keyring is a
+> natural place to store an HMAC transform keyed by each key, thus =
+making
+> it easy and efficient to switch the KDF to HKDF (solves problem #3).
+>=20
+> Finally, to check that the correct key was supplied, I use HKDF to
+> derive a cryptographically secure key_identifier for each key (solves
+> problem #4).  This in combination with key quotas and other careful
+> precautions also makes it safe to allow non-root users to add and =
+remove
+> keys to/from the filesystem-level keyring.  Thus, all problems are
+> solved without having to restrict the fscrypt API to root only.
+>=20
+> The patchset is organized as follows:
+>=20
+> - Patches 1-10 add new ioctls FS_IOC_ADD_ENCRYPTION_KEY,
+>  FS_IOC_REMOVE_ENCRYPTION_KEY, and FS_IOC_GET_ENCRYPTION_KEY_STATUS.
+>  Adding a key logically "unlocks" all files on the filesystem that are
+>  protected by that key; removing a key "locks" them again.
+>=20
+> - Patches 11-14 add support for v2 encryption policies.
+>=20
+> - Patches 15-17 wire up the new ioctls to ext4, f2fs, and ubifs.
+>=20
+> - Patch 18 updates the fscrypt documentation for all the changes.
+>=20
+> Changes v2 =3D> v3:
+>    - Use ->drop_inode() to trigger the inode eviction during/after
+>      FS_IOC_REMOVE_ENCRYPTION_KEY, as suggested by Dave Chinner.
+>    - A few small cleanups.
+>=20
+> v1 of this patchset was sent in October 2017 with title "fscrypt:
+> filesystem-level keyring and v2 policy support".  This revived version
+> follows the same basic design but incorporates numerous improvements,
+> such as splitting keyinfo.c into multiple files for much better
+> understandability, and introducing "per-mode" encryption keys to
+> implement the semantics of the DIRECT_KEY encryption policy flag.
+>=20
+> This applies to the fscrypt.git tree.  You can also get it from git =
+at:
+>=20
+> 	Repository:   =
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+> 	Branch:       fscrypt-key-mgmt-improvements-v3
+>=20
+> I've started writing xfstests for the new APIs.  So far they cover =
+basic
+> functionality.  They can be found at:
+>=20
+> 	Repository:   =
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+> 	Branch:       fscrypt-key-mgmt-improvements
+>=20
+> The xfstests depend on new xfs_io commands which can be found at:
+>=20
+> 	Repository:   =
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfsprogs-dev.git
+> 	Branch:       fscrypt-key-mgmt-improvements
+>=20
+> I've also made proof-of-concept changes to the 'fscrypt' userspace
+> program (https://github.com/google/fscrypt) to make it support v2
+> encryption policies.  You can find these changes in git at:
+>=20
+> 	Repository:   https://github.com/ebiggers/fscrypt.git
+> 	Branch:       fscrypt-key-mgmt-improvements
+>=20
+> To make the 'fscrypt' userspace program experimentally use v2 =
+encryption
+> policies on new encrypted directories, add the following to
+> /etc/fscrypt.conf within the "options" section:
+>=20
+> 	"policy_version": "2"
+>=20
+> It's also planned for Android and Chromium OS to switch to the new
+> ioctls and eventually to v2 encryption policies.  Work-in-progress,
+> proof-of-concept changes by Satya Tangirala for AOSP can be found at
+> =
+https://android-review.googlesource.com/q/topic:fscrypt-key-mgmt-improveme=
+nts
+>=20
+> Eric Biggers (18):
+>  fs, fscrypt: move uapi definitions to new header <linux/fscrypt.h>
+>  fscrypt: use FSCRYPT_ prefix for uapi constants
+>  fscrypt: use FSCRYPT_* definitions, not FS_*
+>  fs: add ->s_master_keys to struct super_block
+>  fscrypt: add ->ci_inode to fscrypt_info
+>  fscrypt: refactor v1 policy key setup into keysetup_legacy.c
+>  fscrypt: add FS_IOC_ADD_ENCRYPTION_KEY ioctl
+>  fs/dcache.c: add shrink_dcache_inode()
+>  fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+>  fscrypt: add FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl
+>  fscrypt: add an HKDF-SHA512 implementation
+>  fscrypt: v2 encryption policy support
+>  fscrypt: allow unprivileged users to add/remove keys for v2 policies
+>  fscrypt: require that key be added when setting a v2 encryption =
+policy
+>  ext4: wire up new fscrypt ioctls
+>  f2fs: wire up new fscrypt ioctls
+>  ubifs: wire up new fscrypt ioctls
+>  fscrypt: document the new ioctls and policy version
+>=20
+> Documentation/filesystems/fscrypt.rst | 670 +++++++++++++++----
+> MAINTAINERS                           |   1 +
+> fs/crypto/Kconfig                     |   2 +
+> fs/crypto/Makefile                    |  10 +-
+> fs/crypto/crypto.c                    |  14 +-
+> fs/crypto/fname.c                     |   5 +-
+> fs/crypto/fscrypt_private.h           | 364 ++++++++--
+> fs/crypto/hkdf.c                      | 188 ++++++
+> fs/crypto/keyinfo.c                   | 592 -----------------
+> fs/crypto/keyring.c                   | 911 ++++++++++++++++++++++++++
+> fs/crypto/keysetup.c                  | 540 +++++++++++++++
+> fs/crypto/keysetup_legacy.c           | 340 ++++++++++
+> fs/crypto/policy.c                    | 388 ++++++++---
+> fs/dcache.c                           |  32 +
+> fs/ext4/ioctl.c                       |  24 +
+> fs/ext4/super.c                       |   3 +
+> fs/f2fs/file.c                        |  46 ++
+> fs/f2fs/super.c                       |   2 +
+> fs/super.c                            |   3 +
+> fs/ubifs/ioctl.c                      |  24 +-
+> fs/ubifs/super.c                      |   3 +
+> include/linux/dcache.h                |   1 +
+> include/linux/fs.h                    |   1 +
+> include/linux/fscrypt.h               |  43 +-
+> include/uapi/linux/fs.h               |  54 +-
+> include/uapi/linux/fscrypt.h          | 163 +++++
+> 26 files changed, 3496 insertions(+), 928 deletions(-)
+> create mode 100644 fs/crypto/hkdf.c
+> delete mode 100644 fs/crypto/keyinfo.c
+> create mode 100644 fs/crypto/keyring.c
+> create mode 100644 fs/crypto/keysetup.c
+> create mode 100644 fs/crypto/keysetup_legacy.c
+> create mode 100644 include/uapi/linux/fscrypt.h
+>=20
+> --
+> 2.20.1
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_BF861CC0-6F7D-45E4-A4DC-D77A4C3AE913
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAlxs/z0ACgkQcqXauRfM
+H+DlvBAAvOZ9ghTw4OWfocz9i6Sq+5IyW5m9q3LwPQBc5IqlEIh/Z1UQxEcHtzAf
+IS+jZylXuPON90IK6FT1YnjDOOGXnua+ZBIF3Lv8AsUilT26gXYaTPxDD5gta8kb
+nRArNAoVuVTw9FiDAN459njJb8FVayL9IUvMQo+S0ALbkTVXi4H54MNlq9jN46bQ
+aFF3q4Vr7L57YlR2WJu9n6AykfrZztWlXeLuHrlxWsCzxYmScty+NtmsY/iGHXke
+Eo8WBVBi7Js1SA/vYvG9aqDQiATThrl+4RDOw08XQ5gemKF8MRvVFXnnBAEwwOn+
+vPVPL0vRoX5UIiL5vPuv+IplrMaL72ckdMVMar7sZBCBhYkHejoP6uPcJZSyEosP
+WcXFBmVBs+q00gaeHEVsefzNmpls8rIbtAmK3AlcZ95bP22Z/C3eW2LPgxDmgYhM
+2nOQIHEPegZdyaGNybRC3Z+Sqa9YQIOX3/0ql9KM9v04frVNnfvP/qpHeHjsExM6
+8zbXLC23uxDfvmvwK0vNpjKfcnbUWXwAD6zyj6L1ONQpFPNBr2L8/RAWoJukO3M7
+ND2mLK9794N3c0XxirJe78aNz0wLnCAcMh2fX4O0AIOOGcDR5x1T5pfzyB85XqcE
+Jqitr7AXTq0S2InbBiTICa0oI2HCALvhcOXWoL2mYsqJVqMJgmk=
+=5CU+
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_BF861CC0-6F7D-45E4-A4DC-D77A4C3AE913--
+
+
+--===============4928510563471635485==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4928510563471635485==--
+
