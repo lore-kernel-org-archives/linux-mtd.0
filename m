@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D7CCC43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 06:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A13ACC43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:11:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E170E2087B
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 06:59:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D9BF20449
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:11:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dbQJqM0P";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yGkrdo52"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E170E2087B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NCJNv9V3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="X0GptzFs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqxaVwe7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D9BF20449
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qAOTxrdRQbTfCFtYD1IoX1jOvKUmZ4sEmEwT8ImreRE=; b=dbQJqM0PYGXAzQ
-	gqS91F5pEDkoj6G8zgQMRUcYSfzSboCTElBCj1QcpDMD5zrs6YCxkRm+AxovsyuoJVf7TsiwRgKgq
-	CvxCYXZQQeKTnnieSBmLrzHFjaxBATAyH4E8cqvOILn5tAiYiKd5wwNheJLj9XSYf4tyt0bUBnepO
-	t+4K0lRz9tZhrkTBp9dRe5HZuQ48OQeYmMO5rZzSt1J4Mvt+NNcj9C/cpiMsJ08q+BHk0HQfhDWnd
-	X+jvm7ln0A4rHReUe4Rc1xupiF14Q9Jn0TSzOvPQTkL6C401w5CkhqSQPVEJRV5YyxPBEh2cCZtls
-	TH4XfVyYWEdFYg+8sJug==;
+	List-Owner; bh=mAWnAhcnfbAckEaJ93lH7Psf92QtcsQyKBTiA2i59Yk=; b=NCJNv9V3tYg9hS
+	C4SNhf0v+k44TnJLTuJy8eW+asyw3/ERY1eal6x28nv8Nz0BovZSZzr8n6XH7izBuMGiKISKk6+EA
+	xAve0j6y8q6u7xUqS8A6+vxEK2lqKAlElON5RBnI9QVbdHC3O3u604xKYZqShEFn0JX4vQKQs7bTF
+	XhffsSB0P3rNaTbO444AyVOsqvzWRhrN1HptKWoaeCn+W/4wFQ1SD8JGpwULxJx0J86EBfXCqXMjj
+	RkrUQOOSRCS1PiSYyACk4+JtS0oBUZuR6iYUybUO7z+dpwb9h3R/kiseNtHeXlcTNKxqRfjV8CEpS
+	EQaVClT4Qk3NmYUvVQJA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwLqv-0000V2-PF; Wed, 20 Feb 2019 06:59:33 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gwM1y-0005ec-Et; Wed, 20 Feb 2019 07:10:58 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwLmG-00030w-Bx
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 06:54:53 +0000
+ id 1gwM1l-0005R1-Iz
+ for linux-mtd@bombadil.infradead.org; Wed, 20 Feb 2019 07:10:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=qmlRVYyDnOGMhmx1758GoHH46/sKb/2J10CgCLc/WM4=; b=X0GptzFsQ5MF6BvQ4rD8fGyxRc
+ Qsh33M3TCdzfPzAINm9ra1OwnGclccxSacfjQfrPCarAr5PBxuujtP+Jkrp04mXfK/1NebGXRORec
+ gUaR473F13DqIwuLkQtagLcM7zQtUjqb+01LexwyqFmhK8ajKPtd/QGyM68MvjO1XpsdLn3SlJrCN
+ LD6qF04TXedaSqB8RGFLy9u8wae394cBUOprPRgITxk2KoVlQELH8wV0P/3wgzOcppWZKfG0CKgxs
+ FpFvFxJdf3UHo2jEtQ+0EqR7kUgSFgkrAA9DroT7s698VffvLLaMbbzNjfntE8tM1VYPjy+MkjjxN
+ R9WIO7Ng==;
+Received: from mail.kernel.org ([198.145.29.99])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gwLmJ-0003mh-32
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 06:54:48 +0000
 Received: from sol.localdomain (c-107-3-167-184.hsd1.ca.comcast.net
  [107.3.167.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1B41921907;
- Wed, 20 Feb 2019 06:54:39 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 11E5E21924;
+ Wed, 20 Feb 2019 06:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550645679;
- bh=++6mrgjJQEDWCFGV5FOmIZq6uCObzn0tc+lyF3xtNb4=;
+ s=default; t=1550645680;
+ bh=3DkH0bp0zUc9LxIu6pVm0k4lPIo9EbHGyZmwkcsjTQE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=yGkrdo52M3MopZKt1gxAAmtSOLdlNkkq/EozzyvjEvQeamxTiw5nIHVDwt0DuIvL1
- Az6ys4HoJlfNgUDQ7xsFz1PHjONrbYz/Ua02QG2oWUGYdrWr7dadOE5pDCieoj6kOV
- p1PN2r7CVTX4hgYBz1y6BKQNUxM/w3q5jD98YYvo=
+ b=dqxaVwe7QoMa61gO3VJ/TUgUBuwX6RQIEzuQdyivEsblIn5E+3uKShGNGTOHGVZzO
+ Vo2uGLKQ0xXgfCWeg7HCNi+jjSfZNJ/g01k8WkWbxEV9/Vrxd4L+fS6YqivaDDgo6H
+ h2w6lW9llT1AEbWCPoRUXB72wG8kGiyE7opEly7E=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [RFC PATCH v3 09/18] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
-Date: Tue, 19 Feb 2019 22:52:40 -0800
-Message-Id: <20190220065249.32099-10-ebiggers@kernel.org>
+Subject: [RFC PATCH v3 11/18] fscrypt: add an HKDF-SHA512 implementation
+Date: Tue, 19 Feb 2019 22:52:42 -0800
+Message-Id: <20190220065249.32099-12-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190220065249.32099-1-ebiggers@kernel.org>
 References: <20190220065249.32099-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190219_225444_855810_65231FBF 
-X-CRM114-Status: GOOD (  32.15  )
+X-CRM114-CacheID: sfid-20190220_015447_292249_396AA252 
+X-CRM114-Status: GOOD (  30.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,651 +103,289 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a new fscrypt ioctl, FS_IOC_REMOVE_ENCRYPTION_KEY.  This ioctl
-removes an encryption key that was added by FS_IOC_ADD_ENCRYPTION_KEY.
-It wipes the secret key itself, then "locks" the encrypted files and
-directories that had been unlocked using that key -- implemented by
-evicting the relevant dentries and inodes from the VFS caches.
+Add an implementation of HKDF (RFC 5869) to fscrypt, for the purpose of
+deriving additional key material from the fscrypt master keys for v2
+encryption policies.  HKDF is a key derivation function built on top of
+HMAC.  We choose SHA-512 for the underlying unkeyed hash, and use an
+"hmac(sha512)" transform allocated from the crypto API.
 
-The problem this solves is that many fscrypt users want the ability to
-remove encryption keys, causing the corresponding encrypted directories
-to appear "locked" (presented in ciphertext form) again.  Moreover,
-users want removing an encryption key to *really* remove it, in the
-sense that the removed keys cannot be recovered even if kernel memory is
-compromised, e.g. by the exploit of a kernel security vulnerability or
-by a physical attack.  This is desirable after a user logs out of the
-system, for example.  In many cases users even already assume this to be
-the case and are surprised to hear when it's not.
+We'll be using this to replace the AES-ECB based KDF currently used to
+derive the per-file encryption keys.  While the AES-ECB based KDF is
+believed to meet the original security requirements, it is nonstandard
+and has problems that don't exist in modern KDFs such as HKDF:
 
-It is not sufficient to simply unlink the master key from the keyring
-(or to revoke or invalidate it), since the actual encryption transform
-objects are still pinned in memory by their inodes.  Therefore, to
-really remove a key we must also evict the relevant inodes.
+1. It's reversible.  Given a derived key and nonce, an attacker can
+   easily compute the master key.  This is okay if the master key and
+   derived keys are equally hard to compromise, but now we'd like to be
+   more robust against threats such as a derived key being compromised
+   through a timing attack, or a derived key for an in-use file being
+   compromised after the master key has already been removed.
 
-Currently one workaround is to run 'sync && echo 2 >
-/proc/sys/vm/drop_caches'.  But, that evicts all unused inodes in the
-system rather than just the inodes associated with the key being
-removed, causing severe performance problems.  Moreover, it requires
-root privileges, so regular users can't "lock" their encrypted files.
+2. It doesn't evenly distribute the entropy from the master key; each 16
+   input bytes only affects the corresponding 16 output bytes.
 
-Another workaround, used in Chromium OS kernels, is to add a new
-VFS-level ioctl FS_IOC_DROP_CACHE which is a more restricted version of
-drop_caches that operates on a single super_block.  It does:
+3. It isn't easily extensible to deriving other values or keys that are
+   or will be needed, such as per-mode keys (which is what DIRECT_KEY
+   policies really should use, rather than the master key directly as
+   they do now) or a public hash for securely identifying the key (to
+   ensure that an encrypted file cannot be set up with the wrong key).
 
-        shrink_dcache_sb(sb);
-        invalidate_inodes(sb, false);
-
-But it's still a hack.  Yet, the major users of filesystem encryption
-want this feature badly enough that they are actually using these hacks.
-
-To properly solve the problem, start maintaining a list of the inodes
-which have been "unlocked" using each master key.  Originally this
-wasn't possible because the kernel didn't keep track of in-use master
-keys at all.  But, with the ->s_master_keys keyring it is now possible.
-
-Then, add an ioctl FS_IOC_REMOVE_ENCRYPTION_KEY.  It finds the specified
-master key in ->s_master_keys, then wipes the secret key itself, which
-prevents any additional inodes from being unlocked with the key.  Then,
-it syncs the filesystem and evicts the inodes in the key's list.  The
-normal inode eviction code will free and wipe the per-file keys (in
-->i_crypt_info).  Note that freeing ->i_crypt_info without evicting the
-inodes was also considered, but would have been racy.
-
-Some inodes may still be in use when a master key is removed, and we
-can't simply revoke random file descriptors, mmap's, etc.  Thus, the
-ioctl simply skips in-use inodes, and returns -EBUSY to indicate that
-some inodes weren't evicted.  The master key *secret* is still removed,
-but the fscrypt_master_key struct remains to keep track of the remaining
-inodes.  Userspace can then retry the ioctl to evict the remaining
-inodes.  Alternatively, if userspace adds the key again, the refreshed
-secret will be associated with the existing list of inodes so they
-remain correctly tracked for future key removals.
-
-The ioctl doesn't wipe pagecache pages.  Thus, we tolerate that after a
-kernel compromise some portions of plaintext file contents may still be
-recoverable from memory.  This can be solved be enabling page poisoning
-system-wide, which security conscious users may choose to do.  But it's
-very difficult to solve otherwise, e.g. note that plaintext file
-contents may have been read in other places than pagecache pages.
-
-Like FS_IOC_ADD_ENCRYPTION_KEY, FS_IOC_REMOVE_ENCRYPTION_KEY is
-initially restricted to privileged users only.  This is sufficient for
-some use cases, but not all.  A later patch will relax this restriction,
-but it will require introducing key hashes, among other changes.
+HKDF solves all the above problems.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h  |  53 ++++++++-
- fs/crypto/keyring.c          | 201 ++++++++++++++++++++++++++++++++++-
- fs/crypto/keysetup.c         | 103 +++++++++++++++++-
- include/linux/fscrypt.h      |  13 +++
- include/uapi/linux/fscrypt.h |   7 ++
- 5 files changed, 372 insertions(+), 5 deletions(-)
+ fs/crypto/Kconfig           |   2 +
+ fs/crypto/Makefile          |   1 +
+ fs/crypto/fscrypt_private.h |  15 +++
+ fs/crypto/hkdf.c            | 188 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 206 insertions(+)
+ create mode 100644 fs/crypto/hkdf.c
 
+diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+index f0de238000c0..c160598a9fe2 100644
+--- a/fs/crypto/Kconfig
++++ b/fs/crypto/Kconfig
+@@ -7,6 +7,8 @@ config FS_ENCRYPTION
+ 	select CRYPTO_XTS
+ 	select CRYPTO_CTS
+ 	select CRYPTO_SHA256
++	select CRYPTO_SHA512
++	select CRYPTO_HMAC
+ 	select KEYS
+ 	help
+ 	  Enable encryption of files and directories.  This
+diff --git a/fs/crypto/Makefile b/fs/crypto/Makefile
+index accdd622c908..4977b4347928 100644
+--- a/fs/crypto/Makefile
++++ b/fs/crypto/Makefile
+@@ -2,6 +2,7 @@ obj-$(CONFIG_FS_ENCRYPTION)	+= fscrypto.o
+ 
+ fscrypto-y := crypto.o \
+ 	      fname.o \
++	      hkdf.o \
+ 	      hooks.o \
+ 	      keyring.o \
+ 	      keysetup.o \
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index b4c431208555..cc1862c9baa1 100644
+index cc1862c9baa1..e2a65189eb57 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -78,6 +78,19 @@ struct fscrypt_info {
- 	/* Back-pointer to the inode */
- 	struct inode *ci_inode;
+@@ -175,6 +175,21 @@ extern bool fscrypt_fname_encrypted_size(const struct inode *inode,
+ 					 u32 orig_len, u32 max_len,
+ 					 u32 *encrypted_len_ret);
  
-+	/*
-+	 * The master key with which this inode was unlocked (decrypted).  This
-+	 * will be NULL if the master key was found in a process-subscribed
-+	 * keyring rather than in the filesystem-level keyring.
-+	 */
-+	struct key *ci_master_key;
++/* hkdf.c */
 +
-+	/*
-+	 * Link in list of inodes that were unlocked with the master key.
-+	 * Only used when ->ci_master_key is set.
-+	 */
-+	struct list_head ci_master_key_link;
++struct fscrypt_hkdf {
++	struct crypto_shash *hmac_tfm;
++};
 +
- 	/*
- 	 * If non-NULL, then encryption is done using the master key directly
- 	 * and ci_ctfm will equal ci_direct_key->dk_ctfm.
-@@ -186,14 +199,52 @@ struct fscrypt_master_key_secret {
-  */
- struct fscrypt_master_key {
- 
--	/* The secret key material */
-+	/*
-+	 * The secret key material.  After FS_IOC_REMOVE_ENCRYPTION_KEY is
-+	 * executed, this is wiped and no new inodes can be unlocked with this
-+	 * key; however, there may still be inodes in ->mk_decrypted_inodes
-+	 * which could not be evicted.  As long as some inodes still remain,
-+	 * FS_IOC_REMOVE_ENCRYPTION_KEY can be retried, or
-+	 * FS_IOC_ADD_ENCRYPTION_KEY can add the secret again.
-+	 *
-+	 * Locking: protected by key->sem.
-+	 */
- 	struct fscrypt_master_key_secret	mk_secret;
- 
- 	/* Arbitrary key descriptor which was assigned by userspace */
- 	struct fscrypt_key_specifier		mk_spec;
- 
-+	/*
-+	 * Length of ->mk_decrypted_inodes, plus one if mk_secret is present.
-+	 * Once this goes to 0, the master key is removed from ->s_master_keys.
-+	 * The 'struct fscrypt_master_key' will continue to live as long as the
-+	 * 'struct key' whose payload it is, but we won't let this reference
-+	 * count rise again.
-+	 */
-+	refcount_t		mk_refcount;
++extern int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
++			     unsigned int master_key_size);
 +
-+	/*
-+	 * List of inodes that were unlocked using this key.  This allows the
-+	 * inodes to be evicted efficiently if the key is removed.
-+	 */
-+	struct list_head	mk_decrypted_inodes;
-+	spinlock_t		mk_decrypted_inodes_lock;
++extern int fscrypt_hkdf_expand(struct fscrypt_hkdf *hkdf, u8 context,
++			       const u8 *info, unsigned int infolen,
++			       u8 *okm, unsigned int okmlen);
 +
- } __randomize_layout;
- 
-+static inline bool
-+is_master_key_secret_present(const struct fscrypt_master_key_secret *secret)
-+{
-+	/*
-+	 * The READ_ONCE() is only necessary for fscrypt_drop_inode() and
-+	 * fscrypt_key_describe().  These run in atomic context, so they can't
-+	 * take key->sem and thus 'secret' can change concurrently which would
-+	 * be a data race.  But they only need to know whether the secret *was*
-+	 * present at the time of check, so READ_ONCE() suffices.
-+	 */
-+	return READ_ONCE(secret->size) != 0;
-+}
++extern void fscrypt_destroy_hkdf(struct fscrypt_hkdf *hkdf);
 +
- extern struct key *
- fscrypt_find_master_key(struct super_block *sb,
- 			const struct fscrypt_key_specifier *mk_spec);
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index d44d595b2fd0..da1bfe5934eb 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -10,6 +10,7 @@
-  * filesystem-level keyring, including the ioctls:
-  *
-  * - FS_IOC_ADD_ENCRYPTION_KEY: add a key
-+ * - FS_IOC_REMOVE_ENCRYPTION_KEY: remove a key
-  */
- 
- #include <linux/key-type.h>
-@@ -66,6 +67,13 @@ static void fscrypt_key_destroy(struct key *key)
- static void fscrypt_key_describe(const struct key *key, struct seq_file *m)
- {
- 	seq_puts(m, key->description);
-+
-+	if (key_is_positive(key)) {
-+		const struct fscrypt_master_key *mk = key->payload.data[0];
-+
-+		if (!is_master_key_secret_present(&mk->mk_secret))
-+			seq_puts(m, ": secret removed");
-+	}
- }
+ /* keyring.c */
  
  /*
-@@ -186,6 +194,10 @@ static int add_new_master_key(struct fscrypt_master_key_secret *secret,
- 
- 	move_master_key_secret(&mk->mk_secret, secret);
- 
-+	refcount_set(&mk->mk_refcount, 1); /* secret is present */
-+	INIT_LIST_HEAD(&mk->mk_decrypted_inodes);
-+	spin_lock_init(&mk->mk_decrypted_inodes_lock);
+diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+new file mode 100644
+index 000000000000..3f9dbf171d96
+--- /dev/null
++++ b/fs/crypto/hkdf.c
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Implementation of HKDF ("HMAC-based Extract-and-Expand Key Derivation
++ * Function"), aka RFC 5869.  See also the original paper (Krawczyk 2010):
++ * "Cryptographic Extraction and Key Derivation: The HKDF Scheme".
++ *
++ * This is used to derive keys from the fscrypt master keys.
++ *
++ * Copyright 2019 Google LLC
++ */
 +
- 	format_mk_description(description, mk_spec);
- 	key = key_alloc(&key_type_fscrypt, description,
- 			GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
-@@ -207,6 +219,22 @@ static int add_new_master_key(struct fscrypt_master_key_secret *secret,
- 	return err;
- }
- 
-+#define KEY_DEAD	1
++#include <crypto/hash.h>
++#include <crypto/sha.h>
 +
-+static int add_existing_master_key(struct fscrypt_master_key *mk,
-+				   struct fscrypt_master_key_secret *secret,
-+				   const struct fscrypt_key_specifier *mk_spec)
++#include "fscrypt_private.h"
++
++/*
++ * HKDF supports any unkeyed cryptographic hash algorithm, but fscrypt uses
++ * SHA-512 because it is reasonably secure and efficient; and since it produces
++ * a 64-byte digest, deriving an AES-256-XTS key preserves all 64 bytes of
++ * entropy from the master key and requires only one iteration of HKDF-Expand.
++ */
++#define HKDF_HMAC_ALG		"hmac(sha512)"
++#define HKDF_HASHLEN		SHA512_DIGEST_SIZE
++
++/*
++ * HKDF consists of two steps:
++ *
++ * 1. HKDF-Extract: extract a pseudorandom key of length HKDF_HASHLEN bytes from
++ *    the input keying material and optional salt.
++ * 2. HKDF-Expand: expand the pseudorandom key into output keying material of
++ *    any length, parameterized by an application-specific info string.
++ *
++ * HKDF-Extract can be skipped if the input is already a pseudorandom key of
++ * length HKDF_HASHLEN bytes.  However, cipher modes other than AES-256-XTS take
++ * shorter keys, and we don't want to force users of those modes to generate
++ * unnecessarily long keys.  Thus fscrypt still does HKDF-Extract.
++ *
++ * HKDF-Extract also supports a salt.  Choosing a random salt per input key
++ * would permit the input key to come from *any* source with sufficient entropy,
++ * even if it's not distributed uniformly.  However, fscrypt doesn't take
++ * advantage of this because userspace should already provide good pseudorandom
++ * keys, which makes this unnecessary; also, having to persist a random salt per
++ * key from kernel mode would pose significant implementation complexity.  Thus
++ * fscrypt uses a fixed salt.  But to be slightly more robust against userspace
++ * (unwisely) reusing the fscrypt keys for another purpose, and to force
++ * brute-force attacks to target the fscrypt KDF specifically, fscrypt uses
++ * "fscrypt_hkdf_salt" rather than the default of all 0's defined by RFC 5869.
++ */
++
++#define HKDF_SALT		"fscrypt_hkdf_salt"
++#define HKDF_SALTLEN		CONST_STRLEN(HKDF_SALT)
++
++/* HKDF-Extract (RFC 5869 section 2.2), see explanation above */
++static int hkdf_extract(struct crypto_shash *hmac_tfm, const u8 *ikm,
++			unsigned int ikmlen, u8 prk[HKDF_HASHLEN])
 +{
-+	if (is_master_key_secret_present(&mk->mk_secret))
-+		return 0;
++	SHASH_DESC_ON_STACK(desc, hmac_tfm);
++	int err;
 +
-+	if (!refcount_inc_not_zero(&mk->mk_refcount))
-+		return KEY_DEAD;
++	err = crypto_shash_setkey(hmac_tfm, HKDF_SALT, HKDF_SALTLEN);
++	if (err)
++		return err;
 +
-+	move_master_key_secret(&mk->mk_secret, secret);
-+	return 0;
-+}
-+
- static int add_master_key(struct super_block *sb,
- 			  struct fscrypt_master_key_secret *secret,
- 			  const struct fscrypt_key_specifier *mk_spec)
-@@ -216,6 +244,7 @@ static int add_master_key(struct super_block *sb,
- 	int err;
- 
- 	mutex_lock(&fscrypt_add_key_mutex); /* serialize find + link */
-+retry:
- 	key = fscrypt_find_master_key(sb, mk_spec);
- 	if (IS_ERR(key)) {
- 		err = PTR_ERR(key);
-@@ -227,8 +256,21 @@ static int add_master_key(struct super_block *sb,
- 			goto out_unlock;
- 		err = add_new_master_key(secret, mk_spec, sb->s_master_keys);
- 	} else {
-+		/*
-+		 * Found the key in ->s_master_keys.  Re-add the secret if
-+		 * needed.
-+		 */
-+		down_write(&key->sem);
-+		err = add_existing_master_key(key->payload.data[0], secret,
-+					      mk_spec);
-+		up_write(&key->sem);
-+		if (err == KEY_DEAD) {
-+			/* Key being removed or needs to be removed */
-+			key_invalidate(key);
-+			key_put(key);
-+			goto retry;
-+		}
- 		key_put(key);
--		err = 0;
- 	}
- out_unlock:
- 	mutex_unlock(&fscrypt_add_key_mutex);
-@@ -277,6 +319,163 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
- }
- EXPORT_SYMBOL_GPL(fscrypt_ioctl_add_key);
- 
-+static void evict_dentries_for_decrypted_inodes(struct fscrypt_master_key *mk)
-+{
-+	struct fscrypt_info *ci;
-+	struct inode *inode;
-+	struct inode *toput_inode = NULL;
-+
-+	spin_lock(&mk->mk_decrypted_inodes_lock);
-+
-+	list_for_each_entry(ci, &mk->mk_decrypted_inodes, ci_master_key_link) {
-+		inode = ci->ci_inode;
-+		spin_lock(&inode->i_lock);
-+		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
-+			spin_unlock(&inode->i_lock);
-+			continue;
-+		}
-+		__iget(inode);
-+		spin_unlock(&inode->i_lock);
-+		spin_unlock(&mk->mk_decrypted_inodes_lock);
-+
-+		shrink_dcache_inode(inode);
-+		iput(toput_inode);
-+		toput_inode = inode;
-+
-+		spin_lock(&mk->mk_decrypted_inodes_lock);
-+	}
-+
-+	spin_unlock(&mk->mk_decrypted_inodes_lock);
-+	iput(toput_inode);
-+}
-+
-+static int try_to_lock_encrypted_files(struct super_block *sb,
-+				       struct fscrypt_master_key *mk)
-+{
-+	int err1;
-+	int err2;
-+
-+	/*
-+	 * An inode can't be evicted while it is dirty or has dirty pages.
-+	 * Thus, we first have to clean the inodes in ->mk_decrypted_inodes.
-+	 *
-+	 * Just do it the easy way: call sync_filesystem().  It's overkill, but
-+	 * it works, and it's more important to minimize the amount of caches we
-+	 * drop than the amount of data we sync.  Also, unprivileged users can
-+	 * already call sync_filesystem() via sys_syncfs() or sys_sync().
-+	 */
-+	down_read(&sb->s_umount);
-+	err1 = sync_filesystem(sb);
-+	up_read(&sb->s_umount);
-+	/* If a sync error occurs, still try to evict as much as possible. */
-+
-+	/*
-+	 * Inodes are pinned by their dentries, so we have to evict their
-+	 * dentries.  shrink_dcache_sb() would suffice, but would be overkill
-+	 * and inappropriate for use by unprivileged users.  So instead go
-+	 * through the inodes' alias lists and try to evict each dentry.
-+	 */
-+	evict_dentries_for_decrypted_inodes(mk);
-+
-+	/*
-+	 * evict_dentries_for_decrypted_inodes() already iput() each inode in
-+	 * the list; any inodes for which that dropped the last reference will
-+	 * have been evicted due to fscrypt_drop_inode() detecting the key
-+	 * removal and telling the VFS to evict the inode.  So to finish, we
-+	 * just need to check whether any inodes couldn't be evicted.
-+	 */
-+	err2 = 0;
-+	spin_lock(&mk->mk_decrypted_inodes_lock);
-+	if (!list_empty(&mk->mk_decrypted_inodes)) {
-+		const struct fscrypt_info *first_ci =
-+			list_first_entry(&mk->mk_decrypted_inodes,
-+					 struct fscrypt_info,
-+					 ci_master_key_link);
-+		fscrypt_warn(sb,
-+			     "inodes still busy after removing key with description %*phN (first ino: %lu)",
-+			     master_key_spec_len(&mk->mk_spec),
-+			     (u8 *)&mk->mk_spec.u, first_ci->ci_inode->i_ino);
-+		err2 = -EBUSY;
-+	}
-+	spin_unlock(&mk->mk_decrypted_inodes_lock);
-+
-+	return err1 ?: err2;
++	desc->tfm = hmac_tfm;
++	desc->flags = 0;
++	err = crypto_shash_digest(desc, ikm, ikmlen, prk);
++	shash_desc_zero(desc);
++	return err;
 +}
 +
 +/*
-+ * Try to remove an fscrypt master encryption key.  If other users have also
-+ * added the key, we'll remove the current user's usage of the key, then return
-+ * -EUSERS.  Otherwise we'll continue on and try to actually remove the key.
++ * Compute HKDF-Extract using the given master key as the input keying material,
++ * and prepare an HMAC transform object keyed by the resulting pseudorandom key.
 + *
-+ * First we wipe the actual master key secret from memory, so that no more
-+ * inodes can be unlocked with it.  Then, we try to evict all cached inodes that
-+ * had been unlocked using the key.  Since this can fail for in-use inodes, this
-+ * is expected to be used in cooperation with userspace ensuring that none of
-+ * the files are still open.
-+ *
-+ * If, nevertheless, some inodes could not be evicted, we return -EBUSY
-+ * (although we still evicted as many inodes as possible) and keep the 'struct
-+ * key' and the 'struct fscrypt_master_key' around to keep track of the list of
-+ * remaining inodes.  Userspace can then retry the ioctl later to retry evicting
-+ * the remaining inodes, or alternatively can add the secret key again.
-+ *
-+ * Note that even though we wipe the encryption *keys* from memory, decrypted
-+ * data can likely still be found in memory, e.g. in pagecache pages that have
-+ * been freed.  Wiping such data is currently out of scope, short of users who
-+ * may choose to enable page and slab poisoning systemwide.
++ * Afterwards, the keyed HMAC transform object can be used for HKDF-Expand many
++ * times without having to recompute HKDF-Extract each time.
 + */
-+int fscrypt_ioctl_remove_key(struct file *filp, const void __user *uarg)
++int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
++		      unsigned int master_key_size)
 +{
-+	struct super_block *sb = file_inode(filp)->i_sb;
-+	struct fscrypt_remove_key_arg arg;
-+	struct key *key;
-+	struct fscrypt_master_key *mk;
++	struct crypto_shash *hmac_tfm;
++	u8 prk[HKDF_HASHLEN];
 +	int err;
-+	bool dead;
 +
-+	if (copy_from_user(&arg, uarg, sizeof(arg)))
-+		return -EFAULT;
-+
-+	if (!valid_key_spec(&arg.key_spec))
-+		return -EINVAL;
-+
-+	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
-+		return -EINVAL;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EACCES;
-+
-+	/* Find the key being removed. */
-+	key = fscrypt_find_master_key(sb, &arg.key_spec);
-+	if (IS_ERR(key))
-+		return PTR_ERR(key);
-+	mk = key->payload.data[0];
-+
-+	down_write(&key->sem);
-+
-+	/* Wipe the secret. */
-+	dead = false;
-+	if (is_master_key_secret_present(&mk->mk_secret)) {
-+		wipe_master_key_secret(&mk->mk_secret);
-+		dead = refcount_dec_and_test(&mk->mk_refcount);
++	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
++	if (IS_ERR(hmac_tfm)) {
++		fscrypt_warn(NULL, "error allocating " HKDF_HMAC_ALG ": %ld",
++			     PTR_ERR(hmac_tfm));
++		return PTR_ERR(hmac_tfm);
 +	}
-+	up_write(&key->sem);
-+	if (dead) {
-+		/*
-+		 * We wiped the secret and no inodes reference the key anymore,
-+		 * so it's free to remove.
-+		 */
-+		key_invalidate(key);
-+		err = 0;
-+	} else {
-+		/* Some inodes still reference this key; try to evict them. */
-+		err = try_to_lock_encrypted_files(sb, mk);
-+	}
-+	key_put(key);
++
++	BUG_ON(crypto_shash_digestsize(hmac_tfm) != sizeof(prk));
++
++	err = hkdf_extract(hmac_tfm, master_key, master_key_size, prk);
++	if (err)
++		goto err_free_tfm;
++
++	err = crypto_shash_setkey(hmac_tfm, prk, sizeof(prk));
++	if (err)
++		goto err_free_tfm;
++
++	hkdf->hmac_tfm = hmac_tfm;
++	goto out;
++
++err_free_tfm:
++	crypto_free_shash(hmac_tfm);
++out:
++	memzero_explicit(prk, sizeof(prk));
 +	return err;
 +}
-+EXPORT_SYMBOL_GPL(fscrypt_ioctl_remove_key);
 +
- int __init fscrypt_init_keyring(void)
- {
- 	return register_key_type(&key_type_fscrypt);
-diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-index b63fb4e8aebd..fb600cac8ee4 100644
---- a/fs/crypto/keysetup.c
-+++ b/fs/crypto/keysetup.c
-@@ -210,8 +210,16 @@ int fscrypt_set_derived_key(struct fscrypt_info *ci, const u8 *derived_key)
- 
- /*
-  * Find the master key, then set up the inode's actual encryption key.
++/*
++ * HKDF-Expand (RFC 5869 section 2.3).  This expands the pseudorandom key, which
++ * was already keyed into 'hkdf->hmac_tfm' by fscrypt_init_hkdf(), into 'okmlen'
++ * bytes of output keying material parameterized by the application-specific
++ * 'info' of length 'infolen' bytes, prefixed with the 'context' byte.  This is
++ * thread-safe and may be called by multiple threads in parallel.
 + *
-+ * If the master key is found in the filesystem-level keyring, then the
-+ * corresponding 'struct key' is returned in *master_key_ret with
-+ * ->sem read-locked.  This is needed to ensure that only one task links the
-+ * fscrypt_info into ->mk_decrypted_inodes (as multiple tasks may race to create
-+ * an fscrypt_info for the same inode), and to synchronize the key being removed
-+ * with a new inode starting to use it.
-  */
--static int setup_file_encryption_key(struct fscrypt_info *ci)
-+static int setup_file_encryption_key(struct fscrypt_info *ci,
-+				     struct key **master_key_ret)
- {
- 	struct key *key;
- 	struct fscrypt_master_key *mk = NULL;
-@@ -231,6 +239,13 @@ static int setup_file_encryption_key(struct fscrypt_info *ci)
- 	}
- 
- 	mk = key->payload.data[0];
-+	down_read(&key->sem);
-+
-+	/* Has the secret been removed (via FS_IOC_REMOVE_ENCRYPTION_KEY)? */
-+	if (!is_master_key_secret_present(&mk->mk_secret)) {
-+		err = -ENOKEY;
-+		goto out_release_key;
-+	}
- 
- 	if (mk->mk_secret.size < ci->ci_mode->keysize) {
- 		fscrypt_warn(NULL,
-@@ -242,14 +257,22 @@ static int setup_file_encryption_key(struct fscrypt_info *ci)
- 	}
- 
- 	err = fscrypt_setup_v1_file_key(ci, mk->mk_secret.raw);
-+	if (err)
-+		goto out_release_key;
-+
-+	*master_key_ret = key;
-+	return 0;
- 
- out_release_key:
-+	up_read(&key->sem);
- 	key_put(key);
- 	return err;
- }
- 
- static void put_crypt_info(struct fscrypt_info *ci)
- {
-+	struct key *key;
-+
- 	if (!ci)
- 		return;
- 
-@@ -259,6 +282,26 @@ static void put_crypt_info(struct fscrypt_info *ci)
- 		crypto_free_skcipher(ci->ci_ctfm);
- 		crypto_free_cipher(ci->ci_essiv_tfm);
- 	}
-+
-+	key = ci->ci_master_key;
-+	if (key) {
-+		struct fscrypt_master_key *mk = key->payload.data[0];
-+
-+		/*
-+		 * Remove this inode from the list of inodes that were unlocked
-+		 * with the master key.
-+		 *
-+		 * In addition, if we're removing the last inode from a key that
-+		 * already had its secret removed, invalidate the key so that it
-+		 * gets removed from ->s_master_keys.
-+		 */
-+		spin_lock(&mk->mk_decrypted_inodes_lock);
-+		list_del(&ci->ci_master_key_link);
-+		spin_unlock(&mk->mk_decrypted_inodes_lock);
-+		if (refcount_dec_and_test(&mk->mk_refcount))
-+			key_invalidate(key);
-+		key_put(key);
-+	}
- 	kmem_cache_free(fscrypt_info_cachep, ci);
- }
- 
-@@ -267,6 +310,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
- 	struct fscrypt_info *crypt_info;
- 	struct fscrypt_context ctx;
- 	struct fscrypt_mode *mode;
-+	struct key *master_key = NULL;
- 	int res;
- 
- 	if (inode->i_crypt_info)
-@@ -319,13 +363,30 @@ int fscrypt_get_encryption_info(struct inode *inode)
- 	WARN_ON(mode->ivsize > FSCRYPT_MAX_IV_SIZE);
- 	crypt_info->ci_mode = mode;
- 
--	res = setup_file_encryption_key(crypt_info);
-+	res = setup_file_encryption_key(crypt_info, &master_key);
- 	if (res)
- 		goto out;
- 
--	if (cmpxchg(&inode->i_crypt_info, NULL, crypt_info) == NULL)
-+	if (cmpxchg(&inode->i_crypt_info, NULL, crypt_info) == NULL) {
-+		if (master_key) {
-+			struct fscrypt_master_key *mk =
-+				master_key->payload.data[0];
-+
-+			refcount_inc(&mk->mk_refcount);
-+			crypt_info->ci_master_key = key_get(master_key);
-+			spin_lock(&mk->mk_decrypted_inodes_lock);
-+			list_add(&crypt_info->ci_master_key_link,
-+				 &mk->mk_decrypted_inodes);
-+			spin_unlock(&mk->mk_decrypted_inodes_lock);
-+		}
- 		crypt_info = NULL;
-+	}
-+	res = 0;
- out:
-+	if (master_key) {
-+		up_read(&master_key->sem);
-+		key_put(master_key);
-+	}
- 	if (res == -ENOKEY)
- 		res = 0;
- 	put_crypt_info(crypt_info);
-@@ -339,3 +400,39 @@ void fscrypt_put_encryption_info(struct inode *inode)
- 	inode->i_crypt_info = NULL;
- }
- EXPORT_SYMBOL(fscrypt_put_encryption_info);
-+
-+/**
-+ * fscrypt_drop_inode() - check whether the inode's master key has been removed
-+ *
-+ * Filesystems supporting fscrypt must call this from their ->drop_inode()
-+ * method so that encrypted inodes are evicted as soon as they're no longer in
-+ * use and their master key has been removed.
-+ *
-+ * Return: 1 if fscrypt wants the inode to be evicted now, otherwise 0
++ * ('context' isn't part of the HKDF specification; it's just a prefix fscrypt
++ * adds to its application-specific info strings to guarantee that it doesn't
++ * accidentally repeat an info string when using HKDF for different purposes.)
 + */
-+int fscrypt_drop_inode(struct inode *inode)
++int fscrypt_hkdf_expand(struct fscrypt_hkdf *hkdf, u8 context,
++			const u8 *info, unsigned int infolen,
++			u8 *okm, unsigned int okmlen)
 +{
-+	const struct fscrypt_info *ci = inode->i_crypt_info;
-+	const struct fscrypt_master_key *mk;
++	SHASH_DESC_ON_STACK(desc, hkdf->hmac_tfm);
++	unsigned int i;
++	int err;
++	const u8 *prev = NULL;
++	u8 counter = 1;
++	u8 tmp[HKDF_HASHLEN];
 +
-+	/*
-+	 * If ci is NULL, then the inode doesn't have an encryption key set up
-+	 * so it's irrelevant.  If ci_master_key is NULL, then the master key
-+	 * was provided via the legacy mechanism of the process-subscribed
-+	 * keyrings, so we don't know whether it's been removed or not.
-+	 */
-+	if (!ci || !ci->ci_master_key)
-+		return 0;
-+	mk = ci->ci_master_key->payload.data[0];
++	if (WARN_ON(okmlen > 255 * HKDF_HASHLEN))
++		return -EINVAL;
 +
-+	/*
-+	 * Note: since we aren't holding key->sem, the result here can
-+	 * immediately become outdated.  But there's no correctness problem with
-+	 * unnecessarily evicting.  Nor is there a correctness problem with not
-+	 * evicting while iput() is racing with the key being removed, since
-+	 * then the thread removing the key will either evict the inode itself
-+	 * or will correctly detect that it wasn't evicted due to the race.
-+	 */
-+	return !is_master_key_secret_present(&mk->mk_secret);
-+}
-+EXPORT_SYMBOL(fscrypt_drop_inode);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index ddb54b8eab81..c4fff46ce847 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -114,10 +114,12 @@ extern int fscrypt_inherit_context(struct inode *, struct inode *,
- 					void *, bool);
- /* keyring.c */
- extern int fscrypt_ioctl_add_key(struct file *filp, void __user *arg);
-+extern int fscrypt_ioctl_remove_key(struct file *filp, const void __user *arg);
- 
- /* keysetup.c */
- extern int fscrypt_get_encryption_info(struct inode *);
- extern void fscrypt_put_encryption_info(struct inode *);
-+extern int fscrypt_drop_inode(struct inode *inode);
- 
- /* fname.c */
- extern int fscrypt_setup_filename(struct inode *, const struct qstr *,
-@@ -321,6 +323,12 @@ static inline int fscrypt_ioctl_add_key(struct file *filp, void __user *arg)
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int fscrypt_ioctl_remove_key(struct file *filp,
-+					   const void __user *arg)
-+{
-+	return -EOPNOTSUPP;
-+}
++	desc->tfm = hkdf->hmac_tfm;
++	desc->flags = 0;
 +
- /* keysetup.c */
- static inline int fscrypt_get_encryption_info(struct inode *inode)
- {
-@@ -332,6 +340,11 @@ static inline void fscrypt_put_encryption_info(struct inode *inode)
- 	return;
- }
- 
-+static inline int fscrypt_drop_inode(struct inode *inode)
-+{
-+	return 0;
++	for (i = 0; i < okmlen; i += HKDF_HASHLEN) {
++
++		err = crypto_shash_init(desc);
++		if (err)
++			goto out;
++
++		if (prev) {
++			err = crypto_shash_update(desc, prev, HKDF_HASHLEN);
++			if (err)
++				goto out;
++		}
++
++		BUILD_BUG_ON(sizeof(context) != 1);
++		err = crypto_shash_update(desc, &context, 1);
++		if (err)
++			goto out;
++
++		err = crypto_shash_update(desc, info, infolen);
++		if (err)
++			goto out;
++
++		BUILD_BUG_ON(sizeof(counter) != 1);
++		if (okmlen - i < HKDF_HASHLEN) {
++			err = crypto_shash_finup(desc, &counter, 1, tmp);
++			if (err)
++				goto out;
++			memcpy(&okm[i], tmp, okmlen - i);
++			memzero_explicit(tmp, sizeof(tmp));
++		} else {
++			err = crypto_shash_finup(desc, &counter, 1, &okm[i]);
++			if (err)
++				goto out;
++		}
++		counter++;
++		prev = &okm[i];
++	}
++	err = 0;
++out:
++	if (unlikely(err))
++		memzero_explicit(okm, okmlen); /* so caller doesn't need to */
++	shash_desc_zero(desc);
++	return err;
 +}
 +
-  /* fname.c */
- static inline int fscrypt_setup_filename(struct inode *dir,
- 					 const struct qstr *iname,
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index 7bed24632bda..3302a407131e 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -65,10 +65,17 @@ struct fscrypt_add_key_arg {
- 	__u8 raw[];
- };
- 
-+/* Struct passed to FS_IOC_REMOVE_ENCRYPTION_KEY */
-+struct fscrypt_remove_key_arg {
-+	struct fscrypt_key_specifier key_spec;
-+	__u32 __reserved[6];
-+};
-+
- #define FS_IOC_SET_ENCRYPTION_POLICY	  _IOR('f', 19, struct fscrypt_policy)
- #define FS_IOC_GET_ENCRYPTION_PWSALT	  _IOW('f', 20, __u8[16])
- #define FS_IOC_GET_ENCRYPTION_POLICY	  _IOW('f', 21, struct fscrypt_policy)
- #define FS_IOC_ADD_ENCRYPTION_KEY	 _IOWR('f', 23, struct fscrypt_add_key_arg)
-+#define FS_IOC_REMOVE_ENCRYPTION_KEY	  _IOW('f', 24, struct fscrypt_remove_key_arg)
- 
- /**********************************************************************/
- 
++void fscrypt_destroy_hkdf(struct fscrypt_hkdf *hkdf)
++{
++	crypto_free_shash(hkdf->hmac_tfm);
++}
 -- 
 2.20.1
 
