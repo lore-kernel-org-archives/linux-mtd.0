@@ -2,69 +2,59 @@ Return-Path: <SRS0=2MvH=Q3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CABDAC10F01
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BB23C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:57:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C7802083B
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:54:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D35182083B
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 07:57:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZTa6Fv9p";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uKU7DBXp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C7802083B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kxpR5BuQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D35182083B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kwQpu0p2sA/IH+GRyyaORLUQnXdy1xVty8V1b1mouVY=; b=ZTa6Fv9pdP/Z7H
-	m9QlRWnLKX6w9m2e+J4v0vD7iSPRIRH4AqTg8Fof0EDLYQ0dHNYnvtozsZtAT724JozhKG+bsu10U
-	Ha+4zeo4wCTYcThKNpma0dqFxdyqh6peHQ8MgF+Ez9vmEMrbkHkBZn/SYfG3g0DQrb8PyJ+dTypta
-	F6KJ7i0ifS4uVzFdCZ7uBAj055gSC/b2vg4e3IZyHV9f+RaT72U6X9iKr0F+Eh11CUWsLZfNwYfDM
-	r/h1l8SUmmxR+4GdOg72OpvODBow9Nyu2QRdP3BQ/MugY2GRDEJODq3Nluax2uhNugB3PpkzBRO0a
-	ZPwmhWCvpwe1LcycmJIA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Y15XFA5s/OBl6Wpx7HHnPuG8hNl26vlEYKqF6ukUxX0=; b=kxpR5BuQZAJpBB
+	VCf0Cu7rSZJkCMoconVh/8Pbwu0s3rb8LreJ9DmortI7rnFe/ggkx7qHaQ53X44d49O7OXw3svghM
+	ZDCMRNnUdQjR5C0jFRdjjgCZxtKyTATCeQK0z1RjS8VvLJvItkkexUZuIVf+jhvKIkq4kb2169zNu
+	3u1pXQmI4mtp1sMjN57RFhG52eIqhuz6paVSOI15HWXxkScQyjXrbeEg2Zkx6LseymPpmkclEUAur
+	2weWk7VsQpAudxO0gBf2J7obU/Uc/hP75eJLXB3LWU+oEN+34hB+naxSzZPMyEi+Luz8ZIEDN7AtC
+	nCCa07ctgIa/kF7y30jA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwMhl-0008Gq-Ug; Wed, 20 Feb 2019 07:54:09 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gwMkX-0002b1-49; Wed, 20 Feb 2019 07:57:01 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwMhj-0008GD-VG
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 07:54:09 +0000
-Received: from sol.localdomain (c-107-3-167-184.hsd1.ca.comcast.net
- [107.3.167.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 440E12083B;
- Wed, 20 Feb 2019 07:54:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550649247;
- bh=tLOAeQqo8uWF4VkUGKhfz71PVfoAaoBcFMjA2Hj/aW4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uKU7DBXp0Hq4FeA1WZfTzMFWadwa1LkoRF0dY1fWJnZzqaXsWKu0MxvnvLR4xhY/x
- N4GzMOv6bJBGyoKjWblU/NQBBWCJVWZ3EjomIutqG/+Cp/IswqT1iNP09jb+GiEy1z
- Px/6RiDKz01hM58Rv3p9YP2CEnzugDFeckUdhp8Q=
-Date: Tue, 19 Feb 2019 23:54:05 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [RFC PATCH v3 00/18] fscrypt: key management improvements
-Message-ID: <20190220075404.GA974@sol.localdomain>
-References: <20190220065249.32099-1-ebiggers@kernel.org>
- <1660609D-3525-4485-9652-57976DB020F4@dilger.ca>
+ id 1gwMkV-0002aF-2y
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 07:57:00 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 640EB260F7F;
+ Wed, 20 Feb 2019 07:56:56 +0000 (GMT)
+Date: Wed, 20 Feb 2019 08:56:53 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] mtd: Fixes for 5.0/5.0-rc8
+Message-ID: <20190220085653.182aa2c6@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1660609D-3525-4485-9652-57976DB020F4@dilger.ca>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190219_235408_020420_53C9B272 
-X-CRM114-Status: GOOD (  15.60  )
+X-CRM114-CacheID: sfid-20190219_235659_256153_DA39DE73 
+X-CRM114-Status: GOOD (  13.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,54 +66,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Satya Tangirala <satyat@google.com>, Paul Crowley <paulcrowley@google.com>
+Cc: Marek Vasut <marex@denx.de>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 19, 2019 at 11:18:21PM -0800, Andreas Dilger wrote:
-> On Feb 19, 2019, at 10:52 PM, Eric Biggers <ebiggers@kernel.org> wrote:
-> > 
-> > Hello,
-> > 
-> > This patchset makes major improvements to how keys are added, removed,
-> > and derived in fscrypt, aka ext4/f2fs/ubifs encryption.  It does this by
-> > adding new ioctls that add and remove encryption keys directly to/from
-> > the filesystem, and by adding a new encryption policy version ("v2")
-> > where the user-provided keys are only used as input to HKDF-SHA512 and
-> > are identified by their cryptographic hash.
-> 
-> Just to confirm for the layman reader - the fact that the crypto keys
-> are registered with the filesystem and not with the user process doesn't
-> prevent user(s) from having different crypto keys for different subdirs
-> in a single filesystem?
+Hello Linus,
 
-Correct, that hasn't changed.  Different directories can use different keys.
+Here are 2 fixes for 5.0 (or -rc8 if you end up delaying the release).
 
-> 
-> Secondly, does this progress fscrypt toward allowing multiple master keys
-> to decrypt a single per-file key?
-> 
+Regards,
 
-It's not a goal of this patchset as no one has really been asking for it yet.
-Per-file keys are still derived from the master key.
+Boris
 
-Note that it's already possible to wrap the master keys in userspace.  Thus you
-can already have multiple passwords that unlock the same encrypted directory.
-You just can't do this with *individual files*.  Maybe that's good enough.
+The following changes since commit d13937116f1e82bf508a6325111b322c30c85eb9:
 
-However, this patchset does fix the denial of service vulnerabilities that
-currently exist when users share an encrypted directory.  Also, since it adds a
-real KDF, it makes it much easier to derive a wrapping key to wrap the per-file
-keys if that were to become a requirement.  (The master key could be used as the
-wrapping key directly, but that's inflexible and more error-prone.)
+  Linux 5.0-rc6 (2019-02-10 14:42:20 -0800)
 
-- Eric
+are available in the Git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-5.0-rc8
+
+for you to fetch changes up to 3e35730dd7540bad2d4e002703996391d9be49a0:
+
+  mtd: powernv_flash: Fix device registration error (2019-02-13 14:19:40 +0100)
+
+----------------------------------------------------------------
+- Don't add a digit to MTD-backed nvmem device names
+- Make sure powernv flash names are unique
+
+----------------------------------------------------------------
+Aneesh Kumar K.V (2):
+      mtd: Use mtd->name when registering nvmem device
+      mtd: powernv_flash: Fix device registration error
+
+ drivers/mtd/devices/powernv_flash.c | 2 +-
+ drivers/mtd/mtdcore.c               | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
