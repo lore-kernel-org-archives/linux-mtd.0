@@ -1,93 +1,70 @@
-Return-Path: <SRS0=Ei3U=Q2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=2MvH=Q3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C2A3C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Feb 2019 20:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B34D9C10F02
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 06:55:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92E1921738
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Feb 2019 20:02:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8454E21773
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Feb 2019 06:55:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bZQUMWHp";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="Mj7O/ATI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92E1921738
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HdJ3IAue";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jni7Qqup"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8454E21773
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q3tBy8W3TV3Hc+GzxxlS9UG2ONDUq90sgpUOU8jTih0=; b=bZQUMWHp9Ts+XN
-	H96TkphAp0w/D3CVRli0wA/Jw87NILzbEuRW9ngksJQoZXkMn3IWyNuzYNnV9XIEeXEoWYKfFmmr2
-	Au75g02Q9DobezL+2fgv70VmXRoNIQFbAHaHvNAe6XSW09SblVqP7m58rdMUsSydpRd74Tfm04Jvg
-	vaXIed6cMsUrGIhTJCRD8FWp8Gi728afctfEl2s5zqJQgtZ5n3u+NaMtiz8Y/ExlsNRLSyi8XkDQX
-	9lx98+Xz+hZgXuCqp/8OzgKQF3Xgq6ehgxp7NS4VyBfbM6VdGeE/9lXZCj63z9ymxCT7qQxG28JzA
-	avj3hPkG4qqt04CY6jjg==;
+	List-Owner; bh=HWfBbqzkoTreSHl5/22yiH2WiS8b64W5FC9EmwsaDZs=; b=HdJ3IAuex4NU4T
+	uqtq8kkYecY3r42tuxUhb9syevRvf3L3+dE3CDsPtfC/Nx2kt5q1zf/y+yyLwnPc9NlM5rWYhbEE5
+	CkBVowrXTe4Ap2Hjg6uR4WcWikdT4KZy8vSucWT3xTI1/HqRiMGdjb/6VnuwZTjHmj9zmc+Kdt6qk
+	vf9cJvWQMnY/OoGMSaDMV0YvF8ZYhNzBBIGkicq/5Ou1wCgZZoD/sJt9ls71cgtaIYlKoMU3xenQU
+	/quD1ANLI1cuxuZVM1oW85hL96eFWoJ2WmekhZM8HuvsZY/tzCrZNsbYVexPdNMabbbytK1S9AtZj
+	5/X1lLFFxawz+7j2NUbA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwBbS-0002Lz-Rc; Tue, 19 Feb 2019 20:02:54 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1gwLmY-0003LJ-Ny; Wed, 20 Feb 2019 06:55:02 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwBbO-0002La-CM
- for linux-mtd@lists.infradead.org; Tue, 19 Feb 2019 20:02:52 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 6949D8781F;
- Wed, 20 Feb 2019 09:02:43 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
- s=mail181024; t=1550606563;
- bh=f0LEh2kI76xY9GI3sHFuppkOxBSn2YPTwsd0OeGY1ZA=;
- h=From:To:CC:Subject:Date:References:In-Reply-To;
- b=Mj7O/ATI1jXK55rUIhdcvxam0DTlsdvY79yq938UWd1HHmAfQKuTONOJQ25amKTXa
- xhTk33jYhOl/tb1LO1i+3z/s/wT3OHmsy/1Nbt+aLbBHjVrY53QdsYSgyvV2hkVtD0
- Lqs3CHnonx4LGkvTwh02VwTKm3FlOo41kybVPtL+w4teyGAZ25f59X2w7aqWGvvcgQ
- FulsuBS/uCZ80zY1k2T42kIKLagFFSpHvo8SEnsOyfP8Fe0bhpIBMtR13GRQpE3ymP
- 0SQ/ahvAtGvHZ+7KhgLTLp9nJOhUhz7gkUDTLDn5uNK4pklg65JQoZBL31R8pgRUL5
- C3Y6V4UQvH7vA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by
- mmarshal3.atlnz.lc with Trustwave SEG (v7, 5, 8, 10121)
- id <B5c6c60dc0000>; Wed, 20 Feb 2019 09:02:41 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1156.6; Wed, 20 Feb 2019 09:02:38 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1156.000; Wed, 20 Feb 2019 09:02:38 +1300
-From: Mark Tomlinson <Mark.Tomlinson@alliedtelesis.co.nz>
-To: Boris Brezillon <boris.brezillon@collabora.com>, Chris Packham
- <Chris.Packham@alliedtelesis.co.nz>
-Subject: Re: mtd: cfi: Fixed endless loop problem in CFI when value was
- written but corrupted.
-Thread-Topic: mtd: cfi: Fixed endless loop problem in CFI when value was
- written but corrupted.
-Thread-Index: AQHUw/2yaFopaTJblkCsDO0mtD692qXl8FGAgADJ5IA=
-Date: Tue, 19 Feb 2019 20:02:37 +0000
-Message-ID: <f5d597dd-d09d-b8f8-a800-756a23954164@alliedtelesis.co.nz>
-References: <20190207235806.GA39580@dev-dsk-psobon-2c-1dd9f399.us-west-2.amazon.com>
- <e945b943b2204d4d927391ffd068491d@svr-chch-ex1.atlnz.lc>
- <20190219085946.64a1bd39@kernel.org>
-In-Reply-To: <20190219085946.64a1bd39@kernel.org>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.16.78]
-Content-ID: <B91D2CF2C360E743B09DF304DF774574@atlnz.lc>
+ id 1gwLm7-0002rG-SN
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2019 06:54:42 +0000
+Received: from sol.localdomain (c-107-3-167-184.hsd1.ca.comcast.net
+ [107.3.167.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C18592183F;
+ Wed, 20 Feb 2019 06:54:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1550645675;
+ bh=nhr0MEuxKqc0WCfuSwznUKZ1pkbK4Ha2Zmg6tPXW7Mo=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Jni7QqupILa+hD3U3XeiuL8d1edfLkZ/3QSNsoTUOfHl4irRr8sLM2OGnyUII6Kac
+ UAJVIsP+TVchZhUS0+LCemIA6PeZLv9cHUGqOkSMfYrD1tC90sh0u8hrqBsbaWD5LT
+ 8awWst1dB6LPBpofuPQLOgGhuHSQp0Qz6nEo/bKM=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [RFC PATCH v3 01/18] fs,
+ fscrypt: move uapi definitions to new header <linux/fscrypt.h>
+Date: Tue, 19 Feb 2019 22:52:32 -0800
+Message-Id: <20190220065249.32099-2-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190220065249.32099-1-ebiggers@kernel.org>
+References: <20190220065249.32099-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190219_120251_166648_380020BC 
-X-CRM114-Status: GOOD (  13.36  )
+X-CRM114-CacheID: sfid-20190219_225436_403298_1317D570 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -99,55 +76,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "Joakim.Tjernlund@infinera.com" <Joakim.Tjernlund@infinera.com>,
- "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
- Przemyslaw Sobon <psobon@amazon.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "liujian56@huawei.com" <liujian56@huawei.com>,
- "fbettoni@gmail.com" <fbettoni@gmail.com>
+Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+ Paul Crowley <paulcrowley@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Eric Biggers <ebiggers@google.com>
 
-On 19/02/19 9:00 PM, Boris Brezillon wrote:
-> On Thu, 14 Feb 2019 00:39:09 +0000
-> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
->
->> Hi All,
->>
->> On 8/02/19 12:58 PM, Przemyslaw Sobon wrote:
->>> Fixes: dfeae1073583(mtd: cfi_cmdset_0002: Change write buffer to
->>>          check correct value)
->>>
->>> There was an endless loop in CFI Flash driver when a value was written
->>> incorrectly. In such case chip_ready returns true but chip_good returns
->>> false and we never get out of the loop.
->>>
->>> The solution was to break the loop in 2 cases, either device is ready or
->>> device is not ready and timeout elapsed. The correctness of the write is
->>> checked after the loop ended. That way we ensure the loop always ends.
->>>
->>> Signed-off-by: Przemyslaw Sobon <psobon@amazon.com>
->> Mark (cc'd) has done some testing here, and assuming he's happy with the
->> forgery.
->>
->> Tested-by: Mark Tomlinson <Mark.Tomlinson@alliedtelesis.co.nz>
-> I'm a bit lost. Ikegami told us that checking for chip_ready() was not
-> enough and chip_good() could return true after a few tests even though
-> it initially returned false.
->
-> I'd really like to get that fixed, but it looks like you haven't reached
-> a consensus on what the appropriate fix is :-/.
-I have done some further testing and this patch doesn't work 100%. It
-appears at least some flash chips do not start toggling immediately, and
-therefore chip_ready() can return true early. A timeout is reported,
-even though that isn't what happened.
+More fscrypt definitions are being added, and we shouldn't use a
+disproportionate amount of space in <linux/fs.h> for fscrypt stuff.
+So move the fscrypt definitions to a new header <linux/fscrypt.h>.
 
-chip_good() makes an additional check over chip_ready() and is the call
-I believe we should be using. I will submit a new patch which should fix
-the infinite loop as well as not mis-reporting errors.
+For source compatibility with existing userspace programs, <linux/fs.h>
+still includes the new header.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ MAINTAINERS                  |  1 +
+ include/linux/fscrypt.h      |  1 +
+ include/uapi/linux/fs.h      | 54 ++-------------------------------
+ include/uapi/linux/fscrypt.h | 58 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 63 insertions(+), 51 deletions(-)
+ create mode 100644 include/uapi/linux/fscrypt.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 51029a425dbe..f3c60ca897cc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6199,6 +6199,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/fscrypt.git
+ S:	Supported
+ F:	fs/crypto/
+ F:	include/linux/fscrypt*.h
++F:	include/uapi/linux/fscrypt.h
+ F:	Documentation/filesystems/fscrypt.rst
+ 
+ FSI-ATTACHED I2C DRIVER
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index e5194fc3983e..8b1e44421497 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -16,6 +16,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ #include <linux/slab.h>
++#include <uapi/linux/fscrypt.h>
+ 
+ #define FS_CRYPTO_BLOCK_SIZE		16
+ 
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index 121e82ce296b..0f4e66b1bcd0 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -13,6 +13,9 @@
+ #include <linux/limits.h>
+ #include <linux/ioctl.h>
+ #include <linux/types.h>
++#ifndef __KERNEL__
++#include <linux/fscrypt.h>
++#endif
+ 
+ /* Use of MS_* flags within the kernel is restricted to core mount(2) code. */
+ #if !defined(__KERNEL__)
+@@ -212,57 +215,6 @@ struct fsxattr {
+ #define FS_IOC_GETFSLABEL		_IOR(0x94, 49, char[FSLABEL_MAX])
+ #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+ 
+-/*
+- * File system encryption support
+- */
+-/* Policy provided via an ioctl on the topmost directory */
+-#define FS_KEY_DESCRIPTOR_SIZE	8
+-
+-#define FS_POLICY_FLAGS_PAD_4		0x00
+-#define FS_POLICY_FLAGS_PAD_8		0x01
+-#define FS_POLICY_FLAGS_PAD_16		0x02
+-#define FS_POLICY_FLAGS_PAD_32		0x03
+-#define FS_POLICY_FLAGS_PAD_MASK	0x03
+-#define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
+-#define FS_POLICY_FLAGS_VALID		0x07
+-
+-/* Encryption algorithms */
+-#define FS_ENCRYPTION_MODE_INVALID		0
+-#define FS_ENCRYPTION_MODE_AES_256_XTS		1
+-#define FS_ENCRYPTION_MODE_AES_256_GCM		2
+-#define FS_ENCRYPTION_MODE_AES_256_CBC		3
+-#define FS_ENCRYPTION_MODE_AES_256_CTS		4
+-#define FS_ENCRYPTION_MODE_AES_128_CBC		5
+-#define FS_ENCRYPTION_MODE_AES_128_CTS		6
+-#define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
+-#define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
+-#define FS_ENCRYPTION_MODE_ADIANTUM		9
+-
+-struct fscrypt_policy {
+-	__u8 version;
+-	__u8 contents_encryption_mode;
+-	__u8 filenames_encryption_mode;
+-	__u8 flags;
+-	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+-};
+-
+-#define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
+-#define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW('f', 20, __u8[16])
+-#define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
+-
+-/* Parameters for passing an encryption key into the kernel keyring */
+-#define FS_KEY_DESC_PREFIX		"fscrypt:"
+-#define FS_KEY_DESC_PREFIX_SIZE		8
+-
+-/* Structure that userspace passes to the kernel keyring */
+-#define FS_MAX_KEY_SIZE			64
+-
+-struct fscrypt_key {
+-	__u32 mode;
+-	__u8 raw[FS_MAX_KEY_SIZE];
+-	__u32 size;
+-};
+-
+ /*
+  * Inode flags (FS_IOC_GETFLAGS / FS_IOC_SETFLAGS)
+  *
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+new file mode 100644
+index 000000000000..193339cb53fd
+--- /dev/null
++++ b/include/uapi/linux/fscrypt.h
+@@ -0,0 +1,58 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_FSCRYPT_H
++#define _UAPI_LINUX_FSCRYPT_H
++
++#include <linux/types.h>
++
++/*
++ * File system encryption support
++ */
++/* Policy provided via an ioctl on the topmost directory */
++#define FS_KEY_DESCRIPTOR_SIZE	8
++
++#define FS_POLICY_FLAGS_PAD_4		0x00
++#define FS_POLICY_FLAGS_PAD_8		0x01
++#define FS_POLICY_FLAGS_PAD_16		0x02
++#define FS_POLICY_FLAGS_PAD_32		0x03
++#define FS_POLICY_FLAGS_PAD_MASK	0x03
++#define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
++#define FS_POLICY_FLAGS_VALID		0x07
++
++/* Encryption algorithms */
++#define FS_ENCRYPTION_MODE_INVALID		0
++#define FS_ENCRYPTION_MODE_AES_256_XTS		1
++#define FS_ENCRYPTION_MODE_AES_256_GCM		2
++#define FS_ENCRYPTION_MODE_AES_256_CBC		3
++#define FS_ENCRYPTION_MODE_AES_256_CTS		4
++#define FS_ENCRYPTION_MODE_AES_128_CBC		5
++#define FS_ENCRYPTION_MODE_AES_128_CTS		6
++#define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
++#define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
++#define FS_ENCRYPTION_MODE_ADIANTUM		9
++
++struct fscrypt_policy {
++	__u8 version;
++	__u8 contents_encryption_mode;
++	__u8 filenames_encryption_mode;
++	__u8 flags;
++	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++};
++
++#define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
++#define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW('f', 20, __u8[16])
++#define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
++
++/* Parameters for passing an encryption key into the kernel keyring */
++#define FS_KEY_DESC_PREFIX		"fscrypt:"
++#define FS_KEY_DESC_PREFIX_SIZE		8
++
++/* Structure that userspace passes to the kernel keyring */
++#define FS_MAX_KEY_SIZE			64
++
++struct fscrypt_key {
++	__u32 mode;
++	__u8 raw[FS_MAX_KEY_SIZE];
++	__u32 size;
++};
++
++#endif /* _UAPI_LINUX_FSCRYPT_H */
+-- 
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
