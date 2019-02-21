@@ -2,21 +2,21 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0117C00319
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 486E0C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:22:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 815E22084D
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:20:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 176F92084F
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:22:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g1EswIq1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwNVqKJh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 815E22084D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XSQj69kH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y6Ymagic"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 176F92084F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,44 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oLwSRxoeoi0CjZn8zWqsb7WTWgDSgUAwzF+b7zN8yd8=; b=g1EswIq1YMyZiR
-	a3lz/sMFeCWLDyWttZcJ2ul8qXUPxPWMbnKUGI8kRAODpbcJa40AG3HxymEuIZ6Fm9TJM15h/tP1Y
-	yoGRBoff6j5J3dPYamLL4y2Mz+Ffi30uTJJTkKKzav43ZE0gcYm4xn+/XbDVcsa2quIj/uEvkfblY
-	VZa8UWGMZpCCsduNUhvvug+P84iGrRlXThZESK/tkliz2yGXHEOhJhNV4k3dm25S/kC4/wMY0ZQvf
-	6N117edta7/53Spw8LFpG61WI1ktFoOQ/DsPFECXqjtiMVt7dpoj2JXCi68FUQX77DAGpZUroFgqi
-	YREgmNuG4IX7uKJwLkqg==;
+	List-Owner; bh=xgiGJHKdlXdfXfH5DGEj3q3aGhZ5TK4Uw/YjYZggYTc=; b=XSQj69kHgu5a15
+	cpvck7y9KVtOjVfNT0fZ/aOAtklKuYQYGV4AHM9kDkzGUhpYfaywFenq+x6YX2KGpofG+VR2j6D0N
+	abtZaF96Z4y99VijrB43i8cSqd5phldPkNtUh7QQufSPvv3sQMfAZkgJ62x4chwOoeMKwmArURTRL
+	YY1x+aSzJC+RK4GVDEUG+omAEyJFXt5G7zUE0y+N/s8jib4p7xfb5nAJQvz6Dg5aOMz/eihxeFXlJ
+	JsxT9WyD6cbmpyrxOa7vaXleYgPBQTfhwIdJgWzmAKEt8DJDOPLqFeQWsLIz/sua4rvwyG9itOvPm
+	rHgQNkvlMVYwuAPWRx0g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwoGz-0001rd-3N; Thu, 21 Feb 2019 13:20:21 +0000
+	id 1gwoIp-0002Pk-Vz; Thu, 21 Feb 2019 13:22:16 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwoGn-0001hS-1J; Thu, 21 Feb 2019 13:20:14 +0000
+ id 1gwoIh-0002I8-HX; Thu, 21 Feb 2019 13:22:09 +0000
 Received: from localhost (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D0D6F2084D;
- Thu, 21 Feb 2019 13:20:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 02ADF2084D;
+ Thu, 21 Feb 2019 13:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550755208;
- bh=GG7QF0wsArjZndGSLuqz5xT5ggYt/M0dUteRbZmwa2w=;
+ s=default; t=1550755327;
+ bh=S48oQwiBxU8MWekSwFC8xQpJ1OQ1a+mkyrpNS2MBGhY=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=VwNVqKJhVZjISx2nwKK7McXAn5uAg1CjLOkMJlcvY91Xbvx1A514IETT/8xDyVMn+
- bJECyi3xRWojIS2YshJL/dx+0NcbDjiivsWBvuNGmfLjIP6iJKJQ1LYC+rvr4e7tGP
- sbO1jptwPkaSMsUObJfK7p716OMF1+twy1pLqMkA=
-Date: Thu, 21 Feb 2019 14:20:02 +0100
+ b=y6YmagicjZxb0hsjVIBAsRwCrN097NXPJ2B+24KWJnSbAWphFqcnHh41EHxMmJBXY
+ cTC0iu2WaMYeWru3qHJFKDin0aHfBBEUiS9L4LQH/AfoeilZ2oqu4xJ0kyxOSJdgty
+ J055nuVGqv1JbG76+m64dOTXcU6uYL+ZFC4kRrjU=
+Date: Thu, 21 Feb 2019 14:22:00 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [RFC PATCH 17/27] mtd: nand: ecc: Let the software Hamming ECC
- engine be unselected
-Message-ID: <20190221142002.5a160f87@kernel.org>
-In-Reply-To: <20190221125806.28875-5-miquel.raynal@bootlin.com>
+Subject: Re: [RFC PATCH 14/27] mtd: nand: ecc: Turn the software Hamming
+ implementation generic
+Message-ID: <20190221142200.01877314@kernel.org>
+In-Reply-To: <20190221125806.28875-2-miquel.raynal@bootlin.com>
 References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
- <20190221125806.28875-5-miquel.raynal@bootlin.com>
+ <20190221125806.28875-2-miquel.raynal@bootlin.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_052009_098349_67630C96 
-X-CRM114-Status: GOOD (  18.45  )
+X-CRM114-CacheID: sfid-20190221_052207_591950_4DF1EA4D 
+X-CRM114-Status: GOOD (  10.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,45 +87,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Feb 2019 13:57:56 +0100
+On Thu, 21 Feb 2019 13:57:53 +0100
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> There is no reason to always embed the software Hamming ECC engine
-> implementation. By default it is, but we can let the user decide.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/ecc/Kconfig               | 10 +++++-
->  drivers/mtd/nand/raw/Kconfig               |  2 +-
->  include/linux/mtd/nand-sw-hamming-engine.h | 38 ++++++++++++++++++++++
->  3 files changed, 48 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/ecc/Kconfig b/drivers/mtd/nand/ecc/Kconfig
-> index e0106b3a7ec1..ff20e621ffef 100644
-> --- a/drivers/mtd/nand/ecc/Kconfig
-> +++ b/drivers/mtd/nand/ecc/Kconfig
-> @@ -1,7 +1,15 @@
->  menu "ECC engine support"
->  
->  config MTD_NAND_ECC_SW_HAMMING
-> -	tristate
-> +	tristate "Software Hamming ECC engine"
-> +	default y
 
-Same as for the NAND_CORE stuff, let users this option when they need
-it instead of having a "default y". Haven't made my mind yet on whether
-this option should be visible to users or not. I guess it could be with
-the new infrastructure, but it's probably too early in the patch series
-to change that.
+> -/*
+> - * Detect and correct a 1 bit error for 256/512 byte block
+> - */
+> -int nand_correct_data(struct nand_chip *chip, u_char *dat, u_char *read_ecc,
+> -		      u_char *calc_ecc);
+> +int __ecc_sw_hamming_calculate(const unsigned char *buf,
 
-> +	help
-> +	  This enables support for software Hamming error
-> +	  correction. This correction can correct up to 1 bit error
-> +	  per chunk and detect up to 2 bit errors. While it used to be
-> +	  widely used with old parts, newer NAND chips usually require
-> +	  more strength correction and in this case BCH or RS will be
-> +	  preferred.
->  
+Let's stop with these __ prefixes. Just prefix functions taking a
+nand_device object with nand_ and leave others with the ecc_ prefix.
+
+> +			       unsigned int step_size,
+> +			       unsigned char *code, bool sm_order);
+> +int ecc_sw_hamming_calculate(struct nand_device *nand,
+> +			     const unsigned char *buf,
+> +			     unsigned char *code);
 
 ______________________________________________________
 Linux MTD discussion mailing list
