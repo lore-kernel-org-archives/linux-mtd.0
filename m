@@ -4,19 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 334B3C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C72EC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:29:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F14E120880
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:28:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68FD820880
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:29:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HIRGo9qg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F14E120880
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aIBpoOC5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C3KMas+e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68FD820880
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +26,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QVOvEyz9IjRDf5vIBOKlrL9ucfv/V/Y4k10q/RpUcts=; b=HIRGo9qgLHdri7
-	/4XP5xWJBBq4vXGzkEr3d9K1U1Jdj66k3cnEFum+9GCo4oxIrpA9i/LTU3hAAmXWJ6d9c7E8vfcZG
-	F2jeClyNuittWCxziA3gDn7uiHTv0iqo4uMibqOsr1+P/FUQAUm5Jfn3e/W13+BvNNZZTTswKtrlk
-	B95AZ/ebwUkRkgk0wbFt2N1/SPqFonpm02jXha3c6VWbd6D88rvpN618MrwbJrRjAcz55PRZI2+pV
-	NhFSJV6DLthwrcdsKHSo5WMoagjTEchx2CDW+a4nU/6v9ZrlbCBsTi82uOlnXwCTpi+ASlYd6g9fs
-	kQscrm37a8+pwtg3cjkQ==;
+	List-Owner; bh=UU/uOHDtuwQQYwdjFAQn8Jy5Ca98izJSsIjJW3QpiKM=; b=aIBpoOC5DQttkZ
+	iu9Zjms2uc/7Ijhq0eQJdTQzqHZa9SC47Xl3wOa9hCgKfcvG4e8u9ckyhioVgXUJQZftEfbM5WlaQ
+	0w/FlBx1TfeKSOC3Oxq2vPcJh/ykpn/tNa+cR4LEU3fVuGiR35hTKaC9gut7/zVV4PQBKT4R0qUDU
+	dYspl2nM2/0qU7DiuK6HrbgLLYW4xSktGjfG8Sq2OnQk8fpqZItusJCERWGdTia2hlkRDSKLizmVI
+	JQm5hDl1ooypAj95UtAjXoIMiQux9gZzHgXpv0ekJNgDO6xbMTRbuhJiLlAUpOyGXrgGvbImVz6Rx
+	birvE7LApwNcm11rokPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwket-0005Lk-12; Thu, 21 Feb 2019 09:28:47 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1gwkfj-0006OJ-8I; Thu, 21 Feb 2019 09:29:39 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwke4-00049J-1n; Thu, 21 Feb 2019 09:27:59 +0000
+ id 1gwkeN-0004eF-JQ; Thu, 21 Feb 2019 09:28:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=V5VF+gNYgoXrPF6c9ZOTjAYlBhRxATSJ4Yi7DrRUC/c=; b=C3KMas+e8vgrtFoKyZWYWD0hCC
+ yh1FXqSkcunP2Pgt9ohD5xFEtMB8/wgGdn00yWJHnrC1g8PfyndNbD2nYaBuw972FUhcusAdiow23
+ nZ8tqV3dU66k/md//+X4z89RJ7PnFpSHmYZjmrk6B28GJSG7vrGZZ7WTUnHs6zS3HZB6HPUM5FqCI
+ ziQkMjBEXznonPK0NSgbsAv3RGqB6Cj3qcmgTOkz4HhVOloeBDlekzpWjKP+zCVL5NRXM0bykJ1/g
+ oxeygVtgDDPe5f8lvJ79/fmT+crf5lzwsHgybpGG7IiKLH2QqH2LrBBzdOQJUnSQ9p6YcnWX0j2tD
+ KOkHaHsg==;
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gwkeK-00072w-Lx; Thu, 21 Feb 2019 09:28:13 +0000
 X-Originating-IP: 90.88.23.190
 Received: from localhost.localdomain
  (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 0783340022;
- Thu, 21 Feb 2019 09:27:51 +0000 (UTC)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 71E4F40006;
+ Thu, 21 Feb 2019 09:27:39 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 6/6] mtd: nand: Remove useless line in Kconfig
-Date: Thu, 21 Feb 2019 10:27:33 +0100
-Message-Id: <20190221092734.21634-7-miquel.raynal@bootlin.com>
+Subject: [PATCH 1/6] mtd: nand: omap: Fix comment in platform data using wrong
+ Kconfig symbol
+Date: Thu, 21 Feb 2019 10:27:28 +0100
+Message-Id: <20190221092734.21634-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190221092734.21634-1-miquel.raynal@bootlin.com>
 References: <20190221092734.21634-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_012756_447744_6355406D 
-X-CRM114-Status: UNSURE (   9.82  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190221_042812_862883_92B20B42 
+X-CRM114-Status: GOOD (  12.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -81,25 +97,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prepare changes that will lay in this file to better express what is
-NAND related and what is not in menuconfig.
+The symbol that is being used in the #if/#endif bloc is not the one
+mentioned at the bottom.
 
+Fixes: 93af53b8633c ("nand: omap2: Remove horrible ifdefs to fix module probe")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/platform_data/elm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 9033215e62ea..495751ed3fd7 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -2,6 +2,5 @@ config MTD_NAND_CORE
- 	tristate
+diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+index b8686c00f15f..fef4b081b736 100644
+--- a/include/linux/platform_data/elm.h
++++ b/include/linux/platform_data/elm.h
+@@ -60,6 +60,6 @@ static inline int elm_config(struct device *dev, enum bch_ecc bch_type,
+ {
+ 	return -ENOSYS;
+ }
+-#endif /* CONFIG_MTD_NAND_ECC_BCH */
++#endif /* CONFIG_MTD_NAND_OMAP_BCH */
  
- source "drivers/mtd/nand/onenand/Kconfig"
--
- source "drivers/mtd/nand/raw/Kconfig"
- source "drivers/mtd/nand/spi/Kconfig"
+ #endif /* __ELM_H */
 -- 
 2.19.1
 
