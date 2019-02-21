@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF44C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8EC4C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D4DB2086A
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96A202086A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="odUU0FtU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D4DB2086A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E2c4V/G5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96A202086A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,45 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zDRqhFZ+eQQmxpiZ/Zu0ql/m0TSiicBTw9xMSL5Hf8I=; b=odUU0FtUP8Yh/+
-	PhrFA8eGB0V7kYAKdG74u7hRev3R2TJ1NPYD5znDdzzFlInrfQeKSm1+FxWFkCBCoZYw1yoNRyHZg
-	dq+zYy5sPRoIQsWgrGDa3WLlSOZCoqtz5hVll8GOFwvKwJLOpAr3qY/7qNjiQ1/AtU5RD1jEL2uJ+
-	RoKnITUpFUr0poYMChpazbK9lNENNoBd186gHd9coeHzQTYwHiSJudMxdWpOd+Dy0wJQiSbPPAGYS
-	Oqt4mvVxrw91wL7izULruQRQThKAwms4FChY2j46B/4TMzOdLFxPjNODuzSbubf4ryJkvVWWqR6T+
-	pNMSD1jEF3AJkCZWvaTQ==;
+	List-Owner; bh=KDUTkVYW8VEETWbP8q76RV7zyqY2p/pF0miAZATvSg0=; b=E2c4V/G57intpu
+	z2TBgMXQX8ZulzbCV5UZFzLPBlblNDNGb+QTbaDB9nafrJaCi6a1nrrMlLXdocPGegoBSVrEnTeNZ
+	wkJvv7GrpYBmFtEg41ehWq7/j/4eftlkQ7nj99JPr8+1a07Jo2n8Qw6gXjFgaskjuZ+8RttZ4+yVH
+	nicjvKl22vsDwIZ8V8KXZ6DVTSG27ZolRlT7z+bsZqfzRjFXWa+zaOzsY2NytNCd84xaG8CAxSE+Q
+	ukUFaQXofAwgUZaH1wx1sAuVcUVwvgS92wxZf7J6DvE38s+lI9o+kaGWMKKoELHWdGDuw6aZUaZFG
+	VUFow8L5wNVnttO6ZhqA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwjGQ-0004p6-Qq; Thu, 21 Feb 2019 07:59:26 +0000
+	id 1gwjGc-000591-4g; Thu, 21 Feb 2019 07:59:38 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwjGC-0004R3-JO
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 07:59:15 +0000
+ id 1gwjGJ-0004bn-Mo
+ for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 07:59:25 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 157F027F823;
- Thu, 21 Feb 2019 07:59:11 +0000 (GMT)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 39ECB27F823;
+ Thu, 21 Feb 2019 07:59:18 +0000 (GMT)
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Colin King <colin.king@canonical.com>, Marek Vasut <marek.vasut@gmail.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [next] mtd: spi-nor: cadence-quadspi: fix spelling mistake:
- "Couldnt't" -> "Couldn't"
-Date: Thu, 21 Feb 2019 08:59:08 +0100
-Message-Id: <20190221075908.3559-1-boris.brezillon@collabora.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>,
+ "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [v2,2/2] mtd: spi-nor: Add support for MX25V8035F
+Date: Thu, 21 Feb 2019 08:59:16 +0100
+Message-Id: <20190221075916.3631-1-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190215151547.17532-1-colin.king@canonical.com>
+In-Reply-To: <20190218120421.5034-2-frieder.schrempf@kontron.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: d678d222de8b9ca3f6a177bed162e8de32ead732
+X-linux-mtd-patch-commit: e36bb65e5d0cf3233d4da6af4a03d802af51a376
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190220_235912_913754_416A0444 
-X-CRM114-Status: UNSURE (   9.20  )
+X-CRM114-CacheID: sfid-20190220_235920_444363_0BE72547 
+X-CRM114-Status: UNSURE (   9.76  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -76,7 +72,12 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -84,12 +85,15 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-On Fri, 2019-02-15 at 15:15:47 UTC, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, 2019-02-18 at 12:04:43 UTC, Schrempf Frieder wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
 > 
-> There is a spelling mistake in a dev_error message. Fix it.
+> This adds support for the Macronix MX25V8035F, a 8Mb SPI NOR chip.
+> It is used on i.MX6UL/ULL SoMs by Kontron Electronics GmbH (N631x).
+> It was only tested with a single data line connected, by writing and
+> reading random data with dd.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 > Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
 Applied to http://git.infradead.org/linux-mtd.git spi-nor/next, thanks.
