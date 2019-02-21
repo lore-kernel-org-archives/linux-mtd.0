@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 585E6C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9137AC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26FDB2086A
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:17:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 612302086A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V2zFElGw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26FDB2086A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ec2u1MIa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 612302086A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C6WouQOXTNLVq/iUdpDpvDXT6na/32LCdLM9/i/Cnns=; b=V2zFElGw1gS+3V
-	LzQoo2gYRgQHgE5MZa5thq/ol8LPGUYoxNieq3YL0NisBjB3bNpUd7HqZhwIqXPTRrOoQtWDxMW3H
-	o9sAFxQV5i2DDHf9Vo7FN38x8kJjtNQGWTGWgTRuQVNWNapSQlVfi+Ghl79uBHAbceEcunLaEY7du
-	z43HXgJM4k4eSsUK4DcN7bw69AY31mo+MJihlQJRVNa2xsf/3wDxrLMa8ThxN1snCBA0yYfFG+759
-	bOJ7YKl//48rXLOyVTSSSi7Df3V0NJdfULLGtaCwYYR+0YDhRjyvFEtg2D6pQpXfScYmSY4Ddd2K6
-	cQ4gVQfRWhyqcaU2NPDQ==;
+	List-Owner; bh=XA9vWxcRBJbjpnkWVUUzVR1ij3gTTmgrqkARKDZ09fs=; b=ec2u1MIaT+helO
+	gV/KBpVfBKJXFYUIyN6F1WgCIsIcUjzOwZ8IvsklYGHQiFc4FJEn1gWyAchVy0c5Ag4QgSYhOINn0
+	60YwV4uLb37+A/qPfsKAOxQoRO5BGud2DBu7Z4Jch0CFqamHO44nvROU7d6L1xe5Rwkprpq7Ny+JS
+	O2+kcTAfGdg9jHhESwVx9qnwvJhTMqd25S8MRXPne5+OEvJkKN/PFHY+WBjrxHkQ3UR41Tg/ld3Qf
+	ek72tCVEbTXUkrf5VDisCNjRySxPbN300zJ1XuSNh+p9B1EhnOb4iEWZY9PprJ0nnv4J/on7xuUW0
+	H0lE4J2XFr/s1v8a6wFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwkUG-00044R-CS; Thu, 21 Feb 2019 09:17:48 +0000
+	id 1gwkUQ-0004Lj-5R; Thu, 21 Feb 2019 09:17:58 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwkSL-0001XO-RO; Thu, 21 Feb 2019 09:15:53 +0000
+ id 1gwkSQ-0001dv-JX; Thu, 21 Feb 2019 09:16:03 +0000
 X-Originating-IP: 90.88.23.190
 Received: from localhost.localdomain
  (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id CACC51BF205;
- Thu, 21 Feb 2019 09:15:45 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id B39411BF215;
+ Thu, 21 Feb 2019 09:15:50 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 06/15] mtd: rawnand: Prepare things to reuse the generic NAND
- layer
-Date: Thu, 21 Feb 2019 10:15:18 +0100
-Message-Id: <20190221091527.20497-7-miquel.raynal@bootlin.com>
+Subject: [PATCH 08/15] mtd: rawnand: Initialize the nand_device object
+Date: Thu, 21 Feb 2019 10:15:20 +0100
+Message-Id: <20190221091527.20497-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190221091527.20497-1-miquel.raynal@bootlin.com>
 References: <20190221091527.20497-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_011550_326155_759282B0 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20190221_011555_427966_507597DD 
+X-CRM114-Status: GOOD (  18.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,75 +83,146 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-The generic NAND layer provides abstraction of NAND devices no matter
-the bus that is used to communicate with the chip. Basing the raw NAND
-core on this generic layer should avoid duplication of common
-operations, like iterating over all pages/blocks for MTD IO/erase
-operations.
+In order to use some of the nanddev_xxx() helpers, we need to
+initialize the nand_device object embedded in nand_chip using
+nanddev_init(). This requires implementing nand_ops.
 
-In order to re-use this layer, we must first inherit from nand_device
-and then initialize the nand_device struct appropriately. This patch
-is taking care of the former.
+We also drop useless mtd->xxx initialization when they're already taken
+case of by nanddev_init().
 
 Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/mtd/rawnand.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/Kconfig     |  1 +
+ drivers/mtd/nand/raw/nand_base.c | 65 ++++++++++++++++++++++++++++----
+ 2 files changed, 59 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index c20ea012aab6..dfeedfe2f3e0 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -22,6 +22,7 @@
- #include <linux/mtd/flashchip.h>
- #include <linux/mtd/bbm.h>
- #include <linux/mtd/jedec.h>
-+#include <linux/mtd/nand.h>
- #include <linux/mtd/onfi.h>
- #include <linux/of.h>
- #include <linux/types.h>
-@@ -861,6 +862,7 @@ struct nand_operation {
- int nand_op_parser_exec_op(struct nand_chip *chip,
- 			   const struct nand_op_parser *parser,
- 			   const struct nand_operation *op, bool check_only);
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 1a55d3e3d4c5..8c38f2c116a2 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -14,6 +14,7 @@ menuconfig MTD_NAND
+ 	tristate "Raw/Parallel NAND Device Support"
+ 	depends on MTD
+ 	select MTD_NAND_ECC
++	select MTD_NAND_CORE
+ 	help
+ 	  This enables support for accessing all type of raw/parallel
+ 	  NAND flash devices. For further information see
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index cb03877c775c..e8c1ad17f3c6 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5519,6 +5519,50 @@ static bool nand_ecc_strength_good(struct nand_chip *chip)
+ 	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
+ }
+ 
++static int rawnand_erase(struct nand_device *nand, const struct nand_pos *pos)
++{
++	struct nand_chip *chip = container_of(nand, struct nand_chip,
++					      base);
++	unsigned int eb = nanddev_pos_to_row(nand, pos);
++	int ret;
++
++	eb >>= nand->rowconv.eraseblock_addr_shift;
++
++	nand_select_target(chip, pos->target);
++	ret = nand_erase_op(chip, eb);
++	nand_deselect_target(chip);
++
++	return ret;
++}
++
++static int rawnand_markbad(struct nand_device *nand,
++			   const struct nand_pos *pos)
++{
++	struct nand_chip *chip = container_of(nand, struct nand_chip,
++					      base);
++
++	return nand_markbad_bbm(chip, nanddev_pos_to_offs(nand, pos));
++}
++
++static bool rawnand_isbad(struct nand_device *nand, const struct nand_pos *pos)
++{
++	struct nand_chip *chip = container_of(nand, struct nand_chip,
++					      base);
++	int ret;
++
++	nand_select_target(chip, pos->target);
++	ret = nand_isbad_bbm(chip, nanddev_pos_to_offs(nand, pos));
++	nand_deselect_target(chip);
++
++	return ret;
++}
++
++static const struct nand_ops rawnand_ops = {
++	.erase = rawnand_erase,
++	.markbad = rawnand_markbad,
++	.isbad = rawnand_isbad,
++};
 +
  /**
-  * struct nand_controller_ops - Controller operations
-  *
-@@ -973,7 +975,7 @@ struct nand_legacy {
+  * nand_scan_tail - Scan for the NAND device
+  * @chip: NAND chip object
+@@ -5787,10 +5831,15 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 		break;
+ 	}
  
- /**
-  * struct nand_chip - NAND Private Flash Chip Data
-- * @mtd:		MTD device registered to the MTD framework
-+ * @base:		Inherit from the generic NAND device
-  * @legacy:		All legacy fields/hooks. If you develop a new driver,
-  *			don't even try to use any of these fields/hooks, and if
-  *			you're modifying an existing driver that is using those
-@@ -1050,7 +1052,7 @@ struct nand_legacy {
-  */
++	ret = nanddev_init(&chip->base, &rawnand_ops, mtd->owner);
++	if (ret)
++		goto err_nand_manuf_cleanup;
++
++	/* Adjust the MTD_CAP_ flags when NAND_ROM is set. */
++	if (chip->options & NAND_ROM)
++		mtd->flags = MTD_CAP_ROM;
++
+ 	/* Fill in remaining MTD driver data */
+-	mtd->type = nand_is_slc(chip) ? MTD_NANDFLASH : MTD_MLCNANDFLASH;
+-	mtd->flags = (chip->options & NAND_ROM) ? MTD_CAP_ROM :
+-						MTD_CAP_NANDFLASH;
+ 	mtd->_erase = nand_erase;
+ 	mtd->_point = NULL;
+ 	mtd->_unpoint = NULL;
+@@ -5807,7 +5856,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
+ 	mtd->_max_bad_blocks = nand_max_bad_blocks;
+-	mtd->writebufsize = mtd->writesize;
  
- struct nand_chip {
--	struct mtd_info mtd;
-+	struct nand_device base;
+ 	/*
+ 	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
+@@ -5820,13 +5868,13 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 	/* Initialize the ->data_interface field. */
+ 	ret = nand_init_data_interface(chip);
+ 	if (ret)
+-		goto err_nand_manuf_cleanup;
++		goto err_nanddev_cleanup;
  
- 	struct nand_legacy legacy;
+ 	/* Enter fastest possible mode on all dies. */
+ 	for (i = 0; i < chip->numchips; i++) {
+ 		ret = nand_setup_data_interface(chip, i);
+ 		if (ret)
+-			goto err_nand_manuf_cleanup;
++			goto err_nanddev_cleanup;
+ 	}
  
-@@ -1115,12 +1117,12 @@ extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
+ 	/* Check, if we should skip the bad block table scan */
+@@ -5836,11 +5884,14 @@ static int nand_scan_tail(struct nand_chip *chip)
+ 	/* Build bad block table */
+ 	ret = nand_create_bbt(chip);
+ 	if (ret)
+-		goto err_nand_manuf_cleanup;
++		goto err_nanddev_cleanup;
  
- static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
- {
--	return container_of(mtd, struct nand_chip, mtd);
-+	return container_of(mtd, struct nand_chip, base.mtd);
- }
+ 	return 0;
  
- static inline struct mtd_info *nand_to_mtd(struct nand_chip *chip)
- {
--	return &chip->mtd;
-+	return &chip->base.mtd;
- }
  
- static inline void *nand_get_controller_data(struct nand_chip *chip)
++err_nanddev_cleanup:
++	nanddev_cleanup(&chip->base);
++
+ err_nand_manuf_cleanup:
+ 	nand_manufacturer_cleanup(chip);
+ 
 -- 
 2.19.1
 
