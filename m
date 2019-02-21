@@ -3,21 +3,21 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE74C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:56:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 612C9C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:06:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE4172086A
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:56:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3029320855
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:06:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qlhx+IRw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIF7FG3C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE4172086A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HTb1fzaO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3029320855
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,43 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5w5NmeMpyk0f6VaTLFVJn/+pQfimumuZu5Ju3GfFCx8=; b=qlhx+IRw8JmpGF
-	qBKi83Efn51X4ekcz4QgI2uSkAx/G9T+2mlDbx9EqfLubQBt1gxRB4ySaScOdAR2lIdkBqqsRtMx5
-	vcO+HT7+Ow6dVzIDOLvFB7CNpY6wbKXJ4Xo+MaQ/avQkhrDmPJ2KL8m1XdzayXC6emomP7/VG+WWX
-	+/PAZ/INJFxnAmRvzsAUsAED2Z4trzMUWl3TwURVAqlLTg6kEFg/89lHNTGIhPrPeYqJrgR1SHfGP
-	zhVcvQ5d0Qlv0H8DJWr0A9SH3CeYrYVpj31STXcwx+dMjFyc5Mp6KVmzQb/J6vpqTa1Q2h6EKb+wJ
-	w1irxl/xEseueb/qWZAA==;
+	List-Owner; bh=tAT4+5/JkBH2Q/maN1YDSX0m9YKrv5mngiQasm/gCos=; b=HTb1fzaOJlN7My
+	tUsdg5pPy4N69ykaaY5D/eWMrtjfseQO9PA+N2gzawZP5lzHRiwGfK/xg7ZWLYYRk7GJxI889MBB6
+	shA7MDZeZzWJx1mYC7hoy8wDVOAzkPTnR8dkvBOnJCUjiR6s9Jxe1I8g2sEw2WYcOwVaE3kqhxS2B
+	pSbb9EH5QHm65xpK2LSMDMlfTLo/I8dbl0OhDyBkCmsHHlzZzGguR159Hph7EAiirw+7ibDVDsGuu
+	6+pLs3buGCvsrbk5VO/KURHrGk+V5oKDgcj/wVM8AsNnlg48FBBNElzUGvVX7fT8ObDs52x0RFwY2
+	5UEqTaT8LinTLTjT/vJA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwm1V-000530-FQ; Thu, 21 Feb 2019 10:56:13 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gwmBS-0000Yw-0r; Thu, 21 Feb 2019 11:06:30 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwm1J-0004qa-A9; Thu, 21 Feb 2019 10:56:02 +0000
-Received: from localhost (unknown [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9F1812086A;
- Thu, 21 Feb 2019 10:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550746560;
- bh=8b0jdkoIJUtGvzzZKY2RFI9ZaRIq0rKjd+MkiLGiACg=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=fIF7FG3CoZX4tt4BtXgkwYrDVLHLGdT+q7LYD6BJNvcMY6WlkiYwwXTq7ZWxd07lb
- iLW4xHihETZf1ZqnxfVlJbpc1WnRjaFwt2lri16gItELggC5zAycd51kppolOHqJ1K
- 4k4BdhyPDi2lFeLlGVyyTXmN4VR64qh9n0ti18zM=
-Date: Thu, 21 Feb 2019 11:55:54 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1gwmBI-0000QJ-TU; Thu, 21 Feb 2019 11:06:22 +0000
+X-Originating-IP: 90.88.23.190
+Received: from xps13 (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr
+ [90.88.23.190]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id C73844000A;
+ Thu, 21 Feb 2019 11:06:11 +0000 (UTC)
+Date: Thu, 21 Feb 2019 12:06:10 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <bbrezillon@kernel.org>
 Subject: Re: [RFC PATCH 02/27] mtd: nand: Compile in the NAND core by default
-Message-ID: <20190221115554.315fbd9b@kernel.org>
-In-Reply-To: <20190221100216.25255-3-miquel.raynal@bootlin.com>
+Message-ID: <20190221120610.5abb49ae@xps13>
+In-Reply-To: <20190221115554.315fbd9b@kernel.org>
 References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
  <20190221100216.25255-3-miquel.raynal@bootlin.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20190221115554.315fbd9b@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_025601_416897_A8BA3170 
-X-CRM114-Status: GOOD (  18.93  )
+X-CRM114-CacheID: sfid-20190221_030621_107463_3C1383B1 
+X-CRM114-Status: GOOD (  16.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -81,94 +76,43 @@ Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Feb 2019 11:01:51 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> Force the NAND core be compiled-in when using any kind of NAND.
-
-Why?
-
-> 
-> Also remove the redundant dependencies on MTD which is enforced by the
-> game of the if/endif blocs.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/Kconfig         | 12 ++++++++++--
->  drivers/mtd/nand/onenand/Kconfig |  1 -
->  drivers/mtd/nand/raw/Kconfig     |  1 -
->  drivers/mtd/nand/spi/Kconfig     |  1 -
->  4 files changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 495751ed3fd7..e8d26a715922 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -1,6 +1,14 @@
-> -config MTD_NAND_CORE
-> -	tristate
-> +menuconfig MTD_NAND_CORE
-> +	tristate "NAND"
-
-Definitely not something we want to expose in menuconfig.
-
-> +	default y
-
-I don't see what's the problem with letting SPINAND, RAWNAND and
-ONENAND select this options if they actually need it.
-
-> +	help
-> +	  Embed the NAND core. This is the generic part between raw
-> +	  NAND, SPI NAND and Onenand.
-> +
-> +if MTD_NAND_CORE
->  
->  source "drivers/mtd/nand/onenand/Kconfig"
->  source "drivers/mtd/nand/raw/Kconfig"
->  source "drivers/mtd/nand/spi/Kconfig"
-> +
-> +endif
-> diff --git a/drivers/mtd/nand/onenand/Kconfig b/drivers/mtd/nand/onenand/Kconfig
-> index 9dc15748947b..c168f3b4b296 100644
-> --- a/drivers/mtd/nand/onenand/Kconfig
-> +++ b/drivers/mtd/nand/onenand/Kconfig
-> @@ -1,6 +1,5 @@
->  menuconfig MTD_ONENAND
->  	tristate "OneNAND Device Support"
-> -	depends on MTD
->  	depends on HAS_IOMEM
->  	help
->  	  This enables support for accessing all type of OneNAND flash
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index 510a6b32820d..ebb8a3da9fa5 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -11,7 +11,6 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
->  
->  menuconfig MTD_RAW_NAND
->  	tristate "Raw/Parallel NAND Device Support"
-> -	depends on MTD
->  	select MTD_NAND_ECC_SW_HAMMING
->  	help
->  	  This enables support for accessing all type of raw/parallel
-> diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
-> index 7c37d2929b68..7631050610ab 100644
-> --- a/drivers/mtd/nand/spi/Kconfig
-> +++ b/drivers/mtd/nand/spi/Kconfig
-> @@ -1,6 +1,5 @@
->  menuconfig MTD_SPI_NAND
->  	tristate "SPI NAND device Support"
-> -	select MTD_NAND_CORE
->  	depends on SPI_MASTER
->  	select SPI_MEM
->  	help
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJicmV6aWxsb25Aa2VybmVsLm9yZz4gd3JvdGUg
+b24gVGh1LCAyMSBGZWIgMjAxOQoxMTo1NTo1NCArMDEwMDoKCj4gT24gVGh1LCAyMSBGZWIgMjAx
+OSAxMTowMTo1MSArMDEwMAo+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
+b20+IHdyb3RlOgo+IAo+ID4gRm9yY2UgdGhlIE5BTkQgY29yZSBiZSBjb21waWxlZC1pbiB3aGVu
+IHVzaW5nIGFueSBraW5kIG9mIE5BTkQuICAKPiAKPiBXaHk/CgpCZWNhdXNlIGFsbCB0aGUgbG9n
+aWMgdGhhdCBjb21lcyBsYXRlciBpbiB0aGUgc2VyaWVzIHJlbGllcyBvbiB0aGlzCmNoYW5nZS4g
+SSBuZWVkIHRoZSBOQU5EIGNvcmUgdG8gYmUgY29tcGlsZWQtaW4sIGFzIHdlbGwgdGhlIEVDQyBl
+bmdpbmUKY29yZSwgYXMgd2VsbCBhcyBldmVyeXRoaW5nIHRoYXQgaXMgc2hhcmVkIGJldHdlZW4g
+cmF3IE5BTkQgYW5kClNQSS1OQU5EIHdoaWNoIEkgbW92ZSBpbiB0aGUgTkFORCBjb3JlLgoKPiAK
+PiA+IAo+ID4gQWxzbyByZW1vdmUgdGhlIHJlZHVuZGFudCBkZXBlbmRlbmNpZXMgb24gTVREIHdo
+aWNoIGlzIGVuZm9yY2VkIGJ5IHRoZQo+ID4gZ2FtZSBvZiB0aGUgaWYvZW5kaWYgYmxvY3MuCj4g
+PiAKPiA+IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxp
+bi5jb20+Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL0tjb25maWcgICAgICAgICB8IDEy
+ICsrKysrKysrKystLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9LY29uZmlnIHwgIDEg
+LQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcgICAgIHwgIDEgLQo+ID4gIGRyaXZl
+cnMvbXRkL25hbmQvc3BpL0tjb25maWcgICAgIHwgIDEgLQo+ID4gIDQgZmlsZXMgY2hhbmdlZCwg
+MTAgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbXRkL25hbmQvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZwo+ID4gaW5k
+ZXggNDk1NzUxZWQzZmQ3Li5lOGQyNmE3MTU5MjIgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210
+ZC9uYW5kL0tjb25maWcKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZwo+ID4gQEAg
+LTEsNiArMSwxNCBAQAo+ID4gLWNvbmZpZyBNVERfTkFORF9DT1JFCj4gPiAtCXRyaXN0YXRlCj4g
+PiArbWVudWNvbmZpZyBNVERfTkFORF9DT1JFCj4gPiArCXRyaXN0YXRlICJOQU5EIiAgCj4gCj4g
+RGVmaW5pdGVseSBub3Qgc29tZXRoaW5nIHdlIHdhbnQgdG8gZXhwb3NlIGluIG1lbnVjb25maWcu
+CgpJIGNvbnNpZGVyZWQgdGhlIE5BTkQgY29yZSBhcyBlc3NlbnRpYWwgd2hlbiB1c2luZyByYXcg
+TkFORCBhbmQKU1BJLU5BTkQuIEhlbmNlLCB0dXJuaW5nIGl0IGludG8gYSBtZW51Y29uZmlnIG9w
+dGlvbiBtYWtlIHRoZSB3aG9sZQpOQU5EIHN1YnN5c3RlbSBhdmFpbGFibGUgKG9yIG5vdCkgYW5k
+IHdpbGwgYXBwZWFyIGluIGEgZGlmZmVyZW50CiJtZW51Y29uZmlnIHBhZ2UiLCB3aGljaCByZWFs
+bHkgZW5oYW5jZXMgdGhlIHJlYWRhYmlsaXR5LgoKPiAKPiA+ICsJZGVmYXVsdCB5ICAKPiAKPiBJ
+IGRvbid0IHNlZSB3aGF0J3MgdGhlIHByb2JsZW0gd2l0aCBsZXR0aW5nIFNQSU5BTkQsIFJBV05B
+TkQgYW5kCj4gT05FTkFORCBzZWxlY3QgdGhpcyBvcHRpb25zIGlmIHRoZXkgYWN0dWFsbHkgbmVl
+ZCBpdC4KClNlZSB0aGUgcmVhc29uIGFib3ZlLCBoZW5jZSBoYXZpbmcgaXQgImRlZmF1bHQgeSIg
+aXMgbmVlZGVkIHRvIGRvIG5vdApicmVhayBleGlzdGluZyBkZWZjb25maWdzLgoKClRoYW5rcywK
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
