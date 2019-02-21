@@ -2,22 +2,22 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2DF9C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC0DC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 12:08:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A030220880
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:51:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5301D20855
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 12:08:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YtmT9cNe";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="unrPc/TS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A030220880
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jHxF7yP+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="NjEMWwKM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5301D20855
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,58 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XwK5DiBqlhBnbxj9dXJqMIph3UT7s1N990cwrlaCdyA=; b=YtmT9cNeZQKHhZ
-	E0DrjDd46gU/iNdv8CzVMWqTQM2qkg/pysM5TLS/Pj8Tj6jjR6VAXmegzBiVz5Ecvq6ezIZlni/4P
-	1ZfNBBuvCwmh/SPUDVeNPJoBOZTVzfohmxcyKp5deiqsdW177CcT294P584Ohd4Kq6ps2miwTMBuI
-	V5cUstkgSaBIGvAleH4v1MK1cFeyBl/654SHgaU8e0nlIt3nuEtzcEweD+8VuiJ0y7zx2yCdEGDsc
-	5FvW3qBCucIi0+ciREIsbsbqzCiIAUtU0j1f0gzjuiJ8PRaAdyPSsXRPh0qahJDQlNVn8+sl5tZHG
-	q1dpCcUW5MaUDkXDW9wA==;
+	List-Owner; bh=v6ctU4PjX8wdomhlB1dpVCgG+gOIyEReEtPjmxT/Lnk=; b=jHxF7yP+MkDaIz
+	PFY+rW11G5mzAEFstcQf0KjVIu+mOhKTxiof8q5xQwPewTy4wy6YRqmpdvLaF6xrniWu5p9WFa8SH
+	afMsMypajBE2m1/DJCkTyS7JWDoyy+S6c1s2t4nmme3tgv/zq/kS84ZFozzuyB/88iDE5h5/uIAE6
+	IYJW3svPpQiEEyhLuvgbxIbUgbwaH6nxoc7+JKozLfBwpCRKnsXzq0oBwVg5qvtKeq01vJU0z1Gcs
+	KnYBKOguxtzeotxzWVfJJ8sDGeibV/Dc5kw11Jf51cLieEtjsj0ZDcNXsNC3zKnCa2Ve4hrLXrbCR
+	Pp1SYYFaF3SDGiqVW9XQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwmsi-0007SV-NY; Thu, 21 Feb 2019 11:51:12 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1gwn9V-0006Do-3b; Thu, 21 Feb 2019 12:08:33 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwmsh-0007Ab-4P
- for linux-mtd@bombadil.infradead.org; Thu, 21 Feb 2019 11:51:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=6+5t/ytICsqQa4+JvgABL1goOYl1TQTfelxrDGVeKQo=; b=unrPc/TSCIgsk+9dWEuoO1idcM
- CU3ORtEiIFET/YlXC7knnx1tEBpr+YnzfxmJ9AKJiupePeKJffDosbVivNRCLIR4LT3St6m+zKTF7
- 9+vTwec0Oo1MVEATy+hu63EZq/OMt3xlqJt7jkNbeFtkaE1SL7IW8YPCxScT420QiFLj8BjYKvAGv
- O3QONczJpDqbNoKDBGW34jqf/2cD+xTZD1ZpKtFMk0YYb0lI86pL9nkPS1F/eu3EkPc/lTQ/PHYya
- tru3fMeFJV2SCYG66JUNbcI4CKv5ssf9eB0YP1MMD20mjGZsdB9ZyQfuECLj2WYwmqjYs1KLWhE8T
- hc3bLg6A==;
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwmfD-0005ko-GC
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 11:37:17 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1B1112809F7;
- Thu, 21 Feb 2019 11:37:14 +0000 (GMT)
-Date: Thu, 21 Feb 2019 12:37:09 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: Prevent Nand page writes on Power failure
-Message-ID: <20190221123709.000aa79d@collabora.com>
-In-Reply-To: <20190221112138.i5cqclnlpsjnms7y@pengutronix.de>
-References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
- <20190221091055.266b9627@collabora.com>
- <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
- <20190221113646.6d4eccf1@collabora.com>
- <20190221112138.i5cqclnlpsjnms7y@pengutronix.de>
-Organization: Collabora
+ id 1gwn9K-00064x-70; Thu, 21 Feb 2019 12:08:25 +0000
+Received: from localhost (unknown [91.160.177.164])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 58EB720855;
+ Thu, 21 Feb 2019 12:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1550750901;
+ bh=fpaFN2eK2DE98FA8SCXmmCYjNYjUVZWlfRrxsUVSUdU=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=NjEMWwKMawag2vuZ4XsYkLrWUF8tnjzh6jf6j5qspq2gZDuMJy7TOIZmA/xHGR0Mg
+ RNMXbI/WqQCjucarzwNWB5Q4HTdqvUUqh61hDGX+FX57S+eCeGC13uBnPV/ot6Me41
+ iWHb88gByPnR0zlITYWWfl9EdRiBkhKTt+LMVrM8=
+Date: Thu, 21 Feb 2019 13:08:15 +0100
+From: Boris Brezillon <bbrezillon@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [RFC PATCH 02/27] mtd: nand: Compile in the NAND core by default
+Message-ID: <20190221130815.7bd550dd@kernel.org>
+In-Reply-To: <20190221124628.3538ecb0@xps13>
+References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
+ <20190221100216.25255-3-miquel.raynal@bootlin.com>
+ <20190221115554.315fbd9b@kernel.org>
+ <20190221120610.5abb49ae@xps13>
+ <20190221121437.7c551bc5@kernel.org>
+ <20190221124628.3538ecb0@xps13>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_113715_605130_37F1D5DE 
-X-CRM114-Status: GOOD (  38.07  )
+X-CRM114-CacheID: sfid-20190221_040823_904836_CD52E7CA 
+X-CRM114-Status: GOOD (  27.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,88 +77,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>,
+ Schrempf Frieder <frieder.schrempf@kontron.de>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Feb 2019 12:21:38 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Thu, 21 Feb 2019 12:46:28 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> On Thu, Feb 21, 2019 at 11:36:46AM +0100, Boris Brezillon wrote:
-> > On Thu, 21 Feb 2019 11:17:47 +0100
-> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> Hi Boris,
+> 
+> Boris Brezillon <bbrezillon@kernel.org> wrote on Thu, 21 Feb 2019
+> 12:14:37 +0100:
+> 
+> > On Thu, 21 Feb 2019 12:06:10 +0100
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > >   
 > > > Hi Boris,
 > > > 
-> > > On Thu, Feb 21, 2019 at 09:10:55AM +0100, Boris Brezillon wrote:  
-> > > > Hi Sascha,
+> > > Boris Brezillon <bbrezillon@kernel.org> wrote on Thu, 21 Feb 2019
+> > > 11:55:54 +0100:
+> > >     
+> > > > On Thu, 21 Feb 2019 11:01:51 +0100
+> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > > >       
+> > > > > Force the NAND core be compiled-in when using any kind of NAND.        
 > > > > 
-> > > > On Wed, 20 Feb 2019 14:58:20 +0100
-> > > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > >     
-> > > > > Hi All,
-> > > > > 
-> > > > > I have hardware here for which the normal way to turn off is just to cut
-> > > > > the power. When the powercut happens during a NAND page write then we
-> > > > > get more or less completely written pages during next boot. Very rarely
-> > > > > it seems to happen that such a half written page with only very few
-> > > > > flipped bits is erroneously detected as empty and written again which
-> > > > > then results in ECC errors when reading the data.    
-> > > > 
-> > > > This should definitely be fixed, maybe by lowering the bitflip
-> > > > threshold when doing the empty check. Do you know the ECC strength and
-> > > > the number of bitflips you have when that problem occurs?    
+> > > > Why?      
 > > > 
-> > > The problem is that these half written pages do not seem to be very
-> > > stable. It happens that the number of bitflips change with each read.
-> > > I have seen pages which can be read sometimes and sometimes not. It
-> > > really seems that half written pages must be avoided entirely.  
+> > > Because all the logic that comes later in the series relies on this
+> > > change. I need the NAND core to be compiled-in,    
 > > 
-> > But when they are correctly read, do you know how many bitflips they
-> > have?  
+> > Hm, not exactly compiled-in as it can still be selected as a module.  
 > 
-> Yes, I know this number,
+> Yes, do you think it is a problem?
 
-Is it high? I mean, can we tweak the threshold to detect such cases?
-
-> but as said, it varies when reading the same
-> page again.
-
-Yes, I can imagine, as cells were weakly programmed, their state might
-change from one read to another. What I'm mainly interested in is the
-state on the first read after the powercut.
+Yes, it is, at least for the SPI NAND case (and soon the RAW NAND case
+too) since you remove the select but don't add a depends on. If you
+select NAND_CORE as a module and SPI_NAND compiled-in => BOOM!
 
 > 
-> > To be honest, I fear not all users will be able to be informed
-> > that powercuts are about to happen, and we need a way to fix that for
-> > everyone.  
+> >   
+> > > as well the ECC engine
+> > > core, as well as everything that is shared between raw NAND and
+> > > SPI-NAND which I move in the NAND core.    
+> > 
+> > Yes, the core is required for SPI NAND and soon will be for RAW NAND,
+> > but I still don't see the problem with the "select NAND_CORE" approach,
+> > sorry.
+> >   
+> > >     
+> > > >       
+> > > > > 
+> > > > > Also remove the redundant dependencies on MTD which is enforced by the
+> > > > > game of the if/endif blocs.
+> > > > > 
+> > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > ---
+> > > > >  drivers/mtd/nand/Kconfig         | 12 ++++++++++--
+> > > > >  drivers/mtd/nand/onenand/Kconfig |  1 -
+> > > > >  drivers/mtd/nand/raw/Kconfig     |  1 -
+> > > > >  drivers/mtd/nand/spi/Kconfig     |  1 -
+> > > > >  4 files changed, 10 insertions(+), 5 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> > > > > index 495751ed3fd7..e8d26a715922 100644
+> > > > > --- a/drivers/mtd/nand/Kconfig
+> > > > > +++ b/drivers/mtd/nand/Kconfig
+> > > > > @@ -1,6 +1,14 @@
+> > > > > -config MTD_NAND_CORE
+> > > > > -	tristate
+> > > > > +menuconfig MTD_NAND_CORE
+> > > > > +	tristate "NAND"        
+> > > > 
+> > > > Definitely not something we want to expose in menuconfig.      
+> > > 
+> > > I considered the NAND core as essential when using raw NAND and
+> > > SPI-NAND.    
+> > 
+> > It is needed for SPI NAND, and will be for raw NAND for sure, but I
+> > still see no reasons for turning it into a user-visible option.
+> >   
+> > > Hence, turning it into a menuconfig option make the whole
+> > > NAND subsystem available (or not) and will appear in a different
+> > > "menuconfig page", which really enhances the readability.    
+> > 
+> > That's a different thing, and I have no problem with adding an extra
+> > level in the Kconfig hierarchy.  
 > 
-> If you want that I'm afraid we can't fix this on this level. You can't
-> rely on the data when a powercut happens during write. It may look ok at
-> first, but bitflips can develop later. I just found an interesting read
-> here:
-> https://www.datalight.com/blog/2017/03/08/enemy-of-nand-flash-memory/
-> 
-> If you want to fix it for all users you have to track somehow which
-> pages you have written last and discard the data or copy it to another
-> block.
+> Then why not using this symbol? I don't get why you are opposed.
 
-Did you have the problem that pages written with valid data turn into
-uncorrectable pages on the second read attempt or is it just
-erased/empty pages that turn out to be not so empty/erased and next
-time you write to them you end up with uncorrectable errors?
-
-Other than that, yes, tracking which block was written last so that you
-can move the data somewhere else in case of an unclean detach/unmount
-is an option. Don't know if UBIFS has this information (UBI doesn't,
-that's for sure).
+Because, not only you're forcing onenand users to pull the nand core
+code in, which is not needed until the conversion to the generic NAND
+layer is done, but you're actually forcing that for all existing
+defconfigs because of your "default y" approach. Also, I don't see
+what's the benefit of letting users know about this intermediate
+framework when all they care about is supporting a specific class of
+devices.
 
 > 
-> Sascha
-> 
+> So you would like a config NAND_CORE (invisible) and a visible
+> menuconfig NAND? And all entries in the NAND menu selecting NAND_CORE?
 
+Not all entries, just SPI NAND, and soon, raw NAND. And yes, I'd prefer
+that.
 
 ______________________________________________________
 Linux MTD discussion mailing list
