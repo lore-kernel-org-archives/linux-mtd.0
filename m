@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 137FCC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64209C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:03:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D69BB20880
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:02:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 147D120880
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:03:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Uc3yT3pj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D69BB20880
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EAHKUww8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 147D120880
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qBmTnPkxTzlktzu5bbLDi5ek3sQw9P5qF8t5Cz+RC5M=; b=Uc3yT3pjWpFwdU
-	LQ+fr/BADEDuh5Hc39wAaH/vwSnA222CyTGsYJFuX4sbQj2LXKNJysFg6OCyhjeZvRsf4/1A/Risx
-	ZVu8E4oxqymIRZiF5f3EzBic5stKqu0mXdH/dxkD54rHXeXtRnDqDUlila5hQRypy8wTM9XB8vwrl
-	7sdI4CYU8jj2n8gC964UyTWtrovwagdLfBGQrGaFlxf2X7W0R5mtKQlwEFU7cohkw05Xi6QCuusGt
-	+hq7PDf6+j6qKoYPhaMnh2fzsNUCR+JekZ1WVlSicAUyFN3uZWNFTV583cuFUAHEICw0AaLZEGrfF
-	9uWhm3/C560tJWhIihNw==;
+	List-Owner; bh=VRgy+iVV9esRcuEtORoUQ3PgXctWNGOiit6eXSNKm7M=; b=EAHKUww8cCU/zr
+	lB19QyTpjHFNXRpP7oTaWzmoVLgqFmGQVlFgbLs76XIgHbvg4UcJzsb3MvsCGAqGIQM3MTDqcpmiM
+	w419tffyx3BT5Mo2wE8OKoiIPaw6ezK9kVqp2Zxxd4SVKClrt7QXDqh9hR0geVp/V3ik3NlXhgojK
+	2POJjSDPN8e3n2eaSfZ+lTG1QElR0wBD6mCpRfk31goJqd+/5ejJgdFzZhqB6dBogXGyKH6NvaYis
+	ozjSLuFySHAKYgkaqZ/3NO8LuKMaVzmwLWvgEjg9X5nWG+qPwj4cwVL4qsZ4xLIuCMcsXMVudSZyE
+	4ycGVgPOUlSIkBYeApmA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwlBl-0007Ul-Cz; Thu, 21 Feb 2019 10:02:45 +0000
+	id 1gwlC8-00081T-E6; Thu, 21 Feb 2019 10:03:08 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwlBa-0007Jg-Gh; Thu, 21 Feb 2019 10:02:36 +0000
+ id 1gwlBa-0007Je-Gj; Thu, 21 Feb 2019 10:02:36 +0000
 Received: from localhost.localdomain
  (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id BE42A10000D;
- Thu, 21 Feb 2019 10:02:24 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 8CC53100013;
+ Thu, 21 Feb 2019 10:02:27 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [RFC PATCH 01/27] mtd: nand: Move nand_device forward declaration to
- the top
-Date: Thu, 21 Feb 2019 11:01:50 +0100
-Message-Id: <20190221100216.25255-2-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 02/27] mtd: nand: Compile in the NAND core by default
+Date: Thu, 21 Feb 2019 11:01:51 +0100
+Message-Id: <20190221100216.25255-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190221100216.25255-1-miquel.raynal@bootlin.com>
 References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_020234_701193_A01BEE9F 
-X-CRM114-Status: GOOD (  10.09  )
+X-CRM114-CacheID: sfid-20190221_020234_706152_0C740A4B 
+X-CRM114-Status: GOOD (  11.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -81,36 +80,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This structure might be used earlier in this file, let's move the
-forward declaration at the top.
+Force the NAND core be compiled-in when using any kind of NAND.
+
+Also remove the redundant dependencies on MTD which is enforced by the
+game of the if/endif blocs.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/mtd/nand.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/Kconfig         | 12 ++++++++++--
+ drivers/mtd/nand/onenand/Kconfig |  1 -
+ drivers/mtd/nand/raw/Kconfig     |  1 -
+ drivers/mtd/nand/spi/Kconfig     |  1 -
+ 4 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index cebc38b6d6f5..30f0fb02abe2 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -12,6 +12,8 @@
- 
- #include <linux/mtd/mtd.h>
- 
-+struct nand_device;
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 495751ed3fd7..e8d26a715922 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -1,6 +1,14 @@
+-config MTD_NAND_CORE
+-	tristate
++menuconfig MTD_NAND_CORE
++	tristate "NAND"
++	default y
++	help
++	  Embed the NAND core. This is the generic part between raw
++	  NAND, SPI NAND and Onenand.
 +
- /**
-  * struct nand_memory_organization - Memory organization structure
-  * @bits_per_cell: number of bits per NAND cell
-@@ -133,8 +135,6 @@ struct nand_bbt {
- 	unsigned long *cache;
- };
++if MTD_NAND_CORE
  
--struct nand_device;
--
- /**
-  * struct nand_ops - NAND operations
-  * @erase: erase a specific block. No need to check if the block is bad before
+ source "drivers/mtd/nand/onenand/Kconfig"
+ source "drivers/mtd/nand/raw/Kconfig"
+ source "drivers/mtd/nand/spi/Kconfig"
++
++endif
+diff --git a/drivers/mtd/nand/onenand/Kconfig b/drivers/mtd/nand/onenand/Kconfig
+index 9dc15748947b..c168f3b4b296 100644
+--- a/drivers/mtd/nand/onenand/Kconfig
++++ b/drivers/mtd/nand/onenand/Kconfig
+@@ -1,6 +1,5 @@
+ menuconfig MTD_ONENAND
+ 	tristate "OneNAND Device Support"
+-	depends on MTD
+ 	depends on HAS_IOMEM
+ 	help
+ 	  This enables support for accessing all type of OneNAND flash
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 510a6b32820d..ebb8a3da9fa5 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -11,7 +11,6 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
+ 
+ menuconfig MTD_RAW_NAND
+ 	tristate "Raw/Parallel NAND Device Support"
+-	depends on MTD
+ 	select MTD_NAND_ECC_SW_HAMMING
+ 	help
+ 	  This enables support for accessing all type of raw/parallel
+diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
+index 7c37d2929b68..7631050610ab 100644
+--- a/drivers/mtd/nand/spi/Kconfig
++++ b/drivers/mtd/nand/spi/Kconfig
+@@ -1,6 +1,5 @@
+ menuconfig MTD_SPI_NAND
+ 	tristate "SPI NAND device Support"
+-	select MTD_NAND_CORE
+ 	depends on SPI_MASTER
+ 	select SPI_MEM
+ 	help
 -- 
 2.19.1
 
