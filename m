@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A0EC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB8AC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:19:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50E9A2084F
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:16:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D6042084F
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:19:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pY3McRtU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="E8Th/qaS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50E9A2084F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D/lot5QG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYyPw0aG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D6042084F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,45 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=331ReeDyDRTfzcLnkW7draKiwRzjGMSHL81vOWQWlmI=; b=pY3McRtU1oH2TY
-	vJHldKr8zDmqJIMIhvYNBUnRyuRwdK0PY9MP6u3os6Wj/VY1muJARRUKUJ4vaY7CaHd1K1avro/kS
-	KpxlIr9AQqYpFg8z0WR5qNWDW1tkuXrFzOu4oHftLuc56QuRlOz/qUzpoxMte6oFk951gW9Ejqv0c
-	BsrkkFEglnTWG75PQU+kFflxTI6szJbF+mIEU/O7wfP6kZWBPWz1iaYtb/4bV33d9KOGOvbFYwReg
-	2CJal6wd8ny5/rFqsWE0nemEhGj/k9CDGK493+A/ttm1cFyoIyT1nDmM171Xd2+WgPv10REPPc6it
-	oGvszc1z+DU8qCa9HsLw==;
+	List-Owner; bh=mApPlGDSnyD7uIFGTGVaTVHd0xCIPV8ErY4WXhV2ZdA=; b=D/lot5QGOPTCzU
+	rIg5siBHaDXi06JXopppYi/7ndXWbq1qDk3fgQMZtd5NTMkTHX1/W7QChNU6UtJp16VHCyGkCvaMU
+	I/4koaQGE9W3vbk2hOi0MyByQjn5Z5P7jc9CAO4fOTbSJfkXdjJqgRFY00woEZOcEudhfbv6qdmal
+	nTzvk9uKoAiXDxC2JU9eiPIa0G0ED38qMBV32bP0agpNE7PRiavqAyuhsvqXo5rKu8+xXCoOR7WDm
+	WQOhoabMFtephkAZMVw2VvuDRucPgHiUfrayrEUovy9e4NTEIg3k1E1g4KcmO7EiQm5qQs6R9TtTL
+	PF2YNlBHZumCWUELeDTQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwmLK-0004ix-BK; Thu, 21 Feb 2019 11:16:42 +0000
+	id 1gwmNo-0005SF-9E; Thu, 21 Feb 2019 11:19:16 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwmLB-0004aT-0E; Thu, 21 Feb 2019 11:16:34 +0000
+ id 1gwmNf-0005KG-9N; Thu, 21 Feb 2019 11:19:08 +0000
 Received: from localhost (unknown [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 641A12086C;
- Thu, 21 Feb 2019 11:16:30 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id B7DA32084F;
+ Thu, 21 Feb 2019 11:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550747792;
- bh=4g0fFeIOMLK4749Aw70OPodjeXCJ/xU+ILuYlLNbbRY=;
+ s=default; t=1550747947;
+ bh=OFWRmPdHR9MMBor0LEiYPxs3cWI8jGhrxy11w5VI+4M=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=E8Th/qaS7iPn7WzxlZh0puUxBqg7JICMv8ZzRJmI7Ygs5jrI642zxQn6xDbwdL7CU
- h6a1wASClJJOz5cn+dZFkfugEx1/cAE1VOAldHRZksUHSIcfa//BdB1GQVKY5PqAPX
- AuHpPPXsvC0JqvgEJWMIPKEDT60LEkfPSCkoogAg=
-Date: Thu, 21 Feb 2019 12:16:25 +0100
+ b=sYyPw0aGHSr5e4wIEFbPHuD3OsbdxtrBqd7kH8zyGrTeEAI4wuX97gRU794pC+cvk
+ KjSPsKkb2NlGSKVHlDJKs4bnZ6sD2SKFDzmKvle0LIytCADcGML3iaj0UatLBDSEoH
+ 0jCpmPMpC/E3owbQ35ftRzBpmmtYB/4icXTbJJnE=
+Date: Thu, 21 Feb 2019 12:19:00 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- <linux-arm-kernel@lists.infradead.org>, Mason Yang
- <masonccyang@mxic.com.tw>
-Subject: Re: [RFC PATCH 03/27] mtd: nand: Introduce the ECC engine abstraction
-Message-ID: <20190221121625.33a7f6c0@kernel.org>
-In-Reply-To: <20190221100216.25255-4-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [RFC PATCH 05/27] mtd: nand: Move standard OOB layouts to the
+ NAND core
+Message-ID: <20190221121900.19d28477@kernel.org>
+In-Reply-To: <20190221100216.25255-6-miquel.raynal@bootlin.com>
 References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
- <20190221100216.25255-4-miquel.raynal@bootlin.com>
+ <20190221100216.25255-6-miquel.raynal@bootlin.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_031633_080132_83A1E8ED 
-X-CRM114-Status: GOOD (  18.36  )
+X-CRM114-CacheID: sfid-20190221_031907_344457_4CBB3D72 
+X-CRM114-Status: GOOD (  11.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,108 +74,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh R <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Julien Su <juliensu@mxic.com.tw>, Richard Weinberger <richard@nod.at>,
+Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>,
  Schrempf Frieder <frieder.schrempf@kontron.de>,
  Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Feb 2019 11:01:52 +0100
+On Thu, 21 Feb 2019 11:01:54 +0100
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
+> These OOB layouts are generic to all NAND chips, the should not be
+> restricted to be used only by raw NAND controller drivers. They might
+> later be used by generic ECC engines and SPI-NAND devices as well.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/core.c             | 161 ++++++++++++++++++++++++++++
 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 30f0fb02abe2..9e3b018d0b83 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -82,8 +82,14 @@ struct nand_pos {
->  	unsigned int page;
->  };
->  
-> +enum nand_page_io_req_type {
-> +	NAND_PAGE_READ = 0,
-> +	NAND_PAGE_WRITE,
-> +};
-> +
->  /**
->   * struct nand_page_io_req - NAND I/O request object
-> + * @type: the type of page I/O: read or write
->   * @pos: the position this I/O request is targeting
->   * @dataoffs: the offset within the page
->   * @datalen: number of data bytes to read from/write to this page
-> @@ -99,6 +105,7 @@ struct nand_pos {
->   * specific commands/operations.
->   */
->  struct nand_page_io_req {
-> +	enum nand_page_io_req_type type;
+Can we place those definitions in ecc.c instead of core.c
 
-Can you add the reqtype enum and type field (+ patch the iterator
-helpers) in a separate patch?
-
->  	struct nand_pos pos;
->  	unsigned int dataoffs;
->  	unsigned int datalen;
-> @@ -116,13 +123,35 @@ struct nand_page_io_req {
->  };
->  
->  /**
-> - * struct nand_ecc_req - NAND ECC requirements
-> + * struct nand_ecc_conf - NAND ECC configuration
-> + * @strength: ECC strength
-> + * @step_size: Number of bytes per step
-> + * @total: Total number of bytes used for storing ECC codes, this is used by
-> + *         generic OOB layouts
-> + */
-> +struct nand_ecc_conf {
-
-Please do the s/nand_ecc_req/nand_ecc_conf/ in a separate patch.
-
-> +	unsigned int strength;
-> +	unsigned int step_size;
-> +	unsigned int total;
-
-Do we really need to add this total field here? Looks like something
-that should be kept private to the ECC engine implementation.
-
-> +};
-> +
-> +/**
-> + * struct nand_ecc_user_conf - User desired ECC configuration
-> + * @mode: ECC mode
-> + * @algo: ECC algorithm
->   * @strength: ECC strength
->   * @step_size: ECC step/block size
-> + * @maximize: ECC parameters must be maximized depending on the device
-> + *            capabilities
-> + * @flags: User flags
->   */
-> -struct nand_ecc_req {
-> +struct nand_ecc_user_conf {
-> +	int mode;
-
-We should definitely name that one differently ('provider' maybe).
-
-> +	unsigned int algo;
->  	unsigned int strength;
->  	unsigned int step_size;
-> +	unsigned int maximize;
-> +	unsigned int flags;
-
-maximize could be a flag.
-
->  };
->  
->  #define NAND_ECCREQ(str, stp) { .strength = (str), .step_size = (stp) }
-> @@ -157,11 +186,76 @@ struct nand_ops {
->  	bool (*isbad)(struct nand_device *nand, const struct nand_pos *pos);
->  };
-
+>  drivers/mtd/nand/raw/nand_base.c    | 161 +---------------------------
+>  drivers/mtd/nand/raw/nand_toshiba.c |   2 +
+>  include/linux/mtd/nand.h            |   4 +
+>  include/linux/mtd/rawnand.h         |   3 -
+>  5 files changed, 168 insertions(+), 163 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
