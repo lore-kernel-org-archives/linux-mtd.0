@@ -2,75 +2,62 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6F47C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:17:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8DB2C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:37:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A61B42148D
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:17:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8143B2086A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:37:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AT3uO2vE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A61B42148D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sBjmy6lA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8143B2086A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oYDfLpQKECacCTbWQKqzclV7Cq5eD/fZyRMTN9UOaZM=; b=AT3uO2vE4JBjCY
-	Gjkj5fDgU3qRihMQ21Z0DBGIEbyQhgQSgouPGS7NipzJxpO6m5YUnNE6avVOFjXEA7303v81Ait4M
-	PNES9erhoIXAOcPpF/t3bFMdxE/QMQbmMLrrKZLjWTCqZ/GgU2xLYH/oe9EEaUqTnn69vgtIcWTDL
-	ZWk77BN7043Q0d7Woe2NP2GVADfD+G5AsKGevQ65tznYWwAJajDwYQ7+XQ/radB0Cik46As5OeJ09
-	UMpLYgqj9G7uBecJ7PEr8/Psy8bLAL4kXIBvhYO1XX2ruxcl+SelR4p7HwaTsCB7M5HkOJWjGSnDq
-	nbBi/LANnkGfyCmXa1+Q==;
+	List-Owner; bh=t4F1liJ1XK6t34QExZH6zGy2SE9/AM+jWsr7/A8ymLQ=; b=sBjmy6lAelSKxh
+	JfcBA1++DN87B6Ja3Q6gDUy1UNyIESnFqTmSIlKfZj2yVK+iYkVzASML6zXj1iSLs4RnTz+eZ+lnf
+	T5GmPAeYfTvBGecvArPbDJr5d/zJ6gY+cHio5AICO+BGvxNQ6dDYPZ3fgmtjSPEdQodILqAO8JaLW
+	iNb+f1gdy0ISjkzeEzxyUYJIQR9r8Qnwr6LZsdM16lXkXoxJ7zFssdokVcfbt1MSmT9bwX5vufiol
+	oa3rubHw11a70hqt5ZYPw2dutV43uLX3x/LgKAEGRHFyFECvK/mNkVminz3Al8xdCQVXJPy4iAtZ+
+	m1JfANgpX9TBI3CkYioA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwlQQ-000340-Bi; Thu, 21 Feb 2019 10:17:54 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1gwlip-0005Jx-VA; Thu, 21 Feb 2019 10:36:55 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwlQM-00033J-Tu
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 10:17:53 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1gwlQJ-0004vM-JU; Thu, 21 Feb 2019 11:17:47 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1gwlQJ-0001XI-6s; Thu, 21 Feb 2019 11:17:47 +0100
-Date: Thu, 21 Feb 2019 11:17:47 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1gwlim-0005JZ-5I
+ for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 10:36:53 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9824028099B;
+ Thu, 21 Feb 2019 10:36:50 +0000 (GMT)
+Date: Thu, 21 Feb 2019 11:36:46 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
 Subject: Re: Prevent Nand page writes on Power failure
-Message-ID: <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
+Message-ID: <20190221113646.6d4eccf1@collabora.com>
+In-Reply-To: <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
 References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
  <20190221091055.266b9627@collabora.com>
+ <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190221091055.266b9627@collabora.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:53:36 up 9 days, 18:19, 70 users, load average: 0.13, 0.18, 0.17
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_021751_118572_E9142A4C 
-X-CRM114-Status: GOOD (  16.72  )
+X-CRM114-CacheID: sfid-20190221_023652_334990_AC12BE47 
+X-CRM114-Status: GOOD (  19.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,39 +75,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Boris,
+On Thu, 21 Feb 2019 11:17:47 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-On Thu, Feb 21, 2019 at 09:10:55AM +0100, Boris Brezillon wrote:
-> Hi Sascha,
+> Hi Boris,
 > 
-> On Wed, 20 Feb 2019 14:58:20 +0100
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > Hi All,
+> On Thu, Feb 21, 2019 at 09:10:55AM +0100, Boris Brezillon wrote:
+> > Hi Sascha,
 > > 
-> > I have hardware here for which the normal way to turn off is just to cut
-> > the power. When the powercut happens during a NAND page write then we
-> > get more or less completely written pages during next boot. Very rarely
-> > it seems to happen that such a half written page with only very few
-> > flipped bits is erroneously detected as empty and written again which
-> > then results in ECC errors when reading the data.
+> > On Wed, 20 Feb 2019 14:58:20 +0100
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >   
+> > > Hi All,
+> > > 
+> > > I have hardware here for which the normal way to turn off is just to cut
+> > > the power. When the powercut happens during a NAND page write then we
+> > > get more or less completely written pages during next boot. Very rarely
+> > > it seems to happen that such a half written page with only very few
+> > > flipped bits is erroneously detected as empty and written again which
+> > > then results in ECC errors when reading the data.  
+> > 
+> > This should definitely be fixed, maybe by lowering the bitflip
+> > threshold when doing the empty check. Do you know the ECC strength and
+> > the number of bitflips you have when that problem occurs?  
 > 
-> This should definitely be fixed, maybe by lowering the bitflip
-> threshold when doing the empty check. Do you know the ECC strength and
-> the number of bitflips you have when that problem occurs?
+> The problem is that these half written pages do not seem to be very
+> stable. It happens that the number of bitflips change with each read.
+> I have seen pages which can be read sometimes and sometimes not. It
+> really seems that half written pages must be avoided entirely.
 
-The problem is that these half written pages do not seem to be very
-stable. It happens that the number of bitflips change with each read.
-I have seen pages which can be read sometimes and sometimes not. It
-really seems that half written pages must be avoided entirely.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+But when they are correctly read, do you know how many bitflips they
+have? To be honest, I fear not all users will be able to be informed
+that powercuts are about to happen, and we need a way to fix that for
+everyone.
 
 ______________________________________________________
 Linux MTD discussion mailing list
