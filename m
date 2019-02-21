@@ -2,79 +2,61 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F0E8C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:27:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 565D6C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:36:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 068522080D
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:27:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26CAC2084F
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:36:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l5RrvmS2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 068522080D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B35FdhwG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26CAC2084F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VSIkmS+BMpT8KHNwq/o8MRcBx0us+dwcGZrWSjA6zro=; b=l5RrvmS27aiHXy
-	2ibnCx0nqKGiFdqC/Xrc21ZlHAGISF34JrdnXLjlVFWfNqEyktqayRJVROQGHn9ETGK96S/WD6n/4
-	5GeINod902Ag3lMlzRClgKVO8TaOg4BDjhNYt4zX1KAPr4+M/LeTi2e1rxUKghVo0TPSqm/baSBKd
-	52wcuf3bbgM9CrQMXmOMNFerCtflu6hHz80kS/DBJv6zwsnmGlar72W96Fk/zx+3quK/L4iSaVM+E
-	iieaY84yRqLyRZ6etJaDGfEKh6+/tJYQXyhiXlatarDFjqdVUYUVLR+HL6cHEIZr1hQ+OmgL098QK
-	GtGm2z5YSe+1UpmzcWvA==;
+	List-Owner; bh=ZCySVwIgVbBO3wq0kAc3t4R9/gwMhGPcIO0VzWMgD8A=; b=B35FdhwGjMyEY1
+	XvqFcBOg2BnUDCjprKjdmJ3NSWTxosfIeckpTkOHXBhuuKEVpY2eG29om7kRv719vEYcULdBgbc6C
+	py/7M6QO8B4ikE/oIl0/EFrbz54qlt18KzjO+E4q8Qy4JEAnq1xpylfss7S4LYAm1EJaXaHYDPbeH
+	XNGBWPYX1bWHDkKPhpBy66gxhuZubJsC0KdTnY0+pXND2t/vqKC0hdeIxzUtYjfnfEMfdOcgb+/Vm
+	jKwbgO4xctMLkD/XgQd6ptpHdj29lT/b3NPfvImdKEtihE3aQ6xpQ5E441l7909ONDtPokAC832M/
+	s9k6W2IpOCNkAWQHxtYA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwoNW-0004Pl-KD; Thu, 21 Feb 2019 13:27:06 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1gwoWA-0000EB-NX; Thu, 21 Feb 2019 13:36:02 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwoNT-0004PM-DE
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 13:27:05 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1gwoNR-0003bu-VC; Thu, 21 Feb 2019 14:27:01 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1gwoNR-0003t1-FF; Thu, 21 Feb 2019 14:27:01 +0100
-Date: Thu, 21 Feb 2019 14:27:01 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: Prevent Nand page writes on Power failure
-Message-ID: <20190221132701.jzl7vkdtksc33cjn@pengutronix.de>
-References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
- <20190221091055.266b9627@collabora.com>
- <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
- <20190221113646.6d4eccf1@collabora.com>
- <20190221112138.i5cqclnlpsjnms7y@pengutronix.de>
- <20190221123709.000aa79d@collabora.com>
+ id 1gwoW1-00006P-Kg; Thu, 21 Feb 2019 13:35:55 +0000
+X-Originating-IP: 90.88.23.190
+Received: from xps13 (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr
+ [90.88.23.190]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 8B7B740012;
+ Thu, 21 Feb 2019 13:35:40 +0000 (UTC)
+Date: Thu, 21 Feb 2019 14:35:39 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <bbrezillon@kernel.org>
+Subject: Re: [RFC PATCH 17/27] mtd: nand: ecc: Let the software Hamming ECC
+ engine be unselected
+Message-ID: <20190221143539.65035bfa@xps13>
+In-Reply-To: <20190221142002.5a160f87@kernel.org>
+References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
+ <20190221125806.28875-5-miquel.raynal@bootlin.com>
+ <20190221142002.5a160f87@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190221123709.000aa79d@collabora.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:56:40 up 9 days, 20:22, 79 users, load average: 0.16, 0.18, 0.12
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_052703_607791_1B9BDE09 
-X-CRM114-Status: GOOD (  29.02  )
+X-CRM114-CacheID: sfid-20190221_053553_822930_7CA6D6FC 
+X-CRM114-Status: GOOD (  19.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,105 +68,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>,
+ Schrempf Frieder <frieder.schrempf@kontron.de>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 21, 2019 at 12:37:09PM +0100, Boris Brezillon wrote:
-> On Thu, 21 Feb 2019 12:21:38 +0100
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > On Thu, Feb 21, 2019 at 11:36:46AM +0100, Boris Brezillon wrote:
-> > > On Thu, 21 Feb 2019 11:17:47 +0100
-> > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > >   
-> > > > Hi Boris,
-> > > > 
-> > > > On Thu, Feb 21, 2019 at 09:10:55AM +0100, Boris Brezillon wrote:  
-> > > > > Hi Sascha,
-> > > > > 
-> > > > > On Wed, 20 Feb 2019 14:58:20 +0100
-> > > > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > > >     
-> > > > > > Hi All,
-> > > > > > 
-> > > > > > I have hardware here for which the normal way to turn off is just to cut
-> > > > > > the power. When the powercut happens during a NAND page write then we
-> > > > > > get more or less completely written pages during next boot. Very rarely
-> > > > > > it seems to happen that such a half written page with only very few
-> > > > > > flipped bits is erroneously detected as empty and written again which
-> > > > > > then results in ECC errors when reading the data.    
-> > > > > 
-> > > > > This should definitely be fixed, maybe by lowering the bitflip
-> > > > > threshold when doing the empty check. Do you know the ECC strength and
-> > > > > the number of bitflips you have when that problem occurs?    
-> > > > 
-> > > > The problem is that these half written pages do not seem to be very
-> > > > stable. It happens that the number of bitflips change with each read.
-> > > > I have seen pages which can be read sometimes and sometimes not. It
-> > > > really seems that half written pages must be avoided entirely.  
-> > > 
-> > > But when they are correctly read, do you know how many bitflips they
-> > > have?  
-> > 
-> > Yes, I know this number,
-> 
-> Is it high? I mean, can we tweak the threshold to detect such cases?
-
-I haven't told you the number because I have seen pages with a single
-bitflip, pages with 3 bitflips, pages with 8 bitflips, anything you
-like.
-Funny enough, once I write to following pages up to the end of the block
-then the page which previously had only a few bitflips turns into a
-nearly random pattern.
-
-> 
-> > but as said, it varies when reading the same
-> > page again.
-> 
-> Yes, I can imagine, as cells were weakly programmed, their state might
-> change from one read to another. What I'm mainly interested in is the
-> state on the first read after the powercut.
-> 
-> > 
-> > > To be honest, I fear not all users will be able to be informed
-> > > that powercuts are about to happen, and we need a way to fix that for
-> > > everyone.  
-> > 
-> > If you want that I'm afraid we can't fix this on this level. You can't
-> > rely on the data when a powercut happens during write. It may look ok at
-> > first, but bitflips can develop later. I just found an interesting read
-> > here:
-> > https://www.datalight.com/blog/2017/03/08/enemy-of-nand-flash-memory/
-> > 
-> > If you want to fix it for all users you have to track somehow which
-> > pages you have written last and discard the data or copy it to another
-> > block.
-> 
-> Did you have the problem that pages written with valid data turn into
-> uncorrectable pages on the second read attempt or is it just
-> erased/empty pages that turn out to be not so empty/erased and next
-> time you write to them you end up with uncorrectable errors?
-
-Both (seemingly) valid pages turned into uncorrectable pages, but as
-said above pages turned into garbage once I wrote other pages in the
-same block.
-
-I haven't made any tests with power cuts during erase. Power cuts during
-erase are probably not that critical because blocks without a valid
-erase marker will be erased again next time.
-
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJicmV6aWxsb25Aa2VybmVsLm9yZz4gd3JvdGUg
+b24gVGh1LCAyMSBGZWIgMjAxOQoxNDoyMDowMiArMDEwMDoKCj4gT24gVGh1LCAyMSBGZWIgMjAx
+OSAxMzo1Nzo1NiArMDEwMAo+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
+b20+IHdyb3RlOgo+IAo+ID4gVGhlcmUgaXMgbm8gcmVhc29uIHRvIGFsd2F5cyBlbWJlZCB0aGUg
+c29mdHdhcmUgSGFtbWluZyBFQ0MgZW5naW5lCj4gPiBpbXBsZW1lbnRhdGlvbi4gQnkgZGVmYXVs
+dCBpdCBpcywgYnV0IHdlIGNhbiBsZXQgdGhlIHVzZXIgZGVjaWRlLgo+ID4gCj4gPiBTaWduZWQt
+b2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+ID4gLS0t
+Cj4gPiAgZHJpdmVycy9tdGQvbmFuZC9lY2MvS2NvbmZpZyAgICAgICAgICAgICAgIHwgMTAgKysr
+KystCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZyAgICAgICAgICAgICAgIHwgIDIg
+Ky0KPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLXN3LWhhbW1pbmctZW5naW5lLmggfCAzOCAr
+KysrKysrKysrKysrKysrKysrKysrCj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCA0OCBpbnNlcnRpb25z
+KCspLCAyIGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFu
+ZC9lY2MvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL25hbmQvZWNjL0tjb25maWcKPiA+IGluZGV4IGUw
+MTA2YjNhN2VjMS4uZmYyMGU2MjFmZmVmIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9tdGQvbmFu
+ZC9lY2MvS2NvbmZpZwo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9lY2MvS2NvbmZpZwo+ID4g
+QEAgLTEsNyArMSwxNSBAQAo+ID4gIG1lbnUgIkVDQyBlbmdpbmUgc3VwcG9ydCIKPiA+ICAKPiA+
+ICBjb25maWcgTVREX05BTkRfRUNDX1NXX0hBTU1JTkcKPiA+IC0JdHJpc3RhdGUKPiA+ICsJdHJp
+c3RhdGUgIlNvZnR3YXJlIEhhbW1pbmcgRUNDIGVuZ2luZSIKPiA+ICsJZGVmYXVsdCB5ICAKPiAK
+PiBTYW1lIGFzIGZvciB0aGUgTkFORF9DT1JFIHN0dWZmLCBsZXQgdXNlcnMgdGhpcyBvcHRpb24g
+d2hlbiB0aGV5IG5lZWQKPiBpdCBpbnN0ZWFkIG9mIGhhdmluZyBhICJkZWZhdWx0IHkiLiBIYXZl
+bid0IG1hZGUgbXkgbWluZCB5ZXQgb24gd2hldGhlcgo+IHRoaXMgb3B0aW9uIHNob3VsZCBiZSB2
+aXNpYmxlIHRvIHVzZXJzIG9yIG5vdC4gSSBndWVzcyBpdCBjb3VsZCBiZSB3aXRoCj4gdGhlIG5l
+dyBpbmZyYXN0cnVjdHVyZSwgYnV0IGl0J3MgcHJvYmFibHkgdG9vIGVhcmx5IGluIHRoZSBwYXRj
+aCBzZXJpZXMKPiB0byBjaGFuZ2UgdGhhdC4KClRoaXMgb25lIGlzIGRpZmZlcmVudC4KCkJlZm9y
+ZSB0aGUgc2VyaWVzOiB0aGUgc29mdHdhcmUgSGFtbWluZyBFQ0MgYWxnb3JpdGhtIGlzIHBhcnQg
+b2YgdGhlCidOQU5EIHBhY2thZ2UnLiBUaGVyZSBpcyBubyB3YXkgdG8gaWdub3JlIGl0LCBpdCAq
+d2lsbCogYmUgcGFydCBvZiB5b3VyCmJpbmFyeSAob3IgbW9kdWxlKS4KCkFmdGVyIHRoZSBzZXJp
+ZXM6IEkganVzdCBnaXZlIHRoZSB1c2VyIHRoZSBwb3NzaWJpbGl0eSB0byBkZXNlbGVjdAp0aGlz
+IG9wdGlvbi4gQnV0IGhhdmluZyAnZGVmYXVsdCB5JyBpcyBtYW5kYXRvcnkgaGVyZSB0byBhdm9p
+ZCBicmVha2luZwpjdXJyZW50IGRlZmNvbmZpZ3MuCgo+IAo+ID4gKwloZWxwCj4gPiArCSAgVGhp
+cyBlbmFibGVzIHN1cHBvcnQgZm9yIHNvZnR3YXJlIEhhbW1pbmcgZXJyb3IKPiA+ICsJICBjb3Jy
+ZWN0aW9uLiBUaGlzIGNvcnJlY3Rpb24gY2FuIGNvcnJlY3QgdXAgdG8gMSBiaXQgZXJyb3IKPiA+
+ICsJICBwZXIgY2h1bmsgYW5kIGRldGVjdCB1cCB0byAyIGJpdCBlcnJvcnMuIFdoaWxlIGl0IHVz
+ZWQgdG8gYmUKPiA+ICsJICB3aWRlbHkgdXNlZCB3aXRoIG9sZCBwYXJ0cywgbmV3ZXIgTkFORCBj
+aGlwcyB1c3VhbGx5IHJlcXVpcmUKPiA+ICsJICBtb3JlIHN0cmVuZ3RoIGNvcnJlY3Rpb24gYW5k
+IGluIHRoaXMgY2FzZSBCQ0ggb3IgUlMgd2lsbCBiZQo+ID4gKwkgIHByZWZlcnJlZC4KPiA+ICAg
+IAoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
