@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B898C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:04:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE1CC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:05:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39FA8214AF
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:04:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 19B442147A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:05:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bk7Hnuim"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39FA8214AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Gyht4nu4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19B442147A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dtdpx8CC6CIAgR1C0lLMWAjYSBj2amiW42ao3mdGM+M=; b=bk7Hnuim17qY7N
-	ESirHBus5mrwJtUauIsLrMzg+fhnV5CWIvZknR35FlyQwQ1cx7aNNrZRaKuo0pvmmtry8JrfkYdeP
-	DY2Xpl15B2muvPK8b4DjO3yncXHbaPbywAzbBFkliKZjnd9FQl1rp0PTkyp/quKaivgoY+BT/TMSr
-	tprS1bJ6dGTbRR/SZDTrqn70NJrIG8o1JRftK9fz0pzcZvgOGK9fW8t3bQ9WvpssAmhPeu05UToB3
-	cwjSY8uytgEx8P278mdhEaYA+STg2k08Me0peQlSlses9h+vM7CiURqBUZ+nRpwMTfP039hr+Dk2v
-	AQgxLzSlNqbYFx9+aUWg==;
+	List-Owner; bh=enCZuWNtL1RkWMUp+jLRwKzZBp3St/0EZK1zT2AycsI=; b=Gyht4nu4D/D9jB
+	LLl5g7JJH6705HyZEl5jGn18ThFQtGQd0rsNJHu5bff8G3JoTcUdeBpjGE8SD14FTNUx4HYTcsc7r
+	h9ImCRpZ93Sl+hhUyT7hlgtLcii45H9S/zi8u6pB3+eujnqm5n4sBcEcmwQ4C1d51uTZaI00yLTT6
+	zm8XoVM4OShK4nmWZ62imdDHFkSNMOJIsLtus6yhNp4w2F3kFch6pcEEyxg9dt5Oy8mntW8YMD3JH
+	dxyZKOSQnupbe1mO6Qd+Sxe4u3fwu9JbzVEG3Zdo42TraG8f2GLXCFC1nHnF1wIGodOt1EWh5GuET
+	EBQ9ae+b0E+MtTsr5hMg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwlD8-00010M-Vq; Thu, 21 Feb 2019 10:04:10 +0000
+	id 1gwlDu-0001wP-44; Thu, 21 Feb 2019 10:04:58 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwlBg-0007Mp-S0; Thu, 21 Feb 2019 10:02:46 +0000
+ id 1gwlBo-0007Xo-V4; Thu, 21 Feb 2019 10:02:58 +0000
 Received: from localhost.localdomain
  (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id B9FCA10000F;
- Thu, 21 Feb 2019 10:02:36 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 856C4100003;
+ Thu, 21 Feb 2019 10:02:44 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [RFC PATCH 05/27] mtd: nand: Move standard OOB layouts to the NAND
- core
-Date: Thu, 21 Feb 2019 11:01:54 +0100
-Message-Id: <20190221100216.25255-6-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 08/27] mtd: nand: ecc: Use SPDX license identifier for the
+ software BCH code
+Date: Thu, 21 Feb 2019 11:01:57 +0100
+Message-Id: <20190221100216.25255-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190221100216.25255-1-miquel.raynal@bootlin.com>
 References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_020241_751865_C7A61440 
-X-CRM114-Status: GOOD (  16.96  )
+X-CRM114-CacheID: sfid-20190221_020249_787490_5E35E97C 
+X-CRM114-Status: GOOD (  14.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,421 +76,55 @@ Cc: Vignesh R <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These OOB layouts are generic to all NAND chips, the should not be
-restricted to be used only by raw NAND controller drivers. They might
-later be used by generic ECC engines and SPI-NAND devices as well.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/core.c             | 161 ++++++++++++++++++++++++++++
- drivers/mtd/nand/raw/nand_base.c    | 161 +---------------------------
- drivers/mtd/nand/raw/nand_toshiba.c |   2 +
- include/linux/mtd/nand.h            |   4 +
- include/linux/mtd/rawnand.h         |   3 -
- 5 files changed, 168 insertions(+), 163 deletions(-)
-
-diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-index 0a2be5e6d669..a76d206d233a 100644
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -270,6 +270,167 @@ void nanddev_cleanup(struct nand_device *nand)
- }
- EXPORT_SYMBOL_GPL(nanddev_cleanup);
- 
-+/* Define default oob placement schemes for large and small page devices */
-+static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
-+				 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.conf.total;
-+
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobregion->offset = 0;
-+		if (mtd->oobsize == 16)
-+			oobregion->length = 4;
-+		else
-+			oobregion->length = 3;
-+	} else {
-+		if (mtd->oobsize == 8)
-+			return -ERANGE;
-+
-+		oobregion->offset = 6;
-+		oobregion->length = total_ecc_bytes - 4;
-+	}
-+
-+	return 0;
-+}
-+
-+static int nand_ooblayout_free_sp(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (mtd->oobsize == 16) {
-+		if (section)
-+			return -ERANGE;
-+
-+		oobregion->length = 8;
-+		oobregion->offset = 8;
-+	} else {
-+		oobregion->length = 2;
-+		if (!section)
-+			oobregion->offset = 3;
-+		else
-+			oobregion->offset = 6;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
-+	.ecc = nand_ooblayout_ecc_sp,
-+	.free = nand_ooblayout_free_sp,
-+};
-+EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
-+
-+static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
-+				 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.conf.total;
-+
-+	if (section || !total_ecc_bytes)
-+		return -ERANGE;
-+
-+	oobregion->length = total_ecc_bytes;
-+	oobregion->offset = mtd->oobsize - oobregion->length;
-+
-+	return 0;
-+}
-+
-+static int nand_ooblayout_free_lp(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.conf.total;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->length = mtd->oobsize - total_ecc_bytes - 2;
-+	oobregion->offset = 2;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops nand_ooblayout_lp_ops = {
-+	.ecc = nand_ooblayout_ecc_lp,
-+	.free = nand_ooblayout_free_lp,
-+};
-+EXPORT_SYMBOL_GPL(nand_ooblayout_lp_ops);
-+
-+/*
-+ * Support the old "large page" layout used for 1-bit Hamming ECC where ECC
-+ * are placed at a fixed offset.
-+ */
-+static int nand_ooblayout_ecc_lp_hamming(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.conf.total;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	switch (mtd->oobsize) {
-+	case 64:
-+		oobregion->offset = 40;
-+		break;
-+	case 128:
-+		oobregion->offset = 80;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	oobregion->length = total_ecc_bytes;
-+	if (oobregion->offset + oobregion->length > mtd->oobsize)
-+		return -ERANGE;
-+
-+	return 0;
-+}
-+
-+static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
-+					  struct mtd_oob_region *oobregion)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+	unsigned int total_ecc_bytes = nand->ecc.ctx.conf.total;
-+	int ecc_offset = 0;
-+
-+	if (section < 0 || section > 1)
-+		return -ERANGE;
-+
-+	switch (mtd->oobsize) {
-+	case 64:
-+		ecc_offset = 40;
-+		break;
-+	case 128:
-+		ecc_offset = 80;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (section == 0) {
-+		oobregion->offset = 2;
-+		oobregion->length = ecc_offset - 2;
-+	} else {
-+		oobregion->offset = ecc_offset + total_ecc_bytes;
-+		oobregion->length = mtd->oobsize - oobregion->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
-+	.ecc = nand_ooblayout_ecc_lp_hamming,
-+	.free = nand_ooblayout_free_lp_hamming,
-+};
-+EXPORT_SYMBOL_GPL(nand_ooblayout_lp_hamming_ops);
-+
- MODULE_DESCRIPTION("Generic NAND framework");
- MODULE_AUTHOR("Boris Brezillon <boris.brezillon@free-electrons.com>");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 82ac620bbdac..0851ac63e70d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -38,6 +38,7 @@
- #include <linux/mm.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/interrupt.h>
-@@ -49,166 +50,6 @@
- 
- #include "internals.h"
- 
--/* Define default oob placement schemes for large and small page devices */
--static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
--				 struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section > 1)
--		return -ERANGE;
--
--	if (!section) {
--		oobregion->offset = 0;
--		if (mtd->oobsize == 16)
--			oobregion->length = 4;
--		else
--			oobregion->length = 3;
--	} else {
--		if (mtd->oobsize == 8)
--			return -ERANGE;
--
--		oobregion->offset = 6;
--		oobregion->length = ecc->total - 4;
--	}
--
--	return 0;
--}
--
--static int nand_ooblayout_free_sp(struct mtd_info *mtd, int section,
--				  struct mtd_oob_region *oobregion)
--{
--	if (section > 1)
--		return -ERANGE;
--
--	if (mtd->oobsize == 16) {
--		if (section)
--			return -ERANGE;
--
--		oobregion->length = 8;
--		oobregion->offset = 8;
--	} else {
--		oobregion->length = 2;
--		if (!section)
--			oobregion->offset = 3;
--		else
--			oobregion->offset = 6;
--	}
--
--	return 0;
--}
--
--const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
--	.ecc = nand_ooblayout_ecc_sp,
--	.free = nand_ooblayout_free_sp,
--};
--EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
--
--static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
--				 struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section || !ecc->total)
--		return -ERANGE;
--
--	oobregion->length = ecc->total;
--	oobregion->offset = mtd->oobsize - oobregion->length;
--
--	return 0;
--}
--
--static int nand_ooblayout_free_lp(struct mtd_info *mtd, int section,
--				  struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section)
--		return -ERANGE;
--
--	oobregion->length = mtd->oobsize - ecc->total - 2;
--	oobregion->offset = 2;
--
--	return 0;
--}
--
--const struct mtd_ooblayout_ops nand_ooblayout_lp_ops = {
--	.ecc = nand_ooblayout_ecc_lp,
--	.free = nand_ooblayout_free_lp,
--};
--EXPORT_SYMBOL_GPL(nand_ooblayout_lp_ops);
--
--/*
-- * Support the old "large page" layout used for 1-bit Hamming ECC where ECC
-- * are placed at a fixed offset.
-- */
--static int nand_ooblayout_ecc_lp_hamming(struct mtd_info *mtd, int section,
--					 struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	if (section)
--		return -ERANGE;
--
--	switch (mtd->oobsize) {
--	case 64:
--		oobregion->offset = 40;
--		break;
--	case 128:
--		oobregion->offset = 80;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	oobregion->length = ecc->total;
--	if (oobregion->offset + oobregion->length > mtd->oobsize)
--		return -ERANGE;
--
--	return 0;
--}
--
--static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
--					  struct mtd_oob_region *oobregion)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int ecc_offset = 0;
--
--	if (section < 0 || section > 1)
--		return -ERANGE;
--
--	switch (mtd->oobsize) {
--	case 64:
--		ecc_offset = 40;
--		break;
--	case 128:
--		ecc_offset = 80;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	if (section == 0) {
--		oobregion->offset = 2;
--		oobregion->length = ecc_offset - 2;
--	} else {
--		oobregion->offset = ecc_offset + ecc->total;
--		oobregion->length = mtd->oobsize - oobregion->offset;
--	}
--
--	return 0;
--}
--
--static const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
--	.ecc = nand_ooblayout_ecc_lp_hamming,
--	.free = nand_ooblayout_free_lp_hamming,
--};
--
- static int check_offs_len(struct nand_chip *chip, loff_t ofs, uint64_t len)
- {
- 	int ret = 0;
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index f00d958d724f..566cc1a11679 100644
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -15,6 +15,8 @@
-  * GNU General Public License for more details.
-  */
- 
-+#include <linux/mtd/nand.h>
-+
- #include "internals.h"
- 
- /* Bit for detecting BENAND */
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9e3b018d0b83..da214aaa0b8a 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -122,6 +122,10 @@ struct nand_page_io_req {
- 	int mode;
- };
- 
-+extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
-+extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
-+extern const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops;
-+
- /**
-  * struct nand_ecc_conf - NAND ECC configuration
-  * @strength: ECC strength
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 14748183508b..0059f5952187 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1098,9 +1098,6 @@ struct nand_chip {
- 	} manufacturer;
- };
- 
--extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
--extern const struct mtd_ooblayout_ops nand_ooblayout_lp_ops;
--
- static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
- {
- 	return container_of(mtd, struct nand_chip, base.mtd);
--- 
-2.19.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+UmVtb3ZlIHRoZSBsZWdhY3kgbGljZW5zZSB0ZXh0LCBhbHNvIHVwZGF0ZSB0aGUgTU9EVUxFX0xJ
+Q0VOU0UgbWFjcm8KaW4gYWNjb3JkYW5jZSB3aXRoIHRoZSB0ZXh0IGF0IHRoZSB0b3Agb2YgdGhl
+IGZpbGUgKEdQTCB2MiBvcgpoaWdoZXIpLgoKU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8
+bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9uYW5kL2VjYy9zdy1i
+Y2gtZW5naW5lLmMgICB8IDE3ICsrLS0tLS0tLS0tLS0tLS0tCiBpbmNsdWRlL2xpbnV4L210ZC9u
+YW5kLXN3LWJjaC1lbmdpbmUuaCB8ICA1ICstLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0
+aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9l
+Y2Mvc3ctYmNoLWVuZ2luZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9lY2Mvc3ctYmNoLWVuZ2luZS5j
+CmluZGV4IDM3ZGMwZjAwNjFkMy4uODcxYzRkZDlmNzFkIDEwMDY0NAotLS0gYS9kcml2ZXJzL210
+ZC9uYW5kL2VjYy9zdy1iY2gtZW5naW5lLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9lY2Mvc3ct
+YmNoLWVuZ2luZS5jCkBAIC0xLDIyICsxLDkgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVy
+OiBHUEwtMi4wKwogLyoKICAqIFRoaXMgZmlsZSBwcm92aWRlcyBFQ0MgY29ycmVjdGlvbiBmb3Ig
+bW9yZSB0aGFuIDEgYml0IHBlciBibG9jayBvZiBkYXRhLAogICogdXNpbmcgYmluYXJ5IEJDSCBj
+b2Rlcy4gSXQgcmVsaWVzIG9uIHRoZSBnZW5lcmljIEJDSCBsaWJyYXJ5IGxpYi9iY2guYy4KICAq
+CiAgKiBDb3B5cmlnaHQgwqkgMjAxMSBJdmFuIERqZWxpYyA8aXZhbi5kamVsaWNAcGFycm90LmNv
+bT4KLSAqCi0gKiBUaGlzIGZpbGUgaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1
+dGUgaXQgYW5kL29yIG1vZGlmeSBpdAotICogdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
+ZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkgdGhlCi0gKiBGcmVlIFNvZnR3YXJl
+IEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb3IgKGF0IHlvdXIgb3B0aW9uKSBhbnkKLSAq
+IGxhdGVyIHZlcnNpb24uCi0gKgotICogVGhpcyBmaWxlIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBo
+b3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsIGJ1dCBXSVRIT1VUCi0gKiBBTlkgV0FSUkFOVFk7
+IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZiBNRVJDSEFOVEFCSUxJVFkgb3IK
+LSAqIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZSBHTlUgR2VuZXJh
+bCBQdWJsaWMgTGljZW5zZQotICogZm9yIG1vcmUgZGV0YWlscy4KLSAqCi0gKiBZb3Ugc2hvdWxk
+IGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBh
+bG9uZwotICogd2l0aCB0aGlzIGZpbGU7IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdh
+cmUgRm91bmRhdGlvbiwgSW5jLiwKLSAqIDU5IFRlbXBsZSBQbGFjZSwgU3VpdGUgMzMwLCBCb3N0
+b24sIE1BIDAyMTExLTEzMDcgVVNBLgogICovCiAKICNpbmNsdWRlIDxsaW51eC90eXBlcy5oPgpA
+QCAtMjI3LDYgKzIxNCw2IEBAIHZvaWQgbmFuZF9iY2hfZnJlZShzdHJ1Y3QgbmFuZF9iY2hfY29u
+dHJvbCAqbmJjKQogfQogRVhQT1JUX1NZTUJPTChuYW5kX2JjaF9mcmVlKTsKIAotTU9EVUxFX0xJ
+Q0VOU0UoIkdQTCIpOworTU9EVUxFX0xJQ0VOU0UoIkdQTCB2MiIpOwogTU9EVUxFX0FVVEhPUigi
+SXZhbiBEamVsaWMgPGl2YW4uZGplbGljQHBhcnJvdC5jb20+Iik7CiBNT0RVTEVfREVTQ1JJUFRJ
+T04oIk5BTkQgc29mdHdhcmUgQkNIIEVDQyBzdXBwb3J0Iik7CmRpZmYgLS1naXQgYS9pbmNsdWRl
+L2xpbnV4L210ZC9uYW5kLXN3LWJjaC1lbmdpbmUuaCBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQt
+c3ctYmNoLWVuZ2luZS5oCmluZGV4IGE2ODJhMTVmYTE2NS4uMTIxMDdhYTdjMzcxIDEwMDY0NAot
+LS0gYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLXN3LWJjaC1lbmdpbmUuaAorKysgYi9pbmNsdWRl
+L2xpbnV4L210ZC9uYW5kLXN3LWJjaC1lbmdpbmUuaApAQCAtMSwxMCArMSw3IEBACisvKiBTUERY
+LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLwogLyoKICAqIENvcHlyaWdodCDCqSAyMDEx
+IEl2YW4gRGplbGljIDxpdmFuLmRqZWxpY0BwYXJyb3QuY29tPgogICoKLSAqIFRoaXMgcHJvZ3Jh
+bSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5
+Ci0gKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNl
+IHZlcnNpb24gMiBhcwotICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRp
+b24uCi0gKgogICogVGhpcyBmaWxlIGlzIHRoZSBoZWFkZXIgZm9yIHRoZSBOQU5EIEJDSCBFQ0Mg
+aW1wbGVtZW50YXRpb24uCiAgKi8KIAotLSAKMi4xOS4xCgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
