@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9137AC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 038E4C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 612302086A
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C529E214AF
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ec2u1MIa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 612302086A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eb3d3Ti6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C529E214AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XA9vWxcRBJbjpnkWVUUzVR1ij3gTTmgrqkARKDZ09fs=; b=ec2u1MIaT+helO
-	gV/KBpVfBKJXFYUIyN6F1WgCIsIcUjzOwZ8IvsklYGHQiFc4FJEn1gWyAchVy0c5Ag4QgSYhOINn0
-	60YwV4uLb37+A/qPfsKAOxQoRO5BGud2DBu7Z4Jch0CFqamHO44nvROU7d6L1xe5Rwkprpq7Ny+JS
-	O2+kcTAfGdg9jHhESwVx9qnwvJhTMqd25S8MRXPne5+OEvJkKN/PFHY+WBjrxHkQ3UR41Tg/ld3Qf
-	ek72tCVEbTXUkrf5VDisCNjRySxPbN300zJ1XuSNh+p9B1EhnOb4iEWZY9PprJ0nnv4J/on7xuUW0
-	H0lE4J2XFr/s1v8a6wFg==;
+	List-Owner; bh=i4bFnpGWzITM2GqUD+3QGD3VSUor4K0NdNJs6HnAg/0=; b=eb3d3Ti6yX8ZBo
+	kugq96muJXapZI43Debh7X31XCiTcCyK7huVg7BHnHLcWQhHIQeSb21cp3EMPdAXLoBrQBJMS9CEO
+	XcwIyExs8JQI6QmE6/VXzaB+ND2IOkrhOOXG3+YuGWqhyVrsm/580QHlqpDE8/amY1jTUDkFQ4iZc
+	ANpqViVRbw3SgLjFZ3a30FBK4Vepy5nrHwLABLvrlBw7cKi4EyEGHCY9fQ4UYauQ2ghurlGFRIY6G
+	9D6GlvWydw9pfTHTS+e4mKGCeJZuc32YxakbFnq/9ttRWkK+CuCWiu6YrRWIJ3YUf1HT0jzzDN4V+
+	2hzw8LOSim2CBpNLAEgQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwkUQ-0004Lj-5R; Thu, 21 Feb 2019 09:17:58 +0000
+	id 1gwkUd-0004cO-1a; Thu, 21 Feb 2019 09:18:11 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwkSQ-0001dv-JX; Thu, 21 Feb 2019 09:16:03 +0000
+ id 1gwkSO-0001aP-7c; Thu, 21 Feb 2019 09:16:07 +0000
 X-Originating-IP: 90.88.23.190
 Received: from localhost.localdomain
  (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id B39411BF215;
- Thu, 21 Feb 2019 09:15:50 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 54D7C1BF219;
+ Thu, 21 Feb 2019 09:15:48 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH 08/15] mtd: rawnand: Initialize the nand_device object
-Date: Thu, 21 Feb 2019 10:15:20 +0100
-Message-Id: <20190221091527.20497-9-miquel.raynal@bootlin.com>
+Subject: [PATCH 07/15] mtd: rawnand: Fill memorg during detection
+Date: Thu, 21 Feb 2019 10:15:19 +0100
+Message-Id: <20190221091527.20497-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190221091527.20497-1-miquel.raynal@bootlin.com>
 References: <20190221091527.20497-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_011555_427966_507597DD 
-X-CRM114-Status: GOOD (  18.50  )
+X-CRM114-CacheID: sfid-20190221_011553_015937_6598623A 
+X-CRM114-Status: GOOD (  21.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -83,146 +83,636 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-In order to use some of the nanddev_xxx() helpers, we need to
-initialize the nand_device object embedded in nand_chip using
-nanddev_init(). This requires implementing nand_ops.
-
-We also drop useless mtd->xxx initialization when they're already taken
-case of by nanddev_init().
+If we want to use the generic NAND layer, we need to have the memorg
+struct appropriately filled. Patch the detection code to fill this
+struct.
 
 Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig     |  1 +
- drivers/mtd/nand/raw/nand_base.c | 65 ++++++++++++++++++++++++++++----
- 2 files changed, 59 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/denali.c       |  5 +++
+ drivers/mtd/nand/raw/diskonchip.c   |  4 ++
+ drivers/mtd/nand/raw/jz4740_nand.c  |  4 ++
+ drivers/mtd/nand/raw/nand_amd.c     | 11 ++++--
+ drivers/mtd/nand/raw/nand_base.c    | 60 ++++++++++++++++++++++++++---
+ drivers/mtd/nand/raw/nand_hynix.c   | 48 +++++++++++++++--------
+ drivers/mtd/nand/raw/nand_jedec.c   | 22 ++++++++---
+ drivers/mtd/nand/raw/nand_onfi.c    | 23 ++++++++---
+ drivers/mtd/nand/raw/nand_samsung.c | 24 ++++++++----
+ drivers/mtd/nand/raw/nand_toshiba.c |  9 ++++-
+ drivers/mtd/nand/raw/nandsim.c      |  6 +++
+ 11 files changed, 172 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 1a55d3e3d4c5..8c38f2c116a2 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -14,6 +14,7 @@ menuconfig MTD_NAND
- 	tristate "Raw/Parallel NAND Device Support"
- 	depends on MTD
- 	select MTD_NAND_ECC
-+	select MTD_NAND_CORE
- 	help
- 	  This enables support for accessing all type of raw/parallel
- 	  NAND flash devices. For further information see
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index cb03877c775c..e8c1ad17f3c6 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5519,6 +5519,50 @@ static bool nand_ecc_strength_good(struct nand_chip *chip)
- 	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
- }
- 
-+static int rawnand_erase(struct nand_device *nand, const struct nand_pos *pos)
-+{
-+	struct nand_chip *chip = container_of(nand, struct nand_chip,
-+					      base);
-+	unsigned int eb = nanddev_pos_to_row(nand, pos);
-+	int ret;
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index eebac35304c6..86e5df403beb 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1119,6 +1119,9 @@ static int denali_multidev_fixup(struct denali_nand_info *denali)
+ {
+ 	struct nand_chip *chip = &denali->nand;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
 +
-+	eb >>= nand->rowconv.eraseblock_addr_shift;
-+
-+	nand_select_target(chip, pos->target);
-+	ret = nand_erase_op(chip, eb);
-+	nand_deselect_target(chip);
-+
-+	return ret;
-+}
-+
-+static int rawnand_markbad(struct nand_device *nand,
-+			   const struct nand_pos *pos)
-+{
-+	struct nand_chip *chip = container_of(nand, struct nand_chip,
-+					      base);
-+
-+	return nand_markbad_bbm(chip, nanddev_pos_to_offs(nand, pos));
-+}
-+
-+static bool rawnand_isbad(struct nand_device *nand, const struct nand_pos *pos)
-+{
-+	struct nand_chip *chip = container_of(nand, struct nand_chip,
-+					      base);
-+	int ret;
-+
-+	nand_select_target(chip, pos->target);
-+	ret = nand_isbad_bbm(chip, nanddev_pos_to_offs(nand, pos));
-+	nand_deselect_target(chip);
-+
-+	return ret;
-+}
-+
-+static const struct nand_ops rawnand_ops = {
-+	.erase = rawnand_erase,
-+	.markbad = rawnand_markbad,
-+	.isbad = rawnand_isbad,
-+};
-+
- /**
-  * nand_scan_tail - Scan for the NAND device
-  * @chip: NAND chip object
-@@ -5787,10 +5831,15 @@ static int nand_scan_tail(struct nand_chip *chip)
- 		break;
- 	}
- 
-+	ret = nanddev_init(&chip->base, &rawnand_ops, mtd->owner);
-+	if (ret)
-+		goto err_nand_manuf_cleanup;
-+
-+	/* Adjust the MTD_CAP_ flags when NAND_ROM is set. */
-+	if (chip->options & NAND_ROM)
-+		mtd->flags = MTD_CAP_ROM;
-+
- 	/* Fill in remaining MTD driver data */
--	mtd->type = nand_is_slc(chip) ? MTD_NANDFLASH : MTD_MLCNANDFLASH;
--	mtd->flags = (chip->options & NAND_ROM) ? MTD_CAP_ROM :
--						MTD_CAP_NANDFLASH;
- 	mtd->_erase = nand_erase;
- 	mtd->_point = NULL;
- 	mtd->_unpoint = NULL;
-@@ -5807,7 +5856,6 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	mtd->_block_isbad = nand_block_isbad;
- 	mtd->_block_markbad = nand_block_markbad;
- 	mtd->_max_bad_blocks = nand_max_bad_blocks;
--	mtd->writebufsize = mtd->writesize;
++	memorg = nanddev_get_memorg(&chip->base);
  
  	/*
- 	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
-@@ -5820,13 +5868,13 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	/* Initialize the ->data_interface field. */
- 	ret = nand_init_data_interface(chip);
- 	if (ret)
--		goto err_nand_manuf_cleanup;
-+		goto err_nanddev_cleanup;
- 
- 	/* Enter fastest possible mode on all dies. */
- 	for (i = 0; i < chip->numchips; i++) {
- 		ret = nand_setup_data_interface(chip, i);
- 		if (ret)
--			goto err_nand_manuf_cleanup;
-+			goto err_nanddev_cleanup;
+ 	 * Support for multi device:
+@@ -1148,6 +1151,8 @@ static int denali_multidev_fixup(struct denali_nand_info *denali)
  	}
  
- 	/* Check, if we should skip the bad block table scan */
-@@ -5836,11 +5884,14 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	/* Build bad block table */
- 	ret = nand_create_bbt(chip);
- 	if (ret)
--		goto err_nand_manuf_cleanup;
-+		goto err_nanddev_cleanup;
+ 	/* 2 chips in parallel */
++	memorg->pagesize <<= 1;
++	memorg->oobsize <<= 1;
+ 	mtd->size <<= 1;
+ 	mtd->erasesize <<= 1;
+ 	mtd->writesize <<= 1;
+diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+index 53f57e0f007e..e9767e06415d 100644
+--- a/drivers/mtd/nand/raw/diskonchip.c
++++ b/drivers/mtd/nand/raw/diskonchip.c
+@@ -1028,6 +1028,7 @@ static inline int __init nftl_partscan(struct mtd_info *mtd, struct mtd_partitio
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	struct doc_priv *doc = nand_get_controller_data(this);
++	struct nand_memory_organization *memorg;
+ 	int ret = 0;
+ 	u_char *buf;
+ 	struct NFTLMediaHeader *mh;
+@@ -1036,6 +1037,8 @@ static inline int __init nftl_partscan(struct mtd_info *mtd, struct mtd_partitio
+ 	unsigned blocks, maxblocks;
+ 	int offs, numheaders;
  
- 	return 0;
- 
- 
-+err_nanddev_cleanup:
-+	nanddev_cleanup(&chip->base);
++	memorg = nanddev_get_memorg(&this->base);
 +
- err_nand_manuf_cleanup:
- 	nand_manufacturer_cleanup(chip);
+ 	buf = kmalloc(mtd->writesize, GFP_KERNEL);
+ 	if (!buf) {
+ 		return 0;
+@@ -1082,6 +1085,7 @@ static inline int __init nftl_partscan(struct mtd_info *mtd, struct mtd_partitio
+ 	   implementation of the NAND layer.  */
+ 	if (mh->UnitSizeFactor != 0xff) {
+ 		this->bbt_erase_shift += (0xff - mh->UnitSizeFactor);
++		memorg->pages_per_eraseblock <<= (0xff - mh->UnitSizeFactor);
+ 		mtd->erasesize <<= (0xff - mh->UnitSizeFactor);
+ 		pr_info("Setting virtual erase size to %d\n", mtd->erasesize);
+ 		blocks = mtd->size >> this->bbt_erase_shift;
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+index f92ae5aa2a54..76a32ad2cf83 100644
+--- a/drivers/mtd/nand/raw/jz4740_nand.c
++++ b/drivers/mtd/nand/raw/jz4740_nand.c
+@@ -313,8 +313,11 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
+ 	uint32_t ctrl;
+ 	struct nand_chip *chip = &nand->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	u8 id[2];
  
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	/* Request I/O resource. */
+ 	sprintf(res_name, "bank%d", bank);
+ 	ret = jz_nand_ioremap_resource(pdev, res_name,
+@@ -352,6 +355,7 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
+ 
+ 		/* Update size of the MTD. */
+ 		chip->numchips++;
++		memorg->ntargets++;
+ 		mtd->size += chip->chipsize;
+ 	}
+ 
+diff --git a/drivers/mtd/nand/raw/nand_amd.c b/drivers/mtd/nand/raw/nand_amd.c
+index 890c5b43e03c..e008fd662ee6 100644
+--- a/drivers/mtd/nand/raw/nand_amd.c
++++ b/drivers/mtd/nand/raw/nand_amd.c
+@@ -20,6 +20,9 @@
+ static void amd_nand_decode_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
++
++	memorg = nanddev_get_memorg(&chip->base);
+ 
+ 	nand_decode_ext_id(chip);
+ 
+@@ -31,9 +34,11 @@ static void amd_nand_decode_id(struct nand_chip *chip)
+ 	 */
+ 	if (chip->id.data[4] != 0x00 && chip->id.data[5] == 0x00 &&
+ 	    chip->id.data[6] == 0x00 && chip->id.data[7] == 0x00 &&
+-	    mtd->writesize == 512) {
+-		mtd->erasesize = 128 * 1024;
+-		mtd->erasesize <<= ((chip->id.data[3] & 0x03) << 1);
++	    memorg->pagesize == 512) {
++		memorg->pages_per_eraseblock = 256;
++		memorg->pages_per_eraseblock <<= ((chip->id.data[3] & 0x03) << 1);
++		mtd->erasesize = memorg->pages_per_eraseblock *
++				 memorg->pagesize;
+ 	}
+ }
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d3092c9a3e21..cb03877c775c 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -4530,21 +4530,30 @@ static int nand_get_bits_per_cell(u8 cellinfo)
+  */
+ void nand_decode_ext_id(struct nand_chip *chip)
+ {
++	struct nand_memory_organization *memorg;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int extid;
+ 	u8 *id_data = chip->id.data;
++
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	/* The 3rd id byte holds MLC / multichip data */
++	memorg->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+ 	chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+ 	/* The 4th id byte is the important one */
+ 	extid = id_data[3];
+ 
+ 	/* Calc pagesize */
+-	mtd->writesize = 1024 << (extid & 0x03);
++	memorg->pagesize = 1024 << (extid & 0x03);
++	mtd->writesize = memorg->pagesize;
+ 	extid >>= 2;
+ 	/* Calc oobsize */
+-	mtd->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
++	memorg->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
++	mtd->oobsize = memorg->oobsize;
+ 	extid >>= 2;
+ 	/* Calc blocksize. Blocksize is multiples of 64KiB */
++	memorg->pages_per_eraseblock = ((64 * 1024) << (extid & 0x03)) /
++				       memorg->pagesize;
+ 	mtd->erasesize = (64 * 1024) << (extid & 0x03);
+ 	extid >>= 2;
+ 	/* Get buswidth information */
+@@ -4561,12 +4570,19 @@ EXPORT_SYMBOL_GPL(nand_decode_ext_id);
+ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
++	memorg->pages_per_eraseblock = type->erasesize / type->pagesize;
+ 	mtd->erasesize = type->erasesize;
+-	mtd->writesize = type->pagesize;
+-	mtd->oobsize = mtd->writesize / 32;
++	memorg->pagesize = type->pagesize;
++	mtd->writesize = memorg->pagesize;
++	memorg->oobsize = memorg->pagesize / 32;
++	mtd->oobsize = memorg->oobsize;
+ 
+ 	/* All legacy ID NAND are small-page, SLC */
++	memorg->bits_per_cell = 1;
+ 	chip->bits_per_cell = 1;
+ }
+ 
+@@ -4595,13 +4611,21 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ 			      struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	u8 *id_data = chip->id.data;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	if (!strncmp(type->id, id_data, type->id_len)) {
+-		mtd->writesize = type->pagesize;
++		memorg->pagesize = type->pagesize;
++		mtd->writesize = memorg->pagesize;
++		memorg->pages_per_eraseblock = type->erasesize /
++					       type->erasesize;
+ 		mtd->erasesize = type->erasesize;
+-		mtd->oobsize = type->oobsize;
++		memorg->oobsize = type->oobsize;
++		mtd->oobsize = memorg->oobsize;
+ 
++		memorg->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+ 		chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+ 		chip->chipsize = (uint64_t)type->chipsize << 20;
+ 		chip->options |= type->options;
+@@ -4632,7 +4656,12 @@ static void nand_manufacturer_detect(struct nand_chip *chip)
+ 	 */
+ 	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
+ 	    chip->manufacturer.desc->ops->detect) {
++		struct nand_memory_organization *memorg;
++
++		memorg = nanddev_get_memorg(&chip->base);
++
+ 		/* The 3rd id byte holds MLC / multichip data */
++		memorg->bits_per_cell = nand_get_bits_per_cell(chip->id.data[2]);
+ 		chip->bits_per_cell = nand_get_bits_per_cell(chip->id.data[2]);
+ 		chip->manufacturer.desc->ops->detect(chip);
+ 	} else {
+@@ -4682,10 +4711,20 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	const struct nand_manufacturer *manufacturer;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	int busw, ret;
+ 	u8 *id_data = chip->id.data;
+ 	u8 maf_id, dev_id;
+ 
++	/*
++	 * Let's start by initializing memorg fields that might be left
++	 * unassigned by the ID-based detection logic.
++	 */
++	memorg = nanddev_get_memorg(&chip->base);
++	memorg->planes_per_lun = 1;
++	memorg->luns_per_target = 1;
++	memorg->ntargets = 1;
++
+ 	/*
+ 	 * Reset the chip, required by some chips (e.g. Micron MT29FxGxxxxx)
+ 	 * after power-up.
+@@ -4790,6 +4829,11 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	/* Get chip options */
+ 	chip->options |= type->options;
+ 
++	memorg->eraseblocks_per_lun =
++			DIV_ROUND_DOWN_ULL((u64)type->chipsize << 20,
++					   memorg->pagesize *
++					   memorg->pages_per_eraseblock);
++
+ ident_done:
+ 	if (!mtd->name)
+ 		mtd->name = chip->parameters.model;
+@@ -5016,10 +5060,13 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 			   struct nand_flash_dev *table)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	int nand_maf_id, nand_dev_id;
+ 	unsigned int i;
+ 	int ret;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	/* Assume all dies are deselected when we enter nand_scan_ident(). */
+ 	chip->cur_cs = -1;
+ 
+@@ -5081,6 +5128,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 		pr_info("%d chips detected\n", i);
+ 
+ 	/* Store the number of chips and calc total size for mtd */
++	memorg->ntargets = i;
+ 	chip->numchips = i;
+ 	mtd->size = i * chip->chipsize;
+ 
+diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
+index 343f477362d1..94ea8c593589 100644
+--- a/drivers/mtd/nand/raw/nand_hynix.c
++++ b/drivers/mtd/nand/raw/nand_hynix.c
+@@ -418,24 +418,27 @@ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
+ 				       bool valid_jedecid)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	u8 oobsize;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	oobsize = ((chip->id.data[3] >> 2) & 0x3) |
+ 		  ((chip->id.data[3] >> 4) & 0x4);
+ 
+ 	if (valid_jedecid) {
+ 		switch (oobsize) {
+ 		case 0:
+-			mtd->oobsize = 2048;
++			memorg->oobsize = 2048;
+ 			break;
+ 		case 1:
+-			mtd->oobsize = 1664;
++			memorg->oobsize = 1664;
+ 			break;
+ 		case 2:
+-			mtd->oobsize = 1024;
++			memorg->oobsize = 1024;
+ 			break;
+ 		case 3:
+-			mtd->oobsize = 640;
++			memorg->oobsize = 640;
+ 			break;
+ 		default:
+ 			/*
+@@ -450,25 +453,25 @@ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
+ 	} else {
+ 		switch (oobsize) {
+ 		case 0:
+-			mtd->oobsize = 128;
++			memorg->oobsize = 128;
+ 			break;
+ 		case 1:
+-			mtd->oobsize = 224;
++			memorg->oobsize = 224;
+ 			break;
+ 		case 2:
+-			mtd->oobsize = 448;
++			memorg->oobsize = 448;
+ 			break;
+ 		case 3:
+-			mtd->oobsize = 64;
++			memorg->oobsize = 64;
+ 			break;
+ 		case 4:
+-			mtd->oobsize = 32;
++			memorg->oobsize = 32;
+ 			break;
+ 		case 5:
+-			mtd->oobsize = 16;
++			memorg->oobsize = 16;
+ 			break;
+ 		case 6:
+-			mtd->oobsize = 640;
++			memorg->oobsize = 640;
+ 			break;
+ 		default:
+ 			/*
+@@ -492,8 +495,10 @@ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
+ 		 * the actual OOB size for this chip is: 640 * 16k / 8k).
+ 		 */
+ 		if (chip->id.data[1] == 0xde)
+-			mtd->oobsize *= mtd->writesize / SZ_8K;
++			memorg->oobsize *= memorg->pagesize / SZ_8K;
+ 	}
++
++	mtd->oobsize = memorg->oobsize;
+ }
+ 
+ static void hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
+@@ -609,9 +614,12 @@ static void hynix_nand_extract_scrambling_requirements(struct nand_chip *chip,
+ static void hynix_nand_decode_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	bool valid_jedecid;
+ 	u8 tmp;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	/*
+ 	 * Exclude all SLC NANDs from this advanced detection scheme.
+ 	 * According to the ranges defined in several datasheets, it might
+@@ -625,7 +633,8 @@ static void hynix_nand_decode_id(struct nand_chip *chip)
+ 	}
+ 
+ 	/* Extract pagesize */
+-	mtd->writesize = 2048 << (chip->id.data[3] & 0x03);
++	memorg->pagesize = 2048 << (chip->id.data[3] & 0x03);
++	mtd->writesize = memorg->pagesize;
+ 
+ 	tmp = (chip->id.data[3] >> 4) & 0x3;
+ 	/*
+@@ -635,12 +644,19 @@ static void hynix_nand_decode_id(struct nand_chip *chip)
+ 	 * The only exception is when ID[3][4:5] == 3 and ID[3][7] == 0, in
+ 	 * this case the erasesize is set to 768KiB.
+ 	 */
+-	if (chip->id.data[3] & 0x80)
++	if (chip->id.data[3] & 0x80) {
++		memorg->pages_per_eraseblock = (SZ_1M << tmp) /
++					       memorg->pagesize;
+ 		mtd->erasesize = SZ_1M << tmp;
+-	else if (tmp == 3)
++	} else if (tmp == 3) {
++		memorg->pages_per_eraseblock = (SZ_512K + SZ_256K) /
++					       memorg->pagesize;
+ 		mtd->erasesize = SZ_512K + SZ_256K;
+-	else
++	} else {
++		memorg->pages_per_eraseblock = (SZ_128K << tmp) /
++					       memorg->pagesize;
+ 		mtd->erasesize = SZ_128K << tmp;
++	}
+ 
+ 	/*
+ 	 * Modern Toggle DDR NANDs have a valid JEDECID even though they are
+diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
+index 38b5dc22cb30..61e33ee7ee19 100644
+--- a/drivers/mtd/nand/raw/nand_jedec.c
++++ b/drivers/mtd/nand/raw/nand_jedec.c
+@@ -22,12 +22,15 @@
+ int nand_jedec_detect(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	struct nand_jedec_params *p;
+ 	struct jedec_ecc_info *ecc;
+ 	int jedec_version = 0;
+ 	char id[5];
+ 	int i, val, ret;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	/* Try JEDEC for unknown chip or LP */
+ 	ret = nand_readid_op(chip, 0x40, id, sizeof(id));
+ 	if (ret || strncmp(id, "JEDEC", sizeof(id)))
+@@ -81,17 +84,26 @@ int nand_jedec_detect(struct nand_chip *chip)
+ 		goto free_jedec_param_page;
+ 	}
+ 
+-	mtd->writesize = le32_to_cpu(p->byte_per_page);
++	memorg->pagesize = le32_to_cpu(p->byte_per_page);
++	mtd->writesize = memorg->pagesize;
+ 
+ 	/* Please reference to the comment for nand_flash_detect_onfi. */
+-	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+-	mtd->erasesize *= mtd->writesize;
++	memorg->pages_per_eraseblock =
++			1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
++	mtd->erasesize = memorg->pages_per_eraseblock * memorg->pagesize;
+ 
+-	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++	memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++	mtd->oobsize = memorg->oobsize;
++
++	memorg->luns_per_target = p->lun_count;
++	memorg->planes_per_lun = 1 << p->multi_plane_addr;
+ 
+ 	/* Please reference to the comment for nand_flash_detect_onfi. */
+-	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	memorg->eraseblocks_per_lun =
++		1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	chip->chipsize = memorg->eraseblocks_per_lun;
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
++	memorg->bits_per_cell = p->bits_per_cell;
+ 	chip->bits_per_cell = p->bits_per_cell;
+ 
+ 	if (le16_to_cpu(p->features) & JEDEC_FEATURE_16_BIT_BUS)
+diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
+index d8184cf591ad..f3f59cf37d7f 100644
+--- a/drivers/mtd/nand/raw/nand_onfi.c
++++ b/drivers/mtd/nand/raw/nand_onfi.c
+@@ -140,12 +140,15 @@ static void nand_bit_wise_majority(const void **srcbufs,
+ int nand_onfi_detect(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
+ 	struct nand_onfi_params *p;
+ 	struct onfi_params *onfi;
+ 	int onfi_version = 0;
+ 	char id[4];
+ 	int i, ret, val;
+ 
++	memorg = nanddev_get_memorg(&chip->base);
++
+ 	/* Try ONFI for unknown chip or LP */
+ 	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
+ 	if (ret || strncmp(id, "ONFI", 4))
+@@ -221,21 +224,31 @@ int nand_onfi_detect(struct nand_chip *chip)
+ 		goto free_onfi_param_page;
+ 	}
+ 
+-	mtd->writesize = le32_to_cpu(p->byte_per_page);
++	memorg->pagesize = le32_to_cpu(p->byte_per_page);
++	mtd->writesize = memorg->pagesize;
+ 
+ 	/*
+ 	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
+ 	 * (don't ask me who thought of this...). MTD assumes that these
+ 	 * dimensions will be power-of-2, so just truncate the remaining area.
+ 	 */
+-	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+-	mtd->erasesize *= mtd->writesize;
++	memorg->pages_per_eraseblock =
++			1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
++	mtd->erasesize = memorg->pages_per_eraseblock * memorg->pagesize;
+ 
+-	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++	memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++	mtd->oobsize = memorg->oobsize;
++
++	memorg->luns_per_target = p->lun_count;
++	memorg->planes_per_lun = 1 << p->interleaved_bits;
+ 
+ 	/* See erasesize comment */
+-	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	memorg->eraseblocks_per_lun =
++		1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
++	chip->chipsize = memorg->eraseblocks_per_lun;
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
++	memorg->bits_per_cell = p->bits_per_cell;
+ 	chip->bits_per_cell = p->bits_per_cell;
+ 
+ 	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
+diff --git a/drivers/mtd/nand/raw/nand_samsung.c b/drivers/mtd/nand/raw/nand_samsung.c
+index e46d4c492ad8..9a9ad43cc97d 100644
+--- a/drivers/mtd/nand/raw/nand_samsung.c
++++ b/drivers/mtd/nand/raw/nand_samsung.c
+@@ -20,6 +20,9 @@
+ static void samsung_nand_decode_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
++
++	memorg = nanddev_get_memorg(&chip->base);
+ 
+ 	/* New Samsung (6 byte ID): Samsung K9GAG08U0F (p.44) */
+ 	if (chip->id.len == 6 && !nand_is_slc(chip) &&
+@@ -27,29 +30,30 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+ 		u8 extid = chip->id.data[3];
+ 
+ 		/* Get pagesize */
+-		mtd->writesize = 2048 << (extid & 0x03);
++		memorg->pagesize = 2048 << (extid & 0x03);
++		mtd->writesize = memorg->pagesize;
+ 
+ 		extid >>= 2;
+ 
+ 		/* Get oobsize */
+ 		switch (((extid >> 2) & 0x4) | (extid & 0x3)) {
+ 		case 1:
+-			mtd->oobsize = 128;
++			memorg->oobsize = 128;
+ 			break;
+ 		case 2:
+-			mtd->oobsize = 218;
++			memorg->oobsize = 218;
+ 			break;
+ 		case 3:
+-			mtd->oobsize = 400;
++			memorg->oobsize = 400;
+ 			break;
+ 		case 4:
+-			mtd->oobsize = 436;
++			memorg->oobsize = 436;
+ 			break;
+ 		case 5:
+-			mtd->oobsize = 512;
++			memorg->oobsize = 512;
+ 			break;
+ 		case 6:
+-			mtd->oobsize = 640;
++			memorg->oobsize = 640;
+ 			break;
+ 		default:
+ 			/*
+@@ -62,8 +66,14 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+ 			break;
+ 		}
+ 
++		mtd->oobsize = memorg->oobsize;
++
+ 		/* Get blocksize */
+ 		extid >>= 2;
++		memorg->pages_per_eraseblock = (128 * 1024) <<
++					       (((extid >> 1) & 0x04) |
++						(extid & 0x03)) /
++					       memorg->pagesize;
+ 		mtd->erasesize = (128 * 1024) <<
+ 				 (((extid >> 1) & 0x04) | (extid & 0x03));
+ 
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index d068163b64b3..d8465049dfd6 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -101,6 +101,9 @@ static void toshiba_nand_benand_init(struct nand_chip *chip)
+ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_memory_organization *memorg;
++
++	memorg = nanddev_get_memorg(&chip->base);
+ 
+ 	nand_decode_ext_id(chip);
+ 
+@@ -114,8 +117,10 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 	 */
+ 	if (chip->id.len >= 6 && nand_is_slc(chip) &&
+ 	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
+-	    !(chip->id.data[4] & 0x80) /* !BENAND */)
+-		mtd->oobsize = 32 * mtd->writesize >> 9;
++	    !(chip->id.data[4] & 0x80) /* !BENAND */) {
++		memorg->oobsize = 32 * memorg->pagesize >> 9;
++		mtd->oobsize = memorg->oobsize;
++	}
+ 
+ 	/*
+ 	 * Extract ECC requirements from 6th id byte.
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index 933d1a629c51..7da15620f12e 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -2302,6 +2302,11 @@ static int __init ns_init_module(void)
+ 
+ 	if (overridesize) {
+ 		uint64_t new_size = (uint64_t)nsmtd->erasesize << overridesize;
++		struct nand_memory_organization *memorg;
++		u64 targetsize;
++
++		memorg = nanddev_get_memorg(&chip->base);
++
+ 		if (new_size >> overridesize != nsmtd->erasesize) {
+ 			NS_ERR("overridesize is too big\n");
+ 			retval = -EINVAL;
+@@ -2309,6 +2314,7 @@ static int __init ns_init_module(void)
+ 		}
+ 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
+ 		nsmtd->size = new_size;
++		memorg->eraseblocks_per_lun = 1 << overridesize;
+ 		chip->chipsize = new_size;
+ 		chip->chip_shift = ffs(nsmtd->erasesize) + overridesize - 1;
+ 		chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
 -- 
 2.19.1
 
