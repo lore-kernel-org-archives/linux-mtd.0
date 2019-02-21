@@ -2,82 +2,61 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 521BFC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:49:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05019C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 14:02:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E1732084F
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:49:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C793E2084D
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 14:02:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cHEvMI5/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GApEs4x8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E1732084F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SAzO+o8e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C793E2084D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DwtPYuzZSUgvBEaHCrgBczXNIucKM//QkFFhx8g52Ms=; b=cHEvMI5/0moMar
-	pnyxRznDWDya7ZV3UcBblYjXSTJPAs2FdCVn3nGPV1MA4PrK6b2/7M04VFg3N+QyNsjruNtW7lj6q
-	YZnCLOJ4LuCfwIOE+9NDDwk0gv//mcyXCO9MT656yDaHapv84iJ+qlVk8s1q4dS7AbZfN0YOJoQzr
-	Z7Kx7AXRetnGJcZty7CMpbfboC2FsaloihMIaUzM64fcMAx+0X9oxJlKONoIYg+4AIGG6ur+xPA9O
-	b8FF8X8Y5HzUMtKxh1783IPl1JDv16GjQgrXOj240uCka3+i3rGd/zxpYwt3RCDka0oXqcW4DJgYZ
-	wq0PqnTcXnZOXs7pbpIA==;
+	List-Owner; bh=zaP1DwCw37fZ5StAvAMY2Tqf0Ye6j8JtTOwlMx9Co2w=; b=SAzO+o8e959bu3
+	RgsSoLqzog++oXL6sfIbjihol7Bw/MxslKsLgNUHlGcnEj7KMSzpJKwYSYnpwuc2zl9LdcxnVhLiQ
+	7EUqwy18UX4FwtRSh+nnPipyzdE6uj/0+ptjobxNaqRuDjx+PDInp/vjxcw/bULKSeXM4Gy8lb3wn
+	lqpT4y+UTLRfWIzbspqx9nKDwf2SjwOuZatwjaRO5Dr7ckP4vf5ITY2ZduHmq7f09FjENqqZ+P5m7
+	eT2GQb/SVGm5fnuTrDCjgLVjwGsxULQ75yJ/e9DGpSSvV1BEaVePdGlDKAi5RH7TDkskDPEnVJRi5
+	OPVYXs7PiC1H+r+2KaMQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwoik-0007It-Jz; Thu, 21 Feb 2019 13:49:02 +0000
-Received: from mail-it1-x143.google.com ([2607:f8b0:4864:20::143])
+	id 1gwow9-0004TG-Ek; Thu, 21 Feb 2019 14:02:53 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwoih-0007IO-3P; Thu, 21 Feb 2019 13:49:00 +0000
-Received: by mail-it1-x143.google.com with SMTP id i2so22828975ite.5;
- Thu, 21 Feb 2019 05:48:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=PVDwraPMuK128R4L9+QhmYly3JI7tJ6lX5ehsk36Uqg=;
- b=GApEs4x8iCt0AU5nxvw5PpHnIe5HPwW3TJFZOgiZGe+OuTHi9jzsWx42UmFZiGJtBH
- qwu5Q8oiFygNgZetfxeP3GYbuIBV/o/jl6eFVxYcMtJuipkB6iyM8j7DE5cQRDzCCWSK
- 6xdtBA4FjCAPqS+SOL0pG4j/nLgRVwhyGOa7K5cxKLie6S7dZ0H3hsNnNypYy6PWleo3
- R4ziauQtJfdTbFd+rVy+cfj23saVxUPJ5QGtSeTY03Uf96hGYJ/oqORIhiZBVunjU56V
- Ry13COsryK0O2DDNTktsopK44eZCVE3Klo7rEmDkcKbS2J5qU1nA+mPX0jKjkDI7kl21
- FwJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=PVDwraPMuK128R4L9+QhmYly3JI7tJ6lX5ehsk36Uqg=;
- b=U58i6Q5fHNCY/y6qKy5dJjUQj3mNz4ozrJkENsnPdP9AUCvk9SkQldK/OcJq529Z45
- KwmO9SRg5NWvKwOg2J3IyowQtP5gmQAByCkX6E3zxx8AJYUo0kLFCxXRZeMjlcpaw9W1
- /zeafdxDDunKVADg8JTQQUEayzBp4TdKJeGaJrbsAHfeF/TDFol5pXbNzes352s3Qexi
- CoiwNOhfE/wH5B2RH95Oto+BXpDDXP7jZ9FPC/OQFZX6OgII2zOF7+50TOWKA5FsjeSF
- hgoChNvR8l7BM0mLrGorMpd3W/j397J7FW/PMT5u8pcObMCsV5j5csi14ShhrhgSOv3O
- GF3Q==
-X-Gm-Message-State: AHQUAubeKjQNxpE4GZWKc6x6uAKXvHoVOlFZpZ41WZxNQaCFIdX2/jzm
- 2AsyRdC4Ma9/rEEFtkjOFg3aqYevOAN4rIrLNyQ=
-X-Google-Smtp-Source: AHgI3IZt1XMvCF1DAEUjEINeZr1UH3ga6FuCMW11CpyNO/1clOAqjaXEp/EKrpvXRTFH/OOT7KkaLot6ReWO1BQ6wV4=
-X-Received: by 2002:a02:9f19:: with SMTP id z25mr1972490jal.3.1550756937998;
- Thu, 21 Feb 2019 05:48:57 -0800 (PST)
-MIME-Version: 1.0
+ id 1gwovx-0004M8-Dc; Thu, 21 Feb 2019 14:02:43 +0000
+X-Originating-IP: 90.88.23.190
+Received: from xps13 (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr
+ [90.88.23.190]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 4D7EEE0009;
+ Thu, 21 Feb 2019 14:02:25 +0000 (UTC)
+Date: Thu, 21 Feb 2019 15:02:24 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Adam Ford <aford173@gmail.com>
+Subject: Re: [RFC PATCH 16/27] mtd: nand: ecc: Let the software BCH ECC
+ engine be a module
+Message-ID: <20190221150224.7b01b553@xps13>
+In-Reply-To: <CAHCN7xJhoEAjPchpp=-zEyyK1Ggzt24aQAX9ujfavdP329+ouw@mail.gmail.com>
 References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
  <20190221125806.28875-4-miquel.raynal@bootlin.com>
-In-Reply-To: <20190221125806.28875-4-miquel.raynal@bootlin.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Thu, 21 Feb 2019 07:48:46 -0600
-Message-ID: <CAHCN7xJhoEAjPchpp=-zEyyK1Ggzt24aQAX9ujfavdP329+ouw@mail.gmail.com>
-Subject: Re: [RFC PATCH 16/27] mtd: nand: ecc: Let the software BCH ECC engine
- be a module
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ <CAHCN7xJhoEAjPchpp=-zEyyK1Ggzt24aQAX9ujfavdP329+ouw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_054859_178609_DB5303FC 
-X-CRM114-Status: GOOD (  20.42  )
+X-CRM114-CacheID: sfid-20190221_060241_609760_80AC9ED8 
+X-CRM114-Status: GOOD (  16.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -98,68 +77,26 @@ Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  arm-soc <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 21, 2019 at 6:58 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> There is no reason to prevent the software BCH ECC engine
-> implementation to be compiled as a module, so change the 'bool' into a
-> 'tristate'.
-
-If you're booting from nand and need the BCH engine, it seems to me
-like you'd need it to be compiled into the kernel because you'd have
-to mount the filesystem before loading the module unless you have a
-initramfs.  If you need the BCH engine to mount the filesystem, it
-creates a dependency issue.
-
-Just my two cents.
-
-adam
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/ecc/Kconfig           | 2 +-
->  include/linux/mtd/nand-sw-bch-engine.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/nand/ecc/Kconfig b/drivers/mtd/nand/ecc/Kconfig
-> index 6ce9007e1d9b..e0106b3a7ec1 100644
-> --- a/drivers/mtd/nand/ecc/Kconfig
-> +++ b/drivers/mtd/nand/ecc/Kconfig
-> @@ -12,7 +12,7 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
->           The original Linux implementation had byte 0 and 1 swapped.
->
->  config MTD_NAND_ECC_SW_BCH
-> -       bool "Software BCH ECC engine"
-> +       tristate "Software BCH ECC engine"
->         select BCH
->         default n
->         help
-> diff --git a/include/linux/mtd/nand-sw-bch-engine.h b/include/linux/mtd/nand-sw-bch-engine.h
-> index d8abfc9fc288..5d0b98e34a3a 100644
-> --- a/include/linux/mtd/nand-sw-bch-engine.h
-> +++ b/include/linux/mtd/nand-sw-bch-engine.h
-> @@ -33,7 +33,7 @@ struct ecc_sw_bch_conf {
->         unsigned char *eccmask;
->  };
->
-> -#if defined(CONFIG_MTD_NAND_ECC_SW_BCH)
-> +#if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_BCH)
->
->  int ecc_sw_bch_calculate(struct nand_device *nand, const unsigned char *buf,
->                          unsigned char *code);
-> --
-> 2.19.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQWRhbSwKCkFkYW0gRm9yZCA8YWZvcmQxNzNAZ21haWwuY29tPiB3cm90ZSBvbiBUaHUsIDIx
+IEZlYiAyMDE5IDA3OjQ4OjQ2IC0wNjAwOgoKPiBPbiBUaHUsIEZlYiAyMSwgMjAxOSBhdCA2OjU4
+IEFNIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4K
+PiA+IFRoZXJlIGlzIG5vIHJlYXNvbiB0byBwcmV2ZW50IHRoZSBzb2Z0d2FyZSBCQ0ggRUNDIGVu
+Z2luZQo+ID4gaW1wbGVtZW50YXRpb24gdG8gYmUgY29tcGlsZWQgYXMgYSBtb2R1bGUsIHNvIGNo
+YW5nZSB0aGUgJ2Jvb2wnIGludG8gYQo+ID4gJ3RyaXN0YXRlJy4gIAo+IAo+IElmIHlvdSdyZSBi
+b290aW5nIGZyb20gbmFuZCBhbmQgbmVlZCB0aGUgQkNIIGVuZ2luZSwgaXQgc2VlbXMgdG8gbWUK
+PiBsaWtlIHlvdSdkIG5lZWQgaXQgdG8gYmUgY29tcGlsZWQgaW50byB0aGUga2VybmVsIGJlY2F1
+c2UgeW91J2QgaGF2ZQo+IHRvIG1vdW50IHRoZSBmaWxlc3lzdGVtIGJlZm9yZSBsb2FkaW5nIHRo
+ZSBtb2R1bGUgdW5sZXNzIHlvdSBoYXZlIGEKPiBpbml0cmFtZnMuICBJZiB5b3UgbmVlZCB0aGUg
+QkNIIGVuZ2luZSB0byBtb3VudCB0aGUgZmlsZXN5c3RlbSwgaXQKPiBjcmVhdGVzIGEgZGVwZW5k
+ZW5jeSBpc3N1ZS4KClRoYXQncyB0cnVlLCBJIGNvdWxkIG1lbnRpb24gdGhpcyB1c2UgY2FzZSBp
+biB0aGUgY29tbWl0IGxvZy4gQnV0IHRoZQphY3Rpb24gb2YgY2hvb3NpbmcgdG8gY29tcGlsZSBp
+dCBhcyBhIG1vZHVsZSBpcyBkb25lIGJ5IHRoZSB1c2VyLCBzbyBJCmd1ZXNzIHByZXZlbnRpbmcg
+YW55IHVzZXIgdG8gdXNlIGl0IGFzIGEgbW9kdWxlIGlzIG5vbmV0aGVsZXNzIHRvbwpyZXN0cmlj
+dGl2ZT8KCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
