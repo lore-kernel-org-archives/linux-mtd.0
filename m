@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6037CC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4717BC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:06:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D65E214AF
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 022DB2147A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:06:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lya//H9z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D65E214AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gt75CGO7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 022DB2147A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xm/TcJax9m4dwn1tUu/TextXE559OSdbGBslSVaLy/E=; b=lya//H9z30ftb+
-	w8LBoTL0WaZ2Af6arQ2rGOvnpK6c7D+gQWPJRDYhUJmVscaIc/64uiEZrE5DuaX2Nth3O2m+hcXNQ
-	WNk9BfPt3zMg3IjR301iYmTF6TB3Ndt6tWZpbItPFu1rjqM/r87KFGCjvqVvseQ7fqdR6huJRTW17
-	0nvi0sAxojuXK6ZgWiJWs5+7DiOkodwgLUC4ZxC9vgtDzgRyTuqOCwkTLFBMe19Y0gnoAQYf+sFlL
-	Q2O/o+ZydI7XHZBMzIMYY8cMW+ICUuGBxVAex+g3NXpobvKA9utKGcFtw08iVIR5gF/3eAvC14go2
-	EFSdaFA1SdLuHIBMt7Og==;
+	List-Owner; bh=ZOXRUXXaHGmDCWWRt3Z1/0R+PhKus/kY+8jpyNSxlV0=; b=gt75CGO7Ur7QnV
+	lYIdCEO+x7tJ4vmKf6ZQcYFwZODxuuAOhoudm03beobeTsZkNh1RiXVYH/H4JKo0HZGKhECWyyuXr
+	jdIhwivieq+Q/pCyBaCsLYaKqz+U24gbC+xlo8xnvOjENw3oAbkQ8s5gzU0lq3lwZ9meulgSaxTej
+	PP4EiDKfzPUEvx5JM7ZPGWIbchAWKJpt2Hs+/qWi6u4NV68v7+sS0JcZ18aEp9tvIGi2BYD8VGz78
+	s44Jcm3ckvfcISQrsJDowqbzyijTBSwpE6A//uE34Usn1L9SaspfWiWJhqn83V8OwXzO25YLcGGoY
+	+lO2PGYTYLE3z+sYVf4w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwlEW-0003p2-Dk; Thu, 21 Feb 2019 10:05:36 +0000
+	id 1gwlFI-0004qT-2A; Thu, 21 Feb 2019 10:06:24 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwlBt-0007fZ-Vj; Thu, 21 Feb 2019 10:03:16 +0000
+ id 1gwlBm-0007Tx-1y; Thu, 21 Feb 2019 10:02:54 +0000
 Received: from localhost.localdomain
  (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id D948810000D;
- Thu, 21 Feb 2019 10:02:49 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id E64DC100019;
+ Thu, 21 Feb 2019 10:02:41 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [RFC PATCH 10/27] mtd: rawnand: Get rid of chip->ecc.priv
-Date: Thu, 21 Feb 2019 11:01:59 +0100
-Message-Id: <20190221100216.25255-11-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 07/27] mtd: nand: ecc: Move BCH code into the ecc/
+ directory
+Date: Thu, 21 Feb 2019 11:01:56 +0100
+Message-Id: <20190221100216.25255-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190221100216.25255-1-miquel.raynal@bootlin.com>
 References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_020254_854530_C1FACF67 
-X-CRM114-Status: GOOD (  15.62  )
+X-CRM114-CacheID: sfid-20190221_020246_853667_43E81FDD 
+X-CRM114-Status: GOOD (  12.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -80,151 +81,163 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-nand_ecc_ctrl embeds a private pointer which had only a meaning in the
-sunxi driver. This structure will soon be deprecated, but as this
-field is actually not needed, let's just drop it.
+Move generic ECC code in the ecc/ sub-directory for later re-use by
+the SPI NAND layer.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 29 ++++++++++++++---------------
- include/linux/mtd/rawnand.h       |  2 --
- 2 files changed, 14 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/ecc/Kconfig                           | 10 ++++++++++
+ drivers/mtd/nand/ecc/Makefile                          |  1 +
+ .../mtd/nand/{raw/nand_bch.c => ecc/sw-bch-engine.c}   |  2 +-
+ drivers/mtd/nand/raw/Kconfig                           | 10 ----------
+ drivers/mtd/nand/raw/Makefile                          |  1 -
+ drivers/mtd/nand/raw/nand_base.c                       |  2 +-
+ drivers/mtd/nand/raw/nandsim.c                         |  2 +-
+ drivers/mtd/nand/raw/omap2.c                           |  2 +-
+ include/linux/mtd/{nand_bch.h => nand-sw-bch-engine.h} |  6 +++---
+ 9 files changed, 18 insertions(+), 18 deletions(-)
+ rename drivers/mtd/nand/{raw/nand_bch.c => ecc/sw-bch-engine.c} (99%)
+ rename include/linux/mtd/{nand_bch.h => nand-sw-bch-engine.h} (93%)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index b56f89c992f3..d05f71f33b5c 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -230,6 +230,7 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
-  *			this NAND controller
-  * @complete:		a completion object used to wait for NAND
-  *			controller events
-+ * @ecc:		ECC controller structure
+diff --git a/drivers/mtd/nand/ecc/Kconfig b/drivers/mtd/nand/ecc/Kconfig
+index 66c396dcbfbd..a05f1d474446 100644
+--- a/drivers/mtd/nand/ecc/Kconfig
++++ b/drivers/mtd/nand/ecc/Kconfig
+@@ -1,3 +1,13 @@
+ menu "ECC engine support"
+ 
++config MTD_NAND_ECC_SW_BCH
++	bool "Software BCH ECC engine"
++	select BCH
++	default n
++	help
++	  This enables support for software BCH error correction. Binary BCH
++	  codes are more powerful and cpu intensive than traditional Hamming
++	  ECC codes. They are used with NAND devices requiring more than 1 bit
++	  of error correction.
++
+ endmenu
+diff --git a/drivers/mtd/nand/ecc/Makefile b/drivers/mtd/nand/ecc/Makefile
+index 6a42577ba424..fdbfc2bc38d7 100644
+--- a/drivers/mtd/nand/ecc/Makefile
++++ b/drivers/mtd/nand/ecc/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ obj-$(CONFIG_MTD_NAND_CORE) += engine.o
++obj-$(CONFIG_MTD_NAND_ECC_SW_BCH)	+= sw-bch-engine.o
+diff --git a/drivers/mtd/nand/raw/nand_bch.c b/drivers/mtd/nand/ecc/sw-bch-engine.c
+similarity index 99%
+rename from drivers/mtd/nand/raw/nand_bch.c
+rename to drivers/mtd/nand/ecc/sw-bch-engine.c
+index 574c0ca16160..37dc0f0061d3 100644
+--- a/drivers/mtd/nand/raw/nand_bch.c
++++ b/drivers/mtd/nand/ecc/sw-bch-engine.c
+@@ -26,7 +26,7 @@
+ #include <linux/bitops.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_bch.h>
++#include <linux/mtd/nand-sw-bch-engine.h>
+ #include <linux/bch.h>
+ 
+ /**
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index ebb8a3da9fa5..478bc3f3c042 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -19,16 +19,6 @@ menuconfig MTD_RAW_NAND
+ 
+ if MTD_RAW_NAND
+ 
+-config MTD_NAND_ECC_SW_BCH
+-	bool "Support software BCH ECC"
+-	select BCH
+-	default n
+-	help
+-	  This enables support for software BCH error correction. Binary BCH
+-	  codes are more powerful and cpu intensive than traditional Hamming
+-	  ECC codes. They are used with NAND devices requiring more than 1 bit
+-	  of error correction.
+-
+ comment "Raw/parallel NAND flash controllers"
+ 
+ config MTD_NAND_DENALI
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index ffe95b157131..18ae42077b05 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -2,7 +2,6 @@
+ 
+ obj-$(CONFIG_MTD_RAW_NAND)		+= nand.o
+ obj-$(CONFIG_MTD_NAND_ECC_SW_HAMMING)	+= nand_ecc.o
+-obj-$(CONFIG_MTD_NAND_ECC_SW_BCH)	+= nand_bch.o
+ obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
+ 
+ obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 39cd2b163dc9..8a9cbe3aa7c1 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -40,7 +40,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/nand_ecc.h>
+-#include <linux/mtd/nand_bch.h>
++#include <linux/mtd/nand-sw-bch-engine.h>
+ #include <linux/interrupt.h>
+ #include <linux/bitops.h>
+ #include <linux/io.h>
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index 670abe8d59ca..797a6e4999cc 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -36,7 +36,7 @@
+ #include <linux/string.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+-#include <linux/mtd/nand_bch.h>
++#include <linux/mtd/nand-sw-bch-engine.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/delay.h>
+ #include <linux/list.h>
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index eaf14813a3ab..38550148a53b 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -26,7 +26,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ 
+-#include <linux/mtd/nand_bch.h>
++#include <linux/mtd/nand-sw-bch-engine.h>
+ #include <linux/platform_data/elm.h>
+ 
+ #include <linux/omap-gpmc.h>
+diff --git a/include/linux/mtd/nand_bch.h b/include/linux/mtd/nand-sw-bch-engine.h
+similarity index 93%
+rename from include/linux/mtd/nand_bch.h
+rename to include/linux/mtd/nand-sw-bch-engine.h
+index 06ce2b655c13..a682a15fa165 100644
+--- a/include/linux/mtd/nand_bch.h
++++ b/include/linux/mtd/nand-sw-bch-engine.h
+@@ -8,8 +8,8 @@
+  * This file is the header for the NAND BCH ECC implementation.
   */
- struct sunxi_nfc {
- 	struct nand_controller controller;
-@@ -243,6 +244,7 @@ struct sunxi_nfc {
- 	struct list_head chips;
- 	struct completion complete;
- 	struct dma_chan *dmac;
-+	struct sunxi_nand_hw_ecc *ecc;
- };
  
- static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_controller *ctrl)
-@@ -774,14 +776,13 @@ static void sunxi_nfc_hw_ecc_enable(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand = mtd_to_nand(mtd);
- 	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
--	struct sunxi_nand_hw_ecc *data = nand->ecc.priv;
- 	u32 ecc_ctl;
+-#ifndef __MTD_NAND_BCH_H__
+-#define __MTD_NAND_BCH_H__
++#ifndef __MTD_NAND_ECC_SW_BCH_H__
++#define __MTD_NAND_ECC_SW_BCH_H__
  
- 	ecc_ctl = readl(nfc->regs + NFC_REG_ECC_CTL);
- 	ecc_ctl &= ~(NFC_ECC_MODE_MSK | NFC_ECC_PIPELINE |
- 		     NFC_ECC_BLOCK_SIZE_MSK);
--	ecc_ctl |= NFC_ECC_EN | NFC_ECC_MODE(data->mode) | NFC_ECC_EXCEPTION |
--		   NFC_ECC_PIPELINE;
-+	ecc_ctl |= NFC_ECC_EN | NFC_ECC_MODE(nfc->ecc->mode) |
-+		   NFC_ECC_EXCEPTION | NFC_ECC_PIPELINE;
+ struct mtd_info;
+ struct nand_chip;
+@@ -66,4 +66,4 @@ static inline void nand_bch_free(struct nand_bch_control *nbc) {}
  
- 	if (nand->ecc.size == 512)
- 		ecc_ctl |= NFC_ECC_BLOCK_512;
-@@ -1671,9 +1672,9 @@ static const struct mtd_ooblayout_ops sunxi_nand_ooblayout_ops = {
- 	.free = sunxi_nand_ooblayout_free,
- };
+ #endif /* CONFIG_MTD_NAND_ECC_SW_BCH */
  
--static void sunxi_nand_hw_ecc_ctrl_cleanup(struct nand_ecc_ctrl *ecc)
-+static void sunxi_nand_hw_ecc_ctrl_cleanup(struct sunxi_nfc *nfc)
- {
--	kfree(ecc->priv);
-+	kfree(nfc->ecc);
- }
- 
- static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
-@@ -1685,7 +1686,6 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 	struct nand_chip *nand = mtd_to_nand(mtd);
- 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
- 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
--	struct sunxi_nand_hw_ecc *data;
- 	int nsectors;
- 	int ret;
- 	int i;
-@@ -1722,8 +1722,8 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 	if (ecc->size != 512 && ecc->size != 1024)
- 		return -EINVAL;
- 
--	data = kzalloc(sizeof(*data), GFP_KERNEL);
--	if (!data)
-+	nfc->ecc = kzalloc(sizeof(*nfc->ecc), GFP_KERNEL);
-+	if (!nfc->ecc)
- 		return -ENOMEM;
- 
- 	/* Prefer 1k ECC chunk over 512 ones */
-@@ -1750,7 +1750,7 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 		goto err;
- 	}
- 
--	data->mode = i;
-+	nfc->ecc->mode = i;
- 
- 	/* HW ECC always request ECC bytes for 1024 bytes blocks */
- 	ecc->bytes = DIV_ROUND_UP(ecc->strength * fls(8 * 1024), 8);
-@@ -1768,7 +1768,6 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 	ecc->read_oob = sunxi_nfc_hw_ecc_read_oob;
- 	ecc->write_oob = sunxi_nfc_hw_ecc_write_oob;
- 	mtd_set_ooblayout(mtd, &sunxi_nand_ooblayout_ops);
--	ecc->priv = data;
- 
- 	if (nfc->dmac) {
- 		ecc->read_page = sunxi_nfc_hw_ecc_read_page_dma;
-@@ -1789,16 +1788,16 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 	return 0;
- 
- err:
--	kfree(data);
-+	kfree(nfc->ecc);
- 
- 	return ret;
- }
- 
--static void sunxi_nand_ecc_cleanup(struct nand_ecc_ctrl *ecc)
-+static void sunxi_nand_ecc_cleanup(struct sunxi_nfc *nfc)
- {
--	switch (ecc->mode) {
-+	switch (nfc->ecc->mode) {
- 	case NAND_ECC_HW:
--		sunxi_nand_hw_ecc_ctrl_cleanup(ecc);
-+		sunxi_nand_hw_ecc_ctrl_cleanup(nfc);
- 		break;
- 	case NAND_ECC_NONE:
- 	default:
-@@ -1980,7 +1979,7 @@ static void sunxi_nand_chips_cleanup(struct sunxi_nfc *nfc)
- 		chip = list_first_entry(&nfc->chips, struct sunxi_nand_chip,
- 					node);
- 		nand_release(&chip->nand);
--		sunxi_nand_ecc_cleanup(&chip->nand.ecc);
-+		sunxi_nand_ecc_cleanup(nfc);
- 		list_del(&chip->node);
- 	}
- }
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index d4718dcef753..afe75e707e2c 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -279,7 +279,6 @@ static const struct nand_ecc_caps __name = {			\
-  * @prepad:	padding information for syndrome based ECC generators
-  * @postpad:	padding information for syndrome based ECC generators
-  * @options:	ECC specific options (see NAND_ECC_XXX flags defined above)
-- * @priv:	pointer to private ECC control data
-  * @calc_buf:	buffer for calculated ECC, size is oobsize.
-  * @code_buf:	buffer for ECC read from flash, size is oobsize.
-  * @hwctl:	function to control hardware ECC generator. Must only
-@@ -331,7 +330,6 @@ struct nand_ecc_ctrl {
- 	int prepad;
- 	int postpad;
- 	unsigned int options;
--	void *priv;
- 	u8 *calc_buf;
- 	u8 *code_buf;
- 	void (*hwctl)(struct nand_chip *chip, int mode);
+-#endif /* __MTD_NAND_BCH_H__ */
++#endif /* __MTD_NAND_ECC_SW_BCH_H__ */
 -- 
 2.19.1
 
