@@ -2,63 +2,75 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9794AC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6F47C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:17:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 674192148D
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:15:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A61B42148D
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 10:17:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iJAOMn2S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 674192148D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AT3uO2vE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A61B42148D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FFvQ9VQ934T2grJ80W0IVCkx7nFN4Ym8IWSiGiSr4F8=; b=iJAOMn2SWANTmc
-	pVN9RG4osvfc4kdbFf+op7rv8W2J8UGVcgF8X83jyt43D20lzie+wwq1qNnnEEn0qPacqZzqt0mT8
-	L4mrgRJm6wGnoDPFw5QEI+XwuVg3oFADAb/RxkSbrvaPs2dfILhxVE7mf4yoR8Sikb/cgVzAlyPdk
-	SntYS1R71LEr1s4djh8Qb6e82CtobTBzMPoTq58kgSg0KdJBSTHqHl8pG7UWV6dAmYkSBWa8DyTBn
-	53jxtIyUqXc9f/vkjzAxCqOudRdI7Usn7uIYr5IE0svreEOjvvGboU4EyaLwMmHojUKQcJvcox5A1
-	wnkimLItIPtdMAgPfMfA==;
+	List-Owner; bh=oYDfLpQKECacCTbWQKqzclV7Cq5eD/fZyRMTN9UOaZM=; b=AT3uO2vE4JBjCY
+	Gjkj5fDgU3qRihMQ21Z0DBGIEbyQhgQSgouPGS7NipzJxpO6m5YUnNE6avVOFjXEA7303v81Ait4M
+	PNES9erhoIXAOcPpF/t3bFMdxE/QMQbmMLrrKZLjWTCqZ/GgU2xLYH/oe9EEaUqTnn69vgtIcWTDL
+	ZWk77BN7043Q0d7Woe2NP2GVADfD+G5AsKGevQ65tznYWwAJajDwYQ7+XQ/radB0Cik46As5OeJ09
+	UMpLYgqj9G7uBecJ7PEr8/Psy8bLAL4kXIBvhYO1XX2ruxcl+SelR4p7HwaTsCB7M5HkOJWjGSnDq
+	nbBi/LANnkGfyCmXa1+Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwlNk-0001gC-BZ; Thu, 21 Feb 2019 10:15:08 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1gwlQQ-000340-Bi; Thu, 21 Feb 2019 10:17:54 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwlBz-0007nn-Ha; Thu, 21 Feb 2019 10:03:31 +0000
-Received: from localhost.localdomain
- (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr [90.88.23.190])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 1F5B1100016;
- Thu, 21 Feb 2019 10:02:54 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [RFC PATCH 12/27] mtd: nand: ecc: Use SPDX license identifier for the
- software Hamming code
-Date: Thu, 21 Feb 2019 11:02:01 +0100
-Message-Id: <20190221100216.25255-13-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190221100216.25255-1-miquel.raynal@bootlin.com>
-References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
+ id 1gwlQM-00033J-Tu
+ for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 10:17:53 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gwlQJ-0004vM-JU; Thu, 21 Feb 2019 11:17:47 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gwlQJ-0001XI-6s; Thu, 21 Feb 2019 11:17:47 +0100
+Date: Thu, 21 Feb 2019 11:17:47 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: Prevent Nand page writes on Power failure
+Message-ID: <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
+References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
+ <20190221091055.266b9627@collabora.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190221091055.266b9627@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:53:36 up 9 days, 18:19, 70 users, load average: 0.13, 0.18, 0.17
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_020300_466545_199F23C7 
-X-CRM114-Status: GOOD (  15.21  )
+X-CRM114-CacheID: sfid-20190221_021751_118572_E9142A4C 
+X-CRM114-Status: GOOD (  16.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -70,87 +82,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh R <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Julien Su <juliensu@mxic.com.tw>,
- Schrempf Frieder <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Remove the legacy license text, also update the MODULE_LICENSE macro
-in accordance with the text at the top of the file (GPL v2 or
-higher).
+Hi Boris,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/ecc/sw-hamming-engine.c   | 18 ++----------------
- include/linux/mtd/nand-sw-hamming-engine.h |  5 +----
- 2 files changed, 3 insertions(+), 20 deletions(-)
+On Thu, Feb 21, 2019 at 09:10:55AM +0100, Boris Brezillon wrote:
+> Hi Sascha,
+> 
+> On Wed, 20 Feb 2019 14:58:20 +0100
+> Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> 
+> > Hi All,
+> > 
+> > I have hardware here for which the normal way to turn off is just to cut
+> > the power. When the powercut happens during a NAND page write then we
+> > get more or less completely written pages during next boot. Very rarely
+> > it seems to happen that such a half written page with only very few
+> > flipped bits is erroneously detected as empty and written again which
+> > then results in ECC errors when reading the data.
+> 
+> This should definitely be fixed, maybe by lowering the bitflip
+> threshold when doing the empty check. Do you know the ECC strength and
+> the number of bitflips you have when that problem occurs?
 
-diff --git a/drivers/mtd/nand/ecc/sw-hamming-engine.c b/drivers/mtd/nand/ecc/sw-hamming-engine.c
-index 9abef611456f..6ba0205f1b4f 100644
---- a/drivers/mtd/nand/ecc/sw-hamming-engine.c
-+++ b/drivers/mtd/nand/ecc/sw-hamming-engine.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0+
- /*
-  * This file contains an ECC algorithm that detects and corrects 1 bit
-  * errors in a 256 byte block of data.
-@@ -11,21 +12,6 @@
-  *
-  * Information on how this algorithm works and how it was developed
-  * can be found in Documentation/mtd/nand_ecc.txt
-- *
-- * This file is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the
-- * Free Software Foundation; either version 2 or (at your option) any
-- * later version.
-- *
-- * This file is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-- * for more details.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this file; if not, write to the Free Software Foundation, Inc.,
-- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-- *
-  */
- 
- #include <linux/types.h>
-@@ -493,6 +479,6 @@ int nand_correct_data(struct nand_chip *chip, unsigned char *buf,
- }
- EXPORT_SYMBOL(nand_correct_data);
- 
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Frans Meulenbroeks <fransmeulenbroeks@gmail.com>");
- MODULE_DESCRIPTION("Generic NAND ECC support");
-diff --git a/include/linux/mtd/nand-sw-hamming-engine.h b/include/linux/mtd/nand-sw-hamming-engine.h
-index c0f015b1a077..1bd7493c682b 100644
---- a/include/linux/mtd/nand-sw-hamming-engine.h
-+++ b/include/linux/mtd/nand-sw-hamming-engine.h
-@@ -1,12 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  *  Copyright (C) 2000-2010 Steven J. Hill <sjhill@realitydiluted.com>
-  *			    David Woodhouse <dwmw2@infradead.org>
-  *			    Thomas Gleixner <tglx@linutronix.de>
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  * This file is the header for the ECC algorithm.
-  */
- 
+The problem is that these half written pages do not seem to be very
+stable. It happens that the number of bitflips change with each read.
+I have seen pages which can be read sometimes and sometimes not. It
+really seems that half written pages must be avoided entirely.
+
+Sascha
+
 -- 
-2.19.1
-
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
