@@ -2,67 +2,77 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB8AC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:19:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DCC3C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:21:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D6042084F
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:19:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 505672084F
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 11:21:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D/lot5QG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYyPw0aG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D6042084F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fgO358fN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 505672084F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mApPlGDSnyD7uIFGTGVaTVHd0xCIPV8ErY4WXhV2ZdA=; b=D/lot5QGOPTCzU
-	rIg5siBHaDXi06JXopppYi/7ndXWbq1qDk3fgQMZtd5NTMkTHX1/W7QChNU6UtJp16VHCyGkCvaMU
-	I/4koaQGE9W3vbk2hOi0MyByQjn5Z5P7jc9CAO4fOTbSJfkXdjJqgRFY00woEZOcEudhfbv6qdmal
-	nTzvk9uKoAiXDxC2JU9eiPIa0G0ED38qMBV32bP0agpNE7PRiavqAyuhsvqXo5rKu8+xXCoOR7WDm
-	WQOhoabMFtephkAZMVw2VvuDRucPgHiUfrayrEUovy9e4NTEIg3k1E1g4KcmO7EiQm5qQs6R9TtTL
-	PF2YNlBHZumCWUELeDTQ==;
+	List-Owner; bh=dfZHr9ZMslBs3/JYRZP1VH9mRSxOmo26bQHrSJYaQQI=; b=fgO358fN+l1Ney
+	04RJlCs+4oHc1ZNRo6K3FvDFXYY78xMopUnc2BrY5UE2L/5nIiHTSLdGJxAFQLNCf72tQxotm65JH
+	p0JPf5U2dKji5qtPSu3xBL7lg07Q89T+OEOMmKem5vqXwMjuyBbCUZ4wQUiP+rXL2eIfZSeS+s5Ey
+	DPAEnHNHeYjg0dVssoBqB3uVzrPuEIbUt2Mh2HhBvpDXO5wzSbY+SJnMgod7NAX67myB30yAWPIdn
+	B6342EacXWVP7hdRnzsitiXycvdQBZLnpM+i4BPtFMh2pE+OdgoTsRR1xDlkQbXxSnBxDnMXSEQVJ
+	7bhvKG9ym+GtAY5bEBQg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwmNo-0005SF-9E; Thu, 21 Feb 2019 11:19:16 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1gwmQC-0007Bg-JH; Thu, 21 Feb 2019 11:21:44 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwmNf-0005KG-9N; Thu, 21 Feb 2019 11:19:08 +0000
-Received: from localhost (unknown [91.160.177.164])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B7DA32084F;
- Thu, 21 Feb 2019 11:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550747947;
- bh=OFWRmPdHR9MMBor0LEiYPxs3cWI8jGhrxy11w5VI+4M=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=sYyPw0aGHSr5e4wIEFbPHuD3OsbdxtrBqd7kH8zyGrTeEAI4wuX97gRU794pC+cvk
- KjSPsKkb2NlGSKVHlDJKs4bnZ6sD2SKFDzmKvle0LIytCADcGML3iaj0UatLBDSEoH
- 0jCpmPMpC/E3owbQ35ftRzBpmmtYB/4icXTbJJnE=
-Date: Thu, 21 Feb 2019 12:19:00 +0100
-From: Boris Brezillon <bbrezillon@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [RFC PATCH 05/27] mtd: nand: Move standard OOB layouts to the
- NAND core
-Message-ID: <20190221121900.19d28477@kernel.org>
-In-Reply-To: <20190221100216.25255-6-miquel.raynal@bootlin.com>
-References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
- <20190221100216.25255-6-miquel.raynal@bootlin.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1gwmQ9-0007BC-0d
+ for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 11:21:42 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gwmQ6-0004b4-Vi; Thu, 21 Feb 2019 12:21:38 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gwmQ6-00056N-C7; Thu, 21 Feb 2019 12:21:38 +0100
+Date: Thu, 21 Feb 2019 12:21:38 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: Prevent Nand page writes on Power failure
+Message-ID: <20190221112138.i5cqclnlpsjnms7y@pengutronix.de>
+References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
+ <20190221091055.266b9627@collabora.com>
+ <20190221101747.zbznw2mdf7p7rcy4@pengutronix.de>
+ <20190221113646.6d4eccf1@collabora.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190221113646.6d4eccf1@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:42:06 up 9 days, 19:07, 70 users, load average: 0.24, 0.19, 0.21
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_031907_344457_4CBB3D72 
-X-CRM114-Status: GOOD (  11.65  )
+X-CRM114-CacheID: sfid-20190221_032141_240309_BA04DA72 
+X-CRM114-Status: GOOD (  23.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,37 +84,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
- Richard Weinberger <richard@nod.at>,
- Schrempf Frieder <frieder.schrempf@kontron.de>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Feb 2019 11:01:54 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> These OOB layouts are generic to all NAND chips, the should not be
-> restricted to be used only by raw NAND controller drivers. They might
-> later be used by generic ECC engines and SPI-NAND devices as well.
+On Thu, Feb 21, 2019 at 11:36:46AM +0100, Boris Brezillon wrote:
+> On Thu, 21 Feb 2019 11:17:47 +0100
+> Sascha Hauer <s.hauer@pengutronix.de> wrote:
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/core.c             | 161 ++++++++++++++++++++++++++++
+> > Hi Boris,
+> > 
+> > On Thu, Feb 21, 2019 at 09:10:55AM +0100, Boris Brezillon wrote:
+> > > Hi Sascha,
+> > > 
+> > > On Wed, 20 Feb 2019 14:58:20 +0100
+> > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> > >   
+> > > > Hi All,
+> > > > 
+> > > > I have hardware here for which the normal way to turn off is just to cut
+> > > > the power. When the powercut happens during a NAND page write then we
+> > > > get more or less completely written pages during next boot. Very rarely
+> > > > it seems to happen that such a half written page with only very few
+> > > > flipped bits is erroneously detected as empty and written again which
+> > > > then results in ECC errors when reading the data.  
+> > > 
+> > > This should definitely be fixed, maybe by lowering the bitflip
+> > > threshold when doing the empty check. Do you know the ECC strength and
+> > > the number of bitflips you have when that problem occurs?  
+> > 
+> > The problem is that these half written pages do not seem to be very
+> > stable. It happens that the number of bitflips change with each read.
+> > I have seen pages which can be read sometimes and sometimes not. It
+> > really seems that half written pages must be avoided entirely.
+> 
+> But when they are correctly read, do you know how many bitflips they
+> have?
 
-Can we place those definitions in ecc.c instead of core.c
+Yes, I know this number, but as said, it varies when reading the same
+page again.
 
->  drivers/mtd/nand/raw/nand_base.c    | 161 +---------------------------
->  drivers/mtd/nand/raw/nand_toshiba.c |   2 +
->  include/linux/mtd/nand.h            |   4 +
->  include/linux/mtd/rawnand.h         |   3 -
->  5 files changed, 168 insertions(+), 163 deletions(-)
+> To be honest, I fear not all users will be able to be informed
+> that powercuts are about to happen, and we need a way to fix that for
+> everyone.
+
+If you want that I'm afraid we can't fix this on this level. You can't
+rely on the data when a powercut happens during write. It may look ok at
+first, but bitflips can develop later. I just found an interesting read
+here:
+https://www.datalight.com/blog/2017/03/08/enemy-of-nand-flash-memory/
+
+If you want to fix it for all users you have to track somehow which
+pages you have written last and discard the data or copy it to another
+block.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
