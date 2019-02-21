@@ -2,64 +2,82 @@ Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96278C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:46:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 521BFC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:49:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 665F12080F
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:46:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E1732084F
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 13:49:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Bblj05bO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 665F12080F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cHEvMI5/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GApEs4x8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E1732084F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MXEvbTq1IUER/ivzuzUgmiG/1JjsIh3zMfP7AocJdks=; b=Bblj05bO8aWYtK
-	WwEMPTQICqPh8Wh530GSmiCrn8Kz7odEG78A9ORPEdY7evPXLf3o2XFE0bANHI4jvQYn4b0EBkVR7
-	AhDBCl0Apiq5D81jzngQ2VpDXGK+eg0Uocp07O+V0jsuqE7IpOk65SCBwjiFka4Z1XHx9MOV6xL+j
-	WRI54Bgd4zt7X9BS7MZsrpkTzL3PtdPtfE8vuxO5r+wioH/PDIhpKoaVCbLA7SAUT4Q9IoO+wQf5z
-	/ya7Fe2DEdm4nGSS8hKmFg/xd60bWncZNJegi3BKS419+at1+yE+K2w4RGvtu7MqfJ6JCii+RPUHM
-	7viMW9ebWiDDh0SxV0vA==;
+	List-Owner; bh=DwtPYuzZSUgvBEaHCrgBczXNIucKM//QkFFhx8g52Ms=; b=cHEvMI5/0moMar
+	pnyxRznDWDya7ZV3UcBblYjXSTJPAs2FdCVn3nGPV1MA4PrK6b2/7M04VFg3N+QyNsjruNtW7lj6q
+	YZnCLOJ4LuCfwIOE+9NDDwk0gv//mcyXCO9MT656yDaHapv84iJ+qlVk8s1q4dS7AbZfN0YOJoQzr
+	Z7Kx7AXRetnGJcZty7CMpbfboC2FsaloihMIaUzM64fcMAx+0X9oxJlKONoIYg+4AIGG6ur+xPA9O
+	b8FF8X8Y5HzUMtKxh1783IPl1JDv16GjQgrXOj240uCka3+i3rGd/zxpYwt3RCDka0oXqcW4DJgYZ
+	wq0PqnTcXnZOXs7pbpIA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwogg-0006Eb-Fu; Thu, 21 Feb 2019 13:46:54 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1gwoik-0007It-Jz; Thu, 21 Feb 2019 13:49:02 +0000
+Received: from mail-it1-x143.google.com ([2607:f8b0:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwogV-00064x-5M; Thu, 21 Feb 2019 13:46:45 +0000
-X-Originating-IP: 90.88.23.190
-Received: from xps13 (aaubervilliers-681-1-81-190.w90-88.abo.wanadoo.fr
- [90.88.23.190]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 4A14F4001F;
- Thu, 21 Feb 2019 13:46:39 +0000 (UTC)
-Date: Thu, 21 Feb 2019 14:46:38 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [RFC PATCH 17/27] mtd: nand: ecc: Let the software Hamming ECC
- engine be unselected
-Message-ID: <20190221144638.5f3ee481@xps13>
-In-Reply-To: <20190221144148.6313d2ba@kernel.org>
-References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
- <20190221125806.28875-5-miquel.raynal@bootlin.com>
- <20190221142002.5a160f87@kernel.org>
- <20190221143539.65035bfa@xps13>
- <20190221144148.6313d2ba@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1gwoih-0007IO-3P; Thu, 21 Feb 2019 13:49:00 +0000
+Received: by mail-it1-x143.google.com with SMTP id i2so22828975ite.5;
+ Thu, 21 Feb 2019 05:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=PVDwraPMuK128R4L9+QhmYly3JI7tJ6lX5ehsk36Uqg=;
+ b=GApEs4x8iCt0AU5nxvw5PpHnIe5HPwW3TJFZOgiZGe+OuTHi9jzsWx42UmFZiGJtBH
+ qwu5Q8oiFygNgZetfxeP3GYbuIBV/o/jl6eFVxYcMtJuipkB6iyM8j7DE5cQRDzCCWSK
+ 6xdtBA4FjCAPqS+SOL0pG4j/nLgRVwhyGOa7K5cxKLie6S7dZ0H3hsNnNypYy6PWleo3
+ R4ziauQtJfdTbFd+rVy+cfj23saVxUPJ5QGtSeTY03Uf96hGYJ/oqORIhiZBVunjU56V
+ Ry13COsryK0O2DDNTktsopK44eZCVE3Klo7rEmDkcKbS2J5qU1nA+mPX0jKjkDI7kl21
+ FwJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=PVDwraPMuK128R4L9+QhmYly3JI7tJ6lX5ehsk36Uqg=;
+ b=U58i6Q5fHNCY/y6qKy5dJjUQj3mNz4ozrJkENsnPdP9AUCvk9SkQldK/OcJq529Z45
+ KwmO9SRg5NWvKwOg2J3IyowQtP5gmQAByCkX6E3zxx8AJYUo0kLFCxXRZeMjlcpaw9W1
+ /zeafdxDDunKVADg8JTQQUEayzBp4TdKJeGaJrbsAHfeF/TDFol5pXbNzes352s3Qexi
+ CoiwNOhfE/wH5B2RH95Oto+BXpDDXP7jZ9FPC/OQFZX6OgII2zOF7+50TOWKA5FsjeSF
+ hgoChNvR8l7BM0mLrGorMpd3W/j397J7FW/PMT5u8pcObMCsV5j5csi14ShhrhgSOv3O
+ GF3Q==
+X-Gm-Message-State: AHQUAubeKjQNxpE4GZWKc6x6uAKXvHoVOlFZpZ41WZxNQaCFIdX2/jzm
+ 2AsyRdC4Ma9/rEEFtkjOFg3aqYevOAN4rIrLNyQ=
+X-Google-Smtp-Source: AHgI3IZt1XMvCF1DAEUjEINeZr1UH3ga6FuCMW11CpyNO/1clOAqjaXEp/EKrpvXRTFH/OOT7KkaLot6ReWO1BQ6wV4=
+X-Received: by 2002:a02:9f19:: with SMTP id z25mr1972490jal.3.1550756937998;
+ Thu, 21 Feb 2019 05:48:57 -0800 (PST)
 MIME-Version: 1.0
+References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
+ <20190221125806.28875-4-miquel.raynal@bootlin.com>
+In-Reply-To: <20190221125806.28875-4-miquel.raynal@bootlin.com>
+From: Adam Ford <aford173@gmail.com>
+Date: Thu, 21 Feb 2019 07:48:46 -0600
+Message-ID: <CAHCN7xJhoEAjPchpp=-zEyyK1Ggzt24aQAX9ujfavdP329+ouw@mail.gmail.com>
+Subject: Re: [RFC PATCH 16/27] mtd: nand: ecc: Let the software BCH ECC engine
+ be a module
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_054643_509620_FA5B56DC 
-X-CRM114-Status: GOOD (  25.18  )
+X-CRM114-CacheID: sfid-20190221_054859_178609_DB5303FC 
+X-CRM114-Status: GOOD (  20.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -73,65 +91,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
- Richard Weinberger <richard@nod.at>,
+ Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
  Schrempf Frieder <frieder.schrempf@kontron.de>,
  Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ David Woodhouse <dwmw2@infradead.org>,
+ arm-soc <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJicmV6aWxsb25Aa2VybmVsLm9yZz4gd3JvdGUg
-b24gVGh1LCAyMSBGZWIgMjAxOQoxNDo0MTo0OCArMDEwMDoKCj4gT24gVGh1LCAyMSBGZWIgMjAx
-OSAxNDozNTozOSArMDEwMAo+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
-b20+IHdyb3RlOgo+IAo+ID4gSGkgQm9yaXMsCj4gPiAKPiA+IEJvcmlzIEJyZXppbGxvbiA8YmJy
-ZXppbGxvbkBrZXJuZWwub3JnPiB3cm90ZSBvbiBUaHUsIDIxIEZlYiAyMDE5Cj4gPiAxNDoyMDow
-MiArMDEwMDoKPiA+ICAgCj4gPiA+IE9uIFRodSwgMjEgRmViIDIwMTkgMTM6NTc6NTYgKzAxMDAK
-PiA+ID4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4g
-PiA+ICAgICAKPiA+ID4gPiBUaGVyZSBpcyBubyByZWFzb24gdG8gYWx3YXlzIGVtYmVkIHRoZSBz
-b2Z0d2FyZSBIYW1taW5nIEVDQyBlbmdpbmUKPiA+ID4gPiBpbXBsZW1lbnRhdGlvbi4gQnkgZGVm
-YXVsdCBpdCBpcywgYnV0IHdlIGNhbiBsZXQgdGhlIHVzZXIgZGVjaWRlLgo+ID4gPiA+IAo+ID4g
-PiA+IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
-b20+Cj4gPiA+ID4gLS0tCj4gPiA+ID4gIGRyaXZlcnMvbXRkL25hbmQvZWNjL0tjb25maWcgICAg
-ICAgICAgICAgICB8IDEwICsrKysrLQo+ID4gPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29u
-ZmlnICAgICAgICAgICAgICAgfCAgMiArLQo+ID4gPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9uYW5k
-LXN3LWhhbW1pbmctZW5naW5lLmggfCAzOCArKysrKysrKysrKysrKysrKysrKysrCj4gPiA+ID4g
-IDMgZmlsZXMgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiA+ID4g
-PiAKPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9lY2MvS2NvbmZpZyBiL2Ry
-aXZlcnMvbXRkL25hbmQvZWNjL0tjb25maWcKPiA+ID4gPiBpbmRleCBlMDEwNmIzYTdlYzEuLmZm
-MjBlNjIxZmZlZiAxMDA2NDQKPiA+ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL2VjYy9LY29u
-ZmlnCj4gPiA+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9lY2MvS2NvbmZpZwo+ID4gPiA+IEBA
-IC0xLDcgKzEsMTUgQEAKPiA+ID4gPiAgbWVudSAiRUNDIGVuZ2luZSBzdXBwb3J0Igo+ID4gPiA+
-ICAKPiA+ID4gPiAgY29uZmlnIE1URF9OQU5EX0VDQ19TV19IQU1NSU5HCj4gPiA+ID4gLQl0cmlz
-dGF0ZQo+ID4gPiA+ICsJdHJpc3RhdGUgIlNvZnR3YXJlIEhhbW1pbmcgRUNDIGVuZ2luZSIKPiA+
-ID4gPiArCWRlZmF1bHQgeSAgICAgIAo+ID4gPiAKPiA+ID4gU2FtZSBhcyBmb3IgdGhlIE5BTkRf
-Q09SRSBzdHVmZiwgbGV0IHVzZXJzIHRoaXMgb3B0aW9uIHdoZW4gdGhleSBuZWVkCj4gPiA+IGl0
-IGluc3RlYWQgb2YgaGF2aW5nIGEgImRlZmF1bHQgeSIuIEhhdmVuJ3QgbWFkZSBteSBtaW5kIHll
-dCBvbiB3aGV0aGVyCj4gPiA+IHRoaXMgb3B0aW9uIHNob3VsZCBiZSB2aXNpYmxlIHRvIHVzZXJz
-IG9yIG5vdC4gSSBndWVzcyBpdCBjb3VsZCBiZSB3aXRoCj4gPiA+IHRoZSBuZXcgaW5mcmFzdHJ1
-Y3R1cmUsIGJ1dCBpdCdzIHByb2JhYmx5IHRvbyBlYXJseSBpbiB0aGUgcGF0Y2ggc2VyaWVzCj4g
-PiA+IHRvIGNoYW5nZSB0aGF0LiAgICAKPiA+IAo+ID4gVGhpcyBvbmUgaXMgZGlmZmVyZW50Lgo+
-ID4gCj4gPiBCZWZvcmUgdGhlIHNlcmllczogdGhlIHNvZnR3YXJlIEhhbW1pbmcgRUNDIGFsZ29y
-aXRobSBpcyBwYXJ0IG9mIHRoZQo+ID4gJ05BTkQgcGFja2FnZScuIFRoZXJlIGlzIG5vIHdheSB0
-byBpZ25vcmUgaXQsIGl0ICp3aWxsKiBiZSBwYXJ0IG9mIHlvdXIKPiA+IGJpbmFyeSAob3IgbW9k
-dWxlKS4KPiA+IAo+ID4gQWZ0ZXIgdGhlIHNlcmllczogSSBqdXN0IGdpdmUgdGhlIHVzZXIgdGhl
-IHBvc3NpYmlsaXR5IHRvIGRlc2VsZWN0Cj4gPiB0aGlzIG9wdGlvbi4gQnV0IGhhdmluZyAnZGVm
-YXVsdCB5JyBpcyBtYW5kYXRvcnkgaGVyZSB0byBhdm9pZCBicmVha2luZwo+ID4gY3VycmVudCBk
-ZWZjb25maWdzLiAgCj4gCj4gT2theSwgdGhlbiBtYXliZQo+IAo+IAlkZWZhdWx0IHkgaWYgTVRE
-X1JBV19OQU5ECgpSaWdodCwgdGhpcyBpcyBtb3JlIGFjY3VyYXRlLgoKPiAKPiBBbmQgSSB0aGlu
-ayB5b3Ugc2hvdWxkIHNlbGVjdCB0aGUgb3B0aW9uIGluIE1URF9OQU5EX05ERkMgaW5zdGVhZCBv
-Zgo+IGFkZGluZyBhIGRlcGVuZHMgb24uIAoKQWNrLgoKPiAKPiA+ICAgCj4gPiA+ICAgICAKPiA+
-ID4gPiArCWhlbHAKPiA+ID4gPiArCSAgVGhpcyBlbmFibGVzIHN1cHBvcnQgZm9yIHNvZnR3YXJl
-IEhhbW1pbmcgZXJyb3IKPiA+ID4gPiArCSAgY29ycmVjdGlvbi4gVGhpcyBjb3JyZWN0aW9uIGNh
-biBjb3JyZWN0IHVwIHRvIDEgYml0IGVycm9yCj4gPiA+ID4gKwkgIHBlciBjaHVuayBhbmQgZGV0
-ZWN0IHVwIHRvIDIgYml0IGVycm9ycy4gV2hpbGUgaXQgdXNlZCB0byBiZQo+ID4gPiA+ICsJICB3
-aWRlbHkgdXNlZCB3aXRoIG9sZCBwYXJ0cywgbmV3ZXIgTkFORCBjaGlwcyB1c3VhbGx5IHJlcXVp
-cmUKPiA+ID4gPiArCSAgbW9yZSBzdHJlbmd0aCBjb3JyZWN0aW9uIGFuZCBpbiB0aGlzIGNhc2Ug
-QkNIIG9yIFJTIHdpbGwgYmUKPiA+ID4gPiArCSAgcHJlZmVycmVkLgo+ID4gPiA+ICAgICAgICAK
-PiA+IAo+ID4gCj4gPiBUaGFua3MsCj4gPiBNaXF1w6hsICAKPiAKCgoKClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Thu, Feb 21, 2019 at 6:58 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> There is no reason to prevent the software BCH ECC engine
+> implementation to be compiled as a module, so change the 'bool' into a
+> 'tristate'.
+
+If you're booting from nand and need the BCH engine, it seems to me
+like you'd need it to be compiled into the kernel because you'd have
+to mount the filesystem before loading the module unless you have a
+initramfs.  If you need the BCH engine to mount the filesystem, it
+creates a dependency issue.
+
+Just my two cents.
+
+adam
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/ecc/Kconfig           | 2 +-
+>  include/linux/mtd/nand-sw-bch-engine.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/ecc/Kconfig b/drivers/mtd/nand/ecc/Kconfig
+> index 6ce9007e1d9b..e0106b3a7ec1 100644
+> --- a/drivers/mtd/nand/ecc/Kconfig
+> +++ b/drivers/mtd/nand/ecc/Kconfig
+> @@ -12,7 +12,7 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
+>           The original Linux implementation had byte 0 and 1 swapped.
+>
+>  config MTD_NAND_ECC_SW_BCH
+> -       bool "Software BCH ECC engine"
+> +       tristate "Software BCH ECC engine"
+>         select BCH
+>         default n
+>         help
+> diff --git a/include/linux/mtd/nand-sw-bch-engine.h b/include/linux/mtd/nand-sw-bch-engine.h
+> index d8abfc9fc288..5d0b98e34a3a 100644
+> --- a/include/linux/mtd/nand-sw-bch-engine.h
+> +++ b/include/linux/mtd/nand-sw-bch-engine.h
+> @@ -33,7 +33,7 @@ struct ecc_sw_bch_conf {
+>         unsigned char *eccmask;
+>  };
+>
+> -#if defined(CONFIG_MTD_NAND_ECC_SW_BCH)
+> +#if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_BCH)
+>
+>  int ecc_sw_bch_calculate(struct nand_device *nand, const unsigned char *buf,
+>                          unsigned char *code);
+> --
+> 2.19.1
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
