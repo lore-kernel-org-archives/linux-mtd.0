@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8EC4C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BEAAC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96A202086A
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AB1E2086A
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 07:59:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E2c4V/G5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96A202086A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="idBH1QGt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AB1E2086A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KDUTkVYW8VEETWbP8q76RV7zyqY2p/pF0miAZATvSg0=; b=E2c4V/G57intpu
-	z2TBgMXQX8ZulzbCV5UZFzLPBlblNDNGb+QTbaDB9nafrJaCi6a1nrrMlLXdocPGegoBSVrEnTeNZ
-	wkJvv7GrpYBmFtEg41ehWq7/j/4eftlkQ7nj99JPr8+1a07Jo2n8Qw6gXjFgaskjuZ+8RttZ4+yVH
-	nicjvKl22vsDwIZ8V8KXZ6DVTSG27ZolRlT7z+bsZqfzRjFXWa+zaOzsY2NytNCd84xaG8CAxSE+Q
-	ukUFaQXofAwgUZaH1wx1sAuVcUVwvgS92wxZf7J6DvE38s+lI9o+kaGWMKKoELHWdGDuw6aZUaZFG
-	VUFow8L5wNVnttO6ZhqA==;
+	List-Owner; bh=cbQXGPn4THsqRqiE7dIlDsggLhg3FeRwCngqsoBW0wo=; b=idBH1QGt82XHFj
+	3HTx19NKGzNtp1WKbzTvPshnx6FEzJ6RTBlNMtJJFyrNRCDVODEsx4PguaLyK9D4aUmaM3x6uznJH
+	3izmF+sXH2gZ7hE8jEvuqAOU/VCWOrXRHrlJj57DWtzsWZm60Ikvltm60zn2/uikLslU2LlrOofJK
+	I7NXxBzO2vppH2rGJvy2hj39kHsDcpU2qsK5vDy0d6F5Py34dxcXvhUXIr+xuqkslYsnOmhnA1BrH
+	C4BnUFB2sM1pmqL34xytbthUYEsTKQ583F/q0Kkj92zx3hEBs15rCOt5ZNRwYVCqdbQgwRXJQsSkG
+	QLOzAtF9oco64ji1Hbyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwjGc-000591-4g; Thu, 21 Feb 2019 07:59:38 +0000
+	id 1gwjGm-0005VZ-IW; Thu, 21 Feb 2019 07:59:48 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwjGJ-0004bn-Mo
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 07:59:25 +0000
+ id 1gwjGP-0004lo-K5
+ for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 07:59:28 +0000
 Received: from localhost.localdomain (unknown
  [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 39ECB27F823;
- Thu, 21 Feb 2019 07:59:18 +0000 (GMT)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2575A27F89F;
+ Thu, 21 Feb 2019 07:59:24 +0000 (GMT)
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Schrempf Frieder <frieder.schrempf@kontron.de>,
  "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [v2,2/2] mtd: spi-nor: Add support for MX25V8035F
-Date: Thu, 21 Feb 2019 08:59:16 +0100
-Message-Id: <20190221075916.3631-1-boris.brezillon@collabora.com>
+Subject: Re: [v2,1/2] mtd: spi-nor: Add support for EN25Q80A
+Date: Thu, 21 Feb 2019 08:59:21 +0100
+Message-Id: <20190221075921.3691-1-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190218120421.5034-2-frieder.schrempf@kontron.de>
+In-Reply-To: <20190218120421.5034-1-frieder.schrempf@kontron.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: e36bb65e5d0cf3233d4da6af4a03d802af51a376
+X-linux-mtd-patch-commit: 08326d8a9472c0bb98f0ba455c6d781951530dc1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190220_235920_444363_0BE72547 
-X-CRM114-Status: UNSURE (   9.76  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190220_235925_974480_0962C47D 
+X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,8 +87,9 @@ From: Boris Brezillon <bbrezillon@kernel.org>
 On Mon, 2019-02-18 at 12:04:43 UTC, Schrempf Frieder wrote:
 > From: Frieder Schrempf <frieder.schrempf@kontron.de>
 > 
-> This adds support for the Macronix MX25V8035F, a 8Mb SPI NOR chip.
-> It is used on i.MX6UL/ULL SoMs by Kontron Electronics GmbH (N631x).
+> This adds support for the EON EN25Q80A, a 8Mb SPI NOR chip.
+> It is used on i.MX6 boards by Kontron Electronics GmbH
+> (N60xx, N61xx).
 > It was only tested with a single data line connected, by writing and
 > reading random data with dd.
 > 
