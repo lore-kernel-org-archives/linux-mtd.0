@@ -1,83 +1,87 @@
-Return-Path: <SRS0=HEdT=Q4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=6jNp=Q5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9695DC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 20:59:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DF03C43381
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Feb 2019 05:58:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64828206B6
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Feb 2019 20:59:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54F2220823
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Feb 2019 05:58:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WtU+eKVy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a73TWtFB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64828206B6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ln9UseAH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EonOr0sj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54F2220823
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yJYJkpGnckxyawMJJn3GhFLSmEK+2xc7SU1yI56X4gk=; b=WtU+eKVy64G3DP
-	X5Y4K5rxOYogxdNA1IuhWjk1eig3/DgBXls+xWVmT/IPCIm/ZHM6ygNqt+AtZf539BcFo7aUY+D8T
-	26vaujVz/i25liPzSzevkvJx1QBWudHUmgVJTsik+DBelFy47FFrHlF4pxZ+1Ma/Ym857Mz3RS50A
-	m5WrSB/cDsJOX8+UJshEmQlx5LHQy/GfZmnH85ud3iRDRyT68KU+o8jv9hTYKqLQY2QT7Qtwj9FEq
-	zDWeGNGtPpCpZm0RqZc+MCuCpE/nnqwS1/K/ZPN++moPzK3ydhqzIglTYhH+3HkINSke1ipLpghQN
-	foQmTYDlYyqCWvnePhYg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=dqNF60zOKTvFIMlU+SR0/yb5w8ttr5KqO615AZpPwnc=; b=Ln9UseAHPJleaL
+	FTl6oHCxIpqEG7hwhhm/5JH0qUASw92oCHz1xCugr+NXmma8VGSPLU4j3n2Cd/7Oc+iqwjuYfntz6
+	tVv/EnaXS5Bs0fQbBXNJnyZ/sfPkP3bq5Un4jz0jYOuuHmVZptOuYV7wOOcV0VAA7JLmyVhjSFP1I
+	2qH/VdtROvDJzfpB8BX1DHO/5lMeLJKdRQxLeU7ZGmoBTk3q8KD81XsoTkevC3Bnyzec/mb9zEGlR
+	aE0x19iFcb+TcuYGbkAgAnMHGWlYRl0fm3SeNKFiq3As+LSQyZqGu6TA00e4R3nakFAXB+Opk904h
+	6mv9Av5Nm0jM+76HxNMA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gwvQv-0000P1-Ip; Thu, 21 Feb 2019 20:59:05 +0000
-Received: from mail-qk1-x744.google.com ([2607:f8b0:4864:20::744])
+	id 1gx3qq-0001oM-4b; Fri, 22 Feb 2019 05:58:24 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gwvQs-0000Nb-8d
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2019 20:59:03 +0000
-Received: by mail-qk1-x744.google.com with SMTP id z13so7642qki.2
- for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2019 12:59:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=5HsirSaHgF3nrHLdsnlGzjR+XNKpSzn5MWdsXjHuCW8=;
- b=a73TWtFB23q7YILKBQK6H3cNILUIRSrXiZqFLyL0ZAo1023eRTxXAaVETCI9CMyEW0
- rJArQNgXojK0TGiog3oJk58B80cOgu3O63+7Zk28yxD+OEvUqs+UsXwfh/oyRK5w/v7b
- W/0XtfWHOzI7xJJBKWjQ79Gj8dU83olkiS0h/EATZyLvXbXQQXZ8tGJNrjua51OZ1T5d
- J99+2mxglYWTc2hBqqmf7x5zdLtEbHrIibqgNw2hgxuZkA0YkyDf1MPPr/YPXebghnql
- OVvxKkDwcur1Wjb+tMkfr0vzWLBjet4NPDnNIGTqdPh12E3Hg0Ev2fE0/G3WHzmPKhsN
- lDGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=5HsirSaHgF3nrHLdsnlGzjR+XNKpSzn5MWdsXjHuCW8=;
- b=RTCPNnlZbq7hAk8ypAYRkAt0o4ukYuV2LXJyywb/g620Ac/rwsqhoqP+pNPWLj7olj
- H3pLwtgBOf6C+nCNx6NXJgpY7ZKMcVHbBztxh7mVQVA9AfoRUXO2K3GMjSnepCO8yCe2
- Loiuv75DD2yqye9JIBqt4/Hb+mzN7fChgLtGoYh3xvuV+QavX6i5NbDZYR7IyTchEFEB
- v6WliyTiBFp+HZDIj5Dm1i9m+NYA1cAcyZPBYJcf75NpH+9HmCU2RyjsLacf3d9XzqGs
- g4uGe1d9bh6byQnJPJ6p1E+ExvEW9RTByvU5bDI0IjOp7UFPKroqy07OaBhZf+6SUjHZ
- FyHg==
-X-Gm-Message-State: AHQUAuZ5YUJ33ZO8NrkpJVR00iwgEHmNMLN1nb2idSa5ClnTh63ibmTT
- gMnq3vYzqHWv3y9vjgBCLGOXAK+tEKeynSjgjTg=
-X-Google-Smtp-Source: AHgI3IYnrl6/w7gDDnXr3YQYGShHPAHMWAMRjqVkY18kuiRzm1xHl63g49lUDUWBqxkEB8g5WDKn26avTfAmC2bed5Q=
-X-Received: by 2002:a37:c403:: with SMTP id d3mr421649qki.54.1550782739144;
- Thu, 21 Feb 2019 12:58:59 -0800 (PST)
+ id 1gx3qn-0001o1-0c
+ for linux-mtd@lists.infradead.org; Fri, 22 Feb 2019 05:58:22 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x1M5vo3m111502;
+ Thu, 21 Feb 2019 23:57:50 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1550815070;
+ bh=NoppK0cXQU2yGt/UWUVX9GymC+SOG6254eUSduksSxs=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=EonOr0sjdtil7a4hR2AsUEyHlnTs5zhDXoOCqBp/dwzFL21GVBcsprNIT/LJs8PwB
+ sufWpDyOwPyjdVaWyvccRF5WJB8Yz4EYm+80LxDMZuoS4Ol/Dc0g2nORQbUgrdzFvR
+ 1rf1O76WJCAm+SDuJ7dTcvCA2exHH20hROKxk0xM=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x1M5voVh053593
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 21 Feb 2019 23:57:50 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Thu, 21
+ Feb 2019 23:57:49 -0600
+Received: from dlep32.itg.ti.com (157.170.170.100) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
+ Thu, 21 Feb 2019 23:57:49 -0600
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dlep32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x1M5vjBe032262;
+ Thu, 21 Feb 2019 23:57:46 -0600
+Subject: Re: [PATCH v2] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
+To: Liu Jian <liujian56@huawei.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <bbrezillon@kernel.org>,
+ <marek.vasut@gmail.com>, <richard@nod.at>,
+ <joakim.tjernlund@infinera.com>, <ikegami@allied-telesis.co.jp>,
+ <keescook@chromium.org>
+References: <1550609234-40861-1-git-send-email-liujian56@huawei.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <e9923a1f-aefc-fdd9-97d8-5c0012f09726@ti.com>
+Date: Fri, 22 Feb 2019 11:28:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-References: <20190214205723.9011-1-robimarko@gmail.com>
- <97e48e85-9700-53e3-0f7a-eeac6f93f721@microchip.com>
-In-Reply-To: <97e48e85-9700-53e3-0f7a-eeac6f93f721@microchip.com>
-From: Robert Marko <robimarko@gmail.com>
-Date: Thu, 21 Feb 2019 21:58:47 +0100
-Message-ID: <CAOX2RU5MsnNLseBRqcp1KqbmQ+5_KzRyTQ_rGQB2DsrW_v-3iA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Add Winbond w25q16jv support
-To: Tudor.Ambarus@microchip.com
+In-Reply-To: <1550609234-40861-1-git-send-email-liujian56@huawei.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190221_125902_309674_192180C2 
-X-CRM114-Status: GOOD (  17.83  )
+X-CRM114-CacheID: sfid-20190221_215821_152125_3518C9D0 
+X-CRM114-Status: GOOD (  19.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,57 +93,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, richard@nod.at, linux-kernel@vger.kernel.org,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Feb 2019 at 21:29, <Tudor.Ambarus@microchip.com> wrote:>>
-Hi, Robert,>> On 02/14/2019 10:57 PM, Robert Marko wrote:> >
-Datasheet: https://www.winbond.com/resource-files/w25q16jv%20spi%20revg%2003222018%20plus.pdf>
->> > Testing done on Mikrotik Routerboard RB450Gx4 board under 4.19.19
-kernel.>> It is preferable to do the test on spi-nor/nextUnfortunately
-I cant do that as OpenWrt has a considerable amount of patches that
-would need to be ported and we are only moving from LTS to LTS version
-and we are currently on 4.19.
-> >
-> > Test board does not support Dual or Quad modes.
-> >
-> > Signed-off-by: Robert Marko <robimarko@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index 6e13bbd1aaa5..0e958f48db1b 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -1975,6 +1975,11 @@ static const struct flash_info spi_nor_ids[] = {
-> >                       SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> >                       SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-> >       },
-> > +     {
-> > +             "w25q16jv", INFO(0xef7015, 0, 64 * 1024,  32,
-> > +                     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> > +                     SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->
-> You'll need a way to differentiate between W25Q16JV-IQ/JQ and W25Q16JV-IM/JM.
-Hm, from what I understood JV is the series and suffix only indictes
-the package.
-They should all have the same JEDEC ID and features.
->
-> And I would prefer to have the new entries ordered alphabetically as much as
-> possible. This one should fit just before w25q20cl. Manufacturers are naming
-> flashes based on a product identification system. The flashes are presented in
-> alphabetical order, we should do the same.
-I agree, will reorder and send a v2.
->
-> Cheers,
-> ta
+
+
+On 20/02/19 2:17 AM, Liu Jian wrote:
+> In function do_write_buffer(), in the for loop, there is a case
+> chip_ready() returns 1 while chip_good() returns 0, so it never
+> break the loop.
+> To fix this, chip_good() is enough and it should timeout if it stay
+> bad for a while.
+> 
+> Fixes: dfeae1073583 ("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+> Signed-off-by: Yi Huaijie <yihuaijie@huawei.com>
+> Signed-off-by: Liu Jian <liujian56@huawei.com>
+> Reviewed-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
+> ---
+> v1->v2:
+> change git log, put the Fixes tag on a single line
+> 
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 72428b6..818e94b 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1876,14 +1876,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+>  			continue;
+>  		}
+>  
+> -		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+> -			break;
+> -
+>  		if (chip_good(map, adr, datum)) {
+>  			xip_enable(map, chip, adr);
+>  			goto op_done;
+>  		}
+>  
+> +		if (time_after(jiffies, timeo))
+> +			break;
+> +
+
+It is quite possible that this thread might be pre-empted just after
+chip_good() check but before before time_after(). If the thread, then
+resumes execution after timeo has elasped then, this code will wrongly
+indicate write failure.
+
+To avoid this case, you should add one more check for check_good() even
+when time_after() returns true. Something like:
+
+	if (time_after(jiffies, timeo)) {
+		if (chip_good(map, adr, datum)) {
+			xip_enable(map, chip, adr);
+			goto op_done;
+		}
+		break;
+	}
+
+
+
+>  		/* Latency issues. Drop the lock, wait a while and retry */
+>  		UDELAY(map, chip, adr, 1);
+>  	}
+> 
+
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
