@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15C24C43381
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Feb 2019 14:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D8C6C43381
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Feb 2019 14:39:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D96742075A
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Feb 2019 14:33:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D2C352075A
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Feb 2019 14:39:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aNBJfxTx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pfgC9JOb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D96742075A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eLtKUtsJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mVbysrqn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2C352075A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,44 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uzAshk7+HJIp/wZFLaNNlH/OHt5g/fa0NIQDAbCyaRQ=; b=aNBJfxTx/Ty+zz
-	wbKFU7fgcNxaAQ0pGbNGYHBuk8RjTQKyKqUSAmDgnWpWGmOf0X4wT6eDcM55W5+5noCuO4a+cfZxh
-	6cUSM3nMuKwJ0uaP+tjp1BScQ4M13sbjCkv+W595U49DagUP/ecjvi2st29hAQYJ/E7oj1CG8k8dY
-	Q9t4nRiTtnW1dgFOL2xHgZEym+3FChiLOhEH09ClIWZwprigiVqzShvptaEnNj8FmmYUer5cQLOEp
-	bGjF8/FZyq5GwJXXbSzwZQBBc35zizUqEaPcQr7TVs0BcYVosNN/Y7nunLhRJWT4Pg8z873fdQ+io
-	1OTuY4pM96g42Z6qFHQw==;
+	List-Owner; bh=y+J0HqLk1z+fmDKLwqBHgKx0QR8QnqclY9/5sZ/J9Rw=; b=eLtKUtsJsTptQc
+	fG/33rjjjvRnGOu4IBgQPtdJWZZE8tPiKiE1JRfpLNW1q3DWmxERatraw1/zuT3dOFOkxD6KxAk6g
+	U0J/XfLud0FxtyTh57KZJPfHMf88AaU4ZBoNgzXwyur2QTEyCGp/YdcjlXFaLiwOEyTrsXamyXS+3
+	jLldlutpxEi8QO1MnWVwqfVL0smKzxqllf1S0oKwsOW4qc82fyjj+jpAsaUiVigOcWxQZRhsncNdu
+	mO1aYPSj16sbdB2zeLhtcDKvAdMG4bI1O4dGfjLAGeL6MAzkQYxCNjIyhRTfixJWaRRG07lio3dqa
+	FCmdlf2p95QwpbPHwlBg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gxBtS-0008DB-55; Fri, 22 Feb 2019 14:33:38 +0000
+	id 1gxByn-0002vI-Fa; Fri, 22 Feb 2019 14:39:09 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gxBtJ-00084k-V6; Fri, 22 Feb 2019 14:33:31 +0000
+ id 1gxBye-0002mg-I9; Fri, 22 Feb 2019 14:39:02 +0000
 Received: from localhost (91-160-177-164.subs.proxad.net [91.160.177.164])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 576882075A;
- Fri, 22 Feb 2019 14:33:27 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E66C32075A;
+ Fri, 22 Feb 2019 14:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1550846009;
- bh=GpzMJvdjSis+pRH/ZzBiCNAN+uefcqjeQgAH26klJFg=;
+ s=default; t=1550846340;
+ bh=zjinuR813AkGthV/dSUOKPEjfqFS2Hzi/KUrQT9O0Os=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=pfgC9JObBVIoJxZZEpHl/aF7wg/cJieJzX8qAI/kbftDMPrULjRrCiP3osVXXJHd+
- eGIjba3m1Nq5Sy4zZwaxa68Hvyte5KOAvRC23+huUkZkS8kA7Efshgp+y8rcm3/PAp
- iyOuE0pfu/AUFR0PnEInwyDHPBk1+rNkcy6Rs45g=
-Date: Fri, 22 Feb 2019 15:33:22 +0100
+ b=mVbysrqnDOioD+lRxLiXps2k+ztmvDk353SSMBnr4uzUHVUnN12t/aQWIroz6RKvO
+ 7W3yrwmj3vPpRXpddNymFofTK81YHYEUnfz3zl0YihOV+nPYYgE24mFRhAxAzs+ELC
+ iaTnq6/n5JM8tOESRF4sfbHV8buAMAKBT7TvxC9c=
+Date: Fri, 22 Feb 2019 15:38:53 +0100
 From: Boris Brezillon <bbrezillon@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [RFC PATCH 22/27] mtd: spinand: Let the SPI-NAND core flag a
- SPI-NAND chip
-Message-ID: <20190222153322.2c7a5fa3@kernel.org>
-In-Reply-To: <20190221125806.28875-10-miquel.raynal@bootlin.com>
+Subject: Re: [RFC PATCH 24/27] mtd: spinand: Instantiate a SPI-NAND on-die
+ ECC engine
+Message-ID: <20190222153853.3347b253@kernel.org>
+In-Reply-To: <20190221125806.28875-12-miquel.raynal@bootlin.com>
 References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
- <20190221125806.28875-10-miquel.raynal@bootlin.com>
+ <20190221125806.28875-12-miquel.raynal@bootlin.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190222_063330_034348_13397836 
-X-CRM114-Status: GOOD (  20.79  )
+X-CRM114-CacheID: sfid-20190222_063900_633445_6BC30191 
+X-CRM114-Status: GOOD (  22.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,68 +87,150 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 21 Feb 2019 13:58:01 +0100
+On Thu, 21 Feb 2019 13:58:03 +0100
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> As of today there is no way to make the distinction between a raw NAND
-> chip and a SPI-NAND chip. The ABI is stable and we cannot add a
-> "SPI-NAND" tag to the MTD type, but we can add a special SPINAND
-> capability to the flags instead. A helper is also provided to retrieve
-> if whether or not the chip is working over SPI or not.
-
-Why would we need a new cap or a new type? The user should only care
-about the class of device (NAND, NOR, SRAM, ...) and not the
-bus/protocol used to communicate with this device.
-
+> Make use of the existing functions taken from the SPI-NAND core to
+> instantiate an on-die ECC engine specific to the SPI-NAND core. The
+> next step will be to tweak the core to use this object instead of
+> calling the helpers directly.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  drivers/mtd/nand/core.c    | 2 +-
->  include/linux/mtd/mtd.h    | 5 +++++
->  include/uapi/mtd/mtd-abi.h | 1 +
->  3 files changed, 7 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/spi/on-die-ecc-engine.c   | 105 +++++++++++++++++++++
+
+Maybe on-die-ecc.c is enough. To be honest, given the amount of code,
+I'd even prefer to have this code directly in core.c.
+
+
+>  include/linux/mtd/nand-spi-on-die-engine.h |  35 +++++++
+
+Hm, let's make those defs part of the spinand.h file instead of
+creating a new one.
+
+
+>  include/linux/mtd/nand.h                   |   1 +
+>  3 files changed, 141 insertions(+)
+>  create mode 100644 include/linux/mtd/nand-spi-on-die-engine.h
 > 
-> diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-> index a76d206d233a..872d46b5fc0f 100644
-> --- a/drivers/mtd/nand/core.c
-> +++ b/drivers/mtd/nand/core.c
-> @@ -245,7 +245,7 @@ int nanddev_init(struct nand_device *nand, const struct nand_ops *ops,
+> diff --git a/drivers/mtd/nand/spi/on-die-ecc-engine.c b/drivers/mtd/nand/spi/on-die-ecc-engine.c
+> index 3d5b83238e14..515b9e3efc93 100644
+> --- a/drivers/mtd/nand/spi/on-die-ecc-engine.c
+> +++ b/drivers/mtd/nand/spi/on-die-ecc-engine.c
+> @@ -45,3 +45,108 @@ int spinand_check_ecc_status(struct spinand_device *spinand, u8 status)
 >  
->  	mtd->type = memorg->bits_per_cell == 1 ?
->  		    MTD_NANDFLASH : MTD_MLCNANDFLASH;
-> -	mtd->flags = MTD_CAP_NANDFLASH;
-> +	mtd->flags = MTD_SPINAND | MTD_CAP_NANDFLASH;
->  	mtd->erasesize = memorg->pagesize * memorg->pages_per_eraseblock;
->  	mtd->writesize = memorg->pagesize;
->  	mtd->writebufsize = memorg->pagesize;
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 677768b21a1d..7c245d109524 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -551,6 +551,11 @@ static inline int mtd_type_is_nand(const struct mtd_info *mtd)
->  	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
+>  	return -EINVAL;
 >  }
->  
-> +static inline int mtd_type_is_spinand(const struct mtd_info *mtd)
+> +
+> +static int spinand_noecc_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +				       struct mtd_oob_region *region)
 > +{
-> +	return mtd_type_is_nand(mtd) && (mtd->flags & MTD_SPINAND);
+> +	return -ERANGE;
 > +}
 > +
->  static inline int mtd_can_have_bb(const struct mtd_info *mtd)
->  {
->  	return !!mtd->_block_isbad;
-> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-> index aff5b5e59845..7c7124c88fe0 100644
-> --- a/include/uapi/mtd/mtd-abi.h
-> +++ b/include/uapi/mtd/mtd-abi.h
-> @@ -104,6 +104,7 @@ struct mtd_write_req {
->  #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
->  #define MTD_NO_ERASE		0x1000	/* No erase necessary */
->  #define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
-> +#define MTD_SPINAND		0x4000	/* Device works over SPI */
->  
->  /* Some common devices / combinations of capabilities */
->  #define MTD_CAP_ROM		0
+> +static int spinand_noecc_ooblayout_free(struct mtd_info *mtd, int section,
+> +					struct mtd_oob_region *region)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	/* Reserve 2 bytes for the BBM. */
+> +	region->offset = 2;
+> +	region->length = 62;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct mtd_ooblayout_ops spinand_noecc_ooblayout = {
+> +	.ecc = spinand_noecc_ooblayout_ecc,
+> +	.free = spinand_noecc_ooblayout_free,
+> +};
+> +
+> +static int ecc_spinand_ondie_init_ctx(struct nand_device *nand)
+> +{
+> +	struct spinand_device *spinand = nand_to_spinand(nand);
+> +	struct mtd_info *mtd = nanddev_to_mtd(nand);
+> +	struct ecc_sw_hamming_conf *engine_conf;
+> +
+> +	nand->ecc.ctx.conf.step_size = nand->ecc.requirements.step_size;
+> +	nand->ecc.ctx.conf.strength = nand->ecc.requirements.strength;
+> +
+> +	engine_conf = kzalloc(sizeof(*engine_conf), GFP_KERNEL);
+> +	if (!engine_conf)
+> +		return -ENOMEM;
+> +
+> +	nand->ecc.ctx.priv = engine_conf;
+> +
+> +	if (spinand->eccinfo.ooblayout)
+> +		mtd_set_ooblayout(mtd, spinand->eccinfo.ooblayout);
+> +	else
+> +		mtd_set_ooblayout(mtd, &spinand_noecc_ooblayout);
+> +
+> +	return 0;
+> +}
+> +
+> +static void ecc_spinand_ondie_cleanup_ctx(struct nand_device *nand)
+> +{
+> +	kfree(nand->ecc.ctx.priv);
+> +}
+> +
+> +static int ecc_spinand_ondie_prepare_io_req(struct nand_device *nand,
+> +					    struct nand_page_io_req *req,
+> +					    void *oobbuf)
+> +{
+> +	struct spinand_device *spinand = nand_to_spinand(nand);
+> +	bool enable = (req->mode != MTD_OPS_RAW);
+> +
+> +	/* Only enable or disable the engine */
+> +	return spinand_ecc_enable(spinand, enable);
+> +}
+> +
+> +static int ecc_spinand_ondie_finish_io_req(struct nand_device *nand,
+> +					   struct nand_page_io_req *req,
+> +					   void *oobbuf)
+> +{
+> +	struct ecc_spinand_ondie_conf *engine_conf = nand->ecc.ctx.priv;
+> +	struct spinand_device *spinand = nand_to_spinand(nand);
+> +
+> +	if (req->mode == MTD_OPS_RAW)
+> +		return 0;
+> +
+> +	/* Nothing to do when finishing a page write */
+> +	if (req->type == NAND_PAGE_WRITE)
+> +		return 0;
+> +
+> +	/* Finish a page write: check the status, report errors/bitflips */
+> +	return spinand_check_ecc_status(spinand, engine_conf->status);
+> +}
+> +
+> +static struct nand_ecc_engine_ops spinand_ondie_engine_ops = {
+> +	.init_ctx = ecc_spinand_ondie_init_ctx,
+> +	.cleanup_ctx = ecc_spinand_ondie_cleanup_ctx,
+> +	.prepare_io_req = ecc_spinand_ondie_prepare_io_req,
+> +	.finish_io_req = ecc_spinand_ondie_finish_io_req,
+> +};
+> +
+> +static struct nand_ecc_engine spinand_ondie_engine = {
+> +	.ops = &spinand_ondie_engine_ops,
+> +};
+> +
+> +void spinand_ondie_ecc_save_status(struct nand_device *nand, u8 status)
+> +{
+> +	struct ecc_spinand_ondie_conf *engine_conf = nand->ecc.ctx.priv;
+> +
+> +	if (nand->ecc.engine == &spinand_ondie_engine && engine_conf)
+> +		engine_conf->status = status;
+> +}
+> +
+> +struct nand_ecc_engine *spinand_ondie_ecc_get_engine(void)
+> +{
+> +	return &spinand_ondie_engine;
+
+Hm, I was expecting to have one engine instance directly embedded in
+spinand_device. The ECC engine is not a global thing here, it's
+actually tied to the SPI NAND device itself.
+
+> +}
 
 
 ______________________________________________________
