@@ -4,103 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17013C10F0B
-	for <linux-mtd@archiver.kernel.org>; Sat, 23 Feb 2019 13:28:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE6AC43381
+	for <linux-mtd@archiver.kernel.org>; Sat, 23 Feb 2019 18:41:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCE57206B6
-	for <linux-mtd@archiver.kernel.org>; Sat, 23 Feb 2019 13:28:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F31A5206B6
+	for <linux-mtd@archiver.kernel.org>; Sat, 23 Feb 2019 18:41:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FN+EuKCm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ATPinG1a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCE57206B6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lu5Z/FEq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="qQGPVSJS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F31A5206B6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LH1+45VcI0sa+rSwWVMjiCTwJvioZxsf/KlNEn+WmEo=; b=FN+EuKCmR9rb6H
-	qxPcv3TLslqLtwH63O5kcpZeMYaW0oWgSIW5uAfclnExL9gjcakilPJFv9QFc7HX+lX/DfvxYKxWI
-	Dr/53S7ArHEbQuPKSAJny/L3MV4Cgywdrb0aD/WWUmjcRRGOSY7WJUDJL34tLAkBmME9xkHDZGARh
-	tO0BtYqsus8AxaMJege4Xb/S1uPwNg6EkUkptCRnukByWmTN7p87mKXVbYDf0yiPnLcglIVZOsVXx
-	BAMf3qO6EHa5ZJrxOMdUcW1YWC78LTn0rn8fDjAOo/MQmAfE4K3LW2hmEiBoX4GCMaN93mu2vxxJq
-	74C0oXSIKbnbRJph4i9w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=QlzGvZbZa2aL1pIEMLDJWLMIM6dEtwK9ZXQ6HW3ZbhE=; b=lu5Z/FEqgOOadz
+	P9iLS62UzOJ+ePiVmt6ShrQRUsaOewZrvg4uPvamnMzbP5RS9qwVhoZiVQMtj0G85w11ltxgHZ0Wo
+	FbNq5tRtnNxPhtLP4bKuNNej4Jp/Q8XT7wfFjgxN+TN/ytXHKQnTDGLNUzxUN/CMXpovjQWJXC6ib
+	MHxQap8Kp7h2zZfd817WG8vV2fnxx+UvESpgoBKFFgQCGAIksJcA3DMDEu4sLSPuvOiSq+uq8o1Oh
+	CCZGrJpOUZD/ykEaE3e3iyiwUVzNN/T6McA+h9LMFdc5SXm71xdGQQ3IbYBTsn1RdC+MY6K3MhCdu
+	8kZslHqZtIrBG/XQzMVw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gxXLk-0004iy-Mr; Sat, 23 Feb 2019 13:28:16 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1gxcEg-0006W5-RM; Sat, 23 Feb 2019 18:41:18 +0000
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gxXLb-0004PE-KO; Sat, 23 Feb 2019 13:28:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Transfer-Encoding:
- Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:
- From:Sender:Reply-To:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=ysFOEoBN0mDMPBnZTlVcBUz2nnDmzVvhwsfZHxcfqeo=; b=ATPinG1aNHYpVW5dDZ49NfD+Qm
- Sg2entMbAmhGukQALO7lA5WE8d0YBDAPrOLCOlRi9OO6wGVMxQPQeSrDW+I+OiFEy6+1FZiwVfSra
- LQumb479x2KjJKUiYaLX2oRWYa5k+AbTvT9NDs1FfGKGDTDbLwvVU+PrCynEswf9B3becidZpSZCz
- Whhz1G8OARtAlC7zzlxTThfIGs2HK/9MxmcK6Ar9KfDIx4cGuroa9+LaiTWB7TjNBSpTSDLwqLW5y
- 0Ccxa305GW1rc1372gzjOTnnaWuw1yMPE5rXkjb4WE2t/QXThJS+8MMksiUOKiu3kMiLqqYE42CjS
- FlR5kazA==;
-Received: from skedge03.snt-world.com ([91.208.41.68])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gxX8Y-0002DT-Vo; Sat, 23 Feb 2019 13:14:40 +0000
-Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by skedge03.snt-world.com (Postfix) with ESMTPS id 46F0F60B8EB;
- Sat, 23 Feb 2019 14:14:37 +0100 (CET)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail12r.snt-is.com
- (10.203.32.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Sat, 23 Feb
- 2019 14:14:36 +0100
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Sat, 23 Feb 2019 14:14:36 +0100
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Boris Brezillon
- <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Marek
- Vasut" <marek.vasut@gmail.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH 12/15] mtd: rawnand: Get rid of chip->bits_per_cell
-Thread-Topic: [PATCH 12/15] mtd: rawnand: Get rid of chip->bits_per_cell
-Thread-Index: AQHUycbfYc3tDmdZVE2S4Gchap3WLKXtTyEA
-Date: Sat, 23 Feb 2019 13:14:36 +0000
-Message-ID: <dee53576-f522-4ea7-5d67-94cdd609467f@kontron.de>
-References: <20190221091527.20497-1-miquel.raynal@bootlin.com>
- <20190221091527.20497-13-miquel.raynal@bootlin.com>
-In-Reply-To: <20190221091527.20497-13-miquel.raynal@bootlin.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.43]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <D2E52634A59DED4CAF5C28E4CA1F9017@snt-world.com>
+ id 1gxcEZ-0006VT-O3
+ for linux-mtd@lists.infradead.org; Sat, 23 Feb 2019 18:41:13 +0000
+Received: by mail-lf1-x143.google.com with SMTP id p1so4041724lfk.9
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Feb 2019 10:41:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Ea/okYVZ+pasABhX8qlXJFmI0/ViCB5RXJYFQ4QKyQ8=;
+ b=qQGPVSJSAqfeONRBIzytK56ICZobRATlVn/Z70qyMbVmnHMHcFRrlNDpEVqd8FfjhY
+ h4PVvKAHyh02k0MWtdLTPFhtuoBdEuIpqIXw/h3RAbilRCrDGlGRIKoPar9x+wVcmdVL
+ GD+LGagfNggkbnBBYPXR4l4w/mz5vL1zLSinEKhhU5Tl2VQhxHGg5dwp8SQUmt7Smibg
+ 6l/2IDM4l9ySYAuwXwrVykMfiK90IasXjTQKR44kRybD6uM5hOzoljFMeWq/VBzAWllb
+ 2Slid1UcuvRm5+oSVxEUv+Bi1uwR1qJ1B54Q1UwEz789W8Ao8nd88sVM3yaFa0V8niSf
+ Tpdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=Ea/okYVZ+pasABhX8qlXJFmI0/ViCB5RXJYFQ4QKyQ8=;
+ b=qOk7DIV3fO+pUB9G3hVyaorMhzC8TQO8TXbmnJF14seJnGWQ6TXLv4j4HmtTemr4Oc
+ fDDImgEQpd1cJzfr3fkGFOcn4cTa7ZbO9T+sH9K5Jtdv9UMS6i7RYUfqloexvKFTXnKU
+ QB6DjiQWAXCtgshI/kgOCphvQ4u8X4FBgiShCQgzKhoaHu1uyjYIXRH3yZH50SgUwgkZ
+ LyAnwodLt6WUVyJOo8Xucbio5ebaE3aI0BxKV8kPTKravm1hzlKLnBII//TCgwG1KKBo
+ mYUbqjngucc76DUSnNWjxVwRMPMQM21EQLTcoZtxy473DTtf0lMsTE6uaJMP7kmMo2p0
+ a3cw==
+X-Gm-Message-State: AHQUAuaLV0okBSwGgSE0mFwEoDvLWk4vP9s7UHq4SlzPhBYVUkK7+5FQ
+ ah0Xvmr2hvZ6hDhuXxJERl89LA==
+X-Google-Smtp-Source: AHgI3IaELFgS5vpZOQEaG3bhJ60/Qh+HmZ1kowr62TOQHsatYS7tqQJuzb1RFhRs/JSJvRD7NliWDA==
+X-Received: by 2002:ac2:5183:: with SMTP id u3mr6012140lfi.153.1550947269078; 
+ Sat, 23 Feb 2019 10:41:09 -0800 (PST)
+Received: from wasted.cogentembedded.com ([31.173.83.184])
+ by smtp.gmail.com with ESMTPSA id c27sm1524924lfh.76.2019.02.23.10.41.07
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sat, 23 Feb 2019 10:41:08 -0800 (PST)
+Subject: Re: [RFC PATCH 1/5] mtd: cfi_cmdset_0002: Add support for polling
+ status register
+To: "Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>)"
+ <vigneshr@ti.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>
+References: <20190219063607.29949-1-vigneshr@ti.com>
+ <20190219063607.29949-2-vigneshr@ti.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Organization: Cogent Embedded
+Message-ID: <4fb5aac2-d421-c7df-ab1c-9a9290f068e3@cogentembedded.com>
+Date: Sat, 23 Feb 2019 21:41:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 46F0F60B8EB.A3B37
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, juliensu@mxic.com.tw,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- marek.vasut@gmail.com, masonccyang@mxic.com.tw,
- miquel.raynal@bootlin.com, richard@nod.at,
- thomas.petazzoni@bootlin.com, tudor.ambarus@microchip.com,
- vigneshr@ti.com, yamada.masahiro@socionext.com
+In-Reply-To: <20190219063607.29949-2-vigneshr@ti.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190223_131439_135814_8B741B51 
-X-CRM114-Status: GOOD (  26.00  )
+X-CRM114-CacheID: sfid-20190223_104111_970303_0529CE26 
+X-CRM114-Status: GOOD (  25.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -112,157 +107,98 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh R <vigneshr@ti.com>, Julien Su <juliensu@mxic.com.tw>, Masahiro
- Yamada <yamada.masahiro@socionext.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21.02.19 10:15, Miquel Raynal wrote:
-> From: Boris Brezillon <bbrezillon@kernel.org>
-> 
-> Now that we inherit from nand_device, we can use
-> nand_device->memorg.bits_per_cell instead of having our own field at
-> the nand_chip level.
-> 
-> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Hello!
 
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+On 02/19/2019 09:36 AM, Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>) wrote:
 
+> HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
+> Set(0x0002) for flash operations, therefore drivers/mtd/chips/cfi_cmdset_0002.c
+> can be use as is. But these devices do not support DQ polling method of
+> determining chip ready/good status. These flashes provide Status
+> Register whose bits can be polled to know status of flash operation.
+> 
+> Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
+> Extended Query version 1.5. Bit 0 of "Software Features supported" field
+> of CFI Primary Vendor-Specific Extended Query table indicates
+> presence/absence of status register and Bit 1 indicates whether or not
+> DQ polling is supported. Using these bits, its possible to determine
+> whether flash supports DQ polling or need to use Status Register.
+> 
+> Add support for polling status register to know device ready/status of
+> erase/write operations when DQ polling is not supported.
+> 
+> [1] https://www.cypress.com/file/213346/download
+> 
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
 > ---
->   drivers/mtd/nand/raw/nand_base.c   | 4 ----
->   drivers/mtd/nand/raw/nand_hynix.c  | 2 +-
->   drivers/mtd/nand/raw/nand_jedec.c  | 1 -
->   drivers/mtd/nand/raw/nand_micron.c | 2 +-
->   drivers/mtd/nand/raw/nand_onfi.c   | 1 -
->   include/linux/mtd/rawnand.h        | 6 ++----
->   6 files changed, 4 insertions(+), 12 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 4c9c2660df64..00fe124fcb44 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -4502,7 +4502,6 @@ void nand_decode_ext_id(struct nand_chip *chip)
->   
->   	/* The 3rd id byte holds MLC / multichip data */
->   	memorg->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
-> -	chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
->   	/* The 4th id byte is the important one */
->   	extid = id_data[3];
->   
-> @@ -4546,7 +4545,6 @@ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
->   
->   	/* All legacy ID NAND are small-page, SLC */
->   	memorg->bits_per_cell = 1;
-> -	chip->bits_per_cell = 1;
->   }
->   
->   /*
-> @@ -4589,7 +4587,6 @@ static bool find_full_id_nand(struct nand_chip *chip,
->   		mtd->oobsize = memorg->oobsize;
->   
->   		memorg->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
-> -		chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
->   		chip->chipsize = (uint64_t)type->chipsize << 20;
->   		chip->options |= type->options;
->   		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
-> @@ -4625,7 +4622,6 @@ static void nand_manufacturer_detect(struct nand_chip *chip)
->   
->   		/* The 3rd id byte holds MLC / multichip data */
->   		memorg->bits_per_cell = nand_get_bits_per_cell(chip->id.data[2]);
-> -		chip->bits_per_cell = nand_get_bits_per_cell(chip->id.data[2]);
->   		chip->manufacturer.desc->ops->detect(chip);
->   	} else {
->   		nand_decode_ext_id(chip);
-> diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-> index 94ea8c593589..272b934dffb7 100644
-> --- a/drivers/mtd/nand/raw/nand_hynix.c
-> +++ b/drivers/mtd/nand/raw/nand_hynix.c
-> @@ -592,7 +592,7 @@ static void hynix_nand_extract_scrambling_requirements(struct nand_chip *chip,
->   	u8 nand_tech;
->   
->   	/* We need scrambling on all TLC NANDs*/
-> -	if (chip->bits_per_cell > 2)
-> +	if (nanddev_bits_per_cell(&chip->base) > 2)
->   		chip->options |= NAND_NEED_SCRAMBLING;
->   
->   	/* And on MLC NANDs with sub-3xnm process */
-> diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
-> index 61e33ee7ee19..030f178c7a97 100644
-> --- a/drivers/mtd/nand/raw/nand_jedec.c
-> +++ b/drivers/mtd/nand/raw/nand_jedec.c
-> @@ -104,7 +104,6 @@ int nand_jedec_detect(struct nand_chip *chip)
->   	chip->chipsize = memorg->eraseblocks_per_lun;
->   	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
->   	memorg->bits_per_cell = p->bits_per_cell;
-> -	chip->bits_per_cell = p->bits_per_cell;
->   
->   	if (le16_to_cpu(p->features) & JEDEC_FEATURE_16_BIT_BUS)
->   		chip->options |= NAND_BUSWIDTH_16;
-> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> index b85e1c13b79e..98ce6575aa64 100644
-> --- a/drivers/mtd/nand/raw/nand_micron.c
-> +++ b/drivers/mtd/nand/raw/nand_micron.c
-> @@ -385,7 +385,7 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
->   	if (!chip->parameters.onfi)
->   		return MICRON_ON_DIE_UNSUPPORTED;
->   
-> -	if (chip->bits_per_cell != 1)
-> +	if (nanddev_bits_per_cell(&chip->base) != 1)
->   		return MICRON_ON_DIE_UNSUPPORTED;
->   
->   	/*
-> diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-> index 3ca9c8923a30..a6b9fc9a335b 100644
-> --- a/drivers/mtd/nand/raw/nand_onfi.c
-> +++ b/drivers/mtd/nand/raw/nand_onfi.c
-> @@ -249,7 +249,6 @@ int nand_onfi_detect(struct nand_chip *chip)
->   	chip->chipsize = memorg->eraseblocks_per_lun;
->   	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
->   	memorg->bits_per_cell = p->bits_per_cell;
-> -	chip->bits_per_cell = p->bits_per_cell;
->   
->   	if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
->   		chip->options |= NAND_BUSWIDTH_16;
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index d748e09de480..24ecd9a4f952 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1004,7 +1004,6 @@ struct nand_legacy {
->    * @badblockbits:	[INTERN] minimum number of set bits in a good block's
->    *			bad block marker position; i.e., BBM == 11110111b is
->    *			not bad when badblockbits == 7
-> - * @bits_per_cell:	[INTERN] number of bits per cell. i.e., 1 means SLC.
->    * @ecc_strength_ds:	[INTERN] ECC correctability from the datasheet.
->    *			Minimum amount of bit errors per @ecc_step_ds guaranteed
->    *			to be correctable. If unknown, set to zero.
-> @@ -1073,7 +1072,6 @@ struct nand_chip {
->   	} pagecache;
->   
->   	int subpagesize;
-> -	uint8_t bits_per_cell;
->   	uint16_t ecc_strength_ds;
->   	uint16_t ecc_step_ds;
->   	int onfi_timing_mode_default;
-> @@ -1244,9 +1242,9 @@ int nand_create_bbt(struct nand_chip *chip);
->    */
->   static inline bool nand_is_slc(struct nand_chip *chip)
->   {
-> -	WARN(chip->bits_per_cell == 0,
-> +	WARN(nanddev_bits_per_cell(&chip->base) == 0,
->   	     "chip->bits_per_cell is used uninitialized\n");
-> -	return chip->bits_per_cell == 1;
-> +	return nanddev_bits_per_cell(&chip->base) == 1;
->   }
->   
->   /**
+> Note: PRI extended query table size is bigger on 1.5 than on older
+> revision. Not sure if this causes problems on older rev. because of
+> reading beyond current size.
 > 
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 50 +++++++++++++++++++++++++++++
+>  include/linux/mtd/cfi.h             |  5 +++
+>  2 files changed, 55 insertions(+)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 72428b6bfc47..7a4ef0237750 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+[...]
+> @@ -97,6 +105,18 @@ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
+>  	.module		= THIS_MODULE
+>  };
+>  
+> +/*
+> + * Use status register to poll for Erase/write completion when DQ is not
+> + * supported. This is indicated by Bit[1:0] of SoftwareFeatures field in
+> + * CFI Primary Vendor-Specific Extended Query table 1.5
+> + */
+> +static int cfi_use_status_reg(struct cfi_private *cfi)
+> +{
+> +	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
+> +
+> +	return (extp->MinorVersion >= '5') &&
+> +		((extp->SoftwareFeatures & 0x11) == 1);
+
+   Parens not necessary here.
+
+[...]
+> @@ -744,8 +764,21 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+>   */
+>  static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+>  {
+> +	struct cfi_private *cfi = map->fldrv_priv;
+>  	map_word d, t;
+>  
+> +	if (cfi_use_status_reg(cfi)) {
+> +		/*
+> +		 * For chips that support status register, check device
+> +		 * ready bit
+> +		 */
+> +		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
+> +				 cfi->device_type, NULL);
+> +		d = map_read(map, addr);
+> +
+> +		return (d.x[0] & CFI_SR_DRB);
+
+   Again, parens not needed.
+
+[...]
+
+   Other than that, looks good.
+
+MBR, Sergei
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
