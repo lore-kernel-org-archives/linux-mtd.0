@@ -2,59 +2,74 @@ Return-Path: <SRS0=/vOe=RA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3330C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 08:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D2D2C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 08:56:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 911962087C
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 08:45:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE8332087C
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 08:56:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O2oB3Op6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 911962087C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nNw4t3La"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE8332087C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1K/gknJKESXrhrKJPjXtOJ/Onka0sJbf0rLGZg8au5Q=; b=O2oB3Op6bwfALf
-	ZmTDAfjYbA0lURgItDDIcstBfQXv1Xm27VV7qIDWHLwbps0w/3qAdmmpQJMl8Cj3SDflUjqVj0B8J
-	wpuUAsHSEKI7L/jjhoMsS8ZtQVjsKhkktjo70NRRMQqM8S8o3BL4GNLdzc0ppWfoXzKakEKNLv6/2
-	X2dw7AgH8NjSUlJknZ5/ng+Q80eX74doANUb4fEs2KInCyjI1n/u5qxYIwqIV0IfohaVudc4YHHm6
-	wE57RgT5zQsE1IncPu54eyHQPkbbot8m7aZC5JeMV1XJ3PXj034pDF/6OcmKJpoyE/fKXc4iFFbt6
-	Del7rU1kqlm030A4qSQw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KC+12y69DONe1YfHskgYUuJTTBbKeKfDRWESCl3FZp8=; b=nNw4t3LaQuavmt
+	G4C9A2jBH8iKwCtDQarHqqvtb7JbLYbzYtsvj22OwGy1yEPtLKxDkjmYVqXkypRd3Kjis8Z56ugsl
+	anrm3K6rvR7Edv7nsJrvWnnK7eqXjkl4f+n8wrwuU6S/LSRsUUKqrHwYAq0Qh6+SXLwrUsaymQuqb
+	GOTKcrXH9I6YWkUAkF+HIlKVSySzIua+BoY/F1f3Dcf+CIPqJoOVEpRWZXeJuv9Dz/atpfKowW0aZ
+	Ei7aBZ0lxtTk5FMkkUxcPV9+HNXM5WuxPOh/zuf7KuvrZSehcx5CkNxwivqGz+5/jMTTykCdK0tqN
+	1YvF1vNjoyz2J8sS2adw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyBtI-0000fZ-PB; Mon, 25 Feb 2019 08:45:36 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1gyC3w-00056Q-Ka; Mon, 25 Feb 2019 08:56:36 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyBtF-0000eb-Mm
- for linux-mtd@lists.infradead.org; Mon, 25 Feb 2019 08:45:36 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 67A3C260497;
- Mon, 25 Feb 2019 08:45:29 +0000 (GMT)
-Date: Mon, 25 Feb 2019 09:45:26 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [GIT PULL] mtd: Changes for 5.1
-Message-ID: <20190225094526.580e0dbb@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1gyC3t-00055k-0n
+ for linux-mtd@lists.infradead.org; Mon, 25 Feb 2019 08:56:35 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gyC3r-0007bx-Fg; Mon, 25 Feb 2019 09:56:31 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1gyC3r-0000Sb-82; Mon, 25 Feb 2019 09:56:31 +0100
+Date: Mon, 25 Feb 2019 09:56:31 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Prevent Nand page writes on Power failure
+Message-ID: <20190225085631.ddsodh7x3kaofer5@pengutronix.de>
+References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:49:30 up 13 days, 17:15, 58 users,  load average: 0.00, 0.04, 0.08
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190225_004534_006837_3C5C0B31 
-X-CRM114-Status: GOOD (  20.24  )
+X-CRM114-CacheID: sfid-20190225_005633_216023_10893027 
+X-CRM114-Status: GOOD (  31.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -66,201 +81,263 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: kernel@pengutronix.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTGludXMsCgpIZXJlIGlzIHRoZSBNVEQgUFIgZm9yIDUuMS4gTm90ZSB0aGF0IHlvdSBt
-aWdodCBoYXZlIHRvIGZpeCBhIGNvbmZsaWN0IGluCk1BSU5UQUlORVJTIChjb25mbGljdCBiZXR3
-ZWVuIGxpbnV4LWFybSBhbmQgTVREKS4gRm9yIHRoZSByZWNvcmQsIGhlcmUgaXMKU3RlcGhlbidz
-IGNvbmZsaWN0IHJlc29sdXRpb24gWzFdLgoKUmVnYXJkcywKCkJvcmlzCgpbMV1odHRwczovL2xr
-bWwub3JnL2xrbWwvMjAxOS8yLzYvOTI1CgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29t
-bWl0IGJmZWZmZDE1NTI4Mzc3MmJiZTc4YzZhMDVkZWM3YzAxMjhlZTUwMGM6CgogIExpbnV4IDUu
-MC1yYzEgKDIwMTktMDEtMDYgMTc6MDg6MjAgLTA4MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBH
-aXQgcmVwb3NpdG9yeSBhdDoKCiAgZ2l0Oi8vZ2l0LmluZnJhZGVhZC5vcmcvbGludXgtbXRkLmdp
-dCB0YWdzL210ZC9mb3ItNS4xCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gOTIyMGQ3
-YmVmYzljMjhiZjcxNDcwMWU2ZTI2MTYzNjQ0NzUwZDg3MToKCiAgTWVyZ2UgdGFnICduYW5kL2Zv
-ci01LjEnIG9mIGdpdDovL2dpdC5pbmZyYWRlYWQub3JnL2xpbnV4LW10ZCBpbnRvIG10ZC9uZXh0
-ICgyMDE5LTAyLTI1IDA5OjI4OjU0ICswMTAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNVEQgY2hhbmdlczoKLSBVc2Ug
-c3RydWN0X3NpemUoKSB3aGVyZSBhcHByb3ByaWF0ZQotIG10ZF97cmVhZCx3cml0ZX0oKSBhcyB3
-cmFwcGVycyBhcm91bmQgbXRkX3tyZWFkLHdyaXRlfV9vb2IoKQotIEZpeCBtaXN1c2Ugb2YgUFRS
-X0VSUigpIGluIGRvY2czCi0gQ29kaW5nIHN0eWxlIGltcHJvdmVtZW50cyBpbiBtdGRjb3JlLmMK
-ClNQSSBOT1IgY2hhbmdlczoKICBDb3JlIGNoYW5nZXM6CiAgLSBBZGQgc3VwcG9ydCBvZiBvY3Rh
-bCBtb2RlIEkvTyB0cmFuc2ZlcgogIC0gQWRkIGEgYnVuY2ggb2YgU1BJIE5PUiBlbnRyaWVzIHRv
-IHRoZSBmbGFzaF9pbmZvIHRhYmxlCgogIFNQSSBOT1IgY29udHJvbGxlciBkcml2ZXIgY2hhbmdl
-czoKICAtIGNhZGVuY2UtcXVhZHNwaToKICAgICogQWRkIHN1cHBvcnQgZm9yIE9jdGFsIFNQSSBj
-b250cm9sbGVyCiAgICAqIHdyaXRlIHVwdG8gOC1ieXRlcyBkYXRhIGluIFNUSUcgbW9kZQogIC0g
-bXRrLXF1YWRzcGk6CiAgICAqIHJlbmFtZSBjb25maWcgdG8gYSBjb21tb24gb25lCiAgICAqIGFk
-ZCBTTk9SX0hXQ0FQU19SRUFEIHRvIHNwaV9ub3JfaHdjYXBzIG1hc2sKICAtIEFkZCBUdWRvciBh
-cyBTUEktTk9SIGNvLW1haW50YWluZXIKCk5BTkQgY2hhbmdlcwogIE5BTkQgY29yZSBjaGFuZ2Vz
-OgogIC0gRm91cnRoIGJhdGNoIG9mIGZpeGVzL2NsZWFudXAgdG8gdGhlIHJhdyBOQU5EIGNvcmUg
-aW1wYWN0aW5nIHZhcmlvdXMKICAgIGNvbnRyb2xsZXIgZHJpdmVycyAoU3VueGksIE1hcnZlbGws
-IE1USywgVE1JTywgT01BUDIpLgogIC0gQ2hlY2tpbmcgdGhlIHJldHVybiBjb2RlIG9mIG5hbmRf
-cmVzZXQoKSBhbmQgbmFuZF9yZWFkaWRfb3AoKS4KICAtIFJlbW92aW5nIC0+bGVnYWN5LmVyYXNl
-IGFuZCBzaW5nbGVfZXJhc2UoKS4KICAtIFNpbXBsaWZ5aW5nIHRoZSBsb2NraW5nLgogIC0gU2V2
-ZXJhbCBpbXBsaWNpdCBmYWxsIHRocm91Z2ggYW5ub3RhdGlvbnMuCgogIFJhdyBOQU5EIGNvbnRy
-b2xsZXJzIGRyaXZlcnMgY2hhbmdlczoKICAtIEZpeGluZyB2YXJpb3VzIHBvc3NpYmxlIG9iamVj
-dCByZWZlcmVuY2UgbGVha3MgKE1USywgSlo0NzgwLCBBdG1lbCkuCiAgLSBTVDoKICAgICogQWRk
-aW5nIHN1cHBvcnQgZm9yIFNUTTMyIEZNQzIgTkFORCBmbGFzaCBjb250cm9sbGVyLgogIC0gTWVz
-b246CiAgICAqIEFkZGluZyBzdXBwb3J0IGZvciBBbWxvZ2ljIE5BTkQgZmxhc2ggY29udHJvbGxl
-ci4KICAtIERlbmFsaToKICAgICogU2V2ZXJhbCBjbGVhbnVwIHBhdGNoZXMuCiAgLSBTdW54aToK
-ICAgICogU2V2ZXJhbCBjbGVhbnVwIHBhdGNoZXMuCiAgLSBGU01DOgogICAgKiBEaXNhYmxpbmcg
-TkFORCBvbiByZW1vdmUoKS4KICAgICogUmVzZXR0aW5nIE5BTkQgdGltaW5ncyBvbiByZXN1bWUo
-KS4KCiAgU1BJLU5BTkQgZHJpdmVycyBjaGFuZ2VzOgogIC0gVG9zaGliYToKICAgICogQWRkaW5n
-IHN1cHBvcnQgZm9yIGFsbCBUb3NoaWJhIHByb2R1Y3RzLgogIC0gTWFjcm9uaXg6CiAgICAqIEZp
-eGluZyBFQ0Mgc3RhdHVzIHJlYWQuCiAgLSBHaWdhZGV2aWNlOgogICAgKiBBZGRpbmcgc3VwcG9y
-dCBmb3IgR0Q1RjFHUTRVRXh4Ry4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQWhtZXQgQ2VsZW5rICgxKToKICAgICAgbXRk
-OiBzcGktbm9yOiBzcGxpdCBzMjVmbDEyOHMgaW50byBzMjVmbDEyOHMwIGFuZCBzMjVmbDEyOHMx
-CgpBbmRyw6kgVmFsZW50aW4gKDEpOgogICAgICBtdGQ6IHNwaS1ub3I6IEFkZCBzdXBwb3J0IGZv
-ciBteDI1dTMyMzVmCgpCZWFuIEh1byAoMSk6CiAgICAgIG10ZDogc3BpLW5vcjogRml4IHdyb25n
-IGFiYnJldmlhdGlvbiBIV0NQQVMKCkJvcmlzIEJyZXppbGxvbiAoMTYpOgogICAgICBtdGQ6IElt
-cGxlbWVudCBtdGRfe3JlYWQsd3JpdGV9KCkgYXMgd3JhcHBlcnMgYXJvdW5kIG10ZF97cmVhZCx3
-cml0ZX1fb29iKCkKICAgICAgbXRkOiByYXduYW5kOiBzdW54aTogVXNlIGEgY29uc2lzdGVudCBu
-YW1lIGZvciBzdW54aV9uYW5kX2NoaXAgb2JqZWN0cwogICAgICBtdGQ6IHJhd25hbmQ6IHN1bnhp
-OiBVc2Ugc3RydWN0X3NpemUoKQogICAgICBtdGQ6IHJhd25hbmQ6IHN1bnhpOiBOYW1lIG5hbmRf
-Y2hpcCBvYmplY3RzIGNvbnNpc3RlbnRseQogICAgICBtdGQ6IHJhd25hbmQ6IHN1bnhpOiBTdG9w
-IHBhc3NpbmcgbXRkX2luZm8gb2JqZWN0cyBhcm91bmQKICAgICAgbXRkOiByYXduYW5kOiBzdW54
-aTogQWRkIGFuIFNQRFggdGFnCiAgICAgIG10ZDogcmF3bmFuZDogc3VueGk6IE1pZ3JhdGUgdG8g
-LT5leGVjX29wKCkKICAgICAgbXRkOiByYXduYW5kOiBzdW54aTogRml4IGtlcm5lbCBkb2MgaGVh
-ZGVycwogICAgICBtdGQ6IHJhd25hbmQ6IHN1bnhpOiBIYW5kbGUgdGhlIHRSRUEgPiB0UkMgLyAy
-IGNhc2UKICAgICAgbXRkOiByYXduYW5kOiBtdGs6IFVzZSBuYW5kX2NvbnRyb2xsZXJfaW5pdCgp
-IGluc3RlYWQgb2Ygb3Blbi1jb2RpbmcgaXQKICAgICAgbXRkOiByYXduYW5kOiB0bWlvOiBEbyBu
-b3QgYWJ1c2UgbmFuZF9jb250cm9sbGVyLT53cQogICAgICBtdGQ6IHJhd25hbmQ6IG9tYXAyOiBV
-c2UgbmFuZF9jb250cm9sbGVyX2luaXQoKQogICAgICBtdGQ6IHJhd25hbmQ6IFN0b3AgdXNpbmcg
-Y2hpcC0+c3RhdGUgaW4gZHJpdmVycwogICAgICBtdGQ6IHJhd25hbmQ6IFNpbXBsaWZ5IHRoZSBs
-b2NraW5nCiAgICAgIE1lcmdlIHRhZyAnc3BpLW5vci9mb3ItNS4xJyBvZiBnaXQ6Ly9naXQuaW5m
-cmFkZWFkLm9yZy9saW51eC1tdGQgaW50byBtdGQvbmV4dAogICAgICBNZXJnZSB0YWcgJ25hbmQv
-Zm9yLTUuMScgb2YgZ2l0Oi8vZ2l0LmluZnJhZGVhZC5vcmcvbGludXgtbXRkIGludG8gbXRkL25l
-eHQKCkNocmlzdG9waGUgS2VyZWxsbyAoMyk6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHN0bTMy
-X2ZtYzI6IGFkZCBTVE0zMiBGTUMyIE5BTkQgY29udHJvbGxlciBkb2N1bWVudGF0aW9uCiAgICAg
-IG10ZDogcmF3bmFuZDogc3RtMzJfZm1jMjogYWRkIFNUTTMyIEZNQzIgTkFORCBmbGFzaCBjb250
-cm9sbGVyIGRyaXZlcgogICAgICBtdGQ6IHJhd25hbmQ6IHN0bTMyX2ZtYzI6IGFkZCBwb2xsaW5n
-IG1vZGUKCkNvbGluIElhbiBLaW5nICgxKToKICAgICAgbXRkOiBzcGktbm9yOiBjYWRlbmNlLXF1
-YWRzcGk6IGZpeCBzcGVsbGluZyBtaXN0YWtlOiAiQ291bGRudCd0IiAtPiAiQ291bGRuJ3QiCgpF
-bWlsIExlbm5ncmVuICgxKToKICAgICAgbXRkOiBzcGluYW5kOiBtYWNyb25peDogRml4IEVDQyBT
-dGF0dXMgUmVhZAoKRnJpZWRlciBTY2hyZW1wZiAoMik6CiAgICAgIG10ZDogc3BpLW5vcjogQWRk
-IHN1cHBvcnQgZm9yIEVOMjVRODBBCiAgICAgIG10ZDogc3BpLW5vcjogQWRkIHN1cHBvcnQgZm9y
-IE1YMjVWODAzNUYKCkd1b2NodW4gTWFvICgxKToKICAgICAgbXRkOiBzcGktbm9yOiBtdGstcXVh
-ZHNwaTogYWRkIFNOT1JfSFdDQVBTX1JFQUQgdG8gc3BpX25vcl9od2NhcHMgbWFzawoKR3VzdGF2
-byBBLiBSLiBTaWx2YSAoNCk6CiAgICAgIG10ZDogZ2VuX3Byb2JlOiBVc2Ugc3RydWN0X3NpemUo
-KSBpbiBrbWFsbG9jKCkKICAgICAgbXRkOiBjZmk6IGNtZHNldF8wMDAxOiBVc2Ugc3RydWN0X3Np
-emUoKSBpbiBrbWFsbG9jKCkKICAgICAgbXRkOiBscGRkcjogVXNlIHN0cnVjdF9zaXplKCkgaW4g
-a3phbGxvYygpCiAgICAgIG10ZDogcmF3bmFuZDogbWFydmVsbDogdXNlIHN0cnVjdF9zaXplKCkg
-aW4gZGV2bV9remFsbG9jKCkKCkppYW54aW4gUGFuICgxKToKICAgICAgTUFJTlRBSU5FUlM6IEFk
-ZCBlbnRyeSBmb3IgQW1sb2dpYyBOQU5EIGNvbnRyb2xsZXIgZHJpdmVyCgpMaWFuZyBZYW5nICgy
-KToKICAgICAgZHQtYmluZGluZ3M6IG5hbmQ6IG1lc29uOiBhZGQgQW1sb2dpYyBOQU5EIGNvbnRy
-b2xsZXIgZHJpdmVyCiAgICAgIG10ZDogcmF3bmFuZDogbWVzb246IGFkZCBzdXBwb3J0IGZvciBB
-bWxvZ2ljIE5BTkQgZmxhc2ggY29udHJvbGxlcgoKTGludXMgV2FsbGVpaiAoMik6CiAgICAgIG10
-ZDogcmF3bmFuZDogZnNtYzogUmVzZXQgTkFORCB0aW1pbmdzIG9uIHJlc3VtZSgpCiAgICAgIG10
-ZDogcmF3bmFuZDogZnNtYzogRGlzYWJsZSBOQU5EIG9uIHJlbW92ZSgpCgpNYXNhaGlybyBZYW1h
-ZGEgKDcpOgogICAgICBtdGQ6IHJhd25hbmQ6IGRlbmFsaTogcmVtb3ZlIC0+ZXJhc2UgaG9vawog
-ICAgICBtdGQ6IHJhd25hbmQ6IHJlbW92ZSAtPmxlZ2FjeS5lcmFzZSBhbmQgc2luZ2xlX2VyYXNl
-KCkKICAgICAgbXRkOiByYXduYW5kOiBjaGVjayByZXR1cm4gY29kZSBvZiBuYW5kX3Jlc2V0KCkg
-YW5kIG5hbmRfcmVhZGlkX29wKCkKICAgICAgbXRkOiByYXduYW5kOiBkZW5hbGk6IHJlbW92ZSB1
-bm5lZWRlZCBkZW5hbGlfcmVzZXRfaXJxKCkgY2FsbAogICAgICBtdGQ6IHJhd25hbmQ6IGRlbmFs
-aTogcmVtb3ZlIHVudXNlZCBmdW5jdGlvbiBhcmd1bWVudCAncmF3JwogICAgICBtdGQ6IHJhd25h
-bmQ6IGRlbmFsaTogcmVtb3ZlIHVudXNlZCBkbWFfYWRkciBmaWVsZCBmcm9tIGRlbmFsaV9uYW5k
-X2luZm8KICAgICAgbXRkOiByYXduYW5kOiBkZW5hbGlfZHQ6IHJlbW92ZSBzaW5nbGUgYW5vbnlt
-b3VzIGNsb2NrIHN1cHBvcnQKCk1hdGhpZXUgTWFsYXRlcnJlICgyKToKICAgICAgbXRkOiByYXdu
-YW5kOiBBbm5vdGF0ZSBpbXBsaWNpdCBmYWxsIHRocm91Z2ggaW4gbmFuZF9jb21tYW5kL25hbmRf
-Y29tbWFuZF9scAogICAgICBtdGQ6IHJhd25hbmQ6IEFubm90YXRlIGltcGxpY2l0IGZhbGwgdGhy
-b3VnaCBpbiBuYW5kX3NjYW5fdGFpbAoKUHVybmEgQ2hhbmRyYSBNYW5kYWwgKDEpOgogICAgICBt
-dGQ6IHNwaS1ub3I6IGNhZGVuY2UtcXVhZHNwaTogd3JpdGUgdXB0byA4LWJ5dGVzIGRhdGEgaW4g
-U1RJRyBtb2RlCgpSaWNoYXJkIFdlaW5iZXJnZXIgKDEpOgogICAgICBtdGQ6IG10ZHJhbTogRXhw
-b3NlIG1vZHVsZSBwYXJhbWV0ZXJzCgpSb2dlciBQdWV5byBDZW50ZWxsZXMgKDEpOgogICAgICBt
-dGQ6IHNwaS1ub3I6IEFkZCBzdXBwb3J0IGZvciBlbjI1cWg2NAoKUnlkZXIgTGVlICgyKToKICAg
-ICAgZHQtYmluZGluZ3M6IG10ZDogbXRrLXF1YWRzcGk6IHVwZGF0ZSBiaW5kaW5ncyBmb3IgTVQ3
-NjI5IFNvQwogICAgICBtdGQ6IHNwaS1ub3I6IG10ay1xdWFkc3BpOiByZW5hbWUgY29uZmlnIHRv
-IGEgY29tbW9uIG9uZQoKU2VyZ2VpIFNodHlseW92ICgyKToKICAgICAgbXRkOiBzcGktbm9yOiBh
-ZGQgU3BhbnNpb24gUzI1RlM1MTJTIElECiAgICAgIG10ZDogc3BpLW5vcjogcmVmaW5lIFNwYW5z
-aW9uIFMyNUZMNTEyUyBJRAoKU3RlZmFuIFJvZXNlICgyKToKICAgICAgbXRkOiBSZW1vdmUgZW1w
-dHkgbGluZXMgYXQgZW5kIG9mIHN5c2ZzIHJlbGF0ZWQgZnVuY3Rpb25zCiAgICAgIG10ZDogc3Bp
-bmFuZDogQWRkIHN1cHBvcnQgZm9yIEdpZ2FEZXZpY2UgR0Q1RjFHUTRVRXh4RwoKVHVkb3IgQW1i
-YXJ1cyAoMSk6CiAgICAgIE1BSU5UQUlORVJTOiBhZGQgbXlzZWxmIGFzIFNQSSBOT1IgY28tbWFp
-bnRhaW5lcgoKVmlnbmVzaCBSICgyKToKICAgICAgZHQtYmluZGluZ3M6IGNhZGVuY2UtcXVhZHNw
-aTogQWRkIG5ldyBjb21wYXRpYmxlIGZvciBBTTY1NCBTb0MKICAgICAgbXRkOiBzcGktbm9yOiBj
-YWRlbmNlLXF1YWRzcGk6IEFkZCBzdXBwb3J0IGZvciBPY3RhbCBTUEkgY29udHJvbGxlcgoKV2Vu
-IFlhbmcgKDMpOgogICAgICBtdGQ6IHJhd25hbmQ6IGF0bWVsOiBmaXggcG9zc2libGUgb2JqZWN0
-IHJlZmVyZW5jZSBsZWFrCiAgICAgIG10ZDogcmF3bmFuZDogano0NzgwOiBmaXggcG9zc2libGUg
-b2JqZWN0IHJlZmVyZW5jZSBsZWFrCiAgICAgIG10ZDogcmF3bmFuZDogbXRrOiBmaXggcG9zc2li
-bGUgb2JqZWN0IHJlZmVyZW5jZSBsZWFrCgpZb2dlc2ggTmFyYXlhbiBHYXVyICgzKToKICAgICAg
-bXRkOiBzcGktbm9yOiBhZGQgb3Bjb2RlcyBmb3Igb2N0YWwgUmVhZC9Xcml0ZSBjb21tYW5kcwog
-ICAgICBtdGQ6IHNwaS1ub3I6IGFkZCBvY3RhbCByZWFkIGZsYWcgZm9yIGZsYXNoIG10MzV4dTUx
-MmFiYQogICAgICBtdGQ6IG0yNXA4MDogYWRkIHN1cHBvcnQgb2Ygb2N0YWwgbW9kZSBJL08gdHJh
-bnNmZXIKCllvc2hpbyBGdXJ1eWFtYSAoMSk6CiAgICAgIG10ZDogc3BpbmFuZDogQWRkIHN1cHBv
-cnQgZm9yIGFsbCBUb3NoaWJhIE1lbW9yeSBwcm9kdWN0cwoKWXVlSGFpYmluZyAoMik6CiAgICAg
-IG10ZDogZG9jZzM6IEZpeCBwYXNzaW5nIHplcm8gdG8gJ1BUUl9FUlInIHdhcm5pbmcgaW4gZG9j
-X3Byb2JlX2RldmljZQogICAgICBtdGQ6IGRvY2czOiBmaXggYSBwb3NzaWJsZSBtZW1vcnkgbGVh
-ayBvZiBtdGQtPm5hbWUKCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2Ft
-bG9naWMsbWVzb24tbmFuZC50eHQgfCAgIDYwICsrCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbXRkL2NhZGVuY2UtcXVhZHNwaS50eHQgICAgfCAgICAxICsKIERvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbXRrLXF1YWRzcGkudHh0ICAgICAgICB8ICAgIDMg
-Ky0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3RtMzItZm1jMi1uYW5k
-LnR4dCAgICB8ICAgNjEgKysrCiBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA4ICsKIGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9j
-bWRzZXRfMDAwMS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgKy0KIGRyaXZlcnMv
-bXRkL2NoaXBzL2dlbl9wcm9iZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-IDIgKy0KIGRyaXZlcnMvbXRkL2RldmljZXMvZG9jZzMuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAgIDcgKy0KIGRyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgwLmMgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDkgKy0KIGRyaXZlcnMvbXRkL2RldmljZXMv
-bXRkcmFtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgLQogZHJpdmVy
-cy9tdGQvbHBkZHIvcWluZm9fcHJvYmUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-ICAgNCArLQogZHJpdmVycy9tdGQvbXRkY29yZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgICA4MyArLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTcgKwogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArCiBkcml2
-ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9wbWVjYy5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgIDIxICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGkuYyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgIDQyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGkuaCAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxIC0KIGRyaXZlcnMvbXRkL25hbmQv
-cmF3L2RlbmFsaV9kdC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMjcgKy0KIGRy
-aXZlcnMvbXRkL25hbmQvcmF3L2ZzbWNfbmFuZC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgMTYgKwogZHJpdmVycy9tdGQvbmFuZC9yYXcvano0NzgwX2JjaC5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICAgOSArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFydmVsbF9u
-YW5kLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNSArLQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvbWVzb25fbmFuZC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTQ2NCArKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiBkcml2ZXJzL210
-ZC9uYW5kL3Jhdy9tdGtfZWNjLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA4
-ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfbmFuZC5jICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgICAzICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTU5ICsrKy0tLQogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvbmFuZF9sZWdhY3kuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyArLQogZHJp
-dmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAyMCArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvcjg1Mi5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICAgMyArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvc3RtMzJfZm1j
-Ml9uYW5kLmMgICAgICAgICAgICAgICAgICAgICAgIHwgMjA3MyArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiBkcml2
-ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9uYW5kLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgNzMyICsrKysrKysrKysrKystLS0tLS0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Rt
-aW9fbmFuZC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMjEgKy0KIGRyaXZlcnMv
-bXRkL25hbmQvc3BpL2dpZ2FkZXZpY2UuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-ODMgKysrCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9tYWNyb25peC5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgICA4ICstCiBkcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDc5ICsrLQogZHJpdmVycy9tdGQvc3BpLW5v
-ci9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNiArLQogZHJp
-dmVycy9tdGQvc3BpLW5vci9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAgMiArLQogZHJpdmVycy9tdGQvc3BpLW5vci9jYWRlbmNlLXF1YWRzcGkuYyAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICA3NCArKy0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvbXRrLXF1YWRz
-cGkuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgKy0KIGRyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BpLW5vci5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMzUgKy0K
-IGluY2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgMjYgKy0KIGluY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8ICAgMTYgKy0KIDQxIGZpbGVzIGNoYW5nZWQsIDQ1MzYgaW5z
-ZXJ0aW9ucygrKSwgNjc1IGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnR4dAogY3Jl
-YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3Rt
-MzItZm1jMi1uYW5kLnR4dAogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvcmF3
-L21lc29uX25hbmQuYwogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvcmF3L3N0
-bTMyX2ZtYzJfbmFuZC5jCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, Feb 20, 2019 at 02:58:20PM +0100, Sascha Hauer wrote:
+> 
+> Hi All,
+> 
+> I have hardware here for which the normal way to turn off is just to cut
+> the power. When the powercut happens during a NAND page write then we
+> get more or less completely written pages during next boot. Very rarely
+> it seems to happen that such a half written page with only very few
+> flipped bits is erroneously detected as empty and written again which
+> then results in ECC errors when reading the data.
+> 
+> The Nand in question is a Micron MT29F4G08ABADAH4 and in TN2917 Micron
+> clearly states:
+> 
+> | Power loss during NAND array operations (especially Program/Erase) is a
+> | violation of the NAND voltage specifications, which is not supported and
+> | should be avoided
+> 
+> Micron suggests to make the capacitors on the Nand chips supply input
+> big enough that every started operation will be finished before the
+> power goes down. Now we don't have that situation here, what I have
+> though is a power good status GPIO, so my job is to wire that up to the
+> Nand write operations.
+> 
+> Now my question is how could that be done? I assume for some people a
+> power good failure means that we should write all important data away,
+> rather than preventing any Nand access. Given it's a policy decision I
+> assume user space should be involved, right?  An option might be to
+> introcude some sysfs entry to switch mtd devices to readonly mode. Would
+> that be fine? Other suggestions?
+> 
+
+FYI the attached patch is what I have ended up with for now. Not
+upstreamable of course, but works for me. I have the feeling that it's
+not the last time I have this problem, so an upstreamable solution is
+really desired.
+
+Sascha
+
+-----------------------------8<--------------------------------
+
+From 04e76aaea00d2f92b51904e2b1611a3d64081e71 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 21 Feb 2019 12:30:29 +0100
+Subject: [PATCH] mtd: nand: raw: Allow to prevent write operations on power
+ failures
+
+When doing write operations the Nand chips supply must be within
+specified ranges, otherwise written pages can be corrupted in various
+ways, including cases where a page looks empty, but gets corrupted when
+written to, or pages which first look good, but get corrupted over time.
+
+This adds a power_good mutex to the nand chip which is acquired before
+write/erase and released afterwards. Board code can acquire this mutex
+on a power failure to prevent further write accesses to the Nand chip.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 50 ++++++++++++++++++++++
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  2 +
+ drivers/mtd/nand/raw/nand_base.c           | 22 +++++++---
+ include/linux/mtd/rawnand.h                |  2 +
+ 4 files changed, 71 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 1c1ebbc82824..b13ddf7b7b75 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -13,6 +13,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/gpio/consumer.h>
+ #include "gpmi-nand.h"
+ #include "bch-regs.h"
+ 
+@@ -628,6 +629,50 @@ err_clock:
+ 	return err;
+ }
+ 
++static irqreturn_t gpmi_pwr_good_irq(int irq, void *dev_id)
++{
++	struct gpmi_nand_data *this = dev_id;
++	int level;
++
++	level = gpiod_get_value_cansleep(this->pwrgood_gpio);
++	if (level) {
++		mutex_lock(&this->nand.power_lock);
++	} else {
++		mutex_unlock(&this->nand.power_lock);
++		dev_info(this->dev, "Spurious Power Failure detected\n");
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int gpmi_get_pwrgood(struct gpmi_nand_data *this)
++{
++	struct gpio_desc *desc;
++	int irq, ret;
++
++	desc = devm_gpiod_get_index_optional(this->dev, "pwrgood", 0, GPIOD_IN);
++	if (!desc)
++		return 0;
++
++	if (IS_ERR(desc))
++		return PTR_ERR(desc);
++
++	irq = gpiod_to_irq(desc);
++
++	ret = devm_request_threaded_irq(this->dev, irq,
++			NULL, gpmi_pwr_good_irq,
++			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++			"pwrgood", this);
++	if (ret)
++		return ret;
++
++	this->pwrgood_gpio = desc;
++
++	dev_info(this->dev, "using irq %d as power good input\n", irq);
++
++	return 0;
++}
++
+ static int acquire_resources(struct gpmi_nand_data *this)
+ {
+ 	int ret;
+@@ -651,6 +696,11 @@ static int acquire_resources(struct gpmi_nand_data *this)
+ 	ret = gpmi_get_clks(this);
+ 	if (ret)
+ 		goto exit_clock;
++
++	ret = gpmi_get_pwrgood(this);
++	if (ret)
++		goto exit_clock;
++
+ 	return 0;
+ 
+ exit_clock:
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+index 69cd0cbde4f2..251e02bb4338 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+@@ -148,6 +148,8 @@ struct gpmi_nand_data {
+ 	void			*auxiliary_virt;
+ 	dma_addr_t		auxiliary_phys;
+ 
++	struct gpio_desc	*pwrgood_gpio;
++
+ 	void			*raw_buffer;
+ 
+ 	/* DMA channels */
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d527e448ce19..d9487503bec0 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -2115,6 +2115,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+ 	int ret;
+ 	u8 status;
+ 
++	mutex_lock(&chip->power_lock);
++
+ 	if (chip->exec_op) {
+ 		const struct nand_sdr_timings *sdr =
+ 			nand_get_sdr_timings(&chip->data_interface);
+@@ -2133,26 +2135,30 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+ 
+ 		ret = nand_exec_op(chip, &op);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		ret = nand_status_op(chip, &status);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	} else {
+ 		chip->cmdfunc(mtd, NAND_CMD_ERASE1, -1, page);
+ 		chip->cmdfunc(mtd, NAND_CMD_ERASE2, -1, -1);
+ 
+ 		ret = chip->waitfunc(mtd, chip);
+ 		if (ret < 0)
+-			return ret;
++			goto out;
+ 
+ 		status = ret;
+ 	}
+ 
+ 	if (status & NAND_STATUS_FAIL)
+-		return -EIO;
++		ret = -EIO;
++	else
++		ret = 0;
++out:
++	mutex_unlock(&chip->power_lock);
+ 
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(nand_erase_op);
+ 
+@@ -4330,6 +4336,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	else
+ 		subpage = 0;
+ 
++	mutex_lock(&chip->power_lock);
++
+ 	if (unlikely(raw))
+ 		status = chip->ecc.write_page_raw(mtd, chip, buf,
+ 						  oob_required, page);
+@@ -4340,6 +4348,8 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		status = chip->ecc.write_page(mtd, chip, buf, oob_required,
+ 					      page);
+ 
++	mutex_unlock(&chip->power_lock);
++
+ 	if (status < 0)
+ 		return status;
+ 
+@@ -6786,6 +6796,8 @@ int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	int ret;
+ 
++	mutex_init(&chip->power_lock);
++
+ 	if (maxchips) {
+ 		ret = nand_scan_ident(mtd, maxchips, ids);
+ 		if (ret)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index efb2345359bb..638b187eb198 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1357,6 +1357,8 @@ struct nand_chip {
+ 
+ 	struct nand_bbt_descr *badblock_pattern;
+ 
++	struct mutex power_lock;
++
+ 	void *priv;
+ 
+ 	struct {
+-- 
+2.20.1
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
