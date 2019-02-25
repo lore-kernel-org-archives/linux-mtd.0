@@ -1,99 +1,80 @@
-Return-Path: <SRS0=v7BG=Q7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=/vOe=RA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE83C43381
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Feb 2019 14:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D56C9C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 07:54:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49DA6206B6
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Feb 2019 14:08:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9722F20842
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 07:54:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HJatmWQc";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="sLxiFdFp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49DA6206B6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Gz72h8pA";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JTcSThaF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9722F20842
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ZcGLJ6nocT22VeBCfOwxHR/y1fQwa0PlxHSI1dSQX3U=; b=HJatmWQcgYMQ61WaA0B9N4Zgs
-	yWdQvXNB0rr/oRyB3pbeojtW7vI1TwbPL0w0N7Yt2qF8O4JSJyyXzuey7VXAJlysf4nLXWFWQF2JU
-	DBFIkQJEgjyPLmJc7ZelXoKZDaI+udavQwOy1lancr2S+FZH5Cd3q+kHROuGe3eg1i3FVSrA1cfXo
-	0q3bAtCuN4qawofVoElq4TpTksv8leDS70T8BqWaWZ3GsSN+pU8JY/GaxSm2BGachQBpVMtyh0hmC
-	i3VzX0cIknXXldFwelqsUqRM+UmnhxuOCN0RW7wZuv7mfGvR4Ra3Ji9vXq4M8LnhTcaUWDzWawSYN
-	yGe+oR5rw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=lMjuGWMFznl927JWZGvvWf2yGXHx41j1Ad9yJRGim80=; b=Gz7
+	2h8pATZWYBgBc61XKaNdYgJTPOBnTcTsV9aLFvNaoMQ4fRNut34eJ7MFjMnJHfjTHUEl+zYi0gtuK
+	esz4bmSX+06px0JfEo8iKtU4yTzZtH8WCCAsacliE9/4XvBARSVgfUdvqG8pGdWoUX96sUHVCz6GP
+	PLjvtOnvZBTiuLS1GTGk2fxcbGMbT/yomFWVM6bomFlJWLQ0YMylxvtcHMuP/tDQpmpNzgRr0ysGP
+	UiPQVrlJOaF05QMbGa0j+ujaSsTr1D2tOpIoTY1UWQVdnKleq/y8hU2IsvWT6WuEZhS/SOaOCJ86p
+	NFJFfVgViqNqUTNO6WN0vYBnwl8ELjw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gxuRk-0000H2-8V; Sun, 24 Feb 2019 14:08:00 +0000
-Received: from mail-lf1-f67.google.com ([209.85.167.67])
+	id 1gyB5L-0007RC-8g; Mon, 25 Feb 2019 07:53:59 +0000
+Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gxuRa-00006C-QV
- for linux-mtd@lists.infradead.org; Sun, 24 Feb 2019 14:07:57 +0000
-Received: by mail-lf1-f67.google.com with SMTP id q12so4980469lfm.0
- for <linux-mtd@lists.infradead.org>; Sun, 24 Feb 2019 06:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=X7AyGWsy6lqqt1CMP5klNyO7Se+yGqcYOfqOpxc8ZyY=;
- b=sLxiFdFpGTAsznEby3fF1geo7APwsBaQOD5Qtryj0FV6wz6OTh1jW1/9OvX5oMt5rT
- TKn4WCt5Q+x2EGyQHaZ5l/bSTyH2zfkNTFOttdFbGWBdy5b3OaNRwLOWtvkj4YpOIQuk
- OUw/nU9u3Uh6UgoCV6jXX8Bcm1aTB5s3U3EZ3gLPUVudvvbiRk7pi2jh8HEDATD2aZal
- pzVImyqAkskZRmf7jJ7HaIJTZklEBrnOajrYZs86qQFAui0nJ6+0ZduOSvHlHPsOOKkP
- DqL0JEELpEUALXT4TaDI5dfajiBpza+DZn/3qVioeBS385YS1IFDezEYVZ4IU0rarodM
- p/cg==
+ id 1gyB5I-0007Qp-50
+ for linux-mtd@lists.infradead.org; Mon, 25 Feb 2019 07:53:57 +0000
+Received: by mail-lf1-x132.google.com with SMTP id z196so5418730lff.4
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Feb 2019 23:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=e0RVqcKZRdw2SAmY4o/u++TFnkOMClUQqViFZbAog7E=;
+ b=JTcSThaFfi+Mt+JYYc+eWVxR+jthBBWERynxwQeX3J6lB28nPEHwkAqGATWAWi1/bp
+ ooKbjXsjwXq4+fWQ96rWablvxF4VzDM2Wygzb4rkz2V0oyIuAxRjzP2/TfZI1odhV15U
+ HuwKSusN/rRxfMWfrqa5t2oKdbvgXrCEhDq6DwiNnUge/KzOZBlCF+sstitP7QT/DhWi
+ LYiZY6uxZ1miEfSW3gQOnMukf3UjaPs4j13+qV1ayssst3EVTNe+y/TuUVpi9OKj2+7f
+ doKV8qfifJIuA+zRaIbXYjbJjsivCMXiZU4kg1KTzqR5EgAinzkw2Ip7u6HfBlTqpap/
+ yYIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=X7AyGWsy6lqqt1CMP5klNyO7Se+yGqcYOfqOpxc8ZyY=;
- b=beorLZq7ZutkzDKqqB1aYUE+/xvQZxYy4RCzGdGsryNddzFc7D8ZKbfJmtUWNJF9xN
- o9JyAXVEaM0NjyEm7KlAGqlY8/YyDqSL+pmvzJpJkTiOoLlm6+K805tmIhqNh9zqVG7e
- du/Vzi+8Tm3DvrwTTuVE3ky+/WnG+zGph8WI/TK27jjL8uP5fuJKd8DsVH4a9ynI5G+8
- ZuSHK/PAyGRXc2SdMmW3phjXQHAwwzFkUJz1jz1tyqswlXQxhrbjs41EUDA5qKkocy5X
- QaSQWLV+hqFmz9590+sC3sHaCXVTGc1xJjS3LE9j9cZLX6NbSTo4VxVdj7cD/oMZe313
- tz9g==
-X-Gm-Message-State: AHQUAuYUh2ffdBnF47T22LnLdKqmNIbfUfg5MkUP9qAYWK/WjNFOInAg
- fZccqGAK45T7y1avghjpXC3uRw==
-X-Google-Smtp-Source: AHgI3IalkRMkO15u/S1T1c9U+qR+uhOu2lPS0TW2/sC74Xcb7Y3gq3zt7QQ/crFfS9sBMFEXKjtJcw==
-X-Received: by 2002:a19:5209:: with SMTP id m9mr7437620lfb.51.1551017207080;
- Sun, 24 Feb 2019 06:06:47 -0800 (PST)
-Received: from [192.168.0.199] ([31.173.83.141])
- by smtp.gmail.com with ESMTPSA id c22sm2254961lfi.27.2019.02.24.06.06.45
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 24 Feb 2019 06:06:46 -0800 (PST)
-Subject: Re: [RFC PATCH 5/5] mtd: hyperbus: Add driver for TI's Hyperbus
- memory controller
-To: "Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>)"
- <vigneshr@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190219063607.29949-1-vigneshr@ti.com>
- <20190219063607.29949-6-vigneshr@ti.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <61d04389-414a-70d8-ad33-36ed138df38c@cogentembedded.com>
-Date: Sun, 24 Feb 2019 17:06:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=e0RVqcKZRdw2SAmY4o/u++TFnkOMClUQqViFZbAog7E=;
+ b=pYhF5ZnfJL/eXoZozisGWM2jHDiONlUoH554ZRDhsXElBdK3PVeSprs71/+eaKeivf
+ j3QcKn6rzXGZlsl2QZvZVNfe3lnYHOYfbE0xT57Jk5O7mcEV7EycRqQ+rVJdqlskDLYY
+ GUkRI/lO7nLbk9r6aMED6nogpNi1LBflvImSMuiS2BWRdOZiYEsSNtkhs5RKI+Y8Nknf
+ pHSLC97zuGZYHXHYjudp3Zv71jlO+CyMuMVqArgyFwFzbsGl4+8mZk2VM0AykFSG3lKS
+ oHN5jUZwIv/Q4aA+RDfYxcCx4bHNYlEJlJ1hQ3FT2CfMLqmw3OVQ80DiGVaNf0vLrgHW
+ t0+A==
+X-Gm-Message-State: AHQUAuapNRMCveOIEsjzPZqJ8JxRFqFu09zkvY9T/g8swy2XUhIvOMKo
+ ETv5zaEVuEbFhyO19+dcdsNNo+/05ztSMc9ZQRpTYI58
+X-Google-Smtp-Source: AHgI3IZX0mRQe+tVeUvfay0CFUmA5ecZlh9P8rdIyMTmytsjKFO/xB2bvaKw0oqlSeIqIapamf5ZVLjPOKcUKCOzHXI=
+X-Received: by 2002:ac2:5230:: with SMTP id i16mr9337128lfl.63.1551081232540; 
+ Sun, 24 Feb 2019 23:53:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20190219063607.29949-6-vigneshr@ti.com>
-Content-Language: en-US
+From: Ibtsam Ul-Haq <ibtsam.haq.0x01@gmail.com>
+Date: Mon, 25 Feb 2019 08:53:41 +0100
+Message-ID: <CAPQseg0m+j+pc-AAZmQqJvnkALf3ayGC_hg8kgQ11Z0_R9DtkA@mail.gmail.com>
+Subject: gpmi-nand: Probe failure on imx6qp linux 4.19
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190224_060754_200658_D4057554 
-X-CRM114-Status: GOOD (  20.82  )
+X-CRM114-CacheID: sfid-20190224_235356_218316_B9988C32 
+X-CRM114-Status: UNSURE (   7.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -105,97 +86,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Hi,
 
-On 19.02.2019 9:36, Vignesh R (by way of Boris Brezillon
-<bbrezillon@kernel.org>) wrote:
+I need help regarding a gpmi-nand probe failure. I am trying to run
+mainline linux 4.19.21 on an IMX6QP based board. I get a timeout error
+during probe:
 
-> Add driver for Hyperbus memory controller on TI's AM654 SoC. Programming
-> IP is pretty simple and provides direct memory mapped access to
-> connected Flash devices.
-> 
-> Add basic support for the IP without DMA. Second ChipSelect is not
-> supported for now.
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> ---
->   drivers/mtd/hyperbus/hbmc_am654.c | 105 ++++++++++++++++++++++++++++++
->   1 file changed, 105 insertions(+)
->   create mode 100644 drivers/mtd/hyperbus/hbmc_am654.c
-> 
-> diff --git a/drivers/mtd/hyperbus/hbmc_am654.c b/drivers/mtd/hyperbus/hbmc_am654.c
-> new file mode 100644
-> index 000000000000..1f0d2dc52f9f
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/hbmc_am654.c
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-> +// Author: Vignesh R <vigneshr@ti.com>
-> +
-> +#include <linux/err.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/hyperbus.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/types.h>
-> +
-> +struct am654_hbmc_priv {
-> +	struct hb_device hbdev;
-> +	void __iomem	*regbase;
-> +};
-> +
-> +static int am654_hbmc_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct am654_hbmc_priv *priv;
-> +	struct resource *res;
-> +	int err;
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (IS_ERR(res)) {
+[    3.079948] gpmi_reset_block((ptrval)): module reset timeout
+[    3.086728] gpmi-nand: probe of 112000.gpmi-nand failed with error -110
 
-     I don't think that function ever returns error ptrs. It should only 
-return NULL on error.
+The timeout error is returned by the call at gpmi-lib.c line 152:
 
-> +		dev_err(&pdev->dev, "failed to get memory resource\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	priv->regbase = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(priv->regbase)) {
-> +		dev_err(dev, "Cannot remap controller address.\n");
+ret = gpmi_reset_block(r->gpmi_regs, false);
 
-    The above function already prints its error messages.
+The relevant sections from the dts are:
 
-[...]
-> +module_platform_driver(am654_hbmc_platform_driver);
-> +
-> +MODULE_DESCRIPTION("HBMC driver for AM654 SoC");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:hbmc-am654");
-> +MODULE_AUTHOR("Vignesh R <vigneshr@ti.com>");
+&gpmi {
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_gpmi_nand>;
+    nand-on-flash-bbt;
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <1>;
 
-MBR, Sergei
+    partition@0 {
+        label = "barebox";
+        reg = <0x0 0x400000>;
+    };
+...
+};
+
+        pinctrl_gpmi_nand: gpmigrp {
+            fsl,pins = <
+                MX6QDL_PAD_NANDF_CLE__NAND_CLE          0xb0b1
+                MX6QDL_PAD_NANDF_ALE__NAND_ALE          0xb0b1
+                MX6QDL_PAD_NANDF_WP_B__NAND_WP_B        0xb0b1
+                MX6QDL_PAD_NANDF_RB0__NAND_READY_B      0xb000
+                MX6QDL_PAD_NANDF_CS0__NAND_CE0_B        0xb0b1
+                MX6QDL_PAD_NANDF_CS1__NAND_CE1_B        0xb0b1
+                MX6QDL_PAD_NANDF_CS2__NAND_CE2_B    0xb0b1
+                MX6QDL_PAD_NANDF_CS3__NAND_CE3_B    0xb0b1
+                MX6QDL_PAD_SD4_CMD__NAND_RE_B           0xb0b1
+                MX6QDL_PAD_SD4_CLK__NAND_WE_B           0xb0b1
+                MX6QDL_PAD_NANDF_D0__NAND_DATA00        0xb0b1
+                MX6QDL_PAD_NANDF_D1__NAND_DATA01        0xb0b1
+                MX6QDL_PAD_NANDF_D2__NAND_DATA02        0xb0b1
+                MX6QDL_PAD_NANDF_D3__NAND_DATA03        0xb0b1
+                MX6QDL_PAD_NANDF_D4__NAND_DATA04        0xb0b1
+                MX6QDL_PAD_NANDF_D5__NAND_DATA05        0xb0b1
+                MX6QDL_PAD_NANDF_D6__NAND_DATA06        0xb0b1
+                MX6QDL_PAD_NANDF_D7__NAND_DATA07        0xb0b1
+                MX6QDL_PAD_SD4_DAT0__NAND_DQS           0x00b1
+            >;
+        };
+
+The dts node "gpmi" is included from the imx6qdl.dtsi in mainline 4.19.21.
+It would be great if someone could help debug the issue.
+
+Thanks!
+Ibtsam Haq
 
 ______________________________________________________
 Linux MTD discussion mailing list
