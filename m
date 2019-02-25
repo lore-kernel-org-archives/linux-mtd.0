@@ -2,83 +2,92 @@ Return-Path: <SRS0=/vOe=RA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B888EC43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 11:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33481C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 15:18:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 872732083D
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 11:28:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F080F20842
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 15:18:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r8t+sFzY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h4CKRJ8G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 872732083D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X8UvkoNI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EcT92FU/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F080F20842
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gAuWbQ7sebuWIywZP0M1bsc4txIZgghTNMdf2D0vuB8=; b=r8t+sFzYV17USd
-	pVf86WhkZVz+CGnB4WiZxzTXuN3bp5aNV7A/1nChO5fDEJGERx6b64VYP/gzoBb8IhElpKLvxjEag
-	JsrcvgLLo+QuMBU5O9fEj76GQoPOJHor7rkICu9GqWNV0ciToL2hSfdfVetus8SQDUGBdaGWoKm2J
-	AN1SCDwhjbWYc1MFE0+8JA3pQdVdLeS8OLWLaIkqQ96XtXtCQF3iV+eV6D8LhsDbH3Hm/4kk5WoiI
-	KFhEZLGHDQjtC/D24t7FAzWl1fUKQl2gCCI8VtC3NYFPKOMsrtpFnYjQix3Gld4C2JlFJuw5lc9TI
-	TD/RRwoVEsr/3cR49dOw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6Lv1wqoo+KNvSHwPTbT++lfihUPpVaE+lWQCI3ackpc=; b=X8UvkoNILqGRye
+	eundhRi+/xmKbRN5p11A/+jmK+97RAZ05vHdRU9OcbZXE9vobikCDIzg1d3XE3/1O4bayP1y3dd8Y
+	SSxUz1AzjoqEx1K32stPiu0bUROZQJFskLz0FqMrieYySefEM+fFGup3L9f/k7AO7zN87RKjQS0Uz
+	mlgPvTM/lIhQloQxlka8VMCrqSDH2clG3hEJ9VBblrc7Uq3gqp+VsjB+EpAzGSnLEXzT45SCFymA0
+	4ixXX0ajmQjoNOE07b6PIMdiRzx7y4Q09f+A+aQgNijNeIEK5iF4q4jARCsTNjnDJvMIVbnGl71dt
+	zsvxlRP0SuqRCESGGK2g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyEQy-0004p6-RR; Mon, 25 Feb 2019 11:28:32 +0000
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+	id 1gyI1W-0006V9-Pt; Mon, 25 Feb 2019 15:18:30 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyEQv-0004og-JR
- for linux-mtd@lists.infradead.org; Mon, 25 Feb 2019 11:28:30 +0000
-Received: by mail-wm1-x342.google.com with SMTP id v26so7686273wmh.3
- for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2019 03:28:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=0vgsFSU6Bhl8mBC3uOGoB/E/omwDE4oHvg1YIBbnkng=;
- b=h4CKRJ8GMfJb1JI7eQliibHGhBL3TDTWVN3USNPkGEImK1DYEiAt9tnbsWmMkn0mQB
- qYexeCZrYlMXZN+h5YsWQ73bw0bM0XIWHIWW2BuOp9CKPwfzzikLZgwxm440EQ98BVcf
- EYS7bL1B5clz3gqaTKKR0lmE1t3g01lEz7aJ/Fmlk8XspbFHhPqc3cHOTUuCoDE91J7T
- QJ1VTVNe1gvtKjihw4PYtydVW5RIzsjmNUf7tCzAVoKJe3kHOEWUZACFjBvKwcwsqd0u
- QVUi0zFzQ8ksbYkfrD5Hxs9Vv4p859ypRCM5uIPNgWECZ5Af+tCNm0h+BlnSgF2LfWyz
- WLxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=0vgsFSU6Bhl8mBC3uOGoB/E/omwDE4oHvg1YIBbnkng=;
- b=GQ0B+Arvi+oNh8XU4GIb79EDzom998RBVKaugWP+0NP8FmyO6QWnDB3W577gD3AOPc
- Uv/Uo5+3A9J9khZI9jDvq7MrwBINOqGgA7wtig3BwvAn3omXhFt+XFv+gCMs6EoG/5Kl
- GL3vHWSNW2iDAH20VA5WWrN1lFTEyEZ57KQclI0ehezVIvYajOFgnLUs4REOKC+R1xUa
- PcQkmnOaXW1/VFgRj5ljJyVIIJ4Od18qht3LVx7kquY5RLqUv0A8kmJgCTZcGlQHKhjb
- DFQAnoCM06dOIncCa1VFooyzkhvERg/3onyz1GVeiEhkg4h3sBRM+RFjCBlX1QIUADdd
- 8K3g==
-X-Gm-Message-State: AHQUAuY77Q3Af5P7tAEeoDh70bEJS51Q2e1U4Jp3Tf1k41b+pf1oE43W
- ziTOK6Es7X0PmX2mcXJKdsqc8/XeK8VegtF7BDM=
-X-Google-Smtp-Source: AHgI3IbP1v8B8SSLivFEgQpdE1/lUhN/+sO4CqRu6KaiAdBwYZWHDNdwhqjMdCsGFRhM9aa8TSYKAB/iqfi+N5Y4bgg=
-X-Received: by 2002:a1c:be04:: with SMTP id o4mr10034778wmf.19.1551094107049; 
- Mon, 25 Feb 2019 03:28:27 -0800 (PST)
+ id 1gyI1S-0006Tl-9H
+ for linux-mtd@lists.infradead.org; Mon, 25 Feb 2019 15:18:28 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x1PFHvvb074698;
+ Mon, 25 Feb 2019 09:17:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1551107877;
+ bh=z7qYdyUgcM8oI4fbVoZxsZD1hbs2v/OAoV/UeB4WxXs=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=EcT92FU/4QWYPGg0STgrHERhppwrwnrA4tdgBm2SnXLjMZ+v1+v8EhOCKu3JGRce9
+ hRCcnoK3sYQOB/NcvpXm6bgfrh2cgkAJbKhyKRTet5NribTZ/54VnynQrCNhUNpM7x
+ SZQJNJfsabZ+wuUl96CHxpu+ITFQxFFyF4iq15gA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x1PFHvcr027391
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 25 Feb 2019 09:17:57 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Mon, 25
+ Feb 2019 09:17:57 -0600
+Received: from dflp32.itg.ti.com (10.64.6.15) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
+ Mon, 25 Feb 2019 09:17:57 -0600
+Received: from [172.22.217.116] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x1PFHqoA015613;
+ Mon, 25 Feb 2019 09:17:53 -0600
+Subject: Re: [PATCH v2] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
+To: "liujian (CE)" <liujian56@huawei.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "bbrezillon@kernel.org"
+ <bbrezillon@kernel.org>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>, "joakim.tjernlund@infinera.com"
+ <joakim.tjernlund@infinera.com>, "ikegami@allied-telesis.co.jp"
+ <ikegami@allied-telesis.co.jp>, "keescook@chromium.org"
+ <keescook@chromium.org>
+References: <1550609234-40861-1-git-send-email-liujian56@huawei.com>
+ <e9923a1f-aefc-fdd9-97d8-5c0012f09726@ti.com>
+ <4F88C5DDA1E80143B232E89585ACE27D0263D40B@DGGEMM528-MBX.china.huawei.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <f838cc47-abe6-cc81-e75f-61b2be6e97fe@ti.com>
+Date: Mon, 25 Feb 2019 20:47:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.1
 MIME-Version: 1.0
-References: <20190220135820.b2ku2unaxxdqflut@pengutronix.de>
- <20190225085631.ddsodh7x3kaofer5@pengutronix.de>
-In-Reply-To: <20190225085631.ddsodh7x3kaofer5@pengutronix.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 25 Feb 2019 12:28:15 +0100
-Message-ID: <CAFLxGvxcck2mhKA1_20Q3p1FD9MHTrcy-yfi8RxkwTgrwa5j-A@mail.gmail.com>
-Subject: Re: Prevent Nand page writes on Power failure
-To: Sascha Hauer <s.hauer@pengutronix.de>
+In-Reply-To: <4F88C5DDA1E80143B232E89585ACE27D0263D40B@DGGEMM528-MBX.china.huawei.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190225_032829_642849_0D8C1F2D 
-X-CRM114-Status: UNSURE (   9.10  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190225_071826_411450_9EA8E9FD 
+X-CRM114-Status: GOOD (  21.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,33 +99,111 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 25, 2019 at 9:56 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> +static irqreturn_t gpmi_pwr_good_irq(int irq, void *dev_id)
-> +{
-> +       struct gpmi_nand_data *this = dev_id;
-> +       int level;
-> +
-> +       level = gpiod_get_value_cansleep(this->pwrgood_gpio);
-> +       if (level) {
-> +               mutex_lock(&this->nand.power_lock);
-> +       } else {
-> +               mutex_unlock(&this->nand.power_lock);
-> +               dev_info(this->dev, "Spurious Power Failure detected\n");
-> +       }
 
-Hmm, not sure if it is wise to unlock after the power-low pin was toggled.
-Do you have a guarantee that the system, and most important the NAND chip,
-is in a well defined state after the power returns?
 
--- 
-Thanks,
-//richard
+On 22-Feb-19 8:20 PM, liujian (CE) wrote:
+> 
+>> -----Original Message-----
+>> From: Vignesh R [mailto:vigneshr@ti.com]
+>> Sent: Friday, February 22, 2019 1:59 PM
+>> To: liujian (CE) <liujian56@huawei.com>; dwmw2@infradead.org;
+>> computersforpeace@gmail.com; bbrezillon@kernel.org;
+>> marek.vasut@gmail.com; richard@nod.at; joakim.tjernlund@infinera.com;
+>> ikegami@allied-telesis.co.jp; keescook@chromium.org
+>> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH v2] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
+>>
+>>
+>>
+>> On 20/02/19 2:17 AM, Liu Jian wrote:
+>>> In function do_write_buffer(), in the for loop, there is a case
+>>> chip_ready() returns 1 while chip_good() returns 0, so it never break
+>>> the loop.
+>>> To fix this, chip_good() is enough and it should timeout if it stay
+>>> bad for a while.
+>>>
+>>> Fixes: dfeae1073583 ("mtd: cfi_cmdset_0002: Change write buffer to
+>>> check correct value")
+>>> Signed-off-by: Yi Huaijie <yihuaijie@huawei.com>
+>>> Signed-off-by: Liu Jian <liujian56@huawei.com>
+>>> Reviewed-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
+>>> ---
+>>> v1->v2:
+>>> change git log, put the Fixes tag on a single line
+>>>
+>>>  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+>>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> index 72428b6..818e94b 100644
+>>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> @@ -1876,14 +1876,14 @@ static int __xipram do_write_buffer(struct
+>> map_info *map, struct flchip *chip,
+>>>  			continue;
+>>>  		}
+>>>
+>>> -		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+>>> -			break;
+>>> -
+>>>  		if (chip_good(map, adr, datum)) {
+>>>  			xip_enable(map, chip, adr);
+>>>  			goto op_done;
+>>>  		}
+>>>
+>>> +		if (time_after(jiffies, timeo))
+>>> +			break;
+>>> +
+>>
+>> It is quite possible that this thread might be pre-empted just after
+>> chip_good() check but before before time_after(). If the thread, then resumes
+>> execution after timeo has elasped then, this code will wrongly indicate write
+>> failure.
+>>
+>> To avoid this case, you should add one more check for check_good() even when
+>> time_after() returns true. Something like:
+>>
+>> 	if (time_after(jiffies, timeo)) {
+>> 		if (chip_good(map, adr, datum)) {
+>> 			xip_enable(map, chip, adr);
+>> 			goto op_done;
+>> 		}
+>> 		break;
+>> 	}
+>>
+> So,  the patch should like this ?
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 72428b6..3da2376 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1876,7 +1876,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+>                         continue;
+>                 }
+> 
+> -               if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+> +               if (time_after(jiffies, timeo) && !chip_good(map, adr, datum))
+>                         break;
+> 
+>                 if (chip_good(map, adr, datum)) {
+> 
+> 
+> 
+> Any other opinions?
+> If there are no other comments, I will send a patch again
+
+Looks fine to me.. Please submit a new version. Thanks!
+
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
