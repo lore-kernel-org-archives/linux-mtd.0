@@ -4,97 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92B11C4360F
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 18:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC3DEC43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 18:48:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A8CC2084D
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 18:26:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84DF52087C
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Feb 2019 18:48:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WJRERGqw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="cnVrZkEa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A8CC2084D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dS+coaKf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84DF52087C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KXUIK3o1Kbg1Rc61OT1MG7Wkm0dIsTl1vUKc1dLUdBU=; b=WJRERGqwLxYjdn
-	JlewRb65msRJm6abbV9NlOwsgclpU2APHYOqA57FbX9WPzWvyymoWYSyWKR/Uws8GNLyi5i1A74Vl
-	G9/EjeEtlQE5dxWPLlHEH5aRXA83K8xl3b3/eScSGdzptAAGzpjATmpGUbvJOV/ruV33IF4uZJ+Jc
-	QeCP1IQN75GgXYq8IdejMOLNJZn+yGpsVLVUPJzrOX9Sc7bK4/WJw8g14gXBLdA8FfbBgAw5QNm1a
-	ipI7ma+qNI4iJAn0NBLHQoI5eAvqVZo6F7yk8H/aadCrMvxPEyj5Qni5a3mFooTmin5mXxQPhYqQ0
-	PG7ycxB1QTvcd5cSGerQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mEEelDcuK16mDbVJeT/tS9ZR1BCrJDM7y0VN0GgBhO8=; b=dS+coaKf/1gx07
+	d/EyGCyd/4i/SJCn/hOQeGwGeAQ47VsQc2CbnOq62cj4VDnA93P0n7m4LwBhOXWOmfaJzytpQ9plZ
+	chMsfKq/Z9gSfKwIMa75Pgbx54Ou46opwNRf8XDA5L4Vl7AmS/itZm1eiYimqiT834wGic3iLcdhx
+	YqY7ww3fcKJiEkOUXsLz+0hUEgDDUYsLh6ENGKkmLEvm0Z5Tny11gIJRo+0ZLqvXZVoC/Hsqt0Q9v
+	uR7DQpCRWW8Zh8xTH4CD0D9UjRF53Eqjo2uRyl6KypucY/4w75q53+7EbStn/meTMEH55Maqakv5M
+	ParkSkeF9GAOoNDeY/8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyKxb-0007Yz-MY; Mon, 25 Feb 2019 18:26:39 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1gyLIc-0005eb-Lj; Mon, 25 Feb 2019 18:48:22 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyKxR-0007QY-Gy
- for linux-mtd@lists.infradead.org; Mon, 25 Feb 2019 18:26:31 +0000
-Received: by mail-lj1-x244.google.com with SMTP id w6so8304014ljd.7
- for <linux-mtd@lists.infradead.org>; Mon, 25 Feb 2019 10:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=ykpzer4RBcU0VcCznMZdvt8qKc+1G2JLswY5vEVF8KE=;
- b=cnVrZkEa0+E2BDaBa9Bqu+PZyTg/T7u4ILs8kHP+zOTrFDaY6CjejkKtzzEEs9+41m
- vOFG5x/+cOvsmCEPzFpbmwzfS8YGkytQ0V9jHaNRK+YlguIxVhQhxsdz6wtu7IpcFmOV
- TFGwvuKdNFUFn2lX6lKSWWhjuSYnNdgmMn13s+++3g7cSe3DqeIbQP6s27DVSsDLCUtm
- yV6GIRG3JqhVcYviv7X/pFadwNA8qIhASPBvjxbX52UL1WGej1xpgqkRv/P14viBCgQC
- GL4q/kjMb8xMzz3qlJ36Byy5pMDu4ufxkU/NHX3naueT2/4qVC3F1aCZetbcdj7nX4Ly
- rWtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=ykpzer4RBcU0VcCznMZdvt8qKc+1G2JLswY5vEVF8KE=;
- b=bosSS5fpSuVX4q0E1UXhUBDFUKfjF1ouO+o1zX4cNJSmYNJS1Vxa58kjFi5WE9NKVQ
- a+8ykSDMyD3gS1kurf52qFhhg8sEuGjQnfzNHpSRjArZHSWPIBKOL/pZuFI24zZMIs9r
- rWrRCZNiOOuqFQOg7G+R5f0mEayUni963bhvq0lUO3Wc0WsDJtetbvz0tuVYt+9ELZCy
- SSyT2WGlMnfS2EBHj9xIq2mUXpq/Om65w/Cm7nK+2HpIi8/xYjxvfUXsjsDwmuXFnBw/
- 5mk/+ij1Xx60KEFgbIGuHiep2UXuQfgbKM9Vze+Z3+4XIPPvSRxi0w9tIWhSLEyEJjsA
- ypIg==
-X-Gm-Message-State: AHQUAuaS81JIa6YUbZn27LTorKm5W5y90fnZS2WMDpeo1/YTxzSq/yRo
- TizAZLG/aQ+gLUMMRG4X5/FOjg==
-X-Google-Smtp-Source: AHgI3IauTkTaG9r94aYfrTbxXRe3SgfuefYMs+7/pOQ/52B+35BeBQd9H6xbT4LLh1M94kT+jd4vug==
-X-Received: by 2002:a2e:7806:: with SMTP id t6mr9568859ljc.188.1551119187463; 
- Mon, 25 Feb 2019 10:26:27 -0800 (PST)
-Received: from wasted.cogentembedded.com ([31.173.84.85])
- by smtp.gmail.com with ESMTPSA id r64sm1608761lff.77.2019.02.25.10.26.25
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 25 Feb 2019 10:26:26 -0800 (PST)
-Subject: Re: [RFC PATCH 3/5] mtd: Add support for Hyperbus memory devices
-To: "Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>)"
- <vigneshr@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190219063607.29949-1-vigneshr@ti.com>
- <20190219063607.29949-4-vigneshr@ti.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <92bfdbf8-cc78-c691-298d-d2eb6193e1be@cogentembedded.com>
-Date: Mon, 25 Feb 2019 21:26:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ id 1gyLIP-0005Vv-Lk; Mon, 25 Feb 2019 18:48:11 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2FB42260877;
+ Mon, 25 Feb 2019 18:48:07 +0000 (GMT)
+Date: Mon, 25 Feb 2019 19:48:03 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [RFC PATCH 25/27] mtd: nand: Add helpers to manage ECC engines
+ and configurations
+Message-ID: <20190225194803.58fb8efc@collabora.com>
+In-Reply-To: <20190225173414.1836f0a8@kernel.org>
+References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
+ <20190221125806.28875-13-miquel.raynal@bootlin.com>
+ <20190222154431.66c6911f@kernel.org>
+ <20190225170118.62739fc4@xps13>
+ <20190225173414.1836f0a8@kernel.org>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190219063607.29949-4-vigneshr@ti.com>
-Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190225_102629_700292_8A3EB210 
-X-CRM114-Status: GOOD (  26.33  )
+X-CRM114-CacheID: sfid-20190225_104809_975304_09965928 
+X-CRM114-Status: GOOD (  39.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -106,110 +71,177 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+Cc: Brian Norris <computersforpeace@gmail.com>, Vignesh R <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>,
+ Schrempf Frieder <frieder.schrempf@kontron.de>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/19/2019 09:36 AM, Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>) wrote:
+On Mon, 25 Feb 2019 17:34:22 +0100
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-> Cypress HyperBus is Low Signal Count, High Performance Double Data Rate Bus
-> interface between a host system master and one or more slave interfaces.
-> HyperBus is used to connect microprocessor, microcontroller, or ASIC
-> devices with random access NOR flash memory(called HyperFlash) or
-> self refresh DRAM(called HyperRAM).
+> On Mon, 25 Feb 2019 17:01:18 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
-> signal and either Single-ended clock(3.0V parts) or Differential clock
-> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
-> At bus level, it follows a separate protocol described in HyperBus
-> specification[1].
+> > Hi Boris,
+> > 
+> > Boris Brezillon <bbrezillon@kernel.org> wrote on Fri, 22 Feb 2019
+> > 15:44:31 +0100:
+> >   
+> > > On Thu, 21 Feb 2019 13:58:04 +0100
+> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > >     
+> > > > Add the logic in the NAND core to find the right ECC engine depending
+> > > > on the NAND chip requirements and the user desires. Right now, the
+> > > > choice may be made between (more will come):
+> > > > * software Hamming
+> > > > * software BCH
+> > > > * on-die (SPI-NAND devices only)
+> > > > 
+> > > > Once the ECC engine has been found, the ECC engine must be
+> > > > configured.
+> > > > 
+> > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > ---
+> > > >  drivers/mtd/nand/core.c  | 107 +++++++++++++++++++++++++++++++++++++++
+> > > >  include/linux/mtd/nand.h |   4 ++
+> > > >  2 files changed, 111 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
+> > > > index 872d46b5fc0f..9feb118c9f68 100644
+> > > > --- a/drivers/mtd/nand/core.c
+> > > > +++ b/drivers/mtd/nand/core.c
+> > > > @@ -207,6 +207,113 @@ int nanddev_mtd_max_bad_blocks(struct mtd_info *mtd, loff_t offs, size_t len)
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(nanddev_mtd_max_bad_blocks);
+> > > >  
+> > > > +/**
+> > > > + * nanddev_find_ecc_engine() - Find a suitable ECC engine
+> > > > + * @nand: NAND device
+> > > > + */
+> > > > +static int nanddev_find_ecc_engine(struct nand_device *nand)      
+> > > 
+> > > Can we pass the conf in argument instead of reading it from
+> > > nand->ecc.user_conf?
+> > >     
+> > > > +{
+> > > > +	bool is_spinand = mtd_type_is_spinand(&nand->mtd);      
+> > > 
+> > > And here is the reason for the SPINAND type.
+> > >     
+> > > > +
+> > > > +	/* Read the user desires in terms of ECC engine/configuration */
+> > > > +	nand_ecc_read_user_conf(nand);
+> > > > +
+> > > > +	/* No ECC engine requestedn, let's return without error */
+> > > > +	if (nand->ecc.user_conf.mode == NAND_ECC_NONE)
+> > > > +		return 0;
+> > > > +
+> > > > +	/* Raw NAND default mode is hardware */
+> > > > +	if (!is_spinand && nand->ecc.user_conf.mode < 0)
+> > > > +		nand->ecc.user_conf.mode = NAND_ECC_HW;      
+> > > 
+> > > We should let the raw NAND layer take this decision (actually, it's
+> > > even a raw NAND controller driver decision). Please complain if
+> > > user_conf.mode is invalid.
+> > > This way you won't need the SPINAND type you added in one of your
+> > > previous patch.
+> > >     
+> > > > +
+> > > > +	/* SPI-NAND default mode is on-die */
+> > > > +	if (is_spinand && nand->ecc.user_conf.mode < 0)
+> > > > +		nand->ecc.user_conf.mode = NAND_ECC_ON_DIE;
+> > > > +
+> > > > +	switch (nand->ecc.user_conf.mode) {
+> > > > +	case NAND_ECC_SOFT:
+> > > > +		nand->ecc.engine = nand_ecc_sw_get_engine(nand);
+> > > > +		break;
+> > > > +	case NAND_ECC_ON_DIE:
+> > > > +		if (is_spinand)
+> > > > +			nand->ecc.engine = spinand_ondie_ecc_get_engine();      
+> > > 
+> > > So, maybe it's worth having the ondie ECC engine instance directly
+> > > embedded in nand_device instead of spinand, or maybe just a pointer, so
+> > > that you don't reserve extra space when the NAND device does not have
+> > > on-die ECC.
+> > >     
+> > > > +		else
+> > > > +			pr_err("On-die ECC engines for non SPI devices not supported yet\n");
+> > > > +		break;
+> > > > +	case NAND_ECC_HW:
+> > > > +		pr_err("Hardware ECC engines not supported yet\n");
+> > > > +		break;
+> > > > +	default:
+> > > > +		pr_err("Missing ECC engine property\n");
+> > > > +	}
+> > > > +
+> > > > +	if (!nand->ecc.engine)
+> > > > +		return  -EINVAL;
+> > > > +
+> > > > +	return 0;
+> > > > +}      
+> > >     
+> > 
+> > I think this is the root patch were our ideas diverge. For me, each
+> > 'ECC engine' has a _get() helper and the NAND core decides which one to
+> > call to retrieve the right engine. Can you please explain what was your
+> > idea if this one does not fit?  
 > 
-> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
-> to that of existing parallel NORs. Since Hyperbus is x8 DDR bus,
+> Each class of ECC engine has its own way of getting a pointer to an ECC
+> engine instance:
+> 
+> - ondie: the engine is directly attached to the device and can be
+>   retrieved by accessing a nand_device field (nanddev->ondie_ecc?).
+> - sw ECC: you can create a new instance for each device and possibly
+>   pass the OOB layout you want to use (assuming you don't want to use
+>   the default one)
+> - HW-controller-side engine: refers to the controller device (parent
+>   node) or the device pointed by the ecc-engine DT prop (we'll probably
+>   need a way to pass this info when for non-DT platforms). For this one
+>   we'll add a nanddev_get_hw_ecc_engine() which will search for all
+>   registered HW ECC engines and try to match with some search keys (in
+>   case of DT, it's the ->of_node pointer address)
+> 
+> Clearly, for SW-based ECC, you'll need more than just the nanddev
+> object, as layouts can differ depending on the controller driver. So,
+> what I'm suggesting is to have a
+> 
+> 	nand_create_sw_ecc_engine(algo, layout) 
+> 
+> funtion that returns this ECC engine instance which the driver will
+> then attach to the NAND device.
 
-   HyperBus, please be consistent.
+I'm reconsidering what I said here. I guess having the layout set by
+the driver before nand_ecc_sw_get_engine() is called could do the
+trick. We just need to make sure the layout provided has enough space
+to store ECC bytes at context creation time.
 
-> its equivalent to x16 parallel NOR flash wrt bits per clk. But Hyperbus
+> 
+> > 
+> > Also, the parsing of the DT (in nand_ecc_read_user_conf()) gives me the
+> > user ECC mode and algo, so I cannot let the raw NAND core (or a raw
+> > NAND controller driver) or the SPI NAND core decide which mode is the
+> > default if not provided by the user.  
+> 
+> Except this prop is optional in most cases, and the default value is
+> not always the same, which is why I think this ECC engine retrieval step
+> should be left to each sub-layer (and sometimes to the controller driver
+> behind it). Maybe you can provide helpers to help with that, but I
+> don't think taking this decision here, based on the bus type, is a good
+> idea. And I also don't like the idea of adding a new SPINAND type.
 
-   Again...
-
-> operates at >166MHz frequencies.
-> HyperRAM provides direct random read/write access to flash memory
-> array.
-> 
-> But, Hyperbus memory controllers seem to abstract implementation details
-
-  And again.
-
-> and expose a simple MMIO interface to access connected flash.
-> 
-> Add support for registering HyperFlash devices with MTD framework. MTD
-> maps framework along with CFI chip support framework are used to support
-> communicate with flash.
-> 
-> Framework is modelled along the lines of spi-nor framework. HyperBus
-> memory controller(HBMC) drivers call hb_register_device() to register a
-> single HyperFlash device. HyperFlash core parses MMIO access
-> information from DT, sets up the map_info struct, probes CFI flash and
-> registers it with MTD framework.
-> 
-> Some HBMC masters need calibration/training sequence[3] to be carried
-> out, in order for DLL inside the controller to lock, by reading a known
-> string/pattern. This is done by repeatedly reading CFI Query
-> Identification String. Calibration needs to be done before try to detect
-> flash as part of CFI flash probe.
-> 
-> HyperRAM is not supported atm.
-> 
-> HyperBus specification can be found at[1]
-> HyperFlash datasheet can be found at[2]
-> 
-> [1] https://www.cypress.com/file/213356/download
-> [2] https://www.cypress.com/file/213346/download
-> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->     Table 12-5741. HyperFlash Access Sequence
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
-[...]
-> diff --git a/drivers/mtd/hyperbus/core.c b/drivers/mtd/hyperbus/core.c
-> new file mode 100644
-> index 000000000000..d3d44aab7503
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/core.c
-> @@ -0,0 +1,167 @@
-[...]
-> +/* Calibrate HBMC by repeatedly reading "QRY" string from CFI space */
-> +static int hb_calibrate(struct hb_device *hbdev)
-> +{
-> +	struct map_info *map = &hbdev->map;
-> +	struct cfi_private cfi;
-> +	int count = HB_CALIB_COUNT;
-> +	int ret;
-> +
-> +	cfi.interleave = 1;
-> +	cfi.device_type = CFI_DEVICETYPE_X16;
-> +	cfi_send_gen_cmd(0xF0, 0, 0, map, &cfi, cfi.device_type, NULL);
-> +	cfi_send_gen_cmd(0x98, 0x55, 0, map, &cfi, cfi.device_type, NULL);
-> +
-> +	while (count--)
-> +		cfi_qry_present(map, 0, &cfi);
-
-   Why do all 25 reads if you can encounter valid QRY in less reads than 25?
-
-> +
-> +	ret = cfi_qry_present(map, 0, &cfi);
-> +	cfi_qry_mode_off(0, map, &cfi);
-> +
-> +	return ret;
-> +}
-[...]
-
-MBR, Sergei
+Hm, after thinking a bit more about it, maybe we could have something
+in-between: let the controller driver or sub-layer specify what the
+default values are (provider/mode and possibly algorithm if that makes
+sense) so that this generic function can use these defaults when
+nand->ecc.user_conf.{mode,algo} == UNKNOWN.
 
 ______________________________________________________
 Linux MTD discussion mailing list
