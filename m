@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E49C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 15:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9EBBC43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 16:04:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51CAF20652
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 15:59:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A96B020652
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 16:04:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QKCR/LyG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51CAF20652
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jjKlAuQ0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A96B020652
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -24,41 +24,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u6lwHsptVX3CT7tOmfa2/DVae6XcWUGI9NpOzNyE2RQ=; b=QKCR/LyGuQOYQG
-	w0XhWu6gdsGBdHBGgLcSRZ+KgckDaSeoQr49ktYdR42Jh2V+jM2wuXWb+47VSV4JIf/DT8AbLj9Uv
-	GMXlduDaxWokLJyJgeafATWiElMCR6HMo3Wo/04WTieuTSqZ8YKhfGBCboCYpEMPj/MB4sLxUKIP6
-	lZJSpPmoxI04KNE3irVSE6I0Nfr/y8cv33Qi3PmpSXaLkShvjWFQyzPjpxKyELCfFRIGniArdNGvO
-	XE6KYWdjN3XPai6n9elF4mlZXDMGc6SXuGzmo4JdMY5H52Lev9sMtpDBl4Li0Z0dq8Z6TgCtxaFgv
-	fLcoYJh17pl8ShVmijGg==;
+	List-Owner; bh=BfT7OMMrxl/QkqQtct0S/oOAtO8kV8myynEKwyDU81k=; b=jjKlAuQ0oxhifz
+	16pNlqYMVO00wuqqVfV+9A6PQpjkwipoOD2v9E4jINDDN1DXCPjwIcwdzaI4gWp0o6Y09BHScVKqy
+	jOXLmWe/oUOhvb6D1p8s9ekyUH6CVAdQ/QAaKvRYnG3N12dN/tl3/ulaXap7p1DBdsgbO4/nmow5I
+	V9qL3sdU29IoBuy/ebtLocC9UkjmTEv7I0wV1Bs3OvjrND/F3fKg6DRyktpTJCh/EbH+3NLw39uq4
+	5eq8Rc6wYDr2mgxIZy1majGmbBXOhsyke2a7bHvNjM2+OBePbqznpEYcndwbgrs/y+5RXNgmai44w
+	zPGalALHTNC5mMg4jRZw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyf8x-00075x-Tn; Tue, 26 Feb 2019 15:59:43 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1gyfDU-0001jU-BE; Tue, 26 Feb 2019 16:04:24 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyf8p-0006xc-Mg; Tue, 26 Feb 2019 15:59:37 +0000
-Received: from xps13 (aaubervilliers-681-1-27-150.w90-88.abo.wanadoo.fr
- [90.88.147.150]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 7E47920000C;
- Tue, 26 Feb 2019 15:59:24 +0000 (UTC)
-Date: Tue, 26 Feb 2019 16:59:23 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1gyfDJ-0001aj-71; Tue, 26 Feb 2019 16:04:16 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5F2C326053B;
+ Tue, 26 Feb 2019 16:04:07 +0000 (GMT)
+Date: Tue, 26 Feb 2019 17:04:04 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Subject: Re: [RFC PATCH 25/27] mtd: nand: Add helpers to manage ECC engines
  and configurationsND
-Message-ID: <20190226165923.535f63f7@xps13>
-In-Reply-To: <20190225194803.58fb8efc@collabora.com>
+Message-ID: <20190226170404.36707f87@collabora.com>
+In-Reply-To: <20190226165923.535f63f7@xps13>
 References: <20190221125806.28875-1-miquel.raynal@bootlin.com>
  <20190221125806.28875-13-miquel.raynal@bootlin.com>
  <20190222154431.66c6911f@kernel.org>
  <20190225170118.62739fc4@xps13>
  <20190225173414.1836f0a8@kernel.org>
  <20190225194803.58fb8efc@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20190226165923.535f63f7@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190226_075935_894536_5C4E6C45 
-X-CRM114-Status: GOOD (  15.38  )
+X-CRM114-CacheID: sfid-20190226_080413_381728_547006AC 
+X-CRM114-Status: GOOD (  19.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,35 +81,46 @@ Cc: Brian Norris <computersforpeace@gmail.com>, Vignesh R <vigneshr@ti.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Mason Yang <masonccyang@mxic.com.tw>, David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBNb24sIDI1IEZlYgoyMDE5IDE5OjQ4OjAzICswMTAwOgoKPiA+ID4gQWxzbywg
-dGhlIHBhcnNpbmcgb2YgdGhlIERUIChpbiBuYW5kX2VjY19yZWFkX3VzZXJfY29uZigpKSBnaXZl
-cyBtZSB0aGUKPiA+ID4gdXNlciBFQ0MgbW9kZSBhbmQgYWxnbywgc28gSSBjYW5ub3QgbGV0IHRo
-ZSByYXcgTkFORCBjb3JlIChvciBhIHJhdwo+ID4gPiBOQU5EIGNvbnRyb2xsZXIgZHJpdmVyKSBv
-ciB0aGUgU1BJIE5BTkQgY29yZSBkZWNpZGUgd2hpY2ggbW9kZSBpcyB0aGUKPiA+ID4gZGVmYXVs
-dCBpZiBub3QgcHJvdmlkZWQgYnkgdGhlIHVzZXIuICAgIAo+ID4gCj4gPiBFeGNlcHQgdGhpcyBw
-cm9wIGlzIG9wdGlvbmFsIGluIG1vc3QgY2FzZXMsIGFuZCB0aGUgZGVmYXVsdCB2YWx1ZSBpcwo+
-ID4gbm90IGFsd2F5cyB0aGUgc2FtZSwgd2hpY2ggaXMgd2h5IEkgdGhpbmsgdGhpcyBFQ0MgZW5n
-aW5lIHJldHJpZXZhbCBzdGVwCj4gPiBzaG91bGQgYmUgbGVmdCB0byBlYWNoIHN1Yi1sYXllciAo
-YW5kIHNvbWV0aW1lcyB0byB0aGUgY29udHJvbGxlciBkcml2ZXIKPiA+IGJlaGluZCBpdCkuIE1h
-eWJlIHlvdSBjYW4gcHJvdmlkZSBoZWxwZXJzIHRvIGhlbHAgd2l0aCB0aGF0LCBidXQgSQo+ID4g
-ZG9uJ3QgdGhpbmsgdGFraW5nIHRoaXMgZGVjaXNpb24gaGVyZSwgYmFzZWQgb24gdGhlIGJ1cyB0
-eXBlLCBpcyBhIGdvb2QKPiA+IGlkZWEuIEFuZCBJIGFsc28gZG9uJ3QgbGlrZSB0aGUgaWRlYSBv
-ZiBhZGRpbmcgYSBuZXcgU1BJTkFORCB0eXBlLiAgCj4gCj4gSG0sIGFmdGVyIHRoaW5raW5nIGEg
-Yml0IG1vcmUgYWJvdXQgaXQsIG1heWJlIHdlIGNvdWxkIGhhdmUgc29tZXRoaW5nCj4gaW4tYmV0
-d2VlbjogbGV0IHRoZSBjb250cm9sbGVyIGRyaXZlciBvciBzdWItbGF5ZXIgc3BlY2lmeSB3aGF0
-IHRoZQo+IGRlZmF1bHQgdmFsdWVzIGFyZSAocHJvdmlkZXIvbW9kZSBhbmQgcG9zc2libHkgYWxn
-b3JpdGhtIGlmIHRoYXQgbWFrZXMKPiBzZW5zZSkgc28gdGhhdCB0aGlzIGdlbmVyaWMgZnVuY3Rp
-b24gY2FuIHVzZSB0aGVzZSBkZWZhdWx0cyB3aGVuCj4gbmFuZC0+ZWNjLnVzZXJfY29uZi57bW9k
-ZSxhbGdvfSA9PSBVTktOT1dOLgoKSGF2aW5nIGEgImRlZmF1bHRfcHJvdmlkZXIiIGluIHN0cnVj
-dCBuYW5kX2VjYyBjb3VsZCB0byB0aGUgdHJpY2suIEl0CndvdWxkIGJlIGZpbGxlZCBieSB0aGUg
-Y29udHJvbGxlciBkcml2ZXJzL3N1YmxheWVycyBiZWZvcmUKbmFuZGRldl9lY2NfZW5naW5lX2lu
-aXQoKSBpcyBjYWxsZWQuCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+On Tue, 26 Feb 2019 16:59:23 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Hi Boris,
+> 
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 25 Feb
+> 2019 19:48:03 +0100:
+> 
+> > > > Also, the parsing of the DT (in nand_ecc_read_user_conf()) gives me the
+> > > > user ECC mode and algo, so I cannot let the raw NAND core (or a raw
+> > > > NAND controller driver) or the SPI NAND core decide which mode is the
+> > > > default if not provided by the user.      
+> > > 
+> > > Except this prop is optional in most cases, and the default value is
+> > > not always the same, which is why I think this ECC engine retrieval step
+> > > should be left to each sub-layer (and sometimes to the controller driver
+> > > behind it). Maybe you can provide helpers to help with that, but I
+> > > don't think taking this decision here, based on the bus type, is a good
+> > > idea. And I also don't like the idea of adding a new SPINAND type.    
+> > 
+> > Hm, after thinking a bit more about it, maybe we could have something
+> > in-between: let the controller driver or sub-layer specify what the
+> > default values are (provider/mode and possibly algorithm if that makes
+> > sense) so that this generic function can use these defaults when
+> > nand->ecc.user_conf.{mode,algo} == UNKNOWN.  
+> 
+> Having a "default_provider" in struct nand_ecc could to the trick. It
+> would be filled by the controller drivers/sublayers before
+> nanddev_ecc_engine_init() is called.
+
+You'll also need a default_algo, at least for SW ECC. Note that other
+props, like strength, step-size or flags (like the maximize flag) can
+be left undefined as well, so providing default vals for those ones (or
+deriving them from ECC requirements) might make sense too.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
