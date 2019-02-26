@@ -2,73 +2,87 @@ Return-Path: <SRS0=THda=RB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 695F7C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 10:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14CF9C43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 10:59:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A0D42173C
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 10:48:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D217A20842
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 10:59:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ISktPxRl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A0D42173C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=asem.it
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="loOhW4ij";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kjwlFYNI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D217A20842
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kyiw60VOG4pqwD0/zHxNlb2WXGcvYFSHlH7R9B/jmdQ=; b=ISktPxRl85beyu
-	Uu3U7DHKsqtXWgAAUeuYYfHn6oPSRfFv1zkfgH2z7/2cAFoPh8cTyjij8tvTEkpLTumht1LakYq70
-	UCrRZy47bZpUldtm312GO+Yw4SW/CAf/EWX39qUHY1SoCaK094Jrhw3lNhoWl65RC/NG/6byTTJgy
-	l6MuX6usJl6TgDJSMnvh24c84MyWrNvkksX+zKCp8tTAAMYWt6sEueHQrp3WTsATIgIqNOqaeTbC2
-	hvlaEyx9I/TfmoMyCPSTjJg5DvzN+AXUXV4ko7lKLaLdzheW8UK5Uj6UuE3iIRQTGyF0wHnuGZa7b
-	FHIjHs/cVgPu1XfNPXsQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+JeNEfuTI0zBk4LrpTXuDKgk1LVyij9M55zRAZj6i0E=; b=loOhW4iju8rOFV
+	WQoU6nAI08qF/tuU9zeTjZ2kKMB6BbguFJYcMMxdvwKvqWFxOQzpRWteYxY1KaGS+5yMCcmLxckes
+	yttrgs4nhrS+q+JNtWPas2SCmzdT5xQoo7RI+2coJSVX6FmKBjVGvl/buLG+RCMejckjzzV0UU9Ey
+	wZofCwUq5NhhzEH42bbdJmPzyvv2zeslN2qRg/dD+HJRJmEIYX5o6j3UzcpuM4s9nv1h8KlRAIF3H
+	BL8nBwfExgBssHhjFU6PX7bHqzN4PXq7J+vuE6kvXMC/rH4aVi/UpAkN8oIGH/OesXUWXfE17Xk0A
+	VEqIGsQ/BkFqMNhu6isg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyaHo-0007yS-21; Tue, 26 Feb 2019 10:48:32 +0000
-Received: from smtp.asem.it ([151.1.184.197])
+	id 1gyaSd-0003J4-Sv; Tue, 26 Feb 2019 10:59:43 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyaHg-0007ou-W1
- for linux-mtd@lists.infradead.org; Tue, 26 Feb 2019 10:48:26 +0000
-Received: from webmail.asem.it by asem.it (smtp.asem.it)
- (SecurityGateway 5.5.0) with ESMTP id SG003717273.MSG 
- for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2019 11:48:11 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1261.35; Tue, 26
- Feb 2019 11:48:10 +0100
-Received: from flavio-x.asem.intra (172.16.17.161) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1261.35 via Frontend
- Transport; Tue, 26 Feb 2019 11:48:10 +0100
-From: Flavio Suligoi <f.suligoi@asem.it>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon <bbrezillon@kernel.org>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Mark
- Brown <broonie@kernel.org>, Frieder Schrempf <frieder.schrempf@exceet.de>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 1/1] mtd: devices: add ACPI support for non-jedec m25p80
-Date: Tue, 26 Feb 2019 11:48:08 +0100
-Message-ID: <1551178088-6615-2-git-send-email-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1551178088-6615-1-git-send-email-f.suligoi@asem.it>
-References: <1551178088-6615-1-git-send-email-f.suligoi@asem.it>
+ id 1gyaSZ-0003Ie-QK; Tue, 26 Feb 2019 10:59:42 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x1QAxThK114173;
+ Tue, 26 Feb 2019 04:59:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1551178769;
+ bh=xu8wrs2N42x599628JA5mvXzDvF/M2T/HAGD+1mUjL8=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=kjwlFYNI+r0QLt9Es4I7p8ObYC0sK6tKBfeluNOApobJos/8X2Wa0kxbaL6AawOyi
+ HVCqwLRL+yrP8r3mLuIDBi1TGAMjrAuV/bHi8PfhIHNwpT6yRuKIWOgkZEXyOTw9Rx
+ G1Z5OyniDFDCN1jFgeaLDDUmbSJ1V3o/d+RmnUy8=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x1QAxT8T118117
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 26 Feb 2019 04:59:29 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Tue, 26
+ Feb 2019 04:59:29 -0600
+Received: from dlep33.itg.ti.com (157.170.170.75) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
+ Tue, 26 Feb 2019 04:59:29 -0600
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dlep33.itg.ti.com (8.14.3/8.13.8) with ESMTP id x1QAxO3M005249;
+ Tue, 26 Feb 2019 04:59:25 -0600
+Subject: Re: [RFC PATCH 3/5] mtd: Add support for Hyperbus memory devices
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
+References: <20190219063607.29949-1-vigneshr@ti.com>
+ <20190219063607.29949-4-vigneshr@ti.com>
+ <42d0fd7b-42e0-605c-70ee-6e308908fc90@cogentembedded.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <b7e93ab0-8db1-f990-ed51-adb1123df4c4@ti.com>
+Date: Tue, 26 Feb 2019 16:30:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A0B0207.5C75196B.0066, ss=1, re=0.000, recu=0.000,
- reip=0.000, cl=1, cld=1, fgs=0 (_st=1 _vt=0 _iwf=0)
+In-Reply-To: <42d0fd7b-42e0-605c-70ee-6e308908fc90@cogentembedded.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190226_024825_213666_73C84F48 
-X-CRM114-Status: GOOD (  15.89  )
+X-CRM114-CacheID: sfid-20190226_025939_939219_46090E15 
+X-CRM114-Status: GOOD (  32.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -80,138 +94,290 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Flavio Suligoi <f.suligoi@asem.it>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Nori,
+ Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For the x86 machines a m25p80-compatible device have to be declared using
-an ACPI table (which can be directly a part of the BIOS ACPI tables).
 
-In this case it is necessary to add the device in the "of_device_id" structure
-list, to permit the device name matching by the ACPI kernel functions.
 
-This is an example of a SSDT table for the Everspin mr25h40:
+On 24/02/19 1:49 AM, Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 02/19/2019 09:36 AM, Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>) wrote:
+> 
+>> Cypress HyperBus is Low Signal Count, High Performance Double Data Rate Bus
+>> interface between a host system master and one or more slave interfaces.
+>> HyperBus is used to connect microprocessor, microcontroller, or ASIC
+>> devices with random access NOR flash memory(called HyperFlash) or
+> 
+>   Need space before (.
+> 
+>> self refresh DRAM(called HyperRAM).
+>>
+>> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+>> signal and either Single-ended clock(3.0V parts) or Differential clock
+>> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+>> At bus level, it follows a separate protocol described in HyperBus
+>> specification[1].
+>>
+>> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+>> to that of existing parallel NORs. Since Hyperbus is x8 DDR bus,
+>> its equivalent to x16 parallel NOR flash wrt bits per clk. But Hyperbus
+>> operates at >166MHz frequencies.
+>> HyperRAM provides direct random read/write access to flash memory
+>> array.
+>>
+>> But, Hyperbus memory controllers seem to abstract implementation details
+>> and expose a simple MMIO interface to access connected flash.
+>>
+>> Add support for registering HyperFlash devices with MTD framework. MTD
+>> maps framework along with CFI chip support framework are used to support
+>> communicate with flash.
+> 
+>    Communicating.
+> 
+>> Framework is modelled along the lines of spi-nor framework. HyperBus
+>> memory controller(HBMC) drivers call hb_register_device() to register a
+> 
+>    Again, space needed before (.
+> 
+>> single HyperFlash device. HyperFlash core parses MMIO access
+>> information from DT, sets up the map_info struct, probes CFI flash and
+>> registers it with MTD framework.
+>>
+>> Some HBMC masters need calibration/training sequence[3] to be carried
+>> out, in order for DLL inside the controller to lock, by reading a known
+>> string/pattern. This is done by repeatedly reading CFI Query
+>> Identification String. Calibration needs to be done before try to detect
+> 
+>    Trying.
+> 
+>> flash as part of CFI flash probe.
+>>
+>> HyperRAM is not supported atm.
+> 
+>    ATM?
+> 
+>> HyperBus specification can be found at[1]
+>> HyperFlash datasheet can be found at[2]
+>>
+>> [1] https://www.cypress.com/file/213356/download
+>> [2] https://www.cypress.com/file/213346/download
+>> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+>>     Table 12-5741. HyperFlash Access Sequence
+>>
+>> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> [...]
+>> diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
+>> new file mode 100644
+>> index 000000000000..02c38afc5c50
+>> --- /dev/null
+>> +++ b/drivers/mtd/hyperbus/Kconfig
+>> @@ -0,0 +1,23 @@
+>> +menuconfig MTD_HYPERBUS
+>> +	tristate "Hyperbus support"
+>> +	select MTD_CFI
+>> +	select MTD_MAP_BANK_WIDTH_2
+>> +	select MTD_CFI_AMDSTD
+>> +	select MTD_COMPLEX_MAPPINGS
+>> +	help
+>> +	  This is the framework for the Hyperbus which can be used by
+>> +	  the Hyperbus Controller driver to commmunicate with
+>                                               ^^^
+>   Too many m's. :-)
+> 
+>> +	  Hyperflash. See Cypress Hyperbus specification for more
+>> +	  details
+>> +
+>> +
+>> +if MTD_HYPERBUS
+>> +
+>> +config HBMC_AM654
+>> +	tristate "Hyperbus controller driver for AM65x SoC"
+>> +	help
+>> +	 This is the driver for Hyperbus controller on TI's AM65x and
+>> +	 other SoCs
+>> +
+>> +endif # MTD_HYPERBUS
+> 
+>   The above clearly belongs to patch #5.
+> 
+>> +
+> 
+>    No empty lines at end of file, please...
+> 
+>> diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
+>> new file mode 100644
+>> index 000000000000..64e377d7f636
+>> --- /dev/null
+>> +++ b/drivers/mtd/hyperbus/Makefile
+>> @@ -0,0 +1,4 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +
+>> +obj-$(CONFIG_MTD_HYPERBUS)	+= core.o
+>> +obj-$(CONFIG_HBMC_AM654)	+= hbmc_am654.o
+> 
+>    The above line clearly belongs to patch #5 as well...
+> 
+>> diff --git a/drivers/mtd/hyperbus/core.c b/drivers/mtd/hyperbus/core.c
+>> new file mode 100644
+>> index 000000000000..d3d44aab7503
+>> --- /dev/null
+>> +++ b/drivers/mtd/hyperbus/core.c
+>> @@ -0,0 +1,167 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +//
+>> +// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
+>> +// Author: Vignesh R <vigneshr@ti.com>
+>> +
+>> +#include <linux/err.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/mtd/hyperbus.h>
+>> +#include <linux/mtd/map.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mtd/cfi.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_address.h>
+>> +#include <linux/types.h>
+>> +
+>> +#define HB_CALIB_COUNT 25
+> 
+>    Isn't this controller specific?
+> 
 
-DefinitionBlock ("mr25h40.aml", "SSDT", 5, "ASEMsp", "MR25H40", 1)
-{
-	External (_SB.SPI1, DeviceObj)
 
-	Scope (\_SB.SPI1)
-	{
-		Device (NVR0)
-		{
-			Name (_HID, "PRP0001")
-			Name (_DDN, "Everspin MR25H40 MRAM")
-			Name (_CRS, ResourceTemplate () {
-				SpiSerialBus (
-				1,                      // Chip select
-				PolarityLow,            // Chip select is active low
-				FourWireMode,           // Full duplex
-				8,                      // Bits per word is 8 (byte)
-				ControllerInitiated,    // Don't care
-				10000000,               // 10 MHz
-				ClockPolarityLow,       // SPI mode 0 ClockPolarityLow
-				ClockPhaseFirst,        // SPI mode 0 ClockPhaseFirst
-				"\\_SB.SPI1",      	// SPI host controller
-				0,			// Must be 0
-				ResourceConsumer,
-				,
-				)
-			})
+I can convert this to be a field in hb_device struct that controller
+driver can populate. But, I believe above count can still serve as
+conservative default.
 
-			Name (_DSD, Package () {
-				ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-				Package () {
-					Package () {"compatible", "mr25h40"},
-				}
-			})
-		}
-	}
-}
+> [...]
+>> +/* Calibrate HBMC by repeatedly reading "QRY" string from CFI space */
+>> +static int hb_calibrate(struct hb_device *hbdev)
+> 
+>    s/int/bool/, perhaps?
+> 
+> [...]
+>> +int hb_register_device(struct hb_device *hbdev)
+>> +{
+>> +	struct resource res;
+>> +	struct device *dev;
+>> +	struct device_node *np;
+>> +	struct map_info *map;
+>> +	struct hb_ops *ops;
+>> +	int err;
+>> +
+>> +	if (!hbdev || !hbdev->dev || !hbdev->np) {
+>> +		pr_err("hyperbus: please fill all the necessary fields!\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	np = hbdev->np;
+>> +	if (!of_device_is_compatible(np, "cypress,hyperflash"))
+>> +		return -ENODEV;
+>> +
+>> +	hbdev->memtype = HYPERFLASH;
+>> +
+>> +	if (of_address_to_resource(np, 0, &res))
+> 
+>     Isn't the direct mapping property of the HF controller, not of HyperFlash
+> itself?
+> 
+>> +		return -EINVAL;
+>> +
+>> +	dev = hbdev->dev;
+>> +	map = &hbdev->map;
+>> +	map->size = resource_size(&res);
+>> +	map->virt = devm_ioremap_resource(dev, &res);
+>> +	if (IS_ERR(map->virt))
+>> +		return PTR_ERR(map->virt);
+>> +
+>> +	map->name = dev_name(dev);
+>> +	map->bankwidth = 2;
+>> +
+>> +	simple_map_init(map);
+> 
+>    It's not that simple, I'm afraid -- e.g. Renesas RPC-IF has read and write
+> mappings in the separate memory resources.
+> 
+> [...]
+>> +	if (hbdev->needs_calib) {
+>> +		err = hb_calibrate(hbdev);
+>> +		if (!err) {
+> 
+>    Why call this variable 'err' when it indicates successful calibration?
+> 
+>> +			dev_err(hbdev->dev, "Calibration failed\n");
+>> +			return -ENODEV;
+>> +		}
+>> +	}
+>> +
+>> +	hbdev->mtd = do_map_probe("cfi_probe", map);
+>> +	if (!hbdev->mtd) {
+>> +		dev_err(hbdev->dev, "probing failed\n");
+> 
+>    "map probe", perhaps?
+> 
+>> +		return -ENXIO;
+>> +	}
+>> +
+>> +	hbdev->mtd->dev.parent = hbdev->dev;
+>> +	mtd_set_of_node(hbdev->mtd, np);
+>> +
+>> +	err = mtd_device_register(hbdev->mtd, NULL, 0);
+>> +	if (err) {
+>> +		dev_err(hbdev->dev, "failed to register mtd device\n");
+>> +		goto err_destroy;
+>> +	}
+>> +	hbdev->registered = true;
+>> +
+>> +	return 0;
+>> +
+>> +err_destroy:
+> 
+>    The label and the code below doesn't seem necessary. Just do it above
+> instead of *goto*.
+> 
+>> +	map_destroy(hbdev->mtd);
+>> +	return err;
+>> +}
+> [...]
+>> diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
+>> new file mode 100644
+>> index 000000000000..0aa11458c424
+>> --- /dev/null
+>> +++ b/include/linux/mtd/hyperbus.h
+>> @@ -0,0 +1,73 @@
+>> +/* SPDX-License-Identifier: GPL-2.0
+>> + *
+>> + * Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#ifndef __LINUX_MTD_HYPERBUS_H__
+>> +#define __LINUX_MTD_HYPERBUS_H__
+>> +
+>> +#include <linux/mtd/map.h>
+>> +
+>> +enum hb_memtype {
+> 
+>    I'm for the full hyperbus_ prefixes, it's not that long and seems clearer.
+> 
+> [...]
+> 
+> MBR, Sergei
+> 
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
-
-v1: - first patch version
-
- drivers/mtd/devices/m25p80.c | 57 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c4a1d04..b5c7db8 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -312,9 +312,64 @@ MODULE_DEVICE_TABLE(spi, m25p_ids);
- static const struct of_device_id m25p_of_table[] = {
- 	/*
- 	 * Generic compatibility for SPI NOR that can be identified by the
--	 * JEDEC READ ID opcode (0x9F). Use this, if possible.
-+	 * JEDEC READ ID opcode (0x9F). Use this (jedec,spi-nor), if possible.
-+	 *
-+	 * The list of all flash devices is instead necessary in x86 machines,
-+	 * to use a "non-jedec device" inside the ACPI BIOS tables.
- 	 */
- 	{ .compatible = "jedec,spi-nor" },
-+	{ .compatible = "s25sl064a" },
-+	{ .compatible = "w25x16" },
-+	{ .compatible = "m25p10" },
-+	{ .compatible = "m25px64" },
-+	{ .compatible = "at25df321a" },
-+	{ .compatible = "at25df641" },
-+	{ .compatible = "at26df081a" },
-+	{ .compatible = "mx25l4005a" },
-+	{ .compatible = "mx25l1606e" },
-+	{ .compatible = "mx25l6405d" },
-+	{ .compatible = "mx25l12805d" },
-+	{ .compatible = "mx25l25635e" },
-+	{ .compatible = "mx66l51235l" },
-+	{ .compatible = "n25q064" },
-+	{ .compatible = "n25q128a11" },
-+	{ .compatible = "n25q128a13" },
-+	{ .compatible = "n25q512a" },
-+	{ .compatible = "s25fl256s1" },
-+	{ .compatible = "s25fl512s" },
-+	{ .compatible = "s25sl12801" },
-+	{ .compatible = "s25fl008k" },
-+	{ .compatible = "s25fl064k" },
-+	{ .compatible = "sst25vf040b" },
-+	{ .compatible = "sst25vf016b" },
-+	{ .compatible = "sst25vf032b" },
-+	{ .compatible = "sst25wf040" },
-+	{ .compatible = "m25p40" },
-+	{ .compatible = "m25p80" },
-+	{ .compatible = "m25p16" },
-+	{ .compatible = "m25p32" },
-+	{ .compatible = "m25p64" },
-+	{ .compatible = "m25p128" },
-+	{ .compatible = "w25x80" },
-+	{ .compatible = "w25x32" },
-+	{ .compatible = "w25q32" },
-+	{ .compatible = "w25q32dw" },
-+	{ .compatible = "w25q80bl" },
-+	{ .compatible = "w25q128" },
-+	{ .compatible = "w25q256" },
-+	{ .compatible = "m25p05-nonjedec" },
-+	{ .compatible = "m25p10-nonjedec" },
-+	{ .compatible = "m25p20-nonjedec" },
-+	{ .compatible = "m25p40-nonjedec" },
-+	{ .compatible = "m25p80-nonjedec" },
-+	{ .compatible = "m25p16-nonjedec" },
-+	{ .compatible = "m25p32-nonjedec" },
-+	{ .compatible = "m25p64-nonjedec" },
-+	{ .compatible = "m25p128-nonjedec" },
-+	{ .compatible = "mr25h128" },
-+	{ .compatible = "mr25h256" },
-+	{ .compatible = "mr25h10" },
-+	{ .compatible = "mr25h40" },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, m25p_of_table);
 -- 
-2.7.4
-
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
