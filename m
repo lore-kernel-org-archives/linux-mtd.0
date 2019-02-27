@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA077C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 14:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 023E7C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 14:28:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A8FA2133D
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 14:20:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6B4B2133D
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 14:28:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dWAb3r3T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A8FA2133D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PzSdqHC+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6B4B2133D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -24,40 +24,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XK5MD/j4borME52rEN1KqVqrKsizbkq4F/4aD0WchPY=; b=dWAb3r3T6AQUya
-	GlJFpptFyQex8zFzlC81eclBH2wKuf9hJ7cjpRbFbdLxF/Lw9NsvzwkpeaMEDO/62FQZR0PdKOtfE
-	/4K3Zw2/r1xgNJDUBkJT5cblpd/E33hjbia8GxPpJG/8TuCZL3ds4G5OCRBTzGKj7UIFvBgoAa2Mr
-	3MqOJTwlK9HWmgMzrJUapcGj24MaZH2LOl2JaoUi0Cd6t11JahBlv+fldwwtadx+T/RBQBmiIYdeL
-	VEZR+NRJWvcU3wP+ABovoOzLDa4Cy6ONvvJJerWdnwh+Rjf+0tg9LNUBaQDYsNPK+v9qu+8curGmd
-	0EGpJJsT1pV4sp+RfjUA==;
+	List-Owner; bh=S8VGjykWkVNnAz/wYXqTFZZpaJiwk1+aMw+ElzGICik=; b=PzSdqHC+AxCZPT
+	XL/DRGdRtiSYDxIl74r5VUQ/3mMr8jVQsrWDc5aQt8OBf0vxpbWxmUJSlL/y8q1ATsriSHKY8aIHV
+	FW118PmL6BXhH9d3/fMMDxH6fnksKLiVDwaDbOkzgj7xCOS2ZDqUWe2QzrOGh+K7LQjPFa2n7xayu
+	2aWYBJETckmBykqTk3riSierDWW/Oos9hWzU4dWCHXNSgZgSi33yHr5vjLHwhw5rlZRgpA4vNR7OA
+	qg5AyulOqRISZ2WQ9iSVQloMSKe6c0aXclSqqG9g1q1KFSjQfuzURMQkrpmn0SDIvu+S+8oLpTPou
+	zoe1VZ5L77OUvOI5eopQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gz04E-0002qE-4A; Wed, 27 Feb 2019 14:20:14 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1gz0CM-0005C4-9f; Wed, 27 Feb 2019 14:28:38 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gz043-0001Ts-Ku; Wed, 27 Feb 2019 14:20:05 +0000
-X-Originating-IP: 90.88.147.150
-Received: from xps13 (aaubervilliers-681-1-27-150.w90-88.abo.wanadoo.fr
- [90.88.147.150]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id BE6A1C001B;
- Wed, 27 Feb 2019 14:19:58 +0000 (UTC)
-Date: Wed, 27 Feb 2019 15:19:57 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1gz0CC-000537-TF; Wed, 27 Feb 2019 14:28:30 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7F8712806C1;
+ Wed, 27 Feb 2019 14:28:26 +0000 (GMT)
+Date: Wed, 27 Feb 2019 15:28:23 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Subject: Re: [RFC PATCH 03/27] mtd: nand: Introduce the ECC engine abstraction
-Message-ID: <20190227151957.4de6ff32@xps13>
-In-Reply-To: <20190227150633.7d8f5c5c@collabora.com>
+Message-ID: <20190227152823.73249976@collabora.com>
+In-Reply-To: <20190227151957.4de6ff32@xps13>
 References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
  <20190221100216.25255-4-miquel.raynal@bootlin.com>
  <20190225195543.27799e77@kernel.org>
  <20190227145607.24e49014@xps13>
  <20190227150633.7d8f5c5c@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20190227151957.4de6ff32@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190227_062003_994278_BA3B25C8 
-X-CRM114-Status: GOOD (  22.16  )
+X-CRM114-CacheID: sfid-20190227_062829_205820_E81164C9 
+X-CRM114-Status: GOOD (  27.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,62 +79,98 @@ Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBXZWQsIDI3IEZlYgoyMDE5IDE1OjA2OjMzICswMTAwOgoKPiBPbiBXZWQsIDI3
-IEZlYiAyMDE5IDE0OjU2OjA3ICswMTAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
-b290bGluLmNvbT4gd3JvdGU6Cj4gCj4gPiBIaSBCb3JpcywKPiA+IAo+ID4gQm9yaXMgQnJlemls
-bG9uIDxiYnJlemlsbG9uQGtlcm5lbC5vcmc+IHdyb3RlIG9uIE1vbiwgMjUgRmViIDIwMTkKPiA+
-IDE5OjU1OjQzICswMTAwOgo+ID4gICAKPiA+ID4gT24gVGh1LCAyMSBGZWIgMjAxOSAxMTowMTo1
-MiArMDEwMAo+ID4gPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3
-cm90ZToKPiA+ID4gICAgIAo+ID4gPiA+ICsKPiA+ID4gPiArLyoqCj4gPiA+ID4gKyAqIHN0cnVj
-dCBuYW5kX2VjY19lbmdpbmVfb3BzIC0gR2VuZXJpYyBFQ0MgZW5naW5lIG9wZXJhdGlvbnMKPiA+
-ID4gPiArICoKPiA+ID4gPiArICogQGluaXRfY3R4OiBnaXZlbiBhIGRlc2lyZWQgdXNlciBjb25m
-aWd1cmF0aW9uIGZvciB0aGUgcG9pbnRlZCBOQU5EIGRldmljZSwKPiA+ID4gPiArICogICAgICAg
-ICAgICByZXF1ZXN0cyB0aGUgRUNDIGVuZ2luZSBkcml2ZXIgdG8gc2V0dXAgYSBjb25maWd1cmF0
-aW9uIHdpdGgKPiA+ID4gPiArICogICAgICAgICAgICB2YWx1ZXMgaXQgc3VwcG9ydHMuCj4gPiA+
-ID4gKyAqIEBjbGVhbnVwX2N0eDogY2xlYW4gdGhlIGNvbnRleHQgaW5pdGlhbGl6ZWQgYnkgQGlu
-aXRfY3R4Lgo+ID4gPiA+ICsgKiBAcHJlcGFyZV9pb19yZXE6IGlzIGNhbGxlZCBiZWZvcmUgcmVh
-ZGluZy93cml0aW5nIGEgcGFnZSB0byBwcmVwYXJlIHRoZSBJL08KPiA+ID4gPiArICogICAgICAg
-ICAgICAgICAgICByZXF1ZXN0IHRvIGJlIHBlcmZvcm1lZCB3aXRoIEVDQyBjb3JyZWN0aW9uLgo+
-ID4gPiA+ICsgKiBAZmluaXNoX2lvX3JlcTogaXMgY2FsbGVkIGFmdGVyIHJlYWRpbmcvd3JpdGlu
-ZyBhIHBhZ2UgdG8gdGVybWluYXRlIHRoZSBJL08KPiA+ID4gPiArICogICAgICAgICAgICAgICAg
-IHJlcXVlc3QgYW5kIGVuc3VyZSBwcm9wZXIgRUNDIGNvcnJlY3Rpb24uCj4gPiA+ID4gKyAqLwo+
-ID4gPiA+ICtzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lX29wcyB7ICAgICAgCj4gPiA+IAo+ID4gPiBX
-ZSBtaWdodCB3YW50IHRvIGFkZCBhCj4gPiA+IAo+ID4gPiAJdm9pZCAoKnB1dF9lbmdpbmUpKHN0
-cnVjdCBuYW5kX2VjY19lbmdpbmUgKmVuZ2luZSk7Cj4gPiA+IAo+ID4gPiBoZXJlIGlmIHdlIHdh
-bnQgdGhlIG5hbmRkZXYgY2xlYW51cCBwYXRoIHRvIGJlIGdlbmVyaWMuCj4gPiA+IFRoaXMgaG9v
-ayB3b3VsZCBiZSBpbXBsZW1lbnRlZCBieSBkcml2ZXJzIHdoZXJlIHRoZSBFQ0MgZW5naW5lIG9i
-amVjdCBpcwo+ID4gPiByZWZjb3VudGVkICh0eXBpY2FsbHkgdGhlIGNhc2UgZm9yIEhXIEVDQyBl
-bmdpbmVzIHNoYXJlZCBieSB0aGUgcmF3IE5BTkQKPiA+ID4gY29udHJvbGxlciBhbmQgdGhlIFNQ
-SSBjb250cm9sbGVyKS4KPiA+ID4gCj4gPiA+IEFsdGVybmF0aXZlbHksIHlvdSBjYW4ganVzdCBh
-ZGQgb25lIG5hbmRfcHV0X3h4eF9lY2NfZW5naW5lKCkgZnVuYyBwZXIKPiA+ID4gZW5naW5lIGNs
-YXNzIChTVywgb25kaWUgYW5kIEhXKS4gICAgCj4gPiAKPiA+IENhbid0IHRoaXMgYmUgaGFuZGxl
-ZCBpbiB0aGUgaW5pdC9jbGVhbnVwX2N0eCgpIHBhdGggZGlyZWN0bHk/ICAKPiAKPiBZb3UgcmVh
-bGx5IGhhdmUgdG8gZ2V0IHRoZSByZWZlcmVuY2UgYmVmb3JlIGluaXRfY3R4KCkgb3RoZXJ3aXNl
-IHRoZQo+IGVuZ2luZSBtaWdodCBkaXNhcHBlYXIgYmV0d2VlbiB5b3VyIGdldCgpIGFuZCBpbml0
-KCkgY2FsbCwgYW5kLCB0byBrZWVwCj4gdGhpbmdzIHN5bW1ldHJpYywgSSB0aGluayBpdCdzIGJl
-c3QgdG8gaGFuZGxlIHRoZSBwdXQoKSBvdXRzaWRlIHRoZQo+IGNsZWFudXBfY3R4KCkgcGF0aC4K
-PiAKPiA+IAo+ID4gRnVydGhlcm1vcmUgaWYgdGhpcyBpcyBqdXN0IGEgaG9vayB0byBkbyByZWZl
-cmVuY2UgY291bnRpbmcuICAKPiAKPiBXZWxsLCB3aGF0IHRoaXMgcHV0KCkgZG9lcyBkZXBlbmRz
-IG9uIHRoZSBjbGFzcyBvZiBlbmdpbmUuIEZvciBTVyBhbmQKPiBvbi1kaWUgRUNDIGl0IGNhbiBi
-ZSBhIE5PT1AgKHRoYXQncyB0cnVlIG9ubHkgaWYgeW91IGtlZXAgdGhlIGFwcHJvYWNoCj4gd2hl
-cmUgeW91IGhhdmUgYSBzaW5nbGUgaW5zdGFuY2Ugc2hhcmVkIGJ5IGV2ZXJ5b25lIGZvciBTVy1i
-YXNlZCBFQ0MKPiBlbmdpbmVzKS4KPiBGb3IgSFctY29udHJvbGxlci1zaWRlIEVDQyBlbmdpbmVz
-LCB5b3UnbGwgaGF2ZSB0byBjYWxsIGRldmljZV9nZXQoKSBvbgo+IHRoZSBwYXJlbnQgZGV2aWNl
-IGluIHlvdXIgbmFuZF9nZXRfaHdfZWNjX2VuZ2luZSgpIGZ1bmN0aW9uIHdoaWxlIHlvdQo+IGhv
-bGQgdGhlIGxvY2sgcHJvdGVjdGluZyB0aGUgRUNDIGVuZ2luZSBsaXN0LiBBbmQgZGV2aWNlX3B1
-dCgpIHdpbGwgYmUKPiBjYWxsZWQgaW4gbmFuZF9wdXRfaHdfZWNjX2VuZ2luZSgpLgoKCkkgc2Vl
-LgoKVGhlbiBJIHByZWZlciBrZWVwaW5nIHRoZSBsb2dpYyBpbiB0aGUgY29yZSwgbm90IGluIHRo
-ZSBlbmdpbmUgZHJpdmVyCmFuZCBwcm9wb3NlIGEKCiAgICAgICAgdm9pZCBuYW5kX2VjY19wdXRf
-ZW5naW5lKHN0cnVjdCBuYW5kX2VjY19lbmdpbmUgKmVuZ2luZSkKCndoaWNoIHdpbGwgZG8gbm90
-aGluZyBmb3Igb24tZGllL3N3IGVuZ2luZXMgYW5kIGRyb3AgdGhlIHJlZmVyZW5jZSBmb3IKaHcg
-ZW5naW5lcy4gSSB3aWxsIGFsc28gcmVuYW1lIHRoZSAiZmluZF9lY2NfZW5naW5lIiB0byAiZ2V0
-X2VuZ2luZSIgc28KdGhhdCB0aGUgY2FsbCB0byB0aGUgInB1dCIgaGVscGVyIGhhcyBtb3JlIG1l
-YW5pbmcuCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, 27 Feb 2019 15:19:57 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Hi Boris,
+> 
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Wed, 27 Feb
+> 2019 15:06:33 +0100:
+> 
+> > On Wed, 27 Feb 2019 14:56:07 +0100
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > Hi Boris,
+> > > 
+> > > Boris Brezillon <bbrezillon@kernel.org> wrote on Mon, 25 Feb 2019
+> > > 19:55:43 +0100:
+> > >     
+> > > > On Thu, 21 Feb 2019 11:01:52 +0100
+> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > > >       
+> > > > > +
+> > > > > +/**
+> > > > > + * struct nand_ecc_engine_ops - Generic ECC engine operations
+> > > > > + *
+> > > > > + * @init_ctx: given a desired user configuration for the pointed NAND device,
+> > > > > + *            requests the ECC engine driver to setup a configuration with
+> > > > > + *            values it supports.
+> > > > > + * @cleanup_ctx: clean the context initialized by @init_ctx.
+> > > > > + * @prepare_io_req: is called before reading/writing a page to prepare the I/O
+> > > > > + *                  request to be performed with ECC correction.
+> > > > > + * @finish_io_req: is called after reading/writing a page to terminate the I/O
+> > > > > + *                 request and ensure proper ECC correction.
+> > > > > + */
+> > > > > +struct nand_ecc_engine_ops {        
+> > > > 
+> > > > We might want to add a
+> > > > 
+> > > > 	void (*put_engine)(struct nand_ecc_engine *engine);
+> > > > 
+> > > > here if we want the nanddev cleanup path to be generic.
+> > > > This hook would be implemented by drivers where the ECC engine object is
+> > > > refcounted (typically the case for HW ECC engines shared by the raw NAND
+> > > > controller and the SPI controller).
+> > > > 
+> > > > Alternatively, you can just add one nand_put_xxx_ecc_engine() func per
+> > > > engine class (SW, ondie and HW).      
+> > > 
+> > > Can't this be handled in the init/cleanup_ctx() path directly?    
+> > 
+> > You really have to get the reference before init_ctx() otherwise the
+> > engine might disappear between your get() and init() call, and, to keep
+> > things symmetric, I think it's best to handle the put() outside the
+> > cleanup_ctx() path.
+> >   
+> > > 
+> > > Furthermore if this is just a hook to do reference counting.    
+> > 
+> > Well, what this put() does depends on the class of engine. For SW and
+> > on-die ECC it can be a NOOP (that's true only if you keep the approach
+> > where you have a single instance shared by everyone for SW-based ECC
+> > engines).
+> > For HW-controller-side ECC engines, you'll have to call device_get() on
+> > the parent device in your nand_get_hw_ecc_engine() function while you
+> > hold the lock protecting the ECC engine list. And device_put() will be
+> > called in nand_put_hw_ecc_engine().  
+> 
+> 
+> I see.
+> 
+> Then I prefer keeping the logic in the core, not in the engine driver
+> and propose a
+> 
+>         void nand_ecc_put_engine(struct nand_ecc_engine *engine)
+> 
+> which will do nothing for on-die/sw engines and drop the reference for
+> hw engines. I will also rename the "find_ecc_engine" to "get_engine" so
+> that the call to the "put" helper has more meaning.
+
+Ack for most of it. One thing I'd like to clarify: it's probably better
+to have a separate function called nand_ecc_put_hw_engine() which you'll
+call from nand_ecc_put_engine() when you're dealing with an
+HW ECC engine rather than calling put_device() directly from
+nand_ecc_put_engine(). This way you keep the code for HW ECC engine
+well isolated.
+
+Same goes for the nand_ecc_get_engine() path, just delegate to
+nand_ecc_get_hw_engine() when ->provider == HW_ECC.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
