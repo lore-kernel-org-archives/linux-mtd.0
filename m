@@ -2,86 +2,133 @@ Return-Path: <SRS0=gTFy=RC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAD_ENC_HEADER,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D0FC43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 09:51:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 339FFC43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 09:57:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F295B2063F
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 09:51:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03E4920842
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 09:57:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KL9UBF/m";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aCML68/U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F295B2063F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rxYCeBFj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="jjI2P74B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03E4920842
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4zbCnznOpfIGC86HmCsU97JndWNFhQthCB27dzVRBOw=; b=KL9UBF/mP7uIO7
-	oIUrWzRJuEXeDpBpZWl/UgIFt8gDe2frMzBv0WesNZ2h05tZkUo3HHrL0HWNS9t1ny9wj9gRYlKNd
-	kRXlhhjWx1MFPAx/uCwddiFiY8dFgoTYBG67igzZt6Iu564DHHcUoq6ytxvnSCt0VwurTaX8rt/0/
-	WJs4jRqt1smG9BiPRbB/bPsWRWFzpX6f4TM5naPxzPTfv8vbUthm1RVHd0hbhcfSghmwUqFJgB0pu
-	xZPFH6ztwbZ0xBXGSHcFNZozvSUgnahn1vI1xUBegaCEz6w8gscrOx4dz+6uKdIWOczn+yjUAU6fl
-	WBROVeGUCn3FLoyJXwXA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Message-ID:
+	Date:Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=YjJ/jk9/qCG0SlNPbMNfN6lDKous5gSPDmogi9MQUUo=; b=rxYCeBFjE9OC76
+	9BPmNFkJ0bPAEqczdQsEriYafFj6jWSpNaoksv4tic/7Y92vmpwNp0FNs2jNyqbMFwfMqMyUs3s0c
+	9s0eoKJ8bRWsKhgIieKJ7r15AzI025MxI/E6WkBR2JkWPHFoIrHtnDt4Pde8UUm7aUtFC3jzFzOLh
+	3ugZd9hBHu/I7GYdOjSK7xGZ/6d4OUxhdKlBiQVvNA0arJXRBVDhgomWVrKO9ho7L+kkt5h2XSjvD
+	zxzaDA8wu90EU+zVWnZz0O2p7RucdCr7BRERIYKYCIhHkk7+WxNfQAU1SPfYygAu7UuH0gvFeTrME
+	3cs7cfiSNubF787O62Sw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyvsQ-0004PS-ME; Wed, 27 Feb 2019 09:51:46 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1gyvxq-0006pu-Ui; Wed, 27 Feb 2019 09:57:22 +0000
+Received: from mail-eopbgr30131.outbound.protection.outlook.com
+ ([40.107.3.131] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyvsM-0004Oz-7u; Wed, 27 Feb 2019 09:51:44 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x1R9pNkq052559;
- Wed, 27 Feb 2019 03:51:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1551261083;
- bh=yF8gzQ5n86ofp2GeqC5j5kpyXhMZD26e5MxQjR2necQ=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=aCML68/UqBqaLk2IydB84o5oiOJ2ZCkBHAKfLHE3pXdPq7IxoxdkEPsA34IkHlq+H
- Cg+A/Sy4aKqTc3uwzfP0VSpRytgjvE6rlebpTw8mAuGe0We8E8ZMSuj1Eh2rB4GBE4
- vrm8lQBVjTM5tzUsU2Fv1j4Ns/YtFg7bb63hfMDA=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x1R9pNnP119697
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 27 Feb 2019 03:51:23 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Wed, 27
- Feb 2019 03:51:23 -0600
-Received: from dflp33.itg.ti.com (10.64.6.16) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
- Wed, 27 Feb 2019 03:51:23 -0600
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by dflp33.itg.ti.com (8.14.3/8.13.8) with ESMTP id x1R9pIWV000755;
- Wed, 27 Feb 2019 03:51:19 -0600
-Subject: Re: [RFC PATCH 3/5] mtd: Add support for Hyperbus memory devices
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-References: <20190219063607.29949-1-vigneshr@ti.com>
- <20190219063607.29949-4-vigneshr@ti.com>
- <7e79fff7-2565-28f7-7b2b-bb3098f1a928@cogentembedded.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <3952b327-3aff-a32e-4280-6ab24c32cfd9@ti.com>
-Date: Wed, 27 Feb 2019 15:22:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
-MIME-Version: 1.0
-In-Reply-To: <7e79fff7-2565-28f7-7b2b-bb3098f1a928@cogentembedded.com>
+ id 1gyvxn-0006kw-B7
+ for linux-mtd@lists.infradead.org; Wed, 27 Feb 2019 09:57:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SJDaMn6jlmACW8jeFGyrHCUnSvt72qXGpQJB7inORSs=;
+ b=jjI2P74B2CReqH5pszwDAVIW2gPJGZfbjbPoBOv0gP5ivKmkwhdEYwkvkDrU2EuEOZfdINitqHUFFHbZ2ODNWXlOCp5BP1AYCS5idCNYsV6yE0tB2OESURPAIPLPMf+qViSWZpfnKHuoBQI28FGiHUlLl8lavW6t5G+2dIohm9E=
+Received: from VI1PR07MB5902.eurprd07.prod.outlook.com (20.177.202.154) by
+ VI1PR07MB5694.eurprd07.prod.outlook.com (20.178.120.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1665.13; Wed, 27 Feb 2019 09:57:15 +0000
+Received: from VI1PR07MB5902.eurprd07.prod.outlook.com
+ ([fe80::8899:2ceb:9508:1c00]) by VI1PR07MB5902.eurprd07.prod.outlook.com
+ ([fe80::8899:2ceb:9508:1c00%5]) with mapi id 15.20.1665.012; Wed, 27 Feb 2019
+ 09:57:15 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] spi-nor: intel-spi: Avoid crossing 4K address boundary on
+ read/write
+Thread-Topic: [PATCH v2] spi-nor: intel-spi: Avoid crossing 4K address
+ boundary on read/write
+Thread-Index: AQHUzoLR83xWyQgGN0a7EHqHdsNcMQ==
+Date: Wed, 27 Feb 2019 09:57:15 +0000
+Message-ID: <20190227095617.20968-1-alexander.sverdlin@nokia.com>
+In-Reply-To: <20190226112334.401-1-alexander.sverdlin@nokia.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [131.228.32.181]
+x-mailer: git-send-email 2.19.1
+x-clientproxiedby: HE1P191CA0005.EURP191.PROD.OUTLOOK.COM (2603:10a6:3:cf::15)
+ To VI1PR07MB5902.eurprd07.prod.outlook.com
+ (2603:10a6:803:9a::26)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f8736bb7-e8dd-452e-a9df-08d69c99f3a5
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(4618075)(2017052603328)(7193020);
+ SRVR:VI1PR07MB5694; 
+x-ms-traffictypediagnostic: VI1PR07MB5694:
+x-microsoft-exchange-diagnostics: =?iso-8859-1?Q?1; VI1PR07MB5694;
+ 23:dqrqsS9KuQEHns773i9ZIe3xDF3tTh/CaTtpaRW?=
+ =?iso-8859-1?Q?U5nXR0qknvzx6pkmzw2TCLMEdwS0HB/zU0r8J2pwP+Rhe2gADk3D7DNyRU?=
+ =?iso-8859-1?Q?mnP3LafZjUQVvO2m0FrBiZzZaNed7q0Pp0l+V+Ug/IXXdB1f1Q6lJUzvvX?=
+ =?iso-8859-1?Q?b+8VrReoITpf1TBYJEOJdZGGy8mQvhwwzKASMI9K6KMbzVuKejQgX3i6eW?=
+ =?iso-8859-1?Q?ctiPK3E0FsDYppVl5hSz4+ZxMmugXSH4hQu+LPcLoJc/ea1w5v/ezDumeh?=
+ =?iso-8859-1?Q?VgWy5X8Lfj+zyuu0PC07KFO2yvKyWpxHgj0J1jVKr+JAsvPncUJWfKp8S/?=
+ =?iso-8859-1?Q?i2kFfrG+wQ/XzRJKCu1wt3q+Yys1ugZbEm3Gmvo4lutmfKkbDZSZmXDhp+?=
+ =?iso-8859-1?Q?BtcI04Qbf73kdDxGpdO4oy4CPy7EIHBdOYU8GpxM2KfLSiD2ZFmqIY5jIp?=
+ =?iso-8859-1?Q?SBkqFYmpHnjI2Lb6cjUuSYQivqOnRYsFVrh0scQtZjQ1NAc9oIy/9xUWxf?=
+ =?iso-8859-1?Q?ooZgY6qTg5QPuC1JHbsVeTiLBqDdYeVO4ki0ygVP8AAnjGIyDEMCq5TtR0?=
+ =?iso-8859-1?Q?YkQHimuCGruVQdAuoTzmfmHIuvEZhGzQAPPf6vrJz9imLI110ZOUbN0YpI?=
+ =?iso-8859-1?Q?5xubBrzllBi92OzNuO+bk2umJfE4JqDyHlP/102YDoio3fi2zX9iMTBCv3?=
+ =?iso-8859-1?Q?sYJQZ4Xh34OSyjpnLpvV6vYsILeUNzIXyjhfy3XcCDt7OC/cWa5IE/Zek0?=
+ =?iso-8859-1?Q?lSOGjvyKwQm0Y+HjJ/z1NWxLnQJzKOC0noXN6ap2LoIWQN4AcESYFAAvWS?=
+ =?iso-8859-1?Q?hC6a3OieZ0XRU/SxQm4tMTDDGFaz0QLxTZdmxjcJ32m+EaHzHreyLLDD0F?=
+ =?iso-8859-1?Q?pbhxOMWut8gu0p2wOin6eE5ZaWgEY10iZSx+6PqOdqZzWtzRz4gw98oi5u?=
+ =?iso-8859-1?Q?GXaCZ2Z7yxEir9PfO6XdvELXNQ/7ezXNJy9Xp5PTCI2XWyLwaanXtrFoOe?=
+ =?iso-8859-1?Q?+dAEj3Eh8ogSMMBDZNl/NCa2YSIZ5WUwQtbg9XVCMuG2xdzmusRp8RS7pT?=
+ =?iso-8859-1?Q?i+Jny4a8yf10DDaHCIYa0tCiHUHnbVcZJIYoPfTf+7tkJ3T1+j8b8AO4vf?=
+ =?iso-8859-1?Q?rGk2/wFOP066qsHFpsT4qaZsPmT9a6j2iRDDMfe5/z65uTvlhdzxVJxo7u?=
+ =?iso-8859-1?Q?K7Z65Q467R30C7xMSkyoN4kefw463/7vTnPde8T3iDYr22Pd8gQYxbv3mK?=
+ =?iso-8859-1?Q?QBY6PeYZD9rlqNrF9fXeH3CG8LJGMLETUgO7/z2ul/rvaPcreT1SRIfx3/?=
+ =?iso-8859-1?Q?uHlDnB5zwCjFK8DlecPlWIHLzVE86nigrvxU4qI3vcl2Qg69XWYAUkA6O/?=
+ =?iso-8859-1?Q?Ak050lIE=3D?=
+x-microsoft-antispam-prvs: <VI1PR07MB569405DF5D71D4CBEDBC6F3788740@VI1PR07MB5694.eurprd07.prod.outlook.com>
+x-forefront-prvs: 0961DF5286
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(366004)(39860400002)(346002)(136003)(396003)(376002)(54534003)(199004)(189003)(5640700003)(8936002)(186003)(6436002)(316002)(52116002)(81166006)(6486002)(8676002)(2501003)(68736007)(54906003)(66066001)(476003)(486006)(25786009)(11346002)(2616005)(99286004)(4326008)(5660300002)(81156014)(6116002)(3846002)(102836004)(386003)(53936002)(14444005)(6346003)(7416002)(105586002)(2351001)(106356001)(71190400001)(71200400001)(6916009)(6506007)(7736002)(2906002)(36756003)(6512007)(50226002)(1076003)(97736004)(14454004)(256004)(478600001)(305945005)(26005)(86362001);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:VI1PR07MB5694;
+ H:VI1PR07MB5902.eurprd07.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: nokia.com does not designate
+ permitted sender hosts)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=alexander.sverdlin@nokia.com; 
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: r+x5pc4lybc/A8R3gquwARWgxU4vA1QIKcjBkLpoOm80XXQgvumpc9f7Da+mCkwk2hTwiDlDqZ+a45+6AJ1rvD49TDmfX6keExYJ7UFpaw4qehG51uDjaR/lp/A9lbS9d25RAXPJp2bMGw97iJGYb4T/OUsFZpswXcB5eVtmuxqlKqgNqdjoeOLmbmOwQEvQrIUM7aU0b4In7Wgkc094clJSzQ3Q1eRUtxRCKTokqEyVEHdzsurq9p1rz071ZH60vfcA7G28KebqWZhO8suGbV57l8CeiKJ/hhL4R307UZXxinxk+fNIDdd0xMbW0aNKGdrISMaZmBfkWcWtBreVn2DwtBAFTJDqwBl5nuo2c0vmIiN5lVJ6bn3eYYUYxG808exCEHZK2M0/mw1QqWdeJNk7vTi6AdZoICY2fKYmhKg=
+MIME-Version: 1.0
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8736bb7-e8dd-452e-a9df-08d69c99f3a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2019 09:57:15.4245 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB5694
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190227_015142_409464_8CF70F03 
-X-CRM114-Status: GOOD (  27.69  )
+X-CRM114-CacheID: sfid-20190227_015719_428158_98D0D360 
+X-CRM114-Status: GOOD (  10.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,165 +140,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Nori,
- Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "Porte, Romain \(Nokia - FR/Paris-Saclay\)" <romain.porte@nokia.com>,
+ Bin Meng <bmeng.cn@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, "Sverdlin,
+ Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>, "Fabreges,
+ Pascal \(Nokia - FR/Paris-Saclay\)" <pascal.fabreges@nokia.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+It was observed that reads crossing 4K address boundary are failing.
 
+This limitation is mentioned in Intel documents:
 
-On 26/02/19 11:46 PM, Sergei Shtylyov wrote:
-> On 02/19/2019 09:36 AM, Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>) wrote:
-> 
->> Cypress HyperBus is Low Signal Count, High Performance Double Data Rate Bus
->> interface between a host system master and one or more slave interfaces.
->> HyperBus is used to connect microprocessor, microcontroller, or ASIC
->> devices with random access NOR flash memory(called HyperFlash) or
->> self refresh DRAM(called HyperRAM).
->>
->> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
->> signal and either Single-ended clock(3.0V parts) or Differential clock
->> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
->> At bus level, it follows a separate protocol described in HyperBus
->> specification[1].
->>
->> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
->> to that of existing parallel NORs. Since Hyperbus is x8 DDR bus,
->> its equivalent to x16 parallel NOR flash wrt bits per clk. But Hyperbus
->> operates at >166MHz frequencies.
->> HyperRAM provides direct random read/write access to flash memory
->> array.
->>
->> But, Hyperbus memory controllers seem to abstract implementation details
->> and expose a simple MMIO interface to access connected flash.
->>
->> Add support for registering HyperFlash devices with MTD framework. MTD
->> maps framework along with CFI chip support framework are used to support
->> communicate with flash.
->>
->> Framework is modelled along the lines of spi-nor framework. HyperBus
->> memory controller(HBMC) drivers call hb_register_device() to register a
->> single HyperFlash device. HyperFlash core parses MMIO access
->> information from DT, sets up the map_info struct, probes CFI flash and
->> registers it with MTD framework.
->>
->> Some HBMC masters need calibration/training sequence[3] to be carried
->> out, in order for DLL inside the controller to lock, by reading a known
->> string/pattern. This is done by repeatedly reading CFI Query
->> Identification String. Calibration needs to be done before try to detect
->> flash as part of CFI flash probe.
->>
->> HyperRAM is not supported atm.
->>
->> HyperBus specification can be found at[1]
->> HyperFlash datasheet can be found at[2]
->>
->> [1] https://www.cypress.com/file/213356/download
->> [2] https://www.cypress.com/file/213346/download
->> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->>     Table 12-5741. HyperFlash Access Sequence
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> [...]
->> diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
->> new file mode 100644
->> index 000000000000..0aa11458c424
->> --- /dev/null
->> +++ b/include/linux/mtd/hyperbus.h
->> @@ -0,0 +1,73 @@
->> +/* SPDX-License-Identifier: GPL-2.0
->> + *
->> + * Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
->> + */
->> +
->> +#ifndef __LINUX_MTD_HYPERBUS_H__
->> +#define __LINUX_MTD_HYPERBUS_H__
->> +
->> +#include <linux/mtd/map.h>
->> +
->> +enum hb_memtype {
->> +	HYPERFLASH,
->> +	HYPERRAM,
->> +};
->> +
->> +/**
->> + * struct hb_device - struct representing Hyperbus slave device
->> + * @map: map_info struct for accessing MMIO Hyperbus flash memory
->> + * @dev: device pointer of Hyperbus Controller
-> 
->    I think we need a separate structure for the HyperBus controller, not just
-> for the slave devices...
-> 
->> + * @np:	pointer to Hyperbus slave device node
->> + * @mtd: pointer to MTD struct
->> + * @ops: pointer to custom Hyperbus ops
->> + * @memtype: type of memory device: Hyperflash or HyperRAM
->> + * @needs_calib: flag to indicate whether calibration sequence is needed
->> + * @registered: flag to indicate whether device is registered with MTD core
->> + */
->> +
->> +struct hb_device {
->> +	struct map_info map;
->> +	struct device *dev;
->> +	struct device_node *np;
->> +	struct mtd_info *mtd;
->> +	struct hb_ops *ops;
->> +	enum hb_memtype memtype;
->> +	bool needs_calib;
->> +	bool registered;
->> +};
->> +
->> +/**
->> + * struct hb_ops - struct representing custom Hyperbus operations
->> + * @read16: read 16 bit of data, usually from register/ID-CFI space
->> + * @write16: write 16 bit of data, usually to register/ID-CFI space
->> + * copy_from: copy data from flash memory
->> + * copy_to: copy data to flash_memory
->> + */
->> +
->> +struct hb_ops {
->> +	u16 (*read16)(struct hb_device *hbdev, unsigned long addr);
->> +	void (*write16)(struct hb_device *hbdev, unsigned long addr, u16 val);
->> +
->> +	void (*copy_from)(struct hb_device *hbdev, void *to,
->> +			  unsigned long from, ssize_t len);
->> +	void (*copy_to)(struct hb_device *dev, unsigned long to,
->> +			const void *from, ssize_t len);
-> 
->    ... else these methods won't fly if you need to "massage" the controller
-> registers inside them...
-> 
+Intel(R) 9 Series Chipset Family Platform Controller Hub (PCH) Datasheet:
 
-If accessing controller register is the only need, wouldn't a private
-data pointer within struct hb_device be sufficient to hold pointer to
-controller specific struct?
+"5.26.3 Flash Access
+Program Register Access:
+* Program Register Accesses are not allowed to cross a 4 KB boundary..."
 
-struct hb_device {
-	...
-	void *priv; /* points to controller's private data */
-};
+Enhanced Serial Peripheral Interface (eSPI)
+Interface Base Specification (for Client and Server Platforms):
 
+"5.1.4 Address
+For other memory transactions, the address may start or end at any byte
+boundary. However, the address and payload length combination must not
+cross the naturally aligned address boundary of the corresponding Maximum
+Payload Size. It must not cross a 4 KB address boundary."
 
-Or do you see a need for separate structure for the HyperBus controller?
+Avoid this by splitting an operation crossing the boundary into two
+operations.
 
+Cc: stable@vger.kernel.org
+Reported-by: Romain Porte <romain.porte@nokia.com>
+Tested-by: Pascal Fabreges <pascal.fabreges@nokia.com>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+Changelog:
+v2:	More macros! As Mika suggested.
 
->> +};
-> [...]
-> 
-> MBR, Sergei
-> 
+ drivers/mtd/spi-nor/intel-spi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+index af0a220..8c279c4 100644
+--- a/drivers/mtd/spi-nor/intel-spi.c
++++ b/drivers/mtd/spi-nor/intel-spi.c
+@@ -632,6 +632,10 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	while (len > 0) {
+ 		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
+ 
++		/* Read cannot cross 4K boundary */
++		blocksize = min(from + block_size, round_up(from + 1, SZ_4K)) -
++			    from;
++
+ 		writel(from, ispi->base + FADDR);
+ 
+ 		val = readl(ispi->base + HSFSTS_CTL);
+@@ -685,6 +689,9 @@ static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	while (len > 0) {
+ 		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
+ 
++		/* Write cannot cross 4K boundary */
++		blocksize = min(to + block_size, round_up(to + 1, SZ_4K)) - to;
++
+ 		writel(to, ispi->base + FADDR);
+ 
+ 		val = readl(ispi->base + HSFSTS_CTL);
 -- 
-Regards
-Vignesh
+2.4.6
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
