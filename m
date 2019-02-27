@@ -1,100 +1,61 @@
-Return-Path: <SRS0=THda=RB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=gTFy=RC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 990A8C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 18:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24918C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 09:27:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65FF32173C
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Feb 2019 18:28:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFD0B2147C
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 09:27:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jNnKYC3q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Y3JgxTQH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65FF32173C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oOHBf7l+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFD0B2147C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PbtBw7ovuJQ8atB4U3pMxAr5CiI+W9vZLQa6HCFBfPI=; b=jNnKYC3qIjKBJH
-	3ml3J4vEPRul22l2FzB6SaYsv1uubb/SY1br3edfOR44KOXobnSxagkMF0qEKLHuSFmNfMo88mRpd
-	cZxSd5Z5g5WU3GjAJ1FYId1r/udJn69ZctSPzsnU3CdBruzqkVOcDKuaewB/uCTAlxsP6ZYantSLZ
-	wEdx2wniNVJnoIfOFSFq9tnqyK4uVAuE/cinwbZZiTilqyC+kg5IFqyJHm1fLMW2eAjoJD3vvLsU8
-	d3Qr1GamZ3PPSwN8eblqk9pLcRRul6BlnHPih9jsy8JeGyOIjJMo7gJ7Ux+q7PmmH3A+TSNgC00I5
-	PWzBiHlYa+G8/ZjEqLtg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cY7JX3GlWAsWHlCo7y8eLsa0AyLjrlvU/1+SWzX6a6k=; b=oOHBf7l+zYK9NU
+	kF3yCeiPeWd8zbnBRKc/98TVyr0O2kCzY0FOH36oNQPAnqx17ykS/+wLIAbOpnzBbyynhomWLgnJ5
+	NA5AAw6JZU6ZAKvluvZ8UrfwqZh9erWQTasCWVx9hEa5Rj9Zo6jve8FOMoo31i8vJ2r2IuOpkiUhj
+	ner31tawEnQ+NV05qi+Q7PMqhDG2cZqMdyOFO4b/chtQnCJyfTfXdncGH2qMCDc7UdBRX/I8FzgkV
+	ghqsRpNunyeGwasEX7YXPsDNuoY365XacrI8N5QAH1htKFQNbbGOyTuEHX3pN0eWQ1r6IJoImmUjv
+	zp0ZFHOelIkSWRV3mRIQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gyhSr-0002aH-G0; Tue, 26 Feb 2019 18:28:25 +0000
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+	id 1gyvUa-0007ss-Pq; Wed, 27 Feb 2019 09:27:08 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gyhSn-0002Z9-Vf
- for linux-mtd@lists.infradead.org; Tue, 26 Feb 2019 18:28:23 +0000
-Received: by mail-lj1-x243.google.com with SMTP id a17so11654396ljd.4
- for <linux-mtd@lists.infradead.org>; Tue, 26 Feb 2019 10:28:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=bLpnNHAsXYeTMUo78HRM2QnmksqH5fmT7cGzmEMRAOI=;
- b=Y3JgxTQHu9gHW/Gn4f+FyhRmBRRVr5YeaJ1hu+s+XHpndpcvccBgy+HntzAob+cbq7
- oXJ437K+PAgR75PEj4GBYHd9UeTgh69NoKGkZhdwoIWQoHWNtMEckokK7YY1WOH1svJt
- CrGj/Ezhmh/s0v3UGbGMaxDT8mxHe7FTEGDuu9/vSahRs1snt5CnwfsnmfNXizHC67aC
- NsrZGKf/zkyoKYzzK339ZHuIXzWjmgdrG9almFsUx7wuJBSO847kIVCTDqYnw0C5apHx
- 1OdHF2HUH6Mi9O3L++NeH8Mu3z1qWihxhAhsiVOzgECnJ/1zwl7nQiDgGuYb/SR57tp+
- 4Uqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=bLpnNHAsXYeTMUo78HRM2QnmksqH5fmT7cGzmEMRAOI=;
- b=RMMJPARceHqcpjKZb48N2jM7P3lraqYamdeGinWsu7nymflW1fzZ6o7MuO4+YWyuVl
- cyguuikPQ+7RVtFOca8uEiDNRGC+7GbctGIkiCNBu1cWT2ooeldU0fmZIZun7/+a2zMi
- sC3L2k8NKTI0LYruK+fVKnEltT6rluUkKuQowZUctNVzHfL0QD5GDbD46dZEHP5n11L4
- knSBV8yUTtN5Ocytg/KzYAIG9omw8Sl54I8Vdj3qqBYiRRRUMmghfMxpVtbvkvuTn20e
- bVDVkiBlBCGF2geY32Ph3gJVO+mI5rfBeg8IVvSMOgyDYYgfxKTatB6bxp20RG7fKPpU
- 6syQ==
-X-Gm-Message-State: AHQUAubCAjycky4eE9XAOoe226TQROYYsEcLhN29wBKJYuEXxqB5GymC
- cuHT93PVDBnfMkUtQNU77dmTwQ==
-X-Google-Smtp-Source: AHgI3IZENB2wSiagUzwcZqG0Fd7+YIzsH6UcxiSQ6DwQ4zPeLlqHuDiNNUXmGASynfjHrC5gtR5dUQ==
-X-Received: by 2002:a2e:3807:: with SMTP id f7mr14223743lja.9.1551205699070;
- Tue, 26 Feb 2019 10:28:19 -0800 (PST)
-Received: from wasted.cogentembedded.com ([31.173.84.110])
- by smtp.gmail.com with ESMTPSA id d25sm3413914lji.9.2019.02.26.10.28.17
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 26 Feb 2019 10:28:18 -0800 (PST)
-Subject: Re: [RFC PATCH 5/5] mtd: hyperbus: Add driver for TI's Hyperbus
- memory controller
-To: "Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>)"
- <vigneshr@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190219063607.29949-1-vigneshr@ti.com>
- <20190219063607.29949-6-vigneshr@ti.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <4d2e31e3-0130-14a1-ab06-e6ffeae1cd22@cogentembedded.com>
-Date: Tue, 26 Feb 2019 21:28:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ id 1gyvUM-0007kC-Ua; Wed, 27 Feb 2019 09:26:56 +0000
+X-Originating-IP: 90.88.147.150
+Received: from xps13 (aaubervilliers-681-1-27-150.w90-88.abo.wanadoo.fr
+ [90.88.147.150]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id F1EEB6000F;
+ Wed, 27 Feb 2019 09:26:42 +0000 (UTC)
+Date: Wed, 27 Feb 2019 10:26:42 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <bbrezillon@kernel.org>
+Subject: Re: [RFC PATCH 03/27] mtd: nand: Introduce the ECC engine abstraction
+Message-ID: <20190227102642.4a1c8224@xps13>
+In-Reply-To: <20190221121625.33a7f6c0@kernel.org>
+References: <20190221100216.25255-1-miquel.raynal@bootlin.com>
+ <20190221100216.25255-4-miquel.raynal@bootlin.com>
+ <20190221121625.33a7f6c0@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190219063607.29949-6-vigneshr@ti.com>
-Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190226_102822_019391_72505AD5 
-X-CRM114-Status: GOOD (  21.61  )
+X-CRM114-CacheID: sfid-20190227_012655_286828_CAE3720E 
+X-CRM114-Status: GOOD (  20.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -106,61 +67,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>,
+ Schrempf Frieder <frieder.schrempf@kontron.de>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/19/2019 09:36 AM, Vignesh R (by way of Boris Brezillon <bbrezillon@kernel.org>) wrote:
-
-> Add driver for Hyperbus memory controller on TI's AM654 SoC. Programming
-> IP is pretty simple and provides direct memory mapped access to
-> connected Flash devices.
-> 
-> Add basic support for the IP without DMA. Second ChipSelect is not
-> supported for now.
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> ---
->  drivers/mtd/hyperbus/hbmc_am654.c | 105 ++++++++++++++++++++++++++++++
->  1 file changed, 105 insertions(+)
->  create mode 100644 drivers/mtd/hyperbus/hbmc_am654.c
-> 
-> diff --git a/drivers/mtd/hyperbus/hbmc_am654.c b/drivers/mtd/hyperbus/hbmc_am654.c
-> new file mode 100644
-> index 000000000000..1f0d2dc52f9f
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/hbmc_am654.c
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-> +// Author: Vignesh R <vigneshr@ti.com>
-> +
-> +#include <linux/err.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/hyperbus.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/types.h>
-> +
-> +struct am654_hbmc_priv {
-> +	struct hb_device hbdev;
-> +	void __iomem	*regbase;
-
-   Isn't regbase a controller's data, not a slave device's?
-
-[...]
-
-MBR, Sergei
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJicmV6aWxsb25Aa2VybmVsLm9yZz4gd3JvdGUg
+b24gVGh1LCAyMSBGZWIgMjAxOQoxMjoxNjoyNSArMDEwMDoKCj4gT24gVGh1LCAyMSBGZWIgMjAx
+OSAxMTowMTo1MiArMDEwMAo+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
+b20+IHdyb3RlOgo+IAo+IAo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL25hbmQu
+aCBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAo+ID4gaW5kZXggMzBmMGZiMDJhYmUyLi45ZTNi
+MDE4ZDBiODMgMTAwNjQ0Cj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmgKPiA+ICsr
+KyBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAo+ID4gQEAgLTgyLDggKzgyLDE0IEBAIHN0cnVj
+dCBuYW5kX3BvcyB7Cj4gPiAgCXVuc2lnbmVkIGludCBwYWdlOwo+ID4gIH07Cj4gPiAgCj4gPiAr
+ZW51bSBuYW5kX3BhZ2VfaW9fcmVxX3R5cGUgewo+ID4gKwlOQU5EX1BBR0VfUkVBRCA9IDAsCj4g
+PiArCU5BTkRfUEFHRV9XUklURSwKPiA+ICt9Owo+ID4gKwo+ID4gIC8qKgo+ID4gICAqIHN0cnVj
+dCBuYW5kX3BhZ2VfaW9fcmVxIC0gTkFORCBJL08gcmVxdWVzdCBvYmplY3QKPiA+ICsgKiBAdHlw
+ZTogdGhlIHR5cGUgb2YgcGFnZSBJL086IHJlYWQgb3Igd3JpdGUKPiA+ICAgKiBAcG9zOiB0aGUg
+cG9zaXRpb24gdGhpcyBJL08gcmVxdWVzdCBpcyB0YXJnZXRpbmcKPiA+ICAgKiBAZGF0YW9mZnM6
+IHRoZSBvZmZzZXQgd2l0aGluIHRoZSBwYWdlCj4gPiAgICogQGRhdGFsZW46IG51bWJlciBvZiBk
+YXRhIGJ5dGVzIHRvIHJlYWQgZnJvbS93cml0ZSB0byB0aGlzIHBhZ2UKPiA+IEBAIC05OSw2ICsx
+MDUsNyBAQCBzdHJ1Y3QgbmFuZF9wb3Mgewo+ID4gICAqIHNwZWNpZmljIGNvbW1hbmRzL29wZXJh
+dGlvbnMuCj4gPiAgICovCj4gPiAgc3RydWN0IG5hbmRfcGFnZV9pb19yZXEgewo+ID4gKwllbnVt
+IG5hbmRfcGFnZV9pb19yZXFfdHlwZSB0eXBlOyAgCj4gCj4gQ2FuIHlvdSBhZGQgdGhlIHJlcXR5
+cGUgZW51bSBhbmQgdHlwZSBmaWVsZCAoKyBwYXRjaCB0aGUgaXRlcmF0b3IKPiBoZWxwZXJzKSBp
+biBhIHNlcGFyYXRlIHBhdGNoPwoKU3VyZS4KCj4gCj4gPiAgCXN0cnVjdCBuYW5kX3BvcyBwb3M7
+Cj4gPiAgCXVuc2lnbmVkIGludCBkYXRhb2ZmczsKPiA+ICAJdW5zaWduZWQgaW50IGRhdGFsZW47
+Cj4gPiBAQCAtMTE2LDEzICsxMjMsMzUgQEAgc3RydWN0IG5hbmRfcGFnZV9pb19yZXEgewo+ID4g
+IH07Cj4gPiAgCj4gPiAgLyoqCj4gPiAtICogc3RydWN0IG5hbmRfZWNjX3JlcSAtIE5BTkQgRUND
+IHJlcXVpcmVtZW50cwo+ID4gKyAqIHN0cnVjdCBuYW5kX2VjY19jb25mIC0gTkFORCBFQ0MgY29u
+ZmlndXJhdGlvbgo+ID4gKyAqIEBzdHJlbmd0aDogRUNDIHN0cmVuZ3RoCj4gPiArICogQHN0ZXBf
+c2l6ZTogTnVtYmVyIG9mIGJ5dGVzIHBlciBzdGVwCj4gPiArICogQHRvdGFsOiBUb3RhbCBudW1i
+ZXIgb2YgYnl0ZXMgdXNlZCBmb3Igc3RvcmluZyBFQ0MgY29kZXMsIHRoaXMgaXMgdXNlZCBieQo+
+ID4gKyAqICAgICAgICAgZ2VuZXJpYyBPT0IgbGF5b3V0cwo+ID4gKyAqLwo+ID4gK3N0cnVjdCBu
+YW5kX2VjY19jb25mIHsgIAo+IAo+IFBsZWFzZSBkbyB0aGUgcy9uYW5kX2VjY19yZXEvbmFuZF9l
+Y2NfY29uZi8gaW4gYSBzZXBhcmF0ZSBwYXRjaC4KCk9rLgoKPiAKPiA+ICsJdW5zaWduZWQgaW50
+IHN0cmVuZ3RoOwo+ID4gKwl1bnNpZ25lZCBpbnQgc3RlcF9zaXplOwo+ID4gKwl1bnNpZ25lZCBp
+bnQgdG90YWw7ICAKPiAKPiBEbyB3ZSByZWFsbHkgbmVlZCB0byBhZGQgdGhpcyB0b3RhbCBmaWVs
+ZCBoZXJlPyBMb29rcyBsaWtlIHNvbWV0aGluZwo+IHRoYXQgc2hvdWxkIGJlIGtlcHQgcHJpdmF0
+ZSB0byB0aGUgRUNDIGVuZ2luZSBpbXBsZW1lbnRhdGlvbi4KCkl0IHdhcyBpbml0aWFsbHkgcHJp
+dmF0ZSwgYnV0IEkgcmVhbGl6ZWQgaXQgd2FzIG5lZWRlZCBieSBnZW5lcmljIHBhcnRzCihpbmNs
+dWRpbmcgZm9yIGluc3RhbmNlIHRoZSBnZW5lcmljIE9PQiBsYXlvdXRzKSBzbyBpdCBjb3VsZCBu
+b3QgYmUKbWFkZSBwcml2YXRlLgoKSSBqdXN0IG1vdmVkIHRoZSAndG90YWwnIGVudHJ5IG91dCBv
+ZiB0aGUgc3RydWN0IG5hbmRfZWNjX2NvbmYgYW5kCm1vdmVkIGl0IGluIHRoZSBzdHJ1Y3QgbmFu
+ZF9lY2NfY3R4LiBJdCBpcyBzdGlsbCBwdWJsaWMgYnV0IG5vdCBpbiB0aGUKdmVyeSBnZW5lcmlj
+ICJjb25mIiBzdHJ1Y3R1cmUgYW55bW9yZS4KCj4gCj4gPiArfTsKPiA+ICsKPiA+ICsvKioKPiA+
+ICsgKiBzdHJ1Y3QgbmFuZF9lY2NfdXNlcl9jb25mIC0gVXNlciBkZXNpcmVkIEVDQyBjb25maWd1
+cmF0aW9uCj4gPiArICogQG1vZGU6IEVDQyBtb2RlCj4gPiArICogQGFsZ286IEVDQyBhbGdvcml0
+aG0KPiA+ICAgKiBAc3RyZW5ndGg6IEVDQyBzdHJlbmd0aAo+ID4gICAqIEBzdGVwX3NpemU6IEVD
+QyBzdGVwL2Jsb2NrIHNpemUKPiA+ICsgKiBAbWF4aW1pemU6IEVDQyBwYXJhbWV0ZXJzIG11c3Qg
+YmUgbWF4aW1pemVkIGRlcGVuZGluZyBvbiB0aGUgZGV2aWNlCj4gPiArICogICAgICAgICAgICBj
+YXBhYmlsaXRpZXMKPiA+ICsgKiBAZmxhZ3M6IFVzZXIgZmxhZ3MKPiA+ICAgKi8KPiA+IC1zdHJ1
+Y3QgbmFuZF9lY2NfcmVxIHsKPiA+ICtzdHJ1Y3QgbmFuZF9lY2NfdXNlcl9jb25mIHsKPiA+ICsJ
+aW50IG1vZGU7ICAKPiAKPiBXZSBzaG91bGQgZGVmaW5pdGVseSBuYW1lIHRoYXQgb25lIGRpZmZl
+cmVudGx5ICgncHJvdmlkZXInIG1heWJlKS4KCkNoYW5nZWQgdG8gcHJvdmlkZXIuCgo+IAo+ID4g
+Kwl1bnNpZ25lZCBpbnQgYWxnbzsKPiA+ICAJdW5zaWduZWQgaW50IHN0cmVuZ3RoOwo+ID4gIAl1
+bnNpZ25lZCBpbnQgc3RlcF9zaXplOwo+ID4gKwl1bnNpZ25lZCBpbnQgbWF4aW1pemU7Cj4gPiAr
+CXVuc2lnbmVkIGludCBmbGFnczsgIAo+IAo+IG1heGltaXplIGNvdWxkIGJlIGEgZmxhZy4KCkl0
+IGlzIG5vdy4KCj4gCj4gPiAgfTsKPiA+ICAKPiA+ICAjZGVmaW5lIE5BTkRfRUNDUkVRKHN0ciwg
+c3RwKSB7IC5zdHJlbmd0aCA9IChzdHIpLCAuc3RlcF9zaXplID0gKHN0cCkgfQo+ID4gQEAgLTE1
+NywxMSArMTg2LDc2IEBAIHN0cnVjdCBuYW5kX29wcyB7Cj4gPiAgCWJvb2wgKCppc2JhZCkoc3Ry
+dWN0IG5hbmRfZGV2aWNlICpuYW5kLCBjb25zdCBzdHJ1Y3QgbmFuZF9wb3MgKnBvcyk7Cj4gPiAg
+fTsgIAo+IAoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
