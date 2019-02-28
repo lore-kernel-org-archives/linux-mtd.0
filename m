@@ -1,71 +1,89 @@
-Return-Path: <SRS0=gTFy=RC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=M8pk=RD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24519C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 22:59:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87498C10F00
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 05:36:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEA2F2087C
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Feb 2019 22:59:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 236E521850
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 05:36:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="m2VURS0L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEA2F2087C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XU7SgL2K";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dduaxbTr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 236E521850
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DISKLHdQg3I5l0CyViexEW57HG8bFUDBmBVNWSHb7kM=; b=m2VURS0LZbsB7h
-	OrVH04vv4j2mf2rcl/QnCKEDNsQ+qxz/qCoFEJwI1AKVio5QSuG6o4yxOFubb1hLR8C43gWf6PLMa
-	MjEmxTp3ZUb9Yu6Kpx1vyASDGtwlVinlI8WFJ+8B9BD1CWcumLHVJDL1eimRbdD1k4V3dNPfgOFT1
-	YfmxfDcbayzIfsvjqG4jqEkTXIL8cWzHPVd5cNFVHfQZE9I4yt6aYOj79d72rUshjBV1W2iz2Fkui
-	z5SdAeREGnvkFrE9uMg1kUzWk9uCUhiIYaAuEc2Y/qWR1keJfLjmESILH1sR+TSyX+MhwzgxEMsqc
-	9MHSRa1AFpA+NGUTkz5w==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xnYvMYnJft1U4J5rhHNLODA/dkQ7RnY2DN6xFLK3094=; b=XU7SgL2K1CWhH5
+	9o3HnsqVO99vwUJokhQC2NLRJAXMtjs4rdplN8sO84+WsCiOlc/zIvz3uC+3K33wFhq+PletyYsGI
+	KtkmhG68fbTJUIAJbyg+Z6rxtFje6Sr2nqA3a5YL8hawDbgc2IPCe+ztGuB1J61EFpQB9EeXIyTIE
+	57m/glyoaULnVI8LAwemUWDBVUOdc0hXIG00DEUyX2uqSwYQSJEHcBuPfpXa/UaWbSYwv8as84XnB
+	JA8yYrQQWviyiMj/lhboD24tekLA4OlXDJyN8XkaOKNgIJYATtQDANz2REuK3APca7k4cCb8tYRpo
+	uJqfrUph4YWV+vurMMZg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gz8Af-0000k1-6T; Wed, 27 Feb 2019 22:59:25 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1gzEMr-0005e2-U8; Thu, 28 Feb 2019 05:36:25 +0000
+Received: from userp2130.oracle.com ([156.151.31.86])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gz8Ac-0000ji-17
- for linux-mtd@lists.infradead.org; Wed, 27 Feb 2019 22:59:24 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 9334F608A396;
- Wed, 27 Feb 2019 23:59:19 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 4GRcXsxbzWnT; Wed, 27 Feb 2019 23:59:18 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id C8CFC608A3A6;
- Wed, 27 Feb 2019 23:59:18 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id srJ67fUplq6s; Wed, 27 Feb 2019 23:59:18 +0100 (CET)
-Received: from blindfold.localnet (213-47-184-186.cable.dynamic.surfer.at
- [213.47.184.186])
- by lithops.sigma-star.at (Postfix) with ESMTPSA id 987A1608A396;
- Wed, 27 Feb 2019 23:59:18 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Tim Harvey <tharvey@gateworks.com>, linux-mtd@lists.infradead.org
-Subject: Re: ubi/ubifs performance comparison on two NAND devices
-Date: Wed, 27 Feb 2019 23:59:18 +0100
-Message-ID: <1778492.l5RC12KMDO@blindfold>
-In-Reply-To: <CAJ+vNU1xtj3f7GefcyY=s7RmNxtBjFpefaG57Xmeq80w0=monQ@mail.gmail.com>
-References: <CAJ+vNU3sxjVjuPg8NRCBJzRNByM__xFAYdiQo=-ZKXawvZw1yQ@mail.gmail.com>
- <CAFLxGvyFgO-OzgrijL_i0Us5=_VbuYTSCBW0EVyC+8HYpnqOfg@mail.gmail.com>
- <CAJ+vNU1xtj3f7GefcyY=s7RmNxtBjFpefaG57Xmeq80w0=monQ@mail.gmail.com>
+ id 1gzEMn-0005dB-Cx
+ for linux-mtd@lists.infradead.org; Thu, 28 Feb 2019 05:36:22 +0000
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x1S5XvdT056496;
+ Thu, 28 Feb 2019 05:36:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
+ bh=/fDC22xAYWtn0nGLk6+c/CCroSr5JQ1vrczT+c/nFu4=;
+ b=dduaxbTrrJolz1knEZgZR7Cz8leqTJoreXTZxSXL+VZbyBaIglm7+ifYqijWMBI6soPt
+ K0skPYsYsggQC/r0LQQAxFW0QJawQldrzKYJ1mDh5uHEY3c0NecKxm1WRzxV2pTfByKn
+ PHGOSomzBzxNoB50wwFXHGiqNnhk6l1Tsb7OAy154h1LXjl0gla8+4QVrwzp5iWsVVpE
+ st/fcoedvxLOiUxxpNPw+4GJgdHkynL6q1PUo5X/gDkylteGIdqwpaWzUCTilO5CjmNg
+ 4GoEQPACz40ZxMwdWMLPR61bCLS057xHGRHUv59sJrU/C5DYNPCBu6vrfNtyCObmWOUu tg== 
+Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
+ by userp2130.oracle.com with ESMTP id 2qtwkuevey-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 28 Feb 2019 05:36:01 +0000
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+ by aserv0022.oracle.com (8.14.4/8.14.4) with ESMTP id x1S5a013013802
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 28 Feb 2019 05:36:00 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+ by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x1S5ZxCe001181;
+ Thu, 28 Feb 2019 05:35:59 GMT
+Received: from kadam (/197.157.0.25) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 27 Feb 2019 21:35:59 -0800
+Date: Thu, 28 Feb 2019 08:35:51 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubi: wl: Silence uninitialized variable warning
+Message-ID: <20190228053551.GB3253@kadam>
 MIME-Version: 1.0
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9180
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1902280038
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190227_145922_370636_F30CF85C 
-X-CRM114-Status: GOOD (  25.75  )
+X-CRM114-CacheID: sfid-20190227_213621_526600_45A9060D 
+X-CRM114-Status: GOOD (  16.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,124 +95,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Boris Brezillon <bbrezillon@kernel.org>, kernel-janitors@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Tim,
+This condition needs to be fipped around because "err" is uninitialized
+when "force" is set.  The Smatch static analysis tool complains and
+UBsan will also complain at runtime.
 
-Am Mittwoch, 27. Februar 2019, 23:43:17 CET schrieb Tim Harvey:
-> On Wed, Feb 27, 2019 at 2:13 PM Richard Weinberger
-> <richard.weinberger@gmail.com> wrote:
-> >
-> > On Wed, Feb 27, 2019 at 9:39 PM Tim Harvey <tharvey@gateworks.com> wrote:
-> > >
-> > > Greetings,
-> > >
-> > > I've got two embedded boards (IMX6 using gpmi-nand driver) that are
-> > > identical except for the NAND FLASH and am trying to understand why
-> > > I'm seeing a massive performance difference when it comes to ubi and
-> > > ubifs (in particular ubi scanning and UBIFS resizing).
-> > >
-> > > Micron MT29F16G08ADACAH4:
-> > > - page size: 4320 bytes (4096 + 224 bytes)
-> > > - block size: 64 pages (256K + 14K bytes)
-> > > - device size: 16Gb
-> > > - 30ns per-block read
-> > > - 300us per-block program
-> > > - 2.0ms per-block erase
-> > >
-> > > Cypress S34ML16G202BHI000
-> > > - page size: 2176 bytes (2048+128)
-> > > - block size: 64 pages (128K + 8K)
-> > > - device size: 16Gb
-> > > - 25ns per-block read
-> > > - 300us per-block program
-> > > - 3.5ms per-block erase
-> > >
-> > > The parts are relatively close in per-block performance but because
-> > > the Micron has twice the block size I think of it being twice as fast
-> > > on a per-byte basis compared to the Cypress and I do see this relative
-> > > performance when testing read/write/erase both in modern U-Boot and
-> > > latest Linux. What doesn't add up is that the Cypress part takes about
-> > > 7x longer to complete the ubi attach (between 'attaching mtd' and
+Fixes: 663586c0a892 ("ubi: Expose the bitrot interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/mtd/ubi/wl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Here you say attach takes 7 times longer.
-
-> > > 'scanning is finished' and about 100x longer to complete the UBIFS
-> > > free space fixup (between 'start fixing up free space' and 'free space
-> > > fixup complete') performed on the first mount of a ubifs filesystem
-> > > that was created with auto-resize enabled.
-> > >
-> > > Both parts are 2GiB and the ubi scanning on attach in the kernel goes
-> > > from ~4s on Micron to ~28s on Cypress and the UBIFS free space fixup
-> > > goes from 0.5s on Micron to a whopping 56s on Cypress.
-> > >
-> > > Any ideas why would I be seeing this kind of performance difference
-> > > when the raw erase/read/write performance is (both datasheet and Linux
-> > > tests) only 2x slower? Anywhere I can look to improve performance of
-> > > the Cypress part?
-> >
-> > Let's focus as first step on UBI attach by scanning. Here UBI reads
-> > the first two
-> > (sub)pages of each block.
-> >
-> > Please figure whether in both setup subpages are used or not. Then
-> > measure how long
-> > it takes to read a single page.
-> > Given this numbers we can start with the detective work.
-> >
-> 
-> Hi Richard,
-> 
-> I suppose I should have provided:
-> 
-> [    6.438793] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd5
-> [    6.445240] nand: Micron MT29F16G08ADACAH4
-> [    6.449362] nand: 2048 MiB, SLC, erase size: 256 KiB, page size:
-> 4096, OOB size: 224
-> [    6.459037] Scanning device for bad blocks
-> [    8.784007] 3 fixed-partitions partitions found on MTD device gpmi-nand
-> [    8.790716] Creating 3 MTD partitions on "gpmi-nand":
-> [    8.795823] 0x000000000000-0x000001000000 : "uboot"
-> [    8.810841] 0x000001000000-0x000001100000 : "env"
-> [    8.819356] 0x000001100000-0x000080000000 : "rootfs"
-> [    9.355834] gpmi-nand 112000.gpmi-nand: driver registered.
-> 
-> and
-> 
-> [    6.014529] nand: device found, Manufacturer ID: 0x01, Chip ID: 0xd5
-> [    6.020907] nand: AMD/Spansion S34ML16G2
-> [    6.024917] nand: 2048 MiB, SLC, erase size: 128 KiB, page size:
-> 2048, OOB size: 128
-> [    6.033385] Scanning device for bad blocks
-> [   10.689345] 3 fixed-partitions partitions found on MTD device gpmi-nand
-> [   10.696056] Creating 3 MTD partitions on "gpmi-nand":
-> [   10.701143] 0x000000000000-0x000001000000 : "uboot"
-> [   10.720392] 0x000001000000-0x000001100000 : "env"
-> [   10.729253] 0x000001100000-0x000080000000 : "rootfs"
-> [   11.793715] gpmi-nand 112000.gpmi-nand: driver registered.
-> 
-> So its taking 2.3s to scan the Micron and 5.4s to scan the Cypress
-> which is what I would expect (Micron 2x faster as it has similar read
-> time per block but half as many blocks)
-
-And now all is good.
-I'm confused.
-
-> > Did you also check what timings both NANDs are using?
-> 
-> No, where would I see these? Would this be something that can be
-> provided in device-tree or a nand chip-specific driver?
-
-Usually the driver computes them based on various sources.
-See drivers/mtd/nand/raw/nand_timings.c
-
-Thanks,
-//richard
-
-
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 40f838d54b0f..2709dc02fc24 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1517,7 +1517,7 @@ int ubi_bitflip_check(struct ubi_device *ubi, int pnum, int force)
+ 		mutex_unlock(&ubi->buf_mutex);
+ 	}
+ 
+-	if (err == UBI_IO_BITFLIPS || force) {
++	if (force || err == UBI_IO_BITFLIPS) {
+ 		/*
+ 		 * Okay, bit flip happened, let's figure out what we can do.
+ 		 */
+-- 
+2.17.1
 
 
 ______________________________________________________
