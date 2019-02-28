@@ -3,19 +3,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05886C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 18:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C11DC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 18:25:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D06532070B
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 18:24:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E14C42070B
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 18:25:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O9PVF7yG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D06532070B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JBn+w5FZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E14C42070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,56 +24,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V2+jVErGlmss/IIGHzl/4P3scDHT6MmUb0nUw2IJO38=; b=O9PVF7yGDhT6bO
-	VEdtRPoEu3HD1g+9a0ZsLDcESIWEG2kQUIsda0dU3HUiSWzTQwb3N0rKGB+AUbS33y6PEpK9LLX9D
-	LQQeIam/U60ORkjF9lz5VNhMiYQMZ8CpGvgCn7Pt/VHTCFXctu8jH8d3BUOZKM1k0vdW7Ia6Z0DAD
-	OKv3qk/31cZtG8L6oSWdOGR2OzlocvGAWdRC+LPDo6JsGi58Yn1ofMQxMHOanX8ZduT+gx1RgNTqI
-	x7ifEt70zRYxnpv2/EUl5eaYm2rTwOzub7/dEOP4771u3+KkHTuWNeC0SycTlkN3b2OwHSk4jcgpn
-	nhsrjLATYlovIYn/Uyug==;
+	List-Owner; bh=tot6TiP8VNAam/yGcJmybl0ydpJNFWNLVrFAZkJ9tsA=; b=JBn+w5FZtPuCdd
+	+fD2X63NxaeUwiyz6s2jXYGIudNe1TbJsxZ/sOSO14sHRwMTq3PnrVJk63MTytauUlYllYy6LQ/uw
+	mMn4TKPnehm9dyyMGFVrSWcIqu/xO1aJVCMrY2fJMX4Vq6SjJrChcLWzUN1DpFlix+FdpP664C8t6
+	MgFD+Sy8wA0sTVwA01AeOIpaDBQ3E3H6zrAq0cySV6/V7sC4SJoTLISwWkVwt1qfCDyZvxAeWxX3q
+	+9XnUp5e7FKrNSlF8mvbKeMTEkFPtCYcDBn8Jv8aGSJq4pIlEyiCv1i2cVV04fNqpF0AT/dZoSaQm
+	XHZ/beTD+Ce5vXgd3zgQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gzQM0-00013S-9f; Thu, 28 Feb 2019 18:24:20 +0000
-Received: from mail-ot1-f65.google.com ([209.85.210.65])
+	id 1gzQMr-0002Pc-15; Thu, 28 Feb 2019 18:25:13 +0000
+Received: from mail-oi1-f193.google.com ([209.85.167.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzQLr-0000v9-Vs; Thu, 28 Feb 2019 18:24:13 +0000
-Received: by mail-ot1-f65.google.com with SMTP id t7so18529161otk.8;
- Thu, 28 Feb 2019 10:24:11 -0800 (PST)
+ id 1gzQMd-0001QH-DH; Thu, 28 Feb 2019 18:25:00 +0000
+Received: by mail-oi1-f193.google.com with SMTP id t82so17248060oie.12;
+ Thu, 28 Feb 2019 10:24:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=ucn6HmMNAstPj8g03QkHR9PsQlpdzwekMb2Oly/4j8o=;
- b=tO9HARSYS7sveN82tnG/5Qyswr/L5WJleNMwxhAGWbbVEvoMHqkZ87B0NXw/ofLqxG
- qNS4pHfXiiT/DYkzfKiPgKM9UmJNtqSJZNMwup+PZDCuUx6bv51R2rux9rFdRI7iRy4S
- bERI4kcAjOrSLpsqWJV0O60g7E0LBvfwn7feyrWEWa8l3Vx7B099w5e+6u35F9HN3ZYs
- 63Hn5loSN2GCQVZ3+Yi3dlTmlVfM4EqbCRfS1qUSjDk5TYy66GFmc3v9PMkq5d4cerwo
- VZzgmeCa6RVyGaEZYrhuKrlVRNnQ7QczD2jH1B+N0Be7henYvWCdjVYe9TNKoqBzfsCF
- Sk3w==
-X-Gm-Message-State: APjAAAU+cfUc/5dv1r1+C2JErO3bII4iFtp3A2DGCuAGuGYbBTEPt9i4
- JgvHjdwtDdW96QlnLPbEvSnG8ac=
-X-Google-Smtp-Source: APXvYqxH9zlN7A4Vy6xIJjVeQB8YBo8fveLpCXSu0uBo4yR5o+VI2zQr7NViKyJ6E0nA76uGKUi0Vg==
-X-Received: by 2002:a9d:6a08:: with SMTP id g8mr668730otn.191.1551378251051;
- Thu, 28 Feb 2019 10:24:11 -0800 (PST)
+ bh=0jSrRIhfTa4WE1XJ9yzCZgw4zBXph8fqSTtiUCoqXHQ=;
+ b=myFIRm8+th88LvsMSdarZEUpj1vEZcWem2KNpGj1BQqKxIppSobhC+IalpiMS4Z3l/
+ smwOBst4XTk7h81ZKypMygunrH34NWs6AV2xiY9kNKdOeV5rmEZLkGmEv/xFBHogWV6B
+ BBTlzdg7N7TJvYK/GFAnzL7e92ykVcluhsGkq1f29V6BD5hnphps/8MR/1h5ik+iChm/
+ K+sDxpT6/Y4r5IKXdEHGKJ09yg0WWY8ZkSMwIHa7t+Vr1pIe6V+Bk/BR2UMook2zdscy
+ wGWeO94AxWFdaxeKM7LVBIR2miXVBeAw+IDuzyLtFQe+pHMP/mu4MLVTZvMlat+6OagT
+ LwOg==
+X-Gm-Message-State: APjAAAWQU6dRO5YxZG76I3EJ6i08FX/OtSxY4pTr/bwhFldnRhK0hYuO
+ CbAAa7XYm0Unx8hUE2ER1w==
+X-Google-Smtp-Source: AHgI3IZYrcZ80ogxEgXeBfTtEYEPD8wg6iGPdBvstlxcFtxKpLv4OFmAa9d2Ws76d5IoI4KCNH1fug==
+X-Received: by 2002:aca:4e13:: with SMTP id c19mr735672oib.96.1551378298467;
+ Thu, 28 Feb 2019 10:24:58 -0800 (PST)
 Received: from localhost (ip-184-203-129-180.hstntx.spcsdns.net.
  [184.203.129.180])
- by smtp.gmail.com with ESMTPSA id q25sm7394305otl.15.2019.02.28.10.24.09
+ by smtp.gmail.com with ESMTPSA id q6sm5614273oia.4.2019.02.28.10.24.57
  (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Thu, 28 Feb 2019 10:24:09 -0800 (PST)
-Date: Thu, 28 Feb 2019 12:24:08 -0600
+ Thu, 28 Feb 2019 10:24:57 -0800 (PST)
+Date: Thu, 28 Feb 2019 12:24:56 -0600
 From: Rob Herring <robh@kernel.org>
 To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH 03/11] dt-bindings: memory: atmel-ebi: add sam9x60
- compatible
-Message-ID: <20190228182408.GA20310@bogus>
+Subject: Re: [PATCH 06/11] dt-bindings: mtd: atmel-nand: add sam9x60 compatible
+Message-ID: <20190228182456.GA21460@bogus>
 References: <20190213085930.31578-1-tudor.ambarus@microchip.com>
- <20190213085930.31578-4-tudor.ambarus@microchip.com>
+ <20190213085930.31578-7-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190213085930.31578-4-tudor.ambarus@microchip.com>
+In-Reply-To: <20190213085930.31578-7-tudor.ambarus@microchip.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190228_102412_020297_C0600675 
-X-CRM114-Status: GOOD (  10.13  )
+X-CRM114-CacheID: sfid-20190228_102459_450290_7FE403D9 
+X-CRM114-Status: GOOD (  10.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -98,14 +97,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 13 Feb 2019 08:59:52 +0000, <Tudor.Ambarus@microchip.com> wrote:
+On Wed, 13 Feb 2019 09:00:01 +0000, <Tudor.Ambarus@microchip.com> wrote:
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> Add compatibility string for the sam9x60 EBI.
+> Add compatibility string for the sam9x60 nand controller.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > ---
->  Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt | 1 +
+>  Documentation/devicetree/bindings/mtd/atmel-nand.txt | 1 +
 >  1 file changed, 1 insertion(+)
 > 
 
