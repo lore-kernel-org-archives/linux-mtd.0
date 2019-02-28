@@ -2,78 +2,90 @@ Return-Path: <SRS0=M8pk=RD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D766BC10F00
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 15:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15045C10F00
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 15:34:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98733214D8
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 15:12:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DBBD1206DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Feb 2019 15:34:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B2zLIDBv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98733214D8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iAKg2Ck6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyqOBJeu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBBD1206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T+X08cNnejsqKGUkDjTNwgGisEWRTu7x/1KyYoDqxHs=; b=B2zLIDBv67hGIx
-	gThw88FUeeUJvTez49zbvMoV6hUEJmKGspRmY/P6ZwWwPhTjtJfLWCrVpq38UZugVz1FbtW0F30we
-	HweW8ejBKv14SrgA1Yxfaok61vMz4BvR6tI5x6h3jGOgA9M2W4d29CpbCt9FSfLJj+JhmNtcjgN4v
-	qcOlzt7+dgsRXv50BqEZPiY/Urbhsk7NZtC6Ae/0nmG8iT0KhO9RxbqXdieAUQ+W7kNj5zTLfkNHt
-	eOU7gpG8PReZq9jrq8flEcMaa4N4ig6sTckP9WvKZgCCTEfyouc9p4v+8v8P7ZGxe8t7k7oDcaJUr
-	XiGxq0oRUWd6iONqZr2g==;
+	List-Owner; bh=J3hV923QW0f9XNxAaD1OERWqb57efiI8kkBPnkH4Veo=; b=iAKg2Ck6mwoV1t
+	sslHLtv3L2+8U443q0frhjeYg5z3Z06fkzQ3SqcKvhmVSCzLZHvrzMJtUdNA7PKKXXplUD+aG5V7Y
+	fACYZG0lYSVy/THHx3BV7D356yg9e09w0N8idXofrEyWzeBaK0uQSCy08mX5IFxlvSC8uIY+g2jwT
+	fs6VUr6luSZYKlPUC2PEmzT6wpotTyQQq/rIOhq9S5PTHmXkLc/BvNVPieffmX6eTCXm/kL85g2Bg
+	CpMMB0w1f0zft58gAQbjNBlXb/uVreBH7nvxwaHO6QiO3rPJgrFsDR+2WwIcKz/d2EcQ4dEnG2CGU
+	SAsV9XanS6lwteHEWSFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gzNMU-0005nY-1g; Thu, 28 Feb 2019 15:12:38 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187] helo=huawei.com)
+	id 1gzNh8-0000un-Vf; Thu, 28 Feb 2019 15:33:58 +0000
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzNMM-0005Y3-81
- for linux-mtd@lists.infradead.org; Thu, 28 Feb 2019 15:12:36 +0000
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
- by Forcepoint Email with ESMTP id B66D33A35A602205F53F;
- Thu, 28 Feb 2019 23:12:20 +0800 (CST)
-Received: from DGGEMM422-HUB.china.huawei.com (10.1.198.39) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Thu, 28 Feb 2019 23:12:20 +0800
-Received: from DGGEMM528-MBX.china.huawei.com ([169.254.8.114]) by
- dggemm422-hub.china.huawei.com ([10.1.198.39]) with mapi id 14.03.0415.000;
- Thu, 28 Feb 2019 23:12:16 +0800
-From: "liujian (CE)" <liujian56@huawei.com>
-To: Tokunori Ikegami <ikegami.t@gmail.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "bbrezillon@kernel.org"
- <bbrezillon@kernel.org>, "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>, "joakim.tjernlund@infinera.com"
- <joakim.tjernlund@infinera.com>, "ikegami@allied-telesis.co.jp"
- <ikegami@allied-telesis.co.jp>, "keescook@chromium.org"
- <keescook@chromium.org>, "vigneshr@ti.com" <vigneshr@ti.com>
-Subject: RE: [PATCH v3] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
-Thread-Topic: [PATCH v3] cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
-Thread-Index: AQHUzdvN8JD42IGEz0+tKjpXrjJ4RaX0wTIAgACMYjA=
-Date: Thu, 28 Feb 2019 15:12:15 +0000
-Message-ID: <4F88C5DDA1E80143B232E89585ACE27D0264F137@DGGEMM528-MBX.china.huawei.com>
-References: <1551189648-58073-1-git-send-email-liujian56@huawei.com>
- <016001d4cf71$865e7b60$931b7220$@gmail.com>
-In-Reply-To: <016001d4cf71$865e7b60$931b7220$@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.177.97.126]
+ id 1gzNh6-0000uM-36
+ for linux-mtd@lists.infradead.org; Thu, 28 Feb 2019 15:33:57 +0000
+Received: by mail-ed1-x544.google.com with SMTP id f2so17309073edy.13
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2019 07:33:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=nFqL9m0NX5qldT2dkDBFsVeaVLfFnnYdcBbOg1N7ftM=;
+ b=ZyqOBJeuBg5GlsMZyZwz8S7RSgr4ywieg5HvvDTb2OM5dgFerpqGy5MYcDG5AqvLOC
+ 3z+Kn8BL3y9q7i8cM9jAZApYoqhI5HUHnyMDeNERqV7U2DKJmUVwS47Y1TscI2124rrC
+ CfQSZDrkCTUxT35/xTgwRMBEAWbQsW67zf3280jIotpmbSxQkfwT9D4l1mvmK8s+2Psa
+ 0r/RHYd2UFRRjPeNoCQCqtvhUHcqL7l+Cjshi4mm2FrxrB4LDaYzUT8WkU5FTCx5hgsc
+ DD5OdCj1JIwSpT0Zj4g4DJnj549ClrzgGdekzfIzUotu8gmAPUoV1okPPoeHjrAJZ+wQ
+ BBOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=nFqL9m0NX5qldT2dkDBFsVeaVLfFnnYdcBbOg1N7ftM=;
+ b=q0MchxKo7xCvEMyFCH1VTN4U4bUEvj4dP6orqqZzv8fORkNfNpDXr9vpy0Q7Jo3bA0
+ eAafx6KZyNbphUWX4G2VuKRI00NQ7mhO236dxxdueBZBtLGIuZs2Cup70+owZB8iuUrQ
+ z6MzH/wdOe0YDEhT1/wnbCHVG6+0defYy+BWh/L/An9hAGLXDW3mNHfK6RO3j9dsPpBg
+ fJrpgKmkrkgyNZEntt04O0o8vl/X8DO1HUpz3RpJn5uUBsW8Z2Qb6inqwFdm5SqDWD0P
+ 1gbpV9Of7wn9/zEZMTXvf7EjgDSrXANvQGtWjX1enM0EJY0pV6iBrzzcQPDi8pTh5KyA
+ novw==
+X-Gm-Message-State: APjAAAWoTLetHJ/oKBgZ70lE47VHM7DGG7HmMG5znWkFBc72UbJbHGBr
+ OrJUDznpTjdi9odsDqxgv2s=
+X-Google-Smtp-Source: AHgI3IZA5U7K1aXO9b+fYEyV6Z+8egoWf1IqqnsDmzgigj+AuYzZnOJ/ew1i+VvjdnbMDLb+Acgbmw==
+X-Received: by 2002:a50:ac09:: with SMTP id v9mr150475edc.3.1551368034136;
+ Thu, 28 Feb 2019 07:33:54 -0800 (PST)
+Received: from archlinux-ryzen ([2a01:4f9:2a:1fae::2])
+ by smtp.gmail.com with ESMTPSA id x16sm4935800edx.89.2019.02.28.07.33.52
+ (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+ Thu, 28 Feb 2019 07:33:53 -0800 (PST)
+Date: Thu, 28 Feb 2019 08:33:51 -0700
+From: Nathan Chancellor <natechancellor@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] ubi: wl: Silence uninitialized variable warning
+Message-ID: <20190228153351.GA26480@archlinux-ryzen>
+References: <20190228053551.GB3253@kadam> <8490920.CCJDc82j5X@blindfold>
+ <20190228085058.GA5694@archlinux-ryzen>
+ <4970018.iuHtFo4yVV@blindfold>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <4970018.iuHtFo4yVV@blindfold>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190228_071230_774181_9A2CF6B9 
-X-CRM114-Status: GOOD (  18.35  )
+X-CRM114-CacheID: sfid-20190228_073356_161865_BB52C97B 
+X-CRM114-Status: GOOD (  27.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,68 +97,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, kernel-janitors@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBUb2t1bm9yaSBJa2Vn
-YW1pIFttYWlsdG86aWtlZ2FtaS50QGdtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIEZlYnJ1
-YXJ5IDI4LCAyMDE5IDEwOjI2IFBNDQo+IFRvOiBsaXVqaWFuIChDRSkgPGxpdWppYW41NkBodWF3
-ZWkuY29tPjsgZHdtdzJAaW5mcmFkZWFkLm9yZzsNCj4gY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwu
-Y29tOyBiYnJlemlsbG9uQGtlcm5lbC5vcmc7DQo+IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsgcmlj
-aGFyZEBub2QuYXQ7IGpvYWtpbS50amVybmx1bmRAaW5maW5lcmEuY29tOw0KPiBpa2VnYW1pQGFs
-bGllZC10ZWxlc2lzLmNvLmpwOyBrZWVzY29va0BjaHJvbWl1bS5vcmc7IHZpZ25lc2hyQHRpLmNv
-bQ0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2Vy
-Lmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUkU6IFtQQVRDSCB2M10gY2ZpOiBmaXggZGVhZGxvb3Ag
-aW4gY2ZpX2NtZHNldF8wMDAyLmMgZG9fd3JpdGVfYnVmZmVyDQo+IA0KPiANCj4gDQo+ID4gLS0t
-LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBsaW51eC1tdGQgW21haWx0bzpsaW51
-eC1tdGQtYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnXSBPbg0KPiA+IEJlaGFsZiBPZiBMaXUg
-Smlhbg0KPiA+IFNlbnQ6IFR1ZXNkYXksIEZlYnJ1YXJ5IDI2LCAyMDE5IDExOjAxIFBNDQo+ID4g
-VG86IGR3bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsNCj4g
-PiBiYnJlemlsbG9uQGtlcm5lbC5vcmc7IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsgcmljaGFyZEBu
-b2QuYXQ7DQo+ID4gam9ha2ltLnRqZXJubHVuZEBpbmZpbmVyYS5jb207IGlrZWdhbWlAYWxsaWVk
-LXRlbGVzaXMuY28uanA7DQo+ID4ga2Vlc2Nvb2tAY2hyb21pdW0ub3JnOyB2aWduZXNockB0aS5j
-b20NCj4gPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpdWppYW41NkBodWF3
-ZWkuY29tOw0KPiA+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBTdWJqZWN0OiBb
-UEFUQ0ggdjNdIGNmaTogZml4IGRlYWRsb29wIGluIGNmaV9jbWRzZXRfMDAwMi5jDQo+ID4gZG9f
-d3JpdGVfYnVmZmVyDQo+ID4NCj4gPiBJbiBmdW5jdGlvbiBkb193cml0ZV9idWZmZXIoKSwgaW4g
-dGhlIGZvciBsb29wLCB0aGVyZSBpcyBhIGNhc2UNCj4gPiBjaGlwX3JlYWR5KCkgcmV0dXJucyAx
-IHdoaWxlIGNoaXBfZ29vZCgpIHJldHVybnMgMCwgc28gaXQgbmV2ZXIgYnJlYWsNCj4gPiB0aGUg
-bG9vcC4NCj4gPiBUbyBmaXggdGhpcywgY2hpcF9nb29kKCkgaXMgZW5vdWdoIGFuZCBpdCBzaG91
-bGQgdGltZW91dCBpZiBpdCBzdGF5DQo+ID4gYmFkIGZvciBhIHdoaWxlLg0KPiA+DQo+ID4gRml4
-ZXM6IGRmZWFlMTA3MzU4MygibXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSB3cml0ZSBidWZm
-ZXIgdG8NCj4gPiBjaGVjayBjb3JyZWN0IHZhbHVlIikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBZaSBI
-dWFpamllIDx5aWh1YWlqaWVAaHVhd2VpLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBMaXUgSmlh
-biA8bGl1amlhbjU2QGh1YXdlaS5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IFRva3Vub3JpIElrZWdh
-bWkgPGlrZWdhbWlfdG9AeWFob28uY28uanA+DQo+ID4gLS0tDQo+ID4gdjItPnYzOg0KPiA+IEZv
-bGxvdyBWaWduZXNoJ3MgYWR2aWNlOg0KPiA+IGFkZCBvbmUgbW9yZSBjaGVjayBmb3IgY2hlY2tf
-Z29vZCgpIGV2ZW4gd2hlbiB0aW1lX2FmdGVyKCkgcmV0dXJucyB0cnVlLg0KPiA+DQo+ID4gIGRy
-aXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYw0KPiA+IGIvZHJpdmVycy9tdGQv
-Y2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gPiBpbmRleCA3MjQyOGI2Li4zZGEyMzc2IDEwMDY0
-NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ID4gKysr
-IGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gPiBAQCAtMTg3Niw3ICsx
-ODc2LDcgQEAgc3RhdGljIGludCBfX3hpcHJhbSBkb193cml0ZV9idWZmZXIoc3RydWN0DQo+ID4g
-bWFwX2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcCAqY2hpcCwNCj4gPiAgCQkJY29udGludWU7DQo+
-ID4gIAkJfQ0KPiA+DQo+ID4gLQkJaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywgdGltZW8pICYmICFj
-aGlwX3JlYWR5KG1hcCwgYWRyKSkNCj4gPiArCQlpZiAodGltZV9hZnRlcihqaWZmaWVzLCB0aW1l
-bykgJiYgIWNoaXBfZ29vZChtYXAsIGFkciwNCj4gPiBkYXR1bSkpDQo+IA0KPiAgIEp1c3QgYW5v
-dGhlciBpZGVhIHRvIHVuZGVyc3RhbmQgZWFzaWx5Lg0KPiANCj4gICAgIHVuc2lnbmVkIGxvbmcg
-bm93ID0gamlmZmllczsNCj4gDQo+ICAgICBpZiAoY2hpcF9nb29kKG1hcCwgYWRyLCBkYXR1bSkp
-IHsNCj4gICAgICAgICB4aXBfZW5hYmxlKG1hcCwgY2hpcCwgYWRyKTsNCj4gICAgICAgICBnb3Rv
-IG9wX2RvbmU7DQo+ICAgICB9DQo+IA0KPiAgICAgaWYgKHRpbWVfYWZ0ZXIobm93LCB0aW1lbykg
-ew0KPiAgICAgICAgIGJyZWFrOw0KPiAgICAgfQ0KPiANCg0KVGhhbmsgeW91fi4gSXQgaXMgbW9y
-ZSBlYXNpZXIgdG8gdW5kZXJzdGFuZKOhDQpJZiB0aGVyZSBhcmUgbm8gb3RoZXIgY29tbWVudHMs
-IEkgd2lsbCBzZW5kIG5ldyBwYXRjaCBhZ2FpbiApOiAgDQoNCkJlc3QgUmVnYXJkcywNCkxpdWpp
-YW4NCg0KPiBSZWdhcmRzLA0KPiBJa2VnYW1pDQo+IA0KPiA+ICAJCQlicmVhazsNCj4gPg0KPiA+
-ICAJCWlmIChjaGlwX2dvb2QobWFwLCBhZHIsIGRhdHVtKSkgew0KPiA+IC0tDQo+ID4gMi43LjQN
-Cj4gPg0KPiA+DQo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fDQo+ID4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0DQo+ID4g
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvDQoN
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Thu, Feb 28, 2019 at 10:51:12AM +0100, Richard Weinberger wrote:
+> Am Donnerstag, 28. Februar 2019, 09:50:58 CET schrieb Nathan Chancellor:
+> > On Thu, Feb 28, 2019 at 09:35:50AM +0100, Richard Weinberger wrote:
+> > > Am Donnerstag, 28. Februar 2019, 06:35:51 CET schrieb Dan Carpenter:
+> > > > This condition needs to be fipped around because "err" is uninitialized
+> > > > when "force" is set.  The Smatch static analysis tool complains and
+> > > > UBsan will also complain at runtime.
+> > > > 
+> > > > Fixes: 663586c0a892 ("ubi: Expose the bitrot interface")
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> > Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> Did you really test the code or just compile it?
+>  
+
+Compiled tested. If I shouldn't use that tag in that instance, please
+let me know.
+
+> > This fixes a -Wsometimes-uninitialized warning from Clang:
+> > 
+> > drivers/mtd/ubi/wl.c:1514:6: warning: variable 'err' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+> >         if (!force) {
+> >             ^~~~~~
+> > drivers/mtd/ubi/wl.c:1520:6: note: uninitialized use occurs here
+> >         if (err == UBI_IO_BITFLIPS || force) {
+> >             ^~~
+> > drivers/mtd/ubi/wl.c:1514:2: note: remove the 'if' if its condition is always true
+> >         if (!force) {
+> >         ^~~~~~~~~~~~
+> > drivers/mtd/ubi/wl.c:1478:9: note: initialize the variable 'err' to silence this warning
+> >         int err;
+> >                ^
+> >                 = 0
+> > 1 warning generated.
+> 
+> How much false positives does this trigger?
+> Many useful gcc warnings are disabled because they produce too much churn.
+> 
+
+I haven't gone through them all yet but it doesn't seem to trigger as
+often as GCC. I think there are only 22 files with a problem across arm,
+arm64, and x86_64 allyesconfig.
+
+> > > > ---
+> > > >  drivers/mtd/ubi/wl.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> > > > index 40f838d54b0f..2709dc02fc24 100644
+> > > > --- a/drivers/mtd/ubi/wl.c
+> > > > +++ b/drivers/mtd/ubi/wl.c
+> > > > @@ -1517,7 +1517,7 @@ int ubi_bitflip_check(struct ubi_device *ubi, int pnum, int force)
+> > > >  		mutex_unlock(&ubi->buf_mutex);
+> > > >  	}
+> > > >  
+> > > > -	if (err == UBI_IO_BITFLIPS || force) {
+> > > > +	if (force || err == UBI_IO_BITFLIPS) {
+> > > >  		/*
+> > > >  		 * Okay, bit flip happened, let's figure out what we can do.
+> > > >  		 */
+> > > > 
+> > > 
+> > > Good catch, Dan!
+> > > I thought gcc is supposed to find such issues too. :-/
+> > 
+> > This isn't the first time GCC hasn't caught something...
+> > 
+> > https://lore.kernel.org/lkml/20190221222123.GC6474@magnolia/
+> 
+> Compilers are not perfect. :-)
+
+Would make everyone's life a lot better if they were :)
+
+Nathan
+
+> 
+> Thanks,
+> //richard
+> 
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
