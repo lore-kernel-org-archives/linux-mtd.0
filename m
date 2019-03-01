@@ -2,87 +2,91 @@ Return-Path: <SRS0=kP5e=RE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4C74C43381
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 18:29:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60EFAC43381
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 18:30:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7409B2084F
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 18:29:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0CE592084F
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 18:30:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="camRalJ2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="F5qYnIte"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7409B2084F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d/TC1cW4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="URExq/Md"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CE592084F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qWEKr3q3hN+UEhyqAlS014PE4eCBtByUp3uU1BT38b0=; b=camRalJ2mJFoum
-	nc6QPmpzK9w6JwL5y6El+QfDFzwpmNmZq4s8diblqcKMAmCmpAKpl05AMHB1wKlU5iUE90uBezgv5
-	PSLvf+NSCw54Wl9v9IxqfVD0y0CYgf65TYBVNhyL9ehrI0cGEqQqASMdfZAVLDqtFqe2VxSQvRTq6
-	UwxVOEvJHZe5MEohNXpHvrTDd020glOwNblLCjm3wHn3v9PXMUjoVnhZZcHUCma43HkQfGwfkHT2y
-	nuxb1DRAmeSjwvUz3XMBiJUVJRHRBvONGgAZYTHhZ68cJq952qsKDCmAqLenpCnDIqMUChjxgm/g8
-	4dQepXEt0xj7es/cwZ8g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LPO6QrAYQ+3VL/4sQj7fodndnnjX50wNEWAsS1rR78E=; b=d/TC1cW4OBkD+W
+	ZvETdjjZ/xRbP2sDamprNKXCwMu1z2cTWDUhXlcELlXPZ1fwxXw+pAtLdpwcG4E6cTULzE2B2XAg3
+	UatDRfIfGeZelUA9yODp+Hbzl/jBL5N1lLNXMhO2iQTOUM5wzyOCM/ZeB17atlY/SzdUE8QZ3wajl
+	fWC7zinozqRrfYrZyA0qElzqznyIt4+Ol3/VrW9/Gv3QkfVUwHhFrDhy5BucoBY+5aPWw+QIGLIT2
+	90mYoYVie73GXU1rJA2WVVoTavk9Nz2ihGfdr63UeDSp0EqXGRcdh+m268y4FYseu/YXcheorTCmZ
+	RT0+OeRg3NVsbtZbVMTw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gzmur-0007yK-My; Fri, 01 Mar 2019 18:29:49 +0000
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+	id 1gzmvK-0001CN-Br; Fri, 01 Mar 2019 18:30:18 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzmuo-0007vF-9i; Fri, 01 Mar 2019 18:29:48 +0000
-Received: by mail-wm1-x342.google.com with SMTP id n19so13346641wmi.1;
- Fri, 01 Mar 2019 10:29:45 -0800 (PST)
+ id 1gzmup-0007wN-G7; Fri, 01 Mar 2019 18:29:49 +0000
+Received: by mail-wm1-x341.google.com with SMTP id q187so13462992wme.5;
+ Fri, 01 Mar 2019 10:29:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=googlemail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=f3Sv++UVg2V+HyaCtufnec76MalXMb89tH3bKrzAQLY=;
- b=F5qYnItei8jeh+CJgIrxnZE6y3mU9Hwokgs0LAPuhCqfQRmifG4wfbbJjXXPSiSUCO
- 7X6c04DlR0U7E8tBCQ8fidfHouN+MlAlk4APzAgeSGgWWGH+DI7GOrK2j+mwAAVChe+5
- KdaDswaEwGj8rPP7zJw3ilm/wqiImgn1ecwKFCwYZdTKEE6n5klHa0urONsdmhKwi5Fd
- tn+j/Uzbm6MlJ2OMEbFEIKr8tDIOzUPokrXobyZH9KtzdiWiExyMJ6EJ459enJQRXzkN
- aYy8fHRgvur3vNHSknqkOgZsSqReQQviHsJACpL+yV32CspF6Cat3dOcZirNK4jR1Lk5
- FXlA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=ncNcJQwDfiPhDXs8lF0Szc4vWY35aZvZb7KgVFzyX5I=;
+ b=URExq/MdU1CtB9n0eev3RNX3Z8rgbn1RYMpZ2oI5fDT+J5pVKYLAhSyO4OX1jSj+7m
+ 6OIXVKnWOaax2masO02Kx3eNwMHCic6tZj++1PUutHSBfngBvr0gtl6DZM2X7JfW2FBV
+ 3sTzOcQ/bE64OGaGAjZvpa6H4zK9WUq/qVAvX3GE5fSU5OhLo9iKFwjhFbv1cKPt083q
+ UZcq8NKgIZF9aPnYkyP7B1sdDZowrbirUcb+evU78pKhsByLxOYabGNXV6GCcLlHWDns
+ 8GXCvpAB3uGK8dSU2UH2zjTpNLO8jD0pyHn/vgydwrrOJ1FFAf2PojP1aHIpo4csPH5H
+ GqAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=f3Sv++UVg2V+HyaCtufnec76MalXMb89tH3bKrzAQLY=;
- b=oa2oAXIacpDR9yS4qKnr9+Vr0jZyu+6C3BdoljibvVq1hq5kXsiMcJzgGdr8A7s7Sk
- pYQCfDus3E5Xgc78v/ogTN34SmsOixGu+yVCslnKzaexJfOzB77+k2yNa9zKa5+3RfWJ
- DRfE8ikgWTMvOFRmZ1vl6PFPgcHFv+se/NH8rqCScmV6sz5ixpTwKEGCoI7qklwReSv4
- uAM8knB6Kn5UjASs8ShvzGmB0rJRmSdZrFDeiMFy9Z/DwKvq9kBs/HxT7TTwoIG/b/xr
- E0WdwIZSfeRAUUH42slxSMQJ0rE+0SGhZXdCxAEZg3FqUlSZjpoDlez0JiH7PZ4x2ih5
- obtQ==
-X-Gm-Message-State: APjAAAVYbTYIupO+s7R1/HodhUjxrKC1yKSJcePJfyXP7pM9N6oF6+bG
- 7a84TDTkMZ23wsMDFvPcEYc=
-X-Google-Smtp-Source: AHgI3IZliHFXfgsMpREr94uqmen6/rkas0Zgs6n5ueaSRujjNyFIeAusUj9ifqcDVgw4y3WA/PevDg==
-X-Received: by 2002:a1c:b6d5:: with SMTP id g204mr3880389wmf.107.1551464984355; 
- Fri, 01 Mar 2019 10:29:44 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=ncNcJQwDfiPhDXs8lF0Szc4vWY35aZvZb7KgVFzyX5I=;
+ b=gZnuxKXR/0flNHdCID8GaCNNbIwTVgXQz19kTj5S0r9z5dKT/zCAJ0GJH8TOI/IVD1
+ y2eAUfDjEPPDanQjTjWHIhU6hjw4GQfuvYfEByKxmyCc62BK92ADXD7bcDWVpL6VpERB
+ REPS+4ay21XZ1Cb+gBCe4PCtKFqNNkFPcKzEMc38VzokOYYaxpV2Jf2jn7FDffNikYfX
+ 6vhqp6dYWxbpwfb6I0uKxaO8zuYtgzv1BBJAG0weLImHY26TBOvbg68pLy8kOdF0Lc8x
+ 0cRdRod9Ywqa2Z1eymZgpZc8uiHJaAwHuK+VHiqy1FJqLuE4u6/elNtK88XrdlBydVJf
+ SyJg==
+X-Gm-Message-State: AHQUAubn/zuyyawQghkDNae4ZTi0SbAE0oII8dII+2KdNT7elAgBvikh
+ sDIk1XN5J+3xDjZ04hTfq4w=
+X-Google-Smtp-Source: APXvYqyc6XRleJWg4NXBrYYv7pNcd/11bHNukuFm5PeHaiHZ58IoBn+q9XGMaaZaeGAuoA8TimxTTA==
+X-Received: by 2002:a1c:f901:: with SMTP id x1mr4125319wmh.51.1551464985881;
+ Fri, 01 Mar 2019 10:29:45 -0800 (PST)
 Received: from blackbox.darklights.net
  (p200300DCD7109200428D5CFFFEB99DB8.dip0.t-ipconnect.de.
  [2003:dc:d710:9200:428d:5cff:feb9:9db8])
- by smtp.googlemail.com with ESMTPSA id l18sm21221367wrv.20.2019.03.01.10.29.42
+ by smtp.googlemail.com with ESMTPSA id l18sm21221367wrv.20.2019.03.01.10.29.44
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 01 Mar 2019 10:29:43 -0800 (PST)
+ Fri, 01 Mar 2019 10:29:45 -0800 (PST)
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To: liang.yang@amlogic.com
-Subject: [RFC PATCH nand-next 0/2] meson-nand: support for older SoCs
-Date: Fri,  1 Mar 2019 19:29:20 +0100
-Message-Id: <20190301182922.8309-1-martin.blumenstingl@googlemail.com>
+Subject: [RFC PATCH nand-next 1/2] dt-bindings: nand: meson: add support for
+ more SoCs
+Date: Fri,  1 Mar 2019 19:29:21 +0100
+Message-Id: <20190301182922.8309-2-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190301182922.8309-1-martin.blumenstingl@googlemail.com>
+References: <20190301182922.8309-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190301_102946_360236_185FF71E 
-X-CRM114-Status: GOOD (  20.99  )
+X-CRM114-CacheID: sfid-20190301_102947_533324_388B7A03 
+X-CRM114-Status: GOOD (  13.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -104,128 +108,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Liang,
+Older Amlogic SoCs have a slightly different integration of the NFC
+(NAND flash controller) than the new ones (GXL, GXM, AXG).
 
-I am trying to add support for older SoCs to the meson-nand driver.
-Back when the driver was in development I used an early revision (of
-your driver) and did some modifications to make it work on older SoCs.
+On GXL, AXG and newer the "NAND device clock" is shared with sd_emmc_c.
+This requires muxing the signal of that clock between the sd_emmc_c
+controller and the NAND controller. The "amlogic,mmc-syscon" property
+exists for this purpose.
 
-Now that the driver is upstream I wanted to give it another try and
-make a real patch out of it. Unfortunately it's not working anymore.
+Older SoCs (Meson8, Meson8b, Meson8m2 and GXBB) have a dedicated "NAND
+device clock". Thus we don't need to "amlogic,mmc-syscon" property for
+muxing the clock on these older SoCs.
 
-As far as I know the NFC IP block revision on GXL is similar (or even
-the same?) as on all older SoCs. As far as I can tell only the clock
-setup is different on the older SoCs (which have a dedicated NAND
-clock):
-- we don't need the "amlogic,mmc-syscon" property on the older SoCs
-  because we don't need to setup any muxing (common clock framework
-  will do everything for us)
-- "rx" and "tx" clocks don't exist
-- I could not find any other differences between Meson8, Meson8b,
-  Meson8m2, GXBB and GXL
+The clock implementation itself is also more advanced on newer SoCs
+because the phase of the RX and TX clock can be controlled. Older SoCs
+cannot change the phase of the "NAND device clock". Thus the "rx" and
+"tx" clock-names are only required for the GXL, GXM and AXG SoCs.
 
-In this series I'm sending two patches which add support for the older
-SoCs.
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ .../devicetree/bindings/mtd/amlogic,meson-nand.txt | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Unfortunately these patches are currently not working for me (hence the
-"RFC" prefix). I get a (strange) crash which is triggered by the
-kzalloc() in meson_nfc_read_buf() - see below for more details.
-
-Can you please help me on this one? I'd like to know whether:
-- the meson-nand driver works for you on GXL or AXG on linux-next?
-  (I was running these patches on top of next-20190301 on my M8S
-  board which uses a 32-bit Meson8m2 SoC. I don't have any board using
-  a GXL SoC which also has NAND)
-- you see any issue with my patches? (maybe I missed more differences
-  between GXL and the older SoCs)
-
-
-kernel log extract:
-[...]
-Could not find a valid ONFI parameter page, trying bit-wise majority to recover it
-ONFI parameter recovery failed, aborting
-Unable to handle kernel paging request at virtual address 80110000
-pgd = (ptrval)
-[80110000] *pgd=00000000
-Internal error: Oops: 5 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.0.0-rc8-next-20190301-00053-g50ac6f7757e2 #4145
-Hardware name: Amlogic Meson platform
-PC is at kmem_cache_alloc_trace+0xc8/0x268
-LR is at kmem_cache_alloc_trace+0x2c/0x268
-pc : [<c046479c>]    lr : [<c0464700>]    psr: 60000013
-sp : c02adc58  ip : e9e7a440  fp : 00004ee2
-r10: 80110000  r9 : ffffe000  r8 : c110918c
-r7 : 00000008  r6 : c08967c0  r5 : 00000dc0  r4 : c0201e40
-r3 : c109dd30  r2 : 00000000  r1 : 00004ee2  r0 : 00000000
-Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-Control: 10c5387d  Table: 0020404a  DAC: 00000051
-Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
-Stack: (0xc02adc58 to 0xc02ae000)
-dc40:                                                       e9d84048 00000003
-dc60: e9e7a440 c02add18 00000028 e9e68680 c02adcf0 00000003 e9d84048 00000002
-dc80: e9e7a440 c08967c0 c1108cb4 c02adcdc 10624dd3 c02adce4 10624dd3 00000005
-dca0: e9e7a440 c0f5c310 00000028 c0f09998 00000005 e9d84048 00000005 c02add57
-dcc0: c1108c88 e9e7a440 c02adcf0 e9d84428 e9d843b0 c0882258 000000ff 40000000
-dce0: c02adce8 00000000 c02adcf0 00000003 00000000 00000090 00000000 00000000
-dd00: 00000000 00000001 00000001 c02adcdf 00000000 00000190 00000002 00000005
-dd20: c02add57 00000001 00000000 a10a1ef7 00000000 c1108c88 c1180250 e9d843c0
-dd40: 00000001 000000de 00000000 c088d114 c0f08db4 00d843c0 00000000 a10a1ef7
-dd60: 00000015 e9d84048 c1108c88 c088d470 e9d84048 c08888b4 00000000 60000013
-dd80: c0eebc9c 000000ad c0da01ac 00000000 e9e7a48c c0cc6d50 c12122cc a10a1ef7
-dda0: e9e7a440 e9e7a440 e9d84040 c0eebc9c e987f410 eafd6748 e9d84048 c1108c88
-ddc0: e9e7a48c c0895c70 00000000 e9871f00 e9e7a440 c04eef60 00000000 eafd64bc
-dde0: e9e7a534 00000000 00000000 00000000 00000001 a10a1ef7 00000000 e987f410
-de00: 00000000 c1180728 00000000 00000000 c1180728 00000000 c1071854 c07fd388
-de20: c120da38 e987f410 c120da3c 00000000 00000000 c07fb410 e987f410 c1180728
-de40: c1180728 c07fb910 00000000 c1071834 c10004a8 c07fb65c c10004a8 c0a917b4
-de60: c0da1914 e987f410 00000000 c1180728 c07fb910 00000000 c1071834 c10004a8
-de80: c1071854 c07fb908 00000000 c1180728 e987f410 c07fb968 e98b8eb4 c1108c88
-dea0: c1180728 c07f97d4 c1175260 c029a958 e98b8eb4 a10a1ef7 c029a96c c1180728
-dec0: e9e1fa80 c1175260 00000000 c07fa844 c0f09c64 c1108c88 ffffe000 c1180728
-dee0: c1108c88 ffffe000 c103b788 c07fc494 c11c2ca0 c1108c88 ffffe000 c0302f1c
-df00: ebfffd96 c0346f90 c0fab8a0 c0f2ad00 00000000 00000006 00000006 c0e9e26c
-df20: 00000000 c1108c88 c0eb11b0 c0e9e2e0 c11d1300 ebfffd84 ebfffd89 a10a1ef7
-df40: c1071838 c11c2ca0 c10914b8 a10a1ef7 c11c2ca0 c1091804 00000007 c11d1300
-df60: c11d1300 c1001180 00000006 00000006 00000000 c10004a8 0000013d 00000000
-df80: c02c0504 00000000 c0cbf6e8 00000000 00000000 00000000 00000000 00000000
-dfa0: 00000000 c0cbf6f0 00000000 c03010e8 00000000 00000000 00000000 00000000
-dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-[<c046479c>] (kmem_cache_alloc_trace) from [<c08967c0>] (meson_nfc_exec_op+0x2c4/0x3e8)
-[<c08967c0>] (meson_nfc_exec_op) from [<c0882258>] (nand_readid_op+0x128/0x1c4)
-[<c0882258>] (nand_readid_op) from [<c088d114>] (hynix_nand_has_valid_jedecid+0x34/0x78)
-[<c088d114>] (hynix_nand_has_valid_jedecid) from [<c088d470>] (hynix_nand_decode_id+0x64/0x3fc)
-[<c088d470>] (hynix_nand_decode_id) from [<c08888b4>] (nand_scan_with_ids+0xa04/0x171c)
-[<c08888b4>] (nand_scan_with_ids) from [<c0895c70>] (meson_nfc_probe+0x460/0x690)
-[<c0895c70>] (meson_nfc_probe) from [<c07fd388>] (platform_drv_probe+0x48/0x98)
-[<c07fd388>] (platform_drv_probe) from [<c07fb410>] (really_probe+0x1e0/0x2cc)
-[<c07fb410>] (really_probe) from [<c07fb65c>] (driver_probe_device+0x60/0x16c)
-[<c07fb65c>] (driver_probe_device) from [<c07fb908>] (device_driver_attach+0x58/0x60)
-[<c07fb908>] (device_driver_attach) from [<c07fb968>] (__driver_attach+0x58/0xcc)
-[<c07fb968>] (__driver_attach) from [<c07f97d4>] (bus_for_each_dev+0x74/0xb4)
-[<c07f97d4>] (bus_for_each_dev) from [<c07fa844>] (bus_add_driver+0x1b8/0x1d8)
-[<c07fa844>] (bus_add_driver) from [<c07fc494>] (driver_register+0x74/0x108)
-[<c07fc494>] (driver_register) from [<c0302f1c>] (do_one_initcall+0x54/0x284)
-[<c0302f1c>] (do_one_initcall) from [<c1001180>] (kernel_init_freeable+0x2d4/0x36c)
-[<c1001180>] (kernel_init_freeable) from [<c0cbf6f0>] (kernel_init+0x8/0x110)
-[<c0cbf6f0>] (kernel_init) from [<c03010e8>] (ret_from_fork+0x14/0x2c)
-Exception stack(0xc02adfb0 to 0xc02adff8)
-dfa0:                                     00000000 00000000 00000000 00000000
-dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-Code: e5943000 e5942014 e3130007 1a000038 (e79ae002) 
----[ end trace 28d391ed14b0f021 ]---
-
-
-Martin Blumenstingl (2):
-  dt-bindings: nand: meson: add support for more SoCs
-  mtd: rawnand: meson: support for older SoCs up to Meson8
-
- .../bindings/mtd/amlogic,meson-nand.txt       | 14 ++++--
- drivers/mtd/nand/raw/meson_nand.c             | 46 +++++++++++++------
- 2 files changed, 42 insertions(+), 18 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+index 3983c11e062c..8766d4e82a74 100644
+--- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+@@ -5,6 +5,9 @@ the MTD NAND bindings.
+ 
+ Required properties:
+ - compatible : contains one of:
++  - "amlogic,meson8-nfc"
++  - "amlogic,meson8b-nfc"
++  - "amlogic,meson-gxbb-nfc"
+   - "amlogic,meson-gxl-nfc"
+   - "amlogic,meson-axg-nfc"
+ - clocks     :
+@@ -13,12 +16,13 @@ Required properties:
+ 
+ - clock-names: Should contain the following:
+ 	"core" - NFC module gate clock
+-	"device" - device clock from eMMC sub clock controller
+-	"rx" - rx clock phase
+-	"tx" - tx clock phase
++	"device" - NAND device clock
++	"rx" - rx clock phase, only used on the GXL, GXM and AXG SoCs.
++	"tx" - tx clock phase, only used on the GXL, GXM and AXG SoCs.
+ 
+-- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
+-				controller port C
++- amlogic,mmc-syscon	: Only used on the GXL, GXM and AXG SoCs.
++			  Required for NAND clocks, it's shared with SD/eMMC
++			  controller port C
+ 
+ Optional children nodes:
+ Children nodes represent the available nand chips.
 -- 
 2.21.0
 
