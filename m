@@ -2,144 +2,84 @@ Return-Path: <SRS0=kP5e=RE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EE77C43381
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 09:51:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08460C43381
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 10:11:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D97620851
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 09:50:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C39472186A
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2019 10:11:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cuDOwohJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="tUi/lk4O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D97620851
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CzfoRJED";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HShg49i1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C39472186A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d3oeBVM53VXqiAePkmx2zL9tQ2LmJUVFU/Ks2WAriAY=; b=cuDOwohJcY8lvi
-	Wk5T9nvmkhu8VpNxIWBuu+rQrW4SAJRSHN5eLOTNLE/kRgl14PuuC9KdzHLz2T0rq+YyVcNiM2vdx
-	No2ciPn2/Guqe9OGl62SYfO7S71eTAeckJLGV8oFcuRYnWTx3lHY2SxbpDw+tamKCk6W78U1qRv0P
-	LomxAf3UQ1tFn2unYOmTfLMJrj5w0UeXSfoir9BkJeql8goPP+8n8JeYPUzGRo9q1r3SZ9vi3DHyZ
-	BHyAszQroco0kFDf7ODxJs//H4v7jn6cIkUlCTAcKX3v/8g0/5QXKleWsea9JYQH9gGi5s8LMCpUv
-	O+ElvPy/djWuDNxNDHaA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SNIrA+CYzivWMSa3HWIAsxQfCWk8u4klFi5mufga9gU=; b=CzfoRJEDls/Qq7
+	xBlKzju+HE4+D5FRCCCmbNrKCC2hfq29Ond8SbAQouUbMcObiP0KC6MEjhGNRh9RdkH3eX09nOrNk
+	r4TGefnl6Ne4jMVk7kpQIKJ1Y/nQnlOz0YHfu4yFy/orlyktTNrdiV+QfcS8OmS0AITHdz2BAjHZO
+	ZK5uHGpYH+8VpR4/3nI4VGpipM4AgBgx3161EvhIPJxiMHEGeLVg/TKAEqPStjZ45+ZiZjB2h/gH7
+	ERUFjQWhf7cHi/YzgwacvIEr/+zDrkcN0rVzwFAALHKpU8sNbqcxOXDhTUhtZb+kpl2oH5DQs0MT/
+	3ejClDoZyimpW87nIeug==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1gzeof-0006Ne-Fj; Fri, 01 Mar 2019 09:50:53 +0000
-Received: from mail-eopbgr120109.outbound.protection.outlook.com
- ([40.107.12.109] helo=FRA01-PR2-obe.outbound.protection.outlook.com)
+	id 1gzf8g-0006YU-DE; Fri, 01 Mar 2019 10:11:34 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gzeob-0006Mx-Lj
- for linux-mtd@lists.infradead.org; Fri, 01 Mar 2019 09:50:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
- s=selector1-nokia-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u+w+qGO7GTR060pORtO8CVZdhD9UG4j7BnXFi6ym090=;
- b=tUi/lk4OaZiHbMhA2k6NNmUm0GJrTfSjJeopZS+tfD1OBrw1YWetvlJg05BokKBA9/0QcspaAbiBtpfPaj5ScgxoYazdkvXPReG/yhtx9nGaf/Wzwu6qTjwRC6I0SkMHcmvb5nZPFpIhv9XwSf5PzzaNDvXuIakh0bzvq5gVX0g=
-Received: from PR1PR07MB5900.eurprd07.prod.outlook.com (20.177.212.21) by
- PR1PR07MB4860.eurprd07.prod.outlook.com (20.177.209.27) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1665.14; Fri, 1 Mar 2019 09:50:31 +0000
-Received: from PR1PR07MB5900.eurprd07.prod.outlook.com
- ([fe80::2459:e669:7cd2:b538]) by PR1PR07MB5900.eurprd07.prod.outlook.com
- ([fe80::2459:e669:7cd2:b538%4]) with mapi id 15.20.1665.012; Fri, 1 Mar 2019
- 09:50:31 +0000
-From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Always use biggest erase size
-Thread-Topic: [PATCH 2/2] mtd: spi-nor: Always use biggest erase size
-Thread-Index: AQHUs9bk77RvlSJjREa6El1S6pHNP6X1pmCAgAEaVAA=
-Date: Fri, 1 Mar 2019 09:50:30 +0000
-Message-ID: <e286d6bf-99a1-eedc-7b9f-a082603b0946@nokia.com>
-References: <20190124112014.20167-1-alexander.sverdlin@nokia.com>
- <20190124112014.20167-3-alexander.sverdlin@nokia.com>
- <08858201-eebb-b9c0-a94d-9eec9106d23b@microchip.com>
-In-Reply-To: <08858201-eebb-b9c0-a94d-9eec9106d23b@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [131.228.32.167]
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ id 1gzf8C-0005zJ-KR
+ for linux-mtd@lists.infradead.org; Fri, 01 Mar 2019 10:11:27 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x21AAfAS064091;
+ Fri, 1 Mar 2019 04:10:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1551435041;
+ bh=cZ6qTFMGSOCyss0MhiuuAiIbp+LKfCIHtGiReXWXgKY=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=HShg49i1BTWqqhyFmFLvYhG5/QgINEj0UPp8sB30G9S/5L+r6CN3TYwHsTnfzEEuQ
+ uTGVuUdFQKrsStPhpOLFdV9mt6W3/X8enIyp76RRE9mIzf+QR+3BDhLFi0qzyoGKEM
+ HOtjhHZt607T7TbqY7roKFTTnheV4rj6fuJ8g2Mg=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x21AAfYD010685
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 1 Mar 2019 04:10:41 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Fri, 1
+ Mar 2019 04:10:41 -0600
+Received: from dlep32.itg.ti.com (157.170.170.100) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
+ Fri, 1 Mar 2019 04:10:41 -0600
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dlep32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x21AAb1v021895;
+ Fri, 1 Mar 2019 04:10:38 -0600
+Subject: Re: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI controller
+To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+ <broonie@kernel.org>, <bbrezillon@kernel.org>
+References: <1551337361-11665-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <48dafcc4-1b9d-9ce2-9228-78e73252781f@ti.com>
+Date: Fri, 1 Mar 2019 15:41:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.5.1
-x-clientproxiedby: HE1PR0401CA0058.eurprd04.prod.outlook.com
- (2603:10a6:3:19::26) To PR1PR07MB5900.eurprd07.prod.outlook.com
- (2603:10a6:102:10::21)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=alexander.sverdlin@nokia.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 03f98c2f-23b5-49b9-a747-08d69e2b5754
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(4618075)(2017052603328)(7193020);
- SRVR:PR1PR07MB4860; 
-x-ms-traffictypediagnostic: PR1PR07MB4860:
-x-microsoft-exchange-diagnostics: =?utf-8?B?MTtQUjFQUjA3TUI0ODYwOzIzOjRrRkRJWVh5ZGR0eHRXL091bis0VkVPUW82?=
- =?utf-8?B?dHZYYzV5NEZjNTZaNUl4Q016T0FkUTFyUllIbnZ5SVp6WWlYOEpieVFTWUF2?=
- =?utf-8?B?eFRZVm9weDc0OGVWWFZlc2RxbS9ZN05RRW1tWFJpd09xYml3Z3VCVDdxclRs?=
- =?utf-8?B?VDB1c0RNUE8wVllDZVNHY2diMTI0QXEySERSSDVkaTNSQzB0bndyU3NLTTBp?=
- =?utf-8?B?V0F4a1FOclErRmxWRzhXRDBXMnByQW90NnlxLysrRzhsQ0VRYlJXWTV2aFRX?=
- =?utf-8?B?bVpMeFRjcmtIVUw0UjVETS9sRkxGaHNmYUdZa0lyUTd4VlgzekVnazNGaU5q?=
- =?utf-8?B?YUxaZGR0RjhMbERmTFJYUnBEOXB3d05xcjdzdWt5QTZ6YmcwcHBZckhzMW1O?=
- =?utf-8?B?U0dYdjI5MS9YWWZNZVJUT3hQbGUxeGN1NUdWb2NldjZJSkpld2tqdG9WYlk5?=
- =?utf-8?B?cmhHUU1LMlozTGNQaUhpeE82N0MvSU96a2o0WTVnN3JJU2ZtZXg3aGpHOGlU?=
- =?utf-8?B?RVVyM3NHWUxhN3R4c1dLTkt0TjgyT2JVdllCeGdzZjZ0VmVicnZlNW1lajIv?=
- =?utf-8?B?bDFRYkNRUEY3T3o5cEN5SUdzVUhmTDJzUUtRdnJ0NFJTbDgzbnV4OGI2aWRr?=
- =?utf-8?B?NktNbjk0cXFDNzZJV2FGS29ZaXVRSDdlNkp3TjRTVGg3ZlRORUxBWGRObjBR?=
- =?utf-8?B?RjY4c0VlYjRleWlwR3BZakR0Zk43ejc5YmdkVUR1b1Vqb3c2U1hWUnBGK1oz?=
- =?utf-8?B?bEdlZ1k3ZVdFS1FBYjlHcFM0Q3RUQi8zN29KM3FaQjQ5Y2c4NHV2YlNIZDB3?=
- =?utf-8?B?bEFXNlNPTlR3ekE3Z0p2R1NHUjdvNnNSdzVZT3ROTEJ5cGwxUm14TVlHc3NN?=
- =?utf-8?B?YURYZHcrZlVad3RVYjBLN09LT3NBcUxEQUE4d0NmSWphL2JiRi9pSDlFVTgz?=
- =?utf-8?B?R1JoNnZadjdDNk1ZaXI0S0RjdWdrT3VVMU5rTzF4L0tpMlIvSFRSMW8wZHNS?=
- =?utf-8?B?Q0puelpmNytEMk81YmwzWkduVzVGWXhsY1h3MDAwT1FyRGtMQm5VSEJrQy81?=
- =?utf-8?B?RGY3dE1mSVRJY2ZJWjBRWlNaaDVjOWxuK090QncrMCtUOXB5djFkU3NhVzNN?=
- =?utf-8?B?UW83cDF1c3RRL3dndFNDa2h0TnNCZXBuNFZKeHNLcExIVkZ1c2lsVlM1bVVo?=
- =?utf-8?B?ZXprcFYrdEJTaXlNUW50bWc0YjlZUmt0UHpWRG9LWXJWZ2pIZjhTKzZ1SjND?=
- =?utf-8?B?dVUzOVBYM1A2bnJJWWc3UkpNa3FZME5iY3ljMFVSc3FxVTNzWWpEcUxaMy9Q?=
- =?utf-8?B?NTNKODhVOXFCcWd4VVNhOUNUTElHd0tFODBZZEE2MUdEODFFTTBZd01aWlZ0?=
- =?utf-8?B?Uk0yZFNIWkZteE9HdVNTYjJpNVpPUEtEbWFhWmlEQnBtNEM4UFFURmZVVmZK?=
- =?utf-8?B?cHFwblNoMUVhdXNlc3Y1RmNtWmhucXBiQ1lvRkUwbEU5a05SSkdOTWx5Vllq?=
- =?utf-8?B?ZEk0N1g5clRCSUZ0M0VEWFFvVUpCRHhqYmVkVk82WTZ0amtZMTVPWVArTzF3?=
- =?utf-8?B?Z00wVkd0eU8vQU5NUHNMYjRwOTRwYUpieGtZVit4Ykw4Qy9IcW42NEFMUWVH?=
- =?utf-8?B?UEhpb3pLb0JCeTRMNG5sMFdEV2I0UmhHRUlTY2R3elhWcGhMak5henlJbER0?=
- =?utf-8?B?ZldnYmRUY1ErdEMxN3dDVFlWU05CZjQ5S0VmNGxLTTN6NTgwdlM3ZWoyb0ZZ?=
- =?utf-8?B?WVFlc1N1MDMwLzM2Si9TZkc3cGdDT1VIUXNCdmRZZVE5elUxQno2K2ZLUlc4?=
- =?utf-8?B?R0QzcE5xVm1CVW9LUVIzMy9sa1N5NlEwcDAzd2I2Uzgzb2lFb3dIbnpGblF6?=
- =?utf-8?B?YklDQUJkR1MwU1BWdC9laEhwRUdlaVk1MGhNdDdrZVAzUzhMVnNqZzhwS1hL?=
- =?utf-8?B?WnhEUEFWeUFnPT0=?=
-x-microsoft-antispam-prvs: <PR1PR07MB48607197A74F37B068C2F2E688760@PR1PR07MB4860.eurprd07.prod.outlook.com>
-x-forefront-prvs: 09634B1196
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10019020)(39860400002)(136003)(346002)(376002)(396003)(366004)(199004)(189003)(65956001)(53936002)(2501003)(5660300002)(66066001)(71190400001)(71200400001)(65806001)(58126008)(478600001)(386003)(110136005)(8936002)(97736004)(53546011)(6512007)(102836004)(76176011)(6506007)(99286004)(65826007)(54906003)(2906002)(31696002)(86362001)(68736007)(52116002)(316002)(6436002)(81156014)(2616005)(476003)(486006)(186003)(26005)(8676002)(6116002)(81166006)(446003)(3846002)(6486002)(305945005)(14454004)(105586002)(4326008)(25786009)(14444005)(256004)(6246003)(106356001)(31686004)(64126003)(229853002)(7736002)(36756003)(11346002);
- DIR:OUT; SFP:1102; SCL:1; SRVR:PR1PR07MB4860;
- H:PR1PR07MB5900.eurprd07.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: nokia.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: eECGNnG/WPXsIrEIJqGZHn4Ex1d0/bscxhfzUe97nfvlEBHbrC1vQUSuj1kkFW0ufV0iOw0RjK5GS4ZoYk5YlgI6T4IQedEgvUTwLyibBWHKraBgALiEaaSiOWxvep562QwKP8NhdYxvY9pMZzsac1Gwc96uhoKxbRwZ1PlF1k5fbmvsLFviwtvcE6YDblvpHwGvMZLEBhAUVfqDW/ZzDkV8nD/dy3TG6zILCATnoVrZ1rUhc6b+n0JPV1ZZvsvZfCcAqgR7XnwVLlZESathTPHuDXcJJZT/Nw4nTR9zd76s/c54k9GFH5WgqI4ZD8ViWpC39U4t4THopHds7HIOifrokkU0/Amwbt5Pw4UL1JSuq/7r+LCIcIC6tkEs1faOhSwP/ofJknDELvmk5hMYtMDujPjzkQwAJSLo1cTdQL4=
-Content-ID: <026535BDB4281C4F805EBB359C629663@eurprd07.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03f98c2f-23b5-49b9-a747-08d69e2b5754
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2019 09:50:30.9074 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1PR07MB4860
+In-Reply-To: <1551337361-11665-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190301_015049_759189_4DC2DE22 
-X-CRM114-Status: GOOD (  10.93  )
+X-CRM114-CacheID: sfid-20190301_021105_653501_87F97057 
+X-CRM114-Status: GOOD (  32.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -151,54 +91,876 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "richard@nod.at" <richard@nod.at>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>
+Cc: richard@nod.at, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org, nagasuresh12@gmail.com,
+ dwmw2@infradead.org, michal.simek@xilinx.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
 
-On 28/02/2019 18:00, Tudor.Ambarus@microchip.com wrote:
-> On 01/24/2019 01:21 PM, Sverdlin, Alexander (Nokia - DE/Ulm) wrote:
->> Optimize erase time by always using biggest erase size for given erase
->> request. Do it by removing "sector"-at-a-time erase code.
->> spi_nor_erase_multi_sectors() seems to be mature enough to handle all
->> the cases better.
+
+On 28/02/19 12:32 PM, Naga Sureshkumar Relli wrote:
+> Add support for QSPI controller driver used by Xilinx Zynq SOC.
 > 
-> Did you check if the upper mtd layers are affected by this change?
-
-For now I just change static function, I didn't want to remote
-spi_nor_has_uniform_erase() infrastructure in the first step.
-
-So I personally see no problems with my patch. It's also quite well
-tested up to now.
-
->> For the above to work backwards-compatible regarding 4-bytes commands
->> spi_nor_set_4byte_opcodes() has to prepare them always, independent of
->> spi_nor_has_uniform_erase() flag.
->>
->> Remainder check in spi_nor_erase() becomes superfluous because
->> spi_nor_erase_multi_sectors() performs it anyway.
->>
->> The trigger for this change was n25q128a13: enabling SECT_4K increased
->> erase time of 128k block from 1.763s to 11.335s.
+> Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> ---
+>  drivers/spi/Kconfig         |   8 +
+>  drivers/spi/Makefile        |   1 +
+>  drivers/spi/spi-zynq-qspi.c | 780 ++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 789 insertions(+)
+>  create mode 100644 drivers/spi/spi-zynq-qspi.c
 > 
-> When needed, one can disable the 4K sectors with the MTD_SPI_NOR_USE_4K_SECTORS
-> kconfig option. Does this help you?
+> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+> index 9f89cb1..f12c880 100644
+> --- a/drivers/spi/Kconfig
+> +++ b/drivers/spi/Kconfig
+> @@ -816,6 +816,14 @@ config SPI_XTENSA_XTFPGA
+>  	  16 bit words in SPI mode 0, automatically asserting CS on transfer
+>  	  start and deasserting on end.
+>  
+> +config SPI_ZYNQ_QSPI
+> +	tristate "Xilinx Zynq QSPI controller"
+> +	depends on ARCH_ZYNQ
+> +	help
+> +	  This enables support for the Zynq Quad SPI controller
+> +	  in master mode.
+> +	  This controller only supports SPI memory interface.
+> +
+>  config SPI_ZYNQMP_GQSPI
+>  	tristate "Xilinx ZynqMP GQSPI controller"
+>  	depends on SPI_MASTER && HAS_DMA
+> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+> index f296270..565db4d 100644
+> --- a/drivers/spi/Makefile
+> +++ b/drivers/spi/Makefile
+> @@ -115,6 +115,7 @@ obj-$(CONFIG_SPI_XCOMM)		+= spi-xcomm.o
+>  obj-$(CONFIG_SPI_XILINX)		+= spi-xilinx.o
+>  obj-$(CONFIG_SPI_XLP)			+= spi-xlp.o
+>  obj-$(CONFIG_SPI_XTENSA_XTFPGA)		+= spi-xtensa-xtfpga.o
+> +obj-$(CONFIG_SPI_ZYNQ_QSPI)		+= spi-zynq-qspi.o
+>  obj-$(CONFIG_SPI_ZYNQMP_GQSPI)		+= spi-zynqmp-gqspi.o
+>  
+>  # SPI slave protocol handlers
+> diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
+> new file mode 100644
+> index 0000000..87c9ec2
+> --- /dev/null
+> +++ b/drivers/spi/spi-zynq-qspi.c
+> @@ -0,0 +1,780 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright (C) 2019 Xilinx, Inc.
+> + *
+> + * Author: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/gpio.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/of_address.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/workqueue.h>
+> +#include <linux/spi/spi-mem.h>
+> +
+> +/* Register offset definitions */
+> +#define ZYNQ_QSPI_CONFIG_OFFSET		0x00 /* Configuration  Register, RW */
+> +#define ZYNQ_QSPI_STATUS_OFFSET		0x04 /* Interrupt Status Register, RO */
+> +#define ZYNQ_QSPI_IEN_OFFSET		0x08 /* Interrupt Enable Register, WO */
+> +#define ZYNQ_QSPI_IDIS_OFFSET		0x0C /* Interrupt Disable Reg, WO */
+> +#define ZYNQ_QSPI_IMASK_OFFSET		0x10 /* Interrupt Enabled Mask Reg,RO */
+> +#define ZYNQ_QSPI_ENABLE_OFFSET		0x14 /* Enable/Disable Register, RW */
+> +#define ZYNQ_QSPI_DELAY_OFFSET		0x18 /* Delay Register, RW */
+> +#define ZYNQ_QSPI_TXD_00_00_OFFSET	0x1C /* Transmit 4-byte inst, WO */
+> +#define ZYNQ_QSPI_TXD_00_01_OFFSET	0x80 /* Transmit 1-byte inst, WO */
+> +#define ZYNQ_QSPI_TXD_00_10_OFFSET	0x84 /* Transmit 2-byte inst, WO */
+> +#define ZYNQ_QSPI_TXD_00_11_OFFSET	0x88 /* Transmit 3-byte inst, WO */
+> +#define ZYNQ_QSPI_RXD_OFFSET		0x20 /* Data Receive Register, RO */
+> +#define ZYNQ_QSPI_SIC_OFFSET		0x24 /* Slave Idle Count Register, RW */
+> +#define ZYNQ_QSPI_TX_THRESH_OFFSET	0x28 /* TX FIFO Watermark Reg, RW */
+> +#define ZYNQ_QSPI_RX_THRESH_OFFSET	0x2C /* RX FIFO Watermark Reg, RW */
+> +#define ZYNQ_QSPI_GPIO_OFFSET		0x30 /* GPIO Register, RW */
+> +#define ZYNQ_QSPI_LINEAR_CFG_OFFSET	0xA0 /* Linear Adapter Config Ref, RW */
+> +#define ZYNQ_QSPI_MOD_ID_OFFSET		0xFC /* Module ID Register, RO */
+> +
+> +/*
+> + * QSPI Configuration Register bit Masks
+> + *
+> + * This register contains various control bits that effect the operation
+> + * of the QSPI controller
+> + */
+> +#define ZYNQ_QSPI_CONFIG_IFMODE_MASK	0x80000000 /* Flash Memory Interface */
+> +#define ZYNQ_QSPI_CONFIG_MANSRT_MASK	0x00010000 /* Manual TX Start */
+> +#define ZYNQ_QSPI_CONFIG_MANSRTEN_MASK	0x00008000 /* Enable Manual TX Mode */
+> +#define ZYNQ_QSPI_CONFIG_SSFORCE_MASK	0x00004000 /* Manual Chip Select */
+> +#define ZYNQ_QSPI_CONFIG_BDRATE_MASK	0x00000038 /* Baud Rate Divisor Mask */
+> +#define ZYNQ_QSPI_CONFIG_CPHA_MASK	0x00000004 /* Clock Phase Control */
+> +#define ZYNQ_QSPI_CONFIG_CPOL_MASK	0x00000002 /* Clock Polarity Control */
+> +#define ZYNQ_QSPI_CONFIG_SSCTRL_MASK	0x00000400 /* Slave Select Mask */
+> +#define ZYNQ_QSPI_CONFIG_FWIDTH_MASK	0x000000C0 /* FIFO width */
+> +#define ZYNQ_QSPI_CONFIG_MSTREN_MASK	0x00000001 /* Master Mode */
+> +
 
-This very same kernel runs on different boards with different flashes.
-Seems that more modern flashes are not so slow when 4K sectors are used.
+Convert to GENMASK() and BIT() macros
 
-Moreover, I truly believe this was a dead code and want to be convinced
-otherwise before real problems start :)
+> +/*
+> + * QSPI Configuration Register - Baud rate and slave select
+> + *
+> + * These are the values used in the calculation of baud rate divisor and
+> + * setting the slave select.
+> + */
+> +#define ZYNQ_QSPI_BAUD_DIV_MAX		7 /* Baud rate divisor maximum */
+> +#define ZYNQ_QSPI_BAUD_DIV_SHIFT	3 /* Baud rate divisor shift in CR */
+> +#define ZYNQ_QSPI_SS_SHIFT		10 /* Slave Select field shift in CR */
+> +
+> +/*
+> + * QSPI Interrupt Registers bit Masks
+> + *
+> + * All the four interrupt registers (Status/Mask/Enable/Disable) have the same
+> + * bit definitions.
+> + */
+> +#define ZYNQ_QSPI_IXR_RX_OVERFLOW_MASK	0x00000001 /* QSPI RX FIFO Overflow */
+> +#define ZYNQ_QSPI_IXR_TXNFULL_MASK	0x00000004 /* QSPI TX FIFO Overflow */
+> +#define ZYNQ_QSPI_IXR_TXFULL_MASK	0x00000008 /* QSPI TX FIFO is full */
+> +#define ZYNQ_QSPI_IXR_RXNEMTY_MASK	0x00000010 /* QSPI RX FIFO Not Empty */
+> +#define ZYNQ_QSPI_IXR_RXF_FULL_MASK	0x00000020 /* QSPI RX FIFO is full */
+> +#define ZYNQ_QSPI_IXR_TXF_UNDRFLOW_MASK	0x00000040 /* QSPI TX FIFO Underflow */
+> +#define ZYNQ_QSPI_IXR_ALL_MASK		(ZYNQ_QSPI_IXR_RX_OVERFLOW_MASK | \
+> +					ZYNQ_QSPI_IXR_TXNFULL_MASK | \
+> +					ZYNQ_QSPI_IXR_TXFULL_MASK | \
+> +					ZYNQ_QSPI_IXR_RXNEMTY_MASK | \
+> +					ZYNQ_QSPI_IXR_RXF_FULL_MASK | \
+> +					ZYNQ_QSPI_IXR_TXF_UNDRFLOW_MASK)
+> +#define ZYNQ_QSPI_IXR_RXTX_MASK		(ZYNQ_QSPI_IXR_TXNFULL_MASK | \
+> +					ZYNQ_QSPI_IXR_RXNEMTY_MASK)
+> +
 
--- 
-Best regards,
-Alexander Sverdlin.
+Convert to GENMASK() and BIT() macros
+
+> +/*
+> + * QSPI Enable Register bit Masks
+> + *
+> + * This register is used to enable or disable the QSPI controller
+> + */
+> +#define ZYNQ_QSPI_ENABLE_ENABLE_MASK	0x00000001 /* QSPI Enable Bit Mask */
+> +
+> +/*
+> + * QSPI Linear Configuration Register
+> + *
+> + * It is named Linear Configuration but it controls other modes when not in
+> + * linear mode also.
+> + */
+> +#define ZYNQ_QSPI_LCFG_TWO_MEM_MASK	0x40000000 /* LQSPI Two memories Mask */
+> +#define ZYNQ_QSPI_LCFG_SEP_BUS_MASK	0x20000000 /* LQSPI Separate bus Mask */
+> +#define ZYNQ_QSPI_LCFG_U_PAGE_MASK	0x10000000 /* LQSPI Upper Page Mask */
+> +
+
+Convert to GENMASK() and BIT() macros
+
+> +#define ZYNQ_QSPI_LCFG_DUMMY_SHIFT	8
+> +
+> +#define ZYNQ_QSPI_FAST_READ_QOUT_CODE	0x6B /* read instruction code */
+> +#define ZYNQ_QSPI_FIFO_DEPTH		63 /* FIFO depth in words */
+> +#define ZYNQ_QSPI_RX_THRESHOLD		32 /* Rx FIFO threshold level */
+> +#define ZYNQ_QSPI_TX_THRESHOLD		1 /* Tx FIFO threshold level */
+> +
+> +/*
+> + * The modebits configurable by the driver to make the SPI support different
+> + * data formats
+> + */
+> +#define MODEBITS			(SPI_CPOL | SPI_CPHA)
+> +
+
+Rename as ZYNQ_QSPI_MODEBITS to avoid namespace conflicts
+
+> +/* Default number of chip selects */
+> +#define ZYNQ_QSPI_DEFAULT_NUM_CS	1
+> +
+> +/**
+> + * struct zynq_qspi - Defines qspi driver instance
+> + * @regs:		Virtual address of the QSPI controller registers
+> + * @refclk:		Pointer to the peripheral clock
+> + * @pclk:		Pointer to the APB clock
+> + * @irq:		IRQ number
+> + * @txbuf:		Pointer to the TX buffer
+> + * @rxbuf:		Pointer to the RX buffer
+> + * @tx_bytes:		Number of bytes left to transfer
+> + * @rx_bytes:		Number of bytes left to receive
+> + * @data_completion:	completion structure
+> + */
+> +struct zynq_qspi {
+> +	struct device *dev;
+> +	void __iomem *regs;
+> +	struct clk *refclk;
+> +	struct clk *pclk;
+> +	int irq;
+> +	u8 *txbuf;
+> +	u8 *rxbuf;
+> +	int tx_bytes;
+> +	int rx_bytes;
+> +	struct completion data_completion;
+> +};
+> +
+> +/*
+> + * Inline functions for the QSPI controller read/write
+> + */
+> +static inline u32 zynq_qspi_read(struct zynq_qspi *xqspi, u32 offset)
+> +{
+> +	return readl_relaxed(xqspi->regs + offset);
+> +}
+> +
+> +static inline void zynq_qspi_write(struct zynq_qspi *xqspi, u32 offset,
+> +				   u32 val)
+> +{
+> +	writel_relaxed(val, xqspi->regs + offset);
+> +}
+> +
+> +/**
+> + * zynq_qspi_init_hw - Initialize the hardware
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + *
+> + * The default settings of the QSPI controller's configurable parameters on
+> + * reset are
+> + *	- Master mode
+> + *	- Baud rate divisor is set to 2
+> + *	- Tx threshold set to 1l Rx threshold set to 32
+> + *	- Flash memory interface mode enabled
+> + *	- Size of the word to be transferred as 8 bit
+> + * This function performs the following actions
+> + *	- Disable and clear all the interrupts
+> + *	- Enable manual slave select
+> + *	- Enable manual start
+> + *	- Deselect all the chip select lines
+> + *	- Set the size of the word to be transferred as 32 bit
+> + *	- Set the little endian mode of TX FIFO and
+> + *	- Enable the QSPI controller
+> + */
+> +static void zynq_qspi_init_hw(struct zynq_qspi *xqspi)
+> +{
+> +	u32 config_reg;
+> +
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_ENABLE_OFFSET, 0);
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_IDIS_OFFSET, ZYNQ_QSPI_IXR_ALL_MASK);
+> +
+> +	/* Disable linear mode as the boot loader may have used it */
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_LINEAR_CFG_OFFSET, 0);
+> +
+> +	/* Clear the RX FIFO */
+> +	while (zynq_qspi_read(xqspi, ZYNQ_QSPI_STATUS_OFFSET) &
+> +			      ZYNQ_QSPI_IXR_RXNEMTY_MASK)
+> +		zynq_qspi_read(xqspi, ZYNQ_QSPI_RXD_OFFSET);
+> +
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_STATUS_OFFSET, ZYNQ_QSPI_IXR_ALL_MASK);
+> +	config_reg = zynq_qspi_read(xqspi, ZYNQ_QSPI_CONFIG_OFFSET);
+> +	config_reg &= ~(ZYNQ_QSPI_CONFIG_MSTREN_MASK |
+> +			ZYNQ_QSPI_CONFIG_CPOL_MASK |
+> +			ZYNQ_QSPI_CONFIG_CPHA_MASK |
+> +			ZYNQ_QSPI_CONFIG_BDRATE_MASK |
+> +			ZYNQ_QSPI_CONFIG_SSFORCE_MASK |
+> +			ZYNQ_QSPI_CONFIG_MANSRTEN_MASK |
+> +			ZYNQ_QSPI_CONFIG_MANSRT_MASK);
+> +	config_reg |= (ZYNQ_QSPI_CONFIG_MSTREN_MASK |
+> +		       ZYNQ_QSPI_CONFIG_SSFORCE_MASK |
+> +		       ZYNQ_QSPI_CONFIG_FWIDTH_MASK |
+> +		       ZYNQ_QSPI_CONFIG_IFMODE_MASK);
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_CONFIG_OFFSET, config_reg);
+> +
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_RX_THRESH_OFFSET,
+> +			ZYNQ_QSPI_RX_THRESHOLD);
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_TX_THRESH_OFFSET,
+> +			ZYNQ_QSPI_TX_THRESHOLD);
+> +
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_ENABLE_OFFSET,
+> +			ZYNQ_QSPI_ENABLE_ENABLE_MASK);
+> +}
+> +
+> +static int zynq_qspi_check_buswidth(u8 width)
+> +{
+> +	switch (width) {
+> +	case 1:
+> +	case 2:
+> +	case 4:
+> +		return 0;
+> +	}
+> +
+> +	return -ENOTSUPP;
+> +}
+> +
+> +static bool zynq_qspi_supports_op(struct spi_mem *mem,
+> +				  const struct spi_mem_op *op)
+> +{
+> +	int ret;
+> +
+> +	ret = zynq_qspi_check_buswidth(op->cmd.buswidth);
+> +
+> +	if (op->addr.nbytes)
+> +		ret |= zynq_qspi_check_buswidth(op->addr.buswidth);
+> +
+> +	if (op->dummy.nbytes)
+> +		ret |= zynq_qspi_check_buswidth(op->dummy.buswidth);
+> +
+> +	if (op->data.nbytes)
+> +		ret |= zynq_qspi_check_buswidth(op->data.buswidth);
+> +
+> +	if (ret)
+> +		return false;
+> +
+
+spi_mem_default_supports_op() already has this code.
+Could you change, spi_mem_supports_op() to call
+spi_mem_default_supports_op() first before controller specific
+->supports_op()? So that, above code can be dropped.
+
+> +	/*
+> +	 * The number of address bytes should be equal to or less than 3 bytes.
+> +	 */
+> +	if (op->addr.nbytes > 3)
+> +		return false;
+> +
+
+Hmm, how does the driver handle flash devices >16MB in size? Not supported?
+
+> +	return true;
+> +}
+> +
+> +/**
+> + * zynq_qspi_rxfifo_op - Read 1..4 bytes from RxFIFO to RX buffer
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + * @size:	Number of bytes to be read (1..4)
+> + */
+> +static void zynq_qspi_rxfifo_op(struct zynq_qspi *xqspi, unsigned int size)
+> +{
+> +	u32 data;
+> +
+> +	data = zynq_qspi_read(xqspi, ZYNQ_QSPI_RXD_OFFSET);
+> +
+> +	if (xqspi->rxbuf) {
+> +		memcpy(xqspi->rxbuf, ((u8 *)&data) + 4 - size, size);
+> +		xqspi->rxbuf += size;
+> +	}
+> +
+> +	xqspi->rx_bytes -= size;
+> +	if (xqspi->rx_bytes < 0)
+> +		xqspi->rx_bytes = 0;
+> +}
+> +
+> +/**
+> + * zynq_qspi_txfifo_op - Write 1..4 bytes from TX buffer to TxFIFO
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + * @size:	Number of bytes to be written (1..4)
+> + */
+> +static void zynq_qspi_txfifo_op(struct zynq_qspi *xqspi, unsigned int size)
+> +{
+> +	static const unsigned int offset[4] = {
+> +		ZYNQ_QSPI_TXD_00_01_OFFSET, ZYNQ_QSPI_TXD_00_10_OFFSET,
+> +		ZYNQ_QSPI_TXD_00_11_OFFSET, ZYNQ_QSPI_TXD_00_00_OFFSET };
+> +	u32 data;
+> +
+> +	if (xqspi->txbuf) {
+> +		data = 0xffffffff;
+> +		memcpy(&data, xqspi->txbuf, size);
+> +		xqspi->txbuf += size;
+> +	} else {
+> +		data = 0;
+> +	}
+> +
+> +	xqspi->tx_bytes -= size;
+> +	zynq_qspi_write(xqspi, offset[size - 1], data);
+> +}
+> +
+> +/**
+> + * zynq_qspi_chipselect - Select or deselect the chip select line
+> + * @spi:	Pointer to the spi_device structure
+> + * @assert:	1 for select or 0 for deselect the chip select line
+> + */
+> +static void zynq_qspi_chipselect(struct spi_device *spi, bool assert)
+> +{
+> +	struct spi_controller *ctrl = spi->master;
+> +	struct zynq_qspi *xqspi = spi_controller_get_devdata(ctrl);
+> +	u32 config_reg;
+> +
+> +	config_reg = zynq_qspi_read(xqspi, ZYNQ_QSPI_CONFIG_OFFSET);
+> +	if (assert) {
+> +		/* Select the slave */
+> +		config_reg &= ~ZYNQ_QSPI_CONFIG_SSCTRL_MASK;
+> +		config_reg |= (((~(BIT(spi->chip_select))) <<
+> +				ZYNQ_QSPI_SS_SHIFT) &
+> +				ZYNQ_QSPI_CONFIG_SSCTRL_MASK);
+> +	} else {
+> +		config_reg |= ZYNQ_QSPI_CONFIG_SSCTRL_MASK;
+> +	}
+> +
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_CONFIG_OFFSET, config_reg);
+> +}
+> +
+> +/**
+> + * zynq_qspi_config_op - Configure QSPI controller for specified transfer
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + * @qspi:	Pointer to the spi_device structure
+> + *
+> + * Sets the operational mode of QSPI controller for the next QSPI transfer and
+> + * sets the requested clock frequency.
+> + *
+> + * Return:	0 on success and -EINVAL on invalid input parameter
+> + *
+> + * Note: If the requested frequency is not an exact match with what can be
+> + * obtained using the prescalar value, the driver sets the clock frequency which
+> + * is lower than the requested frequency (maximum lower) for the transfer. If
+> + * the requested frequency is higher or lower than that is supported by the QSPI
+> + * controller the driver will set the highest or lowest frequency supported by
+> + * controller.
+> + */
+> +static int zynq_qspi_config_op(struct zynq_qspi *xqspi, struct spi_device *spi)
+> +{
+> +	u32 config_reg, baud_rate_val = 0;
+> +
+> +	/* Set the clock frequency */
+> +	while ((baud_rate_val < ZYNQ_QSPI_BAUD_DIV_MAX)  &&
+> +	       (clk_get_rate(xqspi->refclk) / (2 << baud_rate_val)) >
+> +		spi->max_speed_hz)
+> +		baud_rate_val++;
+
+This can be simplified by using DIV_ROUND_UP() to find baud_rate_val
+
+
+
+Regards
+Vignesh
+
+> +	config_reg = zynq_qspi_read(xqspi, ZYNQ_QSPI_CONFIG_OFFSET);
+> +
+> +	/* Set the QSPI clock phase and clock polarity */
+> +	config_reg &= (~ZYNQ_QSPI_CONFIG_CPHA_MASK) &
+> +		      (~ZYNQ_QSPI_CONFIG_CPOL_MASK);
+> +	if (spi->mode & SPI_CPHA)
+> +		config_reg |= ZYNQ_QSPI_CONFIG_CPHA_MASK;
+> +	if (spi->mode & SPI_CPOL)
+> +		config_reg |= ZYNQ_QSPI_CONFIG_CPOL_MASK;
+> +
+> +	config_reg &= ~ZYNQ_QSPI_CONFIG_BDRATE_MASK;
+> +	config_reg |= (baud_rate_val << ZYNQ_QSPI_BAUD_DIV_SHIFT);
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_CONFIG_OFFSET, config_reg);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * zynq_qspi_setup - Configure the QSPI controller
+> + * @spi:	Pointer to the spi_device structure
+> + *
+> + * Sets the operational mode of QSPI controller for the next QSPI transfer, baud
+> + * rate and divisor value to setup the requested qspi clock.
+> + *
+> + * Return:	0 on success and error value on failure
+> + */
+> +static int zynq_qspi_setup_op(struct spi_device *spi)
+> +{
+> +	struct spi_controller *ctrl = spi->master;
+> +	struct zynq_qspi *qspi = spi_controller_get_devdata(ctrl);
+> +
+> +	if (ctrl->busy)
+> +		return -EBUSY;
+> +
+> +	clk_enable(qspi->refclk);
+> +	clk_enable(qspi->pclk);
+> +	zynq_qspi_write(qspi, ZYNQ_QSPI_ENABLE_OFFSET,
+> +			ZYNQ_QSPI_ENABLE_ENABLE_MASK);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * zynq_qspi_write_op - Fills the TX FIFO with as many bytes as possible
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + * @txcount:	Maximum number of words to write
+> + * @txempty:	Indicates that TxFIFO is empty
+> + */
+> +static void zynq_qspi_write_op(struct zynq_qspi *xqspi, int txcount,
+> +			       bool txempty)
+> +{
+> +	int count, len, k;
+> +
+> +	len = xqspi->tx_bytes;
+> +	if (len && len < 4) {
+> +		/*
+> +		 * We must empty the TxFIFO between accesses to TXD0,
+> +		 * TXD1, TXD2, TXD3.
+> +		 */
+> +		if (txempty)
+> +			zynq_qspi_txfifo_op(xqspi, len);
+> +
+> +		return;
+> +	}
+> +
+> +	count = len / 4;
+> +	if (count > txcount)
+> +		count = txcount;
+> +
+> +	if (xqspi->txbuf) {
+> +		writesl(xqspi->regs + ZYNQ_QSPI_TXD_00_00_OFFSET,
+> +			xqspi->txbuf, count);
+> +		xqspi->txbuf += count * 4;
+> +	} else {
+> +		for (k = 0; k < count; k++)
+> +			writel_relaxed(0, xqspi->regs +
+> +					  ZYNQ_QSPI_TXD_00_00_OFFSET);
+> +	}
+> +
+> +	xqspi->tx_bytes -= count * 4;
+> +}
+> +
+> +/**
+> + * zynq_qspi_read_op - Drains the RX FIFO by as many bytes as possible
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + * @rxcount:	Maximum number of words to read
+> + */
+> +static void zynq_qspi_read_op(struct zynq_qspi *xqspi, int rxcount)
+> +{
+> +	int count, len, k;
+> +
+> +	len = xqspi->rx_bytes - xqspi->tx_bytes;
+> +	count = len / 4;
+> +	if (count > rxcount)
+> +		count = rxcount;
+> +	if (xqspi->rxbuf) {
+> +		readsl(xqspi->regs + ZYNQ_QSPI_RXD_OFFSET,
+> +		       xqspi->rxbuf, count);
+> +		xqspi->rxbuf += count * 4;
+> +	} else {
+> +		for (k = 0; k < count; k++)
+> +			readl_relaxed(xqspi->regs + ZYNQ_QSPI_RXD_OFFSET);
+> +	}
+> +	xqspi->rx_bytes -= count * 4;
+> +	len -= count * 4;
+> +
+> +	if (len && len < 4 && count < rxcount)
+> +		zynq_qspi_rxfifo_op(xqspi, len);
+> +}
+> +
+> +/**
+> + * zynq_qspi_irq - Interrupt service routine of the QSPI controller
+> + * @irq:	IRQ number
+> + * @dev_id:	Pointer to the xqspi structure
+> + *
+> + * This function handles TX empty only.
+> + * On TX empty interrupt this function reads the received data from RX FIFO and
+> + * fills the TX FIFO if there is any data remaining to be transferred.
+> + *
+> + * Return:	IRQ_HANDLED when interrupt is handled; IRQ_NONE otherwise.
+> + */
+> +static irqreturn_t zynq_qspi_irq(int irq, void *dev_id)
+> +{
+> +	u32 intr_status;
+> +	bool txempty;
+> +	struct zynq_qspi *xqspi = (struct zynq_qspi *)dev_id;
+> +
+> +	intr_status = zynq_qspi_read(xqspi, ZYNQ_QSPI_STATUS_OFFSET);
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_STATUS_OFFSET, intr_status);
+> +
+> +	if ((intr_status & ZYNQ_QSPI_IXR_TXNFULL_MASK) ||
+> +	    (intr_status & ZYNQ_QSPI_IXR_RXNEMTY_MASK)) {
+> +		/*
+> +		 * This bit is set when Tx FIFO has < THRESHOLD entries.
+> +		 * We have the THRESHOLD value set to 1,
+> +		 * so this bit indicates Tx FIFO is empty.
+> +		 */
+> +		txempty = !!(intr_status & ZYNQ_QSPI_IXR_TXNFULL_MASK);
+> +		/* Read out the data from the RX FIFO */
+> +		zynq_qspi_read_op(xqspi, ZYNQ_QSPI_RX_THRESHOLD);
+> +		if (xqspi->tx_bytes) {
+> +			/* There is more data to send */
+> +			zynq_qspi_write_op(xqspi, ZYNQ_QSPI_RX_THRESHOLD,
+> +					   txempty);
+> +		} else {
+> +			/*
+> +			 * If transfer and receive is completed then only send
+> +			 * complete signal.
+> +			 */
+> +			if (!xqspi->rx_bytes) {
+> +				zynq_qspi_write(xqspi,
+> +						ZYNQ_QSPI_IDIS_OFFSET,
+> +						ZYNQ_QSPI_IXR_RXTX_MASK);
+> +				complete(&xqspi->data_completion);
+> +			}
+> +		}
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	return IRQ_NONE;
+> +}
+> +
+> +/**
+> + * zynq_qspi_exec_mem_op() - Initiates the QSPI transfer
+> + * @mem: the SPI memory
+> + * @op: the memory operation to execute
+> + *
+> + * Executes a memory operation.
+> + *
+> + * This function first selects the chip and starts the memory operation.
+> + *
+> + * Return: 0 in case of success, a negative error code otherwise.
+> + */
+> +static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+> +				 const struct spi_mem_op *op)
+> +{
+> +	struct zynq_qspi *xqspi = spi_controller_get_devdata(mem->spi->master);
+> +	int err = 0, i;
+> +	u8 *tmpbuf;
+> +
+> +	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
+> +		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
+> +		op->dummy.buswidth, op->data.buswidth);
+> +
+> +	zynq_qspi_chipselect(mem->spi, true);
+> +	zynq_qspi_config_op(xqspi, mem->spi);
+> +
+> +	if (op->cmd.opcode) {
+> +		reinit_completion(&xqspi->data_completion);
+> +		xqspi->txbuf = (u8 *)&op->cmd.opcode;
+> +		xqspi->rxbuf = NULL;
+> +		xqspi->tx_bytes = sizeof(op->cmd.opcode);
+> +		xqspi->rx_bytes = sizeof(op->cmd.opcode);
+> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> +							       msecs_to_jiffies(1000))) {
+> +			err = -ETIMEDOUT;
+> +		}
+> +	}
+> +	zynq_qspi_config_op(xqspi, mem->spi);
+> +	if (op->addr.nbytes) {
+> +		for (i = 0; i < op->addr.nbytes; i++) {
+> +			xqspi->txbuf[i] = op->addr.val >>
+> +					(8 * (op->addr.nbytes - i - 1));
+> +		}
+> +
+> +		reinit_completion(&xqspi->data_completion);
+> +		xqspi->rxbuf = NULL;
+> +		xqspi->tx_bytes = op->addr.nbytes;
+> +		xqspi->rx_bytes = op->addr.nbytes;
+> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> +							       msecs_to_jiffies(1000))) {
+> +			err = -ETIMEDOUT;
+> +		}
+> +	}
+> +	zynq_qspi_config_op(xqspi, mem->spi);
+> +	if (op->dummy.nbytes) {
+> +		tmpbuf = kzalloc(op->dummy.nbytes, GFP_KERNEL);
+> +		memset(tmpbuf, 0xff, op->dummy.nbytes);
+> +		reinit_completion(&xqspi->data_completion);
+> +		xqspi->txbuf = tmpbuf;
+> +		xqspi->rxbuf = NULL;
+> +		xqspi->tx_bytes = op->dummy.nbytes;
+> +		xqspi->rx_bytes = op->dummy.nbytes;
+> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> +							       msecs_to_jiffies(1000))) {
+> +			err = -ETIMEDOUT;
+> +		}
+> +		kfree(tmpbuf);
+> +	}
+> +	zynq_qspi_config_op(xqspi, mem->spi);
+> +	if (op->data.nbytes) {
+> +		reinit_completion(&xqspi->data_completion);
+> +		if (op->data.dir == SPI_MEM_DATA_OUT) {
+> +			xqspi->txbuf = (u8 *)op->data.buf.out;
+> +			xqspi->tx_bytes = op->data.nbytes;
+> +			xqspi->rxbuf = NULL;
+> +			xqspi->rx_bytes = op->data.nbytes;
+> +		} else {
+> +			xqspi->txbuf = NULL;
+> +			xqspi->rxbuf = (u8 *)op->data.buf.in;
+> +			xqspi->rx_bytes = op->data.nbytes;
+> +			xqspi->tx_bytes = op->data.nbytes;
+> +		}
+> +
+> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> +							       msecs_to_jiffies(1000))) {
+> +			err = -ETIMEDOUT;
+> +		}
+> +	}
+> +	zynq_qspi_chipselect(mem->spi, false);
+> +
+> +	return err;
+> +}
+> +
+> +static const struct spi_controller_mem_ops zynq_qspi_mem_ops = {
+> +	.supports_op = zynq_qspi_supports_op,
+> +	.exec_op = zynq_qspi_exec_mem_op,
+> +};
+> +
+> +/**
+> + * zynq_qspi_probe - Probe method for the QSPI driver
+> + * @pdev:	Pointer to the platform_device structure
+> + *
+> + * This function initializes the driver data structures and the hardware.
+> + *
+> + * Return:	0 on success and error value on failure
+> + */
+> +static int zynq_qspi_probe(struct platform_device *pdev)
+> +{
+> +	int ret = 0;
+> +	struct spi_controller *ctlr;
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct zynq_qspi *xqspi;
+> +	struct resource *res;
+> +	u32 num_cs;
+> +
+> +	ctlr = spi_alloc_master(&pdev->dev, sizeof(*xqspi));
+> +	if (!ctlr)
+> +		return -ENOMEM;
+> +
+> +	xqspi = spi_controller_get_devdata(ctlr);
+> +	xqspi->dev = dev;
+> +	platform_set_drvdata(pdev, xqspi);
+> +	ctlr->mem_ops = &zynq_qspi_mem_ops;
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	xqspi->regs = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(xqspi->regs)) {
+> +		ret = PTR_ERR(xqspi->regs);
+> +		goto remove_master;
+> +	}
+> +
+> +	xqspi->pclk = devm_clk_get(&pdev->dev, "pclk");
+> +	if (IS_ERR(xqspi->pclk)) {
+> +		dev_err(&pdev->dev, "pclk clock not found.\n");
+> +		ret = PTR_ERR(xqspi->pclk);
+> +		goto remove_master;
+> +	}
+> +
+> +	init_completion(&xqspi->data_completion);
+> +
+> +	xqspi->refclk = devm_clk_get(&pdev->dev, "ref_clk");
+> +	if (IS_ERR(xqspi->refclk)) {
+> +		dev_err(&pdev->dev, "ref_clk clock not found.\n");
+> +		ret = PTR_ERR(xqspi->refclk);
+> +		goto remove_master;
+> +	}
+> +
+> +	ret = clk_prepare_enable(xqspi->pclk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Unable to enable APB clock.\n");
+> +		goto remove_master;
+> +	}
+> +
+> +	ret = clk_prepare_enable(xqspi->refclk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Unable to enable device clock.\n");
+> +		goto clk_dis_pclk;
+> +	}
+> +
+> +	/* QSPI controller initializations */
+> +	zynq_qspi_init_hw(xqspi);
+> +
+> +	xqspi->irq = platform_get_irq(pdev, 0);
+> +	if (xqspi->irq <= 0) {
+> +		ret = -ENXIO;
+> +		dev_err(&pdev->dev, "irq resource not found\n");
+> +		goto remove_master;
+> +	}
+> +	ret = devm_request_irq(&pdev->dev, xqspi->irq, zynq_qspi_irq,
+> +			       0, pdev->name, xqspi);
+> +	if (ret != 0) {
+> +		ret = -ENXIO;
+> +		dev_err(&pdev->dev, "request_irq failed\n");
+> +		goto remove_master;
+> +	}
+> +
+> +	ret = of_property_read_u32(pdev->dev.of_node, "num-cs",
+> +				   &num_cs);
+> +	if (ret < 0)
+> +		ctlr->num_chipselect = ZYNQ_QSPI_DEFAULT_NUM_CS;
+> +	else
+> +		ctlr->num_chipselect = num_cs;
+> +	ctlr->mode_bits =  SPI_RX_DUAL | SPI_RX_QUAD |
+> +			    SPI_TX_DUAL | SPI_TX_QUAD;
+> +	ctlr->mem_ops = &zynq_qspi_mem_ops;
+> +	ctlr->setup = zynq_qspi_setup_op;
+> +	ctlr->max_speed_hz = clk_get_rate(xqspi->refclk) / 2;
+> +	ctlr->dev.of_node = np;
+> +	ret = spi_register_controller(ctlr);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "spi_register_master failed\n");
+> +		goto clk_dis_all;
+> +	}
+> +
+> +	return ret;
+> +
+> +clk_dis_all:
+> +	clk_disable_unprepare(xqspi->refclk);
+> +clk_dis_pclk:
+> +	clk_disable_unprepare(xqspi->pclk);
+> +remove_master:
+> +	spi_controller_put(ctlr);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * zynq_qspi_remove - Remove method for the QSPI driver
+> + * @pdev:	Pointer to the platform_device structure
+> + *
+> + * This function is called if a device is physically removed from the system or
+> + * if the driver module is being unloaded. It frees all resources allocated to
+> + * the device.
+> + *
+> + * Return:	0 on success and error value on failure
+> + */
+> +static int zynq_qspi_remove(struct platform_device *pdev)
+> +{
+> +	struct zynq_qspi *xqspi = platform_get_drvdata(pdev);
+> +
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_ENABLE_OFFSET, 0);
+> +
+> +	clk_disable_unprepare(xqspi->refclk);
+> +	clk_disable_unprepare(xqspi->pclk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id zynq_qspi_of_match[] = {
+> +	{ .compatible = "xlnx,zynq-qspi-1.0", },
+> +	{ /* end of table */ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, zynq_qspi_of_match);
+> +
+> +/*
+> + * zynq_qspi_driver - This structure defines the QSPI platform driver
+> + */
+> +static struct platform_driver zynq_qspi_driver = {
+> +	.probe = zynq_qspi_probe,
+> +	.remove = zynq_qspi_remove,
+> +	.driver = {
+> +		.name = "zynq-qspi",
+> +		.of_match_table = zynq_qspi_of_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(zynq_qspi_driver);
+> +
+> +MODULE_AUTHOR("Xilinx, Inc.");
+> +MODULE_DESCRIPTION("Xilinx Zynq QSPI driver");
+> +MODULE_LICENSE("GPL");
+> 
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
