@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA96C43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:32:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE20DC43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:33:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 74DE920823
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:32:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC53420823
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:33:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mzdsvUo5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74DE920823
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WH90MHz/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC53420823
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PJGZBlyUVypzxXpXj7X3xyCvxf2v8aaJfxtYwHqecQk=; b=mzdsvUo5pL6Ryo
-	Z+aqSeKsxWdmIbMn/2bM9r8w0sHgQFxb8zdcN7OwBfM2NxpQdFehXrZLjql/Lg+bu3b2J/8RSsA4D
-	5gAwvTOC+npb7gtoKzLyMCYACi2z5HQg6nqhwhUhQVsZmsLYTQsl51XYjFztPeAm4yECr0L39LEcc
-	u1Ll+DgZW10Gd7iGeOPDYYMcg029Z3ZDsZF6R0oa4Vo39pREaXSgX4V4tckZeUIqrjx/RvKliqHaH
-	b25zMK713nG02nxDuWYK1NNHxZ+lBwzDyy2dqUxhjljZZPlgAZGitsy61PavzuER075YrHNl1QHbS
-	Xr+QcZUY0p6+u4ddWgkA==;
+	List-Owner; bh=Wm5GNp/6jk+Dhg5A0LfKEHwvV9INGCJmYI8XXhlAeh4=; b=WH90MHz/8CUr1/
+	et/r5nIsuEbF9baoumtK0/YSyfwuXybm3hB0N0cZUYRnJlaQUmTIiZBacXJA+0S36s77l8MAFDX8H
+	puC/Y3xPUhjKSSonsozE109V9Ld+nlGTxYInF/AKISpdQSHuFikeWU3albge8dannqtDSFrLM/+Bm
+	WmcX4Iw8mxO8iKOcjp5BBmW0b+a+Mwv0HdbroZgdkPuxLkI6YFw9uOH0Z2CaS+qBbSpvI5WdcEx0t
+	IAq4+UKrxUWhDtn1Tu6EaLAdF/FLhZdyMqWSsQW4Tx2oUJ9kKi0drJWCuRNkOfYoCOeC/z7MoObFV
+	OR/8nUK431kMCnNFZO6g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0w8g-0001qL-Tn; Mon, 04 Mar 2019 22:32:50 +0000
+	id 1h0w90-0002H0-Ny; Mon, 04 Mar 2019 22:33:10 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0w7R-0000CG-HP; Mon, 04 Mar 2019 22:31:55 +0000
+ id 1h0w7b-0000QO-3R; Mon, 04 Mar 2019 22:32:01 +0000
 X-Originating-IP: 90.5.42.199
 Received: from localhost.localdomain
  (atoulouse-657-1-1088-199.w90-5.abo.wanadoo.fr [90.5.42.199])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E05C8240003;
- Mon,  4 Mar 2019 22:31:26 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B286F240002;
+ Mon,  4 Mar 2019 22:31:36 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 31/36] mtd: nand: Let on-die ECC engines be retrieved from
- the NAND core
-Date: Mon,  4 Mar 2019 23:28:36 +0100
-Message-Id: <20190304222841.13899-32-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 33/36] mtd: spinand: Fill a default ECC provider/algorithm
+Date: Mon,  4 Mar 2019 23:28:38 +0100
+Message-Id: <20190304222841.13899-34-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 References: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_143134_089688_45B5C6CE 
-X-CRM114-Status: GOOD (  10.10  )
+X-CRM114-CacheID: sfid-20190304_143143_612721_3B670A1A 
+X-CRM114-Status: GOOD (  14.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -83,44 +82,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Before making use of the ECC engines, we must retrieve them. Add the
-boilerplate for the on-die ones.
+The SPI-NAND layer default is on-die ECC because until now it was the
+only one supported. New SPI-NAND chip flavors might use something else
+as ECC engine provider but this will always be the default if the user
+does not choose explicitly something else.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/ecc/engine.c | 6 ++++++
- include/linux/mtd/nand.h      | 1 +
- 2 files changed, 7 insertions(+)
+ drivers/mtd/nand/spi/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/ecc/engine.c b/drivers/mtd/nand/ecc/engine.c
-index 4345124e01bf..2464b7dea062 100644
---- a/drivers/mtd/nand/ecc/engine.c
-+++ b/drivers/mtd/nand/ecc/engine.c
-@@ -470,6 +470,12 @@ struct nand_ecc_engine *nand_ecc_get_sw_engine(struct nand_device *nand)
- }
- EXPORT_SYMBOL(nand_ecc_get_sw_engine);
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 90f62ea4111c..7ff957c2e9f0 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -325,7 +325,7 @@ static struct nand_ecc_engine_ops spinand_ondie_ecc_engine_ops = {
+ 	.finish_io_req = spinand_ondie_ecc_finish_io_req,
+ };
  
-+struct nand_ecc_engine *nand_ecc_get_ondie_engine(struct nand_device *nand)
-+{
-+	return nand->ecc.ondie_engine;
-+}
-+EXPORT_SYMBOL(nand_ecc_get_ondie_engine);
+-static __maybe_unused struct nand_ecc_engine spinand_ondie_ecc_engine = {
++static struct nand_ecc_engine spinand_ondie_ecc_engine = {
+ 	.ops = &spinand_ondie_ecc_engine_ops,
+ };
+ 
+@@ -1099,6 +1099,10 @@ static int spinand_init(struct spinand_device *spinand)
+ 	if (ret)
+ 		goto err_manuf_cleanup;
+ 
++	/* SPI-NAND default ECC engine is on-die */
++	nand->ecc.defaults.provider = NAND_ECC_ON_DIE;
++	nand->ecc.ondie_engine = &spinand_ondie_ecc_engine;
 +
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
- MODULE_DESCRIPTION("Generic ECC engine");
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index c68060cebc86..3498d22fe893 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -248,6 +248,7 @@ int nand_ecc_finish_io_req(struct nand_device *nand,
- 			   struct nand_page_io_req *req, void *oobbuf);
- bool nand_ecc_correction_is_enough(struct nand_device *nand);
- struct nand_ecc_engine *nand_ecc_get_sw_engine(struct nand_device *nand);
-+struct nand_ecc_engine *nand_ecc_get_ondie_engine(struct nand_device *nand);
- 
- /**
-  * struct nand_ecc - High-level ECC object
+ 	/*
+ 	 * Right now, we don't support ECC, so let the whole oob
+ 	 * area available for the user.
 -- 
 2.19.1
 
