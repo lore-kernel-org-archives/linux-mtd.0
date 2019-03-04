@@ -7,16 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9269C4360F
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E2D8C4360F
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:20:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87074208E4
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:20:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B942206B6
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:20:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BO5Anidx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87074208E4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qqSZQ+h2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vJsntNzQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B942206B6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +26,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x85f0LHMJ3asveYvyY+zr0rDUebPHLeB+sVf5lv5aro=; b=BO5Anidx+o3JqP
-	xl0CFSnuYL06Prb+COF2NnQwKwdfuDXeob5zZysL6SJNdeIGqzkGo9/y6lqbNm1oc88Hrj2k++Pwk
-	WtOjkxblsbGuuyacUyhUPKrG2sFGLjUz1W4rdmkZiUik6O2JwnHDf9cwnJ5THUZeSFY9TM+BwVkPG
-	xwAdnzYzE4/ZfUMBT+fUpQUV66HAhz+KtmlyfhTYaEcIvvZaA9sE3uvPOCC1GS1d6vE6qS4byNd0K
-	uHbtLsE6cQrIYZIn7w5OjgnjRRofj+z19/WWUvEGSSsRtXFoZ+8G/mnhDIai5VgVh7tDM4T+F+UCu
-	1OhcsGvalwXSCIbHvlBg==;
+	List-Owner; bh=Oc0jiu5Y1s9QUyjoPMimr6USbPGkFDPs0g2juFi6pXI=; b=qqSZQ+h2iawJwk
+	TYRaUc7gAwyz2Y2zthaGlQNQb4BYpCoJ4jCP5vLYk+yVi62GOjS1sVFy8JUoSpEbe7gekQ4UvZbLP
+	s4W/w0yIjJ8BSzvmhNZFgEBjcFgVp2wj20pUcKDVFdwk09gTdP3QPIrcg/cZ80ousfmVrN5cQHGsh
+	L+EyMyhvyJRtrtA+EHFHwVvJOZI6yf8H6d3+uUjQmGWCvX/X2z0l/J4d75EqTgzI35AM7PH5tm3ec
+	Bfx14kyV43RaawqSHE/CN9+MLj4y/PiZqS6jL1UuGWWJ596eVOjp/C+/loafZ1bfzqXKTAoN8e+z5
+	eleFS6KUx2bpaRz2N4Bg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0u4c-0005i4-3x; Mon, 04 Mar 2019 20:20:30 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1h0u4x-0006AW-VG; Mon, 04 Mar 2019 20:20:52 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0u1S-0000Ip-OC; Mon, 04 Mar 2019 20:17:50 +0000
+ id 1h0u26-00019k-L1; Mon, 04 Mar 2019 20:17:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=xnMxcdwEgnT+fHyRKk3I34cdfgiLr/AvEDgHIXo4pdE=; b=vJsntNzQaADYZvlYZ1gCTNSuEN
+ xq8BwGT13zbGeycNKH5MGVznWXg7gPhMpYSJz3yp+21VuJ/FJInl+FarkSC86nt8Keb1dnTDbwRPL
+ Zxi/Eq0JoMSAglYIHjWmVwqN1DgyONoLbN6lxrAcMppGeub3KpiKKFgKsIdHxs6R59oKXciyEMioc
+ bvf2XWPV0C+s9Rr3nvAHgBDAnRFiiBNm7a4IZWWhyido20JW9I5hOGA4+UVlTink714EQvJ199ONY
+ Y0/aAqsTEAl4gLGGYqTX2QCH4WJSE2hPUUNM17iJIXBiyB0RQ6Fp16hw0o3kz6fgzPpeoGdEdfsx9
+ wQf4YHcw==;
+Received: from relay10.mail.gandi.net ([217.70.178.230])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h0u23-00009B-L3; Mon, 04 Mar 2019 20:17:52 +0000
 Received: from localhost.localdomain (26.43.136.77.rev.sfr.net [77.136.43.26])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 62EF4240014;
- Mon,  4 Mar 2019 20:16:54 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 6D343240007;
+ Mon,  4 Mar 2019 20:17:21 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 13/15] mtd: rawnand: Get rid of chip->chipsize
-Date: Mon,  4 Mar 2019 21:15:20 +0100
-Message-Id: <20190304201522.11323-14-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 15/15] mtd: rawnand: Get rid of chip->ecc_{strength,
+ step}_ds
+Date: Mon,  4 Mar 2019 21:15:22 +0100
+Message-Id: <20190304201522.11323-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190304201522.11323-1-miquel.raynal@bootlin.com>
 References: <20190304201522.11323-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_121715_474795_3B0107F4 
-X-CRM114-Status: GOOD (  18.90  )
+X-CRM114-CacheID: sfid-20190304_151751_937564_043916E2 
+X-CRM114-Status: GOOD (  23.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,422 +99,526 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-The target size can now be returned by nanddev_get_targetsize(). Get
-rid of the chip->chipsize field and use this helper instead.
+nand_device embeds a nand_ecc_req object which contains the minimum
+strength and step-size required by the NAND device.
+
+Drop the chip->ecc_{strength,step}_ds fields and use
+chip->base.eccreq.{strength,step_size} instead.
 
 Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
- .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  |  2 +-
- drivers/mtd/nand/raw/denali.c                 |  1 -
- drivers/mtd/nand/raw/fsl_elbc_nand.c          |  2 +-
- drivers/mtd/nand/raw/fsl_ifc_nand.c           |  2 +-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c    |  2 +-
- drivers/mtd/nand/raw/jz4740_nand.c            |  2 +-
- drivers/mtd/nand/raw/nand_base.c              | 17 ++++++-------
- drivers/mtd/nand/raw/nand_bbt.c               | 25 ++++++++++++-------
- drivers/mtd/nand/raw/nand_jedec.c             |  2 --
- drivers/mtd/nand/raw/nand_onfi.c              |  2 --
- drivers/mtd/nand/raw/nandsim.c                |  6 +++--
- drivers/mtd/nand/raw/sh_flctl.c               |  9 ++++---
- include/linux/mtd/rawnand.h                   |  2 --
- 13 files changed, 38 insertions(+), 36 deletions(-)
+ drivers/mtd/nand/raw/atmel/nand-controller.c |  8 ++--
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c   | 11 ++++--
+ drivers/mtd/nand/raw/marvell_nand.c          |  6 +--
+ drivers/mtd/nand/raw/mtk_nand.c              |  4 +-
+ drivers/mtd/nand/raw/nand_base.c             | 15 ++++----
+ drivers/mtd/nand/raw/nand_esmt.c             | 10 ++---
+ drivers/mtd/nand/raw/nand_hynix.c            | 40 ++++++++++----------
+ drivers/mtd/nand/raw/nand_jedec.c            |  4 +-
+ drivers/mtd/nand/raw/nand_micron.c           | 12 +++---
+ drivers/mtd/nand/raw/nand_onfi.c             |  8 ++--
+ drivers/mtd/nand/raw/nand_samsung.c          | 18 ++++-----
+ drivers/mtd/nand/raw/nand_toshiba.c          | 10 ++---
+ drivers/mtd/nand/raw/sunxi_nand.c            |  4 +-
+ drivers/mtd/nand/raw/tegra_nand.c            |  8 ++--
+ include/linux/mtd/rawnand.h                  |  8 ----
+ 15 files changed, 81 insertions(+), 85 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index a37cbfe56567..a53ffb3d64b0 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -428,7 +428,7 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- 	}
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index 5781fcf6b76c..9867e9115399 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -1068,15 +1068,15 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
+ 		req.ecc.strength = ATMEL_PMECC_MAXIMIZE_ECC_STRENGTH;
+ 	else if (chip->ecc.strength)
+ 		req.ecc.strength = chip->ecc.strength;
+-	else if (chip->ecc_strength_ds)
+-		req.ecc.strength = chip->ecc_strength_ds;
++	else if (chip->base.eccreq.strength)
++		req.ecc.strength = chip->base.eccreq.strength;
+ 	else
+ 		req.ecc.strength = ATMEL_PMECC_MAXIMIZE_ECC_STRENGTH;
  
- 	/* Configure FLASH */
--	chipsize = b47n->nand_chip.chipsize >> 20;
-+	chipsize = nanddev_target_size(&b47n->nand_chip.base) >> 20;
- 	tbits = ffs(chipsize); /* find first bit set */
- 	if (!tbits || tbits != fls(chipsize)) {
- 		pr_err("Invalid flash size: 0x%lX\n", chipsize);
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 86e5df403beb..3ec0242b0aa2 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1157,7 +1157,6 @@ static int denali_multidev_fixup(struct denali_nand_info *denali)
- 	mtd->erasesize <<= 1;
- 	mtd->writesize <<= 1;
- 	mtd->oobsize <<= 1;
--	chip->chipsize <<= 1;
- 	chip->page_shift += 1;
- 	chip->phys_erase_shift += 1;
- 	chip->bbt_erase_shift += 1;
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index 70f0d2b450ea..1d960a6cd691 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -655,7 +655,7 @@ static int fsl_elbc_attach_chip(struct nand_chip *chip)
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->numchips = %d\n",
- 	        chip->numchips);
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->chipsize = %lld\n",
--	        chip->chipsize);
-+	        nanddev_target_size(&chip->base));
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->pagemask = %8x\n",
- 	        chip->pagemask);
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->legacy.chip_delay = %d\n",
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index e65d274399f9..a9e8f89aeebd 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -724,7 +724,7 @@ static int fsl_ifc_attach_chip(struct nand_chip *chip)
- 	dev_dbg(priv->dev, "%s: nand->numchips = %d\n", __func__,
- 							chip->numchips);
- 	dev_dbg(priv->dev, "%s: nand->chipsize = %lld\n", __func__,
--							chip->chipsize);
-+	        nanddev_target_size(&chip->base));
- 	dev_dbg(priv->dev, "%s: nand->pagemask = %8x\n", __func__,
- 							chip->pagemask);
- 	dev_dbg(priv->dev, "%s: nand->legacy.chip_delay = %d\n", __func__,
+ 	if (chip->ecc.size)
+ 		req.ecc.sectorsize = chip->ecc.size;
+-	else if (chip->ecc_step_ds)
+-		req.ecc.sectorsize = chip->ecc_step_ds;
++	else if (chip->base.eccreq.step_size)
++		req.ecc.sectorsize = chip->base.eccreq.step_size;
+ 	else
+ 		req.ecc.sectorsize = ATMEL_PMECC_SECTOR_SIZE_AUTO;
+ 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 05f6f68e4e0d..6151214eddec 100644
+index 6151214eddec..dbefb6bac5c9 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1753,7 +1753,7 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
- 	dev_dbg(dev, "Transcribing bad block marks...\n");
+@@ -204,7 +204,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
+ 	default:
+ 		dev_err(this->dev,
+ 			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
+-			chip->ecc_strength_ds, chip->ecc_step_ds);
++			chip->base.eccreq.strength,
++			chip->base.eccreq.step_size);
+ 		return -EINVAL;
+ 	}
+ 	geo->ecc_chunk_size = ecc_step;
+@@ -417,11 +418,13 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
  
- 	/* Compute the number of blocks in the entire medium. */
--	block_count = chip->chipsize >> chip->phys_erase_shift;
-+	block_count = nanddev_eraseblocks_per_target(&chip->base);
+ 	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+ 				|| legacy_set_geometry(this)) {
+-		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
++		if (!(chip->base.eccreq.strength > 0 &&
++		      chip->base.eccreq.step_size > 0))
+ 			return -EINVAL;
  
- 	/*
- 	 * Loop over all the blocks in the medium, transcribing block marks as
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index 76a32ad2cf83..06690b3603b1 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -356,7 +356,7 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
- 		/* Update size of the MTD. */
- 		chip->numchips++;
- 		memorg->ntargets++;
--		mtd->size += chip->chipsize;
-+		mtd->size += nanddev_target_size(&chip->base);
+-		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
+-						chip->ecc_step_ds);
++		return set_geometry_by_ecc_info(this,
++						chip->base.eccreq.strength,
++						chip->base.eccreq.step_size);
  	}
  
- 	dev_info(&pdev->dev, "Found chip %zu on bank %i\n", chipnr, bank);
+ 	return 0;
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index e8023b32be93..d21e808bb075 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2248,9 +2248,9 @@ static int marvell_nand_ecc_init(struct mtd_info *mtd,
+ 	int ret;
+ 
+ 	if (ecc->mode != NAND_ECC_NONE && (!ecc->size || !ecc->strength)) {
+-		if (chip->ecc_step_ds && chip->ecc_strength_ds) {
+-			ecc->size = chip->ecc_step_ds;
+-			ecc->strength = chip->ecc_strength_ds;
++		if (chip->base.eccreq.step_size && chip->base.eccreq.strength) {
++			ecc->size = chip->base.eccreq.step_size;
++			ecc->strength = chip->base.eccreq.strength;
+ 		} else {
+ 			dev_info(nfc->dev,
+ 				 "No minimum ECC strength, using 1b/512B\n");
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index b6b4602f5132..bfb89aca4155 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -1197,8 +1197,8 @@ static int mtk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
+ 	/* if optional dt settings not present */
+ 	if (!nand->ecc.size || !nand->ecc.strength) {
+ 		/* use datasheet requirements */
+-		nand->ecc.strength = nand->ecc_strength_ds;
+-		nand->ecc.size = nand->ecc_step_ds;
++		nand->ecc.strength = nand->base.eccreq.strength;
++		nand->ecc.size = nand->base.eccreq.step_size;
+ 
+ 		/*
+ 		 * align eccstrength and eccsize
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 91fd508cf406..427c80abef3f 100644
+index ce01824dcc62..1b4df8b851f8 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4587,7 +4587,6 @@ static bool find_full_id_nand(struct nand_chip *chip,
- 		mtd->oobsize = memorg->oobsize;
- 
- 		memorg->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
--		chip->chipsize = (uint64_t)type->chipsize << 20;
- 		memorg->eraseblocks_per_lun =
- 			DIV_ROUND_DOWN_ULL((u64)type->chipsize << 20,
+@@ -4592,8 +4592,8 @@ static bool find_full_id_nand(struct nand_chip *chip,
  					   memorg->pagesize *
-@@ -4678,6 +4677,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	int busw, ret;
- 	u8 *id_data = chip->id.data;
- 	u8 maf_id, dev_id;
-+	u64 targetsize;
+ 					   memorg->pages_per_eraseblock);
+ 		chip->options |= type->options;
+-		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
+-		chip->ecc_step_ds = NAND_ECC_STEP(type);
++		chip->base.eccreq.strength = NAND_ECC_STRENGTH(type);
++		chip->base.eccreq.step_size = NAND_ECC_STEP(type);
+ 		chip->onfi_timing_mode_default =
+ 					type->onfi_timing_mode_default;
  
- 	/*
- 	 * Let's start by initializing memorg fields that might be left
-@@ -4782,8 +4782,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	if (!chip->parameters.model)
- 		return -ENOMEM;
+@@ -5266,8 +5266,8 @@ nand_match_ecc_req(struct nand_chip *chip,
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	const struct nand_ecc_step_info *stepinfo;
+-	int req_step = chip->ecc_step_ds;
+-	int req_strength = chip->ecc_strength_ds;
++	int req_step = chip->base.eccreq.step_size;
++	int req_strength = chip->base.eccreq.strength;
+ 	int req_corr, step_size, strength, nsteps, ecc_bytes, ecc_bytes_total;
+ 	int best_step, best_strength, best_ecc_bytes;
+ 	int best_ecc_bytes_total = INT_MAX;
+@@ -5460,7 +5460,7 @@ static bool nand_ecc_strength_good(struct nand_chip *chip)
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	int corr, ds_corr;
  
--	chip->chipsize = (uint64_t)type->chipsize << 20;
--
- 	if (!type->pagesize)
- 		nand_manufacturer_detect(chip);
- 	else
-@@ -4825,14 +4823,15 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	/* Calculate the address shift from the page size */
- 	chip->page_shift = ffs(mtd->writesize) - 1;
- 	/* Convert chipsize to number of pages per chip -1 */
--	chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
-+	targetsize = nanddev_target_size(&chip->base);
-+	chip->pagemask = (targetsize >> chip->page_shift) - 1;
+-	if (ecc->size == 0 || chip->ecc_step_ds == 0)
++	if (ecc->size == 0 || chip->base.eccreq.step_size == 0)
+ 		/* Not enough information */
+ 		return true;
  
- 	chip->bbt_erase_shift = chip->phys_erase_shift =
- 		ffs(mtd->erasesize) - 1;
--	if (chip->chipsize & 0xffffffff)
--		chip->chip_shift = ffs((unsigned)chip->chipsize) - 1;
-+	if (targetsize & 0xffffffff)
-+		chip->chip_shift = ffs((unsigned)targetsize) - 1;
- 	else {
--		chip->chip_shift = ffs((unsigned)(chip->chipsize >> 32));
-+		chip->chip_shift = ffs((unsigned)(targetsize >> 32));
- 		chip->chip_shift += 32 - 1;
- 	}
+@@ -5469,9 +5469,10 @@ static bool nand_ecc_strength_good(struct nand_chip *chip)
+ 	 * the correction density.
+ 	 */
+ 	corr = (mtd->writesize * ecc->strength) / ecc->size;
+-	ds_corr = (mtd->writesize * chip->ecc_strength_ds) / chip->ecc_step_ds;
++	ds_corr = (mtd->writesize * chip->base.eccreq.strength) /
++		  chip->base.eccreq.step_size;
  
-@@ -4848,7 +4847,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
- 		chip->parameters.model);
- 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
--		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
-+		(int)(targetsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
- 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
- 	return 0;
- 
-@@ -5093,7 +5092,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
- 	/* Store the number of chips and calc total size for mtd */
- 	memorg->ntargets = i;
- 	chip->numchips = i;
--	mtd->size = i * chip->chipsize;
-+	mtd->size = i * nanddev_target_size(&chip->base);
- 
- 	return 0;
+-	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
++	return corr >= ds_corr && ecc->strength >= chip->base.eccreq.strength;
  }
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index 0b96c4cab967..e3308857b2ee 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -264,6 +264,7 @@ static int read_abs_bbt(struct nand_chip *this, uint8_t *buf,
- 			struct nand_bbt_descr *td, int chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	int res = 0, i;
  
- 	if (td->options & NAND_BBT_PERCHIP) {
-@@ -271,11 +272,11 @@ static int read_abs_bbt(struct nand_chip *this, uint8_t *buf,
- 		for (i = 0; i < this->numchips; i++) {
- 			if (chip == -1 || chip == i)
- 				res = read_bbt(this, buf, td->pages[i],
--					this->chipsize >> this->bbt_erase_shift,
-+					targetsize >> this->bbt_erase_shift,
- 					td, offs);
- 			if (res)
- 				return res;
--			offs += this->chipsize >> this->bbt_erase_shift;
-+			offs += targetsize >> this->bbt_erase_shift;
+ static int rawnand_erase(struct nand_device *nand, const struct nand_pos *pos)
+diff --git a/drivers/mtd/nand/raw/nand_esmt.c b/drivers/mtd/nand/raw/nand_esmt.c
+index 96f039a83bc8..3de5e89482f5 100644
+--- a/drivers/mtd/nand/raw/nand_esmt.c
++++ b/drivers/mtd/nand/raw/nand_esmt.c
+@@ -14,20 +14,20 @@ static void esmt_nand_decode_id(struct nand_chip *chip)
+ 
+ 	/* Extract ECC requirements from 5th id byte. */
+ 	if (chip->id.len >= 5 && nand_is_slc(chip)) {
+-		chip->ecc_step_ds = 512;
++		chip->base.eccreq.step_size = 512;
+ 		switch (chip->id.data[4] & 0x3) {
+ 		case 0x0:
+-			chip->ecc_strength_ds = 4;
++			chip->base.eccreq.strength = 4;
+ 			break;
+ 		case 0x1:
+-			chip->ecc_strength_ds = 2;
++			chip->base.eccreq.strength = 2;
+ 			break;
+ 		case 0x2:
+-			chip->ecc_strength_ds = 1;
++			chip->base.eccreq.strength = 1;
+ 			break;
+ 		default:
+ 			WARN(1, "Could not get ECC info");
+-			chip->ecc_step_ds = 0;
++			chip->base.eccreq.step_size = 0;
+ 			break;
  		}
- 	} else {
- 		res = read_bbt(this, buf, td->pages[0],
-@@ -459,6 +460,7 @@ static int scan_block_fast(struct nand_chip *this, struct nand_bbt_descr *bd,
- static int create_bbt(struct nand_chip *this, uint8_t *buf,
- 		      struct nand_bbt_descr *bd, int chip)
- {
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	struct mtd_info *mtd = nand_to_mtd(this);
- 	int i, numblocks, numpages;
- 	int startblock;
-@@ -481,7 +483,7 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
- 			       chip + 1, this->numchips);
- 			return -EINVAL;
- 		}
--		numblocks = this->chipsize >> this->bbt_erase_shift;
-+		numblocks = targetsize >> this->bbt_erase_shift;
- 		startblock = chip * numblocks;
- 		numblocks += startblock;
- 		from = (loff_t)startblock << this->bbt_erase_shift;
-@@ -529,6 +531,7 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
- static int search_bbt(struct nand_chip *this, uint8_t *buf,
- 		      struct nand_bbt_descr *td)
- {
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	struct mtd_info *mtd = nand_to_mtd(this);
- 	int i, chips;
- 	int startblock, block, dir;
-@@ -548,7 +551,7 @@ static int search_bbt(struct nand_chip *this, uint8_t *buf,
- 	/* Do we have a bbt per chip? */
- 	if (td->options & NAND_BBT_PERCHIP) {
- 		chips = this->numchips;
--		bbtblocks = this->chipsize >> this->bbt_erase_shift;
-+		bbtblocks = targetsize >> this->bbt_erase_shift;
- 		startblock &= bbtblocks - 1;
- 	} else {
- 		chips = 1;
-@@ -576,7 +579,7 @@ static int search_bbt(struct nand_chip *this, uint8_t *buf,
- 				break;
+ 	}
+diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
+index 272b934dffb7..821d221b83eb 100644
+--- a/drivers/mtd/nand/raw/nand_hynix.c
++++ b/drivers/mtd/nand/raw/nand_hynix.c
+@@ -508,30 +508,30 @@ static void hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
+ 
+ 	if (valid_jedecid) {
+ 		/* Reference: H27UCG8T2E datasheet */
+-		chip->ecc_step_ds = 1024;
++		chip->base.eccreq.step_size = 1024;
+ 
+ 		switch (ecc_level) {
+ 		case 0:
+-			chip->ecc_step_ds = 0;
+-			chip->ecc_strength_ds = 0;
++			chip->base.eccreq.step_size = 0;
++			chip->base.eccreq.strength = 0;
+ 			break;
+ 		case 1:
+-			chip->ecc_strength_ds = 4;
++			chip->base.eccreq.strength = 4;
+ 			break;
+ 		case 2:
+-			chip->ecc_strength_ds = 24;
++			chip->base.eccreq.strength = 24;
+ 			break;
+ 		case 3:
+-			chip->ecc_strength_ds = 32;
++			chip->base.eccreq.strength = 32;
+ 			break;
+ 		case 4:
+-			chip->ecc_strength_ds = 40;
++			chip->base.eccreq.strength = 40;
+ 			break;
+ 		case 5:
+-			chip->ecc_strength_ds = 50;
++			chip->base.eccreq.strength = 50;
+ 			break;
+ 		case 6:
+-			chip->ecc_strength_ds = 60;
++			chip->base.eccreq.strength = 60;
+ 			break;
+ 		default:
+ 			/*
+@@ -552,14 +552,14 @@ static void hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
+ 		if (nand_tech < 3) {
+ 			/* > 26nm, reference: H27UBG8T2A datasheet */
+ 			if (ecc_level < 5) {
+-				chip->ecc_step_ds = 512;
+-				chip->ecc_strength_ds = 1 << ecc_level;
++				chip->base.eccreq.step_size = 512;
++				chip->base.eccreq.strength = 1 << ecc_level;
+ 			} else if (ecc_level < 7) {
+ 				if (ecc_level == 5)
+-					chip->ecc_step_ds = 2048;
++					chip->base.eccreq.step_size = 2048;
+ 				else
+-					chip->ecc_step_ds = 1024;
+-				chip->ecc_strength_ds = 24;
++					chip->base.eccreq.step_size = 1024;
++				chip->base.eccreq.strength = 24;
+ 			} else {
+ 				/*
+ 				 * We should never reach this case, but if that
+@@ -572,14 +572,14 @@ static void hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
+ 		} else {
+ 			/* <= 26nm, reference: H27UBG8T2B datasheet */
+ 			if (!ecc_level) {
+-				chip->ecc_step_ds = 0;
+-				chip->ecc_strength_ds = 0;
++				chip->base.eccreq.step_size = 0;
++				chip->base.eccreq.strength = 0;
+ 			} else if (ecc_level < 5) {
+-				chip->ecc_step_ds = 512;
+-				chip->ecc_strength_ds = 1 << (ecc_level - 1);
++				chip->base.eccreq.step_size = 512;
++				chip->base.eccreq.strength = 1 << (ecc_level - 1);
+ 			} else {
+-				chip->ecc_step_ds = 1024;
+-				chip->ecc_strength_ds = 24 +
++				chip->base.eccreq.step_size = 1024;
++				chip->base.eccreq.strength = 24 +
+ 							(8 * (ecc_level - 5));
  			}
  		}
--		startblock += this->chipsize >> this->bbt_erase_shift;
-+		startblock += targetsize >> this->bbt_erase_shift;
- 	}
- 	/* Check, if we found a bbt for each requested chip */
- 	for (i = 0; i < chips; i++) {
-@@ -626,6 +629,7 @@ static void search_read_bbts(struct nand_chip *this, uint8_t *buf,
- static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
- 			 struct nand_bbt_descr *md, int chip)
- {
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	int startblock, dir, page, numblocks, i;
- 
- 	/*
-@@ -637,7 +641,7 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
- 		return td->pages[chip] >>
- 				(this->bbt_erase_shift - this->page_shift);
- 
--	numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
-+	numblocks = (int)(targetsize >> this->bbt_erase_shift);
- 	if (!(td->options & NAND_BBT_PERCHIP))
- 		numblocks *= this->numchips;
- 
-@@ -717,6 +721,7 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
- 		     struct nand_bbt_descr *td, struct nand_bbt_descr *md,
- 		     int chipsel)
- {
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	struct mtd_info *mtd = nand_to_mtd(this);
- 	struct erase_info einfo;
- 	int i, res, chip = 0;
-@@ -737,7 +742,7 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
- 		rcode = 0xff;
- 	/* Write bad block table per chip rather than per device? */
- 	if (td->options & NAND_BBT_PERCHIP) {
--		numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
-+		numblocks = (int)(targetsize >> this->bbt_erase_shift);
- 		/* Full device write or specific chip? */
- 		if (chipsel == -1) {
- 			nrchips = this->numchips;
-@@ -1099,6 +1104,7 @@ static int nand_update_bbt(struct nand_chip *this, loff_t offs)
-  */
- static void mark_bbt_region(struct nand_chip *this, struct nand_bbt_descr *td)
- {
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	struct mtd_info *mtd = nand_to_mtd(this);
- 	int i, j, chips, block, nrblocks, update;
- 	uint8_t oldval;
-@@ -1106,7 +1112,7 @@ static void mark_bbt_region(struct nand_chip *this, struct nand_bbt_descr *td)
- 	/* Do we have a bbt per chip? */
- 	if (td->options & NAND_BBT_PERCHIP) {
- 		chips = this->numchips;
--		nrblocks = (int)(this->chipsize >> this->bbt_erase_shift);
-+		nrblocks = (int)(targetsize >> this->bbt_erase_shift);
- 	} else {
- 		chips = 1;
- 		nrblocks = (int)(mtd->size >> this->bbt_erase_shift);
-@@ -1159,6 +1165,7 @@ static void mark_bbt_region(struct nand_chip *this, struct nand_bbt_descr *td)
-  */
- static void verify_bbt_descr(struct nand_chip *this, struct nand_bbt_descr *bd)
- {
-+	u64 targetsize = nanddev_target_size(&this->base);
- 	struct mtd_info *mtd = nand_to_mtd(this);
- 	u32 pattern_len;
- 	u32 bits;
-@@ -1187,7 +1194,7 @@ static void verify_bbt_descr(struct nand_chip *this, struct nand_bbt_descr *bd)
- 	}
- 
- 	if (bd->options & NAND_BBT_PERCHIP)
--		table_size = this->chipsize >> this->bbt_erase_shift;
-+		table_size = targetsize >> this->bbt_erase_shift;
- 	else
- 		table_size = mtd->size >> this->bbt_erase_shift;
- 	table_size >>= 3;
 diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
-index 030f178c7a97..99e2f017c79b 100644
+index 99e2f017c79b..9b540e76f84f 100644
 --- a/drivers/mtd/nand/raw/nand_jedec.c
 +++ b/drivers/mtd/nand/raw/nand_jedec.c
-@@ -101,8 +101,6 @@ int nand_jedec_detect(struct nand_chip *chip)
- 	/* Please reference to the comment for nand_flash_detect_onfi. */
- 	memorg->eraseblocks_per_lun =
- 		1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
--	chip->chipsize = memorg->eraseblocks_per_lun;
--	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
- 	memorg->bits_per_cell = p->bits_per_cell;
+@@ -110,8 +110,8 @@ int nand_jedec_detect(struct nand_chip *chip)
+ 	ecc = &p->ecc_info[0];
  
- 	if (le16_to_cpu(p->features) & JEDEC_FEATURE_16_BIT_BUS)
+ 	if (ecc->codeword_size >= 9) {
+-		chip->ecc_strength_ds = ecc->ecc_bits;
+-		chip->ecc_step_ds = 1 << ecc->codeword_size;
++		chip->base.eccreq.strength = ecc->ecc_bits;
++		chip->base.eccreq.step_size = 1 << ecc->codeword_size;
+ 	} else {
+ 		pr_warn("Invalid codeword size\n");
+ 	}
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 98ce6575aa64..7a2cef02eacd 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -391,7 +391,7 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ 	/*
+ 	 * We only support on-die ECC of 4/512 or 8/512
+ 	 */
+-	if  (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
++	if  (chip->base.eccreq.strength != 4 && chip->base.eccreq.strength != 8)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+ 
+ 	/* 0x2 means on-die ECC is available. */
+@@ -424,7 +424,7 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ 	/*
+ 	 * We only support on-die ECC of 4/512 or 8/512
+ 	 */
+-	if  (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
++	if  (chip->base.eccreq.strength != 4 && chip->base.eccreq.strength != 8)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+ 
+ 	return MICRON_ON_DIE_SUPPORTED;
+@@ -479,7 +479,7 @@ static int micron_nand_init(struct nand_chip *chip)
+ 		 * That's not needed for 8-bit ECC, because the status expose
+ 		 * a better approximation of the number of bitflips in a page.
+ 		 */
+-		if (chip->ecc_strength_ds == 4) {
++		if (chip->base.eccreq.strength == 4) {
+ 			micron->ecc.rawbuf = kmalloc(mtd->writesize +
+ 						     mtd->oobsize,
+ 						     GFP_KERNEL);
+@@ -489,16 +489,16 @@ static int micron_nand_init(struct nand_chip *chip)
+ 			}
+ 		}
+ 
+-		if (chip->ecc_strength_ds == 4)
++		if (chip->base.eccreq.strength == 4)
+ 			mtd_set_ooblayout(mtd,
+ 					  &micron_nand_on_die_4_ooblayout_ops);
+ 		else
+ 			mtd_set_ooblayout(mtd,
+ 					  &micron_nand_on_die_8_ooblayout_ops);
+ 
+-		chip->ecc.bytes = chip->ecc_strength_ds * 2;
++		chip->ecc.bytes = chip->base.eccreq.strength * 2;
+ 		chip->ecc.size = 512;
+-		chip->ecc.strength = chip->ecc_strength_ds;
++		chip->ecc.strength = chip->base.eccreq.strength;
+ 		chip->ecc.algo = NAND_ECC_BCH;
+ 		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+ 		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
 diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index a6b9fc9a335b..7b468e7214c7 100644
+index 7b468e7214c7..0b879bd0a68c 100644
 --- a/drivers/mtd/nand/raw/nand_onfi.c
 +++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -246,8 +246,6 @@ int nand_onfi_detect(struct nand_chip *chip)
- 	memorg->eraseblocks_per_lun =
- 		1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
- 	memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
--	chip->chipsize = memorg->eraseblocks_per_lun;
--	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
- 	memorg->bits_per_cell = p->bits_per_cell;
- 
- 	if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 07144c992d54..670abe8d59ca 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2303,6 +2303,7 @@ static int __init ns_init_module(void)
- 	if (overridesize) {
- 		uint64_t new_size = (uint64_t)nsmtd->erasesize << overridesize;
- 		struct nand_memory_organization *memorg;
-+		u64 targetsize;
- 
- 		memorg = nanddev_get_memorg(&chip->base);
- 
-@@ -2311,12 +2312,13 @@ static int __init ns_init_module(void)
- 			retval = -EINVAL;
- 			goto err_exit;
- 		}
-+
- 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
- 		nsmtd->size = new_size;
- 		memorg->eraseblocks_per_lun = 1 << overridesize;
--		chip->chipsize = new_size;
-+		targetsize = nanddev_target_size(&chip->base);
- 		chip->chip_shift = ffs(nsmtd->erasesize) + overridesize - 1;
--		chip->pagemask = (chip->chipsize >> chip->page_shift) - 1;
-+		chip->pagemask = (targetsize >> chip->page_shift) - 1;
+@@ -94,8 +94,8 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+ 		goto ext_out;
  	}
  
- 	if ((retval = setup_wear_reporting(nsmtd)) != 0)
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index cf6b1be1cf9c..3f610040f0c3 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -986,6 +986,7 @@ static void flctl_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
+-	chip->ecc_strength_ds = ecc->ecc_bits;
+-	chip->ecc_step_ds = 1 << ecc->codeword_size;
++	chip->base.eccreq.strength = ecc->ecc_bits;
++	chip->base.eccreq.step_size = 1 << ecc->codeword_size;
+ 	ret = 0;
  
- static int flctl_chip_attach_chip(struct nand_chip *chip)
- {
-+	u64 targetsize = nanddev_target_size(&chip->base);
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+ ext_out:
+@@ -252,8 +252,8 @@ int nand_onfi_detect(struct nand_chip *chip)
+ 		chip->options |= NAND_BUSWIDTH_16;
  
-@@ -998,11 +999,11 @@ static int flctl_chip_attach_chip(struct nand_chip *chip)
+ 	if (p->ecc_bits != 0xff) {
+-		chip->ecc_strength_ds = p->ecc_bits;
+-		chip->ecc_step_ds = 512;
++		chip->base.eccreq.strength = p->ecc_bits;
++		chip->base.eccreq.step_size = 512;
+ 	} else if (onfi_version >= 21 &&
+ 		(le16_to_cpu(p->features) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
  
- 	if (mtd->writesize == 512) {
- 		flctl->page_size = 0;
--		if (chip->chipsize > (32 << 20)) {
-+		if (targetsize > (32 << 20)) {
- 			/* big than 32MB */
- 			flctl->rw_ADRCNT = ADRCNT_4;
- 			flctl->erase_ADRCNT = ADRCNT_3;
--		} else if (chip->chipsize > (2 << 16)) {
-+		} else if (targetsize > (2 << 16)) {
- 			/* big than 128KB */
- 			flctl->rw_ADRCNT = ADRCNT_3;
- 			flctl->erase_ADRCNT = ADRCNT_2;
-@@ -1012,11 +1013,11 @@ static int flctl_chip_attach_chip(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/raw/nand_samsung.c b/drivers/mtd/nand/raw/nand_samsung.c
+index 9a9ad43cc97d..f7d7041b6213 100644
+--- a/drivers/mtd/nand/raw/nand_samsung.c
++++ b/drivers/mtd/nand/raw/nand_samsung.c
+@@ -80,23 +80,23 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+ 		/* Extract ECC requirements from 5th id byte*/
+ 		extid = (chip->id.data[4] >> 4) & 0x07;
+ 		if (extid < 5) {
+-			chip->ecc_step_ds = 512;
+-			chip->ecc_strength_ds = 1 << extid;
++			chip->base.eccreq.step_size = 512;
++			chip->base.eccreq.strength = 1 << extid;
+ 		} else {
+-			chip->ecc_step_ds = 1024;
++			chip->base.eccreq.step_size = 1024;
+ 			switch (extid) {
+ 			case 5:
+-				chip->ecc_strength_ds = 24;
++				chip->base.eccreq.strength = 24;
+ 				break;
+ 			case 6:
+-				chip->ecc_strength_ds = 40;
++				chip->base.eccreq.strength = 40;
+ 				break;
+ 			case 7:
+-				chip->ecc_strength_ds = 60;
++				chip->base.eccreq.strength = 60;
+ 				break;
+ 			default:
+ 				WARN(1, "Could not decode ECC info");
+-				chip->ecc_step_ds = 0;
++				chip->base.eccreq.step_size = 0;
+ 			}
  		}
  	} else {
- 		flctl->page_size = 1;
--		if (chip->chipsize > (128 << 20)) {
-+		if (targetsize > (128 << 20)) {
- 			/* big than 128MB */
- 			flctl->rw_ADRCNT = ADRCNT2_E;
- 			flctl->erase_ADRCNT = ADRCNT_3;
--		} else if (chip->chipsize > (8 << 16)) {
-+		} else if (targetsize > (8 << 16)) {
- 			/* big than 512KB */
- 			flctl->rw_ADRCNT = ADRCNT_4;
- 			flctl->erase_ADRCNT = ADRCNT_2;
+@@ -106,8 +106,8 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+ 			switch (chip->id.data[1]) {
+ 			/* K9F4G08U0D-S[I|C]B0(T00) */
+ 			case 0xDC:
+-				chip->ecc_step_ds = 512;
+-				chip->ecc_strength_ds = 1;
++				chip->base.eccreq.step_size = 512;
++				chip->base.eccreq.strength = 1;
+ 				break;
+ 
+ 			/* K9F1G08U0E 21nm chips do not support subpage write */
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index d8465049dfd6..13f9632f1cb4 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -130,20 +130,20 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 	 *  - 24nm: 8 bit ECC for each 512Byte is required.
+ 	 */
+ 	if (chip->id.len >= 6 && nand_is_slc(chip)) {
+-		chip->ecc_step_ds = 512;
++		chip->base.eccreq.step_size = 512;
+ 		switch (chip->id.data[5] & 0x7) {
+ 		case 0x4:
+-			chip->ecc_strength_ds = 1;
++			chip->base.eccreq.strength = 1;
+ 			break;
+ 		case 0x5:
+-			chip->ecc_strength_ds = 4;
++			chip->base.eccreq.strength = 4;
+ 			break;
+ 		case 0x6:
+-			chip->ecc_strength_ds = 8;
++			chip->base.eccreq.strength = 8;
+ 			break;
+ 		default:
+ 			WARN(1, "Could not get ECC info");
+-			chip->ecc_step_ds = 0;
++			chip->base.eccreq.step_size = 0;
+ 			break;
+ 		}
+ 	}
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index d5de0a7114bc..69599854fdd6 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -1821,8 +1821,8 @@ static int sunxi_nand_attach_chip(struct nand_chip *nand)
+ 	nand->options |= NAND_SUBPAGE_READ;
+ 
+ 	if (!ecc->size) {
+-		ecc->size = nand->ecc_step_ds;
+-		ecc->strength = nand->ecc_strength_ds;
++		ecc->size = nand->base.eccreq.step_size;
++		ecc->strength = nand->base.eccreq.strength;
+ 	}
+ 
+ 	if (!ecc->size || !ecc->strength)
+diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
+index 13be32c38194..3cc9a4c41443 100644
+--- a/drivers/mtd/nand/raw/tegra_nand.c
++++ b/drivers/mtd/nand/raw/tegra_nand.c
+@@ -853,7 +853,7 @@ static int tegra_nand_get_strength(struct nand_chip *chip, const int *strength,
+ 		} else {
+ 			strength_sel = strength[i];
+ 
+-			if (strength_sel < chip->ecc_strength_ds)
++			if (strength_sel < chip->base.eccreq.strength)
+ 				continue;
+ 		}
+ 
+@@ -917,9 +917,9 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->ecc.size = 512;
+ 	chip->ecc.steps = mtd->writesize / chip->ecc.size;
+-	if (chip->ecc_step_ds != 512) {
++	if (chip->base.eccreq.step_size != 512) {
+ 		dev_err(ctrl->dev, "Unsupported step size %d\n",
+-			chip->ecc_step_ds);
++			chip->base.eccreq.step_size);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -950,7 +950,7 @@ static int tegra_nand_attach_chip(struct nand_chip *chip)
+ 		if (ret < 0) {
+ 			dev_err(ctrl->dev,
+ 				"No valid strength found, minimum %d\n",
+-				chip->ecc_strength_ds);
++				chip->base.eccreq.strength);
+ 			return ret;
+ 		}
+ 
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 24ecd9a4f952..a127eb773b1a 100644
+index e5a25ba75211..14748183508b 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1015,7 +1015,6 @@ struct nand_legacy {
+@@ -1004,12 +1004,6 @@ struct nand_legacy {
+  * @badblockbits:	[INTERN] minimum number of set bits in a good block's
+  *			bad block marker position; i.e., BBM == 11110111b is
+  *			not bad when badblockbits == 7
+- * @ecc_strength_ds:	[INTERN] ECC correctability from the datasheet.
+- *			Minimum amount of bit errors per @ecc_step_ds guaranteed
+- *			to be correctable. If unknown, set to zero.
+- * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
+- *			also from the datasheet. It is the recommended ECC step
+- *			size, if known; if unknown, set to zero.
+  * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
+  *			      set to the actually used ONFI mode if the chip is
   *			      ONFI compliant or deduced from the datasheet if
-  *			      the NAND chip is not ONFI compliant.
-  * @numchips:		[INTERN] number of physical chips
-- * @chipsize:		[INTERN] the size of one chip for multichip arrays
-  * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
-  * @data_buf:		[INTERN] buffer for data, size is (page size + oobsize).
-  * @pagecache:		Structure containing page cache related fields
-@@ -1062,7 +1061,6 @@ struct nand_chip {
- 	int bbt_erase_shift;
- 	int chip_shift;
- 	int numchips;
--	uint64_t chipsize;
- 	int pagemask;
- 	u8 *data_buf;
+@@ -1069,8 +1063,6 @@ struct nand_chip {
+ 	} pagecache;
  
+ 	int subpagesize;
+-	uint16_t ecc_strength_ds;
+-	uint16_t ecc_step_ds;
+ 	int onfi_timing_mode_default;
+ 	int badblockpos;
+ 	int badblockbits;
 -- 
 2.19.1
 
