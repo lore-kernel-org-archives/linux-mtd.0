@@ -2,63 +2,61 @@ Return-Path: <SRS0=RlT6=RH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A98B3C43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86EE3C4360F
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:29:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E74420652
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:26:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D13F20823
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:29:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hPyu+4Tp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E74420652
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yr3ByjY4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D13F20823
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a+FdskNYa84LCEFlaeM67lEnw/q3999kxVIbrh1Ak2I=; b=hPyu+4TpxXfYYM
-	EwXxpCrP58DsNmvxMFzivmO/Md2Mmpea0xonTEWSy5TgZNogYCdotWSk+si+A0OTveDSGw0yTXwE5
-	YgRpX3q3ySx1phbmjvxuVK5Iy39fCSjST+/hg4erThqxwcj75XCvoTlfkmCwIr72tqmguv/h804BT
-	YMQxO+iClIK2vcYOVRStwDhdghdIpE5uZyKG8cI96FkJZh72PMOOoESYBTHqRbE5EVFr9yS6wyhTg
-	F0s1QC+3Jk8u9d5orDr2btUX/R0/vtLp5Au2nCiCU31mIFHx+QPIRyijpwDdnvvDmWNedQ1rET7/x
-	Cxp4SwpD7JhMjlUTXFbw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=bLxNTgbU2CJ8eiimq0LNRcZAISA39ngxYqP5C7Xy8aM=; b=Yr3ByjY4/eweof
+	CqwYl0+lVCV2Rxaj6zyXWzXfos7RTjGxoKwcZR9c2Rr0GMT+GpWvIijad4co6CVQrYGbCI3o2DsVf
+	7ju70qxcElp7F3ka/MnscnQyu+Ocw37gYRzahA55hzHwa9Jhz+4/h3v9XX+lzULuoLp/94TFXUiPL
+	H8idvUazWi22+pXG6Hwnq7X59O2IH/4n1o1occGfXAaI8Ka6d7t4aAs5aYTm9R3FuRYbypvLahF+E
+	JPILnMTkpnNZ26SoaE++gO7XrU/vsyb8UTve3Qfj+J5hVEOZAJ3y0XHiJSCA5xEvx5B1ChT8SfDkv
+	IpTHzreZ6QLcyRuc5H+w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0w2U-0002yr-FK; Mon, 04 Mar 2019 22:26:26 +0000
+	id 1h0w4y-00042t-97; Mon, 04 Mar 2019 22:29:00 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0vzO-0006Me-UK; Mon, 04 Mar 2019 22:23:48 +0000
+ id 1h0w4p-0003uI-29; Mon, 04 Mar 2019 22:28:53 +0000
 X-Originating-IP: 90.5.42.199
 Received: from localhost.localdomain
  (atoulouse-657-1-1088-199.w90-5.abo.wanadoo.fr [90.5.42.199])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 393AD240003;
- Mon,  4 Mar 2019 22:23:06 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EACCA240002;
+ Mon,  4 Mar 2019 22:28:43 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 5/6] mtd: rawnand: Clarify Kconfig entry MTD_NAND
-Date: Mon,  4 Mar 2019 23:22:25 +0100
-Message-Id: <20190304222226.12682-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 00/36] Introduce the generic ECC engine abstraction
+Date: Mon,  4 Mar 2019 23:28:05 +0100
+Message-Id: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190304222226.12682-1-miquel.raynal@bootlin.com>
-References: <20190304222226.12682-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_142316_263214_4589119E 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20190304_142851_407711_EA306CC9 
+X-CRM114-Status: GOOD (  23.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -72,1217 +70,220 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh R <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
  Julien Su <juliensu@mxic.com.tw>,
- Schrempf Frieder <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
+ Schrempf Frieder <frieder.schrempf@kontron.de>,
+ Paul Cercueil <paul@crapouillou.net>, linux-mtd@lists.infradead.org,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MTD_NAND is large and encloses much more than what the symbol is
-actually used for: raw NAND. Clarify the symbol by naming it
-MTD_RAW_NAND instead.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- arch/arm/configs/at91_dt_defconfig              | 2 +-
- arch/arm/configs/clps711x_defconfig             | 2 +-
- arch/arm/configs/cm_x2xx_defconfig              | 2 +-
- arch/arm/configs/cm_x300_defconfig              | 2 +-
- arch/arm/configs/colibri_pxa270_defconfig       | 2 +-
- arch/arm/configs/corgi_defconfig                | 2 +-
- arch/arm/configs/davinci_all_defconfig          | 2 +-
- arch/arm/configs/em_x270_defconfig              | 2 +-
- arch/arm/configs/ep93xx_defconfig               | 2 +-
- arch/arm/configs/eseries_pxa_defconfig          | 2 +-
- arch/arm/configs/imx_v4_v5_defconfig            | 2 +-
- arch/arm/configs/imx_v6_v7_defconfig            | 2 +-
- arch/arm/configs/ixp4xx_defconfig               | 2 +-
- arch/arm/configs/keystone_defconfig             | 2 +-
- arch/arm/configs/lpc32xx_defconfig              | 2 +-
- arch/arm/configs/macronix_zynq_defconfig        | 2 +-
- arch/arm/configs/mini2440_defconfig             | 2 +-
- arch/arm/configs/mmp2_defconfig                 | 2 +-
- arch/arm/configs/multi_v4t_defconfig            | 2 +-
- arch/arm/configs/multi_v5_defconfig             | 2 +-
- arch/arm/configs/multi_v7_defconfig             | 2 +-
- arch/arm/configs/mv78xx0_defconfig              | 2 +-
- arch/arm/configs/mvebu_v5_defconfig             | 2 +-
- arch/arm/configs/mvebu_v7_defconfig             | 2 +-
- arch/arm/configs/mxs_defconfig                  | 2 +-
- arch/arm/configs/nhk8815_defconfig              | 2 +-
- arch/arm/configs/omap1_defconfig                | 2 +-
- arch/arm/configs/omap2plus_defconfig            | 2 +-
- arch/arm/configs/orion5x_defconfig              | 2 +-
- arch/arm/configs/oxnas_v6_defconfig             | 2 +-
- arch/arm/configs/pxa3xx_defconfig               | 2 +-
- arch/arm/configs/pxa_defconfig                  | 2 +-
- arch/arm/configs/qcom_defconfig                 | 2 +-
- arch/arm/configs/raumfeld_defconfig             | 2 +-
- arch/arm/configs/s3c2410_defconfig              | 2 +-
- arch/arm/configs/s3c6400_defconfig              | 2 +-
- arch/arm/configs/sama5_defconfig                | 2 +-
- arch/arm/configs/socfpga_defconfig              | 2 +-
- arch/arm/configs/spear13xx_defconfig            | 2 +-
- arch/arm/configs/spear3xx_defconfig             | 2 +-
- arch/arm/configs/spear6xx_defconfig             | 2 +-
- arch/arm/configs/spitz_defconfig                | 2 +-
- arch/arm/configs/tango4_defconfig               | 2 +-
- arch/arm/configs/trizeps4_defconfig             | 2 +-
- arch/arm/configs/u300_defconfig                 | 2 +-
- arch/arm64/configs/defconfig                    | 2 +-
- arch/mips/configs/bcm47xx_defconfig             | 2 +-
- arch/mips/configs/ci20_defconfig                | 2 +-
- arch/mips/configs/db1xxx_defconfig              | 2 +-
- arch/mips/configs/generic/board-ni169445.config | 2 +-
- arch/mips/configs/generic/board-ocelot.config   | 2 +-
- arch/mips/configs/loongson1b_defconfig          | 2 +-
- arch/mips/configs/loongson1c_defconfig          | 2 +-
- arch/mips/configs/qi_lb60_defconfig             | 2 +-
- arch/mips/configs/rb532_defconfig               | 2 +-
- arch/mips/configs/rbtx49xx_defconfig            | 2 +-
- arch/mips/configs/xway_defconfig                | 2 +-
- arch/powerpc/configs/40x/kilauea_defconfig      | 2 +-
- arch/powerpc/configs/40x/obs600_defconfig       | 2 +-
- arch/powerpc/configs/44x/canyonlands_defconfig  | 2 +-
- arch/powerpc/configs/44x/eiger_defconfig        | 2 +-
- arch/powerpc/configs/44x/sequoia_defconfig      | 2 +-
- arch/powerpc/configs/44x/warp_defconfig         | 2 +-
- arch/powerpc/configs/83xx/mpc8313_rdb_defconfig | 2 +-
- arch/powerpc/configs/83xx/mpc8315_rdb_defconfig | 2 +-
- arch/powerpc/configs/85xx-hw.config             | 2 +-
- arch/powerpc/configs/85xx/ge_imp3a_defconfig    | 2 +-
- arch/powerpc/configs/85xx/socrates_defconfig    | 2 +-
- arch/powerpc/configs/85xx/tqm8548_defconfig     | 2 +-
- arch/powerpc/configs/85xx/xes_mpc85xx_defconfig | 2 +-
- arch/powerpc/configs/86xx-hw.config             | 2 +-
- arch/powerpc/configs/mpc512x_defconfig          | 2 +-
- arch/powerpc/configs/mpc83xx_defconfig          | 2 +-
- arch/powerpc/configs/pasemi_defconfig           | 2 +-
- arch/powerpc/configs/ppc44x_defconfig           | 2 +-
- arch/sh/configs/ap325rxa_defconfig              | 2 +-
- arch/sh/configs/ecovec24_defconfig              | 2 +-
- arch/sh/configs/migor_defconfig                 | 2 +-
- arch/sh/configs/sdk7786_defconfig               | 2 +-
- arch/sh/configs/se7724_defconfig                | 2 +-
- arch/sh/configs/titan_defconfig                 | 2 +-
- drivers/mtd/nand/raw/Kconfig                    | 6 +++---
- drivers/mtd/nand/raw/Makefile                   | 2 +-
- drivers/mtd/tests/mtd_nandecctest.c             | 2 +-
- 84 files changed, 86 insertions(+), 86 deletions(-)
-
-diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
-index e4b1be66b3f5..50ef3eb0ab64 100644
---- a/arch/arm/configs/at91_dt_defconfig
-+++ b/arch/arm/configs/at91_dt_defconfig
-@@ -56,7 +56,7 @@ CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_DATAFLASH=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_UBI=y
- CONFIG_MTD_UBI_GLUEBI=y
-diff --git a/arch/arm/configs/clps711x_defconfig b/arch/arm/configs/clps711x_defconfig
-index fc105c9178cc..7968d20673b9 100644
---- a/arch/arm/configs/clps711x_defconfig
-+++ b/arch/arm/configs/clps711x_defconfig
-@@ -36,7 +36,7 @@ CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PLATRAM=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_GPIO=y
- CONFIG_NETDEVICES=y
- # CONFIG_NET_CADENCE is not set
-diff --git a/arch/arm/configs/cm_x2xx_defconfig b/arch/arm/configs/cm_x2xx_defconfig
-index fb45b4983d3c..5344434df652 100644
---- a/arch/arm/configs/cm_x2xx_defconfig
-+++ b/arch/arm/configs/cm_x2xx_defconfig
-@@ -58,7 +58,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PXA2XX=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_GPIO=m
- CONFIG_MTD_NAND_CM_X270=y
- CONFIG_MTD_NAND_PLATFORM=y
-diff --git a/arch/arm/configs/cm_x300_defconfig b/arch/arm/configs/cm_x300_defconfig
-index 5e349c625b71..3707a014cbc4 100644
---- a/arch/arm/configs/cm_x300_defconfig
-+++ b/arch/arm/configs/cm_x300_defconfig
-@@ -48,7 +48,7 @@ CONFIG_LIB80211=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_MARVELL=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/colibri_pxa270_defconfig b/arch/arm/configs/colibri_pxa270_defconfig
-index 8995695fc118..8d484e4d51cc 100644
---- a/arch/arm/configs/colibri_pxa270_defconfig
-+++ b/arch/arm/configs/colibri_pxa270_defconfig
-@@ -64,7 +64,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PXA2XX=y
- CONFIG_MTD_BLOCK2MTD=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DISKONCHIP=y
- CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED=y
- CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0x4000000
-diff --git a/arch/arm/configs/corgi_defconfig b/arch/arm/configs/corgi_defconfig
-index 09e1672777c9..d99725984947 100644
---- a/arch/arm/configs/corgi_defconfig
-+++ b/arch/arm/configs/corgi_defconfig
-@@ -87,7 +87,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_ROM=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_SHARPSL=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_SD=y
-diff --git a/arch/arm/configs/davinci_all_defconfig b/arch/arm/configs/davinci_all_defconfig
-index 207962a656a2..4a8cad4d3707 100644
---- a/arch/arm/configs/davinci_all_defconfig
-+++ b/arch/arm/configs/davinci_all_defconfig
-@@ -74,7 +74,7 @@ CONFIG_MTD_CFI_INTELEXT=m
- CONFIG_MTD_CFI_AMDSTD=m
- CONFIG_MTD_PHYSMAP=m
- CONFIG_MTD_M25P80=m
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_MTD_NAND_DAVINCI=m
- CONFIG_MTD_SPI_NOR=m
- CONFIG_MTD_UBI=m
-diff --git a/arch/arm/configs/em_x270_defconfig b/arch/arm/configs/em_x270_defconfig
-index 30a67523f860..61228a25ba8d 100644
---- a/arch/arm/configs/em_x270_defconfig
-+++ b/arch/arm/configs/em_x270_defconfig
-@@ -54,7 +54,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PXA2XX=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/arm/configs/ep93xx_defconfig b/arch/arm/configs/ep93xx_defconfig
-index 78cd73d1c795..14889a785f07 100644
---- a/arch/arm/configs/ep93xx_defconfig
-+++ b/arch/arm/configs/ep93xx_defconfig
-@@ -63,7 +63,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_ROM=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_BLK_DEV_NBD=y
- CONFIG_EEPROM_LEGACY=y
- CONFIG_SCSI=y
-diff --git a/arch/arm/configs/eseries_pxa_defconfig b/arch/arm/configs/eseries_pxa_defconfig
-index cd27d651463c..03b0220a59b1 100644
---- a/arch/arm/configs/eseries_pxa_defconfig
-+++ b/arch/arm/configs/eseries_pxa_defconfig
-@@ -43,7 +43,7 @@ CONFIG_MAC80211_RC_PID=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_STANDALONE is not set
- CONFIG_MTD=m
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_MTD_NAND_TMIO=m
- CONFIG_BLK_DEV_LOOP=m
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/arm/configs/imx_v4_v5_defconfig b/arch/arm/configs/imx_v4_v5_defconfig
-index 8661dd9b064a..ffdcfc3edc25 100644
---- a/arch/arm/configs/imx_v4_v5_defconfig
-+++ b/arch/arm/configs/imx_v4_v5_defconfig
-@@ -61,7 +61,7 @@ CONFIG_MTD_CFI_GEOMETRY=y
- # CONFIG_MTD_CFI_I2 is not set
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_MXC=y
- CONFIG_MTD_UBI=y
- CONFIG_EEPROM_AT24=y
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 5586a5074a96..07b796c2f0ee 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -110,7 +110,7 @@ CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_SST25L=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_GPMI_NAND=y
- CONFIG_MTD_NAND_VF610_NFC=y
- CONFIG_MTD_NAND_MXC=y
-diff --git a/arch/arm/configs/ixp4xx_defconfig b/arch/arm/configs/ixp4xx_defconfig
-index 8c3c99cd6de9..39ebcce3bc2f 100644
---- a/arch/arm/configs/ixp4xx_defconfig
-+++ b/arch/arm/configs/ixp4xx_defconfig
-@@ -112,7 +112,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_IXP4XX=y
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=8192
-diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
-index 3ded35a07f45..72fee57aad2f 100644
---- a/arch/arm/configs/keystone_defconfig
-+++ b/arch/arm/configs/keystone_defconfig
-@@ -124,7 +124,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_PLATRAM=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DAVINCI=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
-diff --git a/arch/arm/configs/lpc32xx_defconfig b/arch/arm/configs/lpc32xx_defconfig
-index 0b54b4024e51..b4b7aac97051 100644
---- a/arch/arm/configs/lpc32xx_defconfig
-+++ b/arch/arm/configs/lpc32xx_defconfig
-@@ -47,7 +47,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_SLC_LPC32XX=y
- CONFIG_MTD_NAND_MLC_LPC32XX=y
- CONFIG_MTD_UBI=y
-diff --git a/arch/arm/configs/macronix_zynq_defconfig b/arch/arm/configs/macronix_zynq_defconfig
-index 23e37cd66fe2..1276ae284575 100644
---- a/arch/arm/configs/macronix_zynq_defconfig
-+++ b/arch/arm/configs/macronix_zynq_defconfig
-@@ -76,7 +76,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/arm/configs/mini2440_defconfig b/arch/arm/configs/mini2440_defconfig
-index 88ea02e7ba19..820213930664 100644
---- a/arch/arm/configs/mini2440_defconfig
-+++ b/arch/arm/configs/mini2440_defconfig
-@@ -92,7 +92,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_RAM=y
- CONFIG_MTD_ROM=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_S3C2410=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_MTD_LPDDR=y
-diff --git a/arch/arm/configs/mmp2_defconfig b/arch/arm/configs/mmp2_defconfig
-index 1eeee7f11d91..94deb0ed0541 100644
---- a/arch/arm/configs/mmp2_defconfig
-+++ b/arch/arm/configs/mmp2_defconfig
-@@ -28,7 +28,7 @@ CONFIG_IP_PNP=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_ONENAND=y
- CONFIG_MTD_ONENAND_GENERIC=y
- # CONFIG_BLK_DEV is not set
-diff --git a/arch/arm/configs/multi_v4t_defconfig b/arch/arm/configs/multi_v4t_defconfig
-index 9a6390c172d6..14f3a4a65d01 100644
---- a/arch/arm/configs/multi_v4t_defconfig
-+++ b/arch/arm/configs/multi_v4t_defconfig
-@@ -39,7 +39,7 @@ CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PLATRAM=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_GPIO=y
- # CONFIG_INPUT is not set
- # CONFIG_SERIO is not set
-diff --git a/arch/arm/configs/multi_v5_defconfig b/arch/arm/configs/multi_v5_defconfig
-index 318b76fa26d1..63b5a8824f0f 100644
---- a/arch/arm/configs/multi_v5_defconfig
-+++ b/arch/arm/configs/multi_v5_defconfig
-@@ -87,7 +87,7 @@ CONFIG_MTD_CFI_GEOMETRY=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_NAND_ORION=y
- CONFIG_MTD_SPI_NOR=y
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 5bee34a7ff2e..3589adc76628 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -181,7 +181,7 @@ CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DENALI_DT=y
- CONFIG_MTD_NAND_OMAP2=y
- CONFIG_MTD_NAND_OMAP_BCH=y
-diff --git a/arch/arm/configs/mv78xx0_defconfig b/arch/arm/configs/mv78xx0_defconfig
-index 0448bd8075ac..e9567513f068 100644
---- a/arch/arm/configs/mv78xx0_defconfig
-+++ b/arch/arm/configs/mv78xx0_defconfig
-@@ -47,7 +47,7 @@ CONFIG_MTD_CFI_GEOMETRY=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ORION=y
- CONFIG_BLK_DEV_LOOP=y
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/arm/configs/mvebu_v5_defconfig b/arch/arm/configs/mvebu_v5_defconfig
-index 4b598da0d086..0e5577a31851 100644
---- a/arch/arm/configs/mvebu_v5_defconfig
-+++ b/arch/arm/configs/mvebu_v5_defconfig
-@@ -77,7 +77,7 @@ CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ORION=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/mvebu_v7_defconfig b/arch/arm/configs/mvebu_v7_defconfig
-index 55140219ab11..48f7b4277b8d 100644
---- a/arch/arm/configs/mvebu_v7_defconfig
-+++ b/arch/arm/configs/mvebu_v7_defconfig
-@@ -52,7 +52,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_MARVELL=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
-diff --git a/arch/arm/configs/mxs_defconfig b/arch/arm/configs/mxs_defconfig
-index 38480596c449..ed570a0d1f2a 100644
---- a/arch/arm/configs/mxs_defconfig
-+++ b/arch/arm/configs/mxs_defconfig
-@@ -50,7 +50,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_DATAFLASH=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_SST25L=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_GPMI_NAND=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
-diff --git a/arch/arm/configs/nhk8815_defconfig b/arch/arm/configs/nhk8815_defconfig
-index 413c65b4c7e6..6f33138d66ca 100644
---- a/arch/arm/configs/nhk8815_defconfig
-+++ b/arch/arm/configs/nhk8815_defconfig
-@@ -50,7 +50,7 @@ CONFIG_MTD_TESTS=m
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_NAND_ECC_SW_HAMMING_SMC=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSMC=y
- CONFIG_MTD_ONENAND=y
- CONFIG_MTD_ONENAND_VERIFY_WRITE=y
-diff --git a/arch/arm/configs/omap1_defconfig b/arch/arm/configs/omap1_defconfig
-index cfc00b0961ec..40fdf890a292 100644
---- a/arch/arm/configs/omap1_defconfig
-+++ b/arch/arm/configs/omap1_defconfig
-@@ -90,7 +90,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_INTELEXT=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_COUNT=2
-diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
-index bb4b3975f7df..7f7faf5f5d4a 100644
---- a/arch/arm/configs/omap2plus_defconfig
-+++ b/arch/arm/configs/omap2plus_defconfig
-@@ -132,7 +132,7 @@ CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_M25P80=m
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ECC_SW_BCH=y
- CONFIG_MTD_NAND_OMAP2=y
- CONFIG_MTD_NAND_OMAP_BCH=y
-diff --git a/arch/arm/configs/orion5x_defconfig b/arch/arm/configs/orion5x_defconfig
-index bf9046331f6e..077e0fde1ff9 100644
---- a/arch/arm/configs/orion5x_defconfig
-+++ b/arch/arm/configs/orion5x_defconfig
-@@ -70,7 +70,7 @@ CONFIG_MTD_CFI_GEOMETRY=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_MTD_NAND_ORION=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/oxnas_v6_defconfig b/arch/arm/configs/oxnas_v6_defconfig
-index f6ba32c9d173..cae0db6b4eaf 100644
---- a/arch/arm/configs/oxnas_v6_defconfig
-+++ b/arch/arm/configs/oxnas_v6_defconfig
-@@ -50,7 +50,7 @@ CONFIG_SIMPLE_PM_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_OXNAS=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/pxa3xx_defconfig b/arch/arm/configs/pxa3xx_defconfig
-index 3e0de035ab77..7681eea60127 100644
---- a/arch/arm/configs/pxa3xx_defconfig
-+++ b/arch/arm/configs/pxa3xx_defconfig
-@@ -31,7 +31,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_MARVELL=y
- CONFIG_MTD_ONENAND=y
- CONFIG_MTD_ONENAND_VERIFY_WRITE=y
-diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
-index 76e535b14fd8..4913be26d898 100644
---- a/arch/arm/configs/pxa_defconfig
-+++ b/arch/arm/configs/pxa_defconfig
-@@ -188,7 +188,7 @@ CONFIG_MTD_PXA2XX=m
- CONFIG_MTD_M25P80=m
- CONFIG_MTD_BLOCK2MTD=y
- CONFIG_MTD_DOCG3=m
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_MTD_NAND_ECC_SW_BCH=y
- CONFIG_MTD_NAND_GPIO=m
- CONFIG_MTD_NAND_DISKONCHIP=m
-diff --git a/arch/arm/configs/qcom_defconfig b/arch/arm/configs/qcom_defconfig
-index bd6440f23493..4c50b5337cf6 100644
---- a/arch/arm/configs/qcom_defconfig
-+++ b/arch/arm/configs/qcom_defconfig
-@@ -57,7 +57,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_QCOM=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/raumfeld_defconfig b/arch/arm/configs/raumfeld_defconfig
-index 2dd56e9a484e..e68094330d6d 100644
---- a/arch/arm/configs/raumfeld_defconfig
-+++ b/arch/arm/configs/raumfeld_defconfig
-@@ -32,7 +32,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_NFTL=y
- CONFIG_NFTL_RW=y
- CONFIG_MTD_BLOCK2MTD=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_MARVELL=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/arm/configs/s3c2410_defconfig b/arch/arm/configs/s3c2410_defconfig
-index 2afb359f3168..39c648594d93 100644
---- a/arch/arm/configs/s3c2410_defconfig
-+++ b/arch/arm/configs/s3c2410_defconfig
-@@ -192,7 +192,7 @@ CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_ROM=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_S3C2410=y
- CONFIG_PARPORT=y
- CONFIG_PARPORT_PC=m
-diff --git a/arch/arm/configs/s3c6400_defconfig b/arch/arm/configs/s3c6400_defconfig
-index 507d7ad7523a..6e2656567da6 100644
---- a/arch/arm/configs/s3c6400_defconfig
-+++ b/arch/arm/configs/s3c6400_defconfig
-@@ -23,7 +23,7 @@ CONFIG_CMDLINE="console=ttySAC0,115200 root=/dev/ram init=/linuxrc initrd=0x5100
- CONFIG_VFP=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_S3C2410=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index b0026f73083d..515cb37eeab6 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -66,7 +66,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
-diff --git a/arch/arm/configs/socfpga_defconfig b/arch/arm/configs/socfpga_defconfig
-index 371fca4e1ab7..fe316675f6b7 100644
---- a/arch/arm/configs/socfpga_defconfig
-+++ b/arch/arm/configs/socfpga_defconfig
-@@ -54,7 +54,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DENALI_DT=y
- CONFIG_MTD_SPI_NOR=y
- # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
-diff --git a/arch/arm/configs/spear13xx_defconfig b/arch/arm/configs/spear13xx_defconfig
-index 7b36eeb928bb..8ee3679ca8b2 100644
---- a/arch/arm/configs/spear13xx_defconfig
-+++ b/arch/arm/configs/spear13xx_defconfig
-@@ -32,7 +32,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
- CONFIG_MTD_OF_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSMC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=16384
-diff --git a/arch/arm/configs/spear3xx_defconfig b/arch/arm/configs/spear3xx_defconfig
-index 2c5e8df33191..188449db6178 100644
---- a/arch/arm/configs/spear3xx_defconfig
-+++ b/arch/arm/configs/spear3xx_defconfig
-@@ -17,7 +17,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
- CONFIG_MTD_OF_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSMC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=16384
-diff --git a/arch/arm/configs/spear6xx_defconfig b/arch/arm/configs/spear6xx_defconfig
-index 124c244d8df1..5b410f0a365b 100644
---- a/arch/arm/configs/spear6xx_defconfig
-+++ b/arch/arm/configs/spear6xx_defconfig
-@@ -14,7 +14,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
- CONFIG_MTD_OF_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSMC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=16384
-diff --git a/arch/arm/configs/spitz_defconfig b/arch/arm/configs/spitz_defconfig
-index 9ea82c118661..f6d2f674517c 100644
---- a/arch/arm/configs/spitz_defconfig
-+++ b/arch/arm/configs/spitz_defconfig
-@@ -84,7 +84,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_ROM=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_SHARPSL=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_SD=y
-diff --git a/arch/arm/configs/tango4_defconfig b/arch/arm/configs/tango4_defconfig
-index 68725d4eae45..68eb16e583ac 100644
---- a/arch/arm/configs/tango4_defconfig
-+++ b/arch/arm/configs/tango4_defconfig
-@@ -39,7 +39,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_MTD=y
- CONFIG_MTD_TESTS=m
- CONFIG_MTD_CMDLINE_PARTS=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_TANGO=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_SCSI=y
-diff --git a/arch/arm/configs/trizeps4_defconfig b/arch/arm/configs/trizeps4_defconfig
-index 2b5a224d2da1..ecad22501b48 100644
---- a/arch/arm/configs/trizeps4_defconfig
-+++ b/arch/arm/configs/trizeps4_defconfig
-@@ -76,7 +76,7 @@ CONFIG_MTD_DOC2001PLUS=y
- CONFIG_MTD_DOCPROBE_ADVANCED=y
- CONFIG_MTD_DOCPROBE_ADDRESS=0x4000000
- CONFIG_MTD_DOCPROBE_HIGH=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DISKONCHIP=y
- CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED=y
- CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0x4000000
-diff --git a/arch/arm/configs/u300_defconfig b/arch/arm/configs/u300_defconfig
-index 36d77406e31b..cfd3622e2c8a 100644
---- a/arch/arm/configs/u300_defconfig
-+++ b/arch/arm/configs/u300_defconfig
-@@ -27,7 +27,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSMC=y
- # CONFIG_INPUT_MOUSEDEV is not set
- CONFIG_INPUT_EVDEV=y
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 3ef443cfbab6..22e30f66f986 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -203,7 +203,7 @@ CONFIG_SIMPLE_PM_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DENALI_DT=y
- CONFIG_MTD_NAND_MARVELL=y
- CONFIG_MTD_NAND_QCOM=y
-diff --git a/arch/mips/configs/bcm47xx_defconfig b/arch/mips/configs/bcm47xx_defconfig
-index 249f5285e343..91ce75edbfb4 100644
---- a/arch/mips/configs/bcm47xx_defconfig
-+++ b/arch/mips/configs/bcm47xx_defconfig
-@@ -41,7 +41,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_BCM47XXSFLASH=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_BCM47XXNFLASH=y
- CONFIG_NETDEVICES=y
- CONFIG_B44=y
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index 412800d5d7e0..50bebce28500 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -51,7 +51,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DMA_CMA=y
- CONFIG_CMA_SIZE_MBYTES=32
- CONFIG_MTD=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_JZ4780=y
- CONFIG_MTD_UBI=y
- CONFIG_MTD_UBI_FASTMAP=y
-diff --git a/arch/mips/configs/db1xxx_defconfig b/arch/mips/configs/db1xxx_defconfig
-index c5a2c6f234d4..bc9b6ae046b2 100644
---- a/arch/mips/configs/db1xxx_defconfig
-+++ b/arch/mips/configs/db1xxx_defconfig
-@@ -95,7 +95,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_SST25L=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ECC_SW_BCH=y
- CONFIG_MTD_NAND_AU1550=y
- CONFIG_MTD_NAND_PLATFORM=y
-diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/configs/generic/board-ni169445.config
-index e68da2e9dc7c..1ed0d3e8715e 100644
---- a/arch/mips/configs/generic/board-ni169445.config
-+++ b/arch/mips/configs/generic/board-ni169445.config
-@@ -17,7 +17,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- 
- CONFIG_MTD_NAND_ECC_SW_HAMMING=y
- CONFIG_MTD_NAND_ECC_SW_BCH=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_GPIO=y
- CONFIG_MTD_NAND_IDS=y
- 
-diff --git a/arch/mips/configs/generic/board-ocelot.config b/arch/mips/configs/generic/board-ocelot.config
-index f607888d2483..2621630f9850 100644
---- a/arch/mips/configs/generic/board-ocelot.config
-+++ b/arch/mips/configs/generic/board-ocelot.config
-@@ -6,7 +6,7 @@ CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_M25P80=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
-diff --git a/arch/mips/configs/loongson1b_defconfig b/arch/mips/configs/loongson1b_defconfig
-index b064d68a5424..1628e6fcc405 100644
---- a/arch/mips/configs/loongson1b_defconfig
-+++ b/arch/mips/configs/loongson1b_defconfig
-@@ -42,7 +42,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_SCSI=m
-diff --git a/arch/mips/configs/loongson1c_defconfig b/arch/mips/configs/loongson1c_defconfig
-index 5d76559b56cd..7aa5527e50b1 100644
---- a/arch/mips/configs/loongson1c_defconfig
-+++ b/arch/mips/configs/loongson1c_defconfig
-@@ -43,7 +43,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_SCSI=m
-diff --git a/arch/mips/configs/qi_lb60_defconfig b/arch/mips/configs/qi_lb60_defconfig
-index 7671fe6a8042..1a0677d04982 100644
---- a/arch/mips/configs/qi_lb60_defconfig
-+++ b/arch/mips/configs/qi_lb60_defconfig
-@@ -44,7 +44,7 @@ CONFIG_TCP_CONG_WESTWOOD=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_JZ4740=y
- CONFIG_MTD_UBI=y
- CONFIG_NETDEVICES=y
-diff --git a/arch/mips/configs/rb532_defconfig b/arch/mips/configs/rb532_defconfig
-index 7befe05fd813..4cbcf015a7ed 100644
---- a/arch/mips/configs/rb532_defconfig
-+++ b/arch/mips/configs/rb532_defconfig
-@@ -110,7 +110,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_BLOCK2MTD=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_ATA=y
- # CONFIG_ATA_VERBOSE_ERROR is not set
-diff --git a/arch/mips/configs/rbtx49xx_defconfig b/arch/mips/configs/rbtx49xx_defconfig
-index 50a2c9ad583f..96114ca59016 100644
---- a/arch/mips/configs/rbtx49xx_defconfig
-+++ b/arch/mips/configs/rbtx49xx_defconfig
-@@ -40,7 +40,7 @@ CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_RBTX4939=y
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_MTD_NAND_TXX9NDFMC=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/mips/configs/xway_defconfig b/arch/mips/configs/xway_defconfig
-index c3cac29e8414..d943254a9ac9 100644
---- a/arch/mips/configs/xway_defconfig
-+++ b/arch/mips/configs/xway_defconfig
-@@ -82,7 +82,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_LANTIQ=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_XWAY=y
- CONFIG_EEPROM_93CX6=m
- CONFIG_SCSI=y
-diff --git a/arch/powerpc/configs/40x/kilauea_defconfig b/arch/powerpc/configs/40x/kilauea_defconfig
-index b5cc7426c21f..3da091f651d6 100644
---- a/arch/powerpc/configs/40x/kilauea_defconfig
-+++ b/arch/powerpc/configs/40x/kilauea_defconfig
-@@ -33,7 +33,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_NDFC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=35000
-diff --git a/arch/powerpc/configs/40x/obs600_defconfig b/arch/powerpc/configs/40x/obs600_defconfig
-index aac06d2ad01a..38d3d7769a2f 100644
---- a/arch/powerpc/configs/40x/obs600_defconfig
-+++ b/arch/powerpc/configs/40x/obs600_defconfig
-@@ -33,7 +33,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_NDFC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=35000
-diff --git a/arch/powerpc/configs/44x/canyonlands_defconfig b/arch/powerpc/configs/44x/canyonlands_defconfig
-index c8e6f048a122..d427cee027a6 100644
---- a/arch/powerpc/configs/44x/canyonlands_defconfig
-+++ b/arch/powerpc/configs/44x/canyonlands_defconfig
-@@ -32,7 +32,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_NDFC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=35000
-diff --git a/arch/powerpc/configs/44x/eiger_defconfig b/arch/powerpc/configs/44x/eiger_defconfig
-index f6dc23fef683..f593258806ad 100644
---- a/arch/powerpc/configs/44x/eiger_defconfig
-+++ b/arch/powerpc/configs/44x/eiger_defconfig
-@@ -33,7 +33,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_NDFC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=35000
-diff --git a/arch/powerpc/configs/44x/sequoia_defconfig b/arch/powerpc/configs/44x/sequoia_defconfig
-index 1e04122912f3..f34fee9464e5 100644
---- a/arch/powerpc/configs/44x/sequoia_defconfig
-+++ b/arch/powerpc/configs/44x/sequoia_defconfig
-@@ -33,7 +33,7 @@ CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_NDFC=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=35000
-diff --git a/arch/powerpc/configs/44x/warp_defconfig b/arch/powerpc/configs/44x/warp_defconfig
-index 6c02f53271cd..6ae88d4879bf 100644
---- a/arch/powerpc/configs/44x/warp_defconfig
-+++ b/arch/powerpc/configs/44x/warp_defconfig
-@@ -34,7 +34,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_NDFC=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/83xx/mpc8313_rdb_defconfig b/arch/powerpc/configs/83xx/mpc8313_rdb_defconfig
-index 1f69f4edf074..9dffb2e7f735 100644
---- a/arch/powerpc/configs/83xx/mpc8313_rdb_defconfig
-+++ b/arch/powerpc/configs/83xx/mpc8313_rdb_defconfig
-@@ -31,7 +31,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSL_ELBC=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/83xx/mpc8315_rdb_defconfig b/arch/powerpc/configs/83xx/mpc8315_rdb_defconfig
-index 797fc3ffddee..a42232732c6d 100644
---- a/arch/powerpc/configs/83xx/mpc8315_rdb_defconfig
-+++ b/arch/powerpc/configs/83xx/mpc8315_rdb_defconfig
-@@ -31,7 +31,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=32768
-diff --git a/arch/powerpc/configs/85xx-hw.config b/arch/powerpc/configs/85xx-hw.config
-index c03d0fb16665..9575a38c9155 100644
---- a/arch/powerpc/configs/85xx-hw.config
-+++ b/arch/powerpc/configs/85xx-hw.config
-@@ -71,7 +71,7 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND_FSL_ELBC=y
- CONFIG_MTD_NAND_FSL_IFC=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_PLATRAM=y
-diff --git a/arch/powerpc/configs/85xx/ge_imp3a_defconfig b/arch/powerpc/configs/85xx/ge_imp3a_defconfig
-index dd98f43b2fb8..d70b60314dad 100644
---- a/arch/powerpc/configs/85xx/ge_imp3a_defconfig
-+++ b/arch/powerpc/configs/85xx/ge_imp3a_defconfig
-@@ -73,7 +73,7 @@ CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSL_ELBC=y
- CONFIG_BLK_DEV_LOOP=m
- CONFIG_BLK_DEV_CRYPTOLOOP=m
-diff --git a/arch/powerpc/configs/85xx/socrates_defconfig b/arch/powerpc/configs/85xx/socrates_defconfig
-index 6106fadbbd8b..7037a6d8018c 100644
---- a/arch/powerpc/configs/85xx/socrates_defconfig
-+++ b/arch/powerpc/configs/85xx/socrates_defconfig
-@@ -31,7 +31,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_SOCRATES=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/85xx/tqm8548_defconfig b/arch/powerpc/configs/85xx/tqm8548_defconfig
-index 464ce192bc14..1c63cbdc3211 100644
---- a/arch/powerpc/configs/85xx/tqm8548_defconfig
-+++ b/arch/powerpc/configs/85xx/tqm8548_defconfig
-@@ -36,7 +36,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_MTD_NAND_ECC_SW_HAMMING_SMC=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSL_UPM=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/85xx/xes_mpc85xx_defconfig b/arch/powerpc/configs/85xx/xes_mpc85xx_defconfig
-index 6531139a8a8d..78f5beb2928c 100644
---- a/arch/powerpc/configs/85xx/xes_mpc85xx_defconfig
-+++ b/arch/powerpc/configs/85xx/xes_mpc85xx_defconfig
-@@ -65,7 +65,7 @@ CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSL_ELBC=y
- CONFIG_MTD_NAND_FSL_UPM=y
- CONFIG_BLK_DEV_LOOP=y
-diff --git a/arch/powerpc/configs/86xx-hw.config b/arch/powerpc/configs/86xx-hw.config
-index d3dd6b8865c0..151164cf8cb3 100644
---- a/arch/powerpc/configs/86xx-hw.config
-+++ b/arch/powerpc/configs/86xx-hw.config
-@@ -47,7 +47,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_NAND_FSL_ELBC=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_PHYSMAP_OF=y
- CONFIG_NETDEVICES=y
- CONFIG_NET_TULIP=y
-diff --git a/arch/powerpc/configs/mpc512x_defconfig b/arch/powerpc/configs/mpc512x_defconfig
-index c2b1c4404683..5f81aa8723b7 100644
---- a/arch/powerpc/configs/mpc512x_defconfig
-+++ b/arch/powerpc/configs/mpc512x_defconfig
-@@ -46,7 +46,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_ROM=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_MPC5121_NFC=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/mpc83xx_defconfig b/arch/powerpc/configs/mpc83xx_defconfig
-index d1b82035d35f..005d00020fb9 100644
---- a/arch/powerpc/configs/mpc83xx_defconfig
-+++ b/arch/powerpc/configs/mpc83xx_defconfig
-@@ -46,7 +46,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_FSL_ELBC=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/pasemi_defconfig b/arch/powerpc/configs/pasemi_defconfig
-index 6daa56f8895c..c0423b2cf7c0 100644
---- a/arch/powerpc/configs/pasemi_defconfig
-+++ b/arch/powerpc/configs/pasemi_defconfig
-@@ -51,7 +51,7 @@ CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_SLRAM=y
- CONFIG_MTD_PHRAM=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PASEMI=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/powerpc/configs/ppc44x_defconfig b/arch/powerpc/configs/ppc44x_defconfig
-index 66dd6bf45cde..db48039e0b11 100644
---- a/arch/powerpc/configs/ppc44x_defconfig
-+++ b/arch/powerpc/configs/ppc44x_defconfig
-@@ -44,7 +44,7 @@ CONFIG_MTD_CFI=y
- CONFIG_MTD_JEDECPROBE=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP_OF=y
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_MTD_NAND_NDFC=m
- CONFIG_MTD_UBI=m
- CONFIG_MTD_UBI_GLUEBI=m
-diff --git a/arch/sh/configs/ap325rxa_defconfig b/arch/sh/configs/ap325rxa_defconfig
-index 72b72e50a92e..0ef3f1f9de5c 100644
---- a/arch/sh/configs/ap325rxa_defconfig
-+++ b/arch/sh/configs/ap325rxa_defconfig
-@@ -35,7 +35,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_SH_FLCTL=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/sh/configs/ecovec24_defconfig b/arch/sh/configs/ecovec24_defconfig
-index 3568310c2c2f..ba67e3752938 100644
---- a/arch/sh/configs/ecovec24_defconfig
-+++ b/arch/sh/configs/ecovec24_defconfig
-@@ -38,7 +38,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_COUNT=4
-diff --git a/arch/sh/configs/migor_defconfig b/arch/sh/configs/migor_defconfig
-index e04f21be0756..121a75d65fb4 100644
---- a/arch/sh/configs/migor_defconfig
-+++ b/arch/sh/configs/migor_defconfig
-@@ -34,7 +34,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_SCSI=y
-diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
-index e9ee0c878ead..7d90421ac0f4 100644
---- a/arch/sh/configs/sdk7786_defconfig
-+++ b/arch/sh/configs/sdk7786_defconfig
-@@ -108,7 +108,7 @@ CONFIG_MTD_ROM=m
- CONFIG_MTD_ABSENT=m
- CONFIG_MTD_PLATRAM=y
- CONFIG_MTD_PHRAM=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_MTD_NAND_SH_FLCTL=m
- CONFIG_MTD_UBI=y
-diff --git a/arch/sh/configs/se7724_defconfig b/arch/sh/configs/se7724_defconfig
-index aedb3a2d9a10..9f6d46d58554 100644
---- a/arch/sh/configs/se7724_defconfig
-+++ b/arch/sh/configs/se7724_defconfig
-@@ -37,7 +37,7 @@ CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_AMDSTD=y
- CONFIG_MTD_PHYSMAP=y
--CONFIG_MTD_NAND=y
-+CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_COUNT=4
-diff --git a/arch/sh/configs/titan_defconfig b/arch/sh/configs/titan_defconfig
-index ceb48e9b70f4..822fa9e96f74 100644
---- a/arch/sh/configs/titan_defconfig
-+++ b/arch/sh/configs/titan_defconfig
-@@ -155,7 +155,7 @@ CONFIG_INFTL=m
- CONFIG_RFD_FTL=m
- CONFIG_MTD_CFI=m
- CONFIG_MTD_JEDECPROBE=m
--CONFIG_MTD_NAND=m
-+CONFIG_MTD_RAW_NAND=m
- CONFIG_BLK_DEV_LOOP=m
- CONFIG_BLK_DEV_CRYPTOLOOP=m
- CONFIG_BLK_DEV_RAM=y
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index aa54f804ee40..510a6b32820d 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -9,7 +9,7 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
- 	  Software ECC according to the Smart Media Specification.
- 	  The original Linux implementation had byte 0 and 1 swapped.
- 
--menuconfig MTD_NAND
-+menuconfig MTD_RAW_NAND
- 	tristate "Raw/Parallel NAND Device Support"
- 	depends on MTD
- 	select MTD_NAND_ECC_SW_HAMMING
-@@ -18,7 +18,7 @@ menuconfig MTD_NAND
- 	  NAND flash devices. For further information see
- 	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
- 
--if MTD_NAND
-+if MTD_RAW_NAND
- 
- config MTD_NAND_ECC_SW_BCH
- 	bool "Support software BCH ECC"
-@@ -539,4 +539,4 @@ config MTD_NAND_DISKONCHIP_BBTWRITE
- 	  load time (assuming you build diskonchip as a module) with the module
- 	  parameter "inftl_bbt_write=1".
- 
--endif # MTD_NAND
-+endif # MTD_RAW_NAND
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 60ec994808c5..ffe95b157131 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-$(CONFIG_MTD_NAND)			+= nand.o
-+obj-$(CONFIG_MTD_RAW_NAND)		+= nand.o
- obj-$(CONFIG_MTD_NAND_ECC_SW_HAMMING)	+= nand_ecc.o
- obj-$(CONFIG_MTD_NAND_ECC_SW_BCH)	+= nand_bch.o
- obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
-diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index 0c0091fb3708..73b06304c975 100644
---- a/drivers/mtd/tests/mtd_nandecctest.c
-+++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -21,7 +21,7 @@
-  * or detected.
-  */
- 
--#if IS_ENABLED(CONFIG_MTD_NAND)
-+#if IS_ENABLED(CONFIG_MTD_RAW_NAND)
- 
- struct nand_ecc_test {
- 	const char *name;
--- 
-2.19.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QXMgb2YgdG9kYXksIG9ubHkgcmF3IE5BTkQgY29udHJvbGxlcnMgdXNlZCB0byBmZWF0dXJlIGFu
+IGludGVncmF0ZWQKRUNDIGVuZ2luZSBhbmQgc28gY29udHJvbGxlciBkcml2ZXJzIGFsd2F5cyBl
+bWJlZGRlZCBzb21lIGNvZGUgdG8KZW5hYmxlL2Rpc2FibGUgdGhlIGNvcnJlY3Rpb24uCgpUaGlz
+IHN0YXRlbWVudCBpcyBubyBsb25nZXIgY29ycmVjdCBhcyBTUEktTkFORCBkZXZpY2VzIG1pZ2h0
+IG5vdAplbWJlZCBhbiBvbi1kaWUgRUNDIGVuZ2luZSBhbmQgbXVzdCBtYWtlIHVzZSBvZiBhbiBl
+eHRlcm5hbCBFQ0MKZW5naW5lLiBXZSBmaWd1cmVkIHRoZXJlIGFyZSB0aHJlZSBwb3NzaWJsZSBz
+aXR1YXRpb25zIGZvciAoZ2VuZXJpYykKTkFORCBkZXZpY2U6IGVpdGhlciB0aGUgZW5naW5lIGlz
+ICdvbi1kaWUnIChtb3N0IG9mIHRoZSBTUEktTkFORHMsIGEKZmV3IHJhdyBOQU5EcyksIG9yIHRo
+ZSBlbmdpbmUgaXMgcGFydCBvZiB0aGUgaG9zdCBjb250cm9sbGVyIChtb3N0IHJhdwpOQU5Ecyks
+IG9yIHRoZSBlbmdpbmUgbWF5IGJlIGV4dGVybmFsIChTUEkgY29udHJvbGxlcnMgbWlnaHQgZmVh
+dHVyZQphbiBFQ0MgZW5naW5lLCBvciB0aGVyZSBhcmUgc3RpbGwgdGhlIHBvc3NpYmlsaXR5IHRv
+IHVzZSBzb2Z0d2FyZQpjb3JyZWN0aW9uKS4KCgpUbyBzb2x2ZSB0aGlzIHNpdHVhdGlvbiwgdGhp
+cyBpcyBhIHByb3Bvc2FsIG9uIGhvdyB0byBtYWtlIHRoaW5ncwp3b3JrLiBXZSB3YW50IHRvIGNy
+ZWF0ZSBhbiBFQ0MgZW5naW5lIG9iamVjdCB3aGljaCBoYXMgc2ltcGxlCmNhbGxiYWNrczoKKiBp
+bml0L2NsZWFudXAgaXRzIGNvbnRleHQKKiBwcmVwYXJlIGFuIEkvTyBvcGVyYXRpb24KKiBmaW5p
+c2ggYW4gSS9PIG9wZXJhdGlvbgpEZXRhaWxzIGFib3V0IHdoYXQgaXMgZ29pbmcgdG8gaGFwcGVu
+IGluIHRoZXNlIGNhbGxiYWNrcyBpcyBkZXNjcmliZWQKaW4gZHJpdmVycy9tdGQvbmFuZC9lY2Mv
+ZW5naW5lLmMuCgpUaGUgbG9naWMgaW4gdGhpcyBzZXJpZXMgaXM6CjEvIFVzZSB0aGUgZ2VuZXJp
+YyBOQU5EIGNvcmUgZm9yIGFsbCBOQU5EIGRldmljZXMgKHJhdyBhbmQgU1BJKS4KMi8gQ3JlYXRl
+IHRoZSBFQ0MgZW5naW5lIGludGVyZmFjZSBpbiBkcml2ZXJzL210ZC9uYW5kL2VjYy8KMy8gTW92
+ZSBjb2RlIGluIGRyaXZlci9tdGQvbmFuZC9lY2MuCjQvIE1ha2UgYm90aCBzb2Z0d2FyZSBlbmdp
+bmVzIChIYW1taW5nIGFuZCBCQ0gpIGdlbmVyaWMsIG1vdmUgdGhlbSBpbgogICB0aGUgZWNjLyBk
+aXJlY3RvcnksIGNsZWFuIHRoZW0gYSBiaXQgYW5kIGluc3RhbnRpYXRlIEVDQwogICBlbmdpbmVz
+LiBXcml0ZSByYXcgTkFORCBoZWxwZXJzIHRvIHVzZSB0aGVzZSB0d28gbmV3IGVuZ2luZXMuCjUv
+IElzb2xhdGUgU1BJLU5BTkQgb24tZGllIEVDQyBlbmdpbmUgaW4gaXRzIG93biBkcml2ZXIuCjYv
+IE1ha2UgdXNlIGZyb20gdGhlIFNQSS1OQU5EIGxheWVyIG9mIGFsbCB0aGUgRUNDIGVuZ2luZXMg
+bGlzdGVkCiAgIGFib3ZlIChvbiB1c2VyIHJlcXVlc3QsIHBlb3BsZSBjYW4gbm93IG1ha2UgdXNl
+IG9mIHNvZnQgQkNIIGlmIHRoZXkKICAgZG9uJ3QgaGF2ZSBhbiBFQ0MtZW5naW5lKS4KClRoaXMg
+d29yayBpcyBzdGlsbCBXSVAsIEkgZXhwZWN0IGEgZmV3IDAtZGF5IHJlZ3Jlc3Npb25zLCBtYXli
+ZSB0aGUKbmFtaW5nIGlzIG5vdCBwZXJmZWN0IGJ1dCBpdCBnaXZlcyBhbiBpZGVhIG9mIHdoYXQg
+SSB3b3VsZCBsaWtlIHRvCmludHJvZHVjZS4gVGhlIG5leHQgc3RlcHMgYXJlOgoxLyBNaWdyYXRl
+IHRoZSByYXcgTkFORCBjb3JlIHRvIG1ha2UgYSBwcm9wZXIgdXNlIG9mIHRoZXNlIEVDQwogICBl
+bmdpbmVzLgoyLyBEZXByZWNhdGUgaW4gdGhlIHJhdyBOQU5EIHN1YnN5c3RlbSB0aGUgaW50ZXJm
+YWNlcyB1c2VkIHVudGlsIG5vdwogICAoSSBleHBlY3Qgd2Ugc2hvdWxkIGdldCByaWQgb2YgYSBs
+b3Qgb2YgYm9pbGVycGxhdGUpLgozLyBJbnRyb2R1Y2UgYW4gZXh0ZXJuYWwgaGFyZHdhcmUgRUND
+IGVuZ2luZSBkcml2ZXIuCgoKVGhhbmtzLApNaXF1w6hsCgpDaGFuZ2VzIGluIHYyCj09PT09PT09
+PT09PT0KKiBTUERYIGxpY2Vuc2UgaWRlbnRpZmllcnMgZm9yIHNvZnQgQkNIIGFuZCBIYW1taW5n
+OiB0aGUgbGljZW5zZSBtYWNybwogIHdhcyByaWdodCwgIkdQTCIgbWVhbnMgIkdQTHYyIG9yIGhp
+Z2hlciIsIHNvIGRvIG5vdCBjaGFuZ2UgdGhpcwogIHBvcnRpb24uIEFsc28gdXBkYXRlIHRoZSBj
+b21taXQgbWVzc2FnZXMgdG8gZml0IHRoZSBhY3R1YWwgY2hhbmdlLgoqIERvIG5vdCBjb21waWxl
+LWluIHRoZSBOQU5EIGNvcmUgYnkgZGVmYXVsdCwgZG8gaXQgb25seSBmb3IgcmF3CiAgTkFORC4g
+UmVtb3ZlIHRoZSBkZXBlbmRlbmNpZXMgb24gQ09ORklHX01URCBpbiBhIGRpZmZlcmVudAogIHBh
+dGNoLiBBbHNvLCBrZWVwIGFuIGV4dHJhIGxldmVsIG9mIGhpZXJhcmNoeSBpbiBLY29uZmlnIGZv
+ciB0aGUKICBOQU5EIGJpdHMgYnkgYWRkaW5nIGEgbWVudSBpbnN0ZWFkIG9mIGEgY29uZmlnLgoq
+IE1vdmVkIHRoZSBzdGFuZGFyZCBPT0IgbGF5b3V0cyBpbiB0aGUgZWNjL2VuZ2luZS5jIGRyaXZl
+ciBpbnN0ZWFkIG9mCiAgaW4gdGhlIE5BTkQgY29yZS4KKiBVc2VkIHRoZSBuYW5kX2VjY18gcHJl
+Zml4IGluIG1vc3Qgb2YgdGhlIGVuZ2luZXMgZnVuY3Rpb25zIGluc3RlYWQKICBvZiBqdXN0IGVj
+Y18sIHdoaWNoIGlzIG5vdyByZXNlcnZlZCBmb3IgYmFyZSBoZWxwZXJzLiBHZXQgcmlkIG9mIHRo
+ZQogIF9fZWNjIHByZWZpeC4KKiBJbiB0aGUgc3VueGkgTkFORCBjb250cm9sbGVyIGRyaXZlcjog
+bW92ZWQgdGhlIEVDQyBzdHJ1Y3R1cmUgZnJvbQogIHN1bnhpX25mYyB0byBzdW54aV9uYW5kX2No
+aXAgYXMgdGhlIEVDQyBlbmdpbmUgaXMgcGVyLWNoaXAgYW5kIG5vdAogIHBlciBjb250cm9sbGVy
+LgoqIFNvZnR3YXJlIEhhbW1pbmcgRUNDIGVuZ2luZSBpcyBvbmx5IGVuYWJsZWQgYnkgZGVmYXVs
+dCBpZiByYXcgTkFORAogIGlzIGFsc28gZW5hYmxlZC4gTkRGQyBub3cgc2VsZWN0cyB0aGUgc29m
+dHdhcmUgSGFtbWluZyBFQ0MgZW5naW5lCiAgKGluc3RlYWQgb2YgZGVwZW5kaW5nIG9uIGl0KS4K
+KiBNZW50aW9uIGluIHNvZnR3YXJlIEJDSCBhbmQgSGFtbWluZyBLY29uZmlnIGVudHJpZXMgdGhh
+dCBib290aW5nCiAgZnJvbSBOQU5EIGlzIHZlcnkgbGlrZWx5IHRvIGZhaWwgaWYgdGhlIHVzZXIg
+c2VsZWN0cyB0aGVzZSBzeW1ib2xzCiAgYXMgbW9kdWxlcy4KKiBBZGRlZCBCb3JpcyBSZXZpZXdl
+ZC1ieSB0YWcgb24gdGhlIFNQSS1OQU5EIHR5cG8gZml4aW5nIHBhdGNoLgoqIFJlbmFtZWQgdGhl
+ICJtb2RlIiBpbnRvIGEgInByb3ZpZGVyIiBlbnRyeSBpbiB0aGUgRUNDIGNvbmZpZ3VyYXRpb24K
+ICBzdHJ1Y3R1cmVzLgoqIE1vdmVkIHRoZSAidG90YWwiIGVudHJ5IG9mIHRoZSBFQ0MgY29uZmln
+dXJhdGlvbiBkaXJlY3RseSBpbiB0aGUKICBjb250ZXh0IHN0cnVjdHVyZSAoc2hvdWxkIHByb2Jh
+Ymx5IG5vdCBiZSBwdWJsaWMgYnV0IGxldCdzIGtlZXAgaXQKICBhcyBpcyBmb3Igbm93KS4KKiBT
+cGxpdCB0aGUgZ2VuZXJpYyBFQ0MgZW5naW5lIGludHJvZHVjdGlvbiBpbnRvIHNtYWxsZXIgcGF0
+Y2hlcyB0byBkbwogIHNvbWUgcmVuYW1pbmcgYXNpZGUuCiogRHJvcCB0aGUgIm1heGltaXplIiBl
+bnRyeSBpbiB0aGUgRUNDIGVuZ2luZSBjb25maWd1cmF0aW9uIHN0cnVjdHVyZSwKICBrZWVwIHVz
+aW5nIGEgZmxhZyBsaWtlIGJlZm9yZS4KKiBDYW5jZWxlZCB0aGUgbW92ZSBvZiB0aGUgU1BJLU5B
+TkQgc3BlY2lmaWMgRUNDIGVuZ2luZSBvdXQgb2YgdGhlCiAgY29yZSBmaWxlLgoqIEFtZW5kZWQg
+dGhlIHJvb3QgRUNDIHN0cnVjdHVyZXMgdG8gaGF2ZSB0aHJlZSBuYW5kX2VjY19jb25mCiAgc3Ry
+dWN0dXJlczogb25lIGZvciB0aGUgZGVmYXVsdHMsIG9uZSBmb3IgdGhlIGNoaXAgcmVxdWlyZW1l
+bnRzLCBvbmUKICBmb3IgdGhlIHVzZXIgZGVzaXJlcy4KKiBDcmVhdGVkIGEgKm9uZGllX2VuZ2lu
+ZSBwb2ludGVyIGluIHRoZSBuYW5kX2VjYyBzdHJ1Y3R1cmUgdG8gc2F2ZQogIHRoZSBvbi1kaWUg
+RUNDIGVuZ2luZSwgaWYgYW55LiBGb3IgaW5zdGFuY2UsIHNhdmluZyBhIHJlZmVyZW5jZSB0bwog
+IHRoaXMgZW5naW5lIGlzIGRvbmUgYnkgdGhlIFNQSS1OQU5EIGNvcmUuCiogRHJvcHBlZCB0aGUg
+U1BJLU5BTkQgZmxhZyB0aGF0IHdhcyB1c2VkIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4gTkFORAog
+IGZsYXZvcnMgZnJvbSB0aGUgTkFORCBjb3JlLCBpdCBzaG91bGQgbm90IGJlIG5lZWRlZCBhbnlt
+b3JlLgoqIEFkZGVkIGFuIGhlbHBlciBpbiB0aGUgTkFORCBjb3JlIHRvIHB1dCBhIHJlZmVyZW5j
+ZSBvbiBhbiBFQ0MKICBlbmdpbmUuIFRoaXMgd2lsbCBiZSB1c2VkIGJ5IHRoZSBoYXJkd2FyZSBl
+bmdpbmVzIG9ubHkuCiogUmVuYW1lZCB0aGUgZmlsZXMgZWNjL3N3LXtiY2gsaGFtbWluZ30uYyBh
+bmQgdGhlaXIgaGVhZGVycwogIGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLXN3LXtiY2gsaGFt
+bWluZ30tZW5naW5lLmguCiogQ3JlYXRlZCBhIE1URF9OQU5EX0VDQyBpbnZpc2libGUgS2NvbmZp
+ZyBzeW1ib2wuCiogQWRkZWQgcGxlbnR5IG9mIG1pc3NpbmcgRVhQT1JUX1NZTUJPTHssX0dQTH0o
+KS4KKiBNaW5vciBtb2RpZmljYXRpb25zIHNvIHRoYXQgZXZlcnl0aGluZyBzdGlsbCBjb21waWxl
+cyBldmVuIHdoZW4KICBtb2R1bGVzIGFuZCBidWlsdC1pbiBkcml2ZXJzIGFyZSBtaXhlZCBpbiBL
+Y29uZmlnIGluIHRoZSB3aG9sZSBOQU5ECiAgZGlyZWN0b3J5LgoKCk1pcXVlbCBSYXluYWwgKDM2
+KToKICBtdGQ6IG5hbmQ6IE1vdmUgbmFuZF9kZXZpY2UgZm9yd2FyZCBkZWNsYXJhdGlvbiB0byB0
+aGUgdG9wCiAgbXRkOiBuYW5kOiBBZGQgYW4gZXh0cmEgbGV2ZWwgaW4gdGhlIEtjb25maWcgaGll
+cmFyY2h5CiAgbXRkOiBuYW5kOiBEcm9wIHVzZWxlc3MgJ2RlcGVuZHMgb24nIGluIEtjb25maWcK
+ICBtdGQ6IHJhd25hbmQ6IFVzZSB0aGUgTkFORCBjb3JlCiAgbXRkOiBuYW5kOiBBZGQgYSBOQU5E
+IHBhZ2UgSS9PIHJlcXVlc3QgdHlwZQogIG10ZDogbmFuZDogUmVuYW1lIGEgY29yZSBzdHJ1Y3R1
+cmUKICBtdGQ6IHJhd25hbmQ6IEF2b2lkIGEgdHlwZWRlZgogIG10ZDogcmF3bmFuZDogQWRkIGFu
+IGludmFsaWQgRUNDIG1vZGUgdG8gZGlzY3JpbWluYXRlIHdpdGggdmFsaWQgb25lcwogIG10ZDog
+cmF3bmFuZDogQ2xhcmlmeSB0aGUgdmFsdWVzIGZvciBpbnZhbGlkIEVDQyBtb2RlL2FsZ28KICBt
+dGQ6IG5hbmQ6IEludHJvZHVjZSB0aGUgRUNDIGVuZ2luZSBhYnN0cmFjdGlvbgogIG10ZDogRml4
+IHR5cG8gaW4gbXRkX29vYmxheW91dF9zZXRfZGF0YWJ5dGVzKCkgZGVzY3JpcHRpb24KICBtdGQ6
+IG5hbmQ6IE1vdmUgc3RhbmRhcmQgT09CIGxheW91dHMgdG8gdGhlIGdlbmVyaWMgRUNDIGNvcmUK
+ICBtdGQ6IG5hbmQ6IE1vdmUgRUNDIHNwZWNpZmljIGZ1bmN0aW9ucyB0byBlY2MvZW5naW5lLmMK
+ICBtdGQ6IG5hbmQ6IGVjYzogTW92ZSBCQ0ggY29kZSBpbnRvIHRoZSBlY2MvIGRpcmVjdG9yeQog
+IG10ZDogbmFuZDogZWNjOiBVc2UgU1BEWCBsaWNlbnNlIGlkZW50aWZpZXIgZm9yIHRoZSBzb2Z0
+d2FyZSBCQ0ggY29kZQogIG10ZDogbmFuZDogZWNjOiBUdXJuIHRoZSBzb2Z0d2FyZSBCQ0ggaW1w
+bGVtZW50YXRpb24gZ2VuZXJpYwogIG10ZDogcmF3bmFuZDogR2V0IHJpZCBvZiBjaGlwLT5lY2Mu
+cHJpdgogIG10ZDogbmFuZDogZWNjOiBNb3ZlIEhhbW1pbmcgY29kZSBpbnRvIHRoZSBlY2MvIGRp
+cmVjdG9yeQogIG10ZDogbmFuZDogZWNjOiBVc2UgU1BEWCBsaWNlbnNlIGlkZW50aWZpZXIgZm9y
+IHRoZSBzb2Z0d2FyZSBIYW1taW5nCiAgICBjb2RlCiAgbXRkOiBuYW5kOiBlY2M6IENsYXJpZnkg
+dGhlIHNvZnR3YXJlIEhhbW1pbmcgaW50cm9kdWN0b3J5IGxpbmUKICBtdGQ6IG5hbmQ6IGVjYzog
+VHVybiB0aGUgc29mdHdhcmUgSGFtbWluZyBpbXBsZW1lbnRhdGlvbiBnZW5lcmljCiAgbXRkOiBu
+YW5kOiBSZW1vdmUgdXNlbGVzcyBpbmNsdWRlIGFib3V0IHNvZnR3YXJlIEhhbW1pbmcgRUNDCiAg
+bXRkOiBuYW5kOiBlY2M6IExldCB0aGUgc29mdHdhcmUgQkNIIEVDQyBlbmdpbmUgYmUgYSBtb2R1
+bGUKICBtdGQ6IG5hbmQ6IGVjYzogTGV0IHRoZSBzb2Z0d2FyZSBIYW1taW5nIEVDQyBlbmdpbmUg
+YmUgdW5zZWxlY3RlZAogIG10ZDogbmFuZDogZWNjOiBDcmVhdGUgdGhlIHNvZnR3YXJlIEJDSCBl
+bmdpbmUgaW5zdGFuY2UKICBtdGQ6IG5hbmQ6IGVjYzogQ3JlYXRlIHRoZSBzb2Z0d2FyZSBIYW1t
+aW5nIGVuZ2luZSBpbnN0YW5jZQogIG10ZDogbmFuZDogTGV0IHNvZnR3YXJlIEVDQyBlbmdpbmVz
+IGJlIHJldHJpZXZlZCBmcm9tIHRoZSBOQU5EIGNvcmUKICBtdGQ6IHNwaW5hbmQ6IEZpeCB0eXBv
+IGluIGNvbW1lbnQKICBtdGQ6IHNwaW5hbmQ6IE1vdmUgRUNDIHJlbGF0ZWQgZGVmaW5pdGlvbnMg
+ZWFybGllciBpbiB0aGUgZHJpdmVyCiAgbXRkOiBzcGluYW5kOiBJbnN0YW50aWF0ZSBhIFNQSS1O
+QU5EIG9uLWRpZSBFQ0MgZW5naW5lCiAgbXRkOiBuYW5kOiBMZXQgb24tZGllIEVDQyBlbmdpbmVz
+IGJlIHJldHJpZXZlZCBmcm9tIHRoZSBOQU5EIGNvcmUKICBtdGQ6IHJhd25hbmQ6IEZpbGwgYSBk
+ZWZhdWx0IEVDQyBwcm92aWRlci9hbGdvcml0aG0KICBtdGQ6IHNwaW5hbmQ6IEZpbGwgYSBkZWZh
+dWx0IEVDQyBwcm92aWRlci9hbGdvcml0aG0KICBtdGQ6IG5hbmQ6IEFkZCBoZWxwZXJzIHRvIG1h
+bmFnZSBFQ0MgZW5naW5lcyBhbmQgY29uZmlndXJhdGlvbnMKICBtdGQ6IHNwaW5hbmQ6IFVzZSB0
+aGUgZXh0ZXJuYWwgRUNDIGVuZ2luZSBsb2dpYwogIG10ZDogc3BpbmFuZDogUHJvcGFnYXRlIEVD
+QyBpbmZvcm1hdGlvbiB0byB0aGUgTVREIHN0cnVjdHVyZQoKIGFyY2gvYXJtL21hY2gtczNjMjR4
+eC9jb21tb24tc21kay5jICAgICAgICAgICB8ICAgMSAtCiBhcmNoL2FybS9tYWNoLXMzYzI0eHgv
+bWFjaC1hbnViaXMuYyAgICAgICAgICAgfCAgIDEgLQogYXJjaC9hcm0vbWFjaC1zM2MyNHh4L21h
+Y2gtYXQyNDQwZXZiLmMgICAgICAgIHwgICAxIC0KIGFyY2gvYXJtL21hY2gtczNjMjR4eC9tYWNo
+LWJhc3QuYyAgICAgICAgICAgICB8ICAgMSAtCiBhcmNoL2FybS9tYWNoLXMzYzI0eHgvbWFjaC1n
+dGEwMi5jICAgICAgICAgICAgfCAgIDEgLQogYXJjaC9hcm0vbWFjaC1zM2MyNHh4L21hY2gtaml2
+ZS5jICAgICAgICAgICAgIHwgICAxIC0KIGFyY2gvYXJtL21hY2gtczNjMjR4eC9tYWNoLW1pbmky
+NDQwLmMgICAgICAgICB8ICAgMSAtCiBhcmNoL2FybS9tYWNoLXMzYzI0eHgvbWFjaC1vc2lyaXMu
+YyAgICAgICAgICAgfCAgIDEgLQogYXJjaC9hcm0vbWFjaC1zM2MyNHh4L21hY2gtcXQyNDEwLmMg
+ICAgICAgICAgIHwgICAxIC0KIGFyY2gvYXJtL21hY2gtczNjMjR4eC9tYWNoLXJ4MzcxNS5jICAg
+ICAgICAgICB8ICAgMSAtCiBhcmNoL2FybS9tYWNoLXMzYzI0eHgvbWFjaC12c3Rtcy5jICAgICAg
+ICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbXRkY29yZS5jICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL0tjb25maWcgICAgICAgICAgICAgICAgICAg
+ICAgfCAgIDUgKwogZHJpdmVycy9tdGQvbmFuZC9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAg
+IHwgICAxICsKIGRyaXZlcnMvbXRkL25hbmQvY29yZS5jICAgICAgICAgICAgICAgICAgICAgICB8
+IDEyNCArKysrCiBkcml2ZXJzL210ZC9uYW5kL2VjYy9LY29uZmlnICAgICAgICAgICAgICAgICAg
+fCAgNDEgKysKIGRyaXZlcnMvbXRkL25hbmQvZWNjL01ha2VmaWxlICAgICAgICAgICAgICAgICB8
+ICAgNSArCiBkcml2ZXJzL210ZC9uYW5kL2VjYy9lbmdpbmUuYyAgICAgICAgICAgICAgICAgfCA0
+ODEgKysrKysrKysrKysrKysrCiBkcml2ZXJzL210ZC9uYW5kL2VjYy9zdy1iY2guYyAgICAgICAg
+ICAgICAgICAgfCA0MjQgKysrKysrKysrKysrKysKIC4uLi9uYW5kL3tyYXcvbmFuZF9lY2MuYyA9
+PiBlY2Mvc3ctaGFtbWluZy5jfSB8IDM0NyArKysrKysrKy0tLQogZHJpdmVycy9tdGQvbmFuZC9v
+bmVuYW5kL0tjb25maWcgICAgICAgICAgICAgIHwgICAxIC0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
+L0tjb25maWcgICAgICAgICAgICAgICAgICB8ICAyNiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcv
+TWFrZWZpbGUgICAgICAgICAgICAgICAgIHwgICAyIC0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2F0
+bWVsL25hbmQtY29udHJvbGxlci5jICB8ICAxMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvY3M1
+NTN4X25hbmQuYyAgICAgICAgICAgIHwgICAzICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5h
+bGkuYyAgICAgICAgICAgICAgICAgfCAgIDMgKwogZHJpdmVycy9tdGQvbmFuZC9yYXcvZGVuYWxp
+X3BjaS5jICAgICAgICAgICAgIHwgICAxIC0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2ZzbF9lbGJj
+X25hbmQuYyAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25h
+bmQuYyAgICAgICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNsX3VwbS5jICAg
+ICAgICAgICAgICAgIHwgICAxIC0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2ZzbWNfbmFuZC5jICAg
+ICAgICAgICAgICB8ICAgMyArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWkt
+bmFuZC5jICAgIHwgIDEyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9scGMzMnh4X21sYy5jICAg
+ICAgICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbHBjMzJ4eF9zbGMuYyAgICAg
+ICAgICAgIHwgICAzICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tYXJ2ZWxsX25hbmQuYyAgICAg
+ICAgICAgfCAgIDcgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L210a19uYW5kLmMgICAgICAgICAg
+ICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgICAgICAgICAg
+ICAgIHwgNTUxICsrKysrKy0tLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9i
+Y2guYyAgICAgICAgICAgICAgIHwgMjMyIC0tLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9u
+YW5kX2VzbXQuYyAgICAgICAgICAgICAgfCAgMTEgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L25h
+bmRfaHluaXguYyAgICAgICAgICAgICB8ICA0MSArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZF9qZWRlYy5jICAgICAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
+X21pY3Jvbi5jICAgICAgICAgICAgfCAgMTQgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRf
+b25maS5jICAgICAgICAgICAgICB8ICAgOCArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9z
+YW1zdW5nLmMgICAgICAgICAgIHwgIDE5ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX3Rv
+c2hpYmEuYyAgICAgICAgICAgfCAgMTMgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRzaW0u
+YyAgICAgICAgICAgICAgICB8ICAgMyArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmRmYy5jICAg
+ICAgICAgICAgICAgICAgIHwgICAzICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9vbWFwMi5jICAg
+ICAgICAgICAgICAgICAgfCAgMzIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Bhc2VtaV9uYW5k
+LmMgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zM2MyNDEwLmMgICAg
+ICAgICAgICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvc2hhcnBzbC5jICAgICAg
+ICAgICAgICAgIHwgICAzICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9uYW5kLmMgICAg
+ICAgICAgICAgfCAgMzggKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3JhX25hbmQuYyAgICAg
+ICAgICAgICB8ICAxMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvdG1pb19uYW5kLmMgICAgICAg
+ICAgICAgIHwgICA3ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy90eHg5bmRmbWMuYyAgICAgICAg
+ICAgICAgfCAgIDUgKy0KIGRyaXZlcnMvbXRkL25hbmQvc3BpL0tjb25maWcgICAgICAgICAgICAg
+ICAgICB8ICAgMSArCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgICAgICAgICAgICAgICAg
+ICAgfCAzMDEgKysrKysrLS0tLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvbWFjcm9uaXguYyAgICAg
+ICAgICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9vbi1kaWUtZWNjLWVuZ2lu
+ZS5jICAgICAgfCAgIDAKIGRyaXZlcnMvbXRkL25hbmQvc3BpL3Rvc2hpYmEuYyAgICAgICAgICAg
+ICAgICB8ICAgNiArLQogZHJpdmVycy9tdGQvc21fZnRsLmMgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDMwICstCiBkcml2ZXJzL210ZC90ZXN0cy9tdGRfbmFuZGVjY3Rlc3QuYyAgICAgICAg
+ICAgfCAgMzEgKy0KIGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLXN3LWJjaC5oICAgICAgICAg
+ICB8ICA4MCArKysKIGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLXN3LWhhbW1pbmcuaCAgICAg
+ICB8ICA5OSArKysrCiBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLmggICAgICAgICAgICAgICAgICAg
+ICAgfCAxNTAgKysrKy0KIGluY2x1ZGUvbGludXgvbXRkL25hbmRfYmNoLmggICAgICAgICAgICAg
+ICAgICB8ICA2OSAtLS0KIGluY2x1ZGUvbGludXgvbXRkL25hbmRfZWNjLmggICAgICAgICAgICAg
+ICAgICB8ICA0MiAtLQogaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oICAgICAgICAgICAgICAg
+ICAgIHwgIDQyICstCiBpbmNsdWRlL2xpbnV4L210ZC9zaGFycHNsLmggICAgICAgICAgICAgICAg
+ICAgfCAgIDEgLQogaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgICAgICAgICAgICAgICAg
+IHwgIDEzICstCiBpbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvbXRkLWRhdmluY2kuaCAgICAg
+fCAgIDIgKy0KIC4uLi9saW51eC9wbGF0Zm9ybV9kYXRhL210ZC1uYW5kLXMzYzI0MTAuaCAgICB8
+ICAgMiArLQogNzIgZmlsZXMgY2hhbmdlZCwgMjI0MCBpbnNlcnRpb25zKCspLCAxMTU1IGRlbGV0
+aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvZWNjL0tjb25maWcK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL2VjYy9NYWtlZmlsZQogY3JlYXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvZWNjL2VuZ2luZS5jCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy9tdGQvbmFuZC9lY2Mvc3ctYmNoLmMKIHJlbmFtZSBkcml2ZXJzL210ZC9u
+YW5kL3tyYXcvbmFuZF9lY2MuYyA9PiBlY2Mvc3ctaGFtbWluZy5jfSAoNTklKQogZGVsZXRlIG1v
+ZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmNoLmMKIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBkcml2ZXJzL210ZC9uYW5kL3NwaS9vbi1kaWUtZWNjLWVuZ2luZS5jCiBjcmVhdGUgbW9k
+ZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tdGQvbmFuZC1lY2Mtc3ctYmNoLmgKIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLWVjYy1zdy1oYW1taW5nLmgKIGRlbGV0ZSBt
+b2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L210ZC9uYW5kX2JjaC5oCiBkZWxldGUgbW9kZSAxMDA2
+NDQgaW5jbHVkZS9saW51eC9tdGQvbmFuZF9lY2MuaAoKLS0gCjIuMTkuMQoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
