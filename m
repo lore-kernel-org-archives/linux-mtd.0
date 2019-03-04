@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47345C4360F
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:32:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A4BAC43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:32:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF56620823
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:32:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6D0B20823
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:32:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nZvHmth9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF56620823
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RK2fq8AU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6D0B20823
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,41 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=N8yrUSCHl69SpJkMWS4NUAiM/lw5PqPEKDKiKjRqPgE=; b=nZvHmth9ppPJu7
-	z0Z5vELcEcoqlXT8kXl1wccuZfqvmXfRJuUHl2tQoMePzUQHmqJMZitqUPTQqVn5ZwR4wcQLXcGb6
-	071evydP3rCSKNQ9XOrrTvuLb5GwewKX3ViphnrPthpa6F8rbPh+0mZs/7jnqclAn94t6vs5n1ZtC
-	VlSXWqrMRouvT0h5UQZ/wiHO72KRZjoFVMANB9VHPgL1Hk5B5zspM+mG5u8n5g/aF1Ls9ZW8KU0E8
-	wDZoqrxQwMjdKuxXmUkWx9l4wv3n/meC3SPFnKep9Zbi+m8JTTc8/RIamTK9bpJpP8oTddSMk2Y/5
-	uY8Y+2ORwRZFYTHcZPgA==;
+	List-Owner; bh=N273KDVqzRsZSdx6E4eOgve3fIKlXu0yJtaq3w/OLpQ=; b=RK2fq8AUOs8zNn
+	o8VXfkoPxb/RPtf5XccsDgbFG4U6TEQt7px6rC5mk0tHet3wUFj8RNmt1xFzUak0SzwXJqC9Xt1Nb
+	ZB780rzwNtI2yuvEunXC7W3oNbDZ6NtZAYe5rUP4bMNG9Lwg3swY8GWtzi8w80wbqm+9w+mw82sjn
+	KWBSzacUNfwbMnGpSWtLrWI01sxfJUramixDSSLnZtMuCfMVVoUSDvD92DUJqsoWuNg6y6qmLr0eH
+	Ke4I7dnqpIzt2KcSgRrH7so8p9vpRTNqBl2UZvvtnjWDpb6HojqNjoVuBjpTowM0Sf7MZWFTBrBCJ
+	mAckSK1ks1YD9Uzhm0oQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0w7u-0000mq-R5; Mon, 04 Mar 2019 22:32:02 +0000
+	id 1h0w8J-0001JN-G7; Mon, 04 Mar 2019 22:32:27 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0w72-00084m-9L; Mon, 04 Mar 2019 22:31:51 +0000
+ id 1h0w7H-0008Po-KD; Mon, 04 Mar 2019 22:31:53 +0000
 X-Originating-IP: 90.5.42.199
 Received: from localhost.localdomain
  (atoulouse-657-1-1088-199.w90-5.abo.wanadoo.fr [90.5.42.199])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DC425240007;
- Mon,  4 Mar 2019 22:31:02 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B7691240008;
+ Mon,  4 Mar 2019 22:31:16 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 26/36] mtd: nand: ecc: Create the software Hamming engine
- instance
-Date: Mon,  4 Mar 2019 23:28:31 +0100
-Message-Id: <20190304222841.13899-27-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 29/36] mtd: spinand: Move ECC related definitions earlier
+ in the driver
+Date: Mon,  4 Mar 2019 23:28:34 +0100
+Message-Id: <20190304222841.13899-30-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 References: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_143109_178910_1D4FF15E 
-X-CRM114-Status: GOOD (  22.71  )
+X-CRM114-CacheID: sfid-20190304_143124_734387_CE3AEDC0 
+X-CRM114-Status: GOOD (  15.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -83,349 +83,154 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Let's continue introducing the generic ECC engine abstraction in the
-NAND subsystem by instantiating a second ECC engine: the software
-Hamming one.
+Prepare the creation of a SPI-NAND chips on-die ECC engine by
+gathering the ECC-related code earlier enough in the core to avoid the
+need for forward declarations.
+
+The next step is to actually create that engine by implementing the
+generic ECC interface.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/ecc/sw-hamming.c       | 208 ++++++++++++++++++++++++
- drivers/mtd/nand/raw/nand_base.c        |  25 +--
- include/linux/mtd/nand-ecc-sw-hamming.h |  15 ++
- 3 files changed, 231 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/spi/core.c              | 106 +++++++++++------------
+ drivers/mtd/nand/spi/on-die-ecc-engine.c |   0
+ 2 files changed, 53 insertions(+), 53 deletions(-)
+ create mode 100644 drivers/mtd/nand/spi/on-die-ecc-engine.c
 
-diff --git a/drivers/mtd/nand/ecc/sw-hamming.c b/drivers/mtd/nand/ecc/sw-hamming.c
-index 816e5ea816c2..c58dfddc0ff3 100644
---- a/drivers/mtd/nand/ecc/sw-hamming.c
-+++ b/drivers/mtd/nand/ecc/sw-hamming.c
-@@ -17,6 +17,7 @@
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/mtd/nand.h>
- #include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <asm/byteorder.h>
- 
-@@ -464,6 +465,213 @@ int nand_ecc_sw_hamming_correct(struct nand_device *nand, unsigned char *buf,
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 9c8a5ee626cd..43f0e97c1808 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -207,6 +207,59 @@ static int spinand_ecc_enable(struct spinand_device *spinand,
+ 			       enable ? CFG_ECC_ENABLE : 0);
  }
- EXPORT_SYMBOL(nand_ecc_sw_hamming_correct);
  
-+int nand_ecc_sw_hamming_init_ctx(struct nand_device *nand)
++static int spinand_check_ecc_status(struct spinand_device *spinand, u8 status)
 +{
-+	struct nand_ecc_conf *conf = &nand->ecc.ctx.conf;
-+	struct nand_ecc_sw_hamming_conf *engine_conf;
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
++	struct nand_device *nand = spinand_to_nand(spinand);
 +
-+	if (!mtd->ooblayout) {
-+		switch (mtd->oobsize) {
-+		case 8:
-+		case 16:
-+			mtd_set_ooblayout(mtd, &nand_ooblayout_sp_ops);
-+			break;
-+		case 64:
-+		case 128:
-+			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_hamming_ops);
-+			break;
-+		default:
-+			return -ENOTSUPP;
-+		}
++	if (spinand->eccinfo.get_status)
++		return spinand->eccinfo.get_status(spinand, status);
++
++	switch (status & STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_HAS_BITFLIPS:
++		/*
++		 * We have no way to know exactly how many bitflips have been
++		 * fixed, so let's return the maximum possible value so that
++		 * wear-leveling layers move the data immediately.
++		 */
++		return nand->ecc.ctx.conf.strength;
++
++	case STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++
++	default:
++		break;
 +	}
 +
-+	conf->provider = NAND_ECC_SOFT;
-+	conf->algo = NAND_ECC_HAMMING;
-+	conf->step_size = nand->ecc.user_conf.step_size;
-+	conf->strength = 1;
++	return -EINVAL;
++}
 +
-+	/* Use the strongest configuration by default */
-+	if (conf->step_size != 256 && conf->step_size != 512)
-+		conf->step_size = 256;
++static int spinand_noecc_ooblayout_ecc(struct mtd_info *mtd, int section,
++				       struct mtd_oob_region *region)
++{
++	return -ERANGE;
++}
 +
-+	engine_conf = kzalloc(sizeof(*engine_conf), GFP_KERNEL);
-+	if (!engine_conf)
-+		return -ENOMEM;
++static int spinand_noecc_ooblayout_free(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
 +
-+	engine_conf->code_size = 3;
-+	engine_conf->nsteps = mtd->writesize / conf->step_size;
-+	engine_conf->calc_buf = kzalloc(sizeof(mtd->oobsize), GFP_KERNEL);
-+	engine_conf->code_buf = kzalloc(sizeof(mtd->oobsize), GFP_KERNEL);
-+	if (!engine_conf->calc_buf || !engine_conf->code_buf) {
-+		kfree(engine_conf);
-+		return -ENOMEM;
-+	}
-+
-+	nand->ecc.ctx.priv = engine_conf;
-+	nand->ecc.ctx.total = engine_conf->nsteps * engine_conf->code_size;
++	/* Reserve 2 bytes for the BBM. */
++	region->offset = 2;
++	region->length = 62;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(nand_ecc_sw_hamming_init_ctx);
 +
-+void nand_ecc_sw_hamming_cleanup_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_sw_hamming_conf *engine_conf = nand->ecc.ctx.priv;
-+
-+	if (engine_conf) {
-+		kfree(engine_conf->calc_buf);
-+		kfree(engine_conf->code_buf);
-+	}
-+
-+	kfree(engine_conf);
-+}
-+EXPORT_SYMBOL(nand_ecc_sw_hamming_cleanup_ctx);
-+
-+static int nand_ecc_sw_hamming_prepare_io_req(struct nand_device *nand,
-+					      struct nand_page_io_req *req,
-+					      void *oobbuf)
-+{
-+	struct nand_ecc_sw_hamming_conf *engine_conf = nand->ecc.ctx.priv;
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	int eccsize = nand->ecc.ctx.conf.step_size;
-+	int eccbytes = engine_conf->code_size;
-+	int eccsteps = engine_conf->nsteps;
-+	int total = nand->ecc.ctx.total;
-+	u8 *ecccalc = engine_conf->calc_buf;
-+	const u8 *data = req->databuf.out;
-+	int i, ret;
-+
-+	/* Ensure the OOB buffer is empty before using it */
-+	if (req->oobbuf.in)
-+		memset(req->oobbuf.in, 0xff, nanddev_per_page_oobsize(nand));
-+
-+	if (req->mode == MTD_OPS_RAW)
-+		return 0;
-+
-+	/* This engine does not provide BBM/free OOB bytes protection */
-+	if (!req->datalen)
-+		return 0;
-+
-+	/*
-+	 * Ensure OOB area is fully read/written otherwise the software
-+	 * correction cannot not apply.
-+	 */
-+	engine_conf->reqooblen = req->ooblen;
-+	req->ooblen = nanddev_per_page_oobsize(nand);
-+
-+	/* No preparation for page read */
-+	if (req->type == NAND_PAGE_READ)
-+		return 0;
-+
-+	/* Preparation for page write: derive the ECC bytes and place them */
-+	for (i = 0; eccsteps; eccsteps--, i += eccbytes, data += eccsize)
-+		nand_ecc_sw_hamming_calculate(nand, data, &ecccalc[i]);
-+
-+	ret = mtd_ooblayout_set_eccbytes(mtd, ecccalc, oobbuf, 0, total);
-+
-+	/* Also place user data OOB bytes in the free area, if any */
-+	if (engine_conf->reqooblen) {
-+		if (req->mode == MTD_OPS_AUTO_OOB)
-+			mtd_ooblayout_set_databytes(mtd, req->oobbuf.out,
-+						    oobbuf,
-+						    req->ooboffs,
-+						    req->ooblen);
-+		else
-+			memcpy(oobbuf + req->ooboffs, req->oobbuf.out,
-+			       req->ooblen);
-+	}
-+
-+	return ret;
-+}
-+
-+static int nand_ecc_sw_hamming_finish_io_req(struct nand_device *nand,
-+					     struct nand_page_io_req *req,
-+					     void *oobbuf)
-+{
-+	struct nand_ecc_sw_hamming_conf *engine_conf = nand->ecc.ctx.priv;
-+	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	int eccsize = nand->ecc.ctx.conf.step_size;
-+	int total = nand->ecc.ctx.total;
-+	int eccbytes = engine_conf->code_size;
-+	int eccsteps = engine_conf->nsteps;
-+	u8 *ecccalc = engine_conf->calc_buf;
-+	u8 *ecccode = engine_conf->code_buf;
-+	unsigned int max_bitflips = 0;
-+	u8 *data = req->databuf.in;
-+	int i, ret;
-+
-+	if (req->mode == MTD_OPS_RAW)
-+		return 0;
-+
-+	/* This engine does not provide BBM/free OOB bytes protection */
-+	if (!req->datalen)
-+		return 0;
-+
-+	/* Don't mess up with the upper layer: restore the request OOB length */
-+	req->ooblen = engine_conf->reqooblen;
-+
-+	/* Nothing more to do for page write */
-+	if (req->type == NAND_PAGE_WRITE)
-+		return 0;
-+
-+	/* Finish a page read: retrieve the (raw) ECC bytes*/
-+	ret = mtd_ooblayout_get_eccbytes(mtd, ecccode, oobbuf, 0, total);
-+	if (ret)
-+		return ret;
-+
-+	/* Calculate the ECC bytes */
-+	for (i = 0; eccsteps; eccsteps--, i += eccbytes, data += eccsize)
-+		nand_ecc_sw_hamming_calculate(nand, data, &ecccalc[i]);
-+
-+	eccsteps = engine_conf->nsteps;
-+
-+	/* Finish a page read: compare and correct */
-+	for (eccsteps = engine_conf->nsteps, i = 0, data = req->databuf.in;
-+	     eccsteps;
-+	     eccsteps--, i += eccbytes, data += eccsize) {
-+		int stat =  nand_ecc_sw_hamming_correct(nand, data,
-+							&ecccode[i],
-+							&ecccalc[i]);
-+		if (stat < 0) {
-+			mtd->ecc_stats.failed++;
-+		} else {
-+			mtd->ecc_stats.corrected += stat;
-+			max_bitflips = max_t(unsigned int, max_bitflips, stat);
-+		}
-+	}
-+
-+	/* Format the OOB buffer that will be returned to the user */
-+	if (req->ooblen) {
-+		if (req->mode == MTD_OPS_AUTO_OOB)
-+			mtd_ooblayout_get_databytes(mtd, oobbuf,
-+						    req->oobbuf.in,
-+						    req->ooboffs, req->ooblen);
-+		else
-+			memcpy(req->oobbuf.in, oobbuf + req->ooboffs,
-+			       req->ooblen);
-+	}
-+
-+	return max_bitflips;
-+}
-+
-+static struct nand_ecc_engine_ops nand_ecc_sw_hamming_engine_ops = {
-+	.init_ctx = nand_ecc_sw_hamming_init_ctx,
-+	.cleanup_ctx = nand_ecc_sw_hamming_cleanup_ctx,
-+	.prepare_io_req = nand_ecc_sw_hamming_prepare_io_req,
-+	.finish_io_req = nand_ecc_sw_hamming_finish_io_req,
++static const struct mtd_ooblayout_ops spinand_noecc_ooblayout = {
++	.ecc = spinand_noecc_ooblayout_ecc,
++	.free = spinand_noecc_ooblayout_free,
 +};
 +
-+static struct nand_ecc_engine nand_ecc_sw_hamming_engine = {
-+	.ops = &nand_ecc_sw_hamming_engine_ops,
-+};
-+
-+struct nand_ecc_engine *nand_ecc_sw_hamming_get_engine(void)
-+{
-+	return &nand_ecc_sw_hamming_engine;
-+}
-+EXPORT_SYMBOL(nand_ecc_sw_hamming_get_engine);
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Frans Meulenbroeks <fransmeulenbroeks@gmail.com>");
- MODULE_DESCRIPTION("NAND software Hamming ECC support");
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 8b910c818755..3149af72f519 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4849,34 +4849,24 @@ static void nand_scan_ident_cleanup(struct nand_chip *chip)
- 
- int rawnand_sw_hamming_init(struct nand_chip *chip)
+ static int spinand_write_enable_op(struct spinand_device *spinand)
  {
--	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_ecc_sw_hamming_conf *engine_conf;
- 	struct nand_device *base = &chip->base;
-+	int ret;
+ 	struct spi_mem_op op = SPINAND_WR_EN_DIS_OP(true);
+@@ -463,35 +516,6 @@ static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+ 	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
+ }
  
- 	base->ecc.user_conf.provider = NAND_ECC_SOFT;
- 	base->ecc.user_conf.algo = NAND_ECC_HAMMING;
- 	base->ecc.user_conf.strength = chip->ecc.strength;
- 	base->ecc.user_conf.step_size = chip->ecc.size;
- 
--	if (base->ecc.user_conf.strength != 1 ||
--	    (base->ecc.user_conf.step_size != 256 &&
--	     base->ecc.user_conf.step_size != 512)) {
--		pr_err("%s: unsupported strength or step size\n", __func__);
--		return -EINVAL;
+-static int spinand_check_ecc_status(struct spinand_device *spinand, u8 status)
+-{
+-	struct nand_device *nand = spinand_to_nand(spinand);
+-
+-	if (spinand->eccinfo.get_status)
+-		return spinand->eccinfo.get_status(spinand, status);
+-
+-	switch (status & STATUS_ECC_MASK) {
+-	case STATUS_ECC_NO_BITFLIPS:
+-		return 0;
+-
+-	case STATUS_ECC_HAS_BITFLIPS:
+-		/*
+-		 * We have no way to know exactly how many bitflips have been
+-		 * fixed, so let's return the maximum possible value so that
+-		 * wear-leveling layers move the data immediately.
+-		 */
+-		return nand->ecc.ctx.conf.strength;
+-
+-	case STATUS_ECC_UNCOR_ERROR:
+-		return -EBADMSG;
+-
+-	default:
+-		break;
 -	}
-+	ret = nand_ecc_sw_hamming_init_ctx(base);
-+	if (ret)
-+		return ret;
- 
--	engine_conf = kzalloc(sizeof(*engine_conf), GFP_KERNEL);
--	if (!engine_conf)
--		return -ENOMEM;
 -
--	engine_conf->code_size = 3;
--	engine_conf->nsteps = mtd->writesize / base->ecc.user_conf.step_size;
-+	engine_conf = base->ecc.ctx.priv;
- 
- 	if (chip->ecc.options & NAND_ECC_SOFT_HAMMING_SM_ORDER)
- 		engine_conf->sm_order = true;
- 
--	base->ecc.ctx.priv = engine_conf;
+-	return -EINVAL;
+-}
 -
- 	chip->ecc.size = base->ecc.ctx.conf.step_size;
- 	chip->ecc.strength = base->ecc.ctx.conf.strength;
- 	chip->ecc.total = base->ecc.ctx.total;
-@@ -4912,7 +4902,7 @@ void rawnand_sw_hamming_cleanup(struct nand_chip *chip)
+ static int spinand_read_page(struct spinand_device *spinand,
+ 			     const struct nand_page_io_req *req,
+ 			     bool ecc_enabled)
+@@ -937,30 +961,6 @@ static int spinand_detect(struct spinand_device *spinand)
+ 	return 0;
+ }
+ 
+-static int spinand_noecc_ooblayout_ecc(struct mtd_info *mtd, int section,
+-				       struct mtd_oob_region *region)
+-{
+-	return -ERANGE;
+-}
+-
+-static int spinand_noecc_ooblayout_free(struct mtd_info *mtd, int section,
+-					struct mtd_oob_region *region)
+-{
+-	if (section)
+-		return -ERANGE;
+-
+-	/* Reserve 2 bytes for the BBM. */
+-	region->offset = 2;
+-	region->length = 62;
+-
+-	return 0;
+-}
+-
+-static const struct mtd_ooblayout_ops spinand_noecc_ooblayout = {
+-	.ecc = spinand_noecc_ooblayout_ecc,
+-	.free = spinand_noecc_ooblayout_free,
+-};
+-
+ static int spinand_init(struct spinand_device *spinand)
  {
- 	struct nand_device *base = &chip->base;
- 
--	kfree(base->ecc.ctx.priv);
-+	nand_ecc_sw_hamming_cleanup_ctx(base);
- }
- EXPORT_SYMBOL(rawnand_sw_hamming_cleanup);
- 
-@@ -5376,7 +5366,8 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	 * If no default placement scheme is given, select an appropriate one.
- 	 */
- 	if (!mtd->ooblayout &&
--	    !(ecc->mode == NAND_ECC_SOFT && ecc->algo == NAND_ECC_BCH)) {
-+	    !(ecc->mode == NAND_ECC_SOFT && ecc->algo == NAND_ECC_BCH) &&
-+	    !(ecc->mode == NAND_ECC_SOFT && ecc->algo == NAND_ECC_HAMMING)) {
- 		switch (mtd->oobsize) {
- 		case 8:
- 		case 16:
-diff --git a/include/linux/mtd/nand-ecc-sw-hamming.h b/include/linux/mtd/nand-ecc-sw-hamming.h
-index 4d41d6ec9fe7..9ea096aaf230 100644
---- a/include/linux/mtd/nand-ecc-sw-hamming.h
-+++ b/include/linux/mtd/nand-ecc-sw-hamming.h
-@@ -32,6 +32,8 @@ struct nand_ecc_sw_hamming_conf {
- 
- #if IS_REACHABLE(CONFIG_MTD_NAND_ECC_SW_HAMMING)
- 
-+int nand_ecc_sw_hamming_init_ctx(struct nand_device *nand);
-+void nand_ecc_sw_hamming_cleanup_ctx(struct nand_device *nand);
- int ecc_sw_hamming_calculate(const unsigned char *buf, unsigned int step_size,
- 			     unsigned char *code, bool sm_order);
- int nand_ecc_sw_hamming_calculate(struct nand_device *nand,
-@@ -43,9 +45,17 @@ int ecc_sw_hamming_correct(unsigned char *buf, unsigned char *read_ecc,
- int nand_ecc_sw_hamming_correct(struct nand_device *nand, unsigned char *buf,
- 				unsigned char *read_ecc,
- 				unsigned char *calc_ecc);
-+struct nand_ecc_engine *nand_ecc_sw_hamming_get_engine(void);
- 
- #else /* !CONFIG_MTD_NAND_ECC_SW_HAMMING */
- 
-+static inline int nand_ecc_sw_hamming_init_ctx(struct nand_device *nand)
-+{
-+	return -ENOTSUPP;
-+}
-+
-+static inline void nand_ecc_sw_hamming_cleanup_ctx(struct nand_device *nand) {}
-+
- static inline int ecc_sw_hamming_calculate(const unsigned char *buf,
- 					   unsigned int step_size,
- 					   unsigned char *code, bool sm_order)
-@@ -76,6 +86,11 @@ static inline int nand_ecc_sw_hamming_correct(struct nand_device *nand,
- 	return -ENOTSUPP;
- }
- 
-+static inline struct nand_ecc_engine *nand_ecc_sw_hamming_get_engine(void)
-+{
-+	return NULL;
-+}
-+
- #endif /* CONFIG_MTD_NAND_ECC_SW_HAMMING */
- 
- #endif /* __MTD_NAND_ECC_SW_HAMMING_H__ */
+ 	struct device *dev = &spinand->spimem->spi->dev;
+diff --git a/drivers/mtd/nand/spi/on-die-ecc-engine.c b/drivers/mtd/nand/spi/on-die-ecc-engine.c
+new file mode 100644
+index 000000000000..e69de29bb2d1
 -- 
 2.19.1
 
