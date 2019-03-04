@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C08BC43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:18:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AE2C43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:19:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3952C206B6
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:18:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8BC9B206B6
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 20:19:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EjN/c5Ia";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jy2NNdRZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3952C206B6
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u1/tFmBt";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Taq2MT+t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BC9B206B6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,53 +26,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ShoeLOEP/xNZgt9YzLKSJm0jrW24sUzTbNTH7D/Vrww=; b=EjN/c5IazqWHaM
-	I/jcnvIUcxOcfQwvdJ5sg1EjgYFP7BobzFadumuVxe3+mPZ83qoj96UoX3frtXhIsIVutCG9yAmuO
-	l2fjQsFjuOzmtDteAFt1f4XgMXsItRtNumxQmncJkWi9A7kEL2MNCUX8NEsJ0Twz+ypYQOBAU115V
-	I8yTqg35Zhmt9MltcsM5EDGl5hym56qLEuqLfW87fJE9hhdw+f7v1K5ecVZ+zw71OtPHBKHVqxVuh
-	pmpzwq7E0JNpLsI+3lxdcQt4cHbcsrKnaz7y9mBuopj8BHt/+v+Dzg3FIKVkCvxtYQ2gYrY3wt0Ze
-	D1ks+Bu/e3DqMszW6DvQ==;
+	List-Owner; bh=DtgZGOz7Xi70H+6Zy4/9UbY99XsN3LFX01PgCAtT3fE=; b=u1/tFmBt3jtsoh
+	A9bHo9j4BXpY1tb+S4K1oVSV9Ga8xEzOH9kf+pRoF8U45TwdKgXsv1gl6rxJ7MFAyotluNhQdWzgj
+	6alUrcAMEjeoy3k9X8nkUs8zJ4U9WyULaVWnTpX5/GjNMc41Nc7stFzeauyWYzPj7WTbGfSJUDGqA
+	xnLCDATDRekvCYtQCP9nqr8ctaO/GrFkbmlBKJu6goLXbnd/yg8pnqEm4QbKaquzLOCX1WqsakADf
+	4FU/vMKE9v3gWpeOkwetS2kYufGNJ2iCd/CuZomYhh0LMRmnc9z6HhDt6oPggac9kOFX/zViFAKMm
+	YA+YwjDVYBFMBYu2192g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0u2q-0002CA-Oz; Mon, 04 Mar 2019 20:18:40 +0000
+	id 1h0u3C-0002fd-To; Mon, 04 Mar 2019 20:19:02 +0000
 Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0u18-0008Mp-OF; Mon, 04 Mar 2019 20:16:54 +0000
+ id 1h0u1D-0008TR-N1; Mon, 04 Mar 2019 20:16:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
  Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
  List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=RIMMN+wHIkXJynA5yw8q7ecODfUtkJ2MmUKCA/HS1sc=; b=Jy2NNdRZvdMTEoGp6hQUplsy+G
- LG53YxD12Q6YxjiSFRRJ1XBxsat7mZdWzRSEpTZQQtlF61+7Kbs9gV5tCSPRtXWzYvmxdE9PL1gwQ
- U7nz5d2eYEys9GWyl/GrnYp5E+mfy9iJciYjv3mK6Ok+RHvfOHLidco5K8GEz70mZUvdnktxPb8ey
- 0acQga1DYoPBxhZ1a3H861+cMCuC2J2x61I3g9oHvaRMeJv//qz3/V33JJcuCr+10IJH4FbrffL1d
- kXkQLkXzCOvXspW0XZJXaMWVe1Q4ozPU3xD+t0E8JhCezf7W4g5mjb5+qMlzOyILAfRkLixMPpoBw
- +ShJrGDA==;
+ bh=6nZSraSthOa3yM3BU2dfptfKbKS1pVlB3hmcABK/vW0=; b=Taq2MT+tC/VzGPFUUAjT9fI61b
+ litOdGw7YVnQt4scolvOZA07sGpDwdoKYZsHH68OJvXtMeo5QYjreQtkSOltnvsZZxsQDw/lhzeWi
+ Z/YvjEwpkpVYQE2Jzn9JSrU+x8/7BqPkVqwCCmNVu5CaW1RFXlACB6XIeK2M3os5/Sh4y0pPHYGwd
+ 7xMd4zOWIoAbpiC91EoZsGxwLf7SmKFlyyWTzL/DUjW1SL41HkSf69oqeFsW59ssgIsm218W3UN82
+ lhr5WQ7IzKVIvXca7DRWV2NvUB45DagMD8qOiXtSYmq/EPXqbL9MXpxi+Iymxw4XmtcLzs4b0l7ZS
+ qreI0W2g==;
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0u15-00005v-Oj; Mon, 04 Mar 2019 20:16:52 +0000
+ id 1h0u1A-00006O-K2; Mon, 04 Mar 2019 20:16:57 +0000
 Received: from localhost.localdomain (26.43.136.77.rev.sfr.net [77.136.43.26])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7C014240008;
- Mon,  4 Mar 2019 20:16:22 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 46FE624000C;
+ Mon,  4 Mar 2019 20:16:29 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 08/15] mtd: rawnand: Initialize the nand_device object
-Date: Mon,  4 Mar 2019 21:15:15 +0100
-Message-Id: <20190304201522.11323-9-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 09/15] mtd: rawnand: Provide a helper to get chip->data_buf
+Date: Mon,  4 Mar 2019 21:15:16 +0100
+Message-Id: <20190304201522.11323-10-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190304201522.11323-1-miquel.raynal@bootlin.com>
 References: <20190304201522.11323-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_151652_043179_6B9C4C78 
-X-CRM114-Status: GOOD (  19.80  )
+X-CRM114-CacheID: sfid-20190304_151656_920157_687FBDB4 
+X-CRM114-Status: GOOD (  19.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -98,147 +98,277 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Boris Brezillon <bbrezillon@kernel.org>
 
-In order to use some of the nanddev_xxx() helpers, we need to
-initialize the nand_device object embedded in nand_chip using
-nanddev_init(). This requires implementing nand_ops.
+We plan to move cache related fields to a pagecache struct in nand_chip
+but some drivers access ->pagebuf directly to invalidate the cache
+before they start using ->data_buf.
 
-We also drop useless mtd->xxx initialization when they're already taken
-case of by nanddev_init().
+Let's provide an helper that returns a pointer to ->data_buf after
+invalidating the cache.
 
 Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
- drivers/mtd/nand/raw/Kconfig     |  1 +
- drivers/mtd/nand/raw/nand_base.c | 65 ++++++++++++++++++++++++++++----
- 2 files changed, 59 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c   |  7 +---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c |  4 +-
+ drivers/mtd/nand/raw/marvell_nand.c        | 43 +++++++++-------------
+ drivers/mtd/nand/raw/nand_base.c           |  7 ++--
+ drivers/mtd/nand/raw/nand_bbt.c            |  4 +-
+ drivers/mtd/nand/raw/qcom_nandc.c          |  8 ++--
+ drivers/mtd/nand/raw/sunxi_nand.c          | 11 +++---
+ include/linux/mtd/rawnand.h                | 21 +++++++++++
+ 8 files changed, 56 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 1a55d3e3d4c5..8c38f2c116a2 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -14,6 +14,7 @@ menuconfig MTD_NAND
- 	tristate "Raw/Parallel NAND Device Support"
- 	depends on MTD
- 	select MTD_NAND_ECC
-+	select MTD_NAND_CORE
- 	help
- 	  This enables support for accessing all type of raw/parallel
- 	  NAND flash devices. For further information see
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 5aba1cf38a4b..fea3f8b96558 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5523,6 +5523,50 @@ static bool nand_ecc_strength_good(struct nand_chip *chip)
- 	return corr >= ds_corr && ecc->strength >= chip->ecc_strength_ds;
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 482c6f093f99..ce0b8ffc7812 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -1676,11 +1676,8 @@ static int brcmstb_nand_verify_erased_page(struct mtd_info *mtd,
+ 	int page = addr >> chip->page_shift;
+ 	int ret;
+ 
+-	if (!buf) {
+-		buf = chip->data_buf;
+-		/* Invalidate page cache */
+-		chip->pagebuf = -1;
+-	}
++	if (!buf)
++		buf = nand_get_data_buf(chip);
+ 
+ 	sas = mtd->oobsize / chip->ecc.steps;
+ 
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index ed405c9434fe..05f6f68e4e0d 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1602,7 +1602,7 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int search_area_size_in_strides;
+ 	unsigned int stride;
+ 	unsigned int page;
+-	uint8_t *buffer = chip->data_buf;
++	u8 *buffer = nand_get_data_buf(chip);
+ 	int saved_chip_number;
+ 	int found_an_ncb_fingerprint = false;
+ 
+@@ -1664,7 +1664,7 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int block;
+ 	unsigned int stride;
+ 	unsigned int page;
+-	uint8_t      *buffer = chip->data_buf;
++	u8 *buffer = nand_get_data_buf(chip);
+ 	int saved_chip_number;
+ 	int status;
+ 
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 84283c6bb0ff..e8023b32be93 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -1083,12 +1083,11 @@ static int marvell_nfc_hw_ecc_hmg_read_page(struct nand_chip *chip, u8 *buf,
+  */
+ static int marvell_nfc_hw_ecc_hmg_read_oob_raw(struct nand_chip *chip, int page)
+ {
+-	/* Invalidate page cache */
+-	chip->pagebuf = -1;
++	u8 *buf = nand_get_data_buf(chip);
+ 
+ 	marvell_nfc_select_target(chip, chip->cur_cs);
+-	return marvell_nfc_hw_ecc_hmg_do_read_page(chip, chip->data_buf,
+-						   chip->oob_poi, true, page);
++	return marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi,
++						   true, page);
  }
  
-+static int rawnand_erase(struct nand_device *nand, const struct nand_pos *pos)
-+{
-+	struct nand_chip *chip = container_of(nand, struct nand_chip,
-+					      base);
-+	unsigned int eb = nanddev_pos_to_row(nand, pos);
-+	int ret;
+ /* Hamming write helpers */
+@@ -1179,15 +1178,13 @@ static int marvell_nfc_hw_ecc_hmg_write_oob_raw(struct nand_chip *chip,
+ 						int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *buf = nand_get_data_buf(chip);
+ 
+-	/* Invalidate page cache */
+-	chip->pagebuf = -1;
+-
+-	memset(chip->data_buf, 0xFF, mtd->writesize);
++	memset(buf, 0xFF, mtd->writesize);
+ 
+ 	marvell_nfc_select_target(chip, chip->cur_cs);
+-	return marvell_nfc_hw_ecc_hmg_do_write_page(chip, chip->data_buf,
+-						    chip->oob_poi, true, page);
++	return marvell_nfc_hw_ecc_hmg_do_write_page(chip, buf, chip->oob_poi,
++						    true, page);
+ }
+ 
+ /* BCH read helpers */
+@@ -1434,18 +1431,16 @@ static int marvell_nfc_hw_ecc_bch_read_page(struct nand_chip *chip,
+ 
+ static int marvell_nfc_hw_ecc_bch_read_oob_raw(struct nand_chip *chip, int page)
+ {
+-	/* Invalidate page cache */
+-	chip->pagebuf = -1;
++	u8 *buf = nand_get_data_buf(chip);
+ 
+-	return chip->ecc.read_page_raw(chip, chip->data_buf, true, page);
++	return chip->ecc.read_page_raw(chip, buf, true, page);
+ }
+ 
+ static int marvell_nfc_hw_ecc_bch_read_oob(struct nand_chip *chip, int page)
+ {
+-	/* Invalidate page cache */
+-	chip->pagebuf = -1;
++	u8 *buf = nand_get_data_buf(chip);
+ 
+-	return chip->ecc.read_page(chip, chip->data_buf, true, page);
++	return chip->ecc.read_page(chip, buf, true, page);
+ }
+ 
+ /* BCH write helpers */
+@@ -1619,25 +1614,21 @@ static int marvell_nfc_hw_ecc_bch_write_oob_raw(struct nand_chip *chip,
+ 						int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *buf = nand_get_data_buf(chip);
+ 
+-	/* Invalidate page cache */
+-	chip->pagebuf = -1;
++	memset(buf, 0xFF, mtd->writesize);
+ 
+-	memset(chip->data_buf, 0xFF, mtd->writesize);
+-
+-	return chip->ecc.write_page_raw(chip, chip->data_buf, true, page);
++	return chip->ecc.write_page_raw(chip, buf, true, page);
+ }
+ 
+ static int marvell_nfc_hw_ecc_bch_write_oob(struct nand_chip *chip, int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *buf = nand_get_data_buf(chip);
+ 
+-	/* Invalidate page cache */
+-	chip->pagebuf = -1;
++	memset(buf, 0xFF, mtd->writesize);
+ 
+-	memset(chip->data_buf, 0xFF, mtd->writesize);
+-
+-	return chip->ecc.write_page(chip, chip->data_buf, true, page);
++	return chip->ecc.write_page(chip, buf, true, page);
+ }
+ 
+ /* NAND framework ->exec_op() hooks and related helpers */
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index fea3f8b96558..4b10652b0b97 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -4033,10 +4033,9 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
+ 					 __func__, buf);
+ 			if (part_pagewr)
+ 				bytes = min_t(int, bytes - column, writelen);
+-			chip->pagebuf = -1;
+-			memset(chip->data_buf, 0xff, mtd->writesize);
+-			memcpy(&chip->data_buf[column], buf, bytes);
+-			wbuf = chip->data_buf;
++			wbuf = nand_get_data_buf(chip);
++			memset(wbuf, 0xff, mtd->writesize);
++			memcpy(&wbuf[column], buf, bytes);
+ 		}
+ 
+ 		if (unlikely(oob)) {
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index 1b722fe9213c..0b96c4cab967 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -901,7 +901,9 @@ static int write_bbt(struct nand_chip *this, uint8_t *buf,
+ static inline int nand_memory_bbt(struct nand_chip *this,
+ 				  struct nand_bbt_descr *bd)
+ {
+-	return create_bbt(this, this->data_buf, bd, -1);
++	u8 *pagebuf = nand_get_data_buf(this);
 +
-+	eb >>= nand->rowconv.eraseblock_addr_shift;
-+
-+	nand_select_target(chip, pos->target);
-+	ret = nand_erase_op(chip, eb);
-+	nand_deselect_target(chip);
-+
-+	return ret;
-+}
-+
-+static int rawnand_markbad(struct nand_device *nand,
-+			   const struct nand_pos *pos)
-+{
-+	struct nand_chip *chip = container_of(nand, struct nand_chip,
-+					      base);
-+
-+	return nand_markbad_bbm(chip, nanddev_pos_to_offs(nand, pos));
-+}
-+
-+static bool rawnand_isbad(struct nand_device *nand, const struct nand_pos *pos)
-+{
-+	struct nand_chip *chip = container_of(nand, struct nand_chip,
-+					      base);
-+	int ret;
-+
-+	nand_select_target(chip, pos->target);
-+	ret = nand_isbad_bbm(chip, nanddev_pos_to_offs(nand, pos));
-+	nand_deselect_target(chip);
-+
-+	return ret;
-+}
-+
-+static const struct nand_ops rawnand_ops = {
-+	.erase = rawnand_erase,
-+	.markbad = rawnand_markbad,
-+	.isbad = rawnand_isbad,
-+};
-+
++	return create_bbt(this, pagebuf, bd, -1);
+ }
+ 
  /**
-  * nand_scan_tail - Scan for the NAND device
-  * @chip: NAND chip object
-@@ -5791,10 +5835,15 @@ static int nand_scan_tail(struct nand_chip *chip)
- 		break;
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 46c62a31fa46..3f8005113fe2 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1680,14 +1680,12 @@ check_for_erased_page(struct qcom_nand_host *host, u8 *data_buf,
+ 	u8 *cw_data_buf, *cw_oob_buf;
+ 	int cw, data_size, oob_size, ret = 0;
+ 
+-	if (!data_buf) {
+-		data_buf = chip->data_buf;
+-		chip->pagebuf = -1;
+-	}
++	if (!data_buf)
++		data_buf = nand_get_data_buf(chip);
+ 
+ 	if (!oob_buf) {
++		nand_get_data_buf(chip);
+ 		oob_buf = chip->oob_poi;
+-		chip->pagebuf = -1;
  	}
  
-+	ret = nanddev_init(&chip->base, &rawnand_ops, mtd->owner);
-+	if (ret)
-+		goto err_nand_manuf_cleanup;
-+
-+	/* Adjust the MTD_CAP_ flags when NAND_ROM is set. */
-+	if (chip->options & NAND_ROM)
-+		mtd->flags = MTD_CAP_ROM;
-+
- 	/* Fill in remaining MTD driver data */
--	mtd->type = nand_is_slc(chip) ? MTD_NANDFLASH : MTD_MLCNANDFLASH;
--	mtd->flags = (chip->options & NAND_ROM) ? MTD_CAP_ROM :
--						MTD_CAP_NANDFLASH;
- 	mtd->_erase = nand_erase;
- 	mtd->_point = NULL;
- 	mtd->_unpoint = NULL;
-@@ -5811,7 +5860,6 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	mtd->_block_isbad = nand_block_isbad;
- 	mtd->_block_markbad = nand_block_markbad;
- 	mtd->_max_bad_blocks = nand_max_bad_blocks;
--	mtd->writebufsize = mtd->writesize;
+ 	for_each_set_bit(cw, &uncorrectable_cws, ecc->steps) {
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index e828ee50a201..d5de0a7114bc 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -1426,20 +1426,19 @@ static int sunxi_nfc_hw_ecc_write_page_dma(struct nand_chip *chip,
  
- 	/*
- 	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
-@@ -5824,13 +5872,13 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	/* Initialize the ->data_interface field. */
- 	ret = nand_init_data_interface(chip);
+ static int sunxi_nfc_hw_ecc_read_oob(struct nand_chip *chip, int page)
+ {
+-	chip->pagebuf = -1;
++	u8 *buf = nand_get_data_buf(chip);
+ 
+-	return chip->ecc.read_page(chip, chip->data_buf, 1, page);
++	return chip->ecc.read_page(chip, buf, 1, page);
+ }
+ 
+ static int sunxi_nfc_hw_ecc_write_oob(struct nand_chip *chip, int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *buf = nand_get_data_buf(chip);
+ 	int ret;
+ 
+-	chip->pagebuf = -1;
+-
+-	memset(chip->data_buf, 0xff, mtd->writesize);
+-	ret = chip->ecc.write_page(chip, chip->data_buf, 1, page);
++	memset(buf, 0xff, mtd->writesize);
++	ret = chip->ecc.write_page(chip, buf, 1, page);
  	if (ret)
--		goto err_nand_manuf_cleanup;
-+		goto err_nanddev_cleanup;
+ 		return ret;
  
- 	/* Enter fastest possible mode on all dies. */
- 	for (i = 0; i < chip->numchips; i++) {
- 		ret = nand_setup_data_interface(chip, i);
- 		if (ret)
--			goto err_nand_manuf_cleanup;
-+			goto err_nanddev_cleanup;
- 	}
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index dfeedfe2f3e0..e62c3ab4e0f7 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1358,4 +1358,25 @@ int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
+ void nand_select_target(struct nand_chip *chip, unsigned int cs);
+ void nand_deselect_target(struct nand_chip *chip);
  
- 	/* Check, if we should skip the bad block table scan */
-@@ -5840,11 +5888,14 @@ static int nand_scan_tail(struct nand_chip *chip)
- 	/* Build bad block table */
- 	ret = nand_create_bbt(chip);
- 	if (ret)
--		goto err_nand_manuf_cleanup;
-+		goto err_nanddev_cleanup;
- 
- 	return 0;
- 
- 
-+err_nanddev_cleanup:
-+	nanddev_cleanup(&chip->base);
++/**
++ * nand_get_data_buf() - Get the internal page buffer
++ * @chip: NAND chip object
++ *
++ * Returns the pre-allocated page buffer after invalidating the cache. This
++ * function should be used by drivers that do not want to allocate their own
++ * bounce buffer and still need such a buffer for specific operations (most
++ * commonly when reading OOB data only).
++ *
++ * Be careful to never call this function in the write/write_oob path, because
++ * the core may have placed the data to be written out in this buffer.
++ *
++ * Return: pointer to the page cache buffer
++ */
++static inline void *nand_get_data_buf(struct nand_chip *chip)
++{
++	chip->pagebuf = -1;
 +
- err_nand_manuf_cleanup:
- 	nand_manufacturer_cleanup(chip);
- 
++	return chip->data_buf;
++}
++
+ #endif /* __LINUX_MTD_RAWNAND_H */
 -- 
 2.19.1
 
