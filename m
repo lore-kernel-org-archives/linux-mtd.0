@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B1DC43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:31:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37F2BC43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:31:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B360F20823
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:31:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0956A20823
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:31:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mTWvBbEV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B360F20823
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fBB1s+L/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0956A20823
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mLeFF/8aX3PBVI213G8zGXegPHYkwJiSCVrp/J042Zs=; b=mTWvBbEVraw4ox
-	1wuD0C7qIPMTGfXtvQ9kjPXnPZyy8v1WlOFNkG2qVyR4IL4qbq9hhK112IRO4LISeKAWsYTHggPpK
-	yrjpzH2hAxV0l20uvtzb87xWcGoPGXXf+a86U9UlDtdJVzV2JS7/hoy+Ka5rTuTBalvkEqPKjRMdJ
-	Bt50y6etLUNW3Ox7NeG3HkgSlPXQyTZ6acLRC5GHl8t9cfOAArSWvGl2ZyQXa4ALv+w0QmT42MNG2
-	zZaRc0JNbDn4h8rOsRILC26llzxSpy5Nf8z2nuAvcTaS7fmO+0oWC+TeSiA8NppkOXPlDxBhSElMK
-	7xX+MaxtPfjOGQEJmXIg==;
+	List-Owner; bh=hXRR2IaMJPQ5/rDitiQreIpGgDSwDxw+XHtHcpOaNGo=; b=fBB1s+L/tXkkeQ
+	TqubpqtwQZCLbhax933XITwNQf8mp5RiCCV5Loz/EoOn5x3K/Rwclv3ufT92qfnavJUT5h30I0hMS
+	uDO9KHki0ujXFcTFTeLuK5g7r/kyDsazwERk4pm8DWb4accry+WkLu2FTRLMC0FjidtZn7IIeQR07
+	ib/4OExWo3yrRMKf6YHspqyp362ntq/d7Fkg7tUJEtPxC0u6QB5jobjCd1x/xYDKtLeLJJM1fK9yN
+	SsPGZh1dc2NvWLh6U0n/Fk1cCN4P29Ru3blAuw+YWoFzSgDIGwWDZ/EsBMBxvOjddAAos17Z0SWUj
+	L+183Gi35SDfFx+nXIng==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0w6s-0007s9-5h; Mon, 04 Mar 2019 22:30:58 +0000
+	id 1h0w7V-0000JV-9Q; Mon, 04 Mar 2019 22:31:37 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0w5E-0004Oq-4g; Mon, 04 Mar 2019 22:29:56 +0000
+ id 1h0w65-0005w7-8K; Mon, 04 Mar 2019 22:30:57 +0000
 X-Originating-IP: 90.5.42.199
 Received: from localhost.localdomain
  (atoulouse-657-1-1088-199.w90-5.abo.wanadoo.fr [90.5.42.199])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 89663240005;
- Mon,  4 Mar 2019 22:29:09 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 5936924000B;
+ Mon,  4 Mar 2019 22:30:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 05/36] mtd: nand: Add a NAND page I/O request type
-Date: Mon,  4 Mar 2019 23:28:10 +0100
-Message-Id: <20190304222841.13899-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 15/36] mtd: nand: ecc: Use SPDX license identifier for the
+ software BCH code
+Date: Mon,  4 Mar 2019 23:28:20 +0100
+Message-Id: <20190304222841.13899-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 References: <20190304222841.13899-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_142917_004358_FC278BAB 
-X-CRM114-Status: GOOD (  14.12  )
+X-CRM114-CacheID: sfid-20190304_143010_210550_A0A3F87F 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,98 +78,48 @@ Cc: Vignesh R <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use an enum to differentiate the type of I/O (reading or writing a
-page). Also update the request iterator.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/spi/core.c |  4 ++--
- include/linux/mtd/nand.h    | 13 +++++++++++--
- 2 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index ed5e340dff51..9ee192585854 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -558,7 +558,7 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
- 
- 	mutex_lock(&spinand->lock);
- 
--	nanddev_io_for_each_page(nand, from, ops, &iter) {
-+	nanddev_io_for_each_page(nand, NAND_PAGE_READ, from, ops, &iter) {
- 		ret = spinand_select_target(spinand, iter.req.pos.target);
- 		if (ret)
- 			break;
-@@ -606,7 +606,7 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
- 
- 	mutex_lock(&spinand->lock);
- 
--	nanddev_io_for_each_page(nand, to, ops, &iter) {
-+	nanddev_io_for_each_page(nand, NAND_PAGE_WRITE, to, ops, &iter) {
- 		ret = spinand_select_target(spinand, iter.req.pos.target);
- 		if (ret)
- 			break;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 30f0fb02abe2..84ab76f34c74 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -82,8 +82,14 @@ struct nand_pos {
- 	unsigned int page;
- };
- 
-+enum nand_page_io_req_type {
-+	NAND_PAGE_READ = 0,
-+	NAND_PAGE_WRITE,
-+};
-+
- /**
-  * struct nand_page_io_req - NAND I/O request object
-+ * @type: the type of page I/O: read or write
-  * @pos: the position this I/O request is targeting
-  * @dataoffs: the offset within the page
-  * @datalen: number of data bytes to read from/write to this page
-@@ -99,6 +105,7 @@ struct nand_pos {
-  * specific commands/operations.
-  */
- struct nand_page_io_req {
-+	enum nand_page_io_req_type type;
- 	struct nand_pos pos;
- 	unsigned int dataoffs;
- 	unsigned int datalen;
-@@ -624,11 +631,13 @@ static inline void nanddev_pos_next_page(struct nand_device *nand,
-  * layer.
-  */
- static inline void nanddev_io_iter_init(struct nand_device *nand,
-+					enum nand_page_io_req_type reqtype,
- 					loff_t offs, struct mtd_oob_ops *req,
- 					struct nand_io_iter *iter)
- {
- 	struct mtd_info *mtd = nanddev_to_mtd(nand);
- 
-+	iter->req.type = reqtype;
- 	iter->req.mode = req->mode;
- 	iter->req.dataoffs = nanddev_offs_to_pos(nand, offs, &iter->req.pos);
- 	iter->req.ooboffs = req->ooboffs;
-@@ -698,8 +707,8 @@ static inline bool nanddev_io_iter_end(struct nand_device *nand,
-  *
-  * Should be used for iterate over pages that are contained in an MTD request.
-  */
--#define nanddev_io_for_each_page(nand, start, req, iter)		\
--	for (nanddev_io_iter_init(nand, start, req, iter);		\
-+#define nanddev_io_for_each_page(nand, type, start, req, iter)		\
-+	for (nanddev_io_iter_init(nand, type, start, req, iter);	\
- 	     !nanddev_io_iter_end(nand, iter);				\
- 	     nanddev_io_iter_next_page(nand, iter))
- 
--- 
-2.19.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+UmVtb3ZlIHRoZSBsZWdhY3kgbGljZW5zZSB0ZXh0IGFuZCByZXBsYWNlIGl0IHdpdGggdGhlIG5l
+dyBzdGFuZGFyZDoKYW4gU1BEWCBsaWNlbnNlIGlkZW50aWZpZXIuCgpTaWduZWQtb2ZmLWJ5OiBN
+aXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgotLS0KIGRyaXZlcnMvbXRk
+L25hbmQvZWNjL3N3LWJjaC5jICAgICAgIHwgMTUgKy0tLS0tLS0tLS0tLS0tCiBpbmNsdWRlL2xp
+bnV4L210ZC9uYW5kLWVjYy1zdy1iY2guaCB8ICA1ICstLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDIg
+aW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+bmFuZC9lY2Mvc3ctYmNoLmMgYi9kcml2ZXJzL210ZC9uYW5kL2VjYy9zdy1iY2guYwppbmRleCBi
+NjQwZDU3NzEzODIuLjJmOGYzODgzYzhhMyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9l
+Y2Mvc3ctYmNoLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9lY2Mvc3ctYmNoLmMKQEAgLTEsMjIg
+KzEsOSBAQAorLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjArCiAvKgogICogVGhp
+cyBmaWxlIHByb3ZpZGVzIEVDQyBjb3JyZWN0aW9uIGZvciBtb3JlIHRoYW4gMSBiaXQgcGVyIGJs
+b2NrIG9mIGRhdGEsCiAgKiB1c2luZyBiaW5hcnkgQkNIIGNvZGVzLiBJdCByZWxpZXMgb24gdGhl
+IGdlbmVyaWMgQkNIIGxpYnJhcnkgbGliL2JjaC5jLgogICoKICAqIENvcHlyaWdodCDCqSAyMDEx
+IEl2YW4gRGplbGljIDxpdmFuLmRqZWxpY0BwYXJyb3QuY29tPgotICoKLSAqIFRoaXMgZmlsZSBp
+cyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5IGl0
+Ci0gKiB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFz
+IHB1Ymxpc2hlZCBieSB0aGUKLSAqIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZl
+cnNpb24gMiBvciAoYXQgeW91ciBvcHRpb24pIGFueQotICogbGF0ZXIgdmVyc2lvbi4KLSAqCi0g
+KiBUaGlzIGZpbGUgaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVz
+ZWZ1bCwgYnV0IFdJVEhPVVQKLSAqIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBs
+aWVkIHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSBvcgotICogRklUTkVTUyBGT1IgQSBQQVJU
+SUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCi0gKiBm
+b3IgbW9yZSBkZXRhaWxzLgotICoKLSAqIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkg
+b2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFsb25nCi0gKiB3aXRoIHRoaXMgZmls
+ZTsgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuLAot
+ICogNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0Eu
+CiAgKi8KIAogI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xp
+bnV4L210ZC9uYW5kLWVjYy1zdy1iY2guaCBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLXN3
+LWJjaC5oCmluZGV4IGE2ODJhMTVmYTE2NS4uMTIxMDdhYTdjMzcxIDEwMDY0NAotLS0gYS9pbmNs
+dWRlL2xpbnV4L210ZC9uYW5kLWVjYy1zdy1iY2guaAorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9u
+YW5kLWVjYy1zdy1iY2guaApAQCAtMSwxMCArMSw3IEBACisvKiBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMCAqLwogLyoKICAqIENvcHlyaWdodCDCqSAyMDExIEl2YW4gRGplbGljIDxp
+dmFuLmRqZWxpY0BwYXJyb3QuY29tPgogICoKLSAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3
+YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Ci0gKiBpdCB1bmRlciB0
+aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwot
+ICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCi0gKgogICogVGhp
+cyBmaWxlIGlzIHRoZSBoZWFkZXIgZm9yIHRoZSBOQU5EIEJDSCBFQ0MgaW1wbGVtZW50YXRpb24u
+CiAgKi8KIAotLSAKMi4xOS4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
