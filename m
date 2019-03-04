@@ -2,60 +2,64 @@ Return-Path: <SRS0=RlT6=RH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE95C43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:23:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C3DCC43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:23:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A474320663
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:23:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C54220652
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 22:23:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ORzQrxbl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A474320663
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lm0VY5KH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C54220652
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3wqUX0G1/uYvIgjxb/gYA4IerLLn4vzSoSiygPQUUAE=; b=ORzQrxbluoyYYH
-	qcqRiOIP09/TEOKWhG0T+KpoRieDsXgjjjxj3+cVl0XTvxpOKUTd4nCdc0rL9pVj4qAgeePAzuiex
-	RMO+bAflIR7FkeGZZFSCCoCim+SK8iypX5a0+ShxB71GPicMofsjeIZFv3NFXaX8uqra5GVPGGhvC
-	PSfS7qIU0LPqI6SBcEuUlRwl1NzeCit0Ibg++vNgbLF7nj8Gk6EZ7tePkaxwfbGqNrP6WJw+10Ycl
-	C2Xg6YbWO0PKyVFexaYy1sxFRS3CSUu+BCfuy4XxS39dYqJF4XUi+ek0/+ZSmNrXl87TqeNZaJ5Pw
-	KIX2of9EihF/ZKYyDAlw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=x/MTC1j7p35VljHBJhdF2DiUf7yVRfSmuH0eiHTpS+M=; b=lm0VY5KHF+1kHS
+	H8zuQvkk5IiQAT98Uq9q2Z3YugI2tWFCArv+QvHb2cqj7tshpEzffvROkOBHIHhy6G6KAjCxsu8SG
+	AD9+rGLWyuvknJ1geSvnFVtS7zXjU3VwpBfU+J2gsCF/JjN9SSGNe00KdrH+/grCcB/lEdzi1oudt
+	8JAGtSBZOcM7n2l9EmUFkdK9bN5/ZZ5wjCawgZJc6UDUiB0IpRaWqlAkZOgkW/YXrdrqjAdwx/0rB
+	JXlhqQS3rPUpbBvvPqy5LmfNDk1FWxVLE86FsuXVc0ruCTlQGMGcoStajMNDtckYfdx7UhbDrbwAB
+	BKPt4VOKVYrJ8b+K/mzA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0vza-0006fy-Lf; Mon, 04 Mar 2019 22:23:26 +0000
+	id 1h0vzy-0007BC-D7; Mon, 04 Mar 2019 22:23:50 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0vz6-00062M-Gt; Mon, 04 Mar 2019 22:22:58 +0000
+ id 1h0vz7-00062O-G0; Mon, 04 Mar 2019 22:22:59 +0000
 X-Originating-IP: 90.5.42.199
 Received: from localhost.localdomain
  (atoulouse-657-1-1088-199.w90-5.abo.wanadoo.fr [90.5.42.199])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D6314240003;
- Mon,  4 Mar 2019 22:22:39 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 3B8EB240006;
+ Mon,  4 Mar 2019 22:22:51 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Subject: [PATCH v2 0/6] mtd: nand: 6th batch of cleanups (Kconfig)
-Date: Mon,  4 Mar 2019 23:22:20 +0100
-Message-Id: <20190304222226.12682-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 2/6] mtd: nand: Clarify Kconfig entry for software BCH ECC
+ algorithm
+Date: Mon,  4 Mar 2019 23:22:22 +0100
+Message-Id: <20190304222226.12682-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20190304222226.12682-1-miquel.raynal@bootlin.com>
+References: <20190304222226.12682-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_142256_890804_17D5ADCE 
-X-CRM114-Status: GOOD (  10.15  )
+X-CRM114-CacheID: sfid-20190304_142257_825844_D7462920 
+X-CRM114-Status: GOOD (  14.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -73,121 +77,190 @@ Cc: Vignesh R <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIGEgc21hbGwgcHJlcGFyYXRpb24gc2VyaWVzIGZvY3VzZWQgb24gTWFr
-ZWZpbGUvS2NvbmZpZwpmaWxlcy4gVGhlIGdvYWwgaXMgdG8gY2xhcmlmeSB3aGF0IGlzIGNvbXBp
-bGVkIGluIHRoZSBOQU5EIHN1YnN5c3RlbSwKcmF3IE5BTkQgY29udHJvbGxlciBkcml2ZXJzLCBT
-UEktTkFORCBjb250cm9sbGVycyBhbmQgc29vbiBFQ0MKZW5naW5lcy4gUGxlYXNlIGhhdmUgYSBs
-b29rIHdpdGggYSBtZW51Y29uZmlnIGF0IHRoZSBuZXcgcHJlc2VudGF0aW9uLApJIGZlZWwgaXQg
-aXMgbXVjaCBtb3JlIHJlYWRhYmxlIGFuZCB1bmRlcnN0YW5kYWJsZS4gTW9yZSBjaGFuZ2VzIHdp
-bGwKY29tZSBpbiB0aGVzZSBLY29uZmlnIGZpbGVzIHdoZW4gYWRkaW5nIHRoZSBFQ0MgZW5naW5l
-IGdlbmVyaWMgbGF5ZXIuCgpSZWdhcmRzLApNaXF1w6hsCgpDaGFuZ2VzIGZvciB2Mgo9PT09PT09
-PT09PT09PQoqIFNtYWxsIEtjb25maWcgZml4ZXMgKGEgZmV3IGRlZmNvbmZpZ3Mgd2VyZSBtaXNz
-aW5nIHdoZW4gSSBtb2RpZmllZAogIE1URF9OQU5EX0VDQyBpbnRvIE1URF9OQU5EX0VDQ19TV19I
-QU1NSU5HKS4KKiBSZWJhc2VkIG9uIHRvcCBvZiB0aGUgY2xlYW51cCBzZXJpZXMuCgoKTWlxdWVs
-IFJheW5hbCAoNik6CiAgbXRkOiBuYW5kOiBvbWFwOiBGaXggY29tbWVudCBpbiBwbGF0Zm9ybSBk
-YXRhIHVzaW5nIHdyb25nIEtjb25maWcKICAgIHN5bWJvbAogIG10ZDogbmFuZDogQ2xhcmlmeSBL
-Y29uZmlnIGVudHJ5IGZvciBzb2Z0d2FyZSBCQ0ggRUNDIGFsZ29yaXRobQogIG10ZDogbmFuZDog
-Q2xhcmlmeSBLY29uZmlnIGVudHJ5IGZvciBzb2Z0d2FyZSBIYW1taW5nIEVDQyBlbnRyaWVzCiAg
-bXRkOiByYXduYW5kOiBDaGFuZ2UgS2NvbmZpZyB0aXRsZXMgYW5kIHJlLW9yZGVyIGEgYml0IHRo
-ZSBsaXN0CiAgbXRkOiByYXduYW5kOiBDbGFyaWZ5IEtjb25maWcgZW50cnkgTVREX05BTkQKICBt
-dGQ6IG5hbmQ6IFJlbW92ZSB1c2VsZXNzIGxpbmUgaW4gS2NvbmZpZwoKIGFyY2gvYXJtL2NvbmZp
-Z3MvYXQ5MV9kdF9kZWZjb25maWcgICAgICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmln
-cy9jbHBzNzExeF9kZWZjb25maWcgICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdz
-L2NtX3gyeHhfZGVmY29uZmlnICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3Mv
-Y21feDMwMF9kZWZjb25maWcgICAgICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9j
-b2xpYnJpX3B4YTI3MF9kZWZjb25maWcgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL2Nv
-cmdpX2RlZmNvbmZpZyAgICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvZGF2
-aW5jaV9hbGxfZGVmY29uZmlnICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9lbV94
-MjcwX2RlZmNvbmZpZyAgICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL2VwOTN4
-eF9kZWZjb25maWcgICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvZXNlcmll
-c19weGFfZGVmY29uZmlnICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9pbXhfdjRf
-djVfZGVmY29uZmlnICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL2lteF92Nl92
-N19kZWZjb25maWcgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvaXhwNHh4X2Rl
-ZmNvbmZpZyAgICAgICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9rZXlzdG9uZV9k
-ZWZjb25maWcgICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL2xwYzMyeHhfZGVm
-Y29uZmlnICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvbWFjcm9uaXhfenlu
-cV9kZWZjb25maWcgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9taW5pMjQ0MF9kZWZj
-b25maWcgICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL21tcDJfZGVmY29uZmln
-ICAgICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvbXVsdGlfdjR0X2RlZmNv
-bmZpZyAgICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25m
-aWcgICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNvbmZp
-ZyAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvbXY3OHh4MF9kZWZjb25maWcg
-ICAgICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9tdmVidV92NV9kZWZjb25maWcg
-ICAgICAgICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL212ZWJ1X3Y3X2RlZmNvbmZpZyAg
-ICAgICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvbXhzX2RlZmNvbmZpZyAgICAgICAg
-ICAgICAgICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9uaGs4ODE1X2RlZmNvbmZpZyAgICAg
-ICAgICAgIHwgICA0ICstCiBhcmNoL2FybS9jb25maWdzL29tYXAxX2RlZmNvbmZpZyAgICAgICAg
-ICAgICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3Mvb21hcDJwbHVzX2RlZmNvbmZpZyAgICAg
-ICAgICB8ICAgNCArLQogYXJjaC9hcm0vY29uZmlncy9vcmlvbjV4X2RlZmNvbmZpZyAgICAgICAg
-ICAgIHwgICAyICstCiBhcmNoL2FybS9jb25maWdzL294bmFzX3Y2X2RlZmNvbmZpZyAgICAgICAg
-ICAgfCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvcHhhM3h4X2RlZmNvbmZpZyAgICAgICAgICAg
-ICB8ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9weGFfZGVmY29uZmlnICAgICAgICAgICAgICAg
-IHwgICA0ICstCiBhcmNoL2FybS9jb25maWdzL3Fjb21fZGVmY29uZmlnICAgICAgICAgICAgICAg
-fCAgIDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3MvcmF1bWZlbGRfZGVmY29uZmlnICAgICAgICAgICB8
-ICAgMiArLQogYXJjaC9hcm0vY29uZmlncy9zM2MyNDEwX2RlZmNvbmZpZyAgICAgICAgICAgIHwg
-ICAyICstCiBhcmNoL2FybS9jb25maWdzL3MzYzY0MDBfZGVmY29uZmlnICAgICAgICAgICAgfCAg
-IDIgKy0KIGFyY2gvYXJtL2NvbmZpZ3Mvc2FtYTVfZGVmY29uZmlnICAgICAgICAgICAgICB8ICAg
-MiArLQogYXJjaC9hcm0vY29uZmlncy9zb2NmcGdhX2RlZmNvbmZpZyAgICAgICAgICAgIHwgICAy
-ICstCiBhcmNoL2FybS9jb25maWdzL3NwZWFyMTN4eF9kZWZjb25maWcgICAgICAgICAgfCAgIDIg
-Ky0KIGFyY2gvYXJtL2NvbmZpZ3Mvc3BlYXIzeHhfZGVmY29uZmlnICAgICAgICAgICB8ICAgMiAr
-LQogYXJjaC9hcm0vY29uZmlncy9zcGVhcjZ4eF9kZWZjb25maWcgICAgICAgICAgIHwgICAyICst
-CiBhcmNoL2FybS9jb25maWdzL3NwaXR6X2RlZmNvbmZpZyAgICAgICAgICAgICAgfCAgIDIgKy0K
-IGFyY2gvYXJtL2NvbmZpZ3MvdGFuZ280X2RlZmNvbmZpZyAgICAgICAgICAgICB8ICAgMiArLQog
-YXJjaC9hcm0vY29uZmlncy90cml6ZXBzNF9kZWZjb25maWcgICAgICAgICAgIHwgICAyICstCiBh
-cmNoL2FybS9jb25maWdzL3UzMDBfZGVmY29uZmlnICAgICAgICAgICAgICAgfCAgIDIgKy0KIGFy
-Y2gvYXJtNjQvY29uZmlncy9kZWZjb25maWcgICAgICAgICAgICAgICAgICB8ICAgMiArLQogYXJj
-aC9taXBzL2NvbmZpZ3MvYmNtNDd4eF9kZWZjb25maWcgICAgICAgICAgIHwgICAyICstCiBhcmNo
-L21pcHMvY29uZmlncy9jaTIwX2RlZmNvbmZpZyAgICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gv
-bWlwcy9jb25maWdzL2RiMXh4eF9kZWZjb25maWcgICAgICAgICAgICB8ICAgNCArLQogLi4uL2Nv
-bmZpZ3MvZ2VuZXJpYy9ib2FyZC1uaTE2OTQ0NS5jb25maWcgICAgIHwgICA2ICstCiBhcmNoL21p
-cHMvY29uZmlncy9nZW5lcmljL2JvYXJkLW9jZWxvdC5jb25maWcgfCAgIDIgKy0KIGFyY2gvbWlw
-cy9jb25maWdzL2xvb25nc29uMWJfZGVmY29uZmlnICAgICAgICB8ICAgMiArLQogYXJjaC9taXBz
-L2NvbmZpZ3MvbG9vbmdzb24xY19kZWZjb25maWcgICAgICAgIHwgICAyICstCiBhcmNoL21pcHMv
-Y29uZmlncy9xaV9sYjYwX2RlZmNvbmZpZyAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvbWlwcy9j
-b25maWdzL3JiNTMyX2RlZmNvbmZpZyAgICAgICAgICAgICB8ICAgMiArLQogYXJjaC9taXBzL2Nv
-bmZpZ3MvcmJ0eDQ5eHhfZGVmY29uZmlnICAgICAgICAgIHwgICAyICstCiBhcmNoL21pcHMvY29u
-Zmlncy94d2F5X2RlZmNvbmZpZyAgICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvcG93ZXJwYy9j
-b25maWdzLzQweC9raWxhdWVhX2RlZmNvbmZpZyAgICB8ICAgMiArLQogYXJjaC9wb3dlcnBjL2Nv
-bmZpZ3MvNDB4L29iczYwMF9kZWZjb25maWcgICAgIHwgICAyICstCiAuLi4vcG93ZXJwYy9jb25m
-aWdzLzQ0eC9jYW55b25sYW5kc19kZWZjb25maWcgfCAgIDIgKy0KIGFyY2gvcG93ZXJwYy9jb25m
-aWdzLzQ0eC9laWdlcl9kZWZjb25maWcgICAgICB8ICAgMiArLQogYXJjaC9wb3dlcnBjL2NvbmZp
-Z3MvNDR4L3NlcXVvaWFfZGVmY29uZmlnICAgIHwgICAyICstCiBhcmNoL3Bvd2VycGMvY29uZmln
-cy80NHgvd2FycF9kZWZjb25maWcgICAgICAgfCAgIDIgKy0KIC4uLi9jb25maWdzLzgzeHgvbXBj
-ODMxM19yZGJfZGVmY29uZmlnICAgICAgICB8ICAgMiArLQogLi4uL2NvbmZpZ3MvODN4eC9tcGM4
-MzE1X3JkYl9kZWZjb25maWcgICAgICAgIHwgICAyICstCiBhcmNoL3Bvd2VycGMvY29uZmlncy84
-NXh4LWh3LmNvbmZpZyAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvcG93ZXJwYy9jb25maWdzLzg1
-eHgvZ2VfaW1wM2FfZGVmY29uZmlnICB8ICAgMiArLQogYXJjaC9wb3dlcnBjL2NvbmZpZ3MvODV4
-eC9zb2NyYXRlc19kZWZjb25maWcgIHwgICAyICstCiBhcmNoL3Bvd2VycGMvY29uZmlncy84NXh4
-L3RxbTg1NDhfZGVmY29uZmlnICAgfCAgIDQgKy0KIC4uLi9jb25maWdzLzg1eHgveGVzX21wYzg1
-eHhfZGVmY29uZmlnICAgICAgICB8ICAgMiArLQogYXJjaC9wb3dlcnBjL2NvbmZpZ3MvODZ4eC1o
-dy5jb25maWcgICAgICAgICAgIHwgICAyICstCiBhcmNoL3Bvd2VycGMvY29uZmlncy9tcGM1MTJ4
-X2RlZmNvbmZpZyAgICAgICAgfCAgIDIgKy0KIGFyY2gvcG93ZXJwYy9jb25maWdzL21wYzgzeHhf
-ZGVmY29uZmlnICAgICAgICB8ICAgMiArLQogYXJjaC9wb3dlcnBjL2NvbmZpZ3MvcGFzZW1pX2Rl
-ZmNvbmZpZyAgICAgICAgIHwgICAyICstCiBhcmNoL3Bvd2VycGMvY29uZmlncy9wcGM0NHhfZGVm
-Y29uZmlnICAgICAgICAgfCAgIDIgKy0KIGFyY2gvc2gvY29uZmlncy9hcDMyNXJ4YV9kZWZjb25m
-aWcgICAgICAgICAgICB8ICAgMiArLQogYXJjaC9zaC9jb25maWdzL2Vjb3ZlYzI0X2RlZmNvbmZp
-ZyAgICAgICAgICAgIHwgICAyICstCiBhcmNoL3NoL2NvbmZpZ3MvbWlnb3JfZGVmY29uZmlnICAg
-ICAgICAgICAgICAgfCAgIDIgKy0KIGFyY2gvc2gvY29uZmlncy9zZGs3Nzg2X2RlZmNvbmZpZyAg
-ICAgICAgICAgICB8ICAgMiArLQogYXJjaC9zaC9jb25maWdzL3NlNzcyNF9kZWZjb25maWcgICAg
-ICAgICAgICAgIHwgICAyICstCiBhcmNoL3NoL2NvbmZpZ3MvdGl0YW5fZGVmY29uZmlnICAgICAg
-ICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL0tjb25maWcgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgMyArLQogZHJpdmVycy9tdGQvZGV2aWNlcy9LY29uZmlnICAgICAgICAgICAg
-ICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL0tjb25maWcgICAgICAgICAgICAgICAg
-ICAgICAgfCAgIDEgLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZyAgICAgICAgICAgICAg
-ICAgIHwgMzg1ICsrKysrKysrKy0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFrZWZp
-bGUgICAgICAgICAgICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jh
-c2UuYyAgICAgICAgICAgICAgfCAgIDQgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L29tYXAyLmMg
-ICAgICAgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9tdGQvc21fZnRsLmMgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgIDEyICstCiBkcml2ZXJzL210ZC90ZXN0cy9tdGRfbmFuZGVjY3Rl
-c3QuYyAgICAgICAgICAgfCAgMTYgKy0KIGluY2x1ZGUvbGludXgvbXRkL25hbmRfYmNoLmggICAg
-ICAgICAgICAgICAgICB8ICAgNiArLQogaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL2VsbS5o
-ICAgICAgICAgICAgIHwgICAyICstCiA5MiBmaWxlcyBjaGFuZ2VkLCAzMDYgaW5zZXJ0aW9ucygr
-KSwgMzExIGRlbGV0aW9ucygtKQoKLS0gCjIuMTkuMQoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+There is no point in having two distinct entries, merge them and
+rename the symbol for more clarity: MTD_NAND_ECC_SW_BCH
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ arch/arm/configs/omap2plus_defconfig            | 2 +-
+ arch/arm/configs/pxa_defconfig                  | 2 +-
+ arch/mips/configs/db1xxx_defconfig              | 2 +-
+ arch/mips/configs/generic/board-ni169445.config | 2 +-
+ drivers/mtd/devices/Kconfig                     | 2 +-
+ drivers/mtd/nand/raw/Kconfig                    | 9 ++-------
+ drivers/mtd/nand/raw/Makefile                   | 2 +-
+ drivers/mtd/nand/raw/nand_base.c                | 2 +-
+ drivers/mtd/nand/raw/omap2.c                    | 4 ++--
+ include/linux/mtd/nand_bch.h                    | 6 +++---
+ 10 files changed, 14 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+index 9c6f436d1b12..bb4b3975f7df 100644
+--- a/arch/arm/configs/omap2plus_defconfig
++++ b/arch/arm/configs/omap2plus_defconfig
+@@ -133,7 +133,7 @@ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PHYSMAP_OF=y
+ CONFIG_MTD_M25P80=m
+ CONFIG_MTD_NAND=y
+-CONFIG_MTD_NAND_ECC_BCH=y
++CONFIG_MTD_NAND_ECC_SW_BCH=y
+ CONFIG_MTD_NAND_OMAP2=y
+ CONFIG_MTD_NAND_OMAP_BCH=y
+ CONFIG_MTD_ONENAND=y
+diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
+index 6bb506edb1f5..76e535b14fd8 100644
+--- a/arch/arm/configs/pxa_defconfig
++++ b/arch/arm/configs/pxa_defconfig
+@@ -189,7 +189,7 @@ CONFIG_MTD_M25P80=m
+ CONFIG_MTD_BLOCK2MTD=y
+ CONFIG_MTD_DOCG3=m
+ CONFIG_MTD_NAND=m
+-CONFIG_MTD_NAND_ECC_BCH=y
++CONFIG_MTD_NAND_ECC_SW_BCH=y
+ CONFIG_MTD_NAND_GPIO=m
+ CONFIG_MTD_NAND_DISKONCHIP=m
+ CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED=y
+diff --git a/arch/mips/configs/db1xxx_defconfig b/arch/mips/configs/db1xxx_defconfig
+index 34633b7611cb..c5a2c6f234d4 100644
+--- a/arch/mips/configs/db1xxx_defconfig
++++ b/arch/mips/configs/db1xxx_defconfig
+@@ -96,7 +96,7 @@ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_SST25L=y
+ CONFIG_MTD_NAND=y
+-CONFIG_MTD_NAND_ECC_BCH=y
++CONFIG_MTD_NAND_ECC_SW_BCH=y
+ CONFIG_MTD_NAND_AU1550=y
+ CONFIG_MTD_NAND_PLATFORM=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/configs/generic/board-ni169445.config
+index f72223b366ca..01f6ab0d47d5 100644
+--- a/arch/mips/configs/generic/board-ni169445.config
++++ b/arch/mips/configs/generic/board-ni169445.config
+@@ -16,7 +16,7 @@ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+ 
+ CONFIG_MTD_NAND_ECC=y
+-CONFIG_MTD_NAND_ECC_BCH=y
++CONFIG_MTD_NAND_ECC_SW_BCH=y
+ CONFIG_MTD_NAND=y
+ CONFIG_MTD_NAND_GPIO=y
+ CONFIG_MTD_NAND_IDS=y
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index aa983422aa97..7fcdaf6c279d 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -207,7 +207,7 @@ comment "Disk-On-Chip Device Drivers"
+ config MTD_DOCG3
+ 	tristate "M-Systems Disk-On-Chip G3"
+ 	select BCH
+-	select BCH_CONST_PARAMS if !MTD_NAND_BCH
++	select BCH_CONST_PARAMS if !CONFIG_MTD_NAND_ECC_SW_BCH
+ 	select BITREVERSE
+ 	help
+ 	  This provides an MTD device driver for the M-Systems DiskOnChip
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 8c38f2c116a2..849748278aed 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -22,14 +22,9 @@ menuconfig MTD_NAND
+ 
+ if MTD_NAND
+ 
+-config MTD_NAND_BCH
+-	tristate
+-	select BCH
+-	depends on MTD_NAND_ECC_BCH
+-	default MTD_NAND
+-
+-config MTD_NAND_ECC_BCH
++config MTD_NAND_ECC_SW_BCH
+ 	bool "Support software BCH ECC"
++	select BCH
+ 	default n
+ 	help
+ 	  This enables support for software BCH error correction. Binary BCH
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 57159b349054..7f4ae08f4c18 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -2,7 +2,7 @@
+ 
+ obj-$(CONFIG_MTD_NAND)			+= nand.o
+ obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
+-obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
++obj-$(CONFIG_MTD_NAND_ECC_SW_BCH)	+= nand_bch.o
+ obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
+ 
+ obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 1b4df8b851f8..2d3713d6b953 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5126,7 +5126,7 @@ static int nand_set_ecc_soft_ops(struct nand_chip *chip)
+ 		return 0;
+ 	case NAND_ECC_BCH:
+ 		if (!mtd_nand_has_bch()) {
+-			WARN(1, "CONFIG_MTD_NAND_ECC_BCH not enabled\n");
++			WARN(1, "CONFIG_MTD_NAND_ECC_SW_BCH not enabled\n");
+ 			return -EINVAL;
+ 		}
+ 		ecc->calculate = nand_bch_calculate_ecc;
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index 68e8b9f7f372..eaf14813a3ab 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -1728,9 +1728,9 @@ static bool omap2_nand_ecc_check(struct omap_nand_info *info)
+ 		break;
+ 	}
+ 
+-	if (ecc_needs_bch && !IS_ENABLED(CONFIG_MTD_NAND_ECC_BCH)) {
++	if (ecc_needs_bch && !IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_BCH)) {
+ 		dev_err(&info->pdev->dev,
+-			"CONFIG_MTD_NAND_ECC_BCH not enabled\n");
++			"CONFIG_MTD_NAND_ECC_SW_BCH not enabled\n");
+ 		return false;
+ 	}
+ 	if (ecc_needs_omap_bch && !IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)) {
+diff --git a/include/linux/mtd/nand_bch.h b/include/linux/mtd/nand_bch.h
+index b8106651f807..06ce2b655c13 100644
+--- a/include/linux/mtd/nand_bch.h
++++ b/include/linux/mtd/nand_bch.h
+@@ -15,7 +15,7 @@ struct mtd_info;
+ struct nand_chip;
+ struct nand_bch_control;
+ 
+-#if defined(CONFIG_MTD_NAND_ECC_BCH)
++#if defined(CONFIG_MTD_NAND_ECC_SW_BCH)
+ 
+ static inline int mtd_nand_has_bch(void) { return 1; }
+ 
+@@ -39,7 +39,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd);
+  */
+ void nand_bch_free(struct nand_bch_control *nbc);
+ 
+-#else /* !CONFIG_MTD_NAND_ECC_BCH */
++#else /* !CONFIG_MTD_NAND_ECC_SW_BCH */
+ 
+ static inline int mtd_nand_has_bch(void) { return 0; }
+ 
+@@ -64,6 +64,6 @@ static inline struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ 
+ static inline void nand_bch_free(struct nand_bch_control *nbc) {}
+ 
+-#endif /* CONFIG_MTD_NAND_ECC_BCH */
++#endif /* CONFIG_MTD_NAND_ECC_SW_BCH */
+ 
+ #endif /* __MTD_NAND_BCH_H__ */
+-- 
+2.19.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
