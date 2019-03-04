@@ -2,21 +2,20 @@ Return-Path: <SRS0=RlT6=RH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FEAAC43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 02:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C90DC43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 04:56:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F1FB204FD
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 02:28:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1A40220815
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2019 04:56:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="M0KdK7sA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F1FB204FD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="i7Ek1QMG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A40220815
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +24,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
 	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=J4cd4xvSPvQe/miEdIWYJ1Zkbuqoyx78nQTY8mWokOs=; b=M0KdK7sAavmZ/vaMyE6WYyJx0
-	2BZvJHOUfj8zPfcpcp/iCEOlv8ulMaopnGkiPQrdc45jOOlwEw/mbkCP9nq1RXWxzQzFNHT7QiGJH
-	djPvfBUtxF4xedwEmOByMBdNhz1IcrSnPotae68K/E6ky9AKFwnsWO4DDSJQt0qKKXE6oiK7czSwD
-	1FGI+oAxWwAnYFrDuULk8T4wxlMvbWkY7r9e3XmHlgZG+9OiJklIiMCAu9DSbo4B6W4wkqNRpOn+O
-	3KFsf2qzNPAsTr/TMrsR0852oZrl3aFGqRyOlSFZLL5xE0v1RBUSb7jtxCvLrApsSmZCpSUVPiQdf
-	sITV9WAdg==;
+	 bh=BylBYdQJH2tKlT5/UDaodTXNIw8+nj9ByvRYxiSEKxI=; b=i7Ek1QMGB9BBZObIjUVF9ZRxu
+	HtBodlXUJzFJeV2VyzatcZDz4Clfqfrp0QxK1ZriG4SEWCurgRd1/nMkttr7ggBK3ONpN8s9sSxej
+	4M2MUG9xcIQvoHJoKLOmLAMBxFyACZQaDORlZALGHXuuvpzkKjbnLD7kGB9XrSaC3g9D2GVVGLooI
+	7nWcIzJMkFM+8L8COv9LAdWqX66eR1EM8UjHgG7G1kr7kvQ5wGYd9RxfcLpoFz35BYbI/jqHzFK0F
+	HfUJ/YALaKLaBUgLPjCInCE+z9YmdCgmkVUvMpRfoW99nIj5WvwvqCoOkgGZoDmskZGlTBuEarN/U
+	mPUFWkOpw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h0dLX-0002b5-4J; Mon, 04 Mar 2019 02:28:51 +0000
+	id 1h0feR-0007YT-6H; Mon, 04 Mar 2019 04:56:31 +0000
 Received: from mail-sz.amlogic.com ([211.162.65.117])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h0dLV-0002ad-0B; Mon, 04 Mar 2019 02:28:50 +0000
+ id 1h0feG-0007M8-Vm; Mon, 04 Mar 2019 04:56:22 +0000
 Received: from [10.28.18.125] (10.28.18.125) by mail-sz.amlogic.com
  (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Mon, 4 Mar
- 2019 10:29:54 +0800
-Subject: Re: [PATCH 2/2] mtd: rawnand: meson: fix a potential memory leak in
- meson_nfc_read_buf
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- <linux-amlogic@lists.infradead.org>, <linux-mtd@lists.infradead.org>
-References: <20190301173820.30776-1-martin.blumenstingl@googlemail.com>
- <20190301173820.30776-3-martin.blumenstingl@googlemail.com>
+ 2019 12:56:42 +0800
+Subject: Re: [RFC PATCH nand-next 0/2] meson-nand: support for older SoCs
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+References: <20190301182922.8309-1-martin.blumenstingl@googlemail.com>
 From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <c152e9a7-55ce-424c-8468-a4e861792582@amlogic.com>
-Date: Mon, 4 Mar 2019 10:29:54 +0800
+Message-ID: <98776767-c4d7-1207-6d42-97105f289bec@amlogic.com>
+Date: Mon, 4 Mar 2019 12:56:41 +0800
 User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101
  Thunderbird/60.5.1
 MIME-Version: 1.0
-In-Reply-To: <20190301173820.30776-3-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20190301182922.8309-1-martin.blumenstingl@googlemail.com>
 Content-Language: en-US
 X-Originating-IP: [10.28.18.125]
 X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
  (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190303_182849_041831_4DC3D955 
-X-CRM114-Status: GOOD (  13.48  )
+X-CRM114-CacheID: sfid-20190303_205621_025888_D64A5AAA 
+X-CRM114-Status: GOOD (  26.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -72,8 +68,10 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
- jianxin.pan@amlogic.com, bbrezillon@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, jianxin.pan@amlogic.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -81,46 +79,139 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hello Martin,
 
-Thank you very much.
-
-On 2019/3/2 1:38, Martin Blumenstingl wrote:
-> meson_nfc_dma_buffer_setup() is called with the "info" buffer which is
-> allocated a few lines before using kzalloc(). If
-> meson_nfc_dma_buffer_setup() fails we need to free the allocated "info"
-> buffer instead of only freeing it upon success.
+On 2019/3/2 2:29, Martin Blumenstingl wrote:
+> Hi Liang,
 > 
-> Fixes: 8fae856c53500a ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->   drivers/mtd/nand/raw/meson_nand.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+> I am trying to add support for older SoCs to the meson-nand driver.
+> Back when the driver was in development I used an early revision (of
+> your driver) and did some modifications to make it work on older SoCs.
 > 
-> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> index a1d8506b61c7..38db4fd61459 100644
-> --- a/drivers/mtd/nand/raw/meson_nand.c
-> +++ b/drivers/mtd/nand/raw/meson_nand.c
-> @@ -534,7 +534,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
->   	ret = meson_nfc_dma_buffer_setup(nand, buf, len, info,
->   					 PER_INFO_BYTE, DMA_FROM_DEVICE);
->   	if (ret)
-> -		return ret;
-> +		goto out;
->   Looks good to me.
-Acked-by: Liang Yang <liang.yang@amlogic.com>
+> Now that the driver is upstream I wanted to give it another try and
+> make a real patch out of it. Unfortunately it's not working anymore.
+> 
+> As far as I know the NFC IP block revision on GXL is similar (or even
+> the same?) as on all older SoCs. As far as I can tell only the clock
+> setup is different on the older SoCs (which have a dedicated NAND
+> clock):
+> - we don't need the "amlogic,mmc-syscon" property on the older SoCs
+>    because we don't need to setup any muxing (common clock framework
+>    will do everything for us)
+> - "rx" and "tx" clocks don't exist
+> - I could not find any other differences between Meson8, Meson8b,
+>    Meson8m2, GXBB and GXL
+> 
+That is right. the serials NFC is almost the same except:
+1) The clock control and source that M8-serials are not share with EMMC.
+2) The base register address
+3) DMA encryption option which we don't care on NFC driver.
 
->   	cmd = NFC_CMD_N2M | (len & GENMASK(5, 0));
->   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-> @@ -542,6 +542,8 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
->   	meson_nfc_drain_cmd(nfc);
->   	meson_nfc_wait_cmd_finish(nfc, 1000);
->   	meson_nfc_dma_buffer_release(nand, len, PER_INFO_BYTE, DMA_FROM_DEVICE);
-> +
-> +out:
-Looks good to me.
-Acked-by: Liang Yang <liang.yang@amlogic.com>
->   	kfree(info);
->   
->   	return ret;
+> In this series I'm sending two patches which add support for the older
+> SoCs.
+> 
+> Unfortunately these patches are currently not working for me (hence the
+> "RFC" prefix). I get a (strange) crash which is triggered by the
+> kzalloc() in meson_nfc_read_buf() - see below for more details.
+> 
+> Can you please help me on this one? I'd like to know whether:
+> - the meson-nand driver works for you on GXL or AXG on linux-next?
+>    (I was running these patches on top of next-20190301 on my M8S
+>    board which uses a 32-bit Meson8m2 SoC. I don't have any board using
+>    a GXL SoC which also has NAND)
+Yes, it works on AXG platform using a MXIC slc nand flash(MX30LF4G); but 
+i an not sure it runs the same flow with yours. because i see the print 
+"Counld not find a valid ONFI parameter page, ...." in yours. i will try 
+to reproduce it on AXG(i don't have a M8 platform now).
+
+> - you see any issue with my patches? (maybe I missed more differences
+>    between GXL and the older SoCs)
+> 
+i think it is ok now.
+> 
+> kernel log extract:
+> [...]
+> Could not find a valid ONFI parameter page, trying bit-wise majority to recover it
+> ONFI parameter recovery failed, aborting
+> Unable to handle kernel paging request at virtual address 80110000
+> pgd = (ptrval)
+> [80110000] *pgd=00000000
+> Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+> Modules linked in:
+> CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.0.0-rc8-next-20190301-00053-g50ac6f7757e2 #4145
+> Hardware name: Amlogic Meson platform
+> PC is at kmem_cache_alloc_trace+0xc8/0x268
+> LR is at kmem_cache_alloc_trace+0x2c/0x268
+> pc : [<c046479c>]    lr : [<c0464700>]    psr: 60000013
+> sp : c02adc58  ip : e9e7a440  fp : 00004ee2
+> r10: 80110000  r9 : ffffe000  r8 : c110918c
+> r7 : 00000008  r6 : c08967c0  r5 : 00000dc0  r4 : c0201e40
+> r3 : c109dd30  r2 : 00000000  r1 : 00004ee2  r0 : 00000000
+> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> Control: 10c5387d  Table: 0020404a  DAC: 00000051
+> Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+> Stack: (0xc02adc58 to 0xc02ae000)
+> dc40:                                                       e9d84048 00000003
+> dc60: e9e7a440 c02add18 00000028 e9e68680 c02adcf0 00000003 e9d84048 00000002
+> dc80: e9e7a440 c08967c0 c1108cb4 c02adcdc 10624dd3 c02adce4 10624dd3 00000005
+> dca0: e9e7a440 c0f5c310 00000028 c0f09998 00000005 e9d84048 00000005 c02add57
+> dcc0: c1108c88 e9e7a440 c02adcf0 e9d84428 e9d843b0 c0882258 000000ff 40000000
+> dce0: c02adce8 00000000 c02adcf0 00000003 00000000 00000090 00000000 00000000
+> dd00: 00000000 00000001 00000001 c02adcdf 00000000 00000190 00000002 00000005
+> dd20: c02add57 00000001 00000000 a10a1ef7 00000000 c1108c88 c1180250 e9d843c0
+> dd40: 00000001 000000de 00000000 c088d114 c0f08db4 00d843c0 00000000 a10a1ef7
+> dd60: 00000015 e9d84048 c1108c88 c088d470 e9d84048 c08888b4 00000000 60000013
+> dd80: c0eebc9c 000000ad c0da01ac 00000000 e9e7a48c c0cc6d50 c12122cc a10a1ef7
+> dda0: e9e7a440 e9e7a440 e9d84040 c0eebc9c e987f410 eafd6748 e9d84048 c1108c88
+> ddc0: e9e7a48c c0895c70 00000000 e9871f00 e9e7a440 c04eef60 00000000 eafd64bc
+> dde0: e9e7a534 00000000 00000000 00000000 00000001 a10a1ef7 00000000 e987f410
+> de00: 00000000 c1180728 00000000 00000000 c1180728 00000000 c1071854 c07fd388
+> de20: c120da38 e987f410 c120da3c 00000000 00000000 c07fb410 e987f410 c1180728
+> de40: c1180728 c07fb910 00000000 c1071834 c10004a8 c07fb65c c10004a8 c0a917b4
+> de60: c0da1914 e987f410 00000000 c1180728 c07fb910 00000000 c1071834 c10004a8
+> de80: c1071854 c07fb908 00000000 c1180728 e987f410 c07fb968 e98b8eb4 c1108c88
+> dea0: c1180728 c07f97d4 c1175260 c029a958 e98b8eb4 a10a1ef7 c029a96c c1180728
+> dec0: e9e1fa80 c1175260 00000000 c07fa844 c0f09c64 c1108c88 ffffe000 c1180728
+> dee0: c1108c88 ffffe000 c103b788 c07fc494 c11c2ca0 c1108c88 ffffe000 c0302f1c
+> df00: ebfffd96 c0346f90 c0fab8a0 c0f2ad00 00000000 00000006 00000006 c0e9e26c
+> df20: 00000000 c1108c88 c0eb11b0 c0e9e2e0 c11d1300 ebfffd84 ebfffd89 a10a1ef7
+> df40: c1071838 c11c2ca0 c10914b8 a10a1ef7 c11c2ca0 c1091804 00000007 c11d1300
+> df60: c11d1300 c1001180 00000006 00000006 00000000 c10004a8 0000013d 00000000
+> df80: c02c0504 00000000 c0cbf6e8 00000000 00000000 00000000 00000000 00000000
+> dfa0: 00000000 c0cbf6f0 00000000 c03010e8 00000000 00000000 00000000 00000000
+> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+> [<c046479c>] (kmem_cache_alloc_trace) from [<c08967c0>] (meson_nfc_exec_op+0x2c4/0x3e8)
+> [<c08967c0>] (meson_nfc_exec_op) from [<c0882258>] (nand_readid_op+0x128/0x1c4)
+> [<c0882258>] (nand_readid_op) from [<c088d114>] (hynix_nand_has_valid_jedecid+0x34/0x78)
+> [<c088d114>] (hynix_nand_has_valid_jedecid) from [<c088d470>] (hynix_nand_decode_id+0x64/0x3fc)
+> [<c088d470>] (hynix_nand_decode_id) from [<c08888b4>] (nand_scan_with_ids+0xa04/0x171c)
+> [<c08888b4>] (nand_scan_with_ids) from [<c0895c70>] (meson_nfc_probe+0x460/0x690)
+> [<c0895c70>] (meson_nfc_probe) from [<c07fd388>] (platform_drv_probe+0x48/0x98)
+> [<c07fd388>] (platform_drv_probe) from [<c07fb410>] (really_probe+0x1e0/0x2cc)
+> [<c07fb410>] (really_probe) from [<c07fb65c>] (driver_probe_device+0x60/0x16c)
+> [<c07fb65c>] (driver_probe_device) from [<c07fb908>] (device_driver_attach+0x58/0x60)
+> [<c07fb908>] (device_driver_attach) from [<c07fb968>] (__driver_attach+0x58/0xcc)
+> [<c07fb968>] (__driver_attach) from [<c07f97d4>] (bus_for_each_dev+0x74/0xb4)
+> [<c07f97d4>] (bus_for_each_dev) from [<c07fa844>] (bus_add_driver+0x1b8/0x1d8)
+> [<c07fa844>] (bus_add_driver) from [<c07fc494>] (driver_register+0x74/0x108)
+> [<c07fc494>] (driver_register) from [<c0302f1c>] (do_one_initcall+0x54/0x284)
+> [<c0302f1c>] (do_one_initcall) from [<c1001180>] (kernel_init_freeable+0x2d4/0x36c)
+> [<c1001180>] (kernel_init_freeable) from [<c0cbf6f0>] (kernel_init+0x8/0x110)
+> [<c0cbf6f0>] (kernel_init) from [<c03010e8>] (ret_from_fork+0x14/0x2c)
+> Exception stack(0xc02adfb0 to 0xc02adff8)
+> dfa0:                                     00000000 00000000 00000000 00000000
+> dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> Code: e5943000 e5942014 e3130007 1a000038 (e79ae002)
+> ---[ end trace 28d391ed14b0f021 ]---
+> 
+> 
+> Martin Blumenstingl (2):
+>    dt-bindings: nand: meson: add support for more SoCs
+>    mtd: rawnand: meson: support for older SoCs up to Meson8
+> 
+>   .../bindings/mtd/amlogic,meson-nand.txt       | 14 ++++--
+>   drivers/mtd/nand/raw/meson_nand.c             | 46 +++++++++++++------
+>   2 files changed, 42 insertions(+), 18 deletions(-)
 > 
 
 ______________________________________________________
