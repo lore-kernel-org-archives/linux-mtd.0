@@ -4,95 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BB8EC43381
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 08:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0088C43381
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 09:21:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CAD1320842
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 08:22:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDCEE206DD
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 09:21:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TOBrTE8U";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="yqKO7ETo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAD1320842
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z8TfsNFx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="oszpQX22"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDCEE206DD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JWbs8Vb1FiFX7JBfyRqfXY1swnFOcYA+hlqGtYpiRvw=; b=TOBrTE8UkzvaXCrYCn2ILe+u2
-	T0WrBDFALcprH/tZKGZebQHzuIwwglyKoNJb/RKwciVbgFlpMRSO7bWhQC117NeKRAbH6YeakpaLt
-	T36s9xdwbZIYQMQE/d0f26AXUI1NErQtZiRWi5NZtqc1jBb3NCbvVwmKQFXpds5W83Tk7eYZMmHvt
-	kkmDYHRMMezZPQD986p7OkliwNJxAmbSuWLuVF/2pFPDrNicB8N2GXOHXor8NP5RiscMPE7GCxXGy
-	h4HfoIvFdWGpGjy4/AMHiy10Rl9PyNiKnQ6ib3O77TuEG6323laYAFQ1GMJGISQ3AZKc8sCiafdZC
-	inYzXHfIA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VAyI8abXkHBqmTpZJ++DYBQ3WWqBNlzLSIUyP2YzvVY=; b=Z8TfsNFxIzAya6
+	jufPYQU6GvIQ1W4e0UCjqECeKeFAOO0tQCqt3v/ZtS+u9ib/gdyKv3T2kPMxoyRJK1nyH5RDcE5VQ
+	Q1AyiefxyBF9YSZKz5fU2iEEbf6TDfLodVPsGOVoD8GrOll8Kac29BthCDA9QV+WSpKwr/9L0EN/H
+	wFbjzB1bug58NcGGiPje6zjk+y03xIlpSmuOavU3EFVdBn0Ta6Dky+yaMjdtVphg7nC1he4s++pFR
+	xlDeqfZBhlbQmELdl+xsXPchXQ9v62elaGxChHsKbeDNX742wj4ofDkH1RZQO1ZSA1wcgHYuk0j9/
+	4ejQ1tuX07F+5ukPCF+w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h15La-0002rs-Pm; Tue, 05 Mar 2019 08:22:46 +0000
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+	id 1h16GQ-00007u-9q; Tue, 05 Mar 2019 09:21:30 +0000
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h15LX-0002r4-9G
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2019 08:22:44 +0000
-Received: by mail-lf1-x144.google.com with SMTP id d26so5538995lfa.1
- for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2019 00:22:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=lBt4S0FA1EkxSjGgyIh59AKcn3Q1GYOcPWe19fy/ias=;
- b=yqKO7EToAesfw0V366u0WHlAcmFrUJHa/2+9ot2m6I82bnK6P8UICK+IW/mLFrL7TV
- xItjEBB20c3RqhAOtj4HYFuRo9gtWHTUC4zcA7E06vI2iap9MXHAKoZNs1YKTpqvAcdV
- 7ZE4HlEYlnWavSAPnlYK0JUtn3nD2LqbcHe8A8jkqnkHHP7Mi+xi1bAE5gli4NoAm6/c
- 5V8/80GnH0eTDWm1UVxXqssgxxsn889NJZi3xmSwBSAPJFs5vmI7hzu2IG2MGMFxYYKK
- Ufh94MJF9FqB3O0+RAwNrTQCAy2AJPN4vb4Wqg+CZyaCgfIB6iowZfImbBlvczm8bKNd
- PEeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=lBt4S0FA1EkxSjGgyIh59AKcn3Q1GYOcPWe19fy/ias=;
- b=iMfZj/82H2zZEIyxgI+Fdck9/jsfbF0fErFG9F9i603oG8gy3uaFpI7d7WjNBpqQHs
- RCDykD90mnkYM+71IzpdT/NKZMnvqHpiaBzuebuJ8SQde1A4A8eTBnB/T4rks4XsixSX
- fS7QuQO49hz8B2dt7rHjKoSj51vZ1foinHgYJeROaVuJzD3dZ2oZZ9Nfv/LsSz/QEM1G
- BEVASxPKfw5BQH/FG3mIzmCAi9JU/l7N6+01OHVq2zJR4IWu/oU1r8SZStAQgvEk8PNw
- FO0GcCW/a0eBYVbFoy7gdg1gYbSfd2/KOMNjuUiNUbCyqqoMrsrhr4YqwxSA5ET0x94e
- Et5w==
-X-Gm-Message-State: APjAAAVj26LHB9olttVeWdoZ+G7TAOMuJAoBoMf7VmXp+1nr90YodaMG
- fB70DC+qTzHSOgNzFV5vd2b9yQ==
-X-Google-Smtp-Source: APXvYqyjC4mUKNMxUL/pZN9tNVjC+xAkOAacV+xbs0xkbuQ8pj1SjsrQD4qdtpSw8xiQyTjNjUtHKw==
-X-Received: by 2002:a19:f506:: with SMTP id j6mr12715lfb.159.1551774159067;
- Tue, 05 Mar 2019 00:22:39 -0800 (PST)
-Received: from [10.105.82.250] ([81.16.143.135])
- by smtp.gmail.com with ESMTPSA id w69sm1952438lff.22.2019.03.05.00.22.37
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 05 Mar 2019 00:22:37 -0800 (PST)
-Subject: Re: [PATCH v2 1/6] mtd: nand: omap: Fix comment in platform data
- using wrong Kconfig symbol
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-References: <20190304222226.12682-1-miquel.raynal@bootlin.com>
- <20190304222226.12682-2-miquel.raynal@bootlin.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <2d2d62ab-e76e-7686-f4b7-720ffa7b4ab6@cogentembedded.com>
-Date: Tue, 5 Mar 2019 11:22:19 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+ id 1h16GN-00007G-L2
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2019 09:21:29 +0000
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com
+ [209.85.222.54]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id x259Kw9w002931
+ for <linux-mtd@lists.infradead.org>; Tue, 5 Mar 2019 18:20:59 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x259Kw9w002931
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1551777659;
+ bh=n3KJVYBv09wgsRhWLTES9R+R2x0ss4Nx5o5rZ9eHyZs=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=oszpQX22Y6OGB4iLb19PNA2O+ohym8GNBBjoN247Q0Pyu04oDluRGXpE/6hsQPCVn
+ RpLbOwdAG63/wINPF6ilzvKT7mWc41CJgtEUGRyo2Fw5oj/Hzq6mRLwFozAIGcLdzT
+ mjmvqKzoTAWqJZXFcjWsFMTTmVz2i319TgAAQPSBLzyQ2ykoc1QvfQNHGlHRbXiiyk
+ Hh3KmH+jwbZzWq2olspQiHoOfEVZHddJrsujS0h+bBPfAoJ/yS8tz0dFDQIUtIEZbp
+ 7n7KDzXZJdRLgAymCAYHmPpIyv6vLNMMz8VKry6GHfqKFq0yKpJjRY0c6sInA6J1z6
+ FtjVSDHkU7FUQ==
+X-Nifty-SrcIP: [209.85.222.54]
+Received: by mail-ua1-f54.google.com with SMTP id f88so7122401uaf.2
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2019 01:20:59 -0800 (PST)
+X-Gm-Message-State: APjAAAVF0fEkG98bLbztz8RAdoxgAWWKpauTbB6++kO8RSxYB3Lm4V+0
+ rXwmeuypGmCPYBru8JRb5lKBpBpX/3ZxaPfbTXg=
+X-Google-Smtp-Source: APXvYqwUxPcFCDcq1pmH3zcXmYu/REIVSy9qiCLgsC89JWmmdlOhe3nFAEaGSbdmyo2dPLjaK0/hFjV3uPdc5mbD5JU=
+X-Received: by 2002:a9f:314d:: with SMTP id n13mr718977uab.6.1551777658294;
+ Tue, 05 Mar 2019 01:20:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20190304222226.12682-2-miquel.raynal@bootlin.com>
-Content-Language: en-US
+References: <1549955582-30346-1-git-send-email-yamada.masahiro@socionext.com>
+ <1549955582-30346-3-git-send-email-yamada.masahiro@socionext.com>
+ <20190304100106.72ad49c3@xps13>
+In-Reply-To: <20190304100106.72ad49c3@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 5 Mar 2019 18:20:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASeBDxsUj2fu0bh9G6dXV2jxeHp6iBG+8FytNbHGtVHKQ@mail.gmail.com>
+Message-ID: <CAK7LNASeBDxsUj2fu0bh9G6dXV2jxeHp6iBG+8FytNbHGtVHKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 02/10] mtd: rawnand: denali: refactor syndrome layout
+ handling for raw access
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190305_002243_506303_095DB7F9 
-X-CRM114-Status: GOOD (  11.70  )
+X-CRM114-CacheID: sfid-20190305_012127_903179_A63C9765 
+X-CRM114-Status: GOOD (  25.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -104,30 +87,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh R <vigneshr@ti.com>, Julien Su <juliensu@mxic.com.tw>,
- Schrempf Frieder <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Hi Miquel,
 
-On 05.03.2019 1:22, Miquel Raynal wrote:
+On Mon, Mar 4, 2019 at 6:01 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Hi Masahiro,
+>
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 12 Feb
+> 2019 16:12:54 +0900:
+>
+> > The Denali IP adopts the syndrome page layout (payload and ECC are
+> > interleaved). The *_page_raw() and *_oob() callbacks are complicated
+> > because they must hide the underlying layout used by the hardware,
+> > and always return contiguous in-band and out-of-band data.
+> >
+> > Currently, similar code is duplicated to reorganize the data layout.
+> > For example, denali_read_page_raw() and denali_write_page_raw() look
+> > almost the same.
+> >
+> > The idea for refactoring is to split the code into two parts:
+> >   [1] conversion of page layout
+> >   [2] what to do at every ECC chunk boundary
+> >
+> > For [1], I wrote denali_raw_payload_op() and denali_raw_oob_op().
+> > They manipulate data for the Denali controller's specific page layout
+> > of in-band, out-of-band, respectively.
+>
+> Could you please comment the purpose of these two functions in the code
+> as well?
 
-> The symbol that is being used in the #if/#endif bloc is not the one
 
-    Block?
+OK, I will.
 
-> mentioned at the bottom.
-> 
-> Fixes: 93af53b8633c ("nand: omap2: Remove horrible ifdefs to fix module probe")
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-[...]
 
-MBR, Sergei
+
+> >
+> > The difference between write and read is just the operation at
+> > ECC chunk boundaries. For example, denali_read_oob() calls
+> > nand_change_read_column_op(), whereas denali_write_oob() calls
+> > nand_change_write_column_op(). So, I implemented [2] as a callback
+> > passed into [1].
+> >
+> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > ---
+> >
+> > Changes in v2: None
+> >
+> > drivers/mtd/nand/raw/denali.c | 354 +++++++++++++++++++-----------------------
+> > 1 file changed, 163 insertions(+), 191 deletions(-)
+>
+> Too bad that the size of the driver did not shrink more than that :)
+
+Indeed, less than expected.
+
+But, please do not miss this commit is adding
+error check to every operation.
+
+Prior to this commit, the code just ignored the return code
+because 97d90da8a886949f simply replaced old hooks
+despite the new ones return the error code.
+
+
+Generally, every error check costs two lines
+in the following form:
+
+
+  ret = (do something)
+  if (ret)
+           return ret;
+
+
+
+> > +
+> > +static int denali_memcpy_in(void *buf, unsigned int offset, unsigned int len,
+> > +                         void *priv)
+> > +{
+> > +     memcpy(buf, priv + offset, len);
+> > +     return 0;
+> >  }
+>
+> Maybe this "callback" and the (_out cousin) could be part of you
+> controller's structure,
+> and you could use a read/write flag instead of
+> passing the functions' pointer?
+
+This is what the old code does.
+
+There are 4 callbacks for the combination
+of raw/oob, and write/read.
+
+I do not know how your suggestion looks like,
+and whether it will make the code cleaner.
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
