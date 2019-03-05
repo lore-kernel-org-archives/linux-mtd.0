@@ -2,67 +2,80 @@ Return-Path: <SRS0=LjUq=RI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7A84C43381
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 03:40:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40908C43381
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 06:37:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77A0420842
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 03:40:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F74320842
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Mar 2019 06:37:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aF7ImN3d";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjf3g8/H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77A0420842
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RmOTeOe6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="IbpQgqpu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F74320842
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ekn5mAiuGyJLqKx7MkC2OHtAV68oB8RyPVzJXidZduU=; b=aF7ImN3dx6FwA4
-	u3pmAYzB89hO8CC0G7dXQAYYfCyc5nV4PBq7YlObons25x4Re1ZwB+saK0NxGlbmyQiy4iRCzaPnU
-	ZC7gkxJGy98xs1HNgpwMaX5o2fivrKwl62IOGaecAM/n+MJPMujbCSRbrzqTPhjEVFgDppf9LggDp
-	8flwcKtFNg61zuizuEOW0tfyUQOkG2ZxQMk+8Y1oZmqfmDhr+GlHn1GQLkg+5DCbSjB6+rC9hy954
-	mcSinu3Ik4qMFqqYr/C3BZGrjO/fkrdaJ2yGJit3on7bPrMBzhO/YV/LkpApO6Ie+jrHBsw3iWGKD
-	j2pPrznDASCAQnSBpYIQ==;
+	List-Owner; bh=EPEkVD/dSEHYfe+MYEVCFGhe5TUk6iEpZVIjg+DEebw=; b=RmOTeOe6xWfAIa
+	5LguMDE0whPeJgGgJ65MA4/pRlV+HU3FoXiPcVlnneytbYGTMTvBQUKhSTzxkGjj5HYjxQYtFXOiK
+	SvVCEmZdfxiFy2Hdn6PurDd+GxYKxE1kALC61VdWXceP8HCGk79aJ139VgXiZjYWUdK4FgFcLpv5b
+	/rCEyS8dVEHFD2Z09Lh1g7IfrAvHxM/NagFo1p7RYS04/M626SxaVtXLuIRTEKvg76GMHcT9XrpG6
+	x7iVhuEa301I4OQ6TkIomX/qgHHQ7ocyLaj2Ijzs5puXomWSsGM9fRF9g7EUCcQiUR1qN++a1xnUN
+	Bom02t4jGjoBnaRI/0rA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h10w8-0004Ja-6v; Tue, 05 Mar 2019 03:40:12 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1h13hc-0004X6-UU; Tue, 05 Mar 2019 06:37:24 +0000
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h10w0-0003nW-V3
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2019 03:40:06 +0000
-Subject: Re: [GIT PULL] mtd: Changes for 5.1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1551757203;
- bh=kgKUs6CB2OVqa+OQ+Mkv6MbdlbqdAMWR44sDfGqmF2A=;
- h=From:In-Reply-To:References:Date:To:Cc:From;
- b=gjf3g8/H9+JvKK6eWTu1LinNPCEviGPA6jznOdDxsuuBMENe8z/pYEKpWH27EL+Zm
- fOZCsX24YM8FKqUgO0yicxY36roO/pmPA5eWKdMoczuIkrszuhwGQYhltDT7FFS44A
- oLeq/O3jzWdcQMCPG8xptoxhVvgw9PeUaDz/Vh3M=
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20190225094526.580e0dbb@collabora.com>
-References: <20190225094526.580e0dbb@collabora.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190225094526.580e0dbb@collabora.com>
-X-PR-Tracked-Remote: git://git.infradead.org/linux-mtd.git tags/mtd/for-5.1
-X-PR-Tracked-Commit-Id: 9220d7befc9c28bf714701e6e26163644750d871
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 811c16a2a2de6fcdeea188a770600210943f8947
-Message-Id: <155175720373.14960.4410023755111714346.pr-tracker-bot@kernel.org>
-Date: Tue, 05 Mar 2019 03:40:03 +0000
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1h13hZ-0004W0-Qd
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2019 06:37:23 +0000
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com
+ [209.85.222.46]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id x256b0xS024760
+ for <linux-mtd@lists.infradead.org>; Tue, 5 Mar 2019 15:37:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com x256b0xS024760
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1551767821;
+ bh=JbIazAa1ZSJRKnDzcfc5Qsq/YvL6BKExSfpDOizLBOM=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=IbpQgqpuQIyIm4w3dGAF2QD9J64Y+sWrwC1TigKqFKCmbPyT0/4hm1piC6QOnINe0
+ 1Vxm84JAQQxxmErBSzifjSTnkdkj1Mk2aE9twlx/KkpgsiF8IN/64p4A9stI+6mlGR
+ Dh+nKe56SdHYRmzm7u6g/KyfNFUvuAFkx7U+tzHCX8n9CCzcP7WUDNX08hNkz7r95A
+ sVkBW4M13chUMELQbyQacCqdunvKpih2kqfN2H8wum+Bx7L4bIruREStolV+16VdVL
+ 9jIw2vLL2r5a5MJ7ZCBGXH9tSFPhSlg501QAFkTLcvpC9DIK82QRB9AeIcSOJh5sN7
+ XZIZSP6NvxA0Q==
+X-Nifty-SrcIP: [209.85.222.46]
+Received: by mail-ua1-f46.google.com with SMTP id x1so6777113uaj.4
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2019 22:37:00 -0800 (PST)
+X-Gm-Message-State: APjAAAWZ1ORIkxW3ypedxDZYtZ9maE5Jz0K9IueHssW0oneY/tmkoULC
+ tkiVvsAhy0Faxgis0DUqgeL7MNFFVdPCMqUZeZE=
+X-Google-Smtp-Source: APXvYqylV0ZTHhoN/LtvtPh6WbpZJq6c2NEePNdBGGxxDLZ3+qkE3EhSp3as7/KkS18Pu71R6Ddhs+Z6wqxpyC22LAg=
+X-Received: by 2002:a67:7bd3:: with SMTP id w202mr339247vsc.179.1551767819908; 
+ Mon, 04 Mar 2019 22:36:59 -0800 (PST)
+MIME-Version: 1.0
+References: <1549955582-30346-1-git-send-email-yamada.masahiro@socionext.com>
+ <1549955582-30346-6-git-send-email-yamada.masahiro@socionext.com>
+ <20190304094346.3b62e6cd@xps13>
+In-Reply-To: <20190304094346.3b62e6cd@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 5 Mar 2019 15:36:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ4cxLHB_iVZvKdon--4x69HUh0_uJ_zAw89S4XN6aDcg@mail.gmail.com>
+Message-ID: <CAK7LNAQ4cxLHB_iVZvKdon--4x69HUh0_uJ_zAw89S4XN6aDcg@mail.gmail.com>
+Subject: Re: [PATCH v2 05/10] mtd: rawnand: denali: use more precise timeout
+ for NAND_OP_WAITRDT_INSTR
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190304_194005_038444_7758F81F 
-X-CRM114-Status: UNSURE (   2.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190304_223722_096760_D5BA3928 
+X-CRM114-Status: GOOD (  15.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,33 +87,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marex@denx.de>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
  David Woodhouse <dwmw2@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Mon, 25 Feb 2019 09:45:26 +0100:
-
-> git://git.infradead.org/linux-mtd.git tags/mtd/for-5.1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/811c16a2a2de6fcdeea188a770600210943f8947
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKCgpPbiBNb24sIE1hciA0LCAyMDE5IGF0IDU6NDQgUE0gTWlxdWVsIFJheW5h
+bCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBNYXNhaGlybywKPgo+
+IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+IHdyb3RlIG9u
+IFR1ZSwgMTIgRmViCj4gMjAxOSAxNjoxMjo1NyArMDkwMDoKPgo+ID4gQ3VycmVudGx5LCB3YWl0
+X2Zvcl9jb21wbGV0aW9uX3RpbWVvdXQoKSBpcyBhbHdheXMgcGFzc2VkIGluIHRoZQo+ID4gaGFy
+ZC1jb2RlZCBtc2VjX3RvX2ppZmZpZXMoMTAwMCkuIFRoZXJlIGlzIG5vIHNwZWNpZmljIHJlYXNv
+biBmb3IKPiA+IDEwMDAgbXNlYywgYnV0IGl0IHdhcyBjaG9zZW4gdG8gYmUgbG9uZyBlbm91Z2gu
+Cj4gPgo+ID4gV2l0aCB0aGUgZXhlY19vcCgpIGNvbnZlcnNpb24sIE5BTkRfT1BfV0FJVFJEWV9J
+TlNUUiBwcm92aWRlcyBtb3JlCj4gPiBwcmVjaXNlIHRpbWVvdXQgdmFsdWUsIGRlcGVuZGluZyBv
+biB0aGUgcHJlY2VkaW5nIGNvbW1hbmQuIExldCdzIHVzZQo+ID4gaXQgKCsgMTAwIG1zZWMpIHRv
+IGJhaWwgb3V0IGVhcmxpZXIgaW4gZXJyb3IgY2FzZS4gVGhlIDEwMCBtc2VjIGV4dHJhCj4gPiBp
+cyBpbiBjYXNlIHRoZSBoZWF2eSBsb2FkIG9uIHRoZSBzeXN0ZW0uCj4gPgo+ID4gSSBhbSBzdGls
+bCBrZWVwaW5nIHRoZSBoYXJkLWNvZGVkIHZhbHVlcyBmb3Igb3RoZXIgaGlnaGVyIGxldmVsIGhv
+b2tzCj4gPiBzdWNoIGFzIHBhZ2VfcmVhZCwgcGFnZV93cml0ZSwgZXRjLiBXZSBrbm93IHRoZSB2
+YWx1ZSBvZiB0UiwgdFBST0csIGJ1dAo+ID4gd2UgaGF2ZSB1bmtub3dsZWRnZSBhYm91dCB0aGUg
+ZGF0YSB0cmFuc2ZlciBzcGVlZCBvZiB0aGUgRE1BIGVuZ2luZS4KPiA+Cj4gPiBTaWduZWQtb2Zm
+LWJ5OiBNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPgo+Cj4g
+SSByZWFsbHkgYW0gbm90IGNvbnZpbmNlZCBieSB0aGlzIGNoYW5nZS4gUGxlYXNlIGp1c3QgZGVm
+aW5lIGEgdGltZW91dAo+IGJpZyBlbm91Z2ggZm9yIG1vc3QgY2FzZXMgKDEwMDAgaXMgb2theSkg
+YW5kIHVzZSBpdCBzeXN0ZW1hdGljYWxseS4KCgpPSywgSSB3aWxsIGRyb3AgdGhpcyBwYXRjaC4K
+YW5kIGlnbm9yZSBjdHgud2FpdHJkeS50aW1lb3V0X21zLgoKCgoKCj4gVGhhbmtzLAo+IE1pcXXD
+qGwKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwoKCgotLQpCZXN0IFJlZ2Fy
+ZHMKTWFzYWhpcm8gWWFtYWRhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
