@@ -2,63 +2,79 @@ Return-Path: <SRS0=kH4D=RJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4BA1C43381
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2019 14:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1143C43381
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2019 14:08:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B51DC20661
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2019 14:00:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9177A206DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2019 14:08:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="L7jQ0i3k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B51DC20661
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="do89TizB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NB8SnwCc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9177A206DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QIrYsg6UqHiqEVdem3Dyo7I052y00rRxu+ClB+XdGs0=; b=L7jQ0i3k0irJWq
-	EWwX3QWCsciIvxVSVry4b3DxIQiptrPIIehmEn7Xpm/dOMxV75AY838XSRaAqA9fvTYx4iQEsm8mG
-	fcjVWfdkdBwZXIY5D5vI3QqaJ3hIy6bPpef4zbeg2BCgnKfxxBiMt0z1IKh4oDizLlRXhVtkpA/Q6
-	+G49Jh0XWpswTkJC5qCgr+mHII8Q3pb+/8P05yqJ032N/aUa9BQ2lYbnoDK7NA9t6KUU4wryO6Lv3
-	LIK4NIPa/caDSTARNDWdugZBi8dU4wVBYB1DTMwX/3blwIgn/2hNiBphiiSgtZ8i7ZCFjRHEXiE6o
-	qIUMSYjvTAbLS35LKudg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=IwUSd+Vhq5gCD0qitB6GgFKU40e6EFuw5iJwOWVlvMg=; b=do8
+	9TizBK/y3J2h4hhBfaeQ5Ob1N/10r10b6nO/oSwUtbb1dVPvu9kP8hrZfLeWykJWeOMHKjqVoMf2A
+	QIuOoTG7SkfD6ZXYLeg18fklWpYCNPVCjTHa2WPPYosN/pKOEuR0alHCgpw6VlsTH8lPsyooYKGSv
+	lV/4l5MFATHHvL1+5HpJG3vybO6xeI97TADOM1Jjic276E4+zc6Ih0PqfkKOpOJFhgaOjeBJqQwUf
+	qt1L7wVbX+0Fq2pm/9mofs8bDXq2mregwOyftyth7c7NcE6SF/TQY9HhJgjjC6MQMs501K5t5YaLC
+	NRdlC9yCaiSbl5z4YjWn8C7RP9xvGKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h1X5r-00047Z-3p; Wed, 06 Mar 2019 14:00:23 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1h1XDd-0006zW-Ed; Wed, 06 Mar 2019 14:08:25 +0000
+Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h1X5i-00046S-SF
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2019 14:00:21 +0000
-X-Originating-IP: 90.88.150.179
-Received: from xps13 (aaubervilliers-681-1-31-179.w90-88.abo.wanadoo.fr
- [90.88.150.179]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CCFB3240021;
- Wed,  6 Mar 2019 14:00:02 +0000 (UTC)
-Date: Wed, 6 Mar 2019 14:59:42 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: i.MX28 nand driver broken in Linux 4.18
-Message-ID: <20190306145942.625b5c87@xps13>
-In-Reply-To: <17beb0d3-6202-00ee-ff42-a656c4d8cb23@grandegger.com>
-References: <8ec3f0b1-b288-d208-c0e4-431b49719d08@grandegger.com>
- <20190304125435.0e33d362@xps13>
- <e5450dfe-9228-569a-2c59-3b6f7bb05d2d@grandegger.com>
- <17beb0d3-6202-00ee-ff42-a656c4d8cb23@grandegger.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1h1XDa-0006z7-Ep
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2019 14:08:24 +0000
+Received: by mail-ot1-x344.google.com with SMTP id n71so10799236ota.10
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2019 06:08:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=P2lE/VfgoJg1Jq8ZGRhUNszH8kRBipWe35bkHhwScDU=;
+ b=NB8SnwCcaoG7rMm6KR54Ckj6P3mMa8QzMpmxOongRDgyCuhJKuFVh053TEdxQ+2oxi
+ X6s3Lt9ysEAxNsvLsJ7hA2RErEpF1EbYoIdITgAZyWGtpG3SPYUZy9iIe5UojXxsb1RD
+ RaMnVdsMQ0v+aBonBxdphQVWHYeq6HF5isqgHmLtUA2ATj+o61vOIUunBbVefY95duxp
+ Rq6ffD9MErESGu5qYPsePmCb2oOc6YOAJH2x/tOWYabfWaU5X+egi+7rD/YJxgRCPQOk
+ i3DJdPGbpTpcuAfvtAMSGIna56TuMi7mCRTDsscwf8ezxtdfMuN8nGTmthPXxPkxFr5E
+ SnNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=P2lE/VfgoJg1Jq8ZGRhUNszH8kRBipWe35bkHhwScDU=;
+ b=MOVzaBoQLA8/bGMu3jWY0FZ2fP+sUGE18VC3ZZ02cWDzUAoo+xBxSwO7fJ/haiI5WT
+ ATh5oMKf2u8MncFd/7Rh/zBw3Eo9GutZuJJyxisRm8pLXnvR9lSBmd2HFTLtxfhtTDvv
+ nsVXkFInpPM8VnsZIGx9ZZ4wtop9QuCNhu2epcpbSv3aYgZzL35dMkU3+kZH/3R1CX+1
+ C8pNiaKFEHS7tOkZrx3Zan84fqqT23xA2IvpLltL2Korm/ZSMVk//RdNYyjXYINotJcP
+ A5f67vA4GVLUqfBWOaEGbQb6ip+mM7UGu5Uvzp9EYu1tyMrW0+w83PaIRWOun3OhnXSZ
+ Wn9Q==
+X-Gm-Message-State: APjAAAX9Y2wLWi/5I2DLn3M7X8LgJdXjgSD7Z0cBix9Ib8tLgBrkSYlo
+ 1lSnZHF3trJiqejaIJAGsSnFGq3rDBPP9RkzeK7wT6I=
+X-Google-Smtp-Source: APXvYqzWsz4sbLjYcQAvfVNXqgomdAP8ZzmRu88bnz6QkazUTdn+nrQzTiALDHQM3fJA89aT66Xvi+zyEpSOvbCx64E=
+X-Received: by 2002:a9d:803:: with SMTP id 3mr4805723oty.4.1551881300333; Wed,
+ 06 Mar 2019 06:08:20 -0800 (PST)
 MIME-Version: 1.0
+From: Sebastian Falbesoner <sebastian.falbesoner@gmail.com>
+Date: Wed, 6 Mar 2019 15:08:11 +0100
+Message-ID: <CACi0ghs0q1B14mpZOjZB0shm65fDydzYxnaYza4LMZ-cZqZZsA@mail.gmail.com>
+Subject: mtd: fsl-quadspi: kernel panic in fsl_qspi_nor_write() due to access
+ across page boundary
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190306_060015_069732_96EB5C34 
-X-CRM114-Status: UNSURE (   6.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190306_060822_511443_FBC96183 
+X-CRM114-Status: GOOD (  11.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -70,19 +86,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd@lists.infradead.org, Boris Brezillon <bbrezillon@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgV29sZmdhbmcsCgpXb2xmZ2FuZyBHcmFuZGVnZ2VyIDx3Z0BncmFuZGVnZ2VyLmNvbT4gd3Jv
-dGUgb24gVHVlLCA1IE1hciAyMDE5CjE1OjUyOjUyICswMTAwOgoKPiBIZWxsbywKPiAKPiBJIHdp
-bGwgYmlzZWN0IHRoZSBwcm9ibGVtIG5leHQgd2VlayB3aGVuIEkgaGF2ZSBhY2Nlc3MgdG8gdGhl
-Cj4gaGFyZHdhcmUuLi4gbW9yZSBzb29uLi4uCj4gCgpHcmVhdCwgdGhhbmtzLgoKUGxlYXNlIGRv
-bid0IGZvcmdldCB0byBrZWVwIE1URCBtYWludGFpbmVycyBpbiBDYzogdG8gc3BlZWQgdXAgdGhl
-CmRpc2N1c3Npb24uCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Hi,
+
+we noticed that whenever we copy large files (several MB) within a JFFS2
+partition for a flash memory using the fsl-quadspi driver, sporadic kernel
+panics happen, e.g.:
+
+--------------------------------------------------------------------------------
+Unable to handle kernel paging request at virtual address 7fe54000
+pgd = 88ce4000
+[7fe54000] *pgd=9fd5b811, *pte=00000000, *ppte=00000000
+Internal error: Oops: 7 1 PREEMPT SMP ARM
+Modules linked in: [...]
+CPU: 0 PID: 621 Comm: _SVM Tainted: G O 4.1.15-1.2.0+g77f6154 #1
+Hardware name: Freescale i.MX7 Dual (Device Tree)
+task: 88468000 ti: 88d60000 task.ti: 88d60000
+PC is at fsl_qspi_nor_write+0x74/0x13c
+LR is at fsl_qspi_write+0x34/0xa8
+[...]
+[<80362314>] (fsl_qspi_nor_write) from [<80362410>] (fsl_qspi_write+0x34/0xa8)
+[<80362410>] (fsl_qspi_write) from [<80360c04>] (spi_nor_write+0x134/0x178)
+[<80360c04>] (spi_nor_write) from [<80358c78>] (mtd_writev+0xa4/0xec)
+[<80358c78>] (mtd_writev) from [<8020b5d0>] (jffs2_flash_writev+0x3f0/0x480)
+[<8020b5d0>] (jffs2_flash_writev) from [<802047b8>]
+(jffs2_write_dnode+0xc8/0x320)
+[<802047b8>] (jffs2_write_dnode) from [<80204f74>]
+(jffs2_write_inode_range+0x21c/0x2c0)
+[<80204f74>] (jffs2_write_inode_range) from [<801ffc8c>]
+(jffs2_write_end+0xe0/0x1fc)
+[<801ffc8c>] (jffs2_write_end) from [<800a3ec0>]
+(generic_perform_write+0x114/0x1ac)
+[<800a3ec0>] (generic_perform_write) from [<800a58bc>]
+(__generic_file_write_iter+0x178/0x1c8)
+[<800a58bc>] (__generic_file_write_iter) from [<800a5a48>]
+(generic_file_write_iter+0x13c/0x258)
+[<800a5a48>] (generic_file_write_iter) from [<800e05dc>] (__vfs_write+0xa8/0xd8)
+[<800e05dc>] (__vfs_write) from [<800e0d84>] (vfs_write+0x90/0x16c)
+[<800e0d84>] (vfs_write) from [<800e159c>] (SyS_write+0x44/0x9c)
+[<800e159c>] (SyS_write) from [<8000f400>] (ret_fast_syscall+0x0/0x3c)
+[...]
+--------------------------------------------------------------------------------
+
+After analyzing the backtrace of several panic incidents we came to the
+following conclusions:
+
+- the panic happens in drivers/mtd/spi-nor/fsl-quadspi.c:fsl_qspi_nor_write() in
+the following loop filling the TX data into the FIFO in 4-byte-chunks, when
+the txbuf pointer is dereferenced:
+
+static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+                u8 opcode, unsigned int to, u32 *txbuf,
+                unsigned count, size_t *retlen)
+{
+    int ret, i, j;
+    u32 tmp;
+    ...
+    /* fill the TX data to the FIFO */
+    for (j = 0, i = ((count + 3) / 4); j < i; j++) {
+        tmp = fsl_qspi_endian_xchg(q, *txbuf); // <<<<< BOOM!
+        qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
+        txbuf++;
+    }
+    ...
+}
+
+- the virtual address where the access causes trouble is always in the form
+  .....000, i.e. at the beginning of a page
+- the parameters "txbuf" and "count" are set such that the very last byte has
+  the virtual address in the form .....fff, i.e. at the end of a page
+
+Obviously the bad case happens whenever we have the TX data pointer is unaligned
+and the data is at the end of a page -- this causes the last iteration of the
+filling loop to have an access across page boundaries, for example:
+
+       txbuf (count=2)
+         |
+         v
+...-+---+---+---+ || +---+---+---+-...
+... |   | X | X | || | X | X |   | ...
+...-+---+---+---+ || +---+---+---+-...
+                  ^^
+                   \\ page boundary
+
+The one iteration would dereference the txbuf pointer, which accesses two bytes
+within the valid page, but another bytes in the next page which we are not
+guaranteed to have access to, which in turn can cause the kernel panic.
+
+The obvious solution would be to guarantee that txbuf is aligned, but since
+the calling function of fsl_qspi_nor_write() simply casts an incoming u_char
+pointer to an u32 pointer, it is not obvious for me where to fix this:
+
+static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
+        size_t len, size_t *retlen, const u_char *buf)
+{
+    struct fsl_qspi *q = nor->priv;
+
+    fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
+                (u32 *)buf, len, retlen);
+    ..... //    ^^^ this cast creates and unaligned memory pointer
+}
+
+Any recommendation on how to fix this problem?
+Isn't unaligned memory access generally considered a bad practice in linux
+kernel (according to Documentation/unaligned-memory-access.txt) and should be
+avoided?
+
+Best regards,
+Sebastian Falbesoner
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
