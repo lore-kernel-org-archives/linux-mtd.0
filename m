@@ -6,144 +6,90 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F2FC43381
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Mar 2019 10:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C152C43381
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Mar 2019 10:42:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98789207E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Mar 2019 10:06:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13C3F207E0
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Mar 2019 10:42:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f6Jmc7ca";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="adTt9eEK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98789207E0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EIGzNONu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norrbonn-se.20150623.gappssmtp.com header.i=@norrbonn-se.20150623.gappssmtp.com header.b="KWk5mto/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13C3F207E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=norrbonn.se
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1EmtSxzmkhoKnjnVUjEgihebS+TuGjdP4Pj4P3VItY4=; b=f6Jmc7caxCQXto
-	dS3LsHiMh0haAYlOiyYsrQ8Y6bCL6/m1LveJlBQ2GLzC8mKxxe32Cb8kZ53CfSp1vlkXzCZnEOr18
-	/IFt1aFYHx/bVZeL+AWQ8nzea/so1hdjNFOr/cqmO7DblU3nlBsK9AtNisqUf9PW+ieuZasqX+2Z5
-	rCdm1Y0HcMxVcJabwvkTtD6C4ssLLwheHOrY3uCYMG4YzbCe3zcrHoJs6DlGo/lEYJAXKo1/9WarB
-	4YoGFMf42nAPjdenEcbrWgwjEZMEDKOukm2D8t+/j/qBLy3L4DPL51C+pf1netB28KJZHnu1M/yhg
-	I+GXm/QyR3oT/n5ykYaA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=xFLPcKGjPOwnoE+n5fwAVkCc3z3115UekytHZvd2d5g=; b=EIGzNONubgwEYb15wzNSm08HS
+	YpHU43QVGgh28TiyPQ+PraRta96Qu/IQv4EC28a0DCMMbk606j9uOzvo3D6FY15Tb3PRfS7XP22Lu
+	zrgwUPet0yO5f0LFZpexmpzp1s4oh6j7OKD/q2YWWhfMc75jNAI2r2lD2VjrkkCcmfE7Uim2671TL
+	29d3KGp6jyJYu4OGV5+jZnWzIXeQNprDfUybRcbUuf8/vFyCP8XZ82jol+gbl0ex4DV//yeAPDMeE
+	lYBT6OBNlCOMWdB++vWVf+dMtUA9SXt4c5wKuqKRdoREq3Hh1OgkOfKTIi75z3d7YxefpuYy5n3rS
+	UnjiviuBA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h2vLg-0001A4-2x; Sun, 10 Mar 2019 10:06:28 +0000
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
+	id 1h2vux-0003w8-7d; Sun, 10 Mar 2019 10:42:55 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h2vLc-00019g-K9
- for linux-mtd@lists.infradead.org; Sun, 10 Mar 2019 10:06:26 +0000
-X-IronPort-AV: E=Sophos;i="5.58,463,1544511600"; d="scan'208";a="29002305"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 10 Mar 2019 03:06:22 -0700
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.49) with Microsoft SMTP Server (TLS) id
- 14.3.352.0; Sun, 10 Mar 2019 03:06:22 -0700
+ id 1h2vut-0003vj-8M
+ for linux-mtd@lists.infradead.org; Sun, 10 Mar 2019 10:42:53 +0000
+Received: by mail-lj1-x241.google.com with SMTP id a17so1552539ljd.4
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Mar 2019 03:42:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4DFOHDcnJOGSB2OR1jp7FcQZRkn2JLuHqAaVhmRrfMY=;
- b=adTt9eEKZbphtcj3X2qg7WL/8/sbTzq2lC9dchiwuJf9BpV7dTxWLlbim+MetVRmZw3kZIv5OaZ02rKD01hqX/Tl28psFHw5gl/RbJzV6Q5QoHIYHLyLs8Ls2dhr+KNh1ZG0tplEEFtIne7U2NsBT9PC6CZPkx+bhBUimTUMPo0=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB2019.namprd11.prod.outlook.com (10.173.27.135) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1686.20; Sun, 10 Mar 2019 10:06:17 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::85a9:6cf6:d651:128e]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::85a9:6cf6:d651:128e%10]) with mapi id 15.20.1686.021; Sun, 10 Mar
- 2019 10:06:17 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <jonas@norrbonn.se>, <linux-mtd@lists.infradead.org>,
- <bbrezillon@kernel.org>, <marek.vasut@gmail.com>
-Subject: Re: [PATCH v2 3/3] mtd: spi-nor: allow setting the BPNV (default
- locked) bit
-Thread-Topic: [PATCH v2 3/3] mtd: spi-nor: allow setting the BPNV (default
- locked) bit
-Thread-Index: AQHUuB8oUzB2rEqLhUSvblZMn7eTr6YE4YYA
-Date: Sun, 10 Mar 2019 10:06:17 +0000
-Message-ID: <41ca14de-3756-d1fa-4dd2-2a6fe9dc0c38@microchip.com>
+ d=norrbonn-se.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=iFkNRdBHrJ9mSm74UHIzxCrdgTycNZnVfQD4a9WF7CE=;
+ b=KWk5mto//+03J+ZK9o2JHrBku1rMTFkDKJBSpqKluswtAnv7Y+WOfI1eMOGKHC+tgi
+ lFW/PSfdUhW8RBp6KykIrfO6hF1d4nxCV4hhINHM5lhSj7i4vptxgF5+Ew9d7qiiUpPV
+ KfZaS3pk+NVcr023Tn42Z8PyriiGzhUaDzTgHrVTnqZUHoiAT3aX78BUkMATx+z/t+0Z
+ mEfgWi0ick7ZIYxypMY5+azPRC40XH+hDDngiuIk5GvZCNZGT/fEQx7d3emzGZJCktll
+ GZyml4i2clcmXSlb3vKDYFwLi2xzRztEUL4gyTgx8BkRuBQcHl+RghBMiPi5HweLZGuz
+ tVUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=iFkNRdBHrJ9mSm74UHIzxCrdgTycNZnVfQD4a9WF7CE=;
+ b=Xk4egNAmBtExt7jJc7w2E/AUNonNLTDzFF2RSlFeqUnYOycK7zNJmeQwJSOjPp51A6
+ /6f/weym2Nr581ht35E+Oa8lht5mWn7RWdju51oXUdeYuFfUdzwlwoO0ksQUtzxqcm3U
+ vqtxCNu8RfS7E/0gP+3gDu8A6FuYEwkJtZsh6gMiBZUgcT3KPddqQ5ZaPlXzWFTH5fR2
+ wSS6BEJvLsUuu9gWVBsFxkGvP64no78TzlMl+y//pHBMR9QX5LTJNq7XPHOSitXMY81r
+ dH0nNcCFVPmF80x8NnpR1G3yY3mgfT6XIk3ynGOaKncqRRbjNpIYdZs+DShJMjrzJiAN
+ FNJA==
+X-Gm-Message-State: APjAAAUkzEucn+Fqq2sCYgJaSsS/Px4mGyxVcW09oTaHvCawO3luJoBg
+ FymErVzGY4a0LF7z/bLUaR75Ww==
+X-Google-Smtp-Source: APXvYqx5tXVXD8L7ZzZ5tbYglR9XNrbQFsHHE0GuvH8BzRrNkuoqHB+7G89B9E9YMlvICOXcShxLSA==
+X-Received: by 2002:a2e:7e0f:: with SMTP id z15mr12518569ljc.145.1552214568398; 
+ Sun, 10 Mar 2019 03:42:48 -0700 (PDT)
+Received: from [192.168.1.169] (h-29-16.A159.priv.bahnhof.se. [79.136.29.16])
+ by smtp.gmail.com with ESMTPSA id
+ h137sm579146lfg.74.2019.03.10.03.42.46
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sun, 10 Mar 2019 03:42:47 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
+To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
+ James.Tomasetta@cypress.com, Yong.Qin@cypress.com
 References: <20190129220705.5143-1-jonas@norrbonn.se>
- <20190129220705.5143-4-jonas@norrbonn.se>
-In-Reply-To: <20190129220705.5143-4-jonas@norrbonn.se>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR09CA0061.eurprd09.prod.outlook.com
- (2603:10a6:802:28::29) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [5.12.69.190]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c661300d-af89-4fc2-aa9e-08d6a54008f7
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB2019; 
-x-ms-traffictypediagnostic: BN6PR11MB2019:
-x-microsoft-exchange-diagnostics: =?utf-8?B?MTtCTjZQUjExTUIyMDE5OzIzOlVjNlhrWEY5WmlvZktaenVnNzN4TTdGY1Zw?=
- =?utf-8?B?OXpucllmbGxabXFBanpOK1YyOUIvVWhUc0FUVUFxOHM5a3F4R1lrTm9xbVlB?=
- =?utf-8?B?MVV4Y0dINWNGb0R4QWF0cHQ0OG0yMWZHcGRvR0tTM1ZTQjgvMDNBN0hTd1dF?=
- =?utf-8?B?aXMzVEJaNVRBMFRoNU9ncWNJSmp5L2tkQU1taVcyWkRidSs1R1hZaStKMXht?=
- =?utf-8?B?YnYzRUJWNTQ4T1VEbHNvQlBSbWYwNk5qS1lHWEp0cFlWNVk0d1FJMXNKUm9R?=
- =?utf-8?B?dDc1WE1XcFRaM3NTSTY2ZWhsNi95SHZ2WTR1Wm9MRXoraGhEdVl2aVM5RmNj?=
- =?utf-8?B?cFdmZUx3UU9LcGRnZzEyS0RSc291RUNETkQ1ZkR3NnhGUDN1RnMzRmVYNVV0?=
- =?utf-8?B?T1JBVnFzaDhiRUhLRFd2T2lRWWVMaFMrRWhCQlhNbU9lTFBOeVNWVEJTREZF?=
- =?utf-8?B?TlVvOVN4bmpPSHM2RFB3ekhlNGhSSyt5eVFkdWVicGlCdHIyZUxONCtTTWVy?=
- =?utf-8?B?K0RKMjlLQkJMWk1aUjFEbGZvTjFoZU5OWHlnT0NzR0lGNFNKdWY3WHRleGZl?=
- =?utf-8?B?Nk5ua3E0d1RFSi9YOFN2UHJsL25iQ3pXZ3FtU0NvR0Z0djRxblJGd001NzZG?=
- =?utf-8?B?cC9lekwvMXljY1kwWmt3cVc4QlpRYTRtNVVlcyt0Y2JGMEdHaTg5UlZCTUI4?=
- =?utf-8?B?NStCaUQ5Q0FmWWsxNm5Bd1hPblR0NmduNUt2SWFzck05cG9sSVlqZ1pKdmJN?=
- =?utf-8?B?bWJteGZBZGtJWHdjRmpscHRWK0h2emVkTWZhTWxmaHU1aHMrd2xHdXhOMkI2?=
- =?utf-8?B?d1JiSDIvSjRUbjlYZGgranFsck9FVlRncXFKR0dvemNTejkxUWQ2d2xMT00x?=
- =?utf-8?B?UEw4dkI1Sko4d1JNMThnQVJuai9xYUI0N3FpUytEZExUR2hEOEZxK0h2cUhB?=
- =?utf-8?B?RkFYdFRicTB0QWRNY0pFWk5FcFg0dEhQV2xrc1p6a1hvaUZVL2VPVXNOSkpn?=
- =?utf-8?B?MGIyM2ZNVE9XNFB2UmNKRWZ0bFU0WXMzWkNCais0Z2MrVEJ4Q2tkWGtFRmNR?=
- =?utf-8?B?VGNwSXRsYVh5SHhjOHBRaVZubzQ3TGQwYmtCMzFqUDRKeVJMQ1hFelNEUVQr?=
- =?utf-8?B?YVpMMDRWL0J5eGU5MTVNZndsemNkTllsbUFFdGpWMnp3Rmc0VmJUWHFDWXpq?=
- =?utf-8?B?ZHVSV0hyOXdhdC8xUm54QlorcWN4RlFxbUo0T2V0SmhjaHpXQmpyL1RxblVG?=
- =?utf-8?B?MkZDZWo3WlduUnZoVFRFNWhZcGpORkVoTFg1Z015V3pXL0pJR2hIOERYdllM?=
- =?utf-8?B?bkkzNElCdXRLL0M4VlF1Y2xOeXNjYk10OUxXSTRyOURsYy85bEFWSjU4OEVM?=
- =?utf-8?B?aEJZYXVCM1FldVdnQ244aHBIRDMyU3M0RHl3c3lDekowbzdwWCtxZDIxMGpm?=
- =?utf-8?B?TFFHOER4WG9FSHFFc1FlYzUrV3h2aXhCL2xiQlZ2Z0h4VlUwUnh2QjlIN3NR?=
- =?utf-8?B?T29sanF4Y0dhazY2Nm9PZmMxMjVIa1JtQ0MrOU9NYmswYU9NcVlqSWh6ZUli?=
- =?utf-8?B?OVNUbDZBc1FORzk3c2dld29VNkVweGs5WS9BcWx6RXA2MnZnamo4eWFPUFpz?=
- =?utf-8?B?TGllV1QzTWhUZ2xvL3UyQTZZYUZzMkowUldQb0pNdUdHSC9GeHdwbmFnd0Ra?=
- =?utf-8?B?RE8wWkNVdGxqU2NjOFFSckV6YVJqS0VGd3hGT29oUEVRNmVKRitwNk53SUlG?=
- =?utf-8?B?SDF2Z3pOMzZLMUtORGl3aEJQSkhxSzVHUndkRk1KcjdGY3ZJcXdJM3kzQVpj?=
- =?utf-8?B?M0tJT0l3alVwbzFBMUhEM0tMcVRXS2s0VEdSTEFBMGk3N2c9PQ==?=
-x-microsoft-antispam-prvs: <BN6PR11MB2019AAEB53720811AED4C6B6F04F0@BN6PR11MB2019.namprd11.prod.outlook.com>
-x-forefront-prvs: 0972DEC1D9
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(39850400004)(346002)(136003)(366004)(376002)(189003)(199004)(99286004)(11346002)(68736007)(446003)(6506007)(36756003)(71200400001)(6486002)(76176011)(14454004)(97736004)(486006)(105586002)(106356001)(305945005)(476003)(2616005)(7736002)(53936002)(6436002)(31696002)(86362001)(2906002)(2501003)(3846002)(6116002)(4326008)(52116002)(110136005)(229853002)(54906003)(66066001)(25786009)(478600001)(31686004)(186003)(6246003)(71446004)(316002)(8676002)(8936002)(81156014)(14444005)(256004)(102836004)(72206003)(81166006)(6512007)(26005)(5660300002)(386003)(71190400001)(53546011);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB2019;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: QZsqjh3EaonlnbNLXqkO1atTOxFMz+S/JfqFwhtQllNqN/Uxnp+OlH3YsHG7ibEio7tzjSgqEVGPWIMbyzV+Z2Z1Cyhq0+d+UBo5bATm1AjeZKH1vg9sy8cAXdZWOJCGVk1PwlokPuEdFPw7oki0pqT1BsmrJG0/nIFQiuPHxRzuu7FOkjdiaTSLEfui77SK0ywS+iJahWC1J/bLbSXIke5NxKsUh+JeHu+c1Ps6dLMTVo7VaetSrZQMcfkgzjcPzMkw6qeQ6JQ+0kjxoepGpvX+Ps21IO26a4/enrE9TJ9SoJTcOFh2V9WzyyAfFi9aVIK/82gZhpK7aX/FoAaY6pc9N01IVrG3SAj2LOOyqFsdG+rRQAdLYGjUoRcPt/oAYZPO4qmkzPTYNDwJer32e02PybL1epIsVV3aTN5BywM=
-Content-ID: <38B407DBE6AB504B945A545D2C3752CF@namprd11.prod.outlook.com>
+ <20190129220705.5143-2-jonas@norrbonn.se>
+ <db7aef53-43bc-2c14-12bc-2f0d452b4bc8@microchip.com>
+From: Jonas Bonn <jonas@norrbonn.se>
+Message-ID: <cb41d4e3-d300-89da-3378-6305699d610c@norrbonn.se>
+Date: Sun, 10 Mar 2019 11:42:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: c661300d-af89-4fc2-aa9e-08d6a54008f7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2019 10:06:17.0295 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB2019
-X-OriginatorOrg: microchip.com
+In-Reply-To: <db7aef53-43bc-2c14-12bc-2f0d452b4bc8@microchip.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190310_030624_829639_2A59308E 
-X-CRM114-Status: GOOD (  26.49  )
+X-CRM114-CacheID: sfid-20190310_034251_339537_935FE344 
+X-CRM114-Status: GOOD (  25.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -155,289 +101,128 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="us-ascii"
+Cc: richard@nod.at, computersforpeace@gmail.com, dwmw2@infradead.org,
+ marek.vasut@gmail.com, bbrezillon@kernel.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Jonas,
+Hi,
 
-On 01/30/2019 12:07 AM, Jonas Bonn wrote:
-> Setting the BPNV bit defaults the block protection bits BP0-2 to 1 at
-> reset.  This means that all the flash sectors are protected until they
-> are explicity unlocked by the user.
+On 10/03/2019 10:58, Tudor.Ambarus@microchip.com wrote:
+> + James and Yong from Cypress.
 > 
-> Together with protection of the status register via the SRWD bit and the
-> WP# signal, this allows a flash device to be effectively protected from
-> erasure by unauthorized actors.
+> Hi, Jonas, James, Yong,
 > 
-> The patch has been tested with a Cypress s25fl512s and works as
-> advertised.  The concern that I have with this, though, is that the BPNV
-> bit is "write once":  if somebody inadvertently sets this feature on the
-> device, it is irrevocable!  Whether or not this actually belongs in the
-> mainline kernel is therefore up for debate...
+> On 01/30/2019 12:07 AM, Jonas Bonn wrote:
+>> The status register bit SRWD (status register write disable) is
+>> described in many words in the datasheets but effectively boils down to:
+>>
+>> i) if set, respect WP# when trying to change protection bits;
+>> ii) if unset, ignore WP# when trying to change protection bits
+>>
+>> In short, the bit determines whether the WP# signal is honored or not.
+>>
+>> It's difficult to imagine the use-case where the WP# is connected and
+>> asserted but the user doesn't want to respect its setting.  As such,
+>> this patch sets the SRWD bit unconditionally so that the WP# is _always_
+>> respected; hardware that doesn't care about WP# normally won't even have
+>> it connected.
+>>
+> 
+> Always setting SRWD to 1, dismisses the need of a SRWD bit in the first place.
+> Do you know why Cypress made this bit configurable and didn't enable it by default?
 
-My opinion is that OTP bits should be set at manufacturer sites or in a client's
-controlled environment. I wouldn't add this in kernel. But maybe Marek or Boris
-think otherwise?
+I suspect it has some historical relevance; as things currently stand, I 
+don't see how it's useful in its current form.
 
-Cheers,
-ta
+We initially thought that the WP# signal turned on/off block protection 
+but that's not the case; the block protection bits BP0-BP2 turn on/off 
+block protection and the WP# signal only protects the BP[0-2] bits from 
+being modified.  Turning off the WP# functionality via the SRWD bits 
+means that the BP[0-2] bits are always modifiable and therefore the 
+flash device is never really protected from writes by a malicious actor.
+
+The key question here is:  if the WP# signal is connected, why would you 
+ever want its state to be ignored by the device?  De-asserting the 
+signal has the same effect as setting the SRWD bit.  And the default 
+state is un-asserted if the signal is not connected, so that case is 
+covered, too.  I see no reason not to just always set SRWD and thereby 
+make the WP# signal do what one expects of it, always.
+
+/Jonas
+
 
 > 
-> Signed-off-by: Jonas Bonn <jonas@norrbonn.se>
-> CC: Marek Vasut <marek.vasut@gmail.com>
-> CC: David Woodhouse <dwmw2@infradead.org>
-> CC: Brian Norris <computersforpeace@gmail.com>
-> CC: Boris Brezillon <bbrezillon@kernel.org>
-> CC: Richard Weinberger <richard@nod.at>
-> CC: linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/mtdchar.c         |   6 ++
->  drivers/mtd/mtdcore.c         |   8 +++
->  drivers/mtd/spi-nor/spi-nor.c | 102 +++++++++++++++++++++++-----------
->  include/linux/mtd/mtd.h       |   2 +
->  include/linux/mtd/spi-nor.h   |   1 +
->  include/uapi/mtd/mtd-abi.h    |   1 +
->  6 files changed, 88 insertions(+), 32 deletions(-)
+> Cheers,
+> ta
 > 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index affb0ac39928..31dd308d34b1 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -803,6 +803,12 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  		break;
->  	}
->  
-> +	case MEMSETDEFAULTLOCKED:
-> +	{
-> +		ret = mtd_set_default_locked(mtd);
-> +		break;
-> +	}
-> +
->  	case MEMLOCK:
->  	{
->  		struct erase_info_user einfo;
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 254c3b413213..3cae22f161cb 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1759,6 +1759,14 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
->  }
->  EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
->  
-> +int mtd_set_default_locked(struct mtd_info *mtd)
-> +{
-> +	if (!mtd->_set_default_locked)
-> +		return -EOPNOTSUPP;
-> +	return mtd->_set_default_locked(mtd);
-> +}
-> +EXPORT_SYMBOL_GPL(mtd_set_default_locked);
-> +
->  /* Chip-supported device locking */
->  int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  {
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d6840c2b15dd..4f9b82ff87ce 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -250,7 +250,7 @@ struct flash_info {
->  	u16		page_size;
->  	u16		addr_width;
->  
-> -	u16		flags;
-> +	u32		flags;
->  #define SECT_4K			BIT(0)	/* SPINOR_OP_BE_4K works uniformly */
->  #define SPI_NOR_NO_ERASE	BIT(1)	/* No erase command needed */
->  #define SST_WRITE		BIT(2)	/* use SST byte programming */
-> @@ -279,6 +279,10 @@ struct flash_info {
->  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
->  #define USE_CLSR		BIT(14)	/* use CLSR command */
->  #define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */
-> +#define SPI_NOR_HAS_BPNV	BIT(16) /* Block protection bits can be set
-> +					 * non-volatile, meaning all blocks
-> +					 * are protected by default at reset
-> +					 */
->  
->  	/* Part specific fixup hooks. */
->  	const struct spi_nor_fixups *fixups;
-> @@ -1324,6 +1328,36 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
->  	return write_sr_and_check(nor, status_new, mask);
->  }
->  
-> +/*
-> + * Write status Register and configuration register with 2 bytes
-> + * The first byte will be written to the status register, while the
-> + * second byte will be written to the configuration register.
-> + * Return negative if error occurred.
-> + */
-> +static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
-> +{
-> +	int ret;
-> +
-> +	write_enable(nor);
-> +
-> +	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev,
-> +			"error while writing configuration register\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = spi_nor_wait_till_ready(nor);
-> +	if (ret) {
-> +		dev_err(nor->dev,
-> +			"timeout while writing configuration register\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +
->  /*
->   * Check if a region of the flash is (completely) locked. See stm_lock() for
->   * more info.
-> @@ -1342,6 +1376,35 @@ static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
->  	return stm_is_locked_sr(nor, ofs, len, status);
->  }
->  
-> +static int spi_nor_set_default_locked(struct mtd_info *mtd)
-> +{
-> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> +	struct device *dev = nor->dev;
-> +	u8 sr_cr[2];
-> +	int ret;
-> +
-> +	ret = read_cr(nor);
-> +	if (ret < 0) {
-> +		dev_err(dev, "error while reading configuration register\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (ret & CR_BPNV)
-> +		return 0;
-> +
-> +	sr_cr[1] = ret | CR_BPNV;
-> +
-> +	/* Keep the current value of the Status Register. */
-> +	ret = read_sr(nor);
-> +	if (ret < 0) {
-> +		dev_err(dev, "error while reading status register\n");
-> +		return -EINVAL;
-> +	}
-> +	sr_cr[0] = ret;
-> +
-> +	return write_sr_cr(nor, sr_cr);
-> +}
-> +
->  static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  {
->  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> @@ -1387,35 +1450,6 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  	return ret;
->  }
->  
-> -/*
-> - * Write status Register and configuration register with 2 bytes
-> - * The first byte will be written to the status register, while the
-> - * second byte will be written to the configuration register.
-> - * Return negative if error occurred.
-> - */
-> -static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
-> -{
-> -	int ret;
-> -
-> -	write_enable(nor);
-> -
-> -	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
-> -	if (ret < 0) {
-> -		dev_err(nor->dev,
-> -			"error while writing configuration register\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	ret = spi_nor_wait_till_ready(nor);
-> -	if (ret) {
-> -		dev_err(nor->dev,
-> -			"timeout while writing configuration register\n");
-> -		return ret;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  /**
->   * macronix_quad_enable() - set QE bit in Status Register.
->   * @nor:	pointer to a 'struct spi_nor'
-> @@ -1886,8 +1920,8 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR) },
->  	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
-> -	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | USE_CLSR) },
-> -	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | USE_CLSR) },
-> +	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BPNV | USE_CLSR) },
-> +	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_HAS_BPNV | USE_CLSR) },
->  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
->  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
->  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-> @@ -4066,6 +4100,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  		mtd->_is_locked = spi_nor_is_locked;
->  	}
->  
-> +	if (info->flags & SPI_NOR_HAS_BPNV) {
-> +		mtd->_set_default_locked = spi_nor_set_default_locked;
-> +	}
-> +
->  	/* sst nor chips use AAI word program */
->  	if (info->flags & SST_WRITE)
->  		mtd->_write = sst_write;
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index b78e2c1b27b1..a07468b6677d 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -346,6 +346,7 @@ struct mtd_info {
->  	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
->  			unsigned long count, loff_t to, size_t *retlen);
->  	void (*_sync) (struct mtd_info *mtd);
-> +	int (*_set_default_locked) (struct mtd_info *mtd);
->  	int (*_lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  	int (*_unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  	int (*_is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
-> @@ -535,6 +536,7 @@ static inline void mtd_sync(struct mtd_info *mtd)
->  int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
->  int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-> +int mtd_set_default_locked(struct mtd_info *mtd);
->  int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs);
->  int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs);
->  int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 2353af8bac99..c7cc84a5c8f6 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -144,6 +144,7 @@
->  #define FSR_PT_ERR		BIT(1)	/* Protection error bit */
->  
->  /* Configuration Register bits. */
-> +#define CR_BPNV			BIT(3)	/* Block protection non-volatile */
->  #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
->  
->  /* Status Register 2 bits. */
-> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-> index aff5b5e59845..27b752796efa 100644
-> --- a/include/uapi/mtd/mtd-abi.h
-> +++ b/include/uapi/mtd/mtd-abi.h
-> @@ -204,6 +204,7 @@ struct otp_info {
->   * without OOB, e.g., NOR flash.
->   */
->  #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
-> +#define MEMSETDEFAULTLOCKED	_IO('M', 25)
->  
->  /*
->   * Obsolete legacy interface. Keep it in order not to break userspace
-> 
+>> Tested on a Cypress s25fl512s.  With this patch, the WP# is always
+>> respected, irregardless of whether any flash protection bits are set.
+>>
+>> Signed-off-by: Jonas Bonn <jonas@norrbonn.se>
+>> CC: Marek Vasut <marek.vasut@gmail.com>
+>> CC: David Woodhouse <dwmw2@infradead.org>
+>> CC: Brian Norris <computersforpeace@gmail.com>
+>> CC: Boris Brezillon <bbrezillon@kernel.org>
+>> CC: Richard Weinberger <richard@nod.at>
+>> CC: linux-mtd@lists.infradead.org
+>> ---
+>>   drivers/mtd/spi-nor/spi-nor.c | 17 +++++++++--------
+>>   1 file changed, 9 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 13a5055e5f3f..4c8ce2b90838 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1231,9 +1231,6 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>>   
+>>   	status_new = (status_old & ~mask & ~SR_TB) | val;
+>>   
+>> -	/* Disallow further writes if WP pin is asserted */
+>> -	status_new |= SR_SRWD;
+>> -
+>>   	if (!use_top)
+>>   		status_new |= SR_TB;
+>>   
+>> @@ -1313,10 +1310,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>>   
+>>   	status_new = (status_old & ~mask & ~SR_TB) | val;
+>>   
+>> -	/* Don't protect status register if we're fully unlocked */
+>> -	if (lock_len == 0)
+>> -		status_new &= ~SR_SRWD;
+>> -
+>>   	if (!use_top)
+>>   		status_new |= SR_TB;
+>>   
+>> @@ -3898,6 +3891,7 @@ static int spi_nor_setup(struct spi_nor *nor,
+>>   static int spi_nor_init(struct spi_nor *nor)
+>>   {
+>>   	int err;
+>> +	int sr;
+>>   
+>>   	/*
+>>   	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+>> @@ -3933,7 +3927,14 @@ static int spi_nor_init(struct spi_nor *nor)
+>>   		set_4byte(nor, true);
+>>   	}
+>>   
+>> -	return 0;
+>> +	/* Always respect the WP# (write-protect) input */
+>> +	sr = read_sr(nor);
+>> +	if (sr < 0) {
+>> +		dev_err(nor->dev, "error while reading status register\n");
+>> +		return -EINVAL;
+>> +	}
+>> +	sr |= SR_SRWD;
+>> +	return write_sr_and_check(nor, sr, SR_SRWD);
+>>   }
+>>   
+>>   /* mtd resume handler */
+>>
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
