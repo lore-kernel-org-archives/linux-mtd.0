@@ -3,147 +3,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB20BC43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Mar 2019 14:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFA86C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Mar 2019 20:15:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA75620657
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Mar 2019 14:06:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDEE92147C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Mar 2019 20:15:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TbV1Z1C0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="Wi7v8XJj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA75620657
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y+MfoRR+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cypress.com header.i=@cypress.com header.b="vp0OPB7Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDEE92147C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cypress.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+Yd53pAlKzeYiQbz/mdmpNc3IYo8xFwBikfSgkHvxGg=; b=TbV1Z1C08yZ8z9
-	7QlmwXtxI49khbZmGv5ttTco2VUN8rZc6Atcw8HHOfN3QyVeI2sYjxwECCkaIWDN6fWEHOBZOkPZ+
-	suzWw+DAK+QhrrfAJC4J+TqAEMo7wPp3u1FwzHj+CSoMsm6hO/ut7c/TfWhS9krj+r6hDiqZue6Y6
-	itkcxfciJZ/+H96HwvtKktzHGQrJYgjOtGFKI6hmwIU9Azris2r4uMjOUnHYoaGGWpi+aWzaRS1Zz
-	E9uLQTIQOgJBOmuo+8Y9jYPY/I1WsNCwUjJHB+3SW2oXKeczxL8y4lfOMY2qGrs6dMIS4qsTKGobb
-	ejy0SGGOa/9NIVoT6T0Q==;
+	List-Owner; bh=3diIr3+OSTQxgqQC1aaFT/PaXY5GEmx2lgm18/OXiuA=; b=Y+MfoRR+KT0hF4
+	a3pOsflhaeEuR3qtDn4X6DKLU7r7ysxOfLERfKvFkEtKotX+79wGZBvP9lvd0SZvNrCDSBf7sieV9
+	HM9+XW+XpjDB7iVRw8Q5Q6RY1+9yFZ9ueWe70mA9EoYXMnTphH6P3Vie5/NC9Jy2v/gQLTMLRkabs
+	BPq5Ecs6jmZkmPCSwyfWfkodYmOh1z5pfNb3r9mRzJw9Nu/mYpeCpy0H25zKK0Sg9iMDscO+7/oVb
+	etvdZ9iymxy0BLI373tBdE2AW60SpMj+Du/VfkJtuXwpM4iiQ9IBly6PvfnYzdI5Dd/eQ6vsRA+2c
+	PG07xsAyAMJljXLWF+/Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h3LZ4-0002Aa-1R; Mon, 11 Mar 2019 14:06:02 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1h3RKH-0002sL-1J; Mon, 11 Mar 2019 20:15:09 +0000
+Received: from mail-eopbgr750091.outbound.protection.outlook.com
+ ([40.107.75.91] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3LYt-00029w-FB
- for linux-mtd@lists.infradead.org; Mon, 11 Mar 2019 14:05:58 +0000
-X-IronPort-AV: E=Sophos;i="5.58,468,1544511600"; d="scan'208";a="25937913"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 11 Mar 2019 07:05:48 -0700
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.49) with Microsoft SMTP Server (TLS) id
- 14.3.352.0; Mon, 11 Mar 2019 07:05:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
+ id 1h3RKD-0001hd-2m
+ for linux-mtd@lists.infradead.org; Mon, 11 Mar 2019 20:15:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cypress.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ys+imZDdGNowT5+tkZzLv4JDqIhLkXszR4+DGOxrnYo=;
- b=Wi7v8XJjFPMRzFe6vH1xgJ/Ikg4lhy8zbl1lO0c0tMSv3vUe94Fzc98tJMcS5S1uho0abTnfsAAtP8Om9IXt9SFH60i+KUQZCSw6+56TA3ezkOg3l6F4k+NmUjpYYXGYIHPBjiy8iLC9NfVvuyEBmBiByjTvQAHKg6mqST4qpe0=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1761.namprd11.prod.outlook.com (10.175.99.12) with Microsoft SMTP
+ bh=TR0odx7WlXgEMltW5fckLOX6omuhpj/ATn9pxiSlqJI=;
+ b=vp0OPB7Z0y6blr8heCtZH1sQm9IBIYruKKE7KUD3I/KHOam9HTb0kiTeWryZajsD7UkjRPoDNSbGF2xu6YQljEFlZtyux0Z1S1KlzJ/7AJ1Z7j179D5W/HWxBCmtr8O3yrSIAHes7GgyEZLMtFrQAF6ZvR3lM/0P5EO1QRFvQ5Y=
+Received: from BYAPR06MB5893.namprd06.prod.outlook.com (20.179.157.74) by
+ BYAPR06MB5878.namprd06.prod.outlook.com (20.179.157.15) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1686.19; Mon, 11 Mar 2019 14:05:45 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::85a9:6cf6:d651:128e]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::85a9:6cf6:d651:128e%10]) with mapi id 15.20.1686.021; Mon, 11 Mar
- 2019 14:05:45 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <jonas@norrbonn.se>, <James.Tomasetta@cypress.com>, <Yong.Qin@cypress.com>
-Subject: Re: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
+ 15.20.1686.18; Mon, 11 Mar 2019 20:14:59 +0000
+Received: from BYAPR06MB5893.namprd06.prod.outlook.com
+ ([fe80::9995:d549:6e1c:c360]) by BYAPR06MB5893.namprd06.prod.outlook.com
+ ([fe80::9995:d549:6e1c:c360%7]) with mapi id 15.20.1686.018; Mon, 11 Mar 2019
+ 20:14:59 +0000
+From: Yong Qin <Yong.Qin@cypress.com>
+To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>,
+ "jonas@norrbonn.se" <jonas@norrbonn.se>, James Tomasetta
+ <James.Tomasetta@cypress.com>
+Subject: RE: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
 Thread-Topic: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
-Thread-Index: AQHUuB8ZhXd2N1Mh6EWe4SXNj0Cyz6YE33oAgAAMRYCAAcsCAA==
-Date: Mon, 11 Mar 2019 14:05:45 +0000
-Message-ID: <6e20b1c1-4eaf-bdcc-aec4-59dcbe2a8a34@microchip.com>
+Thread-Index: AQHUuB8ZhXd2N1Mh6EWe4SXNj0Cyz6YE33oAgAAMRYCAAcsCAIAAWT4w
+Date: Mon, 11 Mar 2019 20:14:59 +0000
+Message-ID: <BYAPR06MB5893F6DEA9B0965E234983CD8F480@BYAPR06MB5893.namprd06.prod.outlook.com>
 References: <20190129220705.5143-1-jonas@norrbonn.se>
  <20190129220705.5143-2-jonas@norrbonn.se>
  <db7aef53-43bc-2c14-12bc-2f0d452b4bc8@microchip.com>
  <cb41d4e3-d300-89da-3378-6305699d610c@norrbonn.se>
-In-Reply-To: <cb41d4e3-d300-89da-3378-6305699d610c@norrbonn.se>
+ <6e20b1c1-4eaf-bdcc-aec4-59dcbe2a8a34@microchip.com>
+In-Reply-To: <6e20b1c1-4eaf-bdcc-aec4-59dcbe2a8a34@microchip.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1P195CA0029.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:5a::18) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
+ smtp.mailfrom=Yong.Qin@cypress.com; 
+x-originating-ip: [99.228.74.150]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: db324452-9ac4-44eb-8925-08d6a62aa776
+x-ms-office365-filtering-correlation-id: a735b9c7-9423-4991-0b80-08d6a65e3cfe
+x-ms-office365-filtering-ht: Tenant
 x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB1761; 
-x-ms-traffictypediagnostic: BN6PR11MB1761:
-x-microsoft-exchange-diagnostics: =?utf-8?B?MTtCTjZQUjExTUIxNzYxOzIzOnRudDhEdTEvbjBKMldqU2lob0YvUUxRQUF1?=
- =?utf-8?B?SHNUTTNBQm5DM0xyaFNsaThjMFhBVTVob1gyZGFucHJhRFRtLzZCNThFU1pv?=
- =?utf-8?B?UFFLVzNCMmlMODNoS2VyU1pUdGdVcXJabzFid3RKQTRCRnZudVFQSU9pK3Vr?=
- =?utf-8?B?bXM5aXJaWnZmbDlJbGRNWm1TNXF2VWQrRzlPMmNUakpJbHV3cXJ2VkFnMGwz?=
- =?utf-8?B?RzFCcEZnWCtrcU12TGh1WVRvM1RVYzlTZDlJRHRQNHV5R1AvSWVBeEMzdzVj?=
- =?utf-8?B?clpDMEpBVEx2YUVXbWMvZTlxZjlSc2krUzBsRDJjNHZDL2R2ZnY2aW5PM2t5?=
- =?utf-8?B?V2YvU1pnbHpTeFo0RWNVb05uNFdXVlMxUFo3N2J5U1JFMHYzeXh1aHpFdXMw?=
- =?utf-8?B?WndJcGhkNGV6Rm0yTXNFOGFwdkp2STVzSUtpT25lRnkxMmljYThFeGVXWmcx?=
- =?utf-8?B?T0Q1MFpvRG5ZODlvVjRYenRlQ1d0VjdQajlxc29XaG1RMnJ3TGRHUUJzelo3?=
- =?utf-8?B?dE1zT2pMSFBZRHpDVjl1L2JBVytSK3JqbnZGbHVNVHVoS1pmTTd4WnhRQlhG?=
- =?utf-8?B?NjRvRXRzQlJ4WTE0eEFubzk2M1Q1bDUzRy9UYW1BR0VzcEl6R1UvYWhuQWRC?=
- =?utf-8?B?ZTlwem51OHhuK1p2U2d6ak5jamt1VWFYWXRncy9tUDE4bC9BbnN1OGMyN3BW?=
- =?utf-8?B?WnpFQ2dNY1A4S3B1WFFnU0lKU1YxQ3Rvb0VsWEhPbXQ0UFNHRk5McS93clJ0?=
- =?utf-8?B?N2F6ZUw0NXZEY1F0SUloZG96OWIxdzBMZS8vVlI1VXNsR3Z0bjZRYlNQVVlU?=
- =?utf-8?B?WEVhVS9HcHQrd2hZc3NhWGZ4UWh2UFJrNXY5N3hNOVM4NnY0VmVHSzFCOGJx?=
- =?utf-8?B?a1dhMi9DUmR5RTVnc0NlUkxaaTZwTVNuZXlUZG9vd25NTEtLcVR6R1pNTW9M?=
- =?utf-8?B?U1hDK21NSnYweEp5R0JJRzdWRmw5QmU0ZThZR1hxRFRiRzdrSTFvV3dCV3o4?=
- =?utf-8?B?d1pVQTVLb2ZsSHQrVmJ2SU9zYjZUZ0ZpQ2MxajZPcVAxMG14SE9EMU5Tc0hl?=
- =?utf-8?B?UGtBUkFmSFFac3N1UHBmWU9QV3dOWWtNb0ZKWWR2OWpodEdNS3BtcjlBczhS?=
- =?utf-8?B?em1PdzFuR0pacjh1Wjc5WDNrRjBpWStRb041VEVVbkhjbEdxSFVhak9WY3I5?=
- =?utf-8?B?a1lJRVpRUWtNU2tZbitOMFVRaTVSZjJjcEQyUUdwRExnR1ptME8xNGNKREoy?=
- =?utf-8?B?Z0hnZkhFT3BNUU9uZHJhWkhLa2Vtd2lYd3FvRlJMOTJOanJkRkhYeTRFc1J3?=
- =?utf-8?B?RmxFcmtEMGo5VzdUeThvbXppekU1c3hvY0czVGJPS3JwYVoreW5GWGJIczZx?=
- =?utf-8?B?ZlJXczZWa2U0SEVoZ1VmaEZTQ0dmWXlUU016bCtCdDhzdFJsTzlHTUJJRmRi?=
- =?utf-8?B?N0tDdFNMRDVSYlRmOGpuakF5TzcxRFRtN1ZwVCtacU1LNGY2TE9XUmtqMktO?=
- =?utf-8?B?K3pUR3hmYStWZ0Y5WHlyQUxlYzRRUTNhZjVzRlBhTk5TNjI4VG5CbUtUM0N4?=
- =?utf-8?B?YmZBVUV6NjVmVHNJazhVVHRCQ2NuWSs3cUN2WlZ1WE8rTm9lSm1DdHAwekwz?=
- =?utf-8?B?NVBEN3QvUUJwdFBWSXd0VFdaT0ZkNCs0ejdpUXZXM3dUMjg3WVR3WHdReGNS?=
- =?utf-8?B?L0hIZ3ZtbGJNdm90KzNhVFdXbThWMFBMZVVLMVN4WUlHbEJ1UHFINEl4Ukh0?=
- =?utf-8?B?Q05aRnI0L0FBTElCSWdUVEJTZDJNRHg5dWJkd2FvQU9EM0d6QU5SRWxkMEtB?=
- =?utf-8?B?b3FPaW5TcG9FbEc1R0M2dStNaUNFV3gydDBiQ2s3b0FxbDJKZEFRNGpYbzZx?=
- =?utf-8?Q?NcoeiWfAB8ysGlY1wSFptg/baY/+8hgh?=
-x-microsoft-antispam-prvs: <BN6PR11MB1761F5E1A4258E5ADFC4A10CF0480@BN6PR11MB1761.namprd11.prod.outlook.com>
+ RULEID:(2390118)(7020095)(4652040)(8989299)(5600127)(711020)(4605104)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7153060)(7193020);
+ SRVR:BYAPR06MB5878; 
+x-ms-traffictypediagnostic: BYAPR06MB5878:
+x-microsoft-exchange-diagnostics: =?utf-8?B?MTtCWUFQUjA2TUI1ODc4OzIzOjVUK0tXK0RZZzRNNzRDaWRTS0sxVTdaUk5t?=
+ =?utf-8?B?S2dVVDhWOWJZMXJzeUN4bVYvWndxeEVGVHROSEwzUUROcSt6ZWl4amNCMk1L?=
+ =?utf-8?B?b1A2aDl6elk2OVFDNTcvVWNxM0I2YjFKZDJ4Tm1uRDRNb3hCbk9iUTk3Qi9u?=
+ =?utf-8?B?cFJsSVVoYW1mRWE3UWJVbEJ5aEd4ZWJ5UFQxTDNiOUVENGIxMXNXNXFPcE55?=
+ =?utf-8?B?VjFjREptamxySmN6MjI2aHloMjhYN2dOMDNlRkh4czdxQ05CNWw5UmJWbGV0?=
+ =?utf-8?B?Q1RKRGdidDdOTkZzTnkrYUJZcTBjbFFyOCtQQ2wyV214Mm4vL1I1Zmp3RElZ?=
+ =?utf-8?B?eHZXK3RLdExhNklPejJJTUIza2VoZzk1d1RXckdTSGdBQVZOTjB4L0o0K1BB?=
+ =?utf-8?B?UUhsUEhPa0NvNWxGdWwvd2J6TVBFNzF3UndZbldyQU1aRUNoSEpYVDlKQVpO?=
+ =?utf-8?B?ZVpnanRDdHEyNFMvK3E0TjBJY044Q0U5bzdDWXVvK0gvcFJhUU1jd1B6UFhV?=
+ =?utf-8?B?V0VNYlk5SlVrYXRiVEo5KzZZcFRFWHpxSzVhekUxc2JjMVp4MVZEUVNqa2VL?=
+ =?utf-8?B?QVZ1Wmg5T0xNZHpHV3RBK0J4NGxRcWkvYW10MVhhOHhLdHdMYXNRZkRVZ2Mz?=
+ =?utf-8?B?ZnFNOW1rV0NpVzJoYUkyNkppdkVqMU5DcXVSaCtWdFpSN2dqeThMWDd0bUhH?=
+ =?utf-8?B?d29ISHZpT1owdGFCVmR6cmM3VTVZQnZkME10Z0lVREJQK1I4VGRrT3p1Z0lj?=
+ =?utf-8?B?UVovY1pXSXVEckFXdXY4bHlIYisrdkRyZmJVcXI3UDQ1T0g5T05LVEp0WkpL?=
+ =?utf-8?B?ZkpJRENOQjJEWGt5S1JHSGJtNUpKZ0hTZGZ0THlmOWUzN0M2Um51bUpIYUJk?=
+ =?utf-8?B?N2FHT3NydWFFY0V5NEp1OXFzWm9DcWk3ZEMrY2ZMR3Fkdk5VRi9tT2V1U2Za?=
+ =?utf-8?B?VC8vZnJTaVZZa2hMdHQ5d0ZGZXpQUlN4bG9KU0IxQm5tbEJ3VXc3ZVBwSHh0?=
+ =?utf-8?B?ZmF1Z2dZTmFOdVc2c24yOTJ1cEd3bnFPWndFQVdnQWlWQkFIRUxYbzVFNGFP?=
+ =?utf-8?B?U21JOXdLYjJyTXBscXFCZzRQdUxURnpVNU5RK2l5ajVpdXdaakdMakFkNXJZ?=
+ =?utf-8?B?NHJLQlBpbnIzclJ1YXdMekhTdFVmYXhPOXBvb1pMcDRueUp1QXhldVpObS9k?=
+ =?utf-8?B?bkM1T1lJNE9IdTErWDQxVkp3K2RDSjBGZkpOUkdNTi94R3ZoRkRER2NCNWhh?=
+ =?utf-8?B?S1lRdGtCRHVLL3Y0VXBJNzdQdVlpWGo0VGxQT2c1b0xKSXhvZDFTRWUvNWoz?=
+ =?utf-8?B?djMyVWphektYVkRaUFQ1MVI1b1lpRHVXNVdHaktkcGpaNkJpd1pvTTM5MkZl?=
+ =?utf-8?B?QWE2RmJVdnZvb1BtUFRVNkFKMkZNUFVvYTZ2SU5pRTRKM1FyVVRHZXNTbk5k?=
+ =?utf-8?B?cWFqUmN0QmpsbzVuck1KQ2FqSXFLTkUvNytmMmhxTjhZOWcrOVpCMHBZbVRN?=
+ =?utf-8?B?U05pOXdkT3dnTmxxTHJNUzI1V2h0QWdjU2xFdUhPOXJIbHc0L3NOZHhaV2Qv?=
+ =?utf-8?B?YXgvZXJuZlFpU3ArWW55MW93TTZJVU1UMTJ0c29IWGhJZ2V6VndhVDQ3T3hQ?=
+ =?utf-8?B?UGFiSmdlcS9kWmR3K1dvS2JHTVlEUmNJVlBJODFSRHZWeHZYN1ZZNXFKbi9p?=
+ =?utf-8?B?UUEvRVZqeEJTbnRwWEgzRndxTlhyVEZzRjRrUkgxYnBaMFk4djIwcXBxMFdF?=
+ =?utf-8?B?c0xHblBFdzQxNnhWdHVRM2x3TzFnbjJQUitCS1l5TmZLQzR2VlE1WDhzUUlu?=
+ =?utf-8?B?L3ZLQ3N0bTBseVRhWnNHcWY5anBwVHAvSlQ4ZmdjYVJhSWhvVVp4ZkFPczc0?=
+ =?utf-8?B?QVBjWWhUWmZZbkZNVGdtYjlYTFpXU3ordWtSUWhEUlByVnRQdnZsbWc1TlFF?=
+ =?utf-8?B?TXZ5dVhNTmlRPT0=?=
+x-microsoft-antispam-prvs: <BYAPR06MB58785138D06D969D9909D6D68F480@BYAPR06MB5878.namprd06.prod.outlook.com>
 x-forefront-prvs: 09730BD177
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(136003)(39860400002)(396003)(376002)(366004)(199004)(189003)(55674003)(72206003)(97736004)(4326008)(14454004)(478600001)(5660300002)(25786009)(71190400001)(71200400001)(8676002)(6116002)(14444005)(31696002)(81166006)(31686004)(2906002)(3846002)(81156014)(93886005)(68736007)(110136005)(2201001)(54906003)(305945005)(316002)(36756003)(256004)(86362001)(106356001)(26005)(76176011)(53936002)(486006)(66066001)(8936002)(446003)(11346002)(229853002)(99286004)(476003)(105586002)(186003)(2616005)(52116002)(2501003)(386003)(6506007)(6486002)(6246003)(53546011)(102836004)(6436002)(6512007)(7736002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1761;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
+ SFS:(10019020)(136003)(376002)(346002)(366004)(39860400002)(396003)(189003)(199004)(53754006)(13464003)(55674003)(486006)(14444005)(54906003)(11346002)(4326008)(5024004)(186003)(476003)(53546011)(93886005)(97736004)(8936002)(9686003)(76176011)(86362001)(99286004)(26005)(7696005)(55016002)(33656002)(102836004)(446003)(25786009)(68736007)(6246003)(110136005)(316002)(53936002)(71190400001)(52536013)(74316002)(7736002)(106356001)(14454004)(305945005)(105586002)(478600001)(5660300002)(81166006)(81156014)(8676002)(66066001)(2501003)(6506007)(72206003)(6636002)(6116002)(71200400001)(256004)(6436002)(229853002)(3846002)(2906002);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:BYAPR06MB5878;
+ H:BYAPR06MB5893.namprd06.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: cypress.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Ras3wTCybJDviaUIDYhLjzr3800Ek30vY4eEuCHtgLh07Okd+9/jKbOFpYQpGyFYDTLvWRLCT5dK1khfy0Uepr9PbLKu/f0veMXBSmHqfOS69IaFJ6xXuRbIHGOIDpB03dFQLwFNzmJCsfL2e6Wv3kkg9GIuJuXqksY1z9q2JI1xe+dePr45ndOcTswjVIAJIo7+Q6UDDryaYHgejy6QzlzOCvW2uImRgSQuYNOD3AizX0PgXlalsCyxg/CeTsUcHo5RWsWhofqsocV3a7+jegeX4RrEd6vaa6BMXP0D7yKreh23e3SrM2VK3mg1N40j+FyCU5OKtPHb3fptAZ+ou8RkeU7sRJZyZtu2n9xftQOvbXTREMAGzMZoXhDzZKBzW08UYK3ikKyjHuYytOkTXmtP0A1ZYxlu+hntqVBF5bY=
-Content-ID: <0551C8153F0E944AA0EEC0834368E4AE@namprd11.prod.outlook.com>
+x-microsoft-antispam-message-info: TjFgqOd308xqymWvpKBDIUoIRJuqzOFQRV1EAdq4cX14SqBj/r4TwgE/BLLTQYR2iqwE0YU5toO9bzd9lUtJ7r6lU3h00BpM1BBj/65lsEEQhnRdJifY5vbVLE7UgWw+QPPwlXfeaU/88ykyUrZBvOAwbisZgx5+yw7eoOf1qCdWWWPJQpXnFWhvKvrZkVIiaNg9oPu6ejgq1bkCa2RvddpoTaL9vmFoBLC547DToN0Yi7k4SL+Wlu2Acma8TnnutLVcblTLelzG4fBItetZ9Ki7qubGzZu+RgsL+GXugw4kHA+6BjjXZOMusksTQ4EB1wLf6mtzjNUJkNQ8HjluVCFjcTn6HXZY0QJYHVCYXUUvt6LbxzTacco8d1h2q0fiddjN6/t4thAppiy1PB4TuK/uJXSxxPNPGuGklyqIuL8=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: db324452-9ac4-44eb-8925-08d6a62aa776
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2019 14:05:45.2178 (UTC)
+X-OriginatorOrg: cypress.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a735b9c7-9423-4991-0b80-08d6a65e3cfe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2019 20:14:59.8221 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-id: 011addfc-2c09-450d-8938-e0bbc2dd2376
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1761
-X-OriginatorOrg: microchip.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR06MB5878
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190311_070551_681079_B315590B 
-X-CRM114-Status: GOOD (  16.04  )
+X-CRM114-CacheID: sfid-20190311_131505_229474_6B6316D8 
+X-CRM114-Status: GOOD (  21.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -155,57 +147,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, richard@nod.at, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksIEpvbmFzLA0KDQpPbiAwMy8xMC8yMDE5IDEyOjQyIFBNLCBKb25hcyBCb25uIHdyb3RlOg0K
-PiBIaSwNCj4gDQo+IE9uIDEwLzAzLzIwMTkgMTA6NTgsIFR1ZG9yLkFtYmFydXNAbWljcm9jaGlw
-LmNvbSB3cm90ZToNCj4+ICsgSmFtZXMgYW5kIFlvbmcgZnJvbSBDeXByZXNzLg0KPj4NCj4+IEhp
-LCBKb25hcywgSmFtZXMsIFlvbmcsDQo+Pg0KPj4gT24gMDEvMzAvMjAxOSAxMjowNyBBTSwgSm9u
-YXMgQm9ubiB3cm90ZToNCj4+PiBUaGUgc3RhdHVzIHJlZ2lzdGVyIGJpdCBTUldEIChzdGF0dXMg
-cmVnaXN0ZXIgd3JpdGUgZGlzYWJsZSkgaXMNCj4+PiBkZXNjcmliZWQgaW4gbWFueSB3b3JkcyBp
-biB0aGUgZGF0YXNoZWV0cyBidXQgZWZmZWN0aXZlbHkgYm9pbHMgZG93biB0bzoNCj4+Pg0KPj4+
-IGkpIGlmIHNldCwgcmVzcGVjdCBXUCMgd2hlbiB0cnlpbmcgdG8gY2hhbmdlIHByb3RlY3Rpb24g
-Yml0czsNCj4+PiBpaSkgaWYgdW5zZXQsIGlnbm9yZSBXUCMgd2hlbiB0cnlpbmcgdG8gY2hhbmdl
-IHByb3RlY3Rpb24gYml0cw0KPj4+DQo+Pj4gSW4gc2hvcnQsIHRoZSBiaXQgZGV0ZXJtaW5lcyB3
-aGV0aGVyIHRoZSBXUCMgc2lnbmFsIGlzIGhvbm9yZWQgb3Igbm90Lg0KPj4+DQo+Pj4gSXQncyBk
-aWZmaWN1bHQgdG8gaW1hZ2luZSB0aGUgdXNlLWNhc2Ugd2hlcmUgdGhlIFdQIyBpcyBjb25uZWN0
-ZWQgYW5kDQo+Pj4gYXNzZXJ0ZWQgYnV0IHRoZSB1c2VyIGRvZXNuJ3Qgd2FudCB0byByZXNwZWN0
-IGl0cyBzZXR0aW5nLsKgIEFzIHN1Y2gsDQo+Pj4gdGhpcyBwYXRjaCBzZXRzIHRoZSBTUldEIGJp
-dCB1bmNvbmRpdGlvbmFsbHkgc28gdGhhdCB0aGUgV1AjIGlzIF9hbHdheXNfDQo+Pj4gcmVzcGVj
-dGVkOyBoYXJkd2FyZSB0aGF0IGRvZXNuJ3QgY2FyZSBhYm91dCBXUCMgbm9ybWFsbHkgd29uJ3Qg
-ZXZlbiBoYXZlDQo+Pj4gaXQgY29ubmVjdGVkLg0KPj4+DQo+Pg0KPj4gQWx3YXlzIHNldHRpbmcg
-U1JXRCB0byAxLCBkaXNtaXNzZXMgdGhlIG5lZWQgb2YgYSBTUldEIGJpdCBpbiB0aGUgZmlyc3Qg
-cGxhY2UuDQo+PiBEbyB5b3Uga25vdyB3aHkgQ3lwcmVzcyBtYWRlIHRoaXMgYml0IGNvbmZpZ3Vy
-YWJsZSBhbmQgZGlkbid0IGVuYWJsZSBpdCBieSBkZWZhdWx0Pw0KPiANCj4gSSBzdXNwZWN0IGl0
-IGhhcyBzb21lIGhpc3RvcmljYWwgcmVsZXZhbmNlOyBhcyB0aGluZ3MgY3VycmVudGx5IHN0YW5k
-LCBJIGRvbid0IHNlZSBob3cgaXQncyB1c2VmdWwgaW4gaXRzIGN1cnJlbnQgZm9ybS4NCj4gDQo+
-IFdlIGluaXRpYWxseSB0aG91Z2h0IHRoYXQgdGhlIFdQIyBzaWduYWwgdHVybmVkIG9uL29mZiBi
-bG9jayBwcm90ZWN0aW9uIGJ1dCB0aGF0J3Mgbm90IHRoZSBjYXNlOyB0aGUgYmxvY2sgcHJvdGVj
-dGlvbiBiaXRzIEJQMC1CUDIgdHVybiBvbi9vZmYgYmxvY2sgcHJvdGVjdGlvbiBhbmQgdGhlIFdQ
-IyBzaWduYWwgb25seSBwcm90ZWN0cyB0aGUgQlBbMC0yXSBiaXRzIGZyb20gYmVpbmcgbW9kaWZp
-ZWQuwqAgVHVybmluZyBvZmYgdGhlIFdQIyBmdW5jdGlvbmFsaXR5IHZpYSB0aGUgU1JXRCBiaXRz
-IG1lYW5zIHRoYXQgdGhlIEJQWzAtMl0gYml0cyBhcmUgYWx3YXlzIG1vZGlmaWFibGUgYW5kIHRo
-ZXJlZm9yZSB0aGUgZmxhc2ggZGV2aWNlIGlzIG5ldmVyIHJlYWxseSBwcm90ZWN0ZWQgZnJvbSB3
-cml0ZXMgYnkgYSBtYWxpY2lvdXMgYWN0b3IuDQo+IA0KPiBUaGUga2V5IHF1ZXN0aW9uIGhlcmUg
-aXM6wqAgaWYgdGhlIFdQIyBzaWduYWwgaXMgY29ubmVjdGVkLCB3aHkgd291bGQgeW91IGV2ZXIg
-d2FudCBpdHMgc3RhdGUgdG8gYmUgaWdub3JlZCBieSB0aGUgZGV2aWNlP8KgIERlLWFzc2VydGlu
-ZyB0aGUgc2lnbmFsIGhhcyB0aGUgc2FtZSBlZmZlY3QgYXMgc2V0dGluZyB0aGUgU1JXRCBiaXQu
-wqAgQW5kIHRoZSBkZWZhdWx0IHN0YXRlIGlzIHVuLWFzc2VydGVkIGlmIHRoZSBzaWduYWwgaXMg
-bm90IGNvbm5lY3RlZCwgc28gdGhhdCBjYXNlIGlzIGNvdmVyZWQsIHRvby7CoCBJIHNlZSBubyBy
-ZWFzb24gbm90IHRvIGp1c3QgYWx3YXlzIHNldCBTUldEIGFuZCB0aGVyZWJ5IG1ha2UgdGhlIFdQ
-IyBzaWduYWwgZG8gd2hhdCBvbmUgZXhwZWN0cyBvZiBpdCwgYWx3YXlzLg0KPiANCg0KSSB0ZW5k
-IHRvIGFncmVlIHdpdGggeW91LiBMZXQncyB3YWl0IGZvciBhIGZldyBkYXlzLCBtYXliZSBKYW1l
-cyBvciBZb25nIHdpbGwNCnRlbGwgdXMgdGhlIEN5cHJlc3MncyByZWFzb25zIG9mIG1ha2luZyBT
-UldEIGNvbmZpZ3VyYWJsZS4gSW4gdGhlIG1lYW50aW1lIEknbGwNCmNoZWNrIHRoZSBkYXRhc2hl
-ZXRzIG9mIHRoZSBmbGFzaGVzIHRoYXQgaGF2ZSBTUElfTk9SX0hBU19MT0NLIGRlY2xhcmVkLCBz
-ZWUgaWYNClNSV0QgaXMgY29uZmlndXJhYmxlIGFuZCB3aGF0IHdlcmUgdGhlIHJlYXNvbnMgb2Yg
-bWFraW5nIGl0IHNvLg0KDQpDaGVlcnMsDQp0YQ0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+Hello all,
+
+SRWD bit (along with WP#) provides a way to protect Status and Configuration Registers from been modified unintendedly or by a malicious actor.
+
+By default, SRWD bit is 0, which means no protection on registers alternations. Registers can be modified easily by WRR command. (this is most of the application use cases).
+
+If set SRWD bit to 1, then when WP# is driven low during WRR command, WRR command will be ignored and Registers can't be modified. This provides a way to protect Registers, meanwhile still reserve the capability to modify Registers when necessary by driving WP# to high during WRR command.
+
+Flash data array can be protected by DYB, or PPB, or BP0-2 and TBPROT, or combination of these three methods. These 3 sector protection mechanisms and combinations provide flexibility (different security level) of data protection. If a sector is protected by any of DYB, or PPB, or BP bit, then it is not programmable or erasable. If a sector has none of DYB, PPB, BP bit set, then it is not protected and is programmable and erasable.
+
+DYB is volatile bit. It can be easily and fast modified on the fly, and will be set to default value upon power cycle or hardware reset. So it provides least security level protection, normally is used to prevent unintended program/erase commands. It also does not have wear limitation (i.e., unlimited times of alternations). One example of the use case is that set DYB bits to protect all the data array sectors right after system powers on. Whenever program or erase the flash data array, clear the DYB bit (set to unprotect) for the target sector prior to sending program/erase command. After program/erase complete, set the relevant DYB bit to protect the sector again.
+
+PPB is non-volatile bit. It is a little difficult to change than DYB. It provides medium security protection level. PPB bits have the same erase/program lifecycles as the flash data array.
+
+BP0-2 and TBPROT provide another level of security protection.
+
+SRWD bit and WP# can prevent BP0-2 and TBPROT bits to be modified, which can provide one more level of security protection.
+
+Best Regards,
+Yong
+
+-----Original Message-----
+From: Tudor.Ambarus@microchip.com <Tudor.Ambarus@microchip.com>
+Sent: Monday, March 11, 2019 10:06 AM
+To: jonas@norrbonn.se; James Tomasetta <James.Tomasetta@cypress.com>; Yong Qin <Yong.Qin@cypress.com>
+Cc: linux-mtd@lists.infradead.org; bbrezillon@kernel.org; richard@nod.at; marek.vasut@gmail.com; computersforpeace@gmail.com; dwmw2@infradead.org
+Subject: Re: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
+
+Hi, Jonas,
+
+On 03/10/2019 12:42 PM, Jonas Bonn wrote:
+> Hi,
+>
+> On 10/03/2019 10:58, Tudor.Ambarus@microchip.com wrote:
+>> + James and Yong from Cypress.
+>>
+>> Hi, Jonas, James, Yong,
+>>
+>> On 01/30/2019 12:07 AM, Jonas Bonn wrote:
+>>> The status register bit SRWD (status register write disable) is
+>>> described in many words in the datasheets but effectively boils down to:
+>>>
+>>> i) if set, respect WP# when trying to change protection bits;
+>>> ii) if unset, ignore WP# when trying to change protection bits
+>>>
+>>> In short, the bit determines whether the WP# signal is honored or not.
+>>>
+>>> It's difficult to imagine the use-case where the WP# is connected
+>>> and asserted but the user doesn't want to respect its setting.  As
+>>> such, this patch sets the SRWD bit unconditionally so that the WP#
+>>> is _always_ respected; hardware that doesn't care about WP# normally
+>>> won't even have it connected.
+>>>
+>>
+>> Always setting SRWD to 1, dismisses the need of a SRWD bit in the first place.
+>> Do you know why Cypress made this bit configurable and didn't enable it by default?
+>
+> I suspect it has some historical relevance; as things currently stand, I don't see how it's useful in its current form.
+>
+> We initially thought that the WP# signal turned on/off block protection but that's not the case; the block protection bits BP0-BP2 turn on/off block protection and the WP# signal only protects the BP[0-2] bits from being modified.  Turning off the WP# functionality via the SRWD bits means that the BP[0-2] bits are always modifiable and therefore the flash device is never really protected from writes by a malicious actor.
+>
+> The key question here is:  if the WP# signal is connected, why would you ever want its state to be ignored by the device?  De-asserting the signal has the same effect as setting the SRWD bit.  And the default state is un-asserted if the signal is not connected, so that case is covered, too.  I see no reason not to just always set SRWD and thereby make the WP# signal do what one expects of it, always.
+>
+
+I tend to agree with you. Let's wait for a few days, maybe James or Yong will tell us the Cypress's reasons of making SRWD configurable. In the meantime I'll check the datasheets of the flashes that have SPI_NOR_HAS_LOCK declared, see if SRWD is configurable and what were the reasons of making it so.
+
+Cheers,
+ta
+
+This message and any attachments may contain confidential information from Cypress or its subsidiaries. If it has been received in error, please advise the sender and immediately delete this message.
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
