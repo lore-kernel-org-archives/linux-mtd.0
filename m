@@ -2,67 +2,87 @@ Return-Path: <SRS0=+O2D=RP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ADE8C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 15:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6119FC10F00
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 17:06:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BF402087C
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 15:14:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3402E2083D
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 17:06:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r361O2x8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BF402087C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oLrnuROs";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="i0Q6/irM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3402E2083D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZGmMplXXsF1mdLobNDVlOIDmeN0SD+zbS5O6rkuvCOM=; b=r361O2x8nrv/BT
-	xZFaMTT1v7pVoal9a4bRizgDf0/O0ZlkHDS/KGG5eMiJ4em+u+MHfvrVz2zLkqeAry1DgZJ/KKQ+e
-	LB3DFNsmNFZ5+A66GJ0bKJTzlkqSzkv28rt4h8GoeOg9PGWPxG0SfB/H9E78dPwpNPVkxJCnXBK3U
-	qceSrlhJL3+SMq5TW1hjoA3IObbHQ/A5gLcFrvvckoERQESjkrLPtxcj3alJlQDsJq5qp8oZ6TbIJ
-	pKTzApdmP1UCk8W/WWABMbQIoIC3ueDrFa5D6OPFxKcf6Xa1F+w5cAda00B4TTIks0djC0jdyZ76a
-	j+eh0xNZMAGaVEmuo5/g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lgf7pM1MgUd+Mcp4w/u7jDYYkCV57Fh45cJeTWx/d0c=; b=oLrnuROsLa0yf+
+	N1LDASazKwpbtWn4Ha597PlPQke8mZEMXN2ccljdWThVmNZU3TfR1DJEXlTReFTUH8kamR3wd72MW
+	MULIY3bys9ABZcL5bg7go0BFZUGdsPZ/i9/bWdnjDr5ckKiNEMaHqh7Zqz14rOxCUwLi/LFPSpOtX
+	L8bus2evyBIermsZDkQQ1T7rEoQZvJ5gsCE8nXkefsw+XyvN3juE691Sn2zrqR//GO2tRwnKsN2In
+	NX6ZIKnkl9Pmh1lPArGLfxM+2DWRRd4j84rjQOBQqMHax/GoGWe+b7c5u6Lfmm3uux5OCZyWQfR1g
+	ym2+qY2yVOm0F0VzDi7Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h3j6Z-0006kG-4S; Tue, 12 Mar 2019 15:14:11 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1h3kqq-0006sK-6r; Tue, 12 Mar 2019 17:06:04 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3j6T-0006fP-LO
- for linux-mtd@lists.infradead.org; Tue, 12 Mar 2019 15:14:07 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id E00416091865;
- Tue, 12 Mar 2019 16:13:54 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id y9lNEVtk4dgl; Tue, 12 Mar 2019 16:13:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 92692609187B;
- Tue, 12 Mar 2019 16:13:54 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id koBhCvT6gr9b; Tue, 12 Mar 2019 16:13:54 +0100 (CET)
-Received: from blindfold.localnet (unknown [82.150.214.1])
- by lithops.sigma-star.at (Postfix) with ESMTPSA id 596B66091865;
- Tue, 12 Mar 2019 16:13:54 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds@linux-foundation.org
-Subject: [GIT PULL] UBI/UBIFS updates for 5.1-rc1
-Date: Tue, 12 Mar 2019 16:13:53 +0100
-Message-ID: <6283638.XALati16HY@blindfold>
+ id 1h3kql-0006oQ-QR
+ for linux-mtd@lists.infradead.org; Tue, 12 Mar 2019 17:06:02 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x2CH5nKK071489;
+ Tue, 12 Mar 2019 12:05:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1552410349;
+ bh=DM2GNiTdlezc0jl7RbEUe8Q6lZEriQmM/kPozEGEYNA=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=i0Q6/irMMgFTetVEcySTvpu8/a2hmgR5zWwGH4JW/bHsNj3CIypLqm/GYBSDAl2L+
+ dxdlhCKebgdtolVR/QaL4cTATFUUo+UlaPWW7/gTM/+/KCVpmyFj/7jJHTJGWByfle
+ jE4YMPjiAepzxgxNU3V0JOJYkIu0J4kIaMxvp91g=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x2CH5nFe088521
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 12 Mar 2019 12:05:49 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Tue, 12
+ Mar 2019 12:05:48 -0500
+Received: from dlep32.itg.ti.com (157.170.170.100) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1591.10 via Frontend Transport;
+ Tue, 12 Mar 2019 12:05:48 -0500
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dlep32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x2CH5ibf009486;
+ Tue, 12 Mar 2019 12:05:44 -0500
+Subject: Re: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI controller
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "bbrezillon@kernel.org" <bbrezillon@kernel.org>
+References: <1551337361-11665-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <48dafcc4-1b9d-9ce2-9228-78e73252781f@ti.com>
+ <MWHPR02MB262310CF8152AE170FE7443CAF760@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <602dd5ed-48b6-2098-fc2a-e36192b6a8e7@ti.com>
+ <MWHPR02MB262362EC0116C64B84874740AF480@MWHPR02MB2623.namprd02.prod.outlook.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <1f4df1cc-7a2f-1601-0553-1db5d69b492d@ti.com>
+Date: Tue, 12 Mar 2019 22:36:43 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.1
 MIME-Version: 1.0
+In-Reply-To: <MWHPR02MB262362EC0116C64B84874740AF480@MWHPR02MB2623.namprd02.prod.outlook.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190312_081405_849441_A7422BD6 
-X-CRM114-Status: UNSURE (   8.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190312_100600_011383_28602473 
+X-CRM114-Status: GOOD (  18.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,52 +94,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
+ Michal Simek <michals@xilinx.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Linus,
+Hi,
 
-The following changes since commit a3b22b9f11d9fbc48b0291ea92259a5a810e9438:
+On 11/03/19 10:02 AM, Naga Sureshkumar Relli wrote:
+> Hi Vignesh,
+> 
+>> -----Original Message-----
+>> From: linux-spi-owner@vger.kernel.org <linux-spi-owner@vger.kernel.org> On Behalf Of
+>> Vignesh Raghavendra
+>> Sent: Friday, March 8, 2019 10:20 AM
+>> To: Naga Sureshkumar Relli <nagasure@xilinx.com>; broonie@kernel.org;
+>> bbrezillon@kernel.org
+>> Cc: linux-spi@vger.kernel.org; dwmw2@infradead.org; marek.vasut@gmail.com;
+>> richard@nod.at; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek
+>> <michals@xilinx.com>; nagasuresh12@gmail.com
+>> Subject: Re: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI controller
+>>
+>>
+>>
+>> On 01/03/19 4:32 PM, Naga Sureshkumar Relli wrote:
+>>>>> +static bool zynq_qspi_supports_op(struct spi_mem *mem,
+>>>>> +				  const struct spi_mem_op *op)
+>>>>> +{
+>>>>> +	int ret;
+>>>>> +
+>>>>> +	ret = zynq_qspi_check_buswidth(op->cmd.buswidth);
+>>>>> +
+>>>>> +	if (op->addr.nbytes)
+>>>>> +		ret |= zynq_qspi_check_buswidth(op->addr.buswidth);
+>>>>> +
+>>>>> +	if (op->dummy.nbytes)
+>>>>> +		ret |= zynq_qspi_check_buswidth(op->dummy.buswidth);
+>>>>> +
+>>>>> +	if (op->data.nbytes)
+>>>>> +		ret |= zynq_qspi_check_buswidth(op->data.buswidth);
+>>>>> +
+>>>>> +	if (ret)
+>>>>> +		return false;
+>>>>> +
+>>>> spi_mem_default_supports_op() already has this code.
+>>>> Could you change, spi_mem_supports_op() to call
+>>>> spi_mem_default_supports_op() first before controller specific
+>>>> ->supports_op()? So that, above code can be dropped.
+>>> Ok, I will update it.
+>>>>> +	/*
+>>>>> +	 * The number of address bytes should be equal to or less than 3 bytes.
+>>>>> +	 */
+>>>>> +	if (op->addr.nbytes > 3)
+>>>>> +		return false;
+>>>>> +
+>>>> Hmm, how does the driver handle flash devices >16MB in size? Not supported?
+>>> Zynq QSPI controller doesn't support 4 byte addressing.
+>>> So to support > 16MB size, we have to use EAR(extended address register).
+>>> As it is initial version of driver, I haven't added this code. This needs to be added in spi-nor.c.
+>>> Previously I have sent an RFC patch to support all these.
+>>> But Boris suggested to upstream the basic one first under spi-mem frame work.
+>>> Not only this support, there are other features like dual parallel and dual stacked.
+>>> All these features require additional support from spi-nor framework.
+>>> We have another QSPI controller on ZynqMP SOC, which is also similar(but it supports
+>> 4Byte addressing).
+>>> So by consolidating all these, I sent this patch.
+>>>
+>>> Please let me know your suggestion on this.
+>>
+>> Sounds fine to me. Support for > 16MB flash using EAR can come later.
+> Thanks.
+> Shall I wait for others to review or go ahead by addressing your previous comments?
+> 
 
-  Linux 5.0-rc7 (2019-02-17 18:46:40 -0800)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-5.1-rc1
-
-for you to fetch changes up to 5578e48e5c0bf4684e68ae08caa2293bfb3f5307:
-
-  ubi: wl: Silence uninitialized variable warning (2019-03-05 21:21:07 +0100)
-
-----------------------------------------------------------------
-This pull request contains updates for both UBI and UBIFS:
-
-- A new interface for UBI to deal better with read disturb
-- Reject unsupported ioctl flags in UBIFS (xfstests found it)
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      ubi: wl: Silence uninitialized variable warning
-
-Hou Tao (1):
-      ubifs: Reject unsupported ioctl flags explicitly
-
-Richard Weinberger (2):
-      ubi: Introduce in_pq()
-      ubi: Expose the bitrot interface
-
- drivers/mtd/ubi/cdev.c      |  30 ++++++++
- drivers/mtd/ubi/ubi.h       |   1 +
- drivers/mtd/ubi/wl.c        | 174 ++++++++++++++++++++++++++++++++++++++++++--
- fs/ubifs/ioctl.c            |   8 ++
- include/uapi/mtd/ubi-user.h |   5 ++
- 5 files changed, 211 insertions(+), 7 deletions(-)
+Typically, for a new driver, I would wait at least 2 weeks from date of
+posting so that other reviewers have sufficient time to look into the patch.
 
 
-
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
