@@ -4,61 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1392C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 10:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1EDEC43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 11:03:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70F7F2075C
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 10:54:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A2CFC206DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2019 11:03:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FoQuDpah"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70F7F2075C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bFicZC4N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2CFC206DF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=egECjFr8C2XQZKR4R5Xat8JhoPg43N2ZUjvL+uuO6f0=; b=FoQuDpahvoJ3vG
-	lbXLOfiWmXylpL/t+Eg8RUbXoC5oq9O9E7A6lIO/O0DoGMC/wu5RmyZ7ROB1GlxEOuNTKFwAV90d4
-	X2ZFW01jw1oSU/zqay5Zfw1x5l23zM65v2MU8PwF51/ek2bYLEsJwCbMenvK2OUp4/h4mCoywEsOP
-	2LTaD2ttMVlS4R1IqPUknuBbQxIzkXN0TwMA4WSV498QlFCZKbOExKOshTJ9LpyOsy6lo/+VJIGgT
-	4jnlp0kN5XbzAT3GR666Itjt0yxQfR7CEmIt/g8U/WChD+kUVGkZF7UsNaPDu2lrI+c+6hzITp04n
-	OdbAV/1690l7rRxL109A==;
+	List-Owner; bh=kuC1n/6r/mhRgLghFWkUcUwja0FevhO+1gamzMvNsI4=; b=bFicZC4NbkXJPE
+	gpXXEmWDK2i8y6nCqKUTG23ZdPs0d7Urf5Kgd5rzgJxWZzIwIheevESXF/XOt17ULTu88PPhg8/FL
+	40SRgt2/Sn2M+Dkap091f8vgLa0rd58awTDDDAClf3jrCJdtkCwp5P0QFXQIWLyualGFyWWWdDhrd
+	+Ec0vUm/m8KeaLutcMsD2UoLzFCWwMs1ztIbewJa6HsknLydYuTNEq+fmp8MJu7Mwfz2XAx3Gcft0
+	XGZhVxbqSBPF2dGV3dQ73sRZ81Q7amtw+3rLN+U7Rkf7ogvAE9Nw4keMA6srJ0hYKrDlmIbTiS91N
+	aDkzGdN4+RmBSpfFsh1A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h3f3U-0004Lv-RM; Tue, 12 Mar 2019 10:54:44 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1h3fBU-0001MH-5f; Tue, 12 Mar 2019 11:03:00 +0000
+Received: from mail-vs1-f67.google.com ([209.85.217.67])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h3f3R-0004Lb-CK
- for linux-mtd@lists.infradead.org; Tue, 12 Mar 2019 10:54:43 +0000
-X-Originating-IP: 90.88.150.179
-Received: from xps13 (aaubervilliers-681-1-31-179.w90-88.abo.wanadoo.fr
- [90.88.150.179]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id EDDBE20005;
- Tue, 12 Mar 2019 10:54:26 +0000 (UTC)
-Date: Tue, 12 Mar 2019 11:54:25 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH v3 2/9] mtd: rawnand: denali: refactor syndrome layout
- handling for raw access
-Message-ID: <20190312115425.612bcdf2@xps13>
-In-Reply-To: <CAK7LNATud=QTQ4FGxt1FtSZ06-Boa-jiROp7-wOj192FgXTNLw@mail.gmail.com>
-References: <1552380290-19951-1-git-send-email-yamada.masahiro@socionext.com>
- <1552380290-19951-3-git-send-email-yamada.masahiro@socionext.com>
- <20190312112811.1af0bb00@xps13>
- <CAK7LNATud=QTQ4FGxt1FtSZ06-Boa-jiROp7-wOj192FgXTNLw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1h3fBM-0001AP-4h
+ for linux-mtd@lists.infradead.org; Tue, 12 Mar 2019 11:02:54 +0000
+Received: by mail-vs1-f67.google.com with SMTP id z18so1291552vso.7
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2019 04:02:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=l8qRV/tQgBYHVc8PSLRAylUGH7Bv0fETjpbDy/rM09o=;
+ b=n/VFmRv0BqQdUt/B+eqRD1t24X6SOsuQWfdLhhic8Rl2SVCufLyQ9zvjJJsYKhZ2aU
+ tmHPXKlR2b2aAOBMCTD7Y+5UVQZ3HOWvknkOZ/BfrreFjP/yM+9E4PGGNVPLLSyoumA8
+ ntgYbzAd6/e5ijhd8YAzrmW/fUvTrXpusrcZkrNVK6PlXQgBG/kjp/gdyiZu0799qzhc
+ 9AskEI9mQdr/P4KMXHy+k9l3JvZguDg/gNjqaYh/TYl76P4ZRLfzrlt92sl6LcBAUSlm
+ HDGtWfml1mWrCTNLMDkK9eeN8f7jiO79IOkRme8Jzh6n4HF+Rcmy63Bd1AW8CANNQGaL
+ XNSA==
+X-Gm-Message-State: APjAAAVmLQkO4R8FyxI67ep7qsOHGogY/RMr/k7uXc7Ui0IXzgS1oaH1
+ 0lpU8VDCJsPaZ2ftWUmA331icYQ0gC9GqW2RFKY=
+X-Google-Smtp-Source: APXvYqw4geNOGk/Sk5KFPNbEntLypuplDoQVl5Zdw+m/JJIJAUVechlIwTuK1a0lFRQXisoTO2+WJF5SgEKSZP1NqLs=
+X-Received: by 2002:a67:8588:: with SMTP id h130mr18575185vsd.11.1552388569717; 
+ Tue, 12 Mar 2019 04:02:49 -0700 (PDT)
 MIME-Version: 1.0
+References: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
+ <09a2508e-f63e-4804-bf11-76832faae1f5@cogentembedded.com>
+ <CAMuHMdVjvbcK21r9ajp9xKEGx=VHbXkrSB0ob2EjR8+dmNVdPw@mail.gmail.com>
+In-Reply-To: <CAMuHMdVjvbcK21r9ajp9xKEGx=VHbXkrSB0ob2EjR8+dmNVdPw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 12 Mar 2019 12:02:37 +0100
+Message-ID: <CAMuHMdWkJi3VnNmdR_ykbUuKs4d_XT9uSYHzCed_=eJreCC2LA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: refine Spansion S25FL512S ID
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190312_035441_715983_A6412F21 
-X-CRM114-Status: GOOD (  24.04  )
+X-CRM114-CacheID: sfid-20190312_040252_286656_3B003EE3 
+X-CRM114-Status: GOOD (  20.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -72,85 +81,91 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Boris Brezillon <bbrezillon@kernel.org>,
  Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFzYWhpcm8sCgpNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQu
-Y29tPiB3cm90ZSBvbiBUdWUsIDEyIE1hcgoyMDE5IDE5OjUxOjIxICswOTAwOgoKPiBPbiBUdWUs
-IE1hciAxMiwgMjAxOSBhdCA3OjI4IFBNIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9v
-dGxpbi5jb20+IHdyb3RlOgo+ID4KPiA+IEhpIE1hc2FoaXJvLAo+ID4KPiA+IE1hc2FoaXJvIFlh
-bWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+IHdyb3RlIG9uIFR1ZSwgMTIgTWFy
-Cj4gPiAyMDE5IDE3OjQ0OjQzICswOTAwOgo+ID4gIAo+ID4gPiBUaGUgRGVuYWxpIElQIGFkb3B0
-cyB0aGUgc3luZHJvbWUgcGFnZSBsYXlvdXQgKHBheWxvYWQgYW5kIEVDQyBhcmUKPiA+ID4gaW50
-ZXJsZWF2ZWQpLiBUaGUgKl9wYWdlX3JhdygpIGFuZCAqX29vYigpIGNhbGxiYWNrcyBhcmUgY29t
-cGxpY2F0ZWQKPiA+ID4gYmVjYXVzZSB0aGV5IG11c3QgaGlkZSB0aGUgdW5kZXJseWluZyBsYXlv
-dXQgdXNlZCBieSB0aGUgaGFyZHdhcmUsCj4gPiA+IGFuZCBhbHdheXMgcmV0dXJuIGNvbnRpZ3Vv
-dXMgaW4tYmFuZCBhbmQgb3V0LW9mLWJhbmQgZGF0YS4KPiA+ID4KPiA+ID4gQ3VycmVudGx5LCBz
-aW1pbGFyIGNvZGUgaXMgZHVwbGljYXRlZCB0byByZW9yZ2FuaXplIHRoZSBkYXRhIGxheW91dC4K
-PiA+ID4gRm9yIGV4YW1wbGUsIGRlbmFsaV9yZWFkX3BhZ2VfcmF3KCkgYW5kIGRlbmFsaV93cml0
-ZV9wYWdlX3JhdygpIGxvb2sKPiA+ID4gYWxtb3N0IHRoZSBzYW1lLgo+ID4gPgo+ID4gPiBUaGUg
-aWRlYSBmb3IgcmVmYWN0b3JpbmcgaXMgdG8gc3BsaXQgdGhlIGNvZGUgaW50byB0d28gcGFydHM6
-Cj4gPiA+ICAgWzFdIGNvbnZlcnNpb24gb2YgcGFnZSBsYXlvdXQKPiA+ID4gICBbMl0gd2hhdCB0
-byBkbyBhdCBldmVyeSBFQ0MgY2h1bmsgYm91bmRhcnkKPiA+ID4KPiA+ID4gRm9yIFsxXSwgSSB3
-cm90ZSBkZW5hbGlfcmF3X3BheWxvYWRfb3AoKSBhbmQgZGVuYWxpX3Jhd19vb2Jfb3AoKS4KPiA+
-ID4gVGhleSBtYW5pcHVsYXRlIGRhdGEgZm9yIHRoZSBEZW5hbGkgY29udHJvbGxlcidzIHNwZWNp
-ZmljIHBhZ2UgbGF5b3V0Cj4gPiA+IG9mIGluLWJhbmQsIG91dC1vZi1iYW5kLCByZXNwZWN0aXZl
-bHkuCj4gPiA+Cj4gPiA+IFRoZSBkaWZmZXJlbmNlIGJldHdlZW4gd3JpdGUgYW5kIHJlYWQgaXMg
-anVzdCB0aGUgb3BlcmF0aW9uIGF0Cj4gPiA+IEVDQyBjaHVuayBib3VuZGFyaWVzLiBGb3IgZXhh
-bXBsZSwgZGVuYWxpX3JlYWRfb29iKCkgY2FsbHMKPiA+ID4gbmFuZF9jaGFuZ2VfcmVhZF9jb2x1
-bW5fb3AoKSwgd2hlcmVhcyBkZW5hbGlfd3JpdGVfb29iKCkgY2FsbHMKPiA+ID4gbmFuZF9jaGFu
-Z2Vfd3JpdGVfY29sdW1uX29wKCkuIFNvLCBJIGltcGxlbWVudGVkIFsyXSBhcyBhIGNhbGxiYWNr
-Cj4gPiA+IHBhc3NlZCBpbnRvIFsxXS4KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogTWFzYWhp
-cm8gWWFtYWRhIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNvbT4KPiA+ID4gLS0tCj4gPiA+
-ICAKPiA+Cj4gPiBbLi4uXQo+ID4gIAo+ID4gPiAgc3RhdGljIGludCBkZW5hbGlfcmVhZF9wYWdl
-X3JhdyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ICpidWYsCj4gPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGludCBvb2JfcmVxdWlyZWQsIGludCBwYWdlKQo+ID4gPiAg
-ewo+ID4gPiArICAgICBzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVuYWxpID0gdG9fZGVuYWxp
-KGNoaXApOwo+ID4gPiAgICAgICBzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5hbmRfdG9fbXRkKGNo
-aXApOwo+ID4gPiAtICAgICBzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVuYWxpID0gbXRkX3Rv
-X2RlbmFsaShtdGQpOwo+ID4gPiAtICAgICBpbnQgd3JpdGVzaXplID0gbXRkLT53cml0ZXNpemU7
-Cj4gPiA+IC0gICAgIGludCBvb2JzaXplID0gbXRkLT5vb2JzaXplOwo+ID4gPiAtICAgICBpbnQg
-ZWNjX3N0ZXBzID0gY2hpcC0+ZWNjLnN0ZXBzOwo+ID4gPiAtICAgICBpbnQgZWNjX3NpemUgPSBj
-aGlwLT5lY2Muc2l6ZTsKPiA+ID4gLSAgICAgaW50IGVjY19ieXRlcyA9IGNoaXAtPmVjYy5ieXRl
-czsKPiA+ID4gICAgICAgdm9pZCAqdG1wX2J1ZiA9IGRlbmFsaS0+YnVmOwo+ID4gPiAtICAgICBp
-bnQgb29iX3NraXAgPSBkZW5hbGktPm9vYl9za2lwX2J5dGVzOwo+ID4gPiAtICAgICBzaXplX3Qg
-c2l6ZSA9IHdyaXRlc2l6ZSArIG9vYnNpemU7Cj4gPiA+IC0gICAgIGludCByZXQsIGksIHBvcywg
-bGVuOwo+ID4gPiArICAgICBzaXplX3Qgc2l6ZSA9IG10ZC0+d3JpdGVzaXplICsgbXRkLT5vb2Jz
-aXplOwo+ID4gPiArICAgICBpbnQgcmV0Owo+ID4gPiArCj4gPiA+ICsgICAgIGlmICghYnVmKQo+
-ID4gPiArICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ID4gPgo+ID4gPiAgICAgICByZXQg
-PSBkZW5hbGlfZGF0YV94ZmVyKGNoaXAsIHRtcF9idWYsIHNpemUsIHBhZ2UsIDEsIDApOwo+ID4g
-PiAgICAgICBpZiAocmV0KQo+ID4gPiAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gPiA+Cj4g
-PiA+IC0gICAgIC8qIEFycmFuZ2UgdGhlIGJ1ZmZlciBmb3Igc3luZHJvbWUgcGF5bG9hZC9lY2Mg
-bGF5b3V0ICovCj4gPiA+IC0gICAgIGlmIChidWYpIHsKPiA+ID4gLSAgICAgICAgICAgICBmb3Ig
-KGkgPSAwOyBpIDwgZWNjX3N0ZXBzOyBpKyspIHsKPiA+ID4gLSAgICAgICAgICAgICAgICAgICAg
-IHBvcyA9IGkgKiAoZWNjX3NpemUgKyBlY2NfYnl0ZXMpOwo+ID4gPiAtICAgICAgICAgICAgICAg
-ICAgICAgbGVuID0gZWNjX3NpemU7Cj4gPiA+IC0KPiA+ID4gLSAgICAgICAgICAgICAgICAgICAg
-IGlmIChwb3MgPj0gd3JpdGVzaXplKQo+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBwb3MgKz0gb29iX3NraXA7Cj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICBlbHNlIGlmIChw
-b3MgKyBsZW4gPiB3cml0ZXNpemUpCj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IGxlbiA9IHdyaXRlc2l6ZSAtIHBvczsKPiA+ID4gLQo+ID4gPiAtICAgICAgICAgICAgICAgICAg
-ICAgbWVtY3B5KGJ1ZiwgdG1wX2J1ZiArIHBvcywgbGVuKTsKPiA+ID4gLSAgICAgICAgICAgICAg
-ICAgICAgIGJ1ZiArPSBsZW47Cj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICBpZiAobGVuIDwg
-ZWNjX3NpemUpIHsKPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGVuID0gZWNj
-X3NpemUgLSBsZW47Cj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1lbWNweShi
-dWYsIHRtcF9idWYgKyB3cml0ZXNpemUgKyBvb2Jfc2tpcCwKPiA+ID4gLSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGxlbik7Cj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGJ1ZiArPSBsZW47Cj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICB9Cj4gPiA+IC0g
-ICAgICAgICAgICAgfQo+ID4gPiAtICAgICB9Cj4gPiA+ICsgICAgIHJldCA9IGRlbmFsaV9yYXdf
-cGF5bG9hZF9vcChjaGlwLCBidWYsIGRlbmFsaV9tZW1jcHlfaW4sIHRtcF9idWYpOyAgCj4gPgo+
-ID4gSG9uZXN0bHksIEkgc3RpbGwgZG9uJ3QgbGlrZSBwYXNzaW5nIGRlbmFsaV9tZW1jcHlfaW4v
-b3V0IGFzIHBhcmFtZXRlci4KPiA+Cj4gPiBCZXNpZGVzIHRoYXQsIG9uY2UgeW91J2xsIGhhdmUg
-YWRkZWQgaGVscGVycyB0byBhdm9pZCBhYnVzaW5nIHRoZQo+ID4gdGVybmFyeSBvcGVyYXRvciBp
-biA0LzksIHRoZSByZXN0IGxvb2tzIGZpbmUgYnkgbWUuCj4gPiAgCj4gCj4gCj4gRG8geW91IGhh
-dmUgYW55IHN1Z2dlc3Rpb24/CgpNYXliZSByZWdpc3RlciB0aGVzZSB0d28gaGVscGVycyBhdCBw
-cm9iZSBhcyBjb250cm9sbGVyIHNwZWNpZmljIGhvb2tzLAp0aGVuIGp1c3QgcGFzcyBhbiBpbi9v
-dXQgYm9vbGVhbiB0byB0aGUgZnVuY3Rpb24/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, Mar 5, 2019 at 3:05 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, Jan 16, 2019 at 6:53 PM Sergei Shtylyov
+> <sergei.shtylyov@cogentembedded.com> wrote:
+> > Spansion S25FL512S ID is erroneously using 5-byte JEDEC ID, while the chip
+> > family ID is stored in the 6th byte. Due to using only 5-byte ID, it's also
+> > covering S25FS512S and now that we have added 6-byte ID for that chip, we
+> > can convert S25FL512S to using a proper 6-byte ID as well...
+> >
+> > Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>
+> This is now commit a2126b0a010905e5 ("mtd: spi-nor: refine Spansion
+> S25FL512S ID"), and turns out to cause a regression on r8a7791/koelsch.
+> Dmesg diff before/after:
+>
+>     -m25p80 spi0.0: s25fl512s (65536 Kbytes)
+>     -3 fixed-partitions partitions found on MTD device spi0.0
+>     -Creating 3 MTD partitions on "spi0.0":
+>     -0x000000000000-0x000000080000 : "loader"
+>     -0x000000080000-0x000000600000 : "user"
+>     -0x000000600000-0x000004000000 : "flash"
+>     +m25p80 spi0.0: unrecognized JEDEC id bytes: 01, 02, 20
+>
+> As the (old) U-Boot on my Koelsch keeps many module clocks enabled, I
+> typically merge in my topic/renesas-debug branch, which makes sure all
+> non-critical module clocks are disabled early during boot, to catch
+> drivers not properly implementing Runtime PM.
+>
+> However, it turns out this has some impact on JEDEC ID detection:
+>   - When module clocks are left untouched, spi_nor_read_id() reads
+>     0x01:0x02:0x20:0x4d:0x00:0x80.
+>   - When my debug code has disabled module clocks during early boot,
+>     The last byte is 0x00.
+>
+> Before the above commit, only the first 5 bytes were compared, and the
+> last byte was ignored, thus not causing problems.
+> When comparing all 6 bytes, detection fails if the last byte is 0x00.
+>
+> I believe mainline U-Boot for R-Car Gen2 boards doesn't keep the QSPI
+> module clock enabled, so this commit may breaks those boards.
+>
+> To be investigated more (e.g. with a logic analyzer)...
+
+The FLASH returns the correct data, but it is not received correctly.
+When reading 16 bytes, thus including the ASCII model at offset 6/7:
+
+  - actual:   01 02 20 4d 00 80 47 31 82 ff ff ff ff ff ff ff
+  - received: 01 02 20 4d 00 00 8e 63 05 ff ff ff ff ff ff fe
+
+When retrying the operation, data is received correctly.
+
+This happens due to a Runtime PM related bug in the initialization code
+of the spi-rspi driver: if the module clock is not running (disabled by
+my debug code, the boot loader, or the clk_disable_unused late
+initcall), the SPI controller is not initialized properly.  The first
+transfer still manages to read some correct data, which used to be
+sufficient to identify the S25FL512S FLASH chip, before the sixth byte
+was also considered.
+
+Will send a quick fix, and a proper solution requiring more refactoring
+later.
+
+Sorry for the noise...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
