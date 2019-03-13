@@ -2,21 +2,21 @@ Return-Path: <SRS0=ZvR1=RQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DA71C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 12:55:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 362ABC43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 13:00:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D2AE2177E
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 12:55:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06424214AE
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 13:00:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EdmztJE1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="l4ZtSWTO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D2AE2177E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WrGydWBg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ldehnXed"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06424214AE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,43 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
 	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=JolKF2krZSXZHDQ8mkJUNz0KlCR6z1OnKhtKs8Lg0ss=; b=EdmztJE1AxzjMOUkAw4Rx9i4c
-	H6/K5mUYhgcU3RKTB806FHvE9n/OlUdK1ml1m+AaX7n0CdSzGmZ7tVDOzG2oWiyt/1LRsMGvP0BoO
-	jMyJXjaQz6VkaybrhZ4Xjt7GV8Itmn9eDqAArIAXm1xvwdpDb7eObCW8cXKyZCICDuIuveP24/Ihf
-	euhqD5oMgU/mXRN0Qdb/AvQs2YSZrG45b/9NbNuivk7tIP8nxZgk6zz0zGPAGiBzhDOyoIWjEluhn
-	cGfIyUxTDHmgSujBHkHpi1LfEuxTf0IOfPq15edYw2ahhbcYbDenZB0eyLvdHmM417ZOeQusHEwOz
-	i2t2B/Uyw==;
+	 bh=l/LCN7cuHkOQAp/mWbpf/D2r5Xt6Y89sYM1mHS5LKgA=; b=WrGydWBgFqrBN2kbkl2m3QBRv
+	ypBPlN9D4fVwVAq+uMM/ZJSQY/Pd9KihkILephJbddCTkxORBKitxdKtF6e24k9UIcWxrYxeKlQKl
+	CjSemKgMyt0CZUSBJxz3EzqpeWSxOjfiJhXeCkzWaoVp8OkCMrvxooauOZdeuSjjD/kw2psb+FH9m
+	YV8L3/wOrX4cukmDM+2hoL/6i35YcOg1NumPz0CJzyR9tnPtrQciXjhShZXQ8zMidiW3eUK6YWgem
+	Ym2sqzq2AUCSPZWUA1DlcUSJPz70V2XUEplnL2xXnK5HcpGaQ+Jel2UwOTMi38eAi3xg19QeJoeBk
+	CAVuWQvOA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h43Q7-0006cZ-Im; Wed, 13 Mar 2019 12:55:43 +0000
+	id 1h43UH-0007CE-Q0; Wed, 13 Mar 2019 13:00:01 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h43Q4-0006cB-JB
- for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 12:55:42 +0000
+ id 1h43UC-0007Bn-Gc
+ for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 12:59:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1552481738; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1552481993; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:mime-version:
  content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zsSEVUC0BIaGQjpDQt5EuoDLXlWn4F5jnVW8wjVFbpA=;
- b=l4ZtSWTOnmjmPUi+jjyDj/euQBhcc31ykUc0PLkXlKETWxqkmeGyVRlrzKSqsTWkUBf19o
- Q9C4tL9B6L+K57Z4v678X2WQnDn2eBd8TI8xJMtXgvxpqfUlF2mXFcRxKT7e3eDW9yznG5
- EIcK4ajInr1WMT10r8XjXUmTKvd/it0=
-Date: Wed, 13 Mar 2019 09:55:34 -0300
+ bh=CQfhMEahN/XrocGBGIFWacACkKiBhn1UP0sVp4+5o4E=;
+ b=ldehnXedF7XsNQEdYt+WNCD79TY93OlbKMUJxZq0I6kYpNvO31/WlkBPmRn+Tzo2Ub4qie
+ +bwnqvZib1oimQr89EzzXngJ2o/Mgo+Ep31PTI9Q3cqyOXT4/Q2V1zouIwL5jBtMFUXpoh
+ pIEPyyG3vR7MMBBAcESULnsRND56Zug=
+Date: Wed, 13 Mar 2019 09:59:48 -0300
 From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v4 1/9] dt-bindings: mtd: ingenic: Add compatible strings
- for JZ4740 and JZ4725B
+Subject: Re: [PATCH v4 2/9] dt-bindings: mtd: ingenic: Change 'BCH' to 'ECC'
+ in documentation
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Message-Id: <1552481734.2412.1@crapouillou.net>
-In-Reply-To: <20190304195149.7cca9c64@xps13>
+Message-Id: <1552481988.2412.2@crapouillou.net>
+In-Reply-To: <20190304195852.45c056f6@xps13>
 References: <20190209192305.4434-1-paul@crapouillou.net>
- <20190304104554.09be4cd4@xps13> <1551723742.4932.2@crapouillou.net>
- <20190304195149.7cca9c64@xps13>
+ <20190209192305.4434-2-paul@crapouillou.net> <20190304105014.0cceea0a@xps13>
+ <1551723830.4932.3@crapouillou.net> <20190304195852.45c056f6@xps13>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190313_055540_816795_663EAFE9 
-X-CRM114-Status: GOOD (  12.63  )
+X-CRM114-CacheID: sfid-20190313_055956_946412_1396E864 
+X-CRM114-Status: GOOD (  20.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,53 +85,110 @@ Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-Le lun. 4 mars 2019 =E0 15:51, Miquel Raynal <miquel.raynal@bootlin.com> =
+
+Le lun. 4 mars 2019 =E0 15:58, Miquel Raynal <miquel.raynal@bootlin.com> =
 
 a =E9crit :
 > Hi Paul,
 > =
 
+> Paul Cercueil <paul@crapouillou.net> wrote on Mon, 04 Mar 2019 =
+
+> 19:23:50
+> +0100:
+> =
+
+>>  On Mon, Mar 4, 2019 at 10:50 AM, Miquel Raynal =
+
+>> <miquel.raynal@bootlin.com> wrote:
+>>  > Hi Paul,
+>>  >
+>>  > Paul Cercueil <paul@crapouillou.net =
+
+>> <mailto:paul@crapouillou.net>> > wrote on Sat,  9 Feb 2019 16:22:58
+>>  > -0300:
+>>  >
+>>  >>  The JZ4740 ECC hardware is not BCH but Reed-Solomon, so it =
+
+>> makes >> more
+>>  >>  sense to use the more generic ECC term.
+>>  >> >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net >> =
+
+>> <mailto:paul@crapouillou.net>>
+>>  >>  ---
+>>  >> >>  Changes:
+>>  >> >>  v3: New patch
+>>  >> >>  v4: No change
+>>  >> >>   .../devicetree/bindings/mtd/ingenic,jz4780-nand.txt    | 18 =
+
+>> >> +++++++++---------
+>>  >>   1 file changed, 9 insertions(+), 9 deletions(-)
+>>  >> >>  diff --git >> =
+
+>> a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt >> =
+
+>> b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+>>  >>  index a5b940f18bf6..5a45cc54f46d 100644
 >>  >>  --- =
 
 >> a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
 >>  >>  +++ =
 
 >> b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
->>  >>  @@ -6,7 +6,10 @@ memory-controllers/ingenic,jz4780-nemc.txt), =
+>>  >>  @@ -1,4 +1,4 @@
+>>  >>  -* Ingenic JZ4780 NAND/BCH
+>>  >>  +* Ingenic JZ4780 NAND/ECC
+>>  >> >>   This file documents the device tree bindings for NAND flash =
 
->> and >> thus NAND device nodes must
->>  >>   be children of the NEMC node.
->>  >> >>   Required NAND controller device properties:
->>  >>  -- compatible: Should be set to "ingenic,jz4780-nand".
->>  >>  +- compatible: Should be one of:
->>  >>  +  * ingenic,jz4740-nand
->>  >>  +  * ingenic,jz4725b-nand
->>  >>  +  * ingenic,jz4780-nand
+>> >> devices on the
+>>  >>   JZ4780. NAND devices are connected to the NEMC controller >> =
+
+>> (described in
+>>  >>  @@ -14,10 +14,10 @@ Required NAND controller device properties:
+>>  >>     an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC =
+
+>> >> bank).
+>>  >> >>   Optional NAND controller device properties:
+>>  >>  -- ingenic,bch-controller: To make use of the hardware BCH >> =
+
+>> controller, this
+>>  >>  -  property must contain a phandle for the BCH controller node. =
+
+>> The >> required
+>>  >>  +- ingenic,bch-controller: To make use of the hardware ECC >> =
+
+>> controller, this
+>>  >>  +  property must contain a phandle for the ECC controller node. =
+
+>> The >> required
 >>  >
->>  > Wouldn't "-nand-controller" suffix be better? Of course in the =
+>>  > I think there is already a 'ecc-engine' property used by MTK and =
 
->> driver
->>  > you should still check for jz4780-nand.
+>> Atmel
+>>  > NAND controllers to point to the ECC engine block. Please use this
+>>  > property instead of the ingenic specific one.
 >> =
 
->>  So I would be compatible with:
->>  * ingenic,jz4740-nand-controller
->>  * ingenic,jz4725b-nand-controller
->>  * ingenic,jz4780-nand
->>  ?
+>>  ingenic,bch-controller is already in the devicetree ABI. I can't =
+
+>> change it now...
 > =
 
-> From a driver POV I would even prefer ingenic,jz4780-nand-controller. =
+> Oh, right...
+> =
 
-> I
-> don't know what's best here. Maybe Boris or Rob can help?
+> Well, same thing as before, maybe you can change it and keep the =
 
-The "ingenic,jz4780-nand" compatible string is already out there and =
+> driver
+> backward compatible? I don't want new DT to use this property because
+> it is not generic and we must have a way from the core to find the ECC
+> engine handle when the controller does not embed one itself (thus, the
+> ecc-engine property which is around for quite some time already).
 
-used
-in devicetree files, so I wouldn't change it just for the sake of it.
+I can do that. Will the new ECC framework work with the "ecc-engine" =
+
+property?
 
 -Paul
 
