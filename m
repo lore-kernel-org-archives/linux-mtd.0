@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A156C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF4DC43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65D5C21019
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A28A72146E
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H59V2zap";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="mUWdnzHY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65D5C21019
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="new02/Rh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="qluECxCd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A28A72146E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,27 +27,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=t/rtV31/saTiii2v3ECZKPX7lWuWgg0UmINfq5SnURU=; b=H59V2zapb78Zufl+EqjxPhWqs9
-	hIDTIIJm+eXk6roqEvYSW4IloHNo4JKhrwLV+FAkZ5wCI93zQkzXKnBMrjdS3u+6t1PpiZnZ4JZU7
-	ef1sgOqtpl/qwmd4cEOaDPykZCd7y73KoUf2ji4O1Fh1gbaa0FZrqmXLfbMllQLJjAYvxumsnEQ97
-	gKhhmpuVI9Vu2ElJ7ndYyWeX2zhfA+LPx9VhiYADVNkcC8AmT9UkJ1KsS3522pz34KzV21Likvy/5
-	LrwFNCmHHyWjHu/WCfJdc3+0Azo8uOUrTLSW8TY6IisSNXdzjU4W9Ox3mU5Sybi962/SH2DQrrQ2N
-	7e9akJdQ==;
+	bh=cvVbH/QuycSHLsOSZP/dfBhjcry0vWLa7e4tb8l/OJ4=; b=new02/RhGTi9qIaykClUytzHDl
+	+PUPI7VX+D+pdPAN2rXNAy5FZI3WmX1Yp83q/iUdcOljQOuKLzoeiOWqD5n2QtFBAvTyz4MSppbZT
+	6HMKI+sLoBR91GJSTTjbtFrrBMQdT8xoZDW4Ao2ga4rpUbsFD7K6+25YolyT0D3SOC2C3bLD9IQO5
+	17c4b9n5YWcs9Ep7IeCQE6cL+g+TI7YAN1wc3w+Vmkh8nKXo5A/uUDl26CinhrFdlch/UdhYMx8tE
+	qRe4eOc3OiIuDoUogorALsiAgSfbRGx9fKwYs0mcYXHMY5O2cuZQa2u21EetlRkb3xgPCTdEGXjh0
+	dF2Phv2g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4CIc-0005it-It; Wed, 13 Mar 2019 22:24:34 +0000
+	id 1h4CIm-0005w9-S6; Wed, 13 Mar 2019 22:24:44 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4CHQ-000472-QW
- for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 22:23:29 +0000
+ id 1h4CHW-0004Gk-Pa
+ for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 22:23:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1552515793; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1552515805; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:content-type:
  content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=fXIVlsu9/altBvPbxyC58fPKEHD6uV+x9UTkdgpvmcE=;
- b=mUWdnzHY+tLJ6p2KOup6zCKveJ6jjIiIxiawByjPdmk46HYVywe6dshuqS8/UPSnpO1jyn
- AbnF6+CVxbVXn3XYnIzGKsAPJevL+BAgpfO3woYBwgR3/GwCQm3414zdlI8ab3uqFvQyYc
- Qm7nQzXLVYkqXfqyPf3lIBePklsr1aI=
+ bh=PfiEt3Ut2ICxtLnattDTV67cHIBzSUuGvUTgMRXKYDQ=;
+ b=qluECxCdHO/ynneRGmBuszkIPYdV+JEWItji5fRsQuRmddaWPzp6krwDn8tnKDslMF9Owo
+ gvTKfx71x/PFLM6biSgVZGXQZxVvzhwZHgTJsvLdsfp2D1x6ngWduRAfmySCgZ8RFslCbT
+ N9W168skDAcaaAaacZyyGE27jBbnWlY=
 From: Paul Cercueil <paul@crapouillou.net>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -56,15 +56,15 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>
-Subject: [PATCH v5 04/12] mtd: rawnand: Move drivers for Ingenic SoCs to
- subfolder
-Date: Wed, 13 Mar 2019 23:22:51 +0100
-Message-Id: <20190313222259.28704-4-paul@crapouillou.net>
+Subject: [PATCH v5 12/12] mtd: rawnand: ingenic: Add ooblayout for the Qi Ben
+ Nanonote
+Date: Wed, 13 Mar 2019 23:22:59 +0100
+Message-Id: <20190313222259.28704-12-paul@crapouillou.net>
 In-Reply-To: <20190313222259.28704-1-paul@crapouillou.net>
 References: <20190313222259.28704-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190313_152321_606071_F2E97DE9 
-X-CRM114-Status: GOOD (  15.78  )
+X-CRM114-CacheID: sfid-20190313_152327_614400_B29716FB 
+X-CRM114-Status: GOOD (  13.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,8 +85,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Before adding support for more SoCs and seeing the number of files for
-these drivers grow, we move them to their own subfolder to keep it tidy.
+The Ben Nanonote from Qi Hardware expects a specific OOB layout on its
+NAND.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
@@ -94,110 +94,75 @@ Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Notes:
     v2: New patch
     
-    v3: No change
+    v3: Use the qi,lb60 layout unconditionally if we detect that we're
+        running on that board.
     
     v4: No change
     
     v5: No change
 
- drivers/mtd/nand/raw/Kconfig                     | 14 +-------------
- drivers/mtd/nand/raw/Makefile                    |  3 +--
- drivers/mtd/nand/raw/ingenic/Kconfig             | 13 +++++++++++++
- drivers/mtd/nand/raw/ingenic/Makefile            |  2 ++
- drivers/mtd/nand/raw/{ => ingenic}/jz4740_nand.c |  0
- drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.c  |  0
- drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.h  |  0
- drivers/mtd/nand/raw/{ => ingenic}/jz4780_nand.c |  0
- 8 files changed, 17 insertions(+), 15 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/ingenic/Kconfig
- create mode 100644 drivers/mtd/nand/raw/ingenic/Makefile
- rename drivers/mtd/nand/raw/{ => ingenic}/jz4740_nand.c (100%)
- rename drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.c (100%)
- rename drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.h (100%)
- rename drivers/mtd/nand/raw/{ => ingenic}/jz4780_nand.c (100%)
+ drivers/mtd/nand/raw/ingenic/ingenic_nand.c | 41 ++++++++++++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index e604625e2dfa..705863c6709a 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -470,19 +470,7 @@ config MTD_NAND_NUC900
- 	  This enables the driver for the NAND Flash on evaluation board based
- 	  on w90p910 / NUC9xx.
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
+index a2450e10932a..d32d68ef0dc7 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
+@@ -72,6 +72,41 @@ static inline struct ingenic_nfc *to_ingenic_nfc(struct nand_controller *ctrl)
+ 	return container_of(ctrl, struct ingenic_nfc, controller);
+ }
  
--config MTD_NAND_JZ4740
--	tristate "Support for JZ4740 SoC NAND controller"
--	depends on MACH_JZ4740 || COMPILE_TEST
--	depends on HAS_IOMEM
--	help
--	  Enables support for NAND Flash on JZ4740 SoC based boards.
--
--config MTD_NAND_JZ4780
--	tristate "Support for NAND on JZ4780 SoC"
--	depends on JZ4780_NEMC
--	help
--	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
--	  based boards, using the BCH controller for hardware error correction.
-+source "drivers/mtd/nand/raw/ingenic/Kconfig"
- 
- config MTD_NAND_FSMC
- 	tristate "Support for NAND on ST Micros FSMC"
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 5a5a72f0793e..5552c4a9f2cf 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -45,8 +45,7 @@ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
- obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
--obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
--obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
-+obj-y					+= ingenic/
- obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
- obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
- obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
-diff --git a/drivers/mtd/nand/raw/ingenic/Kconfig b/drivers/mtd/nand/raw/ingenic/Kconfig
-new file mode 100644
-index 000000000000..67806c87b2c4
---- /dev/null
-+++ b/drivers/mtd/nand/raw/ingenic/Kconfig
-@@ -0,0 +1,13 @@
-+config MTD_NAND_JZ4740
-+	tristate "Support for JZ4740 SoC NAND controller"
-+	depends on MACH_JZ4740 || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  Enables support for NAND Flash on JZ4740 SoC based boards.
++static int qi_lb60_ooblayout_ecc(struct mtd_info *mtd, int section,
++				 struct mtd_oob_region *oobregion)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
 +
-+config MTD_NAND_JZ4780
-+	tristate "Support for NAND on JZ4780 SoC"
-+	depends on JZ4780_NEMC
-+	help
-+	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
-+	  based boards, using the BCH controller for hardware error correction.
-diff --git a/drivers/mtd/nand/raw/ingenic/Makefile b/drivers/mtd/nand/raw/ingenic/Makefile
-new file mode 100644
-index 000000000000..44c2ca053d24
---- /dev/null
-+++ b/drivers/mtd/nand/raw/ingenic/Makefile
-@@ -0,0 +1,2 @@
-+obj-$(CONFIG_MTD_NAND_JZ4740) += jz4740_nand.o
-+obj-$(CONFIG_MTD_NAND_JZ4780) += jz4780_nand.o jz4780_bch.o
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/ingenic/jz4740_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/raw/jz4740_nand.c
-rename to drivers/mtd/nand/raw/ingenic/jz4740_nand.c
-diff --git a/drivers/mtd/nand/raw/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-similarity index 100%
-rename from drivers/mtd/nand/raw/jz4780_bch.c
-rename to drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-diff --git a/drivers/mtd/nand/raw/jz4780_bch.h b/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-similarity index 100%
-rename from drivers/mtd/nand/raw/jz4780_bch.h
-rename to drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/raw/jz4780_nand.c
-rename to drivers/mtd/nand/raw/ingenic/jz4780_nand.c
++	if (section || !ecc->total)
++		return -ERANGE;
++
++	oobregion->length = ecc->total;
++	oobregion->offset = 12;
++
++	return 0;
++}
++
++static int qi_lb60_ooblayout_free(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *oobregion)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++
++	if (section)
++		return -ERANGE;
++
++	oobregion->length = mtd->oobsize - ecc->total - 12;
++	oobregion->offset = 12 + ecc->total;
++
++	return 0;
++}
++
++const struct mtd_ooblayout_ops qi_lb60_ooblayout_ops = {
++	.ecc = qi_lb60_ooblayout_ecc,
++	.free = qi_lb60_ooblayout_free,
++};
++
+ static int jz4725b_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+@@ -247,7 +282,11 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
+ 		return -EINVAL;
+ 	}
+ 
+-	mtd_set_ooblayout(mtd, nfc->soc_info->oob_layout);
++	/* For legacy reasons we use a different layout on the qi,lb60 board. */
++	if (of_machine_is_compatible("qi,lb60"))
++		mtd_set_ooblayout(mtd, &qi_lb60_ooblayout_ops);
++	else
++		mtd_set_ooblayout(mtd, nfc->soc_info->oob_layout);
+ 
+ 	return 0;
+ }
 -- 
 2.11.0
 
