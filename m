@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 828FBC10F03
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:23:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C821C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:23:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F02F217F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:23:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC63B2146E
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:23:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Q1L5TfrM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="fzPWFM2x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F02F217F5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="al68mbOH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="Y3sYIOtj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC63B2146E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=tJhhCsNU+hwSF0/1mZ98sGfJF6ruyJyYvEo9B45vq6I=; b=Q1L
-	5TfrMS+uOC5n0XSFarEr3NyagLT6AT21c2N0fn7RXJlZ8cpoAEFoa2XGK0vJrQTR8nhichuLZGytt
-	ESsWK67dn3cOcCRv2dPizqjXTORdW60ZsFofeKnKC7rzK9yykX7Kve27c7AupJn0W8n15HPzn8M1f
-	Zq/g8as7tiJGSv8/wSY1uex9GqgRjd8TUZJRJ9Eb9rTHmU01srEGKaegmNM2ZLr2yu8FcTfn9A8wi
-	cI2CxuAO7w+TvPeN0jNhoSirZdoDYsHRwS8bikO2y90qKz2jy/CxXnVPgHEx7IE2yuBUux4P3rX1J
-	repQXf0YLnMee80ZCtd8fCdn4EXKNXQ==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=GKJ7aXoAgZBKka0DICRbLdGCEMES0OPTSeRXw3tb1vY=; b=al68mbOHOXyRlbb56d5r2Tpbjq
+	0PdgoK0RIpIMBEQaZVhK9R+LvqH/dLxa+5YSynkKIYWv4DMP3TKy4YpQuQZh3nZNxK2Yajz/POUv/
+	jrQv504ZzI1e3q5BZxgXkS8Q6l8R08zZ7ZD0gObHruyzSCCnHgvBjWysbitT+flUE8QZx1C7n503P
+	YYljSqScAxL7hiZrc6adOxoGzJHQFyRXY23xESkMoCyowgup+/03NYZaJh9b/FP1JoJnlvn/KBj0F
+	dOEfI4Rst4t74S3LlUV93YOxYvpAK0CFngwCKpLgMLvEnw1iKVVRFSwBLgPPAzyMaG/9RQGQ02NWP
+	7JBfSf0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4CHN-000450-R7; Wed, 13 Mar 2019 22:23:17 +0000
+	id 1h4CHU-0004DY-AX; Wed, 13 Mar 2019 22:23:24 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4CHK-00043I-I4
+ id 1h4CHK-00043J-I3
  for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 22:23:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1552515784; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1552515790; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:content-type:
- content-transfer-encoding:in-reply-to:references;
- bh=M0Xj2kk23SnRTXLNt+74nDq03LVAY47qlGUEW7OnrvM=;
- b=fzPWFM2xxEnt6mdtIdst7zDIKdgi3caNlZJB0UEYUruRIYbG+6HxB2aHwkDf5Lxgv0UtVF
- vTDwGKjcQdN/b+ML2slecGrhyen8ROEHHaEw7zG/ELES/OiukqOObL/mTWvh8oIu5v7uHp
- EOXTpi5JciCn15VbbxbPoZi0QiugK54=
+ content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+ bh=0IFtIe1dFG5SVRj6QBRirk3HIm/FVNgvYL+hs8x3h+E=;
+ b=Y3sYIOtjfeNB16h6p14aWtbWKkVN9ed14cWbJbnScvgGfi4U8TKVjCDo4Q1CVKSktEvAmY
+ ZwLj9iTDOjnHGnRECq48Y9xBizOtPg0zSANq1+Iopym5c209/ApoKrkLdavqdjY6tfJXLS
+ Jxurwq0KmCSCPCQy7atQ5pD8KfpATrE=
 From: Paul Cercueil <paul@crapouillou.net>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -55,13 +55,15 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>
-Subject: [PATCH v5 01/12] dt-bindings: mtd: ingenic: Add compatible strings
- for JZ4740 and JZ4725B
-Date: Wed, 13 Mar 2019 23:22:48 +0100
-Message-Id: <20190313222259.28704-1-paul@crapouillou.net>
+Subject: [PATCH v5 02/12] dt-bindings: mtd: ingenic: Change 'BCH' to 'ECC' in
+ documentation
+Date: Wed, 13 Mar 2019 23:22:49 +0100
+Message-Id: <20190313222259.28704-2-paul@crapouillou.net>
+In-Reply-To: <20190313222259.28704-1-paul@crapouillou.net>
+References: <20190313222259.28704-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190313_152314_804460_FA23C33F 
-X-CRM114-Status: GOOD (  12.94  )
+X-CRM114-CacheID: sfid-20190313_152314_808634_0B5DCF0B 
+X-CRM114-Status: GOOD (  14.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,56 +84,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add compatible strings to probe the jz4780-nand and jz4780-bch drivers
-from devicetree on the JZ4725B and JZ4740 SoCs from Ingenic.
+The JZ4740 ECC hardware is not BCH but Reed-Solomon, so it makes more
+sense to use the more generic ECC term.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
 
 Notes:
-    v2: - Change 'ingenic,jz4725b-nand' compatible string to
-          'ingenic,jz4740-nand' to reflect driver change
-        - Add 'ingenic,jz4740-bch' compatible string
-        - Document 'ingenic,oob-layout' property
-    
-    v3: - Removed 'ingenic,oob-layout' property
-        - Update compatible strings to what the driver supports
+    v3: New patch
     
     v4: No change
     
     v5: No change
 
- Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/mtd/ingenic,jz4780-nand.txt    | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
-index 29ea5853ca91..a5b940f18bf6 100644
+index a5b940f18bf6..5a45cc54f46d 100644
 --- a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
 +++ b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
-@@ -6,7 +6,10 @@ memory-controllers/ingenic,jz4780-nemc.txt), and thus NAND device nodes must
- be children of the NEMC node.
+@@ -1,4 +1,4 @@
+-* Ingenic JZ4780 NAND/BCH
++* Ingenic JZ4780 NAND/ECC
  
- Required NAND controller device properties:
--- compatible: Should be set to "ingenic,jz4780-nand".
-+- compatible: Should be one of:
-+  * ingenic,jz4740-nand
-+  * ingenic,jz4725b-nand
-+  * ingenic,jz4780-nand
- - reg: For each bank with a NAND chip attached, should specify a bank number,
+ This file documents the device tree bindings for NAND flash devices on the
+ JZ4780. NAND devices are connected to the NEMC controller (described in
+@@ -14,10 +14,10 @@ Required NAND controller device properties:
    an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC bank).
  
-@@ -72,7 +75,10 @@ NAND devices. The following is a description of the device properties for a
- BCH controller.
+ Optional NAND controller device properties:
+-- ingenic,bch-controller: To make use of the hardware BCH controller, this
+-  property must contain a phandle for the BCH controller node. The required
++- ingenic,bch-controller: To make use of the hardware ECC controller, this
++  property must contain a phandle for the ECC controller node. The required
+   properties for this node are described below. If this is not specified,
+-  software BCH will be used instead.
++  software ECC will be used instead.
  
- Required BCH properties:
--- compatible: Should be set to "ingenic,jz4780-bch".
-+- compatible: Should be one of:
-+  * ingenic,jz4740-ecc
-+  * ingenic,jz4725b-bch
-+  * ingenic,jz4780-bch
- - reg: Should specify the BCH controller registers location and length.
- - clocks: Clock for the BCH controller.
+ Optional children nodes:
+ - Individual NAND chips are children of the NAND controller node.
+@@ -70,17 +70,17 @@ nemc: nemc@13410000 {
+ 	};
+ };
+ 
+-The BCH controller is a separate SoC component used for error correction on
++The ECC controller is a separate SoC component used for error correction on
+ NAND devices. The following is a description of the device properties for a
+-BCH controller.
++ECC controller.
+ 
+-Required BCH properties:
++Required ECC properties:
+ - compatible: Should be one of:
+   * ingenic,jz4740-ecc
+   * ingenic,jz4725b-bch
+   * ingenic,jz4780-bch
+-- reg: Should specify the BCH controller registers location and length.
+-- clocks: Clock for the BCH controller.
++- reg: Should specify the ECC controller registers location and length.
++- clocks: Clock for the ECC controller.
+ 
+ Example:
  
 -- 
 2.11.0
