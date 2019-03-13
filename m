@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 198EDC43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A156C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBF2F21019
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65D5C21019
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:24:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tnLBV1D/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="tyewH6yf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBF2F21019
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H59V2zap";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="mUWdnzHY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65D5C21019
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,27 +27,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=FJ3We3f/yq2DwEdbLhoPF0eLMWyonpDheeSZP7yJomY=; b=tnLBV1D/m2HqjmAFycFRklLLUX
-	dxPoMmjFqnqfZYUKjUoAnlH6ux1yTqIuO8AGzSLh14pZNcCPGed9i2eQwRynhQty7zch1mrfvUYgf
-	g3wSOjnUYkEQZl/kFkhoBLy/zqKCsezrkpv8sxdZkKQPp08h2ES20tj8Bz/v4+VzgYn22W01aFXKi
-	ndxEPeeA9VJ1XX0+JXfU4SFfoL04wjyUK5ATKyNEq3EnKawg0LnOzAnvcvsfrJaFlMPjtajqbCZTl
-	814dah8xwNpVty50wolHbSHi2htgKm8HQAtvzE32VJ/RCZ5BzzE+HqP0PqsMqFPo6qiY0RQ95KxX4
-	vZqSz2tg==;
+	bh=t/rtV31/saTiii2v3ECZKPX7lWuWgg0UmINfq5SnURU=; b=H59V2zapb78Zufl+EqjxPhWqs9
+	hIDTIIJm+eXk6roqEvYSW4IloHNo4JKhrwLV+FAkZ5wCI93zQkzXKnBMrjdS3u+6t1PpiZnZ4JZU7
+	ef1sgOqtpl/qwmd4cEOaDPykZCd7y73KoUf2ji4O1Fh1gbaa0FZrqmXLfbMllQLJjAYvxumsnEQ97
+	gKhhmpuVI9Vu2ElJ7ndYyWeX2zhfA+LPx9VhiYADVNkcC8AmT9UkJ1KsS3522pz34KzV21Likvy/5
+	LrwFNCmHHyWjHu/WCfJdc3+0Azo8uOUrTLSW8TY6IisSNXdzjU4W9Ox3mU5Sybi962/SH2DQrrQ2N
+	7e9akJdQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4CIS-0005Um-5Z; Wed, 13 Mar 2019 22:24:24 +0000
+	id 1h4CIc-0005it-It; Wed, 13 Mar 2019 22:24:34 +0000
 Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4CHS-00048z-64
- for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 22:23:28 +0000
+ id 1h4CHQ-000472-QW
+ for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 22:23:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1552515800; h=from:from:sender:reply-to:subject:subject:date:date:
+ s=mail; t=1552515793; h=from:from:sender:reply-to:subject:subject:date:date:
  message-id:message-id:to:to:cc:cc:mime-version:content-type:
  content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=0umgjSAPrTZHFT4VpZbszTj7Bzav/Y3LXeJO+vVz6yA=;
- b=tyewH6yfT0LVN8q1HoBLNeCJnJvMQYi58WT2KddE7M00vCmLYjnTrpZJpU7iD3JFtzL21J
- hhWEBpH5wkUvQlgU/PLzYxpjsb3t/Ar3bKqyrfyFpYzYp2LufDE6/+UNx2rL9iLYpIufW/
- pGOQQbfcHhLVAxhSWTwGeMNen12i+Pc=
+ bh=fXIVlsu9/altBvPbxyC58fPKEHD6uV+x9UTkdgpvmcE=;
+ b=mUWdnzHY+tLJ6p2KOup6zCKveJ6jjIiIxiawByjPdmk46HYVywe6dshuqS8/UPSnpO1jyn
+ AbnF6+CVxbVXn3XYnIzGKsAPJevL+BAgpfO3woYBwgR3/GwCQm3414zdlI8ab3uqFvQyYc
+ Qm7nQzXLVYkqXfqyPf3lIBePklsr1aI=
 From: Paul Cercueil <paul@crapouillou.net>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -56,15 +56,15 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>
-Subject: [PATCH v5 09/12] mtd: rawnand: ingenic: Make use of ecc-engine
- property
-Date: Wed, 13 Mar 2019 23:22:56 +0100
-Message-Id: <20190313222259.28704-9-paul@crapouillou.net>
+Subject: [PATCH v5 04/12] mtd: rawnand: Move drivers for Ingenic SoCs to
+ subfolder
+Date: Wed, 13 Mar 2019 23:22:51 +0100
+Message-Id: <20190313222259.28704-4-paul@crapouillou.net>
 In-Reply-To: <20190313222259.28704-1-paul@crapouillou.net>
 References: <20190313222259.28704-1-paul@crapouillou.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190313_152322_969127_4A2E39E9 
-X-CRM114-Status: GOOD (  14.77  )
+X-CRM114-CacheID: sfid-20190313_152321_606071_F2E97DE9 
+X-CRM114-Status: GOOD (  15.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,50 +85,119 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the 'ecc-engine' standard property instead of the custom
-'ingenic,bch-controller' custom property, which is now deprecated.
+Before adding support for more SoCs and seeing the number of files for
+these drivers grow, we move them to their own subfolder to keep it tidy.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
 
 Notes:
-    v5: New patch
+    v2: New patch
+    
+    v3: No change
+    
+    v4: No change
+    
+    v5: No change
 
- drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/Kconfig                     | 14 +-------------
+ drivers/mtd/nand/raw/Makefile                    |  3 +--
+ drivers/mtd/nand/raw/ingenic/Kconfig             | 13 +++++++++++++
+ drivers/mtd/nand/raw/ingenic/Makefile            |  2 ++
+ drivers/mtd/nand/raw/{ => ingenic}/jz4740_nand.c |  0
+ drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.c  |  0
+ drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.h  |  0
+ drivers/mtd/nand/raw/{ => ingenic}/jz4780_nand.c |  0
+ 8 files changed, 17 insertions(+), 15 deletions(-)
+ create mode 100644 drivers/mtd/nand/raw/ingenic/Kconfig
+ create mode 100644 drivers/mtd/nand/raw/ingenic/Makefile
+ rename drivers/mtd/nand/raw/{ => ingenic}/jz4740_nand.c (100%)
+ rename drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.c (100%)
+ rename drivers/mtd/nand/raw/{ => ingenic}/jz4780_bch.h (100%)
+ rename drivers/mtd/nand/raw/{ => ingenic}/jz4780_nand.c (100%)
 
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-index d7f3a8c3abea..30436ca6628a 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-@@ -82,9 +82,9 @@ static struct ingenic_ecc *ingenic_ecc_get(struct device_node *np)
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index e604625e2dfa..705863c6709a 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -470,19 +470,7 @@ config MTD_NAND_NUC900
+ 	  This enables the driver for the NAND Flash on evaluation board based
+ 	  on w90p910 / NUC9xx.
  
- /**
-  * of_ingenic_ecc_get() - get the ECC controller from a DT node
-- * @of_node: the node that contains a bch-controller property.
-+ * @of_node: the node that contains a ecc-engine property.
-  *
-- * Get the bch-controller property from the given device tree
-+ * Get the ecc-engine property from the given device tree
-  * node and pass it to ingenic_ecc_get to do the work.
-  *
-  * Return: a pointer to ingenic_ecc, errors are encoded into the pointer.
-@@ -95,7 +95,14 @@ struct ingenic_ecc *of_ingenic_ecc_get(struct device_node *of_node)
- 	struct ingenic_ecc *ecc = NULL;
- 	struct device_node *np;
+-config MTD_NAND_JZ4740
+-	tristate "Support for JZ4740 SoC NAND controller"
+-	depends on MACH_JZ4740 || COMPILE_TEST
+-	depends on HAS_IOMEM
+-	help
+-	  Enables support for NAND Flash on JZ4740 SoC based boards.
+-
+-config MTD_NAND_JZ4780
+-	tristate "Support for NAND on JZ4780 SoC"
+-	depends on JZ4780_NEMC
+-	help
+-	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
+-	  based boards, using the BCH controller for hardware error correction.
++source "drivers/mtd/nand/raw/ingenic/Kconfig"
  
--	np = of_parse_phandle(of_node, "ingenic,bch-controller", 0);
-+	np = of_parse_phandle(of_node, "ecc-engine", 0);
+ config MTD_NAND_FSMC
+ 	tristate "Support for NAND on ST Micros FSMC"
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 5a5a72f0793e..5552c4a9f2cf 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -45,8 +45,7 @@ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
+ obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
+ obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
+ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+-obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
+-obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
++obj-y					+= ingenic/
+ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+ obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
+ obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
+diff --git a/drivers/mtd/nand/raw/ingenic/Kconfig b/drivers/mtd/nand/raw/ingenic/Kconfig
+new file mode 100644
+index 000000000000..67806c87b2c4
+--- /dev/null
++++ b/drivers/mtd/nand/raw/ingenic/Kconfig
+@@ -0,0 +1,13 @@
++config MTD_NAND_JZ4740
++	tristate "Support for JZ4740 SoC NAND controller"
++	depends on MACH_JZ4740 || COMPILE_TEST
++	depends on HAS_IOMEM
++	help
++	  Enables support for NAND Flash on JZ4740 SoC based boards.
 +
-+	/*
-+	 * If the ecc-engine property is not found, check for the deprecated
-+	 * ingenic,bch-controller property
-+	 */
-+	if (!np)
-+		np = of_parse_phandle(of_node, "ingenic,bch-controller", 0);
- 
- 	if (np) {
- 		ecc = ingenic_ecc_get(np);
++config MTD_NAND_JZ4780
++	tristate "Support for NAND on JZ4780 SoC"
++	depends on JZ4780_NEMC
++	help
++	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
++	  based boards, using the BCH controller for hardware error correction.
+diff --git a/drivers/mtd/nand/raw/ingenic/Makefile b/drivers/mtd/nand/raw/ingenic/Makefile
+new file mode 100644
+index 000000000000..44c2ca053d24
+--- /dev/null
++++ b/drivers/mtd/nand/raw/ingenic/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_MTD_NAND_JZ4740) += jz4740_nand.o
++obj-$(CONFIG_MTD_NAND_JZ4780) += jz4780_nand.o jz4780_bch.o
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/ingenic/jz4740_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/raw/jz4740_nand.c
+rename to drivers/mtd/nand/raw/ingenic/jz4740_nand.c
+diff --git a/drivers/mtd/nand/raw/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+similarity index 100%
+rename from drivers/mtd/nand/raw/jz4780_bch.c
+rename to drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+diff --git a/drivers/mtd/nand/raw/jz4780_bch.h b/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
+similarity index 100%
+rename from drivers/mtd/nand/raw/jz4780_bch.h
+rename to drivers/mtd/nand/raw/ingenic/jz4780_bch.h
+diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/ingenic/jz4780_nand.c
+similarity index 100%
+rename from drivers/mtd/nand/raw/jz4780_nand.c
+rename to drivers/mtd/nand/raw/ingenic/jz4780_nand.c
 -- 
 2.11.0
 
