@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 674D2C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 17:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C045C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 17:16:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E9D3217F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 17:16:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47B28217F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 17:16:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xvlpmu8Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9D3217F5
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YBHEuVx6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47B28217F5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,35 +25,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+Mmd45AU0+F2RjPsD2lo2FFKgf7Qsdxy7FW/m5yo6Ek=; b=Xvlpmu8ZcBrdau
-	KvkgSYmQ+5zeMkugBgiuBGL7/FtBmMHzDqXIrPMazlyxt/GGgY7nXwPB6vfU9EkXSCEN/UNm+6pIf
-	V9KzpoxlN+uogKJ9awEivL49KinmU3BX1NbcA92/HJgp7yNM8urt7/V8FKPBB4e3NybMnaCusx79p
-	TD2s/JKFKknaib/gmhA9UmDqIfAmFyoynABQkZI5M8QTEKw+XrZAHokx90/2x7D2G6BL8aaJmGnQk
-	Ba6viMeGXCi4MNtSAfhBdDeivQLMQ0Lw1nntabNMOCPA5tuBO3h0+C9NSwqvMTi76RQp6AA2mHx5G
-	J2hX25aoY4rMKHnaui8g==;
+	List-Owner; bh=P1k+CsoccBxg5MvQ0W9dx25hCXdyF20RVTlGVbidyPg=; b=YBHEuVx6Tza1jj
+	ymnHPlxdU+b6Hgmy4ucLkAsrnjg/O3FWSp01Rmozeod4H8/HXl1ZOXUOEfDp8aYqCrk2uYmpVQ0BW
+	P2GyZBIk4Uly0EAqeP+aZv9t8tgRt2czvg9jzIy1zOtP3/0skn6+O5nh1XSNVEqybGWo4LShacrPv
+	S9cjJaGIOcZxphb/XqmhH/zFCfDmfjboF0/nJ7RmbLEXiWgsbFfJxRwjW9As1qsGMOaPKcVRYQEOa
+	AxvUQWW7SMflxlS9x5H38f89hSHHeljo7fT616N8IwxEczPFklvVOyIAc6A78K5K2EoYxTN1cqTig
+	lGQTsJmH5EL9f3DcQX7A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4TyF-00018i-A6; Thu, 14 Mar 2019 17:16:43 +0000
+	id 1h4TyM-0001Hw-5r; Thu, 14 Mar 2019 17:16:50 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4Ty7-00015n-2k
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 17:16:38 +0000
+ id 1h4TyH-00016m-6z
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 17:16:47 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 175C21802DF74;
- Thu, 14 Mar 2019 18:16:16 +0100 (CET)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 06E4C1802DF6C;
+ Thu, 14 Mar 2019 18:16:18 +0100 (CET)
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/4] fscrypt: Export fscrypt_d_ops
-Date: Thu, 14 Mar 2019 18:15:57 +0100
-Message-Id: <20190314171559.27584-3-richard@nod.at>
+Subject: [PATCH 3/4] ubifs: Simplify fscrypt_get_encryption_info() error
+ handling
+Date: Thu, 14 Mar 2019 18:15:58 +0100
+Message-Id: <20190314171559.27584-4-richard@nod.at>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190314171559.27584-1-richard@nod.at>
 References: <CAJfpegvX4ANfso-Jn1zaB+m4Q_0eK9i-+MCJ+sTH5QzD3PZFMQ@mail.gmail.com>
  <20190314171559.27584-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190314_101635_267935_82771656 
-X-CRM114-Status: GOOD (  13.41  )
+X-CRM114-CacheID: sfid-20190314_101645_827481_A6D94552 
+X-CRM114-Status: GOOD (  12.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,52 +76,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If a filesystem manages dentry operations itself it might want to
-re-use fscrypt_d_ops.
+fscrypt_get_encryption_info() does not return -ENOKEY,
+there is no need to handle this case.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/crypto/crypto.c          | 1 +
- fs/crypto/fscrypt_private.h | 1 -
- include/linux/fscrypt.h     | 1 +
- 3 files changed, 2 insertions(+), 1 deletion(-)
+ fs/ubifs/dir.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 4dc788e3bc96..8018f8bba50d 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -357,6 +357,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- const struct dentry_operations fscrypt_d_ops = {
- 	.d_revalidate = fscrypt_d_revalidate,
- };
-+EXPORT_SYMBOL(fscrypt_d_ops);
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 5767b373a8ff..b0cb913697c5 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -526,7 +526,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
  
- void fscrypt_restore_control_page(struct page *page)
- {
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index 7da276159593..bced1ee4fd64 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -125,7 +125,6 @@ extern int fscrypt_do_page_crypto(const struct inode *inode,
- 				  gfp_t gfp_flags);
- extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
- 					      gfp_t gfp_flags);
--extern const struct dentry_operations fscrypt_d_ops;
+ 	if (encrypted) {
+ 		err = fscrypt_get_encryption_info(dir);
+-		if (err && err != -ENOKEY)
++		if (err)
+ 			return err;
  
- extern void __printf(3, 4) __cold
- fscrypt_msg(struct super_block *sb, const char *level, const char *fmt, ...);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 7139a110ac4f..2b9577e4707f 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -231,6 +231,7 @@ extern int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- extern const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
- 				       unsigned int max_size,
- 				       struct delayed_call *done);
-+extern const struct dentry_operations fscrypt_d_ops;
- #else  /* !CONFIG_FS_ENCRYPTION */
+ 		err = fscrypt_fname_alloc_buffer(dir, UBIFS_MAX_NLEN, &fstr);
+@@ -794,7 +794,7 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
  
- static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ 	if (ubifs_crypt_is_encrypted(dir)) {
+ 		err = fscrypt_get_encryption_info(dir);
+-		if (err && err != -ENOKEY)
++		if (err)
+ 			return err;
+ 	}
+ 
+@@ -904,7 +904,7 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
+ 
+ 	if (ubifs_crypt_is_encrypted(dir)) {
+ 		err = fscrypt_get_encryption_info(dir);
+-		if (err && err != -ENOKEY)
++		if (err)
+ 			return err;
+ 	}
+ 
 -- 
 2.21.0
 
