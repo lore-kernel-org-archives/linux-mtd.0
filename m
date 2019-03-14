@@ -1,70 +1,85 @@
-Return-Path: <SRS0=ZvR1=RQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=YFz0=RR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56712C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66CAFC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:26:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15DC321019
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2019 22:25:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31C8C217F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:26:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WFDwou+0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="GP19kChe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15DC321019
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t0TWj1T9";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Umy3ipo4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31C8C217F5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=pB/A6/yB7iqScb4a0RM6hhVUqE9ElQsNlB45eHNssrE=; b=WFDwou+0RMolEH1ZX5ZyNEO6RX
-	iQ/COwSKV18NXsKdcuYuZwXF9VpqZiH4EYcza3mu7EP3eIIUOoibciqfP9eERBCgLSl0FhNIo6kAB
-	4RHZsEhXL3UpfLd5Ls1d5Ph+b8v1nAWe6l0dTL1+FA+wUVsUCjOBXESA5vdHA67d5V7oY0BxA2MBm
-	pIPKyit7hmPBe686KYlNE9C+c9IJw85kyIvFWBOv1gvKJb/wMzX3nwBq6yHu1aXrR99AT+iaPXQVK
-	DFISd11bM9nFiFFjbQOEr7w1k5qlff6027IjesC0xxM/7iPi+QR9Inlgs5EgXoHsz4Z3H1HrO5rM9
-	lAckuyZA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MLUAsWJHWchifCVR3DhmC9kvVJvfSNM6SLg7PiEZMVI=; b=t0TWj1T9ulujXA
+	kOX9+3yQHCJ1ZjqiTXq0u+kytYeDoBE1tsmg0MoITS8i9AGSiHSniM6bSXqEj7nO0bGVnBbaQqYPR
+	b1af9cjM5mxvdNqyZ7r4urkBL2h/qLp8FvCTNn5MjDkf3fT3kueHnds9gef1IKeH7jnjBIQOPGRgw
+	ni4ukNiIBpIyMk7QJIY1zKJZ1vTMFTCzlArYpA3GQs0tEPZya9LW5c86mGm3HgO7jWje3gtWKeB5W
+	6MtnPwscKus8garTlPl9ivp1A9AOul6AaMMnkEreqHTrVrj7+3Ju19Q7JFRHlsmHyxQPsLOjyFRUi
+	BODlsi4gtInyrnzkQ73A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4CJP-00080G-Bm; Wed, 13 Mar 2019 22:25:23 +0000
-Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
+	id 1h4Lgn-000114-Dz; Thu, 14 Mar 2019 08:26:09 +0000
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4CHQ-00046v-Nb
- for linux-mtd@lists.infradead.org; Wed, 13 Mar 2019 22:23:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1552515799; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:content-type:
- content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=xYVANPrcbvh6+UQVRKvdO6Q7btzG+ukfvhxSyxhw6pY=;
- b=GP19kCheD7oZW+IPnS9MB7Hy204De6DCiAsBav3rAgx6T0y/LqeerCzmIaJo/S7jV5bsCx
- 6Ohu780wZZsctEOhD5po9oKQltjN2WF3HydsCDOO65c/drkMLpxYOp0mfp4pfSYUfg9Y6r
- KiiYPTwprDZFtkNkm7n3V+OdF3rgcTs=
-From: Paul Cercueil <paul@crapouillou.net>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>
-Subject: [PATCH v5 08/12] mtd: rawnand: ingenic: Separate top-level and SoC
- specific code
-Date: Wed, 13 Mar 2019 23:22:55 +0100
-Message-Id: <20190313222259.28704-8-paul@crapouillou.net>
-In-Reply-To: <20190313222259.28704-1-paul@crapouillou.net>
-References: <20190313222259.28704-1-paul@crapouillou.net>
+ id 1h4Lge-0000lz-SE
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 08:26:06 +0000
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com
+ [209.85.217.47]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id x2E8PJ5I030647
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2019 17:25:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x2E8PJ5I030647
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1552551920;
+ bh=e9evzMJ+uYgsiNQQS23HsBEHSxwMxqUkSnjbOuWeCO0=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=Umy3ipo4ci5Upbl0Mhb5E5QR93Vl3uYM7Gi7L0wyLL2WYhOUGAy2oPJWa/cBxkCAM
+ OzuBuLywCniMsFDEXJKHFAELXYoBvyAqYbGgHP0115HcRvvST8EuUnkWxEPrgPHnhS
+ ERi8IjJlx+6BnHrbSP7GaJlfsXWw5HV87/pn8LJ9jOZIyMr/G8R1CKliAPx5tXf6Hn
+ KRhukGeietHB+Ldp+FirNKWtK+fjvex8l2PZO/27mJnMJO4Gd5jAFKzB5IbWTWH+MU
+ sC+VbiyK9LVBbK52MNZOQBdnOZmv9toEymyPhOFlr+0tajiKlS5cW4a1bR+y7uY7Jq
+ sMQPo7LaNaqDg==
+X-Nifty-SrcIP: [209.85.217.47]
+Received: by mail-vs1-f47.google.com with SMTP id b8so2697295vsq.11
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2019 01:25:19 -0700 (PDT)
+X-Gm-Message-State: APjAAAVNpwLmjq2R398tfpyHe+kEGuNmSxKNhJqtEcZDg+ahU/1a7VdB
+ fiKZSs8T1QU3tJDYRm47k1anbUSzXNo8IZU5GgY=
+X-Google-Smtp-Source: APXvYqwZk4wBESJvvoYIyvcTIIgfT0pyq1xMF0FcpmWaYXxTvL+yKZZG1iWMytyinJVe0Kz9d7rMGDfOjOuIx82FTcY=
+X-Received: by 2002:a67:7c04:: with SMTP id x4mr25724602vsc.155.1552551918500; 
+ Thu, 14 Mar 2019 01:25:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <1552380290-19951-1-git-send-email-yamada.masahiro@socionext.com>
+ <1552380290-19951-3-git-send-email-yamada.masahiro@socionext.com>
+ <20190312112811.1af0bb00@xps13>
+ <CAK7LNATud=QTQ4FGxt1FtSZ06-Boa-jiROp7-wOj192FgXTNLw@mail.gmail.com>
+ <20190312115425.612bcdf2@xps13>
+ <CAK7LNAT_h7o4Rbzsgmd8Z6G3Pq3Uhvdqyhp2-ArCb8hfnreEpA@mail.gmail.com>
+ <20190312141327.31c6af3f@xps13>
+In-Reply-To: <20190312141327.31c6af3f@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 14 Mar 2019 17:24:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASegGwny8T+3-daaTJZoBNAar_26SSoNPqgd=Ns-t2_dA@mail.gmail.com>
+Message-ID: <CAK7LNASegGwny8T+3-daaTJZoBNAar_26SSoNPqgd=Ns-t2_dA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/9] mtd: rawnand: denali: refactor syndrome layout
+ handling for raw access
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190313_152322_039150_A4647591 
-X-CRM114-Status: GOOD (  28.10  )
+X-CRM114-CacheID: sfid-20190314_012601_581243_6592BC71 
+X-CRM114-Status: GOOD (  30.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,764 +91,137 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Mathieu Malaterre <malat@debian.org>,
- linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
- linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ingenic-nand driver uses an API provided by the jz4780-bch driver.
-This makes it difficult to support other SoCs in the jz4780-bch driver.
-To work around this, we separate the API functions from the SoC-specific
-code, so that these API functions are SoC-agnostic.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
-
-Notes:
-    v2: Add an optional .probe() callback. It is used for instance to set
-        the clock rate in the JZ4780 backend.
-    
-    v3: The common code is now inside the ingenic-ecc module. Each
-        SoC-specific ECC code is now in its own module, which leaves to the
-        user the choice of which (if any) ECC code should be supported.
-    
-    v4: No change
-    
-    v5: Remove .probe callback. Instead, call ingenic_ecc_probe from
-        jz4780_bch_probe and set the clock rate afterwards.
-
- drivers/mtd/nand/raw/ingenic/Kconfig        |  17 +++
- drivers/mtd/nand/raw/ingenic/Makefile       |   5 +-
- drivers/mtd/nand/raw/ingenic/ingenic_ecc.c  | 153 +++++++++++++++++++++++++
- drivers/mtd/nand/raw/ingenic/ingenic_ecc.h  |  83 ++++++++++++++
- drivers/mtd/nand/raw/ingenic/ingenic_nand.c |  40 +++----
- drivers/mtd/nand/raw/ingenic/jz4780_bch.c   | 172 +++++-----------------------
- drivers/mtd/nand/raw/ingenic/jz4780_bch.h   |  40 -------
- 7 files changed, 307 insertions(+), 203 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
- create mode 100644 drivers/mtd/nand/raw/ingenic/ingenic_ecc.h
- delete mode 100644 drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-
-diff --git a/drivers/mtd/nand/raw/ingenic/Kconfig b/drivers/mtd/nand/raw/ingenic/Kconfig
-index 67806c87b2c4..4bf7d7af3b0a 100644
---- a/drivers/mtd/nand/raw/ingenic/Kconfig
-+++ b/drivers/mtd/nand/raw/ingenic/Kconfig
-@@ -11,3 +11,20 @@ config MTD_NAND_JZ4780
- 	help
- 	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
- 	  based boards, using the BCH controller for hardware error correction.
-+
-+if MTD_NAND_JZ4780
-+
-+config MTD_NAND_INGENIC_ECC
-+	tristate
-+
-+config MTD_NAND_JZ4780_BCH
-+	tristate "Hardware BCH support for JZ4780 SoC"
-+	select MTD_NAND_INGENIC_ECC
-+	help
-+	  Enable this driver to support the BCH error-correction hardware
-+	  present on the JZ4780 SoC from Ingenic.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called jz4780-bch.
-+
-+endif # MTD_NAND_JZ4780
-diff --git a/drivers/mtd/nand/raw/ingenic/Makefile b/drivers/mtd/nand/raw/ingenic/Makefile
-index af2d5de21f60..f3c3c0f230b0 100644
---- a/drivers/mtd/nand/raw/ingenic/Makefile
-+++ b/drivers/mtd/nand/raw/ingenic/Makefile
-@@ -1,2 +1,5 @@
- obj-$(CONFIG_MTD_NAND_JZ4740) += jz4740_nand.o
--obj-$(CONFIG_MTD_NAND_JZ4780) += ingenic_nand.o jz4780_bch.o
-+obj-$(CONFIG_MTD_NAND_JZ4780) += ingenic_nand.o
-+
-+obj-$(CONFIG_MTD_NAND_INGENIC_ECC) += ingenic_ecc.o
-+obj-$(CONFIG_MTD_NAND_JZ4780_BCH) += jz4780_bch.o
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-new file mode 100644
-index 000000000000..d7f3a8c3abea
---- /dev/null
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * JZ47xx ECC common code
-+ *
-+ * Copyright (c) 2015 Imagination Technologies
-+ * Author: Alex Smith <alex.smith@imgtec.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/init.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+
-+#include "ingenic_ecc.h"
-+
-+/**
-+ * ingenic_ecc_calculate() - calculate ECC for a data buffer
-+ * @ecc: ECC device.
-+ * @params: ECC parameters.
-+ * @buf: input buffer with raw data.
-+ * @ecc_code: output buffer with ECC.
-+ *
-+ * Return: 0 on success, -ETIMEDOUT if timed out while waiting for ECC
-+ * controller.
-+ */
-+int ingenic_ecc_calculate(struct ingenic_ecc *ecc,
-+			  struct ingenic_ecc_params *params,
-+			  const u8 *buf, u8 *ecc_code)
-+{
-+	return ecc->ops->calculate(ecc, params, buf, ecc_code);
-+}
-+EXPORT_SYMBOL(ingenic_ecc_calculate);
-+
-+/**
-+ * ingenic_ecc_correct() - detect and correct bit errors
-+ * @ecc: ECC device.
-+ * @params: ECC parameters.
-+ * @buf: raw data read from the chip.
-+ * @ecc_code: ECC read from the chip.
-+ *
-+ * Given the raw data and the ECC read from the NAND device, detects and
-+ * corrects errors in the data.
-+ *
-+ * Return: the number of bit errors corrected, -EBADMSG if there are too many
-+ * errors to correct or -ETIMEDOUT if we timed out waiting for the controller.
-+ */
-+int ingenic_ecc_correct(struct ingenic_ecc *ecc,
-+			struct ingenic_ecc_params *params,
-+			u8 *buf, u8 *ecc_code)
-+{
-+	return ecc->ops->correct(ecc, params, buf, ecc_code);
-+}
-+EXPORT_SYMBOL(ingenic_ecc_correct);
-+
-+/**
-+ * ingenic_ecc_get() - get the ECC controller device
-+ * @np: ECC device tree node.
-+ *
-+ * Gets the ECC controller device from the specified device tree node. The
-+ * device must be released with ingenic_ecc_release() when it is no longer being
-+ * used.
-+ *
-+ * Return: a pointer to ingenic_ecc, errors are encoded into the pointer.
-+ * PTR_ERR(-EPROBE_DEFER) if the device hasn't been initialised yet.
-+ */
-+static struct ingenic_ecc *ingenic_ecc_get(struct device_node *np)
-+{
-+	struct platform_device *pdev;
-+	struct ingenic_ecc *ecc;
-+
-+	pdev = of_find_device_by_node(np);
-+	if (!pdev || !platform_get_drvdata(pdev))
-+		return ERR_PTR(-EPROBE_DEFER);
-+
-+	get_device(&pdev->dev);
-+
-+	ecc = platform_get_drvdata(pdev);
-+	clk_prepare_enable(ecc->clk);
-+
-+	return ecc;
-+}
-+
-+/**
-+ * of_ingenic_ecc_get() - get the ECC controller from a DT node
-+ * @of_node: the node that contains a bch-controller property.
-+ *
-+ * Get the bch-controller property from the given device tree
-+ * node and pass it to ingenic_ecc_get to do the work.
-+ *
-+ * Return: a pointer to ingenic_ecc, errors are encoded into the pointer.
-+ * PTR_ERR(-EPROBE_DEFER) if the device hasn't been initialised yet.
-+ */
-+struct ingenic_ecc *of_ingenic_ecc_get(struct device_node *of_node)
-+{
-+	struct ingenic_ecc *ecc = NULL;
-+	struct device_node *np;
-+
-+	np = of_parse_phandle(of_node, "ingenic,bch-controller", 0);
-+
-+	if (np) {
-+		ecc = ingenic_ecc_get(np);
-+		of_node_put(np);
-+	}
-+	return ecc;
-+}
-+EXPORT_SYMBOL(of_ingenic_ecc_get);
-+
-+/**
-+ * ingenic_ecc_release() - release the ECC controller device
-+ * @ecc: ECC device.
-+ */
-+void ingenic_ecc_release(struct ingenic_ecc *ecc)
-+{
-+	clk_disable_unprepare(ecc->clk);
-+	put_device(ecc->dev);
-+}
-+EXPORT_SYMBOL(ingenic_ecc_release);
-+
-+int ingenic_ecc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct ingenic_ecc *ecc;
-+	struct resource *res;
-+
-+	ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
-+	if (!ecc)
-+		return -ENOMEM;
-+
-+	ecc->ops = device_get_match_data(dev);
-+	if (!ecc->ops)
-+		return -EINVAL;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	ecc->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(ecc->base))
-+		return PTR_ERR(ecc->base);
-+
-+	ecc->ops->disable(ecc);
-+
-+	ecc->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(ecc->clk)) {
-+		dev_err(dev, "failed to get clock: %ld\n", PTR_ERR(ecc->clk));
-+		return PTR_ERR(ecc->clk);
-+	}
-+
-+	mutex_init(&ecc->lock);
-+
-+	ecc->dev = dev;
-+	platform_set_drvdata(pdev, ecc);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(ingenic_ecc_probe);
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h
-new file mode 100644
-index 000000000000..d0486f963cc9
---- /dev/null
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DRIVERS_MTD_NAND_INGENIC_ECC_INTERNAL_H__
-+#define __DRIVERS_MTD_NAND_INGENIC_ECC_INTERNAL_H__
-+
-+#include <linux/compiler_types.h>
-+#include <linux/err.h>
-+#include <linux/mutex.h>
-+#include <linux/types.h>
-+#include <uapi/asm-generic/errno-base.h>
-+
-+struct clk;
-+struct device;
-+struct ingenic_ecc;
-+struct platform_device;
-+
-+/**
-+ * struct ingenic_ecc_params - ECC parameters
-+ * @size: data bytes per ECC step.
-+ * @bytes: ECC bytes per step.
-+ * @strength: number of correctable bits per ECC step.
-+ */
-+struct ingenic_ecc_params {
-+	int size;
-+	int bytes;
-+	int strength;
-+};
-+
-+#ifdef CONFIG_MTD_NAND_INGENIC_ECC
-+int ingenic_ecc_calculate(struct ingenic_ecc *ecc,
-+			  struct ingenic_ecc_params *params,
-+			  const u8 *buf, u8 *ecc_code);
-+int ingenic_ecc_correct(struct ingenic_ecc *ecc,
-+			struct ingenic_ecc_params *params, u8 *buf,
-+			u8 *ecc_code);
-+
-+void ingenic_ecc_release(struct ingenic_ecc *ecc);
-+struct ingenic_ecc *of_ingenic_ecc_get(struct device_node *np);
-+#else /* CONFIG_MTD_NAND_INGENIC_ECC */
-+int ingenic_ecc_calculate(struct ingenic_ecc *ecc,
-+			  struct ingenic_ecc_params *params,
-+			  const u8 *buf, u8 *ecc_code)
-+{
-+	return -ENODEV;
-+}
-+
-+int ingenic_ecc_correct(struct ingenic_ecc *ecc,
-+			struct ingenic_ecc_params *params, u8 *buf,
-+			u8 *ecc_code)
-+{
-+	return -ENODEV;
-+}
-+
-+void ingenic_ecc_release(struct ingenic_ecc *ecc)
-+{
-+}
-+
-+struct ingenic_ecc *of_ingenic_ecc_get(struct device_node *np)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
-+#endif /* CONFIG_MTD_NAND_INGENIC_ECC */
-+
-+struct ingenic_ecc_ops {
-+	void (*disable)(struct ingenic_ecc *ecc);
-+	int (*calculate)(struct ingenic_ecc *ecc,
-+			 struct ingenic_ecc_params *params,
-+			 const u8 *buf, u8 *ecc_code);
-+	int (*correct)(struct ingenic_ecc *ecc,
-+			struct ingenic_ecc_params *params,
-+			u8 *buf, u8 *ecc_code);
-+};
-+
-+struct ingenic_ecc {
-+	struct device *dev;
-+	const struct ingenic_ecc_ops *ops;
-+	void __iomem *base;
-+	struct clk *clk;
-+	struct mutex lock;
-+};
-+
-+int ingenic_ecc_probe(struct platform_device *pdev);
-+
-+#endif /* __DRIVERS_MTD_NAND_INGENIC_ECC_INTERNAL_H__ */
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
-index 8c73f7c5be9a..a5f2f21c5198 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand.c
-@@ -22,7 +22,7 @@
- 
- #include <linux/jz4780-nemc.h>
- 
--#include "jz4780_bch.h"
-+#include "ingenic_ecc.h"
- 
- #define DRV_NAME	"ingenic-nand"
- 
-@@ -40,7 +40,7 @@ struct ingenic_nand_cs {
- 
- struct ingenic_nfc {
- 	struct device *dev;
--	struct jz4780_bch *bch;
-+	struct ingenic_ecc *ecc;
- 	struct nand_controller controller;
- 	unsigned int num_banks;
- 	struct list_head chips;
-@@ -124,11 +124,11 @@ static int ingenic_nand_ecc_calculate(struct nand_chip *chip, const u8 *dat,
- {
- 	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
- 	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
--	struct jz4780_bch_params params;
-+	struct ingenic_ecc_params params;
- 
- 	/*
--	 * Don't need to generate the ECC when reading, BCH does it for us as
--	 * part of decoding/correction.
-+	 * Don't need to generate the ECC when reading, the ECC engine does it
-+	 * for us as part of decoding/correction.
- 	 */
- 	if (nand->reading)
- 		return 0;
-@@ -137,7 +137,7 @@ static int ingenic_nand_ecc_calculate(struct nand_chip *chip, const u8 *dat,
- 	params.bytes = nand->chip.ecc.bytes;
- 	params.strength = nand->chip.ecc.strength;
- 
--	return jz4780_bch_calculate(nfc->bch, &params, dat, ecc_code);
-+	return ingenic_ecc_calculate(nfc->ecc, &params, dat, ecc_code);
- }
- 
- static int ingenic_nand_ecc_correct(struct nand_chip *chip, u8 *dat,
-@@ -145,13 +145,13 @@ static int ingenic_nand_ecc_correct(struct nand_chip *chip, u8 *dat,
- {
- 	struct ingenic_nand *nand = to_ingenic_nand(nand_to_mtd(chip));
- 	struct ingenic_nfc *nfc = to_ingenic_nfc(nand->chip.controller);
--	struct jz4780_bch_params params;
-+	struct ingenic_ecc_params params;
- 
- 	params.size = nand->chip.ecc.size;
- 	params.bytes = nand->chip.ecc.bytes;
- 	params.strength = nand->chip.ecc.strength;
- 
--	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
-+	return ingenic_ecc_correct(nfc->ecc, &params, dat, read_ecc);
- }
- 
- static int ingenic_nand_attach_chip(struct nand_chip *chip)
-@@ -165,8 +165,8 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
- 
- 	switch (chip->ecc.mode) {
- 	case NAND_ECC_HW:
--		if (!nfc->bch) {
--			dev_err(nfc->dev, "HW BCH selected, but BCH controller not found\n");
-+		if (!nfc->ecc) {
-+			dev_err(nfc->dev, "HW ECC selected, but ECC controller not found\n");
- 			return -ENODEV;
- 		}
- 
-@@ -176,7 +176,7 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
- 		/* fall through */
- 	case NAND_ECC_SOFT:
- 		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
--			 (nfc->bch) ? "hardware BCH" : "software ECC",
-+			 (nfc->ecc) ? "hardware ECC" : "software ECC",
- 			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
- 		break;
- 	case NAND_ECC_NONE:
-@@ -354,12 +354,12 @@ static int ingenic_nand_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	/*
--	 * Check for BCH HW before we call nand_scan_ident, to prevent us from
--	 * having to call it again if the BCH driver returns -EPROBE_DEFER.
-+	 * Check for ECC HW before we call nand_scan_ident, to prevent us from
-+	 * having to call it again if the ECC driver returns -EPROBE_DEFER.
- 	 */
--	nfc->bch = of_jz4780_bch_get(dev->of_node);
--	if (IS_ERR(nfc->bch))
--		return PTR_ERR(nfc->bch);
-+	nfc->ecc = of_ingenic_ecc_get(dev->of_node);
-+	if (IS_ERR(nfc->ecc))
-+		return PTR_ERR(nfc->ecc);
- 
- 	nfc->dev = dev;
- 	nfc->num_banks = num_banks;
-@@ -369,8 +369,8 @@ static int ingenic_nand_probe(struct platform_device *pdev)
- 
- 	ret = ingenic_nand_init_chips(nfc, pdev);
- 	if (ret) {
--		if (nfc->bch)
--			jz4780_bch_release(nfc->bch);
-+		if (nfc->ecc)
-+			ingenic_ecc_release(nfc->ecc);
- 		return ret;
- 	}
- 
-@@ -382,8 +382,8 @@ static int ingenic_nand_remove(struct platform_device *pdev)
- {
- 	struct ingenic_nfc *nfc = platform_get_drvdata(pdev);
- 
--	if (nfc->bch)
--		jz4780_bch_release(nfc->bch);
-+	if (nfc->ecc)
-+		ingenic_ecc_release(nfc->ecc);
- 
- 	ingenic_nand_cleanup_chips(nfc);
- 
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-index 7635753bd7ea..079266a0d6cf 100644
---- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-+++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * JZ4780 BCH controller
-+ * JZ4780 BCH controller driver
-  *
-  * Copyright (c) 2015 Imagination Technologies
-  * Author: Alex Smith <alex.smith@imgtec.com>
-@@ -8,18 +8,15 @@
- 
- #include <linux/bitops.h>
- #include <linux/clk.h>
--#include <linux/delay.h>
--#include <linux/init.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
--#include <linux/sched.h>
--#include <linux/slab.h>
- 
--#include "jz4780_bch.h"
-+#include "ingenic_ecc.h"
- 
- #define BCH_BHCR			0x0
- #define BCH_BHCCR			0x8
-@@ -62,15 +59,8 @@
- /* Timeout for BCH calculation/correction. */
- #define BCH_TIMEOUT_US			100000
- 
--struct jz4780_bch {
--	struct device *dev;
--	void __iomem *base;
--	struct clk *clk;
--	struct mutex lock;
--};
--
--static void jz4780_bch_reset(struct jz4780_bch *bch,
--			     struct jz4780_bch_params *params, bool encode)
-+static void jz4780_bch_reset(struct ingenic_ecc *bch,
-+			     struct ingenic_ecc_params *params, bool encode)
- {
- 	u32 reg;
- 
-@@ -90,13 +80,13 @@ static void jz4780_bch_reset(struct jz4780_bch *bch,
- 	writel(reg, bch->base + BCH_BHCR);
- }
- 
--static void jz4780_bch_disable(struct jz4780_bch *bch)
-+static void jz4780_bch_disable(struct ingenic_ecc *bch)
- {
- 	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
- 	writel(BCH_BHCR_BCHE, bch->base + BCH_BHCCR);
- }
- 
--static void jz4780_bch_write_data(struct jz4780_bch *bch, const void *buf,
-+static void jz4780_bch_write_data(struct ingenic_ecc *bch, const void *buf,
- 				  size_t size)
- {
- 	size_t size32 = size / sizeof(u32);
-@@ -113,7 +103,7 @@ static void jz4780_bch_write_data(struct jz4780_bch *bch, const void *buf,
- 		writeb(*src8++, bch->base + BCH_BHDR);
- }
- 
--static void jz4780_bch_read_parity(struct jz4780_bch *bch, void *buf,
-+static void jz4780_bch_read_parity(struct ingenic_ecc *bch, void *buf,
- 				   size_t size)
- {
- 	size_t size32 = size / sizeof(u32);
-@@ -143,7 +133,7 @@ static void jz4780_bch_read_parity(struct jz4780_bch *bch, void *buf,
- 	}
- }
- 
--static bool jz4780_bch_wait_complete(struct jz4780_bch *bch, unsigned int irq,
-+static bool jz4780_bch_wait_complete(struct ingenic_ecc *bch, unsigned int irq,
- 				     u32 *status)
- {
- 	u32 reg;
-@@ -167,18 +157,9 @@ static bool jz4780_bch_wait_complete(struct jz4780_bch *bch, unsigned int irq,
- 	return true;
- }
- 
--/**
-- * jz4780_bch_calculate() - calculate ECC for a data buffer
-- * @bch: BCH device.
-- * @params: BCH parameters.
-- * @buf: input buffer with raw data.
-- * @ecc_code: output buffer with ECC.
-- *
-- * Return: 0 on success, -ETIMEDOUT if timed out while waiting for BCH
-- * controller.
-- */
--int jz4780_bch_calculate(struct jz4780_bch *bch, struct jz4780_bch_params *params,
--			 const u8 *buf, u8 *ecc_code)
-+static int jz4780_calculate(struct ingenic_ecc *bch,
-+			    struct ingenic_ecc_params *params,
-+			    const u8 *buf, u8 *ecc_code)
- {
- 	int ret = 0;
- 
-@@ -198,23 +179,10 @@ int jz4780_bch_calculate(struct jz4780_bch *bch, struct jz4780_bch_params *param
- 	mutex_unlock(&bch->lock);
- 	return ret;
- }
--EXPORT_SYMBOL(jz4780_bch_calculate);
--
--/**
-- * jz4780_bch_correct() - detect and correct bit errors
-- * @bch: BCH device.
-- * @params: BCH parameters.
-- * @buf: raw data read from the chip.
-- * @ecc_code: ECC read from the chip.
-- *
-- * Given the raw data and the ECC read from the NAND device, detects and
-- * corrects errors in the data.
-- *
-- * Return: the number of bit errors corrected, -EBADMSG if there are too many
-- * errors to correct or -ETIMEDOUT if we timed out waiting for the controller.
-- */
--int jz4780_bch_correct(struct jz4780_bch *bch, struct jz4780_bch_params *params,
--		       u8 *buf, u8 *ecc_code)
-+
-+static int jz4780_correct(struct ingenic_ecc *bch,
-+			  struct ingenic_ecc_params *params,
-+			  u8 *buf, u8 *ecc_code)
- {
- 	u32 reg, mask, index;
- 	int i, ret, count;
-@@ -260,110 +228,30 @@ int jz4780_bch_correct(struct jz4780_bch *bch, struct jz4780_bch_params *params,
- 	mutex_unlock(&bch->lock);
- 	return ret;
- }
--EXPORT_SYMBOL(jz4780_bch_correct);
--
--/**
-- * jz4780_bch_get() - get the BCH controller device
-- * @np: BCH device tree node.
-- *
-- * Gets the BCH controller device from the specified device tree node. The
-- * device must be released with jz4780_bch_release() when it is no longer being
-- * used.
-- *
-- * Return: a pointer to jz4780_bch, errors are encoded into the pointer.
-- * PTR_ERR(-EPROBE_DEFER) if the device hasn't been initialised yet.
-- */
--static struct jz4780_bch *jz4780_bch_get(struct device_node *np)
--{
--	struct platform_device *pdev;
--	struct jz4780_bch *bch;
--
--	pdev = of_find_device_by_node(np);
--	if (!pdev)
--		return ERR_PTR(-EPROBE_DEFER);
--
--	bch = platform_get_drvdata(pdev);
--	if (!bch) {
--		put_device(&pdev->dev);
--		return ERR_PTR(-EPROBE_DEFER);
--	}
--
--	clk_prepare_enable(bch->clk);
--
--	return bch;
--}
--
--/**
-- * of_jz4780_bch_get() - get the BCH controller from a DT node
-- * @of_node: the node that contains a bch-controller property.
-- *
-- * Get the bch-controller property from the given device tree
-- * node and pass it to jz4780_bch_get to do the work.
-- *
-- * Return: a pointer to jz4780_bch, errors are encoded into the pointer.
-- * PTR_ERR(-EPROBE_DEFER) if the device hasn't been initialised yet.
-- */
--struct jz4780_bch *of_jz4780_bch_get(struct device_node *of_node)
--{
--	struct jz4780_bch *bch = NULL;
--	struct device_node *np;
--
--	np = of_parse_phandle(of_node, "ingenic,bch-controller", 0);
--
--	if (np) {
--		bch = jz4780_bch_get(np);
--		of_node_put(np);
--	}
--	return bch;
--}
--EXPORT_SYMBOL(of_jz4780_bch_get);
--
--/**
-- * jz4780_bch_release() - release the BCH controller device
-- * @bch: BCH device.
-- */
--void jz4780_bch_release(struct jz4780_bch *bch)
--{
--	clk_disable_unprepare(bch->clk);
--	put_device(bch->dev);
--}
--EXPORT_SYMBOL(jz4780_bch_release);
- 
- static int jz4780_bch_probe(struct platform_device *pdev)
- {
--	struct device *dev = &pdev->dev;
--	struct jz4780_bch *bch;
--	struct resource *res;
--
--	bch = devm_kzalloc(dev, sizeof(*bch), GFP_KERNEL);
--	if (!bch)
--		return -ENOMEM;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	bch->base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(bch->base))
--		return PTR_ERR(bch->base);
--
--	jz4780_bch_disable(bch);
-+	struct ingenic_ecc *bch;
-+	int ret;
- 
--	bch->clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(bch->clk)) {
--		dev_err(dev, "failed to get clock: %ld\n", PTR_ERR(bch->clk));
--		return PTR_ERR(bch->clk);
--	}
-+	ret = ingenic_ecc_probe(pdev);
-+	if (ret)
-+		return ret;
- 
-+	bch = platform_get_drvdata(pdev);
- 	clk_set_rate(bch->clk, BCH_CLK_RATE);
- 
--	mutex_init(&bch->lock);
--
--	bch->dev = dev;
--	platform_set_drvdata(pdev, bch);
--
- 	return 0;
- }
- 
-+static const struct ingenic_ecc_ops jz4780_bch_ops = {
-+	.disable = jz4780_bch_disable,
-+	.calculate = jz4780_calculate,
-+	.correct = jz4780_correct,
-+};
-+
- static const struct of_device_id jz4780_bch_dt_match[] = {
--	{ .compatible = "ingenic,jz4780-bch" },
-+	{ .compatible = "ingenic,jz4780-bch", .data = &jz4780_bch_ops },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, jz4780_bch_dt_match);
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.h b/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-deleted file mode 100644
-index 451e0c770160..000000000000
---- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.h
-+++ /dev/null
-@@ -1,40 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * JZ4780 BCH controller
-- *
-- * Copyright (c) 2015 Imagination Technologies
-- * Author: Alex Smith <alex.smith@imgtec.com>
-- */
--
--#ifndef __DRIVERS_MTD_NAND_JZ4780_BCH_H__
--#define __DRIVERS_MTD_NAND_JZ4780_BCH_H__
--
--#include <linux/types.h>
--
--struct device;
--struct device_node;
--struct jz4780_bch;
--
--/**
-- * struct jz4780_bch_params - BCH parameters
-- * @size: data bytes per ECC step.
-- * @bytes: ECC bytes per step.
-- * @strength: number of correctable bits per ECC step.
-- */
--struct jz4780_bch_params {
--	int size;
--	int bytes;
--	int strength;
--};
--
--int jz4780_bch_calculate(struct jz4780_bch *bch,
--				struct jz4780_bch_params *params,
--				const u8 *buf, u8 *ecc_code);
--int jz4780_bch_correct(struct jz4780_bch *bch,
--			      struct jz4780_bch_params *params, u8 *buf,
--			      u8 *ecc_code);
--
--void jz4780_bch_release(struct jz4780_bch *bch);
--struct jz4780_bch *of_jz4780_bch_get(struct device_node *np);
--
--#endif /* __DRIVERS_MTD_NAND_JZ4780_BCH_H__ */
--- 
-2.11.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKT24gVHVlLCBNYXIgMTIsIDIwMTkgYXQgMTA6MTMgUE0gTWlxdWVsIFJheW5h
+bAo8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBNYXNhaGlybywKPgo+
+IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+IHdyb3RlIG9u
+IFR1ZSwgMTIgTWFyCj4gMjAxOSAyMDowNzoyNyArMDkwMDoKPgo+ID4gSGkgTWlxdWVsLAo+ID4K
+PiA+Cj4gPiBPbiBUdWUsIE1hciAxMiwgMjAxOSBhdCA3OjU0IFBNIE1pcXVlbCBSYXluYWwgPG1p
+cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4gPgo+ID4gPiBIaSBNYXNhaGlybywK
+PiA+ID4KPiA+ID4gTWFzYWhpcm8gWWFtYWRhIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNv
+bT4gd3JvdGUgb24gVHVlLCAxMiBNYXIKPiA+ID4gMjAxOSAxOTo1MToyMSArMDkwMDoKPiA+ID4K
+PiA+ID4gPiBPbiBUdWUsIE1hciAxMiwgMjAxOSBhdCA3OjI4IFBNIE1pcXVlbCBSYXluYWwgPG1p
+cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4gPiA+ID4KPiA+ID4gPiA+IEhpIE1h
+c2FoaXJvLAo+ID4gPiA+ID4KPiA+ID4gPiA+IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2Fo
+aXJvQHNvY2lvbmV4dC5jb20+IHdyb3RlIG9uIFR1ZSwgMTIgTWFyCj4gPiA+ID4gPiAyMDE5IDE3
+OjQ0OjQzICswOTAwOgo+ID4gPiA+ID4KPiA+ID4gPiA+ID4gVGhlIERlbmFsaSBJUCBhZG9wdHMg
+dGhlIHN5bmRyb21lIHBhZ2UgbGF5b3V0IChwYXlsb2FkIGFuZCBFQ0MgYXJlCj4gPiA+ID4gPiA+
+IGludGVybGVhdmVkKS4gVGhlICpfcGFnZV9yYXcoKSBhbmQgKl9vb2IoKSBjYWxsYmFja3MgYXJl
+IGNvbXBsaWNhdGVkCj4gPiA+ID4gPiA+IGJlY2F1c2UgdGhleSBtdXN0IGhpZGUgdGhlIHVuZGVy
+bHlpbmcgbGF5b3V0IHVzZWQgYnkgdGhlIGhhcmR3YXJlLAo+ID4gPiA+ID4gPiBhbmQgYWx3YXlz
+IHJldHVybiBjb250aWd1b3VzIGluLWJhbmQgYW5kIG91dC1vZi1iYW5kIGRhdGEuCj4gPiA+ID4g
+PiA+Cj4gPiA+ID4gPiA+IEN1cnJlbnRseSwgc2ltaWxhciBjb2RlIGlzIGR1cGxpY2F0ZWQgdG8g
+cmVvcmdhbml6ZSB0aGUgZGF0YSBsYXlvdXQuCj4gPiA+ID4gPiA+IEZvciBleGFtcGxlLCBkZW5h
+bGlfcmVhZF9wYWdlX3JhdygpIGFuZCBkZW5hbGlfd3JpdGVfcGFnZV9yYXcoKSBsb29rCj4gPiA+
+ID4gPiA+IGFsbW9zdCB0aGUgc2FtZS4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gVGhlIGlkZWEg
+Zm9yIHJlZmFjdG9yaW5nIGlzIHRvIHNwbGl0IHRoZSBjb2RlIGludG8gdHdvIHBhcnRzOgo+ID4g
+PiA+ID4gPiAgIFsxXSBjb252ZXJzaW9uIG9mIHBhZ2UgbGF5b3V0Cj4gPiA+ID4gPiA+ICAgWzJd
+IHdoYXQgdG8gZG8gYXQgZXZlcnkgRUNDIGNodW5rIGJvdW5kYXJ5Cj4gPiA+ID4gPiA+Cj4gPiA+
+ID4gPiA+IEZvciBbMV0sIEkgd3JvdGUgZGVuYWxpX3Jhd19wYXlsb2FkX29wKCkgYW5kIGRlbmFs
+aV9yYXdfb29iX29wKCkuCj4gPiA+ID4gPiA+IFRoZXkgbWFuaXB1bGF0ZSBkYXRhIGZvciB0aGUg
+RGVuYWxpIGNvbnRyb2xsZXIncyBzcGVjaWZpYyBwYWdlIGxheW91dAo+ID4gPiA+ID4gPiBvZiBp
+bi1iYW5kLCBvdXQtb2YtYmFuZCwgcmVzcGVjdGl2ZWx5Lgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4g
+PiBUaGUgZGlmZmVyZW5jZSBiZXR3ZWVuIHdyaXRlIGFuZCByZWFkIGlzIGp1c3QgdGhlIG9wZXJh
+dGlvbiBhdAo+ID4gPiA+ID4gPiBFQ0MgY2h1bmsgYm91bmRhcmllcy4gRm9yIGV4YW1wbGUsIGRl
+bmFsaV9yZWFkX29vYigpIGNhbGxzCj4gPiA+ID4gPiA+IG5hbmRfY2hhbmdlX3JlYWRfY29sdW1u
+X29wKCksIHdoZXJlYXMgZGVuYWxpX3dyaXRlX29vYigpIGNhbGxzCj4gPiA+ID4gPiA+IG5hbmRf
+Y2hhbmdlX3dyaXRlX2NvbHVtbl9vcCgpLiBTbywgSSBpbXBsZW1lbnRlZCBbMl0gYXMgYSBjYWxs
+YmFjawo+ID4gPiA+ID4gPiBwYXNzZWQgaW50byBbMV0uCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+
+IFNpZ25lZC1vZmYtYnk6IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4
+dC5jb20+Cj4gPiA+ID4gPiA+IC0tLQo+ID4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiA+IFsu
+Li5dCj4gPiA+ID4gPgo+ID4gPiA+ID4gPiAgc3RhdGljIGludCBkZW5hbGlfcmVhZF9wYWdlX3Jh
+dyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ICpidWYsCj4gPiA+ID4gPiA+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGludCBvb2JfcmVxdWlyZWQsIGludCBwYWdlKQo+ID4g
+PiA+ID4gPiAgewo+ID4gPiA+ID4gPiArICAgICBzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVu
+YWxpID0gdG9fZGVuYWxpKGNoaXApOwo+ID4gPiA+ID4gPiAgICAgICBzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCA9IG5hbmRfdG9fbXRkKGNoaXApOwo+ID4gPiA+ID4gPiAtICAgICBzdHJ1Y3QgZGVuYWxp
+X25hbmRfaW5mbyAqZGVuYWxpID0gbXRkX3RvX2RlbmFsaShtdGQpOwo+ID4gPiA+ID4gPiAtICAg
+ICBpbnQgd3JpdGVzaXplID0gbXRkLT53cml0ZXNpemU7Cj4gPiA+ID4gPiA+IC0gICAgIGludCBv
+b2JzaXplID0gbXRkLT5vb2JzaXplOwo+ID4gPiA+ID4gPiAtICAgICBpbnQgZWNjX3N0ZXBzID0g
+Y2hpcC0+ZWNjLnN0ZXBzOwo+ID4gPiA+ID4gPiAtICAgICBpbnQgZWNjX3NpemUgPSBjaGlwLT5l
+Y2Muc2l6ZTsKPiA+ID4gPiA+ID4gLSAgICAgaW50IGVjY19ieXRlcyA9IGNoaXAtPmVjYy5ieXRl
+czsKPiA+ID4gPiA+ID4gICAgICAgdm9pZCAqdG1wX2J1ZiA9IGRlbmFsaS0+YnVmOwo+ID4gPiA+
+ID4gPiAtICAgICBpbnQgb29iX3NraXAgPSBkZW5hbGktPm9vYl9za2lwX2J5dGVzOwo+ID4gPiA+
+ID4gPiAtICAgICBzaXplX3Qgc2l6ZSA9IHdyaXRlc2l6ZSArIG9vYnNpemU7Cj4gPiA+ID4gPiA+
+IC0gICAgIGludCByZXQsIGksIHBvcywgbGVuOwo+ID4gPiA+ID4gPiArICAgICBzaXplX3Qgc2l6
+ZSA9IG10ZC0+d3JpdGVzaXplICsgbXRkLT5vb2JzaXplOwo+ID4gPiA+ID4gPiArICAgICBpbnQg
+cmV0Owo+ID4gPiA+ID4gPiArCj4gPiA+ID4gPiA+ICsgICAgIGlmICghYnVmKQo+ID4gPiA+ID4g
+PiArICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiAg
+ICAgICByZXQgPSBkZW5hbGlfZGF0YV94ZmVyKGNoaXAsIHRtcF9idWYsIHNpemUsIHBhZ2UsIDEs
+IDApOwo+ID4gPiA+ID4gPiAgICAgICBpZiAocmV0KQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAg
+IHJldHVybiByZXQ7Cj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IC0gICAgIC8qIEFycmFuZ2UgdGhl
+IGJ1ZmZlciBmb3Igc3luZHJvbWUgcGF5bG9hZC9lY2MgbGF5b3V0ICovCj4gPiA+ID4gPiA+IC0g
+ICAgIGlmIChidWYpIHsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICBmb3IgKGkgPSAwOyBpIDwg
+ZWNjX3N0ZXBzOyBpKyspIHsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgIHBvcyA9
+IGkgKiAoZWNjX3NpemUgKyBlY2NfYnl0ZXMpOwo+ID4gPiA+ID4gPiAtICAgICAgICAgICAgICAg
+ICAgICAgbGVuID0gZWNjX3NpemU7Cj4gPiA+ID4gPiA+IC0KPiA+ID4gPiA+ID4gLSAgICAgICAg
+ICAgICAgICAgICAgIGlmIChwb3MgPj0gd3JpdGVzaXplKQo+ID4gPiA+ID4gPiAtICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBwb3MgKz0gb29iX3NraXA7Cj4gPiA+ID4gPiA+IC0gICAgICAg
+ICAgICAgICAgICAgICBlbHNlIGlmIChwb3MgKyBsZW4gPiB3cml0ZXNpemUpCj4gPiA+ID4gPiA+
+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxlbiA9IHdyaXRlc2l6ZSAtIHBvczsKPiA+
+ID4gPiA+ID4gLQo+ID4gPiA+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgbWVtY3B5KGJ1Ziwg
+dG1wX2J1ZiArIHBvcywgbGVuKTsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgIGJ1
+ZiArPSBsZW47Cj4gPiA+ID4gPiA+IC0gICAgICAgICAgICAgICAgICAgICBpZiAobGVuIDwgZWNj
+X3NpemUpIHsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGVuID0g
+ZWNjX3NpemUgLSBsZW47Cj4gPiA+ID4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IG1lbWNweShidWYsIHRtcF9idWYgKyB3cml0ZXNpemUgKyBvb2Jfc2tpcCwKPiA+ID4gPiA+ID4g
+LSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxlbik7Cj4gPiA+ID4gPiA+IC0g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZiArPSBsZW47Cj4gPiA+ID4gPiA+IC0gICAg
+ICAgICAgICAgICAgICAgICB9Cj4gPiA+ID4gPiA+IC0gICAgICAgICAgICAgfQo+ID4gPiA+ID4g
+PiAtICAgICB9Cj4gPiA+ID4gPiA+ICsgICAgIHJldCA9IGRlbmFsaV9yYXdfcGF5bG9hZF9vcChj
+aGlwLCBidWYsIGRlbmFsaV9tZW1jcHlfaW4sIHRtcF9idWYpOwo+ID4gPiA+ID4KPiA+ID4gPiA+
+IEhvbmVzdGx5LCBJIHN0aWxsIGRvbid0IGxpa2UgcGFzc2luZyBkZW5hbGlfbWVtY3B5X2luL291
+dCBhcyBwYXJhbWV0ZXIuCj4gPiA+ID4gPgo+ID4gPiA+ID4gQmVzaWRlcyB0aGF0LCBvbmNlIHlv
+dSdsbCBoYXZlIGFkZGVkIGhlbHBlcnMgdG8gYXZvaWQgYWJ1c2luZyB0aGUKPiA+ID4gPiA+IHRl
+cm5hcnkgb3BlcmF0b3IgaW4gNC85LCB0aGUgcmVzdCBsb29rcyBmaW5lIGJ5IG1lLgo+ID4gPiA+
+ID4KPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4gRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb24/Cj4g
+PiA+Cj4gPiA+IE1heWJlIHJlZ2lzdGVyIHRoZXNlIHR3byBoZWxwZXJzIGF0IHByb2JlIGFzIGNv
+bnRyb2xsZXIgc3BlY2lmaWMgaG9va3MsCj4gPiA+IHRoZW4ganVzdCBwYXNzIGFuIGluL291dCBi
+b29sZWFuIHRvIHRoZSBmdW5jdGlvbj8KPiA+ID4KPiA+Cj4gPiBTb3JyeSwgSSBkbyBub3QgdW5k
+ZXJzdGFuZC4KPiA+Cj4gPiBBcmUgeW91IHN1Z2dlc3RpbmcgdG8gZG8gbGlrZSBmb2xsb3dzIGlu
+IHByb2JlID8KPiA+Cj4gPiBkZW5hbGktPmNoYW5nZV9jb2x1bW5fcmVhZF9yYXcgPSBkZW5hbGlf
+bWVtY3B5X2luOwo+ID4gZGVuYWxpLT5jaGFuZ2VfY29sdW1uX3dyaXRlX3JhdyA9IGRlbmFsaV9t
+ZW1jcHlfb3V0Owo+ID4gZGVuYWxpLT5jaGFuZ2VfY29sdW1uX3JlYWRfb29iID0gZGVuYWxpX2No
+YW5nZV9yZWFkX2NvbHVtbl9vcDsKPiA+IGRlbmFsaS0+Y2hhbmdlX2NvbHVtbl93cml0ZV9vb2Ig
+PSBkZW5hbGlfY2hhbmdlX3dyaXRlX2NvbHVtbl9vcDsKPiA+Cj4gPgo+ID4gQWxsIHRoZSA0IGhv
+b2tzIGFyZSBhbHdheXMgbmVlZGVkCj4gPiByZWdhcmRsZXNzIG9mIGFueSBwcm9iZWQgZmVhdHVy
+ZXMuCj4gPgo+ID4KPiA+IFRoZSByZXN1bHQgaXMganVzdCB0ZXh0dWFsIHJlcGxhY2VtZW50Cj4g
+PiBkZW5hbGlfKiB3aXRoIGRlbmFsaS0+Ki4KPiA+Cj4gPiBXaGF0J3MgdGhlIHBvaW50IG9mIGNv
+cHlpbmcgZml4ZWQgZnVuY3Rpb24gYWRkcmVzc2VzCj4gPiB0byBkZW5hbGkgc3RydWN0dXJlPwo+
+ID4KPiA+Cj4KPiBXaGF0IEkgZG9uJ3QgbGlrZSBpcyB0aGUgZnVuY3Rpb24gcG9pbnRlciBhcyBh
+IGZ1bmN0aW9uIHBhcmFtZXRlci4KClRoaXMgaXMgYSB1c3VhbCB3YXkgdG8gaGFuZGxlIGNhbGxi
+YWNrLgoKPiBZb3UKPiBjYW4gdXNlIHRoZSBmdW5jdGlvbnMgZGVmaW5lZCBzdGF0aWNhbGx5IGlm
+IHlvdSBwcmVmZXIgYXMgbG9uZyBhcyB0aGUKPiBwYXJhbWV0ZXIgaXMganVzdCBhIGJvb2xlYW4g
+Zm9yIGluc3RhbmNlPwoKCgpJIHN0aWxsIGRvIG5vdCB1bmRlcnN0YW5kIHlvdXIgY29uY2VybiwK
+YnV0IGlmIHlvdSBiYW4gdGhlIHVzZSBvZiBmdW5jdGlvbiBwb2ludGVyLAp0aGUgZm9sbG93aW5n
+IGlzIHRoZSBiZXN0IEkgY2FuIGRvCnNpbmNlIHRoZXJlIGFyZSA0IGhvb2tzIGRlcGVuZGluZyBv
+biB0aGUKY29tYmluYXRpb24gb2Ygb29iL3Jhdywgd3JpdGUvcmVhZC4KCgoKaWYgKG9vYikgewog
+ICAgICAgIGlmICh3cml0ZSkKICAgICAgICAgICAgICAgIHJldHVybiBuYW5kX2NoYW5nZV93cml0
+ZV9jb2x1bW5fb3AoY2hpcCwgb2Zmc2V0LCBidWYsCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGxlbiwgZmFsc2UpOwogICAgICAgIGVsc2UKICAgICAg
+ICAgICAgICAgIHJldHVybiBuYW5kX2NoYW5nZV9yZWFkX2NvbHVtbl9vcChjaGlwLCBvZmZzZXQs
+IGJ1ZiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBs
+ZW4sIGZhbHNlKTsKfQoKaWYgKHdyaXRlKQogICAgICAgIG1lbWNweShkZW5hbGktPmJ1ZiArIG9m
+ZnNldCwgYnVmLCBsZW4pOwplbHNlCiAgICAgICAgbWVtY3B5KGJ1ZiwgZGVuYWxpLT5idWYgKyBv
+ZmZzZXQsIGxlbik7CgpyZXR1cm4gMDsKCgoKCkJUVywgd2hlbiBhcmUgLnJlYWRfcGFnZV9yYXcg
+LyAud3JpdGVfcGFnZV9yYXcgdXNlZD8KCkN1cnJlbnRseSwgSSB1c2UgIndob2xlIHBhZ2UgYWNj
+ZXNzICYmIG1lbWNweSIgZm9yIGJldHRlciBwZXJmb3JtYW5jZS4KCklmIHRob3NlIGhvb2tzIGFy
+ZSByYXJlbHkgdXNlZCwgSSB1c2UKbmFuZF9jaGFuZ2Vfd3JpdGVfY29sdW1uX29wIC8gbmFuZF9j
+aGFuZ2VfcmVhZF9jb2x1bW5fb3AsCndoaWNoIHdpbGwgcmVkdWNlIHRoZSBpZi1jb25kaXRpb25h
+bC4KCgoKCj4KPiBUaGFua3MsCj4gTWlxdcOobAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCgoKCi0tIApCZXN0IFJlZ2FyZHMKTWFzYWhpcm8gWWFtYWRhCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
