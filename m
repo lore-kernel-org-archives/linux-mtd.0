@@ -2,87 +2,58 @@ Return-Path: <SRS0=YFz0=RR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72725C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 674D2C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 17:16:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31AFB2184E
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:38:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E9D3217F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 17:16:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jqa93Os7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rTku9ekx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31AFB2184E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Xvlpmu8Z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9D3217F5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=rMQvSZEMdNm4ulvpT2leAzO4S1E0D3UCtdPzVt2iNTE=; b=jqa93Os7LfWQtk
-	+bqTLq1v4JMin7siVGVVAf6vDPvPXOegkMfnLZySzqYjQai71y5tot8UG/Jy56Aw0fQSJN3/WJWGP
-	pfLfco9uDK39YFY0cDFXuk4+Ajihnza6N5+Ep31D2UezjX2ZZ9hX+luW7kZroSvkRfrRgp9aldMw6
-	QhDBUb/S8e3Q+GxfIi1K/e0nUL4uQeJ1wKCeTcBrswkKNF1lwacTYrF49Ww/pcxoAmJxOq13XYkA1
-	RYpDK97v/redH6cCpFZXhVwc7ghngjgpi25wfZhP1A3foWTBbIJBXCk7SOcPtWFjF7jTJ+6mUmzRf
-	TAWbRWsjmLZ57QmQRM1A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+Mmd45AU0+F2RjPsD2lo2FFKgf7Qsdxy7FW/m5yo6Ek=; b=Xvlpmu8ZcBrdau
+	KvkgSYmQ+5zeMkugBgiuBGL7/FtBmMHzDqXIrPMazlyxt/GGgY7nXwPB6vfU9EkXSCEN/UNm+6pIf
+	V9KzpoxlN+uogKJ9awEivL49KinmU3BX1NbcA92/HJgp7yNM8urt7/V8FKPBB4e3NybMnaCusx79p
+	TD2s/JKFKknaib/gmhA9UmDqIfAmFyoynABQkZI5M8QTEKw+XrZAHokx90/2x7D2G6BL8aaJmGnQk
+	Ba6viMeGXCi4MNtSAfhBdDeivQLMQ0Lw1nntabNMOCPA5tuBO3h0+C9NSwqvMTi76RQp6AA2mHx5G
+	J2hX25aoY4rMKHnaui8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4LsP-0005EG-0v; Thu, 14 Mar 2019 08:38:09 +0000
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+	id 1h4TyF-00018i-A6; Thu, 14 Mar 2019 17:16:43 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4LsL-0005D1-5M
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 08:38:06 +0000
-Received: by mail-pf1-x444.google.com with SMTP id r15so586970pfn.9
- for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2019 01:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=30vebO2M7s86h+bgRozKToa38rLhn+5TImed8PXHvkA=;
- b=rTku9ekxRqeOqpFkpVZDslv9tFwbpQhuc71cG7VkVF4/FTWDXBGYLy20CpYUk61o25
- qYLUePdfe0AwTST86gRzsAgLGul6u8ZadKZO3JNxpudPg9A+i89qIdcC+6/zSlnglMKQ
- jsI2JjLC7rJ12jgG43AUDSXPjtYsNMDQDCr8pR3ZpxrN0WsKOiKdH2o3YklQgtZeT41E
- 600DnOFkg2H7zDfbd9rEWP5eYxvABGpODAqBoT4oQqZ3nUdeTF/8B52flh+8pGJ4ytwZ
- 54jx4gWcOuY9Wqmw+7eGu0gW9of6L6mXj7rRqz2mjGB5EjdAowgzErehONEV7UAr//2Z
- StQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=30vebO2M7s86h+bgRozKToa38rLhn+5TImed8PXHvkA=;
- b=nav60GJlT6haQ1AmXW8Tx9Cp0Vs5VJgYLrjsnTHQvejBT73EmkSs7gyXeoiKyk2Kgo
- n/GgZ2XL/7WEp1W35C1rB8LWiKh0IF8hf4E8opmyQx/PdvtheUmFsQHc+AlpBJU3yd+b
- FOLSxgTg+gwbF8drjxvCEd9uPcCHJzuzfWSI2GR0JxLf6qz/bWNcDnTwDiwH/+PmVfei
- 7m/Ed4otJTsGddg1dIZ7ls3bR809ditQsTvnTirSKFzSAi8zi50QfAeRXJL+iduh1EWL
- RD3+jZqK+0t3ojD6p9BHaAaxypO+NoKMOuK4kyrfmhsIaPJ03jaDZKcyQslgHU2+Jpl7
- AH8w==
-X-Gm-Message-State: APjAAAUVvcJ60+mUPmdkLHPTNaXJIaV2oxB+ZSuEfWfe3y/SNQjTVXZC
- UpBlxlcDhyeRfUxLc2lh4Z4=
-X-Google-Smtp-Source: APXvYqz6L6mEkSM9vos0uXnnWgupOgEVWWz8y1Pyy7Od8UEIi7Vka7RAYKD0H0rSFh+Hp/+M9XMCnA==
-X-Received: by 2002:a63:4650:: with SMTP id v16mr16281311pgk.329.1552552684200; 
- Thu, 14 Mar 2019 01:38:04 -0700 (PDT)
-Received: from localhost.localdomain ([175.223.23.218])
- by smtp.gmail.com with ESMTPSA id g3sm20830999pfo.125.2019.03.14.01.38.01
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 14 Mar 2019 01:38:03 -0700 (PDT)
-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] jffs2: do not use __constant_cpu_to_xx
-Date: Thu, 14 Mar 2019 17:37:57 +0900
-Message-Id: <20190314083757.25039-1-sergey.senozhatsky@gmail.com>
+ id 1h4Ty7-00015n-2k
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 17:16:38 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 175C21802DF74;
+ Thu, 14 Mar 2019 18:16:16 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/4] fscrypt: Export fscrypt_d_ops
+Date: Thu, 14 Mar 2019 18:15:57 +0100
+Message-Id: <20190314171559.27584-3-richard@nod.at>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190314171559.27584-1-richard@nod.at>
+References: <CAJfpegvX4ANfso-Jn1zaB+m4Q_0eK9i-+MCJ+sTH5QzD3PZFMQ@mail.gmail.com>
+ <20190314171559.27584-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190314_013805_246980_D9097922 
-X-CRM114-Status: UNSURE (   9.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190314_101635_267935_82771656 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,51 +65,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: tytso@mit.edu, miklos@szeredi.hu, Richard Weinberger <richard@nod.at>,
+ amir73il@gmail.com, linux-unionfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, paullawrence@google.com,
+ linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ jaegeuk@kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A trivial patch.
+If a filesystem manages dentry operations itself it might want to
+re-use fscrypt_d_ops.
 
-cpu_to_XX() functions are smart enough to detect and
-handle __builtin_constant_p() at compile time.
-
-So we can use cpu_to_XX() instead of __constant_cpu_to_XX().
-
-Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/jffs2/nodelist.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/crypto/crypto.c          | 1 +
+ fs/crypto/fscrypt_private.h | 1 -
+ include/linux/fscrypt.h     | 1 +
+ 3 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index 0637271f3770..b1de897b3408 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -48,8 +48,8 @@
- #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
- #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(x))})
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 4dc788e3bc96..8018f8bba50d 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -357,6 +357,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+ const struct dentry_operations fscrypt_d_ops = {
+ 	.d_revalidate = fscrypt_d_revalidate,
+ };
++EXPORT_SYMBOL(fscrypt_d_ops);
  
--#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_be16(x)})
--#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_be32(x)})
-+#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
-+#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+ void fscrypt_restore_control_page(struct page *page)
+ {
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 7da276159593..bced1ee4fd64 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -125,7 +125,6 @@ extern int fscrypt_do_page_crypto(const struct inode *inode,
+ 				  gfp_t gfp_flags);
+ extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
+ 					      gfp_t gfp_flags);
+-extern const struct dentry_operations fscrypt_d_ops;
  
- #define je16_to_cpu(x) (be16_to_cpu(x.v16))
- #define je32_to_cpu(x) (be32_to_cpu(x.v32))
-@@ -59,8 +59,8 @@
- #define cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
- #define cpu_to_jemode(x) ((jmode_t){cpu_to_le32(os_to_jffs2_mode(x))})
+ extern void __printf(3, 4) __cold
+ fscrypt_msg(struct super_block *sb, const char *level, const char *fmt, ...);
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 7139a110ac4f..2b9577e4707f 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -231,6 +231,7 @@ extern int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
+ extern const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
+ 				       unsigned int max_size,
+ 				       struct delayed_call *done);
++extern const struct dentry_operations fscrypt_d_ops;
+ #else  /* !CONFIG_FS_ENCRYPTION */
  
--#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_le16(x)})
--#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_le32(x)})
-+#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_le16(x)})
-+#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
- 
- #define je16_to_cpu(x) (le16_to_cpu(x.v16))
- #define je32_to_cpu(x) (le32_to_cpu(x.v32))
+ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
 -- 
 2.21.0
 
