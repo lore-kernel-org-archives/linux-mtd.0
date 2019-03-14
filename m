@@ -2,84 +2,87 @@ Return-Path: <SRS0=YFz0=RR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66CAFC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72725C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:38:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31C8C217F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:26:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31AFB2184E
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Mar 2019 08:38:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="t0TWj1T9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Umy3ipo4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31C8C217F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jqa93Os7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rTku9ekx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31AFB2184E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MLUAsWJHWchifCVR3DhmC9kvVJvfSNM6SLg7PiEZMVI=; b=t0TWj1T9ulujXA
-	kOX9+3yQHCJ1ZjqiTXq0u+kytYeDoBE1tsmg0MoITS8i9AGSiHSniM6bSXqEj7nO0bGVnBbaQqYPR
-	b1af9cjM5mxvdNqyZ7r4urkBL2h/qLp8FvCTNn5MjDkf3fT3kueHnds9gef1IKeH7jnjBIQOPGRgw
-	ni4ukNiIBpIyMk7QJIY1zKJZ1vTMFTCzlArYpA3GQs0tEPZya9LW5c86mGm3HgO7jWje3gtWKeB5W
-	6MtnPwscKus8garTlPl9ivp1A9AOul6AaMMnkEreqHTrVrj7+3Ju19Q7JFRHlsmHyxQPsLOjyFRUi
-	BODlsi4gtInyrnzkQ73A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rMQvSZEMdNm4ulvpT2leAzO4S1E0D3UCtdPzVt2iNTE=; b=jqa93Os7LfWQtk
+	+bqTLq1v4JMin7siVGVVAf6vDPvPXOegkMfnLZySzqYjQai71y5tot8UG/Jy56Aw0fQSJN3/WJWGP
+	pfLfco9uDK39YFY0cDFXuk4+Ajihnza6N5+Ep31D2UezjX2ZZ9hX+luW7kZroSvkRfrRgp9aldMw6
+	QhDBUb/S8e3Q+GxfIi1K/e0nUL4uQeJ1wKCeTcBrswkKNF1lwacTYrF49Ww/pcxoAmJxOq13XYkA1
+	RYpDK97v/redH6cCpFZXhVwc7ghngjgpi25wfZhP1A3foWTBbIJBXCk7SOcPtWFjF7jTJ+6mUmzRf
+	TAWbRWsjmLZ57QmQRM1A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4Lgn-000114-Dz; Thu, 14 Mar 2019 08:26:09 +0000
-Received: from conssluserg-05.nifty.com ([210.131.2.90])
+	id 1h4LsP-0005EG-0v; Thu, 14 Mar 2019 08:38:09 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4Lge-0000lz-SE
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 08:26:06 +0000
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com
- [209.85.217.47]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id x2E8PJ5I030647
- for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2019 17:25:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x2E8PJ5I030647
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1552551920;
- bh=e9evzMJ+uYgsiNQQS23HsBEHSxwMxqUkSnjbOuWeCO0=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=Umy3ipo4ci5Upbl0Mhb5E5QR93Vl3uYM7Gi7L0wyLL2WYhOUGAy2oPJWa/cBxkCAM
- OzuBuLywCniMsFDEXJKHFAELXYoBvyAqYbGgHP0115HcRvvST8EuUnkWxEPrgPHnhS
- ERi8IjJlx+6BnHrbSP7GaJlfsXWw5HV87/pn8LJ9jOZIyMr/G8R1CKliAPx5tXf6Hn
- KRhukGeietHB+Ldp+FirNKWtK+fjvex8l2PZO/27mJnMJO4Gd5jAFKzB5IbWTWH+MU
- sC+VbiyK9LVBbK52MNZOQBdnOZmv9toEymyPhOFlr+0tajiKlS5cW4a1bR+y7uY7Jq
- sMQPo7LaNaqDg==
-X-Nifty-SrcIP: [209.85.217.47]
-Received: by mail-vs1-f47.google.com with SMTP id b8so2697295vsq.11
- for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2019 01:25:19 -0700 (PDT)
-X-Gm-Message-State: APjAAAVNpwLmjq2R398tfpyHe+kEGuNmSxKNhJqtEcZDg+ahU/1a7VdB
- fiKZSs8T1QU3tJDYRm47k1anbUSzXNo8IZU5GgY=
-X-Google-Smtp-Source: APXvYqwZk4wBESJvvoYIyvcTIIgfT0pyq1xMF0FcpmWaYXxTvL+yKZZG1iWMytyinJVe0Kz9d7rMGDfOjOuIx82FTcY=
-X-Received: by 2002:a67:7c04:: with SMTP id x4mr25724602vsc.155.1552551918500; 
- Thu, 14 Mar 2019 01:25:18 -0700 (PDT)
+ id 1h4LsL-0005D1-5M
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2019 08:38:06 +0000
+Received: by mail-pf1-x444.google.com with SMTP id r15so586970pfn.9
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2019 01:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=30vebO2M7s86h+bgRozKToa38rLhn+5TImed8PXHvkA=;
+ b=rTku9ekxRqeOqpFkpVZDslv9tFwbpQhuc71cG7VkVF4/FTWDXBGYLy20CpYUk61o25
+ qYLUePdfe0AwTST86gRzsAgLGul6u8ZadKZO3JNxpudPg9A+i89qIdcC+6/zSlnglMKQ
+ jsI2JjLC7rJ12jgG43AUDSXPjtYsNMDQDCr8pR3ZpxrN0WsKOiKdH2o3YklQgtZeT41E
+ 600DnOFkg2H7zDfbd9rEWP5eYxvABGpODAqBoT4oQqZ3nUdeTF/8B52flh+8pGJ4ytwZ
+ 54jx4gWcOuY9Wqmw+7eGu0gW9of6L6mXj7rRqz2mjGB5EjdAowgzErehONEV7UAr//2Z
+ StQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=30vebO2M7s86h+bgRozKToa38rLhn+5TImed8PXHvkA=;
+ b=nav60GJlT6haQ1AmXW8Tx9Cp0Vs5VJgYLrjsnTHQvejBT73EmkSs7gyXeoiKyk2Kgo
+ n/GgZ2XL/7WEp1W35C1rB8LWiKh0IF8hf4E8opmyQx/PdvtheUmFsQHc+AlpBJU3yd+b
+ FOLSxgTg+gwbF8drjxvCEd9uPcCHJzuzfWSI2GR0JxLf6qz/bWNcDnTwDiwH/+PmVfei
+ 7m/Ed4otJTsGddg1dIZ7ls3bR809ditQsTvnTirSKFzSAi8zi50QfAeRXJL+iduh1EWL
+ RD3+jZqK+0t3ojD6p9BHaAaxypO+NoKMOuK4kyrfmhsIaPJ03jaDZKcyQslgHU2+Jpl7
+ AH8w==
+X-Gm-Message-State: APjAAAUVvcJ60+mUPmdkLHPTNaXJIaV2oxB+ZSuEfWfe3y/SNQjTVXZC
+ UpBlxlcDhyeRfUxLc2lh4Z4=
+X-Google-Smtp-Source: APXvYqz6L6mEkSM9vos0uXnnWgupOgEVWWz8y1Pyy7Od8UEIi7Vka7RAYKD0H0rSFh+Hp/+M9XMCnA==
+X-Received: by 2002:a63:4650:: with SMTP id v16mr16281311pgk.329.1552552684200; 
+ Thu, 14 Mar 2019 01:38:04 -0700 (PDT)
+Received: from localhost.localdomain ([175.223.23.218])
+ by smtp.gmail.com with ESMTPSA id g3sm20830999pfo.125.2019.03.14.01.38.01
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 14 Mar 2019 01:38:03 -0700 (PDT)
+From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] jffs2: do not use __constant_cpu_to_xx
+Date: Thu, 14 Mar 2019 17:37:57 +0900
+Message-Id: <20190314083757.25039-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <1552380290-19951-1-git-send-email-yamada.masahiro@socionext.com>
- <1552380290-19951-3-git-send-email-yamada.masahiro@socionext.com>
- <20190312112811.1af0bb00@xps13>
- <CAK7LNATud=QTQ4FGxt1FtSZ06-Boa-jiROp7-wOj192FgXTNLw@mail.gmail.com>
- <20190312115425.612bcdf2@xps13>
- <CAK7LNAT_h7o4Rbzsgmd8Z6G3Pq3Uhvdqyhp2-ArCb8hfnreEpA@mail.gmail.com>
- <20190312141327.31c6af3f@xps13>
-In-Reply-To: <20190312141327.31c6af3f@xps13>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 14 Mar 2019 17:24:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASegGwny8T+3-daaTJZoBNAar_26SSoNPqgd=Ns-t2_dA@mail.gmail.com>
-Message-ID: <CAK7LNASegGwny8T+3-daaTJZoBNAar_26SSoNPqgd=Ns-t2_dA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/9] mtd: rawnand: denali: refactor syndrome layout
- handling for raw access
-To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190314_012601_581243_6592BC71 
-X-CRM114-Status: GOOD (  30.72  )
+X-CRM114-CacheID: sfid-20190314_013805_246980_D9097922 
+X-CRM114-Status: UNSURE (   9.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,137 +94,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKT24gVHVlLCBNYXIgMTIsIDIwMTkgYXQgMTA6MTMgUE0gTWlxdWVsIFJheW5h
-bAo8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBNYXNhaGlybywKPgo+
-IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+IHdyb3RlIG9u
-IFR1ZSwgMTIgTWFyCj4gMjAxOSAyMDowNzoyNyArMDkwMDoKPgo+ID4gSGkgTWlxdWVsLAo+ID4K
-PiA+Cj4gPiBPbiBUdWUsIE1hciAxMiwgMjAxOSBhdCA3OjU0IFBNIE1pcXVlbCBSYXluYWwgPG1p
-cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4gPgo+ID4gPiBIaSBNYXNhaGlybywK
-PiA+ID4KPiA+ID4gTWFzYWhpcm8gWWFtYWRhIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNv
-bT4gd3JvdGUgb24gVHVlLCAxMiBNYXIKPiA+ID4gMjAxOSAxOTo1MToyMSArMDkwMDoKPiA+ID4K
-PiA+ID4gPiBPbiBUdWUsIE1hciAxMiwgMjAxOSBhdCA3OjI4IFBNIE1pcXVlbCBSYXluYWwgPG1p
-cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4gPiA+ID4KPiA+ID4gPiA+IEhpIE1h
-c2FoaXJvLAo+ID4gPiA+ID4KPiA+ID4gPiA+IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2Fo
-aXJvQHNvY2lvbmV4dC5jb20+IHdyb3RlIG9uIFR1ZSwgMTIgTWFyCj4gPiA+ID4gPiAyMDE5IDE3
-OjQ0OjQzICswOTAwOgo+ID4gPiA+ID4KPiA+ID4gPiA+ID4gVGhlIERlbmFsaSBJUCBhZG9wdHMg
-dGhlIHN5bmRyb21lIHBhZ2UgbGF5b3V0IChwYXlsb2FkIGFuZCBFQ0MgYXJlCj4gPiA+ID4gPiA+
-IGludGVybGVhdmVkKS4gVGhlICpfcGFnZV9yYXcoKSBhbmQgKl9vb2IoKSBjYWxsYmFja3MgYXJl
-IGNvbXBsaWNhdGVkCj4gPiA+ID4gPiA+IGJlY2F1c2UgdGhleSBtdXN0IGhpZGUgdGhlIHVuZGVy
-bHlpbmcgbGF5b3V0IHVzZWQgYnkgdGhlIGhhcmR3YXJlLAo+ID4gPiA+ID4gPiBhbmQgYWx3YXlz
-IHJldHVybiBjb250aWd1b3VzIGluLWJhbmQgYW5kIG91dC1vZi1iYW5kIGRhdGEuCj4gPiA+ID4g
-PiA+Cj4gPiA+ID4gPiA+IEN1cnJlbnRseSwgc2ltaWxhciBjb2RlIGlzIGR1cGxpY2F0ZWQgdG8g
-cmVvcmdhbml6ZSB0aGUgZGF0YSBsYXlvdXQuCj4gPiA+ID4gPiA+IEZvciBleGFtcGxlLCBkZW5h
-bGlfcmVhZF9wYWdlX3JhdygpIGFuZCBkZW5hbGlfd3JpdGVfcGFnZV9yYXcoKSBsb29rCj4gPiA+
-ID4gPiA+IGFsbW9zdCB0aGUgc2FtZS4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gVGhlIGlkZWEg
-Zm9yIHJlZmFjdG9yaW5nIGlzIHRvIHNwbGl0IHRoZSBjb2RlIGludG8gdHdvIHBhcnRzOgo+ID4g
-PiA+ID4gPiAgIFsxXSBjb252ZXJzaW9uIG9mIHBhZ2UgbGF5b3V0Cj4gPiA+ID4gPiA+ICAgWzJd
-IHdoYXQgdG8gZG8gYXQgZXZlcnkgRUNDIGNodW5rIGJvdW5kYXJ5Cj4gPiA+ID4gPiA+Cj4gPiA+
-ID4gPiA+IEZvciBbMV0sIEkgd3JvdGUgZGVuYWxpX3Jhd19wYXlsb2FkX29wKCkgYW5kIGRlbmFs
-aV9yYXdfb29iX29wKCkuCj4gPiA+ID4gPiA+IFRoZXkgbWFuaXB1bGF0ZSBkYXRhIGZvciB0aGUg
-RGVuYWxpIGNvbnRyb2xsZXIncyBzcGVjaWZpYyBwYWdlIGxheW91dAo+ID4gPiA+ID4gPiBvZiBp
-bi1iYW5kLCBvdXQtb2YtYmFuZCwgcmVzcGVjdGl2ZWx5Lgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4g
-PiBUaGUgZGlmZmVyZW5jZSBiZXR3ZWVuIHdyaXRlIGFuZCByZWFkIGlzIGp1c3QgdGhlIG9wZXJh
-dGlvbiBhdAo+ID4gPiA+ID4gPiBFQ0MgY2h1bmsgYm91bmRhcmllcy4gRm9yIGV4YW1wbGUsIGRl
-bmFsaV9yZWFkX29vYigpIGNhbGxzCj4gPiA+ID4gPiA+IG5hbmRfY2hhbmdlX3JlYWRfY29sdW1u
-X29wKCksIHdoZXJlYXMgZGVuYWxpX3dyaXRlX29vYigpIGNhbGxzCj4gPiA+ID4gPiA+IG5hbmRf
-Y2hhbmdlX3dyaXRlX2NvbHVtbl9vcCgpLiBTbywgSSBpbXBsZW1lbnRlZCBbMl0gYXMgYSBjYWxs
-YmFjawo+ID4gPiA+ID4gPiBwYXNzZWQgaW50byBbMV0uCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+
-IFNpZ25lZC1vZmYtYnk6IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4
-dC5jb20+Cj4gPiA+ID4gPiA+IC0tLQo+ID4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiA+IFsu
-Li5dCj4gPiA+ID4gPgo+ID4gPiA+ID4gPiAgc3RhdGljIGludCBkZW5hbGlfcmVhZF9wYWdlX3Jh
-dyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ICpidWYsCj4gPiA+ID4gPiA+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGludCBvb2JfcmVxdWlyZWQsIGludCBwYWdlKQo+ID4g
-PiA+ID4gPiAgewo+ID4gPiA+ID4gPiArICAgICBzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVu
-YWxpID0gdG9fZGVuYWxpKGNoaXApOwo+ID4gPiA+ID4gPiAgICAgICBzdHJ1Y3QgbXRkX2luZm8g
-Km10ZCA9IG5hbmRfdG9fbXRkKGNoaXApOwo+ID4gPiA+ID4gPiAtICAgICBzdHJ1Y3QgZGVuYWxp
-X25hbmRfaW5mbyAqZGVuYWxpID0gbXRkX3RvX2RlbmFsaShtdGQpOwo+ID4gPiA+ID4gPiAtICAg
-ICBpbnQgd3JpdGVzaXplID0gbXRkLT53cml0ZXNpemU7Cj4gPiA+ID4gPiA+IC0gICAgIGludCBv
-b2JzaXplID0gbXRkLT5vb2JzaXplOwo+ID4gPiA+ID4gPiAtICAgICBpbnQgZWNjX3N0ZXBzID0g
-Y2hpcC0+ZWNjLnN0ZXBzOwo+ID4gPiA+ID4gPiAtICAgICBpbnQgZWNjX3NpemUgPSBjaGlwLT5l
-Y2Muc2l6ZTsKPiA+ID4gPiA+ID4gLSAgICAgaW50IGVjY19ieXRlcyA9IGNoaXAtPmVjYy5ieXRl
-czsKPiA+ID4gPiA+ID4gICAgICAgdm9pZCAqdG1wX2J1ZiA9IGRlbmFsaS0+YnVmOwo+ID4gPiA+
-ID4gPiAtICAgICBpbnQgb29iX3NraXAgPSBkZW5hbGktPm9vYl9za2lwX2J5dGVzOwo+ID4gPiA+
-ID4gPiAtICAgICBzaXplX3Qgc2l6ZSA9IHdyaXRlc2l6ZSArIG9vYnNpemU7Cj4gPiA+ID4gPiA+
-IC0gICAgIGludCByZXQsIGksIHBvcywgbGVuOwo+ID4gPiA+ID4gPiArICAgICBzaXplX3Qgc2l6
-ZSA9IG10ZC0+d3JpdGVzaXplICsgbXRkLT5vb2JzaXplOwo+ID4gPiA+ID4gPiArICAgICBpbnQg
-cmV0Owo+ID4gPiA+ID4gPiArCj4gPiA+ID4gPiA+ICsgICAgIGlmICghYnVmKQo+ID4gPiA+ID4g
-PiArICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiAg
-ICAgICByZXQgPSBkZW5hbGlfZGF0YV94ZmVyKGNoaXAsIHRtcF9idWYsIHNpemUsIHBhZ2UsIDEs
-IDApOwo+ID4gPiA+ID4gPiAgICAgICBpZiAocmV0KQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAg
-IHJldHVybiByZXQ7Cj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IC0gICAgIC8qIEFycmFuZ2UgdGhl
-IGJ1ZmZlciBmb3Igc3luZHJvbWUgcGF5bG9hZC9lY2MgbGF5b3V0ICovCj4gPiA+ID4gPiA+IC0g
-ICAgIGlmIChidWYpIHsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICBmb3IgKGkgPSAwOyBpIDwg
-ZWNjX3N0ZXBzOyBpKyspIHsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgIHBvcyA9
-IGkgKiAoZWNjX3NpemUgKyBlY2NfYnl0ZXMpOwo+ID4gPiA+ID4gPiAtICAgICAgICAgICAgICAg
-ICAgICAgbGVuID0gZWNjX3NpemU7Cj4gPiA+ID4gPiA+IC0KPiA+ID4gPiA+ID4gLSAgICAgICAg
-ICAgICAgICAgICAgIGlmIChwb3MgPj0gd3JpdGVzaXplKQo+ID4gPiA+ID4gPiAtICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBwb3MgKz0gb29iX3NraXA7Cj4gPiA+ID4gPiA+IC0gICAgICAg
-ICAgICAgICAgICAgICBlbHNlIGlmIChwb3MgKyBsZW4gPiB3cml0ZXNpemUpCj4gPiA+ID4gPiA+
-IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxlbiA9IHdyaXRlc2l6ZSAtIHBvczsKPiA+
-ID4gPiA+ID4gLQo+ID4gPiA+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgbWVtY3B5KGJ1Ziwg
-dG1wX2J1ZiArIHBvcywgbGVuKTsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgIGJ1
-ZiArPSBsZW47Cj4gPiA+ID4gPiA+IC0gICAgICAgICAgICAgICAgICAgICBpZiAobGVuIDwgZWNj
-X3NpemUpIHsKPiA+ID4gPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGVuID0g
-ZWNjX3NpemUgLSBsZW47Cj4gPiA+ID4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IG1lbWNweShidWYsIHRtcF9idWYgKyB3cml0ZXNpemUgKyBvb2Jfc2tpcCwKPiA+ID4gPiA+ID4g
-LSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxlbik7Cj4gPiA+ID4gPiA+IC0g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZiArPSBsZW47Cj4gPiA+ID4gPiA+IC0gICAg
-ICAgICAgICAgICAgICAgICB9Cj4gPiA+ID4gPiA+IC0gICAgICAgICAgICAgfQo+ID4gPiA+ID4g
-PiAtICAgICB9Cj4gPiA+ID4gPiA+ICsgICAgIHJldCA9IGRlbmFsaV9yYXdfcGF5bG9hZF9vcChj
-aGlwLCBidWYsIGRlbmFsaV9tZW1jcHlfaW4sIHRtcF9idWYpOwo+ID4gPiA+ID4KPiA+ID4gPiA+
-IEhvbmVzdGx5LCBJIHN0aWxsIGRvbid0IGxpa2UgcGFzc2luZyBkZW5hbGlfbWVtY3B5X2luL291
-dCBhcyBwYXJhbWV0ZXIuCj4gPiA+ID4gPgo+ID4gPiA+ID4gQmVzaWRlcyB0aGF0LCBvbmNlIHlv
-dSdsbCBoYXZlIGFkZGVkIGhlbHBlcnMgdG8gYXZvaWQgYWJ1c2luZyB0aGUKPiA+ID4gPiA+IHRl
-cm5hcnkgb3BlcmF0b3IgaW4gNC85LCB0aGUgcmVzdCBsb29rcyBmaW5lIGJ5IG1lLgo+ID4gPiA+
-ID4KPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4gRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb24/Cj4g
-PiA+Cj4gPiA+IE1heWJlIHJlZ2lzdGVyIHRoZXNlIHR3byBoZWxwZXJzIGF0IHByb2JlIGFzIGNv
-bnRyb2xsZXIgc3BlY2lmaWMgaG9va3MsCj4gPiA+IHRoZW4ganVzdCBwYXNzIGFuIGluL291dCBi
-b29sZWFuIHRvIHRoZSBmdW5jdGlvbj8KPiA+ID4KPiA+Cj4gPiBTb3JyeSwgSSBkbyBub3QgdW5k
-ZXJzdGFuZC4KPiA+Cj4gPiBBcmUgeW91IHN1Z2dlc3RpbmcgdG8gZG8gbGlrZSBmb2xsb3dzIGlu
-IHByb2JlID8KPiA+Cj4gPiBkZW5hbGktPmNoYW5nZV9jb2x1bW5fcmVhZF9yYXcgPSBkZW5hbGlf
-bWVtY3B5X2luOwo+ID4gZGVuYWxpLT5jaGFuZ2VfY29sdW1uX3dyaXRlX3JhdyA9IGRlbmFsaV9t
-ZW1jcHlfb3V0Owo+ID4gZGVuYWxpLT5jaGFuZ2VfY29sdW1uX3JlYWRfb29iID0gZGVuYWxpX2No
-YW5nZV9yZWFkX2NvbHVtbl9vcDsKPiA+IGRlbmFsaS0+Y2hhbmdlX2NvbHVtbl93cml0ZV9vb2Ig
-PSBkZW5hbGlfY2hhbmdlX3dyaXRlX2NvbHVtbl9vcDsKPiA+Cj4gPgo+ID4gQWxsIHRoZSA0IGhv
-b2tzIGFyZSBhbHdheXMgbmVlZGVkCj4gPiByZWdhcmRsZXNzIG9mIGFueSBwcm9iZWQgZmVhdHVy
-ZXMuCj4gPgo+ID4KPiA+IFRoZSByZXN1bHQgaXMganVzdCB0ZXh0dWFsIHJlcGxhY2VtZW50Cj4g
-PiBkZW5hbGlfKiB3aXRoIGRlbmFsaS0+Ki4KPiA+Cj4gPiBXaGF0J3MgdGhlIHBvaW50IG9mIGNv
-cHlpbmcgZml4ZWQgZnVuY3Rpb24gYWRkcmVzc2VzCj4gPiB0byBkZW5hbGkgc3RydWN0dXJlPwo+
-ID4KPiA+Cj4KPiBXaGF0IEkgZG9uJ3QgbGlrZSBpcyB0aGUgZnVuY3Rpb24gcG9pbnRlciBhcyBh
-IGZ1bmN0aW9uIHBhcmFtZXRlci4KClRoaXMgaXMgYSB1c3VhbCB3YXkgdG8gaGFuZGxlIGNhbGxi
-YWNrLgoKPiBZb3UKPiBjYW4gdXNlIHRoZSBmdW5jdGlvbnMgZGVmaW5lZCBzdGF0aWNhbGx5IGlm
-IHlvdSBwcmVmZXIgYXMgbG9uZyBhcyB0aGUKPiBwYXJhbWV0ZXIgaXMganVzdCBhIGJvb2xlYW4g
-Zm9yIGluc3RhbmNlPwoKCgpJIHN0aWxsIGRvIG5vdCB1bmRlcnN0YW5kIHlvdXIgY29uY2VybiwK
-YnV0IGlmIHlvdSBiYW4gdGhlIHVzZSBvZiBmdW5jdGlvbiBwb2ludGVyLAp0aGUgZm9sbG93aW5n
-IGlzIHRoZSBiZXN0IEkgY2FuIGRvCnNpbmNlIHRoZXJlIGFyZSA0IGhvb2tzIGRlcGVuZGluZyBv
-biB0aGUKY29tYmluYXRpb24gb2Ygb29iL3Jhdywgd3JpdGUvcmVhZC4KCgoKaWYgKG9vYikgewog
-ICAgICAgIGlmICh3cml0ZSkKICAgICAgICAgICAgICAgIHJldHVybiBuYW5kX2NoYW5nZV93cml0
-ZV9jb2x1bW5fb3AoY2hpcCwgb2Zmc2V0LCBidWYsCiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGxlbiwgZmFsc2UpOwogICAgICAgIGVsc2UKICAgICAg
-ICAgICAgICAgIHJldHVybiBuYW5kX2NoYW5nZV9yZWFkX2NvbHVtbl9vcChjaGlwLCBvZmZzZXQs
-IGJ1ZiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBs
-ZW4sIGZhbHNlKTsKfQoKaWYgKHdyaXRlKQogICAgICAgIG1lbWNweShkZW5hbGktPmJ1ZiArIG9m
-ZnNldCwgYnVmLCBsZW4pOwplbHNlCiAgICAgICAgbWVtY3B5KGJ1ZiwgZGVuYWxpLT5idWYgKyBv
-ZmZzZXQsIGxlbik7CgpyZXR1cm4gMDsKCgoKCkJUVywgd2hlbiBhcmUgLnJlYWRfcGFnZV9yYXcg
-LyAud3JpdGVfcGFnZV9yYXcgdXNlZD8KCkN1cnJlbnRseSwgSSB1c2UgIndob2xlIHBhZ2UgYWNj
-ZXNzICYmIG1lbWNweSIgZm9yIGJldHRlciBwZXJmb3JtYW5jZS4KCklmIHRob3NlIGhvb2tzIGFy
-ZSByYXJlbHkgdXNlZCwgSSB1c2UKbmFuZF9jaGFuZ2Vfd3JpdGVfY29sdW1uX29wIC8gbmFuZF9j
-aGFuZ2VfcmVhZF9jb2x1bW5fb3AsCndoaWNoIHdpbGwgcmVkdWNlIHRoZSBpZi1jb25kaXRpb25h
-bC4KCgoKCj4KPiBUaGFua3MsCj4gTWlxdcOobAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCgoKCi0tIApCZXN0IFJlZ2FyZHMKTWFzYWhpcm8gWWFtYWRhCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+A trivial patch.
+
+cpu_to_XX() functions are smart enough to detect and
+handle __builtin_constant_p() at compile time.
+
+So we can use cpu_to_XX() instead of __constant_cpu_to_XX().
+
+Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+---
+ fs/jffs2/nodelist.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index 0637271f3770..b1de897b3408 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -48,8 +48,8 @@
+ #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+ #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(x))})
+ 
+-#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_be16(x)})
+-#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_be32(x)})
++#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
++#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+ 
+ #define je16_to_cpu(x) (be16_to_cpu(x.v16))
+ #define je32_to_cpu(x) (be32_to_cpu(x.v32))
+@@ -59,8 +59,8 @@
+ #define cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
+ #define cpu_to_jemode(x) ((jmode_t){cpu_to_le32(os_to_jffs2_mode(x))})
+ 
+-#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_le16(x)})
+-#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_le32(x)})
++#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_le16(x)})
++#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
+ 
+ #define je16_to_cpu(x) (le16_to_cpu(x.v16))
+ #define je32_to_cpu(x) (le32_to_cpu(x.v32))
+-- 
+2.21.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
