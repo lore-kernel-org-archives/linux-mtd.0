@@ -2,70 +2,67 @@ Return-Path: <SRS0=5Vwq=RS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC02DC4360F
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Mar 2019 13:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60701C43381
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Mar 2019 14:37:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A4C1217F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Mar 2019 13:59:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30BE321871
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Mar 2019 14:37:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WO3RTAYO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A4C1217F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QzRg3wFm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="UqSqjLCH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30BE321871
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pmrgi9GH8G3go02JMhAcmElAlveU/Clq48TgmR1JtwY=; b=WO3RTAYOU0B27g
-	OPp7OP2bI+w0v7kogyzdjOOqOH2uanGgsDoUSo+aiTsN7PL91ic7YY4j/tTFQ/Y4UFiIYduzmJxBX
-	lpVe04shwD5FvvPHISFpDW3Vik9MHPelfrUwNm191dVa6bm1gypmj2K+sh3zgMcOtJVrJSK0J3qVq
-	b0vl3uFp7wpl6vNVHQGVQJBDXzFQFSHAbjRQxrLgSzXvjWybw6crpJp8tUsx7dsZKCFiC8C7haEgJ
-	isjYVyWgXTK6lfDdTfc9ewZD2hVht5hn0Ty7gmJvf4E8iL921wghENgOeT1GP9PZkGd3rl3jjIVkd
-	hcL1brlg3xEdNV4En/rg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
+	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=1+4+s/lkf6c0l6exi83LO0xQo44t+EVtx1aCw/cqNwY=; b=QzRg3wFmD+ZhVaVtxieAjoiFq
+	R1RvjFYdeTOuClP24B5AFBkgm/iP8mAOiDhLWtWIjRgS5cJ5gTF439RF7HEnPxNck5EFofdLDLH6c
+	rnYeKot9ylVKmtTc+41LeBqr2QwfaglMtAhEMLf7omFDB4aOh3UPjAL/AoSCfV2QudSrqhJJ9n/Yi
+	hwVsbX8YXr4zK1GDuJbFM1iXJWPBDKpeovNLKt21vNYPVYeroM3kgVxezVm9LIQsRR4Ix0g1t+OZC
+	EBvIY8dM/WUKKSZQCnek8q8Myh/4vT0MdYR2AH2XEHMU8S9o7hRxi9iufWcHF0kKGRoTj+wLbz0mU
+	TU5Z/t81g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h4nN0-0008FI-4m; Fri, 15 Mar 2019 13:59:34 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1h4ny4-0005E8-IJ; Fri, 15 Mar 2019 14:37:52 +0000
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h4nMw-0008Eu-Li
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2019 13:59:32 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 4C192608A397;
- Fri, 15 Mar 2019 14:59:28 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id F8QMm3UBWQjW; Fri, 15 Mar 2019 14:59:28 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id EECF760B62A7;
- Fri, 15 Mar 2019 14:59:27 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id EhW9eD3_Ku6b; Fri, 15 Mar 2019 14:59:27 +0100 (CET)
-Received: from blindfold.localnet (089144193070.atnat0002.highway.a1.net
- [89.144.193.70])
- by lithops.sigma-star.at (Postfix) with ESMTPSA id 147D6608A397;
- Fri, 15 Mar 2019 14:59:27 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 4/4] ubifs: Implement new mount option,
- fscrypt_key_required
-Date: Fri, 15 Mar 2019 14:59:26 +0100
-Message-ID: <11194150.36rPM0hNvo@blindfold>
-In-Reply-To: <20190315135128.GL11334@mit.edu>
-References: <CAJfpegvX4ANfso-Jn1zaB+m4Q_0eK9i-+MCJ+sTH5QzD3PZFMQ@mail.gmail.com>
- <3651600.xvQHXhhOD0@blindfold> <20190315135128.GL11334@mit.edu>
+ id 1h4ny1-0005DD-9N
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2019 14:37:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1552660659; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+ content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=K6kOoG2l+4ZryPRZR9ndkiXXIfexV8a+h0H/nuKIaCA=;
+ b=UqSqjLCH3KFngrfrL7sxgCDgwqBGU4aCUf35U4asZHexA4sDjveEv1hi02SD80tJqSSOPn
+ wuT4qP5iPeNL2g7B6gHRsdpurZ1W8U3Wo1QDa8xLH3ArPx/d+OkRxo6du4mKldiwvovzAo
+ FWl2dzQSrh6pm5pMuZ1dJY+vXgb0M88=
+Date: Fri, 15 Mar 2019 15:37:34 +0100
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v5 09/12] mtd: rawnand: ingenic: Make use of ecc-engine
+ property
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Message-Id: <1552660654.1727.0@crapouillou.net>
+In-Reply-To: <20190315094009.66b91ad5@xps13>
+References: <20190313222259.28704-1-paul@crapouillou.net>
+ <20190313222259.28704-9-paul@crapouillou.net>
+ <20190315094009.66b91ad5@xps13>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190315_065930_860634_047DF40A 
-X-CRM114-Status: GOOD (  18.86  )
+X-CRM114-CacheID: sfid-20190315_073749_720208_75B1CA15 
+X-CRM114-Status: GOOD (  21.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,78 +74,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: paullawrence@google.com, miklos@szeredi.hu, amir73il@gmail.com,
- linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- jaegeuk@kernel.org, James.Bottomley@hansenpartnership.com
-Content-Type: text/plain; charset="iso-8859-1"
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, od@zcrc.me,
+ Boris Brezillon <bbrezillon@kernel.org>, Mathieu Malaterre <malat@debian.org>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ted,
+Hi,
 
-Am Freitag, 15. M=E4rz 2019, 14:51:28 CET schrieb Theodore Ts'o:
-> On Fri, Mar 15, 2019 at 08:48:10AM +0100, Richard Weinberger wrote:
-> > Ted,
-> > =
+Le ven. 15 mars 2019 =E0 9:40, Miquel Raynal <miquel.raynal@bootlin.com> =
 
-> > Am Freitag, 15. M=E4rz 2019, 00:07:02 CET schrieb Theodore Ts'o:
-> > > Richard --- stepping back for a moment, in your use case, are you
-> > > assuming that the encryption key is always going to be present while
-> > > the system is running?
-> > =
-
-> > it is not a hard requirement, it is something what is common on embedded
-> > systems that utilize UBIFS and fscrypt.
-> > =
-
-> > Well, fscrypt was chosen as UBIFS encryption backend because per-file e=
-ncryption
-> > with derived keys makes a lot of sense.
-> > Also the implementation was not super hard, David and I weren't keen to=
- reinvent
-> > dm-crypt f=FCr UBI/MTD.
-> > =
-
-> > That said, I'm happy with fscrypt, it works well in production.
+a =E9crit :
+> Hi Paul,
 > =
 
-> OK, but please note that fscrypt leaks i_size and timestamp
-> information; dm-crypt doesn't.  An enterprising attacker could very
-> easily be able to do something interesting with that information, so
-> be sure you've thought through what the threat model for users of
-> ubifs is going to be.
+> Paul Cercueil <paul@crapouillou.net> wrote on Wed, 13 Mar 2019 =
 
-No need to worry, I'm fully aware of all this.
- =
-
-> If you need per-user keying, and you need to be able to mount the file
-> system and access some of the files without having any keys, and if
-> it's useful for an admin to be able to delete files without having the
-> key, then fscrypt is a great fit.
+> 23:22:56
+> +0100:
 > =
 
-> You are proposing changes that (optionally) eliminate that last
-> advantage of fscrypt.  So I just wanted to sanity check whether or not
-> the other advantages are useful to you, and worth the security
-> tradeoffs that are inherent in such a choice.  If it's worth it, then
-> great.  But if it isn't, I'd much rather that you appropriately
-> protect your users and your customers rather than be an additional
-> user of fscrypt.  :-)
+>>  Use the 'ecc-engine' standard property instead of the custom
+>>  'ingenic,bch-controller' custom property, which is now deprecated.
+>> =
 
-Like I said, this patch series is an RFC, the mount option was suggested
-by Amir and Miklos, so I assumed showing some code is a good base for furth=
-er
-discussion.
-For most of *my* use-cases it works but having general support for fscrypt+=
-overlayfs
-would be the ultimate goal.
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>> =
+
+>>  Notes:
+>>      v5: New patch
+>> =
+
+>>   drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 13 ++++++++++---
+>>   1 file changed, 10 insertions(+), 3 deletions(-)
+>> =
+
+>>  diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c =
+
+>> b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+>>  index d7f3a8c3abea..30436ca6628a 100644
+>>  --- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+>>  +++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+>>  @@ -82,9 +82,9 @@ static struct ingenic_ecc *ingenic_ecc_get(struct =
+
+>> device_node *np)
+>> =
+
+>>   /**
+>>    * of_ingenic_ecc_get() - get the ECC controller from a DT node
+>>  - * @of_node: the node that contains a bch-controller property.
+>>  + * @of_node: the node that contains a ecc-engine property.
+> =
+
+> Would "contains an ecc-engine property" be better English?
+> =
+
+> I am not sure what is the rule when it comes to plain English with
+> variable names. However if you agree, no need to re-send the series, I
+> can fix it when applying.
+
+Yes, that's better.
+
+> BTW, I added hw ECC engines support to my generic ECC engine
+> implementation, but migrating the whole raw NAND subsystem (using I/O
+> requests like in the SPI-NAND core, adding prepare/finish_io_req =
+
+> hooks)
+> is going to be much more invasive than initially expected, so I am not
+> sure I will finish the migration any time soon.
+
+Ok, I will follow the development then.
+
+> Thanks,
+> Miqu=E8l
+
+One thing I notice with my patchset: it works perfectly on top of 4.20,
+but on top of 5.0 I am unable to erase any eraseblock with flash_erase.
+I get -EIO every time. I'm trying to debug it but didn't go very far,
+it looks like nand_status_op() gives me a status of 0xff. Do you know
+what could have changed between 4.20 and 5.0 that could trigger this =
+
+bug?
+
+Second thing, everytime I reboot it fails to find the BBT. That's =
+
+because
+the BBT marker is overwritten by the ECC data as they occupy the same =
+
+area
+in the OOB space. Is there a way to move the BBT marker? Or should I use
+NAND_BBT_NO_OOB then? Since the eraseblocks where the BBTs are located
+is used in my system partition, won't that conflict with the data?
 
 Thanks,
-//richard
-
+-Paul
 
 
 ______________________________________________________
