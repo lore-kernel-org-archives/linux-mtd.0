@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BCB4C43381
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:07:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 457A4C43381
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:08:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A57520896
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:07:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1523920896
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:08:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SQikD9n+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="frpCRYgI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A57520896
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dx5nLuzo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vPGW0vZy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1523920896
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,45 +25,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+T2UYNWdY1xYvD9VY3qOgbjYy9w2OjgIGiuwciWJLQc=; b=SQikD9n+amjLaV
-	aChj7u6acDXa3NqAQ/d8b9IYSUK88KLaB5CcybsZxflVGgOVa124hL8tIC5CMb4dAXH9rtgLYKQbe
-	ynrLh3uSr3wviSLwSh7oof7ccnUQoBM1/Ba5JMIwinHy7lDRDUpREQryuAjSRocestjMRll9oLOmw
-	mHlmzwmvYiJdudL73IbmEH0NlnJ38qluVXxjg3UDzs98ukLXEBkaOhP3tas2OQiP0/wWeqpj9msnf
-	3+rtJGsNCyQk+ZGgnqyFf56Ln/G4lIn//UENRau9ip59TPLW9+WlBRvCuLrMv97MI/C9t+eSANe9U
-	bMpH8ra3QZ0wgAXsO8qQ==;
+	List-Owner; bh=gMQyHZvzszc9eQfuETRs5kPLBxGkWjJkZc4JwD+LOJQ=; b=dx5nLuzoYIjhJs
+	06ufdWrDx1NPvAT1982S4qciOduyalSK1hDjdaH7JnkQuiUTAU4iYVTsB/eIfsqh+7nb7gBqqiRQ2
+	y5/ssTDbxVAN6jojcSYHRYjga1LtIaJRROza07cSKjcIeH2MQ7lgHfsvJlRVrsoXS7YWl0xhqE9FU
+	THhU8Otp+yXTVc4rqwNDxSX9nOlkrYjnhVoRQX9IBgbxdHAucCBFfmjABsF6bRMxI25uyRjNJExGn
+	g1HUD4oogKPwtHWJ5yro3UgaHusTnE2sxGIzFjeFrnxmz0h00BVARqWmYrB+NZx1JeBtdj/IM9Xmi
+	/+HYnvC3LCQBX0yx6zKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h5c4O-00048L-05; Sun, 17 Mar 2019 20:07:44 +0000
+	id 1h5c4b-0004O0-Ds; Sun, 17 Mar 2019 20:07:57 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h5c3u-0003gH-70
- for linux-mtd@lists.infradead.org; Sun, 17 Mar 2019 20:07:15 +0000
+ id 1h5c3u-0003gy-Ko
+ for linux-mtd@lists.infradead.org; Sun, 17 Mar 2019 20:07:16 +0000
 Received: from sol.localdomain (c-107-3-167-184.hsd1.ca.comcast.net
  [107.3.167.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A6371217F4;
- Sun, 17 Mar 2019 20:07:13 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 17EF22184C;
+ Sun, 17 Mar 2019 20:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1552853233;
- bh=YHR/+9P1+ldG9ELfX/j4cm4R/vh6YcN8N9+3+6wV3+A=;
+ s=default; t=1552853234;
+ bh=hl2rdke2dF46rBeCelfCcRBHtrXDX7oT7cNW2Sq/1uc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=frpCRYgIvwqYzym69BoMLZKxShI8KuRdIinQD8shXEvrvfR/d5KyqrSR0jWmApQnw
- TjJSawO74jvRWzjeX7MeJd1pWp7m/ShrZR0bw9gk4jExE8EsulsoPEkuJc5T70oT+I
- YFL5ZlJ9cmO8lBcEmn2aIqStEjy1uCHkc0V8vKUo=
+ b=vPGW0vZyUdX3cdN0YRxvFiYGJNJj9mC/CU+whCHhyO3iIWzoUta7bNCyxL988f5w6
+ UX6WZp/1OeBPTrRrBf3gWOoajvowQQDMZRi9jBnXgqNykzW4i8DnAzxYcVaF9RVyWa
+ 0kYOYjIDCnmUv4SdvvyTvYu7yUezgPI1nWleACP4=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH 3/5] fs,
- fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
-Date: Sun, 17 Mar 2019 13:04:42 -0700
-Message-Id: <20190317200444.5967-4-ebiggers@kernel.org>
+Subject: [PATCH 4/5] fscrypt: only set dentry_operations on ciphertext dentries
+Date: Sun, 17 Mar 2019 13:04:43 -0700
+Message-Id: <20190317200444.5967-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190317200444.5967-1-ebiggers@kernel.org>
 References: <20190317200444.5967-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190317_130714_402459_6DD4474B 
-X-CRM114-Status: GOOD (  10.05  )
+X-CRM114-CacheID: sfid-20190317_130714_693523_6DCB3676 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,58 +85,45 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Make __d_move() clear DCACHE_ENCRYPTED_NAME on the source dentry.  This
-is needed for when d_splice_alias() moves a directory's encrypted alias
-to its decrypted alias as a result of the encryption key being added.
+Plaintext dentries are always valid, so only set fscrypt_d_ops on
+ciphertext dentries.
 
-Otherwise, the decrypted alias will incorrectly be invalidated on the
-next lookup, causing problems such as unmounting a mount the user just
-mount()ed there.
+Besides marginally improved performance, this allows overlayfs to use an
+fscrypt-encrypted upperdir, provided that all the following are true:
 
-Note that we don't have to support arbitrary moves of this flag because
-fscrypt doesn't allow dentries with DCACHE_ENCRYPTED_NAME to be the
-source or target of a rename().
+    (1) The fscrypt encryption key is placed in the keyring before
+	mounting overlayfs, and remains while the overlayfs is mounted.
 
-Fixes: 28b4c263961c ("ext4 crypto: revalidate dentry after adding or removing the key")
-Reported-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+    (2) The workdir uses the same encryption policy.
+
+    (3) No dentries for the ciphertext names of subdirectories have been
+	created in the upperdir or workdir yet.  (Since otherwise
+	d_splice_alias() will reuse the old dentry with ->d_op set.)
+
+One potential use case is using an ephemeral encryption key to encrypt
+all files created or changed by a container, so that they can be
+securely erased ("crypto-shredded") after the container stops.
+
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/dcache.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ fs/crypto/hooks.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index aac41adf4743..e27d11151d0e 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -2718,6 +2718,20 @@ static void copy_name(struct dentry *dentry, struct dentry *target)
- 		kfree_rcu(old_name, u.head);
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index 2e7498a821a4..9d8910e86ee5 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -115,9 +115,8 @@ int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
+ 		spin_lock(&dentry->d_lock);
+ 		dentry->d_flags |= DCACHE_ENCRYPTED_NAME;
+ 		spin_unlock(&dentry->d_lock);
++		d_set_d_op(dentry, &fscrypt_d_ops);
+ 	}
+-
+-	d_set_d_op(dentry, &fscrypt_d_ops);
+ 	return 0;
  }
- 
-+static void fscrypt_update_flags(struct dentry *dentry)
-+{
-+#ifdef CONFIG_FS_ENCRYPTION
-+	/*
-+	 * When d_splice_alias() moves a directory's encrypted alias to its
-+	 * decrypted alias as a result of the encryption key being added,
-+	 * DCACHE_ENCRYPTED_NAME must be cleared.  Note that we don't have to
-+	 * support arbitrary moves of this flag because fscrypt doesn't allow
-+	 * encrypted aliases to be the source or target of a rename().
-+	 */
-+	dentry->d_flags &= ~DCACHE_ENCRYPTED_NAME;
-+#endif
-+}
-+
- /*
-  * __d_move - move a dentry
-  * @dentry: entry to move
-@@ -2795,6 +2809,7 @@ static void __d_move(struct dentry *dentry, struct dentry *target,
- 	list_move(&dentry->d_child, &dentry->d_parent->d_subdirs);
- 	__d_rehash(dentry);
- 	fsnotify_update_flags(dentry);
-+	fscrypt_update_flags(dentry);
- 
- 	write_seqcount_end(&target->d_seq);
- 	write_seqcount_end(&dentry->d_seq);
+ EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
 -- 
 2.21.0
 
