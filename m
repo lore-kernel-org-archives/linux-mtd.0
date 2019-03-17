@@ -2,69 +2,58 @@ Return-Path: <SRS0=af1s=RU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC0B4C43381
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:08:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E93AEC43381
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:40:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B428520896
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:08:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B389120657
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 Mar 2019 20:40:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="haSmX1fx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdK4Oy/a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B428520896
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hwQ/U8V2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B389120657
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zeniv.linux.org.uk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1JvIATVzW1gqfNSGIAogWhkzw2CSx8jop6QSkGvlyrE=; b=haSmX1fx91GMo/
-	hUUkxd4xoI89gfpZmq9nVdATLoDvqEkPIggohxcnEX0VgGtn9ra9xex3oN2g+1fwBWZoxFRyYMGpo
-	obUujsP+AQsIa6zKRsOyKBR7GTjvOOF8trMk6/pay+B/On0bz6xHK9uQ4LL5vMK9Y5cp00DOPUHSF
-	BX4ndzqti/qb037Q7UhmOALvyt3GVcRVfMNcYAHmVuuga1V59QfaTK5DHFpfkBeDVW+vCiVGAlZQI
-	iWzuvI1AahS301otaFOrLyrcyyo8WbOV/dNQjHVHcKsOzDwXE+CD0Ux5a4dFVduUMLkkn9JWlWk9n
-	Bin4/VJxNlYG7m5KbVnQ==;
+	List-Owner; bh=rc+nQ7tWaw97gmEqQoKoRm+03vv5NCta3jk3QKZw2Mg=; b=hwQ/U8V2wOWOR9
+	BHMfOOom9OSX3HXNKla0ho6DfLO4en+F5LuVJJ6LNEND8SoPlrzW8UeBxjOFxmC+W6u0/pWr2jyc+
+	lT7lgR7hR4C4/u0zLFCbEyu9OyLksBwXXvLSyAn2wub60LFuk09Yw94UucW9KFRuGiwuLddv642nc
+	13h2icN71GGVkOKePWUxe07UjAJMOWMGbhTkWxlVYHwzLxOv0R42exd8W5mSvaLQFReZ3ZJYvoxx/
+	RuxZa4ig1Pol9SRxBAMz/svGC2R4MmAj6njFn9TME8Faxf5pmRY6WU3Hy5gMBzyVKJ/3kvHC2Pbng
+	mobm5tmzgQjm3XHeyK/g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h5c4w-0004pe-QB; Sun, 17 Mar 2019 20:08:19 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1h5caE-0006Co-Ef; Sun, 17 Mar 2019 20:40:38 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h5c3v-0003hE-49
- for linux-mtd@lists.infradead.org; Sun, 17 Mar 2019 20:07:17 +0000
-Received: from sol.localdomain (c-107-3-167-184.hsd1.ca.comcast.net
- [107.3.167.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7DB7C217F5;
- Sun, 17 Mar 2019 20:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1552853234;
- bh=emt2y9jPdu+suCZWWppl/w5vvY2NCPR5zs+h7mz5QhM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FdK4Oy/afkx3r2fc82aUcYbY6ReFS76l3cCPgq7IkVsxvhtWXpdrZa4iijGiis2aw
- SbmyeNNGNUfdSyhNqYU3OvEQ6vYY9k6bqRlq7FcEomNpC2m9pmlgvyHnd5SkN03bjt
- FmbVPO3Gb7wGIg4EGXUOA1e/Li0AD5Mq2iYtOnTY=
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH 5/5] fscrypt: fix race where ->lookup() marks plaintext dentry
- as ciphertext
-Date: Sun, 17 Mar 2019 13:04:44 -0700
-Message-Id: <20190317200444.5967-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190317200444.5967-1-ebiggers@kernel.org>
+ id 1h5caA-0004wk-Dx
+ for linux-mtd@lists.infradead.org; Sun, 17 Mar 2019 20:40:37 +0000
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92 #3 (Red Hat
+ Linux)) id 1h5cY2-0003ZP-Lc; Sun, 17 Mar 2019 20:38:22 +0000
+Date: Sun, 17 Mar 2019 20:38:22 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH 1/5] fscrypt: clean up and improve dentry revalidation
+Message-ID: <20190317203822.GH2217@ZenIV.linux.org.uk>
 References: <20190317200444.5967-1-ebiggers@kernel.org>
+ <20190317200444.5967-2-ebiggers@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190317200444.5967-2-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190317_130715_408312_0E75CE15 
-X-CRM114-Status: GOOD (  22.25  )
+X-CRM114-CacheID: sfid-20190317_134034_471597_A432B111 
+X-CRM114-Status: UNSURE (   6.16  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,487 +66,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Gao Xiang <gaoxiang25@huawei.com>, linux-unionfs@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- Sarthak Kukreti <sarthakkukreti@chromium.org>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org
+ linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Sarthak Kukreti <sarthakkukreti@chromium.org>,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Sun, Mar 17, 2019 at 01:04:40PM -0700, Eric Biggers wrote:
+> +	/*
+> +	 * Ciphertext name; valid if the directory's key is still unavailable.
+> +	 *
+> +	 * Note: since fscrypt forbids rename() on ciphertext names, it should
+> +	 * be safe to access ->d_parent directly here.
 
-->lookup() in an encrypted directory begins as follows:
-
-1. fscrypt_prepare_lookup():
-    a. Try to load the directory's encryption key.
-    b. If the key is unavailable, mark the dentry as a ciphertext name
-       via d_flags.
-2. fscrypt_setup_filename():
-    a. Try to load the directory's encryption key.
-    b. If the key is available, encrypt the name (treated as a plaintext
-       name) to get the on-disk name.  Otherwise decode the name
-       (treated as a ciphertext name) to get the on-disk name.
-
-But if the key is concurrently added, it may be found at (2a) but not at
-(1a).  In this case, the dentry will be wrongly marked as a ciphertext
-name even though it was actually treated as plaintext.
-
-This will cause the dentry to be wrongly invalidated on the next lookup,
-potentially causing problems.  For example, if the racy ->lookup() was
-part of sys_mount(), then the new mount will be detached when anything
-tries to access it.  This is despite the mountpoint having a plaintext
-path, which should remain valid now that the key was added.
-
-Of course, this is only possible if there's a userspace race.  Still,
-the additional kernel-side race is confusing and unexpected.
-
-Close the kernel-side race by changing fscrypt_prepare_lookup() to also
-set the on-disk filename (step 2b), consistent with the d_flags update.
-
-Fixes: 28b4c263961c ("ext4 crypto: revalidate dentry after adding or removing the key")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/fname.c       |  1 +
- fs/crypto/hooks.c       | 11 +++---
- fs/ext4/ext4.h          | 62 +++++++++++++++++++++++++--------
- fs/ext4/namei.c         | 76 ++++++++++++++++++++++++++++-------------
- fs/f2fs/namei.c         | 17 +++++----
- fs/ubifs/dir.c          |  8 ++---
- include/linux/fscrypt.h | 31 ++++++++++-------
- 7 files changed, 138 insertions(+), 68 deletions(-)
-
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 7ff40a73dbec..dea65c091f71 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -356,6 +356,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 	}
- 	if (!lookup)
- 		return -ENOKEY;
-+	fname->is_ciphertext_name = true;
- 
- 	/*
- 	 * We don't have the key and we are doing a lookup; decode the
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 9d8910e86ee5..042d5b44f4ed 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -104,20 +104,21 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
- 
--int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
-+int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
-+			     struct fscrypt_name *fname)
- {
--	int err = fscrypt_get_encryption_info(dir);
-+	int err = fscrypt_setup_filename(dir, &dentry->d_name, 1, fname);
- 
--	if (err)
-+	if (err && err != -ENOENT)
- 		return err;
- 
--	if (!fscrypt_has_encryption_key(dir)) {
-+	if (fname->is_ciphertext_name) {
- 		spin_lock(&dentry->d_lock);
- 		dentry->d_flags |= DCACHE_ENCRYPTED_NAME;
- 		spin_unlock(&dentry->d_lock);
- 		d_set_d_op(dentry, &fscrypt_d_ops);
- 	}
--	return 0;
-+	return err;
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
- 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 82ffdacdc7fa..e64a4ee96d30 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2287,23 +2287,47 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
- 
- #ifdef CONFIG_FS_ENCRYPTION
-+static inline void ext4_fname_from_fscrypt_name(struct ext4_filename *dst,
-+						const struct fscrypt_name *src)
-+{
-+	memset(dst, 0, sizeof(*dst));
-+
-+	dst->usr_fname = src->usr_fname;
-+	dst->disk_name = src->disk_name;
-+	dst->hinfo.hash = src->hash;
-+	dst->hinfo.minor_hash = src->minor_hash;
-+	dst->crypto_buf = src->crypto_buf;
-+}
-+
- static inline int ext4_fname_setup_filename(struct inode *dir,
--			const struct qstr *iname,
--			int lookup, struct ext4_filename *fname)
-+					    const struct qstr *iname,
-+					    int lookup,
-+					    struct ext4_filename *fname)
- {
- 	struct fscrypt_name name;
- 	int err;
- 
--	memset(fname, 0, sizeof(struct ext4_filename));
--
- 	err = fscrypt_setup_filename(dir, iname, lookup, &name);
-+	if (err)
-+		return err;
- 
--	fname->usr_fname = name.usr_fname;
--	fname->disk_name = name.disk_name;
--	fname->hinfo.hash = name.hash;
--	fname->hinfo.minor_hash = name.minor_hash;
--	fname->crypto_buf = name.crypto_buf;
--	return err;
-+	ext4_fname_from_fscrypt_name(fname, &name);
-+	return 0;
-+}
-+
-+static inline int ext4_fname_prepare_lookup(struct inode *dir,
-+					    struct dentry *dentry,
-+					    struct ext4_filename *fname)
-+{
-+	struct fscrypt_name name;
-+	int err;
-+
-+	err = fscrypt_prepare_lookup(dir, dentry, &name);
-+	if (err)
-+		return err;
-+
-+	ext4_fname_from_fscrypt_name(fname, &name);
-+	return 0;
- }
- 
- static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-@@ -2317,19 +2341,27 @@ static inline void ext4_fname_free_filename(struct ext4_filename *fname)
- 	fname->usr_fname = NULL;
- 	fname->disk_name.name = NULL;
- }
--#else
-+#else /* !CONFIG_FS_ENCRYPTION */
- static inline int ext4_fname_setup_filename(struct inode *dir,
--		const struct qstr *iname,
--		int lookup, struct ext4_filename *fname)
-+					    const struct qstr *iname,
-+					    int lookup,
-+					    struct ext4_filename *fname)
- {
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
- 	return 0;
- }
--static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
- 
--#endif
-+static inline int ext4_fname_prepare_lookup(struct inode *dir,
-+					    struct dentry *dentry,
-+					    struct ext4_filename *fname)
-+{
-+	return ext4_fname_setup_filename(dir, &dentry->d_name, 1, fname);
-+}
-+
-+static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
-+#endif /* !CONFIG_FS_ENCRYPTION */
- 
- /* dir.c */
- extern int __ext4_check_dir_entry(const char *, unsigned int, struct inode *,
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 980166a8122a..3ba6f30db8d9 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1327,7 +1327,7 @@ static int is_dx_internal_node(struct inode *dir, ext4_lblk_t block,
- }
- 
- /*
-- *	ext4_find_entry()
-+ *	__ext4_find_entry()
-  *
-  * finds an entry in the specified directory with the wanted name. It
-  * returns the cache buffer in which the entry was found, and the entry
-@@ -1337,39 +1337,32 @@ static int is_dx_internal_node(struct inode *dir, ext4_lblk_t block,
-  * The returned buffer_head has ->b_count elevated.  The caller is expected
-  * to brelse() it when appropriate.
-  */
--static struct buffer_head * ext4_find_entry (struct inode *dir,
--					const struct qstr *d_name,
--					struct ext4_dir_entry_2 **res_dir,
--					int *inlined)
-+static struct buffer_head *__ext4_find_entry(struct inode *dir,
-+					     struct ext4_filename *fname,
-+					     struct ext4_dir_entry_2 **res_dir,
-+					     int *inlined)
- {
- 	struct super_block *sb;
- 	struct buffer_head *bh_use[NAMEI_RA_SIZE];
- 	struct buffer_head *bh, *ret = NULL;
- 	ext4_lblk_t start, block;
--	const u8 *name = d_name->name;
-+	const u8 *name = fname->usr_fname->name;
- 	size_t ra_max = 0;	/* Number of bh's in the readahead
- 				   buffer, bh_use[] */
- 	size_t ra_ptr = 0;	/* Current index into readahead
- 				   buffer */
- 	ext4_lblk_t  nblocks;
- 	int i, namelen, retval;
--	struct ext4_filename fname;
- 
- 	*res_dir = NULL;
- 	sb = dir->i_sb;
--	namelen = d_name->len;
-+	namelen = fname->usr_fname->len;
- 	if (namelen > EXT4_NAME_LEN)
- 		return NULL;
- 
--	retval = ext4_fname_setup_filename(dir, d_name, 1, &fname);
--	if (retval == -ENOENT)
--		return NULL;
--	if (retval)
--		return ERR_PTR(retval);
--
- 	if (ext4_has_inline_data(dir)) {
- 		int has_inline_data = 1;
--		ret = ext4_find_inline_entry(dir, &fname, res_dir,
-+		ret = ext4_find_inline_entry(dir, fname, res_dir,
- 					     &has_inline_data);
- 		if (has_inline_data) {
- 			if (inlined)
-@@ -1389,7 +1382,7 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,
- 		goto restart;
- 	}
- 	if (is_dx(dir)) {
--		ret = ext4_dx_find_entry(dir, &fname, res_dir);
-+		ret = ext4_dx_find_entry(dir, fname, res_dir);
- 		/*
- 		 * On success, or if the error was file not found,
- 		 * return.  Otherwise, fall back to doing a search the
-@@ -1453,7 +1446,7 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,
- 			goto cleanup_and_exit;
- 		}
- 		set_buffer_verified(bh);
--		i = search_dirblock(bh, dir, &fname,
-+		i = search_dirblock(bh, dir, fname,
- 			    block << EXT4_BLOCK_SIZE_BITS(sb), res_dir);
- 		if (i == 1) {
- 			EXT4_I(dir)->i_dir_start_lookup = block;
-@@ -1484,10 +1477,50 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,
- 	/* Clean up the read-ahead blocks */
- 	for (; ra_ptr < ra_max; ra_ptr++)
- 		brelse(bh_use[ra_ptr]);
--	ext4_fname_free_filename(&fname);
- 	return ret;
- }
- 
-+static struct buffer_head *ext4_find_entry(struct inode *dir,
-+					   const struct qstr *d_name,
-+					   struct ext4_dir_entry_2 **res_dir,
-+					   int *inlined)
-+{
-+	int err;
-+	struct ext4_filename fname;
-+	struct buffer_head *bh;
-+
-+	err = ext4_fname_setup_filename(dir, d_name, 1, &fname);
-+	if (err == -ENOENT)
-+		return NULL;
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	bh = __ext4_find_entry(dir, &fname, res_dir, inlined);
-+
-+	ext4_fname_free_filename(&fname);
-+	return bh;
-+}
-+
-+static struct buffer_head *ext4_lookup_entry(struct inode *dir,
-+					     struct dentry *dentry,
-+					     struct ext4_dir_entry_2 **res_dir)
-+{
-+	int err;
-+	struct ext4_filename fname;
-+	struct buffer_head *bh;
-+
-+	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
-+	if (err == -ENOENT)
-+		return NULL;
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	bh = __ext4_find_entry(dir, &fname, res_dir, NULL);
-+
-+	ext4_fname_free_filename(&fname);
-+	return bh;
-+}
-+
- static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- 			struct ext4_filename *fname,
- 			struct ext4_dir_entry_2 **res_dir)
-@@ -1546,16 +1579,11 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
- 	struct inode *inode;
- 	struct ext4_dir_entry_2 *de;
- 	struct buffer_head *bh;
--	int err;
--
--	err = fscrypt_prepare_lookup(dir, dentry, flags);
--	if (err)
--		return ERR_PTR(err);
- 
- 	if (dentry->d_name.len > EXT4_NAME_LEN)
- 		return ERR_PTR(-ENAMETOOLONG);
- 
--	bh = ext4_find_entry(dir, &dentry->d_name, &de, NULL);
-+	bh = ext4_lookup_entry(dir, dentry, &de);
- 	if (IS_ERR(bh))
- 		return ERR_CAST(bh);
- 	inode = NULL;
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index f5e34e467003..c3e8a901d47a 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -436,19 +436,23 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 	nid_t ino = -1;
- 	int err = 0;
- 	unsigned int root_ino = F2FS_ROOT_INO(F2FS_I_SB(dir));
-+	struct fscrypt_name fname;
- 
- 	trace_f2fs_lookup_start(dir, dentry, flags);
- 
--	err = fscrypt_prepare_lookup(dir, dentry, flags);
--	if (err)
--		goto out;
--
- 	if (dentry->d_name.len > F2FS_NAME_LEN) {
- 		err = -ENAMETOOLONG;
- 		goto out;
- 	}
- 
--	de = f2fs_find_entry(dir, &dentry->d_name, &page);
-+	err = fscrypt_prepare_lookup(dir, dentry, &fname);
-+	if (err == -ENOENT)
-+		goto out_splice;
-+	if (err)
-+		goto out;
-+	de = __f2fs_find_entry(dir, &fname, &page);
-+	fscrypt_free_filename(&fname);
-+
- 	if (!de) {
- 		if (IS_ERR(page)) {
- 			err = PTR_ERR(page);
-@@ -488,8 +492,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 	}
- out_splice:
- 	new = d_splice_alias(inode, dentry);
--	if (IS_ERR(new))
--		err = PTR_ERR(new);
-+	err = PTR_ERR_OR_ZERO(new);
- 	trace_f2fs_lookup_end(dir, dentry, ino, err);
- 	return new;
- out_iput:
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 5767b373a8ff..b73de6d04fa3 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -220,11 +220,9 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
- 
- 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
- 
--	err = fscrypt_prepare_lookup(dir, dentry, flags);
--	if (err)
--		return ERR_PTR(err);
--
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
-+	err = fscrypt_prepare_lookup(dir, dentry, &nm);
-+	if (err == -ENOENT)
-+		return d_splice_alias(NULL, dentry);
- 	if (err)
- 		return ERR_PTR(err);
- 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 4ad7a856e0f1..44e7a576c5be 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -33,6 +33,7 @@ struct fscrypt_name {
- 	u32 hash;
- 	u32 minor_hash;
- 	struct fscrypt_str crypto_buf;
-+	bool is_ciphertext_name;
- };
- 
- #define FSTR_INIT(n, l)		{ .name = n, .len = l }
-@@ -221,7 +222,8 @@ extern int __fscrypt_prepare_rename(struct inode *old_dir,
- 				    struct inode *new_dir,
- 				    struct dentry *new_dentry,
- 				    unsigned int flags);
--extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry);
-+extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
-+				    struct fscrypt_name *fname);
- extern int __fscrypt_prepare_symlink(struct inode *dir, unsigned int len,
- 				     unsigned int max_len,
- 				     struct fscrypt_str *disk_link);
-@@ -331,7 +333,7 @@ static inline int fscrypt_setup_filename(struct inode *dir,
- 	if (IS_ENCRYPTED(dir))
- 		return -EOPNOTSUPP;
- 
--	memset(fname, 0, sizeof(struct fscrypt_name));
-+	memset(fname, 0, sizeof(*fname));
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *)iname->name;
- 	fname->disk_name.len = iname->len;
-@@ -418,7 +420,8 @@ static inline int __fscrypt_prepare_rename(struct inode *old_dir,
- }
- 
- static inline int __fscrypt_prepare_lookup(struct inode *dir,
--					   struct dentry *dentry)
-+					   struct dentry *dentry,
-+					   struct fscrypt_name *fname)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -539,25 +542,29 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
-  * fscrypt_prepare_lookup - prepare to lookup a name in a possibly-encrypted directory
-  * @dir: directory being searched
-  * @dentry: filename being looked up
-- * @flags: lookup flags
-+ * @fname: (output) the name to use to search the on-disk directory
-  *
-- * Prepare for ->lookup() in a directory which may be encrypted.  Lookups can be
-- * done with or without the directory's encryption key; without the key,
-- * filenames are presented in encrypted form.  Therefore, we'll try to set up
-- * the directory's encryption key, but even without it the lookup can continue.
-+ * Prepare for ->lookup() in a directory which may be encrypted by determining
-+ * the name that will actually be used to search the directory on-disk.
-  *
-  * This also installs a custom ->d_revalidate() method which will invalidate the
-  * dentry if it was created without the key and the key is later added.
-  *
-- * Return: 0 on success, -errno if a problem occurred while setting up the
-- * encryption key
-+ * Return: 0 on success; -ENOENT if key is unavailable but the filename isn't a
-+ * correctly formed encoded ciphertext name, so a negative dentry should be
-+ * created; or another -errno code.
-  */
- static inline int fscrypt_prepare_lookup(struct inode *dir,
- 					 struct dentry *dentry,
--					 unsigned int flags)
-+					 struct fscrypt_name *fname)
- {
- 	if (IS_ENCRYPTED(dir))
--		return __fscrypt_prepare_lookup(dir, dentry);
-+		return __fscrypt_prepare_lookup(dir, dentry, fname);
-+
-+	memset(fname, 0, sizeof(*fname));
-+	fname->usr_fname = &dentry->d_name;
-+	fname->disk_name.name = (unsigned char *)dentry->d_name.name;
-+	fname->disk_name.len = dentry->d_name.len;
- 	return 0;
- }
- 
--- 
-2.21.0
-
+No, it is not.  Again, d_splice_alias() on buggered fs image picking a reference
+to your subdirectory when doing a lookup elsewhere.  It can relocate the
+damn thing, without rename() being allowed for _anything_.
 
 ______________________________________________________
 Linux MTD discussion mailing list
