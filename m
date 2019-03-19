@@ -2,89 +2,87 @@ Return-Path: <SRS0=4hvs=RW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43794C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2019 17:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB05C43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2019 20:28:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1103020811
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2019 17:24:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AD152146E
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2019 20:28:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YNAE1cN8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1103020811
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jH/6VjNL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="tbN+RIjM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AD152146E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
-	From:To:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cok7Mys72shqjOM5+UD5uolq5QJBBQZzR3nuYOczQPQ=; b=YNAE1cN8P/VhC0
-	OjmJNEnd3i8LZeVkejkYpA/XlsDg3SDLN6ioazbToe9MF/Uqjttke8UbEl9+k2lKNk4zdqNHtmRM+
-	hQwwKbJrkiuWaV2hAv18Ha3olzEqCaG2lV53cvtydMjiKUmanayyQOwQN4tqJnM69LV2wgJo48mWc
-	svX/Qy7n8T8QxXcuyxFJi/263dMe2PEIFZ39LDDcY83OTXCzMnj8XKI0byXS88Tprj+b/Paf1Fs/c
-	d7qY56ZkevqNPLSqVI4fuhjyrgQIJZ7PalcJ0hc7wQqvjdkVKvH8eDYuja8JM9mYjpfhlgYn3QYPZ
-	CdZoPZ1dhtTD9HSKz1BQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:
+	Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Nec98vRpGLbvd3YUChFPNuUfEPmspHrZEzyDydnfcis=; b=jH/6VjNLE4IvkluOAMtaMGtY9
+	c9dafoJ2912RPsFEAvn7xODU/t73ivwe+ZmkL/gVxtXn6UaBThNMeEAwEJ35FgBs02wDLy0DyBnIO
+	gp4c4scY8Z29v8MYFkohWxkYO6idA+P3taQOyDJXz/BQ1pTuiufcpKRm59oo4ZSDueGkHN5eNXppH
+	NkVzGfqqmacubQrC5LoORhHEAa0NrWR5KBAjyMK1Aw0AsKv4yLdW3UGce2PZg7HSKnj5pJTrV6nmp
+	5RaniSYfiXtYjDBro/a0B7rTpafVuAF31aM5Sgom1kbSaTFnP8/wl505+knG8OU4sh3eI5Hh5a12J
+	ZVeKgQ4fg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6ITG-00066I-Ft; Tue, 19 Mar 2019 17:24:14 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1h6LLF-00035C-Qt; Tue, 19 Mar 2019 20:28:09 +0000
+Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6ITC-00065k-Tg
- for linux-mtd@lists.infradead.org; Tue, 19 Mar 2019 17:24:12 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id AE42E18013DB1;
- Tue, 19 Mar 2019 18:24:06 +0100 (CET)
-To: MTD Mailing List <linux-mtd@lists.infradead.org>,
- Buildroot Mailing List <buildroot@busybox.net>,
- "Josh Boyer (Fedora)" <jwboyer@gmail.com>,
- "Riku Voipio (Debian)" <riku.voipio@linaro.org>,
- "Pascal Bleser (SUSE)" <pascal.bleser@opensuse.org>,
- "Timothy Redaelli (Arch)" <timothy.redaelli@gmail.com>,
- Richard Weinberger <richard@nod.at>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [ANNOUNCE] mtd-utils-2.1.0 is released
-Openpgp: preference=signencrypt
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <678ab76b-7707-93fb-1be4-8bb4cafdfcef@sigma-star.at>
-Date: Tue, 19 Mar 2019 18:23:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+ id 1h6LLD-00034c-0x; Tue, 19 Mar 2019 20:28:08 +0000
+Received: by mail-oi1-x244.google.com with SMTP id j132so5509oib.2;
+ Tue, 19 Mar 2019 13:28:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=googlemail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=SjqSbwN3WCbrXUkCAiwGKUCDVIotOmf3+czbqgtuT1E=;
+ b=tbN+RIjMSwyIWasK+Tr4VV/cr5+inkDDpl4GqznTG9ZzQQzNE9c1kKyxHXUWk7jMSh
+ kW3Hksq14qfjB1WbNQlvo5LvSFyxo41jZZdE0sDCAc37hIsA2fWQdex8C+KBlJDVDI5J
+ 9+sQitfKhhOo+/jhwsxF31ddh0l2tpgJ7R1njCLIe0+THx4ppC8E0ym0nLOkI9l31qko
+ wHCaimpES1wLvRjzk9fLdBhusEFpAQ6Cp9BtHinjKH1BaY38DeRcBKjQAsDByv1kRInW
+ Ge4WjNWfKlvO9lMP/ptPnh/FTSlKzl2CShfShmsPYpsb/NHOVb6bNxiPk/D/f3r2QX7D
+ kCFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=SjqSbwN3WCbrXUkCAiwGKUCDVIotOmf3+czbqgtuT1E=;
+ b=LAYMaZL7/y1EPvAFBHFQthzEXwSGh6ohvNLz42D39dO3EHgZNIukRZ10MEN1v7HDLC
+ B+KWN35eNnRs5Xb1Y5LiexTWwKIA3BzmduUTPhgAKs7iajMr5suXss44ft6yOg4klptr
+ PMHha8+3994Xc+2dFAM0Cm+M3py2wAOKHkEzEhXf4QgB+9s7h4bZJ/hXPRYzpq8vKMiV
+ T08FzgvpB411dNEDpK2l+MBq7kpr+vQK8htMkpjVzloWJIGnRhMGITLxfzUgh/keB2+i
+ Vdn7pxfb6YsrtsKA4Cm2yhY4zaxXUvyMgkByTiiIpWXU+B8spzk3uBbTBwibYUpsRlTo
+ jwPw==
+X-Gm-Message-State: APjAAAWHzR0aaEhT8vDja9hM5LTVGDL+vEg85FeRbMUUnYYErL+8nTHK
+ UDOfHL8zCqkal6+PCGrrFGErEVKWxkR/vgtBaEQ=
+X-Google-Smtp-Source: APXvYqxzZKOEQbaYE2ZhCsWJJr0F70V+8dKoZ8zrhtNrLFCwKjIqR5ZvqW5k9UtXZBSFKzar7xsPQBM3xJIcbIfRPvw=
+X-Received: by 2002:aca:6209:: with SMTP id w9mr2813097oib.47.1553027285832;
+ Tue, 19 Mar 2019 13:28:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: en-US
+References: <20190301182922.8309-1-martin.blumenstingl@googlemail.com>
+ <98776767-c4d7-1207-6d42-97105f289bec@amlogic.com>
+ <CAFBinCC7P40sqrDGTuM8M=jVOFTgZLDUK6rGdNpigFoepyCASw@mail.gmail.com>
+ <20190307140959.10092d45@xps13>
+ <ccb95e75-e62f-c510-cabd-853481f77fc8@amlogic.com>
+ <CAFBinCBd=dOZjv4KEDY9ODOONDO=WtaBqAMRi_a+gH3_iZEAHQ@mail.gmail.com>
+In-Reply-To: <CAFBinCBd=dOZjv4KEDY9ODOONDO=WtaBqAMRi_a+gH3_iZEAHQ@mail.gmail.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Tue, 19 Mar 2019 21:27:54 +0100
+Message-ID: <CAFBinCA7LLK6K3ZqauJy2N-z5-kTfuTztmoSQ=Bk4A5Xagxddw@mail.gmail.com>
+Subject: Re: [RFC PATCH nand-next 0/2] meson-nand: support for older SoCs
+To: Liang Yang <liang.yang@amlogic.com>
+Content-Type: multipart/mixed; boundary="000000000000b308a20584785793"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190319_102411_255110_BADEABBC 
-X-CRM114-Status: GOOD (  16.16  )
+X-CRM114-CacheID: sfid-20190319_132807_076547_EE026918 
+X-CRM114-Status: GOOD (  17.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -96,163 +94,189 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, jianxin.pan@amlogic.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+--000000000000b308a20584785793
+Content-Type: text/plain; charset="UTF-8"
 
-mtd-utils-2.1.0 is released.
+Hello Liang,
 
-Tarball:               ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-2.1.0.tar.bz2
-Tarball gpg signature: ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-2.1.0.tar.bz2.asc
-Signed git tag:        git://git.infradead.org/mtd-utils.git v2.1.0
+On Sat, Mar 16, 2019 at 11:55 AM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+[...]
+> > Martin, Now i am not sure whether NFC driver leads to kernel panic when
+> > calling kmem_cache_alloc_trace.
+> thank you for confirming that it works for you on GXL
+>
+> I'm not sure that this is a NFC driver problem.
+> after enabling CONFIG_SLAB_FREELIST_HARDENED in my kernel config the
+> crash moves. it's now crashing in slub.c's kfree() at
+> BUG_ON(!PageCompound(page));
+I added some debug prints in meson_nfc_read_buf() to get some details
+about the info buffer before the crash,
+format is: meson_nfc_read_buf <virtual address> <physical address>
 
+during my first test three different addresses are used:
+- meson_nfc_read_buf e9e6c640 0x29e6c640 (works fine)
+- meson_nfc_read_buf e9e6c680 0x29e6c680 (works fine)
+- meson_nfc_read_buf ee39a34b 0x2e39a34b (crashes during kfree)
 
-After quite some time that has passed since the last mtd-utils release, the
-new 2.1.0 release brings (as usual) a lot of fixes but also some new features.
+so I tried playing around with the allocation size (see the attached
+patch) and changed it to:
+  kzalloc(PER_INFO_BYTE + 64, GFP_KERNEL)
+this results in the following addresses being used:
+- meson_nfc_read_buf e9ea4280 0x29ea4280 (works fine)
+- meson_nfc_read_buf e9ea4300 0x29ea4300 (works fine)
+(there is no crash anymore)
 
-More precisely, it includes the long anticipated mkfs.ubifs support for file
-level encryption, better mkfs.ubifs tooling for SELinux and an lsblk like
-utility for inspecting the MTD/UBI stack on a system. Hence the minor version
-bump.
-
-While the mkfs.ubifs encryption support has seen some use already and should
-work (TM) for most use cases, I expect that fixes for various untested edge
-cases will eventually be merged over the coming months up to the next patch
-level release.
-
-
-Changes from 2.0.2 to 2.1.0:
-
-Features:
- - mkfs.ubifs: Implement support for file system encryption
- - mkfs.ubifs: Implement selinux labelling support
- - ubinize: add support for skipping CRC check of a static volume when opening
- - ubimkvol: add support for skipping CRC check of a static volume when opening
- - Add lsmtd program
-
-Fixes:
- - update various kernel headers
- - Instead of doing preprocessor magic, just output off_t as long long
- - fix verification percent display in flashcp
- - mkfs.ubifs: fix double free
- - mkfs.ubifs: Fix xattr nlink value
- - ubinize: avoid to create two UBI_LAYOUT_VOLUME_ID volume
- - common.h: fix prompt function
- - libmtd: don't print an error message for devices without ecc support
- - io_paral: Fix error handling of update_volume()
- - ubimkvol: Initialize req to zero to make sure no flags are set by default
- - libubi: add volume flags to ubi_mkvol_request
- - mkfs.ubifs: add_xattr is not depending on host XATTR support
- - Revert "Return correct error number in ubi_get_vol_info1" which
-   introduced a regression.
- - make sure pkg-config is installed in configure script
- - ubiformat: process command line arguments before handling file arguments
-
-Cleanup:
- - ubiformat: remove no-volume-table option
+Liang, are there any special requirements on the "info address" like
+the alignment?
+also do you know why the PER_INFO_BYTE buffer is allocated dynamically
+in meson_nfc_read_buf() instead of allocating it at initialization?
+I'm not saying that it should be changed! I'm curious because there's
+per-meson_nfc_nand_chip info and data buffers which are allocated at
+initialization time.
 
 
-Raw short log since the 2.0.2 release:
+meson_nfc_read_buf debug log with PER_INFO_BYTE allocation:
+[    2.032914] meson_nfc_read_buf e9e6c640 0x29e6c640
+[    2.033005] meson_nfc_dma_buffer_setup 0x29e6c640
+[    2.037717] meson_nfc_read_buf: about to kfree info
+[    2.042535] meson_nfc_read_buf: kfree'd info
+[    2.046794] meson_nfc_read_buf e9e6c640 0x29e6c640
+[    2.051552] meson_nfc_dma_buffer_setup 0x29e6c640
+[    2.056261] meson_nfc_read_buf: about to kfree info
+[    2.061086] meson_nfc_read_buf: kfree'd info
+[    2.065356] meson_nfc_read_buf e9e6c680 0x29e6c680
+[    2.070102] meson_nfc_dma_buffer_setup 0x29e6c680
+[    2.074810] meson_nfc_read_buf: about to kfree info
+[    2.079635] meson_nfc_read_buf: kfree'd info
+[    2.083978] meson_nfc_read_buf e9e6c640 0x29e6c640
+[    2.088684] meson_nfc_dma_buffer_setup 0x29e6c640
+[    2.093334] meson_nfc_read_buf: about to kfree info
+[    2.098199] meson_nfc_read_buf: kfree'd info
+[    2.102446] meson_nfc_read_buf e9e6c640 0x29e6c640
+[    2.107208] meson_nfc_dma_buffer_setup 0x29e6c640
+[    2.111883] meson_nfc_read_buf: about to kfree info
+[    2.116765] meson_nfc_read_buf: kfree'd info
+[    2.120996] meson_nfc_read_buf e9e6c640 0x29e6c640
+[    2.125762] meson_nfc_dma_buffer_setup 0x29e6c640
+[    2.130433] meson_nfc_read_buf: about to kfree info
+[    2.135294] meson_nfc_read_buf: kfree'd info
+[    2.139545] Could not find a valid ONFI parameter page, trying
+bit-wise majority to recover it
+[    2.148173] ONFI parameter recovery failed, aborting
+[    2.153058] meson_nfc_read_buf e9e6c680 0x29e6c680
+[    2.157831] meson_nfc_dma_buffer_setup 0x29e6c680
+[    2.162527] meson_nfc_read_buf: about to kfree info
+[    2.167369] meson_nfc_read_buf: kfree'd info
+[    2.171611] meson_nfc_read_buf ee39a34b 0x2e39a34b
+[    2.176383] meson_nfc_dma_buffer_setup 0x2e39a34b
+[    2.181076] meson_nfc_read_buf: about to kfree info
+[    2.185932] ------------[ cut here ]------------
+[    2.190503] kernel BUG at mm/slub.c:3950!
+[    2.194491] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+...
+
+meson_nfc_read_buf debug log with PER_INFO_BYTE+64 allocation:
+[    2.033019] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.033112] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.037847] meson_nfc_read_buf: about to kfree info
+[    2.042642] meson_nfc_read_buf: kfree'd info
+[    2.046909] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.051659] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.056374] meson_nfc_read_buf: about to kfree info
+[    2.061192] meson_nfc_read_buf: kfree'd info
+[    2.065461] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.070208] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.074922] meson_nfc_read_buf: about to kfree info
+[    2.079742] meson_nfc_read_buf: kfree'd info
+[    2.084087] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.088789] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.093440] meson_nfc_read_buf: about to kfree info
+[    2.098303] meson_nfc_read_buf: kfree'd info
+[    2.102553] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.107316] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.111990] meson_nfc_read_buf: about to kfree info
+[    2.116870] meson_nfc_read_buf: kfree'd info
+[    2.121103] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.125868] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.130540] meson_nfc_read_buf: about to kfree info
+[    2.135400] meson_nfc_read_buf: kfree'd info
+[    2.139652] Could not find a valid ONFI parameter page, trying
+bit-wise majority to recover it
+[    2.148276] ONFI parameter recovery failed, aborting
+[    2.153165] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.157938] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.162634] meson_nfc_read_buf: about to kfree info
+[    2.167475] meson_nfc_read_buf: kfree'd info
+[    2.171717] meson_nfc_read_buf e9ea4280 0x29ea4280
+[    2.176489] meson_nfc_dma_buffer_setup 0x29ea4280
+[    2.181183] meson_nfc_read_buf: about to kfree info
+[    2.186025] meson_nfc_read_buf: kfree'd info
+[    2.190265] nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
+[    2.196598] nand: Hynix NAND 8GiB 3,3V 8-bit
+[    2.200840] nand: 8192 MiB, MLC, erase size: 4096 KiB, page size:
+16384, OOB size: 1280
+[    2.208829] meson_nfc_read_buf e9ea4300 0x29ea4300
+[    2.213581] meson_nfc_dma_buffer_setup 0x29ea4300
+[    2.218291] meson_nfc_read_buf: about to kfree info
+[    2.223115] meson_nfc_read_buf: kfree'd info
+[    2.227374] ------------[ cut here ]------------
+[    2.231968] WARNING: CPU: 1 PID: 1 at
+drivers/mtd/nand/raw/nand_base.c:5503 nand_scan_with_ids+0x1718/0x171c
+[    2.241760] No oob scheme defined for oobsize 1280
+...
+(the "No oob scheme defined for oobsize 1280" message is expected)
 
 
-Andrij Abyzov (1):
-      mtd-utils: fixes verification percent display in flashcp
+Regards
+Martin
 
-Boris Brezillon (1):
-      ubi-utils: ubimkvol: Initialize req to zero to make sure no flags are set by default
+--000000000000b308a20584785793
+Content-Type: text/x-patch; charset="US-ASCII"; name="meson-nfc-debug-prints.patch"
+Content-Disposition: attachment; filename="meson-nfc-debug-prints.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jtg81v7a0>
+X-Attachment-Id: f_jtg81v7a0
 
-David Gstir (1):
-      mkfs.ubifs: fix default cipher in help output
-
-David Oberhollenzer (24):
-      ubiformat: process command line arguments first
-      ubiformat: remove no-volume-table option
-      mtd-utils: make sure pkg-config is installed in configure script
-      Revert "Return correct error number in ubi_get_vol_info1"
-      Add lsmtd program
-      Add manpage for lsmtd
-      Add configure switch to disable compiling/installing lsmtd
-      libmtd: don't print an error message for devices without ecc support
-      mtd-utils: common.h: fix prompt function
-      mkfs.ubifs: Add crypto helper functions
-      mkfs.ubifs: Implement UBIFS_FLG_DOUBLE_HASH
-      mkfs.ubifs: Move symlink data encryption to helper function
-      mkfs.ubifs: Seperate path encryption from symlink encryption helper
-      mkfs.ubifs: Cleanup add_dent_node, user path encryption helper
-      mkfs.ubifs: Replace constant values with parameters in init_fscrypt_context
-      mkfs.ubifs: Make encryption dependend on (not-yet-existant) command line options
-      mkfs.ubifs: Get key descriptor from command line and master key from file
-      mkfs.ubifs: Specify padding policy via command line
-      mkfs.ubifs: Initial support for encryption command lines
-      mkfs.ubifs: Remove cipher implementations from public header
-      mkfs.ubifs: Move fscrypt definitions and functions out of mkfs.ubifs.c
-      mkfs.ubifs: Cleanup over-long lines
-      mkfs.ubifs: Check length of master key
-      mkfs.ubifs: Accept 0x prefix for key descriptor
-
-Martin Lund (1):
-      ubi-tests: io_paral: Fix error handling of update_volume()
-
-Quentin Schulz (4):
-      UBI: update ubi-user.h and ubi-media.h
-      libubi: add volume flags to ubi_mkvol_request
-      ubi-utils: ubimkvol: add support for skipping CRC check of a static volume when opening
-      ubi-utils: ubinize: add support for skipping CRC check of a static volume when opening
-
-Richard Weinberger (30):
-      Import latest ubifs-media.h
-      common: Add round functions
-      mkfs.ubifs: Make r5 hash binary string aware
-      mkfs.ubifs: Add fscrypto defines
-      mkfs.ubifs: Add basic fscrypto functions
-      mkfs.ubifs: Implement UBIFS_FLG_ENCRYPTION
-      mkfs.ubifs: Implement basic fscrypto context passing
-      mkfs.ubifs: Implement fscrypto context store as xattr
-      mkfs.ubifs: Store directory name len in the temporary index
-      mkfs.ubifs: Implement filename encryption
-      mkfs.ubifs: Add dummy setup for crypto
-      mkfs.ubifs: Pass source/dest key len to key derive function
-      mkfs.ubifs: Add encrypted symlink support
-      mkfs.ubifs: Implement file contents encryption
-      mkfs.ubifs: Make sure we catch nodes that should or should not have name
-      mkfs.ubifs: Free all index entry names
-      mkfs.ubifs: Correctly use iv lengths in aes-cts mode
-      mkfs.ubifs: Enable Cipher selection
-      mkfs.ubifs: Use correct sizes for keys and hash lengths
-      mkfs.ubifs: Fixup AES-XTS mode
-      mkfs.ubifs: Compute encryption key descriptor automatically
-      mkfs.ubifs: Fix key descriptor printing
-      mkfs.ubifs: More fscryptctl compatibility
-      mkfs.ubifs: Move RAND_poll to crypto.c
-      mkfs.ubifs: Enable support for building without crypto
-      mkfs.ubifs: Print key descriptor only when generated
-      mkfs.ubifs: Use AES-256-XTS as default
-      mkfs.ubifs: Fix IV selection
-      mkfs.ubifs: Store compr_size in correct endianness.
-      mkfs.ubifs: Don't compress by default if filesystem is encrypted
-
-Ritesh Harjani (2):
-      mkfs.ubifs: add_xattr is not depending on host XATTR support
-      mkfs.ubifs: Implement selinux labelling support in mkfs.ubifs.
-
-Sascha Hauer (1):
-      mkfs.ubifs: Fix xattr nlink value
-
-Thorsten Glaser (1):
-      mtd-utils: Instead of doing preprocessor magic, just output off_t as long long
-
-Yufen Yu (2):
-      mtd-utils: avoid to create two UBI_LAYOUT_VOLUME_ID volume
-      mtd-utils: fixes double free in mkfs.ubifs
-
-
-Regards,
-
-David
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyBiL2RyaXZlcnMv
+bXRkL25hbmQvcmF3L21lc29uX25hbmQuYwppbmRleCBiNDlhNDVmMjU1ZjguLmNkYzQyNmNkMGE0
+MyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5jCisrKyBiL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYwpAQCAtNDkzLDYgKzQ5Myw3IEBAIHN0YXRp
+YyBpbnQgbWVzb25fbmZjX2RtYV9idWZmZXJfc2V0dXAoc3RydWN0IG5hbmRfY2hpcCAqbmFuZCwg
+dTggKmRhdGFidWYsCiAKIAlpZiAoaW5mb2J1ZikgewogCQluZmMtPmlhZGRyID0gZG1hX21hcF9z
+aW5nbGUobmZjLT5kZXYsIGluZm9idWYsIGluZm9sZW4sIGRpcik7CisJCXByaW50aygiJXMgMHgl
+MDh4XG4iLCBfX2Z1bmNfXywgbmZjLT5pYWRkcik7CiAJCXJldCA9IGRtYV9tYXBwaW5nX2Vycm9y
+KG5mYy0+ZGV2LCBuZmMtPmlhZGRyKTsKIAkJaWYgKHJldCkgewogCQkJZGV2X2VycihuZmMtPmRl
+diwgIkRNQSBtYXBwaW5nIGVycm9yXG4iKTsKQEAgLTUyOCwxMCArNTI5LDEwIEBAIHN0YXRpYyBp
+bnQgbWVzb25fbmZjX3JlYWRfYnVmKHN0cnVjdCBuYW5kX2NoaXAgKm5hbmQsIHU4ICpidWYsIGlu
+dCBsZW4pCiAJdTMyIGNtZDsKIAl1OCAqaW5mbzsKIAotCWluZm8gPSBremFsbG9jKFBFUl9JTkZP
+X0JZVEUsIEdGUF9LRVJORUwpOworCWluZm8gPSBremFsbG9jKFBFUl9JTkZPX0JZVEUgKyA2NCwg
+R0ZQX0tFUk5FTCk7CiAJaWYgKCFpbmZvKQogCQlyZXR1cm4gLUVOT01FTTsKLQorcHJpbnRrKCIl
+cyAlcHggMHglMDh4XG4iLCBfX2Z1bmNfXywgaW5mbywgdmlydF90b19waHlzKGluZm8pKTsKIAly
+ZXQgPSBtZXNvbl9uZmNfZG1hX2J1ZmZlcl9zZXR1cChuYW5kLCBidWYsIGxlbiwgaW5mbywKIAkJ
+CQkJIFBFUl9JTkZPX0JZVEUsIERNQV9GUk9NX0RFVklDRSk7CiAJaWYgKHJldCkKQEAgLTU0NSw3
+ICs1NDYsOSBAQCBzdGF0aWMgaW50IG1lc29uX25mY19yZWFkX2J1ZihzdHJ1Y3QgbmFuZF9jaGlw
+ICpuYW5kLCB1OCAqYnVmLCBpbnQgbGVuKQogCW1lc29uX25mY19kbWFfYnVmZmVyX3JlbGVhc2Uo
+bmFuZCwgbGVuLCBQRVJfSU5GT19CWVRFLCBETUFfRlJPTV9ERVZJQ0UpOwogCiBvdXQ6Citwcmlu
+dGsoIiVzOiBhYm91dCB0byBrZnJlZSBpbmZvXG4iLCBfX2Z1bmNfXyk7CiAJa2ZyZWUoaW5mbyk7
+CitwcmludGsoIiVzOiBrZnJlZSdkIGluZm9cbiIsIF9fZnVuY19fKTsKIAogCXJldHVybiByZXQ7
+CiB9Cg==
+--000000000000b308a20584785793
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--000000000000b308a20584785793--
+
