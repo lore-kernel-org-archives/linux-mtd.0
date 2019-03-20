@@ -2,83 +2,69 @@ Return-Path: <SRS0=zR1V=RX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8516BC43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 17:11:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C72C4360F
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:40:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5420420850
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 17:11:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8FD49218A6
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:40:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qBYisaLA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FUbwWnAp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5420420850
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RaupsZvT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qye2SP4y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FD49218A6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EMBiLz2EhqCDDr4l9kqGnu+jemHJWhjpvsJ1X+dxQHw=; b=qBYisaLAsZ8Ro5
-	pzTKEL6D9LIWGGbYVXt3ECLTegDuymcXKxMbAkq+f9sXHU22XQ9cef1a5X1C5v3ObQIKsOzkkHUgb
-	P50ROaiHJ27bvn9BQ9A5kVfGKSAJGExVbet4Dk1a7qbEU05ryBSf2tPth8GVNkKahUXtDJdY/k6jI
-	YDuLwu8PSM6xF+t/tSpvAhOf8oYADwai64o1NA4rhc+7PpNlCPNvzF5AK9bcOlJyQLupHQXXYXW6Q
-	CAhq7LzxC+9M5R7r9/fqgPLRGKPvuBp7cZfPp36wzc4Dm5UScGhm8PpYLszQGcKrTytreTnCAGWsG
-	ulQcVl+VIK8CS+zNrzUA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3rY5fiEq5v+mf4mophu056gE+dfnVavZi445HA0KUUY=; b=RaupsZvT4a+3JB
+	05OuBKjp/c/SXo8PPYHRKolcXATFW+13l7h4tgWfq52LeqTkwjWBuCQk3odvNf2IH0WnnPmMzwcan
+	BDMsvcm06mzBeScCJhVgoyRq0NTZUemrWwqbUenQO45kLiCb7qp8g6+jm1QzL1+/IDV/mKT5jrz4W
+	DX/bpzvIavzOtDhqGW1+Z8uv2AQMQqvy0WxxzdXuRD5CEdFwp2dhsfzVe8MKj3O6FXPuQc+hduZQ/
+	/yG3/TabJ5Z/8TZP62aV1VFivXwvMJux80lHtJkTFk6ys2+NDzHAQu7Lh/TX4D2MIuiVgeWUvNo6Q
+	kDQEY5npSN+YfE5yLJFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6ekX-0006DK-BW; Wed, 20 Mar 2019 17:11:33 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1h6g8Q-00005J-TX; Wed, 20 Mar 2019 18:40:18 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6ekP-0006CL-G8
- for linux-mtd@lists.infradead.org; Wed, 20 Mar 2019 17:11:31 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x2KHB3u7024413;
- Wed, 20 Mar 2019 12:11:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1553101863;
- bh=vNyrPfp/rapz2FAlW3IAC6oQ99GzNrsC7h56+ls4X90=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=FUbwWnApr91TgwAXRLMVFI3Dm/NINuItT+KjBLwW/4MJMulkHpn6BIxYqo1xkd28j
- +1hPIO/X80mAqGB+4NSk9+V3l+XsLHQ4IR0BL+qJGJUdNjc8JoR7cMcCa4aCfoxSm/
- hLEHUZmFpxtSKO0nN5O+MWlK6Db+OrNhhMNjIpis=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x2KHB3tk013133
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 20 Mar 2019 12:11:03 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 20
- Mar 2019 12:11:03 -0500
-Received: from dlep33.itg.ti.com (157.170.170.75) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5 via Frontend Transport;
- Wed, 20 Mar 2019 12:11:03 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by dlep33.itg.ti.com (8.14.3/8.13.8) with ESMTP id x2KHAxxC010307;
- Wed, 20 Mar 2019 12:11:00 -0500
-Subject: Re: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI controller
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
- <broonie@kernel.org>, <bbrezillon@kernel.org>
-References: <1551337361-11665-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <be5f5974-2f8f-1d8d-6f93-4b975a8114b1@ti.com>
-Date: Wed, 20 Mar 2019 22:41:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+ id 1h6g8N-0008Uv-7H
+ for linux-mtd@lists.infradead.org; Wed, 20 Mar 2019 18:40:16 +0000
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
+ [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6FE002184D;
+ Wed, 20 Mar 2019 18:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1553107214;
+ bh=gw7hzL2AWULkDpqnra8Btn4G36d3e2QHfPxFEHxuM+Q=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Qye2SP4yuT5Mn/ZZSTmiWX1eRJQP2xdtgpmqL0MfroLwNJuTe0KmM5BHjAxFeQ6GS
+ dueVl8MsoLVeMGaUZc3y+gRl9R5CqJltDFCcsy4uJBrCUYtZycfq/+HWHtxm1xO3X7
+ xODg9CUj76XYwKA0NZbwW9jxbvBq/M5BugWipLIE=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH v2 2/5] fscrypt: fix race allowing rename() and link() of
+ ciphertext dentries
+Date: Wed, 20 Mar 2019 11:39:10 -0700
+Message-Id: <20190320183913.12686-3-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.21.0.225.g810b269d1ac-goog
+In-Reply-To: <20190320183913.12686-1-ebiggers@kernel.org>
+References: <20190320183913.12686-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1551337361-11665-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190320_101125_645235_91288A2A 
-X-CRM114-Status: GOOD (  30.95  )
+X-CRM114-CacheID: sfid-20190320_114015_304314_8CE266BF 
+X-CRM114-Status: GOOD (  12.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,336 +76,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org, nagasuresh12@gmail.com,
- dwmw2@infradead.org, michal.simek@xilinx.com
+Cc: Gao Xiang <gaoxiang25@huawei.com>, linux-unionfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ Sarthak Kukreti <sarthakkukreti@chromium.org>, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Eric Biggers <ebiggers@google.com>
 
-Few more comments that I missed last time around.
+Close some race conditions where fscrypt allowed rename() and link() on
+ciphertext dentries that had been looked up just prior to the key being
+concurrently added.  It's better to return -ENOKEY in this case.
 
-On 28/02/19 12:32 PM, Naga Sureshkumar Relli wrote:
-> Add support for QSPI controller driver used by Xilinx Zynq SOC.
-> 
-> Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> ---
->  drivers/spi/Kconfig         |   8 +
->  drivers/spi/Makefile        |   1 +
->  drivers/spi/spi-zynq-qspi.c | 780 ++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 789 insertions(+)
->  create mode 100644 drivers/spi/spi-zynq-qspi.c
-> 
-> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-> index 9f89cb1..f12c880 100644
-> --- a/drivers/spi/Kconfig
-> +++ b/drivers/spi/Kconfig
-> @@ -816,6 +816,14 @@ config SPI_XTENSA_XTFPGA
->  	  16 bit words in SPI mode 0, automatically asserting CS on transfer
->  	  start and deasserting on end.
->  
-> +config SPI_ZYNQ_QSPI
-> +	tristate "Xilinx Zynq QSPI controller"
-> +	depends on ARCH_ZYNQ
+This avoids doing the nonsensical thing of encrypting the names a second
+time when searching for the actual on-disk dir entries.  It also
+guarantees that DCACHE_ENCRYPTED_NAME dentries are never rename()d, so
+the dcache won't have support all possible combinations of moving
+DCACHE_ENCRYPTED_NAME around during __d_move().
 
-Could you enable the driver for compile testing?
-From quick look this should enough:
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/hooks.c       | 12 +++++++++++-
+ include/linux/fscrypt.h |  9 +++++----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
-depends on ARCH_ZYNQ || COMPILE_TEST
-
-> +	help
-> +	  This enables support for the Zynq Quad SPI controller
-> +	  in master mode.
-> +	  This controller only supports SPI memory interface.
-> +
->  config SPI_ZYNQMP_GQSPI
->  	tristate "Xilinx ZynqMP GQSPI controller"
->  	depends on SPI_MASTER && HAS_DMA
-
-[...]
-
-> +/**
-> + * zynq_qspi_exec_mem_op() - Initiates the QSPI transfer
-> + * @mem: the SPI memory
-> + * @op: the memory operation to execute
-> + *
-> + * Executes a memory operation.
-> + *
-> + * This function first selects the chip and starts the memory operation.
-> + *
-> + * Return: 0 in case of success, a negative error code otherwise.
-> + */
-> +static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
-> +				 const struct spi_mem_op *op)
-> +{
-> +	struct zynq_qspi *xqspi = spi_controller_get_devdata(mem->spi->master);
-> +	int err = 0, i;
-> +	u8 *tmpbuf;
-> +
-> +	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
-> +		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
-> +		op->dummy.buswidth, op->data.buswidth);
-> +
-> +	zynq_qspi_chipselect(mem->spi, true);
-> +	zynq_qspi_config_op(xqspi, mem->spi);
-> +
-> +	if (op->cmd.opcode) {
-> +		reinit_completion(&xqspi->data_completion);
-> +		xqspi->txbuf = (u8 *)&op->cmd.opcode;
-> +		xqspi->rxbuf = NULL;
-> +		xqspi->tx_bytes = sizeof(op->cmd.opcode);
-> +		xqspi->rx_bytes = sizeof(op->cmd.opcode);
-> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
-> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
-> +				ZYNQ_QSPI_IXR_RXTX_MASK);
-> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-> +							       msecs_to_jiffies(1000))) {
-> +			err = -ETIMEDOUT;
-> +		}
-> +	}
-> +	zynq_qspi_config_op(xqspi, mem->spi);
-
-Why is it required to call zynq_qspi_config_op() b/w every stage of
-single flash operation? Is it not enough to do once at the beginning?
-
-> +	if (op->addr.nbytes) {
-> +		for (i = 0; i < op->addr.nbytes; i++) {
-> +			xqspi->txbuf[i] = op->addr.val >>
-> +					(8 * (op->addr.nbytes - i - 1));
-> +		}
-> +
-> +		reinit_completion(&xqspi->data_completion);
-> +		xqspi->rxbuf = NULL;
-> +		xqspi->tx_bytes = op->addr.nbytes;
-> +		xqspi->rx_bytes = op->addr.nbytes;
-> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
-> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
-> +				ZYNQ_QSPI_IXR_RXTX_MASK);
-> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-> +							       msecs_to_jiffies(1000))) {
-> +			err = -ETIMEDOUT;
-> +		}
-> +	}
-> +	zynq_qspi_config_op(xqspi, mem->spi);
-> +	if (op->dummy.nbytes) {
-> +		tmpbuf = kzalloc(op->dummy.nbytes, GFP_KERNEL);
-> +		memset(tmpbuf, 0xff, op->dummy.nbytes);
-> +		reinit_completion(&xqspi->data_completion);
-> +		xqspi->txbuf = tmpbuf;
-> +		xqspi->rxbuf = NULL;
-> +		xqspi->tx_bytes = op->dummy.nbytes;
-> +		xqspi->rx_bytes = op->dummy.nbytes;
-> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
-> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
-> +				ZYNQ_QSPI_IXR_RXTX_MASK);
-> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-> +							       msecs_to_jiffies(1000))) {
-> +			err = -ETIMEDOUT;
-> +		}
-> +		kfree(tmpbuf);
-> +	}
-> +	zynq_qspi_config_op(xqspi, mem->spi);
-> +	if (op->data.nbytes) {
-> +		reinit_completion(&xqspi->data_completion);
-> +		if (op->data.dir == SPI_MEM_DATA_OUT) {
-> +			xqspi->txbuf = (u8 *)op->data.buf.out;
-> +			xqspi->tx_bytes = op->data.nbytes;
-> +			xqspi->rxbuf = NULL;
-> +			xqspi->rx_bytes = op->data.nbytes;
-> +		} else {
-> +			xqspi->txbuf = NULL;
-> +			xqspi->rxbuf = (u8 *)op->data.buf.in;
-> +			xqspi->rx_bytes = op->data.nbytes;
-> +			xqspi->tx_bytes = op->data.nbytes;
-> +		}
-> +
-> +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
-> +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
-> +				ZYNQ_QSPI_IXR_RXTX_MASK);
-> +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-> +							       msecs_to_jiffies(1000))) {
-> +			err = -ETIMEDOUT;
-> +		}
-> +	}
-> +	zynq_qspi_chipselect(mem->spi, false);
-> +
-> +	return err;
-> +}
-> +
-> +static const struct spi_controller_mem_ops zynq_qspi_mem_ops = {
-> +	.supports_op = zynq_qspi_supports_op,
-> +	.exec_op = zynq_qspi_exec_mem_op,
-> +};
-> +
-> +/**
-> + * zynq_qspi_probe - Probe method for the QSPI driver
-> + * @pdev:	Pointer to the platform_device structure
-> + *
-> + * This function initializes the driver data structures and the hardware.
-> + *
-> + * Return:	0 on success and error value on failure
-> + */
-> +static int zynq_qspi_probe(struct platform_device *pdev)
-> +{
-> +	int ret = 0;
-> +	struct spi_controller *ctlr;
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev->of_node;
-> +	struct zynq_qspi *xqspi;
-> +	struct resource *res;
-> +	u32 num_cs;
-> +
-> +	ctlr = spi_alloc_master(&pdev->dev, sizeof(*xqspi));
-> +	if (!ctlr)
-> +		return -ENOMEM;
-> +
-> +	xqspi = spi_controller_get_devdata(ctlr);
-> +	xqspi->dev = dev;
-> +	platform_set_drvdata(pdev, xqspi);
-> +	ctlr->mem_ops = &zynq_qspi_mem_ops;
-
-
-ctlr->mem_ops is initialized twice. See below..
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	xqspi->regs = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(xqspi->regs)) {
-> +		ret = PTR_ERR(xqspi->regs);
-> +		goto remove_master;
-> +	}
-> +
-> +	xqspi->pclk = devm_clk_get(&pdev->dev, "pclk");
-> +	if (IS_ERR(xqspi->pclk)) {
-> +		dev_err(&pdev->dev, "pclk clock not found.\n");
-> +		ret = PTR_ERR(xqspi->pclk);
-> +		goto remove_master;
-> +	}
-> +
-> +	init_completion(&xqspi->data_completion);
-> +
-> +	xqspi->refclk = devm_clk_get(&pdev->dev, "ref_clk");
-> +	if (IS_ERR(xqspi->refclk)) {
-> +		dev_err(&pdev->dev, "ref_clk clock not found.\n");
-> +		ret = PTR_ERR(xqspi->refclk);
-> +		goto remove_master;
-> +	}
-> +
-> +	ret = clk_prepare_enable(xqspi->pclk);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Unable to enable APB clock.\n");
-> +		goto remove_master;
-> +	}
-> +
-> +	ret = clk_prepare_enable(xqspi->refclk);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Unable to enable device clock.\n");
-> +		goto clk_dis_pclk;
-> +	}
-> +
-> +	/* QSPI controller initializations */
-> +	zynq_qspi_init_hw(xqspi);
-> +
-> +	xqspi->irq = platform_get_irq(pdev, 0);
-> +	if (xqspi->irq <= 0) {
-> +		ret = -ENXIO;
-> +		dev_err(&pdev->dev, "irq resource not found\n");
-> +		goto remove_master;
-> +	}
-> +	ret = devm_request_irq(&pdev->dev, xqspi->irq, zynq_qspi_irq,
-> +			       0, pdev->name, xqspi);
-> +	if (ret != 0) {
-> +		ret = -ENXIO;
-> +		dev_err(&pdev->dev, "request_irq failed\n");
-> +		goto remove_master;
-> +	}
-> +
-> +	ret = of_property_read_u32(pdev->dev.of_node, "num-cs",
-> +				   &num_cs);
-> +	if (ret < 0)
-> +		ctlr->num_chipselect = ZYNQ_QSPI_DEFAULT_NUM_CS;
-> +	else
-> +		ctlr->num_chipselect = num_cs;
-> +	ctlr->mode_bits =  SPI_RX_DUAL | SPI_RX_QUAD |
-> +			    SPI_TX_DUAL | SPI_TX_QUAD;
-> +	ctlr->mem_ops = &zynq_qspi_mem_ops;
-
-And here again...
-
-> +	ctlr->setup = zynq_qspi_setup_op;
-> +	ctlr->max_speed_hz = clk_get_rate(xqspi->refclk) / 2;
-> +	ctlr->dev.of_node = np;
-> +	ret = spi_register_controller(ctlr);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "spi_register_master failed\n");
-> +		goto clk_dis_all;
-> +	}
-> +
-> +	return ret;
-> +
-> +clk_dis_all:
-> +	clk_disable_unprepare(xqspi->refclk);
-> +clk_dis_pclk:
-> +	clk_disable_unprepare(xqspi->pclk);
-> +remove_master:
-> +	spi_controller_put(ctlr);
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * zynq_qspi_remove - Remove method for the QSPI driver
-> + * @pdev:	Pointer to the platform_device structure
-> + *
-> + * This function is called if a device is physically removed from the system or
-> + * if the driver module is being unloaded. It frees all resources allocated to
-> + * the device.
-> + *
-> + * Return:	0 on success and error value on failure
-> + */
-> +static int zynq_qspi_remove(struct platform_device *pdev)
-> +{
-> +	struct zynq_qspi *xqspi = platform_get_drvdata(pdev);
-> +
-> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_ENABLE_OFFSET, 0);
-> +
-> +	clk_disable_unprepare(xqspi->refclk);
-> +	clk_disable_unprepare(xqspi->pclk);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id zynq_qspi_of_match[] = {
-> +	{ .compatible = "xlnx,zynq-qspi-1.0", },
-> +	{ /* end of table */ }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, zynq_qspi_of_match);
-> +
-> +/*
-> + * zynq_qspi_driver - This structure defines the QSPI platform driver
-> + */
-> +static struct platform_driver zynq_qspi_driver = {
-> +	.probe = zynq_qspi_probe,
-> +	.remove = zynq_qspi_remove,
-> +	.driver = {
-> +		.name = "zynq-qspi",
-> +		.of_match_table = zynq_qspi_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(zynq_qspi_driver);
-> +
-> +MODULE_AUTHOR("Xilinx, Inc.");
-> +MODULE_DESCRIPTION("Xilinx Zynq QSPI driver");
-> +MODULE_LICENSE("GPL");
-> 
-
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index a9492f75bbe13..2e7498a821a48 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -49,7 +49,8 @@ int fscrypt_file_open(struct inode *inode, struct file *filp)
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_file_open);
+ 
+-int __fscrypt_prepare_link(struct inode *inode, struct inode *dir)
++int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
++			   struct dentry *dentry)
+ {
+ 	int err;
+ 
+@@ -57,6 +58,10 @@ int __fscrypt_prepare_link(struct inode *inode, struct inode *dir)
+ 	if (err)
+ 		return err;
+ 
++	/* ... in case we looked up ciphertext name before key was added */
++	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME)
++		return -ENOKEY;
++
+ 	if (!fscrypt_has_permitted_context(dir, inode))
+ 		return -EXDEV;
+ 
+@@ -78,6 +83,11 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	if (err)
+ 		return err;
+ 
++	/* ... in case we looked up ciphertext name(s) before key was added */
++	if ((old_dentry->d_flags | new_dentry->d_flags) &
++	    DCACHE_ENCRYPTED_NAME)
++		return -ENOKEY;
++
+ 	if (old_dir != new_dir) {
+ 		if (IS_ENCRYPTED(new_dir) &&
+ 		    !fscrypt_has_permitted_context(new_dir,
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 5a0c3fee1ea2b..4ad7a856e0f1c 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -214,7 +214,8 @@ extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
+ 
+ /* hooks.c */
+ extern int fscrypt_file_open(struct inode *inode, struct file *filp);
+-extern int __fscrypt_prepare_link(struct inode *inode, struct inode *dir);
++extern int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
++				  struct dentry *dentry);
+ extern int __fscrypt_prepare_rename(struct inode *old_dir,
+ 				    struct dentry *old_dentry,
+ 				    struct inode *new_dir,
+@@ -401,8 +402,8 @@ static inline int fscrypt_file_open(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
+-static inline int __fscrypt_prepare_link(struct inode *inode,
+-					 struct inode *dir)
++static inline int __fscrypt_prepare_link(struct inode *inode, struct inode *dir,
++					 struct dentry *dentry)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -497,7 +498,7 @@ static inline int fscrypt_prepare_link(struct dentry *old_dentry,
+ 				       struct dentry *dentry)
+ {
+ 	if (IS_ENCRYPTED(dir))
+-		return __fscrypt_prepare_link(d_inode(old_dentry), dir);
++		return __fscrypt_prepare_link(d_inode(old_dentry), dir, dentry);
+ 	return 0;
+ }
+ 
 -- 
-Regards
-Vignesh
+2.21.0.225.g810b269d1ac-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
