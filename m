@@ -2,65 +2,68 @@ Return-Path: <SRS0=zR1V=RX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E671C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFD50C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:40:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFECA2146E
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:40:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9913B2146E
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:40:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VhmNGYH0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kCLPwNsx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFECA2146E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hWaYxz0/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="wVVDHm0u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9913B2146E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wbLvBsgkx+nMWonIJsFUWRkg0xhIEJODNmQwrPmAUtA=; b=VhmNGYH0vpo0A2
-	NDcMMJ4T5JceF2YHEoZnD3YavtY3ztrlhvZxuyIKMZYg39Zv4ef5dItmKH56yEVVJSQtfWVEbapuN
-	oEfRm2b+jGPpctsNWEbrZIGpneP1XYWlFe7OlJ+LS2i9sgaEszQF5N0NXwGq4NqBGVInbWVvuSH0q
-	9q4VGnPcvCspDCdu3m9VI4el2qYMaLBAr+Cpdz419Uk4O7fWi14ilmHI4k27ekPoBEJbMnjVBcm70
-	5uHSnrGhOKSDck+QxqbHq3BYxwMOVwtboD4AuOkfpKulPVXurhK6xvVyc+5tyBPDkj2WmQMFIO6px
-	jNrYkW8nUMLt17avj03Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=B+fZ95LOMoMner+ttAAU5E53LA35YKmSUEbwt8DfO4s=; b=hWaYxz0//PK7W0
+	8neOS1ND1KItjLlmSrCMK+D27RXOYC4rnbfLsTwslom7qXW/ZTuiOZCx/jZvORT7HdSQpc4Rq24F2
+	o1/TeSpX0gUAO0yV2INDdRTyAxUk1SrOsgM87JRrsnVB35oA9tIbKF9667hujw1YiN73/UYVvt6uX
+	hv5SHSaEhgA9GCbH9vQrkvIWOTCdRPoADAOSxCcuEPuBGwr7XlulAjLaEHs1qQIFr+b38BSKZLl/o
+	Qm2uZyaR3+MViNWUrKVo+WaSolfrNyP00uWpqqcz7l3T6STsg6pwvIk/PqQUy95YYpytWFrNBk3Tc
+	VoRANam22C3jL/U7CDqQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6g8f-0000TQ-Sx; Wed, 20 Mar 2019 18:40:33 +0000
+	id 1h6g8t-0000me-BA; Wed, 20 Mar 2019 18:40:47 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6g8N-0008Ur-7Q
+ id 1h6g8N-0008Vb-P8
  for linux-mtd@lists.infradead.org; Wed, 20 Mar 2019 18:40:17 +0000
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
  [104.132.1.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A6F812146E;
- Wed, 20 Mar 2019 18:40:13 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 37A1321841;
+ Wed, 20 Mar 2019 18:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1553107213;
- bh=VLKOyjiTo4zNBcYy+Dh3fGC61v1rZeuQPK7QsXfa/kc=;
- h=From:To:Cc:Subject:Date:From;
- b=kCLPwNsxKjBi1Cf0dZQ8mzosH4wpgpoPRGZIiZ+TJq67qp1EPXw1oJEkLwXC7Qy49
- o8DMUYha//gs3Z1TECuZ2GWGWH11EH2+btPL8IFsMzjiFOgFr+4sNO/3s6MQB+tZkg
- sTY06QYUuiNmrpsIfnD+6V52mI/AEtWWDfsTXja8=
+ s=default; t=1553107215;
+ bh=QPdDcwv8QIQHVxEXZR8gR3cRzKCH9Mf22Cf6SiteznU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=wVVDHm0uotjkjfN448/7q/NYGAclTe2c9aCMPtDz3xBWYQ1I4tqAfAMUu0syQxWp6
+ hiqp9xi0Wr7Sc5TzlpXB/4D2JchsoJF6uMNCfC+XhByuA+sbOHSIyQVH+u/y964RLk
+ P1GoxbBTjV1z6a5W9PGbwRmc6NXa2V2VBRqql7pY=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 0/5] fscrypt: d_revalidate fixes and cleanups
-Date: Wed, 20 Mar 2019 11:39:08 -0700
-Message-Id: <20190320183913.12686-1-ebiggers@kernel.org>
+Subject: [PATCH v2 4/5] fscrypt: only set dentry_operations on ciphertext
+ dentries
+Date: Wed, 20 Mar 2019 11:39:12 -0700
+Message-Id: <20190320183913.12686-5-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0.225.g810b269d1ac-goog
+In-Reply-To: <20190320183913.12686-1-ebiggers@kernel.org>
+References: <20190320183913.12686-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190320_114015_386744_958E49FB 
-X-CRM114-Status: GOOD (  10.62  )
+X-CRM114-CacheID: sfid-20190320_114015_826495_41724005 
+X-CRM114-Status: GOOD (  11.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -83,72 +86,45 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-This patch series improves dentry revalidation in fscrypt.
+Plaintext dentries are always valid, so only set fscrypt_d_ops on
+ciphertext dentries.
 
-To recap, fscrypt (aka ext4/f2fs/ubifs encryption) encrypts both file
-contents and file names in individual directory trees.  A single
-filesystem can contain many encrypted directory trees using many
-different encryption keys.  Major users of fscrypt require the ability
-to delete encrypted files when their encryption key is unavailable, e.g.
-when the system needs to delete a removed user's home directory or free
-up space from a logged-out user's cache directory.
+Besides marginally improved performance, this allows overlayfs to use an
+fscrypt-encrypted upperdir, provided that all the following are true:
 
-Therefore fscrypt allows listing, looking up, and deleting files in
-encrypted directories via encoded ciphertext names, but only before the
-key is added.  After the key is added, the ciphertext names are
-invalidated via ->d_revalidate() and plaintext names are shown instead.
+    (1) The fscrypt encryption key is placed in the keyring before
+	mounting overlayfs, and remains while the overlayfs is mounted.
 
-fscrypt isn't a stacked filesystem, and it's explicitly for storage
-encryption, not OS-level access control.  Thus, whether each directory
-inode has its key or not is a global state, not per-process.  Also, the
-inode keeps its key until it's evicted from the inode cache.  So,
-plaintext names shouldn't ever get invalidated by ->d_revalidate().
+    (2) The overlayfs workdir uses the same encryption policy.
 
-This patch series makes the following improvements:
+    (3) No dentries for the ciphertext names of subdirectories have been
+	created in the upperdir or workdir yet.  (Since otherwise
+	d_splice_alias() will reuse the old dentry with ->d_op set.)
 
-- Only assign ->d_revalidate() to ciphertext filenames, thus allowing
-  overlayfs to use an fscrypt-encrypted upperdir in some cases.
-  (Previous discussion: https://lkml.org/lkml/2019/3/13/255)
+One potential use case is using an ephemeral encryption key to encrypt
+all files created or changed by a container, so that they can be
+securely erased ("crypto-shredded") after the container stops.
 
-- Fix cases where plaintext filenames would wrongly be invalidated,
-  including a real-world bug recently reported on Chromium OS.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/hooks.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-- Fix cases where ciphertext filenames would wrongly not be invalidated.
-
-- Allow rcu-walk lookups in encrypted directories with the key, which
-  improves performance.
-  (Previous attempt: https://patchwork.kernel.org/patch/10594133/)
-
-- Fix cases where rename() and link() could succeed on ciphertext names.
-
-Changed since v1:
-
-- Fixed comment in fscrypt_d_revalidate() to explain that dget_parent()
-  is actually still required.
-
-- Moved clearing DCACHE_ENCRYPTED_NAME into fscrypt.h, to avoid an extra
-  #ifdef and cluttering up dcache.c.
-
-Eric Biggers (5):
-  fscrypt: clean up and improve dentry revalidation
-  fscrypt: fix race allowing rename() and link() of ciphertext dentries
-  fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when unaliasing directory
-  fscrypt: only set dentry_operations on ciphertext dentries
-  fscrypt: fix race where ->lookup() marks plaintext dentry as
-    ciphertext
-
- fs/crypto/crypto.c      | 58 ++++++++++++++++---------------
- fs/crypto/fname.c       |  1 +
- fs/crypto/hooks.c       | 28 ++++++++++-----
- fs/dcache.c             |  2 ++
- fs/ext4/ext4.h          | 62 +++++++++++++++++++++++++--------
- fs/ext4/namei.c         | 76 ++++++++++++++++++++++++++++-------------
- fs/f2fs/namei.c         | 17 +++++----
- fs/ubifs/dir.c          |  8 ++---
- include/linux/dcache.h  |  2 +-
- include/linux/fscrypt.h | 61 +++++++++++++++++++++++----------
- 10 files changed, 208 insertions(+), 107 deletions(-)
-
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index 2e7498a821a48..9d8910e86ee5d 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -115,9 +115,8 @@ int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
+ 		spin_lock(&dentry->d_lock);
+ 		dentry->d_flags |= DCACHE_ENCRYPTED_NAME;
+ 		spin_unlock(&dentry->d_lock);
++		d_set_d_op(dentry, &fscrypt_d_ops);
+ 	}
+-
+-	d_set_d_op(dentry, &fscrypt_d_ops);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
 -- 
 2.21.0.225.g810b269d1ac-goog
 
