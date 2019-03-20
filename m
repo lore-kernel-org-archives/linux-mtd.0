@@ -2,69 +2,116 @@ Return-Path: <SRS0=zR1V=RX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DEAEC43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:41:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFA61C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:56:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E1642146E
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:41:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A821E206BA
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 18:56:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rH752koQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="vqrHZmW8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E1642146E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oVqWggGw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cypress.com header.i=@cypress.com header.b="DzMNuVur"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A821E206BA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cypress.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hq1J+auRB2IstQ7HH4+KhvcRnKSkQCvSMqsqUMuN30Y=; b=rH752koQo1H10+
-	+62SDHcOKlGXX3R49lqcM6W7br0zi4hKuhwiY2WlnU+6wqU5qIvHB/THFxZWnk/LZxEUIz/rFX4US
-	5vY2scHVVKWhs6fVPDzBZMwDxNNRQbNwVQEC/zzDDwdPU6PGqEU9+C6/otVCSYfVnCVdfzQ2TD64z
-	1wupEFN/OKjCIUQf3lYzzMdT7B6TsxVvW/Z7ilgGqCaaUg0SaoG7W7hGERCTdeILLogUPzVervzUX
-	oKjRET9p0n1BMs/K/nkE+7tJfvIWlQyCxTt/Oowc0IaWfXv/w6XPtMhQ3vFhhuXPIzvz/iHWmrV5X
-	oWNCNes1vmYyopxUb1eQ==;
+	List-Owner; bh=7BhVieEIpzEBVCLMqwqR2rpBvYup9VAjMRsvtmWvfAE=; b=oVqWggGwlsDCEu
+	N9GX0ijV4rCoHHSnaRbTPS1G2rvBVziBMJi6LP9pe9BgbHgGX5odhIPD8a6xriMrojuTpOT3KKOSS
+	A0uY2J4IStYtEct7SB5MveDTLs7f6scRyc4sB38uek2JlyaNRXbYiDk3STwTZDu/Nthtnb9YVhEI+
+	8FMGgkx1CwPhTufHlg/d/3fO7dyNXKAwbx8ANx3O7w/jDf470EmTZhTBjWetuVxDLQ7zli+VzQqTJ
+	OZQF7U1ZX7UlYaMfboBNTzB7VSQdy3kOeVHDzhJtU+LK13pdhE46Fru+Fxk1EyPiFKI2nkLMzvjcU
+	P13sbX/oGBLhrSqAGoXg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6g9E-0001Ey-TK; Wed, 20 Mar 2019 18:41:08 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1h6gNx-0003dp-8F; Wed, 20 Mar 2019 18:56:21 +0000
+Received: from mail-eopbgr750133.outbound.protection.outlook.com
+ ([40.107.75.133] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6g8O-0008W4-CF
- for linux-mtd@lists.infradead.org; Wed, 20 Mar 2019 18:40:18 +0000
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
- [104.132.1.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 963BF218A2;
- Wed, 20 Mar 2019 18:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1553107215;
- bh=jEJ17DfyejGc8TI94VO3u5nCjiy43EqYCoVtJ5ZK1/0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=vqrHZmW8JsWjo3WETOCU5/G7NY+mDXYDNWtjlMn5ZPfok64BD7AGrR5M5B45ckX8U
- 0uNbpwNs3K1BtVRrt4t1frNFnzRyxwMxpHaoILDn3gjAqgyD7Icw4K6FPD2zyZCh2L
- SOl1P/d+zpOfUDUMq8nXqOd/5MNczqLrvnQ71nVY=
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 5/5] fscrypt: fix race where ->lookup() marks plaintext
- dentry as ciphertext
-Date: Wed, 20 Mar 2019 11:39:13 -0700
-Message-Id: <20190320183913.12686-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.21.0.225.g810b269d1ac-goog
-In-Reply-To: <20190320183913.12686-1-ebiggers@kernel.org>
-References: <20190320183913.12686-1-ebiggers@kernel.org>
+ id 1h6gNs-0003dG-Q7
+ for linux-mtd@lists.infradead.org; Wed, 20 Mar 2019 18:56:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cypress.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HNo5s5jyz3Rwmj2PVCP6dfxpWKE4pzjqnDqa5/XCgeI=;
+ b=DzMNuVurl3WP6xHVd6SYAgUGir7E7k3iWlhLgFJvvcggA4tbxIpzhYv8vMUs2JCqJFiLHvGccdMgY692q5b7dJcaOiRUvSbU9t8VKKlrrUtGtAnr3BgfFB6KPNPQ9Hjf6PQy38kh7wCErZNPYpEPIqhskZ4vafWTIQ9axNlr39s=
+Received: from BYAPR06MB5893.namprd06.prod.outlook.com (20.179.157.74) by
+ BYAPR06MB5206.namprd06.prod.outlook.com (20.178.49.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1709.14; Wed, 20 Mar 2019 18:56:12 +0000
+Received: from BYAPR06MB5893.namprd06.prod.outlook.com
+ ([fe80::9995:d549:6e1c:c360]) by BYAPR06MB5893.namprd06.prod.outlook.com
+ ([fe80::9995:d549:6e1c:c360%7]) with mapi id 15.20.1730.013; Wed, 20 Mar 2019
+ 18:56:12 +0000
+From: Yong Qin <Yong.Qin@cypress.com>
+To: Jonas Bonn <jonas@norrbonn.se>, "Tudor.Ambarus@microchip.com"
+ <Tudor.Ambarus@microchip.com>, James Tomasetta <James.Tomasetta@cypress.com>
+Subject: RE: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
+Thread-Topic: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
+Thread-Index: AQHUuB8ZhXd2N1Mh6EWe4SXNj0Cyz6YE33oAgAAMRYCAAcsCAIAAWT4wgADr6oCAAKGJ4IAKNP4AgAAD8ACAAYb4AIAACVgAgAAHWoCAAAHygIAAuCJQ
+Date: Wed, 20 Mar 2019 18:56:12 +0000
+Message-ID: <BYAPR06MB589357713279CE756A65B3238F410@BYAPR06MB5893.namprd06.prod.outlook.com>
+References: <20190129220705.5143-1-jonas@norrbonn.se>
+ <20190129220705.5143-2-jonas@norrbonn.se>
+ <db7aef53-43bc-2c14-12bc-2f0d452b4bc8@microchip.com>
+ <cb41d4e3-d300-89da-3378-6305699d610c@norrbonn.se>
+ <6e20b1c1-4eaf-bdcc-aec4-59dcbe2a8a34@microchip.com>
+ <BYAPR06MB5893F6DEA9B0965E234983CD8F480@BYAPR06MB5893.namprd06.prod.outlook.com>
+ <4ddb8f33-93b1-9aa4-3fdd-c60cfa1d1d7d@microchip.com>
+ <BYAPR06MB58937598257ADB18DAF344C38F490@BYAPR06MB5893.namprd06.prod.outlook.com>
+ <41859b7a-98ad-fc6d-242e-6e9ab810e038@microchip.com>
+ <9fcc328f-ae13-a294-a56c-0b5a6247b26a@norrbonn.se>
+ <64b52a54-94a0-4b0b-683c-41eb07d5b09a@microchip.com>
+ <37e1a622-1bb9-0104-c35d-8d7b6c6fcd73@norrbonn.se>
+ <5d342253-1ca2-4673-7560-6698cc71696e@microchip.com>
+ <71b64bdf-73f7-03b7-14a6-5fb2750b84a1@norrbonn.se>
+In-Reply-To: <71b64bdf-73f7-03b7-14a6-5fb2750b84a1@norrbonn.se>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Yong.Qin@cypress.com; 
+x-originating-ip: [99.228.74.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c7515cbc-4818-412f-2c67-08d6ad65b8c1
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(4618075)(2017052603328)(7153060)(7193020);
+ SRVR:BYAPR06MB5206; 
+x-ms-traffictypediagnostic: BYAPR06MB5206:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <BYAPR06MB520652DAAFDA896A1A7D23758F410@BYAPR06MB5206.namprd06.prod.outlook.com>
+x-forefront-prvs: 098291215C
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(346002)(376002)(396003)(39860400002)(136003)(366004)(199004)(189003)(13464003)(229853002)(97736004)(4326008)(71200400001)(478600001)(8676002)(6116002)(5660300002)(2906002)(7736002)(3846002)(14444005)(54906003)(106356001)(81156014)(105586002)(110136005)(256004)(2501003)(81166006)(93886005)(25786009)(14454004)(5024004)(74316002)(966005)(72206003)(8936002)(26005)(66066001)(68736007)(476003)(7696005)(446003)(55016002)(33656002)(186003)(6246003)(99286004)(316002)(6636002)(76176011)(11346002)(102836004)(6506007)(71190400001)(486006)(6436002)(6306002)(53546011)(9686003)(53936002)(52536014)(305945005)(86362001);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:BYAPR06MB5206;
+ H:BYAPR06MB5893.namprd06.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: cypress.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: XYPvJjeEAQdDi0IIjcLeUHB6IOUjUouTgALAzMC88GY9bzbryLzbRFVfJT3LvkYnJQzXtI1BdfgJalP09gc/Fnf+1Z5/fMO1LlOTQaQOBGn4nU1Lk0uvlWZtVGSFV2r0z7l6yEkV/1yZFBaPk74eJvN8fzjSvS2c+8a9AnZpjEAZujBcl0MxMJLQ5pBiuqNTRlUoAXa2zdi8ayonYyv+rROgRvPupoLwa1mPrT9ugEk2a8r4mS+B2eqZMVg1NYt7UWekoqsu051cB+IHcCMFuSzFv9Wgxl0DNe63UcQ/idi6Od2nJ6Q6R1san6svCk5aiDpRSg1wLFzJclY52lh33GuUAnIueDbWybT0ANoEX5Cvmpi8ZfsmHN/vydyxBeLOzgH9cs0m6K22x5qda8bFxcZ1eG5Kfc4kWW8yjBUuHYM=
 MIME-Version: 1.0
+X-OriginatorOrg: cypress.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7515cbc-4818-412f-2c67-08d6ad65b8c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2019 18:56:12.0672 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 011addfc-2c09-450d-8938-e0bbc2dd2376
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR06MB5206
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190320_114016_585993_2E865ABE 
-X-CRM114-Status: GOOD (  22.32  )
+X-CRM114-CacheID: sfid-20190320_115616_963411_F6371B3C 
+X-CRM114-Status: GOOD (  24.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,490 +123,165 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Gao Xiang <gaoxiang25@huawei.com>, linux-unionfs@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- Sarthak Kukreti <sarthakkukreti@chromium.org>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org
+Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Jonas, Tudor,
 
-->lookup() in an encrypted directory begins as follows:
+I think Tudor described is a reasonable use case scenario.
 
-1. fscrypt_prepare_lookup():
-    a. Try to load the directory's encryption key.
-    b. If the key is unavailable, mark the dentry as a ciphertext name
-       via d_flags.
-2. fscrypt_setup_filename():
-    a. Try to load the directory's encryption key.
-    b. If the key is available, encrypt the name (treated as a plaintext
-       name) to get the on-disk name.  Otherwise decode the name
-       (treated as a ciphertext name) to get the on-disk name.
+BPNV bit default value is 0, which means BP0-2 bits are default Non-Volatile. In this case, BPNV bit does not need to be set. After the flash chip mounted on PCB board with WP# grounded, all need to do are: Program data into flash --> Set BP0-2 to 1 --> Set SRWD to 1, then both SRWD bit and BP0-2 bits are locked-down, unless disconnecting WP# from grounding. Reset will not change SRWD bit and BP0-2 bits since they all are Non-Volatile.
 
-But if the key is concurrently added, it may be found at (2a) but not at
-(1a).  In this case, the dentry will be wrongly marked as a ciphertext
-name even though it was actually treated as plaintext.
+Best Regards,
+Yong
 
-This will cause the dentry to be wrongly invalidated on the next lookup,
-potentially causing problems.  For example, if the racy ->lookup() was
-part of sys_mount(), then the new mount will be detached when anything
-tries to access it.  This is despite the mountpoint having a plaintext
-path, which should remain valid now that the key was added.
-
-Of course, this is only possible if there's a userspace race.  Still,
-the additional kernel-side race is confusing and unexpected.
-
-Close the kernel-side race by changing fscrypt_prepare_lookup() to also
-set the on-disk filename (step 2b), consistent with the d_flags update.
-
-Fixes: 28b4c263961c ("ext4 crypto: revalidate dentry after adding or removing the key")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/fname.c       |  1 +
- fs/crypto/hooks.c       | 11 +++---
- fs/ext4/ext4.h          | 62 +++++++++++++++++++++++++--------
- fs/ext4/namei.c         | 76 ++++++++++++++++++++++++++++-------------
- fs/f2fs/namei.c         | 17 +++++----
- fs/ubifs/dir.c          |  8 ++---
- include/linux/fscrypt.h | 30 ++++++++++------
- 7 files changed, 139 insertions(+), 66 deletions(-)
-
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 7ff40a73dbece..dea65c091f713 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -356,6 +356,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 	}
- 	if (!lookup)
- 		return -ENOKEY;
-+	fname->is_ciphertext_name = true;
- 
- 	/*
- 	 * We don't have the key and we are doing a lookup; decode the
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 9d8910e86ee5d..042d5b44f4ed9 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -104,20 +104,21 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
- 
--int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
-+int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
-+			     struct fscrypt_name *fname)
- {
--	int err = fscrypt_get_encryption_info(dir);
-+	int err = fscrypt_setup_filename(dir, &dentry->d_name, 1, fname);
- 
--	if (err)
-+	if (err && err != -ENOENT)
- 		return err;
- 
--	if (!fscrypt_has_encryption_key(dir)) {
-+	if (fname->is_ciphertext_name) {
- 		spin_lock(&dentry->d_lock);
- 		dentry->d_flags |= DCACHE_ENCRYPTED_NAME;
- 		spin_unlock(&dentry->d_lock);
- 		d_set_d_op(dentry, &fscrypt_d_ops);
- 	}
--	return 0;
-+	return err;
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
- 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 82ffdacdc7fac..e64a4ee96d30a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2287,23 +2287,47 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
- 
- #ifdef CONFIG_FS_ENCRYPTION
-+static inline void ext4_fname_from_fscrypt_name(struct ext4_filename *dst,
-+						const struct fscrypt_name *src)
-+{
-+	memset(dst, 0, sizeof(*dst));
-+
-+	dst->usr_fname = src->usr_fname;
-+	dst->disk_name = src->disk_name;
-+	dst->hinfo.hash = src->hash;
-+	dst->hinfo.minor_hash = src->minor_hash;
-+	dst->crypto_buf = src->crypto_buf;
-+}
-+
- static inline int ext4_fname_setup_filename(struct inode *dir,
--			const struct qstr *iname,
--			int lookup, struct ext4_filename *fname)
-+					    const struct qstr *iname,
-+					    int lookup,
-+					    struct ext4_filename *fname)
- {
- 	struct fscrypt_name name;
- 	int err;
- 
--	memset(fname, 0, sizeof(struct ext4_filename));
--
- 	err = fscrypt_setup_filename(dir, iname, lookup, &name);
-+	if (err)
-+		return err;
- 
--	fname->usr_fname = name.usr_fname;
--	fname->disk_name = name.disk_name;
--	fname->hinfo.hash = name.hash;
--	fname->hinfo.minor_hash = name.minor_hash;
--	fname->crypto_buf = name.crypto_buf;
--	return err;
-+	ext4_fname_from_fscrypt_name(fname, &name);
-+	return 0;
-+}
-+
-+static inline int ext4_fname_prepare_lookup(struct inode *dir,
-+					    struct dentry *dentry,
-+					    struct ext4_filename *fname)
-+{
-+	struct fscrypt_name name;
-+	int err;
-+
-+	err = fscrypt_prepare_lookup(dir, dentry, &name);
-+	if (err)
-+		return err;
-+
-+	ext4_fname_from_fscrypt_name(fname, &name);
-+	return 0;
- }
- 
- static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-@@ -2317,19 +2341,27 @@ static inline void ext4_fname_free_filename(struct ext4_filename *fname)
- 	fname->usr_fname = NULL;
- 	fname->disk_name.name = NULL;
- }
--#else
-+#else /* !CONFIG_FS_ENCRYPTION */
- static inline int ext4_fname_setup_filename(struct inode *dir,
--		const struct qstr *iname,
--		int lookup, struct ext4_filename *fname)
-+					    const struct qstr *iname,
-+					    int lookup,
-+					    struct ext4_filename *fname)
- {
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
- 	return 0;
- }
--static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
- 
--#endif
-+static inline int ext4_fname_prepare_lookup(struct inode *dir,
-+					    struct dentry *dentry,
-+					    struct ext4_filename *fname)
-+{
-+	return ext4_fname_setup_filename(dir, &dentry->d_name, 1, fname);
-+}
-+
-+static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
-+#endif /* !CONFIG_FS_ENCRYPTION */
- 
- /* dir.c */
- extern int __ext4_check_dir_entry(const char *, unsigned int, struct inode *,
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 980166a8122a6..3ba6f30db8d92 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1327,7 +1327,7 @@ static int is_dx_internal_node(struct inode *dir, ext4_lblk_t block,
- }
- 
- /*
-- *	ext4_find_entry()
-+ *	__ext4_find_entry()
-  *
-  * finds an entry in the specified directory with the wanted name. It
-  * returns the cache buffer in which the entry was found, and the entry
-@@ -1337,39 +1337,32 @@ static int is_dx_internal_node(struct inode *dir, ext4_lblk_t block,
-  * The returned buffer_head has ->b_count elevated.  The caller is expected
-  * to brelse() it when appropriate.
-  */
--static struct buffer_head * ext4_find_entry (struct inode *dir,
--					const struct qstr *d_name,
--					struct ext4_dir_entry_2 **res_dir,
--					int *inlined)
-+static struct buffer_head *__ext4_find_entry(struct inode *dir,
-+					     struct ext4_filename *fname,
-+					     struct ext4_dir_entry_2 **res_dir,
-+					     int *inlined)
- {
- 	struct super_block *sb;
- 	struct buffer_head *bh_use[NAMEI_RA_SIZE];
- 	struct buffer_head *bh, *ret = NULL;
- 	ext4_lblk_t start, block;
--	const u8 *name = d_name->name;
-+	const u8 *name = fname->usr_fname->name;
- 	size_t ra_max = 0;	/* Number of bh's in the readahead
- 				   buffer, bh_use[] */
- 	size_t ra_ptr = 0;	/* Current index into readahead
- 				   buffer */
- 	ext4_lblk_t  nblocks;
- 	int i, namelen, retval;
--	struct ext4_filename fname;
- 
- 	*res_dir = NULL;
- 	sb = dir->i_sb;
--	namelen = d_name->len;
-+	namelen = fname->usr_fname->len;
- 	if (namelen > EXT4_NAME_LEN)
- 		return NULL;
- 
--	retval = ext4_fname_setup_filename(dir, d_name, 1, &fname);
--	if (retval == -ENOENT)
--		return NULL;
--	if (retval)
--		return ERR_PTR(retval);
--
- 	if (ext4_has_inline_data(dir)) {
- 		int has_inline_data = 1;
--		ret = ext4_find_inline_entry(dir, &fname, res_dir,
-+		ret = ext4_find_inline_entry(dir, fname, res_dir,
- 					     &has_inline_data);
- 		if (has_inline_data) {
- 			if (inlined)
-@@ -1389,7 +1382,7 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,
- 		goto restart;
- 	}
- 	if (is_dx(dir)) {
--		ret = ext4_dx_find_entry(dir, &fname, res_dir);
-+		ret = ext4_dx_find_entry(dir, fname, res_dir);
- 		/*
- 		 * On success, or if the error was file not found,
- 		 * return.  Otherwise, fall back to doing a search the
-@@ -1453,7 +1446,7 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,
- 			goto cleanup_and_exit;
- 		}
- 		set_buffer_verified(bh);
--		i = search_dirblock(bh, dir, &fname,
-+		i = search_dirblock(bh, dir, fname,
- 			    block << EXT4_BLOCK_SIZE_BITS(sb), res_dir);
- 		if (i == 1) {
- 			EXT4_I(dir)->i_dir_start_lookup = block;
-@@ -1484,10 +1477,50 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,
- 	/* Clean up the read-ahead blocks */
- 	for (; ra_ptr < ra_max; ra_ptr++)
- 		brelse(bh_use[ra_ptr]);
--	ext4_fname_free_filename(&fname);
- 	return ret;
- }
- 
-+static struct buffer_head *ext4_find_entry(struct inode *dir,
-+					   const struct qstr *d_name,
-+					   struct ext4_dir_entry_2 **res_dir,
-+					   int *inlined)
-+{
-+	int err;
-+	struct ext4_filename fname;
-+	struct buffer_head *bh;
-+
-+	err = ext4_fname_setup_filename(dir, d_name, 1, &fname);
-+	if (err == -ENOENT)
-+		return NULL;
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	bh = __ext4_find_entry(dir, &fname, res_dir, inlined);
-+
-+	ext4_fname_free_filename(&fname);
-+	return bh;
-+}
-+
-+static struct buffer_head *ext4_lookup_entry(struct inode *dir,
-+					     struct dentry *dentry,
-+					     struct ext4_dir_entry_2 **res_dir)
-+{
-+	int err;
-+	struct ext4_filename fname;
-+	struct buffer_head *bh;
-+
-+	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
-+	if (err == -ENOENT)
-+		return NULL;
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	bh = __ext4_find_entry(dir, &fname, res_dir, NULL);
-+
-+	ext4_fname_free_filename(&fname);
-+	return bh;
-+}
-+
- static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- 			struct ext4_filename *fname,
- 			struct ext4_dir_entry_2 **res_dir)
-@@ -1546,16 +1579,11 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
- 	struct inode *inode;
- 	struct ext4_dir_entry_2 *de;
- 	struct buffer_head *bh;
--	int err;
--
--	err = fscrypt_prepare_lookup(dir, dentry, flags);
--	if (err)
--		return ERR_PTR(err);
- 
- 	if (dentry->d_name.len > EXT4_NAME_LEN)
- 		return ERR_PTR(-ENAMETOOLONG);
- 
--	bh = ext4_find_entry(dir, &dentry->d_name, &de, NULL);
-+	bh = ext4_lookup_entry(dir, dentry, &de);
- 	if (IS_ERR(bh))
- 		return ERR_CAST(bh);
- 	inode = NULL;
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index f5e34e4670031..c3e8a901d47ac 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -436,19 +436,23 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 	nid_t ino = -1;
- 	int err = 0;
- 	unsigned int root_ino = F2FS_ROOT_INO(F2FS_I_SB(dir));
-+	struct fscrypt_name fname;
- 
- 	trace_f2fs_lookup_start(dir, dentry, flags);
- 
--	err = fscrypt_prepare_lookup(dir, dentry, flags);
--	if (err)
--		goto out;
--
- 	if (dentry->d_name.len > F2FS_NAME_LEN) {
- 		err = -ENAMETOOLONG;
- 		goto out;
- 	}
- 
--	de = f2fs_find_entry(dir, &dentry->d_name, &page);
-+	err = fscrypt_prepare_lookup(dir, dentry, &fname);
-+	if (err == -ENOENT)
-+		goto out_splice;
-+	if (err)
-+		goto out;
-+	de = __f2fs_find_entry(dir, &fname, &page);
-+	fscrypt_free_filename(&fname);
-+
- 	if (!de) {
- 		if (IS_ERR(page)) {
- 			err = PTR_ERR(page);
-@@ -488,8 +492,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 	}
- out_splice:
- 	new = d_splice_alias(inode, dentry);
--	if (IS_ERR(new))
--		err = PTR_ERR(new);
-+	err = PTR_ERR_OR_ZERO(new);
- 	trace_f2fs_lookup_end(dir, dentry, ino, err);
- 	return new;
- out_iput:
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 5767b373a8ffb..b73de6d04fa3e 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -220,11 +220,9 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
- 
- 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
- 
--	err = fscrypt_prepare_lookup(dir, dentry, flags);
--	if (err)
--		return ERR_PTR(err);
--
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
-+	err = fscrypt_prepare_lookup(dir, dentry, &nm);
-+	if (err == -ENOENT)
-+		return d_splice_alias(NULL, dentry);
- 	if (err)
- 		return ERR_PTR(err);
- 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 39bd2619a3424..c00b764d6b8c9 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -33,6 +33,7 @@ struct fscrypt_name {
- 	u32 hash;
- 	u32 minor_hash;
- 	struct fscrypt_str crypto_buf;
-+	bool is_ciphertext_name;
- };
- 
- #define FSTR_INIT(n, l)		{ .name = n, .len = l }
-@@ -233,7 +234,8 @@ extern int __fscrypt_prepare_rename(struct inode *old_dir,
- 				    struct inode *new_dir,
- 				    struct dentry *new_dentry,
- 				    unsigned int flags);
--extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry);
-+extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
-+				    struct fscrypt_name *fname);
- extern int __fscrypt_prepare_symlink(struct inode *dir, unsigned int len,
- 				     unsigned int max_len,
- 				     struct fscrypt_str *disk_link);
-@@ -347,7 +349,7 @@ static inline int fscrypt_setup_filename(struct inode *dir,
- 	if (IS_ENCRYPTED(dir))
- 		return -EOPNOTSUPP;
- 
--	memset(fname, 0, sizeof(struct fscrypt_name));
-+	memset(fname, 0, sizeof(*fname));
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *)iname->name;
- 	fname->disk_name.len = iname->len;
-@@ -434,7 +436,8 @@ static inline int __fscrypt_prepare_rename(struct inode *old_dir,
- }
- 
- static inline int __fscrypt_prepare_lookup(struct inode *dir,
--					   struct dentry *dentry)
-+					   struct dentry *dentry,
-+					   struct fscrypt_name *fname)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -555,25 +558,32 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
-  * fscrypt_prepare_lookup - prepare to lookup a name in a possibly-encrypted directory
-  * @dir: directory being searched
-  * @dentry: filename being looked up
-- * @flags: lookup flags
-+ * @fname: (output) the name to use to search the on-disk directory
-  *
-- * Prepare for ->lookup() in a directory which may be encrypted.  Lookups can be
-- * done with or without the directory's encryption key; without the key,
-+ * Prepare for ->lookup() in a directory which may be encrypted by determining
-+ * the name that will actually be used to search the directory on-disk.  Lookups
-+ * can be done with or without the directory's encryption key; without the key,
-  * filenames are presented in encrypted form.  Therefore, we'll try to set up
-  * the directory's encryption key, but even without it the lookup can continue.
-  *
-  * This also installs a custom ->d_revalidate() method which will invalidate the
-  * dentry if it was created without the key and the key is later added.
-  *
-- * Return: 0 on success, -errno if a problem occurred while setting up the
-- * encryption key
-+ * Return: 0 on success; -ENOENT if key is unavailable but the filename isn't a
-+ * correctly formed encoded ciphertext name, so a negative dentry should be
-+ * created; or another -errno code.
-  */
- static inline int fscrypt_prepare_lookup(struct inode *dir,
- 					 struct dentry *dentry,
--					 unsigned int flags)
-+					 struct fscrypt_name *fname)
- {
- 	if (IS_ENCRYPTED(dir))
--		return __fscrypt_prepare_lookup(dir, dentry);
-+		return __fscrypt_prepare_lookup(dir, dentry, fname);
-+
-+	memset(fname, 0, sizeof(*fname));
-+	fname->usr_fname = &dentry->d_name;
-+	fname->disk_name.name = (unsigned char *)dentry->d_name.name;
-+	fname->disk_name.len = dentry->d_name.len;
- 	return 0;
- }
- 
--- 
-2.21.0.225.g810b269d1ac-goog
+-----Original Message-----
+From: Jonas Bonn <jonas@norrbonn.se>
+Sent: Wednesday, March 20, 2019 3:40 AM
+To: Tudor.Ambarus@microchip.com; Yong Qin <Yong.Qin@cypress.com>; James Tomasetta <James.Tomasetta@cypress.com>
+Cc: bbrezillon@kernel.org; richard@nod.at; marek.vasut@gmail.com; linux-mtd@lists.infradead.org; computersforpeace@gmail.com; dwmw2@infradead.org
+Subject: Re: [PATCH v2 1/3] mtd: spi-nor: always respect write-protect input
 
 
+
+On 20/03/2019 08:33, Tudor.Ambarus@microchip.com wrote:
+>
+>
+> On 03/20/2019 09:06 AM, Jonas Bonn wrote:
+>> External E-Mail
+>>
+>>
+>>
+>> On 20/03/2019 07:33, Tudor.Ambarus@microchip.com wrote:
+>>> Jonas,
+>>>
+>>> On 03/19/2019 09:13 AM, Jonas Bonn wrote:
+>>>>
+>>>> On 19/03/2019 07:59, Tudor.Ambarus@microchip.com wrote:
+>>>>> Jonas, Yong,
+>>>>>
+>>>>> On 03/12/2019 09:27 PM, Yong Qin wrote:
+>>>>>> Hi Tudor,
+>>>>>>
+>>>>>> Good question.
+>>>>>>
+>>>>>> The WP# function is not available when the Quad mode is enabled (CR[1]=1). The WP# function is replaced by IO2 for input and output during Quad mode. With that said, if CR[1] is set to 1 (Quad mode enabled), the registers will not be protected.
+>>>>>>
+>>>>>> Technically default SRWD bit can be set as either 0 or 1. However, as most customers (applications) don't use this feature to protect registers, the default SRWD bit set to 0 might be a better choice, and reserve the option to change to 1 for the applications do need this feature.
+>>>>>
+>>>>> I think I found the reason why SRWD bit is configurable, and
+>>>>> disabled by
+>>>>> default: => to allow the installation of the flash in a system
+>>>>> with a grounded WP# pin while still enabling write to the BP bits.
+>>>>
+>>>> I think this is bogus.  Why would you ground the SRWD pin?  That's a design error.
+>>>
+>>> I've talked with Microchip hardware team, we have this feature on sst26 flashes too.
+>>>
+>>> Grounding WP would not necessarily be a design error. The intention
+>>> is that some users might choose to populate the Flash chip onto
+>>> their PCB, program the memory in-circuit, and then lock down the write protection to use the chip like a ROM.
+>>> Grounding WP allows them to do this. Since SRWD is set to '0' from
+>>> the factory, so users can program the memory, set the block
+>>> protection (BP) bits to protect the memory, and then set the SRWD
+>>> bit to enable the grounded WP input and prevent changing the BP bits.
+>>
+>> Again, this is bogus.  The SRWD bit is non-volatile so just resetting the flash clears the bit and the BP bits can be changed.  This does not magically turn the flash into a ROM.  Grounded or not, the WP# is NOT respected until the SRWD bit is set; what you've described is yet another reason to default the SRWD to set.
+>
+> SRWD is a non-volatile bit: default at power-up will be the setting
+> prior to power-down.
+
+Ah, right you are! :)
+
+By grounding the WP# pin, you are effectively turning the SRWD bit into an OTP bit.  Note that what you described above also requires setting the BPNV bit, otherwise protection is irrevocably reset to "unprotected"
+at reset.  The BPNV bit cannot be set from Linux so whoever is using the "grounded pin" method must be programming the board in-factory from another system than Linux.  Therefore it's OK for Linux to default SRWD to asserted, irregardless of the state of WP#.
+
+/Jonas
+
+
+
+>
+> Cheers,
+> ta
+>
+>>
+>> With the BPNV bit (see patch 3 that I posted in the v2 series), at least the flash can be made to start up write-protected; however, there is nothing preventing modification of the PROTection bits until SRWD is set AND WP# is asserted (through grounding or otherwise).  Linux currently defaults SRWD to cleared which is "unprotected", irregardless of the state of WP#.
+>>
+>>>
+>>> The grounded WP pin + SRWD bit method is an older, legacy approach
+>>> to the problem. We don't know how many users actually ground the WP
+>>> pin in this manner, but there are probably some users out there who do.
+>>
+>> If they do so, they are fooling themselves... or they are running a
+>> patched kernel! :)
+>>
+>> /Jonas
+>>
+>>
+>>
+>>
+>>>
+>>> Cheers,
+>>> ta
+>>>
+>>>>
+>>>> /Jonas
+>>>>
+>>>>>
+>>>>> Jonas, Yong, what do you think?
+>>>>>
+>>>>> Cheers,
+>>>>> ta
+>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Yong
+>>>>>>
+>>>>>> -----Original Message-----
+>>>>>> From: Tudor.Ambarus@microchip.com <Tudor.Ambarus@microchip.com>
+>>>>>> Sent: Tuesday, March 12, 2019 5:30 AM
+>>>>>> To: Yong Qin <Yong.Qin@cypress.com>; jonas@norrbonn.se; James
+>>>>>> Tomasetta <James.Tomasetta@cypress.com>
+>>>>>> Cc: linux-mtd@lists.infradead.org; bbrezillon@kernel.org;
+>>>>>> richard@nod.at; marek.vasut@gmail.com;
+>>>>>> computersforpeace@gmail.com; dwmw2@infradead.org
+>>>>>> Subject: Re: [PATCH v2 1/3] mtd: spi-nor: always respect
+>>>>>> write-protect input
+>>>>>>
+>>>>>> Hi, Yong,
+>>>>>>
+>>>>>> Thank you for the explanation. There are still few things to clarify.
+>>>>>>
+>>>>>> On 03/11/2019 10:14 PM, Yong Qin wrote:
+>>>>>>> SRWD bit (along with WP#) provides a way to protect Status and Configuration Registers from been modified unintendedly or by a malicious actor.
+>>>>>>>
+>>>>>>> By default, SRWD bit is 0, which means no protection on registers alternations. Registers can be modified easily by WRR command. (this is most of the application use cases).
+>>>>>>>
+>>>>>>> If set SRWD bit to 1, then when WP# is driven low during WRR command, WRR command will be ignored and Registers can't be modified. This provides a way to protect Registers, meanwhile still reserve the capability to modify Registers when necessary by driving WP# to high during WRR command.
+>>>>>>
+>>>>>> Does the SRWD bit protect the Status and Configuration Register bits even when in Quad Mode? WP# function is not available in Quad mode. How can one release this protection when in Quad Mode and SRWD set to 1?
+>>>>>>
+>>>>>> If SRWD bit is ignored in Quad Mode, then why didn't Cypress enable Status and Configuration Register bits protection by default? I.e., remove SRWD bit from SR1, make BIT(7) a NOP, and consider the Status and Configuration Register bits protection enabled by default when not in Quad Mode.
+>>>>>>
+>>>>>> Cheers,
+>>>>>> ta
+>>>>>>
+>>>>>> This message and any attachments may contain confidential information from Cypress or its subsidiaries. If it has been received in error, please advise the sender and immediately delete this message.
+>>>>>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+This message and any attachments may contain confidential information from Cypress or its subsidiaries. If it has been received in error, please advise the sender and immediately delete this message.
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
