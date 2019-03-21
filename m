@@ -4,106 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3726AC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E5AC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:55:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08282218D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:15:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88C0D218B0
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:55:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PCdfgbZL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08282218D9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PT/VqyZ/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88C0D218B0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:From:Subject:Reply-To:Cc:Content-ID:
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=UyNm9FAJnsMw3WsIcXPzhMNRIswyKeo0xe9btUp95mw=; b=PCdfgbZLzkF8gluhryCMxYKL6h
-	O7qY9giJUMW/XLxvT9OSjdydpE9nxU/bbRpETEaOkyJfA9irE085MpUtCrIhzw+DHvjQ19Tt8kvph
-	giKz4xp3wDFQuicqB0e4RPmff8fLx+declG+CWpWOHp5VW3QJ2XfMkq5oNFvS3OPIprK5QBjZtnaS
-	aE2kIZcoYsfl5daT+IEulG8g4D3rs1VSzDMSXiDaaReZH78PZrFqZDPtIY4eQLsTDrK9xoa8kXBvR
-	fbLu+/nROVsTXcW1VgL1CAiAuw/fqVpDG7RWdDTYhKHxHfsEnoklVO8i1tJI1kgmsizJiIeVRcl7x
-	F/CqiBiA==;
+	bh=HaOx3MgBjLTtRyNTAXY5wyDg3+ETxO5yOE6osReORIs=; b=PT/VqyZ/7PhWuyZUbH9pxXiNbo
+	WR8RCm51fuIKN0+E+shZwVH/NSGjCKFy8antz9wwLUyNfY+hmXV0TzU7KU4AghnoE/+nRs2jLBHEZ
+	y7UJJscKQV/hUSdLKm8F81TScUlkKlZUZDRHydbFVJd39N9AjWNPaBtq0IsP0u120XV0zNsEzu8z+
+	yKpIGoGv09WyEGoc30WhWxk89W04SaAmt+2y019NrkDmMuQ5n0AZYoLhLgFccSS5mgQ/BN4EJvewq
+	eUgMX97xL9pcCMbLPVsu5rmZgQiWvg+O2Y163dSlkzU/0jFTijdQp8Bmt6XTsavuohMBrjevv5WeF
+	PrJEy3dw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6rvQ-0005Ui-LO; Thu, 21 Mar 2019 07:15:40 +0000
-Received: from mail.bugwerft.de ([46.23.86.59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6rvG-0005Mq-SJ; Thu, 21 Mar 2019 07:15:32 +0000
-Received: from [192.168.178.170] (pD95EF74E.dip0.t-ipconnect.de
- [217.94.247.78])
- by mail.bugwerft.de (Postfix) with ESMTPSA id DDAD73814CC;
- Thu, 21 Mar 2019 07:14:13 +0000 (UTC)
-Subject: Re: Regression in marvell-nand
-From: Daniel Mack <daniel@zonque.org>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <787bd285-d9a8-9aff-9de0-8bdd4901fa51@zonque.org>
+	id 1h6sXW-0000eV-9F; Thu, 21 Mar 2019 07:55:02 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h6sXS-0000YC-Mz
+ for linux-mtd@lists.infradead.org; Thu, 21 Mar 2019 07:55:00 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id A6FC318021992;
+ Thu, 21 Mar 2019 08:54:52 +0100 (CET)
+Subject: Re: nandwrite vs. flashcp when writing image to mtd device
+To: Shibin George <george.shibin1993@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <CAGu8XfQHuEcU6b+bbD80641ePKvR--5sv7vraGibKZBj4_JEnA@mail.gmail.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Openpgp: preference=signencrypt
-Autocrypt: addr=daniel@zonque.org; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <63cc12bb-693f-654c-6856-bd54d8231ad5@zonque.org>
-Date: Thu, 21 Mar 2019 08:15:28 +0100
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <32029ac2-c9c3-93a0-3195-0829387ceeac@sigma-star.at>
+Date: Thu, 21 Mar 2019 08:54:45 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.5.1
 MIME-Version: 1.0
-In-Reply-To: <787bd285-d9a8-9aff-9de0-8bdd4901fa51@zonque.org>
+In-Reply-To: <CAGu8XfQHuEcU6b+bbD80641ePKvR--5sv7vraGibKZBj4_JEnA@mail.gmail.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190321_001531_201199_F0E252F6 
-X-CRM114-Status: GOOD (  13.51  )
+X-CRM114-CacheID: sfid-20190321_005458_903239_199A9401 
+X-CRM114-Status: GOOD (  11.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -120,60 +99,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[Switching to Boris' new email address]
+Hi,
 
-On 21/3/2019 8:00 AM, Daniel Mack wrote:
-> Hi Boris and all,
-> 
-> I'm seeing a severe regression with the NAND driver on a PXA3xx platform
-> caused by b25251414f6e00 ("mtd: rawnand: marvell: Stop implementing
-> ->select_chip()"). Since that commit, I'm seeing lots of messages like
-> this during boot:
-> 
-> [    5.480730] Bad eraseblock 702 at 0x0000057c0000
-> [    5.485936] Bad eraseblock 703 at 0x0000057e0000
-> [    5.491354] Bad eraseblock 704 at 0x000005800000
-> [    5.496544] Bad eraseblock 705 at 0x000005820000
-> 
-> Eventually followed by the UBI layer acting up:
-> 
-> [    9.334403] ubi0 error: ubi_io_read: error -74 (ECC error) while
-> reading 64 bytes from PEB 5:0, read 64 bytes
-> [    9.344361] CPU: 0 PID: 1 Comm: swapper Not tainted 5.0.2+ #551
-> [    9.350285] Hardware name: Marvell PXA3xx (Device Tree Support)
-> [    9.356206] [<c0107c14>] (unwind_backtrace) from [<c0105a5c>]
-> (show_stack+0x10/0x14)
-> [    9.363981] [<c0105a5c>] (show_stack) from [<c04322c8>]
-> (ubi_io_read+0x1dc/0x2c8)
-> [    9.371512] [<c04322c8>] (ubi_io_read) from [<c04325e8>]
-> (ubi_io_read_ec_hdr+0x6c/0x220)
-> [    9.379633] [<c04325e8>] (ubi_io_read_ec_hdr) from [<c0437568>]
-> (ubi_attach+0x18c/0x137c)
-> [    9.387839] [<c0437568>] (ubi_attach) from [<c042c71c>]
-> (ubi_attach_mtd_dev+0x654/0xad0)
-> [    9.395891] [<c042c71c>] (ubi_attach_mtd_dev) from [<c09153b8>]
-> (ubi_init+0x148/0x200)
-> [    9.403834] [<c09153b8>] (ubi_init) from [<c0102508>]
-> (do_one_initcall+0x74/0x178)
-> [    9.411456] [<c0102508>] (do_one_initcall) from [<c0900d8c>]
-> (kernel_init_freeable+0x108/0x1d4)
-> [    9.420177] [<c0900d8c>] (kernel_init_freeable) from [<c0665da0>]
-> (kernel_init+0x8/0x110)
-> [    9.428385] [<c0665da0>] (kernel_init) from [<c01010e0>]
-> (ret_from_fork+0x14/0x34)
-> [    9.435900] Exception stack(0xc603dfb0 to 0xc603dff8)
-> 
-> 
-> The commit before is working just fine. I haven't dug any further than
-> bisecting yet however.
-> 
-> Any idea?
-> 
-> 
-> Thanks,
-> Daniel
-> 
+flashcp is a rather crude program and hasn't seen any improvements in way over a decade.
+All it does is round the size of your input file up to the reported block size, erases
+that range and then writes the input file.
 
+It directly opens the device file, works on the raw fd and does 2 ioctls to retrieve
+the erase size and erase that range.
+
+The size of 6815744 happens to be the reported block size of 262144 * 26. Erasing multiple
+blocks in one go is supported by the erase ioctl, it is also what libmtd does internally.
+
+However, flashcp is completely oblivious of bad blocks, OOB size and other fun stuff.
+
+nandwrite is somewhat more sophisticated. It is aware of all of the above and has a lot of
+extra command line options for fine grained control over those things. It also uses libmtd
+to access the flash which in turn is aware of a lot of newer ioctls and provides a number
+of fallback code paths.
+
+So yes, I would recommend using nandwrite for writing images to nand flashes.
+
+Regards,
+
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
