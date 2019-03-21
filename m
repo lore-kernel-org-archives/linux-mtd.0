@@ -1,4 +1,4 @@
-Return-Path: <SRS0=zR1V=RX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=+wMu=RY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,143 +6,101 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B24CC43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 23:37:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47A36C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:01:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 351F82175B
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2019 23:37:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11C5C218B0
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:01:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bX2i4JSr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tIrdVhT1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 351F82175B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nSQ0W6iH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11C5C218B0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HmIS5G5A8CcOk1dH6Krtlc3a+iD1TwAUdbqGKOYVkwA=; b=bX2i4JSrfAefwa
-	xPiKHqo1WR9YBiDvIpMAvYtWOnZfCjLWYKepW92S7w1M545j9KJ+A3/khJcaINo4BCkelU1xSJ8p3
-	oY5R9rr7CQcJP0lFolwNVdSQEjqgdkGHbLJ67o2KU+sLZZiDbuK0WwdeWwJ7dKbmAmX3qmw9q9Byf
-	bvr/nr5cZnJEb4ZGYfr/OPo+TQVvJBc543GXeU7PJtiz0jIlw2RdRpCyG318jtWnXN+8BynKdtiYN
-	szuGV3FUYs1/8BfHvspUehrUxtErkrWh1dOh1Bfq4U7yA/D+XRvhOwxUBWby/wwwhaQe2YLdDnZnO
-	CLieSP0Tgd4UDNi3Y9GA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:
+	From:To:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=bM/1oafgH3WXe3OM4dphMljrrStS9ulsuZljYxg7DEk=; b=nSQ0W6iH5ueYNN
+	CTW/fAOZ4O4bckr51EzUUyw4lYfx5ka/bUEm0rKYl7fcruSY28LF1D4tdo+Tkw3c4Qul0yHwYc8AW
+	9nM2MkTB4lEunrQle74+zv0M0B4k5gozwok7JrvVSgZOzB3293aXSAgJ9ga3aoBxsAUJJBxYl9nnL
+	JxPGxARgxgr1SdaZ5ANRDemYp5fsCBr44yW3r3Ghq15bnmfGzVny8GdzETOgYpK4IEbCIt+orydgv
+	M7kIQm75lPp7L8vr3PSx9jnJbeebEeS+QaEZr6LwNDK15ysQprN3sbTmGJopu2ezcxf0L4tZQfyar
+	BH/wGjoj3FiXiHV/F5sQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6klu-0006f7-MK; Wed, 20 Mar 2019 23:37:22 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6klW-0006e8-SI
- for linux-mtd@bombadil.infradead.org; Wed, 20 Mar 2019 23:36:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=TXmCqJegA002XjIhBFJ3SM7rKUxCMPcIkyOCJvWQHxQ=; b=tIrdVhT1UUwWCrR1sTkvFmyGnV
- 19FvMwbu4Ye6YpWkbvmYTRUjl7YQy2NjkQpzW9a5bKWaOsF9O+ePPC0vaItXf8q8ngohpfm4DjjQd
- jf0u2iFbKE9d2j5yopfZ6ZXj2UuWIsEG/0sV0GudxZ88+iOtpqlQyoDxhydY3hJ4NnCv21FPzoDOw
- xRP+rT5mXLqxiFI7FxMAGS+/g4+DG5ZCXSMjI1/9H+j95+5RXuGGr3haJEQUe391BUOff+LEd+KHD
- vm91bLCveydt8wF/J9sdFY+vrxi9QHoKURsLZFukjQwyn/DHsf6rHx21G0ipuDcFjSzTJDLECYMXe
- vLYm6cAw==;
-Received: from gateway24.websitewelcome.com ([192.185.51.172])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6kl0-0005hB-CP
- for linux-mtd@lists.infradead.org; Wed, 20 Mar 2019 23:36:27 +0000
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway24.websitewelcome.com (Postfix) with ESMTP id F41E6ED7A
- for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2019 18:36:19 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id 6kkthYLkZdnCe6kkthQLPS; Wed, 20 Mar 2019 18:36:19 -0500
-X-Authority-Reason: nr=8
-Received: from [189.250.100.204] (port=40370 helo=[192.168.1.76])
- by gator4166.hostgator.com with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
- (envelope-from <gustavo@embeddedor.com>)
- id 1h6kks-0018i1-EO; Wed, 20 Mar 2019 18:36:19 -0500
-Subject: Re: [PATCH] mtd: cfi_util: mark expected switch fall-throughs
-To: Richard Weinberger <richard@nod.at>
-References: <20190208180202.GA16603@embeddedor> <3141647.IxSqQhjO87@blindfold>
- <1b9c6280-f1dc-2381-59d6-dc29fda3a63b@embeddedor.com>
- <16526639.hLaf6TFmul@blindfold>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+	id 1h6rhS-0000fj-DF; Thu, 21 Mar 2019 07:01:14 +0000
+Received: from mail.bugwerft.de ([2a03:6000:1011::59])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h6rhK-0000Zj-Cl; Thu, 21 Mar 2019 07:01:08 +0000
+Received: from [192.168.178.170] (pD95EF74E.dip0.t-ipconnect.de
+ [217.94.247.78])
+ by mail.bugwerft.de (Postfix) with ESMTPSA id A50DC3814CC;
+ Thu, 21 Mar 2019 06:59:43 +0000 (UTC)
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Regression in marvell-nand
 Openpgp: preference=signencrypt
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <e4ab787c-1112-5088-7afc-911f33509ed5@embeddedor.com>
-Date: Wed, 20 Mar 2019 18:36:16 -0500
+Autocrypt: addr=daniel@zonque.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <787bd285-d9a8-9aff-9de0-8bdd4901fa51@zonque.org>
+Date: Thu, 21 Mar 2019 08:00:58 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.5.1
 MIME-Version: 1.0
-In-Reply-To: <16526639.hLaf6TFmul@blindfold>
 Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.250.100.204
-X-Source-L: No
-X-Exim-ID: 1h6kks-0018i1-EO
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.76]) [189.250.100.204]:40370
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190320_233626_676371_49BA306D 
-X-CRM114-Status: UNSURE (   9.81  )
+X-CRM114-CacheID: sfid-20190321_000106_707995_4C31A8FD 
+X-CRM114-Status: UNSURE (   8.80  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -155,23 +113,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Kees Cook <keescook@chromium.org>, Boris Brezillon <bbrezillon@kernel.org>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAzLzIwLzE5IDY6MjUgUE0sIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPiBBbSBNaXR0
-d29jaCwgMjAuIE3DpHJ6IDIwMTksIDIyOjIzOjIxIENFVCBzY2hyaWViIEd1c3Rhdm8gQS4gUi4g
-U2lsdmE6Cj4+IFNvLCBpZiB0aGlzIGlzIHRvbyBtdWNoIG9mIGEgYnVyZGVuIGZvciBwZW9wbGUs
-IEkgY2FuIGFkZCBhbGwgdGhlc2UKPj4gTVREIHBhdGNoZXMgdG8gbXkgb3duIHRyZWUgZm9yIDUu
-Mi4KPiAKPiBUYWtpbmcgdGhlIHBhdGNoZXMgdmlhIE1URCBpcyBub3QgYSBiaWcgZGVhbCwgbGV0
-J3MgZ28gdGhhdCBwYXRoLgoKQ29vbC4KCj4gRm9yIHlvdSBpdCBpcyBtb3JlIHdvcmsgdG8gc2Vu
-ZCBtYW55IHBhdGNoZXMgYW5kIGdldHRpbmcgdGhlbSBpbnRvIHRoZSBpbmRpdmlkdWFsCj4gdHJl
-ZXMuIDopCj4gCgpIZXJlIGFwcGxpZXMgdGhpcyB3aXNlIHBocmFzZTogSXQgaXMgd2hhdCBpdCBp
-cy4gOikKClRoYW5rcwotLQpHdXN0YXZvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Boris and all,
+
+I'm seeing a severe regression with the NAND driver on a PXA3xx platform
+caused by b25251414f6e00 ("mtd: rawnand: marvell: Stop implementing
+->select_chip()"). Since that commit, I'm seeing lots of messages like
+this during boot:
+
+[    5.480730] Bad eraseblock 702 at 0x0000057c0000
+[    5.485936] Bad eraseblock 703 at 0x0000057e0000
+[    5.491354] Bad eraseblock 704 at 0x000005800000
+[    5.496544] Bad eraseblock 705 at 0x000005820000
+
+Eventually followed by the UBI layer acting up:
+
+[    9.334403] ubi0 error: ubi_io_read: error -74 (ECC error) while
+reading 64 bytes from PEB 5:0, read 64 bytes
+[    9.344361] CPU: 0 PID: 1 Comm: swapper Not tainted 5.0.2+ #551
+[    9.350285] Hardware name: Marvell PXA3xx (Device Tree Support)
+[    9.356206] [<c0107c14>] (unwind_backtrace) from [<c0105a5c>]
+(show_stack+0x10/0x14)
+[    9.363981] [<c0105a5c>] (show_stack) from [<c04322c8>]
+(ubi_io_read+0x1dc/0x2c8)
+[    9.371512] [<c04322c8>] (ubi_io_read) from [<c04325e8>]
+(ubi_io_read_ec_hdr+0x6c/0x220)
+[    9.379633] [<c04325e8>] (ubi_io_read_ec_hdr) from [<c0437568>]
+(ubi_attach+0x18c/0x137c)
+[    9.387839] [<c0437568>] (ubi_attach) from [<c042c71c>]
+(ubi_attach_mtd_dev+0x654/0xad0)
+[    9.395891] [<c042c71c>] (ubi_attach_mtd_dev) from [<c09153b8>]
+(ubi_init+0x148/0x200)
+[    9.403834] [<c09153b8>] (ubi_init) from [<c0102508>]
+(do_one_initcall+0x74/0x178)
+[    9.411456] [<c0102508>] (do_one_initcall) from [<c0900d8c>]
+(kernel_init_freeable+0x108/0x1d4)
+[    9.420177] [<c0900d8c>] (kernel_init_freeable) from [<c0665da0>]
+(kernel_init+0x8/0x110)
+[    9.428385] [<c0665da0>] (kernel_init) from [<c01010e0>]
+(ret_from_fork+0x14/0x34)
+[    9.435900] Exception stack(0xc603dfb0 to 0xc603dff8)
+
+
+The commit before is working just fine. I haven't dug any further than
+bisecting yet however.
+
+Any idea?
+
+
+Thanks,
+Daniel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
