@@ -2,97 +2,106 @@ Return-Path: <SRS0=+wMu=RY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B2AC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 10:08:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C89E1C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 11:00:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9886F218D3
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 10:08:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9304F21915
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 11:00:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gwG1D/EP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PpGc6WeM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bofh-nu.20150623.gappssmtp.com header.i=@bofh-nu.20150623.gappssmtp.com header.b="X/Ur4wc1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9886F218D3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bofh.nu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k5NJ/VmE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="arH6BGvv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9304F21915
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=qmfwtlw5AfQUnS7E2HPm1THaSEqB+rqXBIR3v9hbaLM=; b=gwG
-	1D/EPhwTPvPBw35GBVP66HwNKyqziTh27ELz2l/iZh1mi/jGDiaXjnhW3hrZsaftRsCuKrqWqKreA
-	BRtBJ+txlszi2+1/7TlxsFSlir22pMLHm5SaZIzb5cVLSzIr5nLsWUxWV3VsaHVd5B2AQViTcOmoX
-	yydPaCcUYNsOSF9Ig3eoG+2yPZ97X6gmSBEtXujonzQ+B/w+jf0y3vmKOrmhxqgsV3pYNBvbuvtS8
-	W0Gs2abWqpP17yudk7xac2/uUwrOfFEA6dL0LVO2lW8r2bMul4iaiP9DA7b4lA8q9a9pPMEi0/Dfa
-	v4Kh+C6SGhoxZxWcKKb8GyswpaLXRrg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BenVX5f3TKmBPZdS5lDwzXu1TJL6DDHCHGgattkxYa0=; b=k5NJ/VmEKzfmEb
+	9LfS7jyeFr9hXUY+qcqzHwZVh5tyRRU07Ym06YpMJ9GOlB0MfVzKDNT3G4bMRC4HNyNlXAw6sRvkq
+	nibsSZUWhDJCRai9LpACBTKAVLqsSu3aMSJ/1Xd+fOWbZYrbIUJSq46KtHrm067JYybRCeSCrl0ui
+	m25xo50LlxIQB4g0kg854TwtsrvKTBc/d4v2AAZZrzHsIHZlep5PkyUqlUfYu40wchV/+yWv8ouJE
+	5lRzQ7MZfrJiyssubdUZu0t/hh+b+2zum0Wp0PlVpuwyljSDwrOnWEOLcRI/8zWbqRSq5bxZ490C7
+	GoDAfA8ZL+i1M0tzSmXw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6ucf-0003Cr-SW; Thu, 21 Mar 2019 10:08:29 +0000
-Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
+	id 1h6vRM-0005SL-OK; Thu, 21 Mar 2019 11:00:52 +0000
+Received: from mail-eopbgr710084.outbound.protection.outlook.com
+ ([40.107.71.84] helo=NAM05-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6uWu-0000MS-Mx
- for linux-mtd@bombadil.infradead.org; Thu, 21 Mar 2019 10:02:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Type:To:Subject:Message-ID:Date
- :From:MIME-Version:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
- List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=doybul+lVaccYgKrdY9/Cs0C2qVwT/C08IoXuGmO8PQ=; b=PpGc6WeM5XBGWLjOHfGzSE8hfA
- ArC4biInLYLm+ZXJS5Crk/KK6y2dFIqmgTsyvBOOfq1nytXXfuV54qPBKRDipf1l6fpdZnb0r9DtM
- 7lFzrNfDFjh6je9IGIyj4Lrs9W50RQgpMQJ88GlgYlS0U+lMUoTbY8gqWR+qJgyLHqjjXrn2MKV45
- sTfyPnFkUxo9VLh2AhGjYsG1VuIUMA05qZqmk4ptXlemr6mlz6wEewKonaCcXGkJAIjjeib8UbYBd
- moElzwfYmjOkpkSPxYLmv9wkCu+bxDMmJOzgoJ24/I9OoDeAETyahT+5XWr6lQla0U2NwaTYTFhMf
- 5StGp4xA==;
-Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6uWq-0000q1-QX
- for linux-mtd@lists.infradead.org; Thu, 21 Mar 2019 10:02:30 +0000
-Received: by mail-ot1-x344.google.com with SMTP id 103so4880441otd.9
- for <linux-mtd@lists.infradead.org>; Thu, 21 Mar 2019 03:02:25 -0700 (PDT)
+ id 1h6vRJ-0005Rt-H4
+ for linux-mtd@lists.infradead.org; Thu, 21 Mar 2019 11:00:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bofh-nu.20150623.gappssmtp.com; s=20150623;
- h=mime-version:from:date:message-id:subject:to;
- bh=doybul+lVaccYgKrdY9/Cs0C2qVwT/C08IoXuGmO8PQ=;
- b=X/Ur4wc13WKIY5potnxjLErRs74sa+RvSs2sPNLrXOCK2vauDH4JHFyuxVUIJtUY7/
- EBdYNaptiijfap45YSg3VTqNorO1RQI58gfsRoASeb8A7smVfwgU+aEX4FTFcJPcVnAh
- Q9ubA1KYPIhOtNSDG+MqeJHkd2Kho7b26LzzgK9D9QoS39fgNV2e3WhhgS8yCKtaqsbz
- +YwNujA44bGkASuYec4lrzfpg1832jqW2zU1EpQz60DsMvOGaqHPAEYRGOM0T2Ipqf45
- NzBCcL6ZFNLx/RMYiPs8wnFwDKn4bQ2cK0pHB1kL1uyVMHN1txSTBBcs6f5EeYR7izJY
- SSww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=doybul+lVaccYgKrdY9/Cs0C2qVwT/C08IoXuGmO8PQ=;
- b=mISFI1eauApPTVh8F7isjTbSE6b56aYDKmovUyoE5WAU/gVSien4VwTsRVVZo/9ulb
- 72ehP3dIfwGPgeZI769NEp+1ALMcKWwqkKwkBCl0yZvmTTQQnnb4ibbWt7Ofz0yTQUyo
- eJ0jejk/e1vr1K4aK0Q0QH7PY3QrjDKqw5DukGdg6JFVEDtk90Z21a7lq78lMhTpzovF
- ZIsO4CGB7jJjeDwA/Ja3OwLMpkbVSAmQUAccc8i5FURJQmF+VXknSczg0gKAgeqrHaOV
- nuRPATO+sZ+9agI64pCM3t1ATcWM4TqoHpXxG2g0tiKZAbZvCqVN0sOM7WDCbSCBQEj/
- 7J8A==
-X-Gm-Message-State: APjAAAV8N3cLYtqE6SSuvicFfdyV0GnrZekXT1yvNGtWPT5IhthKx684
- pWUDI8h7C/+pUoarqnW0ts5liluiJGYq7aoroiQOOCCzc+Q=
-X-Google-Smtp-Source: APXvYqwNOeodJKvjsze8JRoyfiz5sV46pM/OoXjOYiCGLgadzUwBlPN2XgaxgmHVDwFn2SN3y9segLb+iHdQJEjulWY=
-X-Received: by 2002:a9d:6185:: with SMTP id g5mr1954299otk.346.1553162539741; 
- Thu, 21 Mar 2019 03:02:19 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nDQOrqmIVeRy8ffaF3u5fiRn6lFwAKlfhAKisLN/V6E=;
+ b=arH6BGvvOOSE1oB00p1sRr3L0oMSAfN0ZcCdP+MwxuCQILAMZ/KWb/AqvJd0AwPBC1RYtb6y6xz6DeoPw4YUiSkok+PpKJwL2sOOJtG825sTCdwpzUGfULvnFflelldNFR2e6iDP7zFlRVAc90+jSvTSqCiNViiG9UGqhTwmFxQ=
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com (10.168.206.9) by
+ MWHPR02MB2415.namprd02.prod.outlook.com (10.168.244.145) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1709.15; Thu, 21 Mar 2019 11:00:46 +0000
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::c89d:e485:cb5e:89cf]) by MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::c89d:e485:cb5e:89cf%5]) with mapi id 15.20.1709.017; Thu, 21 Mar 2019
+ 11:00:46 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "bbrezillon@kernel.org" <bbrezillon@kernel.org>
+Subject: RE: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI controller
+Thread-Topic: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI
+ controller
+Thread-Index: AQHUzzOoSBENcbUE5E66VjcEuxsjhqYU4aSAgAEjihA=
+Date: Thu, 21 Mar 2019 11:00:45 +0000
+Message-ID: <MWHPR02MB2623D0FAE20F2B16A34A26B5AF420@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1551337361-11665-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <be5f5974-2f8f-1d8d-6f93-4b975a8114b1@ti.com>
+In-Reply-To: <be5f5974-2f8f-1d8d-6f93-4b975a8114b1@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=nagasure@xilinx.com; 
+x-originating-ip: [149.199.50.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ea2b8cc5-8730-4de7-0ee7-08d6adec783b
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(4618075)(2017052603328)(7153060)(7193020);
+ SRVR:MWHPR02MB2415; 
+x-ms-traffictypediagnostic: MWHPR02MB2415:
+x-microsoft-antispam-prvs: <MWHPR02MB241546B409C9C3ADD41FF8FAAF420@MWHPR02MB2415.namprd02.prod.outlook.com>
+x-forefront-prvs: 0983EAD6B2
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(396003)(366004)(136003)(346002)(39860400002)(376002)(13464003)(51914003)(189003)(199004)(52536014)(8676002)(71200400001)(3846002)(2201001)(6116002)(105586002)(476003)(97736004)(53546011)(30864003)(486006)(53936002)(2906002)(55016002)(68736007)(71190400001)(11346002)(14454004)(86362001)(8936002)(5660300002)(6436002)(316002)(9686003)(54906003)(99286004)(6246003)(66066001)(305945005)(81166006)(478600001)(186003)(26005)(110136005)(7736002)(74316002)(229853002)(102836004)(76176011)(256004)(14444005)(81156014)(6506007)(2501003)(7696005)(446003)(7416002)(25786009)(4326008)(106356001)(33656002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MWHPR02MB2415;
+ H:MWHPR02MB2623.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: xilinx.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 4cz4h1Zza5YP2fuByouCd0YEFBNFzRKBN+OIzAPlINQNkjyxwy/LkjYFCauby7BqyJgp63G8di3InG6TSU9BRCW66p8AdcOf4HP2so9VfdJ2tgii5ZJgwCqbnkjmqM9IYY1UnYaeKArocZbeIMZpm6cVa9avVaw6lIQjQQo21SEO/yNBWOtykcVRyzieGShR8fPGyD5+NH88HozgpZrhb1W0tPo4ChqaZbbGofGFfCOxcNNzCbi6IAC5ozyrot7N4hJmy48+b9ZLamxEYLwSR4wk1JVfMBZnfnkYuHuhI//g2gPGht/X5+nOhggpV4OnXn7NW2FxwX/DFnS+LCZQbRwPSPFUwi2gmflzkb30YDyfWKPmNf+8697c4W9oEnV6R+DBmh5y+FxVU4xftNzte9AOxEh6BSI9RWzkSZzWXek=
 MIME-Version: 1.0
-From: Lars Persson <lists@bofh.nu>
-Date: Thu, 21 Mar 2019 11:02:09 +0100
-Message-ID: <CADnJP=vQURY9u7Fb=Bt=udf89A6VX_TccBXfk8q2kdkqMnqj4A@mail.gmail.com>
-Subject: UBIFS file-system corruption (missing inode) after power-cut on
- 4.14.96
-To: linux-mtd@lists.infradead.org
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea2b8cc5-8730-4de7-0ee7-08d6adec783b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2019 11:00:45.8645 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2415
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190321_060229_004818_0B5FD927 
-X-CRM114-Status: UNSURE (   8.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190321_040049_631500_730D887C 
+X-CRM114-Status: GOOD (  25.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -104,78 +113,364 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
+ Michal Simek <michals@xilinx.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi
+Hi Vignesh,
 
-We have recently encountered multiple cases of corrupted UBIFS volumes that
-were triggered by a power-cut during startup. It may be a regression in the
-4.14 stable branch.
+Thanks for the review.
 
-The symptom is seen when accessing a file in the corrupted FS:
-  UBIFS error (ubi0:20 pid 513): ubifs_iget: failed to read inode 348, error -2
-  UBIFS error (ubi0:20 pid 513): ubifs_lookup: dead directory entry
-'tampering.conf', error -2
-  UBIFS warning (ubi0:20 pid 513): ubifs_ro_mode.part.0: switched to
-read-only mode, error -2
-  [<80506a51>] (dump_stack) from [<80297e2f>] (ubifs_lookup+0x29b/0x300)
-  [<80297e2f>] (ubifs_lookup) from [<80226169>] (lookup_slow+0x69/0xe4)
+> -----Original Message-----
+> From: linux-spi-owner@vger.kernel.org <linux-spi-owner@vger.kernel.org> On Behalf Of
+> Vignesh Raghavendra
+> Sent: Wednesday, March 20, 2019 10:42 PM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>; broonie@kernel.org;
+> bbrezillon@kernel.org
+> Cc: linux-spi@vger.kernel.org; dwmw2@infradead.org; marek.vasut@gmail.com;
+> richard@nod.at; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek
+> <michals@xilinx.com>; nagasuresh12@gmail.com
+> Subject: Re: [RFC PATCH 2/2] spi: spi-mem: Add support for Zynq QSPI controller
+> 
+> Hi,
+> 
+> Few more comments that I missed last time around.
+> 
+> On 28/02/19 12:32 PM, Naga Sureshkumar Relli wrote:
+> > Add support for QSPI controller driver used by Xilinx Zynq SOC.
+> >
+> > Signed-off-by: Naga Sureshkumar Relli
+> > <naga.sureshkumar.relli@xilinx.com>
+> > ---
+> >  drivers/spi/Kconfig         |   8 +
+> >  drivers/spi/Makefile        |   1 +
+> >  drivers/spi/spi-zynq-qspi.c | 780
+> > ++++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 789 insertions(+)
+> >  create mode 100644 drivers/spi/spi-zynq-qspi.c
+> >
+> > diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig index
+> > 9f89cb1..f12c880 100644
+> > --- a/drivers/spi/Kconfig
+> > +++ b/drivers/spi/Kconfig
+> > @@ -816,6 +816,14 @@ config SPI_XTENSA_XTFPGA
+> >  	  16 bit words in SPI mode 0, automatically asserting CS on transfer
+> >  	  start and deasserting on end.
+> >
+> > +config SPI_ZYNQ_QSPI
+> > +	tristate "Xilinx Zynq QSPI controller"
+> > +	depends on ARCH_ZYNQ
+> 
+> Could you enable the driver for compile testing?
+> From quick look this should enough:
+Ok. I will update it in next version.
+> 
+> depends on ARCH_ZYNQ || COMPILE_TEST
+> 
+> > +	help
+> > +	  This enables support for the Zynq Quad SPI controller
+> > +	  in master mode.
+> > +	  This controller only supports SPI memory interface.
+> > +
+> >  config SPI_ZYNQMP_GQSPI
+> >  	tristate "Xilinx ZynqMP GQSPI controller"
+> >  	depends on SPI_MASTER && HAS_DMA
+> 
+> [...]
+> 
+> > +/**
+> > + * zynq_qspi_exec_mem_op() - Initiates the QSPI transfer
+> > + * @mem: the SPI memory
+> > + * @op: the memory operation to execute
+> > + *
+> > + * Executes a memory operation.
+> > + *
+> > + * This function first selects the chip and starts the memory operation.
+> > + *
+> > + * Return: 0 in case of success, a negative error code otherwise.
+> > + */
+> > +static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+> > +				 const struct spi_mem_op *op)
+> > +{
+> > +	struct zynq_qspi *xqspi = spi_controller_get_devdata(mem->spi->master);
+> > +	int err = 0, i;
+> > +	u8 *tmpbuf;
+> > +
+> > +	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
+> > +		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
+> > +		op->dummy.buswidth, op->data.buswidth);
+> > +
+> > +	zynq_qspi_chipselect(mem->spi, true);
+> > +	zynq_qspi_config_op(xqspi, mem->spi);
+> > +
+> > +	if (op->cmd.opcode) {
+> > +		reinit_completion(&xqspi->data_completion);
+> > +		xqspi->txbuf = (u8 *)&op->cmd.opcode;
+> > +		xqspi->rxbuf = NULL;
+> > +		xqspi->tx_bytes = sizeof(op->cmd.opcode);
+> > +		xqspi->rx_bytes = sizeof(op->cmd.opcode);
+> > +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> > +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> > +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> > +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> > +							       msecs_to_jiffies(1000))) {
+> > +			err = -ETIMEDOUT;
+> > +		}
+> > +	}
+> > +	zynq_qspi_config_op(xqspi, mem->spi);
+> 
+> Why is it required to call zynq_qspi_config_op() b/w every stage of single flash operation? Is
+> it not enough to do once at the beginning?
+Yes, we can do it once. 
+I will update it.
 
-We enabled chk_fs and reproduced it:
-  UBIFS error (ubi0:20 pid 120): read_add_inode: inode 352 not found in index
-  UBIFS error (ubi0:20 pid 120): check_leaf: error -2 while processing
-entry node and trying to find inode node 352
-  UBIFS (ubi0:20): dump of node at LEB 29:94656
-        magic          0x6101831
-        crc            0xda5d6bee
-        node_type      2 (direntry node)
-        group_type     1 (in node group)
-        sqnum          4079
-        len            70
-        key            (66, direntry, 0x4974b0f)
-        inum           352
-        type           0
-        nlen           13
-        name           emotiond.conf
-  UBIFS error (ubi0:20 pid 120): dbg_walk_index: leaf checking
-function returned error -2, for leaf at LEB 29:94656
-  UBIFS (ubi0:20): dump of znode at LEB 37:57680
-  znode be0bf000, LEB 37:57680 len 128 parent be0af800 iip 1 level 0
-child_cnt 5 flags 0
-  zbranches:
-        0: LNC   (null) LEB 32:53248 len 81 key (66, direntry, 0x363e97f)
-        1: LNC   (null) LEB 29:94208 len 63 key (66, direntry, 0x3f88c71)
-        2: LNC   (null) LEB 12:92160 len 74 key (66, direntry, 0x477308e)
-        3: LNC   (null) LEB 29:94656 len 70 key (66, direntry, 0x4974b0f)
-        4: LNC be084600 LEB 814:49152 len 63 key (66, direntry, 0x49bb6f7)
-  UBIFS error (ubi0:20 pid 120): dbg_check_filesystem: file-system
-check failed with error -2
+> 
+> > +	if (op->addr.nbytes) {
+> > +		for (i = 0; i < op->addr.nbytes; i++) {
+> > +			xqspi->txbuf[i] = op->addr.val >>
+> > +					(8 * (op->addr.nbytes - i - 1));
+> > +		}
+> > +
+> > +		reinit_completion(&xqspi->data_completion);
+> > +		xqspi->rxbuf = NULL;
+> > +		xqspi->tx_bytes = op->addr.nbytes;
+> > +		xqspi->rx_bytes = op->addr.nbytes;
+> > +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> > +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> > +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> > +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> > +							       msecs_to_jiffies(1000))) {
+> > +			err = -ETIMEDOUT;
+> > +		}
+> > +	}
+> > +	zynq_qspi_config_op(xqspi, mem->spi);
+> > +	if (op->dummy.nbytes) {
+> > +		tmpbuf = kzalloc(op->dummy.nbytes, GFP_KERNEL);
+> > +		memset(tmpbuf, 0xff, op->dummy.nbytes);
+> > +		reinit_completion(&xqspi->data_completion);
+> > +		xqspi->txbuf = tmpbuf;
+> > +		xqspi->rxbuf = NULL;
+> > +		xqspi->tx_bytes = op->dummy.nbytes;
+> > +		xqspi->rx_bytes = op->dummy.nbytes;
+> > +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> > +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> > +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> > +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> > +							       msecs_to_jiffies(1000))) {
+> > +			err = -ETIMEDOUT;
+> > +		}
+> > +		kfree(tmpbuf);
+> > +	}
+> > +	zynq_qspi_config_op(xqspi, mem->spi);
+> > +	if (op->data.nbytes) {
+> > +		reinit_completion(&xqspi->data_completion);
+> > +		if (op->data.dir == SPI_MEM_DATA_OUT) {
+> > +			xqspi->txbuf = (u8 *)op->data.buf.out;
+> > +			xqspi->tx_bytes = op->data.nbytes;
+> > +			xqspi->rxbuf = NULL;
+> > +			xqspi->rx_bytes = op->data.nbytes;
+> > +		} else {
+> > +			xqspi->txbuf = NULL;
+> > +			xqspi->rxbuf = (u8 *)op->data.buf.in;
+> > +			xqspi->rx_bytes = op->data.nbytes;
+> > +			xqspi->tx_bytes = op->data.nbytes;
+> > +		}
+> > +
+> > +		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+> > +		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+> > +				ZYNQ_QSPI_IXR_RXTX_MASK);
+> > +		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
+> > +							       msecs_to_jiffies(1000))) {
+> > +			err = -ETIMEDOUT;
+> > +		}
+> > +	}
+> > +	zynq_qspi_chipselect(mem->spi, false);
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +static const struct spi_controller_mem_ops zynq_qspi_mem_ops = {
+> > +	.supports_op = zynq_qspi_supports_op,
+> > +	.exec_op = zynq_qspi_exec_mem_op,
+> > +};
+> > +
+> > +/**
+> > + * zynq_qspi_probe - Probe method for the QSPI driver
+> > + * @pdev:	Pointer to the platform_device structure
+> > + *
+> > + * This function initializes the driver data structures and the hardware.
+> > + *
+> > + * Return:	0 on success and error value on failure
+> > + */
+> > +static int zynq_qspi_probe(struct platform_device *pdev) {
+> > +	int ret = 0;
+> > +	struct spi_controller *ctlr;
+> > +	struct device *dev = &pdev->dev;
+> > +	struct device_node *np = dev->of_node;
+> > +	struct zynq_qspi *xqspi;
+> > +	struct resource *res;
+> > +	u32 num_cs;
+> > +
+> > +	ctlr = spi_alloc_master(&pdev->dev, sizeof(*xqspi));
+> > +	if (!ctlr)
+> > +		return -ENOMEM;
+> > +
+> > +	xqspi = spi_controller_get_devdata(ctlr);
+> > +	xqspi->dev = dev;
+> > +	platform_set_drvdata(pdev, xqspi);
+> > +	ctlr->mem_ops = &zynq_qspi_mem_ops;
+> 
+> 
+> ctlr->mem_ops is initialized twice. See below..
+Ok. I will correct it.
+> 
+> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	xqspi->regs = devm_ioremap_resource(&pdev->dev, res);
+> > +	if (IS_ERR(xqspi->regs)) {
+> > +		ret = PTR_ERR(xqspi->regs);
+> > +		goto remove_master;
+> > +	}
+> > +
+> > +	xqspi->pclk = devm_clk_get(&pdev->dev, "pclk");
+> > +	if (IS_ERR(xqspi->pclk)) {
+> > +		dev_err(&pdev->dev, "pclk clock not found.\n");
+> > +		ret = PTR_ERR(xqspi->pclk);
+> > +		goto remove_master;
+> > +	}
+> > +
+> > +	init_completion(&xqspi->data_completion);
+> > +
+> > +	xqspi->refclk = devm_clk_get(&pdev->dev, "ref_clk");
+> > +	if (IS_ERR(xqspi->refclk)) {
+> > +		dev_err(&pdev->dev, "ref_clk clock not found.\n");
+> > +		ret = PTR_ERR(xqspi->refclk);
+> > +		goto remove_master;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(xqspi->pclk);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "Unable to enable APB clock.\n");
+> > +		goto remove_master;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(xqspi->refclk);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "Unable to enable device clock.\n");
+> > +		goto clk_dis_pclk;
+> > +	}
+> > +
+> > +	/* QSPI controller initializations */
+> > +	zynq_qspi_init_hw(xqspi);
+> > +
+> > +	xqspi->irq = platform_get_irq(pdev, 0);
+> > +	if (xqspi->irq <= 0) {
+> > +		ret = -ENXIO;
+> > +		dev_err(&pdev->dev, "irq resource not found\n");
+> > +		goto remove_master;
+> > +	}
+> > +	ret = devm_request_irq(&pdev->dev, xqspi->irq, zynq_qspi_irq,
+> > +			       0, pdev->name, xqspi);
+> > +	if (ret != 0) {
+> > +		ret = -ENXIO;
+> > +		dev_err(&pdev->dev, "request_irq failed\n");
+> > +		goto remove_master;
+> > +	}
+> > +
+> > +	ret = of_property_read_u32(pdev->dev.of_node, "num-cs",
+> > +				   &num_cs);
+> > +	if (ret < 0)
+> > +		ctlr->num_chipselect = ZYNQ_QSPI_DEFAULT_NUM_CS;
+> > +	else
+> > +		ctlr->num_chipselect = num_cs;
+> > +	ctlr->mode_bits =  SPI_RX_DUAL | SPI_RX_QUAD |
+> > +			    SPI_TX_DUAL | SPI_TX_QUAD;
+> > +	ctlr->mem_ops = &zynq_qspi_mem_ops;
+> 
+> And here again...
+Ok. will remove it from here.
 
-The setup of our system is:
-An overlayfs stack for /etc with:
-- The lower file-system is a read-only squashfs on ubi
-- The upper file-system is an ubifs
-
-The ubi partition resides on an SLC NAND from Toshiba (TH58NVG2S3HBAI4).
-
-The missing inode is always triggered on those two particular files
-emotiond.conf and tampering.conf that share the same write pattern at startup:
-
- cp file file.tmp
- echo some data > file.tmp
- mv file.tmp file
- fsync file
-
-Do not ask me about the logic of this script :> It overwrites the result of cp
-and does not implement a proper atomic move.. Anyway the end result must not be
-a file-system that is corrupt and mounts as RO.
-
-BR,
- Lars
-
+Thanks,
+Naga Sureshkumar Relli
+> 
+> > +	ctlr->setup = zynq_qspi_setup_op;
+> > +	ctlr->max_speed_hz = clk_get_rate(xqspi->refclk) / 2;
+> > +	ctlr->dev.of_node = np;
+> > +	ret = spi_register_controller(ctlr);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "spi_register_master failed\n");
+> > +		goto clk_dis_all;
+> > +	}
+> > +
+> > +	return ret;
+> > +
+> > +clk_dis_all:
+> > +	clk_disable_unprepare(xqspi->refclk);
+> > +clk_dis_pclk:
+> > +	clk_disable_unprepare(xqspi->pclk);
+> > +remove_master:
+> > +	spi_controller_put(ctlr);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +/**
+> > + * zynq_qspi_remove - Remove method for the QSPI driver
+> > + * @pdev:	Pointer to the platform_device structure
+> > + *
+> > + * This function is called if a device is physically removed from the
+> > +system or
+> > + * if the driver module is being unloaded. It frees all resources
+> > +allocated to
+> > + * the device.
+> > + *
+> > + * Return:	0 on success and error value on failure
+> > + */
+> > +static int zynq_qspi_remove(struct platform_device *pdev) {
+> > +	struct zynq_qspi *xqspi = platform_get_drvdata(pdev);
+> > +
+> > +	zynq_qspi_write(xqspi, ZYNQ_QSPI_ENABLE_OFFSET, 0);
+> > +
+> > +	clk_disable_unprepare(xqspi->refclk);
+> > +	clk_disable_unprepare(xqspi->pclk);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct of_device_id zynq_qspi_of_match[] = {
+> > +	{ .compatible = "xlnx,zynq-qspi-1.0", },
+> > +	{ /* end of table */ }
+> > +};
+> > +
+> > +MODULE_DEVICE_TABLE(of, zynq_qspi_of_match);
+> > +
+> > +/*
+> > + * zynq_qspi_driver - This structure defines the QSPI platform driver
+> > +*/ static struct platform_driver zynq_qspi_driver = {
+> > +	.probe = zynq_qspi_probe,
+> > +	.remove = zynq_qspi_remove,
+> > +	.driver = {
+> > +		.name = "zynq-qspi",
+> > +		.of_match_table = zynq_qspi_of_match,
+> > +	},
+> > +};
+> > +
+> > +module_platform_driver(zynq_qspi_driver);
+> > +
+> > +MODULE_AUTHOR("Xilinx, Inc.");
+> > +MODULE_DESCRIPTION("Xilinx Zynq QSPI driver"); MODULE_LICENSE("GPL");
+> >
+> 
+> --
+> Regards
+> Vignesh
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
