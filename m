@@ -2,87 +2,87 @@ Return-Path: <SRS0=+wMu=RY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E5AC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C324AC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:55:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88C0D218B0
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:55:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 911E6218B0
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 07:55:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PT/VqyZ/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88C0D218B0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ep6s+e3u";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="KRDQgFpY";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="PnVZL893"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 911E6218B0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=HaOx3MgBjLTtRyNTAXY5wyDg3+ETxO5yOE6osReORIs=; b=PT/VqyZ/7PhWuyZUbH9pxXiNbo
-	WR8RCm51fuIKN0+E+shZwVH/NSGjCKFy8antz9wwLUyNfY+hmXV0TzU7KU4AghnoE/+nRs2jLBHEZ
-	y7UJJscKQV/hUSdLKm8F81TScUlkKlZUZDRHydbFVJd39N9AjWNPaBtq0IsP0u120XV0zNsEzu8z+
-	yKpIGoGv09WyEGoc30WhWxk89W04SaAmt+2y019NrkDmMuQ5n0AZYoLhLgFccSS5mgQ/BN4EJvewq
-	eUgMX97xL9pcCMbLPVsu5rmZgQiWvg+O2Y163dSlkzU/0jFTijdQp8Bmt6XTsavuohMBrjevv5WeF
-	PrJEy3dw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=bdXd/Fm19NGiu0PnX8ELrdL4OytSGbP7p8j6cn6jLx4=; b=Ep6s+e3ueSJTMciT6Ngd2uh5R
+	tnjer9h24Xtb3WW99epoYQjlODKCyjlIocKbZck55emf3CWRHbTvt//VbbSFXmz38MERbfNWZStab
+	icT/1LNAZRCcldoqKvxBMD+gQZlLRKquqAtq0vdNvHGT46ncTqBKd/EROdziFClMyQcpkjQsuzZ/X
+	iKCOZocQrbHjo6WTYTKX3FkOWTWFn61/vuetR0pOJ47PKlpkODXwWXRfix7NmZTyDbTxFVE+Er+Sy
+	red1nXTI234+XfWK5K2uoo0skJgR/a2YNYmFqcYc2i1StxRKiae5Vg7vvOk7cot8hrNoKYiDLrn/V
+	HuL6nd4mA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h6sXW-0000eV-9F; Thu, 21 Mar 2019 07:55:02 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1h6sXi-0001wn-E7; Thu, 21 Mar 2019 07:55:14 +0000
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h6sXS-0000YC-Mz
- for linux-mtd@lists.infradead.org; Thu, 21 Mar 2019 07:55:00 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id A6FC318021992;
- Thu, 21 Mar 2019 08:54:52 +0100 (CET)
-Subject: Re: nandwrite vs. flashcp when writing image to mtd device
-To: Shibin George <george.shibin1993@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <CAGu8XfQHuEcU6b+bbD80641ePKvR--5sv7vraGibKZBj4_JEnA@mail.gmail.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Openpgp: preference=signencrypt
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <32029ac2-c9c3-93a0-3195-0829387ceeac@sigma-star.at>
-Date: Thu, 21 Mar 2019 08:54:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+ id 1h6sXb-00014r-VT
+ for linux-mtd@lists.infradead.org; Thu, 21 Mar 2019 07:55:13 +0000
+Received: by smtp.codeaurora.org (Postfix, from userid 1000)
+ id 314D9608FC; Thu, 21 Mar 2019 07:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+ s=default; t=1553154907;
+ bh=6HLZLXqAu+OAKx0tuTz/DZ4oCpkPVKbmwROnZg1VfXk=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=KRDQgFpYsB3A5Tx0iOYsHv1te4pgAWUxFMn4rWhxz8GWXvgpFS2rXHv0oLAT1qjTZ
+ LjAiMpTTTcHwJHQlZVgdtKBU6kU7OP8RdoR4b/mrME7vAhBkZomTtOqgWy220lnAih
+ U2qCFs8+xS27+aK2ATESa+INacXW+lMKP9l5T/s4=
+Received: from [10.79.163.157]
+ (blr-bdr-fw-01_globalnat_allzones-outside.qualcomm.com [103.229.18.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: mojha@smtp.codeaurora.org)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 62BC4608FC;
+ Thu, 21 Mar 2019 07:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+ s=default; t=1553154906;
+ bh=6HLZLXqAu+OAKx0tuTz/DZ4oCpkPVKbmwROnZg1VfXk=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=PnVZL893t+ixLUwW4luUHWSCkcCitXMUk8LmenhDESWp1q0HI9CdaUZdbxhy9EYju
+ nvNFiB5MY3JYgx2AOYcDd2NUfOdTasWGq5ab1Gt2UHoOxzJKlWWzMzJbVviO4bBiYA
+ 4xSRTQ0P3Qiq2yIy57Vb16h6nVuwCmpvH0Ik9q4E=
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62BC4608FC
+Authentication-Results: pdx-caf-mail.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: pdx-caf-mail.web.codeaurora.org;
+ spf=none smtp.mailfrom=mojha@codeaurora.org
+Subject: Re: [PATCH -next] ubifs: remove unused function __ubifs_shash_final
+To: Richard Weinberger <richard@nod.at>
+References: <20190320140955.11576-1-yuehaibing@huawei.com>
+ <97289b81-ed73-002a-504d-2e82fad153e7@codeaurora.org>
+ <2691086.gDEv9kBeKS@blindfold>
+From: Mukesh Ojha <mojha@codeaurora.org>
+Message-ID: <289f9994-0980-081e-f913-5729b16d16f4@codeaurora.org>
+Date: Thu, 21 Mar 2019 13:24:55 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAGu8XfQHuEcU6b+bbD80641ePKvR--5sv7vraGibKZBj4_JEnA@mail.gmail.com>
+In-Reply-To: <2691086.gDEv9kBeKS@blindfold>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190321_005458_903239_199A9401 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20190321_005508_636941_5D4906DE 
+X-CRM114-Status: GOOD (  12.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,36 +94,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-kernel@vger.kernel.org, Yue Haibing <yuehaibing@huawei.com>,
+ adrian.hunter@intel.com, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-flashcp is a rather crude program and hasn't seen any improvements in way over a decade.
-All it does is round the size of your input file up to the reported block size, erases
-that range and then writes the input file.
-
-It directly opens the device file, works on the raw fd and does 2 ioctls to retrieve
-the erase size and erase that range.
-
-The size of 6815744 happens to be the reported block size of 262144 * 26. Erasing multiple
-blocks in one go is supported by the erase ioctl, it is also what libmtd does internally.
-
-However, flashcp is completely oblivious of bad blocks, OOB size and other fun stuff.
-
-nandwrite is somewhat more sophisticated. It is aware of all of the above and has a lot of
-extra command line options for fine grained control over those things. It also uses libmtd
-to access the flash which in turn is aware of a lot of newer ioctls and provides a number
-of fallback code paths.
-
-So yes, I would recommend using nandwrite for writing images to nand flashes.
-
-Regards,
-
-David
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDMvMjEvMjAxOSAxOjQ4IEFNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4gQW0gTWl0
+dHdvY2gsIDIwLiBNw6RyeiAyMDE5LCAyMTowNTozNyBDRVQgc2NocmllYiBNdWtlc2ggT2poYToK
+Pj4gT24gMy8yMC8yMDE5IDc6MzkgUE0sIFl1ZSBIYWliaW5nIHdyb3RlOgo+Pj4gRnJvbTogWXVl
+SGFpYmluZyA8eXVlaGFpYmluZ0BodWF3ZWkuY29tPgo+Pj4KPj4+IFRoZXJlIGlzIG5vIGNhbGxl
+cnMgaW4gdHJlZSwgYW5kIGNhbiBiZSByZW1vdmVkLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFl1
+ZUhhaWJpbmcgPHl1ZWhhaWJpbmdAaHVhd2VpLmNvbT4KPj4+IC0tLQo+Pj4gICAgZnMvdWJpZnMv
+YXV0aC5jIHwgMTggLS0tLS0tLS0tLS0tLS0tLS0tCj4+PiAgICAxIGZpbGUgY2hhbmdlZCwgMTgg
+ZGVsZXRpb25zKC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL2F1dGguYyBiL2ZzL3Vi
+aWZzL2F1dGguYwo+Pj4gaW5kZXggNWJmNWZkMC4uMmE0MGNjY2UgMTAwNjQ0Cj4+PiAtLS0gYS9m
+cy91Ymlmcy9hdXRoLmMKPj4+ICsrKyBiL2ZzL3ViaWZzL2F1dGguYwo+Pj4gQEAgLTE0NywyNCAr
+MTQ3LDYgQEAgc3RydWN0IHNoYXNoX2Rlc2MgKl9fdWJpZnNfaGFzaF9nZXRfZGVzYyhjb25zdCBz
+dHJ1Y3QgdWJpZnNfaW5mbyAqYykKPj4+ICAgIH0KPj4+ICAgIAo+Pj4gICAgLyoqCj4+PiAtICog
+X191Ymlmc19zaGFzaF9maW5hbCAtIGZpbmFsaXplIHNoYXNoCj4+PiAtICogQGM6IFVCSUZTIGZp
+bGUtc3lzdGVtIGRlc2NyaXB0aW9uIG9iamVjdAo+Pj4gLSAqIEBkZXNjOiB0aGUgZGVzY3JpcHRv
+cgo+Pj4gLSAqIEBvdXQ6IHRoZSBvdXRwdXQgaGFzaAo+Pj4gLSAqCj4+PiAtICogU2ltcGxlIHdy
+YXBwZXIgYXJvdW5kIGNyeXB0b19zaGFzaF9maW5hbCgpLCBzYWZlIHRvIGJlIGNhbGxlZCB3aXRo
+Cj4+PiAtICogZGlzYWJsZWQgYXV0aGVudGljYXRpb24uCj4+PiAtICovCj4+PiAtaW50IF9fdWJp
+ZnNfc2hhc2hfZmluYWwoY29uc3Qgc3RydWN0IHViaWZzX2luZm8gKmMsIHN0cnVjdCBzaGFzaF9k
+ZXNjICpkZXNjLAo+Pj4gLQkJCXU4ICpvdXQpCj4+PiAtewo+Pj4gLQlpZiAodWJpZnNfYXV0aGVu
+dGljYXRlZChjKSkKPj4+IC0JCXJldHVybiBjcnlwdG9fc2hhc2hfZmluYWwoZGVzYywgb3V0KTsK
+Pj4+IC0KPj4+IC0JcmV0dXJuIDA7Cj4+PiAtfQo+Pj4gLQo+Pj4gLS8qKgo+Pj4gICAgICogdWJp
+ZnNfYmFkX2hhc2ggLSBSZXBvcnQgaGFzaCBtaXNtYXRjaGVzCj4+PiAgICAgKiBAYzogVUJJRlMg
+ZmlsZS1zeXN0ZW0gZGVzY3JpcHRpb24gb2JqZWN0Cj4+PiAgICAgKiBAbm9kZTogdGhlIG5vZGUK
+Pj4KPj4KPj4gTG9va3MgZmluZSB0byBiZSByZW1vdmVkLgo+Pgo+PiBBY2tlZC1ieTogTXVrZXNo
+IE9qaGEgPG1vamhhQGNvZGVhdXJvcmEub3JnPgo+IEkgZ3Vlc3MgeW91IG1lYW4gUmV2aWV3ZWQt
+Ynk/CgpBcyBpIGFtIHVuc3VyZSBhYm91dCBmdXR1cmUgc2NvcGUgb2YgdGhpcyBmdW5jLiBpLmUg
+d2h5IEFja2VkLgoKCi1NdWtlc2gKCgoKPgo+IFRoYW5rcywKPiAvL3JpY2hhcmQKPgo+Cj4KCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
