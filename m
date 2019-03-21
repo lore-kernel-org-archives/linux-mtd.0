@@ -2,81 +2,80 @@ Return-Path: <SRS0=+wMu=RY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93E94C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 19:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDDBCC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 20:17:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E8AC218FD
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 19:48:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B0C7218A1
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2019 20:17:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eKBy2v4I";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="a07YkhAS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E8AC218FD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YuvjHZGn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="BOoXzi1T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B0C7218A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hsrNRB3F93qGfETABdPZW+MXX2c2yc+bucZ0LyDRAmI=; b=eKBy2v4IM6vjT8
-	RJ1TaNejH2Y6YdtlHBx3RfPrFC2nLX0Mu+fGxb6prvyHOazJUbgtMIGOhKtG9EK3+nRzYCHLX8yga
-	kKeZJKjb5fcue0OGC53uSu1+umZDsiAiKDf2bCEeBQ/s3txPhnSE51OXSuWq1g0Mnmo6saw0CgEkW
-	jRQlR2pz1+TjoICJ+GMTcOVP6oJ+b80ikYRDr0Jjx7EJOb1xBFXLzYekCS+Lg3UKeUD5olsl+NHTC
-	TNuZwd0ehHK2KUYV7yf4mQLGwKGstaNTTYNNIx+xGdyzpwTKipwADgpQDSY1veKZp2VbM0av4exRA
-	ElGcHmIhLUrjGvpX2rJw==;
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zyOc2zrm9pwF9rFF3Phju9Is0dr5bu8n2wqX24DaZvg=; b=YuvjHZGnlFAptC
+	PSs+S/jtSyeP3BtNBOz5PgoxhHJIPTL3anaw+V4nzunXnsnORLf8XMK3f8j99nkpbcsp6wCnXee7p
+	a/raQSgg6pmmpIatzXikK+lGQUFOm13F4mbZnR0wZlU81PTJugeWTuOMSk4V9L93I5GvaE3WUvvZp
+	Q30vtWhF5SyvDheRutdXQJ0/YtHgZC8fmovBNFXbNp1XA9ekCUMhUIkNJIA0QxSeoLmzRsl91BdlM
+	jSStt1UyXu5reDnUig4PEj8XbSaMUto4ptIqzm9qwA3qe/D3OuRMC2yR6LVpo6Xst+rCLfzYnc6NS
+	ra238I1UYu4Il5zWeLrQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h73gK-0005Ju-4V; Thu, 21 Mar 2019 19:48:52 +0000
-Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
+	id 1h748S-00084m-Vm; Thu, 21 Mar 2019 20:17:57 +0000
+Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h73gF-0005J1-U6; Thu, 21 Mar 2019 19:48:49 +0000
-Received: by mail-oi1-x244.google.com with SMTP id 3so4962131oir.7;
- Thu, 21 Mar 2019 12:48:47 -0700 (PDT)
+ id 1h748I-0007uV-Nu; Thu, 21 Mar 2019 20:17:48 +0000
+Received: by mail-ot1-x344.google.com with SMTP id x8so4739320otg.7;
+ Thu, 21 Mar 2019 13:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=googlemail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=5zcWU2dTLuAsgRn/uaCWzV93GDxkM/l9+qmdryQUun4=;
- b=a07YkhAS3QDm+zZApgI0JQFpYazXYES4DeY36RKnfRsB7vhGXdxt/1g+XHEWWO4pRP
- psGhf65geakQWJyOrs6JbEMyUcIGTx/dRFYqqnTwJTgW5TjdmNfl21NJDG5lSxZP5Fzb
- 3lUNCyFxc19TIcry3xz0h0ntpdIGDPElhwmLxG9eVR8wDRwjjQp9Bv8szPbgbjqszdAw
- OTaVd8bKBBKkF545L+zmkaWN0s+JNb2XNtvS/iL/9zu9/UvMtJigTLgsxG1YIfai42MO
- YXpt/va1gYeqhNvR497pGVcwPPpzoH1/YZaGGv11dMpeqmjmSxFDxQRDwpy4/65OwwxY
- x5sg==
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=/wxyUvtToomdZ+5Q9o+FQ/M8e4o6ylXXt1G7gXDkthY=;
+ b=BOoXzi1TLXiHBJG+1HwL+ID2AnLv3oZT6PlJ1aORSU6oRHSSgjPMihc1eXyKPMdyD/
+ AqFJYySnhXSr/0KJyrtQDtju9Fr248wnuBcTNenyPVOZ0PHV8QNzp2jvcn1CbBa6l+An
+ GMsEqyRqcPt8vX6qgUAu9wZb5RYF6Ezu+PIvFDfPlByy+bkmb4Blb0cd9dqhuxowHTZn
+ MTjTD4Bg8pQ9Q9xgazplzVmi36XlNjsp/avPctiTShRqAN8PfMdK3maZbLpXpzZCOXP9
+ hrNEmNbrANp5WxgBJCzg9g832X4/sb7Ijvgq0pfVeoOJ2/arzBW23a2dvX/XrfcOvwke
+ sHqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=5zcWU2dTLuAsgRn/uaCWzV93GDxkM/l9+qmdryQUun4=;
- b=EBEnBTzIYwEIBYsaSSCsB/3wukrL1ti7EqQWgceWFc+5sF1dXMdPIvRPqCID4g3Gx7
- rMrfEIKYQZUwTQXcKDCFcgcdff0vV4FU8xPLFR5QGIvhB3FwntFhaPzhFPn/gZdplXi7
- iv8s5OnO2kAjvTyAvuEqlb0pkDX7Reuu+xy+m2wIpT1WqriJktMcIEORG7LjuhavOaes
- ONfp+jlhlGD8qdD9m5NqnyG3t5n4/yUYX4yFE/qBA8aIiO1dHm9t+tzdGu2jRo10+JkO
- SM/1FsvTuEdgzMiaD4uK8MeOU+ixdv7vLUdcvnsqnCpq3+CuaW9BNulMkI2FWW05UzZB
- Uy9g==
-X-Gm-Message-State: APjAAAVfO0x4Y4k45QtAguCpwajol70Tws6xSIfFJ9CLckCCdzu7IC/m
- 8ERWObEE4iDtJxSUi5mSL6YJXgzJg/k+fU41naE=
-X-Google-Smtp-Source: APXvYqw8cxN35ECNqg92hsr7x3jP3Ry906VaP5u+ReWx8iRv0dqXSon10OTu2dRKboRYnxFDs7LSIn8boqYnzZ/GbbM=
-X-Received: by 2002:aca:6209:: with SMTP id w9mr789176oib.47.1553197725400;
- Thu, 21 Mar 2019 12:48:45 -0700 (PDT)
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=/wxyUvtToomdZ+5Q9o+FQ/M8e4o6ylXXt1G7gXDkthY=;
+ b=KvO/puQ+Ees2p2+iH3C73aNRGuVNZq+pAOZsKnX7rGZIKuZw2uSoeHAzSv56FJ3IQN
+ ysd4RMVqKNPcS2nc7qDKt4cEeTnIVuMP3JzDv3HLagpbm5R0dN8VjgLyq+L039a9s99x
+ IiFbCHh1qXrubEA9dlZX9jm7NXvO/EvnoW4/wLsr/O8ve1XKtXyq5UH48lpTzbvoQTPI
+ f7jfH2Q4K89+dRcRntH0wavjPR2dOjjk6hV4uHht8t/ltWGYSbrCeB0iyOCSw3Gyj8QC
+ PboUOOhkGjAPw6PkkroEDSoli97HBn5f477j6Y06EAQGS3lACaEIL8WfIccuTIMFydW3
+ X73Q==
+X-Gm-Message-State: APjAAAWP7HzLm+uc9LRj/h2AA35w8abj2k5ll1ohSljUywhyhWmQrJum
+ CdTgOzo3ckVcM09Rp+kcdk+1ztx7rWWSJDTCEhM=
+X-Google-Smtp-Source: APXvYqwUYsousOMTeeL8c+A2HnTXT2l2mWYx2JCiWrVy/yAmVWlPJppOWrh94pnxO/J9vbn6442DXbT8N9OeaM9xXRs=
+X-Received: by 2002:a9d:5614:: with SMTP id e20mr3932876oti.348.1553199465574; 
+ Thu, 21 Mar 2019 13:17:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <1553170441-23448-1-git-send-email-liang.yang@amlogic.com>
-In-Reply-To: <1553170441-23448-1-git-send-email-liang.yang@amlogic.com>
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Thu, 21 Mar 2019 20:48:34 +0100
-Message-ID: <CAFBinCD65-e2Kx3vw60FGFJvauof7ADV3e=bt6A4jUNC0K64Ng@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd: rawnand: meson: set oob layout ops
-To: Liang Yang <liang.yang@amlogic.com>
+Date: Thu, 21 Mar 2019 21:17:34 +0100
+Message-ID: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
+Subject: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190321_124847_998697_1BD7346D 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20190321_131746_806897_D3F53643 
+X-CRM114-Status: UNSURE (   8.43  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,43 +87,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Rob Herring <robh@kernel.org>, Hanjie Lin <hanjie.lin@amlogic.com>,
- Victor Wan <victor.wan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Neil Armstrong <narmstrong@baylibre.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- devicetree@vger.kernel.org, Jian Hu <jian.hu@amlogic.com>,
- linux-mtd@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Carlo Caione <carlo@caione.org>,
- linux-amlogic@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- Jerome Brunet <jbrunet@baylibre.com>
+Cc: mhocko@suse.com, linux@armlinux.org.uk, willy@infradead.org,
+ rppt@linux.ibm.com, liang.yang@amlogic.com, linux-mtd@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, akpm@linux-foundation.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Mar 21, 2019 at 1:14 PM Liang Yang <liang.yang@amlogic.com> wrote:
->
-> Specify the oob layout operation to avoid no oob scheme defined for
-> some nand flash.
->
-> Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-this patch solves the "No oob scheme defined for oobsize 1280" on my
-Meson8m2 M8S board, so:
-Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Hello,
 
-to give a bit of context on my Tested-by:
-I tested this with my work-in-progress series and a hack to make the
-kzalloc() in meson_nfc_read_buf() return an aligned address (by
-allocating PAGE_SIZE instead of PER_INFO_BYTE) on my Meson8m2 M8S
-board.
-it's now progressing to the state where Linux tries to find the BBT
-which it can't (because the vendor kernel which was used to format the
-NAND flash is shipping a custom BBT format).
-before this patch I couldn't get past the "No oob scheme defined for
-oobsize 1280" error.
+I am experiencing the following crash:
+  ------------[ cut here ]------------
+  kernel BUG at mm/slub.c:3950!
+  Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+  Modules linked in:
+  CPU: 1 PID: 1 Comm: swapper/0 Not tainted
+5.1.0-rc1-00080-g37b8cb064293-dirty #4252
+  Hardware name: Amlogic Meson platform
+  PC is at kfree+0x250/0x274
+  LR is at meson_nfc_exec_op+0x3b0/0x408
+  ...
+my goal is to add support for the 32-bit Amlogic Meson SoCs (ARM
+Cortex-A5 / Cortex-A9 cores) in the meson-nand driver.
+
+I have traced this crash to the kfree() in meson_nfc_read_buf().
+my observation is as follows:
+- meson_nfc_read_buf() is called 7 times without any crash, the
+kzalloc() call returns 0xe9e6c600 (virtual address) / 0x29e6c600
+(physical address)
+- the eight time meson_nfc_read_buf() is called kzalloc() call returns
+0xee39a38b (virtual address) / 0x2e39a38b (physical address) and the
+final kfree() crashes
+- changing the size in the kzalloc() call from PER_INFO_BYTE (= 8) to
+PAGE_SIZE works around that crash
+- disabling the meson-nand driver makes my board boot just fine
+- Liang has tested the unmodified code on a 64-bit Amlogic SoC (ARM
+Cortex-A53 cores) and he doesn't see the crash there
+
+in case the selected SLAB allocator is relevant:
+  CONFIG_SLUB=y
+
+the following printk statement is used to print the addresses returned
+by the kzalloc() call in meson_nfc_read_buf():
+  printk("%s 0x%px 0x%08x\n", __func__, info, virt_to_phys(info));
+
+my questions are:
+- why does kzalloc() return an unaligned address 0xee39a38b (virtual
+address) / 0x2e39a38b (physical address)?
+- how can further analyze this issue?
+- (I don't know where to start analyzing: in mm/, arch/arm/mm, the
+meson-nand driver seems to work fine on the 64-bit SoCs but that
+doesn't fully rule it out, ...)
 
 
 Regards
