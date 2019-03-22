@@ -2,69 +2,93 @@ Return-Path: <SRS0=aBH3=RZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C459C43381
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Mar 2019 22:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 379C3C43381
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Mar 2019 22:10:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B99BD2190A
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Mar 2019 22:03:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 052402190A
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Mar 2019 22:10:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oqNXPOAV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B99BD2190A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EsvAr15F";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oNu8iEd3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 052402190A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=234hzy7KlGl/I2uCYaQGgjIBaTztcceCAAAm8VFC/gQ=; b=oqNXPOAVcM0OvW
-	IUhSFbG6k7OAzUeRWuSGS7fpYtQd8QAbBWKU8EXR6XknEJEGip6zPkpq0obSW81wFZ0uf46MQ8t7u
-	9JTCjEc7z70iXZa/NpVredPySrnjZ70fhwWZuzgv6gY8rErK1gLsjfmsoKYbVaKAxp4V2m2TtCkfp
-	2DH4JY2RBI5/8+0sjZYWJboZhnbCtv40+HXDsMysM7Ra1MMotiEsG325C1Xy1uD1TZAMR7P/qF18N
-	DTiSI5sxup/SAgFJgGcgYIsyyzwU/0tnYnxwShRkULktfGg8VUZ1IE5Z+yZ6HHycMbnF09pkKEG9F
-	JiKx4MelvdujDubmlGpA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=DVWt7UYCajMi88wxFjQ1306ekIbgFxfTBlRO7Y1dDkE=; b=EsvAr15FReanyO
+	81hDTUaC0RQ4bQ3/tXfSf6SRAWtselzbpPW6SbKTADh2sQUHDiio8t0Ega5iqAzCc6fHzVSkJ15SP
+	IkF/4X294QdSECLctW9wy21u31jxE3BoICk86PX9pzXoEpT0Yi4whrlmQioBQKHVu6TdCpcJsTbvj
+	ruOahi9BePT8fAYx2yqoVozPnwNaSd4fz1kBPifHh1m/J5dyymeCw6Y0VC1p6hVXMXSp/YfhmcW9P
+	OyoY0dBNXhXk71c9uMgCbVoF3XdHY7jtS1gaOzOHBZRW1ExlRPyHfyYss+HRbdxxardz91P/fF0Dt
+	v5MbWHp5/WluMdlBzIIQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h7SFn-0003ET-Ne; Fri, 22 Mar 2019 22:03:07 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1h7SMx-0006Hr-S2; Fri, 22 Mar 2019 22:10:31 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h7SFj-0003DD-S9
- for linux-mtd@lists.infradead.org; Fri, 22 Mar 2019 22:03:05 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 22AD4608A395;
- Fri, 22 Mar 2019 23:02:52 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id bxgElapSClzg; Fri, 22 Mar 2019 23:02:51 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id B507760F6D61;
- Fri, 22 Mar 2019 23:02:51 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id SkcTucd3wTxy; Fri, 22 Mar 2019 23:02:51 +0100 (CET)
-Received: from blindfold.localnet (213-47-184-186.cable.dynamic.surfer.at
- [213.47.184.186])
- by lithops.sigma-star.at (Postfix) with ESMTPSA id 1D02D608A395;
- Fri, 22 Mar 2019 23:02:51 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [RFC PATCH v3 07/18] fscrypt: add FS_IOC_ADD_ENCRYPTION_KEY ioctl
-Date: Fri, 22 Mar 2019 23:02:49 +0100
-Message-ID: <4190811.5ckf3pJJgb@blindfold>
-In-Reply-To: <20190318230830.GA40545@gmail.com>
-References: <20190220065249.32099-1-ebiggers@kernel.org>
- <20190221184203.GB140206@gmail.com> <20190318230830.GA40545@gmail.com>
+ id 1h7SMv-0006HS-8m
+ for linux-mtd@lists.infradead.org; Fri, 22 Mar 2019 22:10:30 +0000
+Received: by mail-pg1-x544.google.com with SMTP id p6so2403884pgh.9
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Mar 2019 15:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=1iKqD1ucN45IcW6wn6xqJB3PQ7tx9hiUKga7iqSy8Fo=;
+ b=oNu8iEd3HGy90AG4P3Ha/ryRQ1OHUj2cEnCMAxScR++M7DR97urKTrTt6gTu4JDKzr
+ V/kac9zm8buGhGcAk/+hZOJfULhjOB4jM6zAGyqKal/sqWb0t8JozLLbgfG1f9GRpUSP
+ /eBSY6J5vKdbdpLHxItqz7cDT2hzM1cFSYE5TGJ4TjBnATC2r++SWLZUeTw1ezI1RzYL
+ jPC/dFQkzYRQm0+x2/oQULOj0CdovEvTakhUh1MvtgPIBX6dt6PJCTDbgUTlHGF3S1Q+
+ 898kMRW3mqZTd6KbqqpBNXu9BpqefeRgYkGkWBIs7tUmGM0KDbJbwHDyRNG2ea0057/I
+ Y1VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=1iKqD1ucN45IcW6wn6xqJB3PQ7tx9hiUKga7iqSy8Fo=;
+ b=F+4GgyPBxys9RwWDijBsmAXOjLD3TZR38EVnFQi5SOvHcHjr2YbNX15ZYT/ISrkMwB
+ dGuAIc84M1QnQ8C3GZFLufrLiFB61ve2l2uFm+JiSvsSu5i92nJNspN1NYdfJRp6e3W2
+ xuPS6bDSAhKYYZbalmx1Du2XTk8/lT7JxAzQ5khYOUfD2aKt6olx5LUHAW8qZImtJnGx
+ C9Mv5Y69JH1c+YRvyKFu/fjiGxyUUialqItYjEVdGCxaKU5oFfRK+WusnxhwVIsNGFrr
+ L/RUbDs/8k8NWNEgRRJOsu8rOSCG5gmMrFQi8WdDRKkUxLG0FtR9iwqr0rofJFsfoaLP
+ dJEQ==
+X-Gm-Message-State: APjAAAXEb0E8lUvqkgnjKsplEcgNH7lepanlDGQ9gkbAap9dHbVzkPfL
+ vsYepjeK33oM2pFZaVL0KlaDWI2qg5M=
+X-Google-Smtp-Source: APXvYqyXQ9geD+0hj3lSdj7CuG/licv3br7cmSOuIvZ9S1W6JJcf4EionWr5CJu1q4oKN4TztTtc6A==
+X-Received: by 2002:a63:5541:: with SMTP id f1mr11332970pgm.38.1553292627746; 
+ Fri, 22 Mar 2019 15:10:27 -0700 (PDT)
+Received: from hari-Inspiron-1545 ([183.83.168.123])
+ by smtp.gmail.com with ESMTPSA id j6sm13007298pfe.79.2019.03.22.15.10.24
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 22 Mar 2019 15:10:27 -0700 (PDT)
+Date: Sat, 23 Mar 2019 03:40:21 +0530
+From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+To: Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+ Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] fs: fix warning about Using plain integer as NULL pointer
+Message-ID: <20190322221021.GA24814@hari-Inspiron-1545>
 MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190322_150304_113471_DC09D634 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20190322_151029_335986_E1A108E4 
+X-CRM114-Status: GOOD (  11.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,82 +100,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-ext4@vger.kernel.org, "open list:ABI/API" <linux-api@vger.kernel.org>,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Satya Tangirala <satyat@google.com>, Paul Crowley <paulcrowley@google.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ericm
+Sparse warning below:
 
-Am Dienstag, 19. M=E4rz 2019, 00:08:31 CET schrieb Eric Biggers:
-> I tried using sb->s_bdi->name, but it's still "ubifs" for all UBIFS files=
-ystems.
+sudo make C=2 CF=-D__CHECK_ENDIAN__ M=fs
 
-hmpf.
- =
+CHECK   fs/f2fs/data.c
+fs/f2fs/data.c:426:47: warning: Using plain integer as NULL pointer
+CHECK   fs/notify/fdinfo.c
+fs/notify/fdinfo.c:53:87: warning: Using plain integer as NULL pointer
+ CHECK   fs/ubifs/xattr.c
+fs/ubifs/xattr.c:615:58: warning: Using plain integer as NULL pointer
 
-> Perhaps there's a way you can make ->s_id for UBIFS unique?  There are al=
-ready
-> existing places that log ->s_id, so perhaps you should do it anyway regar=
-dless
-> of this patchset?
+Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+---
+ fs/f2fs/data.c     | 2 +-
+ fs/notify/fdinfo.c | 2 +-
+ fs/ubifs/xattr.c   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Yes, let me implement that.
-ubifs does:
-super_setup_bdi_name(sb, "ubifs_%d_%d", c->vi.ubi_num, c->vi.vol_id);
-
-So, I try to set ->s_id also to ubifs_%d_%d.
-
-> > > =
-
-> > > > Note that the keyring name isn't particularly important, since the =
-ioctls will
-> > > > work regardless.  But we might as well choose something logical, si=
-nce the
-> > > > keyring name will still show up in /proc/keys.
-> > > =
-
-> > > I'm not done with reviewing your patches, but will it be possible to =
-use keyctl?
-> > > For the a unique name is helpful. :)
-> > > =
-
-> > =
-
-> > Not for adding keys, removing keys, or getting a key's status -- those =
-are what
-> > the ioctls are for.
-> > =
-
-> > See e.g. the discussion in patch 7 ("fscrypt: add FS_IOC_ADD_ENCRYPTION=
-_KEY
-> > ioctl") for why the keyrings syscalls are a poor fit for fscrypt.
-> > =
-
-> =
-
-> Anyway, perhaps I should reconsider whether fscrypt should even use the k=
-eyrings
-> subsystem at all, even just "internally", as its quirks still leak out a =
-bit.
-> I'd prefer a nice clean API without any quirks like having to name the ke=
-yrings
-> and assign SELinux labels to the keys just to make the keyrings subsystem=
- happy.
-
-IMHO the keys subsytem is a good fit. For example for stuff like this one:
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1945778.html
-
-We use UBIFS on many embedded systems with crypto hardware.
-
-Thanks,
-//richard
-
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 97279441..15a2381 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -423,7 +423,7 @@ static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
+ 
+ void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type)
+ {
+-	__submit_merged_write_cond(sbi, NULL, 0, 0, type, true);
++	__submit_merged_write_cond(sbi, NULL, NULL, 0, type, true);
+ }
+ 
+ void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
+diff --git a/fs/notify/fdinfo.c b/fs/notify/fdinfo.c
+index 1e2bfd2..ef83f40 100644
+--- a/fs/notify/fdinfo.c
++++ b/fs/notify/fdinfo.c
+@@ -50,7 +50,7 @@ static void show_mark_fhandle(struct seq_file *m, struct inode *inode)
+ 	f.handle.handle_bytes = sizeof(f.pad);
+ 	size = f.handle.handle_bytes >> 2;
+ 
+-	ret = exportfs_encode_inode_fh(inode, (struct fid *)f.handle.f_handle, &size, 0);
++	ret = exportfs_encode_inode_fh(inode, (struct fid *)f.handle.f_handle, &size, NULL);
+ 	if ((ret == FILEID_INVALID) || (ret < 0)) {
+ 		WARN_ONCE(1, "Can't encode file handler for inotify: %d\n", ret);
+ 		return;
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index f5ad1ed..066a566 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -612,7 +612,7 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+ 	int err;
+ 
+ 	err = security_inode_init_security(inode, dentry, qstr,
+-					   &init_xattrs, 0);
++					   &init_xattrs, NULL);
+ 	if (err) {
+ 		struct ubifs_info *c = dentry->i_sb->s_fs_info;
+ 		ubifs_err(c, "cannot initialize security for inode %lu, error %d",
+-- 
+2.7.4
 
 
 ______________________________________________________
