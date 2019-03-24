@@ -2,99 +2,88 @@ Return-Path: <SRS0=La3s=R3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B07DC43381
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0B4BC43381
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:48:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA2A92148D
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:23:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B86592087F
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:48:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VEGhmVs1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Uioip74/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA2A92148D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="conUhnuP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWNlsDmZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B86592087F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f6kDPUOaXDqtuqXP+ughULP8B12lh7t3gQqh0MOgqnM=; b=VEGhmVs1ovvqmL
-	9SXfJEF/FVokgdQ9MhNvMYsZ+JRUVB2JYDtY2gdIbxC8/TvAxYtAXinSId5SzkmRleEKBU9uYEFGr
-	K/ggHnpb7bJVdcnEObC5zZYi55381vG8uNskLy3yDByVasjxHciHll8y33qJH2egcwUOl2xmZPE5c
-	Ni6VQMRpygEokXgcArbvQ4bZZ3U+xz38g/gNp3ElVy1MzDf8oqdxU2ABoQYLefQVoUFqwXxKlAema
-	Ga1f66+xmrMPJvrEqX82xJQn7E3LWArHGdZQDisQlPQK+nI0ikVsrC048heyhMtoGY3eQ93C3Ouo7
-	UqO7kCAjDrKWf4SvfPsg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=styeNuO3mL4lc5M91GwqNUqOTmm4iy3hCjNjP8L1K68=; b=conUhnuP9Kqf4k
+	z/3HVJSP+b3a1/l0jCWgeQWw6uJkCVeyvzfssa/xt82TGcXuTLlXaW6udT1WUw2ljjjX+Mvy3Le6z
+	cYMT9LiJHaAFNh1pKyCZDENgsb8os+qWfo9MFefza1fqXwmFx22YDiKPEw11pMhzlI6NUVaX0sFb3
+	V26Fo2sEbXDeC/X1erXlfOkTmXF6TfBiBRXvIPz/wck9e94oe7dRsXu7VC1tFACh61vxO1VNR+Pnb
+	TCPFJL2EKPGellqgGhcV6Rcj03t45tOy9kp/sOe7477d05e0QcbtIorsJk8VlK/fKv0FilIqmuMsl
+	ShcRPN7xDYoQgnlTpDhA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h85uE-0000yu-Um; Sun, 24 Mar 2019 16:23:30 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1h86IU-0002Hg-DW; Sun, 24 Mar 2019 16:48:34 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h85uB-0000yD-R3
- for linux-mtd@lists.infradead.org; Sun, 24 Mar 2019 16:23:29 +0000
-Received: by mail-lj1-x244.google.com with SMTP id l7so5733131ljg.6
- for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2019 09:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=5Pg6TyKqOEBJ5p2F+vVjKYJQKTqyJO6B+2xoYuenJv4=;
- b=Uioip74/Cvek/C88/GJF9rB6Ct7bPJU7UacdoAMAvEjYXV3X278WXaUoaOoHjJWzbW
- P/QJBKhNokIkciz2/sO9lLL8iQNwzQv4Ep+ETMgzK94Nhnbf2FAtW+fVKqeJX1Ndt27q
- lVOX6GWL3p/3k2U5+fGWQH9327Z9lQhdqWnF5RXOyU9aAcI1cFCh4YgEcB8bqKYUWbn7
- iYrqDm25Iu/AfZDZ4ed5+fb4Ibztylwal1usi+3RBbxFpntBZq0sSu7YVFlGEZMl7KNQ
- VaY2XZ6cItH29TY5hWKV3SkvufipS0ZPMEkC70T2qx+GNzuXaUIEY9QyEpA74FWjjVQl
- uxDQ==
+ id 1h86IR-0002Gu-Q5; Sun, 24 Mar 2019 16:48:33 +0000
+Received: by mail-lj1-x241.google.com with SMTP id l7so5760283ljg.6;
+ Sun, 24 Mar 2019 09:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=b1U9n/t18wnXKhRjLFYD2gjH0o+xCH9hI2JLlh3jrEQ=;
+ b=jWNlsDmZfw1BhmENeKMJNFMpaoNMtEohfdG1sudB7Tdo64fVoty7f328ILDHh9ICb1
+ Ux+U58FUO7yQx6lmVeKrebPKHqDKvX8uZnUxNZqsYTHGodj8yDAtNqVNEun4YJg9ZE3I
+ 0CjWQ6iCdVxxIRPL8MSCilpybL5PT59OZa1J11uabZqsSiiz5erKO/y9yoJHvgttJrlD
+ ZpEX3VcOclRn1mLZ/iRF43y5ntEUFhnW07+ek6h0136axxQK568bNmsYgSQQeldDPTYj
+ /Jf2Qs9mqVs/v8RY9Opzj4ucJuqgZopK8UQrZBZ3VCDUJlNgyhkzy3bYMRUupsz9Cc1q
+ JvSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=5Pg6TyKqOEBJ5p2F+vVjKYJQKTqyJO6B+2xoYuenJv4=;
- b=arHD5uUXTGtB+FxPI6gp6PH/1CJMq0PS9Ml7PpDgbjVtFRHtfNBT8IET00YEuPhFBq
- qLk7M2VmEUVCC+y1HSAaT7LfyeaZj/aE9nxOzAVAjo+PttQLofcvrfyaV3Ioh6aAucvT
- QKnJA3KZhCfnDSdWDdfLvZfX+/mbcDJIuJb0Q1/7+T7MlTJm9zxDL1TDaWkCReldZ2wE
- 2FLGZiFpcGa/11nIeV+Li0v+9eJoaKUaMQJqqe/JdDNnN9qiBie2Cthrql/o88KGeTeT
- a3o6wGoSA+t2L548GHJS9dqfZZZ5DuQdqX9JtaQf3MnOCXQa/S9yEcDQzYlymqnYAmJs
- wteA==
-X-Gm-Message-State: APjAAAVqJBtXA5p0MZh93+n07zVamL7Gm814jhg3HnBJY0s0xrS7l6UP
- V47v9eh/2B+FB5FUEO3iAH4Y4A==
-X-Google-Smtp-Source: APXvYqx65heiScyKG8alJoDaHCi5DRZy7K7C5cZitdgwR6mOF6H8fyfI0Nk8MZQsTUtPObWBZwf6cA==
-X-Received: by 2002:a2e:9a02:: with SMTP id o2mr1698779lji.179.1553444605756; 
- Sun, 24 Mar 2019 09:23:25 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([31.173.80.147])
- by smtp.gmail.com with ESMTPSA id h68sm2881577lfg.77.2019.03.24.09.23.23
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=b1U9n/t18wnXKhRjLFYD2gjH0o+xCH9hI2JLlh3jrEQ=;
+ b=WhH0LeSw98jDAaELxTQoavmYk1A0KsTLp8lWBEVOGKuuhlaMQTi5QwkLjJlXpkk8VG
+ qJ149p+kxpU+jslmYbfuVtZd4EkDmMGxYBnUhrGVjS+B4i6sdD0Lypo+mqsHtc6wgWFu
+ dcO7LHDrzWZUPOGd5eDSs1PVHBEKzJGq/ErcQePTykXnBJWSWk3u+crPEiYbym5q3Z0k
+ fvHCeU3Qvbulz7IqwyEWNVfDqS51mgV2WsjSy9FnlHvrBWGxbFR6SZrxdh9Bo4gEOVnl
+ /+jLw93ha1D2V7aLoext8uVvBX1w4Pi3uTTc+TcCyt2I2cULueC8Q7DKjK8MnJ+BzTEH
+ 3cjg==
+X-Gm-Message-State: APjAAAU1pfkgfdE94FrzROSrx47HujU7nkRrUxsHEiYstct2KSEFZ5cR
+ kRbDmfDiISg4Ti/Y0qZSyGs=
+X-Google-Smtp-Source: APXvYqyRT39fP1KHInPKbhDDKFdmjTM2OITzznmI5qvR/PHnqi5ZpwANDdHcX1mmV0TJkTvbc0GNyQ==
+X-Received: by 2002:a2e:4715:: with SMTP id u21mr10582949lja.156.1553446106051; 
+ Sun, 24 Mar 2019 09:48:26 -0700 (PDT)
+Received: from z50.localnet (109241207190.gdansk.vectranet.pl.
+ [109.241.207.190])
+ by smtp.gmail.com with ESMTPSA id b15sm3007352ljj.70.2019.03.24.09.48.23
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 24 Mar 2019 09:23:24 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 1/5] mtd: cfi_cmdset_0002: Add support for polling
- status register
-To: Vignesh Raghavendra <vigneshr@ti.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190321174548.9288-1-vigneshr@ti.com>
- <20190321174548.9288-2-vigneshr@ti.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <597bbe8e-65d3-40c6-5d15-544e962be7c3@cogentembedded.com>
-Date: Sun, 24 Mar 2019 19:23:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ Sun, 24 Mar 2019 09:48:24 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: [PATCH] mtd: rawnand: ams-delta: Drop board specific partition
+ info
+Date: Sun, 24 Mar 2019 17:48:22 +0100
+Message-ID: <2631901.52Nzq63B5o@z50>
+In-Reply-To: <20190320011630.GB7872@darkstar.musicnaut.iki.fi>
+References: <20190319223718.26131-1-jmkrzyszt@gmail.com>
+ <20190320011630.GB7872@darkstar.musicnaut.iki.fi>
 MIME-Version: 1.0
-In-Reply-To: <20190321174548.9288-2-vigneshr@ti.com>
-Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190324_092327_881191_CBE5786C 
-X-CRM114-Status: GOOD (  22.31  )
+X-CRM114-CacheID: sfid-20190324_094831_892840_750FD19B 
+X-CRM114-Status: GOOD (  21.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -106,72 +95,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Cc: linux-omap@vger.kernel.org, Boris Brezillon <bbrezillon@kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Hi Aaro,
 
-On 03/21/2019 08:45 PM, Vignesh Raghavendra wrote:
+Thanks for your review.
 
-> HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
-> Set(0x0002) for flash operations, therefore drivers/mtd/chips/cfi_cmdset_0002.c
-> can be use as is. But these devices do not support DQ polling method of
-> determining chip ready/good status. These flashes provide Status
-> Register whose bits can be polled to know status of flash operation.
+On Wednesday, March 20, 2019 2:16:30 AM CET Aaro Koskinen wrote:
+> On Tue, Mar 19, 2019 at 11:37:18PM +0100, Janusz Krzysztofik wrote:
+> > After recent modifications, only a hardcoded partition info makes
+> > the driver device specific.  Other than that, the driver uses GPIO
+> > exclusively and can be used on any hardware.
+> > 
+> > Drop the partition info and use MTD partition parser with default
+> > list of partition types instead.
+> > 
+> > Amstrad Delta users should append the followig partition info to their
+>                                         ^^^^^^^^
+> Should be "following".
 > 
-> Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
-> Extended Query version 1.5. Bit 0 of "Software Features supported" field
-> of CFI Primary Vendor-Specific Extended Query table indicates
-> presence/absence of status register and Bit 1 indicates whether or not
-> DQ polling is supported. Using these bits, its possible to determine
-> whether flash supports DQ polling or need to use Status Register.
-
-   We need?
-
-> Add support for polling status register to know device ready/status of
-> erase/write operations when DQ polling is not supported.
+> > kernel command line, possibly by embedding it in CONFIG_CMDLINE:
+> > mtdparts=ams-delta-nand:3584k(Kernel),256k(u-boot),256k(u-boot_params),\
+> > 256k(Amstrad_LDR),27m(File_system),768k(PBL_reserved).  For their
+> > convenience, select CONFIG_MTD_CMDLINE_PARTS  symbol from that board
+> > Kconfig automatically if this NAND driver is also selected.
+> > 
+> > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> > Cc: Tony Lindgren <tony@atomide.com>
 > 
-> [1] https://www.cypress.com/file/213346/download
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 50 +++++++++++++++++++++++++++++
->  include/linux/mtd/cfi.h             |  5 +++
->  2 files changed, 55 insertions(+)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 72428b6bfc47..29987d8e6c6e 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-[...]
-> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-> index cbf77168658c..92ac82ac2329 100644
-> --- a/include/linux/mtd/cfi.h
-> +++ b/include/linux/mtd/cfi.h
-> @@ -233,6 +233,11 @@ struct cfi_pri_amdstd {
->  	uint8_t  VppMin;
->  	uint8_t  VppMax;
->  	uint8_t  TopBottom;
-> +	/* Below field are added from version 1.5 */
+> Could we move the fixed partition setup to the board file
+> instead? Otherwise this kind of change is not really nice for the users,
+> as it will likely break existing setups. The default partition layout
+> should remain the same.
 
-   The below fields are.
+I'm wondering if it would be acceptable to pass partition info from a .dts 
+file.  I think that would be a better, more modern approach than adding a new 
+header under include/linux/platform_data.
 
-> +	uint8_t  ProgramSuspend;
-> +	uint8_t  UnlockBypass;
-> +	uint8_t  SecureSiliconSector;
-> +	uint8_t  SoftwareFeatures;
->  } __packed;
->  
->  /* Vendor-Specific PRI for Atmel chips (command set 0x0002) */
+The problem with a device tree based implementation is, I know of no u-boot 
+version supporting both Amstrad Delta and FDT.  However, I've already tested 
+two solutions that work for me.
+
+One uses CONFIG_ARM_APPENDED_DTB and requires a user to manually append the 
+blob to zImage and (re)generate uImage.  I'm not sure how much more user-
+friendly it looks for you, compared to the command line version I proposed 
+initially.
+
+If the above is not acceptable. I can propose still another approach. The blob 
+is automagically built and embedded into the kernel with some assembler glue, 
+then unflattened from the board init_machine(), somehow similar to the way 
+drivers/of/unittest.c does it.
+
+Please advise which approach sounds best to you (platform_data, 
+CONFIG_ARM_APPENDED_DTB or unittest like).
+
+Thanks,
+Janusz
+
+
+> 
+> A.
 > 
 
-MBR, Sergei
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
