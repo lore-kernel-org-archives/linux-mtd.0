@@ -4,20 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1B26C43381
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B07DC43381
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:23:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEACF2148D
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:19:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA2A92148D
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2019 16:23:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="af1NeICY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="IQwS18ZI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEACF2148D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VEGhmVs1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="Uioip74/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA2A92148D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,56 +25,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+ePyVG11qn9kC/r7cpmRXKrvt/I2QMCu+CbL1Bm7WJY=; b=af1NeICYSMiiNp
-	2y5lEkrbF1Kreel5kLdV9G2KP8e4LEU0OVxCj7ieg05LcDJEwaUJVkjqu3gkuWNLrpCpi4xhWaglh
-	bRHpwh1/Jrvx5vIpbN/IT13T9djUMWSaCDsyYEFqgkVU+TgZH6l3Y/vvv317G2cpNQky7dPuch9EP
-	idlXsWUvTeNpIR21RUyzegHwSiLfTsgsgqR+uOwTbKGUoWUS3Rk89rvzLexx6QZ1lb7T5WjV/DHY3
-	pWWE0H5On2UBN8ipCLUqM5S3cqKerXTgRuiFTnWgGSeIzloSyLaHDL0hrEB1SMJlY0mYW1K2SkkHK
-	gMc7y4IawuRlZrBVJytA==;
+	List-Owner; bh=f6kDPUOaXDqtuqXP+ughULP8B12lh7t3gQqh0MOgqnM=; b=VEGhmVs1ovvqmL
+	9SXfJEF/FVokgdQ9MhNvMYsZ+JRUVB2JYDtY2gdIbxC8/TvAxYtAXinSId5SzkmRleEKBU9uYEFGr
+	K/ggHnpb7bJVdcnEObC5zZYi55381vG8uNskLy3yDByVasjxHciHll8y33qJH2egcwUOl2xmZPE5c
+	Ni6VQMRpygEokXgcArbvQ4bZZ3U+xz38g/gNp3ElVy1MzDf8oqdxU2ABoQYLefQVoUFqwXxKlAema
+	Ga1f66+xmrMPJvrEqX82xJQn7E3LWArHGdZQDisQlPQK+nI0ikVsrC048heyhMtoGY3eQ93C3Ouo7
+	UqO7kCAjDrKWf4SvfPsg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h85q2-0007eb-KP; Sun, 24 Mar 2019 16:19:10 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+	id 1h85uE-0000yu-Um; Sun, 24 Mar 2019 16:23:30 +0000
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h85px-0007dD-3l
- for linux-mtd@lists.infradead.org; Sun, 24 Mar 2019 16:19:06 +0000
-Received: by mail-lf1-x143.google.com with SMTP id d18so4366045lfn.3
- for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2019 09:19:02 -0700 (PDT)
+ id 1h85uB-0000yD-R3
+ for linux-mtd@lists.infradead.org; Sun, 24 Mar 2019 16:23:29 +0000
+Received: by mail-lj1-x244.google.com with SMTP id l7so5733131ljg.6
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2019 09:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
  h=subject:to:cc:references:from:organization:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=UyqVDhLC4OHpuBtwhSQ0ZuhPa8nU+D6SzGMHE1FiNTs=;
- b=IQwS18ZI7crnnbpYRF1xocEaHklD2D+PukRRZT1HnGmT23Ho34stCYUAqVnZmWrpYS
- LeC8djYJrGiiVGUPHuQZKiG4sVYmpLw9PlETADEmNtv0h+vQDaAKL6DS//CwDJs6vHEK
- dhDQ6yLxTMawIfy+Mr11A2JSj0kQRAgMxDGamA5bKvW87eeX93wzuep0FnqJou+9b6Xq
- KFz/D3WpG595WX1BMyClnktSiGMmPZu7b5VGSgSOao8zcCJOC7wNshtyyRGZZPq5bvvj
- HgwSD3D+Oc/we3vCc5VqEN4T8PYWvrft+GEi2LTdUSHy53u7lAeZQ3zYPTTt4Zs7kBqx
- Y9jQ==
+ bh=5Pg6TyKqOEBJ5p2F+vVjKYJQKTqyJO6B+2xoYuenJv4=;
+ b=Uioip74/Cvek/C88/GJF9rB6Ct7bPJU7UacdoAMAvEjYXV3X278WXaUoaOoHjJWzbW
+ P/QJBKhNokIkciz2/sO9lLL8iQNwzQv4Ep+ETMgzK94Nhnbf2FAtW+fVKqeJX1Ndt27q
+ lVOX6GWL3p/3k2U5+fGWQH9327Z9lQhdqWnF5RXOyU9aAcI1cFCh4YgEcB8bqKYUWbn7
+ iYrqDm25Iu/AfZDZ4ed5+fb4Ibztylwal1usi+3RBbxFpntBZq0sSu7YVFlGEZMl7KNQ
+ VaY2XZ6cItH29TY5hWKV3SkvufipS0ZPMEkC70T2qx+GNzuXaUIEY9QyEpA74FWjjVQl
+ uxDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:organization
  :message-id:date:user-agent:mime-version:in-reply-to
  :content-language:content-transfer-encoding;
- bh=UyqVDhLC4OHpuBtwhSQ0ZuhPa8nU+D6SzGMHE1FiNTs=;
- b=gZnY8LRGqSZcRkVOVwZd1MusqYxnNdk2OlgL3eu1TAALJfH5LyWQSkz3P9Z4CYPo/w
- 8v3w8d5efEl2Z86gu1MGWpGCeoc4nreDECQJ+i7hKnd77cVOGrZhw7+9cty9GdlxzScC
- /Bai4M+SN4ZISsGyKrXHrNb6x/vRGJwosIzgaEus7175vkGdkip3dU/NK1EAI3F4lq1Q
- oWv4x4qmLh21YzHRgHj4mCczGLdVfd4y5hYvLJxTwwgIwbx7/+BbJJBpTC8ZiLD1j8vp
- WTynjk0jo7Ax8ez+4nuGcBR8uOMgs2ERsNqf1v8fVlMeMKgVWT+6MJc015mwh2zFGy+E
- lnCg==
-X-Gm-Message-State: APjAAAW+/Q+8Pu/5vVifFyGCTJ3YjP3wuLqDLNR8PizbjtSmwwsz4iwd
- Htea2rEhXbDjWM/mpdvGiuw0Aw==
-X-Google-Smtp-Source: APXvYqwaqRFeeg5cMADmKN0HFpWflJH8cDWRvMWVzAbZ5tlzYUg0lBd+5ttgyFeD7jeKzZl+Fsw5Rw==
-X-Received: by 2002:a19:c90a:: with SMTP id z10mr9993966lff.40.1553444340176; 
- Sun, 24 Mar 2019 09:19:00 -0700 (PDT)
+ bh=5Pg6TyKqOEBJ5p2F+vVjKYJQKTqyJO6B+2xoYuenJv4=;
+ b=arHD5uUXTGtB+FxPI6gp6PH/1CJMq0PS9Ml7PpDgbjVtFRHtfNBT8IET00YEuPhFBq
+ qLk7M2VmEUVCC+y1HSAaT7LfyeaZj/aE9nxOzAVAjo+PttQLofcvrfyaV3Ioh6aAucvT
+ QKnJA3KZhCfnDSdWDdfLvZfX+/mbcDJIuJb0Q1/7+T7MlTJm9zxDL1TDaWkCReldZ2wE
+ 2FLGZiFpcGa/11nIeV+Li0v+9eJoaKUaMQJqqe/JdDNnN9qiBie2Cthrql/o88KGeTeT
+ a3o6wGoSA+t2L548GHJS9dqfZZZ5DuQdqX9JtaQf3MnOCXQa/S9yEcDQzYlymqnYAmJs
+ wteA==
+X-Gm-Message-State: APjAAAVqJBtXA5p0MZh93+n07zVamL7Gm814jhg3HnBJY0s0xrS7l6UP
+ V47v9eh/2B+FB5FUEO3iAH4Y4A==
+X-Google-Smtp-Source: APXvYqx65heiScyKG8alJoDaHCi5DRZy7K7C5cZitdgwR6mOF6H8fyfI0Nk8MZQsTUtPObWBZwf6cA==
+X-Received: by 2002:a2e:9a02:: with SMTP id o2mr1698779lji.179.1553444605756; 
+ Sun, 24 Mar 2019 09:23:25 -0700 (PDT)
 Received: from wasted.cogentembedded.com ([31.173.80.147])
- by smtp.gmail.com with ESMTPSA id u1sm3016475lfm.4.2019.03.24.09.18.57
+ by smtp.gmail.com with ESMTPSA id h68sm2881577lfg.77.2019.03.24.09.23.23
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 24 Mar 2019 09:18:58 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 2/5] dt-bindings: mtd: Add binding documentation
- for Hyperbus memory devices
+ Sun, 24 Mar 2019 09:23:24 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 1/5] mtd: cfi_cmdset_0002: Add support for polling
+ status register
 To: Vignesh Raghavendra <vigneshr@ti.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -83,19 +82,19 @@ To: Vignesh Raghavendra <vigneshr@ti.com>,
  <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Rob Herring <robh+dt@kernel.org>
 References: <20190321174548.9288-1-vigneshr@ti.com>
- <20190321174548.9288-3-vigneshr@ti.com>
+ <20190321174548.9288-2-vigneshr@ti.com>
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 Organization: Cogent Embedded
-Message-ID: <ca3326cb-1b37-cf9a-f196-3288a539d064@cogentembedded.com>
-Date: Sun, 24 Mar 2019 19:18:56 +0300
+Message-ID: <597bbe8e-65d3-40c6-5d15-544e962be7c3@cogentembedded.com>
+Date: Sun, 24 Mar 2019 19:23:23 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.2.1
 MIME-Version: 1.0
-In-Reply-To: <20190321174548.9288-3-vigneshr@ti.com>
+In-Reply-To: <20190321174548.9288-2-vigneshr@ti.com>
 Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190324_091905_365679_71949A67 
-X-CRM114-Status: GOOD (  20.06  )
+X-CRM114-CacheID: sfid-20190324_092327_881191_CBE5786C 
+X-CRM114-Status: GOOD (  22.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -120,30 +119,57 @@ Hello!
 
 On 03/21/2019 08:45 PM, Vignesh Raghavendra wrote:
 
-> Add DT binding documentation for Hyperbus memory devices. Only
-> Hyperflash is supported at the moment.
+> HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
+> Set(0x0002) for flash operations, therefore drivers/mtd/chips/cfi_cmdset_0002.c
+> can be use as is. But these devices do not support DQ polling method of
+> determining chip ready/good status. These flashes provide Status
+> Register whose bits can be polled to know status of flash operation.
+> 
+> Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
+> Extended Query version 1.5. Bit 0 of "Software Features supported" field
+> of CFI Primary Vendor-Specific Extended Query table indicates
+> presence/absence of status register and Bit 1 indicates whether or not
+> DQ polling is supported. Using these bits, its possible to determine
+> whether flash supports DQ polling or need to use Status Register.
+
+   We need?
+
+> Add support for polling status register to know device ready/status of
+> erase/write operations when DQ polling is not supported.
+> 
+> [1] https://www.cypress.com/file/213346/download
 > 
 > Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 > ---
->  Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 50 +++++++++++++++++++++++++++++
+>  include/linux/mtd/cfi.h             |  5 +++
+>  2 files changed, 55 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt b/Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt
-> new file mode 100644
-> index 000000000000..cb408f80b868
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt
-> @@ -0,0 +1,6 @@
-> +Bindings for Hyperflash NOR flash chips compliant with Cypress Hyperbus
-> +specification and supports Cypress CFI specification 1.5 command set.
-> +
-> +Required properties:
-> +- compatible : "cypress,hyperflash" for Hyperflash NOR chips
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 72428b6bfc47..29987d8e6c6e 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+[...]
+> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+> index cbf77168658c..92ac82ac2329 100644
+> --- a/include/linux/mtd/cfi.h
+> +++ b/include/linux/mtd/cfi.h
+> @@ -233,6 +233,11 @@ struct cfi_pri_amdstd {
+>  	uint8_t  VppMin;
+>  	uint8_t  VppMax;
+>  	uint8_t  TopBottom;
+> +	/* Below field are added from version 1.5 */
 
-   What about "cfi-flash", shouldn't it be also specified?
+   The below fields are.
 
-> +- reg : Address where flash's memory mapped space
+> +	uint8_t  ProgramSuspend;
+> +	uint8_t  UnlockBypass;
+> +	uint8_t  SecureSiliconSector;
+> +	uint8_t  SoftwareFeatures;
+>  } __packed;
+>  
+>  /* Vendor-Specific PRI for Atmel chips (command set 0x0002) */
+> 
 
 MBR, Sergei
 
