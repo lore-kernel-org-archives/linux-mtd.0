@@ -2,22 +2,21 @@ Return-Path: <SRS0=pM9p=R4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03789C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 06:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11D25C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 07:33:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5FC4206C0
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 06:45:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D34B220854
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 07:33:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HqhnlPjV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="s9SfYvAe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5FC4206C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZQF69mG0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D34B220854
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,57 +24,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EZJ6zPW5eUzq898E+TBdYWxqxLHlKTGXR9Kch/xRttU=; b=HqhnlPjVWKiskh
-	kg49G1qrSmNUgZL9clxsve9lDnqud3TnblYP4oS/oQ+cUeZthbWjA3TDFmnZJ4cRxXOP6AuKCHObc
-	lmo4+9SBgRbqH2qZXFka/Wverk7hbWLXA4dokgPHkAy9PtJO+mrHTF49Gb8qFQKEiAmpZbOsMZA4M
-	6jxihqoQ6tkNTKkjug8+qOtjX7jqeQ0TEK+IvPFb3HGTrdP8Q6GIyCCk9nt4yBSZMaZ63SMLNNMSk
-	OI88z7iznCNMHxCUEWqXwfQt8Kpcr5Hqmi+ymT50wRY8vmAEboBzeDwUJ3CLoTRAgZdKxpkIUVK7/
-	nvwzsFN32GcR0f8oAT0g==;
+	List-Owner; bh=NWwIkWieIovozDF/sOGNeZnXzGCcKKXmFlFouPOxVps=; b=ZQF69mG0cJrdg+
+	3rpnPn6HUWlsmPvxzlFEop3Lt9COC3gyPmwHOPRVY/rYBdQ3PdhOAXMen6Hp5T9NcA7yJebml6Jgu
+	lw3Uz3YfBdFWLCnjMUbEOnOfQFjiUPez52mdonRPVgYmjIIA/mn2xsQUPLWACuY79bKLAcLyYtguh
+	qlZXDFuJyC43C04fg6uXyZwuqaq/b1zOJgARK2SLX8NHr0pS5hVXbUzoLVDYzQzVyvShMb2Ji4acE
+	Bp/MQ7vNT4fOO3a+Ax8YzCGwAqRnkVAyDnZrGHW2ZKQVeFPxFwzOu+o9itU8Cvx/Ys0lMtV9MY3/v
+	YX511Kw/MzSQcVd5XFtg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8JMW-0000Tb-VE; Mon, 25 Mar 2019 06:45:36 +0000
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
+	id 1h8K6b-0000nf-8I; Mon, 25 Mar 2019 07:33:13 +0000
+Received: from mail-qt1-f193.google.com ([209.85.160.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8JMH-0000KU-5Q; Mon, 25 Mar 2019 06:45:29 +0000
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com
- [209.85.221.181]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id x2P6igBL003738;
- Mon, 25 Mar 2019 15:44:43 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com x2P6igBL003738
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1553496283;
- bh=TBTAAoxc845YLThKvAPkYbBCM6ldvYbj/UGkzwkcQAM=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=s9SfYvAeSqIUtAvXRpZnL3fs+fGErLsknf/UM8QsJCd+E31WXSg8W4awFda3+J8Sd
- WnYCHXk2JEsfZepAmv+CysBKLnqmhQEKM0rPUd5KD2d8F16pId5qvhma7zkNPZsmKB
- S85mimjzYlvb94oGamww08hck4dFGnybJirdkvWdc4lzI4qS7j4Vq2VJw92okBS1SW
- 4cp7uBLkaV2TA2XvEuSRJhfPIJ/F5W5QoEqhUG7VNrD+ePJdQFf/BshskYshCberRv
- 9eFNYSojHTFFxRkki3KpOgnTmA8R4DaBIlnuwpI8MkV4aZ7FSvwlhIrrBChClK4u8A
- jxwnRXEu//UIw==
-X-Nifty-SrcIP: [209.85.221.181]
-Received: by mail-vk1-f181.google.com with SMTP id l17so1712204vke.7;
- Sun, 24 Mar 2019 23:44:43 -0700 (PDT)
-X-Gm-Message-State: APjAAAVJUerq4t/q6IwKCJKw69NrcFWeQmYQX+QgsmEmQUOqfzozJ/b9
- WUu7L3LHLAP1Bth9PYLx6BxqfmT5jbCON5jTvwQ=
-X-Google-Smtp-Source: APXvYqwTSFTBYn1wiYBRqHfKdoCVAdr+1/wgpdan2TCSHZXnhVT5/9jZ4MbEQSjIRz89Tdd3klpPpTJYpCQPkyUEguo=
-X-Received: by 2002:a1f:b297:: with SMTP id b145mr13805982vkf.74.1553496282456; 
- Sun, 24 Mar 2019 23:44:42 -0700 (PDT)
+ id 1h8K6W-0000mc-2M; Mon, 25 Mar 2019 07:33:11 +0000
+Received: by mail-qt1-f193.google.com with SMTP id v20so9094032qtv.12;
+ Mon, 25 Mar 2019 00:33:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=1MqoVO4GdF3K6sehfp7D7I5RtwnxGYYTVEiIQ0OI5sQ=;
+ b=QN1Pz1A2b7guxeX+kLtDJhSFnlvqQShSuZ9IiQx8KlFrOk22dddMbXVNWcnbnQ0ztS
+ gCczUcNsz2GTY0iAXD2Io4xJAWe6mSnnQzmtvU/aB+lGTHffJ2Wkn13CkqchABqCyNxZ
+ tlOsbNhiUYg9DBDV6s8wA7SrzxgTgUksLbIZVGYAHQ9uoghqnaHoC5PE9pvBsHcxgeHl
+ p09TD/bs5UqNTHycs2KLd+aas1tYSUBLwGisN5+SQAXxa7ebpbVceQsWSOpJZdcbXn1Q
+ WJG6m0cBlUKr8PNr29ol//lSX5NO6zxixt4ApZWDAZ7Pp5ANyltNt48Op3M7N9Rp4SDD
+ 7Aew==
+X-Gm-Message-State: APjAAAUZA3xiXSgmGzQVczi6x+OH5J9pAAJuqUpWABD6up4tN2cpnwDE
+ 6wUDgkOIwu9K7LUmUHVo+sd2Wgr2BTq9oMcte68=
+X-Google-Smtp-Source: APXvYqxKEsoDhNlT5+1LqguQotzzoYfh33c3j/RJW0lHblejN8SPJQgxr41seRZPVPQ7PbwWXyRFPtHB2ovD82Zw4eY=
+X-Received: by 2002:a0c:9487:: with SMTP id j7mr18527311qvj.180.1553499185439; 
+ Mon, 25 Mar 2019 00:33:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <1553062828-27798-1-git-send-email-yamada.masahiro@socionext.com>
  <CAK8P3a3BG_mxYxxCx4S_+ZKAer_+5FpmkzLk0VrACZekuD=2GQ@mail.gmail.com>
  <CAK8P3a0GEYTbw5XCwzVeZe_-pGF=7e=1kXhH3U+fidnMZeP0CA@mail.gmail.com>
- <20190323092640.Horde.2lm4u26aZox5ialxuIRcYw2@messagerie.si.c-s.fr>
-In-Reply-To: <20190323092640.Horde.2lm4u26aZox5ialxuIRcYw2@messagerie.si.c-s.fr>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 25 Mar 2019 15:44:06 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQGifytZRQXcqma9VuvQPfL2w8NjzLRt7CxzFgvaMhyRw@mail.gmail.com>
-Message-ID: <CAK7LNAQGifytZRQXcqma9VuvQPfL2w8NjzLRt7CxzFgvaMhyRw@mail.gmail.com>
+ <CAK7LNAQvvCVsQtd9ZYkechOSCg4HAeZFaNXCgaBbWWxBYXOgaQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAQvvCVsQtd9ZYkechOSCg4HAeZFaNXCgaBbWWxBYXOgaQ@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 25 Mar 2019 08:32:48 +0100
+Message-ID: <CAK8P3a1P812avY8reSSguYB0jPzgjs+30dSJpKZCnWwzyLoSVQ@mail.gmail.com>
 Subject: Re: [PATCH] compiler: allow all arches to enable
  CONFIG_OPTIMIZE_INLINING
-To: LEROY Christophe <christophe.leroy@c-s.fr>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190324_234521_414722_43EDFC43 
-X-CRM114-Status: GOOD (  11.96  )
+X-CRM114-CacheID: sfid-20190325_003308_111654_A2C40DB1 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,34 +82,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: linux-arch <linux-arch@vger.kernel.org>,
  linux-s390 <linux-s390@vger.kernel.org>, Dave Hansen <dave@sr71.net>,
- Arnd Bergmann <arnd@arndb.de>, the arch/x86 maintainers <x86@kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ the arch/x86 maintainers <x86@kernel.org>, linux-mips@vger.kernel.org,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mips@vger.kernel.org, Paul Burton <paul.burton@mips.com>,
- Ingo Molnar <mingo@redhat.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Paul Burton <paul.burton@mips.com>, Ingo Molnar <mingo@redhat.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCgpPbiBTYXQsIE1hciAyMywgMjAxOSBhdCA1OjI3IFBNIExFUk9ZIENo
-cmlzdG9waGUKPGNocmlzdG9waGUubGVyb3lAYy1zLmZyPiB3cm90ZToKPgo+IEFybmQgQmVyZ21h
-bm4gPGFybmRAYXJuZGIuZGU+IGEgw6ljcml0IDoKPgo+ID4gT24gV2VkLCBNYXIgMjAsIDIwMTkg
-YXQgMTA6NDEgQU0gQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4gd3JvdGU6Cj4gPj4KPiA+
-PiBJJ3ZlIGFkZGVkIHlvdXIgcGF0Y2ggdG8gbXkgcmFuZGNvbmZpZyB0ZXN0IHNldHVwIGFuZCB3
-aWxsIGxldCB5b3UKPiA+PiBrbm93IGlmIEkgc2VlIGFueXRoaW5nIG5vdGljZWFibGUuIEknbSBj
-dXJyZW50bHkgdGVzdGluZyBjbGFuZy1hcm0zMiwKPiA+PiBjbGFuZy1hcm02NCBhbmQgZ2NjLXg4
-Ni4KPiA+Cj4gPiBUaGlzIGlzIHRoZSBvbmx5IGFkZGl0aW9uYWwgYnVnIHRoYXQgaGFzIGNvbWUg
-dXAgc28gZmFyOgo+ID4KPiA+IGAuZXhpdC50ZXh0JyByZWZlcmVuY2VkIGluIHNlY3Rpb24gYC5h
-bHQuc21wLmluaXQnIG9mCj4gPiBkcml2ZXJzL2NoYXIvaXBtaS9pcG1pX21zZ2hhbmRsZXIubzog
-ZGVmaW5lZCBpbiBkaXNjYXJkZWQgc2VjdGlvbgo+ID4gYGV4aXQudGV4dCcgb2YgZHJpdmVycy9j
-aGFyL2lwbWkvaXBtaV9tc2doYW5kbGVyLm8KPgo+IFdvdWxkbid0IGl0IGJlIHVzZWZ1bCB0byBh
-Y3RpdmF0ZSAtV2lubGluZSBnY2Mgd2FybmluZyB0byBlYXNlIGZpbmRpbmcKPiBvdXQgcHJvYmxl
-bWF0aWMgdXNhZ2Ugb2YgaW5saW5lIGtleXdvcmQgPwoKClllcywgaXQgaXMgdXNlZnVsIHRvIGZp
-bmQgb3V0CndoaWNoIGZ1bmN0aW9uIGlzIGNhdXNpbmcgdGhlIGVycm9yLgpUaGFua3MgZm9yIHRo
-ZSB0aXAuCgoKCgotLSAKQmVzdCBSZWdhcmRzCk1hc2FoaXJvIFlhbWFkYQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+On Mon, Mar 25, 2019 at 7:11 AM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+> On Wed, Mar 20, 2019 at 10:34 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Wed, Mar 20, 2019 at 10:41 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > >
+> > > I've added your patch to my randconfig test setup and will let you
+> > > know if I see anything noticeable. I'm currently testing clang-arm32,
+> > > clang-arm64 and gcc-x86.
+> >
+> > This is the only additional bug that has come up so far:
+> >
+> > `.exit.text' referenced in section `.alt.smp.init' of
+> > drivers/char/ipmi/ipmi_msghandler.o: defined in discarded section
+> > `exit.text' of drivers/char/ipmi/ipmi_msghandler.o
+> >
+> > diff --git a/arch/arm/kernel/atags.h b/arch/arm/kernel/atags.h
+> > index 201100226301..84b12e33104d 100644
+> > --- a/arch/arm/kernel/atags.h
+> > +++ b/arch/arm/kernel/atags.h
+> > @@ -5,7 +5,7 @@ void convert_to_tag_list(struct tag *tags);
+> >  const struct machine_desc *setup_machine_tags(phys_addr_t __atags_pointer,
+> >         unsigned int machine_nr);
+> >  #else
+> > -static inline const struct machine_desc *
+> > +static __always_inline const struct machine_desc *
+> >  setup_machine_tags(phys_addr_t __atags_pointer, unsigned int machine_nr)
+> >  {
+> >         early_print("no ATAGS support: can't continue\n");
+> >
+>
+>
+> I do not know why to reproduce it,
+> but is "__init __noreturn" more sensible than
+> "__always_inline" here?
+
+It's in a header file, so it has to be 'inline'. We could make it
+static inline __init __noreturn, but I don't see an advantage over
+__always_inline there.
+
+        Arnd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
