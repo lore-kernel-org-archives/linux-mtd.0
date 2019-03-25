@@ -2,105 +2,61 @@ Return-Path: <SRS0=pM9p=R4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2AC4C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 16:22:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1525C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 16:28:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EBF820828
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 16:22:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E7982087C
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 16:28:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Jkg6ADWl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EBF820828
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sbou2jDS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E7982087C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=udMhOStnakmwVTY4CNv/mZFZH2NI4XeSeIwJjiqTt0I=; b=Jkg6ADWl1+Uq3j
-	gkuVw229M/Ujk0l0Ds0kganngUW6L8pkOQGtDDzVhvtCpTVbnvL2cLzciTTlKGx/IOJ7uIvnlHoyp
-	GXZi9rGbU7KcYretXvaTCrxCXPGHcTsb36JEHB4x1FlHf5x01WrkSPcW3L7zDMSu4a78YTMOUJ5Un
-	o0yStHFR3HRZZEbIJacr5V4D2rcKfVKpeOce4axhNbMit8g+7EZqylNRPMwUL8mlIB8iI7k/uTTjG
-	t8t6c0BkNJhS3oZkEIVkhzWJ586gCJacsJVP2tvZzRI6S7WvYPR23Q/hT15oRv6VIA79ShBiTCuLG
-	cM8uz8Y5p7VTC9h9EOYw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Q2OBrgxvlSNyY55mCmaEegamx/ByMw/PcXae+4PL4SU=; b=sbou2jDSbRTC3F
+	bO2YqbbXe9xW+/dmC8IBK9ud/D0seDC97uZyQf8LeYm1YL4jTquxA1c4BEahjvjg244eFm/0aYtUQ
+	5gLCOKE2gdu8qg/pvu8BaIMlBtPPVH1YFPoZrRTtrU1CCrSbxdBIX68TiRbHdwvVVAafpFKzuI8hF
+	Jmq5uig81NT3VB15sQVzvwefWrP2vmQxOMG7PrabIxPWmE0nn5F7WtnmMNhYTvXZKu6FMzWlSOr3g
+	C8FTEOdWRwe71wOK0myG0j2Duwag5sCJoNi/bjkrO+PgBBcYnjez2xTDFLeDJCTAN8L75pLFd30o8
+	dHcNgF7VXtUK76Xg2nxQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8SMK-0007GB-9d; Mon, 25 Mar 2019 16:22:00 +0000
-Received: from mail.bugwerft.de ([46.23.86.59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8SM9-00079L-Fx; Mon, 25 Mar 2019 16:21:53 +0000
-Received: from [192.168.178.170] (pD95EF892.dip0.t-ipconnect.de
- [217.94.248.146])
- by mail.bugwerft.de (Postfix) with ESMTPSA id 1F2382A56FF;
- Mon, 25 Mar 2019 16:20:23 +0000 (UTC)
-Subject: Re: [PATCH] mtd: rawnand: marvell: select target before setting up
- data interface
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20190321212010.3995-1-daniel@zonque.org>
- <20190322093046.71df010d@xps13>
- <6bcd6f18-6e57-2221-9e32-5bbabfffc48d@zonque.org>
- <20190325100909.5f3558b9@xps13>
-From: Daniel Mack <daniel@zonque.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=daniel@zonque.org; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <60179efc-122f-2439-bd20-ab27b29afa32@zonque.org>
-Date: Mon, 25 Mar 2019 17:21:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+	id 1h8SSy-0001vl-2d; Mon, 25 Mar 2019 16:28:52 +0000
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h8SSu-0001v4-Mz
+ for linux-mtd@lists.infradead.org; Mon, 25 Mar 2019 16:28:51 +0000
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id C2CC9AFDA;
+ Mon, 25 Mar 2019 16:28:45 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id CA5401E429A; Mon, 25 Mar 2019 17:28:44 +0100 (CET)
+Date: Mon, 25 Mar 2019 17:28:44 +0100
+From: Jan Kara <jack@suse.cz>
+To: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Subject: Re: [PATCH] fs: fix warning about Using plain integer as NULL pointer
+Message-ID: <20190325162844.GD8308@quack2.suse.cz>
+References: <20190322221021.GA24814@hari-Inspiron-1545>
 MIME-Version: 1.0
-In-Reply-To: <20190325100909.5f3558b9@xps13>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190322221021.GA24814@hari-Inspiron-1545>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_092149_810160_2D7C325E 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20190325_092849_523873_AA97A378 
+X-CRM114-Status: GOOD (  16.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -112,81 +68,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, stable@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
- linux-arm-kernel@lists.infradead.org
+Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Chao Yu <yuchao0@huawei.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On 25/3/2019 10:09 AM, Miquel Raynal wrote:
-> Daniel Mack <daniel@zonque.org> wrote on Fri, 22 Mar 2019 19:48:08
-> +0100:
+On Sat 23-03-19 03:40:21, Hariprasad Kelam wrote:
+> Sparse warning below:
 > 
->> Hi Miquel,
->>
->> On 22/3/2019 9:30 AM, Miquel Raynal wrote:
->>> + Richard: this is fixes materials
->>>
->>> Daniel Mack <daniel@zonque.org> wrote on Thu, 21 Mar 2019 22:20:10
->>> +0100:
->>>   
->>>> Now that the nand drivers are responsible for selecting the target
->>>> prior to hardware access, a call to marvell_nfc_select_target() is
->>>> necessary from marvell_nfc_setup_data_interface().
->>>>
->>>> This is a regression introduced by commit b25251414f6e ("mtd:
->>>> rawnand: marvell: Stop implementing ->select_chip()").
->>>>
->>>> Fixes: b25251414f6e ("mtd: rawnand: marvell: Stop implementing ->select_chip()")
->>>> Cc: Boris Brezillon <boris.brezillon@collabora.com>
->>>> Cc: <stable@vger.kernel.org>
->>>> Signed-off-by: Daniel Mack <daniel@zonque.org>
->>>> ---
->>>>  drivers/mtd/nand/raw/marvell_nand.c | 2 ++
->>>>  1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
->>>> index 84283c6bb0ff..93abe5be8995 100644
->>>> --- a/drivers/mtd/nand/raw/marvell_nand.c
->>>> +++ b/drivers/mtd/nand/raw/marvell_nand.c
->>>> @@ -2325,6 +2325,8 @@ static int marvell_nfc_setup_data_interface(struct nand_chip *chip, int chipnr,
->>>>  	struct marvell_nfc_timings nfc_tmg;
->>>>  	int read_delay;
->>>>  
->>>> +	marvell_nfc_select_target(chip, chip->cur_cs);
->>>> +
->>>>  	sdr = nand_get_sdr_timings(conf);
->>>>  	if (IS_ERR(sdr))
->>>>  		return PTR_ERR(sdr);  
->>>
->>> I had a short look yesterday and this is very likely to be the root
->>> cause of the regression, thank you very much!  
->>
->> Yes it is, it fixes the regression I have reported.
->>
->> Do you want me to resend with that nit addressed you mentioned? My
->> version works well, I know that much :)
+> sudo make C=2 CF=-D__CHECK_ENDIAN__ M=fs
 > 
-> Yes please, resent with Boris' comment addressed and we'll be fine.
+> CHECK   fs/f2fs/data.c
+> fs/f2fs/data.c:426:47: warning: Using plain integer as NULL pointer
+> CHECK   fs/notify/fdinfo.c
+> fs/notify/fdinfo.c:53:87: warning: Using plain integer as NULL pointer
+>  CHECK   fs/ubifs/xattr.c
+> fs/ubifs/xattr.c:615:58: warning: Using plain integer as NULL pointer
+> 
+> Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
 
-I tried this now, and with 'chip->cur_cs' instead of 'chipnr', the
-regression is back. This function is invoked twice during boot, and in
-both cases, 'chip->cur_cs' is -1, while 'chipnr' is 0. The 2nd time this
-function is invoked, the 'selected_die' cache value is 0, so
-marvell_nfc_select_target() bails early, which seems to be a problem.
+fs/notify part looks good to me. Feel free to add:
 
-I can't quite make sense of that yet, all I know is that calling
-marvell_nfc_select_target() with -1 from
-marvell_nfc_setup_data_interface() makes the driver functional again. Hmm.
+Acked-by: Jan Kara <jack@suse.cz>
+
+								Honza
 
 
-Thanks,
-Daniel
+> ---
+>  fs/f2fs/data.c     | 2 +-
+>  fs/notify/fdinfo.c | 2 +-
+>  fs/ubifs/xattr.c   | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 97279441..15a2381 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -423,7 +423,7 @@ static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
+>  
+>  void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type)
+>  {
+> -	__submit_merged_write_cond(sbi, NULL, 0, 0, type, true);
+> +	__submit_merged_write_cond(sbi, NULL, NULL, 0, type, true);
+>  }
+>  
+>  void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
+> diff --git a/fs/notify/fdinfo.c b/fs/notify/fdinfo.c
+> index 1e2bfd2..ef83f40 100644
+> --- a/fs/notify/fdinfo.c
+> +++ b/fs/notify/fdinfo.c
+> @@ -50,7 +50,7 @@ static void show_mark_fhandle(struct seq_file *m, struct inode *inode)
+>  	f.handle.handle_bytes = sizeof(f.pad);
+>  	size = f.handle.handle_bytes >> 2;
+>  
+> -	ret = exportfs_encode_inode_fh(inode, (struct fid *)f.handle.f_handle, &size, 0);
+> +	ret = exportfs_encode_inode_fh(inode, (struct fid *)f.handle.f_handle, &size, NULL);
+>  	if ((ret == FILEID_INVALID) || (ret < 0)) {
+>  		WARN_ONCE(1, "Can't encode file handler for inotify: %d\n", ret);
+>  		return;
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index f5ad1ed..066a566 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -612,7 +612,7 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+>  	int err;
+>  
+>  	err = security_inode_init_security(inode, dentry, qstr,
+> -					   &init_xattrs, 0);
+> +					   &init_xattrs, NULL);
+>  	if (err) {
+>  		struct ubifs_info *c = dentry->i_sb->s_fs_info;
+>  		ubifs_err(c, "cannot initialize security for inode %lu, error %d",
+> -- 
+> 2.7.4
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
