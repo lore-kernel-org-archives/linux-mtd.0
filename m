@@ -2,82 +2,85 @@ Return-Path: <SRS0=pM9p=R4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C5C6C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 17:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CDB5C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 18:32:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30EAD2087E
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 17:57:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E7AB20830
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 18:32:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WW9QoKmv";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="D9c8wTs0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30EAD2087E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OowblMCC";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="p/psuEGd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E7AB20830
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xz1hJCUY1hRZa+tHOPQkLmeFgYzjRZq1eAaBZybkTMU=; b=WW9QoKmvcs0Q8e
-	AjVYMRzf1LBRcMjckbf+og+hRdgcAuIMjRVcL3ooIDIH+qW7gNKzUpJ3R3sUewvq3Lb3+QNo0oSka
-	n28Qw9a/k7LVsqvhNlKpnfyxSzGI5ukLnegVnznqopkumKIFLqucQCtncdVjBzoqwntWKCFgYbHCp
-	8wpwknQD1fJk8RGtice/klJl4ZWMP5IS9+5fYJvTIAdHllJBcCUZaVQI1rb8Cy8qwPOkI+9mZj9MJ
-	P55Nrrd/8p97NIqlshKzXtJDu2aZsmFh0tkL3UoEvD882xoKgBjg4g3eBZsV7tx2ePc1ChRqJX14T
-	LPAObSKmHC6hjrxwZVrg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:
+	Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=RM6IM/nK12aYoHqu14yWcAzXf9WxOLa7hb4EwvnDFUw=; b=OowblMCCa6LxZ4DAG9tt5HCDe
+	AoFuEqIB3H7X2dXQ/MjtlOdmpy3iy5altj+QApzQsJc23V+UL+hnZ6PqFrxticQEb1ECWt4zvQ92v
+	fCMiFJ80gvOZyCKg0uca8Kpdle8PjAj59jsqZfdV9H4FUWMMrlEjIfMNj7zydVvzvaWstG2A0UMVx
+	mZhIP8Iw5MghmjSDGRROD93p6hQI3Y0Wjilttj12iHA3CpwfDeyuNJ02GfUSVNy27xK1HyXVULvhc
+	QxqES8dVoKBL4DeTm2onXiyzB5qhjymOsk7JQAZuZnxc2X2nwy/N0f+hHaDlmRVnXu1N4HE9sRYCd
+	eeEAmC+OA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8Tqb-0006ZA-S9; Mon, 25 Mar 2019 17:57:21 +0000
-Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
+	id 1h8UOE-0006MS-S3; Mon, 25 Mar 2019 18:32:06 +0000
+Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8TqV-0006Uu-Vz
- for linux-mtd@lists.infradead.org; Mon, 25 Mar 2019 17:57:18 +0000
-Received: by mail-pf1-x444.google.com with SMTP id i19so6810778pfd.0
- for <linux-mtd@lists.infradead.org>; Mon, 25 Mar 2019 10:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ id 1h8UNo-0005n4-Ry; Mon, 25 Mar 2019 18:32:05 +0000
+Received: by mail-oi1-x241.google.com with SMTP id v10so3459626oib.1;
+ Mon, 25 Mar 2019 11:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=googlemail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=x0H6tmkxza/8d0+N913JHZ3De4yw9yKeqvruKlu2rc4=;
- b=D9c8wTs0NkN7Uh8lWSEvsILq9RHew5bXj8s5S7P4xFoAEVAJph4XOii7koKyaN03i8
- deWHhDjYPVRem2gGURMZ4Ohsf8uM4V/U/UpNEB+4oujSICm/Yu9uSBz6zYpjqpq88aps
- cD7SPllYvd/Jqcqd0e0eGx0eoKh3AOqaK95m4iv0n/x/ImLIzC4k0BE7x9+W+jQYGaDC
- 5Pkw7EfoSMGMfnnVei/F5Afk4POU8ucNH2QlzZoD+DTO0pgEXDTNILnRmkQmguEoqK+O
- ZNiPL/1e2LV2uHetTFT8HX5GxMyJBBBi+3I/EvxmmFCe3Es+fd2RuuWVFPctk/7DXEt3
- iwWg==
+ :cc; bh=De4EaLx9v93H4rVCB9OpKmCuXJ71zefVFfl8bToAja8=;
+ b=p/psuEGd+bbH84nCMhcR2daLTOwWMpTx48QQFy0ea9FgbMAPI8OV9l3cPelA0UnXTw
+ yNdukP3Njy2aa+tv22/A4TKJfJfS3wqJuVs0EI5WasO34XocggcaS/vpz4SV55Xh38/o
+ gWbu0WC6cb2vsKL8iXvgpr7O3J7RRcPfNuTHKV3qnsT9I413mAFzSA6GEoRzOwJECinC
+ 1tsKI5tHfEiruKn1ztiO/tU65nym5IS2Vt9v3NO/GdbJor5opMqtdjM+mM0uj6BWLL9r
+ 4vJwVIQJx13nSo3vkn8UNI4n5KcEZ+PhXibBCai21qWIn0djEfCrkuCFJLu4vYr8DDEG
+ Mw5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=x0H6tmkxza/8d0+N913JHZ3De4yw9yKeqvruKlu2rc4=;
- b=kxirvOsUn8oY7VDXgH3h8uvrH7tY7aPjHC20UhFONa9OoLnOK938hIB8rTslRmEt8P
- /Us3vJy0DF8BjIrXOPSpE86HGU8fS3XcpxvvvwW+bx3daHw60EpPETfhYZfBcsbykzmT
- hnSBeDrIgsyhWzcFKWvxJsb6OJcU+I9bA7K+L5+LleuYsVYzv4GPfhjOOweopXd8SAEf
- y++kAEBuwD6BGhnUJMWgyRxBbXcENKFlFjwgKVWKQ77sze7cgwcNFbORumwFSHMLw+uF
- GQUERY7k66RbVW/eObdYFyT7U5z6jle9mab5o+w1aihipT3OYuRDqvKmEPI2bqAaMxzO
- 3f4Q==
-X-Gm-Message-State: APjAAAWEiPmMB1KbIrr8ToadyUbzhvaPX4ipC0RAdLm2FWmFsLJOssML
- kKNO9cihngsyt17vv57lgIZgRHzz/x4Dl3qs9DF+5A==
-X-Google-Smtp-Source: APXvYqzyuJ7+cZVdUhdxPd44AK/Lb7S1zjwyVJIgc78P3c9DApdnlx6RPs+bTeyQ6ch6HV72IUo+B3dO5vYPXABBB6E=
-X-Received: by 2002:a63:84c7:: with SMTP id
- k190mr24506978pgd.255.1553536631433; 
- Mon, 25 Mar 2019 10:57:11 -0700 (PDT)
+ bh=De4EaLx9v93H4rVCB9OpKmCuXJ71zefVFfl8bToAja8=;
+ b=iDC/Q/P90FHyi8Or8grs5LgaBVzVuM+m50UyP2vX2RaS6n/zhMJwkkXbOPNGgE1voc
+ fGkZ8ZZ0wz0SO3IsGtDcrYawp7eHr+AZh6BfQDvHMU/aNZJBjSpDUXfJ3RN9hieyXhsu
+ TR1Sd2zeO75S+FtO7yJqBLMhslY/qDx/S8TcLKiPuImHNH+2BcfT9ESkOTM2BGfcC2ij
+ sJowIi6iCoqWSm4S2CBNk131+VgCT2OlzIVXrE45EZrC75TLUfkN1wF98oOc9TpDXM4g
+ pm9WZmqqIuJ2cLGq3qi1nOt4Hpjx36/8tFwv58C7JknAkeJpW6+E+gBqmkVdVSo5d5cc
+ Zn4Q==
+X-Gm-Message-State: APjAAAXRVVMCf0Lrqw0jFj7kD2JjjGD+B16OScSO5KMrXjCpC6wGrZWI
+ NvohWnOCD+MqQmKbIGbcz/F8LwdJDiaLEYWCZ90=
+X-Google-Smtp-Source: APXvYqweyMJzn4BD11eQrMQCO8LR/J0VVuDuZzmXPjzzKYYY6SYp4FkhWRAhdA0GV/Xtwo99XpOYoKmoe13aHDuvk5o=
+X-Received: by 2002:aca:6209:: with SMTP id w9mr13107288oib.47.1553538697302; 
+ Mon, 25 Mar 2019 11:31:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190324194505.3244479-1-arnd@arndb.de>
-In-Reply-To: <20190324194505.3244479-1-arnd@arndb.de>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 25 Mar 2019 10:57:00 -0700
-Message-ID: <CAKwvOdmH+G6asuizkYJ-A6OTepQ6MXKzTmLYoWrCK8nhXxYahw@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: work around high stack usage with clang
-To: Arnd Bergmann <arnd@arndb.de>
+References: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
+ <20190321214401.GC19508@bombadil.infradead.org>
+ <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
+ <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
+In-Reply-To: <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Mon, 25 Mar 2019 19:31:26 +0100
+Message-ID: <CAFBinCA=0XSSVmzfTgb4eSiVFr=XRHqLOVFGyK0++XRty6VjnQ@mail.gmail.com>
+Subject: Re: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
+To: Liang Yang <liang.yang@amlogic.com>
+Content-Type: multipart/mixed; boundary="0000000000003310550584ef6a0f"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_105716_083727_5935FB8B 
-X-CRM114-Status: GOOD (  23.34  )
+X-CRM114-CacheID: sfid-20190325_113141_561877_2948F602 
+X-CRM114-Status: GOOD (  27.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,94 +92,303 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
- Eric Biggers <ebiggers@google.com>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, LKML <linux-kernel@vger.kernel.org>,
- clang-built-linux@googlegroups.com, linux-mtd@lists.infradead.org,
- Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mhocko@suse.com, linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+ Matthew Wilcox <willy@infradead.org>, rppt@linux.ibm.com, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Mar 24, 2019 at 12:45 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> Building this file with clang can result in large stack usage as seen from
-> this warning:
->
-> fs/ubifs/auth.c:78:5: error: stack frame size of 1152 bytes in function 'ubifs_prepare_auth_node'
->
-> The problem is that inlining ubifs_hash_calc_hmac() leads to
-> two SHASH_DESC_ON_STACK() blocks in the same function, and clang
-> for some reason does not reuse the stack space as it should.
->
-> Putting the first declaration into a separate basic block avoids
-> this problem and reduces the stack allocation to 640 bytes.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+--0000000000003310550584ef6a0f
+Content-Type: text/plain; charset="UTF-8"
 
-LGTM; in general, it can be useful to always include a comment before
-a new scope like:
+Hi Liang,
 
-/* New scope to limit lifetime of large stack allocated hash_desc. */
-
-but folks can always refer to the git blame/log for reasoning as to
-why a new scope was added.
-
-I plan on working on a pass in LLVM to improve stack slot reuse
-sometime in 2019Q2.  Thanks for this patch.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  fs/ubifs/auth.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
+On Mon, Mar 25, 2019 at 11:03 AM Liang Yang <liang.yang@amlogic.com> wrote:
 >
-> diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-> index 5bf5fd08879e..5d3d0b37a908 100644
-> --- a/fs/ubifs/auth.c
-> +++ b/fs/ubifs/auth.c
-> @@ -78,7 +78,6 @@ static int ubifs_hash_calc_hmac(const struct ubifs_info *c, const u8 *hash,
->  int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
->                              struct shash_desc *inhash)
->  {
-> -       SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
->         struct ubifs_auth_node *auth = node;
->         u8 *hash;
->         int err;
-> @@ -87,13 +86,17 @@ int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
->         if (!hash)
->                 return -ENOMEM;
+> Hi Martin,
 >
-> -       hash_desc->tfm = c->hash_tfm;
-> -       hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> -       ubifs_shash_copy_state(c, inhash, hash_desc);
-> +       {
-> +               SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
+> On 2019/3/23 5:07, Martin Blumenstingl wrote:
+> > Hi Matthew,
+> >
+> > On Thu, Mar 21, 2019 at 10:44 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >>
+> >> On Thu, Mar 21, 2019 at 09:17:34PM +0100, Martin Blumenstingl wrote:
+> >>> Hello,
+> >>>
+> >>> I am experiencing the following crash:
+> >>>    ------------[ cut here ]------------
+> >>>    kernel BUG at mm/slub.c:3950!
+> >>
+> >>          if (unlikely(!PageSlab(page))) {
+> >>                  BUG_ON(!PageCompound(page));
+> >>
+> >> You called kfree() on the address of a page which wasn't allocated by slab.
+> >>
+> >>> I have traced this crash to the kfree() in meson_nfc_read_buf().
+> >>> my observation is as follows:
+> >>> - meson_nfc_read_buf() is called 7 times without any crash, the
+> >>> kzalloc() call returns 0xe9e6c600 (virtual address) / 0x29e6c600
+> >>> (physical address)
+> >>> - the eight time meson_nfc_read_buf() is called kzalloc() call returns
+> >>> 0xee39a38b (virtual address) / 0x2e39a38b (physical address) and the
+> >>> final kfree() crashes
+> >>> - changing the size in the kzalloc() call from PER_INFO_BYTE (= 8) to
+> >>> PAGE_SIZE works around that crash
+> >>
+> >> I suspect you're doing something which corrupts memory.  Overrunning
+> >> the end of your allocation or something similar.  Have you tried KASAN
+> >> or even the various slab debugging (eg redzones)?
+> > KASAN is not available on 32-bit ARM. there was some progress last
+> > year [0] but it didn't make it into mainline. I tried to make the
+> > patches apply again and got it to compile (and my kernel is still
+> > booting) but I have no idea if it's still working. for anyone
+> > interested, my patches are here: [1] (I consider this a HACK because I
+> > don't know anything about the code which is being touched in the
+> > patches, I only made it compile)
+> >
+> > SLAB debugging (redzones) were a great hint, thank you very much for
+> > that Matthew! I enabled:
+> >    CONFIG_SLUB_DEBUG=y
+> >    CONFIG_SLUB_DEBUG_ON=y
+> > and with that I now get "BUG kmalloc-64 (Not tainted): Redzone
+> > overwritten" (a larger kernel log extract is attached).
+> >
+> > I'm starting to wonder if the NAND controller (hardware) writes more
+> > than 8 bytes.
+> > some context: the "info" buffer allocated in meson_nfc_read_buf is
+> > then passed to the NAND controller IP (after using dma_map_single).
+> >
+> > Liang, how does the NAND controller know that it only has to send
+> > PER_INFO_BYTE (= 8) bytes when called from meson_nfc_read_buf? all
+> > other callers of meson_nfc_dma_buffer_setup (which passes the info
+> > buffer to the hardware) are using (nand->ecc.steps * PER_INFO_BYTE)
+> > bytes?
+> >
+> NFC_CMD_N2M and CMDRWGEN are different commands. CMDRWGEN needs to set
+> the ecc page size (1KB or 512B) and Pages(2, 4, 8, ...), so
+> PER_INFO_BYTE(= 8) bytes for each ecc page.
+> I have never used NFC_CMD_N2M to transfer data before, because it is
+> very low efficient. And I do a experiment with the attachment and find
+> on overwritten on my meson axg platform.
 >
-> -       err = crypto_shash_final(hash_desc, hash);
-> -       if (err)
-> -               goto out;
-> +               hash_desc->tfm = c->hash_tfm;
-> +               hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +               ubifs_shash_copy_state(c, inhash, hash_desc);
-> +
-> +               err = crypto_shash_final(hash_desc, hash);
-> +               if (err)
-> +                       goto out;
-> +       }
->
->         err = ubifs_hash_calc_hmac(c, hash, auth->hmac);
->         if (err)
-> --
-> 2.20.0
->
+> Martin, I would appreciate it very much if you would try the attachment
+> on your meson m8b platform.
+thank you for your debug patch! on my board 2 * PER_INFO_BYTE is not enough.
+I took the idea from your patch and adapted it so I could print a
+buffer with 256 bytes (which seems to be "big enough" for my board).
+see the attached, modified patch
+
+in the output I see that sometimes the first 32 bytes are not touched
+by the controller, but everything beyond 32 bytes is modified in the
+info buffer.
+
+I also tried to increase the buffer size to 512, but that didn't make
+a difference (I never saw any info buffer modification beyond 256
+bytes).
+
+also I just noticed that I didn't give you much details on my NAND chip yet.
+from Amlogic vendor u-boot on Meson8m2 (all my Meson8b boards have
+eMMC flash, but I believe the NAND controller on Meson8 to GXBB is
+identical):
+  m8m2_n200_v1#amlnf chipinfo
+  flash  info
+  name:B revision 20nm NAND 8GiB H27UCG8T2B, id:ad de 94 eb 74 44  0  0
+  pagesize:0x4000, blocksize:0x400000, oobsize:0x500, chipsize:0x2000,
+    option:0x8, T_REA:16, T_RHOH:15
+  hw controller info
+  chip_num:1, onfi_mode:0, page_shift:14, block_shift:22, option:0xc2
+  ecc_unit:1024, ecc_bytes:70, ecc_steps:16, ecc_max:40
+  bch_mode:5, user_mode:2, oobavail:32, oobtail:64384
 
 
--- 
-Thanks,
-~Nick Desaulniers
+Regards
+
+Martin
+
+--0000000000003310550584ef6a0f
+Content-Type: text/plain; charset="US-ASCII"; name="debug-256-buffer-output.txt"
+Content-Disposition: attachment; filename="debug-256-buffer-output.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jtoomclb1>
+X-Attachment-Id: f_jtoomclb1
+
+Li4uClsgICAgMi43MTY4ODVdIDAwMDAwMDAwOiAwMDAwIDgwMDUgMjgwMCAyOTQ1IGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAg
+Mi43MjA0NjRdIDAwMDAwMDIwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43Mjk2ODld
+IDAwMDAwMDQwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43Mzg4NDddIDAwMDAwMDYw
+OiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43NDgwNjVdIDAwMDAwMDgwOiBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkClsgICAgMi43NTcyMjhdIDAwMDAwMGEwOiBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkClsgICAgMi43NjY0MDRdIDAwMDAwMGMwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsg
+ICAgMi43NzU2MDJdIDAwMDAwMGUwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43ODQ3
+ODBdIApbICAgIDIuNzg2MzA2XSAwMDAwMDAwMDogMDAwMCA4MDFiIDI4MDAgMjk0NSBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAg
+IDIuNzk1NDU1XSAwMDAwMDAyMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODA0NjM4
+XSAwMDAwMDA0MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODEzODI4XSAwMDAwMDA2
+MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODIzMDE0XSAwMDAwMDA4MDogZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODMyMjAzXSAwMDAwMDBhMDogZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZApbICAgIDIuODQxMzkwXSAwMDAwMDBjMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApb
+ICAgIDIuODUwNTgwXSAwMDAwMDBlMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODU5
+NzU5XSAKWyAgICAyLjg2MTMwM10gMDAwMDAwMDA6IDAwMDAgODAxMSAzZDAwIDI5NWUgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAg
+ICAyLjg3MDQzNV0gMDAwMDAwMjA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjg3OTYx
+OF0gMDAwMDAwNDA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjg4ODgxMl0gMDAwMDAw
+NjA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjg5Nzk5Nl0gMDAwMDAwODA6IGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjkwNzE4NF0gMDAwMDAwYTA6IGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQKWyAgICAyLjkxNjM2NF0gMDAwMDAwYzA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQK
+WyAgICAyLjkyNTU1OV0gMDAwMDAwZTA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjkz
+NDc0MV0gClsgICAgMi45MzYzNjddIDAwMDAwMDAwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsg
+ICAgMi45NDU0MTNdIDAwMDAwMDIwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
+IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45NTQ2
+MDBdIDAwMDAwMDQwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
+YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45NjM4MDNdIDAwMDAw
+MDYwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
+NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45NzI5NzhdIDAwMDAwMDgwOiA2YjZi
+IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
+YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45ODIxNjNdIDAwMDAwMGEwOiA2YjZiIDZiNmIgNmI2
+YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
+NmI2YiA2YjZiClsgICAgMi45OTEzNTJdIDAwMDAwMGMwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
+NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
+ClsgICAgMy4wMDA1MzldIDAwMDAwMGUwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
+YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiBhNTZiClsgICAgMy4w
+MDk3MjJdIApbICAgIDMuMDExMjMzXSAwMDAwMDAwMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApb
+ICAgIDMuMDIwMzkwXSAwMDAwMDAyMDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
+YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDI5
+NTgwXSAwMDAwMDA0MDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
+NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDM4NzY2XSAwMDAw
+MDA2MDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
+YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDQ3OTcxXSAwMDAwMDA4MDogNmI2
+YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
+NmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDU3MTQ1XSAwMDAwMDBhMDogNmI2YiA2YjZiIDZi
+NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
+IDZiNmIgNmI2YgpbICAgIDMuMDY2MzI1XSAwMDAwMDBjMDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2
+YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
+YgpbICAgIDMuMDc1NTIxXSAwMDAwMDBlMDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
+NmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgYTU2YgpbICAgIDMu
+MDg0NzAwXSAKWyAgICAzLjA4NjIxM10gMDAwMDAwMDA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQK
+WyAgICAzLjA5NTM3M10gMDAwMDAwMjA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
+NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjEw
+NDU1OF0gMDAwMDAwNDA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
+YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjExMzc0OF0gMDAw
+MDAwNjA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
+NmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjEyMjkzNF0gMDAwMDAwODA6IDZi
+NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
+IDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjEzMjEyNF0gMDAwMDAwYTA6IDZiNmIgNmI2YiA2
+YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
+YiA2YjZiIDZiNmIKWyAgICAzLjE0MTMxMV0gMDAwMDAwYzA6IDZiNmIgNmI2YiA2YjZiIDZiNmIg
+NmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
+NmIKWyAgICAzLjE1MDUwNV0gMDAwMDAwZTA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
+IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIGE1NmIKWyAgICAz
+LjE1OTY4MV0gClsgICAgMy4xNjExNzFdIENvdWxkIG5vdCBmaW5kIGEgdmFsaWQgT05GSSBwYXJh
+bWV0ZXIgcGFnZSwgdHJ5aW5nIGJpdC13aXNlIG1ham9yaXR5IHRvIHJlY292ZXIgaXQKWyAgICAz
+LjE2OTc4Nl0gT05GSSBwYXJhbWV0ZXIgcmVjb3ZlcnkgZmFpbGVkLCBhYm9ydGluZwpbICAgIDMu
+MTc0NzQwXSAwMDAwMDAwMDogMDAwMCA4MDEwIDNkMDAgMjk1ZSBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMTgzODc3XSAw
+MDAwMDAyMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMTkzMDY0XSAwMDAwMDA0MDog
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMjAyMjQ5XSAwMDAwMDA2MDogZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZApbICAgIDMuMjExNDM5XSAwMDAwMDA4MDogZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZApbICAgIDMuMjIwNjI2XSAwMDAwMDBhMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAg
+IDMuMjI5ODE1XSAwMDAwMDBjMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMjM5MDAy
+XSAwMDAwMDBlMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMjQ4MTg0XSAKWyAgICAz
+LjI0OTc0M10gMDAwMDAwMDA6IDAwMDAgODAxMCAyMmMwIDI5NWUgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI1ODg1N10g
+MDAwMDAwMjA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI2ODA0NF0gMDAwMDAwNDA6
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI3NzIzMV0gMDAwMDAwNjA6IGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI4NjQxMV0gMDAwMDAwODA6IGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQKWyAgICAzLjI5NTYwN10gMDAwMDAwYTA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAg
+ICAzLjMwNDc5NF0gMDAwMDAwYzA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjMxMzk4
+NF0gMDAwMDAwZTA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjMyMzE2M10gClsgICAg
+My4zMjQ2NTddIG5hbmQ6IGRldmljZSBmb3VuZCwgTWFudWZhY3R1cmVyIElEOiAweGFkLCBDaGlw
+IElEOiAweGRlClsgICAgMy4zMzA5NjhdIG5hbmQ6IEh5bml4IE5BTkQgOEdpQiAzLDNWIDgtYml0
+ClsgICAgMy4zMzUyMTBdIG5hbmQ6IDgxOTIgTWlCLCBNTEMsIGVyYXNlIHNpemU6IDQwOTYgS2lC
+LCBwYWdlIHNpemU6IDE2Mzg0LCBPT0Igc2l6ZTogMTI4MApbICAgIDMuMzQzMjc0XSAwMDAwMDAw
+MDogMDAwMCA4MDEwIDI0MDAgMjk1ZSBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzUyMzkwXSAwMDAwMDAyMDogZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzYxNTcyXSAwMDAwMDA0MDogZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZApbICAgIDMuMzcwNzYyXSAwMDAwMDA2MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
+IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApb
+ICAgIDMuMzc5OTYzXSAwMDAwMDA4MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzg5
+MTQwXSAwMDAwMDBhMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
+ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzk4MzI2XSAwMDAw
+MDBjMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
+ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuNDA3NTE5XSAwMDAwMDBlMDogZmRm
+ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
+ZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuNDE2Njk1XSAKLi4uCg==
+--0000000000003310550584ef6a0f
+Content-Type: application/x-patch; name="nand_debug_martin.patch"
+Content-Disposition: attachment; filename="nand_debug_martin.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jtoomcks0>
+X-Attachment-Id: f_jtoomcks0
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyBiL2RyaXZlcnMv
+bXRkL25hbmQvcmF3L21lc29uX25hbmQuYwppbmRleCBjYjBiMDNlMzZhMzUuLjZkNzkyNzE1MDA4
+MSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5jCisrKyBiL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYwpAQCAtNTI3LDEyICs1MjcsMTQgQEAgc3Rh
+dGljIGludCBtZXNvbl9uZmNfcmVhZF9idWYoc3RydWN0IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1
+ZiwgaW50IGxlbikKIAl1MzIgY21kOwogCXU4ICppbmZvOwogCi0JaW5mbyA9IGt6YWxsb2MoUEVS
+X0lORk9fQllURSwgR0ZQX0tFUk5FTCk7CisJaW5mbyA9IGt6YWxsb2MoMjU2LCBHRlBfS0VSTkVM
+KTsKIAlpZiAoIWluZm8pCiAJCXJldHVybiAtRU5PTUVNOwogCi0JcmV0ID0gbWVzb25fbmZjX2Rt
+YV9idWZmZXJfc2V0dXAobmFuZCwgYnVmLCBsZW4sIGluZm8sCi0JCQkJCSBQRVJfSU5GT19CWVRF
+LCBETUFfRlJPTV9ERVZJQ0UpOworCW1lbXNldChpbmZvLCAweEZELCAyNTYpOworCisJcmV0ID0g
+bWVzb25fbmZjX2RtYV9idWZmZXJfc2V0dXAobmFuZCwgYnVmLCBsZW4sIGluZm8sIFBFUl9JTkZP
+X0JZVEUsCisJCQkJCSBETUFfRlJPTV9ERVZJQ0UpOwogCWlmIChyZXQpCiAJCWdvdG8gb3V0Owog
+CkBAIC01NDQsNiArNTQ2LDkgQEAgc3RhdGljIGludCBtZXNvbl9uZmNfcmVhZF9idWYoc3RydWN0
+IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1ZiwgaW50IGxlbikKIAltZXNvbl9uZmNfZG1hX2J1ZmZl
+cl9yZWxlYXNlKG5hbmQsIGxlbiwgUEVSX0lORk9fQllURSwgRE1BX0ZST01fREVWSUNFKTsKIAog
+b3V0OgorCXByaW50X2hleF9kdW1wKEtFUk5fRVJSLCAiIiwgRFVNUF9QUkVGSVhfT0ZGU0VULCAz
+MiwgMiwgaW5mbywgMjU2LCBmYWxzZSk7CisJcHJpbnRrKCJcbiIpOworCiAJa2ZyZWUoaW5mbyk7
+CiAKIAlyZXR1cm4gcmV0Owo=
+--0000000000003310550584ef6a0f
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--0000000000003310550584ef6a0f--
+
