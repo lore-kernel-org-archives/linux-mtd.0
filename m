@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC27C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 10:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4918C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 10:27:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45FBB20870
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 10:26:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 69DFF20863
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 10:27:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kKmZKnbR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45FBB20870
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eQj/EMu/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69DFF20863
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,53 +24,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W3nUySbFre2SlGwZwGv3MYHmMNnGN7ixtGpz8ga0q48=; b=kKmZKnbRqMc/Q1
-	+BeL9jclUcq0+cYs1eLU/67NNStDtQjLDvWBDhAk0KFB7RHiZ3H/8CkNeVtr9DCa/uRQbKvdCQgdN
-	+zwDa9gQwCllIU07W2kfK4HHGDpoyELqNtStvBrp8t3L7hwEhyX5ICnag56GrDJ3zOreIdsh524Hd
-	RocuFeAmnSZPsmfzFNJbz8SjJMAsI5NSEHtQGYb8VkBR17cZ68DsR6Wf7QOafmrw8U2nVfeUDn/SH
-	4tMVqKADQ9tLXPOTADPY7fNgrek3M8zMkTPrkZgg0F8/N+ftG4vrJA/EpDjWNGcmxVmLH3M95cQ3c
-	69sas08xNBCSb3gc1CdQ==;
+	List-Owner; bh=R+EAsnHc2K2DvBQ8egNJY63o6TCU+Kg/AUYnn446Sc0=; b=eQj/EMu/PQByuU
+	8S3fobSmpWyPGvNVo/3jgqb22amHcKqdMuohaYU77gUZIzoaNnB4ei3TSWkEr6Fv3ZA+45nfxarrw
+	jWDishAWGh5SU/h/3ltoTGntgAADgArpATwS2rSTqFZRziWBmjJl71E1YDJoPAytudVm6D/gzeuOk
+	d6bu+fgEI8xyXnlrLTjwivkBniklbVm1I/Wr6I2AYMClMG0QoOwMOAe/AAESMcx+jNzGKmATOA/Vz
+	vl0oBfBuwzTzKSGzFYTZkWAzztkdcBbmQrNFqxr20zE50iJBmYdxRSz3RUYU1mS473upaM8g7ovw4
+	wTkHy4eGzXtf/PHqhHOg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8Mnn-0000Pp-LG; Mon, 25 Mar 2019 10:25:59 +0000
-Received: from mail-qt1-f194.google.com ([209.85.160.194])
+	id 1h8Mpc-000141-Pd; Mon, 25 Mar 2019 10:27:52 +0000
+Received: from mail-qt1-f195.google.com ([209.85.160.195])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8Mnj-0000On-5g; Mon, 25 Mar 2019 10:25:58 +0000
-Received: by mail-qt1-f194.google.com with SMTP id x12so9553639qts.7;
- Mon, 25 Mar 2019 03:25:53 -0700 (PDT)
+ id 1h8MpV-00012e-9T; Mon, 25 Mar 2019 10:27:50 +0000
+Received: by mail-qt1-f195.google.com with SMTP id y36so9585481qtb.3;
+ Mon, 25 Mar 2019 03:27:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=uptj+eh0cd0E1jTQT2RebCWvCgUIjjYNwZDO+zjMQlo=;
- b=RY71CJs7ymzzYVpTU9eshnMGk8pC9/Tl4GjwV0hH6QRHDqfJc7ZEr1j0b+xVrDO1KC
- eVRDvEZC+Nl4YKYYHPzjyMVKxTHF10arkLzxhQ1Bai/sSdgaLMvoVvrEyYjCn5egV4M8
- /9Co+Nzz+wCM5oTmPTLxYeP18yY1thoOq5qSeESJVu7jT7zoWPrSBhR/tXtEFvCPsOUm
- wdopj1PADS2b5fzNDQu+AYGI5e1eC3j8OlX7mpiS5UVACn714wW+fXYusmVR2Pb/Pndb
- YX1g/cpERMmcLLN8p4IiKVY74ztEP6b+IFv0ZiFqC5ccgTg6rHvkrciSXLTldzov00A5
- kLjA==
-X-Gm-Message-State: APjAAAVJS7c5Mv293uTzqQ49JgeemoCT2YVX0wGIT9JMqLiuUzL5QJ1R
- dNTKcd9UUXSFipCFMGMcgQtg28tJSOTM5LYchtoeow==
-X-Google-Smtp-Source: APXvYqzGC36CS17RsbRIMSM2NUx4KUTTuXGfJCXxY4s1a67ibbIU6+K0CM3qgDFINgtkxQIR4biGlim06jrN/EGtVB0=
-X-Received: by 2002:ac8:2692:: with SMTP id 18mr19682479qto.343.1553509551667; 
- Mon, 25 Mar 2019 03:25:51 -0700 (PDT)
+ bh=WWk2E7FS2keWQ3mp16IWcnefUS4l+ZTi/r4nGIMgIAY=;
+ b=exw2rXdXY/FGu1CXrnSdvNPFSDAQ9sK0vaimW5wg82rUEyXpGxr2GGxiN6bJfTiP6K
+ VBd/snLrb9ppJG41nYESmPfuxh4gyyaEs6pFW9HPwxVjn6qGvDnjO4pwrEND56JvLyXN
+ 0nh0OB6KluPsEZyN5RHl+9nslgOpnO6QoeQZPjaMINrdNU8D0TGaWI9DrpgRwBIsfYGe
+ QCJpv67uAirUixf8n5Eb1CFiSgJhB5IEennJjptk5aZcTtseowaTlQJ67pM8QGbGJX68
+ 8Tbeo1aojeW3QyzU+ypyCNWtdFa1LVXQS7XZsHUYVBOMXWxNoyTeUc7nlql+/VYcF9H6
+ dKgA==
+X-Gm-Message-State: APjAAAXO51JrVOEzEfZ56zu3C72tsr6s+QdrYh+HIrxO5rG23OILz6lu
+ Oi0FP/j5fc9O+/l9fRDGX+GiIenO44DjUz+1S2Y=
+X-Google-Smtp-Source: APXvYqyjyImGL1pGf/aDVmDwHNjft4SZK7XiOGetAykXBVPrR+YAK8JAm8dLkG811rLOdSD5qF9H6YdvL0SvSIQwzSg=
+X-Received: by 2002:a0c:b758:: with SMTP id q24mr19400309qve.149.1553509659744; 
+ Mon, 25 Mar 2019 03:27:39 -0700 (PDT)
 MIME-Version: 1.0
 References: <1553062828-27798-1-git-send-email-yamada.masahiro@socionext.com>
  <CAK8P3a3BG_mxYxxCx4S_+ZKAer_+5FpmkzLk0VrACZekuD=2GQ@mail.gmail.com>
  <CAK8P3a0GEYTbw5XCwzVeZe_-pGF=7e=1kXhH3U+fidnMZeP0CA@mail.gmail.com>
- <CAK7LNAQvvCVsQtd9ZYkechOSCg4HAeZFaNXCgaBbWWxBYXOgaQ@mail.gmail.com>
- <CAK8P3a1P812avY8reSSguYB0jPzgjs+30dSJpKZCnWwzyLoSVQ@mail.gmail.com>
- <CAK7LNARatcRQ2u0JhiZHx4qU+mzS=SUv-kj7F-7-Vx--RFX5tw@mail.gmail.com>
-In-Reply-To: <CAK7LNARatcRQ2u0JhiZHx4qU+mzS=SUv-kj7F-7-Vx--RFX5tw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0GEYTbw5XCwzVeZe_-pGF=7e=1kXhH3U+fidnMZeP0CA@mail.gmail.com>
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 25 Mar 2019 11:25:33 +0100
-Message-ID: <CAK8P3a1QQeK1cBN2O8=p+zceQ7tw-ovYtWq6sBeavDucDWA7Lg@mail.gmail.com>
+Date: Mon, 25 Mar 2019 11:27:22 +0100
+Message-ID: <CAK8P3a3SRYAHSoNfLb7_25O8kP6faN=Bg--QNOzaL9=wVn=ycw@mail.gmail.com>
 Subject: Re: [PATCH] compiler: allow all arches to enable
  CONFIG_OPTIMIZE_INLINING
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_032555_217224_BD13B96F 
-X-CRM114-Status: GOOD (  12.75  )
+X-CRM114-CacheID: sfid-20190325_032745_323989_A38A00AC 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -97,32 +94,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 25, 2019 at 8:55 AM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
+On Wed, Mar 20, 2019 at 2:34 PM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> On Mon, Mar 25, 2019 at 4:33 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Wed, Mar 20, 2019 at 10:41 AM Arnd Bergmann <arnd@arndb.de> wrote:
 > >
-> > On Mon, Mar 25, 2019 at 7:11 AM Masahiro Yamada
-> > <yamada.masahiro@socionext.com> wrote:
-> > > I do not know why to reproduce it,
-> > > but is "__init __noreturn" more sensible than
-> > > "__always_inline" here?
-> >
-> > It's in a header file, so it has to be 'inline'. We could make it
-> > static inline __init __noreturn,
+> > I've added your patch to my randconfig test setup and will let you
+> > know if I see anything noticeable. I'm currently testing clang-arm32,
+> > clang-arm64 and gcc-x86.
 >
-> Yes, I like 'static inline __init __noreturn'
+> This is the only additional bug that has come up so far:
 >
-> > but I don't see an advantage over
-> > __always_inline there.
->
-> __always_inline takes away the compiler's freedom.
->
-> I'd like to leave it up to the compiler where possible.
+> `.exit.text' referenced in section `.alt.smp.init' of
+> drivers/char/ipmi/ipmi_msghandler.o: defined in discarded section
+> `exit.text' of drivers/char/ipmi/ipmi_msghandler.o
 
-Ok, fair enough.
+FWIW, the message up there does not match the patch anyway,
+that was an unrelated bug.
 
-      Arnd
+     Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
