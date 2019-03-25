@@ -2,109 +2,73 @@ Return-Path: <SRS0=pM9p=R4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD921C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 13:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F805C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 16:03:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8AA920830
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 13:52:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D90A20830
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 16:03:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hA0T6iYW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=infinera.com header.i=@infinera.com header.b="kWYCqOf0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8AA920830
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=infinera.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eyW7/c1q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="hmkmYQvm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D90A20830
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BKZcFcb0F5qZRFcd/3V4dOKxf3dV4f54wWXoeI/WTds=; b=hA0T6iYWEN1oQ2
-	3xxjC/eXdvo/ixOwSqs1SsdQkPHRPY8K43ARbCcmdHJjRU1Vm69Mf9q0zr2D+d7U9agbRxrRF8XrC
-	mNRscTk/yOow9rxx+UlvqonKeBJm2mjFSSHX94XgItBdv5ywUtB6D2xrW/Ur8lWZikiIQfzy08Zju
-	yW7T388RcnBOV+iinHdHoMvEcj1T19st6GfDzNKdl8kb1gJimYOSBi50Hcebak6IV0fcmLn/cnIJS
-	1ym3fQrubFb3mSueMZFi+BbXLgNSbi1Gcpg+fADrwiz3C2jsl3jFkKc2YiMDW9hFMrWkw2trJeEun
-	oCIqmrXOVvAEH+bqi7Bw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=vPnY+ByHPTxAP4wb6iu5O98bvGcijW3Y0av1i6597fY=; b=eyW7/c1qqvtSrw0AeXIgWepOo
+	dn/ZKN6i2nNolh+RrVyaHJmb0dzavAENnLFxzYRH+Ae3MvR4ufvxDr7VibzVRdNBqt3BHIHxxC75C
+	WyMk9gec1srfjMQjUoCT6EJzTgMipV+/j6wLju7TnSqiNDeXIHTuF3i6Uf4Cvwrr0oTV+nXKUDhNK
+	ungEcZs8Vb8MEGyWlQiMNm5FW/Zsh0GXJBk7UaLDfJ1CKoamA1sc/8duS8Amkoex5h6esXyw3/t2E
+	utqHORkiatIblHnhFaI40qVTWwPKyy7bx5TAN4BlyQr6oZMKf9E8OiLW0zE0BhCs9tomvtT+OHCA6
+	Gx2dvemEw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8Q1F-00055t-0b; Mon, 25 Mar 2019 13:52:05 +0000
-Received: from mail-eopbgr770071.outbound.protection.outlook.com
- ([40.107.77.71] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+	id 1h8S4X-0005h6-Vs; Mon, 25 Mar 2019 16:03:37 +0000
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8Q17-00054h-Ld; Mon, 25 Mar 2019 13:52:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z8FU2S7YYltHz9HsPo84oGk4cXe4V/5/+ZVDotP0voI=;
- b=kWYCqOf0ZxYWJ0M14HFEwxksNcSDtZjKyF7S8w3uT/sA0sT+q5KXXWbWiNW0ulTrEUrHZrQiAGFGLkMwdSP18oL43WLDL98EiRbeZ5EFSUc7ZudHmVc6par+JyUQrzHxZXRB2tuadtNKJsu7tc2tb5HIut/tRzIBZSm/972hadE=
-Received: from BN8PR10MB3540.namprd10.prod.outlook.com (20.179.78.205) by
- BN8PR10MB3651.namprd10.prod.outlook.com (20.179.96.33) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1730.18; Mon, 25 Mar 2019 13:51:49 +0000
-Received: from BN8PR10MB3540.namprd10.prod.outlook.com
- ([fe80::18aa:cf18:b8d3:d77f]) by BN8PR10MB3540.namprd10.prod.outlook.com
- ([fe80::18aa:cf18:b8d3:d77f%5]) with mapi id 15.20.1730.019; Mon, 25 Mar 2019
- 13:51:48 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "richard@nod.at" <richard@nod.at>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH v2 1/5] mtd: cfi_cmdset_0002: Add support for polling
- status register
-Thread-Topic: [RFC PATCH v2 1/5] mtd: cfi_cmdset_0002: Add support for polling
- status register
-Thread-Index: AQHU4A390EDhLD8/jkyjBXiay9/acKYWYsWAgAXxyICAAA8cAA==
-Date: Mon, 25 Mar 2019 13:51:48 +0000
-Message-ID: <107cd92703919f97f4cf2d9cd279b091bc90518e.camel@infinera.com>
-References: <20190321174548.9288-1-vigneshr@ti.com>
- <20190321174548.9288-2-vigneshr@ti.com>
- <f92362a0678b07d22ccc0f271fe3483dc77364a9.camel@infinera.com>
- <b1961c49-6795-89e7-e154-6270bf43d49c@ti.com>
-In-Reply-To: <b1961c49-6795-89e7-e154-6270bf43d49c@ti.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Joakim.Tjernlund@infinera.com; 
-x-originating-ip: [88.131.87.201]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e2c53933-9980-48bb-5bc1-08d6b1290707
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);
- SRVR:BN8PR10MB3651; 
-x-ms-traffictypediagnostic: BN8PR10MB3651:
-x-microsoft-antispam-prvs: <BN8PR10MB365154BC0F48FF0C067D97A8F45E0@BN8PR10MB3651.namprd10.prod.outlook.com>
-x-forefront-prvs: 0987ACA2E2
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(396003)(366004)(346002)(136003)(39860400002)(189003)(199004)(7416002)(6116002)(81156014)(2201001)(3846002)(72206003)(105586002)(81166006)(446003)(11346002)(229853002)(8676002)(6436002)(53936002)(2616005)(476003)(68736007)(86362001)(478600001)(316002)(6486002)(6512007)(7736002)(305945005)(93886005)(110136005)(6246003)(54906003)(118296001)(2906002)(6506007)(5660300002)(26005)(2501003)(102836004)(14454004)(53546011)(186003)(97736004)(8936002)(71190400001)(4326008)(99286004)(486006)(25786009)(66066001)(106356001)(36756003)(256004)(71200400001)(5024004)(14444005)(76176011)(21314003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN8PR10MB3651;
- H:BN8PR10MB3540.namprd10.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: infinera.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: ENUq5H3XmT/P845IrZLZzKX601g3OeglZ1e6uqwUjQ1/dvHlgGbSFyvoMHvcsDLSuyTuuCpa4thEzIiOA2iSHr9/o/W2bx2bey6u5PssfURWSaCLwWSNEION6CQm3QgBVZo/sCzjFVmcpSwD6cT/Jtdl7LT2PtpSGBGHBN3Hk5MLxonHaANk5HdcdRwd6Xn0ep98EFB5EeFyOF8ifaRlzfEWbS700BggkbU9voVPj40IQkplOIofNdFRkZK7Po3k/p8tg2cugre2MRLFD9lx5rYQvHT1cWZej0D8+ekWEVp/nL/wgMbkGDQtxEykTPA3JjMiHmTElDRBIjZqxWzeTOlID2zlcoyNKOOchS8CCpZQ939Tn+IM+X56R9Q1LnxX7POFe9KBIojIo4b4Sxml3XOmk9DuayIFnWfr37gsWtQ=
-Content-ID: <64F643BA9BD1D64099EF7B7EE1AC61D6@namprd10.prod.outlook.com>
+ id 1h8S4K-0005ZN-N3; Mon, 25 Mar 2019 16:03:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=bVatkp1ZOcVOBlKz/e+XJrjrAYMID8wn3F0WJ//LFdM=; b=hmkmYQvmSVfrtNTvQ/7zrh1UT
+ L+l6Off4RPoxge/R7435f19CK1kpFLWK2K8CQe2inrZf46AQJ788saGqDXGeAqCaR5RghqhvtScRI
+ yOfiSb1iMFiBM9Gu8V3MgcLkO6T4N0qnsm23GwFExARH6HO0IyPNeNG+6zfgwNdVZi4Ds=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=debutante.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpa (Exim 4.89)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1h8S4A-0002cY-6t; Mon, 25 Mar 2019 16:03:14 +0000
+Received: by debutante.sirena.org.uk (Postfix, from userid 1000)
+ id 76CBB11288F1; Mon, 25 Mar 2019 16:03:13 +0000 (GMT)
+Date: Mon, 25 Mar 2019 16:03:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Ludovic Barre <ludovic.Barre@st.com>
+Subject: Re: [PATCH 1/2] spi: stm32-qspi: add spi_master_put in release
+ function
+Message-ID: <20190325160313.GJ7284@sirena.org.uk>
+References: <1553265354-16433-1-git-send-email-ludovic.Barre@st.com>
+ <1553265354-16433-2-git-send-email-ludovic.Barre@st.com>
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2c53933-9980-48bb-5bc1-08d6b1290707
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2019 13:51:48.8271 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR10MB3651
+In-Reply-To: <1553265354-16433-2-git-send-email-ludovic.Barre@st.com>
+X-Cookie: Short people get rained on last.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_065157_800956_7104B7AB 
-X-CRM114-Status: GOOD (  27.54  )
+X-CRM114-CacheID: sfid-20190325_090325_712420_A9380081 
+X-CRM114-Status: UNSURE (   7.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -116,113 +80,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>,
- "sergei.shtylyov@cogentembedded.com" <sergei.shtylyov@cogentembedded.com>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "nsekhar@ti.com" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "masonccyang@mxic.com.tw" <masonccyang@mxic.com.tw>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Alexandre Torgue <alexandre.torgue@st.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============0606123775237977612=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2019-03-25 at 18:27 +0530, Vignesh Raghavendra wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
-> 
-> 
-> Hi,
-> 
-> On 21/03/19 11:41 PM, Joakim Tjernlund wrote:
-> > On Thu, 2019-03-21 at 23:15 +0530, Vignesh Raghavendra wrote:
-> > > HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
-> > > Set(0x0002) for flash operations, therefore drivers/mtd/chips/cfi_cmdset_0002.c
-> > > can be use as is. But these devices do not support DQ polling method of
-> > > determining chip ready/good status. These flashes provide Status
-> > > Register whose bits can be polled to know status of flash operation.
-> > > 
-> > > Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
-> > > Extended Query version 1.5. Bit 0 of "Software Features supported" field
-> > > of CFI Primary Vendor-Specific Extended Query table indicates
-> > > presence/absence of status register and Bit 1 indicates whether or not
-> > > DQ polling is supported. Using these bits, its possible to determine
-> > > whether flash supports DQ polling or need to use Status Register.
-> > > 
-> > > Add support for polling status register to know device ready/status of
-> > > erase/write operations when DQ polling is not supported.
-> > 
-> > Isn't this new Status scheme just a copy of Intels(cmdset_0001)?
-> 
-> Yes, but with one difference: At the end of program/erase operation,
-> device directly enters status register mode and  starts reflecting
-> status register content at any address.
-> The device remains in the read status register state until another
-> command is written to the device. Therefore there is notion of device is
-> in "status register read mode" (FL_STATUS) state
 
-That seems to vary and long time ago RMK added this:
-		/* If the flash has finished erasing, then 'erase suspend'
-		 * appears to make some (28F320) flash devices switch to
-		 * 'read' mode.  Make sure that we switch to 'read status'
-		 * mode so we get the right data. --rmk
-		 */
-		map_write(map, CMD(0x70), chip->in_progress_block_addr);
+--===============0606123775237977612==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tAmVnWIZ6lqEAvSf"
+Content-Disposition: inline
 
-> 
-> But in case of cfi_cmdset_0002, once program/erase operation is
-> complete, device returns to previous address space overlay from which
-> operation was started from (mostly read mode)
 
-I hope you can do the same as Intel here, issue an explicit Status CMD or you will be in trouble.
+--tAmVnWIZ6lqEAvSf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, I think you need to use the various map_word_xxx as in:
-status = map_read(map, chip->in_progress_block_addr);
-if (map_word_andequal(map, status, status_OK, status_OK))
-	break;
-otherwise you will break interleaved setups(like two 8-bit flashes in parallel to
-form one 16 bit bus). Maybe this is not supported for CMDSET 0002 ?
+On Fri, Mar 22, 2019 at 03:35:53PM +0100, Ludovic Barre wrote:
+> From: Ludovic Barre <ludovic.barre@st.com>
+>=20
+> This patch adds spi_master_put in release function
+> to drop the controller's refcount.
 
- Jocke
+I'm getting build errors with this:
 
-> 
-> In order to enter status register overlay mode, Read Status command is
-> to be written to addr_unlock1(0x555) address. The overlay is in effect
-> for one read access, specifically the next read access that follows the
-> Status Register Read command
-> Therefore code around FL_STATUS state in cfi_cmdset_0001 is not
-> applicable to cfi_cmdset_0002 as is.
-> 
-> 
-> > If so I think the new status impl. in 0002 should borrow from 0001 as this is a
-> > hardened and battle tested impl.
-> > 
-> 
-> In case of cfi_cmdset_0001.c, program/erase is followed by
-> inval_cache_and_wait_for_operation() to poll ready bit and based on
-> status register value, success or the error handling is done.
-> 
-> Most of the code corresponding to inval_cache_and_wait_for_operation()
-> is already in cfi_cmdset_0002.c. So, whats missing in this patch is
-> handling and reporting of errors as reflected in status register after
-> write/erase failures. I will add that in the next version.
-> 
-> But, I don't see much to borrow apart from error handling sequence.
-> Please, let me know if I missed something.
-> 
-> > I know other modern 0002 chips supports both old and new impl. of Status and I world
-> > guess that we will see more chips with new Status only.
-> > 
-> 
-> Agreed. Newer devices would mostly be CFI 1.5.
-> 
-> --
-> Regards
-> Vignesh
+  CC      drivers/spi/spi-stm32-qspi.o
+drivers/spi/spi-stm32-qspi.c: In function =E2=80=98stm32_qspi_probe=E2=80=
+=99:
+drivers/spi/spi-stm32-qspi.c:430:8: error: =E2=80=98struct stm32_qspi=E2=80=
+=99 has no member named =E2=80=98phys_base=E2=80=99; did you mean =E2=80=98=
+io_base=E2=80=99?
+  qspi->phys_base =3D res->start;
+        ^~~~~~~~~
+        io_base
+
+--tAmVnWIZ6lqEAvSf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyY+8AACgkQJNaLcl1U
+h9B0aQf/fdWpPjnowIBjcy1bnS1nYt1V/UZopHw918CDYM0j/ws6gqcZ6hliRlSB
+2WhwMUaq4th49OQOitBHw/kDyQAS7gkfvHhg9LyEL0B5nkVnQDTN8pfnsRj7b/5N
+fjG2AM6bMKjeiyUl97ObpJrDPvNUi6Gp/RwAXVlFLEXMKrN5vnnzaQYEfpctAFp5
+JBMc6n9Qp2Ao5jAHb6Kw0yGqnrFvDDz/Rnp03ofXJJI4T+lvtwp+rUz2R3ZzyRlC
+SHP68Lapg/Jk+AQ3EQexlyR3SpOezzpiDRH4iECxNH98nNX3WmUQJ5u8WjMTGU75
+0eNyyzqbd0DM8wXYWOd0QSHCV0JCaA==
+=T4u8
+-----END PGP SIGNATURE-----
+
+--tAmVnWIZ6lqEAvSf--
+
+
+--===============0606123775237977612==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0606123775237977612==--
+
