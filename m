@@ -2,60 +2,82 @@ Return-Path: <SRS0=pM9p=R4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B963CC43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 09:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A535C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 09:48:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8856F2087E
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 09:09:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FBFB20870
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 09:48:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l4dk/3DX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8856F2087E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E+DkpcFX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oudiTICJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FBFB20870
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JObnC242VovpCwCp7C8NEW6eHDLvxLCVbbiOfzMe6Sk=; b=l4dk/3DXYou8f9
-	jiod7TNBdmPArs1zV0rdqOLXeuyKhoO4nLTV4B+wFmA5FuuazLVFB2cUwiw6aml/Dy4NcIspn5n4m
-	s2P+xnRdBxT7SvDocB7LTaFHg8Flca08qu0QD4aBBsC1yS/FWQmSiwFLngM4a5H96DYMBYpR6xAis
-	0SREqrUT1fh6i3AQJ9F1gtefng4XlR6a+HUjkfXKa3LqCLo+jB/RFZnfmb4Jx9Y3Mmsmyz4XAOR8y
-	cM7yzdRuc+OrOnWHjHYJfOQ9tEiEH1LvXYRG80pnDSVhxz5B0UyNNQ357ISDu0hmKwWBgstfxsaTk
-	2WTUc7JKIGNYma8HFzbA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=gCMTmqcXRKzu6v8+gp7yOJAiBh/zOL3qlS6+eVKnMh8=; b=E+DkpcFXKKDw+D
+	YUAdpaLTTJdLLXcaK/IJ76EofSRKIAMa1fk+700NzREt2pXmNbkSS8Mn7y+Tr3FFGgvpXBqBElOSH
+	RSbvnCrdnRe1+v2Ikxaw6tBFU0QdBxFgsXondHHTTdcz8Uvwuxfluk1Q870Q+lQlDkGrkRCTrnan6
+	4VVam/AT1fDY585qAadaIqi3wUmZZajPKJya5DbuGAD9jo0MwxKOSgXnqvCFpmvhaILY3eJoC85Rz
+	RCY7p99IHHOp8VV5urX32OZyQWFAyJ4W2OITAyiPpmgiY7zxafTBax1jxfkGH/PY2c50IsYdtt4aG
+	T9E22W3hzEx7+ud/o6LA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8Lbz-0004sM-71; Mon, 25 Mar 2019 09:09:43 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1h8MDU-0004Zg-V9; Mon, 25 Mar 2019 09:48:28 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8Lbq-0004kb-J0; Mon, 25 Mar 2019 09:09:36 +0000
-Received: from xps13 (aaubervilliers-681-1-92-153.w90-88.abo.wanadoo.fr
- [90.88.33.153]) (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id F1A80100022;
- Mon, 25 Mar 2019 09:09:10 +0000 (UTC)
-Date: Mon, 25 Mar 2019 10:09:09 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] mtd: rawnand: marvell: select target before setting up
- data interface
-Message-ID: <20190325100909.5f3558b9@xps13>
-In-Reply-To: <6bcd6f18-6e57-2221-9e32-5bbabfffc48d@zonque.org>
-References: <20190321212010.3995-1-daniel@zonque.org>
- <20190322093046.71df010d@xps13>
- <6bcd6f18-6e57-2221-9e32-5bbabfffc48d@zonque.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1h8MDO-0004YY-VQ
+ for linux-mtd@lists.infradead.org; Mon, 25 Mar 2019 09:48:26 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x2P9mBtb013481;
+ Mon, 25 Mar 2019 04:48:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1553507291;
+ bh=28Peh/jxho5OJxt0QTnKzgP2PiaE22m6eGhTdEuyud0=;
+ h=From:To:CC:Subject:Date;
+ b=oudiTICJCDndvb8PBP2iKqClrc1305ySH7r/XknhOhP8WnoF3LohTZkuok0vmvvw/
+ aWRKZN2d9VFIGFABYfoAE+iXSmXhsHh6bZRoh43XJrIJ2df1ZNF6xMMoY23Jq62RRk
+ cwwVNyD+H2RApCubcwGuf1hfsgK3BqEMAT+2kaWI=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x2P9mBRI022187
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 25 Mar 2019 04:48:11 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 25
+ Mar 2019 04:48:11 -0500
+Received: from dflp32.itg.ti.com (10.64.6.15) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_0,
+ cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5 via Frontend Transport;
+ Mon, 25 Mar 2019 04:48:11 -0500
+Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x2P9m7mF004811;
+ Mon, 25 Mar 2019 04:48:08 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH] MAINTAINERS: Add myself as co-maintainer for MTD
+Date: Mon, 25 Mar 2019 15:18:46 +0530
+Message-ID: <20190325094846.30709-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_020934_772766_339BE45C 
-X-CRM114-Status: GOOD (  17.69  )
+X-CRM114-CacheID: sfid-20190325_024823_052640_492C872B 
+X-CRM114-Status: GOOD (  15.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -67,48 +89,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, stable@vger.kernel.org,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGFuaWVsLAoKRGFuaWVsIE1hY2sgPGRhbmllbEB6b25xdWUub3JnPiB3cm90ZSBvbiBGcmks
-IDIyIE1hciAyMDE5IDE5OjQ4OjA4CiswMTAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24gMjIvMy8y
-MDE5IDk6MzAgQU0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPiArIFJpY2hhcmQ6IHRoaXMgaXMg
-Zml4ZXMgbWF0ZXJpYWxzCj4gPiAKPiA+IERhbmllbCBNYWNrIDxkYW5pZWxAem9ucXVlLm9yZz4g
-d3JvdGUgb24gVGh1LCAyMSBNYXIgMjAxOSAyMjoyMDoxMAo+ID4gKzAxMDA6Cj4gPiAgIAo+ID4+
-IE5vdyB0aGF0IHRoZSBuYW5kIGRyaXZlcnMgYXJlIHJlc3BvbnNpYmxlIGZvciBzZWxlY3Rpbmcg
-dGhlIHRhcmdldAo+ID4+IHByaW9yIHRvIGhhcmR3YXJlIGFjY2VzcywgYSBjYWxsIHRvIG1hcnZl
-bGxfbmZjX3NlbGVjdF90YXJnZXQoKSBpcwo+ID4+IG5lY2Vzc2FyeSBmcm9tIG1hcnZlbGxfbmZj
-X3NldHVwX2RhdGFfaW50ZXJmYWNlKCkuCj4gPj4KPiA+PiBUaGlzIGlzIGEgcmVncmVzc2lvbiBp
-bnRyb2R1Y2VkIGJ5IGNvbW1pdCBiMjUyNTE0MTRmNmUgKCJtdGQ6Cj4gPj4gcmF3bmFuZDogbWFy
-dmVsbDogU3RvcCBpbXBsZW1lbnRpbmcgLT5zZWxlY3RfY2hpcCgpIikuCj4gPj4KPiA+PiBGaXhl
-czogYjI1MjUxNDE0ZjZlICgibXRkOiByYXduYW5kOiBtYXJ2ZWxsOiBTdG9wIGltcGxlbWVudGlu
-ZyAtPnNlbGVjdF9jaGlwKCkiKQo+ID4+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXpp
-bGxvbkBjb2xsYWJvcmEuY29tPgo+ID4+IENjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz4KPiA+
-PiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjayA8ZGFuaWVsQHpvbnF1ZS5vcmc+Cj4gPj4gLS0t
-Cj4gPj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L21hcnZlbGxfbmFuZC5jIHwgMiArKwo+ID4+ICAx
-IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4gPj4KPiA+PiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvbmFuZC9yYXcvbWFydmVsbF9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9t
-YXJ2ZWxsX25hbmQuYwo+ID4+IGluZGV4IDg0MjgzYzZiYjBmZi4uOTNhYmU1YmU4OTk1IDEwMDY0
-NAo+ID4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21hcnZlbGxfbmFuZC5jCj4gPj4gKysr
-IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFydmVsbF9uYW5kLmMKPiA+PiBAQCAtMjMyNSw2ICsy
-MzI1LDggQEAgc3RhdGljIGludCBtYXJ2ZWxsX25mY19zZXR1cF9kYXRhX2ludGVyZmFjZShzdHJ1
-Y3QgbmFuZF9jaGlwICpjaGlwLCBpbnQgY2hpcG5yLAo+ID4+ICAJc3RydWN0IG1hcnZlbGxfbmZj
-X3RpbWluZ3MgbmZjX3RtZzsKPiA+PiAgCWludCByZWFkX2RlbGF5Owo+ID4+ICAKPiA+PiArCW1h
-cnZlbGxfbmZjX3NlbGVjdF90YXJnZXQoY2hpcCwgY2hpcC0+Y3VyX2NzKTsKPiA+PiArCj4gPj4g
-IAlzZHIgPSBuYW5kX2dldF9zZHJfdGltaW5ncyhjb25mKTsKPiA+PiAgCWlmIChJU19FUlIoc2Ry
-KSkKPiA+PiAgCQlyZXR1cm4gUFRSX0VSUihzZHIpOyAgCj4gPiAKPiA+IEkgaGFkIGEgc2hvcnQg
-bG9vayB5ZXN0ZXJkYXkgYW5kIHRoaXMgaXMgdmVyeSBsaWtlbHkgdG8gYmUgdGhlIHJvb3QKPiA+
-IGNhdXNlIG9mIHRoZSByZWdyZXNzaW9uLCB0aGFuayB5b3UgdmVyeSBtdWNoISAgCj4gCj4gWWVz
-IGl0IGlzLCBpdCBmaXhlcyB0aGUgcmVncmVzc2lvbiBJIGhhdmUgcmVwb3J0ZWQuCj4gCj4gRG8g
-eW91IHdhbnQgbWUgdG8gcmVzZW5kIHdpdGggdGhhdCBuaXQgYWRkcmVzc2VkIHlvdSBtZW50aW9u
-ZWQ/IE15Cj4gdmVyc2lvbiB3b3JrcyB3ZWxsLCBJIGtub3cgdGhhdCBtdWNoIDopCgpZZXMgcGxl
-YXNlLCByZXNlbnQgd2l0aCBCb3JpcycgY29tbWVudCBhZGRyZXNzZWQgYW5kIHdlJ2xsIGJlIGZp
-bmUuCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+I have been contributing and reviewing MTD patches for a while now and
+would like to add myself as co-maintainer for MTD to help maintain
+CFI and SPI NOR parts of the subsystem.
+Hopefully, this will help in taking some load off current maintainers.
+
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3453f397ad87..d950fa01d829 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10014,6 +10014,7 @@ M:	Brian Norris <computersforpeace@gmail.com>
+ M:	Boris Brezillon <bbrezillon@kernel.org>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
++M:	Vignesh Raghavendra <vigneshr@ti.com>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+-- 
+2.21.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
