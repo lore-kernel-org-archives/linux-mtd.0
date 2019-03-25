@@ -2,85 +2,98 @@ Return-Path: <SRS0=pM9p=R4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CDB5C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 18:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCC49C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 20:14:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E7AB20830
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 18:32:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BBE32087C
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 20:14:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OowblMCC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="p/psuEGd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E7AB20830
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HVU5MtiF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="XHlyZlEX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BBE32087C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:To:
-	Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=RM6IM/nK12aYoHqu14yWcAzXf9WxOLa7hb4EwvnDFUw=; b=OowblMCCa6LxZ4DAG9tt5HCDe
-	AoFuEqIB3H7X2dXQ/MjtlOdmpy3iy5altj+QApzQsJc23V+UL+hnZ6PqFrxticQEb1ECWt4zvQ92v
-	fCMiFJ80gvOZyCKg0uca8Kpdle8PjAj59jsqZfdV9H4FUWMMrlEjIfMNj7zydVvzvaWstG2A0UMVx
-	mZhIP8Iw5MghmjSDGRROD93p6hQI3Y0Wjilttj12iHA3CpwfDeyuNJ02GfUSVNy27xK1HyXVULvhc
-	QxqES8dVoKBL4DeTm2onXiyzB5qhjymOsk7JQAZuZnxc2X2nwy/N0f+hHaDlmRVnXu1N4HE9sRYCd
-	eeEAmC+OA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ixG0J9F8PYy/wzCzrCfPZNvH+kI8jg42VYxQvjAcIvM=; b=HVU5MtiFPStPif
+	r/5/k6fKNfBP/UqlvNs3fH89iUl7Ht3Z5jNB/tZlHOl+k4w+rRUx5MdyBkGwrYoXHpUjoUdI2uQQR
+	590PJDLun/KY3rb5tnonBZLDaLPvMpgQG3e433WHnbNIkflA7r7sNgHiKtOM/qHvUV6DeG8ZPGEto
+	J/20J1XpI4wWWgiTW0kGoANbLWavjirmK5Mm+4t5oMlyKuR60V7aNIaLh9d1AkAvqVO3Nn502TOhZ
+	a6QQsTvL/DlXHW1lJQzybnfjEVoVt3Xi1rt5Vl4iNJk9mxINVitPOBZwKVGmMNDx2pKwQ0i1uMBE0
+	d8oJxqDm8iqgmHVmf/KQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8UOE-0006MS-S3; Mon, 25 Mar 2019 18:32:06 +0000
-Received: from mail-oi1-x241.google.com ([2607:f8b0:4864:20::241])
+	id 1h8Vyl-0000SC-SV; Mon, 25 Mar 2019 20:13:55 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8UNo-0005n4-Ry; Mon, 25 Mar 2019 18:32:05 +0000
-Received: by mail-oi1-x241.google.com with SMTP id v10so3459626oib.1;
- Mon, 25 Mar 2019 11:31:39 -0700 (PDT)
+ id 1h8Vyc-0000Kx-Pr
+ for linux-mtd@lists.infradead.org; Mon, 25 Mar 2019 20:13:49 +0000
+Received: by mail-lj1-x241.google.com with SMTP id v22so9032997lje.9
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Mar 2019 13:13:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=De4EaLx9v93H4rVCB9OpKmCuXJ71zefVFfl8bToAja8=;
- b=p/psuEGd+bbH84nCMhcR2daLTOwWMpTx48QQFy0ea9FgbMAPI8OV9l3cPelA0UnXTw
- yNdukP3Njy2aa+tv22/A4TKJfJfS3wqJuVs0EI5WasO34XocggcaS/vpz4SV55Xh38/o
- gWbu0WC6cb2vsKL8iXvgpr7O3J7RRcPfNuTHKV3qnsT9I413mAFzSA6GEoRzOwJECinC
- 1tsKI5tHfEiruKn1ztiO/tU65nym5IS2Vt9v3NO/GdbJor5opMqtdjM+mM0uj6BWLL9r
- 4vJwVIQJx13nSo3vkn8UNI4n5KcEZ+PhXibBCai21qWIn0djEfCrkuCFJLu4vYr8DDEG
- Mw5g==
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=M3hXDey3IsqYK6xV0My06hiJ6NVz3dADomQ8EMGTigc=;
+ b=XHlyZlEXqAr/6HdDejMjq1iO643MRL4V/TSUyGvXM/jUxsPpr0AbRmzN0+mHcuvaS5
+ GDRr9JcKh1JgcAxanV7S8OYXpMZ+6CIHcZIjj7dnA9Moa7qGAeJU1wXckWxUeoVkPGgp
+ ZzEKU9wwwWQ98qJ3XeNvajS98ZLQKL/cnSXZejVcyW8siHGHTOVYBWxOqZTR7eYnn7+g
+ 57i38NKB3OLN/QGq66FDckUhbLkLAnQkIfj3jJcHzYhZW5Pfi24HW+KI0m/M4OVxskrO
+ MnBi2mgSfHrz+AVRNCJKqhuYGv7Opj86hgpsbwMZCiVnS7tBTkjtIubV4ttKFYF8PC3k
+ qVsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=De4EaLx9v93H4rVCB9OpKmCuXJ71zefVFfl8bToAja8=;
- b=iDC/Q/P90FHyi8Or8grs5LgaBVzVuM+m50UyP2vX2RaS6n/zhMJwkkXbOPNGgE1voc
- fGkZ8ZZ0wz0SO3IsGtDcrYawp7eHr+AZh6BfQDvHMU/aNZJBjSpDUXfJ3RN9hieyXhsu
- TR1Sd2zeO75S+FtO7yJqBLMhslY/qDx/S8TcLKiPuImHNH+2BcfT9ESkOTM2BGfcC2ij
- sJowIi6iCoqWSm4S2CBNk131+VgCT2OlzIVXrE45EZrC75TLUfkN1wF98oOc9TpDXM4g
- pm9WZmqqIuJ2cLGq3qi1nOt4Hpjx36/8tFwv58C7JknAkeJpW6+E+gBqmkVdVSo5d5cc
- Zn4Q==
-X-Gm-Message-State: APjAAAXRVVMCf0Lrqw0jFj7kD2JjjGD+B16OScSO5KMrXjCpC6wGrZWI
- NvohWnOCD+MqQmKbIGbcz/F8LwdJDiaLEYWCZ90=
-X-Google-Smtp-Source: APXvYqweyMJzn4BD11eQrMQCO8LR/J0VVuDuZzmXPjzzKYYY6SYp4FkhWRAhdA0GV/Xtwo99XpOYoKmoe13aHDuvk5o=
-X-Received: by 2002:aca:6209:: with SMTP id w9mr13107288oib.47.1553538697302; 
- Mon, 25 Mar 2019 11:31:37 -0700 (PDT)
+ h=x-gm-message-state:subject:to:cc:references:from:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=M3hXDey3IsqYK6xV0My06hiJ6NVz3dADomQ8EMGTigc=;
+ b=RtzduGpWSQU3ZU4qiGgQGgUZEPZVEgZynZUQqXT8JOQBD1aUl8gULqsfR+lnTTg2p/
+ pE6amsD2ngIEQUrQfCfcqxF03RiUkAaqOvKwxPzZuv6o5ngNxU4cGbO44ho4VAk22rpb
+ uUQxlHl7rbn2+mqGH+ZWNqn4lCpe/rUy28ZAycl+CZCHtoJXOrdjhnDVz2tx/JQpjMbL
+ mUBUCMq7IrUy6ZK/ui3v5yI6HxAO2LxyDrv1kIk8GVRaAAFeO1n3YvsF0WghejSrcnjM
+ DNR2dE1RbKiFWUfLQmtL55zLJneodr9nlRxPcW02aCE+ABJa2kdB13BVWT341j9bQmOA
+ fxqw==
+X-Gm-Message-State: APjAAAXjhIZo5WqstGgVk2OrYU4TIvloXM2cGnXRlMboloEDOldhojeV
+ wy3OQSs6EHqvCTvvaeIrO2Hscw==
+X-Google-Smtp-Source: APXvYqzsd/W7vnU7xF4ONRLt9pqNJWHefN44Y95JakvzZJ4LJfKyhVUWh94uVt9zu1cNGNAI1lQRnw==
+X-Received: by 2002:a2e:2d02:: with SMTP id t2mr1838734ljt.148.1553544822428; 
+ Mon, 25 Mar 2019 13:13:42 -0700 (PDT)
+Received: from wasted.cogentembedded.com ([31.173.83.129])
+ by smtp.gmail.com with ESMTPSA id g79sm3670443lje.25.2019.03.25.13.13.40
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 25 Mar 2019 13:13:41 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 3/5] mtd: Add support for Hyperbus memory devices
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>
+References: <20190321174548.9288-1-vigneshr@ti.com>
+ <20190321174548.9288-4-vigneshr@ti.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Organization: Cogent Embedded
+Message-ID: <98e1e3ad-75d3-670f-bcf7-27389cc60a98@cogentembedded.com>
+Date: Mon, 25 Mar 2019 23:13:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-References: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
- <20190321214401.GC19508@bombadil.infradead.org>
- <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
- <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
-In-Reply-To: <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 25 Mar 2019 19:31:26 +0100
-Message-ID: <CAFBinCA=0XSSVmzfTgb4eSiVFr=XRHqLOVFGyK0++XRty6VjnQ@mail.gmail.com>
-Subject: Re: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
-To: Liang Yang <liang.yang@amlogic.com>
-Content-Type: multipart/mixed; boundary="0000000000003310550584ef6a0f"
+In-Reply-To: <20190321174548.9288-4-vigneshr@ti.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_113141_561877_2948F602 
-X-CRM114-Status: GOOD (  27.44  )
+X-CRM114-CacheID: sfid-20190325_131347_005636_369BC17B 
+X-CRM114-Status: GOOD (  30.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,303 +105,196 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mhocko@suse.com, linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
- Matthew Wilcox <willy@infradead.org>, rppt@linux.ibm.com, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org,
- akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ tudor.ambarus@microchip.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---0000000000003310550584ef6a0f
-Content-Type: text/plain; charset="UTF-8"
+Hello!
 
-Hi Liang,
+On 03/21/2019 08:45 PM, Vignesh Raghavendra wrote:
 
-On Mon, Mar 25, 2019 at 11:03 AM Liang Yang <liang.yang@amlogic.com> wrote:
->
-> Hi Martin,
->
-> On 2019/3/23 5:07, Martin Blumenstingl wrote:
-> > Hi Matthew,
-> >
-> > On Thu, Mar 21, 2019 at 10:44 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >>
-> >> On Thu, Mar 21, 2019 at 09:17:34PM +0100, Martin Blumenstingl wrote:
-> >>> Hello,
-> >>>
-> >>> I am experiencing the following crash:
-> >>>    ------------[ cut here ]------------
-> >>>    kernel BUG at mm/slub.c:3950!
-> >>
-> >>          if (unlikely(!PageSlab(page))) {
-> >>                  BUG_ON(!PageCompound(page));
-> >>
-> >> You called kfree() on the address of a page which wasn't allocated by slab.
-> >>
-> >>> I have traced this crash to the kfree() in meson_nfc_read_buf().
-> >>> my observation is as follows:
-> >>> - meson_nfc_read_buf() is called 7 times without any crash, the
-> >>> kzalloc() call returns 0xe9e6c600 (virtual address) / 0x29e6c600
-> >>> (physical address)
-> >>> - the eight time meson_nfc_read_buf() is called kzalloc() call returns
-> >>> 0xee39a38b (virtual address) / 0x2e39a38b (physical address) and the
-> >>> final kfree() crashes
-> >>> - changing the size in the kzalloc() call from PER_INFO_BYTE (= 8) to
-> >>> PAGE_SIZE works around that crash
-> >>
-> >> I suspect you're doing something which corrupts memory.  Overrunning
-> >> the end of your allocation or something similar.  Have you tried KASAN
-> >> or even the various slab debugging (eg redzones)?
-> > KASAN is not available on 32-bit ARM. there was some progress last
-> > year [0] but it didn't make it into mainline. I tried to make the
-> > patches apply again and got it to compile (and my kernel is still
-> > booting) but I have no idea if it's still working. for anyone
-> > interested, my patches are here: [1] (I consider this a HACK because I
-> > don't know anything about the code which is being touched in the
-> > patches, I only made it compile)
-> >
-> > SLAB debugging (redzones) were a great hint, thank you very much for
-> > that Matthew! I enabled:
-> >    CONFIG_SLUB_DEBUG=y
-> >    CONFIG_SLUB_DEBUG_ON=y
-> > and with that I now get "BUG kmalloc-64 (Not tainted): Redzone
-> > overwritten" (a larger kernel log extract is attached).
-> >
-> > I'm starting to wonder if the NAND controller (hardware) writes more
-> > than 8 bytes.
-> > some context: the "info" buffer allocated in meson_nfc_read_buf is
-> > then passed to the NAND controller IP (after using dma_map_single).
-> >
-> > Liang, how does the NAND controller know that it only has to send
-> > PER_INFO_BYTE (= 8) bytes when called from meson_nfc_read_buf? all
-> > other callers of meson_nfc_dma_buffer_setup (which passes the info
-> > buffer to the hardware) are using (nand->ecc.steps * PER_INFO_BYTE)
-> > bytes?
-> >
-> NFC_CMD_N2M and CMDRWGEN are different commands. CMDRWGEN needs to set
-> the ecc page size (1KB or 512B) and Pages(2, 4, 8, ...), so
-> PER_INFO_BYTE(= 8) bytes for each ecc page.
-> I have never used NFC_CMD_N2M to transfer data before, because it is
-> very low efficient. And I do a experiment with the attachment and find
-> on overwritten on my meson axg platform.
->
-> Martin, I would appreciate it very much if you would try the attachment
-> on your meson m8b platform.
-thank you for your debug patch! on my board 2 * PER_INFO_BYTE is not enough.
-I took the idea from your patch and adapted it so I could print a
-buffer with 256 bytes (which seems to be "big enough" for my board).
-see the attached, modified patch
+> Cypress' Hyperbus is Low Signal Count, High Performance Double Data Rate
 
-in the output I see that sometimes the first 32 bytes are not touched
-by the controller, but everything beyond 32 bytes is modified in the
-info buffer.
+   It's HyperBus, according to the spec...
 
-I also tried to increase the buffer size to 512, but that didn't make
-a difference (I never saw any info buffer modification beyond 256
-bytes).
+> Bus interface between a host system master and one or more slave
+> interfaces. Hyperbus is used to connect microprocessor, microcontroller,
+> or ASIC devices with random access NOR flash memory (called Hyperflash)
+> or self refresh DRAM (called HyperRAM).
+> 
+> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+> signal and either Single-ended clock(3.0V parts) or Differential clock
+> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+> At bus level, it follows a separate protocol described in Hyperbus
+> specification[1].
 
-also I just noticed that I didn't give you much details on my NAND chip yet.
-from Amlogic vendor u-boot on Meson8m2 (all my Meson8b boards have
-eMMC flash, but I believe the NAND controller on Meson8 to GXBB is
-identical):
-  m8m2_n200_v1#amlnf chipinfo
-  flash  info
-  name:B revision 20nm NAND 8GiB H27UCG8T2B, id:ad de 94 eb 74 44  0  0
-  pagesize:0x4000, blocksize:0x400000, oobsize:0x500, chipsize:0x2000,
-    option:0x8, T_REA:16, T_RHOH:15
-  hw controller info
-  chip_num:1, onfi_mode:0, page_shift:14, block_shift:22, option:0xc2
-  ecc_unit:1024, ecc_bytes:70, ecc_steps:16, ecc_max:40
-  bch_mode:5, user_mode:2, oobavail:32, oobtail:64384
+   HyperBus. 
+> Hyperflash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+> to that of existing parallel NORs. Since Hyperbus is x8 DDR bus,
+> its equivalent to x16 parallel NOR flash wrt bits per clock cycle. But
+> Hyperbus operates at >166MHz frequencies.
+> HyperRAM provides direct random read/write access to flash memory
+> array.
+> 
+> But, Hyperbus memory controllers seem to abstract implementation details
 
+   HyperBus.
 
-Regards
+> and expose a simple MMIO interface to access connected flash.
+> 
+> Add support for registering Hyperflash devices with MTD framework. MTD
 
-Martin
+   HyperFlash.
 
---0000000000003310550584ef6a0f
-Content-Type: text/plain; charset="US-ASCII"; name="debug-256-buffer-output.txt"
-Content-Disposition: attachment; filename="debug-256-buffer-output.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jtoomclb1>
-X-Attachment-Id: f_jtoomclb1
+> maps framework along with CFI chip support framework are used to support
+> communicating with flash.
+> 
+> Framework is modelled along the lines of spi-nor framework. Hyperbus
 
-Li4uClsgICAgMi43MTY4ODVdIDAwMDAwMDAwOiAwMDAwIDgwMDUgMjgwMCAyOTQ1IGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAg
-Mi43MjA0NjRdIDAwMDAwMDIwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43Mjk2ODld
-IDAwMDAwMDQwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43Mzg4NDddIDAwMDAwMDYw
-OiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43NDgwNjVdIDAwMDAwMDgwOiBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkClsgICAgMi43NTcyMjhdIDAwMDAwMGEwOiBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkClsgICAgMi43NjY0MDRdIDAwMDAwMGMwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsg
-ICAgMi43NzU2MDJdIDAwMDAwMGUwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsgICAgMi43ODQ3
-ODBdIApbICAgIDIuNzg2MzA2XSAwMDAwMDAwMDogMDAwMCA4MDFiIDI4MDAgMjk0NSBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAg
-IDIuNzk1NDU1XSAwMDAwMDAyMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODA0NjM4
-XSAwMDAwMDA0MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODEzODI4XSAwMDAwMDA2
-MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODIzMDE0XSAwMDAwMDA4MDogZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODMyMjAzXSAwMDAwMDBhMDogZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZApbICAgIDIuODQxMzkwXSAwMDAwMDBjMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApb
-ICAgIDIuODUwNTgwXSAwMDAwMDBlMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDIuODU5
-NzU5XSAKWyAgICAyLjg2MTMwM10gMDAwMDAwMDA6IDAwMDAgODAxMSAzZDAwIDI5NWUgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAg
-ICAyLjg3MDQzNV0gMDAwMDAwMjA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjg3OTYx
-OF0gMDAwMDAwNDA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjg4ODgxMl0gMDAwMDAw
-NjA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjg5Nzk5Nl0gMDAwMDAwODA6IGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjkwNzE4NF0gMDAwMDAwYTA6IGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQKWyAgICAyLjkxNjM2NF0gMDAwMDAwYzA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQK
-WyAgICAyLjkyNTU1OV0gMDAwMDAwZTA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAyLjkz
-NDc0MV0gClsgICAgMi45MzYzNjddIDAwMDAwMDAwOiBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkClsg
-ICAgMi45NDU0MTNdIDAwMDAwMDIwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
-IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45NTQ2
-MDBdIDAwMDAwMDQwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
-YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45NjM4MDNdIDAwMDAw
-MDYwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
-NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45NzI5NzhdIDAwMDAwMDgwOiA2YjZi
-IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
-YjZiIDZiNmIgNmI2YiA2YjZiClsgICAgMi45ODIxNjNdIDAwMDAwMGEwOiA2YjZiIDZiNmIgNmI2
-YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
-NmI2YiA2YjZiClsgICAgMi45OTEzNTJdIDAwMDAwMGMwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
-NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
-ClsgICAgMy4wMDA1MzldIDAwMDAwMGUwOiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
-YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiBhNTZiClsgICAgMy4w
-MDk3MjJdIApbICAgIDMuMDExMjMzXSAwMDAwMDAwMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApb
-ICAgIDMuMDIwMzkwXSAwMDAwMDAyMDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
-YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDI5
-NTgwXSAwMDAwMDA0MDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
-NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDM4NzY2XSAwMDAw
-MDA2MDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
-YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDQ3OTcxXSAwMDAwMDA4MDogNmI2
-YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
-NmI2YiA2YjZiIDZiNmIgNmI2YgpbICAgIDMuMDU3MTQ1XSAwMDAwMDBhMDogNmI2YiA2YjZiIDZi
-NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
-IDZiNmIgNmI2YgpbICAgIDMuMDY2MzI1XSAwMDAwMDBjMDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2
-YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
-YgpbICAgIDMuMDc1NTIxXSAwMDAwMDBlMDogNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
-NmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgYTU2YgpbICAgIDMu
-MDg0NzAwXSAKWyAgICAzLjA4NjIxM10gMDAwMDAwMDA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQK
-WyAgICAzLjA5NTM3M10gMDAwMDAwMjA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
-NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjEw
-NDU1OF0gMDAwMDAwNDA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2
-YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjExMzc0OF0gMDAw
-MDAwNjA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIg
-NmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjEyMjkzNF0gMDAwMDAwODA6IDZi
-NmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
-IDZiNmIgNmI2YiA2YjZiIDZiNmIKWyAgICAzLjEzMjEyNF0gMDAwMDAwYTA6IDZiNmIgNmI2YiA2
-YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2
-YiA2YjZiIDZiNmIKWyAgICAzLjE0MTMxMV0gMDAwMDAwYzA6IDZiNmIgNmI2YiA2YjZiIDZiNmIg
-NmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZi
-NmIKWyAgICAzLjE1MDUwNV0gMDAwMDAwZTA6IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZi
-IDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIDZiNmIgNmI2YiA2YjZiIGE1NmIKWyAgICAz
-LjE1OTY4MV0gClsgICAgMy4xNjExNzFdIENvdWxkIG5vdCBmaW5kIGEgdmFsaWQgT05GSSBwYXJh
-bWV0ZXIgcGFnZSwgdHJ5aW5nIGJpdC13aXNlIG1ham9yaXR5IHRvIHJlY292ZXIgaXQKWyAgICAz
-LjE2OTc4Nl0gT05GSSBwYXJhbWV0ZXIgcmVjb3ZlcnkgZmFpbGVkLCBhYm9ydGluZwpbICAgIDMu
-MTc0NzQwXSAwMDAwMDAwMDogMDAwMCA4MDEwIDNkMDAgMjk1ZSBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMTgzODc3XSAw
-MDAwMDAyMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMTkzMDY0XSAwMDAwMDA0MDog
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMjAyMjQ5XSAwMDAwMDA2MDogZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZApbICAgIDMuMjExNDM5XSAwMDAwMDA4MDogZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZApbICAgIDMuMjIwNjI2XSAwMDAwMDBhMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAg
-IDMuMjI5ODE1XSAwMDAwMDBjMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMjM5MDAy
-XSAwMDAwMDBlMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMjQ4MTg0XSAKWyAgICAz
-LjI0OTc0M10gMDAwMDAwMDA6IDAwMDAgODAxMCAyMmMwIDI5NWUgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI1ODg1N10g
-MDAwMDAwMjA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI2ODA0NF0gMDAwMDAwNDA6
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI3NzIzMV0gMDAwMDAwNjA6IGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQKWyAgICAzLjI4NjQxMV0gMDAwMDAwODA6IGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQKWyAgICAzLjI5NTYwN10gMDAwMDAwYTA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAg
-ICAzLjMwNDc5NF0gMDAwMDAwYzA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjMxMzk4
-NF0gMDAwMDAwZTA6IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQKWyAgICAzLjMyMzE2M10gClsgICAg
-My4zMjQ2NTddIG5hbmQ6IGRldmljZSBmb3VuZCwgTWFudWZhY3R1cmVyIElEOiAweGFkLCBDaGlw
-IElEOiAweGRlClsgICAgMy4zMzA5NjhdIG5hbmQ6IEh5bml4IE5BTkQgOEdpQiAzLDNWIDgtYml0
-ClsgICAgMy4zMzUyMTBdIG5hbmQ6IDgxOTIgTWlCLCBNTEMsIGVyYXNlIHNpemU6IDQwOTYgS2lC
-LCBwYWdlIHNpemU6IDE2Mzg0LCBPT0Igc2l6ZTogMTI4MApbICAgIDMuMzQzMjc0XSAwMDAwMDAw
-MDogMDAwMCA4MDEwIDI0MDAgMjk1ZSBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzUyMzkwXSAwMDAwMDAyMDogZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzYxNTcyXSAwMDAwMDA0MDogZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZApbICAgIDMuMzcwNzYyXSAwMDAwMDA2MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZk
-IGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApb
-ICAgIDMuMzc5OTYzXSAwMDAwMDA4MDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzg5
-MTQwXSAwMDAwMDBhMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZk
-ZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuMzk4MzI2XSAwMDAw
-MDBjMDogZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBm
-ZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuNDA3NTE5XSAwMDAwMDBlMDogZmRm
-ZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQgZmRmZCBmZGZkIGZkZmQg
-ZmRmZCBmZGZkIGZkZmQgZmRmZApbICAgIDMuNDE2Njk1XSAKLi4uCg==
---0000000000003310550584ef6a0f
-Content-Type: application/x-patch; name="nand_debug_martin.patch"
-Content-Disposition: attachment; filename="nand_debug_martin.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jtoomcks0>
-X-Attachment-Id: f_jtoomcks0
+   HyperBus.
 
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyBiL2RyaXZlcnMv
-bXRkL25hbmQvcmF3L21lc29uX25hbmQuYwppbmRleCBjYjBiMDNlMzZhMzUuLjZkNzkyNzE1MDA4
-MSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5jCisrKyBiL2Ry
-aXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYwpAQCAtNTI3LDEyICs1MjcsMTQgQEAgc3Rh
-dGljIGludCBtZXNvbl9uZmNfcmVhZF9idWYoc3RydWN0IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1
-ZiwgaW50IGxlbikKIAl1MzIgY21kOwogCXU4ICppbmZvOwogCi0JaW5mbyA9IGt6YWxsb2MoUEVS
-X0lORk9fQllURSwgR0ZQX0tFUk5FTCk7CisJaW5mbyA9IGt6YWxsb2MoMjU2LCBHRlBfS0VSTkVM
-KTsKIAlpZiAoIWluZm8pCiAJCXJldHVybiAtRU5PTUVNOwogCi0JcmV0ID0gbWVzb25fbmZjX2Rt
-YV9idWZmZXJfc2V0dXAobmFuZCwgYnVmLCBsZW4sIGluZm8sCi0JCQkJCSBQRVJfSU5GT19CWVRF
-LCBETUFfRlJPTV9ERVZJQ0UpOworCW1lbXNldChpbmZvLCAweEZELCAyNTYpOworCisJcmV0ID0g
-bWVzb25fbmZjX2RtYV9idWZmZXJfc2V0dXAobmFuZCwgYnVmLCBsZW4sIGluZm8sIFBFUl9JTkZP
-X0JZVEUsCisJCQkJCSBETUFfRlJPTV9ERVZJQ0UpOwogCWlmIChyZXQpCiAJCWdvdG8gb3V0Owog
-CkBAIC01NDQsNiArNTQ2LDkgQEAgc3RhdGljIGludCBtZXNvbl9uZmNfcmVhZF9idWYoc3RydWN0
-IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1ZiwgaW50IGxlbikKIAltZXNvbl9uZmNfZG1hX2J1ZmZl
-cl9yZWxlYXNlKG5hbmQsIGxlbiwgUEVSX0lORk9fQllURSwgRE1BX0ZST01fREVWSUNFKTsKIAog
-b3V0OgorCXByaW50X2hleF9kdW1wKEtFUk5fRVJSLCAiIiwgRFVNUF9QUkVGSVhfT0ZGU0VULCAz
-MiwgMiwgaW5mbywgMjU2LCBmYWxzZSk7CisJcHJpbnRrKCJcbiIpOworCiAJa2ZyZWUoaW5mbyk7
-CiAKIAlyZXR1cm4gcmV0Owo=
---0000000000003310550584ef6a0f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> memory controller (HBMC) drivers calls hyperbus_register_device() to
+> register a single Hyperflash device. Hyperflash core parses MMIO access
+
+   HyperFlash.
+
+> information from DT, sets up the map_info struct, probes CFI flash and
+> registers it with MTD framework.
+> 
+> Some HBMC masters need calibration/training sequence[3] to be carried
+> out, in order for DLL inside the controller to lock, by reading a known
+> string/pattern. This is done by repeatedly reading CFI Query
+> Identification String. Calibration needs to be done before trying to detect
+> flash as part of CFI flash probe.
+> 
+> HyperRAM is not supported at the moment.
+> 
+> Hyperbus specification can be found at[1]
+> Hyperflash datasheet can be found at[2]
+
+  HyperBus & HyperFlash.
+ 
+> [1] https://www.cypress.com/file/213356/download
+> [2] https://www.cypress.com/file/213346/download
+> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+>     Table 12-5741. HyperFlash Access Sequence
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+[...]
+> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
+> new file mode 100644
+> index 000000000000..4c2876c367fc
+> --- /dev/null
+> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
+> @@ -0,0 +1,183 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
+> +// Author: Vignesh Raghavendra <vigneshr@ti.com>
+> +
+> +#include <linux/err.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mtd/hyperbus.h>
+> +#include <linux/mtd/map.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/cfi.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/types.h>
+> +
+> +#define HYPERBUS_CALIB_COUNT 25
+
+   As I said, this seems platform specific...
+
+[...]
+> +/* Default calibration routine for use by Hyperbus controller.
+
+   No, there should be easy opt-out from the calibration method.
+Currently, the driver will have to define its own calibrate method, even
+if does't need any calibration...
+
+> + * Controller is calibrated by repeatedly reading known pattern ("QRY"
+> + * string from CFI space)
+> + * It is not enough to just ensure "QRY" string is read correctly, need
+> + * to read mulitple times to ensure stability of the DLL lock.
+> + */
+> +int hyperbus_calibrate(struct hyperbus_device *hbdev)
+> +{
+> +	struct map_info *map = &hbdev->map;
+> +	struct cfi_private cfi;
+> +	int count = HYPERBUS_CALIB_COUNT;
+> +	int ret;
+> +
+> +	cfi.interleave = 1;
+> +	cfi.device_type = CFI_DEVICETYPE_X16;
+> +	cfi_send_gen_cmd(0xF0, 0, 0, map, &cfi, cfi.device_type, NULL);
+> +	cfi_send_gen_cmd(0x98, 0x55, 0, map, &cfi, cfi.device_type, NULL);
+> +
+> +	while (count--)
+> +		cfi_qry_present(map, 0, &cfi);
+
+   I still don't understand why we have to spin all 25 times here if QRY
+appears earlier than that.
+
+> +
+> +	ret = cfi_qry_present(map, 0, &cfi);
+> +	cfi_qry_mode_off(0, map, &cfi);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hyperbus_calibrate);
+[...]
+> diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
+> new file mode 100644
+> index 000000000000..57f273e87f29
+> --- /dev/null
+> +++ b/include/linux/mtd/hyperbus.h
+> @@ -0,0 +1,91 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
+> + */
+> +
+> +#ifndef __LINUX_MTD_HYPERBUS_H__
+> +#define __LINUX_MTD_HYPERBUS_H__
+> +
+> +#include <linux/mtd/map.h>
+> +
+> +enum hyperbus_memtype {
+> +	HYPERFLASH,
+> +	HYPERRAM,
+> +};
+> +
+> +/**
+> + * struct hyerbus_device - struct representing Hyperbus slave device
+
+   hyperbus_device.
+
+> + * @map: map_info struct for accessing MMIO Hyperbus flash memory
+> + * @np:	pointer to Hyperbus slave device node
+> + * @mtd: pointer to MTD struct
+> + * @ctlr: pointer to Hyperbus controller struct
+> + * @memtype: type of memory device: Hyperflash or HyperRAM
+
+   HyperFlash.
+
+[...]
+> +/**
+> + * hyperbus_calibrate - default calibration routine for use by Hyperbus ctlr.
+> + * @hbdev: hyperbus_device to be used for calibration
+
+   HyperBus.
+
+[...]
+
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---0000000000003310550584ef6a0f--
-
