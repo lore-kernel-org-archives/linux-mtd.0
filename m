@@ -3,81 +3,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A535C43381
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 09:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5BB8C43381
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 10:03:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FBFB20870
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 09:48:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B672D206DF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2019 10:03:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E+DkpcFX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oudiTICJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FBFB20870
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HlM9KHax"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B672D206DF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=gCMTmqcXRKzu6v8+gp7yOJAiBh/zOL3qlS6+eVKnMh8=; b=E+DkpcFXKKDw+D
-	YUAdpaLTTJdLLXcaK/IJ76EofSRKIAMa1fk+700NzREt2pXmNbkSS8Mn7y+Tr3FFGgvpXBqBElOSH
-	RSbvnCrdnRe1+v2Ikxaw6tBFU0QdBxFgsXondHHTTdcz8Uvwuxfluk1Q870Q+lQlDkGrkRCTrnan6
-	4VVam/AT1fDY585qAadaIqi3wUmZZajPKJya5DbuGAD9jo0MwxKOSgXnqvCFpmvhaILY3eJoC85Rz
-	RCY7p99IHHOp8VV5urX32OZyQWFAyJ4W2OITAyiPpmgiY7zxafTBax1jxfkGH/PY2c50IsYdtt4aG
-	T9E22W3hzEx7+ud/o6LA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=rYaEJMPdqC8kvNiACSzN3KEl32ol36rLqPtBoAML438=; b=HlM9KHaxJdGQVzLnfET3lL/sf
+	gpJRVGuHucgN0nEgtGnHxQZ63CR2O2n5/1PH3+zzBmj+eUZiuEHxUEIF+z74X4NcOzTXnJhD6eE9i
+	2BpOnNEH8sau3OZ3Y10fRoBmSPiAA6BxF9U5jkoT4SMGOtc6J+3R4WkAtHNBoP2/md5O6n8GQFqf/
+	iEghKCfqfYCdv2SZh5r8EJXHGrr61hMrvm2JRRgHjg0JOuc+kNu27SDD+aFC4hp2GTtUeJu9PBbnn
+	T2OOI1uIhZKnqPAxtguXNjsQ9485OklQcElm5a0WHw6wax8fQWTSGPfA90qOxhhG5GJLletGnk8O4
+	p2MmZDXjA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8MDU-0004Zg-V9; Mon, 25 Mar 2019 09:48:28 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1h8MRk-0007um-Cg; Mon, 25 Mar 2019 10:03:12 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8MDO-0004YY-VQ
- for linux-mtd@lists.infradead.org; Mon, 25 Mar 2019 09:48:26 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x2P9mBtb013481;
- Mon, 25 Mar 2019 04:48:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1553507291;
- bh=28Peh/jxho5OJxt0QTnKzgP2PiaE22m6eGhTdEuyud0=;
- h=From:To:CC:Subject:Date;
- b=oudiTICJCDndvb8PBP2iKqClrc1305ySH7r/XknhOhP8WnoF3LohTZkuok0vmvvw/
- aWRKZN2d9VFIGFABYfoAE+iXSmXhsHh6bZRoh43XJrIJ2df1ZNF6xMMoY23Jq62RRk
- cwwVNyD+H2RApCubcwGuf1hfsgK3BqEMAT+2kaWI=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x2P9mBRI022187
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 25 Mar 2019 04:48:11 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 25
- Mar 2019 04:48:11 -0500
-Received: from dflp32.itg.ti.com (10.64.6.15) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5 via Frontend Transport;
- Mon, 25 Mar 2019 04:48:11 -0500
-Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id x2P9m7mF004811;
- Mon, 25 Mar 2019 04:48:08 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] MAINTAINERS: Add myself as co-maintainer for MTD
-Date: Mon, 25 Mar 2019 15:18:46 +0530
-Message-ID: <20190325094846.30709-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.21.0
+ id 1h8MRh-0007tj-1V; Mon, 25 Mar 2019 10:03:11 +0000
+Received: from [10.28.18.125] (10.28.18.125) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Mon, 25 Mar
+ 2019 18:04:17 +0800
+Subject: Re: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Matthew Wilcox
+ <willy@infradead.org>
+References: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
+ <20190321214401.GC19508@bombadil.infradead.org>
+ <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
+Date: Mon, 25 Mar 2019 18:04:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.3
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------65F66B8BEFB8B57F8555B6FE"
+Content-Language: en-US
+X-Originating-IP: [10.28.18.125]
+X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
+ (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190325_024823_052640_492C872B 
-X-CRM114-Status: GOOD (  15.81  )
+X-CRM114-CacheID: sfid-20190325_030309_083889_68994C50 
+X-CRM114-Status: GOOD (  21.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,39 +73,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mhocko@suse.com, linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+ rppt@linux.ibm.com, linux-mm@kvack.org, linux-mtd@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, akpm@linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I have been contributing and reviewing MTD patches for a while now and
-would like to add myself as co-maintainer for MTD to help maintain
-CFI and SPI NOR parts of the subsystem.
-Hopefully, this will help in taking some load off current maintainers.
+--------------65F66B8BEFB8B57F8555B6FE
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Hi Martin,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3453f397ad87..d950fa01d829 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10014,6 +10014,7 @@ M:	Brian Norris <computersforpeace@gmail.com>
- M:	Boris Brezillon <bbrezillon@kernel.org>
- M:	Marek Vasut <marek.vasut@gmail.com>
- M:	Richard Weinberger <richard@nod.at>
-+M:	Vignesh Raghavendra <vigneshr@ti.com>
- L:	linux-mtd@lists.infradead.org
- W:	http://www.linux-mtd.infradead.org/
- Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
--- 
-2.21.0
+On 2019/3/23 5:07, Martin Blumenstingl wrote:
+> Hi Matthew,
+> 
+> On Thu, Mar 21, 2019 at 10:44 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>> On Thu, Mar 21, 2019 at 09:17:34PM +0100, Martin Blumenstingl wrote:
+>>> Hello,
+>>>
+>>> I am experiencing the following crash:
+>>>    ------------[ cut here ]------------
+>>>    kernel BUG at mm/slub.c:3950!
+>>
+>>          if (unlikely(!PageSlab(page))) {
+>>                  BUG_ON(!PageCompound(page));
+>>
+>> You called kfree() on the address of a page which wasn't allocated by slab.
+>>
+>>> I have traced this crash to the kfree() in meson_nfc_read_buf().
+>>> my observation is as follows:
+>>> - meson_nfc_read_buf() is called 7 times without any crash, the
+>>> kzalloc() call returns 0xe9e6c600 (virtual address) / 0x29e6c600
+>>> (physical address)
+>>> - the eight time meson_nfc_read_buf() is called kzalloc() call returns
+>>> 0xee39a38b (virtual address) / 0x2e39a38b (physical address) and the
+>>> final kfree() crashes
+>>> - changing the size in the kzalloc() call from PER_INFO_BYTE (= 8) to
+>>> PAGE_SIZE works around that crash
+>>
+>> I suspect you're doing something which corrupts memory.  Overrunning
+>> the end of your allocation or something similar.  Have you tried KASAN
+>> or even the various slab debugging (eg redzones)?
+> KASAN is not available on 32-bit ARM. there was some progress last
+> year [0] but it didn't make it into mainline. I tried to make the
+> patches apply again and got it to compile (and my kernel is still
+> booting) but I have no idea if it's still working. for anyone
+> interested, my patches are here: [1] (I consider this a HACK because I
+> don't know anything about the code which is being touched in the
+> patches, I only made it compile)
+> 
+> SLAB debugging (redzones) were a great hint, thank you very much for
+> that Matthew! I enabled:
+>    CONFIG_SLUB_DEBUG=y
+>    CONFIG_SLUB_DEBUG_ON=y
+> and with that I now get "BUG kmalloc-64 (Not tainted): Redzone
+> overwritten" (a larger kernel log extract is attached).
+> 
+> I'm starting to wonder if the NAND controller (hardware) writes more
+> than 8 bytes.
+> some context: the "info" buffer allocated in meson_nfc_read_buf is
+> then passed to the NAND controller IP (after using dma_map_single).
+> 
+> Liang, how does the NAND controller know that it only has to send
+> PER_INFO_BYTE (= 8) bytes when called from meson_nfc_read_buf? all
+> other callers of meson_nfc_dma_buffer_setup (which passes the info
+> buffer to the hardware) are using (nand->ecc.steps * PER_INFO_BYTE)
+> bytes?
+> 
+NFC_CMD_N2M and CMDRWGEN are different commands. CMDRWGEN needs to set 
+the ecc page size (1KB or 512B) and Pages(2, 4, 8, ...), so 
+PER_INFO_BYTE(= 8) bytes for each ecc page.
+I have never used NFC_CMD_N2M to transfer data before, because it is 
+very low efficient. And I do a experiment with the attachment and find 
+on overwritten on my meson axg platform.
 
+Martin, I would appreciate it very much if you would try the attachment 
+on your meson m8b platform.
+
+> 
+> Regards
+> Martin
+> 
+> 
+> [0] https://lore.kernel.org/patchwork/cover/913212/
+> [1] https://github.com/xdarklight/linux/tree/arm-kasan-hack-v5.1-rc1
+> 
+
+--------------65F66B8BEFB8B57F8555B6FE
+Content-Type: text/plain; charset="UTF-8"; name="nand_debug.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="nand_debug.diff"
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYwpvbGQgbW9kZSAxMDA2NDQKbmV3IG1vZGUg
+MTAwNzU1CmluZGV4IGU4NThkNTguLjkwNWVmMzkKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvbWVzb25fbmFuZC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQu
+YwpAQCAtNTI3LDExICs1MjcsMTIgQEAgc3RhdGljIHZvaWQgbWVzb25fbmZjX2RtYV9idWZm
+ZXJfcmVsZWFzZShzdHJ1Y3QgbmFuZF9jaGlwICpuYW5kLAogc3RhdGljIGludCBtZXNvbl9u
+ZmNfcmVhZF9idWYoc3RydWN0IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1ZiwgaW50IGxlbikK
+IHsKIAlzdHJ1Y3QgbWVzb25fbmZjICpuZmMgPSBuYW5kX2dldF9jb250cm9sbGVyX2RhdGEo
+bmFuZCk7Ci0JaW50IHJldCA9IDA7CisJaW50IHJldCA9IDAsIGk7CiAJdTMyIGNtZDsKIAl1
+OCAqaW5mbzsKIAotCWluZm8gPSBremFsbG9jKFBFUl9JTkZPX0JZVEUsIEdGUF9LRVJORUwp
+OworCWluZm8gPSBremFsbG9jKDIgKiBQRVJfSU5GT19CWVRFLCBHRlBfS0VSTkVMKTsKKwlt
+ZW1zZXQoaW5mbywgMHhGRCwgMiAqIFBFUl9JTkZPX0JZVEUpOwogCXJldCA9IG1lc29uX25m
+Y19kbWFfYnVmZmVyX3NldHVwKG5hbmQsIGJ1ZiwgbGVuLCBpbmZvLAogCQkJCQkgUEVSX0lO
+Rk9fQllURSwgRE1BX0ZST01fREVWSUNFKTsKIAlpZiAocmV0KQpAQCAtNTQzLDYgKzU0NCwx
+MiBAQCBzdGF0aWMgaW50IG1lc29uX25mY19yZWFkX2J1ZihzdHJ1Y3QgbmFuZF9jaGlwICpu
+YW5kLCB1OCAqYnVmLCBpbnQgbGVuKQogCW1lc29uX25mY19kcmFpbl9jbWQobmZjKTsKIAlt
+ZXNvbl9uZmNfd2FpdF9jbWRfZmluaXNoKG5mYywgMTAwMCk7CiAJbWVzb25fbmZjX2RtYV9i
+dWZmZXJfcmVsZWFzZShuYW5kLCBsZW4sIFBFUl9JTkZPX0JZVEUsIERNQV9GUk9NX0RFVklD
+RSk7CisKKwlmb3IgKGkgPSAwOyBpIDwgMiAqIFBFUl9JTkZPX0JZVEU7IGkrKyl7CisJCXBy
+aW50aygiMHgleCAiLCBpbmZvW2ldKTsNCisJfQorCXByaW50aygiXG4iKTsKKwogCWtmcmVl
+KGluZm8pOwogCiAJcmV0dXJuIHJldDsK
+--------------65F66B8BEFB8B57F8555B6FE
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--------------65F66B8BEFB8B57F8555B6FE--
+
