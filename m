@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C58A4C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89AE8C43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:43:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 972892075E
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:43:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B46C20823
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:43:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Qh4CmbeT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="gCmOkw+0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 972892075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cmf64gCN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GgrenB19"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B46C20823
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
 	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=P8tLHXlSFvfp/pfK1JYX3JtWnXVXaPPr9AVLdh2zXH8=; b=Qh4
-	CmbeTHPR7Ljb4w9o5cEip3gCIeMEvvwcYLp/AzllXkFCwYkZ6v1QMHOB7W8HqjO0rQOv98iYjjU7e
-	35gAiAUMAZghic3pZrfPchqHK9oa7XzEkXOmfl+yI9E7eKVhD+ntemfa8EglbxAozDK8EhutmvwTm
-	H1Xtt1tWd5psVPbWtPDOR9jTM6ptila16j7YCAB/HHf7l8BwCBMZHKHLvDh4HnjqBGPG7U6IJsSLq
-	vy53CwOVROCtqdbZlg+LPB/u8NVe85GJpsvWNIiEkl0q0dy54JOr0gapIdKkJEAxEHTVVhOgSeyWG
-	uUOS0Gw9/U3Bbk2ct8YmZ05wUqm4gDQ==;
+	References:List-Owner; bh=uf85/2fpi8yWm/1m/7tyuQ9DYtfUjgu16OIWUWDhYaY=; b=cmf
+	64gCNBa5ShdYJeOrHQGLdRFIioLe8VUxRe/RX/xNgNVfrqyIagl5Uq10AZep6lnyaDdN98x1+2YGY
+	UAph/YxTU1WQB0cQm0aIKn5PhlvSPb7USjFoa+hmqJjH4DBYWSCnxOEvrVkdRXg6zyh09O21MmZjY
+	gIUaEGfQuoK1jkmcxVn7H0OREQkqn29OyYFwIx+/D24dZ4WwHEqicPlWoK6HoM12LO5ZQHDHKNgcA
+	kcK2XacuNw0LJBKdvp+eY11l9DPXMBRrQXP1XB6Jt0dvG80BR7L6EmnLif5rPZO9Jb0a8Fv1yBDcl
+	uGEuET8jNqNPMOUy5IPyuaZw2izUhQw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8nIW-0007fC-Cj; Tue, 26 Mar 2019 14:43:28 +0000
+	id 1h8nIt-0008AL-Rw; Tue, 26 Mar 2019 14:43:51 +0000
 Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8nIN-0007ZB-4P; Tue, 26 Mar 2019 14:43:22 +0000
+ id 1h8nIN-0007Yy-4L; Tue, 26 Mar 2019 14:43:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Euy4kP34EVSo3uJa1rD2WsYUcr5nsGPI8u55e7tdHdE=; b=gCmOkw+0CmQ8
- EJ+Rsrwuix9g6DG/RpGPL3EPY+90H5H1nPuXn6K6CHl8LYgPYH7M9w8gVK8ae0/U+lGpIRwRPDOQy
- o2DTj5kwlPKM1hJiCGpd167vJr7+WGncearXulyXoGIdNA6drp1RskY090LtimNvLeF8/EOcdy1OL
- s8I5g=;
+ List-Archive; bh=4ighytQJon5HFPVt7oxSahUBPRk1+g+mM66kvVxarVE=; b=GgrenB19WKCW
+ h+Te2vdTUJE1RZWlvgNllzErxeaw9oDdQb/GDU5eSlurWnzxOYxRfuLmXDPQlT1Z9BTZKPLIjCzGv
+ OkV4fbTbbkozLmMqe+B3/URrqYBYXrv5Ch9O2e6mB2sDi5FvFTB9y16ynMc/fQ5dAuGoDsyhosCp+
+ iJIGk=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=debutante.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpa (Exim 4.89)
  (envelope-from <broonie@sirena.org.uk>)
- id 1h8nII-0007jb-F2; Tue, 26 Mar 2019 14:43:14 +0000
+ id 1h8nIG-0007jW-6T; Tue, 26 Mar 2019 14:43:12 +0000
 Received: by debutante.sirena.org.uk (Postfix, from userid 1000)
- id E58A41121B57; Tue, 26 Mar 2019 14:43:13 +0000 (GMT)
+ id BF8841121B57; Tue, 26 Mar 2019 14:43:11 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Ludovic Barre <ludovic.barre@st.com>
-Subject: Applied "spi: stm32-qspi: add spi_master_put in release function" to
- the spi tree
-In-Reply-To: <1553533300-29999-2-git-send-email-ludovic.Barre@st.com>
+Subject: Applied "spi: stm32-qspi: add dma support" to the spi tree
+In-Reply-To: <1553533300-29999-3-git-send-email-ludovic.Barre@st.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190326144313.E58A41121B57@debutante.sirena.org.uk>
-Date: Tue, 26 Mar 2019 14:43:13 +0000 (GMT)
+Message-Id: <20190326144311.BF8841121B57@debutante.sirena.org.uk>
+Date: Tue, 26 Mar 2019 14:43:11 +0000 (GMT)
 X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190326_074319_346933_7D55657D 
-X-CRM114-Status: GOOD (  16.37  )
+X-CRM114-CacheID: sfid-20190326_074319_347261_DB121792 
+X-CRM114-Status: GOOD (  20.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,7 +90,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 The patch
 
-   spi: stm32-qspi: add spi_master_put in release function
+   spi: stm32-qspi: add dma support
 
 has been applied to the spi tree at
 
@@ -116,125 +115,240 @@ to this mail.
 Thanks,
 Mark
 
-From a88eceb17ac7e8dc4ad9995681af61c8371668f4 Mon Sep 17 00:00:00 2001
+From 245308c6217027c0d7fc8c3cf2bf95858c704d7b Mon Sep 17 00:00:00 2001
 From: Ludovic Barre <ludovic.barre@st.com>
-Date: Mon, 25 Mar 2019 18:01:39 +0100
-Subject: [PATCH] spi: stm32-qspi: add spi_master_put in release function
+Date: Mon, 25 Mar 2019 18:01:40 +0100
+Subject: [PATCH] spi: stm32-qspi: add dma support
 
-This patch adds spi_master_put in release function
-to drop the controller's refcount.
+This patch adds the dma support for the stm32-qspi hardware.
+The memory buffer constraints (lowmem, vmalloc, kmap) are taken into
+account by framework. In read mode, the memory map is preferred vs
+dma (due to better throughput). If the dma transfer fails the buffer
+is sent by polling.
 
 Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-stm32-qspi.c | 46 ++++++++++++++++++++++--------------
- 1 file changed, 28 insertions(+), 18 deletions(-)
+ drivers/spi/spi-stm32-qspi.c | 136 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 135 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 7879a523583c..9875139ef0cf 100644
+index 9875139ef0cf..11a89aa15d56 100644
 --- a/drivers/spi/spi-stm32-qspi.c
 +++ b/drivers/spi/spi-stm32-qspi.c
-@@ -93,6 +93,7 @@ struct stm32_qspi_flash {
+@@ -5,6 +5,8 @@
+  */
+ #include <linux/bitfield.h>
+ #include <linux/clk.h>
++#include <linux/dmaengine.h>
++#include <linux/dma-mapping.h>
+ #include <linux/errno.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+@@ -84,6 +86,7 @@
+ #define STM32_FIFO_TIMEOUT_US 30000
+ #define STM32_BUSY_TIMEOUT_US 100000
+ #define STM32_ABT_TIMEOUT_US 100000
++#define STM32_COMP_TIMEOUT_MS 1000
  
+ struct stm32_qspi_flash {
+ 	struct stm32_qspi *qspi;
+@@ -94,6 +97,7 @@ struct stm32_qspi_flash {
  struct stm32_qspi {
  	struct device *dev;
-+	struct spi_controller *ctrl;
+ 	struct spi_controller *ctrl;
++	phys_addr_t phys_base;
  	void __iomem *io_base;
  	void __iomem *mm_base;
  	resource_size_t mm_size;
-@@ -400,6 +401,7 @@ static void stm32_qspi_release(struct stm32_qspi *qspi)
+@@ -103,6 +107,10 @@ struct stm32_qspi {
+ 	struct completion data_completion;
+ 	u32 fmode;
+ 
++	struct dma_chan *dma_chtx;
++	struct dma_chan *dma_chrx;
++	struct completion dma_completion;
++
+ 	u32 cr_reg;
+ 	u32 dcr_reg;
+ 
+@@ -181,6 +189,81 @@ static int stm32_qspi_tx_mm(struct stm32_qspi *qspi,
+ 	return 0;
+ }
+ 
++static void stm32_qspi_dma_callback(void *arg)
++{
++	struct completion *dma_completion = arg;
++
++	complete(dma_completion);
++}
++
++static int stm32_qspi_tx_dma(struct stm32_qspi *qspi,
++			     const struct spi_mem_op *op)
++{
++	struct dma_async_tx_descriptor *desc;
++	enum dma_transfer_direction dma_dir;
++	struct dma_chan *dma_ch;
++	struct sg_table sgt;
++	dma_cookie_t cookie;
++	u32 cr, t_out;
++	int err;
++
++	if (op->data.dir == SPI_MEM_DATA_IN) {
++		dma_dir = DMA_DEV_TO_MEM;
++		dma_ch = qspi->dma_chrx;
++	} else {
++		dma_dir = DMA_MEM_TO_DEV;
++		dma_ch = qspi->dma_chtx;
++	}
++
++	/*
++	 * spi_map_buf return -EINVAL if the buffer is not DMA-able
++	 * (DMA-able: in vmalloc | kmap | virt_addr_valid)
++	 */
++	err = spi_controller_dma_map_mem_op_data(qspi->ctrl, op, &sgt);
++	if (err)
++		return err;
++
++	desc = dmaengine_prep_slave_sg(dma_ch, sgt.sgl, sgt.nents,
++				       dma_dir, DMA_PREP_INTERRUPT);
++	if (!desc) {
++		err = -ENOMEM;
++		goto out_unmap;
++	}
++
++	cr = readl_relaxed(qspi->io_base + QSPI_CR);
++
++	reinit_completion(&qspi->dma_completion);
++	desc->callback = stm32_qspi_dma_callback;
++	desc->callback_param = &qspi->dma_completion;
++	cookie = dmaengine_submit(desc);
++	err = dma_submit_error(cookie);
++	if (err)
++		goto out;
++
++	dma_async_issue_pending(dma_ch);
++
++	writel_relaxed(cr | CR_DMAEN, qspi->io_base + QSPI_CR);
++
++	t_out = sgt.nents * STM32_COMP_TIMEOUT_MS;
++	if (!wait_for_completion_interruptible_timeout(&qspi->dma_completion,
++						       msecs_to_jiffies(t_out)))
++		err = -ETIMEDOUT;
++
++	if (dma_async_is_tx_complete(dma_ch, cookie,
++				     NULL, NULL) != DMA_COMPLETE)
++		err = -ETIMEDOUT;
++
++	if (err)
++		dmaengine_terminate_all(dma_ch);
++
++out:
++	writel_relaxed(cr & ~CR_DMAEN, qspi->io_base + QSPI_CR);
++out_unmap:
++	spi_controller_dma_unmap_mem_op_data(qspi->ctrl, op, &sgt);
++
++	return err;
++}
++
+ static int stm32_qspi_tx(struct stm32_qspi *qspi, const struct spi_mem_op *op)
+ {
+ 	if (!op->data.nbytes)
+@@ -188,6 +271,10 @@ static int stm32_qspi_tx(struct stm32_qspi *qspi, const struct spi_mem_op *op)
+ 
+ 	if (qspi->fmode == CCR_FMODE_MM)
+ 		return stm32_qspi_tx_mm(qspi, op);
++	else if ((op->data.dir == SPI_MEM_DATA_IN && qspi->dma_chrx) ||
++		 (op->data.dir == SPI_MEM_DATA_OUT && qspi->dma_chtx))
++		if (!stm32_qspi_tx_dma(qspi, op))
++			return 0;
+ 
+ 	return stm32_qspi_tx_poll(qspi, op);
+ }
+@@ -218,7 +305,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
+ 	writel_relaxed(cr | CR_TCIE | CR_TEIE, qspi->io_base + QSPI_CR);
+ 
+ 	if (!wait_for_completion_interruptible_timeout(&qspi->data_completion,
+-						msecs_to_jiffies(1000))) {
++				msecs_to_jiffies(STM32_COMP_TIMEOUT_MS))) {
+ 		err = -ETIMEDOUT;
+ 	} else {
+ 		sr = readl_relaxed(qspi->io_base + QSPI_SR);
+@@ -387,6 +474,49 @@ static int stm32_qspi_setup(struct spi_device *spi)
+ 	return 0;
+ }
+ 
++static void stm32_qspi_dma_setup(struct stm32_qspi *qspi)
++{
++	struct dma_slave_config dma_cfg;
++	struct device *dev = qspi->dev;
++
++	memset(&dma_cfg, 0, sizeof(dma_cfg));
++
++	dma_cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
++	dma_cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
++	dma_cfg.src_addr = qspi->phys_base + QSPI_DR;
++	dma_cfg.dst_addr = qspi->phys_base + QSPI_DR;
++	dma_cfg.src_maxburst = 4;
++	dma_cfg.dst_maxburst = 4;
++
++	qspi->dma_chrx = dma_request_slave_channel(dev, "rx");
++	if (qspi->dma_chrx) {
++		if (dmaengine_slave_config(qspi->dma_chrx, &dma_cfg)) {
++			dev_err(dev, "dma rx config failed\n");
++			dma_release_channel(qspi->dma_chrx);
++			qspi->dma_chrx = NULL;
++		}
++	}
++
++	qspi->dma_chtx = dma_request_slave_channel(dev, "tx");
++	if (qspi->dma_chtx) {
++		if (dmaengine_slave_config(qspi->dma_chtx, &dma_cfg)) {
++			dev_err(dev, "dma tx config failed\n");
++			dma_release_channel(qspi->dma_chtx);
++			qspi->dma_chtx = NULL;
++		}
++	}
++
++	init_completion(&qspi->dma_completion);
++}
++
++static void stm32_qspi_dma_free(struct stm32_qspi *qspi)
++{
++	if (qspi->dma_chtx)
++		dma_release_channel(qspi->dma_chtx);
++	if (qspi->dma_chrx)
++		dma_release_channel(qspi->dma_chrx);
++}
++
+ /*
+  * no special host constraint, so use default spi_mem_default_supports_op
+  * to check supported mode.
+@@ -399,6 +529,7 @@ static void stm32_qspi_release(struct stm32_qspi *qspi)
+ {
+ 	/* disable qspi */
  	writel_relaxed(0, qspi->io_base + QSPI_CR);
++	stm32_qspi_dma_free(qspi);
  	mutex_destroy(&qspi->lock);
  	clk_disable_unprepare(qspi->clk);
-+	spi_master_put(qspi->ctrl);
- }
+ 	spi_master_put(qspi->ctrl);
+@@ -427,6 +558,8 @@ static int stm32_qspi_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
  
- static int stm32_qspi_probe(struct platform_device *pdev)
-@@ -416,43 +418,54 @@ static int stm32_qspi_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	qspi = spi_controller_get_devdata(ctrl);
-+	qspi->ctrl = ctrl;
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi");
- 	qspi->io_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(qspi->io_base))
--		return PTR_ERR(qspi->io_base);
-+	if (IS_ERR(qspi->io_base)) {
-+		ret = PTR_ERR(qspi->io_base);
-+		goto err;
-+	}
- 
++	qspi->phys_base = res->start;
++
  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi_mm");
  	qspi->mm_base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(qspi->mm_base))
--		return PTR_ERR(qspi->mm_base);
-+	if (IS_ERR(qspi->mm_base)) {
-+		ret = PTR_ERR(qspi->mm_base);
-+		goto err;
-+	}
+ 	if (IS_ERR(qspi->mm_base)) {
+@@ -477,6 +610,7 @@ static int stm32_qspi_probe(struct platform_device *pdev)
  
- 	qspi->mm_size = resource_size(res);
--	if (qspi->mm_size > STM32_QSPI_MAX_MMAP_SZ)
--		return -EINVAL;
-+	if (qspi->mm_size > STM32_QSPI_MAX_MMAP_SZ) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
+ 	qspi->dev = dev;
+ 	platform_set_drvdata(pdev, qspi);
++	stm32_qspi_dma_setup(qspi);
+ 	mutex_init(&qspi->lock);
  
- 	irq = platform_get_irq(pdev, 0);
- 	ret = devm_request_irq(dev, irq, stm32_qspi_irq, 0,
- 			       dev_name(dev), qspi);
- 	if (ret) {
- 		dev_err(dev, "failed to request irq\n");
--		return ret;
-+		goto err;
- 	}
- 
- 	init_completion(&qspi->data_completion);
- 
- 	qspi->clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(qspi->clk))
--		return PTR_ERR(qspi->clk);
-+	if (IS_ERR(qspi->clk)) {
-+		ret = PTR_ERR(qspi->clk);
-+		goto err;
-+	}
- 
- 	qspi->clk_rate = clk_get_rate(qspi->clk);
--	if (!qspi->clk_rate)
--		return -EINVAL;
-+	if (!qspi->clk_rate) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
- 
- 	ret = clk_prepare_enable(qspi->clk);
- 	if (ret) {
- 		dev_err(dev, "can not enable the clock\n");
--		return ret;
-+		goto err;
- 	}
- 
- 	rstc = devm_reset_control_get_exclusive(dev, NULL);
-@@ -475,14 +488,11 @@ static int stm32_qspi_probe(struct platform_device *pdev)
- 	ctrl->dev.of_node = dev->of_node;
- 
- 	ret = devm_spi_register_master(dev, ctrl);
--	if (ret)
--		goto err_spi_register;
--
--	return 0;
-+	if (!ret)
-+		return 0;
- 
--err_spi_register:
-+err:
- 	stm32_qspi_release(qspi);
--
- 	return ret;
- }
- 
+ 	ctrl->mode_bits = SPI_RX_DUAL | SPI_RX_QUAD
 -- 
 2.20.1
 
