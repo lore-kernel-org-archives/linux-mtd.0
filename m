@@ -2,65 +2,72 @@ Return-Path: <SRS0=gzro=R5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_NEOMUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D64D4C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 13:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 337F1C43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:21:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65F352075D
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 13:27:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F38D72075C
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:21:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Q34p7ReF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intenta.de header.i=@intenta.de header.b="saf7D+xr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65F352075D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intenta.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OhX0iiQj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=126.com header.i=@126.com header.b="VLZlwQHP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F38D72075C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=126.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Message-ID:MIME-Version:References:
+	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s6Ff7peVRgFFe2W3Nh1sl84PEndRE0plkS/smBbPppQ=; b=Q34p7ReFFcrUDg
-	fd6enWAsHSojATPxIsmcGIw1wRIi1lLi1F54BtARyVXb3VJrpvmy393hZP3pfHuNTHpxa3ar/jHM9
-	u/HmRo8kdQMUcwcUWwrRdY3c2sazdLsj0Yb0t8rknVWTJo6raqVc7gDLSCneWAnnMt96u4a+ozSYq
-	hONdmcjwqnbRmtEQi4RIdQRoi1GdasUDnlZduuY/J0LQC/MoofI8RtRv1isXl7Mniug2cBCvPFnrC
-	vhscNxRFcUlfKMABoLfb8J3Bu+XLOBP30YhkREA4OCPtt6jhtnV+b/eqSKJAht1lPxrQ9b9gQyoSw
-	PDPllmDebfcNlVzsXpjQ==;
+	List-Owner; bh=wnv1/ufUTA0w8oIeWgj0G/kZQmaznyCm9bNeUMWaj8k=; b=OhX0iiQjR96ehS
+	7qqo/6CDpCWIYPe7MYK3CtTLa571TMwZoFU91LH/siX32qKdpp4s1EjxNKO9UQFiOEHlBri/R9LtP
+	6jPVSBPBA5/cGTb3F+j68ltnnwzeWFFGvGZOjKt6IgXveMwrE7cA3JLtZdR3+f//eZ6XnG4YCPLsW
+	Wx/hzHA86bRWVs7rIY1fNPeHr2PbjtI8E/EXcIcV2k3BZnDDRW/XDNsHwSALk/W/nnuZhj3nEEGyo
+	zqLWWg+Xl4RT6iyN34Y1Oy3OXMIk5sqoaDQ+YVqnxSdXdfQYCujEj6ybWQdr8Ya0Ei8LAgAx0kB79
+	SEG+maWVkSfv142vkl3Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8m7G-0000wy-PL; Tue, 26 Mar 2019 13:27:46 +0000
-Received: from mail.intenta.de ([178.249.25.132])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8m7B-0000wP-UU
- for linux-mtd@lists.infradead.org; Tue, 26 Mar 2019 13:27:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=intenta.de;
- s=dkim1; 
- h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:CC:To:From:Date;
- bh=E4LgTeAYS90v+QPMpYy6r78rOfJneZnRqnHkuTTGwkw=; 
- b=saf7D+xrGbY4t59dSisXEiCcWrJ0GsM7/KWEJ290QYx3aO2mpI4N5AscGg+XEYjXkG6en4BIuni4K/dRsMCKdARDxFg8eJ+lDBDX6zHbWJkMaW35R20tE7y7Lbs+RrEeQdk5PYVFxKXJUGR4333e1paNJm2UK7SI9Sw4x4y1+pwr6Y/6Lx8nzB9yXkFiSE5ap90dDXLjERMmPb0cq/Jor9bz8MgWv2zJdJJHgeIozl08vtKNN0uORXitxVqbPiCPUB1wel0nvP8f3+HX1iljhto7wDilj2fCRvWbB2IUXMDAVGDGzZ/TWW1AqmEgGOqWUdHWfm5WG6wG26OvbV7v4A==;
-X-CTCH-RefID: str=0001.0A0C0211.5C9A28BB.00B2, ss=1, re=0.000, recu=0.000,
- reip=0.000, cl=1, cld=1, fgs=0
-Date: Tue, 26 Mar 2019 14:27:23 +0100
-From: Helmut Grohne <helmut.grohne@intenta.de>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Subject: Re: [LINUX PATCH v13] rawnand: pl353: Add basic driver for arm pl353
- smc nand interface
-Message-ID: <20190326132721.52e7ktnptgwvzeor@laureti-dev>
-References: <1549694247-24625-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+	id 1h8mxG-0006hC-3Z; Tue, 26 Mar 2019 14:21:30 +0000
+Received: from m15-29.126.com ([220.181.15.29])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h8mx6-0006g1-Si
+ for linux-mtd@lists.infradead.org; Tue, 26 Mar 2019 14:21:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+ s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=n1jzq
+ 8200DdddCyXM3kjf0pJJmlFhUFeWh8XmCOIek8=; b=VLZlwQHP85mRxB8CtRKEU
+ L95sKB7xJGc0bksd65Az3FZjpCQ2t9ClcEEAHXDkt6zoNHBqqp9/wuOHZEud2+kS
+ 1mvIf00xwPEe+Qxt1cymQUONaKNqTA/9QTio0Um59kOLPXLSPR+V4iOniVf7XEKK
+ EJ/14zhKCTaH1/P//fmH94=
+Received: from liuxiang_1999$126.com ( [222.209.19.73] ) by
+ ajax-webmail-wmsvr29 (Coremail) ; Tue, 26 Mar 2019 22:20:50 +0800 (CST)
+X-Originating-IP: [222.209.19.73]
+Date: Tue, 26 Mar 2019 22:20:50 +0800 (CST)
+From: "Liu Xiang" <liuxiang_1999@126.com>
+To: "Vignesh Raghavendra" <vigneshr@ti.com>
+Subject: Re:Re: [PATCH v2] mtd: spi-nor: Return error when nor->addr_width
+ does not match the device size
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version SP_ntes V3.5 build
+ 20180927(cd7136b6) Copyright (c) 2002-2019 www.mailtech.cn 126com
+In-Reply-To: <823dcd3f-8b9f-15c5-a072-06625120766e@ti.com>
+References: <1552484753-3393-1-git-send-email-liu.xiang6@zte.com.cn>
+ <823dcd3f-8b9f-15c5-a072-06625120766e@ti.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1549694247-24625-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-ClientProxiedBy: ICSMA002.intenta.de (10.10.16.48) To ICSMA002.intenta.de
- (10.10.16.48)
+Message-ID: <7c81cffa.98f1.169ba600d1e.Coremail.liuxiang_1999@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: HcqowAD3_19DNZpc0AgMAA--.33921W
+X-CM-SenderInfo: xolx5x5dqjsiqzzzqiyswou0bp/1tbiZgSDsFpD5zMzZwACsK
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190326_062742_632936_CF5BF64C 
-X-CRM114-Status: GOOD (  12.25  )
+X-CRM114-CacheID: sfid-20190326_072123_334030_51AA5378 
+X-CRM114-Status: GOOD (  13.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,148 +81,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: bbrezillon@kernel.org, richard@nod.at, linux-kernel@vger.kernel.org,
  marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, nagasureshkumarrelli@gmail.com, michals@xilinx.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+ Liu Xiang <liu.xiang6@zte.com.cn>, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Feb 09, 2019 at 12:07:27PM +0530, Naga Sureshkumar Relli wrote:
-> +static void pl353_nfc_force_byte_access(struct nand_chip *chip,
-> +					bool force_8bit)
-> +{
-> +	struct pl353_nand_controller *xnfc =
-> +		container_of(chip, struct pl353_nand_controller, chip);
 
-This `xnfc' variable is never used anywhere inside this function.
+Hi, Vignesh
 
-> +/**
-> + * pl353_nand_exec_op_cmd - Send command to NAND device
-> + * @chip:	Pointer to the NAND chip info structure
-> + * @subop:	Pointer to array of instructions
-> + * Return:	Always return zero
-> + */
-> +static int pl353_nand_exec_op_cmd(struct nand_chip *chip,
-> +				  const struct nand_subop *subop)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	const struct nand_op_instr *instr;
-> +	struct pl353_nfc_op nfc_op = {};
-> +	struct pl353_nand_controller *xnfc =
-> +		container_of(chip, struct pl353_nand_controller, chip);
-> +	unsigned long cmd_phase_data = 0, end_cmd_valid = 0;
-> +	unsigned long cmd_phase_addr, data_phase_addr, end_cmd;
-> +	unsigned int op_id, len, offset;
-> +	bool reading;
-> +
-> +	pl353_nfc_parse_instructions(chip, subop, &nfc_op);
-> +	instr = nfc_op.data_instr;
-> +	op_id = nfc_op.data_instr_idx;
-> +
-> +	offset = nand_subop_get_data_start_off(subop, op_id);
+Thanks for your suggestion. I will send a new patch.
 
-This `offset' variable is never used anywhere inside this function. The
-call is unnecessary and should be removed.
 
-Beyond being useless, it also is harmful. When applying this patch on
-top of a v5.1-rc2, this can be found in dmesg:
 
-| ------------[ cut here ]------------
-| WARNING: CPU: 0 PID: 1 at .../linux/drivers/mtd/nand/raw/nand_base.c:2299 nand_subop_get_data_start_off+0x30/0x6c
-| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.1.0-rc2-dirty #3
-| Hardware name: Xilinx Zynq Platform
-| [<c001743c>] (unwind_backtrace) from [<c00145a4>] (show_stack+0x18/0x1c)
-| [<c00145a4>] (show_stack) from [<c03afe98>] (dump_stack+0xa0/0xcc)
-| [<c03afe98>] (dump_stack) from [<c0021c10>] (__warn+0x10c/0x128)
-| [<c0021c10>] (__warn) from [<c0021d14>] (warn_slowpath_null+0x48/0x50)
-| [<c0021d14>] (warn_slowpath_null) from [<c02703f0>] (nand_subop_get_data_start_off+0x30/0x6c)
-| [<c02703f0>] (nand_subop_get_data_start_off) from [<c0279fe0>] (pl353_nand_exec_op_cmd+0x94/0x2f0)
-| [<c0279fe0>] (pl353_nand_exec_op_cmd) from [<c027025c>] (nand_op_parser_exec_op+0x460/0x4cc)
-| [<c027025c>] (nand_op_parser_exec_op) from [<c026ee4c>] (nand_reset_op+0x134/0x1a0)
-| [<c026ee4c>] (nand_reset_op) from [<c0270adc>] (nand_reset+0x60/0xbc)
-| [<c0270adc>] (nand_reset) from [<c0272410>] (nand_scan_with_ids+0x288/0x1600)
-| [<c0272410>] (nand_scan_with_ids) from [<c027974c>] (pl353_nand_probe+0xf8/0x1a0)
-| [<c027974c>] (pl353_nand_probe) from [<c025185c>] (platform_drv_probe+0x3c/0x74)
-| [<c025185c>] (platform_drv_probe) from [<c024fd28>] (really_probe+0x278/0x400)
-| [<c024fd28>] (really_probe) from [<c024e440>] (bus_for_each_drv+0x68/0x9c)
-| [<c024e440>] (bus_for_each_drv) from [<c0250090>] (__device_attach+0xa8/0x11c)
-| [<c0250090>] (__device_attach) from [<c024e63c>] (bus_probe_device+0x90/0x98)
-| [<c024e63c>] (bus_probe_device) from [<c024cf7c>] (device_add+0x3b4/0x5f0)
-| [<c024cf7c>] (device_add) from [<c02b91b8>] (of_platform_device_create_pdata+0x98/0xc8)
-| [<c02b91b8>] (of_platform_device_create_pdata) from [<c02beba8>] (pl353_smc_probe+0x194/0x234)
-| [<c02beba8>] (pl353_smc_probe) from [<c0223a64>] (amba_probe+0x60/0x74)
-| [<c0223a64>] (amba_probe) from [<c024fd28>] (really_probe+0x278/0x400)
-| [<c024fd28>] (really_probe) from [<c025062c>] (device_driver_attach+0x60/0x68)
-| [<c025062c>] (device_driver_attach) from [<c02506bc>] (__driver_attach+0x88/0x180)
-| [<c02506bc>] (__driver_attach) from [<c024df98>] (bus_for_each_dev+0x60/0x9c)
-| [<c024df98>] (bus_for_each_dev) from [<c024e894>] (bus_add_driver+0x10c/0x208)
-| [<c024e894>] (bus_add_driver) from [<c0250dcc>] (driver_register+0x80/0x114)
-| [<c0250dcc>] (driver_register) from [<c04e2194>] (do_one_initcall+0x164/0x374)
-| [<c04e2194>] (do_one_initcall) from [<c04e2738>] (kernel_init_freeable+0x394/0x474)
-| [<c04e2738>] (kernel_init_freeable) from [<c03c9660>] (kernel_init+0x14/0x100)
-| [<c03c9660>] (kernel_init) from [<c00090ac>] (ret_from_fork+0x14/0x28)
-| Exception stack(0xdd8c9fb0 to 0xdd8c9ff8)
-| 9fa0:                                     00000000 00000000 00000000 00000000
-| 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-| 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-| irq event stamp: 414355
-| hardirqs last  enabled at (414361): [<c007c318>] console_unlock+0x4c4/0x690
-| hardirqs last disabled at (414366): [<c007bf30>] console_unlock+0xdc/0x690
-| softirqs last  enabled at (414350): [<c000a4cc>] __do_softirq+0x454/0x544
-| softirqs last disabled at (414345): [<c0027d98>] irq_exit+0x124/0x128
-| ---[ end trace 3be9247df2f8dfb5 ]---
 
-After removing the call (and the variable), this particular problem goes away.
 
-> +/**
-> + * pl353_nand_probe - Probe method for the NAND driver
-> + * @pdev:	Pointer to the platform_device structure
-> + *
-> + * This function initializes the driver data structures and the hardware.
-> + * The NAND driver has dependency with the pl353_smc memory controller
-> + * driver for initializing the NAND timing parameters, bus width, ECC modes,
-> + * control and status information.
-> + *
-> + * Return:	0 on success or error value on failure
-> + */
-> +static int pl353_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct pl353_nand_controller *xnfc;
-> +	struct mtd_info *mtd;
-> +	struct nand_chip *chip;
-> +	struct resource *res;
-> +	struct device_node *np, *dn;
-> +	u32 ret, val;
 
-This `val' variable is never used anywhere inside this function.
-
-Even after fixing these, I couldn't make this driver work on actual
-hardware.
-
-| nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-| nand: Micron MT29F2G08ABAEAWP
-| nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-| nand: WARNING: MT29F2G08ABAEAWP: the ECC used on your system is too weak compared to the one required by the NAND chip
-| pl353_nand_calculate_hwecc status failed
-| pl353_nand_calculate_hwecc status failed
-| pl353_nand_calculate_hwecc status failed
-| pl353_nand_calculate_hwecc status failed
-| Bad block table not found for chip 0
-| pl353_nand_calculate_hwecc status failed
-| pl353_nand_calculate_hwecc status failed
-| pl353_nand_calculate_hwecc status failed
-| pl353_nand_calculate_hwecc status failed
-| Bad block table not found for chip 0
-
-The very same device works fine with an older version of the out-of-tree
-driver based on a v4.14 tree. Thus far I couldn't figure out why it
-fails like this.
-
-I'd appreciate if you could Cc me on future postings of this driver.
-
-Helmut
-
+At 2019-03-19 13:22:15, "Vignesh Raghavendra" <vigneshr@ti.com> wrote:
+>Hi,
+>
+>On 13/03/19 7:15 PM, Liu Xiang wrote:
+>> In some is25lp256, the DWORD1 of JEDEC Basic Flash Parameter Header
+>> is 0xfff920e5. So the DWORD1[18:17] Address Bytes bits are 0b00,
+>> means that 3-Byte only addressing. But the device size is larger
+>> than 16MB, nor->addr_width must be 4 to access the whole address.
+>> An error should be returned when nor->addr_width does not match
+>> the device size in spi_nor_parse_bfpt(). Then it can go back to
+>> use spi_nor_ids[] for setting the right addr_width.
+>> 
+>> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+>> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 6e13bbd..63933c7 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -2811,6 +2811,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>>  	}
+>>  	params->size >>= 3; /* Convert to bytes. */
+>>  
+>> +	/*
+>> +	 * If the device exceeds 16MiB, addr_width must be 4.
+>> +	 * addr_width == 3 means the Address Bytes we are
+>> +	 * reading from BFPT is wrong.
+>> +	 */
+>
+>JESD216 standard does not mandate flash devices >16MiB to always support
+>4 byte addressing opcode. So, its okay for flash vendor to support
+>>16MiB flash with 3 byte addressing and Bank/extended address register.
+>
+>> +	if (params->size > 0x1000000 && nor->addr_width == 3)
+>> +		return -EINVAL;
+>> +
+>
+>Assuming only DWORD1[18:17] bits are wrong, then returning from here
+>would mean we miss parsing Sector Erase settings, Quad Enable
+>Requirements etc from BFPT which is kind of bad.
+>I suggest to move the fix to[1], addr_width indicated in flash_info
+>struct of the device can take precedence over SFDP.
+>
+>[1]https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/spi-nor.c#L4106
+>
+>
+>>  	/* Fast Read settings. */
+>>  	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
+>>  		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
+>> 
+>
+>-- 
+>Regards
+>Vignesh
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
