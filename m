@@ -2,69 +2,89 @@ Return-Path: <SRS0=gzro=R5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89AE8C43381
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E363C43381
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 15:30:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B46C20823
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 14:43:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1939A20866
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2019 15:30:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cmf64gCN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GgrenB19"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B46C20823
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GPbb5YME";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GdYurZf9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=126.com header.i=@126.com header.b="YGbUuNOo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1939A20866
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=126.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
-	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Message-ID:MIME-Version:References:
+	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=uf85/2fpi8yWm/1m/7tyuQ9DYtfUjgu16OIWUWDhYaY=; b=cmf
-	64gCNBa5ShdYJeOrHQGLdRFIioLe8VUxRe/RX/xNgNVfrqyIagl5Uq10AZep6lnyaDdN98x1+2YGY
-	UAph/YxTU1WQB0cQm0aIKn5PhlvSPb7USjFoa+hmqJjH4DBYWSCnxOEvrVkdRXg6zyh09O21MmZjY
-	gIUaEGfQuoK1jkmcxVn7H0OREQkqn29OyYFwIx+/D24dZ4WwHEqicPlWoK6HoM12LO5ZQHDHKNgcA
-	kcK2XacuNw0LJBKdvp+eY11l9DPXMBRrQXP1XB6Jt0dvG80BR7L6EmnLif5rPZO9Jb0a8Fv1yBDcl
-	uGEuET8jNqNPMOUy5IPyuaZw2izUhQw==;
+	List-Owner; bh=p7yevUCMVK+ZwYUPlhsBW01Ovq4M/o4ECrGhY/5vtCM=; b=GPbb5YMESYQYcD
+	+eA6UbqoDEYETSwk0lRJuiVc9yIzRkTVOCHuH8+AvynHAM3YHnu7XOx1BXKMgPoJ1cvWKWOj0+nNH
+	ZsT87zr1WwxXq8X6X457/byCGHC++m54OJaMArkl9lJn6r4IbzMKarCithSJy7uFXbFeuPuZnV6g3
+	INewoRjugfIgg3qrAHy9wFBZb5WvOYvKvlso8V6JWpUiQl6tu1cju7wyMEwVkq1oJ5pgHVxoAsdKD
+	mkbex8JnizeDchzzAzKhqWJBwDomS2Dh/6D/ZiYQSI9G21VkY6QCw7aUkmehlK2WQZteeD4c6qJHU
+	Z0lvdr6eKVAVjtoMqonQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h8nIt-0008AL-Rw; Tue, 26 Mar 2019 14:43:51 +0000
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+	id 1h8o2L-0008Hr-Rq; Tue, 26 Mar 2019 15:30:49 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h8nIN-0007Yy-4L; Tue, 26 Mar 2019 14:43:23 +0000
+ id 1h8o2J-00087l-Gl
+ for linux-mtd@bombadil.infradead.org; Tue, 26 Mar 2019 15:30:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=4ighytQJon5HFPVt7oxSahUBPRk1+g+mM66kvVxarVE=; b=GgrenB19WKCW
- h+Te2vdTUJE1RZWlvgNllzErxeaw9oDdQb/GDU5eSlurWnzxOYxRfuLmXDPQlT1Z9BTZKPLIjCzGv
- OkV4fbTbbkozLmMqe+B3/URrqYBYXrv5Ch9O2e6mB2sDi5FvFTB9y16ynMc/fQ5dAuGoDsyhosCp+
- iJIGk=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=debutante.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpa (Exim 4.89)
- (envelope-from <broonie@sirena.org.uk>)
- id 1h8nIG-0007jW-6T; Tue, 26 Mar 2019 14:43:12 +0000
-Received: by debutante.sirena.org.uk (Postfix, from userid 1000)
- id BF8841121B57; Tue, 26 Mar 2019 14:43:11 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Ludovic Barre <ludovic.barre@st.com>
-Subject: Applied "spi: stm32-qspi: add dma support" to the spi tree
-In-Reply-To: <1553533300-29999-3-git-send-email-ludovic.Barre@st.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20190326144311.BF8841121B57@debutante.sirena.org.uk>
-Date: Tue, 26 Mar 2019 14:43:11 +0000 (GMT)
-X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
+ d=infradead.org; s=casper.20170209; h=Message-ID:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:References:In-Reply-To:Subject:Cc:To:From:Date:
+ Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=JcoOMmZXsRi5JyZ2RXd43rhwGeOt+JTLh9aetNu0lb0=; b=GdYurZf9a7U782TF6uQ2Ns5iIV
+ kQZsL5uSU2S/B7o2FbwqVw75jZ6a/pZlJTsGFgcAzYDORQGrJcKczM9pb6+JlVXo1G1ji/CHHykro
+ sbIPFukN3koDuZ4EEcAV2/Y6ld0/C71JCTo/ybYzo/6hn0+nFtCyO+UuGMgoHnslv02BxvVly6AXq
+ 1lrR2UgcJD6+BQq6KnZJ0hdOgHRAFwtYorwkCc8/xxkUOzONSSXFo7JU3yz91NKRIRcEARqRV7HlN
+ 2ACjjJzYEQkT4GBrxClHaUTMSJM6kctMRIxfSzdcYjZ0f0O/dOa/wAFqfQU5XBCla2p9KRrugfngP
+ Afy9SGVg==;
+Received: from m15-29.126.com ([220.181.15.29])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h8nsw-0007mj-5e
+ for linux-mtd@lists.infradead.org; Tue, 26 Mar 2019 15:21:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+ s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=b0/RK
+ zzp+5oKOQQwWeV+adVheJakuAyEinAyTntq0/E=; b=YGbUuNOozUbuiOdpwD/e5
+ ga6JNJKtnYUGgrmWve8vtDrQ8dEY+Vj/+RrGCATCUAoE7MI1ZlCLePLOZgKetGry
+ y8k10ariH5BnPq6vjTB+4fgvb3XxVUVjeElyZu4pAyX/TDlyg84WW6E10dGiO1cw
+ fdYKnNKr8K67x47CHEXm0I=
+Received: from liuxiang_1999$126.com ( [222.209.19.73] ) by
+ ajax-webmail-wmsvr29 (Coremail) ; Tue, 26 Mar 2019 23:20:44 +0800 (CST)
+X-Originating-IP: [222.209.19.73]
+Date: Tue, 26 Mar 2019 23:20:44 +0800 (CST)
+From: "Liu Xiang" <liuxiang_1999@126.com>
+To: "Vignesh Raghavendra" <vigneshr@ti.com>
+Subject: Re:Re: [PATCH v2] mtd: spi-nor: Return error when nor->addr_width
+ does not match the device size
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version SP_ntes V3.5 build
+ 20180927(cd7136b6) Copyright (c) 2002-2019 www.mailtech.cn 126com
+In-Reply-To: <823dcd3f-8b9f-15c5-a072-06625120766e@ti.com>
+References: <1552484753-3393-1-git-send-email-liu.xiang6@zte.com.cn>
+ <823dcd3f-8b9f-15c5-a072-06625120766e@ti.com>
+MIME-Version: 1.0
+Message-ID: <209ad144.9c0a.169ba96e2ad.Coremail.liuxiang_1999@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: HcqowADXTelNQ5pccQ0MAA--.9976W
+X-CM-SenderInfo: xolx5x5dqjsiqzzzqiyswou0bp/1tbiZhuDsFpD5zoPcgABs2
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190326_074319_347261_DB121792 
-X-CRM114-Status: GOOD (  20.11  )
+X-CRM114-CacheID: sfid-20190326_152106_711549_9D34F4E0 
+X-CRM114-Status: GOOD (  17.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,283 +96,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Alexandre Torgue <alexandre.torgue@st.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
+Cc: bbrezillon@kernel.org, richard@nod.at, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ Liu Xiang <liu.xiang6@zte.com.cn>, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The patch
-
-   spi: stm32-qspi: add dma support
-
-has been applied to the spi tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 245308c6217027c0d7fc8c3cf2bf95858c704d7b Mon Sep 17 00:00:00 2001
-From: Ludovic Barre <ludovic.barre@st.com>
-Date: Mon, 25 Mar 2019 18:01:40 +0100
-Subject: [PATCH] spi: stm32-qspi: add dma support
-
-This patch adds the dma support for the stm32-qspi hardware.
-The memory buffer constraints (lowmem, vmalloc, kmap) are taken into
-account by framework. In read mode, the memory map is preferred vs
-dma (due to better throughput). If the dma transfer fails the buffer
-is sent by polling.
-
-Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/spi/spi-stm32-qspi.c | 136 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 135 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 9875139ef0cf..11a89aa15d56 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -5,6 +5,8 @@
-  */
- #include <linux/bitfield.h>
- #include <linux/clk.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
- #include <linux/errno.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
-@@ -84,6 +86,7 @@
- #define STM32_FIFO_TIMEOUT_US 30000
- #define STM32_BUSY_TIMEOUT_US 100000
- #define STM32_ABT_TIMEOUT_US 100000
-+#define STM32_COMP_TIMEOUT_MS 1000
- 
- struct stm32_qspi_flash {
- 	struct stm32_qspi *qspi;
-@@ -94,6 +97,7 @@ struct stm32_qspi_flash {
- struct stm32_qspi {
- 	struct device *dev;
- 	struct spi_controller *ctrl;
-+	phys_addr_t phys_base;
- 	void __iomem *io_base;
- 	void __iomem *mm_base;
- 	resource_size_t mm_size;
-@@ -103,6 +107,10 @@ struct stm32_qspi {
- 	struct completion data_completion;
- 	u32 fmode;
- 
-+	struct dma_chan *dma_chtx;
-+	struct dma_chan *dma_chrx;
-+	struct completion dma_completion;
-+
- 	u32 cr_reg;
- 	u32 dcr_reg;
- 
-@@ -181,6 +189,81 @@ static int stm32_qspi_tx_mm(struct stm32_qspi *qspi,
- 	return 0;
- }
- 
-+static void stm32_qspi_dma_callback(void *arg)
-+{
-+	struct completion *dma_completion = arg;
-+
-+	complete(dma_completion);
-+}
-+
-+static int stm32_qspi_tx_dma(struct stm32_qspi *qspi,
-+			     const struct spi_mem_op *op)
-+{
-+	struct dma_async_tx_descriptor *desc;
-+	enum dma_transfer_direction dma_dir;
-+	struct dma_chan *dma_ch;
-+	struct sg_table sgt;
-+	dma_cookie_t cookie;
-+	u32 cr, t_out;
-+	int err;
-+
-+	if (op->data.dir == SPI_MEM_DATA_IN) {
-+		dma_dir = DMA_DEV_TO_MEM;
-+		dma_ch = qspi->dma_chrx;
-+	} else {
-+		dma_dir = DMA_MEM_TO_DEV;
-+		dma_ch = qspi->dma_chtx;
-+	}
-+
-+	/*
-+	 * spi_map_buf return -EINVAL if the buffer is not DMA-able
-+	 * (DMA-able: in vmalloc | kmap | virt_addr_valid)
-+	 */
-+	err = spi_controller_dma_map_mem_op_data(qspi->ctrl, op, &sgt);
-+	if (err)
-+		return err;
-+
-+	desc = dmaengine_prep_slave_sg(dma_ch, sgt.sgl, sgt.nents,
-+				       dma_dir, DMA_PREP_INTERRUPT);
-+	if (!desc) {
-+		err = -ENOMEM;
-+		goto out_unmap;
-+	}
-+
-+	cr = readl_relaxed(qspi->io_base + QSPI_CR);
-+
-+	reinit_completion(&qspi->dma_completion);
-+	desc->callback = stm32_qspi_dma_callback;
-+	desc->callback_param = &qspi->dma_completion;
-+	cookie = dmaengine_submit(desc);
-+	err = dma_submit_error(cookie);
-+	if (err)
-+		goto out;
-+
-+	dma_async_issue_pending(dma_ch);
-+
-+	writel_relaxed(cr | CR_DMAEN, qspi->io_base + QSPI_CR);
-+
-+	t_out = sgt.nents * STM32_COMP_TIMEOUT_MS;
-+	if (!wait_for_completion_interruptible_timeout(&qspi->dma_completion,
-+						       msecs_to_jiffies(t_out)))
-+		err = -ETIMEDOUT;
-+
-+	if (dma_async_is_tx_complete(dma_ch, cookie,
-+				     NULL, NULL) != DMA_COMPLETE)
-+		err = -ETIMEDOUT;
-+
-+	if (err)
-+		dmaengine_terminate_all(dma_ch);
-+
-+out:
-+	writel_relaxed(cr & ~CR_DMAEN, qspi->io_base + QSPI_CR);
-+out_unmap:
-+	spi_controller_dma_unmap_mem_op_data(qspi->ctrl, op, &sgt);
-+
-+	return err;
-+}
-+
- static int stm32_qspi_tx(struct stm32_qspi *qspi, const struct spi_mem_op *op)
- {
- 	if (!op->data.nbytes)
-@@ -188,6 +271,10 @@ static int stm32_qspi_tx(struct stm32_qspi *qspi, const struct spi_mem_op *op)
- 
- 	if (qspi->fmode == CCR_FMODE_MM)
- 		return stm32_qspi_tx_mm(qspi, op);
-+	else if ((op->data.dir == SPI_MEM_DATA_IN && qspi->dma_chrx) ||
-+		 (op->data.dir == SPI_MEM_DATA_OUT && qspi->dma_chtx))
-+		if (!stm32_qspi_tx_dma(qspi, op))
-+			return 0;
- 
- 	return stm32_qspi_tx_poll(qspi, op);
- }
-@@ -218,7 +305,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
- 	writel_relaxed(cr | CR_TCIE | CR_TEIE, qspi->io_base + QSPI_CR);
- 
- 	if (!wait_for_completion_interruptible_timeout(&qspi->data_completion,
--						msecs_to_jiffies(1000))) {
-+				msecs_to_jiffies(STM32_COMP_TIMEOUT_MS))) {
- 		err = -ETIMEDOUT;
- 	} else {
- 		sr = readl_relaxed(qspi->io_base + QSPI_SR);
-@@ -387,6 +474,49 @@ static int stm32_qspi_setup(struct spi_device *spi)
- 	return 0;
- }
- 
-+static void stm32_qspi_dma_setup(struct stm32_qspi *qspi)
-+{
-+	struct dma_slave_config dma_cfg;
-+	struct device *dev = qspi->dev;
-+
-+	memset(&dma_cfg, 0, sizeof(dma_cfg));
-+
-+	dma_cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-+	dma_cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-+	dma_cfg.src_addr = qspi->phys_base + QSPI_DR;
-+	dma_cfg.dst_addr = qspi->phys_base + QSPI_DR;
-+	dma_cfg.src_maxburst = 4;
-+	dma_cfg.dst_maxburst = 4;
-+
-+	qspi->dma_chrx = dma_request_slave_channel(dev, "rx");
-+	if (qspi->dma_chrx) {
-+		if (dmaengine_slave_config(qspi->dma_chrx, &dma_cfg)) {
-+			dev_err(dev, "dma rx config failed\n");
-+			dma_release_channel(qspi->dma_chrx);
-+			qspi->dma_chrx = NULL;
-+		}
-+	}
-+
-+	qspi->dma_chtx = dma_request_slave_channel(dev, "tx");
-+	if (qspi->dma_chtx) {
-+		if (dmaengine_slave_config(qspi->dma_chtx, &dma_cfg)) {
-+			dev_err(dev, "dma tx config failed\n");
-+			dma_release_channel(qspi->dma_chtx);
-+			qspi->dma_chtx = NULL;
-+		}
-+	}
-+
-+	init_completion(&qspi->dma_completion);
-+}
-+
-+static void stm32_qspi_dma_free(struct stm32_qspi *qspi)
-+{
-+	if (qspi->dma_chtx)
-+		dma_release_channel(qspi->dma_chtx);
-+	if (qspi->dma_chrx)
-+		dma_release_channel(qspi->dma_chrx);
-+}
-+
- /*
-  * no special host constraint, so use default spi_mem_default_supports_op
-  * to check supported mode.
-@@ -399,6 +529,7 @@ static void stm32_qspi_release(struct stm32_qspi *qspi)
- {
- 	/* disable qspi */
- 	writel_relaxed(0, qspi->io_base + QSPI_CR);
-+	stm32_qspi_dma_free(qspi);
- 	mutex_destroy(&qspi->lock);
- 	clk_disable_unprepare(qspi->clk);
- 	spi_master_put(qspi->ctrl);
-@@ -427,6 +558,8 @@ static int stm32_qspi_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
-+	qspi->phys_base = res->start;
-+
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi_mm");
- 	qspi->mm_base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(qspi->mm_base)) {
-@@ -477,6 +610,7 @@ static int stm32_qspi_probe(struct platform_device *pdev)
- 
- 	qspi->dev = dev;
- 	platform_set_drvdata(pdev, qspi);
-+	stm32_qspi_dma_setup(qspi);
- 	mutex_init(&qspi->lock);
- 
- 	ctrl->mode_bits = SPI_RX_DUAL | SPI_RX_QUAD
--- 
-2.20.1
 
 
+
+Hi, Vignesh
+
+
+
+
+
+
+At 2019-03-19 13:22:15, "Vignesh Raghavendra" <vigneshr@ti.com> wrote:
+>Hi,
+>
+>On 13/03/19 7:15 PM, Liu Xiang wrote:
+>> In some is25lp256, the DWORD1 of JEDEC Basic Flash Parameter Header
+>> is 0xfff920e5. So the DWORD1[18:17] Address Bytes bits are 0b00,
+>> means that 3-Byte only addressing. But the device size is larger
+>> than 16MB, nor->addr_width must be 4 to access the whole address.
+>> An error should be returned when nor->addr_width does not match
+>> the device size in spi_nor_parse_bfpt(). Then it can go back to
+>> use spi_nor_ids[] for setting the right addr_width.
+>> 
+>> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+>> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 6e13bbd..63933c7 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -2811,6 +2811,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>>  	}
+>>  	params->size >>= 3; /* Convert to bytes. */
+>>  
+>> +	/*
+>> +	 * If the device exceeds 16MiB, addr_width must be 4.
+>> +	 * addr_width == 3 means the Address Bytes we are
+>> +	 * reading from BFPT is wrong.
+>> +	 */
+>
+>JESD216 standard does not mandate flash devices >16MiB to always support
+>4 byte addressing opcode. So, its okay for flash vendor to support
+>>16MiB flash with 3 byte addressing and Bank/extended address register.
+>
+>> +	if (params->size > 0x1000000 && nor->addr_width == 3)
+>> +		return -EINVAL;
+>> +
+>
+>Assuming only DWORD1[18:17] bits are wrong, then returning from here
+>would mean we miss parsing Sector Erase settings, Quad Enable
+>Requirements etc from BFPT which is kind of bad.
+>I suggest to move the fix to[1], addr_width indicated in flash_info
+>struct of the device can take precedence over SFDP.
+>
+>[1]https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/spi-nor.c#L4106
+
+Boris has added a fixup function, do you think this is more better:
+
+static int
+is25lp256_post_bfpt_fixups(struct spi_nor *nor,
+			    const struct sfdp_parameter_header *bfpt_header,
+			    const struct sfdp_bfpt *bfpt,
+			    struct spi_nor_flash_parameter *params)
+{
+	/*
+	 * IS25LP256 supports 4B opcodes.
+	 * Unfortunately, some devices get BFPT_DWORD1_ADDRESS_BYTES_3_ONLY  
+	 * from BFPT table for address width. We should fix it.
+	 */
+	if (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK == 
+		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
+		nor->addr_width = 4;
+
+	return 0;
+}
+
+static struct spi_nor_fixups is25lp256_fixups = {
+	.post_bfpt = is25lp256_post_bfpt_fixups,
+};
+
+
+>
+>
+>>  	/* Fast Read settings. */
+>>  	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
+>>  		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
+>> 
+>
+>-- 
+>Regards
+>Vignesh
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
