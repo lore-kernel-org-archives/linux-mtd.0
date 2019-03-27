@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC608C4360F
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78DE3C43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:49:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B24232075E
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:47:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C87B204FD
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:49:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mUus71vF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B24232075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HKGm8EWe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C87B204FD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,48 +24,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GQo9kx/KZLMuFTzlR847NB/SwMIlWVbKdzaup+wetGs=; b=mUus71vFU/MkMo
-	eUueqSs5OUkm3KQPyrYGSU4YsFnCkirUELmDEgmY9/NPpmvIdC3qcoWS+15ojxNWowUFnQRRETs1H
-	74Vtvx+k2albi1g4QUgWu0/A8fWXssLwuBh60YFKqPF2AsfFBw+FX8mRYQJgYgAqjd5w9OWEZidHt
-	QNSayXU0Z/6oRQS0qotR7b4uNF612ofcwpYVsF9FJzdTgYc00GKMNjzQW0b1GprwcbUVf6FqWkbVM
-	jqeqRlyryK3ljpXLLtmPpz5ivzrT56VIhy7H3EKTJZYqExC1QpAidfSFxdgtTnOiDJ0z0HRhWLv6t
-	zwtglzMMs8W+KCcRaGvA==;
+	List-Owner; bh=uL9sCHvO/rSNBqhCjTaJpBFqCXQS/HuzPrVsRnlMzm4=; b=HKGm8EWe9FuNBm
+	CUvpvG+Q+Gk3ee/gPttmQYVroqBiw5a8Wvp6QeM2FJN3GRXcCN6HgHEiW3DJugl7xEGRgE5PDTmj9
+	JvY7RxrF+k/bsXpEhFMSLLAacs+gswyVWP7OzGpmniUK5vvY635dADSNZVEYX15dosufLpVBiLZ19
+	Hsb3gJnkoHzml6eiM8pYRdxAAK0eOxIdYhLiDxKGziASyDBpy8Fcgis6Yx3EpnBi5YlOGpDYOEo6i
+	XaPFH6Z+MTN1A60SKB2rvA/VK/a1pEDkSEjyEhgsU0/CIsnobu3vx/60+8PiolebdwSFv8Eph8b4q
+	867jEM8ffzQZldnIDPAw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9IGJ-00054y-8t; Wed, 27 Mar 2019 23:47:15 +0000
+	id 1h9II5-00060U-RM; Wed, 27 Mar 2019 23:49:05 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9IFs-0004TV-8b
- for linux-mtd@lists.infradead.org; Wed, 27 Mar 2019 23:47:13 +0000
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
- [10.5.11.16])
+ id 1h9IHz-000601-VW
+ for linux-mtd@lists.infradead.org; Wed, 27 Mar 2019 23:49:04 +0000
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
+ [10.5.11.22])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx1.redhat.com (Postfix) with ESMTPS id B41333087950;
- Wed, 27 Mar 2019 23:46:46 +0000 (UTC)
+ by mx1.redhat.com (Postfix) with ESMTPS id 86A14A971A;
+ Wed, 27 Mar 2019 23:48:59 +0000 (UTC)
 Received: from warthog.procyon.org.uk (ovpn-121-98.rdu2.redhat.com
  [10.10.121.98])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 4E5A05C23E;
- Wed, 27 Mar 2019 23:46:45 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id ABEE81092001;
+ Wed, 27 Mar 2019 23:48:57 +0000 (UTC)
 Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
  Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
  Kingdom.
  Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 49/68] vfs: Convert jffs2 to use the new mount API
+Subject: [RFC PATCH 66/68] vfs: Convert ubifs to use the new mount API
 From: David Howells <dhowells@redhat.com>
 To: viro@zeniv.linux.org.uk
-Date: Wed, 27 Mar 2019 23:46:44 +0000
-Message-ID: <155373040456.7602.12983604512303323486.stgit@warthog.procyon.org.uk>
+Date: Wed, 27 Mar 2019 23:48:56 +0000
+Message-ID: <155373053689.7602.13296695814557418043.stgit@warthog.procyon.org.uk>
 In-Reply-To: <155372999953.7602.13784796495137723805.stgit@warthog.procyon.org.uk>
 References: <155372999953.7602.13784796495137723805.stgit@warthog.procyon.org.uk>
 User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
- (mx1.redhat.com [10.5.110.45]); Wed, 27 Mar 2019 23:46:46 +0000 (UTC)
+ (mx1.redhat.com [10.5.110.38]); Wed, 27 Mar 2019 23:48:59 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190327_164648_639562_B3D4A756 
-X-CRM114-Status: GOOD (  25.37  )
+X-CRM114-CacheID: sfid-20190327_164900_063079_925A23DD 
+X-CRM114-Status: GOOD (  27.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,15 +77,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
+ dhowells@redhat.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the jffs2 filesystem to the new internal mount API as the old
+Convert the ubifs filesystem to the new internal mount API as the old
 one will be obsoleted and removed.  This allows greater flexibility in
 communication of mount parameters between userspace, the VFS and the
 filesystem.
@@ -93,363 +94,657 @@ filesystem.
 See Documentation/filesystems/mount_api.txt for more information.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
-cc: David Woodhouse <dwmw2@infradead.org>
+cc: Richard Weinberger <richard@nod.at>
+cc: Artem Bityutskiy <dedekind1@gmail.com>
+cc: Adrian Hunter <adrian.hunter@intel.com>
 cc: linux-mtd@lists.infradead.org
 ---
 
- fs/jffs2/fs.c       |   21 +++---
- fs/jffs2/os-linux.h |    4 +
- fs/jffs2/super.c    |  172 +++++++++++++++++++++++++--------------------------
- 3 files changed, 96 insertions(+), 101 deletions(-)
+ fs/ubifs/super.c |  447 ++++++++++++++++++++++++------------------------------
+ 1 file changed, 200 insertions(+), 247 deletions(-)
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index eab04eca95a3..d79734bd7650 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -17,6 +17,7 @@
- #include <linux/sched.h>
- #include <linux/cred.h>
- #include <linux/fs.h>
-+#include <linux/fs_context.h>
- #include <linux/list.h>
- #include <linux/mtd/mtd.h>
- #include <linux/pagemap.h>
-@@ -184,7 +185,7 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
- 	if (ivalid & ATTR_SIZE && inode->i_size > iattr->ia_size) {
- 		truncate_setsize(inode, iattr->ia_size);
- 		inode->i_blocks = (inode->i_size + 511) >> 9;
--	}	
-+	}
- 
- 	return 0;
- }
-@@ -390,7 +391,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
- 	jffs2_do_setattr(inode, &iattr);
- }
- 
--int jffs2_do_remount_fs(struct super_block *sb, int *flags, char *data)
-+int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
- 
-@@ -408,10 +409,10 @@ int jffs2_do_remount_fs(struct super_block *sb, int *flags, char *data)
- 		mutex_unlock(&c->alloc_sem);
- 	}
- 
--	if (!(*flags & SB_RDONLY))
-+	if (!(fc->sb_flags & SB_RDONLY))
- 		jffs2_start_garbage_collect_thread(c);
- 
--	*flags |= SB_NOATIME;
-+	fc->sb_flags |= SB_NOATIME;
- 	return 0;
- }
- 
-@@ -508,7 +509,7 @@ static int calculate_inocache_hashsize(uint32_t flash_size)
- 	return hashsize;
- }
- 
--int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
-+int jffs2_do_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	struct jffs2_sb_info *c;
- 	struct inode *root_i;
-@@ -523,11 +524,11 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
- 
- #ifndef CONFIG_JFFS2_FS_WRITEBUFFER
- 	if (c->mtd->type == MTD_NANDFLASH) {
--		pr_err("Cannot operate on NAND flash unless jffs2 NAND support is compiled in\n");
-+		errorf(fc, "Cannot operate on NAND flash unless jffs2 NAND support is compiled in");
- 		return -EINVAL;
- 	}
- 	if (c->mtd->type == MTD_DATAFLASH) {
--		pr_err("Cannot operate on DataFlash unless jffs2 DataFlash support is compiled in\n");
-+		errorf(fc, "Cannot operate on DataFlash unless jffs2 DataFlash support is compiled in");
- 		return -EINVAL;
- 	}
- #endif
-@@ -541,12 +542,12 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
- 	 */
- 	if ((c->sector_size * blocks) != c->flash_size) {
- 		c->flash_size = c->sector_size * blocks;
--		pr_info("Flash size not aligned to erasesize, reducing to %dKiB\n",
--			c->flash_size / 1024);
-+		infof(fc, "Flash size not aligned to erasesize, reducing to %dKiB",
-+		      c->flash_size / 1024);
- 	}
- 
- 	if (c->flash_size < 5*c->sector_size) {
--		pr_err("Too few erase blocks (%d)\n",
-+		errorf(fc, "Too few erase blocks (%d)",
- 		       c->flash_size / c->sector_size);
- 		return -EINVAL;
- 	}
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index a2dbbb3f4c74..ac23ae5cdb54 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -172,8 +172,8 @@ void jffs2_dirty_inode(struct inode *inode, int flags);
- struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode,
- 			       struct jffs2_raw_inode *ri);
- int jffs2_statfs (struct dentry *, struct kstatfs *);
--int jffs2_do_remount_fs(struct super_block *, int *, char *);
--int jffs2_do_fill_super(struct super_block *sb, void *data, int silent);
-+int jffs2_do_remount_fs(struct super_block *sb, struct fs_context *fc);
-+int jffs2_do_fill_super(struct super_block *sb, struct fs_context *fc);
- void jffs2_gc_release_inode(struct jffs2_sb_info *c,
- 			    struct jffs2_inode_info *f);
- struct jffs2_inode_info *jffs2_gc_fetch_inode(struct jffs2_sb_info *c,
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index bb6ae387469f..69dcc4e0b243 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -19,7 +19,8 @@
- #include <linux/fs.h>
- #include <linux/err.h>
- #include <linux/mount.h>
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 8dc2818fdd84..e77ad4dd2665 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -31,9 +31,9 @@
+ #include <linux/module.h>
+ #include <linux/ctype.h>
+ #include <linux/kthread.h>
 -#include <linux/parser.h>
 +#include <linux/fs_context.h>
 +#include <linux/fs_parser.h>
- #include <linux/jffs2.h>
- #include <linux/pagemap.h>
- #include <linux/mtd/super.h>
-@@ -160,96 +161,77 @@ static const struct export_operations jffs2_export_ops = {
- /*
-  * JFFS2 mount options.
-  *
-+ * Opt_source: The source device
-  * Opt_override_compr: override default compressor
-  * Opt_rp_size: size of reserved pool in KiB
-- * Opt_err: just end of array marker
-  */
- enum {
-+	Opt_source,
- 	Opt_override_compr,
- 	Opt_rp_size,
+ #include <linux/seq_file.h>
+-#include <linux/mount.h>
+ #include <linux/math64.h>
+ #include <linux/writeback.h>
+ #include "ubifs.h"
+@@ -935,7 +935,7 @@ static int check_volume_empty(struct ubifs_info *c)
+  * Opt_no_bulk_read: disable bulk-reads
+  * Opt_chk_data_crc: check CRCs when reading data nodes
+  * Opt_no_chk_data_crc: do not check CRCs when reading data nodes
+- * Opt_override_compr: override default compressor
++ * Opt_compr: override default compressor
+  * Opt_assert: set ubifs_assert() action
+  * Opt_auth_key: The key name used for authentication
+  * Opt_auth_hash_name: The hash type used for authentication
+@@ -948,54 +948,47 @@ enum {
+ 	Opt_no_bulk_read,
+ 	Opt_chk_data_crc,
+ 	Opt_no_chk_data_crc,
+-	Opt_override_compr,
++	Opt_compr,
+ 	Opt_assert,
+ 	Opt_auth_key,
+ 	Opt_auth_hash_name,
+ 	Opt_ignore,
 -	Opt_err,
  };
  
 -static const match_table_t tokens = {
+-	{Opt_fast_unmount, "fast_unmount"},
+-	{Opt_norm_unmount, "norm_unmount"},
+-	{Opt_bulk_read, "bulk_read"},
+-	{Opt_no_bulk_read, "no_bulk_read"},
+-	{Opt_chk_data_crc, "chk_data_crc"},
+-	{Opt_no_chk_data_crc, "no_chk_data_crc"},
 -	{Opt_override_compr, "compr=%s"},
--	{Opt_rp_size, "rp_size=%u"},
+-	{Opt_auth_key, "auth_key=%s"},
+-	{Opt_auth_hash_name, "auth_hash_name=%s"},
+-	{Opt_ignore, "ubi=%s"},
+-	{Opt_ignore, "vol=%s"},
+-	{Opt_assert, "assert=%s"},
 -	{Opt_err, NULL},
-+static const struct fs_parameter_spec jffs2_param_specs[] = {
-+	fsparam_string	("source",	Opt_source),
-+	fsparam_enum	("compr",	Opt_override_compr),
-+	fsparam_u32	("rp_size",	Opt_rp_size),
++static const struct fs_parameter_spec ubifs_param_specs[] = {
++	fsparam_flag	("fast_unmount",		Opt_fast_unmount),
++	fsparam_flag	("norm_unmount",		Opt_norm_unmount),
++	fsparam_flag	("bulk_read",			Opt_bulk_read),
++	fsparam_flag	("no_bulk_read",		Opt_no_bulk_read),
++	fsparam_flag	("chk_data_crc",		Opt_chk_data_crc),
++	fsparam_flag	("no_chk_data_crc",		Opt_no_chk_data_crc),
++	fsparam_enum	("compr",			Opt_compr),
++	fsparam_enum	("assert",			Opt_assert),
++	fsparam_string	("auth_key",			Opt_auth_key),
++	fsparam_string	("auth_hash_name",		Opt_auth_hash_name),
++	fsparam_string	("ubi",				Opt_ignore),
++	fsparam_string	("vol",				Opt_ignore),
 +	{}
  };
  
--static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
+-/**
+- * parse_standard_option - parse a standard mount option.
+- * @option: the option to parse
+- *
+- * Normally, standard mount options like "sync" are passed to file-systems as
+- * flags. However, when a "rootflags=" kernel boot parameter is used, they may
+- * be present in the options string. This function tries to deal with this
+- * situation and parse standard options. Returns 0 if the option was not
+- * recognized, and the corresponding integer flag if it was.
+- *
+- * UBIFS is only interested in the "sync" option, so do not check for anything
+- * else.
+- */
+-static int parse_standard_option(const char *option)
 -{
++static const struct fs_parameter_enum ubifs_param_enums[] = {
++	{ Opt_compr,	"none",		UBIFS_COMPR_NONE },
++	{ Opt_compr,	"lzo",		UBIFS_COMPR_LZO },
++	{ Opt_compr,	"zlib",		UBIFS_COMPR_ZLIB },
++	{ Opt_assert,	"report",	ASSACT_REPORT },
++	{ Opt_assert,	"read-only",	ASSACT_RO },
++	{ Opt_assert,	"panic",	ASSACT_PANIC },
++	{}
++};
+ 
+-	pr_notice("UBIFS: parse %s\n", option);
+-	if (!strcmp(option, "sync"))
+-		return SB_SYNCHRONOUS;
+-	return 0;
+-}
++static const struct fs_parameter_description ubifs_fs_parameters = {
++	.name		= "ubifs",
++	.specs		= ubifs_param_specs,
++	.enums		= ubifs_param_enums,
++};
+ 
+ /**
+- * ubifs_parse_options - parse mount parameters.
++ * ubifs_parse_param - parse a parameter.
+  * @c: UBIFS file-system description object
+  * @options: parameters to parse
+  * @is_remount: non-zero if this is FS re-mount
+@@ -1003,119 +996,64 @@ static int parse_standard_option(const char *option)
+  * This function parses UBIFS mount options and returns zero in case success
+  * and a negative error code in case of failure.
+  */
+-static int ubifs_parse_options(struct ubifs_info *c, char *options,
+-			       int is_remount)
++static int ubifs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ {
+-	char *p;
 -	substring_t args[MAX_OPT_ARGS];
--	char *p, *name;
--	unsigned int opt;
 -
--	if (!data)
+-	if (!options)
 -		return 0;
 -
--	while ((p = strsep(&data, ","))) {
+-	while ((p = strsep(&options, ","))) {
 -		int token;
--
++	struct ubifs_info *c = fc->s_fs_info;
++	struct fs_parse_result result;
++	int opt;
+ 
 -		if (!*p)
 -			continue;
--
++	opt = fs_parse(fc, &ubifs_fs_parameters, param, &result);
++	if (opt < 0)
++		return opt;
+ 
 -		token = match_token(p, tokens, args);
 -		switch (token) {
++	switch (opt) {
+ 		/*
+ 		 * %Opt_fast_unmount and %Opt_norm_unmount options are ignored.
+ 		 * We accept them in order to be backward-compatible. But this
+ 		 * should be removed at some point.
+ 		 */
+-		case Opt_fast_unmount:
+-			c->mount_opts.unmount_mode = 2;
+-			break;
+-		case Opt_norm_unmount:
+-			c->mount_opts.unmount_mode = 1;
+-			break;
+-		case Opt_bulk_read:
+-			c->mount_opts.bulk_read = 2;
+-			c->bulk_read = 1;
+-			break;
+-		case Opt_no_bulk_read:
+-			c->mount_opts.bulk_read = 1;
+-			c->bulk_read = 0;
+-			break;
+-		case Opt_chk_data_crc:
+-			c->mount_opts.chk_data_crc = 2;
+-			c->no_chk_data_crc = 0;
+-			break;
+-		case Opt_no_chk_data_crc:
+-			c->mount_opts.chk_data_crc = 1;
+-			c->no_chk_data_crc = 1;
+-			break;
 -		case Opt_override_compr:
--			name = match_strdup(&args[0]);
+-		{
+-			char *name = match_strdup(&args[0]);
 -
 -			if (!name)
 -				return -ENOMEM;
 -			if (!strcmp(name, "none"))
--				c->mount_opts.compr = JFFS2_COMPR_MODE_NONE;
-+static const struct fs_parameter_enum jffs2_param_enums[] = {
-+	{ Opt_override_compr,	"none",	JFFS2_COMPR_MODE_NONE },
- #ifdef CONFIG_JFFS2_LZO
+-				c->mount_opts.compr_type = UBIFS_COMPR_NONE;
 -			else if (!strcmp(name, "lzo"))
--				c->mount_opts.compr = JFFS2_COMPR_MODE_FORCELZO;
-+	{ Opt_override_compr,	"lzo",	JFFS2_COMPR_MODE_FORCELZO },
- #endif
- #ifdef CONFIG_JFFS2_ZLIB
+-				c->mount_opts.compr_type = UBIFS_COMPR_LZO;
 -			else if (!strcmp(name, "zlib"))
--				c->mount_opts.compr =
--						JFFS2_COMPR_MODE_FORCEZLIB;
-+	{ Opt_override_compr,	"zlib",	JFFS2_COMPR_MODE_FORCEZLIB },
- #endif
+-				c->mount_opts.compr_type = UBIFS_COMPR_ZLIB;
 -			else {
--				pr_err("Error: unknown compressor \"%s\"\n",
--				       name);
+-				ubifs_err(c, "unknown compressor \"%s\"", name); //FIXME: is c ready?
 -				kfree(name);
 -				return -EINVAL;
 -			}
 -			kfree(name);
--			c->mount_opts.override_compr = true;
+-			c->mount_opts.override_compr = 1;
+-			c->default_compr = c->mount_opts.compr_type;
 -			break;
--		case Opt_rp_size:
--			if (match_int(&args[0], &opt))
--				return -EINVAL;
--			opt *= 1024;
--			if (opt > c->mtd->size) {
--				pr_warn("Too large reserve pool specified, max "
--					"is %llu KB\n", c->mtd->size / 1024);
+-		}
+-		case Opt_assert:
+-		{
+-			char *act = match_strdup(&args[0]);
+-
+-			if (!act)
+-				return -ENOMEM;
+-			if (!strcmp(act, "report"))
+-				c->assert_action = ASSACT_REPORT;
+-			else if (!strcmp(act, "read-only"))
+-				c->assert_action = ASSACT_RO;
+-			else if (!strcmp(act, "panic"))
+-				c->assert_action = ASSACT_PANIC;
+-			else {
+-				ubifs_err(c, "unknown assert action \"%s\"", act);
+-				kfree(act);
 -				return -EINVAL;
 -			}
--			c->mount_opts.rp_size = opt;
+-			kfree(act);
+-			break;
+-		}
+-		case Opt_auth_key:
+-			c->auth_key_name = kstrdup(args[0].from, GFP_KERNEL);
+-			if (!c->auth_key_name)
+-				return -ENOMEM;
+-			break;
+-		case Opt_auth_hash_name:
+-			c->auth_hash_name = kstrdup(args[0].from, GFP_KERNEL);
+-			if (!c->auth_hash_name)
+-				return -ENOMEM;
+-			break;
+-		case Opt_ignore:
 -			break;
 -		default:
--			pr_err("Error: unrecognized mount option '%s' or missing value\n",
--			       p);
--			return -EINVAL;
+-		{
+-			unsigned long flag;
+-			struct super_block *sb = c->vfs_sb;
+-
+-			flag = parse_standard_option(p);
+-			if (!flag) {
+-				ubifs_err(c, "unrecognized mount option \"%s\" or missing value",
+-					  p);
+-				return -EINVAL;
+-			}
+-			sb->s_flags |= flag;
+-			break;
 -		}
-+	{}
-+};
-+
-+const struct fs_parameter_description jffs2_fs_parameters = {
-+	.name		= "jffs2",
-+	.specs		= jffs2_param_specs,
-+	.enums		= jffs2_param_enums,
-+};
-+
-+static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
-+{
-+	struct fs_parse_result result;
-+	struct jffs2_sb_info *c = fc->s_fs_info;
-+	int opt;
-+
-+	opt = fs_parse(fc, &jffs2_fs_parameters, param, &result);
-+	if (opt < 0)
-+		return opt;
-+
-+	switch (opt) {
-+	case Opt_override_compr:
-+		c->mount_opts.compr = result.uint_32;
-+		c->mount_opts.override_compr = true;
+-		}
++	case Opt_fast_unmount:
++		c->mount_opts.unmount_mode = 2;
 +		break;
-+	case Opt_rp_size:
-+		if (result.uint_32 > UINT_MAX / 1024)
-+			return invalf(fc, "jffs2: rp_size unrepresentable");
-+		opt = result.uint_32 * 1024;
-+		if (opt > c->mtd->size)
-+			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
-+				      c->mtd->size / 1024);
-+		c->mount_opts.rp_size = opt;
++	case Opt_norm_unmount:
++		c->mount_opts.unmount_mode = 1;
 +		break;
-+	default:
-+		return -EINVAL;
++	case Opt_bulk_read:
++		c->mount_opts.bulk_read = 2;
++		c->bulk_read = 1;
++		break;
++	case Opt_no_bulk_read:
++		c->mount_opts.bulk_read = 1;
++		c->bulk_read = 0;
++		break;
++	case Opt_chk_data_crc:
++		c->mount_opts.chk_data_crc = 2;
++		c->no_chk_data_crc = 0;
++		break;
++	case Opt_no_chk_data_crc:
++		c->mount_opts.chk_data_crc = 1;
++		c->no_chk_data_crc = 1;
++		break;
++	case Opt_compr:
++		c->mount_opts.compr_type = result.uint_32;
++		c->mount_opts.override_compr = 1;
++		c->default_compr = c->mount_opts.compr_type;
++		break;
++	case Opt_assert:
++		c->assert_action = result.uint_32;
++		break;
++	case Opt_auth_key:
++		kfree(c->auth_key_name);
++		c->auth_key_name = param->string;
++		param->string = NULL;
++		break;
++	case Opt_auth_hash_name:
++		kfree(c->auth_hash_name);
++		c->auth_hash_name = param->string;
++		param->string = NULL;
++		break;
++	case Opt_ignore:
++		break;
  	}
  
  	return 0;
+@@ -1927,21 +1865,30 @@ static void ubifs_put_super(struct super_block *sb)
+ 	mutex_unlock(&c->umount_mutex);
  }
  
--static int jffs2_remount_fs(struct super_block *sb, int *flags, char *data)
-+static int jffs2_reconfigure(struct fs_context *fc)
+-static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
++static int ubifs_reconfigure(struct fs_context *fc)
  {
--	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
--	int err;
 +	struct super_block *sb = fc->root->d_sb;
+ 	int err;
+ 	struct ubifs_info *c = sb->s_fs_info;
++	struct ubifs_info *reconf = fc->s_fs_info;
  
  	sync_filesystem(sb);
--	err = jffs2_parse_options(c, data);
--	if (err)
--		return -EINVAL;
--
--	return jffs2_do_remount_fs(sb, flags, data);
-+	return jffs2_do_remount_fs(sb, fc);
- }
+-	dbg_gen("old flags %#lx, new flags %#x", sb->s_flags, *flags);
++	dbg_gen("old flags %#lx, new flags %#x", sb->s_flags, fc->sb_flags);
  
- static const struct super_operations jffs2_super_operations =
-@@ -258,7 +240,6 @@ static const struct super_operations jffs2_super_operations =
- 	.destroy_inode =jffs2_destroy_inode,
- 	.put_super =	jffs2_put_super,
- 	.statfs =	jffs2_statfs,
--	.remount_fs =	jffs2_remount_fs,
- 	.evict_inode =	jffs2_evict_inode,
- 	.dirty_inode =	jffs2_dirty_inode,
- 	.show_options =	jffs2_show_options,
-@@ -268,26 +249,16 @@ static const struct super_operations jffs2_super_operations =
- /*
-  * fill in the superblock
+-	err = ubifs_parse_options(c, data, 1);
+-	if (err) {
+-		ubifs_err(c, "invalid or unknown remount parameter");
+-		return err;
+-	}
++	/* Apply the mount option changes.
++	 *
++	 * [!] NOTE Replacing the auth_key_name and auth_hash_name is
++	 *     very dodgy without locking.  Previously it just leaked
++	 *     the old strings.  The strings only seem to be used
++	 *     during mounting, so don't reconfigure those.
++	 */
++	c->mount_opts		= reconf->mount_opts;
++	c->bulk_read		= reconf->bulk_read;
++	c->no_chk_data_crc	= reconf->no_chk_data_crc;
++	c->default_compr	= reconf->default_compr;
++	c->assert_action	= reconf->assert_action;
+ 
+-	if (c->ro_mount && !(*flags & SB_RDONLY)) {
++	if (c->ro_mount && !(fc->sb_flags & SB_RDONLY)) {
+ 		if (c->ro_error) {
+ 			ubifs_msg(c, "cannot re-mount R/W due to prior errors");
+ 			return -EROFS;
+@@ -1953,7 +1900,7 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
+ 		err = ubifs_remount_rw(c);
+ 		if (err)
+ 			return err;
+-	} else if (!c->ro_mount && (*flags & SB_RDONLY)) {
++	} else if (!c->ro_mount && (fc->sb_flags & SB_RDONLY)) {
+ 		if (c->ro_error) {
+ 			ubifs_msg(c, "cannot re-mount R/O due to prior errors");
+ 			return -EROFS;
+@@ -1985,14 +1932,13 @@ const struct super_operations ubifs_super_operations = {
+ 	.evict_inode   = ubifs_evict_inode,
+ 	.statfs        = ubifs_statfs,
+ 	.dirty_inode   = ubifs_dirty_inode,
+-	.remount_fs    = ubifs_remount_fs,
+ 	.show_options  = ubifs_show_options,
+ 	.sync_fs       = ubifs_sync_fs,
+ };
+ 
+ /**
+  * open_ubi - parse UBI device name string and open the UBI device.
+- * @name: UBI volume name
++ * @fc: The filesystem parameters
+  * @mode: UBI volume open mode
+  *
+  * The primary method of mounting UBIFS is by specifying the UBI volume
+@@ -2009,15 +1955,13 @@ const struct super_operations ubifs_super_operations = {
+  * returns UBI volume description object in case of success and a negative
+  * error code in case of failure.
   */
--static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
-+static int jffs2_fill_super(struct super_block *sb, struct fs_context *fc)
+-static struct ubi_volume_desc *open_ubi(const char *name, int mode)
++static struct ubi_volume_desc *open_ubi(struct fs_context *fc, int mode)
  {
--	struct jffs2_sb_info *c;
--	int ret;
-+	struct jffs2_sb_info *c = sb->s_fs_info;
+ 	struct ubi_volume_desc *ubi;
++	const char *name = fc->source;
+ 	int dev, vol;
+ 	char *endptr;
  
- 	jffs2_dbg(1, "jffs2_get_sb_mtd():"
- 		  " New superblock for device %d (\"%s\")\n",
- 		  sb->s_mtd->index, sb->s_mtd->name);
- 
--	c = kzalloc(sizeof(*c), GFP_KERNEL);
--	if (!c)
--		return -ENOMEM;
+-	if (!name || !*name)
+-		return ERR_PTR(-EINVAL);
 -
- 	c->mtd = sb->s_mtd;
- 	c->os_priv = sb;
--	sb->s_fs_info = c;
--
--	ret = jffs2_parse_options(c, data);
--	if (ret)
--		return -EINVAL;
+ 	/* First, try to open using the device node path method */
+ 	ubi = ubi_open_volume_path(name, mode);
+ 	if (!IS_ERR(ubi))
+@@ -2025,14 +1969,14 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
  
- 	/* Initialize JFFS2 superblock locks, the further initialization will
- 	 * be done later */
-@@ -305,15 +276,37 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
- #ifdef CONFIG_JFFS2_FS_POSIX_ACL
- 	sb->s_flags |= SB_POSIXACL;
- #endif
--	ret = jffs2_do_fill_super(sb, data, silent);
--	return ret;
-+	return jffs2_do_fill_super(sb, fc);
+ 	/* Try the "nodev" method */
+ 	if (name[0] != 'u' || name[1] != 'b' || name[2] != 'i')
+-		return ERR_PTR(-EINVAL);
++		goto invalid_source;
+ 
+ 	/* ubi:NAME method */
+ 	if ((name[3] == ':' || name[3] == '!') && name[4] != '\0')
+ 		return ubi_open_volume_nm(0, name + 4, mode);
+ 
+ 	if (!isdigit(name[3]))
+-		return ERR_PTR(-EINVAL);
++		goto invalid_source;
+ 
+ 	dev = simple_strtoul(name + 3, &endptr, 0);
+ 
+@@ -2044,7 +1988,7 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+ 	if (*endptr == '_' && isdigit(endptr[1])) {
+ 		vol = simple_strtoul(endptr + 1, &endptr, 0);
+ 		if (*endptr != '\0')
+-			return ERR_PTR(-EINVAL);
++			goto invalid_source;
+ 		return ubi_open_volume(dev, vol, mode);
+ 	}
+ 
+@@ -2052,57 +1996,11 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+ 	if ((*endptr == ':' || *endptr == '!') && endptr[1] != '\0')
+ 		return ubi_open_volume_nm(dev, ++endptr, mode);
+ 
+-	return ERR_PTR(-EINVAL);
+-}
+-
+-static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
+-{
+-	struct ubifs_info *c;
+-
+-	c = kzalloc(sizeof(struct ubifs_info), GFP_KERNEL);
+-	if (c) {
+-		spin_lock_init(&c->cnt_lock);
+-		spin_lock_init(&c->cs_lock);
+-		spin_lock_init(&c->buds_lock);
+-		spin_lock_init(&c->space_lock);
+-		spin_lock_init(&c->orphan_lock);
+-		init_rwsem(&c->commit_sem);
+-		mutex_init(&c->lp_mutex);
+-		mutex_init(&c->tnc_mutex);
+-		mutex_init(&c->log_mutex);
+-		mutex_init(&c->umount_mutex);
+-		mutex_init(&c->bu_mutex);
+-		mutex_init(&c->write_reserve_mutex);
+-		init_waitqueue_head(&c->cmt_wq);
+-		c->buds = RB_ROOT;
+-		c->old_idx = RB_ROOT;
+-		c->size_tree = RB_ROOT;
+-		c->orph_tree = RB_ROOT;
+-		INIT_LIST_HEAD(&c->infos_list);
+-		INIT_LIST_HEAD(&c->idx_gc);
+-		INIT_LIST_HEAD(&c->replay_list);
+-		INIT_LIST_HEAD(&c->replay_buds);
+-		INIT_LIST_HEAD(&c->uncat_list);
+-		INIT_LIST_HEAD(&c->empty_list);
+-		INIT_LIST_HEAD(&c->freeable_list);
+-		INIT_LIST_HEAD(&c->frdi_idx_list);
+-		INIT_LIST_HEAD(&c->unclean_leb_list);
+-		INIT_LIST_HEAD(&c->old_buds);
+-		INIT_LIST_HEAD(&c->orph_list);
+-		INIT_LIST_HEAD(&c->orph_new);
+-		c->no_chk_data_crc = 1;
+-		c->assert_action = ASSACT_RO;
+-
+-		c->highest_inum = UBIFS_FIRST_INO;
+-		c->lhead_lnum = c->ltail_lnum = UBIFS_LOG_LNUM;
+-
+-		ubi_get_volume_info(ubi, &c->vi);
+-		ubi_get_device_info(c->vi.ubi_num, &c->di);
+-	}
+-	return c;
++invalid_source:
++	return ERR_PTR(invalf(fc, "Invalid source name"));
  }
  
--static struct dentry *jffs2_mount(struct file_system_type *fs_type,
--			int flags, const char *dev_name,
--			void *data)
-+static int jffs2_get_tree(struct fs_context *fc)
+-static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
++static int ubifs_fill_super(struct super_block *sb, struct fs_context *fc)
  {
--	return mount_mtd(fs_type, flags, dev_name, data, jffs2_fill_super);
-+	return vfs_get_mtd_super(fc, jffs2_fill_super);
+ 	struct ubifs_info *c = sb->s_fs_info;
+ 	struct inode *root;
+@@ -2116,10 +2014,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto out;
+ 	}
+ 
+-	err = ubifs_parse_options(c, data, 0);
+-	if (err)
+-		goto out_close;
+-
+ 	/*
+ 	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
+ 	 * UBIFS, I/O is not deferred, it is done immediately in readpage,
+@@ -2183,69 +2077,61 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	return err;
+ }
+ 
+-static int sb_test(struct super_block *sb, void *data)
++static int sb_test(struct super_block *sb, struct fs_context *fc)
+ {
+-	struct ubifs_info *c1 = data;
++	struct ubifs_info *c1 = fc->s_fs_info;
+ 	struct ubifs_info *c = sb->s_fs_info;
+ 
+ 	return c->vi.cdev == c1->vi.cdev;
+ }
+ 
+-static int sb_set(struct super_block *sb, void *data)
+-{
+-	sb->s_fs_info = data;
+-	return set_anon_super(sb, NULL);
+-}
+-
+-static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+-			const char *name, void *data)
++static int ubifs_get_tree(struct fs_context *fc)
+ {
+ 	struct ubi_volume_desc *ubi;
+-	struct ubifs_info *c;
++	struct ubifs_info *c = fc->s_fs_info;
+ 	struct super_block *sb;
+ 	int err;
+ 
+-	dbg_gen("name %s, flags %#x", name, flags);
++	if (!fc->source || !*fc->source)
++		return invalf(fc, "No source specified");
++
++	dbg_gen("name %s, flags %#x", fc->source, fc->sb_flags);
+ 
+ 	/*
+ 	 * Get UBI device number and volume ID. Mount it read-only so far
+ 	 * because this might be a new mount point, and UBI allows only one
+ 	 * read-write user at a time.
+ 	 */
+-	ubi = open_ubi(name, UBI_READONLY);
++	ubi = open_ubi(fc, UBI_READONLY);
+ 	if (IS_ERR(ubi)) {
+-		if (!(flags & SB_SILENT))
+-			pr_err("UBIFS error (pid: %d): cannot open \"%s\", error %d",
+-			       current->pid, name, (int)PTR_ERR(ubi));
+-		return ERR_CAST(ubi);
++		err = PTR_ERR(ubi);
++		if (!(fc->sb_flags & SB_SILENT))
++			errorf(fc, "UBIFS error (pid: %d): cannot open \"%s\", error %d",
++			       current->pid, fc->source, err);
++		return err;
+ 	}
+ 
+-	c = alloc_ubifs_info(ubi);
+-	if (!c) {
+-		err = -ENOMEM;
+-		goto out_close;
+-	}
++	ubi_get_volume_info(ubi, &c->vi);
++	ubi_get_device_info(c->vi.ubi_num, &c->di);
+ 
+ 	dbg_gen("opened ubi%d_%d", c->vi.ubi_num, c->vi.vol_id);
+ 
+-	sb = sget(fs_type, sb_test, sb_set, flags, c);
++	sb = sget_fc(fc, sb_test, set_anon_super_fc);
+ 	if (IS_ERR(sb)) {
+ 		err = PTR_ERR(sb);
+-		kfree(c);
+ 		goto out_close;
+ 	}
+ 
+ 	if (sb->s_root) {
+-		struct ubifs_info *c1 = sb->s_fs_info;
+-		kfree(c);
+ 		/* A new mount point for already mounted UBIFS */
++		c = sb->s_fs_info;
+ 		dbg_gen("this ubi volume is already mounted");
+-		if (!!(flags & SB_RDONLY) != c1->ro_mount) {
++		if (!!(fc->sb_flags & SB_RDONLY) != c->ro_mount) {
+ 			err = -EBUSY;
+ 			goto out_deact;
+ 		}
+ 	} else {
+-		err = ubifs_fill_super(sb, data, flags & SB_SILENT ? 1 : 0);
++		err = ubifs_fill_super(sb, fc);
+ 		if (err)
+ 			goto out_deact;
+ 		/* We do not support atime */
+@@ -2260,13 +2146,79 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+ 	/* 'fill_super()' opens ubi again so we must close it here */
+ 	ubi_close_volume(ubi);
+ 
+-	return dget(sb->s_root);
++	fc->root = dget(sb->s_root);
++	return 0;
+ 
+ out_deact:
+ 	deactivate_locked_super(sb);
+ out_close:
+ 	ubi_close_volume(ubi);
+-	return ERR_PTR(err);
++	return err;
 +}
 +
-+static void jffs2_free_fc(struct fs_context *fc)
++static void ubifs_free_fc(struct fs_context *fc)
 +{
-+	kfree(fc->s_fs_info);
++	struct ubifs_info *c = fc->s_fs_info;
++
++	if (c) {
++		kfree(c->auth_key_name);
++		kfree(c->auth_hash_name);
++		kfree(c);
++	}
 +}
 +
-+static const struct fs_context_operations jffs2_context_ops = {
-+	.free		= jffs2_free_fc,
-+	.parse_param	= jffs2_parse_param,
-+	.get_tree	= jffs2_get_tree,
-+	.reconfigure	= jffs2_reconfigure,
++static const struct fs_context_operations ubifs_context_ops = {
++	.free		= ubifs_free_fc,
++	.parse_param	= ubifs_parse_param,
++	.get_tree	= ubifs_get_tree,
++	.reconfigure	= ubifs_reconfigure,
 +};
 +
-+static int jffs2_init_fs_context(struct fs_context *fc)
++static int ubifs_init_fs_context(struct fs_context *fc)
 +{
-+	struct jffs2_sb_info *ctx;
++	struct ubifs_info *c;
 +
-+	ctx = kzalloc(sizeof(struct jffs2_sb_info), GFP_KERNEL);
-+	if (!ctx)
++	c = kzalloc(sizeof(struct ubifs_info), GFP_KERNEL);
++	if (!c)
 +		return -ENOMEM;
 +
-+	fc->s_fs_info = ctx;
-+	fc->ops = &jffs2_context_ops;
++	spin_lock_init(&c->cnt_lock);
++	spin_lock_init(&c->cs_lock);
++	spin_lock_init(&c->buds_lock);
++	spin_lock_init(&c->space_lock);
++	spin_lock_init(&c->orphan_lock);
++	init_rwsem(&c->commit_sem);
++	mutex_init(&c->lp_mutex);
++	mutex_init(&c->tnc_mutex);
++	mutex_init(&c->log_mutex);
++	mutex_init(&c->umount_mutex);
++	mutex_init(&c->bu_mutex);
++	mutex_init(&c->write_reserve_mutex);
++	init_waitqueue_head(&c->cmt_wq);
++	c->buds = RB_ROOT;
++	c->old_idx = RB_ROOT;
++	c->size_tree = RB_ROOT;
++	c->orph_tree = RB_ROOT;
++	INIT_LIST_HEAD(&c->infos_list);
++	INIT_LIST_HEAD(&c->idx_gc);
++	INIT_LIST_HEAD(&c->replay_list);
++	INIT_LIST_HEAD(&c->replay_buds);
++	INIT_LIST_HEAD(&c->uncat_list);
++	INIT_LIST_HEAD(&c->empty_list);
++	INIT_LIST_HEAD(&c->freeable_list);
++	INIT_LIST_HEAD(&c->frdi_idx_list);
++	INIT_LIST_HEAD(&c->unclean_leb_list);
++	INIT_LIST_HEAD(&c->old_buds);
++	INIT_LIST_HEAD(&c->orph_list);
++	INIT_LIST_HEAD(&c->orph_new);
++	c->no_chk_data_crc = 1;
++	c->assert_action = ASSACT_RO;
++	c->highest_inum = UBIFS_FIRST_INO;
++	c->lhead_lnum = c->ltail_lnum = UBIFS_LOG_LNUM;
++
++	fc->s_fs_info = c;
++	fc->ops = &ubifs_context_ops;
 +	return 0;
  }
  
- static void jffs2_put_super (struct super_block *sb)
-@@ -350,7 +343,8 @@ static void jffs2_kill_sb(struct super_block *sb)
- static struct file_system_type jffs2_fs_type = {
- 	.owner =	THIS_MODULE,
- 	.name =		"jffs2",
--	.mount =	jffs2_mount,
-+	.init_fs_context = jffs2_init_fs_context,
-+	.parameters =	&jffs2_fs_parameters,
- 	.kill_sb =	jffs2_kill_sb,
+ static void kill_ubifs_super(struct super_block *s)
+@@ -2279,7 +2231,8 @@ static void kill_ubifs_super(struct super_block *s)
+ static struct file_system_type ubifs_fs_type = {
+ 	.name    = "ubifs",
+ 	.owner   = THIS_MODULE,
+-	.mount   = ubifs_mount,
++	.init_fs_context = ubifs_init_fs_context,
++	.parameters	= &ubifs_fs_parameters,
+ 	.kill_sb = kill_ubifs_super,
  };
- MODULE_ALIAS_FS("jffs2");
+ MODULE_ALIAS_FS("ubifs");
 
 
 ______________________________________________________
