@@ -4,18 +4,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD8D7C43381
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 472C0C10F06
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:46:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 940152146F
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:46:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12EF72146F
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:46:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J1KBwMxw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 940152146F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="adJhsI9t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12EF72146F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,48 +24,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KSx5ndGiuZUEbGlB26v7K4iVlbLUGZcu3IVtg6XJRjo=; b=J1KBwMxwTVvP4T
-	AvLcQsqgybU9T9Jz68dS0lQvU9ztZCtpGvTv59weuFPpPsPaFmZ9IXtl2ceTaAj36vNrwL1DSR9u9
-	lmB977hufIvRMsgFONoA7SewVBSiIc1PH++4w9tZCiyQeJNyT+d5motmru66EMCBLg/BpoKkXoKow
-	4fzB03v+qaWtU4j1z69wYXVoP5JwSD4cs1exn4C8Ek/FDl9iESQ4P+h0MQOJgYM00wj2pFACsTsIh
-	Hp19S/uTs73gmX5xzDt30KtOxcUiZCZEDMAeedRGCy58C1I5FvCkUhZ+XvW5MVASkFfTMBkwfjkDw
-	KyRMUgrzai3uNzo2xbUQ==;
+	List-Owner; bh=NkJezPsB+gDP7LymqhNYI58jR8IAbuPlsc+KXRQyFZ4=; b=adJhsI9t/x0mJl
+	HVJz4MOCmn4KHs0ViOScLd8vu0NAPg/KRhNwyKECtTCqSNg9Z9wweI45Yk9SGnWcXM33wjPv4SynE
+	vuEffRrXAJaKYs8WvuTn4GLZrI4JUuxmhczyN8qljVOmFUTSIa1Vokb5amcmcovQL9ZiVRcIw4rTZ
+	P5FDhe8uaQWRP+nehRJGvk53oiQpSxIEjbmT1p+3nhviiwdW4dMmvz+3bOgN8qsGcla7Bm4laOZPt
+	Xx36J17P0SpA1lwE3ki0XvEzyuWW4w2Bu83QRDf+AixfV6ZtrrJkUmHyRhWNEa1UpUZY1vLDVdMcB
+	zQT7zMNxATAN1Fqg9z5w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9IFh-0004DK-Co; Wed, 27 Mar 2019 23:46:37 +0000
+	id 1h9IFZ-00041G-5f; Wed, 27 Mar 2019 23:46:29 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9IFc-00045E-9J
- for linux-mtd@lists.infradead.org; Wed, 27 Mar 2019 23:46:36 +0000
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
+ id 1h9IFT-00040O-2W
+ for linux-mtd@lists.infradead.org; Wed, 27 Mar 2019 23:46:27 +0000
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
+ [10.5.11.14])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx1.redhat.com (Postfix) with ESMTPS id CCAFF307D98E;
- Wed, 27 Mar 2019 23:46:31 +0000 (UTC)
+ by mx1.redhat.com (Postfix) with ESMTPS id 9861E307EA83;
+ Wed, 27 Mar 2019 23:46:22 +0000 (UTC)
 Received: from warthog.procyon.org.uk (ovpn-121-98.rdu2.redhat.com
  [10.10.121.98])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 90C4960F9B;
- Wed, 27 Mar 2019 23:46:28 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B3EC35D9C5;
+ Wed, 27 Mar 2019 23:46:20 +0000 (UTC)
 Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
  Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
  Kingdom.
  Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 47/68] vfs: Convert romfs to use the new mount API
+Subject: [RFC PATCH 46/68] mtd: Provide fs_context-aware mount_mtd()
+ replacement
 From: David Howells <dhowells@redhat.com>
 To: viro@zeniv.linux.org.uk
-Date: Wed, 27 Mar 2019 23:46:27 +0000
-Message-ID: <155373038782.7602.3687455217702268098.stgit@warthog.procyon.org.uk>
+Date: Wed, 27 Mar 2019 23:46:20 +0000
+Message-ID: <155373037997.7602.10121636631236011522.stgit@warthog.procyon.org.uk>
 In-Reply-To: <155372999953.7602.13784796495137723805.stgit@warthog.procyon.org.uk>
 References: <155372999953.7602.13784796495137723805.stgit@warthog.procyon.org.uk>
 User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
- (mx1.redhat.com [10.5.110.48]); Wed, 27 Mar 2019 23:46:31 +0000 (UTC)
+ (mx1.redhat.com [10.5.110.44]); Wed, 27 Mar 2019 23:46:22 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190327_164633_014277_525F7BCF 
-X-CRM114-Status: GOOD (  19.05  )
+X-CRM114-CacheID: sfid-20190327_164623_156202_93E77CFA 
+X-CRM114-Status: GOOD (  29.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,145 +78,288 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- dhowells@redhat.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ dhowells@redhat.com, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the romfs filesystem to the new internal mount API as the old
-one will be obsoleted and removed.  This allows greater flexibility in
-communication of mount parameters between userspace, the VFS and the
-filesystem.
-
-See Documentation/filesystems/mount_api.txt for more information.
+Provide a function, vfs_get_mtd_super(), to replace mount_mtd(), using an
+fs_context struct to hold the parameters.  The mtd device pointer is cached
+in the struct, along with a destructor pointer as the mtd core may be in a
+module and, as such, unreachable by the core code that would release the
+fs_context.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: Brian Norris <computersforpeace@gmail.com>
+cc: Boris Brezillon <bbrezillon@kernel.org>
+cc: Marek Vasut <marek.vasut@gmail.com>
+cc: Richard Weinberger <richard@nod.at>
 cc: linux-mtd@lists.infradead.org
-cc: linux-block@vger.kernel.org
 ---
 
- fs/romfs/super.c |   46 ++++++++++++++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 18 deletions(-)
+ drivers/mtd/mtdcore.h      |    1 
+ drivers/mtd/mtdsuper.c     |  192 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/fs_context.h |    3 -
+ include/linux/mtd/super.h  |    3 +
+ 4 files changed, 196 insertions(+), 3 deletions(-)
 
-diff --git a/fs/romfs/super.c b/fs/romfs/super.c
-index 6ccb51993a76..627c2b64ff03 100644
---- a/fs/romfs/super.c
-+++ b/fs/romfs/super.c
-@@ -65,7 +65,7 @@
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index b31c868019ad..b5eefeabf310 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -5,6 +5,7 @@
+  */
+ 
+ extern struct mutex mtd_table_mutex;
++extern struct backing_dev_info *mtd_bdi;
+ 
+ struct mtd_info *__mtd_next_device(int i);
+ int __must_check add_mtd_device(struct mtd_info *mtd);
+diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+index d58a61c09304..cf165f7c8632 100644
+--- a/drivers/mtd/mtdsuper.c
++++ b/drivers/mtd/mtdsuper.c
+@@ -19,6 +19,196 @@
  #include <linux/slab.h>
- #include <linux/init.h>
- #include <linux/blkdev.h>
--#include <linux/parser.h>
+ #include <linux/major.h>
+ #include <linux/backing-dev.h>
 +#include <linux/fs_context.h>
- #include <linux/mount.h>
- #include <linux/namei.h>
- #include <linux/statfs.h>
-@@ -430,10 +430,10 @@ static int romfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- /*
-  * remounting must involve read-only
-  */
--static int romfs_remount(struct super_block *sb, int *flags, char *data)
-+static int romfs_reconfigure(struct fs_context *fc)
- {
--	sync_filesystem(sb);
--	*flags |= SB_RDONLY;
-+	sync_filesystem(fc->root->d_sb);
-+	fc->sb_flags |= SB_RDONLY;
- 	return 0;
- }
- 
-@@ -441,7 +441,6 @@ static const struct super_operations romfs_super_ops = {
- 	.alloc_inode	= romfs_alloc_inode,
- 	.destroy_inode	= romfs_destroy_inode,
- 	.statfs		= romfs_statfs,
--	.remount_fs	= romfs_remount,
- };
- 
- /*
-@@ -464,7 +463,7 @@ static __u32 romfs_checksum(const void *data, int size)
- /*
-  * fill in the superblock
-  */
--static int romfs_fill_super(struct super_block *sb, void *data, int silent)
-+static int romfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	struct romfs_super_block *rsb;
- 	struct inode *root;
-@@ -511,8 +510,8 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
- 
- 	if (rsb->word0 != ROMSB_WORD0 || rsb->word1 != ROMSB_WORD1 ||
- 	    img_size < ROMFH_SIZE) {
--		if (!silent)
--			pr_warn("VFS: Can't find a romfs filesystem on dev %s.\n",
-+		if (!(fc->sb_flags & SB_SILENT))
-+			errorf(fc, "VFS: Can't find a romfs filesystem on dev %s.\n",
- 			       sb->s_id);
- 		goto error_rsb_inval;
- 	}
-@@ -525,7 +524,7 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
- 	storage = sb->s_mtd ? "MTD" : "the block layer";
- 
- 	len = strnlen(rsb->name, ROMFS_MAXFN);
--	if (!silent)
-+	if (!(fc->sb_flags & SB_SILENT))
- 		pr_notice("Mounting image '%*.*s' through %s\n",
- 			  (unsigned) len, (unsigned) len, rsb->name, storage);
- 
-@@ -555,23 +554,34 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
- /*
-  * get a superblock for mounting
-  */
--static struct dentry *romfs_mount(struct file_system_type *fs_type,
--			int flags, const char *dev_name,
--			void *data)
-+static int romfs_get_tree(struct fs_context *fc)
- {
--	struct dentry *ret = ERR_PTR(-EINVAL);
-+	int ret = -EINVAL;
- 
- #ifdef CONFIG_ROMFS_ON_MTD
--	ret = mount_mtd(fs_type, flags, dev_name, data, romfs_fill_super);
-+	ret = vfs_get_mtd_super(fc, romfs_fill_super);
- #endif
- #ifdef CONFIG_ROMFS_ON_BLOCK
--	if (ret == ERR_PTR(-EINVAL))
--		ret = mount_bdev(fs_type, flags, dev_name, data,
--				  romfs_fill_super);
-+	if (ret == -EINVAL)
-+		ret = vfs_get_block_super(fc, romfs_fill_super);
- #endif
- 	return ret;
- }
- 
-+static const struct fs_context_operations romfs_context_ops = {
-+	.get_tree	= romfs_get_tree,
-+	.reconfigure	= romfs_reconfigure,
-+};
++#include "mtdcore.h"
++
++static void mtd_fc_destructor(struct fs_context *fc)
++{
++	if (fc->mtd)
++		put_mtd_device(fc->mtd);
++}
 +
 +/*
-+ * Set up the filesystem mount context.
++ * compare superblocks to see if they're equivalent
++ * - they are if the underlying MTD device is the same
 + */
-+static int romfs_init_fs_context(struct fs_context *fc)
++static int mtd_test_super(struct super_block *sb, struct fs_context *fc)
 +{
-+	fc->ops = &romfs_context_ops;
++	struct mtd_info *mtd = fc->mtd;
++
++	if (sb->s_mtd == mtd) {
++		pr_debug("MTDSB: Match on device %d (\"%s\")\n",
++			 mtd->index, mtd->name);
++		return 1;
++	}
++
++	pr_debug("MTDSB: No match, device %d (\"%s\"), device %d (\"%s\")\n",
++		 sb->s_mtd->index, sb->s_mtd->name, mtd->index, mtd->name);
 +	return 0;
 +}
 +
++/*
++ * mark the superblock by the MTD device it is using
++ * - set the device number to be the correct MTD block device for pesuperstence
++ *   of NFS exports
++ */
++static int mtd_set_super(struct super_block *sb, struct fs_context *fc)
++{
++	struct mtd_info *mtd = fc->mtd;
++
++	sb->s_mtd = mtd;
++	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
++	sb->s_bdi = bdi_get(mtd_bdi);
++	fc->mtd = NULL;
++	return 0;
++}
++
++/*
++ * get a superblock on an MTD-backed filesystem
++ */
++static int mtd_get_sb(struct fs_context *fc,
++		      int (*fill_super)(struct super_block *,
++					struct fs_context *))
++{
++	struct super_block *sb;
++	struct mtd_info *mtd = fc->mtd;
++	int ret;
++
++	sb = sget_fc(fc, mtd_test_super, mtd_set_super);
++	if (IS_ERR(sb))
++		return PTR_ERR(sb);
++
++	if (sb->s_root) {
++		/* new mountpoint for an already mounted superblock */
++		pr_debug("MTDSB: Device %d (\"%s\") is already mounted\n",
++			 mtd->index, mtd->name);
++		put_mtd_device(mtd);
++	} else {
++		/* fresh new superblock */
++		pr_debug("MTDSB: New superblock for device %d (\"%s\")\n",
++			 mtd->index, mtd->name);
++
++		ret = fill_super(sb, fc);
++		if (ret < 0)
++			goto error_sb;
++
++		sb->s_flags |= SB_ACTIVE;
++	}
++
++	BUG_ON(fc->root);
++	fc->root = dget(sb->s_root);
++	return 0;
++
++error_sb:
++	deactivate_locked_super(sb);
++	return ret;
++}
++
++/*
++ * get a superblock on an MTD-backed filesystem by MTD device number
++ */
++static int mtd_get_sb_by_nr(struct fs_context *fc, int mtdnr,
++			    int (*fill_super)(struct super_block *,
++					      struct fs_context *))
++{
++	struct mtd_info *mtd;
++
++	mtd = get_mtd_device(NULL, mtdnr);
++	if (IS_ERR(mtd)) {
++		errorf(fc, "MTDSB: Device #%u doesn't appear to exist\n", mtdnr);
++		return PTR_ERR(mtd);
++	}
++
++	fc->mtd = mtd;
++	fc->dev_destructor = mtd_fc_destructor;
++	return mtd_get_sb(fc, fill_super);
++}
++
++/**
++ * vfs_get_mtd_super - Get a superblock based on a single MTD device
++ * @fc: The filesystem context holding the parameters
++ * @fill_super: Helper to initialise a new superblock
++ */
++int vfs_get_mtd_super(struct fs_context *fc,
++		      int (*fill_super)(struct super_block *sb,
++					struct fs_context *fc))
++{
++#ifdef CONFIG_BLOCK
++	struct block_device *bdev;
++	int ret, major;
++#endif
++	int mtdnr;
++
++	if (!fc->source)
++		return invalf(fc, "No source specified");
++
++	pr_debug("MTDSB: dev_name \"%s\"\n", fc->source);
++
++	/* the preferred way of mounting in future; especially when
++	 * CONFIG_BLOCK=n - we specify the underlying MTD device by number or
++	 * by name, so that we don't require block device support to be present
++	 * in the kernel.
++	 */
++	if (fc->source[0] == 'm' &&
++	    fc->source[1] == 't' &&
++	    fc->source[2] == 'd') {
++		if (fc->source[3] == ':') {
++			struct mtd_info *mtd;
++
++			/* mount by MTD device name */
++			pr_debug("MTDSB: mtd:%%s, name \"%s\"\n",
++				 fc->source + 4);
++
++			mtd = get_mtd_device_nm(fc->source + 4);
++			if (!IS_ERR(mtd)) {
++				fc->mtd = mtd;
++				fc->dev_destructor = mtd_fc_destructor;
++				return mtd_get_sb(fc, fill_super);
++			}
++
++			errorf(fc, "MTD: MTD device with name \"%s\" not found",
++			       fc->source + 4);
++
++		} else if (isdigit(fc->source[3])) {
++			/* mount by MTD device number name */
++			char *endptr;
++
++			mtdnr = simple_strtoul(fc->source + 3, &endptr, 0);
++			if (!*endptr) {
++				/* It was a valid number */
++				pr_debug("MTDSB: mtd%%d, mtdnr %d\n", mtdnr);
++				return mtd_get_sb_by_nr(fc, mtdnr, fill_super);
++			}
++		}
++	}
++
++#ifdef CONFIG_BLOCK
++	/* try the old way - the hack where we allowed users to mount
++	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
++	 */
++	bdev = lookup_bdev(fc->source);
++	if (IS_ERR(bdev)) {
++		ret = PTR_ERR(bdev);
++		errorf(fc, "MTD: Couldn't look up '%s': %d", fc->source, ret);
++		return ret;
++	}
++	pr_debug("MTDSB: lookup_bdev() returned 0\n");
++
++	major = MAJOR(bdev->bd_dev);
++	mtdnr = MINOR(bdev->bd_dev);
++	bdput(bdev);
++
++	if (major == MTD_BLOCK_MAJOR)
++		return mtd_get_sb_by_nr(fc, mtdnr, fill_super);
++
++#endif /* CONFIG_BLOCK */
++
++	if (!(fc->sb_flags & SB_SILENT))
++		errorf(fc, "MTD: Attempt to mount non-MTD device \"%s\"",
++		       fc->source);
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(vfs_get_mtd_super);
+ 
  /*
-  * destroy a romfs superblock in the appropriate manner
-  */
-@@ -594,7 +604,7 @@ static void romfs_kill_sb(struct super_block *sb)
- static struct file_system_type romfs_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "romfs",
--	.mount		= romfs_mount,
-+	.init_fs_context = romfs_init_fs_context,
- 	.kill_sb	= romfs_kill_sb,
- 	.fs_flags	= FS_REQUIRES_DEV,
- };
+  * compare superblocks to see if they're equivalent
+@@ -39,8 +229,6 @@ static int get_sb_mtd_compare(struct super_block *sb, void *_mtd)
+ 	return 0;
+ }
+ 
+-extern struct backing_dev_info *mtd_bdi;
+-
+ /*
+  * mark the superblock by the MTD device it is using
+  * - set the device number to be the correct MTD block device for pesuperstence
+diff --git a/include/linux/fs_context.h b/include/linux/fs_context.h
+index 70fdebf1dc85..7c7eefb35cc3 100644
+--- a/include/linux/fs_context.h
++++ b/include/linux/fs_context.h
+@@ -77,7 +77,8 @@ struct fs_context {
+ 	struct file_system_type	*fs_type;
+ 	void			*fs_private;	/* The filesystem's context */
+ 	union {
+-		struct block_device *bdev;	/* The backing blockdev (if applicable) */
++		struct block_device	*bdev;	/* The backing blockdev (if applicable) */
++		struct mtd_info		*mtd;	/* The backing mtd (if applicable) */
+ 	};
+ 	struct dentry		*root;		/* The root and superblock */
+ 	struct user_namespace	*user_ns;	/* The user namespace for this mount */
+diff --git a/include/linux/mtd/super.h b/include/linux/mtd/super.h
+index f456230f9330..7ebd69e5c640 100644
+--- a/include/linux/mtd/super.h
++++ b/include/linux/mtd/super.h
+@@ -18,6 +18,9 @@
+ #include <linux/fs.h>
+ #include <linux/mount.h>
+ 
++extern int vfs_get_mtd_super(struct fs_context *fc,
++			     int (*fill_super)(struct super_block *sb,
++					       struct fs_context *fc));
+ extern struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+ 		      const char *dev_name, void *data,
+ 		      int (*fill_super)(struct super_block *, void *, int));
 
 
 ______________________________________________________
