@@ -2,85 +2,65 @@ Return-Path: <SRS0=crBW=R6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B3E3C10F00
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 16:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ACEEC43381
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:40:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A45120700
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 16:04:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 456122075E
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2019 23:40:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BqJxwrfL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="x+nuKIaz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A45120700
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cKKvmgHM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 456122075E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5PYUJGTxf5B7CvJhqXGs+Mvuna9PJeLBjyF4KsbB4Zk=; b=BqJxwrfL33GpO3
-	zgyVhzSI0Ft0CmEAn7wZCN+UTAPkQB3kCN1Q1PJgjOIxtIsw5Fg3lBKm55vPHMtXEG3VAVpKWqqId
-	2Z7CYeKqo1xrsitPRk8qMmvuSILNAHs+EetZ+v+fF0ouQbBghQOiyppxIHL69Ahlbk08QaSaBUlUJ
-	gWLMEtTs0pD0enCjbfetHTW2lLZZXAJpEZ29aHJB+zEpvNwWcFxZS59/1moMTRrf4o1ht3hoLze9J
-	1Tm1xHhqeSINBWkEmW7GL6ZUYMNk0l7rx5okT27A2fmj+fduPeFcb0vJ647wfxSJrqx8gcBCZDG0H
-	cLg9bensxl9t7JwlEUHA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:To:From:
+	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PxYJAaUdkO4B3lz4X5DtxY4CdFK8gverE0xIB9VBTeA=; b=cKKvmgHMQm4aJR
+	MHe3XwmHELRZ9vqpFfhVNcB7HPJntVfVTxtvWNVe8wFtFwmUZ+aPfcU3dxxY6WUIcN16dLDqT8hd9
+	nqlscE3D/O+9Lt0TnJOS5kA59rwnKZqtsxwZ/b0WGf6cbcQFqAqkG+xOfaAYIwArh0QYI6jbKV5k+
+	8ZVfP/7IhHSSZ/3udiSKnog1AO3UY2WijG05gsMiNkGhtolMrD9ooncZrRxVfBaJ65Aqaa7Bp6vt5
+	mz4hJ9FbqqQWT1zyMjtzJoz5R7y3XuCjHNmr8VyejcjxkiUSflO2nOgaKDbf0vw8oK808kubvtQ4F
+	6zkrfQSJdorIrJlkZxdw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9B1w-0002JP-L6; Wed, 27 Mar 2019 16:03:56 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1h9IA5-0001ml-Mr; Wed, 27 Mar 2019 23:40:49 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9B1s-0002Io-KG
- for linux-mtd@lists.infradead.org; Wed, 27 Mar 2019 16:03:54 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x2RG3aLv040085;
- Wed, 27 Mar 2019 11:03:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1553702616;
- bh=bY6i+Gb3B1LRhSlCo7jad+rnNzPpomSDjT2EHAj2YhE=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=x+nuKIazGsJ/LII5BL7C3FgtqpX7YV+Jc2OFMgPiwV7Wb4emj1kxo8is156QhYvXb
- QkB6E+CyBeIK+sv0cs9yMDMO9fE4qslVOCIDr5V6VMO5Dkl/J07LavJ78TM948hNGr
- T0by+ykhjGwCqRU+HpuB7fLnxwYSdplo2TdGZAcI=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x2RG3ZXh126512
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 27 Mar 2019 11:03:35 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 27
- Mar 2019 11:03:35 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Wed, 27 Mar 2019 11:03:35 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x2RG3V3k102496;
- Wed, 27 Mar 2019 11:03:32 -0500
-Subject: Re: [PATCH v2] mtd: spi-nor: Return error when nor->addr_width does
- not match the device size
-To: Liu Xiang <liuxiang_1999@126.com>
-References: <1552484753-3393-1-git-send-email-liu.xiang6@zte.com.cn>
- <823dcd3f-8b9f-15c5-a072-06625120766e@ti.com>
- <209ad144.9c0a.169ba96e2ad.Coremail.liuxiang_1999@126.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <c718ab17-1c0a-a75f-c43a-4e2558a67d0f@ti.com>
-Date: Wed, 27 Mar 2019 21:34:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.1
+ id 1h9I9z-0001mJ-B0
+ for linux-mtd@lists.infradead.org; Wed, 27 Mar 2019 23:40:46 +0000
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
+ [10.5.11.23])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id 8DC9081F2F;
+ Wed, 27 Mar 2019 23:40:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-121-98.rdu2.redhat.com
+ [10.10.121.98])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 2B92419C5A;
+ Wed, 27 Mar 2019 23:40:01 +0000 (UTC)
+Subject: [RFC PATCH 00/68] VFS: Convert a bunch of filesystems to the new
+ mount API
+From: David Howells <dhowells@redhat.com>
+To: viro@zeniv.linux.org.uk
+Date: Wed, 27 Mar 2019 23:40:00 +0000
+Message-ID: <155372999953.7602.13784796495137723805.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-In-Reply-To: <209ad144.9c0a.169ba96e2ad.Coremail.liuxiang_1999@126.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.5.110.27]); Wed, 27 Mar 2019 23:40:41 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190327_090352_745739_C5D01767 
-X-CRM114-Status: GOOD (  18.12  )
+X-CRM114-CacheID: sfid-20190327_164043_426738_86C587CD 
+X-CRM114-Status: GOOD (  19.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,101 +72,281 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Liu Xiang <liu.xiang6@zte.com.cn>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, dri-devel@lists.freedesktop.org,
+ "J. Bruce Fields" <bfields@fieldses.org>, ceph-devel@vger.kernel.org,
+ Mike Marshall <hubcap@omnibond.com>, xen-devel@lists.xenproject.org,
+ devel@lists.orangefs.org, Felipe Balbi <balbi@kernel.org>,
+ Uma Krishnan <ukrishn@linux.ibm.com>, "Manoj N. Kumar" <manoj@linux.ibm.com>,
+ Joel Becker <jlbec@evilplan.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Mike Marciniszyn <mike.marciniszyn@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Arve =?utf-8?b?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+ Frederic Barrat <fbarrat@linux.ibm.com>,
+ Martin Brandenburg <martin@omnibond.com>, linux-ia64@vger.kernel.org,
+ David Airlie <airlied@linux.ie>, virtualization@lists.linux-foundation.org,
+ Keith Busch <keith.busch@intel.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Jens Axboe <axboe@kernel.dk>,
+ Christian Brauner <christian.brauner@ubuntu.com>,
+ Matthew Garrett <matthew.garrett@nebula.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, Paul Moore <paul@paul-moore.com>,
+ Andreas Schwab <schwab@suse.de>, Anton Vorontsov <anton@enomsg.org>,
+ Hugh Dickins <hughd@google.com>, Christoph Hellwig <hch@lst.de>,
+ Yonghong Song <yhs@fb.com>, Todd Kjos <tkjos@android.com>,
+ Felipe Balbi <felipe.balbi@linux.intel.com>, selinux@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Casey Schaufler <casey@schaufler-ca.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>, Nitin Gupta <ngupta@vflare.org>,
+ Martijn Coenen <maco@android.com>, Tony Luck <tony.luck@intel.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Dennis Dalessandro <dennis.dalessandro@intel.com>, linux-nvdimm@lists.01.org,
+ "Yan, Zheng" <zyan@redhat.com>, Minchan Kim <minchan@kernel.org>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ Martin Schwidefsky <schwidefsky@de.ibm.com>, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, linux-efi@vger.kernel.org,
+ linux-aio@kvack.org, Jason Wang <jasowang@redhat.com>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>, Chris Mason <clm@fb.com>,
+ linux-mtd@lists.infradead.org, Joel Fernandes <joel@joelfernandes.org>,
+ Dave Jiang <dave.jiang@intel.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-rdma@vger.kernel.org,
+ coda@cs.cmu.edu, Andrew Price <anprice@redhat.com>,
+ Ilya Dryomov <idryomov@gmail.com>, Stephen Smalley <sds@tycho.nsa.gov>,
+ Fenghua Yu <fenghua.yu@intel.com>, Robert Richter <rric@kernel.org>,
+ Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Eric Paris <eparis@parisplace.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Christian Brauner <christian@brauner.io>, Jan Harkes <jaharkes@cs.cmu.edu>,
+ linux-nfs@vger.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Ard Biesheuvel <ard.biesheuvel@linaro.org>, linux-s390@vger.kernel.org,
+ Jeff Layton <jlayton@kernel.org>, Jeremy Kerr <jk@ozlabs.org>,
+ Andrew Donnellan <andrew.donnellan@au1.ibm.com>,
+ Colin Cross <ccross@android.com>, linux-fsdevel@vger.kernel.org,
+ bpf@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, dhowells@redhat.com, linux-mm@kvack.org,
+ devel@driverdev.osuosl.org, Sage Weil <sage@redhat.com>,
+ Nicolas Pitre <nico@linaro.org>, Richard Weinberger <richard@nod.at>,
+ cluster-devel@redhat.com, Marek Vasut <marek.vasut@gmail.com>,
+ oprofile-list@lists.sf.net, squashfs-devel@lists.sourceforge.net,
+ "Matthew R. Ochs" <mrochs@linux.vnet.ibm.com>, apparmor@lists.ubuntu.com,
+ Josef Bacik <josef@toxicpanda.com>,
+ =?utf-8?q?Micha=C5=82?= Nazarewicz <mina86@mina86.com>,
+ linux-block@vger.kernel.org, David Sterba <dsterba@suse.com>,
+ Juergen Gross <jgross@suse.com>, John Johansen <john.johansen@canonical.com>,
+ linux-scsi@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ netdev@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-security-module@vger.kernel.org, Benjamin LaHaise <bcrl@kvack.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Vishal Verma <vishal.l.verma@intel.com>,
+ Phillip Lougher <phillip@squashfs.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 26/03/19 8:50 PM, Liu Xiang wrote:
-> At 2019-03-19 13:22:15, "Vignesh Raghavendra" <vigneshr@ti.com> wrote:
->> Hi,
->>
->> On 13/03/19 7:15 PM, Liu Xiang wrote:
->>> In some is25lp256, the DWORD1 of JEDEC Basic Flash Parameter Header
->>> is 0xfff920e5. So the DWORD1[18:17] Address Bytes bits are 0b00,
->>> means that 3-Byte only addressing. But the device size is larger
->>> than 16MB, nor->addr_width must be 4 to access the whole address.
->>> An error should be returned when nor->addr_width does not match
->>> the device size in spi_nor_parse_bfpt(). Then it can go back to
->>> use spi_nor_ids[] for setting the right addr_width.
->>>
->>> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
->>> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
->>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
->>>  1 file changed, 8 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>> index 6e13bbd..63933c7 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -2811,6 +2811,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->>>  	}
->>>  	params->size >>= 3; /* Convert to bytes. */
->>>  
->>> +	/*
->>> +	 * If the device exceeds 16MiB, addr_width must be 4.
->>> +	 * addr_width == 3 means the Address Bytes we are
->>> +	 * reading from BFPT is wrong.
->>> +	 */
->>
->> JESD216 standard does not mandate flash devices >16MiB to always support
->> 4 byte addressing opcode. So, its okay for flash vendor to support
->>> 16MiB flash with 3 byte addressing and Bank/extended address register.
->>
->>> +	if (params->size > 0x1000000 && nor->addr_width == 3)
->>> +		return -EINVAL;
->>> +
->>
->> Assuming only DWORD1[18:17] bits are wrong, then returning from here
->> would mean we miss parsing Sector Erase settings, Quad Enable
->> Requirements etc from BFPT which is kind of bad.
->> I suggest to move the fix to[1], addr_width indicated in flash_info
->> struct of the device can take precedence over SFDP.
->>
->> [1]https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/spi-nor.c#L4106
-> 
-> Boris has added a fixup function, do you think this is more better:
-> 
-> static int
-> is25lp256_post_bfpt_fixups(struct spi_nor *nor,
-> 			    const struct sfdp_parameter_header *bfpt_header,
-> 			    const struct sfdp_bfpt *bfpt,
-> 			    struct spi_nor_flash_parameter *params)
-> {
-> 	/*
-> 	 * IS25LP256 supports 4B opcodes.
-> 	 * Unfortunately, some devices get BFPT_DWORD1_ADDRESS_BYTES_3_ONLY  
-> 	 * from BFPT table for address width. We should fix it.
-> 	 */
-> 	if (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK == 
-> 		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
-> 		nor->addr_width = 4;
-> 
-> 	return 0;
-> }
-> 
-> static struct spi_nor_fixups is25lp256_fixups = {
-> 	.post_bfpt = is25lp256_post_bfpt_fixups,
-> };
-> 
-> 
 
-Sounds fine to me as is25lp256 is the only part that needs this quirk at
-the moment.
+Hi Al,
+
+Here's a set of patches that converts a bunch (but not yet all!) to the new
+mount API.  To this end, it makes the following changes:
+
+ (1) Provides a convenience member in struct fs_context that is OR'd into
+     sb->s_iflags by sget_fc().
+
+ (2) Provides a convenience helper function, vfs_init_pseudo_fs_context(),
+     for doing most of the work in mounting a pseudo filesystem.
+
+ (3) Provides a convenience helper function, vfs_get_block_super(), for
+     doing the work in setting up a block-based superblock.
+
+ (4) Improves the handling of fd-type parameters.
+
+ (5) Moves some of the subtype handling int fuse.
+
+ (6) Provides a convenience helper function, vfs_get_mtd_super(), for
+     doing the work in setting up an MTD device-based superblock.
+
+ (7) Kills off mount_pseudo(), mount_pseudo_xattr(), mount_ns(),
+     sget_userns(), mount_mtd(), mount_single().
+
+ (8) Converts a slew of filesystems to use the mount API.
+
+ (9) Fixes a bug in hypfs.
+
+The patches can be found here also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+
+on branch:
+
+	mount-api-viro
+
+David
+---
+Andrew Price (1):
+      gfs2: Convert gfs2 to fs_context
+
+David Howells (66):
+      vfs: Update mount API docs
+      vfs: Fix refcounting of filenames in fs_parser
+      vfs: Provide sb->s_iflags settings in fs_context struct
+      vfs: Provide a mount_pseudo-replacement for the new mount API
+      vfs: Convert aio to use the new mount API
+      vfs: Convert anon_inodes to use the new mount API
+      vfs: Convert bdev to use the new mount API
+      vfs: Convert nsfs to use the new mount API
+      vfs: Convert pipe to use the new mount API
+      vfs: Convert zsmalloc to use the new mount API
+      vfs: Convert sockfs to use the new mount API
+      vfs: Convert dax to use the new mount API
+      vfs: Convert drm to use the new mount API
+      vfs: Convert ia64 perfmon to use the new mount API
+      vfs: Convert cxl to use the new mount API
+      vfs: Convert ocxlflash to use the new mount API
+      vfs: Convert virtio_balloon to use the new mount API
+      vfs: Convert btrfs_test to use the new mount API
+      vfs: Kill off mount_pseudo() and mount_pseudo_xattr()
+      vfs: Use sget_fc() for pseudo-filesystems
+      vfs: Convert binderfs to use the new mount API
+      vfs: Convert nfsctl to use the new mount API
+      vfs: Convert rpc_pipefs to use the new mount API
+      vfs: Kill mount_ns()
+      vfs: Kill sget_userns()
+      vfs: Convert binfmt_misc to use the new mount API
+      vfs: Convert configfs to use the new mount API
+      vfs: Convert efivarfs to use the new mount API
+      vfs: Convert fusectl to use the new mount API
+      vfs: Convert qib_fs/ipathfs to use the new mount API
+      vfs: Convert ibmasmfs to use the new mount API
+      vfs: Convert oprofilefs to use the new mount API
+      vfs: Convert gadgetfs to use the new mount API
+      vfs: Convert xenfs to use the new mount API
+      vfs: Convert openpromfs to use the new mount API
+      vfs: Convert apparmorfs to use the new mount API
+      vfs: Convert securityfs to use the new mount API
+      vfs: Convert selinuxfs to use the new mount API
+      vfs: Convert smackfs to use the new mount API
+      vfs: Convert ramfs, shmem, tmpfs, devtmpfs, rootfs to use the new mount API
+      vfs: Create fs_context-aware mount_bdev() replacement
+      vfs: Make fs_parse() handle fs_param_is_fd-type params better
+      vfs: Convert fuse to use the new mount API
+      vfs: Move the subtype parameter into fuse
+      mtd: Provide fs_context-aware mount_mtd() replacement
+      vfs: Convert romfs to use the new mount API
+      vfs: Convert cramfs to use the new mount API
+      vfs: Convert jffs2 to use the new mount API
+      mtd: Kill mount_mtd()
+      vfs: Convert squashfs to use the new mount API
+      vfs: Convert ceph to use the new mount API
+      vfs: Convert functionfs to use the new mount API
+      vfs: Add a single-or-reconfig keying to vfs_get_super()
+      vfs: Convert debugfs to use the new mount API
+      vfs: Convert tracefs to use the new mount API
+      vfs: Convert pstore to use the new mount API
+      hypfs: Fix error number left in struct pointer member
+      vfs: Convert hypfs to use the new mount API
+      vfs: Convert spufs to use the new mount API
+      vfs: Kill mount_single()
+      vfs: Convert coda to use the new mount API
+      vfs: Convert autofs to use the new mount API
+      vfs: Convert devpts to use the new mount API
+      vfs: Convert bpf to use the new mount API
+      vfs: Convert ubifs to use the new mount API
+      vfs: Convert orangefs to use the new mount API
+
+Masahiro Yamada (1):
+      kbuild: skip sub-make for in-tree build with GNU Make 4.x
 
 
--- 
-Regards
-Vignesh
+ Documentation/filesystems/mount_api.txt   |  367 ++++++++-------
+ Documentation/filesystems/vfs.txt         |    4 
+ Makefile                                  |   31 +
+ arch/ia64/kernel/perfmon.c                |   14 -
+ arch/powerpc/platforms/cell/spufs/inode.c |  207 +++++----
+ arch/s390/hypfs/inode.c                   |  137 +++---
+ drivers/android/binderfs.c                |  173 ++++---
+ drivers/base/devtmpfs.c                   |   16 -
+ drivers/block/rbd.c                       |  363 ++++++++-------
+ drivers/dax/super.c                       |   13 -
+ drivers/gpu/drm/drm_drv.c                 |   14 -
+ drivers/infiniband/hw/qib/qib_fs.c        |   26 +
+ drivers/misc/cxl/api.c                    |   10 
+ drivers/misc/ibmasm/ibmasmfs.c            |   21 +
+ drivers/mtd/mtdcore.h                     |    1 
+ drivers/mtd/mtdsuper.c                    |  181 ++++----
+ drivers/oprofile/oprofilefs.c             |   20 +
+ drivers/scsi/cxlflash/ocxl_hw.c           |   21 -
+ drivers/usb/gadget/function/f_fs.c        |  233 +++++-----
+ drivers/usb/gadget/legacy/inode.c         |   21 +
+ drivers/virtio/virtio_balloon.c           |   19 -
+ drivers/xen/xenfs/super.c                 |   21 +
+ fs/aio.c                                  |   15 -
+ fs/anon_inodes.c                          |   12 
+ fs/autofs/autofs_i.h                      |   13 -
+ fs/autofs/init.c                          |    9 
+ fs/autofs/inode.c                         |  429 ++++++++++--------
+ fs/binfmt_misc.c                          |   20 +
+ fs/block_dev.c                            |   14 -
+ fs/btrfs/tests/btrfs-tests.c              |   13 -
+ fs/ceph/cache.c                           |    9 
+ fs/ceph/cache.h                           |    5 
+ fs/ceph/super.c                           |  697 ++++++++++++++---------------
+ fs/ceph/super.h                           |    1 
+ fs/coda/inode.c                           |  171 +++++--
+ fs/configfs/mount.c                       |   20 +
+ fs/cramfs/inode.c                         |   69 ++-
+ fs/debugfs/inode.c                        |  186 ++++----
+ fs/devpts/inode.c                         |  265 +++++------
+ fs/efivarfs/super.c                       |   20 +
+ fs/fs_context.c                           |   16 -
+ fs/fs_parser.c                            |   18 +
+ fs/fuse/control.c                         |   20 +
+ fs/fuse/inode.c                           |  291 +++++++-----
+ fs/gfs2/incore.h                          |    8 
+ fs/gfs2/ops_fstype.c                      |  495 ++++++++++++++++-----
+ fs/gfs2/super.c                           |  335 --------------
+ fs/gfs2/super.h                           |    3 
+ fs/jffs2/fs.c                             |   21 -
+ fs/jffs2/os-linux.h                       |    4 
+ fs/jffs2/super.c                          |  172 +++----
+ fs/libfs.c                                |   91 +++-
+ fs/nfsd/nfsctl.c                          |   33 +
+ fs/nsfs.c                                 |   13 -
+ fs/openpromfs/inode.c                     |   20 +
+ fs/orangefs/orangefs-kernel.h             |    8 
+ fs/orangefs/orangefs-mod.c                |    3 
+ fs/orangefs/super.c                       |  186 ++++----
+ fs/pipe.c                                 |   12 
+ fs/pstore/inode.c                         |  109 +++--
+ fs/ramfs/inode.c                          |  104 +++-
+ fs/romfs/super.c                          |   46 +-
+ fs/squashfs/super.c                       |  100 ++--
+ fs/super.c                                |  301 ++++++-------
+ fs/tracefs/inode.c                        |  180 +++----
+ fs/ubifs/super.c                          |  447 ++++++++-----------
+ include/linux/ceph/ceph_debug.h           |    1 
+ include/linux/ceph/libceph.h              |   17 +
+ include/linux/fs.h                        |   24 -
+ include/linux/fs_context.h                |   20 +
+ include/linux/mtd/super.h                 |    6 
+ include/linux/ramfs.h                     |    6 
+ include/linux/shmem_fs.h                  |    4 
+ init/do_mounts.c                          |   12 
+ kernel/bpf/inode.c                        |   92 ++--
+ mm/shmem.c                                |  396 +++++++++++-----
+ mm/zsmalloc.c                             |   19 -
+ net/ceph/ceph_common.c                    |  410 +++++++----------
+ net/socket.c                              |   14 -
+ net/sunrpc/rpc_pipe.c                     |   34 +
+ security/apparmor/apparmorfs.c            |   20 +
+ security/inode.c                          |   21 +
+ security/selinux/selinuxfs.c              |   20 +
+ security/smack/smackfs.c                  |   34 +
+ 84 files changed, 4257 insertions(+), 3810 deletions(-)
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
