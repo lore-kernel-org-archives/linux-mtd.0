@@ -2,115 +2,124 @@ Return-Path: <SRS0=odZH=R7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D0CC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:32:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4973C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 11:15:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3568206B6
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:32:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A4342082F
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 11:15:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jsHpgehb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="CqeuqhLD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3568206B6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rejn5lNS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="TqWgde8S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A4342082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0OQWqjzyIhwklWsx51ApCtO8/qSPEQpdszn4MlxO1xQ=; b=jsHpgehbEdRNWO
-	nuyXHJ4C2tvNQUddwxZjjX7Q812bzQ1P00Uf9MsLX9DMc1UoxVjEr8jTAFfNQTZpjivnGApI4Kp0L
-	OHQTc00+PFiPPcE1A2Fi8EGdOu3DiDHonoZ1wA+llqb238ZtVsO3X1M2/MxIJSR1PL3r7EK2zJMMe
-	AkD+zbfs8CA0wEAj+Xgcb59V8rWO7EWfPfwdjQIA6pk9F1Z1+QNNYsOv4nz700OaR9UICUz6VJll0
-	6q9XricrkLYsQvgkI/xhRbbXgmRhApNAIiPktUQ+HRTokx2tpZCLQv5ciO8770yJlEHLt9I4mqkoV
-	HUs6TGyawHnrVStd/Zew==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Pb44cVFx7r9RgIVsH5Oby0e8vY5zftCEQLGg3Y9zUPg=; b=rejn5lNSOU1+Wk
+	fAV8P6MOXJO1X2/3D/Am0zIKzqyDvE4ISTjlggRcleSS21rWS3RYfTzmKfT3zKGJSxP+ccJkITIIU
+	T4Q6++ewDH4Mz/CJk9UppBnRtEflY5PlFyOSS8QzS9dBZz7XQw6jxsMWCGQ42UjfcCQ6pVm6edLlI
+	1XGXe9R0JAnDbAJEHqrEVvpm1D/RUqtngFp8o2ukE1M/wJo7BaecbdwEmR81jwrnpk4g2/AIFVi/K
+	4z4f+0rkHJ4Lq1lLxTmvQ+56wqeY5D4lBFdbtB4rw3nqff282JLVLhmnSZg2N7ohfxvH/yZbHhRsX
+	83Yicnf+6r/pcH5rV1jQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9SKr-0004P4-73; Thu, 28 Mar 2019 10:32:37 +0000
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
+	id 1h9T0R-0007u4-03; Thu, 28 Mar 2019 11:15:35 +0000
+Received: from mail-eopbgr760081.outbound.protection.outlook.com
+ ([40.107.76.81] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9SKo-0004OK-3Z
- for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 10:32:36 +0000
-X-IronPort-AV: E=Sophos;i="5.60,280,1549954800"; d="scan'208";a="30323103"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 28 Mar 2019 03:32:27 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.49) with Microsoft SMTP Server (TLS) id
- 14.3.352.0; Thu, 28 Mar 2019 03:32:27 -0700
+ id 1h9T0M-0007tN-DX
+ for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 11:15:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LQrfs2z+pvvUQIVgHDxh78+lztr5MgGuFY6+h5y5EL4=;
- b=CqeuqhLD2Zmbnlg0+/8qKBiR1SAkYGRnLdc63/l4eRjc80S1CP1csyc4YI2lxUr2Ng7zrFVHDg+5rMTJpyFoVem2YHVGwqeqGKcBLKiySZmC0ZugoQ/bIGRGtDjiM4ZiQVFXbG/g/ZxfHth0oKq/2KgOELVwGa/lBnGYtjHeHiA=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1972.namprd11.prod.outlook.com (10.175.100.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1750.15; Thu, 28 Mar 2019 10:32:25 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e4c0:24a5:9a32:46e3]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e4c0:24a5:9a32:46e3%9]) with mapi id 15.20.1730.019; Thu, 28 Mar 2019
- 10:32:25 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <vigneshr@ti.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <bbrezillon@kernel.org>, <marek.vasut@gmail.com>, <richard@nod.at>
-Subject: Re: [PATCH] MAINTAINERS: Add myself as co-maintainer for MTD
-Thread-Topic: [PATCH] MAINTAINERS: Add myself as co-maintainer for MTD
-Thread-Index: AQHU4vAJ2j1zDpLGl0ml0cNqWoULGaYg3SYA
-Date: Thu, 28 Mar 2019 10:32:24 +0000
-Message-ID: <1f0f42e8-8b68-e97e-3b37-96b5f9dd6bb2@microchip.com>
-References: <20190325094846.30709-1-vigneshr@ti.com>
-In-Reply-To: <20190325094846.30709-1-vigneshr@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR07CA0275.eurprd07.prod.outlook.com
- (2603:10a6:803:b4::42) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: df314c84-5c12-401f-a9da-08d6b368aade
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(2017052603328)(7153060)(7193020);
- SRVR:BN6PR11MB1972; 
-x-ms-traffictypediagnostic: BN6PR11MB1972:
-x-microsoft-antispam-prvs: <BN6PR11MB19721649586F1039A0AC4BCAF0590@BN6PR11MB1972.namprd11.prod.outlook.com>
-x-forefront-prvs: 0990C54589
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(346002)(136003)(39860400002)(366004)(396003)(376002)(199004)(189003)(5660300002)(53936002)(7736002)(31686004)(106356001)(3846002)(305945005)(102836004)(6512007)(6246003)(68736007)(76176011)(14444005)(53546011)(256004)(6506007)(6116002)(386003)(105586002)(4326008)(97736004)(25786009)(54906003)(8936002)(66066001)(6306002)(110136005)(316002)(86362001)(229853002)(81156014)(81166006)(6436002)(99286004)(26005)(71190400001)(4744005)(2906002)(36756003)(486006)(11346002)(478600001)(186003)(446003)(2616005)(52116002)(72206003)(476003)(31696002)(14454004)(8676002)(71200400001)(6486002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1972;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: qVyYzc8zOtBiROjwsUS5vQ8FMg2KaYaeQVA7mDrVktpLMo1EDaLlERPW5vbTd8f9VNR513kUZ2/DPBsJikiCMjWd6mWw9MUm0FSAh7zkRK8Pf4dnkR0VnsFpK4XB7zQDLGOxgNpriPJqJY5R95OKbeOfbtoYfdZBSnzgUFLTWVU2MrTk2IvucAptWZ43vZuLSLgoI6iky7YJx9ulP8GDRhVLjmuDBFI6yxqJXSxR1My9zwm1DtG8FeXAdAMxdL33PKCIxeAywJo/FakU02xIsZSZbjBTqeR1UhoALcc7wXBtRvY5/81QftKe3/uFvucif2ASQQVnMgIh62z64GnCH17RX65L8VfLITnaOQlwYFIBOPvsVL+YgdpkJUTAhaC7NduQhz2WildzCOe4YcTL+xidXG2hZmAsi3nkGbTDwj8=
-Content-ID: <4A3C5761F3CE1F439710BB5D2753F96C@namprd11.prod.outlook.com>
+ bh=J8nlTj83bRnjAd7BpsOk8tOB8MT62dw7Chcid2GHIq0=;
+ b=TqWgde8Sp2cjQtSetXbkf2ZiEejsxbtr6xp1QeW/wLRYandeuH6TeUwm/FEGt/cApFMAtNYxXKrkeQu+DWSkNnpuPBBCste0zzYM+UORs/GaT4p6PwkxhcAIjRM6mPDjkjHVm7kkz5tWGOaQCobGFpYqgQ+5LVPwNvn2rKRm1RA=
+Received: from MWHPR0201CA0058.namprd02.prod.outlook.com
+ (2603:10b6:301:73::35) by DM5PR0201MB3398.namprd02.prod.outlook.com
+ (2603:10b6:4:76::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1730.16; Thu, 28 Mar
+ 2019 11:15:26 +0000
+Received: from SN1NAM02FT024.eop-nam02.prod.protection.outlook.com
+ (2a01:111:f400:7e44::202) by MWHPR0201CA0058.outlook.office365.com
+ (2603:10b6:301:73::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1750.15 via Frontend
+ Transport; Thu, 28 Mar 2019 11:15:25 +0000
+Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT024.mail.protection.outlook.com (10.152.72.127) with Microsoft SMTP
+ Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1750.16
+ via Frontend Transport; Thu, 28 Mar 2019 11:15:24 +0000
+Received: from unknown-38-66.xilinx.com ([149.199.38.66] helo=xsj-pvapsmtp01)
+ by xsj-pvapsmtpgw01 with esmtp (Exim 4.63)
+ (envelope-from <naga.sureshkumar.relli@xilinx.com>)
+ id 1h9T0G-00022o-E7; Thu, 28 Mar 2019 04:15:24 -0700
+Received: from [127.0.0.1] (helo=localhost)
+ by xsj-pvapsmtp01 with smtp (Exim 4.63)
+ (envelope-from <naga.sureshkumar.relli@xilinx.com>)
+ id 1h9T0B-0000L0-B2; Thu, 28 Mar 2019 04:15:19 -0700
+Received: from xsj-pvapsmtp01 (mailman.xilinx.com [149.199.38.66])
+ by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id x2SBF934009883; 
+ Thu, 28 Mar 2019 04:15:09 -0700
+Received: from [172.23.37.108] (helo=xhdnagasure40.xilinx.com)
+ by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+ (envelope-from <naga.sureshkumar.relli@xilinx.com>)
+ id 1h9T00-0000Ba-Na; Thu, 28 Mar 2019 04:15:09 -0700
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: <broonie@kernel.org>, <bbrezillon@kernel.org>
+Subject: [LINUX PATCH 0/3] Add support for Zynq QSPI controller driver
+Date: Thu, 28 Mar 2019 16:44:52 +0530
+Message-ID: <1553771692-30969-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83; IPV:NLI; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(346002)(396003)(376002)(39860400002)(136003)(2980300002)(199004)(189003)(7696005)(316002)(5660300002)(81156014)(426003)(4326008)(81166006)(305945005)(8676002)(2906002)(336012)(7416002)(126002)(36386004)(26005)(2616005)(110136005)(476003)(106002)(486006)(54906003)(51416003)(106466001)(356004)(36756003)(16586007)(14444005)(6666004)(9786002)(63266004)(50466002)(107886003)(478600001)(47776003)(8936002)(50226002)(186003)(48376002)(77096007);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM5PR0201MB3398; H:xsj-pvapsmtpgw01; FPR:;
+ SPF:Pass; LANG:en; PTR:unknown-60-83.xilinx.com; A:1; MX:1; 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: df314c84-5c12-401f-a9da-08d6b368aade
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2019 10:32:25.0529 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1972
-X-OriginatorOrg: microchip.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e02b8ae4-24a2-449b-301f-08d6b36ead2d
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600127)(711020)(4605104)(4709054)(2017052603328)(7153060);
+ SRVR:DM5PR0201MB3398; 
+X-MS-TrafficTypeDiagnostic: DM5PR0201MB3398:
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-Microsoft-Antispam-PRVS: <DM5PR0201MB3398BE68E99F74FC80280D83AF590@DM5PR0201MB3398.namprd02.prod.outlook.com>
+X-Forefront-PRVS: 0990C54589
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: lV5Qi7taTHYCsGDIRk0ccfNbvxnsP6PCn/ioIpBVEsQX4soYszC+M8pLD2uPzhEU5x2ZFSZlA3IqQ3Bwjub37TMveYWczh3sTbd5NBeCB82jy55e9mBde10FceB8ryFtaA91aowSL4IM3iK8bA8Xui8P+4XkOBJpjrK6JoNFlUktqqFmFVvcQTVbYmskR5XINMEx/ZsDUpyhPg4Go7JIl7vTFrhZH06Tg56HlSBY1F3gXNiV2e4NqsI0F1OU4Vd1Nub1QNrc4HzlJK+sEoCKDlP6pE5fLzgGcqjpH99ciO70guaquCCX90Y/KbY8EWRg56teSBwOdwIgbMjALSRzbCNSlaQYKhVkbeTnO8mor/MraeT0U6juf/EIPP9ldPynJjoFrXZhkKEAWPGNGI69oUcy+ur+5YgyKgNL3L+PDbc=
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2019 11:15:24.8684 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e02b8ae4-24a2-449b-301f-08d6b36ead2d
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c; Ip=[149.199.60.83];
+ Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0201MB3398
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_033234_341665_BD57828A 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20190328_041530_519064_0DDAC1D4 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -122,48 +131,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, vigneshr@ti.com,
+ richard@nod.at, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org, nagasuresh12@gmail.com,
+ dwmw2@infradead.org, michal.simek@xilinx.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Xilinx Zynq uses a QSPI controller that implements all the functionality
+required to support Quad SPI NOR flash devices.
+This driver along with the SPI MEM and MTD layer is used to support
+flash devices.
+
+The flash device(s) can be connected in three configurations to this
+controller:
+1. Single - One flash device with 1 CS, 1 Clock and 4 IO lines.
+2. Dual Parallel - Two flash devices connected with common CS and
+   separate IO lines (resulting in 8 IO lines).
+   In this configuration, the controller
+   a) Duplicates commands, address etc. sent on both sets of 4 IO lines.
+   b) Stripes data both transmitted and received i.e.
+      4 bits of data is sent to the first flash and the other 4 bits
+      to the second flash. Similarly read data is also consolidated.
+   Due to this, TX and RX data handling in the driver need special
+   handling for parallel mode.
+3. Dual Stacked - Two flash devices connected with separate CS and
+   4 common IO lines. This is largely similar to single, except for
+   the slave selection logic.
+The above configuration is conveyed to the QSPI driver through a
+devicetree property(currently not implemented 2 & 3 mentioned above).
+
+As per Boris suggestion We are currently not targetting for
+dual stacked/dual parallel handling. There are changes needed in the
+framework to handle this. so this update is only for the Single mode.
+
+This is tested with spi-v5.0 tag
+
+Naga Sureshkumar Relli (3):
+  dt-bindings: spi: Add device tree binding documentation for Zynq QSPI
+    controller
+  spi: spi-mem: call spi_mem_default_supports_op() first
+  spi: spi-mem: Add support for Zynq QSPI controller
+
+ .../devicetree/bindings/spi/spi-zynq-qspi.txt      |  25 +
+ drivers/spi/Kconfig                                |  10 +-
+ drivers/spi/Makefile                               |   1 +
+ drivers/spi/spi-mem.c                              |   7 +-
+ drivers/spi/spi-zynq-qspi.c                        | 770 +++++++++++++++++++++
+ 5 files changed, 810 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
+ create mode 100644 drivers/spi/spi-zynq-qspi.c
+
+-- 
+2.7.4
 
 
-On 03/25/2019 11:48 AM, Vignesh Raghavendra wrote:
-> External E-Mail
-> 
-> 
-> I have been contributing and reviewing MTD patches for a while now and
-> would like to add myself as co-maintainer for MTD to help maintain
-> CFI and SPI NOR parts of the subsystem.
-> Hopefully, this will help in taking some load off current maintainers.
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-
-for spi-nor:
-
-Acked-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-Thanks,
-ta
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3453f397ad87..d950fa01d829 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10014,6 +10014,7 @@ M:	Brian Norris <computersforpeace@gmail.com>
->  M:	Boris Brezillon <bbrezillon@kernel.org>
->  M:	Marek Vasut <marek.vasut@gmail.com>
->  M:	Richard Weinberger <richard@nod.at>
-> +M:	Vignesh Raghavendra <vigneshr@ti.com>
->  L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
