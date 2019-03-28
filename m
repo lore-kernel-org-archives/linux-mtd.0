@@ -2,62 +2,63 @@ Return-Path: <SRS0=odZH=R7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 320ADC10F03
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 08:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBD9FC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:01:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 040002173C
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 08:32:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 896D42173C
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:01:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uOJbrNAz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 040002173C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OPfU/sTM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 896D42173C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=++rSq6Q+lE0G4NQ3DfzPnPO5lBL7n4hh80pZvXxIzDQ=; b=uOJbrNAzm5PkXz
-	Fq25pIbybNiHJNQcqT7PfWHRrjWNN7xbh39hRns0LMe/CeaU3xf7xkQcZLVbb7lYfc7gOeDfUMVC6
-	WbQ3NjMJ3H6itdukZK6H2J0vlQc+x+BQXUYD9IhR1QJ2hV294LdhT7j0QPRGtpPK0BOEeWAgAxlFI
-	sEGe12LsOSgjJT6RuFokhGPqR4QUuXYaOOuKGYNhVRMZHXKCUj8CYbbINv6GvMrBW58/HU+6dFEb7
-	ztrVeLGzbPK/2d2IWWO4LzaGX5QH8Wsh8iArDvD+hTUd17FFRLbIOtJmsFlT3yk9udE/sV4jF4VA3
-	wUdWp7w7CKAc3+fDVTow==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=LltGW/kdBwSAi4Z4wx9KsGQ/cyW9iTLjKBiqKtpm7zY=; b=OPf
+	U/sTMCdwRTz1WDdS3IYmyma1hq0p41OyLES9Bqs54fxrFmFMFdqPc6x/5eeAQxnp9dU7u7kFj/zW5
+	euRfYcqtK3dImUXfF/2vVNxJ7s1CcAiIsQdKXeUMGfws2341LPvwEU/mWZpm//6gzDTRjoDsLzea0
+	S0lMPyHR9J0qqx1hX6wA8YAcDi9Zw4+ItNs4OlkY+4XDrCehyYN3wBmK86xRpTYin/yp7XC37R+WZ
+	LCRSFGj6dWbPb/PyY40J0rDaP0bOGn8CCee7CavVjOZUmPm3fhqE3UEIjp85E9wdEikAYCsKcYuYI
+	ZT4pEv9MNGa1/0Ce9OqEfdP26xUfTKA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9QSs-00020K-Gh; Thu, 28 Mar 2019 08:32:46 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1h9RqJ-0005BR-SK; Thu, 28 Mar 2019 10:01:03 +0000
+Received: from twhmllg3.macronix.com ([211.75.127.131])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9QSn-0001zW-PO
- for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 08:32:45 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B136927FAE5;
- Thu, 28 Mar 2019 08:32:31 +0000 (GMT)
-Date: Thu, 28 Mar 2019 09:32:28 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH 1/2] mtd: maps: physmap: Store gpio_values correctly
-Message-ID: <20190328093228.5ab79718@collabora.com>
-In-Reply-To: <20190328040217.1895-2-chris.packham@alliedtelesis.co.nz>
-References: <20190328040217.1895-1-chris.packham@alliedtelesis.co.nz>
- <20190328040217.1895-2-chris.packham@alliedtelesis.co.nz>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+ id 1h9RpD-0002bU-OW
+ for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 10:00:20 +0000
+Received: from localhost.localdomain ([172.17.195.96])
+ by TWHMLLG3.macronix.com with ESMTP id x2S9wlJJ052359;
+ Thu, 28 Mar 2019 17:58:47 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+From: Mason Yang <masonccyang@mxic.com.tw>
+To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, bbrezillon@kernel.org, dwmw2@infradead.org,
+ lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
+ computersforpeace@gmal.com, paul.burton@mips.com, stefan@agner.ch,
+ christophe.kerello@st.com, liang.yang@amlogic.com,
+ geert@linux-m68k.org, devicetree@vger.kernel.org,
+ marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org,
+ richard@nod.at, miquel.raynal@bootlin.com
+Subject: [PATCH 0/7] Add Macronix MX25F0A MFD driver and NAND function 
+Date: Thu, 28 Mar 2019 18:18:31 +0800
+Message-Id: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
+X-Mailer: git-send-email 1.9.1
+X-MAIL: TWHMLLG3.macronix.com x2S9wlJJ052359
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_013241_960396_BF5C0B1D 
-X-CRM114-Status: GOOD (  16.03  )
+X-CRM114-CacheID: sfid-20190328_025956_390272_A9920678 
+X-CRM114-Status: UNSURE (   5.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -69,50 +70,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bbrezillon@kernel.org,
- richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: juliensu@mxic.com.tw, Mason Yang <masonccyang@mxic.com.tw>,
+ zhengxunli@mxic.com.tw
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 28 Mar 2019 17:02:15 +1300
-Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+Hi,
 
-> When the gpio-addr-flash.c driver was merged with physmap-core.c the
-> code to store the current gpio_values was lost. This meant that once a
-> gpio was asserted it was never de-asserted. Fix this by storing the
-> current offset in gpio_values like the old driver used to.
-> 
-> Fixes: commit ba32ce95cbd9 ("mtd: maps: Merge gpio-addr-flash.c into physmap-core.c")
+These patches support
+1. Add Macronix MX25F0A MFD driver for SPI and raw NAND controller.
+2. Add direct mapping read mode for SPI host controller.
+3. Macronix NAND device read retry and randomizer function.
+4. Macronix NAND device block protection function.
 
-You miss
+thanks for your review.
 
-Cc: <stable@vger.kernel.org>
+best regards,
+Mason
 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Mason Yang (7):
+  mfd: Add Macronix MX25F0A MFD controller driver
+  mtd: rawnand: Add Macronix MX25F0A NAND controller driver
+  spi: Patch Macronix MX25F0A SPI controller driver
+  dt-bindings: mfd: Document Macronix MX25F0A controller bindings
+  spi: Add direct mapping mode for Macronix SPI controller
+  mtd: rawnand: Add Macronix NAND read retry and randomizer support
+  mtd: rawnand: Add Macronix NAND block protection driver
 
-> ---
->  drivers/mtd/maps/physmap-core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-> index d9a3e4bebe5d..21b556afc305 100644
-> --- a/drivers/mtd/maps/physmap-core.c
-> +++ b/drivers/mtd/maps/physmap-core.c
-> @@ -132,6 +132,8 @@ static void physmap_set_addr_gpios(struct physmap_flash_info *info,
->  
->  		gpiod_set_value(info->gpios->desc[i], !!(BIT(i) & ofs));
->  	}
-> +
-> +	info->gpio_values = ofs;
->  }
->  
->  #define win_mask(order)		(BIT(order) - 1)
+ .../devicetree/bindings/mfd/mxic-mx25f0a.txt       |  66 +++++
+ drivers/mfd/Kconfig                                |   9 +
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/mxic-mx25f0a.c                         |  90 ++++++
+ drivers/mtd/nand/raw/Kconfig                       |   6 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/mxic_nand.c                   | 306 +++++++++++++++++++++
+ drivers/mtd/nand/raw/nand_macronix.c               | 216 +++++++++++++++
+ drivers/spi/spi-mxic.c                             | 288 +++++++------------
+ include/linux/mfd/mxic-mx25f0a.h                   | 176 ++++++++++++
+ 10 files changed, 974 insertions(+), 185 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
+ create mode 100644 drivers/mfd/mxic-mx25f0a.c
+ create mode 100644 drivers/mtd/nand/raw/mxic_nand.c
+ create mode 100644 include/linux/mfd/mxic-mx25f0a.h
+
+-- 
+1.9.1
 
 
 ______________________________________________________
