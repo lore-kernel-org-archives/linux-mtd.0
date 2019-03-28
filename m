@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19D33C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC9CEC43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D27672075E
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA72B2075E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IQ1xeLpH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gvs+l9wn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D27672075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="S5WKM0Uq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eejvCUol"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA72B2075E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,63 +28,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=3IPU0ECFOqUnNiWf+u+KOaeubY9oSRf6PNQdV4H24Xo=; b=IQ1xeLpHK3IuU/Rt1junJ4FSd8
-	giAYxDINejaD1VodOvTCBpUZjwvvmS6811iWdEg07Mukh8XP9lXRccD9InE9dpvzegccDyLDas/dD
-	rSycwAelPKbgBWBah9NRUoPtx/xmFba7qvEw92J+0+gKnglNP8X8SJ+YSxsYJFsLUaMMwnDZzwRiV
-	VnhfH+2QtUkBZdmYhX6R6JDBifPUq0Dkpy10bq7ASmLyRssTWF+8k6lXKLBwOKBg/dJTrNvBHrQ5v
-	Z0T1n8yCShNQreuK92PdeY1oVGDqHcepuaB4e3h6QdSnB/Mb/17zd1k5+MRdl5HhemjgH8IM55LBz
-	oiUO0ccg==;
+	bh=YBUAlDJ5Jyn+o7p92DEo3QborwfAk0r72OhxVKgP840=; b=S5WKM0Uq14SV5gWzfPP+kG/tES
+	I1wB/dNfMbsaFqA2NAEIVq+gEmZKVm9dq8C9IUJBMoGpH+a6cQ7yQvhJFkDMaqmzdnFBMdvuyJJeV
+	mwBk2YsYdDMsF5OY1BEm3BRSnk43752QSHM0BSYabRKOO+lYkVkhJjeWXbzjTvQeNaungzGtNsEv+
+	s2+29q8PY+MnlkTC26Lc8RHRa4B8pq7/j9Z6SMccZtLWAoK8RTkftnJNcBQ0g3MQuEWHTJoimI6tP
+	4HTgb7h0ZGMqhQvMALtthLhM5loxMPtJ8d9dGmykPada7QA91UVua8E29Jtqj5miO5wZmcuRgu+GQ
+	pXofTTfg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9Vsd-0002UZ-PY; Thu, 28 Mar 2019 14:19:43 +0000
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+	id 1h9Vsn-0002hG-6z; Thu, 28 Mar 2019 14:19:53 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9VsE-0001uN-SG
- for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 14:19:22 +0000
-Received: by mail-wm1-x344.google.com with SMTP id q16so3771067wmj.3
- for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 07:19:18 -0700 (PDT)
+ id 1h9VsF-0001vl-P9
+ for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 14:19:25 +0000
+Received: by mail-wm1-x341.google.com with SMTP id n25so1473848wmk.4
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 07:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=I4NBnrPcBLSmBLDLCMVl3UePqPRGaV+p6WB2tvNcQqI=;
- b=Gvs+l9wnTKifah4+ommEMdCF3VyDMDjGXizrqqKCOYZK/7aEwDCAXuUu4qPgMCdAZE
- hpaOAf4eYDuFj9bfpAR2rHQy5NACX+B8QHwfWqLVVZ++hcl/l8WKsQW4tzP7cb5OYrMx
- jzkqiSXDXLQWEdYetcyTmd7c0Md4usPnC/WLFS/Y2Qyel+uRhM+Lgs31gkseKsMnL8WX
- mu0ysgSNuzu6O6FAgzwn0ZDAqzrkIGD+V/xQcBRBR4rUp7s3486FhHxg0ufbG57U2h1r
- hWwZLycAgb/c4+YALbuH37rMlWIXcDj0TDm7SrGUUQCSwWcYCRCpy7wNpjWGuTg9ksJ+
- bpnA==
+ bh=5SDmaay2PipicUYSZvHglq+HG44PekQJ0piwteiL9L0=;
+ b=eejvCUolEysHGqzH8de5mqsot14FOnHV6FOzGR/b97GQ1j19aui7unMT/aP6uKDp5u
+ L87rtTxdr2TDbnNXJEGjWVFPWBlUw9L4SzmbWjGT+M36gQKu6IttCTp573TCRagw6Ghj
+ xWdbqf6xEnjWThgSoKiH5FrihFdrS9iA2fxjYCujEZCLjmHIYdtGHJGhM35uPmflkPjK
+ rKhxhNX0PBRkD9N6g9H1bbnBmlv+sPYK5/LmMaPw15IGov8p5N80xJaedlhlrXhb+4ev
+ NA9rmLnDi6hd75snjBzeGWhgLKYPHffvuHXXWLd+OWtOYd54dYtyGugKSQt+mN9WNdVh
+ eN7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=I4NBnrPcBLSmBLDLCMVl3UePqPRGaV+p6WB2tvNcQqI=;
- b=sqHgZH3FDcEsw2Oif2r2OOaPkitblrMwT6knZ8CdP0+kGnvxVXNsM5HgfsfX1Gb4iT
- jgtAJQ/glOyNH8a8OcTRKRlCbbN10CjbL7D+tp9e0SlwcQ1ayDHnn6npuRRZIXvmWDNA
- rkAOKfSd++srgaoHLgjM9M4SloNiqroiDWuwIOtGLH2i5LrgRKRQexkfdFScvVenNDAV
- 3V3OOz/5fm784zf80bF/T8vDXB5y/tB96pL5UkhJFgWJrGk+uIyG1gTPrF0HuGV97QhM
- Z8lik58YTjRTYEMCC+loFWYcmth04/TE/kidy/506czKUztVeSbvT/+nccb1L5lyJ9fK
- dnkg==
-X-Gm-Message-State: APjAAAV8mT42479lJNKQrh2ediBn2nUDIM+WpjMq5LGimg7Qymkuhnyt
- uPnjibtCiqKdUuuL8Nno1rY=
-X-Google-Smtp-Source: APXvYqxj4yMMTwGZN3jZrKa2nblQ2yJaLcEzHuCyH5j8jBTWePtOYkl+bCKoeKihHUVa8ZZqop8AiA==
-X-Received: by 2002:a1c:7dcc:: with SMTP id y195mr156864wmc.13.1553782756991; 
- Thu, 28 Mar 2019 07:19:16 -0700 (PDT)
+ bh=5SDmaay2PipicUYSZvHglq+HG44PekQJ0piwteiL9L0=;
+ b=oY0opIJPMIHP33JEcHjRG05TiJWOC7+gyabaJPZK5LmaAiOjRVPEel57WkN22nAZsU
+ DhHAo0KSz694mbvf6TU4OrGturw6915opg8eHrWtCoRSUPk4RVGf1JRJcBeGxdG6totB
+ Y5wbi/af+8OBmA2ErGPAY1l5zod0vmcmzZw7euColQx97Z+JLG5muq/rpbbWjFHfDW1y
+ JVlXoVgI0woj5PM+JFANkHE3aTeSwaonnmdHWwjIeePNMf005qNkhBJIBLyWZTdFXbpA
+ JTsc4ytk9CbRR6hbqTL+XwYnnoB5FeAJ4l1eZs6jJyoTbFZEjwlJBn2syLSvchA3tKIB
+ yjPw==
+X-Gm-Message-State: APjAAAVrDNcLlBpRXoH97yHkT7hBuaIVgoKt5iyHv3WPYt3zY+MZaQ2L
+ DOPjIUdSZs6go2d75zhUWUk=
+X-Google-Smtp-Source: APXvYqw3064co9Xwn6q2uRwBFf+tRlmYmV6nGwG5EfVRz48DXRUZ9f14iDxVaBgHK3/IkBCubSsFHA==
+X-Received: by 2002:a7b:c382:: with SMTP id s2mr177301wmj.56.1553782758255;
+ Thu, 28 Mar 2019 07:19:18 -0700 (PDT)
 Received: from localhost.localdomain ([2001:470:9e39::64])
- by smtp.gmail.com with ESMTPSA id t2sm51802879wra.9.2019.03.28.07.19.15
+ by smtp.gmail.com with ESMTPSA id t2sm51802879wra.9.2019.03.28.07.19.17
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 28 Mar 2019 07:19:16 -0700 (PDT)
+ Thu, 28 Mar 2019 07:19:17 -0700 (PDT)
 From: Jonas Gorski <jonas.gorski@gmail.com>
 To: devicetree@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH V2 4/5] dt-bindings: mtd: describe BCM963XX ImageTag format
- and usage
-Date: Thu, 28 Mar 2019 15:19:09 +0100
-Message-Id: <20190328141910.5723-5-jonas.gorski@gmail.com>
+Subject: [PATCH V2 5/5] mtd: parser_imagetag: add of_match_table support
+Date: Thu, 28 Mar 2019 15:19:10 +0100
+Message-Id: <20190328141910.5723-6-jonas.gorski@gmail.com>
 X-Mailer: git-send-email 2.13.2
 In-Reply-To: <20190328141910.5723-1-jonas.gorski@gmail.com>
 References: <20190328141910.5723-1-jonas.gorski@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_071919_289876_79D9B7AF 
-X-CRM114-Status: GOOD (  16.94  )
+X-CRM114-CacheID: sfid-20190328_071920_369975_A1AB806F 
+X-CRM114-Status: GOOD (  17.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -109,67 +108,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Describe how to use the BCM963XX ImageTag format in a mixed flash layout
-environment.
+Allow matching the imagetag parser for fixed partitions defined in the
+device tree.
 
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 45 ++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+ drivers/mtd/parsers/parser_imagetag.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
-new file mode 100644
-index 000000000000..f8b7418ed817
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
-@@ -0,0 +1,45 @@
-+Broadcom BCM963XX ImageTag Partition Container
-+==============================================
-+
-+Some Broadcom BCM63XX SoC based devices contain additional, non discoverable
-+partitions or non standard bootloader partition sizes. For these a mixed layout
-+needs to be used with an explicit firmware partition.
-+
-+The BCM963XX ImageTag is a simple firmware header describing the offsets and
-+sizes of the rootfs and kernel parts contained in the firmware.
-+
-+Required properties:
-+- compatible : must be "brcm,bcm963xx-imagetag"
-+
-+Example:
-+
-+flash@1e000000 {
-+	compatible = "cfi-flash";
-+	reg = <0x1e000000 0x2000000>;
-+	bank-width = <2>;
-+
-+	partitions {
-+		compatible = "fixed-partitions";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		cfe@0 {
-+			reg = <0x0 0x10000>;
-+			read-only;
-+		};
-+
-+		firmware@10000 {
-+			reg = <0x10000 0x7d0000>;
-+			compatible = "brcm,bcm963xx-imagetag";
-+		};
-+
-+		caldata@7e0000 {
-+			reg = <0x7e0000 0x10000>;
-+			read-only;
-+		};
-+
-+		nvram@7f0000 {
-+			reg = <0x7f0000 0x10000>;
-+		};
-+	};
+diff --git a/drivers/mtd/parsers/parser_imagetag.c b/drivers/mtd/parsers/parser_imagetag.c
+index 74b66d009b5c..9537c183a3be 100644
+--- a/drivers/mtd/parsers/parser_imagetag.c
++++ b/drivers/mtd/parsers/parser_imagetag.c
+@@ -24,6 +24,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of.h>
+ 
+ /* Ensure strings read from flash structs are null terminated */
+ #define STR_NULL_TERMINATE(x) \
+@@ -200,9 +201,16 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 	return nrparts;
+ }
+ 
++static const struct of_device_id parse_bcm963xx_imagetag_match_table[] = {
++	{ .compatible = "brcm,bcm963xx-imagetag" },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, parse_bcm963xx_imagetag_match_table);
++
+ static struct mtd_part_parser bcm963xx_imagetag_parser = {
+ 	.parse_fn = bcm963xx_parse_imagetag_partitions,
+ 	.name = "bcm963xx-imagetag",
++	.of_match_table = parse_bcm963xx_imagetag_match_table,
+ };
+ module_mtd_part_parser(bcm963xx_imagetag_parser);
+ 
 -- 
 2.13.2
 
