@@ -2,84 +2,83 @@ Return-Path: <SRS0=odZH=R7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D62DC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 11:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F4094C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D23D720700
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 11:54:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C11892075E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="D4T3exiq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bofh-nu.20150623.gappssmtp.com header.i=@bofh-nu.20150623.gappssmtp.com header.b="iu1+p/G/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D23D720700
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bofh.nu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dTl+ukZV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZcL9IbHx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C11892075E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=/i+hmKU0dvWOkIUqE6HRZmXIyO0z7HDgnBn05bF+zhk=; b=D4T3exiqdEbGmf/Tcb4fSc++yM
-	ok27Mph6bq06LO1T3gJsF04TVrlaOQMaQX0Nk/ku1E8WVmG7rpjGI35W5gu5Nwf7ZmVAW3hUQfr5J
-	zPwg/G8xwils2V7crYCbFapRAFko+YsKBQYB6Gukt3n4a1X7luY2g4v0XmIdz9Spo+hQuN3m6CesH
-	szMe4lN+TZFWzxdFO8WYqpArVLPUqg15yBhRUVgAjv2LYG4Y20afdx6mHz71PqzY3W7k0rYVLqXDy
-	Fo27A3IM23CZvTd6Vpf4opuUr65YSPV6j/m48y1t3VFYv5Qt9ZFa9qL7DZ40ERnIIzHkVeQWoibck
-	93hTmBpg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=o+xhnxza/XiJtnBwsXYOWUodN9ZCW6MKIYCxAwWHI30=; b=dTl
+	+ukZVvDUcZLal2PsTwXnw2cIG1BM92MAu0L9BFbjSEngjMhnqBuK1yfK4rBrwSRyVJwhaFwGNp38E
+	wq6IbswQT3j5/aROoVWEhDWfPpBzAzjvCkMro9KAeBD81+EYtGOmRJKrX52ZKjasMw/+KttYj/Pg9
+	4mPU2d5ISnOxLPx7nhCWfXfug1IsHJK9VPNRDz0AxSLOzfN2qAXi8qhs/7Ag9TLz6b6rsLRSDJBfk
+	WqohL/jviwKyuhm9UVpj6a2hgJMtxFcIdT3ZBA+ZcGENHUMh3R4XdeY+eekxJJ1O/4QeMPMgXzwl9
+	iD9tD2yiIjvpWagwv2RyXpvMrU+w1Vg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9TcK-0008AW-I4; Thu, 28 Mar 2019 11:54:44 +0000
-Received: from mail-ot1-x32f.google.com ([2607:f8b0:4864:20::32f])
+	id 1h9VsC-0001tl-PZ; Thu, 28 Mar 2019 14:19:16 +0000
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9TcH-00089Y-Bg
- for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 11:54:43 +0000
-Received: by mail-ot1-x32f.google.com with SMTP id 64so17991414otb.8
- for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 04:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bofh-nu.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
- bh=NQ2ows4CIjzTGSHm4+IIKozZNGaSI2ut8dPHL24ufMg=;
- b=iu1+p/G/39lmRsxdHX4dlmAEuCP4I922nWwN1tjqH6pcuVNBQ9yT2pJMe25p0ZVko7
- 0oBdeik7hbwtgusYV9uEm3dXv28e+T5twJdplJJKI2FGqC0MocARF+NF05Sjn75Qg+9M
- U7D+z1O3UAfDCsue4IhjJPKnuZL8UP9zNwQOZUZbC5nklNdOhjmD8NR3egjTNjyXd9Mx
- iVWcQXkgpTcKQoIFIkWsd2bf504YQGwy4vEwFvaYYexXfs1hWdtPyyUOwN/ykiCjxKMq
- 8vd2mBYJUcG4eRWla59htJ7YTT1cE80i3SROkd7YZDvETrA58aLx/H9O73+7EKEbvBHJ
- sTuA==
+ id 1h9VsA-0001si-9q
+ for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 14:19:15 +0000
+Received: by mail-wm1-x343.google.com with SMTP id y197so1526550wmd.0
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 07:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=kxi9Xw0rPP9E+6rF5Q2Up/hUyZzAdi6u3y6OfYt/pFE=;
+ b=ZcL9IbHxWTKpH4iBWcXifyLWGngLEXBIJBpMHQpfTrbV+ux22Fh/FSQK03PTXhtgNR
+ Wh36u7zA79B+CFma8aWq3OgHcRVDRV3waDne/n47SXujRhPKJLzvXKgDMsuYw9zhamn3
+ 1g84ptwmxd9cRibhSQF+sulUXi1ofmMdPkt6ys3S4J7z0AnaTt8ysk36OXpFQtD9i7hk
+ xMRiMmHRmQVIKQrGuo1WvMlEvpnKomt2EyDgu5QtqueMMlJMG+yh7+JmtU6H544nS1g3
+ SN8pAtemmgh6fvt+ZXadeDrA41uRVyM9TTWevxFjfA67IvUt6GfhzTO4L0+SNYb7YYoM
+ o+rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to;
- bh=NQ2ows4CIjzTGSHm4+IIKozZNGaSI2ut8dPHL24ufMg=;
- b=mEBpKD5Fh/I3GbFIOhECU4oLDiDZiU59CZj1tlKCuqj9cIbmE5M2jcKWUFa3Vp5y/P
- yWR7H4OnlTxNGfemnmt0cO1zCtSp3OWnCXyT3Ym02dNCJkNWHVM4zNSLP11lGasJIrBn
- Ow3aiSlTJtZv1snvuGY6Nw3OePK+6ET25bPePGJj75gG0X8CJzaFNG/c+/KYa7eiNFlC
- ZlLjTjain58JgLSHFiYKSlnlD5wuiT6o5BrhM7iznqPMM+ju5D8WbHre96Xvji0jN5IS
- zP7aZV0ZGM2ay2MI6B1OeDT3oLrWn0gQmlcft3fjNNqYhHeeK3uEwd+OjpvcaFIP2IeU
- wVTw==
-X-Gm-Message-State: APjAAAXzmzgBAGeM+Hiz1MGTVSQ6MNjDXUvnbZv/mZ5hEZG53lxnfNz0
- dNh1m9kxm1t6nngBFeye6srRryuAAtJ69tdunoIDI1/Bja4=
-X-Google-Smtp-Source: APXvYqw9pr6nXEsf4nbcw0ADF+IQt/GRqkN4gXnj3OYHr3Y9tPS1Ybrs+PVqm5/ELFpLvQ0rtL6d0XkwmRbNXL4V10Y=
-X-Received: by 2002:a9d:6185:: with SMTP id g5mr32293162otk.346.1553774076821; 
- Thu, 28 Mar 2019 04:54:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <CADnJP=vQURY9u7Fb=Bt=udf89A6VX_TccBXfk8q2kdkqMnqj4A@mail.gmail.com>
- <CADnJP=shWk7qcK1V9v0JiDGqmOD4-B3zyXzbj7ZbTf2H3BLnRg@mail.gmail.com>
-In-Reply-To: <CADnJP=shWk7qcK1V9v0JiDGqmOD4-B3zyXzbj7ZbTf2H3BLnRg@mail.gmail.com>
-From: Lars Persson <lists@bofh.nu>
-Date: Thu, 28 Mar 2019 12:54:25 +0100
-Message-ID: <CADnJP=svNQ_LRq1OWbCMNNeTHs_-fAe1kmU1+G4GZ2BV0Jvo2w@mail.gmail.com>
-Subject: Re: UBIFS file-system corruption (missing inode) after power-cut on
- 4.14.96
-To: linux-mtd@lists.infradead.org
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=kxi9Xw0rPP9E+6rF5Q2Up/hUyZzAdi6u3y6OfYt/pFE=;
+ b=BVeS7vCyQesi24NUtwcvH36CWjh3jFzrUzTdOCuOjk7TI5C+vLYCsds1tGopZavahc
+ H+Ch6dW8twC2weZYyhUTb45jpR/uV6YkIl085AzYEAxz+s0bB3MWaG80WEcqkGv1yuAy
+ kLa9UeyS4Sc5vxW8wJPVqlQUCM6oFCv0O/9C9GtGahlEXkdsAvKkDZ/nyJ2XpayZpt+I
+ KMTQu4L6yMgeuyZYPW+rUptjIQefM8b5aSo4xOWs9AdS2RzqXQXQ9qq1O+Q/oWXexEwG
+ FTegjPViwWtWqZphF4t9zJUk9rGTMwsyK8Q5n616nypVemKCxxEAWepDh1KkjTdIzYSp
+ Wi9g==
+X-Gm-Message-State: APjAAAX3sIQuqHla1jt6zgcdeyDbE6bfhLNXuhJyK8HK2ByiiWsleOjC
+ HqmQ0eJ7LAitnnZ8LCPmMRA=
+X-Google-Smtp-Source: APXvYqzIvoq0AsB1NwJuqv3ddxHk7iF+FoX+SAYHKTUrvjxkdNfgaDvkeLoAC0sxx/+AwqqHm2n6KA==
+X-Received: by 2002:a7b:c382:: with SMTP id s2mr176966wmj.56.1553782751578;
+ Thu, 28 Mar 2019 07:19:11 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:9e39::64])
+ by smtp.gmail.com with ESMTPSA id t2sm51802879wra.9.2019.03.28.07.19.09
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 28 Mar 2019 07:19:10 -0700 (PDT)
+From: Jonas Gorski <jonas.gorski@gmail.com>
+To: devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH V2 0/5] mtd: bcm63xxpart: add device tree support
+Date: Thu, 28 Mar 2019 15:19:05 +0100
+Message-Id: <20190328141910.5723-1-jonas.gorski@gmail.com>
+X-Mailer: git-send-email 2.13.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_045441_484955_5D5D7187 
-X-CRM114-Status: GOOD (  12.64  )
+X-CRM114-CacheID: sfid-20190328_071914_345751_3535FEFC 
+X-CRM114-Status: GOOD (  19.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,43 +90,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 26, 2019 at 10:21 AM Lars Persson <lists@bofh.nu> wrote:
->
-> On Thu, Mar 21, 2019 at 11:02 AM Lars Persson <lists@bofh.nu> wrote:
-> >
-> > The missing inode is always triggered on those two particular files
-> > emotiond.conf and tampering.conf that share the same write pattern at startup:
-> >
-> >  cp file file.tmp
-> >  echo some data > file.tmp
-> >  mv file.tmp file
-> >  fsync file
-> >
->
-> A closer look at that script shows that the atomic file update part
-> was bypassed. It only performs a chown operation on that file.
-> That simple chown will trigger an overlayfs copyup operation.
->
-> With a proper unmount after the system has finished writing to /etc I
-> cannot reproduce any corruption. An unclean shutdown triggers
-> corruption in about 1/3 of the attempts, also when I cut power tens of
-> seconds after the problematic script has executed.
+This patchset adds appropriate bindings for parsing various bcm963xx NOR
+flash layouts found in the wild.
 
-OK I think I have found the bug.
+The image header is quite limited, and only has fixed fields for the
+offsets and sizes of the kernel and rootfs partitions. If any additional
+partitions exist, they need to be described externally, e.g. through
+fixed partition layouts.
 
-Commit 32fe905c17f0 ("Fix O_TMPFILE corner case in ubifs_link()")
-tried to fix the use of O_TMPFILE by removing an inode from the orphan
-list when it is relinked.
+The first two patches add the bindings for the full flash parser for the
+"common" case: first erase block bootloader, last erase block nvram,
+reminder available for firmware.
 
-Unfortunately the removal never gets committed to flash because the
-removal of an orphan does not trigger a commit. The condition for
-committing is that new_orphans > 0, but in our case it is zero after
-the call to ubifs_delete_orphan().
+The third patch splits out the image header parsing into its own parser.
+
+Then patches four and five add bindings for the split out parser, to
+support non-trivial cases with additional partitions, or a non-standard
+offset of the firmware partition.
+
+These patches have been in used since a while in OpenWrt.
+
+Changes V1 -> V2:
+ * dropped the second example from brcm,bcm963xx-imagetag.txt
+ * added reviewed bys from Rob Herring
+
+Jonas Gorski (5):
+  dt-bindings: mtd: describe the simple BCM963XX NOR flash layout
+  mtd: bcm63xxpart: add of_match_table support
+  mtd: bcm63xxpart: move imagetag parsing to its own parser
+  dt-bindings: mtd: describe BCM963XX ImageTag format and usage
+  mtd: parser_imagetag: add of_match_table support
+
+ .../brcm,bcm963xx-cfe-nor-partitions.txt           |  24 +++
+ .../mtd/partitions/brcm,bcm963xx-imagetag.txt      |  45 +++++
+ drivers/mtd/Kconfig                                |   1 +
+ drivers/mtd/bcm63xxpart.c                          | 163 ++-------------
+ drivers/mtd/parsers/Kconfig                        |  11 +
+ drivers/mtd/parsers/Makefile                       |   1 +
+ drivers/mtd/parsers/parser_imagetag.c              | 222 +++++++++++++++++++++
+ 7 files changed, 320 insertions(+), 147 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-cfe-nor-partitions.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+ create mode 100644 drivers/mtd/parsers/parser_imagetag.c
+
+-- 
+2.13.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
