@@ -2,21 +2,22 @@ Return-Path: <SRS0=odZH=R7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D0FFC43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 239DEC10F03
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:16:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DB9121773
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:07:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B967721773
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:16:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RLr3m1uI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB9121773
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QFg3apXw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oJ4dBRqd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B967721773
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,22 +27,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=mNHlH5G36ftfBTvXskD/Pi/kYpNJM1Bkv9pZWmfaPpU=; b=RLr3m1uIE27NnPnF3CMPfg07um
-	h+xQMjho1tkct4YKRYJdwHMgSnWET21xs3x9T/gd0hW1rOKXHuPKNsqjtEmuZXn7n5h6jTwYr0zAj
-	tJO36WOx9nDgUpdAREmn3tP4mbH/Iwg8j+UvqwfhxvZ1GKl6aQMEX3QZJ89wihHbMbznvJRlyIZun
-	NqIYuFN7zM612phq8yKCycb3XBJwN3NyQdnVVwuMb9E+zzx8V/OSKgpzikPT2AR9M5vMHVDQ7MEbP
-	TziJ/6oH7KnNOhZTEXU5Hj5dJK3YITLET5vizBKidxDF9f03kszETgTcif6Ff2Ye7RWQs07Q2xvay
-	+wi/7pww==;
+	bh=qsLCjmihlPE28BOgBLEicGv+Dzqrycx6q/nMJ/LzQlU=; b=QFg3apXwy99b+Uw8xdFBJ5dd83
+	1ekYDU1Wm5Y4YV92N2CwvPPcH+HWjPgDnINDsUhR/f/gfPfO5GiYmPuUiD9bi6u2sN3mHs1zu72/Y
+	FGqbCwPIoA6euuAG0FnWnrfBaDoCDzAW/2KEgGFpykSbWvORQsiI3BBEHg2eggvTLNZggO6/1gYSA
+	+ygXNtLgf3seOqdiHRSeSZl4NANHeZqfqO/8UUUZwxFbymu5FqEVHQvMzmgB8cClLYJ+zHc166x8l
+	HJioPm6dtkbE++NmKhK/jsVHnYO/ERHK0jMYfml6xA3KSCYMqW/9/lR0AKZN7uW526YtJISQVJTnL
+	SQF+vE0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9RwV-00010b-6B; Thu, 28 Mar 2019 10:07:27 +0000
-Received: from twhmllg3.macronix.com ([211.75.127.131])
+	id 1h9S5d-0006Am-B3; Thu, 28 Mar 2019 10:16:53 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9RpD-0002bm-Ok
- for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 10:00:26 +0000
+ id 1h9S5Y-0005jz-KM
+ for linux-mtd@bombadil.infradead.org; Thu, 28 Mar 2019 10:16:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=References:In-Reply-To:Message-Id:Date:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=FkGAx3GasFGeKloHMprKgzQ+EYNBRg9XNiFS+TMdbHI=; b=oJ4dBRqdzkTW2BVG5clMQhlyU
+ QeIDKc1X3dlUppMk1tgmboPG8LYNUhMt4akwYeetryKWlgfbyEeDvms2VHR0oHOvHwDAlMmOPeKCV
+ IJj6BgJykARsDcQbCcbJ3jwP3inaYHXht1XfoKeEL/X2GB8SzGyo7Rj2BcXf+a8TL80x8Sa8VHZYQ
+ eBzJogXoEIGe6goeUC0bhlLTkbrWbXr8k5ehkFYI3KMvO3YijQY/X1Dh9D9Vqyn0vnGkVjo3Xv+7C
+ Tds1dL/8zH6agNwcEj8iy6CcqGDwhAcXDb4dqbOGUmkqx5YYFBujz4Ch0que+WV7byNJ4Q7wdEeeF
+ yFgDyQYvw==;
+Received: from twhmllg3.macronix.com ([122.147.135.201])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1h9RpI-0006o5-W4
+ for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 10:00:04 +0000
 Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG3.macronix.com with ESMTP id x2S9wlJM052359;
- Thu, 28 Mar 2019 17:58:50 +0800 (GMT-8)
+ by TWHMLLG3.macronix.com with ESMTP id x2S9wlJP052359;
+ Thu, 28 Mar 2019 17:58:53 +0800 (GMT-8)
  (envelope-from masonccyang@mxic.com.tw)
 From: Mason Yang <masonccyang@mxic.com.tw>
 To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
@@ -52,17 +69,17 @@ To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
  geert@linux-m68k.org, devicetree@vger.kernel.org,
  marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org,
  richard@nod.at, miquel.raynal@bootlin.com
-Subject: [PATCH 3/7] spi: Patch Macronix MX25F0A SPI controller driver
-Date: Thu, 28 Mar 2019 18:18:34 +0800
-Message-Id: <1553768318-23149-4-git-send-email-masonccyang@mxic.com.tw>
+Subject: [PATCH 6/7] mtd: rawnand: Add Macronix NAND read retry and randomizer
+ support
+Date: Thu, 28 Mar 2019 18:18:37 +0800
+Message-Id: <1553768318-23149-7-git-send-email-masonccyang@mxic.com.tw>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
 References: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG3.macronix.com x2S9wlJM052359
+X-MAIL: TWHMLLG3.macronix.com x2S9wlJP052359
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_025956_461014_B482AA95 
-X-CRM114-Status: UNSURE (   8.82  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190328_100001_661462_8EEAB32D 
+X-CRM114-Status: GOOD (  15.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,202 +99,200 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Patch a MFD driver for Macronix MX25F0A SPI controller.
+Add a driver for Macronix NAND read retry and randomizer.
 
 Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 ---
- drivers/spi/spi-mxic.c | 159 +------------------------------------------------
- 1 file changed, 3 insertions(+), 156 deletions(-)
+ drivers/mtd/nand/raw/nand_macronix.c | 169 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 169 insertions(+)
 
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index e41ae6e..fbebf89 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -9,163 +9,11 @@
- //
+diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
+index 47d8cda..a19caa4 100644
+--- a/drivers/mtd/nand/raw/nand_macronix.c
++++ b/drivers/mtd/nand/raw/nand_macronix.c
+@@ -17,6 +17,174 @@
  
- #include <linux/clk.h>
--#include <linux/io.h>
--#include <linux/iopoll.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
-+#include <linux/mfd/mxic-mx25f0a.h>
- #include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
+ #include "internals.h"
  
--#define HC_CFG			0x0
--#define HC_CFG_IF_CFG(x)	((x) << 27)
--#define HC_CFG_DUAL_SLAVE	BIT(31)
--#define HC_CFG_INDIVIDUAL	BIT(30)
--#define HC_CFG_NIO(x)		(((x) / 4) << 27)
--#define HC_CFG_TYPE(s, t)	((t) << (23 + ((s) * 2)))
--#define HC_CFG_TYPE_SPI_NOR	0
--#define HC_CFG_TYPE_SPI_NAND	1
--#define HC_CFG_TYPE_SPI_RAM	2
--#define HC_CFG_TYPE_RAW_NAND	3
--#define HC_CFG_SLV_ACT(x)	((x) << 21)
--#define HC_CFG_CLK_PH_EN	BIT(20)
--#define HC_CFG_CLK_POL_INV	BIT(19)
--#define HC_CFG_BIG_ENDIAN	BIT(18)
--#define HC_CFG_DATA_PASS	BIT(17)
--#define HC_CFG_IDLE_SIO_LVL(x)	((x) << 16)
--#define HC_CFG_MAN_START_EN	BIT(3)
--#define HC_CFG_MAN_START	BIT(2)
--#define HC_CFG_MAN_CS_EN	BIT(1)
--#define HC_CFG_MAN_CS_ASSERT	BIT(0)
--
--#define INT_STS			0x4
--#define INT_STS_EN		0x8
--#define INT_SIG_EN		0xc
--#define INT_STS_ALL		GENMASK(31, 0)
--#define INT_RDY_PIN		BIT(26)
--#define INT_RDY_SR		BIT(25)
--#define INT_LNR_SUSP		BIT(24)
--#define INT_ECC_ERR		BIT(17)
--#define INT_CRC_ERR		BIT(16)
--#define INT_LWR_DIS		BIT(12)
--#define INT_LRD_DIS		BIT(11)
--#define INT_SDMA_INT		BIT(10)
--#define INT_DMA_FINISH		BIT(9)
--#define INT_RX_NOT_FULL		BIT(3)
--#define INT_RX_NOT_EMPTY	BIT(2)
--#define INT_TX_NOT_FULL		BIT(1)
--#define INT_TX_EMPTY		BIT(0)
--
--#define HC_EN			0x10
--#define HC_EN_BIT		BIT(0)
--
--#define TXD(x)			(0x14 + ((x) * 4))
--#define RXD			0x24
--
--#define SS_CTRL(s)		(0x30 + ((s) * 4))
--#define LRD_CFG			0x44
--#define LWR_CFG			0x80
--#define RWW_CFG			0x70
--#define OP_READ			BIT(23)
--#define OP_DUMMY_CYC(x)		((x) << 17)
--#define OP_ADDR_BYTES(x)	((x) << 14)
--#define OP_CMD_BYTES(x)		(((x) - 1) << 13)
--#define OP_OCTA_CRC_EN		BIT(12)
--#define OP_DQS_EN		BIT(11)
--#define OP_ENHC_EN		BIT(10)
--#define OP_PREAMBLE_EN		BIT(9)
--#define OP_DATA_DDR		BIT(8)
--#define OP_DATA_BUSW(x)		((x) << 6)
--#define OP_ADDR_DDR		BIT(5)
--#define OP_ADDR_BUSW(x)		((x) << 3)
--#define OP_CMD_DDR		BIT(2)
--#define OP_CMD_BUSW(x)		(x)
--#define OP_BUSW_1		0
--#define OP_BUSW_2		1
--#define OP_BUSW_4		2
--#define OP_BUSW_8		3
--
--#define OCTA_CRC		0x38
--#define OCTA_CRC_IN_EN(s)	BIT(3 + ((s) * 16))
--#define OCTA_CRC_CHUNK(s, x)	((fls((x) / 32)) << (1 + ((s) * 16)))
--#define OCTA_CRC_OUT_EN(s)	BIT(0 + ((s) * 16))
--
--#define ONFI_DIN_CNT(s)		(0x3c + (s))
--
--#define LRD_CTRL		0x48
--#define RWW_CTRL		0x74
--#define LWR_CTRL		0x84
--#define LMODE_EN		BIT(31)
--#define LMODE_SLV_ACT(x)	((x) << 21)
--#define LMODE_CMD1(x)		((x) << 8)
--#define LMODE_CMD0(x)		(x)
--
--#define LRD_ADDR		0x4c
--#define LWR_ADDR		0x88
--#define LRD_RANGE		0x50
--#define LWR_RANGE		0x8c
--
--#define AXI_SLV_ADDR		0x54
--
--#define DMAC_RD_CFG		0x58
--#define DMAC_WR_CFG		0x94
--#define DMAC_CFG_PERIPH_EN	BIT(31)
--#define DMAC_CFG_ALLFLUSH_EN	BIT(30)
--#define DMAC_CFG_LASTFLUSH_EN	BIT(29)
--#define DMAC_CFG_QE(x)		(((x) + 1) << 16)
--#define DMAC_CFG_BURST_LEN(x)	(((x) + 1) << 12)
--#define DMAC_CFG_BURST_SZ(x)	((x) << 8)
--#define DMAC_CFG_DIR_READ	BIT(1)
--#define DMAC_CFG_START		BIT(0)
--
--#define DMAC_RD_CNT		0x5c
--#define DMAC_WR_CNT		0x98
--
--#define SDMA_ADDR		0x60
--
--#define DMAM_CFG		0x64
--#define DMAM_CFG_START		BIT(31)
--#define DMAM_CFG_CONT		BIT(30)
--#define DMAM_CFG_SDMA_GAP(x)	(fls((x) / 8192) << 2)
--#define DMAM_CFG_DIR_READ	BIT(1)
--#define DMAM_CFG_EN		BIT(0)
--
--#define DMAM_CNT		0x68
--
--#define LNR_TIMER_TH		0x6c
--
--#define RDM_CFG0		0x78
--#define RDM_CFG0_POLY(x)	(x)
--
--#define RDM_CFG1		0x7c
--#define RDM_CFG1_RDM_EN		BIT(31)
--#define RDM_CFG1_SEED(x)	(x)
--
--#define LWR_SUSP_CTRL		0x90
--#define LWR_SUSP_CTRL_EN	BIT(31)
--
--#define DMAS_CTRL		0x9c
--#define DMAS_CTRL_DIR_READ	BIT(31)
--#define DMAS_CTRL_EN		BIT(30)
--
--#define DATA_STROB		0xa0
--#define DATA_STROB_EDO_EN	BIT(2)
--#define DATA_STROB_INV_POL	BIT(1)
--#define DATA_STROB_DELAY_2CYC	BIT(0)
--
--#define IDLY_CODE(x)		(0xa4 + ((x) * 4))
--#define IDLY_CODE_VAL(x, v)	((v) << (((x) % 4) * 8))
--
--#define GPIO			0xc4
--#define GPIO_PT(x)		BIT(3 + ((x) * 16))
--#define GPIO_RESET(x)		BIT(2 + ((x) * 16))
--#define GPIO_HOLDB(x)		BIT(1 + ((x) * 16))
--#define GPIO_WPB(x)		BIT((x) * 16)
--
--#define HC_VER			0xd0
--
--#define HW_TEST(x)		(0xe0 + ((x) * 4))
--
- struct mxic_spi {
- 	struct clk *ps_clk;
- 	struct clk *send_clk;
-@@ -525,8 +373,8 @@ static int __maybe_unused mxic_spi_runtime_resume(struct device *dev)
++#define MACRONIX_READ_RETRY_BIT BIT(0)
++#define MACRONIX_RANDOMIZER_BIT BIT(1)
++#define MACRONIX_READ_RETRY_MODE 5
++
++#define ONFI_FEATURE_ADDR_MXIC_RANDOMIZER 0xB0
++
++struct nand_onfi_vendor_macronix {
++	u8 reserved[1];
++	u8 reliability_func;
++} __packed;
++
++struct nand_chip *mxic_sysfs;
++
++static int macronix_nand_setup_read_retry(struct nand_chip *chip, int mode)
++{
++	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
++	int ret;
++
++	if (mode > MACRONIX_READ_RETRY_MODE)
++		mode = MACRONIX_READ_RETRY_MODE;
++
++	feature[0] = mode;
++	ret =  nand_set_features(chip, ONFI_FEATURE_ADDR_READ_RETRY, feature);
++	if (ret)
++		pr_err("failed to enter read retry moded:%d\n", mode);
++
++	if (mode == 0)
++		ret =  nand_get_features(chip, ONFI_FEATURE_ADDR_READ_RETRY,
++					 feature);
++		if (ret)
++			pr_err("failed to exits read retry moded:%d\n", mode);
++
++	return ret;
++}
++
++static ssize_t mxic_nand_rand_type_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *buf)
++{
++	struct nand_chip *chip = mxic_sysfs;
++	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
++	int ret;
++
++	nand_select_target(chip, 0);
++	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
++				feature);
++	nand_deselect_target(chip);
++	if (ret)
++		pr_err("failed to check mxic nand device randomizer\n");
++
++	return sprintf(buf, "MXIC NAND device randomizer %s(0x%x)\n",
++		       feature[0] & MACRONIX_RANDOMIZER_BIT ?
++		       "enable" : "disable", feature[0]);
++}
++
++static ssize_t mxic_nand_rand_type_store(struct kobject *kobj,
++					 struct kobj_attribute *attr,
++					 const char *buf, size_t count)
++{
++	struct nand_chip *chip = mxic_sysfs;
++	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
++	unsigned int rand_layout;
++	int ret;
++
++	nand_select_target(chip, 0);
++	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
++				feature);
++	nand_deselect_target(chip);
++
++	if (feature[0]) {
++		pr_err("Randomizer is enabled 0x%x\n", feature[0]);
++		goto err_out;
++	}
++
++	ret = kstrtouint(buf, 0, &rand_layout);
++	if (ret)
++		goto err_out;
++
++	if (rand_layout > 7) {
++		pr_err("Error parameter value:0x%x\n", rand_layout);
++		goto err_out;
++	}
++
++	feature[0] = rand_layout & 0x07;
++	nand_select_target(chip, 0);
++	ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
++				feature);
++	nand_deselect_target(chip);
++	if (ret) {
++		pr_err("device randomizer set feature failed\n");
++		goto err_out;
++	}
++
++	feature[0] = 0x0;
++	nand_select_target(chip, 0);
++	ret = nand_prog_page_op(chip, 0, 0, feature, 1);
++	nand_deselect_target(chip);
++	if (ret) {
++		pr_err("Prog device randomizer failed\n");
++		goto err_out;
++	}
++
++	feature[0] = 0x0;
++	nand_select_target(chip, 0);
++	ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
++				feature);
++	nand_deselect_target(chip);
++	if (ret)
++		pr_err("failed to exits prog device randomizer\n");
++
++err_out:
++	return count;
++}
++
++static const struct kobj_attribute sysfs_mxic_nand =
++	__ATTR(nand_random, S_IRUGO | S_IWUSR,
++	       mxic_nand_rand_type_show,
++	       mxic_nand_rand_type_store);
++
++static void macronix_nand_onfi_init(struct nand_chip *chip)
++{
++	struct nand_parameters *p = &chip->parameters;
++	struct kobject *kobj;
++	int ret;
++
++	mxic_sysfs = chip;
++	if (p->onfi) {
++		struct nand_onfi_vendor_macronix *mxic =
++				(void *)p->onfi->vendor;
++
++		if (mxic->reliability_func & MACRONIX_READ_RETRY_BIT) {
++			chip->read_retries = MACRONIX_READ_RETRY_MODE + 1;
++			chip->setup_read_retry =
++				 macronix_nand_setup_read_retry;
++			if (p->supports_set_get_features) {
++				set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
++					p->set_feature_list);
++				set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
++					p->get_feature_list);
++			}
++		}
++
++		if (mxic->reliability_func & MACRONIX_RANDOMIZER_BIT) {
++			if (p->supports_set_get_features) {
++				set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
++					p->set_feature_list);
++				set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
++					p->get_feature_list);
++				/*
++				 * create syfs-fs for MXIC NAND device
++				 * randomizer status check & enable
++				 * operations.
++				 */
++				kobj = kobject_create_and_add("mxic_rand_nand",
++							      NULL);
++				if (!kobj)
++					return;
++
++				ret = sysfs_create_file(kobj,
++							&sysfs_mxic_nand.attr);
++				if (ret) {
++					pr_err("Err: mxic_rand_nand sysfs");
++					kobject_put(kobj);
++				}
++			}
++		}
++	}
++}
++
+ /*
+  * Macronix AC series does not support using SET/GET_FEATURES to change
+  * the timings unlike what is declared in the parameter page. Unflag
+@@ -65,6 +233,7 @@ static int macronix_nand_init(struct nand_chip *chip)
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
  
- static int mxic_spi_probe(struct platform_device *pdev)
- {
-+	struct mx25f0a_mfd *mxic_mfd = dev_get_drvdata(pdev->dev.parent);
- 	struct spi_master *master;
--	struct resource *res;
- 	struct mxic_spi *mxic;
- 	int ret;
+ 	macronix_nand_fix_broken_get_timings(chip);
++	macronix_nand_onfi_init(chip);
  
-@@ -552,8 +400,7 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	if (IS_ERR(mxic->send_dly_clk))
- 		return PTR_ERR(mxic->send_dly_clk);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
--	mxic->regs = devm_ioremap_resource(&pdev->dev, res);
-+	mxic->regs = mxic_mfd->base;
- 	if (IS_ERR(mxic->regs))
- 		return PTR_ERR(mxic->regs);
- 
+ 	return 0;
+ }
 -- 
 1.9.1
 
