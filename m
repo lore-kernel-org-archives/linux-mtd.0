@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B368C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:01:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C3A4C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:01:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2ADBA2173C
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:01:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5D7B2173C
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 10:01:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PyRhuYHG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2ADBA2173C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l6qFFJlw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5D7B2173C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,22 +26,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=EFQRI8ie5Fx0vZSH72tvmmXA0SfOtPyn+nTTvMjOU3Y=; b=PyRhuYHGSQjm2wNlXO3b2nDOuL
-	E/vHbkrz70Q2CI6ehMWNSoyBFhAV5wh/L2T5I3NC1N9mtxMHyaHCnfXWCleJ8XAoS7IteZxat5uu/
-	3x7+thzS65mFKxepKDcPhvKdgVKdFH2DVXllKb0O+pnWgp6jCO06gaJtO/j9f5moa9fHcOtNTNKse
-	Yqta1L9xrL2DGLay2GJTsBOilrkZKUgTdw+vM+TQmKVyr8TF1YBufAP354Q1tOfHYrBpFuSZ4MUUq
-	Ofx9M2UPrkniIimOUusa/qKfrLl3gCdraoD5TWEh6P2jZgb7/U/1S2HjYCa0Yf/rnDT8drZo6wF3v
-	C1B9eMKg==;
+	bh=B11Mxxv7vfEVR+us3bVu0F7MbZrVmECplJShI+O1GlQ=; b=l6qFFJlwtdP7WXkVcoZ9XZCdCo
+	EfyA2TbkpefCc6XT5wuvOCOVMC0NtXV1BwBIRNzYoq9k8AiF/cvO+j6lZ64kg+yFK1iLWOIQXOit9
+	Evg34Or5u93MuRW3tXz+aj7NInzxRrSlsBp9UO/TuM0o3LVIWQ7cTVAymRfJqgaVKapIIozwAz4KM
+	Bh/zw3lCaKiDjT1LqTEpiFnMYEaOmN6qe85sJPLOLBkg9TP8HVgXDAE+5UGsLxG8r123ghWE7seXD
+	2r9BztaQy15rMSyybv3136riHpEJFxNyqSWLUYu2HC6LROKHihqxwbciCXfuccueJxyYJsh9Q99rh
+	NSTNoGAw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9Rqj-0005m2-IK; Thu, 28 Mar 2019 10:01:29 +0000
+	id 1h9Rqt-000602-Ln; Thu, 28 Mar 2019 10:01:39 +0000
 Received: from twhmllg3.macronix.com ([211.75.127.131])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9RpD-0002cg-Oj
+ id 1h9RpD-0002b8-Oi
  for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 10:00:27 +0000
 Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG3.macronix.com with ESMTP id x2S9wlJL052359;
- Thu, 28 Mar 2019 17:58:50 +0800 (GMT-8)
+ by TWHMLLG3.macronix.com with ESMTP id x2S9wlJK052359;
+ Thu, 28 Mar 2019 17:58:49 +0800 (GMT-8)
  (envelope-from masonccyang@mxic.com.tw)
 From: Mason Yang <masonccyang@mxic.com.tw>
 To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
@@ -52,16 +52,16 @@ To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
  geert@linux-m68k.org, devicetree@vger.kernel.org,
  marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org,
  richard@nod.at, miquel.raynal@bootlin.com
-Subject: [PATCH 2/7] mtd: rawnand: Add Macronix MX25F0A NAND controller driver
-Date: Thu, 28 Mar 2019 18:18:33 +0800
-Message-Id: <1553768318-23149-3-git-send-email-masonccyang@mxic.com.tw>
+Subject: [PATCH 1/7] mfd: Add Macronix MX25F0A MFD controller driver
+Date: Thu, 28 Mar 2019 18:18:32 +0800
+Message-Id: <1553768318-23149-2-git-send-email-masonccyang@mxic.com.tw>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
 References: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG3.macronix.com x2S9wlJL052359
+X-MAIL: TWHMLLG3.macronix.com x2S9wlJK052359
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_025956_535728_DB60B7BE 
-X-CRM114-Status: GOOD (  18.00  )
+X-CRM114-CacheID: sfid-20190328_025956_515399_CE93F626 
+X-CRM114-Status: GOOD (  13.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -81,354 +81,325 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a driver for Macronix MX25F0A NAND controller.
+Add a driver for Macronix MX25F0A multifunction device controller.
 
 Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 ---
- drivers/mtd/nand/raw/Kconfig     |   6 +
- drivers/mtd/nand/raw/Makefile    |   1 +
- drivers/mtd/nand/raw/mxic_nand.c | 303 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 310 insertions(+)
- create mode 100644 drivers/mtd/nand/raw/mxic_nand.c
+ drivers/mfd/Kconfig              |   9 ++
+ drivers/mfd/Makefile             |   1 +
+ drivers/mfd/mxic-mx25f0a.c       |  90 ++++++++++++++++++++
+ include/linux/mfd/mxic-mx25f0a.h | 173 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 273 insertions(+)
+ create mode 100644 drivers/mfd/mxic-mx25f0a.c
+ create mode 100644 include/linux/mfd/mxic-mx25f0a.h
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index e604625..e0329cc 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -522,6 +522,12 @@ config MTD_NAND_QCOM
- 	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
- 	  controller. This controller is found on IPQ806x SoC.
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 0ce2d8d..68aaf2a 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -823,6 +823,15 @@ config MFD_MAX8998
+ 	  additional drivers must be enabled in order to use the functionality
+ 	  of the device.
  
-+config MTD_NAND_MXIC
-+	tristate "Macronix MX25F0A NAND controller"
-+	depends on HAS_IOMEM
++config MFD_MXIC_MX25F0A
++	tristate "Macronix mx25f0a multifunction device support"
++	select MFD_CORE
 +	help
-+	  This selects the Macronix MX25F0A NAND controller driver.
++	  This supports for Macronix mx25f0a multifunction device controller
++	  for raw nand or spi. You have to select individual components like
++	  raw nand controller or spi host controller under the corresponding
++	  menus.
 +
- config MTD_NAND_MTK
- 	tristate "Support for NAND controller on MTK SoCs"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 5a5a72f..c8a6790 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -54,6 +54,7 @@ obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
- obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
- obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
-+obj-$(CONFIG_MTD_NAND_MXIC)		+= mxic_nand.o
- obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_ecc.o mtk_nand.o
- obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
- obj-$(CONFIG_MTD_NAND_STM32_FMC2)	+= stm32_fmc2_nand.o
-diff --git a/drivers/mtd/nand/raw/mxic_nand.c b/drivers/mtd/nand/raw/mxic_nand.c
+ config MFD_MT6397
+ 	tristate "MediaTek MT6397 PMIC Support"
+ 	select MFD_CORE
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index b4569ed7..dcfe8fd 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -163,6 +163,7 @@ max8925-objs			:= max8925-core.o max8925-i2c.o
+ obj-$(CONFIG_MFD_MAX8925)	+= max8925.o
+ obj-$(CONFIG_MFD_MAX8997)	+= max8997.o max8997-irq.o
+ obj-$(CONFIG_MFD_MAX8998)	+= max8998.o max8998-irq.o
++obj-$(CONFIG_MFD_MXIC_MX25F0A)	+= mxic-mx25f0a.o
+ 
+ pcf50633-objs			:= pcf50633-core.o pcf50633-irq.o
+ obj-$(CONFIG_MFD_PCF50633)	+= pcf50633.o
+diff --git a/drivers/mfd/mxic-mx25f0a.c b/drivers/mfd/mxic-mx25f0a.c
 new file mode 100644
-index 0000000..03886b2
+index 0000000..04b1173
 --- /dev/null
-+++ b/drivers/mtd/nand/raw/mxic_nand.c
-@@ -0,0 +1,303 @@
++++ b/drivers/mfd/mxic-mx25f0a.c
+@@ -0,0 +1,90 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
 +// Copyright (C) 2019 Macronix International Co., Ltd.
 +//
-+// Authors:
++// Author:
 +//	Mason Yang <masonccyang@mxic.com.tw>
-+//	zhengxunli <zhengxunli@mxic.com.tw>
 +//
 +
 +#include <linux/mfd/mxic-mx25f0a.h>
-+#include <linux/mtd/rawnand.h>
-+#include <linux/mtd/nand_ecc.h>
++#include <linux/mfd/core.h>
 +
-+#include "internals.h"
-+
-+struct mxic_nand_ctlr {
-+	struct nand_controller base;
-+	struct nand_chip nand;
-+	void __iomem *regs;
++static const struct mfd_cell mx25f0a_nand_ctlr = {
++	.name = "mxic-nand-ctlr",
++	.of_compatible = "mxicy,mx25f0a-nand-ctlr",
 +};
 +
-+static void mxic_host_init(struct mxic_nand_ctlr *mxic)
++static const struct mfd_cell mx25f0a_spi_ctlr = {
++	.name = "mxic-spi",
++	.of_compatible = "mxicy,mx25f0a-spi",
++};
++
++static int mx25f0a_mfd_probe(struct platform_device *pdev)
 +{
-+	writel(DATA_STROB_EDO_EN, mxic->regs + DATA_STROB);
-+	writel(INT_STS_ALL, mxic->regs + INT_STS_EN);
-+	writel(0x0, mxic->regs + ONFI_DIN_CNT(0));
-+	writel(HC_CFG_NIO(8) | HC_CFG_SLV_ACT(0) | HC_CFG_IDLE_SIO_LVL(1) |
-+	       HC_CFG_TYPE(1, HC_CFG_TYPE_RAW_NAND) | HC_CFG_MAN_CS_EN,
-+	       mxic->regs + HC_CFG);
-+	writel(0x0, mxic->regs + HC_EN);
-+}
++	struct device_node *ctlr;
++	const struct mfd_cell *cell;
++	struct mx25f0a_mfd *mxic;
++	struct resource *res;
++	int ret;
 +
-+static int  mxic_nand_wait_ready(struct nand_chip *chip)
-+{
-+	struct mxic_nand_ctlr *mxic = nand_get_controller_data(chip);
-+	u32 sts;
-+
-+	return readl_poll_timeout(mxic->regs + INT_STS, sts,
-+				  sts & INT_RDY_PIN, 0, USEC_PER_SEC);
-+}
-+
-+static void mxic_nand_select_chip(struct nand_chip *chip, int chipnr)
-+{
-+	struct mxic_nand_ctlr *mxic = nand_get_controller_data(chip);
-+
-+	switch (chipnr) {
-+	case 0:
-+	case 1:
-+		writel(HC_EN_BIT, mxic->regs + HC_EN);
-+		writel(HC_CFG_MAN_CS_ASSERT | readl(mxic->regs + HC_CFG),
-+		       mxic->regs + HC_CFG);
-+		break;
-+
-+	case -1:
-+		writel(~HC_CFG_MAN_CS_ASSERT & readl(mxic->regs + HC_CFG),
-+		       mxic->regs + HC_CFG);
-+		writel(0, mxic->regs + HC_EN);
-+		break;
-+
-+	default:
-+		break;
++	ctlr = of_get_next_child(pdev->dev.of_node, NULL);
++	if (!ctlr) {
++		dev_warn(&pdev->dev, "no spi/nand ctlr node found\n");
++		return -ENODEV;
 +	}
-+}
 +
-+static int mxic_nand_data_xfer(struct mxic_nand_ctlr *mxic, const void *txbuf,
-+			       void *rxbuf, unsigned int len)
-+{
-+	unsigned int pos = 0;
-+
-+	while (pos < len) {
-+		unsigned int nbytes = len - pos;
-+		u32 data = 0xffffffff;
-+		u32 sts;
-+		int ret;
-+
-+		if (nbytes > 4)
-+			nbytes = 4;
-+
-+		if (txbuf)
-+			memcpy(&data, txbuf + pos, nbytes);
-+
-+		ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+					 sts & INT_TX_EMPTY, 0, USEC_PER_SEC);
-+		if (ret)
-+			return ret;
-+
-+		writel(data, mxic->regs + TXD(nbytes % 4));
-+
-+		if (rxbuf) {
-+			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+						 sts & INT_TX_EMPTY, 0,
-+						 USEC_PER_SEC);
-+			if (ret)
-+				return ret;
-+
-+			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+						 sts & INT_RX_NOT_EMPTY, 0,
-+						 USEC_PER_SEC);
-+			if (ret)
-+				return ret;
-+
-+			data = readl(mxic->regs + RXD);
-+			data >>= (8 * (4 - nbytes));
-+			memcpy(rxbuf + pos, &data, nbytes);
-+			WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
++	ret = of_device_is_compatible(ctlr, "mxicy,mx25f0a-nand-ctlr");
++	if (ret) {
++		cell = &mx25f0a_nand_ctlr;
++	} else {
++		ret = of_device_is_compatible(ctlr, "mxicy,mx25f0a-spi");
++		if (ret) {
++			cell = &mx25f0a_spi_ctlr;
 +		} else {
-+			readl(mxic->regs + RXD);
-+		}
-+		WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
-+
-+		pos += nbytes;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mxic_nand_exec_op(struct nand_chip *chip,
-+			     const struct nand_operation *op, bool check_only)
-+{
-+	struct mxic_nand_ctlr *mxic = nand_get_controller_data(chip);
-+	const struct nand_op_instr *instr = NULL;
-+	int i, len = 0, ret = 0;
-+	unsigned int op_id;
-+	unsigned char cmdcnt = 0, addr_cnt = 0, cmd_addr[8] = {0};
-+
-+	for (op_id = 0; op_id < op->ninstrs; op_id++) {
-+		instr = &op->instrs[op_id];
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+			cmd_addr[len++] = instr->ctx.cmd.opcode;
-+			cmdcnt++;
-+			break;
-+
-+		case NAND_OP_ADDR_INSTR:
-+			for (i = 0; i < instr->ctx.addr.naddrs; i++)
-+				cmd_addr[len++] = instr->ctx.addr.addrs[i];
-+			addr_cnt = i;
-+			break;
-+
-+		case NAND_OP_DATA_IN_INSTR:
-+			break;
-+
-+		case NAND_OP_DATA_OUT_INSTR:
-+			writel(instr->ctx.data.len,
-+			       mxic->regs + ONFI_DIN_CNT(0));
-+			break;
-+
-+		case NAND_OP_WAITRDY_INSTR:
-+			break;
++			dev_warn(&pdev->dev, "no any spi/nand device found\n");
++			return -ENODEV;
 +		}
 +	}
 +
-+	if (op_id == 5 && instr->type == NAND_OP_WAITRDY_INSTR) {
-+		/*
-+		 * In case cmd-addr-data-cmd-wait in a sequence,
-+		 * separate the 2'nd command, i.e,. nand_prog_page_op()
-+		 */
-+		writel(OP_CMD_BUSW(OP_BUSW_8) | OP_ADDR_BUSW(OP_BUSW_8) |
-+		       OP_DATA_BUSW(OP_BUSW_8) | OP_DUMMY_CYC(0x3F) |
-+		       OP_ADDR_BYTES(addr_cnt) |
-+		       OP_CMD_BYTES(1), mxic->regs + SS_CTRL(0));
-+		writel(0, mxic->regs + HC_EN);
-+		writel(HC_EN_BIT, mxic->regs + HC_EN);
-+
-+		mxic_nand_data_xfer(mxic, cmd_addr, NULL, len - 1);
-+
-+		mxic_nand_data_xfer(mxic, instr->ctx.data.buf.out, NULL,
-+				    instr->ctx.data.len);
-+
-+		writel(0, mxic->regs + HC_EN);
-+		writel(HC_EN_BIT, mxic->regs + HC_EN);
-+		mxic_nand_data_xfer(mxic, &cmd_addr[--len], NULL, 1);
-+		ret = mxic_nand_wait_ready(chip);
-+		if (ret)
-+			goto err_out;
-+		return ret;
-+	}
-+
-+	if (len) {
-+		writel(OP_CMD_BUSW(OP_BUSW_8) | OP_ADDR_BUSW(OP_BUSW_8) |
-+		       OP_DATA_BUSW(OP_BUSW_8) | OP_DUMMY_CYC(0x3F) |
-+		       OP_ADDR_BYTES(addr_cnt) |
-+		       OP_CMD_BYTES(cmdcnt > 0 ? cmdcnt : 0),
-+		       mxic->regs + SS_CTRL(0));
-+		writel(0, mxic->regs + HC_EN);
-+		writel(HC_EN_BIT, mxic->regs + HC_EN);
-+
-+		mxic_nand_data_xfer(mxic, cmd_addr, NULL, len);
-+	}
-+
-+	for (op_id = 0; op_id < op->ninstrs; op_id++) {
-+		instr = &op->instrs[op_id];
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+		case NAND_OP_ADDR_INSTR:
-+			break;
-+
-+		case NAND_OP_DATA_IN_INSTR:
-+			writel(0x0, mxic->regs + ONFI_DIN_CNT(0));
-+			writel(readl(mxic->regs + SS_CTRL(0)) | OP_READ,
-+			       mxic->regs + SS_CTRL(0));
-+			mxic_nand_data_xfer(mxic, NULL, instr->ctx.data.buf.in,
-+					    instr->ctx.data.len);
-+			break;
-+
-+		case NAND_OP_DATA_OUT_INSTR:
-+			mxic_nand_data_xfer(mxic, instr->ctx.data.buf.out, NULL,
-+					    instr->ctx.data.len);
-+			break;
-+
-+		case NAND_OP_WAITRDY_INSTR:
-+			ret = mxic_nand_wait_ready(chip);
-+			if (ret)
-+				goto err_out;
-+			break;
-+		}
-+	}
-+
-+err_out:
-+	return ret;
-+}
-+
-+static const struct nand_controller_ops mxic_nand_controller_ops = {
-+	.exec_op = mxic_nand_exec_op,
-+};
-+
-+static int mx25f0a_nand_probe(struct platform_device *pdev)
-+{
-+	struct mtd_info *mtd;
-+	struct mx25f0a_mfd *mxic_mfd = dev_get_drvdata(pdev->dev.parent);
-+	struct mxic_nand_ctlr *mxic;
-+	struct nand_chip *nand_chip;
-+	int err;
-+
-+	mxic = devm_kzalloc(&pdev->dev, sizeof(struct mxic_nand_ctlr),
-+			    GFP_KERNEL);
++	mxic = devm_kzalloc(&pdev->dev, sizeof(*mxic), GFP_KERNEL);
 +	if (!mxic)
 +		return -ENOMEM;
 +
-+	nand_chip = &mxic->nand;
-+	mtd = nand_to_mtd(nand_chip);
-+	mtd->dev.parent = &pdev->dev;
-+	nand_chip->ecc.priv = NULL;
-+	nand_set_flash_node(nand_chip, pdev->dev.of_node);
-+	nand_chip->priv = mxic;
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
++	mxic->base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(mxic->base))
++		return PTR_ERR(mxic->base);
 +
-+	mxic->regs = mxic_mfd->base;
-+	if (IS_ERR(mxic->regs))
-+		return PTR_ERR(mxic->regs);
-+
-+	nand_chip->legacy.select_chip = mxic_nand_select_chip;
-+
-+	mxic->base.ops = &mxic_nand_controller_ops;
-+	nand_controller_init(&mxic->base);
-+	nand_chip->controller = &mxic->base;
-+
-+	mxic_host_init(mxic);
-+
-+	err = nand_scan(nand_chip, 1);
-+	if (err)
-+		goto fail;
-+
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err)
-+		goto fail;
++	if (cell == &mx25f0a_spi_ctlr) {
++		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						   "dirmap");
++		mxic->dirmap = devm_ioremap_resource(&pdev->dev, res);
++		if (IS_ERR(mxic->dirmap))
++			mxic->dirmap = NULL;
++	}
 +
 +	platform_set_drvdata(pdev, mxic);
 +
-+	return 0;
-+fail:
-+	return err;
++	ret = devm_mfd_add_devices(&pdev->dev, -1, cell, 1, NULL, 0, NULL);
++
++	return ret;
 +}
 +
-+static int mx25f0a_nand_remove(struct platform_device *pdev)
-+{
-+	struct mxic_nand_ctlr *mxic = platform_get_drvdata(pdev);
-+
-+	nand_release(&mxic->nand);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mx25f0a_nand_ids[] = {
-+	{ .compatible = "mxicy,mx25f0a-nand-ctlr", },
++static const struct of_device_id mx25f0a_mfd_of_match[] = {
++	{ .compatible = "mxic,mx25f0a-mfd", },
 +	{},
 +};
-+MODULE_DEVICE_TABLE(of, mx25f0a_nand_ids);
++MODULE_DEVICE_TABLE(of, mx25f0a_mfd_of_match);
 +
-+static struct platform_driver mx25f0a_nand_driver = {
-+	.probe		= mx25f0a_nand_probe,
-+	.remove		= mx25f0a_nand_remove,
-+	.driver		= {
-+		.name	= "mxic-nand-ctlr",
-+		.of_match_table = mx25f0a_nand_ids,
++static struct platform_driver mx25f0a_mfd_driver = {
++	.probe		= mx25f0a_mfd_probe,
++	.driver = {
++		.name =	"mx25f0a-mfd",
++		.of_match_table = mx25f0a_mfd_of_match,
 +	},
 +};
-+module_platform_driver(mx25f0a_nand_driver);
++module_platform_driver(mx25f0a_mfd_driver);
 +
 +MODULE_AUTHOR("Mason Yang <masonccyang@mxic.com.tw>");
-+MODULE_DESCRIPTION("MX25F0A RAW NAND controller driver");
++MODULE_DESCRIPTION("MX25F0A controller MFD driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/mfd/mxic-mx25f0a.h b/include/linux/mfd/mxic-mx25f0a.h
+new file mode 100644
+index 0000000..5a8cfc7
+--- /dev/null
++++ b/include/linux/mfd/mxic-mx25f0a.h
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Copyright (C) 2019 Macronix International Co., Ltd.
++//
++// Author:
++//	Mason Yang <masonccyang@mxic.com.tw>
++//
++
++#ifndef __MFD_MXIC_MX25F0A_H
++#define __MFD_MXIC_MX25F0A_H
++
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++
++#define HC_CFG			0x0
++#define HC_CFG_IF_CFG(x)	((x) << 27)
++#define HC_CFG_DUAL_SLAVE	BIT(31)
++#define HC_CFG_INDIVIDUAL	BIT(30)
++#define HC_CFG_NIO(x)		(((x) / 4) << 27)
++#define HC_CFG_TYPE(s, t)	((t) << (23 + ((s) * 2)))
++#define HC_CFG_TYPE_SPI_NOR	0
++#define HC_CFG_TYPE_SPI_NAND	1
++#define HC_CFG_TYPE_SPI_RAM	2
++#define HC_CFG_TYPE_RAW_NAND	3
++#define HC_CFG_SLV_ACT(x)	((x) << 21)
++#define HC_CFG_CLK_PH_EN	BIT(20)
++#define HC_CFG_CLK_POL_INV	BIT(19)
++#define HC_CFG_BIG_ENDIAN	BIT(18)
++#define HC_CFG_DATA_PASS	BIT(17)
++#define HC_CFG_IDLE_SIO_LVL(x)	((x) << 16)
++#define HC_CFG_MAN_START_EN	BIT(3)
++#define HC_CFG_MAN_START	BIT(2)
++#define HC_CFG_MAN_CS_EN	BIT(1)
++#define HC_CFG_MAN_CS_ASSERT	BIT(0)
++
++#define INT_STS			0x4
++#define INT_STS_EN		0x8
++#define INT_SIG_EN		0xc
++#define INT_STS_ALL		GENMASK(31, 0)
++#define INT_RDY_PIN		BIT(26)
++#define INT_RDY_SR		BIT(25)
++#define INT_LNR_SUSP		BIT(24)
++#define INT_ECC_ERR		BIT(17)
++#define INT_CRC_ERR		BIT(16)
++#define INT_LWR_DIS		BIT(12)
++#define INT_LRD_DIS		BIT(11)
++#define INT_SDMA_INT		BIT(10)
++#define INT_DMA_FINISH		BIT(9)
++#define INT_RX_NOT_FULL		BIT(3)
++#define INT_RX_NOT_EMPTY	BIT(2)
++#define INT_TX_NOT_FULL		BIT(1)
++#define INT_TX_EMPTY		BIT(0)
++
++#define HC_EN			0x10
++#define HC_EN_BIT		BIT(0)
++
++#define TXD(x)			(0x14 + ((x) * 4))
++#define RXD			0x24
++
++#define SS_CTRL(s)		(0x30 + ((s) * 4))
++#define LRD_CFG			0x44
++#define LWR_CFG			0x80
++#define RWW_CFG			0x70
++#define OP_READ			BIT(23)
++#define OP_DUMMY_CYC(x)		((x) << 17)
++#define OP_ADDR_BYTES(x)	((x) << 14)
++#define OP_CMD_BYTES(x)		(((x) - 1) << 13)
++#define OP_OCTA_CRC_EN		BIT(12)
++#define OP_DQS_EN		BIT(11)
++#define OP_ENHC_EN		BIT(10)
++#define OP_PREAMBLE_EN		BIT(9)
++#define OP_DATA_DDR		BIT(8)
++#define OP_DATA_BUSW(x)		((x) << 6)
++#define OP_ADDR_DDR		BIT(5)
++#define OP_ADDR_BUSW(x)		((x) << 3)
++#define OP_CMD_DDR		BIT(2)
++#define OP_CMD_BUSW(x)		(x)
++#define OP_BUSW_1		0
++#define OP_BUSW_2		1
++#define OP_BUSW_4		2
++#define OP_BUSW_8		3
++
++#define OCTA_CRC		0x38
++#define OCTA_CRC_IN_EN(s)	BIT(3 + ((s) * 16))
++#define OCTA_CRC_CHUNK(s, x)	((fls((x) / 32)) << (1 + ((s) * 16)))
++#define OCTA_CRC_OUT_EN(s)	BIT(0 + ((s) * 16))
++
++#define ONFI_DIN_CNT(s)		(0x3c + (s))
++
++#define LRD_CTRL		0x48
++#define RWW_CTRL		0x74
++#define LWR_CTRL		0x84
++#define LMODE_EN		BIT(31)
++#define LMODE_SLV_ACT(x)	((x) << 21)
++#define LMODE_CMD1(x)		((x) << 8)
++#define LMODE_CMD0(x)		(x)
++
++#define LRD_ADDR		0x4c
++#define LWR_ADDR		0x88
++#define LRD_RANGE		0x50
++#define LWR_RANGE		0x8c
++
++#define AXI_SLV_ADDR		0x54
++
++#define DMAC_RD_CFG		0x58
++#define DMAC_WR_CFG		0x94
++#define DMAC_CFG_PERIPH_EN	BIT(31)
++#define DMAC_CFG_ALLFLUSH_EN	BIT(30)
++#define DMAC_CFG_LASTFLUSH_EN	BIT(29)
++#define DMAC_CFG_QE(x)		(((x) + 1) << 16)
++#define DMAC_CFG_BURST_LEN(x)	(((x) + 1) << 12)
++#define DMAC_CFG_BURST_SZ(x)	((x) << 8)
++#define DMAC_CFG_DIR_READ	BIT(1)
++#define DMAC_CFG_START		BIT(0)
++
++#define DMAC_RD_CNT		0x5c
++#define DMAC_WR_CNT		0x98
++
++#define SDMA_ADDR		0x60
++
++#define DMAM_CFG		0x64
++#define DMAM_CFG_START		BIT(31)
++#define DMAM_CFG_CONT		BIT(30)
++#define DMAM_CFG_SDMA_GAP(x)	(fls((x) / 8192) << 2)
++#define DMAM_CFG_DIR_READ	BIT(1)
++#define DMAM_CFG_EN		BIT(0)
++
++#define DMAM_CNT		0x68
++
++#define LNR_TIMER_TH		0x6c
++
++#define RDM_CFG0		0x78
++#define RDM_CFG0_POLY(x)	(x)
++
++#define RDM_CFG1		0x7c
++#define RDM_CFG1_RDM_EN		BIT(31)
++#define RDM_CFG1_SEED(x)	(x)
++
++#define LWR_SUSP_CTRL		0x90
++#define LWR_SUSP_CTRL_EN	BIT(31)
++
++#define DMAS_CTRL		0x9c
++#define DMAS_CTRL_DIR_READ	BIT(31)
++#define DMAS_CTRL_EN		BIT(30)
++
++#define DATA_STROB		0xa0
++#define DATA_STROB_EDO_EN	BIT(2)
++#define DATA_STROB_INV_POL	BIT(1)
++#define DATA_STROB_DELAY_2CYC	BIT(0)
++
++#define IDLY_CODE(x)		(0xa4 + ((x) * 4))
++#define IDLY_CODE_VAL(x, v)	((v) << (((x) % 4) * 8))
++
++#define GPIO			0xc4
++#define GPIO_PT(x)		BIT(3 + ((x) * 16))
++#define GPIO_RESET(x)		BIT(2 + ((x) * 16))
++#define GPIO_HOLDB(x)		BIT(1 + ((x) * 16))
++#define GPIO_WPB(x)		BIT((x) * 16)
++
++#define HC_VER			0xd0
++
++#define HW_TEST(x)		(0xe0 + ((x) * 4))
++
++struct mx25f0a_mfd {
++	void __iomem *base;
++	void __iomem *dirmap;
++};
++
++#endif // __MFD_MXIC_MX25F0A_H
 -- 
 1.9.1
 
