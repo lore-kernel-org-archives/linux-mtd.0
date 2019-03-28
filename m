@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66715C43381
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19D33C43381
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 360B12075E
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D27672075E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2019 14:19:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YK33D9Zd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R242xSv+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 360B12075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IQ1xeLpH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gvs+l9wn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D27672075E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,62 +28,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=GMDi6PwOVwdQkrbbnCEQIbsTwCbultAppGmtlolAduo=; b=YK33D9ZdSUa+/s80ybiYITibfr
-	4o9rsp2xujHTQXinHCVVnw36YEjW1d0d5d6dJInJPdNV77w+dEnuIu4MAsZBDj5amQjQi+fDMOPUq
-	EFJrpYURGEBY8h5Dm9BHdT2B7LJVryX84N73FWpJKreBENqKp5O28/BHN9rFqt8/U9vD3u/3XQxad
-	7JlCEvDMP2m0FpRa+niYYJ3gyz3cDXhpQn2nDqDugqVhosxgVoDzdqttFmC1D8XR60VKB71ZbwMCl
-	0OwGSX4y29JPF+i6onCjr/7IqzJ9hWi7LOTzzLOp24vkIrxlVF/YHOkN5ugZhprX8yCvgPIFJc1mD
-	741TTxpw==;
+	bh=3IPU0ECFOqUnNiWf+u+KOaeubY9oSRf6PNQdV4H24Xo=; b=IQ1xeLpHK3IuU/Rt1junJ4FSd8
+	giAYxDINejaD1VodOvTCBpUZjwvvmS6811iWdEg07Mukh8XP9lXRccD9InE9dpvzegccDyLDas/dD
+	rSycwAelPKbgBWBah9NRUoPtx/xmFba7qvEw92J+0+gKnglNP8X8SJ+YSxsYJFsLUaMMwnDZzwRiV
+	VnhfH+2QtUkBZdmYhX6R6JDBifPUq0Dkpy10bq7ASmLyRssTWF+8k6lXKLBwOKBg/dJTrNvBHrQ5v
+	Z0T1n8yCShNQreuK92PdeY1oVGDqHcepuaB4e3h6QdSnB/Mb/17zd1k5+MRdl5HhemjgH8IM55LBz
+	oiUO0ccg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9VsT-0002Hq-T9; Thu, 28 Mar 2019 14:19:33 +0000
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+	id 1h9Vsd-0002UZ-PY; Thu, 28 Mar 2019 14:19:43 +0000
+Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9VsB-0001sx-T0
- for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 14:19:17 +0000
-Received: by mail-wm1-x342.google.com with SMTP id v14so4246067wmf.2
- for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 07:19:15 -0700 (PDT)
+ id 1h9VsE-0001uN-SG
+ for linux-mtd@lists.infradead.org; Thu, 28 Mar 2019 14:19:22 +0000
+Received: by mail-wm1-x344.google.com with SMTP id q16so3771067wmj.3
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 07:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=18PdCS+h0jg7d2YDUbKu9gpKAStep0UWRuYUhQxXlf8=;
- b=R242xSv+rkHubKrj0+YfknL8bhjZTfilbT18zrhLhqimSb9HP7hICt9nAQwyoAsqNd
- 6KGqdlV01kkv+OqdbWjqlN5MUN7x+qGjfkTvz8g17eY+JJjgul35dY6KdUHQwted4bNZ
- o3+VlJ+dmuGvrj5mozY0R5D5zYWT2RE3hDbF3NimcJb8qSnUMu2mGpD1QhfmWGI05QvI
- byOgZc7+rZctpYXtXZPPZmlQ+R/7lsQtJPQrwnOeStZQyYwJzqeJ2GpsD8xuJCSBBD+A
- rH6zkBdYWO7gg/VzbvyDqTbJ7Du/BwegYlbKD+XUJkAM4ObLKClX6m66/Dp4eHSygfO1
- tItw==
+ bh=I4NBnrPcBLSmBLDLCMVl3UePqPRGaV+p6WB2tvNcQqI=;
+ b=Gvs+l9wnTKifah4+ommEMdCF3VyDMDjGXizrqqKCOYZK/7aEwDCAXuUu4qPgMCdAZE
+ hpaOAf4eYDuFj9bfpAR2rHQy5NACX+B8QHwfWqLVVZ++hcl/l8WKsQW4tzP7cb5OYrMx
+ jzkqiSXDXLQWEdYetcyTmd7c0Md4usPnC/WLFS/Y2Qyel+uRhM+Lgs31gkseKsMnL8WX
+ mu0ysgSNuzu6O6FAgzwn0ZDAqzrkIGD+V/xQcBRBR4rUp7s3486FhHxg0ufbG57U2h1r
+ hWwZLycAgb/c4+YALbuH37rMlWIXcDj0TDm7SrGUUQCSwWcYCRCpy7wNpjWGuTg9ksJ+
+ bpnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=18PdCS+h0jg7d2YDUbKu9gpKAStep0UWRuYUhQxXlf8=;
- b=ZaqfWX2v1xO0tsV6IY2aK44xuBVjahI1mcDXrfqH/0ncpPlrIriKCn4CKKV0VwZlmv
- CqaO/AC96iPYamoUNjhNdTwMLt9Mo3GEiraPBj/0X1H3hJZMieKil6PHvXMl7hYXXpwe
- ow8g3FSZjvS6Kevehq6AhfXyN0Sm0hfYzMzfALbGj5RGMmr74mKEZxCvHEFREK8WBvqe
- n6fET65ID7DQFcD2YS421uXzFofxYeAXn+8kRBQAWBi8hvrH5lnZzwWCJjMb9cdH8rkg
- W6jwkP+KMvATDNlv6CaibM9FOt/FdBKLAZDSkBz/sspr0Y9pno8Td9KTcBaGT8Qgxx2A
- xEyQ==
-X-Gm-Message-State: APjAAAW5A6rZ+KBzhdUdHIe3mn/JZfXd45vCprepKAgR80E8QiZBKQIZ
- 29trFld2HjcNL7S26EKbxGg=
-X-Google-Smtp-Source: APXvYqyeTHuU4hN36Ngd2KFZvSiV+v8cH5kVdYDrNxNsXG7OxgHORgRrirYXAtLLKzRtB3HNq99xAQ==
-X-Received: by 2002:a1c:b702:: with SMTP id h2mr161980wmf.94.1553782754164;
- Thu, 28 Mar 2019 07:19:14 -0700 (PDT)
+ bh=I4NBnrPcBLSmBLDLCMVl3UePqPRGaV+p6WB2tvNcQqI=;
+ b=sqHgZH3FDcEsw2Oif2r2OOaPkitblrMwT6knZ8CdP0+kGnvxVXNsM5HgfsfX1Gb4iT
+ jgtAJQ/glOyNH8a8OcTRKRlCbbN10CjbL7D+tp9e0SlwcQ1ayDHnn6npuRRZIXvmWDNA
+ rkAOKfSd++srgaoHLgjM9M4SloNiqroiDWuwIOtGLH2i5LrgRKRQexkfdFScvVenNDAV
+ 3V3OOz/5fm784zf80bF/T8vDXB5y/tB96pL5UkhJFgWJrGk+uIyG1gTPrF0HuGV97QhM
+ Z8lik58YTjRTYEMCC+loFWYcmth04/TE/kidy/506czKUztVeSbvT/+nccb1L5lyJ9fK
+ dnkg==
+X-Gm-Message-State: APjAAAV8mT42479lJNKQrh2ediBn2nUDIM+WpjMq5LGimg7Qymkuhnyt
+ uPnjibtCiqKdUuuL8Nno1rY=
+X-Google-Smtp-Source: APXvYqxj4yMMTwGZN3jZrKa2nblQ2yJaLcEzHuCyH5j8jBTWePtOYkl+bCKoeKihHUVa8ZZqop8AiA==
+X-Received: by 2002:a1c:7dcc:: with SMTP id y195mr156864wmc.13.1553782756991; 
+ Thu, 28 Mar 2019 07:19:16 -0700 (PDT)
 Received: from localhost.localdomain ([2001:470:9e39::64])
- by smtp.gmail.com with ESMTPSA id t2sm51802879wra.9.2019.03.28.07.19.12
+ by smtp.gmail.com with ESMTPSA id t2sm51802879wra.9.2019.03.28.07.19.15
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 28 Mar 2019 07:19:13 -0700 (PDT)
+ Thu, 28 Mar 2019 07:19:16 -0700 (PDT)
 From: Jonas Gorski <jonas.gorski@gmail.com>
 To: devicetree@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH V2 2/5] mtd: bcm63xxpart: add of_match_table support
-Date: Thu, 28 Mar 2019 15:19:07 +0100
-Message-Id: <20190328141910.5723-3-jonas.gorski@gmail.com>
+Subject: [PATCH V2 4/5] dt-bindings: mtd: describe BCM963XX ImageTag format
+ and usage
+Date: Thu, 28 Mar 2019 15:19:09 +0100
+Message-Id: <20190328141910.5723-5-jonas.gorski@gmail.com>
 X-Mailer: git-send-email 2.13.2
 In-Reply-To: <20190328141910.5723-1-jonas.gorski@gmail.com>
 References: <20190328141910.5723-1-jonas.gorski@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_071915_976605_FDF681E3 
-X-CRM114-Status: GOOD (  17.63  )
+X-CRM114-CacheID: sfid-20190328_071919_289876_79D9B7AF 
+X-CRM114-Status: GOOD (  16.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -108,44 +109,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add of_match_table support to allow using bcm63xxpart as a full flash
-layout parser from device tree.
+Describe how to use the BCM963XX ImageTag format in a mixed flash layout
+environment.
 
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- drivers/mtd/bcm63xxpart.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 45 ++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
 
-diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index 41d1d3149c61..f639b4c960f0 100644
---- a/drivers/mtd/bcm63xxpart.c
-+++ b/drivers/mtd/bcm63xxpart.c
-@@ -34,6 +34,7 @@
- #include <linux/vmalloc.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of.h>
- 
- #define BCM963XX_CFE_BLOCK_SIZE		SZ_64K	/* always at least 64KiB */
- 
-@@ -311,9 +312,16 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	return ret;
- };
- 
-+static const struct of_device_id parse_bcm63xx_cfe_match_table[] = {
-+	{ .compatible = "brcm,bcm963xx-cfe-nor-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, parse_bcm63xx_cfe_match_table);
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+new file mode 100644
+index 000000000000..f8b7418ed817
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+@@ -0,0 +1,45 @@
++Broadcom BCM963XX ImageTag Partition Container
++==============================================
 +
- static struct mtd_part_parser bcm63xx_cfe_parser = {
- 	.parse_fn = bcm63xx_parse_cfe_partitions,
- 	.name = "bcm63xxpart",
-+	.of_match_table = parse_bcm63xx_cfe_match_table,
- };
- module_mtd_part_parser(bcm63xx_cfe_parser);
- 
++Some Broadcom BCM63XX SoC based devices contain additional, non discoverable
++partitions or non standard bootloader partition sizes. For these a mixed layout
++needs to be used with an explicit firmware partition.
++
++The BCM963XX ImageTag is a simple firmware header describing the offsets and
++sizes of the rootfs and kernel parts contained in the firmware.
++
++Required properties:
++- compatible : must be "brcm,bcm963xx-imagetag"
++
++Example:
++
++flash@1e000000 {
++	compatible = "cfi-flash";
++	reg = <0x1e000000 0x2000000>;
++	bank-width = <2>;
++
++	partitions {
++		compatible = "fixed-partitions";
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		cfe@0 {
++			reg = <0x0 0x10000>;
++			read-only;
++		};
++
++		firmware@10000 {
++			reg = <0x10000 0x7d0000>;
++			compatible = "brcm,bcm963xx-imagetag";
++		};
++
++		caldata@7e0000 {
++			reg = <0x7e0000 0x10000>;
++			read-only;
++		};
++
++		nvram@7f0000 {
++			reg = <0x7f0000 0x10000>;
++		};
++	};
++};
 -- 
 2.13.2
 
