@@ -2,94 +2,82 @@ Return-Path: <SRS0=zMDb=SA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97369C43381
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CEDEC4360F
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:13:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 652D921855
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:13:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 69D302173C
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:13:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F+xtE08i";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CVAXd9Kr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 652D921855
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dDb7Gka0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="oDLeOZt7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69D302173C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tGvd/bt8LGBe09EDV/Pv8+rKc4bVkSRZ7J+M5eEylFU=; b=F+xtE08ixEpftC
-	cY8DLcCH5zkieIs6hOEnld89VYGaOLCJfacVDujyh+DiUaz/ioZ04qN3avesobH1n/f4hCK/DZxEf
-	KwkmmtGTspktMmw5+mqNO/ws9o6eGJ6mBe98+eOpdySxsoCMmsNcyUD5nGdCA8D1eNMEuHIJZoTtr
-	BDoWYL/frLbUS2IBCkjMWHCBZtYniPB1nKfuy8e6MoJmLWPjqqECWjdkZrKyZRjjXrFEBE5GCxhMB
-	W/weYQnGHySpF7U08dIo4ZK6bDIsa8ggrN530kvU4d4OLvX/tkrD5CExawhID6LeU+rQkFEzr2lp2
-	pheTynYPVzFOYmX0Y7/g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=L5+J4pHo4Pr9A3GGmD3Qm48ruKQA4g6P8fCn5W9qUWA=; b=dDb7Gka09p5FUC
+	+I/y3qaagzn6OAExJ2IvZY2FJzBj8d8UQkoRECFuGrxW+1epuO8kT3KhMAyJgIGRu548qxVrP1ltm
+	BuraFt3RFzBUMEI0/8SvjmGGDCLNTAlaxZMWcN9Ja044W2CcdwOUATIkS9Fv0vH5z+Dy+TsAy0jKH
+	DTBWK67natcusfkCXrIp0oScz2rxvGYxsx52dtaVIwym8LGbtWf2LveryzQZiUSLBmlBiOQMaQnRR
+	Fyc/D5YTdH2irjQ6pbAGqD/r8OcejCH26Utc39i0e1rw1ann7PiUEiBIYPpv6LHBlHf0lVuvjOVOg
+	r7ffcpvxusGP22tRSx8Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9h1W-0005Mg-1a; Fri, 29 Mar 2019 02:13:38 +0000
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+	id 1h9h1e-0005ZC-P8; Fri, 29 Mar 2019 02:13:46 +0000
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9h1T-0005M4-QJ
- for linux-mtd@lists.infradead.org; Fri, 29 Mar 2019 02:13:37 +0000
-Received: by mail-pf1-x443.google.com with SMTP id i17so275882pfo.6
- for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 19:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=dIZqirFlcwzhcftvnfiLTQjzfNbvecaVh5j30eHdvp8=;
- b=CVAXd9KrtP87XGYe7xJkMkXhC7Am0h4DNmCHOs7E1BOhsTnr3Xkaj2sogKbqUFHLGo
- +lJ5Lqkmd4iTSiaamuppZkYNmNElo0OYpireXcKdM49Z1i4pfq6PgZ8mF2w7x8Ql5pnM
- HaeD/WwYK6njUDYIAosu21H2U+zK+6ee9CNQMiVY0i5fB+Wc/fsOlXIfFhii/z2mV8Fy
- pDvf3HtNyEeQQGfuMs2lCuiuBhHEL2LnEAvETCJ9KoVtmoYtEHxKQWYD/+I2XZzvZEOh
- goGU4oCw7CseHyz7pJnAXRz7JSfb7udody03sMl3tFhUP+WkxQlq6KXEc4bvEv1ODNlT
- vqqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
- :date:user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=dIZqirFlcwzhcftvnfiLTQjzfNbvecaVh5j30eHdvp8=;
- b=sBBKadbTNYbJ9442SpluZXLnf7tABk32PWZsNrGc2yBaKUt+SNmP063EHyt0Ke7UUV
- Bq2xn6zAJZu83zG5DYNYjEXNdyUZ68fb6Lebw8vmOLhKTWgJF9ogdqC39GhRvVw2fZKk
- 599VwzRwWYUWwK0QO58Cf/SfMc103asJ9mDK7SgOKY2NU4wfejcjDFS6CsrBn7fQMRc0
- 4WJkcDYF+4+oAvEWf0uhG34X/Ji3en4lcke9gTDZtgCIXz8Sw8YxOVlQBsTETv+vIoZB
- E7biEKewET7yY2NX7M7W9vwlQ7phVnx1x45VrqBrycqiRRGDe8MkGzwm7hLXoFe+4K0+
- CI/A==
-X-Gm-Message-State: APjAAAVAUThze3O1te1AQCOZdJ01YS+ameOKSvP7WMtfqpmqA/878xhQ
- f6TRnO9nn8iC2+aWMt6fuzM=
-X-Google-Smtp-Source: APXvYqxOzYd1MxHNAcHtO/kH7qIdMO8VA6/3+rmPDg/06J/l0x1gBHh4CzonmIFY/xN93bfUGQh45Q==
-X-Received: by 2002:a63:1912:: with SMTP id z18mr44348087pgl.115.1553825614950; 
- Thu, 28 Mar 2019 19:13:34 -0700 (PDT)
-Received: from [10.230.28.107] ([192.19.223.250])
- by smtp.gmail.com with ESMTPSA id p3sm596100pfn.167.2019.03.28.19.13.32
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 28 Mar 2019 19:13:34 -0700 (PDT)
-Subject: Re: [PATCH V2 4/5] dt-bindings: mtd: describe BCM963XX ImageTag
- format and usage
-To: Jonas Gorski <jonas.gorski@gmail.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org
-References: <20190328141910.5723-1-jonas.gorski@gmail.com>
- <20190328141910.5723-5-jonas.gorski@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Openpgp: preference=signencrypt
-Message-ID: <a6d6e2c1-963a-5326-b677-cdc941a3c93d@gmail.com>
-Date: Thu, 28 Mar 2019 19:13:30 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1h9h1Y-0005MU-IR
+ for linux-mtd@lists.infradead.org; Fri, 29 Mar 2019 02:13:45 +0000
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 10645886BF;
+ Fri, 29 Mar 2019 15:13:35 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+ s=mail181024; t=1553825615;
+ bh=qXin5++Sh+VhWuTQR9KLZkGJA2wyYE/7eLeYglda5aE=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=oDLeOZt70VOuvpqL7FxS1O9nQi262UStlswTF/hZgw51g+YxYk0gbRexJCCSv0JMV
+ 2wBuP2dWjtLhjgigKGq+qWgpPZfQHwK9kN0id8rxh5HjExa7sy8kReFY0GOedbDFMR
+ F9BJsep35W7LEFAZUQ89i+Yo79cpX+4izCzMcZVBv3Nvek3M7QmjyUQPzVfCGHKUfw
+ nMlGoRDhHxXCMBlMdqHtn7SH6gIMniB6tRQhkJt1Zko1u0soUSQy9esU1rSFogLfja
+ Q0iKJaowMHRYtaa8Z69bwZ2Kq7WMD0ytJ8D2tXS1t9kOK+lQSKMQXIp4zahIWQQ2hP
+ lUbdQblsYZG/A==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with
+ Trustwave SEG (v7, 5, 8, 10121)
+ id <B5c9d7f4d0001>; Fri, 29 Mar 2019 15:13:33 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+ by smtp (Postfix) with ESMTP id F1B4913EC56;
+ Fri, 29 Mar 2019 15:13:34 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+ id D7AFA1E1124; Fri, 29 Mar 2019 15:13:34 +1300 (NZDT)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: bbrezillon@kernel.org, computersforpeace@gmail.com, dwmw2@infradead.org,
+ marek.vasut@gmail.com, richard@nod.at, robh+dt@kernel.org,
+ mark.rutland@arm.com
+Subject: [PATCH v2 1/2] mtd: maps: physmap: Store gpio_values correctly
+Date: Fri, 29 Mar 2019 15:13:21 +1300
+Message-Id: <20190329021322.6833-2-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190329021322.6833-1-chris.packham@alliedtelesis.co.nz>
+References: <20190329021322.6833-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <20190328141910.5723-5-jonas.gorski@gmail.com>
-Content-Language: en-US
+x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_191335_851897_E331E6BA 
-X-CRM114-Status: GOOD (  13.38  )
+X-CRM114-CacheID: sfid-20190328_191341_475924_40F1574E 
+X-CRM114-Status: UNSURE (   9.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -101,29 +89,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- bcm-kernel-feedback-list@broadcom.com,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ linux-mtd@lists.infradead.org, Boris Brezillon <boris.brezillon@collabora.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+When the gpio-addr-flash.c driver was merged with physmap-core.c the
+code to store the current gpio_values was lost. This meant that once a
+gpio was asserted it was never de-asserted. Fix this by storing the
+current offset in gpio_values like the old driver used to.
 
+Fixes: commit ba32ce95cbd9 ("mtd: maps: Merge gpio-addr-flash.c into physmap-core.c")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+Changes in v2:
+- Cc stable, add Boris' review
 
-On 3/28/2019 7:19 AM, Jonas Gorski wrote:
-> Describe how to use the BCM963XX ImageTag format in a mixed flash layout
-> environment.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+ drivers/mtd/maps/physmap-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index d9a3e4bebe5d..21b556afc305 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -132,6 +132,8 @@ static void physmap_set_addr_gpios(struct physmap_flash_info *info,
+ 
+ 		gpiod_set_value(info->gpios->desc[i], !!(BIT(i) & ofs));
+ 	}
++
++	info->gpio_values = ofs;
+ }
+ 
+ #define win_mask(order)		(BIT(order) - 1)
 -- 
-Florian
+2.21.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
