@@ -2,83 +2,94 @@ Return-Path: <SRS0=zMDb=SA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C31D6C43381
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F32C2C43381
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:19:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F9542173C
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:14:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9BCD2173C
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2019 02:19:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n/BjRcqi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="vjALSBq8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F9542173C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZzstB43N";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UoDUu5P4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9BCD2173C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nvS6gfRWu+/9A4bDIR9EIuOJpjqfqrbTs57YemjpT8Q=; b=n/BjRcqicoiuSC
-	wXX6AdHjaEboSwm4HLEra9eb5G8XNRcg7xeKjkRuVRheNl4qsJgnrxBykP2z8l/prD+MIJhY3/hZr
-	dluf/PArv+I6AZPTc6RVW92/EJjdh372ZHSc+Pcl+WeiZXfenHsNngihML+oEVe6tAHBojgajbz9s
-	Be85TR2WlNIe3M17gUgx1ifmLsz4Db9tJZoHDoAqN/a4Q0mAaMElF/xAXsO2DyP8Kr0+YKf29YM6F
-	i8+UX4wV6K3W1LFvyoVmrECPPaN+r4QJ4W+GFZxZrNnL7W+WDzTtOWhWwuMxeBc1YmHH3m2oqlKcB
-	K7m73pubxqNLJkGZDiiw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KPfiVn+7oOzw+se+lcNEPSnOR0RYyEXXCkOcJQPFLCE=; b=ZzstB43NX6nRxx
+	4XSgJUZb0MGLOhKjV7A7xPXuxx3ZBdLgElUstqD6M3EAZCMs2iVc7OBLgA+c6s3QiCgS6NaGNdg8u
+	g3rw0UnQdsfhhLH0d2WSRehBpkcsy/yPP5ym1BY8/k2vHojk+w70Dc9K4eqD3lv6GkM5FhpkFFEcB
+	B9vyslPgU68WG5JmCkjOt6TfxCuPEH3DEOgS98foXmi3Uovgaioqykd7gjECVy7jnsmpSFVC2j8DS
+	0ixFCbtR0plKOCcBF4FCVuqf5SD/i+mlG9gr11DKnCftvEVqMxZ3Nvus/QKi91E5GB0pnlTXLoZGN
+	+5SL89kngSzwzBhuUFFQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1h9h1z-00061U-Ie; Fri, 29 Mar 2019 02:14:07 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1h9h76-0008IR-Cm; Fri, 29 Mar 2019 02:19:24 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1h9h1Z-0005MW-AA
- for linux-mtd@lists.infradead.org; Fri, 29 Mar 2019 02:13:47 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1FF74891A9;
- Fri, 29 Mar 2019 15:13:35 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
- s=mail181024; t=1553825615;
- bh=sOot2M4RQ4NMgXtVvOcSTsEE1VW/kDyxlurU8ZosynE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=vjALSBq8DBeJL7xADoYML3RddVnvfRoOXbGHOutSnjWcNjp1Dju00U8qOWTnsmHgc
- ANhc1imM2jrC0RZEY4q5FQLw7k1XNpva9OiJvWxZsD/Ua8gTRzpFuCpE/lW7YDyoBr
- u3tTnH0G7IzcDX7XxVKTIHmRk2GfaeS0AK5HJw/ifHk1bPw94nETScfEVKiMj08p3k
- 48DEhpNqMNYiiQ3335NsIA15Qh2Uljgbctr70z5faJ8tj/k8/BUWf/AasKs9avod8P
- tTObMyVB/JVDw2WUTWE3nC/XaOUzWmfvTROSrreF4R5DTFbWk57XJKCD/MSLcUoyp6
- tXQWQ2Rmype3g==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with
- Trustwave SEG (v7, 5, 8, 10121)
- id <B5c9d7f4d0002>; Fri, 29 Mar 2019 15:13:33 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
- by smtp (Postfix) with ESMTP id 17BBC13EC56;
- Fri, 29 Mar 2019 15:13:35 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
- id F309F1E1124; Fri, 29 Mar 2019 15:13:34 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: bbrezillon@kernel.org, computersforpeace@gmail.com, dwmw2@infradead.org,
- marek.vasut@gmail.com, richard@nod.at, robh+dt@kernel.org,
- mark.rutland@arm.com
-Subject: [PATCH v2 2/2] dt-binding: mtd: physmap: Add example using addr-gpios
- property
-Date: Fri, 29 Mar 2019 15:13:22 +1300
-Message-Id: <20190329021322.6833-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190329021322.6833-1-chris.packham@alliedtelesis.co.nz>
-References: <20190329021322.6833-1-chris.packham@alliedtelesis.co.nz>
+ id 1h9h71-0008HO-Ty
+ for linux-mtd@lists.infradead.org; Fri, 29 Mar 2019 02:19:22 +0000
+Received: by mail-pf1-x444.google.com with SMTP id r15so275809pfn.9
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2019 19:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=o1KjgXuHZ/02QqD9qn6ij11Zg/MLP+k+C9+IcABDTA8=;
+ b=UoDUu5P435o+GQMV+rUps4rXO8BXPYKd3GwKFsX1D45HJlxewBBn7Ejeuz5dgUs3x3
+ Xzhbm73hQOk6EJQKcCwztjbRzuXaFbNKQVnra42w35wjSC3A/DEblwe/WmB7LPksc6Zt
+ AuV9PceViHMRJiwM6vtDiI3UkNx9/wc7pDcuhDXd/OzO4xmf/dRFFwG8TIEYup5U2uux
+ FvHsXj98YWFmcucVPEn+wQs24UZe5tBfD86An2xoLfUECXxfzQY1Ruiex/xyz+dAxbsn
+ Uy0jmRof2qylznAZB9zI1NSH8EG8nFsvFr44E7c4iQ+azi3D+XGa1kIeftYg8s25m5pQ
+ 3frw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+ :date:user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=o1KjgXuHZ/02QqD9qn6ij11Zg/MLP+k+C9+IcABDTA8=;
+ b=XXOT+kKn/NjTKao61ZQhxgneFyo6bU9cQimg/5iQ30jTPswAXU7nYEU+W2uHHVRfx5
+ gWGyE+EkAbk308sQ0/Mu725wKy8ht3f6+jAA+LAH0BCQJ/DLAbD0NrEYKpUp9h6yID/t
+ 7bKMnc7ZBjvkgvjXXJoXDG83wM3+JrrrefxUORgR0ADEv+RIQE8eI4gkaFJs6oEWYcl6
+ Rv3kx2qDJAVAxvHDBeUdQNfBZMhsKiU4tIw/RzCaV4+2M3uwRay5bx2i/VinwPargSSH
+ QajeZ6OFTTyeGVEg73bt4bZRDpUelnOj5xIlRXtcLP3ZfKIJH0NIqMuL5vuucrQARyMv
+ Bqpg==
+X-Gm-Message-State: APjAAAW9qwPrBIdgvTXH1GAes3WcVEjSFYGil5ARsk0QhK/wB9785Rfl
+ RHfM00lSFkWrQIut4rOMACI=
+X-Google-Smtp-Source: APXvYqxhfHfIfk2hYfwYmaMDcHvE4QOh8YGdjGspJjUMLIsPQcWajt9POFOjXUMz2HSvJt8rvx45ZA==
+X-Received: by 2002:a62:209c:: with SMTP id m28mr5242457pfj.233.1553825955957; 
+ Thu, 28 Mar 2019 19:19:15 -0700 (PDT)
+Received: from [10.230.28.107] ([192.19.223.250])
+ by smtp.gmail.com with ESMTPSA id m16sm709762pfi.29.2019.03.28.19.19.09
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 28 Mar 2019 19:19:15 -0700 (PDT)
+Subject: Re: [PATCH V2 3/5] mtd: bcm63xxpart: move imagetag parsing to its own
+ parser
+To: Jonas Gorski <jonas.gorski@gmail.com>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+References: <20190328141910.5723-1-jonas.gorski@gmail.com>
+ <20190328141910.5723-4-jonas.gorski@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <471411ff-bd00-f7c6-7520-6f89d94afa70@gmail.com>
+Date: Thu, 28 Mar 2019 19:19:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-x-atlnz-ls: pat
+In-Reply-To: <20190328141910.5723-4-jonas.gorski@gmail.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190328_191342_797062_781136D7 
-X-CRM114-Status: UNSURE (   8.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190328_191919_970066_89395229 
+X-CRM114-Status: GOOD (  13.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,53 +101,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add an example showing how to use the addr-gpios property to deal with a
-system with limited IO space.
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Changes in v2:
-- None
 
- .../devicetree/bindings/mtd/mtd-physmap.txt      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+On 3/28/2019 7:19 AM, Jonas Gorski wrote:
+> Move the bcm963xx Image Tag parsing into its own partition parser. This
+> Allows reusing the parser with different full flash parsers.
+> 
+> While moving it, rename it to bcm963* to better reflect it isn't chip,
+> but reference implementation specific.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-index 7df0dcaccb7d..c69f4f065d23 100644
---- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-@@ -96,3 +96,19 @@ An example using SRAM:
- 		bank-width = <2>;
- 	};
- 
-+An example using gpio-addrs
-+
-+	flash@20000000 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "cfi-flash", "jedec-flash";
-+		reg = <0x20000000 0x02000000>;
-+		ranges = <0 0x00000000 0x02000000
-+		          1 0x02000000 0x02000000>;
-+		bank-width = <2>;
-+		addr-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
-+		partition@0 {
-+			label = "test-part1";
-+			reg = <0 0x04000000>;
-+		};
-+	};
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.21.0
-
+Florian
 
 ______________________________________________________
 Linux MTD discussion mailing list
