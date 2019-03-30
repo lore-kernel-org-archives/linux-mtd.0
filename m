@@ -2,60 +2,62 @@ Return-Path: <SRS0=1krx=SB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D4FCC43381
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 14:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 382BBC43381
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 14:23:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 588932183F
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 14:17:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07E832183F
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 14:23:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MXf4Pr8b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 588932183F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GdTXJvm8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07E832183F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZD9urNDttI9sJmS5lFEMCKd2DR8O9CazlKRFKRTcXmY=; b=MXf4Pr8bg4Tucs
-	K+jZ2uv0QSb+XM8RhJivSpIiRPyKvXmsDhIaeB0Ae3jcTZT5E7uKoXLYs9YaGvadUuPz5TobNfjqk
-	/KGepCiRIIhElAlQw45LBn23Y/Ih+B7UCDaZaYqLz+XKsE7MJfpno0cu5xp+jFPFiSHruOcp/P3br
-	R06cEXMI9GW9B91tSL6NVufW6uTtJGkiVvWcDgqayiG5nhMH3lspv0YsLqvrEUco3orVBT+n5qYhL
-	IYSg0rJtfgChP1tTNFQN5IjyZkdrO6gzBpHRore9Oinv8RH/33ABncs4RQ6UtlCrj3cv+S/hA8TXz
-	zkmta+U73W0cs8ATZqWQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BkZ5yrDCug9cHeD+iMge6xpJBc28nrqAjJYMOOkJm7o=; b=GdTXJvm8zBCwsu
+	Y2YTWsn+VTFS0DF1fwwMForc08nuvrcO71dhNUxz38IEpW3/hSnNwuKv0Neni3/QrfE/UFOAopL0P
+	z7w8cE5EAkiAdWScxknO3PKmw7AyaqWZileuh7x0FNT2HzMruFJJeBxs7lr3NKGmFiQJ/6S2JsoNA
+	8cMCkgy9tA0D92ovzWmBYroLl+Fm75vdS1aYNWmppKWljXmwtQT2MskxaPDhQlcqooGlJbD1Dwvtl
+	xnmeUV2QsIukyKdvjf7jvyAK9z+5R9qYAZu4rP4J/wIdwsXk7kQWwM7raEFayPMVpZe8RLKWK/gII
+	q4T8bqDce+eKiMxQHHZw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hAEn1-0000IU-GY; Sat, 30 Mar 2019 14:16:55 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hAEtQ-0001uy-Du; Sat, 30 Mar 2019 14:23:32 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAEmv-0000I8-4X
- for linux-mtd@lists.infradead.org; Sat, 30 Mar 2019 14:16:51 +0000
-Received: from localhost.localdomain (unknown
- [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E8E4A280B0E;
- Sat, 30 Mar 2019 14:16:44 +0000 (GMT)
+ id 1hAEtM-0001ua-45
+ for linux-mtd@lists.infradead.org; Sat, 30 Mar 2019 14:23:30 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2BB302811DC;
+ Sat, 30 Mar 2019 14:23:26 +0000 (GMT)
+Date: Sat, 30 Mar 2019 15:23:23 +0100
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] eeprom: at25: Convert the driver to the spi-mem interface
-Date: Sat, 30 Mar 2019 15:16:37 +0100
-Message-Id: <20190330141637.22632-1-boris.brezillon@collabora.com>
-X-Mailer: git-send-email 2.20.1
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v4 1/9] mtd: rawnand: denali: use nand_chip pointer more
+ for internal functions
+Message-ID: <20190330152323.71734cb8@collabora.com>
+In-Reply-To: <1553844501-7119-2-git-send-email-yamada.masahiro@socionext.com>
+References: <1553844501-7119-1-git-send-email-yamada.masahiro@socionext.com>
+ <1553844501-7119-2-git-send-email-yamada.masahiro@socionext.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190330_071649_451003_E852CE67 
-X-CRM114-Status: GOOD (  24.80  )
+X-CRM114-CacheID: sfid-20190330_072328_817857_4F4BD613 
+X-CRM114-Status: GOOD (  22.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -67,12 +69,10 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@collabora.com>, linux-spi@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -80,458 +80,214 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The AT25 protocol fits pretty well in the spi-mem model. Convert the
-at25 spi driver to a spi-mem driver and use the dirmap API instead of
-forging SPI messages manually.
-This makes the driver compatible with spi-mem-only controllers
-(controllers implementing only the spi_mem ops).
+On Fri, 29 Mar 2019 16:28:13 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
----
- drivers/misc/eeprom/at25.c | 282 +++++++++++++++++++++++--------------
- 1 file changed, 176 insertions(+), 106 deletions(-)
+> With the recent refactoring, the NAND driver hooks now take a pointer
+> to nand_chip. Add to_denali() in order to convert (struct nand_chip *)
+> to (struct denali_nand_info *) directly. It is more useful than the
+> current mtd_to_denali().
+> 
+> I changed some helper functions to take (struct nand_chip *). This will
+> avoid pointer conversion back and forth, and ease further development.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+> 
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+> 
+>  drivers/mtd/nand/raw/denali.c | 57 ++++++++++++++++++++++++-------------------
+>  1 file changed, 32 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+> index 24aeafc..4ac1314 100644
+> --- a/drivers/mtd/nand/raw/denali.c
+> +++ b/drivers/mtd/nand/raw/denali.c
+> @@ -47,6 +47,11 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
+>  	return container_of(mtd_to_nand(mtd), struct denali_nand_info, nand);
+>  }
+>  
+> +static struct denali_nand_info *to_denali(struct nand_chip *chip)
+> +{
+> +	return container_of(chip, struct denali_nand_info, nand);
+> +}
+> +
+>  /*
+>   * Direct Addressing - the slave address forms the control information (command
+>   * type, bank, block, and page address).  The slave data is the actual data to
+> @@ -282,12 +287,12 @@ static void denali_cmd_ctrl(struct nand_chip *chip, int dat, unsigned int ctrl)
+>  	denali->host_write(denali, DENALI_BANK(denali) | type, dat);
+>  }
+>  
+> -static int denali_check_erased_page(struct mtd_info *mtd,
+> -				    struct nand_chip *chip, uint8_t *buf,
+> +static int denali_check_erased_page(struct nand_chip *chip,
+> +				    struct denali_nand_info *denali, u8 *buf,
 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index 99de6939cd5a..818853babbd0 100644
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -17,7 +17,7 @@
- #include <linux/sched.h>
- 
- #include <linux/nvmem-provider.h>
--#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
- #include <linux/spi/eeprom.h>
- #include <linux/property.h>
- 
-@@ -29,12 +29,17 @@
-  */
- 
- struct at25_data {
--	struct spi_device	*spi;
-+	struct spi_mem		*spimem;
- 	struct mutex		lock;
- 	struct spi_eeprom	chip;
- 	unsigned		addrlen;
- 	struct nvmem_config	nvmem_config;
- 	struct nvmem_device	*nvmem;
-+	void			*scratchbuf;
-+	struct {
-+		struct spi_mem_dirmap_desc *rdesc[2];
-+		struct spi_mem_dirmap_desc *wdesc[2];
-+	} dirmap;
- };
- 
- #define	AT25_WREN	0x06		/* latch the write enable */
-@@ -63,17 +68,89 @@ struct at25_data {
- 
- #define	io_limit	PAGE_SIZE	/* bytes */
- 
-+static int at25_create_dirmaps(struct at25_data *at25)
-+{
-+	struct spi_mem_dirmap_info info = {
-+		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(AT25_READ, 1),
-+				      SPI_MEM_OP_ADDR(at25->addrlen, 0, 1),
-+				      SPI_MEM_OP_NO_DUMMY,
-+				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
-+		.offset = 0,
-+		.length = at25->chip.byte_len,
-+	};
-+	struct device *dev = &at25->spimem->spi->dev;
-+
-+	if (at25->chip.flags & EE_INSTR_BIT3_IS_ADDR)
-+		info.length = 256;
-+
-+	at25->dirmap.rdesc[0] = devm_spi_mem_dirmap_create(dev, at25->spimem,
-+							   &info);
-+	if (IS_ERR(at25->dirmap.rdesc[0]))
-+		return PTR_ERR(at25->dirmap.rdesc[0]);
-+
-+	info.op_tmpl.cmd.opcode = AT25_WRITE;
-+	info.op_tmpl.data.dir = SPI_MEM_DATA_OUT;
-+
-+	at25->dirmap.wdesc[0] = devm_spi_mem_dirmap_create(dev, at25->spimem,
-+							   &info);
-+	if (IS_ERR(at25->dirmap.wdesc[0]))
-+		return PTR_ERR(at25->dirmap.wdesc[0]);
-+
-+	if (!(at25->chip.flags & EE_INSTR_BIT3_IS_ADDR))
-+		return 0;
-+
-+	info.length = at25->chip.byte_len - 256;
-+	info.op_tmpl.cmd.opcode = AT25_READ | AT25_INSTR_BIT3;
-+	info.op_tmpl.data.dir = SPI_MEM_DATA_IN;
-+
-+	at25->dirmap.rdesc[1] = devm_spi_mem_dirmap_create(dev, at25->spimem,
-+							   &info);
-+	if (IS_ERR(at25->dirmap.rdesc[1]))
-+		return PTR_ERR(at25->dirmap.rdesc[1]);
-+
-+	info.op_tmpl.cmd.opcode = AT25_WRITE | AT25_INSTR_BIT3;
-+	info.op_tmpl.data.dir = SPI_MEM_DATA_OUT;
-+
-+	at25->dirmap.wdesc[1] = devm_spi_mem_dirmap_create(dev, at25->spimem,
-+							   &info);
-+	if (IS_ERR(at25->dirmap.wdesc[1]))
-+		return PTR_ERR(at25->dirmap.wdesc[1]);
-+
-+	return 0;
-+}
-+
-+static int at25_rdsr(struct at25_data *at25)
-+{
-+	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(AT25_RDSR, 1),
-+					  SPI_MEM_OP_NO_ADDR,
-+					  SPI_MEM_OP_NO_DUMMY,
-+					  SPI_MEM_OP_DATA_IN(1, at25->scratchbuf, 1));
-+	int ret;
-+
-+	ret = spi_mem_exec_op(at25->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	return *((u8 *)at25->scratchbuf);
-+}
-+
-+static int at25_wren(struct at25_data *at25)
-+{
-+	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(AT25_WREN, 1),
-+					  SPI_MEM_OP_NO_ADDR,
-+					  SPI_MEM_OP_NO_DUMMY,
-+					  SPI_MEM_OP_NO_DATA);
-+
-+	return spi_mem_exec_op(at25->spimem, &op);
-+}
-+
- static int at25_ee_read(void *priv, unsigned int offset,
- 			void *val, size_t count)
- {
-+	struct spi_mem_dirmap_desc *desc;
- 	struct at25_data *at25 = priv;
--	char *buf = val;
--	u8			command[EE_MAXADDRLEN + 1];
--	u8			*cp;
-+	unsigned int dirmap_offset;
- 	ssize_t			status;
--	struct spi_transfer	t[2];
--	struct spi_message	m;
--	u8			instr;
- 
- 	if (unlikely(offset >= at25->chip.byte_len))
- 		return -EINVAL;
-@@ -82,38 +159,14 @@ static int at25_ee_read(void *priv, unsigned int offset,
- 	if (unlikely(!count))
- 		return -EINVAL;
- 
--	cp = command;
--
--	instr = AT25_READ;
--	if (at25->chip.flags & EE_INSTR_BIT3_IS_ADDR)
--		if (offset >= (1U << (at25->addrlen * 8)))
--			instr |= AT25_INSTR_BIT3;
--	*cp++ = instr;
--
--	/* 8/16/24-bit address is written MSB first */
--	switch (at25->addrlen) {
--	default:	/* case 3 */
--		*cp++ = offset >> 16;
--		/* fall through */
--	case 2:
--		*cp++ = offset >> 8;
--		/* fall through */
--	case 1:
--	case 0:	/* can't happen: for better codegen */
--		*cp++ = offset >> 0;
-+	if (at25->chip.flags & EE_INSTR_BIT3_IS_ADDR && offset > 255) {
-+		desc = at25->dirmap.rdesc[1];
-+		dirmap_offset = offset - 256;
-+	} else {
-+		desc = at25->dirmap.rdesc[0];
-+		dirmap_offset = offset;
- 	}
- 
--	spi_message_init(&m);
--	memset(t, 0, sizeof(t));
--
--	t[0].tx_buf = command;
--	t[0].len = at25->addrlen + 1;
--	spi_message_add_tail(&t[0], &m);
--
--	t[1].rx_buf = buf;
--	t[1].len = count;
--	spi_message_add_tail(&t[1], &m);
--
- 	mutex_lock(&at25->lock);
- 
- 	/* Read it all at once.
-@@ -122,8 +175,8 @@ static int at25_ee_read(void *priv, unsigned int offset,
- 	 * other devices on the bus need to be accessed regularly or
- 	 * this chip is clocked very slowly
- 	 */
--	status = spi_sync(at25->spi, &m);
--	dev_dbg(&at25->spi->dev, "read %zu bytes at %d --> %zd\n",
-+	status = spi_mem_dirmap_read(desc, dirmap_offset, count, val);
-+	dev_dbg(&at25->spimem->spi->dev, "read %zu bytes at %d --> %zd\n",
- 		count, offset, status);
- 
- 	mutex_unlock(&at25->lock);
-@@ -149,7 +202,7 @@ static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- 	buf_size = at25->chip.page_size;
- 	if (buf_size > io_limit)
- 		buf_size = io_limit;
--	bounce = kmalloc(buf_size + at25->addrlen + 1, GFP_KERNEL);
-+	bounce = kmalloc(buf_size, GFP_KERNEL);
- 	if (!bounce)
- 		return -ENOMEM;
- 
-@@ -158,48 +211,37 @@ static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- 	 */
- 	mutex_lock(&at25->lock);
- 	do {
-+		struct spi_mem_dirmap_desc *desc;
- 		unsigned long	timeout, retries;
- 		unsigned	segment;
--		unsigned	offset = (unsigned) off;
--		u8		*cp = bounce;
-+		unsigned int	dirmap_offset;
- 		int		sr;
--		u8		instr;
- 
--		*cp = AT25_WREN;
--		status = spi_write(at25->spi, cp, 1);
-+		status = at25_wren(at25);
- 		if (status < 0) {
--			dev_dbg(&at25->spi->dev, "WREN --> %d\n", status);
-+			dev_dbg(&at25->spimem->spi->dev, "WREN --> %d\n",
-+				status);
- 			break;
- 		}
- 
--		instr = AT25_WRITE;
--		if (at25->chip.flags & EE_INSTR_BIT3_IS_ADDR)
--			if (offset >= (1U << (at25->addrlen * 8)))
--				instr |= AT25_INSTR_BIT3;
--		*cp++ = instr;
--
--		/* 8/16/24-bit address is written MSB first */
--		switch (at25->addrlen) {
--		default:	/* case 3 */
--			*cp++ = offset >> 16;
--			/* fall through */
--		case 2:
--			*cp++ = offset >> 8;
--			/* fall through */
--		case 1:
--		case 0:	/* can't happen: for better codegen */
--			*cp++ = offset >> 0;
-+		if (at25->chip.flags & EE_INSTR_BIT3_IS_ADDR && off > 255) {
-+			desc = at25->dirmap.wdesc[1];
-+			dirmap_offset = off -  256;
-+		} else {
-+			desc = at25->dirmap.wdesc[0];
-+			dirmap_offset = off;
- 		}
- 
- 		/* Write as much of a page as we can */
--		segment = buf_size - (offset % buf_size);
-+		segment = buf_size - (dirmap_offset % buf_size);
- 		if (segment > count)
- 			segment = count;
--		memcpy(cp, buf, segment);
--		status = spi_write(at25->spi, bounce,
--				segment + at25->addrlen + 1);
--		dev_dbg(&at25->spi->dev, "write %u bytes at %u --> %d\n",
--			segment, offset, status);
-+		memcpy(bounce, buf, segment);
-+		status = spi_mem_dirmap_write(desc, dirmap_offset, segment,
-+					      bounce);
-+		dev_dbg(&at25->spimem->spi->dev,
-+			"write %u bytes at %u --> %d\n",
-+			segment, off, status);
- 		if (status < 0)
- 			break;
- 
-@@ -211,10 +253,9 @@ static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- 		timeout = jiffies + msecs_to_jiffies(EE_TIMEOUT);
- 		retries = 0;
- 		do {
--
--			sr = spi_w8r8(at25->spi, AT25_RDSR);
-+			sr = at25_rdsr(at25);
- 			if (sr < 0 || (sr & AT25_SR_nRDY)) {
--				dev_dbg(&at25->spi->dev,
-+				dev_dbg(&at25->spimem->spi->dev,
- 					"rdsr --> %d (%02x)\n", sr, sr);
- 				/* at HZ=100, this is sloooow */
- 				msleep(1);
-@@ -225,9 +266,9 @@ static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- 		} while (retries++ < 3 || time_before_eq(jiffies, timeout));
- 
- 		if ((sr < 0) || (sr & AT25_SR_nRDY)) {
--			dev_err(&at25->spi->dev,
-+			dev_err(&at25->spimem->spi->dev,
- 				"write %u bytes offset %u, timeout after %u msecs\n",
--				segment, offset,
-+				segment, off,
- 				jiffies_to_msecs(jiffies -
- 					(timeout - EE_TIMEOUT)));
- 			status = -ETIMEDOUT;
-@@ -304,7 +345,7 @@ static int at25_fw_to_chip(struct device *dev, struct spi_eeprom *chip)
- 	return 0;
- }
- 
--static int at25_probe(struct spi_device *spi)
-+static int at25_probe(struct spi_mem *spimem)
- {
- 	struct at25_data	*at25 = NULL;
- 	struct spi_eeprom	chip;
-@@ -313,12 +354,12 @@ static int at25_probe(struct spi_device *spi)
- 	int			addrlen;
- 
- 	/* Chip description */
--	if (!spi->dev.platform_data) {
--		err = at25_fw_to_chip(&spi->dev, &chip);
-+	if (!spimem->spi->dev.platform_data) {
-+		err = at25_fw_to_chip(&spimem->spi->dev, &chip);
- 		if (err)
- 			return err;
- 	} else
--		chip = *(struct spi_eeprom *)spi->dev.platform_data;
-+		chip = *(struct spi_eeprom *)spimem->spi->dev.platform_data;
- 
- 	/* For now we only support 8/16/24 bit addressing */
- 	if (chip.flags & EE_ADDR1)
-@@ -328,37 +369,49 @@ static int at25_probe(struct spi_device *spi)
- 	else if (chip.flags & EE_ADDR3)
- 		addrlen = 3;
- 	else {
--		dev_dbg(&spi->dev, "unsupported address type\n");
-+		dev_dbg(&spimem->spi->dev, "unsupported address type\n");
- 		return -EINVAL;
- 	}
- 
--	/* Ping the chip ... the status register is pretty portable,
--	 * unlike probing manufacturer IDs.  We do expect that system
--	 * firmware didn't write it in the past few milliseconds!
--	 */
--	sr = spi_w8r8(spi, AT25_RDSR);
--	if (sr < 0 || sr & AT25_SR_nRDY) {
--		dev_dbg(&spi->dev, "rdsr --> %d (%02x)\n", sr, sr);
--		return -ENXIO;
--	}
--
--	at25 = devm_kzalloc(&spi->dev, sizeof(struct at25_data), GFP_KERNEL);
-+	at25 = devm_kzalloc(&spimem->spi->dev, sizeof(struct at25_data),
-+			    GFP_KERNEL);
- 	if (!at25)
- 		return -ENOMEM;
- 
- 	mutex_init(&at25->lock);
- 	at25->chip = chip;
--	at25->spi = spi;
--	spi_set_drvdata(spi, at25);
-+	at25->spimem = spimem;
-+	spi_mem_set_drvdata(spimem, at25);
- 	at25->addrlen = addrlen;
- 
--	at25->nvmem_config.name = dev_name(&spi->dev);
--	at25->nvmem_config.dev = &spi->dev;
-+	/*
-+	 * Can't be allocated with devm_kmalloc() because we need a DMA-safe
-+	 * buffer.
-+	 */
-+	at25->scratchbuf = kmalloc(1, GFP_KERNEL);
-+
-+	/* Ping the chip ... the status register is pretty portable,
-+	 * unlike probing manufacturer IDs.  We do expect that system
-+	 * firmware didn't write it in the past few milliseconds!
-+	 */
-+	sr = at25_rdsr(at25);
-+	if (sr < 0 || sr & AT25_SR_nRDY) {
-+		dev_dbg(&spimem->spi->dev, "rdsr --> %d (%02x)\n", sr, sr);
-+		err = -ENXIO;
-+		goto err_free_scratchbuf;
-+	}
-+
-+	err = at25_create_dirmaps(at25);
-+	if (err)
-+		goto err_free_scratchbuf;
-+
-+	at25->nvmem_config.name = dev_name(&spimem->spi->dev);
-+	at25->nvmem_config.dev = &spimem->spi->dev;
- 	at25->nvmem_config.read_only = chip.flags & EE_READONLY;
- 	at25->nvmem_config.root_only = true;
- 	at25->nvmem_config.owner = THIS_MODULE;
- 	at25->nvmem_config.compat = true;
--	at25->nvmem_config.base_dev = &spi->dev;
-+	at25->nvmem_config.base_dev = &spimem->spi->dev;
- 	at25->nvmem_config.reg_read = at25_ee_read;
- 	at25->nvmem_config.reg_write = at25_ee_write;
- 	at25->nvmem_config.priv = at25;
-@@ -366,17 +419,34 @@ static int at25_probe(struct spi_device *spi)
- 	at25->nvmem_config.word_size = 1;
- 	at25->nvmem_config.size = chip.byte_len;
- 
--	at25->nvmem = devm_nvmem_register(&spi->dev, &at25->nvmem_config);
--	if (IS_ERR(at25->nvmem))
--		return PTR_ERR(at25->nvmem);
-+	at25->nvmem = devm_nvmem_register(&spimem->spi->dev,
-+					  &at25->nvmem_config);
-+	if (IS_ERR(at25->nvmem)) {
-+		err = PTR_ERR(at25->nvmem);
-+		goto err_free_scratchbuf;
-+	}
- 
--	dev_info(&spi->dev, "%d %s %s eeprom%s, pagesize %u\n",
-+	dev_info(&spimem->spi->dev, "%d %s %s eeprom%s, pagesize %u\n",
- 		(chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
- 		(chip.byte_len < 1024) ? "Byte" : "KByte",
- 		at25->chip.name,
- 		(chip.flags & EE_READONLY) ? " (readonly)" : "",
- 		at25->chip.page_size);
- 	return 0;
-+
-+err_free_scratchbuf:
-+	kfree(at25->scratchbuf);
-+
-+	return err;
-+}
-+
-+static int at25_remove(struct spi_mem *spimem)
-+{
-+	struct at25_data *at25 = spi_mem_get_drvdata(spimem);
-+
-+	kfree(at25->scratchbuf);
-+
-+	return 0;
- }
- 
- /*-------------------------------------------------------------------------*/
-@@ -387,15 +457,15 @@ static const struct of_device_id at25_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, at25_of_match);
- 
--static struct spi_driver at25_driver = {
--	.driver = {
--		.name		= "at25",
-+static struct spi_mem_driver at25_driver = {
-+	.spidrv.driver = {
-+		.name = "at25",
- 		.of_match_table = at25_of_match,
- 	},
--	.probe		= at25_probe,
-+	.probe = at25_probe,
-+	.remove = at25_remove,
- };
--
--module_spi_driver(at25_driver);
-+module_spi_mem_driver(at25_driver);
- 
- MODULE_DESCRIPTION("Driver for most SPI EEPROMs");
- MODULE_AUTHOR("David Brownell");
--- 
-2.20.1
+You don't need to pass both chip and denali, as one can be extracted
+from the other.
+
+>  				    unsigned long uncor_ecc_flags,
+>  				    unsigned int max_bitflips)
+>  {
+> -	struct denali_nand_info *denali = mtd_to_denali(mtd);
+> +	struct mtd_ecc_stats *ecc_stats = &nand_to_mtd(chip)->ecc_stats;
+>  	uint8_t *ecc_code = chip->oob_poi + denali->oob_skip_bytes;
+>  	int ecc_steps = chip->ecc.steps;
+>  	int ecc_size = chip->ecc.size;
+> @@ -303,9 +308,9 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+>  						  NULL, 0,
+>  						  chip->ecc.strength);
+>  		if (stat < 0) {
+> -			mtd->ecc_stats.failed++;
+> +			ecc_stats->failed++;
+>  		} else {
+> -			mtd->ecc_stats.corrected += stat;
+> +			ecc_stats->corrected += stat;
+>  			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+>  		}
+>  
+> @@ -316,11 +321,11 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+>  	return max_bitflips;
+>  }
+>  
+> -static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+> +static int denali_hw_ecc_fixup(struct nand_chip *chip,
+>  			       struct denali_nand_info *denali,
+
+Ditto.
+
+>  			       unsigned long *uncor_ecc_flags)
+>  {
+> -	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct mtd_ecc_stats *ecc_stats = &nand_to_mtd(chip)->ecc_stats;
+>  	int bank = denali->active_bank;
+>  	uint32_t ecc_cor;
+>  	unsigned int max_bitflips;
+> @@ -346,16 +351,17 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+>  	 * Unfortunately, we can not know the total number of corrected bits in
+>  	 * the page.  Increase the stats by max_bitflips. (compromised solution)
+>  	 */
+> -	mtd->ecc_stats.corrected += max_bitflips;
+> +	ecc_stats->corrected += max_bitflips;
+>  
+>  	return max_bitflips;
+>  }
+>  
+> -static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+> +static int denali_sw_ecc_fixup(struct nand_chip *chip,
+>  			       struct denali_nand_info *denali,
+>  			       unsigned long *uncor_ecc_flags, uint8_t *buf)
+>  {
+> -	unsigned int ecc_size = denali->nand.ecc.size;
+> +	struct mtd_ecc_stats *ecc_stats = &nand_to_mtd(chip)->ecc_stats;
+> +	unsigned int ecc_size = chip->ecc.size;
+>  	unsigned int bitflips = 0;
+>  	unsigned int max_bitflips = 0;
+>  	uint32_t err_addr, err_cor_info;
+> @@ -404,7 +410,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+>  			/* correct the ECC error */
+>  			flips_in_byte = hweight8(buf[offset] ^ err_cor_value);
+>  			buf[offset] ^= err_cor_value;
+> -			mtd->ecc_stats.corrected += flips_in_byte;
+> +			ecc_stats->corrected += flips_in_byte;
+>  			bitflips += flips_in_byte;
+>  
+>  			max_bitflips = max(max_bitflips, bitflips);
+> @@ -587,9 +593,11 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+>  	return ret;
+>  }
+>  
+> -static int denali_data_xfer(struct denali_nand_info *denali, void *buf,
+> -			    size_t size, int page, int raw, int write)
+> +static int denali_data_xfer(struct nand_chip *chip, void *buf, size_t size,
+> +			    int page, int raw, int write)
+>  {
+> +	struct denali_nand_info *denali = to_denali(chip);
+> +
+>  	iowrite32(raw ? 0 : ECC_ENABLE__FLAG, denali->reg + ECC_ENABLE);
+>  	iowrite32(raw ? TRANSFER_SPARE_REG__FLAG : 0,
+>  		  denali->reg + TRANSFER_SPARE_REG);
+> @@ -678,7 +686,7 @@ static int denali_read_page_raw(struct nand_chip *chip, uint8_t *buf,
+>  	size_t size = writesize + oobsize;
+>  	int ret, i, pos, len;
+>  
+> -	ret = denali_data_xfer(denali, tmp_buf, size, page, 1, 0);
+> +	ret = denali_data_xfer(chip, tmp_buf, size, page, 1, 0);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -766,14 +774,14 @@ static int denali_read_page(struct nand_chip *chip, uint8_t *buf,
+>  	int stat = 0;
+>  	int ret;
+>  
+> -	ret = denali_data_xfer(denali, buf, mtd->writesize, page, 0, 0);
+> +	ret = denali_data_xfer(chip, buf, mtd->writesize, page, 0, 0);
+>  	if (ret && ret != -EBADMSG)
+>  		return ret;
+>  
+>  	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
+> -		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
+> +		stat = denali_hw_ecc_fixup(chip, denali, &uncor_ecc_flags);
+>  	else if (ret == -EBADMSG)
+> -		stat = denali_sw_ecc_fixup(mtd, denali, &uncor_ecc_flags, buf);
+> +		stat = denali_sw_ecc_fixup(chip, denali, &uncor_ecc_flags, buf);
+>  
+>  	if (stat < 0)
+>  		return stat;
+> @@ -783,7 +791,7 @@ static int denali_read_page(struct nand_chip *chip, uint8_t *buf,
+>  		if (ret)
+>  			return ret;
+>  
+> -		stat = denali_check_erased_page(mtd, chip, buf,
+> +		stat = denali_check_erased_page(chip, denali, buf,
+>  						uncor_ecc_flags, stat);
+>  	}
+>  
+> @@ -866,17 +874,16 @@ static int denali_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
+>  		memcpy(tmp_buf + size - len, oob, len);
+>  	}
+>  
+> -	return denali_data_xfer(denali, tmp_buf, size, page, 1, 1);
+> +	return denali_data_xfer(chip, tmp_buf, size, page, 1, 1);
+>  }
+>  
+>  static int denali_write_page(struct nand_chip *chip, const uint8_t *buf,
+>  			     int oob_required, int page)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+> -	struct denali_nand_info *denali = mtd_to_denali(mtd);
+>  
+> -	return denali_data_xfer(denali, (void *)buf, mtd->writesize,
+> -				page, 0, 1);
+> +	return denali_data_xfer(chip, (void *)buf, mtd->writesize, page,
+> +				0, 1);
+>  }
+>  
+>  static void denali_select_chip(struct nand_chip *chip, int cs)
+> @@ -1092,9 +1099,9 @@ static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
+>  	.free = denali_ooblayout_free,
+>  };
+>  
+> -static int denali_multidev_fixup(struct denali_nand_info *denali)
+> +static int denali_multidev_fixup(struct nand_chip *chip)
+>  {
+> -	struct nand_chip *chip = &denali->nand;
+> +	struct denali_nand_info *denali = to_denali(chip);
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  
+>  	/*
+> @@ -1222,7 +1229,7 @@ static int denali_attach_chip(struct nand_chip *chip)
+>  	chip->ecc.read_oob = denali_read_oob;
+>  	chip->ecc.write_oob = denali_write_oob;
+>  
+> -	ret = denali_multidev_fixup(denali);
+> +	ret = denali_multidev_fixup(chip);
+>  	if (ret)
+>  		return ret;
+>  
 
 
 ______________________________________________________
