@@ -2,75 +2,62 @@ Return-Path: <SRS0=1krx=SB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8B07C43381
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 03:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FAC0C43381
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 08:29:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0D392184C
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 03:44:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 375A42184C
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 08:29:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PIwQmvjo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Ldy3Kn5V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0D392184C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZDwRf7Jv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 375A42184C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=nUwZ3YhLGkeidDP1hO5uK4RAph+IZZDRhNiwXpwNn20=; b=PIw
-	Qmvjomf3nkVr3/hdeJ08rh3ApmMmMA9YFjzhQqJlpNcfcJJxiLdxbUp6tVqTCBNujtk7wMH89/9vC
-	H+oP8wrO2Nb0WcxxVCmRFydRg4Y1OcNZq9lQLROFLt6MLeD22iToE/CmgiSkVNDM2VTqpP+VJRSAi
-	xDX7KKIyZrK4B1AHa6VWhRkKKyl6Qpq9Yhk5lQLEry1h09GHec8KXnJotOgvZeeJK9PwQf4Zgh1s7
-	jm+4+uDmeu9FZC0d67w9BkubMFHdmGtrnRzdQG+uLg/s10uIj0Dlv5QwQbG73QX2OtDi6yljk1Cx4
-	i5ZOxftKR2Gnazvi0E9qV+b42RKMv+w==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=e+40G/YkJW2ZQ2BxtOZmGbO5u/R5kfw3UZFNFAShcyc=; b=ZDwRf7JvZt3+3h
+	5XbJsJa7bfl/OlhfUwJymEy+sbaWZPVMu9pInZZGQKgi62kBJEqre7rxvI4sKUfTAIvSlSPtrgegh
+	z32pDF/vu+2lUTs/pgVi8xa4WvzjZzcCM9i2FE/oOwi1LlFJgjaHFKRqz2ZEFGziZ96NcdWVJPZWV
+	KIRTXxzKQiTjS4eFYO8wkCBCQg3HkruuD3B3RxgZB3J6IyXAbaMOLFgp9RQh6vMwldQXwG6Kdy+p2
+	8utHZBGSVsgPzoOhL8aFrdHxqDB6ydPjywc++7zol6jZN5A6v5eWTD1IGAIIdi5JIZ/mdGuQYX/Ar
+	X+8YDN5jiBpdM4XtMu5g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hA4ui-0001t8-Am; Sat, 30 Mar 2019 03:44:12 +0000
-Received: from mail-qt1-x835.google.com ([2607:f8b0:4864:20::835])
+	id 1hA9Mv-0004Po-QW; Sat, 30 Mar 2019 08:29:37 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hA4uf-0001sr-E2
- for linux-mtd@lists.infradead.org; Sat, 30 Mar 2019 03:44:10 +0000
-Received: by mail-qt1-x835.google.com with SMTP id d13so4998466qth.5
- for <linux-mtd@lists.infradead.org>; Fri, 29 Mar 2019 20:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
- h=mime-version:from:date:message-id:subject:to;
- bh=yd4YHuLs8Pwd6d/mf6/B+zn2EanjfkuCBHcpXzwDElc=;
- b=Ldy3Kn5VgfdZXduIrSatoe3z/f2yqelZJaQWS1NbCSaWwnCk2HGPV1pmTwASvHOj44
- QGRObR9bok6H0YgRm8xMvUIeGJfGNczqm1yMOEZXXsAO4vIStYzlgaBzHhdNdI5e5BSD
- xMJMemKewRVA7lUqmG1tmL8d4GHQwwYuGkWfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=yd4YHuLs8Pwd6d/mf6/B+zn2EanjfkuCBHcpXzwDElc=;
- b=GqGIM669GPp+0vU04qyDG2lnr+ImDIj2nKmNZ+3OTpBIBluNz9y2VFriOkP5lTjVrI
- cXeQRROQq+8CmjS3fVEP0lfCT93zmH8QE5p/kovzkfjEFIG7n63mgs778ujMqu9Axyv3
- WEr6b2EfTrkTB+vUGy6ZCBDPPj2DcwqPhRYwMv3eANZUcpdblOGZTk5OC2bSA+mYd7LT
- 4SgC1snDmCpjD3e89aLtgyKEGq2P+n9wKocIMrTW1dWlsM98ol757CkSq7L2U81LvVb+
- vM2kccRsdhFR8ONkJZzXvNpjR+/M/6C0RbdYmzhZbiGV9oB3Lj7EI/luVpwKeOrFni9E
- D4KQ==
-X-Gm-Message-State: APjAAAVNJts0TGD7VP+Sas24nVtYwusPyZbFbP/IiRDYu/+x4fINCtmH
- zRGasEOqqq1QzlVs946a15ivXHNaiWLVFLc8NOx2uLqYdXchZw==
-X-Google-Smtp-Source: APXvYqxzdzWLVDuqfzGXYM6Jt5t+5vtYQHv7oizJnoidt98IW9cKEiltmKS7ZyTidfLoB2HupFBvQkdYuWSRWqFKqko=
-X-Received: by 2002:a0c:947a:: with SMTP id i55mr43765815qvi.223.1553917447710; 
- Fri, 29 Mar 2019 20:44:07 -0700 (PDT)
+ id 1hA9Ms-0004PI-DR
+ for linux-mtd@lists.infradead.org; Sat, 30 Mar 2019 08:29:36 +0000
+Received: from localhost.localdomain (unknown
+ [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EED1D284180;
+ Sat, 30 Mar 2019 08:29:28 +0000 (GMT)
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] MAINTAINERS: Remove my name from the MTD and NAND entries
+Date: Sat, 30 Mar 2019 09:29:25 +0100
+Message-Id: <20190330082925.2362-1-boris.brezillon@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From: Markus Mayer <markus.mayer@broadcom.com>
-Date: Fri, 29 Mar 2019 20:43:56 -0700
-Message-ID: <CAGt4E5tYNVD5n7QmYOpCQs3SOG7w0qJrk9LikQ9NDR5G3QoyCQ@mail.gmail.com>
-Subject: mkfs.ubifs issues with mtd-utils 2.1.0
-To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190329_204409_473664_D49941BC 
-X-CRM114-Status: UNSURE (   7.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190330_012934_587040_7F511B78 
+X-CRM114-Status: GOOD (  14.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,55 +69,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+I am less and less active on the MTD/NAND fronts, and I don't think
+it will get any better in the future. Let's remove my name so that
+people don't expect me to review/merge their patches.
 
-After the switch from mtd-utils 2.0.2 to 2.1.0, mkfs.ubifs fails to
-create a file system that it used to be able to create.
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+Hello,
 
-Specifically, what is happening is the following:
+After 3 years as a maintainer of the MTD and NAND subsystems I think
+it's time for me to hand the torch to someone else. Not because I'm
+tired of doing it, but because I don't have the necessary time to do
+it correctly and I think it's unfair to keep my position and impose
+the extra review/merge latency to contributors.
 
-$ ./mkfs.ubifs -U -D misc/devtable.txt -r arm64/target -o
-/tmp/ubifs.img -m 1 -e 65408 -c 2047
-Error: Expected symlink
+I hope I served the community well during those three years (I know
+things have not been perfect, but I think it worked reasonably well)
+and would like to wish good luck to the people that will take over my
+responsibilities (most likely Miquel and/or Richart at first).
+Anyway, I'll stay around and will help getting things in place during
+the transition, so, if you want my opinion or review on something don't
+hesitate to Cc me.
 
-For starters, the error message "Expected symlink" without giving the
-offending file name is more annoying than it is helpful. "It didn't
-work" doesn't convey much information after all. What, specifically,
-didn't work, that is the question.
+Regards,
 
-Using GDB, I was able to track down the file it didn't like. It was
-"/dev/console" from the device table:
+Boris
+---
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
 
-$ cat misc/devtable.txt
-/dev            d 755 0 0 - - - - -
-/dev/console    c 600 0 0 5 1 0 0 -
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e17ebf70b548..9e099f2cbdf9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9997,7 +9997,6 @@ F:	mm/
+ MEMORY TECHNOLOGY DEVICES (MTD)
+ M:	David Woodhouse <dwmw2@infradead.org>
+ M:	Brian Norris <computersforpeace@gmail.com>
+-M:	Boris Brezillon <bbrezillon@kernel.org>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+@@ -10611,7 +10610,6 @@ S:	Supported
+ F:	drivers/net/ethernet/myricom/myri10ge/
+ 
+ NAND FLASH SUBSYSTEM
+-M:	Boris Brezillon <bbrezillon@kernel.org>
+ M:	Miquel Raynal <miquel.raynal@bootlin.com>
+ R:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+-- 
+2.20.1
 
-The code that's complaining:
-
-./ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-1533         if (data_len) {
-1534                 if (!S_ISLNK(st->st_mode))
-1535                         return err_msg("Expected symlink");
-
-Clearly, checking just for symlinks at this points seems to be too
-restrictive. /dev/console is a character device, and there is no
-reason why mkfs.ubifs should refuse to create it. After all, it has
-always worked in the past.
-
-Since I am not entirely sure of the purpose of the check, I am also
-unsure what solution to propose. Would
-    if (S_ISREG(st->st_mode)) /* error here */
-or
-    if (S_ISREG(st->st_mode) || S_ISDIR(st->st_mode)) /* error here */
-be sufficient? This would allow links, character & block devices, sockets, etc.
-
-Thanks,
--Markus
 
 ______________________________________________________
 Linux MTD discussion mailing list
