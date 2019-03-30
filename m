@@ -2,65 +2,80 @@ Return-Path: <SRS0=1krx=SB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A2FC43381
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 18:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3A1AC43381
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 18:32:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA3B6217F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 18:20:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 858D32082C
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 18:32:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XI4kBKmq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA3B6217F5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TXYIrwv9";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SbrbM0GL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 858D32082C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=92enqpVt7XF0Hx8U+ENcHDQdqGX0G5tFMrFLfagaUls=; b=XI4kBKmqcJkNXj
-	VIu5K3vUrLvhJRbrEImTuCx8fMUwdrnLkSUrpxWPcKzMDMB5vDgytF6gWbss9zueTCH9jO4RgRb+U
-	5Y4Gg5llO+3inco+KnGLDoqmBCCl1FWm2w9GBbj5DKVEX48l/QVQuLB2jTLsByIrqdLVAIHkb5L7m
-	Uw2brUBJYegb7hpK4Mz4jBvu9tOlKuRSE22pTDjG5vxEUC8dTK5D5WOBNhuyxKPm10f/aVbRVjkzU
-	xP+or4i5BSfcAS5ZnxNLgD6CrQx7uADOjjyG0AsbYC1PmzMHFUGbAiIORwJ6SwjPiDmlNi94oOFvA
-	YteUSugtvTqg7oHMP+iA==;
+	List-Owner; bh=anirhjX26JHgy9eGlClT1QJ9yrPoEd2SN1Eq5r0qoFA=; b=TXYIrwv9t27C4O
+	w0o8vzHqVtOLhXBl6khAQfj09VgtZZIayetJIUekxua1tRSwhR8XB7M+rSe/9rjcOlWEbmd6q+BWV
+	5p6dM+wh7nnrE7Qf6V4ki1enk15DQ0u9/tb7rISP+jTWAwR7boV0Bzf/aofnyOzfqEzWOg5qVEcn+
+	JT9ZDYjBJZeAc8T9JvlntwFRfDOwlEEsmI6sbzxgr7N2E5OEfB6401HBHBX2xaan8P2O3Nf/Ej0kI
+	/KXKEA1ueBuqudQGrLhOMG6IrGaU0Fj85zvoryod44o81uL9GD8AnF2IEzXlfel+lMgqN1xdcuA3o
+	TaUVTcE+FMF77lSZMYoA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hAIb4-0002qE-5I; Sat, 30 Mar 2019 18:20:50 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hAImP-0005zA-1G; Sat, 30 Mar 2019 18:32:33 +0000
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAIav-0002jN-K2; Sat, 30 Mar 2019 18:20:43 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AAA56280B0E;
- Sat, 30 Mar 2019 18:20:38 +0000 (GMT)
-Date: Sat, 30 Mar 2019 19:20:36 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] mtd: rawnand: marvell: select target before setting up
- data interface
-Message-ID: <20190330192036.193e9e1c@collabora.com>
-In-Reply-To: <60179efc-122f-2439-bd20-ab27b29afa32@zonque.org>
-References: <20190321212010.3995-1-daniel@zonque.org>
- <20190322093046.71df010d@xps13>
- <6bcd6f18-6e57-2221-9e32-5bbabfffc48d@zonque.org>
- <20190325100909.5f3558b9@xps13>
- <60179efc-122f-2439-bd20-ab27b29afa32@zonque.org>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hAImL-0005yU-4u; Sat, 30 Mar 2019 18:32:30 +0000
+Received: by mail-pg1-x542.google.com with SMTP id v12so2744291pgq.1;
+ Sat, 30 Mar 2019 11:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=skRULYaGnsGuwSHl3Pkf/Hf5xkfTXbuPlqJJkGetkNc=;
+ b=SbrbM0GLYp/F+ZBvfWoyKbOsXHYwHFbj5+D8dSX5WiPjaqvJbrWMdWGOtVC0nZ0cCM
+ 34XAm1WHSf8vUiMr1ZtZgEQO7SvwWCwfk1MeVUxq1TrXvKk7fe8FzsWKzhpPHp/+0Z2g
+ uc28baaOEOjkJMcbAAXKG1LFXfoKNj92/UpRq43JCg5sgBjdM6KoR8I/g4wkrS3rms4v
+ 7I/A+HWrp3o2RebOzudNA1LsZSOq6joZmjfCHeSlqCAOgA9TUkdboSrT/re8SPqjToYP
+ 1vwA4ioGG4YElOCU79wV3RW7wUOs63Df36uho5xpVlksBayuz9wGNPIgOrZXID3U8ep+
+ 9+kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=skRULYaGnsGuwSHl3Pkf/Hf5xkfTXbuPlqJJkGetkNc=;
+ b=Uq/C3xIuZLo3h6mr5OLxsqD443ApyyDec7GbawF/KPZCAV8a52p6fCJaPUUgQMrV4c
+ maHE2qZCBqWuu0WDYDMUeVa0bNQK8V7GaJmvrzaf//eUhJzMiq/FOkBhqMbBC1wnlzzH
+ mliTSUfAP88fo9GVu21RR08PSodR4mX6xtxezrdsbMoKwrc9cQDjSCmeLGGREjOqtU53
+ 8GjAnJ+9kZW2rRbI2Yyb9IWfwE3QJLCyGSCPkIZ6leTo4dRx9az0JVK16sVAMIwP6tCI
+ xsI8or5oPTHY/mKPvMxbp75yiG8TNd7kbdYxSwZg6/isu18mfJq7CWF/do+oXSRX0KEE
+ JK4w==
+X-Gm-Message-State: APjAAAXrXS/PBpD4IvJkniSE/t3NsX9CJ5EwoH10vwoQ+ue6/9AcbpBT
+ MiQq9UfED25eRypz1WVavLNmRzcbScvV/CXqzDc=
+X-Google-Smtp-Source: APXvYqyTKQEWb+KljeDpmX6txVxxjSyvRqHNpFatGgpulkMBtEc+jB8NBCEvU4P4BABz9MuYIQuLQ33fU0m/OswGmNM=
+X-Received: by 2002:a65:5acc:: with SMTP id d12mr52875695pgt.337.1553970748130; 
+ Sat, 30 Mar 2019 11:32:28 -0700 (PDT)
 MIME-Version: 1.0
+References: <18626931553963861@sas1-b3ec53dbc12b.qloud-c.yandex.net>
+In-Reply-To: <18626931553963861@sas1-b3ec53dbc12b.qloud-c.yandex.net>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sat, 30 Mar 2019 20:32:16 +0200
+Message-ID: <CAHp75Ve-VUkMA4NUfN3QxR=whfoatOuPMKddz2Gb1e9acF3vMw@mail.gmail.com>
+Subject: Re: [PATCH 0/5] simple sort swap function usage improvements
+To: Andrey Abramov <st5pub@yandex.ru>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190330_112042_108318_325EBD22 
-X-CRM114-Status: GOOD (  22.96  )
+X-CRM114-CacheID: sfid-20190330_113229_195976_380E2896 
+X-CRM114-Status: GOOD (  13.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -72,97 +87,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, haojian.zhuang@gmail.com,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, robert.jarzmik@free.fr,
- linux-arm-kernel@lists.infradead.org
+Cc: Michal Hocko <mhocko@suse.com>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Dave Chinner <dchinner@redhat.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, piaojun@huawei.com,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ "H. Peter Anvin" <hpa@zytor.com>, jiang.biao2@zte.com.cn,
+ Jiri Slaby <jslaby@suse.cz>, Stephen Rothwell <sfr@canb.auug.org.au>,
+ darrick.wong@oracle.com, Richard Weinberger <richard@nod.at>, mark@fasheh.com,
+ "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+ YueHaibing <yuehaibing@huawei.com>, lchen@suse.com, rppt@linux.ibm.com,
+ ge.changwei@h3c.com, Ingo Molnar <mingo@redhat.com>,
+ naveen.n.rao@linux.vnet.ibm.com, linux-snps-arc@lists.infradead.org,
+ kamalesh@linux.vnet.ibm.com, amir73il@gmail.com,
+ Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+ ashish.samant@oracle.com, Nicholas Piggin <npiggin@gmail.com>,
+ jiangyiwen@huawei.com, Borislav Petkov <bp@alien8.de>,
+ Joel Becker <jlbec@evilplan.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ George Spelvin <lkml@sdf.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Mathieu Malaterre <malat@debian.org>, Vineet Gupta <vgupta@synopsys.com>,
+ Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Morton Andrew <akpm@linux-foundation.org>,
+ "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT"
+ <linuxppc-dev@lists.ozlabs.org>, ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 25 Mar 2019 17:21:42 +0100
-Daniel Mack <daniel@zonque.org> wrote:
+On Sat, Mar 30, 2019 at 6:39 PM Andrey Abramov <st5pub@yandex.ru> wrote:
+>
+> This is the logical continuation of sort improvements by George Spelvin
+> "lib/sort & lib/list_sort: faster and smaller" series
+> (added to the linux-next really recently).
+>
+> Patches from 1 to 4 replace simple swap functions with the built-in
+> (which is now much faster) and grouped by subsystem (after that only
+> 3 files implement custom swap - arch/x86/kernel/unwind_orc.c,
+> kernel/jump_label.c and lib/extable.c).
+>
+> Patch #5 replaces the int type with the size_t type of the size argument
+> in the swap function.
 
-> Hi Miquel,
-> 
-> On 25/3/2019 10:09 AM, Miquel Raynal wrote:
-> > Daniel Mack <daniel@zonque.org> wrote on Fri, 22 Mar 2019 19:48:08
-> > +0100:
-> >   
-> >> Hi Miquel,
-> >>
-> >> On 22/3/2019 9:30 AM, Miquel Raynal wrote:  
-> >>> + Richard: this is fixes materials
-> >>>
-> >>> Daniel Mack <daniel@zonque.org> wrote on Thu, 21 Mar 2019 22:20:10
-> >>> +0100:
-> >>>     
-> >>>> Now that the nand drivers are responsible for selecting the target
-> >>>> prior to hardware access, a call to marvell_nfc_select_target() is
-> >>>> necessary from marvell_nfc_setup_data_interface().
-> >>>>
-> >>>> This is a regression introduced by commit b25251414f6e ("mtd:
-> >>>> rawnand: marvell: Stop implementing ->select_chip()").
-> >>>>
-> >>>> Fixes: b25251414f6e ("mtd: rawnand: marvell: Stop implementing ->select_chip()")
-> >>>> Cc: Boris Brezillon <boris.brezillon@collabora.com>
-> >>>> Cc: <stable@vger.kernel.org>
-> >>>> Signed-off-by: Daniel Mack <daniel@zonque.org>
-> >>>> ---
-> >>>>  drivers/mtd/nand/raw/marvell_nand.c | 2 ++
-> >>>>  1 file changed, 2 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> >>>> index 84283c6bb0ff..93abe5be8995 100644
-> >>>> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> >>>> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> >>>> @@ -2325,6 +2325,8 @@ static int marvell_nfc_setup_data_interface(struct nand_chip *chip, int chipnr,
-> >>>>  	struct marvell_nfc_timings nfc_tmg;
-> >>>>  	int read_delay;
-> >>>>  
-> >>>> +	marvell_nfc_select_target(chip, chip->cur_cs);
-> >>>> +
-> >>>>  	sdr = nand_get_sdr_timings(conf);
-> >>>>  	if (IS_ERR(sdr))
-> >>>>  		return PTR_ERR(sdr);    
-> >>>
-> >>> I had a short look yesterday and this is very likely to be the root
-> >>> cause of the regression, thank you very much!    
-> >>
-> >> Yes it is, it fixes the regression I have reported.
-> >>
-> >> Do you want me to resend with that nit addressed you mentioned? My
-> >> version works well, I know that much :)  
-> > 
-> > Yes please, resent with Boris' comment addressed and we'll be fine.  
-> 
-> I tried this now, and with 'chip->cur_cs' instead of 'chipnr', the
-> regression is back. This function is invoked twice during boot, and in
-> both cases, 'chip->cur_cs' is -1, while 'chipnr' is 0. The 2nd time this
-> function is invoked, the 'selected_die' cache value is 0, so
-> marvell_nfc_select_target() bails early, which seems to be a problem.
-> 
-> I can't quite make sense of that yet, all I know is that calling
-> marvell_nfc_select_target() with -1 from
-> marvell_nfc_setup_data_interface() makes the driver functional again. Hmm.
+> Andrey Abramov (5):
+>   arch/arc: unwind.c: replace swap function with built-in one
+>   powerpc: module_[32|64].c: replace swap function with built-in one
+>   ocfs2: dir,refcounttree,xattr: replace swap functions with built-in
+>     one
+>   ubifs: find.c: replace swap function with built-in one
+>   Lib: sort.h: replace int size with size_t size in the swap function
 
-Can you try with the following diff applied?
---->8---
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index f38e5c1b87e4..e8eccf6afc8f 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -722,9 +722,6 @@ static void marvell_nfc_select_target(struct nand_chip *chip,
-        struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-        u32 ndcr_generic;
- 
--       if (chip == nfc->selected_chip && die_nr == marvell_nand->selected_die)
--               return;
--
-        writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
-        writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
- 
+You have to do something about Cc list.
+50 people is complete overkill. Seems as your series is a set of
+independent fixes. Why not to split and Cc based on individual case?
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 ______________________________________________________
 Linux MTD discussion mailing list
