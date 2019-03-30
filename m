@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64B20C43381
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 16:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE67CC43381
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 16:42:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33843218CD
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 16:41:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACC3A218D0
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 16:42:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pW+NIqyU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="r2yLcjas"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33843218CD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GqQlVYfR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="eW/IcYg6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACC3A218D0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=yandex.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,35 +26,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:MIME-Version:Subject:
 	References:In-Reply-To:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8COeM6rw3cdq0uWgiX1pa8gx0s1myS5SgbvhHIs91y4=; b=pW+NIqyU0w6CJa
-	lU9EnN56F8fP7qOjrVzl7CewCh0yXwkLb8I9gLP9udpQ04Q3kKmXefbsgvQe0tOQ+IZ2SpIXmT3mJ
-	5AMsk70HSV2R2dMbzjIx88CV9WGWqYj3C+X6OWA92hJ8BXfe4+AOA42pNu4A41lZrbxaElvvlSs77
-	W83/SsKWGj2Ic6TVHCcYXdb9w1lWI5ygMKbgQH1tdeI0rwUVswY8URD+P9ooyJ5lqtCH/vgYh2hD8
-	14EoeWYdRqSCl1d+KxfW5dYHmNE//v3eJDRzH8fkPTFW41IwhAg3fotx9vgmjDy0J0OcWI+z9etV9
-	a28a6TT4f6JXb+wbJTMA==;
+	List-Owner; bh=l4/UfxIkjZg3WNcDL0JP/YoP6CF5H+EIkuVCFkj5Ytw=; b=GqQlVYfR+YOeke
+	xvU+3TBvbUywhTkLp0m6uI3xEaWyt/dbj4MJ1O9VHNnIc/H/C5i48cJn/kZ7yGgP2kELuNsX8g4M2
+	t2PVPFLdTmU04/uJY+Eu+knMTszWMwMtTTqDdOHSSTcYX6QDHG5+RO4Gp97zdOd3S/83k8P6EIqgR
+	fBvTgXIhcONI8tmKphsN+wigdknle5ZalPodb/hiCr0MoerDusRZkZ1Vv02chL+E3Aye9x3irkM/g
+	yep3gT45nSyfqfqam0Wo5LwLHQAESk2oAjlABias3EsPEfpWHdbSU9NKlPrjnZAMmGPF0US9QtV2H
+	ipyb9jFTjykPEjTWzQZQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hAH3C-0003f8-AP; Sat, 30 Mar 2019 16:41:46 +0000
-Received: from forward501j.mail.yandex.net ([5.45.198.251])
+	id 1hAH3z-0003z2-Qn; Sat, 30 Mar 2019 16:42:35 +0000
+Received: from forward500p.mail.yandex.net ([77.88.28.110])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAH39-0003eJ-D6; Sat, 30 Mar 2019 16:41:45 +0000
-Received: from mxback15o.mail.yandex.net (mxback15o.mail.yandex.net
- [IPv6:2a02:6b8:0:1a2d::66])
- by forward501j.mail.yandex.net (Yandex) with ESMTP id 0A0063380055;
- Sat, 30 Mar 2019 19:41:38 +0300 (MSK)
+ id 1hAH3v-0003yG-5h; Sat, 30 Mar 2019 16:42:33 +0000
+Received: from mxback20j.mail.yandex.net (mxback20j.mail.yandex.net
+ [IPv6:2a02:6b8:0:1619::114])
+ by forward500p.mail.yandex.net (Yandex) with ESMTP id A95F4940261;
+ Sat, 30 Mar 2019 19:42:24 +0300 (MSK)
 Received: from localhost (localhost [::1])
- by mxback15o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id FwYt6bfWhz-fUuGwdtu;
- Sat, 30 Mar 2019 19:41:37 +0300
+ by mxback20j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id 9Vf1ajHZpZ-gHlu9bVR;
+ Sat, 30 Mar 2019 19:42:23 +0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
- t=1553964097; bh=BAGuq6aY41vQoMTVybblCDo6g+wTKuB5ZkNrCMXNEeI=;
+ t=1553964143; bh=LM7LeHa743lvi4DRsEXm/wIP8IcZHVpJpFo+a5ZMhVw=;
  h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
- b=r2yLcjasL66jIafN59BUK+sNyksLUyMg6rcLPmogPy/2DlS0P/jSubx07PiOJqTv4
- UrX91bPScueQ2KihFcebl6F7npigS0F0/mtjTfsIKZ3lZYvTmqBZ1MzsKkxVLCINhx
- CLR56e2I5oHl+LwxkL8NnPLdj6sMk5V+40LdDaG8=
-Authentication-Results: mxback15o.mail.yandex.net;
+ b=eW/IcYg6/RpPaSzkLffrx92XO5yXFOEGS0RtoLfHfe9pAEGODdkr0DHEOeJI6RBng
+ A45I2EP0IRBDDn7yaImdAlKNyoosHxa4zRYjaoh0XFTqB0qhq/KLjgxmBxIttBmoox
+ JDNt0+Zv9+UW6b714qhDMfy1rLiJkUFwzaiItOAM=
+Authentication-Results: mxback20j.mail.yandex.net;
  dkim=pass header.i=@yandex.ru
-Received: by iva7-8a22bc446c12.qloud-c.yandex.net with HTTP;
- Sat, 30 Mar 2019 19:41:30 +0300
+Received: by myt3-c7e5d17fe013.qloud-c.yandex.net with HTTP;
+ Sat, 30 Mar 2019 19:42:17 +0300
 From: Andrey Abramov <st5pub@yandex.ru>
 To: "vgupta@synopsys.com" <vgupta@synopsys.com>,
  "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
@@ -83,15 +83,15 @@ To: "vgupta@synopsys.com" <vgupta@synopsys.com>,
  "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>
 In-Reply-To: <18626931553963861@sas1-b3ec53dbc12b.qloud-c.yandex.net>
 References: <18626931553963861@sas1-b3ec53dbc12b.qloud-c.yandex.net>
-Subject: [PATCH 2/5] powerpc: module_[32|64].c: replace swap function with
- built-in one
+Subject: [PATCH 3/5] ocfs2: dir, refcounttree,
+ xattr: replace swap functions with built-in one
 MIME-Version: 1.0
 X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date: Sat, 30 Mar 2019 19:41:30 +0300
-Message-Id: <21287961553964090@iva7-8a22bc446c12.qloud-c.yandex.net>
+Date: Sat, 30 Mar 2019 19:42:17 +0300
+Message-Id: <3079511553964137@myt3-c7e5d17fe013.qloud-c.yandex.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190330_094143_814434_7BF4DCEB 
-X-CRM114-Status: UNSURE (   6.60  )
+X-CRM114-CacheID: sfid-20190330_094232_182175_95FDEB56 
+X-CRM114-Status: UNSURE (   9.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -130,85 +130,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace relaswap with built-in one, because of relaswap
-does a simple byte to byte swap.
+Replace dx_leaf_sort_swap, swap_refcount_rec and swap_xe functions
+with built-in one, because they do only a simple byte to byte swap.
 
 Signed-off-by: Andrey Abramov <st5pub@yandex.ru>
 ---
- arch/powerpc/kernel/module_32.c | 17 +----------------
- arch/powerpc/kernel/module_64.c | 17 +----------------
- 2 files changed, 2 insertions(+), 32 deletions(-)
+ fs/ocfs2/dir.c          | 13 +------------
+ fs/ocfs2/refcounttree.c | 13 +++----------
+ fs/ocfs2/xattr.c        | 15 +++------------
+ 3 files changed, 7 insertions(+), 34 deletions(-)
 
-diff --git a/arch/powerpc/kernel/module_32.c b/arch/powerpc/kernel/module_32.c
-index 88d83771f462..c311e8575d10 100644
---- a/arch/powerpc/kernel/module_32.c
-+++ b/arch/powerpc/kernel/module_32.c
-@@ -79,21 +79,6 @@ static int relacmp(const void *_x, const void *_y)
- 		return 0;
+diff --git a/fs/ocfs2/dir.c b/fs/ocfs2/dir.c
+index c121abbdfc7d..4b86b181df0a 100644
+--- a/fs/ocfs2/dir.c
++++ b/fs/ocfs2/dir.c
+@@ -3529,16 +3529,6 @@ static int dx_leaf_sort_cmp(const void *a, const void *b)
+ 	return 0;
  }
  
--static void relaswap(void *_x, void *_y, int size)
+-static void dx_leaf_sort_swap(void *a, void *b, int size)
 -{
--	uint32_t *x, *y, tmp;
--	int i;
+-	struct ocfs2_dx_entry *entry1 = a;
+-	struct ocfs2_dx_entry *entry2 = b;
 -
--	y = (uint32_t *)_x;
--	x = (uint32_t *)_y;
+-	BUG_ON(size != sizeof(*entry1));
 -
--	for (i = 0; i < sizeof(Elf32_Rela) / sizeof(uint32_t); i++) {
--		tmp = x[i];
--		x[i] = y[i];
--		y[i] = tmp;
--	}
+-	swap(*entry1, *entry2);
 -}
 -
- /* Get the potential trampolines size required of the init and
-    non-init sections */
- static unsigned long get_plt_size(const Elf32_Ehdr *hdr,
-@@ -130,7 +115,7 @@ static unsigned long get_plt_size(const Elf32_Ehdr *hdr,
- 			 */
- 			sort((void *)hdr + sechdrs[i].sh_offset,
- 			     sechdrs[i].sh_size / sizeof(Elf32_Rela),
--			     sizeof(Elf32_Rela), relacmp, relaswap);
-+			     sizeof(Elf32_Rela), relacmp, NULL);
+ static int ocfs2_dx_leaf_same_major(struct ocfs2_dx_leaf *dx_leaf)
+ {
+ 	struct ocfs2_dx_entry_list *dl_list = &dx_leaf->dl_list;
+@@ -3799,8 +3789,7 @@ static int ocfs2_dx_dir_rebalance(struct ocfs2_super *osb, struct inode *dir,
+ 	 * This block is changing anyway, so we can sort it in place.
+ 	 */
+ 	sort(dx_leaf->dl_list.de_entries, num_used,
+-	     sizeof(struct ocfs2_dx_entry), dx_leaf_sort_cmp,
+-	     dx_leaf_sort_swap);
++	     sizeof(struct ocfs2_dx_entry), dx_leaf_sort_cmp, NULL);
  
- 			ret += count_relocs((void *)hdr
- 					     + sechdrs[i].sh_offset,
-diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
-index 8661eea78503..0c833d7f36f1 100644
---- a/arch/powerpc/kernel/module_64.c
-+++ b/arch/powerpc/kernel/module_64.c
-@@ -231,21 +231,6 @@ static int relacmp(const void *_x, const void *_y)
- 		return 0;
+ 	ocfs2_journal_dirty(handle, dx_leaf_bh);
+ 
+diff --git a/fs/ocfs2/refcounttree.c b/fs/ocfs2/refcounttree.c
+index 1dc9a08e8bdc..7bbc94d23a0c 100644
+--- a/fs/ocfs2/refcounttree.c
++++ b/fs/ocfs2/refcounttree.c
+@@ -1400,13 +1400,6 @@ static int cmp_refcount_rec_by_cpos(const void *a, const void *b)
+ 	return 0;
  }
  
--static void relaswap(void *_x, void *_y, int size)
+-static void swap_refcount_rec(void *a, void *b, int size)
 -{
--	uint64_t *x, *y, tmp;
--	int i;
+-	struct ocfs2_refcount_rec *l = a, *r = b;
 -
--	y = (uint64_t *)_x;
--	x = (uint64_t *)_y;
--
--	for (i = 0; i < sizeof(Elf64_Rela) / sizeof(uint64_t); i++) {
--		tmp = x[i];
--		x[i] = y[i];
--		y[i] = tmp;
--	}
+-	swap(*l, *r);
 -}
 -
- /* Get size of potential trampolines required. */
- static unsigned long get_stubs_size(const Elf64_Ehdr *hdr,
- 				    const Elf64_Shdr *sechdrs)
-@@ -269,7 +254,7 @@ static unsigned long get_stubs_size(const Elf64_Ehdr *hdr,
- 			 */
- 			sort((void *)sechdrs[i].sh_addr,
- 			     sechdrs[i].sh_size / sizeof(Elf64_Rela),
--			     sizeof(Elf64_Rela), relacmp, relaswap);
-+			     sizeof(Elf64_Rela), relacmp, NULL);
+ /*
+  * The refcount cpos are ordered by their 64bit cpos,
+  * But we will use the low 32 bit to be the e_cpos in the b-tree.
+@@ -1482,7 +1475,7 @@ static int ocfs2_divide_leaf_refcount_block(struct buffer_head *ref_leaf_bh,
+ 	 */
+ 	sort(&rl->rl_recs, le16_to_cpu(rl->rl_used),
+ 	     sizeof(struct ocfs2_refcount_rec),
+-	     cmp_refcount_rec_by_low_cpos, swap_refcount_rec);
++	     cmp_refcount_rec_by_low_cpos, NULL);
  
- 			relocs += count_relocs((void *)sechdrs[i].sh_addr,
- 					       sechdrs[i].sh_size
+ 	ret = ocfs2_find_refcount_split_pos(rl, &cpos, &split_index);
+ 	if (ret) {
+@@ -1507,11 +1500,11 @@ static int ocfs2_divide_leaf_refcount_block(struct buffer_head *ref_leaf_bh,
+ 
+ 	sort(&rl->rl_recs, le16_to_cpu(rl->rl_used),
+ 	     sizeof(struct ocfs2_refcount_rec),
+-	     cmp_refcount_rec_by_cpos, swap_refcount_rec);
++	     cmp_refcount_rec_by_cpos, NULL);
+ 
+ 	sort(&new_rl->rl_recs, le16_to_cpu(new_rl->rl_used),
+ 	     sizeof(struct ocfs2_refcount_rec),
+-	     cmp_refcount_rec_by_cpos, swap_refcount_rec);
++	     cmp_refcount_rec_by_cpos, NULL);
+ 
+ 	*split_cpos = cpos;
+ 	return 0;
+diff --git a/fs/ocfs2/xattr.c b/fs/ocfs2/xattr.c
+index 3a24ce3deb01..b3e6f42baf78 100644
+--- a/fs/ocfs2/xattr.c
++++ b/fs/ocfs2/xattr.c
+@@ -4175,15 +4175,6 @@ static int cmp_xe(const void *a, const void *b)
+ 	return 0;
+ }
+ 
+-static void swap_xe(void *a, void *b, int size)
+-{
+-	struct ocfs2_xattr_entry *l = a, *r = b, tmp;
+-
+-	tmp = *l;
+-	memcpy(l, r, sizeof(struct ocfs2_xattr_entry));
+-	memcpy(r, &tmp, sizeof(struct ocfs2_xattr_entry));
+-}
+-
+ /*
+  * When the ocfs2_xattr_block is filled up, new bucket will be created
+  * and all the xattr entries will be moved to the new bucket.
+@@ -4249,7 +4240,7 @@ static void ocfs2_cp_xattr_block_to_bucket(struct inode *inode,
+ 	trace_ocfs2_cp_xattr_block_to_bucket_end(offset, size, off_change);
+ 
+ 	sort(target + offset, count, sizeof(struct ocfs2_xattr_entry),
+-	     cmp_xe, swap_xe);
++	     cmp_xe, NULL);
+ }
+ 
+ /*
+@@ -4444,7 +4435,7 @@ static int ocfs2_defrag_xattr_bucket(struct inode *inode,
+ 	 */
+ 	sort(entries, le16_to_cpu(xh->xh_count),
+ 	     sizeof(struct ocfs2_xattr_entry),
+-	     cmp_xe_offset, swap_xe);
++	     cmp_xe_offset, NULL);
+ 
+ 	/* Move all name/values to the end of the bucket. */
+ 	xe = xh->xh_entries;
+@@ -4486,7 +4477,7 @@ static int ocfs2_defrag_xattr_bucket(struct inode *inode,
+ 	/* sort the entries by their name_hash. */
+ 	sort(entries, le16_to_cpu(xh->xh_count),
+ 	     sizeof(struct ocfs2_xattr_entry),
+-	     cmp_xe, swap_xe);
++	     cmp_xe, NULL);
+ 
+ 	buf = bucket_buf;
+ 	for (i = 0; i < bucket->bu_blocks; i++, buf += blocksize)
 -- 
 2.21.0
 
