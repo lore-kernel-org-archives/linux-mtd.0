@@ -1,69 +1,74 @@
-Return-Path: <SRS0=1krx=SB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=WHT+=SC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8033DC43381
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 18:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D78FDC43381
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 Mar 2019 07:43:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 510CA218A3
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2019 18:38:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CBF02070B
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 Mar 2019 07:43:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mKvytEtw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z8zL3K/6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 510CA218A3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OSup/bpW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CBF02070B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zte.com.cn
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l1C14becanbyOVyr+f9kxyYmKNs4A+cuMNBTVxo7zKw=; b=mKvytEtwjoYwrw
-	2UmZem5Se+68tn4hTDJ3GWC56nF3z3Q1C1vsuQnt6ffPdgCE/f2pzssQ40ljUFCN7ziZA65OzrDKC
-	o+M4M3UewkbQl0jgC7g7U1VYkY385lSB5tmZc+iE84GPLPAJbp5DsVbqlV9CxKl6g5jV2miXtSsKK
-	il6xn/GfzOIQDFk2z+frzXkGHI24MkVTGufVG2P/p9zrlyXX44plv03MRO30pXHHmlKLNGABMgX4Y
-	ovcBfd+3lQFG8qzI3ruceE5gpM8fTnIW6quiA840E/fEl8uE2pw22SAeNF9nAjn2QegvFHWsu408c
-	DsvwrGrnsUFzGHJy2T5A==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=zwld8/wqPGREBHCSePCf3qSD2AxvVnRzt4vX0TTuxFI=; b=OSu
+	p/bpWDTlNT+hkEd8zsadY6jeAiy6fI7DsN/0BBKzvQI9ziO2RO4Pq1W3MnCeZu6eCDmE9AknWtetO
+	AZNMwCf06tGW9/7t7eMUumKYWMOndmY8reW2YGHAMml9WliFB6C1nIElokiByOBCFWlUmJIMx+Uyz
+	nRSFKfUL8h++Jm87phOPNDmHyOW/4LwURBDVeY4QyEj8aYbNsngP2HmKY5joTcQ8z4tGwx+OpUUo5
+	U06s62XXX5FTLrcFUKEsovySXB+1rK9xpE4AYnZh4ipRbTRZpJ0OeHoGrMrHSTq58lueHsLje1na6
+	KUV4whA7ZPxaov96CN3YGzOktY7bh/Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hAIsI-0007xG-NQ; Sat, 30 Mar 2019 18:38:38 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hAV7Q-00060r-CW; Sun, 31 Mar 2019 07:43:04 +0000
+Received: from smtprz15.163.net ([106.3.154.248] helo=smtp.tom.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAIsF-0007wp-Ey; Sat, 30 Mar 2019 18:38:36 +0000
-Received: from localhost (unknown [62.119.166.9])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3EBD02082C;
- Sat, 30 Mar 2019 18:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1553971113;
- bh=vM5XqOYIzrKLgI9QaO+v6rMuxnWCOX6vb912khkZumM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Z8zL3K/6e1BCa/IS41rGnV9LgxCrji6MJAcOVtk1N4vYWpj0Ifi8Lws/EroR3Q1xA
- l2XvbbLc5Vm/jEVDNA9G4RNBLRp9lRR7HVuW8OJLQRiUGHMYi5hUIr0TYRwaZLD476
- jLL7zA+oC+JldczlxlZqN7m3X6HFSO8n95MM8Lak=
-Date: Sat, 30 Mar 2019 19:38:26 +0100
-From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To: Andrey Abramov <st5pub@yandex.ru>
-Subject: Re: [PATCH 5/5] Lib: sort.h: replace int size with size_t size in
- the swap function
-Message-ID: <20190330183826.GB21828@kroah.com>
-References: <18626931553963861@sas1-b3ec53dbc12b.qloud-c.yandex.net>
- <20467491553964233@myt4-c0b480c282c8.qloud-c.yandex.net>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20467491553964233@myt4-c0b480c282c8.qloud-c.yandex.net>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+ id 1hAV7M-000600-Pt
+ for linux-mtd@lists.infradead.org; Sun, 31 Mar 2019 07:43:03 +0000
+Received: from 172.25.16.147 (unknown [172.25.16.147])
+ by freemail01.tom.com (Postfix) with ESMTP id E49451C85F20
+ for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2019 15:42:50 +0800 (CST)
+Received: from 172.25.16.90 (HELO smtp.tom.com) ([172.25.16.90])
+ by localhost (TOM SMTP Server) with SMTP ID -294487056
+ for <linux-mtd@lists.infradead.org>;
+ Sun, 31 Mar 2019 15:42:50 +0800 (CST)
+Received: from antispam1.tom.com (unknown [172.25.16.55])
+ by freemail01.tom.com (Postfix) with ESMTP id DA2A81C85F42
+ for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2019 15:42:50 +0800 (CST)
+Received: from antispam1.tom.com (antispam1.tom.com [127.0.0.1])
+ by antispam1.tom.com (Postfix) with ESMTP id 6289D100186C
+ for <linux-mtd@lists.infradead.org>; Sun, 31 Mar 2019 15:42:50 +0800 (CST)
+X-Virus-Scanned: Debian amavisd-new at antispam1.tom.com
+Received: from antispam1.tom.com ([127.0.0.1])
+ by antispam1.tom.com (antispam1.tom.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 38RqktdqEq6b for <linux-mtd@lists.infradead.org>;
+ Sun, 31 Mar 2019 15:42:49 +0800 (CST)
+Received: from localhost (unknown [222.209.17.169])
+ by antispam1.tom.com (Postfix) with ESMTPA id 89C501001870;
+ Sun, 31 Mar 2019 15:42:48 +0800 (CST)
+From: Liu Xiang <liu.xiang6@zte.com.cn>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v3] mtd: spi-nor: fix nor->addr_width when its value
+ configured from SFDP does not match the actual width
+Date: Sun, 31 Mar 2019 15:42:37 +0800
+Message-Id: <1554018157-10860-1-git-send-email-liu.xiang6@zte.com.cn>
+X-Mailer: git-send-email 1.9.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190330_113835_521420_CDD7E05D 
-X-CRM114-Status: UNSURE (   6.85  )
+X-CRM114-CacheID: sfid-20190331_004301_024689_6E8FBFEE 
+X-CRM114-Status: UNSURE (   9.71  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -76,67 +81,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "mhocko@suse.com" <mhocko@suse.com>,
- "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
- "peterz@infradead.org" <peterz@infradead.org>,
- "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
- Dave Chinner <dchinner@redhat.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "piaojun@huawei.com" <piaojun@huawei.com>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "paulus@samba.org" <paulus@samba.org>, "hpa@zytor.com" <hpa@zytor.com>,
- "jiang.biao2@zte.com.cn" <jiang.biao2@zte.com.cn>,
- "jslaby@suse.cz" <jslaby@suse.cz>,
- "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
- "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
- "richard@nod.at" <richard@nod.at>, "mark@fasheh.com" <mark@fasheh.com>,
- "x86@kernel.org" <x86@kernel.org>,
- "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
- "lchen@suse.com" <lchen@suse.com>, "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
- "ge.changwei@h3c.com" <ge.changwei@h3c.com>,
- "mingo@redhat.com" <mingo@redhat.com>,
- "naveen.n.rao@linux.vnet.ibm.com" <naveen.n.rao@linux.vnet.ibm.com>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- "kamalesh@linux.vnet.ibm.com" <kamalesh@linux.vnet.ibm.com>,
- "amir73il@gmail.com" <amir73il@gmail.com>,
- "keescook@chromium.org" <keescook@chromium.org>,
- "jannh@google.com" <jannh@google.com>,
- "ashish.samant@oracle.com" <ashish.samant@oracle.com>,
- "npiggin@gmail.com" <npiggin@gmail.com>,
- "jiangyiwen@huawei.com" <jiangyiwen@huawei.com>, "bp@alien8.de" <bp@alien8.de>,
- "jlbec@evilplan.org" <jlbec@evilplan.org>,
- "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- George Spelvin <lkml@sdf.org>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "malat@debian.org" <malat@debian.org>,
- "vgupta@synopsys.com" <vgupta@synopsys.com>,
- "ard.biesheuvel@linaro.org" <ard.biesheuvel@linaro.org>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Morton Andrew <akpm@linux-foundation.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+Cc: bbrezillon@kernel.org, richard@nod.at, Liu Xiang <liu.xiang6@zte.com.cn>,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com, liuxiang_1999@126.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 30, 2019 at 07:43:53PM +0300, Andrey Abramov wrote:
-> Replace int type with size_t type of the size argument
-> in the swap function, also affect all its dependencies.
+Some is25lp256 get BFPT_DWORD1_ADDRESS_BYTES_3_ONLY from BFPT table for
+address width. But in actual fact the flash can support 4-byte address.
+So we should fix it.
 
-This says _what_ the patch does, but it gives no clue as to _why_ you
-are doing this.  Neither did your 0/5 patch :(
+Suggested-by: Boris Brezillon <bbrezillon@kernel.org>
+Suggested-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+---
 
-Why make this change?  Nothing afterward depends on it from what I can
-tell, so why is it needed?
+Changes in v3:
+ add a fixup for is25lp256 to solve the address width problem.
 
-thanks,
+ drivers/mtd/spi-nor/spi-nor.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 6e13bbd..d252a66 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1682,6 +1682,28 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+ 		.flags = SPI_NOR_NO_FR | SPI_S3AN,
+ 
+ static int
++is25lp256_post_bfpt_fixups(struct spi_nor *nor,
++			   const struct sfdp_parameter_header *bfpt_header,
++			   const struct sfdp_bfpt *bfpt,
++			   struct spi_nor_flash_parameter *params)
++{
++	/*
++	 * IS25LP256 supports 4B opcodes.
++	 * Unfortunately, some devices get BFPT_DWORD1_ADDRESS_BYTES_3_ONLY
++	 * from BFPT table for address width. We should fix it.
++	 */
++	if ((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
++		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
++		nor->addr_width = 4;
++
++	return 0;
++}
++
++static struct spi_nor_fixups is25lp256_fixups = {
++	.post_bfpt = is25lp256_post_bfpt_fixups,
++};
++
++static int
+ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+ 			    const struct sfdp_parameter_header *bfpt_header,
+ 			    const struct sfdp_bfpt *bfpt,
+@@ -1818,7 +1840,8 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+ 			SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			SPI_NOR_4B_OPCODES) },
++			SPI_NOR_4B_OPCODES)
++			.fixups = &is25lp256_fixups },
+ 	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
+-- 
+1.9.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
