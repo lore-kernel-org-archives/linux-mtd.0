@@ -2,87 +2,73 @@ Return-Path: <SRS0=Y0kv=SD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2B86C43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 06:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D880C43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 07:52:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94FF420896
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 06:40:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2BA9420857
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 07:52:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KQgWvKR9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94FF420896
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CzxN99OD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ZzrcfVAk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BA9420857
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=43OR7lskcsF9Ew4LQp53q6gyQNKYZBrC5dyM3kN9qhM=; b=KQgWvKR9AOnefmzevhqK89JnIY
-	K2Ed0DLzW4BQpdZpdbVu/VaT5b3VIgge8+jFUfRPP0ptTG28ISWzQLuogJ/vOBS5Iw30Q/HIBmfn2
-	NIf4YCLHKupRBIYSR2RGw7JQ1u7M4nvFKMTCXefwZCVsorMqBbPNiEChWaE6xBHHmk4ueiVxD92SI
-	j9ksJY5cb/Pt75uMtuZPxLZYzCYorZJ2uEIFUL9O/TvGsQ6ricEng0MSjMsRH/Zqc4CFuqAdrTg8j
-	hH/V9QHULKj8ENZFjO29vKID/pljifiV1Sjsg3p91OktybfWoVOQ6LL31SILK5IwrNgqgYPZFy7vu
-	/+qA/ksw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=l89Syvt9Y6bfja+Nb1zBmnXeHyLLG3mkbe8cduTEdYg=; b=CzxN99ODMwytYMLjnNVMYse7m
+	e0I+85UeB1SNbOF0g1020ZXU7+YaBpI2FLL1voDTlf18cAQriLMH7XaTrA3O8F4R4AbCTVmH97itE
+	5n9lV7KFeXTGCXrHYcZbpFOSBxVkROovP+IJUvEUnghWezKunAlgQIlSfCiJ8blwe3eCntdAVDDrQ
+	jmbcTYGn/XiMfvFJQ8jgHTlfH0zbBRZ36E7SE4k9l+/ydj/7GVggmjxJC7K8Pd1ASEbPT5FQMO08R
+	1nUKg51xGCIoUZLWlPHrAiE6xIYVbMQwD9JxlR4FcKUlirPA+IfsA7NDHBOIEHk7B0sOQn897xJXa
+	28bMrUZjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hAqco-0006Ug-Do; Mon, 01 Apr 2019 06:40:54 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1hArje-0008Hg-Jn; Mon, 01 Apr 2019 07:52:02 +0000
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAqck-0006IC-RH
- for linux-mtd@lists.infradead.org; Mon, 01 Apr 2019 06:40:52 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id A5CD318011A69;
- Mon,  1 Apr 2019 08:40:46 +0200 (CEST)
-Subject: Re: mkfs.ubifs issues with mtd-utils 2.1.0
-To: Markus Mayer <markus.mayer@broadcom.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>
-References: <CAGt4E5tYNVD5n7QmYOpCQs3SOG7w0qJrk9LikQ9NDR5G3QoyCQ@mail.gmail.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Openpgp: preference=signencrypt
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <f6ee3da1-0f1a-fa36-c2b7-438c7f1b7d26@sigma-star.at>
-Date: Mon, 1 Apr 2019 08:40:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.0
+ id 1hArjb-0008HN-7o
+ for linux-mtd@lists.infradead.org; Mon, 01 Apr 2019 07:52:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=zv5TUv8WJFX8fnlubsLXjXRzhfQQobOfvHozLtN2Hpc=; b=ZzrcfVAkKf9VNxDp5LQcyMR8v
+ urujuNCGR4zCsHcQ/YG+tYuDjVd+VqC5XxlofbVkgpo8ZKqHaCqsrvht6lHekO6paxpfzJalOisxr
+ Zd/h8wI4eUBO2/1liyAuSjvlyfi3cSGkiE3bs4mPxtWSt/tgVm0lMBDLSK2/waArHxhGY=;
+Received: from [147.50.13.10] (helo=finisterre.ee.mobilebroadband)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1hArj8-00089e-QW; Mon, 01 Apr 2019 07:51:31 +0000
+Received: by finisterre.ee.mobilebroadband (Postfix, from userid 1000)
+ id 7FC02440082; Mon,  1 Apr 2019 08:51:27 +0100 (BST)
+Date: Mon, 1 Apr 2019 14:51:27 +0700
+From: Mark Brown <broonie@kernel.org>
+To: Mason Yang <masonccyang@mxic.com.tw>
+Subject: Re: [PATCH 3/7] spi: Patch Macronix MX25F0A SPI controller driver
+Message-ID: <20190401075127.GM2059@sirena.org.uk>
+References: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
+ <1553768318-23149-4-git-send-email-masonccyang@mxic.com.tw>
 MIME-Version: 1.0
-In-Reply-To: <CAGt4E5tYNVD5n7QmYOpCQs3SOG7w0qJrk9LikQ9NDR5G3QoyCQ@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <1553768318-23149-4-git-send-email-masonccyang@mxic.com.tw>
+X-Cookie: Use extra care when cleaning on stairs.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190331_234051_174245_04842173 
-X-CRM114-Status: GOOD (  15.70  )
+X-CRM114-CacheID: sfid-20190401_005159_431401_8BFB48F1 
+X-CRM114-Status: UNSURE (   7.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,56 +80,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, juliensu@mxic.com.tw,
+ christophe.kerello@st.com, richard@nod.at, bbrezillon@kernel.org,
+ marcel.ziswiler@toradex.com, dwmw2@infradead.org, miquel.raynal@bootlin.com,
+ linux-kernel@vger.kernel.org, stefan@agner.ch, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, paul.burton@mips.com, robh+dt@kernel.org,
+ geert@linux-m68k.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmal.com, liang.yang@amlogic.com, lee.jones@linaro.org,
+ zhengxunli@mxic.com.tw
+Content-Type: multipart/mixed; boundary="===============0723319962662507437=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-On 3/30/19 4:43 AM, Markus Mayer wrote:
-> The code that's complaining:
-> 
-> ./ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-> 1533         if (data_len) {
-> 1534                 if (!S_ISLNK(st->st_mode))
-> 1535                         return err_msg("Expected symlink");
-> 
-> Clearly, checking just for symlinks at this points seems to be too
-> restrictive. /dev/console is a character device, and there is no
-> reason why mkfs.ubifs should refuse to create it. After all, it has
-> always worked in the past.
+--===============0723319962662507437==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xtx0sNU5lZ46KfgK"
+Content-Disposition: inline
 
-This check was introduced in "a767dd30 mkfs.ubifs: Add encrypted symlink support".
 
-This commit is part of the fscrypt patch set. A few lines below, the extra data is
-encrypted with the path encryption functions if there is an fscrypt context.
+--xtx0sNU5lZ46KfgK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Given that having device files on disk outside an initramfs is a rather rare thing
-nowadays (devtmpfs), it appears we unfortunately didn't think of that case and
-tests subsequently didn't cover it either.
+On Thu, Mar 28, 2019 at 06:18:34PM +0800, Mason Yang wrote:
+> Patch a MFD driver for Macronix MX25F0A SPI controller.
+>=20
+> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 
-> Since I am not entirely sure of the purpose of the check, I am also
-> unsure what solution to propose. Would
->     if (S_ISREG(st->st_mode)) /* error here */
-> or
->     if (S_ISREG(st->st_mode) || S_ISDIR(st->st_mode)) /* error here */
-> be sufficient? This would allow links, character & block devices, sockets, etc.
+I can't tell what this commit is supposed to do based on this commit
+message which makes it hard to review :(
 
-A quick and dirty fix would be to move the check into the branch where the data
-is actually encrypted.
+--xtx0sNU5lZ46KfgK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-However, the question remains what the fscrypt branch should actually do with
-a device number in this case.
+-----BEGIN PGP SIGNATURE-----
 
-If the user space tooling made the implicit assumption that it must be a symlink
-if it has extra data, chances are that the corresponding UBIFS kernel patch set
-makes the same assumption.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyhwv4ACgkQJNaLcl1U
+h9DLegf+I4q4dklppx9CBbUDzY7TJuYMR9fUaHEJ+PERL25QB7175CTrJAMJwNUT
+VYMvdLaDFLhYbL5W340U3TsnndEAr5Ad+8UyN6UKyLnDEJ9St1a+mF+s3bGIDh/y
+9eoAmlwLizsthxqUJvBRh7ZhvKvwhSqfJ4AsiNFhXfq1BnPeYks5pHRtzAa2Y4Qn
+2y6UJEi9pKVrl2Dd8Uer91pO51KSbeT8ScjjbDd8/mD1kTNTxejhvJyzrT2jiqnh
+Zqhjwv1kZB6Nx4IvOiLD5SeRi0QPV987Z95qpDgo2EBeY81zRHEt4wcACe95mGcf
+6+BzLYW9fOms8zU/qBIE5kPY923RZw==
+=IEo0
+-----END PGP SIGNATURE-----
 
-Thanks for reporting this,
+--xtx0sNU5lZ46KfgK--
 
-David
+
+--===============0723319962662507437==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0723319962662507437==--
+
