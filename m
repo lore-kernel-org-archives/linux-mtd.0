@@ -2,82 +2,60 @@ Return-Path: <SRS0=Y0kv=SD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48885C43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 15:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0797BC43381
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 15:25:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16051208E4
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 15:25:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C1125208E4
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 15:25:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NW7caF5u";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b="YLNhaTYf";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=fluxnic.net header.i=@fluxnic.net header.b="1fXeqViD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16051208E4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=fluxnic.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PcHCtXzh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1125208E4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
-	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5Uh8s86TNSNh8KQOZggt0UKWuoPXIOnLTcUYg5iY3qg=; b=NW7caF5uXSxE8x
-	8+CUo10Veoe7m+ck+q8TbTpHgQUnAIR/6bW8u0U2ieB+i1YerYWiPyr4LRuCefb3lIddJ4Zgud2r4
-	xY92opfASLWJB2Y77kEJBChtJJBVlUEx7uZI1FAyK/8MJKEREx575DCTf1wWlGZ8dJiiqaCb26ofU
-	xyWGyo5BxyFrxqGApWFI3MCrvhdvcXPQ7XC1sTtROEoenSdaADosdO43IqT4t4pXwB+xDDwsGIgSc
-	+joaWJ1uP54+qsCUoYJaGPo39T/t7orPWiC+NnkZa7GHFPF/t0k0rgd3zzYGjaGHlQKi6ZL9R0HWJ
-	L2KMRFEPS1Spf51KD73g==;
+	List-Owner; bh=mifFQpHgblMeDW7yViVJ2cnIeNOkUtIs0OUGXCyT7fM=; b=PcHCtXzhE9vFyh
+	NRsf8EXX39Ezs9DduEUZ1QxD7eLnw2YR0YtMU6m6xajPEuo3nUfzyT9hWx2o3VXpzH/wObu1u5wd8
+	wfmhEVjP7v8gp17ex5ZkV40KqVDXESK9KSn9Wu+7vfpAngr6BXp62VaZidmpamq5bxjsORoCN/Dw+
+	ibTvnkSFF9wmVvBO3MPCeq3EoRCtReMS26PvMMknQvPMDfZ9WIAUnW9WE8DD85Jc9MnPLkJ3cv+XR
+	kfCDCOerpWWpJwqNjZaJGv5ebhVQyrQ0kJaR0yMLe++br4hpBS1YlNw4gV53UMxkIpTGGZQWTICBB
+	2m2KK7w24ZhVnqBYFE0w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hAyoP-00073N-Bp; Mon, 01 Apr 2019 15:25:25 +0000
-Received: from pb-smtp2.pobox.com ([64.147.108.71])
+	id 1hAyoV-0007C7-Au; Mon, 01 Apr 2019 15:25:31 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hAyoL-00072P-N1
- for linux-mtd@lists.infradead.org; Mon, 01 Apr 2019 15:25:23 +0000
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
- by pb-smtp2.pobox.com (Postfix) with ESMTP id CB6C5134A61;
- Mon,  1 Apr 2019 11:25:17 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
- :cc:subject:in-reply-to:message-id:references:mime-version
- :content-type; s=sasl; bh=ndejXqIJxqzUiIyAycGiXOLl8Ag=; b=YLNhaT
- YfkwoPLHnkOUK3jepEQtyVPxcxDCaKKlJHVBjHjo+HxiWEJnjCKyTYI/B9EnoEaG
- DNnauRE/iGjnjCkP82LGL5o3Jcn/UM6uFH7d6aik6p/GhFGYBVC1RFrRcOr/Sccc
- 9xa5VBOizpXOO+0eSo/FT1sxkbPHr2hlrdimA=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
- by pb-smtp2.pobox.com (Postfix) with ESMTP id C1508134A60;
- Mon,  1 Apr 2019 11:25:17 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type;
- s=2016-12.pbsmtp; bh=Sga27Msg4oo6+VzgjwJKl6FpIJ7nJxQUh/RmP2YrqDo=;
- b=1fXeqViDMMyFYU/qirHu6UJ4ss2rJILOHapZ2tM7J73AmLHdhaM56MslbBqcN7iS4mC56k10WRHSjH9l12ra3GlQlE55HQeeXNIVLqDBUVb9VuptWEkB18Zsse8kUmpOf6Q5rQi2Dh4ihJyG09Ky75T54dMk2BCnWiruyCYW1Qc=
-Received: from yoda.home (unknown [70.82.104.228])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 3F284134A5F;
- Mon,  1 Apr 2019 11:25:17 -0400 (EDT)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
- by yoda.home (Postfix) with ESMTPSA id 55C122DA00D8;
- Mon,  1 Apr 2019 11:25:16 -0400 (EDT)
-Date: Mon, 1 Apr 2019 11:25:16 -0400 (EDT)
-From: Nicolas Pitre <nico@fluxnic.net>
-To: David Howells <dhowells@redhat.com>
-Subject: Re: [RFC PATCH 48/68] vfs: Convert cramfs to use the new mount API
-In-Reply-To: <155373039704.7602.6796835761744428479.stgit@warthog.procyon.org.uk>
-Message-ID: <nycvar.YSQ.7.76.1904011120210.20244@knanqh.ubzr>
-References: <155372999953.7602.13784796495137723805.stgit@warthog.procyon.org.uk>
- <155373039704.7602.6796835761744428479.stgit@warthog.procyon.org.uk>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+ id 1hAyoN-00072d-8f
+ for linux-mtd@lists.infradead.org; Mon, 01 Apr 2019 15:25:24 +0000
+X-Originating-IP: 90.88.32.136
+Received: from xps13 (aaubervilliers-681-1-91-136.w90-88.abo.wanadoo.fr
+ [90.88.32.136]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B688A4001A;
+ Mon,  1 Apr 2019 15:25:20 +0000 (UTC)
+Date: Mon, 1 Apr 2019 17:25:19 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v6 00/13] Ingenic NAND patchset v6
+Message-ID: <20190401172519.4b7a42df@xps13>
+In-Reply-To: <20190319145403.31627-1-paul@crapouillou.net>
+References: <20190319145403.31627-1-paul@crapouillou.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Pobox-Relay-ID: 5A8E4D16-5492-11E9-BFB9-DF19F34BB12D-78420484!pb-smtp2.pobox.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190401_082521_918410_00A5C12D 
-X-CRM114-Status: GOOD (  25.53  )
+X-CRM114-CacheID: sfid-20190401_082523_451242_4C4B5EF1 
+X-CRM114-Status: UNSURE (   7.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,220 +67,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 27 Mar 2019, David Howells wrote:
-
-> Convert the cramfs filesystem to the new internal mount API as the old
-> one will be obsoleted and removed.  This allows greater flexibility in
-> communication of mount parameters between userspace, the VFS and the
-> filesystem.
-> 
-> See Documentation/filesystems/mount_api.txt for more information.
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Nicolas Pitre <nico@linaro.org>
-> cc: linux-mtd@lists.infradead.org
-> cc: linux-block@vger.kernel.org
-
-Tested-by: Nicolas Pitre <nico@fluxnic.net>
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-
-
-
-
-> ---
-> 
->  fs/cramfs/inode.c |   69 ++++++++++++++++++++++++++++++-----------------------
->  1 file changed, 39 insertions(+), 30 deletions(-)
-> 
-> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> index 9352487bd0fc..2ee89a353d64 100644
-> --- a/fs/cramfs/inode.c
-> +++ b/fs/cramfs/inode.c
-> @@ -24,6 +24,7 @@
->  #include <linux/blkdev.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/super.h>
-> +#include <linux/fs_context.h>
->  #include <linux/slab.h>
->  #include <linux/vfs.h>
->  #include <linux/mutex.h>
-> @@ -506,18 +507,19 @@ static void cramfs_kill_sb(struct super_block *sb)
->  	kfree(sbi);
->  }
->  
-> -static int cramfs_remount(struct super_block *sb, int *flags, char *data)
-> +static int cramfs_reconfigure(struct fs_context *fc)
->  {
-> -	sync_filesystem(sb);
-> -	*flags |= SB_RDONLY;
-> +	sync_filesystem(fc->root->d_sb);
-> +	fc->sb_flags |= SB_RDONLY;
->  	return 0;
->  }
->  
-> -static int cramfs_read_super(struct super_block *sb,
-> -			     struct cramfs_super *super, int silent)
-> +static int cramfs_read_super(struct super_block *sb, struct fs_context *fc,
-> +			     struct cramfs_super *super)
->  {
->  	struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
->  	unsigned long root_offset;
-> +	bool silent = fc->sb_flags & SB_SILENT;
->  
->  	/* We don't know the real size yet */
->  	sbi->size = PAGE_SIZE;
-> @@ -532,7 +534,7 @@ static int cramfs_read_super(struct super_block *sb,
->  		/* check for wrong endianness */
->  		if (super->magic == CRAMFS_MAGIC_WEND) {
->  			if (!silent)
-> -				pr_err("wrong endianness\n");
-> +				errorf(fc, "cramfs: wrong endianness");
->  			return -EINVAL;
->  		}
->  
-> @@ -544,22 +546,22 @@ static int cramfs_read_super(struct super_block *sb,
->  		mutex_unlock(&read_mutex);
->  		if (super->magic != CRAMFS_MAGIC) {
->  			if (super->magic == CRAMFS_MAGIC_WEND && !silent)
-> -				pr_err("wrong endianness\n");
-> +				errorf(fc, "cramfs: wrong endianness");
->  			else if (!silent)
-> -				pr_err("wrong magic\n");
-> +				errorf(fc, "cramfs: wrong magic");
->  			return -EINVAL;
->  		}
->  	}
->  
->  	/* get feature flags first */
->  	if (super->flags & ~CRAMFS_SUPPORTED_FLAGS) {
-> -		pr_err("unsupported filesystem features\n");
-> +		errorf(fc, "cramfs: unsupported filesystem features");
->  		return -EINVAL;
->  	}
->  
->  	/* Check that the root inode is in a sane state */
->  	if (!S_ISDIR(super->root.mode)) {
-> -		pr_err("root is not a directory\n");
-> +		errorf(fc, "cramfs: root is not a directory");
->  		return -EINVAL;
->  	}
->  	/* correct strange, hard-coded permissions of mkcramfs */
-> @@ -578,12 +580,12 @@ static int cramfs_read_super(struct super_block *sb,
->  	sbi->magic = super->magic;
->  	sbi->flags = super->flags;
->  	if (root_offset == 0)
-> -		pr_info("empty filesystem");
-> +		infof(fc, "cramfs: empty filesystem");
->  	else if (!(super->flags & CRAMFS_FLAG_SHIFTED_ROOT_OFFSET) &&
->  		 ((root_offset != sizeof(struct cramfs_super)) &&
->  		  (root_offset != 512 + sizeof(struct cramfs_super))))
->  	{
-> -		pr_err("bad root offset %lu\n", root_offset);
-> +		errorf(fc, "cramfs: bad root offset %lu", root_offset);
->  		return -EINVAL;
->  	}
->  
-> @@ -607,8 +609,7 @@ static int cramfs_finalize_super(struct super_block *sb,
->  	return 0;
->  }
->  
-> -static int cramfs_blkdev_fill_super(struct super_block *sb, void *data,
-> -				    int silent)
-> +static int cramfs_blkdev_fill_super(struct super_block *sb, struct fs_context *fc)
->  {
->  	struct cramfs_sb_info *sbi;
->  	struct cramfs_super super;
-> @@ -623,14 +624,13 @@ static int cramfs_blkdev_fill_super(struct super_block *sb, void *data,
->  	for (i = 0; i < READ_BUFFERS; i++)
->  		buffer_blocknr[i] = -1;
->  
-> -	err = cramfs_read_super(sb, &super, silent);
-> +	err = cramfs_read_super(sb, fc, &super);
->  	if (err)
->  		return err;
->  	return cramfs_finalize_super(sb, &super.root);
->  }
->  
-> -static int cramfs_mtd_fill_super(struct super_block *sb, void *data,
-> -				 int silent)
-> +static int cramfs_mtd_fill_super(struct super_block *sb, struct fs_context *fc)
->  {
->  	struct cramfs_sb_info *sbi;
->  	struct cramfs_super super;
-> @@ -652,7 +652,7 @@ static int cramfs_mtd_fill_super(struct super_block *sb, void *data,
->  
->  	pr_info("checking physical address %pap for linear cramfs image\n",
->  		&sbi->linear_phys_addr);
-> -	err = cramfs_read_super(sb, &super, silent);
-> +	err = cramfs_read_super(sb, fc, &super);
->  	if (err)
->  		return err;
->  
-> @@ -947,32 +947,41 @@ static const struct inode_operations cramfs_dir_inode_operations = {
->  };
->  
->  static const struct super_operations cramfs_ops = {
-> -	.remount_fs	= cramfs_remount,
->  	.statfs		= cramfs_statfs,
->  };
->  
-> -static struct dentry *cramfs_mount(struct file_system_type *fs_type, int flags,
-> -				   const char *dev_name, void *data)
-> +static int cramfs_get_tree(struct fs_context *fc)
->  {
-> -	struct dentry *ret = ERR_PTR(-ENOPROTOOPT);
-> +	int ret = -ENOPROTOOPT;
->  
->  	if (IS_ENABLED(CONFIG_CRAMFS_MTD)) {
-> -		ret = mount_mtd(fs_type, flags, dev_name, data,
-> -				cramfs_mtd_fill_super);
-> -		if (!IS_ERR(ret))
-> +		ret = vfs_get_mtd_super(fc, cramfs_mtd_fill_super);
-> +		if (ret < 0)
->  			return ret;
->  	}
-> -	if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV)) {
-> -		ret = mount_bdev(fs_type, flags, dev_name, data,
-> -				 cramfs_blkdev_fill_super);
-> -	}
-> +	if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV))
-> +		ret = vfs_get_block_super(fc, cramfs_blkdev_fill_super);
->  	return ret;
->  }
->  
-> +static const struct fs_context_operations cramfs_context_ops = {
-> +	.get_tree	= cramfs_get_tree,
-> +	.reconfigure	= cramfs_reconfigure,
-> +};
-> +
-> +/*
-> + * Set up the filesystem mount context.
-> + */
-> +static int cramfs_init_fs_context(struct fs_context *fc)
-> +{
-> +	fc->ops = &cramfs_context_ops;
-> +	return 0;
-> +}
-> +
->  static struct file_system_type cramfs_fs_type = {
->  	.owner		= THIS_MODULE,
->  	.name		= "cramfs",
-> -	.mount		= cramfs_mount,
-> +	.init_fs_context = cramfs_init_fs_context,
->  	.kill_sb	= cramfs_kill_sb,
->  	.fs_flags	= FS_REQUIRES_DEV,
->  };
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUGF1bCwKClBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PiB3cm90ZSBvbiBU
+dWUsIDE5IE1hciAyMDE5IDE1OjUzOjUwCiswMTAwOgoKPiBIaSwKPiAKPiBDaGFuZ2VzIGZyb20g
+VjUgaW5jbHVkZSBqdXN0IGEgdHlwbyBjb3JyZWN0aW9uIGluIHBhdGNoIDA5LzEzLCBhbmQgdGhl
+Cj4gaW50cm9kdWN0aW9uIG9mIHRoZSBwYXRjaCAxMy8xMyB3aGljaCBpcyBuZXcuCj4gCj4gVGhl
+IHJlc3QgaXMgdW50b3VjaGVkLgo+IAo+IFRoYW5rcywKPiAtUGF1bAo+IAoKCkFwcGxpZWQgdG8g
+Z2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210ZC9saW51eC5n
+aXQKb24gbmFuZC9uZXh0LgoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
