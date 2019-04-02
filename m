@@ -2,68 +2,82 @@ Return-Path: <SRS0=uocl=SE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B79DFC4360F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:52:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E40C8C4360F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 20:42:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83FD320645
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:52:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B1BC52084B
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 20:42:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZqGBgsYU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ganR7fpq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83FD320645
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I8XKHi5z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="tjPKIU2c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1BC52084B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=yandex.ru
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lbAVD6Q8+3ecPDKz2th0iPpcEA2VSas/pjKzu/GUEF4=; b=ZqGBgsYUzXvhSi
-	ahhYRPwvt4o8/Mf6/IBhfB3+Z8Ii4qjsPk6SG4w1W2JfWrqiP21UK9C5b+0jOcYawnJ3l870QEEnP
-	1WM3rt70CHZWje+SIIASaIMFtC/Q1rOuInIxFfH1G1ch7DCzfd+GHvs1BCIo76AQZprovrS0LgZqz
-	Sudwmp0lJr6JEgNC5Qj035dU1OVoEQ9SUJVepiaN3OX+D9+MGE5VtwkGPSf7Fc4y5cUcj0pYNy9Pj
-	yAFOO2i8XKlIx1PFsZhKrcS3nxJSvpTz5zbQii5TX50UW9yxVuhUjBee2VYn+VmKGc18RGWbcLNAM
-	USRZSN8+UuiugzIW/q2g==;
+	List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:MIME-Version:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4aEnEwXuhfgyTMsyfp29auBrKwwCB5Fri7+qE8oiz3k=; b=I8XKHi5z/AnJTJ
+	knlTChI+/Sl/pA2kKc4VmNuumtenXdZEmuMwfEnepKAh6To1KOksPRtg+DIUrrRj3fzvlATE5a67o
+	R6ddXRWjBjIG7qj/ZpLiJWAavTWYVWN6o1JLedRztukC4TtDX8aOpSF4JpoP8l7YHLlbjbIiC5Dnp
+	AVpAwk9TW8GyqEybh43WeooMqsA1hNuKEoArHCC8cQZRUGOr0O2YB3Eh2a+txCaT5WgI00/5As//f
+	H6TTD5EjWkrRlXd5l6gwoycwS9ozt1+fyQESEVFyjogwCFzpXerEopqOMWFXvIQRISB7+833qW5XR
+	0y/J53TjaIBp/r+mFyPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBLiI-0002iL-0L; Tue, 02 Apr 2019 15:52:38 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hBQEb-0007zX-2J; Tue, 02 Apr 2019 20:42:17 +0000
+Received: from forward102j.mail.yandex.net ([5.45.198.243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBLeX-0004xu-L6
- for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 15:49:22 +0000
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net
- [24.5.143.220])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D789321741;
- Tue,  2 Apr 2019 15:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1554220118;
- bh=sXTzCdkJrYXxv/SHdPjmdIL5PN0MRwSnIQ9nL31vSRk=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ganR7fpq8u+FfoCR+Ev16F1/7Te9U+qa4UwB7Hu9reApO8UOxEaElRGkAex1tkmqp
- wyH4sEp0exKkh0p2Qe/uAa88fMSTWm8n0ERqHpymeftJDZLQWi8Q3cLeAUpyo9T9Jc
- EMuq1Ps8/0cB4CHthASEFkp7JlIc56eHoG4mM5BU=
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v4 15/17] f2fs: wire up new fscrypt ioctls
-Date: Tue,  2 Apr 2019 08:45:58 -0700
-Message-Id: <20190402154600.32432-16-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190402154600.32432-1-ebiggers@kernel.org>
-References: <20190402154600.32432-1-ebiggers@kernel.org>
+ id 1hBQEU-0007z5-RO; Tue, 02 Apr 2019 20:42:13 +0000
+Received: from mxback5j.mail.yandex.net (mxback5j.mail.yandex.net
+ [IPv6:2a02:6b8:0:1619::10e])
+ by forward102j.mail.yandex.net (Yandex) with ESMTP id 3945DF21601;
+ Tue,  2 Apr 2019 23:41:58 +0300 (MSK)
+Received: from localhost (localhost [::1])
+ by mxback5j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id hTyhEB7C0p-fpP4KXkT; 
+ Tue, 02 Apr 2019 23:41:56 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+ t=1554237716; bh=nlyxbITpbpWV++WUuQA9wS2TeXvU+5JCwzDJix4Usoo=;
+ h=Message-Id:Date:Cc:Subject:To:From;
+ b=tjPKIU2cCaEXSiHfxcru19tJ8/TstdyLtuyZwbPA/Sq8/Gmk0DSG7NmMB3QjZfxej
+ ZvTyUnmAzsfjexhu96Zg6jg/bf/suid9Ehsx7yASkCSTZF0Lk+SsLUMMpZKaZH7Xh1
+ yOEx6yM/ABY452UdMwGN416SaPeiKcOONAEazK0I=
+Authentication-Results: mxback5j.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by sas1-23a37bc8251c.qloud-c.yandex.net with HTTP;
+ Tue, 02 Apr 2019 23:41:51 +0300
+From: Andrey Abramov <st5pub@yandex.ru>
+To: vgupta <vgupta@synopsys.com>, benh <benh@kernel.crashing.org>,
+ paulus <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>, bp <bp@alien8.de>,
+ hpa <hpa@zytor.com>, x86 <x86@kernel.org>, mark <mark@fasheh.com>,
+ jlbec <jlbec@evilplan.org>, richard <richard@nod.at>,
+ dedekind1 <dedekind1@gmail.com>, adrian.hunter <adrian.hunter@intel.com>,
+ gregkh <gregkh@linuxfoundation.org>,
+ naveen.n.rao <naveen.n.rao@linux.vnet.ibm.com>,
+ jpoimboe <jpoimboe@redhat.com>, Dave Chinner <dchinner@redhat.com>,
+ darrick.wong <darrick.wong@oracle.com>,
+ ard.biesheuvel <ard.biesheuvel@linaro.org>, George Spelvin <lkml@sdf.org>,
+ linux-snps-arc <linux-snps-arc@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ ocfs2-devel <ocfs2-devel@oss.oracle.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, sfr <sfr@canb.auug.org.au>
+Subject: [PATCH v3 0/5] simple sort swap function improvements
 MIME-Version: 1.0
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date: Tue, 02 Apr 2019 23:41:51 +0300
+Message-Id: <824481554237711@sas1-23a37bc8251c.qloud-c.yandex.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190402_084846_140253_8630125A 
-X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-CacheID: sfid-20190402_134211_395254_1B8DCB3E 
+X-CRM114-Status: UNSURE (   5.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -76,119 +90,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Satya Tangirala <satyat@google.com>, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- Paul Crowley <paulcrowley@google.com>
+Cc: mhocko <mhocko@suse.com>, gustavo <gustavo@embeddedor.com>,
+ peterz <peterz@infradead.org>, amir73il <amir73il@gmail.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ kamalesh <kamalesh@linux.vnet.ibm.com>, piaojun <piaojun@huawei.com>,
+ "yamada.masahiro" <yamada.masahiro@socionext.com>,
+ "jiang.biao2" <jiang.biao2@zte.com.cn>, jslaby <jslaby@suse.cz>,
+ yuehaibing <yuehaibing@huawei.com>, rppt <rppt@linux.ibm.com>,
+ "ge.changwei" <ge.changwei@h3c.com>, keescook <keescook@chromium.org>,
+ jannh <jannh@google.com>, "ashish.samant" <ashish.samant@oracle.com>,
+ npiggin <npiggin@gmail.com>, jiangyiwen <jiangyiwen@huawei.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, lchen <lchen@suse.com>,
+ malat <malat@debian.org>, Morton Andrew <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+This is the logical continuation of the "lib/sort & lib/list_sort:
+faster and smaller" series by George Spelvin (added to linux-next
+recently).
 
-Wire up the new ioctls for adding and removing fscrypt keys to/from the
-filesystem, and the new ioctl for retrieving v2 encryption policies.
+Since Spectre mitigations have made indirect function calls more
+expensive, and the previous patch series implements the default
+simple byte copies without them, an "optimized" custom swap
+function is now a waste of time as well as code.
 
-FS_IOC_REMOVE_ENCRYPTION_KEY also required making f2fs_drop_inode() call
-fscrypt_drop_inode().
+Patches 1 to 4 replace trivial swap functions with the built-in
+(which is now much faster) and are grouped by subsystem.
+Being pure code deletion patches, they are sure to bring joy to
+Linus's heart.
 
-For more details see Documentation/filesystems/fscrypt.rst, as well as
-the fscrypt patches that added the implementation of these ioctls.
+Having reviewed all call sites, only three non-trivial swap
+functions remain:  arch/x86/kernel/unwind_orc.c,
+kernel/jump_label.c and lib/extable.c.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/file.c  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/f2fs/super.c |  2 ++
- 2 files changed, 48 insertions(+)
+Patch #5 removes size argument from the swap function because:
+	1) It wasn't used.
+	2) Custom swap function knows what kind of objects it swaps,
+		so it already knows their sizes.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 5742ab8b57dc6..251e374353da8 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2095,6 +2095,40 @@ static int f2fs_ioc_get_encryption_pwsalt(struct file *filp, unsigned long arg)
- 	return err;
- }
- 
-+static int f2fs_ioc_get_encryption_policy_ex(struct file *filp,
-+					     unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_get_policy_ex(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_add_encryption_key(struct file *filp, unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_add_key(filp, (void __user *)arg);
-+}
-+
-+static int f2fs_ioc_remove_encryption_key(struct file *filp, unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_remove_key(filp, (const void __user *)arg);
-+}
-+
-+static int f2fs_ioc_get_encryption_key_status(struct file *filp,
-+					      unsigned long arg)
-+{
-+	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-+		return -EOPNOTSUPP;
-+
-+	return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
-+}
-+
- static int f2fs_ioc_gc(struct file *filp, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
-@@ -3000,6 +3034,14 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return f2fs_ioc_get_encryption_policy(filp, arg);
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 		return f2fs_ioc_get_encryption_pwsalt(filp, arg);
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+		return f2fs_ioc_get_encryption_policy_ex(filp, arg);
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+		return f2fs_ioc_add_encryption_key(filp, arg);
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+		return f2fs_ioc_remove_encryption_key(filp, arg);
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-+		return f2fs_ioc_get_encryption_key_status(filp, arg);
- 	case F2FS_IOC_GARBAGE_COLLECT:
- 		return f2fs_ioc_gc(filp, arg);
- 	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
-@@ -3119,6 +3161,10 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case F2FS_IOC_SET_ENCRYPTION_POLICY:
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 	case F2FS_IOC_GET_ENCRYPTION_POLICY:
-+	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-+	case FS_IOC_ADD_ENCRYPTION_KEY:
-+	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-+	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
- 	case F2FS_IOC_GARBAGE_COLLECT:
- 	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
- 	case F2FS_IOC_WRITE_CHECKPOINT:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index f2aaa2cc6b3e0..7219b3b2af759 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -934,6 +934,8 @@ static int f2fs_drop_inode(struct inode *inode)
- 		return 0;
- 	}
- 	ret = generic_drop_inode(inode);
-+	if (!ret)
-+		ret = fscrypt_drop_inode(inode);
- 	trace_f2fs_drop_inode(inode, ret);
- 	return ret;
- }
+v1->v2: Only commit messages have changed to better explain
+		the purpose of commits. (Thanks to George Spelvin and Greg KH)
+v2->v3: Patch #5 now completely removes the size argument
+
+Andrey Abramov (5):
+  arch/arc: unwind.c: replace swap function with built-in one
+  powerpc: module_[32|64].c: replace swap function with built-in one
+  ocfs2: dir,refcounttree,xattr: replace swap functions with built-in
+    one
+  ubifs: find.c: replace swap function with built-in one
+  Lib: sort.h: remove the size argument from the swap function
+
+ arch/arc/kernel/unwind.c        | 20 ++------------------
+ arch/powerpc/kernel/module_32.c | 17 +----------------
+ arch/powerpc/kernel/module_64.c | 17 +----------------
+ arch/x86/kernel/unwind_orc.c    |  2 +-
+ fs/ocfs2/dir.c                  | 13 +------------
+ fs/ocfs2/refcounttree.c         | 13 +++----------
+ fs/ocfs2/xattr.c                | 15 +++------------
+ fs/ubifs/find.c                 |  9 +--------
+ include/linux/sort.h            |  2 +-
+ kernel/jump_label.c             |  2 +-
+ lib/extable.c                   |  2 +-
+ lib/sort.c                      |  7 +++----
+ 12 files changed, 19 insertions(+), 100 deletions(-)
+
 -- 
 2.21.0
+
 
 
 ______________________________________________________
