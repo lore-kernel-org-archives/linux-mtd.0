@@ -3,21 +3,21 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F19DC43381
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 02:02:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4553FC43381
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 03:49:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E33C120830
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 02:02:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14322206B8
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 03:49:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g0x8WMU/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tqY868Id"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E33C120830
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Dx/Hc6bx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="wWUfN3MJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14322206B8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,51 +25,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GhpOyCc8YzKMAduAyo4umyzuUsxc6U7UL117XeTWSIc=; b=g0x8WMU/9DKlqV
-	vGO6fIltLhiQFp2wyANbVG4fE9vqhk1H53Sh4Kw4sUzxpGteBFugz9TXnJLB5hwnUmbzTKeMA+KC2
-	BaKBwS9wSq71cDCVerZ7vJ5HfFDbo9LTpb+5hmLPkc5tTpGWfbdu7AGhSVQWsls0fTUaDeGL+3JaP
-	ysXGxMIl6oxeLSS0bL33j6l990MOClnzZV2QRiOw8qKv3lEwOLHm3jk0aK+O/LCabeIrHwyb3mkYM
-	athvaGudlbktaDmOCwLTwv5Q0cXCYap15N/ThC/isEZ+hyN3NUyvSA5pYL2rjZtxXJs6wIZuRLvQ5
-	0u8UUEOkgXxerYlCMUkA==;
+	List-Owner; bh=C6aVxQCpJl0Wcn41TmNyydmMyPV7l9Qh9kqNummg1mw=; b=Dx/Hc6bxMfdMzt
+	V2W3f439gDHC/Ld82C8yLQl12iWgbCTfIXf+C4TumAuvKACLmxQp96TZ/AgWwjLiVbZ2nnQsZSAZY
+	z93XKEC8rkuipjIKk3OROeSRmuG7GKe9MwvmhUb6fkWSUDwVQpwf4eHFxV34uqhMEDGHh9iPk1rOp
+	7kHmChC+5qCun/43MgLeQ7vOz/0hclfTNdwege7fAjOjb64aP1pErlbKVPLaoCJOtz4TG/UNo7Hc8
+	pV5NKQAqCUV6Ukpt0g89QEJtRL9MhlMqPcOLC2fHOGMxCBpB+JB42gbxvs1asRhuf687fddA5a4zt
+	mHEhtphgRSRBk2XJ1X1A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hB8kq-0004Km-6A; Tue, 02 Apr 2019 02:02:24 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hBAQ7-0003Og-HC; Tue, 02 Apr 2019 03:49:07 +0000
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hB8kh-0004Cr-42; Tue, 02 Apr 2019 02:02:16 +0000
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com
- [209.85.160.177])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B2FCB21473;
- Tue,  2 Apr 2019 02:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1554170534;
- bh=7FEByyNms8A4/G0KAU/Ei93iPKqUnJD9pSL/qwhya8c=;
+ id 1hBAQ4-0003OG-1g
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 03:49:05 +0000
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com
+ [209.85.217.50]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id x323mjOE029329
+ for <linux-mtd@lists.infradead.org>; Tue, 2 Apr 2019 12:48:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com x323mjOE029329
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1554176926;
+ bh=orflN0K2hlD4VebMkeM0h3skXVyarEcudonJ2InpyeQ=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=tqY868Idgmj/funHHlWpiWSrBvJXI0WcQjwXq7IXC51TKmWxFIgYK7LK1ZjEJwH4p
- 0XE+a5zIkiTFdk+G1E/89Lcbv8UaWcp2tHmgMsNyALmDUbPD5wSoRGcPET+XxJDYYe
- imB33HNXLUG7QpmKYgoWhdJhWCpvGLC5QSjDmcPY=
-Received: by mail-qt1-f177.google.com with SMTP id z17so13163800qts.13;
- Mon, 01 Apr 2019 19:02:14 -0700 (PDT)
-X-Gm-Message-State: APjAAAV37TC4JW3V8XmWYvPG96zsXHe/Azjy5fDUNdbE3mKI+P2sZNVg
- PCtXeVpKtJ++jlDp9LFKf0El3+ROLJhoyAinGw==
-X-Google-Smtp-Source: APXvYqyqzQ9fkjRQvBuqhwF8bWacTcrtZWWxpvopbIQProUR3ueGZqXKzwxi6vZmp9KVVkNxjPYmaRij5RMtzRwPZE4=
-X-Received: by 2002:aed:302f:: with SMTP id 44mr58116007qte.178.1554170533898; 
- Mon, 01 Apr 2019 19:02:13 -0700 (PDT)
+ b=wWUfN3MJ5etjm+3TwxUMCcz4cUDJnsg7T51D2OPSZXlplbevPi844sDE04NR743Iu
+ Yk1iHwh+HlZYuOmYGZuTHP16DXmRQNp9em71mVSSWhb0aikCSzo3PMp8wy6Z0m2Gn7
+ N+1ojW0wGNV8U+RNXk46DGKvHGcl5zMfjLY+26w6rzTFqem8Up00OhiYCdxuNZICuf
+ vs2IHvMtggS3GZkxZlAt867wSIugFBES+8lZtGTr74x11QgKu4LbF5wYffLjeHmD2I
+ 9ctY/JExCAKnJpOn27N0T4YviObuWzMeRdIzL+JfiOhz7YG66734z9ozfBnmdpa8Jb
+ 3eB4nc54CEXdw==
+X-Nifty-SrcIP: [209.85.217.50]
+Received: by mail-vs1-f50.google.com with SMTP id g187so6902984vsc.8
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Apr 2019 20:48:46 -0700 (PDT)
+X-Gm-Message-State: APjAAAVKhieMukyI9Dj1O5p/a7Wq+ebf0bW8zQQ2m9ZzqtmcBlucR2x+
+ J1CnnVWw4us8XWhxHtn5WJzj8h1mAqg5RoKVMCM=
+X-Google-Smtp-Source: APXvYqwWuInBXXjUhRCFto8+gyjWnl7GfGN7EmaObVgvGZmikt5N18U3q5qmdhH70Xg7lfJTaQhBEXJb1p/siMpa1JU=
+X-Received: by 2002:a67:fbcc:: with SMTP id o12mr27098495vsr.60.1554176925253; 
+ Mon, 01 Apr 2019 20:48:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <75ad3b89e4a6f8ad5bc414c3dccbb1f99361495a.1554153146.git-series.maxime.ripard@bootlin.com>
- <5bbd086f909e2331103fbf9afbe75cc5b8782f36.1554153146.git-series.maxime.ripard@bootlin.com>
-In-Reply-To: <5bbd086f909e2331103fbf9afbe75cc5b8782f36.1554153146.git-series.maxime.ripard@bootlin.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Mon, 1 Apr 2019 21:02:02 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKaaFH2AKKLV91n_RjL5_56ozheLJNtrE=0t+ygm=pxxg@mail.gmail.com>
-Message-ID: <CAL_JsqKaaFH2AKKLV91n_RjL5_56ozheLJNtrE=0t+ygm=pxxg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: mtd: sunxi-nand: Add YAML schemas
-To: Maxime Ripard <maxime.ripard@bootlin.com>
+References: <1553844501-7119-1-git-send-email-yamada.masahiro@socionext.com>
+ <1553844501-7119-2-git-send-email-yamada.masahiro@socionext.com>
+ <20190330152323.71734cb8@collabora.com> <20190401191419.0431882e@xps13>
+In-Reply-To: <20190401191419.0431882e@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 2 Apr 2019 12:48:09 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT_tum_v5QwxDbz3Cmb4LwJ1BSY0mPTzzE3nc6SOE-Bng@mail.gmail.com>
+Message-ID: <CAK7LNAT_tum_v5QwxDbz3Cmb4LwJ1BSY0mPTzzE3nc6SOE-Bng@mail.gmail.com>
+Subject: Re: [PATCH v4 1/9] mtd: rawnand: denali: use nand_chip pointer more
+ for internal functions
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190401_190215_199053_1A52BD28 
-X-CRM114-Status: GOOD (  20.65  )
+X-CRM114-CacheID: sfid-20190401_204904_417211_3030079F 
+X-CRM114-Status: GOOD (  23.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -81,179 +87,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Chen-Yu Tsai <wens@csie.org>, Boris Brezillon <boris.brezillon@collabora.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Frank Rowand <frowand.list@gmail.com>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 1, 2019 at 4:14 PM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
+On Tue, Apr 2, 2019 at 2:14 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 >
-> Switch the DT binding to a YAML schema to enable the DT validation.
+> Hi Masahiro,
 >
-> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml | 81 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  Documentation/devicetree/bindings/mtd/sunxi-nand.txt                | 48 +-------------------------------------------
->  2 files changed, 81 insertions(+), 48 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Sat, 30 Mar
+> 2019 15:23:23 +0100:
 >
-> diff --git a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
-> new file mode 100644
-> index 000000000000..174294b9e9c6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
-> @@ -0,0 +1,81 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/allwinner,sun4i-a10-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Allwinner A10 NAND Controller Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - Chen-Yu Tsai <wens@csie.org>
-> +  - Maxime Ripard <maxime.ripard@bootlin.com>
-> +
-> +properties:
-> +  "#address-cells": true
-> +  "#size-cells": true
-> +
-> +  compatible:
-> +    const: allwinner,sun4i-a10-nand
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Bus Clock
-> +      - description: Module Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ahb
-> +      - const: mod
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    const: ahb
-> +
-> +  dmas:
-> +    maxItems: 1
-> +
-> +  dma-names:
-> +    const: rxtx
-> +
-> +  pinctrl-names: true
-> +
-> +patternProperties:
-> +  "^pinctrl-[0-9]+$": true
-> +
-> +  "^nand@[a-z0-9]+$":
-> +    properties:
-> +      reg:
-> +        maxItems: 1
+> > On Fri, 29 Mar 2019 16:28:13 +0900
+> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >
+> > > With the recent refactoring, the NAND driver hooks now take a pointer
+> > > to nand_chip. Add to_denali() in order to convert (struct nand_chip *)
+> > > to (struct denali_nand_info *) directly. It is more useful than the
+> > > current mtd_to_denali().
+> > >
+> > > I changed some helper functions to take (struct nand_chip *). This will
+> > > avoid pointer conversion back and forth, and ease further development.
+> > >
+> > > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > > ---
+> > >
+> > > Changes in v4: None
+> > > Changes in v3: None
+> > > Changes in v2: None
+> > >
+> > >  drivers/mtd/nand/raw/denali.c | 57 ++++++++++++++++++++++++-------------------
+> > >  1 file changed, 32 insertions(+), 25 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+> > > index 24aeafc..4ac1314 100644
+> > > --- a/drivers/mtd/nand/raw/denali.c
+> > > +++ b/drivers/mtd/nand/raw/denali.c
+> > > @@ -47,6 +47,11 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
+> > >     return container_of(mtd_to_nand(mtd), struct denali_nand_info, nand);
+> > >  }
+> > >
+> > > +static struct denali_nand_info *to_denali(struct nand_chip *chip)
+> > > +{
+> > > +   return container_of(chip, struct denali_nand_info, nand);
+> > > +}
+> > > +
+> > >  /*
+> > >   * Direct Addressing - the slave address forms the control information (command
+> > >   * type, bank, block, and page address).  The slave data is the actual data to
+> > > @@ -282,12 +287,12 @@ static void denali_cmd_ctrl(struct nand_chip *chip, int dat, unsigned int ctrl)
+> > >     denali->host_write(denali, DENALI_BANK(denali) | type, dat);
+> > >  }
+> > >
+> > > -static int denali_check_erased_page(struct mtd_info *mtd,
+> > > -                               struct nand_chip *chip, uint8_t *buf,
+> > > +static int denali_check_erased_page(struct nand_chip *chip,
+> > > +                               struct denali_nand_info *denali, u8 *buf,
+> >
+> > You don't need to pass both chip and denali, as one can be extracted
+> > from the other.
+> >
+> > >                                 unsigned long uncor_ecc_flags,
+> > >                                 unsigned int max_bitflips)
+> > >  {
+> > > -   struct denali_nand_info *denali = mtd_to_denali(mtd);
+> > > +   struct mtd_ecc_stats *ecc_stats = &nand_to_mtd(chip)->ecc_stats;
+> > >     uint8_t *ecc_code = chip->oob_poi + denali->oob_skip_bytes;
+> > >     int ecc_steps = chip->ecc.steps;
+> > >     int ecc_size = chip->ecc.size;
+> > > @@ -303,9 +308,9 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+> > >                                               NULL, 0,
+> > >                                               chip->ecc.strength);
+> > >             if (stat < 0) {
+> > > -                   mtd->ecc_stats.failed++;
+> > > +                   ecc_stats->failed++;
+> > >             } else {
+> > > -                   mtd->ecc_stats.corrected += stat;
+> > > +                   ecc_stats->corrected += stat;
+> > >                     max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> > >             }
+> > >
+> > > @@ -316,11 +321,11 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+> > >     return max_bitflips;
+> > >  }
+> > >
+> > > -static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+> > > +static int denali_hw_ecc_fixup(struct nand_chip *chip,
+> > >                            struct denali_nand_info *denali,
+> >
+> > Ditto.
+> >
+>
+> I am fine with the series in its current state, please submit a v5
+> with Boris comment's addressed and I'll queue it right away to next.
+>
 
-min/max value of reg values?
 
-> +
-> +      nand-ecc-mode: true
-> +      nand-ecc-step-size: true
-> +      nand-ecc-strength: true
+OK, I will submit v5 shortly.
 
-Surely the h/w has further constraints on possible values?
 
-> +
-> +      allwinner,rb:
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> +        description:
-> +          Contains the native Ready/Busy IDs.
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> deleted file mode 100644
-> index dcd5a5d80dc0..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-> +++ /dev/null
-> @@ -1,48 +0,0 @@
-> -Allwinner NAND Flash Controller (NFC)
-> -
-> -Required properties:
-> -- compatible : "allwinner,sun4i-a10-nand".
-> -- reg : shall contain registers location and length for data and reg.
-> -- interrupts : shall define the nand controller interrupt.
-> -- #address-cells: shall be set to 1. Encode the nand CS.
-> -- #size-cells : shall be set to 0.
-> -- clocks : shall reference nand controller clocks.
-> -- clock-names : nand controller internal clock names. Shall contain :
-> -    * "ahb" : AHB gating clock
-> -    * "mod" : nand controller clock
-> -
-> -Optional properties:
-> -- dmas : shall reference DMA channel associated to the NAND controller.
-> -- dma-names : shall be "rxtx".
-> -
-> -Optional children nodes:
-> -Children nodes represent the available nand chips.
-> -
-> -Optional properties:
-> -- reset : phandle + reset specifier pair
-> -- reset-names : must contain "ahb"
-> -- allwinner,rb : shall contain the native Ready/Busy ids.
-> -- nand-ecc-mode : one of the supported ECC modes ("hw", "soft", "soft_bch" or
-> -                 "none")
-> -
-> -see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
-> -
-> -
-> -Examples:
-> -nfc: nand@1c03000 {
-> -       compatible = "allwinner,sun4i-a10-nand";
-> -       reg = <0x01c03000 0x1000>;
-> -       interrupts = <0 37 1>;
-> -       clocks = <&ahb_gates 13>, <&nand_clk>;
-> -       clock-names = "ahb", "mod";
-> -       #address-cells = <1>;
-> -       #size-cells = <0>;
-> -       pinctrl-names = "default";
-> -       pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
-> -
-> -       nand@0 {
-> -               reg = <0>;
-> -               allwinner,rb = <0>;
-> -               nand-ecc-mode = "soft_bch";
-> -       };
-> -};
-> --
-> git-series 0.9.1
+
+
+-- 
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
