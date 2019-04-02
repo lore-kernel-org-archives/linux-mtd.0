@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13FFCC10F00
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 14:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A44C4360F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 14:55:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D18CB2075E
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 14:54:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B229A2075E
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 14:55:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GRTzOl1Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D18CB2075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eR46OR2n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B229A2075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C2zAQC5uNtf46zSyH5IZ00mPrz8Pv6EGQV6bXg338sA=; b=GRTzOl1ZsxuNOh
-	5pMExv4dLsFcGEHWAJeScj670Xbm/nG4wAmw8GCbltURQar3SFmjyaISXMh4j99/A27O+7Nj+Rr9Z
-	6rSVaLeO0zb0iGhpWvqPFsOprhL6aVApaUFCQEvBfbZ7M92OSK/gynEqbSvMEe3oqyatqECBF+Sit
-	nUw6csWguP3xsiSEiUF/bz0Hay/PrItcSW/+sqoEMjPkJQZ5MEyvVGJX6fiGRJmArCP0i4EaKkUXe
-	ziRC6cJ7rwaAV5c9nXWLgIYH0yff6di8WnVgMMiHdNT0RnITC+jVWT7e9sqc1jbChnYqtSJjS+xRa
-	LMS01qaZO+hMT8h3SULw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=f8bPxCEonKl4CNpCPsx2iYJzkGTzeXmbK7ZxXv3DO+U=; b=eR46OR2n8XfW6L
+	weful51v95/rKb0gKtoP31Kwh4U7BtcHyZtfbB6ltyDAVz18cFvfDiueT4E7A2dJWkamGWjqfee6R
+	SPri0Yxl/YFeRjWW+LyPeTaWGI9nBMypCpoas2pAlqMTlm0Qbar3OLtQuG3Dm2LjKTzgh3MX7QgWk
+	zyqaEXVzBuD36szV0N+qzi7Us6SbHIivKHS2Y0G1S0B5y9hH7dMUmGF/m6mHyl5qyySp3TYk3ikvz
+	12PvEW5iZDUrHZYJ75EWJeBmeizDOD6NWrnIlMKTPVf7TRVGHHriwBozgqY+U37wkkO0uZJP5Ndfi
+	C0qNQqV+dWjUkp44rBhA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBKoH-0005J8-Ni; Tue, 02 Apr 2019 14:54:45 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1hBKol-00079M-Qz; Tue, 02 Apr 2019 14:55:15 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBKo8-0005A4-8k; Tue, 02 Apr 2019 14:54:38 +0000
+ id 1hBKoC-0005Af-DU; Tue, 02 Apr 2019 14:54:47 +0000
+X-Originating-IP: 90.88.30.125
 Received: from localhost (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr
  [90.88.30.125]) (Authenticated sender: maxime.ripard@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 44FCB100006;
- Tue,  2 Apr 2019 14:54:33 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CAA0C240002;
+ Tue,  2 Apr 2019 14:54:29 +0000 (UTC)
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>,
  Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
  Frank Rowand <frowand.list@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 2/2] dt-bindings: mtd: sunxi-nand: Add YAML schemas
-Date: Tue,  2 Apr 2019 16:54:25 +0200
-Message-Id: <079279c3713042bdcc76ea27907d5f75bcb483fc.1554216856.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH v2 1/2] dt-bindings: mtd: Add YAML schemas for the generic
+ NAND options
+Date: Tue,  2 Apr 2019 16:54:24 +0200
+Message-Id: <74b8a52ce98b09d7906f988c107793a86c0c5f6b.1554216856.git-series.maxime.ripard@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <74b8a52ce98b09d7906f988c107793a86c0c5f6b.1554216856.git-series.maxime.ripard@bootlin.com>
-References: <74b8a52ce98b09d7906f988c107793a86c0c5f6b.1554216856.git-series.maxime.ripard@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190402_075436_607224_5E8241DD 
-X-CRM114-Status: GOOD (  13.71  )
+X-CRM114-CacheID: sfid-20190402_075441_064850_2027DF39 
+X-CRM114-Status: GOOD (  20.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,177 +75,256 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Switch the DT binding to a YAML schema to enable the DT validation.
+The NAND chips in MTD have a bunch of generic options that are needed in a
+device tree. Add a YAML schemas for those.
 
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 
 ---
 
-Changes from v1
-  - Added controller constraints to the generic options
+Changes from v1:
+  - Removed free form text binding
+  - Enhanced properties descriptions
+  - Fixed the SPDX license tag
+  - Added minimums for nand-ecc-strength and nand-ecc-step-size
+  - Removed Boris from the maintainers
 ---
- Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml | 96 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- Documentation/devicetree/bindings/mtd/sunxi-nand.txt                | 48 +------------------------------------
- 2 files changed, 96 insertions(+), 48 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+ Documentation/devicetree/bindings/mtd/nand-controller.yaml | 141 +++++++-
+ Documentation/devicetree/bindings/mtd/nand.txt             |  75 +----
+ 2 files changed, 141 insertions(+), 75 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nand-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
 
-diff --git a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
 new file mode 100644
-index 000000000000..fcd2faec9af5
+index 000000000000..ebc7833ffc0c
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
-@@ -0,0 +1,96 @@
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -0,0 +1,141 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/mtd/allwinner,sun4i-a10-nand.yaml#
++$id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Allwinner A10 NAND Controller Device Tree Bindings
-+
-+allOf:
-+  - $ref: "nand-controller.yaml"
++title: NAND Chip and NAND Controller Generic Binding
 +
 +maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Maxime Ripard <maxime.ripard@bootlin.com>
++  - Miquel Raynal <miquel.raynal@bootlin.com>
++  - Richard Weinberger <richard@nod.at>
++
++description: |
++  The NAND controller should be represented with its own DT node, and
++  all NAND chips attached to this controller should be defined as
++  children nodes of the NAND controller. This representation should be
++  enforced even for simple controllers supporting only one chip.
++
++  The ECC strength and ECC step size properties define the user
++  desires in terms of correction capability of a controller. Together,
++  they request the ECC engine to correct {strength} bit errors per
++  {size} bytes.
++
++  The interpretation of these parameters is implementation-defined, so
++  not all implementations must support all possible
++  combinations. However, implementations are encouraged to further
++  specify the value(s) they support.
 +
 +properties:
-+  "#address-cells": true
-+  "#size-cells": true
++  $nodename:
++    pattern: "^nand-controller(@.*)?"
 +
-+  compatible:
-+    const: allwinner,sun4i-a10-nand
++  "#address-cells":
++    const: 1
 +
-+  reg:
-+    maxItems: 1
++  "#size-cells":
++    const: 0
 +
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: ahb
-+      - const: mod
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: ahb
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    const: rxtx
-+
-+  pinctrl-names: true
++  ranges: true
 +
 +patternProperties:
-+  "^pinctrl-[0-9]+$": true
-+
-+  "^nand@[a-z0-9]+$":
++  "^nand@[a-z0-9]$":
 +    properties:
 +      reg:
-+        maxItems: 1
-+        minimum: 0
-+        maximum: 7
-+
-+      nand-ecc-mode: true
-+
-+      nand-ecc-algo:
-+        const: bch
-+
-+      nand-ecc-step-size:
-+        enum: [ 512, 1024 ]
-+
-+      nand-ecc-strength:
-+        maximum: 80
-+
-+      allwinner,rb:
 +        description:
 +          Contains the native Ready/Busy IDs.
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/uint32-array
-+          - minItems: 1
-+            maxItems: 2
-+            items:
-+              minimum: 0
-+              maximum: 1
 +
-+    additionalProperties: false
++      nand-ecc-mode:
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/string
++          - enum: [ none, soft, hw, hw_syndrome, hw_oob_first, on-die ]
++        description:
++          Desired ECC engine, either hardware (most of the time
++          embedded in the NAND controller) or software correction
++          (Linux will handle the calculations). soft_bch is deprecated
++          and should be replaced by soft and nand-ecc-algo.
++
++      nand-ecc-algo:
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/string
++          - enum: [ hamming, bch, rs ]
++        description:
++          Desired ECC algorithm.
++
++      nand-bus-width:
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/uint32
++          - enum: [ 8, 16 ]
++          - default: 8
++        description:
++          Bus width to the NAND chip
++
++      nand-on-flash-bbt:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          With this property, the OS will search the device for a Bad
++          Block Table (BBT). If not found, it will create one, reserve
++          a few blocks at the end of the device to store it and update
++          it as the device ages. Otherwise, the out-of-band area of a
++          few pages of all the blocks will be scanned at boot time to
++          find Bad Block Markers (BBM). These markers will help to
++          build a volatile BBT in RAM.
++
++      nand-ecc-strength:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 1
++        description:
++          Maximum number of bits that can be corrected per ECC step.
++
++      nand-ecc-step-size:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 1
++        description:
++          Number of data bytes covered by a single ECC step.
++
++      nand-ecc-maximize:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          Whether or not the ECC strength should be maximized. The
++          maximum ECC strength is both controller and chip
++          dependent. The ECC engine has to select the ECC config
++          providing the best strength and taking the OOB area size
++          constraint into account. This is particularly useful when
++          only the in-band area is used by the upper layers, and you
++          want to make your NAND as reliable as possible.
++
++      nand-is-boot-medium:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          Whether or not the NAND chip is a boot medium. Drivers might
++          use this information to select ECC algorithms supported by
++          the boot ROM or similar restrictions.
++
++      nand-rb:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        description:
++          Contains the native Ready/Busy IDs.
++
++    required:
++      - reg
 +
 +required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
++  - "#address-cells"
++  - "#size-cells"
 +
-+additionalProperties: false
++examples:
++  - |
++    nand-controller {
++      #address-cells = <1>;
++      #size-cells = <0>;
 +
-+...
-diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
++      /* controller specific properties */
++
++      nand@0 {
++        reg = <0>;
++        nand-ecc-mode = "soft";
++        nand-ecc-algo = "bch";
++
++        /* controller specific properties */
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
 deleted file mode 100644
-index dcd5a5d80dc0..000000000000
---- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+index e949c778e983..000000000000
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
 +++ /dev/null
-@@ -1,48 +0,0 @@
--Allwinner NAND Flash Controller (NFC)
+@@ -1,75 +0,0 @@
+-* NAND chip and NAND controller generic binding
 -
--Required properties:
--- compatible : "allwinner,sun4i-a10-nand".
--- reg : shall contain registers location and length for data and reg.
--- interrupts : shall define the nand controller interrupt.
--- #address-cells: shall be set to 1. Encode the nand CS.
--- #size-cells : shall be set to 0.
--- clocks : shall reference nand controller clocks.
--- clock-names : nand controller internal clock names. Shall contain :
--    * "ahb" : AHB gating clock
--    * "mod" : nand controller clock
+-NAND controller/NAND chip representation:
 -
--Optional properties:
--- dmas : shall reference DMA channel associated to the NAND controller.
--- dma-names : shall be "rxtx".
+-The NAND controller should be represented with its own DT node, and all
+-NAND chips attached to this controller should be defined as children nodes
+-of the NAND controller. This representation should be enforced even for
+-simple controllers supporting only one chip.
 -
--Optional children nodes:
--Children nodes represent the available nand chips.
+-Mandatory NAND controller properties:
+-- #address-cells: depends on your controller. Should at least be 1 to
+-		  encode the CS line id.
+-- #size-cells: depends on your controller. Put zero unless you need a
+-	       mapping between CS lines and dedicated memory regions
 -
--Optional properties:
--- reset : phandle + reset specifier pair
--- reset-names : must contain "ahb"
--- allwinner,rb : shall contain the native Ready/Busy ids.
--- nand-ecc-mode : one of the supported ECC modes ("hw", "soft", "soft_bch" or
--		  "none")
+-Optional NAND controller properties
+-- ranges: only needed if you need to define a mapping between CS lines and
+-	  memory regions
 -
--see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+-Optional NAND chip properties:
 -
+-- nand-ecc-mode : String, operation mode of the NAND ecc mode.
+-		  Supported values are: "none", "soft", "hw", "hw_syndrome",
+-		  "hw_oob_first", "on-die".
+-		  Deprecated values:
+-		  "soft_bch": use "soft" and nand-ecc-algo instead
+-- nand-ecc-algo: string, algorithm of NAND ECC.
+-		 Valid values are: "hamming", "bch", "rs".
+-- nand-bus-width : 8 or 16 bus width if not present 8
+-- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
 -
--Examples:
--nfc: nand@1c03000 {
--	compatible = "allwinner,sun4i-a10-nand";
--	reg = <0x01c03000 0x1000>;
--	interrupts = <0 37 1>;
--	clocks = <&ahb_gates 13>, <&nand_clk>;
--	clock-names = "ahb", "mod";
--	#address-cells = <1>;
--	#size-cells = <0>;
--	pinctrl-names = "default";
--	pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
+-- nand-ecc-strength: integer representing the number of bits to correct
+-		     per ECC step.
 -
--	nand@0 {
--		reg = <0>;
--		allwinner,rb = <0>;
--		nand-ecc-mode = "soft_bch";
+-- nand-ecc-step-size: integer representing the number of data bytes
+-		      that are covered by a single ECC step.
+-
+-- nand-ecc-maximize: boolean used to specify that you want to maximize ECC
+-		     strength. The maximum ECC strength is both controller and
+-		     chip dependent. The controller side has to select the ECC
+-		     config providing the best strength and taking the OOB area
+-		     size constraint into account.
+-		     This is particularly useful when only the in-band area is
+-		     used by the upper layers, and you want to make your NAND
+-		     as reliable as possible.
+-- nand-is-boot-medium: Whether the NAND chip is a boot medium. Drivers might use
+-		       this information to select ECC algorithms supported by
+-		       the boot ROM or similar restrictions.
+-
+-- nand-rb: shall contain the native Ready/Busy ids.
+-
+-The ECC strength and ECC step size properties define the correction capability
+-of a controller. Together, they say a controller can correct "{strength} bit
+-errors per {size} bytes".
+-
+-The interpretation of these parameters is implementation-defined, so not all
+-implementations must support all possible combinations. However, implementations
+-are encouraged to further specify the value(s) they support.
+-
+-Example:
+-
+-	nand-controller {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		/* controller specific properties */
+-
+-		nand@0 {
+-			reg = <0>;
+-			nand-ecc-mode = "soft";
+-			nand-ecc-algo = "bch";
+-
+-			/* controller specific properties */
+-		};
 -	};
--};
+
+base-commit: 1244df4693747552c8efba995f4ebc3b247536cf
 -- 
 git-series 0.9.1
 
