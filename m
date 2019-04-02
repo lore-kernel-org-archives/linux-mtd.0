@@ -2,87 +2,88 @@ Return-Path: <SRS0=uocl=SE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC45EC4360F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 20:55:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF2FCC4360F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 23:45:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB0D22084B
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 20:55:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B85EA207E0
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 23:45:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ILWueWm0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="FrZdRMWu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB0D22084B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=yandex.ru
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mq1HDYZE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="SmMN1sUg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B85EA207E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:MIME-Version:Subject:
-	References:In-Reply-To:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BdzscDBs/Hha+KLu7jqrIJJdJwosORVfuy6rpNgOESI=; b=ILWueWm0tVB4a6
-	kRvvqqSn0QLflD1amSu4bn61ojzhL3sjpHB7vFBnvmk3FaOTjidyKfH0S7QjsvO8ZbxPYGPIZLduZ
-	IeYU6mVMk4vMEhwbp5V0aL1iXngtk3sKbcPFDrXC7IkpoE0M6S7N4427Vn9uSTakhh9yyvuCLeAku
-	jvC8Bxsko2DWMcs8eehE5s5tSEDNC3k4ceiPGEDw21wvrw7U7NSXDNHPt38K/WLUG1dpmyFZDaIEO
-	SGVs8lXBQi9kcG+Y/3O48VzIkDdRmXxkkbPqt4c3TKKsh5wf3GNDyqrp3HRfr7fvGw5/LlOm+c+pP
-	Rzfv6Qrxs2WLukbjavfg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:Date
+	:Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	List-Owner; bh=/fK6o7laC793gOnJ52SF5Jyw2B9i3nKhfvYDzWZdmSQ=; b=mq1HDYZEGbEwYv
+	Q0VDbvwUtmvitJ3S/xSdXA5ZAoskLc16V3qYsfb/92eVPDiE0JRJRZuO/yrgknEwPoSSCFTLGYUQo
+	FpHlHAFbTk1s8/Tw6iGKwhy9Cw/h+03OT6axdNiRuouSXFFZfb9w6BzqLh+A8FzuWuvOlWZEFPenM
+	zV79ZKjWURURBBSWqHlRNN5X+Xfx5gaymjk3STAzbaXJ6H+83uYyavSzvNA13QcQ7LyjMWYL4olpu
+	+sVEZ64mqFMfZIjhbeP31rVu5LDdAPONdPTs2XyhJ9K9gumixDCQCWftOC7VnDXKfN2IVxRKZkfBj
+	tGT3JsDg0V1F6N+/0Thg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBQRX-00058n-FY; Tue, 02 Apr 2019 20:55:39 +0000
-Received: from forward500j.mail.yandex.net ([2a02:6b8:0:801:2::110])
+	id 1hBT5L-00049k-Ec; Tue, 02 Apr 2019 23:44:55 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBQRU-00058R-HL; Tue, 02 Apr 2019 20:55:38 +0000
-Received: from mxback1j.mail.yandex.net (mxback1j.mail.yandex.net
- [IPv6:2a02:6b8:0:1619::10a])
- by forward500j.mail.yandex.net (Yandex) with ESMTP id A87C811C137F;
- Tue,  2 Apr 2019 23:55:29 +0300 (MSK)
-Received: from localhost (localhost [::1])
- by mxback1j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id PUHWzjSrkC-tPiuJD2H; 
- Tue, 02 Apr 2019 23:55:28 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
- t=1554238528; bh=vwRxSdvqCt0uzAJjamUTHIW3pMc+Mjgbh6NRf409VFE=;
- h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
- b=FrZdRMWu7fZIuwFjUT+SD4CtNP99eiai+1Iijmbv74PA8UtjFTRr9XP8vxqHs2I9y
- c/1hfVkODcCdvca1F/Js1WNnDe1BgV1p1YNMCTdZ9qDsDhU5sul7YN8R//beYyDv4F
- fmm/fhetrYxMke1/N8CUQgPBg9/4Doi66t89LHBg=
-Authentication-Results: mxback1j.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by sas1-87f9feb8d943.qloud-c.yandex.net with HTTP;
- Tue, 02 Apr 2019 23:55:25 +0300
-From: Andrey Abramov <st5pub@yandex.ru>
-To: vgupta <vgupta@synopsys.com>, benh <benh@kernel.crashing.org>,
- paulus <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>, bp <bp@alien8.de>,
- hpa <hpa@zytor.com>, x86 <x86@kernel.org>, mark <mark@fasheh.com>,
- jlbec <jlbec@evilplan.org>, richard <richard@nod.at>,
- dedekind1 <dedekind1@gmail.com>, adrian.hunter <adrian.hunter@intel.com>,
- gregkh <gregkh@linuxfoundation.org>,
- naveen.n.rao <naveen.n.rao@linux.vnet.ibm.com>,
- jpoimboe <jpoimboe@redhat.com>, Dave Chinner <dchinner@redhat.com>,
- darrick.wong <darrick.wong@oracle.com>,
- ard.biesheuvel <ard.biesheuvel@linaro.org>, George Spelvin <lkml@sdf.org>,
- linux-snps-arc <linux-snps-arc@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- ocfs2-devel <ocfs2-devel@oss.oracle.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, sfr <sfr@canb.auug.org.au>
-In-Reply-To: <824481554237711@sas1-23a37bc8251c.qloud-c.yandex.net>
-References: <824481554237711@sas1-23a37bc8251c.qloud-c.yandex.net>
-Subject: [PATCH v3 5/5] Lib: sort.h: remove the size argument from the swap
- function
+ id 1hBT5D-00049J-1H
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 23:44:53 +0000
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E6A2C891AB;
+ Wed,  3 Apr 2019 12:44:36 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+ s=mail181024; t=1554248676;
+ bh=PiixrKrzsRmdi90owdm9zJ0tMn8AHdOSC7yFEejftPs=;
+ h=From:To:CC:Subject:Date:References;
+ b=SmMN1sUgSAQ8W4Vx9WkpCar9qVv6yQDpOwq0yPxpikmVBm38YdyAjV24J8OpYwy0x
+ DSjFeTscE9POPX/y/MV9e4VqWzfxONkFRNmLaKxC9zdx4n6TER0pCyBLBAL8CbGzyo
+ ZilN2YFTldThVa3yPrV/XVbkUGdnAbHddIRXpWPriOOsbcrLT34MKB5KJuB56zEnbI
+ yUkXGpDFaOE903/tiV284wqmg21OgPHxMerQRFGJuCosknc2L982+oGmh1UMd86ELR
+ wqTM7d18sssdOVrsiZl5K2jFXW83lFZvAlonoy/wHY4AHG8PG+IFPPpwdBxHrDzANk
+ ntqLPUk9fUGuA==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by
+ mmarshal3.atlnz.lc with Trustwave SEG (v7, 5, 8, 10121)
+ id <B5ca3f3e00000>; Wed, 03 Apr 2019 12:44:37 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1156.6; Wed, 3 Apr 2019 12:44:32 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1156.000; Wed, 3 Apr 2019 12:44:32 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Boris Brezillon <bbrezillon@kernel.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Marek
+ Vasut" <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [v2,11/15] mtd: maps: Merge physmap_of.c into physmap-core.c
+Thread-Topic: [v2,11/15] mtd: maps: Merge physmap_of.c into physmap-core.c
+Thread-Index: AQHU6a4E092OmdUrek62VynJQz6wLg==
+Date: Tue, 2 Apr 2019 23:44:31 +0000
+Message-ID: <10efc9a0980f4bc2b06b4149d9a4ff90@svr-chch-ex1.atlnz.lc>
+References: <20181019074908.13226-12-boris.brezillon@bootlin.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [2001:df5:b000:22:3a2c:4aff:fe70:2b02]
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date: Tue, 02 Apr 2019 23:55:25 +0300
-Message-Id: <793311554238525@sas1-87f9feb8d943.qloud-c.yandex.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190402_135536_928125_446A42A3 
-X-CRM114-Status: UNSURE (   9.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190402_164447_464201_6E44468A 
+X-CRM114-Status: GOOD (  28.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,117 +95,829 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: jannh <jannh@google.com>, peterz <peterz@infradead.org>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- "yamada.masahiro" <yamada.masahiro@socionext.com>,
- Morton Andrew <akpm@linux-foundation.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, jslaby <jslaby@suse.cz>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Ricardo
+ Ribalda Delgado <ricardo.ribalda@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Removes size argument from the swap function because:
-	1) It wasn't used.
-	2) Custom swap function knows what kind of objects it swaps,
-		so it already knows their sizes.
+Hi Boris,
 
-Signed-off-by: Andrey Abramov <st5pub@yandex.ru>
-Reviewed by: George Spelvin <lkml@sdf.org>
----
- arch/x86/kernel/unwind_orc.c | 2 +-
- include/linux/sort.h         | 2 +-
- kernel/jump_label.c          | 2 +-
- lib/extable.c                | 2 +-
- lib/sort.c                   | 7 +++----
- 5 files changed, 7 insertions(+), 8 deletions(-)
+I've just come across the commit from this patch.
 
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 89be1be1790c..dc410b567189 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -176,7 +176,7 @@ static struct orc_entry *orc_find(unsigned long ip)
- 	return orc_ftrace_find(ip);
- }
- 
--static void orc_sort_swap(void *_a, void *_b, int size)
-+static void orc_sort_swap(void *_a, void *_b)
- {
- 	struct orc_entry *orc_a, *orc_b;
- 	struct orc_entry orc_tmp;
-diff --git a/include/linux/sort.h b/include/linux/sort.h
-index 2b99a5dd073d..13bb4635b5f1 100644
---- a/include/linux/sort.h
-+++ b/include/linux/sort.h
-@@ -6,6 +6,6 @@
- 
- void sort(void *base, size_t num, size_t size,
- 	  int (*cmp)(const void *, const void *),
--	  void (*swap)(void *, void *, int));
-+	  void (*swap)(void *, void *));
- 
- #endif
-diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-index bad96b476eb6..6b1187b8a060 100644
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -45,7 +45,7 @@ static int jump_label_cmp(const void *a, const void *b)
- 	return 0;
- }
- 
--static void jump_label_swap(void *a, void *b, int size)
-+static void jump_label_swap(void *a, void *b)
- {
- 	long delta = (unsigned long)a - (unsigned long)b;
- 	struct jump_entry *jea = a;
-diff --git a/lib/extable.c b/lib/extable.c
-index f54996fdd0b8..0515a94538ca 100644
---- a/lib/extable.c
-+++ b/lib/extable.c
-@@ -28,7 +28,7 @@ static inline unsigned long ex_to_insn(const struct exception_table_entry *x)
- #ifndef ARCH_HAS_RELATIVE_EXTABLE
- #define swap_ex		NULL
- #else
--static void swap_ex(void *a, void *b, int size)
-+static void swap_ex(void *a, void *b)
- {
- 	struct exception_table_entry *x = a, *y = b, tmp;
- 	int delta = b - a;
-diff --git a/lib/sort.c b/lib/sort.c
-index 50855ea8c262..8704750e6bde 100644
---- a/lib/sort.c
-+++ b/lib/sort.c
-@@ -114,7 +114,7 @@ static void swap_bytes(void *a, void *b, size_t n)
- 	} while (n);
- }
- 
--typedef void (*swap_func_t)(void *a, void *b, int size);
-+typedef void (*swap_func_t)(void *a, void *b);
- 
- /*
-  * The values are arbitrary as long as they can't be confused with
-@@ -138,7 +138,7 @@ static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
- 	else if (swap_func == SWAP_BYTES)
- 		swap_bytes(a, b, size);
- 	else
--		swap_func(a, b, (int)size);
-+		swap_func(a, b);
- }
- 
- /**
-@@ -186,8 +186,7 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
-  * it less suitable for kernel use.
-  */
- void sort(void *base, size_t num, size_t size,
--	  int (*cmp_func)(const void *, const void *),
--	  void (*swap_func)(void *, void *, int size))
-+	  int (*cmp_func)(const void *, const void *), swap_func_t swap_func)
- {
- 	/* pre-scale counters for performance */
- 	size_t n = num * size, a = (num/2) * size;
--- 
-2.21.0
+On 19/10/18 8:49 PM, Boris Brezillon wrote:
+> There's no real reason to have two separate driver for the DT and pdata
+> case. Just do what we do everywhere else and handle DT and pdata
+> parsing in the same driver.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Reviewed-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> ---
+> Changes in v2:
+> - Add Ricardo's R-b
+> - Fix 2 checks (reported by Ricardo)
+> ---
+>   drivers/mtd/maps/Kconfig           |   4 +-
+>   drivers/mtd/maps/Makefile          |   7 +-
+>   drivers/mtd/maps/physmap-core.c    | 261 +++++++++++++++++++++++---
+>   drivers/mtd/maps/physmap_of_core.c | 368 -------------------------------------
+>   4 files changed, 240 insertions(+), 400 deletions(-)
+>   delete mode 100644 drivers/mtd/maps/physmap_of_core.c
+> 
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index afb36bff13a7..5bffebacce86 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -66,8 +66,8 @@ config MTD_PHYSMAP_BANKWIDTH
+>   	  used internally by the CFI drivers.
+>   
+>   config MTD_PHYSMAP_OF
+> -	tristate "Memory device in physical memory map based on OF description"
+> -	depends on OF && (MTD_CFI || MTD_JEDECPROBE || MTD_ROM || MTD_RAM)
+> +	bool "Memory device in physical memory map based on OF description"
+> +	depends on OF && MTD_PHYSMAP
 
+Previously we could select MTD_PHYSMAP_OF if MTD_RAM was defined. After 
+this change we can't select this because MTD_PHYSMAP does not have 
+MTD_RAM as dependency.
+
+I'm just in the process of porting the latest kernel to a platform with 
+parallel SRAM and NAND via a dedicated controller. I haven't got to a 
+point where the platform is booting but I suspect I'll loose my SRAM.
+
+>   	help
+>   	  This provides a 'mapping' driver which allows the NOR Flash, ROM
+>   	  and RAM driver code to communicate with chips which are mapped
+> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> index 2574909edffd..ad32b185a120 100644
+> --- a/drivers/mtd/maps/Makefile
+> +++ b/drivers/mtd/maps/Makefile
+> @@ -18,13 +18,10 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+>   obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+>   obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+>   physmap-objs-y			+= physmap-core.o
+> +physmap-objs-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
+> +physmap-objs-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
+>   physmap-objs			:= $(physmap-objs-y)
+>   obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+> -physmap_of-objs-y		+= physmap_of_core.o
+> -physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
+> -physmap_of-objs-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
+> -physmap_of-objs			:= $(physmap_of-objs-y)
+> -obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+>   obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+>   obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+>   obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+> diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+> index e27051bc5dc6..07af8368d173 100644
+> --- a/drivers/mtd/maps/physmap-core.c
+> +++ b/drivers/mtd/maps/physmap-core.c
+> @@ -6,6 +6,13 @@
+>    * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
+>    *
+>    * 031022 - [jsun] add run-time configure and partition setup
+> + *
+> + * Device tree support:
+> + *    Copyright (C) 2006 MontaVista Software Inc.
+> + *    Author: Vitaly Wool <vwool@ru.mvista.com>
+> + *
+> + *    Revised to handle newer style flash binding by:
+> + *    Copyright (C) 2007 David Gibson, IBM Corporation.
+>    */
+>   
+>   #include <linux/module.h>
+> @@ -20,7 +27,12 @@
+>   #include <linux/mtd/partitions.h>
+>   #include <linux/mtd/physmap.h>
+>   #include <linux/mtd/concat.h>
+> +#include <linux/mtd/cfi_endian.h>
+>   #include <linux/io.h>
+> +#include <linux/of_device.h>
+> +
+> +#include "physmap_of_gemini.h"
+> +#include "physmap_of_versatile.h"
+>   
+>   struct physmap_flash_info {
+>   	unsigned int		nmaps;
+> @@ -29,6 +41,10 @@ struct physmap_flash_info {
+>   	struct map_info		*maps;
+>   	spinlock_t		vpp_lock;
+>   	int			vpp_refcnt;
+> +	const char		*probe_type;
+> +	const char * const	*part_types;
+> +	unsigned int		nparts;
+> +	const struct mtd_partition *parts;
+>   };
+>   
+>   static int physmap_flash_remove(struct platform_device *dev)
+> @@ -41,8 +57,6 @@ static int physmap_flash_remove(struct platform_device *dev)
+>   	if (!info)
+>   		return 0;
+>   
+> -	physmap_data = dev_get_platdata(&dev->dev);
+> -
+>   	if (info->cmtd) {
+>   		err = mtd_device_unregister(info->cmtd);
+>   		if (err)
+> @@ -57,7 +71,8 @@ static int physmap_flash_remove(struct platform_device *dev)
+>   			map_destroy(info->mtds[i]);
+>   	}
+>   
+> -	if (physmap_data->exit)
+> +	physmap_data = dev_get_platdata(&dev->dev);
+> +	if (physmap_data && physmap_data->exit)
+>   		physmap_data->exit(dev);
+>   
+>   	return 0;
+> @@ -89,6 +104,172 @@ static void physmap_set_vpp(struct map_info *map, int state)
+>   	spin_unlock_irqrestore(&info->vpp_lock, flags);
+>   }
+>   
+> +#if IS_ENABLED(CONFIG_MTD_PHYSMAP_OF)
+> +static const struct of_device_id of_flash_match[] = {
+> +	{
+> +		.compatible = "cfi-flash",
+> +		.data = "cfi_probe",
+> +	},
+> +	{
+> +		/*
+> +		 * FIXME: JEDEC chips can't be safely and reliably
+> +		 * probed, although the mtd code gets it right in
+> +		 * practice most of the time.  We should use the
+> +		 * vendor and device ids specified by the binding to
+> +		 * bypass the heuristic probe code, but the mtd layer
+> +		 * provides, at present, no interface for doing so
+> +		 * :(.
+> +		 */
+> +		.compatible = "jedec-flash",
+> +		.data = "jedec_probe",
+> +	},
+> +	{
+> +		.compatible = "mtd-ram",
+> +		.data = "map_ram",
+> +	},
+> +	{
+> +		.compatible = "mtd-rom",
+> +		.data = "map_rom",
+> +	},
+> +	{
+> +		.type = "rom",
+> +		.compatible = "direct-mapped"
+> +	},
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, of_flash_match);
+> +
+> +static const char * const of_default_part_probes[] = {
+> +	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL
+> +};
+> +
+> +static const char * const *of_get_part_probes(struct platform_device *dev)
+> +{
+> +	struct device_node *dp = dev->dev.of_node;
+> +	const char **res;
+> +	int count;
+> +
+> +	count = of_property_count_strings(dp, "linux,part-probe");
+> +	if (count < 0)
+> +		return of_default_part_probes;
+> +
+> +	res = devm_kcalloc(&dev->dev, count + 1, sizeof(*res), GFP_KERNEL);
+> +	if (!res)
+> +		return NULL;
+> +
+> +	count = of_property_read_string_array(dp, "linux,part-probe", res,
+> +					      count);
+> +	if (count < 0)
+> +		return NULL;
+> +
+> +	return res;
+> +}
+> +
+> +static const char *of_select_probe_type(struct platform_device *dev)
+> +{
+> +	struct device_node *dp = dev->dev.of_node;
+> +	const struct of_device_id *match;
+> +	const char *probe_type;
+> +
+> +	match = of_match_device(of_flash_match, &dev->dev);
+> +	probe_type = match->data;
+> +	if (probe_type)
+> +		return probe_type;
+> +
+> +	dev_warn(&dev->dev,
+> +		 "Device tree uses obsolete \"direct-mapped\" flash binding\n");
+> +
+> +	of_property_read_string(dp, "probe-type", &probe_type);
+> +	if (!probe_type)
+> +		return NULL;
+> +
+> +	if (!strcmp(probe_type, "CFI")) {
+> +		probe_type = "cfi_probe";
+> +	} else if (!strcmp(probe_type, "JEDEC")) {
+> +		probe_type = "jedec_probe";
+> +	} else if (!strcmp(probe_type, "ROM")) {
+> +		probe_type = "map_rom";
+> +	} else {
+> +		dev_warn(&dev->dev,
+> +			 "obsolete_probe: don't know probe type '%s', mapping as rom\n",
+> +			 probe_type);
+> +		probe_type = "map_rom";
+> +	}
+> +
+> +	return probe_type;
+> +}
+> +
+> +static int physmap_flash_of_init(struct platform_device *dev)
+> +{
+> +	struct physmap_flash_info *info = platform_get_drvdata(dev);
+> +	struct device_node *dp = dev->dev.of_node;
+> +	const char *mtd_name = NULL;
+> +	int err, swap = 0;
+> +	bool map_indirect;
+> +	unsigned int i;
+> +	u32 bankwidth;
+> +
+> +	if (!dp)
+> +		return -EINVAL;
+> +
+> +	info->probe_type = of_select_probe_type(dev);
+> +
+> +	info->part_types = of_get_part_probes(dev);
+> +	if (!info->part_types)
+> +		return -ENOMEM;
+> +
+> +	of_property_read_string(dp, "linux,mtd-name", &mtd_name);
+> +
+> +	map_indirect = of_property_read_bool(dp, "no-unaligned-direct-access");
+> +
+> +	err = of_property_read_u32(dp, "bank-width", &bankwidth);
+> +	if (err) {
+> +		dev_err(&dev->dev, "Can't get bank width from device tree\n");
+> +		return err;
+> +	}
+> +
+> +	if (of_property_read_bool(dp, "big-endian"))
+> +		swap = CFI_BIG_ENDIAN;
+> +	else if (of_property_read_bool(dp, "little-endian"))
+> +		swap = CFI_LITTLE_ENDIAN;
+> +
+> +	for (i = 0; i < info->nmaps; i++) {
+> +		info->maps[i].name = mtd_name;
+> +		info->maps[i].swap = swap;
+> +		info->maps[i].bankwidth = bankwidth;
+> +		info->maps[i].device_node = dp;
+> +
+> +		err = of_flash_probe_gemini(dev, dp, &info->maps[i]);
+> +		if (err)
+> +			return err;
+> +
+> +		err = of_flash_probe_versatile(dev, dp, &info->maps[i]);
+> +		if (err)
+> +			return err;
+> +
+> +		/*
+> +		 * On some platforms (e.g. MPC5200) a direct 1:1 mapping
+> +		 * may cause problems with JFFS2 usage, as the local bus (LPB)
+> +		 * doesn't support unaligned accesses as implemented in the
+> +		 * JFFS2 code via memcpy(). By setting NO_XIP, the
+> +		 * flash will not be exposed directly to the MTD users
+> +		 * (e.g. JFFS2) any more.
+> +		 */
+> +		if (map_indirect)
+> +			info->maps[i].phys = NO_XIP;
+> +	}
+> +
+> +	return 0;
+> +}
+> +#else /* IS_ENABLED(CONFIG_MTD_PHYSMAP_OF) */
+> +#define of_flash_match NULL
+> +
+> +static int physmap_flash_of_init(struct platform_device *dev)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +#endif /* IS_ENABLED(CONFIG_MTD_PHYSMAP_OF) */
+> +
+>   static const char * const rom_probe_types[] = {
+>   	"cfi_probe", "jedec_probe", "qinfo_probe", "map_rom", NULL
+>   };
+> @@ -97,18 +278,46 @@ static const char * const part_probe_types[] = {
+>   	"cmdlinepart", "RedBoot", "afs", NULL
+>   };
+>   
+> -static int physmap_flash_probe(struct platform_device *dev)
+> +static int physmap_flash_pdata_init(struct platform_device *dev)
+>   {
+> +	struct physmap_flash_info *info = platform_get_drvdata(dev);
+>   	struct physmap_flash_data *physmap_data;
+> +	unsigned int i;
+> +	int err;
+> +
+> +	physmap_data = dev_get_platdata(&dev->dev);
+> +	if (!physmap_data)
+> +		return -EINVAL;
+> +
+> +	info->probe_type = physmap_data->probe_type;
+> +	info->part_types = physmap_data->part_probe_types ? : part_probe_types;
+> +	info->parts = physmap_data->parts;
+> +	info->nparts = physmap_data->nr_parts;
+> +
+> +	if (physmap_data->init) {
+> +		err = physmap_data->init(dev);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	for (i = 0; i < info->nmaps; i++) {
+> +		info->maps[i].bankwidth = physmap_data->width;
+> +		info->maps[i].pfow_base = physmap_data->pfow_base;
+> +		info->maps[i].set_vpp = physmap_set_vpp;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int physmap_flash_probe(struct platform_device *dev)
+> +{
+>   	struct physmap_flash_info *info;
+>   	const char * const *probe_type;
+> -	const char * const *part_types;
+>   	int err = 0;
+>   	int i;
+>   
+> -	physmap_data = dev_get_platdata(&dev->dev);
+> -	if (!physmap_data)
+> -		return -ENODEV;
+> +	if (!dev->dev.of_node && !dev_get_platdata(&dev->dev))
+> +		return -EINVAL;
+>   
+>   	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+>   	if (!info)
+> @@ -132,14 +341,16 @@ static int physmap_flash_probe(struct platform_device *dev)
+>   	if (!info->mtds)
+>   		return -ENOMEM;
+>   
+> -	if (physmap_data->init) {
+> -		err = physmap_data->init(dev);
+> -		if (err)
+> -			goto err_out;
+> -	}
+> -
+>   	platform_set_drvdata(dev, info);
+>   
+> +	if (dev->dev.of_node)
+> +		err = physmap_flash_of_init(dev);
+> +	else
+> +		err = physmap_flash_pdata_init(dev);
+> +
+> +	if (err)
+> +		return err;
+> +
+>   	for (i = 0; i < info->nmaps; i++) {
+>   		struct resource *res;
+>   
+> @@ -154,22 +365,22 @@ static int physmap_flash_probe(struct platform_device *dev)
+>   			   res);
+>   
+>   		info->maps[i].name = dev_name(&dev->dev);
+> -		info->maps[i].phys = res->start;
+> +
+> +		if (!info->maps[i].phys)
+> +			info->maps[i].phys = res->start;
+> +
+>   		info->maps[i].size = resource_size(res);
+> -		info->maps[i].bankwidth = physmap_data->width;
+> -		info->maps[i].set_vpp = physmap_set_vpp;
+> -		info->maps[i].pfow_base = physmap_data->pfow_base;
+>   		info->maps[i].map_priv_1 = (unsigned long)dev;
+>   
+>   		simple_map_init(&info->maps[i]);
+>   
+>   		probe_type = rom_probe_types;
+> -		if (!physmap_data->probe_type) {
+> +		if (!info->probe_type) {
+>   			for (; !info->mtds[i] && *probe_type; probe_type++)
+>   				info->mtds[i] = do_map_probe(*probe_type,
+>   							     &info->maps[i]);
+>   		} else {
+> -			info->mtds[i] = do_map_probe(physmap_data->probe_type,
+> +			info->mtds[i] = do_map_probe(info->probe_type,
+>   						     &info->maps[i]);
+>   		}
+>   
+> @@ -197,11 +408,9 @@ static int physmap_flash_probe(struct platform_device *dev)
+>   
+>   	spin_lock_init(&info->vpp_lock);
+>   
+> -	part_types = physmap_data->part_probe_types ? : part_probe_types;
+> -
+> -	err = mtd_device_parse_register(info->cmtd, part_types, NULL,
+> -					physmap_data->parts,
+> -					physmap_data->nr_parts);
+> +	mtd_set_of_node(info->cmtd, dev->dev.of_node);
+> +	err = mtd_device_parse_register(info->cmtd, info->part_types, NULL,
+> +					info->parts, info->nparts);
+>   	if (err)
+>   		goto err_out;
+>   
+> @@ -232,6 +441,7 @@ static struct platform_driver physmap_flash_driver = {
+>   	.shutdown	= physmap_flash_shutdown,
+>   	.driver		= {
+>   		.name	= "physmap-flash",
+> +		.of_match_table = of_flash_match,
+>   	},
+>   };
+>   
+> @@ -286,6 +496,7 @@ module_exit(physmap_exit);
+>   
+>   MODULE_LICENSE("GPL");
+>   MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
+> +MODULE_AUTHOR("Vitaly Wool <vwool@ru.mvista.com>");
+>   MODULE_DESCRIPTION("Generic configurable MTD map driver");
+>   
+>   /* legacy platform drivers can't hotplug or coldplg */
+> diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
+> deleted file mode 100644
+> index ece605d78c21..000000000000
+> --- a/drivers/mtd/maps/physmap_of_core.c
+> +++ /dev/null
+> @@ -1,368 +0,0 @@
+> -/*
+> - * Flash mappings described by the OF (or flattened) device tree
+> - *
+> - * Copyright (C) 2006 MontaVista Software Inc.
+> - * Author: Vitaly Wool <vwool@ru.mvista.com>
+> - *
+> - * Revised to handle newer style flash binding by:
+> - *   Copyright (C) 2007 David Gibson, IBM Corporation.
+> - *
+> - * This program is free software; you can redistribute  it and/or modify it
+> - * under  the terms of  the GNU General  Public License as published by the
+> - * Free Software Foundation;  either version 2 of the  License, or (at your
+> - * option) any later version.
+> - */
+> -
+> -#include <linux/module.h>
+> -#include <linux/types.h>
+> -#include <linux/device.h>
+> -#include <linux/mtd/mtd.h>
+> -#include <linux/mtd/map.h>
+> -#include <linux/mtd/partitions.h>
+> -#include <linux/mtd/concat.h>
+> -#include <linux/mtd/cfi_endian.h>
+> -#include <linux/of.h>
+> -#include <linux/of_address.h>
+> -#include <linux/of_platform.h>
+> -#include <linux/slab.h>
+> -#include "physmap_of_gemini.h"
+> -#include "physmap_of_versatile.h"
+> -
+> -struct of_flash_list {
+> -	struct mtd_info *mtd;
+> -	struct map_info map;
+> -};
+> -
+> -struct of_flash {
+> -	struct mtd_info		*cmtd;
+> -	int list_size; /* number of elements in of_flash_list */
+> -	struct of_flash_list	list[0];
+> -};
+> -
+> -static int of_flash_remove(struct platform_device *dev)
+> -{
+> -	struct of_flash *info;
+> -	int i;
+> -
+> -	info = dev_get_drvdata(&dev->dev);
+> -	if (!info)
+> -		return 0;
+> -	dev_set_drvdata(&dev->dev, NULL);
+> -
+> -	if (info->cmtd) {
+> -		mtd_device_unregister(info->cmtd);
+> -		if (info->cmtd != info->list[0].mtd)
+> -			mtd_concat_destroy(info->cmtd);
+> -	}
+> -
+> -	for (i = 0; i < info->list_size; i++)
+> -		if (info->list[i].mtd)
+> -			map_destroy(info->list[i].mtd);
+> -
+> -	return 0;
+> -}
+> -
+> -static const char * const rom_probe_types[] = {
+> -	"cfi_probe", "jedec_probe", "map_rom" };
+> -
+> -/* Helper function to handle probing of the obsolete "direct-mapped"
+> - * compatible binding, which has an extra "probe-type" property
+> - * describing the type of flash probe necessary. */
+> -static struct mtd_info *obsolete_probe(struct platform_device *dev,
+> -				       struct map_info *map)
+> -{
+> -	struct device_node *dp = dev->dev.of_node;
+> -	const char *of_probe;
+> -	struct mtd_info *mtd;
+> -	int i;
+> -
+> -	dev_warn(&dev->dev, "Device tree uses obsolete \"direct-mapped\" "
+> -		 "flash binding\n");
+> -
+> -	of_probe = of_get_property(dp, "probe-type", NULL);
+> -	if (!of_probe) {
+> -		for (i = 0; i < ARRAY_SIZE(rom_probe_types); i++) {
+> -			mtd = do_map_probe(rom_probe_types[i], map);
+> -			if (mtd)
+> -				return mtd;
+> -		}
+> -		return NULL;
+> -	} else if (strcmp(of_probe, "CFI") == 0) {
+> -		return do_map_probe("cfi_probe", map);
+> -	} else if (strcmp(of_probe, "JEDEC") == 0) {
+> -		return do_map_probe("jedec_probe", map);
+> -	} else {
+> -		if (strcmp(of_probe, "ROM") != 0)
+> -			dev_warn(&dev->dev, "obsolete_probe: don't know probe "
+> -				 "type '%s', mapping as rom\n", of_probe);
+> -		return do_map_probe("map_rom", map);
+> -	}
+> -}
+> -
+> -/* When partitions are set we look for a linux,part-probe property which
+> -   specifies the list of partition probers to use. If none is given then the
+> -   default is use. These take precedence over other device tree
+> -   information. */
+> -static const char * const part_probe_types_def[] = {
+> -	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
+> -
+> -static const char * const *of_get_probes(struct device_node *dp)
+> -{
+> -	const char **res;
+> -	int count;
+> -
+> -	count = of_property_count_strings(dp, "linux,part-probe");
+> -	if (count < 0)
+> -		return part_probe_types_def;
+> -
+> -	res = kcalloc(count + 1, sizeof(*res), GFP_KERNEL);
+> -	if (!res)
+> -		return NULL;
+> -
+> -	count = of_property_read_string_array(dp, "linux,part-probe", res,
+> -					      count);
+> -	if (count < 0)
+> -		return NULL;
+> -
+> -	return res;
+> -}
+> -
+> -static void of_free_probes(const char * const *probes)
+> -{
+> -	if (probes != part_probe_types_def)
+> -		kfree(probes);
+> -}
+> -
+> -static const struct of_device_id of_flash_match[];
+> -static int of_flash_probe(struct platform_device *dev)
+> -{
+> -	const char * const *part_probe_types;
+> -	const struct of_device_id *match;
+> -	struct device_node *dp = dev->dev.of_node;
+> -	struct resource res;
+> -	struct of_flash *info;
+> -	const char *probe_type;
+> -	const __be32 *width;
+> -	int err;
+> -	int i;
+> -	int count;
+> -	const __be32 *p;
+> -	int reg_tuple_size;
+> -	struct mtd_info **mtd_list = NULL;
+> -	resource_size_t res_size;
+> -	bool map_indirect;
+> -	const char *mtd_name = NULL;
+> -
+> -	match = of_match_device(of_flash_match, &dev->dev);
+> -	if (!match)
+> -		return -EINVAL;
+> -	probe_type = match->data;
+> -
+> -	reg_tuple_size = (of_n_addr_cells(dp) + of_n_size_cells(dp)) * sizeof(u32);
+> -
+> -	of_property_read_string(dp, "linux,mtd-name", &mtd_name);
+> -
+> -	/*
+> -	 * Get number of "reg" tuples. Scan for MTD devices on area's
+> -	 * described by each "reg" region. This makes it possible (including
+> -	 * the concat support) to support the Intel P30 48F4400 chips which
+> -	 * consists internally of 2 non-identical NOR chips on one die.
+> -	 */
+> -	p = of_get_property(dp, "reg", &count);
+> -	if (!p || count % reg_tuple_size != 0) {
+> -		dev_err(&dev->dev, "Malformed reg property on %pOF\n",
+> -				dev->dev.of_node);
+> -		err = -EINVAL;
+> -		goto err_flash_remove;
+> -	}
+> -	count /= reg_tuple_size;
+> -
+> -	map_indirect = of_property_read_bool(dp, "no-unaligned-direct-access");
+> -
+> -	err = -ENOMEM;
+> -	info = devm_kzalloc(&dev->dev,
+> -			    sizeof(struct of_flash) +
+> -			    sizeof(struct of_flash_list) * count, GFP_KERNEL);
+> -	if (!info)
+> -		goto err_flash_remove;
+> -
+> -	dev_set_drvdata(&dev->dev, info);
+> -
+> -	mtd_list = kcalloc(count, sizeof(*mtd_list), GFP_KERNEL);
+> -	if (!mtd_list)
+> -		goto err_flash_remove;
+> -
+> -	for (i = 0; i < count; i++) {
+> -		err = -ENXIO;
+> -		if (of_address_to_resource(dp, i, &res)) {
+> -			/*
+> -			 * Continue with next register tuple if this
+> -			 * one is not mappable
+> -			 */
+> -			continue;
+> -		}
+> -
+> -		dev_dbg(&dev->dev, "of_flash device: %pR\n", &res);
+> -
+> -		err = -EBUSY;
+> -		res_size = resource_size(&res);
+> -		info->list[i].map.virt = devm_ioremap_resource(&dev->dev, &res);
+> -		if (IS_ERR(info->list[i].map.virt)) {
+> -			err = PTR_ERR(info->list[i].map.virt);
+> -			goto err_out;
+> -		}
+> -
+> -		err = -ENXIO;
+> -		width = of_get_property(dp, "bank-width", NULL);
+> -		if (!width) {
+> -			dev_err(&dev->dev, "Can't get bank width from device"
+> -				" tree\n");
+> -			goto err_out;
+> -		}
+> -
+> -		info->list[i].map.name = mtd_name ?: dev_name(&dev->dev);
+> -		info->list[i].map.phys = res.start;
+> -		info->list[i].map.size = res_size;
+> -		info->list[i].map.bankwidth = be32_to_cpup(width);
+> -		info->list[i].map.device_node = dp;
+> -
+> -		if (of_property_read_bool(dp, "big-endian"))
+> -			info->list[i].map.swap = CFI_BIG_ENDIAN;
+> -		else if (of_property_read_bool(dp, "little-endian"))
+> -			info->list[i].map.swap = CFI_LITTLE_ENDIAN;
+> -
+> -		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
+> -		if (err)
+> -			goto err_out;
+> -		err = of_flash_probe_versatile(dev, dp, &info->list[i].map);
+> -		if (err)
+> -			goto err_out;
+> -
+> -		simple_map_init(&info->list[i].map);
+> -
+> -		/*
+> -		 * On some platforms (e.g. MPC5200) a direct 1:1 mapping
+> -		 * may cause problems with JFFS2 usage, as the local bus (LPB)
+> -		 * doesn't support unaligned accesses as implemented in the
+> -		 * JFFS2 code via memcpy(). By setting NO_XIP, the
+> -		 * flash will not be exposed directly to the MTD users
+> -		 * (e.g. JFFS2) any more.
+> -		 */
+> -		if (map_indirect)
+> -			info->list[i].map.phys = NO_XIP;
+> -
+> -		if (probe_type) {
+> -			info->list[i].mtd = do_map_probe(probe_type,
+> -							 &info->list[i].map);
+> -		} else {
+> -			info->list[i].mtd = obsolete_probe(dev,
+> -							   &info->list[i].map);
+> -		}
+> -
+> -		/* Fall back to mapping region as ROM */
+> -		if (!info->list[i].mtd) {
+> -			dev_warn(&dev->dev,
+> -				"do_map_probe() failed for type %s\n",
+> -				 probe_type);
+> -
+> -			info->list[i].mtd = do_map_probe("map_rom",
+> -							 &info->list[i].map);
+> -		}
+> -		mtd_list[i] = info->list[i].mtd;
+> -
+> -		err = -ENXIO;
+> -		if (!info->list[i].mtd) {
+> -			dev_err(&dev->dev, "do_map_probe() failed\n");
+> -			goto err_out;
+> -		} else {
+> -			info->list_size++;
+> -		}
+> -		info->list[i].mtd->dev.parent = &dev->dev;
+> -	}
+> -
+> -	err = 0;
+> -	info->cmtd = NULL;
+> -	if (info->list_size == 1) {
+> -		info->cmtd = info->list[0].mtd;
+> -	} else if (info->list_size > 1) {
+> -		/*
+> -		 * We detected multiple devices. Concatenate them together.
+> -		 */
+> -		info->cmtd = mtd_concat_create(mtd_list, info->list_size,
+> -					       dev_name(&dev->dev));
+> -	}
+> -	if (info->cmtd == NULL)
+> -		err = -ENXIO;
+> -
+> -	if (err)
+> -		goto err_out;
+> -
+> -	info->cmtd->dev.parent = &dev->dev;
+> -	mtd_set_of_node(info->cmtd, dp);
+> -	part_probe_types = of_get_probes(dp);
+> -	if (!part_probe_types) {
+> -		err = -ENOMEM;
+> -		goto err_out;
+> -	}
+> -	mtd_device_parse_register(info->cmtd, part_probe_types, NULL,
+> -			NULL, 0);
+> -	of_free_probes(part_probe_types);
+> -
+> -	kfree(mtd_list);
+> -
+> -	return 0;
+> -
+> -err_out:
+> -	kfree(mtd_list);
+> -err_flash_remove:
+> -	of_flash_remove(dev);
+> -
+> -	return err;
+> -}
+> -
+> -static const struct of_device_id of_flash_match[] = {
+> -	{
+> -		.compatible	= "cfi-flash",
+> -		.data		= (void *)"cfi_probe",
+> -	},
+> -	{
+> -		/* FIXME: JEDEC chips can't be safely and reliably
+> -		 * probed, although the mtd code gets it right in
+> -		 * practice most of the time.  We should use the
+> -		 * vendor and device ids specified by the binding to
+> -		 * bypass the heuristic probe code, but the mtd layer
+> -		 * provides, at present, no interface for doing so
+> -		 * :(. */
+> -		.compatible	= "jedec-flash",
+> -		.data		= (void *)"jedec_probe",
+> -	},
+> -	{
+> -		.compatible     = "mtd-ram",
+> -		.data           = (void *)"map_ram",
+> -	},
+> -	{
+> -		.compatible     = "mtd-rom",
+> -		.data           = (void *)"map_rom",
+> -	},
+> -	{
+> -		.type		= "rom",
+> -		.compatible	= "direct-mapped"
+> -	},
+> -	{ },
+> -};
+> -MODULE_DEVICE_TABLE(of, of_flash_match);
+> -
+> -static struct platform_driver of_flash_driver = {
+> -	.driver = {
+> -		.name = "of-flash",
+> -		.of_match_table = of_flash_match,
+> -	},
+> -	.probe		= of_flash_probe,
+> -	.remove		= of_flash_remove,
+> -};
+> -
+> -module_platform_driver(of_flash_driver);
+> -
+> -MODULE_LICENSE("GPL");
+> -MODULE_AUTHOR("Vitaly Wool <vwool@ru.mvista.com>");
+> -MODULE_DESCRIPTION("Device tree based MTD map driver");
+> 
 
 
 ______________________________________________________
