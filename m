@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42067C4360F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:52:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CF08C4360F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:52:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D13220645
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:52:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFEA120645
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:52:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rUF6Fl8g";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1XMqMESp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D13220645
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OrBfzmxt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+LfqkZz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFEA120645
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tHj58f3ouf3EqlyawXWCs8Q1umjm+77nlaW6AnumOao=; b=rUF6Fl8gsbk9SO
-	fkHd5dq+4FDq2ZVk9Cst6X0FxPYSrXFHrTTDqfmAMJ/JKOlxQsgTlvRh7jS62iOd9v27P3Zn8Cflb
-	rU2atszIrClSL0R9fhArcynPBnsiXUUYL2BYK09evPDWZeFaMbYWh4EtXFIxUENtsafNrshGIFKaV
-	v0gg1KeVXQ0xLYXcsoBOJhmkRVmXjmnX/ex2y+0CVJ+H5zqsUdkFPt5Teta7jbYjDoMNhLNt4RqmU
-	86QaVwTGeZ1D91r7pjhNSzWM/1VD6J+LVMukHTofmorGdIy45jjuEfSjZdOADl8GeuvXei5PmKYFb
-	imwwrOFr6CbMd5qSi31g==;
+	List-Owner; bh=Hltl77QZmB2TO9m5eDWLuHYmuxgcSKukpy9CnlQUK2o=; b=OrBfzmxtx1GRsq
+	FwwKdZJoZ2M7JYH0bs0hhGbesYvfWoopLctQtCE2sH3NP8WAJepEvbaCZ17fXuOnBaikmeBD432o2
+	jeP+oZVEmcBytLG+e1mgNIUx8GQYwGUdVBhfozGcL8tzm7zQ4sLtRVo1H60tBaUPnlTtPCyMsWjA4
+	sq9mReS8OSp6QcDkdonwL1yc4IBhRhkd+fCSlnAuC6AKJUtklUTxg2MBerY2LMNQ4CDaxchmmoP+g
+	G7gZq3TK6Qgd+psa/HoUT+Shmq7EnR4aV0pqpql4cyuCQgHQqhIeoFb/J5l2WClH1I9+ju2oVpJq/
+	sAet6vwB0bl5j7BAKanQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBLi8-0002VD-33; Tue, 02 Apr 2019 15:52:28 +0000
+	id 1hBLi9-0002XP-Tf; Tue, 02 Apr 2019 15:52:29 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBLeQ-0004nJ-C6
- for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 15:48:58 +0000
+ id 1hBLeT-0004rP-2P
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 15:49:18 +0000
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net
  [24.5.143.220])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 73EE7207E0;
- Tue,  2 Apr 2019 15:48:35 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 72976208E4;
+ Tue,  2 Apr 2019 15:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1554220115;
- bh=rQjvkaYqfwA1ukak/+GujYTQLEQcY6Q9fCJS0mEsfLA=;
+ s=default; t=1554220116;
+ bh=tcM0V4DW46qQuWBh2DXrd4oZAQjaLLpvpe8dO+k3HP4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=1XMqMESpwfpIJF9Y7IiEAKCVuPLPlNf7/1odPzbSM+u2cMi/q8nb2GxBMEKj2sjCR
- UsnG5LcxwKmJg4jVuV3GS5zWaGkS8DD4k5I64rO9yM0xpgGdFI9b6hNIrl5u7YNhTy
- g7dLw7qbxEoRSr/IroQzgmpPgv1FVBxV6TchhwTc=
+ b=R+LfqkZz5IoRJ1BQRhi9Jpeb0g5DwfmDx4xU0YUPxaGVIyonILE4j49tuPwgUg8MD
+ iSgwXB0008DGN8nq0ixPLnq7m1WVWqeGkkNLQvvjWpog0WuIukEUjY8Sh1uf78Sdaj
+ gixg4EUCb56SN+80WOTJBzyXWjWqKe0XGmG0oaHk=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v4 10/17] fscrypt: add an HKDF-SHA512 implementation
-Date: Tue,  2 Apr 2019 08:45:53 -0700
-Message-Id: <20190402154600.32432-11-ebiggers@kernel.org>
+Subject: [PATCH v4 12/17] fscrypt: allow unprivileged users to add/remove keys
+ for v2 policies
+Date: Tue,  2 Apr 2019 08:45:55 -0700
+Message-Id: <20190402154600.32432-13-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190402154600.32432-1-ebiggers@kernel.org>
 References: <20190402154600.32432-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190402_084838_773047_1F4CF18D 
-X-CRM114-Status: GOOD (  23.82  )
+X-CRM114-CacheID: sfid-20190402_084841_787174_8B991B19 
+X-CRM114-Status: GOOD (  31.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,289 +88,650 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add an implementation of HKDF (RFC 5869) to fscrypt, for the purpose of
-deriving additional key material from the fscrypt master keys for v2
-encryption policies.  HKDF is a key derivation function built on top of
-HMAC.  We choose SHA-512 for the underlying unkeyed hash, and use an
-"hmac(sha512)" transform allocated from the crypto API.
+Allow the FS_IOC_ADD_ENCRYPTION_KEY and FS_IOC_REMOVE_ENCRYPTION_KEY
+ioctls to be used by non-root users to add and remove encryption keys
+from the filesystem-level crypto keyrings, subject to limitations.
 
-We'll be using this to replace the AES-ECB based KDF currently used to
-derive the per-file encryption keys.  While the AES-ECB based KDF is
-believed to meet the original security requirements, it is nonstandard
-and has problems that don't exist in modern KDFs such as HKDF:
+Motivation: while privileged fscrypt key management is sufficient for
+some users (e.g. Android and Chromium OS, where a privileged process
+manages all keys), the old API by design also allows non-root users to
+set up and use encrypted directories, and we don't want to regress on
+that.  Especially, we don't want to force users to continue using the
+old API, running into the visibility mismatch between files and keyrings
+and being unable to "lock" encrypted directories.
 
-1. It's reversible.  Given a derived key and nonce, an attacker can
-   easily compute the master key.  This is okay if the master key and
-   derived keys are equally hard to compromise, but now we'd like to be
-   more robust against threats such as a derived key being compromised
-   through a timing attack, or a derived key for an in-use file being
-   compromised after the master key has already been removed.
+Intuitively, the ioctls have to be privileged since they manipulate
+filesystem-level state.  However, it's actually safe to make them
+unprivileged if we very carefully enforce some specific limitations.
 
-2. It doesn't evenly distribute the entropy from the master key; each 16
-   input bytes only affects the corresponding 16 output bytes.
+First, each key must be identified by a cryptographic hash so that a
+user can't add the wrong key for another user's files.  For v2
+encryption policies, we use the key_identifier for this.  v1 policies
+don't have this, so managing keys for them remains privileged.
 
-3. It isn't easily extensible to deriving other values or keys that are
-   or will be needed, such as per-mode keys (which is what DIRECT_KEY
-   policies really should use, rather than the master key directly as
-   they do now) or a public hash for securely identifying the key (to
-   ensure that an encrypted file cannot be set up with the wrong key).
+Second, each key a user adds is charged to their quota for the keyrings
+service.  Thus, a user can't exhaust memory by adding a huge number of
+keys.  By default each non-root user is allowed up to 200 keys; this can
+be changed using the existing sysctl 'kernel.keys.maxkeys'.
 
-HKDF solves all the above problems.
+Third, if multiple users add the same key, we keep track of those users
+of the key (of which there remains a single copy), and won't really
+remove the key, i.e. "lock" the encrypted files, until all those users
+have removed it.  This prevents denial of service attacks that would be
+possible under simpler schemes, such allowing the first user who added a
+key to remove it -- since that could be a malicious user who has
+compromised the key.  Of course, encryption keys should be kept secret,
+but the idea is that using encryption should never be *less* secure than
+not using encryption, even if your key was compromised.
+
+We tolerate that a user will be unable to really remove a key, i.e.
+unable to "lock" their encrypted files, if another user has added the
+same key.  But in a sense, this is actually a good thing because it will
+avoid providing a false notion of security where a key appears to have
+been removed when actually it's still in memory, available to any
+attacker who compromises the operating system kernel.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/Kconfig           |   2 +
- fs/crypto/Makefile          |   1 +
- fs/crypto/fscrypt_private.h |  15 +++
- fs/crypto/hkdf.c            | 188 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 206 insertions(+)
- create mode 100644 fs/crypto/hkdf.c
+ fs/crypto/fscrypt_private.h  |  31 +++-
+ fs/crypto/keyring.c          | 310 +++++++++++++++++++++++++++++++++--
+ fs/crypto/keysetup.c         |  18 +-
+ include/uapi/linux/fscrypt.h |   9 +-
+ 4 files changed, 340 insertions(+), 28 deletions(-)
 
-diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-index f0de238000c02..c160598a9fe2c 100644
---- a/fs/crypto/Kconfig
-+++ b/fs/crypto/Kconfig
-@@ -7,6 +7,8 @@ config FS_ENCRYPTION
- 	select CRYPTO_XTS
- 	select CRYPTO_CTS
- 	select CRYPTO_SHA256
-+	select CRYPTO_SHA512
-+	select CRYPTO_HMAC
- 	select KEYS
- 	help
- 	  Enable encryption of files and directories.  This
-diff --git a/fs/crypto/Makefile b/fs/crypto/Makefile
-index accdd622c9083..4977b43479289 100644
---- a/fs/crypto/Makefile
-+++ b/fs/crypto/Makefile
-@@ -2,6 +2,7 @@ obj-$(CONFIG_FS_ENCRYPTION)	+= fscrypto.o
- 
- fscrypto-y := crypto.o \
- 	      fname.o \
-+	      hkdf.o \
- 	      hooks.o \
- 	      keyring.o \
- 	      keysetup.o \
 diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index cc1862c9baa1d..e2a65189eb578 100644
+index 9591f5fd72b33..5f679ba32cece 100644
 --- a/fs/crypto/fscrypt_private.h
 +++ b/fs/crypto/fscrypt_private.h
-@@ -175,6 +175,21 @@ extern bool fscrypt_fname_encrypted_size(const struct inode *inode,
- 					 u32 orig_len, u32 max_len,
- 					 u32 *encrypted_len_ret);
+@@ -338,9 +338,16 @@ struct fscrypt_master_key {
+ 	 * FS_IOC_REMOVE_ENCRYPTION_KEY can be retried, or
+ 	 * FS_IOC_ADD_ENCRYPTION_KEY can add the secret again.
+ 	 *
+-	 * Locking: protected by key->sem.
++	 * Locking: protected by key->sem (outer) and mk_secret_sem (inner).
++	 * The reason for two locks is that key->sem also protects modifying
++	 * mk_users, which ranks it above the semaphore for the keyring key
++	 * type, which is in turn above page faults (via keyring_read).  But
++	 * sometimes filesystems call fscrypt_get_encryption_info() from within
++	 * a transaction, which ranks it below page faults.  So we need a
++	 * separate lock which protects mk_secret but not also mk_users.
+ 	 */
+ 	struct fscrypt_master_key_secret	mk_secret;
++	struct rw_semaphore			mk_secret_sem;
  
-+/* hkdf.c */
+ 	/*
+ 	 * For v1 policy keys: an arbitrary key descriptor which was assigned by
+@@ -350,6 +357,22 @@ struct fscrypt_master_key {
+ 	 */
+ 	struct fscrypt_key_specifier		mk_spec;
+ 
++	/*
++	 * Keyring which contains a key of type 'key_type_fscrypt_user' for each
++	 * user who has added this key.  Normally each key will be added by just
++	 * one user, but it's possible that multiple users share a key, and in
++	 * that case we need to keep track of those users so that one user can't
++	 * remove the key before the others want it removed too.
++	 *
++	 * This is NULL for v1 policy keys; those can only be added by root.
++	 *
++	 * Locking: in addition to this keyrings own semaphore, this is
++	 * protected by the master key's key->sem, so we can do atomic
++	 * search+insert.  It can also be searched without taking any locks, but
++	 * in that case the returned key may have already been removed.
++	 */
++	struct key		*mk_users;
 +
-+struct fscrypt_hkdf {
-+	struct crypto_shash *hmac_tfm;
+ 	/*
+ 	 * Length of ->mk_decrypted_inodes, plus one if mk_secret is present.
+ 	 * Once this goes to 0, the master key is removed from ->s_master_keys.
+@@ -377,9 +400,9 @@ is_master_key_secret_present(const struct fscrypt_master_key_secret *secret)
+ 	/*
+ 	 * The READ_ONCE() is only necessary for fscrypt_drop_inode() and
+ 	 * fscrypt_key_describe().  These run in atomic context, so they can't
+-	 * take key->sem and thus 'secret' can change concurrently which would
+-	 * be a data race.  But they only need to know whether the secret *was*
+-	 * present at the time of check, so READ_ONCE() suffices.
++	 * take ->mk_secret_sem and thus 'secret' can change concurrently which
++	 * would be a data race.  But they only need to know whether the secret
++	 * *was* present at the time of check, so READ_ONCE() suffices.
+ 	 */
+ 	return READ_ONCE(secret->size) != 0;
+ }
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index fe1b003975c4f..3d17c13136a4a 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -42,6 +42,7 @@ static void free_master_key(struct fscrypt_master_key *mk)
+ 	for (i = 0; i < ARRAY_SIZE(mk->mk_mode_keys); i++)
+ 		crypto_free_skcipher(mk->mk_mode_keys[i]);
+ 
++	key_put(mk->mk_users);
+ 	kzfree(mk);
+ }
+ 
+@@ -101,7 +102,39 @@ static struct key_type key_type_fscrypt = {
+ 	.describe		= fscrypt_key_describe,
+ };
+ 
+-/* Search ->s_master_keys */
++static int fscrypt_user_key_instantiate(struct key *key,
++					struct key_preparsed_payload *prep)
++{
++	/*
++	 * We just charge FSCRYPT_MAX_KEY_SIZE bytes to the user's key quota for
++	 * each key, regardless of the exact key size.  The amount of memory
++	 * actually used is greater than the size of the raw key anyway.
++	 */
++	return key_payload_reserve(key, FSCRYPT_MAX_KEY_SIZE);
++}
++
++static void fscrypt_user_key_describe(const struct key *key, struct seq_file *m)
++{
++	seq_puts(m, key->description);
++}
++
++/*
++ * Type of key in ->mk_users.  Each key of this type represents a particular
++ * user who has added a particular master key.
++ *
++ * Note that the name of this key type really should be something like
++ * ".fscrypt-user" instead of simply ".fscrypt".  But the shorter name is chosen
++ * mainly for simplicity of presentation in /proc/keys when read by a non-root
++ * user.  And it is expected to be rare that a key is actually added by multiple
++ * users, since users should keep their encryption keys confidential.
++ */
++static struct key_type key_type_fscrypt_user = {
++	.name			= ".fscrypt",
++	.instantiate		= fscrypt_user_key_instantiate,
++	.describe		= fscrypt_user_key_describe,
 +};
 +
-+extern int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
-+			     unsigned int master_key_size);
-+
-+extern int fscrypt_hkdf_expand(struct fscrypt_hkdf *hkdf, u8 context,
-+			       const u8 *info, unsigned int infolen,
-+			       u8 *okm, unsigned int okmlen);
-+
-+extern void fscrypt_destroy_hkdf(struct fscrypt_hkdf *hkdf);
-+
- /* keyring.c */
++/* Search ->s_master_keys or ->mk_users */
+ static struct key *search_fscrypt_keyring(struct key *keyring,
+ 					  struct key_type *type,
+ 					  const char *description)
+@@ -127,6 +160,13 @@ static struct key *search_fscrypt_keyring(struct key *keyring,
  
- /*
-diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
-new file mode 100644
-index 0000000000000..3f9dbf171d967
---- /dev/null
-+++ b/fs/crypto/hkdf.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Implementation of HKDF ("HMAC-based Extract-and-Expand Key Derivation
-+ * Function"), aka RFC 5869.  See also the original paper (Krawczyk 2010):
-+ * "Cryptographic Extraction and Key Derivation: The HKDF Scheme".
-+ *
-+ * This is used to derive keys from the fscrypt master keys.
-+ *
-+ * Copyright 2019 Google LLC
-+ */
+ #define FSCRYPT_MK_DESCRIPTION_SIZE	(2 * FSCRYPT_KEY_IDENTIFIER_SIZE + 1)
+ 
++#define FSCRYPT_MK_USERS_DESCRIPTION_SIZE	\
++	(CONST_STRLEN("fscrypt-") + 2 * FSCRYPT_KEY_IDENTIFIER_SIZE + \
++	 CONST_STRLEN("-users") + 1)
 +
-+#include <crypto/hash.h>
-+#include <crypto/sha.h>
++#define FSCRYPT_MK_USER_DESCRIPTION_SIZE	\
++	(2 * FSCRYPT_KEY_IDENTIFIER_SIZE + CONST_STRLEN(".uid.") + 10 + 1)
 +
-+#include "fscrypt_private.h"
-+
-+/*
-+ * HKDF supports any unkeyed cryptographic hash algorithm, but fscrypt uses
-+ * SHA-512 because it is reasonably secure and efficient; and since it produces
-+ * a 64-byte digest, deriving an AES-256-XTS key preserves all 64 bytes of
-+ * entropy from the master key and requires only one iteration of HKDF-Expand.
-+ */
-+#define HKDF_HMAC_ALG		"hmac(sha512)"
-+#define HKDF_HASHLEN		SHA512_DIGEST_SIZE
-+
-+/*
-+ * HKDF consists of two steps:
-+ *
-+ * 1. HKDF-Extract: extract a pseudorandom key of length HKDF_HASHLEN bytes from
-+ *    the input keying material and optional salt.
-+ * 2. HKDF-Expand: expand the pseudorandom key into output keying material of
-+ *    any length, parameterized by an application-specific info string.
-+ *
-+ * HKDF-Extract can be skipped if the input is already a pseudorandom key of
-+ * length HKDF_HASHLEN bytes.  However, cipher modes other than AES-256-XTS take
-+ * shorter keys, and we don't want to force users of those modes to generate
-+ * unnecessarily long keys.  Thus fscrypt still does HKDF-Extract.
-+ *
-+ * HKDF-Extract also supports a salt.  Choosing a random salt per input key
-+ * would permit the input key to come from *any* source with sufficient entropy,
-+ * even if it's not distributed uniformly.  However, fscrypt doesn't take
-+ * advantage of this because userspace should already provide good pseudorandom
-+ * keys, which makes this unnecessary; also, having to persist a random salt per
-+ * key from kernel mode would pose significant implementation complexity.  Thus
-+ * fscrypt uses a fixed salt.  But to be slightly more robust against userspace
-+ * (unwisely) reusing the fscrypt keys for another purpose, and to force
-+ * brute-force attacks to target the fscrypt KDF specifically, fscrypt uses
-+ * "fscrypt_hkdf_salt" rather than the default of all 0's defined by RFC 5869.
-+ */
-+
-+#define HKDF_SALT		"fscrypt_hkdf_salt"
-+#define HKDF_SALTLEN		CONST_STRLEN(HKDF_SALT)
-+
-+/* HKDF-Extract (RFC 5869 section 2.2), see explanation above */
-+static int hkdf_extract(struct crypto_shash *hmac_tfm, const u8 *ikm,
-+			unsigned int ikmlen, u8 prk[HKDF_HASHLEN])
+ static void format_fs_keyring_description(
+ 			char description[FSCRYPT_FS_KEYRING_DESCRIPTION_SIZE],
+ 			const struct super_block *sb)
+@@ -142,6 +182,23 @@ static void format_mk_description(
+ 		master_key_spec_len(mk_spec), (u8 *)&mk_spec->u);
+ }
+ 
++static void format_mk_users_keyring_description(
++			char description[FSCRYPT_MK_USERS_DESCRIPTION_SIZE],
++			const u8 mk_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE])
 +{
-+	SHASH_DESC_ON_STACK(desc, hmac_tfm);
++	sprintf(description, "fscrypt-%*phN-users",
++		FSCRYPT_KEY_IDENTIFIER_SIZE, mk_identifier);
++}
++
++static void format_mk_user_description(
++			char description[FSCRYPT_MK_USER_DESCRIPTION_SIZE],
++			const u8 mk_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE])
++{
++
++	sprintf(description, "%*phN.uid.%u", FSCRYPT_KEY_IDENTIFIER_SIZE,
++		mk_identifier, __kuid_val(current_fsuid()));
++}
++
+ /* Create ->s_master_keys if needed.  Synchronized by fscrypt_add_key_mutex. */
+ static int allocate_filesystem_keyring(struct super_block *sb)
+ {
+@@ -189,6 +246,81 @@ struct key *fscrypt_find_master_key(struct super_block *sb,
+ 	return search_fscrypt_keyring(keyring, &key_type_fscrypt, description);
+ }
+ 
++static int allocate_master_key_users_keyring(struct fscrypt_master_key *mk)
++{
++	char description[FSCRYPT_MK_USERS_DESCRIPTION_SIZE];
++	struct key *keyring;
++
++	format_mk_users_keyring_description(description,
++					    mk->mk_spec.u.identifier);
++	keyring = keyring_alloc(description, GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
++				current_cred(), KEY_POS_SEARCH |
++				  KEY_USR_SEARCH | KEY_USR_READ | KEY_USR_VIEW,
++				KEY_ALLOC_NOT_IN_QUOTA, NULL, NULL);
++	if (IS_ERR(keyring))
++		return PTR_ERR(keyring);
++
++	mk->mk_users = keyring;
++	return 0;
++}
++
++/*
++ * Find the current user's key in the master key's ->mk_users.
++ * Returns ERR_PTR(-ENOKEY) if not found.
++ */
++static struct key *find_master_key_user(struct fscrypt_master_key *mk)
++{
++	char description[FSCRYPT_MK_USER_DESCRIPTION_SIZE];
++
++	format_mk_user_description(description, mk->mk_spec.u.identifier);
++	return search_fscrypt_keyring(mk->mk_users, &key_type_fscrypt_user,
++				      description);
++}
++
++/*
++ * Give the current user a key in ->mk_users.  This charges the user's quota and
++ * marks the master key as added by the current user, so that it cannot be
++ * removed by another user with the key.  Either the master key's key->sem must
++ * be held for write, or the master key must be still undergoing initialization.
++ */
++static int add_master_key_user(struct fscrypt_master_key *mk)
++{
++	char description[FSCRYPT_MK_USER_DESCRIPTION_SIZE];
++	struct key *mk_user;
 +	int err;
 +
-+	err = crypto_shash_setkey(hmac_tfm, HKDF_SALT, HKDF_SALTLEN);
++	format_mk_user_description(description, mk->mk_spec.u.identifier);
++	mk_user = key_alloc(&key_type_fscrypt_user, description,
++			    current_fsuid(), current_gid(), current_cred(),
++			    KEY_POS_SEARCH | KEY_USR_VIEW, 0, NULL);
++	if (IS_ERR(mk_user))
++		return PTR_ERR(mk_user);
++
++	err = key_instantiate_and_link(mk_user, NULL, 0, mk->mk_users, NULL);
++	key_put(mk_user);
++	return err;
++}
++
++/*
++ * Remove the current user's key from ->mk_users, if present.
++ * The master key's key->sem must be held for write.
++ */
++static int remove_master_key_user(struct fscrypt_master_key *mk)
++{
++	struct key *mk_user;
++	int err;
++
++	mk_user = find_master_key_user(mk);
++	if (IS_ERR(mk_user)) {
++		if (mk_user != ERR_PTR(-ENOKEY))
++			return PTR_ERR(mk_user);
++		return 0;
++	}
++	err = key_unlink(mk->mk_users, mk_user);
++	key_put(mk_user);
++	return err;
++}
++
+ /*
+  * Allocate a new fscrypt_master_key which contains the given secret, set it as
+  * the payload of a new 'struct key' of type fscrypt, and link the 'struct key'
+@@ -210,11 +342,26 @@ static int add_new_master_key(struct fscrypt_master_key_secret *secret,
+ 	mk->mk_spec = *mk_spec;
+ 
+ 	move_master_key_secret(&mk->mk_secret, secret);
++	init_rwsem(&mk->mk_secret_sem);
+ 
+ 	refcount_set(&mk->mk_refcount, 1); /* secret is present */
+ 	INIT_LIST_HEAD(&mk->mk_decrypted_inodes);
+ 	spin_lock_init(&mk->mk_decrypted_inodes_lock);
+ 
++	if (mk_spec->type != FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
++		err = allocate_master_key_users_keyring(mk);
++		if (err)
++			goto out_free_mk;
++		err = add_master_key_user(mk);
++		if (err)
++			goto out_free_mk;
++	}
++
++	/*
++	 * Note that we don't charge this key to anyone's quota, since when
++	 * ->mk_users is in use those keys are charged instead, and otherwise
++	 * (when ->mk_users isn't in use) only root can add these keys.
++	 */
+ 	format_mk_description(description, mk_spec);
+ 	key = key_alloc(&key_type_fscrypt, description,
+ 			GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
+@@ -242,13 +389,45 @@ static int add_existing_master_key(struct fscrypt_master_key *mk,
+ 				   struct fscrypt_master_key_secret *secret,
+ 				   const struct fscrypt_key_specifier *mk_spec)
+ {
+-	if (is_master_key_secret_present(&mk->mk_secret))
+-		return 0;
++	struct key *mk_user;
++	bool rekey;
++	int err;
++
++	/*
++	 * If the current user is already in ->mk_users, then there's nothing to
++	 * do.  (Not applicable for v1 policy keys, which have NULL ->mk_users.)
++	 */
++	if (mk->mk_users) {
++		mk_user = find_master_key_user(mk);
++		if (mk_user != ERR_PTR(-ENOKEY)) {
++			if (IS_ERR(mk_user))
++				return PTR_ERR(mk_user);
++			key_put(mk_user);
++			return 0;
++		}
++	}
+ 
+-	if (!refcount_inc_not_zero(&mk->mk_refcount))
++	/* If we'll be re-adding ->mk_secret, try to take the reference. */
++	rekey = !is_master_key_secret_present(&mk->mk_secret);
++	if (rekey && !refcount_inc_not_zero(&mk->mk_refcount))
+ 		return KEY_DEAD;
+ 
+-	move_master_key_secret(&mk->mk_secret, secret);
++	/* Add the current user to ->mk_users, if applicable. */
++	if (mk->mk_users) {
++		err = add_master_key_user(mk);
++		if (err) {
++			if (rekey && refcount_dec_and_test(&mk->mk_refcount))
++				return KEY_DEAD;
++			return err;
++		}
++	}
++
++	/* Re-add the secret if needed. */
++	if (rekey) {
++		down_write(&mk->mk_secret_sem);
++		move_master_key_secret(&mk->mk_secret, secret);
++		up_write(&mk->mk_secret_sem);
++	}
+ 	return 0;
+ }
+ 
+@@ -275,7 +454,7 @@ static int add_master_key(struct super_block *sb,
+ 	} else {
+ 		/*
+ 		 * Found the key in ->s_master_keys.  Re-add the secret if
+-		 * needed.
++		 * needed, and add the user to ->mk_users if needed.
+ 		 */
+ 		down_write(&key->sem);
+ 		err = add_existing_master_key(key->payload.data[0], secret,
+@@ -297,6 +476,23 @@ static int add_master_key(struct super_block *sb,
+ /*
+  * Add a master encryption key to the filesystem, causing all files which were
+  * encrypted with it to appear "unlocked" (decrypted) when accessed.
++ *
++ * When adding a key for use by v1 encryption policies, this ioctl is
++ * privileged, and userspace must provide the 'key_descriptor'.
++ *
++ * When adding a key for use by v2+ encryption policies, this ioctl is
++ * unprivileged.  This is needed, in general, to allow non-root users to use
++ * encryption without encountering the visibility problems of process-subscribed
++ * keyrings and the inability to properly remove keys.  This works by having
++ * each key identified by its cryptographically secure hash --- the
++ * 'key_identifier'.  The cryptographic hash ensures that a malicious user
++ * cannot add the wrong key for a given identifier.  Furthermore, each added key
++ * is charged to the appropriate user's quota for the keyrings service, which
++ * prevents a malicious user from adding too many keys.  Finally, we forbid a
++ * user from removing a key while other users have added it too, which prevents
++ * a user who knows another user's key from causing a denial-of-service by
++ * removing it at an inopportune time.  (We tolerate that a user who knows a key
++ * can prevent other users from removing it.)
+  */
+ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
+ {
+@@ -325,11 +521,16 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
+ 	if (copy_from_user(secret.raw, uarg->raw, secret.size))
+ 		goto out_wipe_secret;
+ 
+-	err = -EACCES;
+-	if (!capable(CAP_SYS_ADMIN))
+-		goto out_wipe_secret;
+-
+-	if (arg.key_spec.type != FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
++	if (arg.key_spec.type == FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
++		/*
++		 * Only root can add keys that are identified by an arbitrary
++		 * descriptor rather than by a cryptographic hash --- since
++		 * otherwise a malicious user could add the wrong key.
++		 */
++		err = -EACCES;
++		if (!capable(CAP_SYS_ADMIN))
++			goto out_wipe_secret;
++	} else {
+ 		err = fscrypt_init_hkdf(&secret.hkdf, secret.raw, secret.size);
+ 		if (err)
+ 			goto out_wipe_secret;
+@@ -481,10 +682,26 @@ int fscrypt_ioctl_remove_key(struct file *filp, const void __user *uarg)
+ 	if (!valid_key_spec(&arg.key_spec))
+ 		return -EINVAL;
+ 
++	if (arg.flags & ~FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS)
++		return -EINVAL;
++
+ 	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
+ 		return -EINVAL;
+ 
+-	if (!capable(CAP_SYS_ADMIN))
++	/*
++	 * Only root can request that the key be removed no matter how many
++	 * users have added it.
++	 */
++	if ((arg.flags & FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS) &&
++	    !capable(CAP_SYS_ADMIN))
++		return -EACCES;
++
++	/*
++	 * Only root can add and remove keys that are identified by an arbitrary
++	 * descriptor rather than by a cryptographic hash.
++	 */
++	if (arg.key_spec.type == FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR &&
++	    !capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 
+ 	/* Find the key being removed. */
+@@ -495,11 +712,35 @@ int fscrypt_ioctl_remove_key(struct file *filp, const void __user *uarg)
+ 
+ 	down_write(&key->sem);
+ 
+-	/* Wipe the secret. */
++	/* If relevant, remove current user's (or all users) usage of the key */
++	if (mk->mk_users && mk->mk_users->keys.nr_leaves_on_tree != 0) {
++		if (arg.flags & FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS)
++			err = keyring_clear(mk->mk_users);
++		else
++			err = remove_master_key_user(mk);
++		if (err) {
++			up_write(&key->sem);
++			goto out_put_key;
++		}
++		if (mk->mk_users->keys.nr_leaves_on_tree != 0) {
++			/*
++			 * Other users have still added the key too.  We removed
++			 * the current user's usage of the key if there was one,
++			 * but we still can't remove the key itself.
++			 */
++			err = -EUSERS;
++			up_write(&key->sem);
++			goto out_put_key;
++		}
++	}
++
++	/* No usages remaining.  Go ahead and wipe the secret. */
+ 	dead = false;
+ 	if (is_master_key_secret_present(&mk->mk_secret)) {
++		down_write(&mk->mk_secret_sem);
+ 		wipe_master_key_secret(&mk->mk_secret);
+ 		dead = refcount_dec_and_test(&mk->mk_refcount);
++		up_write(&mk->mk_secret_sem);
+ 	}
+ 	up_write(&key->sem);
+ 	if (dead) {
+@@ -513,6 +754,7 @@ int fscrypt_ioctl_remove_key(struct file *filp, const void __user *uarg)
+ 		/* Some inodes still reference this key; try to evict them. */
+ 		err = try_to_lock_encrypted_files(sb, mk);
+ 	}
++out_put_key:
+ 	key_put(key);
+ 	return err;
+ }
+@@ -528,6 +770,15 @@ EXPORT_SYMBOL_GPL(fscrypt_ioctl_remove_key);
+  * of an encrypted directory without using a hack such as trying to open a
+  * regular file in it (which can confuse the "incompletely removed" state with
+  * absent or present).
++ *
++ * In addition, for v2 policy keys we allow applications to determine, via
++ * ->status_flags and ->user_count, whether the key has been added by the
++ * current user, by other users, or by both.  Most applications should not need
++ * this, since ordinarily only one user should know a given key.  However, if a
++ * secret key is shared by multiple users, applications may wish to add an
++ * already-present key to prevent other users from removing it.  This ioctl can
++ * be used to check whether that really is the case before the work is done to
++ * add the key --- which might e.g. require prompting the user for a passphrase.
+  */
+ int fscrypt_ioctl_get_key_status(struct file *filp, void __user *uarg)
+ {
+@@ -546,6 +797,8 @@ int fscrypt_ioctl_get_key_status(struct file *filp, void __user *uarg)
+ 	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
+ 		return -EINVAL;
+ 
++	arg.status_flags = 0;
++	arg.user_count = 0;
+ 	memset(arg.__out_reserved, 0, sizeof(arg.__out_reserved));
+ 
+ 	key = fscrypt_find_master_key(sb, &arg.key_spec);
+@@ -566,6 +819,20 @@ int fscrypt_ioctl_get_key_status(struct file *filp, void __user *uarg)
+ 	}
+ 
+ 	arg.status = FSCRYPT_KEY_STATUS_PRESENT;
++	if (mk->mk_users) {
++		struct key *mk_user;
++
++		arg.user_count = mk->mk_users->keys.nr_leaves_on_tree;
++		mk_user = find_master_key_user(mk);
++		if (!IS_ERR(mk_user)) {
++			arg.status_flags |=
++				FSCRYPT_KEY_STATUS_FLAG_ADDED_BY_SELF;
++			key_put(mk_user);
++		} else if (mk_user != ERR_PTR(-ENOKEY)) {
++			err = PTR_ERR(mk_user);
++			goto out_release_key;
++		}
++	}
+ 	err = 0;
+ out_release_key:
+ 	up_read(&key->sem);
+@@ -579,10 +846,25 @@ EXPORT_SYMBOL_GPL(fscrypt_ioctl_get_key_status);
+ 
+ int __init fscrypt_init_keyring(void)
+ {
+-	return register_key_type(&key_type_fscrypt);
++	int err;
++
++	err = register_key_type(&key_type_fscrypt);
 +	if (err)
 +		return err;
 +
-+	desc->tfm = hmac_tfm;
-+	desc->flags = 0;
-+	err = crypto_shash_digest(desc, ikm, ikmlen, prk);
-+	shash_desc_zero(desc);
-+	return err;
-+}
-+
-+/*
-+ * Compute HKDF-Extract using the given master key as the input keying material,
-+ * and prepare an HMAC transform object keyed by the resulting pseudorandom key.
-+ *
-+ * Afterwards, the keyed HMAC transform object can be used for HKDF-Expand many
-+ * times without having to recompute HKDF-Extract each time.
-+ */
-+int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
-+		      unsigned int master_key_size)
-+{
-+	struct crypto_shash *hmac_tfm;
-+	u8 prk[HKDF_HASHLEN];
-+	int err;
-+
-+	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
-+	if (IS_ERR(hmac_tfm)) {
-+		fscrypt_warn(NULL, "error allocating " HKDF_HMAC_ALG ": %ld",
-+			     PTR_ERR(hmac_tfm));
-+		return PTR_ERR(hmac_tfm);
-+	}
-+
-+	BUG_ON(crypto_shash_digestsize(hmac_tfm) != sizeof(prk));
-+
-+	err = hkdf_extract(hmac_tfm, master_key, master_key_size, prk);
++	err = register_key_type(&key_type_fscrypt_user);
 +	if (err)
-+		goto err_free_tfm;
++		goto err_unregister_fscrypt;
 +
-+	err = crypto_shash_setkey(hmac_tfm, prk, sizeof(prk));
-+	if (err)
-+		goto err_free_tfm;
++	return 0;
 +
-+	hkdf->hmac_tfm = hmac_tfm;
-+	goto out;
-+
-+err_free_tfm:
-+	crypto_free_shash(hmac_tfm);
-+out:
-+	memzero_explicit(prk, sizeof(prk));
++err_unregister_fscrypt:
++	unregister_key_type(&key_type_fscrypt);
 +	return err;
-+}
+ }
+ 
+ void fscrypt_exit_keyring(void)
+ {
+ 	unregister_key_type(&key_type_fscrypt);
++	unregister_key_type(&key_type_fscrypt_user);
+ }
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index c81447a438ea9..6b6673355538c 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -283,10 +283,10 @@ static int fscrypt_setup_v2_file_key(struct fscrypt_info *ci,
+  *
+  * If the master key is found in the filesystem-level keyring, then the
+  * corresponding 'struct key' is returned in *master_key_ret with
+- * ->sem read-locked.  This is needed to ensure that only one task links the
+- * fscrypt_info into ->mk_decrypted_inodes (as multiple tasks may race to create
+- * an fscrypt_info for the same inode), and to synchronize the key being removed
+- * with a new inode starting to use it.
++ * ->mk_secret_sem read-locked.  This is needed to ensure that only one task
++ * links the fscrypt_info into ->mk_decrypted_inodes (as multiple tasks may race
++ * to create an fscrypt_info for the same inode), and to synchronize the key
++ * being removed with a new inode starting to use it.
+  */
+ static int setup_file_encryption_key(struct fscrypt_info *ci,
+ 				     struct key **master_key_ret)
+@@ -324,7 +324,7 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
+ 	}
+ 
+ 	mk = key->payload.data[0];
+-	down_read(&key->sem);
++	down_read(&mk->mk_secret_sem);
+ 
+ 	/* Has the secret been removed (via FS_IOC_REMOVE_ENCRYPTION_KEY)? */
+ 	if (!is_master_key_secret_present(&mk->mk_secret)) {
+@@ -358,7 +358,7 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
+ 	return 0;
+ 
+ out_release_key:
+-	up_read(&key->sem);
++	up_read(&mk->mk_secret_sem);
+ 	key_put(key);
+ 	return err;
+ }
+@@ -484,7 +484,9 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	res = 0;
+ out:
+ 	if (master_key) {
+-		up_read(&master_key->sem);
++		struct fscrypt_master_key *mk = master_key->payload.data[0];
 +
-+/*
-+ * HKDF-Expand (RFC 5869 section 2.3).  This expands the pseudorandom key, which
-+ * was already keyed into 'hkdf->hmac_tfm' by fscrypt_init_hkdf(), into 'okmlen'
-+ * bytes of output keying material parameterized by the application-specific
-+ * 'info' of length 'infolen' bytes, prefixed with the 'context' byte.  This is
-+ * thread-safe and may be called by multiple threads in parallel.
-+ *
-+ * ('context' isn't part of the HKDF specification; it's just a prefix fscrypt
-+ * adds to its application-specific info strings to guarantee that it doesn't
-+ * accidentally repeat an info string when using HKDF for different purposes.)
-+ */
-+int fscrypt_hkdf_expand(struct fscrypt_hkdf *hkdf, u8 context,
-+			const u8 *info, unsigned int infolen,
-+			u8 *okm, unsigned int okmlen)
-+{
-+	SHASH_DESC_ON_STACK(desc, hkdf->hmac_tfm);
-+	unsigned int i;
-+	int err;
-+	const u8 *prev = NULL;
-+	u8 counter = 1;
-+	u8 tmp[HKDF_HASHLEN];
-+
-+	if (WARN_ON(okmlen > 255 * HKDF_HASHLEN))
-+		return -EINVAL;
-+
-+	desc->tfm = hkdf->hmac_tfm;
-+	desc->flags = 0;
-+
-+	for (i = 0; i < okmlen; i += HKDF_HASHLEN) {
-+
-+		err = crypto_shash_init(desc);
-+		if (err)
-+			goto out;
-+
-+		if (prev) {
-+			err = crypto_shash_update(desc, prev, HKDF_HASHLEN);
-+			if (err)
-+				goto out;
-+		}
-+
-+		BUILD_BUG_ON(sizeof(context) != 1);
-+		err = crypto_shash_update(desc, &context, 1);
-+		if (err)
-+			goto out;
-+
-+		err = crypto_shash_update(desc, info, infolen);
-+		if (err)
-+			goto out;
-+
-+		BUILD_BUG_ON(sizeof(counter) != 1);
-+		if (okmlen - i < HKDF_HASHLEN) {
-+			err = crypto_shash_finup(desc, &counter, 1, tmp);
-+			if (err)
-+				goto out;
-+			memcpy(&okm[i], tmp, okmlen - i);
-+			memzero_explicit(tmp, sizeof(tmp));
-+		} else {
-+			err = crypto_shash_finup(desc, &counter, 1, &okm[i]);
-+			if (err)
-+				goto out;
-+		}
-+		counter++;
-+		prev = &okm[i];
-+	}
-+	err = 0;
-+out:
-+	if (unlikely(err))
-+		memzero_explicit(okm, okmlen); /* so caller doesn't need to */
-+	shash_desc_zero(desc);
-+	return err;
-+}
-+
-+void fscrypt_destroy_hkdf(struct fscrypt_hkdf *hkdf)
-+{
-+	crypto_free_shash(hkdf->hmac_tfm);
-+}
++		up_read(&mk->mk_secret_sem);
+ 		key_put(master_key);
+ 	}
+ 	if (res == -ENOKEY)
+@@ -526,7 +528,7 @@ int fscrypt_drop_inode(struct inode *inode)
+ 	mk = ci->ci_master_key->payload.data[0];
+ 
+ 	/*
+-	 * Note: since we aren't holding key->sem, the result here can
++	 * Note: since we aren't holding ->mk_secret_sem, the result here can
+ 	 * immediately become outdated.  But there's no correctness problem with
+ 	 * unnecessarily evicting.  Nor is there a correctness problem with not
+ 	 * evicting while iput() is racing with the key being removed, since
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 26879e669dfa0..fd1c3e2b0b7c1 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -103,7 +103,9 @@ struct fscrypt_add_key_arg {
+ /* Struct passed to FS_IOC_REMOVE_ENCRYPTION_KEY */
+ struct fscrypt_remove_key_arg {
+ 	struct fscrypt_key_specifier key_spec;
+-	__u32 __reserved[6];
++#define FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS	0x00000001
++	__u32 flags;
++	__u32 __reserved[5];
+ };
+ 
+ /* Struct passed to FS_IOC_GET_ENCRYPTION_KEY_STATUS */
+@@ -117,7 +119,10 @@ struct fscrypt_get_key_status_arg {
+ #define FSCRYPT_KEY_STATUS_PRESENT		2
+ #define FSCRYPT_KEY_STATUS_INCOMPLETELY_REMOVED	3
+ 	__u32 status;
+-	__u32 __out_reserved[15];
++#define FSCRYPT_KEY_STATUS_FLAG_ADDED_BY_SELF   0x00000001
++	__u32 status_flags;
++	__u32 user_count;
++	__u32 __out_reserved[13];
+ };
+ 
+ #define FS_IOC_SET_ENCRYPTION_POLICY	  _IOR('f', 19, struct fscrypt_policy)
 -- 
 2.21.0
 
