@@ -1,23 +1,23 @@
-Return-Path: <SRS0=Y0kv=SD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=uocl=SE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA8AC43381
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 23:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1972DC10F05
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 01:59:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFB4F20856
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Apr 2019 23:17:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DD9E120830
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 01:59:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V9RNd9T/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dn+vjkGb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFB4F20856
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CU4/kaaS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CDz768n0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD9E120830
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,56 +25,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hNl0Stzl5XySXWdYm0N8KPjtLYYlsh8oLU8Tm89DVZM=; b=V9RNd9T/bN2lHX
-	FIX3Qxse8LsZqn4PXTnT92H1siaA36hv69on4nFPKUFdxueCoMEInzGNhVVbuX0gqtwyK52usmt41
-	kiACkvM8grkw/DVvauEEliEgPBLRpNqOixjRhKQCRpwA+IMK4iDSSesyYaCYBT+HdVZPVK0QUMMsW
-	D794pE6ywDn7Gn8xfEyUEo6SFmoiKEZT8Gi8hISiIOPAWFgXXcOm4H3il4lj8wvN7RimExwLfRl2V
-	AUx1+EZvWGxfTl8do3QfZ/PVvy8Q1az6KeiHWv4mK04vonTmpl1Y49l8hkIu8nlBLP643Wr7/Q14i
-	AyBeL4uOkqlsHwOVy9yQ==;
+	List-Owner; bh=W0NGMmvc8DpUtQZ6psau3MmSIHX6Nufmvt1kFd4hlnM=; b=CU4/kaaSsvzcJJ
+	+IQkgTEwIYQy+Q6SgaXehYuuEZ6utOra5un34zbLDVXiUnyALexSeVNspp6OCxsVkiwiQ9dQk8e1g
+	vmk0LgD+kUFNAc60iuJT6NF90aTrH3OkxZCUYswgNtXVJiVxUSmW8aHdvCwslrrhqXKZj6W0rAa9f
+	V+RpmugiQL26UhuAmJ34ItKPMpr29JABVyQPYzOkY4IPfqPix2tl+UEfDwlZMP4u+LtAar4GqOOkj
+	KI+gMjFB87XhSPEMZPNtZcuuDRAv4qne6gdCWino/kcleR+pmaiNZBkXYv9nsJthuJK89gCG1KmRW
+	B6RlhTopPG80cipj7EZg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hB6B1-0004JQ-7T; Mon, 01 Apr 2019 23:17:15 +0000
-Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
+	id 1hB8hj-0002bk-G8; Tue, 02 Apr 2019 01:59:11 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hB6Ay-0004Ih-Bm
- for linux-mtd@lists.infradead.org; Mon, 01 Apr 2019 23:17:13 +0000
-Received: by mail-qk1-x741.google.com with SMTP id c20so6773418qkc.10
- for <linux-mtd@lists.infradead.org>; Mon, 01 Apr 2019 16:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=XnkeB0MmUv7FS2Y36GBVwO76rp5WThGO4+RpI96oa2o=;
- b=dn+vjkGbzNOb4u8Y+IARnaaMyKr7dJQrseo8caWU/MlYXvxVS6vuQdGj8cX5WNSKq6
- g3J5bEi3s8pSkEO110RXe3sUTGmnT3ZQkJJv60lTVu6pDREcOvxFEfpgM46ENo52thhJ
- oLfoZ2hbdFnDVQNT3nejGoBucMPxrKuOtg/pQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=XnkeB0MmUv7FS2Y36GBVwO76rp5WThGO4+RpI96oa2o=;
- b=kYo7InI6l6pibkCUccW1ok5/igJ0pGr2/P7iqg9jm6rrf9XMtmZJuOREm4V8MiB0hf
- 9Jc8tgdv+MXPCKECbR12t4VhLzachBtpIdE8B2tPLhCUZ28eba17MI6f7tLEH+qRaJEE
- jiBuLFNUNRrdQFC3coBrq7bRJy2bxV+LCx7rpazvCcWbjGkb4K6XeD52bL7dDE8K1OhU
- 9gW6JhRluRdB0n+3FpSmi+YqOxmfbb4lJm4ygtB6gTt5tzsXWzKyp7cSj8Qd7VXpUBPn
- XcM/u++prvJjeDE+pICygguCFXNZ3yGQos2CdIlVZBnd170eygg6849FnLARmohQeSpC
- OkIw==
-X-Gm-Message-State: APjAAAV6DCKt5XVJcqGAiAxqbe28Qk1kFbSpnAeJpTy8k3Y8Seq+nReE
- NLRh7xIJ1cCEP7QmVUthY/cq9KC2FAghNzXTzfbFHjyblGY0fg==
-X-Google-Smtp-Source: APXvYqx5ijgl+w0GBnLUWD5KkzkW+7Gj2+GpS5nO9v9fYbmooKsuoHPbdJbXSYbAs0PjmgaJ1GnOBe5Y3YqcPGmFcoI=
-X-Received: by 2002:a37:8bc7:: with SMTP id
- n190mr51197085qkd.108.1554160630332; 
- Mon, 01 Apr 2019 16:17:10 -0700 (PDT)
+ id 1hB8ha-0002VJ-MD; Tue, 02 Apr 2019 01:59:04 +0000
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com
+ [209.85.222.172])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 04DAE2084C;
+ Tue,  2 Apr 2019 01:59:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1554170342;
+ bh=UAWURh5x2Co96NEqHrtUXEo0IXx4734GBTGwtxPIAgA=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=CDz768n0/rnh8ju+u36rgBsmwVIn/AQQqQBRWuslTirjipU9j8k3Lo8iYRR9cCD7Y
+ GVtqG3NAAK2d3dQ9KlJF7ThYkzzLj55bCoqaAWoEO8+eJcGgMnhP65tK+8kP7jWY+M
+ B84C6MknW00gIr/pThnHguaG+0RXVzGYhBLz+k4M=
+Received: by mail-qk1-f172.google.com with SMTP id c189so6973498qke.6;
+ Mon, 01 Apr 2019 18:59:01 -0700 (PDT)
+X-Gm-Message-State: APjAAAWDpeEtiydlGTkF9A8WNZxJFkzG19ewHcxB5PoRtmYw8jA2RN2T
+ xMxUEos5rR+KavQMK907OLUjyt43Bvzzy6ZE+Q==
+X-Google-Smtp-Source: APXvYqyhDcGprRX3gC+Q5Z+dL97XBOC6zWPb6nKj46kC04sdKLlyPG7jHwMf0HCgBOxjhzsDdFWmoyi9n0LKrE97xdY=
+X-Received: by 2002:a37:5805:: with SMTP id m5mr53742218qkb.136.1554170341031; 
+ Mon, 01 Apr 2019 18:59:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGt4E5tYNVD5n7QmYOpCQs3SOG7w0qJrk9LikQ9NDR5G3QoyCQ@mail.gmail.com>
- <f6ee3da1-0f1a-fa36-c2b7-438c7f1b7d26@sigma-star.at>
-In-Reply-To: <f6ee3da1-0f1a-fa36-c2b7-438c7f1b7d26@sigma-star.at>
-From: Markus Mayer <mmayer@broadcom.com>
-Date: Mon, 1 Apr 2019 16:16:59 -0700
-Message-ID: <CAGt4E5svbm0otsjNfHeyEN-8OL7HzeP-EF0V2B5PY70RNPZq4g@mail.gmail.com>
-Subject: Re: mkfs.ubifs issues with mtd-utils 2.1.0
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+References: <75ad3b89e4a6f8ad5bc414c3dccbb1f99361495a.1554153146.git-series.maxime.ripard@bootlin.com>
+In-Reply-To: <75ad3b89e4a6f8ad5bc414c3dccbb1f99361495a.1554153146.git-series.maxime.ripard@bootlin.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Mon, 1 Apr 2019 20:58:49 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLSfitzkb8P5xQ+cCmcSeL6fTjQ3rVPJ2qiNdSXyps-sw@mail.gmail.com>
+Message-ID: <CAL_JsqLSfitzkb8P5xQ+cCmcSeL6fTjQ3rVPJ2qiNdSXyps-sw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: mtd: Add YAML schemas for the generic
+ NAND options
+To: Maxime Ripard <maxime.ripard@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190401_161712_412461_101F2DFA 
-X-CRM114-Status: GOOD (  19.85  )
+X-CRM114-CacheID: sfid-20190401_185902_762264_0DBEB44C 
+X-CRM114-Status: GOOD (  27.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,79 +81,180 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Chen-Yu Tsai <wens@csie.org>, Boris Brezillon <boris.brezillon@collabora.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 31 Mar 2019 at 23:40, David Oberhollenzer
-<david.oberhollenzer@sigma-star.at> wrote:
-
-Hi David,
-
-> This check was introduced in "a767dd30 mkfs.ubifs: Add encrypted symlink support".
+On Mon, Apr 1, 2019 at 4:14 PM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
 >
-> This commit is part of the fscrypt patch set. A few lines below, the extra data is
-> encrypted with the path encryption functions if there is an fscrypt context.
+> The NAND chips in MTD have a bunch of generic options that are needed in a
+> device tree. Add a YAML schemas for those.
 >
-> Given that having device files on disk outside an initramfs is a rather rare thing
-> nowadays (devtmpfs), it appears we unfortunately didn't think of that case and
-> tests subsequently didn't cover it either.
-
-What can I say. We are special. ;-)
-
-> > Since I am not entirely sure of the purpose of the check, I am also
-> > unsure what solution to propose. Would
-> >     if (S_ISREG(st->st_mode)) /* error here */
-> > or
-> >     if (S_ISREG(st->st_mode) || S_ISDIR(st->st_mode)) /* error here */
-> > be sufficient? This would allow links, character & block devices, sockets, etc.
+> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand-controller.yaml | 131 +++++++-
+>  1 file changed, 131 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/nand-controller.yaml
 >
-> A quick and dirty fix would be to move the check into the branch where the data
-> is actually encrypted.
+> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> new file mode 100644
+> index 000000000000..05b1afb34972
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> @@ -0,0 +1,131 @@
+> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NAND Chip and NAND Controller Generic Binding
+> +
+> +maintainers:
+> +  - Boris Brezillon <bbrezillon@kernel.org>
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +  - Richard Weinberger <richard@nod.at>
+> +
+> +description: |
+> +  The NAND controller should be represented with its own DT node, and
+> +  all NAND chips attached to this controller should be defined as
+> +  children nodes of the NAND controller. This representation should be
+> +  enforced even for simple controllers supporting only one chip.
+> +
+> +  The ECC strength and ECC step size properties define the correction
+> +  capability of a controller. Together, they say a controller can
+> +  correct {strength} bit errors per {size} bytes.
+> +
+> +  The interpretation of these parameters is implementation-defined, so
+> +  not all implementations must support all possible
+> +  combinations. However, implementations are encouraged to further
+> +  specify the value(s) they support.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^nand-controller(@.*)?"
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  ranges: true
 
-I can confirm that it works for me again when I do this:
+'ranges' should not be here as nand chip addresses are not translatable.
 
-$ git diff
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index e0c42f36db7f..4af5250db5e6 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1531,12 +1531,12 @@ static int add_inode(struct stat *st, ino_t
-inum, void *data,
-        ino->flags      = cpu_to_le32(use_flags);
-        ino->compr_type = cpu_to_le16(c->default_compr);
-        if (data_len) {
--               if (!S_ISLNK(st->st_mode))
--                       return err_msg("Expected symlink");
--
-                if (!fctx) {
-                        memcpy(&ino->data, data, data_len);
-                } else {
-+                       if (!S_ISLNK(st->st_mode))
-+                               return err_msg("Expected symlink");
-+
-                        ret = encrypt_symlink(&ino->data, data, data_len, fctx);
-                        if (ret < 0)
-                                return ret;
+> +
+> +patternProperties:
+> +  "^nand@[a-z0-9]$":
+> +    properties:
+> +      reg:
+> +        description:
+> +          Contains the native Ready/Busy IDs.
+> +
+> +      nand-ecc-mode:
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#/definitions/string
+> +          - enum: [ none, soft, hw, hw_syndrome, hw_oob_first, on-die ]
+> +        description:
+> +          Operation mode of the NAND ecc mode. soft_bch is deprecated
+> +          and should be replaced by soft and nand-ecc-algo
+> +
+> +      nand-ecc-algo:
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#/definitions/string
+> +          - enum: [ hamming, bch, rs ]
+> +        description:
+> +          Algorithm of NAND ECC.
+> +
+> +      nand-bus-width:
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#/definitions/uint32
+> +          - enum: [ 8, 16 ]
+> +          - default: 8
+> +        description:
+> +          Bus width to the NAND chip
+> +
+> +      nand-on-flash-bbt:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        description:
+> +          Enable the on-flash Bad Block Table
+> +
+> +      nand-ecc-strength:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Number of bits to correct per ECC step.
 
-> However, the question remains what the fscrypt branch should actually do with
-> a device number in this case.
+Is there a range we can define here? Certainly there's a minimum
+values of at least 1.
 
-A good question. I'll have to leave the answer to those more versed
-with UBIFS than me.
+> +
+> +      nand-ecc-step-size:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Number of data bytes covered by a single ECC step.
 
-It may make sense to incorporate the above change for now, especially
-if determining the proper behaviour for encrypting device files takes
-some time. While the change doesn't fix the behaviour if it tries to
-encrypt the file system, it also doesn't change the outcome. If
-encryption is being used, it'll still bail, just as it does now. The
-change does fix things for non-encrypted file systems, however.
+Same here.
 
-Thanks,
--Markus
+> +
+> +      nand-ecc-maximize:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        description:
+> +          Whether or not the ECC strength should be maximized. The
+> +          maximum ECC strength is both controller and chip
+> +          dependent. The controller side has to select the ECC config
+> +          providing the best strength and taking the OOB area size
+> +          constraint into account.  This is particularly useful when
+> +          only the in-band area is used by the upper layers, and you
+> +          want to make your NAND as reliable as possible.
+> +
+> +      nand-is-boot-medium:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        description:
+> +          Whether or not the NAND chip is a boot medium. Drivers might
+> +          use this information to select ECC algorithms supported by
+> +          the boot ROM or similar restrictions.
+> +
+> +      nand-rb:
+> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        description:
+> +          Contains the native Ready/Busy IDs.
+> +
+> +    required:
+> +      - reg
+> +
+> +required:
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +examples:
+> +  - |
+> +    nand-controller {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      /* controller specific properties */
+> +
+> +      nand@0 {
+> +        reg = <0>;
+> +        nand-ecc-mode = "soft";
+> +        nand-ecc-algo = "bch";
+> +
+> +        /* controller specific properties */
+> +      };
+> +    };
+>
+> base-commit: aa63f222af3e5991099ebcecca7c474d8285c7c4
+> --
+> git-series 0.9.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
