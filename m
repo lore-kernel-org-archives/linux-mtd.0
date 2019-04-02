@@ -2,22 +2,22 @@ Return-Path: <SRS0=uocl=SE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A44C4360F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 14:55:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA8DC10F00
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:48:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B229A2075E
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 14:55:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7EA35217D7
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:48:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eR46OR2n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B229A2075E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k2ee1ymT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="t86BAa0J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EA35217D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,37 +25,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=f8bPxCEonKl4CNpCPsx2iYJzkGTzeXmbK7ZxXv3DO+U=; b=eR46OR2n8XfW6L
-	weful51v95/rKb0gKtoP31Kwh4U7BtcHyZtfbB6ltyDAVz18cFvfDiueT4E7A2dJWkamGWjqfee6R
-	SPri0Yxl/YFeRjWW+LyPeTaWGI9nBMypCpoas2pAlqMTlm0Qbar3OLtQuG3Dm2LjKTzgh3MX7QgWk
-	zyqaEXVzBuD36szV0N+qzi7Us6SbHIivKHS2Y0G1S0B5y9hH7dMUmGF/m6mHyl5qyySp3TYk3ikvz
-	12PvEW5iZDUrHZYJ75EWJeBmeizDOD6NWrnIlMKTPVf7TRVGHHriwBozgqY+U37wkkO0uZJP5Ndfi
-	C0qNQqV+dWjUkp44rBhA==;
+	List-Owner; bh=KOXYMUx1y31wIVpdLd13Q4P7IXbQeoZaNfFspdrOmwc=; b=k2ee1ymThbfePQ
+	DFQbF4DYPUwX+PKnJTypy6Pw6Bt98AMwg7PfbET4yg5atzbQMSnzW7vZ68hqX38X6k1A2Tl1soLry
+	B5f1Vj0uFK7Wy5+HinoePyhHt1uXXhQjvPy4l6sjNrKPrd7cwEcuMhKNX/IAECNOS9kvaJ//Ta2A1
+	lhnUqdLLpW13G6N11RtjrioXHBsTQi6Mq/wmJl8wMRnmkbTSEYB5s6PWwX+4O28C+z3dBsmvTbr7L
+	GzfW92H5pI2rfTmXNEspLG+Mt/cyfDJcVGRz7EZOdNsQgLrmPE07c9bHczQfcYBiMa6WfOP25P73r
+	99r2WH2SGKz8sFDYar9Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBKol-00079M-Qz; Tue, 02 Apr 2019 14:55:15 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1hBLea-000525-NQ; Tue, 02 Apr 2019 15:48:48 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBKoC-0005Af-DU; Tue, 02 Apr 2019 14:54:47 +0000
-X-Originating-IP: 90.88.30.125
-Received: from localhost (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr
- [90.88.30.125]) (Authenticated sender: maxime.ripard@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CAA0C240002;
- Tue,  2 Apr 2019 14:54:29 +0000 (UTC)
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
- Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 1/2] dt-bindings: mtd: Add YAML schemas for the generic
- NAND options
-Date: Tue,  2 Apr 2019 16:54:24 +0200
-Message-Id: <74b8a52ce98b09d7906f988c107793a86c0c5f6b.1554216856.git-series.maxime.ripard@bootlin.com>
-X-Mailer: git-send-email 2.20.1
+ id 1hBLeJ-0004cg-As
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 15:48:37 +0000
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net
+ [24.5.143.220])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id A5F7420857;
+ Tue,  2 Apr 2019 15:48:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1554220111;
+ bh=Dymz0YCdEp8A2VHzclBRvxYswJ4OOeP4qqjzzueLx74=;
+ h=From:To:Cc:Subject:Date:From;
+ b=t86BAa0JUOIrdY1Dptt/zeZupV+9Cpr9t9WwSOq9PKoxTFrVNOct7XBZmjM0WFMg+
+ xv/zM4xBBYr0aLwKQsSaby6awgMgJ6D8Djo/shvHe8/2XbpMWR37NeSekAX6BlR3zP
+ d9xAiagp+jFDwp16HdAhfs0t6OhctH9lj+0Lmq/Y=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH v4 00/17] fscrypt: key management improvements
+Date: Tue,  2 Apr 2019 08:45:43 -0700
+Message-Id: <20190402154600.32432-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190402_075441_064850_2027DF39 
-X-CRM114-Status: GOOD (  20.24  )
+X-CRM114-CacheID: sfid-20190402_084831_863962_45156E30 
+X-CRM114-Status: GOOD (  20.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -67,266 +72,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org,
- Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: Satya Tangirala <satyat@google.com>, linux-api@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ Paul Crowley <paulcrowley@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The NAND chips in MTD have a bunch of generic options that are needed in a
-device tree. Add a YAML schemas for those.
+Hello,
 
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+This patchset makes major improvements to how keys are added, removed,
+and derived in fscrypt, aka ext4/f2fs/ubifs encryption.  It does this by
+adding new ioctls that add and remove encryption keys directly to/from
+the filesystem, and by adding a new encryption policy version ("v2")
+where the user-provided keys are only used as input to HKDF-SHA512 and
+are identified by their cryptographic hash.
 
----
+All new APIs and all cryptosystem changes are documented in
+Documentation/filesystems/fscrypt.rst.  Userspace can use the new key
+management ioctls with existing encrypted directories, but migrating to
+v2 encryption policies is needed for the full benefits.
 
-Changes from v1:
-  - Removed free form text binding
-  - Enhanced properties descriptions
-  - Fixed the SPDX license tag
-  - Added minimums for nand-ecc-strength and nand-ecc-step-size
-  - Removed Boris from the maintainers
----
- Documentation/devicetree/bindings/mtd/nand-controller.yaml | 141 +++++++-
- Documentation/devicetree/bindings/mtd/nand.txt             |  75 +----
- 2 files changed, 141 insertions(+), 75 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/nand-controller.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
+These changes solve four interrelated problems:
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-new file mode 100644
-index 000000000000..ebc7833ffc0c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -0,0 +1,141 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NAND Chip and NAND Controller Generic Binding
-+
-+maintainers:
-+  - Miquel Raynal <miquel.raynal@bootlin.com>
-+  - Richard Weinberger <richard@nod.at>
-+
-+description: |
-+  The NAND controller should be represented with its own DT node, and
-+  all NAND chips attached to this controller should be defined as
-+  children nodes of the NAND controller. This representation should be
-+  enforced even for simple controllers supporting only one chip.
-+
-+  The ECC strength and ECC step size properties define the user
-+  desires in terms of correction capability of a controller. Together,
-+  they request the ECC engine to correct {strength} bit errors per
-+  {size} bytes.
-+
-+  The interpretation of these parameters is implementation-defined, so
-+  not all implementations must support all possible
-+  combinations. However, implementations are encouraged to further
-+  specify the value(s) they support.
-+
-+properties:
-+  $nodename:
-+    pattern: "^nand-controller(@.*)?"
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  ranges: true
-+
-+patternProperties:
-+  "^nand@[a-z0-9]$":
-+    properties:
-+      reg:
-+        description:
-+          Contains the native Ready/Busy IDs.
-+
-+      nand-ecc-mode:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/string
-+          - enum: [ none, soft, hw, hw_syndrome, hw_oob_first, on-die ]
-+        description:
-+          Desired ECC engine, either hardware (most of the time
-+          embedded in the NAND controller) or software correction
-+          (Linux will handle the calculations). soft_bch is deprecated
-+          and should be replaced by soft and nand-ecc-algo.
-+
-+      nand-ecc-algo:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/string
-+          - enum: [ hamming, bch, rs ]
-+        description:
-+          Desired ECC algorithm.
-+
-+      nand-bus-width:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/uint32
-+          - enum: [ 8, 16 ]
-+          - default: 8
-+        description:
-+          Bus width to the NAND chip
-+
-+      nand-on-flash-bbt:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          With this property, the OS will search the device for a Bad
-+          Block Table (BBT). If not found, it will create one, reserve
-+          a few blocks at the end of the device to store it and update
-+          it as the device ages. Otherwise, the out-of-band area of a
-+          few pages of all the blocks will be scanned at boot time to
-+          find Bad Block Markers (BBM). These markers will help to
-+          build a volatile BBT in RAM.
-+
-+      nand-ecc-strength:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        minimum: 1
-+        description:
-+          Maximum number of bits that can be corrected per ECC step.
-+
-+      nand-ecc-step-size:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        minimum: 1
-+        description:
-+          Number of data bytes covered by a single ECC step.
-+
-+      nand-ecc-maximize:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          Whether or not the ECC strength should be maximized. The
-+          maximum ECC strength is both controller and chip
-+          dependent. The ECC engine has to select the ECC config
-+          providing the best strength and taking the OOB area size
-+          constraint into account. This is particularly useful when
-+          only the in-band area is used by the upper layers, and you
-+          want to make your NAND as reliable as possible.
-+
-+      nand-is-boot-medium:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          Whether or not the NAND chip is a boot medium. Drivers might
-+          use this information to select ECC algorithms supported by
-+          the boot ROM or similar restrictions.
-+
-+      nand-rb:
-+        $ref: /schemas/types.yaml#/definitions/uint32-array
-+        description:
-+          Contains the native Ready/Busy IDs.
-+
-+    required:
-+      - reg
-+
-+required:
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+examples:
-+  - |
-+    nand-controller {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      /* controller specific properties */
-+
-+      nand@0 {
-+        reg = <0>;
-+        nand-ecc-mode = "soft";
-+        nand-ecc-algo = "bch";
-+
-+        /* controller specific properties */
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-deleted file mode 100644
-index e949c778e983..000000000000
---- a/Documentation/devicetree/bindings/mtd/nand.txt
-+++ /dev/null
-@@ -1,75 +0,0 @@
--* NAND chip and NAND controller generic binding
--
--NAND controller/NAND chip representation:
--
--The NAND controller should be represented with its own DT node, and all
--NAND chips attached to this controller should be defined as children nodes
--of the NAND controller. This representation should be enforced even for
--simple controllers supporting only one chip.
--
--Mandatory NAND controller properties:
--- #address-cells: depends on your controller. Should at least be 1 to
--		  encode the CS line id.
--- #size-cells: depends on your controller. Put zero unless you need a
--	       mapping between CS lines and dedicated memory regions
--
--Optional NAND controller properties
--- ranges: only needed if you need to define a mapping between CS lines and
--	  memory regions
--
--Optional NAND chip properties:
--
--- nand-ecc-mode : String, operation mode of the NAND ecc mode.
--		  Supported values are: "none", "soft", "hw", "hw_syndrome",
--		  "hw_oob_first", "on-die".
--		  Deprecated values:
--		  "soft_bch": use "soft" and nand-ecc-algo instead
--- nand-ecc-algo: string, algorithm of NAND ECC.
--		 Valid values are: "hamming", "bch", "rs".
--- nand-bus-width : 8 or 16 bus width if not present 8
--- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
--
--- nand-ecc-strength: integer representing the number of bits to correct
--		     per ECC step.
--
--- nand-ecc-step-size: integer representing the number of data bytes
--		      that are covered by a single ECC step.
--
--- nand-ecc-maximize: boolean used to specify that you want to maximize ECC
--		     strength. The maximum ECC strength is both controller and
--		     chip dependent. The controller side has to select the ECC
--		     config providing the best strength and taking the OOB area
--		     size constraint into account.
--		     This is particularly useful when only the in-band area is
--		     used by the upper layers, and you want to make your NAND
--		     as reliable as possible.
--- nand-is-boot-medium: Whether the NAND chip is a boot medium. Drivers might use
--		       this information to select ECC algorithms supported by
--		       the boot ROM or similar restrictions.
--
--- nand-rb: shall contain the native Ready/Busy ids.
--
--The ECC strength and ECC step size properties define the correction capability
--of a controller. Together, they say a controller can correct "{strength} bit
--errors per {size} bytes".
--
--The interpretation of these parameters is implementation-defined, so not all
--implementations must support all possible combinations. However, implementations
--are encouraged to further specify the value(s) they support.
--
--Example:
--
--	nand-controller {
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		/* controller specific properties */
--
--		nand@0 {
--			reg = <0>;
--			nand-ecc-mode = "soft";
--			nand-ecc-algo = "bch";
--
--			/* controller specific properties */
--		};
--	};
+(1) Providing fscrypt keys via process-subscribed keyrings is abusing
+    encryption as an OS-level access control mechanism, causing many
+    bugs where processes don't get access to the keys they need -- e.g.,
+    when a 'sudo' command or a system service needs to access encrypted
+    files.  It's also inconsistent with the filesystem/VFS "view" of
+    encrypted files which is global, so sometimes things randomly happen
+    to work anyway due to caching.  Regardless, currently almost all
+    fscrypt users actually do need global keys, so they're having to use
+    workarounds that heavily abuse the session or user keyrings, e.g.
+    Android and Chromium OS both use a systemwide "session keyring" and
+    the 'fscrypt' tool links all user keyrings into root's user keyring.
 
-base-commit: 1244df4693747552c8efba995f4ebc3b247536cf
+(2) Currently there's no way to securely and efficiently remove a
+    fscrypt key such that not only is the original key wiped, but also
+    all files and directories protected by that key are "locked" and
+    their per-file keys wiped.  Many users want this and are using
+    'echo 2 > /proc/sys/vm/drop_caches' as a workaround, but this is
+    root-only, and also is overkill so can be a performance disaster.
+
+(3) The key derivation function (KDF) that fscrypt uses to derive
+    per-file keys is nonstandard, inflexible, and has some weaknesses
+    such as being reversible and not evenly distributing the entropy
+    from the user-provided keys.
+
+(4) fscrypt doesn't check that the correct key was supplied.  This can
+    be a security vulnerability, since it allows malicious local users
+    to associate the wrong key with files to which they have read-only
+    access, causing other users' processes to read/write the wrong data.
+
+Ultimately, the solutions to these problems all tie into each other.  By
+adding a filesystem-level encryption keyring with ioctls to add/remove
+keys to/from it, the keys are made usable filesystem-wide (solves
+problem #1).  It also becomes easy to track the inodes that were
+"unlocked" with each key, so they can be evicted when the key is removed
+(solves problem #2).  Moreover, the filesystem-level keyring is a
+natural place to store an HMAC transform keyed by each key, thus making
+it easy and efficient to switch the KDF to HKDF (solves problem #3).
+
+Finally, to check that the correct key was supplied, I use HKDF to
+derive a cryptographically secure key_identifier for each key (solves
+problem #4).  This in combination with key quotas and other careful
+precautions also makes it safe to allow non-root users to add and remove
+keys to/from the filesystem-level keyring.  Thus, all problems are
+solved without having to restrict the fscrypt API to root only.
+
+The patchset is organized as follows:
+
+- Patches 1-9 add new ioctls FS_IOC_ADD_ENCRYPTION_KEY,
+  FS_IOC_REMOVE_ENCRYPTION_KEY, and FS_IOC_GET_ENCRYPTION_KEY_STATUS.
+  Adding a key logically "unlocks" all files on the filesystem that are
+  protected by that key; removing a key "locks" them again.
+
+- Patches 10-13 add support for v2 encryption policies.
+
+- Patches 14-16 wire up the new ioctls to ext4, f2fs, and ubifs.
+
+- Patch 17 updates the fscrypt documentation for all the changes.
+
+Changes v3 => v4:
+    - Introduce fscrypt_sb_free() to avoid an extra #ifdef.
+    - Fix UBIFS's ->drop_inode().
+    - Add 'version' to union fscrypt_policy and union fscrypt_context.
+
+Changes v2 => v3:
+    - Use ->drop_inode() to trigger the inode eviction during/after
+      FS_IOC_REMOVE_ENCRYPTION_KEY, as suggested by Dave Chinner.
+    - A few small cleanups.
+
+v1 of this patchset was sent in October 2017 with title "fscrypt:
+filesystem-level keyring and v2 policy support".  This revived version
+follows the same basic design but incorporates numerous improvements,
+such as splitting keyinfo.c into multiple files for much better
+understandability, and introducing "per-mode" encryption keys to
+implement the semantics of the DIRECT_KEY encryption policy flag.
+
+This applies to v5.1-rc3.  You can also get it from git at:
+
+	Repository:   https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+	Branch:       fscrypt-key-mgmt-improvements-v4
+
+I've started writing xfstests for the new APIs.  So far they cover basic
+functionality.  They can be found at:
+
+	Repository:   https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+	Branch:       fscrypt-key-mgmt-improvements
+
+The xfstests depend on new xfs_io commands which can be found at:
+
+	Repository:   https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfsprogs-dev.git
+	Branch:       fscrypt-key-mgmt-improvements
+
+I've also made proof-of-concept changes to the 'fscrypt' userspace
+program (https://github.com/google/fscrypt) to make it support v2
+encryption policies.  You can find these changes in git at:
+
+	Repository:   https://github.com/ebiggers/fscrypt.git
+	Branch:       fscrypt-key-mgmt-improvements
+
+To make the 'fscrypt' userspace program experimentally use v2 encryption
+policies on new encrypted directories, add the following to
+/etc/fscrypt.conf within the "options" section:
+
+	"policy_version": "2"
+
+It's also planned for Android and Chromium OS to switch to the new
+ioctls and eventually to v2 encryption policies.  Work-in-progress,
+proof-of-concept changes by Satya Tangirala for AOSP can be found at
+https://android-review.googlesource.com/q/topic:fscrypt-key-mgmt-improvements
+
+Eric Biggers (17):
+  fs, fscrypt: move uapi definitions to new header <linux/fscrypt.h>
+  fscrypt: use FSCRYPT_ prefix for uapi constants
+  fscrypt: use FSCRYPT_* definitions, not FS_*
+  fscrypt: add ->ci_inode to fscrypt_info
+  fscrypt: refactor v1 policy key setup into keysetup_legacy.c
+  fscrypt: add FS_IOC_ADD_ENCRYPTION_KEY ioctl
+  fs/dcache.c: add shrink_dcache_inode()
+  fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+  fscrypt: add FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl
+  fscrypt: add an HKDF-SHA512 implementation
+  fscrypt: v2 encryption policy support
+  fscrypt: allow unprivileged users to add/remove keys for v2 policies
+  fscrypt: require that key be added when setting a v2 encryption policy
+  ext4: wire up new fscrypt ioctls
+  f2fs: wire up new fscrypt ioctls
+  ubifs: wire up new fscrypt ioctls
+  fscrypt: document the new ioctls and policy version
+
+ Documentation/filesystems/fscrypt.rst | 670 +++++++++++++++----
+ MAINTAINERS                           |   1 +
+ fs/crypto/Kconfig                     |   2 +
+ fs/crypto/Makefile                    |  10 +-
+ fs/crypto/crypto.c                    |  14 +-
+ fs/crypto/fname.c                     |   5 +-
+ fs/crypto/fscrypt_private.h           | 366 ++++++++--
+ fs/crypto/hkdf.c                      | 188 ++++++
+ fs/crypto/keyinfo.c                   | 592 -----------------
+ fs/crypto/keyring.c                   | 917 ++++++++++++++++++++++++++
+ fs/crypto/keysetup.c                  | 540 +++++++++++++++
+ fs/crypto/keysetup_legacy.c           | 340 ++++++++++
+ fs/crypto/policy.c                    | 388 ++++++++---
+ fs/dcache.c                           |  32 +
+ fs/ext4/ioctl.c                       |  24 +
+ fs/ext4/super.c                       |   3 +
+ fs/f2fs/file.c                        |  46 ++
+ fs/f2fs/super.c                       |   2 +
+ fs/super.c                            |   2 +
+ fs/ubifs/ioctl.c                      |  23 +-
+ fs/ubifs/super.c                      |  11 +
+ include/linux/dcache.h                |   1 +
+ include/linux/fs.h                    |   1 +
+ include/linux/fscrypt.h               |  49 +-
+ include/uapi/linux/fs.h               |  54 +-
+ include/uapi/linux/fscrypt.h          | 163 +++++
+ 26 files changed, 3516 insertions(+), 928 deletions(-)
+ create mode 100644 fs/crypto/hkdf.c
+ delete mode 100644 fs/crypto/keyinfo.c
+ create mode 100644 fs/crypto/keyring.c
+ create mode 100644 fs/crypto/keysetup.c
+ create mode 100644 fs/crypto/keysetup_legacy.c
+ create mode 100644 include/uapi/linux/fscrypt.h
+
 -- 
-git-series 0.9.1
+2.21.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
