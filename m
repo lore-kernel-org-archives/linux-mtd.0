@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38F13C4360F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:49:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C2C1C4360F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:49:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0890E20645
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:49:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2672E20645
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Apr 2019 15:49:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u6U4Q4fX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DZBFMH0v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0890E20645
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EQJehaOe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="gS/jQmAC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2672E20645
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,44 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0qhGeni+svkCuStfxGn7IWRqRvqvWnFXIHEAHEaEVlw=; b=u6U4Q4fXckqdv2
-	CfYn8oSB+YKp04+6pvvpdKez1LhzMypJru046yuz+auYnuL1UA7skcRUdN6kjZTlt6BJ8T53nimef
-	a4yJsEd5Z83WbZY/C67E3DF4WDJE0zr1SVkojPvTUK9OIf7DliVJl8IC0xUxypYRjgetcNA97qvz4
-	F7lDurpwbis8iBHWWgxuT0iiqk1VegiscyIxjSVjpXC1ew+ktt9nto49GUcO4arqR0hipL1jlFN/w
-	/3AMc0qbUh8UBT0AUCn1iIyr/cpOqjDVPqnDhcHDXEabeTFlKU0XfDAk6H4kWpt9Kqh5ShTDHGk10
-	6I3+ssicUwMRpjZJjuNQ==;
+	List-Owner; bh=gAMoftPnzZT2rVfW8Vre78BHtXibJuK6fvqjEADKpms=; b=EQJehaOeIm6dkW
+	KoJZ+kB3oKBrjeDGgJrnWJ3UbMs6XoBEPxfrirSL4SoGHm/vNBtapiLUvJRFQWo6WjrypUpo1qZvw
+	rKIvkd6j6cLPmMC13v8mFGvlRJOpIcVGQuojnGI8/4V9kdg1pGmmMBdrjCEJWgYK4yc/5icz9xmHW
+	WDfF+5kr57vZAnDEgbHHaBQ5ZrCwrUlQZMQywPq1uFm0xuGyRHltSwiMBWzT9wcnK6w63Y/+FZluX
+	3pfxRWpdxvrou7A/7pNCsu7DiRPHkxI3WtcGN0M+CvLp18SRVf70myM3+z1jPFc9nhqEXB+n6/yxr
+	tr6H7OEXbGuI0zP98VmQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBLfR-0006DC-EV; Tue, 02 Apr 2019 15:49:41 +0000
+	id 1hBLfc-0006Sa-3L; Tue, 02 Apr 2019 15:49:52 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBLeP-0004mh-SL
- for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 15:48:48 +0000
+ id 1hBLeP-0004mp-Uw
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2019 15:48:53 +0000
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net
  [24.5.143.220])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0E9602146E;
+ by mail.kernel.org (Postfix) with ESMTPSA id 008572147C;
  Tue,  2 Apr 2019 15:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1554220114;
- bh=ZS9y98i16xygu0zu+wJ3ifdcMp238qH7OAyxgKi2mvw=;
+ s=default; t=1554220115;
+ bh=J8AYoIAYRLSpKetMu795TZzPCxfx2dR17Mj9p52i4FU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DZBFMH0vSgg9muf0p7CxAXRE4+kBgTnryrfHGeqtHuyMQh6MkW5Rnk64wUKv4Gka8
- dX1SPoqS5MSqc7ovL2tIRqD7DFoeDf4f6+uud/PTvi8vNAjPHp6rvGT3sSEWBKPYA2
- DTbsulOBb1PAKa43ipPUdYtoGqDeXl0x68gopxPo=
+ b=gS/jQmACZAyfkQftTDMvUGXhPj/pRx6QscOfJiV6cxnNNL5+7TSfwZoEvn6UFbDuB
+ yu5Mr1Q1xtc3gjVBu1k4F7aspG6FSOiLmRbLncGgydZe88H68DgNjEKLzCTv7IcdiZ
+ dTzqVCcGXy03sSvxf8f/AaetlmqZF5yOPEfHSZT8=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v4 07/17] fs/dcache.c: add shrink_dcache_inode()
-Date: Tue,  2 Apr 2019 08:45:50 -0700
-Message-Id: <20190402154600.32432-8-ebiggers@kernel.org>
+Subject: [PATCH v4 09/17] fscrypt: add FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl
+Date: Tue,  2 Apr 2019 08:45:52 -0700
+Message-Id: <20190402154600.32432-10-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190402154600.32432-1-ebiggers@kernel.org>
 References: <20190402154600.32432-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190402_084838_290059_1BD5F241 
-X-CRM114-Status: GOOD (  12.14  )
+X-CRM114-CacheID: sfid-20190402_084838_315221_D740A7AA 
+X-CRM114-Status: GOOD (  18.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,78 +87,175 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-When a filesystem encryption key is removed, we need all files which had
-been "unlocked" (had ->i_crypt_info set up) with it to appear "locked"
-again.  This is most easily done by evicting the inodes.  This can
-currently be done using 'echo 2 > /proc/sys/vm/drop_caches'; however,
-that is overkill and not usable by non-root users.
+Add a new fscrypt ioctl, FS_IOC_GET_ENCRYPTION_KEY_STATUS.  Given a key
+specified by 'struct fscrypt_key_specifier' (the same way a key is
+specified for the other fscrypt key management ioctls), it returns
+status information in a 'struct fscrypt_get_key_status_arg'.
 
-To evict just the needed inodes we also need the ability to evict those
-inodes' dentries, since an inode is pinned by its dentries.  Therefore,
-add a function shrink_dcache_inode() which iterates through an inode's
-dentries and evicts any unused ones as well as any unused descendants
-(since there may be negative dentries pinning the inode's dentries).
+The main motivation for this is that applications need to be able to
+check whether an encrypted directory is "unlocked" or not, so that they
+can add the key if it is not, and avoid adding the key (which may
+involve prompting the user for a passphrase) if it already is.
+
+It's possible to use some workarounds such as checking whether opening a
+regular file fails with ENOKEY, or checking whether the filenames "look
+like gibberish" or not.  However, no workaround is usable in all cases.
+
+Like the other key management ioctls, the keyrings syscalls may seem at
+first to be a good fit for this.  Unfortunately, they are not.  Even if
+we exposed the keyring ID of the ->s_master_keys keyring and gave
+everyone Search permission on it (note: currently the keyrings
+permission system would also allow everyone to "invalidate" the keyring
+too), the fscrypt keys have an additional state that doesn't map cleanly
+to the keyrings API: the secret can be removed, but we can be still
+tracking the files that were using the key, and the removal can be
+re-attempted or the secret added again.
+
+After later patches, some applications will also need a way to determine
+whether a key was added by the current user vs. by some other user.
+Reserved fields are included in fscrypt_get_key_status_arg for this and
+other future extensions.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/dcache.c            | 32 ++++++++++++++++++++++++++++++++
- include/linux/dcache.h |  1 +
- 2 files changed, 33 insertions(+)
+ fs/crypto/keyring.c          | 60 ++++++++++++++++++++++++++++++++++++
+ include/linux/fscrypt.h      |  7 +++++
+ include/uapi/linux/fscrypt.h | 15 +++++++++
+ 3 files changed, 82 insertions(+)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index aac41adf47433..1d940484c2d17 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -1507,6 +1507,38 @@ void shrink_dcache_parent(struct dentry *parent)
- }
- EXPORT_SYMBOL(shrink_dcache_parent);
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index ee9be002c1490..08e14497c8e30 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -11,6 +11,7 @@
+  *
+  * - FS_IOC_ADD_ENCRYPTION_KEY: add a key
+  * - FS_IOC_REMOVE_ENCRYPTION_KEY: remove a key
++ * - FS_IOC_GET_ENCRYPTION_KEY_STATUS: get key status
+  */
  
-+/**
-+ * shrink_dcache_inode - prune dcache for inode
-+ * @inode: inode to prune
+ #include <linux/key-type.h>
+@@ -482,6 +483,65 @@ int fscrypt_ioctl_remove_key(struct file *filp, const void __user *uarg)
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_ioctl_remove_key);
+ 
++/*
++ * Retrieve the status of an fscrypt master encryption key.
 + *
-+ * Evict all unused aliases of the specified inode from the dcache.  This is
-+ * intended to be used when trying to evict a specific inode, since inodes are
-+ * pinned by their dentries.  We also have to descend to ->d_subdirs for each
-+ * alias, since aliases may be pinned by negative child dentries.
++ * We set ->status to indicate whether the key is absent, present, or
++ * incompletely removed.  "Incompletely removed" means that the master key
++ * secret has been removed, but some files which had been unlocked with it are
++ * still in use.  This field allows applications to easily determine the state
++ * of an encrypted directory without using a hack such as trying to open a
++ * regular file in it (which can confuse the "incompletely removed" state with
++ * absent or present).
 + */
-+void shrink_dcache_inode(struct inode *inode)
++int fscrypt_ioctl_get_key_status(struct file *filp, void __user *uarg)
 +{
-+	for (;;) {
-+		struct select_data data;
-+		struct dentry *dentry;
++	struct super_block *sb = file_inode(filp)->i_sb;
++	struct fscrypt_get_key_status_arg arg;
++	struct key *key;
++	struct fscrypt_master_key *mk;
++	int err;
 +
-+		INIT_LIST_HEAD(&data.dispose);
-+		data.start = NULL;
-+		data.found = 0;
++	if (copy_from_user(&arg, uarg, sizeof(arg)))
++		return -EFAULT;
 +
-+		spin_lock(&inode->i_lock);
-+		hlist_for_each_entry(dentry, &inode->i_dentry, d_u.d_alias)
-+			d_walk(dentry, &data, select_collect);
-+		spin_unlock(&inode->i_lock);
++	if (!valid_key_spec(&arg.key_spec))
++		return -EINVAL;
 +
-+		if (!data.found)
-+			break;
++	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
++		return -EINVAL;
 +
-+		shrink_dentry_list(&data.dispose);
-+		cond_resched();
++	memset(arg.__out_reserved, 0, sizeof(arg.__out_reserved));
++
++	key = fscrypt_find_master_key(sb, &arg.key_spec);
++	if (IS_ERR(key)) {
++		if (key != ERR_PTR(-ENOKEY))
++			return PTR_ERR(key);
++		arg.status = FSCRYPT_KEY_STATUS_ABSENT;
++		err = 0;
++		goto out;
 +	}
++	mk = key->payload.data[0];
++	down_read(&key->sem);
++
++	if (!is_master_key_secret_present(&mk->mk_secret)) {
++		arg.status = FSCRYPT_KEY_STATUS_INCOMPLETELY_REMOVED;
++		err = 0;
++		goto out_release_key;
++	}
++
++	arg.status = FSCRYPT_KEY_STATUS_PRESENT;
++	err = 0;
++out_release_key:
++	up_read(&key->sem);
++	key_put(key);
++out:
++	if (!err && copy_to_user(uarg, &arg, sizeof(arg)))
++		err = -EFAULT;
++	return err;
++}
++EXPORT_SYMBOL_GPL(fscrypt_ioctl_get_key_status);
++
+ int __init fscrypt_init_keyring(void)
+ {
+ 	return register_key_type(&key_type_fscrypt);
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index b6f8832dadba4..5f251cad255b8 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -116,6 +116,7 @@ extern int fscrypt_inherit_context(struct inode *, struct inode *,
+ extern void fscrypt_sb_free(struct super_block *sb);
+ extern int fscrypt_ioctl_add_key(struct file *filp, void __user *arg);
+ extern int fscrypt_ioctl_remove_key(struct file *filp, const void __user *arg);
++extern int fscrypt_ioctl_get_key_status(struct file *filp, void __user *arg);
+ 
+ /* keysetup.c */
+ extern int fscrypt_get_encryption_info(struct inode *);
+@@ -335,6 +336,12 @@ static inline int fscrypt_ioctl_remove_key(struct file *filp,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int fscrypt_ioctl_get_key_status(struct file *filp,
++					       void __user *arg)
++{
++	return -EOPNOTSUPP;
 +}
 +
- static enum d_walk_ret umount_check(void *_data, struct dentry *dentry)
+ /* keysetup.c */
+ static inline int fscrypt_get_encryption_info(struct inode *inode)
  {
- 	/* it has busy descendents; complain about those instead */
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 60996e64c5798..1b5f295dc1156 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -246,6 +246,7 @@ extern struct dentry * d_obtain_alias(struct inode *);
- extern struct dentry * d_obtain_root(struct inode *);
- extern void shrink_dcache_sb(struct super_block *);
- extern void shrink_dcache_parent(struct dentry *);
-+extern void shrink_dcache_inode(struct inode *);
- extern void shrink_dcache_for_umount(struct super_block *);
- extern void d_invalidate(struct dentry *);
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 3302a407131e6..042e70a4ff7ee 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -71,11 +71,26 @@ struct fscrypt_remove_key_arg {
+ 	__u32 __reserved[6];
+ };
+ 
++/* Struct passed to FS_IOC_GET_ENCRYPTION_KEY_STATUS */
++struct fscrypt_get_key_status_arg {
++	/* input */
++	struct fscrypt_key_specifier key_spec;
++	__u32 __reserved[6];
++
++	/* output */
++#define FSCRYPT_KEY_STATUS_ABSENT		1
++#define FSCRYPT_KEY_STATUS_PRESENT		2
++#define FSCRYPT_KEY_STATUS_INCOMPLETELY_REMOVED	3
++	__u32 status;
++	__u32 __out_reserved[15];
++};
++
+ #define FS_IOC_SET_ENCRYPTION_POLICY	  _IOR('f', 19, struct fscrypt_policy)
+ #define FS_IOC_GET_ENCRYPTION_PWSALT	  _IOW('f', 20, __u8[16])
+ #define FS_IOC_GET_ENCRYPTION_POLICY	  _IOW('f', 21, struct fscrypt_policy)
+ #define FS_IOC_ADD_ENCRYPTION_KEY	 _IOWR('f', 23, struct fscrypt_add_key_arg)
+ #define FS_IOC_REMOVE_ENCRYPTION_KEY	  _IOW('f', 24, struct fscrypt_remove_key_arg)
++#define FS_IOC_GET_ENCRYPTION_KEY_STATUS _IOWR('f', 25, struct fscrypt_get_key_status_arg)
+ 
+ /**********************************************************************/
  
 -- 
 2.21.0
