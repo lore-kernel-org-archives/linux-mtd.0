@@ -2,60 +2,67 @@ Return-Path: <SRS0=c1Ix=SF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B484C4360F
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 07:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1BF4C4360F
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 08:31:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D017220882
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 07:48:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A09DC2084B
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 08:31:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jKv2K7Z8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D017220882
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KP0Q6wCI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A09DC2084B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+Ob3ubIwMDgJv29xWG9KCYsw4PeU2yA9VgyGUKHVGbY=; b=jKv2K7Z8Fm5Y0s
-	X8iOUDKLekwUr/T2zZuYHdLfX12uVwszJpyPzhDeEIemZzN/lWe49bJIOZ8U0P11MEHDQajpXhdEL
-	7gPQY5BziPPOwf+1wgywsECuBnk0lVmp9XxU0Y5R+J66ZrXo9wEmjXVGRBau+dQy+gciTZ7At5uVx
-	g7ZYDr7ysJRz6yZVgOtwU8xu1aOLQrDmPH0n0SmwpmxYmyaOwDV53pyev9FSZDP7spAwU8ImajJPP
-	uXZRI14O2KkmJDsgWCiRnNFcXckHH0cm+DEl39ZJVogJ1pwUu+IgRsI+GASKwSRMkKe/uNLlEHy4i
-	N/JnU4AQEUMWYVkmsGCQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/fKoV54Pa0e3c3LHp4BgJXHReBbsAG3TO3+d4cPO9kM=; b=KP0Q6wCIY6QHvF
+	jp1IXTTQA+RRepe92Vs1GrWXplAmSuM97dJAJhYBjDLPlFbqpDlPAOI2GRHlFgMhmmvIH2fCuliyb
+	/fnd1q5CwnTCUGu0SGe6hh5LidvBdngT13D0gDcG9Gl7Cmw6GJCpAijFVNMRxXW9hhC7V6/grUTuX
+	ohNlO+3kbsKDScrpAzjqYejN/XTb8ibDCq3o32GxDq/yCNHq+RwTvsM1GmeB7jgHejIorUEEIp/AY
+	ScBV3hKpQ93TQTv+HobRYzdUSboKS6TRkZPGfxMr2fjPFdU1yoAJllx0m6jEIr8d4118uniXfGLrp
+	DBmrQmaIJux6+AzQOLIA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBadc-0001wn-Mu; Wed, 03 Apr 2019 07:48:48 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1hBbId-0005DD-Bl; Wed, 03 Apr 2019 08:31:11 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBad7-0001HI-8M; Wed, 03 Apr 2019 07:48:19 +0000
+ id 1hBbIZ-0005Co-OG
+ for linux-mtd@lists.infradead.org; Wed, 03 Apr 2019 08:31:09 +0000
 X-Originating-IP: 90.88.30.125
-Received: from localhost (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr
- [90.88.30.125]) (Authenticated sender: maxime.ripard@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C7F46240018;
- Wed,  3 Apr 2019 07:48:08 +0000 (UTC)
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
- Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 1/2] dt-bindings: mtd: Add YAML schemas for the generic
- NAND options
-Date: Wed,  3 Apr 2019 09:48:04 +0200
-Message-Id: <88ac1ca97bc5dd0a0e40d7d828199331b3e01fb9.1554277681.git-series.maxime.ripard@bootlin.com>
-X-Mailer: git-send-email 2.21.0
+Received: from xps13 (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr
+ [90.88.30.125]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id DB51720011;
+ Wed,  3 Apr 2019 08:31:01 +0000 (UTC)
+Date: Wed, 3 Apr 2019 10:31:01 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Zhuohao Lee <zhuohao@chromium.org>
+Subject: Re: [PATCH v1] mtd: core: add sysfs nodes for querying the flash
+ name and id
+Message-ID: <20190403103101.5c7b7641@xps13>
+In-Reply-To: <CABD5ybnB1JK2_zg0Lsi_1Ny5wGBP9dE4FbP6NCHAPbXpgJqkTg@mail.gmail.com>
+References: <20190328045910.98250-1-zhuohao@chromium.org>
+ <20190401112748.4a3d5539@collabora.com>
+ <CABD5ybm_1BjKSsMFGy=LuM0bsCcBnnY7Eid_Ni3OQ5e+aFZ7pg@mail.gmail.com>
+ <20190402095628.5d376263@collabora.com>
+ <7077290a-8acc-465b-6ed0-fddd35ab8fd6@ti.com>
+ <CABD5yb=JnwY_rMYwTOHjU3izoA8wxfRVgfAGK9zWh=7NZ7H23Q@mail.gmail.com>
+ <20190402140141.385a79d8@collabora.com>
+ <CABD5ybnB1JK2_zg0Lsi_1Ny5wGBP9dE4FbP6NCHAPbXpgJqkTg@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190403_004817_591970_BED085D0 
-X-CRM114-Status: GOOD (  20.87  )
+X-CRM114-CacheID: sfid-20190403_013108_089020_6A79A701 
+X-CRM114-Status: GOOD (  28.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -67,274 +74,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org,
- Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Nicolas Boichat <drinkcat@chromium.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, bbrezillon@kernel.org, richard@nod.at,
+ Brian Norris <briannorris@chromium.org>,
+ Marek =?UTF-8?B?VmHFoXV0?= <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The NAND chips in MTD have a bunch of generic options that are needed in a
-device tree. Add a YAML schemas for those.
-
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-
----
-
-Changes from v2:
-  - Fix the regex for the NAND chip node
-  - Move the minimum into an allOf for nand-ecc-strength and
-    nand-ecc-step-size
-
-Changes from v1:
-  - Removed free form text binding
-  - Enhanced properties descriptions
-  - Fixed the SPDX license tag
-  - Added minimums for nand-ecc-strength and nand-ecc-step-size
-  - Removed Boris from the maintainers
----
- Documentation/devicetree/bindings/mtd/nand-controller.yaml | 143 +++++++-
- Documentation/devicetree/bindings/mtd/nand.txt             |  75 +----
- 2 files changed, 143 insertions(+), 75 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/nand-controller.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
-
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-new file mode 100644
-index 000000000000..199ba5ac2a06
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -0,0 +1,143 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NAND Chip and NAND Controller Generic Binding
-+
-+maintainers:
-+  - Miquel Raynal <miquel.raynal@bootlin.com>
-+  - Richard Weinberger <richard@nod.at>
-+
-+description: |
-+  The NAND controller should be represented with its own DT node, and
-+  all NAND chips attached to this controller should be defined as
-+  children nodes of the NAND controller. This representation should be
-+  enforced even for simple controllers supporting only one chip.
-+
-+  The ECC strength and ECC step size properties define the user
-+  desires in terms of correction capability of a controller. Together,
-+  they request the ECC engine to correct {strength} bit errors per
-+  {size} bytes.
-+
-+  The interpretation of these parameters is implementation-defined, so
-+  not all implementations must support all possible
-+  combinations. However, implementations are encouraged to further
-+  specify the value(s) they support.
-+
-+properties:
-+  $nodename:
-+    pattern: "^nand-controller(@.*)?"
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  ranges: true
-+
-+patternProperties:
-+  "^nand@[a-f0-9]$":
-+    properties:
-+      reg:
-+        description:
-+          Contains the native Ready/Busy IDs.
-+
-+      nand-ecc-mode:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/string
-+          - enum: [ none, soft, hw, hw_syndrome, hw_oob_first, on-die ]
-+        description:
-+          Desired ECC engine, either hardware (most of the time
-+          embedded in the NAND controller) or software correction
-+          (Linux will handle the calculations). soft_bch is deprecated
-+          and should be replaced by soft and nand-ecc-algo.
-+
-+      nand-ecc-algo:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/string
-+          - enum: [ hamming, bch, rs ]
-+        description:
-+          Desired ECC algorithm.
-+
-+      nand-bus-width:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/uint32
-+          - enum: [ 8, 16 ]
-+          - default: 8
-+        description:
-+          Bus width to the NAND chip
-+
-+      nand-on-flash-bbt:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          With this property, the OS will search the device for a Bad
-+          Block Table (BBT). If not found, it will create one, reserve
-+          a few blocks at the end of the device to store it and update
-+          it as the device ages. Otherwise, the out-of-band area of a
-+          few pages of all the blocks will be scanned at boot time to
-+          find Bad Block Markers (BBM). These markers will help to
-+          build a volatile BBT in RAM.
-+
-+      nand-ecc-strength:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/uint32
-+          - minimum: 1
-+        description:
-+          Maximum number of bits that can be corrected per ECC step.
-+
-+      nand-ecc-step-size:
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/uint32
-+          - minimum: 1
-+        description:
-+          Number of data bytes covered by a single ECC step.
-+
-+      nand-ecc-maximize:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          Whether or not the ECC strength should be maximized. The
-+          maximum ECC strength is both controller and chip
-+          dependent. The ECC engine has to select the ECC config
-+          providing the best strength and taking the OOB area size
-+          constraint into account. This is particularly useful when
-+          only the in-band area is used by the upper layers, and you
-+          want to make your NAND as reliable as possible.
-+
-+      nand-is-boot-medium:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          Whether or not the NAND chip is a boot medium. Drivers might
-+          use this information to select ECC algorithms supported by
-+          the boot ROM or similar restrictions.
-+
-+      nand-rb:
-+        $ref: /schemas/types.yaml#/definitions/uint32-array
-+        description:
-+          Contains the native Ready/Busy IDs.
-+
-+    required:
-+      - reg
-+
-+required:
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+examples:
-+  - |
-+    nand-controller {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      /* controller specific properties */
-+
-+      nand@0 {
-+        reg = <0>;
-+        nand-ecc-mode = "soft";
-+        nand-ecc-algo = "bch";
-+
-+        /* controller specific properties */
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-deleted file mode 100644
-index e949c778e983..000000000000
---- a/Documentation/devicetree/bindings/mtd/nand.txt
-+++ /dev/null
-@@ -1,75 +0,0 @@
--* NAND chip and NAND controller generic binding
--
--NAND controller/NAND chip representation:
--
--The NAND controller should be represented with its own DT node, and all
--NAND chips attached to this controller should be defined as children nodes
--of the NAND controller. This representation should be enforced even for
--simple controllers supporting only one chip.
--
--Mandatory NAND controller properties:
--- #address-cells: depends on your controller. Should at least be 1 to
--		  encode the CS line id.
--- #size-cells: depends on your controller. Put zero unless you need a
--	       mapping between CS lines and dedicated memory regions
--
--Optional NAND controller properties
--- ranges: only needed if you need to define a mapping between CS lines and
--	  memory regions
--
--Optional NAND chip properties:
--
--- nand-ecc-mode : String, operation mode of the NAND ecc mode.
--		  Supported values are: "none", "soft", "hw", "hw_syndrome",
--		  "hw_oob_first", "on-die".
--		  Deprecated values:
--		  "soft_bch": use "soft" and nand-ecc-algo instead
--- nand-ecc-algo: string, algorithm of NAND ECC.
--		 Valid values are: "hamming", "bch", "rs".
--- nand-bus-width : 8 or 16 bus width if not present 8
--- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
--
--- nand-ecc-strength: integer representing the number of bits to correct
--		     per ECC step.
--
--- nand-ecc-step-size: integer representing the number of data bytes
--		      that are covered by a single ECC step.
--
--- nand-ecc-maximize: boolean used to specify that you want to maximize ECC
--		     strength. The maximum ECC strength is both controller and
--		     chip dependent. The controller side has to select the ECC
--		     config providing the best strength and taking the OOB area
--		     size constraint into account.
--		     This is particularly useful when only the in-band area is
--		     used by the upper layers, and you want to make your NAND
--		     as reliable as possible.
--- nand-is-boot-medium: Whether the NAND chip is a boot medium. Drivers might use
--		       this information to select ECC algorithms supported by
--		       the boot ROM or similar restrictions.
--
--- nand-rb: shall contain the native Ready/Busy ids.
--
--The ECC strength and ECC step size properties define the correction capability
--of a controller. Together, they say a controller can correct "{strength} bit
--errors per {size} bytes".
--
--The interpretation of these parameters is implementation-defined, so not all
--implementations must support all possible combinations. However, implementations
--are encouraged to further specify the value(s) they support.
--
--Example:
--
--	nand-controller {
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		/* controller specific properties */
--
--		nand@0 {
--			reg = <0>;
--			nand-ecc-mode = "soft";
--			nand-ecc-algo = "bch";
--
--			/* controller specific properties */
--		};
--	};
-
-base-commit: 1244df4693747552c8efba995f4ebc3b247536cf
--- 
-git-series 0.9.1
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgWmh1b2hhbywKClpodW9oYW8gTGVlIDx6aHVvaGFvQGNocm9taXVtLm9yZz4gd3JvdGUgb24g
+VHVlLCAyIEFwciAyMDE5IDIxOjAzOjI4CiswODAwOgoKPiBCb3JpcywgVGhhbmtzIGZvciB5b3Vy
+IGNvbW1lbnQuCj4gQnV0IEkgY2FuJ3QgZmluZCB0aGUgcmVsYXRlZCBzdHVmZiAob3IgaSBnb3Qg
+dGhlIHdyb25nIHdheSkuIElzIHRoYXQKPiBmZWF0dXJlIG1lcmdlZD8KPiBDb3VsZCB5b3UgcGxl
+YXNlIHBvaW50IG91dCB0aGUgY29tbWl0PyBJIGNhbiBtYWtlIHRoZSBjaGFuZ2UgYmFzZSBvbiBp
+dC4KCkkgdGhpbmsgQm9yaXMganVzdCB0b2xkIHlvdSB0aGF0IHRoZSBkZWJ1Z2ZzIE1URCBkaXJl
+Y3RvcnkgaXMgc3VpdGFibGUKdG8gcmVjZWl2ZSBhbiBpbmZvcm1hdGlvbiBjb21pbmcgZnJvbSBk
+aWZmZXJlbnQgdHlwZSBvZiBkZXZpY2VzIGxpa2UKc3BpLW5vciwgbm9yLCBuYW5kLCBldGMuCgpU
+aGUgZmVhdHVyZSBvZiBoYXZpbmcgdGhlIGRldmljZSBuYW1lIHRoZXJlIGRvZXMgbm90IGV4aXN0
+IHlldCwgeW91CmhhdmUgdG8gZG8gaXQuIEZvciBOQU5EIEkgYWxyZWFkeSB3cm90ZSBzb21ldGhp
+bmcgbGlrZSB0aGF0IHdoaWNoIGhhcwpub3QgYmVlbiBtZXJnZWQgYnV0IGNvdWxkIGJlIGFkYXB0
+ZWQgdG8gZXhwb3J0IHRoZSBkYXRhIGluIGRlYnVnZnMKaW5zdGVhZCBvZiBzeXNmcywgc2VlOgoK
+UmF3IE5BTkQgaW5mcmFzdHJ1Y3R1cmUgdG8gcmV0cmlldmUgdGhlIElEOgpodHRwOi8vcGF0Y2h3
+b3JrLm96bGFicy5vcmcvcGF0Y2gvODM3OTAxLwoKQWRkaW5nIGEgc3lzZnMgZW50cnkgKHdoaWNo
+IHdhcyBhbHJlYWR5IHJlamVjdGVkIGF0IHRoaXMgdGltZSk6Cmh0dHA6Ly9wYXRjaHdvcmsub3ps
+YWJzLm9yZy9wYXRjaC84Mzc5MDMvCgpUaGFua3MsCk1pcXXDqGwKCj4gCj4gT24gVHVlLCBBcHIg
+MiwgMjAxOSBhdCA4OjAxIFBNIEJvcmlzIEJyZXppbGxvbgo+IDxib3Jpcy5icmV6aWxsb25AY29s
+bGFib3JhLmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gVHVlLCAyIEFwciAyMDE5IDE5OjA2OjM3ICsw
+ODAwCj4gPiBaaHVvaGFvIExlZSA8emh1b2hhb0BjaHJvbWl1bS5vcmc+IHdyb3RlOgo+ID4gIAo+
+ID4gPiBPbiBUdWUsIEFwciAyLCAyMDE5IGF0IDQ6MjYgUE0gVmlnbmVzaCBSYWdoYXZlbmRyYSA8
+dmlnbmVzaHJAdGkuY29tPiB3cm90ZTogIAo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+
+IE9uIDAyLzA0LzE5IDE6MjYgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZTogIAo+ID4gPiA+ID4g
+T24gVHVlLCAyIEFwciAyMDE5IDE1OjM5OjU0ICswODAwCj4gPiA+ID4gPiBaaHVvaGFvIExlZSA8
+emh1b2hhb0BjaHJvbWl1bS5vcmc+IHdyb3RlOgo+ID4gPiA+ID4gIAo+ID4gPiA+ID4+IFRoYW5r
+cyBCb3JpcyBmb3IgdGhlIGNvbW1lbnQuIFBsZWFzZSB0YWtlIGEgbG9vayB0aGUgcmVwbHkgYXQg
+YmVsb3cuCj4gPiA+ID4gPj4KPiA+ID4gPiA+PiBPbiBNb24sIEFwciAxLCAyMDE5IGF0IDU6Mjcg
+UE0gQm9yaXMgQnJlemlsbG9uCj4gPiA+ID4gPj4gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEu
+Y29tPiB3cm90ZTogIAo+ID4gPiA+ID4+Pgo+ID4gPiA+ID4+PiBPbiBUaHUsIDI4IE1hciAyMDE5
+IDEyOjU5OjEwICswODAwCj4gPiA+ID4gPj4+IFpodW9oYW8gTGVlIDx6aHVvaGFvQGNocm9taXVt
+Lm9yZz4gd3JvdGU6Cj4gPiA+ID4gPj4+ICAKPiA+ID4gPiA+Pj4+IEN1cnJlbnRseSwgd2UgZG9u
+J3QgaGF2ZSBzeXNmcyBub2RlcyBmb3IgcXVlcnlpbmcgdGhlIHVuZGVybHlpbmcgZmxhc2gKPiA+
+ID4gPiA+Pj4+IG5hbWUgYW5kIGZsYXNoIGlkLiBUaGlzIGluZm9ybWF0aW9uIGlzIGltcG9ydGFu
+dCBlc3BlY2lhbGx5IHdoZW4gd2UKPiA+ID4gPiA+Pj4+IHdhbnQgdG8ga25vdyB0aGUgZmxhc2gg
+ZGV0YWlsIG9mIHRoZSBkZWZlY3RpdmUgc3lzdGVtLiBJbiBvcmRlciB0bwo+ID4gPiA+ID4+Pj4g
+c3VwcG9ydCB0aGUgcXVlcnksIHdlIGFkZCB0d28gcG9pbnRlcnMgKCpmbGFzaG5hbWUsICppZCkg
+aW50byB0aGUKPiA+ID4gPiA+Pj4+IG10ZF9pbmZvIHN0cnVjdHVyZSBhbmQgY3JlYXRlIHR3byBz
+eXNmcyBub2RlcyAoZmxhc2huYW1lLCBpZCkuIFRoaXMKPiA+ID4gPiA+Pj4+IHBhdGNoIGlzIG1v
+ZGlmaWVkIGJhc2VkIG9uIHRoZSBTUEktTk9SIGZsYXNoIHN5c3RlbSBhcyB3ZSBvbmx5IGhhdmUK
+PiA+ID4gPiA+Pj4+IHRoYXQgc3lzdGVtIG5vdy4gQnV0IHRoZSBpZGVhIHNob3VsZCBiZSBhcHBs
+aWVkIHRvIHRoZSBvdGhlciBmbGFzaAo+ID4gPiA+ID4+Pj4gZHJpdmVyIGxpa2UgTkFORCBmbGFz
+aC4KPiA+ID4gPiA+Pj4+Cj4gPiA+ID4gPj4+PiBUaGUgb3V0cHV0IG9mIG5ldyBzeXNmcyBub2Rl
+cyBvbiBteSBkZXZpY2UgYXJlOgo+ID4gPiA+ID4+Pj4gY2F0IC9zeXMvZGV2aWNlcy9wbGF0Zm9y
+bS9zb2MvMTEwMTAwMDAuc3BpL3NwaV9tYXN0ZXIvc3BpMS9zcGkxLjAvbXRkL210ZDAvZmxhc2hu
+YW1lCj4gPiA+ID4gPj4+PiB3MjVxNjRkdwo+ID4gPiA+ID4+Pj4gY2F0IC9zeXMvZGV2aWNlcy9w
+bGF0Zm9ybS9zb2MvMTEwMTAwMDAuc3BpL3NwaV9tYXN0ZXIvc3BpMS9zcGkxLjAvbXRkL210ZDAv
+aWQKPiA+ID4gPiA+Pj4+IGVmNjAxNyAgCj4gPiA+ID4gPj4+Cj4gPiA+ID4gPj4+IEknbSBub3Qg
+c3VyZSBJIGxpa2UgdGhlIGlkZWEgb2YgZXhwb3NpbmcgdGhpcyBraW5kIG9mIGluZm8gdGhyb3Vn
+aAo+ID4gPiA+ID4+PiBzeXNmcyBhcyBpdCB0aGVuIG1ha2VzIHBhcnQgb2YgdGhlIEFCSS4gRGlk
+IHlvdSBjb25zaWRlciBleHBvc2luZyB0aGF0Cj4gPiA+ID4gPj4+IHRocm91Z2ggZGVidWdmcz8g
+IAo+ID4gPiA+ID4+Cj4gPiA+ID4gPj4gWWVzLCBpIGRpZCBjb25zaWRlciB0aGUgZGVidWdmcy4g
+SSB0aGluayB0aGUgZGVidWdmcyBpcyBkZXBlbmRlZCBvbgo+ID4gPiA+ID4+IENPTkZJR19ERUJV
+R19GUy4KPiA+ID4gPiA+PiBJZiByZW1vdmluZyB0aGF0IGNvbmZpZywgdGhlIHBhcnRuYW1lIGFu
+ZCBwYXJ0aWQgd2lsbCBiZSBsb3N0LiBTbywgaQo+ID4gPiA+ID4+IHByb3Bvc2VkIHRvIHVzZQo+
+ID4gPiA+ID4+IHN5c2ZzLiAgCj4gPiA+ID4gPgo+ID4gPiA+ID4gVGhlbiBqdXN0IGVuYWJsZSBk
+ZWJ1Z2ZzIGlmIHlvdSBuZWVkIHRoaXMgaW5mb3JtYXRpb24gOlAuICAKPiA+ID4gTXkgb3JpZ2lu
+YWwgaW50ZW50aW9uIGlzIGFkZGluZyB0aGUgbmV3IHN5c2ZzIG5vZGVzIChpLmUgcGFydG5hbWUg
+YW5kCj4gPiA+IHBhcnRpZCkgaW50byB0aGUgY29tbW9uIHBsYWNlIGxpa2UgbXRkY29yZS5jCj4g
+PiA+IHNvIHRoYXQgdGhlIHVzZXJzcGFjZSBwcm9ncmFtIGNhbiBqdXN0IHJlYWQgdGhlIGNvbW1v
+biBzeXNmcyBub2Rlcy4KPiA+ID4gU28gZmFyLCB3aGF0IGkgY2FuIGNvbnRyaWJ1dGUgaXMgZm9y
+IHRoZSBzcGktbm9yIGJ1dCBpZiB0aGUgb3RoZXIKPiA+ID4gZmxhc2ggZHJpdmVycywgbGlrZSBu
+YW5kLWZsYXNoLCBjYW4gYWxzbyBzdXBwb3J0Cj4gPiA+IHRoZSBwYXJ0bmFtZSBhbmQgcGFydGlk
+IHF1ZXJ5LCB0aGVuLCB3ZSBjYW4gaGF2ZSBjb21tb24gc3lzZnMgbm9kZXMgdG8KPiA+ID4gcXVl
+cnkgdGhlIHVuZGVybHlpbmcgZGV2aWNlIGluZm8uCj4gPiA+IENvbXBhcmUgdG8gdGhlIGRlYnVn
+ZnMsIGkgdGhpbmsgZGlmZmVyZW50IGRyaXZlcnMgbWF5IGhhdmUgZGlmZmVyZW50Cj4gPiA+IG5h
+bWUgZm9yIHRoZSBwYXJ0bmFtZSBhbmQgcGFydGlkLiAgCj4gPgo+ID4gV2UndmUgcmVjZW50bHkg
+dW5pZmllZCBob3cgTVREIHJlbGF0ZWQgc3R1ZmYgYXJlIGV4cG9zZWQgdGhyb3VnaAo+ID4gZGVi
+dWdmcyBhbmQgeW91IGNhbiBub3cgaGF2ZSBnZW5lcmljIE1URCBmaWVsZHMgZXhwb3NlZCB0aGVy
+ZS4gIAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
