@@ -4,20 +4,21 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63CF8C10F06
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 11:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE3EC4360F
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 11:52:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FB4E2082C
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 11:33:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADCF8206B7
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 11:52:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bKnTKPX5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FB4E2082C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="q6TWdr1+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TvaVhol5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADCF8206B7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,47 +26,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mqouOnjkLOQRjUGt/9u86V9jKLeF+4CULR1Nvxk5XoA=; b=bKnTKPX55qXSFG
-	2uq5XIp3IMz/dZHGaubJo9R6Ibe8bi9fiVJm3/g23GU7hKLqq0D2KlUJlM8B2fsoYxcGerlZ3ZfJh
-	j6CJ8OPlcOFhjf0ZZ4H1AVHm3xXLkDrZ6ot1QaUxmjcwoWEeyEBjRSMh5UlCsrG8F9jtBhyHaatxb
-	9I/dQVIr8GiURalHefsLaTNYcpx1ZWr71i7oCzRqsBa7NgzNV82ayAxMXaQl6GbknbcHZxJYTesJM
-	aC1BSihcwi18Ei+qyPez3BfwooikdZoBOu1OnzEODdaC4T7cUbjCSGrusAPtEmg337nHajMMdP2a5
-	R96J02ctcj3fR9ihmBlw==;
+	List-Owner; bh=w8aHv1JFhUlEL65NjewmTwIEM4bW4UEJHR7NaVOfbXc=; b=q6TWdr1+if1kWl
+	FDzQ2Hj940Iow7sjMTRJg6Y5lZBlkuJ2mtsjYX0axSs1Z0XyDW5GO3Xxm1zl7+53AsVXrwuO9rr82
+	n0rmwZuVlOZUOxnifUZChCsPT49opikDiCe504jDvdOYuJ1WXZkrhoxAJ00ya8A9LT2WMAzeQyIv5
+	ULGj9kim3ALo97p0uvoU4DEDJaDxNGxaFwgFYHcbMFfcIPlf1eJN62VJJ6OhLV/cOKp3pBAWns3YO
+	VAw4N9+K4SPIv+7YO22mxaRPnRGwZoEKZwBGbClJP9Wd033nUD6fxpZZfzlsBwoI2awOnSoKwG6Nq
+	hhsqMUOQMV8cYKmESXAQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBe93-0003k0-W0; Wed, 03 Apr 2019 11:33:30 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1hBeQy-00037p-Kx; Wed, 03 Apr 2019 11:52:00 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBe91-0003jU-Fw; Wed, 03 Apr 2019 11:33:28 +0000
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2019 04:33:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,304,1549958400"; d="scan'208";a="146236271"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.86])
- by FMSMGA003.fm.intel.com with ESMTP; 03 Apr 2019 04:33:19 -0700
-Received: from andy by smile with local (Exim 4.92)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1hBe8p-0001jQ-Nk; Wed, 03 Apr 2019 14:33:15 +0300
-Date: Wed, 3 Apr 2019 14:33:15 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andrey Abramov <st5pub@yandex.ru>
-Subject: Re: [PATCH v3 5/5] Lib: sort.h: remove the size argument from the
- swap function
-Message-ID: <20190403113315.GW9224@smile.fi.intel.com>
-References: <824481554237711@sas1-23a37bc8251c.qloud-c.yandex.net>
- <793311554238525@sas1-87f9feb8d943.qloud-c.yandex.net>
+ id 1hBeQw-000377-3L
+ for linux-mtd@lists.infradead.org; Wed, 03 Apr 2019 11:51:59 +0000
+Received: by mail-pf1-x444.google.com with SMTP id 188so8040305pfd.8
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Apr 2019 04:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to
+ :user-agent; bh=LeBuh7e0xo0Yd76B7jQlnsPL/L3qs0Zl4qYNPHHmMOY=;
+ b=TvaVhol5+sQ1aSflJzOOq+xJBpNK4vL+0aZsFrWXQhiaku4thAPRZ750FooRgTTomI
+ fwGdLV3IF0YwZgrqbcunIikUPTnbaz+ODFkjSi1Co3Y9f2aBM1vcwmRrTR5wRch7bUK7
+ I45Uu6IPhu7Nqi1mUi5nbnhUk9SrefEvqesMvz2dinE9iIEYAt2Ve0cVbL8ZvFV/G0RS
+ X1Rj3/PzL+dANftAfkhcLQHm+Y86I9qvIDifhOD66nrJOQTdMnCldkK+bc/e6OSFDQFl
+ MssqAHt2QPQFzh4gQLgfykIYAqVYQYDNNkRHU6v7Z+e9btnrlkhIIcTwL3uRiaYLEgx5
+ TRHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to:user-agent;
+ bh=LeBuh7e0xo0Yd76B7jQlnsPL/L3qs0Zl4qYNPHHmMOY=;
+ b=uQo2CiwNzzOcVU5EFnnassfP0iPoHmN71aX7GXS0fDmH4+39u9PWbTRpAsiy9ttUSw
+ ac3FfCHkNzvBISebVqEjP2gbng6rptJt5lXewCMqGX/PathSa4XFDOHsbNdNsV5klgwP
+ nBfoQYHqsF555Z2Prxj4zyv/xV74jQsLeaFZovrEWFcPeUYLu/tNDoRCKpegk020IML5
+ gplbgprvCmjK+Ai9cRb743Op8jQLE8F/GixwpAOmwc2FaNdoBctRpkUTjKTtioS3kIla
+ qDbB5b1yfygK1th/A5XLNsNi/Kp23QuEZbsBFtU5D4nOgfAL2qfRxlcLJCbTfcnJ6g0P
+ PR+w==
+X-Gm-Message-State: APjAAAUyEcbEIYk0sc1MIKzccy9njSfzLDVU7Ch81b+72FZ0hlr2h00X
+ n8oCrQG31paq5+yCk6xubPa4ig==
+X-Google-Smtp-Source: APXvYqz+wHNR2Ljkw4ZN04tKY+ztQWajg9tEPZPt4FUK6kzoI/oO+I4WV8uEqlsgXgaZIob8WBJoKg==
+X-Received: by 2002:a63:4819:: with SMTP id v25mr2464895pga.412.1554292316602; 
+ Wed, 03 Apr 2019 04:51:56 -0700 (PDT)
+Received: from dell ([147.50.13.10])
+ by smtp.gmail.com with ESMTPSA id s15sm19137510pga.71.2019.04.03.04.51.49
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Wed, 03 Apr 2019 04:51:55 -0700 (PDT)
+Date: Wed, 3 Apr 2019 12:51:46 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Mason Yang <masonccyang@mxic.com.tw>
+Subject: Re: [PATCH 4/7] dt-bindings: mfd: Document Macronix MX25F0A
+ controller bindings
+Message-ID: <20190403115146.GR11301@dell>
+References: <1553768318-23149-1-git-send-email-masonccyang@mxic.com.tw>
+ <1553768318-23149-5-git-send-email-masonccyang@mxic.com.tw>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <793311554238525@sas1-87f9feb8d943.qloud-c.yandex.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1553768318-23149-5-git-send-email-masonccyang@mxic.com.tw>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190403_043327_544046_1DA6DEFA 
-X-CRM114-Status: GOOD (  16.77  )
+X-CRM114-CacheID: sfid-20190403_045158_148340_ACCB088A 
+X-CRM114-Status: GOOD (  19.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,145 +98,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: peterz <peterz@infradead.org>, benh <benh@kernel.crashing.org>,
- Dave Chinner <dchinner@redhat.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "yamada.masahiro" <yamada.masahiro@socionext.com>, paulus <paulus@samba.org>,
- Michael Ellerman <mpe@ellerman.id.au>, hpa <hpa@zytor.com>,
- jslaby <jslaby@suse.cz>, sfr <sfr@canb.auug.org.au>,
- "darrick.wong" <darrick.wong@oracle.com>, richard <richard@nod.at>,
- mark <mark@fasheh.com>, x86 <x86@kernel.org>, mingo <mingo@redhat.com>,
- "naveen.n.rao" <naveen.n.rao@linux.vnet.ibm.com>,
- linux-snps-arc <linux-snps-arc@lists.infradead.org>, jannh <jannh@google.com>,
- bp <bp@alien8.de>, jlbec <jlbec@evilplan.org>, jpoimboe <jpoimboe@redhat.com>,
- tglx <tglx@linutronix.de>, George Spelvin <lkml@sdf.org>,
- dedekind1 <dedekind1@gmail.com>, vgupta <vgupta@synopsys.com>,
- "ard.biesheuvel" <ard.biesheuvel@linaro.org>,
- "adrian.hunter" <adrian.hunter@intel.com>, gregkh <gregkh@linuxfoundation.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Morton Andrew <akpm@linux-foundation.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- ocfs2-devel <ocfs2-devel@oss.oracle.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
+ juliensu@mxic.com.tw, bbrezillon@kernel.org, marcel.ziswiler@toradex.com,
+ computersforpeace@gmal.com, miquel.raynal@bootlin.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, paul.burton@mips.com, broonie@kernel.org,
+ geert@linux-m68k.org, stefan@agner.ch, linux-mtd@lists.infradead.org,
+ richard@nod.at, liang.yang@amlogic.com, dwmw2@infradead.org,
+ zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Apr 02, 2019 at 11:55:25PM +0300, Andrey Abramov wrote:
-> Removes size argument from the swap function because:
-> 	1) It wasn't used.
-> 	2) Custom swap function knows what kind of objects it swaps,
-> 		so it already knows their sizes.
-> 
-> Signed-off-by: Andrey Abramov <st5pub@yandex.ru>
-> Reviewed by: George Spelvin <lkml@sdf.org>
-
-FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> ---
->  arch/x86/kernel/unwind_orc.c | 2 +-
->  include/linux/sort.h         | 2 +-
->  kernel/jump_label.c          | 2 +-
->  lib/extable.c                | 2 +-
->  lib/sort.c                   | 7 +++----
->  5 files changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-> index 89be1be1790c..dc410b567189 100644
-> --- a/arch/x86/kernel/unwind_orc.c
-> +++ b/arch/x86/kernel/unwind_orc.c
-> @@ -176,7 +176,7 @@ static struct orc_entry *orc_find(unsigned long ip)
->  	return orc_ftrace_find(ip);
->  }
->  
-> -static void orc_sort_swap(void *_a, void *_b, int size)
-> +static void orc_sort_swap(void *_a, void *_b)
->  {
->  	struct orc_entry *orc_a, *orc_b;
->  	struct orc_entry orc_tmp;
-> diff --git a/include/linux/sort.h b/include/linux/sort.h
-> index 2b99a5dd073d..13bb4635b5f1 100644
-> --- a/include/linux/sort.h
-> +++ b/include/linux/sort.h
-> @@ -6,6 +6,6 @@
->  
->  void sort(void *base, size_t num, size_t size,
->  	  int (*cmp)(const void *, const void *),
-> -	  void (*swap)(void *, void *, int));
-> +	  void (*swap)(void *, void *));
->  
->  #endif
-> diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-> index bad96b476eb6..6b1187b8a060 100644
-> --- a/kernel/jump_label.c
-> +++ b/kernel/jump_label.c
-> @@ -45,7 +45,7 @@ static int jump_label_cmp(const void *a, const void *b)
->  	return 0;
->  }
->  
-> -static void jump_label_swap(void *a, void *b, int size)
-> +static void jump_label_swap(void *a, void *b)
->  {
->  	long delta = (unsigned long)a - (unsigned long)b;
->  	struct jump_entry *jea = a;
-> diff --git a/lib/extable.c b/lib/extable.c
-> index f54996fdd0b8..0515a94538ca 100644
-> --- a/lib/extable.c
-> +++ b/lib/extable.c
-> @@ -28,7 +28,7 @@ static inline unsigned long ex_to_insn(const struct exception_table_entry *x)
->  #ifndef ARCH_HAS_RELATIVE_EXTABLE
->  #define swap_ex		NULL
->  #else
-> -static void swap_ex(void *a, void *b, int size)
-> +static void swap_ex(void *a, void *b)
->  {
->  	struct exception_table_entry *x = a, *y = b, tmp;
->  	int delta = b - a;
-> diff --git a/lib/sort.c b/lib/sort.c
-> index 50855ea8c262..8704750e6bde 100644
-> --- a/lib/sort.c
-> +++ b/lib/sort.c
-> @@ -114,7 +114,7 @@ static void swap_bytes(void *a, void *b, size_t n)
->  	} while (n);
->  }
->  
-> -typedef void (*swap_func_t)(void *a, void *b, int size);
-> +typedef void (*swap_func_t)(void *a, void *b);
->  
->  /*
->   * The values are arbitrary as long as they can't be confused with
-> @@ -138,7 +138,7 @@ static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
->  	else if (swap_func == SWAP_BYTES)
->  		swap_bytes(a, b, size);
->  	else
-> -		swap_func(a, b, (int)size);
-> +		swap_func(a, b);
->  }
->  
->  /**
-> @@ -186,8 +186,7 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
->   * it less suitable for kernel use.
->   */
->  void sort(void *base, size_t num, size_t size,
-> -	  int (*cmp_func)(const void *, const void *),
-> -	  void (*swap_func)(void *, void *, int size))
-> +	  int (*cmp_func)(const void *, const void *), swap_func_t swap_func)
->  {
->  	/* pre-scale counters for performance */
->  	size_t n = num * size, a = (num/2) * size;
-> -- 
-> 2.21.0
-> 
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCAyOCBNYXIgMjAxOSwgTWFzb24gWWFuZyB3cm90ZToKCj4gRG9jdW1lbnQgdGhlIGJp
+bmRpbmdzIHVzZWQgYnkgdGhlIE1hY3Jvbml4IE1YMjVGMEEgTUZEIGNvbnRyb2xsZXIuCj4gCj4g
+U2lnbmVkLW9mZi1ieTogTWFzb24gWWFuZyA8bWFzb25jY3lhbmdAbXhpYy5jb20udHc+Cj4gLS0t
+Cj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9teGljLW14MjVmMGEudHh0ICAgICAgIHwg
+NjYgKysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNjYgaW5zZXJ0aW9u
+cygrKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL21mZC9teGljLW14MjVmMGEudHh0Cj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvbXhpYy1teDI1ZjBhLnR4dCBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvbXhpYy1teDI1ZjBhLnR4dAo+IG5ldyBmaWxlIG1vZGUg
+MTAwNjQ0Cj4gaW5kZXggMDAwMDAwMC4uNTNiNDgzOQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9E
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL214aWMtbXgyNWYwYS50eHQKPiBA
+QCAtMCwwICsxLDY2IEBACj4gK01hY3Jvbml4IE1YMjVGMEEgTXVsdGktRnVuY3Rpb24gRGV2aWNl
+IFRyZWUgQmluZGluZ3MKPiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQo+ICsKPiArTVgyNUYwQSBpcyBhIE11bHRpRnVuY3Rpb24gRGV2aWNlIHdp
+dGggU1BJIGFuZCByYXcgTkFORCwgd2hpY2gKPiArc3VwcG9ydHMgZWl0aGVyIHNwaSBob3N0IGNv
+bnRyb2xsZXIgb3IgcmF3IG5hbmQgY29udHJvbGxlci4KPiArCj4gK1JlcXVpcmVkIHByb3BlcnRp
+ZXM6Cj4gKy0gY29tcGF0aWJsZTogc2hvdWxkIGJlICJteGljLG14MjVmMGEtbWZkIgo+ICstICNh
+ZGRyZXNzLWNlbGxzOiBzaG91bGQgYmUgMQo+ICstICNzaXplLWNlbGxzOiBzaG91bGQgYmUgMAo+
+ICstIHJlZzogc2hvdWxkIGNvbnRhaW4gMiBlbnRyaWVzLCBvbmUgZm9yIHRoZSByZWdpc3RlcnMg
+YW5kIG9uZSBmb3IgdGhlIGRpcmVjdAo+ICsgICAgICAgbWFwcGluZyBhcmVhIGluIFNQSSBtb2Rl
+Lgo+ICstIHJlZy1uYW1lczogc2hvdWxkIGNvbnRhaW4gInJlZ3MiIGFuZCAiZGlybWFwIgo+ICst
+IGludGVycnVwdHM6IGludGVycnVwdCBsaW5lIGNvbm5lY3RlZCB0byB0aGlzIE1GRCBjb250cm9s
+bGVyCj4gKwo+ICtSZXF1aXJlZCBub2RlczoKPiArIC0gc3BpIDoKPiArCU5vZGUgZm9yIGNvbmZp
+Z3VyaW5nIHRoZSBTUEkgY29udHJvbGxlciBkcml2ZXIuCj4gKwlSZXF1aXJlZCBwcm9wZXJ0aWVz
+Ogo+ICsJCS0gY29tcGF0aWJsZSA9ICJteGljeSxteDI1ZjBhLXNwaSI7Cj4gKwkJLSBjbG9jay1u
+YW1lczogc2hvdWxkIGNvbnRhaW4gInBzX2NsayIsICJzZW5kX2NsayIgYW5kCj4gKwkJCSAgICAg
+ICAic2VuZF9kbHlfY2xrIgo+ICsJCS0gY2xvY2tzOiBzaG91bGQgY29udGFpbiAzIGVudHJpZXMg
+Zm9yIHRoZSAicHNfY2xrIiwgInNlbmRfY2xrIgo+ICsJCQkgIGFuZCAic2VuZF9kbHlfY2xrIiBj
+bG9ja3MKPiArCj4gKy0gbmFuZCA6Cj4gKwlOb2RlIGZvciBjb25maWd1cmluZyB0aGUgcmF3IG5h
+bmQgY29udHJvbGxlciBkcml2ZXIuCj4gKwlSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICsJCS0gY29t
+cGF0aWJsZSA9ICJteGljeSxteDI1ZjBhLW5hbmQtY3RsciI7Cj4gKwkJLSBuYW5kLWVjYy1tb2Rl
+ID0gInNvZnQiOwo+ICsJCS0gbmFuZC1lY2MtYWxnbyA9ICJiY2giOwo+ICsKPiArRXhhbXBsZToK
+PiArCj4gKwlteGljOiBteDI1ZjBhLW1mZEA0M2MzMDAwMCB7CgpJJ20gbm90IHN1cmUgSSB1bmRl
+cnN0YW5kIHdoeSB5b3UgYXJlIHVzaW5nIGFuIE1GRCBmb3IgdGhpcy4KCj4gKwkJY29tcGF0aWJs
+ZSA9ICJteGljLG14MjVmMGEtbWZkIjsKPiArCQlyZWcgPSA8MHg0M2MzMDAwMCAweDEwMDAwPiwg
+PDB4YTAwMDAwMDAgMHg0MDAwMDAwPjsKPiArCQlyZWctbmFtZXMgPSAicmVncyIsICJkaXJtYXAi
+Owo+ICsJCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+ICsJCSNzaXplLWNlbGxzID0gPDA+Owo+ICsK
+PiArCQkvKiBlaXRoZXIgc3BpIG9yIG5hbmQgKi8KPiArCQlzcGkgewo+ICsJCQljb21wYXRpYmxl
+ID0gIm14aWN5LG14MjVmMGEtc3BpIjsKPiArCQkJY2xvY2tzID0gPCZjbGt3aXphcmQgMD4sIDwm
+Y2xrd2l6YXJkIDE+LCA8JmNsa2MgMTU+Owo+ICsJCQljbG9jay1uYW1lcyA9ICJzZW5kX2NsayIs
+ICJzZW5kX2RseV9jbGsiLCAicHNfY2xrIjsKPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4g
+KwkJCSNzaXplLWNlbGxzID0gPDA+Owo+ICsKPiArCQkJZmxhc2hAMCB7Cj4gKwkJCQljb21wYXRp
+YmxlID0gImplZGVjLHNwaS1ub3IiOwo+ICsJCQkJcmVnID0gPDA+Owo+ICsJCQkJc3BpLW1heC1m
+cmVxdWVuY3kgPSA8MjUwMDAwMDA+Owo+ICsJCQkJc3BpLXR4LWJ1cy13aWR0aCA9IDw0PjsKPiAr
+CQkJCXNwaS1yeC1idXMtd2lkdGggPSA8ND47Cj4gKwkJCX07Cj4gKwkJfTsKPiArCj4gKwkJbmFu
+ZCB7Cj4gKwkJCWNvbXBhdGlibGUgPSAibXhpY3ksbXgyNWYwYS1uYW5kLWN0bHIiOwo+ICsJCQlu
+YW5kLWVjYy1tb2RlID0gInNvZnQiOwo+ICsJCQluYW5kLWVjYy1hbGdvID0gImJjaCI7Cj4gKwkJ
+CW5hbmQtZWNjLXN0ZXAtc2l6ZSA9IDw1MTI+Owo+ICsJCQluYW5kLWVjYy1zdHJlbmd0aCA9IDw4
+PjsKPiArCQl9Owo+ICsJfTsKCldoeSBub3QganVzdCBzZWxlY3Qgb25lIHVzaW5nIGRldmljZSB0
+cmVlIGFsb25lLCBieToKCglzcGlANDNjMzAwMDAgewoJCWNvbXBhdGlibGUgPSAibXhpY3ksbXgy
+NWYwYS1zcGkiOwoJCXJlZyA9IDwweDQzYzMwMDAwIDB4MTAwMDA+LCA8MHhhMDAwMDAwMCAweDQw
+MDAwMDA+OwoJCXJlZy1uYW1lcyA9ICJyZWdzIiwgImRpcm1hcCI7CgkJI2FkZHJlc3MtY2VsbHMg
+PSA8MT47CgkJI3NpemUtY2VsbHMgPSA8MD47CgkJY2xvY2tzID0gPCZjbGt3aXphcmQgMD4sIDwm
+Y2xrd2l6YXJkIDE+LCA8JmNsa2MgMTU+OwoJCWNsb2NrLW5hbWVzID0gInNlbmRfY2xrIiwgInNl
+bmRfZGx5X2NsayIsICJwc19jbGsiOwoJCSNhZGRyZXNzLWNlbGxzID0gPDE+OwoJCSNzaXplLWNl
+bGxzID0gPDA+OwoKCQlmbGFzaEAwIHsKCQkJY29tcGF0aWJsZSA9ICJqZWRlYyxzcGktbm9yIjsK
+CQkJcmVnID0gPDA+OwoJCQlzcGktbWF4LWZyZXF1ZW5jeSA9IDwyNTAwMDAwMD47CgkJCXNwaS10
+eC1idXMtd2lkdGggPSA8ND47CgkJCXNwaS1yeC1idXMtd2lkdGggPSA8ND47CgkJfTsKCX07CgpP
+UiAuLi4KCgluYW5kQDQzYzMwMDAwIHsKCQljb21wYXRpYmxlID0gIm14aWN5LG14MjVmMGEtbmFu
+ZC1jdGxyIjsKCQlyZWcgPSA8MHg0M2MzMDAwMCAweDEwMDAwPiwgPDB4YTAwMDAwMDAgMHg0MDAw
+MDAwPjsKCQlyZWctbmFtZXMgPSAicmVncyIsICJkaXJtYXAiOwoJCSNhZGRyZXNzLWNlbGxzID0g
+PDE+OwoJCSNzaXplLWNlbGxzID0gPDA+OwoJCW5hbmQtZWNjLW1vZGUgPSAic29mdCI7CgkJbmFu
+ZC1lY2MtYWxnbyA9ICJiY2giOwoJCW5hbmQtZWNjLXN0ZXAtc2l6ZSA9IDw1MTI+OwoJCW5hbmQt
+ZWNjLXN0cmVuZ3RoID0gPDg+OwoJfTsKCi0tIApMZWUgSm9uZXMgW+adjueQvOaWr10KTGluYXJv
+IFNlcnZpY2VzIFRlY2huaWNhbCBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3
+YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9n
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
