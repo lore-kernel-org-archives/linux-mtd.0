@@ -2,61 +2,91 @@ Return-Path: <SRS0=c1Ix=SF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_NEOMUTT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DDB4C4360F
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 08:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B85F9C4360F
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 10:09:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2431921473
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 08:49:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8921E2084C
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Apr 2019 10:09:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QmP/KX5l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2431921473
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E3mrRqqY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rC07FCy8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8921E2084C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=Gb/JxfnTn3zB94Wlkc0pfd0V/y960nFGY5tx9PB5ooI=; b=QmP/KX5lfjKtUrjnYQF+bb+bv
-	L9nXZW9eVdqZx50n9aqAaWxXH2X0x9H253OiPp/NDFAvthq5n3bvHVKLk2wcp4UE7nWAUlYPjWwUA
-	ZV9iC6i9hhZyKD8uk4NEvuXqnRfb+he0/zRmGTBJN2rE1Q8rTjjghpb4893O7M3AEiCfAJPIgFr3L
-	rCyIqNgtLCkfx5QfRm+U4b6Rx42hw+TgQzS0wBmaa7nlOVJw2omjLVddqDmPmDxWhNE6U+4yvWI24
-	U0XnZiDXv5bRR2TyVKquppDjZc0muOqtINPng/UcB1ozRLjg4uQ8McamAGXPrA5h52r8B9ELrcVFY
-	xILfAU3zQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9QQb0hlMyN7Z4fHFso4L148jQ78EDpFqKp4Q/AiLXsE=; b=E3mrRqqYEgPYMv
+	Tfmj3oaGQfIJMtJzHLexhOVZ31e2x7DvIOB3mHRgumsAX1KpSWXpMZg+QSp31xfz1cP1kI7LWNlNO
+	r2WWNa/WFv50qg7mE20USO59VoHCTFbtNsYRfia3iQ7ohhQLRTD20MgpRbawUXLCp/gZtN700G2yG
+	3X4qXONisJSCiLqJyL/tQRWebCIw2fm+mpx6mdmyOdSmjCsrTs7ysQfAtRiwpuNk30zSHJ9UBJL5p
+	2rLuKE1+AZe6ztmpk2WUUPY2wmzbzQV55tN3yXuvzVpSNR9N67dQVeoLyzNhAFmFvROQ7CsjKnR2X
+	2JFZ5DLzWNVsGe+PyAaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hBbak-0000Qo-P1; Wed, 03 Apr 2019 08:49:54 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1hBcpX-0001dO-Ln; Wed, 03 Apr 2019 10:09:15 +0000
+Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hBbac-0000Hf-19; Wed, 03 Apr 2019 08:49:47 +0000
-Received: from localhost (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr
- [90.88.30.125]) (Authenticated sender: maxime.ripard@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 2732010000B;
- Wed,  3 Apr 2019 08:49:38 +0000 (UTC)
-Date: Wed, 3 Apr 2019 10:49:38 +0200
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 2/2] dt-bindings: mtd: sunxi-nand: Add YAML schemas
-Message-ID: <20190403084938.nk5po4w7ljy5bniw@flea>
-References: <74b8a52ce98b09d7906f988c107793a86c0c5f6b.1554216856.git-series.maxime.ripard@bootlin.com>
- <079279c3713042bdcc76ea27907d5f75bcb483fc.1554216856.git-series.maxime.ripard@bootlin.com>
- <CAL_JsqLrdFAhdbjVi0ZoCOM6ajEOdQeLpkSKBsZ90X+UvfkLmA@mail.gmail.com>
- <20190403074418.by3cmvtmdcbovyw5@flea>
- <CAL_Jsq+bivuKJ107tiQDb9EN2S+AyK89+CzfcofioXcqGLLqjA@mail.gmail.com>
+ id 1hBcpO-0001Uc-Tg
+ for linux-mtd@lists.infradead.org; Wed, 03 Apr 2019 10:09:08 +0000
+Received: by mail-pg1-x544.google.com with SMTP id i2so8064929pgj.11
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Apr 2019 03:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to
+ :user-agent; bh=Pt08u+qgVaJIOskSRhQGw1Bt62Ds9fDTXx3KQLjZb3Y=;
+ b=rC07FCy8J032unPAnpDT9Q+GdIy1UpOk8rfav0n0rjfMsqWfU/M7oDdyAFTfWRXRxH
+ eHXCqcJWWNZDZfpiI6rNJPlrjlnSAOvwv9a9fDVRoIga8yWjsiKNzlcEToZWmGTy/mnT
+ nghqntYVvfJD81pOFsW3aPgUhXxF2/Dm5/wg0IfUzv+tPypA6Uz0b8JXlVoEmNyx2UPl
+ XgvthJsNKrLjRQW0BM20VWo9ZxAWLm3hA/S7kVaCi1o0BZ04vI34c1jJlVXKp2TQQSrf
+ fWjgSqDe2Yc7WbpS2RM5ODPU6quIkgq/WMquc0T7qRj8w9AlW5OqQvEax5XW+Hq38CIz
+ ac9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to:user-agent;
+ bh=Pt08u+qgVaJIOskSRhQGw1Bt62Ds9fDTXx3KQLjZb3Y=;
+ b=jyF5+SVxACEEgaInxSzJun0o4RxHG3BiGUuGawJCoIvl8CWJb7Ec8fI05iG3kf+NAF
+ VvvZPV6R6ccrmcxfv8mdhdP7brB7s21lFfhKhMj+WzSGDATnDTm1ye+W8G3FWSjrAEcj
+ 2Q8QdrzcXXv9oZkY6EeeT8Hv7DuCF5iBoKNdSyBtYPw+fVa9cLVODQ9wNceaFS1cofpB
+ 1udVgTmeQf781gD9kd7NoCBTADbfuNVt90Pc2/+adyYfznugZx4mcEGYT21htlI+OxVy
+ +7gJnl0it/OmuDCJ9G1JMNAJkQD75TddKe2Hkcz3qPwT7fjOc2NJh1G/K/ipzVzN7vP8
+ 4Rqw==
+X-Gm-Message-State: APjAAAWslAYQuFFFm9rNuLehzGiwaBbn1Iz6A11j6TqG2Gjo/wGGobCx
+ I1KhhQlDOjG3WsSbTv4BZvwOcg==
+X-Google-Smtp-Source: APXvYqx/e2wy8045fbET+eDWS0nuppPJ8sZahZ0XctSUbEPMdxDHfeUMs/B0SQ5Eu1pPC6panCQeiA==
+X-Received: by 2002:a63:6142:: with SMTP id v63mr71898331pgb.342.1554286146122; 
+ Wed, 03 Apr 2019 03:09:06 -0700 (PDT)
+Received: from dell ([147.50.13.10])
+ by smtp.gmail.com with ESMTPSA id k131sm30077509pfc.183.2019.04.03.03.09.00
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Wed, 03 Apr 2019 03:09:05 -0700 (PDT)
+Date: Wed, 3 Apr 2019 11:08:58 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH 09/11] mfd: syscon: atmel: switch to SPDX license
+ identifiers
+Message-ID: <20190403100858.GM11301@dell>
+References: <20190213085930.31578-1-tudor.ambarus@microchip.com>
+ <20190213085930.31578-10-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+bivuKJ107tiQDb9EN2S+AyK89+CzfcofioXcqGLLqjA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Disposition: inline
+In-Reply-To: <20190213085930.31578-10-tudor.ambarus@microchip.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190403_014946_220823_79C4D4DA 
-X-CRM114-Status: GOOD (  18.09  )
+X-CRM114-CacheID: sfid-20190403_030907_040325_2C4B8EDF 
+X-CRM114-Status: GOOD (  10.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -68,95 +98,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Chen-Yu Tsai <wens@csie.org>, Boris Brezillon <boris.brezillon@collabora.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Frank Rowand <frowand.list@gmail.com>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
-Content-Type: multipart/mixed; boundary="===============7900366019775148312=="
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alexandre.belloni@bootlin.com, bbrezillon@kernel.org, richard@nod.at,
+ Nicolas.Ferre@microchip.com, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, Ludovic.Desroches@microchip.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============7900366019775148312==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="a76thyva57lxv6lt"
-Content-Disposition: inline
-
-
---a76thyva57lxv6lt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 03, 2019 at 03:33:42AM -0500, Rob Herring wrote:
-> > The other one that might be more problematic is that it also tries to
-> > validate nodes that are not enabled. For in-SoC components that don't
-> > rely on anything external, it's fine, however, for components that
-> > would require something that is connected on the board (like a
-> > regulator, a phy, a GPIO, whatever), then we can't have all the
-> > required resources in the DTSI, and boards that don't use that
-> > component (and keep it disabled) will emit warning that this
-> > particular property is missing.
-> >
-> > I've tried to look into it but couldn't find an easy fix for that in
-> > the tooling, so I've opened a github issue for this. Let me know if
-> > it's not appropriate.
->
-> Yeah, I need to go look at that. Skipping disabled nodes shouldn't be
-> too hard to do within the tool. This came up before I think and I've
-> resisted because I don't want to skip validating at least what is
-> there. Maybe the better solution would be to drop 'required' from
-> schema when validating disabled nodes. (At least, I think just
-> 'required' is the problem?)
-
-I thought about something along those lines too, since indeed the only
-thing that causes troube is required.
-
-> The complication would be we'd need 2 sets of schemas and select the
-> right one for each node.
-
-You mean two instances of the schema in the tool, right? Not two
-schema files? Do you expect any drawback to that (like
-performance-wise maybe, if we have more schemas with more complicated
-select patterns)?
-
-> Another way to implement it would be just to filter out the warning
-> messages.
-
-That would work too I guess :)
-
-Maxime
-
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
---a76thyva57lxv6lt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXKRzogAKCRDj7w1vZxhR
-xac1AP0QLbbbxWvLkIPGe2zrWPi6nKLa/QhvRdMWM3ZbsDeZAgEA2a953gpc7deu
-ZRklMgGMaC2SedAc09yfEV12U/V2OAU=
-=qt3G
------END PGP SIGNATURE-----
-
---a76thyva57lxv6lt--
-
-
---===============7900366019775148312==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7900366019775148312==--
-
+T24gV2VkLCAxMyBGZWIgMjAxOSwgVHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tIHdyb3RlOgoK
+PiBGcm9tOiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+Cj4gCj4g
+QWRvcHQgdGhlIFNQRFggbGljZW5zZSBpZGVudGlmaWVycyB0byBlYXNlIGxpY2Vuc2UgY29tcGxp
+YW5jZQo+IG1hbmFnZW1lbnQuCj4gCj4gU2lnbmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVk
+b3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+IC0tLQo+ICBpbmNsdWRlL2xpbnV4L21mZC9zeXNj
+b24vYXRtZWwtbWF0cml4LmggfCA2ICstLS0tLQo+ICBpbmNsdWRlL2xpbnV4L21mZC9zeXNjb24v
+YXRtZWwtbWMuaCAgICAgfCA2ICstLS0tLQo+ICBpbmNsdWRlL2xpbnV4L21mZC9zeXNjb24vYXRt
+ZWwtc21jLmggICAgfCA1ICstLS0tCj4gIGluY2x1ZGUvbGludXgvbWZkL3N5c2Nvbi9hdG1lbC1z
+dC5oICAgICB8IDYgKy0tLS0tCj4gIDQgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAx
+OSBkZWxldGlvbnMoLSkKCkFwcGxpZWQsIHRoYW5rcy4KCi0tIApMZWUgSm9uZXMgW+adjueQvOaW
+r10KTGluYXJvIFNlcnZpY2VzIFRlY2huaWNhbCBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291
+cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0
+ZXIgfCBCbG9nCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
