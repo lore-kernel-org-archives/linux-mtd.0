@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F25EC4360F
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 22:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22525C4360F
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 22:35:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7E9E206DF
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 22:35:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D74EC206DF
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 22:35:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cfdz2EDA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7E9E206DF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IBLj1ezR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D74EC206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,34 +25,34 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eJ2owMxNDCHT4U4LlHyeTf0yE0r9I79F4JxkcVmsUYQ=; b=cfdz2EDAehJKjq
-	2cIm32hKfQS9g/JQ3P7KTxyHjtRZ6R+fgPF0nsBbnQKKOU8EaQ5CO6x9Fyr9ZMH8r0FVNBisAF9/S
-	WGO4oq6CRl8k0b6NGspNeyZV7fYpiZG9DOfIknY9DSTKHE8YKWmPSmf2ZCPi3y/U94D15DRxWBMKm
-	YShRwLSmItD4AOIQDDX4/pUqqXAN1+CVhFLfH3CtZf9IKPnsUC8k1dNIy845VfR5RUY8KkVFd0sid
-	yEqfHEutbqBQB0m0cKbZmibEQ1h6M+m0riF4+gFy9+Zo4jGbHCO0KUWz3NN3e2Kl2V6TEu3m1YdMl
-	HVtAAeeVWDIjM52uczgQ==;
+	List-Owner; bh=1SSG8xGlFoujMa3CwPunGnek29o3sheQzL0D+AK+YsE=; b=IBLj1ezRK74OTG
+	FAmD0/ef4xm9aPtFoW1E9BFgdu9+mT/RSl/FVRE2pZzdaLIa/ArRcyJXBzC4oR43tifKIyVM+qmCN
+	XExlAt8MJy6V8JCVl8+KkokshCRX5lQkoZyFxCM2hCYoibVB+Dmm8aJu7FYi9+Hp+rRzE09Nx7NeB
+	8FAMiW/xwhtGdfGf6CbTVuhjGB3WMH7h5cgyZQ2vMZjOuWGPpiCcuo1p2rnN8Btlv2Ui8Df9cqb5i
+	lmISOaJrWha0Y/x0a9TmQuGq3WiS4/sxeeJpyV0fUhxSB9ZxelMbLrEjMuNxOKeTsZ+WA+B9SdFsB
+	c6c+hBLvfok7yKePX+hA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hCAwy-0000g7-N9; Thu, 04 Apr 2019 22:35:12 +0000
+	id 1hCAx8-0000vE-F0; Thu, 04 Apr 2019 22:35:22 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCAwo-0007mg-9P
- for linux-mtd@lists.infradead.org; Thu, 04 Apr 2019 22:35:04 +0000
+ id 1hCAwp-0007uc-Af
+ for linux-mtd@lists.infradead.org; Thu, 04 Apr 2019 22:35:05 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 22DB21801442E;
- Fri,  5 Apr 2019 00:35:00 +0200 (CEST)
+ by lilium.sigma-star.at (Postfix) with ESMTP id 23BCC1801445D;
+ Fri,  5 Apr 2019 00:35:02 +0200 (CEST)
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] ubifs: journal: Handle xattrs like files
-Date: Fri,  5 Apr 2019 00:34:36 +0200
-Message-Id: <20190404223438.29408-2-richard@nod.at>
+Subject: [PATCH 2/3] ubifs: orphan: Handle xattrs like files
+Date: Fri,  5 Apr 2019 00:34:37 +0200
+Message-Id: <20190404223438.29408-3-richard@nod.at>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190404223438.29408-1-richard@nod.at>
 References: <20190404223438.29408-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190404_153502_691527_BB6B6745 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20190404_153503_662575_83E3E822 
+X-CRM114-Status: GOOD (  17.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -70,146 +70,325 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If an inode hosts xattrs, create deletion entries for each
-inode. That way we can make sure that upon journal replay UBIFS
-can find find all xattr inodes.
-Otherwise it can happen that GC consumed already a LEB which contained
-parts of the TNC that pointed to the xattrs and we no longer
-find all xattr inodes, which will confuse the LPT and cause
-space allocation issues.
+Like for the journal case, make sure that we track all xattr
+inodes.
+Otherwise UBIFS might not be able to locate stale xattr inodes
+upon recovery.
 
 Reported-by: Stefan Agner <stefan@agner.ch>
 Fixes: 1e51764a3c2ac ("UBIFS: add new flash file system")
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/journal.c | 60 ++++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 49 insertions(+), 11 deletions(-)
+ fs/ubifs/orphan.c | 208 ++++++++++++++++++++++++++++++++++++------------------
+ fs/ubifs/ubifs.h  |   3 +
+ 2 files changed, 144 insertions(+), 67 deletions(-)
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 729dc76c83df..4f74d443ca44 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -852,10 +852,11 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
- int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index 8f70494efb0c..2f1618f300fb 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -54,30 +54,24 @@
+ 
+ static int dbg_check_orphans(struct ubifs_info *c);
+ 
+-/**
+- * ubifs_add_orphan - add an orphan.
+- * @c: UBIFS file-system description object
+- * @inum: orphan inode number
+- *
+- * Add an orphan. This function is called when an inodes link count drops to
+- * zero.
+- */
+-int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
++static struct ubifs_orphan *orphan_add(struct ubifs_info *c, ino_t inum,
++				       struct ubifs_orphan *parent_orphan)
  {
- 	int err, lnum, offs;
--	struct ubifs_ino_node *ino;
-+	struct ubifs_ino_node *ino, *ino_start;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
--	int sync = 0, write_len, ilen = UBIFS_INO_NODE_SZ;
-+	int sync = 0, write_len = 0, ilen = UBIFS_INO_NODE_SZ;
- 	int last_reference = !inode->i_nlink;
-+	int kill_xattrs = ui->xattr_cnt && last_reference;
- 	u8 hash[UBIFS_HASH_ARR_SZ];
+ 	struct ubifs_orphan *orphan, *o;
+ 	struct rb_node **p, *parent = NULL;
  
- 	dbg_jnl("ino %lu, nlink %u", inode->i_ino, inode->i_nlink);
-@@ -867,14 +868,16 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 	if (!last_reference) {
- 		ilen += ui->data_len;
- 		sync = IS_SYNC(inode);
-+	} else if (kill_xattrs) {
-+		write_len += UBIFS_INO_NODE_SZ * ui->xattr_cnt;
+ 	orphan = kzalloc(sizeof(struct ubifs_orphan), GFP_NOFS);
+ 	if (!orphan)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 	orphan->inum = inum;
+ 	orphan->new = 1;
++	INIT_LIST_HEAD(&orphan->child_list);
+ 
+ 	spin_lock(&c->orphan_lock);
+ 	if (c->tot_orphans >= c->max_orphans) {
+ 		spin_unlock(&c->orphan_lock);
+ 		kfree(orphan);
+-		return -ENFILE;
++		return ERR_PTR(-ENFILE);
  	}
- 
- 	if (ubifs_authenticated(c))
--		write_len = ALIGN(ilen, 8) + ubifs_auth_node_sz(c);
-+		write_len += ALIGN(ilen, 8) + ubifs_auth_node_sz(c);
- 	else
--		write_len = ilen;
-+		write_len += ilen;
- 
--	ino = kmalloc(write_len, GFP_NOFS);
-+	ino_start = ino = kmalloc(write_len, GFP_NOFS);
- 	if (!ino)
- 		return -ENOMEM;
- 
-@@ -883,12 +886,47 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 	if (err)
- 		goto out_free;
- 
-+	if (kill_xattrs) {
-+		union ubifs_key key;
-+		struct fscrypt_name nm = {0};
-+		struct inode *xino;
-+		struct ubifs_dent_node *xent, *pxent = NULL;
+ 	p = &c->orph_tree.rb_node;
+ 	while (*p) {
+@@ -91,7 +85,7 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
+ 			ubifs_err(c, "orphaned twice");
+ 			spin_unlock(&c->orphan_lock);
+ 			kfree(orphan);
+-			return 0;
++			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
+ 	c->tot_orphans += 1;
+@@ -100,24 +94,22 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
+ 	rb_insert_color(&orphan->rb, &c->orph_tree);
+ 	list_add_tail(&orphan->list, &c->orph_list);
+ 	list_add_tail(&orphan->new_list, &c->orph_new);
 +
-+		lowest_xent_key(c, &key, inode->i_ino);
-+		while (1) {
-+			xent = ubifs_tnc_next_ent(c, &key, &nm);
-+			if (IS_ERR(xent)) {
-+				err = PTR_ERR(xent);
-+				if (err == -ENOENT)
-+					break;
-+
-+				goto out_release;
-+			}
-+
-+			fname_name(&nm) = xent->name;
-+			fname_len(&nm) = le16_to_cpu(xent->nlen);
-+
-+			xino = ubifs_iget(c->vfs_sb, xent->inum);
-+			ubifs_assert(c, ubifs_inode(xino)->xattr);
-+
-+			clear_nlink(xino);
-+			pack_inode(c, ino, xino, 0);
-+			ino = (void *)ino + UBIFS_INO_NODE_SZ;
-+			iput(xino);
-+
-+			kfree(pxent);
-+			pxent = xent;
-+			key_read(c, &xent->key, &key);
-+		}
-+		kfree(pxent);
++	if (parent_orphan) {
++		list_add_tail(&orphan->child_list,
++			      &parent_orphan->child_list);
 +	}
 +
- 	pack_inode(c, ino, inode, 1);
- 	err = ubifs_node_calc_hash(c, ino, hash);
- 	if (err)
- 		goto out_release;
- 
--	err = write_head(c, BASEHD, ino, write_len, &lnum, &offs, sync);
-+	err = write_head(c, BASEHD, ino_start, write_len, &lnum, &offs, sync);
- 	if (err)
- 		goto out_release;
- 	if (!sync)
-@@ -903,7 +941,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 		if (err)
- 			goto out_ro;
- 		ubifs_delete_orphan(c, inode->i_ino);
--		err = ubifs_add_dirt(c, lnum, ilen);
-+		err = ubifs_add_dirt(c, lnum, write_len);
- 	} else {
- 		union ubifs_key key;
- 
-@@ -917,7 +955,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 	spin_lock(&ui->ui_lock);
- 	ui->synced_i_size = ui->ui_size;
- 	spin_unlock(&ui->ui_lock);
--	kfree(ino);
-+	kfree(ino_start);
- 	return 0;
- 
- out_release:
-@@ -926,7 +964,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 	ubifs_ro_mode(c, err);
- 	finish_reservation(c);
- out_free:
--	kfree(ino);
-+	kfree(ino_start);
- 	return err;
+ 	spin_unlock(&c->orphan_lock);
+ 	dbg_gen("ino %lu", (unsigned long)inum);
+-	return 0;
++	return orphan;
  }
  
-@@ -966,8 +1004,8 @@ int ubifs_jnl_delete_inode(struct ubifs_info *c, const struct inode *inode)
+-/**
+- * ubifs_delete_orphan - delete an orphan.
+- * @c: UBIFS file-system description object
+- * @inum: orphan inode number
+- *
+- * Delete an orphan. This function is called when an inode is deleted.
+- */
+-void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
++static struct ubifs_orphan *lookup_orphan(struct ubifs_info *c, ino_t inum)
+ {
+ 	struct ubifs_orphan *o;
+ 	struct rb_node *p;
  
- 	ubifs_assert(c, inode->i_nlink == 0);
+-	spin_lock(&c->orphan_lock);
+ 	p = c->orph_tree.rb_node;
+ 	while (p) {
+ 		o = rb_entry(p, struct ubifs_orphan, rb);
+@@ -126,37 +118,124 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
+ 		else if (inum > o->inum)
+ 			p = p->rb_right;
+ 		else {
+-			if (o->del) {
+-				spin_unlock(&c->orphan_lock);
+-				dbg_gen("deleted twice ino %lu",
+-					(unsigned long)inum);
+-				return;
+-			}
+-			if (o->cmt) {
+-				o->del = 1;
+-				o->dnext = c->orph_dnext;
+-				c->orph_dnext = o;
+-				spin_unlock(&c->orphan_lock);
+-				dbg_gen("delete later ino %lu",
+-					(unsigned long)inum);
+-				return;
+-			}
+-			rb_erase(p, &c->orph_tree);
+-			list_del(&o->list);
+-			c->tot_orphans -= 1;
+-			if (o->new) {
+-				list_del(&o->new_list);
+-				c->new_orphans -= 1;
+-			}
+-			spin_unlock(&c->orphan_lock);
+-			kfree(o);
+-			dbg_gen("inum %lu", (unsigned long)inum);
+-			return;
++			return o;
+ 		}
+ 	}
++	return NULL;
++}
++
++static void __orphan_drop(struct ubifs_info *c, struct ubifs_orphan *o)
++{
++	rb_erase(&o->rb, &c->orph_tree);
++	list_del(&o->list);
++	c->tot_orphans -= 1;
++
++	if (o->new) {
++		list_del(&o->new_list);
++		c->new_orphans -= 1;
++	}
++
++	kfree(o);
++}
++
++static void orphan_delete(struct ubifs_info *c, ino_t inum)
++{
++	struct ubifs_orphan *orph, *child_orph, *tmp_o;
++
++	spin_lock(&c->orphan_lock);
++
++	orph = lookup_orphan(c, inum);
++	if (!orph) {
++		spin_unlock(&c->orphan_lock);
++		ubifs_err(c, "missing orphan ino %lu", (unsigned long)inum);
++		dump_stack();
++
++		return;
++	}
++
++	if (orph->del) {
++		spin_unlock(&c->orphan_lock);
++		dbg_gen("deleted twice ino %lu",
++			(unsigned long)inum);
++		return;
++	}
++
++	if (orph->cmt) {
++		orph->del = 1;
++		orph->dnext = c->orph_dnext;
++		c->orph_dnext = orph;
++		spin_unlock(&c->orphan_lock);
++		dbg_gen("delete later ino %lu",
++			(unsigned long)inum);
++		return;
++	}
++
++	list_for_each_entry_safe(child_orph, tmp_o, &orph->child_list, child_list) {
++		list_del(&child_orph->child_list);
++		__orphan_drop(c, child_orph);
++	}
++
++	__orphan_drop(c, orph);
++
+ 	spin_unlock(&c->orphan_lock);
+-	ubifs_err(c, "missing orphan ino %lu", (unsigned long)inum);
+-	dump_stack();
++}
++
++/**
++ * ubifs_add_orphan - add an orphan.
++ * @c: UBIFS file-system description object
++ * @inum: orphan inode number
++ *
++ * Add an orphan. This function is called when an inodes link count drops to
++ * zero.
++ */
++int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
++{
++	int err = 0;
++	ino_t xattr_inum;
++	union ubifs_key key;
++	struct ubifs_dent_node *xent;
++	struct fscrypt_name nm = {0};
++	struct ubifs_orphan *xattr_orphan;
++	struct ubifs_orphan *orphan;
++
++	orphan = orphan_add(c, inum, NULL);
++	if (IS_ERR(orphan))
++		return PTR_ERR(orphan);
++
++	lowest_xent_key(c, &key, inum);
++	while (1) {
++		xent = ubifs_tnc_next_ent(c, &key, &nm);
++		if (IS_ERR(xent)) {
++			err = PTR_ERR(xent);
++			if (err == -ENOENT)
++				break;
++			return err;
++		}
++
++		fname_name(&nm) = xent->name;
++		fname_len(&nm) = le16_to_cpu(xent->nlen);
++		xattr_inum = le64_to_cpu(xent->inum);
++
++		xattr_orphan = orphan_add(c, xattr_inum, orphan);
++		if (IS_ERR(xattr_orphan))
++			return PTR_ERR(xattr_orphan);
++
++		key_read(c, &xent->key, &key);
++	}
++
++	return 0;
++}
++
++/**
++ * ubifs_delete_orphan - delete an orphan.
++ * @c: UBIFS file-system description object
++ * @inum: orphan inode number
++ *
++ * Delete an orphan. This function is called when an inode is deleted.
++ */
++void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
++{
++	orphan_delete(c, inum);
+ }
  
--	if (ui->del_cmtno != c->cmt_no)
--		/* A commit happened for sure */
-+	if (ui->xattr_cnt || ui->del_cmtno != c->cmt_no)
-+		/* A commit happened for sure or inode hosts xattrs */
- 		return ubifs_jnl_write_inode(c, inode);
+ /**
+@@ -611,10 +690,16 @@ static int do_kill_orphans(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
  
- 	down_read(&c->commit_sem);
+ 		n = (le32_to_cpu(orph->ch.len) - UBIFS_ORPH_NODE_SZ) >> 3;
+ 		for (i = 0; i < n; i++) {
++			union ubifs_key key1, key2;
++
+ 			inum = le64_to_cpu(orph->inos[i]);
+ 			dbg_rcvry("deleting orphaned inode %lu",
+ 				  (unsigned long)inum);
+-			err = ubifs_tnc_remove_ino(c, inum);
++
++			lowest_ino_key(c, &key1, inum);
++			highest_ino_key(c, &key2, inum);
++
++			err = ubifs_tnc_remove_range(c, &key1, &key2);
+ 			if (err)
+ 				return err;
+ 			err = insert_dead_orphan(c, inum);
+@@ -744,26 +829,15 @@ struct check_info {
+ 	struct rb_root root;
+ };
+ 
+-static int dbg_find_orphan(struct ubifs_info *c, ino_t inum)
++static bool dbg_find_orphan(struct ubifs_info *c, ino_t inum)
+ {
+-	struct ubifs_orphan *o;
+-	struct rb_node *p;
++	bool found = false;
+ 
+ 	spin_lock(&c->orphan_lock);
+-	p = c->orph_tree.rb_node;
+-	while (p) {
+-		o = rb_entry(p, struct ubifs_orphan, rb);
+-		if (inum < o->inum)
+-			p = p->rb_left;
+-		else if (inum > o->inum)
+-			p = p->rb_right;
+-		else {
+-			spin_unlock(&c->orphan_lock);
+-			return 1;
+-		}
+-	}
++	found = !!lookup_orphan(c, inum);
+ 	spin_unlock(&c->orphan_lock);
+-	return 0;
++
++	return found;
+ }
+ 
+ static int dbg_ins_check_orphan(struct rb_root *root, ino_t inum)
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 1ae12900e01d..d28102829f6c 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -924,6 +924,8 @@ struct ubifs_budget_req {
+  * @rb: rb-tree node of rb-tree of orphans sorted by inode number
+  * @list: list head of list of orphans in order added
+  * @new_list: list head of list of orphans added since the last commit
++ * @child_list: list of xattr childs if this orphan hosts xattrs, list head
++ * if this orphan is a xattr, not used otherwise.
+  * @cnext: next orphan to commit
+  * @dnext: next orphan to delete
+  * @inum: inode number
+@@ -935,6 +937,7 @@ struct ubifs_orphan {
+ 	struct rb_node rb;
+ 	struct list_head list;
+ 	struct list_head new_list;
++	struct list_head child_list;
+ 	struct ubifs_orphan *cnext;
+ 	struct ubifs_orphan *dnext;
+ 	ino_t inum;
 -- 
 2.16.4
 
