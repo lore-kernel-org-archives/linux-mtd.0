@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54143C4360F
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 16:22:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30D66C4360F
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 16:37:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25448206BA
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 16:22:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F04D3206DF
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 16:37:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VO6eS0bU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25448206BA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uMJYwaH9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F04D3206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,24 +25,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wehWXa/CYx1b2ZFlfuzLwg6gnASFLGfjZ64kuEfP3FI=; b=VO6eS0bUIHqZ3g
-	E3qQmBkxJkcWTzw2+dxuKk7H4wc+vKTdPTjokDPzYyQeE35ewk1h/w/fqaTVNNlDs91NJsk03Pdpv
-	w5WMtNjYy95MZQZ0qGZF2sKVsj3l/mlyJ2W9y7TPBrX4qAOrzGGW5B6sA8Qv8zkyP9EvdYEsH2mvZ
-	fBjLi4WgXCxIpRe2F54jVFtbdoaaB04mZR0JgxpQWhjeH+GHDsVPivFEh7TZrFb6R2yOLPovSClYH
-	Wm3k5sQUKDMcb3e+HANn+g26311fiTVadgniZn8hCm4jQNX2NhF2xBZcomi5rwxnHUgCieT/ooofa
-	Ch3+wkYTn8LhK2sJZa3Q==;
+	List-Owner; bh=3O5LUi6hY/8Gdx8mw5HiXzgSm48VRpjHI2o/xJzxfPI=; b=uMJYwaH9cHTxUr
+	qN/YzzxMKmSkcpO9xk0OKw9gYjlisXrvDStwDpez8wWUZMYhEE0SvkbUmT8SZWnqbudgHJR9oL6V5
+	B9QuFeUdQZV6IhAgQCIO9V+aFt/w/Ex/EEX8KkeedupqzeUsTe6BCu+ZpN3wZoBckJQ2iRhbo+zPJ
+	wHI36gYiWuomf+ai549HVH05GzQeo1R2UWAPnIpFUa9B+2841cIFAkiP7qpCtUctSeNMAtnXOOEm+
+	Fhk0gbYD3pdhlnqDeoLMpQ7SvOQEDY6CqxVqDe2SNyYpPPRWOjjJrGJFWvN5np94p7bkhCrGwEbfm
+	YQj2V8+6q8Fj4aSA8f6w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hC58B-0005Kf-CO; Thu, 04 Apr 2019 16:22:23 +0000
+	id 1hC5N1-0004DY-Q1; Thu, 04 Apr 2019 16:37:43 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hC57J-00047W-3G; Thu, 04 Apr 2019 16:21:32 +0000
+ id 1hC57J-00047d-Rz; Thu, 04 Apr 2019 16:21:31 +0000
 X-Originating-IP: 90.88.30.125
 Received: from localhost.localdomain
  (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr [90.88.30.125])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id BE7841C0076;
- Thu,  4 Apr 2019 16:21:22 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 198D11C0074;
+ Thu,  4 Apr 2019 16:21:25 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -50,16 +50,16 @@ To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 2/3] mtd: rawnand: sunxi: Add DMA support for sun8i
-Date: Thu,  4 Apr 2019 18:21:10 +0200
-Message-Id: <20190404162111.22618-3-miquel.raynal@bootlin.com>
+Subject: [PATCH 3/3] ARM: dts: sunxi: Improve sun8i NAND transfers by using DMA
+Date: Thu,  4 Apr 2019 18:21:11 +0200
+Message-Id: <20190404162111.22618-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20190404162111.22618-1-miquel.raynal@bootlin.com>
 References: <20190404162111.22618-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190404_092129_604261_58D93EA9 
-X-CRM114-Status: GOOD (  20.44  )
+X-CRM114-CacheID: sfid-20190404_092130_049491_0F7C4882 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -80,153 +80,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allwinner NAND controllers can make use of DMA to enhance the I/O
-throughput thanks to ECC pipelining. DMA handling with sun8i NAND IP
-is a bit different than with the older SoCs, hence the introduction of
-a new compatible to handle:
-* the differences between register offsets,
-* the burst length change from 4 to minimum 8,
-* drive SRAM accesses through the AHB bus instead of the MBUS.
+In the current state, sun8i NAND controllers use PIO during
+transfers. Throughput can be increased thanks to the use of DMA
+(mostly during reads, because of the ECC pipelining feature).
+
+Besides the usual addition of DMA DT properties, because the sun8i
+NAND DMA handling is different than for older SoCs, we must also
+update the compatible which has recently been introduced for this
+purpose.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 75 ++++++++++++++++++++++++++++---
- 1 file changed, 68 insertions(+), 7 deletions(-)
+ arch/arm/boot/dts/sun8i-a23-a33.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 4282bc477761..49cd5067adaa 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -42,7 +42,8 @@
- #define NFC_REG_CMD		0x0024
- #define NFC_REG_RCMD_SET	0x0028
- #define NFC_REG_WCMD_SET	0x002C
--#define NFC_REG_IO_DATA		0x0030
-+#define NFC_REG_A10_IO_DATA	0x0030
-+#define NFC_REG_A33_IO_DATA	0x0300
- #define NFC_REG_ECC_CTL		0x0034
- #define NFC_REG_ECC_ST		0x0038
- #define NFC_REG_DEBUG		0x003C
-@@ -200,6 +201,22 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
- 	return container_of(nand, struct sunxi_nand_chip, nand);
- }
+diff --git a/arch/arm/boot/dts/sun8i-a23-a33.dtsi b/arch/arm/boot/dts/sun8i-a23-a33.dtsi
+index 14a7d0288b45..f928b4bceb22 100644
+--- a/arch/arm/boot/dts/sun8i-a23-a33.dtsi
++++ b/arch/arm/boot/dts/sun8i-a23-a33.dtsi
+@@ -162,11 +162,13 @@
+ 		};
  
-+/*
-+ * NAND Controller capabilities structure: stores NAND controller capabilities
-+ * for distinction between compatible strings.
-+ *
-+ * @sram_through_ahb:	On A33, we choose to access the internal RAM through AHB
-+ *                      instead of MBUS (less configuration). A10+ use the MBUS
-+ *                      but no extra configuration is needed.
-+ * @reg_io_data:	I/O data register
-+ * @dma_maxburst:	DMA maxburst
-+ */
-+struct sunxi_nfc_caps {
-+	bool sram_through_ahb;
-+	unsigned int reg_io_data;
-+	unsigned int dma_maxburst;
-+};
-+
- /**
-  * struct sunxi_nfc - stores sunxi NAND controller information
-  *
-@@ -228,6 +245,7 @@ struct sunxi_nfc {
- 	struct list_head chips;
- 	struct completion complete;
- 	struct dma_chan *dmac;
-+	const struct sunxi_nfc_caps *caps;
- };
- 
- static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_controller *ctrl)
-@@ -350,10 +368,29 @@ static int sunxi_nfc_dma_op_prepare(struct sunxi_nfc *nfc, const void *buf,
- 		goto err_unmap_buf;
- 	}
- 
--	writel(readl(nfc->regs + NFC_REG_CTL) | NFC_RAM_METHOD,
--	       nfc->regs + NFC_REG_CTL);
-+	/*
-+	 * On A33, we suppose the "internal RAM" (p.12 of the user manual)
-+	 * refers to the NAND controller's internal SRAM. This memory is mapped
-+	 * and so is accessible from the AHB. It seems that it can also be
-+	 * accessed by the MBUS. MBUS accesses are mandatory when using the
-+	 * internal DMA instead of the external DMA engine.
-+	 *
-+	 * During DMA I/O operation, either we access this memory from the AHB
-+	 * by clearing the NFC_RAM_METHOD bit, or we set the bit and use the
-+	 * MBUS. In this case, we should also configure the MBUS DMA length
-+	 * NFC_REG_MDMA_CNT(0xC4) to be chunksize * nchunks. NAND I/O over MBUS
-+	 * are also limited to 32kiB pages.
-+	 */
-+	if (nfc->caps->sram_through_ahb)
-+		writel(readl(nfc->regs + NFC_REG_CTL) & ~NFC_RAM_METHOD,
-+		       nfc->regs + NFC_REG_CTL);
-+	else
-+		writel(readl(nfc->regs + NFC_REG_CTL) | NFC_RAM_METHOD,
-+		       nfc->regs + NFC_REG_CTL);
-+
- 	writel(nchunks, nfc->regs + NFC_REG_SECTOR_NUM);
- 	writel(chunksize, nfc->regs + NFC_REG_CNT);
-+
- 	dmat = dmaengine_submit(dmad);
- 
- 	ret = dma_submit_error(dmat);
-@@ -2088,6 +2125,12 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 		goto out_mod_clk_unprepare;
- 	}
- 
-+	nfc->caps = of_device_get_match_data(&pdev->dev);
-+	if (!nfc->caps) {
-+		ret = -EINVAL;
-+		goto out_ahb_reset_reassert;
-+	}
-+
- 	ret = sunxi_nfc_rst(nfc);
- 	if (ret)
- 		goto out_ahb_reset_reassert;
-@@ -2102,12 +2145,12 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 	if (nfc->dmac) {
- 		struct dma_slave_config dmac_cfg = { };
- 
--		dmac_cfg.src_addr = r->start + NFC_REG_IO_DATA;
-+		dmac_cfg.src_addr = r->start + nfc->caps->reg_io_data;
- 		dmac_cfg.dst_addr = dmac_cfg.src_addr;
- 		dmac_cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 		dmac_cfg.dst_addr_width = dmac_cfg.src_addr_width;
--		dmac_cfg.src_maxburst = 4;
--		dmac_cfg.dst_maxburst = 4;
-+		dmac_cfg.src_maxburst = nfc->caps->dma_maxburst;
-+		dmac_cfg.dst_maxburst = nfc->caps->dma_maxburst;
- 		dmaengine_slave_config(nfc->dmac, &dmac_cfg);
- 	} else {
- 		dev_warn(dev, "failed to request rxtx DMA channel\n");
-@@ -2152,8 +2195,26 @@ static int sunxi_nfc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct sunxi_nfc_caps sunxi_nfc_a10_caps = {
-+	.reg_io_data = NFC_REG_A10_IO_DATA,
-+	.dma_maxburst = 4,
-+};
-+
-+static const struct sunxi_nfc_caps sunxi_nfc_a33_caps = {
-+	.sram_through_ahb = true,
-+	.reg_io_data = NFC_REG_A33_IO_DATA,
-+	.dma_maxburst = 8,
-+};
-+
- static const struct of_device_id sunxi_nfc_ids[] = {
--	{ .compatible = "allwinner,sun4i-a10-nand" },
-+	{
-+		.compatible = "allwinner,sun4i-a10-nand",
-+		.data = &sunxi_nfc_a10_caps,
-+	},
-+	{
-+		.compatible = "allwinner,sun8i-a33-nand-controller",
-+		.data = &sunxi_nfc_a33_caps,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sunxi_nfc_ids);
+ 		nfc: nand@1c03000 {
+-			compatible = "allwinner,sun4i-a10-nand";
++			compatible = "allwinner,sun8i-a33-nand-controller";
+ 			reg = <0x01c03000 0x1000>;
+ 			interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&ccu CLK_BUS_NAND>, <&ccu CLK_NAND>;
+ 			clock-names = "ahb", "mod";
++			dmas = <&dma 5>;
++			dma-names = "rxtx";
+ 			resets = <&ccu RST_BUS_NAND>;
+ 			reset-names = "ahb";
+ 			pinctrl-names = "default";
 -- 
 2.19.1
 
