@@ -2,58 +2,54 @@ Return-Path: <SRS0=4b6q=SG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B5EDC4360F
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 21:53:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6284C4360F
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 22:35:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6717820882
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 21:53:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85221206DF
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2019 22:35:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U+boekZo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6717820882
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PniIezR2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85221206DF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vdBNqS8wGLhncbWIzMsXZV1cb/ftF3zjjSQpz8RSaCw=; b=U+boekZoCDO3hG
-	ZWfplPAH9iiTra5I0te0tF+zIIBqvyULvr32uehPSFwH+mGt1EEhWLS3QbH/G5AVEQxusJ/qGHE6K
-	a/EYSznr29MI4WosL69fYC+b5hTbwtjQ2NejZRnAFh8bY3ePr2g7VjBS/3vFib9AKjAxvIaQO8bAG
-	YLemYJM00UOcvTmtuLG0YV8Qt05XmsUFVAW5SHHjEWqR1wYKf0Hw2njN4ZwntdaUBrw/YTlRcmwmL
-	Kyw/EXzdZy8qha7Rm0tZ6gBHufKSTAvQKq6yMukVS+czNrrxsBOA1GvcHZq8Ch7nMdClWHpGn5MtE
-	MMrZkLGoiTJ5Gn9pqrNQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ttzorVRRbcHbmtYpGfDnE/8QgEgS3H/sQRoA/JYqDSU=; b=PniIezR2q8Y+/C
+	ZZPgqkwrvvYNAEdxIYNKhuUMQ0lD9g16Mit3/A2++AAnTE+PEPXkfpbwAJbmepw1wDKklWq07e8Ph
+	HG9hekQqNRONA9NZ7dTWDH5fQE16D1bCUI0KcV6ij1Jwp7uegaZesPzP8Cbo8dP/BXB81h7cCVvYs
+	fMuaWPmFX4OBGTHhS4iwhJQWnIJ2o5AykVLcjVX+hwurrkYTrVxUMrd2X2k7cBDTxWVv4x2EMWD4f
+	6XCm263L5b0NA+C+JP6AFg9eOZizI6m8Ya5cxoFY2alnEQjosjRkqRu8zBBXFaJ6fq2ejacb+pFBb
+	sL0DbLi50/lt+H42eTmA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hCAIQ-0002Bx-Vf; Thu, 04 Apr 2019 21:53:18 +0000
+	id 1hCAwr-0008Id-Ba; Thu, 04 Apr 2019 22:35:05 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCAIN-0002BV-Tl
- for linux-mtd@lists.infradead.org; Thu, 04 Apr 2019 21:53:17 +0000
+ id 1hCAwo-0007mf-9R
+ for linux-mtd@lists.infradead.org; Thu, 04 Apr 2019 22:35:04 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 9F80E18098AA9;
- Thu,  4 Apr 2019 23:53:12 +0200 (CEST)
-From: Richard Weinberger <richard@sigma-star.at>
-To: Lars Persson <lists@bofh.nu>, linux-mtd@lists.infradead.org
-Subject: Re: UBIFS file-system corruption (missing inode) after power-cut on
- 4.14.96
-Date: Thu, 04 Apr 2019 23:53:09 +0200
-Message-ID: <1586391.XHllXIAzYb@blindfold>
-In-Reply-To: <CADnJP=so8PSqJ4NgqSyqSk5UEtO2wzSC_LG0Seo0+Yuf45oefA@mail.gmail.com>
-References: <CADnJP=vQURY9u7Fb=Bt=udf89A6VX_TccBXfk8q2kdkqMnqj4A@mail.gmail.com>
- <CAFLxGvye+F5hB+1DUUhDzjaHB5ajC_M+W3fyt5x840sO68RgUQ@mail.gmail.com>
- <CADnJP=so8PSqJ4NgqSyqSk5UEtO2wzSC_LG0Seo0+Yuf45oefA@mail.gmail.com>
+ by lilium.sigma-star.at (Postfix) with ESMTP id 2802018011B38;
+ Fri,  5 Apr 2019 00:34:58 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/3] UBIFS: xattr deletion rework
+Date: Fri,  5 Apr 2019 00:34:35 +0200
+Message-Id: <20190404223438.29408-1-richard@nod.at>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190404_145316_103801_7D71327B 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20190404_153502_554964_F6213053 
+X-CRM114-Status: GOOD (  11.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -65,60 +61,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Richard Weinberger <richard@nod.at>, stefan@agner.ch
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am Freitag, 29. M=E4rz 2019, 10:43:33 CEST schrieb Lars Persson:
-> On Thu, Mar 28, 2019 at 6:31 PM Richard Weinberger
-> <richard.weinberger@gmail.com> wrote:
-> >
-> > Can you please share me your corrupted fs?
-> > I'm not so sure what is really the root cause.
-> > The thing is, ubifs_delete_orphan() does not need to tigger a commit.
-> > Ff something depends on a commit, we have another problem, I fear.
-> >
-> =
+UBIFS handles xattrs in most cases just like files.
+An inode can have child entries, which are inodes for xattrs.
+If an inode with xattrs is unlinked, only the hosting inode is
+referenced in the journal and the orphan list. Upon recovery
+all xattrs will be looked up from the TNC and also deleted.
 
-> Thanks. The download link for the file-system was shared to your gmail ad=
-dress.
+This works in theory, but not in practice. The problem is that
+in many places UBIFS internally assumes that a directory inode
+can only be deleted if the directory is empty. Since xattr
+hosting inodes are treated like directories but you can unlink
+such an inode before all xattrs are gone, this assumption is violated.
+Therefore it can happen that the garbage collector consumes a LEB
+which hosts the information about xattr inodes because the host inode
+itself got unlinked. Upon recovery UBIFS is no longer able to
+locate these inodes and the free space accounting can get confused.
+This can lead to all kind of filesystem corruptions.
 
-Can you please run your tests again with this patch applied?
-It needs further optimization, but we are on the right track.
+The solution is to log every inode in the journal upon unlink.
+This approach has one downside, we need to lower the amount of allowed
+xattrs per inode.
+With this changes applied UBIFS still supports dozens of xattrs per
+inode.
 
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index 2f1618f300fb..c15e484f73a4 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -691,8 +691,21 @@ static int do_kill_orphans(struct ubifs_info *c, struc=
-t ubifs_scan_leb *sleb,
- 		n =3D (le32_to_cpu(orph->ch.len) - UBIFS_ORPH_NODE_SZ) >> 3;
- 		for (i =3D 0; i < n; i++) {
- 			union ubifs_key key1, key2;
-+			struct ubifs_ino_node *ino;
-+
-+			ino =3D kmalloc(UBIFS_MAX_INO_NODE_SZ, GFP_NOFS);
-+			if (!ino)
-+				return -ENOMEM;
- =
+Hunting down this issue down was anything but easy.
+I'd like to thank Toradex AG for supporing this bug hunt.
+Special thanks to Stefan Agner for his constant support and testing my
+debug patches over and over.
 
- 			inum =3D le64_to_cpu(orph->inos[i]);
-+			ino_key_init(c, &key1, inum);
-+			err =3D ubifs_tnc_lookup(c, &key1, ino);
-+			if (!err && ino->nlink) {
-+				kfree(ino);
-+				continue;
-+			}
-+			kfree(ino);
-+
- 			dbg_rcvry("deleting orphaned inode %lu",
- 				  (unsigned long)inum);
- =
+Richard Weinberger (3):
+  ubifs: journal: Handle xattrs like files
+  ubifs: orphan: Handle xattrs like files
+  ubifs: Limit number of xattrs per inode
 
-Thanks,
-//richard
+ fs/ubifs/dir.c     |  15 +++-
+ fs/ubifs/journal.c |  72 ++++++++++++++++---
+ fs/ubifs/misc.h    |   8 +++
+ fs/ubifs/orphan.c  | 208 ++++++++++++++++++++++++++++++++++++-----------------
+ fs/ubifs/super.c   |   2 +
+ fs/ubifs/ubifs.h   |   4 ++
+ fs/ubifs/xattr.c   |  71 ++++++++++++++++--
+ 7 files changed, 294 insertions(+), 86 deletions(-)
 
+-- 
+2.16.4
 
 
 ______________________________________________________
