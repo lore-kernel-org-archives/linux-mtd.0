@@ -2,85 +2,80 @@ Return-Path: <SRS0=PylK=SH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41855C4360F
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 10:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 492AAC4360F
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 10:23:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11F4E217D4
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 10:10:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BEFC217D7
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 10:23:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SkDVzKQZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UpGfOPLZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11F4E217D4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JsP0uC0D";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ngzjZTV4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BEFC217D7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
+	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GpIFfGiKHIS3Oa9NgqGoJdHJYWWGyuSpxeGWv0o6Q9E=; b=SkDVzKQZK2RHqm
-	3luEHofEzz1lZavVpRfBH0Vjdo2nQtq1QjI8JsK4Ao8Qt3d3YSxkECDymwF9RQjBKeNGE8lnc4t+m
-	WXro+vSDjwCqe2I44CwFDn2Gy+Ixn8o4nKj+sS6nYrF4bNrPb8/AGq5XTEHHjqmZG9muJF2Dv17mc
-	wMFyMAmnkMH4HJi+wzWNe+MKvrDW14gp2PtMS6t2owmGmxWF+5AXc5oyKEFNzStpr/ewE6WRjH7zM
-	+ViKq8fG3BtY5Pwx4WeUM4yIZbF40o17q+ykFDHGiPFcO/979lJGqq6GFng5LYxpoEIjbYNNSy+Ds
-	dE9Tgk5LdlV6j4O01IDg==;
+	List-Owner; bh=Y6JcZSbH3RcgcGn30DVU8wvMrHpVP2W0gUS8iRM/k/M=; b=JsP0uC0DxPsRvw
+	cW1Xms4ZISkgVt6DAt3vetqRL29LWYIs8yyN7aPCWgY28VmxmVAkN3msy50+tYd+aWrLE41mTdpwa
+	sVeqe0dIFDuW3hICD0BJCy0taWLdmwTiSbYePK20SiT+6HECJU+u5XO/PwTIVTHm2XBNxBcj4AOsk
+	p0n8nbOdGfJlIpSLVMBABE3KaUQ2z/ZWFMy18VANU6NLqzowSqtzdhUaqhzQLNgqlIXgGJk+0e20O
+	MagrwTwswkCPWSkFV7Cghlttu7he7ScEEyrtSp3mkCor91zb8Q0KU9QrW2VM07ewqBpzPhfIauca7
+	3SbUdEQH5Oet1E4ZQfxA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hCLo8-0004VT-Qp; Fri, 05 Apr 2019 10:10:48 +0000
+	id 1hCM0I-0000s4-BY; Fri, 05 Apr 2019 10:23:22 +0000
 Received: from casper.infradead.org ([85.118.1.10])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCLny-0004FQ-HJ
- for linux-mtd@bombadil.infradead.org; Fri, 05 Apr 2019 10:10:38 +0000
+ id 1hCM0G-0000rw-MS
+ for linux-mtd@bombadil.infradead.org; Fri, 05 Apr 2019 10:23:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Mime-Version:
+ Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
  Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
  List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=MOeKsH7L58cJqmbQuXbbK880bfUHGM5XiaPHP1MLXyo=; b=UpGfOPLZEJ3eOqp1KmTtGdY+aV
- mx9mrvEVxxQgk+LTJctjEmtzNrkqsrrj5h6uV9OSJSpsTzTyq5m2nrCaqK80rgvEgm9z2GkFWaHE4
- uruAAjgZXaOVhR/tWxmbH50/v+yEMErNOOvcVYiOHlfb12a7couLfmVcnU31ME7MXZR8XvIaweO+i
- ORjg0rE7Kb2JUaYeSogmtz5o7tbIeO6cBKmizrStggzdg5Tq8kaL4sn8wKGDwY7quQlC8Meb7yQKX
- Merm/LCzv+yniNwqrTgapAD34DJWQWlpThXonwhcNIBxgMbiUnlL7ocpWJQXAwhFrXd9z4T9PO8eu
- 8M7L2Q+w==;
+ bh=idegsciNuwyIubnKxCclGw1G/yFXF0xE7RFgDTMecVw=; b=ngzjZTV4nQ3N/gbgrTxZHDWJ90
+ ZEPD4AJKeOfNdMMxxvYoyE/4iBfinq1lpvde77wV+3pEZAbBpfRjwU4Mq5y48Zc0QxZZcpOLeTpdQ
+ a23cuduLUWHpv8flLBwF+VxfoG9S2FkqQnqvlHXKu5/EKp9sCByvcaO7d4c4F5FMLtD2GQslaIu+U
+ NRMv1qSyvSfYuHjPToJKE2dWnaL7c3r/OXnUD2Q55r8INHQwuHdS35nGbvwDvQlL8s3HL+0KNB9An
+ FSEx09BemvOmNn8e9RKTNuJniMqzpW+OMZP8tAccOnaykIGPXEPYydJr8ltnq75jgSWsjdVYzXzE/
+ DKtB0OGQ==;
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCLly-0007xF-PN
- for linux-mtd@lists.infradead.org; Fri, 05 Apr 2019 10:10:37 +0000
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1hCLlB-0000RM-TS; Fri, 05 Apr 2019 12:07:45 +0200
-Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92-RC6)
- (envelope-from <sha@pengutronix.de>)
- id 1hCLlA-0008Iv-IU; Fri, 05 Apr 2019 12:07:44 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/10] mtd: rawnand: gpmi: remove unused variable
-Date: Fri,  5 Apr 2019 12:07:34 +0200
-Message-Id: <20190405100740.5074-5-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190405100740.5074-1-s.hauer@pengutronix.de>
+ id 1hCM0D-0008Jm-6t
+ for linux-mtd@lists.infradead.org; Fri, 05 Apr 2019 10:23:19 +0000
+Received: from kresse.hi.pengutronix.de ([2001:67c:670:100:1d::2a])
+ by metis.ext.pengutronix.de with esmtp (Exim 4.89)
+ (envelope-from <l.stach@pengutronix.de>)
+ id 1hCM0B-0002Xj-VF; Fri, 05 Apr 2019 12:23:15 +0200
+Message-ID: <1554459795.2748.12.camel@pengutronix.de>
+Subject: Re: [PATCH 09/10] mtd: rawnand: gpmi: use runtime PM to manage clocks
+From: Lucas Stach <l.stach@pengutronix.de>
+To: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Date: Fri, 05 Apr 2019 12:23:15 +0200
+In-Reply-To: <20190405100740.5074-10-s.hauer@pengutronix.de>
 References: <20190405100740.5074-1-s.hauer@pengutronix.de>
-MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: sha@pengutronix.de
+ <20190405100740.5074-10-s.hauer@pengutronix.de>
+X-Mailer: Evolution 3.22.6-1+deb9u1 
+Mime-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::2a
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190405_111034_943334_D533797B 
-X-CRM114-Status: UNSURE (   9.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190405_112317_602579_1103A7AB 
+X-CRM114-Status: GOOD (  11.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,36 +89,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Sam Lefebvre <sam.lefebvre@essensium.com>,
  Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
- Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Han Xu <han.xu@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index e6b588c77f2f..5cd54c3a65dc 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -154,9 +154,6 @@ struct gpmi_nand_data {
- #define DMA_CHANS		8
- 	struct dma_chan		*dma_chans[DMA_CHANS];
- 	struct completion	dma_done;
--
--	/* private */
--	void			*private;
- };
- 
- /* BCH : Status Block Completion Codes */
--- 
-2.20.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gRnJlaXRhZywgZGVuIDA1LjA0LjIwMTksIDEyOjA3ICswMjAwIHNjaHJpZWIgU2FzY2hhIEhh
+dWVyOgo+IFRoZSBncG1pIGRyaXZlciBhZ2dyZXNzaXZlbHkgZW4vZGlzYWJsZXMgdGhlIGNsb2Nr
+cyBiZXR3ZWVuIG9wZXJhdGlvbnMKPiB3aGljaCBoYXMgc2lnbmlmaWNhbnQgcGVyZm9ybWFuY2Ug
+Y29zdC4gVXNlIHJ1bnRpbWUgUE0gdG8gZ2V0IHJpZCBvZgo+IHRoaXMgYm90dGxlbmVjay4KPiAK
+PiBTaWduZWQtb2ZmLWJ5OiBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+Cj4g
+LS0tClsuLi5dCj4gK3N0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgZ3BtaV9ydW50aW1lX3N1c3Bl
+bmQoc3RydWN0IGRldmljZSAqZGV2KQo+ICt7Cj4gKwlzdHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRo
+aXMgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKPiArCj4gKwlwcmludGsoIiVzXG4iLCBfX2Z1bmNf
+Xyk7Cj4gKwo+ICsJcmV0dXJuIF9fZ3BtaV9lbmFibGVfY2xrKHRoaXMsIGZhbHNlKTsKPiArfQo+
+ICsKPiArc3RhdGljIGludCBfX21heWJlX3VudXNlZCBncG1pX3J1bnRpbWVfcmVzdW1lKHN0cnVj
+dCBkZXZpY2UgKmRldikKPiArewo+ICsJc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzID0gZGV2
+X2dldF9kcnZkYXRhKGRldik7Cj4gKwo+ICsJcHJpbnRrKCIlc1xuIiwgX19mdW5jX18pOwoKTGVm
+dG92ZXIgZGVidWdnaW5nIGluIGJvdGggZnVuY3Rpb25zLgoKUmVnYXJkcywKTHVjYXMKCj4gKwo+
+ICsJcmV0dXJuIF9fZ3BtaV9lbmFibGVfY2xrKHRoaXMsIHRydWUpOwo+ICt9Cj4gKwo+IMKgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBkZXZfcG1fb3BzIGdwbWlfcG1fb3BzID0gewo+IMKgCVNFVF9TWVNU
+RU1fU0xFRVBfUE1fT1BTKGdwbWlfcG1fc3VzcGVuZCwgZ3BtaV9wbV9yZXN1bWUpCj4gKwlTRVRf
+UlVOVElNRV9QTV9PUFMoZ3BtaV9ydW50aW1lX3N1c3BlbmQsIGdwbWlfcnVudGltZV9yZXN1bWUs
+IE5VTEwpCj4gwqB9Owo+IMKgCj4gwqBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBncG1p
+X25hbmRfZHJpdmVyID0gewoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
