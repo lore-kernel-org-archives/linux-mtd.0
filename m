@@ -2,88 +2,84 @@ Return-Path: <SRS0=PylK=SH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 176A9C4360F
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 04:31:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA081C4360F
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 04:43:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D92A921850
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 04:31:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 714D42184B
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 04:43:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gIQqN6nK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="rcG/Bw3V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D92A921850
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u4I3xfE2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ec2V3hEN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 714D42184B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bSEeRwYSuQL6iO72Pnk/QokFwqcYNuhTT/M1iyws6kc=; b=gIQqN6nKEYD18E
-	Ew2e3U5mRPek3VmekzHNZc3ozuHcUOUwhH0eiNhTJLsEkSI+zoIjnBViYliSci0fRaobAO26qGwD2
-	Lbtw2Y09VuXTb5Ul3Ct5a7bVidL39WF9eLu2tYGd5qZOR2J44BzTTLGRcxRS+W4h/HF00e+hFMVUM
-	M0BqNNchRVUh+40qhf+XuVlMAuLxs63dK86T3wdvXhU+M1ensfQ6cKymG9DdN3Jh59f1pcRNjTKB8
-	2ou3jkyGZ0aip4hdN0JUGhIGHeem0fFM6O5r4tcwVc8m7qPQLUIbdY/YKU9/NF0/Sp/1vghDsrF/p
-	CYEriHl2f2vFjUz8zhBQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6GbkxXGKqKTIBingQU6e4/K6mq9CZ4PuGLQxfrLzojI=; b=u4I3xfE2Vddkmg
+	vXDYB4er9Up4ej/cr8g0i/0jiQJcaw/W+BgScHWgxOxryto1yC1XZ6/SPOgM6LW4akXl3E1QpI0M0
+	2lptxyPmpyAQDBy4uNfFA7g5YfEJqLGcicZZCSMbEDUeEHoo4SmGs6q0q9xcdF/VB623rxOBo9WCf
+	mISq0k/j4wMuJtWXaBd8iQtfFbGUusy2jknCldVP4lKPfxvcVl+efj1rrgg6GRLyKQ7bDs/BDgzZX
+	Qa91WCGIeSgMkaSRE2qbc1TOG6hU1/Qw1NnOi3mMmkxhAOrVGcONK2IAGsAHfJ6sVdr0+JCCIeGyx
+	LAZ/1S/uiCKe118YhrWg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hCGVP-0002Bw-Uh; Fri, 05 Apr 2019 04:31:07 +0000
-Received: from mail-ot1-x342.google.com ([2607:f8b0:4864:20::342])
+	id 1hCGgu-0005pC-4t; Fri, 05 Apr 2019 04:43:00 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCGVM-0002Ao-Rp; Fri, 05 Apr 2019 04:31:06 +0000
-Received: by mail-ot1-x342.google.com with SMTP id t8so4463702otp.7;
- Thu, 04 Apr 2019 21:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=+7lBtA8vKkwjwj7PTowhExzIEuTQG9ZRxuYeTf2eq3c=;
- b=rcG/Bw3Vg4FKUUKeWMIhWWl+Dot5HReKA20TPVY5QGg0EZEWRVdHuNhLlde7bDr2LC
- 4BLBBvJSbBRGJmPDGv/B6B0rJypBhrdF5rRlIxvZXGI6AyaQV/QvN2X9FZAL4uqIxvFF
- miIIBZxbDgDNVzJ/lGJ/EBoek9bgSj4A1HSOtmQfmLnXEmanh30ShC/bY2ZcyriSLwpm
- HJ17qsUzqkpKAVjuE32VzvhlvR+54/yQxLNHib6tk3DOBIMIqtcnyY2m1gL/JdQOi1/R
- QxeG6Bf9FzsGG4r4TRGLWd5iqlCDZx90ws5uYaxpFB3/w+torG7AzrLAig+aSkflXOjg
- WPOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=+7lBtA8vKkwjwj7PTowhExzIEuTQG9ZRxuYeTf2eq3c=;
- b=ePChc4Va+r+5P6SHhHmBq/ZoCpxnznAXIsgZyuvcBVlWzMJ8dzUGcxKL/bn5RnHBh9
- XL59pdEagacxiaG3sC7E/wxnFzsu0nJJevZYhAvx/gV3U2dZroxU2ZVz3ONbw8q6gC+e
- rFz01pdmZ5AWzyJX4xHmsre52eSJydm1uKZoakLVciUS7DEQzmDT0rp69g+vGsOuhKG3
- blx//g30dD/rmJTFdn8/RpH34LvNiPCVjoffiWxRnAD+xVvSexHtyr17ksb/ntgtpNHh
- 54/5VUrtYc4prpdisuBum7GGi5dd7W8vQXk+/IXLUsg6stPXCJhqc/XhYKAImAWZJMkS
- YWpA==
-X-Gm-Message-State: APjAAAUBLXSmVVDyww23Y2Awg0AI5ltH/As/ZM025WdHPZ+BKSfzGkLw
- oJf09WqOH18Pt93kcZbavGCkwzmJtI9xGnK/AS0=
-X-Google-Smtp-Source: APXvYqwxFoWU7xp487Ebvt3wzo5VYHnSYc2CvTe5RZAI/ctb22VitfNeaCIFtIGcIC9xMiHlKjZ8oQ+fxNcB9ZMAh5k=
-X-Received: by 2002:a9d:7856:: with SMTP id c22mr6972611otm.261.1554438662631; 
- Thu, 04 Apr 2019 21:31:02 -0700 (PDT)
+ id 1hCGgr-0005or-4w
+ for linux-mtd@lists.infradead.org; Fri, 05 Apr 2019 04:42:58 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x354gjqY054834;
+ Thu, 4 Apr 2019 23:42:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1554439365;
+ bh=FrOEIZruaUA+WUuGykmOzZJvsIbd8p65+rQQUO2qvLI=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=ec2V3hEN/pG98J/7yvYs0cN7xTeNu3hTzryAaysVhXypsYCwrEX4mpULLoMvRvKM2
+ qviRzENcyqZUyfQHg/a+HxCjMXDU+tae0tjEwOh4cG0r8rCuyygjMcrC0ZkJZMlHj+
+ oRvRI/pWRfFkpk1mQp/s+BJy6RuYhXWx9r+FVxxQ=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x354gjmj034331
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 4 Apr 2019 23:42:45 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Thu, 4 Apr
+ 2019 23:42:44 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Thu, 4 Apr 2019 23:42:44 -0500
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x354gewt052962;
+ Thu, 4 Apr 2019 23:42:41 -0500
+Subject: Re: [LINUX PATCH v2 3/3] spi: spi-mem: Add support for Zynq QSPI
+ controller
+To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+ <broonie@kernel.org>, <bbrezillon@kernel.org>
+References: <1554105553-20207-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <c8f73eab-99eb-ddbc-9776-ea6b3a3ecf0f@ti.com>
+Date: Fri, 5 Apr 2019 10:13:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
- <20190321214401.GC19508@bombadil.infradead.org>
- <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
- <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
- <CAFBinCA=0XSSVmzfTgb4eSiVFr=XRHqLOVFGyK0++XRty6VjnQ@mail.gmail.com>
- <32799846-b8f0-758f-32eb-a9ce435e0b79@amlogic.com>
- <CAFBinCDHmuNZxuDf3pe2ij6m8aX2fho7L+B9ZMaMOo28tPZ62Q@mail.gmail.com>
- <79b81748-8508-414f-c08a-c99cb4ae4b2a@amlogic.com>
-In-Reply-To: <79b81748-8508-414f-c08a-c99cb4ae4b2a@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Fri, 5 Apr 2019 06:30:51 +0200
-Message-ID: <CAFBinCCSkVGp_iWKf=o=7UGuDUWxyLPGdrqGy_P-HPuEJiU1zQ@mail.gmail.com>
-Subject: Re: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
-To: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <1554105553-20207-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190404_213104_927007_5DCDF476 
-X-CRM114-Status: GOOD (  12.82  )
+X-CRM114-CacheID: sfid-20190404_214257_294840_F255BFAB 
+X-CRM114-Status: GOOD (  15.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -95,42 +91,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mhocko@suse.com, linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
- Matthew Wilcox <willy@infradead.org>, rppt@linux.ibm.com, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org,
- akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org
+Cc: richard@nod.at, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org, nagasuresh12@gmail.com,
+ dwmw2@infradead.org, michal.simek@xilinx.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Liang,
-
-On Fri, Mar 29, 2019 at 8:44 AM Liang Yang <liang.yang@amlogic.com> wrote:
->
-> Hi Martin,
->
-> On 2019/3/29 2:03, Martin Blumenstingl wrote:
-> > Hi Liang,
-> [......]
-> >> I don't think it is caused by a different NAND type, but i have followed
-> >> the some test on my GXL platform. we can see the result from the
-> >> attachment. By the way, i don't find any information about this on meson
-> >> NFC datasheet, so i will ask our VLSI.
-> >> Martin, May you reproduce it with the new patch on meson8b platform ? I
-> >> need a more clear and easier compared log like gxl.txt. Thanks.
-> > your gxl.txt is great, finally I can also compare my own results with
-> > something that works for you!
-> > in my results (see attachment) the "DATA_IN  [256 B, force 8-bit]"
-> > instructions result in a different info buffer output.
-> > does this make any sense to you?
-> >
-> I have asked our VLSI designer for explanation or simulation result by
-> an e-mail. Thanks.
-do you have any update on this?
 
 
-Martin
+On 01/04/19 1:29 PM, Naga Sureshkumar Relli wrote:
+> +/**
+> + * zynq_qspi_config_op - Configure QSPI controller for specified transfer
+> + * @xqspi:	Pointer to the zynq_qspi structure
+> + * @qspi:	Pointer to the spi_device structure
+> + *
+> + * Sets the operational mode of QSPI controller for the next QSPI transfer and
+> + * sets the requested clock frequency.
+> + *
+> + * Return:	0 on success and -EINVAL on invalid input parameter
+> + *
+> + * Note: If the requested frequency is not an exact match with what can be
+> + * obtained using the prescalar value, the driver sets the clock frequency which
+> + * is lower than the requested frequency (maximum lower) for the transfer. If
+> + * the requested frequency is higher or lower than that is supported by the QSPI
+> + * controller the driver will set the highest or lowest frequency supported by
+> + * controller.
+> + */
+> +static int zynq_qspi_config_op(struct zynq_qspi *xqspi, struct spi_device *spi)
+> +{
+> +	u32 config_reg, baud_rate_val = 0;
+> +
+> +	/*
+> +	 * Set the clock frequency
+> +	 * The baud rate divisor is not a direct mapping to the value written
+> +	 * into the configuration register (config_reg[5:3])
+> +	 * i.e. 000 - divide by 2
+> +	 *      001 - divide by 4
+> +	 *      ----------------
+> +	 *      111 - divide by 256
+> +	 */
+> +	while ((baud_rate_val < ZYNQ_QSPI_BAUD_DIV_MAX)  &&
+> +	       (clk_get_rate(xqspi->refclk) / (2 << baud_rate_val)) >
+> +		spi->max_speed_hz)
+> +		baud_rate_val++;
+> +
+
+Instead use DIV_ROUND_UP, something like below should work(untested):
+
+	unsigned long refclk_rate = clk_get_rate(xqspi->refclk);
+	u32 baud_rate_val = DIV_ROUND_UP(refclk_rate, spi->max_speed_hz) - 1;
+
+	if (baud_rate_val > ZYNQ_QSPI_BAUD_DIV_MAX)
+		baud_rate_val = ZYNQ_QSPI_BAUD_DIV_MAX;
+
+> +	config_reg = zynq_qspi_read(xqspi, ZYNQ_QSPI_CONFIG_OFFSET);
+> +
+> +	/* Set the QSPI clock phase and clock polarity */
+> +	config_reg &= (~ZYNQ_QSPI_CONFIG_CPHA_MASK) &
+> +		      (~ZYNQ_QSPI_CONFIG_CPOL_MASK);
+> +	if (spi->mode & SPI_CPHA)
+> +		config_reg |= ZYNQ_QSPI_CONFIG_CPHA_MASK;
+> +	if (spi->mode & SPI_CPOL)
+> +		config_reg |= ZYNQ_QSPI_CONFIG_CPOL_MASK;
+> +
+> +	config_reg &= ~ZYNQ_QSPI_CONFIG_BDRATE_MASK;
+> +	config_reg |= (baud_rate_val << ZYNQ_QSPI_BAUD_DIV_SHIFT);
+> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_CONFIG_OFFSET, config_reg);
+> +
+> +	return 0;
+> +}
+> +
+
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
