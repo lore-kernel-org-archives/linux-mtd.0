@@ -4,82 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA081C4360F
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 04:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F10F5C4360F
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 05:25:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 714D42184B
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 04:43:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE9532184B
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2019 05:25:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u4I3xfE2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ec2V3hEN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 714D42184B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MSsMoWH2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="qMHYHAq1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE9532184B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6GbkxXGKqKTIBingQU6e4/K6mq9CZ4PuGLQxfrLzojI=; b=u4I3xfE2Vddkmg
-	vXDYB4er9Up4ej/cr8g0i/0jiQJcaw/W+BgScHWgxOxryto1yC1XZ6/SPOgM6LW4akXl3E1QpI0M0
-	2lptxyPmpyAQDBy4uNfFA7g5YfEJqLGcicZZCSMbEDUeEHoo4SmGs6q0q9xcdF/VB623rxOBo9WCf
-	mISq0k/j4wMuJtWXaBd8iQtfFbGUusy2jknCldVP4lKPfxvcVl+efj1rrgg6GRLyKQ7bDs/BDgzZX
-	Qa91WCGIeSgMkaSRE2qbc1TOG6hU1/Qw1NnOi3mMmkxhAOrVGcONK2IAGsAHfJ6sVdr0+JCCIeGyx
-	LAZ/1S/uiCKe118YhrWg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=phvZfG2x1Oh7cXOe0VIv5peGITxj7jWv3uK3+Mm+e8E=; b=MSsMoWH2xJIAnh
+	yw4w80kjxxM0672c3FR+x0BnOUM862vraKmj0z0JGvCChLB9osvDh4QZrvrlQg3Y+iY+wyOamf/jC
+	NktAGUxaK0ZQRNczloY9vZhQAMT7yajNvhxna+1VvT8dv5uuHFlNuSjEbxGJj6Dakf910sBc0Moxb
+	JnMZ3DNoGffQMEhgtPkb3XehPhYON40n0FgSc18XikT0bWe0uRsQ6YO7V3GjfKsslcbJi6qtiWUZc
+	qHgpUO3CNlAKngohravgKesAcVgZvGNFOtVBJycyrWs/PLEYb5fdHrMepdGwOG9H+MPBWEvbtRnBZ
+	zv+BKIGCix9QlpS6stag==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hCGgu-0005pC-4t; Fri, 05 Apr 2019 04:43:00 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1hCHMO-0002HV-Ev; Fri, 05 Apr 2019 05:25:52 +0000
+Received: from mail-eopbgr800044.outbound.protection.outlook.com
+ ([40.107.80.44] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hCGgr-0005or-4w
- for linux-mtd@lists.infradead.org; Fri, 05 Apr 2019 04:42:58 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x354gjqY054834;
- Thu, 4 Apr 2019 23:42:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1554439365;
- bh=FrOEIZruaUA+WUuGykmOzZJvsIbd8p65+rQQUO2qvLI=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=ec2V3hEN/pG98J/7yvYs0cN7xTeNu3hTzryAaysVhXypsYCwrEX4mpULLoMvRvKM2
- qviRzENcyqZUyfQHg/a+HxCjMXDU+tae0tjEwOh4cG0r8rCuyygjMcrC0ZkJZMlHj+
- oRvRI/pWRfFkpk1mQp/s+BJy6RuYhXWx9r+FVxxQ=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x354gjmj034331
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 4 Apr 2019 23:42:45 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Thu, 4 Apr
- 2019 23:42:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Thu, 4 Apr 2019 23:42:44 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x354gewt052962;
- Thu, 4 Apr 2019 23:42:41 -0500
-Subject: Re: [LINUX PATCH v2 3/3] spi: spi-mem: Add support for Zynq QSPI
+ id 1hCHMK-0002H2-Aa
+ for linux-mtd@lists.infradead.org; Fri, 05 Apr 2019 05:25:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AiEkkyIJJ6qHw0yRPjHxD3lG3xO92t52LVW1jVvl3pw=;
+ b=qMHYHAq1fNHcS5ez3Q1aLzis8D+E4Bdvrl2EAHTWSIB2IwbN+/lBBmNzGO2noPJrA9FpdwMvdcuctcA9iQblAKhgssUstCSryykyhSxIsQwWmBcV5U1vlr23dBOaQQzRbK0ZD5CmG168HbciSleIpCkDCYisHpx5t/MYUDH3gIo=
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com (10.168.206.9) by
+ MWHPR02MB3166.namprd02.prod.outlook.com (10.164.204.39) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1771.13; Fri, 5 Apr 2019 05:25:41 +0000
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::905a:a5f3:8d41:431e]) by MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::905a:a5f3:8d41:431e%6]) with mapi id 15.20.1771.016; Fri, 5 Apr 2019
+ 05:25:41 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "bbrezillon@kernel.org" <bbrezillon@kernel.org>
+Subject: RE: [LINUX PATCH v2 3/3] spi: spi-mem: Add support for Zynq QSPI
  controller
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
- <broonie@kernel.org>, <bbrezillon@kernel.org>
+Thread-Topic: [LINUX PATCH v2 3/3] spi: spi-mem: Add support for Zynq QSPI
+ controller
+Thread-Index: AQHU6GDoVyYcIUsosU+lZrvEQXMozqYtA4SAgAAIwOA=
+Date: Fri, 5 Apr 2019 05:25:40 +0000
+Message-ID: <MWHPR02MB2623EDDF4207C7CA8F97B5D4AF510@MWHPR02MB2623.namprd02.prod.outlook.com>
 References: <1554105553-20207-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <c8f73eab-99eb-ddbc-9776-ea6b3a3ecf0f@ti.com>
-Date: Fri, 5 Apr 2019 10:13:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <1554105553-20207-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <c8f73eab-99eb-ddbc-9776-ea6b3a3ecf0f@ti.com>
+In-Reply-To: <c8f73eab-99eb-ddbc-9776-ea6b3a3ecf0f@ti.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=nagasure@xilinx.com; 
+x-originating-ip: [149.199.50.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7a04a48e-c126-4b2b-5e92-08d6b98724e8
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600139)(711020)(4605104)(4618075)(2017052603328)(7193020);
+ SRVR:MWHPR02MB3166; 
+x-ms-traffictypediagnostic: MWHPR02MB3166:
+x-microsoft-antispam-prvs: <MWHPR02MB316688F574C6F27E51784C34AF510@MWHPR02MB3166.namprd02.prod.outlook.com>
+x-forefront-prvs: 0998671D02
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(376002)(39860400002)(396003)(346002)(366004)(136003)(13464003)(199004)(189003)(51914003)(2906002)(8676002)(71190400001)(53936002)(7416002)(99286004)(256004)(66066001)(68736007)(486006)(476003)(4326008)(33656002)(478600001)(74316002)(71200400001)(14454004)(55016002)(446003)(9686003)(11346002)(305945005)(7736002)(6246003)(54906003)(6116002)(2501003)(3846002)(25786009)(229853002)(52536014)(81156014)(5660300002)(76176011)(53546011)(110136005)(97736004)(7696005)(102836004)(26005)(6506007)(86362001)(105586002)(186003)(316002)(8936002)(106356001)(6436002)(81166006)(2201001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MWHPR02MB3166;
+ H:MWHPR02MB2623.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: xilinx.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: YT1+jB/8+ae9M5FPkQ2TX4eiFbgWmcQ0pX6GtFCcBZVuNlOmoMovAlZiKD2JV4uoB7V51qc/brdOjkH1omcxug5rkpNmqfxdt43PbEfE5xMtR2E3pSzf9uP/R/CDyAg7MKrTabZn+onja6ac8lPIzMn1Dnhf3parMgNNb/3xnCgVRX671b7YNr8Pv7XI9hYVJDKYhaEl7psESq6XS9ZSY/4Y6g6+2lIoG1ZvCmT6PYJxTzp7JgSqXU5eQAs0ywG2WnKuDOOLgGKS9HrgO1keltAr13h2fQzjaNWAcJDbSJBcFFV+E9EasA2jgoMGx6unUJbctDot2Gt+DN+cVJB5oh8EYd8hcRtZ4vfFDE0sQ6g3YXjlnvbC8Wh6T2H0ve2PeWZGjlGmCDOWsvWX4bkniaJUjtzJJVH+FKW6RRVszrQ=
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a04a48e-c126-4b2b-5e92-08d6b98724e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2019 05:25:40.9334 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB3166
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190404_214257_294840_F255BFAB 
-X-CRM114-Status: GOOD (  15.91  )
+X-CRM114-CacheID: sfid-20190404_222548_417618_738F8C4A 
+X-CRM114-Status: GOOD (  17.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,83 +113,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org, nagasuresh12@gmail.com,
- dwmw2@infradead.org, michal.simek@xilinx.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
+ Michal Simek <michals@xilinx.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 01/04/19 1:29 PM, Naga Sureshkumar Relli wrote:
-> +/**
-> + * zynq_qspi_config_op - Configure QSPI controller for specified transfer
-> + * @xqspi:	Pointer to the zynq_qspi structure
-> + * @qspi:	Pointer to the spi_device structure
-> + *
-> + * Sets the operational mode of QSPI controller for the next QSPI transfer and
-> + * sets the requested clock frequency.
-> + *
-> + * Return:	0 on success and -EINVAL on invalid input parameter
-> + *
-> + * Note: If the requested frequency is not an exact match with what can be
-> + * obtained using the prescalar value, the driver sets the clock frequency which
-> + * is lower than the requested frequency (maximum lower) for the transfer. If
-> + * the requested frequency is higher or lower than that is supported by the QSPI
-> + * controller the driver will set the highest or lowest frequency supported by
-> + * controller.
-> + */
-> +static int zynq_qspi_config_op(struct zynq_qspi *xqspi, struct spi_device *spi)
-> +{
-> +	u32 config_reg, baud_rate_val = 0;
-> +
-> +	/*
-> +	 * Set the clock frequency
-> +	 * The baud rate divisor is not a direct mapping to the value written
-> +	 * into the configuration register (config_reg[5:3])
-> +	 * i.e. 000 - divide by 2
-> +	 *      001 - divide by 4
-> +	 *      ----------------
-> +	 *      111 - divide by 256
-> +	 */
-> +	while ((baud_rate_val < ZYNQ_QSPI_BAUD_DIV_MAX)  &&
-> +	       (clk_get_rate(xqspi->refclk) / (2 << baud_rate_val)) >
-> +		spi->max_speed_hz)
-> +		baud_rate_val++;
-> +
-
-Instead use DIV_ROUND_UP, something like below should work(untested):
-
-	unsigned long refclk_rate = clk_get_rate(xqspi->refclk);
-	u32 baud_rate_val = DIV_ROUND_UP(refclk_rate, spi->max_speed_hz) - 1;
-
-	if (baud_rate_val > ZYNQ_QSPI_BAUD_DIV_MAX)
-		baud_rate_val = ZYNQ_QSPI_BAUD_DIV_MAX;
-
-> +	config_reg = zynq_qspi_read(xqspi, ZYNQ_QSPI_CONFIG_OFFSET);
-> +
-> +	/* Set the QSPI clock phase and clock polarity */
-> +	config_reg &= (~ZYNQ_QSPI_CONFIG_CPHA_MASK) &
-> +		      (~ZYNQ_QSPI_CONFIG_CPOL_MASK);
-> +	if (spi->mode & SPI_CPHA)
-> +		config_reg |= ZYNQ_QSPI_CONFIG_CPHA_MASK;
-> +	if (spi->mode & SPI_CPOL)
-> +		config_reg |= ZYNQ_QSPI_CONFIG_CPOL_MASK;
-> +
-> +	config_reg &= ~ZYNQ_QSPI_CONFIG_BDRATE_MASK;
-> +	config_reg |= (baud_rate_val << ZYNQ_QSPI_BAUD_DIV_SHIFT);
-> +	zynq_qspi_write(xqspi, ZYNQ_QSPI_CONFIG_OFFSET, config_reg);
-> +
-> +	return 0;
-> +}
-> +
-
--- 
-Regards
-Vignesh
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVmlnbmVzaCwNCg0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQo+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tDQo+IEZyb206IFZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNv
+bT4NCj4gU2VudDogRnJpZGF5LCBBcHJpbCA1LCAyMDE5IDEwOjE0IEFNDQo+IFRvOiBOYWdhIFN1
+cmVzaGt1bWFyIFJlbGxpIDxuYWdhc3VyZUB4aWxpbnguY29tPjsgYnJvb25pZUBrZXJuZWwub3Jn
+Ow0KPiBiYnJlemlsbG9uQGtlcm5lbC5vcmcNCj4gQ2M6IGxpbnV4LXNwaUB2Z2VyLmtlcm5lbC5v
+cmc7IGR3bXcyQGluZnJhZGVhZC5vcmc7IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsNCj4gcmljaGFy
+ZEBub2QuYXQ7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOyBNaWNoYWwgU2ltZWsNCj4gPG1pY2hhbHNAeGlsaW54LmNvbT47IG5hZ2Fz
+dXJlc2gxMkBnbWFpbC5jb20NCj4gU3ViamVjdDogUmU6IFtMSU5VWCBQQVRDSCB2MiAzLzNdIHNw
+aTogc3BpLW1lbTogQWRkIHN1cHBvcnQgZm9yIFp5bnEgUVNQSSBjb250cm9sbGVyDQo+IA0KPiAN
+Cj4gDQo+IE9uIDAxLzA0LzE5IDE6MjkgUE0sIE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgd3JvdGU6
+DQo+ID4gKy8qKg0KPiA+ICsgKiB6eW5xX3FzcGlfY29uZmlnX29wIC0gQ29uZmlndXJlIFFTUEkg
+Y29udHJvbGxlciBmb3Igc3BlY2lmaWVkIHRyYW5zZmVyDQo+ID4gKyAqIEB4cXNwaToJUG9pbnRl
+ciB0byB0aGUgenlucV9xc3BpIHN0cnVjdHVyZQ0KPiA+ICsgKiBAcXNwaToJUG9pbnRlciB0byB0
+aGUgc3BpX2RldmljZSBzdHJ1Y3R1cmUNCj4gPiArICoNCj4gPiArICogU2V0cyB0aGUgb3BlcmF0
+aW9uYWwgbW9kZSBvZiBRU1BJIGNvbnRyb2xsZXIgZm9yIHRoZSBuZXh0IFFTUEkNCj4gPiArdHJh
+bnNmZXIgYW5kDQo+ID4gKyAqIHNldHMgdGhlIHJlcXVlc3RlZCBjbG9jayBmcmVxdWVuY3kuDQo+
+ID4gKyAqDQo+ID4gKyAqIFJldHVybjoJMCBvbiBzdWNjZXNzIGFuZCAtRUlOVkFMIG9uIGludmFs
+aWQgaW5wdXQgcGFyYW1ldGVyDQo+ID4gKyAqDQo+ID4gKyAqIE5vdGU6IElmIHRoZSByZXF1ZXN0
+ZWQgZnJlcXVlbmN5IGlzIG5vdCBhbiBleGFjdCBtYXRjaCB3aXRoIHdoYXQNCj4gPiArY2FuIGJl
+DQo+ID4gKyAqIG9idGFpbmVkIHVzaW5nIHRoZSBwcmVzY2FsYXIgdmFsdWUsIHRoZSBkcml2ZXIg
+c2V0cyB0aGUgY2xvY2sNCj4gPiArZnJlcXVlbmN5IHdoaWNoDQo+ID4gKyAqIGlzIGxvd2VyIHRo
+YW4gdGhlIHJlcXVlc3RlZCBmcmVxdWVuY3kgKG1heGltdW0gbG93ZXIpIGZvciB0aGUNCj4gPiAr
+dHJhbnNmZXIuIElmDQo+ID4gKyAqIHRoZSByZXF1ZXN0ZWQgZnJlcXVlbmN5IGlzIGhpZ2hlciBv
+ciBsb3dlciB0aGFuIHRoYXQgaXMgc3VwcG9ydGVkDQo+ID4gK2J5IHRoZSBRU1BJDQo+ID4gKyAq
+IGNvbnRyb2xsZXIgdGhlIGRyaXZlciB3aWxsIHNldCB0aGUgaGlnaGVzdCBvciBsb3dlc3QgZnJl
+cXVlbmN5DQo+ID4gK3N1cHBvcnRlZCBieQ0KPiA+ICsgKiBjb250cm9sbGVyLg0KPiA+ICsgKi8N
+Cj4gPiArc3RhdGljIGludCB6eW5xX3FzcGlfY29uZmlnX29wKHN0cnVjdCB6eW5xX3FzcGkgKnhx
+c3BpLCBzdHJ1Y3QNCj4gPiArc3BpX2RldmljZSAqc3BpKSB7DQo+ID4gKwl1MzIgY29uZmlnX3Jl
+ZywgYmF1ZF9yYXRlX3ZhbCA9IDA7DQo+ID4gKw0KPiA+ICsJLyoNCj4gPiArCSAqIFNldCB0aGUg
+Y2xvY2sgZnJlcXVlbmN5DQo+ID4gKwkgKiBUaGUgYmF1ZCByYXRlIGRpdmlzb3IgaXMgbm90IGEg
+ZGlyZWN0IG1hcHBpbmcgdG8gdGhlIHZhbHVlIHdyaXR0ZW4NCj4gPiArCSAqIGludG8gdGhlIGNv
+bmZpZ3VyYXRpb24gcmVnaXN0ZXIgKGNvbmZpZ19yZWdbNTozXSkNCj4gPiArCSAqIGkuZS4gMDAw
+IC0gZGl2aWRlIGJ5IDINCj4gPiArCSAqICAgICAgMDAxIC0gZGl2aWRlIGJ5IDQNCj4gPiArCSAq
+ICAgICAgLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICsJICogICAgICAxMTEgLSBkaXZpZGUgYnkgMjU2
+DQo+ID4gKwkgKi8NCj4gPiArCXdoaWxlICgoYmF1ZF9yYXRlX3ZhbCA8IFpZTlFfUVNQSV9CQVVE
+X0RJVl9NQVgpICAmJg0KPiA+ICsJICAgICAgIChjbGtfZ2V0X3JhdGUoeHFzcGktPnJlZmNsaykg
+LyAoMiA8PCBiYXVkX3JhdGVfdmFsKSkgPg0KPiA+ICsJCXNwaS0+bWF4X3NwZWVkX2h6KQ0KPiA+
+ICsJCWJhdWRfcmF0ZV92YWwrKzsNCj4gPiArDQo+IA0KPiBJbnN0ZWFkIHVzZSBESVZfUk9VTkRf
+VVAsIHNvbWV0aGluZyBsaWtlIGJlbG93IHNob3VsZCB3b3JrKHVudGVzdGVkKToNCj4gDQo+IAl1
+bnNpZ25lZCBsb25nIHJlZmNsa19yYXRlID0gY2xrX2dldF9yYXRlKHhxc3BpLT5yZWZjbGspOw0K
+PiAJdTMyIGJhdWRfcmF0ZV92YWwgPSBESVZfUk9VTkRfVVAocmVmY2xrX3JhdGUsIHNwaS0+bWF4
+X3NwZWVkX2h6KSAtIDE7DQo+IA0KVGhpcyBpcyBub3QganVzdCBkaXJlY3QgY2FsY3VsYXRpb24u
+DQppLmUuIGZvciBleGFtcGxlDQpyZWZjbGtfcmF0ZSA9IDIwME1IeiBhbmQgbWF4X3NwZWVkX2h4
+ID0gMTAwTUh6Lg0KdGhlbiBESVZfUk9VTkRfVVAgZ2l2ZXMgYSB2YWx1ZSBvZiAyLg0KQnV0IHdy
+aXRpbmcgYSB2YWx1ZSBvZiAyIHRvIGNvbmZpZyByZWdpc3RlcnMgbWVhbnMsIGRpdmlkZSBieSA4
+LiBCdXQgd2Ugc2hvdWxkIHdyaXRlIGRpdmlkZSBieSAyICh2YWx1ZSBvZiB6ZXJvKS4NClRoYXTi
+gJlzIHdoeSB3ZSBpbXBsZW1lbnRlZCB0aGUgYWJvdmUgY2FsY3VsYXRpb24uDQoNCjAwMDogZGl2
+aWRlIGJ5IDIuDQowMDE6IGRpdmlkZSBieSA0DQowMTA6IGRpdmlkZSBieSA4DQowMTE6IGRpdmlk
+ZSBieSAxNg0KMTAwOiBkaXZpZGUgYnkgMzINCjEwMTogZGl2aWRlIGJ5IDY0DQoxMTA6IGRpdmlk
+ZSBieSAxMjgNCjExMTogZGl2aWRlIGJ5IDI1Ng0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFy
+IFJlbGxpDQo+IAlpZiAoYmF1ZF9yYXRlX3ZhbCA+IFpZTlFfUVNQSV9CQVVEX0RJVl9NQVgpDQo+
+IAkJYmF1ZF9yYXRlX3ZhbCA9IFpZTlFfUVNQSV9CQVVEX0RJVl9NQVg7DQo+IA0KPiA+ICsJY29u
+ZmlnX3JlZyA9IHp5bnFfcXNwaV9yZWFkKHhxc3BpLCBaWU5RX1FTUElfQ09ORklHX09GRlNFVCk7
+DQo+ID4gKw0KPiA+ICsJLyogU2V0IHRoZSBRU1BJIGNsb2NrIHBoYXNlIGFuZCBjbG9jayBwb2xh
+cml0eSAqLw0KPiA+ICsJY29uZmlnX3JlZyAmPSAoflpZTlFfUVNQSV9DT05GSUdfQ1BIQV9NQVNL
+KSAmDQo+ID4gKwkJICAgICAgKH5aWU5RX1FTUElfQ09ORklHX0NQT0xfTUFTSyk7DQo+ID4gKwlp
+ZiAoc3BpLT5tb2RlICYgU1BJX0NQSEEpDQo+ID4gKwkJY29uZmlnX3JlZyB8PSBaWU5RX1FTUElf
+Q09ORklHX0NQSEFfTUFTSzsNCj4gPiArCWlmIChzcGktPm1vZGUgJiBTUElfQ1BPTCkNCj4gPiAr
+CQljb25maWdfcmVnIHw9IFpZTlFfUVNQSV9DT05GSUdfQ1BPTF9NQVNLOw0KPiA+ICsNCj4gPiAr
+CWNvbmZpZ19yZWcgJj0gflpZTlFfUVNQSV9DT05GSUdfQkRSQVRFX01BU0s7DQo+ID4gKwljb25m
+aWdfcmVnIHw9IChiYXVkX3JhdGVfdmFsIDw8IFpZTlFfUVNQSV9CQVVEX0RJVl9TSElGVCk7DQo+
+ID4gKwl6eW5xX3FzcGlfd3JpdGUoeHFzcGksIFpZTlFfUVNQSV9DT05GSUdfT0ZGU0VULCBjb25m
+aWdfcmVnKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+ICsNCj4gDQo+IC0t
+DQo+IFJlZ2FyZHMNCj4gVmlnbmVzaA0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
