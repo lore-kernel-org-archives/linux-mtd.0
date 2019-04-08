@@ -2,69 +2,62 @@ Return-Path: <SRS0=GmYA=SK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F840C282CE
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Apr 2019 08:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2A2C282DD
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Apr 2019 08:32:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E448D208E3
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Apr 2019 08:22:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C7DB20880
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Apr 2019 08:32:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TwP7/yFG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E448D208E3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BnYTQaCQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C7DB20880
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I9fDS0VPAdKDmzoLNhP1ytTAuuX81+flL+WaosRhnUg=; b=TwP7/yFGro714x
-	PTtf0JybjWki52SPlZj5FiIRup1QhEkuOKmJM+ZC5rLTB4PoEUZzzHMnTyy0ljii6a6sovzklT9Gn
-	E80+YyMxN2cZzOAJEixQpgR3uf0S9GaXp5Co1Wld5GuBp36roPByTVoKQypvnTF7fbR051FGSPtBD
-	UPFheMqmY52Q0Jvz+Wmxl6NUfMz0v74BQLDyLJZDjphjeisJRxmTUzujHPARxydOOVzLdRmLgRLFs
-	zc6UMPLWVEy8zDtjpJGcxhyA+lh2PCGfRiQRglXq7UUAjgX4HLccfPNCkG7glFfesep79R1t4iIEo
-	a4Sx7t5uZKteuX2+aXbw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7K1vIye7B1GJpLAdpCT+z9E0JULM3/Pt+VB/o7xrXao=; b=BnYTQaCQ9ATE29
+	lO2jLMvYZi59rMxLNvBQVu5rps5+M5WO9D+euSRn82j1XO8brcEh1WZSSKoQ3hyU1hPhDPJq+UR2c
+	EjWeOsHLYgwuUaj/TMO70yvZKwOcMq8EoIU4Yl7Dmg4ufWIx3H8P95Ui54jP/6iN24ABw7+u+aw8V
+	8vdpxs8H27nPyXFHTGk0X6+q/Isez+QP06p98/URF1Tww1mTF8iIBxzEbXaQy2ao1a2TqMsBI6qPB
+	H82vrjXq8HJ2b4x3iBU44DrXBtm5eqMqGTwItwMF0SVn87VCnOjsWdNVxEWRL97HriBM2pqcvAPYA
+	Vwz8t8K59Gav72r4PwaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hDPY8-00010a-PE; Mon, 08 Apr 2019 08:22:40 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1hDPhD-0006cm-SP; Mon, 08 Apr 2019 08:32:03 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDPY4-0000zn-Va
- for linux-mtd@lists.infradead.org; Mon, 08 Apr 2019 08:22:38 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id E08EC6083252;
- Mon,  8 Apr 2019 10:22:34 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id w3da_GCxnbQ0; Mon,  8 Apr 2019 10:22:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 96BEE6083257;
- Mon,  8 Apr 2019 10:22:34 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 1M5MoThCE2A4; Mon,  8 Apr 2019 10:22:34 +0200 (CEST)
-Received: from blindfold.localnet (unknown [195.149.217.187])
- by lithops.sigma-star.at (Postfix) with ESMTPSA id B94A86083252;
- Mon,  8 Apr 2019 10:22:33 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v2 0/5] fscrypt: d_revalidate fixes and cleanups
-Date: Mon, 08 Apr 2019 10:22:32 +0200
-Message-ID: <1872467.qaoHDzFeKg@blindfold>
-In-Reply-To: <20190401171119.GC131675@gmail.com>
-References: <20190320183913.12686-1-ebiggers@kernel.org>
- <20190401171119.GC131675@gmail.com>
+ id 1hDPh7-0006bC-MO
+ for linux-mtd@lists.infradead.org; Mon, 08 Apr 2019 08:32:01 +0000
+Received: from localhost.localdomain
+ (aaubervilliers-681-1-89-125.w90-88.abo.wanadoo.fr [90.88.30.125])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 89584200013;
+ Mon,  8 Apr 2019 08:31:48 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: rawnand: marvell: Clean the controller state before
+ each operation
+Date: Mon,  8 Apr 2019 10:31:45 +0200
+Message-Id: <20190408083145.13178-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190408_012237_158796_89A1D42D 
-X-CRM114-Status: UNSURE (   6.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190408_013157_907880_B59ED2FE 
+X-CRM114-Status: GOOD (  12.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,27 +69,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Gao Xiang <gaoxiang25@huawei.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-unionfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
- Sarthak Kukreti <sarthakkukreti@chromium.org>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org
+Cc: stable@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am Montag, 1. April 2019, 19:11:21 CEST schrieb Eric Biggers:
- > Any more comments on these patches?  I'd like to apply them to the fscrypt tree
-> for 5.2.  Richard, can you check whether these solve your overlayfs use case?
-> Also, patch 5 could use Acks from ext4, f2fs, and ubifs people.
+Since the migration of the driver to stop using the legacy
+->select_chip() hook, there is nothing deselecting the target anymore,
+thus the selection is not forced at the next access. Ensure the ND_RUN
+bit and the interrupts are always in a clean state.
 
-Will check this week, traveling right now.
+Cc: Daniel Mack <daniel@zonque.org>
+Cc: stable@vger.kernel.org
+Fixes: b25251414f6e00 ("mtd: rawnand: marvell: Stop implementing ->select_chip()")
+Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
 
-Thanks,
-//richard
+Changes in v2:
+* Also include the reset of the interrupts each time
+  marvell_nfc_select_target() is called.
 
+ drivers/mtd/nand/raw/marvell_nand.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index f38e5c1b87e4..d984538980e2 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -722,12 +722,6 @@ static void marvell_nfc_select_target(struct nand_chip *chip,
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+ 	u32 ndcr_generic;
+ 
+-	if (chip == nfc->selected_chip && die_nr == marvell_nand->selected_die)
+-		return;
+-
+-	writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
+-	writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
+-
+ 	/*
+ 	 * Reset the NDCR register to a clean state for this particular chip,
+ 	 * also clear ND_RUN bit.
+@@ -739,6 +733,12 @@ static void marvell_nfc_select_target(struct nand_chip *chip,
+ 	/* Also reset the interrupt status register */
+ 	marvell_nfc_clear_int(nfc, NDCR_ALL_INT);
+ 
++	if (chip == nfc->selected_chip && die_nr == marvell_nand->selected_die)
++		return;
++
++	writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
++	writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
++
+ 	nfc->selected_chip = chip;
+ 	marvell_nand->selected_die = die_nr;
+ }
+-- 
+2.19.1
 
 
 ______________________________________________________
