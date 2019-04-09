@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 769FFC10F0E
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 11:34:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1384DC10F0E
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 11:35:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 459B620857
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 11:34:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C20A720883
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 11:35:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QDYLVWGF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 459B620857
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PLXFbXJJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C20A720883
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IueGCFhtGAvqRjEoDx//SG3hlmQVVkvih3kcGawHhg0=; b=QDYLVWGFyM6t5S
-	EDOqwLHZEQ1ISg7m7D9DSgucC99q0CgP1IT436i0pdrHbqX58sVNeNNT4PUgxzdoz1IUU1Eol+ixc
-	cP+Q4YVVNZaaHnlb+tKbZEWcKFMT10jw+NjJVJrfg7ySQ0H/Wbht2stfVuEubN7CkLNmC+alqat1a
-	VkkdNwnIwfpf2jfSYkTfdnuCjyDzmCt4rX2uRN3cZJxC+az79rcQ5n0FVpLAv41DxVP0D10P/gJpi
-	w07AUW8F/9fQDdnCRe51D7yZ/MKm2EP1E3IAueEKoy+5KKC46myATwzuBIJfpzYD947XY//qCUtMl
-	SyBhNHblWGf68imazg3A==;
+	List-Owner; bh=joedONd6vOdMhFWWzvO5PSmLdwwEHO7h0TRYlAPXHJo=; b=PLXFbXJJARDWk7
+	Atm2aNjUHonqiw1MshW8JdHHqumgSnMD0lTIo6BsygC09g+eilAplBHgattJiz3ls17mvrb/o/9gN
+	IPymxF9Q0JzC/uR4xjSYYVNbR78DxTSU6CHZGBN6scpviN6NFKMmE+JohkYtEFqb81zJA7PV++mLW
+	PEIf5nlp6ShcBbiChituZhvo31habQVqwy+pzDtx/EZjbsdm7ZJ/GXoXEWDfPNA7vpO+iDWniZ7E4
+	Uy9RCJW3WCLm1Nm+X+bDbNEvG78QGo9glHcs6saf2wYNfZRAkSAxY4gkCcJzD187mSzD3M4LIH/pZ
+	/lphKzhKGx9gW9/HY91g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hDp1a-0008Hb-7J; Tue, 09 Apr 2019 11:34:46 +0000
+	id 1hDp1k-0008WH-8l; Tue, 09 Apr 2019 11:34:56 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDp1J-0007uB-R9
- for linux-mtd@lists.infradead.org; Tue, 09 Apr 2019 11:34:31 +0000
+ id 1hDp1N-0007xR-LB
+ for linux-mtd@lists.infradead.org; Tue, 09 Apr 2019 11:34:38 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <sha@pengutronix.de>)
- id 1hDp1I-0001OS-9q; Tue, 09 Apr 2019 13:34:28 +0200
+ id 1hDp1D-0001OY-NG; Tue, 09 Apr 2019 13:34:23 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92-RC6)
  (envelope-from <sha@pengutronix.de>)
- id 1hDp1C-0001bz-LB; Tue, 09 Apr 2019 13:34:22 +0200
+ id 1hDp1C-0001cH-PT; Tue, 09 Apr 2019 13:34:22 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/14] mtd: rawnand: gpmi: remove unused parameters
-Date: Tue,  9 Apr 2019 13:34:14 +0200
-Message-Id: <20190409113421.3037-8-s.hauer@pengutronix.de>
+Subject: [PATCH 13/14] dma: mxs: rename custom flag
+Date: Tue,  9 Apr 2019 13:34:20 +0200
+Message-Id: <20190409113421.3037-14-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190409113421.3037-1-s.hauer@pengutronix.de>
 References: <20190409113421.3037-1-s.hauer@pengutronix.de>
@@ -61,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190409_043430_032167_005F8673 
-X-CRM114-Status: GOOD (  15.60  )
+X-CRM114-CacheID: sfid-20190409_043434_488228_396D7B6D 
+X-CRM114-Status: GOOD (  15.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,89 +84,115 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-gpmi_ecc_read_page_data uses the page parameter only for a debug printf,
-so we can drop the parameter and the debug printf. Moving the oob
-delivery from gpmi_ecc_read_page_data to gpmi_ecc_read_page makes the
-oob_required parameter unnecessary aswell.
+The mxs dma driver uses the flags parameter in dmaengine_prep_slave_sg() for
+custom flags, but still uses the dmaengine specific names of the flags.
+Do a little bit better and at least give the flag a custom name.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 34 ++++++++++++----------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ drivers/dma/mxs-dma.c                      |  4 ++--
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 17 +++++++++++------
+ include/linux/dma/mxs-dma.h                |  2 ++
+ 3 files changed, 15 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 62ee9328aea1..c622bee7eb12 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -541,7 +541,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+ 		ccw->bits = 0;
+ 		ccw->bits |= CCW_IRQ;
+ 		ccw->bits |= CCW_DEC_SEM;
+-		if (flags & DMA_CTRL_ACK)
++		if (flags & MXS_DMA_CTRL_WAIT4END)
+ 			ccw->bits |= CCW_WAIT4END;
+ 		ccw->bits |= CCW_HALT_ON_TERM;
+ 		ccw->bits |= CCW_TERM_FLUSH;
+@@ -573,7 +573,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+ 				ccw->bits &= ~CCW_CHAIN;
+ 				ccw->bits |= CCW_IRQ;
+ 				ccw->bits |= CCW_DEC_SEM;
+-				if (flags & DMA_CTRL_ACK)
++				if (flags & MXS_DMA_CTRL_WAIT4END)
+ 					ccw->bits |= CCW_WAIT4END;
+ 			}
+ 		}
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 6736d76fa1fb..c1d2e6d12e61 100644
+index cf016ec0b1c6..9f648b40197e 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1852,9 +1852,7 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- }
+@@ -925,7 +925,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
+ 	sg_init_one(sgl, this->cmd_buffer, this->command_length);
+ 	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
+ 	desc = dmaengine_prep_slave_sg(channel,
+-				sgl, 1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
++				sgl, 1, DMA_MEM_TO_DEV,
++				MXS_DMA_CTRL_WAIT4END);
+ 	if (!desc)
+ 		return -EINVAL;
  
--static int gpmi_ecc_read_page_data(struct nand_chip *chip,
--				   uint8_t *buf, int oob_required,
--				   int page)
-+static int gpmi_ecc_read_page_data(struct nand_chip *chip, uint8_t *buf)
- {
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 	struct bch_geometry *nfc_geo = &this->bch_geometry;
-@@ -1866,8 +1864,6 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	int           ret;
- 	bool          direct = false;
+@@ -996,7 +997,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf,
+ 	/* [2] send DMA request */
+ 	prepare_data_dma(this, buf, len, DMA_TO_DEVICE);
+ 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
+-					1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
++					1, DMA_MEM_TO_DEV,
++					MXS_DMA_CTRL_WAIT4END);
+ 	if (!desc)
+ 		return -EINVAL;
  
--	dev_dbg(this->dev, "page number is : %d\n", page);
--
- 	payload_phys = this->payload_phys;
+@@ -1033,7 +1035,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 	/* [2] : send DMA request */
+ 	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
+ 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
+-					1, DMA_DEV_TO_MEM, DMA_CTRL_ACK);
++					1, DMA_DEV_TO_MEM,
++					MXS_DMA_CTRL_WAIT4END);
+ 	if (!desc)
+ 		return -EINVAL;
  
- 	if (virt_addr_valid(buf)) {
-@@ -1982,6 +1978,22 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	/* handle the block mark swapping */
- 	block_mark_swapping(this, buf, this->auxiliary_virt);
+@@ -1083,7 +1086,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this,  dma_addr_t payload,
+ 	pio[5] = auxiliary;
  
-+	return max_bitflips;
-+}
+ 	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+-				      DMA_TRANS_NONE, DMA_CTRL_ACK);
++				      DMA_TRANS_NONE,
++				      MXS_DMA_CTRL_WAIT4END);
+ 	if (!desc)
+ 		return -EINVAL;
+ 
+@@ -1140,7 +1144,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
+ 	pio[4] = payload;
+ 	pio[5] = auxiliary;
+ 	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+-				      DMA_TRANS_NONE, DMA_CTRL_ACK);
++				      DMA_TRANS_NONE,
++				      MXS_DMA_CTRL_WAIT4END);
+ 	if (!desc)
+ 		return -EINVAL;
+ 
+@@ -1157,7 +1162,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
+ 	pio[1] = 0;
+ 	pio[2] = 0; /* clear GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
+ 	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
+-				      DMA_CTRL_ACK);
++				      MXS_DMA_CTRL_WAIT4END);
+ 	if (!desc)
+ 		return -EINVAL;
+ 
+diff --git a/include/linux/dma/mxs-dma.h b/include/linux/dma/mxs-dma.h
+index 092b2a7b92ac..4a33f2c8a682 100644
+--- a/include/linux/dma/mxs-dma.h
++++ b/include/linux/dma/mxs-dma.h
+@@ -4,6 +4,8 @@
+ 
+ #include <linux/dmaengine.h>
+ 
++#define MXS_DMA_CTRL_WAIT4END	BIT(31)
 +
-+static int gpmi_ecc_read_page(struct nand_chip *chip, uint8_t *buf,
-+			      int oob_required, int page)
-+{
-+	struct gpmi_nand_data *this = nand_get_controller_data(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret;
-+
-+	nand_read_page_op(chip, page, 0, NULL, 0);
-+
-+	ret = gpmi_ecc_read_page_data(chip, buf);
-+	if (ret < 0)
-+		return ret;
-+
- 	if (oob_required) {
- 		/*
- 		 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob()
-@@ -1997,15 +2009,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 		chip->oob_poi[0] = ((uint8_t *)this->auxiliary_virt)[0];
- 	}
- 
--	return max_bitflips;
--}
--
--static int gpmi_ecc_read_page(struct nand_chip *chip, uint8_t *buf,
--			      int oob_required, int page)
--{
--	nand_read_page_op(chip, page, 0, NULL, 0);
--
--	return gpmi_ecc_read_page_data(chip, buf, oob_required, page);
-+	return ret;
- }
- 
- /* Fake a virtual small page for the subpage read */
-@@ -2086,7 +2090,7 @@ static int gpmi_ecc_read_subpage(struct nand_chip *chip, uint32_t offs,
- 
- 	/* Read the subpage now */
- 	this->swap_block_mark = false;
--	max_bitflips = gpmi_ecc_read_page_data(chip, buf, 0, page);
-+	max_bitflips = gpmi_ecc_read_page_data(chip, buf);
- 
- 	/* Restore */
- 	writel(r1_old, bch_regs + HW_BCH_FLASH0LAYOUT0);
+ /*
+  * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
+  * in the second argument to dmaengine_prep_slave_sg when the direction is
 -- 
 2.20.1
 
