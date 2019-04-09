@@ -2,21 +2,20 @@ Return-Path: <SRS0=j3xG=SL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC4C0C282CE
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 07:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84692C10F0E
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 09:47:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC9EB20857
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 07:04:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 53FF320830
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 09:47:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="p1eCaKeX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC9EB20857
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rgqp61kO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53FF320830
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +24,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qTzmQblxPwNdfz/5HNDLJMkFEqxUjt3+qgmV6nnb3yk=; b=p1eCaKeXBgDu6j
-	7LT+rqyJvu5HrvphTcF2liW2NKpzt2Sh9qL3nxT6CmHYkbFgGSe2Xs00wm0vWWM+nnl4/NRkQYhiS
-	V7fqAIMUrvTiCgorWlo0D2MLltXHEGcKYUUatdIaM+7t0btgn0Db/SwA0YKKkfDDbZOkDmtJEsKck
-	/KhXykkzLlasx9BIeXjQ2xBtgHp4dxYrSxHwQ5kzC2mRSZ2gkhjxsrhOUuDIrMr3FEIlu+mWP0ala
-	ViFPHUQfXuBPJB93zpbYznIPx7x5xmSkJGbdQ8WDU4TgmCmAMDDJAuzPuFRBBwzSGZWUE5cmJmGj8
-	LRR8XThF+1UN8rwod3QA==;
+	List-Owner; bh=6TfipZZx8H7hRffgz2RLlPPRSsQE3OxWPRdRMMxeMlY=; b=rgqp61kO5syBaQ
+	vdFaETkRewLbDFJVkF0m6MktHskwCZCA6wy7A4hwVxS3QQ+4kZfE0aWyzMbWjza3bTYs1+SRJ/TxQ
+	2KZb/5FihZGrDiLCfhHDfqipR+OnBllu9JRvalnp2pHbTZXevX+ZvfVXmnoCxwda/17wiJopX7vNf
+	p3n0oPJlewmcrtb5cm6VKdxtDSfNgXMke7LS2zeMbSKZtj/lRKMeDd+YZZnKo0GS+5HpRDn1hNY2r
+	5DKiJZICxgPj/shBKq0C1foswopkCzvzJYPDlX0B3Fgj10mj3vR/88KmzVclcUAfSWPkxXP/mne4y
+	2436a4d9eC90nHRb7CFw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hDko9-0002Sz-MP; Tue, 09 Apr 2019 07:04:37 +0000
+	id 1hDnLT-0007dI-RK; Tue, 09 Apr 2019 09:47:11 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDko5-0002Sc-Cr
- for linux-mtd@lists.infradead.org; Tue, 09 Apr 2019 07:04:35 +0000
+ id 1hDnLQ-0007cb-Cs
+ for linux-mtd@lists.infradead.org; Tue, 09 Apr 2019 09:47:10 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 27A35280827;
- Tue,  9 Apr 2019 08:04:31 +0100 (BST)
-Date: Tue, 9 Apr 2019 09:04:27 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1DDF22820C8;
+ Tue,  9 Apr 2019 10:47:05 +0100 (BST)
+Date: Tue, 9 Apr 2019 11:47:01 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Mason Yang <masonccyang@mxic.com.tw>
+To: masonccyang@mxic.com.tw
 Subject: Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and
  randomizer support
-Message-ID: <20190409090427.22de9917@collabora.com>
-In-Reply-To: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
+Message-ID: <20190409114701.744c2c8c@collabora.com>
+In-Reply-To: <OF6C97E4DE.45261545-ON482583D7.00340468-482583D7.0034B3FE@mxic.com.tw>
 References: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
+ <20190409090427.22de9917@collabora.com>
+ <OF6C97E4DE.45261545-ON482583D7.00340468-482583D7.0034B3FE@mxic.com.tw>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190409_000433_696848_030B5589 
-X-CRM114-Status: GOOD (  20.99  )
+X-CRM114-CacheID: sfid-20190409_024708_570704_2AABB82C 
+X-CRM114-Status: GOOD (  14.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,217 +79,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue,  9 Apr 2019 11:22:52 +0800
-Mason Yang <masonccyang@mxic.com.tw> wrote:
+On Tue, 9 Apr 2019 17:35:39 +0800
+masonccyang@mxic.com.tw wrote:
 
-> Add a driver for Macronix NAND read retry and randomizer.
-
-These are 2 orthogonal changes, and should thus bit split in 2 patches.
-
+> > > +
+> > > +static const struct kobj_attribute sysfs_mxic_nand =
+> > > +   __ATTR(nand_random, S_IRUGO | S_IWUSR,
+> > > +          mxic_nand_rand_type_show,
+> > > +          mxic_nand_rand_type_store);  
+> > 
+> > No, we don't want to expose that through a sysfs file, especially since
+> > changing the randomizer config means making the NAND unreadable for
+> > those that have used it before the change.
+> >   
 > 
-> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> ---
->  drivers/mtd/nand/raw/nand_macronix.c | 169 +++++++++++++++++++++++++++++++++++
->  1 file changed, 169 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-> index 47d8cda..a19caa4 100644
-> --- a/drivers/mtd/nand/raw/nand_macronix.c
-> +++ b/drivers/mtd/nand/raw/nand_macronix.c
-> @@ -17,6 +17,174 @@
->  
->  #include "internals.h"
->  
-> +#define MACRONIX_READ_RETRY_BIT BIT(0)
-> +#define MACRONIX_RANDOMIZER_BIT BIT(1)
-> +#define MACRONIX_READ_RETRY_MODE 5
-> +
-> +#define ONFI_FEATURE_ADDR_MXIC_RANDOMIZER 0xB0
-> +
-> +struct nand_onfi_vendor_macronix {
-> +	u8 reserved[1];
-> +	u8 reliability_func;
-> +} __packed;
-> +
-> +struct nand_chip *mxic_sysfs;
-> +
-> +static int macronix_nand_setup_read_retry(struct nand_chip *chip, int mode)
-> +{
-> +	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
-> +	int ret;
-> +
-> +	if (mode > MACRONIX_READ_RETRY_MODE)
-> +		mode = MACRONIX_READ_RETRY_MODE;
-> +
-> +	feature[0] = mode;
-> +	ret =  nand_set_features(chip, ONFI_FEATURE_ADDR_READ_RETRY, feature);
-> +	if (ret)
-> +		pr_err("failed to enter read retry moded:%d\n", mode);
-> +
-> +	if (mode == 0)
-> +		ret =  nand_get_features(chip, ONFI_FEATURE_ADDR_READ_RETRY,
-> +					 feature);
-> +		if (ret)
-> +			pr_err("failed to exits read retry moded:%d\n", mode);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t mxic_nand_rand_type_show(struct kobject *kobj,
-> +					struct kobj_attribute *attr, char *buf)
-> +{
-> +	struct nand_chip *chip = mxic_sysfs;
-> +	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
-> +	int ret;
-> +
-> +	nand_select_target(chip, 0);
-> +	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +				feature);
-> +	nand_deselect_target(chip);
-> +	if (ret)
-> +		pr_err("failed to check mxic nand device randomizer\n");
-> +
-> +	return sprintf(buf, "MXIC NAND device randomizer %s(0x%x)\n",
-> +		       feature[0] & MACRONIX_RANDOMIZER_BIT ?
-> +		       "enable" : "disable", feature[0]);
-> +}
-> +
-> +static ssize_t mxic_nand_rand_type_store(struct kobject *kobj,
-> +					 struct kobj_attribute *attr,
-> +					 const char *buf, size_t count)
-> +{
-> +	struct nand_chip *chip = mxic_sysfs;
-> +	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
-> +	unsigned int rand_layout;
-> +	int ret;
-> +
-> +	nand_select_target(chip, 0);
-> +	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +				feature);
-> +	nand_deselect_target(chip);
-> +
-> +	if (feature[0]) {
-> +		pr_err("Randomizer is enabled 0x%x\n", feature[0]);
-> +		goto err_out;
-> +	}
-> +
-> +	ret = kstrtouint(buf, 0, &rand_layout);
-> +	if (ret)
-> +		goto err_out;
-> +
-> +	if (rand_layout > 7) {
-> +		pr_err("Error parameter value:0x%x\n", rand_layout);
-> +		goto err_out;
-> +	}
-> +
-> +	feature[0] = rand_layout & 0x07;
-> +	nand_select_target(chip, 0);
-> +	ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +				feature);
-> +	nand_deselect_target(chip);
-> +	if (ret) {
-> +		pr_err("device randomizer set feature failed\n");
-> +		goto err_out;
-> +	}
-> +
-> +	feature[0] = 0x0;
-> +	nand_select_target(chip, 0);
-> +	ret = nand_prog_page_op(chip, 0, 0, feature, 1);
-> +	nand_deselect_target(chip);
-> +	if (ret) {
-> +		pr_err("Prog device randomizer failed\n");
-> +		goto err_out;
-> +	}
-> +
-> +	feature[0] = 0x0;
-> +	nand_select_target(chip, 0);
-> +	ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +				feature);
-> +	nand_deselect_target(chip);
-> +	if (ret)
-> +		pr_err("failed to exits prog device randomizer\n");
-> +
-> +err_out:
-> +	return count;
-> +}
-> +
-> +static const struct kobj_attribute sysfs_mxic_nand =
-> +	__ATTR(nand_random, S_IRUGO | S_IWUSR,
-> +	       mxic_nand_rand_type_show,
-> +	       mxic_nand_rand_type_store);
+> Our on-die randomizer is still readable from user after the function 
+> is enabled.
 
-No, we don't want to expose that through a sysfs file, especially since
-changing the randomizer config means making the NAND unreadable for
-those that have used it before the change.
+You mean the memory is still readable no matter the randomizer state.
+Not sure how that's possible, but okay.
 
-BTW, why would we want to disable the randomizer? If it's here I guess
-it's needed. The only use case I have in mind is when the controller
-also has a randomizer and you want to use this one instead of the on-die
-one.
+> This randomizer is just like a internal memory cell 
+> reliability enhanced.
 
-> +
-> +static void macronix_nand_onfi_init(struct nand_chip *chip)
-> +{
-> +	struct nand_parameters *p = &chip->parameters;
-> +	struct kobject *kobj;
-> +	int ret;
-> +
-> +	mxic_sysfs = chip;
-> +	if (p->onfi) {
-> +		struct nand_onfi_vendor_macronix *mxic =
-> +				(void *)p->onfi->vendor;
-> +
-> +		if (mxic->reliability_func & MACRONIX_READ_RETRY_BIT) {
-> +			chip->read_retries = MACRONIX_READ_RETRY_MODE + 1;
-> +			chip->setup_read_retry =
-> +				 macronix_nand_setup_read_retry;
-> +			if (p->supports_set_get_features) {
-> +				set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
-> +					p->set_feature_list);
-> +				set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
-> +					p->get_feature_list);
-> +			}
-> +		}
-> +
-> +		if (mxic->reliability_func & MACRONIX_RANDOMIZER_BIT) {
-> +			if (p->supports_set_get_features) {
-> +				set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +					p->set_feature_list);
-> +				set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +					p->get_feature_list);
-> +				/*
-> +				 * create syfs-fs for MXIC NAND device
-> +				 * randomizer status check & enable
-> +				 * operations.
-> +				 */
-> +				kobj = kobject_create_and_add("mxic_rand_nand",
-> +							      NULL);
-> +				if (!kobj)
-> +					return;
-> +
-> +				ret = sysfs_create_file(kobj,
-> +							&sysfs_mxic_nand.attr);
-> +				if (ret) {
-> +					pr_err("Err: mxic_rand_nand sysfs");
-> +					kobject_put(kobj);
-> +				}
-> +			}
-> +		}
-> +	}
-> +}
-> +
->  /*
->   * Macronix AC series does not support using SET/GET_FEATURES to change
->   * the timings unlike what is declared in the parameter page. Unflag
-> @@ -65,6 +233,7 @@ static int macronix_nand_init(struct nand_chip *chip)
->  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
->  
->  	macronix_nand_fix_broken_get_timings(chip);
-> +	macronix_nand_onfi_init(chip);
->  
->  	return 0;
->  }
+Why don't you enable it by default then?
 
+> It could be enable at any time with OTP bit function and that's why
+> we patch it by sys-fs.
+
+Sorry, but that's not a good reason to expose that through sysfs.
 
 ______________________________________________________
 Linux MTD discussion mailing list
