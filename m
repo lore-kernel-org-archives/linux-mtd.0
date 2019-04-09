@@ -4,20 +4,21 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBC7FC10F13
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 03:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F6BC10F0E
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 04:54:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC84120883
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 03:03:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3FC520833
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2019 04:54:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qLawv2qX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC84120883
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kKoBgywc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="BjmSUlQ9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3FC520833
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,36 +26,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=qsLCjmihlPE28BOgBLEicGv+Dzqrycx6q/nMJ/LzQlU=; b=qLa
-	wv2qXNU/mjNuE8eFxjZcfw54BYFWmLjhwLDmFWk0vt0My7OF4S3ssv0ST7jLjxlqWkrcdQV/9BBqX
-	dn37n+ysWXOQfXCHHSOSPApUrTXEG3zP3XdnLd+BYh8ix+u4/uedWAY2dZCZHDqBApq16KblWB1uw
-	zDs8i1GKVFTIjQxVSgdBV5zdZ7Uu1GutGb47po5B3JUf7n7FqiAuFPcAZGo2M904VCjPUflSYmnzZ
-	zEM19W83c6spoyQtWJXsmd/L1jxrVm3KbHnejrJwxmrjhqdccLFghQ6BVyA/nFNO2PadpEFnndJLM
-	d+DNoE1ZL1eC91+V5gstPLvZ4+bGtQQ==;
+	References:List-Owner; bh=bInPsXgkBzDCtlnk83xGb6fNGvkLtVWXkprHko3mt9o=; b=kKo
+	BgywcfLlzsShCOKptQnidcV82+xWpf1SF2FnYq7iLKBDpEZh/50wxLO92LPoxr5W+JmGdDJDq9L/e
+	9faE+ctDhW/SXNFcef+rnJyZ48vzKbtebhC5IV7TnQ4k+obcnwG9nvkSOH/d2LetCb4XNhL44ff3u
+	Oqvys7m/4MSCAPx+gUTWazuPRDB+zyBs8VxdHmdppMbufmUBu+LdrIha0jYoN6FvnDmQ9zS2LMIcB
+	82bxqUYfdY5zZfcyBeAr1alg1bo7GcywO2c2q3M9ZIN2oPlmJNnGRSl1rNIRyAmMyzO0ukUoDUl2+
+	ca/4WgjpybFtsCHO/t9xSsySk+K7bqw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hDh2a-0005f6-Sr; Tue, 09 Apr 2019 03:03:16 +0000
-Received: from twhmllg3.macronix.com ([211.75.127.131])
+	id 1hDim3-00018N-SR; Tue, 09 Apr 2019 04:54:19 +0000
+Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hDh2X-0005ec-Ub
- for linux-mtd@lists.infradead.org; Tue, 09 Apr 2019 03:03:15 +0000
-Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG3.macronix.com with ESMTP id x3932mNJ092915;
- Tue, 9 Apr 2019 11:02:48 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-From: Mason Yang <masonccyang@mxic.com.tw>
-To: bbrezillon@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
- miquel.raynal@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, richard@nod.at, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: rawnand: Add Macronix NAND read retry and randomizer
- support
-Date: Tue,  9 Apr 2019 11:22:52 +0800
-Message-Id: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-X-MAIL: TWHMLLG3.macronix.com x3932mNJ092915
+ id 1hDim0-00017R-OX
+ for linux-mtd@lists.infradead.org; Tue, 09 Apr 2019 04:54:18 +0000
+Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
+ [153.142.97.92]) (authenticated)
+ by conuserg-12.nifty.com with ESMTP id x394rZ7R004013;
+ Tue, 9 Apr 2019 13:53:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com x394rZ7R004013
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1554785615;
+ bh=I8W+MlJxuYZkV0iAaLmXEewdBUE8cuF0yeIZtO9GjRc=;
+ h=From:To:Cc:Subject:Date:From;
+ b=BjmSUlQ9NPP3MBhFboUUGmsWWwy+tRdTNOFO6oXJHzfZs0n25IMZBn6RMJ+teCq26
+ Tk4tr4g123wvcpjIlw9Y3IiAObLazt2Gj90fKALG7jTTZLtoZPNYZn5bdqL7kDU++h
+ /9ne133HKo8X+wsgl5QsVtfeXucCQCfRZ2T83NntV8nkrQ3JJ6SO5Y5c3dZ0Bysc6p
+ Sp5+IdzSdCpVRfXBv4VDm2wonqR7u26ndBIAVw9ExCCbDzJMICD++UUej58G+sPNxJ
+ j05JXBN2m/C1WBjnR6AyNwMNpz6NmTuXa1zh3Fr43m3xy9O/ZL4N7M2oX3GqaSGJHZ
+ eRkYwTZLGUyxg==
+X-Nifty-SrcIP: [153.142.97.92]
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: constify elements of NAND_OP_PARSER(_PATTERN)
+Date: Tue,  9 Apr 2019 13:53:32 +0900
+Message-Id: <20190409045332.5452-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190408_200314_264012_8040707D 
-X-CRM114-Status: GOOD (  11.51  )
+X-CRM114-CacheID: sfid-20190408_215417_147062_F84AB787 
+X-CRM114-Status: GOOD (  10.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -66,210 +75,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: juliensu@mxic.com.tw, Mason Yang <masonccyang@mxic.com.tw>,
- zhengxunli@mxic.com.tw
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a driver for Macronix NAND read retry and randomizer.
+Currently, drivers are able to constify a nand_op_parser array,
+but not nand_op_parser_pattern and nand_op_parser_pattern_elem
+since they are instantiated by using the NAND_OP_PARSER(_PATTERN).
 
-Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+Add 'const' to them in order to move more driver data from .data to
+.rodata section.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- drivers/mtd/nand/raw/nand_macronix.c | 169 +++++++++++++++++++++++++++++++++++
- 1 file changed, 169 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 47d8cda..a19caa4 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -17,6 +17,174 @@
+ include/linux/mtd/rawnand.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index b7445a44a814..ebde52088e4d 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -805,7 +805,7 @@ struct nand_op_parser_pattern {
+ #define NAND_OP_PARSER_PATTERN(_exec, ...)							\
+ 	{											\
+ 		.exec = _exec,									\
+-		.elems = (struct nand_op_parser_pattern_elem[]) { __VA_ARGS__ },		\
++		.elems = (const struct nand_op_parser_pattern_elem[]) { __VA_ARGS__ },		\
+ 		.nelems = sizeof((struct nand_op_parser_pattern_elem[]) { __VA_ARGS__ }) /	\
+ 			  sizeof(struct nand_op_parser_pattern_elem),				\
+ 	}
+@@ -831,7 +831,7 @@ struct nand_op_parser {
  
- #include "internals.h"
- 
-+#define MACRONIX_READ_RETRY_BIT BIT(0)
-+#define MACRONIX_RANDOMIZER_BIT BIT(1)
-+#define MACRONIX_READ_RETRY_MODE 5
-+
-+#define ONFI_FEATURE_ADDR_MXIC_RANDOMIZER 0xB0
-+
-+struct nand_onfi_vendor_macronix {
-+	u8 reserved[1];
-+	u8 reliability_func;
-+} __packed;
-+
-+struct nand_chip *mxic_sysfs;
-+
-+static int macronix_nand_setup_read_retry(struct nand_chip *chip, int mode)
-+{
-+	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
-+	int ret;
-+
-+	if (mode > MACRONIX_READ_RETRY_MODE)
-+		mode = MACRONIX_READ_RETRY_MODE;
-+
-+	feature[0] = mode;
-+	ret =  nand_set_features(chip, ONFI_FEATURE_ADDR_READ_RETRY, feature);
-+	if (ret)
-+		pr_err("failed to enter read retry moded:%d\n", mode);
-+
-+	if (mode == 0)
-+		ret =  nand_get_features(chip, ONFI_FEATURE_ADDR_READ_RETRY,
-+					 feature);
-+		if (ret)
-+			pr_err("failed to exits read retry moded:%d\n", mode);
-+
-+	return ret;
-+}
-+
-+static ssize_t mxic_nand_rand_type_show(struct kobject *kobj,
-+					struct kobj_attribute *attr, char *buf)
-+{
-+	struct nand_chip *chip = mxic_sysfs;
-+	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
-+	int ret;
-+
-+	nand_select_target(chip, 0);
-+	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-+				feature);
-+	nand_deselect_target(chip);
-+	if (ret)
-+		pr_err("failed to check mxic nand device randomizer\n");
-+
-+	return sprintf(buf, "MXIC NAND device randomizer %s(0x%x)\n",
-+		       feature[0] & MACRONIX_RANDOMIZER_BIT ?
-+		       "enable" : "disable", feature[0]);
-+}
-+
-+static ssize_t mxic_nand_rand_type_store(struct kobject *kobj,
-+					 struct kobj_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct nand_chip *chip = mxic_sysfs;
-+	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {0};
-+	unsigned int rand_layout;
-+	int ret;
-+
-+	nand_select_target(chip, 0);
-+	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-+				feature);
-+	nand_deselect_target(chip);
-+
-+	if (feature[0]) {
-+		pr_err("Randomizer is enabled 0x%x\n", feature[0]);
-+		goto err_out;
-+	}
-+
-+	ret = kstrtouint(buf, 0, &rand_layout);
-+	if (ret)
-+		goto err_out;
-+
-+	if (rand_layout > 7) {
-+		pr_err("Error parameter value:0x%x\n", rand_layout);
-+		goto err_out;
-+	}
-+
-+	feature[0] = rand_layout & 0x07;
-+	nand_select_target(chip, 0);
-+	ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-+				feature);
-+	nand_deselect_target(chip);
-+	if (ret) {
-+		pr_err("device randomizer set feature failed\n");
-+		goto err_out;
-+	}
-+
-+	feature[0] = 0x0;
-+	nand_select_target(chip, 0);
-+	ret = nand_prog_page_op(chip, 0, 0, feature, 1);
-+	nand_deselect_target(chip);
-+	if (ret) {
-+		pr_err("Prog device randomizer failed\n");
-+		goto err_out;
-+	}
-+
-+	feature[0] = 0x0;
-+	nand_select_target(chip, 0);
-+	ret = nand_set_features(chip, ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-+				feature);
-+	nand_deselect_target(chip);
-+	if (ret)
-+		pr_err("failed to exits prog device randomizer\n");
-+
-+err_out:
-+	return count;
-+}
-+
-+static const struct kobj_attribute sysfs_mxic_nand =
-+	__ATTR(nand_random, S_IRUGO | S_IWUSR,
-+	       mxic_nand_rand_type_show,
-+	       mxic_nand_rand_type_store);
-+
-+static void macronix_nand_onfi_init(struct nand_chip *chip)
-+{
-+	struct nand_parameters *p = &chip->parameters;
-+	struct kobject *kobj;
-+	int ret;
-+
-+	mxic_sysfs = chip;
-+	if (p->onfi) {
-+		struct nand_onfi_vendor_macronix *mxic =
-+				(void *)p->onfi->vendor;
-+
-+		if (mxic->reliability_func & MACRONIX_READ_RETRY_BIT) {
-+			chip->read_retries = MACRONIX_READ_RETRY_MODE + 1;
-+			chip->setup_read_retry =
-+				 macronix_nand_setup_read_retry;
-+			if (p->supports_set_get_features) {
-+				set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
-+					p->set_feature_list);
-+				set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
-+					p->get_feature_list);
-+			}
-+		}
-+
-+		if (mxic->reliability_func & MACRONIX_RANDOMIZER_BIT) {
-+			if (p->supports_set_get_features) {
-+				set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-+					p->set_feature_list);
-+				set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-+					p->get_feature_list);
-+				/*
-+				 * create syfs-fs for MXIC NAND device
-+				 * randomizer status check & enable
-+				 * operations.
-+				 */
-+				kobj = kobject_create_and_add("mxic_rand_nand",
-+							      NULL);
-+				if (!kobj)
-+					return;
-+
-+				ret = sysfs_create_file(kobj,
-+							&sysfs_mxic_nand.attr);
-+				if (ret) {
-+					pr_err("Err: mxic_rand_nand sysfs");
-+					kobject_put(kobj);
-+				}
-+			}
-+		}
-+	}
-+}
-+
- /*
-  * Macronix AC series does not support using SET/GET_FEATURES to change
-  * the timings unlike what is declared in the parameter page. Unflag
-@@ -65,6 +233,7 @@ static int macronix_nand_init(struct nand_chip *chip)
- 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
- 
- 	macronix_nand_fix_broken_get_timings(chip);
-+	macronix_nand_onfi_init(chip);
- 
- 	return 0;
- }
+ #define NAND_OP_PARSER(...)									\
+ 	{											\
+-		.patterns = (struct nand_op_parser_pattern[]) { __VA_ARGS__ },			\
++		.patterns = (const struct nand_op_parser_pattern[]) { __VA_ARGS__ },		\
+ 		.npatterns = sizeof((struct nand_op_parser_pattern[]) { __VA_ARGS__ }) /	\
+ 			     sizeof(struct nand_op_parser_pattern),				\
+ 	}
 -- 
-1.9.1
+2.17.1
 
 
 ______________________________________________________
