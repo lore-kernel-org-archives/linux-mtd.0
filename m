@@ -2,69 +2,74 @@ Return-Path: <SRS0=ukLJ=SM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EE21C10F14
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2019 11:08:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68B6AC10F11
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2019 13:05:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0FA72196F
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2019 11:08:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39E992083E
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2019 13:05:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TraO/9Zs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0FA72196F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SYKAIYAR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qShOuaXm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39E992083E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=w0JjsvWXG9a7jP1esvH0YIQaf5MpA/sgeExAJDYCuVY=; b=TraO/9Zs8U4bzGcJ52ckeik2A
-	+UyzS39wOXYLVvOcB8vRdvTiUVi2khLkAUT9EgpREiT9uKyphRlFb1LtAkGjO5cqgddrSywyK//+q
-	tP2zDvnAQRfgloak57kKy2lXgPt7QaDSarNg9wdArMtKyKoLNawjC893jP8bV1taRl2l43/xdrhjD
-	oLhMlF3XXZupP1TRvrP6krIePc3nIzO4WHz1bPgxadbyA5OB3ZGRMeHv6qrYoBSrVapgHRXMAchJl
-	YBsNxIMs2CqY/eloCeOp7vOwdlzLMKGZAwcwnK1tmJs0UQxegKmQBhmhCwmYETS3uxp+aAjbmxA/X
-	7CccUmqsA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yijl7mE9LG7EE+JpAHdpvZK40nPhY6UTT+3Mr28+aHg=; b=SYKAIYAR7gt1Cu
+	ZUvnKtgkXskmzxDR71b07fc229XQAWlcH09ZpH2howy8kNf9wW6tJUgeQrsiHRSgG/E2Y5EIhDFQ8
+	gMDHzNod5wfTd0jDexMKeA0vNpTdnyYCV2Jv6hzvRua7KCPZhzQICYC7/wA3QjuUH2z756IuJhLpb
+	F+sjunH9xWAxaY1bDhx77iWPpCqN67/oc/KWjzAvAS4YSy8TqwdSgxp3O0/hUxy/A9n4iWBcu5EpM
+	G5cRUXX9zk183fpkzZP2zeQqH8xnbb3XogaSCdiP2JPXfvxwL7xk7uTYbCLBJ11yKQ87zuQGQaNnC
+	9r9T5i44m4+cAXlMwC8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hEB5n-0004vn-Q5; Wed, 10 Apr 2019 11:08:35 +0000
-Received: from mail-sz.amlogic.com ([211.162.65.117])
+	id 1hECvD-0003lM-Sx; Wed, 10 Apr 2019 13:05:47 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEB5e-0004mX-6G; Wed, 10 Apr 2019 11:08:27 +0000
-Received: from [10.28.18.125] (10.28.18.125) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Wed, 10 Apr
- 2019 19:08:17 +0800
-Subject: Re: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-References: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
- <20190321214401.GC19508@bombadil.infradead.org>
- <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
- <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
- <CAFBinCA=0XSSVmzfTgb4eSiVFr=XRHqLOVFGyK0++XRty6VjnQ@mail.gmail.com>
- <32799846-b8f0-758f-32eb-a9ce435e0b79@amlogic.com>
- <CAFBinCDHmuNZxuDf3pe2ij6m8aX2fho7L+B9ZMaMOo28tPZ62Q@mail.gmail.com>
- <79b81748-8508-414f-c08a-c99cb4ae4b2a@amlogic.com>
- <CAFBinCCSkVGp_iWKf=o=7UGuDUWxyLPGdrqGy_P-HPuEJiU1zQ@mail.gmail.com>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <8cb108ff-7a72-6db4-660d-33880fcee08a@amlogic.com>
-Date: Wed, 10 Apr 2019 19:08:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1hECv5-0003e2-Pn; Wed, 10 Apr 2019 13:05:41 +0000
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com
+ [209.85.160.174])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id BB696217F9;
+ Wed, 10 Apr 2019 13:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1554901538;
+ bh=QrXNsTj3UCRv+IFfAkumwwduoBEVW21RnGj5GpIvyjI=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=qShOuaXmr/XhiRScUWM28aAwAhULyd5H8OsappERIlz3bcEn9nFq9FR5I/0G3N36h
+ 8bWnh9DNi6mYprrHfAH/kD0jFcuRk9gwbaTJenMLpThx/KA86bwnCq1ccFFlwSWbu1
+ 5dKNCdowNFgd/MPUuwhS59cV44aPEONcJa+NdbHY=
+Received: by mail-qt1-f174.google.com with SMTP id w30so2675080qta.8;
+ Wed, 10 Apr 2019 06:05:38 -0700 (PDT)
+X-Gm-Message-State: APjAAAXvY9yzVYA7xYMHvTqNict+xoCYq7zSnXOtXE8sPxrUHUZaT95h
+ Gg1Uxmx0XppYq8vS/CNRg6U/6PAnxZXMHOOvhA==
+X-Google-Smtp-Source: APXvYqyUW++FdC3qHiedwEgJ4noPqVY54ncZULcbcS77fsDPd0iWFkkq1CtD4e8XWCFdKdOAwnVUTXIWN6i329/Wy0o=
+X-Received: by 2002:a0c:b656:: with SMTP id q22mr35346566qvf.205.1554901537915; 
+ Wed, 10 Apr 2019 06:05:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCCSkVGp_iWKf=o=7UGuDUWxyLPGdrqGy_P-HPuEJiU1zQ@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.28.18.125]
-X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
- (10.28.11.5)
+References: <88ac1ca97bc5dd0a0e40d7d828199331b3e01fb9.1554277681.git-series.maxime.ripard@bootlin.com>
+In-Reply-To: <88ac1ca97bc5dd0a0e40d7d828199331b3e01fb9.1554277681.git-series.maxime.ripard@bootlin.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Wed, 10 Apr 2019 08:05:26 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+aXtRSAUoSLxSK2vWj0p8uXMhcr+kfd=60BmdK1agvJw@mail.gmail.com>
+Message-ID: <CAL_Jsq+aXtRSAUoSLxSK2vWj0p8uXMhcr+kfd=60BmdK1agvJw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: Add YAML schemas for the generic
+ NAND options
+To: Maxime Ripard <maxime.ripard@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190410_040826_227895_04E2B698 
-X-CRM114-Status: GOOD (  10.69  )
+X-CRM114-CacheID: sfid-20190410_060539_861723_4C242349 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,53 +81,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mhocko@suse.com, linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
- Matthew Wilcox <willy@infradead.org>, rppt@linux.ibm.com, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org,
- akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Chen-Yu Tsai <wens@csie.org>, Boris Brezillon <boris.brezillon@collabora.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Martin,
+On Wed, Apr 3, 2019 at 2:48 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
+>
+> The NAND chips in MTD have a bunch of generic options that are needed in a
+> device tree. Add a YAML schemas for those.
+>
+> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+>
+> ---
+>
+> Changes from v2:
+>   - Fix the regex for the NAND chip node
+>   - Move the minimum into an allOf for nand-ecc-strength and
+>     nand-ecc-step-size
+>
+> Changes from v1:
+>   - Removed free form text binding
+>   - Enhanced properties descriptions
+>   - Fixed the SPDX license tag
+>   - Added minimums for nand-ecc-strength and nand-ecc-step-size
+>   - Removed Boris from the maintainers
+> ---
+>  Documentation/devicetree/bindings/mtd/nand-controller.yaml | 143 +++++++-
+>  Documentation/devicetree/bindings/mtd/nand.txt             |  75 +----
+>  2 files changed, 143 insertions(+), 75 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/nand-controller.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/nand.txt
 
-On 2019/4/5 12:30, Martin Blumenstingl wrote:
-> Hi Liang,
-> 
-> On Fri, Mar 29, 2019 at 8:44 AM Liang Yang <liang.yang@amlogic.com> wrote:
->>
->> Hi Martin,
->>
->> On 2019/3/29 2:03, Martin Blumenstingl wrote:
->>> Hi Liang,
->> [......]
->>>> I don't think it is caused by a different NAND type, but i have followed
->>>> the some test on my GXL platform. we can see the result from the
->>>> attachment. By the way, i don't find any information about this on meson
->>>> NFC datasheet, so i will ask our VLSI.
->>>> Martin, May you reproduce it with the new patch on meson8b platform ? I
->>>> need a more clear and easier compared log like gxl.txt. Thanks.
->>> your gxl.txt is great, finally I can also compare my own results with
->>> something that works for you!
->>> in my results (see attachment) the "DATA_IN  [256 B, force 8-bit]"
->>> instructions result in a different info buffer output.
->>> does this make any sense to you?
->>>
->> I have asked our VLSI designer for explanation or simulation result by
->> an e-mail. Thanks.
-> do you have any update on this?
-> Sorry. I haven't got reply from VLSI designer yet. We tried to improve 
-priority yesterday, but i still can't estimate the time. There is no 
-document or change list showing the difference between m8/b and gxl/axg 
-serial chips. Now it seems that we can't use command NFC_CMD_N2M on nand 
-initialization for m8/b chips and use *read byte from NFC fifo register* 
-instead.
-> 
-> Martin
-> 
-> .
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
