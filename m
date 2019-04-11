@@ -3,68 +3,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C1CDC10F13
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 09:29:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09CB1C10F13
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 13:19:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 288CC20850
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 09:29:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BAD47206B7
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 13:19:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VTrLDO0+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 288CC20850
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="N53z2+RA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kuU78GGf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAD47206B7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kowLVgdaBZjSiRyu6gBg4Y20eufjd7tFOmippzpXgOg=; b=VTrLDO0+xEsU3D
-	nIOgmLvscpleyu3zGt+nl03op3k4PMGysHpZ/ljQej1/2Q/0XUHFMCUG6a+ve8rQyxpeOzOfNVp/h
-	dSYIWA1/ELZHgHmYdQbPinAa2g9/iMVCF8YM2ohFQ6k9D9O1nQQslPCNiehiiP/4IN9T30CXUEDYA
-	DLjhZCWFz3QLhQuTwxCjHOK5UOFHphjwetYjJHM0Z8mvyX4n+ff6tZp741ELEw326hglNSil58zft
-	u3ABjvMmR6UUv7WI2YRzp2XiJp4KxtbTpcaXt5tvZv0iQGVkeJi0l3W3/KgtW8fZbb2qJL067MdlH
-	0aXEGtgALCpqxgZGi6Kw==;
+	List-Owner; bh=1WUruoxv40gQvATt3cVJlAdj/bKfzCGVCc7kClSCH8Q=; b=N53z2+RALnxLpR
+	pT8P72DK91V3XF+aUtSpL2LKlfkGfPufaPdXUwd5dLff/KrN87mm5qlXqRu+267tXTStr7mE6jEU+
+	KRm6yVR6QTkYN0w17s6zbG09xinb0FHNiQ0zDXbb+OO3zBcUsZUpnfYI7DlUd88ZMYmF+pXPtSQOl
+	XAWECCLBzenirqUYKdPfTe/NI6Z6gZ9figDqOvgflALeAh8YMIuyROsS2PmtnNFP86KETfReM68KN
+	/ofMJg/CTG8Q5V8uhCgfQTk9I8S0prtqfuuV1X4+CV3XI9e6iGR/wq6wGOPLyGjfTU/s/DEVpIO27
+	Oe2/UuC7is7eEECqF48w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hEW1q-0002pR-E2; Thu, 11 Apr 2019 09:29:54 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hEZcO-0001JF-46; Thu, 11 Apr 2019 13:19:52 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEW1k-0002ol-F5
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 09:29:50 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7A106260764;
- Thu, 11 Apr 2019 10:29:46 +0100 (BST)
-Date: Thu, 11 Apr 2019 11:29:43 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: masonccyang@mxic.com.tw
-Subject: Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and
- randomizer support
-Message-ID: <20190411112943.1fecfa69@collabora.com>
-In-Reply-To: <OF34672B6F.AACFE22C-ON482583D9.00335814-482583D9.0033A673@mxic.com.tw>
-References: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
- <20190409090427.22de9917@collabora.com>
- <OF6C97E4DE.45261545-ON482583D7.00340468-482583D7.0034B3FE@mxic.com.tw>
- <20190409114701.744c2c8c@collabora.com>
- <OF9601E14B.A48284C4-ON482583D8.0005E3EB-482583D8.0006CC14@mxic.com.tw>
- <20190410092258.332ef399@collabora.com>
- <OF071D3608.9D6D2523-ON482583D9.00173F52-482583D9.0018188C@mxic.com.tw>
- <20190411085353.4c1af008@collabora.com>
- <OF34672B6F.AACFE22C-ON482583D9.00335814-482583D9.0033A673@mxic.com.tw>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hEZcG-0001FL-Os; Thu, 11 Apr 2019 13:19:46 +0000
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com
+ [209.85.222.173])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5B60221852;
+ Thu, 11 Apr 2019 13:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1554988784;
+ bh=INpHV1wMKlIoeJz3WbTdzbh8mNZZOUVi+KYSjvTpPP0=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=kuU78GGfesa2WDHG1W6yzymAtnGYhpIYwY464F4swuHZ+va8LHpjg9hMFa/EFD8zu
+ omnQmMfL8eu1mhWs3JX7ntLLVDCJljxvxNM6p5TwcrCnmGQ65k6NVBylSBgfAImFGQ
+ H5e/HnwLT2neBvKd5QXKyDoTgMryN0CqpWzP0PqU=
+Received: by mail-qk1-f173.google.com with SMTP id b74so3383665qkg.9;
+ Thu, 11 Apr 2019 06:19:44 -0700 (PDT)
+X-Gm-Message-State: APjAAAVkg5p0pvzqCG7z5xe9pb1o/x59ORLc5HAIzOw2Zzsx1ubWo6Iw
+ HC8XkmTG6x1p0gI/oM4WSPAoPf1QZHQH5xqzWA==
+X-Google-Smtp-Source: APXvYqwVKjoo1wElgJ1V1S67QPcYaOH+I4jMtaYrNi1WqIltuN8JOXtzHAlFnrD3dXq0vXnEBus0jtWWw+gzfdyTuCw=
+X-Received: by 2002:a37:5805:: with SMTP id m5mr38612974qkb.136.1554988783488; 
+ Thu, 11 Apr 2019 06:19:43 -0700 (PDT)
 MIME-Version: 1.0
+References: <74b8a52ce98b09d7906f988c107793a86c0c5f6b.1554216856.git-series.maxime.ripard@bootlin.com>
+ <CAL_JsqL9rOO8jUUVQ5MnD3GCvyyCDPsw=Kd=va3X-rAF60Wkzg@mail.gmail.com>
+ <20190403073551.ym7nbqwcdpicwo6e@flea>
+In-Reply-To: <20190403073551.ym7nbqwcdpicwo6e@flea>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Thu, 11 Apr 2019 08:19:32 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKCky41zrGKNdwrj8i-fburCXx_D+NkZwESUasqNkbMeA@mail.gmail.com>
+Message-ID: <CAL_JsqKCky41zrGKNdwrj8i-fburCXx_D+NkZwESUasqNkbMeA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: Add YAML schemas for the generic
+ NAND options
+To: Maxime Ripard <maxime.ripard@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190411_022948_765831_42819DAB 
-X-CRM114-Status: GOOD (  30.68  )
+X-CRM114-CacheID: sfid-20190411_061945_237751_75521522 
+X-CRM114-Status: GOOD (  15.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,116 +83,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Chen-Yu Tsai <wens@csie.org>, Boris Brezillon <boris.brezillon@collabora.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 11 Apr 2019 17:24:09 +0800
-masonccyang@mxic.com.tw wrote:
+On Wed, Apr 3, 2019 at 2:35 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
+>
+> Hi Rob,
+>
+> On Tue, Apr 02, 2019 at 08:20:58PM -0500, Rob Herring wrote:
+> > > +      nand-ecc-strength:
+> > > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > > +        minimum: 1
+> >
+> > While I wished this worked, these 2 have to be under 'allOf'.
+> > Unfortunately, this will also silently pass validation in json-schema.
+>
+> Unfortunately, I'm not sure I fully get how the ref system is supposed
+> to work yet. Can you elaborate a bit on why we should put the ref and
+> whatever constraint we have in an allOf?
 
-> Hi Boris,
->  
->  
-> > > > > > Subject
-> > > > > > 
-> > > > > > Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and   
-> > > randomizer   
-> > > > > support   
-> > > > > > 
-> > > > > > On Tue, 9 Apr 2019 17:35:39 +0800
-> > > > > > masonccyang@mxic.com.tw wrote:
-> > > > > >   
-> > > > > > > > > +
-> > > > > > > > > +static const struct kobj_attribute sysfs_mxic_nand =
-> > > > > > > > > +   __ATTR(nand_random, S_IRUGO | S_IWUSR,
-> > > > > > > > > +          mxic_nand_rand_type_show,
-> > > > > > > > > +          mxic_nand_rand_type_store);   
-> > > > > > > > 
-> > > > > > > > No, we don't want to expose that through a sysfs file,   
-> > > especially   
-> > > > > since   
-> > > > > > > > changing the randomizer config means making the NAND   
-> unreadable 
-> > > for  
-> > > > > > > > those that have used it before the change.
-> > > > > > > >   
-> > > > > > > 
-> > > > > > > Our on-die randomizer is still readable from user after the   
-> > > function   
-> > > > > > > is enabled.   
-> > > > > > 
-> > > > > > You mean the memory is still readable no matter the randomizer   
-> > > state.  
-> > > > > > Not sure how that's possible, but okay.
-> > > > > >   
-> > > > > > > This randomizer is just like a internal memory cell 
-> > > > > > > reliability enhanced.   
-> > > > > > 
-> > > > > > Why don't you enable it by default then?   
-> > > > > 
-> > > > > The penalty of randomizer is read/write performance down.
-> > > > > i.e,. tPROG 300 us to 340 us (randomizer enable)
-> > > > > therefore, disable it by default.   
-> > > > 
-> > > > I'm a bit puzzled. On the NAND I've seen that required data
-> > > > randomization it's not something you'd want to disable as this   
-> implied
-> > > > poor data retention. What's the use case here? Are we talking about   
-> SLC
-> > > > or MLC NANDs? Should we enable this feature once we start seeing   
-> that
-> > > > the NAND starts being less reliable (basically when read-retry   
-> happens
-> > > > more often)? I really think this is something you should decide   
-> kernel
-> > > > side, because users have no clue when it's appropriate to switch   
-> this
-> > > > feature on/off.
-> > > >   
-> > > 
-> > > It's SLC NAND and seems to has nothing to do with read-retry happens.
-> > > later, I will get more information for your concerns.  
-> > 
-> > Well, this feature is optional, and can be enabled to improve
-> > reliability. Sounds like a good reason to enable it when your NAND
-> > device starts showing reliability issues, and the number of read_retry
-> > attempts reflects the wear level pretty well. Alternatively, you could
-> > use the number of bitflips, but, in any case, don't expect the user to
-> > take this decision, because almost nobody knows what the randomizer
-> > is needed for.
-> >   
-> > >   
-> > > > >   
-> > > > > >   
-> > > > > > > It could be enable at any time with OTP bit function and   
-> that's 
-> > > why  
-> > > > > > > we patch it by sys-fs.   
-> > > > > > 
-> > > > > > Sorry, but that's not a good reason to expose that through   
-> sysfs. 
-> > > > > 
-> > > > > Any good way to expose randomizer function for user ?   
-> > > > 
-> > > > Don't expose it :P.   
-> > > 
-> > > oh, okay, I will remove sys-fs randomizer.
-> > > 
-> > > Is it OK to keep set/get features for randomizer ?  
-> > 
-> > I don't think it's a good idea to have dead code, so no. But I'm pretty
-> > sure we'll find a way to use/expose this feature.  
->  
-> okay, great!
-> Looking forward to hearing this feature use/expose.
+TL;DR is that is how sub-classing or extending schemas works.
 
-But for that to happen we are waiting for inputs about when this is
-supposed to be used...
+I think I read something at one point which explained why it doesn't
+work without allOf, but couldn't find it. Certainly, it seems like it
+should at first.
+
+> Should we do the same in a separate schema that would reference
+> another entire schema (like the second patch does with the first
+> one)?
+
+That would just split defining the type from the additional
+constraints. I prefer to keep the top-level 'allOf' including classes
+of devices.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
