@@ -3,19 +3,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68AD7C10F13
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 06:54:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C1CDC10F13
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 09:29:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32DFE2083E
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 06:54:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 288CC20850
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 09:29:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ShJznm+7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32DFE2083E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VTrLDO0+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 288CC20850
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,32 +24,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RvIbI1WMyRG/Aw48T9Yv9CVhgYgfEqDjYZez+Ql8Exc=; b=ShJznm+76G14aZ
-	nW1OoRZQyT0Vc4Xr6mxfQHsFnQgmnGnrrUsALIvLyElQmPHfz62P8EuRciSRCq4/39NIN0G6KF5kv
-	MXqFZDOSOseJhUTeZ+fYb69+89qS5BPUaXc6yKfzGVWVXiO8Ci4l3bzwWzNd/CAsvYb3tmt3UXn2p
-	vHWK6ZcGyD5eDLoMqQEiJgSbIQ33Xa74wxXJs+kZy1FzVjTbVB1CFyUm3N5HSGR/t2UXOdDnX6Dey
-	SsCzQstNGHx/6mdjRER9xCxX03/uuPS/pfIIdobh65gqdiQfrrPDudYGhB8nZEIUfX/pdqMXHMaQe
-	SUpQC1ScW5A6Tv+SGDiw==;
+	List-Owner; bh=kowLVgdaBZjSiRyu6gBg4Y20eufjd7tFOmippzpXgOg=; b=VTrLDO0+xEsU3D
+	nIOgmLvscpleyu3zGt+nl03op3k4PMGysHpZ/ljQej1/2Q/0XUHFMCUG6a+ve8rQyxpeOzOfNVp/h
+	dSYIWA1/ELZHgHmYdQbPinAa2g9/iMVCF8YM2ohFQ6k9D9O1nQQslPCNiehiiP/4IN9T30CXUEDYA
+	DLjhZCWFz3QLhQuTwxCjHOK5UOFHphjwetYjJHM0Z8mvyX4n+ff6tZp741ELEw326hglNSil58zft
+	u3ABjvMmR6UUv7WI2YRzp2XiJp4KxtbTpcaXt5tvZv0iQGVkeJi0l3W3/KgtW8fZbb2qJL067MdlH
+	0aXEGtgALCpqxgZGi6Kw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hETb1-00080m-0z; Thu, 11 Apr 2019 06:54:03 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1hEW1q-0002pR-E2; Thu, 11 Apr 2019 09:29:54 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hETaw-0007zt-UX
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 06:54:00 +0000
+ id 1hEW1k-0002ol-F5
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 09:29:50 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7EC282756F7;
- Thu, 11 Apr 2019 07:53:56 +0100 (BST)
-Date: Thu, 11 Apr 2019 08:53:53 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7A106260764;
+ Thu, 11 Apr 2019 10:29:46 +0100 (BST)
+Date: Thu, 11 Apr 2019 11:29:43 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: masonccyang@mxic.com.tw
 Subject: Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and
  randomizer support
-Message-ID: <20190411085353.4c1af008@collabora.com>
-In-Reply-To: <OF071D3608.9D6D2523-ON482583D9.00173F52-482583D9.0018188C@mxic.com.tw>
+Message-ID: <20190411112943.1fecfa69@collabora.com>
+In-Reply-To: <OF34672B6F.AACFE22C-ON482583D9.00335814-482583D9.0033A673@mxic.com.tw>
 References: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
  <20190409090427.22de9917@collabora.com>
  <OF6C97E4DE.45261545-ON482583D7.00340468-482583D7.0034B3FE@mxic.com.tw>
@@ -57,12 +57,14 @@ References: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
  <OF9601E14B.A48284C4-ON482583D8.0005E3EB-482583D8.0006CC14@mxic.com.tw>
  <20190410092258.332ef399@collabora.com>
  <OF071D3608.9D6D2523-ON482583D9.00173F52-482583D9.0018188C@mxic.com.tw>
+ <20190411085353.4c1af008@collabora.com>
+ <OF34672B6F.AACFE22C-ON482583D9.00335814-482583D9.0033A673@mxic.com.tw>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190410_235359_248494_B01D1702 
-X-CRM114-Status: GOOD (  31.30  )
+X-CRM114-CacheID: sfid-20190411_022948_765831_42819DAB 
+X-CRM114-Status: GOOD (  30.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -83,168 +85,107 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 11 Apr 2019 12:23:11 +0800
+On Thu, 11 Apr 2019 17:24:09 +0800
 masonccyang@mxic.com.tw wrote:
 
 > Hi Boris,
 >  
 >  
-> > > > Subject
-> > > > 
-> > > > Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and   
-> randomizer 
-> > > support  
-> > > > 
-> > > > On Tue, 9 Apr 2019 17:35:39 +0800
-> > > > masonccyang@mxic.com.tw wrote:
-> > > >   
-> > > > > > > +
-> > > > > > > +static const struct kobj_attribute sysfs_mxic_nand =
-> > > > > > > +   __ATTR(nand_random, S_IRUGO | S_IWUSR,
-> > > > > > > +          mxic_nand_rand_type_show,
-> > > > > > > +          mxic_nand_rand_type_store);   
+> > > > > > Subject
 > > > > > > 
-> > > > > > No, we don't want to expose that through a sysfs file,   
-> especially 
-> > > since  
-> > > > > > changing the randomizer config means making the NAND unreadable   
-> for
-> > > > > > those that have used it before the change.
+> > > > > > Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and   
+> > > randomizer   
+> > > > > support   
+> > > > > > 
+> > > > > > On Tue, 9 Apr 2019 17:35:39 +0800
+> > > > > > masonccyang@mxic.com.tw wrote:
 > > > > > >   
+> > > > > > > > > +
+> > > > > > > > > +static const struct kobj_attribute sysfs_mxic_nand =
+> > > > > > > > > +   __ATTR(nand_random, S_IRUGO | S_IWUSR,
+> > > > > > > > > +          mxic_nand_rand_type_show,
+> > > > > > > > > +          mxic_nand_rand_type_store);   
+> > > > > > > > 
+> > > > > > > > No, we don't want to expose that through a sysfs file,   
+> > > especially   
+> > > > > since   
+> > > > > > > > changing the randomizer config means making the NAND   
+> unreadable 
+> > > for  
+> > > > > > > > those that have used it before the change.
+> > > > > > > >   
+> > > > > > > 
+> > > > > > > Our on-die randomizer is still readable from user after the   
+> > > function   
+> > > > > > > is enabled.   
+> > > > > > 
+> > > > > > You mean the memory is still readable no matter the randomizer   
+> > > state.  
+> > > > > > Not sure how that's possible, but okay.
+> > > > > >   
+> > > > > > > This randomizer is just like a internal memory cell 
+> > > > > > > reliability enhanced.   
+> > > > > > 
+> > > > > > Why don't you enable it by default then?   
 > > > > > 
-> > > > > Our on-die randomizer is still readable from user after the   
-> function 
-> > > > > is enabled.   
+> > > > > The penalty of randomizer is read/write performance down.
+> > > > > i.e,. tPROG 300 us to 340 us (randomizer enable)
+> > > > > therefore, disable it by default.   
 > > > > 
-> > > > You mean the memory is still readable no matter the randomizer   
-> state.
-> > > > Not sure how that's possible, but okay.
+> > > > I'm a bit puzzled. On the NAND I've seen that required data
+> > > > randomization it's not something you'd want to disable as this   
+> implied
+> > > > poor data retention. What's the use case here? Are we talking about   
+> SLC
+> > > > or MLC NANDs? Should we enable this feature once we start seeing   
+> that
+> > > > the NAND starts being less reliable (basically when read-retry   
+> happens
+> > > > more often)? I really think this is something you should decide   
+> kernel
+> > > > side, because users have no clue when it's appropriate to switch   
+> this
+> > > > feature on/off.
 > > > >   
-> > > > > This randomizer is just like a internal memory cell 
-> > > > > reliability enhanced.   
-> > > > 
-> > > > Why don't you enable it by default then?   
 > > > 
-> > > The penalty of randomizer is read/write performance down.
-> > > i.e,. tPROG 300 us to 340 us (randomizer enable)
-> > > therefore, disable it by default.  
+> > > It's SLC NAND and seems to has nothing to do with read-retry happens.
+> > > later, I will get more information for your concerns.  
 > > 
-> > I'm a bit puzzled. On the NAND I've seen that required data
-> > randomization it's not something you'd want to disable as this implied
-> > poor data retention. What's the use case here? Are we talking about SLC
-> > or MLC NANDs? Should we enable this feature once we start seeing that
-> > the NAND starts being less reliable (basically when read-retry happens
-> > more often)? I really think this is something you should decide kernel
-> > side, because users have no clue when it's appropriate to switch this
-> > feature on/off.
+> > Well, this feature is optional, and can be enabled to improve
+> > reliability. Sounds like a good reason to enable it when your NAND
+> > device starts showing reliability issues, and the number of read_retry
+> > attempts reflects the wear level pretty well. Alternatively, you could
+> > use the number of bitflips, but, in any case, don't expect the user to
+> > take this decision, because almost nobody knows what the randomizer
+> > is needed for.
 > >   
-> 
-> It's SLC NAND and seems to has nothing to do with read-retry happens.
-> later, I will get more information for your concerns.
-
-Well, this feature is optional, and can be enabled to improve
-reliability. Sounds like a good reason to enable it when your NAND
-device starts showing reliability issues, and the number of read_retry
-attempts reflects the wear level pretty well. Alternatively, you could
-use the number of bitflips, but, in any case, don't expect the user to
-take this decision, because almost nobody knows what the randomizer
-is needed for.
-
-> 
 > > >   
-> > > >   
-> > > > > It could be enable at any time with OTP bit function and that's   
-> why
-> > > > > we patch it by sys-fs.   
+> > > > >   
+> > > > > >   
+> > > > > > > It could be enable at any time with OTP bit function and   
+> that's 
+> > > why  
+> > > > > > > we patch it by sys-fs.   
+> > > > > > 
+> > > > > > Sorry, but that's not a good reason to expose that through   
+> sysfs. 
+> > > > > 
+> > > > > Any good way to expose randomizer function for user ?   
 > > > > 
-> > > > Sorry, but that's not a good reason to expose that through sysfs.   
+> > > > Don't expose it :P.   
 > > > 
-> > > Any good way to expose randomizer function for user ?  
+> > > oh, okay, I will remove sys-fs randomizer.
+> > > 
+> > > Is it OK to keep set/get features for randomizer ?  
 > > 
-> > Don't expose it :P.  
-> 
-> oh, okay, I will remove sys-fs randomizer.
-> 
-> Is it OK to keep set/get features for randomizer ?
+> > I don't think it's a good idea to have dead code, so no. But I'm pretty
+> > sure we'll find a way to use/expose this feature.  
+>  
+> okay, great!
+> Looking forward to hearing this feature use/expose.
 
-I don't think it's a good idea to have dead code, so no. But I'm pretty
-sure we'll find a way to use/expose this feature.
-
-> that is :
-> 
-> +static void macronix_nand_onfi_init(struct nand_chip *chip)
-> +{
-> +                struct nand_parameters *p = &chip->parameters;
-> +                struct kobject *kobj;
-> +                int ret;
-> +
-> +                if (p->onfi) {
-> +                                struct nand_onfi_vendor_macronix *mxic =
-> +                                                                (void 
-> *)p->onfi->vendor;
-> +
-> +                                if (mxic->reliability_func & 
-> MACRONIX_READ_RETRY_BIT) {
-> +                                                chip->read_retries = 
-> MACRONIX_READ_RETRY_MODE + 1;
-> +                                                chip->setup_read_retry =
-> + macronix_nand_setup_read_retry;
-> +                                                if 
-> (p->supports_set_get_features) {
-> + set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
-> +  p->set_feature_list);
-> + set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
-> +  p->get_feature_list);
-> +                                                }
-> +                                }
-> +
-> +                                if (mxic->reliability_func & 
-> MACRONIX_RANDOMIZER_BIT) {
-> +                                                if 
-> (p->supports_set_get_features) {
-> + set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +  p->set_feature_list);
-> + set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
-> +  p->get_feature_list);
-> +                                                }
-> +                                }
-> +                }
-> +}
-> + 
-> 
-> thanks & best regards,
-> Mason
-> 
-> 
-> 
-> CONFIDENTIALITY NOTE:
-> 
-> This e-mail and any attachments may contain confidential information 
-> and/or personal data, which is protected by applicable laws. Please be 
-> reminded that duplication, disclosure, distribution, or use of this e-mail 
-> (and/or its attachments) or any part thereof is prohibited. If you receive 
-> this e-mail in error, please notify us immediately and delete this mail as 
-> well as its attachment(s) from your system. In addition, please be 
-> informed that collection, processing, and/or use of personal data is 
-> prohibited unless expressly permitted by personal data protection laws. 
-> Thank you for your attention and cooperation.
-> 
-> Macronix International Co., Ltd.
-> 
-> =====================================================================
-> 
-> 
-> 
-> ============================================================================
-> 
-> CONFIDENTIALITY NOTE:
-> 
-> This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-> 
-> Macronix International Co., Ltd.
-> 
-> =====================================================================
-
+But for that to happen we are waiting for inputs about when this is
+supposed to be used...
 
 ______________________________________________________
 Linux MTD discussion mailing list
