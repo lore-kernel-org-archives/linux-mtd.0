@@ -2,71 +2,128 @@ Return-Path: <SRS0=0SW8=SN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DC22C10F13
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 17:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C694C10F13
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 18:30:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5CFB2146F
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 17:28:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E44C2083E
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 18:30:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yjo+SKOi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUL2CvSa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5CFB2146F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KvymkHHy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E44C2083E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OQ5/QdWT9I5VTyp2Ma7WkldEH6Y7MIlFcYnJbfb55Og=; b=Yjo+SKOikb2+E0
-	kQANamzrAcTudI1hgv7U4QbVCFNsi2cEoqTlBdaJ7CK3i3RE/isWCl7+zQtDokJ2NbS4D+3wx44PX
-	V4zIrG3f3EewW+5BHqJrt8WvqiYfIJdC/5YIjBvt4zgRUmK28qfUP2xJvvQIKqG/ub20mSzfp4FDt
-	joC/FKnHZLywwaV3HA23FhXuqR58Z6HB6odkzg5tDufdPYKIjbx/Jb0gN816nagLrtR/yq4tQ5GQj
-	FINZYjfbrY03CaXoFVAklGwch9X5J6nlH7VgZsCh0wp92E+62Z7+mQtLdADkDJ1IczqbXoj3mEG9X
-	PkwhSOXXfUMIuDCVbfHg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mSg44imTgfxZvWIjRKdlwKiEWEBeZkfr3JjctE1v37g=; b=KvymkHHyxOdscb
+	n14A8uowfSMxxLXsAd/WJNy+JBXE6E1bh2XSaB3MzpGIMRBFxJUmPGlpQBnFbhrxiQAkY/McZcqPU
+	S7mfUUaloiW4VlxSP5QyPayZ/FTt0qNZcnD618ibepIo8BFH2KPARRz34+v00zzJvn4dQ/bVr6842
+	kNLEINLQvFI71bFtF1oCh7ji+AQHn4R/dOMEykumVZSsumNCgj50cCJxz2ko2gXSFD0dXZjNxVt7B
+	dnZ/I0neLlA+kc4SogL4fadviW8B6MxE9lY44tG1y/s1O6EkDrX9kW4poI5HNIZK6+YK7TDxMcqHk
+	C5cZOmWOG69eYXe0jDOA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hEdVK-0001rm-JW; Thu, 11 Apr 2019 17:28:50 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hEeTD-00089n-DV; Thu, 11 Apr 2019 18:30:43 +0000
+Received: from gateway22.websitewelcome.com ([192.185.47.144])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEdVH-0001rB-Po
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 17:28:49 +0000
-Received: from gmail.com (unknown [104.132.1.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 08C462084D;
- Thu, 11 Apr 2019 17:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1555003727;
- bh=Z0/DmaNrnDC9OrljK1poyZTLwzQJq8FwEv9dGTtd81Q=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rUL2CvSaEyQQ2WRpMdkdT2D3P6oXuBAQymfy8FzOSYy4nTmeel9KPNRTM/uBXT6Pa
- mAdwIJKBw9vOpFZKrCZd5pEgrYP0ta6vZbmgICqodIuasVHUWpf2BUo9hW+PH5zgZH
- r0XyIAKdCd250xyT9oprWqE3nQsgIGpkd1lw2VgQ=
-Date: Thu, 11 Apr 2019 10:28:45 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v2 1/2] vfs: use READ_ONCE() to access ->i_link
-Message-ID: <20190411172844.GA225654@gmail.com>
-References: <20190410202115.64501-1-ebiggers@kernel.org>
- <20190410202115.64501-2-ebiggers@kernel.org>
- <20190410210657.GA2217@ZenIV.linux.org.uk>
- <20190410231547.GC120258@gmail.com>
- <20190411022514.GC2217@ZenIV.linux.org.uk>
+ id 1hEeT6-00082e-Ta
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 18:30:38 +0000
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+ by gateway22.websitewelcome.com (Postfix) with ESMTP id 6EAADE0D7
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2019 13:30:34 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
+ id EeT4hjEXEiQerEeT4hSg22; Thu, 11 Apr 2019 13:30:34 -0500
+X-Authority-Reason: nr=8
+Received: from [189.250.139.70] (port=55132 helo=[192.168.1.76])
+ by gator4166.hostgator.com with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
+ (envelope-from <gustavo@embeddedor.com>)
+ id 1hEeT3-0036b3-NS; Thu, 11 Apr 2019 13:30:33 -0500
+Subject: Re: [PATCH v2] mtd: rawnand: mark expected switch fall-throughs
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20190128181520.GA25887@embeddedor> <20190205135521.622f82c2@xps13>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ mQINBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
+ 2Pm4wnOyEgYUyJd5tRWcIbsURAgei918mck3tugT7AQiTUN3/5aAzqe/4ApDUC+uWNkpNnSV
+ tjOx1hBpla0ifywy4bvFobwSh5/I3qohxDx+c1obd8Bp/B/iaOtnq0inli/8rlvKO9hp6Z4e
+ DXL3PlD0QsLSc27AkwzLEc/D3ZaqBq7ItvT9Pyg0z3Q+2dtLF00f9+663HVC2EUgP25J3xDd
+ 496SIeYDTkEgbJ7WYR0HYm9uirSET3lDqOVh1xPqoy+U9zTtuA9NQHVGk+hPcoazSqEtLGBk
+ YE2mm2wzX5q2uoyptseSNceJ+HE9L+z1KlWW63HhddgtRGhbP8pj42bKaUSrrfDUsicfeJf6
+ m1iJRu0SXYVlMruGUB1PvZQ3O7TsVfAGCv85pFipdgk8KQnlRFkYhUjLft0u7CL1rDGZWDDr
+ NaNj54q2CX9zuSxBn9XDXvGKyzKEZ4NY1Jfw+TAMPCp4buawuOsjONi2X0DfivFY+ZsjAIcx
+ qQMglPtKk/wBs7q2lvJ+pHpgvLhLZyGqzAvKM1sVtRJ5j+ARKA0w4pYs5a5ufqcfT7dN6TBk
+ LXZeD9xlVic93Ju08JSUx2ozlcfxq+BVNyA+dtv7elXUZ2DrYwARAQABtCxHdXN0YXZvIEEu
+ IFIuIFNpbHZhIDxndXN0YXZvQGVtYmVkZGVkb3IuY29tPokCPQQTAQgAJwUCWywcDAIbIwUJ
+ CWYBgAULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRBHBbTLRwbbMZ6tEACk0hmmZ2FWL1Xi
+ l/bPqDGFhzzexrdkXSfTTZjBV3a+4hIOe+jl6Rci/CvRicNW4H9yJHKBrqwwWm9fvKqOBAg9
+ obq753jydVmLwlXO7xjcfyfcMWyx9QdYLERTeQfDAfRqxir3xMeOiZwgQ6dzX3JjOXs6jHBP
+ cgry90aWbaMpQRRhaAKeAS14EEe9TSIly5JepaHoVdASuxklvOC0VB0OwNblVSR2S5i5hSsh
+ ewbOJtwSlonsYEj4EW1noQNSxnN/vKuvUNegMe+LTtnbbocFQ7dGMsT3kbYNIyIsp42B5eCu
+ JXnyKLih7rSGBtPgJ540CjoPBkw2mCfhj2p5fElRJn1tcX2McsjzLFY5jK9RYFDavez5w3lx
+ JFgFkla6sQHcrxH62gTkb9sUtNfXKucAfjjCMJ0iuQIHRbMYCa9v2YEymc0k0RvYr43GkA3N
+ PJYd/vf9vU7VtZXaY4a/dz1d9dwIpyQARFQpSyvt++R74S78eY/+lX8wEznQdmRQ27kq7BJS
+ R20KI/8knhUNUJR3epJu2YFT/JwHbRYC4BoIqWl+uNvDf+lUlI/D1wP+lCBSGr2LTkQRoU8U
+ 64iK28BmjJh2K3WHmInC1hbUucWT7Swz/+6+FCuHzap/cjuzRN04Z3Fdj084oeUNpP6+b9yW
+ e5YnLxF8ctRAp7K4yVlvA7kCDQRbLBwMARAAsHCE31Ffrm6uig1BQplxMV8WnRBiZqbbsVJB
+ H1AAh8tq2ULl7udfQo1bsPLGGQboJSVN9rckQQNahvHAIK8ZGfU4Qj8+CER+fYPp/MDZj+t0
+ DbnWSOrG7z9HIZo6PR9z4JZza3Hn/35jFggaqBtuydHwwBANZ7A6DVY+W0COEU4of7CAahQo
+ 5NwYiwS0lGisLTqks5R0Vh+QpvDVfuaF6I8LUgQR/cSgLkR//V1uCEQYzhsoiJ3zc1HSRyOP
+ otJTApqGBq80X0aCVj1LOiOF4rrdvQnj6iIlXQssdb+WhSYHeuJj1wD0ZlC7ds5zovXh+FfF
+ l5qH5RFY/qVn3mNIVxeO987WSF0jh+T5ZlvUNdhedGndRmwFTxq2Li6GNMaolgnpO/CPcFpD
+ jKxY/HBUSmaE9rNdAa1fCd4RsKLlhXda+IWpJZMHlmIKY8dlUybP+2qDzP2lY7kdFgPZRU+e
+ zS/pzC/YTzAvCWM3tDgwoSl17vnZCr8wn2/1rKkcLvTDgiJLPCevqpTb6KFtZosQ02EGMuHQ
+ I6Zk91jbx96nrdsSdBLGH3hbvLvjZm3C+fNlVb9uvWbdznObqcJxSH3SGOZ7kCHuVmXUcqoz
+ ol6ioMHMb+InrHPP16aVDTBTPEGwgxXI38f7SUEn+NpbizWdLNz2hc907DvoPm6HEGCanpcA
+ EQEAAYkCJQQYAQgADwUCWywcDAIbDAUJCWYBgAAKCRBHBbTLRwbbMdsZEACUjmsJx2CAY+QS
+ UMebQRFjKavwXB/xE7fTt2ahuhHT8qQ/lWuRQedg4baInw9nhoPE+VenOzhGeGlsJ0Ys52sd
+ XvUjUocKgUQq6ekOHbcw919nO5L9J2ejMf/VC/quN3r3xijgRtmuuwZjmmi8ct24TpGeoBK4
+ WrZGh/1hAYw4ieARvKvgjXRstcEqM5thUNkOOIheud/VpY+48QcccPKbngy//zNJWKbRbeVn
+ imua0OpqRXhCrEVm/xomeOvl1WK1BVO7z8DjSdEBGzbV76sPDJb/fw+y+VWrkEiddD/9CSfg
+ fBNOb1p1jVnT2mFgGneIWbU0zdDGhleI9UoQTr0e0b/7TU+Jo6TqwosP9nbk5hXw6uR5k5PF
+ 8ieyHVq3qatJ9K1jPkBr8YWtI5uNwJJjTKIA1jHlj8McROroxMdI6qZ/wZ1ImuylpJuJwCDC
+ ORYf5kW61fcrHEDlIvGc371OOvw6ejF8ksX5+L2zwh43l/pKkSVGFpxtMV6d6J3eqwTafL86
+ YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
+ GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
+ VtSixD1uOgytAP7RWS474w==
+Message-ID: <ce33f949-48c8-b32a-028e-ee68afc08e8f@embeddedor.com>
+Date: Thu, 11 Apr 2019 13:30:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190411022514.GC2217@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190205135521.622f82c2@xps13>
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - lists.infradead.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.250.139.70
+X-Source-L: No
+X-Exim-ID: 1hEeT3-0036b3-NS
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.76]) [189.250.139.70]:55132
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 10
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190411_102847_849245_29C540D3 
-X-CRM114-Status: GOOD (  16.65  )
+X-CRM114-CacheID: sfid-20190411_113037_032572_BD2468C4 
+X-CRM114-Status: GOOD (  15.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,47 +135,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-f2fs-devel@lists.sourceforge.net
+Cc: Kees Cook <keescook@chromium.org>, Wan ZongShun <mcuos.com@gmail.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 11, 2019 at 03:25:15AM +0100, Al Viro wrote:
-> On Wed, Apr 10, 2019 at 04:15:48PM -0700, Eric Biggers wrote:
-> > On Wed, Apr 10, 2019 at 10:06:57PM +0100, Al Viro wrote:
-> > > On Wed, Apr 10, 2019 at 01:21:14PM -0700, Eric Biggers wrote:
-> > > > From: Eric Biggers <ebiggers@google.com>
-> > > > 
-> > > > Use 'READ_ONCE(inode->i_link)' to explicitly support filesystems caching
-> > > > the symlink target in ->i_link later if it was unavailable at iget()
-> > > > time, or wasn't easily available.  I'll be doing this in fscrypt, to
-> > > > improve the performance of encrypted symlinks on ext4, f2fs, and ubifs.
-> > > > 
-> > > > ->i_link will start NULL and may later be set to a non-NULL value by a
-> > > > smp_store_release() or cmpxchg_release().  READ_ONCE() is needed on the
-> > > > read side.  smp_load_acquire() is unnecessary because only a data
-> > > > dependency barrier is required.  (Thanks to Al for pointing this out.)
-> > > 
-> > > You've missed vfs_readlink()...
-> > 
-> > How so?  The patch already updates vfs_readlink().
+Hi Miquel,
+
+On 2/5/19 6:55 AM, Miquel Raynal wrote:
+[..]
+>> @@ -3280,12 +3280,14 @@ static void onenand_check_features(struct mtd_info *mtd)
+>>  			if ((this->version_id & 0xf) == 0xe)
+>>  				this->options |= ONENAND_HAS_NOP_1;
+>>  		}
+>> +		/* fall through */
+>>  
+>>  	case ONENAND_DEVICE_DENSITY_2Gb:
+>>  		/* 2Gb DDP does not have 2 plane */
+>>  		if (!ONENAND_IS_DDP(this))
+>>  			this->options |= ONENAND_HAS_2PLANE;
+>>  		this->options |= ONENAND_HAS_UNLOCK_ALL;
+>> +		/* fall through */
 > 
-> Huh?  Right you are - fsck knows how have I managed to misread that...
-> Anyway, I can pick that READ_ONCE() patch through vfs.git if you wish,
-> or it can go through your tree with my Acked-by - up to you...
+> This looks strange.
+> 
+> In ONENAND_DEVICE_DENSITY_2Gb:
+> ONENAND_HAS_UNLOCK_ALL is set unconditionally.
+> 
+> But then, under ONENAND_DEVICE_DENSITY_1Gb, the same option is set only
+> if process is evaluated to true.
+> 
+> Same problem with ONENAND_HAS_2PLANE:
+> - it is set in ONENAND_DEVICE_DENSITY_4Gb only if ONENAND_IS_DDP()
+> - it is unset in ONENAND_DEVICE_DENSITY_2Gb only if !ONENAND_IS_DDP()
+> 
+> Maybe this portion should be reworked because I am unsure if this is a
+> missing fall through or a bug.
+> 
 
-Unless you expect merge conflicts, it's easier for me to take it through the
-fscrypt tree, since it's a small patch and the second patch technically isn't
-correct without it.  I'll add your Acked-by.
+I wonder if you had the chance to take a look into this piece of code.
 
-Are you planning to review the second patch too?
-
-Thanks!
-
-- Eric
+Thanks
+--
+Gustavo
 
 ______________________________________________________
 Linux MTD discussion mailing list
