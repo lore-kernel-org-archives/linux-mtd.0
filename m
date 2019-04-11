@@ -6,67 +6,63 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B985CC10F14
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 03:01:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68AD7C10F13
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 06:54:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B89F20818
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 03:01:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 32DFE2083E
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 06:54:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ChEliXBI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B89F20818
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ShJznm+7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32DFE2083E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=hzqizRmZEEYIOq1NFKy/jG4E4iiYCsQyTsVDzL2ivxA=; b=ChEliXBIFTvzOBkz4acpDxfzj
-	ZJz4/C+Ka7mKnr6SiKMXgxKbWqRgLng9Tn5tHJQZ9Fq2kXDL7Orki1pMPJlUnNrA9hD7o4xWPKxi4
-	FDS4hLVYBvktQEnHYmrt1fy4ZN3DzAHaUY5cqt5XG8CHbpTEFfcI3Rr2cI7nMjseC9K8EW7dH7BAS
-	+r7KALTnmEWWHoTQHzMpA6B0NQDOJz4RqQlWOXwh0o/kQq3iu9P6W9qPV+iRmp90vwJz3RlnVBJsh
-	vNzYEyQ0OhKhO9aUGKAPpPCUJTr3rLMN76xn7bsLO1ROSMPaE3TiRSiwvh47K1VsU38n+L2ZcbOIq
-	HItYa2nVw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=RvIbI1WMyRG/Aw48T9Yv9CVhgYgfEqDjYZez+Ql8Exc=; b=ShJznm+76G14aZ
+	nW1OoRZQyT0Vc4Xr6mxfQHsFnQgmnGnrrUsALIvLyElQmPHfz62P8EuRciSRCq4/39NIN0G6KF5kv
+	MXqFZDOSOseJhUTeZ+fYb69+89qS5BPUaXc6yKfzGVWVXiO8Ci4l3bzwWzNd/CAsvYb3tmt3UXn2p
+	vHWK6ZcGyD5eDLoMqQEiJgSbIQ33Xa74wxXJs+kZy1FzVjTbVB1CFyUm3N5HSGR/t2UXOdDnX6Dey
+	SsCzQstNGHx/6mdjRER9xCxX03/uuPS/pfIIdobh65gqdiQfrrPDudYGhB8nZEIUfX/pdqMXHMaQe
+	SUpQC1ScW5A6Tv+SGDiw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hEPxW-0007eP-Dr; Thu, 11 Apr 2019 03:01:02 +0000
-Received: from mail-sz.amlogic.com ([211.162.65.117])
+	id 1hETb1-00080m-0z; Thu, 11 Apr 2019 06:54:03 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEPxL-0007Tm-Rg; Thu, 11 Apr 2019 03:00:53 +0000
-Received: from [10.28.18.125] (10.28.18.125) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Thu, 11 Apr
- 2019 11:00:30 +0800
-Subject: Re: 32-bit Amlogic (ARM) SoC: kernel BUG in kfree()
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-References: <CAFBinCBOX8HyY-UocsVQvsnTr4XWXyE9oU+f2xhO1=JU0i_9ow@mail.gmail.com>
- <20190321214401.GC19508@bombadil.infradead.org>
- <CAFBinCA6oK5UhDAt9kva5qRisxr2gxMF26AMK8vC4b1DN5RXrw@mail.gmail.com>
- <5cad2529-8776-687e-58d0-4fb9e2ec59b1@amlogic.com>
- <CAFBinCA=0XSSVmzfTgb4eSiVFr=XRHqLOVFGyK0++XRty6VjnQ@mail.gmail.com>
- <32799846-b8f0-758f-32eb-a9ce435e0b79@amlogic.com>
- <CAFBinCDHmuNZxuDf3pe2ij6m8aX2fho7L+B9ZMaMOo28tPZ62Q@mail.gmail.com>
- <79b81748-8508-414f-c08a-c99cb4ae4b2a@amlogic.com>
- <CAFBinCCSkVGp_iWKf=o=7UGuDUWxyLPGdrqGy_P-HPuEJiU1zQ@mail.gmail.com>
- <8cb108ff-7a72-6db4-660d-33880fcee08a@amlogic.com>
- <CAFBinCD4cRGbC=cFYEGVAHOtBSvrgNbCSfDWe3To0KCE5+ceVw@mail.gmail.com>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <45ce172c-5c76-bb69-31c8-af91e8ffdd68@amlogic.com>
-Date: Thu, 11 Apr 2019 11:00:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1hETaw-0007zt-UX
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 06:54:00 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7EC282756F7;
+ Thu, 11 Apr 2019 07:53:56 +0100 (BST)
+Date: Thu, 11 Apr 2019 08:53:53 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and
+ randomizer support
+Message-ID: <20190411085353.4c1af008@collabora.com>
+In-Reply-To: <OF071D3608.9D6D2523-ON482583D9.00173F52-482583D9.0018188C@mxic.com.tw>
+References: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
+ <20190409090427.22de9917@collabora.com>
+ <OF6C97E4DE.45261545-ON482583D7.00340468-482583D7.0034B3FE@mxic.com.tw>
+ <20190409114701.744c2c8c@collabora.com>
+ <OF9601E14B.A48284C4-ON482583D8.0005E3EB-482583D8.0006CC14@mxic.com.tw>
+ <20190410092258.332ef399@collabora.com>
+ <OF071D3608.9D6D2523-ON482583D9.00173F52-482583D9.0018188C@mxic.com.tw>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCD4cRGbC=cFYEGVAHOtBSvrgNbCSfDWe3To0KCE5+ceVw@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.28.18.125]
-X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
- (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190410_200051_897789_8BD00C95 
-X-CRM114-Status: GOOD (  17.76  )
+X-CRM114-CacheID: sfid-20190410_235359_248494_B01D1702 
+X-CRM114-Status: GOOD (  31.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -78,85 +74,177 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mhocko@suse.com, linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
- Matthew Wilcox <willy@infradead.org>, rppt@linux.ibm.com, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org,
- akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org
+Cc: bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Martin,
-On 2019/4/11 1:54, Martin Blumenstingl wrote:
-> Hi Liang,
-> 
-> On Wed, Apr 10, 2019 at 1:08 PM Liang Yang <liang.yang@amlogic.com> wrote:
->>
->> Hi Martin,
->>
->> On 2019/4/5 12:30, Martin Blumenstingl wrote:
->>> Hi Liang,
->>>
->>> On Fri, Mar 29, 2019 at 8:44 AM Liang Yang <liang.yang@amlogic.com> wrote:
->>>>
->>>> Hi Martin,
->>>>
->>>> On 2019/3/29 2:03, Martin Blumenstingl wrote:
->>>>> Hi Liang,
->>>> [......]
->>>>>> I don't think it is caused by a different NAND type, but i have followed
->>>>>> the some test on my GXL platform. we can see the result from the
->>>>>> attachment. By the way, i don't find any information about this on meson
->>>>>> NFC datasheet, so i will ask our VLSI.
->>>>>> Martin, May you reproduce it with the new patch on meson8b platform ? I
->>>>>> need a more clear and easier compared log like gxl.txt. Thanks.
->>>>> your gxl.txt is great, finally I can also compare my own results with
->>>>> something that works for you!
->>>>> in my results (see attachment) the "DATA_IN  [256 B, force 8-bit]"
->>>>> instructions result in a different info buffer output.
->>>>> does this make any sense to you?
->>>>>
->>>> I have asked our VLSI designer for explanation or simulation result by
->>>> an e-mail. Thanks.
->>> do you have any update on this?
->> Sorry. I haven't got reply from VLSI designer yet. We tried to improve
->> priority yesterday, but i still can't estimate the time. There is no
->> document or change list showing the difference between m8/b and gxl/axg
->> serial chips. Now it seems that we can't use command NFC_CMD_N2M on nand
->> initialization for m8/b chips and use *read byte from NFC fifo register*
->> instead.
-> thank you for the status update!
-> 
-> I am trying to understand your suggestion not to use NFC_CMD_N2M:
-> the documentation (public S922X datasheet from Hardkernel: [0]) states
-> that P_NAND_BUF (NFC_REG_BUF in the meson_nand driver) can hold up to
-> four bytes of data. is this the "read byte from NFC FIFO register" you
-> mentioned?
-> 
-You are right.take the early meson NFC driver V2 on previous mail as a 
-reference.
+On Thu, 11 Apr 2019 12:23:11 +0800
+masonccyang@mxic.com.tw wrote:
 
-> Before I spend time changing the code to use the FIFO register I would
-> like to wait for an answer from your VLSI designer.
-> Setting the "correct" info buffer length for NFC_CMD_N2M on the 32-bit
-> SoCs seems like an easier solution compared to switching to the FIFO
-> register. Keeping NFC_CMD_N2M on the 32-bit SoCs also allows us to
-> have only one code-path for 32 and 64 bit SoCs, meaning we don't have
-> to maintain two separate code-paths for basically the same
-> functionality (assuming that NFC_CMD_N2M is not completely broken on
-> the 32-bit SoCs, we just don't know how to use it yet).
+> Hi Boris,
+>  
+>  
+> > > > Subject
+> > > > 
+> > > > Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and   
+> randomizer 
+> > > support  
+> > > > 
+> > > > On Tue, 9 Apr 2019 17:35:39 +0800
+> > > > masonccyang@mxic.com.tw wrote:
+> > > >   
+> > > > > > > +
+> > > > > > > +static const struct kobj_attribute sysfs_mxic_nand =
+> > > > > > > +   __ATTR(nand_random, S_IRUGO | S_IWUSR,
+> > > > > > > +          mxic_nand_rand_type_show,
+> > > > > > > +          mxic_nand_rand_type_store);   
+> > > > > > 
+> > > > > > No, we don't want to expose that through a sysfs file,   
+> especially 
+> > > since  
+> > > > > > changing the randomizer config means making the NAND unreadable   
+> for
+> > > > > > those that have used it before the change.
+> > > > > >   
+> > > > > 
+> > > > > Our on-die randomizer is still readable from user after the   
+> function 
+> > > > > is enabled.   
+> > > > 
+> > > > You mean the memory is still readable no matter the randomizer   
+> state.
+> > > > Not sure how that's possible, but okay.
+> > > >   
+> > > > > This randomizer is just like a internal memory cell 
+> > > > > reliability enhanced.   
+> > > > 
+> > > > Why don't you enable it by default then?   
+> > > 
+> > > The penalty of randomizer is read/write performance down.
+> > > i.e,. tPROG 300 us to 340 us (randomizer enable)
+> > > therefore, disable it by default.  
+> > 
+> > I'm a bit puzzled. On the NAND I've seen that required data
+> > randomization it's not something you'd want to disable as this implied
+> > poor data retention. What's the use case here? Are we talking about SLC
+> > or MLC NANDs? Should we enable this feature once we start seeing that
+> > the NAND starts being less reliable (basically when read-retry happens
+> > more often)? I really think this is something you should decide kernel
+> > side, because users have no clue when it's appropriate to switch this
+> > feature on/off.
+> >   
 > 
-All right. I am also waiting for the answer.
+> It's SLC NAND and seems to has nothing to do with read-retry happens.
+> later, I will get more information for your concerns.
+
+Well, this feature is optional, and can be enabled to improve
+reliability. Sounds like a good reason to enable it when your NAND
+device starts showing reliability issues, and the number of read_retry
+attempts reflects the wear level pretty well. Alternatively, you could
+use the number of bitflips, but, in any case, don't expect the user to
+take this decision, because almost nobody knows what the randomizer
+is needed for.
+
 > 
-> Regards
-> Martin
+> > >   
+> > > >   
+> > > > > It could be enable at any time with OTP bit function and that's   
+> why
+> > > > > we patch it by sys-fs.   
+> > > > 
+> > > > Sorry, but that's not a good reason to expose that through sysfs.   
+> > > 
+> > > Any good way to expose randomizer function for user ?  
+> > 
+> > Don't expose it :P.  
+> 
+> oh, okay, I will remove sys-fs randomizer.
+> 
+> Is it OK to keep set/get features for randomizer ?
+
+I don't think it's a good idea to have dead code, so no. But I'm pretty
+sure we'll find a way to use/expose this feature.
+
+> that is :
+> 
+> +static void macronix_nand_onfi_init(struct nand_chip *chip)
+> +{
+> +                struct nand_parameters *p = &chip->parameters;
+> +                struct kobject *kobj;
+> +                int ret;
+> +
+> +                if (p->onfi) {
+> +                                struct nand_onfi_vendor_macronix *mxic =
+> +                                                                (void 
+> *)p->onfi->vendor;
+> +
+> +                                if (mxic->reliability_func & 
+> MACRONIX_READ_RETRY_BIT) {
+> +                                                chip->read_retries = 
+> MACRONIX_READ_RETRY_MODE + 1;
+> +                                                chip->setup_read_retry =
+> + macronix_nand_setup_read_retry;
+> +                                                if 
+> (p->supports_set_get_features) {
+> + set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
+> +  p->set_feature_list);
+> + set_bit(ONFI_FEATURE_ADDR_READ_RETRY,
+> +  p->get_feature_list);
+> +                                                }
+> +                                }
+> +
+> +                                if (mxic->reliability_func & 
+> MACRONIX_RANDOMIZER_BIT) {
+> +                                                if 
+> (p->supports_set_get_features) {
+> + set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
+> +  p->set_feature_list);
+> + set_bit(ONFI_FEATURE_ADDR_MXIC_RANDOMIZER,
+> +  p->get_feature_list);
+> +                                                }
+> +                                }
+> +                }
+> +}
+> + 
+> 
+> thanks & best regards,
+> Mason
 > 
 > 
-> [0] https://dn.odroid.com/S922X/ODROID-N2/Datasheet/S922X_Public_Datasheet_V0.2.pdf
 > 
-> .
+> CONFIDENTIALITY NOTE:
 > 
+> This e-mail and any attachments may contain confidential information 
+> and/or personal data, which is protected by applicable laws. Please be 
+> reminded that duplication, disclosure, distribution, or use of this e-mail 
+> (and/or its attachments) or any part thereof is prohibited. If you receive 
+> this e-mail in error, please notify us immediately and delete this mail as 
+> well as its attachment(s) from your system. In addition, please be 
+> informed that collection, processing, and/or use of personal data is 
+> prohibited unless expressly permitted by personal data protection laws. 
+> Thank you for your attention and cooperation.
+> 
+> Macronix International Co., Ltd.
+> 
+> =====================================================================
+> 
+> 
+> 
+> ============================================================================
+> 
+> CONFIDENTIALITY NOTE:
+> 
+> This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+> 
+> Macronix International Co., Ltd.
+> 
+> =====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
