@@ -2,87 +2,71 @@ Return-Path: <SRS0=0SW8=SN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=0.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65EDFC10F13
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 16:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DC22C10F13
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 17:28:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34D822133D
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 16:09:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E5CFB2146F
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 17:28:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="j9AxIx/b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34D822133D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rockwellcollins.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Yjo+SKOi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUL2CvSa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5CFB2146F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OkmeOFMH3gCoCwaVzFue5M1E7CA7RZKyLRqQ3Uz85ys=; b=j9AxIx/bev5lay
-	BeTy6PGJ1FMMpKs3m3xt87IFB+OffHp6isj6evJNEpsYQ9Yt9kgB71bvBdIMTp9AUQHYpZUNu+Ua7
-	L0+QtsgqoQZMPldSSuw5ZecTX8Dng7SjgjrQ+JVIxTKhvn3GHTX6Va7o74ErnCz7tWgcl5aody4vN
-	T8a0ZkOnN9nUZWymZLayFct4YxDWLYSByLLZq7dyXjol0BDoCF5qq/vZtNEDTy1pP1XvGbdvBnlKJ
-	12at2tUe1xVyuzoXq9yaRsbaBUaQ5K2pUgLIHbfus5Zg4wSmf5mjn/9XmDBoIIfl6/teenSVG8L/J
-	P4DsvwXUR3p6YAlD+J/A==;
+	List-Owner; bh=OQ5/QdWT9I5VTyp2Ma7WkldEH6Y7MIlFcYnJbfb55Og=; b=Yjo+SKOikb2+E0
+	kQANamzrAcTudI1hgv7U4QbVCFNsi2cEoqTlBdaJ7CK3i3RE/isWCl7+zQtDokJ2NbS4D+3wx44PX
+	V4zIrG3f3EewW+5BHqJrt8WvqiYfIJdC/5YIjBvt4zgRUmK28qfUP2xJvvQIKqG/ub20mSzfp4FDt
+	joC/FKnHZLywwaV3HA23FhXuqR58Z6HB6odkzg5tDufdPYKIjbx/Jb0gN816nagLrtR/yq4tQ5GQj
+	FINZYjfbrY03CaXoFVAklGwch9X5J6nlH7VgZsCh0wp92E+62Z7+mQtLdADkDJ1IczqbXoj3mEG9X
+	PkwhSOXXfUMIuDCVbfHg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hEcG9-0006wE-PR; Thu, 11 Apr 2019 16:09:05 +0000
-Received: from ch3vs03.rockwellcollins.com ([205.175.226.47])
+	id 1hEdVK-0001rm-JW; Thu, 11 Apr 2019 17:28:50 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEcG6-0006vJ-7x
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 16:09:04 +0000
-X-RC-All-From: , 205.175.226.20, No hostname, brandon.maier@rockwellcollins.com,
- Brandon Maier <brandon.maier@rockwellcollins.com>, , 
-X-RC-Attachments: , ,
-X-RC-RemoteIP: 205.175.226.20
-X-RC-RemoteHost: No hostname
-X-RC-IP-Hostname: ch3ip03.rockwellcollins.com
-X-RC-IP-MID: 17279384
-X-RC-IP-Group: GOOGLE_RELAYED
-X-RC-IP-Policy: $GOOGLE_RELAYED
-X-RC-IP-SBRS: None
-Received: from unknown (HELO mail-oi1-f199.google.com) ([205.175.226.20])
- by ch3vs03.rockwellcollins.com with ESMTP/TLS/AES128-GCM-SHA256;
- 11 Apr 2019 11:08:58 -0500
-Received: by mail-oi1-f199.google.com with SMTP id n15so3013381oig.11
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2019 09:08:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=CMmjzNWIqe9HoJcUH4vlddQkHOlOHIiBfmqjgOSe430=;
- b=DGQfJmrAVzY139ZKP98O4eKowSODUdWqV1NehuBo8R4/f/akB7EMkC0TQEUUyZEpbQ
- h17EgUZ3rDqq7IPhe/FUuumt54ktvqVw0j5Iulf7wiwIorcYW292MAQR0q8BaeGCREqU
- 4fFsFokYkHO8IzU/jMk2Wy+TBttodAfx+cORM8kPa67SPnfCG3bEI8ac1Xkui2G339Ax
- ejaZmm1KINkG/0QpLJ2zn0uEGIkN2j4bN0ovr7/ecOV+oRAzUGuU6ZvurLmismZ/vLTX
- 2fV7NF4Id+KizrI7UE91fRih238g6XG1sNthtlZ0qeOcG4tn5q7ytUxpSbviTNBsQdS3
- vZ/g==
-X-Gm-Message-State: APjAAAWlJGKEiznlaaEPOD8qHf5M5PlwzdKw8ejGoYKpRLOQ8GtvAks9
- NeWu5ePTkdN3WmsV5Pw49zFWQBdhrjERAypmQJVrkp4wz1St+UbD6/ueZi7vRUq48VZejUeC6fb
- Prva8zawzHHVYHrSBqJiH54b5wu51bqxhonImDhuc2EcPxFG7geL+iCExeoUw
-X-Received: by 2002:aca:6289:: with SMTP id w131mr6851642oib.84.1554998937530; 
- Thu, 11 Apr 2019 09:08:57 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwZSpBwIXIK1oRuZ2fJ5JEaX6MBIqS5ZKgWYfatVaqXR+66mS0pyvVaIV1CHOmJsTJEdb7O3H/2XJb66lYZMkw=
-X-Received: by 2002:aca:6289:: with SMTP id w131mr6851615oib.84.1554998937081; 
- Thu, 11 Apr 2019 09:08:57 -0700 (PDT)
+ id 1hEdVH-0001rB-Po
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 17:28:49 +0000
+Received: from gmail.com (unknown [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 08C462084D;
+ Thu, 11 Apr 2019 17:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1555003727;
+ bh=Z0/DmaNrnDC9OrljK1poyZTLwzQJq8FwEv9dGTtd81Q=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=rUL2CvSaEyQQ2WRpMdkdT2D3P6oXuBAQymfy8FzOSYy4nTmeel9KPNRTM/uBXT6Pa
+ mAdwIJKBw9vOpFZKrCZd5pEgrYP0ta6vZbmgICqodIuasVHUWpf2BUo9hW+PH5zgZH
+ r0XyIAKdCd250xyT9oprWqE3nQsgIGpkd1lw2VgQ=
+Date: Thu, 11 Apr 2019 10:28:45 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v2 1/2] vfs: use READ_ONCE() to access ->i_link
+Message-ID: <20190411172844.GA225654@gmail.com>
+References: <20190410202115.64501-1-ebiggers@kernel.org>
+ <20190410202115.64501-2-ebiggers@kernel.org>
+ <20190410210657.GA2217@ZenIV.linux.org.uk>
+ <20190410231547.GC120258@gmail.com>
+ <20190411022514.GC2217@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-References: <20190212002501.96725-1-brandon.maier@rockwellcollins.com>
-In-Reply-To: <20190212002501.96725-1-brandon.maier@rockwellcollins.com>
-From: Brandon Maier <brandon.maier@rockwellcollins.com>
-Date: Thu, 11 Apr 2019 11:08:46 -0500
-Message-ID: <CA+fik51fDL4i9VYeo7dkYvz_fKjdsF71nbQuvWU8qUSSQez-Bg@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: Fix use of uninitialized erase_completion_lcok
-To: dwmw2@infradead.org
+Content-Disposition: inline
+In-Reply-To: <20190411022514.GC2217@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190411_090902_383573_7CE8BFF3 
-X-CRM114-Status: GOOD (  16.01  )
+X-CRM114-CacheID: sfid-20190411_102847_849245_29C540D3 
+X-CRM114-Status: GOOD (  16.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,82 +78,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org,
- Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-f2fs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ping
+On Thu, Apr 11, 2019 at 03:25:15AM +0100, Al Viro wrote:
+> On Wed, Apr 10, 2019 at 04:15:48PM -0700, Eric Biggers wrote:
+> > On Wed, Apr 10, 2019 at 10:06:57PM +0100, Al Viro wrote:
+> > > On Wed, Apr 10, 2019 at 01:21:14PM -0700, Eric Biggers wrote:
+> > > > From: Eric Biggers <ebiggers@google.com>
+> > > > 
+> > > > Use 'READ_ONCE(inode->i_link)' to explicitly support filesystems caching
+> > > > the symlink target in ->i_link later if it was unavailable at iget()
+> > > > time, or wasn't easily available.  I'll be doing this in fscrypt, to
+> > > > improve the performance of encrypted symlinks on ext4, f2fs, and ubifs.
+> > > > 
+> > > > ->i_link will start NULL and may later be set to a non-NULL value by a
+> > > > smp_store_release() or cmpxchg_release().  READ_ONCE() is needed on the
+> > > > read side.  smp_load_acquire() is unnecessary because only a data
+> > > > dependency barrier is required.  (Thanks to Al for pointing this out.)
+> > > 
+> > > You've missed vfs_readlink()...
+> > 
+> > How so?  The patch already updates vfs_readlink().
+> 
+> Huh?  Right you are - fsck knows how have I managed to misread that...
+> Anyway, I can pick that READ_ONCE() patch through vfs.git if you wish,
+> or it can go through your tree with my Acked-by - up to you...
 
-Should I CC JFFS2 patches somewhere else? I don't see any traction on
-JFFS patches in linux-mtd nor any emails from the maintainer Woodhouse
-since November.
+Unless you expect merge conflicts, it's easier for me to take it through the
+fscrypt tree, since it's a small patch and the second patch technically isn't
+correct without it.  I'll add your Acked-by.
 
-On Mon, Feb 11, 2019 at 6:25 PM Brandon Maier
-<brandon.maier@rockwellcollins.com> wrote:
->
-> From: Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
->
-> If jffs2_fill_super() detects a bad option, it will error out. But it
-> leaves a pointer to the uninitialized jffs2_sb_info in the super block.
-> It gets passed to jffs2_kill_sb() which attempts to use the spinlock,
-> generating the following warning:
->
-> [root@hostname tmp]# mount -t jffs2 -o 'bogus' /dev/mtdblock12 /mnt
-> [  354.060743] jffs2: Error: unrecognized mount option 'bogus' or missing value
-> [  354.067932] INFO: trying to register non-static key.
-> [  354.072847] the code is fine but needs lockdep annotation.
-> [  354.078315] turning off the locking correctness validator.
-> [  354.083804] CPU: 0 PID: 313 Comm: mount Not tainted 4.14.87 #1
-> [  354.089599] Hardware name: Xilinx Zynq Platform
-> [  354.094167] [<c0125e80>] (unwind_backtrace) from [<c0122080>] (show_stack+0x20/0x24)
-> [  354.101867] [<c0122080>] (show_stack) from [<c078f368>] (dump_stack+0xbc/0xe8)
-> [  354.109076] [<c078f368>] (dump_stack) from [<c0187b68>] (register_lock_class+0x27c/0x624)
-> [  354.117227] [<c0187b68>] (register_lock_class) from [<c018b334>] (__lock_acquire+0xa4/0x1c60)
-> [  354.125726] [<c018b334>] (__lock_acquire) from [<c018d92c>] (lock_acquire+0xd0/0x2b0)
-> [  354.133550] [<c018d92c>] (lock_acquire) from [<c07af704>] (_raw_spin_lock+0x54/0x64)
-> [  354.141271] [<c07af704>] (_raw_spin_lock) from [<c03d5ee8>] (jffs2_stop_garbage_collect_thread+0x24/0x5c)
-> [  354.150814] [<c03d5ee8>] (jffs2_stop_garbage_collect_thread) from [<c03d7278>] (jffs2_kill_sb+0x38/0x4c)
-> [  354.160276] [<c03d7278>] (jffs2_kill_sb) from [<c0287248>] (deactivate_locked_super+0x6c/0x90)
-> [  354.168878] [<c0287248>] (deactivate_locked_super) from [<c050ffcc>] (mount_mtd_aux+0x11c/0x124)
-> [  354.177623] [<c050ffcc>] (mount_mtd_aux) from [<c0510034>] (mount_mtd_nr+0x60/0x90)
-> [  354.185262] [<c0510034>] (mount_mtd_nr) from [<c05101d0>] (mount_mtd+0x16c/0x238)
-> [  354.192737] [<c05101d0>] (mount_mtd) from [<c03d72b4>] (jffs2_mount+0x28/0x30)
-> [  354.199946] [<c03d72b4>] (jffs2_mount) from [<c0288bd8>] (mount_fs+0x24/0xb8)
-> [  354.207073] [<c0288bd8>] (mount_fs) from [<c02aba34>] (vfs_kern_mount+0x64/0x138)
-> [  354.214528] [<c02aba34>] (vfs_kern_mount) from [<c02afb78>] (do_mount+0x198/0xce0)
-> [  354.222064] [<c02afb78>] (do_mount) from [<c02b0a5c>] (SyS_mount+0x84/0xac)
-> [  354.229028] [<c02b0a5c>] (SyS_mount) from [<c011cfc0>] (ret_fast_syscall+0x0/0x28)
-> mount: mounting /dev/mtdblock12 on /mnt failed: Invalid argument
->
-> Signed-off-by: Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
-> Signed-off-by: Brandon Maier <brandon.maier@rockwellcollins.com>
-> ---
->  fs/jffs2/super.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-> index bb6ae387469f..34f9a1c21620 100644
-> --- a/fs/jffs2/super.c
-> +++ b/fs/jffs2/super.c
-> @@ -286,8 +286,11 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
->         sb->s_fs_info = c;
->
->         ret = jffs2_parse_options(c, data);
-> -       if (ret)
-> +       if (ret) {
-> +               sb->s_fs_info = NULL;
-> +               kfree(c);
->                 return -EINVAL;
-> +       }
->
->         /* Initialize JFFS2 superblock locks, the further initialization will
->          * be done later */
-> --
-> 2.20.1
->
+Are you planning to review the second patch too?
+
+Thanks!
+
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
