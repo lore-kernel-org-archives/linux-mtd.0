@@ -1,131 +1,62 @@
-Return-Path: <SRS0=0SW8=SN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Ifuc=SO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1FAAC10F13
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 22:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C2CFC10F0E
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2019 07:24:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DD832184B
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2019 22:21:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2A5FE2171F
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2019 07:24:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LsZNulZx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DD832184B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qgwn5OBG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A5FE2171F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hrumr+TbXPSNrp/Y7s772n1jr7LIC+1y5Oz/+DH7C+g=; b=LsZNulZxdynSm6
-	THBWYlQBpkEYNdobgJddCGj1+aWAbtKH49bF/wutPDUqyuRbnDTLB6KKiT99JvpbneGCunyG6Gd6y
-	pfjWBjDb7yuqjMS8KaGc+GpwmGfL4oEgVDwTbkXSpOqSYszJ5yMXybRmENCUO2wRVQ1nnjMCKFisP
-	LPPet/HCD7SaCDzgeJBiYkmsYyY3FA9YHGzEk+YvlsjlDZ0v6JMSgih1N+xCb9C5rj2jA6usemmDf
-	OkKcBdUJxmpTDq7ugUA+tYnl3LmTqSlu7MshIgDwBHr7DyqjEjfnbP/N7WGFpRXl/78cItrQX7yjQ
-	HCssdJ8ZVwjP+qf4TLfQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5DaLQBqqntQVBgXFVS7N/zMs1WhIxit8LUsECGSsl+A=; b=qgwn5OBG5Z1qs9
+	7ODPM8ew3r3aquJLGDWjpAhj9KseEX/Xbx4NyXooe9x1ccLI6peoLMMBoWbn4fCX6UcZPRZaZgENo
+	bulghXcpblaTD13noR9QzxWzxZxUgR0n7mq/8Gzt/tcYtVdS+2BZfiBFvdr//id5srB+JxSjOXsIz
+	aWdtVdKMvh6Q6/BLmMlIBtxytudc2jxg+da2zKhBonobAReLGxwC7jtWzIcHr0tHbliWTr5dvZrUW
+	gfCi6+OiCJkM16kxSCDMhtQnsRcEMgwCvtJISaWig6wfx4dk0phz3reGyAFSdnPKSmqQAGBtSK442
+	IUQ2vjAgXq39PPLHzFIQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hEi3w-0005K2-T3; Thu, 11 Apr 2019 22:20:52 +0000
-Received: from gateway21.websitewelcome.com ([192.185.45.212])
+	id 1hEqYG-0000at-Ak; Fri, 12 Apr 2019 07:24:44 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hEi3t-0005IY-DD
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2019 22:20:50 +0000
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
- by gateway21.websitewelcome.com (Postfix) with ESMTP id 5DDC2400C36B9
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2019 17:20:34 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id Ei3ehp5YA2PzOEi3ehOOpa; Thu, 11 Apr 2019 17:20:34 -0500
-X-Authority-Reason: nr=8
-Received: from [189.250.139.70] (port=56800 helo=[192.168.1.76])
- by gator4166.hostgator.com with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
- (envelope-from <gustavo@embeddedor.com>)
- id 1hEi3d-0015ij-Ji; Thu, 11 Apr 2019 17:20:33 -0500
+ id 1hEqY8-0000Tl-5r; Fri, 12 Apr 2019 07:24:37 +0000
+X-Originating-IP: 90.88.18.121
+Received: from xps13 (aaubervilliers-681-1-63-121.w90-88.abo.wanadoo.fr
+ [90.88.18.121]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 4408BFF80F;
+ Fri, 12 Apr 2019 07:24:19 +0000 (UTC)
+Date: Fri, 12 Apr 2019 09:24:19 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Subject: Re: [PATCH v2] mtd: rawnand: mark expected switch fall-throughs
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+Message-ID: <20190412092419.6f5a6432@xps13>
+In-Reply-To: <017bdd52-8d1f-f746-6e1c-4d38491b2d6a@embeddedor.com>
 References: <20190128181520.GA25887@embeddedor> <20190205135521.622f82c2@xps13>
  <ce33f949-48c8-b32a-028e-ee68afc08e8f@embeddedor.com>
  <20190412001009.2db358b7@xps13>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <017bdd52-8d1f-f746-6e1c-4d38491b2d6a@embeddedor.com>
-Date: Thu, 11 Apr 2019 17:20:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ <017bdd52-8d1f-f746-6e1c-4d38491b2d6a@embeddedor.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190412001009.2db358b7@xps13>
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.250.139.70
-X-Source-L: No
-X-Exim-ID: 1hEi3d-0015ij-Ji
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.76]) [189.250.139.70]:56800
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190411_152049_527299_6902F4C9 
-X-CRM114-Status: GOOD (  16.39  )
+X-CRM114-CacheID: sfid-20190412_002436_366613_21CBAC01 
+X-CRM114-Status: GOOD (  19.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -143,72 +74,45 @@ Cc: Kees Cook <keescook@chromium.org>, Wan ZongShun <mcuos.com@gmail.com>,
  Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 4/11/19 5:10 PM, Miquel Raynal wrote:
-> Hi Gustavo,
-> 
-> "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Thu, 11 Apr
-> 2019 13:30:31 -0500:
-> 
->> Hi Miquel,
->>
->> On 2/5/19 6:55 AM, Miquel Raynal wrote:
->> [..]
->>>> @@ -3280,12 +3280,14 @@ static void onenand_check_features(struct mtd_info *mtd)
->>>>  			if ((this->version_id & 0xf) == 0xe)
->>>>  				this->options |= ONENAND_HAS_NOP_1;
->>>>  		}
->>>> +		/* fall through */
->>>>  
->>>>  	case ONENAND_DEVICE_DENSITY_2Gb:
->>>>  		/* 2Gb DDP does not have 2 plane */
->>>>  		if (!ONENAND_IS_DDP(this))
->>>>  			this->options |= ONENAND_HAS_2PLANE;
->>>>  		this->options |= ONENAND_HAS_UNLOCK_ALL;
->>>> +		/* fall through */  
->>>
->>> This looks strange.
->>>
->>> In ONENAND_DEVICE_DENSITY_2Gb:
->>> ONENAND_HAS_UNLOCK_ALL is set unconditionally.
->>>
->>> But then, under ONENAND_DEVICE_DENSITY_1Gb, the same option is set only
->>> if process is evaluated to true.
->>>
->>> Same problem with ONENAND_HAS_2PLANE:
->>> - it is set in ONENAND_DEVICE_DENSITY_4Gb only if ONENAND_IS_DDP()
->>> - it is unset in ONENAND_DEVICE_DENSITY_2Gb only if !ONENAND_IS_DDP()
->>>
->>> Maybe this portion should be reworked because I am unsure if this is a
->>> missing fall through or a bug.
->>>   
->>
->> I wonder if you had the chance to take a look into this piece of code.
->>
->> Thanks
->> --
->> Gustavo
-> 
-> What do you mean?
-> 
-
-You commented that the piece of code above should be reworked. So, it wasn't
-clear to me who was going to do that; and that's why I'm asking if you took
-a look into it and finally determine whether we are dealing with an actual
-bug or a false positive.
-
-Thanks
---
-Gustavo
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR3VzdGF2bywKCiJHdXN0YXZvIEEuIFIuIFNpbHZhIiA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNv
+bT4gd3JvdGUgb24gVGh1LCAxMSBBcHIKMjAxOSAxNzoyMDozMSAtMDUwMDoKCj4gT24gNC8xMS8x
+OSA1OjEwIFBNLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgR3VzdGF2bywKPiA+IAo+ID4g
+Ikd1c3Rhdm8gQS4gUi4gU2lsdmEiIDxndXN0YXZvQGVtYmVkZGVkb3IuY29tPiB3cm90ZSBvbiBU
+aHUsIDExIEFwcgo+ID4gMjAxOSAxMzozMDozMSAtMDUwMDoKPiA+ICAgCj4gPj4gSGkgTWlxdWVs
+LAo+ID4+Cj4gPj4gT24gMi81LzE5IDY6NTUgQU0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPj4g
+Wy4uXSAgCj4gPj4+PiBAQCAtMzI4MCwxMiArMzI4MCwxNCBAQCBzdGF0aWMgdm9pZCBvbmVuYW5k
+X2NoZWNrX2ZlYXR1cmVzKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ID4+Pj4gIAkJCWlmICgodGhp
+cy0+dmVyc2lvbl9pZCAmIDB4ZikgPT0gMHhlKQo+ID4+Pj4gIAkJCQl0aGlzLT5vcHRpb25zIHw9
+IE9ORU5BTkRfSEFTX05PUF8xOwo+ID4+Pj4gIAkJfQo+ID4+Pj4gKwkJLyogZmFsbCB0aHJvdWdo
+ICovCj4gPj4+PiAgCj4gPj4+PiAgCWNhc2UgT05FTkFORF9ERVZJQ0VfREVOU0lUWV8yR2I6Cj4g
+Pj4+PiAgCQkvKiAyR2IgRERQIGRvZXMgbm90IGhhdmUgMiBwbGFuZSAqLwo+ID4+Pj4gIAkJaWYg
+KCFPTkVOQU5EX0lTX0REUCh0aGlzKSkKPiA+Pj4+ICAJCQl0aGlzLT5vcHRpb25zIHw9IE9ORU5B
+TkRfSEFTXzJQTEFORTsKPiA+Pj4+ICAJCXRoaXMtPm9wdGlvbnMgfD0gT05FTkFORF9IQVNfVU5M
+T0NLX0FMTDsKPiA+Pj4+ICsJCS8qIGZhbGwgdGhyb3VnaCAqLyAgICAKPiA+Pj4KPiA+Pj4gVGhp
+cyBsb29rcyBzdHJhbmdlLgo+ID4+Pgo+ID4+PiBJbiBPTkVOQU5EX0RFVklDRV9ERU5TSVRZXzJH
+YjoKPiA+Pj4gT05FTkFORF9IQVNfVU5MT0NLX0FMTCBpcyBzZXQgdW5jb25kaXRpb25hbGx5Lgo+
+ID4+Pgo+ID4+PiBCdXQgdGhlbiwgdW5kZXIgT05FTkFORF9ERVZJQ0VfREVOU0lUWV8xR2IsIHRo
+ZSBzYW1lIG9wdGlvbiBpcyBzZXQgb25seQo+ID4+PiBpZiBwcm9jZXNzIGlzIGV2YWx1YXRlZCB0
+byB0cnVlLgo+ID4+Pgo+ID4+PiBTYW1lIHByb2JsZW0gd2l0aCBPTkVOQU5EX0hBU18yUExBTkU6
+Cj4gPj4+IC0gaXQgaXMgc2V0IGluIE9ORU5BTkRfREVWSUNFX0RFTlNJVFlfNEdiIG9ubHkgaWYg
+T05FTkFORF9JU19ERFAoKQo+ID4+PiAtIGl0IGlzIHVuc2V0IGluIE9ORU5BTkRfREVWSUNFX0RF
+TlNJVFlfMkdiIG9ubHkgaWYgIU9ORU5BTkRfSVNfRERQKCkKPiA+Pj4KPiA+Pj4gTWF5YmUgdGhp
+cyBwb3J0aW9uIHNob3VsZCBiZSByZXdvcmtlZCBiZWNhdXNlIEkgYW0gdW5zdXJlIGlmIHRoaXMg
+aXMgYQo+ID4+PiBtaXNzaW5nIGZhbGwgdGhyb3VnaCBvciBhIGJ1Zy4KPiA+Pj4gICAgIAo+ID4+
+Cj4gPj4gSSB3b25kZXIgaWYgeW91IGhhZCB0aGUgY2hhbmNlIHRvIHRha2UgYSBsb29rIGludG8g
+dGhpcyBwaWVjZSBvZiBjb2RlLgo+ID4+Cj4gPj4gVGhhbmtzCj4gPj4gLS0KPiA+PiBHdXN0YXZv
+ICAKPiA+IAo+ID4gV2hhdCBkbyB5b3UgbWVhbj8KPiA+ICAgCj4gCj4gWW91IGNvbW1lbnRlZCB0
+aGF0IHRoZSBwaWVjZSBvZiBjb2RlIGFib3ZlIHNob3VsZCBiZSByZXdvcmtlZC4gU28sIGl0IHdh
+c24ndAo+IGNsZWFyIHRvIG1lIHdobyB3YXMgZ29pbmcgdG8gZG8gdGhhdDsgYW5kIHRoYXQncyB3
+aHkgSSdtIGFza2luZyBpZiB5b3UgdG9vawo+IGEgbG9vayBpbnRvIGl0IGFuZCBmaW5hbGx5IGRl
+dGVybWluZSB3aGV0aGVyIHdlIGFyZSBkZWFsaW5nIHdpdGggYW4gYWN0dWFsCj4gYnVnIG9yIGEg
+ZmFsc2UgcG9zaXRpdmUuCgpZZXMgcGxlYXNlIGRvIGl0LCBJIGRvbid0IGhhdmUgdGhlIHRpbWUg
+YW5kIEkgZG9uJ3QgcGxhbiB0byBkbyBpdApteXNlbGYuCgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
