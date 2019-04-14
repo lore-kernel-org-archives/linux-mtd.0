@@ -1,83 +1,63 @@
-Return-Path: <SRS0=Ld/O=SP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=XyTp=SQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E453C10F11
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Apr 2019 15:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40A0DC10F13
+	for <linux-mtd@archiver.kernel.org>; Sun, 14 Apr 2019 08:36:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26871214D8
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Apr 2019 15:36:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FC70206BA
+	for <linux-mtd@archiver.kernel.org>; Sun, 14 Apr 2019 08:36:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Epdxbyyp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mail.com header.i=@mail.com header.b="oIN8gLRQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26871214D8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CGWvpGX6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FC70206BA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Subject:To:From:Message-ID:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=LolBgDy7bDY5GmZ8EaIE7yZBZvhzcp1QZXUDArBH8/0=; b=Epd
-	xbyyp8oga0ZHD8RVQizBwMXpgTVqq8uMUZ1AI5RGYMPVz1s3NTEq98mvXrHzJudAmjaQVpULQajjm
-	AaPrkJf/adxbnmsJwpqe0wGfrMjbgecAq49Xhs7Q9gGRHKhxsmzt6Nu5qOIdVB5B/xwdq85/2ukxs
-	l2INNmAT9ihTDesQIYLs903AOLqZStwz7t5jYILymQwGBiipyClhIAeS3XeHCiCpI6te3SHTbNBPm
-	EGsLJegJfuk2RwnnZnVGRzoojeA3pJIubd5dFZBP8dHlxeXpaEJPwW5Ip5upNL+BeHQUOQRaGP+6C
-	a1jw+4+wK3BPIX09+qGXzV6b6uwRNNQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sS34Nkhh2BjItjtpf8vzVQ5ALGDeO4vP8/ZPWmmbZGQ=; b=CGWvpGX6e3AfZk
+	2HTcEy/u411GTnotHK5UgKodxDOpNWWzumTnRyB96e3tIFSMspUs946OKtQGStdoU33OQkhtpdqWi
+	8t1uPvC+AdxitHzz9QJAIv+LkEvQooUT/Emq2vXoetXGd/fwm/SulBxF/UbtAHahIPsMIoXMmUxcY
+	4PGk5yaV7utc8s5QhSZBjT93Qk3cvAHp5Teyr5GNQNqaFQ3E9LvEuYFO9l697LJqKCQ0NUMCFTOUd
+	pYIHGalVpRS0utNzF2RvY5dt6vAfAqu4RJtsBONsMcvv42pWIibAFHNqLoD00H8Pu1QIpRqSSsv5d
+	kDsYFUnGX1lPTa4ZzWdg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hFKhG-00087b-AQ; Sat, 13 Apr 2019 15:36:02 +0000
-Received: from mout.gmx.com ([74.208.4.201])
+	id 1hFach-0002sm-J0; Sun, 14 Apr 2019 08:36:23 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hFKhB-000873-5l
- for linux-mtd@lists.infradead.org; Sat, 13 Apr 2019 15:35:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com;
- s=dbd5af2cbaf7; t=1555169751;
- bh=GyzfJasrPCcoCcFNN5tou+SDjF2ZFZN2OFIoPMxnxbQ=;
- h=X-UI-Sender-Class:From:To:Subject:Date;
- b=oIN8gLRQtgT5WiE+JNFGlt08kXBFus9gU6ItI1Yi8RGUeOK6UDCJU/j0IjZXzOxQ6
- zwgCYuddaFFTfiPmba2FxOmdt5KhX4C5BN+dGgKbBf8o24pv+3FWm6uEjdNGPDmnWl
- 0OgVICQuc9gFyiSnLJYMkJsG8iNH8uewuHetyDYE=
-X-UI-Sender-Class: 214d933f-fd2f-45c7-a636-f5d79ae31a79
-Received: from [91.188.62.81] ([91.188.62.81]) by web-mail.mail.com
- (3c-app-mailcom-lxa02.server.lan [10.76.45.3]) (via HTTP); Sat, 13 Apr 2019
- 17:35:51 +0200
+ id 1hFacd-0002s5-Rl
+ for linux-mtd@lists.infradead.org; Sun, 14 Apr 2019 08:36:22 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B2304263959;
+ Sun, 14 Apr 2019 09:36:11 +0100 (BST)
+Date: Sun, 14 Apr 2019 10:36:08 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2] mtd: nandsim: switch to exec_op interface
+Message-ID: <20190414103608.257bd8b9@collabora.com>
+In-Reply-To: <20190413084052.15416-2-richard@nod.at>
+References: <20190413084052.15416-1-richard@nod.at>
+ <20190413084052.15416-2-richard@nod.at>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <trinity-5c9b9190-9eab-4324-be77-989be8846f42-1555169751470@3c-app-mailcom-lxa02>
-From: Vesta <laguna-mc@mail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Arguments when nanddump mtd partitions
-Date: Sat, 13 Apr 2019 17:35:51 +0200
-Importance: normal
-Sensitivity: Normal
-X-Priority: 3
-X-Provags-ID: V03:K1:Hvbl7IPKzJXS2qmEwiZlIbdb5D3RJULOuRI/kebqwx4zaCAsn4bQxd5xLoYS2OBhlBXbe
- y+qZ/SBiN5f89QRq50GOnDTMBuCv1s4cwDBX6yvGhrKZqlCwb9z4aXj1qKwH0hQLkdy/x/VdSQ3Z
- HN+FqAE585/K6DuWq+cVPryPBGNekVx4j7e3ddl58nO758Y1tjgd6t6e4vBVDH8PMio1Anqz7qQH
- GyAEHqKGIsy4m6vggfU88s0HcbSso24cHx4ep+F/1cROa+fnWegQZgPTG/MyYXoXe4isD2Rwyu23
- P4=
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tA0Rd9cq4bw=:QyavlJ7DEbf/jEzCcLswaG
- i2EDkU03ZqO/92zngtGijvUpjSciFnedbYEkcOZgPCitxg7nK/Y5FVvJH8x5phlGZ8JMPIiPn
- DXuF2VZGMQSbVN6wHh7H6h9v/1tn8ThfwV1KnLxl1K6qxBTsHpRKv0e/i2oIEeW9KYkTCf/qD
- lfnuA7xX3qg+Zmspt1KLUhbuWA9wSV33/6pXIpP1Kxo9HNZXEkL1dSEt6CaOz/bTolXU6u/lM
- oJh576UyZuc5y51GqSD4CM1MPRYIc1gYQ8gUKAWLKiubfe8RpYPDydZJvzX+fxm2xdV+sWMBl
- 8yvLFPSSvw4S5Q7wSKg8xjRfSm6J0miqMj4c605oDnVkdoTcxxvTsbORBtB3Lsrr/WUt4r8Nz
- aX1aAY6cxzUGTl5s7m1XGix3MlcPlj3ACRNEa8XuSlZx/rA0MTQOs8Xd6TmL4sFm5NFq93vZQ
- zpzfipt5mXt5oGDfr41bijXRHta5A6wmdSI3CTVkgAcNXm4SL+MMyocLJBy1bOQGDzMqieC62
- eSKc5Se7iSRvq7mUFoWTjyVlDvRIzPpcSarytK3A+AFvFRB/65AWPq3i3taRT+s8X+FY92as5
- j/R1RxRBhkBZk=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190413_083557_328480_C5EA22BF 
-X-CRM114-Status: UNSURE (   1.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190414_013620_159471_82AA072F 
+X-CRM114-Status: GOOD (  20.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,29 +69,177 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: bbrezillon@kernel.org, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+On Sat, 13 Apr 2019 10:40:52 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-what should be the proper arguments when make backup of mtd partitions?
+> Stop using the legacy interface.
 
-nanddump -f /tmp/mtd0 /dev/mtd0
-or
-nanddump --noecc --omitoob -f /tmp/mtd0 /dev/mtd0
+Thanks for converting the nandsim driver.
 
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/nand/raw/nandsim.c | 78 ++++++++++++++++++++--------------
+>  1 file changed, 47 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+> index 3d80e2d23b6e..33c369f9a607 100644
+> --- a/drivers/mtd/nand/raw/nandsim.c
+> +++ b/drivers/mtd/nand/raw/nandsim.c
+> @@ -299,6 +299,7 @@ union ns_mem {
+>   */
+>  struct nandsim {
+>  	struct nand_chip chip;
+> +	struct nand_controller base;
+>  	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
+>  	unsigned int nbparts;
+>  
+> @@ -645,9 +646,6 @@ static int __init init_nandsim(struct mtd_info *mtd)
+>  		return -EIO;
+>  	}
+>  
+> -	/* Force mtd to not do delays */
+> -	chip->legacy.chip_delay = 0;
+> -
+>  	/* Initialize the NAND flash parameters */
+>  	ns->busw = chip->options & NAND_BUSWIDTH_16 ? 16 : 8;
+>  	ns->geom.totsz    = mtd->size;
+> @@ -2077,24 +2075,6 @@ static void ns_nand_write_byte(struct nand_chip *chip, u_char byte)
+>  	return;
+>  }
+>  
+> -static void ns_hwcontrol(struct nand_chip *chip, int cmd, unsigned int bitmask)
+> -{
+> -	struct nandsim *ns = nand_get_controller_data(chip);
+> -
+> -	ns->lines.cle = bitmask & NAND_CLE ? 1 : 0;
+> -	ns->lines.ale = bitmask & NAND_ALE ? 1 : 0;
+> -	ns->lines.ce = bitmask & NAND_NCE ? 1 : 0;
+> -
+> -	if (cmd != NAND_CMD_NONE)
+> -		ns_nand_write_byte(chip, cmd);
+> -}
+> -
+> -static int ns_device_ready(struct nand_chip *chip)
+> -{
+> -	NS_DBG("device_ready\n");
+> -	return 1;
+> -}
+> -
+>  static void ns_nand_write_buf(struct nand_chip *chip, const u_char *buf,
+>  			      int len)
+>  {
+> @@ -2146,7 +2126,7 @@ static void ns_nand_read_buf(struct nand_chip *chip, u_char *buf, int len)
+>  		int i;
+>  
+>  		for (i = 0; i < len; i++)
+> -			buf[i] = chip->legacy.read_byte(chip);
+> +			buf[i] = ns_nand_read_byte(chip);
+>  
+>  		return;
+>  	}
+> @@ -2169,6 +2149,46 @@ static void ns_nand_read_buf(struct nand_chip *chip, u_char *buf, int len)
+>  	return;
+>  }
+>  
+> +static int ns_exec_op(struct nand_chip *chip, const struct nand_operation *op,
+> +		      bool check_only)
+> +{
+> +	int i;
+> +	unsigned int op_id;
+> +	const struct nand_op_instr *instr = NULL;
+> +	struct nandsim *ns = nand_get_controller_data(chip);
+> +
+> +	ns->lines.ce = chip->cur_cs == -1 ? 0 : 1;
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00060000 00004000 "u-boot"
-mtd1: 00020000 00004000 "u-bootenv"
-mtd2: 013e0000 00004000 "ROMIMAGE"
-mtd3: 00700000 00004000 "HALFIMAGE"
-mtd4: 01260000 00004000 "LINUX_ROOTFS"
-mtd5: 00200000 00004000 "HS_FW"
-...
+You can assume ns->lines.ce is always 1, since there's no point
+executing a NAND operation if the CS pin is not asserted. BTW, in case
+you ever consider supporting multi-CS chips, the CS line to select is
+passed through op->cs (you should not use nand->cur_cs).
+
+The rest of the patch looks good. Once this tiny detail is addressed you
+can add
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> +
+> +	for (op_id = 0; op_id < op->ninstrs; op_id++) {
+> +		instr = &op->instrs[op_id];
+> +		ns->lines.cle = 0;
+> +		ns->lines.ale = 0;
+> +
+> +		switch (instr->type) {
+> +		case NAND_OP_CMD_INSTR:
+> +			ns->lines.cle = 1;
+> +			ns_nand_write_byte(chip, instr->ctx.cmd.opcode);
+> +			break;
+> +		case NAND_OP_ADDR_INSTR:
+> +			ns->lines.ale = 1;
+> +			for (i = 0; i < instr->ctx.addr.naddrs; i++)
+> +				ns_nand_write_byte(chip, instr->ctx.addr.addrs[i]);
+> +			break;
+> +		case NAND_OP_DATA_IN_INSTR:
+> +			ns_nand_read_buf(chip, instr->ctx.data.buf.in, instr->ctx.data.len);
+> +			break;
+> +		case NAND_OP_DATA_OUT_INSTR:
+> +			ns_nand_write_buf(chip, instr->ctx.data.buf.out, instr->ctx.data.len);
+> +			break;
+> +		case NAND_OP_WAITRDY_INSTR:
+> +			/* we are always ready */
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ns_attach_chip(struct nand_chip *chip)
+>  {
+>  	unsigned int eccsteps, eccbytes;
+> @@ -2209,6 +2229,7 @@ static int ns_attach_chip(struct nand_chip *chip)
+>  
+>  static const struct nand_controller_ops ns_controller_ops = {
+>  	.attach_chip = ns_attach_chip,
+> +	.exec_op = ns_exec_op,
+>  };
+>  
+>  /*
+> @@ -2234,14 +2255,6 @@ static int __init ns_init_module(void)
+>  	nsmtd       = nand_to_mtd(chip);
+>  	nand_set_controller_data(chip, (void *)ns);
+>  
+> -	/*
+> -	 * Register simulator's callbacks.
+> -	 */
+> -	chip->legacy.cmd_ctrl	 = ns_hwcontrol;
+> -	chip->legacy.read_byte  = ns_nand_read_byte;
+> -	chip->legacy.dev_ready  = ns_device_ready;
+> -	chip->legacy.write_buf  = ns_nand_write_buf;
+> -	chip->legacy.read_buf   = ns_nand_read_buf;
+>  	chip->ecc.mode   = NAND_ECC_SOFT;
+>  	chip->ecc.algo   = NAND_ECC_HAMMING;
+>  	/* The NAND_SKIP_BBTSCAN option is necessary for 'overridesize' */
+> @@ -2292,7 +2305,10 @@ static int __init ns_init_module(void)
+>  	if ((retval = parse_gravepages()) != 0)
+>  		goto error;
+>  
+> -	chip->legacy.dummy_controller.ops = &ns_controller_ops;
+> +	nand_controller_init(&ns->base);
+> +	ns->base.ops = &ns_controller_ops;
+> +	chip->controller = &ns->base;
+> +
+>  	retval = nand_scan(chip, 1);
+>  	if (retval) {
+>  		NS_ERR("Could not scan NAND Simulator device\n");
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
