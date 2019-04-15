@@ -2,117 +2,132 @@ Return-Path: <SRS0=BkV4=SR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4B01C10F0E
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 11:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 974F7C10F0E
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 12:59:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0130206BA
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 11:59:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66E8820818
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 12:59:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dPvd3LN3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="zSFiF/rb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0130206BA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U+ajcMWT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66E8820818
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iIQunphuj+A/Git81DaHznutRiEYHITW9n0w0EQ07uw=; b=dPvd3LN3J+kZ9W
-	jwSYM5OJ/5DfUcfkzeo1NGFimp5/W+RrmLjHDC3d00/b5nf03JT0y8+ZVzWM95NLrYQJcfxfOcOzf
-	RX4j5OHXfmn6Kaia+59bLxqSp1HYHOKlqGgAhSeN2wCoKjvHjt5QOnJUhQPqunCX+7B1PBov8RqIX
-	HOkJUD2GvxDZBNkFHCf89TROndeXCvjmgYmEqcm8+Tc7qUjBvGYPaoe5y4IKI5h5XMbh4A9R5EosG
-	X+6l0vOBnXyk6DmoYNYCY0k5AU9Shlv86m1hBSqUkj3z6DbG2S0HFuCxHWnplywHGJs2jBowaDqdd
-	ApqEV47mnFb9OV+mLdLw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:Subject:From:References:To:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3cc4KTnIdFMGBgHomXTymFK8Ja9J36HMEVFvkk6nBh8=; b=U+ajcMWTROht1I
+	FWJY7DliW6ampFcp7oP/LnTsIC68piOfiTD3vulzhU8GFDc7CQEgB+ax4n6CQ+TwxGt4o9FNu2H3E
+	KfB2DQmHnh4xLzo1bHn0XRDdDXxr0p5mo9iqkPtdU3ZvkSSXY70zxOmImETEvZvm2CeKWgznFNegT
+	ZlDZPq9qCnT3n/GjzVAKndr0YFBRhlVXmcqR6EifUYlv7jBConlKKZOx4Sjmcug+WhOZ+aqhEQBYq
+	okbIB0ZZ9RcvVQ+oQ80hYfqlcP9aUAnG34ozpwxV44O+JAClUQw7V881RRKN+g0AxrWAqO2ZyV7+d
+	S+Nm7D8vsUPOwUv/prTA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hG0GU-00021N-J8; Mon, 15 Apr 2019 11:59:10 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1hG1Cb-0006to-V6; Mon, 15 Apr 2019 12:59:13 +0000
+Received: from gateway30.websitewelcome.com ([192.185.197.25])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hG0GR-00020f-Nx
- for linux-mtd@lists.infradead.org; Mon, 15 Apr 2019 11:59:09 +0000
-X-IronPort-AV: E=Sophos;i="5.60,353,1549954800"; d="scan'208";a="28358025"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES128-SHA;
- 15 Apr 2019 04:59:05 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.37) with Microsoft SMTP Server (TLS) id
- 14.3.352.0; Mon, 15 Apr 2019 04:59:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DQEGQ+Ntcw9VR32H1zUTkWjDHXLHAOWzGC1WHCx+/sM=;
- b=zSFiF/rbJibbbF5bpHK7BXCavxFGemJTjr3mXEm3Em5YLnNldWRlbFKRzEYH57JPSZuNGSj5buvNemRN0e4j+XhTDpsRGmAGVF5uBAEGImVOb2E9lNqNToHhMjSqZu1upp2UwmZiiWn+0W52MeE99YD1Jb9ov/bCO8LZ8lPuH2o=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB3876.namprd11.prod.outlook.com (10.255.128.81) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1792.14; Mon, 15 Apr 2019 11:59:00 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e4c0:24a5:9a32:46e3]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e4c0:24a5:9a32:46e3%9]) with mapi id 15.20.1792.018; Mon, 15 Apr 2019
- 11:59:00 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <vigneshr@ti.com>, <bbrezillon@kernel.org>, <marek.vasut@gmail.com>,
- <richard@nod.at>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Rework hwcaps selection for the spi-mem
- case
-Thread-Topic: [PATCH 2/2] mtd: spi-nor: Rework hwcaps selection for the
- spi-mem case
-Thread-Index: AQHU7vFzIg53lLHkV06Pj9Z90zbOsqY9J06A
-Date: Mon, 15 Apr 2019 11:59:00 +0000
-Message-ID: <6876862c-7c04-4338-634f-1a2abdd75672@microchip.com>
-References: <20190409162651.24593-1-vigneshr@ti.com>
- <20190409162651.24593-3-vigneshr@ti.com>
-In-Reply-To: <20190409162651.24593-3-vigneshr@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1P193CA0020.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:bd::30) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Tudor.Ambarus@microchip.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ae6c50ba-f134-4f03-2794-08d6c199bf06
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(5600140)(711020)(4605104)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
- SRVR:BN6PR11MB3876; 
-x-ms-traffictypediagnostic: BN6PR11MB3876:
-x-microsoft-antispam-prvs: <BN6PR11MB38768B004F2D77DD9C1F8C89F02B0@BN6PR11MB3876.namprd11.prod.outlook.com>
-x-forefront-prvs: 000800954F
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(346002)(136003)(366004)(396003)(39860400002)(199004)(189003)(386003)(53936002)(53546011)(102836004)(6506007)(71200400001)(71190400001)(52116002)(186003)(97736004)(6246003)(5660300002)(31686004)(3846002)(256004)(26005)(14444005)(68736007)(76176011)(478600001)(36756003)(14454004)(72206003)(305945005)(86362001)(66066001)(8936002)(2906002)(6116002)(25786009)(6436002)(99286004)(7736002)(81166006)(81156014)(105586002)(8676002)(110136005)(54906003)(6486002)(486006)(2616005)(316002)(229853002)(476003)(31696002)(11346002)(446003)(106356001)(6512007)(4326008);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB3876;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: LF/R3My2gQ44dMeGQwy/BJ9Me6qO0LpEvizF7cOXiJ4Q26j+flM5Jx+DefTJdyyaOPwSJ/EJ4LcsESRedoBFXy1VrI58vwtEM6u/G9Ruaoo+Dwy6NRZDhjbRnjDy31ERCVSeQ+E2+Tfkn9f1OJEZGKvFC6nTqSW9/IWR4FJoaK/Us8fnkEv+dMSTVv2a0f0Qxg6LXu8s+ESaK098ws/FuhVsb2N4e8gz/ESJ2XFFBVoN9tZ3Ik4g8/mLou8bOcmID6xF1o1xhKtJhxd6FKfFMpYj825Sp8OLh+/+D73BSH29jf6IOF6uhpoO/MAQdsD/2Tg4uGLKIxNAP44KbKjiGeKrh/yYxLP2NuAMvIM4xcZMbIBiuuLcOdJbf6v5QnX+bys3g3po277/8EHjNTJzpZc1sWjO/IR9gYfdvYkFZ/c=
-Content-ID: <689B1C83BA369348BBD50E5CD20BE50C@namprd11.prod.outlook.com>
+ id 1hG1CA-0006Gh-Ih
+ for linux-mtd@lists.infradead.org; Mon, 15 Apr 2019 12:58:48 +0000
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+ by gateway30.websitewelcome.com (Postfix) with ESMTP id 1A3C98460
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2019 07:58:33 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
+ id G1BwhCqQ54FKpG1BwhgNW8; Mon, 15 Apr 2019 07:58:33 -0500
+X-Authority-Reason: nr=8
+Received: from [189.250.55.242] (port=43070 helo=[192.168.43.131])
+ by gator4166.hostgator.com with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
+ (envelope-from <gustavo@embeddedor.com>)
+ id 1hG1Bw-000E96-8u; Mon, 15 Apr 2019 07:58:32 -0500
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20190208180202.GA16603@embeddedor>
+ <69083203-0720-1943-8549-ddf3cea6060e@embeddedor.com>
+ <71df15e7-af2e-0326-78fe-0271a1e240fe@embeddedor.com>
+ <20190415104458.7faeec57@xps13>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Subject: Re: [PATCH] mtd: cfi_util: mark expected switch fall-throughs
+Message-ID: <ee1f8c4a-92b0-db9d-6110-3acadeb9e457@embeddedor.com>
+Date: Mon, 15 Apr 2019 07:57:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae6c50ba-f134-4f03-2794-08d6c199bf06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2019 11:59:00.4047 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB3876
-X-OriginatorOrg: microchip.com
+In-Reply-To: <20190415104458.7faeec57@xps13>
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - lists.infradead.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.250.55.242
+X-Source-L: No
+X-Exim-ID: 1hG1Bw-000E96-8u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.131]) [189.250.55.242]:43070
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190415_045908_007464_CA24A93F 
-X-CRM114-Status: GOOD (  25.72  )
+X-CRM114-CacheID: sfid-20190415_055846_692018_47F92ACB 
+X-CRM114-Status: GOOD (  16.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -124,284 +139,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: frieder.schrempf@exceet.de, yogeshnarayan.gaur@nxp.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- miquel.raynal@bootlin.com
+Cc: Kees Cook <keescook@chromium.org>, Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Miquel,
 
-On 04/09/2019 07:26 PM, Vignesh Raghavendra wrote:
-> External E-Mail
+On 4/15/19 3:44 AM, Miquel Raynal wrote:
+> Hi Gustavo,
 > 
+> "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Wed, 10 Apr
+> 2019 16:16:51 -0500:
 > 
-> From: Boris Brezillon <boris.brezillon@bootlin.com>
+>> Hi all,
+>>
+>> If no one cares I'll add this to my tree for 5.2.
 > 
-> The spi-mem layer provides a spi_mem_supports_op() function to check
-> whether a specific operation is supported by the controller or not.
-> This is much more accurate than the hwcaps selection logic based on
-> SPI_{RX,TX}_ flags.
+> Which tree are you talking about?
 > 
-> Rework the hwcaps selection logic to use spi_mem_supports_op() when
-> nor->spimem != NULL.
+
+This one:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+
+> Please let the MTD maintainers take patches through their tree. We
+> might be late but this is definitely not a good reason to bypass us.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
-> Chagnes wrt RFC:
-> Fix checkpatch issues
-> Rebase onto latest
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 164 ++++++++++++++++++++++++++--------
->  include/linux/mtd/spi-nor.h   |  14 +++
->  2 files changed, 142 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 03c8c346c9ae..d48ae3c9661d 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2852,6 +2852,110 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
->  	return ret;
->  }
->  
-> +static int spi_nor_spimem_check_readop(struct spi_nor *nor,
-> +				       const struct spi_nor_read_command *read)
-> +{
-> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(read->opcode, 1),
-> +					  SPI_MEM_OP_ADDR(3, 0, 1),
-> +					  SPI_MEM_OP_DUMMY(0, 1),
-> +					  SPI_MEM_OP_DATA_IN(0, NULL, 1));
-> +
-> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(read->proto);
-> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(read->proto);
-> +	op.data.buswidth = spi_nor_get_protocol_data_nbits(read->proto);
-> +	op.dummy.buswidth = op.addr.buswidth;
-> +	op.dummy.nbytes = (read->num_mode_clocks + read->num_wait_states) *
-> +			  op.dummy.buswidth / 8;
-> +
-> +	/*
-> +	 * First test with 3 address bytes. The opcode itself might already
-> +	 * be a 4B addressing opcode but we don't care, because SPI controller
-> +	 * implementation should not check the opcode, but just the sequence.
-> +	 */
-> +	if (!spi_mem_supports_op(nor->spimem, &op))
-> +		return -ENOTSUPP;
-> +
-> +	/* Now test with 4 address bytes. */
+It's a bit confusing when patches are being ignored for more than two
+months:
 
-shouldn't this be verified only when the previous check failed?
+https://lore.kernel.org/patchwork/patch/1040099/
+https://lore.kernel.org/patchwork/patch/1040100/
+https://lore.kernel.org/patchwork/patch/1040098/
 
-> +	op.addr.nbytes = 4;
-> +	if (!spi_mem_supports_op(nor->spimem, &op))
-> +		return -ENOTSUPP;
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_spimem_check_progop(struct spi_nor *nor,
+Certainly, Richard Weinberger replied to this one. But I couldn't
+find a tree to which this patch was applied, in case it actually
+was.
 
-s/progop/pp?
+It's a common practice for maintainers to reply saying that a patch
+has been finally applied, and in most cases they also explicitly
+mention the tree and branch to which it was applied. All this info
+is really helpful for people working all over the tree.
 
-> +				       const struct spi_nor_pp_command *pp)
-> +{
-> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(pp->opcode, 1),
-> +					  SPI_MEM_OP_ADDR(3, 0, 1),
-> +					  SPI_MEM_OP_NO_DUMMY,
-> +					  SPI_MEM_OP_DATA_OUT(0, NULL, 1));
-> +
-> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(pp->proto);
-> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(pp->proto);
-> +	op.data.buswidth = spi_nor_get_protocol_data_nbits(pp->proto);
-> +
-maybe we can introduce a spi_nor_spimem_check_op() for the block from below to
-reduce code duplication
+I'm only taking this type of patches in my tree when they are being
+ignored for a considerable amount of time and even after pinging the
+maintainers.
 
-> +	/*
-> +	 * First test with 3 address bytes. The opcode itself might already
-> +	 * be a 4B addressing opcode but we don't care, because SPI controller
-> +	 * implementation should not check the opcode, but just the sequence.
-> +	 */
-> +	if (!spi_mem_supports_op(nor->spimem, &op))
-> +		return -ENOTSUPP;
-> +
-> +	/* Now test with 4 address bytes. */
-> +	op.addr.nbytes = 4;
-> +	if (!spi_mem_supports_op(nor->spimem, &op))
-> +		return -ENOTSUPP;
-> +
-> +	return 0;
-> +}
-> +
-> +static void
-> +spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor,
-> +			     const struct spi_nor_flash_parameter *params,
-> +			     u32 *hwcaps)
-> +{
-> +	unsigned int cap;
-> +
-> +	/* DTR modes are not supported yet, mask them all. */
-> +	*hwcaps &= ~SNOR_HWCAPS_DTR;
-> +
-> +	/* X-X-X modes are not supported yet, mask them all. */
-> +	*hwcaps &= ~SNOR_HWCAPS_X_X_X;
-> +
-> +	/* Start with read commands. */
-> +	for (cap = 0; cap < 32; cap++) {
+Thanks
+--
+Gustavo
 
-maybe a macro for 32?
 
-> +		int idx;
-> +
-> +		if (!(*hwcaps & BIT(cap)))
-> +			continue;
-> +
-> +		idx = spi_nor_hwcaps_read2cmd(BIT(cap));
-> +		if (idx < 0)
-> +			continue;
-> +
-> +		if (spi_nor_spimem_check_readop(nor, &params->reads[idx]))
-> +			*hwcaps &= ~BIT(cap);
-> +	}
-> +
-> +	/* Now check program commands. */
-> +	for (cap = 0; cap < 32; cap++) {
 
-can't we use a single loop for both read & pp?
 
-> +		int idx;
-> +
-> +		if (!(*hwcaps & BIT(cap)))
-> +			continue;
-> +
-> +		idx = spi_nor_hwcaps_pp2cmd(BIT(cap));
-> +		if (idx < 0)
-> +			continue;
-> +
-> +		if (spi_nor_spimem_check_progop(nor,
-> +						&params->page_programs[idx]))
-> +			*hwcaps &= ~BIT(cap);
-> +	}
-> +}
-> +
->  /**
->   * spi_nor_read_sfdp_dma_unsafe() - read Serial Flash Discoverable Parameters.
->   * @nor:	pointer to a 'struct spi_nor'
-> @@ -4259,16 +4363,25 @@ static int spi_nor_setup(struct spi_nor *nor,
->  	 */
->  	shared_mask = hwcaps->mask & params->hwcaps.mask;
->  
-> -	/* SPI n-n-n protocols are not supported yet. */
-> -	ignored_mask = (SNOR_HWCAPS_READ_2_2_2 |
-> -			SNOR_HWCAPS_READ_4_4_4 |
-> -			SNOR_HWCAPS_READ_8_8_8 |
-> -			SNOR_HWCAPS_PP_4_4_4 |
-> -			SNOR_HWCAPS_PP_8_8_8);
-> -	if (shared_mask & ignored_mask) {
-> -		dev_dbg(nor->dev,
-> -			"SPI n-n-n protocols are not supported yet.\n");
-> -		shared_mask &= ~ignored_mask;
-> +	if (nor->spimem) {
-> +		/*
-> +		 * When called from spi_nor_probe(), all caps are set and we
-> +		 * need to discard some of them based on what the SPI
-> +		 * controller actually supports (using spi_mem_supports_op()).
-> +		 */
-> +		spi_nor_spimem_adjust_hwcaps(nor, params, &shared_mask);
-> +	} else {
-> +		/*
-> +		 * SPI n-n-n protocols are not supported when the SPI
-> +		 * controller directly implements the spi_nor interface.
-> +		 * Yet another reason to switch to spi-mem.
-> +		 */
-> +		ignored_mask = SNOR_HWCAPS_X_X_X;
-> +		if (shared_mask & ignored_mask) {
-> +			dev_dbg(nor->dev,
-> +				"SPI n-n-n protocols are not supported.\n");
-> +			shared_mask &= ~ignored_mask;
-> +		}
->  	}
->  
->  	/* Select the (Fast) Read command. */
-> @@ -4591,11 +4704,11 @@ static int spi_nor_probe(struct spi_mem *spimem)
->  	struct spi_device *spi = spimem->spi;
->  	struct flash_platform_data *data;
->  	struct spi_nor *nor;
-> -	struct spi_nor_hwcaps hwcaps = {
-> -		.mask = SNOR_HWCAPS_READ |
-> -			SNOR_HWCAPS_READ_FAST |
-> -			SNOR_HWCAPS_PP,
-> -	};
-> +	/*
-> +	 * Enable all caps by default. The core will mask them after
-> +	 * checking what's really supported using spi_mem_supports_op().
-> +	 */
-> +	struct spi_nor_hwcaps hwcaps = { .mask = SNOR_HWCAPS_ALL };
-
-const struct spi_nor_hwcaps hwcaps = { .mask = SNOR_HWCAPS_ALL };
-
-Cheers,
-ta
-
->  	char *flash_name;
->  	int ret;
->  
-> @@ -4624,27 +4737,6 @@ static int spi_nor_probe(struct spi_mem *spimem)
->  
->  	spi_mem_set_drvdata(spimem, nor);
->  
-> -	if (spi->mode & SPI_RX_OCTAL) {
-> -		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
-> -
-> -		if (spi->mode & SPI_TX_OCTAL)
-> -			hwcaps.mask |= (SNOR_HWCAPS_READ_1_8_8 |
-> -					SNOR_HWCAPS_PP_1_1_8 |
-> -					SNOR_HWCAPS_PP_1_8_8);
-> -	} else if (spi->mode & SPI_RX_QUAD) {
-> -		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
-> -
-> -		if (spi->mode & SPI_TX_QUAD)
-> -			hwcaps.mask |= (SNOR_HWCAPS_READ_1_4_4 |
-> -					SNOR_HWCAPS_PP_1_1_4 |
-> -					SNOR_HWCAPS_PP_1_4_4);
-> -	} else if (spi->mode & SPI_RX_DUAL) {
-> -		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
-> -
-> -		if (spi->mode & SPI_TX_DUAL)
-> -			hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
-> -	}
-> -
->  	if (data && data->name)
->  		nor->mtd.name = data->name;
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index ac16745f5ef8..1d56c437f553 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -523,6 +523,20 @@ struct spi_nor_hwcaps {
->  #define SNOR_HWCAPS_PP_1_8_8	BIT(21)
->  #define SNOR_HWCAPS_PP_8_8_8	BIT(22)
->  
-> +#define SNOR_HWCAPS_X_X_X	(SNOR_HWCAPS_READ_2_2_2 |	\
-> +				 SNOR_HWCAPS_READ_4_4_4 |	\
-> +				 SNOR_HWCAPS_READ_8_8_8 |	\
-> +				 SNOR_HWCAPS_PP_4_4_4 |		\
-> +				 SNOR_HWCAPS_PP_8_8_8)
-> +
-> +#define SNOR_HWCAPS_DTR		(SNOR_HWCAPS_READ_1_1_1_DTR |	\
-> +				 SNOR_HWCAPS_READ_1_2_2_DTR |	\
-> +				 SNOR_HWCAPS_READ_1_4_4_DTR |	\
-> +				 SNOR_HWCAPS_READ_1_8_8_DTR)
-> +
-> +#define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
-> +				 SNOR_HWCAPS_PP_MASK)
-> +
->  /**
->   * spi_nor_scan() - scan the SPI NOR
->   * @nor:	the spi_nor structure
-> 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
