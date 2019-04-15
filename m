@@ -2,67 +2,116 @@ Return-Path: <SRS0=BkV4=SR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BCFDC10F0E
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 903B4C10F0E
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:11:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE4432073F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:07:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5DEBC2073F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:11:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WF8vmkFu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE4432073F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ljzCZcxL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="raNtgJ0U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DEBC2073F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=cntE0FrrC3g3smkcRCtFtDAgIROK/eccTcPnIA6IX4g=; b=WF8vmkFuNWs+o+ts8WxkhkaSfj
-	Zxj3wSif9BTDZZHnrZ+JfMnpo0Y0R29fmAwHTcqhWiKgELxWZLAi8+z0hk36JCHnOfa8enp9hgd9q
-	2bBKvX0PAKijlOAcF9rwFyz408k/3L4QHKr4cRLuP5VRwZ0W3U8NAS8r/wQnXaIQRCuksWgGz9n40
-	NMLAB7PAYoKGm1AR4KarZ0Hj+oMtK0rv8N4VYw/1GjTuWG3Oj3lvKa7T2NS0/1qU4sOOIzoSDMmRc
-	Qaf6inlOkZnfgjMO0KpqsNZ//q6HNJIdxQeb9ye01VYdM/mO7g7Yfof2HMOLafuNuRTRG+lEQZOkA
-	pAz6wh6g==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LUze7uM/CqXZgjIHdtD4K0W6Wl57Pb/5cg9l3+Vq63c=; b=ljzCZcxLDZe62g
+	oMbIJv7FmPLWlZ9k6nEAwr+ERhneTUDcCgeDgUXAynWSk+8WxIMBaS5jJhwG8JGAgNEeqxmm+ZfBd
+	oD6MhOrcIjLK5j1LBGQv+Oc+mITdmk8pWxDtI0E1uynyU/zHcrxOIZyv3YtyUh27Hgzx3LGf0QnP6
+	mzq8N/upeEmyQ/yY4obH+5zkWDq36p7VtIrqw1d0+l4nvsUVZ04vbIU4K/TfCbdsW4nt1LK+qF4WU
+	ihkDYEiDiIYNMRqTtRd2xW236GhV4LvVc8n5Bo2xqW4RRKJCmWSKnQbQ9sEfCfm0nzxrl5gsxEzNq
+	uPBmHlTUohAFqIo+pW6Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hFxa9-0002ST-Jq; Mon, 15 Apr 2019 09:07:17 +0000
-Received: from twhmllg4.macronix.com ([211.75.127.132])
+	id 1hFxdi-0004Qi-UA; Mon, 15 Apr 2019 09:10:58 +0000
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hFxZU-0001ZJ-Pm
- for linux-mtd@lists.infradead.org; Mon, 15 Apr 2019 09:06:40 +0000
-Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG4.macronix.com with ESMTP id x3F93pKs042176;
- Mon, 15 Apr 2019 17:03:53 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-From: Mason Yang <masonccyang@mxic.com.tw>
-To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, bbrezillon@kernel.org, dwmw2@infradead.org,
- lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
- computersforpeace@gmal.com, paul.burton@mips.com, stefan@agner.ch,
- christophe.kerello@st.com, liang.yang@amlogic.com,
- geert@linux-m68k.org, devicetree@vger.kernel.org,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org,
- richard@nod.at, miquel.raynal@bootlin.com
-Subject: [PATCH v3 3/4] spi: Patch Macronix SPI controller driver according to
- MX25F0A MFD driver
-Date: Mon, 15 Apr 2019 17:23:53 +0800
-Message-Id: <1555320234-15802-4-git-send-email-masonccyang@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
-References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG4.macronix.com x3F93pKs042176
+ id 1hFxdf-0004QI-Pu
+ for linux-mtd@lists.infradead.org; Mon, 15 Apr 2019 09:10:57 +0000
+X-IronPort-AV: E=Sophos;i="5.60,353,1549954800"; d="scan'208";a="31511630"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 15 Apr 2019 02:10:53 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.76.107) with Microsoft SMTP Server (TLS)
+ id 14.3.352.0; Mon, 15 Apr 2019 02:10:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lYUebBFojl6+OCI3dAbHxeqpWoXQp6QdvErH9nw/INY=;
+ b=raNtgJ0UEQV6a74Q73g5lZ5CuPoxOTTkVtUrntf5pU4bggZsIa9M8K/StipaCMbvr/DIAcx/VBbFzEgzUqQFRjpRkZ1hosEgceAa67I8Vurw/lDIemZ8lSzHwuqJ2+XlN3RxhwTX1hfVVDGvuKSgLNoqYCTRLQea/JmR2QfLhiQ=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6PR11MB1316.namprd11.prod.outlook.com (10.173.26.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1792.15; Mon, 15 Apr 2019 09:10:49 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::e4c0:24a5:9a32:46e3]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::e4c0:24a5:9a32:46e3%9]) with mapi id 15.20.1792.018; Mon, 15 Apr 2019
+ 09:10:49 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <mika.westerberg@linux.intel.com>, <marek.vasut@gmail.com>
+Subject: Re: [PATCH] spi-nor: intel-spi: Add support for Intel Comet Lake SPI
+ serial flash
+Thread-Topic: [PATCH] spi-nor: intel-spi: Add support for Intel Comet Lake SPI
+ serial flash
+Thread-Index: AQHU73CfZBa5TGAvY0awodbZbSzUe6Y891IA
+Date: Mon, 15 Apr 2019 09:10:48 +0000
+Message-ID: <4a314ca1-281d-27ea-e774-6916aac71df9@microchip.com>
+References: <20190410073923.35693-1-mika.westerberg@linux.intel.com>
+In-Reply-To: <20190410073923.35693-1-mika.westerberg@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1PR0602CA0004.eurprd06.prod.outlook.com
+ (2603:10a6:800:bc::14) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Tudor.Ambarus@microchip.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c9dec8e4-e653-4d34-a0dd-08d6c182402d
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(5600140)(711020)(4605104)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
+ SRVR:BN6PR11MB1316; 
+x-ms-traffictypediagnostic: BN6PR11MB1316:
+x-microsoft-antispam-prvs: <BN6PR11MB13169328E0D85149208A858AF02B0@BN6PR11MB1316.namprd11.prod.outlook.com>
+x-forefront-prvs: 000800954F
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(346002)(376002)(366004)(396003)(39850400004)(136003)(199004)(189003)(31686004)(26005)(86362001)(97736004)(8936002)(68736007)(486006)(446003)(52116002)(14454004)(11346002)(6512007)(31696002)(81156014)(81166006)(2616005)(105586002)(53546011)(106356001)(72206003)(305945005)(8676002)(36756003)(7736002)(476003)(4744005)(53936002)(186003)(6506007)(6486002)(386003)(66066001)(316002)(25786009)(102836004)(5660300002)(54906003)(99286004)(3846002)(2906002)(6116002)(229853002)(6436002)(6246003)(76176011)(71190400001)(110136005)(4326008)(71200400001)(478600001)(14444005)(256004);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1316;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: cXHf7+vk6daZPZqN7pF0NH7+XbsvUvnxqtdpdyrDu0khtBTeFgpHZMZkrwbK5EyD/nmIeviVS57BEGZkUKdJrkKqF/7X3c6DbhsYhzxgADG7vXUe7j/7cvxbqD2Uw55U72tXFzGNPDCj2D+6wkGLTZ23KaNSKT/sDa+lc+Hryy+tNhaz7HOLTmmAJCjpzBVYItvCb+jg02vMv7vynNcMGTZxuUVXPTsTbXEpGrNNglfbxyJBjtEKlklg1r96VknySwzmvccJ+NRhQSHaKwcIrcLPGQxg9AZrrnKaVMgRW4/2a74aH6v49V0sxlFRluQ6fEGctSOW+iuRmyZYgqE3bSWNr3lD0AdPQaAzDgCqgtXFtbpuyclwKt/Scl6K9Uk3Z7y/NLE06FQErhgTa2O2Vcj+S23d48O7j/YLo6Xsx+k=
+Content-ID: <D3EEA38AF7869D4B821D379DFB1E2CCB@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9dec8e4-e653-4d34-a0dd-08d6c182402d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2019 09:10:49.0138 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1316
+X-OriginatorOrg: microchip.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190415_020637_111229_83E23529 
-X-CRM114-Status: GOOD (  13.64  )
+X-CRM114-CacheID: sfid-20190415_021055_949824_13EA5B54 
+X-CRM114-Status: GOOD (  13.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -74,479 +123,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: juliensu@mxic.com.tw, Mason Yang <masonccyang@mxic.com.tw>,
- zhengxunli@mxic.com.tw
-MIME-Version: 1.0
+Cc: richard@nod.at, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, bbrezillon@kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Patch Macronix MX25F0A SPI controller driver according to it's MFD driver.
-
-Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
----
- drivers/spi/spi-mxic.c | 275 +++++++++----------------------------------------
- 1 file changed, 49 insertions(+), 226 deletions(-)
-
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index e41ae6e..f98f8e0 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -9,168 +9,13 @@
- //
- 
- #include <linux/clk.h>
--#include <linux/io.h>
--#include <linux/iopoll.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
-+#include <linux/mfd/mxic-mx25f0a.h>
- #include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
- 
--#define HC_CFG			0x0
--#define HC_CFG_IF_CFG(x)	((x) << 27)
--#define HC_CFG_DUAL_SLAVE	BIT(31)
--#define HC_CFG_INDIVIDUAL	BIT(30)
--#define HC_CFG_NIO(x)		(((x) / 4) << 27)
--#define HC_CFG_TYPE(s, t)	((t) << (23 + ((s) * 2)))
--#define HC_CFG_TYPE_SPI_NOR	0
--#define HC_CFG_TYPE_SPI_NAND	1
--#define HC_CFG_TYPE_SPI_RAM	2
--#define HC_CFG_TYPE_RAW_NAND	3
--#define HC_CFG_SLV_ACT(x)	((x) << 21)
--#define HC_CFG_CLK_PH_EN	BIT(20)
--#define HC_CFG_CLK_POL_INV	BIT(19)
--#define HC_CFG_BIG_ENDIAN	BIT(18)
--#define HC_CFG_DATA_PASS	BIT(17)
--#define HC_CFG_IDLE_SIO_LVL(x)	((x) << 16)
--#define HC_CFG_MAN_START_EN	BIT(3)
--#define HC_CFG_MAN_START	BIT(2)
--#define HC_CFG_MAN_CS_EN	BIT(1)
--#define HC_CFG_MAN_CS_ASSERT	BIT(0)
--
--#define INT_STS			0x4
--#define INT_STS_EN		0x8
--#define INT_SIG_EN		0xc
--#define INT_STS_ALL		GENMASK(31, 0)
--#define INT_RDY_PIN		BIT(26)
--#define INT_RDY_SR		BIT(25)
--#define INT_LNR_SUSP		BIT(24)
--#define INT_ECC_ERR		BIT(17)
--#define INT_CRC_ERR		BIT(16)
--#define INT_LWR_DIS		BIT(12)
--#define INT_LRD_DIS		BIT(11)
--#define INT_SDMA_INT		BIT(10)
--#define INT_DMA_FINISH		BIT(9)
--#define INT_RX_NOT_FULL		BIT(3)
--#define INT_RX_NOT_EMPTY	BIT(2)
--#define INT_TX_NOT_FULL		BIT(1)
--#define INT_TX_EMPTY		BIT(0)
--
--#define HC_EN			0x10
--#define HC_EN_BIT		BIT(0)
--
--#define TXD(x)			(0x14 + ((x) * 4))
--#define RXD			0x24
--
--#define SS_CTRL(s)		(0x30 + ((s) * 4))
--#define LRD_CFG			0x44
--#define LWR_CFG			0x80
--#define RWW_CFG			0x70
--#define OP_READ			BIT(23)
--#define OP_DUMMY_CYC(x)		((x) << 17)
--#define OP_ADDR_BYTES(x)	((x) << 14)
--#define OP_CMD_BYTES(x)		(((x) - 1) << 13)
--#define OP_OCTA_CRC_EN		BIT(12)
--#define OP_DQS_EN		BIT(11)
--#define OP_ENHC_EN		BIT(10)
--#define OP_PREAMBLE_EN		BIT(9)
--#define OP_DATA_DDR		BIT(8)
--#define OP_DATA_BUSW(x)		((x) << 6)
--#define OP_ADDR_DDR		BIT(5)
--#define OP_ADDR_BUSW(x)		((x) << 3)
--#define OP_CMD_DDR		BIT(2)
--#define OP_CMD_BUSW(x)		(x)
--#define OP_BUSW_1		0
--#define OP_BUSW_2		1
--#define OP_BUSW_4		2
--#define OP_BUSW_8		3
--
--#define OCTA_CRC		0x38
--#define OCTA_CRC_IN_EN(s)	BIT(3 + ((s) * 16))
--#define OCTA_CRC_CHUNK(s, x)	((fls((x) / 32)) << (1 + ((s) * 16)))
--#define OCTA_CRC_OUT_EN(s)	BIT(0 + ((s) * 16))
--
--#define ONFI_DIN_CNT(s)		(0x3c + (s))
--
--#define LRD_CTRL		0x48
--#define RWW_CTRL		0x74
--#define LWR_CTRL		0x84
--#define LMODE_EN		BIT(31)
--#define LMODE_SLV_ACT(x)	((x) << 21)
--#define LMODE_CMD1(x)		((x) << 8)
--#define LMODE_CMD0(x)		(x)
--
--#define LRD_ADDR		0x4c
--#define LWR_ADDR		0x88
--#define LRD_RANGE		0x50
--#define LWR_RANGE		0x8c
--
--#define AXI_SLV_ADDR		0x54
--
--#define DMAC_RD_CFG		0x58
--#define DMAC_WR_CFG		0x94
--#define DMAC_CFG_PERIPH_EN	BIT(31)
--#define DMAC_CFG_ALLFLUSH_EN	BIT(30)
--#define DMAC_CFG_LASTFLUSH_EN	BIT(29)
--#define DMAC_CFG_QE(x)		(((x) + 1) << 16)
--#define DMAC_CFG_BURST_LEN(x)	(((x) + 1) << 12)
--#define DMAC_CFG_BURST_SZ(x)	((x) << 8)
--#define DMAC_CFG_DIR_READ	BIT(1)
--#define DMAC_CFG_START		BIT(0)
--
--#define DMAC_RD_CNT		0x5c
--#define DMAC_WR_CNT		0x98
--
--#define SDMA_ADDR		0x60
--
--#define DMAM_CFG		0x64
--#define DMAM_CFG_START		BIT(31)
--#define DMAM_CFG_CONT		BIT(30)
--#define DMAM_CFG_SDMA_GAP(x)	(fls((x) / 8192) << 2)
--#define DMAM_CFG_DIR_READ	BIT(1)
--#define DMAM_CFG_EN		BIT(0)
--
--#define DMAM_CNT		0x68
--
--#define LNR_TIMER_TH		0x6c
--
--#define RDM_CFG0		0x78
--#define RDM_CFG0_POLY(x)	(x)
--
--#define RDM_CFG1		0x7c
--#define RDM_CFG1_RDM_EN		BIT(31)
--#define RDM_CFG1_SEED(x)	(x)
--
--#define LWR_SUSP_CTRL		0x90
--#define LWR_SUSP_CTRL_EN	BIT(31)
--
--#define DMAS_CTRL		0x9c
--#define DMAS_CTRL_DIR_READ	BIT(31)
--#define DMAS_CTRL_EN		BIT(30)
--
--#define DATA_STROB		0xa0
--#define DATA_STROB_EDO_EN	BIT(2)
--#define DATA_STROB_INV_POL	BIT(1)
--#define DATA_STROB_DELAY_2CYC	BIT(0)
--
--#define IDLY_CODE(x)		(0xa4 + ((x) * 4))
--#define IDLY_CODE_VAL(x, v)	((v) << (((x) % 4) * 8))
--
--#define GPIO			0xc4
--#define GPIO_PT(x)		BIT(3 + ((x) * 16))
--#define GPIO_RESET(x)		BIT(2 + ((x) * 16))
--#define GPIO_HOLDB(x)		BIT(1 + ((x) * 16))
--#define GPIO_WPB(x)		BIT((x) * 16)
--
--#define HC_VER			0xd0
--
--#define HW_TEST(x)		(0xe0 + ((x) * 4))
--
- struct mxic_spi {
--	struct clk *ps_clk;
--	struct clk *send_clk;
--	struct clk *send_dly_clk;
--	void __iomem *regs;
-+	struct mx25f0a_mfd *mfd;
- 	u32 cur_speed_hz;
- };
- 
-@@ -178,26 +23,26 @@ static int mxic_spi_clk_enable(struct mxic_spi *mxic)
- {
- 	int ret;
- 
--	ret = clk_prepare_enable(mxic->send_clk);
-+	ret = clk_prepare_enable(mxic->mfd->send_clk);
- 	if (ret)
- 		return ret;
- 
--	ret = clk_prepare_enable(mxic->send_dly_clk);
-+	ret = clk_prepare_enable(mxic->mfd->send_dly_clk);
- 	if (ret)
- 		goto err_send_dly_clk;
- 
- 	return ret;
- 
- err_send_dly_clk:
--	clk_disable_unprepare(mxic->send_clk);
-+	clk_disable_unprepare(mxic->mfd->send_clk);
- 
- 	return ret;
- }
- 
- static void mxic_spi_clk_disable(struct mxic_spi *mxic)
- {
--	clk_disable_unprepare(mxic->send_clk);
--	clk_disable_unprepare(mxic->send_dly_clk);
-+	clk_disable_unprepare(mxic->mfd->send_clk);
-+	clk_disable_unprepare(mxic->mfd->send_dly_clk);
- }
- 
- static void mxic_spi_set_input_delay_dqs(struct mxic_spi *mxic, u8 idly_code)
-@@ -206,23 +51,23 @@ static void mxic_spi_set_input_delay_dqs(struct mxic_spi *mxic, u8 idly_code)
- 	       IDLY_CODE_VAL(1, idly_code) |
- 	       IDLY_CODE_VAL(2, idly_code) |
- 	       IDLY_CODE_VAL(3, idly_code),
--	       mxic->regs + IDLY_CODE(0));
-+	       mxic->mfd->regs + IDLY_CODE(0));
- 	writel(IDLY_CODE_VAL(4, idly_code) |
- 	       IDLY_CODE_VAL(5, idly_code) |
- 	       IDLY_CODE_VAL(6, idly_code) |
- 	       IDLY_CODE_VAL(7, idly_code),
--	       mxic->regs + IDLY_CODE(1));
-+	       mxic->mfd->regs + IDLY_CODE(1));
- }
- 
- static int mxic_spi_clk_setup(struct mxic_spi *mxic, unsigned long freq)
- {
- 	int ret;
- 
--	ret = clk_set_rate(mxic->send_clk, freq);
-+	ret = clk_set_rate(mxic->mfd->send_clk, freq);
- 	if (ret)
- 		return ret;
- 
--	ret = clk_set_rate(mxic->send_dly_clk, freq);
-+	ret = clk_set_rate(mxic->mfd->send_dly_clk, freq);
- 	if (ret)
- 		return ret;
- 
-@@ -240,7 +85,7 @@ static int mxic_spi_clk_setup(struct mxic_spi *mxic, unsigned long freq)
- 	 *                  = 360 * freq * 1 sec / 1000000000
- 	 *                  = 9 * freq / 25000000
- 	 */
--	ret = clk_set_phase(mxic->send_dly_clk, 9 * freq / 25000000);
-+	ret = clk_set_phase(mxic->mfd->send_dly_clk, 9 * freq / 25000000);
- 	if (ret)
- 		return ret;
- 
-@@ -270,14 +115,14 @@ static int mxic_spi_set_freq(struct mxic_spi *mxic, unsigned long freq)
- 
- static void mxic_spi_hw_init(struct mxic_spi *mxic)
- {
--	writel(0, mxic->regs + DATA_STROB);
--	writel(INT_STS_ALL, mxic->regs + INT_STS_EN);
--	writel(0, mxic->regs + HC_EN);
--	writel(0, mxic->regs + LRD_CFG);
--	writel(0, mxic->regs + LRD_CTRL);
-+	writel(0, mxic->mfd->regs + DATA_STROB);
-+	writel(INT_STS_ALL, mxic->mfd->regs + INT_STS_EN);
-+	writel(0, mxic->mfd->regs + HC_EN);
-+	writel(0, mxic->mfd->regs + LRD_CFG);
-+	writel(0, mxic->mfd->regs + LRD_CTRL);
- 	writel(HC_CFG_NIO(1) | HC_CFG_TYPE(0, HC_CFG_TYPE_SPI_NAND) |
- 	       HC_CFG_SLV_ACT(0) | HC_CFG_MAN_CS_EN | HC_CFG_IDLE_SIO_LVL(1),
--	       mxic->regs + HC_CFG);
-+	       mxic->mfd->regs + HC_CFG);
- }
- 
- static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
-@@ -297,34 +142,35 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 		if (txbuf)
- 			memcpy(&data, txbuf + pos, nbytes);
- 
--		ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+		ret = readl_poll_timeout(mxic->mfd->regs + INT_STS, sts,
- 					 sts & INT_TX_EMPTY, 0, USEC_PER_SEC);
- 		if (ret)
- 			return ret;
- 
--		writel(data, mxic->regs + TXD(nbytes % 4));
-+		writel(data, mxic->mfd->regs + TXD(nbytes % 4));
- 
- 		if (rxbuf) {
--			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+			ret = readl_poll_timeout(mxic->mfd->regs + INT_STS, sts,
- 						 sts & INT_TX_EMPTY, 0,
- 						 USEC_PER_SEC);
- 			if (ret)
- 				return ret;
- 
--			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+			ret = readl_poll_timeout(mxic->mfd->regs + INT_STS, sts,
- 						 sts & INT_RX_NOT_EMPTY, 0,
- 						 USEC_PER_SEC);
- 			if (ret)
- 				return ret;
- 
--			data = readl(mxic->regs + RXD);
-+			data = readl(mxic->mfd->regs + RXD);
- 			data >>= (8 * (4 - nbytes));
- 			memcpy(rxbuf + pos, &data, nbytes);
--			WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
-+			WARN_ON(readl(mxic->mfd->regs + INT_STS) &
-+				INT_RX_NOT_EMPTY);
- 		} else {
--			readl(mxic->regs + RXD);
-+			readl(mxic->mfd->regs + RXD);
- 		}
--		WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
-+		WARN_ON(readl(mxic->mfd->regs + INT_STS) & INT_RX_NOT_EMPTY);
- 
- 		pos += nbytes;
- 	}
-@@ -370,8 +216,8 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 	       HC_CFG_TYPE(mem->spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
- 	       HC_CFG_SLV_ACT(mem->spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1) |
- 	       HC_CFG_MAN_CS_EN,
--	       mxic->regs + HC_CFG);
--	writel(HC_EN_BIT, mxic->regs + HC_EN);
-+	       mxic->mfd->regs + HC_CFG);
-+	writel(HC_EN_BIT, mxic->mfd->regs + HC_EN);
- 
- 	ss_ctrl = OP_CMD_BYTES(1) | OP_CMD_BUSW(fls(op->cmd.buswidth) - 1);
- 
-@@ -388,10 +234,10 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 			ss_ctrl |= OP_READ;
- 	}
- 
--	writel(ss_ctrl, mxic->regs + SS_CTRL(mem->spi->chip_select));
-+	writel(ss_ctrl, mxic->mfd->regs + SS_CTRL(mem->spi->chip_select));
- 
--	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
--	       mxic->regs + HC_CFG);
-+	writel(readl(mxic->mfd->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
-+	       mxic->mfd->regs + HC_CFG);
- 
- 	ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
- 	if (ret)
-@@ -416,9 +262,9 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 				 op->data.nbytes);
- 
- out:
--	writel(readl(mxic->regs + HC_CFG) & ~HC_CFG_MAN_CS_ASSERT,
--	       mxic->regs + HC_CFG);
--	writel(0, mxic->regs + HC_EN);
-+	writel(readl(mxic->mfd->regs + HC_CFG) & ~HC_CFG_MAN_CS_ASSERT,
-+	       mxic->mfd->regs + HC_CFG);
-+	writel(0, mxic->mfd->regs + HC_EN);
- 
- 	return ret;
- }
-@@ -433,15 +279,15 @@ static void mxic_spi_set_cs(struct spi_device *spi, bool lvl)
- 	struct mxic_spi *mxic = spi_master_get_devdata(spi->master);
- 
- 	if (!lvl) {
--		writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_EN,
--		       mxic->regs + HC_CFG);
--		writel(HC_EN_BIT, mxic->regs + HC_EN);
--		writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
--		       mxic->regs + HC_CFG);
-+		writel(readl(mxic->mfd->regs + HC_CFG) | HC_CFG_MAN_CS_EN,
-+		       mxic->mfd->regs + HC_CFG);
-+		writel(HC_EN_BIT, mxic->mfd->regs + HC_EN);
-+		writel(readl(mxic->mfd->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
-+		       mxic->mfd->regs + HC_CFG);
- 	} else {
--		writel(readl(mxic->regs + HC_CFG) & ~HC_CFG_MAN_CS_ASSERT,
--		       mxic->regs + HC_CFG);
--		writel(0, mxic->regs + HC_EN);
-+		writel(readl(mxic->mfd->regs + HC_CFG) & ~HC_CFG_MAN_CS_ASSERT,
-+		       mxic->mfd->regs + HC_CFG);
-+		writel(0, mxic->mfd->regs + HC_EN);
- 	}
- }
- 
-@@ -479,7 +325,7 @@ static int mxic_spi_transfer_one(struct spi_master *master,
- 
- 	writel(OP_CMD_BYTES(1) | OP_CMD_BUSW(busw) |
- 	       OP_DATA_BUSW(busw) | (t->rx_buf ? OP_READ : 0),
--	       mxic->regs + SS_CTRL(0));
-+	       mxic->mfd->regs + SS_CTRL(0));
- 
- 	ret = mxic_spi_data_xfer(mxic, t->tx_buf, t->rx_buf, t->len);
- 	if (ret)
-@@ -497,7 +343,7 @@ static int __maybe_unused mxic_spi_runtime_suspend(struct device *dev)
- 	struct mxic_spi *mxic = spi_master_get_devdata(master);
- 
- 	mxic_spi_clk_disable(mxic);
--	clk_disable_unprepare(mxic->ps_clk);
-+	clk_disable_unprepare(mxic->mfd->ps_clk);
- 
- 	return 0;
- }
-@@ -509,7 +355,7 @@ static int __maybe_unused mxic_spi_runtime_resume(struct device *dev)
- 	struct mxic_spi *mxic = spi_master_get_devdata(master);
- 	int ret;
- 
--	ret = clk_prepare_enable(mxic->ps_clk);
-+	ret = clk_prepare_enable(mxic->mfd->ps_clk);
- 	if (ret) {
- 		dev_err(dev, "Cannot enable ps_clock.\n");
- 		return ret;
-@@ -525,8 +371,8 @@ static int __maybe_unused mxic_spi_runtime_resume(struct device *dev)
- 
- static int mxic_spi_probe(struct platform_device *pdev)
- {
-+	struct mx25f0a_mfd *mfd = dev_get_drvdata(pdev->dev.parent);
- 	struct spi_master *master;
--	struct resource *res;
- 	struct mxic_spi *mxic;
- 	int ret;
- 
-@@ -538,24 +384,8 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 
- 	mxic = spi_master_get_devdata(master);
- 
--	master->dev.of_node = pdev->dev.of_node;
--
--	mxic->ps_clk = devm_clk_get(&pdev->dev, "ps_clk");
--	if (IS_ERR(mxic->ps_clk))
--		return PTR_ERR(mxic->ps_clk);
--
--	mxic->send_clk = devm_clk_get(&pdev->dev, "send_clk");
--	if (IS_ERR(mxic->send_clk))
--		return PTR_ERR(mxic->send_clk);
--
--	mxic->send_dly_clk = devm_clk_get(&pdev->dev, "send_dly_clk");
--	if (IS_ERR(mxic->send_dly_clk))
--		return PTR_ERR(mxic->send_dly_clk);
--
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
--	mxic->regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(mxic->regs))
--		return PTR_ERR(mxic->regs);
-+	master->dev.of_node = pdev->dev.parent->of_node;
-+	mxic->mfd = mfd;
- 
- 	pm_runtime_enable(&pdev->dev);
- 	master->auto_runtime_pm = true;
-@@ -597,18 +427,11 @@ static int mxic_spi_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct of_device_id mxic_spi_of_ids[] = {
--	{ .compatible = "mxicy,mx25f0a-spi", },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(of, mxic_spi_of_ids);
--
- static struct platform_driver mxic_spi_driver = {
- 	.probe = mxic_spi_probe,
- 	.remove = mxic_spi_remove,
- 	.driver = {
- 		.name = "mxic-spi",
--		.of_match_table = mxic_spi_of_ids,
- 		.pm = &mxic_spi_dev_pm_ops,
- 	},
- };
--- 
-1.9.1
 
 
+On 04/10/2019 10:39 AM, Mika Westerberg wrote:
+> External E-Mail
+> 
+> 
+> Intel Comet Lake has the same SPI serial flash controller than Ice Lake.
+
+s/than/as?
+
+> Add Comet Lake PCI ID to the driver list of supported devices.
+> 
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+
+with that:
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
+> index 872b40922608..bfbfc17ed6aa 100644
+> --- a/drivers/mtd/spi-nor/intel-spi-pci.c
+> +++ b/drivers/mtd/spi-nor/intel-spi-pci.c
+> @@ -63,6 +63,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
+>  }
+>  
+>  static const struct pci_device_id intel_spi_pci_ids[] = {
+> +	{ PCI_VDEVICE(INTEL, 0x02a4), (unsigned long)&bxt_info },
+>  	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
+>  	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
+>  	{ PCI_VDEVICE(INTEL, 0x34a4), (unsigned long)&bxt_info },
+> 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
