@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C14A4C10F0E
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:07:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A12E3C282CE
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:07:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DA132073F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:07:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C4FD2073F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2019 09:07:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BNff1JoJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DA132073F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DbCQXKvB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C4FD2073F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,22 +26,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=kfEdaSjMqVTr66fruiFLZTkZhWnZEQnWJT7SiswvhZY=; b=BNff1JoJ7VPiKf2+Bne5lvHGyG
-	KS+VGrO4MNBj30/p2Jz75zqDYgMVwvaC2FVigtq5ixwalt+87EU3wR7kUgvpfMb/3Enrn3I62SiiE
-	rIyHbL0wnySRdbT/swjDkIt4SEjkXoYCsZuzupQdMJSUgjmS3WtrnOCqvccDU319CR2eqApjCx4qs
-	LrjL9YlaQfUOG94gOXtCjK4OrzEuD9ocS0V3qQfZvrwyT/CthGfYljvmNL7vVU/wfYec6AUdDtkOc
-	afFAiKDlCPsvBk8aNPIzwM5Yo5cNCyBsacYWYJaqUjLTHipYL6j3SEkyTHcMoCf1vW4lwCUYciRQg
-	RovgtbOA==;
+	bh=CN7alKBu8CqgpInWuhQy2rt2HsN65mFqqMRe588DljQ=; b=DbCQXKvBCFusaIz05ZnaHbJNY0
+	CXstjga8fAsLhQZw9kBAkj0Xx6OlwOpkTlF/Lq1ofN0LyFKbsdz2xI7GjwVQH28AvqLkJUy1Bm3SR
+	vn3NpAnEWSNF/ybLilI7iRomn0G0Z0mZS3JF3A2Jh912BevsKkfeEY+1v52pnceRxOaL7EheZh6LP
+	Ofg2QEeWEzuGjqO2O8wUdpz9c+0/vwaXjq/5XQDLYz6mtAvAfGFNBN8C1rRtW+c/+ueck0FJzkTJR
+	2pggNfSyPSLJcnlyuwpd11J3cqEIhftHbf8D2lpD+ulecAsxmYYx1ODaCKRRTt9itSHWcC6lL20lp
+	yuoFXcaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hFxZp-00020N-7Z; Mon, 15 Apr 2019 09:06:57 +0000
+	id 1hFxa0-0002Fb-89; Mon, 15 Apr 2019 09:07:08 +0000
 Received: from twhmllg4.macronix.com ([211.75.127.132])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hFxZR-0001Wo-Fn
+ id 1hFxZT-0001Ya-Nr
  for linux-mtd@lists.infradead.org; Mon, 15 Apr 2019 09:06:37 +0000
 Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG4.macronix.com with ESMTP id x3F93pKq042176;
- Mon, 15 Apr 2019 17:03:52 +0800 (GMT-8)
+ by TWHMLLG4.macronix.com with ESMTP id x3F93pKt042176;
+ Mon, 15 Apr 2019 17:03:54 +0800 (GMT-8)
  (envelope-from masonccyang@mxic.com.tw)
 From: Mason Yang <masonccyang@mxic.com.tw>
 To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
@@ -52,16 +52,18 @@ To: broonie@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
  geert@linux-m68k.org, devicetree@vger.kernel.org,
  marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org,
  richard@nod.at, miquel.raynal@bootlin.com
-Subject: [PATCH v3 1/4]  mfd: Add Macronix MX25F0A MFD controller driver
-Date: Mon, 15 Apr 2019 17:23:51 +0800
-Message-Id: <1555320234-15802-2-git-send-email-masonccyang@mxic.com.tw>
+Subject: [PATCH v3 4/4] dt-bindings: mfd: Document Macronix MX25F0A controller
+ bindings
+Date: Mon, 15 Apr 2019 17:23:54 +0800
+Message-Id: <1555320234-15802-5-git-send-email-masonccyang@mxic.com.tw>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
 References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
-X-MAIL: TWHMLLG4.macronix.com x3F93pKq042176
+X-MAIL: TWHMLLG4.macronix.com x3F93pKt042176
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190415_020633_809821_E2B17C89 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20190415_020636_046541_144E8CC9 
+X-CRM114-Status: UNSURE (   9.04  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -81,321 +83,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a driver for Macronix MX25F0A multifunction device controller.
+Document the bindings used by the Macronix MX25F0A MFD controller.
 
 Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
 ---
- drivers/mfd/Kconfig              |   9 ++
- drivers/mfd/Makefile             |   1 +
- drivers/mfd/mxic-mx25f0a.c       |  84 +++++++++++++++++++
- include/linux/mfd/mxic-mx25f0a.h | 175 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 269 insertions(+)
- create mode 100644 drivers/mfd/mxic-mx25f0a.c
- create mode 100644 include/linux/mfd/mxic-mx25f0a.h
+ .../devicetree/bindings/mfd/mxic-mx25f0a.txt       | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 26ad646..7e99e93 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -823,6 +823,15 @@ config MFD_MAX8998
- 	  additional drivers must be enabled in order to use the functionality
- 	  of the device.
- 
-+config MFD_MXIC_MX25F0A
-+	tristate "Macronix mx25f0a multifunction device support"
-+	select MFD_CORE
-+	help
-+	  This supports for Macronix mx25f0a multifunction device controller
-+	  for raw nand or spi. You have to select individual components like
-+	  raw nand controller or spi host controller under the corresponding
-+	  menus.
-+
- config MFD_MT6397
- 	tristate "MediaTek MT6397 PMIC Support"
- 	select MFD_CORE
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index b4569ed7..dcfe8fd 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -163,6 +163,7 @@ max8925-objs			:= max8925-core.o max8925-i2c.o
- obj-$(CONFIG_MFD_MAX8925)	+= max8925.o
- obj-$(CONFIG_MFD_MAX8997)	+= max8997.o max8997-irq.o
- obj-$(CONFIG_MFD_MAX8998)	+= max8998.o max8998-irq.o
-+obj-$(CONFIG_MFD_MXIC_MX25F0A)	+= mxic-mx25f0a.o
- 
- pcf50633-objs			:= pcf50633-core.o pcf50633-irq.o
- obj-$(CONFIG_MFD_PCF50633)	+= pcf50633.o
-diff --git a/drivers/mfd/mxic-mx25f0a.c b/drivers/mfd/mxic-mx25f0a.c
+diff --git a/Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt b/Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
 new file mode 100644
-index 0000000..a884d97
+index 0000000..7f3e0f8
 --- /dev/null
-+++ b/drivers/mfd/mxic-mx25f0a.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (C) 2019 Macronix International Co., Ltd.
-+//
-+// Author:
-+//	Mason Yang <masonccyang@mxic.com.tw>
-+//
++++ b/Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
+@@ -0,0 +1,51 @@
++Macronix MX25F0A MultiFunction Device Tree Bindings
++----------------------------------------------------
 +
-+#include <linux/clk.h>
-+#include <linux/mfd/mxic-mx25f0a.h>
-+#include <linux/mfd/core.h>
++MX25F0A is a MultiFunction Device with SPI and raw NAND, which
++supports either spi host controller or raw nand controller.
 +
-+static const struct mfd_cell mx25f0a_nand_ctlr = {
-+	.name = "mxic-nand-ctlr",
-+	.of_compatible = "mxicy,mx25f0a-nand-ctlr",
-+};
++Required properties:
++- compatible: should be "mxic,mx25f0a"
++- #address-cells: should be 1
++- #size-cells: should be 0
++- reg: should contain 2 entries, one for the registers and one for the direct
++       mapping area in SPI mode.
++- reg-names: should contain "regs" and "dirmap"
++- interrupts: interrupt line connected to this MFD controller
++- SPI controller driver:
++		- clock-names: should contain "ps_clk", "send_clk" and
++			       "send_dly_clk"
++		- clocks: should contain 3 entries for the "ps_clk", "send_clk"
++			  and "send_dly_clk" clocks
 +
-+static const struct mfd_cell mx25f0a_spi_ctlr = {
-+	.name = "mxic-spi",
-+	.of_compatible = "mxicy,mx25f0a-spi",
-+};
++- Raw nand controller driver.
++		- nand-ecc-mode = "soft";
++		- nand-ecc-algo = "bch";
 +
-+static int mx25f0a_mfd_probe(struct platform_device *pdev)
-+{
-+	const struct mfd_cell *cell;
-+	struct mx25f0a_mfd *mxic;
-+	struct resource *res;
-+	int ret;
++Example:
 +
-+	ret = of_device_is_compatible(pdev->dev.of_node->child,
-+				      "jedec,spi-nor");
-+	if (ret)
-+		cell = &mx25f0a_spi_ctlr;
-+	else
-+		cell = &mx25f0a_nand_ctlr;
++	mxic: mx25f0a@43c30000 {
++		compatible = "mxic,mx25f0a";
++		reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
++		reg-names = "regs", "dirmap";
 +
-+	mxic = devm_kzalloc(&pdev->dev, sizeof(*mxic), GFP_KERNEL);
-+	if (!mxic)
-+		return -ENOMEM;
++		/* spi */
++		clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
++		clock-names = "send_clk", "send_dly_clk", "ps_clk";
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
-+	mxic->regs = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(mxic->regs))
-+		return PTR_ERR(mxic->regs);
++		flash@0 {
++			compatible = "jedec,spi-nor";
++			reg = <0>;
++			spi-max-frequency = <25000000>;
++			spi-tx-bus-width = <4>;
++			spi-rx-bus-width = <4>;
++		};
 +
-+	if (cell == &mx25f0a_spi_ctlr) {
-+		mxic->ps_clk = devm_clk_get(&pdev->dev, "ps_clk");
-+		if (IS_ERR(mxic->ps_clk))
-+			return PTR_ERR(mxic->ps_clk);
-+
-+		mxic->send_clk = devm_clk_get(&pdev->dev, "send_clk");
-+		if (IS_ERR(mxic->send_clk))
-+			return PTR_ERR(mxic->send_clk);
-+
-+		mxic->send_dly_clk = devm_clk_get(&pdev->dev, "send_dly_clk");
-+		if (IS_ERR(mxic->send_dly_clk))
-+			return PTR_ERR(mxic->send_dly_clk);
-+	}
-+
-+	platform_set_drvdata(pdev, mxic);
-+
-+	ret = devm_mfd_add_devices(&pdev->dev, -1, cell, 1, NULL, 0, NULL);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id mx25f0a_mfd_of_match[] = {
-+	{ .compatible = "mxic,mx25f0a", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mx25f0a_mfd_of_match);
-+
-+static struct platform_driver mx25f0a_mfd_driver = {
-+	.probe		= mx25f0a_mfd_probe,
-+	.driver = {
-+		.name =	"mx25f0a-mfd",
-+		.of_match_table = mx25f0a_mfd_of_match,
-+	},
-+};
-+module_platform_driver(mx25f0a_mfd_driver);
-+
-+MODULE_AUTHOR("Mason Yang <masonccyang@mxic.com.tw>");
-+MODULE_DESCRIPTION("MX25F0A controller MFD driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/mfd/mxic-mx25f0a.h b/include/linux/mfd/mxic-mx25f0a.h
-new file mode 100644
-index 0000000..cb7bf19
---- /dev/null
-+++ b/include/linux/mfd/mxic-mx25f0a.h
-@@ -0,0 +1,175 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+//
-+// Copyright (C) 2019 Macronix International Co., Ltd.
-+//
-+// Author:
-+//	Mason Yang <masonccyang@mxic.com.tw>
-+//
-+
-+#ifndef __MFD_MXIC_MX25F0A_H
-+#define __MFD_MXIC_MX25F0A_H
-+
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+
-+#define HC_CFG			0x0
-+#define HC_CFG_IF_CFG(x)	((x) << 27)
-+#define HC_CFG_DUAL_SLAVE	BIT(31)
-+#define HC_CFG_INDIVIDUAL	BIT(30)
-+#define HC_CFG_NIO(x)		(((x) / 4) << 27)
-+#define HC_CFG_TYPE(s, t)	((t) << (23 + ((s) * 2)))
-+#define HC_CFG_TYPE_SPI_NOR	0
-+#define HC_CFG_TYPE_SPI_NAND	1
-+#define HC_CFG_TYPE_SPI_RAM	2
-+#define HC_CFG_TYPE_RAW_NAND	3
-+#define HC_CFG_SLV_ACT(x)	((x) << 21)
-+#define HC_CFG_CLK_PH_EN	BIT(20)
-+#define HC_CFG_CLK_POL_INV	BIT(19)
-+#define HC_CFG_BIG_ENDIAN	BIT(18)
-+#define HC_CFG_DATA_PASS	BIT(17)
-+#define HC_CFG_IDLE_SIO_LVL(x)	((x) << 16)
-+#define HC_CFG_MAN_START_EN	BIT(3)
-+#define HC_CFG_MAN_START	BIT(2)
-+#define HC_CFG_MAN_CS_EN	BIT(1)
-+#define HC_CFG_MAN_CS_ASSERT	BIT(0)
-+
-+#define INT_STS			0x4
-+#define INT_STS_EN		0x8
-+#define INT_SIG_EN		0xc
-+#define INT_STS_ALL		GENMASK(31, 0)
-+#define INT_RDY_PIN		BIT(26)
-+#define INT_RDY_SR		BIT(25)
-+#define INT_LNR_SUSP		BIT(24)
-+#define INT_ECC_ERR		BIT(17)
-+#define INT_CRC_ERR		BIT(16)
-+#define INT_LWR_DIS		BIT(12)
-+#define INT_LRD_DIS		BIT(11)
-+#define INT_SDMA_INT		BIT(10)
-+#define INT_DMA_FINISH		BIT(9)
-+#define INT_RX_NOT_FULL		BIT(3)
-+#define INT_RX_NOT_EMPTY	BIT(2)
-+#define INT_TX_NOT_FULL		BIT(1)
-+#define INT_TX_EMPTY		BIT(0)
-+
-+#define HC_EN			0x10
-+#define HC_EN_BIT		BIT(0)
-+
-+#define TXD(x)			(0x14 + ((x) * 4))
-+#define RXD			0x24
-+
-+#define SS_CTRL(s)		(0x30 + ((s) * 4))
-+#define LRD_CFG			0x44
-+#define LWR_CFG			0x80
-+#define RWW_CFG			0x70
-+#define OP_READ			BIT(23)
-+#define OP_DUMMY_CYC(x)		((x) << 17)
-+#define OP_ADDR_BYTES(x)	((x) << 14)
-+#define OP_CMD_BYTES(x)		(((x) - 1) << 13)
-+#define OP_OCTA_CRC_EN		BIT(12)
-+#define OP_DQS_EN		BIT(11)
-+#define OP_ENHC_EN		BIT(10)
-+#define OP_PREAMBLE_EN		BIT(9)
-+#define OP_DATA_DDR		BIT(8)
-+#define OP_DATA_BUSW(x)		((x) << 6)
-+#define OP_ADDR_DDR		BIT(5)
-+#define OP_ADDR_BUSW(x)		((x) << 3)
-+#define OP_CMD_DDR		BIT(2)
-+#define OP_CMD_BUSW(x)		(x)
-+#define OP_BUSW_1		0
-+#define OP_BUSW_2		1
-+#define OP_BUSW_4		2
-+#define OP_BUSW_8		3
-+
-+#define OCTA_CRC		0x38
-+#define OCTA_CRC_IN_EN(s)	BIT(3 + ((s) * 16))
-+#define OCTA_CRC_CHUNK(s, x)	((fls((x) / 32)) << (1 + ((s) * 16)))
-+#define OCTA_CRC_OUT_EN(s)	BIT(0 + ((s) * 16))
-+
-+#define ONFI_DIN_CNT(s)		(0x3c + (s))
-+
-+#define LRD_CTRL		0x48
-+#define RWW_CTRL		0x74
-+#define LWR_CTRL		0x84
-+#define LMODE_EN		BIT(31)
-+#define LMODE_SLV_ACT(x)	((x) << 21)
-+#define LMODE_CMD1(x)		((x) << 8)
-+#define LMODE_CMD0(x)		(x)
-+
-+#define LRD_ADDR		0x4c
-+#define LWR_ADDR		0x88
-+#define LRD_RANGE		0x50
-+#define LWR_RANGE		0x8c
-+
-+#define AXI_SLV_ADDR		0x54
-+
-+#define DMAC_RD_CFG		0x58
-+#define DMAC_WR_CFG		0x94
-+#define DMAC_CFG_PERIPH_EN	BIT(31)
-+#define DMAC_CFG_ALLFLUSH_EN	BIT(30)
-+#define DMAC_CFG_LASTFLUSH_EN	BIT(29)
-+#define DMAC_CFG_QE(x)		(((x) + 1) << 16)
-+#define DMAC_CFG_BURST_LEN(x)	(((x) + 1) << 12)
-+#define DMAC_CFG_BURST_SZ(x)	((x) << 8)
-+#define DMAC_CFG_DIR_READ	BIT(1)
-+#define DMAC_CFG_START		BIT(0)
-+
-+#define DMAC_RD_CNT		0x5c
-+#define DMAC_WR_CNT		0x98
-+
-+#define SDMA_ADDR		0x60
-+
-+#define DMAM_CFG		0x64
-+#define DMAM_CFG_START		BIT(31)
-+#define DMAM_CFG_CONT		BIT(30)
-+#define DMAM_CFG_SDMA_GAP(x)	(fls((x) / 8192) << 2)
-+#define DMAM_CFG_DIR_READ	BIT(1)
-+#define DMAM_CFG_EN		BIT(0)
-+
-+#define DMAM_CNT		0x68
-+
-+#define LNR_TIMER_TH		0x6c
-+
-+#define RDM_CFG0		0x78
-+#define RDM_CFG0_POLY(x)	(x)
-+
-+#define RDM_CFG1		0x7c
-+#define RDM_CFG1_RDM_EN		BIT(31)
-+#define RDM_CFG1_SEED(x)	(x)
-+
-+#define LWR_SUSP_CTRL		0x90
-+#define LWR_SUSP_CTRL_EN	BIT(31)
-+
-+#define DMAS_CTRL		0x9c
-+#define DMAS_CTRL_DIR_READ	BIT(31)
-+#define DMAS_CTRL_EN		BIT(30)
-+
-+#define DATA_STROB		0xa0
-+#define DATA_STROB_EDO_EN	BIT(2)
-+#define DATA_STROB_INV_POL	BIT(1)
-+#define DATA_STROB_DELAY_2CYC	BIT(0)
-+
-+#define IDLY_CODE(x)		(0xa4 + ((x) * 4))
-+#define IDLY_CODE_VAL(x, v)	((v) << (((x) % 4) * 8))
-+
-+#define GPIO			0xc4
-+#define GPIO_PT(x)		BIT(3 + ((x) * 16))
-+#define GPIO_RESET(x)		BIT(2 + ((x) * 16))
-+#define GPIO_HOLDB(x)		BIT(1 + ((x) * 16))
-+#define GPIO_WPB(x)		BIT((x) * 16)
-+
-+#define HC_VER			0xd0
-+
-+#define HW_TEST(x)		(0xe0 + ((x) * 4))
-+
-+struct mx25f0a_mfd {
-+	void __iomem *regs;
-+	struct clk *ps_clk;
-+	struct clk *send_clk;
-+	struct clk *send_dly_clk;
-+};
-+
-+#endif // __MFD_MXIC_MX25F0A_H
++		/* nand */
++		nand-ecc-mode = "soft";
++		nand-ecc-algo = "bch";
++		nand-ecc-step-size = <512>;
++		nand-ecc-strength = <8>;
++	};
 -- 
 1.9.1
 
