@@ -2,63 +2,73 @@ Return-Path: <SRS0=Gd7z=SS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09BEEC10F13
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Apr 2019 17:24:22 +0000 (UTC)
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CF0CC10F13
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Apr 2019 20:23:28 +0000 (UTC)
+X-Greylist: delayed 102 seconds by postgrey-1.34 at mail.kernel.org; Tue, 16 Apr 2019 20:23:28 UTC
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="a8IpRitE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6508720663
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+Received: from bombadil.infradead.org (unknown [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCC53205ED
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Apr 2019 17:24:21 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n2MtukEu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCC53205ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
-Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6508720663
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Apr 2019 20:23:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZTHqt5LhR3VL+dmqYHLUg8xVQtVjW9JHs5AM3NdHo+Y=; b=n2MtukEuovkghg
-	fnyePzIl7whPA7MPVwiEzJe8Caf9LjQqD082ZVLM1WxVUpzLOfb6IkMZhCVDOO8Vdwl8ihix1gezN
-	2PlcTrOiX7dpFITlRX4S2DjojuDgSoeWUjzuebpSm+yK4Ws974I0HbwbOINmPZzlul/7C9IgJBWBZ
-	6TgHLM7eUwrMfOtR+6SD2k9gHBdT/4B5vOWTXjCdePYevDMfwUEiLhuKO4UuhL8BF5+0S5zw5bc++
-	SOTj5fzTjIt7TxJTNWrtE9h17/LKjcg5HFuPF9P0pveYs57uv39rxj58qa9aXkAXQ6Q9l4MngSccJ
-	wHFXphmESyEx8UaiBR+A==;
+	List-Owner; bh=ziUNLeT3b3s7lf9CDG74YZKyvdJx8LNdC9RAisUzti8=; b=a8IpRitEseP08s
+	sPBQceRD2efmbT6kyk4eYZB9xIVvNO8wgv2Sb3z50r8Gwpqgkzw0Uqqflb1Ou+D2NspbBoV6j9H+X
+	jQJ3rytY2VU/NdFTAq+dJXtywpclyUQvF48W2v2potbwaQ0WXRuuR7zMkToyf08+pi/oW98ywu1Se
+	60hSTf5LEHNOYpPpEzGxrOW6Wa5zolezw1uOlJPPPaeIj8a19d+UuonYFi8gz0Ae2vkgbvT/UZqmZ
+	0LHUCMCu/vRax98FTwVoWJlVb7RlLA+JlipOvy8SL6zm+mbSWqztXKbbrCmrzejs4p5Um8yHzS/Wl
+	KM2EYbokMqsacpjC966g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hGRof-0008PC-II; Tue, 16 Apr 2019 17:24:17 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1hGUbx-0000Kv-57; Tue, 16 Apr 2019 20:23:21 +0000
+Received: from mout.kundenserver.de ([212.227.126.135])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGRoc-0008Om-D0
- for linux-mtd@lists.infradead.org; Tue, 16 Apr 2019 17:24:16 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0F28520009;
- Tue, 16 Apr 2019 17:24:09 +0000 (UTC)
-Date: Tue, 16 Apr 2019 19:24:08 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] mtd: cfi_util: mark expected switch fall-throughs
-Message-ID: <20190416192408.0e321563@xps13>
-In-Reply-To: <ee1f8c4a-92b0-db9d-6110-3acadeb9e457@embeddedor.com>
-References: <20190208180202.GA16603@embeddedor>
- <69083203-0720-1943-8549-ddf3cea6060e@embeddedor.com>
- <71df15e7-af2e-0326-78fe-0271a1e240fe@embeddedor.com>
- <20190415104458.7faeec57@xps13>
- <ee1f8c4a-92b0-db9d-6110-3acadeb9e457@embeddedor.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1hGUbs-0000KP-99; Tue, 16 Apr 2019 20:23:18 +0000
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M7NaW-1hDAfc1scO-007lBC; Tue, 16 Apr 2019 22:22:16 +0200
+From: Arnd Bergmann <arnd@arndb.de>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH v3 09/26] compat_ioctl: move drivers to compat_ptr_ioctl
+Date: Tue, 16 Apr 2019 22:19:47 +0200
+Message-Id: <20190416202013.4034148-10-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
+In-Reply-To: <20190416202013.4034148-1-arnd@arndb.de>
+References: <20190416202013.4034148-1-arnd@arndb.de>
 MIME-Version: 1.0
+X-Provags-ID: V03:K1:vaVmI0/zf8BxnW+oAZ9lHe+8dJU/oQPqer6O5ZzvxK60DJtUya3
+ +6c6sbOzVLNSTUjo4tbh+Auabptrb6LLljmHb2BiKR6GUrlD24YQjg0hYz6Jzenp76pq7Xd
+ ixQEc0eCHYDcWkwtZPjxqks8FJMoz3s99zkDTxhS+Y4Ock66yPr2gky+4CGATvyD1oiQwh6
+ nzE7YoaL8GMC++TWHt/Qg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s9me+MZLR/A=:tyVhJsXkEmvHXn8AymnKr9
+ HUyNSOqLhUsxXw7rKWH5ML4/Jy7o+Gm53iLD3LCR4okOkE/EEXLk+zTs4KG210jSdFwZIKoDF
+ 6Wfey3sgnQdXBc7aGUosxbD7+xkBiJePINnnNoc6nK8IPzggm7ihxE2lyGjNfZb/FAtXuysAG
+ 5EvJzjKTjjnrpFIO+xRrHf7fY3fCACLtfKpvYj/Xtewk64YQA76V6wFbiQerpzHSMKvbY6SBH
+ hpT57QDqw1BtNdrVZokb+pXwj3Y/VZP8ZyP47TUZpl/xbk2D+YvVnKMl7zWOEpnpTPzM9Ftzg
+ a1zBDSoAslK9G6BjZdhMh1AZO/prjbyLUmJ3ZH6GrainW4H53FvEDt23jUYGefcukOTivQMiV
+ XSQjy4ebMfxdz+cUxmi3t7fiAud2xtJ7qWgjvSC5HKwtb//u3ROul+PVEOIEeyf+ypqSm7zBe
+ J9u2S9pFezuiOb7VrODWUqvfPMgfFSuPoHsINjy7oyvetF0ZgyP35FBBC1Y1Djfu/S9daHsTb
+ ncEQvANbb/OrkNqDeEVvN3Cd6a1FSBQdHMv+5zP9xPL+GvWO8GqHRxW8f4r6P+MH/Z7GR32aW
+ l3socAy2cOyiF2ssovam82OvHDEhE4cItbDq4ZnYCiutiBd3hOuNIIecZcj8hNvIHwWeYR/3J
+ LDBZSMc+K/iPEQF96D4ibpkjOEMRcT/+FUWbZ4a+gD0mviqmcllP14YnTO9D9GWzZXtHs+fhd
+ vEYTHJis4P6//WcynEV1ZZP/60zP0CK2C3ozZQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190416_102414_597262_2C9FCFAD 
-X-CRM114-Status: GOOD (  19.60  )
+X-CRM114-CacheID: sfid-20190416_132316_777068_122DD7AE 
+X-CRM114-Status: GOOD (  16.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -70,53 +80,641 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Kees Cook <keescook@chromium.org>, Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-usb@vger.kernel.org, kvm@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ virtualization@lists.linux-foundation.org,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ linux-mtd@lists.infradead.org, Peter Huewe <peterhuewe@gmx.de>,
+ linux1394-devel@lists.sourceforge.net,
+ linux-stm32@st-md-mailman.stormreply.com, devel@driverdev.osuosl.org,
+ Marek Vasut <marek.vasut@gmail.com>, y2038@lists.linaro.org,
+ Richard Weinberger <richard@nod.at>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Jason Gunthorpe <jgg@mellanox.com>, linux-arm-kernel@lists.infradead.org,
+ linux-input@vger.kernel.org, Tomas Winkler <tomas.winkler@intel.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>, Arnd Bergmann <arnd@arndb.de>,
+ Jiri Kosina <jikos@kernel.org>, Alex Williamson <alex.williamson@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ Willem de Bruijn <willemb@google.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ linux-integrity@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgR3VzdGF2bywKCiJHdXN0YXZvIEEuIFIuIFNpbHZhIiA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNv
-bT4gd3JvdGUgb24gTW9uLCAxNSBBcHIKMjAxOSAwNzo1NzoxMSAtMDUwMDoKCj4gSGkgTWlxdWVs
-LAo+IAo+IE9uIDQvMTUvMTkgMzo0NCBBTSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IEhpIEd1
-c3Rhdm8sCj4gPiAKPiA+ICJHdXN0YXZvIEEuIFIuIFNpbHZhIiA8Z3VzdGF2b0BlbWJlZGRlZG9y
-LmNvbT4gd3JvdGUgb24gV2VkLCAxMCBBcHIKPiA+IDIwMTkgMTY6MTY6NTEgLTA1MDA6Cj4gPiAg
-IAo+ID4+IEhpIGFsbCwKPiA+Pgo+ID4+IElmIG5vIG9uZSBjYXJlcyBJJ2xsIGFkZCB0aGlzIHRv
-IG15IHRyZWUgZm9yIDUuMi4gIAo+ID4gCj4gPiBXaGljaCB0cmVlIGFyZSB5b3UgdGFsa2luZyBh
-Ym91dD8KPiA+ICAgCj4gCj4gVGhpcyBvbmU6Cj4gCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9w
-dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvZ3VzdGF2b2Fycy9saW51eC5naXQvbG9nLz9oPWZvci1u
-ZXh0L2tzcHAKPiAKPiA+IFBsZWFzZSBsZXQgdGhlIE1URCBtYWludGFpbmVycyB0YWtlIHBhdGNo
-ZXMgdGhyb3VnaCB0aGVpciB0cmVlLiBXZQo+ID4gbWlnaHQgYmUgbGF0ZSBidXQgdGhpcyBpcyBk
-ZWZpbml0ZWx5IG5vdCBhIGdvb2QgcmVhc29uIHRvIGJ5cGFzcyB1cy4KPiA+ICAgCj4gSXQncyBh
-IGJpdCBjb25mdXNpbmcgd2hlbiBwYXRjaGVzIGFyZSBiZWluZyBpZ25vcmVkIGZvciBtb3JlIHRo
-YW4gdHdvCj4gbW9udGhzOgo+IAo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BhdGNod29yay9w
-YXRjaC8xMDQwMDk5Lwo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BhdGNod29yay9wYXRjaC8x
-MDQwMTAwLwo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BhdGNod29yay9wYXRjaC8xMDQwMDk4
-Lwo+IAoKUGF0Y2hlcyBwb3N0ZWQgYXQgLXJjNiByaWdodCBiZWZvcmUgdGhlIGxhc3QgcmVsZWFz
-ZT8gQ29tZSBvbiEgR3VzdGF2bywKd2UgYWx3YXlzIHNwZW5kIG1vcmUgdGltZSBmb3IgeW91IHRo
-YW4gZm9yIG90aGVyIGNvbnRyaWJ1dG9ycyBiZWNhdXNlIHdlCmRvIG5vdCB0cnVzdCB5b3VyIGNo
-YW5nZXMuIFdlIGNvdWxkIGFwcGx5IHRoZW0gYmxpbmRseSBidXQgd2UgZG9uJ3QgZG8KdGhhdCBm
-b3Igb3RoZXIgKHdvcnRoeSkgY29udHJpYnV0aW9ucywgc28gd2h5IHNoYWxsIHdlIGRvIGl0IGZv
-ciB5b3U/CgpJIHRoaW5rIHlvdSBjb3VsZCBhdCBsZWFzdCBmbGFnIHRoZXNlIGNoYW5nZXMgYXMg
-ImF1dG9tYXRpYyBhbmQKdW52ZXJpZmllZCIgaW4gdGhlIGNvbW1pdCBsb2cgc28gdGhhdCB3aGVu
-IGdpdCBibGFtaW5nLCBwZW9wbGUgY291bGQKa25vdyB0aGF0IHRoZSBhZGRpdGlvbmFsIGV4cGxp
-Y2l0IC8qIGZhbGx0aHJvdWdoICovIGNvbW1lbnQgbWlnaHQgYmUKd3JvbmcgYW5kIHdhcyBqdXN0
-IGFkZGVkIGluIG9yZGVyIHRvIGxpbWl0IHRoZSBudW1iZXIgb2Ygd2FybmluZ3Mgd2hlbgplbmFi
-bGluZyB0aGUgZXh0cmEgR0NDIHdhcm5pbmcuCgo+IENlcnRhaW5seSwgUmljaGFyZCBXZWluYmVy
-Z2VyIHJlcGxpZWQgdG8gdGhpcyBvbmUuIEJ1dCBJIGNvdWxkbid0Cj4gZmluZCBhIHRyZWUgdG8g
-d2hpY2ggdGhpcyBwYXRjaCB3YXMgYXBwbGllZCwgaW4gY2FzZSBpdCBhY3R1YWxseQo+IHdhcy4K
-PiAKPiBJdCdzIGEgY29tbW9uIHByYWN0aWNlIGZvciBtYWludGFpbmVycyB0byByZXBseSBzYXlp
-bmcgdGhhdCBhIHBhdGNoCj4gaGFzIGJlZW4gZmluYWxseSBhcHBsaWVkLCBhbmQgaW4gbW9zdCBj
-YXNlcyB0aGV5IGFsc28gZXhwbGljaXRseQo+IG1lbnRpb24gdGhlIHRyZWUgYW5kIGJyYW5jaCB0
-byB3aGljaCBpdCB3YXMgYXBwbGllZC4gQWxsIHRoaXMgaW5mbwo+IGlzIHJlYWxseSBoZWxwZnVs
-IGZvciBwZW9wbGUgd29ya2luZyBhbGwgb3ZlciB0aGUgdHJlZS4KCkl0IGlzIGNvbW1vbiBwcmFj
-dGljZSBmb3IgY29udHJpYnV0b3JzIHRvIHVuZGVyc3RhbmQgd2hhdCB0aGV5CmFyZSBkb2luZyBi
-ZWZvcmUgc3VibWl0dGluZyBhIGNoYW5nZSBhbmQgdGhpcyBpcyBzb21ldGhpbmcgdGhhdCB5b3UK
-Y2xlYXJseSBkb24ndCB0cnkgdG8gZG8uCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+Each of these drivers has a copy of the same trivial helper function to
+convert the pointer argument and then call the native ioctl handler.
+
+We now have a generic implementation of that, so use it.
+
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/char/ppdev.c              | 12 +---------
+ drivers/char/tpm/tpm_vtpm_proxy.c | 12 +---------
+ drivers/firewire/core-cdev.c      | 12 +---------
+ drivers/hid/usbhid/hiddev.c       | 11 +--------
+ drivers/hwtracing/stm/core.c      | 12 +---------
+ drivers/misc/mei/main.c           | 22 +----------------
+ drivers/mtd/ubi/cdev.c            | 36 +++-------------------------
+ drivers/net/tap.c                 | 12 +---------
+ drivers/staging/pi433/pi433_if.c  | 12 +---------
+ drivers/usb/core/devio.c          | 16 +------------
+ drivers/vfio/vfio.c               | 39 +++----------------------------
+ drivers/vhost/net.c               | 12 +---------
+ drivers/vhost/scsi.c              | 12 +---------
+ drivers/vhost/test.c              | 12 +---------
+ drivers/vhost/vsock.c             | 12 +---------
+ fs/fat/file.c                     | 13 +----------
+ 16 files changed, 20 insertions(+), 237 deletions(-)
+
+diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
+index 1ae77b41050a..e96c8d9623e0 100644
+--- a/drivers/char/ppdev.c
++++ b/drivers/char/ppdev.c
+@@ -674,14 +674,6 @@ static long pp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long pp_compat_ioctl(struct file *file, unsigned int cmd,
+-			    unsigned long arg)
+-{
+-	return pp_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static int pp_open(struct inode *inode, struct file *file)
+ {
+ 	unsigned int minor = iminor(inode);
+@@ -790,9 +782,7 @@ static const struct file_operations pp_fops = {
+ 	.write		= pp_write,
+ 	.poll		= pp_poll,
+ 	.unlocked_ioctl	= pp_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl   = pp_compat_ioctl,
+-#endif
++	.compat_ioctl   = compat_ptr_ioctl,
+ 	.open		= pp_open,
+ 	.release	= pp_release,
+ };
+diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+index d74f3de74ae6..fb845f0a430b 100644
+--- a/drivers/char/tpm/tpm_vtpm_proxy.c
++++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+@@ -675,20 +675,10 @@ static long vtpmx_fops_ioctl(struct file *f, unsigned int ioctl,
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vtpmx_fops_compat_ioctl(struct file *f, unsigned int ioctl,
+-					  unsigned long arg)
+-{
+-	return vtpmx_fops_ioctl(f, ioctl, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static const struct file_operations vtpmx_fops = {
+ 	.owner = THIS_MODULE,
+ 	.unlocked_ioctl = vtpmx_fops_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl = vtpmx_fops_compat_ioctl,
+-#endif
++	.compat_ioctl = compat_ptr_ioctl,
+ 	.llseek = noop_llseek,
+ };
+ 
+diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
+index 16a7045736a9..fb934680fdd3 100644
+--- a/drivers/firewire/core-cdev.c
++++ b/drivers/firewire/core-cdev.c
+@@ -1659,14 +1659,6 @@ static long fw_device_op_ioctl(struct file *file,
+ 	return dispatch_ioctl(file->private_data, cmd, (void __user *)arg);
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long fw_device_op_compat_ioctl(struct file *file,
+-				      unsigned int cmd, unsigned long arg)
+-{
+-	return dispatch_ioctl(file->private_data, cmd, compat_ptr(arg));
+-}
+-#endif
+-
+ static int fw_device_op_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	struct client *client = file->private_data;
+@@ -1808,7 +1800,5 @@ const struct file_operations fw_device_ops = {
+ 	.mmap		= fw_device_op_mmap,
+ 	.release	= fw_device_op_release,
+ 	.poll		= fw_device_op_poll,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= fw_device_op_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ };
+diff --git a/drivers/hid/usbhid/hiddev.c b/drivers/hid/usbhid/hiddev.c
+index a746017fac17..ef4a1cd389d6 100644
+--- a/drivers/hid/usbhid/hiddev.c
++++ b/drivers/hid/usbhid/hiddev.c
+@@ -855,13 +855,6 @@ static long hiddev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	return r;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long hiddev_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	return hiddev_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static const struct file_operations hiddev_fops = {
+ 	.owner =	THIS_MODULE,
+ 	.read =		hiddev_read,
+@@ -871,9 +864,7 @@ static const struct file_operations hiddev_fops = {
+ 	.release =	hiddev_release,
+ 	.unlocked_ioctl =	hiddev_ioctl,
+ 	.fasync =	hiddev_fasync,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= hiddev_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.llseek		= noop_llseek,
+ };
+ 
+diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
+index c7ba8acfd4d5..454da259f144 100644
+--- a/drivers/hwtracing/stm/core.c
++++ b/drivers/hwtracing/stm/core.c
+@@ -840,23 +840,13 @@ stm_char_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long
+-stm_char_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	return stm_char_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#else
+-#define stm_char_compat_ioctl	NULL
+-#endif
+-
+ static const struct file_operations stm_fops = {
+ 	.open		= stm_char_open,
+ 	.release	= stm_char_release,
+ 	.write		= stm_char_write,
+ 	.mmap		= stm_char_mmap,
+ 	.unlocked_ioctl	= stm_char_ioctl,
+-	.compat_ioctl	= stm_char_compat_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.llseek		= no_llseek,
+ };
+ 
+diff --git a/drivers/misc/mei/main.c b/drivers/misc/mei/main.c
+index 87281b3695e6..cc6af92cdef0 100644
+--- a/drivers/misc/mei/main.c
++++ b/drivers/misc/mei/main.c
+@@ -535,24 +535,6 @@ static long mei_ioctl(struct file *file, unsigned int cmd, unsigned long data)
+ 	return rets;
+ }
+ 
+-/**
+- * mei_compat_ioctl - the compat IOCTL function
+- *
+- * @file: pointer to file structure
+- * @cmd: ioctl command
+- * @data: pointer to mei message structure
+- *
+- * Return: 0 on success , <0 on error
+- */
+-#ifdef CONFIG_COMPAT
+-static long mei_compat_ioctl(struct file *file,
+-			unsigned int cmd, unsigned long data)
+-{
+-	return mei_ioctl(file, cmd, (unsigned long)compat_ptr(data));
+-}
+-#endif
+-
+-
+ /**
+  * mei_poll - the poll function
+  *
+@@ -855,9 +837,7 @@ static const struct file_operations mei_fops = {
+ 	.owner = THIS_MODULE,
+ 	.read = mei_read,
+ 	.unlocked_ioctl = mei_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl = mei_compat_ioctl,
+-#endif
++	.compat_ioctl = compat_ptr_ioctl,
+ 	.open = mei_open,
+ 	.release = mei_release,
+ 	.write = mei_write,
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 947a8adbc799..265d34fa3efa 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -1091,36 +1091,6 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vol_cdev_compat_ioctl(struct file *file, unsigned int cmd,
+-				  unsigned long arg)
+-{
+-	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
+-
+-	return vol_cdev_ioctl(file, cmd, translated_arg);
+-}
+-
+-static long ubi_cdev_compat_ioctl(struct file *file, unsigned int cmd,
+-				  unsigned long arg)
+-{
+-	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
+-
+-	return ubi_cdev_ioctl(file, cmd, translated_arg);
+-}
+-
+-static long ctrl_cdev_compat_ioctl(struct file *file, unsigned int cmd,
+-				   unsigned long arg)
+-{
+-	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
+-
+-	return ctrl_cdev_ioctl(file, cmd, translated_arg);
+-}
+-#else
+-#define vol_cdev_compat_ioctl  NULL
+-#define ubi_cdev_compat_ioctl  NULL
+-#define ctrl_cdev_compat_ioctl NULL
+-#endif
+-
+ /* UBI volume character device operations */
+ const struct file_operations ubi_vol_cdev_operations = {
+ 	.owner          = THIS_MODULE,
+@@ -1131,7 +1101,7 @@ const struct file_operations ubi_vol_cdev_operations = {
+ 	.write          = vol_cdev_write,
+ 	.fsync		= vol_cdev_fsync,
+ 	.unlocked_ioctl = vol_cdev_ioctl,
+-	.compat_ioctl   = vol_cdev_compat_ioctl,
++	.compat_ioctl   = compat_ptr_ioctl,
+ };
+ 
+ /* UBI character device operations */
+@@ -1139,13 +1109,13 @@ const struct file_operations ubi_cdev_operations = {
+ 	.owner          = THIS_MODULE,
+ 	.llseek         = no_llseek,
+ 	.unlocked_ioctl = ubi_cdev_ioctl,
+-	.compat_ioctl   = ubi_cdev_compat_ioctl,
++	.compat_ioctl   = compat_ptr_ioctl,
+ };
+ 
+ /* UBI control character device operations */
+ const struct file_operations ubi_ctrl_cdev_operations = {
+ 	.owner          = THIS_MODULE,
+ 	.unlocked_ioctl = ctrl_cdev_ioctl,
+-	.compat_ioctl   = ctrl_cdev_compat_ioctl,
++	.compat_ioctl   = compat_ptr_ioctl,
+ 	.llseek		= no_llseek,
+ };
+diff --git a/drivers/net/tap.c b/drivers/net/tap.c
+index 2ea9b4976f4a..ebe425e65992 100644
+--- a/drivers/net/tap.c
++++ b/drivers/net/tap.c
+@@ -1123,14 +1123,6 @@ static long tap_ioctl(struct file *file, unsigned int cmd,
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long tap_compat_ioctl(struct file *file, unsigned int cmd,
+-			     unsigned long arg)
+-{
+-	return tap_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static const struct file_operations tap_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= tap_open,
+@@ -1140,9 +1132,7 @@ static const struct file_operations tap_fops = {
+ 	.poll		= tap_poll,
+ 	.llseek		= no_llseek,
+ 	.unlocked_ioctl	= tap_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= tap_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ };
+ 
+ static int tap_get_user_xdp(struct tap_queue *q, struct xdp_buff *xdp)
+diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
+index b2314636dc89..ab7dfc7c2917 100644
+--- a/drivers/staging/pi433/pi433_if.c
++++ b/drivers/staging/pi433/pi433_if.c
+@@ -935,16 +935,6 @@ pi433_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	return retval;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long
+-pi433_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+-{
+-	return pi433_ioctl(filp, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#else
+-#define pi433_compat_ioctl NULL
+-#endif /* CONFIG_COMPAT */
+-
+ /*-------------------------------------------------------------------------*/
+ 
+ static int pi433_open(struct inode *inode, struct file *filp)
+@@ -1101,7 +1091,7 @@ static const struct file_operations pi433_fops = {
+ 	.write =	pi433_write,
+ 	.read =		pi433_read,
+ 	.unlocked_ioctl = pi433_ioctl,
+-	.compat_ioctl = pi433_compat_ioctl,
++	.compat_ioctl = compat_ptr_ioctl,
+ 	.open =		pi433_open,
+ 	.release =	pi433_release,
+ 	.llseek =	no_llseek,
+diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
+index fa783531ee88..d75052b36584 100644
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -2568,18 +2568,6 @@ static long usbdev_ioctl(struct file *file, unsigned int cmd,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long usbdev_compat_ioctl(struct file *file, unsigned int cmd,
+-			unsigned long arg)
+-{
+-	int ret;
+-
+-	ret = usbdev_do_ioctl(file, cmd, compat_ptr(arg));
+-
+-	return ret;
+-}
+-#endif
+-
+ /* No kernel lock - fine */
+ static __poll_t usbdev_poll(struct file *file,
+ 				struct poll_table_struct *wait)
+@@ -2603,9 +2591,7 @@ const struct file_operations usbdev_file_operations = {
+ 	.read =		  usbdev_read,
+ 	.poll =		  usbdev_poll,
+ 	.unlocked_ioctl = usbdev_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl =   usbdev_compat_ioctl,
+-#endif
++	.compat_ioctl =   compat_ptr_ioctl,
+ 	.mmap =           usbdev_mmap,
+ 	.open =		  usbdev_open,
+ 	.release =	  usbdev_release,
+diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+index a3030cdf3c18..a5efe82584a5 100644
+--- a/drivers/vfio/vfio.c
++++ b/drivers/vfio/vfio.c
+@@ -1200,15 +1200,6 @@ static long vfio_fops_unl_ioctl(struct file *filep,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vfio_fops_compat_ioctl(struct file *filep,
+-				   unsigned int cmd, unsigned long arg)
+-{
+-	arg = (unsigned long)compat_ptr(arg);
+-	return vfio_fops_unl_ioctl(filep, cmd, arg);
+-}
+-#endif	/* CONFIG_COMPAT */
+-
+ static int vfio_fops_open(struct inode *inode, struct file *filep)
+ {
+ 	struct vfio_container *container;
+@@ -1291,9 +1282,7 @@ static const struct file_operations vfio_fops = {
+ 	.read		= vfio_fops_read,
+ 	.write		= vfio_fops_write,
+ 	.unlocked_ioctl	= vfio_fops_unl_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= vfio_fops_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.mmap		= vfio_fops_mmap,
+ };
+ 
+@@ -1572,15 +1561,6 @@ static long vfio_group_fops_unl_ioctl(struct file *filep,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vfio_group_fops_compat_ioctl(struct file *filep,
+-					 unsigned int cmd, unsigned long arg)
+-{
+-	arg = (unsigned long)compat_ptr(arg);
+-	return vfio_group_fops_unl_ioctl(filep, cmd, arg);
+-}
+-#endif	/* CONFIG_COMPAT */
+-
+ static int vfio_group_fops_open(struct inode *inode, struct file *filep)
+ {
+ 	struct vfio_group *group;
+@@ -1636,9 +1616,7 @@ static int vfio_group_fops_release(struct inode *inode, struct file *filep)
+ static const struct file_operations vfio_group_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.unlocked_ioctl	= vfio_group_fops_unl_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= vfio_group_fops_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open		= vfio_group_fops_open,
+ 	.release	= vfio_group_fops_release,
+ };
+@@ -1703,24 +1681,13 @@ static int vfio_device_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ 	return device->ops->mmap(device->device_data, vma);
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vfio_device_fops_compat_ioctl(struct file *filep,
+-					  unsigned int cmd, unsigned long arg)
+-{
+-	arg = (unsigned long)compat_ptr(arg);
+-	return vfio_device_fops_unl_ioctl(filep, cmd, arg);
+-}
+-#endif	/* CONFIG_COMPAT */
+-
+ static const struct file_operations vfio_device_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.release	= vfio_device_fops_release,
+ 	.read		= vfio_device_fops_read,
+ 	.write		= vfio_device_fops_write,
+ 	.unlocked_ioctl	= vfio_device_fops_unl_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= vfio_device_fops_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.mmap		= vfio_device_fops_mmap,
+ };
+ 
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index df51a35cf537..1642b3573230 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -1765,14 +1765,6 @@ static long vhost_net_ioctl(struct file *f, unsigned int ioctl,
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vhost_net_compat_ioctl(struct file *f, unsigned int ioctl,
+-				   unsigned long arg)
+-{
+-	return vhost_net_ioctl(f, ioctl, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static ssize_t vhost_net_chr_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	struct file *file = iocb->ki_filp;
+@@ -1808,9 +1800,7 @@ static const struct file_operations vhost_net_fops = {
+ 	.write_iter     = vhost_net_chr_write_iter,
+ 	.poll           = vhost_net_chr_poll,
+ 	.unlocked_ioctl = vhost_net_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl   = vhost_net_compat_ioctl,
+-#endif
++	.compat_ioctl   = compat_ptr_ioctl,
+ 	.open           = vhost_net_open,
+ 	.llseek		= noop_llseek,
+ };
+diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+index 618fb6461017..f9b14c39d89b 100644
+--- a/drivers/vhost/scsi.c
++++ b/drivers/vhost/scsi.c
+@@ -1721,21 +1721,11 @@ vhost_scsi_ioctl(struct file *f,
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vhost_scsi_compat_ioctl(struct file *f, unsigned int ioctl,
+-				unsigned long arg)
+-{
+-	return vhost_scsi_ioctl(f, ioctl, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static const struct file_operations vhost_scsi_fops = {
+ 	.owner          = THIS_MODULE,
+ 	.release        = vhost_scsi_release,
+ 	.unlocked_ioctl = vhost_scsi_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= vhost_scsi_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open           = vhost_scsi_open,
+ 	.llseek		= noop_llseek,
+ };
+diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
+index 40589850eb33..61d4d98c8f70 100644
+--- a/drivers/vhost/test.c
++++ b/drivers/vhost/test.c
+@@ -298,21 +298,11 @@ static long vhost_test_ioctl(struct file *f, unsigned int ioctl,
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vhost_test_compat_ioctl(struct file *f, unsigned int ioctl,
+-				   unsigned long arg)
+-{
+-	return vhost_test_ioctl(f, ioctl, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static const struct file_operations vhost_test_fops = {
+ 	.owner          = THIS_MODULE,
+ 	.release        = vhost_test_release,
+ 	.unlocked_ioctl = vhost_test_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl   = vhost_test_compat_ioctl,
+-#endif
++	.compat_ioctl   = compat_ptr_ioctl,
+ 	.open           = vhost_test_open,
+ 	.llseek		= noop_llseek,
+ };
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index bb5fc0e9fbc2..9a86202678b6 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -716,23 +716,13 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long vhost_vsock_dev_compat_ioctl(struct file *f, unsigned int ioctl,
+-					 unsigned long arg)
+-{
+-	return vhost_vsock_dev_ioctl(f, ioctl, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static const struct file_operations vhost_vsock_fops = {
+ 	.owner          = THIS_MODULE,
+ 	.open           = vhost_vsock_dev_open,
+ 	.release        = vhost_vsock_dev_release,
+ 	.llseek		= noop_llseek,
+ 	.unlocked_ioctl = vhost_vsock_dev_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl   = vhost_vsock_dev_compat_ioctl,
+-#endif
++	.compat_ioctl   = compat_ptr_ioctl,
+ };
+ 
+ static struct miscdevice vhost_vsock_misc = {
+diff --git a/fs/fat/file.c b/fs/fat/file.c
+index b3bed32946b1..f173d9261115 100644
+--- a/fs/fat/file.c
++++ b/fs/fat/file.c
+@@ -171,15 +171,6 @@ long fat_generic_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	}
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long fat_generic_compat_ioctl(struct file *filp, unsigned int cmd,
+-				      unsigned long arg)
+-
+-{
+-	return fat_generic_ioctl(filp, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#endif
+-
+ static int fat_file_release(struct inode *inode, struct file *filp)
+ {
+ 	if ((filp->f_mode & FMODE_WRITE) &&
+@@ -209,9 +200,7 @@ const struct file_operations fat_file_operations = {
+ 	.mmap		= generic_file_mmap,
+ 	.release	= fat_file_release,
+ 	.unlocked_ioctl	= fat_generic_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl	= fat_generic_compat_ioctl,
+-#endif
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.fsync		= fat_file_fsync,
+ 	.splice_read	= generic_file_splice_read,
+ 	.splice_write	= iter_file_splice_write,
+-- 
+2.20.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
