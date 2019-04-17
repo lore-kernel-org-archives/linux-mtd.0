@@ -2,83 +2,55 @@ Return-Path: <SRS0=Bfvl=ST=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 656D4C282DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 17:25:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 132ADC282DC
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 18:55:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33D87206BA
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 17:25:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D19DE2173C
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 18:55:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cUpLrknU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VJzpvllK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33D87206BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WA/oMK0j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D19DE2173C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=o/tirtQQCyy5+NBJhMFsp0EWDRLybQB0DY1cL2eXXDc=; b=cUpLrknU6hxZLkDfXhSMwpmo9
-	0IYTd6IirzOyvo8O4ryhxuygr9nsZxkHv7uI2+GBQFDiMpVHcYNeOHH8gUBRQtPzokRU0Uje6wD/p
-	Ae47HGQ4qL6MsgqYuZe6Vk1RJKi36585c7pPlv/qJFt8tKzbH0f8LrhaPCEIIJSgql2lMb2U3c5HT
-	mds8yMX3IcGMKzkFtnOw6Zku0AxDFPWMPrtbG/X5ag0l5wXbnRzVRqA0wy7zJ7Oe6nSLY6xnUZHY6
-	UMKIaJx3qZ7VOCDAhHRQCh8UOVS0k1/IkeHAS+m/qSWCoivDbmC8hnDzfzgHr4Lygkj8kI7RJDCYX
-	oIgq+RJeA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/blh9Dv7HZsqAKpkfdHaY1mhBfHJwjDhaQsDfF68wy4=; b=WA/oMK0jrGk2qK
+	u7aDFDSqJwYaJL2tsy8EJciGMdlNOawPAkw73HminPatCmnnBFC5Obl797YsF6FgDvS0/vvZuxpvZ
+	PO1QGd2e+n2YghmXT832RyXheFshBIS0sylZWkkA+7NEcPnJ0802/CJlsQh5+KTkee4RP+DVtrbqk
+	1ZMQ+1/7m/6PM8KoIozo0nteDoX811w6E88iuwhVo3SB129NB6vqLbUIvI8XptISUCsKh6HkHBMt/
+	GW1ntDQRdoHkTOmparBOHpLuotZ6H17/wzITiqQHvGpoce+fIXxv4/2kbf7LvNguPWg72Sw1g7KCo
+	0Fbe3V2dycz5AL4z0edQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hGoIs-0000m1-OQ; Wed, 17 Apr 2019 17:24:58 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1hGpiQ-0007Hf-Iy; Wed, 17 Apr 2019 18:55:26 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGoIp-0000le-Qx; Wed, 17 Apr 2019 17:24:57 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3HHOijJ092593;
- Wed, 17 Apr 2019 12:24:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1555521884;
- bh=yVgnOiQL608EUWHuPLXH7eDvrVEaDH7Dpfk7s4HRDzM=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=VJzpvllKd8av1n4Ii5yYXX1nl4IsJV+6V7vj2xN6ZZihogZ27yp32pY6lIMw1MlI/
- qzk/dhAvXAuOJuUetu/cDVzs9i/esgGS+4ktUpVgLiy4oyVRFjL9tjatjnheXlE7V6
- rtHya+ZkJSgt2cC+ayd579W8qTbYn7bvVsfsFGzw=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3HHOiHc068018
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 17 Apr 2019 12:24:44 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 17
- Apr 2019 12:24:43 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Wed, 17 Apr 2019 12:24:43 -0500
-Received: from [10.250.138.29] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3HHOaal044307;
- Wed, 17 Apr 2019 12:24:38 -0500
-Subject: Re: [PATCH v3 0/5] MTD: Add Initial Hyperbus support
-To: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, 
- Rob Herring <robh+dt@kernel.org>, Sergei Shtylyov
- <sergei.shtylyov@cogentembedded.com>
-References: <20190412092923.24919-1-vigneshr@ti.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <9e8575e2-b8de-341d-7ab5-08055b84c805@ti.com>
-Date: Wed, 17 Apr 2019 22:54:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1hGpi5-0005le-0F
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2019 18:55:17 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id BFDFF18030842;
+ Wed, 17 Apr 2019 20:54:53 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2 v2] mtd: nandsim: Embed struct nand_chip in struct nandsim
+Date: Wed, 17 Apr 2019 20:54:32 +0200
+Message-Id: <20190417185433.29666-1-richard@nod.at>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20190412092923.24919-1-vigneshr@ti.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190417_102455_916074_6DD0F202 
-X-CRM114-Status: GOOD (  15.04  )
+X-CRM114-CacheID: sfid-20190417_115505_617713_729B2B4F 
+X-CRM114-Status: GOOD (  15.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,36 +62,145 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Mason Yang <masonccyang@mxic.com.tw>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Boris Brezillon <bbrezillon@kernel.org>, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: bbrezillon@kernel.org, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ Boris Brezillon <boris.brezillon@collabora.com>, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Sergei,
+We will need struct nand_controller soon, so more stuff need to
+be parts of struct nandsim.
+While we are here, rename "nand" to "ns" to use the same naming scheme
+everywhere in nandsim.
 
-On 12/04/19 2:59 PM, Vignesh Raghavendra wrote:
-> Vignesh Raghavendra (5):
->    mtd: cfi_cmdset_0002: Add support for polling status register
->    dt-bindings: mtd: Add binding documentation for HyperFlash
->    mtd: Add support for HyperBus memory devices
->    dt-bindings: mtd: Add bindings for TI's AM654 HyperBus memory
->      controller
->    mtd: hyperbus: Add driver for TI's HyperBus memory controller
-> 
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/nand/raw/nandsim.c | 49 +++++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 25 deletions(-)
 
-Thanks for all the reviews!
-Were you able to test this series with your hardware? Would like to get 
-this into v5.2-rc1 if possible
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index 933d1a629c51..3d80e2d23b6e 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -298,6 +298,7 @@ union ns_mem {
+  * The structure which describes all the internal simulator data.
+  */
+ struct nandsim {
++	struct nand_chip chip;
+ 	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
+ 	unsigned int nbparts;
+ 
+@@ -2216,7 +2217,7 @@ static const struct nand_controller_ops ns_controller_ops = {
+ static int __init ns_init_module(void)
+ {
+ 	struct nand_chip *chip;
+-	struct nandsim *nand;
++	struct nandsim *ns;
+ 	int retval = -ENOMEM, i;
+ 
+ 	if (bus_width != 8 && bus_width != 16) {
+@@ -2224,16 +2225,14 @@ static int __init ns_init_module(void)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Allocate and initialize mtd_info, nand_chip and nandsim structures */
+-	chip = kzalloc(sizeof(struct nand_chip) + sizeof(struct nandsim),
+-		       GFP_KERNEL);
+-	if (!chip) {
++	ns = kzalloc(sizeof(struct nandsim), GFP_KERNEL);
++	if (!ns) {
+ 		NS_ERR("unable to allocate core structures.\n");
+ 		return -ENOMEM;
+ 	}
++	chip	    = &ns->chip;
+ 	nsmtd       = nand_to_mtd(chip);
+-	nand        = (struct nandsim *)(chip + 1);
+-	nand_set_controller_data(chip, (void *)nand);
++	nand_set_controller_data(chip, (void *)ns);
+ 
+ 	/*
+ 	 * Register simulator's callbacks.
+@@ -2266,19 +2265,19 @@ static int __init ns_init_module(void)
+ 	 * the initial ID read command correctly
+ 	 */
+ 	if (id_bytes[6] != 0xFF || id_bytes[7] != 0xFF)
+-		nand->geom.idbytes = 8;
++		ns->geom.idbytes = 8;
+ 	else if (id_bytes[4] != 0xFF || id_bytes[5] != 0xFF)
+-		nand->geom.idbytes = 6;
++		ns->geom.idbytes = 6;
+ 	else if (id_bytes[2] != 0xFF || id_bytes[3] != 0xFF)
+-		nand->geom.idbytes = 4;
++		ns->geom.idbytes = 4;
+ 	else
+-		nand->geom.idbytes = 2;
+-	nand->regs.status = NS_STATUS_OK(nand);
+-	nand->nxstate = STATE_UNKNOWN;
+-	nand->options |= OPT_PAGE512; /* temporary value */
+-	memcpy(nand->ids, id_bytes, sizeof(nand->ids));
++		ns->geom.idbytes = 2;
++	ns->regs.status = NS_STATUS_OK(ns);
++	ns->nxstate = STATE_UNKNOWN;
++	ns->options |= OPT_PAGE512; /* temporary value */
++	memcpy(ns->ids, id_bytes, sizeof(ns->ids));
+ 	if (bus_width == 16) {
+-		nand->busw = 16;
++		ns->busw = 16;
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 	}
+ 
+@@ -2323,27 +2322,27 @@ static int __init ns_init_module(void)
+ 	if ((retval = nand_create_bbt(chip)) != 0)
+ 		goto err_exit;
+ 
+-	if ((retval = parse_badblocks(nand, nsmtd)) != 0)
++	if ((retval = parse_badblocks(ns, nsmtd)) != 0)
+ 		goto err_exit;
+ 
+ 	/* Register NAND partitions */
+-	retval = mtd_device_register(nsmtd, &nand->partitions[0],
+-				     nand->nbparts);
++	retval = mtd_device_register(nsmtd, &ns->partitions[0],
++				     ns->nbparts);
+ 	if (retval != 0)
+ 		goto err_exit;
+ 
+-	if ((retval = nandsim_debugfs_create(nand)) != 0)
++	if ((retval = nandsim_debugfs_create(ns)) != 0)
+ 		goto err_exit;
+ 
+         return 0;
+ 
+ err_exit:
+-	free_nandsim(nand);
++	free_nandsim(ns);
+ 	nand_release(chip);
+-	for (i = 0;i < ARRAY_SIZE(nand->partitions); ++i)
+-		kfree(nand->partitions[i].name);
++	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
++		kfree(ns->partitions[i].name);
+ error:
+-	kfree(chip);
++	kfree(ns);
+ 	free_lists();
+ 
+ 	return retval;
+@@ -2364,7 +2363,7 @@ static void __exit ns_cleanup_module(void)
+ 	nand_release(chip); /* Unregister driver */
+ 	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+ 		kfree(ns->partitions[i].name);
+-	kfree(mtd_to_nand(nsmtd));        /* Free other structures */
++	kfree(ns);        /* Free other structures */
+ 	free_lists();
+ }
+ 
+-- 
+2.21.0
 
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
