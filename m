@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C64EC282DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 13:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1330C282DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 14:06:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4ABDC20872
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 13:53:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 934DC206BA
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 14:06:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YhlzezuG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4ABDC20872
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b/6V7d3Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 934DC206BA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mit.edu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,42 +25,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7I87dpyssTpJm3uP4QjX9AEMVrsl0GF/chsYZCrAtHw=; b=YhlzezuGQ6f1kQ
-	xsSpYrtqV8BHKFBcyCRTz4/T2bdP9EogZ0BKlXcELqbaj6Ax7fGO+Y4hN0q8jHlbjAucCe6k0cRPR
-	4YUlXtfvTrfM2tpw2ZSxg+13CgyuFMsi/oqj9v5q+GUdWEPb6o44PF632ADAEl1OlVninx+nxu1QJ
-	fS36q9QcllxQYIIZFNJXOzG2/NnO+jA9DK2SIh199yqzx8ksDy/q5To4qEsbHMFeqxHAmR3YcS+mh
-	EFk7TB6EL36ywuPpnILrMhToadAs+KYOawkMwGYNHrspWMy9DOXW+pVG5moEm4un1Rc6eqqRNvh10
-	ApLDCHXByTVq9fTFBPxg==;
+	List-Owner; bh=iG7/JAYU9NU1L1+mXjCSsS2MqIb+pMP0A0Ywt9amjP4=; b=b/6V7d3YddEUiR
+	Z0Vw7POzxJZFM38Ft046j3+kybN08gP2gjmd8GrG9JYnQ9yIW6gX61NZJIaXUFAoaVf527PMHANGE
+	W9vCyXBoy7P4FBcRHE7pCznt3iXyJstpFyC7hNlJ/FRFuAi6NQOoYfPLbKYhMIH0s/o08ufLw4OPz
+	C0lSBGGZLa1+vZv40LivVyyorQpqcaBzu5mdsfs7STQSAvDYeVXYsgrdRDCX78Key6F6NJYf4Ghtu
+	K5CSFggLSRpyPQHGfxjcsrV6FZhWwZh1sbGoVBZce6GXRDGWtXuAn5SQ9d75noayQk9CIkadFmNE0
+	cXthYUOlaz5Cxdss2V9w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hGl0J-00046u-8X; Wed, 17 Apr 2019 13:53:35 +0000
+	id 1hGlCh-0001Bc-Rt; Wed, 17 Apr 2019 14:06:23 +0000
 Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGl0F-00046U-Ef
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2019 13:53:32 +0000
+ id 1hGlCe-0001Ax-PE
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2019 14:06:22 +0000
 Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com
  [104.133.0.109] (may be forged)) (authenticated bits=0)
  (User authenticated as tytso@ATHENA.MIT.EDU)
- by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x3HDrKZi023379
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x3HE6Agt002081
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 17 Apr 2019 09:53:21 -0400
+ Wed, 17 Apr 2019 10:06:11 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
- id DB208420497; Wed, 17 Apr 2019 09:53:19 -0400 (EDT)
-Date: Wed, 17 Apr 2019 09:53:19 -0400
+ id 3DD27420497; Wed, 17 Apr 2019 10:06:10 -0400 (EDT)
+Date: Wed, 17 Apr 2019 10:06:10 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
 To: Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v2 2/5] fscrypt: fix race allowing rename() and link() of
- ciphertext dentries
-Message-ID: <20190417135319.GB4686@mit.edu>
+Subject: Re: [PATCH v2 3/5] fs, fscrypt: clear DCACHE_ENCRYPTED_NAME when
+ unaliasing directory
+Message-ID: <20190417140610.GC4686@mit.edu>
 References: <20190320183913.12686-1-ebiggers@kernel.org>
- <20190320183913.12686-3-ebiggers@kernel.org>
+ <20190320183913.12686-4-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190320183913.12686-3-ebiggers@kernel.org>
+In-Reply-To: <20190320183913.12686-4-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190417_065331_661509_F3F3157C 
-X-CRM114-Status: UNSURE (   7.56  )
+X-CRM114-CacheID: sfid-20190417_070620_987075_0679E2C4 
+X-CRM114-Status: UNSURE (   9.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -82,19 +82,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 20, 2019 at 11:39:10AM -0700, Eric Biggers wrote:
+On Wed, Mar 20, 2019 at 11:39:11AM -0700, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Close some race conditions where fscrypt allowed rename() and link() on
-> ciphertext dentries that had been looked up just prior to the key being
-> concurrently added.  It's better to return -ENOKEY in this case.
+> Make __d_move() clear DCACHE_ENCRYPTED_NAME on the source dentry.  This
+> is needed for when d_splice_alias() moves a directory's encrypted alias
+> to its decrypted alias as a result of the encryption key being added.
 > 
-> This avoids doing the nonsensical thing of encrypting the names a second
-> time when searching for the actual on-disk dir entries.  It also
-> guarantees that DCACHE_ENCRYPTED_NAME dentries are never rename()d, so
-> the dcache won't have support all possible combinations of moving
-> DCACHE_ENCRYPTED_NAME around during __d_move().
+> Otherwise, the decrypted alias will incorrectly be invalidated on the
+> next lookup, causing problems such as unmounting a mount the user just
+> mount()ed there.
 > 
+> Note that we don't have to support arbitrary moves of this flag because
+> fscrypt doesn't allow dentries with DCACHE_ENCRYPTED_NAME to be the
+> source or target of a rename().
+> 
+> Fixes: 28b4c263961c ("ext4 crypto: revalidate dentry after adding or removing the key")
+> Reported-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
 Looks good, applied.
