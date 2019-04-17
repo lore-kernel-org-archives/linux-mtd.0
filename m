@@ -4,19 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C0BC10F12
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 06:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8496C10F12
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 06:44:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4984204FD
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 06:41:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93A7C2177B
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 06:44:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OTO9Oci2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="uvvX8FZS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4984204FD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kI+p72vv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mEuO7uEl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93A7C2177B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,64 +26,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7Gx2R4nJrqYsrM2VCMq39OLoEnMPSyVezMDwBlbTiCU=; b=OTO9Oci2aKNWCy
-	YuJ8Ke44vPb39VJlUaExlcu1+AZfZYcoeSkD8qOSenwNL+yvRMewdxS609gB62xxSjDvhZ8vbPL1j
-	Y5B3D9bCRTR/Vc1BGItrwSpwqL0M2ma7xg+GQbckEB7Ab2gCf3V6zCQxK5Lm4LCDY8YHy5hPn58AN
-	pVyZ7ccgv8qYBocokgQaS3kT/NuEgoXoMn2ESutp1r9CHy+dH/IoO6oY6ue4qKu4OPmmhvb33ubLt
-	t7oOBCyl7FtmwYyRVOK/Grl/R9uJksDTSJ+XjuEng7j5MJAzxPqLC7pmJZY51IGH5LhrMG4p94ayl
-	8YNnj14LAtHv0dLe9adQ==;
+	List-Owner; bh=Ph90+DNHZIBaEpDWGiN27AtigXpe9P0tzyyO2Nz4BdU=; b=kI+p72vv6p8whg
+	C5MCQQd6qYjOmFOSxEbjxIJilVqkgiyc27SuSzi5XYUDaQ+b1opM3+dTcl0zQye8jeiTZor+NVCQD
+	AS9aPhXN2l0otcg/pJHW/yOrfFiD3KQijUgcPIj7J84UdgyYSzkFGQZtxB51RnT2yKk09HAahJaID
+	E7h+LA9qJ62lYhH3nGvVKiHcMOqGN093n1+W5fnvsNb2Kd+CaflMJfHGdhthB/5AGwria/wQu0IIx
+	wC4P5/kwS5To+sU0MhQ/4rdkd8PMzlfNrVajUWqzQYbmAwEvmpilbPh7HJXvFiukTL5MV3QtMbIhk
+	GV4edhqXxdkjpyQnvDyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hGeGQ-0004Ye-Ex; Wed, 17 Apr 2019 06:41:46 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1hGeJ5-0005sp-Qu; Wed, 17 Apr 2019 06:44:31 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGeGK-0004Y8-LV; Wed, 17 Apr 2019 06:41:42 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3H6fPMl111525;
- Wed, 17 Apr 2019 01:41:25 -0500
+ id 1hGeGc-0004so-Sg; Wed, 17 Apr 2019 06:42:08 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3H6fmWr129340;
+ Wed, 17 Apr 2019 01:41:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1555483285;
- bh=R2Cx5MuUP3Z2JrEZohuogTZlzY46Nlk7R6LBb2vEhWc=;
+ s=ti-com-17Q1; t=1555483308;
+ bh=CX9Mf15Q/kbm2U2c86PfEHE3UxyfDhg/x1yJYZHq8IE=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=uvvX8FZSursVCTXiZxqY6QBtNhDhpgyOfuW2oFNvCWHOyEP95DxhiKYPcPntujdUz
- HsvmXPVIeQAu0eGr739jVe2x55abevw5i7gILjaohUX3ufW716viMJZDXTDn2um18s
- BzjivEjCQ+MlHPItr1DeWhfTgZdnumonuMq4OukQ=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3H6fPO0082475
+ b=mEuO7uElMsrcedYvrbIoLcsrVX3dxJLNsG5L00nZt3KlFG++VD7IW/kXwJhJDM47M
+ ulUnSp6oiE6TLtloSKFfLq6U/GI/Q6Y1U4OtadzdQuCZhl0X3TQRsvvYJpQWkVpr8k
+ W/Z99KaBx5qSxevNz//aSrExAjAPqc49acOgGPjw=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3H6fm87010190
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 17 Apr 2019 01:41:25 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 17 Apr 2019 01:41:48 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 17
- Apr 2019 01:41:25 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2019 01:41:47 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Wed, 17 Apr 2019 01:41:25 -0500
+ Frontend Transport; Wed, 17 Apr 2019 01:41:47 -0500
 Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3H6fJFc060691;
- Wed, 17 Apr 2019 01:41:20 -0500
-Subject: Re: [PATCH v3 4/5] dt-bindings: mtd: Add bindings for TI's AM654
- HyperBus memory controller
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3H6fg96060951;
+ Wed, 17 Apr 2019 01:41:43 -0500
+Subject: Re: [PATCH v3 3/5] mtd: Add support for HyperBus memory devices
 To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
  Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
 References: <20190412092923.24919-1-vigneshr@ti.com>
- <20190412092923.24919-5-vigneshr@ti.com>
- <6a69ce6f-66c0-3f7c-a326-d76ee717cacf@cogentembedded.com>
+ <20190412092923.24919-4-vigneshr@ti.com>
+ <53a92396-2535-ace7-3a31-1daf719ff323@cogentembedded.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <bba45d90-93dd-39c3-1b13-5326956bed89@ti.com>
-Date: Wed, 17 Apr 2019 12:12:18 +0530
+Message-ID: <f4ca7582-bfec-06fc-0b1c-e1eaad6ecebf@ti.com>
+Date: Wed, 17 Apr 2019 12:12:41 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <6a69ce6f-66c0-3f7c-a326-d76ee717cacf@cogentembedded.com>
+In-Reply-To: <53a92396-2535-ace7-3a31-1daf719ff323@cogentembedded.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190416_234140_803305_ADB70094 
-X-CRM114-Status: GOOD (  20.88  )
+X-CRM114-CacheID: sfid-20190416_234159_660236_EB7FB42A 
+X-CRM114-Status: GOOD (  25.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -104,67 +104,164 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
-
-On 14/04/19 11:25 PM, Sergei Shtylyov wrote:
+On 14/04/19 11:21 PM, Sergei Shtylyov wrote:
+> Hello!
+> 
 > On 04/12/2019 12:29 PM, Vignesh Raghavendra wrote:
 > 
->> Add binding documentation for TI's HyperBus memory controller present on
->> AM654 SoC.
+>> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
+>> Bus interface between a host system master and one or more slave
+>> interfaces. HyperBus is used to connect microprocessor, microcontroller,
+>> or ASIC devices with random access NOR flash memory (called HyperFlash)
+>> or self refresh DRAM (called HyperRAM).
+>>
+>> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+>> signal and either Single-ended clock(3.0V parts) or Differential clock
+>> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+>> At bus level, it follows a separate protocol described in HyperBus
+>> specification[1].
+>>
+>> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+>> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
+>> its equivalent to x16 parallel NOR flash wrt bits per clock cycle. But
+>> HyperBus operates at >166MHz frequencies.
+>> HyperRAM provides direct random read/write access to flash memory
+>> array.
+>>
+>> But, HyperBus memory controllers seem to abstract implementation details
+>> and expose a simple MMIO interface to access connected flash.
+>>
+>> Add support for registering HyperFlash devices with MTD framework. MTD
+>> maps framework along with CFI chip support framework are used to support
+>> communicating with flash.
+>>
+>> Framework is modelled along the lines of spi-nor framework. HyperBus
+>> memory controller (HBMC) drivers calls hyperbus_register_device() to
+>> register a single HyperFlash device. HyperFlash core parses MMIO access
+>> information from DT, sets up the map_info struct, probes CFI flash and
+>> registers it with MTD framework.
+>>
+>> Some HBMC masters need calibration/training sequence[3] to be carried
+>> out, in order for DLL inside the controller to lock, by reading a known
+>> string/pattern. This is done by repeatedly reading CFI Query
+>> Identification String. Calibration needs to be done before trying to detect
+>> flash as part of CFI flash probe.
+>>
+>> HyperRAM is not supported at the moment.
+>>
+>> HyperBus specification can be found at[1]
+>> HyperFlash datasheet can be found at[2]
+>>
+>> [1] https://www.cypress.com/file/213356/download
+>> [2] https://www.cypress.com/file/213346/download
+>> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+>>     Table 12-5741. HyperFlash Access Sequence
 >>
 >> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
->>  .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 31 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  2 files changed, 32 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+> [...]
+>> diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
 >> new file mode 100644
->> index 000000000000..00888482df25
+>> index 000000000000..98147e28caa0
 >> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->> @@ -0,0 +1,31 @@
-> [...]
->> +Optional properties:
->> +- mux-controls: phandle to the multiplexer that controls selection of
->> +		HBMC vs OSPI. Mux state of 1 indicates HBMC is selected.
-> 
->    I thought this is usually done with the help of drivers/pinctrl/..
-> 
-
-This mux is internal to SoC and not at SoC pad level. Based on this bit
-read/write requests at SoC interconnect is routed either to OSPI or
-HBMC, hence mmio-mux is a good fit
-
-OSPI and HBMC data pins are themselves at pad level which is handled by
-pinctrl-single node.
-
+>> +++ b/drivers/mtd/hyperbus/Kconfig
+>> @@ -0,0 +1,11 @@
+>> +menuconfig MTD_HYPERBUS
+>> +	tristate "HyperBus support"
+>> +	select MTD_CFI
+>> +	select MTD_MAP_BANK_WIDTH_2
+>> +	select MTD_CFI_AMDSTD
+>> +	select MTD_COMPLEX_MAPPINGS
+>> +	help
+>> +	  This is the framework for the HyperBus which can be used by
+>> +	  the HyperBus Controller driver to communicate with
+>> +	  HyperFlash. See Cypress HyperBus specification for more
+>> +	  details
+>> diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
+>> new file mode 100644
+>> index 000000000000..ca61dedd730d
+>> --- /dev/null
+>> +++ b/drivers/mtd/hyperbus/Makefile
+>> @@ -0,0 +1,3 @@
+>> +# SPDX-License-Identifier: GPL-2.0
 >> +
->> +Example:
->> +	hbmc: hbmc@47034000 {
->> +		compatible = "ti,am654-hbmc";
->> +		reg = <0x0 0x47034000 0x0 0x100>,
->> +			<0x5 0x00000000 0x1 0x0000000>;
->> +		power-domains = <&k3_pds 55>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		ranges = <0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
->> +			 <0x1 0x5 0x04000000 0x4000000>; /* CS1 - 64MB
->> +
->> +		/* Slave flash node */
->> +		flash@0{
-> 
->    Need space before {.
-> 
-
-Will fix.
-
->> +			compatible = "cypress,hyperflash";
->> +			reg = <0x0 0x4000000>;
->> +		};
->> +	};
+>> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
+>> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
+>> new file mode 100644
+>> index 000000000000..49aeb59742c6
+>> --- /dev/null
+>> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
+>> @@ -0,0 +1,192 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +//
+>> +// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
+>> +// Author: Vignesh Raghavendra <vigneshr@ti.com>
 > [...]
+>> +/* Default calibration routine for use by HyperBus controller.
+>> + * Controller is calibrated by repeatedly reading known pattern ("QRY"
+>> + * string from CFI space)
+>> + * Lets ensure "QRY" string is read correctly at least 5 times to ensure
+>> + * stability of the DLL lock.
+>> + */
+>> +int hyperbus_calibrate(struct hyperbus_device *hbdev)
+>> +{
+>> +	struct map_info *map = &hbdev->map;
+>> +	struct cfi_private cfi;
+>> +	int count = HYPERBUS_CALIB_COUNT;
+>> +	int pass_count = 0;
+>> +	int ret;
+>> +
+>> +	cfi.interleave = 1;
+>> +	cfi.device_type = CFI_DEVICETYPE_X16;
+>> +	cfi_send_gen_cmd(0xF0, 0, 0, map, &cfi, cfi.device_type, NULL);
+>> +	cfi_send_gen_cmd(0x98, 0x55, 0, map, &cfi, cfi.device_type, NULL);
+>> +
+>> +	while (count--) {
+>> +		cfi_qry_present(map, 0, &cfi);
+>> +		ret = cfi_qry_present(map, 0, &cfi);
+> 
+>    Why call it twice in a row?
+> 
+
+Oops, will fix in v2
+
+>> +		if (ret)
+>> +			pass_count++;
+>> +		else
+>> +			pass_count = 0;
+>> +		if (pass_count == 5)
+>> +			break;
+>> +	}
+>> +
+>> +	cfi_qry_mode_off(0, map, &cfi);
+>> +
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(hyperbus_calibrate);
+> [...]
+>> diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
+>> new file mode 100644
+>> index 000000000000..19340cc56aa4
+>> --- /dev/null
+>> +++ b/include/linux/mtd/hyperbus.h
+>> @@ -0,0 +1,91 @@
+> [...]
+>> +/**
+>> + * hb_unregister_device - deregister HyperBus slave memory device
+> 
+>    You forgot to update the function name in the kernel-doc. :-)
+> 
+
+Indeed, thanks for catching this!
+
+>> + * @hbdev: hyperbus_device to be unregistered
+>> + *
+>> + * Return: 0 for success, others for failure.
+>> + */
+>> +int hyperbus_unregister_device(struct hyperbus_device *hbdev);
+>> +
+>> +#endif /* __LINUX_MTD_HYPERBUS_H__ */
 > 
 > MBR, Sergei
 > 
