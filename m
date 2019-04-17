@@ -2,87 +2,87 @@ Return-Path: <SRS0=Bfvl=ST=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8496C10F12
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 06:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96780C10F12
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 07:08:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93A7C2177B
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 06:44:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65B0220675
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 07:08:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kI+p72vv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mEuO7uEl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93A7C2177B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qOumXPwi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LKmmuADf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65B0220675
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ph90+DNHZIBaEpDWGiN27AtigXpe9P0tzyyO2Nz4BdU=; b=kI+p72vv6p8whg
-	C5MCQQd6qYjOmFOSxEbjxIJilVqkgiyc27SuSzi5XYUDaQ+b1opM3+dTcl0zQye8jeiTZor+NVCQD
-	AS9aPhXN2l0otcg/pJHW/yOrfFiD3KQijUgcPIj7J84UdgyYSzkFGQZtxB51RnT2yKk09HAahJaID
-	E7h+LA9qJ62lYhH3nGvVKiHcMOqGN093n1+W5fnvsNb2Kd+CaflMJfHGdhthB/5AGwria/wQu0IIx
-	wC4P5/kwS5To+sU0MhQ/4rdkd8PMzlfNrVajUWqzQYbmAwEvmpilbPh7HJXvFiukTL5MV3QtMbIhk
-	GV4edhqXxdkjpyQnvDyg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ObbJX5cXdT6dDAykY17DmrJaodA/k8WSTmXnrZttR6Y=; b=qOumXPwiKgfH7j
+	W5spPrdro8q4QdAiw1ZlBAYS9u0HWwPYXleSEU9SkJvjZ+tRrNE/u1vd4EKQ7F038MnL3dic4/eKV
+	w2ek6sBakZLrkCdUFbLq4oEKwh2kMGGhcJxutZ0+naOoQBbcJMheYucI7artsixBbtnLcLU/lHR82
+	3osekCZ9hk2TAH7Wn+5B5D2QISdgKAKZeCy6IGcDjwwLCGNziI09PIfZr1vkv3KE5wmP67fNIPzR8
+	aeQQyCgShPVadPD9zlwPjkkrXqkILJK5/2z9bS0U6TzhH4QvcKOXRF3IHBnyr0ibOfHkPEBLso6eL
+	021IoGXaGSU6MGYPxNWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hGeJ5-0005sp-Qu; Wed, 17 Apr 2019 06:44:31 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hGegh-0005tz-I5; Wed, 17 Apr 2019 07:08:55 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGeGc-0004so-Sg; Wed, 17 Apr 2019 06:42:08 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3H6fmWr129340;
- Wed, 17 Apr 2019 01:41:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1555483308;
- bh=CX9Mf15Q/kbm2U2c86PfEHE3UxyfDhg/x1yJYZHq8IE=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=mEuO7uElMsrcedYvrbIoLcsrVX3dxJLNsG5L00nZt3KlFG++VD7IW/kXwJhJDM47M
- ulUnSp6oiE6TLtloSKFfLq6U/GI/Q6Y1U4OtadzdQuCZhl0X3TQRsvvYJpQWkVpr8k
- W/Z99KaBx5qSxevNz//aSrExAjAPqc49acOgGPjw=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3H6fm87010190
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 17 Apr 2019 01:41:48 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Wed, 17
- Apr 2019 01:41:47 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Wed, 17 Apr 2019 01:41:47 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3H6fg96060951;
- Wed, 17 Apr 2019 01:41:43 -0500
-Subject: Re: [PATCH v3 3/5] mtd: Add support for HyperBus memory devices
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-References: <20190412092923.24919-1-vigneshr@ti.com>
- <20190412092923.24919-4-vigneshr@ti.com>
- <53a92396-2535-ace7-3a31-1daf719ff323@cogentembedded.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <f4ca7582-bfec-06fc-0b1c-e1eaad6ecebf@ti.com>
-Date: Wed, 17 Apr 2019 12:12:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1hGegg-0005tY-0O
+ for linux-mtd@bombadil.infradead.org; Wed, 17 Apr 2019 07:08:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=oDDsd3biCGV2MNKmKzEyekYCgVkmNFPLMDTspB9sxjI=; b=LKmmuADfYSl1gxmQEzznfZj2wB
+ y0TuFHps//y5vziPtVRkD1msqCZ/mQyQgLA9WsEPvC3CbimlTAOhbJtZ9oCk1c5PsBwyCmofFegpe
+ OAeZhmS4gUfICwNYX3DqEHfW7FA+CDXNL/ifMWX+AvUw/2KNZ/VaaFIn5yHaeaRFukhpmFIf8Sh4N
+ b3yDPMAv/6PG4tPbBUtxg3jLnHj4lVCQ83npgS6IjnvubwedM8Cr2pfnHDicqcoFE/htijqBmuRJk
+ vy9TzwkiuXVjb867R93w35qheTy3HPP0dhmyOb0+QHi8FFyvdzXe1BceKJ7FEGbGEBUMubdAeCNPX
+ ZaTGrefA==;
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hGegc-0002IC-Ju
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2019 07:08:52 +0000
+X-Originating-IP: 90.88.160.238
+Received: from xps13 (aaubervilliers-681-1-42-238.w90-88.abo.wanadoo.fr
+ [90.88.160.238]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id C2AD0E0014;
+ Wed, 17 Apr 2019 07:08:18 +0000 (UTC)
+Date: Wed, 17 Apr 2019 09:08:17 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH] mtd: rawnand: Add Macronix NAND read retry and
+ randomizer support
+Message-ID: <20190417090817.7a0c4638@xps13>
+In-Reply-To: <OF84BD5411.301E92AC-ON482583DF.000CC3CC-482583DF.000F4920@mxic.com.tw>
+References: <1554780172-23111-1-git-send-email-masonccyang@mxic.com.tw>
+ <20190409090427.22de9917@collabora.com>
+ <OF6C97E4DE.45261545-ON482583D7.00340468-482583D7.0034B3FE@mxic.com.tw>
+ <20190409114701.744c2c8c@collabora.com>
+ <OF9601E14B.A48284C4-ON482583D8.0005E3EB-482583D8.0006CC14@mxic.com.tw>
+ <20190410092258.332ef399@collabora.com>
+ <OF071D3608.9D6D2523-ON482583D9.00173F52-482583D9.0018188C@mxic.com.tw>
+ <20190411085353.4c1af008@collabora.com>
+ <OF34672B6F.AACFE22C-ON482583D9.00335814-482583D9.0033A673@mxic.com.tw>
+ <20190411112943.1fecfa69@collabora.com>
+ <OF84BD5411.301E92AC-ON482583DF.000CC3CC-482583DF.000F4920@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <53a92396-2535-ace7-3a31-1daf719ff323@cogentembedded.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190416_234159_660236_EB7FB42A 
-X-CRM114-Status: GOOD (  25.71  )
+X-CRM114-CacheID: sfid-20190417_080850_741958_A300854A 
+X-CRM114-Status: GOOD (  42.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,182 +94,98 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- nsekhar@ti.com, linux-kernel@vger.kernel.org,
- Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 14/04/19 11:21 PM, Sergei Shtylyov wrote:
-> Hello!
-> 
-> On 04/12/2019 12:29 PM, Vignesh Raghavendra wrote:
-> 
->> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
->> Bus interface between a host system master and one or more slave
->> interfaces. HyperBus is used to connect microprocessor, microcontroller,
->> or ASIC devices with random access NOR flash memory (called HyperFlash)
->> or self refresh DRAM (called HyperRAM).
->>
->> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
->> signal and either Single-ended clock(3.0V parts) or Differential clock
->> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
->> At bus level, it follows a separate protocol described in HyperBus
->> specification[1].
->>
->> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
->> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
->> its equivalent to x16 parallel NOR flash wrt bits per clock cycle. But
->> HyperBus operates at >166MHz frequencies.
->> HyperRAM provides direct random read/write access to flash memory
->> array.
->>
->> But, HyperBus memory controllers seem to abstract implementation details
->> and expose a simple MMIO interface to access connected flash.
->>
->> Add support for registering HyperFlash devices with MTD framework. MTD
->> maps framework along with CFI chip support framework are used to support
->> communicating with flash.
->>
->> Framework is modelled along the lines of spi-nor framework. HyperBus
->> memory controller (HBMC) drivers calls hyperbus_register_device() to
->> register a single HyperFlash device. HyperFlash core parses MMIO access
->> information from DT, sets up the map_info struct, probes CFI flash and
->> registers it with MTD framework.
->>
->> Some HBMC masters need calibration/training sequence[3] to be carried
->> out, in order for DLL inside the controller to lock, by reading a known
->> string/pattern. This is done by repeatedly reading CFI Query
->> Identification String. Calibration needs to be done before trying to detect
->> flash as part of CFI flash probe.
->>
->> HyperRAM is not supported at the moment.
->>
->> HyperBus specification can be found at[1]
->> HyperFlash datasheet can be found at[2]
->>
->> [1] https://www.cypress.com/file/213356/download
->> [2] https://www.cypress.com/file/213346/download
->> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->>     Table 12-5741. HyperFlash Access Sequence
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> [...]
->> diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
->> new file mode 100644
->> index 000000000000..98147e28caa0
->> --- /dev/null
->> +++ b/drivers/mtd/hyperbus/Kconfig
->> @@ -0,0 +1,11 @@
->> +menuconfig MTD_HYPERBUS
->> +	tristate "HyperBus support"
->> +	select MTD_CFI
->> +	select MTD_MAP_BANK_WIDTH_2
->> +	select MTD_CFI_AMDSTD
->> +	select MTD_COMPLEX_MAPPINGS
->> +	help
->> +	  This is the framework for the HyperBus which can be used by
->> +	  the HyperBus Controller driver to communicate with
->> +	  HyperFlash. See Cypress HyperBus specification for more
->> +	  details
->> diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
->> new file mode 100644
->> index 000000000000..ca61dedd730d
->> --- /dev/null
->> +++ b/drivers/mtd/hyperbus/Makefile
->> @@ -0,0 +1,3 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +
->> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
->> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
->> new file mode 100644
->> index 000000000000..49aeb59742c6
->> --- /dev/null
->> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
->> @@ -0,0 +1,192 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +//
->> +// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
->> +// Author: Vignesh Raghavendra <vigneshr@ti.com>
-> [...]
->> +/* Default calibration routine for use by HyperBus controller.
->> + * Controller is calibrated by repeatedly reading known pattern ("QRY"
->> + * string from CFI space)
->> + * Lets ensure "QRY" string is read correctly at least 5 times to ensure
->> + * stability of the DLL lock.
->> + */
->> +int hyperbus_calibrate(struct hyperbus_device *hbdev)
->> +{
->> +	struct map_info *map = &hbdev->map;
->> +	struct cfi_private cfi;
->> +	int count = HYPERBUS_CALIB_COUNT;
->> +	int pass_count = 0;
->> +	int ret;
->> +
->> +	cfi.interleave = 1;
->> +	cfi.device_type = CFI_DEVICETYPE_X16;
->> +	cfi_send_gen_cmd(0xF0, 0, 0, map, &cfi, cfi.device_type, NULL);
->> +	cfi_send_gen_cmd(0x98, 0x55, 0, map, &cfi, cfi.device_type, NULL);
->> +
->> +	while (count--) {
->> +		cfi_qry_present(map, 0, &cfi);
->> +		ret = cfi_qry_present(map, 0, &cfi);
-> 
->    Why call it twice in a row?
-> 
-
-Oops, will fix in v2
-
->> +		if (ret)
->> +			pass_count++;
->> +		else
->> +			pass_count = 0;
->> +		if (pass_count == 5)
->> +			break;
->> +	}
->> +
->> +	cfi_qry_mode_off(0, map, &cfi);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(hyperbus_calibrate);
-> [...]
->> diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
->> new file mode 100644
->> index 000000000000..19340cc56aa4
->> --- /dev/null
->> +++ b/include/linux/mtd/hyperbus.h
->> @@ -0,0 +1,91 @@
-> [...]
->> +/**
->> + * hb_unregister_device - deregister HyperBus slave memory device
-> 
->    You forgot to update the function name in the kernel-doc. :-)
-> 
-
-Indeed, thanks for catching this!
-
->> + * @hbdev: hyperbus_device to be unregistered
->> + *
->> + * Return: 0 for success, others for failure.
->> + */
->> +int hyperbus_unregister_device(struct hyperbus_device *hbdev);
->> +
->> +#endif /* __LINUX_MTD_HYPERBUS_H__ */
-> 
-> MBR, Sergei
-> 
-
--- 
-Regards
-Vignesh
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFzb24sCgptYXNvbmNjeWFuZ0BteGljLmNvbS50dyB3cm90ZSBvbiBXZWQsIDE3IEFwciAy
+MDE5IDEwOjQ2OjU3ICswODAwOgoKPiBIaSBCb3JpcywKPiAgCj4gIAo+ID4gPiA+ID4gPiA+ID4g
+U3ViamVjdAo+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiBSZTogW1BBVENIXSBtdGQ6
+IHJhd25hbmQ6IEFkZCBNYWNyb25peCBOQU5EIHJlYWQgcmV0cnkgYW5kICAgCj4gPiA+ID4gPiBy
+YW5kb21pemVyICAgCj4gPiA+ID4gPiA+ID4gc3VwcG9ydCAgIAo+ID4gPiA+ID4gPiA+ID4gCj4g
+PiA+ID4gPiA+ID4gPiBPbiBUdWUsIDkgQXByIDIwMTkgMTc6MzU6MzkgKzA4MDAKPiA+ID4gPiA+
+ID4gPiA+IG1hc29uY2N5YW5nQG14aWMuY29tLnR3IHdyb3RlOgo+ID4gPiA+ID4gPiA+ID4gICAK
+PiA+ID4gPiA+ID4gPiA+ID4gPiA+ICsKPiA+ID4gPiA+ID4gPiA+ID4gPiA+ICtzdGF0aWMgY29u
+c3Qgc3RydWN0IGtvYmpfYXR0cmlidXRlIHN5c2ZzX214aWNfbmFuZCA9Cj4gPiA+ID4gPiA+ID4g
+PiA+ID4gPiArICAgX19BVFRSKG5hbmRfcmFuZG9tLCBTX0lSVUdPIHwgU19JV1VTUiwKPiA+ID4g
+PiA+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgbXhpY19uYW5kX3JhbmRfdHlwZV9zaG93LAo+ID4g
+PiA+ID4gPiA+ID4gPiA+ID4gKyAgICAgICAgICBteGljX25hbmRfcmFuZF90eXBlX3N0b3JlKTsg
+ICAKPiA+ID4gPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiA+ID4gPiBObywgd2UgZG9uJ3Qg
+d2FudCB0byBleHBvc2UgdGhhdCB0aHJvdWdoIGEgc3lzZnMgZmlsZSwgICAKPiA+ID4gPiA+IGVz
+cGVjaWFsbHkgICAKPiA+ID4gPiA+ID4gPiBzaW5jZSAgIAo+ID4gPiA+ID4gPiA+ID4gPiA+IGNo
+YW5naW5nIHRoZSByYW5kb21pemVyIGNvbmZpZyBtZWFucyBtYWtpbmcgdGhlIE5BTkQgICAKPiA+
+ID4gdW5yZWFkYWJsZSAgIAo+ID4gPiA+ID4gZm9yICAgCj4gPiA+ID4gPiA+ID4gPiA+ID4gdGhv
+c2UgdGhhdCBoYXZlIHVzZWQgaXQgYmVmb3JlIHRoZSBjaGFuZ2UuCj4gPiA+ID4gPiA+ID4gPiA+
+ID4gICAKPiA+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiA+IE91ciBvbi1kaWUgcmFu
+ZG9taXplciBpcyBzdGlsbCByZWFkYWJsZSBmcm9tIHVzZXIgYWZ0ZXIgICAKPiB0aGUgCj4gPiA+
+ID4gPiBmdW5jdGlvbiAgIAo+ID4gPiA+ID4gPiA+ID4gPiBpcyBlbmFibGVkLiAgIAo+ID4gPiA+
+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiBZb3UgbWVhbiB0aGUgbWVtb3J5IGlzIHN0aWxsIHJl
+YWRhYmxlIG5vIG1hdHRlciB0aGUgICAKPiByYW5kb21pemVyIAo+ID4gPiA+ID4gc3RhdGUuICAg
+Cj4gPiA+ID4gPiA+ID4gPiBOb3Qgc3VyZSBob3cgdGhhdCdzIHBvc3NpYmxlLCBidXQgb2theS4K
+PiA+ID4gPiA+ID4gPiA+ICAgCj4gPiA+ID4gPiA+ID4gPiA+IFRoaXMgcmFuZG9taXplciBpcyBq
+dXN0IGxpa2UgYSBpbnRlcm5hbCBtZW1vcnkgY2VsbCAKPiA+ID4gPiA+ID4gPiA+ID4gcmVsaWFi
+aWxpdHkgZW5oYW5jZWQuICAgCj4gPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiA+IFdoeSBk
+b24ndCB5b3UgZW5hYmxlIGl0IGJ5IGRlZmF1bHQgdGhlbj8gICAKPiA+ID4gPiA+ID4gPiAKPiA+
+ID4gPiA+ID4gPiBUaGUgcGVuYWx0eSBvZiByYW5kb21pemVyIGlzIHJlYWQvd3JpdGUgcGVyZm9y
+bWFuY2UgZG93bi4KPiA+ID4gPiA+ID4gPiBpLmUsLiB0UFJPRyAzMDAgdXMgdG8gMzQwIHVzIChy
+YW5kb21pemVyIGVuYWJsZSkKPiA+ID4gPiA+ID4gPiB0aGVyZWZvcmUsIGRpc2FibGUgaXQgYnkg
+ZGVmYXVsdC4gICAKPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IEknbSBhIGJpdCBwdXp6bGVkLiBP
+biB0aGUgTkFORCBJJ3ZlIHNlZW4gdGhhdCByZXF1aXJlZCBkYXRhCj4gPiA+ID4gPiA+IHJhbmRv
+bWl6YXRpb24gaXQncyBub3Qgc29tZXRoaW5nIHlvdSdkIHdhbnQgdG8gZGlzYWJsZSBhcyB0aGlz
+ICAgCj4gPiA+IGltcGxpZWQgIAo+ID4gPiA+ID4gPiBwb29yIGRhdGEgcmV0ZW50aW9uLiBXaGF0
+J3MgdGhlIHVzZSBjYXNlIGhlcmU/IEFyZSB3ZSB0YWxraW5nICAgCj4gYWJvdXQgCj4gPiA+IFNM
+QyAgCj4gPiA+ID4gPiA+IG9yIE1MQyBOQU5Ecz8gU2hvdWxkIHdlIGVuYWJsZSB0aGlzIGZlYXR1
+cmUgb25jZSB3ZSBzdGFydCBzZWVpbmcgICAKPiAgCj4gPiA+IHRoYXQgIAo+ID4gPiA+ID4gPiB0
+aGUgTkFORCBzdGFydHMgYmVpbmcgbGVzcyByZWxpYWJsZSAoYmFzaWNhbGx5IHdoZW4gcmVhZC1y
+ZXRyeSAgIAo+ID4gPiBoYXBwZW5zICAKPiA+ID4gPiA+ID4gbW9yZSBvZnRlbik/IEkgcmVhbGx5
+IHRoaW5rIHRoaXMgaXMgc29tZXRoaW5nIHlvdSBzaG91bGQgZGVjaWRlICAgIAo+IAo+ID4gPiBr
+ZXJuZWwgIAo+ID4gPiA+ID4gPiBzaWRlLCBiZWNhdXNlIHVzZXJzIGhhdmUgbm8gY2x1ZSB3aGVu
+IGl0J3MgYXBwcm9wcmlhdGUgdG8gc3dpdGNoICAgCj4gIAo+ID4gPiB0aGlzICAKPiA+ID4gPiA+
+ID4gZmVhdHVyZSBvbi9vZmYuCj4gPiA+ID4gPiA+ICAgCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEl0
+J3MgU0xDIE5BTkQgYW5kIHNlZW1zIHRvIGhhcyBub3RoaW5nIHRvIGRvIHdpdGggcmVhZC1yZXRy
+eSAgIAo+IGhhcHBlbnMuCj4gPiA+ID4gPiBsYXRlciwgSSB3aWxsIGdldCBtb3JlIGluZm9ybWF0
+aW9uIGZvciB5b3VyIGNvbmNlcm5zLiAgIAo+ID4gPiA+IAo+ID4gPiA+IFdlbGwsIHRoaXMgZmVh
+dHVyZSBpcyBvcHRpb25hbCwgYW5kIGNhbiBiZSBlbmFibGVkIHRvIGltcHJvdmUKPiA+ID4gPiBy
+ZWxpYWJpbGl0eS4gU291bmRzIGxpa2UgYSBnb29kIHJlYXNvbiB0byBlbmFibGUgaXQgd2hlbiB5
+b3VyIE5BTkQKPiA+ID4gPiBkZXZpY2Ugc3RhcnRzIHNob3dpbmcgcmVsaWFiaWxpdHkgaXNzdWVz
+LCBhbmQgdGhlIG51bWJlciBvZiAgIAo+IHJlYWRfcmV0cnkKPiA+ID4gPiBhdHRlbXB0cyByZWZs
+ZWN0cyB0aGUgd2VhciBsZXZlbCBwcmV0dHkgd2VsbC4gQWx0ZXJuYXRpdmVseSwgeW91ICAgCj4g
+Y291bGQKPiA+ID4gPiB1c2UgdGhlIG51bWJlciBvZiBiaXRmbGlwcywgYnV0LCBpbiBhbnkgY2Fz
+ZSwgZG9uJ3QgZXhwZWN0IHRoZSB1c2VyICAgCj4gdG8KPiA+ID4gPiB0YWtlIHRoaXMgZGVjaXNp
+b24sIGJlY2F1c2UgYWxtb3N0IG5vYm9keSBrbm93cyB3aGF0IHRoZSByYW5kb21pemVyCj4gPiA+
+ID4gaXMgbmVlZGVkIGZvci4KPiA+ID4gPiAgIAo+ID4gPiA+ID4gICAKPiA+ID4gPiA+ID4gPiAg
+IAo+ID4gPiA+ID4gPiA+ID4gICAKPiA+ID4gPiA+ID4gPiA+ID4gSXQgY291bGQgYmUgZW5hYmxl
+IGF0IGFueSB0aW1lIHdpdGggT1RQIGJpdCBmdW5jdGlvbiBhbmQgICAKPiA+ID4gdGhhdCdzICAg
+Cj4gPiA+ID4gPiB3aHkgICAKPiA+ID4gPiA+ID4gPiA+ID4gd2UgcGF0Y2ggaXQgYnkgc3lzLWZz
+LiAgIAo+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiBTb3JyeSwgYnV0IHRoYXQncyBu
+b3QgYSBnb29kIHJlYXNvbiB0byBleHBvc2UgdGhhdCB0aHJvdWdoICAgCj4gPiA+IHN5c2ZzLiAg
+IAo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IEFueSBnb29kIHdheSB0byBleHBvc2UgcmFu
+ZG9taXplciBmdW5jdGlvbiBmb3IgdXNlciA/ICAgCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBE
+b24ndCBleHBvc2UgaXQgOlAuICAgCj4gPiA+ID4gPiAKPiA+ID4gPiA+IG9oLCBva2F5LCBJIHdp
+bGwgcmVtb3ZlIHN5cy1mcyByYW5kb21pemVyLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBJcyBpdCBP
+SyB0byBrZWVwIHNldC9nZXQgZmVhdHVyZXMgZm9yIHJhbmRvbWl6ZXIgPyAgIAo+ID4gPiA+IAo+
+ID4gPiA+IEkgZG9uJ3QgdGhpbmsgaXQncyBhIGdvb2QgaWRlYSB0byBoYXZlIGRlYWQgY29kZSwg
+c28gbm8uIEJ1dCBJJ20gICAKPiBwcmV0dHkKPiA+ID4gPiBzdXJlIHdlJ2xsIGZpbmQgYSB3YXkg
+dG8gdXNlL2V4cG9zZSB0aGlzIGZlYXR1cmUuICAgCj4gPiA+IAo+ID4gPiBva2F5LCBncmVhdCEK
+PiA+ID4gTG9va2luZyBmb3J3YXJkIHRvIGhlYXJpbmcgdGhpcyBmZWF0dXJlIHVzZS9leHBvc2Uu
+ICAKPiA+IAo+ID4gQnV0IGZvciB0aGF0IHRvIGhhcHBlbiB3ZSBhcmUgd2FpdGluZyBmb3IgaW5w
+dXRzIGFib3V0IHdoZW4gdGhpcyBpcwo+ID4gc3VwcG9zZWQgdG8gYmUgdXNlZC4uLiAgCj4gCj4g
+Cj4gVGhlIG1haW4gcmVhc29uIHRvIGRpc2FibGUgUmFuZG9taXplciBpbiBkZWZhdWx0IGlzCj4g
+Tk9QID0gNCAoZGVmYXVsdCkgY2hhbmdlIHRvIE5PUCA9IDEgKFJhbmRvbWl6ZXIgZW5hYmxlKSwg
+Cj4gTk9QOiBudW1iZXIgb2YgcGFydGlhbCBwcm9ncmFtIGN5Y2xlcyBpbiBzYW1lIHBhZ2UKCkkg
+YW0gbm90IHN1cmUgdG8gdW5kZXJzdGFuZCwgaXMgdGhpcyByZWxhdGVkIHRvIHdoYXQgd2UgY2Fs
+bCAnc3VicGFnZXMnPwoKPiAKPiBTb21lIE9TIGZpbGUgc3lzdGVtcyhvciBGVEwpIG11Y2ggY29u
+Y2VybiBOT1AgPSA0IGFuZCAKPiBhbnkgYmV0dGVyIHdheSB0aGFuIHN5cy1mcyB0byBlbmFibGUg
+aXQ/CgpzeXNmcyBlbnRyeSA9PiB1c2VyIGFjdGlvbgpUaGUgdXNlciBoYXMgYWJzb2x1dGVseSBu
+byB3YXkgdG8ga25vdyB3aGVuIGl0IGlzIHJlbGV2YW50IHRvIGVuYWJsZQp0aGUgcmFuZG9taXpl
+ci4gVGhlIGtlcm5lbCBtdXN0IGJlIGluIGNoYXJnZSBvZiBpdC4gU28gdGhlIHF1ZXN0aW9uIGlz
+Ogp3aGVuIGlzIGl0IHJlbGV2YW50IHRvIGVuYWJsZSB0aGUgcmFuZG9taXplcj8gV2hhdCBjcml0
+ZXJpYT8gV2hhdAp0aHJlc2hvbGQ/CgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
