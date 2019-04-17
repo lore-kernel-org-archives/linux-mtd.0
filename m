@@ -2,88 +2,65 @@ Return-Path: <SRS0=Bfvl=ST=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0B27C282DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 12:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1698C282DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 13:50:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C05F020835
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 12:37:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 90D9920872
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2019 13:50:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lyqLVtVm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C05F020835
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hoBueLzE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90D9920872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mit.edu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qugPNL5U2NjWGrd1P/t+hXYcE4abv3UGtAlFpJxTK1E=; b=lyqLVtVmUMoVF9
-	cBp/uPBXr81e2jEwy76Thd/I1ecJk6IIvDHjc4jKppnvyMuXUsglOZro1TFg3Iyfi+joyXCQkxIDW
-	9x9TgQGQ5UNQmuXxy0L3WJ8AthHn4mUfBh4ivhKpjHPiDTS2UuUIsHogCxy4Fp9rBYJmGaMUcMCkK
-	rwCCRV+IL+sDcH1fFp8PSDVR5uIOxEOXxgcMwuumoB3TwlhqfVdmNRrI+b8rr7BvI484xunpV9h5p
-	yihRuHJZd0eR+xaJF0vW1M+h4RQagl/Va+Bl3Nr3glggh2j03dpmwu14QbY5hfjHo9kYKH6Jk5A8B
-	CCz2EaA6diNhXhrlwE0g==;
+	List-Owner; bh=q2d4kI+1gpO4oMJQP7QgeK+sbes1yWZw9kGA420r/40=; b=hoBueLzE6qZ23W
+	+NUJq8k7ncS/8M+2T3KSo4Vy31pWNZX4xvDHrVgNyYLkMbhUHPIy3zjFCllzGs15P0PkJVEwMe8RU
+	4B05TtOunudpEflFMZoJoMIVNJQCVVWDTWpom0JcDd8WX/mGq2eCwC9Y/j2QD/V0Q5u5IHMewCkch
+	OYFa9PKkP78E/wBdL4CLKV3KWcJnm4FYBsr6oqi2aaiGqa7vC1wETcZtenecmP+o04rgux/iDAfXm
+	qGWDJa2XjRD/f6t5KINATMe+RVCoWtFBm3F/QWt/+Ef0Ncg1GJAf55N9Q3zt7xVTyzL7H6rw0VonF
+	gbAuE4CnL1rJpPtBcdSA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hGjp6-0006Wp-Iq; Wed, 17 Apr 2019 12:37:56 +0000
-Received: from skedge03.snt-world.com ([91.208.41.68])
+	id 1hGkxO-0003kf-5w; Wed, 17 Apr 2019 13:50:34 +0000
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hGjnu-0004id-NC
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2019 12:36:50 +0000
-Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by skedge03.snt-world.com (Postfix) with ESMTPS id 39AD067A913;
- Wed, 17 Apr 2019 14:36:35 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail12r.snt-is.com
- (10.203.32.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Wed, 17 Apr
- 2019 14:36:34 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Wed, 17 Apr 2019 14:36:34 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v6 1/7] mtd: rawnand: Always store info about bad block
- markers in chip struct
-Thread-Topic: [PATCH v6 1/7] mtd: rawnand: Always store info about bad block
- markers in chip struct
-Thread-Index: AQHU9Roxj6tZ0kJRpEqFYDkgYmt4cg==
-Date: Wed, 17 Apr 2019 12:36:34 +0000
-Message-ID: <20190417123631.22545-2-frieder.schrempf@kontron.de>
-References: <20190417123631.22545-1-frieder.schrempf@kontron.de>
-In-Reply-To: <20190417123631.22545-1-frieder.schrempf@kontron.de>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
+ id 1hGkxL-0003kM-6V
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2019 13:50:32 +0000
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com
+ [104.133.0.109] (may be forged)) (authenticated bits=0)
+ (User authenticated as tytso@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x3HDoFw8020484
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 17 Apr 2019 09:50:16 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+ id 8D935420497; Wed, 17 Apr 2019 09:50:15 -0400 (EDT)
+Date: Wed, 17 Apr 2019 09:50:15 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH v2 1/5] fscrypt: clean up and improve dentry revalidation
+Message-ID: <20190417135015.GA4686@mit.edu>
+References: <20190320183913.12686-1-ebiggers@kernel.org>
+ <20190320183913.12686-2-ebiggers@kernel.org>
+ <20190416230840.GB14623@mit.edu> <20190417001041.GA18090@gmail.com>
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 39AD067A913.A0582
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
- miquel.raynal@bootlin.com, richard@nod.at
+Content-Disposition: inline
+In-Reply-To: <20190417001041.GA18090@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190417_053643_398149_DF60B246 
-X-CRM114-Status: GOOD (  16.44  )
+X-CRM114-CacheID: sfid-20190417_065031_401389_A9DA5221 
+X-CRM114-Status: UNSURE (   6.43  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -95,271 +72,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Schrempf
- Frieder <frieder.schrempf@kontron.de>
+Cc: Gao Xiang <gaoxiang25@huawei.com>, linux-unionfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Sarthak Kukreti <sarthakkukreti@chromium.org>,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+On Tue, Apr 16, 2019 at 05:10:42PM -0700, Eric Biggers wrote:
+> 
+> Hi Ted, I assumed you resolved the conflict with "fscrypt: use READ_ONCE() to
+> access ->i_crypt_info"?  The code in fscrypt_d_revalidate() should be:
+> 
+>         dir = dget_parent(dentry);
+>         err = fscrypt_get_encryption_info(d_inode(dir));
+>         valid = !fscrypt_has_encryption_key(d_inode(dir));
+>         dput(dir);
 
-The information about where the manufacturer puts the bad block
-markers inside the bad block and in the OOB data is stored in
-different places. Let's move this information to nand_chip.options
-and nand_chip.badblockpos.
+Yes, I did notice the patch conflict.  Thanks for confirming the
+correct resolution!
 
-As this chip-specific information is not directly related to the
-bad block table (BBT), we also rename the flags to NAND_BBM_*.
-
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/nand_amd.c      |  2 +-
- drivers/mtd/nand/raw/nand_base.c     | 12 ++++++------
- drivers/mtd/nand/raw/nand_bbt.c      |  4 ++--
- drivers/mtd/nand/raw/nand_esmt.c     |  2 +-
- drivers/mtd/nand/raw/nand_hynix.c    |  4 ++--
- drivers/mtd/nand/raw/nand_macronix.c |  2 +-
- drivers/mtd/nand/raw/nand_micron.c   |  2 +-
- drivers/mtd/nand/raw/nand_samsung.c  |  4 ++--
- drivers/mtd/nand/raw/nand_toshiba.c  |  2 +-
- drivers/mtd/nand/raw/sh_flctl.c      |  4 ++--
- include/linux/mtd/rawnand.h          | 16 +++++++++++++++-
- 11 files changed, 34 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_amd.c b/drivers/mtd/nand/raw/nand_amd.c
-index e008fd662ee6..9051e4e41eee 100644
---- a/drivers/mtd/nand/raw/nand_amd.c
-+++ b/drivers/mtd/nand/raw/nand_amd.c
-@@ -45,7 +45,7 @@ static void amd_nand_decode_id(struct nand_chip *chip)
- static int amd_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index fd7ce5b929c0..e1111291389a 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -295,11 +295,11 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
- 	int page, page_end, res;
- 	u8 bad;
- 
--	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-+	if (chip->options & NAND_BBM_LASTPAGE)
- 		ofs += mtd->erasesize - mtd->writesize;
- 
- 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
--	page_end = page + (chip->bbt_options & NAND_BBT_SCAN2NDPAGE ? 2 : 1);
-+	page_end = page + ((chip->options & NAND_BBM_SECONDPAGE) ? 2 : 1);
- 
- 	for (; page < page_end; page++) {
- 		res = chip->ecc.read_oob(chip, page);
-@@ -507,7 +507,7 @@ static int nand_default_block_markbad(struct nand_chip *chip, loff_t ofs)
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 
- 	/* Write to first/last page(s) if necessary */
--	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-+	if (chip->options & NAND_BBM_LASTPAGE)
- 		ofs += mtd->erasesize - mtd->writesize;
- 	do {
- 		res = nand_do_write_oob(chip, ofs, &ops);
-@@ -516,7 +516,7 @@ static int nand_default_block_markbad(struct nand_chip *chip, loff_t ofs)
- 
- 		i++;
- 		ofs += mtd->writesize;
--	} while ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) && i < 2);
-+	} while ((chip->options & NAND_BBM_SECONDPAGE) && i < 2);
- 
- 	return ret;
- }
-@@ -4513,9 +4513,9 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
- 
- 	/* Set the bad block position */
- 	if (mtd->writesize > 512 || (chip->options & NAND_BUSWIDTH_16))
--		chip->badblockpos = NAND_LARGE_BADBLOCK_POS;
-+		chip->badblockpos = NAND_BBM_POS_LARGE;
- 	else
--		chip->badblockpos = NAND_SMALL_BADBLOCK_POS;
-+		chip->badblockpos = NAND_BBM_POS_SMALL;
- }
- 
- static inline bool is_full_id_nand(struct nand_flash_dev *type)
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index 9a7855839f81..4915dd7283bb 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -468,7 +468,7 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
- 
- 	pr_info("Scanning device for bad blocks\n");
- 
--	if (bd->options & NAND_BBT_SCAN2NDPAGE)
-+	if (this->options & NAND_BBM_SECONDPAGE)
- 		numpages = 2;
- 	else
- 		numpages = 1;
-@@ -489,7 +489,7 @@ static int create_bbt(struct nand_chip *this, uint8_t *buf,
- 		from = (loff_t)startblock << this->bbt_erase_shift;
- 	}
- 
--	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
-+	if (this->options & NAND_BBM_LASTPAGE)
- 		from += mtd->erasesize - (mtd->writesize * numpages);
- 
- 	for (i = startblock; i < numblocks; i++) {
-diff --git a/drivers/mtd/nand/raw/nand_esmt.c b/drivers/mtd/nand/raw/nand_esmt.c
-index 3de5e89482f5..4320d4c6a7cd 100644
---- a/drivers/mtd/nand/raw/nand_esmt.c
-+++ b/drivers/mtd/nand/raw/nand_esmt.c
-@@ -36,7 +36,7 @@ static void esmt_nand_decode_id(struct nand_chip *chip)
- static int esmt_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index 821d221b83eb..33cb10df65b8 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -688,9 +688,9 @@ static int hynix_nand_init(struct nand_chip *chip)
- 	int ret;
- 
- 	if (!nand_is_slc(chip))
--		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
-+		chip->options |= NAND_BBM_LASTPAGE;
- 	else
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	hynix = kzalloc(sizeof(*hynix), GFP_KERNEL);
- 	if (!hynix)
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 47d8cda547cf..6db7ced4b96b 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -62,7 +62,7 @@ static void macronix_nand_fix_broken_get_timings(struct nand_chip *chip)
- static int macronix_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	macronix_nand_fix_broken_get_timings(chip);
- 
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 7a2cef02eacd..d43e15772f73 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -448,7 +448,7 @@ static int micron_nand_init(struct nand_chip *chip)
- 		goto err_free_manuf_data;
- 
- 	if (mtd->writesize == 2048)
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	ondie = micron_supports_on_die_ecc(chip);
- 
-diff --git a/drivers/mtd/nand/raw/nand_samsung.c b/drivers/mtd/nand/raw/nand_samsung.c
-index f7d7041b6213..f4db72329b7b 100644
---- a/drivers/mtd/nand/raw/nand_samsung.c
-+++ b/drivers/mtd/nand/raw/nand_samsung.c
-@@ -131,9 +131,9 @@ static int samsung_nand_init(struct nand_chip *chip)
- 		chip->options |= NAND_SAMSUNG_LP_OPTIONS;
- 
- 	if (!nand_is_slc(chip))
--		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
-+		chip->options |= NAND_BBM_LASTPAGE;
- 	else
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |= NAND_BBM_SECONDPAGE;
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index 13f9632f1cb4..67f01cef5651 100644
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -152,7 +152,7 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
- static int toshiba_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
--		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+		chip->options |=  NAND_BBM_SECONDPAGE;
- 
- 	/* Check that chip is BENAND and ECC mode is on-die */
- 	if (nand_is_slc(chip) && chip->ecc.mode == NAND_ECC_ON_DIE &&
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index 3f610040f0c3..02a6768ab13f 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -101,14 +101,12 @@ static const struct mtd_ooblayout_ops flctl_4secc_oob_largepage_ops = {
- static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
- 
- static struct nand_bbt_descr flctl_4secc_smallpage = {
--	.options = NAND_BBT_SCAN2NDPAGE,
- 	.offs = 11,
- 	.len = 1,
- 	.pattern = scan_ff_pattern,
- };
- 
- static struct nand_bbt_descr flctl_4secc_largepage = {
--	.options = NAND_BBT_SCAN2NDPAGE,
- 	.offs = 0,
- 	.len = 2,
- 	.pattern = scan_ff_pattern,
-@@ -1179,6 +1177,8 @@ static int flctl_probe(struct platform_device *pdev)
- 	if (pdata->flcmncr_val & SEL_16BIT)
- 		nand->options |= NAND_BUSWIDTH_16;
- 
-+	nand->options |= NAND_BBM_SECONDPAGE;
-+
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_resume(&pdev->dev);
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index c0589f82c1f8..ef9e54a7ddeb 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -169,6 +169,20 @@ enum nand_ecc_algo {
- /* Macros to identify the above */
- #define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
- 
-+/*
-+ * There are different places where the manufacturer stores the factory bad
-+ * block markers.
-+ *
-+ * Position within the block: Each of these pages needs to be checked for a
-+ * bad block marking pattern.
-+ */
-+#define NAND_BBM_SECONDPAGE		0x02000000
-+#define NAND_BBM_LASTPAGE		0x04000000
-+
-+/* Position within the OOB data of the page */
-+#define NAND_BBM_POS_SMALL		5
-+#define NAND_BBM_POS_LARGE		0
-+
- /* Non chip related options */
- /* This option skips the bbt scan during initialization. */
- #define NAND_SKIP_BBTSCAN	0x00010000
-@@ -1055,7 +1069,7 @@ struct nand_chip {
- 
- 	int subpagesize;
- 	int onfi_timing_mode_default;
--	int badblockpos;
-+	unsigned int badblockpos;
- 	int badblockbits;
- 
- 	struct nand_id id;
--- 
-2.17.1
+						- Ted
 
 ______________________________________________________
 Linux MTD discussion mailing list
