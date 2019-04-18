@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 732FAC10F0E
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 19:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 999C3C10F0E
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 19:30:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 425FB20693
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 19:29:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A702206B6
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 19:30:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r6gu2ogO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oSAv+E/O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 425FB20693
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NQ+XgBOu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DwdWjh34"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A702206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4a9nkYZo6010lhUgnSTSS38ZXuabhA89LXMwHWxsbgY=; b=r6gu2ogOjHGAX5
-	XAgU0EUkXQstBqKCmUU16rnUSh9QslrdfTWZ/FERXq5fvXuy5AtEoRiyQmYLinFpnP12Yr+ywRwm0
-	mpnFbq0nOJtSA/ZlFG0WdCbA6SIWQmiBzhPyz5rY3cfh+9ggdixhBlWhomLt4MG9H1wpUk7I5fblB
-	ieVVQsYxuaUZ7iuSOkfxQm2RbE2KpVz9E1SjYgH9xW7H5DuOonyw7ZDM2bn3NRUBVBJ3rXhsuPF1G
-	FiGhz+PElXTvtXjP0VUR6VKdxalfZEobcssdlbP696uB76l9HtHHc+hoUX+ZeyA3LiFqhWM2/ruye
-	+RjPhCiAY5MkiDinHN0g==;
+	List-Owner; bh=ZzoBAULWvLoowEsIi5tPVKYl15lm7Pj94wj1jryMqQ4=; b=NQ+XgBOuWcTeS6
+	IYMt7SFB8gOuGO9HxDVQYgc3Ggja3QH0PXgFwFLIVnX8obUket92VUPaC6amtN+L35omjTKatirQg
+	KyRFgi+3kJDPdR1I5zYlBsRh0+6NVLmVH621s5qcC7hEQ+jm52nxe/Yy3agaMs2ZKNreH9aoClO5q
+	izLcWMKT8m0zlDzKsFp+PeGQSIy3ZOGpnEMt8ekbJhr4WwJq5ej0gabYFkiCnFh9Dy7OlsvQW/V2r
+	bMF5jHt+79K6zi8MDbEawk1GSnsGFlRnapN15xXkMr4NVF6R/XY8Kpv0W3F6ScI7NCvJJS9JwXYf+
+	Zc6PqF4y5AcixMhr5cxw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHCj2-0000Uc-R3; Thu, 18 Apr 2019 19:29:36 +0000
+	id 1hHCjO-0000jD-MH; Thu, 18 Apr 2019 19:29:58 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHCj0-0000UB-AO
- for linux-mtd@lists.infradead.org; Thu, 18 Apr 2019 19:29:35 +0000
+ id 1hHCjL-0000ic-Ok
+ for linux-mtd@lists.infradead.org; Thu, 18 Apr 2019 19:29:57 +0000
 Received: from gmail.com (unknown [104.132.1.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 8556220693;
- Thu, 18 Apr 2019 19:29:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 57E78206B6;
+ Thu, 18 Apr 2019 19:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1555615773;
- bh=vKFb9yaEK6/wWVD2WwuaQMUhq2f+Aheqcm5vAC7PerM=;
+ s=default; t=1555615795;
+ bh=3wb3l6bjQamDQp7+DSvIUYtgtEjnsNKMNSUS4Jqa0cc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=oSAv+E/O924vF/tIceQnWPGXOiwr058pCGckZ4QYBHk31wErFvjSMi5AP0SPTTv4m
- xIjIex3FOAnKX4PLRLSQ8A1wY6kXUvycZJFo1fNWl1N82OqgPuUUgF6F7m4g8IgFZc
- 3tKrgkCo3gWldcuXP4zW7KDkTuvuP1YakDR2afDg=
-Date: Thu, 18 Apr 2019 12:29:32 -0700
+ b=DwdWjh34F91x07UIXz4HYD/osTwoKvDLl4r22b1kr3u74Wu1LeELGG6oip9RPy9oL
+ J6xiAaCuipWce5Y5vKjB1KCx7zI5V8/G/zZR1VBFeDQGPx/Vn0palsTyFjY8DYTysK
+ ozX1rKda5f2ep6Ww7Nd8AediPOkU4isenJCh6++M=
+Date: Thu, 18 Apr 2019 12:29:53 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [PATCH] ubifs: remove unnecessary calls to set up directory key
-Message-ID: <20190418192930.GA20640@gmail.com>
-References: <20190315205432.195263-1-ebiggers@kernel.org>
- <CAFLxGvw1ETyuLf0yV_MqGyTKmUkxLu0vvZLh2QfLgvYExTosWQ@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: remove unnecessary #ifdef around
+ fscrypt_ioctl_get_policy()
+Message-ID: <20190418192953.GB20640@gmail.com>
+References: <20190315205503.195400-1-ebiggers@kernel.org>
+ <CAFLxGvx3M61E1+Ts38BYRYu93QzmH=XMWoYYrFHTqWXUM7zREg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAFLxGvw1ETyuLf0yV_MqGyTKmUkxLu0vvZLh2QfLgvYExTosWQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvx3M61E1+Ts38BYRYu93QzmH=XMWoYYrFHTqWXUM7zREg@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190418_122934_381345_A43F9F66 
-X-CRM114-Status: GOOD (  17.72  )
+X-CRM114-CacheID: sfid-20190418_122955_816804_D7063A69 
+X-CRM114-Status: GOOD (  17.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,53 +83,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 15, 2019 at 10:05:59PM +0100, Richard Weinberger wrote:
+On Fri, Mar 15, 2019 at 10:08:02PM +0100, Richard Weinberger wrote:
 > On Fri, Mar 15, 2019 at 9:55 PM Eric Biggers <ebiggers@kernel.org> wrote:
 > >
 > > From: Eric Biggers <ebiggers@google.com>
 > >
-> > In ubifs_unlink() and ubifs_rmdir(), remove the call to
-> > fscrypt_get_encryption_info() that precedes fscrypt_setup_filename().
-> > This call was unnecessary, because fscrypt_setup_filename() already
-> > tries to set up the directory's encryption key.
+> > When !CONFIG_FS_ENCRYPTION, fscrypt_ioctl_get_policy() is already
+> > stubbed out to return -EOPNOTSUPP, so the extra #ifdef is not needed.
 > >
 > > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > > ---
-> >  fs/ubifs/dir.c | 12 ------------
-> >  1 file changed, 12 deletions(-)
+> >  fs/ubifs/ioctl.c | 7 +------
+> >  1 file changed, 1 insertion(+), 6 deletions(-)
 > >
-> > diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> > index 5767b373a8ff..c3311ea68fe5 100644
-> > --- a/fs/ubifs/dir.c
-> > +++ b/fs/ubifs/dir.c
-> > @@ -792,12 +792,6 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
-> >                 dentry, inode->i_ino,
-> >                 inode->i_nlink, dir->i_ino);
-> >
-> > -       if (ubifs_crypt_is_encrypted(dir)) {
-> > -               err = fscrypt_get_encryption_info(dir);
-> > -               if (err && err != -ENOKEY)
-> > -                       return err;
+> > diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+> > index 82e4e6a30b04..cd1d4212fc45 100644
+> > --- a/fs/ubifs/ioctl.c
+> > +++ b/fs/ubifs/ioctl.c
+> > @@ -205,13 +205,8 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> >                 return -EOPNOTSUPP;
+> >  #endif
+> >         }
+> > -       case FS_IOC_GET_ENCRYPTION_POLICY: {
+> > -#ifdef CONFIG_FS_ENCRYPTION
+> > +       case FS_IOC_GET_ENCRYPTION_POLICY:
+> >                 return fscrypt_ioctl_get_policy(file, (void __user *)arg);
+> > -#else
+> > -               return -EOPNOTSUPP;
+> > -#endif
 > > -       }
-> > -
-> >         err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
-> >         if (err)
-> >                 return err;
-> > @@ -902,12 +896,6 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
-> >         if (err)
-> >                 return err;
 > >
-> > -       if (ubifs_crypt_is_encrypted(dir)) {
-> > -               err = fscrypt_get_encryption_info(dir);
-> > -               if (err && err != -ENOKEY)
-> > -                       return err;
-> > -       }
-> > -
-> >         err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
-> >         if (err)
-> >                 return err;
+> >         default:
+> >                 return -ENOTTY;
 > 
-> Thanks for the cleanup, Eric!
+> Thanks for that one too. :-)
 > 
 > -- 
 > Thanks,
