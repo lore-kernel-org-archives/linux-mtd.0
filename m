@@ -2,85 +2,69 @@ Return-Path: <SRS0=tAZV=SU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C27CC10F0E
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 19:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A96DC282E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 23:30:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 356442054F
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 19:44:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC8F4218FD
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2019 23:30:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nsTVPzHr";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="PDjG2y4A"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 356442054F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LmSJlB5x";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+Mjf0Cg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC8F4218FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3pvFNeWdHBD47OLouht9Ubh13KFHvqU561+k1YZ1BiM=; b=nsTVPzHrD9Sm4W
-	zPiF+1gCtdNi4f+ljHypcH+DtvM9VhXqgJLGmM0lLa82Pz66MFkEJvjtFYCR6la62KUOXgmAiZ4Or
-	yaKlQbop1VS8Z6U3DVJHOZfT5Ig/5iaukVbGr1LeuZnlYik+XB+zIWeveOpB67qG3pArCQwRsvGf5
-	USZpNnD0PW1LytDo8G4NSiZrXjZvBW6/CtvuTKOWhmjoc/YkR/ssf3etpyk+B6oz4lTcQ9zcOzBuv
-	kkX+gqPUN6qBM+Tjt7UL0mUYB2f0HijYPw3ZuTZY7/8gqDPXl7atuoMoMxoiZ78fMUUT4v4zkPvRZ
-	lob2VvM3yH0K0wDKgiWQ==;
+	List-Owner; bh=tlBVnJ4+ZYO3lIrbaV+/wezMkMIjX6tI+K26ZJf1XUA=; b=LmSJlB5xNOBZFJ
+	OmmF5N1LkGOhAcIKvZbI5FQ+OZUe4l4l/2M/CuBpoxwvJd0uwnixFyBKKda1V2ViaAr2Jkc4gY7jK
+	A0XtSijlecr7j6CAWi5teaTVEyVPG3VRWBNMwdMIknuTKJPYgjxzLO4HdATgm7Q8UDTWVkhECqiqI
+	mG13FUVRjQ39bYPfP19/oyfgSrUuL2ZYLNXqHnW+Z4hxYbvVZ/8Km6IqJPbK0RycSEuByQcb3qmpi
+	Sgs0r/9bntNqWQqv8DtBrqCcGgcif/7v6H1twwNH3ltz0KciBHyaO3MAUK765bbJzZiOxImcuz9ya
+	oJLRuGjweROkJEFlgYfg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHCxJ-0005vx-ED; Thu, 18 Apr 2019 19:44:21 +0000
-Received: from mail-ot1-x344.google.com ([2607:f8b0:4864:20::344])
+	id 1hHGU8-0006ON-L3; Thu, 18 Apr 2019 23:30:28 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHCxF-0005uj-DH; Thu, 18 Apr 2019 19:44:19 +0000
-Received: by mail-ot1-x344.google.com with SMTP id d24so2658834otl.11;
- Thu, 18 Apr 2019 12:44:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Bx5KZfdXjm8ofYlrpIW9ivlLzCel7RPnKzTt4neA1m4=;
- b=PDjG2y4A+ODJSC0q5bF1f9z9TQsnJEK6Z/nQLQt6t6m+YV8A+/CJ5zo+I9dRy7vnTK
- AqE2sG9BqaK/BTOKWz/xe3nFKoForFr8PjoeE2FbzLdBSRfk2/e4N5dKybQfA6JnEPB/
- AZe0PZX3LzhwWkAR/sfZO16S6VWzJeyVNVYPNU4a+g2byBvhyoJsul3efRIdpnoSOJAL
- 8hYOGDhaGN/PRqpNUr+Hh0m2SYSu3TnUKRHCnDKXHcBzTllEoufAV5/stkq0bx8SkrSH
- 0PK3Lsxdp2SV/M1qIjVTsGYi/pxWmMcn3dpIJ9NTotVkZKiNIACd1DbS66zS1ie3Agk+
- x6fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Bx5KZfdXjm8ofYlrpIW9ivlLzCel7RPnKzTt4neA1m4=;
- b=jTbMpBdtuaSLuNPuvbRcwCxYzX5ntebZ9tgP6TJ9UcTMtmdY6knvLXhmz3v114pGyC
- OiU9ktb5+2K3FPOapNm6pycKsnd7iwmGZNH5UEvNgY+qeuZz+UdTWCUgv7S6Av6NSgWL
- N119jukyQmYx1Ku832ILGTxenhsGJY8BXyuZX1mF4igPBuVNSkorqYjnfhGZab6ymPYF
- iTWkMXSmx+48wAo1UNAJc3VV38pUxGYbGZkNEcAc5QC+00bmK9JjTN9vyI1/S7OCYSUP
- z/LVjXPVpLwE6Qtt2/meO8prJfP+bQmqDad1edzTzWRxa1lGCGrC0QEYvklCJRJlyp9z
- g6Ug==
-X-Gm-Message-State: APjAAAUcgeMu5LORr+C5Ad7skMpqeaINZEgIUWl2Fz/RqQ3E8KEmJ0/Z
- oR6D+Oxc/yNprd1mMMJSDBXx+RZqIrnu4rC049Y=
-X-Google-Smtp-Source: APXvYqyijd+OHnD93J6murDFe1J7q1CB4zrpQTFpLXHp4Y+tOsizvLu6b1hoZweO/hrVZVErO+7FYTomNtc/0Yz5UU4=
-X-Received: by 2002:a9d:5e90:: with SMTP id f16mr56649724otl.86.1555616655912; 
- Thu, 18 Apr 2019 12:44:15 -0700 (PDT)
+ id 1hHGU5-0006MG-DG
+ for linux-mtd@lists.infradead.org; Thu, 18 Apr 2019 23:30:26 +0000
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
+ [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id DB1E2217D7;
+ Thu, 18 Apr 2019 23:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1555630225;
+ bh=dTyhSc/O0SkFAocISfOv3+cMBSo+CGvkbVDnhYr6Ahc=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Z+Mjf0Cg0DTpP4lt8uIiO2MYHOgSdpzRZsogZ0fpaf/2nfRP6OSgktd/kCbhO0N8V
+ BBdSdLzBnG2fBr9zgZTmBGlIKrYGkKTgn0RLFbF0U0svd8u4ywkv0Dj1mvk3wO2RKN
+ mgvrcdhWx6VPAkyeh/R9mh/sCKnmvH6kEoMEgEb8=
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Subject: [PATCH v5 01/16] fs,
+ fscrypt: move uapi definitions to new header <linux/fscrypt.h>
+Date: Thu, 18 Apr 2019 16:29:08 -0700
+Message-Id: <20190418232923.250800-2-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
+In-Reply-To: <20190418232923.250800-1-ebiggers@kernel.org>
+References: <20190418232923.250800-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-References: <20190411220056.19109-1-martin.blumenstingl@googlemail.com>
- <20190411220056.19109-5-martin.blumenstingl@googlemail.com>
- <bd1900db-7ca1-a6e5-39f9-db54e0b570dd@amlogic.com>
-In-Reply-To: <bd1900db-7ca1-a6e5-39f9-db54e0b570dd@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Thu, 18 Apr 2019 21:44:05 +0200
-Message-ID: <CAFBinCB9Z_H4wX3_g2hVL-XnS6Oq-KtPHa4Z1ws79FGp5jCapQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mtd: rawnand: meson: only initialize the RB
- completion once
-To: Liang Yang <liang.yang@amlogic.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190418_124417_476285_38F66F09 
-X-CRM114-Status: GOOD (  17.68  )
+X-CRM114-CacheID: sfid-20190418_163025_484248_BDAC71AC 
+X-CRM114-Status: GOOD (  13.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,75 +76,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: jianxin.pan@amlogic.com, bbrezillon@kernel.org, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- linux-amlogic@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+ Paul Crowley <paulcrowley@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Liang,
+From: Eric Biggers <ebiggers@google.com>
 
-On Mon, Apr 15, 2019 at 8:04 AM Liang Yang <liang.yang@amlogic.com> wrote:
->
->
-> On 2019/4/12 6:00, Martin Blumenstingl wrote:
-> > Documentation/scheduler/completion.txt states:
-> >    Calling init_completion() on the same completion object twice is
-> >    most likely a bug as it re-initializes the queue to an empty queue and
-> >    enqueued tasks could get "lost" - use reinit_completion() in that case,
-> >    but be aware of other races.
-> >
-> > Initialize nfc->completion in meson_nfc_probe using init_completion and
-> > change the call in meson_nfc_queue_rb to reinit_completion so the logic
-> > matches what the documentation suggests.
-> >
-> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> > ---
-> >   drivers/mtd/nand/raw/meson_nand.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> > index 57cc4bd3f665..ea57ddcec41e 100644
-> > --- a/drivers/mtd/nand/raw/meson_nand.c
-> > +++ b/drivers/mtd/nand/raw/meson_nand.c
-> > @@ -400,7 +400,7 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
-> >       cfg |= NFC_RB_IRQ_EN;
-> >       writel(cfg, nfc->reg_base + NFC_REG_CFG);
-> >
-> > -     init_completion(&nfc->completion);
-> > +     reinit_completion(&nfc->completion);
-> Tested-by:Liang Yang <liang.yang@amlogic.com>
-> Acked-by: Liang Yang <liang.yang@amlogic.com>
-thank you for reviewing and testing my patches!
+More fscrypt definitions are being added, and we shouldn't use a
+disproportionate amount of space in <linux/fs.h> for fscrypt stuff.
+So move the fscrypt definitions to a new header <linux/fscrypt.h>.
 
-[...]
-> Tested-by:Liang Yang <liang.yang@amlogic.com>
-> Acked-by: Liang Yang <liang.yang@amlogic.com>
-please consider the following note for future code-reviews:
-most maintainers take the patch from patchwork and apply it to their git tree.
-however, patchwork is not smart enough to detect when the same
-Tested-by/Acked-by is sent multiple times.
-this results in the same Tested-by/Acked-by being listed multiple
-times in the final commit: [0]
+For source compatibility with existing userspace programs, <linux/fs.h>
+still includes the new header.
 
-what I do instead is to reply with one set of Tested-by/Acked-by
-(below the author's Signed-off-by) which is then valid for the whole
-patch.
-There's no problem to have Tested-by and Acked-by at the same time,
-the issue only shows up if you send Acked-by (or any other tag) for
-the same patch multiple times.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ MAINTAINERS                  |  1 +
+ include/linux/fscrypt.h      |  1 +
+ include/uapi/linux/fs.h      | 54 ++-------------------------------
+ include/uapi/linux/fscrypt.h | 58 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 63 insertions(+), 51 deletions(-)
+ create mode 100644 include/uapi/linux/fscrypt.h
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3671fdea5010e..8228ba0713ab3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6352,6 +6352,7 @@ T:	git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ S:	Supported
+ F:	fs/crypto/
+ F:	include/linux/fscrypt*.h
++F:	include/uapi/linux/fscrypt.h
+ F:	Documentation/filesystems/fscrypt.rst
+ 
+ FSI-ATTACHED I2C DRIVER
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 28c74e0a72310..1ed0bc2b75f3c 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -16,6 +16,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ #include <linux/slab.h>
++#include <uapi/linux/fscrypt.h>
+ 
+ #define FS_CRYPTO_BLOCK_SIZE		16
+ 
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index 121e82ce296b5..0f4e66b1bcd09 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -13,6 +13,9 @@
+ #include <linux/limits.h>
+ #include <linux/ioctl.h>
+ #include <linux/types.h>
++#ifndef __KERNEL__
++#include <linux/fscrypt.h>
++#endif
+ 
+ /* Use of MS_* flags within the kernel is restricted to core mount(2) code. */
+ #if !defined(__KERNEL__)
+@@ -212,57 +215,6 @@ struct fsxattr {
+ #define FS_IOC_GETFSLABEL		_IOR(0x94, 49, char[FSLABEL_MAX])
+ #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+ 
+-/*
+- * File system encryption support
+- */
+-/* Policy provided via an ioctl on the topmost directory */
+-#define FS_KEY_DESCRIPTOR_SIZE	8
+-
+-#define FS_POLICY_FLAGS_PAD_4		0x00
+-#define FS_POLICY_FLAGS_PAD_8		0x01
+-#define FS_POLICY_FLAGS_PAD_16		0x02
+-#define FS_POLICY_FLAGS_PAD_32		0x03
+-#define FS_POLICY_FLAGS_PAD_MASK	0x03
+-#define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
+-#define FS_POLICY_FLAGS_VALID		0x07
+-
+-/* Encryption algorithms */
+-#define FS_ENCRYPTION_MODE_INVALID		0
+-#define FS_ENCRYPTION_MODE_AES_256_XTS		1
+-#define FS_ENCRYPTION_MODE_AES_256_GCM		2
+-#define FS_ENCRYPTION_MODE_AES_256_CBC		3
+-#define FS_ENCRYPTION_MODE_AES_256_CTS		4
+-#define FS_ENCRYPTION_MODE_AES_128_CBC		5
+-#define FS_ENCRYPTION_MODE_AES_128_CTS		6
+-#define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
+-#define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
+-#define FS_ENCRYPTION_MODE_ADIANTUM		9
+-
+-struct fscrypt_policy {
+-	__u8 version;
+-	__u8 contents_encryption_mode;
+-	__u8 filenames_encryption_mode;
+-	__u8 flags;
+-	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+-};
+-
+-#define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
+-#define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW('f', 20, __u8[16])
+-#define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
+-
+-/* Parameters for passing an encryption key into the kernel keyring */
+-#define FS_KEY_DESC_PREFIX		"fscrypt:"
+-#define FS_KEY_DESC_PREFIX_SIZE		8
+-
+-/* Structure that userspace passes to the kernel keyring */
+-#define FS_MAX_KEY_SIZE			64
+-
+-struct fscrypt_key {
+-	__u32 mode;
+-	__u8 raw[FS_MAX_KEY_SIZE];
+-	__u32 size;
+-};
+-
+ /*
+  * Inode flags (FS_IOC_GETFLAGS / FS_IOC_SETFLAGS)
+  *
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+new file mode 100644
+index 0000000000000..193339cb53fdb
+--- /dev/null
++++ b/include/uapi/linux/fscrypt.h
+@@ -0,0 +1,58 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_FSCRYPT_H
++#define _UAPI_LINUX_FSCRYPT_H
++
++#include <linux/types.h>
++
++/*
++ * File system encryption support
++ */
++/* Policy provided via an ioctl on the topmost directory */
++#define FS_KEY_DESCRIPTOR_SIZE	8
++
++#define FS_POLICY_FLAGS_PAD_4		0x00
++#define FS_POLICY_FLAGS_PAD_8		0x01
++#define FS_POLICY_FLAGS_PAD_16		0x02
++#define FS_POLICY_FLAGS_PAD_32		0x03
++#define FS_POLICY_FLAGS_PAD_MASK	0x03
++#define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
++#define FS_POLICY_FLAGS_VALID		0x07
++
++/* Encryption algorithms */
++#define FS_ENCRYPTION_MODE_INVALID		0
++#define FS_ENCRYPTION_MODE_AES_256_XTS		1
++#define FS_ENCRYPTION_MODE_AES_256_GCM		2
++#define FS_ENCRYPTION_MODE_AES_256_CBC		3
++#define FS_ENCRYPTION_MODE_AES_256_CTS		4
++#define FS_ENCRYPTION_MODE_AES_128_CBC		5
++#define FS_ENCRYPTION_MODE_AES_128_CTS		6
++#define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
++#define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
++#define FS_ENCRYPTION_MODE_ADIANTUM		9
++
++struct fscrypt_policy {
++	__u8 version;
++	__u8 contents_encryption_mode;
++	__u8 filenames_encryption_mode;
++	__u8 flags;
++	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++};
++
++#define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
++#define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW('f', 20, __u8[16])
++#define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
++
++/* Parameters for passing an encryption key into the kernel keyring */
++#define FS_KEY_DESC_PREFIX		"fscrypt:"
++#define FS_KEY_DESC_PREFIX_SIZE		8
++
++/* Structure that userspace passes to the kernel keyring */
++#define FS_MAX_KEY_SIZE			64
++
++struct fscrypt_key {
++	__u32 mode;
++	__u8 raw[FS_MAX_KEY_SIZE];
++	__u32 size;
++};
++
++#endif /* _UAPI_LINUX_FSCRYPT_H */
+-- 
+2.21.0.392.gf8f6787159e-goog
 
-Have a great day!
-Regards,
-Martin
-
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=nand/next&id=39e01956e2f70ff9f0e97db1a69c9847aa1d5d8b
 
 ______________________________________________________
 Linux MTD discussion mailing list
