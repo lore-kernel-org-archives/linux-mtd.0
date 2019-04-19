@@ -2,22 +2,21 @@ Return-Path: <SRS0=SE3z=SV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BA0AC282DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F374C282DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:49:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09480218EA
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:49:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 49BF8218EA
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:49:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eZX0ShgK";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="OKc4G/Sl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09480218EA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="swwQwpAh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="WiSRLVOq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49BF8218EA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,46 +26,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=DFyZaIv9nSrpC/QhLi3T2ImjSgeYxO5ko0iKaNp0YCc=; b=eZX0ShgKwXPXrSX9O1BPxdXyAf
-	JqNmoYku4U91pTzw/n9YedBN6TWfBxo/usQMC0pHy/BrKNI3Wyv+QflEcpy4yo/TdSeXA4bmqsfiU
-	324oOh4zrRI37pDjx6w2eZL2JzbeBk9PZS2HlZpoPdrM1eHeP/Ra/aOA5d3L7367NMU9HHvfqkm6L
-	D86+z0dZXdADSt3noAmiHoE6hPoWydyku0x+8wP2L0fTXdwo+3/2SgXSI3+cFxE6SybRjhMdvDtBD
-	h1O9TD7Xa/nYsu4uxvj6bDGvSfy2nLp9rDFOblhuccOjpfuiwak8zgUGQa/1tpYBjUoFDP0wZwH4/
-	yJPr4IFA==;
+	bh=31EQECa9ckqaNDyRQoZPwlLtMasIAWvBCT7ughquTLI=; b=swwQwpAhfAi2xrqgE7rEbho2dS
+	xjjWjyASk9oZYj1aCa8zD1IEFfsDmX6OHGYZZAjiQfZqOZ02kwrrv+ENg3A+U5j7WCwEONjLXBJRT
+	EVz2kGywXKHCCWwkEe2u/XvQfwG3gwJo95Tyh6+vVgnyG5woZmoMFHu1d/liV6FZNEqHRYqvdrKFT
+	xfkl+ZdsXLPRkD3Xs4WC0zA6WMbE2oCXulPYRJtYIeRFULnNZMmCtlCZllEa2jjA60gSjMocbe2Pf
+	lCZvYVLWYlWNvQgIXkBeboP5UqdoHU4EsU4PMJAZ1obmrHq1iPMbkFzQuMgkm4lMzAIvUMT8ig6TM
+	kXhFIUIg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHQ8r-0006zJ-Fd; Fri, 19 Apr 2019 09:49:09 +0000
+	id 1hHQ92-0007EO-Rn; Fri, 19 Apr 2019 09:49:20 +0000
 Received: from conuserg-08.nifty.com ([210.131.2.75])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHQ8W-0006Yw-46; Fri, 19 Apr 2019 09:48:49 +0000
+ id 1hHQ8W-0006Yz-42; Fri, 19 Apr 2019 09:48:49 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id x3J9mDiO012304;
- Fri, 19 Apr 2019 18:48:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x3J9mDiO012304
+ by conuserg-08.nifty.com with ESMTP id x3J9mDiN012304;
+ Fri, 19 Apr 2019 18:48:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x3J9mDiN012304
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555667299;
- bh=eBbK5bqyHyYLvrp0h+N2R8GVzQgJi3T0h1j8WWECYuA=;
+ s=dec2015msa; t=1555667298;
+ bh=dMl5gVEKTwHtHLItB6x+dFSf7lYx8Jwln2yhWkFBTvk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=OKc4G/SlCAf7HykNHZVlamSTNz1No39oMgc65nQjRDTm1rJqcc1jfITtM8UkGJeeU
- qObhbfjNVkPa4IwDzwkf26u4nAU3hKpzI+J6tQu3ZZdflpufZc02ms3G7P1pYc0JGU
- U7qK6j+UkZyyoUraiWV1lZJhK0+XIeylH+Mn3c3m1E09QsodghVCaNWl1cuXrgNz8b
- 5DldkJUE5/wxVWeRLc8etHsv7i3LuWfHrI9fqz+Y0tsYIthnhw01Jh2NIdTZmBrMN+
- 7s8scZU2FDjhEEnGTf3RMaDna+3ZzgRUv3OjtWHIVq8LHNa1hTWHTHXXab/BDM1FmT
- yllXWqWf+S/IQ==
+ b=WiSRLVOq5x+2GONqtPqhDRF0aPfIywfLdfErEYoMZ6RdK4yxqxbz+tqQyKktdhALJ
+ ZC0EplHjQIRsO0bd4gcGfzAfZvD/aZnFksxkFraObipxhINcqZ0PBSvY8jP7SQORTj
+ OdwwG7dSJR9Ks0cIkNw5+63IypkzGIp2FzucD1i4uYJDoYimo4nbOjq/sRUowzAGQ1
+ QTqrvjrKruMK94jkE7107MwTjbAocK+Sd13vTiuxVIU+g1yxn93hj2IB7cRrCttREk
+ ukMFwTu/ORTnKIYRmeM4Q/nWhGHfxQ8cKORzjRHv45JA6SZBgy5cI77VTMvNyhSKnq
+ lgNKqF1IATJUA==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
  linux-arch <linux-arch@vger.kernel.org>
-Subject: [PATCH v2 03/11] MIPS: mark mult_sh_align_mod() as __always_inline
-Date: Fri, 19 Apr 2019 18:47:46 +0900
-Message-Id: <20190419094754.24667-4-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 02/11] arm64: mark (__)cpus_have_const_cap as
+ __always_inline
+Date: Fri, 19 Apr 2019 18:47:45 +0900
+Message-Id: <20190419094754.24667-3-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190419094754.24667-1-yamada.masahiro@socionext.com>
 References: <20190419094754.24667-1-yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190419_024848_496655_504E30BE 
-X-CRM114-Status: UNSURE (   7.60  )
+X-CRM114-CacheID: sfid-20190419_024848_496533_91476962 
+X-CRM114-Status: UNSURE (   7.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -94,21 +94,23 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
 place. We need to eliminate potential issues beforehand.
 
-If it is enabled for mips, the following error is reported:
+If it is enabled for arm64, the following errors are reported:
 
-arch/mips/kernel/cpu-bugs64.c: In function 'mult_sh_align_mod.constprop':
-arch/mips/kernel/cpu-bugs64.c:33:2: error: asm operand 1 probably doesn't match constraints [-Werror]
-  asm volatile(
-  ^~~
-arch/mips/kernel/cpu-bugs64.c:33:2: error: asm operand 1 probably doesn't match constraints [-Werror]
-  asm volatile(
-  ^~~
-arch/mips/kernel/cpu-bugs64.c:33:2: error: impossible constraint in 'asm'
-  asm volatile(
-  ^~~
-arch/mips/kernel/cpu-bugs64.c:33:2: error: impossible constraint in 'asm'
-  asm volatile(
-  ^~~
+In file included from ././include/linux/compiler_types.h:68,
+                 from <command-line>:
+./arch/arm64/include/asm/jump_label.h: In function 'cpus_have_const_cap':
+./include/linux/compiler-gcc.h:120:38: warning: asm operand 0 probably doesn't match constraints
+ #define asm_volatile_goto(x...) do { asm goto(x); asm (""); } while (0)
+                                      ^~~
+./arch/arm64/include/asm/jump_label.h:32:2: note: in expansion of macro 'asm_volatile_goto'
+  asm_volatile_goto(
+  ^~~~~~~~~~~~~~~~~
+./include/linux/compiler-gcc.h:120:38: error: impossible constraint in 'asm'
+ #define asm_volatile_goto(x...) do { asm goto(x); asm (""); } while (0)
+                                      ^~~
+./arch/arm64/include/asm/jump_label.h:32:2: note: in expansion of macro 'asm_volatile_goto'
+  asm_volatile_goto(
+  ^~~~~~~~~~~~~~~~~
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -116,24 +118,31 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v2:
   - split into a separate patch
 
- arch/mips/kernel/cpu-bugs64.c | 4 ++--
+ arch/arm64/include/asm/cpufeature.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/cpu-bugs64.c b/arch/mips/kernel/cpu-bugs64.c
-index bada74af7641..c04b97aace4a 100644
---- a/arch/mips/kernel/cpu-bugs64.c
-+++ b/arch/mips/kernel/cpu-bugs64.c
-@@ -42,8 +42,8 @@ static inline void align_mod(const int align, const int mod)
- 		: "n"(align), "n"(mod));
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index e505e1fbd2b9..77d1aa57323e 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -406,7 +406,7 @@ static inline bool cpu_have_feature(unsigned int num)
  }
  
--static inline void mult_sh_align_mod(long *v1, long *v2, long *w,
--				     const int align, const int mod)
-+static __always_inline void mult_sh_align_mod(long *v1, long *v2, long *w,
-+					      const int align, const int mod)
+ /* System capability check for constant caps */
+-static inline bool __cpus_have_const_cap(int num)
++static __always_inline bool __cpus_have_const_cap(int num)
  {
- 	unsigned long flags;
- 	int m1, m2;
+ 	if (num >= ARM64_NCAPS)
+ 		return false;
+@@ -420,7 +420,7 @@ static inline bool cpus_have_cap(unsigned int num)
+ 	return test_bit(num, cpu_hwcaps);
+ }
+ 
+-static inline bool cpus_have_const_cap(int num)
++static __always_inline bool cpus_have_const_cap(int num)
+ {
+ 	if (static_branch_likely(&arm64_const_caps_ready))
+ 		return __cpus_have_const_cap(num);
 -- 
 2.17.1
 
