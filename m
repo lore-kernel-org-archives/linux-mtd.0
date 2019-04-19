@@ -2,66 +2,67 @@ Return-Path: <SRS0=SE3z=SV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5C42C282DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 03:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DCACC282DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 07:48:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FF3C205ED
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 03:54:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03C7420869
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 07:47:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EUuxQKXl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FF3C205ED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amlogic.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d1r3zOeH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=agner.ch header.i=@agner.ch header.b="u1JZNp9Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03C7420869
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=agner.ch
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=8//ifCcaTXeJPXTfkolgy863BwQWNEkE0AC7LwLV+EM=; b=EUuxQKXlrqV+zytGeBwELWmnx
-	JjmG+mIvx3KtiAYp2kMTZ2tDqIcjBggShubVDFNWWqGSAJ18F+KJswhATnmGLB0jiUSRkNLkl96BT
-	D6fFIDVr90sYS7bPiJ8VqDkwIggW5omjKNInCb21C6asVgN6tKspunaOFaZw46gx3IdsNeyBRzTgL
-	Ow11L72F2YkkcHhw48cUEx97rFzLh4Z6aRF9B59NWiGy9mMXStAMc1cJto/qf3qHHFcUspSt6hY8G
-	5JNkGiL0YQSbjuPruQI8QsndW1mRRIEeoucxX8RV93x21sM2fOZCUALIR1G3kJiBxsQ5zdcYt8cOT
-	PcL58vjbQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HU5dAcM2kcXA/BA2iE97wD+MCM4/9tkZrNhAUzux3Lo=; b=d1r3zOeH+hn85e
+	NY18J7nhtCdP/FVsDVLa3Njlg2LzTBiGORbzyZwYIcHlI4tS4JG5JsmRTD7YsBATPrOpdS311t4/e
+	S/GXR+QnWoDeUBdsSQpm/jYRWbTPb1eEklSD96+O6Qp2AID4doMGkl3FbejfA3nayjW+u9f5OjlGF
+	NXE7479FdWpr8kMzUnelsnhQ89spQ5kiuSP9JES9fZwYJVmdBrluk4w+S75+CtEUJbzkb63q+6mzR
+	v+iQODtavxcePOLageZHfjG60LR0oxZWFAIN4X7d5PsIwKChc2USUMv/lhvPwI0tgn+UFVUcIFkK3
+	Wjv+MddN6ZvXNkxJ/Trg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHKbT-0002sx-Nb; Fri, 19 Apr 2019 03:54:19 +0000
-Received: from mail-sz.amlogic.com ([211.162.65.117])
+	id 1hHOFY-0007Uz-1O; Fri, 19 Apr 2019 07:47:56 +0000
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHKbL-0002mk-NU; Fri, 19 Apr 2019 03:54:13 +0000
-Received: from [10.28.18.125] (10.28.18.125) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Fri, 19 Apr
- 2019 11:52:52 +0800
-Subject: Re: [PATCH 4/4] mtd: rawnand: meson: only initialize the RB
- completion once
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-References: <20190411220056.19109-1-martin.blumenstingl@googlemail.com>
- <20190411220056.19109-5-martin.blumenstingl@googlemail.com>
- <bd1900db-7ca1-a6e5-39f9-db54e0b570dd@amlogic.com>
- <CAFBinCB9Z_H4wX3_g2hVL-XnS6Oq-KtPHa4Z1ws79FGp5jCapQ@mail.gmail.com>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <8ff232c3-f325-5b91-4de1-a39e63939df2@amlogic.com>
-Date: Fri, 19 Apr 2019 11:52:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1hHOFQ-0007UR-6G
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2019 07:47:50 +0000
+Received: from trochilidae.lan (unknown
+ [IPv6:2a02:169:3465:0:6c69:2b1e:235b:318b])
+ by mail.kmu-office.ch (Postfix) with ESMTPSA id 62BD35C07DC;
+ Fri, 19 Apr 2019 09:47:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+ t=1555660063;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:
+ content-transfer-encoding:content-transfer-encoding:in-reply-to:
+ references; bh=u3EApj181xT5tE6Oke1Xa8zBR+OQyGSCfDmnftxe6V8=;
+ b=u1JZNp9QSY58FGjiUTfRBI0jXQH/Qwlwi6WQJpV4Tekc4XCea5CZXc/rTR4LqZFHudFS7B
+ 9+uovohZLYiIlIivc1Cs70LzHl+4oEqlUXftTMWqMHCN9v5qo0GcwnByvXG9Hqls12db77
+ pLK+oSsiIO5MRyFLUTjlohwYivT3QAk=
+From: Stefan Agner <stefan@agner.ch>
+To: bbrezillon@kernel.org,
+	miquel.raynal@bootlin.com
+Subject: [PATCH] mtd: rawnand: use longest matching pattern
+Date: Fri, 19 Apr 2019 09:47:17 +0200
+Message-Id: <20190419074717.22576-1-stefan@agner.ch>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCB9Z_H4wX3_g2hVL-XnS6Oq-KtPHa4Z1ws79FGp5jCapQ@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.28.18.125]
-X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
- (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190418_205411_766485_FFF47125 
-X-CRM114-Status: GOOD (  16.63  )
+X-CRM114-CacheID: sfid-20190419_004749_120451_D1A81112 
+X-CRM114-Status: GOOD (  18.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -73,83 +74,139 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: jianxin.pan@amlogic.com, bbrezillon@kernel.org, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- linux-amlogic@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: richard@nod.at, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+ marek.vasut@gmail.com, Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Martin,
+Sometimes the exec_op parser does not choose the optimal pattern if
+multiple patterns with optional elements are available. Since the stack
+automatically splits operations in multiple exec_op calls, a non-optimal
+pattern gets broken up into multiple calls. E.g. an OOB read using the
+vf610 driver:
+  nand: executing subop:
+  nand:     ->CMD      [0x00]
+  nand:     ->ADDR     [5 cyc: 00 08 ea 94 02]
+  nand:     ->CMD      [0x30]
+  nand:     ->WAITRDY  [max 200000 ms]
+  nand:       DATA_IN  [64 B]
+  nand: executing subop:
+  nand:       CMD      [0x00]
+  nand:       ADDR     [5 cyc: 00 08 ea 94 02]
+  nand:       CMD      [0x30]
+  nand:       WAITRDY  [max 200000 ms]
+  nand:     ->DATA_IN  [64 B]
 
-On 2019/4/19 3:44, Martin Blumenstingl wrote:
-> Hi Liang,
-> 
-> On Mon, Apr 15, 2019 at 8:04 AM Liang Yang <liang.yang@amlogic.com> wrote:
->>
->>
->> On 2019/4/12 6:00, Martin Blumenstingl wrote:
->>> Documentation/scheduler/completion.txt states:
->>>     Calling init_completion() on the same completion object twice is
->>>     most likely a bug as it re-initializes the queue to an empty queue and
->>>     enqueued tasks could get "lost" - use reinit_completion() in that case,
->>>     but be aware of other races.
->>>
->>> Initialize nfc->completion in meson_nfc_probe using init_completion and
->>> change the call in meson_nfc_queue_rb to reinit_completion so the logic
->>> matches what the documentation suggests.
->>>
->>> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->>> ---
->>>    drivers/mtd/nand/raw/meson_nand.c | 3 ++-
->>>    1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
->>> index 57cc4bd3f665..ea57ddcec41e 100644
->>> --- a/drivers/mtd/nand/raw/meson_nand.c
->>> +++ b/drivers/mtd/nand/raw/meson_nand.c
->>> @@ -400,7 +400,7 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
->>>        cfg |= NFC_RB_IRQ_EN;
->>>        writel(cfg, nfc->reg_base + NFC_REG_CFG);
->>>
->>> -     init_completion(&nfc->completion);
->>> +     reinit_completion(&nfc->completion);
->> Tested-by:Liang Yang <liang.yang@amlogic.com>
->> Acked-by: Liang Yang <liang.yang@amlogic.com>
-> thank you for reviewing and testing my patches!
-> 
-> [...]
->> Tested-by:Liang Yang <liang.yang@amlogic.com>
->> Acked-by: Liang Yang <liang.yang@amlogic.com>
-> please consider the following note for future code-reviews:
-> most maintainers take the patch from patchwork and apply it to their git tree.
-> however, patchwork is not smart enough to detect when the same
-> Tested-by/Acked-by is sent multiple times.
-> this results in the same Tested-by/Acked-by being listed multiple
-> times in the final commit: [0]
-> 
-> what I do instead is to reply with one set of Tested-by/Acked-by
-> (below the author's Signed-off-by) which is then valid for the whole
-> patch.
-> There's no problem to have Tested-by and Acked-by at the same time,
-> the issue only shows up if you send Acked-by (or any other tag) for
-> the same patch multiple times.
-> 
-Thanks. Well, I known about it now.
+However, the vf610 driver has a pattern which can execute the complete
+command in a single go...
 
-> 
-> Have a great day!
-> Regards,
-> Martin
-> 
-> 
-> [0] https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=nand/next&id=39e01956e2f70ff9f0e97db1a69c9847aa1d5d8b
-> 
-> .
-> 
+This patch makes sure that the longest matching pattern is chosen
+instead of the first (potentially only partial) match. With this
+change the vf610 reads the OOB in a single exec_op call:
+  nand: executing subop:
+  nand:     ->CMD      [0x00]
+  nand:     ->ADDR     [5 cyc: 00 08 c0 1d 00]
+  nand:     ->CMD      [0x30]
+  nand:     ->WAITRDY  [max 200000 ms]
+  nand:     ->DATA_IN  [64 B]
+
+Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
+Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+Tested-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/raw/nand_base.c | 50 +++++++++++++++++++++++---------
+ 1 file changed, 37 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index ddd396e93e32..ebf219c05853 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -2131,6 +2131,22 @@ static void nand_op_parser_trace(const struct nand_op_parser_ctx *ctx)
+ }
+ #endif
+ 
++static int nand_op_parser_cmp_ctx(const struct nand_op_parser_ctx *a,
++				  const struct nand_op_parser_ctx *b)
++{
++	if (a->subop.ninstrs < b->subop.ninstrs)
++		return -1;
++	else if (a->subop.ninstrs > b->subop.ninstrs)
++		return 1;
++
++	if (a->subop.last_instr_end_off < b->subop.last_instr_end_off)
++		return -1;
++	else if (a->subop.last_instr_end_off > b->subop.last_instr_end_off)
++		return 1;
++
++	return 0;
++}
++
+ /**
+  * nand_op_parser_exec_op - exec_op parser
+  * @chip: the NAND chip
+@@ -2165,32 +2181,40 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
+ 	unsigned int i;
+ 
+ 	while (ctx.subop.instrs < op->instrs + op->ninstrs) {
+-		int ret;
++		const struct nand_op_parser_pattern *pattern;
++		struct nand_op_parser_ctx best_ctx;
++		int ret, best_pattern = -1;
+ 
+ 		for (i = 0; i < parser->npatterns; i++) {
+-			const struct nand_op_parser_pattern *pattern;
++			struct nand_op_parser_ctx test_ctx = ctx;
+ 
+ 			pattern = &parser->patterns[i];
+-			if (!nand_op_parser_match_pat(pattern, &ctx))
++			if (!nand_op_parser_match_pat(pattern, &test_ctx))
+ 				continue;
+ 
+-			nand_op_parser_trace(&ctx);
+-
+-			if (check_only)
+-				break;
+-
+-			ret = pattern->exec(chip, &ctx.subop);
+-			if (ret)
+-				return ret;
++			if (best_pattern >= 0 &&
++			    nand_op_parser_cmp_ctx(&test_ctx, &best_ctx) <= 0)
++				continue;
+ 
+-			break;
++			best_pattern = i;
++			best_ctx = test_ctx;
+ 		}
+ 
+-		if (i == parser->npatterns) {
++		if (best_pattern < 0) {
+ 			pr_debug("->exec_op() parser: pattern not found!\n");
+ 			return -ENOTSUPP;
+ 		}
+ 
++		ctx = best_ctx;
++		nand_op_parser_trace(&ctx);
++
++		if (!check_only) {
++			pattern = &parser->patterns[best_pattern];
++			ret = pattern->exec(chip, &ctx.subop);
++			if (ret)
++				return ret;
++		}
++
+ 		/*
+ 		 * Update the context structure by pointing to the start of the
+ 		 * next subop.
+-- 
+2.21.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
