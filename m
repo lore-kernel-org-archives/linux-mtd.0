@@ -2,72 +2,75 @@ Return-Path: <SRS0=SE3z=SV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B58C282DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:59:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32CECC282DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 14:52:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C62E218FD
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:59:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E51A6222D3
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 14:52:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BfwH6Uw2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="PydnGSji"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C62E218FD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W/esSgdX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DgaVWyKz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E51A6222D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=F3Tfhcwmlmh7O3Xd05mWaQKZwbsRyaui8UYkYQJPnAQ=; b=BfwH6Uw2l6KG6yhXVqQgogWR9V
-	cYqvUtK4FCFOlGvluyMR5hXs3kby5aB02WflqONx428KkPV8urWAK5118C6TkX95ZWBbH9fa1pOiZ
-	i34f9rKQAzYfOk8VupvR2Xs2UWBNMTNKw82fvrfN9ygsX7peS4deX8JF0iI8K2AB+ghDPhTnR634E
-	UegQSlXsDJODppkxJ1JFOk5MEjcMLFlVQhLnyx0SmCcJRourzh2OC4k2QlPjzoC09m5U58ZK3nVzv
-	4p25y85tfFS62q2nE6yhc2AFE0BM/6hfJDl2/QaGDlslqAe6HDnvHZgLfYzxMY3uU5qZ+dQEecC5M
-	dD3nG30g==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=iqJ5MNIMmeoE1ZQpCLBlme0Q+6YcipRkw+HryYfKlxU=; b=W/esSgdXh7Bl+aoxLYAFbhVFU
+	U/b95CbXsJDrCrs4DEGyuVg1xL85dbs3o4VWNd1zX8WUfwsJDi/P7qRSmjlPMPLYk5K1zUX1NDxUR
+	liT5AC6+tpwvqDtM/CjQ0NNR3br1DhHb3yj+7oHlTWoVtCAuHL3vkWjKe0RmGDn89IBTv0zmaWoTb
+	wuPZBdQo1EHwyejSRGbwyRBbv4Ey4UZlpqnAGdOONl5YiblZ7Kx47ibPIFWBJln97QJbr3S1fjhCi
+	XfahHvOGJ6MzYH1BaYrIPE4f5zLL7ncuz2sCqwOWJQ+GgH8uiS6mSc9z6INj6zxGhjAE23hkNi2vx
+	OlNxgbjjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHQJA-0006SP-4V; Fri, 19 Apr 2019 09:59:48 +0000
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+	id 1hHUsE-0005Dx-9p; Fri, 19 Apr 2019 14:52:18 +0000
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHQ8w-00074J-0q; Fri, 19 Apr 2019 09:49:30 +0000
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
- [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id x3J9mDiW012304;
- Fri, 19 Apr 2019 18:48:29 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x3J9mDiW012304
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555667311;
- bh=DZH3ndX+jwPMXyZB1kQ4OHEY2QeZuXlzmLdAIaBcM6M=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PydnGSjiKyIo14J4fAKaV6koaZeZ0EuTcw4Tq4V8uwNBifRf97/8NMU4AZxYotm6W
- h/czkyZ7MDVZ2xZhy6Byuv6Z4Ztq0jvEL+1rHQtL3Fe/LMX4RBELdDA3ZegwXjdj4m
- UqJDwhBzKD/pptPsi5aw/KnB/EONfPoQF8eebdfHJaMgBG170Y/dNM8a4ryp4EVyLX
- Js9Op5+csNk9r2v3z6G8n18zKMuFlHT/YDZazi9Kv9zGOPV9qNMg9QJWzNAvml8NMc
- aNwXmMoinYdq9Px4fC8i7300TKOZmLWc7fLIBYNhAM/kMZlHf9tWKsM00pZIZMM8B/
- CMFiRyUCM3+HA==
-X-Nifty-SrcIP: [153.142.97.92]
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
- linux-arch <linux-arch@vger.kernel.org>
-Subject: [PATCH v2 11/11] compiler: allow all arches to enable
- CONFIG_OPTIMIZE_INLINING
-Date: Fri, 19 Apr 2019 18:47:54 +0900
-Message-Id: <20190419094754.24667-12-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190419094754.24667-1-yamada.masahiro@socionext.com>
-References: <20190419094754.24667-1-yamada.masahiro@socionext.com>
+ id 1hHUsB-0005De-1b
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2019 14:52:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=L02lidpU1CWJs+5WvBdKuXF1cJhohg86bxgiBZZR0xU=; b=DgaVWyKzfGLpL8WTjq6xjbRJg
+ cXPNBN2oTgNzZvV1P49C16H285liahkHS0bGwxqAUgPW5VJsod3iigt/9PARyVtMHI7pXeHjICcCC
+ gWgyEuHIsjjR84JuKvRBjoWP6KWE2GF3FhtxyLathZ9ZCRmRlQtunkSnEdSJWTIP9RCvo=;
+Received: from 188.29.164.213.threembb.co.uk ([188.29.164.213]
+ helo=finisterre.ee.mobilebroadband)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1hHUrp-0008BF-Bc; Fri, 19 Apr 2019 14:51:53 +0000
+Received: by finisterre.ee.mobilebroadband (Postfix, from userid 1000)
+ id 62107441D3B; Fri, 19 Apr 2019 15:51:51 +0100 (BST)
+Date: Fri, 19 Apr 2019 15:51:51 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Mason Yang <masonccyang@mxic.com.tw>
+Subject: Re: [PATCH v3 3/4] spi: Patch Macronix SPI controller driver
+ according to MX25F0A MFD driver
+Message-ID: <20190419145151.GR2803@sirena.org.uk>
+References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
+ <1555320234-15802-4-git-send-email-masonccyang@mxic.com.tw>
+MIME-Version: 1.0
+In-Reply-To: <1555320234-15802-4-git-send-email-masonccyang@mxic.com.tw>
+X-Cookie: Shah, shah!  Ayatollah you so!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190419_024914_935637_53971AB8 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20190419_075215_254227_A1416007 
+X-CRM114-Status: UNSURE (   8.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -79,132 +82,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>, linux-s390@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
- Heiko Carstens <heiko.carstens@de.ibm.com>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Ingo Molnar <mingo@redhat.com>, linux-mtd@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, juliensu@mxic.com.tw,
+ christophe.kerello@st.com, richard@nod.at, bbrezillon@kernel.org,
+ marcel.ziswiler@toradex.com, dwmw2@infradead.org, miquel.raynal@bootlin.com,
+ linux-kernel@vger.kernel.org, stefan@agner.ch, linux-spi@vger.kernel.org,
+ marek.vasut@gmail.com, paul.burton@mips.com, robh+dt@kernel.org,
+ geert@linux-m68k.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmal.com, liang.yang@amlogic.com, lee.jones@linaro.org,
+ zhengxunli@mxic.com.tw
+Content-Type: multipart/mixed; boundary="===============5567328658075726434=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 60a3cdd06394 ("x86: add optimized inlining") introduced
-CONFIG_OPTIMIZE_INLINING, but it has been available only for x86.
 
-The idea is obviously arch-agnostic. This commit moves the config
-entry from arch/x86/Kconfig.debug to lib/Kconfig.debug so that all
-architectures can benefit from it.
+--===============5567328658075726434==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="IUSVF+LtaR4kWxuH"
+Content-Disposition: inline
 
-This can make a huge difference in kernel image size especially when
-CONFIG_OPTIMIZE_FOR_SIZE is enabled.
 
-For example, I got 3.5% smaller arm64 kernel for v5.1-rc1.
+--IUSVF+LtaR4kWxuH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  dec       file
-  18983424  arch/arm64/boot/Image.before
-  18321920  arch/arm64/boot/Image.after
+On Mon, Apr 15, 2019 at 05:23:53PM +0800, Mason Yang wrote:
+> Patch Macronix MX25F0A SPI controller driver according to it's MFD driver.
 
-This also slightly improves the "Kernel hacking" Kconfig menu as
-e61aca5158a8 ("Merge branch 'kconfig-diet' from Dave Hansen') suggested;
-this config option would be a good fit in the "compiler option" menu.
+It'd be much better to describe what the above actually means - what
+changes have been made in the introduction of the MFD driver?  It does
+feel like there's not as much abstraction as I'd expect between the MFD
+and the child, there's a lot of peering into the parent and enabling and
+disabling individual clocks for example rather than either having this
+hidden behind a function or just having the clocks owned by the child
+driver.  The driver also isn't using the MFD interfaces to pass through
+the register subblocks for the IP - instead the child driver is peering
+straight into the MFD structure and looking at a variable in there.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+--IUSVF+LtaR4kWxuH
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Changes in v2:
-  - split into a separate patch
+-----BEGIN PGP SIGNATURE-----
 
- arch/x86/Kconfig               |  3 ---
- arch/x86/Kconfig.debug         | 14 --------------
- include/linux/compiler_types.h |  3 +--
- lib/Kconfig.debug              | 14 ++++++++++++++
- 4 files changed, 15 insertions(+), 19 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly54IYACgkQJNaLcl1U
+h9D0PQf/erY3gZlhAvdcG9BNLPO9WNE8OrfW8W1e5MFQI3MEhJC9fi3BynwsbKtq
+oYO7n4IlWTIXmNDQdlZTdlGU2ybIAMGbUmRh0sP2UB5dh2nNnCTfzdOKdszWov18
+JFDl2+5xeyM5ensdZqRVNaXOP/j3eavC/1AOgDTlVummvycoxPH7AeDEg/+UTHrb
+blDrIxdutZnG+hGdmdoDBZdMsP/eWTS2FJ1t3bnU2AVnftWS/35E5NXpJG4o+gz+
+kb+NmEWgrDFoCOk03rq02pudfkdQawONL85giQwm5Apz4OcKeGRV7tIUjfVr0DxT
+9Rw+gkXFeqGyyD3rS25VYKnDsuXRCg==
+=WftF
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5ad92419be19..9e93d109a6cb 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -310,9 +310,6 @@ config ZONE_DMA32
- config AUDIT_ARCH
- 	def_bool y if X86_64
- 
--config ARCH_SUPPORTS_OPTIMIZED_INLINING
--	def_bool y
--
- config ARCH_SUPPORTS_DEBUG_PAGEALLOC
- 	def_bool y
- 
-diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-index 15d0fbe27872..f730680dc818 100644
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -266,20 +266,6 @@ config CPA_DEBUG
- 	---help---
- 	  Do change_page_attr() self-tests every 30 seconds.
- 
--config OPTIMIZE_INLINING
--	bool "Allow gcc to uninline functions marked 'inline'"
--	---help---
--	  This option determines if the kernel forces gcc to inline the functions
--	  developers have marked 'inline'. Doing so takes away freedom from gcc to
--	  do what it thinks is best, which is desirable for the gcc 3.x series of
--	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
--	  enabling this option will generate a smaller kernel there. Hopefully
--	  this algorithm is so good that allowing gcc 4.x and above to make the
--	  decision will become the default in the future. Until then this option
--	  is there to test gcc for this.
--
--	  If unsure, say N.
--
- config DEBUG_ENTRY
- 	bool "Debug low-level entry code"
- 	depends on DEBUG_KERNEL
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index ba814f18cb4c..19e58b9138a0 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -140,8 +140,7 @@ struct ftrace_likely_data {
-  * Do not use __always_inline here, since currently it expands to inline again
-  * (which would break users of __always_inline).
-  */
--#if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
--	!defined(CONFIG_OPTIMIZE_INLINING)
-+#if !defined(CONFIG_OPTIMIZE_INLINING)
- #define inline inline __attribute__((__always_inline__)) __gnu_inline \
- 	__maybe_unused notrace
- #else
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 0d9e81779e37..f8f284f46c85 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -310,6 +310,20 @@ config HEADERS_CHECK
- 	  exported to $(INSTALL_HDR_PATH) (usually 'usr/include' in
- 	  your build tree), to make sure they're suitable.
- 
-+config OPTIMIZE_INLINING
-+	bool "Allow compiler to uninline functions marked 'inline'"
-+	help
-+	  This option determines if the kernel forces gcc to inline the functions
-+	  developers have marked 'inline'. Doing so takes away freedom from gcc to
-+	  do what it thinks is best, which is desirable for the gcc 3.x series of
-+	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
-+	  enabling this option will generate a smaller kernel there. Hopefully
-+	  this algorithm is so good that allowing gcc 4.x and above to make the
-+	  decision will become the default in the future. Until then this option
-+	  is there to test gcc for this.
-+
-+	  If unsure, say N.
-+
- config DEBUG_SECTION_MISMATCH
- 	bool "Enable full Section mismatch analysis"
- 	help
--- 
-2.17.1
+--IUSVF+LtaR4kWxuH--
 
+
+--===============5567328658075726434==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5567328658075726434==--
+
