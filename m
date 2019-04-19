@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 457B8C282DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:52:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B58C282DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:59:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12C67218EA
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:52:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C62E218FD
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 09:59:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TPIKQ/NW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="B0BQlA/P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12C67218EA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BfwH6Uw2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="PydnGSji"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C62E218FD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,48 +27,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=X2XSpxBMZnmIMeCR5WxckgwirhFzIAqVKtnZ0MSXXTw=; b=TPIKQ/NWjwFQHknremckwL3oPf
-	J+DRlzUHVaXpdtETPVpsN5Nu0RdIUTZhh9dfUiMT2GUw8p7A//stmOks3+KDRCnLOgsrwbUBTXp+o
-	ll0N4pSFj+Sm5IleYECLE0pq2e1pYCuwfX/6wQ1ZnCLPGya3IqA9c+gzL6aUroB4v8GkHrzLdB9lj
-	WR1mn/kQSa2mMg3HAy3lgFdGvnuXt1rbWBKYBQvBNmBGGyQPxUZ/Bl0Boxo9RwOo7iFXu5IQm+mou
-	KzFN0gvSGzAFug1nkWPmkKfYmGpP9veLRrIGZ7xjDyGcgFial87tRCnQJ1PGYVPN4hFe5YnTxHj0p
-	5+vHjUJA==;
+	bh=F3Tfhcwmlmh7O3Xd05mWaQKZwbsRyaui8UYkYQJPnAQ=; b=BfwH6Uw2l6KG6yhXVqQgogWR9V
+	cYqvUtK4FCFOlGvluyMR5hXs3kby5aB02WflqONx428KkPV8urWAK5118C6TkX95ZWBbH9fa1pOiZ
+	i34f9rKQAzYfOk8VupvR2Xs2UWBNMTNKw82fvrfN9ygsX7peS4deX8JF0iI8K2AB+ghDPhTnR634E
+	UegQSlXsDJODppkxJ1JFOk5MEjcMLFlVQhLnyx0SmCcJRourzh2OC4k2QlPjzoC09m5U58ZK3nVzv
+	4p25y85tfFS62q2nE6yhc2AFE0BM/6hfJDl2/QaGDlslqAe6HDnvHZgLfYzxMY3uU5qZ+dQEecC5M
+	dD3nG30g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHQCN-0004Fg-Qj; Fri, 19 Apr 2019 09:52:47 +0000
+	id 1hHQJA-0006SP-4V; Fri, 19 Apr 2019 09:59:48 +0000
 Received: from conuserg-08.nifty.com ([210.131.2.75])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHQ8a-0006aK-Bj; Fri, 19 Apr 2019 09:49:00 +0000
+ id 1hHQ8w-00074J-0q; Fri, 19 Apr 2019 09:49:30 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id x3J9mDiV012304;
- Fri, 19 Apr 2019 18:48:28 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x3J9mDiV012304
+ by conuserg-08.nifty.com with ESMTP id x3J9mDiW012304;
+ Fri, 19 Apr 2019 18:48:29 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x3J9mDiW012304
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555667309;
- bh=sNr4ub5sQxS+0LMMMb+j8VzxalFAFd/JYoE5EUyoP38=;
+ s=dec2015msa; t=1555667311;
+ bh=DZH3ndX+jwPMXyZB1kQ4OHEY2QeZuXlzmLdAIaBcM6M=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=B0BQlA/PTYdRhr/cnabblYMwAYhKD6J8OBAnfSjQcaEkjG6yjSsJYkeL42KRC579r
- PNg66kXGfTKg1PT7Mcezea0Le+TIG2L3R4/go1gHcEczBgXpsHfXnTklxKr73FcJpB
- pgKBhSPoXPMW7FmxAXFP1oXRnpOJMTmVFfi2T1b21yJJ50Dxj8uphUr9arAF2VZ5Gt
- iFyTtCd7tSUQLuAgFMsInuQd7Zi7f4y+HfXk6okijLRI07aBA/2tsWZxCbHUU5cMYd
- OpHcQiZWhdNji5KDIWUGz0avKi8LtEztXO2FBxeNaT2m5466QUP8yjbxpOEGypVmOj
- xzYLsSTkB+gRA==
+ b=PydnGSjiKyIo14J4fAKaV6koaZeZ0EuTcw4Tq4V8uwNBifRf97/8NMU4AZxYotm6W
+ h/czkyZ7MDVZ2xZhy6Byuv6Z4Ztq0jvEL+1rHQtL3Fe/LMX4RBELdDA3ZegwXjdj4m
+ UqJDwhBzKD/pptPsi5aw/KnB/EONfPoQF8eebdfHJaMgBG170Y/dNM8a4ryp4EVyLX
+ Js9Op5+csNk9r2v3z6G8n18zKMuFlHT/YDZazi9Kv9zGOPV9qNMg9QJWzNAvml8NMc
+ aNwXmMoinYdq9Px4fC8i7300TKOZmLWc7fLIBYNhAM/kMZlHf9tWKsM00pZIZMM8B/
+ CMFiRyUCM3+HA==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
  linux-arch <linux-arch@vger.kernel.org>
-Subject: [PATCH v2 10/11] powerpc/mm/radix: mark as __tlbie_pid() and friends
- as__always_inline
-Date: Fri, 19 Apr 2019 18:47:53 +0900
-Message-Id: <20190419094754.24667-11-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 11/11] compiler: allow all arches to enable
+ CONFIG_OPTIMIZE_INLINING
+Date: Fri, 19 Apr 2019 18:47:54 +0900
+Message-Id: <20190419094754.24667-12-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190419094754.24667-1-yamada.masahiro@socionext.com>
 References: <20190419094754.24667-1-yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190419_024852_774096_446F838F 
-X-CRM114-Status: UNSURE (   8.05  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190419_024914_935637_53971AB8 
+X-CRM114-Status: GOOD (  12.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,76 +91,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
-place. We need to eliminate potential issues beforehand.
+Commit 60a3cdd06394 ("x86: add optimized inlining") introduced
+CONFIG_OPTIMIZE_INLINING, but it has been available only for x86.
 
-If it is enabled for powerpc, the following errors are reported:
+The idea is obviously arch-agnostic. This commit moves the config
+entry from arch/x86/Kconfig.debug to lib/Kconfig.debug so that all
+architectures can benefit from it.
 
-arch/powerpc/mm/tlb-radix.c: In function '__tlbie_lpid':
-arch/powerpc/mm/tlb-radix.c:148:2: warning: asm operand 3 probably doesn't match constraints
-  asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
-  ^~~
-arch/powerpc/mm/tlb-radix.c:148:2: error: impossible constraint in 'asm'
-arch/powerpc/mm/tlb-radix.c: In function '__tlbie_pid':
-arch/powerpc/mm/tlb-radix.c:118:2: warning: asm operand 3 probably doesn't match constraints
-  asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
-  ^~~
-arch/powerpc/mm/tlb-radix.c: In function '__tlbiel_pid':
-arch/powerpc/mm/tlb-radix.c:104:2: warning: asm operand 3 probably doesn't match constraints
-  asm volatile(PPC_TLBIEL(%0, %4, %3, %2, %1)
-  ^~~
+This can make a huge difference in kernel image size especially when
+CONFIG_OPTIMIZE_FOR_SIZE is enabled.
+
+For example, I got 3.5% smaller arm64 kernel for v5.1-rc1.
+
+  dec       file
+  18983424  arch/arm64/boot/Image.before
+  18321920  arch/arm64/boot/Image.after
+
+This also slightly improves the "Kernel hacking" Kconfig menu as
+e61aca5158a8 ("Merge branch 'kconfig-diet' from Dave Hansen') suggested;
+this config option would be a good fit in the "compiler option" menu.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2:
-  - new patch
+  - split into a separate patch
 
- arch/powerpc/mm/tlb-radix.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/Kconfig               |  3 ---
+ arch/x86/Kconfig.debug         | 14 --------------
+ include/linux/compiler_types.h |  3 +--
+ lib/Kconfig.debug              | 14 ++++++++++++++
+ 4 files changed, 15 insertions(+), 19 deletions(-)
 
-diff --git a/arch/powerpc/mm/tlb-radix.c b/arch/powerpc/mm/tlb-radix.c
-index a2b2848f0ae3..14ff414d1545 100644
---- a/arch/powerpc/mm/tlb-radix.c
-+++ b/arch/powerpc/mm/tlb-radix.c
-@@ -90,8 +90,8 @@ void radix__tlbiel_all(unsigned int action)
- 	asm volatile(PPC_INVALIDATE_ERAT "; isync" : : :"memory");
- }
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5ad92419be19..9e93d109a6cb 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -310,9 +310,6 @@ config ZONE_DMA32
+ config AUDIT_ARCH
+ 	def_bool y if X86_64
  
--static inline void __tlbiel_pid(unsigned long pid, int set,
--				unsigned long ric)
-+static __always_inline void __tlbiel_pid(unsigned long pid, int set,
-+					 unsigned long ric)
- {
- 	unsigned long rb,rs,prs,r;
+-config ARCH_SUPPORTS_OPTIMIZED_INLINING
+-	def_bool y
+-
+ config ARCH_SUPPORTS_DEBUG_PAGEALLOC
+ 	def_bool y
  
-@@ -106,7 +106,7 @@ static inline void __tlbiel_pid(unsigned long pid, int set,
- 	trace_tlbie(0, 1, rb, rs, ric, prs, r);
- }
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index 15d0fbe27872..f730680dc818 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -266,20 +266,6 @@ config CPA_DEBUG
+ 	---help---
+ 	  Do change_page_attr() self-tests every 30 seconds.
  
--static inline void __tlbie_pid(unsigned long pid, unsigned long ric)
-+static __always_inline void __tlbie_pid(unsigned long pid, unsigned long ric)
- {
- 	unsigned long rb,rs,prs,r;
- 
-@@ -136,7 +136,7 @@ static inline void __tlbiel_lpid(unsigned long lpid, int set,
- 	trace_tlbie(lpid, 1, rb, rs, ric, prs, r);
- }
- 
--static inline void __tlbie_lpid(unsigned long lpid, unsigned long ric)
-+static __always_inline void __tlbie_lpid(unsigned long lpid, unsigned long ric)
- {
- 	unsigned long rb,rs,prs,r;
- 
-@@ -239,7 +239,7 @@ static inline void fixup_tlbie_lpid(unsigned long lpid)
- /*
-  * We use 128 set in radix mode and 256 set in hpt mode.
+-config OPTIMIZE_INLINING
+-	bool "Allow gcc to uninline functions marked 'inline'"
+-	---help---
+-	  This option determines if the kernel forces gcc to inline the functions
+-	  developers have marked 'inline'. Doing so takes away freedom from gcc to
+-	  do what it thinks is best, which is desirable for the gcc 3.x series of
+-	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
+-	  enabling this option will generate a smaller kernel there. Hopefully
+-	  this algorithm is so good that allowing gcc 4.x and above to make the
+-	  decision will become the default in the future. Until then this option
+-	  is there to test gcc for this.
+-
+-	  If unsure, say N.
+-
+ config DEBUG_ENTRY
+ 	bool "Debug low-level entry code"
+ 	depends on DEBUG_KERNEL
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index ba814f18cb4c..19e58b9138a0 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -140,8 +140,7 @@ struct ftrace_likely_data {
+  * Do not use __always_inline here, since currently it expands to inline again
+  * (which would break users of __always_inline).
   */
--static inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
-+static __always_inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
- {
- 	int set;
+-#if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
+-	!defined(CONFIG_OPTIMIZE_INLINING)
++#if !defined(CONFIG_OPTIMIZE_INLINING)
+ #define inline inline __attribute__((__always_inline__)) __gnu_inline \
+ 	__maybe_unused notrace
+ #else
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 0d9e81779e37..f8f284f46c85 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -310,6 +310,20 @@ config HEADERS_CHECK
+ 	  exported to $(INSTALL_HDR_PATH) (usually 'usr/include' in
+ 	  your build tree), to make sure they're suitable.
  
++config OPTIMIZE_INLINING
++	bool "Allow compiler to uninline functions marked 'inline'"
++	help
++	  This option determines if the kernel forces gcc to inline the functions
++	  developers have marked 'inline'. Doing so takes away freedom from gcc to
++	  do what it thinks is best, which is desirable for the gcc 3.x series of
++	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
++	  enabling this option will generate a smaller kernel there. Hopefully
++	  this algorithm is so good that allowing gcc 4.x and above to make the
++	  decision will become the default in the future. Until then this option
++	  is there to test gcc for this.
++
++	  If unsure, say N.
++
+ config DEBUG_SECTION_MISMATCH
+ 	bool "Enable full Section mismatch analysis"
+ 	help
 -- 
 2.17.1
 
