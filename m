@@ -2,75 +2,71 @@ Return-Path: <SRS0=SE3z=SV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32CECC282DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 14:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D09D2C282DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 15:45:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E51A6222D3
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 14:52:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A0356222CE
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2019 15:45:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W/esSgdX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DgaVWyKz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E51A6222D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TxqCoF5H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0356222CE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=iqJ5MNIMmeoE1ZQpCLBlme0Q+6YcipRkw+HryYfKlxU=; b=W/esSgdXh7Bl+aoxLYAFbhVFU
-	U/b95CbXsJDrCrs4DEGyuVg1xL85dbs3o4VWNd1zX8WUfwsJDi/P7qRSmjlPMPLYk5K1zUX1NDxUR
-	liT5AC6+tpwvqDtM/CjQ0NNR3br1DhHb3yj+7oHlTWoVtCAuHL3vkWjKe0RmGDn89IBTv0zmaWoTb
-	wuPZBdQo1EHwyejSRGbwyRBbv4Ey4UZlpqnAGdOONl5YiblZ7Kx47ibPIFWBJln97QJbr3S1fjhCi
-	XfahHvOGJ6MzYH1BaYrIPE4f5zLL7ncuz2sCqwOWJQ+GgH8uiS6mSc9z6INj6zxGhjAE23hkNi2vx
-	OlNxgbjjg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8zbAmYgqfOCN5XOufp1smWjA1NACM7rtworHRnTcKmM=; b=TxqCoF5HNeVXCT
+	AWTP65SNlS22BJfQcqPRUGj1nm8qcjaYEEUoIKz9F+W/M33yhk61C/p4lW7lBdPArxTohEYsPjPw6
+	GvUhUKO/coOdqt28cZ3BdMhxNzjmXH67yenH3mQ1SMLaBV7r3BgNqNk+hsE0syME2d8qvPQeayKWk
+	f5kSSLDxwYtdVzI84/JQLww+5qlj3pVIqxQiVwTiRJvplz7aRu9jbLKsqqtNgWdlf5RUvv0kzTnLS
+	sKc2BHM4HPqZtP9HdOALdkjAdX9LXnICwCORJQugv+DQbxGtkHF7KSloIY+VmR6/Qwelk3xgK9ZBr
+	HlxJyaEwZiSkCLUKvbig==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hHUsE-0005Dx-9p; Fri, 19 Apr 2019 14:52:18 +0000
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+	id 1hHVi0-00082i-O9; Fri, 19 Apr 2019 15:45:48 +0000
+Received: from mail-ot1-f68.google.com ([209.85.210.68])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hHUsB-0005De-1b
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2019 14:52:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=L02lidpU1CWJs+5WvBdKuXF1cJhohg86bxgiBZZR0xU=; b=DgaVWyKzfGLpL8WTjq6xjbRJg
- cXPNBN2oTgNzZvV1P49C16H285liahkHS0bGwxqAUgPW5VJsod3iigt/9PARyVtMHI7pXeHjICcCC
- gWgyEuHIsjjR84JuKvRBjoWP6KWE2GF3FhtxyLathZ9ZCRmRlQtunkSnEdSJWTIP9RCvo=;
-Received: from 188.29.164.213.threembb.co.uk ([188.29.164.213]
- helo=finisterre.ee.mobilebroadband)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <broonie@sirena.org.uk>)
- id 1hHUrp-0008BF-Bc; Fri, 19 Apr 2019 14:51:53 +0000
-Received: by finisterre.ee.mobilebroadband (Postfix, from userid 1000)
- id 62107441D3B; Fri, 19 Apr 2019 15:51:51 +0100 (BST)
-Date: Fri, 19 Apr 2019 15:51:51 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Mason Yang <masonccyang@mxic.com.tw>
-Subject: Re: [PATCH v3 3/4] spi: Patch Macronix SPI controller driver
- according to MX25F0A MFD driver
-Message-ID: <20190419145151.GR2803@sirena.org.uk>
-References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
- <1555320234-15802-4-git-send-email-masonccyang@mxic.com.tw>
+ id 1hHVhx-00082E-37; Fri, 19 Apr 2019 15:45:46 +0000
+Received: by mail-ot1-f68.google.com with SMTP id e5so4618295otk.12;
+ Fri, 19 Apr 2019 08:45:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=rgm+DlPYj4YwXD0IUlXbIhCkCaP4ItKaQlGxc47GSHs=;
+ b=t7IoVcgMNLEcZtzZeJL3hLEqMpsjvwI3mqNoVQir8JVVl7rcM2Zh20xo2p/AmNTvlv
+ zoPtI+YrrrNfOj1LmnbGO7/sO7wRcX7EnnrCGm5GyqKsgyK/Rx04tjYTruIRj6lD+Suz
+ RRI5QQ5PQabF11t4wvmmJfl0jsbRVfgco2w1X37NIf6Wa9rzP0yNJd7swkp5WHI9MNO7
+ lLNEhBkpcIKKFsjpWfD6KPBKakCKIpFIHkb4cvQnTbHwP1G73bzwr1PXcpulc+Nur31f
+ +CbOXfzR8aDKVfovjK8drYon8u563XZlD/FwY7V2jfBJrdsolntrJxG9VOYw7vlojeAm
+ EsaA==
+X-Gm-Message-State: APjAAAXjq5vfZCDiY5RaBPGwtkmPWt8ihfE2X5dR4E107qubRPMfODkf
+ TqwNj8Go2JnlHEAFLe/Tv2cumQ39P1zXbCxSJ+w=
+X-Google-Smtp-Source: APXvYqyzS5bhws5CT7A5nXn4OpfeWT4dvhjZS6lwiZnWt+A2qa8xQlOemhAXzlKYNBL6JXPtGyLamsLnBS+1CfuvVbc=
+X-Received: by 2002:a9d:7dda:: with SMTP id k26mr2666597otn.354.1555688742221; 
+ Fri, 19 Apr 2019 08:45:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1555320234-15802-4-git-send-email-masonccyang@mxic.com.tw>
-X-Cookie: Shah, shah!  Ayatollah you so!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190419094754.24667-1-yamada.masahiro@socionext.com>
+ <20190419094754.24667-7-yamada.masahiro@socionext.com>
+In-Reply-To: <20190419094754.24667-7-yamada.masahiro@socionext.com>
+From: Mathieu Malaterre <malat@debian.org>
+Date: Fri, 19 Apr 2019 17:45:31 +0200
+Message-ID: <CA+7wUsygTo=AN_giku_X6_a4mQWdJL48RoVbVB4hBqkZSKkP0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 06/11] MIPS: mark __fls() as __always_inline
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190419_075215_254227_A1416007 
-X-CRM114-Status: UNSURE (   8.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190419_084545_139782_93CECEFF 
+X-CRM114-Status: GOOD (  15.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,69 +78,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, juliensu@mxic.com.tw,
- christophe.kerello@st.com, richard@nod.at, bbrezillon@kernel.org,
- marcel.ziswiler@toradex.com, dwmw2@infradead.org, miquel.raynal@bootlin.com,
- linux-kernel@vger.kernel.org, stefan@agner.ch, linux-spi@vger.kernel.org,
- marek.vasut@gmail.com, paul.burton@mips.com, robh+dt@kernel.org,
- geert@linux-m68k.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmal.com, liang.yang@amlogic.com, lee.jones@linaro.org,
- zhengxunli@mxic.com.tw
-Content-Type: multipart/mixed; boundary="===============5567328658075726434=="
+Cc: linux-arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+ Heiko Carstens <heiko.carstens@de.ibm.com>, linux-mips@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
---===============5567328658075726434==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IUSVF+LtaR4kWxuH"
-Content-Disposition: inline
+On Fri, Apr 19, 2019 at 12:06 PM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+>
+> This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
+> place. We need to eliminate potential issues beforehand.
+>
+> If it is enabled for mips, the following errors are reported:
+>
+> arch/mips/mm/sc-mips.o: In function `mips_sc_prefetch_enable.part.2':
+> sc-mips.c:(.text+0x98): undefined reference to `mips_gcr_base'
+> sc-mips.c:(.text+0x9c): undefined reference to `mips_gcr_base'
+> sc-mips.c:(.text+0xbc): undefined reference to `mips_gcr_base'
+> sc-mips.c:(.text+0xc8): undefined reference to `mips_gcr_base'
+> sc-mips.c:(.text+0xdc): undefined reference to `mips_gcr_base'
+> arch/mips/mm/sc-mips.o:sc-mips.c:(.text.unlikely+0x44): more undefined references to `mips_gcr_base'
+
+Tested with success on ppc32/G4. But on CI20 (ci20_defconfig from
+master), I get:
+
+  MODPOST vmlinux.o
+mipsel-linux-gnu-ld: arch/mips/kernel/traps.o: in function
+`addr_gcr_err_control':
+/home/mathieu/tmp/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:169:
+undefined reference to `mips_gcr_base'
+mipsel-linux-gnu-ld:
+/home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:169:
+undefined reference to `mips_gcr_base'
+mipsel-linux-gnu-ld: arch/mips/mm/sc-mips.o: in function
+`addr_gcr_l2_pft_control':
+/home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+undefined reference to `mips_gcr_base'
+mipsel-linux-gnu-ld:
+/home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+undefined reference to `mips_gcr_base'
+mipsel-linux-gnu-ld:
+/home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+undefined reference to `mips_gcr_base'
+mipsel-linux-gnu-ld:
+arch/mips/mm/sc-mips.o:/home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+more undefined references to `mips_gcr_base' follow
 
 
---IUSVF+LtaR4kWxuH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Apr 15, 2019 at 05:23:53PM +0800, Mason Yang wrote:
-> Patch Macronix MX25F0A SPI controller driver according to it's MFD driver.
-
-It'd be much better to describe what the above actually means - what
-changes have been made in the introduction of the MFD driver?  It does
-feel like there's not as much abstraction as I'd expect between the MFD
-and the child, there's a lot of peering into the parent and enabling and
-disabling individual clocks for example rather than either having this
-hidden behind a function or just having the clocks owned by the child
-driver.  The driver also isn't using the MFD interfaces to pass through
-the register subblocks for the IP - instead the child driver is peering
-straight into the MFD structure and looking at a variable in there.
-
---IUSVF+LtaR4kWxuH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly54IYACgkQJNaLcl1U
-h9D0PQf/erY3gZlhAvdcG9BNLPO9WNE8OrfW8W1e5MFQI3MEhJC9fi3BynwsbKtq
-oYO7n4IlWTIXmNDQdlZTdlGU2ybIAMGbUmRh0sP2UB5dh2nNnCTfzdOKdszWov18
-JFDl2+5xeyM5ensdZqRVNaXOP/j3eavC/1AOgDTlVummvycoxPH7AeDEg/+UTHrb
-blDrIxdutZnG+hGdmdoDBZdMsP/eWTS2FJ1t3bnU2AVnftWS/35E5NXpJG4o+gz+
-kb+NmEWgrDFoCOk03rq02pudfkdQawONL85giQwm5Apz4OcKeGRV7tIUjfVr0DxT
-9Rw+gkXFeqGyyD3rS25VYKnDsuXRCg==
-=WftF
------END PGP SIGNATURE-----
-
---IUSVF+LtaR4kWxuH--
-
-
---===============5567328658075726434==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+>
+> Changes in v2:
+>   - new patch
+>
+>  arch/mips/include/asm/bitops.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/include/asm/bitops.h b/arch/mips/include/asm/bitops.h
+> index 830c93a010c3..6a26ead1c2b6 100644
+> --- a/arch/mips/include/asm/bitops.h
+> +++ b/arch/mips/include/asm/bitops.h
+> @@ -482,7 +482,7 @@ static inline void __clear_bit_unlock(unsigned long nr, volatile unsigned long *
+>   * Return the bit position (0..63) of the most significant 1 bit in a word
+>   * Returns -1 if no 1 bit exists
+>   */
+> -static inline unsigned long __fls(unsigned long word)
+> +static __always_inline unsigned long __fls(unsigned long word)
+>  {
+>         int num;
+>
+> --
+> 2.17.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5567328658075726434==--
-
