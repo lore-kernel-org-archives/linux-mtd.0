@@ -2,73 +2,78 @@ Return-Path: <SRS0=5gbO=SZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC075C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B37DCC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:25:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CD0420B1F
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:25:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E50520843
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:25:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hNdw+lqL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="ByF3Wmdm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CD0420B1F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YB3mDptg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="P91ZeAMh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E50520843
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=5tOOc1/CECHq+GCM8nnO5RCL7MHHtY5C6u5aFW5OlIU=; b=hNdw+lqLJlnf8CTokY9Wh+Pexv
-	gnYasKv+MrT5XRPAQ1S617AJ9w1Qg3/2gtZ94tFwBqQtZLFRoFl3iFW4NFAEfz+QwG5/c1da7gAFY
-	FigpaxXg0PqsApPNF+c4qwT5kD/+SbY97FCBQVV17kVNzb8YW661DcUI9tzZ1AVVNmOC2aIrWIRbi
-	GVcchzoRRfKblQy5AtVhIdZI2qVgPS6qTlmABZX2WEVKb9Kxhn5962HzqmEdZ+UWhwor9NBO7nhFt
-	wl28pX4fVbqnd1iIRnYZRIC+IshhhaFbU8E5E6JWAhzLPoaI6Zy/PDTGVuJD1v+eS4WFo9gaICtar
-	q0R5sWFg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=EIF6HEC01J93HYQFZCa3yij49wVDsEBdxsbaRIyxY38=; b=YB3mDptgNT7LHa
+	xXxsZUO4+XAGUrrgoVfqlsxQHHvZ11EwPj4MCpAiaJ2cUop4Sj0s5r4+s+Cw1X4uHbURsOgD5Rwo1
+	ogHprnKPAPUZnhOr1FccyUIZPfW3hy0tQrTijXyGzNBIGbltIfbqDCfY1hpshCpBx1Eoq73qu3cf2
+	rblxbFRE1Deaek+38SLwdezmlWJ6YLlE42q61U6M0ygyWsTqCxV4EZsDN8HRgOS1q43X3e5WQSxSD
+	7egi/qTqg8iXCkBT1/BRejQ1mdsSOfhOQysL+gd9Cs01NjXrc3cfCBE1iUF/IwfO6T0r0dncQGrVX
+	KIC++sbypOhiHySRi5HQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hIm3i-0004Nm-VC; Tue, 23 Apr 2019 03:25:26 +0000
-Received: from conuserg-09.nifty.com ([210.131.2.76])
+	id 1hIm42-0004jR-V4; Tue, 23 Apr 2019 03:25:46 +0000
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hIm0M-0007MS-9r; Tue, 23 Apr 2019 03:22:14 +0000
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
- [153.142.97.92]) (authenticated)
- by conuserg-09.nifty.com with ESMTP id x3N3L8LI031384;
- Tue, 23 Apr 2019 12:21:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com x3N3L8LI031384
+ id 1hIm2r-00023y-Ci; Tue, 23 Apr 2019 03:25:19 +0000
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com
+ [209.85.222.47]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id x3N3OCQR004631;
+ Tue, 23 Apr 2019 12:24:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x3N3OCQR004631
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555989677;
- bh=7qo1vbhArO2n/LZF4sYuHYL1/6J0V//9VqfNxacUkeY=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ByF3Wmdmakc6HLxf+7sO4AecDTjocpMpuNC8cuKlErGY2yh/dUHLMuh9zSFWEGTqW
- q+KiAI+xFh2t24Ab9m1yrPP17Cyl+UhoxHAxcgFKNrCZCdOQN3cso9Mb/EXfi2daGR
- hlvySMMI/+wVS1osaiozGonKjB5tKKgqQoKy+9b/ap9neqJLqr1tga0RknQmdLF5JK
- mrAbzkbvLcAzZ1NxGJ9dZS3STvmHdygjzqiMUFvx18/R69eytCCnyKXuaz6EFMKoqG
- qZ0UXSQUDTS36O4kuT/WHJOuuDNS3UAjjBtSEpPsRvPp7tR/lkpLgjI9bHexOD5AsD
- z+jiwwsUH5rGA==
-X-Nifty-SrcIP: [153.142.97.92]
+ s=dec2015msa; t=1555989853;
+ bh=ZaFZ1e3X9NvA8jIq/O0HE8feh53sYwHuO++fFuOS9nA=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=P91ZeAMhtMqYylWUwrm0osI7w4pI/iDlLSWG/rgtuV4n4+wggoIrtADSDmDO1F8IT
+ 9SwLYRNBLbn0b744T8wkCcKdwRp1bFydxoBb/Ez/b9cQ25oEEeJ8fGba2msUkgzzN7
+ RVgAZWUxJsGwNQ1bWOAqoinA3tgIU6FXaJx5B1L/jq2wQU/LA3xl6qMAHwZmrwSwQr
+ zRfXO4olxBoW18m482H250QJqKYOMqrg5Rb5U/oSnXgQXE947uj84smCxuOU3bNZk6
+ XQX+9jSnBFsERD0tttKHFup0w0hnVx0NFKRLwUi8nadx+s4K1Nt/08Gj7JqtqRc3FH
+ xGxtXeWji4Okg==
+X-Nifty-SrcIP: [209.85.222.47]
+Received: by mail-ua1-f47.google.com with SMTP id g8so4295554uaj.0;
+ Mon, 22 Apr 2019 20:24:13 -0700 (PDT)
+X-Gm-Message-State: APjAAAUzytPaQWPGziw/tul3Y5ZPhR6wxuGr36fGAe3xkK6/SGEAo5EI
+ OAup1lO5acTPVdob8YMl07Cn46Vl4is2Viup7Ek=
+X-Google-Smtp-Source: APXvYqy2+X5gAZU5b5JBqG8lKaQqh8mqoq4bQSgIgGHvQKLEeXzwh1sBxjABZmsDHRTa0MRWHTkc9sQeXvoau4eItSo=
+X-Received: by 2002:ab0:7008:: with SMTP id k8mr11599996ual.40.1555989851968; 
+ Mon, 22 Apr 2019 20:24:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190419094754.24667-1-yamada.masahiro@socionext.com>
+ <20190419094754.24667-7-yamada.masahiro@socionext.com>
+ <CA+7wUsygTo=AN_giku_X6_a4mQWdJL48RoVbVB4hBqkZSKkP0Q@mail.gmail.com>
+In-Reply-To: <CA+7wUsygTo=AN_giku_X6_a4mQWdJL48RoVbVB4hBqkZSKkP0Q@mail.gmail.com>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
- linux-arch <linux-arch@vger.kernel.org>
-Subject: [PATCH v3 07/10] powerpc/prom_init: mark prom_getprop() and
- prom_getproplen() as __init
-Date: Tue, 23 Apr 2019 12:21:03 +0900
-Message-Id: <20190423032106.11960-8-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190423032106.11960-1-yamada.masahiro@socionext.com>
-References: <20190423032106.11960-1-yamada.masahiro@socionext.com>
+Date: Tue, 23 Apr 2019 12:23:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQjQKu9GFyCyDJsQcyQjbeSGoJJPJV8YEtSXuV9JDqhqQ@mail.gmail.com>
+Message-ID: <CAK7LNAQjQKu9GFyCyDJsQcyQjbeSGoJJPJV8YEtSXuV9JDqhqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 06/11] MIPS: mark __fls() as __always_inline
+To: Mathieu Malaterre <malat@debian.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_202159_203526_B3E9F23F 
-X-CRM114-Status: UNSURE (   8.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190422_202434_221946_AEC6B11B 
+X-CRM114-Status: GOOD (  10.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -80,72 +85,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>, linux-s390@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, Mathieu Malaterre <malat@debian.org>,
- x86@kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Ingo Molnar <mingo@redhat.com>, linux-mtd@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
+Cc: linux-arch <linux-arch@vger.kernel.org>,
+ linux-s390 <linux-s390@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ X86 ML <x86@kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>,
+ linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
-place. We need to eliminate potential issues beforehand.
+On Sat, Apr 20, 2019 at 12:45 AM Mathieu Malaterre <malat@debian.org> wrote:
+>
+> Hi,
+>
+> On Fri, Apr 19, 2019 at 12:06 PM Masahiro Yamada
+> <yamada.masahiro@socionext.com> wrote:
+> >
+> > This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
+> > place. We need to eliminate potential issues beforehand.
+> >
+> > If it is enabled for mips, the following errors are reported:
+> >
+> > arch/mips/mm/sc-mips.o: In function `mips_sc_prefetch_enable.part.2':
+> > sc-mips.c:(.text+0x98): undefined reference to `mips_gcr_base'
+> > sc-mips.c:(.text+0x9c): undefined reference to `mips_gcr_base'
+> > sc-mips.c:(.text+0xbc): undefined reference to `mips_gcr_base'
+> > sc-mips.c:(.text+0xc8): undefined reference to `mips_gcr_base'
+> > sc-mips.c:(.text+0xdc): undefined reference to `mips_gcr_base'
+> > arch/mips/mm/sc-mips.o:sc-mips.c:(.text.unlikely+0x44): more undefined references to `mips_gcr_base'
+>
+> Tested with success on ppc32/G4. But on CI20 (ci20_defconfig from
+> master), I get:
 
-If it is enabled for powerpc, the following modpost warnings are
-reported:
 
-WARNING: vmlinux.o(.text.unlikely+0x20): Section mismatch in reference from the function .prom_getprop() to the function .init.text:.call_prom()
-The function .prom_getprop() references
-the function __init .call_prom().
-This is often because .prom_getprop lacks a __init
-annotation or the annotation of .call_prom is wrong.
+Thanks for the test!
 
-WARNING: vmlinux.o(.text.unlikely+0x3c): Section mismatch in reference from the function .prom_getproplen() to the function .init.text:.call_prom()
-The function .prom_getproplen() references
-the function __init .call_prom().
-This is often because .prom_getproplen lacks a __init
-annotation or the annotation of .call_prom is wrong.
+OK, I saw this error for ci20_defconfig.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+I inline'd __ffs() to fix it
+and sumitted v3.
 
-Changes in v3: None
-Changes in v2:
-  - split into a separate patch
+Thank you.
 
- arch/powerpc/kernel/prom_init.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index f33ff4163a51..241fe6b7a8cc 100644
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -501,14 +501,14 @@ static int __init prom_next_node(phandle *nodep)
- 	}
- }
- 
--static inline int prom_getprop(phandle node, const char *pname,
--			       void *value, size_t valuelen)
-+static inline int __init prom_getprop(phandle node, const char *pname,
-+				      void *value, size_t valuelen)
- {
- 	return call_prom("getprop", 4, 1, node, ADDR(pname),
- 			 (u32)(unsigned long) value, (u32) valuelen);
- }
- 
--static inline int prom_getproplen(phandle node, const char *pname)
-+static inline int __init prom_getproplen(phandle node, const char *pname)
- {
- 	return call_prom("getproplen", 2, 1, node, ADDR(pname));
- }
+
+>   MODPOST vmlinux.o
+> mipsel-linux-gnu-ld: arch/mips/kernel/traps.o: in function
+> `addr_gcr_err_control':
+> /home/mathieu/tmp/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:169:
+> undefined reference to `mips_gcr_base'
+> mipsel-linux-gnu-ld:
+> /home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:169:
+> undefined reference to `mips_gcr_base'
+> mipsel-linux-gnu-ld: arch/mips/mm/sc-mips.o: in function
+> `addr_gcr_l2_pft_control':
+> /home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+> undefined reference to `mips_gcr_base'
+> mipsel-linux-gnu-ld:
+> /home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+> undefined reference to `mips_gcr_base'
+> mipsel-linux-gnu-ld:
+> /home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+> undefined reference to `mips_gcr_base'
+> mipsel-linux-gnu-ld:
+> arch/mips/mm/sc-mips.o:/home/mathieu/linux/linux/ci20/../arch/mips/include/asm/mips-cm.h:246:
+> more undefined references to `mips_gcr_base' follow
+
+
+
+
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
