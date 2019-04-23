@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D3DFC10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3D7BC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:07:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D7BB214AE
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:06:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A046B20843
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:07:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n21FMoGD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JU9FPxId"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D7BB214AE
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BRFnoRet";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pjSAVEeG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A046B20843
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,59 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B9pvgwdGQ2lVG82FX08vimWM8+toWUQJ4SO4cTnO4xQ=; b=n21FMoGDDKozT3
-	2RxmoS8HdK42lgkHP3uxh362V2OmTRWvRdL5AZgbIrgVgBeuyQVrXGNwuEVYTXTcxXw6egghJEIH2
-	9L8sAKKHOZP7y9bw09m8fBs3YzyiglZEsoT6Y3DNrGHGqnupdFuj0DG4mvA96fE10A6pMAUFYwLbl
-	BoLlRqzNO1paEAu8m/XU9LI+Q/BKxEDXDnnYZ3O1YEcfG9tgS99p2uNDRPAb1JO4i8XKKjJvNI5/m
-	f+BMnC0jy+tjbyqHBe6tg+9hp6Y2bYrm+2S0pIc2KKyHxX+9+U8tMTzjYQbZL8jQKc0ZQFglU3Qkw
-	KonpsoTZ2L0BYPM6vamQ==;
+	List-Owner; bh=6u6PPk11zOkZh0L3S2MrfnsxJHV5OaDVwATXeg+S+jg=; b=BRFnoRetLwhAxv
+	lHQReL1NY3txCDNxK2OtERdcEsO6XGse1aWQYmSOLURp0gq+k2sSq4bL8PUlLpnl3zGDfrtOAnKPc
+	ZfWHI2YWetWJ73KeZg3jHhIEgQXjSM6iwz64STsOC+idTx529JQ9P68DQXPtN40iyXQbfjBmC5t1I
+	kMNsmmOi6No743m0gqRCOcF6tg4hCSWZ0iXaj/DW2HHC3ejnFCFD0UJZhZk8Rlx9CbRrKthRAM2qi
+	vLAb85/R6YdcPmRISvwFqaICWq8QLJy3fEn0zeul/U/hmtGO/P6aJVZte6V1NtcGihvC596aLT2yc
+	e8xzLfH4p1Fuk3T8XC0Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hIoZv-0001b6-Sl; Tue, 23 Apr 2019 06:06:51 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1hIoaA-0001t2-Bn; Tue, 23 Apr 2019 06:07:06 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hIoZH-0000ig-Er; Tue, 23 Apr 2019 06:06:14 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3N662U9097947;
- Tue, 23 Apr 2019 01:06:02 -0500
+ id 1hIoZJ-0000hv-Ez; Tue, 23 Apr 2019 06:06:20 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3N65qKx117769;
+ Tue, 23 Apr 2019 01:05:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1555999562;
- bh=YmS1a/MLhaosw1v3/c1EdyZW93w4IBWwqStO695zWBM=;
+ s=ti-com-17Q1; t=1555999552;
+ bh=izeTqWIoqRmLAhuZPszVJkQGtEgRoCAJbes+YNYZ65I=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=JU9FPxId8KE+oCUNQOsmKi1rft1PSdEY7CeCPxc8/IIxNdSlQNbiuupRtozyQ8cuG
- Hggp9ekEgp5136kPlP9oA2SMHjEk+sI0RH3Eeaj+tueviKZtC4XeeuYZ7gBhamjaLD
- Ikc/56Bn2+3ak1z4vtesvFtC96f/WYBgpswx0PXk=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3N662jw069611
+ b=pjSAVEeG4ZrGHmqWQMDR7pcPw/8uRqI8MUfjy4XZximFoQA6e9vjbubIYGEL6yuQv
+ jCLqO24ErKYC5I5yaUhKkTVtEAIqeIv7czUhjQmgdDtwiAo5RzpppE82VWeYNbKVx5
+ +TE2Tcr9UAEekBm+1MOTz7nvNQfmDS8UtD3V2wnw=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3N65qm0118955
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 23 Apr 2019 01:06:02 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 23 Apr 2019 01:05:52 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 23
- Apr 2019 01:06:02 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2019 01:05:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Tue, 23 Apr 2019 01:06:02 -0500
+ Frontend Transport; Tue, 23 Apr 2019 01:05:52 -0500
 Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3N65gFD091279;
- Tue, 23 Apr 2019 01:05:57 -0500
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3N65gFB091279;
+ Tue, 23 Apr 2019 01:05:48 -0500
 From: Vignesh Raghavendra <vigneshr@ti.com>
 To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
  Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 3/5] mtd: Add support for HyperBus memory devices
-Date: Tue, 23 Apr 2019 11:36:36 +0530
-Message-ID: <20190423060638.18197-4-vigneshr@ti.com>
+Subject: [PATCH v3 1/5] mtd: cfi_cmdset_0002: Add support for polling status
+ register
+Date: Tue, 23 Apr 2019 11:36:34 +0530
+Message-ID: <20190423060638.18197-2-vigneshr@ti.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190423060638.18197-1-vigneshr@ti.com>
 References: <20190423060638.18197-1-vigneshr@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_230611_579286_8915FE63 
-X-CRM114-Status: GOOD (  27.99  )
+X-CRM114-CacheID: sfid-20190422_230613_964370_800B0DC4 
+X-CRM114-Status: GOOD (  22.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -101,428 +102,209 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
-Bus interface between a host system master and one or more slave
-interfaces. HyperBus is used to connect microprocessor, microcontroller,
-or ASIC devices with random access NOR flash memory (called HyperFlash)
-or self refresh DRAM (called HyperRAM).
+HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
+Set(0x0002) for flash operations, therefore drivers/mtd/chips/cfi_cmdset_0002.c
+can be used as is. But these devices do not support DQ polling method of
+determining chip ready/good status. These flashes provide Status
+Register whose bits can be polled to know status of flash operation.
 
-Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
-signal and either Single-ended clock(3.0V parts) or Differential clock
-(1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
-At bus level, it follows a separate protocol described in HyperBus
-specification[1].
+Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
+Extended Query version 1.5. Bit 0 of "Software Features supported" field
+of CFI Primary Vendor-Specific Extended Query table indicates
+presence/absence of status register and Bit 1 indicates whether or not
+DQ polling is supported. Using these bits, its possible to determine
+whether flash supports DQ polling or need to use Status Register.
 
-HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
-to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
-its equivalent to x16 parallel NOR flash wrt bits per clock cycle. But
-HyperBus operates at >166MHz frequencies.
-HyperRAM provides direct random read/write access to flash memory
-array.
+Add support for polling Status Register to know device ready/status of
+erase/write operations when DQ polling is not supported.
+Print error messages on erase/program failure by looking at related
+Status Register bits.
 
-But, HyperBus memory controllers seem to abstract implementation details
-and expose a simple MMIO interface to access connected flash.
-
-Add support for registering HyperFlash devices with MTD framework. MTD
-maps framework along with CFI chip support framework are used to support
-communicating with flash.
-
-Framework is modelled along the lines of spi-nor framework. HyperBus
-memory controller (HBMC) drivers calls hyperbus_register_device() to
-register a single HyperFlash device. HyperFlash core parses MMIO access
-information from DT, sets up the map_info struct, probes CFI flash and
-registers it with MTD framework.
-
-Some HBMC masters need calibration/training sequence[3] to be carried
-out, in order for DLL inside the controller to lock, by reading a known
-string/pattern. This is done by repeatedly reading CFI Query
-Identification String. Calibration needs to be done before trying to detect
-flash as part of CFI flash probe.
-
-HyperRAM is not supported at the moment.
-
-HyperBus specification can be found at[1]
-HyperFlash datasheet can be found at[2]
-
-[1] https://www.cypress.com/file/213356/download
-[2] https://www.cypress.com/file/213346/download
-[3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
-    Table 12-5741. HyperFlash Access Sequence
+[1] https://www.cypress.com/file/213346/download
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- MAINTAINERS                          |   7 +
- drivers/mtd/Kconfig                  |   2 +
- drivers/mtd/Makefile                 |   1 +
- drivers/mtd/hyperbus/Kconfig         |  11 ++
- drivers/mtd/hyperbus/Makefile        |   3 +
- drivers/mtd/hyperbus/hyperbus-core.c | 192 +++++++++++++++++++++++++++
- include/linux/mtd/hyperbus.h         |  91 +++++++++++++
- 7 files changed, 307 insertions(+)
- create mode 100644 drivers/mtd/hyperbus/Kconfig
- create mode 100644 drivers/mtd/hyperbus/Makefile
- create mode 100644 drivers/mtd/hyperbus/hyperbus-core.c
- create mode 100644 include/linux/mtd/hyperbus.h
+ drivers/mtd/chips/cfi_cmdset_0002.c | 90 +++++++++++++++++++++++++++++
+ include/linux/mtd/cfi.h             |  5 ++
+ 2 files changed, 95 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d60b67e58ea8..7aa1b3454a89 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7243,6 +7243,13 @@ F:	include/uapi/linux/hyperv.h
- F:	tools/hv/
- F:	Documentation/ABI/stable/sysfs-bus-vmbus
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 7b7286b4d81e..55c4d81098d5 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -49,6 +49,16 @@
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
  
-+HYPERBUS SUPPORT
-+M:	Vignesh Raghavendra <vigneshr@ti.com>
-+S:	Supported
-+F:	drivers/mtd/hyperbus/
-+F:	include/linux/mtd/hyperbus.h
-+F:	Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt
++/*
++ * Status Register bit description. Used by flash devices that don't
++ * support DQ polling (Eg.: HyperFlash)
++ */
++#define CFI_SR_DRB		BIT(7)
++#define CFI_SR_ESB		BIT(5)
++#define CFI_SR_PSB		BIT(4)
++#define CFI_SR_WBASB		BIT(3)
++#define CFI_SR_SLSB		BIT(1)
 +
- HYPERVISOR VIRTUAL CONSOLE DRIVER
- L:	linuxppc-dev@lists.ozlabs.org
- S:	Odd Fixes
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index aa5a27fdfdd1..03315fb9c895 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -289,4 +289,6 @@ source "drivers/mtd/spi-nor/Kconfig"
+ static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+ static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+ static int cfi_amdstd_write_buffers(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+@@ -97,6 +107,48 @@ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
+ 	.module		= THIS_MODULE
+ };
  
- source "drivers/mtd/ubi/Kconfig"
++/*
++ * Use status register to poll for Erase/write completion when DQ is not
++ * supported. This is indicated by Bit[1:0] of SoftwareFeatures field in
++ * CFI Primary Vendor-Specific Extended Query table 1.5
++ */
++static int cfi_use_status_reg(struct cfi_private *cfi)
++{
++	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
++
++	return (extp->MinorVersion >= '5') &&
++		(extp->SoftwareFeatures & 0x3) == 0x1;
++}
++
++static void cfi_check_err_status(struct map_info *map, unsigned long adr)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++	map_word status;
++
++	if (!cfi_use_status_reg(cfi))
++		return;
++
++	cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
++			 cfi->device_type, NULL);
++	status = map_read(map, adr);
++
++	if (map_word_bitsset(map, status, CMD(0x3a))) {
++		unsigned long chipstatus = MERGESTATUS(status);
++
++		if (chipstatus & CFI_SR_ESB)
++			pr_err("%s erase operation failed, status %lx\n",
++			       map->name, chipstatus);
++		if (chipstatus & CFI_SR_PSB)
++			pr_err("%s program operation failed, status %lx\n",
++			       map->name, chipstatus);
++		if (chipstatus & CFI_SR_WBASB)
++			pr_err("%s buffer program command aborted, status %lx\n",
++			       map->name, chipstatus);
++		if (chipstatus & CFI_SR_SLSB)
++			pr_err("%s sector write protected, status %lx\n",
++			       map->name, chipstatus);
++	}
++}
  
-+source "drivers/mtd/hyperbus/Kconfig"
-+
- endif # MTD
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 58fc327a5276..04c154906631 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -35,3 +35,4 @@ obj-y		+= chips/ lpddr/ maps/ devices/ nand/ tests/
+ /* #define DEBUG_CFI_FEATURES */
  
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor/
- obj-$(CONFIG_MTD_UBI)		+= ubi/
-+obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus/
-diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
-new file mode 100644
-index 000000000000..98147e28caa0
---- /dev/null
-+++ b/drivers/mtd/hyperbus/Kconfig
-@@ -0,0 +1,11 @@
-+menuconfig MTD_HYPERBUS
-+	tristate "HyperBus support"
-+	select MTD_CFI
-+	select MTD_MAP_BANK_WIDTH_2
-+	select MTD_CFI_AMDSTD
-+	select MTD_COMPLEX_MAPPINGS
-+	help
-+	  This is the framework for the HyperBus which can be used by
-+	  the HyperBus Controller driver to communicate with
-+	  HyperFlash. See Cypress HyperBus specification for more
-+	  details
-diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
-new file mode 100644
-index 000000000000..ca61dedd730d
---- /dev/null
-+++ b/drivers/mtd/hyperbus/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
+@@ -744,8 +796,22 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+  */
+ static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+ {
++	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word d, t;
+ 
++	if (cfi_use_status_reg(cfi)) {
++		map_word ready = CMD(CFI_SR_DRB);
++		/*
++		 * For chips that support status register, check device
++		 * ready bit
++		 */
++		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
++				 cfi->device_type, NULL);
++		d = map_read(map, addr);
 +
-+obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
-diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
-new file mode 100644
-index 000000000000..49aeb59742c6
---- /dev/null
-+++ b/drivers/mtd/hyperbus/hyperbus-core.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-+// Author: Vignesh Raghavendra <vigneshr@ti.com>
-+
-+#include <linux/err.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mtd/hyperbus.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/cfi.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/types.h>
-+
-+#define HYPERBUS_CALIB_COUNT 25
-+
-+static struct hyperbus_device *map_to_hbdev(struct map_info *map)
-+{
-+	return container_of(map, struct hyperbus_device, map);
-+}
-+
-+static map_word hyperbus_read16(struct map_info *map, unsigned long addr)
-+{
-+	struct hyperbus_device *hbdev = map_to_hbdev(map);
-+	struct hyperbus_ctlr *ctlr = hbdev->ctlr;
-+	map_word read_data;
-+
-+	read_data.x[0] = ctlr->ops->read16(hbdev, addr);
-+
-+	return read_data;
-+}
-+
-+static void hyperbus_write16(struct map_info *map, map_word d,
-+			     unsigned long addr)
-+{
-+	struct hyperbus_device *hbdev = map_to_hbdev(map);
-+	struct hyperbus_ctlr *ctlr = hbdev->ctlr;
-+
-+	ctlr->ops->write16(hbdev, addr, d.x[0]);
-+}
-+
-+static void hyperbus_copy_from(struct map_info *map, void *to,
-+			       unsigned long from, ssize_t len)
-+{
-+	struct hyperbus_device *hbdev = map_to_hbdev(map);
-+	struct hyperbus_ctlr *ctlr = hbdev->ctlr;
-+
-+	ctlr->ops->copy_from(hbdev, to, from, len);
-+}
-+
-+static void hyperbus_copy_to(struct map_info *map, unsigned long to,
-+			     const void *from, ssize_t len)
-+{
-+	struct hyperbus_device *hbdev = map_to_hbdev(map);
-+	struct hyperbus_ctlr *ctlr = hbdev->ctlr;
-+
-+	ctlr->ops->copy_to(hbdev, to, from, len);
-+}
-+
-+/* Default calibration routine for use by HyperBus controller.
-+ * Controller is calibrated by repeatedly reading known pattern ("QRY"
-+ * string from CFI space)
-+ * Lets ensure "QRY" string is read correctly at least 5 times to ensure
-+ * stability of the DLL lock.
-+ */
-+int hyperbus_calibrate(struct hyperbus_device *hbdev)
-+{
-+	struct map_info *map = &hbdev->map;
-+	struct cfi_private cfi;
-+	int count = HYPERBUS_CALIB_COUNT;
-+	int pass_count = 0;
-+	int ret;
-+
-+	cfi.interleave = 1;
-+	cfi.device_type = CFI_DEVICETYPE_X16;
-+	cfi_send_gen_cmd(0xF0, 0, 0, map, &cfi, cfi.device_type, NULL);
-+	cfi_send_gen_cmd(0x98, 0x55, 0, map, &cfi, cfi.device_type, NULL);
-+
-+	while (count--) {
-+		cfi_qry_present(map, 0, &cfi);
-+		ret = cfi_qry_present(map, 0, &cfi);
-+		if (ret)
-+			pass_count++;
-+		else
-+			pass_count = 0;
-+		if (pass_count == 5)
-+			break;
++		return map_word_andequal(map, d, ready, ready);
 +	}
 +
-+	cfi_qry_mode_off(0, map, &cfi);
+ 	d = map_read(map, addr);
+ 	t = map_read(map, addr);
+ 
+@@ -769,8 +835,27 @@ static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+  */
+ static int __xipram chip_good(struct map_info *map, unsigned long addr, map_word expected)
+ {
++	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word oldd, curd;
+ 
++	if (cfi_use_status_reg(cfi)) {
++		map_word ready = CMD(CFI_SR_DRB);
++		map_word err = CMD(CFI_SR_PSB | CFI_SR_ESB);
++		/*
++		 * For chips that support status register, check device
++		 * ready bit and Erase/Program status bit to know if
++		 * operation succeeded.
++		 */
++		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
++				 cfi->device_type, NULL);
++		curd = map_read(map, addr);
 +
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(hyperbus_calibrate);
++		if (map_word_andequal(map, curd, ready, ready))
++			return !map_word_bitsset(map, curd, err);
 +
-+int hyperbus_register_device(struct hyperbus_device *hbdev)
-+{
-+	const struct hyperbus_ops *ops;
-+	struct hyperbus_ctlr *ctlr;
-+	struct device_node *np;
-+	struct map_info *map;
-+	struct resource res;
-+	struct device *dev;
-+	int ret;
-+
-+	if (!hbdev || !hbdev->np || !hbdev->ctlr || !hbdev->ctlr->dev) {
-+		pr_err("hyperbus: please fill all the necessary fields!\n");
-+		return -EINVAL;
++		return 0;
 +	}
 +
-+	np = hbdev->np;
-+	ctlr = hbdev->ctlr;
-+	if (!of_device_is_compatible(np, "cypress,hyperflash"))
-+		return -ENODEV;
-+
-+	hbdev->memtype = HYPERFLASH;
-+
-+	if (of_address_to_resource(np, 0, &res))
-+		return -EINVAL;
-+
-+	dev = ctlr->dev;
-+	map = &hbdev->map;
-+	map->size = resource_size(&res);
-+	map->virt = devm_ioremap_resource(dev, &res);
-+	if (IS_ERR(map->virt))
-+		return PTR_ERR(map->virt);
-+
-+	map->name = dev_name(dev);
-+	map->bankwidth = 2;
-+	map->device_node = np;
-+
-+	simple_map_init(map);
-+	ops = ctlr->ops;
-+	if (ops) {
-+		if (ops->read16)
-+			map->read = hyperbus_read16;
-+		if (ops->write16)
-+			map->write = hyperbus_write16;
-+		if (ops->copy_to)
-+			map->copy_to = hyperbus_copy_to;
-+		if (ops->copy_from)
-+			map->copy_from = hyperbus_copy_from;
-+
-+		if (ops->calibrate && !ctlr->calibrated) {
-+			ret = ops->calibrate(hbdev);
-+			if (!ret) {
-+				dev_err(dev, "Calibration failed\n");
-+				return -ENODEV;
-+			}
-+			ctlr->calibrated = true;
-+		}
-+	}
-+
-+	hbdev->mtd = do_map_probe("cfi_probe", map);
-+	if (!hbdev->mtd) {
-+		dev_err(dev, "probing of hyperbus device failed\n");
-+		return -ENODEV;
-+	}
-+
-+	hbdev->mtd->dev.parent = dev;
-+	mtd_set_of_node(hbdev->mtd, np);
-+
-+	ret = mtd_device_register(hbdev->mtd, NULL, 0);
-+	if (ret) {
-+		dev_err(dev, "failed to register mtd device\n");
-+		map_destroy(hbdev->mtd);
-+		return ret;
-+	}
-+	hbdev->registered = true;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(hyperbus_register_device);
-+
-+int hyperbus_unregister_device(struct hyperbus_device *hbdev)
-+{
-+	int ret = 0;
-+
-+	if (hbdev && hbdev->mtd && hbdev->registered) {
-+		ret = mtd_device_unregister(hbdev->mtd);
-+		map_destroy(hbdev->mtd);
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(hyperbus_unregister_device);
-+
-+MODULE_DESCRIPTION("HyperBus Framework");
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Vignesh Raghavendra <vigneshr@ti.com>");
-diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
-new file mode 100644
-index 000000000000..19340cc56aa4
---- /dev/null
-+++ b/include/linux/mtd/hyperbus.h
-@@ -0,0 +1,91 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-+ */
-+
-+#ifndef __LINUX_MTD_HYPERBUS_H__
-+#define __LINUX_MTD_HYPERBUS_H__
-+
-+#include <linux/mtd/map.h>
-+
-+enum hyperbus_memtype {
-+	HYPERFLASH,
-+	HYPERRAM,
-+};
-+
-+/**
-+ * struct hyperbus_device - struct representing HyperBus slave device
-+ * @map: map_info struct for accessing MMIO HyperBus flash memory
-+ * @np:	pointer to HyperBus slave device node
-+ * @mtd: pointer to MTD struct
-+ * @ctlr: pointer to HyperBus controller struct
-+ * @memtype: type of memory device: HyperFlash or HyperRAM
-+ * @registered: flag to indicate whether device is registered with MTD core
-+ */
-+
-+struct hyperbus_device {
-+	struct map_info map;
-+	struct device_node *np;
-+	struct mtd_info *mtd;
-+	struct hyperbus_ctlr *ctlr;
-+	enum hyperbus_memtype memtype;
-+	bool registered;
-+};
-+
-+/**
-+ * struct hyperbus_ops - struct representing custom HyperBus operations
-+ * @read16: read 16 bit of data, usually from register/ID-CFI space
-+ * @write16: write 16 bit of data, usually to register/ID-CFI space
-+ * @copy_from: copy data from flash memory
-+ * @copy_to: copy data to flash memory
-+ * @calibrate: calibrate HyperBus controller
-+ */
-+
-+struct hyperbus_ops {
-+	u16 (*read16)(struct hyperbus_device *hbdev, unsigned long addr);
-+	void (*write16)(struct hyperbus_device *hbdev,
-+			unsigned long addr, u16 val);
-+	void (*copy_from)(struct hyperbus_device *hbdev, void *to,
-+			  unsigned long from, ssize_t len);
-+	void (*copy_to)(struct hyperbus_device *dev, unsigned long to,
-+			const void *from, ssize_t len);
-+	int (*calibrate)(struct hyperbus_device *dev);
-+};
-+
-+/**
-+ * struct hyperbus_ctlr - struct representing HyperBus controller
-+ * @calibrated: flag to indicate ctlr calibration sequence is complete
-+ * @ops: HyperBus controller ops
-+ */
-+struct hyperbus_ctlr {
-+	struct device *dev;
-+	bool calibrated;
-+
-+	const struct hyperbus_ops *ops;
-+};
-+
-+/**
-+ * hyperbus_calibrate - default calibration routine for use by HyperBus ctlr.
-+ * @hbdev: hyperbus_device to be used for calibration
-+ *
-+ * Return: 0 for success, others for failure.
-+ */
-+int hyperbus_calibrate(struct hyperbus_device *hbdev);
-+
-+/**
-+ * hyperbus_register_device - probe and register a HyperBus slave memory device
-+ * @hbdev: hyperbus_device struct with dev, np and ctlr field populated
-+ *
-+ * Return: 0 for success, others for failure.
-+ */
-+int hyperbus_register_device(struct hyperbus_device *hbdev);
-+
-+/**
-+ * hb_unregister_device - deregister HyperBus slave memory device
-+ * @hbdev: hyperbus_device to be unregistered
-+ *
-+ * Return: 0 for success, others for failure.
-+ */
-+int hyperbus_unregister_device(struct hyperbus_device *hbdev);
-+
-+#endif /* __LINUX_MTD_HYPERBUS_H__ */
+ 	oldd = map_read(map, addr);
+ 	curd = map_read(map, addr);
+ 
+@@ -1643,6 +1728,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, datum)) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -1900,6 +1986,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 	 * See e.g.
+ 	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
+ 	 */
++	cfi_check_err_status(map, adr);
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
+ 			 cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
+@@ -2106,6 +2193,7 @@ static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
+ 
+ 	if (!chip_good(map, adr, datum)) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -2315,6 +2403,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -2411,6 +2500,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index cbf77168658c..92ac82ac2329 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -233,6 +233,11 @@ struct cfi_pri_amdstd {
+ 	uint8_t  VppMin;
+ 	uint8_t  VppMax;
+ 	uint8_t  TopBottom;
++	/* Below field are added from version 1.5 */
++	uint8_t  ProgramSuspend;
++	uint8_t  UnlockBypass;
++	uint8_t  SecureSiliconSector;
++	uint8_t  SoftwareFeatures;
+ } __packed;
+ 
+ /* Vendor-Specific PRI for Atmel chips (command set 0x0002) */
 -- 
 2.21.0
 
