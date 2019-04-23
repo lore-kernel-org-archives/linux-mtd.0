@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFC5DC10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 05:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0734DC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 05:24:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77B3F20811
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 05:22:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C47D020811
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 05:24:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dfv+eLOr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcw978wh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77B3F20811
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gDXWO/ic";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xDJKWy9W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C47D020811
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,45 +25,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9Si/gdtyr/wRto9CFhIZVDWp5Cjyjfy6vTH+nx0Ynjw=; b=dfv+eLOrKouEGp
-	dz3x3QqUiEfS3gkjoqEC3DZatwcDct97CaTqe96o6KuBVO0tLhLEgQpqqf4HCJVVuPbV+lqcrs6Un
-	Ldeez7f0UGEX9bmgStSYNcAdzHewW/2dMekTqhm/BZ3+TQnk+g8TG4UAaCn0J4huZ7goJuLDpMAGL
-	3sVMv/X000tHbxYU4Shg6vrNKzDoSPKpQfbkxNYGvPf09KQPTZ0OBSsjWlEMGrawCo1PnXTJ58/zP
-	qTxErXYq0GYukmetTiNMGszc04/ZFBNB799OgPbnONGUrS4NfN0N/avep5aKVKZs6MCVEmKYqIVW+
-	Kg3mAc+V6tPqhGgWcPtg==;
+	List-Owner; bh=1hS1yRTLVnb6GgKqW5Sl9bbhEVeHmTpVjD5aJFdRHZY=; b=gDXWO/icONFhLU
+	59LZRcGMzgyMUNuzwI8/uxjOGulyEhggWyfkREuJUtD+0ALWxrwqX9S72nJFDJ8XaNkhAdWJsxg3n
+	b06nY4ONt8Ps5EusgmGCeU6/wzI4xuwqweVZ0OpySGN1o7IrGnpzMYGVsYoi4X/3WzhxKsL4cBCgD
+	9do6ZVn2tCVdUjt8U7hvN/SxN3LoNsvBxwIy2kQMitquzhszK1A1uF7kvRS9gLbyOKBBAjWbD8lcW
+	gakBAvMi5D5D8LFaJRYp7Sl/EZktYNE0/a2KTG3Er9iNU/B92MWldmsSF2lmtQa8VsM3k/5wIw90F
+	amxwtSW5dJOjX2uUU0SA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hIntC-0007Oc-AC; Tue, 23 Apr 2019 05:22:42 +0000
+	id 1hInv6-0007fc-0T; Tue, 23 Apr 2019 05:24:40 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hInt9-0007OE-S6
- for linux-mtd@lists.infradead.org; Tue, 23 Apr 2019 05:22:41 +0000
+ id 1hInv3-0007fE-GP
+ for linux-mtd@lists.infradead.org; Tue, 23 Apr 2019 05:24:38 +0000
 Received: from localhost (unknown [171.76.113.243])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 94AD820811;
- Tue, 23 Apr 2019 05:22:38 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 75E2720811;
+ Tue, 23 Apr 2019 05:24:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1555996959;
- bh=JRnz1VgMZtR9vfrW0l6xcYdg1w6XmiL4eCs+JT6e9hU=;
+ s=default; t=1555997076;
+ bh=azJUsLWq4cu1LbtPyN7G/yM8U5D5Rj9pwQ5GnEhL/rM=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=kcw978wh1O7G27d/oRqE0SO8c3cHoaGKK6u4SiLJ3VTfNnNUWI3C4af3yrnmbQAmj
- 5alw+ab2HjnEtFI7/jVN5pVGAtKMT06ic5DJQibSemJa9qr2WQdQ0k6zWHepfymBPi
- 464LlZdFOsbZvKc2fVimEE2LifXQhD8kCTUx9MYY=
-Date: Tue, 23 Apr 2019 10:52:33 +0530
+ b=xDJKWy9WBgDB8vA7s4c41QW5HdCcPhgUciwEhJa4+KmoJNG2Q5VxselaLJyqzcE50
+ 6eefrEmu0pFMxB35Iwy5rDY2B/0wdY1TreOAwysDdAUjROTrs3JfmdIKhG45DitgeP
+ wgjEK/NekAqcd4vyG24JRSCVq42LVHqt89gDUmSk=
+Date: Tue, 23 Apr 2019 10:54:30 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 10/14] dma: mxs: Drop unnecessary flag
-Message-ID: <20190423052233.GH28103@vkoul-mobl>
+Subject: Re: [PATCH 12/14] dma: mxs: Add header file to be shared with gpmi
+ nand driver
+Message-ID: <20190423052430.GI28103@vkoul-mobl>
 References: <20190409113421.3037-1-s.hauer@pengutronix.de>
- <20190409113421.3037-11-s.hauer@pengutronix.de>
+ <20190409113421.3037-13-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190409113421.3037-11-s.hauer@pengutronix.de>
+In-Reply-To: <20190409113421.3037-13-s.hauer@pengutronix.de>
 User-Agent: Mutt/1.11.3 (2019-02-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_222239_939051_8CC9EFF5 
-X-CRM114-Status: GOOD (  18.95  )
+X-CRM114-CacheID: sfid-20190422_222437_579184_D5153590 
+X-CRM114-Status: GOOD (  21.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,71 +87,161 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 09-04-19, 13:34, Sascha Hauer wrote:
-> The mxs dma driver insists on having the DMA_PREP_INTERRUPT flag set
-> on all but the first transfer. There's no need to let the user set this
-> flag, the driver can do it internally whenever it needs it. Drop
-> handling of this flag from the driver.
+> The mxs dma driver can do PIO transfers. A pointer to the PIO words
+> to transfer is passed in the struct scatterlist * argument of
+> dmaengine_prep_slave_sg(). It's quite ugly and non obvious to cast
+> u32 * to struct scatterlist * each time when calling
+> dmaengine_prep_slave_sg(), so add a static inline wrapper function
+> to be called by the user along with a description what is going on.
 
-After changing patch title to dmaengine: mxs: ....
+Again after fixing subsystem tag to dmanegine: 
 
 Acked-by: Vinod Koul <vkoul@kernel.org>
 
+> 
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  drivers/dma/mxs-dma.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+>  drivers/dma/mxs-dma.c                      |  1 +
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 36 +++++++++-------------
+>  include/linux/dma/mxs-dma.h                | 21 +++++++++++++
+>  3 files changed, 36 insertions(+), 22 deletions(-)
+>  create mode 100644 include/linux/dma/mxs-dma.h
 > 
 > diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-> index 22cc7f68ef6e..ce92a3626ea4 100644
+> index ce92a3626ea4..62ee9328aea1 100644
 > --- a/drivers/dma/mxs-dma.c
 > +++ b/drivers/dma/mxs-dma.c
-> @@ -477,16 +477,16 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
->   *            ......
->   *            ->device_prep_slave_sg(0);
->   *            ......
-> - *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-> + *            ->device_prep_slave_sg(DMA_CTRL_ACK);
->   *            ......
->   *    [3] If there are more than two DMA commands in the DMA chain, the code
->   *        should be:
->   *            ......
->   *            ->device_prep_slave_sg(0);                                // First
->   *            ......
-> - *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT [| DMA_CTRL_ACK]);
-> + *            ->device_prep_slave_sg(DMA_CTRL_ACK]);
->   *            ......
-> - *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK); // Last
-> + *            ->device_prep_slave_sg(DMA_CTRL_ACK); // Last
->   *            ......
->   */
->  static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
-> @@ -500,13 +500,12 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
->  	struct scatterlist *sg;
->  	u32 i, j;
->  	u32 *pio;
-> -	bool append = flags & DMA_PREP_INTERRUPT;
-> -	int idx = append ? mxs_chan->desc_count : 0;
-> +	int idx = 0;
+> @@ -24,6 +24,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/of_dma.h>
+>  #include <linux/list.h>
+> +#include <linux/dma/mxs-dma.h>
 >  
-> -	if (mxs_chan->status == DMA_IN_PROGRESS && !append)
-> -		return NULL;
-> +	if (mxs_chan->status == DMA_IN_PROGRESS)
-> +		idx = mxs_chan->desc_count;
+>  #include <asm/irq.h>
 >  
-> -	if (sg_len + (append ? idx : 0) > NUM_CCW) {
-> +	if (sg_len + idx > NUM_CCW) {
->  		dev_err(mxs_dma->dma_device.dev,
->  				"maximum number of sg exceeded: %d > %d\n",
->  				sg_len, NUM_CCW);
-> @@ -520,7 +519,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
->  	 * If the sg is prepared with append flag set, the sg
->  	 * will be appended to the last prepared sg.
->  	 */
-> -	if (append) {
-> +	if (idx) {
->  		BUG_ON(idx < 1);
->  		ccw = &mxs_chan->ccw[idx - 1];
->  		ccw->next = mxs_chan->ccw_phys + sizeof(*ccw) * idx;
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> index a6e769afc89a..cf016ec0b1c6 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/dma/mxs-dma.h>
+>  #include "gpmi-nand.h"
+>  #include "gpmi-regs.h"
+>  #include "bch-regs.h"
+> @@ -913,9 +914,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
+>  		| BM_GPMI_CTRL0_ADDRESS_INCREMENT
+>  		| BF_GPMI_CTRL0_XFER_COUNT(this->command_length);
+>  	pio[1] = pio[2] = 0;
+> -	desc = dmaengine_prep_slave_sg(channel,
+> -					(struct scatterlist *)pio,
+> -					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+> +				      DMA_TRANS_NONE, 0);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> @@ -988,8 +988,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf,
+>  		| BF_GPMI_CTRL0_ADDRESS(address)
+>  		| BF_GPMI_CTRL0_XFER_COUNT(len);
+>  	pio[1] = 0;
+> -	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
+> -					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+> +				      DMA_TRANS_NONE, 0);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> @@ -1025,9 +1025,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+>  		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_DATA)
+>  		| BF_GPMI_CTRL0_XFER_COUNT(len);
+>  	pio[1] = 0;
+> -	desc = dmaengine_prep_slave_sg(channel,
+> -					(struct scatterlist *)pio,
+> -					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+> +				      DMA_TRANS_NONE, 0);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> @@ -1083,10 +1082,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this,  dma_addr_t payload,
+>  	pio[4] = payload;
+>  	pio[5] = auxiliary;
+>  
+> -	desc = dmaengine_prep_slave_sg(channel,
+> -					(struct scatterlist *)pio,
+> -					ARRAY_SIZE(pio), DMA_TRANS_NONE,
+> -					DMA_CTRL_ACK);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+> +				      DMA_TRANS_NONE, DMA_CTRL_ACK);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> @@ -1117,9 +1114,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
+>  		| BF_GPMI_CTRL0_ADDRESS(address)
+>  		| BF_GPMI_CTRL0_XFER_COUNT(0);
+>  	pio[1] = 0;
+> -	desc = dmaengine_prep_slave_sg(channel,
+> -				(struct scatterlist *)pio, 2,
+> -				DMA_TRANS_NONE, 0);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, 2, DMA_TRANS_NONE, 0);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> @@ -1144,10 +1139,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
+>  	pio[3] = geo->page_size;
+>  	pio[4] = payload;
+>  	pio[5] = auxiliary;
+> -	desc = dmaengine_prep_slave_sg(channel,
+> -					(struct scatterlist *)pio,
+> -					ARRAY_SIZE(pio), DMA_TRANS_NONE,
+> -					DMA_CTRL_ACK);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
+> +				      DMA_TRANS_NONE, DMA_CTRL_ACK);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> @@ -1163,9 +1156,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
+>  		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size);
+>  	pio[1] = 0;
+>  	pio[2] = 0; /* clear GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
+> -	desc = dmaengine_prep_slave_sg(channel,
+> -				(struct scatterlist *)pio, 3,
+> -				DMA_TRANS_NONE, DMA_CTRL_ACK);
+> +	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
+> +				      DMA_CTRL_ACK);
+>  	if (!desc)
+>  		return -EINVAL;
+>  
+> diff --git a/include/linux/dma/mxs-dma.h b/include/linux/dma/mxs-dma.h
+> new file mode 100644
+> index 000000000000..092b2a7b92ac
+> --- /dev/null
+> +++ b/include/linux/dma/mxs-dma.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _MXS_DMA_H_
+> +#define _MXS_DMA_H_
+> +
+> +#include <linux/dmaengine.h>
+> +
+> +/*
+> + * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
+> + * in the second argument to dmaengine_prep_slave_sg when the direction is
+> + * set to DMA_TRANS_NONE. To make this clear and to prevent users from doing
+> + * the error prone casting we have this wrapper function
+> + */
+> +static inline struct dma_async_tx_descriptor *mxs_dmaengine_prep_pio(
+> +        struct dma_chan *chan, u32 *pio, unsigned int npio,
+> +        enum dma_transfer_direction dir, unsigned long flags)
+> +{
+> +	return dmaengine_prep_slave_sg(chan, (struct scatterlist *)pio, npio,
+> +				       dir, flags);
+> +}
+> +
+> +#endif /* _MXS_DMA_H_ */
 > -- 
 > 2.20.1
 
