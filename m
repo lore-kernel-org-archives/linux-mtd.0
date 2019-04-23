@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BD36C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A6D1C10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE6AC20B1F
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BFDBE21738
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="netDAesf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="I0CioBDT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE6AC20B1F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P38cwBBv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="gV33Qf2t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFDBE21738
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=kpSXJWRgDefqqXJVy1CI4C7u5uwaMYyUrXvW3AxGojQ=; b=netDAesfBqYDRMP7MSYDoPgbt3
-	JE69xM2jYkIzkEi+LQdYgj4JEN8l0CRs2z/3M2FsjZPXaDLXkxzC6Kr8VP3cWXvBnqRYaXvBxXWEX
-	G0bqcb3gmW17fl6V9INvV2Lteh5XS+pPXjPLNudTBNih/65La5ezWhrfntnRAsYNVCgJvSsCHMm5J
-	BsmHrW5ZjnRYvEgssQpNq10dxtk6Tp18yq9gTyfq5pqHMqyTYBr9m1SYQNV5KEesYS0i9CVb4GL2B
-	v/JbIEpFxVArTqIOiDg/KOlMQshpv9ZqcADk7Kb8L8n1QYUJ03a8ACbwH7VTyxcnOCjzbQxBeIlap
-	JlE7siqw==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nHa2VkGJ2KjJxsQUF8P3wQjPVVc6IQw3/zYHUQhbw3Q=; b=P38cwBBv2QgLN6
+	y+iUBwNB0eT07G/ofNzTkyyqC1oz1VESrPvTJU2tDfenTcWTgcHSIRrcsJOT2/8Wqht/G7LwNkAOX
+	IF9Zl7fPJ4IIC9a57HeFqPvGZnE9RX81w/KwvMljlUNXMo1MM/HzaY+bLYf+gvpYMV1BQHlKokkOD
+	Y6zOvu3YyGQm828b9BHZC204Xdtac744pD2q6kfx5Ptw72/iQqRzE+7tU/7HSOzUgZsNp2oopvKtr
+	x4LnjYjqBGV3KLMTuwI/6kRpXFg0ASjoTOjDv/h5dizByaxklktbyaDP28aMzKvKjbX0tOeYU5zxc
+	t/wY8WKXRZ8DcXersxoQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hIm1R-0000BY-4w; Tue, 23 Apr 2019 03:23:05 +0000
+	id 1hIm1b-0000SD-OA; Tue, 23 Apr 2019 03:23:15 +0000
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hIm0M-0007MO-1p; Tue, 23 Apr 2019 03:22:06 +0000
+ id 1hIm0M-0007MM-2U; Tue, 23 Apr 2019 03:22:08 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-09.nifty.com with ESMTP id x3N3L8LE031384;
- Tue, 23 Apr 2019 12:21:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com x3N3L8LE031384
+ by conuserg-09.nifty.com with ESMTP id x3N3L8LF031384;
+ Tue, 23 Apr 2019 12:21:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com x3N3L8LF031384
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555989672;
- bh=WxeGjpwIMtUh4NapkUcSoliRiI5DD/Rdf3zwHkix9l0=;
+ s=dec2015msa; t=1555989673;
+ bh=ck3m1Bnhk+gBZ69Ip9jiWsEf5IWvpXJTs7wxMIQoCXU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=I0CioBDTkc1GHuaVSUtq8jVEnHXnq1hGY5fDTmiT2yZDSu6CTfVaaVXOU2ocZq0yd
- yau4zui0pA9Gklyfdi8o/AJZ0Ym0WBMT+wi/ZHIchu3uqVfAfpQFmT6dC6tCX/Ecrl
- cvxzp/A3CvHBT2XR5HyFgtORaimjq81j8GYVV04h9nnnWkEIg7LZQoh4wdOFskjT2d
- 5eeCSxlqfwdPytf+3xnWAoqknX7CikjegNqgQuyxt3anZOWoLqsxIgU6AOl4i9IKb9
- pVYIeb0NCpH/BeB18yE5PgIoZGN8m8fwFMGMGGUgfjYtgwRleo8ZKHDsJzkNe/clDM
- UU4f0eSYQFKRQ==
+ b=gV33Qf2twLt0S6KodHjawBrkc1EsU13fh2qP1ShaK+o/SW6rZPyaYhhtUGjSAMOAL
+ R6pXzzLQz8ZPC8irBjiP9xHCy62EbVDEQXUwURuCleI0FJA77siCTw7Cz4XKgG1UfL
+ HVZpVKmESAPZc46mK1RRH+1phNlLhepGkqPxUGjE20kRpWeZm0GYs2r7kDaFXdO6qR
+ cCIMvz79juH6wsQD+t5Jx+BzNhp4jE7MKMO0MND1/4edyYQRn+I+KQBoZTCFmf4xjF
+ qjQonQHFppXfOIXGtZ0OqQBPESG1vJw9Dz8ZTGLbmLDpEupQ6kYWoETwrSNw/80XCk
+ Xjd7IfyPdLgtA==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
  linux-arch <linux-arch@vger.kernel.org>
-Subject: [PATCH v3 03/10] s390/cpacf: mark scpacf_query() as __always_inline
-Date: Tue, 23 Apr 2019 12:20:59 +0900
-Message-Id: <20190423032106.11960-4-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 04/10] mtd: rawnand: vf610_nfc: add initializer to avoid
+ -Wmaybe-uninitialized
+Date: Tue, 23 Apr 2019 12:21:00 +0900
+Message-Id: <20190423032106.11960-5-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190423032106.11960-1-yamada.masahiro@socionext.com>
 References: <20190423032106.11960-1-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_202158_909486_23354B63 
-X-CRM114-Status: UNSURE (   8.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190422_202158_914427_CCC2FC98 
+X-CRM114-Status: GOOD (  11.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,51 +86,41 @@ Cc: Christophe Leroy <christophe.leroy@c-s.fr>, linux-s390@vger.kernel.org,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Ingo Molnar <mingo@redhat.com>, linux-mtd@lists.infradead.org,
  linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
-place. We need to eliminate potential issues beforehand.
-
-If it is enabled for s390, the following error is reported:
-
-In file included from arch/s390/crypto/des_s390.c:19:
-./arch/s390/include/asm/cpacf.h: In function 'cpacf_query':
-./arch/s390/include/asm/cpacf.h:170:2: warning: asm operand 3 probably doesn't match constraints
-  asm volatile(
-  ^~~
-./arch/s390/include/asm/cpacf.h:170:2: error: impossible constraint in 'asm'
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v3: None
-Changes in v2:
-  - split into a separate patch
-
- arch/s390/include/asm/cpacf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/s390/include/asm/cpacf.h b/arch/s390/include/asm/cpacf.h
-index 3cc52e37b4b2..f316de40e51b 100644
---- a/arch/s390/include/asm/cpacf.h
-+++ b/arch/s390/include/asm/cpacf.h
-@@ -202,7 +202,7 @@ static inline int __cpacf_check_opcode(unsigned int opcode)
- 	}
- }
- 
--static inline int cpacf_query(unsigned int opcode, cpacf_mask_t *mask)
-+static __always_inline int cpacf_query(unsigned int opcode, cpacf_mask_t *mask)
- {
- 	if (__cpacf_check_opcode(opcode)) {
- 		__cpacf_query(opcode, mask);
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBwcmVwYXJlcyB0byBtb3ZlIENPTkZJR19PUFRJTUlaRV9JTkxJTklORyBmcm9tIHg4NiB0
+byBhIGNvbW1vbgpwbGFjZS4gV2UgbmVlZCB0byBlbGltaW5hdGUgcG90ZW50aWFsIGlzc3VlcyBi
+ZWZvcmVoYW5kLgoKS2J1aWxkIHRlc3Qgcm9ib3QgaGFzIG5ldmVyIHJlcG9ydGVkIC1XbWF5YmUt
+dW5pbml0aWFsaXplZCB3YXJuaW5nCmZvciB0aGlzIHByb2JhYmx5IGJlY2F1c2UgdmY2MTBfbmZj
+X3J1bigpIGlzIGlubGluZWQgYnkgdGhlIHg4Ngpjb21waWxlcidzIGlubGluaW5nIGhldXJpc3Rp
+Yy4KCklmIENPTkZJR19PUFRJTUlaRV9JTkxJTklORyBpcyBlbmFibGVkIGZvciBhIGRpZmZlcmVu
+dCBhcmNoaXRlY3R1cmUKYW5kIHZmNjEwX25mY19ydW4oKSBpcyBub3QgaW5saW5lZCwgdGhlIGZv
+bGxvd2luZyB3YXJuaW5nIGlzIHJlcG9ydGVkOgoKZHJpdmVycy9tdGQvbmFuZC9yYXcvdmY2MTBf
+bmZjLmM6IEluIGZ1bmN0aW9uIOKAmHZmNjEwX25mY19jbWTigJk6CmRyaXZlcnMvbXRkL25hbmQv
+cmF3L3ZmNjEwX25mYy5jOjQ1NTozOiB3YXJuaW5nOiDigJhvZmZzZXTigJkgbWF5IGJlIHVzZWQg
+dW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV21heWJlLXVuaW5pdGlhbGl6ZWRdCiAg
+IHZmNjEwX25mY19yZF9mcm9tX3NyYW0oaW5zdHItPmN0eC5kYXRhLmJ1Zi5pbiArIG9mZnNldCwK
+ICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fgogICAgICAgICAgICBuZmMtPnJlZ3MgKyBORkNfTUFJTl9BUkVBKDApICsgb2Zmc2V0LAogICAg
+ICAgICAgICB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgogICAgICAgICAg
+ICB0cmZyX3N6LCAhbmZjLT5kYXRhX2FjY2Vzcyk7CiAgICAgICAgICAgIH5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDx5YW1hZGEubWFz
+YWhpcm9Ac29jaW9uZXh0LmNvbT4KLS0tCgpDaGFuZ2VzIGluIHYzOiBOb25lCkNoYW5nZXMgaW4g
+djI6CiAgLSBzcGxpdCBpbnRvIGEgc2VwYXJhdGUgcGF0Y2gKCiBkcml2ZXJzL210ZC9uYW5kL3Jh
+dy92ZjYxMF9uZmMuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3ZmNjEwX25mYy5j
+IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvdmY2MTBfbmZjLmMKaW5kZXggYTY2MmNhMTk3MGU1Li4x
+OTc5MmQ3MjVlYzIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3ZmNjEwX25mYy5j
+CisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3ZmNjEwX25mYy5jCkBAIC0zNjQsNyArMzY0LDcg
+QEAgc3RhdGljIGludCB2ZjYxMF9uZmNfY21kKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiB7CiAJ
+Y29uc3Qgc3RydWN0IG5hbmRfb3BfaW5zdHIgKmluc3RyOwogCXN0cnVjdCB2ZjYxMF9uZmMgKm5m
+YyA9IGNoaXBfdG9fbmZjKGNoaXApOwotCWludCBvcF9pZCA9IC0xLCB0cmZyX3N6ID0gMCwgb2Zm
+c2V0OworCWludCBvcF9pZCA9IC0xLCB0cmZyX3N6ID0gMCwgb2Zmc2V0ID0gMDsKIAl1MzIgY29s
+ID0gMCwgcm93ID0gMCwgY21kMSA9IDAsIGNtZDIgPSAwLCBjb2RlID0gMDsKIAlib29sIGZvcmNl
+OGJpdCA9IGZhbHNlOwogCi0tIAoyLjE3LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
