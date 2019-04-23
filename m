@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3B0C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E75FC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA1F320B1F
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5A7C420B1F
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:23:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EqMDQG6p";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="xm48M3KR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA1F320B1F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nnwgrZRy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="dvn9x6ox"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A7C420B1F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,47 +27,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=gPrZokso5het3dyfQgX+9mXVR6GaZTHsdyMq/Bt928s=; b=EqMDQG6pGCSnBqMy45Ap0u6rz8
-	OymIshtlUksjZz7t2UPxkNlrrLAEwnb7M0pUUGdWeqSkgyZmNOyIhUETOCmmbBEAyYV8ROtQIsdcw
-	r4qXIpAVTFLhWBH2+mw7f7Jl4hLQ1cPlv6NJKp2B4wcpk7M5J9PKdrQM1gx7B2LsJ1leO8TCUg7RG
-	ct5o3MtdrYhL4OJAlj0pvcFMclK8jmpWUUZEZzFf9lCSU99gBnR4wiYUXHDoxTQS/WXcgpUEHEhGL
-	MUWvkdGT97S94ARfxGhV5Hot5Sey6h5iRLtdUnvhQOEogn6REFyBc+zsdLhyi4lJCfzW2sLwYANn7
-	or7NdPkw==;
+	bh=1eKxnzkyISWIjasgJXpTALJwirmaFMQVZua/rscJpCs=; b=nnwgrZRyaX9QOYcMK9p+ZYCIjh
+	Iu8dDbtBsTvTKqJA1UXA5TLyETuXZfO1ZJe+xXyo2OabIim+oMbeXB7r1wlokKHtcbuFM3GjYhKOF
+	Zg3DWp7jsfcxHqWZpqe1dGKCKf5IDKznec4V4kNSrl6lSBerNxsD/cXTuHsp8NDy/L1nHkNb9twCh
+	Hx8b+Wh3dxaaMwskYJMVG/bUYqIQ0HZeyw/XLqDuDBzJ5VfRDX9z2eeHegPwvT0MZlQToE8FnUbV6
+	oJEkL84AbYqArV5r80Zg5vswtr+KPnSrl80dZW9d1gGrLnucIwYYyx2hqn1HMqWGx+zVHe/pTXkzv
+	+1MH+6Cg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hIm1p-0000kL-0X; Tue, 23 Apr 2019 03:23:29 +0000
+	id 1hIm20-0000zB-97; Tue, 23 Apr 2019 03:23:40 +0000
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hIm0M-0007MK-2B; Tue, 23 Apr 2019 03:22:08 +0000
+ id 1hIm0M-0007MX-81; Tue, 23 Apr 2019 03:22:10 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-09.nifty.com with ESMTP id x3N3L8LJ031384;
- Tue, 23 Apr 2019 12:21:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com x3N3L8LJ031384
+ by conuserg-09.nifty.com with ESMTP id x3N3L8LK031384;
+ Tue, 23 Apr 2019 12:21:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com x3N3L8LK031384
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555989678;
- bh=dlukBYO6sgrMJOkaTgBisXwB5sU3qv4thlZ8O2ehfGY=;
+ s=dec2015msa; t=1555989679;
+ bh=O+ymeBuOvG0uQG78yokX58qG5GQYyDm6Ks5zKkCXYg8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=xm48M3KRfOyJ5kQVTw4Ovn149SHzUzjXnB91gR/MwjfLF0ptp5BEUN0KLVknYLbrp
- 2X/icDCYfRB9UYEbC3NAUGKwCdyo8dDDhGSx5tTGtY5HP4wqmdSP34dZKju4n+Gge+
- 49so/3DvgiDJ/GVfMURchnCnlw9DNnZeiui7LkTskHswqEbB0x2gtSC2rxId3AjZBR
- GGo7gUXhxNWh5yHM3nD+kCXE9yK+n2f0qxD3hgG6HSsvsfV/vYDp6FrtitJ2VYs22S
- 56kVXNRMf3PkQZYnDbPEP33MV+F6/q6okJweuR2UIDtfb+ST3kPAUvQaC9zZcF4djh
- 8B1WciaXUL4Dw==
+ b=dvn9x6ox5fKI53z4C6POxz1XdusTJbpCXwpiePE9LkrLtyiVEIl8HbNcb4g1F9TNB
+ aLbM74ElzoqAyKnhrfnhn9JGJaQm1caHcFa4qctMPGnbOLqDTSgwRJD+DMSdkE3oiq
+ aR2pnUT6YCEfjxTc6TYECEcOwIzEka03xMTxtqwFA3hlWUWiPuWqFoF8n+/OFUbHrE
+ mzanNOf1EV4wOrj/BXXqBW3Z3HA7y/GIxH/mT9mVx5M0ECaljXrIelcr+WwVJWjZKF
+ l8G7HidXSJAw+7R306/qLGO/OZ8WJEVwXAlkIW6xpK57x+Swra3rVWvL5WVo56xmgn
+ TxHQ+4IdfDqVQ==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
  linux-arch <linux-arch@vger.kernel.org>
-Subject: [PATCH v3 08/10] powerpc/mm/radix: mark
- __radix__flush_tlb_range_psize() as __always_inline
-Date: Tue, 23 Apr 2019 12:21:04 +0900
-Message-Id: <20190423032106.11960-9-yamada.masahiro@socionext.com>
+Subject: [PATCH v3 09/10] powerpc/mm/radix: mark as __tlbie_pid() and friends
+ as__always_inline
+Date: Tue, 23 Apr 2019 12:21:05 +0900
+Message-Id: <20190423032106.11960-10-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190423032106.11960-1-yamada.masahiro@socionext.com>
 References: <20190423032106.11960-1-yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_202158_927522_F6275BAD 
-X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-CacheID: sfid-20190422_202158_964953_B6FB8DB3 
+X-CRM114-Status: UNSURE (   7.96  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -96,37 +96,74 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
 place. We need to eliminate potential issues beforehand.
 
-If it is enabled for powerpc, the following error is reported:
+If it is enabled for powerpc, the following errors are reported:
 
-arch/powerpc/mm/tlb-radix.c: In function '__radix__flush_tlb_range_psize':
-arch/powerpc/mm/tlb-radix.c:104:2: error: asm operand 3 probably doesn't match constraints [-Werror]
+arch/powerpc/mm/tlb-radix.c: In function '__tlbie_lpid':
+arch/powerpc/mm/tlb-radix.c:148:2: warning: asm operand 3 probably doesn't match constraints
+  asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
+  ^~~
+arch/powerpc/mm/tlb-radix.c:148:2: error: impossible constraint in 'asm'
+arch/powerpc/mm/tlb-radix.c: In function '__tlbie_pid':
+arch/powerpc/mm/tlb-radix.c:118:2: warning: asm operand 3 probably doesn't match constraints
+  asm volatile(PPC_TLBIE_5(%0, %4, %3, %2, %1)
+  ^~~
+arch/powerpc/mm/tlb-radix.c: In function '__tlbiel_pid':
+arch/powerpc/mm/tlb-radix.c:104:2: warning: asm operand 3 probably doesn't match constraints
   asm volatile(PPC_TLBIEL(%0, %4, %3, %2, %1)
   ^~~
-arch/powerpc/mm/tlb-radix.c:104:2: error: impossible constraint in 'asm'
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v3: None
 Changes in v2:
-  - split into a separate patch
+  - new patch
 
- arch/powerpc/mm/tlb-radix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/mm/tlb-radix.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/arch/powerpc/mm/tlb-radix.c b/arch/powerpc/mm/tlb-radix.c
-index 6a23b9ebd2a1..a2b2848f0ae3 100644
+index a2b2848f0ae3..14ff414d1545 100644
 --- a/arch/powerpc/mm/tlb-radix.c
 +++ b/arch/powerpc/mm/tlb-radix.c
-@@ -928,7 +928,7 @@ void radix__tlb_flush(struct mmu_gather *tlb)
- 	tlb->need_flush_all = 0;
+@@ -90,8 +90,8 @@ void radix__tlbiel_all(unsigned int action)
+ 	asm volatile(PPC_INVALIDATE_ERAT "; isync" : : :"memory");
  }
  
--static inline void __radix__flush_tlb_range_psize(struct mm_struct *mm,
-+static __always_inline void __radix__flush_tlb_range_psize(struct mm_struct *mm,
- 				unsigned long start, unsigned long end,
- 				int psize, bool also_pwc)
+-static inline void __tlbiel_pid(unsigned long pid, int set,
+-				unsigned long ric)
++static __always_inline void __tlbiel_pid(unsigned long pid, int set,
++					 unsigned long ric)
  {
+ 	unsigned long rb,rs,prs,r;
+ 
+@@ -106,7 +106,7 @@ static inline void __tlbiel_pid(unsigned long pid, int set,
+ 	trace_tlbie(0, 1, rb, rs, ric, prs, r);
+ }
+ 
+-static inline void __tlbie_pid(unsigned long pid, unsigned long ric)
++static __always_inline void __tlbie_pid(unsigned long pid, unsigned long ric)
+ {
+ 	unsigned long rb,rs,prs,r;
+ 
+@@ -136,7 +136,7 @@ static inline void __tlbiel_lpid(unsigned long lpid, int set,
+ 	trace_tlbie(lpid, 1, rb, rs, ric, prs, r);
+ }
+ 
+-static inline void __tlbie_lpid(unsigned long lpid, unsigned long ric)
++static __always_inline void __tlbie_lpid(unsigned long lpid, unsigned long ric)
+ {
+ 	unsigned long rb,rs,prs,r;
+ 
+@@ -239,7 +239,7 @@ static inline void fixup_tlbie_lpid(unsigned long lpid)
+ /*
+  * We use 128 set in radix mode and 256 set in hpt mode.
+  */
+-static inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
++static __always_inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
+ {
+ 	int set;
+ 
 -- 
 2.17.1
 
