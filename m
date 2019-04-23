@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 766DCC10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 443D2C282DD
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 426D7206BA
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11C52206BA
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cNECi3UO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="ewcDEyxA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 426D7206BA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QYL+66i8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="n6YMDDai"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11C52206BA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=dH2G6naI72UwDL9c0pZ4DxgazYEoDCgBXtToOoqt4Ks=; b=cNECi3UO3cw522MOG7KrfR/2g7
-	pp2zKng7Q05qSSuR76PZu5ZpvQBpzTSj4TYCmeH1IK3TIFntwooZkm2LcEFPuVdDirvsk99APo21E
-	H9BNlmtT77Zk/LykIOf2ZCe/plXWQJG7cDFY48APQK7i44HlVb4KIIMgoXvshKNlFgXVgYWeHBxgC
-	HzewaNcZCI3zz3xHZdDocL9WORMgSsLiupaWngfYgtgyAaiwa1xiXJjeARk1NgmTuF53bcKymllJ/
-	nzJuf8HRdFDnBx1sZfHr3yo7B41rihl18Inrs89A94GhVu42uC/8aUjiJniWxmsBzH/QmDHGWMJIb
-	tmD7Wr2A==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nHa2VkGJ2KjJxsQUF8P3wQjPVVc6IQw3/zYHUQhbw3Q=; b=QYL+66i8TqTUyd
+	km6zNExx1AiPuETnHOX1iqdCw08PdU5n8d1PTL4OwYr6gmkKAcjp0sn2C8FWe34WfztWTwV94s7Ma
+	P91fq7L3zR55O9dhM+dTSlK1YD6qcXHzQtYq9Ku3isHllSelLIc3t45z6RTfi3Pj3Z9sI3tiDxxQz
+	fqic6YyHNlT8Fkulx15CeO2aFOCyIwNBEzBeehY3MymNqgGbCCexjLMXeHjVuoFIQ69JNj0tVj/Gl
+	WKJ3mFwzde8wAfH4xspf2OeVNHnY4K19V8DyqEhuqKppZ7CQuNnKhNewozuZLNSkHYBPpOl1yEUmq
+	6WKwJsMu1honnO+7Gfsg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hImUx-0001fX-QA; Tue, 23 Apr 2019 03:53:35 +0000
+	id 1hImV8-0001sh-Hs; Tue, 23 Apr 2019 03:53:46 +0000
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hImSK-0006dW-Ce; Tue, 23 Apr 2019 03:51:05 +0000
+ id 1hImSK-0006dQ-AE; Tue, 23 Apr 2019 03:51:04 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-07.nifty.com with ESMTP id x3N3o2cJ023044;
- Tue, 23 Apr 2019 12:50:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x3N3o2cJ023044
+ by conuserg-07.nifty.com with ESMTP id x3N3o2cD023044;
+ Tue, 23 Apr 2019 12:50:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x3N3o2cD023044
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555991419;
- bh=YGW0gg01jtKnXbnK1Ap0mVZ9GqJOY8DcvskWgXT4tQY=;
+ s=dec2015msa; t=1555991412;
+ bh=ck3m1Bnhk+gBZ69Ip9jiWsEf5IWvpXJTs7wxMIQoCXU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ewcDEyxAy830oNo0YRW7jR4QvsmMHJ7U9S64TPwRMLWVV1Rsdm+QuGqFD8eVuQzA1
- JDeIVx3feidNla9E96nmF8wSY728TufIWZCckpdG4EdzTiWFjhDkl1qYWAhbGtMOvH
- xo8ifEmC+GwRQFpXB00+PHkczCbiY3Edx/sD0mvzV134YRwxkX7r+n7NXQBI2jQ/PC
- tzTk4fiyXAczxbRs/vk2vJTApA0bhWQQ9OU7i7d1T/3wDZ0R7kU9AELrMePMx0TqNa
- MxOdnol7IZuan0BiS94RGSAcH1PAU3odAktvY0h5BgyeHTBXnhekgv8YtdPaUB6ptG
- t6M2dszBtsRcg==
+ b=n6YMDDaiO+Y+ehsJY3BwtkUdg1YDcyPA3Dzmuu8XOwJ1WrZig5ClP17Sypb2aBakK
+ pdb05/Mxt6GVPh61aaBT0xJP66Mu0V7s+lzlxmzMKtCZpnT8wEPrNDYE+HzwcwOsrt
+ M+K4hgRSZ2BsDVMyqA2McjsJjJooi4+aOx81MKG7ecEsFD8/riXxDnXctaXPrCzSeY
+ 2Awph1mCyl2BuT2YcctjtjX9fGNx3slwDHVqkisVXH/eIqwqW4g1+6Ign1Zg0xzjsQ
+ nEbhKOdhvwUnu9BexA/KqiOdzGngWI9/3T9raieSibcixW3rUYkf2NW/Jkw05P6Tx3
+ svNkTBvfuxmgA==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
  linux-arch <linux-arch@vger.kernel.org>
-Subject: [RESEND PATCH v3 11/11] compiler: allow all arches to enable
- CONFIG_OPTIMIZE_INLINING
-Date: Tue, 23 Apr 2019 12:49:59 +0900
-Message-Id: <20190423034959.13525-12-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v3 05/11] mtd: rawnand: vf610_nfc: add initializer to
+ avoid -Wmaybe-uninitialized
+Date: Tue, 23 Apr 2019 12:49:53 +0900
+Message-Id: <20190423034959.13525-6-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190423034959.13525-1-yamada.masahiro@socionext.com>
 References: <20190423034959.13525-1-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_205053_521505_C969287C 
-X-CRM114-Status: GOOD (  12.49  )
+X-CRM114-CacheID: sfid-20190422_205053_289431_BA178EE5 
+X-CRM114-Status: GOOD (  10.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,128 +86,41 @@ Cc: Christophe Leroy <christophe.leroy@c-s.fr>, linux-s390@vger.kernel.org,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Ingo Molnar <mingo@redhat.com>, linux-mtd@lists.infradead.org,
  linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 60a3cdd06394 ("x86: add optimized inlining") introduced
-CONFIG_OPTIMIZE_INLINING, but it has been available only for x86.
-
-The idea is obviously arch-agnostic. This commit moves the config
-entry from arch/x86/Kconfig.debug to lib/Kconfig.debug so that all
-architectures can benefit from it.
-
-This can make a huge difference in kernel image size especially when
-CONFIG_OPTIMIZE_FOR_SIZE is enabled.
-
-For example, I got 3.5% smaller arm64 kernel for v5.1-rc1.
-
-  dec       file
-  18983424  arch/arm64/boot/Image.before
-  18321920  arch/arm64/boot/Image.after
-
-This also slightly improves the "Kernel hacking" Kconfig menu as
-e61aca5158a8 ("Merge branch 'kconfig-diet' from Dave Hansen') suggested;
-this config option would be a good fit in the "compiler option" menu.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Acked-by: Borislav Petkov <bp@suse.de>
----
-
-Changes in v3: None
-Changes in v2:
-  - split into a separate patch
-
- arch/x86/Kconfig               |  3 ---
- arch/x86/Kconfig.debug         | 14 --------------
- include/linux/compiler_types.h |  3 +--
- lib/Kconfig.debug              | 14 ++++++++++++++
- 4 files changed, 15 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 62fc3fda1a05..f214bb5d60d8 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -310,9 +310,6 @@ config ZONE_DMA32
- config AUDIT_ARCH
- 	def_bool y if X86_64
- 
--config ARCH_SUPPORTS_OPTIMIZED_INLINING
--	def_bool y
--
- config ARCH_SUPPORTS_DEBUG_PAGEALLOC
- 	def_bool y
- 
-diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-index 15d0fbe27872..f730680dc818 100644
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -266,20 +266,6 @@ config CPA_DEBUG
- 	---help---
- 	  Do change_page_attr() self-tests every 30 seconds.
- 
--config OPTIMIZE_INLINING
--	bool "Allow gcc to uninline functions marked 'inline'"
--	---help---
--	  This option determines if the kernel forces gcc to inline the functions
--	  developers have marked 'inline'. Doing so takes away freedom from gcc to
--	  do what it thinks is best, which is desirable for the gcc 3.x series of
--	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
--	  enabling this option will generate a smaller kernel there. Hopefully
--	  this algorithm is so good that allowing gcc 4.x and above to make the
--	  decision will become the default in the future. Until then this option
--	  is there to test gcc for this.
--
--	  If unsure, say N.
--
- config DEBUG_ENTRY
- 	bool "Debug low-level entry code"
- 	depends on DEBUG_KERNEL
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index ba814f18cb4c..19e58b9138a0 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -140,8 +140,7 @@ struct ftrace_likely_data {
-  * Do not use __always_inline here, since currently it expands to inline again
-  * (which would break users of __always_inline).
-  */
--#if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
--	!defined(CONFIG_OPTIMIZE_INLINING)
-+#if !defined(CONFIG_OPTIMIZE_INLINING)
- #define inline inline __attribute__((__always_inline__)) __gnu_inline \
- 	__maybe_unused notrace
- #else
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 00dbcdbc9a0d..37402f210115 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -310,6 +310,20 @@ config HEADERS_CHECK
- 	  exported to $(INSTALL_HDR_PATH) (usually 'usr/include' in
- 	  your build tree), to make sure they're suitable.
- 
-+config OPTIMIZE_INLINING
-+	bool "Allow compiler to uninline functions marked 'inline'"
-+	help
-+	  This option determines if the kernel forces gcc to inline the functions
-+	  developers have marked 'inline'. Doing so takes away freedom from gcc to
-+	  do what it thinks is best, which is desirable for the gcc 3.x series of
-+	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
-+	  enabling this option will generate a smaller kernel there. Hopefully
-+	  this algorithm is so good that allowing gcc 4.x and above to make the
-+	  decision will become the default in the future. Until then this option
-+	  is there to test gcc for this.
-+
-+	  If unsure, say N.
-+
- config DEBUG_SECTION_MISMATCH
- 	bool "Enable full Section mismatch analysis"
- 	help
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBwcmVwYXJlcyB0byBtb3ZlIENPTkZJR19PUFRJTUlaRV9JTkxJTklORyBmcm9tIHg4NiB0
+byBhIGNvbW1vbgpwbGFjZS4gV2UgbmVlZCB0byBlbGltaW5hdGUgcG90ZW50aWFsIGlzc3VlcyBi
+ZWZvcmVoYW5kLgoKS2J1aWxkIHRlc3Qgcm9ib3QgaGFzIG5ldmVyIHJlcG9ydGVkIC1XbWF5YmUt
+dW5pbml0aWFsaXplZCB3YXJuaW5nCmZvciB0aGlzIHByb2JhYmx5IGJlY2F1c2UgdmY2MTBfbmZj
+X3J1bigpIGlzIGlubGluZWQgYnkgdGhlIHg4Ngpjb21waWxlcidzIGlubGluaW5nIGhldXJpc3Rp
+Yy4KCklmIENPTkZJR19PUFRJTUlaRV9JTkxJTklORyBpcyBlbmFibGVkIGZvciBhIGRpZmZlcmVu
+dCBhcmNoaXRlY3R1cmUKYW5kIHZmNjEwX25mY19ydW4oKSBpcyBub3QgaW5saW5lZCwgdGhlIGZv
+bGxvd2luZyB3YXJuaW5nIGlzIHJlcG9ydGVkOgoKZHJpdmVycy9tdGQvbmFuZC9yYXcvdmY2MTBf
+bmZjLmM6IEluIGZ1bmN0aW9uIOKAmHZmNjEwX25mY19jbWTigJk6CmRyaXZlcnMvbXRkL25hbmQv
+cmF3L3ZmNjEwX25mYy5jOjQ1NTozOiB3YXJuaW5nOiDigJhvZmZzZXTigJkgbWF5IGJlIHVzZWQg
+dW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV21heWJlLXVuaW5pdGlhbGl6ZWRdCiAg
+IHZmNjEwX25mY19yZF9mcm9tX3NyYW0oaW5zdHItPmN0eC5kYXRhLmJ1Zi5pbiArIG9mZnNldCwK
+ICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fgogICAgICAgICAgICBuZmMtPnJlZ3MgKyBORkNfTUFJTl9BUkVBKDApICsgb2Zmc2V0LAogICAg
+ICAgICAgICB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgogICAgICAgICAg
+ICB0cmZyX3N6LCAhbmZjLT5kYXRhX2FjY2Vzcyk7CiAgICAgICAgICAgIH5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDx5YW1hZGEubWFz
+YWhpcm9Ac29jaW9uZXh0LmNvbT4KLS0tCgpDaGFuZ2VzIGluIHYzOiBOb25lCkNoYW5nZXMgaW4g
+djI6CiAgLSBzcGxpdCBpbnRvIGEgc2VwYXJhdGUgcGF0Y2gKCiBkcml2ZXJzL210ZC9uYW5kL3Jh
+dy92ZjYxMF9uZmMuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3ZmNjEwX25mYy5j
+IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvdmY2MTBfbmZjLmMKaW5kZXggYTY2MmNhMTk3MGU1Li4x
+OTc5MmQ3MjVlYzIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3ZmNjEwX25mYy5j
+CisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3ZmNjEwX25mYy5jCkBAIC0zNjQsNyArMzY0LDcg
+QEAgc3RhdGljIGludCB2ZjYxMF9uZmNfY21kKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiB7CiAJ
+Y29uc3Qgc3RydWN0IG5hbmRfb3BfaW5zdHIgKmluc3RyOwogCXN0cnVjdCB2ZjYxMF9uZmMgKm5m
+YyA9IGNoaXBfdG9fbmZjKGNoaXApOwotCWludCBvcF9pZCA9IC0xLCB0cmZyX3N6ID0gMCwgb2Zm
+c2V0OworCWludCBvcF9pZCA9IC0xLCB0cmZyX3N6ID0gMCwgb2Zmc2V0ID0gMDsKIAl1MzIgY29s
+ID0gMCwgcm93ID0gMCwgY21kMSA9IDAsIGNtZDIgPSAwLCBjb2RlID0gMDsKIAlib29sIGZvcmNl
+OGJpdCA9IGZhbHNlOwogCi0tIAoyLjE3LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
