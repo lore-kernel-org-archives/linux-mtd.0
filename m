@@ -2,68 +2,84 @@ Return-Path: <SRS0=5gbO=SZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86196C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 05:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A57DC282DD
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:06:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B84B214AE
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 05:25:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECD9920843
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:06:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tZkp78Zx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LCEsweUh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B84B214AE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="anaiDIoe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nzWJKQEE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECD9920843
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yy7XQGO2zt9cuKKMo1XCd5RsHU8zG/0wvm4E7yrABr8=; b=tZkp78Zx1Lkv/b
-	R+LwH96LEQoBvbIkX90W8ai9N1kxdB901hfpL0kF9axY4dDNJ+YYgxdcLb/f9ueSS3ZxiKv0CNmR0
-	s9sN8xmqjcT9CWKA/OITpCUXEsZM8IIPeR5g3qFvKaZJ7A25UwL8nADU00lJviZotV9RklqU2qC/J
-	WcRxGLGQ7evJ888K3huWikGdgVifTK6plfqWVp5fAoVPUSENLzZvL5HIWTmZfKiw5ocNpud+3X3dI
-	1pV47dEkLzxZy0gQvM2fBEuOh4SMheCo9puybpo00/KGgXmvyy9cGIoyhmvWrxeRlVYda2feVgJ2a
-	Yb5XF++9bmhRgouWrT/A==;
+	List-Owner; bh=Q+MtWkNkxxbKGIlUvezKhLDxvuhSaGYdHDzH3BYD34A=; b=anaiDIoe06qLjI
+	ZW2nHwCrjTgr/UsJGoDkfPfV2zJk2Y0tBOdrcIDuhGdUvrgd/VdfHY69tlInHFu9885UMk1UTm/mU
+	00mTRmZknr0uI2V4YhcHkKOrM9p1DsfM27BtiIS/1iQkCHh12UAt7YTFY8WihVyz3oBZlCfxemzpH
+	WD6k5jS/uuBhBD6YdBu21878zPTbBYslXcn4ylkgG7BWMMjydLdmOB1/9wGd9537l3jbjKD0NZg8e
+	6Xfh+F/Zvh2F0l8eNgGvj+NJP1G0ovhoUXdGxgwoqhooHm09X3DYu2pd3+uGAd15LUzGA+qm1XJUm
+	vwqhpg41t9quc7ZnCXTQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hInvs-0000jV-5M; Tue, 23 Apr 2019 05:25:28 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hIoZI-0000j2-6J; Tue, 23 Apr 2019 06:06:12 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hInvp-0000jB-Td
- for linux-mtd@lists.infradead.org; Tue, 23 Apr 2019 05:25:27 +0000
-Received: from localhost (unknown [171.76.113.243])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 698D220811;
- Tue, 23 Apr 2019 05:25:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1555997125;
- bh=Q2oiF9bO2McIMN0sWlv05kJ9Uts3J6JRe0WFI16Bv04=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=LCEsweUhj23m7Wr/pWqtD1t4lKPJqwxkGH0nJbfddOCosSpwVIolMIzTykVeIQ8rU
- 2qho/laoAtCnbDF0Iv1D2hGs3vmMUrJcUKbvmkpII7V61fIEho7NXSqLc0MT6xNoMq
- cG0GI/picmiNsV/twpfNQ2IX0PAIcOc6daZ6cHTw=
-Date: Tue, 23 Apr 2019 10:55:19 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 13/14] dma: mxs: rename custom flag
-Message-ID: <20190423052519.GJ28103@vkoul-mobl>
-References: <20190409113421.3037-1-s.hauer@pengutronix.de>
- <20190409113421.3037-14-s.hauer@pengutronix.de>
+ id 1hIoZE-0000hy-Ne; Tue, 23 Apr 2019 06:06:10 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3N65vW4097926;
+ Tue, 23 Apr 2019 01:05:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1555999557;
+ bh=J2zT+LR12Ogn3aduBhqlwatG9kR5GFN1+eqq1CoI5Co=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=nzWJKQEENR/6uT1PFzzt3hZGTH1AfrMna/S2tv5UlfdHV+L6B0end96s1zzZw85V3
+ qX+z6Of69jIvJMU8eg9b96L6l/+pJGRKVOvlNFf+xX6PcdkvH0KEl804yfadm7J7XZ
+ PP/z/JE1V6c16DU53HfJ4+ld0ClEeAJE0PS+zx4U=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3N65vEt069464
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 23 Apr 2019 01:05:57 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 23
+ Apr 2019 01:05:57 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Tue, 23 Apr 2019 01:05:57 -0500
+Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3N65gFC091279;
+ Tue, 23 Apr 2019 01:05:52 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 2/5] dt-bindings: mtd: Add binding documentation for
+ HyperFlash
+Date: Tue, 23 Apr 2019 11:36:35 +0530
+Message-ID: <20190423060638.18197-3-vigneshr@ti.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190423060638.18197-1-vigneshr@ti.com>
+References: <20190423060638.18197-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190409113421.3037-14-s.hauer@pengutronix.de>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_222525_994674_F1192C9D 
-X-CRM114-Status: GOOD (  18.40  )
+X-CRM114-CacheID: sfid-20190422_230608_895705_40B0FCE5 
+X-CRM114-Status: GOOD (  15.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,136 +91,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: kernel@pengutronix.de, Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- NXP Linux Team <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>,
- Shawn Guo <shawnguo@kernel.org>
+Cc: devicetree@vger.kernel.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09-04-19, 13:34, Sascha Hauer wrote:
-> The mxs dma driver uses the flags parameter in dmaengine_prep_slave_sg() for
-> custom flags, but still uses the dmaengine specific names of the flags.
-> Do a little bit better and at least give the flag a custom name.
+Add DT binding documentation for HyperFlash devices.
 
-after subsystem tag to dmaengine:
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ .../devicetree/bindings/mtd/cypress,hyperflash.txt          | 6 ++++++
+ 1 file changed, 6 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
-
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/dma/mxs-dma.c                      |  4 ++--
->  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 17 +++++++++++------
->  include/linux/dma/mxs-dma.h                |  2 ++
->  3 files changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-> index 62ee9328aea1..c622bee7eb12 100644
-> --- a/drivers/dma/mxs-dma.c
-> +++ b/drivers/dma/mxs-dma.c
-> @@ -541,7 +541,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
->  		ccw->bits = 0;
->  		ccw->bits |= CCW_IRQ;
->  		ccw->bits |= CCW_DEC_SEM;
-> -		if (flags & DMA_CTRL_ACK)
-> +		if (flags & MXS_DMA_CTRL_WAIT4END)
->  			ccw->bits |= CCW_WAIT4END;
->  		ccw->bits |= CCW_HALT_ON_TERM;
->  		ccw->bits |= CCW_TERM_FLUSH;
-> @@ -573,7 +573,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
->  				ccw->bits &= ~CCW_CHAIN;
->  				ccw->bits |= CCW_IRQ;
->  				ccw->bits |= CCW_DEC_SEM;
-> -				if (flags & DMA_CTRL_ACK)
-> +				if (flags & MXS_DMA_CTRL_WAIT4END)
->  					ccw->bits |= CCW_WAIT4END;
->  			}
->  		}
-> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> index cf016ec0b1c6..9f648b40197e 100644
-> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> @@ -925,7 +925,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
->  	sg_init_one(sgl, this->cmd_buffer, this->command_length);
->  	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
->  	desc = dmaengine_prep_slave_sg(channel,
-> -				sgl, 1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
-> +				sgl, 1, DMA_MEM_TO_DEV,
-> +				MXS_DMA_CTRL_WAIT4END);
->  	if (!desc)
->  		return -EINVAL;
->  
-> @@ -996,7 +997,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf,
->  	/* [2] send DMA request */
->  	prepare_data_dma(this, buf, len, DMA_TO_DEVICE);
->  	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
-> -					1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
-> +					1, DMA_MEM_TO_DEV,
-> +					MXS_DMA_CTRL_WAIT4END);
->  	if (!desc)
->  		return -EINVAL;
->  
-> @@ -1033,7 +1035,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
->  	/* [2] : send DMA request */
->  	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
->  	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
-> -					1, DMA_DEV_TO_MEM, DMA_CTRL_ACK);
-> +					1, DMA_DEV_TO_MEM,
-> +					MXS_DMA_CTRL_WAIT4END);
->  	if (!desc)
->  		return -EINVAL;
->  
-> @@ -1083,7 +1086,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this,  dma_addr_t payload,
->  	pio[5] = auxiliary;
->  
->  	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-> -				      DMA_TRANS_NONE, DMA_CTRL_ACK);
-> +				      DMA_TRANS_NONE,
-> +				      MXS_DMA_CTRL_WAIT4END);
->  	if (!desc)
->  		return -EINVAL;
->  
-> @@ -1140,7 +1144,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
->  	pio[4] = payload;
->  	pio[5] = auxiliary;
->  	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-> -				      DMA_TRANS_NONE, DMA_CTRL_ACK);
-> +				      DMA_TRANS_NONE,
-> +				      MXS_DMA_CTRL_WAIT4END);
->  	if (!desc)
->  		return -EINVAL;
->  
-> @@ -1157,7 +1162,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
->  	pio[1] = 0;
->  	pio[2] = 0; /* clear GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
->  	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
-> -				      DMA_CTRL_ACK);
-> +				      MXS_DMA_CTRL_WAIT4END);
->  	if (!desc)
->  		return -EINVAL;
->  
-> diff --git a/include/linux/dma/mxs-dma.h b/include/linux/dma/mxs-dma.h
-> index 092b2a7b92ac..4a33f2c8a682 100644
-> --- a/include/linux/dma/mxs-dma.h
-> +++ b/include/linux/dma/mxs-dma.h
-> @@ -4,6 +4,8 @@
->  
->  #include <linux/dmaengine.h>
->  
-> +#define MXS_DMA_CTRL_WAIT4END	BIT(31)
-> +
->  /*
->   * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
->   * in the second argument to dmaengine_prep_slave_sg when the direction is
-> -- 
-> 2.20.1
-
+diff --git a/Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt b/Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+new file mode 100644
+index 000000000000..7fb7d82bb042
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+@@ -0,0 +1,6 @@
++Bindings for HyperFlash NOR flash chips compliant with Cypress HyperBus
++specification and supports Cypress CFI specification 1.5 command set.
++
++Required properties:
++- compatible : "cypress,hyperflash", "cfi-flash" for HyperFlash NOR chips
++- reg : Address where flash's memory mapped space
 -- 
-~Vinod
+2.21.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
