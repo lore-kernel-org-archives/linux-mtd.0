@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B13A7C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 766DCC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76677206BA
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 426D7206BA
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 03:53:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KZGF3g5p";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="Q1F13NSr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76677206BA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cNECi3UO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="ewcDEyxA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 426D7206BA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,48 +27,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=5tOOc1/CECHq+GCM8nnO5RCL7MHHtY5C6u5aFW5OlIU=; b=KZGF3g5pG/256wJQUMU/NR5/Jh
-	R6dJYwhYvbenf/H8VyVmHQ/Xj2heIPN5mqpVSGRBeGXX5n+EJ9eA6NDWHEVbbIJRRXSz2Ry5S6eFX
-	X5NgF6yO0hy3WjQjBrJhsEOVzoh6s+2Z8BkwAWuKSBdCIiwsf/SClouPmPHaoM5Y+/O40tOK5MZjA
-	Bws1ZJgNX4PWZSNPjZq1+xIOKKMWoKs8rBCs2esyzuowgfUaIqkxnyMKztAlAce+iTB6BU5mwLCdn
-	nPC2Eo9o5GMgPlKQbnGLKCdWLGQ182NVK/mAn+0SKaQCm+1Zbic7Hns7g5eIKZmNl0wveHQHNmWAx
-	tUp6OkQQ==;
+	bh=dH2G6naI72UwDL9c0pZ4DxgazYEoDCgBXtToOoqt4Ks=; b=cNECi3UO3cw522MOG7KrfR/2g7
+	pp2zKng7Q05qSSuR76PZu5ZpvQBpzTSj4TYCmeH1IK3TIFntwooZkm2LcEFPuVdDirvsk99APo21E
+	H9BNlmtT77Zk/LykIOf2ZCe/plXWQJG7cDFY48APQK7i44HlVb4KIIMgoXvshKNlFgXVgYWeHBxgC
+	HzewaNcZCI3zz3xHZdDocL9WORMgSsLiupaWngfYgtgyAaiwa1xiXJjeARk1NgmTuF53bcKymllJ/
+	nzJuf8HRdFDnBx1sZfHr3yo7B41rihl18Inrs89A94GhVu42uC/8aUjiJniWxmsBzH/QmDHGWMJIb
+	tmD7Wr2A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hImUm-0001RA-P8; Tue, 23 Apr 2019 03:53:24 +0000
+	id 1hImUx-0001fX-QA; Tue, 23 Apr 2019 03:53:35 +0000
 Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hImSK-0006dP-AG; Tue, 23 Apr 2019 03:51:03 +0000
+ id 1hImSK-0006dW-Ce; Tue, 23 Apr 2019 03:51:05 +0000
 Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
  [153.142.97.92]) (authenticated)
- by conuserg-07.nifty.com with ESMTP id x3N3o2cG023044;
- Tue, 23 Apr 2019 12:50:14 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x3N3o2cG023044
+ by conuserg-07.nifty.com with ESMTP id x3N3o2cJ023044;
+ Tue, 23 Apr 2019 12:50:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com x3N3o2cJ023044
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1555991415;
- bh=7qo1vbhArO2n/LZF4sYuHYL1/6J0V//9VqfNxacUkeY=;
+ s=dec2015msa; t=1555991419;
+ bh=YGW0gg01jtKnXbnK1Ap0mVZ9GqJOY8DcvskWgXT4tQY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Q1F13NSrcvF2A8qD58k2kFX20pyFSYFFSEFXfst6MemH5nI+ogQbTVZV3rS+GsNcQ
- KHXD/9fjRv22l68l7IfxbcQnjZxs4/S6S0aDRad5BGjZ9TbVEhTGuuTtQqcH3vZlMa
- Siw+84dNlAlVVzvfSrMI067rafVMa4BZHPnzWNsDgdS02CdcDMajkswexssLpGT01t
- l2AFzuHdfvAep6hvoUoVEMXRoVxLbpZN+6DdicEMa0CRcEk/LeolZuI3xJ3MSFXuaj
- MiCbwlnKTnNt1QTVHluGORCKmpwIjnHxYZ/R8g+wKMdXrh00H0Yb3w3Ov8DaBB5Rkt
- tvc2mqgRywIIg==
+ b=ewcDEyxAy830oNo0YRW7jR4QvsmMHJ7U9S64TPwRMLWVV1Rsdm+QuGqFD8eVuQzA1
+ JDeIVx3feidNla9E96nmF8wSY728TufIWZCckpdG4EdzTiWFjhDkl1qYWAhbGtMOvH
+ xo8ifEmC+GwRQFpXB00+PHkczCbiY3Edx/sD0mvzV134YRwxkX7r+n7NXQBI2jQ/PC
+ tzTk4fiyXAczxbRs/vk2vJTApA0bhWQQ9OU7i7d1T/3wDZ0R7kU9AELrMePMx0TqNa
+ MxOdnol7IZuan0BiS94RGSAcH1PAU3odAktvY0h5BgyeHTBXnhekgv8YtdPaUB6ptG
+ t6M2dszBtsRcg==
 X-Nifty-SrcIP: [153.142.97.92]
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
  linux-arch <linux-arch@vger.kernel.org>
-Subject: [RESEND PATCH v3 08/11] powerpc/prom_init: mark prom_getprop() and
- prom_getproplen() as __init
-Date: Tue, 23 Apr 2019 12:49:56 +0900
-Message-Id: <20190423034959.13525-9-yamada.masahiro@socionext.com>
+Subject: [RESEND PATCH v3 11/11] compiler: allow all arches to enable
+ CONFIG_OPTIMIZE_INLINING
+Date: Tue, 23 Apr 2019 12:49:59 +0900
+Message-Id: <20190423034959.13525-12-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190423034959.13525-1-yamada.masahiro@socionext.com>
 References: <20190423034959.13525-1-yamada.masahiro@socionext.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_205053_416607_9FFE0571 
-X-CRM114-Status: UNSURE (   8.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190422_205053_521505_C969287C 
+X-CRM114-Status: GOOD (  12.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,56 +92,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This prepares to move CONFIG_OPTIMIZE_INLINING from x86 to a common
-place. We need to eliminate potential issues beforehand.
+Commit 60a3cdd06394 ("x86: add optimized inlining") introduced
+CONFIG_OPTIMIZE_INLINING, but it has been available only for x86.
 
-If it is enabled for powerpc, the following modpost warnings are
-reported:
+The idea is obviously arch-agnostic. This commit moves the config
+entry from arch/x86/Kconfig.debug to lib/Kconfig.debug so that all
+architectures can benefit from it.
 
-WARNING: vmlinux.o(.text.unlikely+0x20): Section mismatch in reference from the function .prom_getprop() to the function .init.text:.call_prom()
-The function .prom_getprop() references
-the function __init .call_prom().
-This is often because .prom_getprop lacks a __init
-annotation or the annotation of .call_prom is wrong.
+This can make a huge difference in kernel image size especially when
+CONFIG_OPTIMIZE_FOR_SIZE is enabled.
 
-WARNING: vmlinux.o(.text.unlikely+0x3c): Section mismatch in reference from the function .prom_getproplen() to the function .init.text:.call_prom()
-The function .prom_getproplen() references
-the function __init .call_prom().
-This is often because .prom_getproplen lacks a __init
-annotation or the annotation of .call_prom is wrong.
+For example, I got 3.5% smaller arm64 kernel for v5.1-rc1.
+
+  dec       file
+  18983424  arch/arm64/boot/Image.before
+  18321920  arch/arm64/boot/Image.after
+
+This also slightly improves the "Kernel hacking" Kconfig menu as
+e61aca5158a8 ("Merge branch 'kconfig-diet' from Dave Hansen') suggested;
+this config option would be a good fit in the "compiler option" menu.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Borislav Petkov <bp@suse.de>
 ---
 
 Changes in v3: None
 Changes in v2:
   - split into a separate patch
 
- arch/powerpc/kernel/prom_init.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/Kconfig               |  3 ---
+ arch/x86/Kconfig.debug         | 14 --------------
+ include/linux/compiler_types.h |  3 +--
+ lib/Kconfig.debug              | 14 ++++++++++++++
+ 4 files changed, 15 insertions(+), 19 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index f33ff4163a51..241fe6b7a8cc 100644
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -501,14 +501,14 @@ static int __init prom_next_node(phandle *nodep)
- 	}
- }
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 62fc3fda1a05..f214bb5d60d8 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -310,9 +310,6 @@ config ZONE_DMA32
+ config AUDIT_ARCH
+ 	def_bool y if X86_64
  
--static inline int prom_getprop(phandle node, const char *pname,
--			       void *value, size_t valuelen)
-+static inline int __init prom_getprop(phandle node, const char *pname,
-+				      void *value, size_t valuelen)
- {
- 	return call_prom("getprop", 4, 1, node, ADDR(pname),
- 			 (u32)(unsigned long) value, (u32) valuelen);
- }
+-config ARCH_SUPPORTS_OPTIMIZED_INLINING
+-	def_bool y
+-
+ config ARCH_SUPPORTS_DEBUG_PAGEALLOC
+ 	def_bool y
  
--static inline int prom_getproplen(phandle node, const char *pname)
-+static inline int __init prom_getproplen(phandle node, const char *pname)
- {
- 	return call_prom("getproplen", 2, 1, node, ADDR(pname));
- }
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index 15d0fbe27872..f730680dc818 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -266,20 +266,6 @@ config CPA_DEBUG
+ 	---help---
+ 	  Do change_page_attr() self-tests every 30 seconds.
+ 
+-config OPTIMIZE_INLINING
+-	bool "Allow gcc to uninline functions marked 'inline'"
+-	---help---
+-	  This option determines if the kernel forces gcc to inline the functions
+-	  developers have marked 'inline'. Doing so takes away freedom from gcc to
+-	  do what it thinks is best, which is desirable for the gcc 3.x series of
+-	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
+-	  enabling this option will generate a smaller kernel there. Hopefully
+-	  this algorithm is so good that allowing gcc 4.x and above to make the
+-	  decision will become the default in the future. Until then this option
+-	  is there to test gcc for this.
+-
+-	  If unsure, say N.
+-
+ config DEBUG_ENTRY
+ 	bool "Debug low-level entry code"
+ 	depends on DEBUG_KERNEL
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index ba814f18cb4c..19e58b9138a0 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -140,8 +140,7 @@ struct ftrace_likely_data {
+  * Do not use __always_inline here, since currently it expands to inline again
+  * (which would break users of __always_inline).
+  */
+-#if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
+-	!defined(CONFIG_OPTIMIZE_INLINING)
++#if !defined(CONFIG_OPTIMIZE_INLINING)
+ #define inline inline __attribute__((__always_inline__)) __gnu_inline \
+ 	__maybe_unused notrace
+ #else
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 00dbcdbc9a0d..37402f210115 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -310,6 +310,20 @@ config HEADERS_CHECK
+ 	  exported to $(INSTALL_HDR_PATH) (usually 'usr/include' in
+ 	  your build tree), to make sure they're suitable.
+ 
++config OPTIMIZE_INLINING
++	bool "Allow compiler to uninline functions marked 'inline'"
++	help
++	  This option determines if the kernel forces gcc to inline the functions
++	  developers have marked 'inline'. Doing so takes away freedom from gcc to
++	  do what it thinks is best, which is desirable for the gcc 3.x series of
++	  compilers. The gcc 4.x series have a rewritten inlining algorithm and
++	  enabling this option will generate a smaller kernel there. Hopefully
++	  this algorithm is so good that allowing gcc 4.x and above to make the
++	  decision will become the default in the future. Until then this option
++	  is there to test gcc for this.
++
++	  If unsure, say N.
++
+ config DEBUG_SECTION_MISMATCH
+ 	bool "Enable full Section mismatch analysis"
+ 	help
 -- 
 2.17.1
 
