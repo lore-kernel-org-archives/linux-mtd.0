@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CACA6C10F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEB5DC10F14
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:07:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93BC720843
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:07:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7955220843
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Apr 2019 06:07:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tfshn04p";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dwCIZXYg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93BC720843
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kMxzeuUF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="K+jqtUPH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7955220843
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,60 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dZQorAiJP1tXS4oGdxEcPfd7sGXNmGNJfK+x6jGkAHA=; b=Tfshn04pE9Qb6e
-	VDUhHG9XxtWVTxG9xqGA8mBwuqBhjd2tzvL1fZlHMAq/OTaUFMNBP2j9rIaNJdCdwt3cua1UQcW8D
-	gbBw+BKTxqIA3jeqsNl42DCF43C8zRis7LI5ifhHSmQUUKMUes96yQC3p5+JRmyvpMRtP9Z/KuOwE
-	TSoXTOioHEWlGwzJgvXstktYP4mRARTUKAs3NiJYAJdkeSclImWqxDMCkgaPMEG53Ty9ziXPbk8Bq
-	8boADHwB11xle5bX8YvIqQrnJU72xhNu3DhV4Ifs/ajGWlzJZp8oLHBPqQFRQQD5GfRro7fq0uIhX
-	B0ZcIuNj1c+IqOhS1F4w==;
+	List-Owner; bh=HxXgZLGcNI39a1fxBT7o5A8UBoRNrqpdQuHiADAJpNI=; b=kMxzeuUFVzPFT5
+	APiZhw8QKu7tKqTTpiofgQVxbq97NIQ7m5EDvF3g21fRWJYyryWBuQY0NXIjnvG1MW8cfB36hTqEK
+	soXGROO8aIeltZemycQxdFApJ/7EPZaSImIgdIeEdYxj0JfFtnd+C9kgnAG/gM/IXRfCmHXP9lP/7
+	FIjYBU9K97JfkGfGABGrnFpLBGRPM2HR3dOAd2kNkwDNuxfM4frNHlG7mPiiJncl4uGxGw6BKMIdC
+	bgGR0ugbhkwkC/Apah2Xz3bh0BYQJqh+f91rXaMljdwQvh9Ed7ZNkSSbNZ0ucHhzeea9m0Q0hczCC
+	o8fnnem2Afs3Ohqk1Rkg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hIoaL-00026o-3r; Tue, 23 Apr 2019 06:07:17 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hIoaV-0002Ps-N4; Tue, 23 Apr 2019 06:07:27 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hIoZN-0000p0-FN; Tue, 23 Apr 2019 06:06:21 +0000
+ id 1hIoZQ-0000uT-Su; Tue, 23 Apr 2019 06:06:26 +0000
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3N667Le077913;
- Tue, 23 Apr 2019 01:06:07 -0500
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3N66C4W056941;
+ Tue, 23 Apr 2019 01:06:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1555999567;
- bh=asnU647SbSxNVpYJJFri++AE/jmwSHAWc7UkxrDjmwY=;
+ s=ti-com-17Q1; t=1555999572;
+ bh=SOs+/lKbDYt47rJCWasS94Bi1lRmC3XqCD8X2v2hPkE=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=dwCIZXYgbgGzxA0HjNKElClTv5ydfADsndnxJ70qEI3D7z/6mA0C81S7ExhMGHEda
- BxHv8/1xj8ykYqXyPR9wTmrvmstEcUjm6yFiL7ueSYRmWI9MBiTaSWmjkYsQAo6V2L
- bXRFyKn0WV7+O5zY8/ONy46zXumS7OzK1SFduZZo=
+ b=K+jqtUPH5fIXQGnNvq63e3yHgYMemlMDJYXVrZTryjRVPAjXPKkfg6fyIauqaMwge
+ G7FTnpOI424tmb0oL853gk/g37YQwPMz6/j03lUybZ96x5UJkuSMIjeuuTjTyKxse5
+ qNjKvR1XVBzeqf8HKMG8bvCK71H8a1rpJ7HvoPHY=
 Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3N667Cd119341
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3N66CYY119490
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 23 Apr 2019 01:06:07 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
+ Tue, 23 Apr 2019 01:06:12 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
  (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 23
- Apr 2019 01:06:07 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2019 01:06:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Tue, 23 Apr 2019 01:06:07 -0500
+ Frontend Transport; Tue, 23 Apr 2019 01:06:12 -0500
 Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3N65gFE091279;
- Tue, 23 Apr 2019 01:06:02 -0500
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3N65gFF091279;
+ Tue, 23 Apr 2019 01:06:07 -0500
 From: Vignesh Raghavendra <vigneshr@ti.com>
 To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
  Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 4/5] dt-bindings: mtd: Add bindings for TI's AM654 HyperBus
- memory controller
-Date: Tue, 23 Apr 2019 11:36:37 +0530
-Message-ID: <20190423060638.18197-5-vigneshr@ti.com>
+Subject: [PATCH v3 5/5] mtd: hyperbus: Add driver for TI's HyperBus memory
+ controller
+Date: Tue, 23 Apr 2019 11:36:38 +0530
+Message-ID: <20190423060638.18197-6-vigneshr@ti.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190423060638.18197-1-vigneshr@ti.com>
 References: <20190423060638.18197-1-vigneshr@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190422_230618_047909_2566AEFE 
-X-CRM114-Status: GOOD (  18.37  )
+X-CRM114-CacheID: sfid-20190422_230621_315813_D7537742 
+X-CRM114-Status: GOOD (  21.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -102,65 +102,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add binding documentation for TI's HyperBus memory controller present on
-AM654 SoC.
+Add driver for HyperBus memory controller on TI's AM654 SoC. Programming
+IP is pretty simple and provides direct memory mapped access to
+connected Flash devices.
+
+Add basic support for the IP without DMA. Second chipSelect is not
+supported for now.
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 31 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+ drivers/mtd/hyperbus/Kconfig      |  12 ++++
+ drivers/mtd/hyperbus/Makefile     |   1 +
+ drivers/mtd/hyperbus/hbmc-am654.c | 115 ++++++++++++++++++++++++++++++
+ 3 files changed, 128 insertions(+)
+ create mode 100644 drivers/mtd/hyperbus/hbmc-am654.c
 
-diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-new file mode 100644
-index 000000000000..00888482df25
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-@@ -0,0 +1,31 @@
-+Bindings for HyperBus Memory Controller (HBMC) on TI's K3 family of SoCs
+diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
+index 98147e28caa0..cff6bbd226f5 100644
+--- a/drivers/mtd/hyperbus/Kconfig
++++ b/drivers/mtd/hyperbus/Kconfig
+@@ -9,3 +9,15 @@ menuconfig MTD_HYPERBUS
+ 	  the HyperBus Controller driver to communicate with
+ 	  HyperFlash. See Cypress HyperBus specification for more
+ 	  details
 +
-+Required properties:
-+- compatible : "ti,am654-hbmc" for AM654 SoC
-+- reg : Two entries:
-+	First entry pointed to the register space of HBMC controller
-+	Second entry pointing to the memory map region dedicated for
-+	MMIO access to attached flash devices
-+- ranges : Address range allocated for each chipselect in the MMIO space
++if MTD_HYPERBUS
 +
-+Optional properties:
-+- mux-controls: phandle to the multiplexer that controls selection of
-+		HBMC vs OSPI. Mux state of 1 indicates HBMC is selected.
++config HBMC_AM654
++	tristate "HyperBus controller driver for AM65x SoC"
++	select MULTIPLEXER
++	select MUX_MMIO
++	help
++	 This is the driver for HyperBus controller on TI's AM65x and
++	 other SoCs
 +
-+Example:
-+	hbmc: hbmc@47034000 {
-+		compatible = "ti,am654-hbmc";
-+		reg = <0x0 0x47034000 0x0 0x100>,
-+			<0x5 0x00000000 0x1 0x0000000>;
-+		power-domains = <&k3_pds 55>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
-+			 <0x1 0x5 0x04000000 0x4000000>; /* CS1 - 64MB
-+
-+		/* Slave flash node */
-+		flash@0{
-+			compatible = "cypress,hyperflash";
-+			reg = <0x0 0x4000000>;
-+		};
-+	};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7aa1b3454a89..07455035fca9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7249,6 +7249,7 @@ S:	Supported
- F:	drivers/mtd/hyperbus/
- F:	include/linux/mtd/hyperbus.h
- F:	Documentation/devicetree/bindings/mtd/cypress,hyperbus.txt
-+F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
++endif # MTD_HYPERBUS
+diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
+index ca61dedd730d..8a936e066f48 100644
+--- a/drivers/mtd/hyperbus/Makefile
++++ b/drivers/mtd/hyperbus/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
  
- HYPERVISOR VIRTUAL CONSOLE DRIVER
- L:	linuxppc-dev@lists.ozlabs.org
+ obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
++obj-$(CONFIG_HBMC_AM654)	+= hbmc-am654.o
+diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
+new file mode 100644
+index 000000000000..f458d7226df9
+--- /dev/null
++++ b/drivers/mtd/hyperbus/hbmc-am654.c
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
++// Author: Vignesh Raghavendra <vigneshr@ti.com>
++
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mtd/hyperbus.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mux/consumer.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/types.h>
++
++struct am654_hbmc_priv {
++	struct hyperbus_ctlr ctlr;
++	struct hyperbus_device hbdev;
++	void __iomem	*regbase;
++};
++
++static const struct hyperbus_ops am654_hbmc_ops = {
++	.calibrate = hyperbus_calibrate,
++};
++
++static int am654_hbmc_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct am654_hbmc_priv *priv;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, priv);
++
++	priv->regbase = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(priv->regbase))
++		return PTR_ERR(priv->regbase);
++
++	if (of_property_read_bool(dev->of_node, "mux-controls")) {
++		struct mux_control *control = devm_mux_control_get(dev, NULL);
++
++		if (IS_ERR(control))
++			return PTR_ERR(control);
++
++		ret = mux_control_select(control, 1);
++		if (ret) {
++			dev_err(dev, "Failed to select HBMC mux\n");
++			return ret;
++		}
++	}
++
++	pm_runtime_enable(dev);
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
++		goto disable_pm;
++	}
++
++	priv->ctlr.dev = dev;
++	priv->ctlr.ops = &am654_hbmc_ops;
++	priv->hbdev.ctlr = &priv->ctlr;
++	priv->hbdev.np = of_get_next_child(dev->of_node, NULL);
++	ret = hyperbus_register_device(&priv->hbdev);
++	if (ret) {
++		dev_err(dev, "failed to register controller\n");
++		pm_runtime_put_sync(&pdev->dev);
++		goto disable_pm;
++	}
++
++	return 0;
++disable_pm:
++	pm_runtime_disable(dev);
++	return ret;
++}
++
++static int am654_hbmc_remove(struct platform_device *pdev)
++{
++	struct am654_hbmc_priv *priv = platform_get_drvdata(pdev);
++	int ret;
++
++	ret = hyperbus_unregister_device(&priv->hbdev);
++	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++
++	return ret;
++}
++
++static const struct of_device_id am654_hbmc_dt_ids[] = {
++	{
++		.compatible = "ti,am654-hbmc",
++	},
++	{ /* end of table */ }
++};
++
++MODULE_DEVICE_TABLE(of, am654_hbmc_dt_ids);
++
++static struct platform_driver am654_hbmc_platform_driver = {
++	.probe = am654_hbmc_probe,
++	.remove = am654_hbmc_remove,
++	.driver = {
++		.name = "hbmc-am654",
++		.of_match_table = am654_hbmc_dt_ids,
++	},
++};
++
++module_platform_driver(am654_hbmc_platform_driver);
++
++MODULE_DESCRIPTION("HBMC driver for AM654 SoC");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:hbmc-am654");
++MODULE_AUTHOR("Vignesh Raghavendra <vigneshr@ti.com>");
 -- 
 2.21.0
 
