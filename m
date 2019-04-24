@@ -2,105 +2,71 @@ Return-Path: <SRS0=0gGT=S2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E2E4C10F11
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 05:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98EC1C282E1
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 06:45:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C364E20878
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 05:04:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 65E662148D
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 06:45:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pUrersxY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="DEuahUDv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C364E20878
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tiWpyhaI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65E662148D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hLptQIf5653oR+KIvEJnSKn7Ndc0y+JsZUBs+2SukBM=; b=pUrersxYHpgvZ7
-	B89z/wKb6g7gGGvYRJavnf2rHto2ALGvK+AsjLpS1msnmm/BEx765207AoKH4JZrA3lEsiETOUJeu
-	IVWszFGH7QECYBXy2hhG/hRXtFx2pVCBSZKE9wzHr72+I701IVV4bf8bBAkauSxpbdrjXe3L2MX9Q
-	Ey6KvZQpr/aEkJu8Ev44uJfQI2BFl1njSEO6TTNrRdgTaQcdFhKU5rkfVT+biRaBZeDA/2rSpR8sf
-	KuR2dOOB0ydiRMezyDblfVmgDtx8WLrh8SRmz/saPIu7snLdK0KZdx4qi1KHmV2GwKeJSr6jillWk
-	5DntIeZBGpRnTrYyXBCQ==;
+	List-Owner; bh=8Djjv+GDgsGwu/2Zy7yZCTjchixnpJ9NgCrePKyTFPQ=; b=tiWpyhaIlU42XB
+	/1d+a7sGWnn5PQYDwoFATRN4WoF38bWDsyy7AlZtfK5REQPN5YkEz8Dr61r9y6YJjlybi/yHTpHpZ
+	thKRKua5hAPXfUuXiOkl01FFQNmF0NFygOM57N3c2Syt8tW8JGDqn9lpRnumwccdbAbnjlPm31iBN
+	sHYp09AXyT2tvoXOl/migmeQxOygNAVRPfZj+Q5wNeyFr5kogJqvQ5pKG/yTgtpyjGPbK20wyjkZD
+	GxmynBJI9JNOosM/7QTu7gey6ZXXTngYxwRvfnit7NomRMmtyNq8fpzdyq/SkTfQevQDvUl4Cjdi4
+	epcv6CzKthG9WAQdLRWA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJA5T-0006rO-53; Wed, 24 Apr 2019 05:04:51 +0000
-Received: from mail-eopbgr820059.outbound.protection.outlook.com
- ([40.107.82.59] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+	id 1hJBf5-0003kE-1r; Wed, 24 Apr 2019 06:45:43 +0000
+Received: from mailgw02.mediatek.com ([216.200.240.185])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJA5P-0006qs-4t
- for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 05:04:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector1-xilinx-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IGQgJ5Ius/udLWBy2o5LGNX/ow0nRMrqbedYDCxfHM8=;
- b=DEuahUDvPw9INMi1jhX4PDl4qOdMaX2tv5ZDIF3qvSIiHyENywxdeXflxy52IVJKyqpF+LkslFWGQx+EpJlPgV0YE5KhDX9MYNTwFvIfi/h5DsUNBt8PIBRJHbS7nvgxRNr+/iA8LF/xZAZbz2px5E9CAwzS6P6gWtrfyKGfvWc=
-Received: from DM6PR02MB4779.namprd02.prod.outlook.com (20.176.109.16) by
- DM6PR02MB4506.namprd02.prod.outlook.com (20.176.107.19) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1835.12; Wed, 24 Apr 2019 05:04:39 +0000
-Received: from DM6PR02MB4779.namprd02.prod.outlook.com
- ([fe80::1970:28ec:3bfa:2305]) by DM6PR02MB4779.namprd02.prod.outlook.com
- ([fe80::1970:28ec:3bfa:2305%7]) with mapi id 15.20.1813.017; Wed, 24 Apr 2019
- 05:04:39 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Helmut Grohne <helmut.grohne@intenta.de>
-Subject: RE: [LINUX PATCH v14] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Thread-Topic: [LINUX PATCH v14] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Thread-Index: AQHU83vggkxmg2rBCEyEcIHuXS/Vp6ZJveKAgAEOs2A=
-Date: Wed, 24 Apr 2019 05:04:38 +0000
-Message-ID: <DM6PR02MB47797E4A5ADFC87DE4B04A81AF3C0@DM6PR02MB4779.namprd02.prod.outlook.com>
-References: <1555326613-26739-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20190423124525.axaprwy4qofbqfhj@laureti-dev>
-In-Reply-To: <20190423124525.axaprwy4qofbqfhj@laureti-dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=nagasure@xilinx.com; 
-x-originating-ip: [149.199.50.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9668ec92-f7fb-45ad-8f2d-08d6c8725aa3
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);
- SRVR:DM6PR02MB4506; 
-x-ms-traffictypediagnostic: DM6PR02MB4506:
-x-microsoft-antispam-prvs: <DM6PR02MB4506E381805A58B4D03144B3AF3C0@DM6PR02MB4506.namprd02.prod.outlook.com>
-x-forefront-prvs: 00179089FD
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(39860400002)(136003)(376002)(366004)(396003)(346002)(13464003)(189003)(199004)(4326008)(186003)(102836004)(14454004)(6506007)(7736002)(97736004)(305945005)(316002)(54906003)(74316002)(26005)(6246003)(25786009)(53546011)(5660300002)(3846002)(6116002)(7416002)(76176011)(86362001)(2906002)(52536014)(8936002)(53936002)(6916009)(55016002)(73956011)(76116006)(8676002)(71190400001)(66946007)(71200400001)(81166006)(6436002)(9686003)(486006)(66476007)(99286004)(68736007)(66556008)(478600001)(33656002)(229853002)(11346002)(256004)(14444005)(66066001)(66446008)(64756008)(446003)(81156014)(7696005)(476003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR02MB4506;
- H:DM6PR02MB4779.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: xilinx.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: vpCr/QnClzzDldn3PMpr+Wxvf0c4ORGX8NlELsBsZGOEcN5f7u1hskPpJD+c8JSvJcJvqnzeD2nBFHRB6BoOSRxOY5Mny6eKLte7rLU1ZjhYx5ZAN85/BQ6nvLkrbuJIX3nxBNQ/z0quo74sAgbqucsEPHpTeBgLzCV+tEA/UPRdA/x587Ih9S3bVk3ri22C2sRxly5Q9YTND4lRP56KBiA4jhTNXJ05lwpc1G1aSfTiUyRXbw617WCP8fX2z9yLTq9p+RUKT1/mMa0jt95xNR+R4FLdghcsuKhn6RH3UvgwBNDPohxcWxY/9xz+CTPJosQQisA4iNxGNpvc87UDNBSOU2Flb6iSPxn54GgGUVN4I83uriIIaE9stSSp6T/h8mnI1f40enMtoLyWA1ICLKBwcFW+zd+DjOyMPfz7m2M=
+ id 1hJBf1-0003ig-PJ; Wed, 24 Apr 2019 06:45:41 +0000
+X-UUID: 39324f9e9e2642f3b9a74fb8672fb985-20190423
+X-UUID: 39324f9e9e2642f3b9a74fb8672fb985-20190423
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
+ (envelope-from <xiaolei.li@mediatek.com>)
+ (musrelay.mediatek.com ESMTP with TLS)
+ with ESMTP id 912310412; Tue, 23 Apr 2019 22:45:33 -0800
+Received: from MTKMBS01N2.mediatek.inc (172.21.101.79) by
+ MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Tue, 23 Apr 2019 23:45:31 -0700
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Wed, 24 Apr 2019 14:45:29 +0800
+Received: from mtkslt306.mediatek.inc (10.21.14.136) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
+ Frontend Transport; Wed, 24 Apr 2019 14:45:29 +0800
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>
+Subject: [RFC PATCH 1/1] mtd: rawnand: mtk: Re-license MTK NAND driver as Dual
+ MIT/GPL
+Date: Wed, 24 Apr 2019 14:45:22 +0800
+Message-ID: <20190424064522.33501-2-xiaolei.li@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20190424064522.33501-1-xiaolei.li@mediatek.com>
+References: <20190424064522.33501-1-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9668ec92-f7fb-45ad-8f2d-08d6c8725aa3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2019 05:04:39.0718 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4506
+X-TM-SNTS-SMTP: ABBA28DE658474ED52645E9ED0858ECEC24C4D8F192E12B73D35BE89644E01162000:8
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190423_220447_264960_3F9926BF 
-X-CRM114-Status: GOOD (  19.81  )
+X-CRM114-CacheID: sfid-20190423_234539_838981_8ABB82BE 
+X-CRM114-Status: GOOD (  10.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -112,126 +78,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>,
- Michal Simek <michals@xilinx.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: daniel.thompson@linaro.org, srv_heupstream@mediatek.com,
+ jorge.ramirez-ortiz@linaro.org, boris.brezillon@bootlin.com,
+ linux-mediatek@lists.infradead.org, yingjoe.chen@mediatek.com,
+ linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Helmut,
+It is allowed to use MTK NAND driver with GPL-2.0 or MIT license.
+But now it is only licensed as GPL-2.0.
+So re-license it as dual MIT/GPL.
 
-> -----Original Message-----
-> From: Helmut Grohne <helmut.grohne@intenta.de>
-> Sent: Tuesday, April 23, 2019 6:15 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: bbrezillon@kernel.org; miquel.raynal@bootlin.com; richard@nod.at;
-> dwmw2@infradead.org; computersforpeace@gmail.com; marek.vasut@gmail.com; linux-
-> mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>;
-> nagasureshkumarrelli@gmail.com
-> Subject: Re: [LINUX PATCH v14] mtd: rawnand: pl353: Add basic driver for arm pl353 smc
-> nand interface
-> 
-> WARNING: This driver might brick the hardware. See below.
-> 
-> Hi Naga,
-> 
-> On Mon, Apr 15, 2019 at 04:40:13PM +0530, Naga Sureshkumar Relli wrote:
-> > Changes in v14:
-> >  - Removed legacy hooks as per Miquel comments
-> 
-> Thank you for the update.
-> 
-> > +static inline int pl353_wait_for_dev_ready(struct nand_chip *chip) {
-> > +	unsigned long timeout = jiffies + PL353_NAND_DEV_BUSY_TIMEOUT;
-> > +
-> > +	do {
-> > +		if (pl353_smc_get_nand_int_status_raw()) {
-> > +			pl353_smc_clr_nand_int();
-> > +			break;
-> 
-> A closing brace is missing here. This causes a compilation failure.
-While cleaning up the warnings reported by checkpatch,  this happened.
-sorry for that. I will correct it. 
-> 
-> > +
-> > +		cpu_relax();
-> 
-> You previously used cond_resched (via nand_wait_ready) here. Why did you change it to
-> cpu_relax()?
-I just replicated the pl353_wait_for_ecc_done() API definition.
-But did you see any issue with this?
-Anyway I will replace it with cond_resched(), instead of cpu_releax()
-> 
-> > +	} while (!time_after_eq(jiffies, timeout));
-> > +
-> > +	if (time_after_eq(jiffies, timeout)) {
-> > +		pr_err("%s timed out\n", __func__);
-> > +		return -ETIMEDOUT;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> 
-> 
-> > +static int pl353_nand_read_page_hwecc(struct nand_chip *chip,
-> > +				      u8 *buf, int oob_required, int page) {
-> > +	int i, stat, eccsize = chip->ecc.size;
-> > +	int eccbytes = chip->ecc.bytes;
-> > +	int eccsteps = chip->ecc.steps;
-> > +	u8 *p = buf;
-> > +	u8 *ecc_calc = chip->ecc.calc_buf;
-> > +	u8 *ecc = chip->ecc.code_buf;
-> > +	unsigned int max_bitflips = 0;
-> > +	u8 *oob_ptr;
-> > +	u32 ret;
-> > +	unsigned long data_phase_addr;
-> > +	unsigned long nand_offset = (unsigned long __force)xnfc->regs;
-> 
-> The variable xnfc is undeclared here. Consider swapping the line with the next one.
-> 
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> 
-> After loading the driver, the device does not work. The dmesg output is:
-> 
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-> nand: Micron MT29F2G08ABAEAWP
-> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64 Bad block table not
-> found for chip 0 Bad block table not found for chip 0 Scanning device for bad blocks
-> nand_bbt: error while writing BBT block -524
-> nand_bbt: error while writing BBT block -524
-> nand_bbt: error while writing BBT block -524
-> nand_bbt: error while writing BBT block -524 No space left to write bad block table
-> nand_bbt: error while writing bad block table -28 pl353-nand e1000000.flash: could not scan
-> the nand chip
-> pl353-nand: probe of e1000000.flash failed with error -28
-Did you follow the same thing that you tried earlier?
-i.e. updated "nand-bus-width" property and "nand-ecc-mode" ?
-I haven't seen any issue in BBT scanning, with this patch.
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ drivers/mtd/nand/raw/mtk_ecc.c  | 12 ++----------
+ drivers/mtd/nand/raw/mtk_ecc.h  |  4 +---
+ drivers/mtd/nand/raw/mtk_nand.c | 12 ++----------
+ 3 files changed, 5 insertions(+), 23 deletions(-)
 
-> 
-> After trying the driver, the flash chip was bricked. Neither the old driver nor the uboot-xlnx
-> driver nor the Xilinx fsbl are able to talk to the chip afterwards. This behaviour persists even
-> after a full power cycle. I'll try reinitializing the flash chip next. I've only seen this behaviour
-> once, so there is a slight chance that the cause is something else.
-Sometimes I also faced the same problem during driver development.
-What I did is, in standalone nandps driver example,  I forcibly created BBT in the init and once
- it is done. I just reloaded the actual example. Then after wards u-boot and Linux are able to scan
-the BBT.
+diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
+index 6432bd70c3b3..eea0f903bc24 100644
+--- a/drivers/mtd/nand/raw/mtk_ecc.c
++++ b/drivers/mtd/nand/raw/mtk_ecc.c
+@@ -1,17 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
+ /*
+  * MTK ECC controller driver.
+  * Copyright (C) 2016  MediaTek Inc.
+  * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
+  *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+  */
+ 
+ #include <linux/platform_device.h>
+@@ -600,4 +592,4 @@ module_platform_driver(mtk_ecc_driver);
+ 
+ MODULE_AUTHOR("Xiaolei Li <xiaolei.li@mediatek.com>");
+ MODULE_DESCRIPTION("MTK Nand ECC Driver");
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("Dual MIT/GPL");
+diff --git a/drivers/mtd/nand/raw/mtk_ecc.h b/drivers/mtd/nand/raw/mtk_ecc.h
+index a455df080952..0e48c36e6ca0 100644
+--- a/drivers/mtd/nand/raw/mtk_ecc.h
++++ b/drivers/mtd/nand/raw/mtk_ecc.h
+@@ -1,12 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+ /*
+  * MTK SDG1 ECC controller
+  *
+  * Copyright (c) 2016 Mediatek
+  * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
+  *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of the GNU General Public License version 2 as published
+- * by the Free Software Foundation.
+  */
+ 
+ #ifndef __DRIVERS_MTD_NAND_MTK_ECC_H__
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index b6b4602f5132..3cbc25793062 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -1,17 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
+ /*
+  * MTK NAND Flash controller driver.
+  * Copyright (C) 2016 MediaTek Inc.
+  * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
+  *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+  */
+ 
+ #include <linux/platform_device.h>
+@@ -1598,6 +1590,6 @@ static struct platform_driver mtk_nfc_driver = {
+ 
+ module_platform_driver(mtk_nfc_driver);
+ 
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("Dual MIT/GPL");
+ MODULE_AUTHOR("Xiaolei Li <xiaolei.li@mediatek.com>");
+ MODULE_DESCRIPTION("MTK Nand Flash Controller Driver");
+-- 
+2.18.0
 
-Thanks,
-Naga Sureshkumar Relli
-> 
-> Helmut
 
 ______________________________________________________
 Linux MTD discussion mailing list
