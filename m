@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58E30C10F11
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09596C10F11
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:52:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2648021905
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:50:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CD526218FC
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:52:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RA3pB5dm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fb4EAdPt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2648021905
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TfYodPGm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="O5E4WQ0o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD526218FC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iEatty/rMe/PPBFnz3+IGF9hOE2BNcuhdxlX4PyuoCY=; b=RA3pB5dm4MGxXM
-	VbSm5znr+0lk80iP5iLrzpJ9x0jO/Rn7igzI7ItdASkxYYE/mFKz3Rjd4Qlx3+XrNagFINSzTu5kx
-	EwFjJCGFvXcXBPzRg4HqjOrOw+3fdeVmCNltfvk2qrvGQm3myyB9hvzpq8VHX3sZyM55ZyZCsjwer
-	C7Tr1ck8zdE6bAd3NR22wJ4VGpyz+dyYH/HUNoPrFUgR20xuGXPAtX/ED5FYv/oEKpJrYsxE+qn8H
-	r0LhNXx54G6Ku74JwxLXBN1jZ2kzR7vcJHVaRnsnCldbxCdY472GzseroQxD6EAHS0DwoYbXXfxjr
-	PrCDioHw3mf2gsaZNBZQ==;
+	List-Owner; bh=AqCE11P3Q6tNZ/valgsBJ3Qnv2/wupTmjcML/+swdVo=; b=TfYodPGmVSXJWh
+	+xVOpBvYw3xdHthyILTt+5Z7531UZjsuYubGKOzn7W9f6kGf+/XzBunLz4Z+8orJBgtm1es++qjLq
+	dcy0I6rn5//aYr7N5ZsMm9m8oEOEGYQRG5gpj/0nAEIps/7xhkY49W6Gm38b9r+pugZ31t7VcyPYe
+	YrS/m9KT3SzNsWmZ34K+EhF7liThTuw5oQliwijkkOFJuMAGf/TsGyvQFOjPXov5jNP6GBgkve/9H
+	gwG63zYiikTYY7TL5Bsxmv9WWK1FQiuedKpfiFcOTmpC811C8o6Ii9cQI0iqiNPwqesxprcBkqUdn
+	f0c3uwbx+kaROX1EMuJA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJJEX-0000iC-Pn; Wed, 24 Apr 2019 14:50:49 +0000
+	id 1hJJFv-0001Vn-Tr; Wed, 24 Apr 2019 14:52:15 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJJEU-0000hH-Id
- for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 14:50:47 +0000
+ id 1hJJFn-0001NZ-6V
+ for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 14:52:08 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B7789218FE;
- Wed, 24 Apr 2019 14:50:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 65201218FC;
+ Wed, 24 Apr 2019 14:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1556117446;
- bh=YIQAdVhr0apGzBMl/aEiIDksJZKPdoyWLEB/z7exXT4=;
+ s=default; t=1556117526;
+ bh=hmYdW0izHINJYOBHn2L29UUICnSc1+fXNT5o+jFrU9s=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=fb4EAdPtLKta6QKtKAU3AXjaq7RNYvxHXqgTZk+YiUX4d/bbNMdVl7Dx07LgJ1cIi
- ADNPFvfFOASVfKFJbbR9fAtax6wa96PGE2itGo5Z5qNbR2gNZEoRre3S51C7jE4siZ
- WE3k5zm1RmgZt7RHgXPTQsMIb2h9VZTsGF+cktEw=
+ b=O5E4WQ0oJBb7K0+XQQFeTv1pv74HEaomiFIK0I1Dr4ijUraFxhEkWoOMrGTm9UxEQ
+ p0zcUXrSSqzJvzE2394S9qRmUS+K2uWdyCmTTifs9JtcV2X4rwL10zzmXw+J9o0WYP
+ IW360PipLFRemvIOSMdxfJmrIwHUZaZAjWMiV0g8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 14/28] jffs2: fix use-after-free on symlink
+Subject: [PATCH AUTOSEL 4.4 05/15] jffs2: fix use-after-free on symlink
  traversal
-Date: Wed, 24 Apr 2019 10:49:58 -0400
-Message-Id: <20190424145012.30886-14-sashal@kernel.org>
+Date: Wed, 24 Apr 2019 10:51:42 -0400
+Message-Id: <20190424145152.31351-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190424145012.30886-1-sashal@kernel.org>
-References: <20190424145012.30886-1-sashal@kernel.org>
+In-Reply-To: <20190424145152.31351-1-sashal@kernel.org>
+References: <20190424145152.31351-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190424_075046_629064_6AB99788 
+X-CRM114-CacheID: sfid-20190424_075207_250464_8048FE79 
 X-CRM114-Status: UNSURE (   9.25  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -102,7 +102,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 06a71dbd4833..2f236cca6095 100644
+index bfebbf13698c..5b52ea41b84f 100644
 --- a/fs/jffs2/readinode.c
 +++ b/fs/jffs2/readinode.c
 @@ -1414,11 +1414,6 @@ void jffs2_do_clear_inode(struct jffs2_sb_info *c, struct jffs2_inode_info *f)
@@ -118,7 +118,7 @@ index 06a71dbd4833..2f236cca6095 100644
  	while(fds) {
  		fd = fds;
 diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 226640563df3..76aedbc97773 100644
+index 023e7f32ee1b..9fc297df8c75 100644
 --- a/fs/jffs2/super.c
 +++ b/fs/jffs2/super.c
 @@ -47,7 +47,10 @@ static struct inode *jffs2_alloc_inode(struct super_block *sb)
