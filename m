@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DBD0C10F11
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23760C10F11
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:40:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F66521901
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:35:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E836121915
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:40:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="q4Yw3Pxq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cM3pXvtm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F66521901
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="esyLrqln";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oBjMxaqP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E836121915
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,48 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cwRBXnImKqVBE4sxTyomTWZwF7RWbJiZHx35QXrIEtw=; b=q4Yw3Pxqm6K2D7
-	Cs3l0u5ytYpBj3cX9anGxD2UThObeF7VWiua2ofJyZnKKlmQWQ8wCOYXmdJVIzTJx8hT5X3EPWSkU
-	gJFynC1iq/nAWdm76FgaoQsmFtT0VjV+qOTe6d48X9i6XtJfRPzQ82zRYEPrqqTqv3WojfNbM9p1c
-	26wdr3O2f6K5LkcrcKMh8A58z/DHb5tAn5K2ILQLnaDO0Qq8+0NRc32/DuYdpGyh//5LwpfQDKSV5
-	JkaUSxmyZd9HjvaDbrQTGv1P10aPol24jtviZhnSO63iaBjmCfBhJgKfbbW1338iOMaPNWXoXI1fX
-	6E11ZCCL5Ab3UvspDQuw==;
+	List-Owner; bh=FWar7wVH+RR0WaZQ23n3yrrhyBXrDH9R3kE4A9GbThU=; b=esyLrqlnkDqqFR
+	Bo6TcoB8Vu9kN+1V/mU+/ku2hkAcmsbmVC+g08CzG0FlQp10u4mBV3Mc2/u57mG0LHs5B39ykTtyt
+	0+L3VxIyO3/93m+AUbAfop3hgnL5GHudWTASW/ztUprkFqLZU7rd6Jun7j885XnP3Xf+VXkd5/lCW
+	8EZnw37rRCV10tAvkDesb2hxyC1V7cXMO+ieZ68638gmjyywMpzaqyvdcQEbK7PnpwGClW9a+KipR
+	/s5cOXbR2eVdU6AuGuxGADF82Xjqj4Kb8vi5pMqfdk6mW+ZDesIOZXCUfFLgbLT46YKCHM6G7r5ir
+	suFUSyd/ubnARt3245jQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJIzN-0000MV-2D; Wed, 24 Apr 2019 14:35:09 +0000
+	id 1hJJ4G-0004Cu-0z; Wed, 24 Apr 2019 14:40:12 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJIzI-0000Le-N1
- for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 14:35:06 +0000
+ id 1hJJ4D-0004Bk-An
+ for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 14:40:10 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 133DA21900;
- Wed, 24 Apr 2019 14:35:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A910821909;
+ Wed, 24 Apr 2019 14:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1556116504;
- bh=KyUK2gqzDF9Mot5ZtixrTjwo3of8+wqm6mhiVro5AH8=;
+ s=default; t=1556116809;
+ bh=7+B5qob+FgaiyQhMC1k51U3e1X0YwM2C2Vys23zN5HE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cM3pXvtm/rRXXIeU+bepEPB/XUVWbJm5GP5tm5Jv4TC05gcQiD5Ncmi3c90CPzFWH
- rOiGMg/P2VShCwncvP1mayCbuSYHJytEq/H0OfqDg5rdEDRyOGQTTo6lyg9kx2zs8M
- L/noiavD9JRfQZbMyYq8uVXjSJT0ZsLgweRhRZoY=
+ b=oBjMxaqPURkKNmzDtoxJu3NWD/iJDvItnQQgiDZcrasXBQLJiTyd7reMettHzOy6u
+ Yf8Bvgrzx8JaeD37rp5/9fEgOssmqx2jHWo5UllpG/nCj4veZRGp7AxTrwQsS7XOYY
+ /ni2F3ymVSzzIx8kNSFGK7wm+icX3eXiFIuC/xy0=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.0 33/66] jffs2: fix use-after-free on symlink
+Subject: [PATCH AUTOSEL 4.19 25/52] jffs2: fix use-after-free on symlink
  traversal
-Date: Wed, 24 Apr 2019 10:33:07 -0400
-Message-Id: <20190424143341.27665-33-sashal@kernel.org>
+Date: Wed, 24 Apr 2019 10:38:43 -0400
+Message-Id: <20190424143911.28890-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190424143341.27665-1-sashal@kernel.org>
-References: <20190424143341.27665-1-sashal@kernel.org>
+In-Reply-To: <20190424143911.28890-1-sashal@kernel.org>
+References: <20190424143911.28890-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190424_073504_770775_6FCB4F5F 
-X-CRM114-Status: UNSURE (   9.14  )
+X-CRM114-CacheID: sfid-20190424_074009_395316_5BB80695 
+X-CRM114-Status: UNSURE (   9.25  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -95,7 +95,7 @@ struct inode itself, so that traversal during RCU pathwalk wouldn't step
 into freed memory.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Sasha Levin (Microsoft) <sashal@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
  fs/jffs2/readinode.c | 5 -----
  fs/jffs2/super.c     | 5 ++++-
