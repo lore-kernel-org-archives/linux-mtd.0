@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23760C10F11
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D9D3C282CE
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:47:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E836121915
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:40:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CE0121903
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 14:47:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="esyLrqln";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oBjMxaqP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E836121915
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VleJ8qF6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="pvNvq6dM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CE0121903
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FWar7wVH+RR0WaZQ23n3yrrhyBXrDH9R3kE4A9GbThU=; b=esyLrqlnkDqqFR
-	Bo6TcoB8Vu9kN+1V/mU+/ku2hkAcmsbmVC+g08CzG0FlQp10u4mBV3Mc2/u57mG0LHs5B39ykTtyt
-	0+L3VxIyO3/93m+AUbAfop3hgnL5GHudWTASW/ztUprkFqLZU7rd6Jun7j885XnP3Xf+VXkd5/lCW
-	8EZnw37rRCV10tAvkDesb2hxyC1V7cXMO+ieZ68638gmjyywMpzaqyvdcQEbK7PnpwGClW9a+KipR
-	/s5cOXbR2eVdU6AuGuxGADF82Xjqj4Kb8vi5pMqfdk6mW+ZDesIOZXCUfFLgbLT46YKCHM6G7r5ir
-	suFUSyd/ubnARt3245jQ==;
+	List-Owner; bh=B794tsVge3EPw43njAQaXy7O23j8RbZqc3v99aWwtVs=; b=VleJ8qF61+l+Ke
+	QQ/x+G8WFxDxhdwW4H6U21HNYirgDVtri9HF0TkQvmhobpsaAxMCjyvOXeikjiBAFxga6xGzFoTOB
+	UiOeLDHjLK8DXcBO6p/Ma0D/ad5e66gMstY7DcLoCYvPpSsTfL2BW9rvZd/uQ416645ukuIL75hwx
+	iLvqk9VeKhrUEZVzpeGRxcybeJ2MQfvirg8h8T6mUInsLz+tV/z+HQGw74NWcvpxcMFVnusJySVXi
+	0VpCw1m3Ycgr86nXJbF+wsLZpiKyzz8T8vhWytMP8WZAgIsQAS/XjVnK/Pk3Z6h1WEBfcHxPrQ6HC
+	6DAF6Iy4mkR5ayNqenVg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJJ4G-0004Cu-0z; Wed, 24 Apr 2019 14:40:12 +0000
+	id 1hJJBc-0006PT-I9; Wed, 24 Apr 2019 14:47:48 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJJ4D-0004Bk-An
- for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 14:40:10 +0000
+ id 1hJJBa-0006P5-Dl
+ for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 14:47:47 +0000
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A910821909;
- Wed, 24 Apr 2019 14:40:07 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E4A5B218FD;
+ Wed, 24 Apr 2019 14:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1556116809;
- bh=7+B5qob+FgaiyQhMC1k51U3e1X0YwM2C2Vys23zN5HE=;
+ s=default; t=1556117266;
+ bh=F9T/FtYXnbbZzGASU5Trxu76QVW6WM1/e7VxBu3vtuI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=oBjMxaqPURkKNmzDtoxJu3NWD/iJDvItnQQgiDZcrasXBQLJiTyd7reMettHzOy6u
- Yf8Bvgrzx8JaeD37rp5/9fEgOssmqx2jHWo5UllpG/nCj4veZRGp7AxTrwQsS7XOYY
- /ni2F3ymVSzzIx8kNSFGK7wm+icX3eXiFIuC/xy0=
+ b=pvNvq6dM4f0yRzWGNUfT6YQvmdet+be/UZSvSZ8yOvJAlDpo1gJhyLomUbq/XQxX7
+ clGETf6Zdclg+BGR2tOcg/QZFnczy5PL0cfR8inpnYSgWd/xMBwSgHx7JMT7VJ5mqQ
+ 9n2kwn0BPbBVZYhkYU5lreDEqLFaSU8Pdy8rszgg=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 25/52] jffs2: fix use-after-free on symlink
+Subject: [PATCH AUTOSEL 4.14 16/35] jffs2: fix use-after-free on symlink
  traversal
-Date: Wed, 24 Apr 2019 10:38:43 -0400
-Message-Id: <20190424143911.28890-25-sashal@kernel.org>
+Date: Wed, 24 Apr 2019 10:46:50 -0400
+Message-Id: <20190424144709.30215-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190424143911.28890-1-sashal@kernel.org>
-References: <20190424143911.28890-1-sashal@kernel.org>
+In-Reply-To: <20190424144709.30215-1-sashal@kernel.org>
+References: <20190424144709.30215-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190424_074009_395316_5BB80695 
+X-CRM114-CacheID: sfid-20190424_074746_478499_F0B7A44D 
 X-CRM114-Status: UNSURE (   9.25  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -118,7 +118,7 @@ index 389ea53ea487..bccfc40b3a74 100644
  	while(fds) {
  		fd = fds;
 diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index bb6ae387469f..05d892c79339 100644
+index 83340496645b..9a9f30eddbbb 100644
 --- a/fs/jffs2/super.c
 +++ b/fs/jffs2/super.c
 @@ -47,7 +47,10 @@ static struct inode *jffs2_alloc_inode(struct super_block *sb)
