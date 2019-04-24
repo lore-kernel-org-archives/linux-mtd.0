@@ -2,105 +2,61 @@ Return-Path: <SRS0=0gGT=S2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBEB7C10F11
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 21:08:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8882BC10F11
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 22:14:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7EEC20684
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 21:08:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 530B420835
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Apr 2019 22:14:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tj91br4w";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="a+og0q+2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7EEC20684
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oKVwwBDU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 530B420835
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-mips.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=r7jC9C96/YUoT0pS1LLCdQpIzDVK3iu6GyMGIsr0dXw=; b=tj91br4wbX4han
-	lhHRFVCcN6o1/OE68zPyzx0EKUVdMC/XdWSx3WmjqxxhwvGiF7pPQ5LbYpCqM86Qt2Vbx9mxUROOG
-	OWJSCkBq/N2zH5177n5HhHmxvH1MgGAU7rjgnelj4uuU3cdLvnuaNzjor5AWQESBqkF1RuJgritzI
-	xd/SfvDIMCVFOMKYDBu52VugBAaRwek3ilg2K3wOy6To5HuAnBAQeKn5kJsxMTUSUkderyOoQ/fbU
-	NZWvRL8AF9/R+YK6jzXZkJ5gb5UzVN6KLZ1+dpyXOBSBdolm0lEw7nWvYWVsBCepCBYiWP6MiGFcF
-	F92Xo5VgaVoza9SyU65Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=46zeyxTUh8VDT2qFp1R3tPY1vESZIiY52l58HBJQ5IE=; b=oKVwwBDULveRjP
+	kFFEY5d5VNfatafc+W3sSTDV87/vlF5J7sgqpfNSUwsdQ3Kl4y+SfBEs0YCHw6gIHSzCpCAPGrXPc
+	DAmpB4PmfPtRWF4FLuZf681+eFu9tgFHSFFVTVW2JYuNbTAo+8J7Aw6zcPpMuv3f3Tn2AYTCGzHb+
+	WF4r6y6loKCcDvAEGdiU+kIg/aG5jA0h58aMTyPsv1q5dtKH/uAg/qD+vikpc/BYjZynN3ERiBPN+
+	BZAm80EPuQpDOLN9YulXDbpbcHfS1tvgT8DGzwgpP/zO5v+V9+MVtr4m09Vk/7VV4+iPMbl/Yp+8F
+	Z1ZBiXnHoWZs7Pn8pMLg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJP8E-00050z-LL; Wed, 24 Apr 2019 21:08:42 +0000
-Received: from mail-he1eur04on0616.outbound.protection.outlook.com
- ([2a01:111:f400:fe0d::616]
- helo=EUR04-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJP8B-00050C-3z
- for linux-mtd@lists.infradead.org; Wed, 24 Apr 2019 21:08:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D+wEvndaxB2q9nE13nG+m5UVzBdo6Iso7ASKP+rwyZM=;
- b=a+og0q+28gThIAIJ4sPqVOE4j95NukOITZb4QI2KrSODqGK+nw3b/Mwfb4H/gOEsxwcg1LojDt0J2gHXoGetED73USNeqCddFAieJKSy6+JCwfxRjNqwt/Lxxe1pY5C7Btj7x5LWpHhshYOQGs6VEmz5FlKRfRYT1a4orSK1HzM=
-Received: from AM6PR04MB4967.eurprd04.prod.outlook.com (20.177.33.210) by
- AM6PR04MB4503.eurprd04.prod.outlook.com (20.177.37.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1813.12; Wed, 24 Apr 2019 21:08:33 +0000
-Received: from AM6PR04MB4967.eurprd04.prod.outlook.com
- ([fe80::ac11:250f:e99e:8fd3]) by AM6PR04MB4967.eurprd04.prod.outlook.com
- ([fe80::ac11:250f:e99e:8fd3%5]) with mapi id 15.20.1813.017; Wed, 24 Apr 2019
- 21:08:33 +0000
-From: Han Xu <han.xu@nxp.com>
-To: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-Subject: [PATCH] mtd: spi-nor: Add prep/unprep for spi_nor_resume
-Thread-Topic: [PATCH] mtd: spi-nor: Add prep/unprep for spi_nor_resume
-Thread-Index: AQHU+uHfbtBiSaKzx0CN/OQDDONR1g==
-Date: Wed, 24 Apr 2019 21:08:33 +0000
-Message-ID: <20190424210818.25205-1-han.xu@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SN6PR04CA0054.namprd04.prod.outlook.com
- (2603:10b6:805:2a::31) To AM6PR04MB4967.eurprd04.prod.outlook.com
- (2603:10a6:20b:7::18)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=han.xu@nxp.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.17.1
-x-originating-ip: [64.157.242.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b62abdc2-a5df-4fce-4fe6-08d6c8f9021b
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);
- SRVR:AM6PR04MB4503; 
-x-ms-traffictypediagnostic: AM6PR04MB4503:
-x-microsoft-antispam-prvs: <AM6PR04MB45032F7E6F76985F6297406E973C0@AM6PR04MB4503.eurprd04.prod.outlook.com>
-x-forefront-prvs: 00179089FD
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(39860400002)(346002)(136003)(396003)(366004)(189003)(199004)(486006)(36756003)(68736007)(2616005)(6512007)(6486002)(6506007)(476003)(386003)(73956011)(256004)(14444005)(4326008)(186003)(44832011)(66446008)(102836004)(64756008)(7736002)(66556008)(53936002)(305945005)(66476007)(25786009)(6436002)(66946007)(54906003)(5660300002)(6116002)(81166006)(8676002)(8936002)(478600001)(14454004)(99286004)(50226002)(1076003)(66066001)(26005)(86362001)(71190400001)(52116002)(2501003)(316002)(2906002)(71200400001)(3846002)(97736004)(110136005)(81156014);
- DIR:OUT; SFP:1101; SCL:1; SRVR:AM6PR04MB4503;
- H:AM6PR04MB4967.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: fsDWoSmcpb5dy0G5txBtKvhhAB4zl1DW/l96pxX9xT8BnLlwt/8Ov7wXRmg3KHu8ugXZhPo1cZEVVEJjnpuQf/AN4yVafvyQIjQ5nx0L+E2NcWhLwkzjIImZOuyp0aQnndqs1efkC/BbTOSYAUHEP28vJCdEnrsAsztqZuCkF/yRYSvmYxdybmgH8mbZy3Lmcgf1zMETgFBB9rzRZRaLuGUsHxketq3NtjGP4u+7uGlMnOwMX0hyRYLcXule/oOYe1OULFlT64sgvJEuU541lPyQEy6Dg+idZ5nVnE4qorhBvh0W9ZysU/qDlx1p3kH+cT4zqZlM+9tBG3xHQnehquxYzNMJDs2q/G++AP3NTGoevJAxt4OqSUH2pP3k6sCg/x3o21/iK4ouZF8G3XIU8cV/iGt+EzPuj6Id6POqKcM=
+	id 1hJQA3-0000Yi-Mo; Wed, 24 Apr 2019 22:14:39 +0000
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hJQ9z-0000XX-Nh; Wed, 24 Apr 2019 22:14:37 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990768AbfDXWOaBmp1H (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org> + 1 other);
+ Thu, 25 Apr 2019 00:14:30 +0200
+Date: Thu, 25 Apr 2019 00:14:28 +0200
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH v3] mtd: rawnand: ams-delta: Drop board specific
+ partition info
+Message-ID: <20190424221428.GA4172@lenoch>
+References: <20190324223344.24590-1-jmkrzyszt@gmail.com>
+ <20190424180212.10830-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b62abdc2-a5df-4fce-4fe6-08d6c8f9021b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2019 21:08:33.1052 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4503
+Content-Disposition: inline
+In-Reply-To: <20190424180212.10830-1-jmkrzyszt@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190424_140839_259869_B169ED58 
-X-CRM114-Status: GOOD (  11.32  )
+X-CRM114-CacheID: sfid-20190424_151435_773493_8379D18E 
+X-CRM114-Status: GOOD (  27.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -112,65 +68,154 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
- "kdasu.kdev@gmail.com" <kdasu.kdev@gmail.com>,
- "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- dl-linux-imx <linux-imx@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+Cc: linux-omap@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In the new implemented spi_nor_resume function, the spi_nor_init()
-should be braced by prep/unprep functions._
+Hi Janusz,
 
-Signed-off-by: Han Xu <han.xu@nxp.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
- include/linux/mtd/spi-nor.h   | 1 +
- 2 files changed, 9 insertions(+)
+On Wed, Apr 24, 2019 at 08:02:12PM +0200, Janusz Krzysztofik wrote:
+> After recent modifications, only a hardcoded partition info makes
+> the driver device specific.  Other than that, the driver uses GPIO
+> exclusively and can be used on any hardware.
+> 
+> Drop the partition info and use MTD partition parser with default list
+> of parser names instead.  For the OF parser to work correctly, pass
+> device of_node to mtd.
+> 
+> Amstrad Delta users should append the following partition info to their
+> kernel command line, possibly embedding it in CONFIG_CMDLINE:
+> 
+> mtdparts=ams-delta-nand:3584k(Kernel),256k(u-boot),256k(u-boot_params),\
+> 256k(Amstrad_LDR),27m(File_system),768k(PBL_reserved)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 73172d7f512b..f6491885fa4f 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3956,10 +3956,18 @@ static void spi_nor_resume(struct mtd_info *mtd)
- 	struct device *dev = nor->dev;
- 	int ret;
- 
-+	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_RESUME);
-+	if (ret) {
-+		dev_err(dev, "prepare() failed\n");
-+		return;
-+	}
-+
- 	/* re-initialize the nor chip */
- 	ret = spi_nor_init(nor);
- 	if (ret)
- 		dev_err(dev, "resume() failed\n");
-+
-+	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_RESUME);
- }
- 
- void spi_nor_restore(struct spi_nor *nor)
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index b3d360b0ee3d..50cf71dd7e9e 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -231,6 +231,7 @@ enum spi_nor_ops {
- 	SPI_NOR_OPS_ERASE,
- 	SPI_NOR_OPS_LOCK,
- 	SPI_NOR_OPS_UNLOCK,
-+	SPI_NOR_OPS_RESUME,
- };
- 
- enum spi_nor_option_flags {
--- 
-2.17.1
+now, when driver is no longer Amstrad Delta specific, why would you want
+to have ams-delta-nand hardcoded on kernel cmdline? I'm assuming at some
+point this driver will become gpio-nand [*] or something like that and
+asking users to change their kernel cmdline twice is just unwise :)
+
+[*] btw, it is really shame gpio-nand name is already taken by driver
+living in drivers/mtd/nand/raw/gpio.c which is more likely gpio-mem-nand
+used by at least CompuLab CM-X255 and Picochip picoXcell.
+
+Otherwise your work on this driver is so amazing that I just spent
+couple of hours finding that phone and compiling some decent userspace
+for it :) Thank you!
+
+> For their convenience, that information is added to the board Kconfig
+> entry help text, as well as CONFIG_MTD_CMDLINE_PARTS symbol is selected
+> automatically from the board Kconfig entry if the NAND driver is also
+> selected.
+> 
+> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+> ---
+> Changelog:
+> v2->v3:
+> - add information on the requirement for passing partition info via
+>   kernel command line to the board Kconfig entry help text
+> v1->v2:
+> - fix a typo poitned out by Aaro - thanks!
+> - fix device_node not passed to OF parser via mtd_info
+> - commit message reworded and reformatted a bit for better readability
+> 
+>  arch/arm/mach-omap1/Kconfig      |  7 ++++++-
+>  drivers/mtd/nand/raw/ams-delta.c | 29 ++---------------------------
+>  2 files changed, 8 insertions(+), 28 deletions(-)
+> 
+> diff --git a/arch/arm/mach-omap1/Kconfig b/arch/arm/mach-omap1/Kconfig
+> index c4694f26b5c4..41a47d251cac 100644
+> --- a/arch/arm/mach-omap1/Kconfig
+> +++ b/arch/arm/mach-omap1/Kconfig
+> @@ -164,17 +164,22 @@ config MACH_NOKIA770
+>  	  have such a device.
+>  
+>  config MACH_AMS_DELTA
+> -	bool "Amstrad E3 (Delta)"
+> +	bool "Amstrad E3 (Delta) - see help for important information"
+>  	depends on ARCH_OMAP1 && ARCH_OMAP15XX
+>  	select FIQ
+>  	select GPIO_GENERIC_PLATFORM
+>  	select LEDS_GPIO_REGISTER
+>  	select REGULATOR
+>  	select REGULATOR_FIXED_VOLTAGE
+> +	select MTD_CMDLINE_PARTS if MTD_NAND_AMS_DELTA
+>  	help
+>  	  Support for the Amstrad E3 (codename Delta) videophone. Say Y here
+>  	  if you have such a device.
+>  
+> +	  If you are using built-in NAND, append the following partition
+> +	  info to kernel command line:
+> +	  mtdparts=ams-delta-nand:3584k(Kernel),256k(u-boot),256k(u-boot_params),256k(Amstrad_LDR),27m(File_system),768k(PBL_reserved)
+> +
+>  config MACH_OMAP_GENERIC
+>  	bool "Generic OMAP board"
+>  	depends on ARCH_OMAP1 && (ARCH_OMAP15XX || ARCH_OMAP16XX)
+> diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+> index 8312182088c1..e0f09179bbda 100644
+> --- a/drivers/mtd/nand/raw/ams-delta.c
+> +++ b/drivers/mtd/nand/raw/ams-delta.c
+> @@ -41,31 +41,6 @@ struct ams_delta_nand {
+>  	bool			data_in;
+>  };
+>  
+> -/*
+> - * Define partitions for flash devices
+> - */
+> -
+> -static const struct mtd_partition partition_info[] = {
+> -	{ .name		= "Kernel",
+> -	  .offset	= 0,
+> -	  .size		= 3 * SZ_1M + SZ_512K },
+> -	{ .name		= "u-boot",
+> -	  .offset	= 3 * SZ_1M + SZ_512K,
+> -	  .size		= SZ_256K },
+> -	{ .name		= "u-boot params",
+> -	  .offset	= 3 * SZ_1M + SZ_512K + SZ_256K,
+> -	  .size		= SZ_256K },
+> -	{ .name		= "Amstrad LDR",
+> -	  .offset	= 4 * SZ_1M,
+> -	  .size		= SZ_256K },
+> -	{ .name		= "File system",
+> -	  .offset	= 4 * SZ_1M + 1 * SZ_256K,
+> -	  .size		= 27 * SZ_1M },
+> -	{ .name		= "PBL reserved",
+> -	  .offset	= 32 * SZ_1M - 3 * SZ_256K,
+> -	  .size		=  3 * SZ_256K },
+> -};
+> -
+>  static void ams_delta_write_commit(struct ams_delta_nand *priv)
+>  {
+>  	gpiod_set_value(priv->gpiod_nwe, 0);
+> @@ -238,6 +213,7 @@ static int ams_delta_init(struct platform_device *pdev)
+>  	mtd->dev.parent = &pdev->dev;
+>  
+>  	nand_set_controller_data(this, priv);
+> +	nand_set_flash_node(this, pdev->dev.of_node);
+>  
+>  	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
+>  	if (IS_ERR(priv->gpiod_rdy)) {
+> @@ -315,8 +291,7 @@ static int ams_delta_init(struct platform_device *pdev)
+>  		return err;
+>  
+>  	/* Register the partitions */
+> -	err = mtd_device_register(mtd, partition_info,
+> -				  ARRAY_SIZE(partition_info));
+> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+>  	if (err)
+>  		goto err_nand_cleanup;
+>  
+> -- 
+> 2.21.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
