@@ -2,87 +2,94 @@ Return-Path: <SRS0=0ANE=S3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA920C10F03
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 06:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E33C10F03
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 07:58:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34DDA214AE
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 06:27:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 20F0520878
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 07:58:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cgZDH0a0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34DDA214AE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uEadIW/O";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="EnKY2EUp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20F0520878
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=cgZDH0a0s9zDyS1jYFYmvDQqSJ
-	uzO8W+vMsxuSGg2cSkuN2VP+1VRtxZ5bxip14FmfStmJW1BHGYsT116q7PMSXDt9Z852UTp2LhDtZ
-	PFvlRKF74qcSaaHKfC2jCbz6jRPDWtudjqVZpmelT6rEQHK1EfIZbiEI2WvhZopyFqu+2oIuKjpfa
-	hCNFHnWn32RSQ1/0QTeH/dMj4Li2WvP5NDPulFtL7P7y4NKjsni/pO6Jjc8CYQcFhX/elNqqfWyGv
-	Q3qEr1tka+venOarFK/eC5bui15R9vovmCZeEnfjKR38l6yduNOB+7OUzULL7JP8qvt9YwJL1keHA
-	z1lGZImg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=p6A0gxGi4jHicRQfu53dWSatgeCidMuZ5LJbnsXGoDU=; b=uEadIW/Or1igW0rSlBQ/xm0uC
+	f1JhnsFXQKd7BsoRiUfj2mO0QzmGoYQ0a9CZWNK7wnU/VbwqQ33w37erX1dF90wMc5lQLvs4ZEqWJ
+	BknnprBsUd6bWWD5FXPA6EWkGl1niH8EjhVLR4v4FeeKvlJd20iVMv1nHpq2Au924C1UJeXjIZkik
+	0Wg+KxRhd603nc5xeU34H31hBifAUy4h6STQ9HKKsBwI96rf5+o9cBnFPtjuqkYYH4rhX9mh/8RLe
+	7OPaLUzzHlc6oQcoKbrOQXpEHlRsoX7yf3xedL7eXnsIYr3sSm+tQtWm2bNBW+jKcvnihLNw8s9Fu
+	3k1srokcw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJXr7-0001E3-Mu; Thu, 25 Apr 2019 06:27:37 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1hJZHP-0000w6-2v; Thu, 25 Apr 2019 07:58:51 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJXr4-0001DV-6O
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 06:27:35 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id BB28118013756;
- Thu, 25 Apr 2019 08:27:29 +0200 (CEST)
-Subject: Re: Allow tests to work on more platforms
-To: Olliver Schinagl <oliver@schinagl.nl>, linux-mtd@lists.infradead.org
-References: <20190415082031.600-1-oliver@schinagl.nl>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Openpgp: preference=signencrypt
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <d92d03c9-c539-980e-79d9-13a56487ecd7@sigma-star.at>
-Date: Thu, 25 Apr 2019 08:27:22 +0200
+ id 1hJZHK-0000vd-Go; Thu, 25 Apr 2019 07:58:48 +0000
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x3P7kUsv028244; Thu, 25 Apr 2019 09:58:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=subject : to : references
+ : from : message-id : date : mime-version : in-reply-to : content-type :
+ content-transfer-encoding; s=STMicroelectronics;
+ bh=IvsHaaSIMlxl18/hQm1gg52lY0Z93obL0eK66HuX8Tk=;
+ b=EnKY2EUp/xh/t5Xc2qWEbEfPcn6/iLL9+qjctaDNkIpmOM3CNfYL0H/44hwg6m/vT5Fe
+ 6ueMtCeDGCqAtvXKt9RwW/MfuMUaYeJ+iQ3IVqCWL2+yJhftpJU1K2P0wU0fontTWoma
+ 1cXmNdmKqBtb0AhVn4/nW1a9SPU7whpV34E4EGzOXFZW/KZdpWiuv6ZflUJuiJbDTcDg
+ /vwG58OcL22W+B2qXLWCNeCQDIw1j9CpRC7l7223RPh41w5mPuhGb8Q32YR2HyWNUOcx
+ OO2zzlKLgEK+akUgwjjw9A2Zg/e4zqX4Fm/AcJ7Js97c1b6ksJWcF+MNokMZw1wNL48H oQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2ryrvxj7jp-1
+ (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT);
+ Thu, 25 Apr 2019 09:58:31 +0200
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CF07D31;
+ Thu, 25 Apr 2019 07:58:28 +0000 (GMT)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5032114A2;
+ Thu, 25 Apr 2019 07:58:28 +0000 (GMT)
+Received: from [10.201.23.29] (10.75.127.44) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 25 Apr
+ 2019 09:58:27 +0200
+Subject: Re: [PATCH] mtd: rawnand: stm32_fmc2: manage the get_irq error case
+To: Fabien Dessenne <fabien.dessenne@st.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@st.com>, <linux-mtd@lists.infradead.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1556117346-5608-1-git-send-email-fabien.dessenne@st.com>
+From: Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <1812f1d3-da71-4c62-d289-e08d742c2932@st.com>
+Date: Thu, 25 Apr 2019 09:58:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190415082031.600-1-oliver@schinagl.nl>
+In-Reply-To: <1556117346-5608-1-git-send-email-fabien.dessenne@st.com>
 Content-Language: en-US
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2019-04-25_07:, , signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190424_232734_380462_E70E6E83 
-X-CRM114-Status: UNSURE (   7.30  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190425_005846_908103_4007ABD0 
+X-CRM114-Status: GOOD (  17.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,16 +101,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Applied to mtd-utils.git master.
 
-Thanks,
 
-David
+On 4/24/19 4:49 PM, Fabien Dessenne wrote:
+> During probe, check the "get_irq" error value.
+> 
+> Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
+
+Acked-by: Christophe Kerello <christophe.kerello@st.com>
+
+> ---
+>   drivers/mtd/nand/raw/stm32_fmc2_nand.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> index 999ca6a..4aabea2 100644
+> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> @@ -1909,6 +1909,12 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0) {
+> +		if (irq != -EPROBE_DEFER)
+> +			dev_err(dev, "IRQ error missing or invalid\n");
+> +		return irq;
+> +	}
+> +
+>   	ret = devm_request_irq(dev, irq, stm32_fmc2_irq, 0,
+>   			       dev_name(dev), fmc2);
+>   	if (ret) {
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
