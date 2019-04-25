@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05B6CC43219
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 19:25:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 874F6C43219
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 19:27:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2583320717
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 19:25:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B05DB20717
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 19:27:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QtzPXp7b";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="s1ihMDtq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2583320717
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pKmmUtbF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="l00VfSMJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B05DB20717
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
 	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=WFS7xM1XY7fO5Icj4OzsMvCa8YshBveas7/a1HFE6uw=; b=Qtz
-	PXp7byt2sqij/sFbNOJIuxUOcxfoxhwqZ9oiof1EHIZBTlixyGG0/KWaej5u3DeHK3wwkkXUKm9sY
-	lkSub9xViq7OG+J5c9C7ntdHhM8z6TizMlWWpZ+K+Np4LWE2/eFngjN/++DTEYMEHmvGsTm03JnGw
-	z7qsPJoZkPw886bBQWXyjsQEwlpiUx+EECa3tt6oA/JHyj1nyCpcJGMNSwrj7JG9vK7WFo1NS6mYZ
-	Y6WBeN1iAOGSgpwhLw4wFYica2zg8/o0khSY6uu7dQcZVJZWoh083ej226HYPg5kvEruylZL4d2fc
-	qOSOljzeGG74GGHdk4XI37rEcqSp5Tg==;
+	References:List-Owner; bh=WFS7xM1XY7fO5Icj4OzsMvCa8YshBveas7/a1HFE6uw=; b=pKm
+	mUtbFzA8ufNvj50ReAdeiBetW1zEQNB0IOUHZmA9EXjmE76JJeO4C2CXZ3+GoXSmx9shElCNDv1KQ
+	qMcpnd7Bcxve+2vRZaVr700lbn99HzIineYZq6CPRABZMYE8UeGW0xl8ILfYlQbE5PW6fMWOYrZh8
+	nOlGEjemfiOQgR/iFm6hIzU0IoytVvv5Fj04vcCmUs2jPr1kBkwF4erCskP+n6ahmrZSqQQWV94ua
+	WyeCn+q34zw7/9e+YZNCCQdbGF9C21qXHm/q4xIinAL9tMi0eJbBqtNG9fXJYPNFfxiCgrUc756NN
+	7FL3eBQd3v9rsGm9D2zZbAFMIrnFCKg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJjzk-0002dm-HB; Thu, 25 Apr 2019 19:25:20 +0000
+	id 1hJk1r-0004O3-IM; Thu, 25 Apr 2019 19:27:31 +0000
 Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJjzJ-0000tv-62
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 19:24:55 +0000
+ id 1hJk1C-0003Zp-AK
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 19:26:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Ujin8fPqiBYO8fG0iJPxqJkdDmUEfnPunS2eRUnJRt4=; b=s1ihMDtquzaX
- y5REDM3DR8EnLtSD6RvB2HPa5BNhuneeTvCe5hWKSKKZSsl5627yGxE5VZsGOrFiV0/ldoRyZd5kI
- Ta29g9lg8BKdXGR+kC+/Od7QyWNDAV88b5jBU+qfDomtfceCO3bnoB86VB0x9K6Lis2s2Y3dG0rK+
- rEhK4=;
+ List-Archive; bh=Ujin8fPqiBYO8fG0iJPxqJkdDmUEfnPunS2eRUnJRt4=; b=l00VfSMJdDnb
+ EtPO8GNXvA8wh7CiU48RLYEOAFUDxWRAflWZqa/2ndHcUPSrcNcmJ3ENqYj2nKFOeRLoN/EPQwSvP
+ GTEnuY7QLOHNP6OuASEBrZ5KM8YWtfBbqUjHGr9EjCevzxQDkHvXhsMpbg5pDoHwxMWWV/4ulx18x
+ xxguU=;
 Received: from 188.29.164.24.threembb.co.uk ([188.29.164.24]
  helo=finisterre.ee.mobilebroadband)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <broonie@sirena.org.uk>)
- id 1hJjzA-0004a5-9b; Thu, 25 Apr 2019 19:24:44 +0000
+ id 1hJk11-0004es-4v; Thu, 25 Apr 2019 19:26:39 +0000
 Received: by finisterre.ee.mobilebroadband (Postfix, from userid 1000)
- id 11C2E441D3E; Thu, 25 Apr 2019 20:24:43 +0100 (BST)
+ id 36C8E441D3D; Thu, 25 Apr 2019 20:26:38 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
 Subject: Applied "spi: spi-mem: zynq-qspi: Fix build error on architectures
  missing readsl/writesl" to the spi tree
 In-Reply-To: <1555918009-13172-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190425192443.11C2E441D3E@finisterre.ee.mobilebroadband>
-Date: Thu, 25 Apr 2019 20:24:43 +0100 (BST)
+Message-Id: <20190425192638.36C8E441D3D@finisterre.ee.mobilebroadband>
+Date: Thu, 25 Apr 2019 20:26:38 +0100 (BST)
 X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190425_122453_373180_C8874666 
+X-CRM114-CacheID: sfid-20190425_122650_903896_1BCB0892 
 X-CRM114-Status: GOOD (  14.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
