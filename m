@@ -2,70 +2,87 @@ Return-Path: <SRS0=0ANE=S3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7F1AC10F11
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 01:56:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA920C10F03
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 06:27:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 761B020835
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 01:56:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34DDA214AE
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 06:27:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aMtq2Tig"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 761B020835
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cgZDH0a0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34DDA214AE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HXEGC9MpChW9PbN/U1WHuvknEzd7twW5sfKL4fEo9EY=; b=aMtq2TigOlrv51
-	3878ZQo2wqHRhdvLE1R87sjuFBwoKOON870AokKzu/BVRZJZ6J1VVAT2f9CtGqd286dk1V3D63wth
-	PJn3J3Qu41u9FperS5mC1ts7Ylbnrrfbz+AxBn7P5gnTJlPzpSfnIromO10rwchcIpv791nqEocxW
-	lfEJxitbZvdGcEiX/a82SiGVklIZQsSp5cvI1zacRztWzfhYduw2sJs9Uvin8bfMgS8TR+JdofYDA
-	jBqT/5pM56GYd29JD5RvB6UBaAvtKuQAeB3+Of7EiK325mmrqPM634mQO6YgLiTKSKtBOEk7g3hWd
-	DFFrLFdGZOFPNhBu+VQw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=cgZDH0a0s9zDyS1jYFYmvDQqSJ
+	uzO8W+vMsxuSGg2cSkuN2VP+1VRtxZ5bxip14FmfStmJW1BHGYsT116q7PMSXDt9Z852UTp2LhDtZ
+	PFvlRKF74qcSaaHKfC2jCbz6jRPDWtudjqVZpmelT6rEQHK1EfIZbiEI2WvhZopyFqu+2oIuKjpfa
+	hCNFHnWn32RSQ1/0QTeH/dMj4Li2WvP5NDPulFtL7P7y4NKjsni/pO6Jjc8CYQcFhX/elNqqfWyGv
+	Q3qEr1tka+venOarFK/eC5bui15R9vovmCZeEnfjKR38l6yduNOB+7OUzULL7JP8qvt9YwJL1keHA
+	z1lGZImg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJTcl-0004aP-K2; Thu, 25 Apr 2019 01:56:31 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1hJXr7-0001E3-Mu; Thu, 25 Apr 2019 06:27:37 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJTci-0004a0-S7; Thu, 25 Apr 2019 01:56:30 +0000
-X-UUID: aca11a69021848efb7febdf55361e2aa-20190424
-X-UUID: aca11a69021848efb7febdf55361e2aa-20190424
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
- (envelope-from <xiaolei.li@mediatek.com>)
- (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 296514583; Wed, 24 Apr 2019 17:56:01 -0800
-Received: from mtkmbs03n1.mediatek.inc (172.21.101.181) by
- MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Wed, 24 Apr 2019 18:56:00 -0700
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs03n1.mediatek.inc (172.21.101.181) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Thu, 25 Apr 2019 09:55:58 +0800
-Received: from mtkslt306.mediatek.inc (10.21.14.136) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
- Frontend Transport; Thu, 25 Apr 2019 09:55:58 +0800
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [RFC PATCH v2 1/1] mtd: rawnand: mtk: Re-license MTK NAND driver as
- Dual MIT/GPL
-Date: Thu, 25 Apr 2019 09:55:52 +0800
-Message-ID: <20190425015552.42638-2-xiaolei.li@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20190425015552.42638-1-xiaolei.li@mediatek.com>
-References: <20190425015552.42638-1-xiaolei.li@mediatek.com>
+ id 1hJXr4-0001DV-6O
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 06:27:35 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id BB28118013756;
+ Thu, 25 Apr 2019 08:27:29 +0200 (CEST)
+Subject: Re: Allow tests to work on more platforms
+To: Olliver Schinagl <oliver@schinagl.nl>, linux-mtd@lists.infradead.org
+References: <20190415082031.600-1-oliver@schinagl.nl>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Openpgp: preference=signencrypt
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <d92d03c9-c539-980e-79d9-13a56487ecd7@sigma-star.at>
+Date: Thu, 25 Apr 2019 08:27:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-MTK: N
+In-Reply-To: <20190415082031.600-1-oliver@schinagl.nl>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190424_185628_906031_01546820 
-X-CRM114-Status: GOOD (  10.52  )
+X-CRM114-CacheID: sfid-20190424_232734_380462_E70E6E83 
+X-CRM114-Status: UNSURE (   7.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,109 +94,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: daniel.thompson@linaro.org, ryder.lee@mediatek.com,
- srv_heupstream@mediatek.com, yellowriver2010@hotmail.com,
- jorge.ramirez-ortiz@linaro.org, boris.brezillon@bootlin.com,
- linux-mtd@lists.infradead.org, yingjoe.chen@mediatek.com, rafal@milecki.pl,
- linux-mediatek@lists.infradead.org, xiaolei.li@mediatek.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It is allowed to use MTK NAND driver with GPL-2.0 or MIT license.
-But now it is only licensed as GPL-2.0.
-So re-license it as dual MIT/GPL.
+Applied to mtd-utils.git master.
 
-Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-Acked-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
----
- drivers/mtd/nand/raw/mtk_ecc.c  | 12 ++----------
- drivers/mtd/nand/raw/mtk_ecc.h  |  4 +---
- drivers/mtd/nand/raw/mtk_nand.c | 12 ++----------
- 3 files changed, 5 insertions(+), 23 deletions(-)
+Thanks,
 
-diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
-index 6432bd70c3b3..eea0f903bc24 100644
---- a/drivers/mtd/nand/raw/mtk_ecc.c
-+++ b/drivers/mtd/nand/raw/mtk_ecc.c
-@@ -1,17 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
- /*
-  * MTK ECC controller driver.
-  * Copyright (C) 2016  MediaTek Inc.
-  * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
-  *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-  */
- 
- #include <linux/platform_device.h>
-@@ -600,4 +592,4 @@ module_platform_driver(mtk_ecc_driver);
- 
- MODULE_AUTHOR("Xiaolei Li <xiaolei.li@mediatek.com>");
- MODULE_DESCRIPTION("MTK Nand ECC Driver");
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("Dual MIT/GPL");
-diff --git a/drivers/mtd/nand/raw/mtk_ecc.h b/drivers/mtd/nand/raw/mtk_ecc.h
-index a455df080952..0e48c36e6ca0 100644
---- a/drivers/mtd/nand/raw/mtk_ecc.h
-+++ b/drivers/mtd/nand/raw/mtk_ecc.h
-@@ -1,12 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR MIT */
- /*
-  * MTK SDG1 ECC controller
-  *
-  * Copyright (c) 2016 Mediatek
-  * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
-  *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License version 2 as published
-- * by the Free Software Foundation.
-  */
- 
- #ifndef __DRIVERS_MTD_NAND_MTK_ECC_H__
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index b6b4602f5132..3cbc25793062 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -1,17 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
- /*
-  * MTK NAND Flash controller driver.
-  * Copyright (C) 2016 MediaTek Inc.
-  * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
-  *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-  */
- 
- #include <linux/platform_device.h>
-@@ -1598,6 +1590,6 @@ static struct platform_driver mtk_nfc_driver = {
- 
- module_platform_driver(mtk_nfc_driver);
- 
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("Dual MIT/GPL");
- MODULE_AUTHOR("Xiaolei Li <xiaolei.li@mediatek.com>");
- MODULE_DESCRIPTION("MTK Nand Flash Controller Driver");
--- 
-2.18.0
-
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
