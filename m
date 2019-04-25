@@ -2,58 +2,55 @@ Return-Path: <SRS0=0ANE=S3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8DE4C10F03
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:57:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8DB3C10F03
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:57:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C438020644
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:57:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F139C20678
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:57:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mMFCnZmT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C438020644
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="khKCM8w5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F139C20678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=64bnqzcZq6kqHWgnq+Q4hfUSTPUuAlNdNXiNhFqxuB8=; b=mMFCnZmTKOeXI7
-	AcR2rgcOA1dQtJ5mMNwNByTuozLuQ+ViCV/InXI9Qr5rgG7RwOHjlI3l7fchMV4EUx4HRLWSZ8Bf8
-	cBRRNTvjKPyPU3rQoqVmgn7tq2yWFivpzHjz2keEOQZCDH5xSOMm4DFXRCXE4M4wpjtWg5MyzqDO0
-	uQ4nT+eknudjiXBM9WZ2bAAPjDcL2pKM41hu73sb+E2kSIewheZjsLcDKUh+pOIXzweM9UcnKavpn
-	aeFqZFA7T6mFdNzDOQMPRUyw+TgA3m0jE7NcDd9GDATG/eX/BtYkjOXhqkLRfCM+ATNVR1p9xf19N
-	TfwJLyzvNstiixPs2CVw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/J5RUPWlstvKpttUUEJP6u+MleXZcaO+4I6OJMaCXhI=; b=khKCM8w5jQXqbr
+	gio23OPhMYNnnEfXvUOAB6KZX42oWVcy+ELac75Pjtd8/tOgGN1VOy6zDt3BVlcTddMiiWTA8rR1V
+	PODsr4AQjusGL6/+xcZp/77+uQiHe6ipIpVbHSJM/lP7YQowhzMS/M9nD5NklJQ69YCDwSi9JO9Qx
+	bmMXnACqajRtZE1VeNK32S3iFZXn/+zcv4JYjfot5YOPIcis4shumH+lT5DPGNjhk+m5nPliIwp6m
+	SGzEjEwJwMUmJSaU9IP3lVQ6I+gMPmnGsas3Ihq+OCH7U14kOHwYaYaoJBknqTs+ZvcirPtuGk0DF
+	OpsIlIzXHn9QuQnbtiTQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJdwD-0006Qb-QM; Thu, 25 Apr 2019 12:57:17 +0000
+	id 1hJdwM-0006cM-VR; Thu, 25 Apr 2019 12:57:26 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJdvo-0005vb-69
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 12:56:55 +0000
+ id 1hJdvo-0005vY-5S
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 12:56:54 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <sha@pengutronix.de>)
- id 1hJdvk-0002Ti-Ar; Thu, 25 Apr 2019 14:56:48 +0200
+ id 1hJdvk-0002TU-AW; Thu, 25 Apr 2019 14:56:48 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92-RC6)
  (envelope-from <sha@pengutronix.de>)
- id 1hJdvj-0008EV-5i; Thu, 25 Apr 2019 14:56:47 +0200
+ id 1hJdvi-0008Dt-U3; Thu, 25 Apr 2019 14:56:46 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 13/14] dmaengine: mxs: rename custom flag
-Date: Thu, 25 Apr 2019 14:56:42 +0200
-Message-Id: <20190425125643.29990-14-s.hauer@pengutronix.de>
+Subject: [PATCH v3 00/14] Implement exec_op for GPMI nand driver
+Date: Thu, 25 Apr 2019 14:56:29 +0200
+Message-Id: <20190425125643.29990-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190425125643.29990-1-s.hauer@pengutronix.de>
-References: <20190425125643.29990-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
 X-SA-Exim-Mail-From: sha@pengutronix.de
@@ -61,8 +58,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190425_055652_431736_C79419EE 
-X-CRM114-Status: GOOD (  15.41  )
+X-CRM114-CacheID: sfid-20190425_055652_365741_5C891E2C 
+X-CRM114-Status: GOOD (  16.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,116 +81,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The mxs dma driver uses the flags parameter in dmaengine_prep_slave_sg() for
-custom flags, but still uses the dmaengine specific names of the flags.
-Do a little bit better and at least give the flag a custom name.
+The GPMI nand driver suffers from very poor performance. The read
+performance can be roughly doubled with two steps: First is to use
+runtime PM for controlling the clocks which prevents the driver from
+spending a good amount of time en/disabling the clocks. The second step
+is to implement exec_op which allows us to combine the steps necessary
+to do a page read into a single DMA transaction.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/dma/mxs-dma.c                      |  4 ++--
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 17 +++++++++++------
- include/linux/dma/mxs-dma.h                |  2 ++
- 3 files changed, 15 insertions(+), 8 deletions(-)
+I would prefer to let this go through the mtd tree with the ack of the
+dmaengine maintainers
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 62ee9328aea1..c622bee7eb12 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -541,7 +541,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
- 		ccw->bits = 0;
- 		ccw->bits |= CCW_IRQ;
- 		ccw->bits |= CCW_DEC_SEM;
--		if (flags & DMA_CTRL_ACK)
-+		if (flags & MXS_DMA_CTRL_WAIT4END)
- 			ccw->bits |= CCW_WAIT4END;
- 		ccw->bits |= CCW_HALT_ON_TERM;
- 		ccw->bits |= CCW_TERM_FLUSH;
-@@ -573,7 +573,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
- 				ccw->bits &= ~CCW_CHAIN;
- 				ccw->bits |= CCW_IRQ;
- 				ccw->bits |= CCW_DEC_SEM;
--				if (flags & DMA_CTRL_ACK)
-+				if (flags & MXS_DMA_CTRL_WAIT4END)
- 					ccw->bits |= CCW_WAIT4END;
- 			}
- 		}
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index cf016ec0b1c6..9f648b40197e 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -925,7 +925,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
- 	sg_init_one(sgl, this->cmd_buffer, this->command_length);
- 	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel,
--				sgl, 1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
-+				sgl, 1, DMA_MEM_TO_DEV,
-+				MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-@@ -996,7 +997,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf,
- 	/* [2] send DMA request */
- 	prepare_data_dma(this, buf, len, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
--					1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
-+					1, DMA_MEM_TO_DEV,
-+					MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-@@ -1033,7 +1035,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- 	/* [2] : send DMA request */
- 	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
--					1, DMA_DEV_TO_MEM, DMA_CTRL_ACK);
-+					1, DMA_DEV_TO_MEM,
-+					MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-@@ -1083,7 +1086,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this,  dma_addr_t payload,
- 	pio[5] = auxiliary;
- 
- 	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
--				      DMA_TRANS_NONE, DMA_CTRL_ACK);
-+				      DMA_TRANS_NONE,
-+				      MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-@@ -1140,7 +1144,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
- 	pio[4] = payload;
- 	pio[5] = auxiliary;
- 	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
--				      DMA_TRANS_NONE, DMA_CTRL_ACK);
-+				      DMA_TRANS_NONE,
-+				      MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-@@ -1157,7 +1162,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
- 	pio[1] = 0;
- 	pio[2] = 0; /* clear GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
- 	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
--				      DMA_CTRL_ACK);
-+				      MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-diff --git a/include/linux/dma/mxs-dma.h b/include/linux/dma/mxs-dma.h
-index 092b2a7b92ac..4a33f2c8a682 100644
---- a/include/linux/dma/mxs-dma.h
-+++ b/include/linux/dma/mxs-dma.h
-@@ -4,6 +4,8 @@
- 
- #include <linux/dmaengine.h>
- 
-+#define MXS_DMA_CTRL_WAIT4END	BIT(31)
-+
- /*
-  * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
-  * in the second argument to dmaengine_prep_slave_sg when the direction is
+changes since v2:
+
+- s/dma/dmaengine in dmaengine specific patches
+- s/nand/NAND/
+- Add reviewed-by Miquel
+- Add Acked-by Vinod
+
+changes since v1:
+
+- tested and fixed on i.MX28
+- remove debugging leftover
+- Add mxs dma specific header files to put the oddities of the mxs dma
+  driver in
+- Turn off BCH engine interrupts when not needed as they result in
+  calling complete() on an uninitialized completion. This crashes
+  on i.MX28
+
+Sascha Hauer (14):
+  mtd: rawnand: export NAND operation tracer
+  mtd: rawnand: fsmc: Use nand_op_trace for operation tracing
+  mtd: rawnand: gpmi: move all driver code into single file
+  mtd: rawnand: gpmi: remove unused variable
+  mtd: rawnand: gpmi: Remove unnecessary variables
+  mtd: rawnand: gpmi: read buf in nand_read_page_op
+  mtd: rawnand: gpmi: remove unused parameters
+  mtd: rawnand: gpmi: Drop unnecessary restoring of previous chipselection
+  mtd: rawnand: gpmi: use runtime PM to manage clocks
+  dmaengine: mxs: Drop unnecessary flag
+  mtd: rawnand: gpmi: drop unnecessary flag
+  dmaengine: mxs: Add header file to be shared with gpmi nand driver
+  dmaengine: mxs: rename custom flag
+  mtd: rawnand: gpmi: Implement exec_op
+
+ drivers/dma/mxs-dma.c                      |   25 +-
+ drivers/mtd/nand/raw/fsmc_nand.c           |   19 +-
+ drivers/mtd/nand/raw/gpmi-nand/Makefile    |    1 -
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  |  936 -----------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 1687 ++++++++++++++------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |   64 +-
+ drivers/mtd/nand/raw/nand_base.c           |   30 +-
+ include/linux/dma/mxs-dma.h                |   24 +
+ include/linux/mtd/rawnand.h                |   37 +
+ 9 files changed, 1264 insertions(+), 1559 deletions(-)
+ delete mode 100644 drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+ create mode 100644 include/linux/dma/mxs-dma.h
+
 -- 
 2.20.1
 
