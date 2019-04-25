@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5D94C282E1
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5A3FC282E1
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:58:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7CBB20678
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:57:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8DCB20678
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:58:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qDuucSMH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7CBB20678
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JhA1PyM/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8DCB20678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,33 +25,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l+1glzq7GfRr5Rx4PYZ8vv/VtDvsSvpAwgBats13SW8=; b=qDuucSMH18xQ+t
-	wt3083dnoCN8eRTsZD6ndKcf/sqGf9je0yN9ikvTCS9uEPSN5X7cch0PV0FTSt8Obwoxla+Fl3rSu
-	m891sZCh8dqXJ7grjxjQ6RCLPlMWxlwKYWSPU9nuLab0IkDvCczaC7BPYpeQciCT5g3s6hRdtD3k7
-	4Iv2N4y5araSA9UtW27gXuj0o7Kj1eQk4WegkuLRHhI3XbWm7B6maAv9bjFGsphjfqV3eYuuzRYKH
-	+B3Lw6RO4ztHGh30hi6ZTBFp33LrDO8o35V24pDJih9vYejIVo7FRfqo+ItKNqQUBtuuiMzYdMi0D
-	AjBUsPNtMkL/gxqj3BKg==;
+	List-Owner; bh=AqMhYln2xt1MrAUz7H3DfyoPsfc+/H6cAQ7KSWqBt1U=; b=JhA1PyM/ozFcc7
+	2lNsjkQ9t0DubiNmJPIatkCAUGw/9sFBjN3ttSdqG9eZIjKrDu5F/FDozwmWcbe5+zyxVVDswKYFm
+	hdJ8V0VilhaOC3GYXYO8YON7S/0RCbbu3wQGVz6xegp6R3q3c3/Xm3HTdCCW67DadpqiWzhduuXU1
+	w8LefVFwa7Il7kDjzrXJzzGNcbf5SjUH8crn86M7M3LCnnV7eKvz28aOsQV0oe53EZPSK82zN+ApE
+	CapnvLvYF0qIIYIrgcD28uqcSPBmKfrstSBN27cKPwNo4khzW/y5wo3Oo24NHM8nnxea0kVlKS07i
+	BnuzgpvRBedMa7BVP0tQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJdwi-000753-7Y; Thu, 25 Apr 2019 12:57:48 +0000
+	id 1hJdws-0007J6-Ik; Thu, 25 Apr 2019 12:57:58 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJdvo-0005ve-6Q
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 12:56:55 +0000
+ id 1hJdvq-0005xW-7A
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 12:56:58 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <sha@pengutronix.de>)
- id 1hJdvk-0002Th-Af; Thu, 25 Apr 2019 14:56:48 +0200
+ id 1hJdvo-0002Td-N3; Thu, 25 Apr 2019 14:56:52 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92-RC6)
  (envelope-from <sha@pengutronix.de>)
- id 1hJdvj-0008ES-59; Thu, 25 Apr 2019 14:56:47 +0200
+ id 1hJdvj-0008EG-2m; Thu, 25 Apr 2019 14:56:47 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 12/14] dmaengine: mxs: Add header file to be shared with gpmi
- nand driver
-Date: Thu, 25 Apr 2019 14:56:41 +0200
-Message-Id: <20190425125643.29990-13-s.hauer@pengutronix.de>
+Subject: [PATCH 08/14] mtd: rawnand: gpmi: Drop unnecessary restoring of
+ previous chipselection
+Date: Thu, 25 Apr 2019 14:56:37 +0200
+Message-Id: <20190425125643.29990-9-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190425125643.29990-1-s.hauer@pengutronix.de>
 References: <20190425125643.29990-1-s.hauer@pengutronix.de>
@@ -62,8 +62,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190425_055652_447408_23547D18 
-X-CRM114-Status: GOOD (  18.73  )
+X-CRM114-CacheID: sfid-20190425_055654_414468_C4E2554E 
+X-CRM114-Status: GOOD (  13.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,157 +85,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The mxs dma driver can do PIO transfers. A pointer to the PIO words
-to transfer is passed in the struct scatterlist * argument of
-dmaengine_prep_slave_sg(). It's quite ugly and non obvious to cast
-u32 * to struct scatterlist * each time when calling
-dmaengine_prep_slave_sg(), so add a static inline wrapper function
-to be called by the user along with a description what is going on.
+The i.MX23 specific option read code is called right after nand_scan. We
+can rely on the NAND core having disabled the chipselect, so there's no
+point in restoring the original chip select after NAND operations. Drop
+it.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/dma/mxs-dma.c                      |  1 +
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 36 +++++++++-------------
- include/linux/dma/mxs-dma.h                | 21 +++++++++++++
- 3 files changed, 36 insertions(+), 22 deletions(-)
- create mode 100644 include/linux/dma/mxs-dma.h
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index ce92a3626ea4..62ee9328aea1 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -24,6 +24,7 @@
- #include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/list.h>
-+#include <linux/dma/mxs-dma.h>
- 
- #include <asm/irq.h>
- 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index a6e769afc89a..cf016ec0b1c6 100644
+index c1d2e6d12e61..bbf9e6a878b8 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -15,6 +15,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/dma/mxs-dma.h>
- #include "gpmi-nand.h"
- #include "gpmi-regs.h"
- #include "bch-regs.h"
-@@ -913,9 +914,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
- 		| BM_GPMI_CTRL0_ADDRESS_INCREMENT
- 		| BF_GPMI_CTRL0_XFER_COUNT(this->command_length);
- 	pio[1] = pio[2] = 0;
--	desc = dmaengine_prep_slave_sg(channel,
--					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-+				      DMA_TRANS_NONE, 0);
- 	if (!desc)
- 		return -EINVAL;
+@@ -2526,13 +2526,11 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int stride;
+ 	unsigned int page;
+ 	uint8_t *buffer = chip->data_buf;
+-	int saved_chip_number;
+ 	int found_an_ncb_fingerprint = false;
  
-@@ -988,8 +988,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf,
- 		| BF_GPMI_CTRL0_ADDRESS(address)
- 		| BF_GPMI_CTRL0_XFER_COUNT(len);
- 	pio[1] = 0;
--	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-+				      DMA_TRANS_NONE, 0);
- 	if (!desc)
- 		return -EINVAL;
+ 	/* Compute the number of strides in a search area. */
+ 	search_area_size_in_strides = 1 << rom_geo->search_area_stride_exponent;
  
-@@ -1025,9 +1025,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- 		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_DATA)
- 		| BF_GPMI_CTRL0_XFER_COUNT(len);
- 	pio[1] = 0;
--	desc = dmaengine_prep_slave_sg(channel,
--					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-+				      DMA_TRANS_NONE, 0);
- 	if (!desc)
- 		return -EINVAL;
+-	saved_chip_number = this->current_chip;
+ 	nand_select_target(chip, 0);
  
-@@ -1083,10 +1082,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this,  dma_addr_t payload,
- 	pio[4] = payload;
- 	pio[5] = auxiliary;
+ 	/*
+@@ -2560,10 +2558,7 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
  
--	desc = dmaengine_prep_slave_sg(channel,
--					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_TRANS_NONE,
--					DMA_CTRL_ACK);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-+				      DMA_TRANS_NONE, DMA_CTRL_ACK);
- 	if (!desc)
- 		return -EINVAL;
+ 	}
  
-@@ -1117,9 +1114,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
- 		| BF_GPMI_CTRL0_ADDRESS(address)
- 		| BF_GPMI_CTRL0_XFER_COUNT(0);
- 	pio[1] = 0;
--	desc = dmaengine_prep_slave_sg(channel,
--				(struct scatterlist *)pio, 2,
--				DMA_TRANS_NONE, 0);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, 2, DMA_TRANS_NONE, 0);
- 	if (!desc)
- 		return -EINVAL;
+-	if (saved_chip_number >= 0)
+-		nand_select_target(chip, saved_chip_number);
+-	else
+-		nand_deselect_target(chip);
++	nand_deselect_target(chip);
  
-@@ -1144,10 +1139,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
- 	pio[3] = geo->page_size;
- 	pio[4] = payload;
- 	pio[5] = auxiliary;
--	desc = dmaengine_prep_slave_sg(channel,
--					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_TRANS_NONE,
--					DMA_CTRL_ACK);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
-+				      DMA_TRANS_NONE, DMA_CTRL_ACK);
- 	if (!desc)
- 		return -EINVAL;
+ 	if (found_an_ncb_fingerprint)
+ 		dev_dbg(dev, "\tFound a fingerprint\n");
+@@ -2587,7 +2582,6 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int stride;
+ 	unsigned int page;
+ 	uint8_t      *buffer = chip->data_buf;
+-	int saved_chip_number;
+ 	int status;
  
-@@ -1163,9 +1156,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this,
- 		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size);
- 	pio[1] = 0;
- 	pio[2] = 0; /* clear GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
--	desc = dmaengine_prep_slave_sg(channel,
--				(struct scatterlist *)pio, 3,
--				DMA_TRANS_NONE, DMA_CTRL_ACK);
-+	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
-+				      DMA_CTRL_ACK);
- 	if (!desc)
- 		return -EINVAL;
+ 	/* Compute the search area geometry. */
+@@ -2604,8 +2598,6 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 	dev_dbg(dev, "\tin Strides: %u\n", search_area_size_in_strides);
+ 	dev_dbg(dev, "\tin Pages  : %u\n", search_area_size_in_pages);
  
-diff --git a/include/linux/dma/mxs-dma.h b/include/linux/dma/mxs-dma.h
-new file mode 100644
-index 000000000000..092b2a7b92ac
---- /dev/null
-+++ b/include/linux/dma/mxs-dma.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _MXS_DMA_H_
-+#define _MXS_DMA_H_
-+
-+#include <linux/dmaengine.h>
-+
-+/*
-+ * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
-+ * in the second argument to dmaengine_prep_slave_sg when the direction is
-+ * set to DMA_TRANS_NONE. To make this clear and to prevent users from doing
-+ * the error prone casting we have this wrapper function
-+ */
-+static inline struct dma_async_tx_descriptor *mxs_dmaengine_prep_pio(
-+        struct dma_chan *chan, u32 *pio, unsigned int npio,
-+        enum dma_transfer_direction dir, unsigned long flags)
-+{
-+	return dmaengine_prep_slave_sg(chan, (struct scatterlist *)pio, npio,
-+				       dir, flags);
-+}
-+
-+#endif /* _MXS_DMA_H_ */
+-	/* Select chip 0. */
+-	saved_chip_number = this->current_chip;
+ 	nand_select_target(chip, 0);
+ 
+ 	/* Loop over blocks in the first search area, erasing them. */
+@@ -2637,11 +2629,7 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 			dev_err(dev, "[%s] Write failed.\n", __func__);
+ 	}
+ 
+-	/* Deselect chip 0. */
+-	if (saved_chip_number >= 0)
+-		nand_select_target(chip, saved_chip_number);
+-	else
+-		nand_deselect_target(chip);
++	nand_deselect_target(chip);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
 
