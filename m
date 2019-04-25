@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A505CC10F03
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2639C10F03
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:59:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B17B820678
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1832920678
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Apr 2019 12:59:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l4ldQ5/9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B17B820678
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QbHdYLSH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1832920678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m/vb4Afh6qyCMzUwYEYxoWzBJx93vs7GTi4D400pjXQ=; b=l4ldQ5/94vvt2K
-	D/Wrkvh3rrqkzh/4OdNp/oYDT/5JPTOT41EmZJmh1mVyOw2hokssdFFKhhCvu37DHAQXoQ5R6QrD6
-	8YQROEgSilsg0KPRuirUGSiEBTEkHEhIZrI6UjZoL725W5UoVp2T6lByk13yoNF84cuDCA5Pmaqvg
-	CxcbEVYVrJgl6ecG8y2r0i7oIkr1YZkbuch57dpqDp2jcZ0CHH8TlQrarp72OEyjxYDVm7RzdSJWF
-	TmGidGnEt3vg31Hd/DgnHFw4Bj0j7eP23xTZJbBguJk9by4W0fgd76UZ3WiS/BvvQIKbHcT/2LhoC
-	K7kpTd4L20nUQo6w73Xw==;
+	List-Owner; bh=FFQgIrxYEvEOrY7ty1MqGlSyxGFa8clMWwPZwTVTWK4=; b=QbHdYLSHNq6XfR
+	hb2aREsI+WGt+4dmRh8JnsIw/MhaG1ba4PdqsS3jXZGTra/JhQdnbuM80Hm52ecQNR9/Z+9nDRg1x
+	aWBUvdDJ3YUx+kF/ca6y/ORQvbtnMG+a/7upVSqqxb4mE3wdGhOYEPZTpNm7KeR44TCbEx6R1pNXz
+	1NWqJxXeFU6kRYO+Fqe8hWRMqypLrf3uRgOR+VooiXKIoh5iVfVgVH4l/AkluQOJaWXzdhJd6vQCk
+	glYqvxoxS2c20iz6xDhQbLVLOmumzAZqLUXKZli+g8HU4mAT5JCH1Ion4Jn1XvV519eh2Nwd+hmVb
+	I0KrXEwvtxZWIjJ97eLQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hJdxy-0000JH-HH; Thu, 25 Apr 2019 12:59:06 +0000
+	id 1hJdy9-0000Xw-HD; Thu, 25 Apr 2019 12:59:17 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hJdvu-000608-7p
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 12:57:08 +0000
+ id 1hJdvu-000603-6r
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2019 12:57:10 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <sha@pengutronix.de>)
- id 1hJdvk-0002Tf-AN; Thu, 25 Apr 2019 14:56:48 +0200
+ id 1hJdvk-0002Te-AS; Thu, 25 Apr 2019 14:56:48 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92-RC6)
  (envelope-from <sha@pengutronix.de>)
- id 1hJdvj-0008EM-3z; Thu, 25 Apr 2019 14:56:47 +0200
+ id 1hJdvj-0008EJ-3P; Thu, 25 Apr 2019 14:56:47 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 10/14] dmaengine: mxs: Drop unnecessary flag
-Date: Thu, 25 Apr 2019 14:56:39 +0200
-Message-Id: <20190425125643.29990-11-s.hauer@pengutronix.de>
+Subject: [PATCH 09/14] mtd: rawnand: gpmi: use runtime PM to manage clocks
+Date: Thu, 25 Apr 2019 14:56:38 +0200
+Message-Id: <20190425125643.29990-10-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190425125643.29990-1-s.hauer@pengutronix.de>
 References: <20190425125643.29990-1-s.hauer@pengutronix.de>
@@ -61,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190425_055659_049231_A3A54E68 
-X-CRM114-Status: GOOD (  16.27  )
+X-CRM114-CacheID: sfid-20190425_055658_723389_7F52C2BC 
+X-CRM114-Status: GOOD (  19.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,68 +84,176 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The mxs dma driver insists on having the DMA_PREP_INTERRUPT flag set
-on all but the first transfer. There's no need to let the user set this
-flag, the driver can do it internally whenever it needs it. Drop
-handling of this flag from the driver.
+The gpmi driver aggressively en/disables the clocks between operations
+which has significant performance cost. Use runtime PM to get rid of
+this bottleneck.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/dma/mxs-dma.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 69 ++++++++++++++--------
+ 1 file changed, 44 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 22cc7f68ef6e..ce92a3626ea4 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -477,16 +477,16 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
-  *            ......
-  *            ->device_prep_slave_sg(0);
-  *            ......
-- *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+ *            ->device_prep_slave_sg(DMA_CTRL_ACK);
-  *            ......
-  *    [3] If there are more than two DMA commands in the DMA chain, the code
-  *        should be:
-  *            ......
-  *            ->device_prep_slave_sg(0);                                // First
-  *            ......
-- *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT [| DMA_CTRL_ACK]);
-+ *            ->device_prep_slave_sg(DMA_CTRL_ACK]);
-  *            ......
-- *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK); // Last
-+ *            ->device_prep_slave_sg(DMA_CTRL_ACK); // Last
-  *            ......
-  */
- static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
-@@ -500,13 +500,12 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
- 	struct scatterlist *sg;
- 	u32 i, j;
- 	u32 *pio;
--	bool append = flags & DMA_PREP_INTERRUPT;
--	int idx = append ? mxs_chan->desc_count : 0;
-+	int idx = 0;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index bbf9e6a878b8..19adc8299490 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -14,6 +14,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ #include "gpmi-nand.h"
+ #include "gpmi-regs.h"
+ #include "bch-regs.h"
+@@ -141,24 +142,11 @@ static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
+ 	return ret;
+ }
  
--	if (mxs_chan->status == DMA_IN_PROGRESS && !append)
--		return NULL;
-+	if (mxs_chan->status == DMA_IN_PROGRESS)
-+		idx = mxs_chan->desc_count;
+-static int gpmi_enable_clk(struct gpmi_nand_data *this)
+-{
+-	return __gpmi_enable_clk(this, true);
+-}
+-
+-static int gpmi_disable_clk(struct gpmi_nand_data *this)
+-{
+-	return __gpmi_enable_clk(this, false);
+-}
+-
+ static int gpmi_init(struct gpmi_nand_data *this)
+ {
+ 	struct resources *r = &this->resources;
+ 	int ret;
  
--	if (sg_len + (append ? idx : 0) > NUM_CCW) {
-+	if (sg_len + idx > NUM_CCW) {
- 		dev_err(mxs_dma->dma_device.dev,
- 				"maximum number of sg exceeded: %d > %d\n",
- 				sg_len, NUM_CCW);
-@@ -520,7 +519,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
- 	 * If the sg is prepared with append flag set, the sg
- 	 * will be appended to the last prepared sg.
+-	ret = gpmi_enable_clk(this);
+-	if (ret)
+-		return ret;
+ 	ret = gpmi_reset_block(r->gpmi_regs, false);
+ 	if (ret)
+ 		goto err_out;
+@@ -191,10 +179,8 @@ static int gpmi_init(struct gpmi_nand_data *this)
  	 */
--	if (append) {
-+	if (idx) {
- 		BUG_ON(idx < 1);
- 		ccw = &mxs_chan->ccw[idx - 1];
- 		ccw->next = mxs_chan->ccw_phys + sizeof(*ccw) * idx;
+ 	writel(BM_GPMI_CTRL1_DECOUPLE_CS, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+ 
+-	gpmi_disable_clk(this);
+ 	return 0;
+ err_out:
+-	gpmi_disable_clk(this);
+ 	return ret;
+ }
+ 
+@@ -559,8 +545,8 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+ 	page_size     = bch_geo->page_size;
+ 	gf_len        = bch_geo->gf_len;
+ 
+-	ret = gpmi_enable_clk(this);
+-	if (ret)
++	ret = pm_runtime_get_sync(this->dev);
++	if (ret < 0)
+ 		return ret;
+ 
+ 	/*
+@@ -594,10 +580,11 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+ 	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
+ 				r->bch_regs + HW_BCH_CTRL_SET);
+ 
+-	gpmi_disable_clk(this);
+-	return 0;
++	ret = 0;
+ err_out:
+-	gpmi_disable_clk(this);
++	pm_runtime_mark_last_busy(this->dev);
++	pm_runtime_put_autosuspend(this->dev);
++
+ 	return ret;
+ }
+ 
+@@ -1754,13 +1741,12 @@ static void gpmi_select_chip(struct nand_chip *chip, int chipnr)
+ 	 * die is selected/unselected.
+ 	 */
+ 	if (this->current_chip < 0 && chipnr >= 0) {
+-		ret = gpmi_enable_clk(this);
+-		if (ret)
++		ret = pm_runtime_get_sync(this->dev);
++		if (ret < 0)
+ 			dev_err(this->dev, "Failed to enable the clock\n");
+ 	} else if (this->current_chip >= 0 && chipnr < 0) {
+-		ret = gpmi_disable_clk(this);
+-		if (ret)
+-			dev_err(this->dev, "Failed to disable the clock\n");
++		pm_runtime_mark_last_busy(this->dev);
++		pm_runtime_put_autosuspend(this->dev);
+ 	}
+ 
+ 	/*
+@@ -2910,6 +2896,16 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto exit_acquire_resources;
+ 
++	ret = __gpmi_enable_clk(this, true);
++	if (ret)
++		goto exit_nfc_init;
++
++	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_get_sync(&pdev->dev);
++
+ 	ret = gpmi_init(this);
+ 	if (ret)
+ 		goto exit_nfc_init;
+@@ -2918,11 +2914,16 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto exit_nfc_init;
+ 
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_put_autosuspend(&pdev->dev);
++
+ 	dev_info(this->dev, "driver registered.\n");
+ 
+ 	return 0;
+ 
+ exit_nfc_init:
++	pm_runtime_put(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
+ 	release_resources(this);
+ exit_acquire_resources:
+ 
+@@ -2933,6 +2934,9 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
+ 
++	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++
+ 	nand_release(&this->nand);
+ 	gpmi_free_dma_buffer(this);
+ 	release_resources(this);
+@@ -2975,8 +2979,23 @@ static int gpmi_pm_resume(struct device *dev)
+ }
+ #endif /* CONFIG_PM_SLEEP */
+ 
++static int __maybe_unused gpmi_runtime_suspend(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++
++	return __gpmi_enable_clk(this, false);
++}
++
++static int __maybe_unused gpmi_runtime_resume(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++
++	return __gpmi_enable_clk(this, true);
++}
++
+ static const struct dev_pm_ops gpmi_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++	SET_RUNTIME_PM_OPS(gpmi_runtime_suspend, gpmi_runtime_resume, NULL)
+ };
+ 
+ static struct platform_driver gpmi_nand_driver = {
 -- 
 2.20.1
 
