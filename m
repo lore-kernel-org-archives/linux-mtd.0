@@ -2,84 +2,89 @@ Return-Path: <SRS0=qSHN=S5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0956C43219
-	for <linux-mtd@archiver.kernel.org>; Sat, 27 Apr 2019 03:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 617A0C43219
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Apr 2019 06:23:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DA792084F
-	for <linux-mtd@archiver.kernel.org>; Sat, 27 Apr 2019 03:01:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CACC82087C
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Apr 2019 06:23:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vv6ZgQcy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kOXVefpV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DA792084F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d7Qd/lxq";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norrbonn-se.20150623.gappssmtp.com header.i=@norrbonn-se.20150623.gappssmtp.com header.b="D3qQynbt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CACC82087C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=norrbonn.se
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PCQa0hvaestTp0qX2eciqz+4InDAUweyaJQehMWrx7A=; b=Vv6ZgQcyA2/dvy
-	BQV8U5Gtg/C6KXAw2Jg0JH3aYFfAoIpjU5m0TjNsNgGp7k6B1zxcujZgGqx5Nxf+8PQlDZ3frSujG
-	sBlJE+wBUQbH39HrXi/YnFar0Mb4BBpR4J5i6YZqwT5XMIcZo+WLLy8DO1XDH3PYu2DbRvCSHHycu
-	B6BBo2oqCngSQHnE5zvdk2vCEIV/GSdoZ9lIWg4AYC23YYS1VlxdqBM88u1glV4OIbWEPvbwp1eOP
-	QxnWdkVQG4xliVSPBmTck8+HB0iZCMcFv4z9bXezBwi/CLU1tzQ/fcvqy8TG8nI7YjYJ/SvbZ6HGG
-	50u4Le1a1O1SnOAY3Y3A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wALMpRcYsP1K1SlP5c2wSOZWwuEKNzp5WpO25gPeJA0=; b=d7Qd/lxqb5RmzL
+	G/2eJJNhGKtU1gk/kTIrYTRb3YTnnoATRFItVjnnoZyYObo5pOnahmXaCTsb2smjdAQezI/7zTDR7
+	fFKZ3Zyi7C6hCFgHuynFcyjgGtbc5OJ6OhSVcbgDeAPaFIet34HzeZ65MyvrloI5R6DZ6f2kceGZx
+	BhTav9EDGvafclddD8VXgN2st9fx8bxpwvG0N2+CvSjGctpKNoA6DFNNzDpk8j285/rOfdKTI5htw
+	TfOmFzIYGoI7WMG+pQFl/GfcvceoDGk6TNbohhgiRi+Q4cbUP5NnIVpPhxFMtNLAcAwEauw7EhY3S
+	iwoy249m3zLwMRmhbFeg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hKDaj-0007Yw-HP; Sat, 27 Apr 2019 03:01:29 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1hKGk9-0003wa-Lu; Sat, 27 Apr 2019 06:23:25 +0000
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hKDaV-0007U4-SD; Sat, 27 Apr 2019 03:01:18 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3R30noV097744;
- Fri, 26 Apr 2019 22:00:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1556334049;
- bh=LZCR6iKbbXEPqBepbMx2w7d7Lo5FnctqMVgc8kv1M8c=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=kOXVefpVWhb+zgn7q7TtEgyIS434p2jRwv5o/p3xTQ2d4S3EfLhpPH3GewqtMEz2G
- 3eA1ksje+vUy96srr55lUzSys5AjfUPwWrobn7PfqpSlK/oCL2p/hLI5SlQpPOrk6/
- RREYqGTo9KZEtsBkOBymtE+IytLXw4Txz03X7iFI=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3R30nG1036899
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 26 Apr 2019 22:00:49 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Fri, 26
- Apr 2019 22:00:49 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Fri, 26 Apr 2019 22:00:48 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3R30hwL099822;
- Fri, 26 Apr 2019 22:00:44 -0500
-Subject: Re: [PATCH v4 4/5] dt-bindings: mtd: Add bindings for TI's AM654
- HyperBus memory controller
-To: Rob Herring <robh@kernel.org>
-References: <20190423104814.5762-1-vigneshr@ti.com>
- <20190423104814.5762-5-vigneshr@ti.com> <20190426202025.GA24486@bogus>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <0972151d-5911-5a6e-da36-8fa8e1761e30@ti.com>
-Date: Sat, 27 Apr 2019 08:31:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ id 1hKGk5-0003wC-IL
+ for linux-mtd@lists.infradead.org; Sat, 27 Apr 2019 06:23:23 +0000
+Received: by mail-lf1-x141.google.com with SMTP id j20so4099272lfh.2
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2019 23:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=norrbonn-se.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=7cc7yCPelO2lVowaMLYe2OEFr5kHeXsyA0/yYuACqB0=;
+ b=D3qQynbtJbcmTvv7zi9F5kmxOX6NCi9tdIeAjO9A7C66mpKFNwZbU8QZPJSz//pG1D
+ DNLe4COVEj5pq8AIMKob0U8zfdaDHX1bweOWxyQQAY2eZ+jkfJufaGf2t0yemHM1ls5Y
+ oHPBpRxA9kStGISxfYDGueFTzWbaiQpTSZqWDZ/SvD9hRRPzxc7Il4YAnMUkqIaEMb6B
+ Y1JlmIuYr7MtflPdtnke1Dnjw6XuYpzDdnV1s53QnDYU0o3vwnd9CSxxsA34CuCd09jD
+ dXljAPSTcTWVVMcTxowO+bn0/Kr0DDsLgRzFA/3eOjLs6o3zAPRtUfPuh9UAmtDt3p8v
+ rHzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=7cc7yCPelO2lVowaMLYe2OEFr5kHeXsyA0/yYuACqB0=;
+ b=idLumCgBUgxa/V63wMiBWW2+TCIu3GevEF+fYOGFQDEyJM3TKhsaXN+LByDE6g/Pcp
+ GiS2Eb8KJALTakGSUIZZ0kXkGV17ZNodp+dTfHF+bz2H9I//BsT4h4hkuX04QxK5RTA+
+ XVwSj6Z7q6atvLxN+SrnolIlozvWjnW/DobVAsPja5iN6JemIa0/ZgKKf6ja8iqIXQe1
+ YFOwalOUILgYW4wf7JDUbir2QBaGcuR62d28svlKJFypRNdJdu2xNhvzJNpjFY0KvOQV
+ TcvChLVV4PoqLAw2c4/27gwJbaqTL5WEJaWxsFX1dHBYmZrms9ODQdVje9yMD4mLNh9U
+ 5acQ==
+X-Gm-Message-State: APjAAAUdZ75PktGQFNgINgdQfxbTD8FoH8bWRPoYCTYPs0Yv0bKflerW
+ /xmLm08a22dkZSsu9d6pPtCU9g==
+X-Google-Smtp-Source: APXvYqzwARzQOFNFrBLlF0eAeefQvbLGm55F5aIhEr0cijOn2eSlXPlUyOndcCSPY2/DXgxOFoL5CQ==
+X-Received: by 2002:ac2:5203:: with SMTP id a3mr6925309lfl.111.1556346197077; 
+ Fri, 26 Apr 2019 23:23:17 -0700 (PDT)
+Received: from mimer.lan (h-29-16.A159.priv.bahnhof.se. [79.136.29.16])
+ by smtp.gmail.com with ESMTPSA id o79sm6066969lff.50.2019.04.26.23.23.15
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 26 Apr 2019 23:23:16 -0700 (PDT)
+From: Jonas Bonn <jonas@norrbonn.se>
+To: Tudor.Ambarus@microchip.com, Yong.Qin@cypress.com,
+ James.Tomasetta@cypress.com, linux-mtd@lists.infradead.org
+Subject: [PATCH v3 1/1] spi-nor: always respect write-protect input
+Date: Sat, 27 Apr 2019 08:23:13 +0200
+Message-Id: <20190427062313.24258-1-jonas@norrbonn.se>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <5401b73b-0b06-45da-ced8-915b8d5c9278@microchip.com>
+References: <5401b73b-0b06-45da-ced8-915b8d5c9278@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20190426202025.GA24486@bogus>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190426_200116_042671_C69A6BDC 
-X-CRM114-Status: GOOD (  24.29  )
+X-CRM114-CacheID: sfid-20190426_232321_655466_0D4D9ADE 
+X-CRM114-Status: GOOD (  14.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,116 +96,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Mason Yang <masonccyang@mxic.com.tw>,
- Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Jonas Bonn <jonas@norrbonn.se>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The status register bit SRWD (status register write disable) is
+described in many words in the datasheets but effectively boils down to:
+
+i) if set, respect WP# when trying to change protection bits;
+ii) if unset, ignore WP# when trying to change protection bits
+
+In short, the bit determines whether the WP# signal is honored or not.
+
+This protection bit is used in a couple of different ways:
+
+i)  Some designs attach WP# directly to ground.  At first boot, they
+write to the NOR and call flash_lock; this results in the BP0-2 block
+protection bits and SRWD being set.  As WP# is permanently grounded,
+this block protection cannot be undone and the NOR is effectively
+read-only.
+
+ii)  Some designs can control WP#, thus allowing the protection of the
+SRWD bit itself to be managed.  When the hardware pulls WP# low, SRWD
+and the BP[0-2] block protection bits cannot be changed; when hardware
+sets WP# high, the block protection bits can be freely changed,
+_irregardless_ of the state of SRWD.
+
+iii)  In the third configuration WP# is pulled high internally, thereby
+rendering the SRWD bit ineffective.  In this configuration, the BP[0-2]
+block protection bits can always be freely modified; this puts the
+writability of the NOR flash exclusively under software control.
+
+Linux currently sets SRWD when flash_lock is invoked.  This prevents
+further modification of the BP[0-2] bits and the SRWD bit itself, _if_
+WP# is in play; if WP# is not in play, this setting has no effect.  This
+behaviour is rational.
+
+Linux, however, clears SRWD when the flash_unlock is invoked to clear
+all BP[0-2] bits.  If WP# is low, this will fail and SRWD and the block
+protection bits will remain unchanged.  If WP# is high, changing the
+BP[0-2] bits will succeed irregardless of the state of SRWD, so clearing
+SRWD has no meaningful effect here.
+
+There is, however, another scenario where clearing SRWD when calling
+flash_unlock causes unwanted behaviour.  If the BPNV bit is set, the
+BP[0-2] bits revert to "fully protected" at reset.  In this
+configuration, only someone who can control WP# is able to call
+flash_unlock and clear the block protection bits.  In this
+configuration, it is desirable that SRWD is not ever cleared so that the
+WP# always has full control over the writability of the BP[0-2] bits.
+This allows the NOR flash to be made writable _only_ by someone who has
+control over the WP# signal; for others, the NOR is read-only.
+
+Given the above, this patch removes the clearing of the SRWD bit from
+the flash_unlock path.  With this, Linux only ever sets the SRWD; it
+will never clear it.  This should be compatible with all three
+configuration outlined above:
+
+i)  If WP# is permanently grounded, SRWD is not clearable anyway.
+ii)  If WP# is controllable, SRWD is moot because WP# takes over its
+role
+iii)  If WP# is floating and thereby pulled permanently high, SRWD has
+no effect on the writability of the block protection bits.
+
+Tested on a Cypress s25fl512s.
+
+Signed-off-by: Jonas Bonn <jonas@norrbonn.se>
+---
+
+Hi Tudor,
+
+I think this problem is simpler than we think.  Just removing the clear
+of SRWD in the flash_unlock path is sufficient to cover all the various
+cases, as far as I can tell.
+
+Best regards,
+Jonas
 
 
-On 27/04/19 1:50 AM, Rob Herring wrote:
-> On Tue, Apr 23, 2019 at 04:18:13PM +0530, Vignesh Raghavendra wrote:
->> Add binding documentation for TI's HyperBus memory controller present on
->> AM654 SoC.
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
->>  .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 32 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  2 files changed, 33 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->> new file mode 100644
->> index 000000000000..fc87c7918389
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->> @@ -0,0 +1,32 @@
->> +Bindings for HyperBus Memory Controller (HBMC) on TI's K3 family of SoCs
->> +
->> +Required properties:
->> +- compatible : "ti,am654-hbmc" for AM654 SoC
->> +- reg : Two entries:
->> +	First entry pointed to the register space of HBMC controller
->> +	Second entry pointing to the memory map region dedicated for
->> +	MMIO access to attached flash devices
->> +- ranges : Address range allocated for each chipselect in the MMIO space
->> +
->> +Optional properties:
->> +- mux-controls : phandle to the multiplexer that controls selection of
->> +		 HBMC vs OSPI. Mux state of 1 indicates HBMC is selected.
-> 
-> So 1 is also the default because your example doesn't have the property?
-> 
+ drivers/mtd/spi-nor/spi-nor.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-No default is 0. Will fix the example.
-
->> +
->> +Example:
->> +
->> +	hbmc: hbmc@47034000 {
->> +		compatible = "ti,am654-hbmc";
->> +		reg = <0x0 0x47034000 0x0 0x100>,
->> +			<0x5 0x00000000 0x1 0x0000000>;
->> +		power-domains = <&k3_pds 55>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		ranges = <0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
->> +			 <0x1 0x5 0x04000000 0x4000000>; /* CS1 - 64MB
-> 
-> This is wrong. You need 2 cells for the child address. The first cell is 
-> the CS and the 2nd cell is the offset (typically 0). Otherwise you have 
-> overlapping addresses with child addresses 0 and 1.
-> 
-
-Oops, didn't think of that. Will fix in the next version.
-
->> +
->> +		/* Slave flash node */
->> +		flash@0 {
-> 
-> And then the unit-address here would be '0,0'.
-> 
->> +			compatible = "cypress,hyperflash";
-> 
-> Doesn't match what you defined for this binding.
-
-Will update. Thanks for the review!
-
-> 
->> +			reg = <0x0 0x4000000>;
->> +		};
->> +	};
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index a5f22f85c848..1ade81f9a32a 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -7258,6 +7258,7 @@ S:	Supported
->>  F:	drivers/mtd/hyperbus/
->>  F:	include/linux/mtd/hyperbus.h
->>  F:	Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
->> +F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->>  
->>  HYPERVISOR VIRTUAL CONSOLE DRIVER
->>  L:	linuxppc-dev@lists.ozlabs.org
->> -- 
->> 2.21.0
->>
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index fae147452aff..bc3317f2bc7c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1313,10 +1313,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 
+ 	status_new = (status_old & ~mask & ~SR_TB) | val;
+ 
+-	/* Don't protect status register if we're fully unlocked */
+-	if (lock_len == 0)
+-		status_new &= ~SR_SRWD;
+-
+ 	if (!use_top)
+ 		status_new |= SR_TB;
+ 
 -- 
-Regards
-Vignesh
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
