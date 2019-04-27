@@ -1,81 +1,85 @@
-Return-Path: <SRS0=mBQF=S4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=qSHN=S5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0C8C43219
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Apr 2019 22:41:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0956C43219
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Apr 2019 03:01:33 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69CC2206E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Apr 2019 22:41:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DA792084F
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Apr 2019 03:01:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gvWO/ChX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69CC2206E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vv6ZgQcy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kOXVefpV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DA792084F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Vdhy1i9u5nxw4dBIxiGrMApoXlHrWaEsSGk7AUFE/lw=; b=gvWO/ChXRHSoC2
-	36YAaEEeMnmSXAHDNgQyPqyJC29r478xVcLNqmDcQGwtKKScou/f7PMNBM6nKpYaWi1gMWXaj7kdD
-	91Ix4pyyBgXzMFip2pzMEsN9974oDw+dxPRtEdDD2SucjPNcb6MY6AJQX9iKOPzU6+AxOLN32yJxv
-	oQY9W7Xa84V/+dBMuvuPxJONaR1a598graKunI9PmaFWFac3zFkk9X3kN0oq2TbGwpiW3fRypaowt
-	uX7ei+5TQMHtVen7S8ZxzF2WWgmAmhzikiqanthGW8zSJ/f8nl+4HS7RoMN93mFaZ6LkOec3tdzzi
-	25F/PcSNUGsT6H+9hVNA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=PCQa0hvaestTp0qX2eciqz+4InDAUweyaJQehMWrx7A=; b=Vv6ZgQcyA2/dvy
+	BQV8U5Gtg/C6KXAw2Jg0JH3aYFfAoIpjU5m0TjNsNgGp7k6B1zxcujZgGqx5Nxf+8PQlDZ3frSujG
+	sBlJE+wBUQbH39HrXi/YnFar0Mb4BBpR4J5i6YZqwT5XMIcZo+WLLy8DO1XDH3PYu2DbRvCSHHycu
+	B6BBo2oqCngSQHnE5zvdk2vCEIV/GSdoZ9lIWg4AYC23YYS1VlxdqBM88u1glV4OIbWEPvbwp1eOP
+	QxnWdkVQG4xliVSPBmTck8+HB0iZCMcFv4z9bXezBwi/CLU1tzQ/fcvqy8TG8nI7YjYJ/SvbZ6HGG
+	50u4Le1a1O1SnOAY3Y3A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hK9XJ-00060X-J6; Fri, 26 Apr 2019 22:41:41 +0000
-Received: from mail-oi1-f196.google.com ([209.85.167.196])
+	id 1hKDaj-0007Yw-HP; Sat, 27 Apr 2019 03:01:29 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hK9XH-000609-CP
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2019 22:41:40 +0000
-Received: by mail-oi1-f196.google.com with SMTP id k6so4204286oic.4
- for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2019 15:41:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=PsdEdDTbsz+N7C5OSHpzo5ojKTZZOZ+w3y29AXWU3a0=;
- b=ntMCOowH46AcLHk6XV0rdYTHbiV4mNGkvIiIsZT1iQI0T7GQvVVmwXzmOHl+O7ehqG
- 1kF1D9CKtmtKUcdYSD70Buq04x82ysojbS4lmf2HlCOAHB1ETuLj9dRnnOpbiGzSLwwW
- YlQlxwpzATeWR6mCbuK6oXcM9rAxtyyhyS6RyQo1Srxu5mW9Js0FPCD/s6oND2N8l94v
- UX7MeKJzy4A13gvPzY8AR3VjGLLdkOi9He0ZDDOZiMeHjtddmJ7MhgjY/kklJb/yrWe4
- gIbjMmmpt7b0M53bIk8RJmyxm416CvtCJN+9UxK9OHTI1xLKTsMKHK6Aj41P5+hs1pJt
- 7HMA==
-X-Gm-Message-State: APjAAAXIcI3XB2Rn/7n90XT8jASoeboXudnK9W51bIb+0ZHDNVrUoake
- FrZG//juqhcdmGfQ3/x8Fw==
-X-Google-Smtp-Source: APXvYqzzmEbC/NuD5L8a9Vj0ZUk4s85sFCjNd6YoWDJUPGt8PPb+Skw3FBdVQPhaSCv3ksmJRDcfww==
-X-Received: by 2002:aca:f1d4:: with SMTP id p203mr9098222oih.154.1556318497952; 
- Fri, 26 Apr 2019 15:41:37 -0700 (PDT)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id f16sm3915279otq.15.2019.04.26.15.41.36
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 26 Apr 2019 15:41:36 -0700 (PDT)
-Date: Fri, 26 Apr 2019 17:41:36 -0500
-From: Rob Herring <robh@kernel.org>
-To: Mason Yang <masonccyang@mxic.com.tw>
-Subject: Re: [PATCH v3 4/4] dt-bindings: mfd: Document Macronix MX25F0A
- controller bindings
-Message-ID: <20190426224136.GA636@bogus>
-References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
- <1555320234-15802-5-git-send-email-masonccyang@mxic.com.tw>
+ id 1hKDaV-0007U4-SD; Sat, 27 Apr 2019 03:01:18 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x3R30noV097744;
+ Fri, 26 Apr 2019 22:00:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1556334049;
+ bh=LZCR6iKbbXEPqBepbMx2w7d7Lo5FnctqMVgc8kv1M8c=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=kOXVefpVWhb+zgn7q7TtEgyIS434p2jRwv5o/p3xTQ2d4S3EfLhpPH3GewqtMEz2G
+ 3eA1ksje+vUy96srr55lUzSys5AjfUPwWrobn7PfqpSlK/oCL2p/hLI5SlQpPOrk6/
+ RREYqGTo9KZEtsBkOBymtE+IytLXw4Txz03X7iFI=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x3R30nG1036899
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 26 Apr 2019 22:00:49 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Fri, 26
+ Apr 2019 22:00:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Fri, 26 Apr 2019 22:00:48 -0500
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x3R30hwL099822;
+ Fri, 26 Apr 2019 22:00:44 -0500
+Subject: Re: [PATCH v4 4/5] dt-bindings: mtd: Add bindings for TI's AM654
+ HyperBus memory controller
+To: Rob Herring <robh@kernel.org>
+References: <20190423104814.5762-1-vigneshr@ti.com>
+ <20190423104814.5762-5-vigneshr@ti.com> <20190426202025.GA24486@bogus>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <0972151d-5911-5a6e-da36-8fa8e1761e30@ti.com>
+Date: Sat, 27 Apr 2019 08:31:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1555320234-15802-5-git-send-email-masonccyang@mxic.com.tw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190426202025.GA24486@bogus>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190426_154139_423120_5EF26008 
-X-CRM114-Status: GOOD (  18.11  )
+X-CRM114-CacheID: sfid-20190426_200116_042671_C69A6BDC 
+X-CRM114-Status: GOOD (  24.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,93 +91,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, juliensu@mxic.com.tw,
- christophe.kerello@st.com, richard@nod.at, bbrezillon@kernel.org,
- marcel.ziswiler@toradex.com, lee.jones@linaro.org, miquel.raynal@bootlin.com,
- linux-kernel@vger.kernel.org, stefan@agner.ch, linux-spi@vger.kernel.org,
- marek.vasut@gmail.com, paul.burton@mips.com, broonie@kernel.org,
- geert@linux-m68k.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmal.com, liang.yang@amlogic.com, dwmw2@infradead.org,
- zhengxunli@mxic.com.tw
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Mason Yang <masonccyang@mxic.com.tw>,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 15, 2019 at 05:23:54PM +0800, Mason Yang wrote:
-> Document the bindings used by the Macronix MX25F0A MFD controller.
-> 
-> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> ---
->  .../devicetree/bindings/mfd/mxic-mx25f0a.txt       | 51 ++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt b/Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
-> new file mode 100644
-> index 0000000..7f3e0f8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/mxic-mx25f0a.txt
-> @@ -0,0 +1,51 @@
-> +Macronix MX25F0A MultiFunction Device Tree Bindings
-> +----------------------------------------------------
-> +
-> +MX25F0A is a MultiFunction Device with SPI and raw NAND, which
-> +supports either spi host controller or raw nand controller.
-> +
-> +Required properties:
-> +- compatible: should be "mxic,mx25f0a"
-> +- #address-cells: should be 1
-> +- #size-cells: should be 0
-> +- reg: should contain 2 entries, one for the registers and one for the direct
-> +       mapping area in SPI mode.
-> +- reg-names: should contain "regs" and "dirmap"
-> +- interrupts: interrupt line connected to this MFD controller
-> +- SPI controller driver:
-> +		- clock-names: should contain "ps_clk", "send_clk" and
-> +			       "send_dly_clk"
-> +		- clocks: should contain 3 entries for the "ps_clk", "send_clk"
-> +			  and "send_dly_clk" clocks
-> +
-> +- Raw nand controller driver.
-> +		- nand-ecc-mode = "soft";
-> +		- nand-ecc-algo = "bch";
-> +
-> +Example:
-> +
-> +	mxic: mx25f0a@43c30000 {
-> +		compatible = "mxic,mx25f0a";
-> +		reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
-> +		reg-names = "regs", "dirmap";
-> +
-> +		/* spi */
-> +		clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
-> +		clock-names = "send_clk", "send_dly_clk", "ps_clk";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		flash@0 {
-> +			compatible = "jedec,spi-nor";
-> +			reg = <0>;
-> +			spi-max-frequency = <25000000>;
-> +			spi-tx-bus-width = <4>;
-> +			spi-rx-bus-width = <4>;
-> +		};
-> +
-> +		/* nand */
 
-Don't you need a nand child node? I'm not sure how that's going to work 
-as you are already using the number space (i.e. reg) for SPI CS number 
-and you can't really mix number spaces within a node level.
 
-> +		nand-ecc-mode = "soft";
-> +		nand-ecc-algo = "bch";
-> +		nand-ecc-step-size = <512>;
-> +		nand-ecc-strength = <8>;
-> +	};
-> -- 
-> 1.9.1
+On 27/04/19 1:50 AM, Rob Herring wrote:
+> On Tue, Apr 23, 2019 at 04:18:13PM +0530, Vignesh Raghavendra wrote:
+>> Add binding documentation for TI's HyperBus memory controller present on
+>> AM654 SoC.
+>>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> ---
+>>  .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 32 +++++++++++++++++++
+>>  MAINTAINERS                                   |  1 +
+>>  2 files changed, 33 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+>> new file mode 100644
+>> index 000000000000..fc87c7918389
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+>> @@ -0,0 +1,32 @@
+>> +Bindings for HyperBus Memory Controller (HBMC) on TI's K3 family of SoCs
+>> +
+>> +Required properties:
+>> +- compatible : "ti,am654-hbmc" for AM654 SoC
+>> +- reg : Two entries:
+>> +	First entry pointed to the register space of HBMC controller
+>> +	Second entry pointing to the memory map region dedicated for
+>> +	MMIO access to attached flash devices
+>> +- ranges : Address range allocated for each chipselect in the MMIO space
+>> +
+>> +Optional properties:
+>> +- mux-controls : phandle to the multiplexer that controls selection of
+>> +		 HBMC vs OSPI. Mux state of 1 indicates HBMC is selected.
 > 
+> So 1 is also the default because your example doesn't have the property?
+> 
+
+No default is 0. Will fix the example.
+
+>> +
+>> +Example:
+>> +
+>> +	hbmc: hbmc@47034000 {
+>> +		compatible = "ti,am654-hbmc";
+>> +		reg = <0x0 0x47034000 0x0 0x100>,
+>> +			<0x5 0x00000000 0x1 0x0000000>;
+>> +		power-domains = <&k3_pds 55>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		ranges = <0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
+>> +			 <0x1 0x5 0x04000000 0x4000000>; /* CS1 - 64MB
+> 
+> This is wrong. You need 2 cells for the child address. The first cell is 
+> the CS and the 2nd cell is the offset (typically 0). Otherwise you have 
+> overlapping addresses with child addresses 0 and 1.
+> 
+
+Oops, didn't think of that. Will fix in the next version.
+
+>> +
+>> +		/* Slave flash node */
+>> +		flash@0 {
+> 
+> And then the unit-address here would be '0,0'.
+> 
+>> +			compatible = "cypress,hyperflash";
+> 
+> Doesn't match what you defined for this binding.
+
+Will update. Thanks for the review!
+
+> 
+>> +			reg = <0x0 0x4000000>;
+>> +		};
+>> +	};
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index a5f22f85c848..1ade81f9a32a 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -7258,6 +7258,7 @@ S:	Supported
+>>  F:	drivers/mtd/hyperbus/
+>>  F:	include/linux/mtd/hyperbus.h
+>>  F:	Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+>> +F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+>>  
+>>  HYPERVISOR VIRTUAL CONSOLE DRIVER
+>>  L:	linuxppc-dev@lists.ozlabs.org
+>> -- 
+>> 2.21.0
+>>
+
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
