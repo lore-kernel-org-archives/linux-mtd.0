@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE6CFC43219
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:39:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 323CFC43219
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:39:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E0602075E
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:39:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F35952075E
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:39:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AlRkeI5y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E0602075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b5lyj7db"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F35952075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=06jOaB6T2+xQGb9LxVM+UVUbo0UQrxJ5LNYQP12OTnQ=; b=AlRkeI5yJb/LCe
-	5hbqbNzzlKfmq7q/26OonJ5Yj8+CRJFt8jsOzM/QXg0eY3RTdStbJ+hHHZdIE/Cm2m1b60V3TDQkN
-	05k8uHlq4h8lD5yhYCFmRnrmnIwOMJ7lcRihEnMXru1iOxFK5OT0+tdZOFaCvOWAqKDtnGbFkbOEm
-	TwOp/8AJHDlzXkQFRMIlZmPpR0/UcKifbe5qgeYtl3HoT71oSxQK2d2FUdZ/cWdBPN0t807n7xGj/
-	8Va88KrB8mOB2mXYnvnD250jVL7eD5kpCKd2Xspe8L7QL6LeEplLbjp9HEM1rh7VY9OiubPBR48Em
-	hf9j8nNzeWnCxBf60zMg==;
+	List-Owner; bh=Suzn2cHjggK9Ffg5eNz64nVPyDYxIdEUNOh4lsTuA/M=; b=b5lyj7dbsaqr6U
+	oG58Ipx21w3AP8Kp+ElIshMm3IckpcftKhoVuKrXOjpmGufvdUMqs1hhreSR5E416W5mTVF7wRhaO
+	ZXK3EKZ4kDyycW+gu2287sZ2ksQzQfWQrnF5b6ykFgFHoB6lmkzveuT72uNxYxtieXArfI4rqH/Tm
+	YxTVijpIoZJAN43yLgKOvs+Pc069DX7wiIChHmH96Qg2vyXGaOAFflKkv6Ork3/BV7avoF5iSu/dw
+	CxwuhNxt5q8IRBArE9BVoZUIfrchpDPp4tl4A3SdC2RFbRf3mdOX5yJ8GcyHjK6du6NM605JGQJeV
+	RQLqgR9d2EGUUYJ4SLzw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hKzwc-0006DR-Bo; Mon, 29 Apr 2019 06:39:18 +0000
+	id 1hKzwo-0006UF-Pb; Mon, 29 Apr 2019 06:39:30 +0000
 Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hKzw8-0005WA-7x; Mon, 29 Apr 2019 06:38:53 +0000
-X-UUID: 92dbac9b124b47c88adf514b7077bbca-20190428
-X-UUID: 92dbac9b124b47c88adf514b7077bbca-20190428
-Received: from mtkcas68.mediatek.inc [(172.29.94.19)] by mailgw01.mediatek.com
+ id 1hKzw9-0005YZ-EI; Mon, 29 Apr 2019 06:38:56 +0000
+X-UUID: 45c08a9f909b415cb7b9b4b8141f8c4c-20190428
+X-UUID: 45c08a9f909b415cb7b9b4b8141f8c4c-20190428
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
  (envelope-from <xiaolei.li@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 1102790042; Sun, 28 Apr 2019 22:38:40 -0800
-Received: from mtkmbs03n1.mediatek.inc (172.21.101.181) by
- MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Sun, 28 Apr 2019 23:38:39 -0700
+ with ESMTP id 2096704270; Sun, 28 Apr 2019 22:38:45 -0800
+Received: from mtkmbs03n2.mediatek.inc (172.21.101.182) by
+ MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Sun, 28 Apr 2019 23:38:44 -0700
 Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs03n1.mediatek.inc (172.21.101.181) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Mon, 29 Apr 2019 14:38:38 +0800
+ mtkmbs03n2.mediatek.inc (172.21.101.182) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Mon, 29 Apr 2019 14:38:42 +0800
 Received: from mtkslt306.mediatek.inc (10.21.14.136) by mtkcas08.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
- Frontend Transport; Mon, 29 Apr 2019 14:38:38 +0800
+ Frontend Transport; Mon, 29 Apr 2019 14:38:42 +0800
 From: Xiaolei Li <xiaolei.li@mediatek.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [PATCH 1/5] mtd: rawnand: mtk: Correct low level time calculation of
- r/w cycle
-Date: Mon, 29 Apr 2019 14:38:30 +0800
-Message-ID: <20190429063834.45967-2-xiaolei.li@mediatek.com>
+Subject: [PATCH 4/5] mtd: rawnand: mtk: Fix wrongly assigned oob buffer
+ pointer issue
+Date: Mon, 29 Apr 2019 14:38:33 +0800
+Message-ID: <20190429063834.45967-5-xiaolei.li@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20190429063834.45967-1-xiaolei.li@mediatek.com>
 References: <20190429063834.45967-1-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
+X-TM-SNTS-SMTP: 9B100842B4657FD66A64336294383828D8E3524E021B44A2107360D80346BEA42000:8
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190428_233848_668583_AB467084 
-X-CRM114-Status: GOOD (  11.89  )
+X-CRM114-CacheID: sfid-20190428_233849_916392_C00C7594 
+X-CRM114-Status: UNSURE (   9.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,65 +86,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-At present, the flow of calculating AC timing of read/write cycle in SDR
-mode is that:
-At first, calculate high hold time which is valid for both read and write
-cycle using the max value between tREH_min and tWH_min.
-Secondly, calculate WE# pulse width using tWP_min.
-Thridly, calculate RE# pulse width using the bigger one between tREA_max
-and tRP_min.
+One main goal of the function mtk_nfc_update_ecc_stats is to check
+whether sectors are all empty. If they are empty, set these sectors's
+data buffer and oob buffer as 0xff.
 
-But NAND SPEC shows that Controller should also meet write/read cycle time.
-That is write cycle time should be more than tWC_min and read cycle should
-be more than tRC_min. Obviously, we do not achieve that now.
+But now, the sector oob buffer pointer is wrongly assigned. We always
+do memset from sector 0.
 
-This patch corrects the low level time calculation to meet minimum
-read/write cycle time required. After getting the high hold time, WE# low
-level time will be promised to meet tWP_min and tWC_min requirement,
-and RE# low level time will be promised to meet tREA_max, tRP_min and
-tRC_min requirement.
+To fix this issue, pass start secotr number to make oob buffer pointer
+be properly assigned.
 
 Fixes: 93db446a424c ("mtd: nand: move raw NAND related code to the raw/ subdir")
 Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 ---
- drivers/mtd/nand/raw/mtk_nand.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/mtk_nand.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index b6b4602f5132..dd855f860a4b 100644
+index 7a5e8c9cf61b..cf5e50e704ae 100644
 --- a/drivers/mtd/nand/raw/mtk_nand.c
 +++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -508,7 +508,7 @@ static int mtk_nfc_setup_data_interface(struct nand_chip *chip, int csline,
+@@ -873,19 +873,21 @@ static int mtk_nfc_write_oob_std(struct nand_chip *chip, int page)
+ 	return mtk_nfc_write_page_raw(chip, NULL, 1, page);
+ }
+ 
+-static int mtk_nfc_update_ecc_stats(struct mtd_info *mtd, u8 *buf, u32 sectors)
++static int mtk_nfc_update_ecc_stats(struct mtd_info *mtd, u8 *buf, u32 start,
++				    u32 sectors)
  {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
  	struct mtk_nfc *nfc = nand_get_controller_data(chip);
- 	const struct nand_sdr_timings *timings;
--	u32 rate, tpoecs, tprecs, tc2r, tw2r, twh, twst, trlt;
-+	u32 rate, tpoecs, tprecs, tc2r, tw2r, twh, twst = 0, trlt = 0;
+ 	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(chip);
+ 	struct mtk_ecc_stats stats;
++	u32 reg_size = mtk_nand->fdm.reg_size;
+ 	int rc, i;
  
- 	timings = nand_get_sdr_timings(conf);
- 	if (IS_ERR(timings))
-@@ -544,11 +544,19 @@ static int mtk_nfc_setup_data_interface(struct nand_chip *chip, int csline,
- 	twh = DIV_ROUND_UP(twh * rate, 1000000) - 1;
- 	twh &= 0xf;
+ 	rc = nfi_readl(nfc, NFI_STA) & STA_EMP_PAGE;
+ 	if (rc) {
+ 		memset(buf, 0xff, sectors * chip->ecc.size);
+ 		for (i = 0; i < sectors; i++)
+-			memset(oob_ptr(chip, i), 0xff, mtk_nand->fdm.reg_size);
++			memset(oob_ptr(chip, start + i), 0xff, reg_size);
+ 		return 0;
+ 	}
  
--	twst = timings->tWP_min / 1000;
-+	/* Calculate min low level timing for write cycle */
-+	if ((twh + 1) * 1000000 / rate < timings->tWC_min / 1000)
-+		twst = (timings->tWC_min / 1000 - (twh + 1) * 1000000 / rate)
-+			* 1000;
-+	twst = max(timings->tWP_min, twst) / 1000;
- 	twst = DIV_ROUND_UP(twst * rate, 1000000) - 1;
- 	twst &= 0xf;
+@@ -905,7 +907,7 @@ static int mtk_nfc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 	u32 spare = mtk_nand->spare_per_sector;
+ 	u32 column, sectors, start, end, reg;
+ 	dma_addr_t addr;
+-	int bitflips;
++	int bitflips = 0;
+ 	size_t len;
+ 	u8 *buf;
+ 	int rc;
+@@ -972,14 +974,11 @@ static int mtk_nfc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (rc < 0) {
+ 		dev_err(nfc->dev, "subpage done timeout\n");
+ 		bitflips = -EIO;
+-	} else {
+-		bitflips = 0;
+-		if (!raw) {
+-			rc = mtk_ecc_wait_done(nfc->ecc, ECC_DECODE);
+-			bitflips = rc < 0 ? -ETIMEDOUT :
+-				mtk_nfc_update_ecc_stats(mtd, buf, sectors);
+-			mtk_nfc_read_fdm(chip, start, sectors);
+-		}
++	} else if (!raw) {
++		rc = mtk_ecc_wait_done(nfc->ecc, ECC_DECODE);
++		bitflips = rc < 0 ? -ETIMEDOUT :
++			mtk_nfc_update_ecc_stats(mtd, buf, start, sectors);
++		mtk_nfc_read_fdm(chip, start, sectors);
+ 	}
  
--	trlt = max(timings->tREA_max, timings->tRP_min) / 1000;
-+	/* Calculate min low level timing for read cycle */
-+	if ((twh + 1) * 1000000 / rate < timings->tRC_min / 1000)
-+		trlt = (timings->tRC_min / 1000 - (twh + 1) * 1000000 / rate)
-+			* 1000;
-+	trlt = max3(trlt, timings->tREA_max, timings->tRP_min) / 1000;
- 	trlt = DIV_ROUND_UP(trlt * rate, 1000000) - 1;
- 	trlt &= 0xf;
- 
+ 	dma_unmap_single(nfc->dev, addr, len, DMA_FROM_DEVICE);
 -- 
 2.18.0
 
