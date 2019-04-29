@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9898C43219
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76A70C43219
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:39:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6F1E2075E
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:38:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E7722075E
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2019 06:39:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JdB2ZPWN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6F1E2075E
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I494GyCO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E7722075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,47 +25,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7rEt43VVkDohRl9O54oPZZVPvG7iSfDKgQ95y4wift4=; b=JdB2ZPWNMaUhcg
-	X0cq0cUhlj16mtlizRhXuKZfrwbg+7jZa3EARcu8vQIeARFMRvFEzSGRyvWOJNY1VwYpN92PI01Qw
-	Kk5F07cmxXIAdCTbKgy56lqwD39xEsZFGctDngqfqtHTaDWPo/ZQIN9dI/GDkbfodchu2KfpiCsGN
-	SNBfeRXDcli87pDIy5RjObpz4cXX4QCRUEuuz53YmAoJZ8KM/+ZCPua9wpOGUFJwRw8gKZiv1H1ss
-	DENXbUPYGWYoBYk6Qh++LBM5qp6gjHYCfHXgW+RwK8ljHihHb3lUuFSrt3JzkHTu8IFjV8i2TCwWT
-	ksCsBrPTWkFp/zv1j+Zw==;
+	List-Owner; bh=NfelvpZIRyW1dJt2aj5vL2oO4+NhiuJeAqkbKjd5AIw=; b=I494GyCOvFUq9H
+	kz3XU9Jnakxq5MeJA6g18/ra/Pl8tPZ0xnVdFQ4qLG+ds3fuihMvaBggcXctbiRpOg7YrGvYWvYK2
+	yoA2EdZtraxSj0fDMrDH5lH0tZHyRPXwvAQiYF/LTNzd+OIJzk1xaRDsQ3w/uZ2BRwQ75dKUhS0Tu
+	snlUieXMFS6tYtURtsFAjnP1RU7Ie1XhKykVk9eTgqIXaUsEdgA0hVjA23OEkD20W6mpwfFSa6ecR
+	7V0pzxfm5I+W2UPkifR8cg9yrHh9eeXWN1cNVXIdCGh3y46QcjR1SX0FGWxG3tksAvAx/FOu9jDgp
+	pgnqo6RxnIlHxWYZviKQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hKzwD-0005fT-TM; Mon, 29 Apr 2019 06:38:53 +0000
+	id 1hKzwP-0005w9-GN; Mon, 29 Apr 2019 06:39:05 +0000
 Received: from mailgw02.mediatek.com ([216.200.240.185])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hKzw5-0005TE-4b; Mon, 29 Apr 2019 06:38:46 +0000
-X-UUID: 9b29542057d6440ba9991c2784e2aa8c-20190428
-X-UUID: 9b29542057d6440ba9991c2784e2aa8c-20190428
-Received: from mtkcas68.mediatek.inc [(172.29.94.19)] by mailgw02.mediatek.com
+ id 1hKzw6-0005To-7O; Mon, 29 Apr 2019 06:38:51 +0000
+X-UUID: 527d2a7c23c64749856ca7c87ddee261-20190428
+X-UUID: 527d2a7c23c64749856ca7c87ddee261-20190428
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
  (envelope-from <xiaolei.li@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 1765915400; Sun, 28 Apr 2019 22:38:44 -0800
-Received: from mtkmbs03n1.mediatek.inc (172.21.101.181) by
- MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ with ESMTP id 349634368; Sun, 28 Apr 2019 22:38:43 -0800
+Received: from mtkmbs03n2.mediatek.inc (172.21.101.182) by
+ MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
  15.0.1395.4; Sun, 28 Apr 2019 23:38:42 -0700
 Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs03n1.mediatek.inc (172.21.101.181) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Mon, 29 Apr 2019 14:38:41 +0800
+ mtkmbs03n2.mediatek.inc (172.21.101.182) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Mon, 29 Apr 2019 14:38:39 +0800
 Received: from mtkslt306.mediatek.inc (10.21.14.136) by mtkcas08.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
- Frontend Transport; Mon, 29 Apr 2019 14:38:41 +0800
+ Frontend Transport; Mon, 29 Apr 2019 14:38:39 +0800
 From: Xiaolei Li <xiaolei.li@mediatek.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [PATCH 3/5] mtd: rawnand: mtk: Add validity check for CE# pin setting
-Date: Mon, 29 Apr 2019 14:38:32 +0800
-Message-ID: <20190429063834.45967-4-xiaolei.li@mediatek.com>
+Subject: [PATCH 2/5] mtd: rawnand: mtk: Improve data sampling timing for read
+ cycle
+Date: Mon, 29 Apr 2019 14:38:31 +0800
+Message-ID: <20190429063834.45967-3-xiaolei.li@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20190429063834.45967-1-xiaolei.li@mediatek.com>
 References: <20190429063834.45967-1-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
+X-TM-SNTS-SMTP: CDF10B6E30D85B07B70D086744F874FC004A29F1A2E07477D3132D0799E5B3CA2000:8
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190428_233845_178024_BA8981C0 
-X-CRM114-Status: UNSURE (   9.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190428_233846_470445_D24F4E11 
+X-CRM114-Status: GOOD (  12.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,49 +85,90 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, we only check how many CE# pins are set in device tree.
-But it should be necessary to check whether CE# pin setting is
-duplicated or if CE# pin index exceeds the maximum CE# number that
-controller supports.
+Currently, we expand RE# low level time by choosing the max value
+between RE# pulse width and RE# access time, and sample data at the
+rising edge of RE#.
 
-So, add validity check to avoid these invalid settings.
+Then, if RE# access time is bigger than RE# pulse width, the real
+read cycle time may be more than NAND SPEC required. This makes
+read performance be worse than that expected.
+
+This patch improves data sampling timing by calculating RE# low level
+time according to RE# pulse width. If RE# access time is bigger than
+RE# pulse width, then delay sampling data timing.
+
+The result of contrast test base on MT2712 evaluat board is as follow.
+
+nand: Micron MT29F16G08ADBCAH4
+nand: 2048 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 224
+
+NFI 2x clock rate: 124800000 HZ.
+
+Test tool: mtd_speedtest.ko
+
+Read speed without this patch:
+mtd_speedtest: page read speed is 14012 KiB/s
+mtd_speedtest: 2 page read speed is 14860 KiB/s
+
+Read speed with this patch:
+mtd_speedtest: page read speed is 18724 KiB/s
+mtd_speedtest: 2 page read speed is 18713 KiB/s
 
 Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 ---
- drivers/mtd/nand/raw/mtk_nand.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/mtd/nand/raw/mtk_nand.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index a2f7af536380..7a5e8c9cf61b 100644
+index dd855f860a4b..a2f7af536380 100644
 --- a/drivers/mtd/nand/raw/mtk_nand.c
 +++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -162,6 +162,8 @@ struct mtk_nfc {
- 	struct list_head chips;
+@@ -87,6 +87,10 @@
+ #define NFI_FDMM(x)		(0xA4 + (x) * sizeof(u32) * 2)
+ #define NFI_FDM_MAX_SIZE	(8)
+ #define NFI_FDM_MIN_SIZE	(1)
++#define NFI_DEBUG_CON1		(0x220)
++#define		STROBE_MASK		GENMASK(4, 3)
++#define		STROBE_SHIFT		(3)
++#define		MAX_STROBE_DLY		(3)
+ #define NFI_MASTER_STA		(0x224)
+ #define		MASTER_STA_MASK		(0x0FFF)
+ #define NFI_EMPTY_THRESH	(0x23C)
+@@ -509,6 +513,7 @@ static int mtk_nfc_setup_data_interface(struct nand_chip *chip, int csline,
+ 	struct mtk_nfc *nfc = nand_get_controller_data(chip);
+ 	const struct nand_sdr_timings *timings;
+ 	u32 rate, tpoecs, tprecs, tc2r, tw2r, twh, twst = 0, trlt = 0;
++	u32 tsel, reg;
  
- 	u8 *buffer;
-+
-+	unsigned long assigned_cs;
- };
+ 	timings = nand_get_sdr_timings(conf);
+ 	if (IS_ERR(timings))
+@@ -556,10 +561,25 @@ static int mtk_nfc_setup_data_interface(struct nand_chip *chip, int csline,
+ 	if ((twh + 1) * 1000000 / rate < timings->tRC_min / 1000)
+ 		trlt = (timings->tRC_min / 1000 - (twh + 1) * 1000000 / rate)
+ 			* 1000;
+-	trlt = max3(trlt, timings->tREA_max, timings->tRP_min) / 1000;
++	trlt = max(trlt, timings->tRP_min) / 1000;
+ 	trlt = DIV_ROUND_UP(trlt * rate, 1000000) - 1;
+ 	trlt &= 0xf;
  
- /*
-@@ -1351,6 +1353,17 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
- 			dev_err(dev, "reg property failure : %d\n", ret);
- 			return ret;
- 		}
-+
-+		if (tmp >= MTK_NAND_MAX_NSELS) {
-+			dev_err(dev, "invalid CS: %u\n", tmp);
-+			return -EINVAL;
++	/* Calculate strobe sel */
++	reg = nfi_readl(nfc, NFI_DEBUG_CON1);
++	reg &= ~STROBE_MASK;
++	if ((trlt + 1) * 1000000 / rate < timings->tREA_max / 1000) {
++		tsel = timings->tREA_max / 1000;
++		tsel = DIV_ROUND_UP(tsel * rate, 1000000);
++		tsel -= (trlt + 1);
++		if (tsel > MAX_STROBE_DLY) {
++			trlt += tsel - MAX_STROBE_DLY;
++			tsel = MAX_STROBE_DLY;
 +		}
++		reg |= tsel << STROBE_SHIFT;
++	}
++	nfi_writel(nfc, reg, NFI_DEBUG_CON1);
 +
-+		if (test_and_set_bit(tmp, &nfc->assigned_cs)) {
-+			dev_err(dev, "CS %u already assigned\n", tmp);
-+			return -EINVAL;
-+		}
-+
- 		chip->sels[i] = tmp;
- 	}
- 
+ 	/*
+ 	 * ACCON: access timing control register
+ 	 * -------------------------------------
 -- 
 2.18.0
 
