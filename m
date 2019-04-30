@@ -2,84 +2,89 @@ Return-Path: <SRS0=r2JG=TA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 477CEC43219
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2019 14:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FE04C43219
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2019 17:04:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1765120835
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2019 14:29:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 609132173E
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2019 17:04:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NVZdUeB7";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rZTzPuiq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1765120835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V5SjLpi9";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="jv7DxdnV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 609132173E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=gyw3LcIkNNx1vB6jmT+3Svdg/W+E4dTwcWTJYOUBQLg=; b=NVZ
-	dUeB77naDzd9cjPjAP58ueBr59hTTBTix28KggvGBR4qNCpmTv6IC33RQhMuM8NYsbFeuaWdQfM6B
-	Dsat3/0fYGJh+JQylRgbaJTfYG6w/5IGG+iIQNcv8yhjzKz40Fe9zEo5rGT058+y9PTJw02bK3qwQ
-	gL5AyEPAUFZxqpEWm3Um6wXu0w6ApgyJZ9+hhliJOw4QU92LYFWdFd3LRektyUOaXhumVzM53Ob1D
-	/c3fQHIC58zzgjYX9QZDdSzPvCXW4VtLnYP22Gjphcx/MRPjwZ7CfFhyiPQ/hIys0K4EPznA6e+wL
-	tlC0f5I2pSylwM2nHuTT9bW90Iv5zYA==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
+	In-Reply-To:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=l/O9wUShqNcfPL7MxnxrQt4eVpi8gm9vYzSB3n6mZhk=; b=V5SjLpi9tI7bmH
+	lLlPHocZAmxt4d28AO/Xt8pip/balpcCcZT/6gxr8vOHfYObtOygu3nUo7TefaMJ3imVu75O9ZpcX
+	JeylgN0iegSMHzIW6XWxwnKA/6Whd9AkjZThZAiRK4RhOKWbbzz0DyXS4xMhLL3DbPqiNvYOY1XbS
+	upBqvDXZuOhimGyLNJla8Y/LOe1HX2BgsZunKmysyj1yeXISaQkAt8b0E4m6tUoPNEktGrpVdRddu
+	h0aaoXArkCjZ8QH84ZWOaVIdphiTaBR/cakrxPDbhho97DXE/WgiF54rL4AO1lCzLAWQXqLaO/GPQ
+	yX4i9JTqY0WRV/WQtUjQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hLTkv-0007t1-OF; Tue, 30 Apr 2019 14:29:13 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1hLWAj-0003Vy-NI; Tue, 30 Apr 2019 17:04:01 +0000
+Received: from mail-io1-xd41.google.com ([2607:f8b0:4864:20::d41])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLTks-0007sa-9C
- for linux-mtd@lists.infradead.org; Tue, 30 Apr 2019 14:29:11 +0000
-Received: by mail-pl1-x644.google.com with SMTP id z8so6819346pln.4
- for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2019 07:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=gb2/qo4daIM4/XD26mQy9x/AtGcglrtxYaVLVttfznM=;
- b=rZTzPuiqcsSaDWwRFjcznNaRL9JbSxWVykC81b4a5zNPB0MgbpfZCPYQuMJZhzoO8S
- 4Bni0xV/aea/YGX0BMNBvrj7EN0mlTaqu9OL1Gu3HFd6Ee/2x2mYcDNHXrDdzQIh0PCR
- jCRAH5OC/qrKncxtIrna01UP0LeJqznC/1HNAFVCj8geU8Bx11eUCaEHY3K1i+M8gapX
- nMBtVd8INq+r7cc9XH+mtmD28ruwpwynt8CeJjuIY6BP63lptbUSnZ4K2/XNLQRF6Q5B
- fBLoJtsro0/r7HFZKdi+rFFt7cOCu3ll6nhjvNzo6daBhe4mMzN78bRUfttYBbY9POFQ
- jNEw==
+ id 1hLWAh-0003Tt-3I
+ for linux-mtd@lists.infradead.org; Tue, 30 Apr 2019 17:04:00 +0000
+Received: by mail-io1-xd41.google.com with SMTP id a23so12882741iot.4
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2019 10:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references
+ :user-agent:mime-version;
+ bh=etJ1WR4qO+3IuPfLuVdMXPbV+XDBvAU6tcECrR4xCrc=;
+ b=jv7DxdnVudtPMbDXxMEw/GM6NMPqoYoCohNeCzcb2ZSDFyhwR53p8yt5rztmB+SlAf
+ /6HkkM1OGFkTHmp6HqKcBGui9wGjTtcdnfFajTPjETmcuAIhe9NUW0xK/jTAi7NKtmHI
+ lL2AftBMEwQCtNz7CwfBTolnOwMRZxouvJvbRP9iDJKEwDZbq+agZE/edhY16NycGWzf
+ D0zkdHg9jEo/1wZ4p2aGffpsSAtgX6TsX+Vd0um8aKmDQ3T9FoNbSkve4NsttbhxTaq4
+ o5LzkTsG3l9hA0mHJxLmZ2vDRt2nqULQ71SsYLA1yapsTMA5oOJoYFdsY9wZ06I3p7yQ
+ /tDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=gb2/qo4daIM4/XD26mQy9x/AtGcglrtxYaVLVttfznM=;
- b=kJdkaSliPV/I6oxqJx0WZpUvio3qBtEN/PFslQ+x1t3jNvgJ+oYdPdMVMAzdgfF0gq
- K3S6wNwNxPXzElB5tm/uDt14aNZhGmgF9B/OARPGf3FSC6A/qc/hu4KTvzbHVqz/BPTe
- FatpBSm3iyngymaM/Qwnbdg2OLFv65Y3AT0Xa0Z+pA2/pXH77P3v55OPx50FbUYbweA1
- xuHpubQXiA2N/vyv97pfrebQ5f55X6E+z9am6qmLX91TJDyEevUGa2L5nMrsGknEnp0w
- XhB2/qY9QHI8TCiIw9goBcNVxI/M36eGB4jIEc1Uaam6PZLZvrNXn+PeHb3yyEL4eZkV
- oTkg==
-X-Gm-Message-State: APjAAAUQjZ+St30B+wPbf/84jaizTkqo5/DzG6IxT2XBqCXkUXKnLXXX
- nT+GNnl4aEag+RacVU4hVmZGMf2h
-X-Google-Smtp-Source: APXvYqx0wRs5VjHk6+IjX8yLFiTwu9iGdA9DOCwU/HCgf9V0IJNyo7XIczIiihHMfM7Nzz7TftkBwA==
-X-Received: by 2002:a17:902:112a:: with SMTP id
- d39mr61897298pla.47.1556634547834; 
- Tue, 30 Apr 2019 07:29:07 -0700 (PDT)
-Received: from localhost.localdomain (fpa056d502.hygk105.ap.nuro.jp.
- [160.86.213.2])
- by smtp.gmail.com with ESMTPSA id h4sm38600666pgv.61.2019.04.30.07.29.05
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 30 Apr 2019 07:29:06 -0700 (PDT)
-From: Yuichi Nakai <xoxyuxu@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: wbuf->offs must be aligned to max_write_size
-Date: Tue, 30 Apr 2019 23:28:23 +0900
-Message-Id: <20190430142823.28044-1-xoxyuxu@gmail.com>
-X-Mailer: git-send-email 2.11.0
+ h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+ :references:user-agent:mime-version;
+ bh=etJ1WR4qO+3IuPfLuVdMXPbV+XDBvAU6tcECrR4xCrc=;
+ b=cXYKBEUvWdAR0od+JCv54QHP9jFHO7CGuUrJU0jOmrsSM9sVR0/5EC8U7XeOE0yDM3
+ MotEbWWCuDI8313QTNgq0s45c+XQ4Rj78/MLs5Toq/5d+levoQGIx0U+CDNskT+keQlU
+ f1d8jVU5sfLNM3khw0SrbY295/zs3VR3JYOPM8e09fjNSUwTyoHXQdyzSHBl2IKg53So
+ prJt10sj7v+l6B0y0mMrZgZaCG5ZSf8z7zwnAtvlG06A9WDZWwPAOod6AYbOYamTY7pU
+ Mg47zUhs/NmG75lqxYA0FZ1pac3Z241GyNOkqMdtPKUObQt4BAlL8QmyCd3ToDTnv73s
+ R5vw==
+X-Gm-Message-State: APjAAAUAh5APzrtOvZ5zc8egCCGV671Zkm8IhdWX/gVctWJ8g5V2HgEM
+ Bb1aeE71eDdREsVZu+txTHA8mg==
+X-Google-Smtp-Source: APXvYqwtQ6krzDTRPbFVrDov44ozx7k+PlhNoNgKqYFMwYfxTI/Usg4vUIfk12zixNg61hOvW70aRA==
+X-Received: by 2002:a5e:9307:: with SMTP id k7mr16429275iom.155.1556643837925; 
+ Tue, 30 Apr 2019 10:03:57 -0700 (PDT)
+Received: from localhost (c-73-95-159-87.hsd1.co.comcast.net. [73.95.159.87])
+ by smtp.gmail.com with ESMTPSA id 12sm526406itm.2.2019.04.30.10.03.57
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Tue, 30 Apr 2019 10:03:57 -0700 (PDT)
+Date: Tue, 30 Apr 2019 10:03:56 -0700 (PDT)
+From: Paul Walmsley <paul.walmsley@sifive.com>
+X-X-Sender: paulw@viisi.sifive.com
+To: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Subject: Re: [PATCH v2 1/3] mtd: spi-nor: add support for is25wp256
+In-Reply-To: <1556474956-27786-2-git-send-email-sagar.kadam@sifive.com>
+Message-ID: <alpine.DEB.2.21.9999.1904301002170.7063@viisi.sifive.com>
+References: <1556474956-27786-1-git-send-email-sagar.kadam@sifive.com>
+ <1556474956-27786-2-git-send-email-sagar.kadam@sifive.com>
+User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190430_072910_322379_97387768 
-X-CRM114-Status: GOOD (  17.19  )
+X-CRM114-CacheID: sfid-20190430_100359_146713_43995026 
+X-CRM114-Status: GOOD (  17.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,165 +96,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Yuichi Nakai <xoxyuxu@gmail.com>
-MIME-Version: 1.0
+Cc: palmer@sifive.com, bbrezillon@kernel.org, richard@nod.at,
+ tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org, paul.walmsley@sifive.com,
+ linux-riscv@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-UBIFS has a journal recovery function.
-It is useful for devices that experience a power failure.
+On Sun, 28 Apr 2019, Sagar Shrikant Kadam wrote:
 
-And as per comment of ubifs_wbuf_sync_nolock(), wbuf is optimized for
-performance by writing aligned max_write_size.
+> Update spi_nor_id tablet for is25wp256 (32MB)device from ISSI,
+> present on HiFive Unleashed dev board (Rev: A00).
+> 
+> Set method to enable quad mode for ISSI device in flash parameters
+> table.
 
-In following environment, checking offset is not aligned to max_write_buffer.
+This patch was based on one originally written by Wes and/or Palmer: 
+https://github.com/riscv/riscv-linux/commit/c94e267766d62bc9a669611c3d0c8ed5ea26569b
 
-- Using a SPI-NOR device with a write buffer size over 256 bytes
-  For example: Micron MT28EW01GABA, its write buffer is 512 words
-- LEB hedaer size is 64 bytes
-- UBI header size is 64 bytes
+The right thing to do is to note this in the commit message.
 
-So if write buffer command make a crrupt data in a block,
-is_last_write() and no_more_nodes() can not check correctly.
-
-This patch adjusts wbuf writes to max_write_size, taking into account
-leb_start. The recovery process also checks the data at the corrected
-alignment position.
-
-Signed-off-by: Yuichi Nakai <xoxyuxu@gmail.com>
----
- fs/ubifs/debug.c    |  2 +-
- fs/ubifs/io.c       | 16 +++++++++-------
- fs/ubifs/misc.h     | 13 +++++++++++++
- fs/ubifs/recovery.c |  6 +++---
- 4 files changed, 26 insertions(+), 11 deletions(-)
-
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index c49ff50fdceb..d8c1fa6d182d 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2565,7 +2565,7 @@ static int corrupt_data(const struct ubifs_info *c, const void *buf,
- 
- 	from = prandom_u32() % len;
- 	/* Corruption span max to end of write unit */
--	to = min(len, ALIGN(from + 1, c->max_write_size));
-+	to = min(len, ubifs_align_max_write(c, from + 1));
- 
- 	ubifs_warn(c, "filled bytes %u-%u with %s", from, to - 1,
- 		   ffs ? "0xFFs" : "random data");
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index d124117efd42..06ccaeb4c5d9 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -564,7 +564,8 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
- 	ubifs_assert(c, wbuf->size % c->min_io_size == 0);
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 	if (c->leb_size - wbuf->offs >= c->max_write_size)
--		ubifs_assert(c, !((wbuf->offs + wbuf->size) % c->max_write_size));
-+		ubifs_assert(c, !((c->leb_start + wbuf->offs + wbuf->size)
-+					% c->max_write_size));
- 
- 	if (c->ro_error)
- 		return -EROFS;
-@@ -595,8 +596,8 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
- 	 */
- 	if (c->leb_size - wbuf->offs < c->max_write_size)
- 		wbuf->size = c->leb_size - wbuf->offs;
--	else if (wbuf->offs & (c->max_write_size - 1))
--		wbuf->size = ALIGN(wbuf->offs, c->max_write_size) - wbuf->offs;
-+	else if ((c->leb_start + wbuf->offs) & (c->max_write_size - 1))
-+		wbuf->size = ubifs_align_max_write(wbuf->offs) - wbuf->offs;
- 	else
- 		wbuf->size = c->max_write_size;
- 	wbuf->avail = wbuf->size;
-@@ -636,8 +637,8 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs)
- 	wbuf->offs = offs;
- 	if (c->leb_size - wbuf->offs < c->max_write_size)
- 		wbuf->size = c->leb_size - wbuf->offs;
--	else if (wbuf->offs & (c->max_write_size - 1))
--		wbuf->size = ALIGN(wbuf->offs, c->max_write_size) - wbuf->offs;
-+	else if ((c->leb_start + wbuf->offs) & (c->max_write_size - 1))
-+		wbuf->size = ubifs_align_max_write(wbuf->offs) - wbuf->offs;
- 	else
- 		wbuf->size = c->max_write_size;
- 	wbuf->avail = wbuf->size;
-@@ -746,7 +747,8 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 	ubifs_assert(c, !c->space_fixup);
- 	if (c->leb_size - wbuf->offs >= c->max_write_size)
--		ubifs_assert(c, !((wbuf->offs + wbuf->size) % c->max_write_size));
-+		ubifs_assert(c, !((c->leb_start + wbuf->offs + wbuf->size)
-+					% c->max_write_size));
- 
- 	if (c->leb_size - wbuf->offs - wbuf->used < aligned_len) {
- 		err = -ENOSPC;
-@@ -813,7 +815,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 		len -= wbuf->avail;
- 		aligned_len -= wbuf->avail;
- 		written += wbuf->avail;
--	} else if (wbuf->offs & (c->max_write_size - 1)) {
-+	} else if ((c->leb_start + wbuf->offs) & (c->max_write_size - 1)) {
- 		/*
- 		 * The write-buffer offset is not aligned to
- 		 * @c->max_write_size and @wbuf->size is less than
-diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
-index 6f87237fdbf4..269350749ce7 100644
---- a/fs/ubifs/misc.h
-+++ b/fs/ubifs/misc.h
-@@ -290,4 +290,17 @@ static inline int ubifs_next_log_lnum(const struct ubifs_info *c, int lnum)
- 
- const char *ubifs_assert_action_name(struct ubifs_info *c);
- 
-+/**
-+ * ubifs_align_max_write -
-+ * @c: UBIFS file-system description object
-+ * @offs: logical eraseblock offset to aligned to
-+ *
-+ * This function calcurates offset which aligned to size of max_write_size
-+ * from start of LEB .
-+ */
-+static inline int ubifs_align_max_write(const struct ubifs_info *c, int offs)
-+{
-+	return (c->leb_start + offs) & (c->max_write_size - 1) - c->leb_start ;
-+}
-+
- #endif /* __UBIFS_MISC_H__ */
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 8526b7ec4707..33fbfb5921ed 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -420,7 +420,7 @@ static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
- 	 * Round up to the next @c->max_write_size boundary i.e. @offs is in
- 	 * the last wbuf written. After that should be empty space.
- 	 */
--	empty_offs = ALIGN(offs + 1, c->max_write_size);
-+	empty_offs = ubifs_align_max_write(offs + 1);
- 	check_len = c->leb_size - empty_offs;
- 	p = buf + empty_offs - offs;
- 	return is_empty(p, check_len);
-@@ -474,7 +474,7 @@ static int no_more_nodes(const struct ubifs_info *c, void *buf, int len,
- 	int skip, dlen = le32_to_cpu(ch->len);
- 
- 	/* Check for empty space after the corrupt node's common header */
--	skip = ALIGN(offs + UBIFS_CH_SZ, c->max_write_size) - offs;
-+	skip = ubifs_align_max_write(offs + UBIFS_CH_SZ) - offs;
- 	if (is_empty(buf + skip, len - skip))
- 		return 1;
- 	/*
-@@ -486,7 +486,7 @@ static int no_more_nodes(const struct ubifs_info *c, void *buf, int len,
- 		return 0;
- 	}
- 	/* Now we know the corrupt node's length we can skip over it */
--	skip = ALIGN(offs + dlen, c->max_write_size) - offs;
-+	skip = ubifs_align_max_write(offs + dlen) - offs;
- 	/* After which there should be empty space */
- 	if (is_empty(buf + skip, len - skip))
- 		return 1;
--- 
-2.11.0
-
+> Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 10 +++++++++-
+>  include/linux/mtd/spi-nor.h   |  1 +
+>  2 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index fae1474..c5408ed 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1834,6 +1834,10 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
+>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
+>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> +	{ "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 1024,
+> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			SPI_NOR_4B_OPCODES)
+> +	},
+>  
+>  	/* Macronix */
+>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+> @@ -3650,6 +3654,10 @@ static int spi_nor_init_params(struct spi_nor *nor,
+>  		case SNOR_MFR_MACRONIX:
+>  			params->quad_enable = macronix_quad_enable;
+>  			break;
+> +		case SNOR_MFR_ISSI:
+> +			params->quad_enable = macronix_quad_enable;
+> +			break;
+> +
+>  
+>  		case SNOR_MFR_ST:
+>  		case SNOR_MFR_MICRON:
+> @@ -4127,7 +4135,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (nor->addr_width) {
+> +	if (nor->addr_width && JEDEC_MFR(info) != SNOR_MFR_ISSI) {
+>  		/* already configured from SFDP */
+>  	} else if (info->addr_width) {
+>  		nor->addr_width = info->addr_width;
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index b3d360b..ff13297 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -19,6 +19,7 @@
+>  #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
+>  #define SNOR_MFR_GIGADEVICE	0xc8
+>  #define SNOR_MFR_INTEL		CFI_MFR_INTEL
+> +#define SNOR_MFR_ISSI		0x9d		/* ISSI */
+>  #define SNOR_MFR_ST		CFI_MFR_ST	/* ST Micro */
+>  #define SNOR_MFR_MICRON		CFI_MFR_MICRON	/* Micron */
+>  #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
+> -- 
+> 1.9.1
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
