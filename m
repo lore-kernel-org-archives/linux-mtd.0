@@ -2,67 +2,66 @@ Return-Path: <SRS0=72Z4=TB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88CB7C04AAC
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 22:46:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86236C46470
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 22:46:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A369217D8
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 22:46:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 546D12089E
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 22:46:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k9stBGAz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xWesjP6+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A369217D8
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="miCv+wIA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fY4qq9BA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 546D12089E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=21sKmD44ekjuzHgcrOaVG+pRjiaYyZsaTP+IqcKpzjM=; b=k9stBGAzpQjMFk
-	0u6nm3cFrWfsNQKMioAGWtBNaSyeao5mVZhmO+fnW45uGc9uCvsyHk/WW64Y8/ofEsyg/jfw13rAH
-	VgGw52WiIxLCQapaP9kUTT+jC6EicF8MoNx2z4W9XVHmvUUSLoSKL+ifcStf2QUbOU0pK2HUZHxm1
-	tcYv8RRwqPxDNI9COkWnopKXr+MpcJejlC3LvhW6YdtFqiPEqsnSkI3ElE2whp8TLllOPRCLJ7Xkw
-	FU/Py/4zqgd9VHRDAhI/2khERvX/1OO5voh95ZvUV+AtmGVoTfAjYM/0tuD1IdJF79XMZB2Th2kU1
-	+7ChJset6edrkTiP6QHQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OjL0Z3TOQ9btCrF0n3hcA+Z81cV0de8LVb3+zjL8vGI=; b=miCv+wIAmh6srr
+	+ND/8a9mnlIAOt7BtkyyDaap3x0Z7/CcVdnQr3gDxbp7q4m/zG6jS59NqRpBbR1W1k8kAUPzaKN7D
+	TRhI8Agb29ObgbprdLegRcZFsJNVYxmsFx5712Qre7+DZHbS1cwKnK6DnwMxsVE1ORwQJEp5Z9cpG
+	I4zvpKa6jaUL+w3MwheKgNen8NzZB0/rT4+s7iESSbmyQfyiJU1QBeB/nId1f/7pak+dSglC/w/DJ
+	ppMQaTOtB9G8N3ZlIptGQvY6aQW4vMU+vjTfs5a6Lh3GCJd6/k1zJCPDyV3FZ+howtFQBJdnT+oLH
+	HmhTzOs4EEKd7otAGo0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hLxzM-00067r-PY; Wed, 01 May 2019 22:46:08 +0000
+	id 1hLxzV-0006Ji-9c; Wed, 01 May 2019 22:46:17 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLxzJ-00065J-Um
+ id 1hLxzJ-00065G-Sf
  for linux-mtd@lists.infradead.org; Wed, 01 May 2019 22:46:07 +0000
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
  [104.132.1.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 7E47A208C3;
- Wed,  1 May 2019 22:46:05 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DA3792075E;
+ Wed,  1 May 2019 22:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=default; t=1556750765;
- bh=C8QCwapKW3U1NG9FA0FfajgZX249u2BatzzbutlTbHM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=xWesjP6+4N/fUY8sdSJYz9/5AYkoS6EJvOsiD+JWTI+4Os9xkz2f/ugmZtas1Mmma
- cZUS6psNpUcyFRIqGQ78jdprtiEFiQSiW+CkONgDZ2k3Rz7VaDuyQWfitlNFiyrnYC
- 0ydXH9LfZ/HI982B1LZzpaIXx4QGiQfYd1iVStUY=
+ bh=oGYtn9WG6er+4eiwYl5cJh2irdpTYgDLIblN4GE18gE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=fY4qq9BAopEMgbyNEunjj+aef9mfWckZY+TJ4tM2F9Yms7jKNXtspSCI4MTU8zXaG
+ b7538Lqq4jiQWV0QrHpbaVi5BTg05KPbB0pix79PFbPT1Ve17AUnOmS6V4Qt4lmAqB
+ G2UwnTy2ET1YrFL8yY0aMeRi7tzVGJLjHvgWyWxA=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH 02/13] fscrypt: remove the "write" part of struct fscrypt_ctx
-Date: Wed,  1 May 2019 15:45:04 -0700
-Message-Id: <20190501224515.43059-3-ebiggers@kernel.org>
+Subject: [PATCH 00/13] fscrypt, ext4: prepare for blocksize != PAGE_SIZE
+Date: Wed,  1 May 2019 15:45:02 -0700
+Message-Id: <20190501224515.43059-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0.593.g511ec345e18-goog
-In-Reply-To: <20190501224515.43059-1-ebiggers@kernel.org>
-References: <20190501224515.43059-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190501_154606_031403_E7E2CA19 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20190501_154605_947485_061043A4 
+X-CRM114-Status: UNSURE (   9.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -82,105 +81,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hello,
 
-Now that fscrypt_ctx is not used for writes, remove the 'w' fields.
+This patch series prepares fs/crypto/, and partially ext4, for the
+'blocksize != PAGE_SIZE' case.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/bio.c         | 11 +++++------
- fs/crypto/crypto.c      | 14 +++++++-------
- include/linux/fscrypt.h |  7 ++-----
- 3 files changed, 14 insertions(+), 18 deletions(-)
+This basically contains the encryption changes from Chandan Rajendra's
+patch series "[V2,00/13] Consolidate FS read I/O callbacks code"
+(https://patchwork.kernel.org/project/linux-fscrypt/list/?series=111039)
+that don't require introducing the read_callbacks and don't depend on
+fsverity stuff.  But they've been reworked to clean things up a lot.
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index 9107e8fe55897..548ec6bb569cf 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -54,9 +54,8 @@ EXPORT_SYMBOL(fscrypt_decrypt_bio);
- 
- static void completion_pages(struct work_struct *work)
- {
--	struct fscrypt_ctx *ctx =
--		container_of(work, struct fscrypt_ctx, r.work);
--	struct bio *bio = ctx->r.bio;
-+	struct fscrypt_ctx *ctx = container_of(work, struct fscrypt_ctx, work);
-+	struct bio *bio = ctx->bio;
- 
- 	__fscrypt_decrypt_bio(bio, true);
- 	fscrypt_release_ctx(ctx);
-@@ -65,9 +64,9 @@ static void completion_pages(struct work_struct *work)
- 
- void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
- {
--	INIT_WORK(&ctx->r.work, completion_pages);
--	ctx->r.bio = bio;
--	fscrypt_enqueue_decrypt_work(&ctx->r.work);
-+	INIT_WORK(&ctx->work, completion_pages);
-+	ctx->bio = bio;
-+	fscrypt_enqueue_decrypt_work(&ctx->work);
- }
- EXPORT_SYMBOL(fscrypt_enqueue_decrypt_bio);
- 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 4b076f8daab75..ebfa13cfecb7d 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -58,11 +58,11 @@ void fscrypt_enqueue_decrypt_work(struct work_struct *work)
- EXPORT_SYMBOL(fscrypt_enqueue_decrypt_work);
- 
- /**
-- * fscrypt_release_ctx() - Releases an encryption context
-- * @ctx: The encryption context to release.
-+ * fscrypt_release_ctx() - Release a decryption context
-+ * @ctx: The decryption context to release.
-  *
-- * If the encryption context was allocated from the pre-allocated pool, returns
-- * it to that pool. Else, frees it.
-+ * If the decryption context was allocated from the pre-allocated pool, return
-+ * it to that pool.  Else, free it.
-  */
- void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
- {
-@@ -79,12 +79,12 @@ void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
- EXPORT_SYMBOL(fscrypt_release_ctx);
- 
- /**
-- * fscrypt_get_ctx() - Gets an encryption context
-+ * fscrypt_get_ctx() - Get a decryption context
-  * @gfp_flags:   The gfp flag for memory allocation
-  *
-- * Allocates and initializes an encryption context.
-+ * Allocate and initialize a decryption context.
-  *
-- * Return: A new encryption context on success; an ERR_PTR() otherwise.
-+ * Return: A new decryption context on success; an ERR_PTR() otherwise.
-  */
- struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
- {
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 77837e72e4add..11e7187fa2e52 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -63,16 +63,13 @@ struct fscrypt_operations {
- 	unsigned int max_namelen;
- };
- 
-+/* Decryption work */
- struct fscrypt_ctx {
- 	union {
--		struct {
--			struct page *bounce_page;	/* Ciphertext page */
--			struct page *control_page;	/* Original page  */
--		} w;
- 		struct {
- 			struct bio *bio;
- 			struct work_struct work;
--		} r;
-+		};
- 		struct list_head free_list;	/* Free list */
- 	};
- 	u8 flags;				/* Flags */
+I propose that to move things forward for ext4 encryption with
+'blocksize != PAGE_SIZE', we apply this series (or something similar) to
+the fscrypt tree for 5.3 on its own merits.  Then the read_callbacks
+series on top of it will much smaller and easier to review.
+
+AFAIK, after this series the only thing stopping ext4 encryption from
+working with blocksize != PAGE_SIZE is the lack of encryption support in
+block_read_full_page(), which the read_callbacks will address.
+
+This series applies to the fscrypt tree, and it can also be retrieved
+from git at https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+branch "fscrypt-subpage-blocks-prep".
+
+Chandan Rajendra (3):
+  ext4: clear BH_Uptodate flag on decryption error
+  ext4: decrypt only the needed blocks in ext4_block_write_begin()
+  ext4: decrypt only the needed block in __ext4_block_zero_page_range()
+
+Eric Biggers (10):
+  fscrypt: simplify bounce page handling
+  fscrypt: remove the "write" part of struct fscrypt_ctx
+  fscrypt: rename fscrypt_do_page_crypto() to fscrypt_crypt_block()
+  fscrypt: clean up some BUG_ON()s in block encryption/decryption
+  fscrypt: introduce fscrypt_encrypt_block_inplace()
+  fscrypt: support encrypting multiple filesystem blocks per page
+  fscrypt: handle blocksize < PAGE_SIZE in fscrypt_zeroout_range()
+  fscrypt: introduce fscrypt_decrypt_block_inplace()
+  fscrypt: support decrypting multiple filesystem blocks per page
+  ext4: encrypt only up to last block in ext4_bio_write_page()
+
+ fs/crypto/bio.c             |  73 +++------
+ fs/crypto/crypto.c          | 299 ++++++++++++++++++++----------------
+ fs/crypto/fscrypt_private.h |  14 +-
+ fs/ext4/inode.c             |  35 +++--
+ fs/ext4/page-io.c           |  44 +++---
+ fs/f2fs/data.c              |  17 +-
+ fs/ubifs/crypto.c           |  19 +--
+ include/linux/fscrypt.h     |  96 ++++++++----
+ 8 files changed, 319 insertions(+), 278 deletions(-)
+
 -- 
 2.21.0.593.g511ec345e18-goog
 
