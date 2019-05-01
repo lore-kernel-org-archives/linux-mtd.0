@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B2FBC43219
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 16:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16A2AC43219
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 16:07:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BD0D20644
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 16:07:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DAE032089E
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 May 2019 16:07:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RhdU3mwA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BD0D20644
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fCP4Sjop"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAE032089E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,24 +25,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3IDY3cbXX+y7mCBo9KCjnvUBLt3vKikU/zV6t4A0lws=; b=RhdU3mwA0dNrhC
-	8mDX66Pbxv2Kb4MpeVOTHD9l22eokxy/R9TIx91/UUrjeJPE1IjBwg9N91pN1ar75GHuNAowg+oW7
-	qqEvJRbxIghbNzsjygQuP3C84hYKfczXnGuptuT0y1KangBiCfgIAyCPszEqEpyTtMQpbbdEoAfXK
-	yS8QHEDmGw4W0lWCjQKgNHRHS8fZAN9hZJn/esFuuKnaG5DoiJG3xE0XqHyOwOxFtCPwEibKOspr0
-	FprT6MZBDztZkccPH2ntELaXB4dsav4InUGjKDNi4gxhDAulpZcRfHRFRaxWOjveqrPkpkobq4AxP
-	2SgFQNtI/nRBmbgTCMJQ==;
+	List-Owner; bh=EmhOH2FfUoA1Qp6OTNd7SoPxgG9UEmvoqU9oFLJl5Y4=; b=fCP4SjopzlFZl2
+	jUi3po+UedNcPVDyPISFcDYHbdkyXQTk/KYyF1eSqO6tXgGZLo2Fk9bgDvYJyNd38Q2yjuQ08ualg
+	gopQyJFuC/Jzic5nvvvFvsg/5dRJhSqF/1fkz13T13fJCbjbWt2vWqZb+nforqh1z6vNc1kU5B+ol
+	SoxLHNthznq+rXMIKDQ9YBhrhC49ypyd5X/n85WKOn+/p5//F0eeewmZs4wNn/JD1q3BH7J7eCJoi
+	mC3wRj9i+xxJkju7qXcaeQhecqi50+3JvRiwJ2vN13CAiddUMXCoH0oIGA6i6sbCtUTmNKnWkRFyZ
+	hgxRhtRwIfRqD/Dpm+NA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hLrld-0000LC-EW; Wed, 01 May 2019 16:07:33 +0000
+	id 1hLrln-0000cD-JX; Wed, 01 May 2019 16:07:43 +0000
 Received: from adsl-173-228-226-134.prtc.net ([173.228.226.134] helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hLrlM-0008L9-Sy; Wed, 01 May 2019 16:07:17 +0000
+ id 1hLrlO-0008Mh-Dh; Wed, 01 May 2019 16:07:18 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 2/4] mm: don't cast ->readpage to filler_t for
- do_read_cache_page
-Date: Wed,  1 May 2019 12:06:34 -0400
-Message-Id: <20190501160636.30841-3-hch@lst.de>
+Subject: [PATCH 3/4] nfs: pass the correct prototype to read_cache_page
+Date: Wed,  1 May 2019 12:06:35 -0400
+Message-Id: <20190501160636.30841-4-hch@lst.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190501160636.30841-1-hch@lst.de>
 References: <20190501160636.30841-1-hch@lst.de>
@@ -67,57 +66,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We can just pass a NULL filler and do the right thing inside of
-do_read_cache_page based on the NULL parameter.
+Fix the callbacks NFS passes to read_cache_page to actually have the
+proper type expected.  Casting around function pointers can easily
+hide typing bugs, and defeats control flow protection.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/pagemap.h |  3 +--
- mm/filemap.c            | 10 ++++++----
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ fs/nfs/dir.c     | 7 ++++---
+ fs/nfs/symlink.c | 7 ++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index bcf909d0de5f..f52c3a2074cd 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -386,8 +386,7 @@ extern int read_cache_pages(struct address_space *mapping,
- static inline struct page *read_mapping_page(struct address_space *mapping,
- 				pgoff_t index, void *data)
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index a71d0b42d160..47d445bec8c9 100644
+--- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -714,8 +714,9 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page,
+  * We only need to convert from xdr once so future lookups are much simpler
+  */
+ static
+-int nfs_readdir_filler(nfs_readdir_descriptor_t *desc, struct page* page)
++int nfs_readdir_filler(void *data, struct page* page)
  {
--	filler_t *filler = (filler_t *)mapping->a_ops->readpage;
--	return read_cache_page(mapping, index, filler, data);
-+	return read_cache_page(mapping, index, NULL, data);
++	nfs_readdir_descriptor_t *desc = data;
+ 	struct inode	*inode = file_inode(desc->file);
+ 	int ret;
+ 
+@@ -762,8 +763,8 @@ void cache_page_release(nfs_readdir_descriptor_t *desc)
+ static
+ struct page *get_cache_page(nfs_readdir_descriptor_t *desc)
+ {
+-	return read_cache_page(desc->file->f_mapping,
+-			desc->page_index, (filler_t *)nfs_readdir_filler, desc);
++	return read_cache_page(desc->file->f_mapping, desc->page_index,
++			nfs_readdir_filler, desc);
  }
  
  /*
-diff --git a/mm/filemap.c b/mm/filemap.c
-index a2fc59f56f50..51f5b02c299a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2866,7 +2866,11 @@ static struct page *do_read_cache_page(struct address_space *mapping,
- 		}
+diff --git a/fs/nfs/symlink.c b/fs/nfs/symlink.c
+index 06eb44b47885..25ba299fdac2 100644
+--- a/fs/nfs/symlink.c
++++ b/fs/nfs/symlink.c
+@@ -26,8 +26,9 @@
+  * and straight-forward than readdir caching.
+  */
  
- filler:
--		err = filler(data, page);
-+		if (filler)
-+			err = filler(data, page);
-+		else
-+			err = mapping->a_ops->readpage(data, page);
-+
- 		if (err < 0) {
- 			put_page(page);
- 			return ERR_PTR(err);
-@@ -2978,9 +2982,7 @@ struct page *read_cache_page_gfp(struct address_space *mapping,
- 				pgoff_t index,
- 				gfp_t gfp)
+-static int nfs_symlink_filler(struct inode *inode, struct page *page)
++static int nfs_symlink_filler(void *data, struct page *page)
  {
--	filler_t *filler = (filler_t *)mapping->a_ops->readpage;
--
--	return do_read_cache_page(mapping, index, filler, NULL, gfp);
-+	return do_read_cache_page(mapping, index, NULL, NULL, gfp);
- }
- EXPORT_SYMBOL(read_cache_page_gfp);
++	struct inode *inode = data;
+ 	int error;
  
+ 	error = NFS_PROTO(inode)->readlink(inode, page, 0, PAGE_SIZE);
+@@ -65,8 +66,8 @@ static const char *nfs_get_link(struct dentry *dentry,
+ 		err = ERR_PTR(nfs_revalidate_mapping(inode, inode->i_mapping));
+ 		if (err)
+ 			return err;
+-		page = read_cache_page(&inode->i_data, 0,
+-					(filler_t *)nfs_symlink_filler, inode);
++		page = read_cache_page(&inode->i_data, 0, nfs_symlink_filler,
++				inode);
+ 		if (IS_ERR(page))
+ 			return ERR_CAST(page);
+ 	}
 -- 
 2.20.1
 
