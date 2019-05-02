@@ -2,80 +2,88 @@ Return-Path: <SRS0=JXt5=TC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50EB6C43219
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 May 2019 01:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D9BCC43219
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 May 2019 02:20:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B1C1206DF
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 May 2019 01:54:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 04937208E4
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 May 2019 02:20:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gmim7JwD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B1C1206DF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Fl68bk12";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="K07MjxJd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="wJ3NgXse"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04937208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
+	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4mo4M8jEcYQRH6mSzMFIBkHzkiwp4qmy22nvTVnPWx8=; b=gmim7JwDMhgxnz
-	OEWNiIXDmuvKU6lR+mCVWSERmo1bpt8DwXX5CB1GrOu2MhDu2rhqZVl1g7n2iuCiFKcxiUJcm+my5
-	AJwfEnoURVkyUdezHIuLEW60R8VX9ygkTsxsrbqMSBfPpD539oIgfjTi7mfYQK319NIdQ+rYhO7R/
-	kIhaiVMndATOUxDqp85qq22lENTxpX6BXp74jsmx/Wy8DUe3I29vqOA/s4ypxgFN0/o+fwJRd6N9I
-	VCdLbInO3yOk1dOCpXwCI2W8Ld9sD6uv1vlLWabjcxEoW0CyAtXRRMXmah3A71U9bPRnjs/TgJVZu
-	OTK3d0fTV9Zn9YinKw5A==;
+	References:List-Owner; bh=sWtYmCOkdE63umI/1iXWXvtlUXLSlDYuBOtxu+YYUNc=; b=Fl6
+	8bk12IRAW8UlXxop0gGODZekodzCSEJhTj1j2D1AIt6rG/TGuO29NcQMIyq3w/NYSmx0FqfMLMK51
+	XHAPVHtoMHtSxTBAdIGVechMbjagg3X3VBUFYNioxKJoOqXl47SXM1euGgJck4R/ZAAbnKniXwNrY
+	W5VWaaiXWt6zFg5h7YGUIqiKHeE/6yHsyK3nUud69R5OiphmLgX85c2C1IwPH8FH9HL1URnxz7wpC
+	0Fwr64aw15XWQXnuElOybJiNVYET7foGMgD/+88OWCVFTeAdIlseKCgOdvhQQfNoMx0/tfPO/hv5A
+	trZGeVJXf66vzIMd/Lp4aOTLW/wVhdQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hM0vO-0005H2-JY; Thu, 02 May 2019 01:54:14 +0000
-Received: from mail-ot1-f67.google.com ([209.85.210.67])
+	id 1hM1KG-0005l2-3Y; Thu, 02 May 2019 02:19:56 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hM0vL-0005GI-MR
- for linux-mtd@lists.infradead.org; Thu, 02 May 2019 01:54:13 +0000
-Received: by mail-ot1-f67.google.com with SMTP id b18so683958otq.3
- for <linux-mtd@lists.infradead.org>; Wed, 01 May 2019 18:54:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to:user-agent;
- bh=vVw1C6lqqEObhIEkQJZC6varaqiUoICZFVm+SicOMFc=;
- b=Mc44bvHRvMCROpcCrRwvblqsOd3HESXx2ukA98vDxvdyHmnyGyAr2I+LaEa5bPlLtb
- P0QeCihzLVkQ8MGpSSFufDfuL22H2HZxn2sH+h1qeWM3DdfIIjgchJiSjECbQOwPQWs/
- Log818qbcvQcEjW9D640Ze2j7TGPtdSzuP6gd501qThWTPD6T+IUmjoXQHBv2xTDa6Cb
- ITOaYwMEVvTbRvZrvQukFdsDBYQW2teaYaJTs+mbEYNUgKJqHs2WazEZPIleo5IaXm+h
- 1pCLQ8YwNTWiGLQIxSRh5gs2n6dknljdVaZ3eJW9DAsthAT4D2k2E+s54FMQv6/FpWbl
- fzgw==
-X-Gm-Message-State: APjAAAX/B8A355bnF1boOsI4ApTQAALasrNAXzrUgOs3QME/mH4fpItx
- 0L5YykvIB/TcFVzt3BUyow==
-X-Google-Smtp-Source: APXvYqyvSe6l1vLK4cJ5ZxTy/PVn9hSglfwCtCezdanzmXnY1wQ1v0aNKpAxBDRzN1UG/UMo5gmWdg==
-X-Received: by 2002:a9d:6c07:: with SMTP id f7mr740077otq.339.1556762050377;
- Wed, 01 May 2019 18:54:10 -0700 (PDT)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id f17sm8630963oto.5.2019.05.01.18.54.08
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Wed, 01 May 2019 18:54:09 -0700 (PDT)
-Date: Wed, 1 May 2019 20:54:08 -0500
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>
-Subject: Re: [PATCH 4/5] dt-binding: mtd: onenand/samsung: Add device tree
- support
-Message-ID: <20190502015408.GA11612@bogus>
-References: <20190426164224.11327-1-pawel.mikolaj.chmiel@gmail.com>
- <20190426164224.11327-5-pawel.mikolaj.chmiel@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190426164224.11327-5-pawel.mikolaj.chmiel@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ id 1hM1Jm-00054j-H5
+ for linux-mtd@bombadil.infradead.org; Thu, 02 May 2019 02:19:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Date:Message-Id:In-Reply-To:Subject:Cc:
+ To:From:Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:References:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=C9XRTvvku7YohEoOselFNompaVQM73w7LtDDtIUkluY=; b=K07MjxJdEyGaxP/Z7/bw19M7Kr
+ ggKqIOtc5CXYlJCBeFxjY0loGMDQuVKJuPJgjplPUV2d2L6uPamJU9HRW0YDGPsWoaU69UMLcFyzz
+ xOXq8QcNgPyen39fqR4R893Qttn9hRo22fcctDYgAGdZ7u6QZu0xfJMhwHFgGLS8mqDUWoR70jg3i
+ NHglixPtdS0ak4IFJ4IrTb+5fI7bMAu1+pISZoOomOcfW1jNTs0fyMNL8KL22U+hSz6kkkPk6Szqu
+ DPlRpaOPn25BTiJTr/0rWUGU4HxEF+CpjIhr7FBoV6oBTZ9Iof9X4efZOR7iG23WfERceaMvvTrlc
+ CVkgrbyA==;
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hM1Ji-0004ND-Ao
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2019 02:19:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=C9XRTvvku7YohEoOselFNompaVQM73w7LtDDtIUkluY=; b=wJ3NgXseGvrx
+ iT+1+Lz86m37j/B8N7zsETj6gF1yNMJPOnMGLyfYsa0eyGk26tu1pgcPCFFkSOYQ6bg0RoKSwh6SK
+ 5lF7hwsuu7fMpSqi3tl1Ro6DiXr4bqSkQfPXdxeD8wMuGFxIf4w+mRPBeoDAXNsDnqF9CGu5cPCI5
+ GJ2RE=;
+Received: from [211.55.52.15] (helo=finisterre.ee.mobilebroadband)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1hM1JQ-0005vW-3J; Thu, 02 May 2019 02:19:04 +0000
+Received: by finisterre.ee.mobilebroadband (Postfix, from userid 1000)
+ id EAF91441D41; Thu,  2 May 2019 03:19:00 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Subject: Applied "spi: spi-mem: zynq-qspi: Fix build error on architectures
+ missing readsl/writesl" to the spi tree
+In-Reply-To: <1555918009-13172-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190502021900.EAF91441D41@finisterre.ee.mobilebroadband>
+Date: Thu,  2 May 2019 03:19:00 +0100 (BST)
+X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190501_185411_734970_E104E2E7 
-X-CRM114-Status: GOOD (  19.83  )
+X-CRM114-CacheID: sfid-20190501_221922_476726_46BF9DBB 
+X-CRM114-Status: GOOD (  15.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,67 +95,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bbrezillon@kernel.org,
- richard@nod.at, linux-kernel@vger.kernel.org,
- Tomasz Figa <tomasz.figa@gmail.com>, marek.vasut@gmail.com,
- kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: kbuild test robot <lkp@intel.com>, bbrezillon@kernel.org,
+ nagasuresh12@gmail.com, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, marek.vasut@gmail.com,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org, richard@nod.at,
+ michals@xilinx.com, dwmw2@infradead.org, vigneshr@ti.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBBcHIgMjYsIDIwMTkgYXQgMDY6NDI6MjNQTSArMDIwMCwgUGF3ZcWCIENobWllbCB3
-cm90ZToKPiBGcm9tOiBUb21hc3ogRmlnYSA8dG9tYXN6LmZpZ2FAZ21haWwuY29tPgo+IAo+IFRo
-aXMgcGF0Y2ggYWRkcyBkdC1iaW5kaW5ncyBmb3IgU2Ftc3VuZyBPbmVOQU5EIGRyaXZlci4KPiAK
-PiBTaWduZWQtb2ZmLWJ5OiBUb21hc3ogRmlnYSA8dG9tYXN6LmZpZ2FAZ21haWwuY29tPgo+IFNp
-Z25lZC1vZmYtYnk6IFBhd2XFgiBDaG1pZWwgPHBhd2VsLm1pa29sYWouY2htaWVsQGdtYWlsLmNv
-bT4KPiAtLS0KPiAgLi4uL2JpbmRpbmdzL210ZC9zYW1zdW5nLW9uZW5hbmQudHh0ICAgICAgICAg
-IHwgNDYgKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNDYgaW5zZXJ0aW9u
-cygrKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL210ZC9zYW1zdW5nLW9uZW5hbmQudHh0Cj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc2Ftc3VuZy1vbmVuYW5kLnR4dCBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc2Ftc3VuZy1vbmVuYW5kLnR4dAo+IG5ldyBm
-aWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAwLi4zNDFkOTdjYzE1MTMKPiAtLS0g
-L2Rldi9udWxsCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9z
-YW1zdW5nLW9uZW5hbmQudHh0Cj4gQEAgLTAsMCArMSw0NiBAQAo+ICtEZXZpY2UgdHJlZSBiaW5k
-aW5ncyBmb3IgU2Ftc3VuZyBTb0MgT25lTkFORCBjb250cm9sbGVyCj4gKwo+ICtSZXF1aXJlZCBw
-cm9wZXJ0aWVzOgo+ICsgLSBjb21wYXRpYmxlIDogdmFsdWUgc2hvdWxkIGJlIGVpdGhlciBvZiB0
-aGUgZm9sbG93aW5nLgo+ICsgICAoYSkgInNhbXN1bmcsczNjNjQwMC1vbmVuYW5kIiAtIGZvciBv
-bmVuYW5kIGNvbnRyb2xsZXIgY29tcGF0aWJsZSB3aXRoCj4gKyAgICAgICBTM0M2NDAwIFNvQywK
-PiArICAgKGIpICJzYW1zdW5nLHMzYzY0MTAtb25lbmFuZCIgLSBmb3Igb25lbmFuZCBjb250cm9s
-bGVyIGNvbXBhdGlibGUgd2l0aAo+ICsgICAgICAgUzNDNjQxMCBTb0MsCj4gKyAgIChjKSAic2Ft
-c3VuZyxzNXBjMTAwLW9uZW5hbmQiIC0gZm9yIG9uZW5hbmQgY29udHJvbGxlciBjb21wYXRpYmxl
-IHdpdGgKPiArICAgICAgIFM1UEMxMDAgU29DLAo+ICsgICAoZCkgInNhbXN1bmcsczVwdjIxMC1v
-bmVuYW5kIiAtIGZvciBvbmVuYW5kIGNvbnRyb2xsZXIgY29tcGF0aWJsZSB3aXRoCj4gKyAgICAg
-ICBTNVBDMTEwL1M1UFYyMTAgU29Dcy4KPiArCj4gKyAtIHJlZyA6IHR3byBtZW1vcnkgbWFwcGVk
-IHJlZ2lzdGVyIHJlZ2lvbnM6Cj4gKyAgIC0gZmlyc3QgZW50cnk6IGNvbnRyb2wgcmVnaXN0ZXJz
-Lgo+ICsgICAtIHNlY29uZCBhbmQgbmV4dCBlbnRyaWVzOiBtZW1vcnkgd2luZG93cyBvZiBwYXJ0
-aWN1bGFyIE9uZU5BTkQgY2hpcHM7Cj4gKyAgICAgZm9yIHZhcmlhbnRzIGEpLCBiKSBhbmQgYykg
-b25seSBvbmUgaXMgYWxsb3dlZCwgaW4gY2FzZSBvZiBkKSB1cCB0bwo+ICsgICAgIHR3byBjaGlw
-cyBjYW4gYmUgc3VwcG9ydGVkLgo+ICsKPiArIC0gaW50ZXJydXB0LXBhcmVudCA6IHBoYW5kbGUg
-b2YgaW50ZXJydXB0IGNvbnRyb2xsZXIgdG8gd2hpY2ggdGhlIE9uZU5BTkQKPiArICAgY29udHJv
-bGxlciBpcyB3aXJlZCwKClRoaXMgaXMgaW1wbGllZCBhbmQgY2FuIGJlIHJlbW92ZWQuCgo+ICsg
-LSBpbnRlcnJ1cHRzIDogc3BlY2lmaWVyIG9mIGludGVycnVwdCBzaWduYWwgdG8gd2hpY2ggdGhl
-IE9uZU5BTkQgY29udHJvbGxlcgo+ICsgICBpcyB3aXJlZDsgc2hvdWxkIGNvbnRhaW4ganVzdCBv
-bmUgZW50cnkuCj4gKyAtIGNsb2NrLW5hbWVzIDogc2hvdWxkIGNvbnRhaW4gdHdvIGVudHJpZXM6
-Cj4gKyAgIC0gImJ1cyIgLSBidXMgY2xvY2sgb2YgdGhlIGNvbnRyb2xsZXIsCj4gKyAgIC0gIm9u
-ZW5hbmQiIC0gY2xvY2sgc3VwcGxpZWQgdG8gT25lTkFORCBtZW1vcnkuCgpJZiB0aGUgY2xvY2sg
-anVzdCBnb2VzIHRvIHRoZSBPbmVOQU5EIGRldmljZSwgdGhlbiBpdCBzaG91bGQgYmUgaW4gdGhl
-IApuYW5kIGRldmljZSBub2RlIHJhdGhlciB0aGFuIHRoZSBjb250cm9sbGVyIG5vZGUuCgo+ICsg
-LSBjbG9jazogc2hvdWxkIGNvbnRhaW4gbGlzdCBvZiBwaGFuZGxlcyBhbmQgc3BlY2lmaWVycyBm
-b3IgYWxsIGNsb2NrcyBsaXN0ZWQKPiArICAgaW4gY2xvY2stbmFtZXMgcHJvcGVydHkuCj4gKyAt
-ICNhZGRyZXNzLWNlbGxzIDogbXVzdCBiZSAxLAo+ICsgLSAjc2l6ZS1jZWxscyA6IG11c3QgYmUg
-MS4KClRoaXMgaW1wbGllcyBzb21lIGNoaWxkIG5vZGVzLiBXaGF0IGFyZSB0aGUgY2hpbGQgbm9k
-ZXM/Cgo+ICsKPiArRm9yIHBhcnRpdGlvbiB0YWJsZSBwYXJzaW5nIChvcHRpb25hbCkgcGxlYXNl
-IHJlZmVyIHRvOgo+ICsgWzFdIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
-cGFydGl0aW9uLnR4dAo+ICsKPiArRXhhbXBsZSBmb3IgYW4gczVwdjIxMCBib2FyZDoKPiArCj4g
-KwlvbmVuYW5kQGIwNjAwMDAwIHsKPiArCQljb21wYXRpYmxlID0gInNhbXN1bmcsczVwdjIxMC1v
-bmVuYW5kIjsKPiArCQlyZWcgPSA8MHhiMDYwMDAwMCAweDIwMDA+LCA8MHhiMDAwMDAwMCAweDIw
-MDAwPjsKPiArCQlpbnRlcnJ1cHQtcGFyZW50ID0gPCZ2aWMxPjsKPiArCQlpbnRlcnJ1cHRzID0g
-PDMxPjsKPiArCQljbG9jay1uYW1lcyA9ICJidXMiLCAib25lbmFuZCI7Cj4gKwkJY2xvY2tzID0g
-PCZjbG9ja3MgTkFORFhMPiwgPCZjbG9ja3MgRE9VVF9GTEFTSD47Cj4gKwkJI2FkZHJlc3MtY2Vs
-bHMgPSA8MT47Cj4gKwkJI3NpemUtY2VsbHMgPSA8MT47Cj4gKwl9Owo+IC0tIAo+IDIuMjAuMQo+
-IAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The patch
+
+   spi: spi-mem: zynq-qspi: Fix build error on architectures missing readsl/writesl
+
+has been applied to the spi tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.2
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From ba3ce8cb3808cad0f9b8303fad4bd1c887834c82 Mon Sep 17 00:00:00 2001
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Date: Mon, 22 Apr 2019 12:56:49 +0530
+Subject: [PATCH] spi: spi-mem: zynq-qspi: Fix build error on architectures
+ missing readsl/writesl
+
+Alpha and some of the architectures are missing readsl/writesl functions.
+so the zynq-qspi driver won't be able to build on these arches. hence use
+ioread32_rep()/iowrite32_rep() instead of readsl()/writesl().
+
+Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/spi/spi-zynq-qspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
+index 8079d0062d03..c6bee67decb5 100644
+--- a/drivers/spi/spi-zynq-qspi.c
++++ b/drivers/spi/spi-zynq-qspi.c
+@@ -407,8 +407,8 @@ static void zynq_qspi_write_op(struct zynq_qspi *xqspi, int txcount,
+ 		count = txcount;
+ 
+ 	if (xqspi->txbuf) {
+-		writesl(xqspi->regs + ZYNQ_QSPI_TXD_00_00_OFFSET,
+-			xqspi->txbuf, count);
++		iowrite32_rep(xqspi->regs + ZYNQ_QSPI_TXD_00_00_OFFSET,
++			      xqspi->txbuf, count);
+ 		xqspi->txbuf += count * 4;
+ 	} else {
+ 		for (k = 0; k < count; k++)
+@@ -433,8 +433,8 @@ static void zynq_qspi_read_op(struct zynq_qspi *xqspi, int rxcount)
+ 	if (count > rxcount)
+ 		count = rxcount;
+ 	if (xqspi->rxbuf) {
+-		readsl(xqspi->regs + ZYNQ_QSPI_RXD_OFFSET,
+-		       xqspi->rxbuf, count);
++		ioread32_rep(xqspi->regs + ZYNQ_QSPI_RXD_OFFSET,
++			     xqspi->rxbuf, count);
+ 		xqspi->rxbuf += count * 4;
+ 	} else {
+ 		for (k = 0; k < count; k++)
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
