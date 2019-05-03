@@ -4,21 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,T_DKIMWL_WL_HIGH autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84573C43219
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2019 14:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2493EC43219
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2019 15:55:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 546F92087F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2019 14:34:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC0BE2075C
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2019 15:55:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FJ9oexuI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="E4evq2C+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 546F92087F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="K6seK4Bu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC0BE2075C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,52 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nSVZuIC8A9TrBRlQGuQA4VoTJdE5c2+7LtF440pOfbY=; b=FJ9oexuIiVidu5
-	7j8XPjEPApOJwVtA1X+lU2ZpnOi4SVk4MSn3lvzmQbm4x0MqjEKnDddgnIIyNgHt7LGjA7BTFf5vf
-	8Xmps0I6tYqO6xpc8jqImTeadn4H3C17M37L1gHv8NvStjBNnb9jIOVLQ0Exi7ESKFb+BMSAyfQiM
-	QgViEGsul/kkFBghZYkPChX9pRRY9XaienLRpoHRw7NlM3gECUweli/gJZbrPHRaP2nnrk/84eQoB
-	wQLBjeh7xJgnxvn2zKeo/Vf0Ve+CKBYQd+OOaf3QzxkCZRMEqDJmboBvzySdxTAb/Qm4c/4tuU5oC
-	l9eDo6kehohNezQxyCNg==;
+	List-Owner; bh=O0KJRNeXeDkAiIJFO7p2nAj981ewqjsn72Qccuqkm0k=; b=K6seK4Bu+j6J9+
+	kDfvsTzYMfquHaDLN1ICD6qlFsnlbtxQTGxR/xQvdjZnFwpmdocKdWcs5NgZ1sfRrH0KZarpEmInf
+	byb1Y77zyO4V8Cqjpw3aS5dtkg864bszdpjAWn8iHP7Dw1k31lxF9gdOJGi0hOet4aKaYYZbg961C
+	44vDUuLlasIPu7pF1OA56xYXZD1EOrmV+uxJ5mYrqiUIHLePMT39c3YVnLjSdse6iuvi6WIMCCgyT
+	4XhYASRduKf6Lqha0auSYRnQ5q0Nt9uZDJn+OgzPeuE3MhcOZTVMCuBwjzteNAMEI80wNzqc2VkOr
+	asZ4g3F+wh1nlRm4GApg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hMZH4-0004WM-N6; Fri, 03 May 2019 14:34:54 +0000
-Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
+	id 1hMaWb-000507-Ns; Fri, 03 May 2019 15:55:01 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMZGy-0004R6-Mp; Fri, 03 May 2019 14:34:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=zkm3QZZG6XwDmJfaWQJCoO1QtMmf+FU1hCkrwKt79TM=; b=E4evq2C+JuS5EfhWJCOW9hDkSj
- wciqJgZXV/NKhxcweT7PB92kHHirN0UWx5cHvbh2t8U3gJJLf2vvA1anuQPbsMnjHsr9KguDjUrTK
- 5UbNsgpxFRFYUO9qbzB0Ro2ab0hp1iTmVMzO/vlxSErm9iUF7aESGZgtegQVZLvUY79aIIZGtycYZ
- rFrB1wC17F7QTDG+kIym8A0BW3VQe8fDnm17uuXv9PZW6qcmp8K/rRJVa7Ar45noVPoJV5uL5LEov
- l7zCLrn4we56mGbVHNFjGP07Og7VxbABaZi4HACdrcGIKBKGF5kDgiI9rickmA0GemsINuYXaB7u6
- D2SzrOqg==;
-Received: from relay11.mail.gandi.net ([217.70.178.231])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hMZGv-00081F-9w; Fri, 03 May 2019 14:34:46 +0000
-Received: from xps13 (91.172.185.81.rev.sfr.net [81.185.172.91])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id A04F8100015;
- Fri,  3 May 2019 14:34:03 +0000 (UTC)
-Date: Fri, 3 May 2019 16:34:00 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1hMaWS-0004sN-3A; Fri, 03 May 2019 15:54:55 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C45A326117E;
+ Fri,  3 May 2019 16:54:49 +0100 (BST)
+Date: Fri, 3 May 2019 17:54:46 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Subject: Re: [PATCH v2 10/36] mtd: nand: Introduce the ECC engine abstraction
-Message-ID: <20190503163400.16c7c666@xps13>
-In-Reply-To: <20190331141025.3a996561@collabora.com>
+Message-ID: <20190503175446.1338e7db@collabora.com>
+In-Reply-To: <20190503163400.16c7c666@xps13>
 References: <20190304222841.13899-1-miquel.raynal@bootlin.com>
  <20190304222841.13899-11-miquel.raynal@bootlin.com>
  <20190331141025.3a996561@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20190503163400.16c7c666@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190503_103445_523071_B1239E21 
-X-CRM114-Status: GOOD (  20.62  )
+X-CRM114-CacheID: sfid-20190503_085452_399952_6245AFDB 
+X-CRM114-Status: GOOD (  27.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -91,82 +78,137 @@ Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29t
-PiB3cm90ZSBvbiBTdW4sIDMxIE1hcgoyMDE5IDE0OjEwOjI1ICswMjAwOgoKPiBPbiBNb24sICA0
-IE1hciAyMDE5IDIzOjI4OjE1ICswMTAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
-b290bGluLmNvbT4gd3JvdGU6Cj4gCj4gPiBDcmVhdGUgYSBnZW5lcmljIEVDQyBlbmdpbmUgb2Jq
-ZWN0Lgo+ID4gCj4gPiBMYXRlciB0aGUgZWNjL2VuZ2luZS5jIGZpbGUgd2lsbCByZWNlaXZlIG1v
-cmUgZ2VuZXJpYyBjb2RlIGNvbWluZyBmcm9tCj4gPiB0aGUgcmF3IE5BTkQgc3BlY2lmaWMgcGFy
-dC4gVGhpcyBpcyBhIGJhc2UgdG8gaW5zdGFudGlhdGUgRUNDIGVuZ2luZQo+ID4gb2JqZWN0cy4K
-PiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290
-bGluLmNvbT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvS2NvbmZpZyAgICAgICAgICAg
-ICAgICAgICAgIHwgICAxICsKPiA+ICBkcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlICAgICAgICAg
-ICAgICAgICAgICB8ICAgMSArCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9lY2MvS2NvbmZpZyAgICAg
-ICAgICAgICAgICAgfCAgIDYgKwo+ID4gIGRyaXZlcnMvbXRkL25hbmQvZWNjL01ha2VmaWxlICAg
-ICAgICAgICAgICAgIHwgICAzICsKPiA+ICBkcml2ZXJzL210ZC9uYW5kL2VjYy9lbmdpbmUuYyAg
-ICAgICAgICAgICAgICB8IDEzOCArKysrKysrKysrKysrKysrKysrCj4gPiAgZHJpdmVycy9tdGQv
-bmFuZC9yYXcvYXRtZWwvbmFuZC1jb250cm9sbGVyLmMgfCAgIDkgKy0KPiA+ICBkcml2ZXJzL210
-ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMgICB8ICAxMiArLQo+ID4gIGRyaXZlcnMv
-bXRkL25hbmQvcmF3L21hcnZlbGxfbmFuZC5jICAgICAgICAgIHwgICA3ICstCj4gPiAgZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvbXRrX25hbmQuYyAgICAgICAgICAgICAgfCAgIDQgKy0KPiA+ICBkcml2
-ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyAgICAgICAgICAgICB8ICAxNyArLS0KPiA+ICBk
-cml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2VzbXQuYyAgICAgICAgICAgICB8ICAxMSArLQo+ID4g
-IGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfaHluaXguYyAgICAgICAgICAgIHwgIDQxICsrKy0t
-LQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfamVkZWMuYyAgICAgICAgICAgIHwgICA0
-ICstCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9taWNyb24uYyAgICAgICAgICAgfCAg
-MTQgKy0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX29uZmkuYyAgICAgICAgICAgICB8
-ICAgOCArLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfc2Ftc3VuZy5jICAgICAgICAg
-IHwgIDE5ICstLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfdG9zaGliYS5jICAgICAg
-ICAgIHwgIDExICstCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvc3VueGlfbmFuZC5jICAgICAg
-ICAgICAgfCAgIDUgKy0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy90ZWdyYV9uYW5kLmMgICAg
-ICAgICAgICB8ICAgOSArLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyAgICAgICAg
-ICAgICAgICAgIHwgICA0ICstCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkvbWFjcm9uaXguYyAg
-ICAgICAgICAgICAgfCAgIDYgKy0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS90b3NoaWJhLmMg
-ICAgICAgICAgICAgICB8ICAgNiArLSAgCj4gCj4gQ2FuIHdlIHBsZWFzZSBzcGxpdCB0aGF0IGlu
-IDMgcGF0Y2hlczoKPiAKPiAxLyBpbnRyb2R1Y2UgdGhlIEVDQyBmcmFtZXdvcmsKPiAyLyBjb252
-ZXJ0IHNwaSBuYW5kCj4gMy8gY29udmVydCByYXcgbmFuZAoKU3BsaXQgaW4gMiBwYXRjaGVzOgox
-LyBJbnRyb2R1Y2UgdGhlIEVDQyBmcmFtZXdvcmsKMi8gQ2hhbmdlIHRoZSBlY2NyZXEgcGFyYW1l
-dGVyIG9mIHRoZSBuYW5kX2RldmljZSBzdHJ1Y3R1cmUgd2hpY2gKaW1wYWN0cyBib3RoIHJhdyBh
-bmQgU1BJIE5BTkQgZnJhbWV3b3Jrcy4KCj4gCj4gPiAgaW5jbHVkZS9saW51eC9tdGQvbmFuZC5o
-ICAgICAgICAgICAgICAgICAgICAgfCAgODIgKysrKysrKysrKy0KPiA+ICBpbmNsdWRlL2xpbnV4
-L210ZC9zcGluYW5kLmggICAgICAgICAgICAgICAgICB8ICAgMiArLQo+ID4gIDI0IGZpbGVzIGNo
-YW5nZWQsIDMyNyBpbnNlcnRpb25zKCspLCA5MyBkZWxldGlvbnMoLSkKPiA+ICBjcmVhdGUgbW9k
-ZSAxMDA2NDQgZHJpdmVycy9tdGQvbmFuZC9lY2MvS2NvbmZpZwo+ID4gIGNyZWF0ZSBtb2RlIDEw
-MDY0NCBkcml2ZXJzL210ZC9uYW5kL2VjYy9NYWtlZmlsZQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBkcml2ZXJzL210ZC9uYW5kL2VjYy9lbmdpbmUuYwo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvbmFuZC9LY29uZmlnIGIvZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnCj4gPiBpbmRl
-eCBkMmVmOGI4OTU2OGUuLjc1ZDBiZDE4YjgxOCAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRk
-L25hbmQvS2NvbmZpZwo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnCj4gPiBAQCAt
-Niw1ICs2LDYgQEAgY29uZmlnIE1URF9OQU5EX0NPUkUKPiA+ICBzb3VyY2UgImRyaXZlcnMvbXRk
-L25hbmQvb25lbmFuZC9LY29uZmlnIgo+ID4gIHNvdXJjZSAiZHJpdmVycy9tdGQvbmFuZC9yYXcv
-S2NvbmZpZyIKPiA+ICBzb3VyY2UgImRyaXZlcnMvbXRkL25hbmQvc3BpL0tjb25maWciCj4gPiAr
-c291cmNlICJkcml2ZXJzL210ZC9uYW5kL2VjYy9LY29uZmlnIgo+ID4gIAo+ID4gIGVuZG1lbnUK
-PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlIGIvZHJpdmVycy9tdGQv
-bmFuZC9NYWtlZmlsZQo+ID4gaW5kZXggN2VjZDgwYzBhNjZlLi45NzcyZTc4MTUzNGQgMTAwNjQ0
-Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlCj4gPiArKysgYi9kcml2ZXJzL210
-ZC9uYW5kL01ha2VmaWxlCj4gPiBAQCAtNiwzICs2LDQgQEAgb2JqLSQoQ09ORklHX01URF9OQU5E
-X0NPUkUpICs9IG5hbmRjb3JlLm8KPiA+ICBvYmoteQkrPSBvbmVuYW5kLwo+ID4gIG9iai15CSs9
-IHJhdy8KPiA+ICBvYmoteQkrPSBzcGkvCj4gPiArb2JqLXkJKz0gZWNjLwo+ID4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL25hbmQvZWNjL0tjb25maWcgYi9kcml2ZXJzL210ZC9uYW5kL2VjYy9L
-Y29uZmlnCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi4w
-MTQzOWY2NmVjYmYKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQv
-ZWNjL0tjb25maWcKPiA+IEBAIC0wLDAgKzEsNiBAQAo+ID4gK21lbnUgIkVDQyBlbmdpbmUgc3Vw
-cG9ydCIKPiA+ICsKPiA+ICtjb25maWcgTVREX05BTkRfRUNDCj4gPiArCXRyaXN0YXRlCj4gPiAr
-ICAKPiAKPiBUaGVyZSdzIGFscmVhZHkgYW4gTVREX05BTkRfRUNDIHN5bWJvbCBkZWZpbmVkIGlu
-Cj4gZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZywKCkRpZG4ndCBmaW5kIGFueT8KCj4gcGx1
-cyBJIGRvbid0IHRoaW5rIHdlIHdhbnQgZWNjL2VuZ2luZS5jCj4gdG8gYmUgY29tcGlsZWQgYXMg
-YSBtb2R1bGUsIGJ1dCBpbnN0ZWFkIGJlIGVtYmVkZGVkIGluIG5hbmQtY29yZS5rby4KCkhvdyB3
-b3VsZCB5b3UgZG8gdGhhdD8gSSBkb24ndCBmaW5kIHRoZSByaWdodCB3YXkgdG8gZW1iZWQKbmFu
-ZF9lY2NfZW5naW5lLm8gZGlyZWN0bHkgaW4gbmFuZGNvcmUuby4gVGhlIG9ubHkgc29sdXRpb24g
-SSBmb3VuZCB3YXMKdG8gYWRkIG5hbmRjb3JlLSQoPGNvbmQ+KSArPSBlY2MvdGhpbmcubyBkaXJl
-Y3RseSBpbgpkcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlIGJ1dCBJIGRvbid0IHRoaW5rIGl0IGlz
-IGFjY2VwdGFibGU/Cgo+IE5vdCB0byBtZW50aW9uIHRoYXQgdGhlIG5hbWUsIGVuZ2luZS5rbywg
-aXMgcHJvYmFibHkgdG9vIGdlbmVyaWMuCgpSZW5hbWVkIGl0IG5hbmRfZWNjX2VuZ2luZS5rbyBm
-b3Igbm93LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, 3 May 2019 16:34:00 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Hi Boris,
+> 
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Sun, 31 Mar
+> 2019 14:10:25 +0200:
+> 
+> > On Mon,  4 Mar 2019 23:28:15 +0100
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > Create a generic ECC engine object.
+> > > 
+> > > Later the ecc/engine.c file will receive more generic code coming from
+> > > the raw NAND specific part. This is a base to instantiate ECC engine
+> > > objects.
+> > > 
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > ---
+> > >  drivers/mtd/nand/Kconfig                     |   1 +
+> > >  drivers/mtd/nand/Makefile                    |   1 +
+> > >  drivers/mtd/nand/ecc/Kconfig                 |   6 +
+> > >  drivers/mtd/nand/ecc/Makefile                |   3 +
+> > >  drivers/mtd/nand/ecc/engine.c                | 138 +++++++++++++++++++
+> > >  drivers/mtd/nand/raw/atmel/nand-controller.c |   9 +-
+> > >  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c   |  12 +-
+> > >  drivers/mtd/nand/raw/marvell_nand.c          |   7 +-
+> > >  drivers/mtd/nand/raw/mtk_nand.c              |   4 +-
+> > >  drivers/mtd/nand/raw/nand_base.c             |  17 +--
+> > >  drivers/mtd/nand/raw/nand_esmt.c             |  11 +-
+> > >  drivers/mtd/nand/raw/nand_hynix.c            |  41 +++---
+> > >  drivers/mtd/nand/raw/nand_jedec.c            |   4 +-
+> > >  drivers/mtd/nand/raw/nand_micron.c           |  14 +-
+> > >  drivers/mtd/nand/raw/nand_onfi.c             |   8 +-
+> > >  drivers/mtd/nand/raw/nand_samsung.c          |  19 +--
+> > >  drivers/mtd/nand/raw/nand_toshiba.c          |  11 +-
+> > >  drivers/mtd/nand/raw/sunxi_nand.c            |   5 +-
+> > >  drivers/mtd/nand/raw/tegra_nand.c            |   9 +-
+> > >  drivers/mtd/nand/spi/core.c                  |   4 +-
+> > >  drivers/mtd/nand/spi/macronix.c              |   6 +-
+> > >  drivers/mtd/nand/spi/toshiba.c               |   6 +-    
+> > 
+> > Can we please split that in 3 patches:
+> > 
+> > 1/ introduce the ECC framework
+> > 2/ convert spi nand
+> > 3/ convert raw nand  
+> 
+> Split in 2 patches:
+> 1/ Introduce the ECC framework
+> 2/ Change the eccreq parameter of the nand_device structure which
+> impacts both raw and SPI NAND frameworks.
+> 
+> >   
+> > >  include/linux/mtd/nand.h                     |  82 ++++++++++-
+> > >  include/linux/mtd/spinand.h                  |   2 +-
+> > >  24 files changed, 327 insertions(+), 93 deletions(-)
+> > >  create mode 100644 drivers/mtd/nand/ecc/Kconfig
+> > >  create mode 100644 drivers/mtd/nand/ecc/Makefile
+> > >  create mode 100644 drivers/mtd/nand/ecc/engine.c
+> > > 
+> > > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> > > index d2ef8b89568e..75d0bd18b818 100644
+> > > --- a/drivers/mtd/nand/Kconfig
+> > > +++ b/drivers/mtd/nand/Kconfig
+> > > @@ -6,5 +6,6 @@ config MTD_NAND_CORE
+> > >  source "drivers/mtd/nand/onenand/Kconfig"
+> > >  source "drivers/mtd/nand/raw/Kconfig"
+> > >  source "drivers/mtd/nand/spi/Kconfig"
+> > > +source "drivers/mtd/nand/ecc/Kconfig"
+> > >  
+> > >  endmenu
+> > > diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> > > index 7ecd80c0a66e..9772e781534d 100644
+> > > --- a/drivers/mtd/nand/Makefile
+> > > +++ b/drivers/mtd/nand/Makefile
+> > > @@ -6,3 +6,4 @@ obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
+> > >  obj-y	+= onenand/
+> > >  obj-y	+= raw/
+> > >  obj-y	+= spi/
+> > > +obj-y	+= ecc/
+> > > diff --git a/drivers/mtd/nand/ecc/Kconfig b/drivers/mtd/nand/ecc/Kconfig
+> > > new file mode 100644
+> > > index 000000000000..01439f66ecbf
+> > > --- /dev/null
+> > > +++ b/drivers/mtd/nand/ecc/Kconfig
+> > > @@ -0,0 +1,6 @@
+> > > +menu "ECC engine support"
+> > > +
+> > > +config MTD_NAND_ECC
+> > > +	tristate
+> > > +    
+> > 
+> > There's already an MTD_NAND_ECC symbol defined in
+> > drivers/mtd/nand/raw/Kconfig,  
+> 
+> Didn't find any?
+
+There was one in drivers/mtd/nand/raw/Kconfig [1], but maybe it's gone
+now.
+
+> 
+> > plus I don't think we want ecc/engine.c
+> > to be compiled as a module, but instead be embedded in nand-core.ko.  
+> 
+> How would you do that? I don't find the right way to embed
+> nand_ecc_engine.o directly in nandcore.o. The only solution I found was
+> to add nandcore-$(<cond>) += ecc/thing.o directly in
+> drivers/mtd/nand/Makefile but I don't think it is acceptable?
+
+Or just move the core logic into drivers/mtd/nand/ecc.c and add
+
+nandcore-$(<cond>) += ecc.o
+
+to the Makefile.
+
+
+> 
+> > Not to mention that the name, engine.ko, is probably too generic.  
+> 
+> Renamed it nand_ecc_engine.ko for now.
+
+Still think it's better to have the code embedded in nandcore.ko.
+
+[1]https://elixir.bootlin.com/linux/v5.1-rc7/source/drivers/mtd/nand/raw/Kconfig#L1
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
