@@ -2,72 +2,71 @@ Return-Path: <SRS0=Kxx5=TH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	T_DKIMWL_WL_HIGH,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,T_DKIMWL_WL_HIGH,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0915C004C9
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:18:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EAFDC04AAB
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:25:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B142020675
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F3F2420578
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:25:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tV+GfA2t"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B142020675
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gkH8qQ9B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3F2420578
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hdwyj5bnSZh7TTgtMpdhqQVcAZtxQeYmHP7MGS8e0vQ=; b=tV+GfA2tzXY5Yd
-	eBT+LU3x+o1L+yQp5MTvy44/1XmgTNurOGxE+9Hn0/oody6LSd0YWpTViX2UN0m1QCAbRYAcH/wRm
-	r1QOFHw17HDy2oMRDONxkPkSJvNvH/I8F9jclmRH8RvgQCyqlrzgKlLsm4sJETkqIuohrBrjQ1Jol
-	G+uyzS37Uvy7Ft9OX+w+E9MxftIMjExM6uch1duyZxPfgDyMCTppUsgyaeULuKFMkZVr7aad75L1+
-	tQqAYrY1DEZVNb3jICKOcsfxYDfPsGgzAorb/pFA2yUC7Lluw8acn0AT2xAuvZkZ9Kqb35hiACfaW
-	lJr1LXkuuSefspruNpVw==;
+	List-Owner; bh=lnM0DdIcmyDxLVr3+klJUPxKOEVagarA3pla3JFzINc=; b=gkH8qQ9BE5b55k
+	ZxwpFG6SBdAMyqHwvVxrQrmYPomjOTEczzxG7wR7o9equ6CHP1/ho+w/NFd2qn8nW1jl+MerXLuAt
+	+lkNpZFulbq4WirLoUtX3QpdDgS4YaRem2KjyNp+GpYbqB6Bd2hdgBjclnkMVaLudixQfzyWTyCNg
+	/2K0rzna26ybOsXsxQVTF/o6Nkd+j9ThcCTxlm6xSDy8F9WXJhkRcnGQOh69G3Kdmp4phpusDjlFz
+	92Cte836dv19j4TqTCyt9Z09zE/N+le+Z0l+LCSwzBwJv7Ya2QgxCvuaBPsliuHq6O+8bKD2oZz2k
+	7IyA/dvM4hMTyGpxnY+Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hNxBI-0007OL-HN; Tue, 07 May 2019 10:18:40 +0000
+	id 1hNxIK-0002vM-HR; Tue, 07 May 2019 10:25:56 +0000
 Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hNxBF-0007Ny-Cy; Tue, 07 May 2019 10:18:39 +0000
-X-UUID: b842481cbd8d4111a7aeaad989142d70-20190507
-X-UUID: b842481cbd8d4111a7aeaad989142d70-20190507
-Received: from mtkcas68.mediatek.inc [(172.29.94.19)] by mailgw01.mediatek.com
+ id 1hNxIH-0002uY-5h; Tue, 07 May 2019 10:25:54 +0000
+X-UUID: b2cbfa6645364d35b754f9e8b1113c14-20190507
+X-UUID: b2cbfa6645364d35b754f9e8b1113c14-20190507
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
  (envelope-from <xiaolei.li@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 1455496154; Tue, 07 May 2019 02:18:33 -0800
-Received: from MTKMBS01N1.mediatek.inc (172.21.101.68) by
- MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Tue, 7 May 2019 03:18:31 -0700
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs01n1.mediatek.inc
- (172.21.101.68) with Microsoft SMTP Server (TLS) id 15.0.1395.4;
- Tue, 7 May 2019 18:18:29 +0800
-Received: from [10.17.3.153] (172.27.4.253) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Tue, 7 May 2019 18:18:28 +0800
-Message-ID: <1557224308.26455.94.camel@mhfsdcap03>
-Subject: Re: [RFC PATCH v4 1/1] mtd: rawnand: mtk: Re-license MTK NAND
- driver as Dual MIT/GPL
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Tue, 7 May 2019 18:18:28 +0800
-In-Reply-To: <20190507120644.6bd0d118@xps13>
-References: <20190507092020.1917-1-xiaolei.li@mediatek.com>
- <20190507092020.1917-2-xiaolei.li@mediatek.com>
- <20190507120644.6bd0d118@xps13>
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+ with ESMTP id 2114400942; Tue, 07 May 2019 02:25:52 -0800
+Received: from mtkmbs03n2.mediatek.inc (172.21.101.182) by
+ MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Tue, 7 May 2019 03:25:51 -0700
+Received: from mtkcas09.mediatek.inc (172.21.101.178) by
+ mtkmbs03n2.mediatek.inc (172.21.101.182) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Tue, 7 May 2019 18:25:50 +0800
+Received: from mtkslt306.mediatek.inc (10.21.14.136) by mtkcas09.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
+ Frontend Transport; Tue, 7 May 2019 18:25:50 +0800
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>
+Subject: [PATCH v3 3/4] mtd: rawnand: mtk: Add validity check for CE# pin
+ setting
+Date: Tue, 7 May 2019 18:25:40 +0800
+Message-ID: <20190507102541.34341-4-xiaolei.li@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20190507102541.34341-1-xiaolei.li@mediatek.com>
+References: <20190507102541.34341-1-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
+X-TM-SNTS-SMTP: AFEDD5DF6343538AA28CE4432F714967C6CDD82681F59CD011010CD6A14EA0F72000:8
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190507_031837_444963_FE4D84AD 
-X-CRM114-Status: GOOD (  10.74  )
+X-CRM114-CacheID: sfid-20190507_032553_310640_7C63380F 
+X-CRM114-Status: GOOD (  10.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -79,38 +78,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: daniel.thompson@linaro.org, ryder.lee@mediatek.com, arnd@arndb.de,
- srv_heupstream@mediatek.com, gustavo@embeddedor.com, richard@nod.at,
- yingjoe.chen@mediatek.com, linux-mediatek@lists.infradead.org,
- yamada.masahiro@socionext.com, rafal@milecki.pl, boris.brezillon@collabora.com,
- linux-mtd@lists.infradead.org, weiyongjun1@huawei.com,
- yellowriver2010@hotmail.com, matthias.bgg@gmail.com,
- jorge.ramirez-ortiz@linaro.org, rogercc.lin@mediatek.com,
- dan.carpenter@oracle.com, peterpandong@micron.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-mediatek@lists.infradead.org, xiaolei.li@mediatek.com,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKT24gVHVlLCAyMDE5LTA1LTA3IGF0IDEyOjA2ICswMjAwLCBNaXF1ZWwgUmF5
-bmFsIHdyb3RlOgo+IEhpIFhpYW9sZWksCj4gCj4gWGlhb2xlaSBMaSA8eGlhb2xlaS5saUBtZWRp
-YXRlay5jb20+IHdyb3RlIG9uIFR1ZSwgNyBNYXkgMjAxOSAxNzoyMDoyMAo+ICswODAwOgo+IAo+
-ID4gSXQgaXMgd2FudGVkIHRvIHVzZSBNVEsgTkFORCBkcml2ZXIgd2l0aCBHUEwtMi4wIG9yIE1J
-VCBsaWNlbnNlLgo+ID4gQnV0IG5vdyBpdCBpcyBvbmx5IGxpY2Vuc2VkIGFzIEdQTC0yLjAuCj4g
-PiBTbyByZS1saWNlbnNlIGl0IGFzIGR1YWwgTUlUL0dQTCBhbmQgcmVwbGFjZSBsaWNlbnNlIHRl
-eHQgd2l0aAo+ID4gU1BEWCB0YWcuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IFhpYW9sZWkgTGkg
-PHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPgo+ID4gQWNrZWQtYnk6IEpvcmdlIFJhbWlyZXotT3J0
-aXogPGpvcmdlLnJhbWlyZXotb3J0aXpAbGluYXJvLm9yZz4KPiA+IEFja2VkLWJ5OiBSeWRlciBM
-ZWUgPHJ5ZGVyLmxlZUBtZWRpYXRlay5jb20+Cj4gPiBBY2tlZC1ieTogUmFmYcWCIE1pxYJlY2tp
-IDxyYWZhbEBtaWxlY2tpLnBsPgo+ID4gQWNrZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5y
-YXluYWxAYm9vdGxpbi5jb20+Cj4gPiBBY2tlZC1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5i
-cmV6aWxsb25AY29sbGFib3JhLmNvbT4KPiA+IEFja2VkLWJ5OiBSb2dlckNDIExpbiA8cm9nZXJj
-Yy5saW5AbWVkaWF0ZWsuY29tPgo+ID4gLS0tCj4gCj4gV2hlbiB0aGVyZSBpcyBvbmx5IG9uZSBw
-YXRjaCwgbm8gbmVlZCB0byBjcmVhdGUgYSBjb3ZlciBsZXR0ZXIuIFlvdSBjYW4KPiBwdXQgdGhl
-IHRleHQgd2hpY2ggaXMgaW4gMC8xIGJlbG93IHRoZSB0aHJlZSBkYXNoZXMgJy0tLScuCj4gCj4g
-QWxzbyBubyBuZWVkIHRvIHNlbmQgYSBuZXcgdmVyc2lvbiB3aGlsZSB0aGVyZSBpcyBub3RoaW5n
-IGNoYW5nZWQgaW4KPiB0aGUgY29kZS4gUGF0Y2h3b3JrIGF1dG9tYXRpY2FsbHkgY29sbGVjdHMg
-dGFncy4KT0tPSy4gVGhhbmtzLgoKWGlhb2xlaQo+IAo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCgoK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Currently, we only check how many CE# pins are set in device tree.
+But it should be necessary to check whether CE# pin setting is
+duplicated or if CE# pin index exceeds the maximum CE# number that
+controller supports.
+
+So, add validity check to avoid these invalid settings.
+
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/mtk_nand.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index 6b79a0f9aef8..14a9b8c2a8db 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -162,6 +162,8 @@ struct mtk_nfc {
+ 	struct list_head chips;
+ 
+ 	u8 *buffer;
++
++	unsigned long assigned_cs;
+ };
+ 
+ /*
+@@ -1367,6 +1369,17 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
+ 			dev_err(dev, "reg property failure : %d\n", ret);
+ 			return ret;
+ 		}
++
++		if (tmp >= MTK_NAND_MAX_NSELS) {
++			dev_err(dev, "invalid CS: %u\n", tmp);
++			return -EINVAL;
++		}
++
++		if (test_and_set_bit(tmp, &nfc->assigned_cs)) {
++			dev_err(dev, "CS %u already assigned\n", tmp);
++			return -EINVAL;
++		}
++
+ 		chip->sels[i] = tmp;
+ 	}
+ 
+-- 
+2.18.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
