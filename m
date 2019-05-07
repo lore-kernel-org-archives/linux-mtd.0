@@ -2,71 +2,69 @@ Return-Path: <SRS0=Kxx5=TH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-7.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_PASS,T_DKIMWL_WL_HIGH,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EAFDC04AAB
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A9DAC004C9
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:26:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3F2420578
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:25:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E2B520578
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 10:26:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gkH8qQ9B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3F2420578
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ppdWIEEW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E2B520578
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lnM0DdIcmyDxLVr3+klJUPxKOEVagarA3pla3JFzINc=; b=gkH8qQ9BE5b55k
-	ZxwpFG6SBdAMyqHwvVxrQrmYPomjOTEczzxG7wR7o9equ6CHP1/ho+w/NFd2qn8nW1jl+MerXLuAt
-	+lkNpZFulbq4WirLoUtX3QpdDgS4YaRem2KjyNp+GpYbqB6Bd2hdgBjclnkMVaLudixQfzyWTyCNg
-	/2K0rzna26ybOsXsxQVTF/o6Nkd+j9ThcCTxlm6xSDy8F9WXJhkRcnGQOh69G3Kdmp4phpusDjlFz
-	92Cte836dv19j4TqTCyt9Z09zE/N+le+Z0l+LCSwzBwJv7Ya2QgxCvuaBPsliuHq6O+8bKD2oZz2k
-	7IyA/dvM4hMTyGpxnY+Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=70P/vMgWpqwBfY/GOjGT9Drp5FT3cyqeEjGq34j62vg=; b=ppdWIEEW3I459V
+	PsCXoTrJ14go6sowTiOh53raBtXYc8NuxY4DjPwjpN8CpfihWHU/aGNDmEu6F6NmKh1sQBPIpu3rK
+	MTs5Y7eIv/U0zhxsyTTSMhsXiy2IDMsKGc8ZbVlcJl9GoAfFQEbdbbD6B4qCYb0k65iprEmMiYQ9G
+	F9n2AXkcvIOFvUOv5rcCmWehJ936q1/EGXhtDhEuNi3hFYT6ibbtvbMCGLvT4dxxVsFyd7hwa0jhl
+	XCogMqhBquaeN5c2LgWSagaKNx3MvNkSzpAturGr02ik6Lc5XOZYWEDB1hplmYvYNjyYDCnNyytxM
+	MhUdxQUmZEPrx3i6hyFg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hNxIK-0002vM-HR; Tue, 07 May 2019 10:25:56 +0000
+	id 1hNxIS-00036q-Lp; Tue, 07 May 2019 10:26:04 +0000
 Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hNxIH-0002uY-5h; Tue, 07 May 2019 10:25:54 +0000
-X-UUID: b2cbfa6645364d35b754f9e8b1113c14-20190507
-X-UUID: b2cbfa6645364d35b754f9e8b1113c14-20190507
+ id 1hNxIH-0002um-UM; Tue, 07 May 2019 10:25:55 +0000
+X-UUID: da66cb69bc3444c5a805c76ef9cccf0c-20190507
+X-UUID: da66cb69bc3444c5a805c76ef9cccf0c-20190507
 Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
  (envelope-from <xiaolei.li@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 2114400942; Tue, 07 May 2019 02:25:52 -0800
+ with ESMTP id 1403518030; Tue, 07 May 2019 02:25:52 -0800
 Received: from mtkmbs03n2.mediatek.inc (172.21.101.182) by
  MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Tue, 7 May 2019 03:25:51 -0700
+ 15.0.1395.4; Tue, 7 May 2019 03:25:50 -0700
 Received: from mtkcas09.mediatek.inc (172.21.101.178) by
  mtkmbs03n2.mediatek.inc (172.21.101.182) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Tue, 7 May 2019 18:25:50 +0800
+ 15.0.1395.4; Tue, 7 May 2019 18:25:42 +0800
 Received: from mtkslt306.mediatek.inc (10.21.14.136) by mtkcas09.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
- Frontend Transport; Tue, 7 May 2019 18:25:50 +0800
+ Frontend Transport; Tue, 7 May 2019 18:25:42 +0800
 From: Xiaolei Li <xiaolei.li@mediatek.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [PATCH v3 3/4] mtd: rawnand: mtk: Add validity check for CE# pin
- setting
-Date: Tue, 7 May 2019 18:25:40 +0800
-Message-ID: <20190507102541.34341-4-xiaolei.li@mediatek.com>
+Subject: [PATCH v3 0/4] MTK NAND driver improvements and fixes
+Date: Tue, 7 May 2019 18:25:37 +0800
+Message-ID: <20190507102541.34341-1-xiaolei.li@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20190507102541.34341-1-xiaolei.li@mediatek.com>
-References: <20190507102541.34341-1-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: AFEDD5DF6343538AA28CE4432F714967C6CDD82681F59CD011010CD6A14EA0F72000:8
+X-TM-SNTS-SMTP: CB9A409872D86BFB57370FA0F8C38126CEED31BFCFF0315A533C6B37AFA563982000:8
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190507_032553_310640_7C63380F 
-X-CRM114-Status: GOOD (  10.20  )
+X-CRM114-CacheID: sfid-20190507_032553_975610_321D1E8D 
+X-CRM114-Status: UNSURE (   6.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,52 +83,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, we only check how many CE# pins are set in device tree.
-But it should be necessary to check whether CE# pin setting is
-duplicated or if CE# pin index exceeds the maximum CE# number that
-controller supports.
+The following patch set mainly contains:
+* Fix low level time calculation of read/write cycle to meet tRC_min
+  and tWC_min requirements.
+* Refine RE# pulse width calculation and data sampling to improve read
+  performance.
+* Add CS validity check.
+* Fix oob buffer pointer wrongly setting.
 
-So, add validity check to avoid these invalid settings.
+Changes on v3 relative to:
+--------------------
 
-Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/mtk_nand.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+tree    : https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/
+branch  : nand/next
+commit  :
+        'commit 1c14fe2167ef ("mtd: nandsim: switch to exec_op interface")
 
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index 6b79a0f9aef8..14a9b8c2a8db 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -162,6 +162,8 @@ struct mtk_nfc {
- 	struct list_head chips;
- 
- 	u8 *buffer;
-+
-+	unsigned long assigned_cs;
- };
- 
- /*
-@@ -1367,6 +1369,17 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
- 			dev_err(dev, "reg property failure : %d\n", ret);
- 			return ret;
- 		}
-+
-+		if (tmp >= MTK_NAND_MAX_NSELS) {
-+			dev_err(dev, "invalid CS: %u\n", tmp);
-+			return -EINVAL;
-+		}
-+
-+		if (test_and_set_bit(tmp, &nfc->assigned_cs)) {
-+			dev_err(dev, "CS %u already assigned\n", tmp);
-+			return -EINVAL;
-+		}
-+
- 		chip->sels[i] = tmp;
- 	}
- 
+Patch v3:
+---------
+- Fix some comment style.
+- Format patch base branch: nand/next
+- Pend to sent patch "mtd: rawnand: mtk: Setup empty page threshold
+  correctly", because it seems that we should confirm this change has no
+  side effect and need more test.
+
+Patch v2:
+---------
+- Fix type
+- Reference correct faulty patch
+- Refine code to do calculation and condition in separate steps
+- Fix empty threshold calculation
+
+Tests:
+------
+
+* ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA by
+  'dd' command.
+* all drivers/mtd/tests/* pass.
+* speed test:
+  eraseblock write speed is 11087 KiB/s
+  eraseblock read speed is 19986 KiB/s
+  page write speed is 10689 KiB/s
+  page read speed is 18724 KiB/s
+  2 page write speed is 10611 KiB/s
+  2 page read speed is 18713 KiB/s
+  erase speed is 103696 KiB/s
+  2x multi-block erase speed is 354248 KiB/s
+  4x multi-block erase speed is 350459 KiB/s
+  8x multi-block erase speed is 356173 KiB/s
+  16x multi-block erase speed is 356173 KiB/s
+  32x multi-block erase speed is 358120 KiB/s
+  64x multi-block erase speed is 356173 KiB/s
+
+Xiaolei Li (4):
+  mtd: rawnand: mtk: Correct low level time calculation of r/w cycle
+  mtd: rawnand: mtk: Improve data sampling timing for read cycle
+  mtd: rawnand: mtk: Add validity check for CE# pin setting
+  mtd: rawnand: mtk: Fix wrongly assigned OOB buffer pointer issue
+
+ drivers/mtd/nand/raw/mtk_nand.c | 84 +++++++++++++++++++++++++++------
+ 1 file changed, 70 insertions(+), 14 deletions(-)
+
 -- 
 2.18.0
+
 
 
 ______________________________________________________
