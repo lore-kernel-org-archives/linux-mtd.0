@@ -2,107 +2,113 @@ Return-Path: <SRS0=Kxx5=TH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,T_DKIMWL_WL_HIGH,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 872FAC004C9
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 18:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A6CC04AAB
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 19:18:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5656220656
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 18:33:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 082E6206A3
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 19:18:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="d3jKzAfY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="PoowSsx0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5656220656
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YzCbgM3u";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="kZO0vjSP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 082E6206A3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LHNATzBKzzupORSRY7X5ypb9y3aMKygejYUbBGbosUg=; b=d3jKzAfYRuoX7G
-	KhUR4ayjGw2uOpJj/mhcifA1si63c6yuB40vu7SgiS+9gMUfhsYKqC1S6N/2F87K+RumHXFj/cnYD
-	EcA2p7TRyZ+571AZzIuT5bjmuhWdvi0Y3NpMkBUezQR0LYHmjJBvcsNHjptTj+y6/nLwm+FTxpdEd
-	h4jsVY644MpJPdaFeuo0VmsTy6ZcSFYJxjSjS9A0uz999BRVTlMDQ3MotplPCojKVkcqUKjH08Wbe
-	2ooM3yFeIAExp271HyT53579lDuJD6IDlBSwRaEdkORcZe7o9gge3Kw5Ks/haUM3yt8DkZTZ41QrS
-	sYBjxqeX1tZD6qfOvLkQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=G3aI7qEc428l9rlrz7Yy+bxPcssWiyC7LxUPiQ9a/iE=; b=YzCbgM3uEjJsBK
+	a7psf+gj2XG868y0+SLjDxTzSbsK25Peq0DY+Y+8jMVTi2Z672hR7xlUzXVeXUBI0ArumBkrmoPeO
+	jBkY5pPuTxwRmO0/RoNmzgqVAr9oOejTUoyFDyoZhT/6HKmsPy7bYbQUf9SQ4gEsArbOOjQ9+s6+T
+	JvxrqyzRZnYzQmhXy+iRyAeWGXYuKio62e4gjfctoDIlSgHIw4iXtpIxZsYi/5ZzghbN52NYvE+2x
+	qMcSMtWz0CxPdbqS2V4ZM8GUTJVyTTZkkJXshi09rOJjtQ76I9VEKJe5AA4Q7p2qzzxRrd5nesEmA
+	OR9GlEPQTVJpYDtYy2kw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hO4u5-0007FU-7y; Tue, 07 May 2019 18:33:25 +0000
-Received: from mail-eopbgr140040.outbound.protection.outlook.com
- ([40.107.14.40] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+	id 1hO5bE-00065Z-6d; Tue, 07 May 2019 19:18:00 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO4u1-0007F0-N8; Tue, 07 May 2019 18:33:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vq/WP10A+sinh1xf3kCKBoiZHCgadiRc8ZUU3lqnzxQ=;
- b=PoowSsx07jQTqmdCQtQN69MyfqVW9bb35OkV339vfWDiTfHtlzBpy2wknXz4zNoq/6EDhGsd38kZy0lMhBP0192oySYUepqwI3Ze+aOb+znVGQrzgFU6/RSzsBUJjX5vb9DVkiTqRi9aepel4EiRC9r6eScqxxh1fAXyARuJQQw=
-Received: from VI1PR04MB5871.eurprd04.prod.outlook.com (20.178.205.13) by
- VI1PR04MB3200.eurprd04.prod.outlook.com (10.170.229.143) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.12; Tue, 7 May 2019 18:33:14 +0000
-Received: from VI1PR04MB5871.eurprd04.prod.outlook.com
- ([fe80::f0ec:9ba8:16da:1d28]) by VI1PR04MB5871.eurprd04.prod.outlook.com
- ([fe80::f0ec:9ba8:16da:1d28%2]) with mapi id 15.20.1856.012; Tue, 7 May 2019
- 18:33:14 +0000
-From: Leo Li <leoyang.li@nxp.com>
-To: Jagdish Gediya <jagdish.gediya@nxp.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Olof Johansson <olof@lixom.net>, Arnd
- Bergmann <arnd@arndb.de>, "shawnguo@kernel.org" <shawnguo@kernel.org>
-Subject: RE: [PATCH v2 2/2] arm64: defconfig: Enable access to CFI-compliant
- memory mapped NOR flash
-Thread-Topic: [PATCH v2 2/2] arm64: defconfig: Enable access to CFI-compliant
- memory mapped NOR flash
-Thread-Index: AQHVBM6mpvzRI8sFlUSX3WYj8ye056Zf9TKw
-Date: Tue, 7 May 2019 18:33:14 +0000
-Message-ID: <VI1PR04MB58713BD7F9C3468F29E2D58A8F310@VI1PR04MB5871.eurprd04.prod.outlook.com>
-References: <1557231354-11758-1-git-send-email-jagdish.gediya@nxp.com>
- <1557231354-11758-2-git-send-email-jagdish.gediya@nxp.com>
-In-Reply-To: <1557231354-11758-2-git-send-email-jagdish.gediya@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leoyang.li@nxp.com; 
-x-originating-ip: [64.157.242.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 207e26bd-b303-49f5-e442-08d6d31a7780
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);
- SRVR:VI1PR04MB3200; 
-x-ms-traffictypediagnostic: VI1PR04MB3200:
-x-microsoft-antispam-prvs: <VI1PR04MB320005802DBFAE17D0EEC0D08F310@VI1PR04MB3200.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:350;
-x-forefront-prvs: 0030839EEE
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(39860400002)(376002)(396003)(346002)(366004)(136003)(13464003)(189003)(199004)(66446008)(64756008)(66556008)(5660300002)(66476007)(186003)(256004)(86362001)(14444005)(6506007)(53546011)(71200400001)(55016002)(71190400001)(66946007)(73956011)(76116006)(2501003)(26005)(66066001)(476003)(478600001)(486006)(11346002)(446003)(2201001)(6436002)(102836004)(3846002)(54906003)(4326008)(7736002)(8936002)(6116002)(110136005)(81156014)(81166006)(74316002)(229853002)(9686003)(68736007)(14454004)(305945005)(8676002)(7696005)(52536014)(2906002)(76176011)(316002)(33656002)(99286004)(25786009)(53936002)(6246003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB3200;
- H:VI1PR04MB5871.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: BWubCbHIUiyZlJIyp4Jkjf/RD8edXLihv5zUUzVMzcWPaS/KbCxpot1X1WHafFicNIGJTOFg+RcQHl8b6MZBRLyb65HZ8Gd3H9Ri5gXcCL/DxRCkNId1e7fDxPoCbNID/Q1mMucpMVSkFTcflln4vLN2D8lrR9ryCLy2vWFwFz5PCFWROQBU4FM+YJ0tht9BPgV+sX7cA2BGnEFDRKoO49jVsqhJNTjhI2ZhIHWnO91WMznoFT9t7OzdPcugcSwUjO6z4rqL3vaQ/nKyOFP/tMLw53WOZ1MnTPejQePU16/VmEXyX//vhnUAg/BZGFox1hIll747UnRx72uPMBHcFwrlrU/HVo9Alwq8EzWelGQWaQ7//g2aYfC5E7Brv0UREvZvRMCvZcfU4NN+HH1MeOzUt9+H9iFS/EeBIBtmvL0=
+ id 1hO5bA-00065G-Gw
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2019 19:17:58 +0000
+Received: from [192.168.1.28] (cpe-70-114-128-244.austin.res.rr.com
+ [70.114.128.244])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 47727206A3;
+ Tue,  7 May 2019 19:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1557256676;
+ bh=IOzU2ldlEUkW/1BUyaWl1FqGsOO5VNzZOu7sEVHAZjI=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=kZO0vjSPeqNy8wyG2tuYXisTFXEe2t7X1RyqaRy/uHGLhkHceIdu2DYlpyPPQ5LH5
+ XYQ3Mgu/DBq2nroW4wtOTiDI/9B+enTNu3ZwRVwb8rswcT/InIlYBqRgwWcd9mviXH
+ thOXMNFl0jSzhNtODjERIbTqnpqAOF0hsrIM8pNo=
+Subject: Re: [PATCHv2] mtd: spi-nor: cadence-quadspi: add reset control
+To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
+References: <20190409153801.6941-1-dinguyen@kernel.org>
+ <5e058af4-17d8-9db9-5bc5-2122d3af4c9f@microchip.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c5d30853-ae60-7542-a75e-3bea7956b257@kernel.org>
+Date: Tue, 7 May 2019 14:17:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 207e26bd-b303-49f5-e442-08d6d31a7780
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2019 18:33:14.6579 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3200
+In-Reply-To: <5e058af4-17d8-9db9-5bc5-2122d3af4c9f@microchip.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190507_113321_818144_A058A107 
-X-CRM114-Status: GOOD (  15.66  )
+X-CRM114-CacheID: sfid-20190507_121756_597454_C1AC9C25 
+X-CRM114-Status: GOOD (  19.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -114,9 +120,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Jagdish Gediya <jagdish.gediya@nxp.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>
+Cc: marex@denx.de, tien.fong.chee@intel.com, vigneshr@ti.com,
+ bbrezillon@kernel.org, linux-kernel@vger.kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -124,77 +130,105 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-> -----Original Message-----
-> From: Jagdish Gediya <jagdish.gediya@nxp.com>
-> Sent: Tuesday, May 7, 2019 7:16 AM
-> To: linux-mtd@lists.infradead.org
-> Cc: bbrezillon@kernel.org; Leo Li <leoyang.li@nxp.com>; Prabhakar
-> Kushwaha <prabhakar.kushwaha@nxp.com>; Jagdish Gediya
-> <jagdish.gediya@nxp.com>
-> Subject: [PATCH v2 2/2] arm64: defconfig: Enable access to CFI-compliant
-> memory mapped NOR flash
+On 4/17/19 3:48 AM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Dinh,
+> 
+> On 04/09/2019 06:38 PM, Dinh Nguyen wrote:
+>> Get the reset control for the QSPI controller and bring it out of reset.
+> 
+> Is there a public datasheet where I can check this?
 
-This should be sent to arm mailing list and arm maintainers(added for you), and cc the MTD owners.
+You can look at the reset manager bits here:
+
+https://www.intel.com/content/www/us/en/programmable/hps/arria-10/hps.html#reg_soc_top/sfo1429890575955.html
+
+Otherwise, the QSPI block is just the standard IP from Cadence.
+
+>>
+>> Suggested-by: Tien-Fong Chee <tien.fong.chee@intel.com>
+>> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+>> ---
+>> v2: use devm_reset_control_get_optional_exclusive
+>>     print an error message
+>>     return -EPROBE_DEFER
+>> ---
+>>  drivers/mtd/spi-nor/cadence-quadspi.c | 14 ++++++++++++++
+> 
+> would you update the bindings as well?
+
+Yes, I will do that.
+
 
 > 
-> Enable below configs in arm64 defconfig file,
-> CONFIG_MTD_CFI=y
-> CONFIG_MTD_CFI_INTELEXT=y
-> CONFIG_MTD_CFI_AMDSTD=y
-> CONFIG_MTD_CFI_STAA=y
-> CONFIG_MTD_PHYSMAP=y
-> CONFIG_MTD_PHYSMAP_OF=y
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> index 792628750eec..c548567adcf0 100644
+>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> @@ -34,6 +34,7 @@
+>>  #include <linux/of.h>
+>>  #include <linux/platform_device.h>
+>>  #include <linux/pm_runtime.h>
+>> +#include <linux/reset.h>
+>>  #include <linux/sched.h>
+>>  #include <linux/spi/spi.h>
+>>  #include <linux/timer.h>
+>> @@ -1336,6 +1337,7 @@ static int cqspi_probe(struct platform_device *pdev)
+>>  	struct cqspi_st *cqspi;
+>>  	struct resource *res;
+>>  	struct resource *res_ahb;
+>> +	struct reset_control *rstc;
+>>  	const struct cqspi_driver_platdata *ddata;
+>>  	int ret;
+>>  	int irq;
+>> @@ -1362,6 +1364,18 @@ static int cqspi_probe(struct platform_device *pdev)
+>>  		return PTR_ERR(cqspi->clk);
+>>  	}
+>>  
+>> +	/* Obtain QSPI reset control */
+> 
+> OSPI version of the IP has been added recently. Is this available just for QSPI?
+> 
+>> +	rstc = devm_reset_control_get_optional_exclusive(dev, NULL);
+>> +	if (IS_ERR(rstc)) {
+>> +		dev_err(dev, "Cannot get QSPI reset.\n");
+>> +		if (PTR_ERR(rstc) == -EPROBE_DEFER)
+>> +			return -EPROBE_DEFER;
+> 
+> why ignoring all the other possible errors? Maybe return PTR_ERR(rstc); ?
 
-This include both CFI and PHYSMAP changes, and probably better to be separate.  And it will be good to mention that CONFIG_MTD_PHYSMAP_OF has been enabled previously in the defconfig.  It is because of the following change to the driver that it is no longer selectable alone but need CONFIG_MTD_PHYSMAP to be selectable.
-
-commit 642b1e8dbed7bbbf8c4deb3c9a0496f17278badc
-Author: Boris Brezillon <boris.brezillon@bootlin.com>
-Date:   Fri Oct 19 09:49:04 2018 +0200
-
-    mtd: maps: Merge physmap_of.c into physmap-core.c
-
-    There's no real reason to have two separate driver for the DT and pdata
-    case. Just do what we do everywhere else and handle DT and pdata
-    parsing in the same driver.
-
-    Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-    Reviewed-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-    Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Ok..
 
 > 
-> These configs are needed to access CFI compliant memory mapped NOR
-> flashes e.g. NOR flash connected over Freescale IFC.
+>> +	} else {
+>> +		reset_control_assert(rstc);
 > 
-> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> ---
-> Change since v2:
->  Split the defconfig changes between,
->  1. Changes as a result of 'make savedefconfig' command
->  2. Enablement of actually needed configs
+> Shouldn't the clock be enabled before asserting reset?
 > 
->  arch/arm64/configs/defconfig | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index aff014e..ac06501 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -193,6 +193,12 @@ CONFIG_HISILICON_LPC=y
->  CONFIG_SIMPLE_PM_BUS=y
->  CONFIG_MTD=y
->  CONFIG_MTD_BLOCK=y
-> +CONFIG_MTD_CFI=y
-> +CONFIG_MTD_CFI_INTELEXT=y
-> +CONFIG_MTD_CFI_AMDSTD=y
-> +CONFIG_MTD_CFI_STAA=y
-> +CONFIG_MTD_PHYSMAP=y
-> +CONFIG_MTD_PHYSMAP_OF=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=y
->  CONFIG_MTD_NAND_DENALI_DT=y
-> --
-> 2.7.4
 
+Yes, it should. Thanks for catching that!
+
+> Does it matter if reset_control_assert() is returning any error?
+> 
+>> +		udelay(1);
+> 
+> Is there a range or 1 us is the maximum time that we should wait?
+> 
+>> +		reset_control_deassert(rstc);
+
+I'll add a 1-2 us range.
+
+> 
+> Should we check if reset_control_deassert() is returning any error?
+> 
+
+I don't think there is a need for error checking here. We've already
+made sure that the reset property is there.
+
+Thanks for the review...
+
+Dinh
 
 ______________________________________________________
 Linux MTD discussion mailing list
