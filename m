@@ -2,65 +2,89 @@ Return-Path: <SRS0=Kxx5=TH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D313C004C9
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 15:10:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F3D8C004C9
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 15:46:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40BBE2087F
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 15:10:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 311902087F
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 15:46:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bDa0IIIo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40BBE2087F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Vno+/bEF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="LcspjzYT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 311902087F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mnlZ/5FDRUNBcvhxTUC4UqQzEUAyishJ899Pn0tQCas=; b=bDa0IIIooDSSF+
-	yhOxriJoySf5574I7u8Dq5kDRf0+BXbOQac6RnbKbqKkDV19S9IdTNIvpy/cYBU5uPu2hqjiQj8Zt
-	pxOOTkAK1/JQI/l3uBMo/S3rZz+VNOM1iagYL2EPvDDVlmyRzRLNYZfhdZ+HOfbnEZ0gSCtuY0zq1
-	DlTu1QCwgVXf9kdcSQ/W4AyBH9NLAFHxqr82AI3uMktzh1/UDa8da9q/LEXrLeYBJwvNin+jCpfqy
-	FrdI09Dbl+PUafME5h1cXyq7hwXuPEx+eYBBV1d3gj4jl0xk1xqCGzAL8shECQtAWeF8196dhsDWK
-	kArcYhisfn9amXXFB7AA==;
+	List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:To:From:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=45Y+iqCVgJTYeTyxZDEv1KHPuEBka1ZBBNYgQjfAtus=; b=Vno+/bEFAMihAv
+	NRWTPqmdgAlM9kWROytoz6+803NEX3d/53MOKhTXU0XLCLWTOEut2sCYTYiQ9c2zNyboKH9glO28C
+	1nFeHhD1ZmxJMdjSBedTBWamrt8uxy7oJuFeBfUfWF5+CISgPrjN1iTpdi5n68PuyLvKM8nSG6fTo
+	MnYpVHyjiqUpEh+a+v2kM+1R5fRme+z/pSX04uU7ysZWQG0pyljQ+8inOi3/aBLtg3vfbZXwEj/1G
+	D7IzPczj4K0BJe/2CWWIwAC6KYJ2z8/f0NrD0dZnCIFLipCjFKJ9xM0eD31VYMcgKT0kDrnMNUD+W
+	kM6lpR6jV8h/U866j4zQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hO1k5-0000FT-8z; Tue, 07 May 2019 15:10:53 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1hO2Il-0003zk-ES; Tue, 07 May 2019 15:46:43 +0000
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hO1k2-0000Dv-Bv
- for linux-mtd@lists.infradead.org; Tue, 07 May 2019 15:10:51 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2BEAB273331;
- Tue,  7 May 2019 16:10:47 +0100 (BST)
-Date: Tue, 7 May 2019 17:10:38 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Zhuohao Lee <zhuohao@chromium.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: add debugfs nodes for querying the
- flash name and id
-Message-ID: <20190507171038.0413678f@collabora.com>
-In-Reply-To: <CABD5ybk+NFsVtdg06=s=iGczoCe2e2s1M+yWZMaUix02uggnrQ@mail.gmail.com>
-References: <20190506084414.89702-1-zhuohao@chromium.org>
- <CANMq1KBpqb5-Ab1z_9zzvNVCkY72pBrAEJ2UVO1CgOjP=xXQ+A@mail.gmail.com>
- <CABD5ybnTbKLNUU68+bN9EcbkJECU6egPghUm=h=xHToWGmeWUw@mail.gmail.com>
- <CANMq1KCxRyvsQ++eDHt3wko6j05kBNUHjWCQtLMKBJxO8-Fwxg@mail.gmail.com>
- <CABD5ybk+NFsVtdg06=s=iGczoCe2e2s1M+yWZMaUix02uggnrQ@mail.gmail.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hO2Ii-0003yW-7P
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2019 15:46:41 +0000
+Received: by mail-pl1-x644.google.com with SMTP id a5so3442825pls.12
+ for <linux-mtd@lists.infradead.org>; Tue, 07 May 2019 08:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
+ h=mime-version:from:to:cc:subject:date:message-id;
+ bh=AyxScH4NIE4sDe1p/0kXATnx4Yd1gHetw4ugG+CXftg=;
+ b=LcspjzYTpm18fBxDLtdVlOSLYgih/UOIl8y2xm86Shd54JuFLAbjRuZJsh7/UJROFW
+ TtPG3dZCOLd3NNoEul47o9myIkAwvByEQcLu1SVAeEFQ3dYwmEQe2TjcZkXAt8F96qzm
+ m1bi5u09yD15mF9UitMHo4z+MNjDAqwkwSCXkNMppq2snlQsOkVdmKMDPENoU43mV7+L
+ RzfwzYC8qqQM7ryF6MyV/7SwGQIPHoB/YzUQMpD8PmNZ4S8CadI+FEHvI2Sbv59AL5vH
+ C1i10OgAXmZLSd450lkDBFZGCG8h/znBvgvuZLKNKvyS6oFP0RmLcCe3dPQ26CPTyW9W
+ x7qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=mime-version:x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=AyxScH4NIE4sDe1p/0kXATnx4Yd1gHetw4ugG+CXftg=;
+ b=blXn+IA8ONyScParWfjjpvE0PzwnmYQFt3bP1mWXWaIyvgHyHtzO1GXq420anAkcs1
+ tcuE3je9TFnykS+tPBLd2uAE+FJm6ETxq/9nNZM19nCQ8Qg0GCT0DbZP0L/kEFroiKPU
+ XLceE6PMysn4LogohPO2BPMUm/kT3mB+ZPZCd27Ag8fwaoYVnbKmXnxSu1fGytXVf8Yd
+ XocdEtbrdayZ6L8VV4a6QLC6CeWx5x0tKuSk5p/R8J6WqMQpF1sC1lfc4epuLKifbn75
+ VNYOvsEssb0jVAFiySEdsZS5Xol7WV+Fp0m9gn/GE0ob6WH1NxiwEI6fXO2ug8dbeBw7
+ 9wjw==
 MIME-Version: 1.0
+X-Gm-Message-State: APjAAAUPz47qGNYzyU9d0UlDxphb3AKHp1X+7dTuMgjxyL9P1HlY6v0H
+ 3Lq2P7wbhsrYRrWsA/3Fdg2IIo9Vdd0p7/AAcGpFuOXGYqicKiaF0PuEpmKo9C32ISDSqlP5mkB
+ mfNAw7NvtcENTvp//cpo=
+X-Google-Smtp-Source: APXvYqxkIWDXrclgUoj+jqcoyhO6CLT/D3zJ0ThibTrmWBC8R5Y1pe8PKcAAb/jfMzxK3ee5u+CN2w==
+X-Received: by 2002:a17:902:29c9:: with SMTP id
+ h67mr41070276plb.114.1557243998932; 
+ Tue, 07 May 2019 08:46:38 -0700 (PDT)
+Received: from buildserver-90.open-silicon.com ([114.143.65.226])
+ by smtp.googlemail.com with ESMTPSA id 5sm15482096pfs.17.2019.05.07.08.46.34
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Tue, 07 May 2019 08:46:38 -0700 (PDT)
+From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+To: marek.vasut@gmail.com, tudor.ambarus@microchip.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, bbrezillon@kernel.org, richard@nod.at,
+ palmer@sifive.com, aou@eecs.berkeley.edu, paul.walmsley@sifive.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org
+Subject: [PATCH v3 v3 0/3] add support for is25wp256 spi-nor device.
+Date: Tue,  7 May 2019 21:16:00 +0530
+Message-Id: <1557243963-14140-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 1.9.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190507_081050_536167_D8173ECB 
-X-CRM114-Status: GOOD (  19.10  )
+X-CRM114-CacheID: sfid-20190507_084640_306171_8DB689B3 
+X-CRM114-Status: GOOD (  11.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -72,54 +96,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Nicolas Boichat <drinkcat@chromium.org>, bbrezillon@kernel.org,
- richard@nod.at, Brian Norris <briannorris@chromium.org>,
- Marek =?UTF-8?B?VmHFoXV0?= <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 7 May 2019 23:06:32 +0800
-Zhuohao Lee <zhuohao@chromium.org> wrote:
+The patch set is tested on HiFive Unleashed board and is based on mainline
+kernel v5.1. Its intended to add support for 32 MB spi-nor flash
+mounted on the board. Memory Device supports 4/32/and 64 KB sectors size.
+The device id table is updated accordingly.
+
+Flash parameter table for ISSI device is set to use macronix_quad_enable
+procedure to set the QE (quad-enable) bit of Status register.
+
+A unilaterlay block unlocking scheme is added in patch 2.
+
+These patches are based on original work done by Wesley Terpstra and/or Palmer Dabbelt:
+https://github.com/riscv/riscv-linux/commit/c94e267766d62bc9a669611c3d0c8ed5ea26569b
+
+Erase/Read/Write operations are verified on HiFive Unleashed board using  mtd and flash utils (v1.5.2):
+1. mtd_debug  	:Options available are : erase/read/write.
+2. flashcp	:Single utility that erases flash, writes a file to flash and verifies the data back.
+3. flash_unlock: Unlock flash memory blocks.
+3. flash_lock: 	 Lock flash memory blocks. 
+
+Unlock scheme clears the protection bits of all blocks in the Status register.
+
+Lock scheme:
+It is a basic implementation similar to stm_lock scheme and is validated for different number of blocks passed
+to flash_lock.
+
+Revision history:
+
+V2<->V3:
+-Rebased patch to mainline v5.1 from earlier v5.1-rc5
+-Updated commit messages, and cover letter with reference to git URL and author information.
+-Deferred flash_lock mechanism and can go as separate patch. 
+
+V1<-> V2:
+-Incorporated changes suggested by reviewers regarding patch/cover letter versioning, references of patch.
+-Updated cover letter with description for flash operations verified with these changes.
+-Add support for unlocking is25xxxxxx device
+-Add support for locking is25xxxxxx device.
+
+v1:
+-Add support for is25wp256 device.
 
 
-> > > > > @@ -231,8 +231,11 @@ static int m25p_probe(struct spi_mem *spimem)  
-> > > >
-> > > > Can we add this to function that is generic to all spi-nor devices,
-> > > > instead of making this specific to m25p?  
-> > > I can't find a better way to insert the spi_nor_debugfs_create()
-> > > inside spi_nor.c.
-> > > Another way is adding spi_nor_debugfs_create() to all of the caller.
-> > > What do you think? Any other suggestion?  
-> >
-> > That, or maybe create a new spi_nor_device_register that does both
-> > mtd_device_register and that spi_nor_debugfs_create call?  
-> Thanks for suggestion. I feel that putting the mtd_device_register
-> (high level api) inside the spi-nor (low level api)
-> isn't perfect. This also will limit the caller to call this api to
-> register mtd device with debugfs and lost the flexibility.
-> I'll keep the original idea that adding spi_nor_debugfs_create() to
-> all of the caller.
+Sagar Shrikant Kadam (3):
+  mtd: spi-nor: add support for is25wp256
+  mtd: spi-nor: add support to unlock flash device.
+  mtd: spi-nor: add locking support for is25xxxxx device
 
-Why don't you move that to the MTD layer? If you add partname/partid
-fields to mtd_info you'll have everything you need to make that generic.
-It's then up to the upper layer to fill those fields before calling
-mtd_device_register().
+ drivers/mtd/spi-nor/spi-nor.c | 110 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/spi-nor.h   |   2 +
+ 2 files changed, 111 insertions(+), 1 deletion(-)
+
+-- 
+1.9.1
 
 
-> > > >  
-> > > > > +               return;
-> > > > > +       }
-> > > > > +       debugfs_create_file("flashid", S_IRUSR, root, nor,
-> > > > > +                       &flashid_dbg_fops);
-> > > > > +       debugfs_create_file("flashname", S_IRUSR, root, nor,
-> > > > > +                       &flashname_dbg_fops);  
-
-I thought we agreed on partname/partid. Any reason for switching back
-to flashname/flashid?
+-- 
+The information transmitted is intended only for the person or entity to 
+which it is addressed and may contain confidential and/or privileged 
+material. If you are not the intended recipient of this message please do 
+not read, copy, use or disclose this communication and notify the sender 
+immediately. It should be noted that any review, retransmission, 
+dissemination or other use of, or taking action or reliance upon, this 
+information by persons or entities other than the intended recipient is 
+prohibited.
 
 ______________________________________________________
 Linux MTD discussion mailing list
