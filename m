@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	T_DKIMWL_WL_HIGH,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6588C004C9
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 08:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46723C004C9
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 08:42:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9387720C01
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 08:40:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11A0920B7C
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2019 08:42:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BxieZYsh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9387720C01
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TVeZCmqK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11A0920B7C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w70MNy0F9Uz31uijRg+5Mh2iS3ZvVDZMungnP6hRZUU=; b=BxieZYshVwoqVa
-	gXZPjepFkGe4qv+M2oshHtcGNzNiKGqlERLssMfPjWuJgU2h5rFA3HvuWPTcfUH4uQyYMyCrKnS6h
-	V77wfIBkAjR7cZsOUKxAhtDxIyOcZsi+lwXQl4F8urUyUuEpsTqVYoCHA4wlknZ97C8PM02Cd5/qA
-	ENn1V5clYaX1S0nX6tNWsMebLcJDVZLZU2OjofDlzQzusrAsbPJ2trHyHMTwrTjVP/WZ6b+M5+tcB
-	wlbSXUQmkwoaNP/xqW9lnREqql5BDdb1ormLHiyCjRXsPRBIDaD8u8Ffb6Z7KqNoHWIXypJHtcnOa
-	4NQrOgDnrksVUgfJMHeQ==;
+	List-Owner; bh=W4Xz8or8GDhSNMAJSU2CsKHY32Vp0qmL3Ad9Qlzf0VI=; b=TVeZCmqKEXXIOF
+	ymFAeiDh4TUg/t3tcBPFTIW625X6GCcr22Ugzczhqle+cqOGjDxhlBgoZFu2o14yrY0byEcJmnhNe
+	mf4vf3wTaXWyIfguFdCuFXCfbIPfUzs4B+oQLRl+pxctnKUV4Py9pgmq7S4lTgXrPBlRQskNi20fR
+	8wvqc110GRw7kHTm1GVVUYqpi2lzd+iEjnqhd7EMSoRx7GEvvx5WjBnFV2PtaXqyOLEWGtM1+2jza
+	eeEIltoupRVFX+MopCD5X8hubd8fFRMOwdVS/IeI0AwckqweiO9ZqGkz7MqCx4NBL+QGoxejvqNUE
+	oTXuh8B914SEurWmK0SQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hNveX-00086K-Tj; Tue, 07 May 2019 08:40:45 +0000
+	id 1hNvgf-0000EY-KN; Tue, 07 May 2019 08:42:57 +0000
 Received: from mailgw02.mediatek.com ([216.200.240.185])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hNveS-00085S-B6; Tue, 07 May 2019 08:40:42 +0000
-X-UUID: c96ba167cb4d46389d89e87ec76c561e-20190507
-X-UUID: c96ba167cb4d46389d89e87ec76c561e-20190507
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
+ id 1hNvga-0000Dg-Q9; Tue, 07 May 2019 08:42:56 +0000
+X-UUID: 20c1503db2a1436da7e3047cc5550508-20190507
+X-UUID: 20c1503db2a1436da7e3047cc5550508-20190507
+Received: from mtkcas68.mediatek.inc [(172.29.94.19)] by mailgw02.mediatek.com
  (envelope-from <rogercc.lin@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 1164526623; Tue, 07 May 2019 00:40:19 -0800
-Received: from mtkmbs03n1.mediatek.inc (172.21.101.181) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Tue, 7 May 2019 01:40:17 -0700
+ with ESMTP id 1686676276; Tue, 07 May 2019 00:42:50 -0800
+Received: from mtkmbs08n2.mediatek.inc (172.21.101.56) by
+ MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Tue, 7 May 2019 01:42:49 -0700
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs03n1.mediatek.inc (172.21.101.181) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Tue, 7 May 2019 16:40:15 +0800
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Tue, 7 May 2019 16:42:35 +0800
 Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Tue, 7 May 2019 16:40:15 +0800
-Message-ID: <1557218415.17298.1.camel@mtkswgap22>
+ Transport; Tue, 7 May 2019 16:42:36 +0800
+Message-ID: <1557218556.17497.1.camel@mtkswgap22>
 Subject: Re: [RFC PATCH v3 1/1] mtd: rawnand: mtk: Re-license MTK NAND
  driver as Dual MIT/GPL
 From: RogerCC.Lin <rogercc.lin@mediatek.com>
 To: xiaolei li <xiaolei.li@mediatek.com>
-Date: Tue, 7 May 2019 16:40:15 +0800
+Date: Tue, 7 May 2019 16:42:36 +0800
 In-Reply-To: <1557133906.26455.91.camel@mhfsdcap03>
 References: <20190429085116.60081-1-xiaolei.li@mediatek.com>
  <20190429085116.60081-2-xiaolei.li@mediatek.com>
@@ -69,10 +69,11 @@ References: <20190429085116.60081-1-xiaolei.li@mediatek.com>
  <1557133906.26455.91.camel@mhfsdcap03>
 X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
+X-TM-SNTS-SMTP: FD9757D5B01F765737B803516AC770CC74BFBA0048A1FC2C27E33F51EE9DF4702000:8
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190507_014040_380406_986994B7 
-X-CRM114-Status: GOOD (  22.83  )
+X-CRM114-CacheID: sfid-20190507_014252_986529_FF409511 
+X-CRM114-Status: GOOD (  23.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -153,25 +154,26 @@ Im10ZDogbmFuZDogbXRrOiBTdXBwb3J0IE1UNzYyMiBOQU5EIGZsYXNoIGNvbnRyb2xsZXIuIikK
 PiA+ID4gPiBiNDVlZTU1MDFlZGUgKCJtdGQ6IG5hbmQ6IG10azogU3VwcG9ydCBkaWZmZXJlbnQg
 TVRLIE5BTkQgZmxhc2ggCj4gPiA+ID4gY29udHJvbGxlciBJUCIpCj4gPiA+ID4gNTU5ZTU4ZTdl
 ZDJkICgibXRkOiBuYW5kOiBmaXggY2hhbmNlcyB0byBjcmVhdGUgaW5jb21wbGV0ZSBFQ0MgZGF0
-YSB3aGVuIAo+ID4gPiA+IHdyaXRpbmciKQo+ID4gPiA+IApBY2tlZC1ieTogUm9nZXJDQyBMaW4g
-PHJvZ2VyY2MubGluQG1lZGlhdGVrLmNvbT4KPiA+ID4gPiA0KSBXZWkKPiA+ID4gPiBDb250cmli
-dXRvciBvZiAxIGNoYW5nZToKPiA+ID4gPiAwN2Y3NjQ0M2VmODEgKCJtdGQ6IG5hbmQ6IG1lZGlh
-dGVrOiByZW1vdmUgcmVkdW5kYW50IGRldl9lcnIgY2FsbCBpbiAKPiA+ID4gPiBtdGtfbmZjX3By
-b2JlKCkiKQo+ID4gPiA+IAo+ID4gPiA+IDUpIFBldGVyCj4gPiA+ID4gQ29udHJpYnV0b3Igb2Yg
-MSBjaGFuZ2U6Cj4gPiA+ID4gZDQwOTJkNzZhNGE0ICgibXRkOiBuYW5kOiBSZW5hbWUgbmFuZC5o
-IGludG8gcmF3bmFuZC5oIikKPiA+ID4gPiAKPiA+ID4gPiA2KSBNYXNhaGlybwo+ID4gPiA+IENv
-bnRyaWJ1dG9yIG9mIDEgY2hhbmdlOgo+ID4gPiA+IGYwZGJlNGFhMzVlNyAoIm10ZDogbmFuZDog
-bWVkaWF0ZWs6IHJldHVybiBlcnJvciBjb2RlIG9mIAo+ID4gPiA+IG5hbmRfc2Nhbl9pZGVudC90
-YWlsKCkgb24gZXJyb3IiKQo+ID4gPiA+IAo+ID4gPiA+IEkgZ3Vlc3Mgd2UgY291bGQgYWNjZXB0
-IHlvdXIgcGF0Y2ggd2l0aG91dCBhY2tzIGZyb20gV2VpLCBQZXRlciBhbmQgCj4gPiA+ID4gTWFz
-YWhpcm8uCj4gPiA+ID4gCj4gPiA+ID4gWW91IGRlZmluaXRlbHkgbmVlZCBhbiBhcHByb3ZhbCBm
-cm9tIE1pcXVlbCwgQm9yaXMgYW5kIFJvZ2VyQ0MuCj4gPiA+ID4gCj4gPiA+ID4gSXQgZG9lc24n
-dCBzZWVtIHlvdSB0b29rIHRoaXMgcmUtbGljZW5zaW5nIHRhc2sgdG9vIHNlcmlvdXNseS4KPiA+
-ID4gPiAKPiA+ID4gPiBQbGVhc2UgcGF5IG1vcmUgYXR0ZW50aW9uIHRvIHRoaXMgbGljZW5zaW5n
-IHByb2JsZW0sIHlvdSBjYW4gc3RhcnQgd2l0aCAKPiA+ID4gPiBkb2luZwo+ID4gPiA+IGEgc2lt
-aWxhciByZXNlYXJjaCBmb3IgbXRrX2VjYy5jIGFuZCBtdGtfZWNjLmguICAKPiA+ID4gCj4gPiA+
-IFRoYW5rcyBmb3IgeW91ciBBQ0sgYW5kIGdvb2Qgc3VnZ2VzdGlvbi4gSXQgaXMgcmVhbGx5IGhl
-bHBmdWwgZm9yIG1lLgo+ID4gPiAKPiA+ID4gVGhhbmtzLAo+ID4gPiBYaWFvbGVpCj4gPiA+IAo+
-ID4gCj4gCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+YSB3aGVuIAo+ID4gPiA+IHdyaXRpbmciKQo+ID4gPiA+IAoKSXQncyBPSyBmb3IgbWUuIApBY2tl
+ZC1ieTogUm9nZXJDQyBMaW4gPHJvZ2VyY2MubGluQG1lZGlhdGVrLmNvbT4KPiA+ID4gPiA0KSBX
+ZWkKPiA+ID4gPiBDb250cmlidXRvciBvZiAxIGNoYW5nZToKPiA+ID4gPiAwN2Y3NjQ0M2VmODEg
+KCJtdGQ6IG5hbmQ6IG1lZGlhdGVrOiByZW1vdmUgcmVkdW5kYW50IGRldl9lcnIgY2FsbCBpbiAK
+PiA+ID4gPiBtdGtfbmZjX3Byb2JlKCkiKQo+ID4gPiA+IAo+ID4gPiA+IDUpIFBldGVyCj4gPiA+
+ID4gQ29udHJpYnV0b3Igb2YgMSBjaGFuZ2U6Cj4gPiA+ID4gZDQwOTJkNzZhNGE0ICgibXRkOiBu
+YW5kOiBSZW5hbWUgbmFuZC5oIGludG8gcmF3bmFuZC5oIikKPiA+ID4gPiAKPiA+ID4gPiA2KSBN
+YXNhaGlybwo+ID4gPiA+IENvbnRyaWJ1dG9yIG9mIDEgY2hhbmdlOgo+ID4gPiA+IGYwZGJlNGFh
+MzVlNyAoIm10ZDogbmFuZDogbWVkaWF0ZWs6IHJldHVybiBlcnJvciBjb2RlIG9mIAo+ID4gPiA+
+IG5hbmRfc2Nhbl9pZGVudC90YWlsKCkgb24gZXJyb3IiKQo+ID4gPiA+IAo+ID4gPiA+IEkgZ3Vl
+c3Mgd2UgY291bGQgYWNjZXB0IHlvdXIgcGF0Y2ggd2l0aG91dCBhY2tzIGZyb20gV2VpLCBQZXRl
+ciBhbmQgCj4gPiA+ID4gTWFzYWhpcm8uCj4gPiA+ID4gCj4gPiA+ID4gWW91IGRlZmluaXRlbHkg
+bmVlZCBhbiBhcHByb3ZhbCBmcm9tIE1pcXVlbCwgQm9yaXMgYW5kIFJvZ2VyQ0MuCj4gPiA+ID4g
+Cj4gPiA+ID4gSXQgZG9lc24ndCBzZWVtIHlvdSB0b29rIHRoaXMgcmUtbGljZW5zaW5nIHRhc2sg
+dG9vIHNlcmlvdXNseS4KPiA+ID4gPiAKPiA+ID4gPiBQbGVhc2UgcGF5IG1vcmUgYXR0ZW50aW9u
+IHRvIHRoaXMgbGljZW5zaW5nIHByb2JsZW0sIHlvdSBjYW4gc3RhcnQgd2l0aCAKPiA+ID4gPiBk
+b2luZwo+ID4gPiA+IGEgc2ltaWxhciByZXNlYXJjaCBmb3IgbXRrX2VjYy5jIGFuZCBtdGtfZWNj
+LmguICAKPiA+ID4gCj4gPiA+IFRoYW5rcyBmb3IgeW91ciBBQ0sgYW5kIGdvb2Qgc3VnZ2VzdGlv
+bi4gSXQgaXMgcmVhbGx5IGhlbHBmdWwgZm9yIG1lLgo+ID4gPiAKPiA+ID4gVGhhbmtzLAo+ID4g
+PiBYaWFvbGVpCj4gPiA+IAo+ID4gCj4gCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
