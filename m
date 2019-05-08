@@ -2,82 +2,127 @@ Return-Path: <SRS0=JkGG=TI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
+	T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF87C04A6B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE3BCC04AAB
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:29:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8181121479
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:25:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D90521479
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:29:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qcaerzTe";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="eQ7vaJGp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8181121479
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="A6/W7Qm5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=analog.onmicrosoft.com header.i=@analog.onmicrosoft.com header.b="qQfQKlBU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D90521479
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=analog.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/fe339hctU7BmOoO6IzZzHalr9xCmpkqQSqZzezYgUs=; b=qcaerzTeh57QdU
-	FaMeZX6cdXhhXB/RsCWOqY1Yweq0qd6BlA3iV66aWv63m8iOY7KJvd94QCDOhyZHKJ+exnXkVvCrY
-	K4FVyPhRMyBCrevdSUdkTLOAR+S67A7MH76zBMqSLOI6wcAaBm97dXKMgsR7knk1sZEKdG0cgEUZ0
-	kru43w1G+La6DpucaQZHV0NYSTQrBm2CVTVmkDycy6fTL6GW5hMqZY7bu/yVMQYzfXwrqC26pcO6c
-	Eoo42s2+9kTXOWrT1yyM+kj/g1np1bi99l+Gv5R7/BhCi1Prwt00JVGNYa5uLJ9IGo5EqXaOs1SuU
-	/dwxVk8Wq6puiTm2dorA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OCUucxxutVwe7li9L3sLffxlX++lD9rvdgHV7/NyM7s=; b=A6/W7Qm5Lg3Ss7
+	fMke311fuWvmczkL8vjPzJazeo4ThTEjHlfZ6zmBa4cpwVlipWfxfXGjHAT0VnIlEMmwNbV0Kq7tA
+	sbuvkNnWsDSkXVEeHpxrandSq4im7jQJz33bes7oCEg1aV2Fl7Ys0nmq00EMM7nPvWM4IA0d1wBn1
+	icCaPkAP5BJzi8Z1KfA9b+EfuMNXa2isTVqWWRkc/MmwieTC75qP/kV3BanEKVEtezVOIvEIr/9lV
+	q86bdyklLMkwFT0D31BXXe7LhcSu5hOdEVdjZGgIF7n8DwjlS4X+e+OFdi+FoLQWFFw9Vv4blFgT6
+	bp8kthAsoaQcmtN2t4aQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOKhJ-0005hK-Ol; Wed, 08 May 2019 11:25:17 +0000
-Received: from mail-it1-x142.google.com ([2607:f8b0:4864:20::142])
+	id 1hOKlH-00065g-Jy; Wed, 08 May 2019 11:29:23 +0000
+Received: from mail-eopbgr750045.outbound.protection.outlook.com
+ ([40.107.75.45] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOKhG-0005gT-6E
- for linux-mtd@lists.infradead.org; Wed, 08 May 2019 11:25:16 +0000
-Received: by mail-it1-x142.google.com with SMTP id o190so3351986itc.1
- for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 04:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Qs73giyYpTiUfmwy7nNWzrtz649jldDc8aQGV262rVQ=;
- b=eQ7vaJGpj+DPMI+L/OWMV74xNcJnxXghm8ZOS7gHZiITPo0lcPhNiK7Krm9+/OAqNu
- ghXs03YfgH/A/g/OIoRqLyU6ZA95wLO17pi1IvjtoVvKVw8K7WnuEoY0y0W+fvQGC/BF
- K5ga7dzSj6YU+ROC0l9bddATkeeTg17tox3DQjuV1Q04l7EIuyMDIA5z0QJVonwLa0PQ
- vHOSt8EEu7WMM7/V1IUo3cz5TqHJmSutYPsv/MV0n0b6ctTEHiwdroWzGw0zTvDt2rH2
- yU7O9JJfr45fihpiGCZR4KID/TJ33gFHDZS3THB+PwD3iHOfWtqNrRPZh9SPeVI6lJIS
- tSDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Qs73giyYpTiUfmwy7nNWzrtz649jldDc8aQGV262rVQ=;
- b=QdXXWjmjbJjs0IKUJ9uVjj/9wwBk37/OvTohNUUjpwTWshfDuiqn4GwM8Tk2zeaetr
- pj72D0Tr2geRwr+5IGjj8PfqToV6A+f9OpBkQT5jkdxozplohT/Hn7vTBvP2SDzGKvDg
- Othjoe24+NvnPwqiABIO3oTkl5L/imaHoJA4soThDJKjkIVsZWDubIwdq+uHr9dzvtYF
- 14YxxSxswXCtgkgz4QAbVqHBIJDEVZuCgB4pRC65kPKgirDq8lDeoPJEv+VgrbsCxttF
- Jp0T2menLfGfbFZYi7CrxJQUTH5PC9n2qVjkDBemsOgAZ5hsvhOFZWS5H7gZwVmRDdQ9
- V+5w==
-X-Gm-Message-State: APjAAAUiEXcfue8AsKoMJa98fXmlVCAav3oPty5fJmKflp/M/zP0qCI3
- O6HUe/WBoiK+VgWuM+aWopGRJBvA4qiE/Pp6f66JYA==
-X-Google-Smtp-Source: APXvYqwySfHXy56sSF+6GAJw51/lPUKp9Sqrr+QqayjNg0KsZeyF8iSNIBqsvUi8R1rsLpwYNOYSB24HjmoxJj4T9Sg=
-X-Received: by 2002:a02:b88b:: with SMTP id p11mr26973754jam.82.1557314712994; 
- Wed, 08 May 2019 04:25:12 -0700 (PDT)
+ id 1hOKlD-000659-O2; Wed, 08 May 2019 11:29:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector1-analog-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9mREEcazEV2TFx5JIFnH3pAzE1JX52Mxgf7Nke2hFVA=;
+ b=qQfQKlBUhqrL+3Zq0CNfpq26DFQMQ47XeDeoOQghyt8YnFxihdOyu/uqLTp4Va2PKJok0DnLUK74RKCRbvROk2XuKOdS1aEBpBZ7S2HyRHxL7vRH6SPzukskQpsFHAO8LtN/Vyu7cA1xYW8YkqaoD+LlmFfxVsALjqdbrsDXj/c=
+Received: from MWHPR03CA0030.namprd03.prod.outlook.com (2603:10b6:301:3b::19)
+ by DM5PR03MB3132.namprd03.prod.outlook.com (2603:10b6:4:3c::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1878.20; Wed, 8 May
+ 2019 11:29:15 +0000
+Received: from SN1NAM02FT031.eop-nam02.prod.protection.outlook.com
+ (2a01:111:f400:7e44::207) by MWHPR03CA0030.outlook.office365.com
+ (2603:10b6:301:3b::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1878.20 via Frontend
+ Transport; Wed, 8 May 2019 11:29:14 +0000
+Authentication-Results: spf=pass (sender IP is 137.71.25.57)
+ smtp.mailfrom=analog.com; lists.freedesktop.org; dkim=none (message not
+ signed) header.d=none;lists.freedesktop.org; dmarc=bestguesspass action=none
+ header.from=analog.com;
+Received-SPF: Pass (protection.outlook.com: domain of analog.com designates
+ 137.71.25.57 as permitted sender) receiver=protection.outlook.com;
+ client-ip=137.71.25.57; helo=nwd2mta2.analog.com;
+Received: from nwd2mta2.analog.com (137.71.25.57) by
+ SN1NAM02FT031.mail.protection.outlook.com (10.152.72.116) with Microsoft SMTP
+ Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1856.11
+ via Frontend Transport; Wed, 8 May 2019 11:29:13 +0000
+Received: from NWD2HUBCAS7.ad.analog.com (nwd2hubcas7.ad.analog.com
+ [10.64.69.107])
+ by nwd2mta2.analog.com (8.13.8/8.13.8) with ESMTP id x48BTCgt016944
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+ Wed, 8 May 2019 04:29:12 -0700
+Received: from saturn.analog.com (10.50.1.244) by NWD2HUBCAS7.ad.analog.com
+ (10.64.69.107) with Microsoft SMTP Server id 14.3.408.0; Wed, 8 May 2019
+ 07:29:11 -0400
+From: Alexandru Ardelean <alexandru.ardelean@analog.com>
+To: <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+ <linux-ide@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <linux-rpi-kernel@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>, 
+ <linux-pm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+ <dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+ <linux-omap@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+ <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+ <devel@driverdev.osuosl.org>, <linux-usb@vger.kernel.org>,
+ <kvm@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <cgroups@vger.kernel.org>,
+ <linux-mm@kvack.org>, <linux-security-module@vger.kernel.org>,
+ <linux-integrity@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH 00/16] treewide: fix match_string() helper when array size
+Date: Wed, 8 May 2019 14:28:25 +0300
+Message-ID: <20190508112842.11654-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <000000000000fb78720587d46fe9@google.com>
- <20190502023426.GA804@sol.localdomain>
-In-Reply-To: <20190502023426.GA804@sol.localdomain>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Wed, 8 May 2019 13:25:01 +0200
-Message-ID: <CACT4Y+YHFH8GAhDaNdNNTVFFx6YfKSL19cLPx2vpP-YngzS6kQ@mail.gmail.com>
-Subject: Re: BUG: soft lockup in kvm_vm_ioctl
-To: Eric Biggers <ebiggers@kernel.org>
+X-ADIRoutedOnPrem: True
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:137.71.25.57; IPV:NLI; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(1496009)(376002)(136003)(346002)(396003)(39860400002)(2980300002)(189003)(199004)(336012)(48376002)(6666004)(16586007)(316002)(426003)(356004)(107886003)(2441003)(50226002)(7696005)(51416003)(54906003)(2906002)(478600001)(110136005)(486006)(47776003)(7636002)(44832011)(106002)(50466002)(2616005)(476003)(8676002)(70206006)(246002)(70586007)(4326008)(2201001)(7416002)(26005)(1076003)(186003)(8936002)(77096007)(5660300002)(36756003)(126002)(53416004)(305945005)(86362001)(14444005)(921003)(83996005)(2101003)(1121003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM5PR03MB3132; H:nwd2mta2.analog.com; FPR:;
+ SPF:Pass; LANG:en; PTR:nwd2mail11.analog.com; MX:1; A:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c32e2cbb-fe64-4c66-7a5d-08d6d3a86664
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4709054)(2017052603328);
+ SRVR:DM5PR03MB3132; 
+X-MS-TrafficTypeDiagnostic: DM5PR03MB3132:
+X-Microsoft-Antispam-PRVS: <DM5PR03MB3132F0B0976A4F2194522684F9320@DM5PR03MB3132.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0031A0FFAF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: j/srRMWDBUltVscxVeW1javD8vK/cachSroUu+/Gbw1dTf/SvbBrFyW07ykT1LHxgf7JFm8qQ93W9eBvUwKDflyO8jAEvFHYdehNb6EHWUlpktuzMPEP4dqtYdoUQPJZJheiLPDUHbBGHPrVF+8TL5mDHJaN5ynPAEYsTTkWak369JERGg4vdXLCAeUTNR0/5p+fpFpKdjOGClAHWrD4fgHBh7O9/Ww1YzfpFB5/ShVxDtLKjt6j5yDaAZJVnp6EeWEY3bKP4Xa20OdzBmuebRIP54BdhQLWgxOFaNRtwz2dquRxZGpNeP4PgyojuMA1RloHq4JkY9VStd6NE4AnfhNTuZyPUNrsaLk3IJ1WIYcn7pLDJzCGmOSiZuodj5CqDCxvmc9nwLsca/AMvRwPw64pvgq4xuPYVpmZdqdwNAA=
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2019 11:29:13.4642 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c32e2cbb-fe64-4c66-7a5d-08d6d3a86664
+X-MS-Exchange-CrossTenant-Id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=eaa689b4-8f87-40e0-9c6f-7228de4d754a; Ip=[137.71.25.57];
+ Helo=[nwd2mta2.analog.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3132
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_042514_261287_12CF56EC 
-X-CRM114-Status: GOOD (  15.73  )
+X-CRM114-CacheID: sfid-20190508_042919_788615_F0A0DABD 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -89,142 +134,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Ingo Molnar <mingo@kernel.org>, KVM list <kvm@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, jbaron@redhat.com,
- Rik van Riel <riel@surriel.com>,
- syzkaller-bugs <syzkaller-bugs@googlegroups.com>, adrian.hunter@intel.com,
- Steven Rostedt <rostedt@goodmis.org>, David Miller <davem@davemloft.net>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Andy Lutomirski <luto@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- syzbot <syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com>
+Cc: gregkh@linuxfoundation.org,
+ Alexandru Ardelean <alexandru.ardelean@analog.com>,
+ andriy.shevchenko@linux.intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Thu, May 2, 2019 at 4:34 AM
-To: syzbot, Dmitry Vyukov, <kvm@vger.kernel.org>
-Cc: <adrian.hunter@intel.com>, <davem@davemloft.net>,
-<dedekind1@gmail.com>, <jbaron@redhat.com>, <jpoimboe@redhat.com>,
-<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-<luto@kernel.org>, <mingo@kernel.org>, <peterz@infradead.org>,
-<richard@nod.at>, <riel@surriel.com>, <rostedt@goodmis.org>,
-<syzkaller-bugs@googlegroups.com>, <tglx@linutronix.de>
+The intent of this patch series is to make a case for fixing the
+match_string() string helper.
 
-> On Wed, May 01, 2019 at 07:36:05AM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    baf76f0c slip: make slhc_free() silently accept an error p..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1407f57f200000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a42d110b47dd6b36
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=8d9bb6157e7b379f740e
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1266a588a00000
-> >
-> > The bug was bisected to:
-> >
-> > commit 252153ba518ac0bcde6b7152c63380d4415bfe5d
-> > Author: Eric Biggers <ebiggers@google.com>
-> > Date:   Wed Nov 29 20:43:17 2017 +0000
-> >
-> >     ubifs: switch to fscrypt_prepare_setattr()
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1448f588a00000
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1648f588a00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1248f588a00000
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com
-> > Fixes: 252153ba518a ("ubifs: switch to fscrypt_prepare_setattr()")
-> >
-> > watchdog: BUG: soft lockup - CPU#0 stuck for 123s! [syz-executor.3:22023]
-> > Modules linked in:
-> > irq event stamp: 26556
-> > hardirqs last  enabled at (26555): [<ffffffff81006673>]
-> > trace_hardirqs_on_thunk+0x1a/0x1c
-> > hardirqs last disabled at (26556): [<ffffffff8100668f>]
-> > trace_hardirqs_off_thunk+0x1a/0x1c
-> > softirqs last  enabled at (596): [<ffffffff87400662>]
-> > __do_softirq+0x662/0x95a kernel/softirq.c:320
-> > softirqs last disabled at (517): [<ffffffff8144e4e0>] invoke_softirq
-> > kernel/softirq.c:374 [inline]
-> > softirqs last disabled at (517): [<ffffffff8144e4e0>] irq_exit+0x180/0x1d0
-> > kernel/softirq.c:414
-> > CPU: 0 PID: 22023 Comm: syz-executor.3 Not tainted 5.1.0-rc6+ #89
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > Google 01/01/2011
-> > RIP: 0010:csd_lock_wait kernel/smp.c:108 [inline]
-> > RIP: 0010:smp_call_function_single+0x13e/0x420 kernel/smp.c:302
-> > Code: 00 48 8b 4c 24 08 48 8b 54 24 10 48 8d 74 24 40 8b 7c 24 1c e8 23 fa
-> > ff ff 41 89 c5 eb 07 e8 e9 87 0a 00 f3 90 44 8b 64 24 58 <31> ff 41 83 e4 01
-> > 44 89 e6 e8 54 89 0a 00 45 85 e4 75 e1 e8 ca 87
-> > RSP: 0018:ffff88809277f3e0 EFLAGS: 00000293 ORIG_RAX: ffffffffffffff13
-> > RAX: ffff8880a8bfc040 RBX: 1ffff110124efe80 RCX: ffffffff8166051c
-> > RDX: 0000000000000000 RSI: ffffffff81660507 RDI: 0000000000000005
-> > RBP: ffff88809277f4b8 R08: ffff8880a8bfc040 R09: ffffed1015d25be9
-> > R10: ffffed1015d25be8 R11: ffff8880ae92df47 R12: 0000000000000003
-> > R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
-> > FS:  00007fd569980700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007fd56997e178 CR3: 00000000a4fd2000 CR4: 00000000001426f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  smp_call_function_many+0x750/0x8c0 kernel/smp.c:434
-> >  smp_call_function+0x42/0x90 kernel/smp.c:492
-> >  on_each_cpu+0x31/0x200 kernel/smp.c:602
-> >  text_poke_bp+0x107/0x19b arch/x86/kernel/alternative.c:821
-> >  __jump_label_transform+0x263/0x330 arch/x86/kernel/jump_label.c:91
-> >  arch_jump_label_transform+0x2b/0x40 arch/x86/kernel/jump_label.c:99
-> >  __jump_label_update+0x16a/0x210 kernel/jump_label.c:389
-> >  jump_label_update kernel/jump_label.c:752 [inline]
-> >  jump_label_update+0x1ce/0x3d0 kernel/jump_label.c:731
-> >  static_key_slow_inc_cpuslocked+0x1c1/0x250 kernel/jump_label.c:129
-> >  static_key_slow_inc+0x1b/0x30 kernel/jump_label.c:144
-> >  kvm_arch_vcpu_init+0x6b7/0x870 arch/x86/kvm/x86.c:9068
-> >  kvm_vcpu_init+0x272/0x370 arch/x86/kvm/../../../virt/kvm/kvm_main.c:320
-> >  vmx_create_vcpu+0x191/0x2540 arch/x86/kvm/vmx/vmx.c:6577
-> >  kvm_arch_vcpu_create+0x80/0x120 arch/x86/kvm/x86.c:8755
-> >  kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:2569
-> > [inline]
-> >  kvm_vm_ioctl+0x5ce/0x19c0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3105
-> >  vfs_ioctl fs/ioctl.c:46 [inline]
-> >  file_ioctl fs/ioctl.c:509 [inline]
-> >  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
-> >  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-> >  __do_sys_ioctl fs/ioctl.c:720 [inline]
-> >  __se_sys_ioctl fs/ioctl.c:718 [inline]
-> >  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-> >  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
-> >  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> > RIP: 0033:0x458da9
-> > Code: ad b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7
-> > 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff
-> > 0f 83 7b b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> > RSP: 002b:00007fd56997fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000458da9
-> > RDX: 0000000000000000 RSI: 000000000000ae41 RDI: 0000000000000005
-> > RBP: 000000000073bfa0 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd5699806d4
-> > R13: 00000000004c1905 R14: 00000000004d40d0 R15: 00000000ffffffff
-> > Sending NMI from CPU 0 to CPUs 1:
+The doc-string of the `__sysfs_match_string()` helper mentions that `n`
+(the size of the given array) should be:
+ * @n: number of strings in the array or -1 for NULL terminated arrays
 
-> Can the KVM maintainers take a look at this?  This doesn't have anything to do
-> with my commit that syzbot bisected it to.
->
-> +Dmitry, statistics lession: if a crash occurs only 1 in 10 times, as was the
-> case here, then often it will happen 0 in 10 times by chance.  syzbot needs to
-> run the reproducer more times if it isn't working reliably.  Otherwise it ends
-> up blaming some random commit.
+However, this is not the case.
+The helper stops on the first NULL in the array, regardless of whether -1
+is provided or not.
 
-Added a note to https://github.com/google/syzkaller/issues/1051
-Thanks
+There are some advantages to allowing this behavior (NULL elements within
+in the array). One example, is to allow reserved registers as NULL in an
+array.
+One example in the series is patch:
+   x86/mtrr: use new match_string() helper + add gaps == minor fix
+which uses a "?" string for values that are reserved/don't care.
+
+Since the change is a bit big, the change was coupled with renaming
+match_string() -> __match_string().
+The new match_string() helper (resulted here) does an ARRAY_SIZE() over the
+array, which is useful when the array is static. 
+
+Also, this way of doing things is a way to go through all the users of this
+helpers and check that nothing goes wrong, and notify them about the change
+to match_string().
+It's a way of grouping changes in a manage-able way.
+
+The first patch is important, the others can be dropped.
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+
+Alexandru Ardelean (16):
+  lib: fix match_string() helper when array size is positive
+  treewide: rename match_string() -> __match_string()
+  lib,treewide: add new match_string() helper/macro
+  powerpc/xmon: use new match_string() helper/macro
+  ALSA: oxygen: use new match_string() helper/macro
+  x86/mtrr: use new match_string() helper + add gaps == minor fix
+  device connection: use new match_string() helper/macro
+  cpufreq/intel_pstate: remove NULL entry + use match_string()
+  mmc: sdhci-xenon: use new match_string() helper/macro
+  pinctrl: armada-37xx: use new match_string() helper/macro
+  mm/vmpressure.c: use new match_string() helper/macro
+  rdmacg: use new match_string() helper/macro
+  drm/edid: use new match_string() helper/macro
+  staging: gdm724x: use new match_string() helper/macro
+  video: fbdev: pxafb: use new match_string() helper/macro
+  sched: debug: use new match_string() helper/macro
+
+ arch/powerpc/xmon/xmon.c                         |  2 +-
+ arch/x86/kernel/cpu/mtrr/if.c                    | 10 ++++++----
+ drivers/ata/pata_hpt366.c                        |  2 +-
+ drivers/ata/pata_hpt37x.c                        |  2 +-
+ drivers/base/devcon.c                            |  2 +-
+ drivers/base/property.c                          |  2 +-
+ drivers/clk/bcm/clk-bcm2835.c                    |  4 +---
+ drivers/clk/clk.c                                |  4 ++--
+ drivers/clk/rockchip/clk.c                       |  4 ++--
+ drivers/cpufreq/intel_pstate.c                   |  9 ++++-----
+ drivers/gpio/gpiolib-of.c                        |  2 +-
+ drivers/gpu/drm/drm_edid_load.c                  |  2 +-
+ drivers/gpu/drm/drm_panel_orientation_quirks.c   |  2 +-
+ drivers/gpu/drm/i915/intel_pipe_crc.c            |  2 +-
+ drivers/ide/hpt366.c                             |  2 +-
+ drivers/mfd/omap-usb-host.c                      |  2 +-
+ drivers/mmc/host/sdhci-xenon-phy.c               | 12 ++++++------
+ drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c |  2 +-
+ drivers/pci/pcie/aer.c                           |  2 +-
+ drivers/phy/tegra/xusb.c                         |  2 +-
+ drivers/pinctrl/mvebu/pinctrl-armada-37xx.c      |  4 ++--
+ drivers/pinctrl/pinmux.c                         |  2 +-
+ drivers/power/supply/ab8500_btemp.c              |  2 +-
+ drivers/power/supply/ab8500_charger.c            |  2 +-
+ drivers/power/supply/ab8500_fg.c                 |  2 +-
+ drivers/power/supply/abx500_chargalg.c           |  2 +-
+ drivers/power/supply/charger-manager.c           |  4 ++--
+ drivers/staging/gdm724x/gdm_tty.c                |  3 +--
+ drivers/usb/common/common.c                      |  4 ++--
+ drivers/usb/typec/class.c                        |  8 +++-----
+ drivers/usb/typec/tps6598x.c                     |  2 +-
+ drivers/vfio/vfio.c                              |  4 +---
+ drivers/video/fbdev/pxafb.c                      |  4 ++--
+ fs/ubifs/auth.c                                  |  4 ++--
+ include/linux/string.h                           | 11 ++++++++++-
+ kernel/cgroup/rdma.c                             |  2 +-
+ kernel/sched/debug.c                             |  2 +-
+ kernel/trace/trace.c                             |  2 +-
+ lib/string.c                                     | 13 ++++++++-----
+ mm/mempolicy.c                                   |  2 +-
+ mm/vmpressure.c                                  |  4 ++--
+ security/apparmor/lsm.c                          |  4 ++--
+ security/integrity/ima/ima_main.c                |  2 +-
+ sound/firewire/oxfw/oxfw.c                       |  2 +-
+ sound/pci/oxygen/oxygen_mixer.c                  |  2 +-
+ sound/soc/codecs/max98088.c                      |  2 +-
+ sound/soc/codecs/max98095.c                      |  2 +-
+ sound/soc/soc-dapm.c                             |  2 +-
+ 48 files changed, 88 insertions(+), 82 deletions(-)
+
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
