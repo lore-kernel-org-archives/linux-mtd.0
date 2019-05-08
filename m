@@ -2,23 +2,22 @@ Return-Path: <SRS0=JkGG=TI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,
+	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C661C04A6B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 16:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A67C04A6B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 17:00:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6BD7121530
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 16:58:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07C6F216F4
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 17:00:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IMxyAbBj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KoDn5evk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BD7121530
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cnTaz0bn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07C6F216F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,59 +25,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jxdx0XdbO3fJg8y2oPetTysib8QLb6QGFy7Iz0+N7vw=; b=IMxyAbBjsuJyW/
-	BqkzoI0JTYKcG//g0H++kO5D0kE/x1BQha/R7qOXqBcYteij9Q/TbSHHalGH48E/7yB1LJiPEAm2K
-	Axtgz5+LwPyqsbKl/z/fXCUjgnInycxRIJQujSbO/ervVk3eEl2qR6RgazH4HDJ8jA1a0rRTXhL6L
-	BTeKvoHZT/gWPevIkPXsFFpqcZs1UT7w4htOknUDWySaM87uETRiuGpBbHnHL6feWA2fXtrZWPLky
-	7Lc31giWLEctjKE/kO1o1uYZHIHxE8xx8puGheSfaHaBfkl6BSMr8EjvrdLUSqLQDxzFes0HkMqBF
-	CwL2O+zzn3LC0bGdJs5Q==;
+	List-Owner; bh=ADB6YENDcQrQ6hcQ9ofWUQY45yaj6bffO2+kTKpXbW8=; b=cnTaz0bn65O3k6
+	opHzMZoU7PLS4nw2RUmBjAv6zTVEER8bppoIWvWYuxTNSz3REkYfXxgxsASkQ7UtKyc3FNfYZOjKk
+	iVROEMODb15/q6v/xBBgUo/fVeDeMOsVRJAnLh5WqL/lmXrplMYEhrdlbZd4MsdnUNEjwWgtuNsTi
+	ojanAvtTGi7ityyPe+KRb89OZ50oIPh7Z9elOAa5IQRLD27wkDe/6xL/r5hot9liouM9hKJi9t2hX
+	RVmJm/zT+d/RRoYdv3bNtFI8k/1mYruVBPAtnfL6Eqgl5KGlcpyy7og6m3C2hpol8SmS6ykwPS/3F
+	ieOkrWtj9P3lkJlMOE8Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOPu2-0003AQ-5t; Wed, 08 May 2019 16:58:46 +0000
-Received: from mail-it1-x143.google.com ([2607:f8b0:4864:20::143])
+	id 1hOPvd-0004jk-Gx; Wed, 08 May 2019 17:00:25 +0000
+Received: from mail-vs1-f67.google.com ([209.85.217.67])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOPtx-00039j-Qo
- for linux-mtd@lists.infradead.org; Wed, 08 May 2019 16:58:44 +0000
-Received: by mail-it1-x143.google.com with SMTP id a190so5212252ite.4
- for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 09:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=c7SeVSug1d6hFQ88Hj9iAuTem9szKnl9bSHrdwwQow8=;
- b=KoDn5evk1r6DhlfC/aQNu13BeFGPdeTqTdb4rZKpEN6q7vnWvthDzE1+ylPHgO0Wh/
- IbpPkjGkKiu9k9aMPsXt6A5Jz63ubDHcLBSKH7XUPzyk1Cj1MWxg4og78sL8tXXQS4EP
- A0/xO723KBBX4riHn3tRNvSHZWW+XJqnIt7B/YQ+T17qfuFyN9Jh+FY1ayTdpBUCgyi9
- wqKs3/cEkVE97ZCEHc3yxFWqAgGkTNw04XQFfhuyA1oudHweWfU3Fz0u5ivFwNlo5GMl
- ObvXM+jXEIMmgb4Ga+ZRE3z506uqa3PZ1zDsqZWRmHFiB8XYTvER0XBhlbUfb43m+rvB
- 1bzA==
+ id 1hOPva-0004iv-ED
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2019 17:00:23 +0000
+Received: by mail-vs1-f67.google.com with SMTP id e2so13080999vsc.13
+ for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 10:00:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=c7SeVSug1d6hFQ88Hj9iAuTem9szKnl9bSHrdwwQow8=;
- b=X8djSgmTcysV8OST4ilclP13jqB+YLpg+aPU+ujNiAdIrTYLUaWbxrXFvezZykggkS
- Jl2EsKwSwclAu7SzqY/TpzGnmXw+9E3HGFeG49USmYz8kAO7sOWdXrZeAh+0kXkr3/t7
- Ac5wmjkO+50z0IDo70/0gL3z8y5K+A/oiig8MsKEYT9ehWNbUcl0RS26z0scy/g/19CW
- ThSeooSVjbdSccEjBO7IOSqwVKg0lomg6XYgeDe63r2IbGP5+8kFBjijOo9ITH5QkKNl
- F4ijrxTLbjVglNY0WqF5fo6r5aS5TX690l+cM/HyPEtWU/dkH9mF48fCiDJ3oiP5Uk7T
- teHw==
-X-Gm-Message-State: APjAAAWWDz5yvZe8SWF+/ef8A0Ed3RKC5PJcrTPHUeXjXBFcybX9FjY+
- 9c0u8PyJJMkF+YVp8hyJHd0K4KQA/LIhG9gf71Xecg==
-X-Google-Smtp-Source: APXvYqwLMPa3BKWvXa5MJL2EM4lKooWFkZmYoTe5uOHS/2+gHSSGqnC6qpSkeIIZNsZA1hu3cluJOP8xoAfskcZmftc=
-X-Received: by 2002:a02:b88b:: with SMTP id p11mr28344236jam.82.1557334720593; 
- Wed, 08 May 2019 09:58:40 -0700 (PDT)
+ bh=UQpdS2BoEXavGkDkQ8SZu1pVpvwtdePVG1xQzZyqCT4=;
+ b=YP/AmqJEEB1zw+EQNGwYLVJqY7yRV8ZU7uZLnPbsRMmSkK4oLmRZUjPIPgHDRWkGoc
+ hVG0Ei4+63Tdo0OygIyaBim9deQvg6PDHF+LgWHC44mUSosAYydINp68BTbnOXSiWgtn
+ N6yOj1Qw9oyy5ohlKgjLhQEyHQp0lW2dDIYehYkaWdM8mS8CYpOVWvU4pjPdjvuwWbBS
+ GvwK17v0fIyDGlS4RXr5bA8xLghIsKLO3dYU95rx75gOSk0KaCzfqLoS+hGPmdX38BXH
+ HytBJn8xtolhuKTTp3zLrVYUw4letWXtZ/1i0ACRvJZmZM5Xaj4ei/wYPrr4ZoZzkV+6
+ C6pA==
+X-Gm-Message-State: APjAAAUIgfWDU3+dudxeZL4nWmVBLi7KMOd9PmU3kcDZ/DC2sURqS1mq
+ IaYjkH7M5EEyUaSETEk+I82bzkVfllGL8igoXWKgUU34
+X-Google-Smtp-Source: APXvYqyU8GkdyLjbtfeyP0LPWxT1gdAL1M98hPFoTiogs2t4uJWzeKkD4ZHOi1UFIw89Yy4Iya6YxZ3GsHXerDyo8go=
+X-Received: by 2002:a67:e2ca:: with SMTP id i10mr12858004vsm.96.1557334820955; 
+ Wed, 08 May 2019 10:00:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000fb78720587d46fe9@google.com>
- <20190502023426.GA804@sol.localdomain>
- <CACT4Y+YHFH8GAhDaNdNNTVFFx6YfKSL19cLPx2vpP-YngzS6kQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+YHFH8GAhDaNdNNTVFFx6YfKSL19cLPx2vpP-YngzS6kQ@mail.gmail.com>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Wed, 8 May 2019 18:58:28 +0200
-Message-ID: <CACT4Y+biO9GEN16Rak_1F+UdvhTe3fUwVf_VWRup2xrgvr9WKA@mail.gmail.com>
-Subject: Re: BUG: soft lockup in kvm_vm_ioctl
-To: Eric Biggers <ebiggers@kernel.org>
+References: <20190320071605.4289-1-jonas@norrbonn.se>
+ <20190320071605.4289-3-jonas@norrbonn.se>
+ <CAMuHMdVH85iFJngkU6W61ybwR2j3YQ7=cugPxgC57hUgBOc5KA@mail.gmail.com>
+ <1f33e1e5-d7bf-76a0-c4d3-ecbc35fbfd4f@microchip.com>
+ <CAMuHMdU83vLeVSqMZuJwR4yd382mau-OE1saMAOC2+6HodsHvg@mail.gmail.com>
+ <fac5fa6d-95e9-cfb0-4d5a-6b16d4470190@norrbonn.se>
+ <CAMuHMdUEdNr5rgCdaGAFJ-WK4oL2DC419smk+QYOJ7qJvkWA8A@mail.gmail.com>
+ <a9ad3641-1eb8-782c-9dfd-0db41256d3f1@microchip.com>
+ <ad49240c-2073-4045-c11c-fb6bad231321@microchip.com>
+ <CAMuHMdVcp--qRo3m8kSQ=++Vx33kvxBWEHFVHfh-j=pq1x-GPQ@mail.gmail.com>
+ <898831ba-b8bb-7c2b-e623-2e6c26da91b5@microchip.com>
+ <CAMuHMdXFwFAPzYPKqj+FZgSq01VAD0izS3ELyOg1YBwTAQ_QkQ@mail.gmail.com>
+ <8b004a57-0fd9-04fe-d031-1d98d890f826@microchip.com>
+In-Reply-To: <8b004a57-0fd9-04fe-d031-1d98d890f826@microchip.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 8 May 2019 19:00:06 +0200
+Message-ID: <CAMuHMdXghAWmNJLUq_uOUVPrrNTAcFq=QqCGjLU51FchvOu3=g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
+To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_095841_897475_EF36D745 
-X-CRM114-Status: GOOD (  18.29  )
+X-CRM114-CacheID: sfid-20190508_100022_479718_D039CB52 
+X-CRM114-Status: GOOD (  13.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,158 +90,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Ingo Molnar <mingo@kernel.org>, KVM list <kvm@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, jbaron@redhat.com,
- Rik van Riel <riel@surriel.com>,
- syzkaller-bugs <syzkaller-bugs@googlegroups.com>, adrian.hunter@intel.com,
- Steven Rostedt <rostedt@goodmis.org>, David Miller <davem@davemloft.net>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Andy Lutomirski <luto@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- syzbot <syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com>
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Jonas Bonn <jonas@norrbonn.se>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Wed, May 8, 2019 at 1:25 PM
-To: Eric Biggers
-Cc: syzbot, KVM list, <adrian.hunter@intel.com>, David Miller, Artem
-Bityutskiy, <jbaron@redhat.com>, Josh Poimboeuf, LKML,
-<linux-mtd@lists.infradead.org>, Andy Lutomirski, Ingo Molnar, Peter
-Zijlstra, Richard Weinberger, Rik van Riel, Steven Rostedt,
-syzkaller-bugs, Thomas Gleixner
+Hi Tudor,
 
-> From: Eric Biggers <ebiggers@kernel.org>
-> Date: Thu, May 2, 2019 at 4:34 AM
-> To: syzbot, Dmitry Vyukov, <kvm@vger.kernel.org>
-> Cc: <adrian.hunter@intel.com>, <davem@davemloft.net>,
-> <dedekind1@gmail.com>, <jbaron@redhat.com>, <jpoimboe@redhat.com>,
-> <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-> <luto@kernel.org>, <mingo@kernel.org>, <peterz@infradead.org>,
-> <richard@nod.at>, <riel@surriel.com>, <rostedt@goodmis.org>,
-> <syzkaller-bugs@googlegroups.com>, <tglx@linutronix.de>
->
-> > On Wed, May 01, 2019 at 07:36:05AM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    baf76f0c slip: make slhc_free() silently accept an error p..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1407f57f200000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a42d110b47dd6b36
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=8d9bb6157e7b379f740e
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1266a588a00000
-> > >
-> > > The bug was bisected to:
-> > >
-> > > commit 252153ba518ac0bcde6b7152c63380d4415bfe5d
-> > > Author: Eric Biggers <ebiggers@google.com>
-> > > Date:   Wed Nov 29 20:43:17 2017 +0000
-> > >
-> > >     ubifs: switch to fscrypt_prepare_setattr()
-> > >
-> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1448f588a00000
-> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1648f588a00000
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1248f588a00000
-> > >
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com
-> > > Fixes: 252153ba518a ("ubifs: switch to fscrypt_prepare_setattr()")
-> > >
-> > > watchdog: BUG: soft lockup - CPU#0 stuck for 123s! [syz-executor.3:22023]
-> > > Modules linked in:
-> > > irq event stamp: 26556
-> > > hardirqs last  enabled at (26555): [<ffffffff81006673>]
-> > > trace_hardirqs_on_thunk+0x1a/0x1c
-> > > hardirqs last disabled at (26556): [<ffffffff8100668f>]
-> > > trace_hardirqs_off_thunk+0x1a/0x1c
-> > > softirqs last  enabled at (596): [<ffffffff87400662>]
-> > > __do_softirq+0x662/0x95a kernel/softirq.c:320
-> > > softirqs last disabled at (517): [<ffffffff8144e4e0>] invoke_softirq
-> > > kernel/softirq.c:374 [inline]
-> > > softirqs last disabled at (517): [<ffffffff8144e4e0>] irq_exit+0x180/0x1d0
-> > > kernel/softirq.c:414
-> > > CPU: 0 PID: 22023 Comm: syz-executor.3 Not tainted 5.1.0-rc6+ #89
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > > Google 01/01/2011
-> > > RIP: 0010:csd_lock_wait kernel/smp.c:108 [inline]
-> > > RIP: 0010:smp_call_function_single+0x13e/0x420 kernel/smp.c:302
-> > > Code: 00 48 8b 4c 24 08 48 8b 54 24 10 48 8d 74 24 40 8b 7c 24 1c e8 23 fa
-> > > ff ff 41 89 c5 eb 07 e8 e9 87 0a 00 f3 90 44 8b 64 24 58 <31> ff 41 83 e4 01
-> > > 44 89 e6 e8 54 89 0a 00 45 85 e4 75 e1 e8 ca 87
-> > > RSP: 0018:ffff88809277f3e0 EFLAGS: 00000293 ORIG_RAX: ffffffffffffff13
-> > > RAX: ffff8880a8bfc040 RBX: 1ffff110124efe80 RCX: ffffffff8166051c
-> > > RDX: 0000000000000000 RSI: ffffffff81660507 RDI: 0000000000000005
-> > > RBP: ffff88809277f4b8 R08: ffff8880a8bfc040 R09: ffffed1015d25be9
-> > > R10: ffffed1015d25be8 R11: ffff8880ae92df47 R12: 0000000000000003
-> > > R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
-> > > FS:  00007fd569980700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 00007fd56997e178 CR3: 00000000a4fd2000 CR4: 00000000001426f0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >  smp_call_function_many+0x750/0x8c0 kernel/smp.c:434
-> > >  smp_call_function+0x42/0x90 kernel/smp.c:492
-> > >  on_each_cpu+0x31/0x200 kernel/smp.c:602
-> > >  text_poke_bp+0x107/0x19b arch/x86/kernel/alternative.c:821
-> > >  __jump_label_transform+0x263/0x330 arch/x86/kernel/jump_label.c:91
-> > >  arch_jump_label_transform+0x2b/0x40 arch/x86/kernel/jump_label.c:99
-> > >  __jump_label_update+0x16a/0x210 kernel/jump_label.c:389
-> > >  jump_label_update kernel/jump_label.c:752 [inline]
-> > >  jump_label_update+0x1ce/0x3d0 kernel/jump_label.c:731
-> > >  static_key_slow_inc_cpuslocked+0x1c1/0x250 kernel/jump_label.c:129
-> > >  static_key_slow_inc+0x1b/0x30 kernel/jump_label.c:144
-> > >  kvm_arch_vcpu_init+0x6b7/0x870 arch/x86/kvm/x86.c:9068
-> > >  kvm_vcpu_init+0x272/0x370 arch/x86/kvm/../../../virt/kvm/kvm_main.c:320
-> > >  vmx_create_vcpu+0x191/0x2540 arch/x86/kvm/vmx/vmx.c:6577
-> > >  kvm_arch_vcpu_create+0x80/0x120 arch/x86/kvm/x86.c:8755
-> > >  kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:2569
-> > > [inline]
-> > >  kvm_vm_ioctl+0x5ce/0x19c0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3105
-> > >  vfs_ioctl fs/ioctl.c:46 [inline]
-> > >  file_ioctl fs/ioctl.c:509 [inline]
-> > >  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
-> > >  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-> > >  __do_sys_ioctl fs/ioctl.c:720 [inline]
-> > >  __se_sys_ioctl fs/ioctl.c:718 [inline]
-> > >  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-> > >  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
-> > >  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> > > RIP: 0033:0x458da9
-> > > Code: ad b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7
-> > > 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff
-> > > 0f 83 7b b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> > > RSP: 002b:00007fd56997fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000458da9
-> > > RDX: 0000000000000000 RSI: 000000000000ae41 RDI: 0000000000000005
-> > > RBP: 000000000073bfa0 R08: 0000000000000000 R09: 0000000000000000
-> > > R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd5699806d4
-> > > R13: 00000000004c1905 R14: 00000000004d40d0 R15: 00000000ffffffff
-> > > Sending NMI from CPU 0 to CPUs 1:
->
-> > Can the KVM maintainers take a look at this?  This doesn't have anything to do
-> > with my commit that syzbot bisected it to.
+On Wed, May 8, 2019 at 4:23 PM <Tudor.Ambarus@microchip.com> wrote:
+> On 05/08/2019 04:11 PM, Geert Uytterhoeven wrote:
+> > On Wed, May 8, 2019 at 12:44 PM <Tudor.Ambarus@microchip.com> wrote:
+> >> Would you run this debug patch on top of mtd/next? I dumped the SR and CR before
+> >> and after the operations in cause.
 > >
-> > +Dmitry, statistics lession: if a crash occurs only 1 in 10 times, as was the
-> > case here, then often it will happen 0 in 10 times by chance.  syzbot needs to
-> > run the reproducer more times if it isn't working reliably.  Otherwise it ends
-> > up blaming some random commit.
+> > Thanks, giving it a try...
+> >
+> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> >> index 73172d7f512b..20d0fdb1dc92 100644
+> >> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >> @@ -22,6 +22,8 @@
+> >>  #include <linux/spi/flash.h>
+> >>  #include <linux/mtd/spi-nor.h>
+> >>
+> >> +#define DEBUG
+> >
+> > Should be moved to the top of the file, before dev_dbg() is defined.
+> >
+> > Result is:
+> >
+> > m25p80 spi0.0: bfpt.dwords[1] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[2] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[3] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[4] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[5] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[6] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[7] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[8] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[9] = ffffffff
+> > m25p80 spi0.0: bfpt.dwords[10] = 00000000
+> > m25p80 spi0.0: bfpt.dwords[11] = 00000000
+> > m25p80 spi0.0: bfpt.dwords[12] = 00000000
+> > m25p80 spi0.0: bfpt.dwords[13] = 00000000
+> > m25p80 spi0.0: bfpt.dwords[14] = 00000000
+> > m25p80 spi0.0: bfpt.dwords[15] = 00000000
+> > m25p80 spi0.0: bfpt.dwords[16] = 00000000
+> > m25p80 spi0.0: failed to parse BFPT: err = -22
+> > m25p80 spi0.0: spi_nor_init_params sfdp parse failed, ret =-22
+> > m25p80 spi0.0: SR = 00000000
+> > m25p80 spi0.0: CR = 00000002
+> > m25p80 spi0.0: Erase Error occurred
+> > m25p80 spi0.0: timeout while writing SR, ret = -5
+> > m25p80 spi0.0: SR = 000000ff
+> > m25p80 spi0.0: CR = 000000ff
 >
-> Added a note to https://github.com/google/syzkaller/issues/1051
-> Thanks
+> ff can mean that the lines are "in air", maybe the flash resets when we
+> write_sr(nor, 0)? How about adding a delay here to let the flash reset?
 
-As we increase number of instances, we increase chances of hitting
-unrelated bugs. E.g. take a look at the bisection log for:
-https://syzkaller.appspot.com/bug?extid=f14868630901fc6151d3
-What is the optimum number of tests is a good question. I suspect that
-the current 10 instances is close to optimum. If we use significantly
-more we may break every other bisection on unrelated bugs...
+No difference after adding msleep(1000).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
