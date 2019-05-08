@@ -2,68 +2,81 @@ Return-Path: <SRS0=JkGG=TI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,
+	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE9A1C04AAD
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 13:11:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7615BC04A6B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 13:12:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B49E20850
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 13:11:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48BC620850
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 13:12:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pz0NAIbl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B49E20850
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hd85rWTw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48BC620850
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fb8QcyGOSMb7jFAUZa0zV/b1MPSNouYLfHuSg5lAwxo=; b=pz0NAIbljNrH92
-	Oz1nyjE6RT2tebi/c8jFnBXs3jWrYlpM2Ss+ZC5pvnxfgrdKL57d4OeFg0eld32S7xSP4Ys89with
-	vtgfb5fawAjBMg6bGw+w8xsI4QizZZAfuVaxGLwaoiMwc+rbWST9uoERntZwqsyRwRPXcqhMn6niR
-	S6NRPI4vj1DFrmquffLqWlTqId8Ee7InJX05HgfL7oSLVLv+txKUtJpMDEpDZkAViSNX79boHAUET
-	LHYx0HyeemZEmNDqqHqyHQ9qeKrtxJbs+hi6BnLEz4RmkDq8mzMU25zpnbbh6+7yFmYV3V3ZhWopT
-	DnPmXlvHpxNbrXI7er4w==;
+	List-Owner; bh=SUybOWbGjrAVVttwTLOCjD2DeB+fFxQFNkl+oIFU0NE=; b=hd85rWTwvoW7VY
+	jFn+DC42C6Sip5rYsNDHYz2aCLjpILLOGWhuE3+As31NdP/fT1oiZFwpzub6M4HMxWsGErZE4nCvk
+	gSFGvWosl/n0TV+sc23Jzm7u5gEqNysvpmfqjgVgfBjYyGqxlc2L2T3paL+fYisrNeEjmkMzXYdTY
+	hq82vZF8E7FqhR7+LAOw47B5H+687/bjgbXLMhSnxvaa8wPO75BWfITvRMrdiU1JmiLuU135M2XI5
+	zxSVlpYR0N5eX24CcwvVvF2C2Kl2LXQwB1kFJvBqst1DTmIvXo9I24bsu/E1OWJnogd67m/A5eysr
+	+4B5TfPyuAy/sWL9khsw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOMMU-0001ok-C0; Wed, 08 May 2019 13:11:54 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1hOMMl-00029y-Pw; Wed, 08 May 2019 13:12:11 +0000
+Received: from mail-ua1-f65.google.com ([209.85.222.65])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOMML-0001fP-91; Wed, 08 May 2019 13:11:46 +0000
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 08 May 2019 06:11:37 -0700
-X-ExtLoop1: 1
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.86])
- by orsmga001.jf.intel.com with ESMTP; 08 May 2019 06:11:29 -0700
-Received: from andy by smile with local (Exim 4.92)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1hOMM4-0000is-79; Wed, 08 May 2019 16:11:28 +0300
-Date: Wed, 8 May 2019 16:11:28 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH 03/16] lib,treewide: add new match_string() helper/macro
-Message-ID: <20190508131128.GL9224@smile.fi.intel.com>
-References: <20190508112842.11654-1-alexandru.ardelean@analog.com>
- <20190508112842.11654-5-alexandru.ardelean@analog.com>
+ id 1hOMMa-0001vT-0B
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2019 13:12:09 +0000
+Received: by mail-ua1-f65.google.com with SMTP id d4so1700850uaj.7
+ for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 06:11:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=p4suxyOeYY7YF8NJlBucfgasWMidvZty5HNK0l9NOMs=;
+ b=mW/l6GRF6oEl9D7eNAadZBV/GfY5OyDOx/iZfCSAWdYBoaT8YSc/xIWXvLJ1MmmUcu
+ nKGXECKeN82pwaj8d7Bcn9OsAfNMQfTrWGyDBvg/iyK5U5uGK5ocWa68/yPE80wrcStp
+ jNy2ZBPvv8p1cIuPsDQame95ghiqRBT4oOuboBrNGQQ67Qq3J4kgTE0f5lkdG4+seCAz
+ z0Co/z5Uye1uTEG7LrcYivNqIfGELTBXpT0/TSlf/3M8SbaNF7c5QP1G/KdRqatIMfVl
+ KlKEhHw2fdrGd5b4rSfqFoHP29IYPFQ08ZL+dSOirYiHkzSxuyMSSsg/NO16b0CcOQOI
+ Cmsw==
+X-Gm-Message-State: APjAAAWH5/Q++gWR1ke70TgJhXH7UW8q3yRpNgUGBhf704pGKZe2X9zB
+ aWgQeN3bTlO43yrs2v/z5KrCYig/wT4S5IhucqM=
+X-Google-Smtp-Source: APXvYqzQAVH/7hNvRuVsT2UoCtHA9NuQmI6bThtezzUSzCnNOY6KBvWo1f5eGePMIHM0tub0nAtXL0476G15j4SCLRQ=
+X-Received: by 2002:a9f:2b84:: with SMTP id y4mr16973368uai.28.1557321115724; 
+ Wed, 08 May 2019 06:11:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190508112842.11654-5-alexandru.ardelean@analog.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190320071605.4289-1-jonas@norrbonn.se>
+ <20190320071605.4289-3-jonas@norrbonn.se>
+ <CAMuHMdVH85iFJngkU6W61ybwR2j3YQ7=cugPxgC57hUgBOc5KA@mail.gmail.com>
+ <1f33e1e5-d7bf-76a0-c4d3-ecbc35fbfd4f@microchip.com>
+ <CAMuHMdU83vLeVSqMZuJwR4yd382mau-OE1saMAOC2+6HodsHvg@mail.gmail.com>
+ <fac5fa6d-95e9-cfb0-4d5a-6b16d4470190@norrbonn.se>
+ <CAMuHMdUEdNr5rgCdaGAFJ-WK4oL2DC419smk+QYOJ7qJvkWA8A@mail.gmail.com>
+ <a9ad3641-1eb8-782c-9dfd-0db41256d3f1@microchip.com>
+ <ad49240c-2073-4045-c11c-fb6bad231321@microchip.com>
+ <CAMuHMdVcp--qRo3m8kSQ=++Vx33kvxBWEHFVHfh-j=pq1x-GPQ@mail.gmail.com>
+ <898831ba-b8bb-7c2b-e623-2e6c26da91b5@microchip.com>
+In-Reply-To: <898831ba-b8bb-7c2b-e623-2e6c26da91b5@microchip.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 8 May 2019 15:11:32 +0200
+Message-ID: <CAMuHMdXFwFAPzYPKqj+FZgSq01VAD0izS3ELyOg1YBwTAQ_QkQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
+To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_061145_333766_3CD668C0 
-X-CRM114-Status: GOOD (  19.98  )
+X-CRM114-CacheID: sfid-20190508_061200_610165_BE7313FA 
+X-CRM114-Status: GOOD (  11.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -75,283 +88,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-fbdev@vger.kernel.org, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-clk@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-rockchip@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-pm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-gpio@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
- linux-tegra@vger.kernel.org, cgroups@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mm@kvack.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org, gregkh@linuxfoundation.org,
- linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Jonas Bonn <jonas@norrbonn.se>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 08, 2019 at 02:28:29PM +0300, Alexandru Ardelean wrote:
-> This change re-introduces `match_string()` as a macro that uses
-> ARRAY_SIZE() to compute the size of the array.
-> The macro is added in all the places that do
-> `match_string(_a, ARRAY_SIZE(_a), s)`, since the change is pretty
-> straightforward.
+Hi Tudor,
 
-Can you split include/linux/ change from the rest?
+On Wed, May 8, 2019 at 12:44 PM <Tudor.Ambarus@microchip.com> wrote:
+> Would you run this debug patch on top of mtd/next? I dumped the SR and CR before
+> and after the operations in cause.
 
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/clk/bcm/clk-bcm2835.c                    | 4 +---
->  drivers/gpio/gpiolib-of.c                        | 2 +-
->  drivers/gpu/drm/i915/intel_pipe_crc.c            | 2 +-
->  drivers/mfd/omap-usb-host.c                      | 2 +-
->  drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c | 2 +-
->  drivers/pci/pcie/aer.c                           | 2 +-
->  drivers/usb/common/common.c                      | 4 ++--
->  drivers/usb/typec/class.c                        | 8 +++-----
->  drivers/usb/typec/tps6598x.c                     | 2 +-
->  drivers/vfio/vfio.c                              | 4 +---
->  include/linux/string.h                           | 9 +++++++++
->  sound/firewire/oxfw/oxfw.c                       | 2 +-
->  sound/soc/codecs/max98088.c                      | 2 +-
->  sound/soc/codecs/max98095.c                      | 2 +-
->  14 files changed, 25 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
-> index a775f6a1f717..1ab388590ead 100644
-> --- a/drivers/clk/bcm/clk-bcm2835.c
-> +++ b/drivers/clk/bcm/clk-bcm2835.c
-> @@ -1390,9 +1390,7 @@ static struct clk_hw *bcm2835_register_clock(struct bcm2835_cprman *cprman,
->  	for (i = 0; i < data->num_mux_parents; i++) {
->  		parents[i] = data->parents[i];
->  
-> -		ret = __match_string(cprman_parent_names,
-> -				     ARRAY_SIZE(cprman_parent_names),
-> -				     parents[i]);
-> +		ret = match_string(cprman_parent_names, parents[i]);
->  		if (ret >= 0)
->  			parents[i] = cprman->real_parent_names[ret];
->  	}
-> diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-> index 27d6f04ab58e..71e886869d78 100644
-> --- a/drivers/gpio/gpiolib-of.c
-> +++ b/drivers/gpio/gpiolib-of.c
-> @@ -279,7 +279,7 @@ static struct gpio_desc *of_find_regulator_gpio(struct device *dev, const char *
->  	if (!con_id)
->  		return ERR_PTR(-ENOENT);
->  
-> -	i = __match_string(whitelist, ARRAY_SIZE(whitelist), con_id);
-> +	i = match_string(whitelist, con_id);
->  	if (i < 0)
->  		return ERR_PTR(-ENOENT);
->  
-> diff --git a/drivers/gpu/drm/i915/intel_pipe_crc.c b/drivers/gpu/drm/i915/intel_pipe_crc.c
-> index 286fad1f0e08..6fc4f3d3d1f6 100644
-> --- a/drivers/gpu/drm/i915/intel_pipe_crc.c
-> +++ b/drivers/gpu/drm/i915/intel_pipe_crc.c
-> @@ -449,7 +449,7 @@ display_crc_ctl_parse_source(const char *buf, enum intel_pipe_crc_source *s)
->  		return 0;
->  	}
->  
-> -	i = __match_string(pipe_crc_sources, ARRAY_SIZE(pipe_crc_sources), buf);
-> +	i = match_string(pipe_crc_sources, buf);
->  	if (i < 0)
->  		return i;
->  
-> diff --git a/drivers/mfd/omap-usb-host.c b/drivers/mfd/omap-usb-host.c
-> index 9aaacb5bdb26..53dff34c0afc 100644
-> --- a/drivers/mfd/omap-usb-host.c
-> +++ b/drivers/mfd/omap-usb-host.c
-> @@ -509,7 +509,7 @@ static int usbhs_omap_get_dt_pdata(struct device *dev,
->  			continue;
->  
->  		/* get 'enum usbhs_omap_port_mode' from port mode string */
-> -		ret = __match_string(port_modes, ARRAY_SIZE(port_modes), mode);
-> +		ret = match_string(port_modes, mode);
->  		if (ret < 0) {
->  			dev_warn(dev, "Invalid port%d-mode \"%s\" in device tree\n",
->  					i, mode);
-> diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-> index 59ce3ff35553..778b4dfd8b75 100644
-> --- a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-> +++ b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
-> @@ -667,7 +667,7 @@ iwl_dbgfs_bt_force_ant_write(struct iwl_mvm *mvm, char *buf,
->  	};
->  	int ret, bt_force_ant_mode;
->  
-> -	ret = __match_string(modes_str, ARRAY_SIZE(modes_str), buf);
-> +	ret = match_string(modes_str, buf);
->  	if (ret < 0)
->  		return ret;
->  
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 41a0773a1cbc..2278caba109c 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -203,7 +203,7 @@ void pcie_ecrc_get_policy(char *str)
->  {
->  	int i;
->  
-> -	i = __match_string(ecrc_policy_str, ARRAY_SIZE(ecrc_policy_str), str);
-> +	i = match_string(ecrc_policy_str, str);
->  	if (i < 0)
->  		return;
->  
-> diff --git a/drivers/usb/common/common.c b/drivers/usb/common/common.c
-> index bca0c404c6ca..5a651d311d38 100644
-> --- a/drivers/usb/common/common.c
-> +++ b/drivers/usb/common/common.c
-> @@ -68,7 +68,7 @@ enum usb_device_speed usb_get_maximum_speed(struct device *dev)
->  	if (ret < 0)
->  		return USB_SPEED_UNKNOWN;
->  
-> -	ret = __match_string(speed_names, ARRAY_SIZE(speed_names), maximum_speed);
-> +	ret = match_string(speed_names, maximum_speed);
->  
->  	return (ret < 0) ? USB_SPEED_UNKNOWN : ret;
->  }
-> @@ -106,7 +106,7 @@ static enum usb_dr_mode usb_get_dr_mode_from_string(const char *str)
->  {
->  	int ret;
->  
-> -	ret = __match_string(usb_dr_modes, ARRAY_SIZE(usb_dr_modes), str);
-> +	ret = match_string(usb_dr_modes, str);
->  	return (ret < 0) ? USB_DR_MODE_UNKNOWN : ret;
->  }
->  
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index 4abc5a76ec51..38ac776cba8a 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -1409,8 +1409,7 @@ EXPORT_SYMBOL_GPL(typec_set_pwr_opmode);
->   */
->  int typec_find_port_power_role(const char *name)
->  {
-> -	return __match_string(typec_port_power_roles,
-> -			      ARRAY_SIZE(typec_port_power_roles), name);
-> +	return match_string(typec_port_power_roles, name);
->  }
->  EXPORT_SYMBOL_GPL(typec_find_port_power_role);
->  
-> @@ -1424,7 +1423,7 @@ EXPORT_SYMBOL_GPL(typec_find_port_power_role);
->   */
->  int typec_find_power_role(const char *name)
->  {
-> -	return __match_string(typec_roles, ARRAY_SIZE(typec_roles), name);
-> +	return match_string(typec_roles, name);
->  }
->  EXPORT_SYMBOL_GPL(typec_find_power_role);
->  
-> @@ -1438,8 +1437,7 @@ EXPORT_SYMBOL_GPL(typec_find_power_role);
->   */
->  int typec_find_port_data_role(const char *name)
->  {
-> -	return __match_string(typec_port_data_roles,
-> -			      ARRAY_SIZE(typec_port_data_roles), name);
-> +	return match_string(typec_port_data_roles, name);
->  }
->  EXPORT_SYMBOL_GPL(typec_find_port_data_role);
->  
-> diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-> index 0389e4391faf..0c4e47868590 100644
-> --- a/drivers/usb/typec/tps6598x.c
-> +++ b/drivers/usb/typec/tps6598x.c
-> @@ -423,7 +423,7 @@ static int tps6598x_check_mode(struct tps6598x *tps)
->  	if (ret)
->  		return ret;
->  
-> -	switch (__match_string(modes, ARRAY_SIZE(modes), mode)) {
-> +	switch (match_string(modes, mode)) {
->  	case TPS_MODE_APP:
->  		return 0;
->  	case TPS_MODE_BOOT:
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index b31585ecf48f..fe8283d3781b 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -637,9 +637,7 @@ static bool vfio_dev_whitelisted(struct device *dev, struct device_driver *drv)
->  			return true;
->  	}
->  
-> -	return __match_string(vfio_driver_whitelist,
-> -			      ARRAY_SIZE(vfio_driver_whitelist),
-> -			      drv->name) >= 0;
-> +	return match_string(vfio_driver_whitelist, drv->name) >= 0;
->  }
->  
->  /*
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index 531d04308ff9..07e9f89088df 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -194,6 +194,15 @@ static inline int strtobool(const char *s, bool *res)
->  int __match_string(const char * const *array, size_t n, const char *string);
->  int __sysfs_match_string(const char * const *array, size_t n, const char *s);
->  
-> +/**
-> + * match_string - matches given string in an array
-> + * @_a: array of strings
-> + * @_s: string to match with
-> + *
-> + * Helper for __match_string(). Calculates the size of @a automatically.
-> + */
-> +#define match_string(_a, _s) __match_string(_a, ARRAY_SIZE(_a), _s)
-> +
->  /**
->   * sysfs_match_string - matches given string in an array
->   * @_a: array of strings
-> diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-> index 9ec5316f3bb5..433fc84c4f90 100644
-> --- a/sound/firewire/oxfw/oxfw.c
-> +++ b/sound/firewire/oxfw/oxfw.c
-> @@ -57,7 +57,7 @@ static bool detect_loud_models(struct fw_unit *unit)
->  	if (err < 0)
->  		return false;
->  
-> -	return __match_string(models, ARRAY_SIZE(models), model) >= 0;
-> +	return match_string(models, model) >= 0;
->  }
->  
->  static int name_card(struct snd_oxfw *oxfw)
-> diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-> index 3ef743075bda..911ffe84c37e 100644
-> --- a/sound/soc/codecs/max98088.c
-> +++ b/sound/soc/codecs/max98088.c
-> @@ -1405,7 +1405,7 @@ static int max98088_get_channel(struct snd_soc_component *component, const char
->  {
->  	int ret;
->  
-> -	ret = __match_string(eq_mode_name, ARRAY_SIZE(eq_mode_name), name);
-> +	ret = match_string(eq_mode_name, name);
->  	if (ret < 0)
->  		dev_err(component->dev, "Bad EQ channel name '%s'\n", name);
->  	return ret;
-> diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-> index cd69916d5dcb..d182d45d0c83 100644
-> --- a/sound/soc/codecs/max98095.c
-> +++ b/sound/soc/codecs/max98095.c
-> @@ -1636,7 +1636,7 @@ static int max98095_get_bq_channel(struct snd_soc_component *component,
->  {
->  	int ret;
->  
-> -	ret = __match_string(bq_mode_name, ARRAY_SIZE(bq_mode_name), name);
-> +	ret = match_string(bq_mode_name, name);
->  	if (ret < 0)
->  		dev_err(component->dev, "Bad biquad channel name '%s'\n", name);
->  	return ret;
-> -- 
-> 2.17.1
-> 
+Thanks, giving it a try...
+
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 73172d7f512b..20d0fdb1dc92 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -22,6 +22,8 @@
+>  #include <linux/spi/flash.h>
+>  #include <linux/mtd/spi-nor.h>
+>
+> +#define DEBUG
+
+Should be moved to the top of the file, before dev_dbg() is defined.
+
+Result is:
+
+m25p80 spi0.0: bfpt.dwords[1] = ffffffff
+m25p80 spi0.0: bfpt.dwords[2] = ffffffff
+m25p80 spi0.0: bfpt.dwords[3] = ffffffff
+m25p80 spi0.0: bfpt.dwords[4] = ffffffff
+m25p80 spi0.0: bfpt.dwords[5] = ffffffff
+m25p80 spi0.0: bfpt.dwords[6] = ffffffff
+m25p80 spi0.0: bfpt.dwords[7] = ffffffff
+m25p80 spi0.0: bfpt.dwords[8] = ffffffff
+m25p80 spi0.0: bfpt.dwords[9] = ffffffff
+m25p80 spi0.0: bfpt.dwords[10] = 00000000
+m25p80 spi0.0: bfpt.dwords[11] = 00000000
+m25p80 spi0.0: bfpt.dwords[12] = 00000000
+m25p80 spi0.0: bfpt.dwords[13] = 00000000
+m25p80 spi0.0: bfpt.dwords[14] = 00000000
+m25p80 spi0.0: bfpt.dwords[15] = 00000000
+m25p80 spi0.0: bfpt.dwords[16] = 00000000
+m25p80 spi0.0: failed to parse BFPT: err = -22
+m25p80 spi0.0: spi_nor_init_params sfdp parse failed, ret =-22
+m25p80 spi0.0: SR = 00000000
+m25p80 spi0.0: CR = 00000002
+m25p80 spi0.0: Erase Error occurred
+m25p80 spi0.0: timeout while writing SR, ret = -5
+m25p80 spi0.0: SR = 000000ff
+m25p80 spi0.0: CR = 000000ff
+m25p80 spi0.0: SR and CR before quad_enable:
+m25p80 spi0.0: SR = 000000ff
+m25p80 spi0.0: CR = 000000ff
+m25p80 spi0.0: Erase Error occurred
+m25p80 spi0.0: timeout while writing configuration register
+m25p80 spi0.0: SR and CR after quad_enable:
+m25p80 spi0.0: SR = 000000ff
+m25p80 spi0.0: CR = 000000ff
+m25p80 spi0.0: quad mode not supported, err = -5
+m25p80: probe of spi0.0 failed with error -5
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
