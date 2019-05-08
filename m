@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60E18C04AAD
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84F4FC46470
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:32:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37CEF21019
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:32:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 555D02053B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:32:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u6Q522lv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=analog.onmicrosoft.com header.i=@analog.onmicrosoft.com header.b="OsAPAAdK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37CEF21019
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="stJDfa7h";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=analog.onmicrosoft.com header.i=@analog.onmicrosoft.com header.b="Ht8Fm6RX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 555D02053B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=analog.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,53 +26,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6rW+P6eHXuR0mgzFAifM+FtL+M/76cKGoQ+ezCmOet0=; b=u6Q522lvpQqtpk
-	OUxYrQTjjJ03rPG2fqXIOXzt6wzy84Xot1tcp1iiGmb8hSphIr9d2YAvj9flx6z6ijQ4RlWE3zcZk
-	+ga/q13Vjp1U2hWcb5fDJ0JgwoZ+oBNCI/CjotXdEeLWB4M9BTbu2JU94pL6T5xzgNrEklcucopZ+
-	4a0qoO7mo+L+i51ZQA+CodxzRz7qY9YCaYiZhTjUI6AzRDqSn0AmEMIJPn8ePfofpNseDHoxgKBaD
-	NjxZ/+xA865D1ThD16JToCV909N7YGwx6gL2u1gfw/hU0tKBzYePSLmiKFJsSG/raK3AHB+TpI0l4
-	6jCVNThgw6H5EYCBkVLA==;
+	List-Owner; bh=IxXDOuueEGhvuPJJvfZSvsBKEHa+vukXdVExerQUgTk=; b=stJDfa7hz2Ner7
+	xi4hBYRosOV11WEFHxSZ3OrVD24n3p7OHjl+0sZANkGtrGY8dGpztqCJ5hnHrZMZjymihI7sX71z8
+	Jjn/bTvNWSfxwlV9qsJQsKphCcWsQSAE0Aj9HRPIHEI0WtsqFbwKf8WiWa46cpb0cn4h4YZSmYcZ3
+	Rzzz2REAJQTABJtormLUFnjOPKtT1+ETmc6yDTs7nqldtOg4t9V0kCtCY259l1jfnyhitwhKXE6Je
+	8kICZ5wsIBztcphlvJNCrCzFBd3zpp6pkFa/Lfgu2wCwvPYRzrPxZiJEyIUTxr3mz8gVY6VIen5np
+	cxVWUOPD0ZAhAYr6Y5yA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOKnp-00021u-PF; Wed, 08 May 2019 11:32:01 +0000
-Received: from mail-eopbgr810051.outbound.protection.outlook.com
- ([40.107.81.51] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+	id 1hOKoC-0002Un-UG; Wed, 08 May 2019 11:32:24 +0000
+Received: from mail-eopbgr780045.outbound.protection.outlook.com
+ ([40.107.78.45] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOKlm-0006Of-MJ; Wed, 08 May 2019 11:30:31 +0000
+ id 1hOKlq-0006sC-2m; Wed, 08 May 2019 11:30:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=analog.onmicrosoft.com; s=selector1-analog-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x+Io6nQDgXXj6vWzapFXKhuWEwCuQ7uYG1o8foVltUs=;
- b=OsAPAAdKA72ag6WEgtGuMxKaWxQ0gZIzCPsuAtgnnj/oFA0fbDHMGodRBcRefG9XbOE2g+Aq3eXHAUOgRsxbe9OUern7w4ZEKU1MFVRM944jQ4MmmTvJjEX5JVN0ZStKQwnZjTEaE6iWfqxBEGLRi5kjF9g1i+IhSA13dB4Oi0w=
-Received: from BN6PR03CA0015.namprd03.prod.outlook.com (2603:10b6:404:23::25)
- by SN2PR03MB2270.namprd03.prod.outlook.com (2603:10b6:804:d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1856.10; Wed, 8 May
- 2019 11:29:43 +0000
-Received: from CY1NAM02FT047.eop-nam02.prod.protection.outlook.com
- (2a01:111:f400:7e45::203) by BN6PR03CA0015.outlook.office365.com
- (2603:10b6:404:23::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1878.21 via Frontend
- Transport; Wed, 8 May 2019 11:29:43 +0000
-Authentication-Results: spf=pass (sender IP is 137.71.25.57)
+ bh=peJzb31cm17ABrXFyc+VL8b8kWU6z5UpeWBKRx5iGOY=;
+ b=Ht8Fm6RXFzi+Mh2C7TtDBrevghDIkKBBrf5hR26HEMHT3clXH+auLpcCAPlBDjunidMIf2KlMCOrIihkOj8RRHLgWzEWMMKXr0g4KWNemLVVhqUlyEjNr2yadJK+HpBmin3dfirgmdsGRBLIe+wQFsopNOyElR+2pj8AJZVAfxw=
+Received: from BYAPR03CA0029.namprd03.prod.outlook.com (2603:10b6:a02:a8::42)
+ by CY4PR03MB3127.namprd03.prod.outlook.com (2603:10b6:910:53::28)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1856.15; Wed, 8 May
+ 2019 11:29:53 +0000
+Received: from BL2NAM02FT049.eop-nam02.prod.protection.outlook.com
+ (2a01:111:f400:7e46::206) by BYAPR03CA0029.outlook.office365.com
+ (2603:10b6:a02:a8::42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1856.11 via Frontend
+ Transport; Wed, 8 May 2019 11:29:52 +0000
+Authentication-Results: spf=pass (sender IP is 137.71.25.55)
  smtp.mailfrom=analog.com; lists.freedesktop.org; dkim=none (message not
  signed) header.d=none;lists.freedesktop.org; dmarc=bestguesspass action=none
  header.from=analog.com;
 Received-SPF: Pass (protection.outlook.com: domain of analog.com designates
- 137.71.25.57 as permitted sender) receiver=protection.outlook.com;
- client-ip=137.71.25.57; helo=nwd2mta2.analog.com;
-Received: from nwd2mta2.analog.com (137.71.25.57) by
- CY1NAM02FT047.mail.protection.outlook.com (10.152.74.177) with Microsoft SMTP
+ 137.71.25.55 as permitted sender) receiver=protection.outlook.com;
+ client-ip=137.71.25.55; helo=nwd2mta1.analog.com;
+Received: from nwd2mta1.analog.com (137.71.25.55) by
+ BL2NAM02FT049.mail.protection.outlook.com (10.152.77.118) with Microsoft SMTP
  Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1856.11
- via Frontend Transport; Wed, 8 May 2019 11:29:41 +0000
+ via Frontend Transport; Wed, 8 May 2019 11:29:52 +0000
 Received: from NWD2HUBCAS7.ad.analog.com (nwd2hubcas7.ad.analog.com
  [10.64.69.107])
- by nwd2mta2.analog.com (8.13.8/8.13.8) with ESMTP id x48BTenk017131
+ by nwd2mta1.analog.com (8.13.8/8.13.8) with ESMTP id x48BTp08023613
  (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Wed, 8 May 2019 04:29:40 -0700
+ Wed, 8 May 2019 04:29:51 -0700
 Received: from saturn.analog.com (10.50.1.244) by NWD2HUBCAS7.ad.analog.com
  (10.64.69.107) with Microsoft SMTP Server id 14.3.408.0; Wed, 8 May 2019
- 07:29:39 -0400
+ 07:29:51 -0400
 From: Alexandru Ardelean <alexandru.ardelean@analog.com>
 To: <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
  <linux-ide@vger.kernel.org>, <linux-clk@vger.kernel.org>,
@@ -88,9 +88,10 @@ To: <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
  <linux-mtd@lists.infradead.org>, <cgroups@vger.kernel.org>,
  <linux-mm@kvack.org>, <linux-security-module@vger.kernel.org>,
  <linux-integrity@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 04/16] powerpc/xmon: use new match_string() helper/macro
-Date: Wed, 8 May 2019 14:28:30 +0300
-Message-ID: <20190508112842.11654-6-alexandru.ardelean@analog.com>
+Subject: [PATCH 06/16] x86/mtrr: use new match_string() helper + add gaps ==
+ minor fix
+Date: Wed, 8 May 2019 14:28:32 +0300
+Message-ID: <20190508112842.11654-8-alexandru.ardelean@analog.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190508112842.11654-1-alexandru.ardelean@analog.com>
 References: <20190508112842.11654-1-alexandru.ardelean@analog.com>
@@ -98,33 +99,33 @@ MIME-Version: 1.0
 X-ADIRoutedOnPrem: True
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:137.71.25.57; IPV:NLI; CTRY:US; EFV:NLI;
+X-Forefront-Antispam-Report: CIP:137.71.25.55; IPV:NLI; CTRY:US; EFV:NLI;
  SFV:NSPM;
- SFS:(10009020)(1496009)(136003)(346002)(39860400002)(396003)(376002)(2980300002)(199004)(189003)(76176011)(7696005)(356004)(6666004)(70206006)(51416003)(316002)(7416002)(2201001)(305945005)(7636002)(107886003)(48376002)(47776003)(110136005)(16586007)(4326008)(2906002)(54906003)(53416004)(106002)(11346002)(446003)(14444005)(36756003)(478600001)(2441003)(186003)(486006)(50226002)(126002)(2616005)(476003)(86362001)(70586007)(50466002)(336012)(8936002)(5660300002)(1076003)(4744005)(426003)(77096007)(26005)(44832011)(246002)(8676002)(921003)(83996005)(1121003)(2101003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:SN2PR03MB2270; H:nwd2mta2.analog.com; FPR:;
- SPF:Pass; LANG:en; PTR:nwd2mail11.analog.com; A:1; MX:1; 
+ SFS:(10009020)(1496009)(39860400002)(346002)(136003)(396003)(376002)(2980300002)(189003)(199004)(478600001)(356004)(7416002)(4326008)(476003)(107886003)(305945005)(5660300002)(76176011)(48376002)(47776003)(50466002)(486006)(7636002)(44832011)(70206006)(70586007)(2906002)(110136005)(6666004)(50226002)(8936002)(54906003)(2616005)(246002)(53416004)(16586007)(1076003)(8676002)(11346002)(106002)(86362001)(7696005)(51416003)(446003)(126002)(426003)(186003)(2441003)(2201001)(336012)(316002)(26005)(36756003)(77096007)(921003)(83996005)(2101003)(1121003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:CY4PR03MB3127; H:nwd2mta1.analog.com; FPR:;
+ SPF:Pass; LANG:en; PTR:nwd2mail10.analog.com; MX:1; A:1; 
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dfbd6645-f3e1-49b6-1450-08d6d3a8774c
+X-MS-Office365-Filtering-Correlation-Id: 9e84d071-f926-4c84-2e80-08d6d3a87ceb
 X-Microsoft-Antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4709054)(2017052603328);
- SRVR:SN2PR03MB2270; 
-X-MS-TrafficTypeDiagnostic: SN2PR03MB2270:
-X-Microsoft-Antispam-PRVS: <SN2PR03MB22702A36CFFB4F24671124AEF9320@SN2PR03MB2270.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+ SRVR:CY4PR03MB3127; 
+X-MS-TrafficTypeDiagnostic: CY4PR03MB3127:
+X-Microsoft-Antispam-PRVS: <CY4PR03MB3127E9C16F1035878E392535F9320@CY4PR03MB3127.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
 X-Forefront-PRVS: 0031A0FFAF
 X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: KBaFP+VndcR4Pf2Avf8+W37sHaN8ZZJBBrWfHnFJ8l4xSH7jQGBdDEcnqagJMKs/oHbr9oYooJZUU4xkacMNv18LLG29wwpx6s6jnKluGmQRA4ewJoO4MJMNLnrj+iEP9+WvVm59vBhxTahQbM7N1ZvL80PXwnLkgR8siCzsyJn5Q9X+sxi8zBFAfc3hej5rkB8PZzkxpkMenJqsj2UIckP4SpNwF+OwyJqZITPx+vJWrk9s+k2seUKSvdSE3UyHHJZZuFbdM83NjlN0sSgLj3ONDOP7mfDlxwMMTiSqV4jdRLFHtNH5oVVbb9KCyE8DTMthgbJCPwDGxxN7b7yMODPWnGCw87W2rP6OrHNOLedXGqVbjL3JmBd48mSrS51VpGb77n/hBi2fRQlG4kD6/k+SqAT2KWOmnMUL3fQ2Hos=
+X-Microsoft-Antispam-Message-Info: hda0K0v5ij/G6H2YACXfIt6bKjpSjAgKGea3NqLag4TL7c+wMp6G/9ToPo3Vo2ALGoXYKL8lIXefI3pjgsKmvrxcQbFYmQXJS7mMxOOHzlhmFQ7IYxncBKfDC4dQju6ANVJhrbiCK6I2H9u41GPFBS6zp5bmQ3KEGqcTA6uu8J8UwkG02mPR404b+UaRjboXhFhWhmzco8OFnY/ZS+Oyiv+jgrcub3OWF1ZE6g2PWZYCiPw+ix3NL4MdKxaNv0gnzhApnIqnJ4GghYC7Eb4ExLnTn+gnu/dJzfLMbsj54G46HtKSw8zG3MhatUk0Fy/RUF/d0ftyuE3K6GD9m91VOurlbnHt9HiykZLpXxUZ0G1o+7zGAAC/ca50ThQK38xp2eRz+OZNwVPJAdO97Sm3P+EhZBozB3hNY3g9PrvxJRw=
 X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2019 11:29:41.2805 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfbd6645-f3e1-49b6-1450-08d6d3a8774c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2019 11:29:52.2067 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e84d071-f926-4c84-2e80-08d6d3a87ceb
 X-MS-Exchange-CrossTenant-Id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=eaa689b4-8f87-40e0-9c6f-7228de4d754a; Ip=[137.71.25.57];
- Helo=[nwd2mta2.analog.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=eaa689b4-8f87-40e0-9c6f-7228de4d754a; Ip=[137.71.25.55];
+ Helo=[nwd2mta1.analog.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR03MB2270
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR03MB3127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_042955_005341_36106972 
-X-CRM114-Status: GOOD (  11.71  )
+X-CRM114-CacheID: sfid-20190508_042958_468041_B449AE6C 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -144,33 +145,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The change is purely cosmetic at this point in time, but it does highlight
-the change done in lib/string.c for match_string().
+This change is a bit more than cosmetic.
 
-Particularly for this change, if a regname is removed (replaced with NULL)
-in the list, the match_string() helper will continue until the end of the
-array and ignore the NULL.
-This would technically allow for "reserved" regs, though here it's not the
-case.
+It replaces 2 values in mtrr_strings with NULL. Previously, they were
+defined as "?", which is not great because you could technically pass "?",
+and you would get value 2.
+It's not sure whether that was intended (likely it wasn't), but this fixes
+that.
 
 Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 ---
- arch/powerpc/xmon/xmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/mtrr/if.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index efca104ac0cb..b84a7fc1112b 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -3231,7 +3231,7 @@ scanhex(unsigned long *vp)
- 			regname[i] = c;
- 		}
- 		regname[i] = 0;
--		i = __match_string(regnames, N_PTREGS, regname);
-+		i = match_string(regnames, regname);
- 		if (i < 0) {
- 			printf("invalid register name '%%%s'\n", regname);
- 			return 0;
+diff --git a/arch/x86/kernel/cpu/mtrr/if.c b/arch/x86/kernel/cpu/mtrr/if.c
+index 4ec7a5f7b94c..e67820a044cc 100644
+--- a/arch/x86/kernel/cpu/mtrr/if.c
++++ b/arch/x86/kernel/cpu/mtrr/if.c
+@@ -20,8 +20,8 @@ static const char *const mtrr_strings[MTRR_NUM_TYPES] =
+ {
+ 	"uncachable",		/* 0 */
+ 	"write-combining",	/* 1 */
+-	"?",			/* 2 */
+-	"?",			/* 3 */
++	NULL,			/* 2 */
++	NULL,			/* 3 */
+ 	"write-through",	/* 4 */
+ 	"write-protect",	/* 5 */
+ 	"write-back",		/* 6 */
+@@ -29,7 +29,9 @@ static const char *const mtrr_strings[MTRR_NUM_TYPES] =
+ 
+ const char *mtrr_attrib_to_str(int x)
+ {
+-	return (x <= 6) ? mtrr_strings[x] : "?";
++	if ((x >= ARRAY_SIZE(mtrr_strings)) || (mtrr_strings[x] == NULL))
++		return "?";
++	return mtrr_strings[x];
+ }
+ 
+ #ifdef CONFIG_PROC_FS
+@@ -142,7 +144,7 @@ mtrr_write(struct file *file, const char __user *buf, size_t len, loff_t * ppos)
+ 		return -EINVAL;
+ 	ptr = skip_spaces(ptr + 5);
+ 
+-	i = __match_string(mtrr_strings, MTRR_NUM_TYPES, ptr);
++	i = match_string(mtrr_strings, ptr);
+ 	if (i < 0)
+ 		return i;
+ 
 -- 
 2.17.1
 
