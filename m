@@ -2,22 +2,23 @@ Return-Path: <SRS0=JkGG=TI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A67C04A6B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 17:00:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BA24C04A6B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 19:52:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07C6F216F4
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 17:00:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C1BE21734
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 19:52:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cnTaz0bn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07C6F216F4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ToiTqxod";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UxL1m2dX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C1BE21734
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,60 +26,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ADB6YENDcQrQ6hcQ9ofWUQY45yaj6bffO2+kTKpXbW8=; b=cnTaz0bn65O3k6
-	opHzMZoU7PLS4nw2RUmBjAv6zTVEER8bppoIWvWYuxTNSz3REkYfXxgxsASkQ7UtKyc3FNfYZOjKk
-	iVROEMODb15/q6v/xBBgUo/fVeDeMOsVRJAnLh5WqL/lmXrplMYEhrdlbZd4MsdnUNEjwWgtuNsTi
-	ojanAvtTGi7ityyPe+KRb89OZ50oIPh7Z9elOAa5IQRLD27wkDe/6xL/r5hot9liouM9hKJi9t2hX
-	RVmJm/zT+d/RRoYdv3bNtFI8k/1mYruVBPAtnfL6Eqgl5KGlcpyy7og6m3C2hpol8SmS6ykwPS/3F
-	ieOkrWtj9P3lkJlMOE8Q==;
+	List-Owner; bh=YzKBe0Fumxus2538nfHpug2/Adh4qXn5cWhext+4+Vw=; b=ToiTqxodyVX3uM
+	MfiwgPq8uIynK0moYtoGn8gO71V0tbIC7mlTaFWS3Lw11mGJU8Bid/p8QmwN/Yr0aUvfeYrIBs/0K
+	Pe0keE/4+idOOVQRoopyS9iYYuWl9d6sfZK/b8J4v7mHt2W23CXwFckk+JYvw7I9Cs9Eg5HPKzVnI
+	CBlGXdLh6S6V0mR/1Bq8f2ac0TODinnBuJrHZwGzHHM/6BT52DP8sXc1fqvIARO+6bZ6sbOEcAewN
+	6nc5zdKAjOpy8wPDKNR7U3CXa5vLAQ9PnloNy0yiq76KEswUBq/4mBjaMf4z8BsQIfv7DHf7b9ENG
+	MtCaf6wsAjJFAJSIFGQQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOPvd-0004jk-Gx; Wed, 08 May 2019 17:00:25 +0000
-Received: from mail-vs1-f67.google.com ([209.85.217.67])
+	id 1hOScI-00066H-KI; Wed, 08 May 2019 19:52:38 +0000
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOPva-0004iv-ED
- for linux-mtd@lists.infradead.org; Wed, 08 May 2019 17:00:23 +0000
-Received: by mail-vs1-f67.google.com with SMTP id e2so13080999vsc.13
- for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 10:00:21 -0700 (PDT)
+ id 1hOScF-00063l-54
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2019 19:52:37 +0000
+Received: by mail-wm1-x336.google.com with SMTP id h11so105313wmb.5
+ for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 12:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=oB/1thJSvfpF3k9iHuEARtLHOAtpxWNWmfqQwy8beMc=;
+ b=UxL1m2dXngyHSLotIi8ABvDNL9treD6WhO/8/YC9qIIOei8rz5HqfVY7AazjZotqLQ
+ PSLP+b/M293D6jaUj+beXitvkgbC4Eg+mQKYLd6321lrVoBNFg+pyU6tbAE0mpZ6FhDK
+ q/U1oKb3ep5x5Zikf32ZvP0tZ5X4zvo3wMNYnoMIMQz0kj5NH7JyLNcJ4lcsM74Y8roK
+ uPgBlmS8vQR1JjxbtWlmEutP8FZGU0QLchRXNs7YzBl2A1uLMgdbKJu43V2lWYyjXBUX
+ ccjP2GTb14LpBsfsfLKZKufjwhDJ9bNcdYHVpv5OKuVCV15idD8diWL52zZ1GYuZpOhx
+ yZFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=UQpdS2BoEXavGkDkQ8SZu1pVpvwtdePVG1xQzZyqCT4=;
- b=YP/AmqJEEB1zw+EQNGwYLVJqY7yRV8ZU7uZLnPbsRMmSkK4oLmRZUjPIPgHDRWkGoc
- hVG0Ei4+63Tdo0OygIyaBim9deQvg6PDHF+LgWHC44mUSosAYydINp68BTbnOXSiWgtn
- N6yOj1Qw9oyy5ohlKgjLhQEyHQp0lW2dDIYehYkaWdM8mS8CYpOVWvU4pjPdjvuwWbBS
- GvwK17v0fIyDGlS4RXr5bA8xLghIsKLO3dYU95rx75gOSk0KaCzfqLoS+hGPmdX38BXH
- HytBJn8xtolhuKTTp3zLrVYUw4letWXtZ/1i0ACRvJZmZM5Xaj4ei/wYPrr4ZoZzkV+6
- C6pA==
-X-Gm-Message-State: APjAAAUIgfWDU3+dudxeZL4nWmVBLi7KMOd9PmU3kcDZ/DC2sURqS1mq
- IaYjkH7M5EEyUaSETEk+I82bzkVfllGL8igoXWKgUU34
-X-Google-Smtp-Source: APXvYqyU8GkdyLjbtfeyP0LPWxT1gdAL1M98hPFoTiogs2t4uJWzeKkD4ZHOi1UFIw89Yy4Iya6YxZ3GsHXerDyo8go=
-X-Received: by 2002:a67:e2ca:: with SMTP id i10mr12858004vsm.96.1557334820955; 
- Wed, 08 May 2019 10:00:20 -0700 (PDT)
+ bh=oB/1thJSvfpF3k9iHuEARtLHOAtpxWNWmfqQwy8beMc=;
+ b=mvql+5Xh5UmBsK7Rq/qdh9znUO/4G2zMT8aq21dly424aQ0M2uwBb500OspmtbIWJt
+ cZg+LeZkQkixdWPZocQz3e9D802ccEAVqLzdchbZ+LYA6xCrczTBLGULJztggbukkWa4
+ 3mI8pgbU/5cuikZjZ1ngZtrokAu+Xo+eEFoP3QUgAxyqo292m5emH3bIdoZ54jfe6Yl9
+ SUBwbNTydB/HuCNvpv3nXMWJ526S2YQlLV/lnfjrLyNejS5IgIXMO7QupZrStv52liPb
+ rHqwTwQU4nlfmBkvtYn8whKvdo+9M++iy7V2SwVd6fbEB+hVkvAeKnnoHo8iULuaJKNK
+ VXDw==
+X-Gm-Message-State: APjAAAXGSH3Ahslez/1bl2EmQ0NpugO/ReBimSs8z95ingy14IpanOei
+ tTZ0v6SHyY3vOlqQ157BLQawixI7ICZ3BiqdL5k=
+X-Google-Smtp-Source: APXvYqwE5SgKy3KzwMaP+JL2avwu8RoCxmdrROcUd664E2XBGvOBHkeVwxPGLSrkgLhmIMcM4oEOrZvFoASSU8i58f4=
+X-Received: by 2002:a1c:2dd2:: with SMTP id t201mr45309wmt.10.1557345150050;
+ Wed, 08 May 2019 12:52:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190320071605.4289-1-jonas@norrbonn.se>
- <20190320071605.4289-3-jonas@norrbonn.se>
- <CAMuHMdVH85iFJngkU6W61ybwR2j3YQ7=cugPxgC57hUgBOc5KA@mail.gmail.com>
- <1f33e1e5-d7bf-76a0-c4d3-ecbc35fbfd4f@microchip.com>
- <CAMuHMdU83vLeVSqMZuJwR4yd382mau-OE1saMAOC2+6HodsHvg@mail.gmail.com>
- <fac5fa6d-95e9-cfb0-4d5a-6b16d4470190@norrbonn.se>
- <CAMuHMdUEdNr5rgCdaGAFJ-WK4oL2DC419smk+QYOJ7qJvkWA8A@mail.gmail.com>
- <a9ad3641-1eb8-782c-9dfd-0db41256d3f1@microchip.com>
- <ad49240c-2073-4045-c11c-fb6bad231321@microchip.com>
- <CAMuHMdVcp--qRo3m8kSQ=++Vx33kvxBWEHFVHfh-j=pq1x-GPQ@mail.gmail.com>
- <898831ba-b8bb-7c2b-e623-2e6c26da91b5@microchip.com>
- <CAMuHMdXFwFAPzYPKqj+FZgSq01VAD0izS3ELyOg1YBwTAQ_QkQ@mail.gmail.com>
- <8b004a57-0fd9-04fe-d031-1d98d890f826@microchip.com>
-In-Reply-To: <8b004a57-0fd9-04fe-d031-1d98d890f826@microchip.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 May 2019 19:00:06 +0200
-Message-ID: <CAMuHMdXghAWmNJLUq_uOUVPrrNTAcFq=QqCGjLU51FchvOu3=g@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
-To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
+References: <CAK3Qp=Xr_XyDZMCoDL6fDAb58+e_Hi9ErgnT-yLbAmbSpzc8TA@mail.gmail.com>
+In-Reply-To: <CAK3Qp=Xr_XyDZMCoDL6fDAb58+e_Hi9ErgnT-yLbAmbSpzc8TA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 8 May 2019 21:52:18 +0200
+Message-ID: <CAFLxGvx2K8kTiUuqpWU2L2_Z6=C5Du8bM2F+YJ2Y4Y5K=pDjrA@mail.gmail.com>
+Subject: Re: Question: Appending data to a file is optimally handled by UBIFS?
+To: Fernando AE <fernando.ae2017@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_100022_479718_D039CB52 
-X-CRM114-Status: GOOD (  13.72  )
+X-CRM114-CacheID: sfid-20190508_125235_192464_E1F2DFA1 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -90,79 +88,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Jonas Bonn <jonas@norrbonn.se>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Marek Vasut <marek.vasut+renesas@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
-
-On Wed, May 8, 2019 at 4:23 PM <Tudor.Ambarus@microchip.com> wrote:
-> On 05/08/2019 04:11 PM, Geert Uytterhoeven wrote:
-> > On Wed, May 8, 2019 at 12:44 PM <Tudor.Ambarus@microchip.com> wrote:
-> >> Would you run this debug patch on top of mtd/next? I dumped the SR and CR before
-> >> and after the operations in cause.
-> >
-> > Thanks, giving it a try...
-> >
-> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> >> index 73172d7f512b..20d0fdb1dc92 100644
-> >> --- a/drivers/mtd/spi-nor/spi-nor.c
-> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> >> @@ -22,6 +22,8 @@
-> >>  #include <linux/spi/flash.h>
-> >>  #include <linux/mtd/spi-nor.h>
-> >>
-> >> +#define DEBUG
-> >
-> > Should be moved to the top of the file, before dev_dbg() is defined.
-> >
-> > Result is:
-> >
-> > m25p80 spi0.0: bfpt.dwords[1] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[2] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[3] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[4] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[5] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[6] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[7] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[8] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[9] = ffffffff
-> > m25p80 spi0.0: bfpt.dwords[10] = 00000000
-> > m25p80 spi0.0: bfpt.dwords[11] = 00000000
-> > m25p80 spi0.0: bfpt.dwords[12] = 00000000
-> > m25p80 spi0.0: bfpt.dwords[13] = 00000000
-> > m25p80 spi0.0: bfpt.dwords[14] = 00000000
-> > m25p80 spi0.0: bfpt.dwords[15] = 00000000
-> > m25p80 spi0.0: bfpt.dwords[16] = 00000000
-> > m25p80 spi0.0: failed to parse BFPT: err = -22
-> > m25p80 spi0.0: spi_nor_init_params sfdp parse failed, ret =-22
-> > m25p80 spi0.0: SR = 00000000
-> > m25p80 spi0.0: CR = 00000002
-> > m25p80 spi0.0: Erase Error occurred
-> > m25p80 spi0.0: timeout while writing SR, ret = -5
-> > m25p80 spi0.0: SR = 000000ff
-> > m25p80 spi0.0: CR = 000000ff
+On Wed, May 8, 2019 at 6:28 PM Fernando AE <fernando.ae2017@gmail.com> wrote:
 >
-> ff can mean that the lines are "in air", maybe the flash resets when we
-> write_sr(nor, 0)? How about adding a delay here to let the flash reset?
+> Hello,
+>
+> I'm working with a UBI and UBIFS in a NAND flash with 2kB pages and
+> 128 kB blocks.
+>
+> My app is periodically appending 16 bytes to a file. I'm wondering if
+> UBIFS and/or underlying drivers will also append data to the same
+> flash page or if a new page must be allocated every time.
+>
+> I'm aware that the kernel will buffer data in RAM before syncing to
+> the flash. In any case, assume that a fsync happens after each append.
 
-No difference after adding msleep(1000).
+If you sync after every write, you make it hard for UBIFS, and yes it will
+waste always at least one "min io" unit which is a page on NAND.
+You also force UBIFS to write inodes and waste even more space by
+syncing that often.
 
-Gr{oetje,eeting}s,
-
-                        Geert
+In theory UBIFS could try to write only sub-pages but that's usually
+slower than writing
+a whole page. But that depends a lot on your NAND and the NAND
+controller you are using.
+That's why UBI is using sub-pages only internally for EC and VID headers.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
