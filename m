@@ -2,146 +2,101 @@ Return-Path: <SRS0=JkGG=TI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7414FC04A6B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE261C04A6B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 12:22:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46D2A20989
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 11:49:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D63921530
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 12:22:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YZekWb2X";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jYaS4sQ9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=analog.onmicrosoft.com header.i=@analog.onmicrosoft.com header.b="q7IP+9NQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46D2A20989
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=analog.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="omOBSpG7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="rwrtMH5v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D63921530
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VUNDbvcfy+lsImf33r63QioZfQkUNoeM4tac4048yl0=; b=YZekWb2XRV1U1c
-	s5Ev+7vA/D7fVOf63DYoCvpuf651uGL/u9gBAdB3fz6rND3FgJtJdaGHsa6DMfOU+LxSRFWwQpxY+
-	JhcWzdhXZDzKNy1SGAx28Eq678Rc5bUWtMxOG1qsTzL5b8UD9kR48vfcTRtCyax4BK+ahI3u43s5L
-	pswIJgyEMBj1BFcpK9hdQU1zNuX69a6K4Qu7ILU3cf5ovAIzFPQ1bhj5zZZZWEHwZt6xESduD+aQA
-	pvegaCN09Ng9iONljvBGUESJ8vUD8dwCnqWm4SvjH89IPYJSoqztAil3NFcaHsq4wtdUssYsB36XG
-	ZubsGQEWQCiZKn6aU44g==;
+	List-Owner; bh=qJjYLfW0Wcl4zl9oLuONwZFVbt6GiHlPX/X0XhNqkaQ=; b=omOBSpG7rhEmdi
+	WL7IZrezvBuFg151JbMaiRat6O4jOJxDMmzBwClRFtG27UnI9YRjkm8bSSooupWZAw8NHe3xJljJ1
+	d9ojOSQ4SECEVcARS+hLe3dzJPTcHyaleVAHT1o/sXC2pCVaf5FCc+QrltKgryJ6lLU+FkyR7fxcT
+	QYvvKgKpu4g1REYo4DvbrL6XmpgBbAVhCprPZo5EqkX1WyCEPotarLF8zrdeExoviLQcxipPlWjRI
+	+qKFzPhaAqqyUL7qNVub6XJw7k02YwQZl1LpPy32qqBTrmozItBN1QvQRP1QE3WFrzDE73dzMw7fp
+	jySCWYHzIpgm/wqDaS/A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOL4b-0006ks-3J; Wed, 08 May 2019 11:49:21 +0000
-Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
+	id 1hOLaD-0001tp-73; Wed, 08 May 2019 12:22:01 +0000
+Received: from aserp2130.oracle.com ([141.146.126.79])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOL46-00063e-Fg; Wed, 08 May 2019 11:48:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
- In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=pjcT89AhZdKkG8M5isLXr+VAVcRFhlBYogTm1g/4pg8=; b=jYaS4sQ9wD36hAatXWoDQYIXS
- 1WgfuwQfxNPAy6ijsTNWkTc2jr3tdGhFQw30O5UcN+5BhooyGXweawlE/ik4DJvqXANnRdN5s6tmv
- nqontWP6h16uCy8IyHhc8iazVniTIKh+i4F/R9mJJcMUgDCVCXmOul2OnjoMAoav4quY1hlqTFDjM
- BNzBwgU+0CJIaqflpnfZ9yKgw/UPMjjM2TcNZLwaDz16pYWX0mxM1gT67hEjyErQZSr+m2TyFcScc
- Y+gUWz4Wou1Gc2IFGiMBQGAqA2rWq/Q9Tn6el+Qs1L1wX7ext2zNMOrz0nzbUY2AhBntYDkg3fK9W
- UC8iDCOlA==;
-Received: from mail-co1nam05on061e.outbound.protection.outlook.com
- ([2a01:111:f400:fe50::61e]
- helo=NAM05-CO1-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOKm1-00067a-S4; Wed, 08 May 2019 11:30:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector1-analog-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pjcT89AhZdKkG8M5isLXr+VAVcRFhlBYogTm1g/4pg8=;
- b=q7IP+9NQa5EDYubf+Njn1bcwKqmHVEVEGwgvxF4CCCebgPyhKgL87yUmH6oKqvITyTy7ly7BzqJF9CuibfYxh1CD7eVrjMoC5DQyzQjqpnGGsZvQUhXfV78CE1aOuzWdCyhisJf3G2Zqgl4Qabaoo9JYILLYMMWBWRQ5g29Xp+w=
-Received: from MWHPR03CA0049.namprd03.prod.outlook.com (2603:10b6:301:3b::38)
- by MWHPR03MB3134.namprd03.prod.outlook.com (2603:10b6:301:3c::27)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1856.11; Wed, 8 May
- 2019 11:29:57 +0000
-Received: from BL2NAM02FT003.eop-nam02.prod.protection.outlook.com
- (2a01:111:f400:7e46::201) by MWHPR03CA0049.outlook.office365.com
- (2603:10b6:301:3b::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1878.21 via Frontend
- Transport; Wed, 8 May 2019 11:29:57 +0000
-Authentication-Results: spf=pass (sender IP is 137.71.25.55)
- smtp.mailfrom=analog.com; lists.freedesktop.org; dkim=none (message not
- signed) header.d=none;lists.freedesktop.org; dmarc=bestguesspass action=none
- header.from=analog.com;
-Received-SPF: Pass (protection.outlook.com: domain of analog.com designates
- 137.71.25.55 as permitted sender) receiver=protection.outlook.com;
- client-ip=137.71.25.55; helo=nwd2mta1.analog.com;
-Received: from nwd2mta1.analog.com (137.71.25.55) by
- BL2NAM02FT003.mail.protection.outlook.com (10.152.76.204) with Microsoft SMTP
- Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1856.11
- via Frontend Transport; Wed, 8 May 2019 11:29:56 +0000
-Received: from NWD2HUBCAS7.ad.analog.com (nwd2hubcas7.ad.analog.com
- [10.64.69.107])
- by nwd2mta1.analog.com (8.13.8/8.13.8) with ESMTP id x48BTu06023698
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Wed, 8 May 2019 04:29:56 -0700
-Received: from saturn.analog.com (10.50.1.244) by NWD2HUBCAS7.ad.analog.com
- (10.64.69.107) with Microsoft SMTP Server id 14.3.408.0; Wed, 8 May 2019
- 07:29:56 -0400
-From: Alexandru Ardelean <alexandru.ardelean@analog.com>
-To: <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
- <linux-ide@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <linux-rpi-kernel@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>, 
- <linux-pm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
- <dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
- <linux-omap@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
- <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
- <devel@driverdev.osuosl.org>, <linux-usb@vger.kernel.org>,
- <kvm@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <cgroups@vger.kernel.org>,
- <linux-mm@kvack.org>, <linux-security-module@vger.kernel.org>,
- <linux-integrity@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 07/16] device connection: use new match_string() helper/macro
-Date: Wed, 8 May 2019 14:28:33 +0300
-Message-ID: <20190508112842.11654-9-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190508112842.11654-1-alexandru.ardelean@analog.com>
+ id 1hOLa9-0001ss-HM; Wed, 08 May 2019 12:21:59 +0000
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+ by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x48CJBEV086953;
+ Wed, 8 May 2019 12:20:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=Vy0vJPC+R/qK4BTy9W8k2EK+1DkuBwwYmX4Im7RV/1I=;
+ b=rwrtMH5vFY76MnriFuwWJRty7cv6d48ndLvoH9qa0iSpe18cQhaRn84K+EEAZ1el4f/y
+ JYXzNPHiRG6Um3c2LeXmrh0vIUgokB68rrApoaQDWIhQiq3xdWk5gSEBW5t2CsNm+NQD
+ vMj6o0elaMb6F0MU58KC4FWtRSn89CRe22TBfRL7zCGITD8/HSnJoDvmL6xh8b//HGVN
+ 0/+i+9yb5Er16ot7xGaUWYdgVLnSKYTBDh5U+VgaaiAGanyy3YqtlO3+pRPaxxQxAHqK
+ Taf9LSC6aD/fmeyve7zi016PT3fCR2HgfwqDVjH/4iBaBbfLBHPj+ptzQwZZXQN8uHEa Qg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+ by aserp2130.oracle.com with ESMTP id 2s94b63etg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 08 May 2019 12:20:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+ by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x48CJL8V107697;
+ Wed, 8 May 2019 12:20:30 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by userp3020.oracle.com with ESMTP id 2s94ag20en-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 08 May 2019 12:20:30 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x48CKNew007185;
+ Wed, 8 May 2019 12:20:24 GMT
+Received: from kadam (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 08 May 2019 05:20:22 -0700
+Date: Wed, 8 May 2019 15:20:10 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: Re: [PATCH 09/16] mmc: sdhci-xenon: use new match_string()
+ helper/macro
+Message-ID: <20190508122010.GC21059@kadam>
 References: <20190508112842.11654-1-alexandru.ardelean@analog.com>
+ <20190508112842.11654-11-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-X-ADIRoutedOnPrem: True
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:137.71.25.55; IPV:NLI; CTRY:US; EFV:NLI;
- SFV:NSPM;
- SFS:(10009020)(1496009)(346002)(396003)(136003)(376002)(39860400002)(2980300002)(199004)(189003)(36756003)(50226002)(246002)(47776003)(8936002)(8676002)(2906002)(48376002)(70586007)(76176011)(54906003)(4326008)(106002)(70206006)(86362001)(51416003)(2201001)(107886003)(14444005)(316002)(110136005)(16586007)(7696005)(486006)(11346002)(53416004)(126002)(476003)(2616005)(446003)(44832011)(2441003)(50466002)(7636002)(305945005)(7416002)(6666004)(426003)(186003)(5660300002)(336012)(478600001)(77096007)(1076003)(356004)(26005)(921003)(83996005)(1121003)(2101003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MWHPR03MB3134; H:nwd2mta1.analog.com; FPR:;
- SPF:Pass; LANG:en; PTR:nwd2mail10.analog.com; A:1; MX:1; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91c3809a-bbd8-4770-1064-08d6d3a87fc5
-X-Microsoft-Antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4709054)(2017052603328);
- SRVR:MWHPR03MB3134; 
-X-MS-TrafficTypeDiagnostic: MWHPR03MB3134:
-X-Microsoft-Antispam-PRVS: <MWHPR03MB3134ADED8AEA2DE87EDA3597F9320@MWHPR03MB3134.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-Forefront-PRVS: 0031A0FFAF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: vPHqUyoLZcW0hVOhWn9GTqMZTbShobrGD2/ViAb1u/5/xckKY/lz+Bdz9sVMaISB5ZX+9BzGInurLqmM2FwjifOIAfCaB8oBwVzIS8pCv9hhyB42Iq3xXxptH5PZSBgO+M5i2dwNxoYHH/OfZkBJA5ivGIM3gJVbqng57UMMXQ2w+fpSmMh4cSgClNCxo8N5onzhk1RNY/exNSfBdSN+Djs9KjT6E9pvBp/NmRaLYmuLC6ZT+yMJ9koDYkjHuyWAEmz0HO0dNrjGBmAXW52KixyJ8drIdiD8EfBe6ovS9H4IykWVZ+zhpPAJrX7aE7bNhPgAj6OIz76YE9VndH2HHEjnLTtm3qOeMcvAav+dbYvG6K++r8veVFChlLmcP/tySHd8yyqVyS0HojCmo6O6IxxBOqhu4D25Gwq0FyInxLU=
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2019 11:29:56.9840 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91c3809a-bbd8-4770-1064-08d6d3a87fc5
-X-MS-Exchange-CrossTenant-Id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=eaa689b4-8f87-40e0-9c6f-7228de4d754a; Ip=[137.71.25.55];
- Helo=[nwd2mta1.analog.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR03MB3134
+Content-Disposition: inline
+In-Reply-To: <20190508112842.11654-11-alexandru.ardelean@analog.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9250
+ signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=644
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905080079
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9250
+ signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=665 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905080079
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_073009_952780_6762189E 
-X-CRM114-Status: GOOD (  14.51  )
+X-CRM114-CacheID: sfid-20190508_052157_667010_FB3488EA 
+X-CRM114-Status: GOOD (  10.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -153,49 +108,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: gregkh@linuxfoundation.org,
- Alexandru Ardelean <alexandru.ardelean@analog.com>,
- andriy.shevchenko@linux.intel.com
+Cc: linux-fbdev@vger.kernel.org, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-clk@vger.kernel.org, devel@driverdev.osuosl.org,
+ andriy.shevchenko@linux.intel.com, linux-rockchip@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-pm@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, linux-gpio@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, gregkh@linuxfoundation.org,
+ linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The `device_connection` struct is defined as:
-struct device_connection {
-        struct fwnode_handle    *fwnode;
-        const char              *endpoint[2];
-        const char              *id;
-        struct list_head        list;
-};
+On Wed, May 08, 2019 at 02:28:35PM +0300, Alexandru Ardelean wrote:
+> -static const char * const phy_types[] = {
+> -	"emmc 5.0 phy",
+> -	"emmc 5.1 phy"
+> -};
+> -
+>  enum xenon_phy_type_enum {
+>  	EMMC_5_0_PHY,
+>  	EMMC_5_1_PHY,
+>  	NR_PHY_TYPES
 
-The `endpoint` member is a static array of strings (on the struct), so
-using the match_string() (which does an ARRAY_SIZE((con->endpoint)) should
-be fine.
+There is no need for NR_PHY_TYPES now so you could remove that as well.
 
-The recent change to match_string() (to ignore NULL entries up to the size
-of the array) shouldn't affect this.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/base/devcon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/base/devcon.c b/drivers/base/devcon.c
-index 7bc1c619b721..4a2338665585 100644
---- a/drivers/base/devcon.c
-+++ b/drivers/base/devcon.c
-@@ -70,7 +70,7 @@ void *device_connection_find_match(struct device *dev, const char *con_id,
- 	mutex_lock(&devcon_lock);
- 
- 	list_for_each_entry(con, &devcon_list, list) {
--		ep = __match_string(con->endpoint, 2, devname);
-+		ep = match_string(con->endpoint, devname);
- 		if (ep < 0)
- 			continue;
- 
--- 
-2.17.1
+regards,
+dan carpenter
 
 
 ______________________________________________________
