@@ -3,92 +3,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7A63C04AB1
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 10:31:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14011C04AB4
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 11:28:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B90F82053B
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 10:31:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9AED20989
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 11:28:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Eed5txjn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="xBxX3o2G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B90F82053B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="QGiF63Og";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="U9HTSn87"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9AED20989
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7XjcIHSU9FZnY+NsX+UxwDwCxm+UQCqrRA2LzQu35Q0=; b=Eed5txjnlxt5jk
-	RhH5mRwKZ43d0gUcECX56ZoVW/1wDFHPRfUXHVhSUUbJTrJH+9Pg09An3S4PD5RW/dfKGzwiS1OOq
-	vauvPx9qbVo/ZQIuJxuyN34AmmA6xJ0EKrNVfZHKmMurRfzZFKgGz8Xs4sGE4MfNQ6Oaeai4m5KM/
-	caeHCwvIgK3OyNBO3qNwvb9xleDZiNPJ1cN1DPWMdO8RjEdJIsAGTefgDYKUsnjOTcJ5BnkOFQjt3
-	ikPpkhmb3CDBNat6n8pS4hawtFC3ickyPZ1Vi+IPdQMYVk7zWMV+lqj2bfneKCUgFP2YiNOMypZD/
-	Emc2Kn8OUxlJxQ7ufcJA==;
+	List-Owner; bh=8ngZ/vsreEQcdOOaHAlSEwi7kgFHgdaKf6to0ardpLY=; b=QGiF63Ogkdj5JU
+	G/NTeeTAH3/rThc8J6d/Wok+z1Y2NdoHhTXHb8wiQMH36fT1eny6mBYTiq48HVAZbjwOY3Nox1ulH
+	1nfVCwLjorVRicEzS05Iia/MIcHFttFntclw/iVeLMBB9mSB0FFvBI804OqkO/0v0MASKEZqSyhnV
+	jjbnD5XpzL/ONbUJI5XobnC7muE+3Kre/XJD7lNymrMqP9ZFDDLbAFzt1hG51z3J67mCkVUVUtaoE
+	Z4Gw3qK1hPrt4JqoXajACtljRSfcvlJSr6EkAcg4FS+dE3y/rm0YQlLiYe8RY87z1FMlN5BffDK9p
+	jpqRTaKvJ2ffmlL/mncQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOgLB-0002lV-Ae; Thu, 09 May 2019 10:31:53 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1hOhDe-0007Gm-Tl; Thu, 09 May 2019 11:28:10 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOgL6-0002kx-0c
- for linux-mtd@lists.infradead.org; Thu, 09 May 2019 10:31:49 +0000
-Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa5.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa5.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-X-IronPort-AV: E=Sophos;i="5.60,449,1549954800"; d="scan'208";a="30759862"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
- 09 May 2019 03:31:45 -0700
-Received: from NAM05-BY2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.76.108) with Microsoft SMTP Server (TLS)
- id 14.3.352.0; Thu, 9 May 2019 03:31:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o8HpuWk0tNGFXNt38eIE/8gRwdJJKf1X2SLf162Q03E=;
- b=xBxX3o2GmveoefhlVv26B2AXpoW/owhGbQJpQH8aVyjzvjNuZjd9cSp9naaQoz2EA5HkUVCIh0P5KN4aoTClMKLWJIudrHLBnRXPF5S0zieJR6sAi/BWxSfu7btBE1JK/Qqmz3/trMbjK7pBt+ubsLc01PYa5i1Hm/I9V+9zOEI=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1459.namprd11.prod.outlook.com (10.172.21.22) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.22; Thu, 9 May 2019 10:31:41 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::35b3:7af:7216:8808]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::35b3:7af:7216:8808%10]) with mapi id 15.20.1878.022; Thu, 9 May 2019
- 10:31:41 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <geert@linux-m68k.org>
-Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
-Thread-Topic: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
-Thread-Index: AQHU3uz1n9sAm8MvGUei5wsE+JArGKZft50AgAANmoCAAAIxgIAABqiAgAAbqwCAAAZdgIAAApsAgAATIoCAAVI2gIAAKTcAgAAUAICAACvcAIAA6X4AgAAl0YCAABZ5gA==
-Date: Thu, 9 May 2019 10:31:41 +0000
-Message-ID: <7649e84f-debb-cec8-d6d6-d33d9dce4259@microchip.com>
+ id 1hOhDe-0007Fc-48
+ for linux-mtd@bombadil.infradead.org; Thu, 09 May 2019 11:28:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Type:Cc:To:Subject:Message-ID:
+ Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=2GNapSTWdZW+nfvnOZyYJdFFg0+Mfj5JFMwWRI5ntto=; b=U9HTSn87rJ0/55n2peDawOhR3
+ vpWgdkV9n7kbPdhgOFWE6PTHv6B0Gdh6qWchYqSi9dTZQY8Un8AocXM1Nf9dyzw0eC42VGi/ISPdR
+ Id6PwIHCzvgCvwFr2UX3OLU/KEi8RzlcBPjY1CXEq7Egkkr0YvGHECPTXwJt2eRN90mtuoZ2LUp+K
+ 6nIretwfwStTfjbABilbdj6tm6X1zILWB2SeyltZkmPq5nW2giitdu66mucMx2dO4ZMVJsUfsTqcu
+ aXC45joJx/1mK8/g2LXeOPt1G5rMiFO8lOx2I1tUUWh+7zWqCXGdsf4pFxLAzsSitaSABB92k4ywR
+ eeRNHQOQw==;
+Received: from mail-ua1-f67.google.com ([209.85.222.67])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hOgyx-0003zg-AS
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2019 11:13:01 +0000
+Received: by mail-ua1-f67.google.com with SMTP id 49so652183uas.0
+ for <linux-mtd@lists.infradead.org>; Thu, 09 May 2019 04:12:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2GNapSTWdZW+nfvnOZyYJdFFg0+Mfj5JFMwWRI5ntto=;
+ b=W1onJQA0ulK/GCHsaMzlV9hudRcK4kUzIGVsJoQ6u3eV6xlJZ4EfXPQm3iPHKVz9rT
+ yF2qTAcKYCpwGdgDp0SYEEObT0I6I0k5Y8wSGo1aKCQMK8krPbeHMoia9foIVG/i55Ll
+ fmxc6WBJpPB30yWPXCLtPcGDAMU790uRey3wak4Uqb+Iwlfvmd+Osy2SWDFx8+RMI6My
+ S08Su3fRwNci1CxKojnhY/4/a9eJu5nIFqZTMbyIM2YYfAhJMDRtx7d/+tD5MpwV7BTv
+ MFk55Kraj2rtC48rSCENvto3StFtPQdBwk3EyH9+B7QJtRIf8GepS6gARj/gu77g+2XX
+ nI7g==
+X-Gm-Message-State: APjAAAUsKezGrz8jbJx5uteL3a9QW62DIofo1Tr2CrEOHVmAzpDgGPvM
+ SVzolSM8y58EFAaGJZLM9CI0Hu1T6U2aSNNorHc=
+X-Google-Smtp-Source: APXvYqxs2BwR9KFho9QUZKAjVXGcEUPzucDa+2TRN5gs5hlRMDoHX8XsbZGI721UhcE8ELyDaqsmWC70YA55q4LtxZc=
+X-Received: by 2002:a9f:352a:: with SMTP id o39mr1537803uao.78.1557400377371; 
+ Thu, 09 May 2019 04:12:57 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190320071605.4289-1-jonas@norrbonn.se>
  <20190320071605.4289-3-jonas@norrbonn.se>
  <CAMuHMdVH85iFJngkU6W61ybwR2j3YQ7=cugPxgC57hUgBOc5KA@mail.gmail.com>
@@ -105,46 +89,16 @@ References: <20190320071605.4289-1-jonas@norrbonn.se>
  <CAMuHMdXghAWmNJLUq_uOUVPrrNTAcFq=QqCGjLU51FchvOu3=g@mail.gmail.com>
  <6a8d9a6c-5281-88d2-51ae-e2afad847a8f@microchip.com>
  <CAMuHMdVBguF4ZQHTqwr6GAJKuUcvBGu-5p0GeYRmZ3dG8tXa2g@mail.gmail.com>
-In-Reply-To: <CAMuHMdVBguF4ZQHTqwr6GAJKuUcvBGu-5p0GeYRmZ3dG8tXa2g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1P189CA0032.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:802:2a::45) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 34ab72bc-b8be-412b-861d-08d6d469865c
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);
- SRVR:BN6PR11MB1459; 
-x-ms-traffictypediagnostic: BN6PR11MB1459:
-x-microsoft-antispam-prvs: <BN6PR11MB1459E8346E1940772A50ED16F0330@BN6PR11MB1459.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-forefront-prvs: 003245E729
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(136003)(39860400002)(396003)(376002)(346002)(366004)(51914003)(199004)(189003)(316002)(73956011)(14444005)(256004)(66946007)(6916009)(5660300002)(72206003)(54906003)(6436002)(66476007)(53936002)(66446008)(64756008)(66556008)(2906002)(68736007)(31686004)(76176011)(478600001)(99286004)(31696002)(86362001)(52116002)(6116002)(8936002)(446003)(11346002)(3846002)(2616005)(476003)(486006)(6246003)(186003)(71200400001)(8676002)(305945005)(71190400001)(6506007)(386003)(81166006)(4326008)(26005)(6512007)(53546011)(102836004)(7736002)(66066001)(6486002)(36756003)(14454004)(229853002)(81156014)(25786009);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1459;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: LnSn1S7ksA9FGYRGhHIUOY7rEnJ3sxlGRRHMCoNy1/MgdWIOXkhfxLYilEDcZKjtpOJNqBMjXRoBWniB4nkc3jN0nhGPgZYmIqxrwmMzb6VwsnR89E7ZR4OUN2Pzm7nCv1c69MWYyHv5jeku3gQRcBwLjtSmi7DZ+R0om11Ul5jORHG17gfL/9tDAsDh2fhR02h2Sg7pqKqpcTqxVSxqdNqlC6tfMhGWGGDXrlBw8UFn9LvjixLC9QycMwoFY5TqpuCKmlR7E9/JuPta8pvZx7s4x8E9nzqJBBSW/rErgXMndXmcMHSININayaBIV9Z6bd6sJeOqBFP115eIZYFRylVw6n0JH3T+yCv3VKYBx3SpoFwJaSdGuHw7YLHWGKCr2ZgW8qp3Vxvr/RCHWxd2GzQ0x9+u2wOcu5AduUh+md8=
-Content-ID: <10A2E6B549FB8E46BCE5CD44D1D59F4E@namprd11.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34ab72bc-b8be-412b-861d-08d6d469865c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2019 10:31:41.2500 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1459
-X-OriginatorOrg: microchip.com
+ <7649e84f-debb-cec8-d6d6-d33d9dce4259@microchip.com>
+In-Reply-To: <7649e84f-debb-cec8-d6d6-d33d9dce4259@microchip.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 9 May 2019 13:12:43 +0200
+Message-ID: <CAMuHMdVPrR=58_+P+D9Gos89n4Yv7wYzLORXmY=JKxZZ2ydKPg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
+To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190509_033148_179072_A9E83BED 
-X-CRM114-Status: GOOD (  14.46  )
+X-CRM114-CacheID: sfid-20190509_121259_364635_C874EA59 
+X-CRM114-Status: GOOD (  23.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -156,104 +110,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-renesas-soc@vger.kernel.org, jonas@norrbonn.se,
- linux-mtd@lists.infradead.org, marek.vasut+renesas@gmail.com
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Jonas Bonn <jonas@norrbonn.se>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Geert,
+Hi Tudor,
 
-On 05/09/2019 12:11 PM, Geert Uytterhoeven wrote:
-> External E-Mail
-> 
-> 
-> Hi Tudor,
-> 
-> On Thu, May 9, 2019 at 8:56 AM <Tudor.Ambarus@microchip.com> wrote:
->> When the configuration register QUAD bit CR[1] is 1, only the WRR command format
->> with 16 data bits may be used, WRR with 8 bits is not recognized and hence the
->> FFs. You probably set quad bit in u-boot, while others don't. We can verify this
->> assumption with the patch form below. Can you try it?
-> 
-> Thanks!
-> 
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> 
->> +static int spi_nor_clear_block_protection(struct spi_nor *nor)
->> +{
->> +       int ret;
->> +       u8 sr, cr, sr_cr[2] = {0};
->> +       u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
->> +
->> +       ret = read_cr(nor);
->> +       dev_dbg(nor->dev, "CR = %08x\n", ret);
->> +        if (ret < 0) {
->> +                dev_err(nor->dev, "error while reading CR\n");
->> +               return ret;
->> +       }
->> +       cr = ret;
->> +
->> +       if (cr & CR_QUAD_EN_SPAN) {
->> +               /* disable quad if already set, must do it with 16-bit WRR */
->> +               ret = write_sr_cr(nor, sr_cr);
->> +               if (ret) {
->> +                       dev_err(nor->dev, "error diasbling quad mode\n");
-> 
-> disabling
-> 
->> +                       return ret;
->> +               }
-> 
-> renesas_spi e6b10000.spi: DMA available
-> renesas_spi e6b10000.spi: registered master spi0
-> spi spi0.0: setup mode 3, 8 bits/w, 30000000 Hz max --> 0
-> m25p80 spi0.0: bfpt.dwords[1] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[2] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[3] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[4] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[5] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[6] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[7] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[8] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[9] = ffffffff
-> m25p80 spi0.0: bfpt.dwords[10] = 00000000
-> m25p80 spi0.0: bfpt.dwords[11] = 00000000
-> m25p80 spi0.0: bfpt.dwords[12] = 00000000
-> m25p80 spi0.0: bfpt.dwords[13] = 00000000
-> m25p80 spi0.0: bfpt.dwords[14] = 00000000
-> m25p80 spi0.0: bfpt.dwords[15] = 00000000
-> m25p80 spi0.0: bfpt.dwords[16] = 00000000
-> m25p80 spi0.0: failed to parse BFPT: err = -22
-> m25p80 spi0.0: spi_nor_init_params sfdp parse failed, ret =-22
-> m25p80 spi0.0: SR and CR before quad_enable:
-> m25p80 spi0.0: SR = 00000000
-> m25p80 spi0.0: CR = 00000002
-> m25p80 spi0.0: SR and CR after quad_enable:
-> m25p80 spi0.0: SR = 00000000
-> m25p80 spi0.0: CR = 00000002
-> m25p80 spi0.0: s25fl512s (65536 Kbytes)
-> m25p80 spi0.0: mtd .name = spi0.0, .size = 0x4000000 (64MiB),
-> .erasesize = 0x00040000 (256KiB) .numeraseregions = 0
-> 3 fixed-partitions partitions found on MTD device spi0.0
-> Creating 3 MTD partitions on "spi0.0":
-> 0x000000000000-0x000000080000 : "loader"
-> 0x000000080000-0x000000600000 : "user"
-> 0x000000600000-0x000004000000 : "flash"
-> renesas_spi e6b10000.spi: registered child spi0.0
-> renesas_spi e6b10000.spi: probed
-> 
-> And /dev/mtd0 reading works fine.
-> Thanks!
-> 
+On Thu, May 9, 2019 at 12:31 PM <Tudor.Ambarus@microchip.com> wrote:
+> On 05/09/2019 12:11 PM, Geert Uytterhoeven wrote:
+> > On Thu, May 9, 2019 at 8:56 AM <Tudor.Ambarus@microchip.com> wrote:
+> >> When the configuration register QUAD bit CR[1] is 1, only the WRR command format
+> >> with 16 data bits may be used, WRR with 8 bits is not recognized and hence the
+> >> FFs. You probably set quad bit in u-boot, while others don't. We can verify this
+> >> assumption with the patch form below. Can you try it?
+> >
+> > And /dev/mtd0 reading works fine.
+> > Thanks!
+> >
+>
+> I'm glad that it worked, thanks for the help. I'll do a patch to fix this case,
+> but probably it will qualify for -next. Is -next ok for you?
 
-I'm glad that it worked, thanks for the help. I'll do a patch to fix this case,
-but probably it will qualify for -next. Is -next ok for you?
+Given the issue is present only in -next, fixing it in -next is fine for me.
+Thanks!
 
-Cheers,
-ta
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
