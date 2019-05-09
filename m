@@ -2,85 +2,97 @@ Return-Path: <SRS0=HSOd=TJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 951CCC04AB1
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 14:23:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82A9FC04AB1
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 15:57:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 409C1208C3
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 14:23:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51AB920850
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 15:57:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pFhqaRZE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Eh/JkVUp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 409C1208C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ky+Rqfzo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f8IIe6G9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51AB920850
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aKHFtX7b/vwyRPT/cmRWMzy/7WmPUB6/OJbS14hwLiw=; b=pFhqaRZEaQojJc
-	cLyDVuYtVnsfAERH0+8PL7EH+42+z1hD31/lJQo47Wp9LmDMVZKsuXT8LRNUXr5k7dzjpDvEh0AA/
-	ifqVfzrH2Kkqw6yR/8jh+1gEWElFBRjmbqFHXSLgGPkzlsnOPhzup+AmyqwYB6KZRAwCzK01HDlA0
-	wM5TcJ3k60Ql3rSHo/vRkRqbxaa+HQjfO3jpabM2yxNe/Hs6hcbmFYDXYibtPdPWBB/QaIa67naIi
-	JahtxxkDo6GQbXGlefmA9BjkTAxyrC5mf8KzZzkU9wXcNZoSLm8BTXBxoGmh4Hcr3Ec4sVqMaQ6Mr
-	ssG/ObkGrddFRovcsz/g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:Subject:From:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=y2jONY9+sbK81IJSrxFCTNHB7nv29OEnMBCX5Z1/CCM=; b=Ky+Rqfzo0u4mR8
+	tc3eRL7sAk/doTnoZcHRwPvAKKyF5sEgirF4XFOIJZ+BiigWCCcn8XneBhnB76WDwJhNowtvIEGZa
+	UX5jZlnqErTtB8moib8DaZ5LNAZmN/7imsANQd7YEwKTNEixsdU0d/9pE9K1X+QJGPJVz2+prIkRw
+	9VICY0zAYMrjHY2Q5rDctXg+61d7k4PNY9tmZMZiQm7x4W78HNkH4DvnWcr5UJs69R1TeOAehhZL5
+	b4AKoPuD4p3bVYJ9nVNHpFHOo0kZL9R+thzduhRHQCcUtQh83+b1wjD1a55+ryQ4cY6QZ2zPvyfKL
+	6fNWnPgbWTM5u/Re0Xcw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOjx6-0002kb-55; Thu, 09 May 2019 14:23:16 +0000
-Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
+	id 1hOlQN-0008Hq-HD; Thu, 09 May 2019 15:57:35 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOjx2-0002jo-QN
- for linux-mtd@lists.infradead.org; Thu, 09 May 2019 14:23:14 +0000
-Received: by mail-it1-x141.google.com with SMTP id r17so3865966ita.0
- for <linux-mtd@lists.infradead.org>; Thu, 09 May 2019 07:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=CJAJWMSbDRtZTT/lyH5+TR+lDyhkoQaqVk/vcm0z2Ao=;
- b=Eh/JkVUpHB0z8bi9m3gkPcO82KpSIWF8E64gJiNt7GJbvEsn28SE6m7w1Al7JQ1PoV
- VenQwAENtE7CyAHXvIK0JNFTnA7wp7FVEh2ihJSwLC4jhWMv95qLlsMziISprMSiOk6C
- V8O/bD0lfn2AcmxtZNufi8B+skOcjemCRrFQ5In63YPA2op4xEUxm3n/DIP71xUilWg8
- Nc+lz/lSy04aFkf9W078jbaarYlPWXx+vpKbNRbANDPjHd/dnrIzmwUwGozs9W3JHW6U
- qy9EgmbVDCf7a2tRHcgDzNeIRzV+fAYyimV+8eMeKgk2FnGoE9kELfZw/86gONFRXIuQ
- KuwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=CJAJWMSbDRtZTT/lyH5+TR+lDyhkoQaqVk/vcm0z2Ao=;
- b=Ysb3gjQdEPnoIa05WmiBUGRP3/71OlAHGPhcueWzVX+ho5JzpWYehzeRt8kCe1GTzm
- J7DvQFPS7SoR7rCoqOU3gFJbec0kUWRstgjGUiiSxJKmbGqywtXDcyt+Ls7jFUwIPxrL
- itkdmBenM40EVoH6wmp9Fm6nTjFdMNj1kuCKfLjKmIWyXFRD50+LLaGYdsGg67a8GQ5M
- 6fNlW5kqUfkV0+xPxrvCKMinpA1EVglVW602k6UcQmtV32KhdUXBrw3QSMMyadcGeW/t
- 4YItlTblZxoTUqyzZQPmt+WcDLwotMVbEyxEd9+IUtDeAWO/DFm78Aus8tTKjNmS8wwy
- wDSw==
-X-Gm-Message-State: APjAAAU/nOugALkELWauDIDtf7XMfWsD4HJGW2dlrJU0/XalJF2ZXLWR
- zMCwofChBw9zfsH7AhJNecDHnk9RtNz37t9OYjk3OA==
-X-Google-Smtp-Source: APXvYqxA41KpQLDZwMiuRZvoLLjanStXSNAuvVQvtDhC5A8eLBEix9KyEuJYsIQQW75bJz2uPEpO1bcu3xil346SB+g=
-X-Received: by 2002:a02:b88b:: with SMTP id p11mr3324967jam.82.1557411788929; 
- Thu, 09 May 2019 07:23:08 -0700 (PDT)
+ id 1hOlQK-0008HE-1b
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2019 15:57:33 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x49FvGPP027849;
+ Thu, 9 May 2019 10:57:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1557417436;
+ bh=/nK4v/rXZbjA+CJzACVkSB/BxokCaylpclLxpBzH4BY=;
+ h=From:Subject:To:CC:References:Date:In-Reply-To;
+ b=f8IIe6G9nEO2+h/tijYerw8stbv05TIhl8lyZwJw/79Qarm5YJWmeHElQTYNonCHB
+ Gm4fkKTaGBp81JCbNWVRBuR8LsemS0Dpd0fEXpzX00yHU+X1wSpnS+LKgEyeczzwtk
+ /b23ldjLKv31j9fjiQCmQsHiWPFD/XkKHA8nfOQg=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x49FvGeG019441
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 9 May 2019 10:57:16 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Thu, 9 May
+ 2019 10:57:16 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Thu, 9 May 2019 10:57:16 -0500
+Received: from [172.22.216.122] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x49FvEaF109386;
+ Thu, 9 May 2019 10:57:14 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
+To: <Tudor.Ambarus@microchip.com>, <geert@linux-m68k.org>
+References: <20190320071605.4289-1-jonas@norrbonn.se>
+ <CAMuHMdVH85iFJngkU6W61ybwR2j3YQ7=cugPxgC57hUgBOc5KA@mail.gmail.com>
+ <1f33e1e5-d7bf-76a0-c4d3-ecbc35fbfd4f@microchip.com>
+ <CAMuHMdU83vLeVSqMZuJwR4yd382mau-OE1saMAOC2+6HodsHvg@mail.gmail.com>
+ <fac5fa6d-95e9-cfb0-4d5a-6b16d4470190@norrbonn.se>
+ <CAMuHMdUEdNr5rgCdaGAFJ-WK4oL2DC419smk+QYOJ7qJvkWA8A@mail.gmail.com>
+ <a9ad3641-1eb8-782c-9dfd-0db41256d3f1@microchip.com>
+ <ad49240c-2073-4045-c11c-fb6bad231321@microchip.com>
+ <CAMuHMdVcp--qRo3m8kSQ=++Vx33kvxBWEHFVHfh-j=pq1x-GPQ@mail.gmail.com>
+ <898831ba-b8bb-7c2b-e623-2e6c26da91b5@microchip.com>
+ <CAMuHMdXFwFAPzYPKqj+FZgSq01VAD0izS3ELyOg1YBwTAQ_QkQ@mail.gmail.com>
+ <8b004a57-0fd9-04fe-d031-1d98d890f826@microchip.com>
+ <CAMuHMdXghAWmNJLUq_uOUVPrrNTAcFq=QqCGjLU51FchvOu3=g@mail.gmail.com>
+ <6a8d9a6c-5281-88d2-51ae-e2afad847a8f@microchip.com>
+ <CAMuHMdVBguF4ZQHTqwr6GAJKuUcvBGu-5p0GeYRmZ3dG8tXa2g@mail.gmail.com>
+ <7649e84f-debb-cec8-d6d6-d33d9dce4259@microchip.com>
+Message-ID: <1d2929b4-3228-437a-b2d7-2126e2e47880@ti.com>
+Date: Thu, 9 May 2019 21:27:13 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <000000000000fb78720587d46fe9@google.com>
- <20190502023426.GA804@sol.localdomain>
- <CACT4Y+YHFH8GAhDaNdNNTVFFx6YfKSL19cLPx2vpP-YngzS6kQ@mail.gmail.com>
- <CACT4Y+biO9GEN16Rak_1F+UdvhTe3fUwVf_VWRup2xrgvr9WKA@mail.gmail.com>
- <20190509031849.GC693@sol.localdomain>
-In-Reply-To: <20190509031849.GC693@sol.localdomain>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Thu, 9 May 2019 16:22:56 +0200
-Message-ID: <CACT4Y+bz-aFJ2PbqJKL7veWavZkLw5nq+RFnnTveXMowRMVY4Q@mail.gmail.com>
-Subject: Re: BUG: soft lockup in kvm_vm_ioctl
-To: Eric Biggers <ebiggers@kernel.org>
+In-Reply-To: <7649e84f-debb-cec8-d6d6-d33d9dce4259@microchip.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190509_072312_881975_81BC8D62 
-X-CRM114-Status: GOOD (  22.80  )
+X-CRM114-CacheID: sfid-20190509_085732_226749_2F30A7D8 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,120 +104,99 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Ingo Molnar <mingo@kernel.org>, KVM list <kvm@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, jbaron@redhat.com,
- Rik van Riel <riel@surriel.com>,
- syzkaller-bugs <syzkaller-bugs@googlegroups.com>, adrian.hunter@intel.com,
- Steven Rostedt <rostedt@goodmis.org>, David Miller <davem@davemloft.net>,
- Richard Weinberger <richard@nod.at>, syzkaller <syzkaller@googlegroups.com>,
- linux-mtd@lists.infradead.org, Andy Lutomirski <luto@kernel.org>,
- Josh Poimboeuf <jpoimboe@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- syzbot <syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com>
+Cc: linux-renesas-soc@vger.kernel.org, jonas@norrbonn.se,
+ linux-mtd@lists.infradead.org, marek.vasut+renesas@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> > > > Can the KVM maintainers take a look at this?  This doesn't have anything to do
-> > > > with my commit that syzbot bisected it to.
-> > > >
-> > > > +Dmitry, statistics lession: if a crash occurs only 1 in 10 times, as was the
-> > > > case here, then often it will happen 0 in 10 times by chance.  syzbot needs to
-> > > > run the reproducer more times if it isn't working reliably.  Otherwise it ends
-> > > > up blaming some random commit.
-> > >
-> > > Added a note to https://github.com/google/syzkaller/issues/1051
-> > > Thanks
-> >
-> > As we increase number of instances, we increase chances of hitting
-> > unrelated bugs. E.g. take a look at the bisection log for:
-> > https://syzkaller.appspot.com/bug?extid=f14868630901fc6151d3
-> > What is the optimum number of tests is a good question. I suspect that
-> > the current 10 instances is close to optimum. If we use significantly
-> > more we may break every other bisection on unrelated bugs...
-> >
->
-> Only because syzbot is being super dumb in how it does the bisection.  AFAICS,
-> in the example you linked to, buggy kernels reliably crashed 10 out of 10 times
-> with the original crash signature, "WARNING in cgroup_exit".  Then at some point
-> it tested some kernel without the bug and got a different crash just 1 in 10
-> times, "WARNING: ODEBUG bug in netdev_freemem".
->
-> The facts that the crash frequency was very different, and the crash signature
-> was different, should be taken as a very strong signal that it's not the bug
-> being bisected for.  And this is something easily checked for in code.
->
-> BTW, I hope you're treating fixing this as a high priority, given that syzbot is
-> now sending bug reports to kernel developers literally selected at random.  This
-> is a great way to teach people to ignore syzbot reports.  (When I suggested
-> bisection originally, I had assumed you'd implement some basic sanity checks so
-> that only bisection results likely to be reliable would be mailed out.)
+Hi Tudor,
 
+On 09/05/19 4:01 PM, Tudor.Ambarus@microchip.com wrote:
+[...]
+>>
+>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>
+>>> +static int spi_nor_clear_block_protection(struct spi_nor *nor)
+>>> +{
+>>> +       int ret;
+>>> +       u8 sr, cr, sr_cr[2] = {0};
+>>> +       u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+>>> +
+>>> +       ret = read_cr(nor);
+>>> +       dev_dbg(nor->dev, "CR = %08x\n", ret);
+>>> +        if (ret < 0) {
+>>> +                dev_err(nor->dev, "error while reading CR\n");
+>>> +               return ret;
+>>> +       }
+>>> +       cr = ret;
+>>> +
+>>> +       if (cr & CR_QUAD_EN_SPAN) {
+>>> +               /* disable quad if already set, must do it with 16-bit WRR */
+>>> +               ret = write_sr_cr(nor, sr_cr);
+>>> +               if (ret) {
+>>> +                       dev_err(nor->dev, "error diasbling quad mode\n");
+>>
+>> disabling
+>>
+>>> +                       return ret;
+>>> +               }
+>>
+>> renesas_spi e6b10000.spi: DMA available
+>> renesas_spi e6b10000.spi: registered master spi0
+>> spi spi0.0: setup mode 3, 8 bits/w, 30000000 Hz max --> 0
+>> m25p80 spi0.0: bfpt.dwords[1] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[2] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[3] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[4] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[5] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[6] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[7] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[8] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[9] = ffffffff
+>> m25p80 spi0.0: bfpt.dwords[10] = 00000000
+>> m25p80 spi0.0: bfpt.dwords[11] = 00000000
+>> m25p80 spi0.0: bfpt.dwords[12] = 00000000
+>> m25p80 spi0.0: bfpt.dwords[13] = 00000000
+>> m25p80 spi0.0: bfpt.dwords[14] = 00000000
+>> m25p80 spi0.0: bfpt.dwords[15] = 00000000
+>> m25p80 spi0.0: bfpt.dwords[16] = 00000000
+>> m25p80 spi0.0: failed to parse BFPT: err = -22
+>> m25p80 spi0.0: spi_nor_init_params sfdp parse failed, ret =-22
+>> m25p80 spi0.0: SR and CR before quad_enable:
+>> m25p80 spi0.0: SR = 00000000
+>> m25p80 spi0.0: CR = 00000002
+>> m25p80 spi0.0: SR and CR after quad_enable:
+>> m25p80 spi0.0: SR = 00000000
+>> m25p80 spi0.0: CR = 00000002
+>> m25p80 spi0.0: s25fl512s (65536 Kbytes)
+>> m25p80 spi0.0: mtd .name = spi0.0, .size = 0x4000000 (64MiB),
+>> .erasesize = 0x00040000 (256KiB) .numeraseregions = 0
+>> 3 fixed-partitions partitions found on MTD device spi0.0
+>> Creating 3 MTD partitions on "spi0.0":
+>> 0x000000000000-0x000000080000 : "loader"
+>> 0x000000080000-0x000000600000 : "user"
+>> 0x000000600000-0x000004000000 : "flash"
+>> renesas_spi e6b10000.spi: registered child spi0.0
+>> renesas_spi e6b10000.spi: probed
+>>
+>> And /dev/mtd0 reading works fine.
+>> Thanks!
+>>
+> 
+> I'm glad that it worked, thanks for the help. I'll do a patch to fix this case,
+> but probably it will qualify for -next. Is -next ok for you?
 
+I think this fix should be forwarded to v5.2-rc1 (or -rc2 at least) as
+patch in question ("spi-nor: s25fl512s supports region locking") is part
+of SPI NOR pull request for v5.2-rc1 and therefore would end up in
+mainline v5.2-rc1 during the merge window.
 
-While I believe we can get some quality improvement by shuffling
-numbers. I don't think we can get significant improvement overall and
-definitely not eliminate wrong bisection results entirely. It's easy
-to take a single wrong bisection and design a system around this
-scenario, but it's very hard to design a system that will handle all
-of them in all generality. For example, look at these bisection logs
-for cases where reproduction frequency varies from 1 to all, but
-that's still the same bug:
-https://syzkaller.appspot.com/x/bisect.txt?x=12df1ba3200000
-https://syzkaller.appspot.com/x/bisect.txt?x=10daff1b200000
-https://syzkaller.appspot.com/x/bisect.txt?x=1592b037200000
-https://syzkaller.appspot.com/x/bisect.txt?x=11c610a7200000
-https://syzkaller.appspot.com/x/bisect.txt?x=17affd1b200000
-You also refer to "a different crash". But that's not a predicate we
-can have. And definitely not something that is "easily checked for in
-code". Consider, a function rename anywhere in the range will lead to
-as if a different crash. If you look at all bisection logs you find
-lots of amusing cases where something that a program may consider a
-different bugs is actually the same bug, or the other way around. So
-if we increase number of tests and we don't have a way to distinguish
-crashes (which we don't), we will necessary increase incorrect results
-due to unrelated bugs.
-
-Bisection is a subtle process and the predicate, whatever logic it
-does internally, in the end need to produce a single yes/no. And a
-single wrong answer in the chain leads to a completely incorrect
-result. There are some fundamental reasons for wrong results:
- - hard to reproduce bugs (not fixable)
- - unrelated bugs/broken builds (fixable)
-While tuning numbers can pepper over these to some degree (maybe),
-these reasons will stay and will lead to incorrect results. Also I
-don't this tuning as something that is trivially to do as you suggest.
-For example, how exactly do you assess a crash as reliably happening
-vs episodically? How exactly do you choose number of tests for each
-case? Choosing too few tests will lead to incorrect results, choosing
-too many will lead to incorrect results. How exactly do you assess
-that something that was happening reliably now does not happen
-reliably? How do you assess that a crash is very different? Each of
-the choices have chances of producing more bad results, so one would
-need to rerun hundreds of bisections with old/new version, and then
-manually mark results and then estimate quality change (which most
-likely will be flaky or inconclusive in lots of cases). Tuning quality
-of heuristics-based algorithms is very time consuming, especially if
-each experiment takes weeks.
-
-There is another down-side for not "super dumb" algorithms. Which is
-explaining results. Consider that syzbot now mails a bisection where
-the crash happened and a developer sees that it's the same crash, but
-syzbot says "nope. did not crash". That will cause reasonable
-questions and somebody (who would that be?) will need to come and
-explain what happens and why, and how that counter-intuitive local
-result was shown to improve quality overall. Simpler algorithms are
-much easier to explain.
-
-I consider bisection as high priority, but unfortunately only among
-other high priority and very high priority work.
-Besides work on the fuzzer itself and bug detection tools, we now test
-15 kernels across 6 different OSes. Operational work can't be
-deprioritized because then nothing will work at all. Change reviews
-can't be deprioritized. Overseeing bug flow can't be deprioritized.
-Updating crash parsing in response to new kernel output can't be
-deprioritized. Answering all human emails can't be deprioritized.
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
