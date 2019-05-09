@@ -1,82 +1,73 @@
-Return-Path: <SRS0=JkGG=TI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=HSOd=TJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,T_DKIMWL_WL_HIGH,
+	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BA24C04A6B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 19:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3990C04AAD
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 03:18:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C1BE21734
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2019 19:52:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7593C21744
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 03:18:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ToiTqxod";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UxL1m2dX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C1BE21734
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O5bT35Jm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYmoGRW8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7593C21744
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YzKBe0Fumxus2538nfHpug2/Adh4qXn5cWhext+4+Vw=; b=ToiTqxodyVX3uM
-	MfiwgPq8uIynK0moYtoGn8gO71V0tbIC7mlTaFWS3Lw11mGJU8Bid/p8QmwN/Yr0aUvfeYrIBs/0K
-	Pe0keE/4+idOOVQRoopyS9iYYuWl9d6sfZK/b8J4v7mHt2W23CXwFckk+JYvw7I9Cs9Eg5HPKzVnI
-	CBlGXdLh6S6V0mR/1Bq8f2ac0TODinnBuJrHZwGzHHM/6BT52DP8sXc1fqvIARO+6bZ6sbOEcAewN
-	6nc5zdKAjOpy8wPDKNR7U3CXa5vLAQ9PnloNy0yiq76KEswUBq/4mBjaMf4z8BsQIfv7DHf7b9ENG
-	MtCaf6wsAjJFAJSIFGQQ==;
+	List-Owner; bh=vDYR1fYg9m46cvH08UQusjaVMXqH8fojLVm3fOb0yB8=; b=O5bT35JmmB+PfV
+	kH72aqnlyoG4AKhN+pt7wdgCkEabkSutnlMStFvoy8noWo2XMtx6YktNTFyGrZmDc5abGB96ZOVJS
+	l2BO6ALAiKJSfWT/lXtcmjbXF+uusgh7SuXJgvlh6IOidpDPyd6qzXQM8RtiLvhlDpovt4hjpsEhn
+	HvXkxP8gc3B/Qmg/b8Y3SOzR6B1XMPtyy/8Og0XyYU1hh1tgvS8ddeJTDYYD9gkpTV/htZj628XDk
+	h7hV2gXifksLzvj93ljM69XkipfVJXIZW2PTkUZLh8divIvuFE6SCFBlA+bQ8PObtdKwejChNKd9z
+	SsKcuzjqGx7cgim7i5Xg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOScI-00066H-KI; Wed, 08 May 2019 19:52:38 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1hOZaB-00037p-OQ; Thu, 09 May 2019 03:18:55 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOScF-00063l-54
- for linux-mtd@lists.infradead.org; Wed, 08 May 2019 19:52:37 +0000
-Received: by mail-wm1-x336.google.com with SMTP id h11so105313wmb.5
- for <linux-mtd@lists.infradead.org>; Wed, 08 May 2019 12:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=oB/1thJSvfpF3k9iHuEARtLHOAtpxWNWmfqQwy8beMc=;
- b=UxL1m2dXngyHSLotIi8ABvDNL9treD6WhO/8/YC9qIIOei8rz5HqfVY7AazjZotqLQ
- PSLP+b/M293D6jaUj+beXitvkgbC4Eg+mQKYLd6321lrVoBNFg+pyU6tbAE0mpZ6FhDK
- q/U1oKb3ep5x5Zikf32ZvP0tZ5X4zvo3wMNYnoMIMQz0kj5NH7JyLNcJ4lcsM74Y8roK
- uPgBlmS8vQR1JjxbtWlmEutP8FZGU0QLchRXNs7YzBl2A1uLMgdbKJu43V2lWYyjXBUX
- ccjP2GTb14LpBsfsfLKZKufjwhDJ9bNcdYHVpv5OKuVCV15idD8diWL52zZ1GYuZpOhx
- yZFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=oB/1thJSvfpF3k9iHuEARtLHOAtpxWNWmfqQwy8beMc=;
- b=mvql+5Xh5UmBsK7Rq/qdh9znUO/4G2zMT8aq21dly424aQ0M2uwBb500OspmtbIWJt
- cZg+LeZkQkixdWPZocQz3e9D802ccEAVqLzdchbZ+LYA6xCrczTBLGULJztggbukkWa4
- 3mI8pgbU/5cuikZjZ1ngZtrokAu+Xo+eEFoP3QUgAxyqo292m5emH3bIdoZ54jfe6Yl9
- SUBwbNTydB/HuCNvpv3nXMWJ526S2YQlLV/lnfjrLyNejS5IgIXMO7QupZrStv52liPb
- rHqwTwQU4nlfmBkvtYn8whKvdo+9M++iy7V2SwVd6fbEB+hVkvAeKnnoHo8iULuaJKNK
- VXDw==
-X-Gm-Message-State: APjAAAXGSH3Ahslez/1bl2EmQ0NpugO/ReBimSs8z95ingy14IpanOei
- tTZ0v6SHyY3vOlqQ157BLQawixI7ICZ3BiqdL5k=
-X-Google-Smtp-Source: APXvYqwE5SgKy3KzwMaP+JL2avwu8RoCxmdrROcUd664E2XBGvOBHkeVwxPGLSrkgLhmIMcM4oEOrZvFoASSU8i58f4=
-X-Received: by 2002:a1c:2dd2:: with SMTP id t201mr45309wmt.10.1557345150050;
- Wed, 08 May 2019 12:52:30 -0700 (PDT)
+ id 1hOZa8-00037A-Mf
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2019 03:18:54 +0000
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net
+ [24.5.143.220])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7B23B216C4;
+ Thu,  9 May 2019 03:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1557371932;
+ bh=wbc2nMDTXj8uKTSNeLXL8qh2f7BOYY4bpqJ3xfZBg8o=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=KYmoGRW85IniC6CISgzssg1sp+SMbhw9CPsTBnm6Sk3J7/99LN+ZKhSNKjVk/vlyZ
+ cDTRdXAdkLy6fadZPeII9mJhuVJlcml3sI2/iMQm1RZz1HZpFZSSvQEboB9l5kqvPU
+ g0eKSV9IUAWBiBV6iJMNZrrMmRB+ofDa5pcdXKd4=
+Date: Wed, 8 May 2019 20:18:50 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: BUG: soft lockup in kvm_vm_ioctl
+Message-ID: <20190509031849.GC693@sol.localdomain>
+References: <000000000000fb78720587d46fe9@google.com>
+ <20190502023426.GA804@sol.localdomain>
+ <CACT4Y+YHFH8GAhDaNdNNTVFFx6YfKSL19cLPx2vpP-YngzS6kQ@mail.gmail.com>
+ <CACT4Y+biO9GEN16Rak_1F+UdvhTe3fUwVf_VWRup2xrgvr9WKA@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAK3Qp=Xr_XyDZMCoDL6fDAb58+e_Hi9ErgnT-yLbAmbSpzc8TA@mail.gmail.com>
-In-Reply-To: <CAK3Qp=Xr_XyDZMCoDL6fDAb58+e_Hi9ErgnT-yLbAmbSpzc8TA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 8 May 2019 21:52:18 +0200
-Message-ID: <CAFLxGvx2K8kTiUuqpWU2L2_Z6=C5Du8bM2F+YJ2Y4Y5K=pDjrA@mail.gmail.com>
-Subject: Re: Question: Appending data to a file is optimally handled by UBIFS?
-To: Fernando AE <fernando.ae2017@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+biO9GEN16Rak_1F+UdvhTe3fUwVf_VWRup2xrgvr9WKA@mail.gmail.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190508_125235_192464_E1F2DFA1 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20190508_201852_804952_98899879 
+X-CRM114-Status: GOOD (  23.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,40 +79,178 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
+Cc: Ingo Molnar <mingo@kernel.org>, KVM list <kvm@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, jbaron@redhat.com,
+ Rik van Riel <riel@surriel.com>,
+ syzkaller-bugs <syzkaller-bugs@googlegroups.com>, adrian.hunter@intel.com,
+ Steven Rostedt <rostedt@goodmis.org>, David Miller <davem@davemloft.net>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Andy Lutomirski <luto@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ syzbot <syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 8, 2019 at 6:28 PM Fernando AE <fernando.ae2017@gmail.com> wrote:
->
-> Hello,
->
-> I'm working with a UBI and UBIFS in a NAND flash with 2kB pages and
-> 128 kB blocks.
->
-> My app is periodically appending 16 bytes to a file. I'm wondering if
-> UBIFS and/or underlying drivers will also append data to the same
-> flash page or if a new page must be allocated every time.
->
-> I'm aware that the kernel will buffer data in RAM before syncing to
-> the flash. In any case, assume that a fsync happens after each append.
+On Wed, May 08, 2019 at 06:58:28PM +0200, 'Dmitry Vyukov' via syzkaller-bugs wrote:
+> From: Dmitry Vyukov <dvyukov@google.com>
+> Date: Wed, May 8, 2019 at 1:25 PM
+> To: Eric Biggers
+> Cc: syzbot, KVM list, <adrian.hunter@intel.com>, David Miller, Artem
+> Bityutskiy, <jbaron@redhat.com>, Josh Poimboeuf, LKML,
+> <linux-mtd@lists.infradead.org>, Andy Lutomirski, Ingo Molnar, Peter
+> Zijlstra, Richard Weinberger, Rik van Riel, Steven Rostedt,
+> syzkaller-bugs, Thomas Gleixner
+> 
+> > From: Eric Biggers <ebiggers@kernel.org>
+> > Date: Thu, May 2, 2019 at 4:34 AM
+> > To: syzbot, Dmitry Vyukov, <kvm@vger.kernel.org>
+> > Cc: <adrian.hunter@intel.com>, <davem@davemloft.net>,
+> > <dedekind1@gmail.com>, <jbaron@redhat.com>, <jpoimboe@redhat.com>,
+> > <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+> > <luto@kernel.org>, <mingo@kernel.org>, <peterz@infradead.org>,
+> > <richard@nod.at>, <riel@surriel.com>, <rostedt@goodmis.org>,
+> > <syzkaller-bugs@googlegroups.com>, <tglx@linutronix.de>
+> >
+> > > On Wed, May 01, 2019 at 07:36:05AM -0700, syzbot wrote:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following crash on:
+> > > >
+> > > > HEAD commit:    baf76f0c slip: make slhc_free() silently accept an error p..
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1407f57f200000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a42d110b47dd6b36
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=8d9bb6157e7b379f740e
+> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1266a588a00000
+> > > >
+> > > > The bug was bisected to:
+> > > >
+> > > > commit 252153ba518ac0bcde6b7152c63380d4415bfe5d
+> > > > Author: Eric Biggers <ebiggers@google.com>
+> > > > Date:   Wed Nov 29 20:43:17 2017 +0000
+> > > >
+> > > >     ubifs: switch to fscrypt_prepare_setattr()
+> > > >
+> > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1448f588a00000
+> > > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1648f588a00000
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1248f588a00000
+> > > >
+> > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > Reported-by: syzbot+8d9bb6157e7b379f740e@syzkaller.appspotmail.com
+> > > > Fixes: 252153ba518a ("ubifs: switch to fscrypt_prepare_setattr()")
+> > > >
+> > > > watchdog: BUG: soft lockup - CPU#0 stuck for 123s! [syz-executor.3:22023]
+> > > > Modules linked in:
+> > > > irq event stamp: 26556
+> > > > hardirqs last  enabled at (26555): [<ffffffff81006673>]
+> > > > trace_hardirqs_on_thunk+0x1a/0x1c
+> > > > hardirqs last disabled at (26556): [<ffffffff8100668f>]
+> > > > trace_hardirqs_off_thunk+0x1a/0x1c
+> > > > softirqs last  enabled at (596): [<ffffffff87400662>]
+> > > > __do_softirq+0x662/0x95a kernel/softirq.c:320
+> > > > softirqs last disabled at (517): [<ffffffff8144e4e0>] invoke_softirq
+> > > > kernel/softirq.c:374 [inline]
+> > > > softirqs last disabled at (517): [<ffffffff8144e4e0>] irq_exit+0x180/0x1d0
+> > > > kernel/softirq.c:414
+> > > > CPU: 0 PID: 22023 Comm: syz-executor.3 Not tainted 5.1.0-rc6+ #89
+> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> > > > Google 01/01/2011
+> > > > RIP: 0010:csd_lock_wait kernel/smp.c:108 [inline]
+> > > > RIP: 0010:smp_call_function_single+0x13e/0x420 kernel/smp.c:302
+> > > > Code: 00 48 8b 4c 24 08 48 8b 54 24 10 48 8d 74 24 40 8b 7c 24 1c e8 23 fa
+> > > > ff ff 41 89 c5 eb 07 e8 e9 87 0a 00 f3 90 44 8b 64 24 58 <31> ff 41 83 e4 01
+> > > > 44 89 e6 e8 54 89 0a 00 45 85 e4 75 e1 e8 ca 87
+> > > > RSP: 0018:ffff88809277f3e0 EFLAGS: 00000293 ORIG_RAX: ffffffffffffff13
+> > > > RAX: ffff8880a8bfc040 RBX: 1ffff110124efe80 RCX: ffffffff8166051c
+> > > > RDX: 0000000000000000 RSI: ffffffff81660507 RDI: 0000000000000005
+> > > > RBP: ffff88809277f4b8 R08: ffff8880a8bfc040 R09: ffffed1015d25be9
+> > > > R10: ffffed1015d25be8 R11: ffff8880ae92df47 R12: 0000000000000003
+> > > > R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+> > > > FS:  00007fd569980700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > CR2: 00007fd56997e178 CR3: 00000000a4fd2000 CR4: 00000000001426f0
+> > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > Call Trace:
+> > > >  smp_call_function_many+0x750/0x8c0 kernel/smp.c:434
+> > > >  smp_call_function+0x42/0x90 kernel/smp.c:492
+> > > >  on_each_cpu+0x31/0x200 kernel/smp.c:602
+> > > >  text_poke_bp+0x107/0x19b arch/x86/kernel/alternative.c:821
+> > > >  __jump_label_transform+0x263/0x330 arch/x86/kernel/jump_label.c:91
+> > > >  arch_jump_label_transform+0x2b/0x40 arch/x86/kernel/jump_label.c:99
+> > > >  __jump_label_update+0x16a/0x210 kernel/jump_label.c:389
+> > > >  jump_label_update kernel/jump_label.c:752 [inline]
+> > > >  jump_label_update+0x1ce/0x3d0 kernel/jump_label.c:731
+> > > >  static_key_slow_inc_cpuslocked+0x1c1/0x250 kernel/jump_label.c:129
+> > > >  static_key_slow_inc+0x1b/0x30 kernel/jump_label.c:144
+> > > >  kvm_arch_vcpu_init+0x6b7/0x870 arch/x86/kvm/x86.c:9068
+> > > >  kvm_vcpu_init+0x272/0x370 arch/x86/kvm/../../../virt/kvm/kvm_main.c:320
+> > > >  vmx_create_vcpu+0x191/0x2540 arch/x86/kvm/vmx/vmx.c:6577
+> > > >  kvm_arch_vcpu_create+0x80/0x120 arch/x86/kvm/x86.c:8755
+> > > >  kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:2569
+> > > > [inline]
+> > > >  kvm_vm_ioctl+0x5ce/0x19c0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3105
+> > > >  vfs_ioctl fs/ioctl.c:46 [inline]
+> > > >  file_ioctl fs/ioctl.c:509 [inline]
+> > > >  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
+> > > >  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+> > > >  __do_sys_ioctl fs/ioctl.c:720 [inline]
+> > > >  __se_sys_ioctl fs/ioctl.c:718 [inline]
+> > > >  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+> > > >  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
+> > > >  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> > > > RIP: 0033:0x458da9
+> > > > Code: ad b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7
+> > > > 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff
+> > > > 0f 83 7b b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> > > > RSP: 002b:00007fd56997fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> > > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000458da9
+> > > > RDX: 0000000000000000 RSI: 000000000000ae41 RDI: 0000000000000005
+> > > > RBP: 000000000073bfa0 R08: 0000000000000000 R09: 0000000000000000
+> > > > R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd5699806d4
+> > > > R13: 00000000004c1905 R14: 00000000004d40d0 R15: 00000000ffffffff
+> > > > Sending NMI from CPU 0 to CPUs 1:
+> >
+> > > Can the KVM maintainers take a look at this?  This doesn't have anything to do
+> > > with my commit that syzbot bisected it to.
+> > >
+> > > +Dmitry, statistics lession: if a crash occurs only 1 in 10 times, as was the
+> > > case here, then often it will happen 0 in 10 times by chance.  syzbot needs to
+> > > run the reproducer more times if it isn't working reliably.  Otherwise it ends
+> > > up blaming some random commit.
+> >
+> > Added a note to https://github.com/google/syzkaller/issues/1051
+> > Thanks
+> 
+> As we increase number of instances, we increase chances of hitting
+> unrelated bugs. E.g. take a look at the bisection log for:
+> https://syzkaller.appspot.com/bug?extid=f14868630901fc6151d3
+> What is the optimum number of tests is a good question. I suspect that
+> the current 10 instances is close to optimum. If we use significantly
+> more we may break every other bisection on unrelated bugs...
+> 
 
-If you sync after every write, you make it hard for UBIFS, and yes it will
-waste always at least one "min io" unit which is a page on NAND.
-You also force UBIFS to write inodes and waste even more space by
-syncing that often.
+Only because syzbot is being super dumb in how it does the bisection.  AFAICS,
+in the example you linked to, buggy kernels reliably crashed 10 out of 10 times
+with the original crash signature, "WARNING in cgroup_exit".  Then at some point
+it tested some kernel without the bug and got a different crash just 1 in 10
+times, "WARNING: ODEBUG bug in netdev_freemem".
 
-In theory UBIFS could try to write only sub-pages but that's usually
-slower than writing
-a whole page. But that depends a lot on your NAND and the NAND
-controller you are using.
-That's why UBI is using sub-pages only internally for EC and VID headers.
+The facts that the crash frequency was very different, and the crash signature
+was different, should be taken as a very strong signal that it's not the bug
+being bisected for.  And this is something easily checked for in code.
 
--- 
-Thanks,
-//richard
+BTW, I hope you're treating fixing this as a high priority, given that syzbot is
+now sending bug reports to kernel developers literally selected at random.  This
+is a great way to teach people to ignore syzbot reports.  (When I suggested
+bisection originally, I had assumed you'd implement some basic sanity checks so
+that only bisection results likely to be reliable would be mailed out.)
+
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
