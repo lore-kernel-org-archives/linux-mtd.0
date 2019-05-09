@@ -2,85 +2,84 @@ Return-Path: <SRS0=HSOd=TJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,T_DKIMWL_WL_HIGH,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,T_DKIMWL_WL_HIGH,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8020C04AB1
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 07:10:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 119DFC04AB1
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 09:11:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A889621019
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 07:10:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D87F520675
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 May 2019 09:11:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jjN+b0TS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bEXcrfNg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A889621019
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KV9Mq09h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D87F520675
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iyS1tZIp+Z0R2x+EYFnqlxKj3HkO3XCuCf2qAFVHhyM=; b=jjN+b0TS/Hnl6V
-	bRcMb31jdPJ9JSA4StNtK8EMaQutNGU9dcEqueLGFINIyjo5DqUd8Ic0rfx26o2S/ZI+IVh/iRf/Z
-	I/v2S2GZX2X61vsYs8MiuVJRStIF6/VPmu29vKo7XVhxTOtw9SbpxaaQCVep/HMa0u4HYSTst7qk/
-	AmZ/t2vvhdoqtvJcUbEyh4IFtMSOStFwuYbZpyw4vRmoshZ+ytOY0YI09a1bzXYAM/g/1f2A9wt7d
-	7AnyoaTTDpiQnUuYEkRhb3ENtHCsSGdLzQ9LGNePGoLq9iEaDc3dcK6/dUHuVGlTxKgliES7psZdq
-	s5mchVOko42thOHLiPjQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hk/Q6UpDRa6zTJUvkpoFN7jtSSvoiRB9dI8k9W/9xeY=; b=KV9Mq09hHUv7B9
+	Y1WU7v82k/00vygzgiGs/lDx8LSC3ggRIZaseIPjGq46BzO5DCyqE7eksC+XqIBwhpuCs9DYE/sah
+	V6thfJYa9RVh/gnG05Pr4Rq+dJCSU3sxz215MPssEcWGLEoyuK+7uAvBVDa0d1fGOZwA+XgICJ3Dh
+	xrqGzHg8+DGbl4ZWu2vT/Cnf+nu553pCiobLjYaA8B940LA2kb1pCY7GfncjM2CJ7w2m4ZbvuLa+q
+	fNGN8OGujsNScc9onS5Eri/eJoNNF70SLDV1JmN0AlGlT1uDAyagqYC6YcDPDuQoUfCkGwodRnQcv
+	aTsiieu4C6B4b+ubwA7Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hOdCB-0002nq-FQ; Thu, 09 May 2019 07:10:23 +0000
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+	id 1hOf5K-0007Ex-6x; Thu, 09 May 2019 09:11:26 +0000
+Received: from mail-vs1-f66.google.com ([209.85.217.66])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hOdC8-0002n8-C2
- for linux-mtd@lists.infradead.org; Thu, 09 May 2019 07:10:22 +0000
-Received: by mail-pl1-x641.google.com with SMTP id d21so681364plr.3
- for <linux-mtd@lists.infradead.org>; Thu, 09 May 2019 00:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=KYQGwY1KkmxQsAXRx4fQ53fVq3yQ2f+zzN0vpEkdvHs=;
- b=bEXcrfNgRvoBm3O30cglqUfVD/v5qExyZLEqIccRIJssIb303lQ8Dj7l+IRmiqGbX9
- qUEtwnQllIoUVzEkZB1OrwSDoC4cRQBTgsNXno9CvaeDLD4tsRm5eDiQMuz0xCH3VEDu
- YXP1/7urWHM790ggnVl5ymGx/JpQqGS1uQjkk=
+ id 1hOf5G-0007EZ-Vc
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2019 09:11:24 +0000
+Received: by mail-vs1-f66.google.com with SMTP id v9so956044vse.5
+ for <linux-mtd@lists.infradead.org>; Thu, 09 May 2019 02:11:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=KYQGwY1KkmxQsAXRx4fQ53fVq3yQ2f+zzN0vpEkdvHs=;
- b=ufix/1zNJLw8KeeoreKA9lKUWTp4oE+fR4z0L4gl7LpvidtZaYq9u1ji4s+uCaPsVW
- w8CE8FeEGwhXt/TqeUwcNA+2ZDNvkLoP+jJ7yxlGPttX+mSbdX73tyPbFmlh4G1ts9qc
- JbiTatuaHN+QTZ5TVlOL7wp/NOPen148z/d8I1CyDiLkFct7T1gcyGGmtr77DokcX5kI
- M00RYVPzwZ+O+YZyl+HHKFgU7A2z1sG5lMGGFOUc72sbm7R4cF5DgSLIxJhSU5Zz1Igj
- 43lQBH1VPsha1LaL91KjDpMyDH05/7j5xuzg12OAczIM7+D1QY5maxQmw3eXkxgMnogK
- y1AQ==
-X-Gm-Message-State: APjAAAVwcP4qJGjw2KlvXBxPKlfZ4lNW8+VjOWU9CK9CFrBgMKPBgOcz
- NqC2+HcbawPgi2S4VxVBPRah5CMQPro=
-X-Google-Smtp-Source: APXvYqzTXYiCCWYFf7W5z8ZAzbnDX3mMBuEe/zVxAZ4wIRgI2RCnP+0QPmCw4dpwNz7yNi90RKZ+Fg==
-X-Received: by 2002:a17:902:4281:: with SMTP id
- h1mr3051054pld.288.1557385817993; 
- Thu, 09 May 2019 00:10:17 -0700 (PDT)
-Received: from zhuohao-z440.tpe.corp.google.com
- ([2401:fa00:1:10:e25c:13cd:9607:cc7f])
- by smtp.gmail.com with ESMTPSA id q1sm1400140pgj.44.2019.05.09.00.10.15
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 09 May 2019 00:10:17 -0700 (PDT)
-From: Zhuohao Lee <zhuohao@chromium.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v3] mtd: spi-nor: add debugfs nodes for querying the flash
- name and id
-Date: Thu,  9 May 2019 15:10:05 +0800
-Message-Id: <20190509071005.198887-1-zhuohao@chromium.org>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gXkRO+XQYGy7/LWPQ5fKlNK8ZU/OfB3zQej18Hwz8ws=;
+ b=RccKL+GwmoYv4UenIoLqIRl+Ssj4GM2Jbor7jmqHKDuZQh6AZLOuv8ILhZogASTkiL
+ ffXZVqkmBcBwVBJcXx2bi9+6P9/oGddH1OtNayWJRHVuvS2MitsSLFDw2Y9OxbRDgeBN
+ tjXxBZqk3ZLMvAydvgRu4XNId69TUjgFppDRGznAkLvl787u/53XrQYm0wa/S2YIRiHs
+ ntR0OD+Xq3bdHFbqPQqystDEwkxAjxyvHSppAAYWKgE0IhWoDg2EQBZq4q30MsrxvLd2
+ imHh2vPsOn12xnmeftDVZP4m9KxPTpqHsNPghEbQAsFpmnQwJiSemsa7ypd0MvBxxPu9
+ XdxQ==
+X-Gm-Message-State: APjAAAX9d7kpwiKLoe6+jLCriQnLeNnXq2cpOPzYnSdYqtl86lKn4nQP
+ ceKWoXUep0Pei5+Fgl/2Q6OMkOx3Yb751FvZd6U=
+X-Google-Smtp-Source: APXvYqyFtFQFzOBs1h2wojiIalCn9FY+WK9+fjvSepNFI+zbP6LZxRuSLRMlT+KN9dTtXapDj+Ze1KlPzPP6kTlsXoE=
+X-Received: by 2002:a67:f956:: with SMTP id u22mr1550424vsq.11.1557393081736; 
+ Thu, 09 May 2019 02:11:21 -0700 (PDT)
 MIME-Version: 1.0
+References: <20190320071605.4289-1-jonas@norrbonn.se>
+ <20190320071605.4289-3-jonas@norrbonn.se>
+ <CAMuHMdVH85iFJngkU6W61ybwR2j3YQ7=cugPxgC57hUgBOc5KA@mail.gmail.com>
+ <1f33e1e5-d7bf-76a0-c4d3-ecbc35fbfd4f@microchip.com>
+ <CAMuHMdU83vLeVSqMZuJwR4yd382mau-OE1saMAOC2+6HodsHvg@mail.gmail.com>
+ <fac5fa6d-95e9-cfb0-4d5a-6b16d4470190@norrbonn.se>
+ <CAMuHMdUEdNr5rgCdaGAFJ-WK4oL2DC419smk+QYOJ7qJvkWA8A@mail.gmail.com>
+ <a9ad3641-1eb8-782c-9dfd-0db41256d3f1@microchip.com>
+ <ad49240c-2073-4045-c11c-fb6bad231321@microchip.com>
+ <CAMuHMdVcp--qRo3m8kSQ=++Vx33kvxBWEHFVHfh-j=pq1x-GPQ@mail.gmail.com>
+ <898831ba-b8bb-7c2b-e623-2e6c26da91b5@microchip.com>
+ <CAMuHMdXFwFAPzYPKqj+FZgSq01VAD0izS3ELyOg1YBwTAQ_QkQ@mail.gmail.com>
+ <8b004a57-0fd9-04fe-d031-1d98d890f826@microchip.com>
+ <CAMuHMdXghAWmNJLUq_uOUVPrrNTAcFq=QqCGjLU51FchvOu3=g@mail.gmail.com>
+ <6a8d9a6c-5281-88d2-51ae-e2afad847a8f@microchip.com>
+In-Reply-To: <6a8d9a6c-5281-88d2-51ae-e2afad847a8f@microchip.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 9 May 2019 11:11:09 +0200
+Message-ID: <CAMuHMdVBguF4ZQHTqwr6GAJKuUcvBGu-5p0GeYRmZ3dG8tXa2g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] spi-nor: s25fl512s supports region locking
+To: Tudor Ambarus <Tudor.Ambarus@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190509_001020_437597_712CD36A 
-X-CRM114-Status: GOOD (  18.52  )
+X-CRM114-CacheID: sfid-20190509_021123_019748_ADFEC869 
+X-CRM114-Status: GOOD (  12.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,206 +91,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: drinkcat@chromium.org, zhuohao@chromium.org, bbrezillon@kernel.org,
- richard@nod.at, briannorris@chromium.org, marek.vasut@gmail.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Jonas Bonn <jonas@norrbonn.se>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, we don't have vfs nodes for querying the underlying flash name
-and flash id. This information is important especially when we want to
-know the flash detail of the defective system. In order to support the
-query, we add mtd_debugfs_create() to create two debugfs nodes
-(ie. partname and partid). The upper driver can assign the pointer to
-partname and partid before calling mtd_device_register().
-This patch is modified based on the SPI-NOR flash system as we only have
-the SPI-NOR system now. But the idea should be applied to the other flash
-driver like NAND flash.
+Hi Tudor,
 
-The output of new debugfs nodes on my device are:
-cat /sys/kernel/debug/mtd/mtd0/partid
-spi-nor:ef6017
-cat /sys/kernel/debug/mtd/mtd0/partname
-w25q64dw
+On Thu, May 9, 2019 at 8:56 AM <Tudor.Ambarus@microchip.com> wrote:
+> When the configuration register QUAD bit CR[1] is 1, only the WRR command format
+> with 16 data bits may be used, WRR with 8 bits is not recognized and hence the
+> FFs. You probably set quad bit in u-boot, while others don't. We can verify this
+> assumption with the patch form below. Can you try it?
 
-Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
----
-Changes in v3:
-- Add partname and partid to mtd.h and create debugfs inside mtdcore.c
-- Previous discussion: https://patchwork.ozlabs.org/patch/1095731/
-Changes in v2:
-- Change to use debugfs to output flash name and id
-- Previous discussion: https://patchwork.ozlabs.org/patch/1067763/
----
- drivers/mtd/mtdcore.c         | 68 +++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/spi-nor.c | 19 ++++++++++
- include/linux/mtd/mtd.h       |  4 +++
- 3 files changed, 91 insertions(+)
+Thanks!
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 3ef01baef9b6..f68f055bfd47 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -357,6 +357,71 @@ static const struct device_type mtd_devtype = {
- 	.release	= mtd_release,
- };
- 
-+static int mtd_partid_show(struct seq_file *s, void *p)
-+{
-+	struct mtd_info *mtd = s->private;
-+
-+	if (!mtd->partid)
-+		return 0;
-+
-+	seq_printf(s, "%s\n", mtd->partid);
-+
-+	return 0;
-+}
-+
-+static int mtd_partid_dbgfs_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, mtd_partid_show, inode->i_private);
-+}
-+
-+static const struct file_operations mtd_partid_dbg_fops = {
-+	.open           = mtd_partid_dbgfs_open,
-+	.read           = seq_read,
-+	.llseek         = seq_lseek,
-+	.release        = single_release,
-+};
-+
-+static int mtd_partname_show(struct seq_file *s, void *p)
-+{
-+	struct mtd_info *mtd = s->private;
-+
-+	if (!mtd->partname)
-+		return 0;
-+
-+	seq_printf(s, "%s\n", mtd->partname);
-+
-+	return 0;
-+}
-+
-+static int mtd_partname_dbgfs_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, mtd_partname_show, inode->i_private);
-+}
-+
-+static const struct file_operations mtd_partname_dbg_fops = {
-+	.open           = mtd_partname_dbgfs_open,
-+	.read           = seq_read,
-+	.llseek         = seq_lseek,
-+	.release        = single_release,
-+};
-+
-+static int mtd_debugfs_create(struct mtd_info *mtd)
-+{
-+	struct dentry *root = mtd->dbg.dfs_dir;
-+	struct dentry *dent_id, *dent_name;
-+
-+	dent_id = debugfs_create_file("partid", S_IRUSR, root, mtd,
-+				      &mtd_partid_dbg_fops);
-+	dent_name = debugfs_create_file("partname", S_IRUSR, root, mtd,
-+					&mtd_partname_dbg_fops);
-+	if (IS_ERR_OR_NULL(dent_id) || IS_ERR_OR_NULL(dent_name)) {
-+		pr_err("cannot create debugfs entry\n");
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
- #ifndef CONFIG_MMU
- unsigned mtd_mmap_capabilities(struct mtd_info *mtd)
- {
-@@ -626,6 +691,9 @@ int add_mtd_device(struct mtd_info *mtd)
- 		if (IS_ERR_OR_NULL(mtd->dbg.dfs_dir)) {
- 			pr_debug("mtd device %s won't show data in debugfs\n",
- 				 dev_name(&mtd->dev));
-+		} else if (mtd_debugfs_create(mtd)) {
-+			pr_debug("mtd device %s can't create debugfs\n",
-+				 dev_name(&mtd->dev));
- 		}
- 	}
- 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 6e13bbd1aaa5..9f157dff0f2c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -38,6 +38,7 @@
- 
- #define SPI_NOR_MAX_ID_LEN	6
- #define SPI_NOR_MAX_ADDR_WIDTH	4
-+#define SPI_NOR_MAX_ID_STRING	(SPI_NOR_MAX_ID_LEN + 9)
- 
- struct spi_nor_read_command {
- 	u8			num_mode_clocks;
-@@ -240,6 +241,12 @@ struct flash_info {
- 	 */
- 	u8		id[SPI_NOR_MAX_ID_LEN];
- 	u8		id_len;
-+	/*
-+	 * This string stores the output format of the id
-+	 * The format looks like this: spi-nor:xxxxxx\0
-+	 * The max length of the string is 8 + SPI_NOR_MAX_ID_LEN + 1
-+	 */
-+	char		id_string[SPI_NOR_MAX_ID_STRING];
- 
- 	/* The size listed here is what works with SPINOR_OP_SE, which isn't
- 	 * necessarily called a "sector" by the vendor.
-@@ -3935,6 +3942,15 @@ static void spi_nor_resume(struct mtd_info *mtd)
- 		dev_err(dev, "resume() failed\n");
- }
- 
-+static void spi_nor_format_id_string(const struct flash_info *info)
-+{
-+	char *id_string = (char *)info->id_string;
-+
-+	if (!snprintf(id_string, SPI_NOR_MAX_ID_STRING,
-+		      "spi-nor:%*phN", info->id_len, info->id))
-+		memset(id_string, 0, SPI_NOR_MAX_ID_STRING);
-+}
-+
- void spi_nor_restore(struct spi_nor *nor)
- {
- 	/* restore the addressing mode */
-@@ -4009,6 +4025,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	}
- 
- 	nor->info = info;
-+	spi_nor_format_id_string(info);
- 
- 	mutex_init(&nor->lock);
- 
-@@ -4027,6 +4044,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 
- 	if (!mtd->name)
- 		mtd->name = dev_name(dev);
-+	mtd->partname = info->name;
-+	mtd->partid = info->id_string;
- 	mtd->priv = nor;
- 	mtd->type = MTD_NORFLASH;
- 	mtd->writesize = 1;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 677768b21a1d..f7b193167680 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -344,6 +344,10 @@ struct mtd_info {
- 	int usecount;
- 	struct mtd_debug_info dbg;
- 	struct nvmem_device *nvmem;
-+
-+	/* debugfs stuff starts here */
-+	const char *partname;
-+	const char *partid;
- };
- 
- int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+
+> +static int spi_nor_clear_block_protection(struct spi_nor *nor)
+> +{
+> +       int ret;
+> +       u8 sr, cr, sr_cr[2] = {0};
+> +       u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+> +
+> +       ret = read_cr(nor);
+> +       dev_dbg(nor->dev, "CR = %08x\n", ret);
+> +        if (ret < 0) {
+> +                dev_err(nor->dev, "error while reading CR\n");
+> +               return ret;
+> +       }
+> +       cr = ret;
+> +
+> +       if (cr & CR_QUAD_EN_SPAN) {
+> +               /* disable quad if already set, must do it with 16-bit WRR */
+> +               ret = write_sr_cr(nor, sr_cr);
+> +               if (ret) {
+> +                       dev_err(nor->dev, "error diasbling quad mode\n");
+
+disabling
+
+> +                       return ret;
+> +               }
+
+renesas_spi e6b10000.spi: DMA available
+renesas_spi e6b10000.spi: registered master spi0
+spi spi0.0: setup mode 3, 8 bits/w, 30000000 Hz max --> 0
+m25p80 spi0.0: bfpt.dwords[1] = ffffffff
+m25p80 spi0.0: bfpt.dwords[2] = ffffffff
+m25p80 spi0.0: bfpt.dwords[3] = ffffffff
+m25p80 spi0.0: bfpt.dwords[4] = ffffffff
+m25p80 spi0.0: bfpt.dwords[5] = ffffffff
+m25p80 spi0.0: bfpt.dwords[6] = ffffffff
+m25p80 spi0.0: bfpt.dwords[7] = ffffffff
+m25p80 spi0.0: bfpt.dwords[8] = ffffffff
+m25p80 spi0.0: bfpt.dwords[9] = ffffffff
+m25p80 spi0.0: bfpt.dwords[10] = 00000000
+m25p80 spi0.0: bfpt.dwords[11] = 00000000
+m25p80 spi0.0: bfpt.dwords[12] = 00000000
+m25p80 spi0.0: bfpt.dwords[13] = 00000000
+m25p80 spi0.0: bfpt.dwords[14] = 00000000
+m25p80 spi0.0: bfpt.dwords[15] = 00000000
+m25p80 spi0.0: bfpt.dwords[16] = 00000000
+m25p80 spi0.0: failed to parse BFPT: err = -22
+m25p80 spi0.0: spi_nor_init_params sfdp parse failed, ret =-22
+m25p80 spi0.0: SR and CR before quad_enable:
+m25p80 spi0.0: SR = 00000000
+m25p80 spi0.0: CR = 00000002
+m25p80 spi0.0: SR and CR after quad_enable:
+m25p80 spi0.0: SR = 00000000
+m25p80 spi0.0: CR = 00000002
+m25p80 spi0.0: s25fl512s (65536 Kbytes)
+m25p80 spi0.0: mtd .name = spi0.0, .size = 0x4000000 (64MiB),
+.erasesize = 0x00040000 (256KiB) .numeraseregions = 0
+3 fixed-partitions partitions found on MTD device spi0.0
+Creating 3 MTD partitions on "spi0.0":
+0x000000000000-0x000000080000 : "loader"
+0x000000080000-0x000000600000 : "user"
+0x000000600000-0x000004000000 : "flash"
+renesas_spi e6b10000.spi: registered child spi0.0
+renesas_spi e6b10000.spi: probed
+
+And /dev/mtd0 reading works fine.
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.21.0.1020.gf2820cf01a-goog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
