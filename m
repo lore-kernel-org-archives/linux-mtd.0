@@ -2,20 +2,21 @@ Return-Path: <SRS0=6cMw=TN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,FSL_HELO_FAKE,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD138C04AA7
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2019 15:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D5FAC04AA7
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2019 19:57:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F7942084A
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2019 15:28:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72144208C3
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2019 19:57:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SJELNSYk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F7942084A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tWBS60jo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="poPdEHBr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72144208C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,57 +25,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M7SkwiUpvHBhbWMXJL+Ujyq2tXGbOlKCKVpexb/F7n4=; b=SJELNSYk5DnoTz
-	PbGVkE1QN/57y+44nJVkCGNqIclAlKCh1ZJ5/H66DXfZVFv+biDKKkKW/+SwEy7GiCcnB6o3qcgEW
-	YhgbY0ud2NWxuINU4FtGvS+VXML/m/v8tZXwHAQT4iBrc175MJgYLp8zZb7aHyuMEmoby2O1TfBPy
-	gLh0fBmF1E7MV+69GHzt0BBSACLZvFw6LHNzkMGKJTqVva9FVz3WqaYr3cvB0m2ktfRcBJq8jXdNr
-	ZBpQ1euByIFEhmb6ZIs8tVNUXmNb7zQvCiewnFzrfi1gYJuw0pTRIky13nex87EjlNqUPtL4Wef3R
-	GbEDonp/z39Ch1D0j4Tg==;
+	List-Owner; bh=41bnY+SqXwQsHYlgI0WrBMMqcSzT8Cq23cKYOjxKF2Y=; b=tWBS60jow35U24
+	EsNERBYncISPH9lcQcSZGasNw10255jO76HksygRzJNd213AfTbNnDA3Y/Uk5BMNmetMMjcXjlLyK
+	UyrFuCkK+Mt73Lppum6UGezdCTKmEZxJAj/EyqxHg0XXCVl6yaQJO9vspG68AGCqCFrDBr9gRPsd4
+	g30kJvd275EDt1AgW8x7RRTsOVn7yI1+x+WeJvIdghVvgAIFt3W1yuI2SQCLYGLxJGEAfOyKb7tU0
+	79rsQwzMnA3W90IBRVW1QfDt8aKjNF8vWXBf0MUUI/tWnPwu6hTq9wSo1Izynzye74gLSV38aYgej
+	ALE73rQrnmw9gIyK9cDw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hQCsA-0005Xg-L4; Mon, 13 May 2019 15:28:14 +0000
-Received: from mail-ot1-f67.google.com ([209.85.210.67])
+	id 1hQH4E-0007ra-MR; Mon, 13 May 2019 19:56:58 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQCs7-0005XE-SK
- for linux-mtd@lists.infradead.org; Mon, 13 May 2019 15:28:13 +0000
-Received: by mail-ot1-f67.google.com with SMTP id i8so12103678oth.10
- for <linux-mtd@lists.infradead.org>; Mon, 13 May 2019 08:28:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=erjTI6eG9SyW0rfn2c4BFHN5r2eXk7Loba80RrzT740=;
- b=AM2rhCu12Splq7n0UHTPs/4S0TwFNEOY4nHB1HNGWdJgN+cpqMaiE7RV81TnMHVxJD
- IEehJXLCz2uDk2vK2ylIR2lgqRWKzahQSkps+I0lBO2eA/B0mtd4N1SJQlrIR3Vu9ddE
- 5PbGk4cP/hIpIp9LmRBSmsOBpkf/ohNPlL6g/IMVuXVB1n0Ud3a/5Wrkgj2KOgIA1cET
- Dvh164MI2fGiAYIb6f2ukyKAVTkBZcfwt3M0GcYKhRrmKTBh0ZPaCbLug0eaF3AhYERD
- TGjNsk9Kt2Qh3cw8mGsSCAsCeoZevj6hir7IfLVh8Yd/iMGjjBLBp9rzfrAWP8sk5QuW
- LbGg==
-X-Gm-Message-State: APjAAAUUQv506SMwqFMm+resGJD2vvKsJOHLNkCF/rA3x7FwSl3Iqbem
- Sdseg9h3MFo2bqk3lpv+dyVZ7p8=
-X-Google-Smtp-Source: APXvYqzDLdKY3K7TQEkkzjYV6fUd9fFK/P6MrGXBIn6DbJSzv7nQ7usMzPtmE/GOn4buxfVLMjxXQQ==
-X-Received: by 2002:a05:6830:14cd:: with SMTP id
- t13mr16704956otq.25.1557761290915; 
- Mon, 13 May 2019 08:28:10 -0700 (PDT)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id d70sm5923986oih.18.2019.05.13.08.28.09
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 13 May 2019 08:28:09 -0700 (PDT)
-Date: Mon, 13 May 2019 10:28:09 -0500
-From: Rob Herring <robh@kernel.org>
-To: Dinh Nguyen <dinguyen@kernel.org>
-Subject: Re: [PATCHv4 1/2] dt-bindings: cadence-quadspi: add options reset
- property
-Message-ID: <20190513152809.GA28897@bogus>
-References: <20190508134338.20565-1-dinguyen@kernel.org>
+ id 1hQH4B-0007rH-MH
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2019 19:56:57 +0000
+Received: from gmail.com (unknown [104.132.1.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 97820208C3;
+ Mon, 13 May 2019 19:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1557777414;
+ bh=H/CvBCQg09lqqJZk0o1uuzjbgPqRVU7YsyNxmQ//uKk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=poPdEHBr8h8uMe+khz3FYPyc+6HX4i3FGRXcwJkWW0s4xdgiLkvBeI27pgQQEvvR1
+ /hNCpiDpG8sNusieY3szYv2k0eEeb4viOuObmWyzM2bGJl0tS6CFZ8/MIUP/LZhaQ+
+ Qpuh9oK58WZ+P+xpmTuu2EfTnIKZdzXksXiQ2Xv8=
+Date: Mon, 13 May 2019 12:56:53 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/2] ubifs: Remove #ifdef around CONFIG_FS_ENCRYPTION
+Message-ID: <20190513195652.GB142816@gmail.com>
+References: <20190326075232.11717-1-s.hauer@pengutronix.de>
+ <20190326075232.11717-2-s.hauer@pengutronix.de>
+ <20190508031954.GA26575@sol.localdomain>
+ <1170873772.48849.1557298158182.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190508134338.20565-1-dinguyen@kernel.org>
+In-Reply-To: <1170873772.48849.1557298158182.JavaMail.zimbra@nod.at>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190513_082811_910039_FCFAA4CD 
-X-CRM114-Status: GOOD (  15.51  )
+X-CRM114-CacheID: sfid-20190513_125655_760355_D53B4E66 
+X-CRM114-Status: GOOD (  18.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -86,57 +77,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, devicetree@vger.kernel.org, bbrezillon@kernel.org,
- tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: tytso <tytso@mit.edu>, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-fscrypt@vger.kernel.org,
+ kernel <kernel@pengutronix.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 08, 2019 at 08:43:37AM -0500, Dinh Nguyen wrote:
-> The QSPI module can have an optional reset signals that will hold the
-> module in a reset state.
-> 
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
-> v4: no change
-> v3: created base on review comments
-> v2: did not exist
-> v1: did not exist
-> ---
->  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> index 4345c3a6f530..b6264323a03c 100644
-> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> @@ -35,6 +35,8 @@ custom properties:
->  		  (qspi_n_ss_out).
->  - cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
->                    and first bit transfer.
-> +- resets	: Must contain an entry for each entry in reset-names.
-> +		  See ../reset/reset.txt for details.
+On Wed, May 08, 2019 at 08:49:18AM +0200, Richard Weinberger wrote:
+> Eric,
+> =
 
-reset-names needs to be documented with the values and order.
+> ----- Urspr=FCngliche Mail -----
+> > Von: "Eric Biggers" <ebiggers@kernel.org>
+> > An: "Sascha Hauer" <s.hauer@pengutronix.de>, "richard" <richard@nod.at>
+> > CC: "linux-mtd" <linux-mtd@lists.infradead.org>, linux-fscrypt@vger.ker=
+nel.org, "tytso" <tytso@mit.edu>, "kernel"
+> > <kernel@pengutronix.de>
+> > Gesendet: Mittwoch, 8. Mai 2019 05:19:55
+> > Betreff: Re: [PATCH 1/2] ubifs: Remove #ifdef around CONFIG_FS_ENCRYPTI=
+ON
+> =
 
->  
->  Example:
->  
-> @@ -50,6 +52,8 @@ Example:
->  		cdns,fifo-depth = <128>;
->  		cdns,fifo-width = <4>;
->  		cdns,trigger-address = <0x00000000>;
-> +		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
-> +		reset-names = "qspi", "qspi-ocp";
->  
->  		flash0: n25q00@0 {
->  			...
-> -- 
-> 2.20.0
-> 
+> > On Tue, Mar 26, 2019 at 08:52:31AM +0100, Sascha Hauer wrote:
+> >> ifdefs reduce readablity and compile coverage. This removes the ifdefs
+> >> around CONFIG_FS_ENCRYPTION by using IS_ENABLED and relying on static
+> >> inline wrappers. A new static inline wrapper for setting sb->s_cop is
+> >> introduced to allow filesystems to unconditionally compile in their
+> >> s_cop operations.
+> >> =
+
+> >> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> >> ---
+> >>  fs/ubifs/ioctl.c        | 11 +----------
+> >>  fs/ubifs/sb.c           |  7 ++++---
+> >>  fs/ubifs/super.c        |  4 +---
+> >>  include/linux/fscrypt.h | 11 +++++++++++
+> >>  4 files changed, 17 insertions(+), 16 deletions(-)
+> >> =
+
+> >> diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+> >> index 82e4e6a30b04..6b05b3ec500e 100644
+> >> --- a/fs/ubifs/ioctl.c
+> >> +++ b/fs/ubifs/ioctl.c
+> >> @@ -193,7 +193,6 @@ long ubifs_ioctl(struct file *file, unsigned int c=
+md,
+> >> unsigned long arg)
+> >>  		return err;
+> >>  	}
+> >>  	case FS_IOC_SET_ENCRYPTION_POLICY: {
+> >> -#ifdef CONFIG_FS_ENCRYPTION
+> >>  		struct ubifs_info *c =3D inode->i_sb->s_fs_info;
+> >>  =
+
+> >>  		err =3D ubifs_enable_encryption(c);
+> >> @@ -201,17 +200,9 @@ long ubifs_ioctl(struct file *file, unsigned int =
+cmd,
+> >> unsigned long arg)
+> >>  			return err;
+> >>  =
+
+> >>  		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
+> >> -#else
+> >> -		return -EOPNOTSUPP;
+> >> -#endif
+> >>  	}
+> >> -	case FS_IOC_GET_ENCRYPTION_POLICY: {
+> >> -#ifdef CONFIG_FS_ENCRYPTION
+> >> +	case FS_IOC_GET_ENCRYPTION_POLICY:
+> >>  		return fscrypt_ioctl_get_policy(file, (void __user *)arg);
+> >> -#else
+> >> -		return -EOPNOTSUPP;
+> >> -#endif
+> >> -	}
+> >>  =
+
+> >>  	default:
+> >>  		return -ENOTTY;
+> >> diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+> >> index 67fac1e8adfb..2afc8b1d4c3b 100644
+> >> --- a/fs/ubifs/sb.c
+> >> +++ b/fs/ubifs/sb.c
+> >> @@ -748,14 +748,12 @@ int ubifs_read_superblock(struct ubifs_info *c)
+> >>  		goto out;
+> >>  	}
+> >>  =
+
+> >> -#ifndef CONFIG_FS_ENCRYPTION
+> >> -	if (c->encrypted) {
+> >> +	if (!IS_ENABLED(CONFIG_UBIFS_FS_ENCRYPTION) && c->encrypted) {
+> >>  		ubifs_err(c, "file system contains encrypted files but UBIFS"
+> >>  			     " was built without crypto support.");
+> >>  		err =3D -EINVAL;
+> >>  		goto out;
+> >>  	}
+> > =
+
+> > A bit late, but I noticed this in ubifs/linux-next.  This needs to use
+> > CONFIG_FS_ENCRYPTION here, not CONFIG_UBIFS_FS_ENCRYPTION, as the latte=
+r no
+> > longer exists.
+> =
+
+> Thanks for spotting. I'll fit it myself in -next.
+> =
+
+> Thanks,
+> //richard
+
+This was merged to mainline and it's still broken.  This breaks UBIFS encry=
+ption
+entirely, BTW.  Do you not run xfstests before sending pull requests?
+
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
