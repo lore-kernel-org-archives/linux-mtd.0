@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C9EBC04AB4
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2019 21:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD105C04AB4
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2019 21:29:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1698020862
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2019 21:28:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F95A20862
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2019 21:29:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b/0i04sh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1698020862
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="X+44nA4y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F95A20862
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allycomm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,24 +25,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NFQzsC1T+U6d3wjuJY17EBegGQnMLXhb5qY9hsXrBhM=; b=b/0i04sh3MNzmf
-	z9xBdZAgXvBmERBHZgUGOlwx7UnbsrKX3kVEqpPFacEn3qn1HJbbz6I886MLdAqUefUYPkPKV5O7T
-	ocQ+2qs6N9ilWTf4jmcJMw9LBPojl++b8Es51WN36cvAfPRlD92GpvNCn/ApNyyyFD+ijoTWacYP3
-	uCBB+zaP0yuZX52AadPfldXx2zrTdGkwDj+b4iAUIeiXiVv6qdNc1rvO/CtdQT9NQB895lUR2fwzf
-	4MZ1D3hfC5dkLNvQmEdHJQa4jMVBQqrZQy1Hh5POqGXubBP25lp5p5VDSABrDIwjZ8LGrljl15lzC
-	qkeRIFxgfApcfgyIcAvA==;
+	List-Owner; bh=NFQzsC1T+U6d3wjuJY17EBegGQnMLXhb5qY9hsXrBhM=; b=X+44nA4yYQmPeg
+	HRjb7vicz/wpqa1vFoxEuaCyke+bZkPhvADC8mImAg1l3DNinHVzGb+LEllkvm8hPOrkBouM/Qj34
+	VYTwue6hb4bpFmQwao+gfeqE4VxiAEC1i4k+yIHcxr9ldQ5tsjhF+lOdjPlpHflq0WBySE3ZVdWPR
+	DrJDkWuFdPNC6AWW3Yn6z+ZM+CEKq6vH45Et57ljsVucavXrG1x6MfhYL28Ju3w176PPEA3y+/gNA
+	zAZRIlLKOXD4MSZ+CXC/NNuFaihb2DzgOjlDmZSpSdggIgSHKL+Bnp1+lFfZj1XffXjlwX/teTg8Y
+	m2kgnOADkl36xygoxxFw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hQeyZ-0004R7-Vc; Tue, 14 May 2019 21:28:43 +0000
+	id 1hQezh-0004gW-5k; Tue, 14 May 2019 21:29:53 +0000
 Received: from mx.allycomm.com ([138.68.30.55])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQeyX-0004Qh-Se
- for linux-mtd@lists.infradead.org; Tue, 14 May 2019 21:28:43 +0000
+ id 1hQeze-0004gB-7S
+ for linux-mtd@lists.infradead.org; Tue, 14 May 2019 21:29:51 +0000
 Received: from allycomm.com (inet.guidewire.com [199.91.42.30])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx.allycomm.com (Postfix) with ESMTPSA id C107A3B676;
- Tue, 14 May 2019 14:28:05 -0700 (PDT)
+ by mx.allycomm.com (Postfix) with ESMTPSA id 336653B682;
+ Tue, 14 May 2019 14:29:49 -0700 (PDT)
 From: Jeff Kletsky <lede@allycomm.com>
 To: Boris Brezillon <bbrezillon@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -51,15 +51,15 @@ To: Boris Brezillon <bbrezillon@kernel.org>,
  Marek Vasut <marek.vasut@gmail.com>
 Subject: [PATCH v2 1/3] mtd: spinand: Add #define-s for page-read ops with
  three-byte addresses
-Date: Tue, 14 May 2019 14:27:49 -0700
-Message-Id: <20190514212751.18684-2-lede@allycomm.com>
+Date: Tue, 14 May 2019 14:29:39 -0700
+Message-Id: <20190514212941.18794-2-lede@allycomm.com>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190514212751.18684-1-lede@allycomm.com>
-References: <20190514212751.18684-1-lede@allycomm.com>
+In-Reply-To: <20190514212941.18794-1-lede@allycomm.com>
+References: <20190514212941.18794-1-lede@allycomm.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190514_142841_926772_98B40DB3 
-X-CRM114-Status: UNSURE (   9.73  )
+X-CRM114-CacheID: sfid-20190514_142950_268925_9B568B04 
+X-CRM114-Status: UNSURE (   9.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
