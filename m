@@ -2,90 +2,68 @@ Return-Path: <SRS0=9tRn=TP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD013C04AA7
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 06:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 617E5C04E53
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 07:37:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD1052084F
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 06:53:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 342A9206A3
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 07:37:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ob+Plari"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1052084F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VmIPHNpi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 342A9206A3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+eaBpaulF/JOSerQ9gK8lDYQXEaepG+nxCGiCgWxW6o=; b=ob+PlariB3XyDu
-	X6BltYg3YH0QhBxXbmPXlkpdJQI95+rBZlV+07iAAquimg6OlZfMxE71ECtBsFHz8Hhj1RkkeZr3T
-	TsPnWf6rPkDL2lJJ+tul95lyYYQaAbK7pTG5yhXHmVmEKFe5JJhhPhpMtWn3RlOsYRFdCULgqpQA+
-	mtaCYsMrJO6v4ewB9YGXs+HH7rvtdoOxs9W8JEkSnlztphSpysXgWKr2HJaC0VKWpVhHYv/njW1YT
-	OkQjHeqL8Z+pdh685jd+h2KFuHx+gwftwjM8Kqj+mupuV/5deGAiYh+PWlwzWdOIFJPGdGg06fopz
-	5i7LWPdCbhxC3HndM5+w==;
+	List-Owner; bh=73yqzn9cve8AvSqpc+fEXFU4SB9JUm+74dzh60Wo7hI=; b=VmIPHNpi8a56Gc
+	LY0dYH5FjxEGxUCaEA531Y6Ku21GSVIYSKjwKWVdNJGPBZAyLQ9v3mmZGKzD9RAYHU7Jv3zvA+wVR
+	YTDoFac/URjbASE8iqVaX6eTLELMLT04zB/7hWoNdy5dYVRwRB/SGIImMkkONlLAAYEUd39kzYqvc
+	/szS1Nd8ISXCYkJSBKJtFo+SK+56HjAY9/32e3Q0wOdMOESdavEopryJHYwHEMPlOpbuwMOKvJkhB
+	8V4Uk/9k5Ugwln/XNB4nWdxhW1Bo+xdwwJaerV3DJNyqki9YGWGfT6H65LkOnalDhOmYQxZoRT6GV
+	8HmpUu17EPYfsJvfDDkg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hQnnF-000184-2G; Wed, 15 May 2019 06:53:37 +0000
-Received: from skedge03.snt-world.com ([91.208.41.68])
+	id 1hQoTX-00007Q-HL; Wed, 15 May 2019 07:37:19 +0000
+Received: from twhmllg3.macronix.com ([211.75.127.131])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQnnC-00017K-Cf
- for linux-mtd@lists.infradead.org; Wed, 15 May 2019 06:53:36 +0000
-Received: from sntmail14r.snt-is.com (unknown [10.203.32.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by skedge03.snt-world.com (Postfix) with ESMTPS id 2D6846024E2;
- Wed, 15 May 2019 08:53:32 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail14r.snt-is.com
- (10.203.32.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Wed, 15 May
- 2019 08:53:31 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Wed, 15 May 2019 08:53:31 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Jeff Kletsky <lede@allycomm.com>, Boris Brezillon <bbrezillon@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH v2 3/3] mtd: spinand: Add support for GigaDevice
- GD5F1GQ4UFxxG
-Thread-Topic: [PATCH v2 3/3] mtd: spinand: Add support for GigaDevice
- GD5F1GQ4UFxxG
-Thread-Index: AQHVCp/mj5ODTut3PUyDQllC6aHQS6ZrnwmA
-Date: Wed, 15 May 2019 06:53:31 +0000
-Message-ID: <6705bff0-e929-301a-485e-1a506cccad32@kontron.de>
-References: <20190514215315.19228-1-lede@allycomm.com>
- <20190514215315.19228-4-lede@allycomm.com>
-In-Reply-To: <20190514215315.19228-4-lede@allycomm.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <985ACC28CD63194E85B68E01C08F9B94@snt-world.com>
+ id 1hQoTU-00006j-MH
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2019 07:37:18 +0000
+Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
+ by TWHMLLG3.macronix.com with ESMTP id x4F7aS9F078422;
+ Wed, 15 May 2019 15:36:28 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id EE36B97764010B1F89B8;
+ Wed, 15 May 2019 15:36:28 +0800 (CST)
+In-Reply-To: <20190512152328.49576a0f@xps13>
+References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>	<1555320234-15802-5-git-send-email-masonccyang@mxic.com.tw>
+ <20190512152328.49576a0f@xps13>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 4/4] dt-bindings: mfd: Document Macronix MX25F0A
+ controller bindings
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 2D6846024E2.ACCA8
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, lede@allycomm.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
- miquel.raynal@bootlin.com, richard@nod.at
+X-KeepSent: 0FD6EB50:C92AD6D4-482583FB:00285AB8;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF0FD6EB50.C92AD6D4-ON482583FB.00285AB8-482583FB.0029CAB7@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Wed, 15 May 2019 15:36:29 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/05/15 PM 03:36:28,
+ Serialize complete at 2019/05/15 PM 03:36:28
+X-MAIL: TWHMLLG3.macronix.com x4F7aS9F078422
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190514_235334_760942_14D92FF4 
-X-CRM114-Status: GOOD (  19.17  )
+X-CRM114-CacheID: sfid-20190515_003716_997251_080812F5 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -97,195 +75,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
+ bbrezillon@kernel.org, juliensu@mxic.com.tw, lee.jones@linaro.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+ marcel.ziswiler@toradex.com, paul.burton@mips.com, broonie@kernel.org,
+ geert@linux-m68k.org, stefan@agner.ch, linux-mtd@lists.infradead.org,
+ richard@nod.at, liang.yang@amlogic.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, marek.vasut@gmail.com, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 14.05.19 23:53, Jeff Kletsky wrote:
-> From: Jeff Kletsky <git-commits@allycomm.com>
-> 
-> The GigaDevice GD5F1GQ4UFxxG SPI NAND is in current production devices
-> and, while it has the same logical layout as the E-series devices,
-> it differs in the SPI interfacing in significant ways.
-> 
-> This support is contingent on previous commits to:
-> 
->    * Add support for two-byte device IDs
->    * Add #define-s for page-read ops with three-byte addresses
-> 
-> http://www.gigadevice.com/datasheet/gd5f1gq4xfxxg/
-> 
-> Signed-off-by: Jeff Kletsky <git-commits@allycomm.com>
 
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Hi Miquel,
 
-> ---
->   drivers/mtd/nand/spi/gigadevice.c | 79 +++++++++++++++++++++++++------
->   1 file changed, 64 insertions(+), 15 deletions(-)
+
+> > +Macronix MX25F0A MultiFunction Device Tree Bindings
+> > +----------------------------------------------------
+> > +
+> > +MX25F0A is a MultiFunction Device with SPI and raw NAND, which
+> > +supports either spi host controller or raw nand controller.
 > 
-> diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-> index 0b49d8264bef..d6497ac4c5d8 100644
-> --- a/drivers/mtd/nand/spi/gigadevice.c
-> +++ b/drivers/mtd/nand/spi/gigadevice.c
-> @@ -9,11 +9,17 @@
->   #include <linux/mtd/spinand.h>
->   
->   #define SPINAND_MFR_GIGADEVICE			0xC8
-> +
->   #define GD5FXGQ4XA_STATUS_ECC_1_7_BITFLIPS	(1 << 4)
->   #define GD5FXGQ4XA_STATUS_ECC_8_BITFLIPS	(3 << 4)
->   
->   #define GD5FXGQ4UEXXG_REG_STATUS2		0xf0
->   
-> +#define GD5FXGQ4UXFXXG_STATUS_ECC_MASK		(7 << 4)
-> +#define GD5FXGQ4UXFXXG_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-> +#define GD5FXGQ4UXFXXG_STATUS_ECC_1_3_BITFLIPS	(1 << 4)
-> +#define GD5FXGQ4UXFXXG_STATUS_ECC_UNCOR_ERROR	(7 << 4)
-> +
->   static SPINAND_OP_VARIANTS(read_cache_variants,
->   		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
->   		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-> @@ -22,6 +28,14 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
->   		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
->   		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
->   
-> +static SPINAND_OP_VARIANTS(read_cache_variants_f,
-> +		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP_3A(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP_3A(0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP_3A(true, 0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP_3A(false, 0, 0, NULL, 0));
-> +
->   static SPINAND_OP_VARIANTS(write_cache_variants,
->   		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
->   		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> @@ -59,6 +73,11 @@ static int gd5fxgq4xa_ooblayout_free(struct mtd_info *mtd, int section,
->   	return 0;
->   }
->   
-> +static const struct mtd_ooblayout_ops gd5fxgq4xa_ooblayout = {
-> +	.ecc = gd5fxgq4xa_ooblayout_ecc,
-> +	.free = gd5fxgq4xa_ooblayout_free,
-> +};
-> +
->   static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
->   					 u8 status)
->   {
-> @@ -83,7 +102,7 @@ static int gd5fxgq4xa_ecc_get_status(struct spinand_device *spinand,
->   	return -EINVAL;
->   }
->   
-> -static int gd5fxgq4uexxg_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +static int gd5fxgq4_variant2_ooblayout_ecc(struct mtd_info *mtd, int section,
->   				       struct mtd_oob_region *region)
->   {
->   	if (section)
-> @@ -95,7 +114,7 @@ static int gd5fxgq4uexxg_ooblayout_ecc(struct mtd_info *mtd, int section,
->   	return 0;
->   }
->   
-> -static int gd5fxgq4uexxg_ooblayout_free(struct mtd_info *mtd, int section,
-> +static int gd5fxgq4_variant2_ooblayout_free(struct mtd_info *mtd, int section,
->   					struct mtd_oob_region *region)
->   {
->   	if (section)
-> @@ -108,6 +127,11 @@ static int gd5fxgq4uexxg_ooblayout_free(struct mtd_info *mtd, int section,
->   	return 0;
->   }
->   
-> +static const struct mtd_ooblayout_ops gd5fxgq4_variant2_ooblayout = {
-> +	.ecc = gd5fxgq4_variant2_ooblayout_ecc,
-> +	.free = gd5fxgq4_variant2_ooblayout_free,
-> +};
-> +
->   static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
->   					u8 status)
->   {
-> @@ -150,15 +174,25 @@ static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
->   	return -EINVAL;
->   }
->   
-> -static const struct mtd_ooblayout_ops gd5fxgq4xa_ooblayout = {
-> -	.ecc = gd5fxgq4xa_ooblayout_ecc,
-> -	.free = gd5fxgq4xa_ooblayout_free,
-> -};
-> +static int gd5fxgq4ufxxg_ecc_get_status(struct spinand_device *spinand,
-> +					u8 status)
-> +{
-> +	switch (status & GD5FXGQ4UXFXXG_STATUS_ECC_MASK) {
-> +	case GD5FXGQ4UXFXXG_STATUS_ECC_NO_BITFLIPS:
-> +		return 0;
->   
-> -static const struct mtd_ooblayout_ops gd5fxgq4uexxg_ooblayout = {
-> -	.ecc = gd5fxgq4uexxg_ooblayout_ecc,
-> -	.free = gd5fxgq4uexxg_ooblayout_free,
-> -};
-> +	case GD5FXGQ4UXFXXG_STATUS_ECC_1_3_BITFLIPS:
-> +		return 3;
-> +
-> +	case GD5FXGQ4UXFXXG_STATUS_ECC_UNCOR_ERROR:
-> +		return -EBADMSG;
-> +
-> +	default: /* (2 << 4) through (6 << 4) are 4-8 corrected errors */
-> +		return ((status & GD5FXGQ4UXFXXG_STATUS_ECC_MASK) >> 4) + 2;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
->   
->   static const struct spinand_info gigadevice_spinand_table[] = {
->   	SPINAND_INFO("GD5F1GQ4xA", 0xF1,
-> @@ -195,25 +229,40 @@ static const struct spinand_info gigadevice_spinand_table[] = {
->   					      &write_cache_variants,
->   					      &update_cache_variants),
->   		     0,
-> -		     SPINAND_ECCINFO(&gd5fxgq4uexxg_ooblayout,
-> +		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
->   				     gd5fxgq4uexxg_ecc_get_status)),
-> +	SPINAND_INFO("GD5F1GQ4UFxxG", 0xb148,
-> +		     NAND_MEMORG(1, 2048, 128, 64, 1024, 1, 1, 1),
-> +		     NAND_ECCREQ(8, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
-> +					      &write_cache_variants,
-> +					      &update_cache_variants),
-> +		     0,
-> +		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
-> +				     gd5fxgq4ufxxg_ecc_get_status)),
->   };
->   
->   static int gigadevice_spinand_detect(struct spinand_device *spinand)
->   {
->   	u8 *id = spinand->id.data;
-> +	u16 did;
->   	int ret;
->   
->   	/*
-> -	 * For GD NANDs, There is an address byte needed to shift in before IDs
-> -	 * are read out, so the first byte in raw_id is dummy.
-> +	 * Earlier GDF5-series devices (A,E) return [0][MID][DID]
-> +	 * Later (F) devices return [MID][DID1][DID2]
->   	 */
-> -	if (id[1] != SPINAND_MFR_GIGADEVICE)
-> +
-> +	if (id[0] == SPINAND_MFR_GIGADEVICE)
-> +		did = (id[1] << 8) + id[2];
-> +	else if (id[0] == 0 && id[1] == SPINAND_MFR_GIGADEVICE)
-> +		did = id[2];
-> +	else
->   		return 0;
->   
->   	ret = spinand_match_and_init(spinand, gigadevice_spinand_table,
->   				     ARRAY_SIZE(gigadevice_spinand_table),
-> -				     id[2]);
-> +				     did);
->   	if (ret)
->   		return ret;
->   
+> Acronyms in plain English should be in upper case.
+
+okay, will fix.
+
+> > +Example:
+> > +
+> > +   mxic: mx25f0a@43c30000 {
+> > +      compatible = "mxic,mx25f0a";
+> > +      reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
+> > +      reg-names = "regs", "dirmap";
+> > +
+> > +      /* spi */
+> > +      clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
+> > +      clock-names = "send_clk", "send_dly_clk", "ps_clk";
+> > +      #address-cells = <1>;
+> > +      #size-cells = <0>;
+> > +
+> > +      flash@0 {
+> > +         compatible = "jedec,spi-nor";
+> > +         reg = <0>;
+> > +         spi-max-frequency = <25000000>;
+> > +         spi-tx-bus-width = <4>;
+> > +         spi-rx-bus-width = <4>;
+> > +      };
+> > +
+> > +      /* nand */
+> > +      nand-ecc-mode = "soft";
+> > +      nand-ecc-algo = "bch";
+> > +      nand-ecc-step-size = <512>;
+> > +      nand-ecc-strength = <8>;
 > 
+> Any reason to enforce 512B/8b correction? Why not letting the core
+> choose for you depending on the NAND chip's requirements?
+> 
+
+I thought here is just a raw NAND DTS example. 
+Will remove it.
+
+> 
+> Anyway, I think you can have only one or the other (NAND or SPI), not
+> both, and you probably should have a compatible or a property to tell
+> the kernel which one you are using, right?
+> 
+
+yes, you are right.
+
+New DTS is bellow.
+-------------------------------------------------------------------------->
+
+Macronix Flash Memory Controller Device Tree Bindings
+-----------------------------------------------------
+
+Macronix Flash Memory Controller supports serial and raw Flash, including
+NOR and NAND Flash for high throughput and low pin count applications.
+It's a MultiFunction Device which supports either SPI host controller or
+raw NAND controller.
+
+Required properties:
+- compatible: should be "mxic,mfd"
+- reg: should contain 2 entries, one for the registers and one for the 
+direct
+       mapping area in SPI mode.
+- reg-names: should contain "regs" and "dirmap"
+- interrupts: interrupt line connected to this controller
+- SPI:
+        - #address-cells: should be 1
+        - #size-cells: should be 0
+        - clock-names: should contain "ps_clk", "send_clk" and
+                       "send_dly_clk"
+        - clocks: should contain 3 entries for the "ps_clk", "send_clk"
+                  and "send_dly_clk" clocks
+- Raw NAND:
+        - nand-ecc-mode = "soft";
+        - nand-ecc-algo = "bch";
+
+Example:
+- SPI mode:
+
+        mxic: mxic-mfd@43c30000 {
+                compatible = "mxic,mfd";
+                reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
+                reg-names = "regs", "dirmap";
+                clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
+                clock-names = "send_clk", "send_dly_clk", "ps_clk";
+                #address-cells = <1>;
+                #size-cells = <0>;
+
+                flash@0 {
+                        compatible = "jedec,spi-nor";
+                        reg = <0>;
+                        spi-max-frequency = <25000000>;
+                        spi-tx-bus-width = <4>;
+                        spi-rx-bus-width = <4>;
+                };
+        };
+ 
+- Raw NAND mode:
+
+        mxic: mxic-mfd@43c30000 {
+                compatible = "mxic,mfd";
+                reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
+                reg-names = "regs", "dirmap";
+
+                nand-ecc-mode = "soft";
+                nand-ecc-algo = "bch";
+        };  
+
+---------------------------------------------------------------------< 
+
+thanks for your review.
+
+best regards,
+Mason
+
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
