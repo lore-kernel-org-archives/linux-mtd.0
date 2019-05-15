@@ -2,70 +2,97 @@ Return-Path: <SRS0=9tRn=TP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5EC2C04AB4
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 01:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F7BC04AA7
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 06:18:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A85692084A
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 01:30:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 354F52089E
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2019 06:18:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tGygZBK8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A85692084A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YjGSnIvZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KzKBJLzx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 354F52089E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nCEIxHeZ8Eb3dFohGB85VAuhdKCAJ7MY++p3in5k3eI=; b=tGygZBK8i71w4C
-	1PZalQAJMTG/yhRPu0fornZiLYPZI3ieLovdYW/QcVdueMYK5iE+/TspRNtosWmRrPZd0uH4EfAD2
-	lTZjqLE2BSdk7cS5j7fy6u4dXVZ81WF1gBPNlcPdsDFfWAQu416dU0/lXcBML+V5/tFPCWb7cb56N
-	EWG4xJTBcY23HDXPm3R+MoR3j/Ly007890CDoJ2IImSr5JnZ9VX4RBF46eNGwVs416lcrhQmsdrQT
-	eDvOMAnZAzmdApQqmUcjySCcXVyifn30lNGYO72pUm7e+KrUZlqQ+782tJWjXT9MjPdHOWZZ/qUv0
-	EqVzOmaZj3rwRgVXv7RQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=a2pK+wtMMF2BquDV7OFdJ99ItHjj8gGGxVNTdCbFNSo=; b=YjGSnIvZQYDQgG
+	inedsLi6DrdIGQxaOkyeFfyk2LsjBzauVhhk3y7a1lkM99zCZCthzmOmbK4ePN9aR42KZXfzodOk0
+	12eFyw/AWw3DuCJjKasWLH+YQENo+l7jHzPjhdXggO0fHuLnG5mvKD2lJmlJxgD21Ag7dhHqbUY50
+	hPiOBMhiXLjKFsD2m6acg6izg2rZ96FsCtrUDbzS0Q6EHu7xSP0tT+ymHIMnOoevCIqjVsI+9NzfW
+	CmJFCapmKktGRcJcWfyj5rArltAAoGKobZgJYU8LYS1BacutlX+huHOa43fiouqyFUiiSayIVQDD4
+	fER/MnfrNcw3gvBA2g0Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hQikq-0007Ri-3C; Wed, 15 May 2019 01:30:48 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1hQnFR-0005Zp-HZ; Wed, 15 May 2019 06:18:41 +0000
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hQiki-0007Kj-B0
- for linux-mtd@lists.infradead.org; Wed, 15 May 2019 01:30:46 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x4F1U0ch051830;
- Wed, 15 May 2019 09:30:00 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id A36C041D2DF341FE82B2;
- Wed, 15 May 2019 09:30:00 +0800 (CST)
-In-Reply-To: <20190514094100.34d2a6ba@windsurf.home>
-References: <1557474062-4949-1-git-send-email-masonccyang@mxic.com.tw>	<20190510153704.33de9568@windsurf.home>
- <OF1EDBA487.7723094D-ON482583F9.00297ABF-482583F9.0029E3EE@mxic.com.tw>	<20190513114059.3934b0bb@windsurf.home>
- <OFB5D53BFC.6B44E7E0-ON482583FA.00090982-482583FA.000A5E93@mxic.com.tw>
- <20190514094100.34d2a6ba@windsurf.home>
-To: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v1] mtd: rawnand: Add Macronix NAND read retry support
+ id 1hQnFN-0005ZW-UN
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2019 06:18:39 +0000
+Received: by mail-wr1-x441.google.com with SMTP id w12so1221430wrp.2
+ for <linux-mtd@lists.infradead.org>; Tue, 14 May 2019 23:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:openpgp:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=jxbQuCq6kfxUE5RewINQp4+ByiSfCMGNEbNEcQrrPrs=;
+ b=KzKBJLzxMK1qi/GNhE7XVDb5NBHzSWrYzu5UitJ5uvsO4v+mxJiGqBx9D/op31wVtZ
+ JE6zeFYI/ruFAcY5lzp8Tr3iXppqV6smS3DQIMTbn7RSekkoyNgHhALoacd8OceLC9NH
+ Xdkcxc13FaEOUHy7R5BE3rtmb3JnwQqTKW0ZbSxU2VdICIPy8o4XQPtufciLhuVwk33/
+ Dj51IEHNBwrd0qR/yFW8a1lmO3g5yE9PHFIiijo7TQ+WNooB57R+sTqpAUfNgu1mbcbS
+ aaGbEpzCj0yLYYbp62BsZ/YHdzwR1Oa01UbCgZfrb4IyczmzugjUHsa1u7FWHyD85Bvf
+ RQAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
+ :date:user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=jxbQuCq6kfxUE5RewINQp4+ByiSfCMGNEbNEcQrrPrs=;
+ b=A9UwbS20F98Py3ilMjGvlFKNbJnEQ73CCvxo6UCvVxmup3+WY2fp9oI3zoc38VI/LO
+ A9SLkJvzgqx+i/mfx7qBexi0jf5qMKvKyxcjxCCLHG/izekth4EelRTHxylQSsuHCWRA
+ X6gheKE7OmaLJ5VA5HeDUaLlIhnGBssxna1be4ic+s/0iaM4TwgPSz/ASmOoohkq3DQV
+ JblTYloE//0mU4CMvkv/YUnmJ+qemDK8zkKBtbS7vGIuxnZBJnMGKTXFj91IQi1n6smJ
+ fRcS3bpCjZtE2rdxUsrMNN/0AJfAKvOn4X7IqozGj6um8Ltpg0i3OvIfUsAuB1BRppd4
+ 3Ieg==
+X-Gm-Message-State: APjAAAWSC3R6YOjgQinRMkQ7mVRSUfDxcPnfv7WmbJ9vh3IV9CFKFFAK
+ c3/NczNzEk/UmUhuUYZIzbU=
+X-Google-Smtp-Source: APXvYqwVX63RizTyf0Ly0Cwi2T4h5/V0OPVTw41psz7mqe3AnwyeW+c+scMntj/tKsnr3MbA9RESWw==
+X-Received: by 2002:adf:94a5:: with SMTP id 34mr23620723wrr.275.1557901115230; 
+ Tue, 14 May 2019 23:18:35 -0700 (PDT)
+Received: from [192.168.1.4] (ip-86-49-110-70.net.upcbroadband.cz.
+ [86.49.110.70])
+ by smtp.gmail.com with ESMTPSA id d3sm1368862wmf.46.2019.05.14.23.18.34
+ (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+ Tue, 14 May 2019 23:18:34 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] mtd: spinand: Add #define-s for page-read ops with
+ three-byte addresses
+To: Jeff Kletsky <lede@allycomm.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <20190514215315.19228-1-lede@allycomm.com>
+ <20190514215315.19228-2-lede@allycomm.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <355bcf8d-bce6-1b82-0f57-539c8d9b6cac@gmail.com>
+Date: Wed, 15 May 2019 08:17:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-KeepSent: 337888B3:25F9D561-482583FB:00070B62;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF337888B3.25F9D561-ON482583FB.00070B62-482583FB.00083D9C@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Wed, 15 May 2019 09:30:01 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/05/15 AM 09:30:00,
- Serialize complete at 2019/05/15 AM 09:30:00
-X-MAIL: TWHMLLG3.macronix.com x4F1U0ch051830
+In-Reply-To: <20190514215315.19228-2-lede@allycomm.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190514_183040_674834_95413E96 
-X-CRM114-Status: UNSURE (   6.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190514_231838_091172_13E7C4E1 
+X-CRM114-Status: GOOD (  16.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,99 +104,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, juliensu@mxic.com.tw, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 5/14/19 11:53 PM, Jeff Kletsky wrote:
+> From: Jeff Kletsky <git-commits@allycomm.com>
 
-Hi Thomas,
+That #define in $subject is called a macro.
 
+Seems this patch adds a lot of almost duplicate code, can it be somehow
+de-duplicated ?
+
+> The GigaDevice GD5F1GQ4UFxxG SPI NAND utilizes three-byte addresses
+> for its page-read ops.
 > 
-> > > > 
--------------------------------------------------------------------
-> > > >  static void macronix_nand_onfi_init(struct nand_chip *chip)
-> > > >  {
-> > > >           struct nand_parameters *p = &chip->parameters;
-> > > >           struct nand_onfi_vendor_macronix *mxic = (void 
-> > > > *)p->onfi->vendor; 
-> > > 
-> > > Why cast to void*, instead of casting directly to struct
-> > > nand_onfi_vendor_macronix * ? 
-> > 
-> > Due to got a warning:
-> > 
-> >  warning: initialization from incompatible pointer type
-> >   struct nand_onfi_vendor_macronix *mxic = p->onfi->vendor;
+> http://www.gigadevice.com/datasheet/gd5f1gq4xfxxg/
 > 
-> You didn't look at my code, I suggested:
+> Signed-off-by: Jeff Kletsky <git-commits@allycomm.com>
+> ---
+>  include/linux/mtd/spinand.h | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
 > 
->    mxic = (struct nand_onfi_vendor_macronix *) p->info->vendor;
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index b92e2aa955b6..05fe98eebe27 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -68,30 +68,60 @@
+>  		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 1))
+>  
+> +#define SPINAND_PAGE_READ_FROM_CACHE_OP_3A(fast, addr, ndummy, buf, len) \
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(fast ? 0x0b : 0x03, 1),		\
+> +		   SPI_MEM_OP_ADDR(3, addr, 1),				\
+> +		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
+> +		   SPI_MEM_OP_DATA_IN(len, buf, 1))
+> +
+>  #define SPINAND_PAGE_READ_FROM_CACHE_X2_OP(addr, ndummy, buf, len)	\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0x3b, 1),				\
+>  		   SPI_MEM_OP_ADDR(2, addr, 1),				\
+>  		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 2))
+>  
+> +#define SPINAND_PAGE_READ_FROM_CACHE_X2_OP_3A(addr, ndummy, buf, len)	\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(0x3b, 1),				\
+> +		   SPI_MEM_OP_ADDR(3, addr, 1),				\
+> +		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
+> +		   SPI_MEM_OP_DATA_IN(len, buf, 2))
+> +
+>  #define SPINAND_PAGE_READ_FROM_CACHE_X4_OP(addr, ndummy, buf, len)	\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0x6b, 1),				\
+>  		   SPI_MEM_OP_ADDR(2, addr, 1),				\
+>  		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 4))
+>  
+> +#define SPINAND_PAGE_READ_FROM_CACHE_X4_OP_3A(addr, ndummy, buf, len)	\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(0x6b, 1),				\
+> +		   SPI_MEM_OP_ADDR(3, addr, 1),				\
+> +		   SPI_MEM_OP_DUMMY(ndummy, 1),				\
+> +		   SPI_MEM_OP_DATA_IN(len, buf, 4))
+> +
+>  #define SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(addr, ndummy, buf, len)	\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0xbb, 1),				\
+>  		   SPI_MEM_OP_ADDR(2, addr, 2),				\
+>  		   SPI_MEM_OP_DUMMY(ndummy, 2),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 2))
+>  
+> +#define SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP_3A(addr, ndummy, buf, len) \
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(0xbb, 1),				\
+> +		   SPI_MEM_OP_ADDR(3, addr, 2),				\
+> +		   SPI_MEM_OP_DUMMY(ndummy, 2),				\
+> +		   SPI_MEM_OP_DATA_IN(len, buf, 2))
+> +
+>  #define SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(addr, ndummy, buf, len)	\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0xeb, 1),				\
+>  		   SPI_MEM_OP_ADDR(2, addr, 4),				\
+>  		   SPI_MEM_OP_DUMMY(ndummy, 4),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 4))
+>  
+> +#define SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP_3A(addr, ndummy, buf, len) \
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(0xeb, 1),				\
+> +		   SPI_MEM_OP_ADDR(3, addr, 4),				\
+> +		   SPI_MEM_OP_DUMMY(ndummy, 4),				\
+> +		   SPI_MEM_OP_DATA_IN(len, buf, 4))
+> +
+>  #define SPINAND_PROG_EXEC_OP(addr)					\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0x10, 1),				\
+>  		   SPI_MEM_OP_ADDR(3, addr, 1),				\
+> 
 
-Oops, sorry that I did not pay attention to it.
 
-Will patch it by your comments.
-
-  static void macronix_nand_onfi_init(struct nand_chip *chip)
-  {
-          struct nand_parameters *p = &chip->parameters;
-          struct nand_onfi_vendor_macronix *mxic;
- 
-          if (!p->onfi)
-                  return;
- 
-          mxic = (struct nand_onfi_vendor_macronix *) p->onfi->vendor;
-          if ((mxic->reliability_func & MACRONIX_READ_RETRY_BIT) == 0)
-                  return;
- 
-          chip->read_retries = MACRONIX_READ_RETRY_MODE;
-          chip->setup_read_retry = macronix_nand_setup_read_retry;
- 
-          if (p->supports_set_get_features) {
-                  bitmap_set(p->set_feature_list,
-                             ONFI_FEATURE_ADDR_READ_RETRY, 1);
-                  bitmap_set(p->get_feature_list,
-                             ONFI_FEATURE_ADDR_READ_RETRY, 1);
-          }
-  }
-
-
-thanks & best regards,
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+-- 
+Best regards,
+Marek Vasut
 
 ______________________________________________________
 Linux MTD discussion mailing list
