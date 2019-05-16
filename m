@@ -2,80 +2,83 @@ Return-Path: <SRS0=GzCT=TQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D18BAC04AAF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 16:15:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887F5C04AAF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 16:42:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A560C20815
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 16:15:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5A4BA20833
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 16:42:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="J2jbSHlN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="YGLG2XRT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A560C20815
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=broadcom.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lA7jOixg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OtQtTKEN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A4BA20833
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Rwc0nQ154FXWC5WVTJOWcKVDGGkDivA+dwWITz8hQjQ=; b=J2jbSHlNTXze0P
-	4NUKSAAynbvQzJ8zRdQEKpDmMlMTzM3naSjl46YyK+sRSt9zdN4dL39b7Tf8ny0BcoGk60l2Kcs4V
-	j5osTlrER9xjhneoust0d+S0/h09WyDrjyKC+kty5udCz8LHVke+lIbBTIlLbO1cwBnWp5ukisstO
-	ES3lf5xaIGU8leeTZT4v841j7PEyj3O77DRnZC7Vf2ukSLWepgmOy+PbDOLFYbt8w8TuyPgFzZ5/5
-	q/X9kOONNpMTkVjufzV0i0GXUQA0c+ORxV8E4HznyqKWWwVjjZszh4LWa3n3527uW4mG7nHgxX0Z9
-	6nLKhZPRCDpHdEgbJ4DA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=pLmSKqMTb8GbrRUYDjWUG40JsVLxtjBW75LpSQ2IX2k=; b=lA7
+	jOixg6GDOWcPSCqpOZSjWtlY/9AIn/+yjDbAdGEGJNEOxvBdhkOLnYDEXCkI2JGA9o0Lx6pe8lI61
+	dklc5qpAXE96+CURDi+dTHOCcg/D4CdiJKWktcIYhooaazmnbpuE2AMzozUtbxhMvpEMj0uEQ6b0u
+	ZLoAB/pO3v2sJabjLZ2di45LMmUiQvwiDizogcRZrzNPKWsxohO5Q2ArKaOkWAU7TA2vbMLyhTx9f
+	g00wWgNwWITBNRo9FW8xaFJWYRZn2IihqHuBQxRF5O+IcWxA9Yek+QczytFPAe2t/xCL6wugWxvZM
+	I9eFAvKJw7ND8p4+moDs/J8ivOxy0NA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hRJ2Y-0003P1-OY; Thu, 16 May 2019 16:15:30 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+	id 1hRJSK-0000Lz-5R; Thu, 16 May 2019 16:42:08 +0000
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRJ2W-0003Of-Ec
- for linux-mtd@lists.infradead.org; Thu, 16 May 2019 16:15:29 +0000
-Received: by mail-lf1-x143.google.com with SMTP id x132so3125359lfd.0
- for <linux-mtd@lists.infradead.org>; Thu, 16 May 2019 09:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=broadcom.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=LBNDRhhKywXBp2MSuZfngBTVHWR97SCmvRB6eI8uLbE=;
- b=YGLG2XRTx2rzAnfC7U7Pt27EAxYtRFVsHIL2F6MDo4Eb18nu45zjdjHrwS1A9kdPGe
- 7AIr1yDi9FrkAOD910N+/Gftjemk6VQpdwLEb6WWejY5+Cn6CS2NDKVPjnz4IQ92cu0t
- 0s8PelXOgvWB0aAfwdmg6nSu5jdC5BtNCXpg4=
+ id 1hRJSH-0000L4-Jl
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2019 16:42:06 +0000
+Received: by mail-ed1-x543.google.com with SMTP id p27so6216764eda.1
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2019 09:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=7hWW7F3Jq1teN//UiYRY0ce3mS1OHS7jeYFYW15JQuE=;
+ b=OtQtTKENS/kDTkzdvta14eqqXLVyFWovn3fbD4Aqk3xTmHOj1RabBgYJ5NfI47wMoZ
+ zICB7jy34Amf3NZv2XpTFIOfdsvC2Sbe8lIMZx8e7DkTUFDcpI4J8raTtFoiHiK4P57F
+ U3flbJ4xdno3lno40OQQZGqVSGb529186F2GIAzC+x/RBmsc0BGWudxRaAmp5TgtJME7
+ 4st677zv7t7NT+eo7l7ifjejIUC8zvoYOa3Hk2wGXh6dPMNu4GwCNBeg/MNwH8w6K97f
+ TAGNOXLUqL8sK32OoYQN/WMKsoD/nchOyBu2Jgk/PwRoHzhGUwC4sKZGEncwEN/8mDNo
+ koEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=LBNDRhhKywXBp2MSuZfngBTVHWR97SCmvRB6eI8uLbE=;
- b=MZCprCZq9MlQ5TjOBSqymA/IiiTx5Z++wCniVZ1pfc3+xDW+vJ/RohGcXclVF4YwvO
- tCv71o0SGlXhx3kKOqW1g54zPNyY6iHCSGCB8qFBgcQtWPBrGCBYhGrpEfCwtveXkmoB
- /ePvd6GPxKaOsVBdLayyxdZEmNWEJ2rFZh7n6A6oa+Zwxsuqu4YBoYRJkmvlPgsj4ST3
- s6vh65I7C2Q6DGzdW2dKezykrGEGxxeoukGhMFizqyBVaGmfM//AaeZakF3PUqqtb6pU
- s+iH6h8xCfEyvZng6GdvISKEo7cNhFOdz9mjFO15JnwQFEXpVDnk58IOEW7icLP4DkBX
- i4ig==
-X-Gm-Message-State: APjAAAUzFkkWG9AQsaAtfqf7trY+WLd3t4qcjIUdd4tgH3reIHnQ9Kly
- kjP733LWCO4Ucptk2FmNp8fNzuCkQatrc+X8NOE4mA==
-X-Google-Smtp-Source: APXvYqzDx21IaIaK95EwYZHZnuKZ60WB8qRKmhPS4eJD5UoIunNxJ5iVpBl+vhmkGydAw0xGLL0IfTX7yIdjwsn9BZs=
-X-Received: by 2002:a19:2791:: with SMTP id n139mr16901324lfn.67.1558023326364; 
- Thu, 16 May 2019 09:15:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <1558022399-24863-1-git-send-email-kdasu.kdev@gmail.com>
- <1558022399-24863-2-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1558022399-24863-2-git-send-email-kdasu.kdev@gmail.com>
-From: Kamal Dasu <kamal.dasu@broadcom.com>
-Date: Thu, 16 May 2019 12:14:49 -0400
-Message-ID: <CAKekbes5XOU81ANJGeSsn_Ww59Fx1kymBt8fscv-fsSJdvaVeA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mtd: nand: raw: brcmnand: When oops in progress
- use pio and interrupt polling
-To: Kamal Dasu <kdasu.kdev@gmail.com>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=7hWW7F3Jq1teN//UiYRY0ce3mS1OHS7jeYFYW15JQuE=;
+ b=VwmhO3txEOtPnk/JZKsEuxx7mMlwV9JHbTR9fij27YdEghhkNZe4EmNYY21+80Dp+C
+ unmfJzjgfWP/AOc5wnhFbiveJTDiU5jJrczlmUb6CkCtKHRs/1GoBpdevpeDcciyoDOa
+ Lk3s2PjQlw2FwzD6V5KLUBybjp0D4wCirfD8L2KARUYSzrYUN2yuZEv1YWWoK/sW5y5J
+ qcoY3ykYFo78MlkB3kDZ5GvIeR1qEHF3++76hD35QPxf+UK5hsNHZmsYWZhP7aeA/z2z
+ krHDk+meBMojXlP0PBlGl+UzS0iygpki0OSZBRtXulyrPZOurQ2njdR9xfouyrbSJmTr
+ DLuw==
+X-Gm-Message-State: APjAAAW5v65y5VdA8Yw27CgXKmWy9bUM6cmhPAnsyNLsbzJiAqgjyFwU
+ kqoZxaNBk6eQr94KIt9Jn49lU3gE
+X-Google-Smtp-Source: APXvYqxE5gnOG1GBDEQ/vXEgfSrP1xENIVStPlB1dls6VlS0+mMGiXF1Q9bgkjMyE3ebKtCimXoKMQ==
+X-Received: by 2002:a50:8eb6:: with SMTP id w51mr50988410edw.34.1558024923930; 
+ Thu, 16 May 2019 09:42:03 -0700 (PDT)
+Received: from mail.broadcom.com ([192.19.231.250])
+ by smtp.gmail.com with ESMTPSA id i45sm2013709eda.67.2019.05.16.09.42.01
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 16 May 2019 09:42:03 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v3 1/2] mtd: Add flag to indicate panic_write
+Date: Thu, 16 May 2019 12:41:46 -0400
+Message-Id: <1558024913-26502-1-git-send-email-kdasu.kdev@gmail.com>
+X-Mailer: git-send-email 1.9.0.138.g2de3478
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190516_091528_494869_2E0B2B47 
-X-CRM114-Status: GOOD (  13.80  )
+X-CRM114-CacheID: sfid-20190516_094205_647233_45840ECD 
+X-CRM114-Status: GOOD (  13.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -87,51 +90,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- open list <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Please ignore v2 patch 1/2 and 2/2. The commit ordering is not right.
-v3 patch on the way
+Added a flag to indicate a panic_write so that low level drivers can
+use it to take required action where applicable, to ensure oops data
+gets written to assigned mtd device.
 
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/mtdcore.c   | 3 +++
+ include/linux/mtd/mtd.h | 6 ++++++
+ 2 files changed, 9 insertions(+)
 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 76b4264..a83decd 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1138,6 +1138,9 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		return -EROFS;
+ 	if (!len)
+ 		return 0;
++	if (!mtd->oops_panic_write)
++		mtd->oops_panic_write = true;
++
+ 	return mtd->_panic_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_panic_write);
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 677768b..791c34d 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -330,6 +330,12 @@ struct mtd_info {
+ 	int (*_get_device) (struct mtd_info *mtd);
+ 	void (*_put_device) (struct mtd_info *mtd);
+ 
++	/*
++	 * flag indicates a panic write, low level drivers can take appropriate
++	 * action if required to ensure writes go through
++	 */
++	bool oops_panic_write;
++
+ 	struct notifier_block reboot_notifier;  /* default mode before reboot */
+ 
+ 	/* ECC status information */
+-- 
+1.9.0.138.g2de3478
 
-Kamal
-
-On Thu, May 16, 2019 at 12:01 PM Kamal Dasu <kdasu.kdev@gmail.com> wrote:
->
-> If mtd_oops is in progress switch to polling for nand command completion
-> interrupts and use PIO mode wihtout DMA so that the mtd_oops buffer can
-> be completely written in the assinged nand partition.
->
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> index a30a7f0..dca8eb8 100644
-> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> @@ -835,7 +835,6 @@ static inline void disable_ctrl_irqs(struct brcmnand_controller *ctrl)
->         }
->
->         disable_irq(ctrl->irq);
-> -
->         ctrl->pio_poll_mode = true;
->  }
->
-> --
-> 1.9.0.138.g2de3478
->
 
 ______________________________________________________
 Linux MTD discussion mailing list
