@@ -2,108 +2,85 @@ Return-Path: <SRS0=GzCT=TQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81CA2C04AAF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 10:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD402C04AAF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 11:04:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50D8A20848
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 10:41:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A11432070D
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 11:04:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="j9HWdCij";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="oYB59ACg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50D8A20848
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rMtbbhdj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T+i9wvbx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A11432070D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yndT4vYrUVl/vXQzAxu1gY1rWrYcb4hU6pE9h3+uohY=; b=j9HWdCijmVjkwU
-	VSZrJXPnbY/hwX18XPXDFipVJ19GHNALRXvLUfzFG+sA6/yhQiHrpQbagnFlY9KHa2BJIrkUW59cW
-	6NQ/upaZark/6VAVuqw0c+10Lb+7Feze38R4sfuIE/r+3zmKNb/eSr/stwnCi5iEK/POz41ekssD3
-	qvBW90BtMf2IkdLwhc/xFxzB552/mmG9rM/u7jtZDp6KzdZD0v2qt7p10eQgZ35NDvpW7ht7BCwcm
-	+b5NPN6iUuwdvTWT9iDTNu79JfZNHAGL6scx2HxjnzpbIXnWzukruciHohYhoBwkw8XODHyNoP67b
-	5xEgA1UoE4EpPZsg2Thg==;
+	List-Owner; bh=BVgApEU1IGui0RW8bFLHuEVEyqH1vDKtKN70zSPiEQM=; b=rMtbbhdjkcxbeE
+	HxldBzQVnn3lEnWW+IZ/084fgqzzgRhPxVDHHLxcDUZa9lZ6fWdqxT3X/e4nim6Owz4qo3TGvcfMX
+	aLR/6UtWVuCabFjm+OqXMRhz18Ctie74MhKzZr31IqbXLnO3/CYI0SNcVfZthJnjv2CU+WRpKOFw7
+	AjBq0eczL4mG3/1fK8rUpPxjR/u/CuNVThOoqZB7u4IqyB5q5/wg8wfMUjomGdHFW4Y4ELietXbc4
+	TQMW/mLHll9nHA/WetwC23aY99G+twkwFKnG5y6yJHQZ7DsHaSEVrbkkVapF2hiXzi2Gf5b6DM6qU
+	ZeB9CFo3b60/JHkC1L4A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hRDpY-0002z9-O2; Thu, 16 May 2019 10:41:44 +0000
-Received: from mail-eopbgr50084.outbound.protection.outlook.com ([40.107.5.84]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+	id 1hREBq-0001z1-7n; Thu, 16 May 2019 11:04:46 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRDoE-0001Bk-Fe; Thu, 16 May 2019 10:40:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OEYbYoqtoaCO5mnD2qF5OBSQYRXuDBlN326Q1NqNL2w=;
- b=oYB59ACgNwowzTK/Nf+ZogaGOFXzOzQ5fk0LOccjSM089odDSFuU4R+UOlK7fKtZRb+AcSNLazDjqoU7ceKjeJB9x68PyF1rh0v/oOBh20oU/j3+8CNh63J6gsRwEsn6DHOeS5Gug0FbzBib/6qetb62+JfLebjbO3RdNziLKGI=
-Received: from AM0PR0402MB3556.eurprd04.prod.outlook.com (52.133.43.147) by
- AM0PR0402MB3460.eurprd04.prod.outlook.com (52.133.48.28) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.21; Thu, 16 May 2019 10:39:46 +0000
-Received: from AM0PR0402MB3556.eurprd04.prod.outlook.com
- ([fe80::f891:76d:8a6a:3dfd]) by AM0PR0402MB3556.eurprd04.prod.outlook.com
- ([fe80::f891:76d:8a6a:3dfd%2]) with mapi id 15.20.1900.010; Thu, 16 May 2019
- 10:39:45 +0000
-From: Kuldeep Singh <kuldeep.singh@nxp.com>
-To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: [PATCH] dt-bindings: spi: spi-fsl-qspi: Add ls2080a compatibility
- string
-Thread-Topic: [PATCH] dt-bindings: spi: spi-fsl-qspi: Add ls2080a
- compatibility string
-Thread-Index: AQHVC9OtkL2+pIZt7Uy9/HRX7rIojQ==
-Date: Thu, 16 May 2019 10:39:45 +0000
-Message-ID: <20190516104046.23830-2-kuldeep.singh@nxp.com>
-References: <20190516104046.23830-1-kuldeep.singh@nxp.com>
-In-Reply-To: <20190516104046.23830-1-kuldeep.singh@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BMXPR01CA0083.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::23) To AM0PR0402MB3556.eurprd04.prod.outlook.com
- (2603:10a6:208:17::19)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=kuldeep.singh@nxp.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.17.1
-x-originating-ip: [92.120.1.68]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7a98e20a-a305-4d05-890a-08d6d9ead00e
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);
- SRVR:AM0PR0402MB3460; 
-x-ms-traffictypediagnostic: AM0PR0402MB3460:
-x-microsoft-antispam-prvs: <AM0PR0402MB346011B28C987CD3280E6401E00A0@AM0PR0402MB3460.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1002;
-x-forefront-prvs: 0039C6E5C5
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(39860400002)(376002)(346002)(136003)(366004)(189003)(199004)(305945005)(1076003)(4326008)(71190400001)(71200400001)(8676002)(26005)(6116002)(53936002)(3846002)(8936002)(81156014)(81166006)(1730700003)(99286004)(256004)(25786009)(6512007)(50226002)(52116002)(6486002)(6436002)(68736007)(2906002)(5640700003)(14454004)(76176011)(86362001)(6506007)(6916009)(386003)(44832011)(2616005)(476003)(316002)(7736002)(186003)(11346002)(478600001)(66066001)(2501003)(446003)(36756003)(486006)(5660300002)(54906003)(73956011)(66946007)(102836004)(66476007)(66556008)(66446008)(64756008)(2351001);
- DIR:OUT; SFP:1101; SCL:1; SRVR:AM0PR0402MB3460;
- H:AM0PR0402MB3556.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: ROgUAS2hbdXiKezD04XNaRsVGzX5vEC/9NNRkhAak+L20TNd5zoNvhljdHnEE3A9Tb4oar+izP99MTrto+EuGslzlQLwX5iGR+CIF8WOaE6stOoMcWTIrvOv95nctWNySQ4XEG4088Xajkljkk4i0TcWnum8I/qszLtbt1Ytjlb3Tu+9UEzgpOnw5V6HKdNG8bS14pyjyF7SdzwwwCyjvJjf3thUjDrcMv6TR7QPxspv/wfy7aF79g9JKFHidzf3PB1v4Y4+3IWs0V+YNnnQdwl+nslHjhyyMNPp71gtl7hvDUeoTLkPLPxSlTGeHkYdOehPKo7vwFArlb6hBqy2iWNXxLtPKSpHEbtvbm7O6u/veiCID66Rq2qV8v716fcIwhGJVd7/Teva1Fi/2A07z8OjI3STffrrD3fLTM+/nBM=
+ id 1hREBn-0001yg-Tb
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2019 11:04:45 +0000
+Received: by mail-wm1-x341.google.com with SMTP id h11so2996972wmb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2019 04:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=gyI/jEopVDM3fprcogRRbW2HvdI8T3zLS+oXAZouBJo=;
+ b=T+i9wvbxHQvslh/qCerb+bav/QL0VhPIyq/vIT9aDW0p5If4d2LXTCGCym+7Mc7DGG
+ LrmX7yVr5tH+Wd3JJir0se1XoIoEsp67gN9d7QlSk0de+wp/NYiBmmZb7xD0CO1UY+kT
+ zIhD7KCaOr83kas+WFgNi0L5Slsk4mUoHJ83eo/aAvjtL7umyHA9nOwL/u7STyYVZLP7
+ AJ1klHcva5cWOyU3j6fgc+kuTd/NYEIAGmWhrNIqwDAKUt8M1TaRsrt9C33TK03CRdnj
+ CwFaLl8q8QxB2jlKZQ5ZDmFb7IOVUrgyYoKjHYVgSf+V1EfOxWeUUXeh1zJFMzQiKwy1
+ DYCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gyI/jEopVDM3fprcogRRbW2HvdI8T3zLS+oXAZouBJo=;
+ b=kEApSTHWTG6EwuH2OjP5E720xslWS8tgcAKSpBG3zU8TPyUzOfns830Y3WmnGf8UGk
+ olPtnaA+BJ3XFc1AdJIwfkh/cgAvaYSXIOuzzyU9RhChUm32o798DQNUDoQfmGDVyAM2
+ LnoV9gjNKRF+RbOahItbuj5UhJX+5QbqWQr3u4pZEDCo0P/fmuEAj386nuKHAqtUklOU
+ 7aPZ+urTQmCiYevX6r5147LeIDkirIzCKyizQv6XZUiY5H4ynbj7QZkderpPFq9N5KGy
+ AwFfaH8DF16YIjXrAyNRmNMsnDUaB0z3dmBqlp8q+J+3/pgfngqEaJknnK7p5facLJnq
+ 7EkQ==
+X-Gm-Message-State: APjAAAWtzn81D19evG6dy6FpS49SrMKRL1aBu9WO61jRyFiFJREsorqN
+ WHjc8/DSCxjyEIGTvJD9TQvAD00n8bvbLO6A8HI=
+X-Google-Smtp-Source: APXvYqyXZaSlzGWKD6qMP2YfVYRx0jX++CUdeG/kZMBh3xuCf6fHKEAM+8Siua3wWoxuTmt1PQVL2qgKmJIsJEFt9ac=
+X-Received: by 2002:a1c:1d16:: with SMTP id d22mr9223464wmd.110.1558004682387; 
+ Thu, 16 May 2019 04:04:42 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a98e20a-a305-4d05-890a-08d6d9ead00e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2019 10:39:45.8820 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3460
+References: <1556914418-40288-1-git-send-email-clayton.shotwell@rockwellcollins.com>
+ <1556914418-40288-2-git-send-email-clayton.shotwell@rockwellcollins.com>
+ <CAFLxGvxgQb1iCTdHbFWz6VmMU1mjnGOadkHtLvA68Jaa0BS=bg@mail.gmail.com>
+In-Reply-To: <CAFLxGvxgQb1iCTdHbFWz6VmMU1mjnGOadkHtLvA68Jaa0BS=bg@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 16 May 2019 13:04:30 +0200
+Message-ID: <CAFLxGvxoO7mMdH5dMKgqzz49qq-M49jSPi5SpmnA1RScgBmj5w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] jffs2: Add sync to underlying mtd device when file
+ system is synced
+To: Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190516_034023_078964_117D1DB1 
-X-CRM114-Status: GOOD (  10.68  )
+X-CRM114-CacheID: sfid-20190516_040443_979740_459458A1 
+X-CRM114-Status: GOOD (  16.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -115,44 +92,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- Kuldeep Singh <kuldeep.singh@nxp.com>, Ashish Kumar <ashish.kumar@nxp.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Brandon Maier <brandon.maier@rockwellcollins.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are 2 version of QSPI-IP, according to which it can be big endian
-or little endian. There are some other minor changes as well.
-The big endian version uses driver compatible fsl,ls1021a-qspi and little
-endian version uses fsl,ls10280a-qspi
+On Mon, May 6, 2019 at 12:22 AM Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Fri, May 3, 2019 at 10:14 PM Clayton Shotwell
+> <clayton.shotwell@rockwellcollins.com> wrote:
+> >
+> > Need to ensure the underlying flash does not cache anything even though
+> > the file system thinks it's synced back.
+> >
+> > Signed-off-by: Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
+> > ---
+> >  fs/jffs2/super.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+> > index 05d892c..4341565 100644
+> > --- a/fs/jffs2/super.c
+> > +++ b/fs/jffs2/super.c
+> > @@ -111,6 +111,7 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
+> >         mutex_lock(&c->alloc_sem);
+> >         jffs2_flush_wbuf_pad(c);
+> >         mutex_unlock(&c->alloc_sem);
+> > +       mtd_sync(c->mtd);
+>
+> This needs a more detailed explanation.
+> mtd_sync() is not cheap, so you make syncfs() more expensive.
+>
+> Please explain what failure you are facing without mtd_sync().
+> jffs2 is supposed to recover from a power failure at any time, just like ubifs.
 
-Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
-Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
----
- Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Ping?
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-index a72616a1ad2d..2c2a3e919a06 100644
---- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-+++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-@@ -3,9 +3,8 @@
- Required properties:
-   - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
- 		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
--		 "fsl,ls1021a-qspi"
-+		 "fsl,ls1021a-qspi", "fsl,ls2080a-qspi"
- 		 or
--		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
- 		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
- 		 "fsl,ls1012a-qspi" followed by "fsl,ls1021a-qspi"
- 		 "fsl,ls1088a-qspi" followed by "fsl,ls2080a-qspi"
 -- 
-2.17.1
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
