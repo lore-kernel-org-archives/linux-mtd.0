@@ -2,77 +2,83 @@ Return-Path: <SRS0=GzCT=TQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DAACC04E84
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 15:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D888C04AAF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 16:00:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3FAE20848
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 15:31:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 403B32087E
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2019 16:00:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kP3rb4mB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3FAE20848
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NGqg53Nw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QHLggaIX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 403B32087E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0y0uad40vXvtZ51jwAtGQUPLv89hXw6/w4HObgA+d4g=; b=kP3rb4mBo/v8vH
-	32oRgTVXiCBtog8JDqTf5nLP11sCXE4RJH2SV5NrVORX0xKtnAmhhZ9VbnnnTuKxsz+GTJGMhfOqM
-	oDeEJvXnAT7gAW+DowOmotunKJ7twxdvHhd8voX2MEA1xHq0QdFGpV3T7pJz6ijn1zceRlaom8p4G
-	taLmzZUemp/IC2F5GDhm5szaS3JvueU4TVtuQTHQJ7pjt7NsvL97/6szeUKPWhCgKdY/xo1mAVNeK
-	5bMheNY22/xMVZZjzNf8ZAUWu1eEY50T7tv561SIWIj+fqF6FkWRu2tsBcSafyj1D1/udrRda9+jg
-	jcyWVQwDcpbz8I0rV3jg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=z8GkbTqbgNwBanwj/JppSPSbyaiPbA4ZuTrECid4vz0=; b=NGq
+	g53NwZo7X00ahVcYddvESFR7cFoVvkQmT/mLfhl723rVtbAB5ELdNxW0Fuxg+g1t/Sjml3baSdKm4
+	MNj5XNthysuQWG2uWt38YTpwq50IPbqQNkNthsyHzF4MmawCSNqUObMVLNYjxxBcwultNNu6jsDFi
+	iPZREvagXLKSeoRnzLjw6y0KGc+aFPY2Uh0/By2b601W9G+8AmEihx/oe8izX3Ok6Qnu9btUDjWE7
+	99FDsDi+FE1xD8KM777cmTLGzBz20ZrZvP/LEafpQWZGJKD+9mIsTPQfBaGQgzb7HNUgiQQ3qiHLg
+	PEInCB2IsblFWpSS1YBJzFOs/DDcYuQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hRIMG-0005iT-4b; Thu, 16 May 2019 15:31:48 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1hRInz-000558-MR; Thu, 16 May 2019 16:00:27 +0000
+Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRIMB-0005cO-01
- for linux-mtd@lists.infradead.org; Thu, 16 May 2019 15:31:44 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id D459F6083252;
- Thu, 16 May 2019 17:31:40 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id yR2y1RGS5PYa; Thu, 16 May 2019 17:31:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id C41EA608325E;
- Thu, 16 May 2019 17:31:39 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id N9F9A20Mf3cD; Thu, 16 May 2019 17:31:39 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 943AD6083252;
- Thu, 16 May 2019 17:31:39 +0200 (CEST)
-Date: Thu, 16 May 2019 17:31:39 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Brandon Maier <brandon.maier@collins.com>
-Message-ID: <538011502.61455.1558020699516.JavaMail.zimbra@nod.at>
-In-Reply-To: <CA+fik51C43hnuWNFYFfzxivMVFrMZ9hN=jsLbQOWb9qcm0fAxQ@mail.gmail.com>
-References: <1556914418-40288-1-git-send-email-clayton.shotwell@rockwellcollins.com>
- <1556914418-40288-2-git-send-email-clayton.shotwell@rockwellcollins.com>
- <CAFLxGvxgQb1iCTdHbFWz6VmMU1mjnGOadkHtLvA68Jaa0BS=bg@mail.gmail.com>
- <CAFLxGvxoO7mMdH5dMKgqzz49qq-M49jSPi5SpmnA1RScgBmj5w@mail.gmail.com>
- <CA+fik51C43hnuWNFYFfzxivMVFrMZ9hN=jsLbQOWb9qcm0fAxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] jffs2: Add sync to underlying mtd device when file
- system is synced
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.8_GA_3025 (ZimbraWebClient - FF60 (Linux)/8.8.8_GA_1703)
-Thread-Topic: jffs2: Add sync to underlying mtd device when file system is
- synced
-Thread-Index: DGlIYNXGANEdrWEqf/v+shvAI91Fsw==
+ id 1hRInw-00053C-NN
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2019 16:00:26 +0000
+Received: by mail-ed1-x542.google.com with SMTP id b8so5928617edm.11
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2019 09:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=40SvhtWBUctj9+S+m8DxOe/VChkRebT6Ohk0rHAg6js=;
+ b=QHLggaIX8qLntcteJprWDMNXEF4m5roi8ecviFniHZepI65lRi+cug/BSR1clU0ev9
+ fW5E6RTikEbksO5qsROQycZ8/HcreUTmV7+HXXJ4hyvDHEJ5sivZd6rHRDG9EuEq68kt
+ 2ZmKV6qK6AJ6QR7QsLWebr/BZD2r+HcJcTevURhtkqdvSh6jmcpBUpcfjfJJ2+o2x8cl
+ VrM1SwE3MrKa+AmtUbbm15ygkP0ZIMuugFXTt2/xoCihciOUQZsJcfUZnvyjvGDF1v5S
+ Dyt19m7G/QY92CzMZg9ZfDEUyBWHRIiVBe9wlHDuEyLJuG5fy5aOjtT7cKfkOR4SERFL
+ dlZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=40SvhtWBUctj9+S+m8DxOe/VChkRebT6Ohk0rHAg6js=;
+ b=EdiY7mbE3GXLgxOU4pA14VXt8Chv99EwRki1HzkRl/Phage3O997ZBXj4ksCBU24H/
+ rfCfmFfKCAmhiQzg/OGRwETwD4zbjgSra86qYc2m6GmqVxkiF4RdB+Oeq0Ia3h75KR3X
+ MN3rITJke+l5yDn8egXXJ4lM5kWNeOMQioKkvK8fvDcsmt3TfiQFG7gs+KNTJa8m8ojA
+ V/KRxNy0yAIuA2Ub0/ltYysMxfmBlKzwRem/1t+lO/jJLnFeVQkvMYz3Grt/E/ZvotUT
+ IMBui688FdV0Tk166j8uepPxOX+ILyi3XgAbdA2cfjgTf3TlSCXsj4PMi5uFppbEyzRj
+ iebQ==
+X-Gm-Message-State: APjAAAUmBoEnTLYzIO5s1jcgXQltrytVh89Bf/3PQF+pmgfqd6Ht06P2
+ lBbNFtcRpu42S0ahkqG8rRf/pU7r
+X-Google-Smtp-Source: APXvYqxFwA4MBXten7Nivfuff+a7/ozMhF32vXLiGMWKvNWcDBFPkoeJLEyW4+8wQP6T1Qwnx6OOmw==
+X-Received: by 2002:a50:ad42:: with SMTP id z2mr52428235edc.9.1558022421720;
+ Thu, 16 May 2019 09:00:21 -0700 (PDT)
+Received: from mail.broadcom.com ([192.19.231.250])
+ by smtp.gmail.com with ESMTPSA id n8sm348307ejk.45.2019.05.16.09.00.19
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 16 May 2019 09:00:21 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 1/2] mtd: Add flag to indicate panic_write
+Date: Thu, 16 May 2019 11:45:39 -0400
+Message-Id: <1558022399-24863-1-git-send-email-kdasu.kdev@gmail.com>
+X-Mailer: git-send-email 1.9.0.138.g2de3478
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190516_083143_231103_228C1CDA 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20190516_090024_809458_E74F453F 
+X-CRM114-Status: GOOD (  16.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,45 +90,144 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkJyYW5kb24gTWFpZXIiIDxi
-cmFuZG9uLm1haWVyQGNvbGxpbnMuY29tPgo+IEFuOiAiUmljaGFyZCBXZWluYmVyZ2VyIiA8cmlj
-aGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4KPiBDQzogIkNsYXl0b24gU2hvdHdlbGwiIDxjbGF5
-dG9uLnNob3R3ZWxsQHJvY2t3ZWxsY29sbGlucy5jb20+LCAibGludXgtbXRkIiA8bGludXgtbXRk
-QGxpc3RzLmluZnJhZGVhZC5vcmc+LCAiQm9yaXMKPiBCcmV6aWxsb24iIDxiYnJlemlsbG9uQGtl
-cm5lbC5vcmc+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgIk1hcmVrIFZhc3V0IiA8bWFy
-ZWsudmFzdXRAZ21haWwuY29tPiwgIkJyaWFuIE5vcnJpcyIKPiA8Y29tcHV0ZXJzZm9ycGVhY2VA
-Z21haWwuY29tPiwgIkRhdmlkIFdvb2Rob3VzZSIgPGR3bXcyQGluZnJhZGVhZC5vcmc+Cj4gR2Vz
-ZW5kZXQ6IERvbm5lcnN0YWcsIDE2LiBNYWkgMjAxOSAxNzoxMjo0NQo+IEJldHJlZmY6IFJlOiBb
-UEFUQ0ggMi8yXSBqZmZzMjogQWRkIHN5bmMgdG8gdW5kZXJseWluZyBtdGQgZGV2aWNlIHdoZW4g
-ZmlsZSBzeXN0ZW0gaXMgc3luY2VkCgo+IENsYXl0b24gaXMgb3V0IGN1cnJlbnRseSwgYnV0IEkg
-Y2FuIGNvbW1lbnQgb24gd2hhdCBoZSBoYWQgdG9sZCBtZS4KClRoYW5rcyEKIAo+IE9uIFRodSwg
-TWF5IDE2LCAyMDE5IGF0IDY6MDUgQU0gUmljaGFyZCBXZWluYmVyZ2VyCj4+ID4gUGxlYXNlIGV4
-cGxhaW4gd2hhdCBmYWlsdXJlIHlvdSBhcmUgZmFjaW5nIHdpdGhvdXQgbXRkX3N5bmMoKS4KPj4g
-PiBqZmZzMiBpcyBzdXBwb3NlZCB0byByZWNvdmVyIGZyb20gYSBwb3dlciBmYWlsdXJlIGF0IGFu
-eSB0aW1lLCBqdXN0IGxpa2UgdWJpZnMuCj4gCj4gVGhlIHN5c3RlbSBleGhpYml0aW5nIHByb2Js
-ZW1zIHJ1bnMgamZmczIgb24gYSBnbHVlYmkgZGV2aWNlLiBPdXIKPiBzb2Z0d2FyZSBzeW5jKCkn
-cyB0aGUgamZmczIgYXQgY2VydGFpbiBwb2ludHMgc28gdGhhdCBpdCdzIHNhZmUgaWYKPiBwb3dl
-ciBpcyBjdXQuIFRoZSBqZmZzMiBhbHdheXMgcmVjb3ZlcnMgdGhlIGZpbGVzeXN0ZW0gYWZ0ZXIg
-cG93ZXIKPiBjdXQsIGJ1dCBzb21ldGltZXMgZGF0YSB3cml0dGVuIGJlZm9yZSB0aGUgc3luYygp
-IGNhbGwgZ2V0cyBsb3N0Lgo+IAo+IFRoZXNlIHBhdGNoZXMgYXR0ZW1wdCB0byBzb2x2ZSB0aGlz
-IHByb2JsZW0gYnkgMSkgY2FsbGluZyBfc3luYygpIG9uCj4gdGhlIHVuZGVybHlpbmcgbXRkIGRl
-dmljZSBhZnRlciB3cml0aW5nIHRvIGZsdXNoIGFueSBidWZmZXJzIGluIHRoZQo+IG10ZCwgYW5k
-IDIpIGFkZGluZyBhIF9zeW5jKCkgY2FsbGJhY2sgdG8gZ2x1ZWJpIHNvIHRoYXQgaWYgc29tZXRo
-aW5nCj4gc3luY3MgdGhlIG10ZCBkZXZpY2UsIHdlIHN5bmMgYW55IGJsb2NrcyBhc3NvY2lhdGVk
-IHdpdGggaXQuCgpUaGUgaW50ZXJlc3RpbmcgcXVlc3Rpb24gaXMsIGRvIHlvdSBsb29zZSBkYXRh
-IHdoaWNoIHdhcyBhbHJlYWR5CndyaXR0ZW4gYW5kIHN5bmNlZCB1c2luZyBmc3luYygpIG9yIGZk
-YXRhc3luYygpPwoKQm90aCBKRkZTMiBhbmQgVUJJRlMgdHJ5IHRvIGF2b2lkIHdyaXRlcyBhbmQg
-YXJlIHJhdGhlciBzdHJpY3Qgd2hlbiBpdApjb21lcyB0byBmc3luYygpLgoKVGhhbmtzLAovL3Jp
-Y2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Added a flag to indicate a panic_write so that low level drivers can
+use it to take required action where applicable, to ensure oops data
+gets written to assigned mtd device.
+
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/mtdcore.c                    |  3 ++
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 49 ++++++++++++++++++++++++++++++--
+ include/linux/mtd/mtd.h                  |  6 ++++
+ 3 files changed, 55 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 76b4264..a83decd 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1138,6 +1138,9 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		return -EROFS;
+ 	if (!len)
+ 		return 0;
++	if (!mtd->oops_panic_write)
++		mtd->oops_panic_write = true;
++
+ 	return mtd->_panic_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_panic_write);
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index ce0b8ff..a30a7f0 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -159,6 +159,7 @@ struct brcmnand_controller {
+ 	u32			nand_cs_nand_xor;
+ 	u32			corr_stat_threshold;
+ 	u32			flash_dma_mode;
++	bool			pio_poll_mode;
+ };
+ 
+ struct brcmnand_cfg {
+@@ -823,6 +824,21 @@ static inline bool has_flash_dma(struct brcmnand_controller *ctrl)
+ 	return ctrl->flash_dma_base;
+ }
+ 
++static inline void disable_ctrl_irqs(struct brcmnand_controller *ctrl)
++{
++	if (ctrl->pio_poll_mode)
++		return;
++
++	if (has_flash_dma(ctrl)) {
++		ctrl->flash_dma_base = 0;
++		disable_irq(ctrl->dma_irq);
++	}
++
++	disable_irq(ctrl->irq);
++
++	ctrl->pio_poll_mode = true;
++}
++
+ static inline bool flash_dma_buf_ok(const void *buf)
+ {
+ 	return buf && !is_vmalloc_addr(buf) &&
+@@ -1237,15 +1253,42 @@ static void brcmnand_cmd_ctrl(struct nand_chip *chip, int dat,
+ 	/* intentionally left blank */
+ }
+ 
++static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
++{
++	struct brcmnand_host *host = nand_get_controller_data(chip);
++	struct brcmnand_controller *ctrl = host->ctrl;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	bool err = false;
++	int sts;
++
++	if (mtd->oops_panic_write) {
++		/* switch to interrupt polling and PIO mode */
++		disable_ctrl_irqs(ctrl);
++		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
++					       NAND_CTRL_RDY, 0);
++		err = (sts < 0) ? true : false;
++	} else {
++		unsigned long timeo = msecs_to_jiffies(
++						NAND_POLL_STATUS_TIMEOUT_MS);
++		/* wait for completion interrupt */
++		sts = wait_for_completion_timeout(&ctrl->done, timeo);
++		err = (sts <= 0) ? true : false;
++	}
++
++	return err;
++}
++
+ static int brcmnand_waitfunc(struct nand_chip *chip)
+ {
+ 	struct brcmnand_host *host = nand_get_controller_data(chip);
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+-	unsigned long timeo = msecs_to_jiffies(100);
++	bool err = false;
+ 
+ 	dev_dbg(ctrl->dev, "wait on native cmd %d\n", ctrl->cmd_pending);
+-	if (ctrl->cmd_pending &&
+-			wait_for_completion_timeout(&ctrl->done, timeo) <= 0) {
++	if (ctrl->cmd_pending)
++		err = brcmstb_nand_wait_for_completion(chip);
++
++	if (err) {
+ 		u32 cmd = brcmnand_read_reg(ctrl, BRCMNAND_CMD_START)
+ 					>> brcmnand_cmd_shift(ctrl);
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 677768b..791c34d 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -330,6 +330,12 @@ struct mtd_info {
+ 	int (*_get_device) (struct mtd_info *mtd);
+ 	void (*_put_device) (struct mtd_info *mtd);
+ 
++	/*
++	 * flag indicates a panic write, low level drivers can take appropriate
++	 * action if required to ensure writes go through
++	 */
++	bool oops_panic_write;
++
+ 	struct notifier_block reboot_notifier;  /* default mode before reboot */
+ 
+ 	/* ECC status information */
+-- 
+1.9.0.138.g2de3478
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
