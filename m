@@ -2,60 +2,82 @@ Return-Path: <SRS0=qEsD=TR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 696AFC04AB4
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 May 2019 06:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0489C04AB4
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 May 2019 08:08:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E65420833
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 May 2019 06:32:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0D0E20848
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 May 2019 08:08:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CmglFaad"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E65420833
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oMaNh2XV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rpChBtU/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0D0E20848
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=f1xMhBPzfyhVhJ8aI/YvrpahAipOYqUsTRpqK76m6KI=; b=Cmg
-	lFaade2VQETiRAnK7M2olroM4HgYkwqN1PP5vBs4gf7gqTVTmsggsKiKub1xBjfUtSTepoW4nwytP
-	jrmxZ1gIPgB4eoYNakyLvqkGIWIcl+9adYLxuSYU5cFB0I4u02MOgPAcKjGVt+HnuXRKLQVRc4L3N
-	rByTec2Mmu4RvWU2n1xail8wZayO7MBlXwAUMWEVoXrQZ2228WFi3eqG5OLi3u3xK76g/DUdItRHj
-	6rhPQAsKUSqWc9404nW3Qt8VZcPjCoi+E80WoMszK4tAopOLTO5YvrEVeHeUIUDxNCxwzpJVVFerM
-	mqXM9HYBtG0tLji2C0bRbnGZBEq4V+A==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sJi9h0OqbDodgnK5YwpioFPThmAN1r+ROqaOpZCbA3A=; b=oMaNh2XVswxQaT
+	LtPjhwH8K+xnMVrjVURfEgU3qLVnLS728Vr3iu8biB7e8pOQIaWE8DV1Vr8/SAPmAZJhrbi4TnG5M
+	d4UnLyBVev3s7mj86HCbwHxLvEU2N/houHLaOnHllioycbMsD4ESCojV0Jt5GYxSUd0Kxut3fxP7g
+	ZjzAtPNuECH+ZZ54rjIeHttJZnwIN0lsTW7Xe8F571luwfo90kVhPRcVCUdzNWJeCX/rOETduozGP
+	zwn9laU92XNEOiGbMcP4ggbIYXWRQJh071xcJ3nlvJVmF3B3MnPFQAOyEXavLZfXtX16DtT8NHFBM
+	VHI16rm/TuiuVoRMmSpA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hRWQ6-0002UQ-IK; Fri, 17 May 2019 06:32:42 +0000
-Received: from [122.147.135.201] (helo=TWHMLLG3.macronix.com)
+	id 1hRXvC-00025X-5Q; Fri, 17 May 2019 08:08:54 +0000
+Received: from mail-wm1-x341.google.com ([2a00:1450:4864:20::341])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hRWQ3-0002St-2x
- for linux-mtd@lists.infradead.org; Fri, 17 May 2019 06:32:40 +0000
-Received: from localhost.localdomain ([172.17.195.96])
- by TWHMLLG3.macronix.com with ESMTP id x4H6Vf60076140;
- Fri, 17 May 2019 14:31:41 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-From: Mason Yang <masonccyang@mxic.com.tw>
-To: bbrezillon@kernel.org, marek.vasut@gmail.com, linux-kernel@vger.kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- vigneshr@ti.com, frieder.schrempf@kontron.de
-Subject: [PATCH v2] mtd: rawnand: Add Macronix NAND read retry support
-Date: Fri, 17 May 2019 14:53:21 +0800
-Message-Id: <1558076001-29579-1-git-send-email-masonccyang@mxic.com.tw>
-X-Mailer: git-send-email 1.9.1
-X-MAIL: TWHMLLG3.macronix.com x4H6Vf60076140
+ id 1hRXv8-00024z-8V
+ for linux-mtd@lists.infradead.org; Fri, 17 May 2019 08:08:52 +0000
+Received: by mail-wm1-x341.google.com with SMTP id j187so8727387wma.1
+ for <linux-mtd@lists.infradead.org>; Fri, 17 May 2019 01:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=JfYR82SrJwNVW06pJvRPW4k79pA13x1SVkcHvJx5clA=;
+ b=rpChBtU/BLblhzIRB0YKed47JbgJMePYBfD45yam5dH3+203i3Rz0AIudOxQOKNoQK
+ b3QzwfvqJeMQchb4iCTNTUR5Tyn+cMw+fKa+3PCfJSizLauF9TAunUE/cGE6NpE9FqjE
+ zXS4hCm9OpkHg9uKNPppRzfk0T/EApeUcwjmJU+MCdzSNFVNbeDPvnb7t+04FNfyIKtN
+ pyNqF/W+OQq/8Z8/07YJJ8MLquI0tUyh4bPIzR6c2qUmKgSgRRgDj5q8X3j+FV1wLOBH
+ iCVSxsT2dyJZWNIcuzIWIF65mey4Sp/NS/I97gmcIdsSRtUioAQ+2CEScngaOMWxNdk3
+ esyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=JfYR82SrJwNVW06pJvRPW4k79pA13x1SVkcHvJx5clA=;
+ b=r8aMp1D4vAjdFrXOC+ML9ZVfJ2HZ56MUZDyHFDjWga464D/xsWsU1vmsQUu9Voq+xh
+ aQlCLq0Q0ptD6oCREHSJEkCJ7wFT5pooJolWvlvwGxGBeVq754Fe4CL1YzynT2hT5XN2
+ dpN27L6EaQ4GXte2tGzgPKVoC6x7jV7KC3Gwiu5BjMc6rIYn7BTtDPPxGueoEvjZI8IO
+ KrhSBgTQg/M205b0tKnUtJS0Vr4/t0mZy6fGavl7/3cQ8nlV0gZ/I7VzJgBBAuGC2IUj
+ SrfUGWFEnGlHxWRFHDzt+D1q/mZNrrV00AFDlD3uFXm5/lFjVMJ63aiq1K7e/aTOtCAn
+ seVw==
+X-Gm-Message-State: APjAAAUsgZ5s24YFbM+5y6kyzCxuRV6uJgGiY+0ovRnrt22eDHiF+sG0
+ y6qTl+g/7l/gfgV+4/i25TqdjxfAHibux/DjnjM=
+X-Google-Smtp-Source: APXvYqwg2RzALCC9z6vUHJ9UiTDIM1iXYb5OAieioPqeEcdSlbhsUvyU17mYxRE6I875hxeldwXhsfyWu2yfttSuAEE=
+X-Received: by 2002:a1c:4909:: with SMTP id w9mr1265084wma.17.1558080528334;
+ Fri, 17 May 2019 01:08:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <1558024913-26502-1-git-send-email-kdasu.kdev@gmail.com>
+In-Reply-To: <1558024913-26502-1-git-send-email-kdasu.kdev@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 17 May 2019 10:08:36 +0200
+Message-ID: <CAFLxGvwjqo27VQ092WV9=6N5RJr-M7aL0HYVWkeaCYbY3XWa1w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mtd: Add flag to indicate panic_write
+To: Kamal Dasu <kdasu.kdev@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190516_233239_399106_880AFF17 
-X-CRM114-Status: UNSURE (   9.93  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190517_010850_326133_8386B3A3 
+X-CRM114-Status: GOOD (  17.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -67,103 +89,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: juliensu@mxic.com.tw, masonccyang@mxic.com.tw, zhengxunli@mxic.com.tw
-MIME-Version: 1.0
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ LKML <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for Macronix NAND read retry.
+On Thu, May 16, 2019 at 6:42 PM Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+>
+> Added a flag to indicate a panic_write so that low level drivers can
+> use it to take required action where applicable, to ensure oops data
+> gets written to assigned mtd device.
+>
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c   | 3 +++
+>  include/linux/mtd/mtd.h | 6 ++++++
+>  2 files changed, 9 insertions(+)
+>
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 76b4264..a83decd 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -1138,6 +1138,9 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+>                 return -EROFS;
+>         if (!len)
+>                 return 0;
+> +       if (!mtd->oops_panic_write)
+> +               mtd->oops_panic_write = true;
+> +
 
-Macronix NANDs support specific read operation for data recovery,
-which can be enabled/disabled with a SET/GET_FEATURE.
-Driver checks byte 167 of Vendor Blocks in ONFI parameter page table
-to see if this high-reliability function is supported.
+You can set the flag unconditionally.
+If it is set, it will stay so, and setting it again, won't hurt.
 
-Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
----
- drivers/mtd/nand/raw/nand_macronix.c | 57 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+>         return mtd->_panic_write(mtd, to, len, retlen, buf);
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_panic_write);
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 677768b..791c34d 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -330,6 +330,12 @@ struct mtd_info {
+>         int (*_get_device) (struct mtd_info *mtd);
+>         void (*_put_device) (struct mtd_info *mtd);
+>
+> +       /*
+> +        * flag indicates a panic write, low level drivers can take appropriate
+> +        * action if required to ensure writes go through
+> +        */
+> +       bool oops_panic_write;
+> +
 
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index e287e71..1a4dc92 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -17,6 +17,62 @@
- 
- #include "internals.h"
- 
-+#define MACRONIX_READ_RETRY_BIT BIT(0)
-+#define MACRONIX_READ_RETRY_MODE 6
-+
-+struct nand_onfi_vendor_macronix {
-+	u8 reserved[1];
-+	u8 reliability_func;
-+} __packed;
-+
-+/*
-+ * Macronix NANDs support using SET/GET_FEATURES to enter/exit read retry mode
-+ */
-+static int macronix_nand_setup_read_retry(struct nand_chip *chip, int mode)
-+{
-+	u8 feature[ONFI_SUBFEATURE_PARAM_LEN];
-+	int ret, feature_addr = ONFI_FEATURE_ADDR_READ_RETRY;
-+
-+	if (chip->parameters.supports_set_get_features &&
-+	    test_bit(feature_addr, chip->parameters.set_feature_list) &&
-+	    test_bit(feature_addr, chip->parameters.get_feature_list)) {
-+		feature[0] = mode;
-+		ret =  nand_set_features(chip, feature_addr, feature);
-+		if (ret)
-+			pr_err("Failed to set read retry moded:%d\n", mode);
-+
-+		ret =  nand_get_features(chip, feature_addr, feature);
-+		if (ret || feature[0] != mode)
-+			pr_err("Failed to verify read retry moded:%d(%d)\n",
-+			       mode, feature[0]);
-+	}
-+
-+	return ret;
-+}
-+
-+static void macronix_nand_onfi_init(struct nand_chip *chip)
-+{
-+	struct nand_parameters *p = &chip->parameters;
-+	struct nand_onfi_vendor_macronix *mxic;
-+
-+	if (!p->onfi)
-+		return;
-+
-+	mxic = (struct nand_onfi_vendor_macronix *)p->onfi->vendor;
-+	if ((mxic->reliability_func & MACRONIX_READ_RETRY_BIT) == 0)
-+		return;
-+
-+	chip->read_retries = MACRONIX_READ_RETRY_MODE;
-+	chip->setup_read_retry = macronix_nand_setup_read_retry;
-+
-+	if (p->supports_set_get_features) {
-+		bitmap_set(p->set_feature_list,
-+			   ONFI_FEATURE_ADDR_READ_RETRY, 1);
-+		bitmap_set(p->get_feature_list,
-+			   ONFI_FEATURE_ADDR_READ_RETRY, 1);
-+	}
-+}
-+
- /*
-  * Macronix AC series does not support using SET/GET_FEATURES to change
-  * the timings unlike what is declared in the parameter page. Unflag
-@@ -65,6 +121,7 @@ static int macronix_nand_init(struct nand_chip *chip)
- 		chip->options |= NAND_BBM_FIRSTPAGE | NAND_BBM_SECONDPAGE;
- 
- 	macronix_nand_fix_broken_get_timings(chip);
-+	macronix_nand_onfi_init(chip);
- 
- 	return 0;
- }
+Maybe we find a better name for it.
+panic_write_triggered?
+
 -- 
-1.9.1
-
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
