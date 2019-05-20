@@ -2,22 +2,22 @@ Return-Path: <SRS0=ONRD=TU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AAB9C04AAC
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 May 2019 16:33:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFDA6C04E87
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 May 2019 17:28:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4066E20815
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 May 2019 16:33:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A6B43217F4
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 May 2019 17:28:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VmrGnVxF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="L1Vz3x+6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4066E20815
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qsfH9Ios";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="I9r5Fd0H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6B43217F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,45 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SddFrt2X86YkubkH8jV9IoM90BXyJ5HEmvCLIXehDNA=; b=VmrGnVxFYSFRWH
-	uQqKtCYQ/u5XTdaDUt6phTCuLJgLt0s9ukTOqXO8wZGVv8kZw+vgNtShvk/ywDLWx7GMJbcUB+VJ9
-	gSN1LxlEMotTy9Jd3Cu3DE1sUaO3d/f00P5IDoVV0eZPq4MNC3tuc7IseNdkEoYjVN2UQYUK8vY0j
-	qM4OhKSsau5Fufz5JVBwM1e1t9OkEmK5lDvzK1RASuBRSBUkHUspVvEHsmnc7D8AsDScOIr7250ZK
-	TYZpIpLPc1rUI+drvVv6oP8iY/UUo/aASVPniuNQbgoyHCGl8I0l7LnWHgKszlO0Re72R8DyC1zsI
-	g26KHl5nReLTbxINOwyA==;
+	List-Owner; bh=E3Q20Zl036wjWnAaDq/k+WgM7+d6QDJNDUg3FjFMI/k=; b=qsfH9IosJG573K
+	eHwTOi7ZC74qb9LdGhstEbX+BOfqQg3z2XkILhrp+6RrVOhMMlv+wvpQJMfodU7RWnmteYaN3dufW
+	VWO+T7kMGBLDTQ4TuHKnkI4q+NYOrKx2K2oTM+fAy0kVMlQbG9xUXCqW+8M8clXuzVJTAL18PYtBe
+	8Hhv5TJsKESk0SHQYblKDSaqMT2L3OjwDxU660OZn/L6Yfb57zz6UrP6bvUJGMnn1sUz3ogzyGjt0
+	GRSngiaPMnJsUd9zqnyVaMHwSKX+opvpRP3p8RVaLUNhB5g7+6q+gddncaMMAZIHWJ3RnkaAM1pss
+	4kK/Npp228roUFczjFNw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hSlDz-00072a-Uf; Mon, 20 May 2019 16:33:19 +0000
+	id 1hSm5i-0000D7-9a; Mon, 20 May 2019 17:28:50 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hSlBC-00038W-0y
- for linux-mtd@lists.infradead.org; Mon, 20 May 2019 16:30:32 +0000
+ id 1hSm5e-0000Ap-B9
+ for linux-mtd@lists.infradead.org; Mon, 20 May 2019 17:28:47 +0000
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown
  [104.132.1.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 75FAB217D8;
- Mon, 20 May 2019 16:30:25 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BB829214DA;
+ Mon, 20 May 2019 17:28:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1558369825;
- bh=nukFlueEKdgNJgzso/AFsN3Mr+EdXgyUtrGGf/8u+g8=;
+ s=default; t=1558373326;
+ bh=kEs3z2bxHH/LOYENg/QLUwH3aQgoxFpT4QgOJVMMhJo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=L1Vz3x+6nxyFBaE2h8BSCuzL5qFe0UHFxvGgBIrdA8tW7WyZbF/6R2LpBd+1TkCzr
- pB4VpfNErXPtOKrXOnjcA6qsOyyIUIO3CgBChitVl3yi1JSURZCiGD6g6S4l1QcvOE
- 4ZUU82xl6pdJqBCczP5WFk45xzIteoWph7h/RoPM=
+ b=I9r5Fd0HozL79xx07IbkXPuc/jTVv3cZ34MAdXjHg2cmXpNx/3unU/Rr2LGfnGk0s
+ DKUGAVgw/M7QF2qxtjKXTa/sv1AWrsdkPhJCkt9inFB0SHY6H2B1gtprbfseoxlShr
+ TIi1eOyHFQqyB33YQpA26K2s6FrJ9xCgBhuM5C30=
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-fscrypt@vger.kernel.org
-Subject: [PATCH v2 14/14] ext4: encrypt only up to last block in
- ext4_bio_write_page()
-Date: Mon, 20 May 2019 09:29:52 -0700
-Message-Id: <20190520162952.156212-15-ebiggers@kernel.org>
+Subject: [PATCH v6 01/16] fs,
+ fscrypt: move uapi definitions to new header <linux/fscrypt.h>
+Date: Mon, 20 May 2019 10:25:37 -0700
+Message-Id: <20190520172552.217253-2-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-In-Reply-To: <20190520162952.156212-1-ebiggers@kernel.org>
-References: <20190520162952.156212-1-ebiggers@kernel.org>
+In-Reply-To: <20190520172552.217253-1-ebiggers@kernel.org>
+References: <20190520172552.217253-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190520_093026_421808_F4F98CB3 
-X-CRM114-Status: GOOD (  13.60  )
+X-CRM114-CacheID: sfid-20190520_102846_462234_4387C99D 
+X-CRM114-Status: GOOD (  13.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -76,9 +76,11 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
- Chandan Rajendra <chandan@linux.ibm.com>,
- linux-f2fs-devel@lists.sourceforge.net
+Cc: linux-ext4@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+ Paul Crowley <paulcrowley@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -86,45 +88,182 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-As an optimization, don't encrypt blocks fully beyond i_size, since
-those definitely won't need to be written out.  Also add a comment.
+More fscrypt definitions are being added, and we shouldn't use a
+disproportionate amount of space in <linux/fs.h> for fscrypt stuff.
+So move the fscrypt definitions to a new header <linux/fscrypt.h>.
 
-This is in preparation for allowing encryption on ext4 filesystems with
-blocksize != PAGE_SIZE.
+For source compatibility with existing userspace programs, <linux/fs.h>
+still includes the new header.
 
-This is based on work by Chandan Rajendra.
-
-Reviewed-by: Chandan Rajendra <chandan@linux.ibm.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/page-io.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ MAINTAINERS                  |  1 +
+ include/linux/fscrypt.h      |  1 +
+ include/uapi/linux/fs.h      | 54 ++-------------------------------
+ include/uapi/linux/fscrypt.h | 58 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 63 insertions(+), 51 deletions(-)
+ create mode 100644 include/uapi/linux/fscrypt.h
 
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 40ee33df57649..a18a47a2a1d1a 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -467,11 +467,19 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5cfbea4ce5750..b55acde12f65f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6475,6 +6475,7 @@ T:	git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
+ S:	Supported
+ F:	fs/crypto/
+ F:	include/linux/fscrypt*.h
++F:	include/uapi/linux/fscrypt.h
+ F:	Documentation/filesystems/fscrypt.rst
  
- 	bh = head = page_buffers(page);
+ FSI-ATTACHED I2C DRIVER
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index f7680ef1abd2d..a2b2ceaf33a85 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -16,6 +16,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ #include <linux/slab.h>
++#include <uapi/linux/fscrypt.h>
  
-+	/*
-+	 * If any blocks are being written to an encrypted file, encrypt them
-+	 * into a bounce page.  For simplicity, just encrypt until the last
-+	 * block which might be needed.  This may cause some unneeded blocks
-+	 * (e.g. holes) to be unnecessarily encrypted, but this is rare and
-+	 * can't happen in the common case of blocksize == PAGE_SIZE.
-+	 */
- 	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode) && nr_to_submit) {
- 		gfp_t gfp_flags = GFP_NOFS;
-+		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
+ #define FS_CRYPTO_BLOCK_SIZE		16
  
- 	retry_encrypt:
--		bounce_page = fscrypt_encrypt_pagecache_blocks(page, PAGE_SIZE,
-+		bounce_page = fscrypt_encrypt_pagecache_blocks(page, enc_bytes,
- 							       0, gfp_flags);
- 		if (IS_ERR(bounce_page)) {
- 			ret = PTR_ERR(bounce_page);
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index 59c71fa8c553a..41bd84d25a980 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -13,6 +13,9 @@
+ #include <linux/limits.h>
+ #include <linux/ioctl.h>
+ #include <linux/types.h>
++#ifndef __KERNEL__
++#include <linux/fscrypt.h>
++#endif
+ 
+ /* Use of MS_* flags within the kernel is restricted to core mount(2) code. */
+ #if !defined(__KERNEL__)
+@@ -212,57 +215,6 @@ struct fsxattr {
+ #define FS_IOC_GETFSLABEL		_IOR(0x94, 49, char[FSLABEL_MAX])
+ #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+ 
+-/*
+- * File system encryption support
+- */
+-/* Policy provided via an ioctl on the topmost directory */
+-#define FS_KEY_DESCRIPTOR_SIZE	8
+-
+-#define FS_POLICY_FLAGS_PAD_4		0x00
+-#define FS_POLICY_FLAGS_PAD_8		0x01
+-#define FS_POLICY_FLAGS_PAD_16		0x02
+-#define FS_POLICY_FLAGS_PAD_32		0x03
+-#define FS_POLICY_FLAGS_PAD_MASK	0x03
+-#define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
+-#define FS_POLICY_FLAGS_VALID		0x07
+-
+-/* Encryption algorithms */
+-#define FS_ENCRYPTION_MODE_INVALID		0
+-#define FS_ENCRYPTION_MODE_AES_256_XTS		1
+-#define FS_ENCRYPTION_MODE_AES_256_GCM		2
+-#define FS_ENCRYPTION_MODE_AES_256_CBC		3
+-#define FS_ENCRYPTION_MODE_AES_256_CTS		4
+-#define FS_ENCRYPTION_MODE_AES_128_CBC		5
+-#define FS_ENCRYPTION_MODE_AES_128_CTS		6
+-#define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
+-#define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
+-#define FS_ENCRYPTION_MODE_ADIANTUM		9
+-
+-struct fscrypt_policy {
+-	__u8 version;
+-	__u8 contents_encryption_mode;
+-	__u8 filenames_encryption_mode;
+-	__u8 flags;
+-	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+-};
+-
+-#define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
+-#define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW('f', 20, __u8[16])
+-#define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
+-
+-/* Parameters for passing an encryption key into the kernel keyring */
+-#define FS_KEY_DESC_PREFIX		"fscrypt:"
+-#define FS_KEY_DESC_PREFIX_SIZE		8
+-
+-/* Structure that userspace passes to the kernel keyring */
+-#define FS_MAX_KEY_SIZE			64
+-
+-struct fscrypt_key {
+-	__u32 mode;
+-	__u8 raw[FS_MAX_KEY_SIZE];
+-	__u32 size;
+-};
+-
+ /*
+  * Inode flags (FS_IOC_GETFLAGS / FS_IOC_SETFLAGS)
+  *
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+new file mode 100644
+index 0000000000000..193339cb53fdb
+--- /dev/null
++++ b/include/uapi/linux/fscrypt.h
+@@ -0,0 +1,58 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_FSCRYPT_H
++#define _UAPI_LINUX_FSCRYPT_H
++
++#include <linux/types.h>
++
++/*
++ * File system encryption support
++ */
++/* Policy provided via an ioctl on the topmost directory */
++#define FS_KEY_DESCRIPTOR_SIZE	8
++
++#define FS_POLICY_FLAGS_PAD_4		0x00
++#define FS_POLICY_FLAGS_PAD_8		0x01
++#define FS_POLICY_FLAGS_PAD_16		0x02
++#define FS_POLICY_FLAGS_PAD_32		0x03
++#define FS_POLICY_FLAGS_PAD_MASK	0x03
++#define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
++#define FS_POLICY_FLAGS_VALID		0x07
++
++/* Encryption algorithms */
++#define FS_ENCRYPTION_MODE_INVALID		0
++#define FS_ENCRYPTION_MODE_AES_256_XTS		1
++#define FS_ENCRYPTION_MODE_AES_256_GCM		2
++#define FS_ENCRYPTION_MODE_AES_256_CBC		3
++#define FS_ENCRYPTION_MODE_AES_256_CTS		4
++#define FS_ENCRYPTION_MODE_AES_128_CBC		5
++#define FS_ENCRYPTION_MODE_AES_128_CTS		6
++#define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
++#define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
++#define FS_ENCRYPTION_MODE_ADIANTUM		9
++
++struct fscrypt_policy {
++	__u8 version;
++	__u8 contents_encryption_mode;
++	__u8 filenames_encryption_mode;
++	__u8 flags;
++	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++};
++
++#define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
++#define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW('f', 20, __u8[16])
++#define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
++
++/* Parameters for passing an encryption key into the kernel keyring */
++#define FS_KEY_DESC_PREFIX		"fscrypt:"
++#define FS_KEY_DESC_PREFIX_SIZE		8
++
++/* Structure that userspace passes to the kernel keyring */
++#define FS_MAX_KEY_SIZE			64
++
++struct fscrypt_key {
++	__u32 mode;
++	__u8 raw[FS_MAX_KEY_SIZE];
++	__u32 size;
++};
++
++#endif /* _UAPI_LINUX_FSCRYPT_H */
 -- 
 2.21.0.1020.gf2820cf01a-goog
 
