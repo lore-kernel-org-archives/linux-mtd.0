@@ -2,73 +2,90 @@ Return-Path: <SRS0=joji=TV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_NEOMUTT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18033C04AAF
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 08:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D37D3C04E87
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 09:02:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1A0320863
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 08:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A985E21479
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 09:02:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GDzFAqiz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1A0320863
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RgvTQiLk";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aXbZOCmd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A985E21479
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9iz7bpUJO9uaFfHTTBNfsXnqFeWTxdUsBjaCxWziUJA=; b=GDzFAqizDLJD8A
-	lbEfQcKec5G4qUUxLmoevMcAhMVkHTa4xeCHWzVl4+Q3zeSfHMzzdbjmlf7h2YgsuJ3F3mQbzpQZh
-	LFnyPKZklavlTvTAj1RbS6TvdZWSBle+vmLSR/1dR+gXsZWwI5+3Insu89AUkYCNDqAVOWor9e0sl
-	YfcUkJgptzkR2+OeSkE11vABg6AOObQkp69yXy5kbm11yiEDFs/LTCZmu24e0fxIIb5IAnqFSQxCx
-	F3LX2J+6vCwMZQnJwLdj9Z4slTmC/S3s2gwNQqNvyvZbysbTQbVSRQ4LmLjO14gG5o8/AjGx8r9DC
-	l9stawQX/YlHNgEEUCTw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=NvtAfC8N0d9dQtu9drIvvNLxvnBuJBodaZbZ/Ulx1pM=; b=RgvTQiLkkiAwn3g8w80X8FFSt
+	KX6rcpgf1NIp9kgtpZvGbAeXQPb9EbnzUJhwY0rxeRMDN0dhrutSWWR3zNuG6M6G+eDwIpHoYKZyO
+	dJqPpidtTDKlk3N2DXkr+MJ/lIAEGTK8Bp9IviZJK/iGRJ4WkG5lnMehbVSv7wASqsBbyw6rkLBe2
+	KXPZa+QfDuKKewzQvcONz8YKTRa2CjH0YShhf7ym0bEBuCD5LrWfiZmiv7FFFbgqiREGqAkOnz3L1
+	kl8FACkRyujC2NswOkcDyMyHLec9C3gEVKXp7SUtVOvEqWyDPMTeFhHVgJ1f+YD4EQLoH6SDLR83U
+	EPZQnUudA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hT0Zk-0005kx-Nd; Tue, 21 May 2019 08:56:48 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1hT0fP-0007jT-1O; Tue, 21 May 2019 09:02:39 +0000
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hT0Zf-0005hW-SP
- for linux-mtd@lists.infradead.org; Tue, 21 May 2019 08:56:47 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1hT0Zd-00057d-TZ; Tue, 21 May 2019 10:56:41 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <sha@pengutronix.de>)
- id 1hT0Zd-0001Nd-F9; Tue, 21 May 2019 10:56:41 +0200
-Date: Tue, 21 May 2019 10:56:41 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-kernel@vger.kernel.org
-Subject: nvmem creates multiple devices with the same name
-Message-ID: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+ id 1hT0fM-0007ie-2b
+ for linux-mtd@lists.infradead.org; Tue, 21 May 2019 09:02:37 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id g12so17343810wro.8
+ for <linux-mtd@lists.infradead.org>; Tue, 21 May 2019 02:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6vXRpcR8hUy/z236jHDc62nRnBJfz6oPwUw/X75saOc=;
+ b=aXbZOCmdi0RuzZZYueJKuRuzHc9qm6+e8qV7RidheapqjMsHvZ+WEt2p5bqrquTIVh
+ iF7mj9TJ1vHbYR9Iy8zIfIcroqjGd+yWWiuXOi8A/tvDh7EMByRwz4RWNQU8uucMtkTm
+ 91DeVuszQAd9D7JpcEQETJC6205zorp0zrito0Mn7RYRggKVuVRXZi7POCFm1CrdD2Jz
+ BztcP0cTLDmN9hWJokghJizBOXif4kCobFcHHsli8dn3VDQQl78IaIycZql0hMj9avW9
+ oOJALNTgfkX4+xiad4VNprAjvJyF7s5+pObDUfEANfYGqKg8IbD6RD1p+8dLXEQjVoD0
+ 3YCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6vXRpcR8hUy/z236jHDc62nRnBJfz6oPwUw/X75saOc=;
+ b=o5gh67FGrEGguwYlkl8H4it0Fo+a5eQuz3EVTVKXnd5DLj8UdmvxGfVH8sOgUfp/ys
+ M29wV8DHWjG022eJ+WtaioOIdQuHA+629jftwW3DNZtoOL9AeBoWJIAIBkR8te94rk0x
+ s5rVhsF3+Sdgp1n4+WqQ/XGEa5Ez7MlVnsU7DExwCxgFSpZmjkWVf/f4H0gjWaursyW0
+ OVqwTTWQ2WxI7dOGeyvRDI2N9wTY0Iz/++lcuqqk+dZv0xlMxp+lFfBp2+qDu78TnXLw
+ y1o7RZptwQ9bbcDF0TrNEkAbs+cw3khe9UlIjpWd0TcFHVhGtEY2OR3/anQBe8ptmWIG
+ EySA==
+X-Gm-Message-State: APjAAAUs4Es47OdeTnrYxoyRUismgtgPkPDJ8lmry+PPs9DHE/IvHWTG
+ 5T3A857upEzr1u5gNpIiAtyqktGo0vE=
+X-Google-Smtp-Source: APXvYqwHbKy6XrNMrf0bXWw/znNxyjKmOYV/fT85nkOTssBGYNlZ75SwruRwpJ6LEmr0CwrFTNRKEg==
+X-Received: by 2002:a5d:4a44:: with SMTP id v4mr4275934wrs.84.1558429354138;
+ Tue, 21 May 2019 02:02:34 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id 20sm3143604wmj.36.2019.05.21.02.02.32
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 21 May 2019 02:02:33 -0700 (PDT)
+Subject: Re: nvmem creates multiple devices with the same name
+To: Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org
+References: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <a9ccac90-7b2f-41da-2ca9-ca3bba52781b@linaro.org>
+Date: Tue, 21 May 2019 10:02:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:44:24 up 3 days, 15:02, 48 users, load average: 0.16, 0.10, 0.09
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190521_015644_077369_A7D14078 
-X-CRM114-Status: UNSURE (   9.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190521_020236_126241_6B5CDAC9 
+X-CRM114-Status: GOOD (  10.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -80,50 +97,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@pengutronix.de
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
 
-nvmem derives the device name directly from the partition name of the
-underlying device. IMO this is wrong since it's not possible to create
-two partitions with the same name on different devices. In my case I
-have a NAND device and a SPI NOR device which both happen to have a
-partition named 'barebox'. This ends up with:
 
-[   11.222196] sysfs: cannot create duplicate filename '/bus/nvmem/devices/barebox'
-[   11.230136] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.2.0-rc1-00014-g793f23e5adb0-dirty #676
-[   11.240414] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[   11.247174] [<c0112928>] (unwind_backtrace) from [<c010d140>] (show_stack+0x10/0x14)
-[   11.255171] [<c010d140>] (show_stack) from [<c0bd65cc>] (dump_stack+0xd8/0x110)
-[   11.262722] [<c0bd65cc>] (dump_stack) from [<c031682c>] (sysfs_warn_dup+0x50/0x64)
-[   11.270527] [<c031682c>] (sysfs_warn_dup) from [<c0316b34>] (sysfs_do_create_link_sd+0xcc/0xd8)
-[   11.279487] [<c0316b34>] (sysfs_do_create_link_sd) from [<c06792a0>] (bus_add_device+0x80/0xfc)
-[   11.288441] [<c06792a0>] (bus_add_device) from [<c0676208>] (device_add+0x328/0x608)
-[   11.296423] [<c0676208>] (device_add) from [<c08bde64>] (nvmem_register.part.1+0x168/0x5e4)
-[   11.305030] [<c08bde64>] (nvmem_register.part.1) from [<c06edb34>] (add_mtd_device+0x1e8/0x404)
-[   11.313988] [<c06edb34>] (add_mtd_device) from [<c06f1004>] (add_mtd_partitions+0x74/0x15c)
-[   11.322589] [<c06f1004>] (add_mtd_partitions) from [<c06f0da8>] (parse_mtd_partitions+0x180/0x368)
-[   11.331807] [<c06f0da8>] (parse_mtd_partitions) from [<c06ede68>] (mtd_device_parse_register+0x40/0x164)
-[   11.341560] [<c06ede68>] (mtd_device_parse_register) from [<c070654c>] (m25p_probe+0x118/0x200)
-[   11.350513] [<c070654c>] (m25p_probe) from [<c073863c>] (spi_drv_probe+0x80/0xa4)
+On 21/05/2019 09:56, Sascha Hauer wrote:
+> . Are there any suggestions how to register the nvmem devices
+> with a different name?
 
-While it's easy to rename the partitions I see no reason why it should
-be illegal to have two different (mtd) devices with eqeally named
-partitions. Are there any suggestions how to register the nvmem devices
-with a different name?
+struct nvmem_config provides id field for this purpose, this will be 
+used by nvmem to set the device name space along with name field.
 
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+--srini
 
 ______________________________________________________
 Linux MTD discussion mailing list
