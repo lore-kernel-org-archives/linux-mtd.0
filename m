@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36A3EC04AAF
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 427FCC04AAF
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:07:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08DC421783
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:06:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14A7821019
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:07:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ker+om4C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08DC421783
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LZpKgjMT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14A7821019
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,32 +25,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K1JxohH7QFIrmdtzndov2khnrFQyBlz6Eu5kQ9wdWk8=; b=Ker+om4CnVB2D0
-	MxgYv3ZbpuFv/OVVzmlPY+0EKNnOs+HXtG1q4vJ8JKRt5A9oK+c9y+f0iL1f27UoBRRcMnk7+iV0I
-	5B2FjTI3CmTzhUKfASame4veyuKZOt5t9VYbyxG2eavRx5A2NmEjAc31BXQB6rE+ENAjDZjBQBhuA
-	l7vhKzLpq8ObvxjCUdxm9G/Ufc2Xh+KoA9KzUO3RUHJo2i9ykSvvGPLCNwESrhZ53vJNU0eqorXGL
-	KCEiyW6uJJL56A11zN9jt0NL6HdebLpPH6XH2McJx4H7Y+2fyVR4oabY6j/FAqlbm9rUbcIySDcoD
-	SDUe6ngLB/69RXgXszqQ==;
+	List-Owner; bh=+FXe13kvpNUfa0xxWS23MopZE6upjy9+9EezD5vcAZ8=; b=LZpKgjMTFStnFe
+	7Dzrp0uoe91tHazjeXMnirVPn1rgk6SPUSL0ql00Afigk5HZuNPnJMLQGUdho91Ev1DWN38QDIEQZ
+	RshztNexfmsJi4CW7HWgiDEK6bDgQj3W0K0lr8i1bz1nVWWleBrotPvrpRs5EVE+X9XSTdO/J45rx
+	x5hv2e0I8PpC/9s1fA6Nk0v6FIGMglaaE0IxArWYe2Pux3IOGowiIc/m9B7P9en2kz4yE0YajxZyw
+	hhHwLM7BstjDaj7egX5meklJogJ16JpzmQzHSZzFTWfIgUdlt/g92d0KW0rP5Dw5ML3hLqYoYjXHt
+	iHCDKLXDoM61lARNQ7yg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hSyrM-0002cT-6l; Tue, 21 May 2019 07:06:52 +0000
+	id 1hSyrT-0002lw-0m; Tue, 21 May 2019 07:06:59 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hSyrJ-0002bF-M9
+ id 1hSyrJ-0002bH-MC
  for linux-mtd@lists.infradead.org; Tue, 21 May 2019 07:06:51 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <sha@pengutronix.de>)
- id 1hSyrH-0006cm-Hk; Tue, 21 May 2019 09:06:47 +0200
+ id 1hSyrH-0006cl-Hz; Tue, 21 May 2019 09:06:47 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1hSyrG-0001br-EZ; Tue, 21 May 2019 09:06:46 +0200
+ id 1hSyrG-0001bo-E0; Tue, 21 May 2019 09:06:46 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 13/14] dmaengine: mxs: rename custom flag
-Date: Tue, 21 May 2019 09:06:42 +0200
-Message-Id: <20190521070643.6244-14-s.hauer@pengutronix.de>
+Subject: [PATCH 12/14] dmaengine: mxs: Add header file to be shared with gpmi
+ nand driver
+Date: Tue, 21 May 2019 09:06:41 +0200
+Message-Id: <20190521070643.6244-13-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190521070643.6244-1-s.hauer@pengutronix.de>
 References: <20190521070643.6244-1-s.hauer@pengutronix.de>
@@ -61,8 +62,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190521_000649_881436_003B407A 
-X-CRM114-Status: GOOD (  15.79  )
+X-CRM114-CacheID: sfid-20190521_000649_961582_98555A55 
+X-CRM114-Status: GOOD (  18.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -84,116 +85,157 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The mxs dma driver uses the flags parameter in dmaengine_prep_slave_sg() for
-custom flags, but still uses the dmaengine specific names of the flags.
-Do a little bit better and at least give the flag a custom name.
+The mxs dma driver can do PIO transfers. A pointer to the PIO words
+to transfer is passed in the struct scatterlist * argument of
+dmaengine_prep_slave_sg(). It's quite ugly and non obvious to cast
+u32 * to struct scatterlist * each time when calling
+dmaengine_prep_slave_sg(), so add a static inline wrapper function
+to be called by the user along with a description what is going on.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/dma/mxs-dma.c                      |  4 ++--
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 17 +++++++++++------
- include/linux/dma/mxs-dma.h                |  2 ++
- 3 files changed, 15 insertions(+), 8 deletions(-)
+ drivers/dma/mxs-dma.c                      |  1 +
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 36 +++++++++-------------
+ include/linux/dma/mxs-dma.h                | 21 +++++++++++++
+ 3 files changed, 36 insertions(+), 22 deletions(-)
+ create mode 100644 include/linux/dma/mxs-dma.h
 
 diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 62ee9328aea1..c622bee7eb12 100644
+index ce92a3626ea4..62ee9328aea1 100644
 --- a/drivers/dma/mxs-dma.c
 +++ b/drivers/dma/mxs-dma.c
-@@ -541,7 +541,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
- 		ccw->bits = 0;
- 		ccw->bits |= CCW_IRQ;
- 		ccw->bits |= CCW_DEC_SEM;
--		if (flags & DMA_CTRL_ACK)
-+		if (flags & MXS_DMA_CTRL_WAIT4END)
- 			ccw->bits |= CCW_WAIT4END;
- 		ccw->bits |= CCW_HALT_ON_TERM;
- 		ccw->bits |= CCW_TERM_FLUSH;
-@@ -573,7 +573,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
- 				ccw->bits &= ~CCW_CHAIN;
- 				ccw->bits |= CCW_IRQ;
- 				ccw->bits |= CCW_DEC_SEM;
--				if (flags & DMA_CTRL_ACK)
-+				if (flags & MXS_DMA_CTRL_WAIT4END)
- 					ccw->bits |= CCW_WAIT4END;
- 			}
- 		}
+@@ -24,6 +24,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_dma.h>
+ #include <linux/list.h>
++#include <linux/dma/mxs-dma.h>
+ 
+ #include <asm/irq.h>
+ 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 9c44d6d21d04..0ec55c7620e8 100644
+index 87af02f34dc0..9c44d6d21d04 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -926,7 +926,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
- 	sg_init_one(sgl, this->cmd_buffer, this->command_length);
- 	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel,
--				sgl, 1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
-+				sgl, 1, DMA_MEM_TO_DEV,
-+				MXS_DMA_CTRL_WAIT4END);
+@@ -15,6 +15,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/dma/mxs-dma.h>
+ #include "gpmi-nand.h"
+ #include "gpmi-regs.h"
+ #include "bch-regs.h"
+@@ -914,9 +915,8 @@ static int gpmi_send_command(struct gpmi_nand_data *this)
+ 		| BM_GPMI_CTRL0_ADDRESS_INCREMENT
+ 		| BF_GPMI_CTRL0_XFER_COUNT(this->command_length);
+ 	pio[1] = pio[2] = 0;
+-	desc = dmaengine_prep_slave_sg(channel,
+-					(struct scatterlist *)pio,
+-					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
++	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
++				      DMA_TRANS_NONE, 0);
  	if (!desc)
  		return -EINVAL;
  
-@@ -996,7 +997,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf, int len)
- 	/* [2] send DMA request */
- 	prepare_data_dma(this, buf, len, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
--					1, DMA_MEM_TO_DEV, DMA_CTRL_ACK);
-+					1, DMA_MEM_TO_DEV,
-+					MXS_DMA_CTRL_WAIT4END);
+@@ -988,8 +988,8 @@ static int gpmi_send_data(struct gpmi_nand_data *this, const void *buf, int len)
+ 		| BF_GPMI_CTRL0_ADDRESS(address)
+ 		| BF_GPMI_CTRL0_XFER_COUNT(len);
+ 	pio[1] = 0;
+-	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
+-					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
++	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
++				      DMA_TRANS_NONE, 0);
  	if (!desc)
  		return -EINVAL;
  
-@@ -1033,7 +1035,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- 	/* [2] : send DMA request */
- 	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
--					1, DMA_DEV_TO_MEM, DMA_CTRL_ACK);
-+					1, DMA_DEV_TO_MEM,
-+					MXS_DMA_CTRL_WAIT4END);
+@@ -1025,9 +1025,8 @@ static int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_DATA)
+ 		| BF_GPMI_CTRL0_XFER_COUNT(len);
+ 	pio[1] = 0;
+-	desc = dmaengine_prep_slave_sg(channel,
+-					(struct scatterlist *)pio,
+-					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
++	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
++				      DMA_TRANS_NONE, 0);
  	if (!desc)
  		return -EINVAL;
  
-@@ -1083,7 +1086,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this, dma_addr_t payload,
- 	pio[5] = auxiliary;
- 
- 	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
--				      DMA_TRANS_NONE, DMA_CTRL_ACK);
-+				      DMA_TRANS_NONE,
-+				      MXS_DMA_CTRL_WAIT4END);
- 	if (!desc)
- 		return -EINVAL;
- 
-@@ -1140,7 +1144,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this, dma_addr_t payload,
+@@ -1083,10 +1082,8 @@ static int gpmi_send_page(struct gpmi_nand_data *this, dma_addr_t payload,
  	pio[4] = payload;
  	pio[5] = auxiliary;
- 	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
--				      DMA_TRANS_NONE, DMA_CTRL_ACK);
-+				      DMA_TRANS_NONE,
-+				      MXS_DMA_CTRL_WAIT4END);
+ 
+-	desc = dmaengine_prep_slave_sg(channel,
+-					(struct scatterlist *)pio,
+-					ARRAY_SIZE(pio), DMA_TRANS_NONE,
+-					DMA_CTRL_ACK);
++	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
++				      DMA_TRANS_NONE, DMA_CTRL_ACK);
  	if (!desc)
  		return -EINVAL;
  
-@@ -1157,7 +1162,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this, dma_addr_t payload,
+@@ -1117,9 +1114,7 @@ static int gpmi_read_page(struct gpmi_nand_data *this, dma_addr_t payload,
+ 		| BF_GPMI_CTRL0_ADDRESS(address)
+ 		| BF_GPMI_CTRL0_XFER_COUNT(0);
+ 	pio[1] = 0;
+-	desc = dmaengine_prep_slave_sg(channel,
+-				(struct scatterlist *)pio, 2,
+-				DMA_TRANS_NONE, 0);
++	desc = mxs_dmaengine_prep_pio(channel, pio, 2, DMA_TRANS_NONE, 0);
+ 	if (!desc)
+ 		return -EINVAL;
+ 
+@@ -1144,10 +1139,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this, dma_addr_t payload,
+ 	pio[3] = geo->page_size;
+ 	pio[4] = payload;
+ 	pio[5] = auxiliary;
+-	desc = dmaengine_prep_slave_sg(channel,
+-					(struct scatterlist *)pio,
+-					ARRAY_SIZE(pio), DMA_TRANS_NONE,
+-					DMA_CTRL_ACK);
++	desc = mxs_dmaengine_prep_pio(channel, pio, ARRAY_SIZE(pio),
++				      DMA_TRANS_NONE, DMA_CTRL_ACK);
+ 	if (!desc)
+ 		return -EINVAL;
+ 
+@@ -1163,9 +1156,8 @@ static int gpmi_read_page(struct gpmi_nand_data *this, dma_addr_t payload,
+ 		| BF_GPMI_CTRL0_XFER_COUNT(geo->page_size);
  	pio[1] = 0;
  	pio[2] = 0; /* clear GPMI_HW_GPMI_ECCCTRL, disable the BCH. */
- 	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
--				      DMA_CTRL_ACK);
-+				      MXS_DMA_CTRL_WAIT4END);
+-	desc = dmaengine_prep_slave_sg(channel,
+-				(struct scatterlist *)pio, 3,
+-				DMA_TRANS_NONE, DMA_CTRL_ACK);
++	desc = mxs_dmaengine_prep_pio(channel, pio, 3, DMA_TRANS_NONE,
++				      DMA_CTRL_ACK);
  	if (!desc)
  		return -EINVAL;
  
 diff --git a/include/linux/dma/mxs-dma.h b/include/linux/dma/mxs-dma.h
-index 092b2a7b92ac..4a33f2c8a682 100644
---- a/include/linux/dma/mxs-dma.h
+new file mode 100644
+index 000000000000..092b2a7b92ac
+--- /dev/null
 +++ b/include/linux/dma/mxs-dma.h
-@@ -4,6 +4,8 @@
- 
- #include <linux/dmaengine.h>
- 
-+#define MXS_DMA_CTRL_WAIT4END	BIT(31)
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _MXS_DMA_H_
++#define _MXS_DMA_H_
 +
- /*
-  * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
-  * in the second argument to dmaengine_prep_slave_sg when the direction is
++#include <linux/dmaengine.h>
++
++/*
++ * The mxs dmaengine can do PIO transfers. We pass a pointer to the PIO words
++ * in the second argument to dmaengine_prep_slave_sg when the direction is
++ * set to DMA_TRANS_NONE. To make this clear and to prevent users from doing
++ * the error prone casting we have this wrapper function
++ */
++static inline struct dma_async_tx_descriptor *mxs_dmaengine_prep_pio(
++        struct dma_chan *chan, u32 *pio, unsigned int npio,
++        enum dma_transfer_direction dir, unsigned long flags)
++{
++	return dmaengine_prep_slave_sg(chan, (struct scatterlist *)pio, npio,
++				       dir, flags);
++}
++
++#endif /* _MXS_DMA_H_ */
 -- 
 2.20.1
 
