@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F61AC04AAF
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:08:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B189FC04AAF
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:08:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 439C72173C
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:08:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87E2B2173C
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2019 07:08:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WVa/kS+G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 439C72173C
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y+S44RjS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87E2B2173C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,33 +25,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mM6WVD4EPu3TVfQb5+q58hnKMCh2X5atCfBwH/kHD7I=; b=WVa/kS+GbKixt7
-	WFzyOV5JkKMVxs7vGap0+dUMJM73gfgL1+6jBLlQeuDQc9wLY+UobbDB5qFXB+om67k8qtEznLece
-	jixlPOvuzFltJNUnGpXvQ6MzwCwpR3nnYGfvVGZ61vDOSl0AiiApHQHzGYG/dzADJOmi8SrPht7Vm
-	TnUTXZOG/onmPKarSyv1y5QS8kFP/5FA4rzH05XpLenQrJsZegfCZ6ztFgrZEXVN4vhaPvABcVshw
-	qe4W3fPZx5c7lB5yITwuntcBMTCyj4i4cwNbKAVLIseCPtoRaR9GfGsgvG3KLMsTkEc/KHQtDfgG2
-	WTjCzrc3AKuOBVdvVm8Q==;
+	List-Owner; bh=m/vb4Afh6qyCMzUwYEYxoWzBJx93vs7GTi4D400pjXQ=; b=Y+S44RjSlGEtTx
+	6DzXD2aGYR4YWigi6Zf9DXw1coRCV54jjXra0mII73ExpUXfqQOmf5zd5Lqrr3lCavPahrN/eCX3z
+	i92JVhqcn23HzYisBZ4XW+By0mXiWBiH6m85a+s6xpIO/8uT5Alt4l5bFPk57ccmXplVGAKJ4Sg62
+	Hc0zKdQ1ikpWLs89Ah3doFSBQjY6sGKSXReOvpXI1IK1aLbpZo4oQ21MmLirB+pgsKW4hYY4tmH1d
+	kq2GV3rEvOVJ7gM6WOHWGHbMZJ8lR/8FxJQaaotL1NCJXMnwfB/vLP4cZMwgnWiNfgzlfm6k0audm
+	FaYg7OzL6tOf3+L44JjA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hSysa-0004Ee-0D; Tue, 21 May 2019 07:08:08 +0000
+	id 1hSysk-0004Sw-ES; Tue, 21 May 2019 07:08:18 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hSyrZ-0002th-Ct
- for linux-mtd@lists.infradead.org; Tue, 21 May 2019 07:07:10 +0000
+ id 1hSyrR-0002hs-DH
+ for linux-mtd@lists.infradead.org; Tue, 21 May 2019 07:07:05 +0000
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <sha@pengutronix.de>)
- id 1hSyrH-0006cb-Hm; Tue, 21 May 2019 09:06:47 +0200
+ id 1hSyrH-0006cj-Hu; Tue, 21 May 2019 09:06:47 +0200
 Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1hSyrG-0001bK-6k; Tue, 21 May 2019 09:06:46 +0200
+ id 1hSyrG-0001bi-Ce; Tue, 21 May 2019 09:06:46 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 02/14] mtd: rawnand: fsmc: Use nand_op_trace for operation
- tracing
-Date: Tue, 21 May 2019 09:06:31 +0200
-Message-Id: <20190521070643.6244-3-s.hauer@pengutronix.de>
+Subject: [PATCH 10/14] dmaengine: mxs: Drop unnecessary flag
+Date: Tue, 21 May 2019 09:06:39 +0200
+Message-Id: <20190521070643.6244-11-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190521070643.6244-1-s.hauer@pengutronix.de>
 References: <20190521070643.6244-1-s.hauer@pengutronix.de>
@@ -62,8 +61,8 @@ X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190521_000706_219517_16C569DA 
-X-CRM114-Status: GOOD (  12.50  )
+X-CRM114-CacheID: sfid-20190521_000658_036142_3135092B 
+X-CRM114-Status: GOOD (  16.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -85,71 +84,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the different operation tracing functions with a call to
-nand_op_trace.
+The mxs dma driver insists on having the DMA_PREP_INTERRUPT flag set
+on all but the first transfer. There's no need to let the user set this
+flag, the driver can do it internally whenever it needs it. Drop
+handling of this flag from the driver.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+ drivers/dma/mxs-dma.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 6c7ca41354be..a6964feeec77 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -613,28 +613,20 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 	for (op_id = 0; op_id < op->ninstrs; op_id++) {
- 		instr = &op->instrs[op_id];
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 22cc7f68ef6e..ce92a3626ea4 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -477,16 +477,16 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
+  *            ......
+  *            ->device_prep_slave_sg(0);
+  *            ......
+- *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++ *            ->device_prep_slave_sg(DMA_CTRL_ACK);
+  *            ......
+  *    [3] If there are more than two DMA commands in the DMA chain, the code
+  *        should be:
+  *            ......
+  *            ->device_prep_slave_sg(0);                                // First
+  *            ......
+- *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT [| DMA_CTRL_ACK]);
++ *            ->device_prep_slave_sg(DMA_CTRL_ACK]);
+  *            ......
+- *            ->device_prep_slave_sg(DMA_PREP_INTERRUPT | DMA_CTRL_ACK); // Last
++ *            ->device_prep_slave_sg(DMA_CTRL_ACK); // Last
+  *            ......
+  */
+ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+@@ -500,13 +500,12 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+ 	struct scatterlist *sg;
+ 	u32 i, j;
+ 	u32 *pio;
+-	bool append = flags & DMA_PREP_INTERRUPT;
+-	int idx = append ? mxs_chan->desc_count : 0;
++	int idx = 0;
  
-+		nand_op_trace("  ", instr);
-+
- 		switch (instr->type) {
- 		case NAND_OP_CMD_INSTR:
--			pr_debug("  ->CMD      [0x%02x]\n",
--				 instr->ctx.cmd.opcode);
--
- 			writeb_relaxed(instr->ctx.cmd.opcode, host->cmd_va);
- 			break;
+-	if (mxs_chan->status == DMA_IN_PROGRESS && !append)
+-		return NULL;
++	if (mxs_chan->status == DMA_IN_PROGRESS)
++		idx = mxs_chan->desc_count;
  
- 		case NAND_OP_ADDR_INSTR:
--			pr_debug("  ->ADDR     [%d cyc]",
--				 instr->ctx.addr.naddrs);
--
- 			for (i = 0; i < instr->ctx.addr.naddrs; i++)
- 				writeb_relaxed(instr->ctx.addr.addrs[i],
- 					       host->addr_va);
- 			break;
- 
- 		case NAND_OP_DATA_IN_INSTR:
--			pr_debug("  ->DATA_IN  [%d B%s]\n", instr->ctx.data.len,
--				 instr->ctx.data.force_8bit ?
--				 ", force 8-bit" : "");
--
- 			if (host->mode == USE_DMA_ACCESS)
- 				fsmc_read_buf_dma(host, instr->ctx.data.buf.in,
- 						  instr->ctx.data.len);
-@@ -644,10 +636,6 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 			break;
- 
- 		case NAND_OP_DATA_OUT_INSTR:
--			pr_debug("  ->DATA_OUT [%d B%s]\n", instr->ctx.data.len,
--				 instr->ctx.data.force_8bit ?
--				 ", force 8-bit" : "");
--
- 			if (host->mode == USE_DMA_ACCESS)
- 				fsmc_write_buf_dma(host,
- 						   instr->ctx.data.buf.out,
-@@ -658,9 +646,6 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 			break;
- 
- 		case NAND_OP_WAITRDY_INSTR:
--			pr_debug("  ->WAITRDY  [max %d ms]\n",
--				 instr->ctx.waitrdy.timeout_ms);
--
- 			ret = nand_soft_waitrdy(chip,
- 						instr->ctx.waitrdy.timeout_ms);
- 			break;
+-	if (sg_len + (append ? idx : 0) > NUM_CCW) {
++	if (sg_len + idx > NUM_CCW) {
+ 		dev_err(mxs_dma->dma_device.dev,
+ 				"maximum number of sg exceeded: %d > %d\n",
+ 				sg_len, NUM_CCW);
+@@ -520,7 +519,7 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+ 	 * If the sg is prepared with append flag set, the sg
+ 	 * will be appended to the last prepared sg.
+ 	 */
+-	if (append) {
++	if (idx) {
+ 		BUG_ON(idx < 1);
+ 		ccw = &mxs_chan->ccw[idx - 1];
+ 		ccw->next = mxs_chan->ccw_phys + sizeof(*ccw) * idx;
 -- 
 2.20.1
 
