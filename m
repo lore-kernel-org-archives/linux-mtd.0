@@ -3,20 +3,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC34BC282CE
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 13:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 116CAC282CE
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 13:56:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F066208C3
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 13:19:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9DD621473
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 13:56:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nHJpwQlv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0mYeaIOi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F066208C3
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kZIJ/+lw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="duF47EnJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9DD621473
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,51 +25,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yz/F/5wzujdfCZOFTmnDmluXG1OdD43MVuS71wbT74g=; b=nHJpwQlvBMI9FX
-	Nhh014wBcLyvY78Iy/QWHcsmL+UbZNaNjT44rrIPZuHBGmzxp6S9oFq1+ExJUS/h2mEfyTLC4Tazj
-	QhSlahQXHGXOc0zv9YTlSxqvy24bXwKSSD1QvEuwrTFUjoDvkkBjlSbpe9wdDIptZuIiII+IR0Hc8
-	WQbiF4QdwFvsejOtgB6gL/3o+1vUaO9HsiKWJ5DIhx3wlfDJ5nO7zhpGbZUQTqIx3rPRVG+0HB8iv
-	Z6tOg/fg9kUuiYOfgpGpGIYPkNnaV2L6Schilf2t2vRb0d9Jvmga6J5pBksKWL1gfkoCn5OYz65LU
-	YW0u1vBOlMSkvUvT5vPQ==;
+	List-Owner; bh=MLqpS0dqG8MEbWdzGWBSIXTikvQLZHuyCqb0LxxLkno=; b=kZIJ/+lw/8wcRe
+	ihQytnAAwyPAn1FnH9nnrgigGUroFPLt57jeWTEVeDPUkI+rtsKn5ENBpmnJW/VpP3B0dRZ7LwSRT
+	R5FAlod+KOwK3tFKpyL24jmmvSMsX9VzQAadt5hN9NKYYr8vkxPQJd0Yq68SGFwlKe0XkwkBs+WBL
+	yCywdsaVz0McbA3bNNf6ipbQd9TaVV/9u9WVGjBHNoJlkZX1srdwv8vBF5ZYdwWo5Vb1OC6TQrFvJ
+	JY72bCpIjqj/GMiNPunLiByg3BY6jO+eWeSJGAS1Unm/DA6QVJ8uHcRpVFos5KVluCFJ76zLmbUc7
+	balnSGC4GqDRWe1nnnOg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hTR9Y-0004FP-RR; Wed, 22 May 2019 13:19:32 +0000
+	id 1hTRj5-0003Ia-Qb; Wed, 22 May 2019 13:56:15 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hTR9P-00046H-GK; Wed, 22 May 2019 13:19:24 +0000
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com
- [209.85.160.174])
+ id 1hTRiw-00039B-9d; Wed, 22 May 2019 13:56:07 +0000
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com
+ [209.85.222.172])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B818F21855;
- Wed, 22 May 2019 13:19:22 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A03B421851;
+ Wed, 22 May 2019 13:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1558531162;
- bh=xZL000OlxXJ3Olb6ufE2AzjLi7N4hMQu+kQzQcbFNCE=;
+ s=default; t=1558533365;
+ bh=CpWRPFDFDeEz2FasTJpU7xC9m9MJZ5sBPRt83HEYgfo=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=0mYeaIOisZLB0e2XA+n2+3BIXH94kWanrOCk0grtqaLO+lZvxY3UI7XggEwxwuQqh
- vq/62sb27M9TkomToLDrAOJEMM7ci1rjoij0f3S6+ILn1ARCEMG0aZLvAXz4U57nd3
- Bsy2TjvX8AeZkQy1Oa+uXn9+h2LRBrcSTjcCeEdI=
-Received: by mail-qt1-f174.google.com with SMTP id f24so2213846qtk.11;
- Wed, 22 May 2019 06:19:22 -0700 (PDT)
-X-Gm-Message-State: APjAAAUj8Ax29YL4TyGZcz6ZOkGUF0w+vk2rfCbLi8SeBtEmrAm3qlxn
- Kzmh/1ivmX0nbedRRNFaVaLVi2+OHnp2Sxov1A==
-X-Google-Smtp-Source: APXvYqyvYTuRn9kxbS1Z4NqODKeovcHPYdzWdAvI9bwxOBcedkYyTwND/I5vtUvsg9uaG6kVGsaTqAdvJBL/eqFqgL8=
-X-Received: by 2002:a0c:929a:: with SMTP id b26mr70772394qvb.148.1558531161859; 
- Wed, 22 May 2019 06:19:21 -0700 (PDT)
+ b=duF47EnJ1olpUVNwqtjHV8UOkB/JftPjhDIWWr5H4ZMBt7IDtYQ1C/3BKouXzaL0v
+ f3jygMikKv5/BWPNiA3P92IWbjeorOYEupad+Hlhua/d6y7btM+ZP6HzFBgM/1PR/F
+ gF+k03o4CdD3kYEN6+YfFHKpbwJPIm2lkyOB1Qxs=
+Received: by mail-qk1-f172.google.com with SMTP id m18so1497083qki.8;
+ Wed, 22 May 2019 06:56:05 -0700 (PDT)
+X-Gm-Message-State: APjAAAXRNr35U3ambEnRM0/3jzwGCY3LQGNaOPavRdtYCox++gWT7KR/
+ hQZiuydN5SQsiTIVL6doojhkBPD8MHR7tTRqdw==
+X-Google-Smtp-Source: APXvYqzvt+EFGiFr6y2zsSRBs4qOUs7e+/z+bJpZu4CMkQbtQjvYCr7ioBnDYS6ibBsbagsPUO0sVjALMvR6IRu+67E=
+X-Received: by 2002:a37:dc03:: with SMTP id v3mr70538862qki.151.1558533364775; 
+ Wed, 22 May 2019 06:56:04 -0700 (PDT)
 MIME-Version: 1.0
 References: <1558466890-45471-1-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1558466890-45471-1-git-send-email-kdasu.kdev@gmail.com>
+ <CAL_JsqKd53W1E33YdtJwagi4=7DrVQ5+N3rSY=Rxo5J0RiW46g@mail.gmail.com>
+In-Reply-To: <CAL_JsqKd53W1E33YdtJwagi4=7DrVQ5+N3rSY=Rxo5J0RiW46g@mail.gmail.com>
 From: Rob Herring <robh+dt@kernel.org>
-Date: Wed, 22 May 2019 08:19:09 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKd53W1E33YdtJwagi4=7DrVQ5+N3rSY=Rxo5J0RiW46g@mail.gmail.com>
-Message-ID: <CAL_JsqKd53W1E33YdtJwagi4=7DrVQ5+N3rSY=Rxo5J0RiW46g@mail.gmail.com>
+Date: Wed, 22 May 2019 08:55:53 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ+zNQ3CeBh8K=oBiZZsiBQ8w1w=6vs8zOQeqUf_qhqcg@mail.gmail.com>
+Message-ID: <CAL_JsqJ+zNQ3CeBh8K=oBiZZsiBQ8w1w=6vs8zOQeqUf_qhqcg@mail.gmail.com>
 Subject: Re: [PATCH] dt: bindings: mtd: replace references to nand.txt with
  nand-controller.yaml
-To: Kamal Dasu <kdasu.kdev@gmail.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190522_061923_589639_F1AC08EA 
-X-CRM114-Status: GOOD (  11.54  )
+X-CRM114-CacheID: sfid-20190522_065606_357307_AF239461 
+X-CRM114-Status: GOOD (  13.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -109,17 +111,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 21, 2019 at 2:28 PM Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+On Wed, May 22, 2019 at 8:19 AM Rob Herring <robh+dt@kernel.org> wrote:
 >
-> nand-controller.yaml replaced nand.txt however the references to it were
-> not updated. This change updates these references wherever it appears in
-> bindings documentation.
+> On Tue, May 21, 2019 at 2:28 PM Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+> >
+> > nand-controller.yaml replaced nand.txt however the references to it were
+> > not updated. This change updates these references wherever it appears in
+> > bindings documentation.
+> >
+> > Fixes: 212e49693592 ("dt-bindings: mtd: Add YAML schemas for the generic NAND options")
+> >
+> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 >
-> Fixes: 212e49693592 ("dt-bindings: mtd: Add YAML schemas for the generic NAND options")
->
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Mauro already sent a similar patch.
 
-Mauro already sent a similar patch.
+Actually, Mauro's patch missed a bunch of cases that aren't full
+paths, so I'll take this one.
 
 Rob
 
