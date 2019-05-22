@@ -2,85 +2,61 @@ Return-Path: <SRS0=Q6Kj=TW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8D5EC282CE
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 21:35:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86554C282CE
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 21:37:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F29120863
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 21:35:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DAF9206B6
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2019 21:37:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Izx/AfxW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VixhObCS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F29120863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZNuznDBj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DAF9206B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ausv/oDlz/lHPNik0leIhjroo2yzojT+b/P25ucJfvA=; b=Izx/AfxWQP4TJq
-	ZDkzWtI6xKRC6O0BDDy7PyLmNQBmupEJEPrp77io9V6neIBY5hBtGcxQi70EoDJcplYKbqQSYS30N
-	W7n8qrw7Pha5qKenjBt0ylgSkBpgeLX0aPR3IDrrRaN0XbqAE2ik54ifvUGCvjVVzHCLE4LJJUi9b
-	a7NBqk1EDSSy0JgISrxdUCUUhTsXPbs/OVLPlYeUO5wWWDfIW6y4ZgW6bwXBMiywqfXcoQ3WklYCn
-	cpLqzQTNhkDX/9gLvygl7kDjO6zieqonGoIeyGqPpWHv68cfNCA2GF/7RAqv/asUy6KrcKYWMNe/3
-	8jCiNuZ9Y0zXfpX8YqNQ==;
+	List-Owner; bh=dlhNHuAzRYewQG8qgiopiD8V7keRIs1CnYw5xmXvmTw=; b=ZNuznDBjviYSNc
+	thDxVJ69tKiAgZAwP1ohKCWJ68DbJqjAdo4WD2a4FrtaveX2mhWZH1I2N22u2fNGv/coA0+VXj/3E
+	Jd/kVBxNKeYoiBiEqmIxEtFQFBBw/qHCZ+MVgGXY5h/zc6yobxyzG1sq/K4jC4qgN1whJPqYikBO2
+	S/gvwPKouIy5lZlJaSupWh7aBZLO1OqVpyKnFjNfk+yDh08PY80plfRtM9QbWgfCNTGBTUsi19q9q
+	jf+E19pX4i0QM6/14V4C53SJlXqjTtPiXSRdq8Lplu/30uDxoXiR2Pc3I7Xuv8ZPhm8BITGvrUY9v
+	72I27Qk9JqI8B1ynpRrg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hTYta-00034g-Iu; Wed, 22 May 2019 21:35:34 +0000
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+	id 1hTYvK-0003KB-6O; Wed, 22 May 2019 21:37:22 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hTYtX-00033y-6U
- for linux-mtd@lists.infradead.org; Wed, 22 May 2019 21:35:32 +0000
-Received: by mail-wr1-x444.google.com with SMTP id d9so3931140wrx.0
- for <linux-mtd@lists.infradead.org>; Wed, 22 May 2019 14:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=CB47ddRrKNWzkvlQMhShBURKZepRSv/MUuWiHjNrhfA=;
- b=VixhObCSPbWyKqLO1CMmQvg2SVLU6ChlVUtMUAF1lP4n2Nn4PM/AAenNz1sRbSWpvi
- bCb3FHCGyTmwCRzy88Je5DbLF4WfH6xMTHIObnbLMTnY0OCIEz4PuVNiPtMAw9e2CeHZ
- 7aksMNx3MDFrvNGSh9hjfNT4ouy9uLzmHR8VeRyU4JKylcuW2ByOpdBFyFQjn61sDc2R
- AozjR1dBbvnGfPrZBw2r6TmGy3oTutj/hfw1NgfoHA7sLvp5PUuCNqE7k93J407Tg/EW
- HKT2THdPzBPRkizuRovFB+O+D1w+Tjn8WT+A7RMt278syNd2ag7WFBPAmRKeGbrrGlU2
- fzNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=CB47ddRrKNWzkvlQMhShBURKZepRSv/MUuWiHjNrhfA=;
- b=qE9XBOnCAsYNBuqoEO9+7JZY6hluLDhmfTbRt4fJgBfyl5ws/HGep0hm6TInhTAwJ1
- F0gwycSgBiwdna5AfXU4/vg6wE17QtyG3jXsEbpR5c52CS0knijmlR3dP5UDy+bGQcIB
- n7v4VNWJ7ElKHuRzwXLwJlloj0/mcJ3qovTdIm7t4Onl3c7BwJ+ucmAZ6vJd6xzJ8PGq
- NkjvxuJyIfEpLaAVU/ZiToT+5UEfJXTrjwqR9XyWurYqFSxZYC0wsBPb8zGWdGvsN0Ji
- 1qRsPFa7rheL7OUwjC5yAIpaaLNyHX1JFRMkbti8xygsrFBuRSjzpK8Mkf2cjjpxXRBF
- KnSQ==
-X-Gm-Message-State: APjAAAWwC7wxau1M/BQ0A83JJl3xbuULZiVXJraZqjUancOVa6YAUO4b
- UDGJOzyF1v22Y2qARWPy90q/tLTqrFMtJNwN568=
-X-Google-Smtp-Source: APXvYqz/54mDVZbKDP50tur8ClqpWHv3gxaKzRHbKKYmLEG/GgnlwoERxevEQsbttDHewjRiEY6hB88Em886jLOpcck=
-X-Received: by 2002:a5d:69cf:: with SMTP id s15mr44438901wrw.75.1558560929456; 
- Wed, 22 May 2019 14:35:29 -0700 (PDT)
+ id 1hTYvH-0003Jm-AG
+ for linux-mtd@lists.infradead.org; Wed, 22 May 2019 21:37:21 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A0C6F283655;
+ Wed, 22 May 2019 22:37:08 +0100 (BST)
+Date: Wed, 22 May 2019 23:37:05 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] mtd: onenand_base: Avoid fall-through warnings
+Message-ID: <20190522233705.234d75d5@collabora.com>
+In-Reply-To: <20190522180446.GA30082@embeddedor>
+References: <20190522180446.GA30082@embeddedor>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20190522000753.13300-1-chris.packham@alliedtelesis.co.nz>
- <20190522000753.13300-2-chris.packham@alliedtelesis.co.nz>
- <CAFLxGvy2c9KV1CyoFaD76jvThfPiotqfoeNchqjGcDp+uHie7Q@mail.gmail.com>
- <0c59bcd6c866429cb9727f787b7f61ce@svr-chch-ex1.atlnz.lc>
- <CAFLxGvwRnBtscaJDQ4qYGpQt87+amKYb4vBJvtt-3BmsOorL_g@mail.gmail.com>
-In-Reply-To: <CAFLxGvwRnBtscaJDQ4qYGpQt87+amKYb4vBJvtt-3BmsOorL_g@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 22 May 2019 23:35:18 +0200
-Message-ID: <CAFLxGvxGCKi1HH_7tit4ykQDJGm9t6Gt8pz7LTCZZ8G4J8sOhw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: concat: implement _is_locked mtd operation
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190522_143531_244030_4AC3F4A3 
-X-CRM114-Status: GOOD (  27.15  )
+X-CRM114-CacheID: sfid-20190522_143719_621808_C79A0777 
+X-CRM114-Status: GOOD (  21.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -93,94 +69,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- LKML <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+ David Woodhouse <dwmw2@infradead.org>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 22, 2019 at 11:26 PM Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
->
-> On Wed, May 22, 2019 at 11:06 PM Chris Packham
-> <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >
-> > On 23/05/19 8:44 AM, Richard Weinberger wrote:
-> > > On Wed, May 22, 2019 at 2:08 AM Chris Packham
-> > > <chris.packham@alliedtelesis.co.nz> wrote:
-> > >>
-> > >> Add an implementation of the _is_locked operation for concatenated mtd
-> > >> devices. As with concat_lock/concat_unlock this can simply use the
-> > >> common helper and pass mtd_is_locked as the operation.
-> > >>
-> > >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > >> ---
-> > >>   drivers/mtd/mtdconcat.c | 6 ++++++
-> > >>   1 file changed, 6 insertions(+)
-> > >>
-> > >> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> > >> index 9514cd2db63c..0e919f3423af 100644
-> > >> --- a/drivers/mtd/mtdconcat.c
-> > >> +++ b/drivers/mtd/mtdconcat.c
-> > >> @@ -496,6 +496,11 @@ static int concat_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-> > >>          return __concat_xxlock(mtd, ofs, len, mtd_unlock);
-> > >>   }
-> > >>
-> > >> +static int concat_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-> > >> +{
-> > >> +       return __concat_xxlock(mtd, ofs, len, mtd_is_locked);
-> > >> +}
-> > >
-> > > Hmm, here you start abusing your own new API. :(
-> >
-> > Abusing because xxlock is a poor choice of name? I initially had a third
-> > copy of the logic from lock/unlock which is what lead me to do the
-> > cleanup first. mtd_lock(), mtd_unlock() and mtd_is_locked() all work the
-> > same way namely given an offset and a length either lock, unlock or
-> > return the status of the len/erasesz blocks at ofs.
->
-> Well, for unlock/lock it is just a loop which applies an operation to
-> a given range on all submtds.
-> But as soon an operation returns non-zero, the loop stops and returns
-> that error.
-> This makes sense for unlock/lock.
->
-> Now you abuse this as "apply a random mtd operation to a given range".
-> So, giving it a proper name is the first step. Step two is figuring
-> for what kind
-> of mtd operations it makes sense and is correct.
->
-> > >
-> > > Did you verify that the unlock/lock-functions deal correctly with all
-> > > semantics from mtd_is_locked?
-> > > i.e. mtd_is_locked() with len = 0 returns 1 for spi-nor.
-> > >
-> >
-> > I believe so. I've only got access to a parallel NOR flash system that
-> > uses concatenation and that seems sane  (is mtdconcat able to work with
-> > spi memories?). The concat_is_locked() should just reflect what the
-> > underlying mtd device driver returns.
->
-> mtdconcat *should* work with any mtd. But I never used it much, I see
-> it more as legacy
-> code.
->
-> What happens if one submtd is locked and another not?
-> Does concat_is_locked() return something sane then?
-> I'd expect it to return true if at least one submtd is locked and 0
-> of no submtd is locked.
-
-BTW: Meant overlapping requests. If it targets always only one submtd,
-it is easy.
-
--- 
-Thanks,
-//richard
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCAyMiBNYXkgMjAxOSAxMzowNDo0NiAtMDUwMAoiR3VzdGF2byBBLiBSLiBTaWx2YSIg
+PGd1c3Rhdm9AZW1iZWRkZWRvci5jb20+IHdyb3RlOgoKPiBOT1RJQ0UgVEhBVDoKPiAKPiAiLi4u
+d2UgZG9uJ3Qga25vdyB3aGV0aGVyIHdlIG5lZWQgZmFsbHRocm91Z2hzIG9yIGJyZWFrcyB0aGVy
+ZSBhbmQgdGhpcwo+IGlzIGp1c3QgYSBjaGFuZ2UgdG8gYXZvaWQgaGF2aW5nIG5ldyB3YXJuaW5n
+cyB3aGVuIHN3aXRjaGluZyB0bwo+IC1XaW1wbGljaXQtZmFsbHRocm91Z2ggYnV0IHRoaXMgY2hh
+bmdlIG1pZ2h0IGJlIGVudGlyZWx5IHdyb25nLiJbMV0KPiAKPiBTZWUgdGhlIG9yaWdpbmFsIHRo
+cmVhZCBvZiBkaXNjdXNzaW9uIGhlcmU6Cj4gCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0
+Y2h3b3JrL3BhdGNoLzEwMzYyNTEvCj4gCj4gU28sIGluIHByZXBhcmF0aW9uIHRvIGVuYWJsaW5n
+IC1XaW1wbGljaXQtZmFsbHRocm91Z2gsIHRoaXMgcGF0Y2ggc2lsZW5jZXMKPiB0aGUgZm9sbG93
+aW5nIHdhcm5pbmdzOgo+IAo+IGRyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jhc2Uu
+YzogSW4gZnVuY3Rpb24g4oCYb25lbmFuZF9jaGVja19mZWF0dXJlc+KAmToKPiBkcml2ZXJzL210
+ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNlLmM6MzI2NDo2OiB3YXJuaW5nOiB0aGlzIHN0YXRl
+bWVudCBtYXkgZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0KPiAgICBpZiAo
+T05FTkFORF9JU19ERFAodGhpcykpCj4gICAgICAgXgo+IGRyaXZlcnMvbXRkL25hbmQvb25lbmFu
+ZC9vbmVuYW5kX2Jhc2UuYzozMjg0OjI6IG5vdGU6IGhlcmUKPiAgIGNhc2UgT05FTkFORF9ERVZJ
+Q0VfREVOU0lUWV8yR2I6Cj4gICBefn5+Cj4gZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5h
+bmRfYmFzZS5jOjMyODg6MTc6IHdhcm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91
+Z2ggWy1XaW1wbGljaXQtZmFsbHRocm91Z2g9XQo+ICAgIHRoaXMtPm9wdGlvbnMgfD0gT05FTkFO
+RF9IQVNfVU5MT0NLX0FMTDsKPiBkcml2ZXJzL210ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNl
+LmM6MzI5MDoyOiBub3RlOiBoZXJlCj4gICBjYXNlIE9ORU5BTkRfREVWSUNFX0RFTlNJVFlfMUdi
+Ogo+ICAgXn5+fgo+IAo+IFdhcm5pbmcgbGV2ZWwgMyB3YXMgdXNlZDogLVdpbXBsaWNpdC1mYWxs
+dGhyb3VnaD0zCj4gCj4gVGhpcyBwYXRjaCBpcyBwYXJ0IG9mIHRoZSBvbmdvaW5nIGVmZm9ydHMg
+dG8gZW5hYmxlCj4gLVdpbXBsaWNpdC1mYWxsdGhyb3VnaC4KPiAKPiBbMV0gaHR0cHM6Ly9sb3Jl
+Lmtlcm5lbC5vcmcvbGttbC8yMDE5MDUwOTA4NTMxOC4zNGE5ZDRiZUB4cHMxMy8KPiAKPiBDYzog
+TWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiBTaWduZWQtb2ZmLWJ5
+OiBHdXN0YXZvIEEuIFIuIFNpbHZhIDxndXN0YXZvQGVtYmVkZGVkb3IuY29tPgo+IC0tLQo+ICBk
+cml2ZXJzL210ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNlLmMgfCAyICsrCj4gIDEgZmlsZSBj
+aGFuZ2VkLCAyIGluc2VydGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFu
+ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5h
+bmRfYmFzZS5jCj4gaW5kZXggZjQxZDc2MjQ4NTUwLi42Y2Y0ZGY5ZjhjMDEgMTAwNjQ0Cj4gLS0t
+IGEvZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCj4gKysrIGIvZHJpdmVy
+cy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCj4gQEAgLTMyODAsMTIgKzMyODAsMTQg
+QEAgc3RhdGljIHZvaWQgb25lbmFuZF9jaGVja19mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10
+ZCkKPiAgCQkJaWYgKCh0aGlzLT52ZXJzaW9uX2lkICYgMHhmKSA9PSAweGUpCj4gIAkJCQl0aGlz
+LT5vcHRpb25zIHw9IE9ORU5BTkRfSEFTX05PUF8xOwo+ICAJCX0KPiArCQkvKiBGYWxsIHRocm91
+Z2ggLSA/ICovCgpTbywgdGhlIG9ubHkgdGhpbmcgdGhhdCB5b3UnbGwgcmUtdXNlIGJ5IGZhbGxp
+bmcgdGhyb3VnaCB0aGUgbmV4dCBjYXNlCmlzIHRoZSAnLT5vcHRpb25zIHw9IE9ORU5BTkRfSEFT
+X1VOTE9DS19BTEwnIG9wZXJhdGlvbi4gSSBmaW5kIGl0IGVhc2llcgp0byBmb2xsb3cgd2l0aCBh
+biBleHBsaWNpdCBjb3B5IG9mIHRoaXMgbGluZSArIGEgYnJlYWsuCgo+ICAKPiAgCWNhc2UgT05F
+TkFORF9ERVZJQ0VfREVOU0lUWV8yR2I6Cj4gIAkJLyogMkdiIEREUCBkb2VzIG5vdCBoYXZlIDIg
+cGxhbmUgKi8KPiAgCQlpZiAoIU9ORU5BTkRfSVNfRERQKHRoaXMpKQo+ICAJCQl0aGlzLT5vcHRp
+b25zIHw9IE9ORU5BTkRfSEFTXzJQTEFORTsKPiAgCQl0aGlzLT5vcHRpb25zIHw9IE9ORU5BTkRf
+SEFTX1VOTE9DS19BTEw7Cj4gKwkJLyogRmFsbCB0aHJvdWdoIC0gPyAqLwoKVGhpcyBmYWxsIHRo
+cm91Z2ggY2VydGFpbmx5IGRvZXNuJ3QgbWFrZSBzZW5zZSwgYXMgdGhlIG9ubHkgdGhpbmcgdGhh
+dAptaWdodCBiZSBkb25lIGluIHRoZSAxR2IgY2FzZSBpcyBjb25kaXRpb25hbGx5IGFkZGluZyB0
+aGUKSEFTX1VOTE9DS19BTEwgZmxhZywgYW5kIHRoaXMgZmxhZyBpcyBhbHJlYWR5IHVuY29uZGl0
+aW9uYWxseSBzZXQuClBsZWFzZSBhZGQgYSBicmVhayBoZXJlLgoKPiAgCj4gIAljYXNlIE9ORU5B
+TkRfREVWSUNFX0RFTlNJVFlfMUdiOgo+ICAJCS8qIEEtRGllIGhhcyBhbGwgYmxvY2sgdW5sb2Nr
+ICovCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
