@@ -2,70 +2,84 @@ Return-Path: <SRS0=uaub=TX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF0EC282DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 08:59:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E77EC282DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 09:01:46 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBCA22081C
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 08:59:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D2EEC2081C
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 09:01:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LayR8Dj1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBCA22081C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eo+LCTDM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2EEC2081C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wrrb2weangojsGB+TL50TPBuMQX87HszMQDyrUSwkE4=; b=LayR8Dj146CmHw
-	Nex7OxZfsPL90tDcxLSvtuH4DhXvsJ2jiKYtW64WE8WhEQC1hWgPZ/35rWIhaPJlRKI1Y9MMZZkhZ
-	YXHa+3CZEOZTtxW4aLDCMwAk2eGJAttAkCx5MkB9V/TyQDlMrmzKCgFoPbEPu5WzTBaRYEVHjviRL
-	34bERr+rR3qU++aNjDrkQpTsB8O6SAYy7vqN3wS7pbHSxAZgu8uaXJftWlj8cIB77zytbf2ujLru3
-	iseX5mpaDojTKpcqMDD196u0Cj2jWRUZQGqaynWrEzSgi/nHFQ4axg06Cm8Jz105ddSAlWP+9CIlp
-	gSI9LhDwaZdSVY9/ceog==;
+	List-Owner; bh=TEw1TJee5q1ecusXEQknHNfybYTM7c2Xzx2OrToZb/U=; b=eo+LCTDM1dWYg1
+	lAleTRkkOTICTwrZIRy812mFg4q2K/mDM3cn10ZCQTMtiDHc/ixkaOi53yigysCC3kgurxVowDKoF
+	4ybHk/I2BXgyWXWqn3WSQFdyLf0nTIUsMON7uxOx0ymmcpSklNGRlW8URM12O+On3XCedEewOHrjB
+	8JlHflPktQhPFJ3/Hd7f19hjKkgPMHiptTT0NeI9A6T0pxPsXNhaPsiQmoiIxZxUpdZKpkpObbXai
+	hT98bZDipgO0IK6Y+RMX9/cRo6PkkQ0/50IkZsXzlBtj4wcgkfmSZ7DvBaRV5A6qF42A6gEWA65ls
+	oFR0TwVWvikostbR6moA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hTjZ5-0006U3-JY; Thu, 23 May 2019 08:59:07 +0000
-Received: from twhmllg4.macronix.com ([211.75.127.132])
+	id 1hTjbb-0000RN-Am; Thu, 23 May 2019 09:01:43 +0000
+Received: from skedge04.snt-world.com ([91.208.41.69])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hTjZ2-0006Td-AQ
- for linux-mtd@lists.infradead.org; Thu, 23 May 2019 08:59:05 +0000
-Received: from twhfmnt1.mxic.com.tw (twhfm1p2.macronix.com [172.17.20.92])
- by TWHMLLG4.macronix.com with ESMTP id x4N8w1Kv035351;
- Thu, 23 May 2019 16:58:01 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id 84B201FAC184BC8B8955;
- Thu, 23 May 2019 16:58:01 +0800 (CST)
-In-Reply-To: <20190520142333.390091d5@xps13>
-References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>	<1555320234-15802-3-git-send-email-masonccyang@mxic.com.tw>
- <20190512151820.4f2dd9da@xps13>	<OF074A1F06.5C1A58BE-ON482583FD.0031CD95-482583FD.003437AD@mxic.com.tw>
- <20190520142333.390091d5@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v3 2/4] mtd: rawnand: Add Macronix MX25F0A NAND controller
+ id 1hTjax-000851-6M; Thu, 23 May 2019 09:01:07 +0000
+Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by skedge04.snt-world.com (Postfix) with ESMTPS id 9BAD766118D;
+ Thu, 23 May 2019 11:01:00 +0200 (CEST)
+Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail12r.snt-is.com
+ (10.203.32.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 23 May
+ 2019 11:01:00 +0200
+Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
+ sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
+ 15.01.1713.004; Thu, 23 May 2019 11:01:00 +0200
+From: Schrempf Frieder <frieder.schrempf@kontron.de>
+To: Shawn Guo <shawnguo@kernel.org>, Kuldeep Singh <kuldeep.singh@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1012a: Add QSPI support for ls1012a
+Thread-Topic: [PATCH] arm64: dts: ls1012a: Add QSPI support for ls1012a
+Thread-Index: AQHVC90UTCiz+BGzB0G+bjSJzqfmRKZ4Tf4AgAAE1IA=
+Date: Thu, 23 May 2019 09:01:00 +0000
+Message-ID: <d3605699-24ea-a071-93da-1c04c7e40f1b@kontron.de>
+References: <20190516114807.30817-1-kuldeep.singh@nxp.com>
+ <20190523084340.GM9261@dragon>
+In-Reply-To: <20190523084340.GM9261@dragon>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.25.9.193]
+x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
+Content-ID: <A79DD735F1818C4ABCA6F0E3CB9F53EC@snt-world.com>
 MIME-Version: 1.0
-X-KeepSent: ADC47344:0F9941B2-48258403:002336E3;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFADC47344.0F9941B2-ON48258403.002336E3-48258403.003141F0@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Thu, 23 May 2019 16:58:02 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/05/23 PM 04:58:01,
- Serialize complete at 2019/05/23 PM 04:58:01
-X-MAIL: TWHMLLG4.macronix.com x4N8w1Kv035351
+X-SnT-MailScanner-Information: Please contact the ISP for more information
+X-SnT-MailScanner-ID: 9BAD766118D.AEB2F
+X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
+ Provider for details
+X-SnT-MailScanner-SpamCheck: 
+X-SnT-MailScanner-From: frieder.schrempf@kontron.de
+X-SnT-MailScanner-To: ashish.kumar@nxp.com, bbrezillon@kernel.org,
+ broonie@kernel.org, devicetree@vger.kernel.org,
+ kuldeep.singh@nxp.com, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, shawnguo@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190523_015904_635110_92BD0274 
-X-CRM114-Status: UNSURE (   9.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190523_020104_558007_16A3BB41 
+X-CRM114-Status: GOOD (  13.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -77,83 +91,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
- bbrezillon@kernel.org, juliensu@mxic.com.tw, lee.jones@linaro.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
- marcel.ziswiler@toradex.com, paul.burton@mips.com, broonie@kernel.org,
- geert@linux-m68k.org, stefan@agner.ch, linux-mtd@lists.infradead.org,
- richard@nod.at, liang.yang@amlogic.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, marek.vasut@gmail.com, zhengxunli@mxic.com.tw
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ Ashish Kumar <ashish.kumar@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi Miquel,
-
-> > 
-> > > > +
-> > > > +static void mxic_nand_select_chip(struct nand_chip *chip, int 
-chipnr) 
-> > > 
-> > > _select_target() is preferred now 
-> > 
-> > Do you mean I implement mxic_nand_select_target() to control #CS ?
-> > 
-> > If so, I need to call mxic_nand_select_target( ) to control #CS ON
-> > and then #CS OFF in _exec_op() due to nand_select_target()<in 
-nand_base,c>
-> > is still calling chip->legacy.select_chip ?
+On 23.05.19 10:43, Shawn Guo wrote:
+> On Thu, May 16, 2019 at 11:47:04AM +0000, Kuldeep Singh wrote:
+>> QSPI support is added for kernel version greater than 5.0 and supports
+>> quad mode defined by
+>> TX-WIDTH = <4>, RX-WIDTH = <4>
+>>
+>> RDB/QDS has one 64MB flash from SPANSION(s25fs512s)
+>>
+>> Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
+>> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+>> ---
+>> Dependency on https://patchwork.ozlabs.org/patch/1100471/
+>> Dependency on https://patchwork.ozlabs.org/patch/1100472/
+>>
+>>   .../arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts | 15 +++++++++++++++
+>>   .../arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts | 15 +++++++++++++++
+>>   arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts | 15 +++++++++++++++
+>>   arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts | 15 +++++++++++++++
+>>   arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi    | 15 +++++++++++++++
+>>   5 files changed, 75 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+>> index f90c040fd5e8..8826278b37bf 100644
+>> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+>> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+>> @@ -61,6 +61,21 @@
+>>   	status = "okay";
+>>   };
+>>   
+>> +&qspi {
 > 
-> You must forget about the ->select_chip() callback. Now it should be
-> handled directly from the controller driver. Please have a look at the
-> commit pointed against the marvell_nand.c driver.
+> Please sort these labeling nodes alphabetically.  That said, &qspi
+> should go after &i2c0.
+> 
+>> +	status = "okay";
+>> +
+>> +	qflash0: flash@0 {
+>> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		m25p,fast-read;
+>> +		spi-max-frequency = <20000000>;
+>> +		spi-rx-bus-width = <4>;
+>> +		spi-tx-bus-width = <4>;
+>> +		reg = <0>;
+>> +	};
+>> +};
+>> +
+>>   &i2c0 {
+>>   	status = "okay";
+>>   
+>> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+>> index 8749634c55ee..0246e8c97628 100644
+>> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+>> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+>> @@ -20,6 +20,21 @@
+>>   	status = "okay";
+>>   };
+>>   
+>> +&qspi {
+>> +	status = "okay";
+>> +
+>> +	qflash0: flash@0 {
+>> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		m25p,fast-read;
+>> +		spi-max-frequency = <20000000>;
+>> +		spi-rx-bus-width = <4>;
+>> +		spi-tx-bus-width = <4>;
+>> +		reg = <0>;
+>> +	};
+>> +};
+>> +
+>>   &i2c0 {
+>>   	status = "okay";
+>>   };
+>> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+>> index 2fb1cb1f7d8f..c304fa20c1c9 100644
+>> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+>> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+>> @@ -90,6 +90,21 @@
+>>   	};
+>>   };
+>>   
+>> +&qspi {
+>> +	status = "okay";
+>> +
+>> +	qflash0: flash@0 {
+>> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		m25p,fast-read;
+>> +		spi-max-frequency = <20000000>;
+>> +		spi-rx-bus-width = <4>;
+>> +		spi-tx-bus-width = <4>;
+>> +		reg = <0>;
+>> +	};
+>> +};
+>> +
+>>   &duart0 {
+>>   	status = "okay";
+>>   };
+>> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+>> index 5edb1e137a52..6017e9cfe40a 100644
+>> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+>> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+>> @@ -38,3 +38,18 @@
+>>   &sata {
+>>   	status = "okay";
+>>   };
+>> +
+>> +&qspi {
+>> +	status = "okay";
+>> +
+>> +	qflash0: flash@0  {
+>> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		m25p,fast-read;
+>> +		spi-max-frequency = <20000000>;
+>> +		spi-rx-bus-width = <4>;
+>> +		spi-tx-bus-width = <4>;
+>> +		reg = <0>;
+>> +	};
+>> +};
+>> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+>> index ec6257a5b251..268268c6a149 100644
+>> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+>> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+>> @@ -350,6 +350,21 @@
+>>   			status = "disabled";
+>>   		};
+>>   
+>> +		qspi: spi@1550000 {
+> 
+> Please sort node with unit-address in that address.  That said, it
+> should go before esdhc@1560000.
+> 
+>> +			compatible = "fsl,ls1021a-qspi", "fsl,ls1012a-qspi";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <0x0 0x1550000 0x0 0x10000>,
+>> +				<0x0 0x40000000 0x0 0x10000000>;
+>> +			reg-names = "QuadSPI", "QuadSPI-memory";
+>> +			interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+>> +			clock-names = "qspi_en", "qspi";
+>> +			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
+>> +			big-endian;
+>> +			fsl,qspi-has-second-chip;
+> 
+> Undocumented property?
 
-I have no Marvell NFC datasheet and have one question.
+Both properties, "fsl,qspi-has-second-chip" and "big-endian" are deprecated.
 
-In marvell_nand.c, there is no xxx_deselect_target() or 
-something like that doing #CS OFF.
-marvell_nfc_select_target() seems always to make one of chip or die
-#CS keep low.
-
-Is it right ?
-
-How to make all #CS keep high for NAND to enter 
-low-power standby mode if driver don't use "legacy.select_chip()" ?
-
-thanks & best regards,
-Mason
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
+See: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=78df30808961cd32f0517c7469886386b0680852
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
