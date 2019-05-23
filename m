@@ -2,85 +2,67 @@ Return-Path: <SRS0=uaub=TX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2F12C04AAC
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 06:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9841CC04AAC
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 08:44:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1EBF2133D
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 06:56:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5703C20881
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 08:44:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="On8TKPin"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1EBF2133D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="s9jb9Vg2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezeITHn4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5703C20881
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pJv9KSVE07/Tz7CPHTtVsq7c5hR+dojdJvDUDxA8NPQ=; b=On8TKPinOmYf8P
-	T5n+eNaxFQrmNy5yjcxSZJidtK9cRIKqecFKRNAJ8pi/lNb4pkiA9n06CkYyW168FiZWXFen/HsWH
-	JufRJkMa6bYZqC8YjgzISTWI7RaOb42MQLwQBRcgElyiiXVI81DorxBp69ujoweIjPaUQXB3t+zJw
-	YOhN8Xhl6WwNY20XrX/dUAah5c6YFf4HoVaptM27D3D3hrK3iMi7fzUoo+S3mwB2zwvEP/aop5kF1
-	2ytzCdb1ryDRYk3znkCTLtty1Gv/Qsi/T4ejznXrzulYUDJ2zRJWohBO/R6Z9pMomPx52cav/sdmu
-	BS2pHZV944a+QgO3+z1A==;
+	List-Owner; bh=pcz2Xxw8qT21VcqAThab8VKq6KaDxbBDIvc4YMGkgJE=; b=s9jb9Vg24LrQCQ
+	kXQgHHnzTFHvyzY9OMqar8L1IrVNAzCUhu383g2WWmOdLZCI76hK2FBuUXIpK7hy077Hf2YcvZX2z
+	iz8/ejl6kIjIsLYf7knvYp4WZMLiHyPSXSUEN1KpMDaZFp2/lyRQoca3HlZM0PexzVJpkIbgGfCfs
+	n6+1hXcashHdjFRn4+CUTIfIt9G/pgSf+VB3sTYLtZ4I6F8HRBTbd6mLaaht/MyK79Ea7QN27gWVZ
+	1V54I++9l1GWivishRTKoxVS1PetR32eromJpbD5++25X0YJAV65HwjF2LCIdJ4MEc6oMLl1BCeHw
+	vjQIYmVhaiQsMCpyhG4Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hTheD-0002wR-CM; Thu, 23 May 2019 06:56:17 +0000
-Received: from skedge04.snt-world.com ([91.208.41.69])
+	id 1hTjLI-0007y2-KR; Thu, 23 May 2019 08:44:52 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hThe9-0002vf-EX
- for linux-mtd@lists.infradead.org; Thu, 23 May 2019 06:56:15 +0000
-Received: from sntmail10s.snt-is.com (unknown [10.203.32.183])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1hTjLB-0007rB-9x; Thu, 23 May 2019 08:44:46 +0000
+Received: from dragon (98.142.130.235.16clouds.com [98.142.130.235])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by skedge04.snt-world.com (Postfix) with ESMTPS id F1C4C66117A;
- Thu, 23 May 2019 08:56:10 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail10s.snt-is.com
- (10.203.32.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 23 May
- 2019 08:56:10 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Thu, 23 May 2019 08:56:10 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Jeff Kletsky <lede@allycomm.com>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v4 0/3] mtd: spinand: Add support for GigaDevice
- GD5F1GQ4UFxxG
-Thread-Topic: [PATCH v4 0/3] mtd: spinand: Add support for GigaDevice
- GD5F1GQ4UFxxG
-Thread-Index: AQHVEOqZITkhzQGdUk6QCGzMLzqE8KZ4JdgA
-Date: Thu, 23 May 2019 06:56:10 +0000
-Message-ID: <6351c1d6-c284-6bca-3914-3895d847c9c3@kontron.de>
-References: <20190522220555.11626-1-lede@allycomm.com>
-In-Reply-To: <20190522220555.11626-1-lede@allycomm.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <6A0683E7EA1CEF4893A50D6A09536B99@snt-world.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id E134E20881;
+ Thu, 23 May 2019 08:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1558601084;
+ bh=VuxAbBT/lQ+VqLCO5y4r4xqAa4P5u307B+vHost8Qds=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ezeITHn4Re/zKK20/gziNX7bkYNQS2gE9Hgi+c1SmSdD3ArHPD+YadwO8HExIDQLw
+ XxI7XaN2eG+7mUNwYqzVbmyv98s7CjXbVmIM9r6cGI1YoCoyFNtKSMWD6qtLZjEYgY
+ A2N8ZCybwnqBo30y6ropX3azbbh4+T4iupJjmF0o=
+Date: Thu, 23 May 2019 16:43:42 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Kuldeep Singh <kuldeep.singh@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1012a: Add QSPI support for ls1012a
+Message-ID: <20190523084340.GM9261@dragon>
+References: <20190516114807.30817-1-kuldeep.singh@nxp.com>
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: F1C4C66117A.A0D76
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, kbuild-all@01.org, lede@allycomm.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- marek.vasut@gmail.com, miquel.raynal@bootlin.com, richard@nod.at
+Content-Disposition: inline
+In-Reply-To: <20190516114807.30817-1-kuldeep.singh@nxp.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190522_235613_807634_6F09A6D1 
-X-CRM114-Status: GOOD (  17.10  )
+X-CRM114-CacheID: sfid-20190523_014445_380831_53F92C9D 
+X-CRM114-Status: GOOD (  13.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -92,91 +74,180 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ Ashish Kumar <ashish.kumar@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kbuild-all@01.org" <kbuild-all@01.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jeff,
+On Thu, May 16, 2019 at 11:47:04AM +0000, Kuldeep Singh wrote:
+> QSPI support is added for kernel version greater than 5.0 and supports
+> quad mode defined by
+> TX-WIDTH = <4>, RX-WIDTH = <4>
+> 
+> RDB/QDS has one 64MB flash from SPANSION(s25fs512s)
+> 
+> Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
+> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> ---
+> Dependency on https://patchwork.ozlabs.org/patch/1100471/
+> Dependency on https://patchwork.ozlabs.org/patch/1100472/
+> 
+>  .../arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts | 15 +++++++++++++++
+>  .../arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts | 15 +++++++++++++++
+>  arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts | 15 +++++++++++++++
+>  arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts | 15 +++++++++++++++
+>  arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi    | 15 +++++++++++++++
+>  5 files changed, 75 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> index f90c040fd5e8..8826278b37bf 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> @@ -61,6 +61,21 @@
+>  	status = "okay";
+>  };
+>  
+> +&qspi {
 
-On 23.05.19 00:05, Jeff Kletsky wrote:
-> Addresses changes in macros and related data structures introduced by
->    commit 377e517b5fa5
->        mtd: nand: Add max_bad_eraseblocks_per_lun info to memorg
-> 
-> Resolves issue detected by kbuild test robot
->    Tue, 21 May 2019 17:28:09 +0800
->    Tue, 21 May 2019 18:17:28 +0800
-> 
-> GD5F1GQ4UFxxG data sheet on page 34 of gd5f1gq4xfxxg_v2.4_20190322.pdf
-> indicates "Minumum number of valid blocks (Nvb)" 1004 out of 1024 total.
-> 
-> Newly introduced "max bad blocks" parameter set to 20 (1024-1020).
-> 
-> Rebased on v5.2-rc1 and confirmed patch applies on master.
-> 
-> 
-> Patches 1/3 and 2/3 are the same as in the previous series.
-> 
-> Patch 3/3, mtd: spinand: Add support for GigaDevice GD5F1GQ4UFxxG,
-> includes the additional parameter (compared here to v3 of the series):
-> 
->      SPINAND_INFO("GD5F1GQ4UFxxG", 0xb148,
->      -                    NAND_MEMORG(1, 2048, 128, 64, 1024, 1, 1, 1),
->      +                    NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
->                           NAND_ECCREQ(8, 512),
->                           SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
->                           &write_cache_variants,
-> 
-> R-b of Frieder Schrempf removed from [3/3] as a result this change.
+Please sort these labeling nodes alphabetically.  That said, &qspi
+should go after &i2c0.
 
-As to what I know, this would not have been necessary in this case. I 
-missed the missing parameter while reviewing and you fixed it with this 
-new version, so you obviously improved the patch with a minor change and 
-it wouldn't be working without this anyway. So I think in such cases you 
-would typically keep the R-b tags.
+> +	status = "okay";
+> +
+> +	qflash0: flash@0 {
+> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		m25p,fast-read;
+> +		spi-max-frequency = <20000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +		reg = <0>;
+> +	};
+> +};
+> +
+>  &i2c0 {
+>  	status = "okay";
+>  
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> index 8749634c55ee..0246e8c97628 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> @@ -20,6 +20,21 @@
+>  	status = "okay";
+>  };
+>  
+> +&qspi {
+> +	status = "okay";
+> +
+> +	qflash0: flash@0 {
+> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		m25p,fast-read;
+> +		spi-max-frequency = <20000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +		reg = <0>;
+> +	};
+> +};
+> +
+>  &i2c0 {
+>  	status = "okay";
+>  };
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> index 2fb1cb1f7d8f..c304fa20c1c9 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> @@ -90,6 +90,21 @@
+>  	};
+>  };
+>  
+> +&qspi {
+> +	status = "okay";
+> +
+> +	qflash0: flash@0 {
+> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		m25p,fast-read;
+> +		spi-max-frequency = <20000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +		reg = <0>;
+> +	};
+> +};
+> +
+>  &duart0 {
+>  	status = "okay";
+>  };
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> index 5edb1e137a52..6017e9cfe40a 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> @@ -38,3 +38,18 @@
+>  &sata {
+>  	status = "okay";
+>  };
+> +
+> +&qspi {
+> +	status = "okay";
+> +
+> +	qflash0: flash@0  {
+> +		compatible = "spansion,m25p80", "jedec,spi-nor";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		m25p,fast-read;
+> +		spi-max-frequency = <20000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +		reg = <0>;
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> index ec6257a5b251..268268c6a149 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> @@ -350,6 +350,21 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		qspi: spi@1550000 {
 
-Also if you drop the R-b tag from one of the patches in your set, you 
-should instead CC the reviewer for the whole set. Otherwise 
-get_maintainer will only CC the reviewer for those patches that contain 
-his tag. In this case I wasn't CCed for patch 3/3.
+Please sort node with unit-address in that address.  That said, it
+should go before esdhc@1560000.
 
-Thanks,
-Frieder
+> +			compatible = "fsl,ls1021a-qspi", "fsl,ls1012a-qspi";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x0 0x1550000 0x0 0x10000>,
+> +				<0x0 0x40000000 0x0 0x10000000>;
+> +			reg-names = "QuadSPI", "QuadSPI-memory";
+> +			interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+> +			clock-names = "qspi_en", "qspi";
+> +			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
+> +			big-endian;
+> +			fsl,qspi-has-second-chip;
 
+Undocumented property?
+
+Shawn
+
+> +			status = "disabled";
+> +		};
+> +
+>  		duart0: serial@21c0500 {
+>  			compatible = "fsl,ns16550", "ns16550a";
+>  			reg = <0x00 0x21c0500 0x0 0x100>;
+> -- 
+> 2.17.1
 > 
-> Supersedes series:
-> 
-> mtd: spinand: Add support for GigaDevice GD5F1GQ4UFxxG
-> https://patchwork.ozlabs.org/project/linux-mtd/list/?series=108868
-> 
-> 
-> 
-> Jeff
-> 
-> 
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Schrempf Frieder <frieder.schrempf@kontron.de>
-> Cc: Boris Brezillon <bbrezillon@kernel.org>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: kbuild-all@01.org
-> 
-> 
-> 
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
