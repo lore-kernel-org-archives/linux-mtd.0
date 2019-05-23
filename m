@@ -2,84 +2,107 @@ Return-Path: <SRS0=uaub=TX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E77EC282DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 09:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2644FC282DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 09:20:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2EEC2081C
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 09:01:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E923121019
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 May 2019 09:20:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eo+LCTDM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2EEC2081C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dFjOzMKl";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Vzg85cbZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E923121019
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TEw1TJee5q1ecusXEQknHNfybYTM7c2Xzx2OrToZb/U=; b=eo+LCTDM1dWYg1
-	lAleTRkkOTICTwrZIRy812mFg4q2K/mDM3cn10ZCQTMtiDHc/ixkaOi53yigysCC3kgurxVowDKoF
-	4ybHk/I2BXgyWXWqn3WSQFdyLf0nTIUsMON7uxOx0ymmcpSklNGRlW8URM12O+On3XCedEewOHrjB
-	8JlHflPktQhPFJ3/Hd7f19hjKkgPMHiptTT0NeI9A6T0pxPsXNhaPsiQmoiIxZxUpdZKpkpObbXai
-	hT98bZDipgO0IK6Y+RMX9/cRo6PkkQ0/50IkZsXzlBtj4wcgkfmSZ7DvBaRV5A6qF42A6gEWA65ls
-	oFR0TwVWvikostbR6moA==;
+	List-Owner; bh=1A5gWUfifBEHkNTYj4QiVKABmKor6Riio1zPzHlU234=; b=dFjOzMKlMnUfQK
+	eUU+O7PWB0pKG1bD4eIlaxkCpjrnVTeg5yu2H+aeddWme5CyuM1avLbRcxCr3gENz/PrJOXPXtoFf
+	CsJsFJqHtDJOTRdXELyxFQAN5BtB3LbSzID5zkJ/ZljZCsyRXrOJHiOSUiER/4h/0ieo/1unb3fOF
+	bTWcAPdALGt4CSmFPYtsbTCcs4BSY+YZamboTwL8vTwzfjnk0AWni/QV+gsyVsqH1DX5htvzLwDPh
+	H239aDJBtY+f2IXA/tlbCQN4Aqjro9ix/+P6ZszdMabvCetIJJsPclkYeIjDBTWcAfS5n5+SSlZC3
+	tW/yuqeY47ipiUrBPV9w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hTjbb-0000RN-Am; Thu, 23 May 2019 09:01:43 +0000
-Received: from skedge04.snt-world.com ([91.208.41.69])
+	id 1hTjtQ-0002z3-Sh; Thu, 23 May 2019 09:20:08 +0000
+Received: from mail-eopbgr60066.outbound.protection.outlook.com ([40.107.6.66]
+ helo=EUR04-DB3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hTjax-000851-6M; Thu, 23 May 2019 09:01:07 +0000
-Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by skedge04.snt-world.com (Postfix) with ESMTPS id 9BAD766118D;
- Thu, 23 May 2019 11:01:00 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail12r.snt-is.com
- (10.203.32.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 23 May
- 2019 11:01:00 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Thu, 23 May 2019 11:01:00 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Shawn Guo <shawnguo@kernel.org>, Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1012a: Add QSPI support for ls1012a
-Thread-Topic: [PATCH] arm64: dts: ls1012a: Add QSPI support for ls1012a
-Thread-Index: AQHVC90UTCiz+BGzB0G+bjSJzqfmRKZ4Tf4AgAAE1IA=
-Date: Thu, 23 May 2019 09:01:00 +0000
-Message-ID: <d3605699-24ea-a071-93da-1c04c7e40f1b@kontron.de>
+ id 1hTjtM-0001pf-Dj; Thu, 23 May 2019 09:20:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QtaSH7hJXC9cObCtJhz/YFYtWUSBibeamdSR5Eke58Q=;
+ b=Vzg85cbZ5MOKBu6Lh1MitvepoC6RsdFducqk9/SbRTJ/hkMqNUPhkMF0arZxWl43GK5/U7KJuihpLipV8QsMHaiRoCO/mXEijZIPK9KiEx8P3Ik+CTQv/7UFtOjWoN5F7V68yyxtUA6xcPsdLdej+/hbEoYZcaMGEanTbMatih0=
+Received: from AM0PR0402MB3556.eurprd04.prod.outlook.com (52.133.43.147) by
+ AM0PR0402MB3763.eurprd04.prod.outlook.com (52.133.39.15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1900.18; Thu, 23 May 2019 09:19:59 +0000
+Received: from AM0PR0402MB3556.eurprd04.prod.outlook.com
+ ([fe80::f891:76d:8a6a:3dfd]) by AM0PR0402MB3556.eurprd04.prod.outlook.com
+ ([fe80::f891:76d:8a6a:3dfd%2]) with mapi id 15.20.1922.016; Thu, 23 May 2019
+ 09:19:59 +0000
+From: Kuldeep Singh <kuldeep.singh@nxp.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>, Shawn Guo
+ <shawnguo@kernel.org>
+Subject: RE: [EXT] Re: [PATCH] arm64: dts: ls1012a: Add QSPI support for
+ ls1012a
+Thread-Topic: [EXT] Re: [PATCH] arm64: dts: ls1012a: Add QSPI support for
+ ls1012a
+Thread-Index: AQHVC90UTCiz+BGzB0G+bjSJzqfmRKZ4b4UAgAAE1QCAAAFicA==
+Date: Thu, 23 May 2019 09:19:59 +0000
+Message-ID: <AM0PR0402MB3556C556ADC2EEF1117CC880E0010@AM0PR0402MB3556.eurprd04.prod.outlook.com>
 References: <20190516114807.30817-1-kuldeep.singh@nxp.com>
  <20190523084340.GM9261@dragon>
-In-Reply-To: <20190523084340.GM9261@dragon>
-Accept-Language: de-DE, en-US
+ <d3605699-24ea-a071-93da-1c04c7e40f1b@kontron.de>
+In-Reply-To: <d3605699-24ea-a071-93da-1c04c7e40f1b@kontron.de>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <A79DD735F1818C4ABCA6F0E3CB9F53EC@snt-world.com>
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=kuldeep.singh@nxp.com; 
+x-originating-ip: [92.120.1.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f74254ac-9f72-485c-7e5f-08d6df5fd432
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);
+ SRVR:AM0PR0402MB3763; 
+x-ms-traffictypediagnostic: AM0PR0402MB3763:
+x-ms-exchange-purlcount: 2
+x-microsoft-antispam-prvs: <AM0PR0402MB376392C070BEB08A5AC4E823E0010@AM0PR0402MB3763.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1824;
+x-forefront-prvs: 00462943DE
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(136003)(396003)(366004)(39860400002)(346002)(376002)(13464003)(199004)(189003)(81166006)(7736002)(8936002)(66066001)(8676002)(14444005)(81156014)(256004)(76116006)(7696005)(76176011)(305945005)(33656002)(966005)(71190400001)(66946007)(73956011)(53546011)(102836004)(71200400001)(14454004)(478600001)(66556008)(64756008)(66446008)(66476007)(6506007)(45080400002)(2906002)(52536014)(186003)(26005)(446003)(86362001)(5660300002)(6246003)(74316002)(54906003)(53936002)(110136005)(476003)(9686003)(229853002)(4326008)(6116002)(316002)(6436002)(11346002)(99286004)(3846002)(6306002)(25786009)(68736007)(55016002)(486006)(44832011);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:AM0PR0402MB3763;
+ H:AM0PR0402MB3556.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: cpET23o1pSQgxTilM1kBsLWGxbCN/0+km6W6X2Quspv4C7fNl1prLJe7jQiEjS6WBV1nwj3sSYm2doZskScx2DXJdVFg3pIcIMat0MsYquo3ySmEfPvoUeL2blNRSeVBtdAuMYyV4S1iZQOtZGwu+kaeVuKRU8Xj7obzOaTSgziqqT+VLWYa/YycD7wt+hEz1z9gSatDWc0CZfWJ3PDm7MIA4s+O0aJLAQM00WzXoK2Ndb+f9ErJtHAIQ+XZraz1sujQ2M7yZ+ZGBBk7lbEEPg+X7LnbQzQ1r44uqk9XbUfjVsQaxpxD30AaiaINyEUUep8/42P/v0qoAv3sNviToy0+c4hepZTmvjWEJnn9XMV29HetdW3kF1BuwPkdn+O8UviMspVZSC2ziYbHmbX84Cy9StDvYNJ7VpnpsBO+c0Y=
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 9BAD766118D.AEB2F
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: ashish.kumar@nxp.com, bbrezillon@kernel.org,
- broonie@kernel.org, devicetree@vger.kernel.org,
- kuldeep.singh@nxp.com, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, shawnguo@kernel.org
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f74254ac-9f72-485c-7e5f-08d6df5fd432
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2019 09:19:59.3670 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3763
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190523_020104_558007_16A3BB41 
-X-CRM114-Status: GOOD (  13.12  )
+X-CRM114-CacheID: sfid-20190523_022004_544666_F03503DF 
+X-CRM114-Status: GOOD (  17.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -101,163 +124,224 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 23.05.19 10:43, Shawn Guo wrote:
-> On Thu, May 16, 2019 at 11:47:04AM +0000, Kuldeep Singh wrote:
->> QSPI support is added for kernel version greater than 5.0 and supports
->> quad mode defined by
->> TX-WIDTH = <4>, RX-WIDTH = <4>
->>
->> RDB/QDS has one 64MB flash from SPANSION(s25fs512s)
->>
->> Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
->> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
->> ---
->> Dependency on https://patchwork.ozlabs.org/patch/1100471/
->> Dependency on https://patchwork.ozlabs.org/patch/1100472/
->>
->>   .../arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts | 15 +++++++++++++++
->>   .../arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts | 15 +++++++++++++++
->>   arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts | 15 +++++++++++++++
->>   arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts | 15 +++++++++++++++
->>   arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi    | 15 +++++++++++++++
->>   5 files changed, 75 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
->> index f90c040fd5e8..8826278b37bf 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
->> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
->> @@ -61,6 +61,21 @@
->>   	status = "okay";
->>   };
->>   
->> +&qspi {
-> 
-> Please sort these labeling nodes alphabetically.  That said, &qspi
-> should go after &i2c0.
-> 
->> +	status = "okay";
->> +
->> +	qflash0: flash@0 {
->> +		compatible = "spansion,m25p80", "jedec,spi-nor";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		m25p,fast-read;
->> +		spi-max-frequency = <20000000>;
->> +		spi-rx-bus-width = <4>;
->> +		spi-tx-bus-width = <4>;
->> +		reg = <0>;
->> +	};
->> +};
->> +
->>   &i2c0 {
->>   	status = "okay";
->>   
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
->> index 8749634c55ee..0246e8c97628 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
->> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
->> @@ -20,6 +20,21 @@
->>   	status = "okay";
->>   };
->>   
->> +&qspi {
->> +	status = "okay";
->> +
->> +	qflash0: flash@0 {
->> +		compatible = "spansion,m25p80", "jedec,spi-nor";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		m25p,fast-read;
->> +		spi-max-frequency = <20000000>;
->> +		spi-rx-bus-width = <4>;
->> +		spi-tx-bus-width = <4>;
->> +		reg = <0>;
->> +	};
->> +};
->> +
->>   &i2c0 {
->>   	status = "okay";
->>   };
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
->> index 2fb1cb1f7d8f..c304fa20c1c9 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
->> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
->> @@ -90,6 +90,21 @@
->>   	};
->>   };
->>   
->> +&qspi {
->> +	status = "okay";
->> +
->> +	qflash0: flash@0 {
->> +		compatible = "spansion,m25p80", "jedec,spi-nor";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		m25p,fast-read;
->> +		spi-max-frequency = <20000000>;
->> +		spi-rx-bus-width = <4>;
->> +		spi-tx-bus-width = <4>;
->> +		reg = <0>;
->> +	};
->> +};
->> +
->>   &duart0 {
->>   	status = "okay";
->>   };
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
->> index 5edb1e137a52..6017e9cfe40a 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
->> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
->> @@ -38,3 +38,18 @@
->>   &sata {
->>   	status = "okay";
->>   };
->> +
->> +&qspi {
->> +	status = "okay";
->> +
->> +	qflash0: flash@0  {
->> +		compatible = "spansion,m25p80", "jedec,spi-nor";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		m25p,fast-read;
->> +		spi-max-frequency = <20000000>;
->> +		spi-rx-bus-width = <4>;
->> +		spi-tx-bus-width = <4>;
->> +		reg = <0>;
->> +	};
->> +};
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
->> index ec6257a5b251..268268c6a149 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
->> @@ -350,6 +350,21 @@
->>   			status = "disabled";
->>   		};
->>   
->> +		qspi: spi@1550000 {
-> 
-> Please sort node with unit-address in that address.  That said, it
-> should go before esdhc@1560000.
-> 
->> +			compatible = "fsl,ls1021a-qspi", "fsl,ls1012a-qspi";
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +			reg = <0x0 0x1550000 0x0 0x10000>,
->> +				<0x0 0x40000000 0x0 0x10000000>;
->> +			reg-names = "QuadSPI", "QuadSPI-memory";
->> +			interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
->> +			clock-names = "qspi_en", "qspi";
->> +			clocks = <&clockgen 4 1>, <&clockgen 4 1>;
->> +			big-endian;
->> +			fsl,qspi-has-second-chip;
-> 
-> Undocumented property?
+Hi Shawn and Frieder,
 
-Both properties, "fsl,qspi-has-second-chip" and "big-endian" are deprecated.
+> -----Original Message-----
+> From: Schrempf Frieder [mailto:frieder.schrempf@kontron.de]
+> Sent: Thursday, May 23, 2019 2:31 PM
+> To: Shawn Guo <shawnguo@kernel.org>; Kuldeep Singh
+> <kuldeep.singh@nxp.com>
+> Cc: devicetree@vger.kernel.org; bbrezillon@kernel.org; Ashish Kumar
+> <ashish.kumar@nxp.com>; broonie@kernel.org; linux-
+> mtd@lists.infradead.org; linux-arm-kernel@lists.infradead.org
+> Subject: [EXT] Re: [PATCH] arm64: dts: ls1012a: Add QSPI support for ls1012a
+> 
+> Caution: EXT Email
+> 
+> On 23.05.19 10:43, Shawn Guo wrote:
+> > On Thu, May 16, 2019 at 11:47:04AM +0000, Kuldeep Singh wrote:
+> >> QSPI support is added for kernel version greater than 5.0 and
+> >> supports quad mode defined by TX-WIDTH = <4>, RX-WIDTH = <4>
+> >>
+> >> RDB/QDS has one 64MB flash from SPANSION(s25fs512s)
+> >>
+> >> Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
+> >> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> >> ---
+> >> Dependency on
+> >>
+> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpat
+> >>
+> chwork.ozlabs.org%2Fpatch%2F1100471%2F&amp;data=02%7C01%7Ckuldee
+> p.sin
+> >>
+> gh%40nxp.com%7C5f9556e9b9b943c5568608d6df5d2e40%7C686ea1d3bc2b4
+> c6fa92
+> >>
+> cd99c5c301635%7C0%7C0%7C636941988633482881&amp;sdata=Pj4XNJHmhK
+> HtBrzg
+> >> eC%2BNA7Lkl3BDEdL1uEVqAnoPcS8%3D&amp;reserved=0
+> >> Dependency on
+> >>
+> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpat
+> >>
+> chwork.ozlabs.org%2Fpatch%2F1100472%2F&amp;data=02%7C01%7Ckuldee
+> p.sin
+> >>
+> gh%40nxp.com%7C5f9556e9b9b943c5568608d6df5d2e40%7C686ea1d3bc2b4
+> c6fa92
+> >>
+> cd99c5c301635%7C0%7C0%7C636941988633482881&amp;sdata=zZ4jCpNyxQl
+> CL6uU
+> >> PK8LG%2BVV8jWOCBg45ZrGoqT3gnU%3D&amp;reserved=0
+> >>
+> >>   .../arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts | 15
+> +++++++++++++++
+> >>   .../arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts | 15
+> +++++++++++++++
+> >>   arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts | 15
+> +++++++++++++++
+> >>   arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts | 15
+> +++++++++++++++
+> >>   arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi    | 15
+> +++++++++++++++
+> >>   5 files changed, 75 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> >> b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> >> index f90c040fd5e8..8826278b37bf 100644
+> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
+> >> @@ -61,6 +61,21 @@
+> >>      status = "okay";
+> >>   };
+> >>
+> >> +&qspi {
+> >
+> > Please sort these labeling nodes alphabetically.  That said, &qspi
+> > should go after &i2c0.
 
-See: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=78df30808961cd32f0517c7469886386b0680852
+Ok, will update in next version
+
+> >
+> >> +    status = "okay";
+> >> +
+> >> +    qflash0: flash@0 {
+> >> +            compatible = "spansion,m25p80", "jedec,spi-nor";
+> >> +            #address-cells = <1>;
+> >> +            #size-cells = <1>;
+> >> +            m25p,fast-read;
+> >> +            spi-max-frequency = <20000000>;
+> >> +            spi-rx-bus-width = <4>;
+> >> +            spi-tx-bus-width = <4>;
+> >> +            reg = <0>;
+> >> +    };
+> >> +};
+> >> +
+> >>   &i2c0 {
+> >>      status = "okay";
+> >>
+> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> >> b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> >> index 8749634c55ee..0246e8c97628 100644
+> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-frwy.dts
+> >> @@ -20,6 +20,21 @@
+> >>      status = "okay";
+> >>   };
+> >>
+> >> +&qspi {
+> >> +    status = "okay";
+> >> +
+> >> +    qflash0: flash@0 {
+> >> +            compatible = "spansion,m25p80", "jedec,spi-nor";
+> >> +            #address-cells = <1>;
+> >> +            #size-cells = <1>;
+> >> +            m25p,fast-read;
+> >> +            spi-max-frequency = <20000000>;
+> >> +            spi-rx-bus-width = <4>;
+> >> +            spi-tx-bus-width = <4>;
+> >> +            reg = <0>;
+> >> +    };
+> >> +};
+> >> +
+> >>   &i2c0 {
+> >>      status = "okay";
+> >>   };
+> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> >> b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> >> index 2fb1cb1f7d8f..c304fa20c1c9 100644
+> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-qds.dts
+> >> @@ -90,6 +90,21 @@
+> >>      };
+> >>   };
+> >>
+> >> +&qspi {
+> >> +    status = "okay";
+> >> +
+> >> +    qflash0: flash@0 {
+> >> +            compatible = "spansion,m25p80", "jedec,spi-nor";
+> >> +            #address-cells = <1>;
+> >> +            #size-cells = <1>;
+> >> +            m25p,fast-read;
+> >> +            spi-max-frequency = <20000000>;
+> >> +            spi-rx-bus-width = <4>;
+> >> +            spi-tx-bus-width = <4>;
+> >> +            reg = <0>;
+> >> +    };
+> >> +};
+> >> +
+> >>   &duart0 {
+> >>      status = "okay";
+> >>   };
+> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> >> b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> >> index 5edb1e137a52..6017e9cfe40a 100644
+> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
+> >> @@ -38,3 +38,18 @@
+> >>   &sata {
+> >>      status = "okay";
+> >>   };
+> >> +
+> >> +&qspi {
+> >> +    status = "okay";
+> >> +
+> >> +    qflash0: flash@0  {
+> >> +            compatible = "spansion,m25p80", "jedec,spi-nor";
+> >> +            #address-cells = <1>;
+> >> +            #size-cells = <1>;
+> >> +            m25p,fast-read;
+> >> +            spi-max-frequency = <20000000>;
+> >> +            spi-rx-bus-width = <4>;
+> >> +            spi-tx-bus-width = <4>;
+> >> +            reg = <0>;
+> >> +    };
+> >> +};
+> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> >> b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> >> index ec6257a5b251..268268c6a149 100644
+> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+> >> @@ -350,6 +350,21 @@
+> >>                      status = "disabled";
+> >>              };
+> >>
+> >> +            qspi: spi@1550000 {
+> >
+> > Please sort node with unit-address in that address.  That said, it
+> > should go before esdhc@1560000.
+
+Ok
+
+> >
+> >> +                    compatible = "fsl,ls1021a-qspi", "fsl,ls1012a-qspi";
+> >> +                    #address-cells = <1>;
+> >> +                    #size-cells = <0>;
+> >> +                    reg = <0x0 0x1550000 0x0 0x10000>,
+> >> +                            <0x0 0x40000000 0x0 0x10000000>;
+> >> +                    reg-names = "QuadSPI", "QuadSPI-memory";
+> >> +                    interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+> >> +                    clock-names = "qspi_en", "qspi";
+> >> +                    clocks = <&clockgen 4 1>, <&clockgen 4 1>;
+> >> +                    big-endian;
+> >> +                    fsl,qspi-has-second-chip;
+> >
+> > Undocumented property?
+> 
+> Both properties, "fsl,qspi-has-second-chip" and "big-endian" are deprecated.
+
+Will remove both in next version
+> 
+> See:
+> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.ke
+> rnel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git%2
+> Fcommit%2F%3Fid%3D78df30808961cd32f0517c7469886386b0680852&amp;d
+> ata=02%7C01%7Ckuldeep.singh%40nxp.com%7C5f9556e9b9b943c5568608d6
+> df5d2e40%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6369419886
+> 33482881&amp;sdata=CDxhRylo%2FLO2rHtEUu5DhtFiBr%2BWFRQl0%2BJFVJ
+> T7y%2B0%3D&amp;reserved=0
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
