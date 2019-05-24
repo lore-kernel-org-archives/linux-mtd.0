@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FB8C072B5
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C91FC072B5
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:56:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07A6120879
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:53:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 726DD20879
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:56:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b5RqMAmb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A6120879
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O7UxXoR1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 726DD20879
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FJMQFQNmR+Wi6ZzdY9lwBMDF3XPQxJXGCAJwJS5e0/k=; b=b5RqMAmbbKUJv1
-	oV/Yq63rtGq7JiLFg7q900aCl0F1dqEPbEyx+Y9hzdpohgeKCGNCBxs4mfVeMlVnSLzs9JzOpmlQy
-	W4syYYZpTmEl9NClsqtLrIMOfUlk9Yh+dWCIRdgBasFHc6/ARQzWVQjEoeRQlqh1tLqHflQIZg1IP
-	sBvV240neu7xG3VkQkRSioZ2By3Nf9sm/caQW8TDNTs4beG0t99pL/Ay6yykXWBd2TV4ntc/UgVes
-	qoEShK6++j1ZEFj5BMH+sCLN+1FRTzWr+Ywg64mphk4Ja5T39PnLd9fSH+2zxs6lFF2HIoX5deHd2
-	rJsoFAyvz0NWCAxw4rug==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=ti0JTbV3wis5ZhKBOFhf6Ydd6DU+bdwcPh5mYNfgsAA=; b=O7UxXoR138sL0xQIMds07KkMF
+	E1DN8GEbd231LEWxfcgI+G5g2EdzCD1RoQ7FgNNbpXU5RTFDypW/0dHzCfUktAjnE7Tvkpm4mrdYg
+	W3gQ5G9QGS3ydoAPYACCpro5iz92jmXoDPe/vz+eZdgQkSm8WUw0OJpYwFtxccFej8uUPlzxkZx3G
+	dGhwFSwW26jZou1OimuuajaDIsHvcH6qY1GXdsaDIigBMIiH/85WBOBS8GaE8e1Sc2mUTj4mrie8P
+	3HBoZp1ahv1MQNmZT+fbM0Iumy1gufZoFlGzsw/1UFk1zfsUeAx3+mhwpbZnymO0S+LMltM5UE26L
+	WJIVUaIlQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hU50h-00008y-H1; Fri, 24 May 2019 07:53:03 +0000
-Received: from mail-qk1-f193.google.com ([209.85.222.193])
+	id 1hU53X-0001nC-0x; Fri, 24 May 2019 07:55:59 +0000
+Received: from 20.mo3.mail-out.ovh.net ([178.33.47.94])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hU50e-00008b-DT; Fri, 24 May 2019 07:53:01 +0000
-Received: by mail-qk1-f193.google.com with SMTP id d10so6090647qko.4;
- Fri, 24 May 2019 00:52:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=QmIWS/gC+fa19PxSGHgrqfgpvxjgo7flHvAf9Hy7FNk=;
- b=Q2dcJfO1Lu/IcYtBkLGHcedolToQw/YXoDf0rEvc7/sFnquOxEDccCs2gxnQ84G5qv
- lPo2ZFubcVaBoC5kVRYYpXxw/QcKp4jYbbuJiCD2KuW7YHkEO7GG0mO2BTFRr+EJm6NE
- vl98+Hl/vPKUEP23RHNJXSshjDH/tfAVwe6ouVeFFYKN3cwX0iYvZxANQ4GfVl7U3dSE
- o+Ntq53+fFsZliX1cbsJOYIIvk+bKLF0zzHHaYtAAB5YNy8tBPXWC3UG7umY5AFlRMvF
- jyzX+2ifJsjL86vOjOioG8lmqY4K1Vx2HzIwK3e9QBc6VNojoIJgR9tiDvNrpEYKqN5y
- wuUQ==
-X-Gm-Message-State: APjAAAXzLQVryG6Mk+x6k/E/O/W4z+j24ilRctNYeXTQearKHrknOOF6
- KHjP6hcPjZZeOe9GPG1SHR6LtZn0bhmmTSEd2so=
-X-Google-Smtp-Source: APXvYqxaxfnh6nmAp0lGugPobsxiW7O+QwmUArkhVA0P3guGuBwge1kPVPSxfQEQDjERy7qUg4QYOPiGt1HNqd9w5y4=
-X-Received: by 2002:ac8:19a7:: with SMTP id u36mr2812318qtj.7.1558684379039;
- Fri, 24 May 2019 00:52:59 -0700 (PDT)
+ id 1hU53S-0001lh-Tq
+ for linux-mtd@lists.infradead.org; Fri, 24 May 2019 07:55:57 +0000
+Received: from player697.ha.ovh.net (unknown [10.108.42.196])
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id 63942215FD3
+ for <linux-mtd@lists.infradead.org>; Fri, 24 May 2019 09:55:43 +0200 (CEST)
+Received: from RCM-web5.webmail.mail.ovh.net
+ (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+ (Authenticated sender: rafal@milecki.pl)
+ by player697.ha.ovh.net (Postfix) with ESMTPSA id 6204862308D0;
+ Fri, 24 May 2019 07:55:21 +0000 (UTC)
 MIME-Version: 1.0
-References: <20190507092020.1917-1-xiaolei.li@mediatek.com>
- <20190507092020.1917-2-xiaolei.li@mediatek.com>
-In-Reply-To: <20190507092020.1917-2-xiaolei.li@mediatek.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 24 May 2019 09:52:42 +0200
-Message-ID: <CAK8P3a3d-2U=hpb0P0+W-eZ0cviwKVwy6dWvHbhBCgF4CJUWKA@mail.gmail.com>
+Date: Fri, 24 May 2019 09:55:21 +0200
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [RFC PATCH v4 1/1] mtd: rawnand: mtk: Re-license MTK NAND driver
  as Dual MIT/GPL
-To: Xiaolei Li <xiaolei.li@mediatek.com>
+In-Reply-To: <CAK8P3a3d-2U=hpb0P0+W-eZ0cviwKVwy6dWvHbhBCgF4CJUWKA@mail.gmail.com>
+References: <20190507092020.1917-1-xiaolei.li@mediatek.com>
+ <20190507092020.1917-2-xiaolei.li@mediatek.com>
+ <CAK8P3a3d-2U=hpb0P0+W-eZ0cviwKVwy6dWvHbhBCgF4CJUWKA@mail.gmail.com>
+Message-ID: <5052ea548ce89c1a588236d00319960b@milecki.pl>
+X-Sender: rafal@milecki.pl
+User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: 194.187.74.233
+X-Webmail-UserID: rafal@milecki.pl
+X-Ovh-Tracer-Id: 11780853676926471683
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduuddrudduhedguddvlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190524_005300_457838_FA7BC570 
-X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-CacheID: sfid-20190524_005555_613019_3CF1843C 
+X-CRM114-Status: UNSURE (   8.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -88,29 +88,31 @@ Cc: Daniel Thompson <daniel.thompson@linaro.org>,
  yingjoe.chen@mediatek.com, boris.brezillon@collabora.com,
  linux-mtd <linux-mtd@lists.infradead.org>,
  Wei Yongjun <weiyongjun1@huawei.com>, yellowriver2010@hotmail.com,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
  "moderated list:ARM/Mediatek SoC..." <linux-mediatek@lists.infradead.org>,
- peterpandong@micron.com, rogercc.lin@mediatek.com,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+ Xiaolei Li <xiaolei.li@mediatek.com>, rogercc.lin@mediatek.com,
+ Dan Carpenter <dan.carpenter@oracle.com>, peterpandong@micron.com
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBNYXkgNywgMjAxOSBhdCAxMToyMCBBTSBYaWFvbGVpIExpIDx4aWFvbGVpLmxpQG1l
-ZGlhdGVrLmNvbT4gd3JvdGU6Cj4KPiBJdCBpcyB3YW50ZWQgdG8gdXNlIE1USyBOQU5EIGRyaXZl
-ciB3aXRoIEdQTC0yLjAgb3IgTUlUIGxpY2Vuc2UuCj4gQnV0IG5vdyBpdCBpcyBvbmx5IGxpY2Vu
-c2VkIGFzIEdQTC0yLjAuCj4gU28gcmUtbGljZW5zZSBpdCBhcyBkdWFsIE1JVC9HUEwgYW5kIHJl
-cGxhY2UgbGljZW5zZSB0ZXh0IHdpdGgKPiBTUERYIHRhZy4KPgo+IFNpZ25lZC1vZmYtYnk6IFhp
-YW9sZWkgTGkgPHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPgo+IEFja2VkLWJ5OiBKb3JnZSBSYW1p
-cmV6LU9ydGl6IDxqb3JnZS5yYW1pcmV6LW9ydGl6QGxpbmFyby5vcmc+Cj4gQWNrZWQtYnk6IFJ5
-ZGVyIExlZSA8cnlkZXIubGVlQG1lZGlhdGVrLmNvbT4KPiBBY2tlZC1ieTogUmFmYcWCIE1pxYJl
-Y2tpIDxyYWZhbEBtaWxlY2tpLnBsPgo+IEFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwu
-cmF5bmFsQGJvb3RsaW4uY29tPgo+IEFja2VkLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJy
-ZXppbGxvbkBjb2xsYWJvcmEuY29tPgo+IEFja2VkLWJ5OiBSb2dlckNDIExpbiA8cm9nZXJjYy5s
-aW5AbWVkaWF0ZWsuY29tPgoKQWNrZWQtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+
-CgpTb3JyeSBmb3IgbWlzc2luZyB0aGlzIGVhcmxpZXIuCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+T24gMjAxOS0wNS0yNCAwOTo1MiwgQXJuZCBCZXJnbWFubiB3cm90ZToKPiBPbiBUdWUsIE1heSA3
+LCAyMDE5IGF0IDExOjIwIEFNIFhpYW9sZWkgTGkgPHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPiAK
+PiB3cm90ZToKPj4gCj4+IEl0IGlzIHdhbnRlZCB0byB1c2UgTVRLIE5BTkQgZHJpdmVyIHdpdGgg
+R1BMLTIuMCBvciBNSVQgbGljZW5zZS4KPj4gQnV0IG5vdyBpdCBpcyBvbmx5IGxpY2Vuc2VkIGFz
+IEdQTC0yLjAuCj4+IFNvIHJlLWxpY2Vuc2UgaXQgYXMgZHVhbCBNSVQvR1BMIGFuZCByZXBsYWNl
+IGxpY2Vuc2UgdGV4dCB3aXRoCj4+IFNQRFggdGFnLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogWGlh
+b2xlaSBMaSA8eGlhb2xlaS5saUBtZWRpYXRlay5jb20+Cj4+IEFja2VkLWJ5OiBKb3JnZSBSYW1p
+cmV6LU9ydGl6IDxqb3JnZS5yYW1pcmV6LW9ydGl6QGxpbmFyby5vcmc+Cj4+IEFja2VkLWJ5OiBS
+eWRlciBMZWUgPHJ5ZGVyLmxlZUBtZWRpYXRlay5jb20+Cj4+IEFja2VkLWJ5OiBSYWZhxYIgTWnF
+gmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4+IEFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1
+ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+PiBBY2tlZC1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jp
+cy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4KPj4gQWNrZWQtYnk6IFJvZ2VyQ0MgTGluIDxyb2dl
+cmNjLmxpbkBtZWRpYXRlay5jb20+Cj4gCj4gQWNrZWQtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRA
+YXJuZGIuZGU+Cj4gCj4gU29ycnkgZm9yIG1pc3NpbmcgdGhpcyBlYXJsaWVyLgoKVGhhbmsgeW91
+IQoKWGlhb2xlaTogcGxlYXNlIHJlc2VuZCB0aGlzIHBhdGNoIHdpdGhvdXQgUkZDIGluIGEgc3Vi
+amVjdC4gSSBiZWxpZXZlIGl0CmNhbiBiZSBhcHBsaWVkL3B1c2hlZCBub3cuCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
