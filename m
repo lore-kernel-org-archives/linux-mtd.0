@@ -2,68 +2,72 @@ Return-Path: <SRS0=t7GP=TY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5DD9C072B5
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FB8C072B5
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:53:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB573217F9
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:41:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 07A6120879
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2019 07:53:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="La89ZMXs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB573217F9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b5RqMAmb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07A6120879
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1dzUjKdWp3yUqKvaGjuajAD8BM/pFHCCHRFUVF0ipqA=; b=La89ZMXs6L0GRl
-	pJ1dZSkOa5Qg7u0hCPQBoTqmpEyOWRZMUNQ22Y9arCx36XZHHj1MiK20z/IkZmIvpBf/LdjFlaXST
-	2Ouf5ji8xicmGFc2i+M4Tuv1Lr2nsgZ96u0LrxJrUM/U6SzL73Rpq8cTIiWYsPuezpsLRiAQGR+SQ
-	p7pBhWZXfyCt2H4UBmLpVMQ/6juv9LlIbhSaIBXGbcbpyxnayMspT/yD++NN5y0lDSHTG2kJYwUUQ
-	UHG8olr8aqdOEhqpdkqrtvINg38RtQ1WOKUPye3PsTjCrbqGiE2spR6EkkwjbYxdfPkTzTNfSpiBZ
-	XWvOd2fOQGtQtb9oNMtg==;
+	List-Owner; bh=FJMQFQNmR+Wi6ZzdY9lwBMDF3XPQxJXGCAJwJS5e0/k=; b=b5RqMAmbbKUJv1
+	oV/Yq63rtGq7JiLFg7q900aCl0F1dqEPbEyx+Y9hzdpohgeKCGNCBxs4mfVeMlVnSLzs9JzOpmlQy
+	W4syYYZpTmEl9NClsqtLrIMOfUlk9Yh+dWCIRdgBasFHc6/ARQzWVQjEoeRQlqh1tLqHflQIZg1IP
+	sBvV240neu7xG3VkQkRSioZ2By3Nf9sm/caQW8TDNTs4beG0t99pL/Ay6yykXWBd2TV4ntc/UgVes
+	qoEShK6++j1ZEFj5BMH+sCLN+1FRTzWr+Ywg64mphk4Ja5T39PnLd9fSH+2zxs6lFF2HIoX5deHd2
+	rJsoFAyvz0NWCAxw4rug==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hU4pg-0004rQ-O1; Fri, 24 May 2019 07:41:40 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1hU50h-00008y-H1; Fri, 24 May 2019 07:53:03 +0000
+Received: from mail-qk1-f193.google.com ([209.85.222.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hU4pa-0004qy-Fl
- for linux-mtd@lists.infradead.org; Fri, 24 May 2019 07:41:36 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x4O7euXb008092;
- Fri, 24 May 2019 15:40:56 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id 2CB04E329FEC00A82B3B;
- Fri, 24 May 2019 15:40:57 +0800 (CST)
-In-Reply-To: <20190521104713.4b3a7769@xps13>
-References: <1558076001-29579-1-git-send-email-masonccyang@mxic.com.tw>	<20190520143438.46248bfc@xps13>
- <OFDCB9EA90.C6F8EA4C-ON48258401.000981AF-48258401.000ED713@mxic.com.tw>
- <20190521104713.4b3a7769@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2] mtd: rawnand: Add Macronix NAND read retry support
+ id 1hU50e-00008b-DT; Fri, 24 May 2019 07:53:01 +0000
+Received: by mail-qk1-f193.google.com with SMTP id d10so6090647qko.4;
+ Fri, 24 May 2019 00:52:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=QmIWS/gC+fa19PxSGHgrqfgpvxjgo7flHvAf9Hy7FNk=;
+ b=Q2dcJfO1Lu/IcYtBkLGHcedolToQw/YXoDf0rEvc7/sFnquOxEDccCs2gxnQ84G5qv
+ lPo2ZFubcVaBoC5kVRYYpXxw/QcKp4jYbbuJiCD2KuW7YHkEO7GG0mO2BTFRr+EJm6NE
+ vl98+Hl/vPKUEP23RHNJXSshjDH/tfAVwe6ouVeFFYKN3cwX0iYvZxANQ4GfVl7U3dSE
+ o+Ntq53+fFsZliX1cbsJOYIIvk+bKLF0zzHHaYtAAB5YNy8tBPXWC3UG7umY5AFlRMvF
+ jyzX+2ifJsjL86vOjOioG8lmqY4K1Vx2HzIwK3e9QBc6VNojoIJgR9tiDvNrpEYKqN5y
+ wuUQ==
+X-Gm-Message-State: APjAAAXzLQVryG6Mk+x6k/E/O/W4z+j24ilRctNYeXTQearKHrknOOF6
+ KHjP6hcPjZZeOe9GPG1SHR6LtZn0bhmmTSEd2so=
+X-Google-Smtp-Source: APXvYqxaxfnh6nmAp0lGugPobsxiW7O+QwmUArkhVA0P3guGuBwge1kPVPSxfQEQDjERy7qUg4QYOPiGt1HNqd9w5y4=
+X-Received: by 2002:ac8:19a7:: with SMTP id u36mr2812318qtj.7.1558684379039;
+ Fri, 24 May 2019 00:52:59 -0700 (PDT)
 MIME-Version: 1.0
-X-KeepSent: 2FAE9766:C611328F-48258404:0029BF19;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF2FAE9766.C611328F-ON48258404.0029BF19-48258404.002A337A@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Fri, 24 May 2019 15:40:57 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/05/24 PM 03:40:57,
- Serialize complete at 2019/05/24 PM 03:40:57
-X-MAIL: TWHMLLG3.macronix.com x4O7euXb008092
+References: <20190507092020.1917-1-xiaolei.li@mediatek.com>
+ <20190507092020.1917-2-xiaolei.li@mediatek.com>
+In-Reply-To: <20190507092020.1917-2-xiaolei.li@mediatek.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 24 May 2019 09:52:42 +0200
+Message-ID: <CAK8P3a3d-2U=hpb0P0+W-eZ0cviwKVwy6dWvHbhBCgF4CJUWKA@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 1/1] mtd: rawnand: mtk: Re-license MTK NAND driver
+ as Dual MIT/GPL
+To: Xiaolei Li <xiaolei.li@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190524_004134_813759_9ACA0FDF 
-X-CRM114-Status: UNSURE (   4.13  )
+X-CRM114-CacheID: sfid-20190524_005300_457838_FA7BC570 
+X-CRM114-Status: UNSURE (   9.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -76,211 +80,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- richard@nod.at, linux-kernel@vger.kernel.org, frieder.schrempf@kontron.de,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Daniel Thompson <daniel.thompson@linaro.org>,
+ Ryder Lee <ryder.lee@mediatek.com>, srv_heupstream@mediatek.com,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>, jorge.ramirez-ortiz@linaro.org,
+ yingjoe.chen@mediatek.com, boris.brezillon@collabora.com,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Wei Yongjun <weiyongjun1@huawei.com>, yellowriver2010@hotmail.com,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ "moderated list:ARM/Mediatek SoC..." <linux-mediatek@lists.infradead.org>,
+ peterpandong@micron.com, rogercc.lin@mediatek.com,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi Miquel,
-
-
-> > > =
-
-> > > > +
-> > > > +      ret =3D  nand_get_features(chip, feature_addr, feature);
-> > > > +      if (ret || feature[0] !=3D mode)
-> > > > +         pr_err("Failed to verify read retry moded:%d(%d)\n",
-> > > > +                mode, feature[0]); =
-
-> > > =
-
-> > > if ret =3D=3D 0 but feature[0] !=3D mode, shouldn't you return an err=
-or? =
-
-> > =
-
-> > okay, will fix.
-> > =
-
-> > > =
-
-> > > > +   }
-> > > > +
-> > > > +   return ret; =
-
-> > > =
-
-> > > This will produce a Warning at compile time (ret may be used
-> > > uninitialized). Have you tested it? =
-
-> > =
-
-> > Tool chain I used is "gcc-arm-linux-gnueabi" and no Warning at compile =
-
-
-> > time.
-> =
-
-> What's the output of:
-> gcc-arm-linux-gnueabi -v
-> ?
-> =
-
-
-Oops, it's gcc 4.8.3 20131111 and kind of obsolete.
-That's why no Warning at compile time.
-
-> > =
-
-> > Patch it to:
-> > =
-
----------------------------------------------------------------------------=
---> =
-
- =
-
-> >  static int macronix_nand_setup_read_retry(struct nand_chip *chip, int =
-
-
-> > mode)
-> >  {
-> >          u8 feature[ONFI_SUBFEATURE_PARAM_LEN];
-> >          int ret, feature_addr =3D ONFI_FEATURE_ADDR_READ_RETRY;
-> > =
-
-> >          if (chip->parameters.supports_set_get_features &&
-> >              test_bit(feature_addr, chip->parameters.set_feature_list) =
-
-&&
-> >              test_bit(feature_addr, =
-
-chip->parameters.get_feature_list)) {
-> > =
-
-> >                  feature[0] =3D mode;
-> >                  ret =3D  nand_set_features(chip, feature_addr, =
-
-feature);
-> =
-
->                          ^ extra space, please be careful with the
->                          typos, and run checkpatch.pl --strict before
->                          sending patches.
-> =
-
-> >                  if (ret) {
-> >                          pr_err("Failed to set read retry moded:%d\n", =
-
-
-> > mode);
-> >                          goto err_out;
-> >                  }
-> > =
-
-> >                  ret =3D  nand_get_features(chip, feature_addr, =
-
-feature);
-> >                  if (ret) {
-> >                          pr_err("Failed to get read retry moded:%d\n", =
-
-
-> > mode);
-> >                          goto err_out;
-> >                  } else if (feature[0] !=3D mode) {
-> >                          pr_err("Failed to verify read retry =
-
-> > moded:%d(%d)\n",
-> >                                  mode, feature[0]);
-> >                          return -EIO;
-> =
-
-> That's not what I meant. You can keep the former condition but if !ret
-> then ret =3D -EIO for instance.
-> =
-
-> >                  }
-> >          }
-> > =
-
-> >  err_out:
-> >          return ret;
-> =
-
-> Again, do not jump to a single return call, directly do the return from
-> the point where you want to quit the function.
-> =
-
-> The problem should be that ret may be used uninitialized, the compiler
-> should tell you that.
-
-got it and thanks for your review.
-
-> =
-
-> Thanks,
-> Miqu=E8l
-
-best regards,
-Mason
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information =
-
-and/or personal data, which is protected by applicable laws. Please be =
-
-reminded that duplication, disclosure, distribution, or use of this e-mail =
-
-(and/or its attachments) or any part thereof is prohibited. If you receive =
-
-this e-mail in error, please notify us immediately and delete this mail as =
-
-well as its attachment(s) from your system. In addition, please be =
-
-informed that collection, processing, and/or use of personal data is =
-
-prohibited unless expressly permitted by personal data protection laws. =
-
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or=
- personal data, which is protected by applicable laws. Please be reminded t=
-hat duplication, disclosure, distribution, or use of this e-mail (and/or it=
-s attachments) or any part thereof is prohibited. If you receive this e-mai=
-l in error, please notify us immediately and delete this mail as well as it=
-s attachment(s) from your system. In addition, please be informed that coll=
-ection, processing, and/or use of personal data is prohibited unless expres=
-sly permitted by personal data protection laws. Thank you for your attentio=
-n and cooperation.
-
-Macronix International Co., Ltd.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBNYXkgNywgMjAxOSBhdCAxMToyMCBBTSBYaWFvbGVpIExpIDx4aWFvbGVpLmxpQG1l
+ZGlhdGVrLmNvbT4gd3JvdGU6Cj4KPiBJdCBpcyB3YW50ZWQgdG8gdXNlIE1USyBOQU5EIGRyaXZl
+ciB3aXRoIEdQTC0yLjAgb3IgTUlUIGxpY2Vuc2UuCj4gQnV0IG5vdyBpdCBpcyBvbmx5IGxpY2Vu
+c2VkIGFzIEdQTC0yLjAuCj4gU28gcmUtbGljZW5zZSBpdCBhcyBkdWFsIE1JVC9HUEwgYW5kIHJl
+cGxhY2UgbGljZW5zZSB0ZXh0IHdpdGgKPiBTUERYIHRhZy4KPgo+IFNpZ25lZC1vZmYtYnk6IFhp
+YW9sZWkgTGkgPHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPgo+IEFja2VkLWJ5OiBKb3JnZSBSYW1p
+cmV6LU9ydGl6IDxqb3JnZS5yYW1pcmV6LW9ydGl6QGxpbmFyby5vcmc+Cj4gQWNrZWQtYnk6IFJ5
+ZGVyIExlZSA8cnlkZXIubGVlQG1lZGlhdGVrLmNvbT4KPiBBY2tlZC1ieTogUmFmYcWCIE1pxYJl
+Y2tpIDxyYWZhbEBtaWxlY2tpLnBsPgo+IEFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwu
+cmF5bmFsQGJvb3RsaW4uY29tPgo+IEFja2VkLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJy
+ZXppbGxvbkBjb2xsYWJvcmEuY29tPgo+IEFja2VkLWJ5OiBSb2dlckNDIExpbiA8cm9nZXJjYy5s
+aW5AbWVkaWF0ZWsuY29tPgoKQWNrZWQtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+
+CgpTb3JyeSBmb3IgbWlzc2luZyB0aGlzIGVhcmxpZXIuCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
