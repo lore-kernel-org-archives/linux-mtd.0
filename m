@@ -7,126 +7,60 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DC3BC04AB6
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2019 07:40:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4820C04AB6
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2019 10:41:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EDFB2075B
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2019 07:40:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 856252081C
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2019 10:41:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bkynxvxa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=analog.onmicrosoft.com header.i=@analog.onmicrosoft.com header.b="ug3p+80+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EDFB2075B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=analog.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UGfjoIHk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 856252081C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BdFGxlrA1SRpH+BwdU2XqVcpVy9iBAvH494g5uFmlhs=; b=bkynxvxaOH3xbK
-	OOK/9rhNPXF9+3etj9AkNhTOVQUyCvcE0cPoOoijteS/FHh7GkrL5zCjJS1+Ndihe8QXOdb9tp4ZI
-	OPI8MFvTsl7Ej0bFoJJWg+3eLHq/7GR7FvFiKcEWNIxYHSeK7PnmLnzonzOKoolwUiMQ+hUeGFWdK
-	KQLe3ogTWHwA06NS+s+wxVUWV0y0ZmWDHV3nVOz8KOl0pSQJPqZo8seNBH9lXBYCNJ8/Ff9dSNSux
-	NSGQeYnVlD2kF/R89yXaX6cU7VacAkQFAQ6hzl5DJqLPZgAyqZJ/Z+SpN2XrWdzEtZqqnPRbMDcFh
-	dPU60cikQNs3BRxpH68g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mYJiCg/vfeSsxJvV1+EN9qh0+rz/Br8oAHUINqa5LAw=; b=UGfjoIHkv/Jbq1
+	HdCUObUUJ31wKY1o9rg9u34AlK7SgxJGjgGxOEN0/SRg97TKzuMYqkAgKX3WvMp3tCun3r+EY3c9g
+	00iuef9Ed2K/28OyQXdYiV768SbteeuugqD1CR6Z947lYeq9Jst08pgM0Mm/8B48J43LhBoAXwlWA
+	3Hx31XuhAAzQlpDNDfE5UkeW4I75aqo+QaXnOZqxbLtC9Au2eHc1S+ZnxY8vFzBNHzLwvguJewLM9
+	DxIYwKnbJZiePkic+eUBvLqAuS7u3rvEI4JOF3Q0iJfII+2AgXzXJ/PKit51X/+coR7Z+Jrd/s/TA
+	SRM4vyzL/4OxWJDViMPg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hVWiw-0007wl-AT; Tue, 28 May 2019 07:40:42 +0000
-Received: from mail-eopbgr770077.outbound.protection.outlook.com
- ([40.107.77.77] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+	id 1hVZXR-0000yT-PT; Tue, 28 May 2019 10:41:01 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hVWiK-00063G-QW; Tue, 28 May 2019 07:40:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector1-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EVygfSY8hqy/DBUvsHRCgGvieeoiCENlb8QcgTW8Qa0=;
- b=ug3p+80+pta3QSOyYVopWCIPknnTa/9XApeIFW+44+SXRahs8pvbg98CvxDZWD2q7UoHIhgUD6Sn7ZbGyOWHdj4WAzkhg9cumlMLts6dyltoEMjlw9eglOAVG8lj96mIW2ArwyzQcb/gVfwCJxWUUom9Q8RHLT+KaOaucx79tQQ=
-Received: from BN3PR03CA0110.namprd03.prod.outlook.com (2603:10b6:400:4::28)
- by BLUPR03MB552.namprd03.prod.outlook.com (2a01:111:e400:883::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1922.22; Tue, 28 May
- 2019 07:39:58 +0000
-Received: from SN1NAM02FT022.eop-nam02.prod.protection.outlook.com
- (2a01:111:f400:7e44::202) by BN3PR03CA0110.outlook.office365.com
- (2603:10b6:400:4::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1943.16 via Frontend
- Transport; Tue, 28 May 2019 07:39:58 +0000
-Authentication-Results: spf=pass (sender IP is 137.71.25.55)
- smtp.mailfrom=analog.com; lists.freedesktop.org; dkim=none (message not
- signed) header.d=none;lists.freedesktop.org; dmarc=bestguesspass action=none
- header.from=analog.com;
-Received-SPF: Pass (protection.outlook.com: domain of analog.com designates
- 137.71.25.55 as permitted sender) receiver=protection.outlook.com;
- client-ip=137.71.25.55; helo=nwd2mta1.analog.com;
-Received: from nwd2mta1.analog.com (137.71.25.55) by
- SN1NAM02FT022.mail.protection.outlook.com (10.152.72.148) with Microsoft SMTP
- Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1922.16
- via Frontend Transport; Tue, 28 May 2019 07:39:57 +0000
-Received: from NWD2HUBCAS7.ad.analog.com (nwd2hubcas7.ad.analog.com
- [10.64.69.107])
- by nwd2mta1.analog.com (8.13.8/8.13.8) with ESMTP id x4S7duOZ023275
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Tue, 28 May 2019 00:39:56 -0700
-Received: from saturn.analog.com (10.50.1.244) by NWD2HUBCAS7.ad.analog.com
- (10.64.69.107) with Microsoft SMTP Server id 14.3.408.0; Tue, 28 May 2019
- 03:39:56 -0400
-From: Alexandru Ardelean <alexandru.ardelean@analog.com>
-To: <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
- <linux-ide@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <linux-rpi-kernel@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-rockchip@lists.infradead.org>, <linux-pm@vger.kernel.org>,
- <linux-gpio@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <intel-gfx@lists.freedesktop.org>, <linux-omap@vger.kernel.org>,
- <linux-mmc@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-pci@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>, <devel@driverdev.osuosl.org>,
- <linux-usb@vger.kernel.org>, <kvm@vger.kernel.org>,
- <linux-fbdev@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
- <linux-security-module@vger.kernel.org>,
- <linux-integrity@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 3/3][V2] lib: re-introduce new match_string() helper/macro
-Date: Tue, 28 May 2019 10:39:32 +0300
-Message-ID: <20190528073932.25365-3-alexandru.ardelean@analog.com>
+ id 1hVZXO-0000xy-Gx
+ for linux-mtd@lists.infradead.org; Tue, 28 May 2019 10:41:00 +0000
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1hVZXM-0004z1-HO; Tue, 28 May 2019 12:40:56 +0200
+Received: from sha by dude.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1hVZXL-0006P3-Sj; Tue, 28 May 2019 12:40:55 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: rawnand: gpmi: check nand_read_page_op() return value
+Date: Tue, 28 May 2019 12:40:54 +0200
+Message-Id: <20190528104054.21018-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190528073932.25365-1-alexandru.ardelean@analog.com>
-References: <20190508112842.11654-1-alexandru.ardelean@analog.com>
- <20190528073932.25365-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-X-ADIRoutedOnPrem: True
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:137.71.25.55; IPV:NLI; CTRY:US; EFV:NLI;
- SFV:NSPM;
- SFS:(10009020)(1496009)(136003)(39860400002)(346002)(396003)(376002)(2980300002)(199004)(189003)(126002)(2441003)(86362001)(44832011)(5660300002)(2201001)(478600001)(446003)(476003)(2616005)(53416004)(47776003)(316002)(11346002)(2870700001)(2906002)(6666004)(356004)(50226002)(51416003)(7696005)(7416002)(76176011)(48376002)(4326008)(305945005)(70586007)(70206006)(336012)(26005)(77096007)(186003)(1076003)(7636002)(246002)(486006)(426003)(7406005)(110136005)(54906003)(106002)(107886003)(50466002)(36756003)(8936002)(8676002)(921003)(83996005)(1121003)(2101003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BLUPR03MB552; H:nwd2mta1.analog.com; FPR:;
- SPF:Pass; LANG:en; PTR:nwd2mail10.analog.com; A:1; MX:1; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9f7495c6-88de-4750-c0e9-08d6e33faf63
-X-Microsoft-Antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(4709054)(1401327)(2017052603328);
- SRVR:BLUPR03MB552; 
-X-MS-TrafficTypeDiagnostic: BLUPR03MB552:
-X-Microsoft-Antispam-PRVS: <BLUPR03MB5526A3F85F374B6EF9329F1F91E0@BLUPR03MB552.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-Forefront-PRVS: 00514A2FE6
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: MswgKhZP9m+ZsGUEhWl3phwXCL8yuqzj7xcxpK+dGlJBf9m5zMl51gqC3LUtKdWQ8Os49FCltfeNbu6Phw/B8l5WNlH00oAhRzdjikewQHYUEmLqJ6/urfczkkAV7S6v3P1UMtUMTOYDySCPLD3RO66kjwZftNeRvVV3dsDqCax4qYOjNj2PWP5gkM5PjRZmJWiCQ5YjWYviSRnNrXmzdalwSZTQ416f6pMfl95WCkKeJFuhdayQMWJGsRNhTOHuxm5bGOp4NnJa6ZTV5K+ilvVE4Xb082rHyJdnAOFnjmjlMMgU1yiCJ2yKYrrmhTGSsWl7mABejle5Gq03Z59rpn0+AbER3kkbBxVnYXW8nX3mrHd8Gqzr89K0YpmuIcGMyscsEWrsfpd9tI6dbYg4W4+zRy2MwWGNPPr9JWXwDBM=
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2019 07:39:57.3627 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f7495c6-88de-4750-c0e9-08d6e33faf63
-X-MS-Exchange-CrossTenant-Id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=eaa689b4-8f87-40e0-9c6f-7228de4d754a; Ip=[137.71.25.55];
- Helo=[nwd2mta1.analog.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLUPR03MB552
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190528_004005_871633_ABD26184 
-X-CRM114-Status: GOOD (  10.01  )
+X-CRM114-CacheID: sfid-20190528_034058_718245_F1D24B76 
+X-CRM114-Status: GOOD (  16.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -138,46 +72,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: gregkh@linuxfoundation.org,
- Alexandru Ardelean <alexandru.ardelean@analog.com>,
- heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc: Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
+ kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This change re-introduces `match_string()` as a macro that uses
-ARRAY_SIZE() to compute the size of the array.
+nand_read_page_op() can fail, so check its return value and bail out
+with an error when necessary.
 
-After this change, work can start on migrating subsystems to use this new
-helper. Since the original helper is pretty used, migrating to this new one
-will take a while, and will be reviewed by each subsystem.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- include/linux/string.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 38 ++++++++++++++++++----
+ 1 file changed, 31 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 7149fcdf62df..34491b075449 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -198,6 +198,15 @@ static inline int strtobool(const char *s, bool *res)
- int __match_string(const char * const *array, size_t n, const char *string);
- int __sysfs_match_string(const char * const *array, size_t n, const char *s);
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index e0080dcd4fc0..5db84178edff 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1451,11 +1451,14 @@ static int gpmi_ecc_read_page(struct nand_chip *chip, uint8_t *buf,
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct bch_geometry *geo = &this->bch_geometry;
+ 	unsigned int max_bitflips;
++	int ret;
  
-+/**
-+ * match_string - matches given string in an array
-+ * @_a: array of strings
-+ * @_s: string to match with
-+ *
-+ * Helper for __match_string(). Calculates the size of @a automatically.
-+ */
-+#define match_string(_a, _s) __match_string(_a, ARRAY_SIZE(_a), _s)
+ 	gpmi_bch_layout_std(this);
+ 	this->bch = true;
+ 
+-	nand_read_page_op(chip, page, 0, buf, geo->page_size);
++	ret = nand_read_page_op(chip, page, 0, buf, geo->page_size);
++	if (ret)
++		return ret;
+ 
+ 	max_bitflips = gpmi_count_bitflips(chip, buf, 0,
+ 					   geo->ecc_chunk_count,
+@@ -1495,6 +1498,7 @@ static int gpmi_ecc_read_subpage(struct nand_chip *chip, uint32_t offs,
+ 	int first, last, marker_pos;
+ 	int ecc_parity_size;
+ 	int col = 0;
++	int ret;
+ 
+ 	/* The size of ECC parity */
+ 	ecc_parity_size = geo->gf_len * geo->ecc_strength / 8;
+@@ -1546,7 +1550,9 @@ static int gpmi_ecc_read_subpage(struct nand_chip *chip, uint32_t offs,
+ 
+ 	this->bch = true;
+ 
+-	nand_read_page_op(chip, page, col, buf, page_size);
++	ret = nand_read_page_op(chip, page, col, buf, page_size);
++	if (ret)
++		return ret;
+ 
+ 	dev_dbg(this->dev, "page:%d(%d:%d)%d, chunk:(%d:%d), BCH PG size:%d\n",
+ 		page, offs, len, col, first, n, page_size);
+@@ -1651,12 +1657,16 @@ static int gpmi_ecc_read_oob(struct nand_chip *chip, int page)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
++	int ret;
+ 
+ 	/* clear the OOB buffer */
+ 	memset(chip->oob_poi, ~0, mtd->oobsize);
+ 
+ 	/* Read out the conventional OOB. */
+-	nand_read_page_op(chip, page, mtd->writesize, chip->oob_poi, mtd->oobsize);
++	ret = nand_read_page_op(chip, page, mtd->writesize, chip->oob_poi,
++				mtd->oobsize);
++	if (ret)
++		return ret;
+ 
+ 	/*
+ 	 * Now, we want to make sure the block mark is correct. In the
+@@ -1665,7 +1675,9 @@ static int gpmi_ecc_read_oob(struct nand_chip *chip, int page)
+ 	 */
+ 	if (GPMI_IS_MX23(this)) {
+ 		/* Read the block mark into the first byte of the OOB buffer. */
+-		nand_read_page_op(chip, page, 0, chip->oob_poi, 1);
++		ret = nand_read_page_op(chip, page, 0, chip->oob_poi, 1);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -1714,8 +1726,12 @@ static int gpmi_ecc_read_page_raw(struct nand_chip *chip, uint8_t *buf,
+ 	size_t oob_byte_off;
+ 	uint8_t *oob = chip->oob_poi;
+ 	int step;
++	int ret;
+ 
+-	nand_read_page_op(chip, page, 0, tmp_buf, mtd->writesize + mtd->oobsize);
++	ret = nand_read_page_op(chip, page, 0, tmp_buf,
++				mtd->writesize + mtd->oobsize);
++	if (ret)
++		return ret;
+ 
+ 	/*
+ 	 * If required, swap the bad block marker and the data stored in the
+@@ -1928,6 +1944,7 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int page;
+ 	u8 *buffer = nand_get_data_buf(chip);
+ 	int found_an_ncb_fingerprint = false;
++	int ret;
+ 
+ 	/* Compute the number of strides in a search area. */
+ 	search_area_size_in_strides = 1 << rom_geo->search_area_stride_exponent;
+@@ -1949,7 +1966,10 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+ 		 * Read the NCB fingerprint. The fingerprint is four bytes long
+ 		 * and starts in the 12th byte of the page.
+ 		 */
+-		nand_read_page_op(chip, page, 12, buffer, strlen(fingerprint));
++		ret = nand_read_page_op(chip, page, 12, buffer,
++					strlen(fingerprint));
++		if (ret)
++			continue;
+ 
+ 		/* Look for the fingerprint. */
+ 		if (!memcmp(buffer, fingerprint, strlen(fingerprint))) {
+@@ -2081,9 +2101,13 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
+ 
+ 		/* Send the command to read the conventional block mark. */
+ 		nand_select_target(chip, chipnr);
+-		nand_read_page_op(chip, page, mtd->writesize, &block_mark, 1);
++		ret = nand_read_page_op(chip, page, mtd->writesize, &block_mark,
++					1);
+ 		nand_deselect_target(chip);
+ 
++		if (ret)
++			continue;
 +
- /**
-  * sysfs_match_string - matches given string in an array
-  * @_a: array of strings
+ 		/*
+ 		 * Check if the block is marked bad. If so, we need to mark it
+ 		 * again, but this time the result will be a mark in the
 -- 
 2.20.1
 
