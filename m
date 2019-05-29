@@ -1,109 +1,71 @@
-Return-Path: <SRS0=NG3o=T4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=GAhz=T5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2501C04AB6
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2019 15:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06296C04AB6
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2019 03:13:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A614B2075C
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2019 15:46:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAEE62173B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2019 03:13:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="n3G4iwLB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="LvNJVCVS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A614B2075C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Jc76tIOJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAEE62173B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rYBGtEEgCYAOFgqDe3/Uha4C7dNuN+vUv/MwqF0oXTg=; b=n3G4iwLBBFrghL
-	Lp0IPwvZHAU1blwWXE8n5pLwn4j0wQkO5gnDYfTGSacs7E4lPY2QoDP2crMTHFEni11E31OO3ezMY
-	ePOAClzdNvKE5sTOEal7+XF/hiF3SJZKT2l6tHC9hSBy1nhZlN68YP2c57IlVCkCCV4h3OhHrtkd5
-	garmc9w0CI7xZpOa+6HG5v8SEQqQwk7vGhajmh0jTNma1lTvCsl/nHlT8Ltfm+PwG8rEfVhIT3KC7
-	jutbX3sScAMzxXoFhCUfDpfQtbfi6O8L8tS23uU6I1w/ShVz0yT4a/RyqBEiV9Ld0eXCFV+PEHWQy
-	R0Qj4/z0DMl+5sUp1zVw==;
+	List-Owner; bh=FJoqqYpJH0B4geTtu8MQ17pZ2uERQp0Xpzmfe2zG4uE=; b=Jc76tIOJLDqaSw
+	4DKD1T48WueDuenLzhZgNSmVaOWur+KGr331/2dJ1rNlyyuBBTiIfkjUSB38pNEIzQ2buGZlWZJlF
+	8rcmST1xJeY25blK/Q5zuSjSlDTiD9iPKqH5WBKEEVdgIfqrOLrZRPDsHNJzMhBAV0rkkFq0nEOsR
+	WEDoaURO3ckDHt2Bjdjy20nhCGcabAiWDDnBJePGYQnNRQGxAgr+pTDIXBWnNw43bzoIOLtVsasDt
+	6M8sSeVIAK1eySiR7y/8FOdKWSnKs1XmYL4PW/mV62ynS2Luu1RcsGXll1j/jTHDUYiBPDplPfWXw
+	jpLE9KoXGj5f+PPJNQVA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hVeJE-0006Ea-HA; Tue, 28 May 2019 15:46:40 +0000
-Received: from mail-eopbgr790054.outbound.protection.outlook.com
- ([40.107.79.54] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+	id 1hVp1j-0007KB-KX; Wed, 29 May 2019 03:13:19 +0000
+Received: from twhmllg3.macronix.com ([122.147.135.201])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hVeJ5-0006D4-Tt
- for linux-mtd@lists.infradead.org; Tue, 28 May 2019 15:46:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3y55626EY4VhwAGnHDDZmHBkeD1vpwcDjDoncxn8sEA=;
- b=LvNJVCVS8sbkg7iNdvmRkEc364DdFiSfOge0izGshwLdj1BVanoGJZJcwrHDc8+TQ452YsUX93Ij0crjq3Wr8LCRDNeRTFNi6zPZ7C/jjCnIla7S0U+UjmDGGUumjxXg3pY7t+FbnhAI38ilI0QnCjupxipnbM3WCGaDeicAVuE=
-Received: from MN2PR08MB5951.namprd08.prod.outlook.com (20.179.85.220) by
- MN2PR08MB5791.namprd08.prod.outlook.com (20.179.87.31) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.15; Tue, 28 May 2019 15:46:10 +0000
-Received: from MN2PR08MB5951.namprd08.prod.outlook.com
- ([fe80::f0f7:f262:a3c6:ce23]) by MN2PR08MB5951.namprd08.prod.outlook.com
- ([fe80::f0f7:f262:a3c6:ce23%7]) with mapi id 15.20.1922.021; Tue, 28 May 2019
- 15:46:10 +0000
-From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: RE: [EXT] Re: [PATCH 3/4] mtd: spinand: Enabled support to detect
- parameter page
-Thread-Topic: [EXT] Re: [PATCH 3/4] mtd: spinand: Enabled support to detect
- parameter page
-Thread-Index: AdTjwSAFDW7WB7gARZuMWrsA2XWYYgbaOd4AAGX3qdAAByiXgAUe47Xg
-Date: Tue, 28 May 2019 15:46:10 +0000
-Message-ID: <MN2PR08MB59517D405930FAEF5C09D766B81E0@MN2PR08MB5951.namprd08.prod.outlook.com>
-References: <MN2PR08MB5951E8D99AA1FBD972131388B85F0@MN2PR08MB5951.namprd08.prod.outlook.com>
- <20190430095508.706fa125@xps13>
- <MN2PR08MB5951A622B36705BC26CE36E2B8340@MN2PR08MB5951.namprd08.prod.outlook.com>
- <20190502135945.61bd6ceb@xps13>
-In-Reply-To: <20190502135945.61bd6ceb@xps13>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=sshivamurthy@micron.com; 
-x-originating-ip: [165.225.81.56]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1337b9b5-a67c-47ab-f9cb-08d6e3839b61
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
- SRVR:MN2PR08MB5791; 
-x-ms-traffictypediagnostic: MN2PR08MB5791:|MN2PR08MB5791:
-x-microsoft-antispam-prvs: <MN2PR08MB579105FE3ED03686CAD4CE30B81E0@MN2PR08MB5791.namprd08.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 00514A2FE6
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(366004)(396003)(39860400002)(136003)(346002)(189003)(199004)(52536014)(8936002)(476003)(446003)(6506007)(74316002)(14454004)(6246003)(11346002)(53936002)(66946007)(76116006)(102836004)(316002)(486006)(99286004)(66446008)(64756008)(66556008)(66476007)(55236004)(6916009)(73956011)(86362001)(508600001)(68736007)(6116002)(81166006)(26005)(256004)(6436002)(4326008)(14444005)(71190400001)(71200400001)(229853002)(25786009)(3846002)(5660300002)(2906002)(7696005)(8676002)(66066001)(76176011)(9686003)(7736002)(186003)(55016002)(81156014)(305945005)(33656002)(54906003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR08MB5791;
- H:MN2PR08MB5951.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: micron.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 0
-x-microsoft-antispam-message-info: xCdZ+D4J/lKmMLrcnOU+FxOiSMoKAIPkP6kXaSzhElfvqUUzEMUVA4Z5lu/5nBMTOA0Sm46rA7mwJP/YlkL1Zjs+gnfSI22iVbFXM4nNIQRGfy6D9ax/IhZ5D0izKpKv6Na3bOj879/VVY93g/q320mNb20NRw8CkoPzjTVaqlRBTdYvXuqSDk0eh45TQfYdI4lyO8JSD407+yN5k31+J2Ih4OmTArnNQH4iUay3Ub/OsFpiJChe0irl4OC5IrAcFHgAB9Du86oWgHqY0bpw/bHDuZpOk2gIEpt1l5QbE3nRBdP0DGcYjGuzX8WKezhO1+WJ5q5Y9OqQUM2Km81bmgh7CCbs7HjW12CrmtZYTbX3Ghk5IEliLAZHK7DK281ZKMZckl9vZpwJMM60riRIJG2V8zcILWeZjN4x8MZc5cI=
+ id 1hVp1g-0007Js-89
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2019 03:13:17 +0000
+Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
+ by TWHMLLG3.macronix.com with ESMTP id x4T3C9Cr060053;
+ Wed, 29 May 2019 11:12:09 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+ by Forcepoint Email with ESMTP id EDCE24567F9C6873D729;
+ Wed, 29 May 2019 11:12:08 +0800 (CST)
+In-Reply-To: <20190527144250.71908bd9@xps13>
+References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>	<1555320234-15802-3-git-send-email-masonccyang@mxic.com.tw>
+ <20190512151820.4f2dd9da@xps13>	<OF074A1F06.5C1A58BE-ON482583FD.0031CD95-482583FD.003437AD@mxic.com.tw>
+ <20190520142333.390091d5@xps13>	<OFADC47344.0F9941B2-ON48258403.002336E3-48258403.003141F0@mxic.com.tw>
+ <20190527144250.71908bd9@xps13>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 2/4] mtd: rawnand: Add Macronix MX25F0A NAND controller
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1337b9b5-a67c-47ab-f9cb-08d6e3839b61
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2019 15:46:10.4985 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sshivamurthy@micron.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB5791
+X-KeepSent: E923A8E5:50375C30-48258409:0009AE1B;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OFE923A8E5.50375C30-ON48258409.0009AE1B-48258409.00119767@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Wed, 29 May 2019 11:12:08 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/05/29 AM 11:12:09,
+ Serialize complete at 2019/05/29 AM 11:12:09
+X-MAIL: TWHMLLG3.macronix.com x4T3C9Cr060053
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190528_084634_195249_F43CC27D 
-X-CRM114-Status: GOOD (  22.49  )
+X-CRM114-CacheID: sfid-20190528_201316_562726_79A7376C 
+X-CRM114-Status: UNSURE (   5.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -115,90 +77,218 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
+ bbrezillon@kernel.org, juliensu@mxic.com.tw, lee.jones@linaro.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
+ marcel.ziswiler@toradex.com, paul.burton@mips.com, broonie@kernel.org,
+ geert@linux-m68k.org, stefan@agner.ch, linux-mtd@lists.infradead.org,
+ richard@nod.at, liang.yang@amlogic.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, marek.vasut@gmail.com, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+
 Hi Miquel,
 
-> > >
-> > > > Some of the SPI NAND devices has parameter page which is similar to
-> ONFI
-> > > > table.
-> > > >
-> > > > But, it may not be self sufficient to propagate all the required
-> > > > parameters. Fixup function has been added in struct manufacturer to
-> > > > accommodate this.
-> > > >
-> > > > Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-> > > > ---
-> > > >  drivers/mtd/nand/spi/core.c | 113
-> > > +++++++++++++++++++++++++++++++++++-
-> > > >  include/linux/mtd/spinand.h |   5 ++
-> > > >  2 files changed, 117 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> > > > index 985ad52cdaa7..40882a1d2bc1 100644
-> > > > --- a/drivers/mtd/nand/spi/core.c
-> > > > +++ b/drivers/mtd/nand/spi/core.c
-> > > > @@ -574,6 +574,108 @@ static int spinand_lock_block(struct
-> > > spinand_device *spinand, u8 lock)
-> > > >  	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
-> > > >  }
-> > > >
-> > > > +/**
-> > > > + * spinand_read_param_page_op - Read parameter page operation
-> > > > + * @spinand: the spinand device
-> > > > + * @page: page number where parameter page tables can be found
-> > > > + * @parameters: buffer used to store the parameter page
-> > >
-> > > Does not match the prototype
-> >
-> > I will fix this in next version.
-> >
-> > >
-> > > > + * @len: length of the buffer
-> > > > + *
-> > > > + * Read parameter page
-> > > > + *
-> > > > + * Returns 0 on success, a negative error code otherwise.
-> > > > + */
-> > > > +static int spinand_parameter_page_read(struct nand_device *base,
-> > >
-> > > Please use a spinand structure as parameter, you don't need a
-> > > nand_device here (same for other spinand functions).
-> >
-> > This function is helper function for generic ONFI layer.
-> > From generic ONFI layer, I can get only nand_device.
-> 
-> How do you handle if the SPI NAND core is not compiled-in?
-> 
+> > > > > > +static void mxic_nand_select_chip(struct nand_chip *chip, int =
 
-Both raw NAND and SPI NAND define parameter_page_read function,
-which will be called in nand_onfi_detect.
+ =
 
-Rightly you pointed, I will add the following lines in nand_onfi_detect
-to tackle if those functions are not compiled-in.
+> > chipnr) =
 
-        /* return 0, if ONFI helper functions are not defined */                 
-        if (!base->helper.parameter_page_read &&                                 
-            !base->helper.check_revision &&                                      
-            !base->helper.init_intf_data)                                        
-                return 0;
+> > > > > =
 
-I hope this answers your point.
+> > > > > _select_target() is preferred now =
 
-Thanks,
-Shiva
+> > > > =
+
+> > > > Do you mean I implement mxic_nand_select_target() to control #CS ?
+> > > > =
+
+> > > > If so, I need to call mxic_nand_select_target( ) to control #CS ON
+> > > > and then #CS OFF in _exec_op() due to nand_select_target()<in =
+
+> > nand_base,c> =
+
+> > > > is still calling chip->legacy.select_chip ? =
+
+> > > =
+
+> > > You must forget about the ->select_chip() callback. Now it should be
+> > > handled directly from the controller driver. Please have a look at =
+
+the
+> > > commit pointed against the marvell_nand.c driver. =
+
+> > =
+
+> > I have no Marvell NFC datasheet and have one question.
+> > =
+
+> > In marvell_nand.c, there is no xxx_deselect_target() or =
+
+> > something like that doing #CS OFF.
+> > marvell_nfc_select_target() seems always to make one of chip or die
+> > #CS keep low.
+> > =
+
+> > Is it right ?
+> =
+
+> Yes, AFAIR there is no "de-assert" mechanism in this controller.
+> =
+
+> > =
+
+> > How to make all #CS keep high for NAND to enter =
+
+> > low-power standby mode if driver don't use "legacy.select_chip()" ?
+> =
+
+> See commit 02b4a52604a4 ("mtd: rawnand: Make ->select_chip() optional
+> when ->exec_op() is implemented") which states:
+> =
+
+>         "When [->select_chip() is] not implemented, the core is assuming
+>    the CS line is automatically asserted/deasserted by the driver
+>    ->exec_op() implementation."
+> =
+
+> Of course, the above is right only when the controller driver supports
+> the ->exec_op() interface. =
+
+
+Currently, it seems that we will get the incorrect data and error
+operation due to CS in error toggling if CS line is controlled in =
+
+->exec_op().
+i.e,. =
+
+
+1) In nand_onfi_detect() to call nand_exec_op() twice by =
+
+nand_read_param_page_op() and annd_read_data_op()
+
+2) In nand_write_page_xxx to call nand_exec_op() many times by
+nand_prog_page_begin_op(), nand_write_data_op() and =
+
+nand_prog_page_end_op().
+
+
+Should we consider to add a CS line controller in struct nand_controller
+i.e,.
+
+struct nand_controller {
+         struct mutex lock;
+         const struct nand_controller_ops *ops;
++          void (*select_chip)(struct nand_chip *chip, int cs);
+};
+
+to replace legacy.select_chip() ?
+
+
+To patch in nand_select_target() and nand_deselect_target()
+
+void nand_select_target(struct nand_chip *chip, unsigned int cs)
+{
+        /*
+         * cs should always lie between 0 and chip->numchips, when that's =
+
+not
+         * the case it's a bug and the caller should be fixed.
+         */
+        if (WARN_ON(cs > chip->numchips))
+                return;
+
+        chip->cur_cs =3D cs;
+
++       if (chip->controller->select_chip)
++               chip->controller->select_chip(chip, cs);
++
+        if (chip->legacy.select_chip)
+                chip->legacy.select_chip(chip, cs);
+}
+
+void nand_deselect_target(struct nand_chip *chip)
+{
++       if (chip->controller->select_chip)
++               chip->controller->select_chip(chip, -1);
++
+        if (chip->legacy.select_chip)
+                chip->legacy.select_chip(chip, -1);
+
+        chip->cur_cs =3D -1;
+}
+
+
+> =
+
+> So if you think it is not too time consuming and worth the trouble to
+> assert/deassert the CS at each operation, you may do it in your driver.
+> =
+
+> =
+
+> Thanks,
+> Miqu=E8l
+
+thanks & best regards,
+Mason
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information =
+
+and/or personal data, which is protected by applicable laws. Please be =
+
+reminded that duplication, disclosure, distribution, or use of this e-mail =
+
+(and/or its attachments) or any part thereof is prohibited. If you receive =
+
+this e-mail in error, please notify us immediately and delete this mail as =
+
+well as its attachment(s) from your system. In addition, please be =
+
+informed that collection, processing, and/or use of personal data is =
+
+prohibited unless expressly permitted by personal data protection laws. =
+
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or=
+ personal data, which is protected by applicable laws. Please be reminded t=
+hat duplication, disclosure, distribution, or use of this e-mail (and/or it=
+s attachments) or any part thereof is prohibited. If you receive this e-mai=
+l in error, please notify us immediately and delete this mail as well as it=
+s attachment(s) from your system. In addition, please be informed that coll=
+ection, processing, and/or use of personal data is prohibited unless expres=
+sly permitted by personal data protection laws. Thank you for your attentio=
+n and cooperation.
+
+Macronix International Co., Ltd.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
