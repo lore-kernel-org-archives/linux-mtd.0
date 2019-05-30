@@ -1,23 +1,24 @@
-Return-Path: <SRS0=GAhz=T5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=l9qW=T6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEAADC28CC0
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2019 23:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E676EC28CC0
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 May 2019 15:21:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F1B424323
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2019 23:24:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5A9425CCB
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 May 2019 15:21:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P4qAhz7H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F1B424323
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RCyqxL4z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PMC8FY/M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5A9425CCB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,29 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GhbZy/nGbaNrOFVAXOxU9bBd5SKErnj+y2V0QohWj8I=; b=P4qAhz7H7osNyn
-	s+RtluEKobQyzqXMI9qOdFSfZrOGVPaFwdx49X3gFV9o/wJf0tGhRbgzwQD4EZKng+bohTlViSCfx
-	NYvBOLhjbN2E+eJeoV9DoPFeb/kPzWqmFbJwNmVU87ioVrMXVO7bzPH6kFRmVNh/dhmaKggrf2J/v
-	Ou+u40U/Hm3vyhhV9MclR5+x6m6zZpnXru4xt3BxyM0bs/kEwPcTlMPJlypmFaCLOP/i6q6/J0/Ef
-	LciRpHik+8Dsg/ddpwVEKsBVolApXnS56RxiPAeFVcMN+FuNRtUt8xArkh1mW0GRoyTULZgsXr9qk
-	4Yca/jfpcb65bQsv/rYQ==;
+	List-Owner; bh=7z4p5w8F7Ww4KrhqvRLZgaK6zZLNZ3p8Q+b6EfvpHWM=; b=RCyqxL4zKTpUTM
+	6ooKOsxXkEfzu09u4B8sgAgCCm050PcEGGMyQrsJ+9HmckHSIh5zf90MhrdmQ6pGysvvow5w9sBU/
+	h5vVp9qKAHv8ujhDsflfQlLZ7EkgBbk2x16vRch9OT3RqheRYgd8ylgNXadsfK4zHQCaHfCIpup9B
+	JcdGpC+Jlo/0Y5h1QAlWih0e2a8OLPuGXLSi/2qDXp5cV3SJAlVjsp6cVLOsP8Ml6NYT4b+CPCpY3
+	s9DtkKToAWb6NwJOUZwxPequG0m+rVXlIs608qCcA4KDKFtsg8d+JtGRL+oOq6xSANwiwUJ4uWv50
+	YHbh5LSG0lxt3DPDRvQQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hW7vZ-0005kf-I4; Wed, 29 May 2019 23:24:13 +0000
-Received: from 177.132.232.81.dynamic.adsl.gvt.net.br ([177.132.232.81]
- helo=bombadil.infradead.org)
- by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hW7vL-0005Rx-II; Wed, 29 May 2019 23:23:59 +0000
-Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
- (envelope-from <mchehab@bombadil.infradead.org>)
- id 1hW7vI-0007wg-Fn; Wed, 29 May 2019 20:23:56 -0300
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: [PATCH 00/22] Some documentation fixes
-Date: Wed, 29 May 2019 20:23:31 -0300
-Message-Id: <cover.1559171394.git.mchehab+samsung@kernel.org>
-X-Mailer: git-send-email 2.21.0
+	id 1hWMrn-0007Zs-Lc; Thu, 30 May 2019 15:21:19 +0000
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1hWMrk-0007ZU-HR
+ for linux-mtd@lists.infradead.org; Thu, 30 May 2019 15:21:18 +0000
+Received: by mail-pf1-x441.google.com with SMTP id c14so1764190pfi.1
+ for <linux-mtd@lists.infradead.org>; Thu, 30 May 2019 08:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=xRjvhoqF+poq2aNfNtjW3hCXw5XIgD2Cm81ruqRXoTQ=;
+ b=PMC8FY/MuPFdoNQRgkjDPUDp0cNcXVUYScaGTSinnr+I8YebzKQtj1DrqPe28qgTG9
+ xtdSnv0irLupZSrsfdZchykLFG7M4hlyMyZLA+x8ypC9OiXlDQJzbVVWqkxCoyek9VTT
+ jDfsLc1U2CXGneMLhl/oxC7KRtHnjFT/lBnDI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=xRjvhoqF+poq2aNfNtjW3hCXw5XIgD2Cm81ruqRXoTQ=;
+ b=FHdBPhOk9fyfxv+YeynqDT5Dev3s+IVuZtBmkmkPsVInaY2gGWiENbHqDGGTq7TBRR
+ Xw5HJKqY4hdwv+w6dUFuxS/MmxSlTWnbWL9uyubcokWvuGiyF7ouRZPEX+KipcEZuFrE
+ H/Fgf5FIM24u2ZXEyi5iSvNlAvqduUvyM5deq3JtKCkiKmYmA4AJoNmmxHmLOF+m0EFa
+ V7sYZAmi4IIoNd3Ze1B5OLcar8CKXbq3cgP3yb093q/IiclEc/2GRjYrv3qDiJF3KlX4
+ k6jwE+UTXOs98y8fdLlv6R5BWXm2yC0LLzU8IXvMHPxgdYwt+zP3Ihm9a4rGsDB605NW
+ P1Ng==
+X-Gm-Message-State: APjAAAXB1XebCjs9zbZJ0+Me+MzTu/Tx8//ZZMcRXgtOz0KLqPT3CZfR
+ n7+bRi8NS5imXzN/P+R4/Pz4ty964PI=
+X-Google-Smtp-Source: APXvYqwEs9wuzeGKeY2PhQiyD2jO6JUkmikVqzEdRrR/JqY8kGpfDMSGJseSQ6HZ9LvbyuAJEtdrMg==
+X-Received: by 2002:a62:3145:: with SMTP id x66mr4290394pfx.223.1559229674754; 
+ Thu, 30 May 2019 08:21:14 -0700 (PDT)
+Received: from zhuohao-z440.tpe.corp.google.com
+ ([2401:fa00:1:10:e25c:13cd:9607:cc7f])
+ by smtp.gmail.com with ESMTPSA id j22sm3198663pfh.71.2019.05.30.08.21.12
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 30 May 2019 08:21:14 -0700 (PDT)
+From: Zhuohao Lee <zhuohao@chromium.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v4 1/2] mtd: mtdcore: add debugfs nodes for querying the flash
+ name and id
+Date: Thu, 30 May 2019 23:21:00 +0800
+Message-Id: <20190530152101.176431-1-zhuohao@chromium.org>
+X-Mailer: git-send-email 2.22.0.rc1.257.g3120a18244-goog
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20190530_082116_600075_AD2EDA7D 
+X-CRM114-Status: GOOD (  14.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -59,151 +91,147 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
- dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
- linux-mm@kvack.org, keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, devel@driverdev.osuosl.org,
- Jonathan Corbet <corbet@lwn.net>, x86@kernel.org, linux-acpi@vger.kernel.org,
- xen-devel@lists.xenproject.org, devicetree@vger.kernel.org,
- linux-pm@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-gpio@vger.kernel.org, linux-amlogic@lists.infradead.org,
- bpf@vger.kernel.org, devel@acpica.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
+Cc: drinkcat@chromium.org, zhuohao@chromium.org, bbrezillon@kernel.org,
+ richard@nod.at, briannorris@chromium.org, marek.vasut@gmail.com,
+ boris.brezillon@collabora.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix several warnings and broken links.
+Currently, we don't have vfs nodes for querying the underlying flash name
+and flash id. This information is important especially when we want to
+know the flash detail of the defective system. In order to support the
+query, we add mtd_debugfs_populate() to create two debugfs nodes
+(ie. partname and partid). The upper driver can assign the pointer to
+partname and partid before calling mtd_device_register().
 
-This series was generated against linux-next, but was rebased to be applied at
-docs-next. It should apply cleanly on either tree.
+Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
+---
+Changes in V4:
+- Separate the change to two patches. The first patch is adding the general
+  handling for the partname and partid in the mtdcore.c. The second patch
+  is enabling the two debugfs nodes for spi-nor.
+- Previous discussion: https://patchwork.ozlabs.org/patch/1097377/
+Changes in v3:
+- Add partname and partid to mtd.h and create debugfs inside mtdcore.c
+- Previous discussion: https://patchwork.ozlabs.org/patch/1095731/
+Changes in v2:
+- Change to use debugfs to output flash name and id
+- Previous discussion: https://patchwork.ozlabs.org/patch/1067763/
+---
+ drivers/mtd/mtdcore.c   | 72 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/mtd.h |  4 +++
+ 2 files changed, 76 insertions(+)
 
-There's a git tree with all of them applied on the top of docs/docs-next
-at:
-
-https://git.linuxtv.org/mchehab/experimental.git/log/?h=fix_doc_links_v2
-
-
-Mauro Carvalho Chehab (21):
-  ABI: sysfs-devices-system-cpu: point to the right docs
-  isdn: mISDN: remove a bogus reference to a non-existing doc
-  dt: fix broken references to nand.txt
-  docs: zh_CN: get rid of basic_profiling.txt
-  doc: it_IT: fix reference to magic-number.rst
-  docs: mm: numaperf.rst: get rid of a build warning
-  docs: bpf: get rid of two warnings
-  docs: mark orphan documents as such
-  docs: amd-memory-encryption.rst get rid of warnings
-  gpu: amdgpu: fix broken amdgpu_dma_buf.c references
-  gpu: i915.rst: Fix references to renamed files
-  docs: zh_CN: avoid duplicate citation references
-  docs: vm: hmm.rst: fix some warnings
-  docs: it: license-rules.rst: get rid of warnings
-  docs: gpio: driver.rst: fix a bad tag
-  docs: soundwire: locking: fix tags for a code-block
-  docs: security: trusted-encrypted.rst: fix code-block tag
-  docs: security: core.rst: Fix several warnings
-  docs: net: dpio-driver.rst: fix two codeblock warnings
-  docs: net: sja1105.rst: fix table format
-  docs: fix broken documentation links
-
-Otto Sabart (1):
-  mfd: madera: Fix bad reference to pinctrl.txt file
-
- .../ABI/testing/sysfs-devices-system-cpu      |  3 +-
- Documentation/accelerators/ocxl.rst           |  2 +
- Documentation/acpi/dsd/leds.txt               |  2 +-
- .../admin-guide/kernel-parameters.rst         |  6 +-
- .../admin-guide/kernel-parameters.txt         | 16 ++---
- Documentation/admin-guide/mm/numaperf.rst     |  5 +-
- Documentation/admin-guide/ras.rst             |  2 +-
- Documentation/arm/stm32/overview.rst          |  2 +
- .../arm/stm32/stm32f429-overview.rst          |  2 +
- .../arm/stm32/stm32f746-overview.rst          |  2 +
- .../arm/stm32/stm32f769-overview.rst          |  2 +
- .../arm/stm32/stm32h743-overview.rst          |  2 +
- .../arm/stm32/stm32mp157-overview.rst         |  2 +
- Documentation/bpf/btf.rst                     |  2 +
- .../bindings/mtd/amlogic,meson-nand.txt       |  2 +-
- .../devicetree/bindings/mtd/gpmc-nand.txt     |  2 +-
- .../devicetree/bindings/mtd/marvell-nand.txt  |  2 +-
- .../devicetree/bindings/mtd/tango-nand.txt    |  2 +-
- .../devicetree/bindings/net/fsl-enetc.txt     |  7 +-
- .../bindings/pci/amlogic,meson-pcie.txt       |  2 +-
- .../regulator/qcom,rpmh-regulator.txt         |  2 +-
- .../devicetree/booting-without-of.txt         |  2 +-
- Documentation/driver-api/gpio/board.rst       |  2 +-
- Documentation/driver-api/gpio/consumer.rst    |  2 +-
- Documentation/driver-api/gpio/driver.rst      |  2 +-
- .../driver-api/soundwire/locking.rst          |  4 +-
- .../firmware-guide/acpi/enumeration.rst       |  2 +-
- .../firmware-guide/acpi/method-tracing.rst    |  2 +-
- Documentation/gpu/amdgpu.rst                  |  4 +-
- Documentation/gpu/i915.rst                    |  6 +-
- Documentation/gpu/msm-crash-dump.rst          |  2 +
- Documentation/i2c/instantiating-devices       |  2 +-
- Documentation/interconnect/interconnect.rst   |  2 +
- Documentation/laptops/lg-laptop.rst           |  2 +
- .../freescale/dpaa2/dpio-driver.rst           |  4 +-
- Documentation/networking/dsa/sja1105.rst      |  6 +-
- Documentation/powerpc/isa-versions.rst        |  2 +
- Documentation/security/keys/core.rst          | 16 +++--
- .../security/keys/trusted-encrypted.rst       |  4 +-
- Documentation/sysctl/kernel.txt               |  4 +-
- .../translations/it_IT/process/howto.rst      |  2 +-
- .../it_IT/process/license-rules.rst           | 28 ++++----
- .../it_IT/process/magic-number.rst            |  2 +-
- .../it_IT/process/stable-kernel-rules.rst     |  4 +-
- .../translations/zh_CN/basic_profiling.txt    | 71 -------------------
- .../translations/zh_CN/process/4.Coding.rst   |  2 +-
- .../zh_CN/process/management-style.rst        |  4 +-
- .../zh_CN/process/programming-language.rst    | 28 ++++----
- .../virtual/kvm/amd-memory-encryption.rst     |  5 ++
- Documentation/virtual/kvm/vcpu-requests.rst   |  2 +
- Documentation/vm/hmm.rst                      |  9 ++-
- Documentation/x86/x86_64/5level-paging.rst    |  2 +-
- Documentation/x86/x86_64/boot-options.rst     |  4 +-
- .../x86/x86_64/fake-numa-for-cpusets.rst      |  2 +-
- MAINTAINERS                                   |  6 +-
- arch/arm/Kconfig                              |  2 +-
- arch/arm64/kernel/kexec_image.c               |  2 +-
- arch/powerpc/Kconfig                          |  2 +-
- arch/x86/Kconfig                              | 16 ++---
- arch/x86/Kconfig.debug                        |  2 +-
- arch/x86/boot/header.S                        |  2 +-
- arch/x86/entry/entry_64.S                     |  2 +-
- arch/x86/include/asm/bootparam_utils.h        |  2 +-
- arch/x86/include/asm/page_64_types.h          |  2 +-
- arch/x86/include/asm/pgtable_64_types.h       |  2 +-
- arch/x86/kernel/cpu/microcode/amd.c           |  2 +-
- arch/x86/kernel/kexec-bzimage64.c             |  2 +-
- arch/x86/kernel/pci-dma.c                     |  2 +-
- arch/x86/mm/tlb.c                             |  2 +-
- arch/x86/platform/pvh/enlighten.c             |  2 +-
- drivers/acpi/Kconfig                          | 10 +--
- drivers/isdn/mISDN/dsp_core.c                 |  2 -
- drivers/net/ethernet/faraday/ftgmac100.c      |  2 +-
- .../fieldbus/Documentation/fieldbus_dev.txt   |  4 +-
- drivers/vhost/vhost.c                         |  2 +-
- include/acpi/acpi_drivers.h                   |  2 +-
- include/linux/fs_context.h                    |  2 +-
- include/linux/lsm_hooks.h                     |  2 +-
- include/linux/mfd/madera/pdata.h              |  3 +-
- mm/Kconfig                                    |  2 +-
- security/Kconfig                              |  2 +-
- tools/include/linux/err.h                     |  2 +-
- .../Documentation/stack-validation.txt        |  4 +-
- tools/testing/selftests/x86/protection_keys.c |  2 +-
- 84 files changed, 183 insertions(+), 212 deletions(-)
- delete mode 100644 Documentation/translations/zh_CN/basic_profiling.txt
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 3ef01baef9b6..b53b40cb2f04 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -357,6 +357,75 @@ static const struct device_type mtd_devtype = {
+ 	.release	= mtd_release,
+ };
+ 
++static int mtd_partid_show(struct seq_file *s, void *p)
++{
++	struct mtd_info *mtd = s->private;
++
++	if (!mtd->dbg.partid)
++		return 0;
++
++	seq_printf(s, "%s\n", mtd->dbg.partid);
++
++	return 0;
++}
++
++static int mtd_partid_debugfs_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, mtd_partid_show, inode->i_private);
++}
++
++static const struct file_operations mtd_partid_debug_fops = {
++	.open           = mtd_partid_debugfs_open,
++	.read           = seq_read,
++	.llseek         = seq_lseek,
++	.release        = single_release,
++};
++
++static int mtd_partname_show(struct seq_file *s, void *p)
++{
++	struct mtd_info *mtd = s->private;
++
++	if (!mtd->dbg.partname)
++		return 0;
++
++	seq_printf(s, "%s\n", mtd->dbg.partname);
++
++	return 0;
++}
++
++static int mtd_partname_debugfs_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, mtd_partname_show, inode->i_private);
++}
++
++static const struct file_operations mtd_partname_debug_fops = {
++	.open           = mtd_partname_debugfs_open,
++	.read           = seq_read,
++	.llseek         = seq_lseek,
++	.release        = single_release,
++};
++
++static int mtd_debugfs_populate(struct mtd_info *mtd)
++{
++	struct dentry *root = mtd->dbg.dfs_dir;
++	struct dentry *dent;
++
++	dent = debugfs_create_file("partid", S_IRUSR, root, mtd,
++				   &mtd_partid_debug_fops);
++	if (IS_ERR_OR_NULL(dent)) {
++		pr_err("cannot create debugfs entry for partid\n");
++		return -ENODEV;
++	}
++	dent = debugfs_create_file("partname", S_IRUSR, root, mtd,
++				   &mtd_partname_debug_fops);
++	if (IS_ERR_OR_NULL(dent)) {
++		pr_err("cannot create debugfs entry for partname\n");
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
+ #ifndef CONFIG_MMU
+ unsigned mtd_mmap_capabilities(struct mtd_info *mtd)
+ {
+@@ -626,6 +695,9 @@ int add_mtd_device(struct mtd_info *mtd)
+ 		if (IS_ERR_OR_NULL(mtd->dbg.dfs_dir)) {
+ 			pr_debug("mtd device %s won't show data in debugfs\n",
+ 				 dev_name(&mtd->dev));
++		} else if (mtd_debugfs_populate(mtd)) {
++			pr_debug("mtd device %s can't create debugfs\n",
++				 dev_name(&mtd->dev));
+ 		}
+ 	}
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 677768b21a1d..c20f53c77899 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -203,6 +203,10 @@ struct module;	/* only needed for owner field in mtd_info */
+  */
+ struct mtd_debug_info {
+ 	struct dentry *dfs_dir;
++
++	/* debugfs stuff starts here */
++	const char *partname;
++	const char *partid;
+ };
+ 
+ struct mtd_info {
 -- 
-2.21.0
-
+2.22.0.rc1.257.g3120a18244-goog
 
 
 ______________________________________________________
