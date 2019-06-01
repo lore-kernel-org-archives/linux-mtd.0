@@ -1,98 +1,63 @@
-Return-Path: <SRS0=uwAN=T7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=JwiN=UA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A661DC04AB6
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 May 2019 18:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B6B6C28CC1
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Jun 2019 07:58:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D83726DF4
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 May 2019 18:31:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B7A627174
+	for <linux-mtd@archiver.kernel.org>; Sat,  1 Jun 2019 07:58:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XAeVFi6J";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="pTE0qPcr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D83726DF4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GWkJDGvW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B7A627174
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:Subject:From:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Jq02kbDvTneuaybM/Nu/c3aRFziz+86SV7+jr74rdEw=; b=XAeVFi6JLJbXs+
-	q1Tth5rDNG68LISUEXJ64oRm/l51BZlsxlyUUgQg0F2nCz7DB18AcSa/y0RqqnuzkhZzs6wMx7UEO
-	c36e6k5IVkMUVl/vs7TExHbOhmhhcTKq1OOL5Se9g9KoNm11/pfw3oUGb3sogK/MtBhqLSpu3/8jO
-	2412w63l7ygvOM9PDdyRYLmCYLq2lAm0NUBLv2qJsQlvwRxjGIhUNtw7pYgu/OM03x81gsU3qLTmb
-	izswMQjgwMK23iqZJMxkyDe7zj8pktybPOJ1Bw3ZaJTgTVlJGV7HdJQj6tDmJhsDSrr/cGHYEpuoA
-	t9vqDEZs38SQK9rgwb7A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZE4OCyZkxK9bUsjhVcQv6C7XGWv7j4afswZFGhzMFm4=; b=GWkJDGvWrUwDde
+	d3exvaBlbqIa/mHHX6kP4Y7KmFiNgQwhthAOmXic9wGHuxkOsG3+qApExqgyD5wpBTjX2JCG+Fqej
+	ggLFGqrYuruANTVRPtDPEfLQF1IAOanqIZb+CAR3PU6MmQ6i+79MCORpKwG8kDIXc5QVgeuhsLfvx
+	m7XuA0zp3WW6C7eI03miRbnhS3Q6s2aOI0t1aLB3pV7Ldx5LCdAVWqBGi605Rkg2qcK2xSXFBkXgz
+	sOgV4jJ/DCMjqTLhkZcnpXyb93p39Hv6tAGoW3LVkTFVgsEhztAw3gQEiw4gRVeHN3r2LKYTMf6og
+	PqZ2U1nD0zLLvOHvR+eg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hWmJn-0004Sf-0c; Fri, 31 May 2019 18:31:55 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+	id 1hWyts-00011v-NG; Sat, 01 Jun 2019 07:58:00 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hWmJj-0004SA-Ty
- for linux-mtd@lists.infradead.org; Fri, 31 May 2019 18:31:53 +0000
-Received: by mail-lf1-x143.google.com with SMTP id y13so8671775lfh.9
- for <linux-mtd@lists.infradead.org>; Fri, 31 May 2019 11:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:references:cc:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=LKyWUKEvfM1fzUvfhVPjqkU6bFidAIH+7Nxwrly31cY=;
- b=pTE0qPcrgsFhHlYnCVNYBZGcUADT6SeE5kPaTeHm8m00++8QPf+o8i7QecbDMNgq7z
- IgZ3ORWP7ngHem8qZmexXRfq2zEbivbJbqqMalXtgdxXpiAJ3Um/glGL82BXC4E9Xr38
- UilcKnlZK0gEc2A0OZUCfAdU3GF1g8IrpVcLmz5TtEvSPsu6lZcJDQwq4EQVne9RA21G
- azt8uun7Nvdao868hSM20mYDKKclekrVuQGvf/A8uVk5x3UAUcxZV3YnYw2EJpADee38
- lk1+00Ok4qR+jSSdo5sCojVTesFUwySz2/sE+o1Z7G8aq8e0hiMHAy23s8OKwwDzWQ2x
- p6rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:references:cc:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=LKyWUKEvfM1fzUvfhVPjqkU6bFidAIH+7Nxwrly31cY=;
- b=eHIYGUBO6TurraOuIYgNz5bN122FAspKuyzOdjZ3gpZr4Fiwg9hn2fJaJYJSZLIM65
- hjzQnx02FTjMjQsWZ2D80PV1rZGKGSKB2eu7YkcC2oHGFJaadXl/3AZYUBKgpCRuBFRT
- gZK8CedqdvGcZl87XnGjVgjpAON/j7mHM3L+IatXGcGqXdtZ5FToELTuH+kJAzsRr9vD
- nPhYlVrv8a1pb9cjzVgcuGIED+EL9KY+3y39/CvOXGbGs/UEL480Icm+de5w9vC6rhFH
- beEldF7Hg+WfPtVmllYKJcCFulJ01b+Iltx1nkeVF9uzR/UZ7uMdiA8PP2kkPyoHg5tS
- txnA==
-X-Gm-Message-State: APjAAAVPd4RjLLzZvvHndrXYojCsszuWjOpizYjWqK/BtkSyh1plxM3V
- 2C0WPcd3QiVLWH0FRkl1npGXNA==
-X-Google-Smtp-Source: APXvYqxBVoMOLjlqCdKyS50irSjf5kd9lEianha8OyN79vWlieMHfo4zeaBKiaOxNf2EXOlFe71qxg==
-X-Received: by 2002:a19:7716:: with SMTP id s22mr6429503lfc.64.1559327509063; 
- Fri, 31 May 2019 11:31:49 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([31.173.86.142])
- by smtp.gmail.com with ESMTPSA id n9sm1381782ljj.10.2019.05.31.11.31.47
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 31 May 2019 11:31:47 -0700 (PDT)
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: [PATCH v4] mtd: devices: m25p80: Use the spi-mem dirmap API
-To: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-References: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <c405efc0-58ef-c67a-d519-95e0eb843229@cogentembedded.com>
-Date: Fri, 31 May 2019 21:31:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ id 1hWytn-00011V-Lo
+ for linux-mtd@lists.infradead.org; Sat, 01 Jun 2019 07:57:57 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E0096263967;
+ Sat,  1 Jun 2019 08:57:51 +0100 (BST)
+Date: Sat, 1 Jun 2019 09:57:48 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: nand: raw: brcmnand: Refactored code and
+ introduced inline functions
+Message-ID: <20190601095748.35d1c1aa@collabora.com>
+In-Reply-To: <1559251257-12383-1-git-send-email-kdasu.kdev@gmail.com>
+References: <1559251257-12383-1-git-send-email-kdasu.kdev@gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
-Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190531_113152_260561_1D7C0D27 
-X-CRM114-Status: GOOD (  20.09  )
+X-CRM114-CacheID: sfid-20190601_005755_981214_C9678FF9 
+X-CRM114-Status: GOOD (  18.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -104,189 +69,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Boris Brezillon <boris.brezillon@bootlin.com>
+On Thu, 30 May 2019 17:20:35 -0400
+Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 
-Make use of the spi-mem direct mapping API to let advanced controllers
-optimize read/write operations when they support direct mapping.
+> Refactored NAND ECC and CMD address configuration code to use inline
+> functions.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+I'd expect the compiler to be smart enough to decide when inlining is
+appropriate. Did you check that adding the inline specifier actually
+makes a difference?
 
----
-This is a leftover unmerged patch of the "spi: spi-mem: Add a direct mapping
-API" series, atop of the 'mtd/next' branch of the MTD 'linux.git' repo.
+> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 100 +++++++++++++++++++------------
+>  1 file changed, 62 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> index ce0b8ff..77b7850 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> @@ -588,6 +588,54 @@ static inline void brcmnand_write_fc(struct brcmnand_controller *ctrl,
+>  	__raw_writel(val, ctrl->nand_fc + word * 4);
+>  }
+>  
+> +static inline void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
+> +{
+> +
+> +	/* Clear error addresses */
+> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
+> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
+> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
+> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
+> +}
+> +
+> +static inline u64 brcmnand_get_uncorrecc_addr(struct brcmnand_controller *ctrl)
+> +{
+> +	u64 err_addr;
+> +
+> +	err_addr = brcmnand_read_reg(ctrl, BRCMNAND_UNCORR_ADDR);
+> +	err_addr |= ((u64)(brcmnand_read_reg(ctrl,
+> +					     BRCMNAND_UNCORR_EXT_ADDR)
+> +					     & 0xffff) << 32);
+> +
+> +	return err_addr;
+> +}
+> +
+> +static inline u64 brcmnand_get_correcc_addr(struct brcmnand_controller *ctrl)
+> +{
+> +	u64 err_addr;
+> +
+> +	err_addr = brcmnand_read_reg(ctrl, BRCMNAND_CORR_ADDR);
+> +	err_addr |= ((u64)(brcmnand_read_reg(ctrl,
+> +					     BRCMNAND_CORR_EXT_ADDR)
+> +					     & 0xffff) << 32);
+> +
+> +	return err_addr;
+> +}
+> +
+> +static inline void brcmnand_set_cmd_addr(struct mtd_info *mtd, u64 addr)
+> +{
+> +	struct nand_chip *chip =  mtd_to_nand(mtd);
+> +	struct brcmnand_host *host = nand_get_controller_data(chip);
+> +	struct brcmnand_controller *ctrl = host->ctrl;
+> +
+> +	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+> +			   (host->cs << 16) | ((addr >> 32) & 0xffff));
+> +	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
+> +	brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
+> +			   lower_32_bits(addr));
+> +	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+> +}
+> +
+>  static inline u16 brcmnand_cs_offset(struct brcmnand_controller *ctrl, int cs,
+>  				     enum brcmnand_cs_reg reg)
+>  {
+> @@ -1213,9 +1261,12 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+>  {
+>  	struct brcmnand_controller *ctrl = host->ctrl;
+>  	int ret;
+> +	u64 cmd_addr;
+> +
+> +	cmd_addr = brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+> +
+> +	dev_dbg(ctrl->dev, "send native cmd %d addr 0x%llx\n", cmd, cmd_addr);
+>  
+> -	dev_dbg(ctrl->dev, "send native cmd %d addr_lo 0x%x\n", cmd,
+> -		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS));
+>  	BUG_ON(ctrl->cmd_pending != 0);
+>  	ctrl->cmd_pending = cmd;
+>  
+> @@ -1374,12 +1425,7 @@ static void brcmnand_cmdfunc(struct nand_chip *chip, unsigned command,
+>  	if (!native_cmd)
+>  		return;
+>  
+> -	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+> -		(host->cs << 16) | ((addr >> 32) & 0xffff));
+> -	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
+> -	brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS, lower_32_bits(addr));
+> -	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+> -
+> +	brcmnand_set_cmd_addr(mtd, addr);
+>  	brcmnand_send_cmd(host, native_cmd);
+>  	brcmnand_waitfunc(chip);
+>  
+> @@ -1597,20 +1643,10 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct brcmnand_controller *ctrl = host->ctrl;
+>  	int i, j, ret = 0;
+>  
+> -	/* Clear error addresses */
+> -	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
+> -	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
+> -	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
+> -	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
+> -
+> -	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+> -			(host->cs << 16) | ((addr >> 32) & 0xffff));
+> -	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
+> +	brcmnand_clear_ecc_addr(ctrl);
+>  
+>  	for (i = 0; i < trans; i++, addr += FC_BYTES) {
+> -		brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
+> -				   lower_32_bits(addr));
+> -		(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+> +		brcmnand_set_cmd_addr(mtd, addr);
+>  		/* SPARE_AREA_READ does not use ECC, so just use PAGE_READ */
+>  		brcmnand_send_cmd(host, CMD_PAGE_READ);
+>  		brcmnand_waitfunc(chip);
+> @@ -1630,21 +1666,15 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+>  					host->hwcfg.sector_size_1k);
+>  
+>  		if (!ret) {
+> -			*err_addr = brcmnand_read_reg(ctrl,
+> -					BRCMNAND_UNCORR_ADDR) |
+> -				((u64)(brcmnand_read_reg(ctrl,
+> -						BRCMNAND_UNCORR_EXT_ADDR)
+> -					& 0xffff) << 32);
+> +			*err_addr = brcmnand_get_uncorrecc_addr(ctrl);
+> +
+>  			if (*err_addr)
+>  				ret = -EBADMSG;
+>  		}
+>  
+>  		if (!ret) {
+> -			*err_addr = brcmnand_read_reg(ctrl,
+> -					BRCMNAND_CORR_ADDR) |
+> -				((u64)(brcmnand_read_reg(ctrl,
+> -						BRCMNAND_CORR_EXT_ADDR)
+> -					& 0xffff) << 32);
+> +			*err_addr = brcmnand_get_correcc_addr(ctrl);
+> +
+>  			if (*err_addr)
+>  				ret = -EUCLEAN;
+>  		}
+> @@ -1711,7 +1741,7 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+>  	dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
+>  
+>  try_dmaread:
+> -	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
+> +	brcmnand_clear_ecc_addr(ctrl);
+>  
+>  	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
+>  		err = brcmnand_dma_trans(host, addr, buf, trans * FC_BYTES,
+> @@ -1858,15 +1888,9 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+>  		goto out;
+>  	}
+>  
+> -	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+> -			(host->cs << 16) | ((addr >> 32) & 0xffff));
+> -	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
+> -
+>  	for (i = 0; i < trans; i++, addr += FC_BYTES) {
+>  		/* full address MUST be set before populating FC */
+> -		brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
+> -				   lower_32_bits(addr));
+> -		(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+> +		brcmnand_set_cmd_addr(mtd, addr);
+>  
+>  		if (buf) {
+>  			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
 
-Changes in v4:
-- Add Yogesh's T-b and my S-o-b
-
-Changes in v3:
-- Make nor->read/write() functional before the direct mappings have been
-  created
-- Add Miquel's R-b
-
-Changes in v2:
-- Rename the dirmap fields
-- Return directly after calling dirmap_read/write() and let the spi-nor
-  framework call us again if those functions returned less than the
-  requested length
-
- drivers/mtd/devices/m25p80.c |  102 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 99 insertions(+), 3 deletions(-)
-
-Index: linux/drivers/mtd/devices/m25p80.c
-===================================================================
---- linux.orig/drivers/mtd/devices/m25p80.c
-+++ linux/drivers/mtd/devices/m25p80.c
-@@ -31,8 +31,70 @@
- struct m25p {
- 	struct spi_mem		*spimem;
- 	struct spi_nor		spi_nor;
-+	struct {
-+		struct spi_mem_dirmap_desc *rdesc;
-+		struct spi_mem_dirmap_desc *wdesc;
-+	} dirmap;
- };
- 
-+static int m25p_create_write_dirmap(struct m25p *flash)
-+{
-+	struct spi_nor *nor = &flash->spi_nor;
-+	struct spi_mem_dirmap_info info = {
-+		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
-+				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-+				      SPI_MEM_OP_NO_DUMMY,
-+				      SPI_MEM_OP_DATA_OUT(0, NULL, 1)),
-+		.offset = 0,
-+		.length = flash->spi_nor.mtd.size,
-+	};
-+	struct spi_mem_op *op = &info.op_tmpl;
-+
-+	/* get transfer protocols. */
-+	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
-+	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-+	op->dummy.buswidth = op->addr.buswidth;
-+	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
-+
-+	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
-+		op->addr.nbytes = 0;
-+
-+	flash->dirmap.wdesc = spi_mem_dirmap_create(flash->spimem, &info);
-+	if (IS_ERR(flash->dirmap.wdesc))
-+		return PTR_ERR(flash->dirmap.wdesc);
-+
-+	return 0;
-+}
-+
-+static int m25p_create_read_dirmap(struct m25p *flash)
-+{
-+	struct spi_nor *nor = &flash->spi_nor;
-+	struct spi_mem_dirmap_info info = {
-+		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
-+				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-+				      SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
-+				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
-+		.offset = 0,
-+		.length = flash->spi_nor.mtd.size,
-+	};
-+	struct spi_mem_op *op = &info.op_tmpl;
-+
-+	/* get transfer protocols. */
-+	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
-+	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-+	op->dummy.buswidth = op->addr.buswidth;
-+	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
-+
-+	/* convert the dummy cycles to the number of bytes */
-+	op->dummy.nbytes = (nor->read_dummy * op->dummy.buswidth) / 8;
-+
-+	flash->dirmap.rdesc = spi_mem_dirmap_create(flash->spimem, &info);
-+	if (IS_ERR(flash->dirmap.rdesc))
-+		return PTR_ERR(flash->dirmap.rdesc);
-+
-+	return 0;
-+}
-+
- static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
- {
- 	struct m25p *flash = nor->priv;
-@@ -92,6 +154,9 @@ static ssize_t m25p80_write(struct spi_n
- 				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
- 	int ret;
- 
-+	if (flash->dirmap.wdesc)
-+		return spi_mem_dirmap_write(flash->dirmap.wdesc, to, len, buf);
-+
- 	/* get transfer protocols. */
- 	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
- 	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-@@ -128,6 +193,9 @@ static ssize_t m25p80_read(struct spi_no
- 	size_t remaining = len;
- 	int ret;
- 
-+	if (flash->dirmap.rdesc)
-+		return spi_mem_dirmap_read(flash->dirmap.rdesc, from, len, buf);
-+
- 	/* get transfer protocols. */
- 	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
- 	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-@@ -238,19 +306,47 @@ static int m25p_probe(struct spi_mem *sp
- 	if (ret)
- 		return ret;
- 
--	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
--				   data ? data->nr_parts : 0);
-+	ret = m25p_create_write_dirmap(flash);
-+	if (ret)
-+		return ret;
-+
-+	ret = m25p_create_read_dirmap(flash);
-+	if (ret)
-+		goto err_destroy_write_dirmap;
-+
-+	ret = mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-+				  data ? data->nr_parts : 0);
-+	if (ret)
-+		goto err_destroy_read_dirmap;
-+
-+	return 0;
-+
-+err_destroy_read_dirmap:
-+	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-+
-+err_destroy_write_dirmap:
-+	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-+
-+	return ret;
- }
- 
- 
- static int m25p_remove(struct spi_mem *spimem)
- {
- 	struct m25p	*flash = spi_mem_get_drvdata(spimem);
-+	int ret;
- 
- 	spi_nor_restore(&flash->spi_nor);
- 
- 	/* Clean up MTD stuff. */
--	return mtd_device_unregister(&flash->spi_nor.mtd);
-+	ret = mtd_device_unregister(&flash->spi_nor.mtd);
-+	if (ret)
-+		return ret;
-+
-+	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-+	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-+
-+	return 0;
- }
- 
- static void m25p_shutdown(struct spi_mem *spimem)
 
 ______________________________________________________
 Linux MTD discussion mailing list
