@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D6A1C04AB5
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A935BC28CC6
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:43:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 439B327EC0
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:43:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72C4F2805E
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:43:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="mU4sF5Nm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="QPs+4FQd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 439B327EC0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fS9wPNIW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="MW6KmWIA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72C4F2805E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,33 +26,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AN3kJfaGkbLQiWZm1yiWjxQ8KpsLBuY7OxpANABv9bk=; b=mU4sF5NmNPqHNF
-	OFvc/5Pj3Arx3K/0Dw9cJRzGqwKSYuRKwooEaz4BjfNGgtf0QzZfhU7Yjvwmt8A4zIgjg/ub+G3Uw
-	F+8gIZ7xFtpIobITtG3o9ndhDLxE/m0g0E7qkUlfe06Jg9LEJpCvvdDGJrsQCUoL2JAU2is3ezovT
-	sAdAMCyIefK9AQLWzHpn1ewLkb3iJLAtrOqOYNlpeGBcfPY6dbbRSYEzagwtZD9jeRsTpowT52lby
-	lVZwVPybLNuk+Ou9VmIn5NQR+K4/kmWwKSmPImZrBYrRSpBJ+1vG1nGnZlBOh5mvSLRJpYUxEho0c
-	lXIrwhq6KPpJD8MkMy5Q==;
+	List-Owner; bh=CdkO5yIkwmGArooMIc/qvMwfCvddbhk/b5IyfTK37r4=; b=fS9wPNIWYUKxFh
+	S7/TL1MIVNSYWBmmLCiSmLpky0+TGG4EosIkzcYUHsuoKVxFaJap/QphUEn+NeieCIxGMRWzhCi3E
+	ZJ3AQzNHjbVnICR7CdRs8Vj92eX2ynrqhAchK+yKqp1XEKgL2YCTZf5IDRTXqVAClfY1f3V/L7/Yb
+	XCBxwcbtEq2JLLHs1k1ww5vXAPYtLJmpBSIwDAHbVVBedxu9A7WILtLnlwM5iFaqDbZ/8x3aHzqrO
+	gIAAPeJTmtIl47aB6keDV6eI9ppaPlwBSniavHC9gWQv0OJV/mSfrf7xOdweZB8vQQiOX2gY9Y4j8
+	jMRgRF+BnrAxlKJPRnTA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hXmJM-0004IY-6C; Mon, 03 Jun 2019 12:43:36 +0000
+	id 1hXmJV-0004X8-S5; Mon, 03 Jun 2019 12:43:45 +0000
 Received: from mail-eopbgr750057.outbound.protection.outlook.com
  ([40.107.75.57] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXmJD-00047x-Ek
- for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 12:43:28 +0000
+ id 1hXmJF-00047x-5u
+ for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 12:43:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZqWGWMZVHJyu/kVx4LtSNU+8fq4JT/Mr6ztQHwBfY4Q=;
- b=QPs+4FQdzPVzaT75oUXgr3jZ18LIkm0ZmSzgkm5NL+hFUQ/VIMO8donkiLFq8kFGiG5p8FJmI3hQUjEYa0JPd/8PR5m8sIX4dByo1SDaW6n++RYudexDp0KMmAAkMjc2uv8TNW1ePK0vPF6ht6/ySDZO9GTMhZlKHUMXzhOJ4SY=
+ bh=l4A5V5oFqAtoLfyAer5GJlkd4qrfwcebqlM8DtwhfPk=;
+ b=MW6KmWIA+3LpFoiZ84gmjQp9OCBPtJOaEzhyAZEvOOvjrCFGRm3nZdUW7NidmiBjDVUC0yslkyjE/L2UjfMYW0+WCzxdaWR0WqF2TlzRbiZyWi7rSaK6Fm7Jyp8+F6AiZnDsO5zQ9OVNNwP93lkR55B+V5uXCLnurE+VSQof8xU=
 Received: from MN2PR08MB5951.namprd08.prod.outlook.com (20.179.85.220) by
  MN2PR08MB5872.namprd08.prod.outlook.com (20.179.86.153) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1943.18; Mon, 3 Jun 2019 12:43:23 +0000
+ 15.20.1943.18; Mon, 3 Jun 2019 12:43:25 +0000
 Received: from MN2PR08MB5951.namprd08.prod.outlook.com
  ([fe80::f0f7:f262:a3c6:ce23]) by MN2PR08MB5951.namprd08.prod.outlook.com
  ([fe80::f0f7:f262:a3c6:ce23%7]) with mapi id 15.20.1943.018; Mon, 3 Jun 2019
- 12:43:23 +0000
+ 12:43:25 +0000
 From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
@@ -65,13 +65,12 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <frieder.schrempf@kontron.de>, Chuanhong Guo <gch981213@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 01/12] mtd: rawnand: turn nand_onfi_detect to use
- nand_device
-Thread-Topic: [PATCH v3 01/12] mtd: rawnand: turn nand_onfi_detect to use
- nand_device
-Thread-Index: AdUaAy8RvNFH7myfRde2bNfDQJf8+g==
-Date: Mon, 3 Jun 2019 12:43:23 +0000
-Message-ID: <MN2PR08MB5951A1DDC80445E917EAA32DB8140@MN2PR08MB5951.namprd08.prod.outlook.com>
+Subject: [PATCH v3 02/12] mtd: rawnand: move ONFI related functions to nand.h
+Thread-Topic: [PATCH v3 02/12] mtd: rawnand: move ONFI related functions to
+ nand.h
+Thread-Index: AdUaA33lzTYZjiQsTQKPsgxjg8oWdQ==
+Date: Mon, 3 Jun 2019 12:43:25 +0000
+Message-ID: <MN2PR08MB5951ABF020CC1DFD080A7A21B8140@MN2PR08MB5951.namprd08.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -80,13 +79,13 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=sshivamurthy@micron.com; 
 x-originating-ip: [165.225.81.42]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2e48ea67-2274-4a22-3377-08d6e8211108
+x-ms-office365-filtering-correlation-id: dd5ae25d-f1f5-4f57-3b4f-08d6e821120a
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
  SRVR:MN2PR08MB5872; 
 x-ms-traffictypediagnostic: MN2PR08MB5872:|MN2PR08MB5872:
-x-microsoft-antispam-prvs: <MN2PR08MB5872705FCE1ABCA3C4655F5CB8140@MN2PR08MB5872.namprd08.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-microsoft-antispam-prvs: <MN2PR08MB5872AC129DA51F3BED26D2E5B8140@MN2PR08MB5872.namprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1201;
 x-forefront-prvs: 0057EE387C
 x-forefront-antispam-report: SFV:NSPM;
  SFS:(10009020)(396003)(376002)(136003)(346002)(39860400002)(366004)(189003)(199004)(76116006)(14454004)(99286004)(7696005)(71200400001)(71190400001)(66446008)(5660300002)(9686003)(52536014)(73956011)(66946007)(66476007)(66066001)(66556008)(64756008)(2201001)(55236004)(6116002)(478600001)(316002)(102836004)(110136005)(2906002)(3846002)(6506007)(86362001)(7416002)(53936002)(486006)(26005)(2501003)(8936002)(476003)(33656002)(14444005)(256004)(8676002)(74316002)(81166006)(81156014)(6436002)(68736007)(7736002)(305945005)(186003)(25786009)(55016002)(921003)(1121003);
@@ -96,19 +95,19 @@ x-forefront-antispam-report: SFV:NSPM;
 received-spf: None (protection.outlook.com: micron.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: R97Kp5fG+znziDSus+uMBjixBdzBXGoL8dgz4yydPXkDaF0CpgEe1x5J3J80F+WXZSGKme490v03GiILzHAwSPxpqW3vSa6jOs6gwPtY/xAbdzQxoOcHXmkY6nWG/AIs3ykDdjKM2o7r0Be7I1ofFk5+JcV6LKdzjhs1DkiDWftfhNTk90OIFGEnMGwHaSD0XdTHB07izT/yUlQY7orjsxab4Y7KQLcs2ynHROqxQvC3K99aImhpEDeJp6NC0V5SMSDV1SVdALBYGvfzZstq2Nu72a61ubbJw91kU2/TPGl/t9inf4Jj9tVOJyLduR77WL3Wet82hmWwgg5V7sTXOGwYjQOHNfuiDzpel8hoOLRNn3q5Rg6KL0586nLTV0u3JAGsx0O/T+fXQ/yO9mD4r+SE6ylQGVHP1aeSFYaCxK4=
+x-microsoft-antispam-message-info: B51J2wQ45XON2SS5llADr/YbfHdSTK/O0sQ5GLGgaAh9ENNOc3vo8Zk9Zb0jJ8aIzXTbzCsGxQwUawDTuzQPMHQ84PKX0mbZaLnJszoxPnbCkDM2VvSRVoHRnfGv9QahJjqHxFm4EpFfcnAof3EZC0E6M9uusQEejPu/TuDbzlOdImRafRsIWESIN9jJxPwKokVWVMDIl7xXISFe2oe+pzBrPijTgBW9uhRMoZJsY9wuOm/EraWSL12rwP7mrrSyFCvUOf6SCm9g+KBVdjTQml/8Iuw0DNLq6t3faZpNGWJrCaB5mgwXfV+a3IihboltcNm6uBJBRWncmXfX6dCLr2YY05dcorzKukTzDay72PorXiaM/dJTDvQKbeVtKKOtfzGlzC28AgQP7NpXZXFg3CZtHQRqh/IPPphHLOFizXk=
 MIME-Version: 1.0
 X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e48ea67-2274-4a22-3377-08d6e8211108
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 12:43:23.3910 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd5ae25d-f1f5-4f57-3b4f-08d6e821120a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 12:43:25.1790 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: sshivamurthy@micron.com
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB5872
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190603_054327_492815_9D3570AB 
-X-CRM114-Status: GOOD (  12.94  )
+X-CRM114-CacheID: sfid-20190603_054329_228335_D4A6230D 
+X-CRM114-Status: GOOD (  11.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -125,93 +124,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It is necessary to turn nand_onfi_detect to use nand_device structure,
-to make ONFI related codes generic for all NAND devices.
+ONFI reated functions are used by nand_jedec.c and in next patch
+nand_onfi.c will be moving to nand/ directory, it is necessary to move
+these functions to nand.h.
 
 Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
 ---
- drivers/mtd/nand/raw/internals.h | 2 +-
- drivers/mtd/nand/raw/nand_base.c | 2 +-
- drivers/mtd/nand/raw/nand_onfi.c | 8 +++++---
- include/linux/mtd/rawnand.h      | 5 +++++
- 4 files changed, 12 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/internals.h | 4 ----
+ drivers/mtd/nand/raw/nand_onfi.c | 8 ++++----
+ include/linux/mtd/nand.h         | 9 +++++++++
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index cba6fe7dd8c4..4dc9ae108fa1 100644
+index 4dc9ae108fa1..c7c684f533fc 100644
 --- a/drivers/mtd/nand/raw/internals.h
 +++ b/drivers/mtd/nand/raw/internals.h
-@@ -141,7 +141,7 @@ int nand_legacy_check_hooks(struct nand_chip *chip);
+@@ -139,10 +139,6 @@ void nand_legacy_set_defaults(struct nand_chip *chip);
+ void nand_legacy_adjust_cmdfunc(struct nand_chip *chip);
+ int nand_legacy_check_hooks(struct nand_chip *chip);
  
- /* ONFI functions */
- u16 onfi_crc16(u16 crc, u8 const *p, size_t len);
--int nand_onfi_detect(struct nand_chip *chip);
-+int nand_onfi_detect(struct nand_device *base);
- 
+-/* ONFI functions */
+-u16 onfi_crc16(u16 crc, u8 const *p, size_t len);
+-int nand_onfi_detect(struct nand_device *base);
+-
  /* JEDEC functions */
  int nand_jedec_detect(struct nand_chip *chip);
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 6ecd1c496ce3..96a93481420f 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4737,7 +4737,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
  
- 	if (!type->name || !type->pagesize) {
- 		/* Check if the chip is ONFI compliant */
--		ret = nand_onfi_detect(chip);
-+		ret = nand_onfi_detect(&chip->base);
- 		if (ret < 0)
- 			return ret;
- 		else if (ret)
 diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
-index 0b879bd0a68c..e20b60b8dd93 100644
+index e20b60b8dd93..939e2277830e 100644
 --- a/drivers/mtd/nand/raw/nand_onfi.c
 +++ b/drivers/mtd/nand/raw/nand_onfi.c
-@@ -13,6 +13,7 @@
-  */
- 
- #include <linux/slab.h>
-+#include <linux/mtd/nand.h>
- 
- #include "internals.h"
- 
-@@ -137,9 +138,10 @@ static void nand_bit_wise_majority(const void **srcbufs,
+@@ -107,10 +107,10 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
  /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+  * Recover data with bit-wise majority
   */
--int nand_onfi_detect(struct nand_chip *chip)
-+int nand_onfi_detect(struct nand_device *base)
+-static void nand_bit_wise_majority(const void **srcbufs,
+-				   unsigned int nsrcbufs,
+-				   void *dstbuf,
+-				   unsigned int bufsize)
++void nand_bit_wise_majority(const void **srcbufs,
++			    unsigned int nsrcbufs,
++			    void *dstbuf,
++			    unsigned int bufsize)
  {
--	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_chip *chip = device_to_nand(base);
-+	struct mtd_info *mtd = &base->mtd;
- 	struct nand_memory_organization *memorg;
- 	struct nand_onfi_params *p;
- 	struct onfi_params *onfi;
-@@ -147,7 +149,7 @@ int nand_onfi_detect(struct nand_chip *chip)
- 	char id[4];
- 	int i, ret, val;
+ 	int i, j, k;
  
--	memorg = nanddev_get_memorg(&chip->base);
-+	memorg = nanddev_get_memorg(base);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index cebc38b6d6f5..3cdf06cae8b6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -760,4 +760,13 @@ static inline bool nanddev_bbt_is_initialized(struct nand_device *nand)
+ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo);
+ int nanddev_mtd_max_bad_blocks(struct mtd_info *mtd, loff_t offs, size_t len);
  
- 	/* Try ONFI for unknown chip or LP */
- 	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index f5bb6f11c36b..87282beee008 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1154,6 +1154,11 @@ static inline struct mtd_info *nand_to_mtd(struct nand_chip *chip)
- 	return &chip->base.mtd;
- }
- 
-+static inline struct nand_chip *device_to_nand(struct nand_device *base)
-+{
-+	return container_of(base, struct nand_chip, base);
-+}
++/* ONFI functions */
++u16 onfi_crc16(u16 crc, u8 const *p, size_t len);
++void nand_bit_wise_majority(const void **srcbufs,
++			    unsigned int nsrcbufs,
++			    void *dstbuf,
++			    unsigned int bufsize);
++void sanitize_string(u8 *s, size_t len);
++int nand_onfi_detect(struct nand_device *base);
 +
- static inline void *nand_get_controller_data(struct nand_chip *chip)
- {
- 	return chip->priv;
+ #endif /* __LINUX_MTD_NAND_H */
 -- 
 2.17.1
 
