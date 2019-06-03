@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FDFCC04AB5
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41198C04AB5
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:45:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28D882810B
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:45:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0ABDE2811D
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:45:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DTdZ6JbX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="vIeTvY32"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28D882810B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Th/PAO0M";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=micron.com header.i=@micron.com header.b="p4oA8dC+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ABDE2811D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=micron.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,33 +26,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mHTHCI+4iV0hQZeqLLKIz0Ox9SRQqaNK2B6TpGTxzYA=; b=DTdZ6JbXZFRMjG
-	wny1Cg7GLGHa/SpZaPtVBkdIO+ml+Ky7qPtYgmSjumDhoyLaSLdQPpkd8OAz9KfJDCMrfT3HrWxN/
-	sEkWWrsyWNPjR8kL1S5atEwHmmARolclb79reDRnVkjM8tvm7IGFxYTCJU01FvdL6bzAGQUGRKx4T
-	0mWrEjzWJInpYJD3Brb7Fjs5GKDWQcGEyZgIMY4RQwDx7HmutQjKdUGzc5ufdqzvTG6rXevikuDgx
-	7GszNVgxpJ5yZX/1KjQSOQEnkkIK5UH/KubKg9+oFGAfOQXVYkN5nGGsWI+NtRfN+xRd9UKz125lR
-	NUUrxCnJyQ03gE5UvWYQ==;
+	List-Owner; bh=i42gffFLz/5+Do4DIfteChDtIZd9TwEha4Rc9f9S6fg=; b=Th/PAO0MR5TwT0
+	i85G7DIkVjQ5EdVfFBZSugNgNHZMlUfL6Nu0ntVquGkf4DVQ/4lBy9ji84LtmOmzQ65AQOeSNfAJx
+	V01OuLf0/T3jjz0fmuGYo2h3se3u/dDW9OhMexv7AWt1BaYNx56MDNYPTr0T2YtngZhi3A9H07Bae
+	Sxg1usxz4mol99oo5mzl3zlC12g91rJqldAdG3otECsK3KwGBZb/mF92EwBTDX4GdDBU7UNllCYjV
+	I5cFFcLqkBJKG3IcTK/iMZAkDk2iz/kO4wxEPwemGaeLJgSQhms3KVIIWyRU7bsRBYRWEK+oyXBk7
+	kb57lCxJDGwT2JsF51FA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hXmKu-00079a-Qi; Mon, 03 Jun 2019 12:45:12 +0000
-Received: from mail-eopbgr750057.outbound.protection.outlook.com
- ([40.107.75.57] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+	id 1hXmL8-0007mb-Fn; Mon, 03 Jun 2019 12:45:26 +0000
+Received: from mail-eopbgr770042.outbound.protection.outlook.com
+ ([40.107.77.42] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXmJz-00047x-PR
- for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 12:44:55 +0000
+ id 1hXmK9-0004Oj-Vv
+ for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 12:45:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbHAcf+LHBvnC1NtHAHv5kNYrvHSrh0Evik85s8nSIg=;
- b=vIeTvY32HQd0Cdoj4uiSIp5xmwQa6r2LB1Q7uErmFtCWyxDSrtaKme3Y4SppUWoIsO+VtdKfnE0Ge+cxHv15cToscv+wQasPRlpyMyoEqz5IgYlghY74XUloMnfUD1M0slBA3LDy5XR1ShANBSxDR3r+2iLgtBVEZsnUaL4sYYU=
+ bh=N31gu65mo/zUo0sBjOpDK8lKNr1MdlVkERp8c7Pvrlw=;
+ b=p4oA8dC+ybXtLokypwrcVnyCronSiqir3xv8D2mGUVfpqSUP3jBbK1MsoQzuAf2ITsoHrW8j/cITDGf64gjPSCaa26RnOxmH7Wym5/GpqPbKPhFZoyo3J2/4IjnvmdP4YXdqSJeAixCE9KUrkUcR5nTUEr4c8x3//viCxqQgUFM=
 Received: from MN2PR08MB5951.namprd08.prod.outlook.com (20.179.85.220) by
- MN2PR08MB5872.namprd08.prod.outlook.com (20.179.86.153) with Microsoft SMTP
+ MN2PR08MB5854.namprd08.prod.outlook.com (20.179.98.213) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1943.18; Mon, 3 Jun 2019 12:43:35 +0000
+ 15.20.1943.22; Mon, 3 Jun 2019 12:43:42 +0000
 Received: from MN2PR08MB5951.namprd08.prod.outlook.com
  ([fe80::f0f7:f262:a3c6:ce23]) by MN2PR08MB5951.namprd08.prod.outlook.com
  ([fe80::f0f7:f262:a3c6:ce23%7]) with mapi id 15.20.1943.018; Mon, 3 Jun 2019
- 12:43:35 +0000
+ 12:43:42 +0000
 From: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
@@ -65,13 +65,13 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <frieder.schrempf@kontron.de>, Chuanhong Guo <gch981213@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 07/12] mtd: spinand: turn SPI NAND to support parameter
- page detection
-Thread-Topic: [PATCH v3 07/12] mtd: spinand: turn SPI NAND to support
- parameter page detection
-Thread-Index: AdUaBZEnl1jU+7xBQUOxHRT5yHw9jA==
-Date: Mon, 3 Jun 2019 12:43:35 +0000
-Message-ID: <MN2PR08MB5951A490A0252C9DD038EA00B8140@MN2PR08MB5951.namprd08.prod.outlook.com>
+Subject: [PATCH v3 11/12] mtd: spinand: micron: Fix read failure in Micron
+ M70A flashes
+Thread-Topic: [PATCH v3 11/12] mtd: spinand: micron: Fix read failure in
+ Micron M70A flashes
+Thread-Index: AdUaBqrYXG5fZNW1Tl+nROeafv3SiA==
+Date: Mon, 3 Jun 2019 12:43:42 +0000
+Message-ID: <MN2PR08MB5951CC96E757BB4A3549AE89B8140@MN2PR08MB5951.namprd08.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -80,35 +80,35 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=sshivamurthy@micron.com; 
 x-originating-ip: [165.225.81.42]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2782c52c-a4df-4d26-833e-08d6e82117e8
+x-ms-office365-filtering-correlation-id: 4ee1f652-795e-4e80-b212-08d6e8211c86
 x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:MN2PR08MB5872; 
-x-ms-traffictypediagnostic: MN2PR08MB5872:|MN2PR08MB5872:
-x-microsoft-antispam-prvs: <MN2PR08MB5872A154232BD58BC451D1AAB8140@MN2PR08MB5872.namprd08.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
+ SRVR:MN2PR08MB5854; 
+x-ms-traffictypediagnostic: MN2PR08MB5854:|MN2PR08MB5854:
+x-microsoft-antispam-prvs: <MN2PR08MB5854A98E5164BDABB807D6BCB8140@MN2PR08MB5854.namprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
 x-forefront-prvs: 0057EE387C
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(1496009)(396003)(376002)(136003)(346002)(39860400002)(366004)(189003)(199004)(76116006)(14454004)(99286004)(7696005)(71200400001)(71190400001)(66446008)(5660300002)(9686003)(52536014)(73956011)(66946007)(66476007)(66066001)(66556008)(64756008)(2201001)(55236004)(6116002)(478600001)(316002)(102836004)(110136005)(2906002)(3846002)(6506007)(86362001)(7416002)(53936002)(486006)(26005)(2501003)(8936002)(476003)(33656002)(14444005)(256004)(8676002)(74316002)(81166006)(81156014)(6436002)(68736007)(7736002)(305945005)(186003)(25786009)(55016002)(921003)(1121003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR08MB5872;
+ SFS:(10009020)(366004)(346002)(136003)(396003)(376002)(39860400002)(189003)(199004)(5660300002)(81166006)(8936002)(7696005)(14444005)(7736002)(8676002)(305945005)(55016002)(256004)(2501003)(81156014)(102836004)(2906002)(110136005)(6506007)(25786009)(55236004)(33656002)(76116006)(476003)(73956011)(66066001)(66556008)(66946007)(26005)(99286004)(64756008)(486006)(66446008)(186003)(66476007)(52536014)(6436002)(74316002)(9686003)(6116002)(3846002)(2201001)(14454004)(7416002)(86362001)(316002)(53936002)(71190400001)(71200400001)(68736007)(478600001)(921003)(1121003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR08MB5854;
  H:MN2PR08MB5951.namprd08.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: micron.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: IYA2IUj11LscvEmTBtAB6haVhhrx/N+zI3UOSmiRFAr94YQK+85APY1J6blKEVErXQcAC8awetpdKNczsYH8Bao4fW9QgTw2PylhbJ+D4BoYAc+cL4RXD891Ni+PnCCtO2h4tRuM730sGy2+HG1pUYHEcyrETqKoVPkBj/YeahTE2yW8U1ESCYTmk+rINuEUtpmTrh63Sl/o9nHZ0am85MPcLL2Ka6HCRHn1D5wfShJHqzhlKH2BefDqT6r/aQy2fgjJONAKaSM4NhOi0nAKTQu+JIOF3i9WPMoDEeTf6b7/rv9STi9OmrKOEynpttH37iAqVa6O5Pxqp1JfFuStj9q1ujcH5BvIivk74F2ytZmwF7tvSeHG+0WZ3jPH1q3Kb9IcsYeAV9msdvuLtgWTfWUa+0qMHWl4F3xjRTyEP44=
+x-microsoft-antispam-message-info: MCjwPj12qcNNvEvqnIJq09WloBRfVzqQFtLr+9Q87B/GNqcL+phBEQuMkjmZBA91gw+E4z9cEUvLyYfYMaFGHjrWGDRtxoA/X2tP3zwTQD95gdgB2AHYGNgKFFY/SbsmlKDMcl+gzp1hIQlVc/oBBywx7KGkYA7wPPk2QpZ9ytuyA7akpZT2rHTmffBuEODSOxZibnE4glAOKSOpB3azYkw7JSHTE85jds+YvV7U6Dr7bLykCVC3gIVMfPFdxmcHfugS8xoLHxKhkvIGBLdr7/3F/vtrVaqWPFk5/zHBf81tbQ3mVwOEwh9L8NnZXHDYR26GWKUcBE0tVcmn5mQD+RU2c2fwGIpD3jUmmKZpxM8BxuMtKUe/dyGmZhoo1mgtTxv3sFdoFFU3MyooZDoLs5pQN+lJN6Lj2v6LjLW9z1o=
 MIME-Version: 1.0
 X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2782c52c-a4df-4d26-833e-08d6e82117e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 12:43:35.0483 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ee1f652-795e-4e80-b212-08d6e8211c86
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 12:43:42.7949 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: sshivamurthy@micron.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB5872
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR08MB5854
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190603_054416_404246_57208CF3 
-X-CRM114-Status: GOOD (  13.54  )
+X-CRM114-CacheID: sfid-20190603_054426_838492_383402B2 
+X-CRM114-Status: GOOD (  11.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -125,135 +125,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Instantiate onfi_helper object for SPI NAND.
-Enable SPI NAND core to detect SPI NANDs with parameter page.
+M70A series flashes by default enable continuous read feature (BIT0 in
+configuration register). This feature will not expose the ECC to host
+and causing read failure.
 
 Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
 ---
- drivers/mtd/nand/spi/core.c | 103 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+ drivers/mtd/nand/spi/micron.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 4c15bb58c623..b031c4a2cdf9 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -400,6 +400,100 @@ static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
- 	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 6fde93ec23a1..1e28ea3d1362 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -127,6 +127,15 @@ static int micron_spinand_detect(struct spinand_device *spinand)
+ 	return 1;
  }
  
-+/**
-+ * spinand_read_param_page_op - Read parameter page operation
-+ * @base: the nand device
-+ * @page: page number where parameter page tables can be found
-+ * @buf: buffer used to store the parameter page
-+ * @len: length of the buffer
-+ *
-+ * Read parameter page
-+ *
-+ * Returns 0 on success, a negative error code otherwise.
-+ */
-+static int spinand_parameter_page_read(struct nand_device *base,
-+				       u8 page, void *buf, unsigned int len)
-+{
-+	struct spinand_device *spinand = nand_to_spinand(base);
-+	struct spi_mem_op pread_op = SPINAND_PAGE_READ_OP(page);
-+	struct spi_mem_op pread_cache_op =
-+				SPINAND_PAGE_READ_FROM_CACHE_OP(false,
-+								0,
-+								1,
-+								buf,
-+								len);
-+	u8 feature;
-+	u8 status;
-+	int ret;
-+
-+	if (len && !buf)
-+		return -EINVAL;
-+
-+	ret = spinand_read_reg_op(spinand, REG_CFG,
-+				  &feature);
-+	if (ret)
-+		return ret;
-+
-+	/* CFG_OTP_ENABLE is used to enable parameter page access */
-+	feature |= CFG_OTP_ENABLE;
-+
-+	spinand_write_reg_op(spinand, REG_CFG, feature);
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &pread_op);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_wait(spinand, &status);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &pread_cache_op);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_read_reg_op(spinand, REG_CFG,
-+				  &feature);
-+	if (ret)
-+		return ret;
-+
-+	feature &= ~CFG_OTP_ENABLE;
-+
-+	spinand_write_reg_op(spinand, REG_CFG, feature);
-+
-+	return 0;
-+}
-+
-+static int check_version(struct nand_device *base,
-+			 struct nand_onfi_params *p, int *onfi_version)
++static int micron_spinand_init(struct spinand_device *spinand)
 +{
 +	/*
-+	 * SPI NANDs do not necessarily support ONFI standard,
-+	 * but, parameter page looks the same as an ONFI table.
++	 * Some of the Micron flashes enable this BIT by default,
++	 * and there is a chance of read failure due to this.
 +	 */
-+	if (!le16_to_cpu(p->revision))
-+		*onfi_version = 0;
-+
-+	return 0;
++	return spinand_upd_cfg(spinand, CFG_QUAD_ENABLE, 0);
 +}
 +
-+static int spinand_intf_data(struct nand_device *base,
-+			     struct nand_onfi_params *p)
-+{
-+	return 0;
-+}
-+
-+static int spinand_param_page_detect(struct spinand_device *spinand)
-+{
-+	struct nand_device *base = spinand_to_nand(spinand);
-+
-+	base->helper.page = 0x01;
-+	base->helper.check_revision = check_version;
-+	base->helper.parameter_page_read = spinand_parameter_page_read;
-+	base->helper.init_intf_data = spinand_intf_data;
-+
-+	return nand_onfi_detect(base);
-+}
-+
- static int spinand_check_ecc_status(struct spinand_device *spinand, u8 status)
+ static void micron_fixup_param_page(struct spinand_device *spinand,
+ 				    struct nand_onfi_params *p)
  {
- 	struct nand_device *nand = spinand_to_nand(spinand);
-@@ -910,6 +1004,15 @@ static int spinand_detect(struct spinand_device *spinand)
- 		return ret;
- 	}
+@@ -150,6 +159,7 @@ static void micron_fixup_param_page(struct spinand_device *spinand,
  
-+	if (!spinand->base.memorg.pagesize) {
-+		ret = spinand_param_page_detect(spinand);
-+		if (ret <= 0) {
-+			dev_err(dev, "no parameter page for %*phN\n",
-+				SPINAND_MAX_ID_LEN, spinand->id.data);
-+			return -ENODEV;
-+		}
-+	}
-+
- 	if (nand->memorg.ntargets > 1 && !spinand->select_target) {
- 		dev_err(dev,
- 			"SPI NANDs with more than one die must implement ->select_target()\n");
+ static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
+ 	.detect = micron_spinand_detect,
++	.init = micron_spinand_init,
+ 	.fixup_param_page = micron_fixup_param_page,
+ };
+ 
 -- 
 2.17.1
 
