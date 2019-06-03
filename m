@@ -2,23 +2,23 @@ Return-Path: <SRS0=ioUS=UC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 639D0C04AB5
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 10:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF04C04AB5
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 11:12:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 387662809A
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 10:19:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8552628107
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 11:12:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OdsUczAj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GY64xU8E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 387662809A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uMAbHz8x";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tTYEqU4p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8552628107
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,57 +26,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uqd6Pq6bZIL02EQgvN63r3XQwaqso1tl6zINfR34K0U=; b=OdsUczAjA2mTF4
-	/PW34WxCfYS5jVTH4J3vsUGGl5wCMZad4gkY4e2T5tzFoeRCLhsOH4DD+dRPk3eeIO6tIeVyJR/ES
-	yXNtT84V2RGDSvCFwxw/e+2o5gkvyLNhXo/CY/zfy7TB7hatXh9rEXLglftleYB3IMACMvo9nkBGB
-	DIHyFXE6O7Y30GJcjJQczOivhzOwpMDiAT2qFJ7amBV/TE/EdK53o0k7CWL/hsJGtVzsrTlhSYj/Q
-	nisW3aWgYd7exjm56kFRunSbKEfq9XrBfkX8aLUf8pLUdeNwKoUwp5bw4xFS2I3+DJO9tGAANKljI
-	3w+ZABJB2AEt9dVyK9QA==;
+	List-Owner; bh=vgW5ypixbSzEHrpsz8x/gP5vy5+P5DAtipHqGVXUAl8=; b=uMAbHz8xGlHG0R
+	zPubuCd2UNujuKqe3vyVZYZY208P1cShRKwNmYMKd7VyGWEXY1MunXACPu8gimYB7QB29Yppdeuyj
+	uPKJ1JcVXflV3SWpuWwy+VveEi8PlFMU/WvujiZyL2i0sFm9RcA7iSdb0VXj0p7vsnEMeGRjLepIQ
+	aq309nP+SvR4UmGFTg+5FjaM9TQKJbO25x2my+oE298XhPE6wNbDmJwkooP6gXRZVagvU2LDaM4lB
+	UC6wNQpNKrvNiUD0KEyJLjs2w/2pZ0OgI2jBPST3uMTC7undNQk5kLo/QHV8LLoIast87Ue72MUq3
+	AMXXenERvbTrX+K4C0NA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hXk4F-0004rS-Hp; Mon, 03 Jun 2019 10:19:51 +0000
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+	id 1hXksq-00028m-Eh; Mon, 03 Jun 2019 11:12:08 +0000
+Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXk4C-0004qr-7p
- for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 10:19:49 +0000
-Received: by mail-wm1-x344.google.com with SMTP id t5so10431766wmh.3
- for <linux-mtd@lists.infradead.org>; Mon, 03 Jun 2019 03:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ id 1hXksn-00028O-AP
+ for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 11:12:07 +0000
+Received: by mail-qt1-x82e.google.com with SMTP id d23so8817242qto.2
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Jun 2019 04:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=0rfDJgmy+Xqu/X1eIsTn5a01PvPdIXvhkiEpDOvAm2Q=;
- b=GY64xU8E/x4Ap+fplVQid9tFU4fzWovF8Xieidu7+YqyMqucYQZHY0kcIJ5oYQiugF
- SF+4jRqEAeQo+SucNNbHoXTCvjQtM0RshaBNi0dyekUj6c4KQQQwVH6DAfBcgUTyPFtC
- UePcPzz3s2BMlwVheM3X4x+MwuZhdOAGv/seE=
+ :cc; bh=ELVXp1eDlBRvxqhGjGPHKBiAR/+IASCt9mGCFmIQCEA=;
+ b=tTYEqU4pEWONf0nX1WSISIkd83fJzINgGaNjC/Y4P4NINsYssBjMa2w/P5N4MhYb6C
+ 3Z9N8PqFCN409cu6OEmXhrNT9gObwAE+vs3IT3CKw8bSDdZAR4o/XIJ9yc6RrdYjee1x
+ BjeTKfPw4yto6pAFffRf4OMpd/xw3/HpQ1TkRLJ0cbldDswEZyTrWh/jKOkYOwHJte8l
+ Ft6r3ry6ppOEZJ++G6/hUkWilyokNMe6nYoXRVFjmdO2SEezhW7zXZ2LbFoCC3ZFlBgd
+ v5bYLSthcZXrg2KFa/I8bhL4p7IfySPXc/yl69PB4pGgKVwBjKuk/iD8KuLN7gK85KnU
+ TIYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=0rfDJgmy+Xqu/X1eIsTn5a01PvPdIXvhkiEpDOvAm2Q=;
- b=kRPLP6qRGHrqxxEGwwuJKST0KaBwE2GBn0xFETCP+q9me0NrlmhQCa7C6qPoN8YMhl
- 1pW9/9mtXETjKvqQwgZKI6F5wHUP4TXtGaUkfhV0i7AycdDjI8xmNDcYau088QXp1I9n
- ZKMS+vLU8wL1SNllH3yGHq4gZ4SfGqHlNBPvwYSwNEs8vLhtxvCbZcCf8dXwpj1ixVEn
- 2XcA6dBxyTnQLoxLWwAFsUrkpPZ6PJotvtGXX3XRCi41Mi1JueAH6A60mcNkVbJw+R9L
- BKYb6+nm4cMIttfwHyoZdNewYKqaklotplM6LS6Fo7Jr0YQEXn8M3XkZHP/8ZjwwNS16
- NGEQ==
-X-Gm-Message-State: APjAAAW3UfVEoD7b63ZE34KPzSe/BmEVhSXnQ7ajTNi2GL+mIZGibCeG
- I0Osnlo26T2h37s3jDn+Yjgedje7UMIqdzUPSKRBqg==
-X-Google-Smtp-Source: APXvYqwaawPEQSgpvfGdbErojGREs5xnG+zAha54JRs8S1636smAbOZ1uSunFdwl+tgr1MhCBsy3xRfu7clZWJfwhZU=
-X-Received: by 2002:a1c:750d:: with SMTP id o13mr1716345wmc.35.1559557184736; 
- Mon, 03 Jun 2019 03:19:44 -0700 (PDT)
+ bh=ELVXp1eDlBRvxqhGjGPHKBiAR/+IASCt9mGCFmIQCEA=;
+ b=Ad8jnnB7q3od/1wrYbCkkP34xmEaOp+NfR+2jCEAW19P6f+6Z6fuJWniC9STkPJI0G
+ 3geDBczNWvDinbYBl6ultjsbMJgEe5dqB1WD5tGtEqC0PRMWwtLsxkbXeKpL/2YVUqxm
+ BxzM5kBp+GBJxhqU1FGPxkiwmp8OkTW7TfOeXWloxdv+ucr0UU5am21tgeJalsYanmYT
+ J7jZqLQOhRqKu70eYXzZKZ8jLh0ojSKaVG3qY9930mn4EEp5tWOefmroxxhYMqcaUS9x
+ SVuZyAX+xFQM/ziJqkooMxp5CiobjWH+JBywo03dhh5BDJvA56vihxAdhcEHzLlRI7Ak
+ 3fZw==
+X-Gm-Message-State: APjAAAWdMzUW0D8zsbECrQKjNkqCLADtRm7Vma2idr5McfzbI6mvkWrU
+ erUfhwRTpOdeYOzuxhW32GEaJny5EO0DfX9RxKk=
+X-Google-Smtp-Source: APXvYqxYitoaq6rnEhOWjNqYqfu6GHPNTV3r1ZgqYJfxEo326KiYiZN0FeMRUoKcqBFU4EPD/ZTeqis6ZMYU5oa45IY=
+X-Received: by 2002:ac8:7052:: with SMTP id y18mr21800742qtm.274.1559560323924; 
+ Mon, 03 Jun 2019 04:12:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190603031451.60749-1-zhuohao@chromium.org>
- <20190603031451.60749-2-zhuohao@chromium.org>
- <20190603092321.3a8f1c7f@collabora.com>
-In-Reply-To: <20190603092321.3a8f1c7f@collabora.com>
-From: Zhuohao Lee <zhuohao@chromium.org>
-Date: Mon, 3 Jun 2019 18:19:33 +0800
-Message-ID: <CABD5ybkf7RjQ3GwymPab3tcXsj3dD=0-WtaGB+c913Jwy60iLw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] mtd: spi-nor: enable the debugfs for the partname
- and partid
-To: Boris Brezillon <boris.brezillon@collabora.com>
+References: <CAM===sSAP-qRv7jxBs9KZDFyuL+Dx3wSkQfSOiSQtp8Z8FQcMw@mail.gmail.com>
+ <CAFLxGvymOZbBM=wtK-fcgYOv7OOucpcZ1eZJ9GQmUH8h9Jcc+Q@mail.gmail.com>
+ <CAM===sSzy4=joOnzLxbSDoC=4HgmXj7QF14vzFCKTWt8z-JLoA@mail.gmail.com>
+In-Reply-To: <CAM===sSzy4=joOnzLxbSDoC=4HgmXj7QF14vzFCKTWt8z-JLoA@mail.gmail.com>
+From: Leon Pollak <leon.pollak@gmail.com>
+Date: Mon, 3 Jun 2019 14:11:52 +0300
+Message-ID: <CAM===sQ3bn34HCajra=Fh6X-u_fTt19UTsKz_EntAcndSd++gw@mail.gmail.com>
+Subject: Re: UBIFS on write-protected NAND
+To: Richard Weinberger <richard.weinberger@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190603_031948_302467_167EC9B5 
-X-CRM114-Status: GOOD (  20.22  )
+X-CRM114-CacheID: sfid-20190603_041205_589997_12786DAE 
+X-CRM114-Status: GOOD (  28.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,78 +90,147 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Nicolas Boichat <drinkcat@chromium.org>, bbrezillon@kernel.org,
- richard@nod.at, Brian Norris <briannorris@chromium.org>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 3, 2019 at 3:23 PM Boris Brezillon
-<boris.brezillon@collabora.com> wrote:
->
-> On Mon,  3 Jun 2019 11:14:51 +0800
-> Zhuohao Lee <zhuohao@chromium.org> wrote:
->
-> > This patch adds spi_nor_debugfs_init() for the debugfs initialization.
-> > With this patch, we can read the partname and partid through the
-> > debugfs.
-> >
-> > The output of new debugfs nodes on my device are:
-> > cat /sys/kernel/debug/mtd/mtd0/partid
-> > spi-nor:ef6017
-> > cat /sys/kernel/debug/mtd/mtd0/partname
-> > w25q64dw
-> >
-> > Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index 6e13bbd1aaa5..acc1915b380b 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -3935,6 +3935,18 @@ static void spi_nor_resume(struct mtd_info *mtd)
-> >               dev_err(dev, "resume() failed\n");
-> >  }
-> >
-> > +static void spi_nor_debugfs_init(struct spi_nor *nor,
-> > +             const struct flash_info *info)
-> > +{
-> > +     struct mtd_info *mtd = &nor->mtd;
-> > +
-> > +     mtd->dbg.partname = info->name;
-> > +     if (!mtd->dbg.partid)
->
-> Hm, how can this happen? I'd expect mtd->dbg.partid to always be NULL
-> when you reach that point. If that's not the case there's probably a
-> bug somewhere.
-Yes, it is always NULL in my case.
-Let me remove it in the next patch.
+Sorry, I think the full UBI log may be also useful:
+UBI: attaching mtd4 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    126976 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          2048 (aligned 2048)
+UBI: data offset:                4096
+UBI: max. sequence number:       85
+UBI: attached mtd4 to ubi0
+UBI: MTD device name:            "File System"
+UBI: MTD device size:            200 MiB
+UBI: number of good PEBs:        1601
+UBI: number of bad PEBs:         0
+UBI: number of corrupted PEBs:   0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 1601
+UBI: number of PEBs reserved for bad PEB handling: 16
+UBI: max/mean erase counter: 2/0
+UBI: image sequence number:  126133844
+UBI: background thread "ubi_bgt0d" started, PID 42
+UBIFS: mounted UBI device 0, volume 0, name "ubi_rootfs"
+UBIFS: mounted read-only
+UBIFS: file system size:   199225344 bytes (194556 KiB, 189 MiB, 1569 LEBs)
+UBIFS: journal size:       9023488 bytes (8812 KiB, 8 MiB, 72 LEBs)
+UBIFS: media format:       w4/r0 (latest is w4/r0)
+UBIFS: default compressor: lzo
+UBIFS: reserved for root:  0 bytes (0 KiB)
+VFS: Mounted root (ubifs filesystem) readonly on device 0:13.
+UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
+1600:2048, written 0 bytes
+UBI: run torture test for PEB 1600
+UBI error: do_sync_erase: cannot erase PEB 1600, error -5
+UBI error: erase_worker: failed to erase PEB 1600, error -5
+UBI: mark PEB 1600 as bad
+UBI error: ubi_io_mark_bad: cannot mark PEB 1600 bad, error -30
+UBI warning: ubi_ro_mode: switch to read-only mode
+UBI error: do_work: work failed with error code -30
+UBI error: ubi_thread: ubi_bgt0d: work failed with error code -30
 
+And from here my rootfs is in ro mode only.
+
+Thanks alot
+Leon
+
+On Mon, 3 Jun 2019 at 10:31, Leon Pollak <leon.pollak@gmail.com> wrote:
 >
-> > +             mtd->dbg.partid = devm_kasprintf(nor->dev, GFP_KERNEL,
-> > +                                             "spi-nor:%*phN",
-> > +                                              info->id_len, info->id);
-> > +}
-> > +
-> >  void spi_nor_restore(struct spi_nor *nor)
-> >  {
-> >       /* restore the addressing mode */
-> > @@ -4036,6 +4048,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
-> >       mtd->_read = spi_nor_read;
-> >       mtd->_resume = spi_nor_resume;
+> Thank you, Richard.
+>
+> On Sun, 2 Jun 2019 at 23:02, Richard Weinberger
+> <richard.weinberger@gmail.com> wrote:
 > >
-> > +     spi_nor_debugfs_init(nor, info);
-> > +
-> >       /* NOR protection support for STmicro/Micron chips and similar */
-> >       if (JEDEC_MFR(info) == SNOR_MFR_ST ||
-> >           JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+> > On Sun, Jun 2, 2019 at 4:08 PM Leon Pollak <leon.pollak@gmail.com> wrote:
+> > >
+> > > I am sorry to disturb the list with the problem most probably already
+> > > solved ion later versions...
+> > >
+> > > I am running Linux 2.6.32 from TI and my root FS is on NAND UBIFS.
+> > > Linux boots with command line:
+> > > root=ubi0:ubi_rootfs ro noinitrd ubi.mtd=4,2048 rootfstype=ubifs
+> > > Please, note the "ro" in the command line.
+> > > Also the HW write-protect line is always set to "protected" state.
+> > > UBIFS stays most of the time in write protected HW state (system
+> > > requirement) and RO mounted, except the very rare cases when some
+> > > update is required.
+> > >
+> > > For this update purpose:
+> > > - HW write-protect is removed in SW;
+> > > - root FS is remounted to RW (mount -o remount,rw /);
+> > > - the change is performed;
+> > > - sync, sleep 3;
+> > > - mount -o,remount,ro / ;
+> > > - sleep 2, return HW write-protection;
+> > > - reboot.
+> > >
+> > > For some unknown reason (may be you know?), sometimes something still
+> > > remains in journal and on the next boot we receive a bundle of error
+> > > messages with error codes -5 and -30. This happens despite the RO
+> > More details please. Can you share a full back trace?
+> This is an example:
+> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
+> 1600:2048, written 0 bytes
+> UBI: run torture test for PEB 1600
+> UBI error: do_sync_erase: cannot erase PEB 1600, error -5
+> UBI error: erase_worker: failed to erase PEB 1600, error -5
+> UBI: mark PEB 1600 as bad
+> UBI error: ubi_io_mark_bad: cannot mark PEB 1600 bad, error -30
+> UBI warning: ubi_ro_mode: switch to read-only mode
+> UBI error: do_work: work failed with error code -30
+> UBI error: ubi_thread: ubi_bgt0d: work failed with error code -30
 >
+>
+> > But in general a re-mount to ro does not guarantee a clean journal.
+> > All it does is making sure that no new files can be opened in write-mode,
+> > it is a VFS thing. UBIFS tries to be nice as possible and disables further
+> > writes. Maybe your kernel has a bug, it is very old. Dunno...
+> OK, I understand. Is there any way to flush ALL data?
+> If "sync" and "ro" doesn't do the job, is there something more? Some IOCTL?...
+> Solving this issue will be the best possible for us.
+>
+> > > state of the FS and effectively blocks all the system:
+> > > - after these errors detection, UBIFS switches to read-only state,
+> > > blocking any possible corrections/repairs.
+> > > - we can't remove HW protection to allow it to finish desired work as
+> > > it happens in the Linux boot, when initd is just starting.
+> > >
+> > > Now, I suppose that this issue (that everything is RO and shouldn't be
+> > > tried to recover) is treated already in the new versions. My problem
+> > > is that I can't move to newer Linux because of TI HW.
+> > >
+> > > So, my questions are:
+> > > 1. Where in the code of UBI (UBIFS?) can I insert the HW write-protect
+> > > removal in order to allow the UBI/UBIFS to do its desired work?
+> > > 2. When can I put write-protection back?
+> >
+> > Using a write protected NAND is not recommend.
+> > You basically remove the wear-leveling feature from UBI.
+> > Blocks can gain bit-flips also in a read-only environment, consider
+> > read disturb or other influences such as temperature changes.
+> Well, as I said, these NAND is updated not more than 30-40 times in
+> all its life.
+> So, wear-leveling is not so relevant.
+> May be this is relics of the NOR past, but our HW engineers always
+> keep flashes write-protected to be on the safe side and avoid possible
+> false writes/disturbances/problems at the power spikes.
+> The main goal here is to keep the system bootable despite everything
+> in the world, except nuclear explosion...:-)
+>
+> Thank you for your help!
+>
+> Leon
 
 ______________________________________________________
 Linux MTD discussion mailing list
