@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB869C04AB6
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0DDCC04AB6
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:05:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCBB627D0D
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:05:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B612D27D0D
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:05:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oHffts7s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCBB627D0D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VR+lQ9H8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B612D27D0D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oWxefLp5u7MQjCAsBaaBg00v7hkFheMU8bA7jcT/LBY=; b=oHffts7snfqQUu
-	FB7xU0YZ0cCq1PebysgTjrZor4GHVvA+KZ6iC1+CykZUOiVb3bBhzg+mFUfJz82PHDJZsqD0LcGoJ
-	wwDF9ZthPa3wTdR8ODSLYm1AwHjY/wiRvawCGwNmulEDw0jMSXBdBAb4nQwbZjHkEkCcwSgv/4VjC
-	kEY6sspPZCEguDoWcYR8thaoafrztaGouYXDzAHKddfI/jlu21ixooI/m3d96+SacFybNWkH1xlh2
-	QfO1Z3bVuBzPQoNL2YVqyJh5Gl+xRlELYLKc60RdIWtvtZJJtlu1cDPwt0BFMJcv8HC8COWf6q6Vh
-	0i9bQ7yt98E37PBAwqZg==;
+	List-Owner; bh=Lp81kbjeyAPjSNmQcy+uCQCvmEqZxbHyyQl8tyevsQA=; b=VR+lQ9H8NiVGin
+	KCF9jRpU1t3s28E9ZcrcEVjphsM7Z2sH9xh6bkOLsKxZXtqCdEqa2s/PysAff4kZU1tuYncg+FUQm
+	rPQ4DG0biLGapXiOZVZYElymb2D9TRpM+6hUKUksksl2a/IwxadhEEcNqMFe5yBAAXHj6lAqAZKaX
+	OwT5XPlnNSJOsp1FW2uCKJRHvY9adYBBAeE6a31agmjY1pnrR31bP6bdPDr4Pel5qjWJlB6uZIOOC
+	+c6EGShvulYvGSAPaW/j2fpqq25fVltu4quNaCLGs7VRW0wDCI7YXj/Pq5rNe+Bk31UizwUGCqttl
+	2FNDA7MkBC/Fumc1e47A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hXhxk-0001Bj-0W; Mon, 03 Jun 2019 08:05:00 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1hXhy1-0002hj-98; Mon, 03 Jun 2019 08:05:17 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXhxE-0000OL-Hg
- for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 08:04:48 +0000
+ id 1hXhxO-00061V-5P
+ for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 08:05:13 +0000
 X-Originating-IP: 90.88.144.139
 Received: from localhost.localdomain
  (aaubervilliers-681-1-24-139.w90-88.abo.wanadoo.fr [90.88.144.139])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id AC55624004E;
- Mon,  3 Jun 2019 08:04:21 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 4F948FF835;
+ Mon,  3 Jun 2019 08:02:21 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 01/14] mtd: rawnand: export NAND operation tracer
-Date: Mon,  3 Jun 2019 10:04:21 +0200
-Message-Id: <20190603080421.28663-1-miquel.raynal@bootlin.com>
+To: Jeff Kletsky <lede@allycomm.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v4 2/3] mtd: spinand: Add support for two-byte device IDs
+Date: Mon,  3 Jun 2019 10:02:19 +0200
+Message-Id: <20190603080219.27512-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190521070643.6244-2-s.hauer@pengutronix.de>
+In-Reply-To: <20190522220555.11626-3-lede@allycomm.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: a372acff8247783434e4fb85897f7c9a6909433a
+X-linux-mtd-patch-commit: 53dd94a79d3bfdaae30e5a4ebf474ea1af1d572e
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190603_010429_284586_4B9DA39C 
-X-CRM114-Status: UNSURE (   8.56  )
+X-CRM114-CacheID: sfid-20190603_010438_997739_E3248EFB 
+X-CRM114-Status: UNSURE (   7.31  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -71,24 +74,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard@nod.at>, Shawn Guo <shawnguo@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
- kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
- Han Xu <han.xu@nxp.com>, Fabio Estevam <festevam@gmail.com>
+Cc: Jeff Kletsky <git-commits@allycomm.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Frieder Schrempf <frieder.schrempf@kontron.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2019-05-21 at 07:06:30 UTC, Sascha Hauer wrote:
-> The NAND core has a NAND operation tracing function, but it can only
-> be used by drivers using the generic option parser from the NAND core.
-> Export the tracing function as a static inline function in rawnand.h
-> so that drivers implementing exec_op directly do not have to write their
-> own operation tracing.
+On Wed, 2019-05-22 at 22:05:54 UTC, Jeff Kletsky wrote:
+> From: Jeff Kletsky <git-commits@allycomm.com>
 > 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> The GigaDevice GD5F1GQ4UFxxG SPI NAND utilizes two-byte device IDs.
+> 
+> http://www.gigadevice.com/datasheet/gd5f1gq4xfxxg/
+> 
+> Signed-off-by: Jeff Kletsky <git-commits@allycomm.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
