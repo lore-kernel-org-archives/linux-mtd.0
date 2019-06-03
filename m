@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FEC3C04AB5
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:38:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42968C28CC6
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:39:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50F3A25FCC
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:38:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C48925FCC
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 12:39:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aelKq6Wt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UNl34rSL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50F3A25FCC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Z/07MUsm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fkW1nFXn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C48925FCC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,61 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=neXVOBqe3wpfTuNUMWfVFLpIIJcQJZESr/lWE9iFJik=; b=aelKq6WtkZxQaL
-	3cMF247XECOv1DeACe2q8QKve9gpIRSkIM38EqlkMryoXPWqpo99sAqrI4YAnQmWtlqqTYqVwkpSt
-	IDFBU+QdAfbrfXa1m7fWZ/FAk+QoOjwevWhdCf+h96+3eHbkZOz/kHwTakH4UPp1MI6WdBiZE1fLn
-	TDUv6r4zOKR6923P3PLVzVBQt9B/zO+c/er85ZyvekyKVJLmwcBqDWqCSHSk0A5oyr4AMcwtTqIyQ
-	SkkEhNcWgeU/PubPU0uSKHPAi/ZXWLZcEIb8+xxVxvxQHrMkfeH3U1HO4XOzAp3+2GMW7rrs66H6W
-	8Ld7G0Ixp7bDBy/BN3bQ==;
+	List-Owner; bh=WAmy31ewQFkrzUhTkjSXjnfY5jBHuoBaXZKHtwuoOWA=; b=Z/07MUsmfmufpO
+	APiSO9QbCprarXJ6L/3jHhB7prCAy9Ex6CnAHmsr/uqRVtfymNd+Vgc+PclBdWXeEAGqw+WbpxMCT
+	przukPYzeniisu158wNjI5QlV484p4QS7mKJxAagNVnfgvdBQde8g8cReuk5Y8HiKeassFMHQf8Ur
+	M4C3Ur/JlJZRqXpB9uhqHZqo+d8e51IKHo2PeEov+qnZk1ibek5Vh2bcRW0XBQTD898vZUBSzNu9V
+	9I5ZawaM9rab46cnH6McoT2hOLAukUlL8wP1S7mFjmNS160BkJXIpSi6n9nHFfJh+dMTUdFpxPZoB
+	M7tzr4TVavRkjqlSxytw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hXmEg-0001IB-Ey; Mon, 03 Jun 2019 12:38:46 +0000
-Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
+	id 1hXmEw-0001VX-1o; Mon, 03 Jun 2019 12:39:02 +0000
+Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXmEd-0001Hg-2P
- for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 12:38:44 +0000
-Received: by mail-pl1-x644.google.com with SMTP id f97so6957505plb.5
- for <linux-mtd@lists.infradead.org>; Mon, 03 Jun 2019 05:38:42 -0700 (PDT)
+ id 1hXmEt-0001Um-DC
+ for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 12:39:00 +0000
+Received: by mail-pf1-x442.google.com with SMTP id d126so10572969pfd.2
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Jun 2019 05:38:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=vS8OVqZe5gaAcYN4Y7CQPzPU225ksDpT3Boi/aiNNeY=;
- b=UNl34rSLrBIw9CspJiIuZSzi8PafLZVAh/nghkWKe4U3NZQUTLkPdfk6jZaXzpqeJH
- Vh98R3wFHmA2RdMzQD1/9cxqoT2f+3eBYFsmycFG23JxDNlsjQ/BAJ9XN7euOqpQV3nc
- c5wLXtzeJoOYfTEVGIN0MI1euLkGDL5FDqKXQ=
+ bh=pwV/Sm23vrBT9LvoRG5nIcWDaJWbnGMNQkzBrzd0dmM=;
+ b=fkW1nFXn0lMbPN42M2tsFbui+UT6YfnkrOOLBdqeWzw9ZBLt1fxIKRZ817K2pN7FNV
+ wFMRWnC33fegqhD8KIpkO2NfPJEKHjIkGoSkK52r1L3lzCNjITn9pq1ftF5mACxAm7OU
+ ho+SzUkubshcooLoR/Cs/MiVDdkaGfowxTDDw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=vS8OVqZe5gaAcYN4Y7CQPzPU225ksDpT3Boi/aiNNeY=;
- b=HvDbnHDw0wZxMJ0tHhC3chknVVQoXhAqm11UwU0JFgDXGrOCUNWM6J2Pe6GLhAlQzF
- OGbtj/4zWnTFbK7jmjYsrBZ692EqOjm7k9MezM/0ulH9fHC+qdKKQwYuiLL7NV34NkDJ
- 56K9weRdnen9B3i/f4E3oYMc24J6A4O3glK1SPd5lGwQQbm37KuvdiG8hGetLIqM6ima
- ItU3mdbeSN5Hr3UvYYvuwNdPZUyBgjORRBp5IS8eBzR12bibBEaFd6xB86Co669y/fIx
- 7QmQPSh2PEPcJBzxX9xVeL6Aq3lriF1NwuqmhLwdUTT5JszhcWnhtx7ZGhQfKRIGulit
- 2ahg==
-X-Gm-Message-State: APjAAAVelaZ7es+w08W37BN3D0QB8VVOt2weajZIWTDuQWkOmLyshanE
- Lz3cXjgRItZOAmewFL5gnOyJp3DYAEQ=
-X-Google-Smtp-Source: APXvYqyeH0UIyluwPYcXIreo4CvYUeEbitkMoY92hNWmM7DtvJNMxtZ4UQONe4/DIY7Bnx/QuDwnag==
-X-Received: by 2002:a17:902:ba82:: with SMTP id
- k2mr20014635pls.323.1559565521642; 
- Mon, 03 Jun 2019 05:38:41 -0700 (PDT)
+ bh=pwV/Sm23vrBT9LvoRG5nIcWDaJWbnGMNQkzBrzd0dmM=;
+ b=qBMI17AkF3mboE33qbDmg3mT7t08DYdaeLf+DBfBMu/Pby3tt7qcapDpVeEQcWN57T
+ N6JcWS77zegAthCm+Aj9g2/KyLBHhKKxb59GwOVIgzGMrYF2hEXTVwxZhGgntDwGmq7T
+ qwztASck0uoUZqVp9NeSZ61q0DrOIHLPkvY0uAlVsfU8fcxpVQG1uu042t6mZg65vYZV
+ JubCrMt3CRBgWz0hH4yVwZpvxmpLZOLVH0tuBLPRkO1C6rOxORDIFLH9RraEq9l3ovlV
+ ApEJBlR1J7rr3C0EwWUHwkOvDSmqPxpsbkcwDVDanJ3e0C/ThAEZCvKXJje6K3KQFQ1C
+ eTTQ==
+X-Gm-Message-State: APjAAAWX4m1jOX5maQ0G1Sdpt/TQ+b+9CSZn42WnbDzepTktvlinUTNQ
+ NzIoLI+tnYsa3hWYZa2+Op0VsQjhyJQ=
+X-Google-Smtp-Source: APXvYqyKVbhwMgb3vuN3iCKZDMSZdVPLYgjJjWeRxozLWsIdkr1pTmw0AxXekAAcSP7l5eJPhfZAMg==
+X-Received: by 2002:a63:6c83:: with SMTP id h125mr27004114pgc.86.1559565538329; 
+ Mon, 03 Jun 2019 05:38:58 -0700 (PDT)
 Received: from zhuohao-z440.tpe.corp.google.com
  ([2401:fa00:1:10:e25c:13cd:9607:cc7f])
- by smtp.gmail.com with ESMTPSA id y7sm26907292pja.26.2019.06.03.05.38.39
+ by smtp.gmail.com with ESMTPSA id j20sm14232899pfi.138.2019.06.03.05.38.56
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 03 Jun 2019 05:38:41 -0700 (PDT)
+ Mon, 03 Jun 2019 05:38:57 -0700 (PDT)
 From: Zhuohao Lee <zhuohao@chromium.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v7 1/2] mtd: mtdcore: add debugfs nodes for querying the flash
- name and id
-Date: Mon,  3 Jun 2019 20:38:35 +0800
-Message-Id: <20190603123835.65536-1-zhuohao@chromium.org>
+Subject: [PATCH v7 2/2] mtd: spi-nor: enable the debugfs for the partname and
+ partid
+Date: Mon,  3 Jun 2019 20:38:53 +0800
+Message-Id: <20190603123853.65676-1-zhuohao@chromium.org>
 X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190603_053843_139292_F6DA704A 
-X-CRM114-Status: GOOD (  17.91  )
+X-CRM114-CacheID: sfid-20190603_053859_444272_BA6C5C05 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -101,163 +100,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, we don't have vfs nodes for querying the underlying flash name
-and flash id. This information is important especially when we want to
-know the flash detail of the defective system. In order to support the
-query, we add mtd_debugfs_populate() to create two debugfs nodes
-(ie. partname and partid). The upper driver can assign the pointer to
-partname and partid before calling mtd_device_register().
+This patch adds spi_nor_debugfs_init() for the debugfs initialization.
+With this patch, we can read the partname and partid through the
+debugfs.
+
+The output of new debugfs nodes on my device are:
+cat /sys/kernel/debug/mtd/mtd0/partid
+spi-nor:ef6017
+cat /sys/kernel/debug/mtd/mtd0/partname
+w25q64dw
 
 Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 ---
-Changes in V7:
-- Remove unused check for partname/partid
-- Previous discussion: https://patchwork.ozlabs.org/patch/1109200/
-Changes in V6:
-- Create the debugfs only when the partname/partid is not NULL
-- Previous discussion: https://patchwork.ozlabs.org/patch/1109041/
-Changes in V5:
-- Move debugfs_create_dir() to mtd_debugfs_populate()
-- Previous discussion: https://patchwork.ozlabs.org/patch/1107810/
-Changes in V4:
-- Separate the change to two patches. The first patch is adding the general
-  handling for the partname and partid in the mtdcore.c. The second patch
-  is enabling the two debugfs nodes for spi-nor.
-- Previous discussion: https://patchwork.ozlabs.org/patch/1097377/
-Changes in v3:
-- Add partname and partid to mtd.h and create debugfs inside mtdcore.c
-- Previous discussion: https://patchwork.ozlabs.org/patch/1095731/
-Changes in v2:
-- Change to use debugfs to output flash name and id
-- Previous discussion: https://patchwork.ozlabs.org/patch/1067763/
----
- drivers/mtd/mtdcore.c   | 84 ++++++++++++++++++++++++++++++++++++-----
- include/linux/mtd/mtd.h |  3 ++
- 2 files changed, 78 insertions(+), 9 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 3ef01baef9b6..d4603bc1d4eb 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -357,6 +357,80 @@ static const struct device_type mtd_devtype = {
- 	.release	= mtd_release,
- };
- 
-+static int mtd_partid_show(struct seq_file *s, void *p)
-+{
-+	struct mtd_info *mtd = s->private;
-+
-+	seq_printf(s, "%s\n", mtd->dbg.partid);
-+
-+	return 0;
-+}
-+
-+static int mtd_partid_debugfs_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, mtd_partid_show, inode->i_private);
-+}
-+
-+static const struct file_operations mtd_partid_debug_fops = {
-+	.open           = mtd_partid_debugfs_open,
-+	.read           = seq_read,
-+	.llseek         = seq_lseek,
-+	.release        = single_release,
-+};
-+
-+static int mtd_partname_show(struct seq_file *s, void *p)
-+{
-+	struct mtd_info *mtd = s->private;
-+
-+	seq_printf(s, "%s\n", mtd->dbg.partname);
-+
-+	return 0;
-+}
-+
-+static int mtd_partname_debugfs_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, mtd_partname_show, inode->i_private);
-+}
-+
-+static const struct file_operations mtd_partname_debug_fops = {
-+	.open           = mtd_partname_debugfs_open,
-+	.read           = seq_read,
-+	.llseek         = seq_lseek,
-+	.release        = single_release,
-+};
-+
-+static struct dentry *dfs_dir_mtd;
-+
-+static void mtd_debugfs_populate(struct mtd_info *mtd)
-+{
-+	struct device *dev = &mtd->dev;
-+	struct dentry *root, *dent;
-+
-+	if (IS_ERR_OR_NULL(dfs_dir_mtd))
-+		return;
-+
-+	root = mtd->dbg.dfs_dir = debugfs_create_dir(dev_name(dev),
-+						     dfs_dir_mtd);
-+	if (IS_ERR_OR_NULL(root)) {
-+		pr_debug("mtd device %s won't show data in debugfs\n",
-+			 dev_name(dev));
-+		return;
-+	}
-+
-+	if (mtd->dbg.partid) {
-+		dent = debugfs_create_file("partid", S_IRUSR, root, mtd,
-+					   &mtd_partid_debug_fops);
-+		if (IS_ERR_OR_NULL(dent))
-+			pr_err("cannot create debugfs entry for partid\n");
-+	}
-+	if (mtd->dbg.partname) {
-+		dent = debugfs_create_file("partname", S_IRUSR, root, mtd,
-+					   &mtd_partname_debug_fops);
-+		if (IS_ERR_OR_NULL(dent))
-+			pr_err("cannot create debugfs entry for partname\n");
-+	}
-+}
-+
- #ifndef CONFIG_MMU
- unsigned mtd_mmap_capabilities(struct mtd_info *mtd)
- {
-@@ -534,8 +608,6 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	return 0;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 6e13bbd1aaa5..52b1a2da9ac0 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -3935,6 +3935,17 @@ static void spi_nor_resume(struct mtd_info *mtd)
+ 		dev_err(dev, "resume() failed\n");
  }
  
--static struct dentry *dfs_dir_mtd;
--
- /**
-  *	add_mtd_device - register an MTD device
-  *	@mtd: pointer to new MTD device info structure
-@@ -621,13 +693,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 	if (error)
- 		goto fail_nvmem_add;
- 
--	if (!IS_ERR_OR_NULL(dfs_dir_mtd)) {
--		mtd->dbg.dfs_dir = debugfs_create_dir(dev_name(&mtd->dev), dfs_dir_mtd);
--		if (IS_ERR_OR_NULL(mtd->dbg.dfs_dir)) {
--			pr_debug("mtd device %s won't show data in debugfs\n",
--				 dev_name(&mtd->dev));
--		}
--	}
-+	mtd_debugfs_populate(mtd);
- 
- 	device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
- 		      "mtd%dro", i);
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 677768b21a1d..b11afb85d962 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -203,6 +203,9 @@ struct module;	/* only needed for owner field in mtd_info */
-  */
- struct mtd_debug_info {
- 	struct dentry *dfs_dir;
++static void spi_nor_debugfs_init(struct spi_nor *nor,
++		const struct flash_info *info)
++{
++	struct mtd_info *mtd = &nor->mtd;
 +
-+	const char *partname;
-+	const char *partid;
- };
++	mtd->dbg.partname = info->name;
++	mtd->dbg.partid = devm_kasprintf(nor->dev, GFP_KERNEL,
++					"spi-nor:%*phN",
++					 info->id_len, info->id);
++}
++
+ void spi_nor_restore(struct spi_nor *nor)
+ {
+ 	/* restore the addressing mode */
+@@ -4036,6 +4047,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	mtd->_read = spi_nor_read;
+ 	mtd->_resume = spi_nor_resume;
  
- struct mtd_info {
++	spi_nor_debugfs_init(nor, info);
++
+ 	/* NOR protection support for STmicro/Micron chips and similar */
+ 	if (JEDEC_MFR(info) == SNOR_MFR_ST ||
+ 	    JEDEC_MFR(info) == SNOR_MFR_MICRON ||
 -- 
 2.22.0.rc1.311.g5d7573a151-goog
 
