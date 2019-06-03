@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5530FC28CC7
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 510B4C04AB6
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:04:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BB9F24A87
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:04:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26B3D267FA
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2019 08:04:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="B4tQHRMO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BB9F24A87
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UsKXyrWp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26B3D267FA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,40 +25,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TqY1FoOe7ERFP3AX5eumjvBI6NzEAjPGtJlWOGldiFA=; b=B4tQHRMODuFJJe
-	TcPB60Qn0joih+cx+TLr46ylfCs41monOn0QL/MuvC37BH7b30cabQzMfGhvXxiDNy3S36g5HTtZ7
-	H+j/jBhkapi/ZU4OI1hfSHeASx7N227a8aIwvBXErZOd0YDE/9JZwDBnAFA2mlXvOtotIMWoefXU4
-	oEvxEhtiICkLRj7hclaSUA6KZeMHNC2ky3tTFEZaEVug07Iemx0Cmtqm6kryo1giBEfeY/iYhO890
-	QEL0YYd9qYeftiLwW0vtn1LNC9HV4GAj91OQT9PooWO4Lj7gfHRt9uRFhha2V0GpSoA2QmUDfyMkg
-	g1G+B+1xDkOi+u5VzeLg==;
+	List-Owner; bh=gqzhjfHVYjSQRLaY6D9TrOJ+IKpcBCFITeJQ19n0Sr4=; b=UsKXyrWpgVrfYz
+	vqjCb2+y6buoQulAMMtBBCuM9lwcdxVqJk+kPDRHfQPEXqdEuePiwbmL+se6AhDLlkUIbnvgmn+rt
+	c3W81njAhuwh4tVjfPl3P8xGWuYYCvBW/gEpaTEuZeF2vXGfZqPrxwwNRXcKI5XAEuyBR7KgQkIiD
+	dOCA7X0/Sk+d7xd2G2EY5cUTEWa3mWVz1ekBqquXlHEcHaTyTIQ6FMGuo87qzfjgwxsgFkZroBZNX
+	Qmduwv0qTqd2gdBU4vd7Sn7HZKWlKW+EI8fy6MvWYihvAARBs8FLEoJumOlDAJSOWiHKC3r5sZ2hg
+	JIFIDTG9wMXSldM9SWvw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hXhwy-0008R0-5a; Mon, 03 Jun 2019 08:04:12 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1hXhxC-0000Mz-3r; Mon, 03 Jun 2019 08:04:26 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hXhwS-0007Tq-Jx
- for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 08:03:59 +0000
+ id 1hXhwp-00089L-3k
+ for linux-mtd@lists.infradead.org; Mon, 03 Jun 2019 08:04:24 +0000
 X-Originating-IP: 90.88.144.139
 Received: from localhost.localdomain
  (aaubervilliers-681-1-24-139.w90-88.abo.wanadoo.fr [90.88.144.139])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 822FC20019;
- Mon,  3 Jun 2019 08:03:24 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C8C78FF80F;
+ Mon,  3 Jun 2019 08:03:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 11/14] mtd: rawnand: gpmi: drop unnecessary flag
-Date: Mon,  3 Jun 2019 10:03:24 +0200
-Message-Id: <20190603080324.27994-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 05/14] mtd: rawnand: gpmi: Remove unnecessary variables
+Date: Mon,  3 Jun 2019 10:03:59 +0200
+Message-Id: <20190603080359.28384-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190521070643.6244-12-s.hauer@pengutronix.de>
+In-Reply-To: <20190521070643.6244-6-s.hauer@pengutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 1d5adc6d76391077417000428facced60d04a0af
+X-linux-mtd-patch-commit: bfee97f1b1b2b2e67ac415b6cbb62f586a1b2a6d
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190603_010341_358990_B66A25E2 
-X-CRM114-Status: UNSURE (   6.27  )
+X-CRM114-CacheID: sfid-20190603_010403_532770_DB408806 
+X-CRM114-Status: UNSURE (   7.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
@@ -80,9 +80,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2019-05-21 at 07:06:40 UTC, Sascha Hauer wrote:
-> The DMA_PREP_INTERRUPT flag is no longer needed by the mxs DMA driver,
-> drop it.
+On Tue, 2019-05-21 at 07:06:34 UTC, Sascha Hauer wrote:
+> this->page_buffer_virt and this->payload_virt are always set to the same
+> value, so drop the former and just use the latter. Same for
+> this->page_buffer_virt and this->payload_virt.
 > 
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
