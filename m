@@ -2,87 +2,85 @@ Return-Path: <SRS0=Hh3Q=UD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B34E7C282CE
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 14:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB0DCC28CC6
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 14:37:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89654249E1
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 14:18:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A0712473C
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 14:37:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fPcEyy7Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89654249E1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="URJAlAjL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCjoVhgd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A0712473C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ln2xZg/yN1wAZTwGNHVNdcDq1Mx60CJrrKQNNHcP9Ak=; b=fPcEyy7Y92zOt2
-	yBL5TgC5hKsOMmxtPaCI+Npf8oxNGaZTFAdPPkN8xPoBrCbQySDbum7jjgiB1jvqVCpZT4dlHa5lU
-	5RaFL9mlixndY7S/OYmaqAWkxU6F8RQal0xEwtkdTCyh9Rv8MM5VkBq+eN7Up151UsIrviVDvMJlU
-	WJQngsHVX05GqB1V7DLCZhHRc3Lm5CiewEoIyxp+lFFRs9s5SLFXnGYUCxxAnKbI/K5IMLV6fYBaQ
-	DSD6E8Ue1t9GwsJtErcinKex4ZgR86sPfxD88xkeUzTo2ZP0RvPzMVcxku54jSMHTid0LkQY/qMFx
-	/Il+EpwgRcB5NL6Zv5kg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=uOJV5XINOlgQ6PPXLX3qB9HijXqdN5OCj1YU2+9v7dQ=; b=URJ
+	AlAjLifu2sA8tCO0gn1qta1uBBa4fBqq+3AfI8PVIc0YnWsYTxKCL/wFMV8B6/+b4hhiBeohj701P
+	YPWRRfu75jxaFS7C7MhLOIYJeXGrFHJtGfTf68STHYddyoV7AWe2LXhVQQQZHf4fmiU7fgqshm5oa
+	2rGlVig5dGHMMkFMJGhZV1BCgfddLpsGqCsWD4NvlZ5SRbJLHTVrdji6+wzDWBgwnsBsyv6x2Dvsx
+	hgLBlotPejUiv4EH62biR5uytjPQ74ctWpTB8ughDsI26l6l/EGX0iTQerTnBN9H4YFS0XbYws6ub
+	fQfkKk6Salbk4wCs1E2z8ntoPimYl8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hYAGL-0001TB-7C; Tue, 04 Jun 2019 14:18:05 +0000
-Received: from gateway21.websitewelcome.com ([192.185.45.176])
+	id 1hYAYw-0001Z0-KG; Tue, 04 Jun 2019 14:37:18 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hYAGG-0001R2-4J
- for linux-mtd@lists.infradead.org; Tue, 04 Jun 2019 14:18:01 +0000
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
- by gateway21.websitewelcome.com (Postfix) with ESMTP id AC948400D2349
- for <linux-mtd@lists.infradead.org>; Tue,  4 Jun 2019 09:17:45 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id YAG1hNuJG4FKpYAG1hi1KT; Tue, 04 Jun 2019 09:17:45 -0500
-X-Authority-Reason: nr=8
-Received: from [189.250.127.120] (port=33416 helo=embeddedor)
- by gator4166.hostgator.com with esmtpa (Exim 4.91)
- (envelope-from <gustavo@embeddedor.com>)
- id 1hYAFz-0006u9-So; Tue, 04 Jun 2019 09:17:44 -0500
-Date: Tue, 4 Jun 2019 09:17:37 -0500
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Kyungmin Park <kyungmin.park@samsung.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jonathan Bakker <xc-racer2@live.ca>
-Subject: [PATCH] mtd: onenand_base: Mark expected switch fall-through
-Message-ID: <20190604141737.GA1064@embeddedor>
-MIME-Version: 1.0
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.250.127.120
-X-Source-L: No
-X-Exim-ID: 1hYAFz-0006u9-So
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [189.250.127.120]:33416
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+ id 1hYAYu-0001W9-Hn
+ for linux-mtd@lists.infradead.org; Tue, 04 Jun 2019 14:37:18 +0000
+Received: by mail-pf1-x430.google.com with SMTP id x15so3019633pfq.0
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Jun 2019 07:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=otDo9JTAjxXUIL0wLWnsf0TMryCbgHF9GFg/VIogBAs=;
+ b=kCjoVhgdZdcOvP3sZPyHTyIZ85jJnetO5gXKqNfILh57x1IyOoKasY2xq1+oWnqr9O
+ /r9Bm+1nN4LFlCXnZzsQli1WhvGWny5lhx5RBZbe6CGxAslWqt+0ZOTyuKugBd+ZmBV0
+ W6HakKVRh1X6jIsVuCT65dnHppF7xOh2ZvBQaVzLkjTuecQulX4y9Kj64AYCZmDVYHwf
+ gy/o5wgQm1NT4XDchxHwTFkv8BLAEjDwyqbYRrWa84wgkO0wPBlv1V/NE06sy7s8cyt4
+ ws4vpjKnoYQr6lTzKQ4k31QbHihv/TDa2QPSBgzz9P8tsNf4bVI28k/+cjVw/fxMyG6/
+ HZmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=otDo9JTAjxXUIL0wLWnsf0TMryCbgHF9GFg/VIogBAs=;
+ b=Y3593a4YkItME3I5WpuJ29+G3xUkV1ZjUs2ArHl9w63ZryjdSPgeGDoUjq1dhT+CpC
+ woNH8TDWyM2YwlDeRTMd2GGfLtybAR7uy29UInJn0CXdALuFMwYrdhmvo6xEtUHfD4M0
+ 4LP6e0Na38qM+3jBiUDEwNTk8Dv+US72txDd7wrARWT5c3m6ilpSSVJkdCFXuJMH9fgo
+ +3FVN03ZCCcmVGXqtvfMvFBIgd6p6wiRw06ndTHcWw+Q9/iG8HPM9MQRnB48G6j/Rumn
+ BD87/GGkC2nAYUcbPj0FuLvv+2oXJWmYs2stMbtgCQQ0aSZ/aTTvNTpFLUt36e9UW2xn
+ zKlA==
+X-Gm-Message-State: APjAAAUpv2yR4IFNIm0E/KDHhLyzRgTFjCeHWQGu8+bwqKwyESMAIEZl
+ WqiN4KUGYqHzCDZYssHmopV5Ecbk
+X-Google-Smtp-Source: APXvYqztDa4a+0/SfVTcijqZh9u/FsWU/PgCbhPoSykbGim4IEpdZHtUKjIpGmXvgwX9fgyFt3scZQ==
+X-Received: by 2002:a17:90a:4814:: with SMTP id
+ a20mr38088311pjh.62.1559659032979; 
+ Tue, 04 Jun 2019 07:37:12 -0700 (PDT)
+Received: from mail.broadcom.com ([192.19.231.250])
+ by smtp.gmail.com with ESMTPSA id m6sm24156872pjl.18.2019.06.04.07.37.10
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 04 Jun 2019 07:37:12 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 1/3] mtd: nand: raw: brcmnand: Refactored code to introduce
+ helper functions
+Date: Tue,  4 Jun 2019 10:36:29 -0400
+Message-Id: <1559659013-34502-1-git-send-email-kdasu.kdev@gmail.com>
+X-Mailer: git-send-email 1.9.0.138.g2de3478
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190604_071800_246787_7313BCFF 
-X-CRM114-Status: UNSURE (   7.32  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190604_073716_593307_74148A6E 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -94,38 +92,193 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Kees Cook <keescook@chromium.org>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SW4gcHJlcGFyYXRpb24gdG8gZW5hYmxpbmcgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaCwgbWFyayBz
-d2l0Y2ggY2FzZXMKd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guCgpUaGlz
-IHBhdGNoIGZpeGVzIHRoZSBmb2xsb3dpbmcgd2FybmluZzoKCmRyaXZlcnMvbXRkL25hbmQvb25l
-bmFuZC9vbmVuYW5kX2Jhc2UuYzogSW4gZnVuY3Rpb24g4oCYb25lbmFuZF9jaGVja19mZWF0dXJl
-c+KAmToKZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jOjMyNjQ6MTc6IHdh
-cm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRo
-cm91Z2g9XQogICB0aGlzLT5vcHRpb25zIHw9IE9ORU5BTkRfSEFTX05PUF8xOwpkcml2ZXJzL210
-ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNlLmM6MzI2NToyOiBub3RlOiBoZXJlCiAgY2FzZSBP
-TkVOQU5EX0RFVklDRV9ERU5TSVRZXzRHYjoKICBefn5+CgpXYXJuaW5nIGxldmVsIDMgd2FzIHVz
-ZWQ6IC1XaW1wbGljaXQtZmFsbHRocm91Z2g9MwoKVGhpcyBwYXRjaCBpcyBwYXJ0IG9mIHRoZSBv
-bmdvaW5nIGVmZm9ydHMgdG8gZW5hYmxlCi1XaW1wbGljaXQtZmFsbHRocm91Z2guCgpDYzogSm9u
-YXRoYW4gQmFra2VyIDx4Yy1yYWNlcjJAbGl2ZS5jYT4KU2lnbmVkLW9mZi1ieTogR3VzdGF2byBB
-LiBSLiBTaWx2YSA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9uYW5k
-L29uZW5hbmQvb25lbmFuZF9iYXNlLmMgfCAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
-bigrKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jhc2Uu
-YyBiL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYwppbmRleCBiYTQ2ZDBj
-ZjYwYTEuLmJkYjVmNDczM2QyOCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5k
-L29uZW5hbmRfYmFzZS5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jh
-c2UuYwpAQCAtMzI2Miw2ICszMjYyLDcgQEAgc3RhdGljIHZvaWQgb25lbmFuZF9jaGVja19mZWF0
-dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIAlzd2l0Y2ggKGRlbnNpdHkpIHsKIAljYXNlIE9O
-RU5BTkRfREVWSUNFX0RFTlNJVFlfOEdiOgogCQl0aGlzLT5vcHRpb25zIHw9IE9ORU5BTkRfSEFT
-X05PUF8xOworCQkvKiBmYWxsIHRocm91Z2ggKi8KIAljYXNlIE9ORU5BTkRfREVWSUNFX0RFTlNJ
-VFlfNEdiOgogCQlpZiAoT05FTkFORF9JU19ERFAodGhpcykpCiAJCQl0aGlzLT5vcHRpb25zIHw9
-IE9ORU5BTkRfSEFTXzJQTEFORTsKLS0gCjIuMjEuMAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+Refactored NAND ECC and CMD address configuration code to use helper
+functions.
+
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 100 +++++++++++++++++++------------
+ 1 file changed, 62 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index ce0b8ff..c534ea8 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -588,6 +588,54 @@ static inline void brcmnand_write_fc(struct brcmnand_controller *ctrl,
+ 	__raw_writel(val, ctrl->nand_fc + word * 4);
+ }
+ 
++static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
++{
++
++	/* Clear error addresses */
++	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
++	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
++	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
++	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
++}
++
++static u64 brcmnand_get_uncorrecc_addr(struct brcmnand_controller *ctrl)
++{
++	u64 err_addr;
++
++	err_addr = brcmnand_read_reg(ctrl, BRCMNAND_UNCORR_ADDR);
++	err_addr |= ((u64)(brcmnand_read_reg(ctrl,
++					     BRCMNAND_UNCORR_EXT_ADDR)
++					     & 0xffff) << 32);
++
++	return err_addr;
++}
++
++static u64 brcmnand_get_correcc_addr(struct brcmnand_controller *ctrl)
++{
++	u64 err_addr;
++
++	err_addr = brcmnand_read_reg(ctrl, BRCMNAND_CORR_ADDR);
++	err_addr |= ((u64)(brcmnand_read_reg(ctrl,
++					     BRCMNAND_CORR_EXT_ADDR)
++					     & 0xffff) << 32);
++
++	return err_addr;
++}
++
++static void brcmnand_set_cmd_addr(struct mtd_info *mtd, u64 addr)
++{
++	struct nand_chip *chip =  mtd_to_nand(mtd);
++	struct brcmnand_host *host = nand_get_controller_data(chip);
++	struct brcmnand_controller *ctrl = host->ctrl;
++
++	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
++			   (host->cs << 16) | ((addr >> 32) & 0xffff));
++	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
++	brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
++			   lower_32_bits(addr));
++	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
++}
++
+ static inline u16 brcmnand_cs_offset(struct brcmnand_controller *ctrl, int cs,
+ 				     enum brcmnand_cs_reg reg)
+ {
+@@ -1213,9 +1261,12 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+ {
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+ 	int ret;
++	u64 cmd_addr;
++
++	cmd_addr = brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
++
++	dev_dbg(ctrl->dev, "send native cmd %d addr 0x%llx\n", cmd, cmd_addr);
+ 
+-	dev_dbg(ctrl->dev, "send native cmd %d addr_lo 0x%x\n", cmd,
+-		brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS));
+ 	BUG_ON(ctrl->cmd_pending != 0);
+ 	ctrl->cmd_pending = cmd;
+ 
+@@ -1374,12 +1425,7 @@ static void brcmnand_cmdfunc(struct nand_chip *chip, unsigned command,
+ 	if (!native_cmd)
+ 		return;
+ 
+-	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+-		(host->cs << 16) | ((addr >> 32) & 0xffff));
+-	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
+-	brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS, lower_32_bits(addr));
+-	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
+-
++	brcmnand_set_cmd_addr(mtd, addr);
+ 	brcmnand_send_cmd(host, native_cmd);
+ 	brcmnand_waitfunc(chip);
+ 
+@@ -1597,20 +1643,10 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+ 	int i, j, ret = 0;
+ 
+-	/* Clear error addresses */
+-	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
+-	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
+-	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
+-	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
+-
+-	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+-			(host->cs << 16) | ((addr >> 32) & 0xffff));
+-	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
++	brcmnand_clear_ecc_addr(ctrl);
+ 
+ 	for (i = 0; i < trans; i++, addr += FC_BYTES) {
+-		brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
+-				   lower_32_bits(addr));
+-		(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
++		brcmnand_set_cmd_addr(mtd, addr);
+ 		/* SPARE_AREA_READ does not use ECC, so just use PAGE_READ */
+ 		brcmnand_send_cmd(host, CMD_PAGE_READ);
+ 		brcmnand_waitfunc(chip);
+@@ -1630,21 +1666,15 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+ 					host->hwcfg.sector_size_1k);
+ 
+ 		if (!ret) {
+-			*err_addr = brcmnand_read_reg(ctrl,
+-					BRCMNAND_UNCORR_ADDR) |
+-				((u64)(brcmnand_read_reg(ctrl,
+-						BRCMNAND_UNCORR_EXT_ADDR)
+-					& 0xffff) << 32);
++			*err_addr = brcmnand_get_uncorrecc_addr(ctrl);
++
+ 			if (*err_addr)
+ 				ret = -EBADMSG;
+ 		}
+ 
+ 		if (!ret) {
+-			*err_addr = brcmnand_read_reg(ctrl,
+-					BRCMNAND_CORR_ADDR) |
+-				((u64)(brcmnand_read_reg(ctrl,
+-						BRCMNAND_CORR_EXT_ADDR)
+-					& 0xffff) << 32);
++			*err_addr = brcmnand_get_correcc_addr(ctrl);
++
+ 			if (*err_addr)
+ 				ret = -EUCLEAN;
+ 		}
+@@ -1711,7 +1741,7 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 	dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
+ 
+ try_dmaread:
+-	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
++	brcmnand_clear_ecc_addr(ctrl);
+ 
+ 	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
+ 		err = brcmnand_dma_trans(host, addr, buf, trans * FC_BYTES,
+@@ -1858,15 +1888,9 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+ 		goto out;
+ 	}
+ 
+-	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+-			(host->cs << 16) | ((addr >> 32) & 0xffff));
+-	(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS);
+-
+ 	for (i = 0; i < trans; i++, addr += FC_BYTES) {
+ 		/* full address MUST be set before populating FC */
+-		brcmnand_write_reg(ctrl, BRCMNAND_CMD_ADDRESS,
+-				   lower_32_bits(addr));
+-		(void)brcmnand_read_reg(ctrl, BRCMNAND_CMD_ADDRESS);
++		brcmnand_set_cmd_addr(mtd, addr);
+ 
+ 		if (buf) {
+ 			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+-- 
+1.9.0.138.g2de3478
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
