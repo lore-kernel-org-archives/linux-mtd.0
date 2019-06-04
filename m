@@ -2,64 +2,87 @@ Return-Path: <SRS0=Hh3Q=UD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 057C5C28CC3
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 13:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B34E7C282CE
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 14:18:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D361B248C1
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 13:01:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89654249E1
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 14:18:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k+fkU99X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D361B248C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fPcEyy7Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89654249E1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Htg9V/R+rQ4k5jbCYXmd+75OaJZQTEiVD3l1SjZN2B4=; b=k+fkU99XpxtQpZ
-	w7JX9t+IkXdW53kRxE/mL0llT9BObVWWLzCEgHSU9mM0+Ohi1QiXTgtV+GqXdXRZqCqFIvMt1+eEk
-	5QsBsVozstZZmT3yF/qLav5i/z32bYaVt3gufWW1Cow78AtmR/m3K64C2UJhCOjD7A4d6D8ZWUBov
-	DbeNsPxV28SEpRUGD6f5G+jhgwqaDnUxgahDLDbB1k3uH1frHdYpoUjY3UV9HvkdggsINgQqvvYWr
-	F7Sp+yc2gTf4VU2sesbqiALl3gcrurhu3vYoWjGuHU9juyDsyGQKHPdjtj0s86XzX0HO6DjaiBb0o
-	raU2GLHaQ5nnPrKWqDkQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ln2xZg/yN1wAZTwGNHVNdcDq1Mx60CJrrKQNNHcP9Ak=; b=fPcEyy7Y92zOt2
+	yBL5TgC5hKsOMmxtPaCI+Npf8oxNGaZTFAdPPkN8xPoBrCbQySDbum7jjgiB1jvqVCpZT4dlHa5lU
+	5RaFL9mlixndY7S/OYmaqAWkxU6F8RQal0xEwtkdTCyh9Rv8MM5VkBq+eN7Up151UsIrviVDvMJlU
+	WJQngsHVX05GqB1V7DLCZhHRc3Lm5CiewEoIyxp+lFFRs9s5SLFXnGYUCxxAnKbI/K5IMLV6fYBaQ
+	DSD6E8Ue1t9GwsJtErcinKex4ZgR86sPfxD88xkeUzTo2ZP0RvPzMVcxku54jSMHTid0LkQY/qMFx
+	/Il+EpwgRcB5NL6Zv5kg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hY93l-0003tB-8e; Tue, 04 Jun 2019 13:01:01 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hYAGL-0001TB-7C; Tue, 04 Jun 2019 14:18:05 +0000
+Received: from gateway21.websitewelcome.com ([192.185.45.176])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hY93i-0003sH-Pa
- for linux-mtd@lists.infradead.org; Tue, 04 Jun 2019 13:01:00 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 68F96281ED8;
- Tue,  4 Jun 2019 14:00:51 +0100 (BST)
-Date: Tue, 4 Jun 2019 15:00:47 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-Subject: Re: [EXT] Re: [PATCH v3 04/12] mtd: rawnand: introduce struct
- onfi_helper
-Message-ID: <20190604150047.063395ab@collabora.com>
-In-Reply-To: <MN2PR08MB595131826D34BFD773DF1251B8150@MN2PR08MB5951.namprd08.prod.outlook.com>
-References: <MN2PR08MB5951E35FED92DD502F57B590B8140@MN2PR08MB5951.namprd08.prod.outlook.com>
- <20190603150537.3ca5ca8a@collabora.com>
- <MN2PR08MB595131826D34BFD773DF1251B8150@MN2PR08MB5951.namprd08.prod.outlook.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hYAGG-0001R2-4J
+ for linux-mtd@lists.infradead.org; Tue, 04 Jun 2019 14:18:01 +0000
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+ by gateway21.websitewelcome.com (Postfix) with ESMTP id AC948400D2349
+ for <linux-mtd@lists.infradead.org>; Tue,  4 Jun 2019 09:17:45 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
+ id YAG1hNuJG4FKpYAG1hi1KT; Tue, 04 Jun 2019 09:17:45 -0500
+X-Authority-Reason: nr=8
+Received: from [189.250.127.120] (port=33416 helo=embeddedor)
+ by gator4166.hostgator.com with esmtpa (Exim 4.91)
+ (envelope-from <gustavo@embeddedor.com>)
+ id 1hYAFz-0006u9-So; Tue, 04 Jun 2019 09:17:44 -0500
+Date: Tue, 4 Jun 2019 09:17:37 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jonathan Bakker <xc-racer2@live.ca>
+Subject: [PATCH] mtd: onenand_base: Mark expected switch fall-through
+Message-ID: <20190604141737.GA1064@embeddedor>
 MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - lists.infradead.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.250.127.120
+X-Source-L: No
+X-Exim-ID: 1hYAFz-0006u9-So
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [189.250.127.120]:33416
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190604_060059_092349_FC3F0682 
-X-CRM114-Status: GOOD (  23.61  )
+X-CRM114-CacheID: sfid-20190604_071800_246787_7313BCFF 
+X-CRM114-Status: UNSURE (   7.32  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -71,109 +94,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Lucas Stach <dev@lynxeye.de>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Marcel Ziswiler <marcel.ziswiler@toradex.com>,
- Richard Weinberger <richard@nod.at>, Yixun Lan <yixun.lan@amlogic.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Stefan Agner <stefan@agner.ch>, Paul Cercueil <paul@crapouillou.net>,
- Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Anders Roxell <anders.roxell@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Chuanhong Guo <gch981213@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "Bean Huo \(beanhuo\)" <beanhuo@micron.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 4 Jun 2019 12:02:28 +0000
-"Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com> wrote:
-
-> Hi Boris,
-> 
-> > > Create onfi_helper object. This is base to turn ONFI code to generic.
-> > >
-> > > Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
-> > > ---
-> > >  include/linux/mtd/nand.h | 21 +++++++++++++++++++++
-> > >  1 file changed, 21 insertions(+)
-> > >
-> > > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > > index 3cdf06cae8b6..645dde4c5797 100644
-> > > --- a/include/linux/mtd/nand.h
-> > > +++ b/include/linux/mtd/nand.h
-> > > @@ -11,6 +11,7 @@
-> > >  #define __LINUX_MTD_NAND_H
-> > >
-> > >  #include <linux/mtd/mtd.h>
-> > > +#include <linux/mtd/onfi.h>
-> > >
-> > >  /**
-> > >   * struct nand_memory_organization - Memory organization structure
-> > > @@ -157,6 +158,24 @@ struct nand_ops {
-> > >  	bool (*isbad)(struct nand_device *nand, const struct nand_pos  
-> > *pos);  
-> > >  };
-> > >
-> > > +/**
-> > > + * struct onfi_helper - ONFI helper functions that should be implemented  
-> > by  
-> > > + * specialized layers (raw NAND, SPI NAND, etc.)
-> > > + * @page: Page number for ONFI parameter table
-> > > + * @check_revision: Check ONFI revision number
-> > > + * @parameter_page_read: Function to read parameter pages
-> > > + * @init_intf_data: Initialize interface specific data or fixups
-> > > + */
-> > > +struct onfi_helper {
-> > > +	u8 page;
-> > > +	int (*check_revision)(struct nand_device *base,
-> > > +			      struct nand_onfi_params *p, int *onfi_version);
-> > > +	int (*parameter_page_read)(struct nand_device *base, u8 page,
-> > > +				   void *buf, unsigned int len);
-> > > +	int (*init_intf_data)(struct nand_device *base,
-> > > +			      struct nand_onfi_params *p);
-> > > +};
-> > > +
-> > >  /**
-> > >   * struct nand_device - NAND device
-> > >   * @mtd: MTD instance attached to the NAND device
-> > > @@ -165,6 +184,7 @@ struct nand_ops {
-> > >   * @rowconv: position to row address converter
-> > >   * @bbt: bad block table info
-> > >   * @ops: NAND operations attached to the NAND device
-> > > + * @helper: Helper functions to detect and initialize ONFI NAND
-> > >   *
-> > >   * Generic NAND object. Specialized NAND layers (raw NAND, SPI NAND,  
-> > OneNAND)  
-> > >   * should declare their own NAND object embedding a nand_device struct  
-> > (that's  
-> > > @@ -183,6 +203,7 @@ struct nand_device {
-> > >  	struct nand_row_converter rowconv;
-> > >  	struct nand_bbt bbt;
-> > >  	const struct nand_ops *ops;
-> > > +	struct onfi_helper helper;  
-> > 
-> > Sorry, but I don't think that's the right solution. When I said we
-> > should have ONFI code shared I was thinking about the code that parses
-> > the ONFI struct/data to extract nand_memory_organization bits or other
-> > generic info, not something that would abstract how to retrieve the
-> > ONFI param page. Clearly, the generic NAND layer is not supposed to
-> > handle such protocol/low-level details.
-> >   
-> 
-> In that case, I am thinking to design as follows, which splits into generic independent code.
-> Let me know, if you have any concerns or inputs.
-> 
-> I will parsing code from nand_onfi_detect function and move it to mtd/nand/onfi.c.
-> Also, I will move functions like sanitize_string, nand_bit_wise_majority, onfi_crc16, and 
-> any other generic info to mtd/nand/onfi.c.
-
-Sounds good.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SW4gcHJlcGFyYXRpb24gdG8gZW5hYmxpbmcgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaCwgbWFyayBz
+d2l0Y2ggY2FzZXMKd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2guCgpUaGlz
+IHBhdGNoIGZpeGVzIHRoZSBmb2xsb3dpbmcgd2FybmluZzoKCmRyaXZlcnMvbXRkL25hbmQvb25l
+bmFuZC9vbmVuYW5kX2Jhc2UuYzogSW4gZnVuY3Rpb24g4oCYb25lbmFuZF9jaGVja19mZWF0dXJl
+c+KAmToKZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jOjMyNjQ6MTc6IHdh
+cm5pbmc6IHRoaXMgc3RhdGVtZW50IG1heSBmYWxsIHRocm91Z2ggWy1XaW1wbGljaXQtZmFsbHRo
+cm91Z2g9XQogICB0aGlzLT5vcHRpb25zIHw9IE9ORU5BTkRfSEFTX05PUF8xOwpkcml2ZXJzL210
+ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNlLmM6MzI2NToyOiBub3RlOiBoZXJlCiAgY2FzZSBP
+TkVOQU5EX0RFVklDRV9ERU5TSVRZXzRHYjoKICBefn5+CgpXYXJuaW5nIGxldmVsIDMgd2FzIHVz
+ZWQ6IC1XaW1wbGljaXQtZmFsbHRocm91Z2g9MwoKVGhpcyBwYXRjaCBpcyBwYXJ0IG9mIHRoZSBv
+bmdvaW5nIGVmZm9ydHMgdG8gZW5hYmxlCi1XaW1wbGljaXQtZmFsbHRocm91Z2guCgpDYzogSm9u
+YXRoYW4gQmFra2VyIDx4Yy1yYWNlcjJAbGl2ZS5jYT4KU2lnbmVkLW9mZi1ieTogR3VzdGF2byBB
+LiBSLiBTaWx2YSA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9uYW5k
+L29uZW5hbmQvb25lbmFuZF9iYXNlLmMgfCAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
+bigrKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jhc2Uu
+YyBiL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYwppbmRleCBiYTQ2ZDBj
+ZjYwYTEuLmJkYjVmNDczM2QyOCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5k
+L29uZW5hbmRfYmFzZS5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jh
+c2UuYwpAQCAtMzI2Miw2ICszMjYyLDcgQEAgc3RhdGljIHZvaWQgb25lbmFuZF9jaGVja19mZWF0
+dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIAlzd2l0Y2ggKGRlbnNpdHkpIHsKIAljYXNlIE9O
+RU5BTkRfREVWSUNFX0RFTlNJVFlfOEdiOgogCQl0aGlzLT5vcHRpb25zIHw9IE9ORU5BTkRfSEFT
+X05PUF8xOworCQkvKiBmYWxsIHRocm91Z2ggKi8KIAljYXNlIE9ORU5BTkRfREVWSUNFX0RFTlNJ
+VFlfNEdiOgogCQlpZiAoT05FTkFORF9JU19ERFAodGhpcykpCiAJCQl0aGlzLT5vcHRpb25zIHw9
+IE9ORU5BTkRfSEFTXzJQTEFORTsKLS0gCjIuMjEuMAoKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
