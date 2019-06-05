@@ -1,82 +1,61 @@
-Return-Path: <SRS0=Hh3Q=UD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=OIBc=UE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAE8CC282CE
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 21:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD8FC28CC5
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2019 21:35:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0C902075B
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2019 21:04:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8103E20717
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2019 21:35:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JPB5YkuD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BfscdB2b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0C902075B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NgE6pM/S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8103E20717
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allycomm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ve5dscsuWyCtF2nuroM9kg0DvhSK2+g+IjBdkiZU/Cc=; b=JPB5YkuDKQM9Xb
-	KC5J1JfKIwc0UjPNpty7TRb8PjSBndhq5uPsSIsWCb72X1ihAOQRWVV9kPyiA5/McLZHQchP3QJU8
-	nfIVL2xTY7gGMGQV/b463qtDkSfC8Rn7yxq7f6B+iEVCniLXpsX1qjqnu5XSHkyp21PTdSFn6mX0p
-	WLGh0AhnVLTGJr83cpUUBWxqxtrwiNOWhiStZsj9BG3J+D5k5DnB9CzQfKZgaD3qCJce3bZ3FbUJk
-	rxveuqVa8LWd2bDW+Y73Pc2qZYj35N81vvsbri5MBPRjiHfFAHIiO916rYP0//aLUdRuCjwKEEPf4
-	uYR+mLCTl0NUcc6zN/8Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ntdLaYroF9yfsPhJtwl84dPtsyxPpbSDDlI2fWb3oj0=; b=NgE6pM/STYqoUQ
+	MhmE8VkU/HiCaoWGdWq3Wrg57RnoByEId85xFCkt0WaOVYgPOyudW84E+A1SINDYdHiIQcTHXW+uZ
+	FsV8ncYjNzRVoLHFd3G4RXxH//6nvGzIB6/aQkhLqjNjzk7mwgQfZCA47SVtOEh4NYd3b7XeIBbb4
+	CKUS5TGXLJ6jjG2l3/2YLRPLD74vtKhxvLu6fduNZ/qNmJLIYKWRcjnkhyEziq2clsD3v9V+N92ct
+	6l5k0wGApSFXUS58rJtc5amCQ7yf5HC+hrtOgGLzx/blWQkhCMVoua/qgDFNEwu3TBzktvECsVWkT
+	+7m7JVjKJXDi4MGmcbLw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hYGbt-0007ov-Py; Tue, 04 Jun 2019 21:04:45 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1hYdZM-0005cD-2R; Wed, 05 Jun 2019 21:35:40 +0000
+Received: from mx.allycomm.com ([138.68.30.55])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hYGbq-0007oQ-Ub
- for linux-mtd@lists.infradead.org; Tue, 04 Jun 2019 21:04:44 +0000
-Received: by mail-wr1-x435.google.com with SMTP id w13so17240634wru.11
- for <linux-mtd@lists.infradead.org>; Tue, 04 Jun 2019 14:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=2yqsO4dtNK+yilF3bRIgywpkE3I0LiEzTxImvFNFr6M=;
- b=BfscdB2b2Bfuh9IiHRKATsrKkkvmLY1aCUY4ZBSkE+dH0JtveCm0yY/5gcRFb86JIF
- +8/PmDd4c4LgrRa9oFYteH3DgEtINgtTjKH7ITNUR9woLBPsOO4ZoylNV3W5RsKQslF1
- pNMJclBeK4fbVMw3VZeASUfCd7ynEJHXzvcrBmvvzazhTrQYW1J0eGpIkDW4dNcOOoAQ
- oyUFfwDAAY+HYoA5xf5A5y8wMKm1s1K/JwcxZ2tE6ySLPR1r+moOHdVgXvbCwJ8J+H10
- uzNkImyIpFzGBfwZgA1ap1to8gCdVW/ZrgUN7ySWH7I74RI9QlErX4donxu/DT80+Pad
- E4aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=2yqsO4dtNK+yilF3bRIgywpkE3I0LiEzTxImvFNFr6M=;
- b=YgJi0gEWlhzWGBUgYf+lpwNyGIV6W3HJpna3quhlsbnSXmYrqF45FQftgJOvoDaA69
- qKcHKYh/w1vswQWT8d+1KiNk15UAeDK+QC5tnm6EXxX8PaKN7fobaePfH9mNB2zym4tF
- DjLCJeJOTebUZKDXzYmjzdT+tBX08jgW+ERKbHEJEDo8BnTOACcfne8w3jbMhhEamO8v
- fFUvJFHIzyCeF5X/0zlr+JgThS2ZyibLWhlvRcV2XqudbrAR7U6VIXk2fUYpmwxPq2Hw
- ohxqoEDrCa0ewKPOoIQ0V5DXUCyMMU0tI95VJTvHi0KKD8pUJ/+GO05h5ezOwJqd6uP1
- ZEGw==
-X-Gm-Message-State: APjAAAVll0qogiMwqFmrhaOUc5tgehmD3E4rdTQnfQI5s708E2ngKVED
- VUajnWqyMXw9It15YbdmrJdKPHTaSf8hXa2h9sM=
-X-Google-Smtp-Source: APXvYqxgb8n/IZNYCggPD2YFMCs10IFZPtfnQDBx5YF/eDNUJv3RNYsuEnoZxoNLkE1C0UlIAp5e9p/ntu0ISTgoR/w=
-X-Received: by 2002:a5d:6b12:: with SMTP id v18mr22219693wrw.306.1559682280882; 
- Tue, 04 Jun 2019 14:04:40 -0700 (PDT)
+ id 1hYdZG-0005bq-Qz
+ for linux-mtd@lists.infradead.org; Wed, 05 Jun 2019 21:35:36 +0000
+Received: from allycomm.com (unknown [IPv6:2601:647:5401:2210::49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mx.allycomm.com (Postfix) with ESMTPSA id 0998D22214;
+ Wed,  5 Jun 2019 14:35:33 -0700 (PDT)
+From: Jeff Kletsky <lede@allycomm.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: spinand: Support Paragon PN26G01A and PN26G02A
+Date: Wed,  5 Jun 2019 14:35:15 -0700
+Message-Id: <20190605213516.13516-1-lede@allycomm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAGu8XfRM6MtAP7v2F2jp9CGYERj5niAvhHYtXQmpzOS0uHoUrg@mail.gmail.com>
-In-Reply-To: <CAGu8XfRM6MtAP7v2F2jp9CGYERj5niAvhHYtXQmpzOS0uHoUrg@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 4 Jun 2019 23:04:29 +0200
-Message-ID: <CAFLxGvxXcvmZtVC_AqgT65e6o-+V8uE30Y0zXQnaJOkxMgDbyg@mail.gmail.com>
-Subject: Re: File-compression on ubifs
-To: Shibin George <george.shibin1993@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190604_140442_989888_44BD14EB 
-X-CRM114-Status: GOOD (  15.09  )
+X-CRM114-CacheID: sfid-20190605_143534_885069_2E05BF51 
+X-CRM114-Status: GOOD (  16.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -88,50 +67,219 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Jeff Kletsky <git-commits@allycomm.com>,
+ linux-kernel@vger.kernel.org, Schrempf Frieder <frieder.schrempf@kontron.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, May 17, 2019 at 1:37 PM Shibin George
-<george.shibin1993@gmail.com> wrote:
->
-> Hi everyone,
->
-> Had a query regarding mkfs.ubifs tool. I created an empty ubifs
-> filesystem using:
->
-> mkfs.ubifs -y /dev/ubiX_Y
+From: Jeff Kletsky <git-commits@allycomm.com>
 
-No need to run mkfs.ubifs, just mount an empty ubi volume as ubifs, it
-will auto create
-a filesystem for you.
+These Paragon chips are very similar to other 1Gb/2Gb chips
+in terms of their layout and command timings.
 
-> I was wondering that if I now create a new file on this filesystem
-> (after mount()), would compression be enabled or disabled for that
-> file by-default? I am sorry but I could quite grasp this from the
-> mkfs.ubifs code.
+One notable difference is that "Minimum number of valid blocks"
+(Nvb) is 1003 per Gb, rather than the common 1004. As a result,
+the bad-block reservation is 21 per Gb, rather than 20 per Gb.
 
-Compression is enabled by default, unless the filesystem is encrypted.
-You can also override the default compressor using the compr= mount-option.
+Datasheets available at
+http://www.xtxtech.com/upfile/2016082517274590.pdf
+http://www.xtxtech.com/upfile/2016082517282329.pdf
 
-> Another query that I have is this:
-> Would ubifs do a better job at compression if it knows the root-dir
-> contents ahead of time? In other words, is on-the-fly compression of a
-> file (i.e. compression at the time of creating/writing to a file)
-> generally worse than when the same file is known to ubifs at the time
-> of image creation?
+Signed-off-by: Jeff Kletsky <git-commits@allycomm.com>
+---
+ drivers/mtd/nand/spi/Makefile  |   2 +-
+ drivers/mtd/nand/spi/core.c    |   1 +
+ drivers/mtd/nand/spi/paragon.c | 142 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |   1 +
+ 4 files changed, 145 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/paragon.c
 
-UBIFS compression works on 4k chunks, it should not matter whether you compress
-at runtime or at mkfs.ubifs time.
-
-If you're looking for better compression rates, give our zstd patches a try.
-You can find them on the mailinglist.
-
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 753125082640..9662b9c1d5a9 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o gigadevice.o macronix.o micron.o toshiba.o winbond.o
++spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 556bfdb34455..f0f3528aab8f 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -757,6 +757,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
++	&paragon_spinand_manufacturer,
+ 	&toshiba_spinand_manufacturer,
+ 	&winbond_spinand_manufacturer,
+ };
+diff --git a/drivers/mtd/nand/spi/paragon.c b/drivers/mtd/nand/spi/paragon.c
+new file mode 100644
+index 000000000000..dd863dbc593a
+--- /dev/null
++++ b/drivers/mtd/nand/spi/paragon.c
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2019 Jeff Kletsky
++ *
++ * Author: Jeff Kletsky <git-commits@allycomm.com>
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++
++#define SPINAND_MFR_PARAGON	0xa1
++
++
++#define PN26G0XA_STATUS_ECC_BITMASK		(3 << 4)
++
++#define PN26G0XA_STATUS_ECC_NONE_DETECTED	(0 << 4)
++#define PN26G0XA_STATUS_ECC_1_7_CORRECTED	(1 << 4)
++#define PN26G0XA_STATUS_ECC_ERRORED		(2 << 4)
++#define PN26G0XA_STATUS_ECC_8_CORRECTED		(3 << 4)
++
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++
++static int pn26g0xa_ooblayout_ecc(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	region->offset = 64;
++	region->length = 64;
++
++	return 0;
++}
++
++static int pn26g0xa_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	region->offset = 1;	/* Reserved byte for BBM */
++	region->length = 63;
++
++	return 0;
++}
++
++static int pn26g0xa_ecc_get_status(struct spinand_device *spinand,
++				   u8 status)
++{
++	switch (status & PN26G0XA_STATUS_ECC_BITMASK) {
++	case PN26G0XA_STATUS_ECC_NONE_DETECTED:
++		return 0;
++
++	case PN26G0XA_STATUS_ECC_1_7_CORRECTED:
++		return 7;	/* Return upper limit by convention */
++
++	case PN26G0XA_STATUS_ECC_8_CORRECTED:
++		return 8;
++
++	case PN26G0XA_STATUS_ECC_ERRORED:
++		return -EBADMSG;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
++static const struct mtd_ooblayout_ops pn26g0xa_ooblayout = {
++	.ecc = pn26g0xa_ooblayout_ecc,
++	.free = pn26g0xa_ooblayout_free,
++};
++
++
++static const struct spinand_info paragon_spinand_table[] = {
++	SPINAND_INFO("PN26G01A", 0xe1,
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 21, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&pn26g0xa_ooblayout,
++				     pn26g0xa_ecc_get_status)),
++	SPINAND_INFO("PN26G02A", 0xe2,
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 21, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&pn26g0xa_ooblayout,
++				     pn26g0xa_ecc_get_status)),
++};
++
++static int paragon_spinand_detect(struct spinand_device *spinand)
++{
++	u8 *id = spinand->id.data;
++	int ret;
++
++	/* Read ID returns [0][MID][DID] */
++
++	if (id[1] != SPINAND_MFR_PARAGON)
++		return 0;
++
++	ret = spinand_match_and_init(spinand, paragon_spinand_table,
++				     ARRAY_SIZE(paragon_spinand_table),
++				     id[2]);
++	if (ret)
++		return ret;
++
++	return 1;
++}
++
++static const struct spinand_manufacturer_ops paragon_spinand_manuf_ops = {
++	.detect = paragon_spinand_detect,
++};
++
++const struct spinand_manufacturer paragon_spinand_manufacturer = {
++	.id = SPINAND_MFR_PARAGON,
++	.name = "Paragon",
++	.ops = &paragon_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index fbc0423bb4ae..4ea558bd3c46 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -227,6 +227,7 @@ struct spinand_manufacturer {
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
++extern const struct spinand_manufacturer paragon_spinand_manufacturer;
+ extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
+ extern const struct spinand_manufacturer winbond_spinand_manufacturer;
+ 
 -- 
-Thanks,
-//richard
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
