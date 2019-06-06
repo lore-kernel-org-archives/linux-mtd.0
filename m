@@ -2,65 +2,85 @@ Return-Path: <SRS0=ASOq=UF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 698A8C04AB5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 09:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 348CEC04AB5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 13:06:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 277E52083E
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 09:10:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 00BDF20883
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 13:06:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TPULhR5t";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=emcraft.com header.i=@emcraft.com header.b="wPwfae3g"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 277E52083E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=emcraft.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f4fzvOkb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fJSchp5v"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00BDF20883
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=J1LIKj6aTxtk1TNYqvUHyuMPJqghVLMbIXahZIojs+g=; b=TPULhR5tuZKS+P
-	wUjSGTvUvmN+Ly8NnRL9PoM8ETnSd3Jo0xhZM1Pift0lzgcWrjUPPCb3yi7ZjRjK8Gs8BQiboP1TO
-	wzZp3ecPpgt4gnvDSTHCgmtgkEdzAsseHxqJnd0Yx6IFwSVXZU5upB/a7a8l2O4h3eveRqb0wjY0h
-	YMp435nbi4+q3NUNZ8AfiK5UkatB0T08BS//LOar3DqUDafzW4JKTh+tLhJZy6uJh+0Hkjclpx9Ib
-	WXJ+/CqyFj5+WJOGMRRXt0nn2p50OD+vMmMN+jrjA4sp7Gaw1RrQAvsdkNKAWMiSA74gSaoFuB/P/
-	WOiHU+dQSpZuBkZcdaww==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=grGfa12544ZSzM/eQQphc12QhmrjNACoDDKJC6ACphI=; b=f4fzvOkbiz7EeC
+	zlEIO+vmVGMdnfaZUhTMkrrtCtjAjT1M2wjEmiGoHD+z3tu/lKbK1MU5HEJ46tmcw0Y2CoCVndxOG
+	XUk5Sq6IZEv5SMI+v+oZwd5rmr5OkodZt8ikb43ljd7NvNu6SZILcaUHUa8cKlnRzkcyQftY5xhsI
+	nNU46sl2TVaxYu1irkpSQF6lDH+ePw/s5/JF7SbEmnsGypqJZBaHrUqPQ9GntjfHoNNdkVCRidp8v
+	YvJDC/yyYRoBsAGl+k9p0W82C+09swmSPrFhjF19jFXe/Xmfrd9Oa84nRb52jwzW0EhipQqZt+ujh
+	AGLYY01dfRQZnLcE4+zA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hYoQ1-0007UT-F1; Thu, 06 Jun 2019 09:10:45 +0000
-Received: from host2.emcraft.com ([138.197.218.152])
+	id 1hYs6J-0008D3-6G; Thu, 06 Jun 2019 13:06:39 +0000
+Received: from mail-pl1-x644.google.com ([2607:f8b0:4864:20::644])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hYoPy-0007U1-L9
- for linux-mtd@lists.infradead.org; Thu, 06 Jun 2019 09:10:44 +0000
-Received: from sergmir.emcraft.com (unknown [176.110.122.116])
- by host2.emcraft.com (Postfix) with ESMTPSA id DF73840043B;
- Thu,  6 Jun 2019 02:10:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host2.emcraft.com DF73840043B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=emcraft.com;
- s=default; t=1559812240;
- bh=mEDDLGmMRrHotyJ7Oc8dhTSw/AMEzEmPPzN4MRzrd+8=;
- h=Date:From:To:Subject:From;
- b=wPwfae3glejTheSwkoMWCqM3umL7+J0SALhgoWFWWv+nqdAEyosUFxzaQuRUjh0xB
- WDtvmjxGYHwkBxzuG/3M5G30EDyPPCyAsDpAgcmuzZ1ltaBotWcx3sOJB0XC5Slrvy
- vMZ7dywmmHMsiklk0RW5V5QvnOKxofqqPRxCLh3E=
-Date: Thu, 6 Jun 2019 12:10:37 +0300
-From: Sergei Poselenov <sposelenov@emcraft.com>
-To: linux-mtd@lists.infradead.org
-Subject: UBIFS: file data corruption during the power cut-off test
-Message-ID: <20190606121037.40a1cc5e@sergmir.emcraft.com>
-Organization: Emcraft Systems
-X-Mailer: Claws Mail 3.15.1-dirty (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hYs6G-0008Ch-0x; Thu, 06 Jun 2019 13:06:37 +0000
+Received: by mail-pl1-x644.google.com with SMTP id x7so898740plr.12;
+ Thu, 06 Jun 2019 06:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=ung4orp8URxuOrMjnVKgYycsz9kC0r/uuyoRY+oDf1I=;
+ b=fJSchp5vjqkdhvO06QvM4RIsoj9eZTNLux+zMHCz/psczOAdx3Jtk5ZcoVrwwfoiKb
+ LL0D9JIAWlejJZEcm+dOLDuIvpNPhwO3U72rIiKnSrB2TG5qNA7DI/X0b3TG4ff/DQ/6
+ g8VGgw4eOL5RcI7h2G8BFrQkppti5noTG717mtKepwqZom+q1dViVnSmOKGV/x31WuH+
+ Fa5Zzkyr+qH85brB8XJ63dzz1P9/0OzezRe7vWv3LbAlPg6E0jO8YR6YXdrz3dAutKlw
+ t5fBDJRertIXj/TSOq0tDL9i5DdQGew7So4Re4BZd5K6i6C+H7scoPTCG65sgp/Ekmqh
+ iYUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ung4orp8URxuOrMjnVKgYycsz9kC0r/uuyoRY+oDf1I=;
+ b=nAN03HBNWPoIDV29dz1was9lePIdfLfz9QVocvqnbvnHlrs+dDtDGjJoS8nPG1d3c8
+ 1r3sZz1VrEgaGEJiE+UlQQvVYmpCnBPetKXrFmO/3w0HtTMFdy7ZX6Qews5t+4JiJTFB
+ /ip87bojzfeHGo0DmeEpHW8trck6NMve0dDg6luO2PqDE6VAVifo0L5FETBCkd5fGZs5
+ ewyhMBYd+AADAKLNtQ/BdguZqb+6j/waBn1CrNzH9tXx03SJ1/KG69I5OuV8ajR+Cc8q
+ KkubR11v8lSBQ4ndrKwgGXycaSSLBy7sXk3IH30Sz3Bt+3rsHzaAlReR+V8YUfDIgSSb
+ LqTA==
+X-Gm-Message-State: APjAAAUB7d+4nJ/PxmDkcDkDGD8H0loyGZ/bnJXvIIf/g+0HBnH2upKJ
+ q5x/JLlJD6KmyMf6sYjztFpHWnIsYGFFsOPM6Fs=
+X-Google-Smtp-Source: APXvYqzfctK1E8IeJCd+SHjUS7CaRJixD8hvabiebVkpp9GqcWONVrECJVLG78yuj2/xKp0pVdKRMAtcjoMZrT+Nkjs=
+X-Received: by 2002:a17:902:112c:: with SMTP id
+ d41mr49148839pla.33.1559826395041; 
+ Thu, 06 Jun 2019 06:06:35 -0700 (PDT)
 MIME-Version: 1.0
+References: <20190304201522.11323-1-miquel.raynal@bootlin.com>
+ <20190304201522.11323-2-miquel.raynal@bootlin.com>
+ <CAO1O6se5=FDf2YTEEzmFJ4K6HQp_2ayU=WubxGAQJdMA4V4m-Q@mail.gmail.com>
+ <5e5d473b-2f08-4230-0920-247c2c463c55@kontron.de>
+In-Reply-To: <5e5d473b-2f08-4230-0920-247c2c463c55@kontron.de>
+From: Emil Lenngren <emil.lenngren@gmail.com>
+Date: Thu, 6 Jun 2019 15:06:26 +0200
+Message-ID: <CAO1O6sfkFGeUWWy1vJHfyi6L4=N-C1D2MH7gz20jhoMSGw5b7w@mail.gmail.com>
+Subject: Re: [PATCH v2 01/15] mtd: nand: Add max_bad_eraseblocks_per_lun info
+ to memorg
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190606_021042_864414_D1C6D6C2 
-X-CRM114-Status: UNSURE (   5.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190606_060636_072665_2813B5D3 
+X-CRM114-Status: GOOD (  16.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -72,29 +92,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+Hi Schrempf,
 
-We have an embedded system based on i.MX 6ULL, with the root filesystem deployed on a UBI volume built on top of the SLC NAND device. The volume is mounted as "rw,sync,relatime".
+Den tors 6 juni 2019 kl 10:27 skrev Schrempf Frieder
+<frieder.schrempf@kontron.de>:
+>
+> Hi Emil,
+>
+> On 04.06.19 10:01, Emil Lenngren wrote:
+> > Hi Miquel,
+> >
+> >>   static const struct spinand_info macronix_spinand_table[] = {
+> >>          SPINAND_INFO("MX35LF1GE4AB", 0x12,
+> >> -                    NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
+> >> +                    NAND_MEMORG(1, 2048, 64, 64, 1024, 40, 1, 1, 1),
+> >>                       NAND_ECCREQ(4, 512),
+> >>                       SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> >>                                                &write_cache_variants,
+> >> @@ -103,7 +103,7 @@ static const struct spinand_info macronix_spinand_table[] = {
+> >>                       SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+> >>                                       mx35lf1ge4ab_ecc_get_status)),
+> >>          SPINAND_INFO("MX35LF2GE4AB", 0x22,
+> >> -                    NAND_MEMORG(1, 2048, 64, 64, 2048, 2, 1, 1),
+> >> +                    NAND_MEMORG(1, 2048, 64, 64, 2048, 20, 2, 1, 1),
+> >>                       NAND_ECCREQ(4, 512),
+> >
+> > Maybe a bit late to the discussion, but shouldn't 20 and 40 be swapped
+> > here, i.e. isn't it the larger flash that has more max bad blocks than
+> > the smaller one?
+>
+> I think Miquel is out of office for some days, so I just checked and you
+> are right, the maximum number of bad blocks should be swapped.
+>
+> Actually there is also a wrong value in the GigaDevice driver: For the
+> GD5F4GQ4xA it should be 80 instead of 40.
+>
+> Would you mind sending a patch with a "Fixes:" tag, that fixes both, the
+> Macronix and the GigaDevice driver? Or should I send one?
 
-We are doing the following test:
+Please go ahead :)
 
-   - Copy the same file (/bin/busybox) to a different file names, in a sequence.
-
-   - Power is cut off during the copy sequence.
-
-   - After reboot, UBI mounts OK, and we see a number of valid copies of /bin/busybox (md5sum matches), and the last file with the short length (partially written), as expected.
-
-The question is: should we expect the last partially-written file to have the valid data of the original? We observe that quite often, the last 512 or so bytes in the short file doesn't match the original.
-
-Any thoughts are welcome.
-
-Regards,
-Sergei
+/Emil
 
 ______________________________________________________
 Linux MTD discussion mailing list
