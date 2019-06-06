@@ -4,88 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	T_DKIMWL_WL_HIGH autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21990C28D1A
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 08:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58CC1C04AB5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 08:40:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC959212F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 08:27:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 136AB207E0
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2019 08:40:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DEHkH1cM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC959212F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UOIdOiY6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 136AB207E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7e8aT9C/9lTvUpafCR/PQrStLubuFIiTmmSI/wRk9tY=; b=DEHkH1cMkfPa3/
-	TbYw9C2XrA2VFo1+VY9FgdB1sVEUSriF0vIDG6Z4g/CvuifoQDODcO8EhBfRTh/Vc6lIHfiNuZoEs
-	tyaQ/hwPW7850fMx9Hx2B1kbtV38qlnMTVDCryy3OPmvMB4krHGBmF5EDLmDZW5SlfYSLlDxBDMYb
-	e6MxvSgvezy2LpP4eYOR9vwr9irbWtmHNhu1XvCT5hBcttTrLx4MbDXwivkGScA6s2TK1ry3r+uOR
-	w8fmfSL6l/UULZHndZLHJsGrpZelxzgqXWpwZsLoxfVACES80yPBfbZqgQPc7GW0Pxr69zzpJlkVM
-	eiUMtateF4AkS5yXHpPw==;
+	List-Owner; bh=sqDRyUtCS+p2qnGHldOPJyp9EGGVK6fWa7Kkv8NHgqA=; b=UOIdOiY6QB1zBh
+	CuSDwrxLZt1L12NZp65dLiQr5HYAaGEoSNNaWzodVNJlJZyNGp1asJbftlCBiJrS9gm70xONy3lxJ
+	fNrnGIj6aT6Uyjt1rNZ58xqoCN9FDc4hap/kRXo8j4ER0evbEws/Xvxr6JYmuaF0vq0Sc6mCKjkJW
+	OoJpqdnIwlmYA4UejiUNwpKGzlm+dYyyGiKs4TPjVnRwSbCGbDxcEFVfrFzFATI2pVlTaDADoz4tR
+	rj02TCMPtOt5y1aT6s1K9jhOuBls1UdyeCsQBS/b3/fqo2Nm6g8OmbLSL8KONBZXN80eYQl/7hGtb
+	rG0+ckIQYl+B4e75YUjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
-	id 1hYnk4-0003UV-N9; Thu, 06 Jun 2019 08:27:24 +0000
-Received: from skedge04.snt-world.com ([91.208.41.69])
+	id 1hYnwR-0001LL-2b; Thu, 06 Jun 2019 08:40:11 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1hYnjw-0003Ng-7J; Thu, 06 Jun 2019 08:27:18 +0000
-Received: from sntmail11s.snt-is.com (unknown [10.203.32.181])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by skedge04.snt-world.com (Postfix) with ESMTPS id 88885661177;
- Thu,  6 Jun 2019 10:27:12 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail11s.snt-is.com
- (10.203.32.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 6 Jun 2019
- 10:27:12 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Thu, 6 Jun 2019 10:27:12 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: Emil Lenngren <emil.lenngren@gmail.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 01/15] mtd: nand: Add max_bad_eraseblocks_per_lun info
- to memorg
-Thread-Topic: [PATCH v2 01/15] mtd: nand: Add max_bad_eraseblocks_per_lun info
- to memorg
-Thread-Index: AQHU0scN55ZCxKZqF0m+9YUbyTEVtKaLkFoAgAMr1oA=
-Date: Thu, 6 Jun 2019 08:27:11 +0000
-Message-ID: <5e5d473b-2f08-4230-0920-247c2c463c55@kontron.de>
+ id 1hYnwE-0000TH-D7; Thu, 06 Jun 2019 08:39:59 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 47AFD2603D4;
+ Thu,  6 Jun 2019 09:39:54 +0100 (BST)
+Date: Thu, 6 Jun 2019 10:39:51 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Subject: Re: [PATCH v2 01/15] mtd: nand: Add max_bad_eraseblocks_per_lun
+ info to memorg
+Message-ID: <20190606103951.1d774b9a@collabora.com>
+In-Reply-To: <5e5d473b-2f08-4230-0920-247c2c463c55@kontron.de>
 References: <20190304201522.11323-1-miquel.raynal@bootlin.com>
  <20190304201522.11323-2-miquel.raynal@bootlin.com>
  <CAO1O6se5=FDf2YTEEzmFJ4K6HQp_2ayU=WubxGAQJdMA4V4m-Q@mail.gmail.com>
-In-Reply-To: <CAO1O6se5=FDf2YTEEzmFJ4K6HQp_2ayU=WubxGAQJdMA4V4m-Q@mail.gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <91792C479013E34B9E52AEE7D1454831@snt-world.com>
+ <5e5d473b-2f08-4230-0920-247c2c463c55@kontron.de>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 88885661177.AD12D
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, emil.lenngren@gmail.com, juliensu@mxic.com.tw,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- marek.vasut@gmail.com, masonccyang@mxic.com.tw,
- miquel.raynal@bootlin.com, richard@nod.at,
- thomas.petazzoni@bootlin.com, tudor.ambarus@microchip.com,
- vigneshr@ti.com, yamada.masahiro@socionext.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190606_012716_588482_69D85FD5 
-X-CRM114-Status: GOOD (  14.08  )
+X-CRM114-CacheID: sfid-20190606_013958_577483_4FADAF73 
+X-CRM114-Status: GOOD (  16.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.21
 Precedence: list
@@ -97,13 +70,15 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>, Tudor
- Ambarus <Tudor.Ambarus@microchip.com>, Julien Su <juliensu@mxic.com.tw>,
- Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
+Cc: Mason Yang <masonccyang@mxic.com.tw>, Vignesh R <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Julien Su <juliensu@mxic.com.tw>,
+ Richard Weinberger <richard@nod.at>, Emil Lenngren <emil.lenngren@gmail.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
@@ -112,41 +87,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Emil,
+On Thu, 6 Jun 2019 08:27:11 +0000
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
 
-On 04.06.19 10:01, Emil Lenngren wrote:
-> Hi Miquel,
+> Hi Emil,
 > 
->>   static const struct spinand_info macronix_spinand_table[] = {
->>          SPINAND_INFO("MX35LF1GE4AB", 0x12,
->> -                    NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
->> +                    NAND_MEMORG(1, 2048, 64, 64, 1024, 40, 1, 1, 1),
->>                       NAND_ECCREQ(4, 512),
->>                       SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
->>                                                &write_cache_variants,
->> @@ -103,7 +103,7 @@ static const struct spinand_info macronix_spinand_table[] = {
->>                       SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
->>                                       mx35lf1ge4ab_ecc_get_status)),
->>          SPINAND_INFO("MX35LF2GE4AB", 0x22,
->> -                    NAND_MEMORG(1, 2048, 64, 64, 2048, 2, 1, 1),
->> +                    NAND_MEMORG(1, 2048, 64, 64, 2048, 20, 2, 1, 1),
->>                       NAND_ECCREQ(4, 512),
+> On 04.06.19 10:01, Emil Lenngren wrote:
+> > Hi Miquel,
+> >   
+> >>   static const struct spinand_info macronix_spinand_table[] = {
+> >>          SPINAND_INFO("MX35LF1GE4AB", 0x12,
+> >> -                    NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
+> >> +                    NAND_MEMORG(1, 2048, 64, 64, 1024, 40, 1, 1, 1),
+> >>                       NAND_ECCREQ(4, 512),
+> >>                       SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> >>                                                &write_cache_variants,
+> >> @@ -103,7 +103,7 @@ static const struct spinand_info macronix_spinand_table[] = {
+> >>                       SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+> >>                                       mx35lf1ge4ab_ecc_get_status)),
+> >>          SPINAND_INFO("MX35LF2GE4AB", 0x22,
+> >> -                    NAND_MEMORG(1, 2048, 64, 64, 2048, 2, 1, 1),
+> >> +                    NAND_MEMORG(1, 2048, 64, 64, 2048, 20, 2, 1, 1),
+> >>                       NAND_ECCREQ(4, 512),  
+> > 
+> > Maybe a bit late to the discussion, but shouldn't 20 and 40 be swapped
+> > here, i.e. isn't it the larger flash that has more max bad blocks than
+> > the smaller one?  
 > 
-> Maybe a bit late to the discussion, but shouldn't 20 and 40 be swapped
-> here, i.e. isn't it the larger flash that has more max bad blocks than
-> the smaller one?
+> I think Miquel is out of office for some days, so I just checked and you 
+> are right, the maximum number of bad blocks should be swapped.
+> 
+> Actually there is also a wrong value in the GigaDevice driver: For the 
+> GD5F4GQ4xA it should be 80 instead of 40.
 
-I think Miquel is out of office for some days, so I just checked and you 
-are right, the maximum number of bad blocks should be swapped.
+Haven't checked the datasheet, but keep in mind that this is the max
+number of eraseblock per LUN.
 
-Actually there is also a wrong value in the GigaDevice driver: For the 
-GD5F4GQ4xA it should be 80 instead of 40.
-
-Would you mind sending a patch with a "Fixes:" tag, that fixes both, the 
-Macronix and the GigaDevice driver? Or should I send one?
-
-Thanks,
-Frieder
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
