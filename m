@@ -2,83 +2,72 @@ Return-Path: <SRS0=qE3A=UG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C03DC2BCA1
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2019 15:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E974C468BD
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2019 15:43:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 657182089E
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2019 15:34:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 36F5321479
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2019 15:43:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sQuhrFTP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qyOSfdjE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 657182089E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="TQe0jU6s";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="By726Rt7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36F5321479
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=synopsys.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kQgTlhUw0PL7Mg6Dm70B22/LgHhzT8hZ5wG8vD+j2sI=; b=sQuhrFTPP9a7eO
-	XsfMV4NjqraZvrKh5W8b5k1VLWzkh7+m3bpTpZWl4vZKBMbz+hOmSkWdWDJjJjxwLuvPh16DMBwg/
-	QAmEq+Sxvufv+vvlstCbp9mnqmHNI9Mu3+m2U8FiNNGhYEuNutcLZ1nNLGVkb0hw24LM0BQKEIpuV
-	OzVPzAJomlZ7bP7iKaLpvQm0eSdKKMyJm3y8zuLGApfpoh/Xx+bBTi8UdIdJIOggKWJ9bOhLMGbHP
-	vu30xB/D3+GiCfFezGNsc+fVIES+ivvI8rTHeWEpnHdl2raYLpoQcVo4UspFBqEkdkH2f6FxHDN/9
-	S7qgslB+NS7pZfLMcN3w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=e7AQbP9QrRn3aAtXKcEx1h6JdHWu2+JHv0gi0NfKCzk=; b=TQe0jU6sFSR+pH
+	fZSfO34Y2jbIblfUFxt9HJCcwixz9jQWl+WmIJCgdHsBBxwWf3AmI11n7GE6fQ4rsXicEWJemgk0t
+	tS5MmhDJb9Aw8n86rE6adNAMsUbTKQhcTrFzMublixw9/2iZethCXhKxBC+PyDK7N7LTF2KRtsg5p
+	QCSz/+7R8Jnrpkz3WiCbYf49YP+gg2YtWBjgEV7ATTtOamYKxWZOI4Zb3lg3ZChXe6Z13pnxxhU0X
+	W0DqymBi2lJCV2VuXCgnXR3B8hwPSD60MIu43HW82XnHZ7uqZXkZP5qav2pxeoj3PqhZxD7ndjIlL
+	hFEu0o5BcXlUyWJcz0tg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hZGsx-0001SC-JP; Fri, 07 Jun 2019 15:34:31 +0000
-Received: from mail-pl1-x642.google.com ([2607:f8b0:4864:20::642])
+	id 1hZH1n-0006Vj-Gi; Fri, 07 Jun 2019 15:43:39 +0000
+Received: from dc2-smtprelay2.synopsys.com ([198.182.61.142]
+ helo=smtprelay-out1.synopsys.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hZGsu-0001Rb-Ra
- for linux-mtd@lists.infradead.org; Fri, 07 Jun 2019 15:34:30 +0000
-Received: by mail-pl1-x642.google.com with SMTP id i2so979574plt.1
- for <linux-mtd@lists.infradead.org>; Fri, 07 Jun 2019 08:34:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=h1nKFwhuq2ZEy0/ENH2G+07fPOyOK64gti3KBgl78Rg=;
- b=qyOSfdjE5eweGadE+c1zpwMdiopx6p5B6y5hDjgg7mxbdYLW+L8J24CH5j4tGB24zV
- frtVpsgEqgv6t0pEMPRIxFRqVIX0XgCddlV3xDyn1kxpBLE035ZJQOz6kto8nCXg+UZf
- 3l7L9b+cHyqGyCAwfT9+M4kKBg68+6SbY8qKCBLm2/GJrIinPcHKCZSBbzw38kfTeMMU
- EMojC7jY+x/kucJIy1Ah1RqjKjPV4mWyT+oJ0ADB487CKYFz6hkJsgu7L1BlqgPV+3Uf
- F6o4XVJKM5m2ohulV2gmIEOi8xdfpLXSLNqRCIqfa2kMPX3Ry3A3L97uY65WipPofcEt
- 6mgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=h1nKFwhuq2ZEy0/ENH2G+07fPOyOK64gti3KBgl78Rg=;
- b=fmOqyCPC5jZRB/r6ULkGEBfXMLcVIjUEkoaKKDvADCLM4JOZGigYw2pjOg2RMO/lnZ
- /sM0J9qkaiL2HHqUuhtxI45FuwPdn1uVY6E00d9DNnIk65EkyDpSngCbjNdD3Ehfn4X8
- REtDS46G8OgW2mhKqn8JfKqHUuW+nREerfWLOTF7gV92kF7gesxUJoPi1XBytZ38zrNT
- 1QI/nohThNaclYF/khT+zB5qbtMQUWvyHRB31GuYhupAG9N6Edwmz5WbnGR8s2iLwXXi
- KKrJETOwrgbz9S0KAP9RYTROnjGU42AO7D94cujI4b2J9eLLkEPCbS4joP0N2dUo2rtl
- o17A==
-X-Gm-Message-State: APjAAAXKDIrYhagZZFxGR/IlMIR9ojOrRcrESu2tcedDbAVHIR5FFKaZ
- iEdTIfdHghs4n1OwBMAyF4lDGrpB0RRspCUbI+cDVnkqGdg=
-X-Google-Smtp-Source: APXvYqw9nXGzWmX8nvxYPgthgjSRzhgkrmwKTLa6iOK+lafpfMeLjTUNEDhZpxPGfckotfg78xd7BTWVl8SfhZRFCxs=
-X-Received: by 2002:a17:902:112c:: with SMTP id
- d41mr55075010pla.33.1559921668118; 
- Fri, 07 Jun 2019 08:34:28 -0700 (PDT)
+ id 1hZH1k-0006Ti-M3; Fri, 07 Jun 2019 15:43:37 +0000
+Received: from mailhost.synopsys.com (unknown [10.225.0.210])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 0448BC5859;
+ Fri,  7 Jun 2019 15:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+ t=1559922215; bh=0lEPE/omdBqnj239oGGM+RMVir+ROFSBHtl3mcsX8h4=;
+ h=From:To:Cc:Subject:Date:From;
+ b=By726Rt7GGoItd7VLH3TBczHPVhVpeILAw1YpJ4M3MQvag4phbfn5xr0LFy6t5X2a
+ +QHT35L7b8z+XR/QkNLac6pNfuzVv0z8uWcy23Ymd0TzpFn17a8THB/fh5sC4Pu1qW
+ UAKxZGZjB8ZmnSXXvae7Ug6uw/m79q5H9omwDTpzQXGCyKx/9mzOF080RjfNa6ubqM
+ yGU5y1NV3MGMokfvHraPa7myWHXntpVK1g31huj07OfGhoFrpwCJWTKxW6Adx6Kgzd
+ w+vRWqICzpUcVteMmSrGLt99f2JPmsZ2/GxyiaQfV7mxpSazQa+uAxFc/F0nZkqCJc
+ hy8ps+XwlfyoQ==
+Received: from paltsev-e7480.internal.synopsys.com
+ (paltsev-e7480.internal.synopsys.com [10.121.3.20])
+ by mailhost.synopsys.com (Postfix) with ESMTP id A3946A022E;
+ Fri,  7 Jun 2019 15:43:29 +0000 (UTC)
+From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+To: linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: spi-nor: add support for sst26wf016, sst26wf032 memory
+Date: Fri,  7 Jun 2019 18:43:08 +0300
+Message-Id: <20190607154308.20899-1-Eugeniy.Paltsev@synopsys.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20190515210202.21169-1-richard@nod.at>
-In-Reply-To: <20190515210202.21169-1-richard@nod.at>
-From: Emil Lenngren <emil.lenngren@gmail.com>
-Date: Fri, 7 Jun 2019 17:34:16 +0200
-Message-ID: <CAO1O6sdU=kAYS2sTKwiagxrbg+fMer9nvbwA9C4LoFMgH7e1dQ@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Add support for zstd compression.
-To: Richard Weinberger <richard@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190607_083428_945188_86DB4E15 
-X-CRM114-Status: GOOD (  18.27  )
+X-CRM114-CacheID: sfid-20190607_084336_725511_FB832314 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,171 +79,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
- linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- Michele Dionisio <michele.dionisio@gmail.com>
+Cc: linux-snps-arc@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Alexey Brodkin <Alexey.Brodkin@synopsys.com>, linux-kernel@vger.kernel.org,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+This commit adds support for the SST sst26wf016 and sst26wf032
+flash memory IC.
 
-Den ons 15 maj 2019 kl 23:03 skrev Richard Weinberger <richard@nod.at>:
->
-> From: Michele Dionisio <michele.dionisio@gmail.com>
->
-> zstd shows a good compression rate and is faster than lzo,
-> also on slow ARM cores.
->
-> Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> Signed-off-by: Michele Dionisio <michele.dionisio@gmail.com>
-> [rw: rewrote commit message]
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  fs/ubifs/Kconfig       | 10 ++++++++++
->  fs/ubifs/compress.c    | 27 ++++++++++++++++++++++++++-
->  fs/ubifs/super.c       |  2 ++
->  fs/ubifs/ubifs-media.h |  2 ++
->  4 files changed, 40 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-> index 9da2f135121b..8d84d2ed096d 100644
-> --- a/fs/ubifs/Kconfig
-> +++ b/fs/ubifs/Kconfig
-> @@ -5,8 +5,10 @@ config UBIFS_FS
->         select CRYPTO if UBIFS_FS_ADVANCED_COMPR
->         select CRYPTO if UBIFS_FS_LZO
->         select CRYPTO if UBIFS_FS_ZLIB
-> +       select CRYPTO if UBIFS_FS_ZSTD
->         select CRYPTO_LZO if UBIFS_FS_LZO
->         select CRYPTO_DEFLATE if UBIFS_FS_ZLIB
-> +       select CRYPTO_ZSTD if UBIFS_FS_ZSTD
->         select CRYPTO_HASH_INFO
->         select UBIFS_FS_XATTR if FS_ENCRYPTION
->         depends on MTD_UBI
-> @@ -37,6 +39,14 @@ config UBIFS_FS_ZLIB
->         help
->           Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
->
-> +config UBIFS_FS_ZSTD
-> +       bool "ZSTD compression support" if UBIFS_FS_ADVANCED_COMPR
-> +       depends on UBIFS_FS
-> +       default y
-> +       help
-> +         ZSTD compresses is a big win in speed over Zlib and
-> +         in compression ratio over LZO. Say 'Y' if unsure.
-> +
->  config UBIFS_ATIME_SUPPORT
->         bool "Access time support"
->         default n
-> diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-> index 565cb56d7225..89183aeeeb7a 100644
-> --- a/fs/ubifs/compress.c
-> +++ b/fs/ubifs/compress.c
-> @@ -71,6 +71,24 @@ static struct ubifs_compressor zlib_compr = {
->  };
->  #endif
->
-> +#ifdef CONFIG_UBIFS_FS_ZSTD
-> +static DEFINE_MUTEX(zstd_enc_mutex);
-> +static DEFINE_MUTEX(zstd_dec_mutex);
-> +
-> +static struct ubifs_compressor zstd_compr = {
-> +       .compr_type = UBIFS_COMPR_ZSTD,
-> +       .comp_mutex = &zstd_enc_mutex,
-> +       .decomp_mutex = &zstd_dec_mutex,
-> +       .name = "zstd",
-> +       .capi_name = "zstd",
-> +};
-> +#else
-> +static struct ubifs_compressor zstd_compr = {
-> +       .compr_type = UBIFS_COMPR_ZSTD,
-> +       .name = "zstd",
-> +};
-> +#endif
-> +
->  /* All UBIFS compressors */
->  struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
->
-> @@ -228,13 +246,19 @@ int __init ubifs_compressors_init(void)
->         if (err)
->                 return err;
->
-> -       err = compr_init(&zlib_compr);
-> +       err = compr_init(&zstd_compr);
->         if (err)
->                 goto out_lzo;
->
-> +       err = compr_init(&zlib_compr);
-> +       if (err)
-> +               goto out_zstd;
-> +
->         ubifs_compressors[UBIFS_COMPR_NONE] = &none_compr;
->         return 0;
->
-> +out_zstd:
-> +       compr_exit(&zstd_compr);
->  out_lzo:
->         compr_exit(&lzo_compr);
->         return err;
-> @@ -247,4 +271,5 @@ void ubifs_compressors_exit(void)
->  {
->         compr_exit(&lzo_compr);
->         compr_exit(&zlib_compr);
-> +       compr_exit(&zstd_compr);
->  }
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index 04b8ecfd3470..ea8615261936 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -1055,6 +1055,8 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
->                                 c->mount_opts.compr_type = UBIFS_COMPR_LZO;
->                         else if (!strcmp(name, "zlib"))
->                                 c->mount_opts.compr_type = UBIFS_COMPR_ZLIB;
-> +                       else if (!strcmp(name, "zstd"))
-> +                               c->mount_opts.compr_type = UBIFS_COMPR_ZSTD;
->                         else {
->                                 ubifs_err(c, "unknown compressor \"%s\"", name); //FIXME: is c ready?
->                                 kfree(name);
-> diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-> index 8b7c1844014f..697b1b89066a 100644
-> --- a/fs/ubifs/ubifs-media.h
-> +++ b/fs/ubifs/ubifs-media.h
-> @@ -348,12 +348,14 @@ enum {
->   * UBIFS_COMPR_NONE: no compression
->   * UBIFS_COMPR_LZO: LZO compression
->   * UBIFS_COMPR_ZLIB: ZLIB compression
-> + * UBIFS_COMPR_ZSTD: ZSTD compression
->   * UBIFS_COMPR_TYPES_CNT: count of supported compression types
->   */
->  enum {
->         UBIFS_COMPR_NONE,
->         UBIFS_COMPR_LZO,
->         UBIFS_COMPR_ZLIB,
-> +       UBIFS_COMPR_ZSTD,
->         UBIFS_COMPR_TYPES_CNT,
->  };
->
-> --
-> 2.16.4
+Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-In fs/ubifs/sb.c we have
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 73172d7f512b..224275461a2c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1945,6 +1945,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
++	{ "sst26wf016",  INFO(0xbf2651, 0, 64 * 1024, 32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "sst26wf032",  INFO(0xbf2622, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 
+ 	/* ST Microelectronics -- newer production may have feature updates */
+-- 
+2.21.0
 
-static int get_default_compressor(struct ubifs_info *c)
-{
-    if (ubifs_compr_present(c, UBIFS_COMPR_LZO))
-        return UBIFS_COMPR_LZO;
-
-    if (ubifs_compr_present(c, UBIFS_COMPR_ZLIB))
-        return UBIFS_COMPR_ZLIB;
-
-    return UBIFS_COMPR_NONE;
-}
-
-Maybe add an entry for zstd here as well?
-
-/Emil
 
 ______________________________________________________
 Linux MTD discussion mailing list
