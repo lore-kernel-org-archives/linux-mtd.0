@@ -2,68 +2,55 @@ Return-Path: <SRS0=FMIu=UH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFE32C28CC5
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Jun 2019 10:22:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2050EC468BD
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Jun 2019 10:57:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D34B214AE
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Jun 2019 10:22:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6C7F214DA
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Jun 2019 10:57:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PgPJ+lu8";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="OaOZ2r2m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D34B214AE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hb/Jwme8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6C7F214DA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
-	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=7riQEqxwqMjP2SD9mRQn4htMSXKjAe6L8XnI7/o+sAw=; b=PgPJ+lu8e7ASVGeD/dzIgeB7i
-	+J1LjpK9XQTk8OnbRhaAc1DT+aYYikI/j/xNUTwRwriZUGWgI8ifsI6vFGLlY8B92lAz/psCYx/ND
-	eVZNLrjA/7uwTOw/POVoAcr7NAoyGrT06j9EEH47NZJV3FTrWZf34Y/hYJ4Hrw/76C+hpmmSPKNYA
-	qRala8f3j7POe+fMyaR1gpnUm4TeatzvTRIYDQjW5m3ZlWCYgtj+FW+3CO8jOsUz/tq/pOxQWv3lA
-	T9M3cIWCEEhXczUcRIZUXmByrv6XEKOBhk7fOIC6ZE25d5qgBH8T2X61eJcX9bKZ5E6GCPn6vFZ5g
-	3W9MW0qzA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=AODOeDYZ3O29HRpcN+vdpXuZQiOiQ87Pd3LdI4FfpPg=; b=hb/Jwme8ADd5UI
+	ujdNebAwA+5fVonq9dgUfSHKre+qoQgBtt3R/Hx/wFSMXce6hF70h2wIMDea7f2OHaQ7ZkN6rvSBS
+	XiKhLcCOj4AkPwdepo9VISRW+tJXVZwx7cixeHlQnBoJSB3qE532HE/1WdxLx5MfjbVOjzMCGVvxs
+	AItEKqTBebBevYoAnkZhLyf90DzdtRLlW4VjSW8hxwXU9Owsir9K44GjNxacPidpTJhPlGkikD+u3
+	btRlNbSuMtzyrZrJzbRaRtz9pLwFfgCBI5IDlP4ibnRAvT+KEuZkIy7GtFbMqEfhqizB3PLhSyEt2
+	SXNdPkXIetJ0d+4B6tZw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hZYUU-0006iR-JH; Sat, 08 Jun 2019 10:22:26 +0000
-Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hZYUR-0006hf-7V
- for linux-mtd@lists.infradead.org; Sat, 08 Jun 2019 10:22:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1559989339; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pURQs9CY2mpuFiZSCMQU4qI61477m0CbkzHnmzitjaE=;
- b=OaOZ2r2mFo+aasqU+cQsqrt2pBttc3uAgYgAz8aCjebx1PDMOnTsmA38uYlj/A3yutjhzs
- U3x8aemgE01DwEVkXf5sc91C5iNKDH6xfROwKEFpwLBl/jlVK+juICQ/F6BODU7uJslKDs
- czE0pGedx9PZmKlg3PbJt+SqTzmHHmw=
-Date: Sat, 08 Jun 2019 12:22:14 +0200
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] mtd/rawnand: ingenic-ecc: Make probe function
- __init_or_module
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Message-Id: <1559989334.1815.5@crapouillou.net>
-In-Reply-To: <20190607160200.16052-1-paul@crapouillou.net>
-References: <20190607160200.16052-1-paul@crapouillou.net>
+	id 1hZZ1v-0000rZ-80; Sat, 08 Jun 2019 10:56:59 +0000
+Received: from sauhun.de ([88.99.104.3] helo=pokefinder.org)
+ by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
+ id 1hZZ1h-0000gl-QY; Sat, 08 Jun 2019 10:56:48 +0000
+Received: from localhost (p5486CBCC.dip0.t-ipconnect.de [84.134.203.204])
+ by pokefinder.org (Postfix) with ESMTPSA id D0A142C3637;
+ Sat,  8 Jun 2019 12:56:40 +0200 (CEST)
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-i2c@vger.kernel.org
+Subject: [PATCH 00/34] treewide: simplify getting the adapter of an I2C client
+Date: Sat,  8 Jun 2019 12:55:39 +0200
+Message-Id: <20190608105619.593-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190608_032223_466792_9537580A 
-X-CRM114-Status: GOOD (  14.77  )
+X-CRM114-CacheID: sfid-20190608_035646_162389_3A3B5A1F 
+X-CRM114-Status: UNSURE (   6.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,97 +62,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: od@zcrc.me, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Cc: devel@driverdev.osuosl.org, linux-rtc@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-iio@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-renesas-soc@vger.kernel.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-mtd@lists.infradead.org,
+ linux-leds@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I misunderstood what __init_or_module was for. Please ignore this =
+While preparing a refactoring series, I noticed that some drivers use a
+complicated way of determining the adapter of a client. The easy way is
+to use the intended pointer: client->adapter
 
-patchset. Sorry for the noise.
+These drivers do:
+	to_i2c_adapter(client->dev.parent);
 
+The I2C core populates the parent pointer as:
+	client->dev.parent = &client->adapter->dev;
 
-Le ven. 7 juin 2019 =E0 18:01, Paul Cercueil <paul@crapouillou.net> a =
+Now take into consideration that
+	to_i2c_adapter(&adapter->dev);
 
-=E9crit :
-> This allows the probe function to be dropped after the kernel finished
-> its initialization, in the case where the driver was not compiled as a
-> module.
-> =
+is a complicated way of saying 'adapter', then we can even formally
+prove that the complicated expression can be simplified by using
+client->adapter.
 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 2 +-
->  drivers/mtd/nand/raw/ingenic/ingenic_ecc.h | 3 ++-
->  drivers/mtd/nand/raw/ingenic/jz4780_bch.c  | 2 +-
->  3 files changed, 4 insertions(+), 3 deletions(-)
-> =
+The conversion was done using a coccinelle script with some manual
+indentation fixes applied on top.
 
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c =
+To avoid a brown paper bag mistake, I double checked this on a Renesas
+Salvator-XS board (R-Car M3N) and verified both expression result in the
+same pointer. Other than that, the series is only build tested.
 
-> b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> index d3e085c5685a..74eff8fb5d32 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> @@ -124,7 +124,7 @@ void ingenic_ecc_release(struct ingenic_ecc *ecc)
->  }
->  EXPORT_SYMBOL(ingenic_ecc_release);
-> =
+A branch can be found here:
 
-> -int ingenic_ecc_probe(struct platform_device *pdev)
-> +int __init_or_module ingenic_ecc_probe(struct platform_device *pdev)
->  {
->  	struct device *dev =3D &pdev->dev;
->  	struct ingenic_ecc *ecc;
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h =
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/no_to_adapter
 
-> b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h
-> index 2cda439b5e11..535eb8f29df6 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.h
-> @@ -4,6 +4,7 @@
-> =
+Please apply the patches to the individual subsystem trees. There are no
+dependencies.
 
->  #include <linux/compiler_types.h>
->  #include <linux/err.h>
-> +#include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/types.h>
->  #include <uapi/asm-generic/errno-base.h>
-> @@ -78,6 +79,6 @@ struct ingenic_ecc {
->  	struct mutex lock;
->  };
-> =
+Thanks and kind regards,
 
-> -int ingenic_ecc_probe(struct platform_device *pdev);
-> +int __init_or_module ingenic_ecc_probe(struct platform_device *pdev);
-> =
-
->  #endif /* __DRIVERS_MTD_NAND_INGENIC_ECC_INTERNAL_H__ */
-> diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c =
-
-> b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-> index 079266a0d6cf..cc0656ac505d 100644
-> --- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-> +++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-> @@ -229,7 +229,7 @@ static int jz4780_correct(struct ingenic_ecc *bch,
->  	return ret;
->  }
-> =
-
-> -static int jz4780_bch_probe(struct platform_device *pdev)
-> +static int __init_or_module jz4780_bch_probe(struct platform_device =
-
-> *pdev)
->  {
->  	struct ingenic_ecc *bch;
->  	int ret;
-> --
-> 2.21.0.593.g511ec345e18
-> =
+   Wolfram
 
 
+Wolfram Sang (34):
+  clk: clk-cdce706: simplify getting the adapter of a client
+  gpu: drm: bridge: sii9234: simplify getting the adapter of a client
+  iio: light: bh1780: simplify getting the adapter of a client
+  leds: leds-pca955x: simplify getting the adapter of a client
+  leds: leds-tca6507: simplify getting the adapter of a client
+  media: i2c: ak881x: simplify getting the adapter of a client
+  media: i2c: mt9m001: simplify getting the adapter of a client
+  media: i2c: mt9m111: simplify getting the adapter of a client
+  media: i2c: mt9p031: simplify getting the adapter of a client
+  media: i2c: ov2640: simplify getting the adapter of a client
+  media: i2c: tw9910: simplify getting the adapter of a client
+  misc: fsa9480: simplify getting the adapter of a client
+  misc: isl29003: simplify getting the adapter of a client
+  misc: tsl2550: simplify getting the adapter of a client
+  mtd: maps: pismo: simplify getting the adapter of a client
+  power: supply: bq24190_charger: simplify getting the adapter of a client
+  power: supply: bq24257_charger: simplify getting the adapter of a client
+  power: supply: bq25890_charger: simplify getting the adapter of a client
+  power: supply: max14656_charger_detector: simplify getting the adapter
+    of a client
+  power: supply: max17040_battery: simplify getting the adapter of a client
+  power: supply: max17042_battery: simplify getting the adapter of a client
+  power: supply: rt5033_battery: simplify getting the adapter of a client
+  power: supply: rt9455_charger: simplify getting the adapter of a client
+  power: supply: sbs-manager: simplify getting the adapter of a client
+  regulator: max8952: simplify getting the adapter of a client
+  rtc: fm3130: simplify getting the adapter of a client
+  rtc: m41t80: simplify getting the adapter of a client
+  rtc: rv8803: simplify getting the adapter of a client
+  rtc: rx8010: simplify getting the adapter of a client
+  rtc: rx8025: simplify getting the adapter of a client
+  staging: media: soc_camera: imx074: simplify getting the adapter of a client
+  staging: media: soc_camera: mt9t031: simplify getting the adapter of a client
+  staging: media: soc_camera: soc_mt9v022: simplify getting the adapter
+    of a client
+  usb: typec: tcpm: fusb302: simplify getting the adapter of a client
+
+ drivers/clk/clk-cdce706.c                        | 2 +-
+ drivers/gpu/drm/bridge/sii9234.c                 | 4 ++--
+ drivers/iio/light/bh1780.c                       | 2 +-
+ drivers/leds/leds-pca955x.c                      | 2 +-
+ drivers/leds/leds-tca6507.c                      | 2 +-
+ drivers/media/i2c/ak881x.c                       | 2 +-
+ drivers/media/i2c/mt9m001.c                      | 2 +-
+ drivers/media/i2c/mt9m111.c                      | 2 +-
+ drivers/media/i2c/mt9p031.c                      | 2 +-
+ drivers/media/i2c/ov2640.c                       | 2 +-
+ drivers/media/i2c/tw9910.c                       | 3 +--
+ drivers/misc/fsa9480.c                           | 2 +-
+ drivers/misc/isl29003.c                          | 2 +-
+ drivers/misc/tsl2550.c                           | 2 +-
+ drivers/mtd/maps/pismo.c                         | 2 +-
+ drivers/power/supply/bq24190_charger.c           | 2 +-
+ drivers/power/supply/bq24257_charger.c           | 2 +-
+ drivers/power/supply/bq25890_charger.c           | 2 +-
+ drivers/power/supply/max14656_charger_detector.c | 2 +-
+ drivers/power/supply/max17040_battery.c          | 2 +-
+ drivers/power/supply/max17042_battery.c          | 2 +-
+ drivers/power/supply/rt5033_battery.c            | 2 +-
+ drivers/power/supply/rt9455_charger.c            | 2 +-
+ drivers/power/supply/sbs-manager.c               | 2 +-
+ drivers/regulator/max8952.c                      | 2 +-
+ drivers/rtc/rtc-fm3130.c                         | 8 +++-----
+ drivers/rtc/rtc-m41t80.c                         | 2 +-
+ drivers/rtc/rtc-rv8803.c                         | 2 +-
+ drivers/rtc/rtc-rx8010.c                         | 2 +-
+ drivers/rtc/rtc-rx8025.c                         | 2 +-
+ drivers/staging/media/soc_camera/imx074.c        | 2 +-
+ drivers/staging/media/soc_camera/mt9t031.c       | 2 +-
+ drivers/staging/media/soc_camera/soc_mt9v022.c   | 2 +-
+ drivers/usb/typec/tcpm/fusb302.c                 | 3 +--
+ 34 files changed, 37 insertions(+), 41 deletions(-)
+
+-- 
+2.19.1
 
 
 ______________________________________________________
