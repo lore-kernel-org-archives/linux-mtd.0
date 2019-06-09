@@ -2,79 +2,84 @@ Return-Path: <SRS0=Yh92=UI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	T_DKIMWL_WL_HIGH autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26D26C28EBD
-	for <linux-mtd@archiver.kernel.org>; Sun,  9 Jun 2019 10:01:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E098C2BCA1
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Jun 2019 10:32:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB71E20868
-	for <linux-mtd@archiver.kernel.org>; Sun,  9 Jun 2019 10:01:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7118C20644
+	for <linux-mtd@archiver.kernel.org>; Sun,  9 Jun 2019 10:32:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o7j6JgE1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB71E20868
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="c+2F5FbI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DpySRNg9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7118C20644
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=srJF+gQ0MOVuwTsnimsuko9GQnxrQQhoN4nZE++hdEg=; b=o7j6JgE1FFY7Qq
-	tMk4VsnXj6zEeo0EMAC/A0N8vf14WLnnM3QR+261EV/vjt358AZ3tHPT5jSm+DA+wqSa9OOP6osxZ
-	uwmnzmPUU/pnjViKG/dPFs9dBJWbIlFHv0hzJftf8BfV5340DT8BJAZ61yLfh7Seg8HvlcOBY9LGR
-	otndNIoypwf2GbWqipobVKbuAcssBDoIK5CZsnmQw6La4iYOVTi/TEh1ByRJ86iAUI1jiXt8SPZuE
-	aXKjGN8Uma7xpXah1/q+iwOyG9J7AxPI50p4rN36sXj3D/yfe2LemY4KmekQJWQbLGf656gOI7asu
-	U5Esdnq7dI08Ww6sTepw==;
+	List-Owner; bh=kk66PVisXdf2YsoFX/tbjeePeMFgIE2ntNe1MioAUe0=; b=c+2F5FbIBPu0v+
+	sCvjBbHPCSkaV9jjzQmFs87J5HU6381oEXbuVCKJI6MGAmJP+xAodDL984CI5nNy3UYRmtxiOTDE2
+	FyQzV2mxVsId/zTeZcZWloyPc0102zwhRBsQHJzfuZn1sFAzUtlgS3khFu6Mz5k98YKtuS7jVXEok
+	Bn8G4n3/fOYjGu4+otghNIlGf+PG1xvyjeqMfjnigAZ9J+lv/TSeYmYcj/LrRkX4iCtjfeUCUOgt/
+	veuvQxRPWq09zZdrRXxoRzbJkZw0fD7ZuX/X2yRlcbjWLGI2ZuzOyWNUNJKqt5JdPP2TjKc5ZPAdX
+	Fyvx7vXmWiFo7EQtNr+A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hZudN-0008LZ-Cm; Sun, 09 Jun 2019 10:01:05 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1hZv7e-0001Xm-4j; Sun, 09 Jun 2019 10:32:22 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hZudK-0008Kw-Dr
- for linux-mtd@lists.infradead.org; Sun, 09 Jun 2019 10:01:04 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 405F2608310F;
- Sun,  9 Jun 2019 12:01:00 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 4acshPSPK03k; Sun,  9 Jun 2019 12:00:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id CA7276083114;
- Sun,  9 Jun 2019 12:00:59 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id gCWz6zux3eRa; Sun,  9 Jun 2019 12:00:59 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id ACA2C608310F;
- Sun,  9 Jun 2019 12:00:59 +0200 (CEST)
-Date: Sun, 9 Jun 2019 12:00:59 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Sergei Poselenov <sposelenov@emcraft.com>
-Message-ID: <1159355903.85757.1560074459598.JavaMail.zimbra@nod.at>
-In-Reply-To: <ac7d203471da8db3a148c207b586cae919304307.camel@emcraft.com>
-References: <20190606121037.40a1cc5e@sergmir.emcraft.com>
- <20190607172355.6541fa51@sergmir.emcraft.com>
- <1299833819.84614.1559923336123.JavaMail.zimbra@nod.at>
- <08a796c9a296245c372511c683adb80913d14553.camel@emcraft.com>
- <766367078.85018.1559983598342.JavaMail.zimbra@nod.at>
- <a43eb232a51b7d0c95623de9403158c290163237.camel@emcraft.com>
- <1957000286.85744.1560070414116.JavaMail.zimbra@nod.at>
- <ac7d203471da8db3a148c207b586cae919304307.camel@emcraft.com>
-Subject: Re: UBIFS: file data corruption during the power cut-off test
+ id 1hZv7O-0001MD-GV; Sun, 09 Jun 2019 10:32:08 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x59AVptH056731;
+ Sun, 9 Jun 2019 05:31:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1560076311;
+ bh=bhf1NnC4v0L9mSFxunRdPIHPTAIDYrhcmMkuEkkylxM=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=DpySRNg93tW2CkhUN1FDLag9UYAVmXlwYyBvxKeFeE2xlciiD6edauRRgxl+9IGKx
+ GvF9RpH2xomzyLhDJCyy01gbTyRvoeQTK1OAFk6rXQJ3K0m2kemcLgEvTN66mY+8Xh
+ PQjO4QOOGTbyN9ZAldXFHZJL8ZsOPfts+MpMArYA=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x59AVp4O078858
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Sun, 9 Jun 2019 05:31:51 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Sun, 9 Jun
+ 2019 05:31:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Sun, 9 Jun 2019 05:31:49 -0500
+Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x59AVe1e049269;
+ Sun, 9 Jun 2019 05:31:45 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v5 1/5] mtd: cfi_cmdset_0002: Add support for polling status
+ register
+Date: Sun, 9 Jun 2019 16:02:23 +0530
+Message-ID: <20190609103227.24875-2-vigneshr@ti.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190609103227.24875-1-vigneshr@ti.com>
+References: <20190609103227.24875-1-vigneshr@ti.com>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.8_GA_3025 (ZimbraWebClient - FF60 (Linux)/8.8.8_GA_1703)
-Thread-Topic: UBIFS: file data corruption during the power cut-off test
-Thread-Index: B69v502MK5vtNWavlEHwCeZ2GPt/YQ==
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190609_030102_618479_61E74F47 
-X-CRM114-Status: UNSURE (   2.91  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190609_033206_695969_9A999228 
+X-CRM114-Status: GOOD (  20.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,16 +91,227 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: devicetree@vger.kernel.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-kernel@vger.kernel.org,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBXZWxsLCB6ZXJvIGJ5dGVzIGFyZSBu
-b3QgZ2FyYmFnZS4gOykKPiAKPiBJJ3ZlIHNlZW4gc29tZSBkYXRhIGluIHRoZSBsYXN0IDUxMiBi
-eXRlcyBhcyB3ZWxsLgoKVGhhdCB3b3VsZCBiZSBhIGJ1ZywgdW5sZXNzIHlvdSBhcmUgb3Zlcndy
-aXRpbmcgYW4gZXhpc3RpbmcKZmlsZS4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
+Set (0x0002) for flash operations, therefore
+drivers/mtd/chips/cfi_cmdset_0002.c can be used as is. But these devices
+do not support DQ polling method of determining chip ready/good status.
+These flashes provide Status Register whose bits can be polled to know
+status of flash operation.
+
+Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
+Extended Query version 1.5. Bit 0 of "Software Features supported" field
+of CFI Primary Vendor-Specific Extended Query table indicates
+presence/absence of status register and Bit 1 indicates whether or not
+DQ polling is supported. Using these bits, its possible to determine
+whether flash supports DQ polling or need to use Status Register.
+
+Add support for polling Status Register to know device ready/status of
+erase/write operations when DQ polling is not supported.
+Print error messages on erase/program failure by looking at related
+Status Register bits.
+
+[1] https://www.cypress.com/file/213346/download
+
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+v5: No change
+
+ drivers/mtd/chips/cfi_cmdset_0002.c | 90 +++++++++++++++++++++++++++++
+ include/linux/mtd/cfi.h             |  5 ++
+ 2 files changed, 95 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index c8fa5906bdf9..0f571f162e3b 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -49,6 +49,16 @@
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
+ 
++/*
++ * Status Register bit description. Used by flash devices that don't
++ * support DQ polling (e.g. HyperFlash)
++ */
++#define CFI_SR_DRB		BIT(7)
++#define CFI_SR_ESB		BIT(5)
++#define CFI_SR_PSB		BIT(4)
++#define CFI_SR_WBASB		BIT(3)
++#define CFI_SR_SLSB		BIT(1)
++
+ static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+ static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+ static int cfi_amdstd_write_buffers(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+@@ -97,6 +107,48 @@ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
+ 	.module		= THIS_MODULE
+ };
+ 
++/*
++ * Use status register to poll for Erase/write completion when DQ is not
++ * supported. This is indicated by Bit[1:0] of SoftwareFeatures field in
++ * CFI Primary Vendor-Specific Extended Query table 1.5
++ */
++static int cfi_use_status_reg(struct cfi_private *cfi)
++{
++	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
++
++	return extp->MinorVersion >= '5' &&
++		(extp->SoftwareFeatures & 0x3) == 0x1;
++}
++
++static void cfi_check_err_status(struct map_info *map, unsigned long adr)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++	map_word status;
++
++	if (!cfi_use_status_reg(cfi))
++		return;
++
++	cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
++			 cfi->device_type, NULL);
++	status = map_read(map, adr);
++
++	if (map_word_bitsset(map, status, CMD(0x3a))) {
++		unsigned long chipstatus = MERGESTATUS(status);
++
++		if (chipstatus & CFI_SR_ESB)
++			pr_err("%s erase operation failed, status %lx\n",
++			       map->name, chipstatus);
++		if (chipstatus & CFI_SR_PSB)
++			pr_err("%s program operation failed, status %lx\n",
++			       map->name, chipstatus);
++		if (chipstatus & CFI_SR_WBASB)
++			pr_err("%s buffer program command aborted, status %lx\n",
++			       map->name, chipstatus);
++		if (chipstatus & CFI_SR_SLSB)
++			pr_err("%s sector write protected, status %lx\n",
++			       map->name, chipstatus);
++	}
++}
+ 
+ /* #define DEBUG_CFI_FEATURES */
+ 
+@@ -744,8 +796,22 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+  */
+ static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+ {
++	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word d, t;
+ 
++	if (cfi_use_status_reg(cfi)) {
++		map_word ready = CMD(CFI_SR_DRB);
++		/*
++		 * For chips that support status register, check device
++		 * ready bit
++		 */
++		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
++				 cfi->device_type, NULL);
++		d = map_read(map, addr);
++
++		return map_word_andequal(map, d, ready, ready);
++	}
++
+ 	d = map_read(map, addr);
+ 	t = map_read(map, addr);
+ 
+@@ -769,8 +835,27 @@ static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+  */
+ static int __xipram chip_good(struct map_info *map, unsigned long addr, map_word expected)
+ {
++	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word oldd, curd;
+ 
++	if (cfi_use_status_reg(cfi)) {
++		map_word ready = CMD(CFI_SR_DRB);
++		map_word err = CMD(CFI_SR_PSB | CFI_SR_ESB);
++		/*
++		 * For chips that support status register, check device
++		 * ready bit and Erase/Program status bit to know if
++		 * operation succeeded.
++		 */
++		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
++				 cfi->device_type, NULL);
++		curd = map_read(map, addr);
++
++		if (map_word_andequal(map, curd, ready, ready))
++			return !map_word_bitsset(map, curd, err);
++
++		return 0;
++	}
++
+ 	oldd = map_read(map, addr);
+ 	curd = map_read(map, addr);
+ 
+@@ -1644,6 +1729,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, datum)) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -1901,6 +1987,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 	 * See e.g.
+ 	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
+ 	 */
++	cfi_check_err_status(map, adr);
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
+ 			 cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
+@@ -2107,6 +2194,7 @@ static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
+ 
+ 	if (!chip_good(map, adr, datum)) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -2316,6 +2404,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+@@ -2412,6 +2501,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (ret) {
+ 		/* reset on all failures. */
++		cfi_check_err_status(map, adr);
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index 208c87cf2e3e..b50416169049 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -219,6 +219,11 @@ struct cfi_pri_amdstd {
+ 	uint8_t  VppMin;
+ 	uint8_t  VppMax;
+ 	uint8_t  TopBottom;
++	/* Below field are added from version 1.5 */
++	uint8_t  ProgramSuspend;
++	uint8_t  UnlockBypass;
++	uint8_t  SecureSiliconSector;
++	uint8_t  SoftwareFeatures;
+ } __packed;
+ 
+ /* Vendor-Specific PRI for Atmel chips (command set 0x0002) */
+-- 
+2.21.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
