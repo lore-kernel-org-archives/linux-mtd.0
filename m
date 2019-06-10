@@ -2,100 +2,85 @@ Return-Path: <SRS0=IRBa=UJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,T_DKIMWL_WL_HIGH autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 647ECC31E40
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jun 2019 16:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58389C31E43
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jun 2019 17:35:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37B1F20859
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jun 2019 16:26:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C9AE20820
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jun 2019 17:35:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rb2hJ+9W";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="GcbtoBrr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37B1F20859
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tRg2vZO2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LgHt6UxA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C9AE20820
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wqGo5+bRHk52IBOXngQps+Ai6auh/IFNv8NJXk941as=; b=rb2hJ+9WD/J9VI
-	nUhrl9jtqUoZXLJj8ueWgR6GmaELA/13uKzhUSJYyEYlQB5pe9BDIJRP1RD1UQN/NnevIoCUCHA6U
-	+PMi/PmACAgeZNMBUvtEhnsVsBhd2UZmiuYHzy1PgNXv/68BnbwismcqjKPJZdnd9I8FJoTT//kTc
-	DQyuXg9ETfegNukJBGbDmrwpldxoP8ep+ZZ5J8ibdEYytJBKaFt3o90/JtKGQCLbXCxaT5tOflrua
-	D1vVWB4d7kvaaztq/cacISZ5iWGunbqm6aYGviBTOUZdKiXAN6J9YaML8acWNADRYy2sRV3Sp7A3+
-	TSxn7RRE5i9Lc1DoExBQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=JtgkV5wJsScxQqnQ/+/wZhYm8rWV+xgh9togGWNz2oY=; b=tRg2vZO25ULfuI
+	ts4/ZNfe1XmqAf7p2rAh5x61ZUwww1C5/YSCwYDj217qgqTFr9MJP47M27GoE9oaA25Q0c2kyNQkY
+	gDwd7FyyRkSwMBRqfDQH3F9fgOym+Hs8V/l64Ki0gvWKnot4Yxl4anWG8sPBpiijCPC/3Od3Fq8ZV
+	NTURFmxwHmq/Pj+Q0Vy6TLIQpPwV1EYWuHkNw7lQW8HPvUMRjrp3rGuqdy1IVD6S4c8DHKe2C8Tj5
+	xhXnOpSVJRA4SHtmveTtb/uHeNs31RbXmhGXdXuNZ96SGrGkNDUhwAootON2CIZVeMaGqk4a3sAEm
+	GySbOD0iAKf9+MRxOO2g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1haN8J-0002ah-Nn; Mon, 10 Jun 2019 16:26:55 +0000
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+	id 1haOCK-0000M4-6e; Mon, 10 Jun 2019 17:35:08 +0000
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1haN6s-0000uy-3O
- for linux-mtd@lists.infradead.org; Mon, 10 Jun 2019 16:25:28 +0000
-Received: by mail-lj1-x242.google.com with SMTP id 16so8536968ljv.10
- for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2019 09:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=eipFIuppUEBChZz5jEQKJnDCMNGzgpujxoDXEsClrz0=;
- b=GcbtoBrrxpTZ95MoI5I8PI/IWR4S1C/FKE6nwL2MNQJYCI1uPUShUb/2eNhZ09VLHr
- ceSg3kp6GOu+D2HcrZ7XtTVUc/yl8vPCa1nV9yVOkOnsiY2EmSzZQ9I/eEdMyrbofzKe
- 7m1RSAId+c4XJqB8uAAf9noe7TGBhcN8oiXc6Rk2DzjzCF9G8TtpzUU0GYnNIACu6kkI
- mwFOqnG/HQaThHI0C/HCE1ZF0UfQjhOmbKNkEKJxuxbUpbt9RMfIjF+hVxzUfmEyoOVf
- eUrXyKqi9cos/KDis7qsJVzqmszRFnfpzNouAxxflgIBDlp+cG7uGzX2fgCaLuEPVseu
- vzMg==
+ id 1haOCH-0008JM-SP
+ for linux-mtd@lists.infradead.org; Mon, 10 Jun 2019 17:35:07 +0000
+Received: by mail-pg1-x542.google.com with SMTP id a3so5409538pgb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Jun 2019 10:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=YPZsrhh8xdphj6kY/HU7HzmBPcCgASPSW2QDsj7N1cg=;
+ b=LgHt6UxAoxGiOoolvM+Eclo4zgmkI5hAf91cyxO7JHH4rl0FIfBTPuV0vQ1zzgHEoJ
+ eexk+9q797xYgx1sxI1agKYgXxDAoxZ+4YFUhzDh9RLI6v8+Te1YAzLmdzbuTtCNlkSu
+ bZu6h2y7c72ndor4qMx6RgyrTeBto72OxVZUQV3Oo0ZjnHS6SoPWIQmz5ZpwLGjHjIUn
+ BRwjJgYuiFF19HNyTVDhAB+xYfipUMjGduIqheJHOeNObyEm4LfvUa/gzr467L0BgDpl
+ M6uhAMjsMe9FGkxAXtKv9zCS/YeL0BQgTgtKL8yK9eunvd1KSIP4qPIPq16JSK2K/Cq9
+ qpLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=eipFIuppUEBChZz5jEQKJnDCMNGzgpujxoDXEsClrz0=;
- b=AzQ1hg89bYsQDQKrobdBstR27WBkSdqos6Z46oXLKDLgL1u3aTzs3T24kOmZR3Tawy
- Glh6K1crmD1M9y1A3ZA4ksqIWFlUyhJoVS9cCYXpcIwh733kApQ8T45lArjFeucKMkZG
- Ai1AibFyALNX1ZMz9wx0xDerBYVRVp7PmtBQxbJ8odXOGchPvAL+5YVTXT98XNg4XhUJ
- dtKZW1YWSOXIiuUed3DsFVzvBfImDGWOlZSLpFIC0iKVDGMnj2/DpjGihity5dOcrPZC
- P8/YE9GeSWGombUPQE/WMlQ7kBuWdLjGPTQOg0X4TBrhHuMYzKfhBpWpghr5NDZgV77j
- HdBw==
-X-Gm-Message-State: APjAAAVr6TPN4SGUAQA+k2v9mFantEdz6kS3SZn+UHPeCCsafHymoRwH
- 3iNf82A6W0YuHizjOpmg6Bv7Uw==
-X-Google-Smtp-Source: APXvYqyznVsw9V2kAPwrtxirNjclrLSAsstJiifDJVxq7J/9R9usmEoDiJrJb+d2UJTKXwgwWbCvvg==
-X-Received: by 2002:a2e:9188:: with SMTP id f8mr17623754ljg.33.1560183923858; 
- Mon, 10 Jun 2019 09:25:23 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([31.173.86.166])
- by smtp.gmail.com with ESMTPSA id 24sm2516567ljs.63.2019.06.10.09.25.22
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 10 Jun 2019 09:25:23 -0700 (PDT)
-Subject: Re: [PATCH v5 4/5] dt-bindings: mtd: Add bindings for TI's AM654
- HyperBus memory controller
-To: Vignesh Raghavendra <vigneshr@ti.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190609103227.24875-1-vigneshr@ti.com>
- <20190609103227.24875-5-vigneshr@ti.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <a808ffca-02a8-14b0-3422-c0905ab212a6@cogentembedded.com>
-Date: Mon, 10 Jun 2019 19:25:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=YPZsrhh8xdphj6kY/HU7HzmBPcCgASPSW2QDsj7N1cg=;
+ b=KKerugHIEetBf5Is4ezqopVrcXAQwWG80T/ZNOGxvE1lRtQOwvE+5kT1FmZFnum28z
+ Ajz4/NDv5ApiO480CDO/g5l999khBdSnCJ9z8Eh2Wy53oELXo0DKhIrVtvXkx5IdzK9j
+ ieOQvcxpn0Ic9RDROuPP7RtMxkxsD9L/yIqsIR/B84Y2Eu9/4bTkMJtw1L6otMnDPZBG
+ sTlw50RLvS50QgrGtVchtVrV5O6xrhEaG4ioD18FwUYADEf0XhD6sOF/NYYRcrbVNukr
+ KuPT+FgY+7pyea4SsXIsaOhrUxB29THiAh2C4PObQEY3nY023vNIXy3BhAXwus5Qhk4f
+ W65w==
+X-Gm-Message-State: APjAAAXBWQJky9sfB+XhlDPtNS+qZH6nNrIUyC+CKxFeShHf4AMV7y40
+ PD7V9lERvJ3rG1ym+WD/QPKvc4elpcXJAFpUIduxSLRK
+X-Google-Smtp-Source: APXvYqwK7ZFD2PfIVv37pSazZY7T13zvcVUvk2fHhw4cV6DYbWYd+Eyj41jZJmA0fOktvTKc1EReaNlw5xcnqd3xeWg=
+X-Received: by 2002:a17:90a:24ac:: with SMTP id
+ i41mr335453pje.124.1560188104720; 
+ Mon, 10 Jun 2019 10:35:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190609103227.24875-5-vigneshr@ti.com>
-Content-Language: en-MW
+References: <20190601104322.57inoggnek3crg55@flow>
+ <CAO1O6sdeY6ZY_PhoZrVuqCg20F0Dt3Y_mXXr-OYUMD4HZMihvg@mail.gmail.com>
+ <1380627689.233779.1559939049026.JavaMail.zimbra@sigma-star.at>
+In-Reply-To: <1380627689.233779.1559939049026.JavaMail.zimbra@sigma-star.at>
+From: Emil Lenngren <emil.lenngren@gmail.com>
+Date: Mon, 10 Jun 2019 19:34:53 +0200
+Message-ID: <CAO1O6sc4RfdrDGiJgXYZaDeZ2e46Rr=PFhqFYYWB9Gqd8XH8NQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mkfs.ubifs: Add ZSTD compression
+To: Richard Weinberger <richard@sigma-star.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190610_092526_595743_E872F36A 
-X-CRM114-Status: GOOD (  24.66  )
+X-CRM114-CacheID: sfid-20190610_103505_927854_697F95C3 
+X-CRM114-Status: GOOD (  15.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,107 +92,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-kernel@vger.kernel.org, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
+ linux-mtd@lists.infradead.org,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
-
-On 06/09/2019 01:32 PM, Vignesh Raghavendra wrote:
-
-> Add binding documentation for TI's HyperBus memory controller present on
-> AM654 SoC.
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
-> v5:
-> Update binding example to show MMIO mux
-> Fix reg property for flash slave.
-> 
->  .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 51 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-> new file mode 100644
-> index 000000000000..c2a2c2b42a92
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-> @@ -0,0 +1,51 @@
-> +Bindings for HyperBus Memory Controller (HBMC) on TI's K3 family of SoCs
-> +
-> +Required properties:
-> +- compatible : "ti,am654-hbmc" for AM654 SoC
-> +- reg : Two entries:
-> +	First entry pointed to the register space of HBMC controller
-> +	Second entry pointing to the memory map region dedicated for
-> +	MMIO access to attached flash devices
-> +- ranges : Address translation from offset within CS to allocated MMIO
-> +	   space in SoC
-> +
-> +Optional properties:
-> +- mux-controls : phandle to the multiplexer that controls selection of
-> +		 HBMC vs OSPI inside Flash SubSystem. Default is OSPI,
-> +		 if property is absent.
-> +		 See Documentation/devicetree/bindings/mux/reg-mux.txt
-> +		 for mmio-mux binding details
-> +
-> +Example:
-> +
-> +	fss: fss@47000000 {
-
-   What's FSS?
-   Regardless of the answer, the node names should be generic, like "memory-controller@".
-
-> +		compatible = "syscon", "simple-mfd";
-
-   If it's "sycon", the nme should probably be "system-controller".
-
-> +		reg = <0x0 0x47000000 0x0 0x100>;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		hbmc_mux: hbmc-mux {
-
-   So, just "multiplexor"?
-
-> +			compatible = "mmio-mux";
-> +			#mux-control-cells = <1>;
-> +			mux-reg-masks = <0x4 0x2>; /* 0: reg 0x4, bit 1 */
-> +		};
-> +
-> +		hbmc: hbmc@47034000 {
-
-   Should be named "memory-controller@47034000", according to the DT spec.
-
-> +			compatible = "ti,am654-hbmc";
-> +			reg = <0x0 0x47034000 0x0 0x100>,
-> +				<0x5 0x00000000 0x1 0x0000000>;
-> +			power-domains = <&k3_pds 55>;
-> +			#address-cells = <2>;
-> +			#size-cells = <1>;
-> +			ranges = <0x0 0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
-> +				 <0x1 0x0 0x5 0x04000000 0x4000000>; /* CS1 - 64MB */
-> +			mux-controls = <&hbmc_mux 0>;
-> +
-> +			/* Slave flash node */
-> +			flash@0,0 {
-> +				compatible = "cypress,hyperflash", "cfi-flash";
-> +				reg = <0x0 0x0 0x4000000>;
-> +			};
-> +		};
-> +	};
-[...]
-
-MBR, Sergei
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgYWxsLAoKRGVuIGZyZSA3IGp1bmkgMjAxOSBrbCAyMjoyNCBza3JldiBSaWNoYXJkIFdlaW5i
+ZXJnZXIgPHJpY2hhcmRAc2lnbWEtc3Rhci5hdD46Cj4KPiBFbWlsLAo+Cj4gLS0tLS0gVXJzcHLD
+vG5nbGljaGUgTWFpbCAtLS0tLQo+ID4gVGhlIG5ldyBtdGQtdXRpbHMgd2l0aCB0aGlzIHBhdGNo
+IGRvZXNuJ3QgY29tcGlsZSBvbiBVYnVudHUgMTguMDQgTFRTCj4gPiBzaW5jZSBpdCB1c2VzIGEg
+c2xpZ2h0bHkgb2xkZXIgdmVyc2lvbiBvZiB6c3RkICgxLjMuMykgdGhhdCBkaWRuJ3QKPiA+IGhh
+dmUgdGhlIG1hY3JvIFpTVERfQ0xFVkVMX0RFRkFVTFQgZGVmaW5lZCwgd2hpY2ggd2FzIGludHJv
+ZHVjZWQgaW4KPiA+IHZlcnNpb24gMS4zLjUuIENvdWxkIHlvdSBtYXliZSBjb25zaWRlciBhZGRp
+bmcgdGhlIGZvbGxvd2luZyBsaW5lcyBpbgo+ID4gY29tcHIuYzoKPiA+Cj4gPiAjaWZuZGVmIFpT
+VERfQ0xFVkVMX0RFRkFVTFQKPiA+ICNkZWZpbmUgWlNURF9DTEVWRUxfREVGQVVMVCAzCj4gPiAj
+ZW5kaWYKPiA+Cj4gPiBvciBzaW1pbGFyLCB3aGljaCBtYWtlIGl0IGNvbXBpbGUgb24gc2xpZ2h0
+bHkgb2xkZXIgZGlzdHJpYnV0aW9ucz8KPgo+IElmIEkgcmVhZCB0aGUgZG9jcyBjb3JyZWN0bHks
+IHdlIGNhbiBqdXN0IHBhc3MgMCBhcyBjb21wcmVzc2lvbiBsZXZlbCwKPiB3aGljaCB3aWxsIGRl
+ZmF1bHQgdG8gWlNURF9DTEVWRUxfREVGQVVMVC4KPiBodHRwczovL2dpdGh1Yi5jb20vZmFjZWJv
+b2svenN0ZC9wdWxsLzExNzQvY29tbWl0cy9lMzRjMDAwZTQ0NDQ0YjlmOGJkNjJlNWFmMGEzNTVl
+ZTE4NmViMjFmCj4KPiBUaGlzIHNob3VsZCB3b3JrIG9uIGFsbCB6c3RkIHZlcnNpb25zLgoKQWZ0
+ZXIgc29tZSBtb3JlIGludmVzdGlnYXRpb25zLCBhbHRob3VnaCBpbmNyZWFzaW5nIGNvbXByZXNz
+aW9uIGxldmVsCmNlcnRhaW5seSBpbmNyZWFzZXMgY29tcHJlc3Npb24gdGltZSwgZGVjb21wcmVz
+c2lvbiB0aW1lIGRvZXMgbm90IHNlZW0KdG8gYmUgaW5jcmVhc2VkIGJ5IGluY3JlYXNpbmcgY29t
+cHJlc3Npb24gbGV2ZWwuIFNlZQpodHRwOi8vd3d3Lm9wZW4temZzLm9yZy93L2ltYWdlcy9iL2Iz
+LzAzLU9wZW5aRlNfMjAxN18tX1pTdGFuZGFyZF9pbl9aRlMucGRmCnBhZ2UgOSBmb3IgYSBiZW5j
+aG1hcmsuIFRoZSBiZW5jaG1hcmsgZXZlbiBzaG93cyB0aGlzIHNlZW1zIHRvIGFwcGx5CnRvIGd6
+IGFzIHdlbGwuLi4KClNxdWFzaEZTIGhhcyBhbHNvIGFkZGVkIHN1cHBvcnQgZm9yIHpzdGQgYW5k
+IHNxdWFzaGZzLXRvb2xzIHVzZXMgbGV2ZWwKMTUgYXMgdGhlIGRlZmF1bHQgbGV2ZWwgKHNlZQpo
+dHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vZnMvc3F1YXNoZnMvc3F1YXNoZnMtdG9vbHMu
+Z2l0L2NvbW1pdC8/aWQ9ZTM4OTU2YjkyZjczODUxOGMyOTczNDM5OTYyOWU3Y2RiMzMwNzJkMwph
+dCB0aGUgYm90dG9tKS4KCldoaWxlIHRoZSBrZXJuZWwgY29tcHJlc3Npb24gbGV2ZWwgc2hvdWxk
+IG1heWJlIHN0YXkgYXQgMywgZm9yCm1rZnMudWJpZnMgd2hlcmUgc3BlZWQgZG9lc24ndCBtYXR0
+ZXIgdGhhdCBtdWNoLCBhIGhpZ2hlciBsZXZlbCBzdWNoCmFzIDE1IG1pZ2h0IG5vdCBiZSBiYWQg
+YWZ0ZXIgYWxsLiBTbyBJIGhhdmUgdHdvIGRpZmZlcmVudCBwcm9wb3NhbHM6CmVpdGhlciBqdXN0
+IHNldCBsZXZlbCAxNSBPUiBzZXQgbGV2ZWwgMTUgYW5kIGFsc28gcHJvdmlkZSBhbiBvcHRpb24K
+Zm9yIG1rZnMudWJpZnMgdG8gb3ZlcnJpZGUgaXQgaWYgb25lIGZvciBzb21lIHJlYXNvbiB3YW50
+cyB0byBnZW5lcmF0ZQp0aGUgaW1hZ2UgZmFzdGVyLgoKV2hhdCBkbyB5b3UgdGhpbms/CgovRW1p
+bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
