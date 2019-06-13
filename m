@@ -2,59 +2,77 @@ Return-Path: <SRS0=Yojm=UM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D3FAC31E45
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2019 19:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E33D6C31E45
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2019 22:51:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 166C02147A
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2019 19:33:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B6C552080A
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2019 22:51:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Oz8x34ye"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 166C02147A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allycomm.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VHLZy8dd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6C552080A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8DvHb2QjEzgvkDxceUbuxptYI8AS2pHyQlu+3IRA+Bg=; b=Oz8x34yexF9LGZ
-	iOOuzEOHTOlCGFP9o3soSKNRqFlFs+gdq1zrtMXIazE4reJsihgUDPpZQB8jN0n40DEdxXfdejygK
-	hAJbxxhq1rn8Wni4WVopPthrr61Ie1PnVXLUgmjciX8Ki2RwYYxK/MQBOoIhU03QanB10X3sKgvNW
-	4kkJJLopaRrUW62X9QeQp7bXpN4h611dZzZ5WKcuO2KxwNQq3R9hjIzINmZnxB7YAEwGPrNKMBm6L
-	wdldVKJZU3nUkQZMlX/TdhpH8QmtMNa4TKxxB+VVK3KR/5w5jtGiNKdFNe7oxHENgpn/3X05HkWfP
-	cMxjpB3gO4uc6ccGkTlw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rlBsNKOyCmUywf5/5y/J2RqBUXT14YdxUyp3P2Qrwv8=; b=VHLZy8ddVaDOrh
+	jFAJMGYY/HY1SmNPe9oO1JPE3OQGZgR8eGgHoebefnZ1Mxwxh5k71gw2Tv3q7orPR4YAFLt04KpNf
+	JSLXknd2umQvsm/g1CJujwfFuzIr/HYlpXXqpVO7qDWhZajoAXI2M6HJ1OjYf3B0cSonnPmukEZHK
+	rcSxoY6SZHHQ3o+zhSDbSNk/ihVUZwq1pvuNrmfnHHKnVKMpdFTKm2O8mZozwThjKZ9mcG/2Ugntb
+	hwn+YcXpQpu16nXuEWRMUI8TMmxecWZ11qCHAf1IRfysEFayoTnsiK5xvw9IWA24KQ6SYiNQa+S0b
+	5wEuODVtHNI1Dv2okqMg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hbVT2-0002mV-BF; Thu, 13 Jun 2019 19:33:00 +0000
-Received: from mx.allycomm.com ([138.68.30.55])
+	id 1hbYZS-0002dI-He; Thu, 13 Jun 2019 22:51:50 +0000
+Received: from mail-qt1-f196.google.com ([209.85.160.196])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hbVSy-0002lm-Ry
- for linux-mtd@lists.infradead.org; Thu, 13 Jun 2019 19:32:58 +0000
-Received: from jkletsky-mbp15.guidewire.com (inet.guidewire.com [199.91.42.30])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mx.allycomm.com (Postfix) with ESMTPSA id 70CB625055;
- Thu, 13 Jun 2019 12:32:53 -0700 (PDT)
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Jeff Kletsky <lede@allycomm.com>
-Subject: nand: Proper definition of "extra" OOB regions? (4x interleaved, then
- one bulk user)
-Message-ID: <0145346c-f1c3-bc50-6bb7-492bbe4f2da4@allycomm.com>
-Date: Thu, 13 Jun 2019 12:32:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+ id 1hbYZQ-0002cy-Cc
+ for linux-mtd@lists.infradead.org; Thu, 13 Jun 2019 22:51:49 +0000
+Received: by mail-qt1-f196.google.com with SMTP id 33so344277qtr.8
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2019 15:51:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=H1jLdvJZozzrqHX1esdeObu7Bz6wiJlvCPsfxGMitgE=;
+ b=PfuVWWfjfvlIbF62vtYUvqnkn3pHatohJ+yLKY6/M+vdDu4i3E2yqNySmfYZKVFRZU
+ pWA22kgkJHlFzojC2XTxmuJnFyTDn60FRzr+Gig+dLusKzsMqk7q55EtqIRJzFgMWA/4
+ RD5A+yfkqHWvYCAMEX5/eqABlBXM5CqI2XTx5Vk2eaxOWK+R6MmnfP7uQk0X8Mf1pj3S
+ L9Qr0w1sT/p8E7hHdh94j+8TSI3MIaTxSSlqFIqnvl16MpCyQlwlTbpwR9HaUnOvdKm3
+ 6CiDZdPtzAmunRdCT4esSyetGW35ocZzBfejvPFkjD7vbPRVHFQDaydW4VKLKb5LBe22
+ 7P2w==
+X-Gm-Message-State: APjAAAWTtd3cyipBoz6ERyQfbtIy6W57opz+ujF804hEgV6z4CdXbWgR
+ KjJrMxCeg4ZmxhzxokVIIA==
+X-Google-Smtp-Source: APXvYqzem4zi3kuCmkw6IRou/aoStUJUuSg911SowZ5Ya3+lMo/6NDr6HMK6vxTNwt20ngySVoIIkw==
+X-Received: by 2002:ac8:3345:: with SMTP id u5mr79299891qta.219.1560466307557; 
+ Thu, 13 Jun 2019 15:51:47 -0700 (PDT)
+Received: from localhost ([64.188.179.243])
+ by smtp.gmail.com with ESMTPSA id g53sm548681qtk.65.2019.06.13.15.51.46
+ (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+ Thu, 13 Jun 2019 15:51:47 -0700 (PDT)
+Date: Thu, 13 Jun 2019 16:51:46 -0600
+From: Rob Herring <robh@kernel.org>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: mtd: brcmnand: Make nand-ecc-strength
+ and nand-ecc-step-size optional
+Message-ID: <20190613225146.GA17725@bogus>
+References: <1558117914-35807-1-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1558117914-35807-1-git-send-email-kdasu.kdev@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190613_123256_910461_F805FBAB 
-X-CRM114-Status: GOOD (  11.23  )
+X-CRM114-CacheID: sfid-20190613_155148_423511_116FDCD7 
+X-CRM114-Status: GOOD (  11.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,58 +84,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VEw7RFIKCkkndmUgYmVlbiB0cnlpbmcgdG8gdHJhY2sgZG93biB0aGUgcHJvcGVyIHdheSB0byBl
-eHByZXNzIHRoZSBQYXJhZ29uClNQSSBOQU5EJ3MgT09CICJ1c2VyIiBkYXRhIHNlZ21lbnRzLCBi
-dXQgYW0gbm90IGNsZWFyIGhvdyB1cHBlcgpsYXllcnMgaW50ZXJwcmV0IHRoZSBjb21iaW5hdGlv
-biBvZiBgbXRkX29vYmxheW91dF9vcHMuZnJlZWAgYW5kIHRoZQpvdmVyYWxsIE9PQiBzaXplLCB0
-eXBpY2FsbHkgc2V0IHRocm91Z2ggdGhlIGBOQU5EX01FTU9SR2AgbWFjcm8uCgpSYXRoZXIgdGhh
-biBjaHVybiBQYXRjaHdvcmsgYW5kIHRob3NlIHRoYXQgZG9uYXRlIHRoZWlyIHRpbWUgYW5kCmVu
-ZXJneSBmb2xsb3csIHJldmlldywgYW5kIG1hbmFnZSBwYXRjaGVzLCB3b3VsZCBpdCBiZSBwb3Nz
-aWJsZSB0bwpjb25maXJtIHRoYXQgdGhlIGxhc3QgNjQgYnl0ZXMgb2YgdGhpcyBjaGlwJ3MgdXNl
-ciBPT0IsIHdoaWNoCmlzIG5vdCBjb250aWd1b3VzIHdpdGggYW55IG90aGVyIHVzZXIgYXJlYXMs
-IHNob3VsZCAob3Igc2hvdWxkIG5vdCkKYmUgZGVmaW5lZCBpbiBgLmZyZWVgIGFzIGEgZmlmdGgg
-c2VjdGlvbj8KCi0tLQoKSW4gdGhlIGNhc2Ugb2YgdGhlIFBhcmFnb24gY2hpcHMsIHRoZXJlIGlz
-IGEgdG90YWwgb2YgMTI4IGJ5dGVzIG9mIE9PQiwKc3BsaXQgaW50byBhIDQtYnl0ZSBCQk0gcmVz
-ZXJ2YXRpb24sIGZvdXIgcmVwZWF0cyBvZiAxNS1ieXRlIHNlY3Rpb25zCndpdGggImZhY3Rvcnki
-IGFuZCAidXNlciIgYXJlYXMgaW50ZXJsZWF2ZWQsIHRoZW4gdGhlIHJlbWFpbmluZyA2NCBieXRl
-cwphdmFpbGFibGUgYXMgYSB1c2VyIGFyZWEsIG5vdCBjb250aWd1b3VzIHdpdGggb3RoZXIgdXNl
-ciBhcmVhc1sxXS4KCjB4ODAwIC0tIDQgYnl0ZXMgQkJNCgoweDgwNCAtLSAyIGJ5dGVzIHVzZXIK
-MHg4MDYgLS0gMTMgYnl0ZXMgZmFjdG9yeSBFQ0MKCjB4ODEzIC0tIDIgYnl0ZXMgdXNlcgoweDgx
-NSAtLSAxMyBieXRlcyBmYWN0b3J5IEVDQwoKMHg4MjIgLS0gMiBieXRlcyB1c2VyCjB4ODI0IC0t
-IDEzIGJ5dGVzIGZhY3RvcnkgRUNDCgoweDgzMSAtLSAyIGJ5dGVzIHVzZXIKMHg4MzMgLS0gMTMg
-Ynl0ZXMgZmFjdG9yeSBFQ0MKCjB4ODQwIC0tIDY0IGJ5dGVzIHVzZXIgICAgICA8PT0gdGhpcyBp
-cyB0aGUgc3ViamVjdCBvZiB0aGUgcXVlc3Rpb24KCkNsZWFybHksIHRoZSA0IHJlZ2lvbnMgb2Yg
-aW50ZXJsZWF2ZWQgT09CIGRhdGEgbmVlZHMgdG8gYmUgZGVzY3JpYmVkCmluIGJvdGggYC5lY2Ng
-IGFuZCBgLmZyZWVgLiBXaGF0IGlzbid0IGNvbXBsZXRlbHkgY2xlYXIgdG8gbWUgaXMgdGhlCnJl
-bWFpbmluZyA2NC1ieXRlIGFyZWEuCgpJcyB0aGF0IHRoZSBPT0IgYXJlYSBpcyBkZWZpbmVkIGFz
-IDEyOCBieXRlcyBhbmQgdGhhdCBvbmx5IDY0IGJ5dGVzCmhhdmUgYmVlbiByZXNlcnZlZCBzdWZm
-aWNpZW50LCBvciBzaG91bGQgdGhvc2UgNjQgYnl0ZXMsIHdoaWNoCmFyZSBub3QgY29udGlndW91
-cyB3aXRoIGFueSBvZiB0aGUgb3RoZXIgInVzZXIiIHNlZ21lbnRzIGJlIGEgZmlmdGgKc2VjdGlv
-biBpbiBkZWZpbmluZyBgLmZyZWVgPwoKClRoYXQgdGhlIGRyaXZlciAid29ya3MiIHdpdGhvdXQg
-ZGVmaW5pbmcgYSBmaWZ0aCByZWdpb24gaW4gYSBzcGVjaWZpYywKVUJJLWJhc2VkIGFwcGxpY2F0
-aW9uIGRvZXNuJ3QgYXNzdXJlIG1lIHRoYXQgaXQgd2lsbCB3b3JrIHByb3Blcmx5CmluIGFsbCBh
-cHBsaWNhdGlvbnMgd2l0aCBhbGwgdXBwZXItbGF5ZXIgY29uc3VtZXJzLgoKCkV4YW1pbmluZyBz
-dXBwb3J0ZWQgY2hpcHMgd2l0aCBzaW1pbGFyIE9PQiBsYXlvdXRzIHdpdGggbXVsdGlwbGUKc2Vj
-dGlvbnMgdGhlbiBhbiAiYWRkaXRpb25hbCIgYXJlYSwgc3VjaCBhcyB0aGUgR2lnYURldmljZSBH
-RDVGeEdRNHhBLAp3YXMgbm90IHRlcnJpYmx5IGluc2lnaHRmdWwuIFRoZSBHRDVGMUdRNFVBWSBk
-YXRhc2hlZXRbMl0gbWFya3MgdGhlCnVwcGVyIDY0LWJ5dGUgcmVnaW9uIGFzICJyZXNlcnZlZCIs
-IGluIGNvbnRyYXN0IHRvICJVc2VyIG1ldGEgZGF0YSIKYW5kIGl0IGlzIG5vdCBkZXNjcmliZWQg
-aW4gdGhlIGN1cnJlbnQgYGdpZ2FkZXZpY2UuY2BbM10uIEFzIHN1Y2gsCml0IGlzbid0IGNvbnZp
-bmNpbmcgZXZpZGVuY2UgdGhhdCBpdCB3YXMgb21pdHRlZCBhcyAibm90IHJlcXVpcmVkIiwKYmVj
-YXVzZSBpdCB3YXMgbWFya2VkICJyZXNlcnZlZCIsIG9yIHBlcmhhcHMgZm9yIHNvbWUgb3RoZXIg
-cmVhc29uLgoKCkFzIGEgc2lkZSBub3RlLCB0aGUgZGF0YXNoZWV0IGFsc28gbWFya3MgdGhlIGZp
-cnN0IGJ5dGUgb2YgZWFjaCByZWdpb24KYXMgInJlc2VydmVkIiwgd2hpY2ggaXMgbm90IHJlZmxl
-Y3RlZCBpbiB0aGUgY3VycmVudCBgZ2lnYWRldmljZS5jYCwKd2hpY2ggaW5jbHVkZXMgaXQgaW4g
-dGhlIGZyZWUgcmVnaW9uIGZvciBzZWN0aW9ucyAxLTMuCgoKVGhhbmtzIQoKSmVmZgoKCgoKWzFd
-aHR0cDovL3d3dy54dHh0ZWNoLmNvbS91cGZpbGUvMjAxNjA4MjUxNzI3NDU5MC5wZGYKIMKgwqDC
-oCBwZy4gMzYKClsyXWh0dHBzOi8vZGF0YXNoZWV0NHUuY29tL2RhdGFzaGVldC1wZGYtZmlsZS83
-OTE2ODAvR2lnYURldmljZS9HRDVGMUdRNFVBWS8xCiDCoMKgwqAgcGcuIDMzCgpbM11odHRwczov
-L2VsaXhpci5ib290bGluLmNvbS9saW51eC92NS4yLXJjNC9zb3VyY2UvZHJpdmVycy9tdGQvbmFu
-ZC9zcGkvZ2lnYWRldmljZS5jI0w0NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Fri, 17 May 2019 14:29:54 -0400, Kamal Dasu wrote:
+> nand-ecc-strength and nand-ecc-step-size can be made optional as
+> brcmanand driver can support using the nand_base driver detected
+> values.
+> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
