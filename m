@@ -2,22 +2,24 @@ Return-Path: <SRS0=VbW+=UN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06034C31E44
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jun 2019 12:20:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4F1DC31E4B
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jun 2019 15:10:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA4F520850
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jun 2019 12:20:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72E4B21537
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jun 2019 15:10:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tYUNvbP5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA4F520850
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Gci0Qn4F";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="YvTHSNzD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="Z9ea8GSa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72E4B21537
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -25,41 +27,127 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=H0YhQxXYyzcZnR5jX7pKMFpV/187jEMO/NORiaZXb7Q=; b=tYUNvbP5UHJKJ5
-	OupuVaVeoGwzHPwCwhaSIJkdNJRS4W0zwvjbPqhBNIK+bcrLzjAuxGf+/oRqPs/7CKVbnEyj/4XDh
-	ROnprO3VedIytQdNNM1k0CcT48N4DW5eBs594pCgu4HQbmc+1FEF88tSb1k/7umJGGpmC7SZa3TxL
-	X1Kw3lh8S6mDYVGyw+XezHA9HOM5WR+6MvyOfi9KRfmZ94bxTmjJNGRiMOtAN2T8us6hdk/bmsww7
-	CREMGSK8tM0mgi5SrefcGfHdriWgMVTx/sNzTugbnmMqsJ7EguSOqt4qq3tqmtLv8QTnPu04OR3wv
-	5UneZyamBy/U3dCGAMZA==;
+	List-Owner; bh=2hlzZIup8bd697a8+dJBWUk81K2/4n7O24R2u5/Rx+c=; b=Gci0Qn4FHcQmWY
+	UCtt2gi9268LiExA0LC1+sSutCZSD0huTGedo3zAN/463pYyQI4zmM20N8BRs52RbrOpy68rVb3pT
+	WwKQ1rgX8UoroHFxVoF106kQ5Brb5Hak6SwU4lcffu8et74/5wwTcNfiWbGZK0WSmvoRhFjebAdPq
+	vFAcoYccS5/DqY6jfsTsHSjTDSELDV0UnVvROCHTdK/mBVgEv9/tCMQI97/3bFpYYdy41nPkRgf5Z
+	Wef0KJeRc6MSyEpDVRp4z/006X1goMidl05BeuAekZM5F+/1Ln1z87gXKQKWxNmRtBWsX+fJ+iPvD
+	Oau8GOpgVqSIU7JXaBIQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hblBz-0004M7-RU; Fri, 14 Jun 2019 12:20:27 +0000
-Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
+	id 1hbnqU-0007u5-A0; Fri, 14 Jun 2019 15:10:26 +0000
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]
+ helo=mx0a-0014ca01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hbl6C-0004sX-1K
- for linux-mtd@lists.infradead.org; Fri, 14 Jun 2019 12:14:29 +0000
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 4CD46B2AEDDC10E6B47A;
- Fri, 14 Jun 2019 20:14:24 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Fri, 14 Jun 2019
- 20:14:18 +0800
-From: <chengzhihao1@huawei.com>
-To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
- <boris.brezillon@bootlin.com>, <david@sigma-star.at>,
- <artem.bityutskiy@linux.intel.com>, <yi.zhang@huawei.com>
-Subject: [PATCH mtd-utils] ubi-tests: fm_param: Replace 'fm_auto' with
- 'fm_autoconvert'
-Date: Fri, 14 Jun 2019 20:19:50 +0800
-Message-ID: <1560514790-55222-1-git-send-email-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.7.4
+ id 1hbnqQ-0007tI-IO
+ for linux-mtd@lists.infradead.org; Fri, 14 Jun 2019 15:10:24 +0000
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+ by mx0b-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x5EF4GZR022902; Fri, 14 Jun 2019 08:09:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=zutQYHKILo9D5aTttR1PQ5MocwnzlGDu/I4L3RBlPOs=;
+ b=YvTHSNzD48Y6gsazCXz4Xb0R1HnWbx8f9Wt73lbjS2KH7efxXfasYlN7fydT3AQDDIID
+ DyIRCwk8RsT5Zr514v5Y5IIImq4CpW4RUFKYhT5wtLdfk4RDFM03yMBtZjW2X49ijnTf
+ CqKnzPJXVROjDozIzZUaD1cMsyIIjE82D3X01Q6uaR5Q6UuVrfPFqC1qQ3BtWa8lFXlK
+ nK8ZIAoSO5A7mOKRsAyYF6pXO8f6QQ1eD+e/My54p4otTW9bXDTXVIGI2p3MuiYN3AeP
+ oD/Tw/q3jSZRjl+6SdkP54A2jZ3/s4zgxap2Fxn6yjZfW80Irlp9pqwJybqy+N2TI7+b /g== 
+Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
+Received: from nam01-sn1-obe.outbound.protection.outlook.com
+ (mail-sn1nam01lp2054.outbound.protection.outlook.com [104.47.32.54])
+ by mx0b-0014ca01.pphosted.com with ESMTP id 2t3qr0ncjy-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+ Fri, 14 Jun 2019 08:09:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zutQYHKILo9D5aTttR1PQ5MocwnzlGDu/I4L3RBlPOs=;
+ b=Z9ea8GSazH6DZcaW8OJsgUdT1HXlzgLj6WEsOdNrOGtt5Wome0scBopDSxpge2vLaILi9tY1+5Hy/1ymKigNUebCI00u2ENeKdBTnA9R52lmZs8Ghyuvy69FK/4r9CMHDxQIjfZu1s7Uhcj1Qm+gb5ajUBq14xOsuRjOnsneR0s=
+Received: from BYAPR07CA0011.namprd07.prod.outlook.com (2603:10b6:a02:bc::24)
+ by CO2PR07MB2486.namprd07.prod.outlook.com (2603:10b6:102:f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1965.17; Fri, 14 Jun
+ 2019 15:09:50 +0000
+Received: from CO1NAM05FT011.eop-nam05.prod.protection.outlook.com
+ (2a01:111:f400:7e50::208) by BYAPR07CA0011.outlook.office365.com
+ (2603:10b6:a02:bc::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1987.13 via Frontend
+ Transport; Fri, 14 Jun 2019 15:09:50 +0000
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ cadence.com discourages use of 158.140.1.28 as permitted sender)
+Received: from sjmaillnx1.cadence.com (158.140.1.28) by
+ CO1NAM05FT011.mail.protection.outlook.com (10.152.96.118) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.2008.7 via Frontend Transport; Fri, 14 Jun 2019 15:09:49 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+ by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id
+ x5EF9g8Y010059
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+ Fri, 14 Jun 2019 08:09:43 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Fri, 14 Jun 2019 17:09:41 +0200
+Received: from lvlogina.cadence.com (10.165.176.102) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Fri, 14 Jun 2019 17:09:41 +0200
+Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
+ by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x5EF9f03031066;
+ Fri, 14 Jun 2019 16:09:41 +0100
+Received: (from piotrs@localhost)
+ by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x5EF9Y8Z030961;
+ Fri, 14 Jun 2019 16:09:34 +0100
+From: Piotr Sroka <piotrs@cadence.com>
+To: <linux-kernel@vger.kernel.org>
+Subject: [v3 0/2] mtd: nand: Add Cadence NAND controller driver
+Date: Fri, 14 Jun 2019 16:06:38 +0100
+Message-ID: <20190614150638.28383-1-piotrs@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:158.140.1.28; IPV:CAL; SCL:-1; CTRY:US;
+ EFV:NLI; SFV:NSPM;
+ SFS:(10009020)(396003)(136003)(376002)(346002)(39860400002)(2980300002)(36092001)(189003)(199004)(50226002)(478600001)(7636002)(48376002)(26826003)(51416003)(6916009)(50466002)(356004)(7416002)(305945005)(36756003)(8676002)(1076003)(87636003)(246002)(2906002)(54906003)(16586007)(47776003)(42186006)(76130400001)(426003)(8936002)(316002)(486006)(26005)(107886003)(2351001)(336012)(70206006)(2616005)(126002)(70586007)(4326008)(186003)(5660300002)(476003)(86362001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:CO2PR07MB2486; H:sjmaillnx1.cadence.com; FPR:;
+ SPF:SoftFail; LANG:en; PTR:corp.cadence.com; MX:1; A:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9df39479-07e4-4818-b90e-08d6f0da5884
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328);
+ SRVR:CO2PR07MB2486; 
+X-MS-TrafficTypeDiagnostic: CO2PR07MB2486:
+X-Microsoft-Antispam-PRVS: <CO2PR07MB24867686734437F8E36DFC7BDDEE0@CO2PR07MB2486.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0068C7E410
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: l3WpcVbfcvr0pHNIz7GKdT3xC/8q2AmxJu+4LyVAP0xonfiJCi+lXEsnUKHcL+0vw4sEzeP+hT0rMJ5Bg1C5dvAzXs9XdkST7tGkrBlprfsc3jiUZHRRHWrZgEWuIk3ngisSQ4vCdaDDFWd8Y0Y7X7/0xSg4TP3qSesBpZ2UamLs56vVurnA69Kde/XCaH27hYIQ8e2Fq6SZKOMsUPflGWjwTylegCnbgLEm7j5HSbuZHFQ4NJI9LTozLwiNKMzKrtkgNKstm3c2laxmnc3sFSw3cbn8wWVhmzB906A+avajsMu7JN1hWUpVdII5tUPq/dV1FhQkGWjVMQvCLRDqs1ag+gslji9gSLhrUA/wZ8L1Gp6bRgbLvo3Sgs6qT6qhzI9tbLBsJMyxP7JWJyGAQ7pLY6/XxXMli2vAhKzYMeQ=
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2019 15:09:49.3780 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9df39479-07e4-4818-b90e-08d6f0da5884
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[158.140.1.28];
+ Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR07MB2486
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf.smktg.jp
+ include:_spf.salesforce.com
+ include:mktomail.com include:spf-0014ca01.pphosted.com
+ include:spf.protection.outlook.com include:auth.msgapp.com
+ include:spf.mandrillapp.com ~all
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2019-06-14_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
+ score=0
+ priorityscore=1501 malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906140125
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190614_051428_350241_04F8D3E0 
-X-CRM114-Status: UNSURE (   8.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190614_081022_910065_30E83BAB 
+X-CRM114-Status: GOOD (  13.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,46 +159,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: chengzhihao1@huawei.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon <bbrezillon@kernel.org>,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Richard Weinberger <richard@nod.at>, Stefan Agner <stefan@agner.ch>,
+ Marek Vasut <marek.vasut@gmail.com>, Paul Burton <paul.burton@mips.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Dmitry Osipenko <digetx@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+Driver for Cadence HPNFC NAND flash controller.
 
-The value of fm_param should be 'fm_autoconvert' rather than 'fm_auto' when
-fastmap is supported by kernel. Currently, following verbose will appear in
-dmesg when fm_param is set to 'fm_auto':
+HW DMA interface
+Page write and page read operations are executed in Command DMA mode.
+Commands are defined by DMA descriptors.
+In CDMA mode controller own DMA engine is used (Master DMA mode).
+Other operations defined by nand_op_instr are executed in "Generic" mode.
+In that mode data can be transferred only in by Slave DMA interface.
+Slave DMA interface can be connected directly to AXI or to an external
+DMA engine.
 
-  ubi: unknown parameter 'fm_auto' ignored
+HW ECC support
+Cadence NAND controller supports HW BCH correction.
+ ECC is transparent from SW point of view. It means that ECC codes
+are calculated and written to flash. In read operation ECC codes 
+are removed from user data and correction is made if necessary.
 
-This patch replace 'fm_auto' with 'fm_autoconvert' for fm_param, so ubi
-kernel module can receive correct parameters.
+Controller data layout with ECC enabled:
+ -------------------------------------------------------------------------
+|Sec 1 | ECC | Sec 2 | ECC ...... | Sec n | OOB (32B) | ECC | unused data |
+ -------------------------------------------------------------------------
 
-----------------------------------------
+Last sector is extended by a out-bound data. Tha maximum size of
+"extra data" is 32 bytes. The oob data are protected by ECC. If we need to 
+read only oob data the whole last sector must be read. It is because 
+oob data are part of last sector. Reading oob function always reads 
+whole sector and writing oob function always writes whole last sector.
+Written data are interleaved with the ECC therefore part of the 
+last sector is located on oob area and the BBM is overwritten.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- tests/ubi-tests/ubi-stress-test.sh.in | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+SKIP BYTES feature
+To protect BBM the "skip byte" HW feature is used. 
+Write page function copies BBM value from first byte of oob data to 
+BBM offset defined by manufacturer. Read page functions always takes 
+BBM from flash manufacturer offset. It causes that for not written 
+pages the proper value of BBM marker is used.
 
-diff --git a/tests/ubi-tests/ubi-stress-test.sh.in b/tests/ubi-tests/ubi-stress-test.sh.in
-index 42ccec5..657ef4b 100755
---- a/tests/ubi-tests/ubi-stress-test.sh.in
-+++ b/tests/ubi-tests/ubi-stress-test.sh.in
-@@ -117,7 +117,7 @@ run_test()
- 		fm_param=
- 	elif [ "$fm_supported" = "yes" ]; then
- 		fastmap="disabled"
--		fm_param="fm_auto"
-+		fm_param="fm_autoconvert"
- 	else
- 		echo "Fastmap is not supported, skip"
- 		return 0
+ECC size calculation
+Information about supported ECC steps and ECC strengths are read 
+from controller registers. ECC sector size and ECC strength can be
+configurable. Size of ECC depends on maximum supported sector size 
+it not depends on selected sector size. Therefore there is a separate
+function for calculating ECC size for each of possible 
+sector size/step size.
+
+Piotr Sroka (2):
+  Add new Cadence NAND driver to MTD subsystem
+  dt-bindings: nand: Add Cadence NAND controller driver
+
+ .../bindings/mtd/cadence-nand-controller.txt       |   51 +
+ drivers/mtd/nand/raw/Kconfig                       |    7 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/cadence-nand-controller.c     | 3119 ++++++++++++++++++++
+ 4 files changed, 3178 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+ create mode 100644 drivers/mtd/nand/raw/cadence-nand-controller.c
+
 -- 
-2.7.4
+2.15.0
 
 
 ______________________________________________________
