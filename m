@@ -2,87 +2,83 @@ Return-Path: <SRS0=mO4J=UQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCEE3C31E5B
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 22:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B685AC31E5B
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 22:15:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B2FC2080A
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 22:12:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C89520657
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 22:15:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uc3titPQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="fcB3luCL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B2FC2080A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alliedtelesis.co.nz
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PKkzSYuZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aY49b7Wk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C89520657
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:Date
-	:Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=TpOSY7MQNSAbG9LZmJenmxn9mgLC37n/Qsdit81bn/0=; b=uc3titPQ+s9G8P
-	qq1z7RbslO0cWkYi12pdzLpYK2Joct0ooxisN4C5YZcRBF01BMXO7kG74TZJcOGztHe/lQBPXdONc
-	bgW53zYRMsMoyAat8SBZxjML51inMVQHAli869eh/2gPFNaPtsrWe23rHxmUXe4AStVUKgyw39V4y
-	/3q+nVlcDubT8WTLjrVFlBKpwshxxaElwuoG5VgEBTyKjpZvrDwh2DxIV+Usb+1bCbHB9WSqS4hHY
-	anmZeMlvc93qaPHaJM4UQjStoAeurkIA2I3DlZyBf/zyx7k2Xd2FGrCfxFyqdz9Q1nOjKf21rkuW2
-	9tTr9Mou23BoatmiY42Q==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=37K1vY5mKYD7SPH84JTOsZKX1LpnFZ5/ogtn0Le2AYs=; b=PKkzSYuZrmxUgm
+	ZwDavljUsguv80Ih+GEAWCsjSaZRzB0LGj/juI04J2MQFzsitDsx5zQBb6BmuZ9efTH3w7wMshk9l
+	gHlqZ/IQkgSG9YlVXGIazUqq9Q1aIaoZwQtGa1u3G8SXCA2hU8hXldQAe7fXaFDevPuaLneFjJyIb
+	c6gyhLQFt0/9wCwepF1da8hC2xVLkNg3W/KP2Wvbg911CvxWeQftBAsWLVSOrHCYxlGH5WSgFnD0S
+	V/Gu8X7ttKZ7jOjhv/Yk3vEuIhVdB62p6Su9EWvtwWLOMmAKCqoMbDacLgsZuZm/rFlzscRsxy0Pw
+	9xuq5hjoGfxUznIPo/ew==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hczrv-0002Yz-KL; Mon, 17 Jun 2019 22:12:51 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1hczuT-0005LX-P3; Mon, 17 Jun 2019 22:15:29 +0000
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hczqt-0001hG-BU
- for linux-mtd@lists.infradead.org; Mon, 17 Jun 2019 22:11:49 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id F0FAF806A8;
- Tue, 18 Jun 2019 10:11:42 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
- s=mail181024; t=1560809502;
- bh=DSLbrc5ukZCi8kilt1qLlyon/yI7IWOwk3BYxT6iAaE=;
- h=From:To:CC:Subject:Date:References;
- b=fcB3luCLIBJWQsT9GCHVwIkLWguH3NSFqKHBsKDIS38SNRWwVrzgCtbHiElyKDpQ/
- HDkMkQRHbX+zZErKxvdiuLuJqTLAiVQFP2Z/QEVhfWVNfiMY3BVqMuO3FGL/afdKTU
- eaF6/NdlyGR3g44H5vPZBpKuch+Wsb+OTsZ3WKRle7rPq2WjfElXAzuoxZU5/km/th
- DhxbhlpjJHODF3PgDgJnlQ/L7GyWckPhghceoKUf8Dc9ANIlhfTnT4iubWwqczgusz
- 9eBq0brMAArF1bieH0dg44qmbo8y4zO61ye2OHdnyuPnj+0u57aaQCVZ8ddBHhkAyh
- MD3L/k+I09CPw==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by
- mmarshal3.atlnz.lc with Trustwave SEG (v7, 5, 8, 10121)
- id <B5d08101f0000>; Tue, 18 Jun 2019 10:11:43 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1156.6; Tue, 18 Jun 2019 10:11:42 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1156.000; Tue, 18 Jun 2019 10:11:42 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: concat: refactor concat_lock/concat_unlock
-Thread-Topic: [PATCH v2 1/2] mtd: concat: refactor concat_lock/concat_unlock
-Thread-Index: AQHVEPTbCX8jgKCQ/EWiWr4BFnYFGQ==
-Date: Mon, 17 Jun 2019 22:11:42 +0000
-Message-ID: <365a80987504424f8685faaceb23b468@svr-chch-ex1.atlnz.lc>
-References: <20190522231948.17559-1-chris.packham@alliedtelesis.co.nz>
- <355dad1321ed46baa98ca6f47b4d00b5@svr-chch-ex1.atlnz.lc>
- <CAFLxGvwNNWKzbfKvDjAK6rujbr5qtmVAWCDD5aULO4BVKutRKw@mail.gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [2001:df5:b000:22:3a2c:4aff:fe70:2b02]
+ id 1hczuR-0005Ko-Cu
+ for linux-mtd@lists.infradead.org; Mon, 17 Jun 2019 22:15:28 +0000
+Received: by mail-wr1-x441.google.com with SMTP id p13so11665243wru.10
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2019 15:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=aOxrv4Z+duhzHk+Vvgki6wKRY9I+T3teV7bGXJE2hg4=;
+ b=aY49b7WkuTfBi9s+q3YkqPFoksMYySMOhjBU6L7c9cc3C7zQp4p2+UV4mY95F/0+JH
+ tL2UKDIzzhClKL9WqK/0Xcgf5BKsw0fpZTFv4wGWckmU7Bj/9XiimGYc94tZJV6KoFnl
+ beS12Vz7LfpA7sRaj1tu2a0eGRfqM+Vka0dXZ83xvafIRlOdvEhQIXWECXaxI/fR6zaA
+ hwTrx3seR9v6J6808XBpeexTzC0DeRJO3yWEKo945ztZeW0s/8p43ED0XsQdd7h3kqk5
+ acZlzLfwvorsKhYzrGPaUSAchILthJH/N4thVd/F5xGt6QCD91vonSWuuI5keLuP7Dab
+ 6okw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=aOxrv4Z+duhzHk+Vvgki6wKRY9I+T3teV7bGXJE2hg4=;
+ b=LDFVmNglFMZqdAFZNmPurySNbpEH0mrKkrcd8n9AZgl5g0uGDIUbwvIqg9SlbdP7xW
+ Yfj7GOJih8cBIwKtZcUioTEEwxoVt8AYEUNSfvFV9Mt8abK56/Fii+6mqqWQsH4KW/6F
+ ZeXgXw6QXYnZihPJaOZBKgusoNQcT7/AxRYNnp43aoeHgvBtPThMKI9lYhgQhMDlzD2y
+ B6yJEtG5UZDFrr3UcOdmKhZlo8CQzHQBVmQcrvKOVqm1GWS3dBwcKnQCG2XnIr74kYJA
+ AfmbvxRzqN15ebcIvS4hsuV2wYPbmmIH0+5UQVDijiIVChkwsiZoMiGqPDRojRd0UsMU
+ bxJQ==
+X-Gm-Message-State: APjAAAXWgV+uoO3wevtlFG9iCkbBCpLkcAfBwFjM9AfgFQC1p4vXnHy4
+ g9yS5B9R6mFU6BK5q46eaAU5cn0cgjNFpJfizTc=
+X-Google-Smtp-Source: APXvYqzIRENvbCsYIcq6eR/PMaPMcy9DkvAWKBfar8wlTlCUFzrbGjxFQHJKL/sWdXUH34woXRKOQ0zdzM7JxnWZL1U=
+X-Received: by 2002:adf:ea8b:: with SMTP id s11mr33675436wrm.100.1560809726001; 
+ Mon, 17 Jun 2019 15:15:26 -0700 (PDT)
 MIME-Version: 1.0
+References: <1558024913-26502-1-git-send-email-kdasu.kdev@gmail.com>
+ <CAFLxGvwjqo27VQ092WV9=6N5RJr-M7aL0HYVWkeaCYbY3XWa1w@mail.gmail.com>
+In-Reply-To: <CAFLxGvwjqo27VQ092WV9=6N5RJr-M7aL0HYVWkeaCYbY3XWa1w@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 18 Jun 2019 00:15:14 +0200
+Message-ID: <CAFLxGvyGFtacE3mgZ03zrOeF2S24KdtGj+Qy-3kmA2wbRhNJYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mtd: Add flag to indicate panic_write
+To: Kamal Dasu <kdasu.kdev@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190617_151147_810679_1A17D4E7 
-X-CRM114-Status: UNSURE (   6.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190617_151527_466600_05A7F52E 
+X-CRM114-Status: GOOD (  19.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,31 +90,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ LKML <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 18/06/19 10:08 AM, Richard Weinberger wrote:
-> On Fri, Jun 14, 2019 at 5:26 AM Chris Packham
-> <Chris.Packham@alliedtelesis.co.nz> wrote:
->>
->> Hi All,
->>
->> Ping?
-> 
-> Your patch is not lost. We start soon with collecting all material for
-> the merge window. :-)
-> 
+On Fri, May 17, 2019 at 10:08 AM Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Thu, May 16, 2019 at 6:42 PM Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+> >
+> > Added a flag to indicate a panic_write so that low level drivers can
+> > use it to take required action where applicable, to ensure oops data
+> > gets written to assigned mtd device.
+> >
+> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> > ---
+> >  drivers/mtd/mtdcore.c   | 3 +++
+> >  include/linux/mtd/mtd.h | 6 ++++++
+> >  2 files changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > index 76b4264..a83decd 100644
+> > --- a/drivers/mtd/mtdcore.c
+> > +++ b/drivers/mtd/mtdcore.c
+> > @@ -1138,6 +1138,9 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+> >                 return -EROFS;
+> >         if (!len)
+> >                 return 0;
+> > +       if (!mtd->oops_panic_write)
+> > +               mtd->oops_panic_write = true;
+> > +
+>
+> You can set the flag unconditionally.
+> If it is set, it will stay so, and setting it again, won't hurt.
+>
+> >         return mtd->_panic_write(mtd, to, len, retlen, buf);
+> >  }
+> >  EXPORT_SYMBOL_GPL(mtd_panic_write);
+> > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> > index 677768b..791c34d 100644
+> > --- a/include/linux/mtd/mtd.h
+> > +++ b/include/linux/mtd/mtd.h
+> > @@ -330,6 +330,12 @@ struct mtd_info {
+> >         int (*_get_device) (struct mtd_info *mtd);
+> >         void (*_put_device) (struct mtd_info *mtd);
+> >
+> > +       /*
+> > +        * flag indicates a panic write, low level drivers can take appropriate
+> > +        * action if required to ensure writes go through
+> > +        */
+> > +       bool oops_panic_write;
+> > +
+>
+> Maybe we find a better name for it.
+> panic_write_triggered?
 
-OK thanks for the confirmation and sorry for the noise.
+ping?
+I'm happy with the overall approach.
+So let's target the upcoming merge window.
+Can you please sort my two comments out? :-)
+
+-- 
+Thanks,
+//richard
 
 ______________________________________________________
 Linux MTD discussion mailing list
