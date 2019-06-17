@@ -2,23 +2,21 @@ Return-Path: <SRS0=mO4J=UQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3FB6C31E44
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 04:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACB2DC31E44
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 07:03:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F78D2054F
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 04:30:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 413BA218E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 07:03:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VSTTFZ0/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="O+3RFtA3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F78D2054F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dQjmgARX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 413BA218E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,64 +24,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RtXJUpBFNb5Bzn+tMlpTtG+ylD6FHGH9Zrr9j9R9KGA=; b=VSTTFZ0/qdJ742
-	Hd2SIOfPCg5+oJxku9CxZuVgYzuoYuqsi0b/Wlnt+q+ZA/249O/c3Il8FW6lRZIMCRB8v6q9AzYto
-	6XmP36NOYDOn9pr8oq09TAcwg0+CJGeSLpTw2bbGvnom4XZouCOc1QHwdK8HHW0uSsQa2f0yiN/+V
-	EUZZiXE5+T4i9jXSB5wCzDbYhG8M3OlpNCqXD5exSwsLntoB4tV+fGu3yTXxrEm2SNQ/RouhyC/wC
-	/oiO521QZxQ1GXRueEwOgqFg3c6SydENdokcD3HttXB0IvtdavJZ8hMCJjKEL/NLmGcRl4Q8k8ixc
-	XiKUa/QEKCXqlhxU0xyQ==;
+	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=dQjmgARXtKMEIo
+	VcLYm2xBcc9nmH6FfDMf398o6sgtSJjYjnpbzkGdtSUiXad7kYQvxURGC4tL2D9jOh6mbMRSt+AP/
+	97BRukxusFFFcx8PAeHpddqnkZzzsafmpUpxNbk1y37pkXw4BXjMVsgAuDHTqPoqx55gLRDfHOTah
+	P4yjc52mQPshb7bHHrmLpu3Jzm5Sw7xsZCZ6sjZcn8pAoz5haJa+ERbyQHbkjNgB7Pw1b4Az/KFKG
+	glCEeARe0HHPlTGSVlmimKj02DzPeC14Ax9yRBiG5e07QKqZ4U/lj3rmn+UXeO/x6E9MtJ4omkt7U
+	voHYOeC5meNQCBren4Bg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hcjHo-0001cI-IJ; Mon, 17 Jun 2019 04:30:28 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hclgB-0007kh-6c; Mon, 17 Jun 2019 07:03:47 +0000
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hcjHl-0001bm-7Z; Mon, 17 Jun 2019 04:30:26 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5H4U4rh055473;
- Sun, 16 Jun 2019 23:30:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1560745804;
- bh=ESKXVh9Sq512lPIqthTXEUClTEi6OelQzFKQgNFQ7wM=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=O+3RFtA3fdfmaj1j/OEZXoOysP1/tfUlSMyvZiC8PYnbYhSaaPvf++0OJeSmhd+uA
- FkMWyld0BDwQiHM1SjnHuwUiSV+LHs5tgvIbPZgqMbLIyHSavD+G8oXUxetR+Gj8dY
- GFqQuKTY1NyJxqD4amy7labW3TVRrE+zNWnedBio=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5H4U4E4103253
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Sun, 16 Jun 2019 23:30:04 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Sun, 16
- Jun 2019 23:30:03 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Sun, 16 Jun 2019 23:30:03 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5H4TvCq010286;
- Sun, 16 Jun 2019 23:29:58 -0500
-Subject: Re: [PATCH v5 4/5] dt-bindings: mtd: Add bindings for TI's AM654
- HyperBus memory controller
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-References: <20190609103227.24875-1-vigneshr@ti.com>
- <20190609103227.24875-5-vigneshr@ti.com>
- <a808ffca-02a8-14b0-3422-c0905ab212a6@cogentembedded.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <7c7828b9-bcfd-6156-3ddb-cbdde5956675@ti.com>
-Date: Mon, 17 Jun 2019 10:00:45 +0530
+ id 1hclg7-0007k2-WC
+ for linux-mtd@lists.infradead.org; Mon, 17 Jun 2019 07:03:45 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id AC3051802BB91;
+ Mon, 17 Jun 2019 09:03:38 +0200 (CEST)
+Subject: Re: [PATCH mtd-utils] ubi-tests: ubi_mkvol_request: Fully initialize
+ 'struct ubi_mkvol_request req'
+To: chengzhihao1@huawei.com, richard@nod.at, boris.brezillon@bootlin.com,
+ david@sigma-star.at, artem.bityutskiy@linux.intel.com, yi.zhang@huawei.com
+References: <1560514478-54276-1-git-send-email-chengzhihao1@huawei.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Openpgp: preference=signencrypt
+Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
+ keydata=
+ mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
+ FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
+ tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
+ BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
+ 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
+ AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
+ ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
+ PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
+ 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
+ Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
+ quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
+ GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
+ cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
+ +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
+ ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
+ h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
+ FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
+ BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
+ yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
+ UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
+ qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
+ 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
+ qyUpot0oG03vtSG4LIRCdxI=
+Organization: sigma star gmbh
+Message-ID: <9da3996f-7e94-a3a0-374f-261691d5045e@sigma-star.at>
+Date: Mon, 17 Jun 2019 09:03:31 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <a808ffca-02a8-14b0-3422-c0905ab212a6@cogentembedded.com>
+In-Reply-To: <1560514478-54276-1-git-send-email-chengzhihao1@huawei.com>
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190616_213025_377460_81AE9BC9 
-X-CRM114-Status: GOOD (  21.61  )
+X-CRM114-CacheID: sfid-20190617_000344_180723_FF8031E0 
+X-CRM114-Status: UNSURE (   6.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,132 +95,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- linux-kernel@vger.kernel.org, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Applied to mtd-utils.git master.
 
-On 10/06/19 9:55 PM, Sergei Shtylyov wrote:
-> Hello!
-> 
-> On 06/09/2019 01:32 PM, Vignesh Raghavendra wrote:
-> 
->> Add binding documentation for TI's HyperBus memory controller present on
->> AM654 SoC.
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
->> v5:
->> Update binding example to show MMIO mux
->> Fix reg property for flash slave.
->>
->>  .../devicetree/bindings/mtd/ti,am654-hbmc.txt | 51 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  2 files changed, 52 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->> new file mode 100644
->> index 000000000000..c2a2c2b42a92
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
->> @@ -0,0 +1,51 @@
->> +Bindings for HyperBus Memory Controller (HBMC) on TI's K3 family of SoCs
->> +
->> +Required properties:
->> +- compatible : "ti,am654-hbmc" for AM654 SoC
->> +- reg : Two entries:
->> +	First entry pointed to the register space of HBMC controller
->> +	Second entry pointing to the memory map region dedicated for
->> +	MMIO access to attached flash devices
->> +- ranges : Address translation from offset within CS to allocated MMIO
->> +	   space in SoC
->> +
->> +Optional properties:
->> +- mux-controls : phandle to the multiplexer that controls selection of
->> +		 HBMC vs OSPI inside Flash SubSystem. Default is OSPI,
->> +		 if property is absent.
->> +		 See Documentation/devicetree/bindings/mux/reg-mux.txt
->> +		 for mmio-mux binding details
->> +
->> +Example:
->> +
->> +	fss: fss@47000000 {
-> 
->    What's FSS?
+Thanks,
 
-Flash SubSystem (FSS). Will highlight that in mux control definition above
-
->    Regardless of the answer, the node names should be generic, like "memory-controller@".
-> 
->> +		compatible = "syscon", "simple-mfd";
-> 
->    If it's "sycon", the nme should probably be "system-controller".
-
-FSS is like a subchip that has all Flash controllers like Octal SPI
-controllers and HyperBus controller within it. Some of their controls
-are in the below address range. So I think its more closer to
-"system-controller"
-
-> 
->> +		reg = <0x0 0x47000000 0x0 0x100>;
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
->> +
->> +		hbmc_mux: hbmc-mux {
-> 
->    So, just "multiplexor"?
-
-Ok
-
-> 
->> +			compatible = "mmio-mux";
->> +			#mux-control-cells = <1>;
->> +			mux-reg-masks = <0x4 0x2>; /* 0: reg 0x4, bit 1 */
->> +		};
->> +
->> +		hbmc: hbmc@47034000 {
-> 
->    Should be named "memory-controller@47034000", according to the DT spec.
-
-IMO, since HyperBus is a bus protocol and has a specification, I think
-its should have a separate generic name like SPI etc.
-
-I will change this to "hyperbus@47034000" to common name of spec.
-
-> 
->> +			compatible = "ti,am654-hbmc";
->> +			reg = <0x0 0x47034000 0x0 0x100>,
->> +				<0x5 0x00000000 0x1 0x0000000>;
->> +			power-domains = <&k3_pds 55>;
->> +			#address-cells = <2>;
->> +			#size-cells = <1>;
->> +			ranges = <0x0 0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
->> +				 <0x1 0x0 0x5 0x04000000 0x4000000>; /* CS1 - 64MB */
->> +			mux-controls = <&hbmc_mux 0>;
->> +
->> +			/* Slave flash node */
->> +			flash@0,0 {
->> +				compatible = "cypress,hyperflash", "cfi-flash";
->> +				reg = <0x0 0x0 0x4000000>;
->> +			};
->> +		};
->> +	};
-> [...]
-> 
-> MBR, Sergei
-> 
-
--- 
-Regards
-Vignesh
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
