@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F51FC31E44
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 07:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17CB2C31E44
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 07:04:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73821218E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 07:04:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E17E7218DA
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2019 07:04:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="M14HmUz7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73821218E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="O4UqKajT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E17E7218DA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,27 +24,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=M14HmUz7I/KXML
-	MInQ3wuZcs1ZhIsaofWJutOFq1GEoJzXREpiwxTT9XijzDU191QdrPehr1rtz37okqOkhfY8/br4K
-	akZzjAyWMwD+ued/j6diErB3qn2Bi4V5Rqo3XmdmlhY0zZn4IRMW0MuS31adDOHE15MdcgGsm7yEx
-	QBh0+kOlRlJtgN8RvXuTCwpoWaPR/g+9Cv3S1IImilA1ezL7IDoi/HA81ffEVPATXUMJMh0pkylrd
-	v1Uqw8S5b0W2aIXdpbUVyrCbWuDMEq+yKS/UWkkCXQ3SLiMS6v7i5DSS05k7JLqcyLMEmxi696DIZ
-	ybt/UaShGt+EOt0M1sWQ==;
+	List-Owner; bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=O4UqKajTmnUS2Z
+	zZ4qVB0sth67UhaRHucYU7dj4RvQcrrbEVDXe4BXMHwZ8OVGBwgbJwyFu/ApPYA9sx7H2JdGrM93W
+	b5/3tYXJ8lYfi6Lgd61bq5kK5CF+HDibhqfp1N5Vfdzxg9rr3elES9tULDl0VdzKihnPXzXAXxjvV
+	VEFD1+3WlTcRwlhWKxQhSI0/EnPHR3RX6BF8OYeBf5f6am7vCyF9tMiTN4vQ9haZRYEM+iN6fjKlx
+	HUyI/OQZfGXnwPc9lnLCINpo8fr/CyWUbXWieV6IkuW2Fzglh3QBqiVjBKuv5Q9/Y33N//WtjXoRP
+	fTZ5WWaDpV2iLNFa33kw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hclgS-0007vI-VG; Mon, 17 Jun 2019 07:04:05 +0000
+	id 1hclgi-0008BJ-Bs; Mon, 17 Jun 2019 07:04:20 +0000
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hclgL-0007pY-Gx
- for linux-mtd@lists.infradead.org; Mon, 17 Jun 2019 07:03:59 +0000
+ id 1hclgW-0007xO-28
+ for linux-mtd@lists.infradead.org; Mon, 17 Jun 2019 07:04:09 +0000
 Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 4CFE51809AD62;
- Mon, 17 Jun 2019 09:03:56 +0200 (CEST)
-Subject: Re: [PATCH mtd-utils] ubi-tests: io_read: Filter invalid offset value
- before 'lseek' in io_read test
+ by lilium.sigma-star.at (Postfix) with ESMTP id 7AE54181180F8;
+ Mon, 17 Jun 2019 09:04:06 +0200 (CEST)
+Subject: Re: [PATCH mtd-utils] ubi-tests: mkvol test: Checks return value
+ 'ENOSPC' for 'ubi_mkvol'
 To: chengzhihao1@huawei.com, richard@nod.at, boris.brezillon@bootlin.com,
  david@sigma-star.at, artem.bityutskiy@linux.intel.com, yi.zhang@huawei.com
-References: <1560514696-54824-1-git-send-email-chengzhihao1@huawei.com>
+References: <1560514728-54932-1-git-send-email-chengzhihao1@huawei.com>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Openpgp: preference=signencrypt
 Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
@@ -73,16 +73,16 @@ Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
  7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
  qyUpot0oG03vtSG4LIRCdxI=
 Organization: sigma star gmbh
-Message-ID: <97f7fed6-9d0e-4315-3237-fcd666539824@sigma-star.at>
-Date: Mon, 17 Jun 2019 09:03:55 +0200
+Message-ID: <1ff9444e-283b-af3b-3428-e66b769f15fd@sigma-star.at>
+Date: Mon, 17 Jun 2019 09:04:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <1560514696-54824-1-git-send-email-chengzhihao1@huawei.com>
+In-Reply-To: <1560514728-54932-1-git-send-email-chengzhihao1@huawei.com>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190617_000358_469171_E94742FA 
-X-CRM114-Status: UNSURE (   7.03  )
+X-CRM114-CacheID: sfid-20190617_000408_359772_B29956EE 
+X-CRM114-Status: UNSURE (   7.04  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
