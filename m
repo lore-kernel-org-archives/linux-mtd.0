@@ -5,81 +5,85 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B0BAC31E5B
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 18:27:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3B6AC31E5B
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 18:27:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E610C2080A
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 18:27:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88EFF2080A
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 18:27:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PsqKmqoj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/sM1rUx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E610C2080A
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="iZFja/Ml";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qQN5Ajlv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88EFF2080A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=7fvrZKXEYd/4Y6kotyHUQS4UeVLL7PaxYIPLy/BrvS4=; b=Psq
-	KmqojmmqbcuEpYe9lKfEtWlfuP3zcK0blXUb85F8K34P8/FRCtRHQl8N+fNZT3lAEALWBZt5dJzGK
-	fKhZh3yONtjJ/dKCLkldKxDO9b0/Zqab3OQ4nCwtmGJB3t594bejZa9gLxuCBG25ZgdMP5OQIufR/
-	HFF5bwZ4Tc8vdcrgfL36OR2GaiiTiYCctES+Nu0J+3k1fnZizWHbm0dQfMMGte+P4BgDzOFPiBCAN
-	nlnvjm3IRYyPBmRbLPUc1L0Qx8448qlB6rcnJ1wGwyXM6yZDy46STZwzAEGooqleCrNw3vsORQRdu
-	ngMP7F4ZE/QFbXhqy8jzVzEz92Z9oPw==;
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=BvbkMTRjKXJlQZoJvtsHgIBCdmbVoK/LDDuIlxgRWWs=; b=iZFja/MlK+WcQNsVBzxj5QoVvc
+	iLRYs8bq9ejFXk/b1eIbyjmF1QjoPDIYDI7Gts51W9T4HA4O1vSREA2j4dTRf6De1JuKYw2VBXua7
+	WurA6DMeHq5Pd6ogDPqCsZ6BjQTMN048ME+S00B/lgytZcVteem+2SGy1MPzeMydCLtA+t3Px0opb
+	71HXVNLZOMn7kDIp9kxUqzQm5VtJpNAvtOYEm538mwEudoJWm141I/EM1rS+2hpvU4UWczJnmAfsv
+	wxbaauHGyI+r/5aqugxIlNlVf6ILS+o7dxCajeWxZj9430zlpfmvJ+6EQBUN46p8rpK77rXaiXeAb
+	1WqLyvxw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hdIp4-0005Ta-O8; Tue, 18 Jun 2019 18:27:10 +0000
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+	id 1hdIpS-0005i8-C7; Tue, 18 Jun 2019 18:27:34 +0000
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdIp2-0005TH-I2
- for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 18:27:09 +0000
-Received: by mail-pf1-x443.google.com with SMTP id p184so8131210pfp.7
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2019 11:27:08 -0700 (PDT)
+ id 1hdIpO-0005hX-IW
+ for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 18:27:32 +0000
+Received: by mail-pf1-x444.google.com with SMTP id x15so8152315pfq.0
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2019 11:27:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=mO472utuFQ+nV4A29aUiVfjK/XWRxLa6xDQ8sQgJqmI=;
- b=R/sM1rUxhjbZRW6SG/PJTnw0z5LYinOBGI/dRLlrIOlSjumvc0CKHCyD+SMw89XEH6
- O7uIcv+A5w/ApFurMpH4xh7R3mPPWYax8BkSssi4IrzM40/LE0nWs9C5qP0CBqnhw93d
- clouyVq+ZVdkUUfxHYdC0zSYpk71dNOtiQXtbtgazRGaEHxgXCbkPR/qnaWClOsp2shk
- D+KO0r0HepQKf8JCu2vxSMIVODaXsuBWxXTDpRPSXh7anxLjXJIfSKTzEYJtvT/HaDmw
- X0GDP/F88ssZTO1V5Z7TRVHRwMb15k96oMB4LUW3bOjZgodr58GmQanpz/1i7OrY0SuN
- htEQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=f1jztib4H2AhReDzbfPoXEq38V+b/2OjoyCgjVjM/vY=;
+ b=qQN5AjlvxoOzG6zwGQCL4kP4KMEGWQWZBJwkiUejECOHE1LzLRRze29XzBsI9kIf93
+ wefOzzVhaGj5tNJujkqJULJTeDydev5qgyw4XF6HkP+Ibpgb5e6/AStQywOrVor3B6/Q
+ NVSTQ9Ja0CMVgNihdqI1lmDS6BApg51HwyNKsdR5c9azUL5XFNq17/aIFbk79uZiyHfF
+ Gs4O7vnSFTyBoXDBJ44AMiaJCbQt5Yhz8pFgOL0ik8VWl1sTVT1QciHexbnlCrBMUC8x
+ 7j0OXIkL1A/A+GTeaY8OC46Xt8uiz9yxPQWCIbvQhqjdc5v2YlwMMDFfGqgiE2gYZGJ+
+ DAEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=mO472utuFQ+nV4A29aUiVfjK/XWRxLa6xDQ8sQgJqmI=;
- b=pTGpoEflMLSm7av8qCJ+fQHkqhSu+wiAdxuHlzPRWiNKb7rYe3Y+TKhp9QY0Yt31C7
- 2otwA7USeLOPg0z6+0WNj/Ya0OFSH1ONZpoqXDW1GYRpDcABQaYTHlfcXbGwVnlGgmVz
- YW9+ZO5bsbT3d1PlbztzN9NXCVvJp90EIQUwNAMwvv02HlETQc/oixfZo6gqZZYVUqre
- 4dtsemmA2VFd5hDsqBc7/Ds3b90BVP68URhOW4Mmzat9BcG6rhpaK3wwPpMd+qbx7dhK
- vdFp4Ktqdbe4VsXYWF7H5Vz728q0jL+VZMH8z2bySutxyOCI3OJZ6KuynVICf/a0pkM4
- kbOw==
-X-Gm-Message-State: APjAAAUUXFwswnyewrlvP1YXnkppiN3FHUCi0fNPrIwPI2TE6hvOlEMI
- 0YS5lDdCa00V2PJ7qAH/zThBIutt
-X-Google-Smtp-Source: APXvYqxTZ4eWDDY0GFYbRMxO2F8ZVnxImzZ5rLTeOMtXnl7NUQclELdAN0qKO+IgHFm8gnB56XWusg==
-X-Received: by 2002:a17:90a:9905:: with SMTP id
- b5mr6758464pjp.70.1560882427917; 
- Tue, 18 Jun 2019 11:27:07 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=f1jztib4H2AhReDzbfPoXEq38V+b/2OjoyCgjVjM/vY=;
+ b=nihcdJF1+9mlpsyblFUTrLYlnOb9UBgd20XajhMZ4SqADIKb8j3IiWwxw89S6uJj3Y
+ XcgpDlH7DzUBazU2cqDA/vZYeA4Zktw2oYbhiSYXBcP+yDh+BOL/pQq0s2SA0ffMVoZE
+ w5emImYCGNoNkH5ivGDxpGF5J8Ku5yWIZyK3ZC+dsIBv2spGYTpxdVg8RNljfnvjEcmj
+ 77hHg96jsXWJkVeQhaWvvfNj7r/cWqQdcryDkNWy72Y9Hi0tBXqC5M1zffBFgnOpFH8X
+ 9NuGGVvwcauDmOZ6aQbsfzFQWmNqX6bg8akMDZ8jfNo1j0cUhTty1WeIzA4HbccXP0I/
+ 2MFA==
+X-Gm-Message-State: APjAAAVnGNlmVFkYI0ffcBCfHv55r9GqHfYFuKyKCrZSTI9PNKNyJRMu
+ OJ6peSzU/uTqcCUXxJuy5CIarbfa
+X-Google-Smtp-Source: APXvYqz03SVDLN2muSEnZep8XNk3L8zbZHPF+1yClksQ9xmMNrWxQpH80qjXYUyIlPzm4unlxTnPHQ==
+X-Received: by 2002:a63:6883:: with SMTP id d125mr3963722pgc.281.1560882449634; 
+ Tue, 18 Jun 2019 11:27:29 -0700 (PDT)
 Received: from mail.broadcom.com ([192.19.231.250])
- by smtp.gmail.com with ESMTPSA id k4sm6639480pfk.42.2019.06.18.11.27.05
+ by smtp.gmail.com with ESMTPSA id k4sm6639480pfk.42.2019.06.18.11.27.27
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 18 Jun 2019 11:27:07 -0700 (PDT)
+ Tue, 18 Jun 2019 11:27:29 -0700 (PDT)
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4 1/2] mtd: Add flag to indicate panic_write
-Date: Tue, 18 Jun 2019 14:26:42 -0400
-Message-Id: <1560882420-727-1-git-send-email-kdasu.kdev@gmail.com>
+Subject: [PATCH v4 2/2] mtd: nand: raw: brcmnand: When oops in progress use
+ pio and interrupt polling
+Date: Tue, 18 Jun 2019 14:26:43 -0400
+Message-Id: <1560882420-727-2-git-send-email-kdasu.kdev@gmail.com>
 X-Mailer: git-send-email 1.9.0.138.g2de3478
+In-Reply-To: <1560882420-727-1-git-send-email-kdasu.kdev@gmail.com>
+References: <1560882420-727-1-git-send-email-kdasu.kdev@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190618_112708_591450_90A392AC 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20190618_112730_643598_E134DB82 
+X-CRM114-Status: GOOD (  15.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,47 +107,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Added a flag to indicate a panic_write so that low level drivers can
-use it to take required action where applicable, to ensure oops data
-gets written to assigned mtd device.
+If mtd_oops is in progress, switch to polling during NAND command
+completion instead of relying on DMA/interrupts so that the mtd_oops
+buffer can be completely written in the assigned NAND partition.
 
 Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 ---
- drivers/mtd/mtdcore.c   | 3 +++
- include/linux/mtd/mtd.h | 6 ++++++
- 2 files changed, 9 insertions(+)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 48 ++++++++++++++++++++++++++++++--
+ 1 file changed, 45 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 453242d..2e04627 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1124,6 +1124,9 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 		return -EROFS;
- 	if (!len)
- 		return 0;
-+
-+	mtd->panic_write_triggered = true;
-+
- 	return mtd->_panic_write(mtd, to, len, retlen, buf);
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 8735277..27b22d6 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -151,6 +151,7 @@ struct brcmnand_controller {
+ 	u32			nand_cs_nand_xor;
+ 	u32			corr_stat_threshold;
+ 	u32			flash_dma_mode;
++	bool			pio_poll_mode;
+ };
+ 
+ struct brcmnand_cfg {
+@@ -815,6 +816,20 @@ static inline bool has_flash_dma(struct brcmnand_controller *ctrl)
+ 	return ctrl->flash_dma_base;
  }
- EXPORT_SYMBOL_GPL(mtd_panic_write);
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 936a3fd..02dce49 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -316,6 +316,12 @@ struct mtd_info {
- 	int (*_get_device) (struct mtd_info *mtd);
- 	void (*_put_device) (struct mtd_info *mtd);
  
-+	/*
-+	 * flag indicates a panic write, low level drivers can take appropriate
-+	 * action if required to ensure writes go through
-+	 */
-+	bool panic_write_triggered;
++static inline void disable_ctrl_irqs(struct brcmnand_controller *ctrl)
++{
++	if (ctrl->pio_poll_mode)
++		return;
 +
- 	struct notifier_block reboot_notifier;  /* default mode before reboot */
++	if (has_flash_dma(ctrl)) {
++		ctrl->flash_dma_base = 0;
++		disable_irq(ctrl->dma_irq);
++	}
++
++	disable_irq(ctrl->irq);
++	ctrl->pio_poll_mode = true;
++}
++
+ static inline bool flash_dma_buf_ok(const void *buf)
+ {
+ 	return buf && !is_vmalloc_addr(buf) &&
+@@ -1229,15 +1244,42 @@ static void brcmnand_cmd_ctrl(struct nand_chip *chip, int dat,
+ 	/* intentionally left blank */
+ }
  
- 	/* ECC status information */
++static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
++{
++	struct brcmnand_host *host = nand_get_controller_data(chip);
++	struct brcmnand_controller *ctrl = host->ctrl;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	bool err = false;
++	int sts;
++
++	if (mtd->panic_write_triggered) {
++		/* switch to interrupt polling and PIO mode */
++		disable_ctrl_irqs(ctrl);
++		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
++					       NAND_CTRL_RDY, 0);
++		err = (sts < 0) ? true : false;
++	} else {
++		unsigned long timeo = msecs_to_jiffies(
++						NAND_POLL_STATUS_TIMEOUT_MS);
++		/* wait for completion interrupt */
++		sts = wait_for_completion_timeout(&ctrl->done, timeo);
++		err = (sts <= 0) ? true : false;
++	}
++
++	return err;
++}
++
+ static int brcmnand_waitfunc(struct nand_chip *chip)
+ {
+ 	struct brcmnand_host *host = nand_get_controller_data(chip);
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+-	unsigned long timeo = msecs_to_jiffies(100);
++	bool err = false;
+ 
+ 	dev_dbg(ctrl->dev, "wait on native cmd %d\n", ctrl->cmd_pending);
+-	if (ctrl->cmd_pending &&
+-			wait_for_completion_timeout(&ctrl->done, timeo) <= 0) {
++	if (ctrl->cmd_pending)
++		err = brcmstb_nand_wait_for_completion(chip);
++
++	if (err) {
+ 		u32 cmd = brcmnand_read_reg(ctrl, BRCMNAND_CMD_START)
+ 					>> brcmnand_cmd_shift(ctrl);
+ 
 -- 
 1.9.0.138.g2de3478
 
