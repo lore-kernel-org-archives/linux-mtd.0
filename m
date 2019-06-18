@@ -2,143 +2,81 @@ Return-Path: <SRS0=PdnT=UR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A964C31E51
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 09:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5F5DC31E5F
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 09:29:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2907206BA
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 09:10:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C85D20B1F
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 09:29:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZIaDhCfY";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="2Tv9Xk4S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2907206BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZpQmrrfJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c4JeQcHI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C85D20B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xHAxcabDscZlmkluSam9xnfUqzpOFj84TjFoUtxjMfo=; b=ZIaDhCfY/3gUSc
-	s9KUySUPnPprzwmDtWfTyyYsMnf2YxUwTE6eO/QD2iZTbgpivJ3hc0YWTvs2L8GxwwfAUdfvJsppp
-	W3DHmD5SkYTlPQCJgD30kyGX5ETZ/OxIl5LBaNd3UpTufsmY8m1xU8QfVxZUskyP+NyjidInlcSI+
-	jqVMW3GuumYCQk4X5cJBzrQBGzcVdPfZjAduP/iYOBTAJM5Q5cm1TGWK/Nx8lUlpoMEnXE0X9o2mE
-	R85NjGKaUbRyJDEQq1O62qsn3WUtZ5UrgjjZ/IKRbtnmf9vP+Ghe5MFBcn8ShJ9P4xPo1BFUdedux
-	XuuU+SoLWulb5O51nb2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=AN9ky5p7yyBz/ACt2CoM3sXzqNf1rpolFkrp3VKSVs4=; b=ZpQmrrfJjimp4n
+	IoczWbiPKrgg4MokaHPcMFvmcoAw9wf5tDGm73PK6iv20VEDL+4MCcAVJVBDgavNwy50xWVZLKiEc
+	83jp3sfmUWq/ZFJRoy1xHo1Rn9rorPrgGcSXqqhdpp6bg0m4VLBu4hNrDcSJfZRVlvlSq3a/UdDf3
+	DavCxT6CXaMbqQgQfQ2bWktsAw1BV6RVgBCIV/rIhV6u5ZgFdv4YehmrnLJvANdRLhIJsVZFFrYOy
+	ClqK3f8trob9K0o5mbO1ZNjHtiPRmxV6sB/QvrFmVjL/K81A97DvpTLxTX7AMgWvQQ/ZeIXNdSvuS
+	06bUsJX39nhGJS93ziLg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hdA8T-0004Iw-9I; Tue, 18 Jun 2019 09:10:37 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1hdAQG-0006de-0s; Tue, 18 Jun 2019 09:29:00 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdA8O-0004I0-EG
- for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 09:10:35 +0000
-Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa5.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa5.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-X-IronPort-AV: E=Sophos;i="5.63,388,1557212400"; d="scan'208";a="36289472"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 18 Jun 2019 02:10:30 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex04.mchp-main.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 18 Jun 2019 02:10:26 -0700
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5 via Frontend
- Transport; Tue, 18 Jun 2019 02:10:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zCJ7UjcLdGTOJxl2Ic/6pe3UiUCoa+Tx0rGHCExjeyo=;
- b=2Tv9Xk4SkWto4IJEpdrrXDV18DTVJ5W4I1PAS+L81MdRwJ6EYjWOSUxhqPn9UBsB41AXyAt6hFwnKJ3v+OtEiCUmMPzXHNtYhVYqU3/yLDgGOMAhwY12Z6bfnlWYr91XWMMhivEhb+haBnTAlpiUm2QxwZgBn4I54FHNueoJt9Y=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB0019.namprd11.prod.outlook.com (10.161.155.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.11; Tue, 18 Jun 2019 09:10:25 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e581:f807:acdc:cb36]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e581:f807:acdc:cb36%9]) with mapi id 15.20.1987.014; Tue, 18 Jun 2019
- 09:10:25 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <dinguyen@kernel.org>, <robh@kernel.org>
-Subject: Re: [PATCHv6 1/2] dt-bindings: cadence-quadspi: add options reset
- property
-Thread-Topic: [PATCHv6 1/2] dt-bindings: cadence-quadspi: add options reset
- property
-Thread-Index: AQHVIdusqBYcLDcbq02njfD9Z3kc16ahJ4oA
-Date: Tue, 18 Jun 2019 09:10:24 +0000
-Message-ID: <40d77b71-efdd-08e6-3d66-743ab0623906@microchip.com>
-References: <20190613113138.8280-1-dinguyen@kernel.org>
-In-Reply-To: <20190613113138.8280-1-dinguyen@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR0602CA0020.eurprd06.prod.outlook.com
- (2603:10a6:800:bc::30) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 80031b57-9825-42cf-990f-08d6f3cccc2f
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:BN6PR11MB0019; 
-x-ms-traffictypediagnostic: BN6PR11MB0019:
-x-microsoft-antispam-prvs: <BN6PR11MB0019D3F6A892EA381E5BA4BBF0EA0@BN6PR11MB0019.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 007271867D
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(136003)(396003)(366004)(39860400002)(376002)(346002)(199004)(189003)(102836004)(14454004)(256004)(14444005)(305945005)(316002)(72206003)(478600001)(73956011)(386003)(66946007)(6506007)(76176011)(66476007)(66446008)(66556008)(7736002)(25786009)(4326008)(186003)(5660300002)(36756003)(26005)(64756008)(110136005)(54906003)(53546011)(31686004)(6512007)(86362001)(486006)(6246003)(8676002)(6116002)(446003)(11346002)(476003)(2501003)(2616005)(52116002)(8936002)(3846002)(81156014)(81166006)(71190400001)(71200400001)(66066001)(68736007)(229853002)(31696002)(2906002)(53936002)(6436002)(99286004)(6486002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB0019;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: /2p8k4z2ke/Asrh0RW8F1om2H7H4t18CC89U4MYPG6jZFajhPGmvCA5iQUQA25N0DNhVzZvs6kD3tPhlyXkXjVamao7ha0yfAvnhIRHm7z/jJtMljDn7wWHsjHMXQUabfeFlZiSMOX8hR9/xl8N1QQKmJ4OQ9MdDA4xQkR5yD2u18I9MnhImcerbjg+7GS7+v9EyyAnpBKVX4KDQyVsDviDtkBVosLBzufDnkANZiFS9ZROp3N8Q90VpWWoWQOvjcmwcikBtHYTKBzh/JIUOjOu+WaPA4o8jKO2csoDeMrZAzRtT+N3JWArZH1G3u0N40q8+Dnyysu+d8OA+Pub2QJ6KRx+Bzq85FsuyyXbBJf3bi3SYiTg+uL1NXLVbZiColSiivZwdP8mfOVp08W8WBbwbv4VeTU9OjE75eD98nL8=
-Content-ID: <1498D07C711E3A46BBAE89F1988EAF56@namprd11.prod.outlook.com>
+ id 1hdAPu-0006L9-BW; Tue, 18 Jun 2019 09:28:40 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5I9SOg3084397;
+ Tue, 18 Jun 2019 04:28:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1560850104;
+ bh=Kw8nG2OFHl2HBlGRL+a2UliJaSPF/WqQQvZMqq7/T4s=;
+ h=From:To:CC:Subject:Date;
+ b=c4JeQcHIUouBKyFdsZqQAdYiWcrqhOOUabfp/itwz6tBKuSfQa4E4GCw0TLl8BPRj
+ eucqu8HvN3G0oYi2HRVE4Txh9R3OUS+f+P6qx30MlBlhXciRoNVEgEPar40andtfS4
+ U4owmVSquQPdClpByjp6N2YZPe0GOkJIW8jvO8Jc=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5I9SOxF042590
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 18 Jun 2019 04:28:24 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 18
+ Jun 2019 04:28:23 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Tue, 18 Jun 2019 04:28:23 -0500
+Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5I9SJRv067156;
+ Tue, 18 Jun 2019 04:28:19 -0500
+From: Vignesh Raghavendra <vigneshr@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v6 0/5] MTD: Add Initial Hyperbus support
+Date: Tue, 18 Jun 2019 14:58:56 +0530
+Message-ID: <20190618092901.31764-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80031b57-9825-42cf-990f-08d6f3cccc2f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 09:10:24.8496 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB0019
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190618_021032_639216_B4635F11 
-X-CRM114-Status: GOOD (  14.43  )
+X-CRM114-CacheID: sfid-20190618_022838_479284_4B6EFD03 
+X-CRM114-Status: GOOD (  16.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -150,67 +88,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: marex@denx.de, devicetree@vger.kernel.org, bbrezillon@kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: devicetree@vger.kernel.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-kernel@vger.kernel.org,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+Rob, devicetree@vger.kernel.org
+Change log:
+Since v5:
+Fix up DT bindings comments for TI HBMC driver
+Move calibration sequence out of core into TI HBMC driver
 
-Hi, Rob,
+Since v4:
+Fix Rob's comments on dt-bindings of TI HBMC driver
 
-Dinh forgot to send this to the device tree mailing list. Would you please
-review it?
+Since v3:
+* Drop reading QRY string twice in hyperbus_calibrate()
+* Fix doc/misc comments on v3.
 
-Thanks,
-ta
+Since RFC v2:
+* use map_word_xxx() for handling status register to support interleaved
+  flashes as suggested by Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+* Report error status/messages on erase/program failure by looking at
+  status register bits.
+* Add "cfi-flash" as fallback compatible for cypress,hyperflash
+* Add support to select between HyperBus and OSPI using mmio mux
 
-On 06/13/2019 02:31 PM, Dinh Nguyen wrote:
-> External E-Mail
-> 
-> 
-> The QSPI module can have an optional reset signals that will hold the
-> module in a reset state.
-> 
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
-> v6: no change
-> v5: document reset-names
-> v4: no change
-> v3: created base on review comments
-> v2: did not exist
-> v1: did not exist
-> ---
->  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> index 4345c3a6f530..945be7d5b236 100644
-> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> @@ -35,6 +35,9 @@ custom properties:
->  		  (qspi_n_ss_out).
->  - cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
->                    and first bit transfer.
-> +- resets	: Must contain an entry for each entry in reset-names.
-> +		  See ../reset/reset.txt for details.
-> +- reset-names	: Must include either "qspi" and/or "qspi-ocp".
->  
->  Example:
->  
-> @@ -50,6 +53,8 @@ Example:
->  		cdns,fifo-depth = <128>;
->  		cdns,fifo-width = <4>;
->  		cdns,trigger-address = <0x00000000>;
-> +		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
-> +		reset-names = "qspi", "qspi-ocp";
->  
->  		flash0: n25q00@0 {
->  			...
-> 
+Since RFC v1:
+* Re-work Hyperbus core to provide separate struct representation for
+  controller and slave devices
+* Rename all files and func names to have hyperbus_ prefix
+* Provide default calibration routine for use by controller drivers
+* Fix up errors with patch spliting
+* Address comments by Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+
+Cypress HyperBus is Low Signal Count, High Performance Double Data Rate Bus
+interface between a host system master and one or more slave interfaces.
+HyperBus is used to connect microprocessor, microcontroller, or ASIC
+devices with random access NOR flash memory(called HyperFlash) or
+self refresh DRAM(called HyperRAM).
+
+Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+signal and either Single-ended clock(3.0V parts) or Differential clock
+(1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+At bus level, it follows a separate protocol described in HyperBus
+specification[1].
+
+HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+to that of existing parallel NORs. Since Hyperbus is x8 DDR bus,
+its equivalent to x16 parallel NOR flash wrt bits per clk. But Hyperbus
+operates at >166MHz frequencies.
+HyperRAM provides direct random read/write access to flash memory
+array.
+Framework is modelled along the lines of spi-nor framework. HyperBus
+memory controller(HBMC) drivers call hyperbus_register_device() to register a
+single HyperFlash device. HyperFlash core parses MMIO access
+information from DT, sets up the map_info struct, probes CFI flash and
+registers it with MTD framework.
+
+This is an early RFC, to know if its okay to use maps framework and existing
+CFI compliant flash support code to support Hyperflash
+Also would like input on different types of HBMC master IPs out there
+and their programming sequences.
+Would appreciate any testing/review.
+
+Tested on modified TI AM654 EVM with Cypress Hyperflash S26KS512 by
+creating a UBIFS partition and writing and reading files to it.
+Stress tested by writing/reading 16MB flash repeatedly at different
+offsets using dd commmand.
+
+HyperBus specification can be found at[1]
+HyperFlash datasheet can be found at[2]
+TI's HBMC controller details at[3]
+
+[1] https://www.cypress.com/file/213356/download
+[2] https://www.cypress.com/file/213346/download
+[3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+    Table 12-5741. HyperFlash Access Sequence
+
+
+Vignesh Raghavendra (5):
+  mtd: cfi_cmdset_0002: Add support for polling status register
+  dt-bindings: mtd: Add binding documentation for HyperFlash
+  mtd: Add support for HyperBus memory devices
+  dt-bindings: mtd: Add bindings for TI's AM654 HyperBus memory
+    controller
+  mtd: hyperbus: Add driver for TI's HyperBus memory controller
+
+ .../bindings/mtd/cypress,hyperflash.txt       |  13 ++
+ .../devicetree/bindings/mtd/ti,am654-hbmc.txt |  51 ++++++
+ MAINTAINERS                                   |   8 +
+ drivers/mtd/Kconfig                           |   2 +
+ drivers/mtd/Makefile                          |   1 +
+ drivers/mtd/chips/cfi_cmdset_0002.c           |  90 ++++++++++
+ drivers/mtd/hyperbus/Kconfig                  |  23 +++
+ drivers/mtd/hyperbus/Makefile                 |   4 +
+ drivers/mtd/hyperbus/hbmc-am654.c             | 141 ++++++++++++++++
+ drivers/mtd/hyperbus/hyperbus-core.c          | 154 ++++++++++++++++++
+ include/linux/mtd/cfi.h                       |   5 +
+ include/linux/mtd/hyperbus.h                  |  86 ++++++++++
+ 12 files changed, 578 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+ create mode 100644 drivers/mtd/hyperbus/Kconfig
+ create mode 100644 drivers/mtd/hyperbus/Makefile
+ create mode 100644 drivers/mtd/hyperbus/hbmc-am654.c
+ create mode 100644 drivers/mtd/hyperbus/hyperbus-core.c
+ create mode 100644 include/linux/mtd/hyperbus.h
+
+-- 
+2.21.0
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
