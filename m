@@ -2,69 +2,84 @@ Return-Path: <SRS0=PdnT=UR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBD72C31E5C
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 03:10:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E5EC31E5D
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 03:55:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9767320665
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 03:10:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FF1D20873
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 03:55:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r7sg+wjl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="VCqGRQfq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9767320665
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Ia/4G7fF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Re+YlSEG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FF1D20873
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=Q/oBwu0hXxstSEWHyvZDr4vpPMLrgtPSvhzWz0Y+ouE=; b=r7s
-	g+wjlstosWevsB11MCdyTPEgxwuaFP7xbxhe6s2OB88o4GNKE24q7Ca5Bi6PQeorc7aRJcjQ7/RKL
-	0PKEncASMIOsHiITAbCPusNenQ64Aga/rupJAQUHYklN5aDuR1p7TcStoJXv4vWRNGf5q73fMkn44
-	On4ohyBULUm7F0bpJUG90LntERhZFwxandpIvDAeU9mr59vYs/up2hG69OoFTlf8k+HkruDtdszU+
-	6SWaCvFaP8HNGs+OMoCdufMjneoIc9kOsIF/E4eyUxzpN2i0+/dyPh6ZjniGshatJVzFxWJ4B4PUs
-	tkPj8ZG6DSVjwcVFHKpQRgkvMcwoL+A==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=poms3/Ys3n/BsWadHIQFL107HqTtZYc1gOfyVAPAVgY=; b=Ia/4G7fFNJAeAu
+	G4/d7xb3/EJr0dHCVGfuJOscLoYc+WjQYImBen6MHdJe6TbL7VoXSDzTY0MvqP8r+M/t91oOpayAj
+	0hGaW5fkksjnhXEIQoHX3E9LLbpndbZfjMf3Q/cqnhk6nBZ746Phhj5h0IvH4o2muv6Wn/rzDEb0C
+	IwA2au0aOzr5znVShc+/OqbqAjgx8/jf8/RQxBg+Cyv8IEj0fP2cDl4vbJDe4WblEW8ALBgoBBK4J
+	zrXGndwI6gerbwcM4GNulrDWkSPN8M08xUAmR0gz55GNI0TZlAYj+mHf6zUm67L7VKfgZ7FZQKg2a
+	Jjh1hYEDFR7+Ik7eT+hA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hd4Vi-00077z-Gb; Tue, 18 Jun 2019 03:10:14 +0000
-Received: from conuserg-08.nifty.com ([210.131.2.75])
+	id 1hd5Dk-0005qb-CN; Tue, 18 Jun 2019 03:55:44 +0000
+Received: from mail-ua1-x944.google.com ([2607:f8b0:4864:20::944])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hd4Vf-00077P-6c
- for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 03:10:12 +0000
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp
- [153.142.97.92]) (authenticated)
- by conuserg-08.nifty.com with ESMTP id x5I39ceS006664;
- Tue, 18 Jun 2019 12:09:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x5I39ceS006664
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
- s=dec2015msa; t=1560827379;
- bh=w4XaL6DWiMYpTTLcCsZBTR/341ShCtHYlKihuEWxr64=;
- h=From:To:Cc:Subject:Date:From;
- b=VCqGRQfqg7FKlT6XeLpvCjmUWP/l/a5jGC4yCAMB5tT8HiAkKBU5yPYOse0+DHylm
- t4ucw7vLHJX5d8laPEl2rYvJKjwQYLBozaAjxFXI9Ev2TDg1d9ZJaV+qS6TZlXjH8h
- +BtM/qmZLZ8+Tz8Gvcr0OsBvMXdN7dEDV4GBnVqjj2D9vQ2Z6fBqn12huGQkby9ep1
- hfEoHadDNqLmxptfBc7RttKdpktJoLEZKICRwS13qctmF+ZaHV7P4GRA1VPR5Wb2O0
- Rh6XGQpYCnt3+1sfxVvyQm7hGeCFx6jM/t+iykeq0/mmkDcaeQkTEibbbOPEYsbdH/
- UmL1tFervQqFg==
-X-Nifty-SrcIP: [153.142.97.92]
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] jffs2: remove C++ style comments from uapi header
-Date: Tue, 18 Jun 2019 12:09:26 +0900
-Message-Id: <20190618030926.30616-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
+ id 1hd5Dg-0005pC-KR
+ for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 03:55:41 +0000
+Received: by mail-ua1-x944.google.com with SMTP id f20so4480112ual.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2019 20:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=hbfLnulmtVwAqcwjBVQHbsEOQQi7C7z9WxtDTCZnrSI=;
+ b=Re+YlSEGCfJ1SB3VhHEwCwAT+I6ygr7MjUUslXWdDU+dVyBdMjbbUUINT+gn0f95Gt
+ gg9fFMRoUhdyB6aOwVFzTZ3x9HpJzIfrsQQmJYlKO1ckg+tr2CWBpsvsicjNlcfcOZPh
+ Jjo2Ollxxgw1eq8cCXM6IblE9BTSEwKlx+gLpDFZZml6K9kj5sixbtZvglbkm5NeO1FJ
+ pn3L7N/EWqLXNXzMgN2GKO0YoOCHfJV7awJALwiImDvE42Anq00vY7lL2mf79V5hV7EE
+ WHb1h4xgcSiq4zEuMJvXyznw1cgR1HYOomy/E98TBj9AOe7bTOU1woffrfzuLkYRRzhz
+ SzBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=hbfLnulmtVwAqcwjBVQHbsEOQQi7C7z9WxtDTCZnrSI=;
+ b=Lifqe5tHDYUPjl1bA2hLWOGO9dG7mzg1Qhuv2dtm9+fPuapdPP24ugQ2c3sZ8j6RO9
+ /xG86BTHEWk11vglWgn06wkq2plcXhPD4oZlOdspPyyXzz5JGlNn8q18aUVA0E7uXa39
+ wDXjqhjtLc9MiZSfbTqSmGOHIHwc44irwFelbsL7c45dtvO2BmMvPjU9evAa1Zau34/K
+ 1SlBZ8lMORSQXjHtntw5Mgwco8ORrvzlstn1TgfJaZbFxSDka1YITn+DfqDVTM6PXirG
+ ENQVm6LOzSRA8L/AQ+KuX36pVq1WFXNrBo/WeJBJbSc9CMsuz9sarGLissDc2OzVn+bv
+ eo7g==
+X-Gm-Message-State: APjAAAWd2y+6cpeapwaxQWifmUBsORQ0sdm2+QRO6o+jv+szZWKIGfzg
+ PkpgV+wiipHdon+dxGDXr9CCuj/8QTi8fL5lYIAYxw==
+X-Google-Smtp-Source: APXvYqy1BIINnP7iB/p/G3CX4qFC0WhpHRsPDZZFp+sb3Ovjpawek1cuOI5hDkFHe03zqioI/wdd62UnpITKNKUex9w=
+X-Received: by 2002:a67:c84:: with SMTP id 126mr54621301vsm.178.1560830139405; 
+ Mon, 17 Jun 2019 20:55:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <1560336476-31763-1-git-send-email-sagar.kadam@sifive.com>
+ <1560336476-31763-3-git-send-email-sagar.kadam@sifive.com>
+ <70732c8e-111f-7c46-9e93-11894d944a1d@ti.com>
+ <CAARK3HmFg=v+cMGAykPPpwxDGaSKk5k+Gz4fSHQPQmg-rCjPhQ@mail.gmail.com>
+ <547e251d87e307fa4d1e31dfc61b496c152f0905.camel@perches.com>
+In-Reply-To: <547e251d87e307fa4d1e31dfc61b496c152f0905.camel@perches.com>
+From: Sagar Kadam <sagar.kadam@sifive.com>
+Date: Tue, 18 Jun 2019 09:25:27 +0530
+Message-ID: <CAARK3H=4QjWr3D7GpNbw9YbFm9C+t5CDcMU=o6_O7rb1ofHuMA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] mtd: spi-nor: add support to unlock flash device
+To: Joe Perches <joe@perches.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190617_201011_566089_8871D7D1 
-X-CRM114-Status: UNSURE (   7.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190617_205540_679538_D86DEAD0 
+X-CRM114-Status: GOOD (  12.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,60 +91,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Richard Weinberger <richard@nod.at>, Boris Brezillon <bbrezillon@kernel.org>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-MIME-Version: 1.0
+Cc: aou@eecs.berkeley.edu, Vignesh Raghavendra <vigneshr@ti.com>,
+ tudor.ambarus@microchip.com, Wesley Terpstra <wesley@sifive.com>,
+ richard@nod.at, Palmer Dabbelt <palmer@sifive.com>,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>,
+ miquel.raynal@bootlin.com, linux-riscv@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Linux kernel tolerates C++ style comments these days. Actually, the
-SPDX License tags for .c files start with //.
+Hello Joe,
 
-On the other hand, uapi headers are written in more strict C, where
-the C++ comment style is forbidden.
+Thanks for reviewing the patch.
 
-I simply dropped these lines instead of fixing the comment style.
+On Tue, Jun 18, 2019 at 5:55 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2019-06-17 at 21:10 +0530, Sagar Kadam wrote:
+> > On Sun, Jun 16, 2019 at 6:35 PM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+> []
+> > > > +static int issi_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> > > > +{
+> []
+> > > > +     if (ret > 0 && !(ret & mask)) {
+> > > > +             dev_info(nor->dev,
+> > > > +                     "ISSI Block Protection Bits cleared SR=0x%x", ret);
+>
+> Please use '\n' terminations on formats
+>
+I will include this in v6.
 
-This code has been always commented out since it was added around
-Linux 2.4.9 (i.e. commented out for more than 17 years).
-
-'Maybe later...' will never happen.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v2:
-  - Delete the comments entirely instead of fixing the comment style
-
- include/uapi/linux/jffs2.h | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/include/uapi/linux/jffs2.h b/include/uapi/linux/jffs2.h
-index a18b719f49d4..784ba0b9690a 100644
---- a/include/uapi/linux/jffs2.h
-+++ b/include/uapi/linux/jffs2.h
-@@ -77,11 +77,6 @@
- 
- #define JFFS2_ACL_VERSION		0x0001
- 
--// Maybe later...
--//#define JFFS2_NODETYPE_CHECKPOINT (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 3)
--//#define JFFS2_NODETYPE_OPTIONS (JFFS2_FEATURE_RWCOMPAT_COPY | JFFS2_NODE_ACCURATE | 4)
--
--
- #define JFFS2_INO_FLAG_PREREAD	  1	/* Do read_inode() for this one at
- 					   mount time, don't wait for it to
- 					   happen later */
--- 
-2.17.1
-
+> > > > +             ret = 0;
+> > > > +     } else {
+> > > > +             dev_err(nor->dev, "ISSI Block Protection Bits not cleared\n");
+>
+> like this one
+>
+> > > > +             ret = -EINVAL;
+> > > > +     }
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +/**
+> > > >   * spansion_quad_enable() - set QE bit in Configuraiton Register.
+>
+> s/Configuraiton/Configuration/
+>
+>
+Thanks & BR,
+Sagar Kadam
 
 ______________________________________________________
 Linux MTD discussion mailing list
