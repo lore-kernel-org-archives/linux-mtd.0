@@ -6,83 +6,65 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 035EBC31E51
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 04:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C880C31E51
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 06:14:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8FD72084D
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 04:30:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CB68214AF
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jun 2019 06:14:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OVljIZns";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="D7cSphGd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8FD72084D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rWWCFzL2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CB68214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r1NBSMVKNKYmBHT71m0wzI+3YzQtrtYsY1PeuZ6AMbI=; b=OVljIZnsRoSY4n
-	yfLybEF6B2hg5It1KTioaBEOvHSsDnknuuf8h2ZUbGWV7HNK04mjL5nQ7c5d0h0ERbwJO1NuHHKVp
-	j3zTAERlAqkfDRjq2C5/tjMOpYVZ4lOWO6rlVsEPS5MJMihme2+0uemrK3RzBx4KwiC7aexciLD7L
-	KDwurz8rlB5LYlI8SEiR3UialWqC7GzQCeEq/VfUFT+yk07drsPgzk7gfuB/NQ8L64ypzm9MxNMKi
-	sD9VfOv0szO6ncaW97MCwsyUGSR5+EmYNw9PykFIlUmCzuj3qM+Ex1vOVgNgpD3LIu1ODRP88NcJP
-	UAy1fGLbuegFL7+7ahpw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fACVAT+th9BfrXKW/15sC76/g6QtOSr3s4m93hiev9c=; b=rWWCFzL2Xwu5rs
+	XQxX7PWpeZsJyFb0LUscy0JpbZEc594qGmNCMdA2EM83GngiPH114hCxgxuh5sR3FV8+4sL/ab1ij
+	3PCUZZURC+95hkNT3pMU+16IJTT0qYVBvDcO4iuwugLpqrNpd5wMYzkm4mmQAQY0BFfZqs+ugI2qj
+	eDbu2t5awDllg2bF0NYo2YTu/R6iy+/J2wq6sencofPzKyerLgADoi57BflBcS7tB3VzzshKb2WRp
+	eoF0Mh4A+D2qL/rHwdbhLactXp1Wi43bslU6IaNb/OsYVtbsujgqu2ynZrHb1vGFeMWPNfiycc2qH
+	50WI4s8uYbxhfO5bkgwg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hd5lI-0004BR-NA; Tue, 18 Jun 2019 04:30:24 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1hd7OH-0000BV-A0; Tue, 18 Jun 2019 06:14:45 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hd5lF-0004Ap-9W
- for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 04:30:22 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5I4UCxS006649;
- Mon, 17 Jun 2019 23:30:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1560832212;
- bh=jy0O0q00SMaAtIZLsjOFVvbAUWzpVwJidYDShm/Frn8=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=D7cSphGd+ZaQPr9kKAW2KqQFw0Nqk/Q7ZZp8Lsa3op3P23ONJ7hJPCp88v2HYfp8L
- e68QGsqNpy9DZYwltKYMT3U5nHl3D3/SXynHB9PrWDpYG7W3BCLosHZyE1jIg1KWWe
- 3vt2ROwSZ5AikVDsxHKQN2A7DUg3SwNHgbGrrlwc=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5I4UCnr077242
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 17 Jun 2019 23:30:12 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 17
- Jun 2019 23:30:12 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Mon, 17 Jun 2019 23:30:12 -0500
-Received: from [172.24.145.200] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5I4U9iJ106107;
- Mon, 17 Jun 2019 23:30:10 -0500
-Subject: Re: [PATCH v4] mtd: devices: m25p80: Use the spi-mem dirmap API
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Marek Vasut
- <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-References: <610761cf-5a19-c182-07d8-8d118ca20035@cogentembedded.com>
- <c405efc0-58ef-c67a-d519-95e0eb843229@cogentembedded.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <5cba0c3f-e42c-9d29-b21a-a0255f532e6f@ti.com>
-Date: Tue, 18 Jun 2019 10:00:09 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+ id 1hd7OE-0008KJ-3j
+ for linux-mtd@lists.infradead.org; Tue, 18 Jun 2019 06:14:43 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E20A426D931;
+ Tue, 18 Jun 2019 07:14:39 +0100 (BST)
+Date: Tue, 18 Jun 2019 08:14:36 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: masonccyang@mxic.com.tw
+Subject: Re: [PATCH v3 2/4] mtd: rawnand: Add Macronix MX25F0A NAND controller
+Message-ID: <20190618081436.5d488320@collabora.com>
+In-Reply-To: <OF1C1397B4.241DC339-ON4825841D.000482A2-4825841D.0007B67E@mxic.com.tw>
+References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>
+ <1555320234-15802-3-git-send-email-masonccyang@mxic.com.tw>
+ <20190512151820.4f2dd9da@xps13>
+ <OF074A1F06.5C1A58BE-ON482583FD.0031CD95-482583FD.003437AD@mxic.com.tw>
+ <20190520142333.390091d5@xps13>
+ <OFADC47344.0F9941B2-ON48258403.002336E3-48258403.003141F0@mxic.com.tw>
+ <20190527144250.71908bd9@xps13>
+ <OFE923A8E5.50375C30-ON48258409.0009AE1B-48258409.00119767@mxic.com.tw>
+ <20190617143510.4ded5728@xps13>
+ <OF1C1397B4.241DC339-ON4825841D.000482A2-4825841D.0007B67E@mxic.com.tw>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <c405efc0-58ef-c67a-d519-95e0eb843229@cogentembedded.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190617_213021_419337_79E7ACF0 
-X-CRM114-Status: GOOD (  17.36  )
+X-CRM114-CacheID: sfid-20190617_231442_414975_8FC6D15A 
+X-CRM114-Status: GOOD (  27.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,175 +76,168 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Boris Brezillon <bbrezillon@kernel.org>
+Cc: mark.rutland@arm.com, christophe.kerello@st.com,
+ marcel.ziswiler@toradex.com, stefan@agner.ch, liang.yang@amlogic.com,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ lee.jones@linaro.org, richard@nod.at, marek.vasut@gmail.com,
+ geert@linux-m68k.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+ bbrezillon@kernel.org, juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, paul.burton@mips.com, broonie@kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Mason,
 
-On 01-Jun-19 12:01 AM, Sergei Shtylyov wrote:
-[...]
+On Tue, 18 Jun 2019 09:24:14 +0800
+masonccyang@mxic.com.tw wrote:
+
+> Hi Miquel,
 > 
->  drivers/mtd/devices/m25p80.c |  102 +++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 99 insertions(+), 3 deletions(-)
+> >   
+> > > > > > > > > +static void mxic_nand_select_chip(struct nand_chip *chip,   
+> int 
+> > >   
+> > > > > chipnr)   
+> > > > > > > > 
+> > > > > > > > _select_target() is preferred now   
+> > > > > > > 
+> > > > > > > Do you mean I implement mxic_nand_select_target() to control   
+> #CS ?
+> > > > > > > 
+> > > > > > > If so, I need to call mxic_nand_select_target( ) to control   
+> #CS ON
+> > > > > > > and then #CS OFF in _exec_op() due to nand_select_target()<in    
 > 
-> Index: linux/drivers/mtd/devices/m25p80.c
-> ===================================================================
-> --- linux.orig/drivers/mtd/devices/m25p80.c
-> +++ linux/drivers/mtd/devices/m25p80.c
-> @@ -31,8 +31,70 @@
->  struct m25p {
->  	struct spi_mem		*spimem;
->  	struct spi_nor		spi_nor;
-> +	struct {
-> +		struct spi_mem_dirmap_desc *rdesc;
-> +		struct spi_mem_dirmap_desc *wdesc;
-> +	} dirmap;
->  };
->  
-> +static int m25p_create_write_dirmap(struct m25p *flash)
-> +{
-> +	struct spi_nor *nor = &flash->spi_nor;
-> +	struct spi_mem_dirmap_info info = {
-> +		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
-> +				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-> +				      SPI_MEM_OP_NO_DUMMY,
-> +				      SPI_MEM_OP_DATA_OUT(0, NULL, 1)),
-> +		.offset = 0,
-> +		.length = flash->spi_nor.mtd.size,
-> +	};
-> +	struct spi_mem_op *op = &info.op_tmpl;
-> +
-> +	/* get transfer protocols. */
-> +	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
-> +	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-> +	op->dummy.buswidth = op->addr.buswidth;
-> +	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
-> +
-> +	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
-> +		op->addr.nbytes = 0;
-> +
-> +	flash->dirmap.wdesc = spi_mem_dirmap_create(flash->spimem, &info);
-
-Could you change this and elsewhere to devm_spi_mem_dirmap_create() and
-thus simplify error handling?
-
-Regards
-Vignesh
-
-
-> +	if (IS_ERR(flash->dirmap.wdesc))
-> +		return PTR_ERR(flash->dirmap.wdesc);
-> +
-> +	return 0;
-> +}
-> +
-> +static int m25p_create_read_dirmap(struct m25p *flash)
-> +{
-> +	struct spi_nor *nor = &flash->spi_nor;
-> +	struct spi_mem_dirmap_info info = {
-> +		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
-> +				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 1),
-> +				      SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
-> +				      SPI_MEM_OP_DATA_IN(0, NULL, 1)),
-> +		.offset = 0,
-> +		.length = flash->spi_nor.mtd.size,
-> +	};
-> +	struct spi_mem_op *op = &info.op_tmpl;
-> +
-> +	/* get transfer protocols. */
-> +	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
-> +	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-> +	op->dummy.buswidth = op->addr.buswidth;
-> +	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
-> +
-> +	/* convert the dummy cycles to the number of bytes */
-> +	op->dummy.nbytes = (nor->read_dummy * op->dummy.buswidth) / 8;
-> +
-> +	flash->dirmap.rdesc = spi_mem_dirmap_create(flash->spimem, &info);
-> +	if (IS_ERR(flash->dirmap.rdesc))
-> +		return PTR_ERR(flash->dirmap.rdesc);
-> +
-> +	return 0;
-> +}
-> +
->  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
->  {
->  	struct m25p *flash = nor->priv;
-> @@ -92,6 +154,9 @@ static ssize_t m25p80_write(struct spi_n
->  				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
->  	int ret;
->  
-> +	if (flash->dirmap.wdesc)
-> +		return spi_mem_dirmap_write(flash->dirmap.wdesc, to, len, buf);
-> +
->  	/* get transfer protocols. */
->  	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
->  	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-> @@ -128,6 +193,9 @@ static ssize_t m25p80_read(struct spi_no
->  	size_t remaining = len;
->  	int ret;
->  
-> +	if (flash->dirmap.rdesc)
-> +		return spi_mem_dirmap_read(flash->dirmap.rdesc, from, len, buf);
-> +
->  	/* get transfer protocols. */
->  	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
->  	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
-> @@ -238,19 +306,47 @@ static int m25p_probe(struct spi_mem *sp
->  	if (ret)
->  		return ret;
->  
-> -	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-> -				   data ? data->nr_parts : 0);
-> +	ret = m25p_create_write_dirmap(flash);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = m25p_create_read_dirmap(flash);
-> +	if (ret)
-> +		goto err_destroy_write_dirmap;
-> +
-> +	ret = mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-> +				  data ? data->nr_parts : 0);
-> +	if (ret)
-> +		goto err_destroy_read_dirmap;
-> +
-> +	return 0;
-> +
-> +err_destroy_read_dirmap:
-> +	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-> +
-> +err_destroy_write_dirmap:
-> +	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-> +
-> +	return ret;
->  }
->  
->  
->  static int m25p_remove(struct spi_mem *spimem)
->  {
->  	struct m25p	*flash = spi_mem_get_drvdata(spimem);
-> +	int ret;
->  
->  	spi_nor_restore(&flash->spi_nor);
->  
->  	/* Clean up MTD stuff. */
-> -	return mtd_device_unregister(&flash->spi_nor.mtd);
-> +	ret = mtd_device_unregister(&flash->spi_nor.mtd);
-> +	if (ret)
-> +		return ret;
-> +
-> +	spi_mem_dirmap_destroy(flash->dirmap.rdesc);
-> +	spi_mem_dirmap_destroy(flash->dirmap.wdesc);
-> +
-> +	return 0;
->  }
->  
->  static void m25p_shutdown(struct spi_mem *spimem)
+> > > > > nand_base,c>   
+> > > > > > > is still calling chip->legacy.select_chip ?   
+> > > > > > 
+> > > > > > You must forget about the ->select_chip() callback. Now it   
+> should be
+> > > > > > handled directly from the controller driver. Please have a look   
+> at 
+> > > the  
+> > > > > > commit pointed against the marvell_nand.c driver.   
+> > > > > 
+> > > > > I have no Marvell NFC datasheet and have one question.
+> > > > > 
+> > > > > In marvell_nand.c, there is no xxx_deselect_target() or 
+> > > > > something like that doing #CS OFF.
+> > > > > marvell_nfc_select_target() seems always to make one of chip or   
+> die
+> > > > > #CS keep low.
+> > > > > 
+> > > > > Is it right ?   
+> > > > 
+> > > > Yes, AFAIR there is no "de-assert" mechanism in this controller.
+> > > >   
+> > > > > 
+> > > > > How to make all #CS keep high for NAND to enter 
+> > > > > low-power standby mode if driver don't use "legacy.select_chip()"   
+> ? 
+> > > > 
+> > > > See commit 02b4a52604a4 ("mtd: rawnand: Make ->select_chip()   
+> optional
+> > > > when ->exec_op() is implemented") which states:
+> > > > 
+> > > >         "When [->select_chip() is] not implemented, the core is   
+> assuming
+> > > >    the CS line is automatically asserted/deasserted by the driver   
+> > > >    ->exec_op() implementation."   
+> > > > 
+> > > > Of course, the above is right only when the controller driver   
+> supports
+> > > > the ->exec_op() interface.   
+> > > 
+> > > Currently, it seems that we will get the incorrect data and error
+> > > operation due to CS in error toggling if CS line is controlled in   
+> > > ->exec_op().   
+> > 
+> > Most of the chips today are CS-don't-care, which chip are you using?  
 > 
+> I think CS-don't-care means read-write operation for NAND device to reside
+> on the same memory bus as other Flash or SRAM devices. Other devices on 
+> the 
+> memory bus can then be accessed while the NAND Flash is busy with internal 
+> 
+> operations. This capability is very important for designs that require 
+> multiple
+> NAND Flash devices on the same bus.
+
+Yes, we know what CS-dont-care mean, what we want to know is whether
+your chip supports that or not. And if it supports it, I don't
+understand why you have a problem when asserting/de-asserting on each
+->exec_op() call.
+
+> 
+> > 
+> > Is this behavior publicly documented?
+> >   
+> 
+> CS# pin goes High enter standby mode to reduce power consumption,
+> i.e,. standby mode w/ CS# keep High, standby current: 10 uA (Typ for 3.3V 
+> NAND)
+>         otherwise, current is more than 1 mA.
+> i.e,. page read current, 25 mA (Typ for 3.3V NAND)
+
+That's not what we were looking for. We want to know what happens when
+the CS line is de-asserted in the middle of a NAND operation (like read
+param page). I'd expect the NAND to retain its state so that the
+operation can be resumed when the CS line is asserted again. If that's
+not the case that means the NAND is not really CS-dont-care compliant.
+
+>  
+> 
+> > Is this LPM mode always activated?
+> >   
+> > > i.e,. 
+> > > 
+> > > 1) In nand_onfi_detect() to call nand_exec_op() twice by 
+> > > nand_read_param_page_op() and annd_read_data_op()
+> > > 
+> > > 2) In nand_write_page_xxx to call nand_exec_op() many times by
+> > > nand_prog_page_begin_op(), nand_write_data_op() and 
+> > > nand_prog_page_end_op().
+> > > 
+> > > 
+> > > Should we consider to add a CS line controller in struct   
+> nand_controller
+> > > i.e,.
+> > > 
+> > > struct nand_controller {
+> > >          struct mutex lock;
+> > >          const struct nand_controller_ops *ops;
+> > > +          void (*select_chip)(struct nand_chip *chip, int cs);
+> > > };
+> > > 
+> > > to replace legacy.select_chip() ?
+> > >   
+> > 
+> > No, if really needed, we could add a "macro op done" flag in the nand
+> > operation structure.
+> >   
+> 
+> Is this "macron op done" flag good for multiple NAND devices on
+> the same bus ?
+
+It's completely orthogonal to the multi-chip feature, so yes, it should
+work just fine.
+
+> 
+> Any other way to control CS# pin? if user application is really
+> care of power consumption, i.e,. loT.
+
+No, the user is not in control of the CS pin, only the driver can do
+that.
+
+Can you please point us to the datasheet of the NAND you're testing, or
+something close enough?
+
+Thanks,
+
+Boris
 
 ______________________________________________________
 Linux MTD discussion mailing list
