@@ -2,144 +2,63 @@ Return-Path: <SRS0=hJJw=US=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45ECCC31E5D
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 15:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A679C31E5B
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 16:18:44 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EA84204FD
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 15:47:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0EE4F217D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 16:18:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="igoF+ar3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="YyOH4Qlo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EA84204FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ranICyTL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EE4F217D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UhQolyKqQ1edq0bLFT0rfjl3uz1lpaVXf85Tt4Rtmrs=; b=igoF+ar3zFZTOQ
-	HoUjUDLj/EyLktBwJhZu9kgv+ABkPvwiPF4q6/id+ukvI7jngmK2mPV3c0pDIgeSDrze8gYNDYJUr
-	M2KfEd9pvZwGxuuZ6ged7t9URudkKdbAiCkeMOIGM3+TSa/fSdUu6Yjvfe6i90SwKH4rGF8TgnQj0
-	yo/PYwN+8666FONke0jRBVj3BslOLxIoRl2vwoLyyiwQnK0AMc/rZMKiY9OU+C6TIO7cfCU6QiTIN
-	0yhcNz5tRK46d6NE7BWYkMVKf/RxqPuhxGokH2QSP9XWeVliOE7YlhD4F7wz4K99cNPoHEl4APkDK
-	ng4s9+6PV+qeH0Zui3OA==;
+	List-Owner; bh=Jcnj5/4EDz7FFawy4tpV2aRyir7aZkP8+iu1PgOUzEo=; b=ranICyTL9/brjC
+	LF9G3H3VXKlz06q4LqHzu75p65uCx4++/YUTDiGimXdD5y/sqCe9jQV24mjAHfKX0dfuHpoDAZ+G0
+	ZaIwZFRyN15bquv2EIeQu/eT1tgfotDODM3ztPKw+LSn8tEc+TQLCaywSunl30gNVuIMEcqBmXUy+
+	VNiOfcgV3NPazuG9jSbO4kl6oV+JdqSw6ef+kQ6Zy8fHuukIV92TdV9xgFx0AFx4pv4wqYMLfw7uq
+	TUNR60AaEfAA7+7hBuYMC3xMctU60UmzoKCh6Z+RxKMR4yXIjX6Tz+nY7yKR/jSbdiTg+ocLINyOC
+	rq+WCOxpfYXSO8ODn0QA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hdco1-0003uM-5s; Wed, 19 Jun 2019 15:47:25 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1hddIH-0000aj-J5; Wed, 19 Jun 2019 16:18:41 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdcnv-0003td-RB
- for linux-mtd@lists.infradead.org; Wed, 19 Jun 2019 15:47:22 +0000
-Received-SPF: Pass (esa3.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa3.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa3.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-X-IronPort-AV: E=Sophos;i="5.63,392,1557212400"; d="scan'208";a="38238273"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 19 Jun 2019 08:47:17 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.87.152) by
- chn-vm-ex04.mchp-main.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 19 Jun 2019 08:47:16 -0700
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 19 Jun 2019 08:47:16 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DG+5zvZ34mn24jD49CkdDFdIjKvgTfrAodPxU4EeaIY=;
- b=YyOH4QloXVBvdCHPAA/d7jGfHfWjjI4NP2XvnWSG2DLzZ8i466fqx9S/ZkAxQFh7s6Oqmzke5BxO6AyphKg9+ORStIqnKYENCrplPkd1EVeAX4LU0x5qmBPzSod4O36yAk5D+EEuOpnIz/KxatgMcXJEaNKh1xUINYE2TqDwETs=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB1666.namprd11.prod.outlook.com (10.172.18.8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.10; Wed, 19 Jun 2019 15:47:13 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e581:f807:acdc:cb36]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::e581:f807:acdc:cb36%9]) with mapi id 15.20.1987.014; Wed, 19 Jun 2019
- 15:47:13 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <geert@linux-m68k.org>
-Subject: Re: [PATCH] mtd: spi-nor: use 16-bit WRR command when QE is set on
- spansion flashes
-Thread-Topic: [PATCH] mtd: spi-nor: use 16-bit WRR command when QE is set on
- spansion flashes
-Thread-Index: AQHVH1UacBq0FintGkWJpZVpCwLZ0KaWIrmAgA0LGgA=
-Date: Wed, 19 Jun 2019 15:47:13 +0000
-Message-ID: <02babf5a-2a50-848c-27d9-9f810078cbcf@microchip.com>
-References: <c57fe97b-ad4a-874e-663f-7f3a737824c9@microchip.com>
- <20190610062351.24405-1-tudor.ambarus@microchip.com>
- <CAMuHMdW3=fzFvt+ZmC2B6qf0zEwfvV--HVEoxa06Tk=a=Q1cWA@mail.gmail.com>
-In-Reply-To: <CAMuHMdW3=fzFvt+ZmC2B6qf0zEwfvV--HVEoxa06Tk=a=Q1cWA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR07CA0308.eurprd07.prod.outlook.com
- (2603:10a6:800:130::36) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b824cbc4-294c-423a-8a55-08d6f4cd65b8
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:BN6PR11MB1666; 
-x-ms-traffictypediagnostic: BN6PR11MB1666:
-x-microsoft-antispam-prvs: <BN6PR11MB1666066CAFDF361E4E4711F4F0E50@BN6PR11MB1666.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:238;
-x-forefront-prvs: 0073BFEF03
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(136003)(346002)(366004)(39860400002)(376002)(199004)(189003)(31686004)(66946007)(73956011)(6116002)(3846002)(66066001)(486006)(14454004)(66476007)(64756008)(66446008)(66556008)(81166006)(81156014)(68736007)(36756003)(476003)(8676002)(2616005)(446003)(305945005)(8936002)(7736002)(11346002)(2906002)(186003)(26005)(53936002)(6436002)(5660300002)(25786009)(386003)(53546011)(71190400001)(6506007)(6916009)(71200400001)(102836004)(14444005)(256004)(86362001)(7416002)(4326008)(99286004)(6486002)(478600001)(316002)(54906003)(72206003)(31696002)(76176011)(6512007)(52116002)(6246003)(229853002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB1666;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: I1e78FJNFKV4ZY2dNGHT3kBFvhb0A0hbYqmaP60LJ1wK33RT06MPDGAZYWw05FJELxE5Hxss72iFRugNVvfs1Q5U4M/xI1vQjPjlk32sGGCKQu0GmFeLfR4Y3xbB/FJVbhlGSLO5yA0b27QltmOllLv/6gQs4jDVXKRp6VtE+foT+xj9aJzvxo5xWz/v8sWWTgPicf5CgQ7wam62SXACAGnxx6SToTchifc2kG0R5X8If/qNBtxVODcIXjK8U6L3Ew8/dFGxvyS9yP5T3K3nPxZ7IF4JdnSLoC4x+Wz5aRo6WBXl+vjv6LNxuRGvVs2B+h/wlWto/RkBalOeDv/3WjsJzYITVYPigFRNnhNzLsl7lBzb9CPmdIbQm2iwO0WAyYOPxzqotZk8IG8pg17X6ts/2d/Ij29Sp0aFa+QWbcs=
-Content-ID: <A6F23B43FA1BA24EBDE89ED9FC6645B3@namprd11.prod.outlook.com>
+ id 1hddIE-0000ZU-T1
+ for linux-mtd@lists.infradead.org; Wed, 19 Jun 2019 16:18:40 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 840CE28A302;
+ Wed, 19 Jun 2019 17:18:35 +0100 (BST)
+Date: Wed, 19 Jun 2019 18:18:32 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Schrempf Frieder <frieder.schrempf@kontron.de>
+Subject: Re: [PATCH] mtd: spinand: fix error read return value
+Message-ID: <20190619181832.6f467279@collabora.com>
+In-Reply-To: <99279437-54a6-c81d-aad2-231009f18cfc@kontron.de>
+References: <1560950005-8868-1-git-send-email-liaoweixiong@allwinnertech.com>
+ <20190619154611.3bfc007b@collabora.com>
+ <99279437-54a6-c81d-aad2-231009f18cfc@kontron.de>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b824cbc4-294c-423a-8a55-08d6f4cd65b8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2019 15:47:13.6343 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1666
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190619_084720_080899_3E8B78E2 
-X-CRM114-Status: GOOD (  14.96  )
+X-CRM114-CacheID: sfid-20190619_091839_065294_6824C898 
+X-CRM114-Status: GOOD (  22.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -151,70 +70,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, marek.vasut@gmail.com, jonas@norrbonn.se,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- marek.vasut+renesas@gmail.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ liaoweixiong <liaoweixiong@allwinnertech.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Chuanhong Guo <gch981213@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Peter Pan <peterpandong@micron.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksIEdlZXJ0LA0KDQpPbiAwNi8xMS8yMDE5IDExOjM1IEFNLCBHZWVydCBVeXR0ZXJob2V2ZW4g
-d3JvdGU6DQo+IEhpIFR1ZG9yLA0KPiANCj4gT24gTW9uLCBKdW4gMTAsIDIwMTkgYXQgODoyNCBB
-TSA8VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tPiB3cm90ZToNCj4+IEZyb206IFR1ZG9yIEFt
-YmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCj4+DQo+PiBTUEkgbWVtb3J5IGRl
-dmljZXMgZnJvbSBkaWZmZXJlbnQgbWFudWZhY3R1cmVycyBoYXZlIHdpZGVseQ0KPj4gZGlmZmVy
-ZW50IGNvbmZpZ3VyYXRpb25zIGZvciBTdGF0dXMsIENvbnRyb2wgYW5kIENvbmZpZ3VyYXRpb24N
-Cj4+IHJlZ2lzdGVycy4gSkVERUMgMjE2QyBkZWZpbmVzIGEgbmV3IG1hcCBmb3IgdGhlc2UgY29t
-bW9uIHJlZ2lzdGVyDQo+PiBiaXRzIGFuZCB0aGVpciBmdW5jdGlvbnMsIGFuZCBkZXNjcmliZXMg
-aG93IHRoZSBpbmRpdmlkdWFsIGJpdHMgbWF5DQo+PiBiZSBhY2Nlc3NlZCBmb3IgYSBzcGVjaWZp
-YyBkZXZpY2UuIEZvciB0aGUgSkVERUMgMjE2QiBjb21wbGlhbnQNCj4+IGZsYXNoZXMsIHdlIGNh
-biBwYXJ0aWFsbHkgZGVkdWNlIFN0YXR1cyBhbmQgQ29uZmlndXJhdGlvbiByZWdpc3RlcnMNCj4+
-IGZ1bmN0aW9ucyBieSBpbnNwZWN0aW5nIHRoZSAxNnRoIERXT1JEIG9mIEJGUFQuIE9sZGVyIGZs
-YXNoZXMgdGhhdA0KPj4gZG9uJ3QgZGVjbGFyZSB0aGUgU0ZEUCB0YWJsZXMgKFNQQU5TSU9OIEZM
-NTEyU0FJRkcxIDMxMVFRMDYzIEEgwqkxMQ0KPj4gU1BBTlNJT04pIGxldCB0aGUgc29mdHdhcmUg
-ZGVjaWRlIGhvdyB0byBpbnRlcmFjdCB3aXRoIHRoZXNlIHJlZ2lzdGVycy4NCj4+DQo+PiBUaGUg
-Y29tbWl0IGRjYjRiMjJlZWFmNCAoInNwaS1ub3I6IHMyNWZsNTEycyBzdXBwb3J0cyByZWdpb24g
-bG9ja2luZyIpDQo+PiB1bmNvdmVyZWQgYSBwcm9iZSBlcnJvciBmb3IgczI1Zmw1MTJzLCB3aGVu
-IHRoZSBRVUFEIGJpdCBDUlsxXSB3YXMgc2V0DQo+PiBpbiB0aGUgYm9vdGxvYWRlci4gV2hlbiB0
-aGlzIGJpdCBpcyBzZXQsIG9ubHkgdGhlIFdyaXRlIFJlZ2lzdGVyDQo+PiBXUlIgY29tbWFuZCBm
-b3JtYXQgd2l0aCAxNiBkYXRhIGJpdHMgbWF5IGJlIHVzZWQsIFdSUiB3aXRoIDggYml0cw0KPj4g
-aXMgbm90IHJlY29nbml6ZWQgYW5kIGhlbmNlIHRoZSBlcnJvciB3aGVuIHRyeWluZyB0byBjbGVh
-ciB0aGUgYmxvY2sNCj4+IHByb3RlY3Rpb24gYml0cy4NCj4+DQo+PiBGaXggdGhlIGFib3ZlIGJ5
-IHVzaW5nIDE2LWJpdHMgV1JSIGNvbW1hbmQgd2hlbiBRdWFkIGJpdCBpcyBzZXQuDQo+Pg0KPj4g
-QmFja3dhcmQgY29tcGF0aWJpbGl0eSBzaG91bGQgYmUgZmluZS4gVGhlIG5ld2x5IGludHJvZHVj
-ZWQNCj4+IHNwaV9ub3Jfc3BhbnNpb25fY2xlYXJfc3JfYnAoKSBpcyB0aWdodGx5IGNvdXBsZWQg
-d2l0aCB0aGUNCj4+IHNwYW5zaW9uX3F1YWRfZW5hYmxlKCkgZnVuY3Rpb24uIEJvdGggYXNzdW1l
-IHRoYXQgdGhlIFdyaXRlIFJlZ2lzdGVyDQo+PiB3aXRoIDE2IGJpdHMsIHRvZ2V0aGVyIHdpdGgg
-dGhlIFJlYWQgQ29uZmlndXJhdGlvbiBSZWdpc3RlciAoMzVoKQ0KPj4gaW5zdHJ1Y3Rpb25zIGFy
-ZSBzdXBwb3J0ZWQuDQo+Pg0KPj4gUmVwb3J0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2Vl
-cnRAbGludXgtbTY4ay5vcmc+DQo+PiBTaWduZWQtb2ZmLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRv
-ci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQo+PiAtLS0NCj4+IEdlZXJ0LCBKb25hcywNCj4+DQo+
-PiBUaGlzIHBhdGNoIGlzIGNvbXBpbGUtdGVzdGVkIG9ubHkuIEkgZG9uJ3QgaGF2ZSB0aGUgZmxh
-c2gsIEkgbmVlZCB5b3VyDQo+PiBoZWxwIGZvciB0ZXN0aW5nIHRoaXMuDQo+IA0KPiBUaGFua3Ms
-IHRoaXMgcmV2aXZlcyBhY2Nlc3MgdG8gdGhlIHMyNWZsNTEycyBvbiBLb2Vsc2NoLg0KPiANCj4g
-Rml4ZXM6IGRjYjRiMjJlZWFmNDRmOTEgKCJzcGktbm9yOiBzMjVmbDUxMnMgc3VwcG9ydHMgcmVn
-aW9uIGxvY2tpbmciKQ0KDQpJIGRpZG4ndCBhZGQgdGhlIEZpeGVzIHRhZyBiZWNhdXNlIHRoaXMg
-Y29tbWl0IGhlbHBlZCB1cyBkaXNjb3ZlciBhIGNhc2UgdGhhdA0KaGFzIG5vdCBiZWVuIHRha2Vu
-IGludG8gY29uc2lkZXJhdGlvbiBiZWZvcmUuIEl0IGRpZG4ndCBpbnRyb2R1Y2UgYSBidWcsIGJ1
-dA0KcmF0aGVyIHJldmVhbGVkIG9uZS4gSG93ZXZlciwgaXQncyBub3QgdGhlIHRpbWUgdG8gd2Fs
-ayBvdmVyIHRoaXMgdGhpbiBsaW5lLCBzbw0KSSdsbCBhZGQgaXQsIHRoYW5rcyENCg0KPiBUZXN0
-ZWQtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnQrcmVuZXNhc0BnbGlkZXIuYmU+SGkgVHVk
-b3IsDQo+IA0KPiBUd28gcXVlc3Rpb25zIGJlbG93Li4uDQo+IA0KPj4gLS0tIGEvZHJpdmVycy9t
-dGQvc3BpLW5vci9zcGktbm9yLmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jDQo+IA0KPj4gK3N0YXRpYyBpbnQgc3BpX25vcl9zcGFuc2lvbl9jbGVhcl9zcl9icChzdHJ1
-Y3Qgc3BpX25vciAqbm9yKQ0KPj4gK3sNCj4gDQo+IFsuLi5dDQo+IA0KPj4gKyAgICAgICAgKiBX
-aGVuIHRoZSBjb25maWd1cmF0aW9uIHJlZ2lzdGVyIFFVQUQgYml0IENSWzFdIGlzIDEsIG9ubHkN
-Cj4+ICsgICAgICAgICogdGhlIFdSUiBjb21tYW5kIGZvcm1hdCB3aXRoIDE2IGRhdGEgYml0cyBt
-YXkgYmUgdXNlZC4NCj4gDQo+IHMvV1JSL1dSU1IvPw0KDQpTMjVGTDUxMlMgbmFtZWQgaXQgIldy
-aXRlIFJlZ2lzdGVycyIgY29tbWFuZCBhbmQgY2hvc2UgdGhlICJXUlIiIGFjcm9ueW0uDQpKRVNE
-MjE2RCBuYW1lcyBpdCAiV3JpdGUgUmVnaXN0ZXIiIGNvbW1hbmQgYW5kIGRvZXNuJ3Qgc3VnZ2Vz
-dCBhbiBhY3JvbnltLiBJJ2xsDQpzLyJXUlIiLyJXcml0ZSBSZWdpc3RlciBjb21tYW5kIiwgdG8g
-dXNlIHRoZSBKRVNEMjE2RCBuYW1pbmcgYW5kIGF2b2lkIGNvbmZ1c2lvbi4NCg0KSSBhbHNvIGZv
-cmdvdCB0byBkZXNjcmliZSBpbnQgKCpjbGVhcl9zcl9icCksIHYyIHdpbGwgZm9sbG93LiBXaWxs
-IGtlZXAgdGhlIFItYg0KYW5kIFQtYiB0YWdzIHNpbmNlIEknbGwganVzdCB1cGRhdGUgY29tbWVu
-dHMuDQoNCnRhDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, 19 Jun 2019 14:02:14 +0000
+Schrempf Frieder <frieder.schrempf@kontron.de> wrote:
+
+> On 19.06.19 15:46, Boris Brezillon wrote:
+> > Hi liaoweixiong,
+> > 
+> > On Wed, 19 Jun 2019 21:13:24 +0800
+> > liaoweixiong <liaoweixiong@allwinnertech.com> wrote:
+> >   
+> >> In function spinand_mtd_read, if the last page to read occurs bitflip,
+> >> this function will return error value because veriable ret not equal to 0.  
+> > 
+> > Actually, that's exactly what the MTD core expects (see [1]), so you're
+> > the one introducing a regression here.  
+> 
+> To me it looks like the patch description is somewhat incorrect, but the 
+> fix itself looks okay, unless I'm getting it wrong.
+> 
+> In case of the last page containing bitflips (ret > 0), 
+> spinand_mtd_read() will return that number of bitflips for the last 
+> page. But to me it looks like it should instead return max_bitflips like 
+> it does when the last page read returns with 0.
+
+Oh, you're right. liaoweixiong, can you adjust the commit message
+accordingly?
+
+> 
+> >>
+> >> Signed-off-by: liaoweixiong <liaoweixiong@allwinnertech.com>
+> >> ---
+> >>   drivers/mtd/nand/spi/core.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> >> index 556bfdb..6b9388d 100644
+> >> --- a/drivers/mtd/nand/spi/core.c
+> >> +++ b/drivers/mtd/nand/spi/core.c
+> >> @@ -511,12 +511,12 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
+> >>   		if (ret == -EBADMSG) {
+> >>   			ecc_failed = true;
+> >>   			mtd->ecc_stats.failed++;
+> >> -			ret = 0;
+> >>   		} else {
+> >>   			mtd->ecc_stats.corrected += ret;
+> >>   			max_bitflips = max_t(unsigned int, max_bitflips, ret);
+> >>   		}
+> >>   
+> >> +		ret = 0;
+> >>   		ops->retlen += iter.req.datalen;
+> >>   		ops->oobretlen += iter.req.ooblen;
+> >>   	}  
+> > 
+> > [1]https://elixir.bootlin.com/linux/latest/source/drivers/mtd/mtdcore.c#L1209
+> > 
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >  
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
