@@ -2,99 +2,72 @@ Return-Path: <SRS0=hJJw=US=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D292C31E5E
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 04:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2567C31E49
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 08:06:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C0F120823
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 04:44:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1A4520823
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 08:06:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="I3rsa927";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sfmT9G1y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C0F120823
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rHKOPCjr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1A4520823
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2NhYUAbceKGyuK0S+KWMZ8iUARV5VQrVyRiQhlSFvgo=; b=I3rsa92793pSXr
-	iuMBHT7GQlQgXdsFxdmsVzK1/gn29MlNI6Uo/4kgZgZ8reAscyxlZ2p87U+rNF5mrAfFbNNszqnrO
-	wk3B7fJac0vSqJlfXbH3qRuNP+3WEyzmkxAvwCVPUm9rIFKP/KEu66XOh3Vxvk7AyBxe9lRmNVQxD
-	srF9L1CBK2ord4UiNzx1V836V/Qv3scq2jsGbTt3zTR9lFBTnt+Mr+siSSXjUXahqqiWjEnrq6UVf
-	gQpKWJdAsSbaTa8CiZAckNGrdK2GRCy1fC0I/IZJ2158kj1LaBhB6FF4OIvKuGqlRPMmNZGS5cC7U
-	+PLOJ563CcgqemPcPMTA==;
+	List-Owner; bh=oAB6ht3opkGIijJx/XabULz7ja7pQgIo8KM1urxzZDM=; b=rHKOPCjrx0+qV6
+	9MhDLKI6E7SKyVD/GYr+Giv+byEF9R4O9Nu9gNcerLSed+k8C/UPCpPWghCpzbkF0m6xLMaa4Ler2
+	9/KUvL5705CZmLT0GRac2mOwiQ+VXYZZfvhJG/G8Bjxi5blcou/kBkW+UoG/kSH9grPqjJC6tDkIj
+	2mTkqLHR9Se9stbRLqGyXsdFkaVUEsllPYbffGcTxXtmsMBCKVk34vX8m9qzfuSF+60D9CcplTHUv
+	zezZSQ/bHAWyqLCRogST9uLGjijKxagwleSGmn7xsCTb0JJpMVd4ho78tcv5o4Stfi0MHpaRI9R6Q
+	Evt/kSxYq4zaZBTJGcvg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hdSSa-0005lV-5G; Wed, 19 Jun 2019 04:44:36 +0000
-Received: from mail-pf1-x442.google.com ([2607:f8b0:4864:20::442])
+	id 1hdVbe-0003pQ-K4; Wed, 19 Jun 2019 08:06:10 +0000
+Received: from twhmllg4.macronix.com ([122.147.135.202])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdSSW-0005kj-Kd
- for linux-mtd@lists.infradead.org; Wed, 19 Jun 2019 04:44:34 +0000
-Received: by mail-pf1-x442.google.com with SMTP id q10so8958478pff.9
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2019 21:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to
- :user-agent; bh=0g2bMiYO6BRA2joCaPp5+9aQYPyjIoLsu+QBVbjEMxA=;
- b=sfmT9G1yEzmffemmyEunK8elvz+2NW6YF1tMii6so/sAc+fZaH4JOs35gAhHTLzI3X
- LCuobRsUJaG2GWVFihuAbjj1ocW2m5V9b9GKLYjgLXYzvO/4R2eOuNYwLl5Axdn9lUgt
- oOOL9Osd3aHQu5kgm1rJ2GN1g/12SI+nxTplRMXdtDRXaKkzT5FCABI6euK5DSPTJTwl
- +j0K7Dt5MxV75IYzB/EpayG+fZfs1rW3BWkKYmY37cwdOAaPAf+Xv9FPQuUan8ENCAMG
- ik1Vda/Dz+F8i6DfAM1QgeNq0eec2CrcSa2faP2mCIY6oZJmGFvnQet1lymfDb0457Fp
- 58OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to:user-agent;
- bh=0g2bMiYO6BRA2joCaPp5+9aQYPyjIoLsu+QBVbjEMxA=;
- b=WlaQIe+mL0yNZ3UyJH+gs66Ks7V6OT/z513VWk0DuSzj57m93yhvchyR1hoTa0uo4k
- oIgctJgWnSQGD5dv3Dn/0A09hE7fq+uNAI6T8wAyqvLfFOW6jipB6vJTYlSlGROmVZMJ
- iBENhagF47iT+jdvBAFlYZrl6Kxs4ddGJ0WaE/EJwGrEsHBNGZ75qjszD2GJp/BI7Tji
- 5H0wajSXgfuPJKCe3sHceiNcocMG0ph12V0wLSLXGH2LHejZ96gogCvDGdwMVztU6lj7
- peEWGQJQGVhIupTspc/HNvt/y3MhZl0a0heSvTubh2e5yIaGPPdrPwOK+/LVH9BFXvtn
- 7HOA==
-X-Gm-Message-State: APjAAAWMgWfn4KQPqUVwoiS9hK3gDbbd5kmD63+eAl7OZV/K4ZPTNVgM
- xXS5HAgGHfgh437rf7Krzeo=
-X-Google-Smtp-Source: APXvYqzRg6obEwd9JJxwejjjACMV+5VfM+yMhhfcGZ+vgly7KUUyNnkpdlWaxypx9XVf3RKLVGEm1A==
-X-Received: by 2002:a63:f50d:: with SMTP id w13mr5977079pgh.411.1560919471616; 
- Tue, 18 Jun 2019 21:44:31 -0700 (PDT)
-Received: from xhdnagasure40.xilinx.com ([149.199.50.129])
- by smtp.gmail.com with ESMTPSA id y14sm341083pjr.13.2019.06.18.21.44.27
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 18 Jun 2019 21:44:30 -0700 (PDT)
-Date: Tue, 18 Jun 2019 22:44:24 -0600
-From: Naga Sureshkumar Relli <nagasureshkumarrelli@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [LINUX PATCH v12 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20190619044424.GB28766@xhdnagasure40.xilinx.com>
-References: <20181212100931.149b0cac@xps13>
- <MWHPR02MB2623EDA15BE59304795F3034AFA70@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181212141825.69711c57@xps13>
- <MWHPR02MB26235AE6567A06EF4C6362E6AFBC0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181217174114.24196d17@xps13>
- <MWHPR02MB26237B932D7F3CCEE0476FE0AFBD0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20181219152647.76f77711@xps13>
- <MWHPR02MB262396FFF946A95D7821D61BAFB80@MWHPR02MB2623.namprd02.prod.outlook.com>
- <MWHPR02MB262328DF62906C01DCDF18E5AF960@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20190128102720.70a52da7@xps13>
+ id 1hdVbc-0003of-3W
+ for linux-mtd@lists.infradead.org; Wed, 19 Jun 2019 08:06:09 +0000
+Received: from twhfmnt1.mxic.com.tw (twhfm1p2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id x5J84fX5040768;
+ Wed, 19 Jun 2019 16:04:41 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id DF2DCF7716F0D9DE9D5B;
+ Wed, 19 Jun 2019 16:04:41 +0800 (CST)
+In-Reply-To: <20190618092901.3bdd9f61@collabora.com>
+References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>	<1555320234-15802-3-git-send-email-masonccyang@mxic.com.tw>
+ <20190512151820.4f2dd9da@xps13>	<OF074A1F06.5C1A58BE-ON482583FD.0031CD95-482583FD.003437AD@mxic.com.tw>
+ <20190520142333.390091d5@xps13>	<OFADC47344.0F9941B2-ON48258403.002336E3-48258403.003141F0@mxic.com.tw>
+ <20190527144250.71908bd9@xps13>	<OFE923A8E5.50375C30-ON48258409.0009AE1B-48258409.00119767@mxic.com.tw>
+ <20190617143510.4ded5728@xps13>	<OF1C1397B4.241DC339-ON4825841D.000482A2-4825841D.0007B67E@mxic.com.tw>
+ <20190618081436.5d488320@collabora.com>
+ <20190618092901.3bdd9f61@collabora.com>
+To: "Boris Brezillon" <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v3 2/4] mtd: rawnand: Add Macronix MX25F0A NAND controller
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190128102720.70a52da7@xps13>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-KeepSent: 5EAF94EB:AE31CF59-4825841E:002A2C38;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF5EAF94EB.AE31CF59-ON4825841E.002A2C38-4825841E.002C60BF@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Wed, 19 Jun 2019 16:04:43 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/06/19 PM 04:04:41,
+ Serialize complete at 2019/06/19 PM 04:04:41
+X-MAIL: TWHMLLG4.macronix.com x5J84fX5040768
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190618_214432_707897_537170D1 
-X-CRM114-Status: GOOD (  14.36  )
+X-CRM114-CacheID: sfid-20190619_010608_424621_EC905E77 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,70 +79,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "robh@kernel.org" <robh@kernel.org>,
- "martin.lund@keep-it-simple.com" <martin.lund@keep-it-simple.com>,
- "richard@nod.at" <richard@nod.at>, Michal Simek <michals@xilinx.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: mark.rutland@arm.com, christophe.kerello@st.com,
+ marcel.ziswiler@toradex.com, stefan@agner.ch, liang.yang@amlogic.com,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ lee.jones@linaro.org, richard@nod.at, marek.vasut@gmail.com,
+ geert@linux-m68k.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+ bbrezillon@kernel.org, juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, paul.burton@mips.com, broonie@kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 28, 2019 at 10:27:39AM +0100, Miquel Raynal wrote:
-Hi Miquel,
 
-> Hi Naga,
-> =
+Hi Boris,
 
-> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Mon, 28 Jan 2019
-> 06:04:53 +0000:
-> =
+> 
+> Re: [PATCH v3 2/4] mtd: rawnand: Add Macronix MX25F0A NAND controller
+> 
+> On Tue, 18 Jun 2019 08:14:36 +0200
+> Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> 
+> > > > > > > 
+> > > > > > > How to make all #CS keep high for NAND to enter 
+> > > > > > > low-power standby mode if driver don't use 
+"legacy.select_chip()" 
+> > > ? 
+> > > > > > 
+> > > > > > See commit 02b4a52604a4 ("mtd: rawnand: Make ->select_chip()  
+> > > optional 
+> > > > > > when ->exec_op() is implemented") which states:
+> > > > > > 
+> > > > > >         "When [->select_chip() is] not implemented, the core 
+is 
+> > > assuming 
+> > > > > >    the CS line is automatically asserted/deasserted by the 
+driver 
+> > > > > >    ->exec_op() implementation." 
+> > > > > > 
+> > > > > > Of course, the above is right only when the controller driver  
+ 
+> > > supports 
+> > > > > > the ->exec_op() interface. 
+> > > > > 
+> > > > > Currently, it seems that we will get the incorrect data and 
+error
+> > > > > operation due to CS in error toggling if CS line is controlled 
+in 
+> > > > > ->exec_op(). 
+> 
+> Oh, and please provide the modifications you added on top of this patch.
+> Right now we're speculating on what you've done which is definitely not
+> an efficient way to debug this sort of issues.
 
-> > Hi Boris & Miquel,
-> > =
+The patch is to add in beginning of ->exec_op() to control CS# low and 
+before return from ->exec_op() to control CS# High.
+i.e,.
+static in mxic_nand_exec_op( )
+{
+ cs_to_low();
 
-> > Could you please provide your thoughts on this driver to support HW-ECC?
-> > As I said previously, there is no way to detect errors beyond N bit.
-> > I am ok to update the driver based on your inputs.
-> =
 
-> We won't support the ECC engine. It simply cannot be used reliably.
-> =
 
-> I am working on a generic ECC engine object. It's gonna take a few
-> months until it gets merged but after that you could update the
-> controller driver to drop any ECC-related function. Although the ECC
+ cs_to_high();
+ return;
+}
 
-Could you please let me know that, when can we expect generic ECC engine
-update in mtd NAND?
-Based on that, i will plan to update the ARASAN NAND driver along with your
-comments mentioned above under this update,
-as you know there is a limiation in ARASAN NAND controller to detect
-ECC errors.
-i am following this series https://patchwork.kernel.org/patch/10838705/
+But for nand_onfi_detect(), 
+it calls nand_read_param_page_op() and then nand_read_data_op().
+mxic_nand_exec_op() be called twice for nand_onfi_detect() and
+driver will get incorrect ONFI parameter table data from 
+nand_read_data_op().
 
-Thanks,
-Naga Sureshkumar Relli
-> engine part is blocking, raw access still look wrong and the driver
-> still needs changes.
-> =
+thanks & best regards,
+Mason
 
-> =
 
-> Thanks,
-> Miqu=E8l
-> =
 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+
+
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
