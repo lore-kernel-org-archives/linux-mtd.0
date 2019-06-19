@@ -8,17 +8,17 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C06C31E5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 16:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB41DC31E5B
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 16:51:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 842E0206E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 16:51:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D418206E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jun 2019 16:51:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ZUOIXpbo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VZGZMiml"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 842E0206E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V645kHML";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ff5Jxroj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D418206E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -28,64 +28,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=t6+w5hH7P3dLYr4OIF4zu0g4QbedMDnzJKA7jrkdOAw=; b=ZUOIXpboiovNGaMWp8lbvRecWr
-	H8+BFigyvCYZrnRPs36iPq5ohmizjnJlAGUKECHRrKbGcjN4y7xTtdZY2uNdOmoa+7c6DRTqYO3lC
-	VRmo5EXNEecTT861Z1m+/qpx9mbzzoM1kycIytz3/iorIM0s3pvwlInQ3fugyHL0yMTn4bkNJhLpR
-	OgF8EH95Km/AGEyto4FHMrNjfUH2cOrrQa0X59WadOcmeCB49twmIoNj7Qbw9QnV9ZjN2hz8PZsZ0
-	xAouHddvLSeSYKw9kh4Wtj6QdS7Q0Uwaf6xo426exiS5C3H/QMw5SqV0YYBreth3SLbbhsSpuzZbH
-	H8FoMF3Q==;
+	bh=wqJA6E6vrBohLxLYSJzQDsS1Np21mJDqBbZ+Z6c0fJs=; b=V645kHMLMUUBkVwzXFeE01lZ3l
+	N/uQ642ljBZQUaf45HIuuTARUxdyzhYadqFpnzDtabpBTACDSUXkkX2m3xZR6tfMVoWG1bBWpHYg9
+	ziP0LAGdS3MfrfHsaxFNEWFhv0whL79r8r4xqpoQO0xj9eSmGhpCpfMBSmHsC9KtNR79K5KxXIViW
+	Tpe7ZyDxh2n76pYEbPo5VCQ/oDTNC+yS4Vyv1CECzq9cUVding2In5KAYuUZz7RKf9JIOZ3PjCepk
+	FWSWJRPWx+fuE4AIrqgjunyFxhE/rdYS0Ac2yIRIv4R5TOFC/xXfI/tWihnctujbk152rsdQqgfhb
+	BHmVOfaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hddnf-0000zC-6u; Wed, 19 Jun 2019 16:51:07 +0000
+	id 1hddnx-0001GF-2x; Wed, 19 Jun 2019 16:51:25 +0000
 Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hddmw-0000FX-ED
- for linux-mtd@lists.infradead.org; Wed, 19 Jun 2019 16:50:25 +0000
-Received: by mail-pl1-x641.google.com with SMTP id c14so61737plo.0
- for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2019 09:50:22 -0700 (PDT)
+ id 1hddn0-0000H9-7L
+ for linux-mtd@lists.infradead.org; Wed, 19 Jun 2019 16:50:28 +0000
+Received: by mail-pl1-x641.google.com with SMTP id i2so59595plt.1
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2019 09:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=ozmqltjjmE5Dif+cHO8QWJrQyO00m0H0FC8u2KbSQ+g=;
- b=VZGZMimlmr2Azv6DE0vHmdaSvCAP1MeFXqUP8EQTmlGaejN8fbOu2ddKYAhxFR+m/7
- /qr7QIVv7U0OhQRN3w+HZnAWe+5CzH7JPdGcPtmK7PBeCTirmJ/sQ/8jXqAY4GnNUTpB
- gmz5g91HwxaJ4eo8Zfpf3+PadiSCrCPrlfiSJEjhNHBiITxRx2dFBftPO+ytrFOcq6zp
- cfCBwIAHHhBVWEvXRhFV/hWpFQfu0X63n6NciAiULZ9YsS8xx92KXbNIn8TjHx8dtE9C
- 4Gcv6kFBqtc8rxstFlGtDDIX8m5zuJ0hp8mD3DnFojQdoR6ye1ukKLOCHIZPWAHOzj5i
- UtjQ==
+ bh=FqodIC35lv+OmmACIdLud67ndXOsuqAQl8Mc0biq5x0=;
+ b=ff5JxrojguB7ua/cEOVI8mu77U0G2l+bJiYU5azpHYU4hmadAYMcWMhAGHD0yA0Ejn
+ JEtGcQ5aQFWTQg9VI6TSw6wQxqSEqwaiO6l8QUpvO/I6FlcEZxY1v0I7pI34HgO7hIpO
+ cH8MJekgFzOOmiNAbgCuPHy5Y77Okjxm9xqcVshE+BvZI2afXs856tB6wmHnJLJIRMxG
+ kN9EtehWsk4fYbqnNMa9uqF1d8E2F7Ibyti6BsS3cQCKAV1r9EfBWkFrApH1u3wC3wJS
+ eGwUWL+RZ5ioGWWJN1Rz2ck45O/k445y6T/jDym9MOcRTnfyQfGLF1/3N6PqWTiQAVAJ
+ AnLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=ozmqltjjmE5Dif+cHO8QWJrQyO00m0H0FC8u2KbSQ+g=;
- b=qX84+408IwMIfxQRRgqnFFxae5aTYaOQ4IXfPTzti1s7EIiC3jvaG8VZXOMhIJ4Nj1
- YzoOHxb3FZHPkN51q3QWztHgj7tZqlZczDIAea6KFxTz2ohoszFN2S2cc71HlAW5hdn4
- 883nnY10vQQay03FSlBkwc8dBDJXi7Epa5z/qqZ8pRTl9o3a3Ze7TNOT4zpqbTwPQhFc
- fJXuKN7EnUslG8bdL7ZZSIPpcmS5kcuZ3BzohC5OHyGYMx0bHiAYapmDLApuwwiZ2BjL
- 08So1AfzHglc2N898KdxbUQgLz0mC5N+eni8TPIgzGPoYqomOX6fHKren+MvtI/iM+aZ
- 39xw==
-X-Gm-Message-State: APjAAAW9LnG9xRVtNnzVJkgH3fmpbGS2eOvM0uUl6JS5Sqt3qJHBuxui
- LadRq3e+aH2V0HhnLM9ZM0w=
-X-Google-Smtp-Source: APXvYqzxNvJwe99RtOqhwXC0dNnYumM8Au+qsnfushvZg2498081sNqErL1r0dcOkhUNNWvViKhsFA==
-X-Received: by 2002:a17:902:a60d:: with SMTP id
- u13mr51977390plq.144.1560963021627; 
- Wed, 19 Jun 2019 09:50:21 -0700 (PDT)
+ bh=FqodIC35lv+OmmACIdLud67ndXOsuqAQl8Mc0biq5x0=;
+ b=GleacriEQTXSmpEskZklk4EZgyWbUO1FXCn0da2GxE9xa8PozAXGpk8thSs/CD5Uza
+ vTx6SvFEc7A/XrbOxERxJQ8DEJPgNKcIs2MK3FesMuW+AAX6Ba0KHcwIj91n0ZWdVRWE
+ HBy/kW/PqhRJ4yMf23nKVtW9r+DqWZ12H3O1fV3EJq5aMnNV+lVj6FHafMXxS3oyzLRW
+ gRQFE5Txe6lLdvCazCni4zEmgj9hc08oqeDQwcnJLdcEDqtKBwlR/f1D4kZh7n6hGKUK
+ DhCF0Ca0HkKoT8E2VtEghvQDclc1/Q0KwsdEaV3WCP72tch10OUkQUG1d9DdfTyQ4o08
+ +QUA==
+X-Gm-Message-State: APjAAAX5HalPPCwyXTlcJQmLblFKnlR5jS4Z0iqN7eBJgtf+GegTsijV
+ xXWI3kel5vU32CYSu9D54jc=
+X-Google-Smtp-Source: APXvYqwV1tEVsAqoBlTGW6GJONWQz3RXpV0sYqlBdnZVe8vdBIRJnNhoTMv2SgyFUb+HCGutQtBjLQ==
+X-Received: by 2002:a17:902:ba8b:: with SMTP id
+ k11mr18743345pls.107.1560963025572; 
+ Wed, 19 Jun 2019 09:50:25 -0700 (PDT)
 Received: from localhost.localdomain (M106072039032.v4.enabler.ne.jp.
  [106.72.39.32])
- by smtp.gmail.com with ESMTPSA id j1sm21344894pfe.101.2019.06.19.09.50.19
+ by smtp.gmail.com with ESMTPSA id j1sm21344894pfe.101.2019.06.19.09.50.23
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 19 Jun 2019 09:50:21 -0700 (PDT)
+ Wed, 19 Jun 2019 09:50:25 -0700 (PDT)
 From: Tokunori Ikegami <ikegami.t@gmail.com>
 To: Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v7 2/9] mtd: cfi_cmdset_0002: Remove goto statement from
- do_write_buffer()
-Date: Thu, 20 Jun 2019 01:49:54 +0900
-Message-Id: <20190619165001.28410-3-ikegami.t@gmail.com>
+Subject: [PATCH v7 4/9] mtd: cfi_cmdset_0002: Split do_write_oneword() op_done
+ goto statement
+Date: Thu, 20 Jun 2019 01:49:56 +0900
+Message-Id: <20190619165001.28410-5-ikegami.t@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190619165001.28410-1-ikegami.t@gmail.com>
 References: <20190619165001.28410-1-ikegami.t@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190619_095023_840811_A2A94AF6 
-X-CRM114-Status: GOOD (  18.29  )
+X-CRM114-CacheID: sfid-20190619_095026_310767_7F413BA2 
+X-CRM114-Status: GOOD (  17.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,8 +107,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For a maintainability by reducing the goto statement remove it from
-do_write_buffer().
+To reduce function size and remove the goto statement split the op_done
+goto statement part into do_write_oneword_done() created a function. Also
+split the start part into do_write_oneword_start() to find easier pairs.
 
 Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
 Cc: Fabio Bettoni <fbettoni@gmail.com>
@@ -120,8 +121,6 @@ Cc: linux-mtd@lists.infradead.org
 Changes since v6:
 - Removed the tag of Koen Vandeputte as same with the v7 1/9 patch.
 - Address the ./scripts/checkpatch.pl issue.
-- Convert to use pr_err() instead of printk(KERN_WARNING).
-- Squash the v6 03/11 patch into this patch.
 
 Changes since v5:
 - Rebased on top of Liu Jian's fixes in master.
@@ -131,88 +130,112 @@ Changes since v4:
 - None.
 
 Changes since v3:
-- Just change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
+- Rebased on the patch v4 01/11.
+- Change the email address of Tokunori Ikegami to ikegami_to@yahoo.co.jp.
 
 Changes since v2:
-- None.
+- Change to split the start part of do_write_oneword() additionally.
+- Fix indentation to call pr_debug().
 
 Changes since v1:
-- Split the patch v1 3/3.
+- Add the patch.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 51 +++++++++++++++++++------------------
- 1 file changed, 26 insertions(+), 25 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 57 ++++++++++++++++++++++++++-----------
+ 1 file changed, 40 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index ed3e640eb03a..60d3669ce5cf 100644
+index 08a119489b28..d511f70080dd 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1887,40 +1887,41 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 		 * We check "time_after" and "!chip_good" before checking "chip_good" to avoid
- 		 * the failure due to scheduling.
- 		 */
--		if (time_after(jiffies, timeo) && !chip_good(map, adr, datum))
-+		if (time_after(jiffies, timeo) && !chip_good(map, adr, datum)) {
-+			ret = -EIO;
- 			break;
--
--		if (chip_good(map, adr, datum)) {
--			xip_enable(map, chip, adr);
--			goto op_done;
- 		}
+@@ -1615,6 +1615,40 @@ static int __xipram do_write_oneword_once(struct map_info *map,
+ 	return ret;
+ }
  
-+		if (chip_good(map, adr, datum))
-+			break;
++static int __xipram do_write_oneword_start(struct map_info *map,
++					   struct flchip *chip,
++					   unsigned long adr, int mode)
++{
++	int ret = 0;
 +
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1);
- 	}
- 
--	/*
--	 * Recovery from write-buffer programming failures requires
--	 * the write-to-buffer-reset sequence.  Since the last part
--	 * of the sequence also works as a normal reset, we can run
--	 * the same commands regardless of why we are here.
--	 * See e.g.
--	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
--	 */
--	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
--			 cfi->device_type, NULL);
--	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
--			 cfi->device_type, NULL);
--	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
--			 cfi->device_type, NULL);
--	xip_enable(map, chip, adr);
--	/* FIXME - should have reset delay before continuing */
++	mutex_lock(&chip->mutex);
++
++	ret = get_chip(map, chip, adr, mode);
 +	if (ret) {
-+		/*
-+		 * Recovery from write-buffer programming failures requires
-+		 * the write-to-buffer-reset sequence.  Since the last part
-+		 * of the sequence also works as a normal reset, we can run
-+		 * the same commands regardless of why we are here.
-+		 * See e.g.
-+		 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
-+		 */
-+		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-+				 cfi->device_type, NULL);
-+		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-+				 cfi->device_type, NULL);
-+		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-+				 cfi->device_type, NULL);
-+		/* FIXME - should have reset delay before continuing */
- 
--	printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
--	       __func__, adr);
-+		pr_err("MTD %s(): software timeout, address:0x%.8lx.\n",
-+		       __func__, adr);
++		mutex_unlock(&chip->mutex);
++		return ret;
 +	}
 +
-+	xip_enable(map, chip, adr);
++	if (mode == FL_OTP_WRITE)
++		otp_enter(map, chip, adr, map_bankwidth(map));
++
++	return ret;
++}
++
++static void __xipram do_write_oneword_done(struct map_info *map,
++					   struct flchip *chip,
++					   unsigned long adr, int mode)
++{
++	if (mode == FL_OTP_WRITE)
++		otp_exit(map, chip, adr, map_bankwidth(map));
++
++	chip->state = FL_READY;
++	DISABLE_VPP(map);
++	put_chip(map, chip, adr);
++
++	mutex_unlock(&chip->mutex);
++}
++
+ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 				     unsigned long adr, map_word datum,
+ 				     int mode)
+@@ -1626,19 +1660,14 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
  
--	ret = -EIO;
-- op_done:
- 	chip->state = FL_READY;
- 	DISABLE_VPP(map);
- 	put_chip(map, chip, adr);
+ 	adr += chip->start;
+ 
+-	mutex_lock(&chip->mutex);
+-	ret = get_chip(map, chip, adr, mode);
++	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n", __func__, adr,
++		 datum.x[0]);
++
++	ret = do_write_oneword_start(map, chip, adr, mode);
+ 	if (ret) {
+-		mutex_unlock(&chip->mutex);
+ 		return ret;
+ 	}
+ 
+-	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
+-		 __func__, adr, datum.x[0]);
+-
+-	if (mode == FL_OTP_WRITE)
+-		otp_enter(map, chip, adr, map_bankwidth(map));
+-
+ 	/*
+ 	 * Check for a NOP for the case when the datum to write is already
+ 	 * present - it saves time and works around buggy chips that corrupt
+@@ -1647,8 +1676,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	 */
+ 	oldd = map_read(map, adr);
+ 	if (map_word_equal(map, oldd, datum)) {
+-		pr_debug("MTD %s(): NOP\n",
+-			 __func__);
++		pr_debug("MTD %s(): NOP\n", __func__);
+ 		goto op_done;
+ 	}
+ 
+@@ -1670,12 +1698,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+ 	}
+ 	xip_enable(map, chip, adr);
+  op_done:
+-	if (mode == FL_OTP_WRITE)
+-		otp_exit(map, chip, adr, map_bankwidth(map));
+-	chip->state = FL_READY;
+-	DISABLE_VPP(map);
+-	put_chip(map, chip, adr);
+-	mutex_unlock(&chip->mutex);
++	do_write_oneword_done(map, chip, adr, mode);
+ 
+ 	return ret;
+ }
 -- 
 2.11.0
 
