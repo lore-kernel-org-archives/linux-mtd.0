@@ -2,62 +2,65 @@ Return-Path: <SRS0=7m8F=UT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C297C43613
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2019 07:13:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBD52C43613
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2019 12:26:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 451C62084A
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2019 07:13:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B21DF206E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2019 12:26:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Md1hd4KQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 451C62084A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WqcDmtId"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B21DF206E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NaehlKHMtsm4f6FeW6tvwq1VRR5gQ4f7ybNjQugG6oc=; b=Md1hd4KQ1V7mRG
-	9ymDQnLdLFShXA2VH1UtAoc+DfEG7TEhHrvW0sqvj/FLCTM3U4lEX1/QAkO5XNQiZ1pJnHWua/8SA
-	+SOl2dB0R71hrDal02k422SkhS7LVlTx3KZsdnJsKeDXdkxtSIIO9fNsRja11yZuB4jzdte1kZnBm
-	WMjhsbBbUT68iaNvkMW9TbEa59PQzzAx50dHlpouR7kIi76gugoKLqTcxN+GLDR8qtAqOLMCbLfcQ
-	kWF4Zsqv5ESEkrARJQdF7zGbLoYYWryBgi6EWZXlg3KZMJ9eChfYonhSzZthkQcmZnvtrHnQIKxKD
-	cAYVm3Xt3gsDCe3mPiRQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hsBA7s4Px/iHrhpUT9zHdKkyy8vUh2nCWuu/CdxqhRs=; b=WqcDmtId42QIIj
+	3hIZvdJLqaQDOiVnt/n42gTIKHBYazIpS0IK50ZCEzQKUoVnGWRA/rqjrB/aiyhSpE3ehwnzImQbI
+	leVvjXHekiDSRd4f4Th+BDUFHUmoZ6gZLRz5APk71z8w/n3qUqET6iEsaQUZ5lJx3/DIph3sF9oJF
+	3Ht5tj5qaIvx/9BfCKRYfjLJ7AXVv6cqGF12UipLsLWBq20419hqkmY219CYU4N6qxYk4tCEN7t+V
+	XU15v5zw52lGm7rZYpAgqCBUOQ9LtX5E80+4z4KgqfSR6ak37jb0N3Bg756kLQYT8tXbRclne5yzR
+	LKG1JaTX84nh9148oSDA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hdrG7-0001AI-9k; Thu, 20 Jun 2019 07:13:23 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hdw9E-0000jd-Je; Thu, 20 Jun 2019 12:26:36 +0000
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hdrG4-000198-FK
- for linux-mtd@lists.infradead.org; Thu, 20 Jun 2019 07:13:22 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5F3D82639EC;
- Thu, 20 Jun 2019 08:13:17 +0100 (BST)
-Date: Thu, 20 Jun 2019 09:13:14 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: liaoweixiong <liaoweixiong@allwinnertech.com>
-Subject: Re: [PATCH v2] mtd: spinand: read return badly if the last page has
- bitflips
-Message-ID: <20190620091314.70bc99a2@collabora.com>
-In-Reply-To: <1560992416-5753-1-git-send-email-liaoweixiong@allwinnertech.com>
-References: <1560992416-5753-1-git-send-email-liaoweixiong@allwinnertech.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hdw9C-0000id-F8
+ for linux-mtd@lists.infradead.org; Thu, 20 Jun 2019 12:26:35 +0000
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 20 Jun 2019 05:26:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,396,1557212400"; d="scan'208";a="170857634"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga002.jf.intel.com with ESMTP; 20 Jun 2019 05:26:30 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+ id AD62E26B; Thu, 20 Jun 2019 15:26:29 +0300 (EEST)
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH 1/2] spi-nor: intel-spi: Add support for Intel Elkhart Lake
+ SPI serial flash
+Date: Thu, 20 Jun 2019 15:26:28 +0300
+Message-Id: <20190620122629.20838-1-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190620_001320_648687_0452BD46 
-X-CRM114-Status: GOOD (  18.56  )
+X-CRM114-CacheID: sfid-20190620_052634_553151_A834B3D7 
+X-CRM114-Status: GOOD (  12.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,54 +72,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Schrempf Frieder <frieder.schrempf@kontron.De>,
- Marek Vasut <marek.vasut@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, linux-mtd@lists.infradead.org,
- Jeff Kletsky <git-commits@allycomm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Peter Pan <peterpandong@micron.com>
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 20 Jun 2019 09:00:16 +0800
-liaoweixiong <liaoweixiong@allwinnertech.com> wrote:
+Intel Elkhart Lake has the same SPI serial flash controller as Ice Lake.
+Add Elkhart Lake PCI ID to the driver list of supported devices.
 
-> In case of the last page containing bitflips (ret > 0),
-> spinand_mtd_read() will return that number of bitflips for the last
-> page. But to me it looks like it should instead return max_bitflips like
-> it does when the last page read returns with 0.
-> 
-> Signed-off-by: liaoweixiong <liaoweixiong@allwinnertech.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+ drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> ---
->  drivers/mtd/nand/spi/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 556bfdb..6b9388d 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -511,12 +511,12 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
->  		if (ret == -EBADMSG) {
->  			ecc_failed = true;
->  			mtd->ecc_stats.failed++;
-> -			ret = 0;
->  		} else {
->  			mtd->ecc_stats.corrected += ret;
->  			max_bitflips = max_t(unsigned int, max_bitflips, ret);
->  		}
->  
-> +		ret = 0;
->  		ops->retlen += iter.req.datalen;
->  		ops->oobretlen += iter.req.ooblen;
->  	}
+diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
+index bfbfc17ed6aa..578f0c74e536 100644
+--- a/drivers/mtd/spi-nor/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/intel-spi-pci.c
+@@ -67,6 +67,7 @@ static const struct pci_device_id intel_spi_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x34a4), (unsigned long)&bxt_info },
++	{ PCI_VDEVICE(INTEL, 0x4b24), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
+ 	{ },
+-- 
+2.20.1
 
 
 ______________________________________________________
