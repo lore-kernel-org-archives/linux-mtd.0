@@ -2,23 +2,23 @@ Return-Path: <SRS0=RgZt=UU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6A72C43613
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 10:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39BD9C43613
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 10:35:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFBB8208C3
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 10:29:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D389E2084E
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 10:35:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="leF1eee3";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="etN7QHE7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFBB8208C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EFeSLPkx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nifty.com header.i=@nifty.com header.b="wnSJN2YS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D389E2084E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,61 +26,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oZzX9ejkpg+vK8RuMWOj2LXSJSlKRezkgZr8VCIY5NE=; b=leF1eee3XWsI/T
-	c4U+uvUYDlB3PV5lnFdWq0a/+wGtyO7ffv3gxsYlfD5eQU5+rCouxfgLOMwjRxf56U1XBIrSVAmhH
-	Zi1cq3BOoygiZYjNFMXuhb+qr7O9mm+GhQ6qQi5U4QwuLM3KDEMY1RNCFeotBqswNb22sgZzjZlN/
-	Fa5uKLiyzHIdxMUGXLRINMPCBb5IvNNG2qe3fwfHl/n1sOu+ZtCCFrdEO7ut/edHbbWS8j3TbOj4U
-	XHiVQiTz4p/oJ10A23ja4yDzUj1lXLbiJjtCKFdJcOye9zYrdoQ1iy/gG/nH6fH6F4KRVszyQS8He
-	RCKhQIsdLdsNOZ+rDgKw==;
+	List-Owner; bh=HADi46RynxlAK2qo1xO85c3fbs6Z+OS825i5mUP3By8=; b=EFeSLPkx3k3nIb
+	mmzNZewZ4rK/oZVQ+Mg8wFOhfPWBgyEBAFphnzNV85RLsqzCfuWFaJ+1E8o/F4Dws3Wz7D40CMHfB
+	TJOffT/zDplMUJv+cZFcf2aaUupnYm7vwFKtLngWcUAkJI/3v+df9BLZp7Eg1rqJd6XzAenpbyfT4
+	vbGfSc9dWsXJIMLmSXTaNcSWtXREwxY1ydWK8+ezFf2DWTyflAe6Dr4V86KjQs3LH/bibO2EOG7wg
+	z5TPc146QoI84hSQofsR9YPMfKncuK7Rgu0kfwNbHuh932kayENtceoUuTARz7Spi3X/zi+vP7inV
+	ScVMvD1F9OCsUWG++1cg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1heGn5-0006AA-5y; Fri, 21 Jun 2019 10:29:07 +0000
-Received: from mail-vs1-xe43.google.com ([2607:f8b0:4864:20::e43])
+	id 1heGtW-0003gB-P4; Fri, 21 Jun 2019 10:35:46 +0000
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1heGn1-00069A-TY
- for linux-mtd@lists.infradead.org; Fri, 21 Jun 2019 10:29:05 +0000
-Received: by mail-vs1-xe43.google.com with SMTP id h28so494709vsl.12
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2019 03:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ENYQKCQSfeszZWYCN2yKfX/JBpyCK1CYVFLjD6oifQ0=;
- b=etN7QHE7JyTa4lpmcwrjRdg6TnTrZT71qn5QpWXhPeGHVs5LbKB7on5lmX86ologtL
- 7XbiDc7JUkNc4+BQeGqzuFBGbVVr8ocD+vYfvpGft4Mc7w356kUy3V65LZHBdflyDdks
- pBnwhTO5D9DEj5J/u+iqjckNNj7Rc97GntY5i1S4zc6On50LZARTYCXQk/LRR36V2BlE
- SMgPRFHAm5TPfEKUQGV8T+s/54ZNmcHw0scr7/QgnsXjtHxX88yXLRu4TMT87r/wBFOJ
- mvAG7S8pio6EeqFl3vC68qkeAUBhNY/8eY1lWfcVTJ2jGeTtOnlK9TON7Lasld8xB/6K
- HjEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ENYQKCQSfeszZWYCN2yKfX/JBpyCK1CYVFLjD6oifQ0=;
- b=ZUeOGuZZv/W1TIwPBGMnFOyX5QaFcnT3LbxksdZw20W2T1TjtLDSEHCwRYEsLUVfpr
- 7bGN+SL3FONhPKq5GDpkvSDHiJE7aMTHp79lXPdYLOMxUIMFsThymZiRAeCTjHSp64Sn
- /Fv/+oDm5R6JQvOAEQjVkGZ0z6n2IqkeO1hDomkswe4A1xv3EoL4DMW0n0s8MRTDNN13
- S1uDXLQDa4WskbvQf3aDdsJeJTkJS9yri+EWV+8AcKQgqf6s75GX1GhzUXdKSOuNcr/K
- LlWtDEOLAR9wXMXYxYq9BLqTDzGn9BMaznHhQ6pjXfGob29PRTDDQRtib3vUrrIsnBow
- EuZw==
-X-Gm-Message-State: APjAAAVLZXl1P0SuhOSN2dCQuwPOu7RiKXniLkkPdElITyaSPq2J0mk8
- 7sBuvU7saymo+4JU0d2Hmdrn78p14XWULo3Ap89f/w==
-X-Google-Smtp-Source: APXvYqyXXbRJwvoUm1/ZU9MgYql7iUjK+l3n4H+mOYUP5gGfjYQ9PO1P5xFbBOShDCcwOuvRyoqJmEPbMxH/uNId6ZQ=
-X-Received: by 2002:a67:7346:: with SMTP id o67mr50970360vsc.92.1561112942493; 
- Fri, 21 Jun 2019 03:29:02 -0700 (PDT)
+ id 1heGrQ-0000lX-Hx
+ for linux-mtd@lists.infradead.org; Fri, 21 Jun 2019 10:33:39 +0000
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com
+ [209.85.222.41]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id x5LAXDpi001409
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2019 19:33:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x5LAXDpi001409
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1561113194;
+ bh=slfiaAY4ctD94Gy3nIbu6Gult9fpiEPn6QKaADUxQkE=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=wnSJN2YSm5dcil8H1o67DeyN/Hp6D/EDbhbYZM0bvHEoQz7AJD5o5SqBj5Pj9t91/
+ 9IS93tRtVysnYe37IvrmPonY66k77U3crau83eCosz69Vf3h1ZAIK1JKJNThAMgY/u
+ QEChTxJ7/HRHvWma9BpSelr3N5EHG/3k2vCrRaiFnxJLEvagewR/62y5vD2mvT9bPz
+ Z4kGWlnyfT4gXbmhNvZNMu2IxM9xSpE8/tzbdRl2W4k5LPWwzxd5IXZddWd4qQwlUE
+ 2izOTbELWcIifKESaowAUrgJFUhIK6sAMyn8B5u4XPoMFVuOl/rHJ/lSFyi/dDy3gc
+ XRujiIC7LqT8A==
+X-Nifty-SrcIP: [209.85.222.41]
+Received: by mail-ua1-f41.google.com with SMTP id v20so2836207uao.3
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Jun 2019 03:33:14 -0700 (PDT)
+X-Gm-Message-State: APjAAAXCrzpjmh/f5k7Y/jtufvoUDTZoBW9nDRpRAaRvvvqJ2rE6k9ma
+ 4cta78Xv1yXo20b9C+JFhPlMtIYCGdmQYTou/rM=
+X-Google-Smtp-Source: APXvYqxmLwDT8bifOHDTDpQKL32lnNXuu/XL4hAyCx//Eg7ndO/Vsaqad1/OJc7brSky8Jqv5hVmgu5F8KQh3cyMtv4=
+X-Received: by 2002:ab0:5ea6:: with SMTP id y38mr45596842uag.40.1561113193212; 
+ Fri, 21 Jun 2019 03:33:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <1560336476-31763-1-git-send-email-sagar.kadam@sifive.com>
- <1560336476-31763-2-git-send-email-sagar.kadam@sifive.com>
- <325855d0-00f9-df8a-ea57-c140d39dd6ef@ti.com>
- <CAARK3H=O=h1VDgOMxs_0ThcisrH=2tzpW5pQqt0O9oYs=MFFVw@mail.gmail.com>
- <93b9c5fd-8f59-96d7-5e40-2b9d540965dd@ti.com>
-In-Reply-To: <93b9c5fd-8f59-96d7-5e40-2b9d540965dd@ti.com>
-From: Sagar Kadam <sagar.kadam@sifive.com>
-Date: Fri, 21 Jun 2019 15:58:50 +0530
-Message-ID: <CAARK3H=CmxSG2srUaoxN1HF6W7CVKtpATrf89n6kuht2Paqp8A@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] mtd: spi-nor: add support for is25wp256
-To: Vignesh Raghavendra <vigneshr@ti.com>
+References: <20190521084335.15026-1-s.hauer@pengutronix.de>
+ <20190521090417.7883-1-miquel.raynal@bootlin.com>
+ <20190521114022.2c3bbc77@collabora.com>
+ <20190521114808.76c56e27@xps13>
+In-Reply-To: <20190521114808.76c56e27@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 21 Jun 2019 19:32:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATMC5VHGG=CdT1Lv_7HD8y65yVRGsBo92-3c2S1_QTGdA@mail.gmail.com>
+Message-ID: <CAK7LNATMC5VHGG=CdT1Lv_7HD8y65yVRGsBo92-3c2S1_QTGdA@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: rawnand: initialize ntargets with maxchips
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190621_032903_966820_5A29E625 
-X-CRM114-Status: GOOD (  20.18  )
+X-CRM114-CacheID: sfid-20190621_033336_985182_1AE4BBC9 
+X-CRM114-Status: GOOD (  16.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,111 +88,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: aou@eecs.berkeley.edu, tudor.ambarus@microchip.com,
- Wesley Terpstra <wesley@sifive.com>, richard@nod.at,
- Palmer Dabbelt <palmer@sifive.com>, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- Paul Walmsley <paul.walmsley@sifive.com>, miquel.raynal@bootlin.com,
- linux-riscv@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: Boris Brezillon <bbrezillon@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Vignesh,
-
-On Fri, Jun 21, 2019 at 11:33 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+On Tue, May 21, 2019 at 6:48 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 >
-> Hi,
+> Hi Boris,
 >
-> On 17/06/19 8:48 PM, Sagar Kadam wrote:
-> > Hello Vignesh,
+> Boris Brezillon <boris.brezillon@collabora.com> wrote on Tue, 21 May
+> 2019 11:40:22 +0200:
+>
+> > On Tue, 21 May 2019 11:04:17 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > >
-> > Thanks for your review comments.
+> > > On Tue, 2019-05-21 at 08:43:35 UTC, Sascha Hauer wrote:
+> > > > memorg->ntargets is initialized with '1'. It should be initialized with
+> > > > the maxchips argument from nand_scan() instead. Otherwise multi chip
+> > > > support errors out on the secondary chip selects when trying to call
+> > > > nand_reset() on them:
+> > > >
+> > > > WARNING: CPU: 0 PID: 1 at drivers/mtd/nand/raw/internals.h:114
+> > > > nand_reset_op+0x194/0x1c4
+> > > >
+> > > > With this memorg->ntargets is initialized with the maximum number of
+> > > > chip selects supported by the driver. After having detected the number
+> > > > of actually connected chips memory->ntargets is updated with that
+> > > > number.
+> > > >
+> > > > Fixes: 32813e288414 ("mtd: rawnand: Get rid of chip->numchips")
+> > > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > >
+> > > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 > >
-> > On Sun, Jun 16, 2019 at 6:14 PM Vignesh Raghavendra <vigneshr@ti.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 12-Jun-19 4:17 PM, Sagar Shrikant Kadam wrote:
-> >> [...]
-> >>
-> >>> @@ -4129,7 +4137,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
-> >>>       if (ret)
-> >>>               return ret;
-> >>>
-> >>> -     if (nor->addr_width) {
-> >>> +     if (nor->addr_width && JEDEC_MFR(info) != SNOR_MFR_ISSI) {
-> >>>               /* already configured from SFDP */
-> >>
-> >> Hmm, why would you want to ignore addr_width that's read from SFDP table?
-> >
-> > The SFDP table for ISSI device considered here, has addr_width set to
-> > 3 byte, and the flash considered
-> > here is 32MB. With 3 byte address width we won't be able to access
-> > flash memories higher address range.
+> > Are you sure it's mtd/next? I'd expect it to be queued in mtd/fixes not
+> > mtd/next.
 >
-> Is it specific to a particular ISSI part as indicated here[1]? If so,
-> please submit solution agreed there i.e. use spi_nor_fixups callback
->
-> [1]https://patchwork.ozlabs.org/patch/1056049/
+> Yes, I failed to checkout the right branch :)
+> I meant mtd/fixes, will move the patch.
 >
 
-Thanks for sharing the link.
-From what I understand here, it seems that "Address Bytes" of SFDP
-table for the device under
-consideration (is25lp256) supports 3 byte only Addressing mode
-(DWORD1[18:17] = 0b00.
-where as that of ISSI device (is25LP/WP 256Mb/512/Mb/1Gb) support 3 or
-4 byte Addressing mode DWORD1[18:17] = 0b01.
+I was also suffering from this problem today,
+then found this patch.
 
-> > Hence I have ignored the addr width from SFDP.  I have verified that
-> > with 3 byte address width, the
-> > flascp util fails while verifying the written data.  Please let me
-> > know your views on this?
-> >
-> If this affects multiple ISSI parts then:
-> Instead of checking for mfr code, look for SNOR_F_4B_OPCODES flag in
-> flash_info struct of the device and let it take precedence over SFDP in
-> case size is over 16MB
->
 
-So as per your suggestion I think second approach is a better one.
-I will send this in V6.
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-Thanks & Regards,
-Sagar
 
-> Regards
-> Vignesh
->
-> > BR,
-> > Sagar Kadam
-> >
-> >> Regards
-> >> Vignesh
-> >>
-> >>
-> >>>       } else if (info->addr_width) {
-> >>>               nor->addr_width = info->addr_width;
-> >>> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> >>> index b3d360b..ff13297 100644
-> >>> --- a/include/linux/mtd/spi-nor.h
-> >>> +++ b/include/linux/mtd/spi-nor.h
-> >>> @@ -19,6 +19,7 @@
-> >>>  #define SNOR_MFR_ATMEL               CFI_MFR_ATMEL
-> >>>  #define SNOR_MFR_GIGADEVICE  0xc8
-> >>>  #define SNOR_MFR_INTEL               CFI_MFR_INTEL
-> >>> +#define SNOR_MFR_ISSI                0x9d            /* ISSI */
-> >>>  #define SNOR_MFR_ST          CFI_MFR_ST      /* ST Micro */
-> >>>  #define SNOR_MFR_MICRON              CFI_MFR_MICRON  /* Micron */
-> >>>  #define SNOR_MFR_MACRONIX    CFI_MFR_MACRONIX
-> >>>
->
-> --
-> Regards
-> Vignesh
+
+-- 
+Best Regards
+Masahiro Yamada
 
 ______________________________________________________
 Linux MTD discussion mailing list
