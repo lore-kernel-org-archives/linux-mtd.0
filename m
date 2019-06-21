@@ -1,87 +1,62 @@
-Return-Path: <SRS0=7m8F=UT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=RgZt=UU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF1BC43613
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2019 22:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA09AC43613
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 00:54:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A883A2082C
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2019 22:14:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9EF8A2075E
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 00:54:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CLl+tEGR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HRHy43z6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A883A2082C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pFeqiXVG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EF8A2075E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mit.edu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=imnVUV56wSNGSifs3P4dc51pMcYJfp0y5VBaUHLa7tw=; b=CLl+tEGRuOcVun
-	Gkz0Negq8Dvl1moAJk/GHfBKMLHZlszvw/yv6KLobiDDwAf11mvTI38id2CJyibeVdyrgl7c+x4Ga
-	X21AIoJyKmPY7lrpG2TLIFYLs0XnDZSPUoJ7d8NQOkwWmNzBmWZBV4asnFpgTIDF+6eK0qXcOefS8
-	PcD+7qVqRg4VbEySPBmostviAlNu6QecO40pWtlsfMDihLJhL3Fj3vTInh/xg1RcV+BmNUUvDph/G
-	Q5rGaEbzXURP+fVuzXxHT4KrbqvDS4u+/no0xOwh3iIhmZHQvIR1i+N4B8xrwQPCTWwjQa9BjUEdF
-	uU4hGS7AzWipYwQ54eWw==;
+	List-Owner; bh=D4IFLkTtRkSTuVoj7eWSesTAqGqbH+qcDnt5GyBLnoM=; b=pFeqiXVGEPxFT/
+	N17Nis0//ofu55TJjuwqMGWp/ibaf/Uqb+OpkyYjZ0TUqeel767PeD3NKKiAWRXjcYj5sym94xf2+
+	AaikfGhyuIlECCodzVCjlbgIjAEqscw8H5h6vGF2tciurH3J9MA3HTmezNcbMAMPn8oDjkpJCfmr5
+	nrfDFSY448QsbrByrdRfLfWqxtwFTxTjF9tuDu5qXBHUCth6mhGWcczXf/9unXOokzQvzqSBluugJ
+	vU3R5sHB5mCrzko83bjMS76x9e7OuHwr1fZHrFLOqQW9eGJULChduEk24DRbRyBjTIhHdKna+c1/p
+	9coSksaAkSovCKv+sZcw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1he5K4-0002yR-1f; Thu, 20 Jun 2019 22:14:24 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1he7pA-0004pO-BY; Fri, 21 Jun 2019 00:54:40 +0000
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1he5J6-0001yr-2j
- for linux-mtd@lists.infradead.org; Thu, 20 Jun 2019 22:13:25 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KM3nsv109072;
- Thu, 20 Jun 2019 22:13:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=OsSBTvuyKOZHpYxr7BMRKlrDJF74SMWishCpQlewDkg=;
- b=HRHy43z65mymGGo6sWVVPuVFpItbR12cz3YFYbaCqJGOBgvqYtfpb/PeLVjuuEVqrQv2
- GpZIrIgzJZC0+U+yXwJ1Vqs3qY3UMIfqSIwL3pZPIfdyZff3jwYOEkEcKtjd/YwH/Sq6
- aV/5TlsmcdKu7KhrpVNfWRmjrbQlir4Di4CKy0hExq7FpxJJYc99Sw4feLIcaNKWlvrK
- 5xy4bURhqhJGb38LoU38YZ1npKwLTXMnl7fXFWWSALJ4esecgPStCOfTzz7/fuGUuQ5/
- 3Ls5Aj1t1c7iY5R0EC3GWYb2yjGGpkr0/0/gtaJLRnwOzAdzATduot/C0pAUHfoTLX0u QQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2130.oracle.com with ESMTP id 2t7809kgm8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 20 Jun 2019 22:13:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KMCXI6043214;
- Thu, 20 Jun 2019 22:13:12 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3020.oracle.com with ESMTP id 2t77ypm9eb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 20 Jun 2019 22:13:12 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5KMDCTk044443;
- Thu, 20 Jun 2019 22:13:12 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by aserp3020.oracle.com with ESMTP id 2t77ypm9e2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 20 Jun 2019 22:13:12 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5KMD85F022773;
- Thu, 20 Jun 2019 22:13:09 GMT
-Received: from localhost (/10.145.179.81)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Thu, 20 Jun 2019 15:13:08 -0700
-Date: Thu, 20 Jun 2019 15:13:06 -0700
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: "Theodore Ts'o" <tytso@mit.edu>, matthew.garrett@nebula.com,
- yuchao0@huawei.com, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
- clm@fb.com, adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk,
- jack@suse.com, dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
+ id 1he7p7-0004p2-5J
+ for linux-mtd@lists.infradead.org; Fri, 21 Jun 2019 00:54:38 +0000
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com
+ [104.133.0.109] (may be forged)) (authenticated bits=0)
+ (User authenticated as tytso@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5L0sK0h000800
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Jun 2019 20:54:21 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+ id 28403420484; Thu, 20 Jun 2019 20:54:20 -0400 (EDT)
+Date: Thu, 20 Jun 2019 20:54:20 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH 1/6] mm/fs: don't allow writes to immutable files
+Message-ID: <20190621005420.GH4650@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+ "Darrick J. Wong" <darrick.wong@oracle.com>,
+ matthew.garrett@nebula.com, yuchao0@huawei.com,
+ ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+ adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+ dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
  reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
  devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
@@ -89,26 +64,16 @@ To: "Theodore Ts'o" <tytso@mit.edu>, matthew.garrett@nebula.com,
  linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
  linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm/fs: don't allow writes to immutable files
-Message-ID: <20190620221306.GD5375@magnolia>
 References: <156022836912.3227213.13598042497272336695.stgit@magnolia>
  <156022837711.3227213.11787906519006016743.stgit@magnolia>
- <20190620215212.GG4650@mit.edu>
+ <20190620215212.GG4650@mit.edu> <20190620221306.GD5375@magnolia>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190620215212.GG4650@mit.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9294
- signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=570 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906200158
+In-Reply-To: <20190620221306.GD5375@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190620_151324_300370_C0C88361 
-X-CRM114-Status: GOOD (  21.17  )
+X-CRM114-CacheID: sfid-20190620_175437_431893_537B03B4 
+X-CRM114-Status: GOOD (  11.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,60 +85,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: linux-efi@vger.kernel.org, linux-btrfs@vger.kernel.org, yuchao0@huawei.com,
+ linux-mm@kvack.org, clm@fb.com, adilger.kernel@dilger.ca,
+ matthew.garrett@nebula.com, linux-nilfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, devel@lists.orangefs.org, josef@toxicpanda.com,
+ reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
+ jaegeuk@kernel.org, ard.biesheuvel@linaro.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+ jk@ozlabs.org, jack@suse.com, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 20, 2019 at 05:52:12PM -0400, Theodore Ts'o wrote:
-> On Mon, Jun 10, 2019 at 09:46:17PM -0700, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <darrick.wong@oracle.com>
-> > 
-> > The chattr manpage has this to say about immutable files:
-> > 
-> > "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> > or renamed, no link can be created to this file, most of the file's
-> > metadata can not be modified, and the file can not be opened in write
-> > mode."
-> > 
-> > Once the flag is set, it is enforced for quite a few file operations,
-> > such as fallocate, fpunch, fzero, rm, touch, open, etc.  However, we
-> > don't check for immutability when doing a write(), a PROT_WRITE mmap(),
-> > a truncate(), or a write to a previously established mmap.
-> > 
-> > If a program has an open write fd to a file that the administrator
-> > subsequently marks immutable, the program still can change the file
-> > contents.  Weird!
-> > 
-> > The ability to write to an immutable file does not follow the manpage
-> > promise that immutable files cannot be modified.  Worse yet it's
-> > inconsistent with the behavior of other syscalls which don't allow
-> > modifications of immutable files.
-> > 
-> > Therefore, add the necessary checks to make the write, mmap, and
-> > truncate behavior consistent with what the manpage says and consistent
-> > with other syscalls on filesystems which support IMMUTABLE.
-> > 
-> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+On Thu, Jun 20, 2019 at 03:13:06PM -0700, Darrick J. Wong wrote:
+> > I note that this patch doesn't allow writes to swap files.  So Amir's
+> > generic/554 test will still fail for those file systems that don't use
+> > copy_file_range.
 > 
-> I note that this patch doesn't allow writes to swap files.  So Amir's
-> generic/554 test will still fail for those file systems that don't use
-> copy_file_range.
+> I didn't add any IS_SWAPFILE checks here, so I'm not sure to what you're
+> referring?
 
-I didn't add any IS_SWAPFILE checks here, so I'm not sure to what you're
-referring?
+Sorry, my bad; I mistyped.  What I should have said is this patch
+doesn't *prohibit* writes to swap files....
 
-> I'm indifferent as to whether you add a new patch, or include that
-> change in this patch, but perhaps we should fix this while we're
-> making changes in these code paths?
+(And so Amir's generic/554 test, even modified so it allow reads from
+swapfiles, but not writes, when using copy_file_range, is still
+failing for ext4.  I was looking to see if I could remove it from my
+exclude list, but not yet.  :-)
 
-The swapfile patches should be in a separate patch, which I was planning
-to work on but hadn't really gotten around to it.
+> > I'm indifferent as to whether you add a new patch, or include that
+> > change in this patch, but perhaps we should fix this while we're
+> > making changes in these code paths?
+> 
+> The swapfile patches should be in a separate patch, which I was planning
+> to work on but hadn't really gotten around to it.
 
---D
+Ok, great, thanks!!
 
-
-> 				- Ted
+				- Ted
 
 ______________________________________________________
 Linux MTD discussion mailing list
