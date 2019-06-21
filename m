@@ -2,107 +2,86 @@ Return-Path: <SRS0=RgZt=UU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43D6DC43613
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 13:24:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 940FAC43613
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 14:45:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F76621537
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 13:24:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 60D532089E
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2019 14:45:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GMnCUgd6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="FYGTNKRQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F76621537
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="u+DQ+jHo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="Sx474+o2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60D532089E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wOm++jVBGMJokVLicvoovgO31DRXTtela9eJc9SwQ3w=; b=GMnCUgd6pyUpWH
-	dK8/7/GJeTcCObsQoKt8TZReed35FDrVMvGFZ7EB22xoFA8cs7SiYYWw3qPCfZZj51RrB8VRDY/Q9
-	r2xyAxrA6R3oOeKhSY88MJJJu5m0xHK3OwYkNT5HU1QrPtXNX2Oe0wh8SE16iH1xWl6IMs1TrWtVI
-	xmnsjkNKN6ZNlXqXQxxfItNnpSBWUOK45gf3Mi9rSnwaTKBdgoZt7MWy4yDvCtq+sdDiS1oymbMlK
-	+aV25ybH88EwDPqZJgH4wv5cBGLkmYlDJqRuwaWWaGjZLnJg4KHgC8hOWs6j2JvTCL3uzwj2iJT06
-	2DiCU8RGaI/T5EmN1vjA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3s7AVR25RdkyxQWS3jCR2efGTXO4hvz9aQrmVi6Gd/o=; b=u+DQ+jHoC+jyPl
+	aV+xU77TfU9QFp30PKhqg64xqFpgg4PdY8CQ81MWLD+6aLHCh6XrNEhZqbMsPOACXnT8g4W8APsKe
+	8nrs0cQH60hfIwt3dkqbPuBOVbs4bVfsWWDlKxKLpcG5jop3+HUAik7puRRgbx2hBdKlwZsJecGyE
+	ZbX9zOfgUu2x/nlhORgNDAaoQZZNT28KuL7FcunhUpKaYMpBS1LAzwzs+rwz/iPpSS4FfiXl2xQ6l
+	sK2Ap5ZwTa+sUmHUvh4FjANfQpeUwdOSaVBcJv1yMjXopHU37ZkOQUPEkHUCIwIDit8uzctxCDSqd
+	loq4oW3ylLrf0kDoQrpQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1heJWX-0007o8-L3; Fri, 21 Jun 2019 13:24:13 +0000
-Received: from mail-eopbgr740055.outbound.protection.outlook.com
- ([40.107.74.55] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+	id 1heKnQ-0005Av-Bc; Fri, 21 Jun 2019 14:45:44 +0000
+Received: from mx07-00178001.pphosted.com ([62.209.51.94])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1heJWL-0007dv-2I
- for linux-mtd@lists.infradead.org; Fri, 21 Jun 2019 13:24:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector1-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BiArLKtiLzI2TGsNoz0UpT/qUaNnHYZYKsBvNEx6tLg=;
- b=FYGTNKRQpq7tc9wLr/+MkAOfDGQOj0frwCTIVxhbA1ifPDRnUxqSQTMBs860nzg+SB8Do1x4iG8pkXUP/BtFYtboqy5MDMVqjeKX90YmNigbdIpQaEkwwGZPYY6Kpdk/W6jYa5Vhftc/vwgqSsKk9ZNOEZjT1ZH5FahkeDc+yXI=
-Received: from DM6PR02MB4779.namprd02.prod.outlook.com (20.176.109.16) by
- DM6PR02MB4217.namprd02.prod.outlook.com (20.176.76.14) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.12; Fri, 21 Jun 2019 13:23:56 +0000
-Received: from DM6PR02MB4779.namprd02.prod.outlook.com
- ([fe80::6d49:62d5:cd7c:a8f]) by DM6PR02MB4779.namprd02.prod.outlook.com
- ([fe80::6d49:62d5:cd7c:a8f%6]) with mapi id 15.20.1987.014; Fri, 21 Jun 2019
- 13:23:56 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Helmut Grohne <helmut.grohne@intenta.de>
-Subject: RE: [LINUX PATCH v16] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Thread-Topic: [LINUX PATCH v16] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Thread-Index: AQHVJOm9RuKR855h4kWfTmRlitOSm6al0HkAgAAWSnA=
-Date: Fri, 21 Jun 2019 13:23:56 +0000
-Message-ID: <DM6PR02MB47797622A75DD47042136C25AFE70@DM6PR02MB4779.namprd02.prod.outlook.com>
-References: <20190617085002.4746-1-naga.sureshkumar.relli@xilinx.com>
- <20190621084141.xnqnzuogb3fv4tla@laureti-dev>
-In-Reply-To: <20190621084141.xnqnzuogb3fv4tla@laureti-dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=nagasure@xilinx.com; 
-x-originating-ip: [149.199.50.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a602038a-285a-4f0d-743c-08d6f64bb68b
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
- SRVR:DM6PR02MB4217; 
-x-ms-traffictypediagnostic: DM6PR02MB4217:
-x-microsoft-antispam-prvs: <DM6PR02MB421753F6FF31DA0F4B6368ACAFE70@DM6PR02MB4217.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1060;
-x-forefront-prvs: 0075CB064E
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(346002)(376002)(366004)(136003)(39850400004)(51914003)(189003)(199004)(13464003)(26005)(71190400001)(25786009)(71200400001)(66066001)(229853002)(30864003)(305945005)(486006)(74316002)(7736002)(476003)(55016002)(53946003)(9686003)(11346002)(186003)(14444005)(256004)(5024004)(446003)(6436002)(86362001)(2906002)(7696005)(4326008)(14454004)(107886003)(76176011)(68736007)(102836004)(99286004)(478600001)(6916009)(81156014)(81166006)(8676002)(52536014)(33656002)(8936002)(64756008)(66946007)(5660300002)(66476007)(66556008)(73956011)(66446008)(76116006)(53936002)(316002)(54906003)(6506007)(53546011)(3846002)(6246003)(6116002)(579004)(569006);
- DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR02MB4217;
- H:DM6PR02MB4779.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-received-spf: None (protection.outlook.com: xilinx.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: CnzXTQrF6Yt6xn/uKcsepmBIsKeo35D+MgUFoXNDvR5inVJZqKir1ZeWl//rq3cMhaNvqWB6/Ep0OAdVQVgMgcngmfOcGeajTBIn6dk8Z+XfkFgqSFq4JUGOlyuPaP+vkb7c7eFXaSpvCAWdwiaErzZ2DHTePA55dkTe2PiDORz1u+bJRKvTiayQ/dzxSqKIKZEcvNJUo/5EMStpqhZPwxZ849o1n24VRHUrFYHnG4dgWJs96bqwxph7aevfGNVdOtHy5XHKcRrrmBAMijcL+KTiG7180DYcDLtzcdQ9rW+nObzHiFI0r9C4ZJfVKvoU6eWVc2gjuLIYG0QKAJfaVcBS9AH+BPiOJGGNVSaerh9U1irah9qNIEfVa/kcDkJQYD+jbjFzqdDJ1BWByRmSyV7njMakBXVDVLUQrYegLmU=
+ id 1heKnL-0005AE-Cl
+ for linux-mtd@lists.infradead.org; Fri, 21 Jun 2019 14:45:43 +0000
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x5LEaLfB015683; Fri, 21 Jun 2019 16:45:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=STMicroelectronics;
+ bh=WqjY9zs9zCZq8+Hm3pdFJcA/p5+E2O4pVwcMcnboFME=;
+ b=Sx474+o2VtzFrHIKl9vcqK4Pzg7C7Z+iP5MPbcN8QCBd5PwqSE+6Bqz0NG7rtAcbmEwE
+ HGjfzSLd2F9YHmkc4UHZdTCpXWDhHXVuLENNIFeFYxJb5UVZ0OsTXJ9+iAGR8MkvDWf/
+ 5XZML2hegjUX+40B6Me6XxkV7O1E76sKgMaIZX17v+laZB/dshFt+JA5Jrkjj0bEW94V
+ yqOf8e/UhwllruOkYqpDdv6h8wHSM4XDkKa2kENVHCQpgLLpbHrVkWTftGEuMc9yRnjt
+ UdHopoZc7hd3JZ4syPdXRHya5MG2ABQCflPIxGF8hAsrmjC7d/EHLpoov1l4wK6AQnWX Eg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2t7813qt03-1
+ (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT);
+ Fri, 21 Jun 2019 16:45:24 +0200
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E052338;
+ Fri, 21 Jun 2019 14:45:23 +0000 (GMT)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ACEE32BA7;
+ Fri, 21 Jun 2019 14:45:23 +0000 (GMT)
+Received: from localhost (10.75.127.49) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2;
+ Fri, 21 Jun 2019 16:45:23 +0200
+From: Christophe Kerello <christophe.kerello@st.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>, <vigneshr@ti.com>
+Subject: [PATCH] mtd: rawnand: stm32_fmc2: avoid warnings when building with
+ W=1 option
+Date: Fri, 21 Jun 2019 16:43:09 +0200
+Message-ID: <1561128189-14411-1-git-send-email-christophe.kerello@st.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a602038a-285a-4f0d-743c-08d6f64bb68b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2019 13:23:56.4197 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nagasure@xilinx.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4217
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2019-06-21_10:, , signatures=0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190621_062401_377675_C9F743A2 
-X-CRM114-Status: GOOD (  26.92  )
+X-CRM114-CacheID: sfid-20190621_074542_196500_2EC98A3E 
+X-CRM114-Status: GOOD (  13.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,1528 +93,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- Michal Simek <michals@xilinx.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Christophe Kerello <christophe.kerello@st.com>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bbrezillon@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Helmut,
-
-> -----Original Message-----
-> From: Helmut Grohne <helmut.grohne@intenta.de>
-> Sent: Friday, June 21, 2019 2:12 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; vigneshr@ti.com; linux-
-> mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>
-> Subject: Re: [LINUX PATCH v16] mtd: rawnand: pl353: Add basic driver for arm pl353 smc
-> nand interface
-> 
-> Hi,
-> 
-> On Mon, Jun 17, 2019 at 02:50:02AM -0600, Naga Sureshkumar Relli wrote:
-> > Add driver for arm pl353 static memory controller nand interface with
-> > HW ECC support. This controller is used in Xilinx Zynq SoC for
-> > interfacing the NAND flash memory.
-> 
-> Thank you for the update.
-> 
-> > -> Tested Micron MT29F2G08ABAEAWP (On-die capable) and AMD/Spansion
-> S34ML01G1.
-> 
-Thank you for your effort on testing.
-> I've tested this driver with the same Micron MT29F2G08ABAEAWP using
-I haven't tried jffs2 previously.
-I tried it now and I also seen the similar behavior.
-I found one issue in nand_micron.c and in pl353_nand.c where in micron_nand_init(),
-without checking if (!chip->ecc.read_page), it is over writing
-The driver's read_page().
-So I have added check like below in nand_micron.c
-@@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
- 		chip->ecc.size = 512;
- 		chip->ecc.strength = chip->base.eccreq.strength;
- 		chip->ecc.algo = NAND_ECC_BCH;
--		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
--		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-+		if (!chip->ecc.read_page)
-+			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-+
-+		if (!chip->ecc.write_page)
-+			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-
-And in pl353_nand.c driver, 
-@@ -1024,6 +1028,8 @@ static int pl353_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
- 	ecc->read_oob = pl353_nand_read_oob;
- 	ecc->write_oob = pl353_nand_write_oob;
- 	if (ecc_mode == NAND_ECC_ON_DIE) {
-+		ecc->write_page = pl353_nand_write_page_raw;
-+		ecc->read_page = pl353_nand_read_page_raw;
- 		ecc->write_page_raw = pl353_nand_write_page_raw;
- 		ecc->read_page_raw = pl353_nand_read_page_raw;
- 
-with this changes, jffs2 is also working fine(able to mount and unmount and data integrity
-is working fine)
-I will update and send the updated patches.
-
-> v5.2-rc5 and I am still seeing lots of ecc errors aka mtd_read returning -EBADMSG. I traced
-> the source of these errors to
-> micron_nand_on_die_ecc_status_4 where the NAND_STATUS_FAIL bit is often found. I
-> reproduced this symptom on multiple boards. An older version of the driver (against v4.14)
-> does not show this behaviour on the same devices. I was able to reliably reproduce this
-> behaviour using the following sequence:
->  * flash_erase -j /dev/mtdN 0 0
->  * mount -t jffs2 /dev/mtdblockN /mnt
->  * touch /mnt/foo
->  * umount /mnt
->  * mount -t jffs2 /dev/mtdblockN /mnt
-> The relevant kernel message is:
-> 
->     jffs2: mtd->read(0xXXX bytes from 0xXXXXXXX) returned ECC error
-> 
-> I also occasionally saw errors from nandtest ("Byte 0xXXXXX is XX should be XX"). They
-> only reproduce when running nandtest multiple times (less than 10).  When such errors
-> happen, they are not simple bit flips. Lots of consecutive bytes differ entirely. Again, I am
-> unable to reproduce these errors with the older driver.
-> 
-> Possibly I'm wrongly configuring the flash. Can you share a correct device tree for it? Given
-> my reading of the driver, the nand-ecc-algo is irrelevant, because nand_micron.c forces bch for
-> on-die ecc-mode anyway.
-> The ecc-strength thus becomes 4. So I'm left wondering what needs to be configured beyond
-> nand-ecc-mode = "on-die" and nand-bus-width = <8>?
-Below one I am using for testing.
-	flash@e1000000 {
-		status = "okay";
-		compatible = "arm,pl353-nand-r2p1";
-		reg = <0xe1000000 0x1000000>;
-		#address-cells = <0x1>;
-		#size-cells = <0x1>;
-		nand-ecc-mode = "on-die";
-		nand-bus-width = <0x8>;
-
-		partition@nand-fsbl-uboot {
-			label = "nand-fsbl-uboot";
-			reg = <0x0 0x2000000>;
-		};
-		partition@nand-linux {
-			label = "nand-linux";
-			reg = <0x100000 0x500000>;
-		};
-		partition@nand-device-tree {
-			label = "nand-device-tree";
-			reg = <0x600000 0x20000>;
-		};
-		partition@nand-rootfs {
-			label = "nand-rootfs";
-			reg = <0x620000 0x5e0000>;
-		};
-		partition@nand-bitstream {
-			label = "nand-bitstream";
-			reg = <0xc00000 0x400000>;
-			};
-	};
-> 
-> In addition to testing the driver, I looked at the source again.
-> 
-> > Changes in v15:
-> 
-> It seems that this version lost the Kconfig and Makefile integration.
-Sorry, will update it.
-> 
-> > --- /dev/null
-> > +++ b/drivers/mtd/nand/raw/pl353_nand.c
-> > @@ -0,0 +1,1306 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * ARM PL353 NAND flash controller driver
-> > + *
-> > + * Copyright (C) 2017 Xilinx, Inc
-> > + * Author: Punnaiah chowdary kalluri <punnaiah@xilinx.com>
-> > + * Author: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> > + *
-> > + */
-> > +
-> > +#include <linux/err.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/ioport.h>
-> > +#include <linux/irq.h>
-> > +#include <linux/module.h>
-> > +#include <linux/moduleparam.h>
-> > +#include <linux/mtd/mtd.h>
-> > +#include <linux/mtd/rawnand.h>
-> > +#include <linux/mtd/nand_ecc.h>
-> > +#include <linux/mtd/partitions.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/of_platform.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/pl353-smc.h>
-> > +#include <linux/clk.h>
-> > +
-> > +#define PL353_NAND_DRIVER_NAME "pl353-nand"
-> > +
-> > +/* NAND flash driver defines */
-> > +#define PL353_NAND_ECC_SIZE	512	/* Size of data for ECC operation */
-> > +
-> > +/* AXI Address definitions */
-> > +#define START_CMD_SHIFT		3
-> > +#define END_CMD_SHIFT		11
-> > +#define END_CMD_VALID_SHIFT	20
-> > +#define ADDR_CYCLES_SHIFT	21
-> > +#define CLEAR_CS_SHIFT		21
-> > +#define ECC_LAST_SHIFT		10
-> > +#define COMMAND_PHASE		(0 << 19)
-> > +#define DATA_PHASE		BIT(19)
-> > +
-> > +#define PL353_NAND_ECC_LAST	BIT(ECC_LAST_SHIFT)	/* Set
-> ECC_Last */
-> > +#define PL353_NAND_CLEAR_CS	BIT(CLEAR_CS_SHIFT)	/* Clear chip
-> select */
-> > +
-> > +#define PL353_NAND_ECC_BUSY_TIMEOUT	(1 * HZ)
-> > +#define PL353_NAND_DEV_BUSY_TIMEOUT	(1 * HZ)
-> > +#define PL353_NAND_LAST_TRANSFER_LENGTH	4
-> > +#define PL353_NAND_ECC_VALID_SHIFT	24
-> > +#define PL353_NAND_ECC_VALID_MASK	0x40
-> > +#define PL353_ECC_BITS_BYTEOFF_MASK	0x1FF
-> > +#define PL353_ECC_BITS_BITOFF_MASK	0x7
-> > +#define PL353_ECC_BIT_MASK		0xFFF
-> > +#define PL353_TREA_MAX_VALUE		1
-> > +#define PL353_MAX_ECC_CHUNKS		4
-> > +#define PL353_MAX_ECC_BYTES		3
-> > +
-> > +struct pl353_nfc_op {
-> > +	u32 cmnds[2];
-> > +	u32 addrs;
-> > +	u32 naddrs;
-> > +	u16 addrs_56;	/* Address cycles 5 and 6 */
-> > +	unsigned int data_instr_idx;
-> > +	unsigned int rdy_timeout_ms;
-> > +	unsigned int rdy_delay_ns;
-> > +	const struct nand_op_instr *data_instr; };
-> > +
-> > +/**
-> > + * struct pl353_nand_controller - Defines the NAND flash controller driver
-> > + *				  instance
-> > + * @controller:		NAND controller structure
-> > + * @chip:		NAND chip information structure
-> > + * @dev:		Parent device (used to print error messages)
-> > + * @regs:		Virtual address of the NAND flash device
-> > + * @dataphase_addrflags:Flags required for data phase transfers
-> > + * @addr_cycles:	Address cycles
-> > + * @mclk:		Memory controller clock
-> > + * @mclk_rate:		Clock rate of the Memory controller
-> > + * @buswidth:		Bus width 8 or 16
-> > + */
-> > +struct pl353_nand_controller {
-> > +	struct nand_controller controller;
-> > +	struct nand_chip chip;
-> > +	struct device *dev;
-> > +	void __iomem *regs;
-> > +	u32 dataphase_addrflags;
-> > +	u8 addr_cycles;
-> > +	struct clk *mclk;
-> 
-> The mclk attribute is only referenced in pl353_nand_probe. There is no need to store it in this
-> struct.
-Ok. will remove it.
-> 
-> > +	ulong mclk_rate;
-> > +	u32 buswidth;
-> > +};
-> > +
-> > +static inline struct pl353_nand_controller *
-> > +			to_pl353_nand(struct nand_chip *chip) {
-> > +	return container_of(chip, struct pl353_nand_controller, chip); }
-> > +
-> > +static int pl353_ecc_ooblayout16_ecc(struct mtd_info *mtd, int section,
-> > +				     struct mtd_oob_region *oobregion) {
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +
-> > +	if (section >= chip->ecc.steps)
-> > +		return -ERANGE;
-> > +
-> > +	oobregion->offset = (section * chip->ecc.bytes);
-> > +	oobregion->length = chip->ecc.bytes;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pl353_ecc_ooblayout16_free(struct mtd_info *mtd, int section,
-> > +				      struct mtd_oob_region *oobregion) {
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +
-> > +	if (section >= chip->ecc.steps)
-> > +		return -ERANGE;
-> > +
-> > +	oobregion->offset = (section * chip->ecc.bytes) + 8;
-> > +	oobregion->length = 8;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct mtd_ooblayout_ops pl353_ecc_ooblayout16_ops = {
-> > +	.ecc = pl353_ecc_ooblayout16_ecc,
-> > +	.free = pl353_ecc_ooblayout16_free,
-> > +};
-> > +
-> > +static int pl353_ecc_ooblayout64_ecc(struct mtd_info *mtd, int section,
-> > +				     struct mtd_oob_region *oobregion) {
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +
-> > +	if (section)
-> > +		return -ERANGE;
-> > +
-> > +	oobregion->offset = (section * chip->ecc.bytes) + 52;
-> 
-> You already know that `section == 0` here. Is there an advantage of including the `(0 *
-> something) +` here?
-Ok. will update this.
-> 
-> > +	oobregion->length = chip->ecc.bytes;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pl353_ecc_ooblayout64_free(struct mtd_info *mtd, int section,
-> > +				      struct mtd_oob_region *oobregion) {
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +
-> > +	if (section)
-> > +		return -ERANGE;
-> > +
-> > +	oobregion->offset = (section * chip->ecc.bytes) + 2;
-> 
-> Dito.
-Ok. will update this.
-> 
-> > +	oobregion->length = 50;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct mtd_ooblayout_ops pl353_ecc_ooblayout64_ops = {
-> > +	.ecc = pl353_ecc_ooblayout64_ecc,
-> > +	.free = pl353_ecc_ooblayout64_free,
-> > +};
-> > +
-> > +/* Generic flash bbt decriptors */
-> > +static u8 bbt_pattern[] = { 'B', 'b', 't', '0' }; static u8
-> > +mirror_pattern[] = { '1', 't', 'b', 'B' };
-> > +
-> > +static struct nand_bbt_descr bbt_main_descr = {
-> > +	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE |
-> NAND_BBT_WRITE
-> > +		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-> > +	.offs = 4,
-> > +	.len = 4,
-> > +	.veroffs = 20,
-> > +	.maxblocks = 4,
-> > +	.pattern = bbt_pattern
-> > +};
-> > +
-> > +static struct nand_bbt_descr bbt_mirror_descr = {
-> > +	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE |
-> NAND_BBT_WRITE
-> > +		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-> > +	.offs = 4,
-> > +	.len = 4,
-> > +	.veroffs = 20,
-> > +	.maxblocks = 4,
-> > +	.pattern = mirror_pattern
-> > +};
-> > +
-> > +static void pl353_nfc_force_byte_access(struct nand_chip *chip,
-> > +					bool force_8bit)
-> > +{
-> > +	int ret;
-> > +	struct pl353_nand_controller *xnfc =
-> > +		container_of(chip, struct pl353_nand_controller, chip);
-> > +
-> > +	if (xnfc->buswidth == 8)
-> > +		return;
-> > +
-> > +	if (force_8bit)
-> > +		ret = pl353_smc_set_buswidth(PL353_SMC_MEM_WIDTH_8);
-> > +	else
-> > +		ret = pl353_smc_set_buswidth(PL353_SMC_MEM_WIDTH_16);
-> > +
-> > +	if (ret)
-> > +		dev_err(xnfc->dev, "Error in Buswidth\n"); }
-> > +
-> > +static inline int pl353_wait_for_dev_ready(struct nand_chip *chip) {
-> > +	unsigned long timeout = jiffies + PL353_NAND_DEV_BUSY_TIMEOUT;
-> > +
-> > +	while (!pl353_smc_get_nand_int_status_raw()) {
-> > +		if (time_after_eq(jiffies, timeout)) {
-> > +			pr_err("%s timed out\n", __func__);
-> > +			return -ETIMEDOUT;
-> > +		}
-> > +		cond_resched();
-> > +	}
-> > +
-> > +	pl353_smc_clr_nand_int();
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_read_data_op - read chip data into buffer
-> > + * @chip:	Pointer to the NAND chip info structure
-> > + * @in:		Pointer to the buffer to store read data
-> > + * @len:	Number of bytes to read
-> > + * @force_8bit:	Force 8-bit bus access
-> > + * Return:	Always return zero
-> > + */
-> > +static void pl353_nand_read_data_op(struct nand_chip *chip, u8 *in,
-> > +				    unsigned int len, bool force_8bit) {
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	int i;
-> > +
-> > +	if (force_8bit)
-> > +		pl353_nfc_force_byte_access(chip, true);
-> > +
-> > +	if ((IS_ALIGNED((uint32_t)in, sizeof(uint32_t)) &&
-> > +	     IS_ALIGNED(len, sizeof(uint32_t))) || !force_8bit) {
-> 
-> Do you really mean `||` here? It seems that when `in` and `len` are properly aligned, there is no
-> way to force 8bit access with this implementation.
-Ok. I will check it and update.
-> 
-> > +		u32 *ptr = (u32 *)in;
-> > +
-> > +		len /= 4;
-> > +		for (i = 0; i < len; i++)
-> > +			ptr[i] = readl(xnfc->regs + xnfc->dataphase_addrflags);
-> > +	} else {
-> > +		for (i = 0; i < len; i++)
-> > +			in[i] = readb(xnfc->regs + xnfc->dataphase_addrflags);
-> > +	}
-> > +
-> > +	if (force_8bit)
-> > +		pl353_nfc_force_byte_access(chip, false); }
-> > +
-> > +/**
-> > + * pl353_nand_write_buf - write buffer to chip
-> > + * @chip:	Pointer to the nand_chip structure
-> > + * @buf:	Pointer to the buffer to store write data
-> > + * @len:	Number of bytes to write
-> > + * @force_8bit:	Force 8-bit bus access
-> > + */
-> > +static void pl353_nand_write_data_op(struct nand_chip *chip, const u8 *buf,
-> > +				     int len, bool force_8bit)
-> > +{
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	int i;
-> > +
-> > +	if (force_8bit)
-> > +		pl353_nfc_force_byte_access(chip, true);
-> > +
-> > +	if ((IS_ALIGNED((uint32_t)buf, sizeof(uint32_t)) &&
-> > +	     IS_ALIGNED(len, sizeof(uint32_t))) || !force_8bit) {
-> 
-> Dito.
-Ok. will update this.
-> 
-> > +		u32 *ptr = (u32 *)buf;
-> > +
-> > +		len /= 4;
-> > +		for (i = 0; i < len; i++)
-> > +			writel(ptr[i], xnfc->regs + xnfc->dataphase_addrflags);
-> > +	} else {
-> > +		for (i = 0; i < len; i++)
-> > +			writeb(buf[i], xnfc->regs + xnfc->dataphase_addrflags);
-> > +	}
-> > +
-> > +	if (force_8bit)
-> > +		pl353_nfc_force_byte_access(chip, false); }
-> > +
-> > +static inline int pl353_wait_for_ecc_done(void) {
-> > +	unsigned long timeout = jiffies + PL353_NAND_ECC_BUSY_TIMEOUT;
-> > +
-> > +	while (pl353_smc_ecc_is_busy()) {
-> > +		if (time_after_eq(jiffies, timeout)) {
-> > +			pr_err("%s timed out\n", __func__);
-> > +			return -ETIMEDOUT;
-> > +		}
-> > +		cond_resched();
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_calculate_hwecc - Calculate Hardware ECC
-> > + * @chip:	Pointer to the nand_chip structure
-> > + * @data:	Pointer to the page data
-> > + * @ecc:	Pointer to the ECC buffer where ECC data needs to be stored
-> > + *
-> > + * This function retrieves the Hardware ECC data from the controller
-> > +and returns
-> > + * ECC data back to the MTD subsystem.
-> > + * It operates on a number of 512 byte blocks of NAND memory and can
-> > +be
-> > + * programmed to store the ECC codes after the data in memory. For
-> > +writes,
-> > + * the ECC is written to the spare area of the page. For reads, the
-> > +result of
-> > + * a block ECC check are made available to the device driver.
-> > + *
-> > + * ------------------------------------------------------------------------
-> > + * |               n * 512 blocks                  | extra  | ecc    |     |
-> > + * |                                               | block  | codes  |     |
-> > + *
-> > +---------------------------------------------------------------------
-> > +---
-> > + *
-> > + * The ECC calculation uses a simple Hamming code, using 1-bit
-> > +correction 2-bit
-> > + * detection. It starts when a valid read or write command with a 512
-> > +byte
-> > + * aligned address is detected on the memory interface.
-> > + *
-> > + * Return:	0 on success or error value on failure
-> > + */
-> > +static int pl353_nand_calculate_hwecc(struct nand_chip *chip,
-> > +				      const u8 *data, u8 *ecc)
-> > +{
-> > +	u32 ecc_value;
-> > +	u8 chunk, ecc_byte, ecc_status;
-> > +
-> > +	for (chunk = 0; chunk < PL353_MAX_ECC_CHUNKS; chunk++) {
-> > +		/* Read ECC value for each block */
-> > +		ecc_value = pl353_smc_get_ecc_val(chunk);
-> > +		ecc_status = (ecc_value >> PL353_NAND_ECC_VALID_SHIFT);
-> > +
-> > +		/* ECC value valid */
-> > +		if (ecc_status & PL353_NAND_ECC_VALID_MASK) {
-> > +			for (ecc_byte = 0; ecc_byte < PL353_MAX_ECC_BYTES;
-> > +			     ecc_byte++) {
-> > +				/* Copy ECC bytes to MTD buffer */
-> > +				*ecc = ~ecc_value & 0xFF;
-> > +				ecc_value = ecc_value >> 8;
-> > +				ecc++;
-> > +			}
-> > +		} else {
-> > +			pr_warn("%s status failed\n", __func__);
-> > +			return -1;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_correct_data - ECC correction function
-> > + * @chip:	Pointer to the nand_chip structure
-> > + * @buf:	Pointer to the page data
-> > + * @read_ecc:	Pointer to the ECC value read from spare data area
-> > + * @calc_ecc:	Pointer to the calculated ECC value
-> > + *
-> > + * This function corrects the ECC single bit errors & detects 2-bit errors.
-> > + *
-> > + * Return:	0 if no ECC errors found
-> > + *		1 if single bit error found and corrected.
-> > + *		-1 if multiple uncorrectable ECC errors found.
-> > + */
-> > +static int pl353_nand_correct_data(struct nand_chip *chip, unsigned char *buf,
-> > +				   unsigned char *read_ecc,
-> > +				   unsigned char *calc_ecc)
-> > +{
-> > +	unsigned char bit_addr;
-> > +	unsigned int byte_addr;
-> > +	unsigned short ecc_odd, ecc_even, read_ecc_lower, read_ecc_upper;
-> > +	unsigned short calc_ecc_lower, calc_ecc_upper;
-> > +
-> > +	read_ecc_lower = (read_ecc[0] | (read_ecc[1] << 8)) &
-> > +			  PL353_ECC_BIT_MASK;
-> > +	read_ecc_upper = ((read_ecc[1] >> 4) | (read_ecc[2] << 4)) &
-> > +			  PL353_ECC_BIT_MASK;
-> > +
-> > +	calc_ecc_lower = (calc_ecc[0] | (calc_ecc[1] << 8)) &
-> > +			  PL353_ECC_BIT_MASK;
-> > +	calc_ecc_upper = ((calc_ecc[1] >> 4) | (calc_ecc[2] << 4)) &
-> > +			  PL353_ECC_BIT_MASK;
-> > +
-> > +	ecc_odd = read_ecc_lower ^ calc_ecc_lower;
-> > +	ecc_even = read_ecc_upper ^ calc_ecc_upper;
-> > +
-> > +	/* no error */
-> > +	if (!ecc_odd && !ecc_even)
-> > +		return 0;
-> > +
-> > +	if (ecc_odd == (~ecc_even & PL353_ECC_BIT_MASK)) {
-> > +		/* bits [11:3] of error code is byte offset */
-> > +		byte_addr = (ecc_odd >> 3) & PL353_ECC_BITS_BYTEOFF_MASK;
-> > +		/* bits [2:0] of error code is bit offset */
-> > +		bit_addr = ecc_odd & PL353_ECC_BITS_BITOFF_MASK;
-> > +		/* Toggling error bit */
-> > +		buf[byte_addr] ^= (BIT(bit_addr));
-> > +		return 1;
-> > +	}
-> > +
-> > +	/* one error in parity */
-> > +	if (hweight32(ecc_odd | ecc_even) == 1)
-> > +		return 1;
-> > +
-> > +	/* Uncorrectable error */
-> > +	return -1;
-> > +}
-> > +
-> > +static void pl353_prepare_cmd(struct nand_chip *chip,
-> > +			      int page, int column, int start_cmd, int end_cmd,
-> > +			      bool read)
-> > +{
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	unsigned long cmd_phase_data = 0;
-> > +	u32 end_cmd_valid = 0, cmdphase_addrflags;
-> > +
-> > +	end_cmd_valid = read ? 1 : 0;
-> > +	cmdphase_addrflags = ((xnfc->addr_cycles
-> > +			      << ADDR_CYCLES_SHIFT) |
-> > +			      (end_cmd_valid << END_CMD_VALID_SHIFT) |
-> > +			      (COMMAND_PHASE) |
-> > +			      (end_cmd << END_CMD_SHIFT) |
-> > +			      (start_cmd << START_CMD_SHIFT));
-> > +
-> > +	/* Get the data phase address */
-> > +	xnfc->dataphase_addrflags = ((0x0 << CLEAR_CS_SHIFT) |
-> > +				(0 << END_CMD_VALID_SHIFT) |
-> > +			  (DATA_PHASE) |
-> > +			  (end_cmd << END_CMD_SHIFT) |
-> > +			  (0x0 << ECC_LAST_SHIFT));
-> > +
-> > +	if (chip->options & NAND_BUSWIDTH_16)
-> > +		column /= 2;
-> > +
-> > +	cmd_phase_data = column;
-> > +	if (mtd->writesize > PL353_NAND_ECC_SIZE) {
-> > +		cmd_phase_data |= page << 16;
-> > +
-> > +		/* Another address cycle for devices > 128MiB */
-> > +		if (chip->options & NAND_ROW_ADDR_3) {
-> > +			writel_relaxed(cmd_phase_data,
-> > +				       xnfc->regs + cmdphase_addrflags);
-> > +			cmd_phase_data = (page >> 16);
-> > +		}
-> > +	} else {
-> > +		cmd_phase_data |= page << 8;
-> > +	}
-> > +
-> > +	writel_relaxed(cmd_phase_data, xnfc->regs + cmdphase_addrflags); }
-> > +
-> > +/**
-> > + * pl353_nand_read_oob - [REPLACEABLE] the most common OOB data read function
-> > + * @chip:	Pointer to the nand_chip structure
-> > + * @chip:	Pointer to the nand_chip structure
-> > + * @page:	Page number to read
-> > + *
-> > + * Return:	Always return zero
-> > + */
-> > +static int pl353_nand_read_oob(struct nand_chip *chip,
-> > +			       int page)
-> > +{
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	u8 *p;
-> > +
-> > +	if (mtd->writesize < PL353_NAND_ECC_SIZE)
-> > +		return 0;
-> > +
-> > +	pl353_prepare_cmd(chip, page, mtd->writesize, NAND_CMD_READ0,
-> > +			  NAND_CMD_READSTART, 1);
-> > +	if (pl353_wait_for_dev_ready(chip))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	p = chip->oob_poi;
-> > +	pl353_nand_read_data_op(chip, p,
-> > +				(mtd->oobsize -
-> > +				PL353_NAND_LAST_TRANSFER_LENGTH), false);
-> > +	p += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_CLEAR_CS;
-> > +	pl353_nand_read_data_op(chip, p, PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				false);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_write_oob - [REPLACEABLE] the most common OOB data write
-> function
-> > + * @chip:	Pointer to the nand_chip structure
-> > + * @chip:	Pointer to the NAND chip info structure
-> > + * @page:	Page number to write
-> > + *
-> > + * Return:	Zero on success and EIO on failure
-> > + */
-> > +static int pl353_nand_write_oob(struct nand_chip *chip,
-> > +				int page)
-> > +{
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	const u8 *buf = chip->oob_poi;
-> > +
-> > +	pl353_prepare_cmd(chip, page, mtd->writesize, NAND_CMD_SEQIN,
-> > +			  NAND_CMD_PAGEPROG, 0);
-> > +
-> > +	pl353_nand_write_data_op(chip, buf,
-> > +				 (mtd->oobsize -
-> > +				 PL353_NAND_LAST_TRANSFER_LENGTH), false);
-> > +	buf += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_CLEAR_CS;
-> > +	xnfc->dataphase_addrflags |= (1 << END_CMD_VALID_SHIFT);
-> > +	pl353_nand_write_data_op(chip, buf, PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				 false);
-> > +	if (pl353_wait_for_dev_ready(chip))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_read_page_raw - [Intern] read raw page data without ecc
-> > + * @chip:		Pointer to the nand_chip structure
-> > + * @buf:		Pointer to the data buffer
-> > + * @oob_required:	Caller requires OOB data read to chip->oob_poi
-> > + * @page:		Page number to read
-> > + *
-> > + * Return:	Always return zero
-> > + */
-> > +static int pl353_nand_read_page_raw(struct nand_chip *chip,
-> > +				    u8 *buf, int oob_required, int page) {
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	u8 *p;
-> > +
-> > +	pl353_prepare_cmd(chip, page, 0, NAND_CMD_READ0,
-> > +			  NAND_CMD_READSTART, 1);
-> > +	if (pl353_wait_for_dev_ready(chip))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	pl353_nand_read_data_op(chip, buf, mtd->writesize, false);
-> > +	p = chip->oob_poi;
-> > +	pl353_nand_read_data_op(chip, p,
-> > +				(mtd->oobsize -
-> > +				PL353_NAND_LAST_TRANSFER_LENGTH), false);
-> > +	p += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_CLEAR_CS;
-> > +	pl353_nand_read_data_op(chip, p, PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				false);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_write_page_raw - [Intern] raw page write function
-> > + * @chip:		Pointer to the nand_chip structure
-> > + * @buf:		Pointer to the data buffer
-> > + * @oob_required:	Caller requires OOB data read to chip->oob_poi
-> > + * @page:		Page number to write
-> > + *
-> > + * Return:	Always return zero
-> > + */
-> > +static int pl353_nand_write_page_raw(struct nand_chip *chip,
-> > +				     const u8 *buf, int oob_required,
-> > +				     int page)
-> > +{
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	u8 *p;
-> > +
-> > +	pl353_prepare_cmd(chip, page, 0, NAND_CMD_SEQIN,
-> > +			  NAND_CMD_PAGEPROG, 0);
-> > +	pl353_nand_write_data_op(chip, buf, mtd->writesize, false);
-> > +	p = chip->oob_poi;
-> > +	pl353_nand_write_data_op(chip, p,
-> > +				 (mtd->oobsize -
-> > +				 PL353_NAND_LAST_TRANSFER_LENGTH), false);
-> > +	p += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_CLEAR_CS;
-> > +	xnfc->dataphase_addrflags |= (1 << END_CMD_VALID_SHIFT);
-> > +	pl353_nand_write_data_op(chip, p, PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				 false);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * nand_write_page_hwecc - Hardware ECC based page write function
-> > + * @chip:		Pointer to the nand_chip structure
-> > + * @buf:		Pointer to the data buffer
-> > + * @oob_required:	Caller requires OOB data read to chip->oob_poi
-> > + * @page:		Page number to write
-> > + *
-> > + * This functions writes data and hardware generated ECC values in to the page.
-> > + *
-> > + * Return:	Always return zero
-> > + */
-> > +static int pl353_nand_write_page_hwecc(struct nand_chip *chip,
-> > +				       const u8 *buf, int oob_required,
-> > +				       int page)
-> > +{
-> > +	int eccsize = chip->ecc.size;
-> > +	int eccsteps = chip->ecc.steps;
-> > +	u8 *ecc_calc = chip->ecc.calc_buf;
-> > +	u8 *oob_ptr;
-> > +	const u8 *p = buf;
-> > +	u32 ret;
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +
-> > +	pl353_prepare_cmd(chip, page, 0, NAND_CMD_SEQIN,
-> > +			  NAND_CMD_PAGEPROG, 0);
-> > +
-> > +	for ( ; (eccsteps - 1); eccsteps--) {
-> > +		pl353_nand_write_data_op(chip, p, eccsize, false);
-> > +		p += eccsize;
-> > +	}
-> > +
-> > +	pl353_nand_write_data_op(chip, p,
-> > +				 (eccsize - PL353_NAND_LAST_TRANSFER_LENGTH),
-> > +				 false);
-> > +	p += (eccsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +
-> > +	/* Set ECC Last bit to 1 */
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_ECC_LAST;
-> > +	pl353_nand_write_data_op(chip, p, PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				 false);
-> > +
-> > +	/* Wait till the ECC operation is complete or timeout */
-> > +	ret = pl353_wait_for_ecc_done();
-> > +	if (ret)
-> > +		dev_err(xnfc->dev, "ECC Timeout\n");
-> > +
-> > +	p = buf;
-> > +	ret = chip->ecc.calculate(chip, p, &ecc_calc[0]);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Wait for ECC to be calculated and read the error values */
-> > +	ret = mtd_ooblayout_set_eccbytes(mtd, ecc_calc, chip->oob_poi,
-> > +					 0, chip->ecc.total);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Clear ECC last bit */
-> > +	xnfc->dataphase_addrflags &= ~PL353_NAND_ECC_LAST;
-> > +
-> > +	/* Write the spare area with ECC bytes */
-> > +	oob_ptr = chip->oob_poi;
-> > +	pl353_nand_write_data_op(chip, oob_ptr,
-> > +				 (mtd->oobsize -
-> > +				 PL353_NAND_LAST_TRANSFER_LENGTH), false);
-> > +
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_CLEAR_CS;
-> > +	xnfc->dataphase_addrflags |= (1 << END_CMD_VALID_SHIFT);
-> > +	oob_ptr += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +	pl353_nand_write_data_op(chip, oob_ptr,
-> PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				 false);
-> > +	if (pl353_wait_for_dev_ready(chip))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_read_page_hwecc - Hardware ECC based page read function
-> > + * @chip:		Pointer to the nand_chip structure
-> > + * @buf:		Pointer to the buffer to store read data
-> > + * @oob_required:	Caller requires OOB data read to chip->oob_poi
-> > + * @page:		Page number to read
-> > + *
-> > + * This functions reads data and checks the data integrity by
-> > +comparing
-> > + * hardware generated ECC values and read ECC values from spare area.
-> > + * There is a limitation in SMC controller, that we must set ECC LAST
-> > +on
-> > + * last data phase access, to tell ECC block not to expect any data further.
-> > + * Ex:  When number of ECC STEPS are 4, then till 3 we will write to
-> > +flash
-> > + * using SMC with HW ECC enabled. And for the last ECC STEP, we will
-> > +subtract
-> > + * 4bytes from page size, and will initiate a transfer. And the
-> > +remaining 4 as
-> > + * one more transfer with ECC_LAST bit set in NAND data phase
-> > +register to
-> > + * notify ECC block not to expect any more data. The last block
-> > +should be align
-> > + * with end of 512 byte block. Because of this limitation, we are not
-> > +using
-> > + * core routines.
-> > + *
-> > + * Return:	0 always and updates ECC operation status in to MTD structure
-> > + */
-> > +static int pl353_nand_read_page_hwecc(struct nand_chip *chip,
-> > +				      u8 *buf, int oob_required, int page) {
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	int i, stat, eccsize = chip->ecc.size;
-> > +	int eccbytes = chip->ecc.bytes;
-> > +	int eccsteps = chip->ecc.steps;
-> > +	unsigned int max_bitflips = 0;
-> > +	u8 *p = buf;
-> > +	u8 *ecc_calc = chip->ecc.calc_buf;
-> > +	u8 *ecc = chip->ecc.code_buf;
-> > +	u8 *oob_ptr;
-> > +	u32 ret;
-> > +
-> > +	pl353_prepare_cmd(chip, page, 0, NAND_CMD_READ0,
-> > +			  NAND_CMD_READSTART, 1);
-> > +	if (pl353_wait_for_dev_ready(chip))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	for ( ; (eccsteps - 1); eccsteps--) {
-> > +		pl353_nand_read_data_op(chip, p, eccsize, false);
-> > +		p += eccsize;
-> > +	}
-> > +
-> > +	pl353_nand_read_data_op(chip, p,
-> > +				(eccsize - PL353_NAND_LAST_TRANSFER_LENGTH),
-> > +				false);
-> > +	p += (eccsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +
-> > +	/* Set ECC Last bit to 1 */
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_ECC_LAST;
-> > +	pl353_nand_read_data_op(chip, p, PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				false);
-> > +
-> > +	/* Wait till the ECC operation is complete or timeout */
-> > +	ret = pl353_wait_for_ecc_done();
-> > +	if (ret)
-> > +		dev_err(xnfc->dev, "ECC Timeout\n");
-> > +
-> > +	/* Read the calculated ECC value */
-> > +	p = buf;
-> > +	ret = chip->ecc.calculate(chip, p, &ecc_calc[0]);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Clear ECC last bit */
-> > +	xnfc->dataphase_addrflags &= ~PL353_NAND_ECC_LAST;
-> > +
-> > +	/* Read the stored ECC value */
-> > +	oob_ptr = chip->oob_poi;
-> > +	pl353_nand_read_data_op(chip, oob_ptr,
-> > +				(mtd->oobsize -
-> > +				PL353_NAND_LAST_TRANSFER_LENGTH), false);
-> > +
-> > +	/* de-assert chip select */
-> > +	xnfc->dataphase_addrflags |= PL353_NAND_CLEAR_CS;
-> > +	oob_ptr += (mtd->oobsize - PL353_NAND_LAST_TRANSFER_LENGTH);
-> > +	pl353_nand_read_data_op(chip, oob_ptr,
-> PL353_NAND_LAST_TRANSFER_LENGTH,
-> > +				false);
-> > +
-> > +	ret = mtd_ooblayout_get_eccbytes(mtd, ecc, chip->oob_poi, 0,
-> > +					 chip->ecc.total);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	eccsteps = chip->ecc.steps;
-> > +	p = buf;
-> > +
-> > +	/* Check ECC error for all blocks and correct if it is correctable */
-> > +	for (i = 0 ; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
-> > +		stat = chip->ecc.correct(chip, p, &ecc[i], &ecc_calc[i]);
-> > +		if (stat < 0) {
-> > +			mtd->ecc_stats.failed++;
-> > +		} else {
-> > +			mtd->ecc_stats.corrected += stat;
-> > +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
-> > +		}
-> > +	}
-> > +
-> > +	return max_bitflips;
-> > +}
-> > +
-> > +/* NAND framework ->exec_op() hooks and related helpers */ static
-> > +void pl353_nfc_parse_instructions(struct nand_chip *chip,
-> > +					 const struct nand_subop *subop,
-> > +					 struct pl353_nfc_op *nfc_op)
-> > +{
-> > +	const struct nand_op_instr *instr = NULL;
-> > +	unsigned int op_id, offset;
-> > +	int i;
-> > +	const u8 *addrs;
-> > +
-> > +	memset(nfc_op, 0, sizeof(struct pl353_nfc_op));
-> > +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-> > +		instr = &subop->instrs[op_id];
-> > +
-> > +		switch (instr->type) {
-> > +		case NAND_OP_CMD_INSTR:
-> > +			if (op_id)
-> > +				nfc_op->cmnds[1] = instr->ctx.cmd.opcode;
-> > +			else
-> > +				nfc_op->cmnds[0] = instr->ctx.cmd.opcode;
-> > +			break;
-> > +
-> > +		case NAND_OP_ADDR_INSTR:
-> > +			offset = nand_subop_get_addr_start_off(subop, op_id);
-> > +			nfc_op->naddrs = nand_subop_get_num_addr_cyc(subop,
-> > +								     op_id);
-> > +			addrs = &instr->ctx.addr.addrs[offset];
-> > +			for (i = 0; i < min_t(unsigned int, 4, nfc_op->naddrs);
-> > +			     i++)
-> > +				nfc_op->addrs |= instr->ctx.addr.addrs[i] <<
-> > +						 (8 * i);
-> 
-> This code is unchanged compared to v14. That may or may not be correct.
-> I've encountered further details regarding this matter:
-> 
-> 1. The documentation of nand_subop_get_addr_start_off says:
->  * During driver development, one could be tempted to directly use the
->  * ->addr.addrs field of address instructions. This is wrong as address
->  * instructions might be split.
->  *
->  * Given an address instruction, returns the offset of the first cycle to issue.
-> 
-> Now the previous line of code does use addr.addrs without considering the relevant offset. I
-> argue that either the documentation or the code is wrong.
-> 
-> 2. During my testing, I added a WARN_ON(offset) to the driver. Whenever offset is exactly 0,
-> this potential bug cannot have any practical effects. In my tests, this warning never triggered.
-> So even if this is buggy, it does not have any practical effects for me.
-> 
-> 3. I also looked into how other drivers use nand_subop_get_addr_start_off. Most drivers use it
-> in a way that matches my reading of the documentation and consider indices from
-> addr_start_off to addr_start_off + num_addr_cyc exclusively. vf610_nfc.c is an exception to
-> this rule and considers indices from addr_start_off to num_addr_cyc. If this is a bug in
-> pl353_nand.c, it likely also is a bug in vf610_nfc.c. Again, it can only have practical effects when
-> the offset is > 0, which I never encountered.
-I don't see any issues with this address cycles update.
-May be because of above jfss2 issue, you are suspecting this calculation.
-Hope the above update addresses this one.
-
-> 
-> > +			if (nfc_op->naddrs >= 5)
-> > +				nfc_op->addrs_56 = addrs[4];
-> > +
-> > +			if (nfc_op->naddrs >= 6)
-> > +				nfc_op->addrs_56 |= (addrs[5] << 8);
-> > +
-> > +			break;
-> > +
-> > +		case NAND_OP_DATA_IN_INSTR:
-> > +			nfc_op->data_instr = instr;
-> > +			nfc_op->data_instr_idx = op_id;
-> > +			break;
-> > +
-> > +		case NAND_OP_DATA_OUT_INSTR:
-> > +			nfc_op->data_instr = instr;
-> > +			nfc_op->data_instr_idx = op_id;
-> > +			break;
-> 
-> Would it make sense to merge the NAND_OP_DATA_IN_INSTR and
-> NAND_OP_DATA_OUT_INSTR cases?
-Yes, we can
-I will update this
-> 
-> > +		case NAND_OP_WAITRDY_INSTR:
-> > +			nfc_op->rdy_timeout_ms = instr->ctx.waitrdy.timeout_ms;
-> > +			nfc_op->rdy_delay_ns = instr->delay_ns;
-> > +			break;
-> > +		}
-> > +	}
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_exec_op_cmd - Send command to NAND device
-> > + * @chip:	Pointer to the NAND chip info structure
-> > + * @subop:	Pointer to array of instructions
-> > + * Return:	Always return zero
-> > + */
-> > +static int pl353_nand_exec_op_cmd(struct nand_chip *chip,
-> > +				  const struct nand_subop *subop) {
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	const struct nand_op_instr *instr;
-> > +	struct pl353_nfc_op nfc_op = {};
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	unsigned long cmd_phase_data = 0, end_cmd_valid = 0;
-> > +	unsigned long end_cmd;
-> > +	unsigned int op_id, len;
-> > +	bool reading;
-> > +	u32 cmdphase_addrflags;
-> > +
-> > +	pl353_nfc_parse_instructions(chip, subop, &nfc_op);
-> > +	instr = nfc_op.data_instr;
-> > +	op_id = nfc_op.data_instr_idx;
-> > +	pl353_smc_clr_nand_int();
-> > +
-> > +	/* Get the command phase address */
-> > +	if (nfc_op.cmnds[1] != 0) {
-> > +		if (nfc_op.cmnds[0] == NAND_CMD_SEQIN)
-> > +			end_cmd_valid = 0;
-> > +		else
-> > +			end_cmd_valid = 1;
-> > +	}
-> > +
-> > +	end_cmd = nfc_op.cmnds[1];
-> > +
-> > +	/*
-> > +	 * The SMC defines two phases of commands when transferring data to or
-> > +	 * from NAND flash.
-> > +	 * Command phase: Commands and optional address information are written
-> > +	 * to the NAND flash.The command and address can be associated with
-> > +	 * either a data phase operation to write to or read from the array,
-> > +	 * or a status/ID register transfer.
-> > +	 * Data phase: Data is either written to or read from the NAND flash.
-> > +	 * This data can be either data transferred to or from the array,
-> > +	 * or status/ID register information.
-> > +	 */
-> > +	cmdphase_addrflags = ((nfc_op.naddrs << ADDR_CYCLES_SHIFT) |
-> > +			 (end_cmd_valid << END_CMD_VALID_SHIFT) |
-> > +			 (COMMAND_PHASE) |
-> > +			 (end_cmd << END_CMD_SHIFT) |
-> > +			 (nfc_op.cmnds[0] << START_CMD_SHIFT));
-> > +
-> > +	/* Get the data phase address */
-> > +	end_cmd_valid = 0;
-> > +
-> > +	xnfc->dataphase_addrflags = ((0x0 << CLEAR_CS_SHIFT) |
-> > +			  (end_cmd_valid << END_CMD_VALID_SHIFT) |
-> > +			  (DATA_PHASE) |
-> > +			  (end_cmd << END_CMD_SHIFT) |
-> > +			  (0x0 << ECC_LAST_SHIFT));
-> > +
-> > +	/* Command phase AXI Read & Write */
-> > +	if (nfc_op.naddrs >= 5) {
-> > +		if (mtd->writesize > PL353_NAND_ECC_SIZE) {
-> > +			cmd_phase_data = nfc_op.addrs;
-> > +
-> > +			/* Another address cycle for devices > 128MiB */
-> > +			if (chip->options & NAND_ROW_ADDR_3) {
-> > +				writel_relaxed(cmd_phase_data,
-> > +					       xnfc->regs + cmdphase_addrflags);
-> > +				cmd_phase_data = nfc_op.addrs_56;
-> > +			}
-> > +		}
-> > +	}  else {
-> > +		if (nfc_op.addrs != -1) {
-> > +			int column = nfc_op.addrs;
-> > +
-> > +			/*
-> > +			 * Change read/write column, read id etc
-> > +			 * Adjust columns for 16 bit bus width
-> > +			 */
-> > +			if ((chip->options & NAND_BUSWIDTH_16) &&
-> > +			    (nfc_op.cmnds[0] == NAND_CMD_READ0 ||
-> > +				nfc_op.cmnds[0] == NAND_CMD_SEQIN ||
-> > +				nfc_op.cmnds[0] == NAND_CMD_RNDOUT ||
-> > +				nfc_op.cmnds[0] == NAND_CMD_RNDIN)) {
-> > +				column >>= 1;
-> > +			}
-> > +			cmd_phase_data = column;
-> > +		}
-> > +	}
-> > +
-> > +	writel_relaxed(cmd_phase_data, xnfc->regs + cmdphase_addrflags);
-> > +	if (!nfc_op.data_instr) {
-> > +		if (nfc_op.rdy_timeout_ms) {
-> > +			if (pl353_wait_for_dev_ready(chip))
-> > +				return -ETIMEDOUT;
-> > +		}
-> > +
-> > +		return 0;
-> > +	}
-> > +
-> > +	reading = (nfc_op.data_instr->type == NAND_OP_DATA_IN_INSTR);
-> > +	if (!reading) {
-> > +		len = nand_subop_get_data_len(subop, op_id);
-> > +		pl353_nand_write_data_op(chip, instr->ctx.data.buf.out,
-> > +					 len, instr->ctx.data.force_8bit);
-> > +		if (nfc_op.rdy_timeout_ms) {
-> > +			if (pl353_wait_for_dev_ready(chip))
-> > +				return -ETIMEDOUT;
-> > +		}
-> > +
-> > +		ndelay(nfc_op.rdy_delay_ns);
-> > +	} else {
-> > +		len = nand_subop_get_data_len(subop, op_id);
-> > +		ndelay(nfc_op.rdy_delay_ns);
-> > +		if (nfc_op.rdy_timeout_ms) {
-> > +			if (pl353_wait_for_dev_ready(chip))
-> > +				return -ETIMEDOUT;
-> > +		}
-> > +
-> > +		pl353_nand_read_data_op(chip, instr->ctx.data.buf.in, len,
-> > +					instr->ctx.data.force_8bit);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct nand_op_parser pl353_nfc_op_parser = NAND_OP_PARSER
-> > +	(NAND_OP_PARSER_PATTERN
-> > +		(pl353_nand_exec_op_cmd,
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> > +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 7),
-> > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-> > +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 2048)),
-> > +	NAND_OP_PARSER_PATTERN
-> > +		(pl353_nand_exec_op_cmd,
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, 7),
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false),
-> > +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 2048)),
-> > +	NAND_OP_PARSER_PATTERN
-> > +		(pl353_nand_exec_op_cmd,
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 7),
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
-> > +	NAND_OP_PARSER_PATTERN
-> > +		(pl353_nand_exec_op_cmd,
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > +		NAND_OP_PARSER_PAT_ADDR_ELEM(false, 8),
-> > +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 2048),
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> > +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
-> > +	NAND_OP_PARSER_PATTERN
-> > +		(pl353_nand_exec_op_cmd,
-> > +		NAND_OP_PARSER_PAT_CMD_ELEM(false)),
-> > +	);
-> > +
-> > +static int pl353_nfc_exec_op(struct nand_chip *chip,
-> > +			     const struct nand_operation *op,
-> > +			     bool check_only)
-> > +{
-> > +	return nand_op_parser_exec_op(chip, &pl353_nfc_op_parser,
-> > +					      op, check_only);
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_ecc_init - Initialize the ecc information as per the ecc mode
-> > + * @mtd:	Pointer to the mtd_info structure
-> > + * @ecc:	Pointer to ECC control structure
-> > + * @ecc_mode:	ondie ecc status
-> > + *
-> > + * This function initializes the ecc block and functional pointers as
-> > +per the
-> > + * ecc mode
-> > + *
-> > + * Return:	0 on success or negative errno.
-> > + */
-> > +static int pl353_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
-> > +			       int ecc_mode)
-> > +{
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	int ret = 0;
-> > +
-> > +	ecc->read_oob = pl353_nand_read_oob;
-> > +	ecc->write_oob = pl353_nand_write_oob;
-> > +	if (ecc_mode == NAND_ECC_ON_DIE) {
-> > +		ecc->write_page_raw = pl353_nand_write_page_raw;
-> > +		ecc->read_page_raw = pl353_nand_read_page_raw;
-> > +
-> > +		/*
-> > +		 * On-Die ECC spare bytes offset 8 is used for ECC codes
-> > +		 * Use the BBT pattern descriptors
-> > +		 */
-> > +		chip->bbt_td = &bbt_main_descr;
-> > +		chip->bbt_md = &bbt_mirror_descr;
-> > +		ret = pl353_smc_set_ecc_mode(PL353_SMC_ECCMODE_BYPASS);
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +	} else {
-> > +		ecc->mode = NAND_ECC_HW;
-> > +
-> > +		/* Hardware ECC generates 3 bytes ECC code for each 512 bytes */
-> > +		ecc->bytes = 3;
-> > +		ecc->strength = 1;
-> > +		ecc->calculate = pl353_nand_calculate_hwecc;
-> > +		ecc->correct = pl353_nand_correct_data;
-> > +		ecc->read_page = pl353_nand_read_page_hwecc;
-> > +		ecc->size = PL353_NAND_ECC_SIZE;
-> > +		ecc->read_page = pl353_nand_read_page_hwecc;
-> > +		ecc->write_page = pl353_nand_write_page_hwecc;
-> > +		pl353_smc_set_ecc_pg_size(mtd->writesize);
-> > +		switch (mtd->writesize) {
-> > +		case SZ_512:
-> > +		case SZ_1K:
-> > +		case SZ_2K:
-> > +			pl353_smc_set_ecc_mode(PL353_SMC_ECCMODE_APB);
-> > +			break;
-> > +		default:
-> > +			ecc->calculate = nand_calculate_ecc;
-> > +			ecc->correct = nand_correct_data;
-> > +			ecc->size = 256;
-> > +			break;
-> > +		}
-> > +
-> > +		if (mtd->oobsize == 16) {
-> > +			mtd_set_ooblayout(mtd, &pl353_ecc_ooblayout16_ops);
-> > +		} else if (mtd->oobsize == 64) {
-> > +			mtd_set_ooblayout(mtd, &pl353_ecc_ooblayout64_ops);
-> > +		} else {
-> > +			ret = -ENXIO;
-> > +			dev_err(xnfc->dev, "Unsupported oob Layout\n");
-> > +		}
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int pl353_nfc_setup_data_interface(struct nand_chip *chip, int csline,
-> > +					  const struct nand_data_interface
-> > +					  *conf)
-> > +{
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	const struct nand_sdr_timings *sdr;
-> > +	u32 timings[7], mckperiodps;
-> > +
-> > +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
-> > +		return 0;
-> > +
-> > +	sdr = nand_get_sdr_timings(conf);
-> > +	if (IS_ERR(sdr))
-> > +		return PTR_ERR(sdr);
-> > +
-> > +	/*
-> > +	 * SDR timings are given in pico-seconds while NFC timings must be
-> > +	 * expressed in NAND controller clock cycles.
-> > +	 */
-> > +	mckperiodps = NSEC_PER_SEC / xnfc->mclk_rate;
-> > +	mckperiodps *= 1000;
-> > +	if (sdr->tRC_min <= 20000)
-> > +		/*
-> > +		 * PL353 SMC needs one extra read cycle in SDR Mode 5
-> > +		 * This is not written anywhere in the datasheet but
-> > +		 * the results observed during testing.
-> > +		 */
-> > +		timings[0] = DIV_ROUND_UP(sdr->tRC_min, mckperiodps) + 1;
-> > +	else
-> > +		timings[0] = DIV_ROUND_UP(sdr->tRC_min, mckperiodps);
-> > +
-> > +	timings[1] = DIV_ROUND_UP(sdr->tWC_min, mckperiodps);
-> > +
-> > +	/*
-> > +	 * For all SDR modes, PL353 SMC needs tREA max value as 1,
-> > +	 * Results observed during testing.
-> > +	 */
-> > +	timings[2] = PL353_TREA_MAX_VALUE;
-> > +	timings[3] = DIV_ROUND_UP(sdr->tWP_min, mckperiodps);
-> > +	timings[4] = DIV_ROUND_UP(sdr->tCLR_min, mckperiodps);
-> > +	timings[5] = DIV_ROUND_UP(sdr->tAR_min, mckperiodps);
-> > +	timings[6] = DIV_ROUND_UP(sdr->tRR_min, mckperiodps);
-> > +	pl353_smc_set_cycles(timings);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pl353_nand_attach_chip(struct nand_chip *chip) {
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	struct pl353_nand_controller *xnfc = to_pl353_nand(chip);
-> > +	int ret;
-> > +
-> > +	if (chip->options & NAND_BUSWIDTH_16) {
-> > +		ret = pl353_smc_set_buswidth(PL353_SMC_MEM_WIDTH_16);
-> > +		if (ret) {
-> > +			dev_err(xnfc->dev, "Set BusWidth failed\n");
-> > +			return ret;
-> > +		}
-> > +	}
-> > +
-> > +	if (mtd->writesize <= SZ_512)
-> > +		xnfc->addr_cycles = 1;
-> > +	else
-> > +		xnfc->addr_cycles = 2;
-> > +
-> > +	if (chip->options & NAND_ROW_ADDR_3)
-> > +		xnfc->addr_cycles += 3;
-> > +	else
-> > +		xnfc->addr_cycles += 2;
-> > +
-> > +	ret = pl353_nand_ecc_init(mtd, &chip->ecc, chip->ecc.mode);
-> > +	if (ret) {
-> > +		dev_err(xnfc->dev, "ECC init failed\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (!mtd->name) {
-> > +		/*
-> > +		 * If the new bindings are used and the bootloader has not been
-> > +		 * updated to pass a new mtdparts parameter on the cmdline, you
-> > +		 * should define the following property in your NAND node, ie:
-> > +		 *
-> > +		 *	label = "pl353-nand";
-> > +		 *
-> > +		 * This way, mtd->name will be set by the core when
-> > +		 * nand_set_flash_node() is called.
-> > +		 */
-> > +		mtd->name = devm_kasprintf(xnfc->dev, GFP_KERNEL,
-> > +					   "%s", PL353_NAND_DRIVER_NAME);
-> > +		if (!mtd->name) {
-> > +			dev_err(xnfc->dev, "Failed to allocate mtd->name\n");
-> > +			return -ENOMEM;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct nand_controller_ops pl353_nand_controller_ops = {
-> > +	.attach_chip = pl353_nand_attach_chip,
-> > +	.exec_op = pl353_nfc_exec_op,
-> > +	.setup_data_interface = pl353_nfc_setup_data_interface, };
-> > +
-> > +/**
-> > + * pl353_nand_probe - Probe method for the NAND driver
-> > + * @pdev:	Pointer to the platform_device structure
-> > + *
-> > + * This function initializes the driver data structures and the hardware.
-> > + * The NAND driver has dependency with the pl353_smc memory
-> > +controller
-> > + * driver for initializing the NAND timing parameters, bus width, ECC
-> > +modes,
-> > + * control and status information.
-> > + *
-> > + * Return:	0 on success or error value on failure
-> > + */
-> > +static int pl353_nand_probe(struct platform_device *pdev) {
-> > +	struct pl353_nand_controller *xnfc;
-> > +	struct mtd_info *mtd;
-> > +	struct nand_chip *chip;
-> > +	struct resource *res;
-> > +	struct device_node *np, *dn;
-> > +	u32 ret, val;
-> > +
-> > +	xnfc = devm_kzalloc(&pdev->dev, sizeof(*xnfc), GFP_KERNEL);
-> > +	if (!xnfc)
-> > +		return -ENOMEM;
-> > +
-> > +	xnfc->dev = &pdev->dev;
-> > +	nand_controller_init(&xnfc->controller);
-> > +	xnfc->controller.ops = &pl353_nand_controller_ops;
-> > +
-> > +	/* Map physical address of NAND flash */
-> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	xnfc->regs = devm_ioremap_resource(xnfc->dev, res);
-> > +	if (IS_ERR(xnfc->regs))
-> > +		return PTR_ERR(xnfc->regs);
-> > +
-> > +	chip = &xnfc->chip;
-> > +	chip->controller = &xnfc->controller;
-> > +	mtd = nand_to_mtd(chip);
-> > +	nand_set_controller_data(chip, xnfc);
-> > +	mtd->priv = chip;
-> > +	mtd->owner = THIS_MODULE;
-> > +	nand_set_flash_node(chip, xnfc->dev->of_node);
-> > +
-> > +	np = of_get_next_parent(xnfc->dev->of_node);
-> > +	xnfc->mclk = of_clk_get_by_name(np, "memclk");
-> > +	if (IS_ERR(xnfc->mclk)) {
-> > +		dev_err(xnfc->dev, "Failed to retrieve MCK clk\n");
-> > +		return PTR_ERR(xnfc->mclk);
-> > +	}
-> > +
-> > +	xnfc->mclk_rate = clk_get_rate(xnfc->mclk);
-> > +	dn = nand_get_flash_node(chip);
-> > +	ret = of_property_read_u32(dn, "nand-bus-width", &val);
-> > +	if (ret)
-> > +		val = 8;
-> > +
-> > +	xnfc->buswidth = val;
-> > +
-> > +	/* Set the device option and flash width */
-> > +	chip->options = NAND_BUSWIDTH_AUTO;
-> > +	chip->bbt_options = NAND_BBT_USE_FLASH;
-> > +	platform_set_drvdata(pdev, xnfc);
-> > +	ret = nand_scan(chip, 1);
-> > +	if (ret) {
-> > +		dev_err(xnfc->dev, "could not scan the nand chip\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = mtd_device_register(mtd, NULL, 0);
-> > +	if (ret) {
-> > +		dev_err(xnfc->dev, "Failed to register mtd device: %d\n", ret);
-> > +		nand_cleanup(chip);
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * pl353_nand_remove - Remove method for the NAND driver
-> > + * @pdev:	Pointer to the platform_device structure
-> > + *
-> > + * This function is called if the driver module is being unloaded. It
-> > +frees all
-> > + * resources allocated to the device.
-> > + *
-> > + * Return:	0 on success or error value on failure
-> > + */
-> > +static int pl353_nand_remove(struct platform_device *pdev) {
-> > +	struct pl353_nand_controller *xnfc = platform_get_drvdata(pdev);
-> > +	struct mtd_info *mtd = nand_to_mtd(&xnfc->chip);
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +
-> > +	/* Release resources, unregister device */
-> > +	nand_release(chip);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/* Match table for device tree binding */ static const struct
-> > +of_device_id pl353_nand_of_match[] = {
-> > +	{ .compatible = "arm,pl353-nand-r2p1" },
-> > +	{},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, pl353_nand_of_match);
-> > +
-> > +/*
-> > + * pl353_nand_driver - This structure defines the NAND subsystem
-> > +platform driver  */ static struct platform_driver pl353_nand_driver =
-> > +{
-> > +	.probe		= pl353_nand_probe,
-> > +	.remove		= pl353_nand_remove,
-> > +	.driver		= {
-> > +		.name	= PL353_NAND_DRIVER_NAME,
-> > +		.of_match_table = pl353_nand_of_match,
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(pl353_nand_driver);
-> > +
-> > +MODULE_AUTHOR("Xilinx, Inc.");
-> > +MODULE_ALIAS("platform:" PL353_NAND_DRIVER_NAME);
-> > +MODULE_DESCRIPTION("ARM PL353 NAND Flash Driver");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.17.1
-> 
-> You've addressed a significant number of review comments. Most of the remaining ones seem
-> minor to me. If you add back the Kconfig and Makefile parts from v14, you may add:
-> 
-> Reviewed-by: Helmut Grohne <helmut.grohne@intenta.de>
-> 
-> Despite the review I cannot confirm that it actually works.
-Hope, the above update fixes your issue and thanks for the review.
-
-Regards,
-Naga Sureshkumar Relli
-> 
-> Helmut
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBwYXRjaCBzb2x2ZXMgd2FybmluZ3MgZGV0ZWN0ZWQgYnkgc2V0dGluZyBXPTEgd2hlbiBi
+dWlsZGluZy4KCldhcm5pbmdzIHR5cGUgZGV0ZWN0ZWQ6CmRyaXZlcnMvbXRkL25hbmQvcmF3L3N0
+bTMyX2ZtYzJfbmFuZC5jOiBJbiBmdW5jdGlvbiDigJhzdG0zMl9mbWMyX2NhbGNfdGltaW5nc+KA
+mToKZHJpdmVycy9tdGQvbmFuZC9yYXcvc3RtMzJfZm1jMl9uYW5kLmM6MTQxNzoyMzogd2Fybmlu
+ZzogY29tcGFyaXNvbiBpcwphbHdheXMgZmFsc2UgZHVlIHRvIGxpbWl0ZWQgcmFuZ2Ugb2YgZGF0
+YSB0eXBlIFstV3R5cGUtbGltaXRzXQogIGVsc2UgaWYgKHRpbXMtPnR3YWl0ID4gRk1DMl9QTUVN
+X1BBVFRfVElNSU5HX01BU0spCgpTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGhlIEtlcmVsbG8gPGNo
+cmlzdG9waGUua2VyZWxsb0BzdC5jb20+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvc3RtMzJf
+Zm1jMl9uYW5kLmMgfCA5MCArKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZp
+bGUgY2hhbmdlZCwgMjkgaW5zZXJ0aW9ucygrKSwgNjEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvc3RtMzJfZm1jMl9uYW5kLmMgYi9kcml2ZXJzL210ZC9u
+YW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYwppbmRleCA0YWFiZWEyLi5lZDZlN2UyIDEwMDY0NAot
+LS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYworKysgYi9kcml2ZXJz
+L210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYwpAQCAtMTQyNCwyMSArMTQyNCwxNiBAQCBz
+dGF0aWMgdm9pZCBzdG0zMl9mbWMyX2NhbGNfdGltaW5ncyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlw
+LAogCXN0cnVjdCBzdG0zMl9mbWMyX3RpbWluZ3MgKnRpbXMgPSAmbmFuZC0+dGltaW5nczsKIAl1
+bnNpZ25lZCBsb25nIGhjbGsgPSBjbGtfZ2V0X3JhdGUoZm1jMi0+Y2xrKTsKIAl1bnNpZ25lZCBs
+b25nIGhjbGtwID0gTlNFQ19QRVJfU0VDIC8gKGhjbGsgLyAxMDAwKTsKLQlpbnQgdGFyLCB0Y2xy
+LCB0aGl6LCB0d2FpdCwgdHNldF9tZW0sIHRzZXRfYXR0LCB0aG9sZF9tZW0sIHRob2xkX2F0dDsK
+LQotCXRhciA9IGhjbGtwOwotCWlmICh0YXIgPCBzZHJ0LT50QVJfbWluKQotCQl0YXIgPSBzZHJ0
+LT50QVJfbWluOwotCXRpbXMtPnRhciA9IERJVl9ST1VORF9VUCh0YXIsIGhjbGtwKSAtIDE7Ci0J
+aWYgKHRpbXMtPnRhciA+IEZNQzJfUENSX1RJTUlOR19NQVNLKQotCQl0aW1zLT50YXIgPSBGTUMy
+X1BDUl9USU1JTkdfTUFTSzsKLQotCXRjbHIgPSBoY2xrcDsKLQlpZiAodGNsciA8IHNkcnQtPnRD
+TFJfbWluKQotCQl0Y2xyID0gc2RydC0+dENMUl9taW47Ci0JdGltcy0+dGNsciA9IERJVl9ST1VO
+RF9VUCh0Y2xyLCBoY2xrcCkgLSAxOwotCWlmICh0aW1zLT50Y2xyID4gRk1DMl9QQ1JfVElNSU5H
+X01BU0spCi0JCXRpbXMtPnRjbHIgPSBGTUMyX1BDUl9USU1JTkdfTUFTSzsKKwl1bnNpZ25lZCBs
+b25nIHRpbWluZywgdGFyLCB0Y2xyLCB0aGl6LCB0d2FpdDsKKwl1bnNpZ25lZCBsb25nIHRzZXRf
+bWVtLCB0c2V0X2F0dCwgdGhvbGRfbWVtLCB0aG9sZF9hdHQ7CisKKwl0YXIgPSBtYXhfdCh1bnNp
+Z25lZCBsb25nLCBoY2xrcCwgc2RydC0+dEFSX21pbik7CisJdGltaW5nID0gRElWX1JPVU5EX1VQ
+KHRhciwgaGNsa3ApIC0gMTsKKwl0aW1zLT50YXIgPSBtaW5fdCh1bnNpZ25lZCBsb25nLCB0aW1p
+bmcsIEZNQzJfUENSX1RJTUlOR19NQVNLKTsKKworCXRjbHIgPSBtYXhfdCh1bnNpZ25lZCBsb25n
+LCBoY2xrcCwgc2RydC0+dENMUl9taW4pOworCXRpbWluZyA9IERJVl9ST1VORF9VUCh0Y2xyLCBo
+Y2xrcCkgLSAxOworCXRpbXMtPnRjbHIgPSBtaW5fdCh1bnNpZ25lZCBsb25nLCB0aW1pbmcsIEZN
+QzJfUENSX1RJTUlOR19NQVNLKTsKIAogCXRpbXMtPnRoaXogPSBGTUMyX1RISVo7CiAJdGhpeiA9
+ICh0aW1zLT50aGl6ICsgMSkgKiBoY2xrcDsKQEAgLTE0NDgsMTggKzE0NDMsMTEgQEAgc3RhdGlj
+IHZvaWQgc3RtMzJfZm1jMl9jYWxjX3RpbWluZ3Moc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAkg
+KiB0V0FJVCA+IHRXUAogCSAqIHRXQUlUID4gdFJFQSArIHRJTwogCSAqLwotCXR3YWl0ID0gaGNs
+a3A7Ci0JaWYgKHR3YWl0IDwgc2RydC0+dFJQX21pbikKLQkJdHdhaXQgPSBzZHJ0LT50UlBfbWlu
+OwotCWlmICh0d2FpdCA8IHNkcnQtPnRXUF9taW4pCi0JCXR3YWl0ID0gc2RydC0+dFdQX21pbjsK
+LQlpZiAodHdhaXQgPCBzZHJ0LT50UkVBX21heCArIEZNQzJfVElPKQotCQl0d2FpdCA9IHNkcnQt
+PnRSRUFfbWF4ICsgRk1DMl9USU87Ci0JdGltcy0+dHdhaXQgPSBESVZfUk9VTkRfVVAodHdhaXQs
+IGhjbGtwKTsKLQlpZiAodGltcy0+dHdhaXQgPT0gMCkKLQkJdGltcy0+dHdhaXQgPSAxOwotCWVs
+c2UgaWYgKHRpbXMtPnR3YWl0ID4gRk1DMl9QTUVNX1BBVFRfVElNSU5HX01BU0spCi0JCXRpbXMt
+PnR3YWl0ID0gRk1DMl9QTUVNX1BBVFRfVElNSU5HX01BU0s7CisJdHdhaXQgPSBtYXhfdCh1bnNp
+Z25lZCBsb25nLCBoY2xrcCwgc2RydC0+dFJQX21pbik7CisJdHdhaXQgPSBtYXhfdCh1bnNpZ25l
+ZCBsb25nLCB0d2FpdCwgc2RydC0+dFdQX21pbik7CisJdHdhaXQgPSBtYXhfdCh1bnNpZ25lZCBs
+b25nLCB0d2FpdCwgc2RydC0+dFJFQV9tYXggKyBGTUMyX1RJTyk7CisJdGltaW5nID0gRElWX1JP
+VU5EX1VQKHR3YWl0LCBoY2xrcCk7CisJdGltcy0+dHdhaXQgPSBjbGFtcF92YWwodGltaW5nLCAx
+LCBGTUMyX1BNRU1fUEFUVF9USU1JTkdfTUFTSyk7CiAKIAkvKgogCSAqIHRTRVRVUF9NRU0gPiB0
+Q1MgLSB0V0FJVApAQCAtMTQ3NCwyMCArMTQ2MiwxNSBAQCBzdGF0aWMgdm9pZCBzdG0zMl9mbWMy
+X2NhbGNfdGltaW5ncyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogCWlmICh0d2FpdCA+IHRoaXog
+JiYgKHNkcnQtPnREU19taW4gPiB0d2FpdCAtIHRoaXopICYmCiAJICAgICh0c2V0X21lbSA8IHNk
+cnQtPnREU19taW4gLSAodHdhaXQgLSB0aGl6KSkpCiAJCXRzZXRfbWVtID0gc2RydC0+dERTX21p
+biAtICh0d2FpdCAtIHRoaXopOwotCXRpbXMtPnRzZXRfbWVtID0gRElWX1JPVU5EX1VQKHRzZXRf
+bWVtLCBoY2xrcCk7Ci0JaWYgKHRpbXMtPnRzZXRfbWVtID09IDApCi0JCXRpbXMtPnRzZXRfbWVt
+ID0gMTsKLQllbHNlIGlmICh0aW1zLT50c2V0X21lbSA+IEZNQzJfUE1FTV9QQVRUX1RJTUlOR19N
+QVNLKQotCQl0aW1zLT50c2V0X21lbSA9IEZNQzJfUE1FTV9QQVRUX1RJTUlOR19NQVNLOworCXRp
+bWluZyA9IERJVl9ST1VORF9VUCh0c2V0X21lbSwgaGNsa3ApOworCXRpbXMtPnRzZXRfbWVtID0g
+Y2xhbXBfdmFsKHRpbWluZywgMSwgRk1DMl9QTUVNX1BBVFRfVElNSU5HX01BU0spOwogCiAJLyoK
+IAkgKiB0SE9MRF9NRU0gPiB0Q0gKIAkgKiB0SE9MRF9NRU0gPiB0UkVIIC0gdFNFVFVQX01FTQog
+CSAqIHRIT0xEX01FTSA+IG1heCh0UkMsIHRXQykgLSAodFNFVFVQX01FTSArIHRXQUlUKQogCSAq
+LwotCXRob2xkX21lbSA9IGhjbGtwOwotCWlmICh0aG9sZF9tZW0gPCBzZHJ0LT50Q0hfbWluKQot
+CQl0aG9sZF9tZW0gPSBzZHJ0LT50Q0hfbWluOworCXRob2xkX21lbSA9IG1heF90KHVuc2lnbmVk
+IGxvbmcsIGhjbGtwLCBzZHJ0LT50Q0hfbWluKTsKIAlpZiAoc2RydC0+dFJFSF9taW4gPiB0c2V0
+X21lbSAmJgogCSAgICAodGhvbGRfbWVtIDwgc2RydC0+dFJFSF9taW4gLSB0c2V0X21lbSkpCiAJ
+CXRob2xkX21lbSA9IHNkcnQtPnRSRUhfbWluIC0gdHNldF9tZW07CkBAIC0xNDk3LDExICsxNDgw
+LDggQEAgc3RhdGljIHZvaWQgc3RtMzJfZm1jMl9jYWxjX3RpbWluZ3Moc3RydWN0IG5hbmRfY2hp
+cCAqY2hpcCwKIAlpZiAoKHNkcnQtPnRXQ19taW4gPiB0c2V0X21lbSArIHR3YWl0KSAmJgogCSAg
+ICAodGhvbGRfbWVtIDwgc2RydC0+dFdDX21pbiAtICh0c2V0X21lbSArIHR3YWl0KSkpCiAJCXRo
+b2xkX21lbSA9IHNkcnQtPnRXQ19taW4gLSAodHNldF9tZW0gKyB0d2FpdCk7Ci0JdGltcy0+dGhv
+bGRfbWVtID0gRElWX1JPVU5EX1VQKHRob2xkX21lbSwgaGNsa3ApOwotCWlmICh0aW1zLT50aG9s
+ZF9tZW0gPT0gMCkKLQkJdGltcy0+dGhvbGRfbWVtID0gMTsKLQllbHNlIGlmICh0aW1zLT50aG9s
+ZF9tZW0gPiBGTUMyX1BNRU1fUEFUVF9USU1JTkdfTUFTSykKLQkJdGltcy0+dGhvbGRfbWVtID0g
+Rk1DMl9QTUVNX1BBVFRfVElNSU5HX01BU0s7CisJdGltaW5nID0gRElWX1JPVU5EX1VQKHRob2xk
+X21lbSwgaGNsa3ApOworCXRpbXMtPnRob2xkX21lbSA9IGNsYW1wX3ZhbCh0aW1pbmcsIDEsIEZN
+QzJfUE1FTV9QQVRUX1RJTUlOR19NQVNLKTsKIAogCS8qCiAJICogdFNFVFVQX0FUVCA+IHRDUyAt
+IHRXQUlUCkBAIC0xNTIzLDExICsxNTAzLDggQEAgc3RhdGljIHZvaWQgc3RtMzJfZm1jMl9jYWxj
+X3RpbWluZ3Moc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAlpZiAodHdhaXQgPiB0aGl6ICYmIChz
+ZHJ0LT50RFNfbWluID4gdHdhaXQgLSB0aGl6KSAmJgogCSAgICAodHNldF9hdHQgPCBzZHJ0LT50
+RFNfbWluIC0gKHR3YWl0IC0gdGhpeikpKQogCQl0c2V0X2F0dCA9IHNkcnQtPnREU19taW4gLSAo
+dHdhaXQgLSB0aGl6KTsKLQl0aW1zLT50c2V0X2F0dCA9IERJVl9ST1VORF9VUCh0c2V0X2F0dCwg
+aGNsa3ApOwotCWlmICh0aW1zLT50c2V0X2F0dCA9PSAwKQotCQl0aW1zLT50c2V0X2F0dCA9IDE7
+Ci0JZWxzZSBpZiAodGltcy0+dHNldF9hdHQgPiBGTUMyX1BNRU1fUEFUVF9USU1JTkdfTUFTSykK
+LQkJdGltcy0+dHNldF9hdHQgPSBGTUMyX1BNRU1fUEFUVF9USU1JTkdfTUFTSzsKKwl0aW1pbmcg
+PSBESVZfUk9VTkRfVVAodHNldF9hdHQsIGhjbGtwKTsKKwl0aW1zLT50c2V0X2F0dCA9IGNsYW1w
+X3ZhbCh0aW1pbmcsIDEsIEZNQzJfUE1FTV9QQVRUX1RJTUlOR19NQVNLKTsKIAogCS8qCiAJICog
+dEhPTERfQVRUID4gdEFMSApAQCAtMTU0MiwxNyArMTUxOSwxMSBAQCBzdGF0aWMgdm9pZCBzdG0z
+Ml9mbWMyX2NhbGNfdGltaW5ncyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogCSAqIHRIT0xEX0FU
+VCA+IHRSQyAtICh0U0VUVVBfQVRUICsgdFdBSVQpCiAJICogdEhPTERfQVRUID4gdFdDIC0gKHRT
+RVRVUF9BVFQgKyB0V0FJVCkKIAkgKi8KLQl0aG9sZF9hdHQgPSBoY2xrcDsKLQlpZiAodGhvbGRf
+YXR0IDwgc2RydC0+dEFMSF9taW4pCi0JCXRob2xkX2F0dCA9IHNkcnQtPnRBTEhfbWluOwotCWlm
+ICh0aG9sZF9hdHQgPCBzZHJ0LT50Q0hfbWluKQotCQl0aG9sZF9hdHQgPSBzZHJ0LT50Q0hfbWlu
+OwotCWlmICh0aG9sZF9hdHQgPCBzZHJ0LT50Q0xIX21pbikKLQkJdGhvbGRfYXR0ID0gc2RydC0+
+dENMSF9taW47Ci0JaWYgKHRob2xkX2F0dCA8IHNkcnQtPnRDT0hfbWluKQotCQl0aG9sZF9hdHQg
+PSBzZHJ0LT50Q09IX21pbjsKLQlpZiAodGhvbGRfYXR0IDwgc2RydC0+dERIX21pbikKLQkJdGhv
+bGRfYXR0ID0gc2RydC0+dERIX21pbjsKKwl0aG9sZF9hdHQgPSBtYXhfdCh1bnNpZ25lZCBsb25n
+LCBoY2xrcCwgc2RydC0+dEFMSF9taW4pOworCXRob2xkX2F0dCA9IG1heF90KHVuc2lnbmVkIGxv
+bmcsIHRob2xkX2F0dCwgc2RydC0+dENIX21pbik7CisJdGhvbGRfYXR0ID0gbWF4X3QodW5zaWdu
+ZWQgbG9uZywgdGhvbGRfYXR0LCBzZHJ0LT50Q0xIX21pbik7CisJdGhvbGRfYXR0ID0gbWF4X3Qo
+dW5zaWduZWQgbG9uZywgdGhvbGRfYXR0LCBzZHJ0LT50Q09IX21pbik7CisJdGhvbGRfYXR0ID0g
+bWF4X3QodW5zaWduZWQgbG9uZywgdGhvbGRfYXR0LCBzZHJ0LT50REhfbWluKTsKIAlpZiAoKHNk
+cnQtPnRXQl9tYXggKyBGTUMyX1RJTyArIEZNQzJfVFNZTkMgPiB0c2V0X21lbSkgJiYKIAkgICAg
+KHRob2xkX2F0dCA8IHNkcnQtPnRXQl9tYXggKyBGTUMyX1RJTyArIEZNQzJfVFNZTkMgLSB0c2V0
+X21lbSkpCiAJCXRob2xkX2F0dCA9IHNkcnQtPnRXQl9tYXggKyBGTUMyX1RJTyArIEZNQzJfVFNZ
+TkMgLSB0c2V0X21lbTsKQEAgLTE1NzEsMTEgKzE1NDIsOCBAQCBzdGF0aWMgdm9pZCBzdG0zMl9m
+bWMyX2NhbGNfdGltaW5ncyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogCWlmICgoc2RydC0+dFdD
+X21pbiA+IHRzZXRfYXR0ICsgdHdhaXQpICYmCiAJICAgICh0aG9sZF9hdHQgPCBzZHJ0LT50V0Nf
+bWluIC0gKHRzZXRfYXR0ICsgdHdhaXQpKSkKIAkJdGhvbGRfYXR0ID0gc2RydC0+dFdDX21pbiAt
+ICh0c2V0X2F0dCArIHR3YWl0KTsKLQl0aW1zLT50aG9sZF9hdHQgPSBESVZfUk9VTkRfVVAodGhv
+bGRfYXR0LCBoY2xrcCk7Ci0JaWYgKHRpbXMtPnRob2xkX2F0dCA9PSAwKQotCQl0aW1zLT50aG9s
+ZF9hdHQgPSAxOwotCWVsc2UgaWYgKHRpbXMtPnRob2xkX2F0dCA+IEZNQzJfUE1FTV9QQVRUX1RJ
+TUlOR19NQVNLKQotCQl0aW1zLT50aG9sZF9hdHQgPSBGTUMyX1BNRU1fUEFUVF9USU1JTkdfTUFT
+SzsKKwl0aW1pbmcgPSBESVZfUk9VTkRfVVAodGhvbGRfYXR0LCBoY2xrcCk7CisJdGltcy0+dGhv
+bGRfYXR0ID0gY2xhbXBfdmFsKHRpbWluZywgMSwgRk1DMl9QTUVNX1BBVFRfVElNSU5HX01BU0sp
+OwogfQogCiBzdGF0aWMgaW50IHN0bTMyX2ZtYzJfc2V0dXBfaW50ZXJmYWNlKHN0cnVjdCBuYW5k
+X2NoaXAgKmNoaXAsIGludCBjaGlwbnIsCi0tIAoxLjkuMQoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
