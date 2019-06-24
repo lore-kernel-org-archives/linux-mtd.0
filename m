@@ -2,104 +2,97 @@ Return-Path: <SRS0=yEN0=UX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DBC4C43613
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 16:37:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B58EC43613
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 16:46:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D56F720665
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 16:37:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02B4020665
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 16:46:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cSX8c2Li";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Val/xFIc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D56F720665
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cFxLAlB9";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THWg/XKi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02B4020665
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8FXNardzSFoUzCQU7Ni32OVRjxGM20VJwIvvVT7SCCo=; b=cSX8c2LiFiEjIm
-	z+XlgbSoXiOtjjvedBpT7MTQ/q/BztT81OOfXNVNynL42NkNfxSJrnMuYRWoFBuGlfHOePKaRLFFA
-	H1RSq8MbrAV0mq/8dlczdDyoYo+b3N9tSHcKKmzOG5T5Y1aoo2UWH+2KyjHklWoUC7kwJiFQEsqVq
-	6pHDZzc8wcnDzxjhWDXgrXApdDyxd+a7Ft05TqoWuqVBKsTFxx5d46p2Pzyusee1Jmf0DmzkQJpTV
-	xLIfviUh8FJlaVKHxtXt+cfuUVr9+UZ30DnUJot921rE/4xARW1yQqHcNlvmQv7YPrQcCn3/0194e
-	Gva9RMsBHrMGa4TotaPg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=/NGGSS/tsSzRa3ISWuuVAotJicMoxIgpWMVfNBfcmQU=; b=cFxLAlB9A3Vz329yGRhuks90E
+	NsZ9voSaG3CCW5eJeO0g9X80fzYiSpmAaoCk87Dz1lYf0qjfIhIKTr6oy9+EH9zQjkpIvU6lgfi1d
+	1XMuLy/pnMP4Zot7MAqdnfbPrBBZTwKnvUpIA/RxQuRrItSLU1se3ddCK/8C0OGhi5ap9B+KhLaya
+	glBFpyjjUY1Lb/HNVUu6kkIleQsDYGZByxUd22pjpEnwx8xW3rwKjbXUYM/xReRBSeNNprWwUT+bl
+	RGQDqRVOanmrAgwDGzTqsOgfC8ch1HnI7KfutFTMtOtN/maqdVbgCk//kPPN+yDgp1eUhP9ijaKnk
+	hNE0wr5Dg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfRxy-000125-JX; Mon, 24 Jun 2019 16:37:14 +0000
-Received: from userp2120.oracle.com ([156.151.31.85])
+	id 1hfS72-00053o-2g; Mon, 24 Jun 2019 16:46:36 +0000
+Received: from mail-pf1-x441.google.com ([2607:f8b0:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfRxv-00011M-QP
- for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 16:37:13 +0000
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5OGYBIm140014;
- Mon, 24 Jun 2019 16:36:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=HA99AMTfTSc28plQQ/cp41x7Nn4dwb3FKNRresvoez8=;
- b=Val/xFIcmXfnvXdGrQBd2uUMZYObEi3W8WIlY6oMUJIKvjldL9xYJIbr4X8m/8PfUkNP
- RhH7NFaRejnXOwK4OrHcHI49LEDw30Z0srM0V+BtgIV6OV/ooJ8YuV1XwJC9gXt//xWz
- Q0bSRiqdmELhNdVSkCIZr87TrKLwiGMPLZJNCBd7weSod/LyeYSIITLeuy/oyb0/36Pk
- joZS32wTTBm4Xftsq9fhk9nHXmjGPPxMMMzommCPqRpU1cRv8ZoyAI6/8dXnLZ2krssP
- nfR6QpxDK+AWnV/OvlFkpdglsTrJTTQAP82qwXJGdU82OAjIBZeAn2VIxNce6Btsj8Q4 7Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
- by userp2120.oracle.com with ESMTP id 2t9cyq7dxf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 24 Jun 2019 16:36:52 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
- by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5OGZS5o040090;
- Mon, 24 Jun 2019 16:36:51 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3030.oracle.com with ESMTP id 2t9acbktrd-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 24 Jun 2019 16:36:51 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5OGaodY042889;
- Mon, 24 Jun 2019 16:36:51 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by aserp3030.oracle.com with ESMTP id 2t9acbktr8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 24 Jun 2019 16:36:50 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5OGaiFC016783;
- Mon, 24 Jun 2019 16:36:44 GMT
-Received: from localhost (/67.169.218.210)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 24 Jun 2019 09:36:44 -0700
-Date: Mon, 24 Jun 2019 09:36:42 -0700
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 2/7] vfs: flush and wait for io when setting the
- immutable flag via SETFLAGS
-Message-ID: <20190624163642.GT5387@magnolia>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
- <156116142734.1664939.5074567130774423066.stgit@magnolia>
- <20190624153358.GH32376@quack2.suse.cz>
+ id 1hfS6m-0004sZ-6B; Mon, 24 Jun 2019 16:46:22 +0000
+Received: by mail-pf1-x441.google.com with SMTP id t16so7826112pfe.11;
+ Mon, 24 Jun 2019 09:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-transfer-encoding:content-language;
+ bh=rk32yi4TS8gcxPCzX8v7QY6cOglFHE8dF0I29LG2lnc=;
+ b=THWg/XKi4hT+eXURO6zCxBWh5cSpNTHmniF8SOoFsAEqFw3MYLE75X73Ad7B0Uoa/u
+ Js0H1vA9IBcQT7Y2zHy34pz1g5j7v/pxeblkUMN1Rk1Xz1mPZ6gmwgJcNTFcmTXPsF08
+ SrSoJKUdi3xus6naqN3TllR7GRAsM4YE9Be/qcoLjROxw2xVWemXxpRXJ/fx3Yf90u1U
+ DhvS26rMMyGG74u6F2J/dT609qVBy/gKV5dk5hA9Rsm0gJVfmuByPHgw2qcLYBZUnE1x
+ 3KNGBWUu1sus3xLGGP5KtbBKJQ8PZnNvr48Gb77b8xwc8IJUi+KjhZ0uIdZ9udXpVBls
+ p3QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding
+ :content-language;
+ bh=rk32yi4TS8gcxPCzX8v7QY6cOglFHE8dF0I29LG2lnc=;
+ b=io48ZFgu14GXxCkCGKKg2FsKDgFrs17/JR+okCuVPneyhOD1PjcaXuzy0dnANG2sp0
+ 38teifua3jrRvZA/bAAlgsGIYHw7AIsT2+cV2uBjbKp+zEVJPUg94+hWSb3T8h7NPVtJ
+ BjHzkDly2w/sP2BB8KGcHunDO/929qpYi7lbi0cxvUbPPrOn7vlwQvKcmiwUsEv/sMDW
+ 0FKXxSVXjAIqmt9Rijgal3tTwSD2za3i5rfTtVnxtZ2muHkyJsWRrm+s3/LR4Ugy8Hxt
+ LQ+ZkKDLjH2gzgNVUMkq9Nn/o5ZpZwEKYmJ3sPPLs1/d9U3yF0fmy5p9RB4nlEwU9EOi
+ ldpg==
+X-Gm-Message-State: APjAAAXzgUIhkdQki1fk/8kzHsv5HW8/J4EVoTn88gpu5HWdbEABkoEH
+ Ym8pi86jbMWI6Dj1SOej/+gYBXJJCFM=
+X-Google-Smtp-Source: APXvYqxi3TsEmcjsEdXwtgJuHHbQfba3PGZKeJ2cIWYwMjOqJarwHX0qFk08wKvYtbaSkUp58mDLAA==
+X-Received: by 2002:a17:90a:c504:: with SMTP id
+ k4mr25698395pjt.104.1561394778617; 
+ Mon, 24 Jun 2019 09:46:18 -0700 (PDT)
+Received: from ?IPv6:240b:10:2720:5510:a182:288:3ffa:432a?
+ ([240b:10:2720:5510:a182:288:3ffa:432a])
+ by smtp.gmail.com with ESMTPSA id y22sm15041975pgj.38.2019.06.24.09.46.15
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 24 Jun 2019 09:46:17 -0700 (PDT)
+Subject: Re: [PATCH v7 1/5] mtd: cfi_cmdset_0002: Add support for polling
+ status register
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>
+References: <20190620172250.9102-1-vigneshr@ti.com>
+ <20190620172250.9102-2-vigneshr@ti.com>
+From: Tokunori Ikegami <ikegami.t@gmail.com>
+Message-ID: <571484c7-0cf4-6a7d-6d7f-375cfb13ce8b@gmail.com>
+Date: Tue, 25 Jun 2019 01:46:13 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190624153358.GH32376@quack2.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9298
- signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=682 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906240131
+In-Reply-To: <20190620172250.9102-2-vigneshr@ti.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190624_093712_006822_8E13224B 
-X-CRM114-Status: GOOD (  13.51  )
+X-CRM114-CacheID: sfid-20190624_094620_259219_0AA853CD 
+X-CRM114-Status: GOOD (  26.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,47 +104,242 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-efi@vger.kernel.org, linux-btrfs@vger.kernel.org, yuchao0@huawei.com,
- linux-mm@kvack.org, clm@fb.com, adilger.kernel@dilger.ca,
- matthew.garrett@nebula.com, linux-nilfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, devel@lists.orangefs.org, josef@toxicpanda.com,
- reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
- jaegeuk@kernel.org, tytso@mit.edu, ard.biesheuvel@linaro.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, jk@ozlabs.org, jack@suse.com,
- linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: devicetree@vger.kernel.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 24, 2019 at 05:33:58PM +0200, Jan Kara wrote:
-> On Fri 21-06-19 16:57:07, Darrick J. Wong wrote:
-> > +/*
-> > + * Flush file data before changing attributes.  Caller must hold any locks
-> > + * required to prevent further writes to this file until we're done setting
-> > + * flags.
-> > + */
-> > +static inline int inode_flush_data(struct inode *inode)
-> > +{
-> > +	inode_dio_wait(inode);
-> > +	return filemap_write_and_wait(inode->i_mapping);
-> > +}
-> 
-> BTW, how about calling this function inode_drain_writes() instead? The
-> 'flush_data' part is more a detail of implementation of write draining than
-> what we need to do to set immutable flag.
 
-Ok, that's a much better description of what the function does.
+On 2019/06/21 2:22, Vignesh Raghavendra wrote:
+> HyperFlash devices are compliant with CFI AMD/Fujitsu Extended Command
+> Set (0x0002) for flash operations, therefore
+> drivers/mtd/chips/cfi_cmdset_0002.c can be used as is. But these devices
+> do not support DQ polling method of determining chip ready/good status.
+> These flashes provide Status Register whose bits can be polled to know
+> status of flash operation.
+>
+> Cypress HyperFlash datasheet here[1], talks about CFI Amd/Fujitsu
+> Extended Query version 1.5. Bit 0 of "Software Features supported" field
+> of CFI Primary Vendor-Specific Extended Query table indicates
+> presence/absence of status register and Bit 1 indicates whether or not
+> DQ polling is supported. Using these bits, its possible to determine
+> whether flash supports DQ polling or need to use Status Register.
+>
+> Add support for polling Status Register to know device ready/status of
+> erase/write operations when DQ polling is not supported.
+> Print error messages on erase/program failure by looking at related
+> Status Register bits.
+>
+> [1] https://www.cypress.com/file/213346/download
+>
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+> v7: No change
+>
+>   drivers/mtd/chips/cfi_cmdset_0002.c | 90 +++++++++++++++++++++++++++++
+>   include/linux/mtd/cfi.h             |  5 ++
+>   2 files changed, 95 insertions(+)
+>
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index c8fa5906bdf9..0f571f162e3b 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -49,6 +49,16 @@
+>   #define SST49LF008A		0x005a
+>   #define AT49BV6416		0x00d6
+>   
+> +/*
+> + * Status Register bit description. Used by flash devices that don't
+> + * support DQ polling (e.g. HyperFlash)
+> + */
+> +#define CFI_SR_DRB		BIT(7)
+> +#define CFI_SR_ESB		BIT(5)
+> +#define CFI_SR_PSB		BIT(4)
+> +#define CFI_SR_WBASB		BIT(3)
+> +#define CFI_SR_SLSB		BIT(1)
+> +
+>   static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+>   static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+>   static int cfi_amdstd_write_buffers(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+> @@ -97,6 +107,48 @@ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
+>   	.module		= THIS_MODULE
+>   };
+>   
+> +/*
+> + * Use status register to poll for Erase/write completion when DQ is not
+> + * supported. This is indicated by Bit[1:0] of SoftwareFeatures field in
+> + * CFI Primary Vendor-Specific Extended Query table 1.5
+> + */
+> +static int cfi_use_status_reg(struct cfi_private *cfi)
+> +{
+> +	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
+> +
+> +	return extp->MinorVersion >= '5' &&
+> +		(extp->SoftwareFeatures & 0x3) == 0x1;
 
---D
+Seems to be better to use defined values instead of 0x3 and 0x1 hard 
+coded values.
 
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> +}
+> +
+> +static void cfi_check_err_status(struct map_info *map, unsigned long adr)
+> +{
+> +	struct cfi_private *cfi = map->fldrv_priv;
+> +	map_word status;
+> +
+> +	if (!cfi_use_status_reg(cfi))
+> +		return;
+> +
+> +	cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
+
+Is it not necessary to set chip->start as the base parameter for 
+cfi_send_gen_cmd()?
+
+> +			 cfi->device_type, NULL);
+> +	status = map_read(map, adr);
+> +
+> +	if (map_word_bitsset(map, status, CMD(0x3a))) {
+> +		unsigned long chipstatus = MERGESTATUS(status);
+> +
+> +		if (chipstatus & CFI_SR_ESB)
+> +			pr_err("%s erase operation failed, status %lx\n",
+> +			       map->name, chipstatus);
+> +		if (chipstatus & CFI_SR_PSB)
+> +			pr_err("%s program operation failed, status %lx\n",
+> +			       map->name, chipstatus);
+> +		if (chipstatus & CFI_SR_WBASB)
+> +			pr_err("%s buffer program command aborted, status %lx\n",
+> +			       map->name, chipstatus);
+> +		if (chipstatus & CFI_SR_SLSB)
+> +			pr_err("%s sector write protected, status %lx\n",
+> +			       map->name, chipstatus);
+> +	}
+> +}
+>   
+>   /* #define DEBUG_CFI_FEATURES */
+>   
+> @@ -744,8 +796,22 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+>    */
+>   static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+>   {
+> +	struct cfi_private *cfi = map->fldrv_priv;
+>   	map_word d, t;
+>   
+> +	if (cfi_use_status_reg(cfi)) {
+> +		map_word ready = CMD(CFI_SR_DRB);
+> +		/*
+> +		 * For chips that support status register, check device
+> +		 * ready bit
+> +		 */
+> +		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
+
+Same comment as cfi_check_err_status() about the base address.
+
+> +				 cfi->device_type, NULL);
+> +		d = map_read(map, addr);
+> +
+> +		return map_word_andequal(map, d, ready, ready);
+> +	}
+> +
+>   	d = map_read(map, addr);
+>   	t = map_read(map, addr);
+>   
+> @@ -769,8 +835,27 @@ static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+>    */
+>   static int __xipram chip_good(struct map_info *map, unsigned long addr, map_word expected)
+>   {
+> +	struct cfi_private *cfi = map->fldrv_priv;
+>   	map_word oldd, curd;
+>   
+> +	if (cfi_use_status_reg(cfi)) {
+> +		map_word ready = CMD(CFI_SR_DRB);
+> +		map_word err = CMD(CFI_SR_PSB | CFI_SR_ESB);
+
+Is it not necessary to check CFI_SR_WBASB and CFI_SR_SLSB that are 
+checked by cfi_check_err_status()?
+
+> +		/*
+> +		 * For chips that support status register, check device
+> +		 * ready bit and Erase/Program status bit to know if
+> +		 * operation succeeded.
+> +		 */
+> +		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, 0, map, cfi,
+
+Same as cfi_check_err_status() and chip_ready() about the base address.
+
+> +				 cfi->device_type, NULL);
+> +		curd = map_read(map, addr);
+> +
+> +		if (map_word_andequal(map, curd, ready, ready))
+> +			return !map_word_bitsset(map, curd, err);
+> +
+> +		return 0;
+> +	}
+> +
+>   	oldd = map_read(map, addr);
+>   	curd = map_read(map, addr);
+>   
+> @@ -1644,6 +1729,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+>   	/* Did we succeed? */
+>   	if (!chip_good(map, adr, datum)) {
+>   		/* reset on all failures. */
+> +		cfi_check_err_status(map, adr);
+>   		map_write(map, CMD(0xF0), chip->start);
+>   		/* FIXME - should have reset delay before continuing */
+>   
+> @@ -1901,6 +1987,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+>   	 * See e.g.
+>   	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
+>   	 */
+> +	cfi_check_err_status(map, adr);
+>   	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
+>   			 cfi->device_type, NULL);
+>   	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
+> @@ -2107,6 +2194,7 @@ static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
+>   
+>   	if (!chip_good(map, adr, datum)) {
+>   		/* reset on all failures. */
+> +		cfi_check_err_status(map, adr);
+>   		map_write(map, CMD(0xF0), chip->start);
+>   		/* FIXME - should have reset delay before continuing */
+>   
+> @@ -2316,6 +2404,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+>   	/* Did we succeed? */
+>   	if (ret) {
+>   		/* reset on all failures. */
+> +		cfi_check_err_status(map, adr);
+>   		map_write(map, CMD(0xF0), chip->start);
+>   		/* FIXME - should have reset delay before continuing */
+>   
+> @@ -2412,6 +2501,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+>   	/* Did we succeed? */
+>   	if (ret) {
+>   		/* reset on all failures. */
+> +		cfi_check_err_status(map, adr);
+>   		map_write(map, CMD(0xF0), chip->start);
+>   		/* FIXME - should have reset delay before continuing */
+>   
+> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+> index 208c87cf2e3e..b50416169049 100644
+> --- a/include/linux/mtd/cfi.h
+> +++ b/include/linux/mtd/cfi.h
+> @@ -219,6 +219,11 @@ struct cfi_pri_amdstd {
+>   	uint8_t  VppMin;
+>   	uint8_t  VppMax;
+>   	uint8_t  TopBottom;
+> +	/* Below field are added from version 1.5 */
+> +	uint8_t  ProgramSuspend;
+> +	uint8_t  UnlockBypass;
+> +	uint8_t  SecureSiliconSector;
+> +	uint8_t  SoftwareFeatures;
+>   } __packed;
+>   
+>   /* Vendor-Specific PRI for Atmel chips (command set 0x0002) */
 
 ______________________________________________________
 Linux MTD discussion mailing list
