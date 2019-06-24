@@ -2,68 +2,77 @@ Return-Path: <SRS0=yEN0=UX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 975A5C43613
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 01:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 561BAC43613
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 07:08:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62D0722CEB
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 01:39:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 299B7205F4
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 07:08:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BpHvdb9n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62D0722CEB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatek.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="txZcJwrX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 299B7205F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=asem.it
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=pWEpvVppj5PNU86yetrbewtudLjFraieMLkFnvSe6mc=; b=BpHvdb9n9Ib/+P
-	ycR1Es0y/nLej806WO7Z8xrcjJNd5xLmi2CrlNvNjYGEtNunC0IKPHnVBlNrW6EMnnisdCRmJeNwB
-	qahMDDDDtmyjd4KnljfpmlMDaUKnUIW+OrRcXPu5tuqLnWZovm7/U9QbQnddR4jN3j3GWgwVNM1M0
-	qvVjWX3swZZ/3cIXj1Ct49u2XtQOtcxGn3FD2NoMtN/BE90T71njmmwpvgzWvcgOMulcHGdJ3t3yM
-	HQmqLgyLQdZaLd1XfkGPnvYCuVCntPFfOctAMnwMAYqxiZY858OSND5efahDhOVenOwgyLpeHc22E
-	mfo11+TFbyCw58f+GDbw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TDmqTMzhAA080iH8yjDWiebY1MBsvTfdcXnJDHvy+Fc=; b=txZcJwrXNC5Csa
+	Qb1+dfr7J6j8qzaKWhqw9OmUgJTkkM91YhMIGnEq8N0dEktbVPFIHuJs1R/2VgkQ/gIenjtQrhe2r
+	bh7RFxkoongIL17WqglOyu9UEtK6zd2WTxEzVDLQIp+yjmSfgTtLNBcalff9YQ8TlkvpRGsC7XTZz
+	Lwz+6E8zLXb6eQtR3xAh+XjizETRW/ePm4wpP+siKDQcc3iHs39PX4HadujEArzpoxUsZoPgpzxNd
+	HAklbOe+78IQ5x0MPSb+kjhal6ePrApc3fwOuFE1WhT5nktd476uy3ncdvrCzhZpBiPGelvMXdEUU
+	6HUlKCsntlb1ZtBRfgYQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfDwp-0001Cg-Ao; Mon, 24 Jun 2019 01:39:07 +0000
-Received: from mailgw01.mediatek.com ([216.200.240.184])
+	id 1hfJ5K-0000vU-0B; Mon, 24 Jun 2019 07:08:14 +0000
+Received: from smtp.asem.it ([151.1.184.197])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfDwm-0001CH-4g; Mon, 24 Jun 2019 01:39:05 +0000
-X-UUID: 9458c8c3087b490ea29e9375cab40c6a-20190623
-X-UUID: 9458c8c3087b490ea29e9375cab40c6a-20190623
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
- (envelope-from <xiaolei.li@mediatek.com>)
- (musrelay.mediatek.com ESMTP with TLS)
- with ESMTP id 1664621968; Sun, 23 Jun 2019 17:39:02 -0800
-Received: from MTKMBS07N2.mediatek.inc (172.21.101.141) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Sun, 23 Jun 2019 18:39:00 -0700
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Mon, 24 Jun 2019 09:38:59 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Mon, 24 Jun 2019 09:38:58 +0800
-From: <xiaolei.li@mediatek.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [PATCH v2] mtd: rawnand: mtk: Re-license MTK NAND driver as Dual
- MIT/GPL
-Date: Mon, 24 Jun 2019 09:38:56 +0800
-Message-ID: <20190624013856.20732-1-xiaolei.li@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+ id 1hfJ5D-0000uF-Uf
+ for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 07:08:10 +0000
+Received: from webmail.asem.it by asem.it (smtp.asem.it)
+ (SecurityGateway 5.5.0) with ESMTP id SG003964369.MSG 
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2019 09:08:00 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1261.35; Mon, 24
+ Jun 2019 09:07:59 +0200
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1261.035; Mon, 24 Jun 2019 09:07:59 +0200
+From: Flavio Suligoi <f.suligoi@asem.it>
+To: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>
+Subject: RE: [PATCH 1/1] mtd: spi-nor: add a presence check for non-JEDEC spi
+ nor
+Thread-Topic: [PATCH 1/1] mtd: spi-nor: add a presence check for non-JEDEC spi
+ nor
+Thread-Index: AQHU3+V6wpgiM/sAo06qkyb8EDJ5fKapDvWAgAHkbDA=
+Date: Mon, 24 Jun 2019 07:07:59 +0000
+Message-ID: <c7ce7a2966a4414a90e84f30929cede1@asem.it>
+References: <1553172946-2251-1-git-send-email-f.suligoi@asem.it>
+ <55f74662-c5f6-2cdf-f1a0-c685f7ff1913@microchip.com>
+In-Reply-To: <55f74662-c5f6-2cdf-f1a0-c685f7ff1913@microchip.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.17.208]
 MIME-Version: 1.0
-X-MTK: N
+X-SGHeloLookup-Result: hardfail smtp.helo=webmail.asem.it (does not match
+ 172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A0B0210.5D1076D0.005F, ss=1, re=0.000, recu=0.000,
+ reip=0.000, cl=1, cld=1, fgs=0 (_st=1 _vt=0 _iwf=0)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190623_183904_189965_C4E81B7A 
-X-CRM114-Status: GOOD (  10.50  )
+X-CRM114-CacheID: sfid-20190624_000808_566089_C3703396 
+X-CRM114-Status: GOOD (  31.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,89 +84,206 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: ryder.lee@mediatek.com, arnd@arndb.de, srv_heupstream@mediatek.com,
- yellowriver2010@hotmail.com, yamada.masahiro@socionext.com,
- boris.brezillon@collabora.com, linux-mediatek@lists.infradead.org,
- jorge.ramirez-ortiz@linaro.org, rafal@milecki.pl,
- linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
- rogercc.lin@mediatek.com, dan.carpenter@oracle.com, matthias.bgg@gmail.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "linux-kernel@vger.kernel.or" <linux-kernel@vger.kernel.or>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "richard@nod.at" <richard@nod.at>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogWGlhb2xlaSBMaSA8eGlhb2xlaS5saUBtZWRpYXRlay5jb20+CgpJdCBpcyB3YW50ZWQg
-dG8gdXNlIE1USyBOQU5EIGRyaXZlciB3aXRoIEdQTC0yLjAgb3IgTUlUIGxpY2Vuc2UuCkJ1dCBu
-b3cgaXQgaXMgb25seSBsaWNlbnNlZCBhcyBHUEwtMi4wLgpTbyByZS1saWNlbnNlIGl0IGFzIGR1
-YWwgTUlUL0dQTCBhbmQgcmVwbGFjZSBsaWNlbnNlIHRleHQgd2l0aApTUERYIHRhZy4KClNpZ25l
-ZC1vZmYtYnk6IFhpYW9sZWkgTGkgPHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPgpBY2tlZC1ieTog
-Sm9yZ2UgUmFtaXJlei1PcnRpeiA8am9yZ2UucmFtaXJlei1vcnRpekBsaW5hcm8ub3JnPgpBY2tl
-ZC1ieTogUnlkZXIgTGVlIDxyeWRlci5sZWVAbWVkaWF0ZWsuY29tPgpBY2tlZC1ieTogUmFmYcWC
-IE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgpBY2tlZC1ieTogTWlxdWVsIFJheW5hbCA8bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4KQWNrZWQtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMu
-YnJlemlsbG9uQGNvbGxhYm9yYS5jb20+CkFja2VkLWJ5OiBXZW4gWWFuZyA8eWVsbG93cml2ZXIy
-MDEwQGhvdG1haWwuY29tPgpBY2tlZC1ieTogRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBv
-cmFjbGUuY29tPgpBY2tlZC1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4KQWNrZWQt
-Ynk6IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+CkFja2Vk
-LWJ5OiBSb2dlckNDIExpbiA8cm9nZXJjYy5saW5AbWVkaWF0ZWsuY29tPgpSZXZpZXdlZC1ieTog
-TWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJzL210
-ZC9uYW5kL3Jhdy9tdGtfZWNjLmMgIHwgMTIgKystLS0tLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9tdGtfZWNjLmggIHwgIDQgKy0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbXRrX25hbmQu
-YyB8IDEyICsrLS0tLS0tLS0tLQogMyBmaWxlcyBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDIz
-IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L210a19lY2Mu
-YyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L210a19lY2MuYwppbmRleCAwNWIwYzE5ZDcyZDkuLjc0
-NTk1YjY0NGI3YyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXRrX2VjYy5jCisr
-KyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L210a19lY2MuYwpAQCAtMSwxNyArMSw5IEBACisvLyBT
-UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCBPUiBNSVQKIC8qCiAgKiBNVEsgRUNDIGNv
-bnRyb2xsZXIgZHJpdmVyLgogICogQ29weXJpZ2h0IChDKSAyMDE2ICBNZWRpYVRlayBJbmMuCiAg
-KiBBdXRob3JzOglYaWFvbGVpIExpCQk8eGlhb2xlaS5saUBtZWRpYXRlay5jb20+CiAgKgkJSm9y
-Z2UgUmFtaXJlei1PcnRpegk8am9yZ2UucmFtaXJlei1vcnRpekBsaW5hcm8ub3JnPgotICoKLSAq
-IFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBh
-bmQvb3IgbW9kaWZ5Ci0gKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1
-YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwotICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3
-YXJlIEZvdW5kYXRpb24uCi0gKgotICogVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRo
-ZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCi0gKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFO
-VFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgotICogTUVSQ0hBTlRBQklM
-SVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQotICogR05V
-IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KICAqLwogCiAjaW5jbHVk
-ZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+CkBAIC02MDQsNCArNTk2LDQgQEAgbW9kdWxlX3Bs
-YXRmb3JtX2RyaXZlcihtdGtfZWNjX2RyaXZlcik7CiAKIE1PRFVMRV9BVVRIT1IoIlhpYW9sZWkg
-TGkgPHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPiIpOwogTU9EVUxFX0RFU0NSSVBUSU9OKCJNVEsg
-TmFuZCBFQ0MgRHJpdmVyIik7Ci1NT0RVTEVfTElDRU5TRSgiR1BMIik7CitNT0RVTEVfTElDRU5T
-RSgiRHVhbCBNSVQvR1BMIik7CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtf
-ZWNjLmggYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfZWNjLmgKaW5kZXggYTQ1NWRmMDgwOTUy
-Li4wZTQ4YzM2ZTZjYTAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L210a19lY2Mu
-aAorKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfZWNjLmgKQEAgLTEsMTIgKzEsMTAgQEAK
-Ky8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wIE9SIE1JVCAqLwogLyoKICAqIE1U
-SyBTREcxIEVDQyBjb250cm9sbGVyCiAgKgogICogQ29weXJpZ2h0IChjKSAyMDE2IE1lZGlhdGVr
-CiAgKiBBdXRob3JzOglYaWFvbGVpIExpCQk8eGlhb2xlaS5saUBtZWRpYXRlay5jb20+CiAgKgkJ
-Sm9yZ2UgUmFtaXJlei1PcnRpegk8am9yZ2UucmFtaXJlei1vcnRpekBsaW5hcm8ub3JnPgotICog
-VGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFu
-ZC9vciBtb2RpZnkgaXQKLSAqIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVi
-bGljIExpY2Vuc2UgdmVyc2lvbiAyIGFzIHB1Ymxpc2hlZAotICogYnkgdGhlIEZyZWUgU29mdHdh
-cmUgRm91bmRhdGlvbi4KICAqLwogCiAjaWZuZGVmIF9fRFJJVkVSU19NVERfTkFORF9NVEtfRUND
-X0hfXwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXRrX25hbmQuYyBiL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L210a19uYW5kLmMKaW5kZXggNjE3Zjk2NTZhMDQ1Li4zNzNkNDdkMWJh
-NGMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L210a19uYW5kLmMKKysrIGIvZHJp
-dmVycy9tdGQvbmFuZC9yYXcvbXRrX25hbmQuYwpAQCAtMSwxNyArMSw5IEBACisvLyBTUERYLUxp
-Y2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCBPUiBNSVQKIC8qCiAgKiBNVEsgTkFORCBGbGFzaCBj
-b250cm9sbGVyIGRyaXZlci4KICAqIENvcHlyaWdodCAoQykgMjAxNiBNZWRpYVRlayBJbmMuCiAg
-KiBBdXRob3JzOglYaWFvbGVpIExpCQk8eGlhb2xlaS5saUBtZWRpYXRlay5jb20+CiAgKgkJSm9y
-Z2UgUmFtaXJlei1PcnRpegk8am9yZ2UucmFtaXJlei1vcnRpekBsaW5hcm8ub3JnPgotICoKLSAq
-IFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBh
-bmQvb3IgbW9kaWZ5Ci0gKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1
-YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwotICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3
-YXJlIEZvdW5kYXRpb24uCi0gKgotICogVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRo
-ZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCi0gKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFO
-VFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgotICogTUVSQ0hBTlRBQklM
-SVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQotICogR05V
-IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KICAqLwogCiAjaW5jbHVk
-ZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+CkBAIC0xNjUzLDYgKzE2NDUsNiBAQCBzdGF0aWMg
-c3RydWN0IHBsYXRmb3JtX2RyaXZlciBtdGtfbmZjX2RyaXZlciA9IHsKIAogbW9kdWxlX3BsYXRm
-b3JtX2RyaXZlcihtdGtfbmZjX2RyaXZlcik7CiAKLU1PRFVMRV9MSUNFTlNFKCJHUEwiKTsKK01P
-RFVMRV9MSUNFTlNFKCJEdWFsIE1JVC9HUEwiKTsKIE1PRFVMRV9BVVRIT1IoIlhpYW9sZWkgTGkg
-PHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPiIpOwogTU9EVUxFX0RFU0NSSVBUSU9OKCJNVEsgTmFu
-ZCBGbGFzaCBDb250cm9sbGVyIERyaXZlciIpOwotLSAKMi4xOC4wCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hi Tudor,
+
+> -----Original Message-----
+> From: Tudor.Ambarus@microchip.com <Tudor.Ambarus@microchip.com>
+> Sent: domenica 23 giugno 2019 06:00
+> To: Flavio Suligoi <f.suligoi@asem.it>; marek.vasut@gmail.com;
+> dwmw2@infradead.org; computersforpeace@gmail.com; bbrezillon@kernel.org;
+> richard@nod.at
+> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.or
+> Subject: Re: [PATCH 1/1] mtd: spi-nor: add a presence check for non-JEDEC
+> spi nor
+> 
+> Hi, Flavio,
+> 
+> On 03/21/2019 02:55 PM, Flavio Suligoi wrote:
+> > External E-Mail
+> >
+> >
+> > This patch fixes the following kernel error message:
+> >
+> > "flash operation timed out"
+> >
+> > that occurs when a non-JEDEC spi-nor, declared in a Device Tree, but not
+> > physically present on the board, is involved in a write operation, as:
+> >
+> > cat datafile > /dev/mtd0
+> >
+> > In some cases, with enough quantity of data, the writing hangs for
+> minutes.
+> >
+> > This situation can happen, for example, in some embedded systems, when
+> > a non-JEDEC spi-nor is mounted using a removable add-on board. So is
+> > important to find a method to check a non-JEDEC device presence before
+> > using it.
+> >
+> > The presence of a JEDEC compliant device is implicitly verified during
+> the
+> > JEDEC auto-detect procedure.
+> > But for a non-JEDEC device, the presence must be explicitly checked,
+> > reading one or more known registers, according to the chip features.
+> >
+> > Without any check, if the spi-nor is declared in a Device Tree but not
+> > physically present on the board, the driver (i.e. m25p80) is loaded
+> anyway
+> > and the correspondent mtd device is also created.
+> > In this way any read operation on this device returns 0xff (or 0x00,
+> > depending on the driver and the hardware used) and any write operation
+> > hangs until the flash operation timeout occurs, with the "flash
+> operation
+> > timed out" error message.
+> >
+> > This patch adds the non-JEDEC spi-nor presence check before initializing
+> > the device.
+> >
+> > Note: currently this presence check supports only the Everspin mr25h40,
+> >       reading its status register.
+> >
+> >       The support for other non-JEDEC devices has to be added.
+> >
+> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 43
+> +++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 43 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-
+> nor.c
+> > index fae1474..d2cb710 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -3981,6 +3981,42 @@ static const struct flash_info
+> *spi_nor_match_id(const char *name)
+> >  	return NULL;
+> >  }
+> >
+> > +/**
+> > + * check_nojedec_nor_presence() - check the real presence of a non-
+> JEDEC nor
+> > + * @nor: pointer to a 'struct spi_nor'
+> > + *
+> > + * The presence of a JEDEC compliant device is implicity verified
+> during the
+> 
+> s/implicity/implicitly
+> 
+> > + * JEDEC auto-detect procedure.
+> > + * For a non-JEDEC device, the presence have to explicity checked,
+> reading
+> 
+> s/explicity/explicitly
+> 
+> > + * one or more known registers, according to the chip features.
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +int check_nojedec_nor_presence(struct spi_nor *nor)
+> 
+> all functions should start with spi_nor_*. How about naming it
+> spi_nor_check_nojedec_presence()?
+> 
+> > +{
+> > +	struct device *dev = nor->dev;
+> 
+> you use dev once, no need to declare a local variable for it.
+> 
+> > +	const struct flash_info *info = nor->info;
+> 
+> this will probably disappear, see below
+> 
+> > +	int ret = 0;
+> 
+> initialization not needed
+> 
+> > +	u8 val;
+> > +
+> > +	/* Check presence for Everspin mr25h40 MRAM */
+> > +	if (!strcmp(info->name, "mr25h40")) {
+> 
+> Couldn't we make this check for all non-jedec flashes? Aren't we safe to
+> assume
+> that all the flashes have a Status Register that contains a WEL bit which
+> come
+> with value zero by default?
+
+I don't know if all the non-JEDEC flashes have a Status Register with
+the same configuration and with the same default values. So for this 
+reason I thought to add a specific test for each single flash.
+In this way, every person who work with a specific flash can add
+a proper flash presence test.
+What do you think about this?
+
+> 
+> > +		/* Read the status register */
+> > +		ret = nor->read_reg(nor, SPINOR_OP_RDSR, &val, 1);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		dev_dbg(dev, "%s - status register = 0x%2.2x\n",
+> 
+> %hhx?
+> 
+> > +			info->name, val);
+> > +
+> > +		/* The factory preset of the status register is 0x00 */
+> 
+> if we generalize this, the comment will become irrelevant. How about
+> something
+> like: "Check if flash is connected."
+> 
+> > +		if (val == 0xff)
+> > +			return -ENODEV;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >  		 const struct spi_nor_hwcaps *hwcaps)
+> >  {
+> > @@ -4158,6 +4194,13 @@ int spi_nor_scan(struct spi_nor *nor, const char
+> *name,
+> >  			return ret;
+> >  	}
+> >
+> > +	/* Check non-JEDEC nor presence */
+> > +	if (!info->id_len) {
+> 
+> if (name && !info->id_len)?
+> 
+> How about moving the entire if block to
+> https://elixir.bootlin.com/linux/v5.2-rc6/source/drivers/mtd/spi-nor/spi-
+> nor.c#L4037?
+> 
+> Cheers,
+> ta
+> 
+> > +		ret = check_nojedec_nor_presence(nor);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> >  	/* Send all the required SPI flash commands to initialize device */
+> >  	ret = spi_nor_init(nor);
+> >  	if (ret)
+> >
+
+Thanks,
+Flavio
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
