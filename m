@@ -2,94 +2,73 @@ Return-Path: <SRS0=yEN0=UX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 011A6C48BE8
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 07:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4610C43613
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 07:41:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD9382089F
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 07:38:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AF28E2089F
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 07:41:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="AH3gVDeY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD9382089F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IEj+YJaH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF28E2089F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MoyOfL9n/UQY57GgC7PGIKGIbnrFdaUWXinC8UJ6iQ4=; b=AH3gVDeYvphVOG
-	Zx4G0ETgTPBKfT0YV6LZbbmPj/wUtUYo2hGnFsm94srt4PP/haH+LOfyeqNAm1GQsH0ZN+qIk57Vk
-	YvqthWFMJYfjFrf+rs4RhP5MpP5IvbB9SRIWr41q+SgAE5HKO3ACN6MibmGVEAHFLHNIhwEGahuCK
-	kfSzPdqQXKpC4fhugjr+nFCBdfP7axpJ7fToiVLSBIVcOSUDUahmr3Kq6rm1G/L5prUje9PdD3HHs
-	8crAXxiSRXgQ+kNqPedW03w2zRCRuV25AALzlcXPdNVIbhzy+39QoZDPMQbayGbfle9lDp86vtVsb
-	6eh6u2lQdmtsdeNchZSg==;
+	List-Owner; bh=f9UOGjqTJDXgVuddA6IC7wzBc/lYVGBLeCspRNSD4JM=; b=IEj+YJaHy6cnSx
+	YNu+5Do0Z8hJQ8DHvWcnUqdvjMYE5jbrGpPUgbnycnpasF6MpN2fMVO76Yb87YX+nmaRIv2ZuSBuU
+	l1U0cccjraITsWuINhsoL0NqU6M9L9VZRt8++VxBQpGScjyX0aQm++gNPlCeCdvnIGkA5K1ZH5XOv
+	WWW7uN9R7BtxnphphioKN2YwlAVtdwdbsWy8UFCX2UeqC8e1KkE2gtS4zTVqUsRVT18Fhabx8QYmA
+	zZPgKBUrppO9gZ4yPggwBh2XjhVpX7tClMjk9UI792Qx5anyq7rH+TlqpRtlEaWcqYxzorjjZaMWi
+	WLEmCTBieEOnxgQDa3yg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfJYG-0006yX-Dw; Mon, 24 Jun 2019 07:38:08 +0000
-Received: from skedge04.snt-world.com ([91.208.41.69])
+	id 1hfJbu-0002Iq-C2; Mon, 24 Jun 2019 07:41:54 +0000
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfJXz-0006lp-Np
- for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 07:37:53 +0000
-Received: from sntmail11s.snt-is.com (unknown [10.203.32.181])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1hfJax-0001hp-SS
+ for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 07:41:00 +0000
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 45XLnH3BLtz1rghg;
+ Mon, 24 Jun 2019 09:40:51 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 45XLnH2K3cz1qql2;
+ Mon, 24 Jun 2019 09:40:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
+ port 10024)
+ with ESMTP id XoQVWKipClzi; Mon, 24 Jun 2019 09:40:49 +0200 (CEST)
+X-Auth-Info: DZTbLzDqiOkcYEujMkjIamkDdJFd7U3+pcWzaSI3AhI=
+Received: from [192.168.1.106] (87-97-41-30.pool.invitel.hu [87.97.41.30])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by skedge04.snt-world.com (Postfix) with ESMTPS id 55C2A67A866;
- Mon, 24 Jun 2019 09:37:45 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail11s.snt-is.com
- (10.203.32.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 24 Jun
- 2019 09:37:44 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Mon, 24 Jun 2019 09:37:44 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: liaoweixiong <liaoweixiong@allwinnertech.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, 
- Marek Vasut <marek.vasut@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Peter Pan <peterpandong@micron.com>, "Jeff
- Kletsky" <git-commits@allycomm.com>
-Subject: Re: [PATCH v2] mtd: spinand: read return badly if the last page has
- bitflips
-Thread-Topic: [PATCH v2] mtd: spinand: read return badly if the last page has
- bitflips
-Thread-Index: AQHVJwOfUanKNwqMXUOnQCnAkBatBqaqT90A
-Date: Mon, 24 Jun 2019 07:37:44 +0000
-Message-ID: <d406a968-a489-f457-2bde-1912618879fa@kontron.de>
-References: <1560992416-5753-1-git-send-email-liaoweixiong@allwinnertech.com>
-In-Reply-To: <1560992416-5753-1-git-send-email-liaoweixiong@allwinnertech.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <44B2B8BBC59D1345937FB8A85C0FB59B@snt-world.com>
+ by mail.mnet-online.de (Postfix) with ESMTPSA;
+ Mon, 24 Jun 2019 09:40:49 +0200 (CEST)
+Subject: Re: [U-Boot] [nand] [ubi] Discrepancy Between U-Boot and Linux NAND
+ PEBs
+To: Ken Sloat <KSloat@aampglobal.com>
+References: <BL0PR07MB411523A25B85713C637090D3ADE40@BL0PR07MB4115.namprd07.prod.outlook.com>
+From: Heiko Schocher <hs@denx.de>
+Message-ID: <9948b558-05fb-fa6b-ef67-ef702edcf319@denx.de>
+Date: Mon, 24 Jun 2019 09:40:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 55C2A67A866.AE508
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, frieder.schrempf@exceet.de,
- git-commits@allycomm.com, liaoweixiong@allwinnertech.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- marek.vasut@gmail.com, miquel.raynal@bootlin.com,
- peterpandong@micron.com, richard@nod.at, vigneshr@ti.com
+In-Reply-To: <BL0PR07MB411523A25B85713C637090D3ADE40@BL0PR07MB4115.namprd07.prod.outlook.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190624_003752_110072_57572FA2 
-X-CRM114-Status: GOOD (  16.22  )
+X-CRM114-CacheID: sfid-20190624_004056_635646_0CCA1DD5 
+X-CRM114-Status: GOOD (  24.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,52 +80,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Reply-To: hs@denx.de
+Cc: "kmpark@infradead.org" <kmpark@infradead.org>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "oss@buserror.net" <oss@buserror.net>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "hs@denx.de" <hs@denx.de>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 20.06.19 03:00, liaoweixiong wrote:
-> In case of the last page containing bitflips (ret > 0),
-> spinand_mtd_read() will return that number of bitflips for the last
-> page. But to me it looks like it should instead return max_bitflips like
-> it does when the last page read returns with 0.
+Hello Ken,
+
+Am 20.06.2019 um 14:55 schrieb Ken Sloat:
+> Hello All,
 > 
-> Signed-off-by: liaoweixiong <liaoweixiong@allwinnertech.com>
-
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-
-This should probably be resent with the following tags:
-
-Cc: stable@vger.kernel.org
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI 
-NANDs")
-
-> ---
->   drivers/mtd/nand/spi/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> I have been working on a system using a NAND flash along with U-Boot 2018.07 and Linux Kernel 4.14. This is an Atmel based system FYI so it uses the Atmel NAND driver. I create a UBI image with 3 separate volumes - 2 of these are a specified fixed size and the third is specified as the minimum needed to hold the current files with the auto resize flag set. As a note, before the first run auto resize operation, there is over 200 MiB of unused space in the NAND - meaning there should be plenty of free space available for UBI to leave overhead when auto-resizing for bad block handling. Another point of note, is that I use UBI within U-Boot as well in order to read the kernel image and dtb out of the UBIFS.
 > 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 556bfdb..6b9388d 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -511,12 +511,12 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
->   		if (ret == -EBADMSG) {
->   			ecc_failed = true;
->   			mtd->ecc_stats.failed++;
-> -			ret = 0;
->   		} else {
->   			mtd->ecc_stats.corrected += ret;
->   			max_bitflips = max_t(unsigned int, max_bitflips, ret);
->   		}
->   
-> +		ret = 0;
->   		ops->retlen += iter.req.datalen;
->   		ops->oobretlen += iter.req.ooblen;
->   	}
+> I have noticed warnings in Linux when attaching UBI regarding not having enough reserved PEBs for bad block handling (it's short by 2). Upon further investigation into the issue, it appears as though there is a discrepancy between what U-Boot and Linux see in terms of the number of bad blocks:
 > 
+> U-Boot:
+> ubi0: good PEBs: 4093, bad PEBs: 3, corrupted PEBs: 0
+> ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
+> 
+> Linux:
+> ubi0 warning: ubi_eba_init: cannot reserve enough PEBs for bad PEB handling, reserved 71, need 73
+> ......
+> ubi0: good PEBs: 4089, bad PEBs: 7, corrupted PEBs: 0
+> ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
+> 
+> After production flashing of a UBI image to NAND (with a "dumb" non UBI aware flasher), U-Boot will be the program to mount UBI. What this means is that it will complete the one time re-size operation. I used a Linux ramdisk image to flash from Linux and mount UBI in Linux for the first time to allow it to complete the auto-resize operation instead and compared:
+> 
+> U-Boot:
+> ubi0: attaching mtd1
+> ubi0: scanning is finished
+> ubi0: volume 1 ("rootfs") re-sized from 1501 to 3385 LEBs
+> ubi0: attached mtd1 (name "mtd=0", size 512 MiB)
+> ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+> ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+> ubi0: good PEBs: 4093, bad PEBs: 3, corrupted PEBs: 0
+> 
+> Linux:
+> ubi0: attaching mtd6
+> ubi0: scanning is finished
+> ubi0: volume 1 ("rootfs") re-sized from 1501 to 3383 LEBs
+> ubi0: attached mtd6 (name "atmel_nand", size 512 MiB)
+> ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+> ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+> ubi0: good PEBs: 4089, bad PEBs: 7, corrupted PEBs: 0
+> 
+> As you can see, U-Boot resizes the image to 3385 blocks while Linux only 3383 - hence the 2 blocks that Linux would complain about had U-Boot resized the volume.
+> 
+> I am not sure exactly what is causing this discrepancy as I just figured this out - but thought I would reach out and discuss it here. Obviously there are ways around this issue (program and mount UBI from Linux initially, don't use autoresize and specify all volume sizes, etc) but was wondering if there is some underlying problem. I noticed an older mailing discussion from several years ago where someone reported a similar issue regarding number of bad PEBs and seems the issue was chalked up to a potential driver problem on one side:
+> https://lists.denx.de/pipermail/u-boot/2015-June/216482.html
+> 
+> Any insight would be helpful.
+
+We use in U-Boot the code from linux 4.2 (commit 64291f7db5bd8150a74ad2036f1037e6a0428df2)
+(Yes, very old in the meantime)
+
+So may there is a problem with this old code base in U-Boot?
+
+Volunteers for rebasing the U-Boot ubi/ubifs code with a newer
+linux version are welcome.
+
+But reading your Email again, may you should first investigate, why U-Boot
+and Linux see different good PEBs.
+
+Also your kernel drops the warning:
+
+ubi0 warning: ubi_eba_init: cannot reserve enough PEBs for bad PEB handling, reserved 71, need 73
+
+You should look here deeper into it.
+
+bye,
+Heiko
+-- 
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
