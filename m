@@ -2,73 +2,87 @@ Return-Path: <SRS0=yEN0=UX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3B17C43613
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 09:06:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25B27C48BE8
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 09:34:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85E1F2083D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 09:06:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F06442089F
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 09:34:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="gw7EPUhC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85E1F2083D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="PcC9zOPH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QHvgV1VB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F06442089F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YNrqXVtsyfOR85XYMsSwnNBYSQGfIgcSzr0cyuegQf0=; b=gw7EPUhCKgRPyV
-	hqep8KXP7ZSR9qjjXDfGddrv1aOFNCaGL5zGsIB3UPZEihy11PyItuqkXUB1DmYliak63AQLBOvU8
-	bH9JEAtcQKghVm0J7sOp1J6rzQfIWyiOqopMr0MqLzJJ2tAEaSqv70ZSPj5f4ShuH5ATNJ2HH9LN0
-	+qx7nFdJSzv2/GKpzUnIhxWEC1RZkUm8a5HJ/ZP+6VLyRLsV0rYIVoE8HVfu6nyaUe4SNP08ikVVR
-	Uz/2ICNPM5Mcn00PqVvR/aIlgQ25W0vjTEijWEsv6eQ663G73pxVrGuaB6rwOMTd2vX92ElGtA7O0
-	Sk2Up/kQ5b9KEC4u0ifg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ofcLpvzwWFSIgyLNQDdUgnSVIjWvpD9wxsqXSU9Szno=; b=PcC9zOPH9czeqY
+	H2JG996oQcUhJe5bh6wWt3BfLry8sJHXIgYl02TfbLzKiKPhPuoBxtCqOxi8BkA6Ai8OAwL53Wmxr
+	VScvQvLmYpMrkrTzr5B5xtZfOuiT63B2tfhsyZr8sCrQwA+Pcvd0fJZfSj6tuWmLLhQfGx0t0p1Iy
+	1JZ1oaaTycUkLPZ+1EvJd2/mU+9LfsxGT7SI4M2zzJtDadGUs5ybJ+KCWNiiQK9SYXOvB5BLtEpB9
+	6WLMxaUzewUxJ09qzGukosYP1yvzhmXoNo8IX94Ah7/4sL93rwgLUbDx/mlQlhkvy72eW2Vl1EXLx
+	usfBxWRnP4/ShtaMJMFA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfKvW-0006e6-87; Mon, 24 Jun 2019 09:06:14 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1hfLMm-0002mV-Up; Mon, 24 Jun 2019 09:34:25 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfKvT-0006WO-Nu
- for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 09:06:13 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x5O95Gw0035152;
- Mon, 24 Jun 2019 17:05:16 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 81A6019632B11D4E365C;
- Mon, 24 Jun 2019 17:05:16 +0800 (CST)
-In-Reply-To: <20190619100904.6b759377@xps13>
-References: <1555320234-15802-1-git-send-email-masonccyang@mxic.com.tw>	<1555320234-15802-3-git-send-email-masonccyang@mxic.com.tw>
- <20190512151820.4f2dd9da@xps13>	<OF074A1F06.5C1A58BE-ON482583FD.0031CD95-482583FD.003437AD@mxic.com.tw>
- <20190520142333.390091d5@xps13>	<OFADC47344.0F9941B2-ON48258403.002336E3-48258403.003141F0@mxic.com.tw>
- <20190527144250.71908bd9@xps13>	<OFE923A8E5.50375C30-ON48258409.0009AE1B-48258409.00119767@mxic.com.tw>
- <20190617143510.4ded5728@xps13>	<OF1C1397B4.241DC339-ON4825841D.000482A2-4825841D.0007B67E@mxic.com.tw>
- <20190618081436.5d488320@collabora.com>	<20190618092901.3bdd9f61@collabora.com>
- <OF5EAF94EB.AE31CF59-ON4825841E.002A2C38-4825841E.002C60BF@mxic.com.tw>
- <20190619100904.6b759377@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v3 2/4] mtd: rawnand: Add Macronix MX25F0A NAND controller
+ id 1hfLMj-0002m4-QT; Mon, 24 Jun 2019 09:34:23 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5O9Y9ak098240;
+ Mon, 24 Jun 2019 04:34:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1561368849;
+ bh=mZ05HE4nNKGrw4LOWrgL5V2CUEn9P3ayZHfTAB4+wKg=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=QHvgV1VBid3yfvAYfkInvcvUzsu7+ZRODUTEaCTWTngaBlgtIRSxJ4L4nju1mhQEf
+ J0LicU6Jfmcy3XPGwTxj7vYA/MVdsC1vgwGI2NaFN+npupaECPNAPXZPF9SRq/FemX
+ geZKyuh82gRY3fAARCadThvUr45hnPEHAEjwXy18=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5O9Y9pu040023
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 24 Jun 2019 04:34:09 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Mon, 24
+ Jun 2019 04:34:08 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Mon, 24 Jun 2019 04:34:08 -0500
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5O9Y4V9106204;
+ Mon, 24 Jun 2019 04:34:05 -0500
+Subject: Re: [PATCH v5 1/3] mtd: spi-nor: add support for is25wp256
+To: Sagar Kadam <sagar.kadam@sifive.com>
+References: <1560336476-31763-1-git-send-email-sagar.kadam@sifive.com>
+ <1560336476-31763-2-git-send-email-sagar.kadam@sifive.com>
+ <325855d0-00f9-df8a-ea57-c140d39dd6ef@ti.com>
+ <CAARK3H=O=h1VDgOMxs_0ThcisrH=2tzpW5pQqt0O9oYs=MFFVw@mail.gmail.com>
+ <93b9c5fd-8f59-96d7-5e40-2b9d540965dd@ti.com>
+ <CAARK3H=CmxSG2srUaoxN1HF6W7CVKtpATrf89n6kuht2Paqp8A@mail.gmail.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <3fe68154-5d1e-a395-4c53-d8e806b2cc6d@ti.com>
+Date: Mon, 24 Jun 2019 15:04:49 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-X-KeepSent: FCBB8981:B840C87C-48258423:00311FA8;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFFCBB8981.B840C87C-ON48258423.00311FA8-48258423.0031EBDD@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Mon, 24 Jun 2019 17:05:16 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/06/24 PM 05:05:16,
- Serialize complete at 2019/06/24 PM 05:05:16
-X-MAIL: TWHMLLG3.macronix.com x5O95Gw0035152
+In-Reply-To: <CAARK3H=CmxSG2srUaoxN1HF6W7CVKtpATrf89n6kuht2Paqp8A@mail.gmail.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190624_020612_064422_A3671681 
-X-CRM114-Status: GOOD (  17.92  )
+X-CRM114-CacheID: sfid-20190624_023421_967838_7080684E 
+X-CRM114-Status: GOOD (  16.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,139 +94,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, christophe.kerello@st.com,
- marcel.ziswiler@toradex.com, stefan@agner.ch, liang.yang@amlogic.com,
- linux-mtd@lists.infradead.org, lee.jones@linaro.org, richard@nod.at,
- marek.vasut@gmail.com, Boris Brezillon <boris.brezillon@collabora.com>,
- geert@linux-m68k.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
- bbrezillon@kernel.org, juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, paul.burton@mips.com, broonie@kernel.org,
- computersforpeace@gmail.com, dwmw2@infradead.org, zhengxunli@mxic.com.tw
+Cc: aou@eecs.berkeley.edu, tudor.ambarus@microchip.com,
+ Wesley Terpstra <wesley@sifive.com>, richard@nod.at,
+ Palmer Dabbelt <palmer@sifive.com>, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ Paul Walmsley <paul.walmsley@sifive.com>, miquel.raynal@bootlin.com,
+ linux-riscv@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
-Hi Miquel, 
+On 21/06/19 3:58 PM, Sagar Kadam wrote:
+> Hello Vignesh,
+> 
+> On Fri, Jun 21, 2019 at 11:33 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+>>
+>> Hi,
+>>
+>> On 17/06/19 8:48 PM, Sagar Kadam wrote:
+>>> Hello Vignesh,
+>>>
+>>> Thanks for your review comments.
+>>>
+>>> On Sun, Jun 16, 2019 at 6:14 PM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> On 12-Jun-19 4:17 PM, Sagar Shrikant Kadam wrote:
+>>>> [...]
+>>>>
+>>>>> @@ -4129,7 +4137,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>>>>>       if (ret)
+>>>>>               return ret;
+>>>>>
+>>>>> -     if (nor->addr_width) {
+>>>>> +     if (nor->addr_width && JEDEC_MFR(info) != SNOR_MFR_ISSI) {
+>>>>>               /* already configured from SFDP */
+>>>>
+>>>> Hmm, why would you want to ignore addr_width that's read from SFDP table?
+>>>
+>>> The SFDP table for ISSI device considered here, has addr_width set to
+>>> 3 byte, and the flash considered
+>>> here is 32MB. With 3 byte address width we won't be able to access
+>>> flash memories higher address range.
+>>
+>> Is it specific to a particular ISSI part as indicated here[1]? If so,
+>> please submit solution agreed there i.e. use spi_nor_fixups callback
+>>
+>> [1]https://patchwork.ozlabs.org/patch/1056049/
+>>
+> 
+> Thanks for sharing the link.
+> From what I understand here, it seems that "Address Bytes" of SFDP
+> table for the device under
+> consideration (is25lp256) supports 3 byte only Addressing mode
+> (DWORD1[18:17] = 0b00.
+> where as that of ISSI device (is25LP/WP 256Mb/512/Mb/1Gb) support 3 or
+> 4 byte Addressing mode DWORD1[18:17] = 0b01.
+> 
 
+Okay, so that SFDP table entry is correct. SPI NOR framework should
+using 4 byte addressing if WORD1[18:17] = 0b01. Could you see if below 
+diff helps:
 
-> > > > > > > > > How to make all #CS keep high for NAND to enter 
-> > > > > > > > > low-power standby mode if driver don't use 
-> > "legacy.select_chip()" 
-> > > > > ? 
-> > > > > > > > 
-> > > > > > > > See commit 02b4a52604a4 ("mtd: rawnand: Make 
-->select_chip() 
-> > > > > optional 
-> > > > > > > > when ->exec_op() is implemented") which states:
-> > > > > > > > 
-> > > > > > > >         "When [->select_chip() is] not implemented, the 
-core 
-> > is 
-> > > > > assuming 
-> > > > > > > >    the CS line is automatically asserted/deasserted by the 
+--->8---
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index c0a8837c0575..ebf32aebe5e9 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2808,6 +2808,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+                break;
  
-> > driver 
-> > > > > > > >    ->exec_op() implementation." 
-> > > > > > > > 
-> > > > > > > > Of course, the above is right only when the controller 
-driver 
-> > 
-> > > > > supports 
-> > > > > > > > the ->exec_op() interface. 
-> > > > > > > 
-> > > > > > > Currently, it seems that we will get the incorrect data and  
-
-> > error
-> > > > > > > operation due to CS in error toggling if CS line is 
-controlled 
-> > in 
-> > > > > > > ->exec_op(). 
-> > > 
-> > > Oh, and please provide the modifications you added on top of this 
-patch.
-> > > Right now we're speculating on what you've done which is definitely 
-not
-> > > an efficient way to debug this sort of issues. 
-> > 
-> 
-> We really need to see the datasheet of the NAND chip which has a
-> problem and how this LPM mode is advertized to understand what the
-> chip expects and eventually how to work-around it.
-> 
-> > The patch is to add in beginning of ->exec_op() to control CS# low and 
-
-> > before return from ->exec_op() to control CS# High.
-> > i.e,.
-> > static in mxic_nand_exec_op( )
-> > {
-> >  cs_to_low();
-> > 
-> > 
-> > 
-> >  cs_to_high();
-> >  return;
-> > }
-> > 
-> > But for nand_onfi_detect(), 
-> > it calls nand_read_param_page_op() and then nand_read_data_op().
-> > mxic_nand_exec_op() be called twice for nand_onfi_detect()
-> 
-> Yes, this is expected and usually chips don't care.
-
-As I replied to Boris's email previously.
-I think I have fixed the problem and the root cause is the our NFC's TX 
-FIFO 
-counter do a unnecessary reset in CS control function.
-currently, doing CS# control in ->exec_op() is OK to me.
-
-In addition, by Jones's comments about MFD, 
-I will re-submit this raw NAND ctlr driver instead of MFD and raw-nand. 
------------------------------------------------------------------------>
-MFD is for registering child devices of chips which offer 
-genuine cross-subsystem functionality. 
-
-It is not designed for mode selecting, or as a place to shove shared code 
-just because a better location doesn't appear to exist. 
-------------------------------------------------------------------------<
-
-thanks & best regards,
-Mason
+        case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
++       case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+                nor->addr_width = 4;
+                break;
+ 
 
 
 
 
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
