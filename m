@@ -2,94 +2,115 @@ Return-Path: <SRS0=yEN0=UX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DE3DC43613
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 14:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7DDDC43613
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 14:53:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55E0B2063F
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 14:48:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B7A05205C9
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2019 14:53:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="VAkM4BvW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55E0B2063F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G/F2GiR0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yzatTweh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7A05205C9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MaP/xyRLsK3ETk+s7RpcY/UUIiODOGz/OyZaIn/qH3s=; b=VAkM4BvW9QBtma
-	i5Dl4ZRepstA5Q4+JPMUfftD+Qiz4AhLsFMioW+c0qj0skwTYQv/7qWXHc1ENbfur2jDEyVH0k0SM
-	EAYCOVfLF1NHnUEPAZnWak8c9QnJkyair2WMbujh5GnIpX768UBoGeY2eaokUQHo258tzV7OT0oga
-	MEn5Vz1nf5WDtEMv7sKmJE0SDYAOSNXkPoYOS/8HyhKqeKTM6YKLbOk3C6qnZGyGSLHJP+hZmCxeh
-	Gm0n7ahtbpzHU5M59C9VMDBahZyApnlHrRLG7HQMhNuhGx+4aV4Gzfw1sa9L316fNFc9grkWsIMJv
-	IdHtew2IndwvcTWDAkZA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wGQAxdWRDaYNafB9bnMDDQa4AshlO7AncQw8OkFFeBg=; b=G/F2GiR0fIWkRZ
+	Dkd+eJGnWY4fJFY7J/2QW2BvCDb1OqQU0wn6w7KoglRkgL9bKuRQ7cpAxJ2JyUJej9B6QYIXY2Ngy
+	ETlxOdq+0E0iaqUIfb2usVVdH/7rOjFolUDcDUrjbjbfaGsdKCE1ckhs1kqjP6cPW4XnROJeqwn/5
+	7q/jOTNvRrPs2wChAKueY7F85mOAlmFMb6ermybXtSQxy7eVrVm6G50j9qOwuX34niVWqfmC6LGRd
+	ubZxPzzchyxGqQtFTec4bKm/JfFp+P6f5DRtprrXCxsqwaXNz9Nx19IHdaj90QFnO8CR5+uY5kyRH
+	e66MLtHpXnYJaI0R5SIw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfQGe-0007eE-3E; Mon, 24 Jun 2019 14:48:24 +0000
-Received: from skedge03.snt-world.com ([91.208.41.68])
+	id 1hfQLA-0004J9-JG; Mon, 24 Jun 2019 14:53:04 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfQGJ-0007Ns-7E
- for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 14:48:06 +0000
-Received: from sntmail12r.snt-is.com (unknown [10.203.32.182])
+ id 1hfQJB-0002do-3a
+ for linux-mtd@lists.infradead.org; Mon, 24 Jun 2019 14:51:02 +0000
+Received: from [192.168.1.25] (cpe-70-114-128-244.austin.res.rr.com
+ [70.114.128.244])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by skedge03.snt-world.com (Postfix) with ESMTPS id 7D8DA67A90A;
- Mon, 24 Jun 2019 16:47:51 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail12r.snt-is.com
- (10.203.32.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Mon, 24 Jun
- 2019 16:47:50 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1713.004; Mon, 24 Jun 2019 16:47:50 +0200
-From: Schrempf Frieder <frieder.schrempf@kontron.de>
-To: liaoweixiong <liaoweixiong@allwinnertech.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, 
- Marek Vasut <marek.vasut@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Peter Pan <peterpandong@micron.com>, "Chuanhong
- Guo" <gch981213@gmail.com>
-Subject: Re: [RESEND PATCH v2] mtd: spinand: read return badly if the last
- page has bitflips
-Thread-Topic: [RESEND PATCH v2] mtd: spinand: read return badly if the last
- page has bitflips
-Thread-Index: AQHVKoaYbYsysfnJPUKsxvje/QcCeKaqwQIA
-Date: Mon, 24 Jun 2019 14:47:50 +0000
-Message-ID: <f86e6750-6b4f-daf7-3f0c-1c5e63b5b95d@kontron.de>
-References: <1561378534-26119-1-git-send-email-liaoweixiong@allwinnertech.com>
-In-Reply-To: <1561378534-26119-1-git-send-email-liaoweixiong@allwinnertech.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-ID: <9FE31BB9AAE8204BAD101611478CAFA2@snt-world.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 7CE3620644;
+ Mon, 24 Jun 2019 14:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1561387860;
+ bh=MEavrdEWUvq1WhMa8mXT4JihEigsl6+4LBo/RZXggYc=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=yzatTweh68URH+QhtsDVciQfjjk9nXuewVNvAr+G9AY2f5RNjMri87Falxsl/5X/B
+ UPSiC7DaXHOnEucfMl7VkBukr9oOPukNEOuKe2Isxo/6oY98CXqYETgXou584iw94a
+ /mMdPZuDPWCnWYRWC9PD9ID4JZhPOYKbvISPSCKE=
+Subject: Re: [PATCHv6 2/2] mtd: spi-nor: cadence-quadspi: add reset control
+To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
+References: <20190613113138.8280-1-dinguyen@kernel.org>
+ <20190613113138.8280-2-dinguyen@kernel.org>
+ <08cde9f6-6687-94df-b4fb-7fde2d9a1478@microchip.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=dinguyen@kernel.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9da2c6a1-d21c-b2d3-3ca4-807ccc271f0a@kernel.org>
+Date: Mon, 24 Jun 2019 09:50:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 7D8DA67A90A.A00F2
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service
- Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: bbrezillon@kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, frieder.schrempf@exceet.de, gch981213@gmail.com,
- liaoweixiong@allwinnertech.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
- miquel.raynal@bootlin.com, peterpandong@micron.com, richard@nod.at,
- stable@vger.kernel.org, vigneshr@ti.com
+In-Reply-To: <08cde9f6-6687-94df-b4fb-7fde2d9a1478@microchip.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190624_074803_688912_215CB5B1 
-X-CRM114-Status: GOOD (  16.97  )
+X-CRM114-CacheID: sfid-20190624_075101_244038_4C799967 
+X-CRM114-Status: UNSURE (   9.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,50 +122,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
+Cc: marex@denx.de, tien.fong.chee@intel.com, bbrezillon@kernel.org,
+ linux-kernel@vger.kernel.org, computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24.06.19 14:15, liaoweixiong wrote:
-> In case of the last page containing bitflips (ret > 0),
-> spinand_mtd_read() will return that number of bitflips for the last
-> page. But to me it looks like it should instead return max_bitflips like
-> it does when the last page read returns with 0.
-> 
-> Signed-off-by: liaoweixiong <liaoweixiong@allwinnertech.com>
-> Acked-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Acked-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Hi Tudor,
 
-Why did you change our Reviewed-by tags to Acked-by tags?
+On 6/22/19 5:21 AM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Dinh,
+> 
+> On 06/13/2019 02:31 PM, Dinh Nguyen wrote:
+>> +	struct reset_control *rstc;
+>> +	struct reset_control *rstc_ocp;
+> 
+> I'll add these on a single line when applying. The patch is good, I'm waiting
+> for Rob to review the bindings.
+> 
 
-> Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-> ---
->   drivers/mtd/nand/spi/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 556bfdb..6b9388d 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -511,12 +511,12 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
->   		if (ret == -EBADMSG) {
->   			ecc_failed = true;
->   			mtd->ecc_stats.failed++;
-> -			ret = 0;
->   		} else {
->   			mtd->ecc_stats.corrected += ret;
->   			max_bitflips = max_t(unsigned int, max_bitflips, ret);
->   		}
->   
-> +		ret = 0;
->   		ops->retlen += iter.req.datalen;
->   		ops->oobretlen += iter.req.ooblen;
->   	}
-> 
+Thanks!
+
+Dinh
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
