@@ -2,23 +2,23 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86902C4646C
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 03:05:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92335C48BD4
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 03:54:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D22220663
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 03:05:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 672DF20883
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 03:54:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IKbjv/Tf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="BXJlUqAK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D22220663
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OdiNwUXR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zy0hx9p/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 672DF20883
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
@@ -26,81 +26,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F3Bn3lgvu1plPP+/sWzVQdJWqxatl+U6p2zq7JMCk28=; b=IKbjv/TfDOsG9F
-	dTNsPgyPNh646s8vorItTR/AkO4/hlqV8ecwKQjLq7nuum04HkcxdJ0+LrMNwpVWk0W7pG7bIgdV/
-	MyJ9kek/qW0tubLKULP8yBB7I6srjabIJ7fadOaDA4y6McNot/YIwsIj541vMRj42zz8Bv1WxEZzD
-	oWzLm7t2a9g+dZaWe8oyqmhLFw6S83XROdztZqK46tKfK4lBLVvHY99kfI+GY2/5id/quKkYQuYHX
-	rfB4SzJqwZP5nnr1x+gqlcanZSlVBaK3A5PPjhczIpKn7fkBYZaCbokscfWX1cSIU3PiRPCaQyGqf
-	Fi6q723zou0iOP/5Cfcg==;
+	List-Owner; bh=+J7SI5KebtU+nDYpPBW90O+pxQHiRjSr6BJ1A0RrMPI=; b=OdiNwUXRyJbLXi
+	Z+lhGCFQhRtynFK6Dn4TnTepNEt8fS/Sp3/3Gms5olDIGn4gZBIRGagf7cXQ9fjrzEM54Ua+15TXk
+	Nyre+2NGAWtID1htNx5T7XT3Oq/OKft7pKBDtUR8iqPSmtir6VJ+hoi8/SUOQXS25KxEELw3K05XP
+	6pYz8QCYbCbkkThHK8INRkC9du6QUb1jeb7MA5g3aHVKLATvG4VBMT0SRhocwfrpK+6MV3YHTSrYB
+	ySgI/+Z8C4roR2gbzsvFL0oAQn0yoWHtsTF9ZPf8ln76z/iPYypheIWQxS1vU613mHuemcgmqP3XT
+	PeRHi3qO5xfiqDrwawnQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfblg-0002sI-7F; Tue, 25 Jun 2019 03:05:12 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1hfcWb-0004qR-VM; Tue, 25 Jun 2019 03:53:42 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfbld-0002ky-4W
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 03:05:10 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5P2xZkP183824;
- Tue, 25 Jun 2019 03:04:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=y1nTqvm5zm2oVuuxHsrGpbU4gEqHpmqSXspC8Bne9NM=;
- b=BXJlUqAKvMETApXDcsKgEZiNdrmlXkQGnY88kMW3AMxNKcXyyaE6UXAlpYECy+ntv7pH
- 6uhEP1tj4tycY9LMVwQSwCJ1OFoN8XiURaWWP5MgMDhRGeWBYKJ5F+hDMXeWyXvzw09Y
- W93kGqDhXdEUxHJGprg0ZqzGMSQuXc6a6uPIBselde0/QnSPFrNudLSF4JrDCRjZHlSe
- PtPwNFzZ3qhrAqfZeA252/OTt3UOJ6W5XclgLFaB43nqCHJq7hk5QCcLKtksxGRz16et
- vcWpg2Ca0sMBi64yleW6uVf2BPJY2qw2eabFh6Nu+9cNmwvp3CwrP4l2harCRSOmeEeb 1g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2130.oracle.com with ESMTP id 2t9brt1hg7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 25 Jun 2019 03:04:56 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5P34h96101926;
- Tue, 25 Jun 2019 03:04:55 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3020.oracle.com with ESMTP id 2t9p6tx2qw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 25 Jun 2019 03:04:55 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5P34tbP102400;
- Tue, 25 Jun 2019 03:04:55 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by aserp3020.oracle.com with ESMTP id 2t9p6tx2qp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 25 Jun 2019 03:04:54 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5P34gx0001788;
- Tue, 25 Jun 2019 03:04:42 GMT
-Received: from localhost (/67.169.218.210)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 24 Jun 2019 20:04:41 -0700
-Date: Mon, 24 Jun 2019 20:04:39 -0700
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Jan Kara <jack@suse.cz>
-Subject: Re: [Ocfs2-devel] [PATCH 2/7] vfs: flush and wait for io when
- setting the immutable flag via SETFLAGS
-Message-ID: <20190625030439.GA5379@magnolia>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
- <156116142734.1664939.5074567130774423066.stgit@magnolia>
- <20190624113737.GG32376@quack2.suse.cz>
- <20190624215817.GE1611011@magnolia>
+ id 1hfcWY-0004ps-NV
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 03:53:40 +0000
+Received: from localhost (unknown [116.226.249.212])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 993EB20863;
+ Tue, 25 Jun 2019 03:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1561434818;
+ bh=LiKh1y/cVsCqNr8ux7WO7aEmLV31ud+AQ1bb0n+nvNg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Zy0hx9p/4crxzYjV1lRLmNA6srJEKNhjem7iURpTiZ6qZyykyJc4xvBjgFbuwsPBI
+ LqUfYd9yJiH2pbvvMsA9I0JwKIbT8dhPcmzYkOFmPoWMn7kF9t4f7XcbUxpiVYvfOZ
+ 70aqqAWKidJgfsmOQAnggYhLnpqxyh1bIcGdE/QQ=
+Date: Tue, 25 Jun 2019 11:08:07 +0800
+From: Greg KH <gregkh@linuxfoundation.org>
+To: liaoweixiong <liaoweixiong@allwinnertech.com>
+Subject: Re: [RESEND PATCH v2] mtd: spinand: read return badly if the last
+ page has bitflips
+Message-ID: <20190625030807.GA11074@kroah.com>
+References: <1561424549-784-1-git-send-email-liaoweixiong@allwinnertech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190624215817.GE1611011@magnolia>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9298
- signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906250023
+In-Reply-To: <1561424549-784-1-git-send-email-liaoweixiong@allwinnertech.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190624_200509_319313_484FC6E9 
-X-CRM114-Status: GOOD (  25.64  )
+X-CRM114-CacheID: sfid-20190624_205338_782409_3C8A2A1F 
+X-CRM114-Status: GOOD (  14.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,103 +76,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-efi@vger.kernel.org, yuchao0@huawei.com, linux-mm@kvack.org,
- clm@fb.com, adilger.kernel@dilger.ca, ocfs2-devel@oss.oracle.com,
- matthew.garrett@nebula.com, linux-nilfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, devel@lists.orangefs.org, josef@toxicpanda.com,
- reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
- jaegeuk@kernel.org, tytso@mit.edu, ard.biesheuvel@linaro.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, jk@ozlabs.org, jack@suse.com,
- linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-btrfs@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Chuanhong Guo <gch981213@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, linux-mtd@lists.infradead.org,
+ Schrempf Frieder <frieder.schrempf@kontron.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Peter Pan <peterpandong@micron.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 24, 2019 at 02:58:17PM -0700, Darrick J. Wong wrote:
-> On Mon, Jun 24, 2019 at 01:37:37PM +0200, Jan Kara wrote:
-> > On Fri 21-06-19 16:57:07, Darrick J. Wong wrote:
-> > > From: Darrick J. Wong <darrick.wong@oracle.com>
-> > > 
-> > > When we're using FS_IOC_SETFLAGS to set the immutable flag on a file, we
-> > > need to ensure that userspace can't continue to write the file after the
-> > > file becomes immutable.  To make that happen, we have to flush all the
-> > > dirty pagecache pages to disk to ensure that we can fail a page fault on
-> > > a mmap'd region, wait for pending directio to complete, and hope the
-> > > caller locked out any new writes by holding the inode lock.
-> > > 
-> > > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > 
-> > Seeing the way this worked out, is there a reason to have separate
-> > vfs_ioc_setflags_flush_data() instead of folding the functionality in
-> > vfs_ioc_setflags_check() (possibly renaming it to
-> > vfs_ioc_setflags_prepare() to indicate it does already some changes)? I
-> > don't see any place that would need these two separated...
+On Tue, Jun 25, 2019 at 09:02:29AM +0800, liaoweixiong wrote:
+> In case of the last page containing bitflips (ret > 0),
+> spinand_mtd_read() will return that number of bitflips for the last
+> page. But to me it looks like it should instead return max_bitflips like
+> it does when the last page read returns with 0.
 > 
-> XFS needs them to be separated.
-> 
-> If we even /think/ that we're going to be setting the immutable flag
-> then we need to grab the IOLOCK and the MMAPLOCK to prevent further
-> writes while we drain all the directio writes and dirty data.  IO
-> completions for the write draining can take the ILOCK, which means that
-> we can't have grabbed it yet.
-> 
-> Next, we grab the ILOCK so we can check the new flags against the inode
-> and then update the inode core.
-> 
-> For most filesystems I think it suffices to inode_lock and then do both,
-> though.
+> Signed-off-by: liaoweixiong <liaoweixiong@allwinnertech.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+> ---
+>  drivers/mtd/nand/spi/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Heh, lol, that applies to fssetxattr, not to setflags, because xfs
-setflags implementation open-codes the relevant fssetxattr pieces.
-So for setflags we can combine both parts into a single _prepare
-function.
+<formletter>
 
---D
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-> > > +/*
-> > > + * Flush all pending IO and dirty mappings before setting S_IMMUTABLE on an
-> > > + * inode via FS_IOC_SETFLAGS.  If the flush fails we'll clear the flag before
-> > > + * returning error.
-> > > + *
-> > > + * Note: the caller should be holding i_mutex, or else be sure that
-> > > + * they have exclusive access to the inode structure.
-> > > + */
-> > > +static inline int vfs_ioc_setflags_flush_data(struct inode *inode, int flags)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	if (!vfs_ioc_setflags_need_flush(inode, flags))
-> > > +		return 0;
-> > > +
-> > > +	inode_set_flags(inode, S_IMMUTABLE, S_IMMUTABLE);
-> > > +	ret = inode_flush_data(inode);
-> > > +	if (ret)
-> > > +		inode_set_flags(inode, 0, S_IMMUTABLE);
-> > > +	return ret;
-> > > +}
-> > 
-> > Also this sets S_IMMUTABLE whenever vfs_ioc_setflags_need_flush() returns
-> > true. That is currently the right thing but seems like a landmine waiting
-> > to trip? So I'd just drop the vfs_ioc_setflags_need_flush() abstraction to
-> > make it clear what's going on.
-> 
-> Ok.
-> 
-> --D
-> 
-> > 
-> > 								Honza
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
-> 
-> _______________________________________________
-> Ocfs2-devel mailing list
-> Ocfs2-devel@oss.oracle.com
-> https://oss.oracle.com/mailman/listinfo/ocfs2-devel
+</formletter>
 
 ______________________________________________________
 Linux MTD discussion mailing list
