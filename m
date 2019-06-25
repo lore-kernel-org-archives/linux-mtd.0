@@ -2,69 +2,128 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92335C48BD4
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 03:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0715C48BD6
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 04:46:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 672DF20883
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 03:54:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8637920665
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 04:46:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OdiNwUXR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zy0hx9p/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 672DF20883
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uIkV8DiZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="og2YQmX7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8637920665
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+J7SI5KebtU+nDYpPBW90O+pxQHiRjSr6BJ1A0RrMPI=; b=OdiNwUXRyJbLXi
-	Z+lhGCFQhRtynFK6Dn4TnTepNEt8fS/Sp3/3Gms5olDIGn4gZBIRGagf7cXQ9fjrzEM54Ua+15TXk
-	Nyre+2NGAWtID1htNx5T7XT3Oq/OKft7pKBDtUR8iqPSmtir6VJ+hoi8/SUOQXS25KxEELw3K05XP
-	6pYz8QCYbCbkkThHK8INRkC9du6QUb1jeb7MA5g3aHVKLATvG4VBMT0SRhocwfrpK+6MV3YHTSrYB
-	ySgI/+Z8C4roR2gbzsvFL0oAQn0yoWHtsTF9ZPf8ln76z/iPYypheIWQxS1vU613mHuemcgmqP3XT
-	PeRHi3qO5xfiqDrwawnQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=GhD9RvfRb8aN+OhmAnjy6KMgbVYMwV0FesBeCAMvclM=; b=uIkV8DiZ+34YOL
+	5e3uol7O30O1HsrPhiRfGteoAM/zT2AaAewXPbAZSK1eiqlfmllg6FwgwP/L/CqACoJiGxEDGpMQW
+	AB2GJ4L4SgNgMeeyxv2BV2HFwf0WP62ttdi7EG59oKOWi2WH3TQYazM+WHPIi/miwCgploeOaqnjw
+	DvOlTrZ6Rna4t95gpZ+joykokYMHb8iJs8F4U4+ZIhXsuCCbsY6shoRfs9Y9xbIxPqO5it8VwYtVQ
+	hAfVFuFQMs82/FFIzITxbIfies1vuIgClsTPI/9n3oChbg3w/eqQSh1RjfpYlm0r2hpY4P0RYnyv5
+	fpXfdvFKLHbNI2tbaJYg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfcWb-0004qR-VM; Tue, 25 Jun 2019 03:53:42 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hfdM7-0005rp-6l; Tue, 25 Jun 2019 04:46:55 +0000
+Received: from mail-eopbgr740087.outbound.protection.outlook.com
+ ([40.107.74.87] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfcWY-0004ps-NV
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 03:53:40 +0000
-Received: from localhost (unknown [116.226.249.212])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 993EB20863;
- Tue, 25 Jun 2019 03:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1561434818;
- bh=LiKh1y/cVsCqNr8ux7WO7aEmLV31ud+AQ1bb0n+nvNg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Zy0hx9p/4crxzYjV1lRLmNA6srJEKNhjem7iURpTiZ6qZyykyJc4xvBjgFbuwsPBI
- LqUfYd9yJiH2pbvvMsA9I0JwKIbT8dhPcmzYkOFmPoWMn7kF9t4f7XcbUxpiVYvfOZ
- 70aqqAWKidJgfsmOQAnggYhLnpqxyh1bIcGdE/QQ=
-Date: Tue, 25 Jun 2019 11:08:07 +0800
-From: Greg KH <gregkh@linuxfoundation.org>
-To: liaoweixiong <liaoweixiong@allwinnertech.com>
-Subject: Re: [RESEND PATCH v2] mtd: spinand: read return badly if the last
- page has bitflips
-Message-ID: <20190625030807.GA11074@kroah.com>
-References: <1561424549-784-1-git-send-email-liaoweixiong@allwinnertech.com>
+ id 1hfdM3-0005r6-SL
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 04:46:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z6D+3ooFLGTQVLRknkth4/HujIit7qoNMsYM6fToroE=;
+ b=og2YQmX7ePmTggTdokoBXbTiXGzTRD2Lpu95KqrVPIFcI0iqFrYijGtQaE6Gl9m0t4CCBtZ7bHdKPp6jPy+BzLpxhFuQsOLnNCfBpjQ0SnatXI59w81IEvUVVIFvpv6eA/TRLv2D/4qs/Zq9B63kUajSeml02w7/2Xn6DhMiwTE=
+Received: from DM6PR02CA0106.namprd02.prod.outlook.com (2603:10b6:5:1f4::47)
+ by MW2PR02MB3786.namprd02.prod.outlook.com (2603:10b6:907:3::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2008.16; Tue, 25 Jun
+ 2019 04:46:46 +0000
+Received: from BL2NAM02FT048.eop-nam02.prod.protection.outlook.com
+ (2a01:111:f400:7e46::209) by DM6PR02CA0106.outlook.office365.com
+ (2603:10b6:5:1f4::47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2008.16 via Frontend
+ Transport; Tue, 25 Jun 2019 04:46:46 +0000
+Authentication-Results: spf=pass (sender IP is 149.199.60.100)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.100; helo=xsj-pvapsmtpgw02;
+Received: from xsj-pvapsmtpgw02 (149.199.60.100) by
+ BL2NAM02FT048.mail.protection.outlook.com (10.152.76.109) with Microsoft SMTP
+ Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1987.11
+ via Frontend Transport; Tue, 25 Jun 2019 04:46:46 +0000
+Received: from unknown-38-66.xilinx.com ([149.199.38.66]:32852
+ helo=xsj-pvapsmtp01) by xsj-pvapsmtpgw02 with esmtp (Exim 4.63)
+ (envelope-from <naga.sureshkumar.relli@xilinx.com>)
+ id 1hfdLx-0006rv-CJ; Mon, 24 Jun 2019 21:46:45 -0700
+Received: from [127.0.0.1] (helo=localhost)
+ by xsj-pvapsmtp01 with smtp (Exim 4.63)
+ (envelope-from <naga.sureshkumar.relli@xilinx.com>)
+ id 1hfdLr-0007mZ-Ew; Mon, 24 Jun 2019 21:46:39 -0700
+Received: from xsj-pvapsmtp01 (smtp-fallback.xilinx.com [149.199.38.66] (may
+ be forged))
+ by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id x5P4kawv015624; 
+ Mon, 24 Jun 2019 21:46:36 -0700
+Received: from [172.23.37.108] (helo=xhdnagasure40.xilinx.com)
+ by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+ (envelope-from <naga.sureshkumar.relli@xilinx.com>)
+ id 1hfdLm-0007lC-P1; Mon, 24 Jun 2019 21:46:35 -0700
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: miquel.raynal@bootlin.com, helmut.grohne@intenta.de
+Subject: [LINUX PATCH v17 1/2] mtd: rawnand: nand_micron: Do not over write
+ driver's read_page()/write_page()
+Date: Mon, 24 Jun 2019 22:46:29 -0600
+Message-Id: <20190625044630.31717-1-naga.sureshkumar.relli@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.100; IPV:NLI; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(39860400002)(376002)(396003)(136003)(346002)(2980300002)(199004)(189003)(486006)(70206006)(70586007)(1076003)(107886003)(5660300002)(48376002)(8936002)(50466002)(8676002)(81166006)(81156014)(106002)(16586007)(316002)(305945005)(36386004)(103116003)(2906002)(2616005)(476003)(126002)(63266004)(426003)(336012)(36756003)(77096007)(478600001)(26005)(186003)(7696005)(51416003)(7416002)(47776003)(50226002)(356004)(6666004)(9786002)(4326008)(42866002)(5001870100001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MW2PR02MB3786; H:xsj-pvapsmtpgw02; FPR:;
+ SPF:Pass; LANG:en; PTR:xapps1.xilinx.com,unknown-60-100.xilinx.com; A:1; MX:1;
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1561424549-784-1-git-send-email-liaoweixiong@allwinnertech.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1f79b9f0-f131-43fc-4805-08d6f92820b5
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(4709080)(1401327)(2017052603328);
+ SRVR:MW2PR02MB3786; 
+X-MS-TrafficTypeDiagnostic: MW2PR02MB3786:
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-Microsoft-Antispam-PRVS: <MW2PR02MB3786D899FD5804BDA969700DAFE30@MW2PR02MB3786.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:200;
+X-Forefront-PRVS: 0079056367
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: OPzJ0r2nteg9BI2IxpmS8N18w/wAE2VKs11AVIrnFAjAa8KIjO/tXm75Lmw//0kCBkA23QXx7AWK2vFpwVIa7lLWjffbigljesZDCC3uo0IrcFdkLH5tovTRXJBEWE1m356Ui9mgeGW03NroQH/le9b3U3m7NJvVL30S5c9oiuPqxcB+FcAFJMin1ohQ/RoYt+PeBA9vbi0djyI9Cis+rxvd2r16d70LpH7E/bSyDm4u8yGLsZeUEfvt6NHcs/HIB2YV8z5LbgfcbfOvDd2Db+PTCQqRGJSQYZDbKaQmwuYuvdoLUpBTJrs8o3D9RuQzUG41rlJ2Fep+J7vDGM1agqDPsyEw9BEr7Y5EyNuibCy/pRIiHNBML3UzuqfzeQ4AYxFE97G8Bf4+oJOWPixFGPUkDwGRoYZTckPgby0XtTw=
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2019 04:46:46.0531 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f79b9f0-f131-43fc-4805-08d6f92820b5
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c; Ip=[149.199.60.100];
+ Helo=[xsj-pvapsmtpgw02]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR02MB3786
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190624_205338_782409_3C8A2A1F 
-X-CRM114-Status: GOOD (  14.64  )
+X-CRM114-CacheID: sfid-20190624_214651_922429_BE810D24 
+X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,42 +135,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Chuanhong Guo <gch981213@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, linux-mtd@lists.infradead.org,
- Schrempf Frieder <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Peter Pan <peterpandong@micron.com>
+Cc: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, vigneshr@ti.com,
+ bbrezillon@kernel.org, yamada.masahiro@socionext.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 25, 2019 at 09:02:29AM +0800, liaoweixiong wrote:
-> In case of the last page containing bitflips (ret > 0),
-> spinand_mtd_read() will return that number of bitflips for the last
-> page. But to me it looks like it should instead return max_bitflips like
-> it does when the last page read returns with 0.
-> 
-> Signed-off-by: liaoweixiong <liaoweixiong@allwinnertech.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-> ---
->  drivers/mtd/nand/spi/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Add check before assigning chip->ecc.read_page() and chip->ecc.write_page()
 
-<formletter>
+Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+---
+ drivers/mtd/nand/raw/nand_micron.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index cbd4f09ac178..565f2696c747 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
+ 		chip->ecc.size = 512;
+ 		chip->ecc.strength = chip->base.eccreq.strength;
+ 		chip->ecc.algo = NAND_ECC_BCH;
+-		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+-		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
++		if (!chip->ecc.read_page)
++			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
++
++		if (!chip->ecc.write_page)
++			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+ 
+ 		if (ondie == MICRON_ON_DIE_MANDATORY) {
+ 			chip->ecc.read_page_raw = nand_read_page_raw_notsupp;
+-- 
+2.17.1
 
-</formletter>
 
 ______________________________________________________
 Linux MTD discussion mailing list
