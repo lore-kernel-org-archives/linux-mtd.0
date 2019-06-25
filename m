@@ -2,97 +2,89 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53165C48BD6
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 20:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C0F4C48BD6
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 20:37:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B05C2063F
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 20:01:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CAB40205ED
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 20:37:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NuJWjUnB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="0XvBt1Fm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B05C2063F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sijDmaaB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dilger-ca.20150623.gappssmtp.com header.i=@dilger-ca.20150623.gappssmtp.com header.b="i0tlux+8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAB40205ED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hs1IeAwnqfZ0Nj5iWYJfr5NzZrwK4FdWQbBfYtDRC0A=; b=NuJWjUnBiklj6d
-	U15kLD8DwVpVpXME+8+9BZ2wbKha+i6fbC72i6FLmhthI6QCbo0WnASTXipDqZJefoBs3haUH9PrU
-	de7ArpK/dk8Fhu68fqTS9p8NJYZD1uUgIojkGvfcKOVS2ykRYwcsHZbUJz8WRXbVBUwZ6zDOKWdPF
-	5SwyW3az/B2ikOEK2eYsl57lYBB9WKK+sBHv02+aBVtdskCpkUE1dJVWWMIt7JnEKHtmgIoPYVLEq
-	nv2NXnQith2ZIGubqelRk7PrfIrgVHGEt7e3KT1gMeSCch9jbe0+MF4+TPz/tjx3rjkiSd9zUtKN0
-	YItl9wlif0N/z2L1lbng==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	References:To:In-Reply-To:Date:Subject:Mime-Version:Message-Id:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=ZkhS2nvj63UUvvwm7wZ15mP3MSriqUOb/ZJBuRJr+Jc=; b=sijDmaaBMedN3egAnP0MtOngF
+	YtKGHiqMgIQrt4zTFangNKATRuVbyxErFji4g/bfBIc5nPo75fXHt077XCcGV47XG2dpzRXWpNcT2
+	t+hY9SPh5kniW7ndJILXOwLjguq00mlKqi7NeiOofPE++CVeqSqKH0W6SjdAgMB9ESh5i+Xk2fzEP
+	I9EDHBfIQpO6kGN/Pdxh1YM/IR7/oGrJtTirGj7ZC8qCNMAwlq1Cec0BiYNkAM4XxO7ZxfYjFtqgU
+	8e1yLMrKjIwhK+F94CKeWir3kiKQVPkspGe99WBRYdCkzr9pxJjNHSgojWeNRT8/umOOq6uu/Sy/f
+	TKjAAtlnQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfrca-0008UV-HO; Tue, 25 Jun 2019 20:00:52 +0000
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+	id 1hfsCJ-0006jn-Bc; Tue, 25 Jun 2019 20:37:47 +0000
+Received: from mail-pl1-x643.google.com ([2607:f8b0:4864:20::643])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfrcJ-0008IL-Kg
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 20:00:37 +0000
-Received: by mail-lj1-x241.google.com with SMTP id 205so8706781ljj.8
- for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2019 13:00:33 -0700 (PDT)
+ id 1hfsCF-0006i6-PN
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 20:37:45 +0000
+Received: by mail-pl1-x643.google.com with SMTP id e5so60103pls.13
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2019 13:37:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=zCSCrKNhNFyn/M7NDXA6/GQVwFG9TAwMh2fCiMszEsw=;
- b=0XvBt1FmYYhbOddB+TldxDZ9G2z64Ma9S9dzeXRx9kN20ce40ts5NlUZDnIRJ1vTuf
- C1YDB3EsPRrICjWZ28zI5OS/bdowzsDZ6hqHaMcmZI2EP67O9YOKt8eHqMRNy6cgQEQi
- ZYJUo4ZZyBX/Dxm3ddLB24GaU7Jy0p6sD5/AnLMR/k7nH/GMPDOeAMooD2JgexeYsLSg
- QmB7oM2Z/rYY70RKG69JLQNFtgHgNrEHWinw4+u2ZtBJq8qaqOJtzWAZqlauErXXgC1F
- bA4f64t2SWTqUTr7Uy6Lazd3tEkl2ycRR8uF7Fck5aOg4xGuM+BVy8IdDuHK+OtpEF30
- UVlA==
+ d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+ h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+ :references; bh=k9wVBI3MNSxJVQhODLuSRbOf+SmT1l1K5RRF5+DdhGM=;
+ b=i0tlux+8FNEu0ugkEvUUlD4zKy+jo4LmPTngoA6r4KZwHDBk4l5v9aHPUQEnX49/5g
+ z/5lU03hiGUesQ1zP/lPDO/M9fU515Y8oNEl0EKjwdC7dNyZmZQEQEJzGU548pSrAizw
+ AlBCGdOUNg8gVK9FeesIiFWJzJ6YbgT5nrsBvzAUmh99yf7q8hQlgwIm8HPdOmToZugA
+ nEmrM6blVwgyo7dN5eFPje1f1HwAtA+5XwodCP1ntkD5mvR/FwjSqB5AJn7YMTtfEeor
+ 5bhYLcubsCaGOlgF0onarHD40ER7JyKcO4a/eslTTHQKCN3GB1Tra4WgBV7T6KYa0chE
+ ps9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=zCSCrKNhNFyn/M7NDXA6/GQVwFG9TAwMh2fCiMszEsw=;
- b=Z02b+Kj2E/KgAgkAao+vaBcWSsKxguAn2ptO5BC0marMKkpu7iE9o68n0fuTA+wZ7H
- d4l1CSaOBh7xfot+ecRVhxlixWm8hnrxzz2GBmcfY4xUOxyMSLn9wX68hkg9b4LjH2fP
- HcigjJjCQ0ev43qMUO6izcrnRUc3ILW3SlZY9AgSUy/02pRPjyArXsRfN0U36u9jz4ii
- I7bADi95pt4u9EK6BzxilOacPyLXvgo9ubak79IA7SWVPdxuNIjMjALgRCARffO28zaX
- IGZKbBewcPlCXFGM2CU41+QVXRYLSS9z8RoRpTS+fL2w2M3qyKcL0MSyJMBzmisHEkLv
- c05g==
-X-Gm-Message-State: APjAAAWf7uHjLMObpWRaTcZ5wYcEML4M5QeR+5KFSZa7UuRgzTGDO+xc
- xycMMSrjGsqXoDIFFWJiJBHHMA==
-X-Google-Smtp-Source: APXvYqyZ2h29fiDFqLuoFeG/2A7hiunBkFu2FU2StBUIMI1OqlEYneEbE551ZrtL7yFZ0qsHbvkvsw==
-X-Received: by 2002:a2e:635d:: with SMTP id x90mr228438ljb.140.1561492832083; 
- Tue, 25 Jun 2019 13:00:32 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([213.87.155.24])
- by smtp.gmail.com with ESMTPSA id j23sm2082075lfb.93.2019.06.25.13.00.30
+ h=x-gm-message-state:from:message-id:mime-version:subject:date
+ :in-reply-to:cc:to:references;
+ bh=k9wVBI3MNSxJVQhODLuSRbOf+SmT1l1K5RRF5+DdhGM=;
+ b=RGTu9RwJ6I6z+ptApQCZcSninSsbrvzp6rAWwn7kob4IZ79L8+ZeG7s+yAcumd0XfU
+ vZK/n4ahYByIt+x95l2xPAWnNt9Gf9aTplCPWKqBx1JZeKU5fRF0tMVS4YeLRVnVg9K0
+ pPZELONkyd9kvxsh5GzDx0BfKNe00YXe2E43KH3ACykpw93qhzX0/3poW1sNOK0yf3eG
+ 9SxM2Syqd/O78W9Sx/H3XxEAJUyQ96ZOPhiOOyMzaY4uanhFPexMSwyNpQpFPJG9+qRe
+ GtFMd4c/IJFbGrfEQkWYVz3OTDCZ4rE7SVjbpO4ytD4p+4oR3clbL3HfSlDVzMVOq5j8
+ WZ2g==
+X-Gm-Message-State: APjAAAVooAjL3rZQSYT3Ghu8ZGITyfQ61u2IDR+7CZBjckN3TXWXEDxu
+ d9IZjr4n5AYiTzil1DTqwgVA1A==
+X-Google-Smtp-Source: APXvYqxrr/uL0yeWv0l0AFEkJ0fiuFxZszwvIRMBTgsPNJXwasc7ZXW/q9+Il/kiADkCo486i0NA9w==
+X-Received: by 2002:a17:902:f216:: with SMTP id
+ gn22mr690564plb.118.1561495062448; 
+ Tue, 25 Jun 2019 13:37:42 -0700 (PDT)
+Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net.
+ [70.77.216.213])
+ by smtp.gmail.com with ESMTPSA id m4sm4145961pff.108.2019.06.25.13.37.40
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 25 Jun 2019 13:00:31 -0700 (PDT)
-Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
-To: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190625075746.10439-1-vigneshr@ti.com>
- <20190625075746.10439-4-vigneshr@ti.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <756e63a4-20cb-fd9e-6ec7-c2742a3d90e4@cogentembedded.com>
-Date: Tue, 25 Jun 2019 23:00:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
-MIME-Version: 1.0
-In-Reply-To: <20190625075746.10439-4-vigneshr@ti.com>
-Content-Language: en-MW
+ Tue, 25 Jun 2019 13:37:41 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <E84C8EBC-8341-49E5-8EED-0980D158CD50@dilger.ca>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4 0/7] vfs: make immutable files actually immutable
+Date: Tue, 25 Jun 2019 14:37:37 -0600
+In-Reply-To: <20190625180326.GC2230847@magnolia>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
+ <20190625103631.GB30156@infradead.org> <20190625180326.GC2230847@magnolia>
+X-Mailer: Apple Mail (2.3273)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190625_130035_707925_920F1B3E 
-X-CRM114-Status: GOOD (  27.68  )
+X-CRM114-CacheID: sfid-20190625_133743_966345_DBDCCEB9 
+X-CRM114-Status: GOOD (  18.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,157 +96,142 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-efi@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ yuchao0@huawei.com, linux-mm <linux-mm@kvack.org>, Chris Mason <clm@fb.com>,
+ linux-mtd@lists.infradead.org, matthew.garrett@nebula.com,
+ linux-nilfs@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>, devel@lists.orangefs.org,
+ Josef Bacik <josef@toxicpanda.com>, reiserfs-devel@vger.kernel.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>, dsterba@suse.com,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ ard.biesheuvel@linaro.org,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs <linux-xfs@vger.kernel.org>,
+ jk@ozlabs.org, Jan Kara <jack@suse.com>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
+Content-Type: multipart/mixed; boundary="===============4286624646496418456=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
 
-On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
+--===============4286624646496418456==
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_D22B91A1-39DB-42F5-937D-A1034700DAE0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
-> Bus interface between a host system master and one or more slave
-> interfaces. HyperBus is used to connect microprocessor, microcontroller,
-> or ASIC devices with random access NOR flash memory (called HyperFlash)
-> or self refresh DRAM (called HyperRAM).
-> 
-> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
-> signal and either Single-ended clock(3.0V parts) or Differential clock
-> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
-> At bus level, it follows a separate protocol described in HyperBus
-> specification[1].
-> 
-> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
-> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
-> its equivalent to x16 parallel NOR flash with respect to bits per clock
-> cycle. But HyperBus operates at >166MHz frequencies.
-> HyperRAM provides direct random read/write access to flash memory
-> array.
-> 
-> But, HyperBus memory controllers seem to abstract implementation details
-> and expose a simple MMIO interface to access connected flash.
-> 
-> Add support for registering HyperFlash devices with MTD framework. MTD
-> maps framework along with CFI chip support framework are used to support
-> communicating with flash.
-> 
-> Framework is modelled along the lines of spi-nor framework. HyperBus
-> memory controller (HBMC) drivers calls hyperbus_register_device() to
-> register a single HyperFlash device. HyperFlash core parses MMIO access
-> information from DT, sets up the map_info struct, probes CFI flash and
-> registers it with MTD framework.
-> 
-> Some HBMC masters need calibration/training sequence[3] to be carried
-> out, in order for DLL inside the controller to lock, by reading a known
-> string/pattern. This is done by repeatedly reading CFI Query
-> Identification String. Calibration needs to be done before trying to detect
-> flash as part of CFI flash probe.
-> 
-> HyperRAM is not supported at the moment.
-> 
-> HyperBus specification can be found at[1]
-> HyperFlash datasheet can be found at[2]
-> 
-> [1] https://www.cypress.com/file/213356/download
-> [2] https://www.cypress.com/file/213346/download
-> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->     Table 12-5741. HyperFlash Access Sequence
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-[...]
-> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-> index 806287e80e84..62d649a959e2 100644
-> --- a/drivers/mtd/Makefile
-> +++ b/drivers/mtd/Makefile
-> @@ -34,3 +34,4 @@ obj-y		+= chips/ lpddr/ maps/ devices/ nand/ tests/
->  
->  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor/
->  obj-$(CONFIG_MTD_UBI)		+= ubi/
-> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus/
-> diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
-> new file mode 100644
-> index 000000000000..98147e28caa0
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/Kconfig
-> @@ -0,0 +1,11 @@
-> +menuconfig MTD_HYPERBUS
-> +	tristate "HyperBus support"
-> +	select MTD_CFI
-> +	select MTD_MAP_BANK_WIDTH_2
-> +	select MTD_CFI_AMDSTD
-> +	select MTD_COMPLEX_MAPPINGS
-> +	help
-> +	  This is the framework for the HyperBus which can be used by
-> +	  the HyperBus Controller driver to communicate with
-> +	  HyperFlash. See Cypress HyperBus specification for more
-> +	  details
-> diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
-> new file mode 100644
-> index 000000000000..ca61dedd730d
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
-> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
-> new file mode 100644
-> index 000000000000..63a9e64895bc
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
-> @@ -0,0 +1,154 @@
-[...]
-> +int hyperbus_register_device(struct hyperbus_device *hbdev)
-> +{
-[...]
-> +	hbdev->mtd = do_map_probe("cfi_probe", map);
-> +	if (!hbdev->mtd) {
-> +		dev_err(dev, "probing of hyperbus device failed\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	hbdev->mtd->dev.parent = dev;
-> +	mtd_set_of_node(hbdev->mtd, np);
-> +
-> +	ret = mtd_device_register(hbdev->mtd, NULL, 0);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register mtd device\n");
-> +		map_destroy(hbdev->mtd);
-> +		return ret;
-> +	}
-> +	hbdev->registered = true;
 
-   I doubt that you actually need this flag...
+--Apple-Mail=_D22B91A1-39DB-42F5-937D-A1034700DAE0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(hyperbus_register_device);
-> +
-> +int hyperbus_unregister_device(struct hyperbus_device *hbdev)
-> +{
-> +	int ret = 0;
-> +
-> +	if (hbdev && hbdev->mtd && hbdev->registered) {
+On Jun 25, 2019, at 12:03 PM, Darrick J. Wong <darrick.wong@oracle.com> =
+wrote:
+>=20
+> On Tue, Jun 25, 2019 at 03:36:31AM -0700, Christoph Hellwig wrote:
+>> On Fri, Jun 21, 2019 at 04:56:50PM -0700, Darrick J. Wong wrote:
+>>> Hi all,
+>>>=20
+>>> The chattr(1) manpage has this to say about the immutable bit that
+>>> system administrators can set on files:
+>>>=20
+>>> "A file with the 'i' attribute cannot be modified: it cannot be =
+deleted
+>>> or renamed, no link can be created to this file, most of the file's
+>>> metadata can not be modified, and the file can not be opened in =
+write
+>>> mode."
+>>>=20
+>>> Given the clause about how the file 'cannot be modified', it is
+>>> surprising that programs holding writable file descriptors can =
+continue
+>>> to write to and truncate files after the immutable flag has been =
+set,
+>>> but they cannot call other things such as utimes, fallocate, unlink,
+>>> link, setxattr, or reflink.
+>>=20
+>> I still think living code beats documentation.  And as far as I can
+>> tell the immutable bit never behaved as documented or implemented
+>> in this series on Linux, and it originated on Linux.
+>=20
+> The behavior has never been consistent -- since the beginning you can
+> keep write()ing to a fd after the file becomes immutable, but you =
+can't
+> ftruncate() it.  I would really like to make the behavior consistent.
+> Since the authors of nearly every new system call and ioctl since the
+> late 1990s have interpreted S_IMMUTABLE to mean "immutable takes =
+effect
+> everywhere immediately" I resolved the inconsistency in favor of that
+> interpretation.
+>=20
+> I asked Ted what he thought that that userspace having the ability to
+> continue writing to an immutable file, and he thought it was an
+> implementation bug that had been there for 25 years.  Even he thought
+> that immutable should take effect immediately everywhere.
+>=20
+>> If you want  hard cut off style immutable flag it should really be a
+>> new API, but I don't really see the point.  It isn't like the usual
+>> workload is to set the flag on a file actively in use.
+>=20
+> FWIW Ted also thought that since it's rare for admins to set +i on a
+> file actively in use we could just change it without forcing everyone
+> onto a new api.
 
-    ... as you missed clearing that 'registered' flag. 
+On the flip side, it is possible to continue to write to an open fd
+after removing the write permission, and this is a problem we've hit
+in the real world with NFS export, so real applications do this.
 
-> +		ret = mtd_device_unregister(hbdev->mtd);
-> +		map_destroy(hbdev->mtd);
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hyperbus_unregister_device);
-[...]
+It may be the same case with immutable files, where an application sets
+the immutable flag immediately after creation, but continues to write
+until it closes the file, so that the file can't be modified by other
+processes, and there isn't a risk that the file is missing the immutable
+flag if the writing process dies before setting it at the end.
 
-MBR, Sergei
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_D22B91A1-39DB-42F5-937D-A1034700DAE0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl0ShhEACgkQcqXauRfM
+H+CbrRAAps35LK3poNlahSXPmgZ5tD+3nAlaeG8JU1XTggnEeHdAHY7wdK713thT
+OumdwU7nj1s+0ngxeUxPU/ZVWyuL2LjugpWEfw8lf0N/16hoTIUPBAe7kXce3jb+
+eg72QT36y1srscGQ/95rv/DPfelxzC7WiVYV7ZHIIF2Cq31B34cZ7GF0zpi6oZSH
+RKioHBOX1Qez1CksvAevhtSGf9e0dF1hNx7gyoVFnGb5V72P7WGGQqWSW4nSJvMe
+xhzkT0wLU28MioHsIcnqwnZJdvCb66Z1FGvAwsNItELe2tch4JzZjVR5sbq/g0+Q
+CpDZk350WiKaFzo9m1TO2Eiiog2vS1bqO+hZuwf7jPqcfIa6Tu9BdCx9U/bKp/rN
+sEtDj+p4qnjTCX2ggozPxye92wzhbF2o25jjoofBh9x9ShQ3GAc/gaTxcR9fpuWJ
+UmMwXwKMVXP/kvBaclrbz/zxaeo3ga7z3mFGgzxU6we9M5x1Lo+ppFxRpEPMIVkW
+LUEIQ4emE6yqzOWLWH6iPnxly9Jtzye3jsiq6s7RPPUGHn1/SCdhVZG130vKEpkC
+IcSmmJGlhPcI8wJ5/gwhAoxm9yLa+t0oH/Y6HUoNc722A3sCVRV5JWoHuK9MKBDK
+IPKKud+iKoNON0zr28k4iNyK1XAO+7yAqjfBAmdm0grbW/nItxg=
+=YBbV
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_D22B91A1-39DB-42F5-937D-A1034700DAE0--
+
+
+--===============4286624646496418456==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4286624646496418456==--
+
