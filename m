@@ -2,155 +2,74 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92C87C48BD4
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 15:22:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF2B1C48BD4
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 15:23:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5CAB52080C
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 15:22:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82AF22080C
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 15:23:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="E720y7bf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="EDgItxgi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="tBEpfni/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CAB52080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DKytgThC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82AF22080C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T74I7xeNieT6KuR9sXF8it5D1eoRG61Jg09McsORiBA=; b=E720y7bfS25Uh7
-	jcUAUIWIJidJVtY3lfAuR7gWWnXfXj90mwo4b+wqwe5iefd5WuPaJyi8Cu2RNHz5UDZn4f39RjvEV
-	2B+jP5nUnB1skheoOOCwMw1FQ8465+q26JJ+4DcuySnj7Ft89oyiVDH0MtmSwYKhA4G5zlutFRhTa
-	wWncq5FPs4eN4FVgSu5IVv9nLV+6I7FuT/QOjt4NWh1IH9as626AP84/4J7wBEkk7N+1wY9EP5kBi
-	xXMuRAxPmbvZgKBm/R02WOEyS7M13zE3ryBRJz+a1FMk9YvXJYJnMD0z7UennzuwuUeJK/nLtxuQB
-	XCky91v50IbNpBujxUEA==;
+	List-Owner; bh=3jqT3CB1PlzofLInnfj2t/nXiEn98bFWsGCJLuNEiV8=; b=DKytgThCRqqZdI
+	9WX9NnS9i6agM8Q45cZ/YFX1JKS44MgYUwvfbP82z0bjZuXQLQaGo3rmzWUCC5Gd6bTQKauKyvLCc
+	Y7s00BDUW54uTg1p8M+SAJB0j9LsEKcycH8a/6j2ghwCggdjRkkr4pfvq/DXl89YufEtJkZWjfy2X
+	ljOAlLhhIimIzbtMazqszO0wMv7EAj0dOVQTT1G1+vdlyY8sg/6zieFd4/IXoGPx1ZWB7uYKswxhP
+	Ews06PfWyjw9jwE454CkxvLTHb+nTSFwpVFjeJo1JW3fQsctejyJ3ey69O/Kahx2XsXoaP3fRC6Ww
+	KEwDpX/fpA1lyqUSwbZg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfnHP-0004in-LQ; Tue, 25 Jun 2019 15:22:43 +0000
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]
- helo=mx0a-0014ca01.pphosted.com)
+	id 1hfnI0-0005Dq-4Q; Tue, 25 Jun 2019 15:23:20 +0000
+Received: from mail-ot1-f68.google.com ([209.85.210.68])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfnHN-0004i5-4u
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 15:22:42 +0000
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
- by mx0b-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
- x5PFIeN5020897; Tue, 25 Jun 2019 08:22:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=axsMklROpfZit99IlYQJrDgrcEftVzRl/BKG3fJNoU8=;
- b=EDgItxgiAE8NcgaQ0XMESqBuXirPvP7v6H6MQyhOx2/ms9Xjs50KyQdBZ2eHVwbb/cBi
- ENCdD8IYwKunWgnGljikNTkv5JfdfsIWyvugco+j96PROYkskg+SZKvYPRhDsmX7ClBf
- HrHgSw8Ed2314ex5U1eItjOFudIMRrLmF4VVJCHRG9oGutTNGFBxYSfwOUAXjwuWlU3F
- do4t1LwkopPd9xUwZFyi2gLWePRuGM1tq2xhz8LjKOqe481KB5/K15gHWRahAnf5k4k5
- LrtaY1o4XyPVQSod3ZmOQPP5VIT+JEFl9iQRnmO/fYHO/ZJsvd9Se+Y866w7iAaFN7kq gg== 
-Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
-Received: from nam02-cy1-obe.outbound.protection.outlook.com
- (mail-cys01nam02lp2058.outbound.protection.outlook.com [104.47.37.58])
- by mx0b-0014ca01.pphosted.com with ESMTP id 2t9fwtx6y2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 25 Jun 2019 08:22:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=axsMklROpfZit99IlYQJrDgrcEftVzRl/BKG3fJNoU8=;
- b=tBEpfni/z83ciVRITG3pDiP038dFDEeN52PPVyLHlTERsNRMAAlc2Q9ah2SwWu4SNacNcRw3RKj7AtdMuK9TPexbPcdEZIdNJXwY5cfC/B9Kb7I2L97wczuGT0lfL/BGgbSCh1ZjiY+Wvsj/VapL3HM8eI/L8TTx0SxxJkGl5NA=
-Received: from BN8PR07CA0029.namprd07.prod.outlook.com (2603:10b6:408:ac::42)
- by BY5PR07MB6968.namprd07.prod.outlook.com (2603:10b6:a03:1e7::24)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2008.16; Tue, 25 Jun
- 2019 15:22:31 +0000
-Received: from DM3NAM05FT051.eop-nam05.prod.protection.outlook.com
- (2a01:111:f400:7e51::209) by BN8PR07CA0029.outlook.office365.com
- (2603:10b6:408:ac::42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2008.16 via Frontend
- Transport; Tue, 25 Jun 2019 15:22:30 +0000
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- cadence.com discourages use of 158.140.1.28 as permitted sender)
-Received: from sjmaillnx1.cadence.com (158.140.1.28) by
- DM3NAM05FT051.mail.protection.outlook.com (10.152.98.165) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2032.6 via Frontend Transport; Tue, 25 Jun 2019 15:22:29 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
- by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id
- x5PFMRWs001097
- (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
- Tue, 25 Jun 2019 08:22:28 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Tue, 25 Jun 2019 17:22:26 +0200
-Received: from lvlogina.cadence.com (10.165.176.102) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 25 Jun 2019 17:22:26 +0200
-Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
- by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x5PFMQqm021221;
- Tue, 25 Jun 2019 16:22:26 +0100
-Received: (from piotrs@localhost)
- by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x5PFMPuJ021210;
- Tue, 25 Jun 2019 16:22:25 +0100
-From: Piotr Sroka <piotrs@cadence.com>
-To: <linux-kernel@vger.kernel.org>
-Subject: [v4 2/2] dt-bindings: mtd: Add Cadence NAND controller driver
-Date: Tue, 25 Jun 2019 16:22:18 +0100
-Message-ID: <20190625152218.21102-1-piotrs@cadence.com>
-X-Mailer: git-send-email 2.15.0
-In-Reply-To: <20190625151559.15270-1-piotrs@cadence.com>
-References: <20190625151559.15270-1-piotrs@cadence.com>
+ id 1hfnHv-00059s-Ts
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 15:23:17 +0000
+Received: by mail-ot1-f68.google.com with SMTP id s20so17669700otp.4
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2019 08:23:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=gRnFrYoEfNfsdoVhVQW0Fet9FOWwAVGxt1dsfE11KLs=;
+ b=rLdirDixUBT25LKCftQLDRef7kW60uPDrvKRwO8qTdzbbGMSysseNSapwpo8/m+kvm
+ Lv5AN7fhzoc2/UYrk0Z3Q5/Ntkn/8hzjYi39wT54tKHpPWseOm98Z40xAgNeM6gpQV6b
+ B2DHZ4mbmNlh/MHE1oGvxZjH+dsTkX35GY/rQ5dFO9VLb9AL7/Fiw3KBOUD7ggC57N2B
+ PwDSepIpti5557Xc5vGMSbuufzc2kUmsKQt77BUstleaYgkKOs3eLlXWD1PwTj8kG1fh
+ SJzXZRtEJLemjwhzliVGmfP/SZO49g0tySmM1bGRukEBWvYajjSe6jTXSeq11q1QXBnA
+ FwEg==
+X-Gm-Message-State: APjAAAWvzy2TLqM36HoLjMKJrZT6jzq4i3M3C+ydFz44+aMMNf3rOXVc
+ C3mRl7IzXgQ6n/XPBLjqSCacXpdKFrBmOk8fiHo=
+X-Google-Smtp-Source: APXvYqx7FUyHJAxzoNmkzQVpQoKhqHv22N+bGY9kRSc3sstmCdqnILXmddt697oOtVxwiUyqQV69PSEDOuLGztoUKmQ=
+X-Received: by 2002:a9d:2f03:: with SMTP id h3mr91953526otb.107.1561476193134; 
+ Tue, 25 Jun 2019 08:23:13 -0700 (PDT)
 MIME-Version: 1.0
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:158.140.1.28; IPV:CAL; SCL:-1; CTRY:US;
- EFV:NLI; SFV:NSPM;
- SFS:(10009020)(396003)(346002)(376002)(136003)(39860400002)(2980300002)(189003)(199004)(36092001)(316002)(336012)(6916009)(16586007)(446003)(11346002)(2616005)(426003)(2906002)(2351001)(486006)(87636003)(305945005)(478600001)(476003)(26826003)(126002)(47776003)(356004)(86362001)(6666004)(36756003)(7416002)(1076003)(246002)(7636002)(50466002)(51416003)(50226002)(5660300002)(186003)(8936002)(76130400001)(48376002)(70586007)(76176011)(4326008)(8676002)(42186006)(107886003)(54906003)(26005)(70206006);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BY5PR07MB6968; H:sjmaillnx1.cadence.com; FPR:;
- SPF:SoftFail; LANG:en; PTR:corp.cadence.com; MX:1; A:1; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 65a7d20b-afce-459c-867f-08d6f980f06a
-X-Microsoft-Antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328);
- SRVR:BY5PR07MB6968; 
-X-MS-TrafficTypeDiagnostic: BY5PR07MB6968:
-X-Microsoft-Antispam-PRVS: <BY5PR07MB69689C3E196B069DE398E7D7DDE30@BY5PR07MB6968.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:285;
-X-Forefront-PRVS: 0079056367
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: 8nv+0DLaJ5amrSDzqs62STJQ9GEkinSg499+TfDS0o81k5DMoDUbyKlh3GPzG5IhrDvFqgVVnLFb5qX98b1/MD2de1HSJSCD2Owsynv+F5br+3r8nytOV7gPn7nhEYKDKDrxPNXXX8sXqn6oS4RPSRhbsY/A+hp68ie2n/k9oKEQ4tJw0o9YuPylOTwsUb6F2sqS+AfwVvbgfFzWA3jyZSSYHmYeq8LB7KoMikYajibTXAaEtYpGfkWp+3LNchBKOQCS4AY35orIRLkQjsXQ4ANDiwylCXCx3TzT6sB8QcgEKrNtBjqShnNjS0Ppr0R56FirTiFnM5XOsbjNCjgHVkJyzfG0hvhz4mjs364Qw2H9WRJpkh/x97jItbsoUD2v4G3iCUuXWh6RNQTmtL1NBcLlI1eWrNMaw3KNV/w56HI=
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2019 15:22:29.7792 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65a7d20b-afce-459c-867f-08d6f980f06a
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[158.140.1.28];
- Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB6968
-X-Proofpoint-SPF-Result: pass
-X-Proofpoint-SPF-Record: v=spf1 include:spf.smktg.jp
- include:_spf.salesforce.com
- include:mktomail.com include:spf-0014ca01.pphosted.com
- include:spf.protection.outlook.com include:auth.msgapp.com
- include:spf.mandrillapp.com ~all
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
- definitions=2019-06-25_11:, , signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
- score=0
- priorityscore=1501 malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0
- spamscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=985 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906250117
+References: <20190614150638.28383-1-piotrs@cadence.com>
+ <20190614150956.31244-1-piotrs@cadence.com>
+ <dd96bd1b-e944-e95d-31c9-6dd1d0b5720f@gmail.com>
+ <20190625130231.GA31865@global.cadence.com>
+ <20110899-d456-8403-f9be-663be5fcd07e@gmail.com>
+In-Reply-To: <20110899-d456-8403-f9be-663be5fcd07e@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 25 Jun 2019 17:23:01 +0200
+Message-ID: <CAMuHMdXJ=DQgNzvwXiZd2-Xm=GwO0gFywOxpuX+xwHc3J7q+3g@mail.gmail.com>
+Subject: Re: [v3 1/2] mtd: nand: Add Cadence NAND controller driver
+To: Dmitry Osipenko <digetx@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190625_082241_320111_F3F97530 
-X-CRM114-Status: GOOD (  18.61  )
+X-CRM114-CacheID: sfid-20190625_082316_000989_7E6A24D0 
+X-CRM114-Status: GOOD (  16.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -162,96 +81,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, BrianNorris <computersforpeace@gmail.com>,
+Cc: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon <bbrezillon@kernel.org>,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Stefan Agner <stefan@agner.ch>, Marek Vasut <marek.vasut@gmail.com>,
+ Paul Burton <paul.burton@mips.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Piotr Sroka <piotrs@cadence.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document the bindings used by Cadence NAND controller driver
-
-Signed-off-by: Piotr Sroka <piotrs@cadence.com>
----
-Changes for v4:
-- add commit message
-Changes for v3:
-- add unit suffix for board_delay 
-- move child description to proper place
-- remove prefix cadence_ for reg and sdma fields
-Changes for v2:
-- remove chip dependends parameters from dts bindings
-- add names for register ranges in dts bindings
-- add generic bindings to describe NAND chip representation
----
- .../bindings/mtd/cadence-nand-controller.txt       | 51 ++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-new file mode 100644
-index 000000000000..e485b87075bd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-@@ -0,0 +1,51 @@
-+* Cadence NAND controller
-+
-+Required properties:
-+  - compatible : "cdns,hpnfc"
-+  - reg : Contains two entries, each of which is a tuple consisting of a
-+	  physical address and length. The first entry is the address and
-+	  length of the controller register set. The second entry is the
-+	  address and length of the Slave DMA data port.
-+  - reg-names: should contain "reg" and "sdma"
-+  - interrupts : The interrupt number.
-+  - clocks: phandle of the controller core clock (nf_clk).
-+
-+Optional properties:
-+  - dmas: shall reference DMA channel associated to the NAND controller
-+  - cdns,board-delay_ps : Estimated Board delay. The value includes the total
-+    round trip delay for the signals and is used for deciding on values
-+    associated with data read capture. The example formula for SDR mode is
-+    the following:
-+    board_delay = RE#PAD_delay + PCB trace to device + PCB trace from device
-+    + DQ PAD delay
-+
-+Children nodes represent the available NAND chips.
-+
-+Required properties of NAND chips:
-+  - reg: shall contain the native Chip Select ids from 0 to max supported by
-+    the cadence nand flash controller
-+
-+
-+See Documentation/devicetree/bindings/mtd/nand.txt for more details on
-+generic bindings.
-+
-+Example:
-+
-+nand_controller: nand-controller @60000000 {
-+
-+	  compatible = "cdns,hpnfc";
-+	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
-+	  reg-names = "reg", "sdma";
-+	  clocks = <&nf_clk>;
-+	  cdns,board-delay_ps = <4830>;
-+	  interrupts = <2 0>;
-+	  nand@0 {
-+	      reg = <0>;
-+	      label = "nand-1";
-+	  };
-+	  nand@1 {
-+	      reg = <1>;
-+	      label = "nand-2";
-+	  };
-+
-+};
--- 
-2.15.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBKdW4gMjUsIDIwMTkgYXQgNDo0NSBQTSBEbWl0cnkgT3NpcGVua28gPGRpZ2V0eEBn
+bWFpbC5jb20+IHdyb3RlOgo+IDI1LjA2LjIwMTkgMTY6MDIsIFBpb3RyIFNyb2thINC/0LjRiNC1
+0YI6Cj4gPiBUaGUgMDYvMTYvMjAxOSAxNjo0MiwgRG1pdHJ5IE9zaXBlbmtvIHdyb3RlOgo+ID4+
+IDE0LjA2LjIwMTkgMTg6MDksIFBpb3RyIFNyb2thINC/0LjRiNC10YI6Cj4gPj4+ICsvKiBDYWRu
+ZW5jZSBOQU5EIGZsYXNoIGNvbnRyb2xsZXIgY2FwYWJpbGl0aWVzIGdldCBmcm9tIGRyaXZlciBk
+YXRhLiAqLwo+ID4+PiArc3RydWN0IGNhZGVuY2VfbmFuZF9kdF9kZXZkYXRhIHsKPiA+Pj4gKyAg
+ICAvKiBTa2V3IHZhbHVlIG9mIHRoZSBvdXRwdXQgc2lnbmFscyBvZiB0aGUgTkFORCBGbGFzaCBp
+bnRlcmZhY2UuICovCj4gPj4+ICsgICAgdTMyIGlmX3NrZXc7Cj4gPj4+ICsgICAgLyogSXQgaW5m
+b3JtcyBpZiBhZ2luZyBmZWF0dXJlIGluIHRoZSBETEwgUEhZIHN1cHBvcnRlZC4gKi8KPiA+Pj4g
+KyAgICB1OCBwaHlfZGxsX2FnaW5nOwo+ID4+PiArICAgIC8qCj4gPj4+ICsgICAgICogSXQgaW5m
+b3JtcyBpZiBwZXIgYml0IGRlc2tldyBmb3IgcmVhZCBhbmQgd3JpdGUgcGF0aCBpbgo+ID4+PiAr
+ICAgICAqIHRoZSBQSFkgaXMgc3VwcG9ydGVkLgo+ID4+PiArICAgICAqLwo+ID4+PiArICAgIHU4
+IHBoeV9wZXJfYml0X2Rlc2tldzsKPiA+Pj4gKyAgICAvKiBJdCBpbmZvcm1zIGlmIHNsYXZlIERN
+QSBpbnRlcmZhY2UgaXMgY29ubmVjdGVkIHRvIERNQSBlbmdpbmUuICovCj4gPj4+ICsgICAgdTgg
+aGFzX2RtYTsKPiA+Pgo+ID4+IFRoZXJlIGlzIG5vIG5lZWRlZCB0byBkZWRpY2F0ZSA4IGJpdHMg
+dG8gYSB2YXJpYWJsZSBpZiB5b3Ugb25seSBjYXJlIGFib3V0IGEgc2luZ2xlCj4gPj4gYml0LiBZ
+b3UgbWF5IHdyaXRlIHRoaXMgYXM6Cj4gPj4KPiA+PiBib29sIGhhc19kbWEgOiAxOwo+ID4gSSBt
+b2RpZmllZCBpdCBsb2NhbGx5IGJ1dCBpdCBsb29rcyB0aGF0IGNoZWNrcGF0Y2ggZG9lcyBub3Qg
+bGlrZSBzdWNoCj4gPiBub3RhdGlvbgo+ID4gIldBUk5JTkc6IEF2b2lkIHVzaW5nIGJvb2wgYXMg
+Yml0ZmllbGQuICBQcmVmZXIgYm9vbCBiaXRmaWVsZHMgYXMKPiA+IHVuc2lnbmVkIGludCBvciB1
+PDh8MTZ8MzI+Igo+ID4gU28gbWF5YmUgSSB3aWxsIGxlYXZlIGl0IGFzIGlzLgo+Cj4gWW91IG1h
+eSBhbHNvIHVzZSB0aGUgInU4IDogMSIgZm9ybSB0aGVuLCB0byBzYXRpc2Z5IHRoZSBjaGVja3Bh
+dGNoLiBQcm9iYWJseQo+ICJ1bnNpZ25lZCBpbnQgOiAxIiB3aWxsIGJlIHRoZSBiZXN0IGluIHRo
+aXMgY2FzZSwgaXQncyB1cCB0byB5b3UuCgpFeGFjdGx5LiBUaGUgY29tcGlsZXIgd2lsbCBhbGxv
+Y2F0ZSB0aGUgc3VmZmljaWVudCBhbW91bnQgb2Ygc3BhY2UgdG8gc3RvcmUgdGhlCmJpdGZpZWxk
+LgoKR3J7b2V0amUsZWV0aW5nfXMsCgogICAgICAgICAgICAgICAgICAgICAgICBHZWVydAoKLS0g
+CkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIg
+LS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0
+ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFs
+a2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcg
+bGlrZSB0aGF0LgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZh
+bGRzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
