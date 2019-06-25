@@ -2,21 +2,21 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 373CEC48BD5
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 10:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB5FEC48BD5
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 10:54:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 093162084B
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 10:36:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B15D7204EC
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 10:54:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KSxmR8lo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 093162084B
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rSK3EtL8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B15D7204EC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,26 +25,28 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sspP+UuC64sEWtTTpKuZJ5kVhOYwDxjdVeANElde/tc=; b=KSxmR8loDPEz9u
-	gZZWXJdmOTwyTu5mxPMZmi2ilCUF6Y9MoxJnSH0NL4dgqApP+LMVc1s6pqv6vT+jnkmqurzsHR9an
-	Klbw43I1EJL5A8kxJ4raCH/+LtQgA5PdI+YZ6IbCOLQxL47WBxZlBmjPZ6elXNOKfHqfzxj+T8chF
-	FbRadk/qD9FJOeFV7Oarz41mX4H2+NUksi3SIUSjG++8a5Gnktb1aiq+b4GiNJhkmcbALvBjMC3BQ
-	cV8PbjYyKtHjK2SP8Qo5aB8eBaUj1smUX4UkrT6Vk4UfJ0V9w6/xdnVFOitKhyKSVs6++rWo14lxo
-	4LQbawZ3m94QH82fOcTw==;
+	List-Owner; bh=8nC5bJ6ARCrsqtVZNbSDId/lvORh6VqazHEh3jYl37M=; b=rSK3EtL8Vd34og
+	gR/WGj0rc1YqyLxdZINhavMs6QmM5k/PxtzcLVOGrtzj/VmrHLrH2JEguqPaWsoIoFzSjANcfN5qP
+	qzGh+G2KZwOO8YBugc7lIOCw7a6LRdfNmDCFpPeH+XeSt0IBXh3XcsK9RrvyTOSpRBke6+IbMIZfN
+	QtwWCtNPxxDwK9W1TXypYuS6MiSyWuUKEdgP3928fTvthyi045aY8P9dvuU6KJF5mSizM2rQzltOC
+	GX+pjtO2EjvxMvoSL+LaYOFowXdLUxAXDLcXODJsqQMz4icVAU8VHCaWU2jm1fOtBk4I1YF/0oIDf
+	bp5S8hptL79rEFF5Thyg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfioV-0001M2-9h; Tue, 25 Jun 2019 10:36:35 +0000
+	id 1hfj5g-00078X-Hy; Tue, 25 Jun 2019 10:54:20 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat
- Linux)) id 1hfioR-0001Ln-BN; Tue, 25 Jun 2019 10:36:31 +0000
-Date: Tue, 25 Jun 2019 03:36:31 -0700
+ Linux)) id 1hfj5c-00078N-JV; Tue, 25 Jun 2019 10:54:16 +0000
+Date: Tue, 25 Jun 2019 03:54:16 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v4 0/7] vfs: make immutable files actually immutable
-Message-ID: <20190625103631.GB30156@infradead.org>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
+Subject: Re: [PATCH 1/4] vfs: create a generic checking function for
+ FS_IOC_SETFLAGS
+Message-ID: <20190625105416.GA26085@infradead.org>
+References: <156116136742.1664814.17093419199766834123.stgit@magnolia>
+ <156116138140.1664814.9610454726122206157.stgit@magnolia>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <156116141046.1664939.11424021489724835645.stgit@magnolia>
+In-Reply-To: <156116138140.1664814.9610454726122206157.stgit@magnolia>
 User-Agent: Mutt/1.11.4 (2019-03-13)
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -57,10 +59,12 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-efi@vger.kernel.org, linux-btrfs@vger.kernel.org, yuchao0@huawei.com,
- linux-mm@kvack.org, clm@fb.com, adilger.kernel@dilger.ca,
- matthew.garrett@nebula.com, linux-nilfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, devel@lists.orangefs.org, josef@toxicpanda.com,
+Cc: shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
+ linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>,
+ linux-btrfs@vger.kernel.org, yuchao0@huawei.com, clm@fb.com,
+ adilger.kernel@dilger.ca, matthew.garrett@nebula.com,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ linux-ext4@vger.kernel.org, josef@toxicpanda.com,
  reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
  jaegeuk@kernel.org, tytso@mit.edu, ard.biesheuvel@linaro.org,
  linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
@@ -72,30 +76,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 21, 2019 at 04:56:50PM -0700, Darrick J. Wong wrote:
-> Hi all,
+On Fri, Jun 21, 2019 at 04:56:21PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <darrick.wong@oracle.com>
 > 
-> The chattr(1) manpage has this to say about the immutable bit that
-> system administrators can set on files:
+> Create a generic checking function for the incoming FS_IOC_SETFLAGS flag
+> values so that we can standardize the implementations that follow ext4's
+> flag values.
 > 
-> "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> or renamed, no link can be created to this file, most of the file's
-> metadata can not be modified, and the file can not be opened in write
-> mode."
-> 
-> Given the clause about how the file 'cannot be modified', it is
-> surprising that programs holding writable file descriptors can continue
-> to write to and truncate files after the immutable flag has been set,
-> but they cannot call other things such as utimes, fallocate, unlink,
-> link, setxattr, or reflink.
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-I still think living code beats documentation.  And as far as I can
-tell the immutable bit never behaved as documented or implemented
-in this series on Linux, and it originated on Linux.
+Looks fine:
 
-If you want  hard cut off style immutable flag it should really be a
-new API, but I don't really see the point.  It isn't like the usual
-workload is to set the flag on a file actively in use.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
