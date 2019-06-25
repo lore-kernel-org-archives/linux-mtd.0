@@ -2,115 +2,97 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B8AAC48BD6
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 18:20:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53165C48BD6
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 20:01:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E5FE2080C
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 18:20:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B05C2063F
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 20:01:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pusf3xL2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="sq8wRGFM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E5FE2080C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NuJWjUnB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="0XvBt1Fm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B05C2063F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wtdgxI/nVTdOIUqvW1NT89Kz9dSy0yldCNtmsi/ETzA=; b=pusf3xL2g5RtVm
-	ziCRGeZm5BSl4jW/gTX8+ynjXMKSh7DBqPDQKOcUq2eVZo7ZDGa/k0PU8KYmknE8jv+t6per+6x6f
-	kNbxpF2HS33mE+oIxW5OT7OiDydlrD+XDB9sxJF4tX9PW6Udki0i5wdEV2p39fr0U5YlT492l03i6
-	CnRAUeanfOayoX+oMwfoldKSa/FXKMeF9j6fFFkgZ3hAOTNQZGPtq/ultymG6NIX7UPouIotAUU95
-	Cdh1MyT6LTHvnJDY8MIPJBASX7xN+8Ue0Aq0GJa2Bc9KELuys8bLcKmpHz9brICxZgEygMlQm7Jep
-	T67S2Bo9+s3T6kr/65Ww==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Hs1IeAwnqfZ0Nj5iWYJfr5NzZrwK4FdWQbBfYtDRC0A=; b=NuJWjUnBiklj6d
+	U15kLD8DwVpVpXME+8+9BZ2wbKha+i6fbC72i6FLmhthI6QCbo0WnASTXipDqZJefoBs3haUH9PrU
+	de7ArpK/dk8Fhu68fqTS9p8NJYZD1uUgIojkGvfcKOVS2ykRYwcsHZbUJz8WRXbVBUwZ6zDOKWdPF
+	5SwyW3az/B2ikOEK2eYsl57lYBB9WKK+sBHv02+aBVtdskCpkUE1dJVWWMIt7JnEKHtmgIoPYVLEq
+	nv2NXnQith2ZIGubqelRk7PrfIrgVHGEt7e3KT1gMeSCch9jbe0+MF4+TPz/tjx3rjkiSd9zUtKN0
+	YItl9wlif0N/z2L1lbng==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfq2k-0005UU-4j; Tue, 25 Jun 2019 18:19:46 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1hfrca-0008UV-HO; Tue, 25 Jun 2019 20:00:52 +0000
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfq0t-0003xN-1W
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 18:17:54 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5PI4epq154535;
- Tue, 25 Jun 2019 18:17:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=lmgK8Cm3Fl3Y68PjHL3I/TBSUBy/0hTgnkbGgtqK7rI=;
- b=sq8wRGFMDp2keeCzfEbQvRF23m4FZdHqzF6KTStnvsnqKgYJRFIybtKXIRJ/BkjACsOp
- VHjdfFdvkzl4/Qyds9SgcqVsToxzG/t5q2X6QJw92ykC0hsb2bCu0+1HnE8/vR1cKWgj
- 9LAuCEvVM/6Q8BB9oO+b2Er0NdC/PFqDczBk7D1I2Io7k9QsIy4cloHAf7QWxHhbVscL
- fa9qlI7JJ3E8N38P1RnUBSFFAK1Ox9ur0vfVe7sOoxdIUQu71AdGqU2biDBGiUMsl2PB
- KOtGcPBYzfwUGEHU5Q7xPZKcvd0Ct/iT3yoSupbQ+ljJ3hcRKX4C0zF8TH1T/hnyBICA pg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
- by userp2130.oracle.com with ESMTP id 2t9brt63t2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 25 Jun 2019 18:17:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
- by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5PIHUke113170;
- Tue, 25 Jun 2019 18:17:38 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3030.oracle.com with ESMTP id 2t9acc8wvk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 25 Jun 2019 18:17:38 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5PIHcHG113583;
- Tue, 25 Jun 2019 18:17:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by aserp3030.oracle.com with ESMTP id 2t9acc8wve-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 25 Jun 2019 18:17:38 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5PIHai8000391;
- Tue, 25 Jun 2019 18:17:36 GMT
-Received: from localhost (/67.169.218.210)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Tue, 25 Jun 2019 11:17:36 -0700
-Date: Tue, 25 Jun 2019 11:17:33 -0700
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: dsterba@suse.cz, matthew.garrett@nebula.com, yuchao0@huawei.com,
- tytso@mit.edu, shaggy@kernel.org, ard.biesheuvel@linaro.org,
- josef@toxicpanda.com, clm@fb.com, adilger.kernel@dilger.ca,
- jk@ozlabs.org, jack@suse.com, dsterba@suse.com, jaegeuk@kernel.org,
- viro@zeniv.linux.org.uk, cluster-devel@redhat.com,
- jfs-discussion@lists.sourceforge.net, linux-efi@vger.kernel.org,
- Jan Kara <jack@suse.cz>, reiserfs-devel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] vfs: create a generic checking function for
- FS_IOC_SETFLAGS
-Message-ID: <20190625181733.GG5375@magnolia>
-References: <156116136742.1664814.17093419199766834123.stgit@magnolia>
- <156116138140.1664814.9610454726122206157.stgit@magnolia>
- <20190625171254.GT8917@twin.jikos.cz>
+ id 1hfrcJ-0008IL-Kg
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 20:00:37 +0000
+Received: by mail-lj1-x241.google.com with SMTP id 205so8706781ljj.8
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2019 13:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=zCSCrKNhNFyn/M7NDXA6/GQVwFG9TAwMh2fCiMszEsw=;
+ b=0XvBt1FmYYhbOddB+TldxDZ9G2z64Ma9S9dzeXRx9kN20ce40ts5NlUZDnIRJ1vTuf
+ C1YDB3EsPRrICjWZ28zI5OS/bdowzsDZ6hqHaMcmZI2EP67O9YOKt8eHqMRNy6cgQEQi
+ ZYJUo4ZZyBX/Dxm3ddLB24GaU7Jy0p6sD5/AnLMR/k7nH/GMPDOeAMooD2JgexeYsLSg
+ QmB7oM2Z/rYY70RKG69JLQNFtgHgNrEHWinw4+u2ZtBJq8qaqOJtzWAZqlauErXXgC1F
+ bA4f64t2SWTqUTr7Uy6Lazd3tEkl2ycRR8uF7Fck5aOg4xGuM+BVy8IdDuHK+OtpEF30
+ UVlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=zCSCrKNhNFyn/M7NDXA6/GQVwFG9TAwMh2fCiMszEsw=;
+ b=Z02b+Kj2E/KgAgkAao+vaBcWSsKxguAn2ptO5BC0marMKkpu7iE9o68n0fuTA+wZ7H
+ d4l1CSaOBh7xfot+ecRVhxlixWm8hnrxzz2GBmcfY4xUOxyMSLn9wX68hkg9b4LjH2fP
+ HcigjJjCQ0ev43qMUO6izcrnRUc3ILW3SlZY9AgSUy/02pRPjyArXsRfN0U36u9jz4ii
+ I7bADi95pt4u9EK6BzxilOacPyLXvgo9ubak79IA7SWVPdxuNIjMjALgRCARffO28zaX
+ IGZKbBewcPlCXFGM2CU41+QVXRYLSS9z8RoRpTS+fL2w2M3qyKcL0MSyJMBzmisHEkLv
+ c05g==
+X-Gm-Message-State: APjAAAWf7uHjLMObpWRaTcZ5wYcEML4M5QeR+5KFSZa7UuRgzTGDO+xc
+ xycMMSrjGsqXoDIFFWJiJBHHMA==
+X-Google-Smtp-Source: APXvYqyZ2h29fiDFqLuoFeG/2A7hiunBkFu2FU2StBUIMI1OqlEYneEbE551ZrtL7yFZ0qsHbvkvsw==
+X-Received: by 2002:a2e:635d:: with SMTP id x90mr228438ljb.140.1561492832083; 
+ Tue, 25 Jun 2019 13:00:32 -0700 (PDT)
+Received: from wasted.cogentembedded.com ([213.87.155.24])
+ by smtp.gmail.com with ESMTPSA id j23sm2082075lfb.93.2019.06.25.13.00.30
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 25 Jun 2019 13:00:31 -0700 (PDT)
+Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>
+References: <20190625075746.10439-1-vigneshr@ti.com>
+ <20190625075746.10439-4-vigneshr@ti.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Organization: Cogent Embedded
+Message-ID: <756e63a4-20cb-fd9e-6ec7-c2742a3d90e4@cogentembedded.com>
+Date: Tue, 25 Jun 2019 23:00:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190625171254.GT8917@twin.jikos.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9299
- signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906250137
+In-Reply-To: <20190625075746.10439-4-vigneshr@ti.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190625_111751_400995_6422AF0D 
-X-CRM114-Status: GOOD (  14.14  )
+X-CRM114-CacheID: sfid-20190625_130035_707925_920F1B3E 
+X-CRM114-Status: GOOD (  27.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,41 +104,156 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 25, 2019 at 07:12:54PM +0200, David Sterba wrote:
-> On Fri, Jun 21, 2019 at 04:56:21PM -0700, Darrick J. Wong wrote:
-> > From: Darrick J. Wong <darrick.wong@oracle.com>
-> > 
-> > Create a generic checking function for the incoming FS_IOC_SETFLAGS flag
-> > values so that we can standardize the implementations that follow ext4's
-> > flag values.
-> 
-> I checked a few samples what's the type of the flags, there are unsigned
-> types while the proposed VFS functions take signed type.
-> 
-> > +int vfs_ioc_setflags_check(struct inode *inode, int oldflags, int flags);
-> 
-> Specifically ext4 uses unsigned type and his was the original API that
-> got copied so I'd think that it should unsigned everywhere.
+Hello!
 
-Yeah, I'll change it.
+On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
 
-> >  fs/btrfs/ioctl.c    |   13 +++++--------
+> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
+> Bus interface between a host system master and one or more slave
+> interfaces. HyperBus is used to connect microprocessor, microcontroller,
+> or ASIC devices with random access NOR flash memory (called HyperFlash)
+> or self refresh DRAM (called HyperRAM).
 > 
-> For the btrfs bits
+> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+> signal and either Single-ended clock(3.0V parts) or Differential clock
+> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+> At bus level, it follows a separate protocol described in HyperBus
+> specification[1].
 > 
-> Acked-by: David Sterba <dsterba@suse.com>
+> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
+> its equivalent to x16 parallel NOR flash with respect to bits per clock
+> cycle. But HyperBus operates at >166MHz frequencies.
+> HyperRAM provides direct random read/write access to flash memory
+> array.
 > 
-> and besides the signedness, the rest of the changes look good to me.
+> But, HyperBus memory controllers seem to abstract implementation details
+> and expose a simple MMIO interface to access connected flash.
+> 
+> Add support for registering HyperFlash devices with MTD framework. MTD
+> maps framework along with CFI chip support framework are used to support
+> communicating with flash.
+> 
+> Framework is modelled along the lines of spi-nor framework. HyperBus
+> memory controller (HBMC) drivers calls hyperbus_register_device() to
+> register a single HyperFlash device. HyperFlash core parses MMIO access
+> information from DT, sets up the map_info struct, probes CFI flash and
+> registers it with MTD framework.
+> 
+> Some HBMC masters need calibration/training sequence[3] to be carried
+> out, in order for DLL inside the controller to lock, by reading a known
+> string/pattern. This is done by repeatedly reading CFI Query
+> Identification String. Calibration needs to be done before trying to detect
+> flash as part of CFI flash probe.
+> 
+> HyperRAM is not supported at the moment.
+> 
+> HyperBus specification can be found at[1]
+> HyperFlash datasheet can be found at[2]
+> 
+> [1] https://www.cypress.com/file/213356/download
+> [2] https://www.cypress.com/file/213346/download
+> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+>     Table 12-5741. HyperFlash Access Sequence
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+[...]
+> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+> index 806287e80e84..62d649a959e2 100644
+> --- a/drivers/mtd/Makefile
+> +++ b/drivers/mtd/Makefile
+> @@ -34,3 +34,4 @@ obj-y		+= chips/ lpddr/ maps/ devices/ nand/ tests/
+>  
+>  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor/
+>  obj-$(CONFIG_MTD_UBI)		+= ubi/
+> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus/
+> diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
+> new file mode 100644
+> index 000000000000..98147e28caa0
+> --- /dev/null
+> +++ b/drivers/mtd/hyperbus/Kconfig
+> @@ -0,0 +1,11 @@
+> +menuconfig MTD_HYPERBUS
+> +	tristate "HyperBus support"
+> +	select MTD_CFI
+> +	select MTD_MAP_BANK_WIDTH_2
+> +	select MTD_CFI_AMDSTD
+> +	select MTD_COMPLEX_MAPPINGS
+> +	help
+> +	  This is the framework for the HyperBus which can be used by
+> +	  the HyperBus Controller driver to communicate with
+> +	  HyperFlash. See Cypress HyperBus specification for more
+> +	  details
+> diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
+> new file mode 100644
+> index 000000000000..ca61dedd730d
+> --- /dev/null
+> +++ b/drivers/mtd/hyperbus/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
+> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
+> new file mode 100644
+> index 000000000000..63a9e64895bc
+> --- /dev/null
+> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
+> @@ -0,0 +1,154 @@
+[...]
+> +int hyperbus_register_device(struct hyperbus_device *hbdev)
+> +{
+[...]
+> +	hbdev->mtd = do_map_probe("cfi_probe", map);
+> +	if (!hbdev->mtd) {
+> +		dev_err(dev, "probing of hyperbus device failed\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	hbdev->mtd->dev.parent = dev;
+> +	mtd_set_of_node(hbdev->mtd, np);
+> +
+> +	ret = mtd_device_register(hbdev->mtd, NULL, 0);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register mtd device\n");
+> +		map_destroy(hbdev->mtd);
+> +		return ret;
+> +	}
+> +	hbdev->registered = true;
 
-Thanks for the look around!  I'll have a new revision with all changes
-out by the end of the day. :)
+   I doubt that you actually need this flag...
 
---D
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(hyperbus_register_device);
+> +
+> +int hyperbus_unregister_device(struct hyperbus_device *hbdev)
+> +{
+> +	int ret = 0;
+> +
+> +	if (hbdev && hbdev->mtd && hbdev->registered) {
+
+    ... as you missed clearing that 'registered' flag. 
+
+> +		ret = mtd_device_unregister(hbdev->mtd);
+> +		map_destroy(hbdev->mtd);
+> +	}
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hyperbus_unregister_device);
+[...]
+
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
