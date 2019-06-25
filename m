@@ -2,61 +2,149 @@ Return-Path: <SRS0=BdDe=UY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MISSING_HEADERS,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5EECC48BD4
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 14:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C7FC48BD4
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 15:20:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79F59208CB
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 14:46:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3ADFF2133F
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2019 15:20:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="H0wV6dY1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79F59208CB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=allycomm.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="U78tpvIE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="OraEtrIF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="H1g2TaIE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3ADFF2133F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Subject:Reply-To:To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=NDOcV5EOE9YYr9JwXjYbr4MzTlBeYB9qUc86W2mAwC4=; b=H0wV6dY1UUmQDN8HbJxEdj7lC
-	tQTJl0gD8fvEldLi2jch2a2B2L372ofHEs8O0BPwJ6HYfJ5Nsw78aSXIaia30Z05QdefJz3K3C8hm
-	Mw7ZfpcXtJ1N06c15T9WklmHIlyuqGuGGj3oroqJ8ez5TGhP+oLdBhMoIfKdRHa0jYpt3UmoLQftV
-	aShKu9W5XDl6rd4DA7PEtl6HWApZXuIT/vrIie2R81DE6rK4VLL8qvzbVTcnnRL2uVk10ohE/vNW+
-	afkSUccRdz6cXuqK9UMgmWobJPiUWZ5zzF4PkvCnHhFoDnU0OWJY9Va2cUBnxfPXdv6cEUjUPz+hG
-	FQOc/AMZg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=flWTpDQGLR4q+7hNljbtASendqd+7ReWqybtqSWcqsk=; b=U78tpvIEsB38JY
+	LkL9HJ9CqxmFECSQHOAmmFRcum1r4vRTfsgSQ1Kjvahh3Qbrlc4bo8eElRif4Av6jIoq3mXaGy6hS
+	ZQGHaXNLH2A/nHY1la3caMhmzlwN6Ph+3OI3hOueEu4lAnRRUFGJeZHnRL7fG6dDriQFZxqb7lRkX
+	Xy4yWjxHmEujcKUv2IIOzexgXnKdG9bay5jWCyxqRi2rCPsyFH8chrZrqNsaLKQ+zkpnUrvtt+mbn
+	sifm811i7LyNdL/ayUFH5wOaHiZamVAQ0DuqLvW0J9K6KFm/nrwht3XnOAyey1XVjMPxLPfS1wjDv
+	xaAtxmfw/XXXhGAm1bPw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfmiC-00040W-8k; Tue, 25 Jun 2019 14:46:20 +0000
-Received: from mx.allycomm.com ([138.68.30.55])
+	id 1hfnEw-0003bK-5r; Tue, 25 Jun 2019 15:20:10 +0000
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfmi7-0003vp-To
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 14:46:17 +0000
-Received: from JKLETSKY-MBP15.guidewire.com (unknown [199.91.43.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mx.allycomm.com (Postfix) with ESMTPSA id A27D92172D;
- Tue, 25 Jun 2019 07:45:44 -0700 (PDT)
-Subject: Re: [PATCH v2] mtd: spinand: Add initial support for Paragon PN26G0xA
-References: <20190618170805.7187-1-lede@allycomm.com>
- <d614767b-7787-b8c7-f8f0-5083e4922b93@kontron.de>
-From: Jeff Kletsky <lede@allycomm.com>
-Message-ID: <6b12e641-329c-2f8d-e547-4437cbd7af9f@allycomm.com>
-Date: Tue, 25 Jun 2019 07:45:44 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+ id 1hfnEs-0002wU-Ql
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2019 15:20:08 +0000
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+ by mx0a-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x5PFIMTk016751; Tue, 25 Jun 2019 08:19:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=8j7BmmHW6DBHa+2mgobfd7aWkcdZyhbrBwu0MaW6p1M=;
+ b=OraEtrIFDofYWUt/x7MFmZ8SDdmSTR57qtf7Zhr9WJ5XzBMxDtm50OH4Nmw/oPBaAyEo
+ hVriMICcsnt+Mst6CJa20YMjiPJN0NzP/KAxc27vipf0z4tE+bta3mwV0gGz1BDGarqM
+ zDTgj4JJh85lRFNYZuKhxjsNNzNEIOZrBu0BTMzbfh9eeXgsFsr5InZjU0NPYFP9nTm6
+ zEjTjPSGl1UQrT5iHJi7TlRPoEvZoUY5b3f/K4A9jG8hPRfAsPSFvzPp6PnPVlvLK/Hr
+ K+s/8ye0A31vrahJpCdjQ6WV5pbbn6KQ/22Dpc7vE6zjo/KisIaP/7kWshRXcm9oP0p8 Yg== 
+Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
+Received: from nam02-cy1-obe.outbound.protection.outlook.com
+ (mail-cys01nam02lp2059.outbound.protection.outlook.com [104.47.37.59])
+ by mx0a-0014ca01.pphosted.com with ESMTP id 2t9gvsd5vk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 25 Jun 2019 08:19:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8j7BmmHW6DBHa+2mgobfd7aWkcdZyhbrBwu0MaW6p1M=;
+ b=H1g2TaIEPHg6mueKL3VUoPpViHBHRz5BOiS3BHcu/anbOakw+XSPdAvNjCn5ki0KVyWfEy/DUw+Z1MKcYv7zZD39YOchZkbcpBTzPUKNZYmm74j2VsSpcZ+jWI7d2rQlNQj1RxksXlXkf63KZHHZkLKeTovtqPfJrAHhLWDBLx8=
+Received: from DM6PR07CA0026.namprd07.prod.outlook.com (20.176.74.39) by
+ BYAPR07MB6821.namprd07.prod.outlook.com (20.179.89.154) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.17; Tue, 25 Jun 2019 15:19:34 +0000
+Received: from CO1NAM05FT003.eop-nam05.prod.protection.outlook.com
+ (2a01:111:f400:7e50::204) by DM6PR07CA0026.outlook.office365.com
+ (2603:10b6:5:94::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2008.16 via Frontend
+ Transport; Tue, 25 Jun 2019 15:19:34 +0000
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ cadence.com discourages use of 158.140.1.28 as permitted sender)
+Received: from sjmaillnx1.cadence.com (158.140.1.28) by
+ CO1NAM05FT003.mail.protection.outlook.com (10.152.96.108) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.2032.6 via Frontend Transport; Tue, 25 Jun 2019 15:19:33 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+ by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id
+ x5PFJShK000783
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+ Tue, 25 Jun 2019 08:19:30 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Tue, 25 Jun 2019 17:19:27 +0200
+Received: from lvlogina.cadence.com (10.165.176.102) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Tue, 25 Jun 2019 17:19:27 +0200
+Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
+ by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x5PFJRoc018428;
+ Tue, 25 Jun 2019 16:19:27 +0100
+Received: (from piotrs@localhost)
+ by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x5PFJLw9018275;
+ Tue, 25 Jun 2019 16:19:21 +0100
+From: Piotr Sroka <piotrs@cadence.com>
+To: <linux-kernel@vger.kernel.org>
+Subject: [v4 0/2] mtd: nand: Add Cadence NAND controller driver
+Date: Tue, 25 Jun 2019 16:15:59 +0100
+Message-ID: <20190625151559.15270-1-piotrs@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-In-Reply-To: <d614767b-7787-b8c7-f8f0-5083e4922b93@kontron.de>
-Content-Language: en-US
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:158.140.1.28; IPV:CAL; SCL:-1; CTRY:US;
+ EFV:NLI; SFV:NSPM;
+ SFS:(10009020)(346002)(376002)(396003)(39860400002)(136003)(2980300002)(199004)(189003)(36092001)(26826003)(50466002)(426003)(2906002)(70206006)(70586007)(336012)(48376002)(4326008)(47776003)(2351001)(76130400001)(36756003)(7416002)(246002)(6666004)(2616005)(356004)(86362001)(51416003)(316002)(8936002)(486006)(478600001)(50226002)(16586007)(6916009)(107886003)(87636003)(42186006)(26005)(186003)(476003)(7636002)(305945005)(5660300002)(8676002)(54906003)(1076003)(126002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BYAPR07MB6821; H:sjmaillnx1.cadence.com; FPR:;
+ SPF:SoftFail; LANG:en; PTR:corp.cadence.com; A:1; MX:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 77ee5bfb-e38c-467f-ead4-08d6f9808760
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328);
+ SRVR:BYAPR07MB6821; 
+X-MS-TrafficTypeDiagnostic: BYAPR07MB6821:
+X-Microsoft-Antispam-PRVS: <BYAPR07MB6821D8C78359CCAEC6C513CEDDE30@BYAPR07MB6821.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0079056367
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: eBFzqGqJkGzQWE5yIWpOCHSgj7wSvHcJ5SYNYC/3vmgLGOn3FfbE/V40PDTlpfnQWWMHNxPbywNB7aezlmh0vQthnp1cf/j/aS/fFH84m3KuRHKK1SrpWLigtD5rMS2S2TM6y8+oDnlaJY0nub973FGw2Q8TAIkDCQXaypmSTCAQ+JhwtVhwhunrwclQPLOFvk9A1Yk0pxoDa//0P+XQjy+QnqN5yXt7C9FCLUBNgaRsr3mW35wfMUajly9u6C6oGtuTfj4tP9ObysdPhEPjj3XW7/lx8ZoMupDioqptj4mKH5xPHL/aNu7OUv/SVeb9GzzLZCDee/3nvYW3jP4KCLW9C5E4fZ9uk3A+YUN4CzgVHEO82A2nfFPTFDn7N8DJIpN0euIC3mWPIPnHOmkrpWN+TTxd453MTMS4Vu7xzU0=
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2019 15:19:33.7636 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77ee5bfb-e38c-467f-ead4-08d6f9808760
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[158.140.1.28];
+ Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB6821
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf.smktg.jp
+ include:_spf.salesforce.com
+ include:mktomail.com include:spf-0014ca01.pphosted.com
+ include:spf.protection.outlook.com include:auth.msgapp.com
+ include:spf.mandrillapp.com ~all
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2019-06-25_11:, , signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
+ score=0
+ priorityscore=1501 malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906250117
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190625_074615_973952_25A6643C 
-X-CRM114-Status: GOOD (  20.62  )
+X-CRM114-CacheID: sfid-20190625_082007_252881_0CCB6A16 
+X-CRM114-Status: GOOD (  14.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,248 +156,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon <bbrezillon@kernel.org>,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Richard Weinberger <richard@nod.at>, Stefan Agner <stefan@agner.ch>,
+ Marek Vasut <marek.vasut@gmail.com>, Paul Burton <paul.burton@mips.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Dmitry Osipenko <digetx@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Piotr Sroka <piotrs@cadence.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-(Resend to lists only, due to multipart content in previous)
+Driver for Cadence HPNFC NAND flash controller.
 
-Of course!
+HW DMA interface
+Page write and page read operations are executed in Command DMA mode.
+Commands are defined by DMA descriptors.
+In CDMA mode controller own DMA engine is used (Master DMA mode).
+Other operations defined by nand_op_instr are executed in "Generic" mode.
+In that mode data can be transferred only in by Slave DMA interface.
+Slave DMA interface can be connected directly to AXI or to an external
+DMA engine.
 
-Thanks for taking the time to look at this.
+HW ECC support
+Cadence NAND controller supports HW BCH correction.
+ ECC is transparent from SW point of view. It means that ECC codes
+are calculated and written to flash. In read operation ECC codes 
+are removed from user data and correction is made if necessary.
 
-* Updated OOB-layout definitions to agree with
-    Table 10; ECC Protection and Spare Area
-    (PN26G01A pg. 36, PN26G02A pg. 35)
+Controller data layout with ECC enabled:
+ -------------------------------------------------------------------------
+|Sec 1 | ECC | Sec 2 | ECC ...... | Sec n | OOB (32B) | ECC | unused data |
+ -------------------------------------------------------------------------
 
-* Corrected NAND_MEMORG for PN26G02A to 41, to agree with
-    Table 9; Error Management Details (PN26G02A pg. 34)
+Last sector is extended by a out-bound data. Tha maximum size of
+"extra data" is 32 bytes. The oob data are protected by ECC. If we need to 
+read only oob data the whole last sector must be read. It is because 
+oob data are part of last sector. Reading oob function always reads 
+whole sector and writing oob function always writes whole last sector.
+Written data are interleaved with the ECC therefore part of the 
+last sector is located on oob area and the BBM is overwritten.
 
-Jeff
+SKIP BYTES feature
+To protect BBM the "skip byte" HW feature is used. 
+Write page function copies BBM value from first byte of oob data to 
+BBM offset defined by manufacturer. Read page functions always takes 
+BBM from flash manufacturer offset. It causes that for not written 
+pages the proper value of BBM marker is used.
 
-On 6/25/19 2:41 AM, Schrempf Frieder wrote:
+ECC size calculation
+Information about supported ECC steps and ECC strengths are read 
+from controller registers. ECC sector size and ECC strength can be
+configurable. Size of ECC depends on maximum supported sector size 
+it not depends on selected sector size. Therefore there is a separate
+function for calculating ECC size for each of possible 
+sector size/step size.
 
-> Hi Jeff,
->
-> On 18.06.19 19:08, Jeff Kletsky wrote:
->> From: Jeff Kletsky <git-commits@allycomm.com>
->>
->> Add initial support for Paragon Technology
->> PN26G01Axxxxx and PN26G02Axxxxx SPI NAND
->>
->> Datasheets available at
->> http://www.xtxtech.com/upfile/2016082517274590.pdf
->> http://www.xtxtech.com/upfile/2016082517282329.pdf
->>
->> Signed-off-by: Jeff Kletsky <git-commits@allycomm.com>
->> ---
-> Can you please add a changelog here with a list of things that changed
-> from v1 to v2?
->
-> Thanks,
-> Frieder
->
->>    drivers/mtd/nand/spi/Makefile  |   2 +-
->>    drivers/mtd/nand/spi/core.c    |   1 +
->>    drivers/mtd/nand/spi/paragon.c | 147 +++++++++++++++++++++++++++++++++
->>    include/linux/mtd/spinand.h    |   1 +
->>    4 files changed, 150 insertions(+), 1 deletion(-)
->>    create mode 100644 drivers/mtd/nand/spi/paragon.c
->>
->> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
->> index 753125082640..9662b9c1d5a9 100644
->> --- a/drivers/mtd/nand/spi/Makefile
->> +++ b/drivers/mtd/nand/spi/Makefile
->> @@ -1,3 +1,3 @@
->>    # SPDX-License-Identifier: GPL-2.0
->> -spinand-objs := core.o gigadevice.o macronix.o micron.o toshiba.o winbond.o
->> +spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
->>    obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
->> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->> index 556bfdb34455..f0f3528aab8f 100644
->> --- a/drivers/mtd/nand/spi/core.c
->> +++ b/drivers/mtd/nand/spi/core.c
->> @@ -757,6 +757,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
->>    	&gigadevice_spinand_manufacturer,
->>    	&macronix_spinand_manufacturer,
->>    	&micron_spinand_manufacturer,
->> +	&paragon_spinand_manufacturer,
->>    	&toshiba_spinand_manufacturer,
->>    	&winbond_spinand_manufacturer,
->>    };
->> diff --git a/drivers/mtd/nand/spi/paragon.c b/drivers/mtd/nand/spi/paragon.c
->> new file mode 100644
->> index 000000000000..52307681cbd0
->> --- /dev/null
->> +++ b/drivers/mtd/nand/spi/paragon.c
->> @@ -0,0 +1,147 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2019 Jeff Kletsky
->> + *
->> + * Author: Jeff Kletsky <git-commits@allycomm.com>
->> + */
->> +
->> +#include <linux/device.h>
->> +#include <linux/kernel.h>
->> +#include <linux/mtd/spinand.h>
->> +
->> +
->> +#define SPINAND_MFR_PARAGON	0xa1
->> +
->> +
->> +#define PN26G0XA_STATUS_ECC_BITMASK		(3 << 4)
->> +
->> +#define PN26G0XA_STATUS_ECC_NONE_DETECTED	(0 << 4)
->> +#define PN26G0XA_STATUS_ECC_1_7_CORRECTED	(1 << 4)
->> +#define PN26G0XA_STATUS_ECC_ERRORED		(2 << 4)
->> +#define PN26G0XA_STATUS_ECC_8_CORRECTED		(3 << 4)
->> +
->> +
->> +static SPINAND_OP_VARIANTS(read_cache_variants,
->> +		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
->> +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
->> +		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
->> +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
->> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
->> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
->> +
->> +static SPINAND_OP_VARIANTS(write_cache_variants,
->> +		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
->> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
->> +
->> +static SPINAND_OP_VARIANTS(update_cache_variants,
->> +		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
->> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
->> +
->> +
->> +static int pn26g0xa_ooblayout_ecc(struct mtd_info *mtd, int section,
->> +				   struct mtd_oob_region *region)
->> +{
->> +	if (section > 3)
->> +		return -ERANGE;
->> +
->> +	region->offset = 6 + (15 * section); /* 4 BBM + 2 user bytes */
->> +	region->length = 13;
->> +
->> +	return 0;
->> +}
->> +
->> +static int pn26g0xa_ooblayout_free(struct mtd_info *mtd, int section,
->> +				   struct mtd_oob_region *region)
->> +{
->> +	if (section > 4)
->> +		return -ERANGE;
->> +
->> +	if (section == 4) {
->> +		region->offset = 64;
->> +		region->length = 64;
->> +	} else {
->> +		region->offset = 4 + (15 * section);
->> +		region->length = 2;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int pn26g0xa_ecc_get_status(struct spinand_device *spinand,
->> +				   u8 status)
->> +{
->> +	switch (status & PN26G0XA_STATUS_ECC_BITMASK) {
->> +	case PN26G0XA_STATUS_ECC_NONE_DETECTED:
->> +		return 0;
->> +
->> +	case PN26G0XA_STATUS_ECC_1_7_CORRECTED:
->> +		return 7;	/* Return upper limit by convention */
->> +
->> +	case PN26G0XA_STATUS_ECC_8_CORRECTED:
->> +		return 8;
->> +
->> +	case PN26G0XA_STATUS_ECC_ERRORED:
->> +		return -EBADMSG;
->> +
->> +	default:
->> +		break;
->> +	}
->> +
->> +	return -EINVAL;
->> +}
->> +
->> +static const struct mtd_ooblayout_ops pn26g0xa_ooblayout = {
->> +	.ecc = pn26g0xa_ooblayout_ecc,
->> +	.free = pn26g0xa_ooblayout_free,
->> +};
->> +
->> +
->> +static const struct spinand_info paragon_spinand_table[] = {
->> +	SPINAND_INFO("PN26G01A", 0xe1,
->> +		     NAND_MEMORG(1, 2048, 128, 64, 1024, 21, 1, 1, 1),
->> +		     NAND_ECCREQ(8, 512),
->> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
->> +					      &write_cache_variants,
->> +					      &update_cache_variants),
->> +		     0,
->> +		     SPINAND_ECCINFO(&pn26g0xa_ooblayout,
->> +				     pn26g0xa_ecc_get_status)),
->> +	SPINAND_INFO("PN26G02A", 0xe2,
->> +		     NAND_MEMORG(1, 2048, 128, 64, 2048, 41, 1, 1, 1),
->> +		     NAND_ECCREQ(8, 512),
->> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
->> +					      &write_cache_variants,
->> +					      &update_cache_variants),
->> +		     0,
->> +		     SPINAND_ECCINFO(&pn26g0xa_ooblayout,
->> +				     pn26g0xa_ecc_get_status)),
->> +};
->> +
->> +static int paragon_spinand_detect(struct spinand_device *spinand)
->> +{
->> +	u8 *id = spinand->id.data;
->> +	int ret;
->> +
->> +	/* Read ID returns [0][MID][DID] */
->> +
->> +	if (id[1] != SPINAND_MFR_PARAGON)
->> +		return 0;
->> +
->> +	ret = spinand_match_and_init(spinand, paragon_spinand_table,
->> +				     ARRAY_SIZE(paragon_spinand_table),
->> +				     id[2]);
->> +	if (ret)
->> +		return ret;
->> +
->> +	return 1;
->> +}
->> +
->> +static const struct spinand_manufacturer_ops paragon_spinand_manuf_ops = {
->> +	.detect = paragon_spinand_detect,
->> +};
->> +
->> +const struct spinand_manufacturer paragon_spinand_manufacturer = {
->> +	.id = SPINAND_MFR_PARAGON,
->> +	.name = "Paragon",
->> +	.ops = &paragon_spinand_manuf_ops,
->> +};
->> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
->> index fbc0423bb4ae..4ea558bd3c46 100644
->> --- a/include/linux/mtd/spinand.h
->> +++ b/include/linux/mtd/spinand.h
->> @@ -227,6 +227,7 @@ struct spinand_manufacturer {
->>    extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
->>    extern const struct spinand_manufacturer macronix_spinand_manufacturer;
->>    extern const struct spinand_manufacturer micron_spinand_manufacturer;
->> +extern const struct spinand_manufacturer paragon_spinand_manufacturer;
->>    extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
->>    extern const struct spinand_manufacturer winbond_spinand_manufacturer;
->>    
->>
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Piotr Sroka (2):
+  Add new Cadence NAND driver to MTD subsystem
+  Add Cadence NAND controller driver
+
+ .../bindings/mtd/cadence-nand-controller.txt       |   51 +
+ drivers/mtd/nand/raw/Kconfig                       |    7 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/cadence-nand-controller.c     | 3109 ++++++++++++++++++++
+ 4 files changed, 3168 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+ create mode 100644 drivers/mtd/nand/raw/cadence-nand-controller.c
+
+-- 
+2.15.0
 
 
 ______________________________________________________
