@@ -2,104 +2,58 @@ Return-Path: <SRS0=bYPC=UZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C14FC48BD6
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 02:36:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 292F1C4646B
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 03:53:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 619BA20645
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 02:36:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4BEB2082F
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 03:53:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rIYg/qrl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Qi2NwHnV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 619BA20645
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sUDNM/vU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4BEB2082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zeniv.linux.org.uk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:To:From:Subject:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BUJ32NO8MXu1cMr2itrdv1Jk3pAjM7I8KCvtVGXWBf4=; b=rIYg/qrljiiZBA
-	eCflscXnyXkYooXwdTfYh2jUNlfPp+G5avJ24oV3JZbNRuuwBiLCM/l+SrhK/Yf+kWM4Os+zQklP+
-	rzVnSGTo/DmiM4ssZpjhy4tdF9/SlCC1S7bMKRT8a4W83Rb4QV7FzRGwZAqQO6+Py4xAJ2ysHv3ov
-	shQYIHOcNOpOwthVmVB5Aza1tXdl0XjnxoBl5tW9M2nfvbZSrt65Pibp+9vbCbe7qxjBxCUsFu0uX
-	QJuEcX1sBnqM3ztJLMZGI+vFeADUI6mScxw9lo+duwcBGMcaNT2M/REy0PXaKQoscTn+iT2mpujY/
-	x1uUZG0i15wtQwz+6uiA==;
+	List-Owner; bh=pqI3KFpJSCSh8LH6JqGzfY2D3enkFFtxweldIAkHLIo=; b=sUDNM/vU8++F7B
+	yrGorgm3fo/UveXzL8YQqWEUtKDh4Zw4HPuFk/6zSBlETOplJKUtj5zHbZXcK+qFb9TbKy1cM14n3
+	b5AmhJ5mZMPK2fYx8pJ9JNzqxzD0g/ITvFkxLx0wZiLh3eo0qrRZF4P5wlU1MaxJ1Xo37IAp/sqyf
+	2s7Z5bZpG0LGfwOy3oNxtYOUsXX2napOM/soJLyxcasNNRSndwWT2z3ZCIqVy22GdIC3rPO2tUWOW
+	qyXfGgNRjdGzv8fPX0DEgk0xoHEp1Uv0xF6tPxN6U21vyp/fLhXdBtwal/t40qUF6N9mRGLru7f0f
+	z3ZvJmBH2mpwzgJZ+H7g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hfxnL-0006qJ-5v; Wed, 26 Jun 2019 02:36:23 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1hfz02-0000fQ-4m; Wed, 26 Jun 2019 03:53:34 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hfxml-0006Km-BR
- for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 02:35:48 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5Q2Z0Zp120740;
- Wed, 26 Jun 2019 02:35:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=RDkQFwhFFQ2vI5qz0xIqaf4zf8uM8p//mWlaoaNYF+I=;
- b=Qi2NwHnVvWi7uetKAFrtDLbEc7vBEztBO544xnn041sSZ7Fd3ocayxJrgUVLY5aWK0nf
- Ite4JKYpy0UTn6/XETb7boW3RhaAdXiKa1fL2V5TysE/aV9BaTPrGmv7gGnaw4E3aPVd
- h1eAr0iXSQgZ8bt1cz+Y/aA8/0mIndivv/2HisCjrSY7yBaaGjEge4/5om9TBbv2jvW3
- eOfa1J2vXFZDfhPdb+EttM0EV/jAq/YuGxJoz8dMa6tkFMJao88u3rFVpg9bj4ZNDBKS
- k6bGwT+rfiYQyJ1DPmadzn9S646qAfU1gSQw1fIjxewe/fI4Upnp6HJpT25nXB2TRGu8 EA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by userp2130.oracle.com with ESMTP id 2t9brt7mt2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 26 Jun 2019 02:35:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5Q2XQY8081296;
- Wed, 26 Jun 2019 02:33:36 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by userp3020.oracle.com with ESMTP id 2tat7cjp2n-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 26 Jun 2019 02:33:36 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5Q2XZtv081761;
- Wed, 26 Jun 2019 02:33:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
- by userp3020.oracle.com with ESMTP id 2tat7cjp28-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 26 Jun 2019 02:33:35 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
- by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5Q2XY3k021348;
- Wed, 26 Jun 2019 02:33:34 GMT
-Received: from localhost (/10.159.230.235)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Tue, 25 Jun 2019 19:33:34 -0700
-Subject: [PATCH 5/5] vfs: don't allow writes to swap files
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
- darrick.wong@oracle.com, ard.biesheuvel@linaro.org,
- josef@toxicpanda.com, hch@infradead.org, clm@fb.com,
- adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
- dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org
-Date: Tue, 25 Jun 2019 19:33:31 -0700
-Message-ID: <156151641177.2283603.7806026378321236401.stgit@magnolia>
-In-Reply-To: <156151637248.2283603.8458727861336380714.stgit@magnolia>
+ id 1hfyzq-0000b2-6K
+ for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 03:53:24 +0000
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92 #3 (Red Hat
+ Linux)) id 1hfyyN-0008Mv-UN; Wed, 26 Jun 2019 03:51:52 +0000
+Date: Wed, 26 Jun 2019 04:51:51 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH 5/5] vfs: don't allow writes to swap files
+Message-ID: <20190626035151.GA10613@ZenIV.linux.org.uk>
 References: <156151637248.2283603.8458727861336380714.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+ <156151641177.2283603.7806026378321236401.stgit@magnolia>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9299
- signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906260028
+Content-Disposition: inline
+In-Reply-To: <156151641177.2283603.7806026378321236401.stgit@magnolia>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190625_193547_532061_0CF0FFF3 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20190625_205322_415538_CACD9C36 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,123 +65,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-efi@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+Cc: linux-efi@vger.kernel.org, linux-btrfs@vger.kernel.org, yuchao0@huawei.com,
+ linux-mm@kvack.org, clm@fb.com, adilger.kernel@dilger.ca,
+ matthew.garrett@nebula.com, linux-nilfs@vger.kernel.org, hch@infradead.org,
+ linux-ext4@vger.kernel.org, devel@lists.orangefs.org, josef@toxicpanda.com,
+ reiserfs-devel@vger.kernel.org, dsterba@suse.com, jaegeuk@kernel.org,
+ tytso@mit.edu, ard.biesheuvel@linaro.org, linux-kernel@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
- linux-mm@kvack.org, linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, devel@lists.orangefs.org
+ jk@ozlabs.org, jack@suse.com, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+On Tue, Jun 25, 2019 at 07:33:31PM -0700, Darrick J. Wong wrote:
+> --- a/fs/attr.c
+> +++ b/fs/attr.c
+> @@ -236,6 +236,9 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
+>  	if (IS_IMMUTABLE(inode))
+>  		return -EPERM;
+>  
+> +	if (IS_SWAPFILE(inode))
+> +		return -ETXTBSY;
+> +
+>  	if ((ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) &&
+>  	    IS_APPEND(inode))
+>  		return -EPERM;
 
-Don't let userspace write to an active swap file because the kernel
-effectively has a long term lease on the storage and things could get
-seriously corrupted if we let this happen.
+Er...  So why exactly is e.g. chmod(2) forbidden for swapfiles?  Or touch(1),
+for that matter...
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/attr.c     |    3 +++
- mm/filemap.c  |    3 +++
- mm/memory.c   |    4 +++-
- mm/mmap.c     |    2 ++
- mm/swapfile.c |   15 +++++++++++++--
- 5 files changed, 24 insertions(+), 3 deletions(-)
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 596ac98051c5..1ca4ee8c2d60 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3165,6 +3165,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>  	if (error)
+>  		goto bad_swap;
+>  
+> +	/*
+> +	 * Flush any pending IO and dirty mappings before we start using this
+> +	 * swap file.
+> +	 */
+> +	if (S_ISREG(inode->i_mode)) {
+> +		inode->i_flags |= S_SWAPFILE;
+> +		error = inode_drain_writes(inode);
+> +		if (error) {
+> +			inode->i_flags &= ~S_SWAPFILE;
+> +			goto bad_swap;
+> +		}
+> +	}
 
-
-diff --git a/fs/attr.c b/fs/attr.c
-index 1fcfdcc5b367..42f4d4fb0631 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -236,6 +236,9 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
- 	if (IS_IMMUTABLE(inode))
- 		return -EPERM;
- 
-+	if (IS_SWAPFILE(inode))
-+		return -ETXTBSY;
-+
- 	if ((ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) &&
- 	    IS_APPEND(inode))
- 		return -EPERM;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index dad85e10f5f8..fd80bc20e30a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2938,6 +2938,9 @@ inline ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
- 	if (IS_IMMUTABLE(inode))
- 		return -EPERM;
- 
-+	if (IS_SWAPFILE(inode))
-+		return -ETXTBSY;
-+
- 	if (!iov_iter_count(from))
- 		return 0;
- 
-diff --git a/mm/memory.c b/mm/memory.c
-index 4311cfdade90..c04c6a689995 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2235,7 +2235,9 @@ static vm_fault_t do_page_mkwrite(struct vm_fault *vmf)
- 
- 	vmf->flags = FAULT_FLAG_WRITE|FAULT_FLAG_MKWRITE;
- 
--	if (vmf->vma->vm_file && IS_IMMUTABLE(file_inode(vmf->vma->vm_file)))
-+	if (vmf->vma->vm_file &&
-+	    (IS_IMMUTABLE(file_inode(vmf->vma->vm_file)) ||
-+	     IS_SWAPFILE(file_inode(vmf->vma->vm_file))))
- 		return VM_FAULT_SIGBUS;
- 
- 	ret = vmf->vma->vm_ops->page_mkwrite(vmf);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index ac1e32205237..031807339869 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1488,6 +1488,8 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 					return -EACCES;
- 				if (IS_IMMUTABLE(file_inode(file)))
- 					return -EPERM;
-+				if (IS_SWAPFILE(file_inode(file)))
-+					return -ETXTBSY;
- 			}
- 
- 			/*
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 596ac98051c5..1ca4ee8c2d60 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3165,6 +3165,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (error)
- 		goto bad_swap;
- 
-+	/*
-+	 * Flush any pending IO and dirty mappings before we start using this
-+	 * swap file.
-+	 */
-+	if (S_ISREG(inode->i_mode)) {
-+		inode->i_flags |= S_SWAPFILE;
-+		error = inode_drain_writes(inode);
-+		if (error) {
-+			inode->i_flags &= ~S_SWAPFILE;
-+			goto bad_swap;
-+		}
-+	}
-+
- 	mutex_lock(&swapon_mutex);
- 	prio = -1;
- 	if (swap_flags & SWAP_FLAG_PREFER)
-@@ -3185,8 +3198,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	atomic_inc(&proc_poll_event);
- 	wake_up_interruptible(&proc_poll_wait);
- 
--	if (S_ISREG(inode->i_mode))
--		inode->i_flags |= S_SWAPFILE;
- 	error = 0;
- 	goto out;
- bad_swap:
-
+Why are swap partitions any less worthy of protection?
 
 ______________________________________________________
 Linux MTD discussion mailing list
