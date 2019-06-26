@@ -4,78 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E49FEC48BD3
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 09:36:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AFDAC48BD6
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 09:54:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCA9B20663
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 09:36:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6C46205F4
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 09:54:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="f5f/4dF8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgWg6g1E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCA9B20663
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FbRiKQi8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qZba/tM9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6C46205F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OZi2Jj7canqr+6SFTebNKT28jbd0K4cLfWKVchnyu9U=; b=f5f/4dF8B5RNm3
-	g8dn/rFw3miaGzzR1/lNvTupvw/seatoLHvI0WNrFrDkALWrXCW5wfq/ntwUo3cAR/7yTih5fXNMx
-	wiExkeqMNTIB+52WMzzx6LOZSjUNduTDybDOLsHkvWj4TU83ckgGAkI+MCLez57/RrpiMJcIDias3
-	JALUuzXJHb5XYhUugX8na/mE83Iqnu1uTfQZzUDiAKEjvm8E0JonOBvF0oK62M16mvIZpJ+C+/629
-	e0OEx56s8lGa4kt7oIYs5m7f8fb59b7qZRBc404saaGxvJ6ei23GSgppEB6LXQv02iVKHt0IMbwJY
-	9s75BQsouwUQKUtagfRQ==;
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qPqnEwtUP+vFWHNqjZ5q5uGgXKBMnYmgKUvBMv6HBak=; b=FbRiKQi8lQRj2m
+	uQLGuXCEpDefTCujk1hMMOGPcDDvEBc5ZwIdBkTtlY1kW3beR4I10+POFFiWxDmb1WPHa1qii25kr
+	wSZWTuv4hjTYRBdLAvU0mt1+1Qd6kJrmHOqK7ebynHNs2L5jXzjl8D38e8mJuXag8J6KGs4cTtRD1
+	B7ZnDzyvG1zlDUyoGJ1HhA8ri1WA4kaKbyllLwOD62gImRoaXvPVZI0MbE3YVGkhLyIM6kOyOLuRL
+	lebv5s9dD/uTmARIp4MMaKEM4GvpKsO4G2gQH2644JrViaOkdc1LcQcHXx+eenFUJ/HbWQO0rEBO9
+	HetoP6jRHrx2bPTVrwNQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hg4Ln-0002Po-I2; Wed, 26 Jun 2019 09:36:23 +0000
-Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
+	id 1hg4cv-0008QZ-SM; Wed, 26 Jun 2019 09:54:05 +0000
+Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hg4Li-0002PH-0w
- for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 09:36:19 +0000
-Received: by mail-io1-xd30.google.com with SMTP id m24so326926ioo.2
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2019 02:36:17 -0700 (PDT)
+ id 1hg4cg-0008BM-1w
+ for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 09:53:51 +0000
+Received: by mail-oi1-x244.google.com with SMTP id m202so1449288oig.6
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2019 02:53:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=3bXdon3OqBDizi1U9rxgE4KJiCWUb9IjTneJEpKAvGI=;
- b=SgWg6g1EBeYsH3FIxYNtCSdZJbt0/O+Ft2Zdr4ZSHO70oiWZKXCKayEwu5ZYXSucJ3
- 2/VZGyaFwovczFBLT9OuRs7kBKF2tPOj3FXJWvLU+Oyy/WGDDOul500G5WNoNtb642k0
- Ph1W915M7tWxFUzqNKZfvgvDeKQ2rjE6rP8Anky3ev/qGoZ8eYHXpQp28Deaoxz+xfMV
- ZvrxfTrOTSTlhg0pBhwTFZ5DfAnnTm7DrHIPVsagrjjRiVKp+6z8NHKc0NA1QBCVzc4o
- XJ7/krSH77DK/VM8zZmLpQgd0D0BgtPsJMpZAB+ws+QxGWgEBlEwZOlYGA3CpxVO4lTW
- hNyA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=FZpn/SM18BezW4pukReRxQPBUQ3d8CRsVoZLAmRFkEQ=;
+ b=qZba/tM9eft65EFUIByi5j0X3EgynrVJ1vVYrBQ58awodkt/Hmh6mAt5Dl/8Gt5QRQ
+ LBO9r9OQUaDAQjUByKwdK+Ri+jrFQ+FhrLU85t7F2QfZM5yp+ehlJIl0zFwKozwIUbzM
+ 1Sz8ys/nXVTK1XTuTs0ovmSp6quwkzPHLftf1+hpkimkgqx2dG2gWgDEnM7R6VHZPTHn
+ c1SUb1Rv5L1oNGGnZbI0gptdzIYOrNAJt+CdDtEHbCe1AxxDfuZqBhJSOp6j5uceCmwW
+ Urs0zIkoB75eOx9wJI+L7MQPuUMDK55cFsfAwq8OkQrFyWy/KuX+OL7HkuQUmR5k7BSV
+ y4Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=3bXdon3OqBDizi1U9rxgE4KJiCWUb9IjTneJEpKAvGI=;
- b=dcq4vreBrazDGAYW8BEP4n+3nsJDYl00z07R94pZTjPrb8nKklBLChOLt6PAWyBQ0e
- ByyCeTnu36DugSlzZBAJPvVrUdmEYWuI5+0w0LspGXIyz4F3t+IB98UDxRy7yB1RlMhd
- VbsPC8YxET2SM/NrJ/BSAU/J8ZlcElXlI3RR2WlKwelcXWyR9eEkPwaMSTqCQvk5AH1l
- BuOyxSqc029L0yqkVCjd8BtbbMsD6jkNEhYQf61JEAftTf9equfRy4jeNkLF2bXxSjCB
- 5KqMYSzdsDblkoMG2YrhduRiXAnvuSSJeArQHvIgGEzlkOKY1i5WWVXUojJhyWoVoCN9
- cYGA==
-X-Gm-Message-State: APjAAAWPA5g7ESADSl1UU55A2LJIkGbXUgM7butKAzNavmup4h0D/KCz
- xfKJd7Lem1nw4yKkN3TozXcrk2pCxwN8KKTvUKLti+UB
-X-Google-Smtp-Source: APXvYqzv2aUAM9Ilsa3f+/W3afiYJiXv5OhnyQiV/J0mBS05dl45dX2W/kzYMBf6CXJpWbWDHS0DOiqwz3n35/wa5/I=
-X-Received: by 2002:a5e:8a05:: with SMTP id d5mr19055iok.147.1561541776831;
- Wed, 26 Jun 2019 02:36:16 -0700 (PDT)
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=FZpn/SM18BezW4pukReRxQPBUQ3d8CRsVoZLAmRFkEQ=;
+ b=p74hZ6iT8HVQ11pTaoHQ6ucYvaGpTyRHLSifQLwMdo9WlgHLkBj9UquijTFDwhDmgt
+ jK9M3qgd1sLlfj2M7eh/09XRn305yXZ/cxLBTFvalL7AjyZXXArhkg2/rFdqVlYWyyUT
+ FoLLjtieTuBqKQc/q4kcS7ODIRuazWoJruwDXx3ZOaNxA5fvOsJQhJrox6ttF2zPBZzd
+ 7StoJndhNFNIJoCAzMtFWQR4hbbNcJayaNl5u4oR2le3BU/tKAxD0Vm1M6HQO1F2q4bx
+ NqIz7Vuq+BJBodivgfDUlv+NDZpQYb5oTEdBbeYr9Wz442T74c/lazA4xMPZTWDOci+T
+ AJrA==
+X-Gm-Message-State: APjAAAVvmS1ovN5TikEALmosknxS0Wu1I8J9aOxPi5bvmteU16X4gCaX
+ VKKQUt7KmXONsNUW6427fSl+aR5l4tJLR/phpfk=
+X-Google-Smtp-Source: APXvYqxfk/cj40sWUyc5CEgNJu4Yg3oD4q5paX2kRGSz+7gHqZ783BKiR4FGZ4IL6ggSz2EBe4FOcjraNVZD7CUbFB4=
+X-Received: by 2002:aca:b208:: with SMTP id b8mr1238382oif.98.1561542828346;
+ Wed, 26 Jun 2019 02:53:48 -0700 (PDT)
 MIME-Version: 1.0
-From: Andreas Fenkart <afenkart@gmail.com>
-Date: Wed, 26 Jun 2019 11:36:06 +0200
-Message-ID: <CALtMJEBpxc+oN1Uf03F0oG-smHZazeeptE=BRX7tPpixnAgFrw@mail.gmail.com>
-Subject: regression: nand/spi flashes listed in reversed order after "ARM:
- dts: at91: Switch to the new NAND bindings"
-To: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <1521807722-21626-1-git-send-email-nagasure@xilinx.com>
+ <BY2PR02MB14115B9E46B35A59AC6505D9AFB00@BY2PR02MB1411.namprd02.prod.outlook.com>
+ <CALgLF9K=rZxVx_QXvV_LH3OhidTcguZ=K=p=Lf9AfFbk4H+8Zw@mail.gmail.com>
+ <20180917170522.0312ae8c@bbrezillon>
+ <CALgLF9JVweEcEm6L33HaHp4HtXhmsZL7J5FDe8+O11i0Q1nukg@mail.gmail.com>
+ <20180918091712.2f97db80@bbrezillon>
+In-Reply-To: <20180918091712.2f97db80@bbrezillon>
+From: naga suresh kumar <nagasureshkumarrelli@gmail.com>
+Date: Wed, 26 Jun 2019 15:23:36 +0530
+Message-ID: <CALgLF9JrTODVPJV8K-TkeN4cAOr88YJT2Swt-jCz_4KN-nwa3A@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/5] RFC for Zynq QSPI
+To: Boris Brezillon <boris.brezillon@collabora.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190626_023618_098035_31764907 
-X-CRM114-Status: UNSURE (   6.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190626_025350_129369_6B48F060 
+X-CRM114-Status: GOOD (  30.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,87 +93,182 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: alexandre.belloni@free-electrons.com, "Michonski,
- Krzysztof" <krzysztof.michonski@digitalstrom.com>
+Cc: vigneshr@ti.com, linux-spi@vger.kernel.org,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Naga Sureshkumar Relli <nagasure@xilinx.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-After this patch, which is of course much appreciated:
+Hi Boris,
 
-1004a2977bdc7566bca87c565541c3232ed467c4
-Refs: v4.12-rc1-7-g1004a2977bdc
-Author:     Boris Brezillon <boris.brezillon@free-electrons.com>
-AuthorDate: Tue May 30 11:20:53 2017 +0200
-Commit:     Alexandre Belloni <alexandre.belloni@free-electrons.com>
-CommitDate: Wed May 31 11:55:41 2017 +0200
+On Tue, Sep 18, 2018 at 12:47 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> Hi Naga,
+>
+> On Tue, 18 Sep 2018 11:26:05 +0530
+> naga suresh kumar <nagasureshkumarrelli@gmail.com> wrote:
+>
+> > Hi,
+> >
+> > Please see my reply inline by prefacing my name, currently i am facing
+> > issues with my outlook. the reply looks not good but please don't mind.
+>
+> I do mind. Please find a way to fix that, 'cause I'm pretty sure others
+> will soon complain about that too.
+>
+>
+> > > > As i said, it needs tweaking the mtd->size and spi read/write addresses.
+> > >
+> > > Can you elaborate a bit on why you think this is needed? Did you look
+> > > at [1]? Maybe it will prevent us from exposing the flash size at the
+> > > spi-mem level.
+> > > [naga]: some example snippet below
+> > >
+> > > spi_nor_read () {
+> > >
+> > >    if (nor->isparallel == 1)
+> > >
+> > >    {
+> > >
+> > >       offset /= 2; //byte stripping will happen here
+> > >
+> > >        nor->spi->master->flags |= SPI_DATA_STRIPE;
+> > >
+> > >        //By setting this flag even bits of data word located in lower
+> > > memory and odd are in upper memory
+> > >
+> > >    }
+> > >
+> > >    if (nor->isstacked == 1) {
+> > >
+> > >      stack_shift = 1;
+> > >
+> > >      if (offset >= (mtd->size / 2)) {
+> > >
+> > >      offset = offset - (mtd->size / 2);
+> > >
+> > >      nor->spi->master->flags |= SPI_MASTER_U_PAGE;
+> > >
+> > >      //We can access Upper memory or lower memory, by setting this flag in
+> > > controller.
+> > >
+> > >   } else {
+> > >
+> > >         nor->spi->master->flags &= ~SPI_MASTER_U_PAGE;
+> > >
+> > >   }
+> > >
+> > >  }
+> > >
+> > > same for spi_nor_write() also.
+>
+> Let's put the stacked and parallel support on the side for now and
+> focus on single die/chip support. Will find a clean way to handle that
+> afterwards.
+>
+> > >
+> > > Also in both dual parallel and stacked mode mtd->size should be sum of
+> > > both flash device sizes
+>
+> Yes, but this information should stay at the spi-nor/mtd level.
+>
+> > >
+> > > also status register read will change, it needs status from both devices.
+> > > like that some changes
+> > >
+> > > will be needed in core.
+>
+> Which is why this needs to be handled in spi-nor.c. The spi-nor core
+> needs to know about the parallel/stack setup and handle it differently
+> (read both status bytes, read both IDs, ...).
+>
+> > > > Can somebody share your thoughts on this(Adding Zynq QSPI Dual parallel
+> > > and
+> > > > stacked)?
+> > >
+> > > I always have a hard time with this naming. I guess stacked is when you
+> > > have 2 chips sharing the same I/O bus, and parallel is when you have 2
+> > > chips with one taking all of the I/O and the other taking the other
+> > > half. Is that correct?
+> > > [naga]: Yes, you are correct, i have attached the diagrams for these mode.
+> > >
+> > > In parallel mode, with the help of controller STRIPE feature, even bits of
+> > >
+> > > data words are located in lower memory and odd bits are located in upper
+> > > memory.
+> > >
+> > > Data management will be taken care by controller in both modes
+>
+> Ok. I need to think about it a bit more. In the meantime, I recommend
+> that you submit a version of the driver that does not support parallel
+> and stacked modes.
 
-    ARM: dts: at91: Switch to the new NAND bindings
+As you suggested previously, i have added the support for Zynq QSPI
+controller to support single chip.
+Currently i am planning to add support for Parallel and Stacked for the same.
+Could you please provide your implementation thoughts on this Parallel
+and Stacked mode?
 
-    Use the new EBI/NAND bindings to declare NAND chips and remove old NAND
-    nodes along the way.
+From my side, i am thinking like below.
+Will take two config entries CONFIG_SPI_XLNX_PARALLEL and
+CONFIG_SPI_XLNX_STACKED
+and
+#ifdef CONFIG_SPI_XILINX_PARALLEL
+   #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags) \
+   ------
+  .sector_size = (_sector_size) << 1, \
+  .n_sectors = (_n_sectors), \
+  .page_size = (256 << 1), \
+  .flags = (_flags | SPI_NOR_XLNX_PARALLEL),
+#elif CONFIG_SPI_XILINX_STACKED
+    #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags) \
+    -------
+  .sector_size = (_sector_size), \
+  .n_sectors = (_n_sectors << 1), \
+  .page_size = 256, \
+  .flags = (_flags | SPI_NOR_XLNX_STACKED),
+#else
+  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags) \
+   ------
+ .sector_size = (_sector_size), \
+  .n_sectors = (_n_sectors), \
+  .page_size = 256, \
+ .flags = (_flags),
+ #endif
+>
 
-    Note that we keep using old bindings in at91rm9200.dtsi because this
-    SoC is not supported by the EBI driver.
+And in the spi_nor_scan()
+if (info->flags & (SPI_NOR_XLNX_PARALLEL || SPI_NOR_XLNX_STACKED)) {
+        mtd->size = (params.size << 1);
+        if (info->flags & SPI_NOR_XLNX_PARALLEL) {
+            nor->spi->controller->flags |= (SPI_CONTROLLER_BOTH_CS |
+SPI_CONTROLLER_DATA_STRIPE);
+            nor->flags |= SNOR_F_XLNX_PARALLEL;
+        } else if (info->flags & SPI_NOR_XLNX_STACKED) {
+            nor->flags |= SNOR_F_XLNX_STACKED;
+       }
+}
+Based on these flags, will alter the address to write/read, in
+spi_nor_write() and spi_nor_read().
+i will send an RFC patch with this update just to give show case this feature.
 
-The listing and indexing of my mtd devices changed:
+So could you please provide a way to implement the same?
+i have also seen, that NXP flex controller is also supporting Parallel
+flash mode, but not sure how
+they are handling the chip select and mtd->size, page_size etc...
+Sorry to bother you, but your suggestions helps a lot.
 
-root@after:~# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00080000 00010000 "spi32766.0"
-...
-mtd4: 32000000 00080000 "rootfs"
-mtd5: 0bc00000 00080000 "config"
+Thanks,
+Naga Sureshkumar Relli
 
-root@before:~# cat /proc/mtd
-dev:    size   erasesize  name
-...
-mtd3: 32000000 00080000 "rootfs"
-mtd4: 0bc00000 00080000 "config"
-mtd5: 00080000 00010000 "spi32766.0"
-
-
-I assume sorting the mtd listing in a specific order is not supported
-nor desired by the mtd maintainers. So I'm not argueing about that.
-
-But since the index of rootfs device is hard-coded in the cmdline, the
-fw-utils config file and a custom script to backup/retrieve
-configuration, this is causing me some problems.
-
-The nand is partitioned, the spi is not:
-mtdparts=mtdparts=atmel_nand:2M(foo),2M(bar),32M(baz),800M(rootfs),-(config)
-
-While the bootargs can be fixed easily by using the human readable
-name (ubi.mtd=rootfs). I can't retrieve that human readable name from
-udev alone, nor can I build something from major/minor alone, since
-the major is the same for nand/spi flash.
-
-root@before:/etc/udev/rules.d# udevadm info /dev/mtd3
-P: /devices/platform/ahb/40000000.nand/mtd/mtd3
-N: mtd3
-E: DEVNAME=/dev/mtd3
-E: DEVPATH=/devices/platform/ahb/40000000.nand/mtd/mtd3
-E: DEVTYPE=mtd
-E: MAJOR=90
-E: MINOR=6
-
-root@dSS:/etc/udev/rules.d# udevadm info /dev/mtd5
-P: /devices/platform/ahb/ahb:apb/fffc8000.spi/spi_master/spi32766/spi32766.0/mtd/mtd5
-N: mtd5
-E: DEVNAME=/dev/mtd5
-E: DEVPATH=/devices/platform/ahb/ahb:apb/fffc8000.spi/spi_master/spi32766/spi32766.0/mtd/mtd5
-E: DEVTYPE=mtd
-E: MAJOR=90
-E: MINOR=10
-E: OF_COMPATIBLE_0=st,m25p40
-E: OF_COMPATIBLE_N=1
-E: OF_FULLNAME=/ahb/apb/spi@fffc8000/m25p40@0
-E: OF_NAME=m25p40
-E: SUBSYSTEM=mtd
-
-What is the preferred to make the rootfs agnostic of a particular mtd
-listing order
+> Regards,
+>
+> Boris
 
 ______________________________________________________
 Linux MTD discussion mailing list
