@@ -2,86 +2,108 @@ Return-Path: <SRS0=bYPC=UZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AFDAC48BD6
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 09:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A75BAC48BD6
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 11:23:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6C46205F4
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 09:54:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 79835208E3
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 11:23:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FbRiKQi8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qZba/tM9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6C46205F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="lztrZoHp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="xZTAW0en"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79835208E3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qPqnEwtUP+vFWHNqjZ5q5uGgXKBMnYmgKUvBMv6HBak=; b=FbRiKQi8lQRj2m
-	uQLGuXCEpDefTCujk1hMMOGPcDDvEBc5ZwIdBkTtlY1kW3beR4I10+POFFiWxDmb1WPHa1qii25kr
-	wSZWTuv4hjTYRBdLAvU0mt1+1Qd6kJrmHOqK7ebynHNs2L5jXzjl8D38e8mJuXag8J6KGs4cTtRD1
-	B7ZnDzyvG1zlDUyoGJ1HhA8ri1WA4kaKbyllLwOD62gImRoaXvPVZI0MbE3YVGkhLyIM6kOyOLuRL
-	lebv5s9dD/uTmARIp4MMaKEM4GvpKsO4G2gQH2644JrViaOkdc1LcQcHXx+eenFUJ/HbWQO0rEBO9
-	HetoP6jRHrx2bPTVrwNQ==;
+	List-Owner; bh=gUzyp4mNufrxHxF5V4iWyBvL3W2mOHsPIjCnMnahvnw=; b=lztrZoHpw5qssJ
+	64y3FHdYpYs0qBlX3cikl6flTvDtsYj4QbwI8pJd2gteAEIAJ+8/rJipcl2I/Y+o+HXn2tXI2X7Pm
+	oDrJPTGKSax+FaZ6M2/cVz0tpvt/H0/owB18rTT4rEuw+uCsWnV7PcLVeWuXjs6ZUAiHR1aoe+eR1
+	a8nuzl0BbVA0IQNQIRcw1nQdj3rF20NS/psHp2ElR2Z4GWLDqGFYP128bUm99NgrsbB5T0qSaoNu0
+	UsQbkIqm3Pzg/W9tkL/FOY3cZpcReAK8le2ZIwXs1M7XWkjgtsgv037lSGP/YpcNIe+xLX1og7ZSi
+	lFQmyNVXzQTSmmTUBF8w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hg4cv-0008QZ-SM; Wed, 26 Jun 2019 09:54:05 +0000
-Received: from mail-oi1-x244.google.com ([2607:f8b0:4864:20::244])
+	id 1hg60e-0001UW-Rh; Wed, 26 Jun 2019 11:22:40 +0000
+Received: from mail-eopbgr690041.outbound.protection.outlook.com
+ ([40.107.69.41] helo=NAM04-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hg4cg-0008BM-1w
- for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 09:53:51 +0000
-Received: by mail-oi1-x244.google.com with SMTP id m202so1449288oig.6
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2019 02:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=FZpn/SM18BezW4pukReRxQPBUQ3d8CRsVoZLAmRFkEQ=;
- b=qZba/tM9eft65EFUIByi5j0X3EgynrVJ1vVYrBQ58awodkt/Hmh6mAt5Dl/8Gt5QRQ
- LBO9r9OQUaDAQjUByKwdK+Ri+jrFQ+FhrLU85t7F2QfZM5yp+ehlJIl0zFwKozwIUbzM
- 1Sz8ys/nXVTK1XTuTs0ovmSp6quwkzPHLftf1+hpkimkgqx2dG2gWgDEnM7R6VHZPTHn
- c1SUb1Rv5L1oNGGnZbI0gptdzIYOrNAJt+CdDtEHbCe1AxxDfuZqBhJSOp6j5uceCmwW
- Urs0zIkoB75eOx9wJI+L7MQPuUMDK55cFsfAwq8OkQrFyWy/KuX+OL7HkuQUmR5k7BSV
- y4Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=FZpn/SM18BezW4pukReRxQPBUQ3d8CRsVoZLAmRFkEQ=;
- b=p74hZ6iT8HVQ11pTaoHQ6ucYvaGpTyRHLSifQLwMdo9WlgHLkBj9UquijTFDwhDmgt
- jK9M3qgd1sLlfj2M7eh/09XRn305yXZ/cxLBTFvalL7AjyZXXArhkg2/rFdqVlYWyyUT
- FoLLjtieTuBqKQc/q4kcS7ODIRuazWoJruwDXx3ZOaNxA5fvOsJQhJrox6ttF2zPBZzd
- 7StoJndhNFNIJoCAzMtFWQR4hbbNcJayaNl5u4oR2le3BU/tKAxD0Vm1M6HQO1F2q4bx
- NqIz7Vuq+BJBodivgfDUlv+NDZpQYb5oTEdBbeYr9Wz442T74c/lazA4xMPZTWDOci+T
- AJrA==
-X-Gm-Message-State: APjAAAVvmS1ovN5TikEALmosknxS0Wu1I8J9aOxPi5bvmteU16X4gCaX
- VKKQUt7KmXONsNUW6427fSl+aR5l4tJLR/phpfk=
-X-Google-Smtp-Source: APXvYqxfk/cj40sWUyc5CEgNJu4Yg3oD4q5paX2kRGSz+7gHqZ783BKiR4FGZ4IL6ggSz2EBe4FOcjraNVZD7CUbFB4=
-X-Received: by 2002:aca:b208:: with SMTP id b8mr1238382oif.98.1561542828346;
- Wed, 26 Jun 2019 02:53:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <1521807722-21626-1-git-send-email-nagasure@xilinx.com>
- <BY2PR02MB14115B9E46B35A59AC6505D9AFB00@BY2PR02MB1411.namprd02.prod.outlook.com>
- <CALgLF9K=rZxVx_QXvV_LH3OhidTcguZ=K=p=Lf9AfFbk4H+8Zw@mail.gmail.com>
- <20180917170522.0312ae8c@bbrezillon>
- <CALgLF9JVweEcEm6L33HaHp4HtXhmsZL7J5FDe8+O11i0Q1nukg@mail.gmail.com>
- <20180918091712.2f97db80@bbrezillon>
-In-Reply-To: <20180918091712.2f97db80@bbrezillon>
-From: naga suresh kumar <nagasureshkumarrelli@gmail.com>
-Date: Wed, 26 Jun 2019 15:23:36 +0530
-Message-ID: <CALgLF9JrTODVPJV8K-TkeN4cAOr88YJT2Swt-jCz_4KN-nwa3A@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] RFC for Zynq QSPI
+ id 1hg60a-0001TZ-PS
+ for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 11:22:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HELjfFyhQIb0MvNALOGGkLXTIak9XAxQdggCW07O0Co=;
+ b=xZTAW0enIxFNIF5JKxtH178isqpKkI6jRR8Xcy01Nh9esSwTCB4MamhzG4IfjbBbfQDToCpUBKzMPA10peJlekFbOYgBs+ygNbsuGj4kY3EzO29AGagv02mZ+w7hR3tyk/LTYXvdxi58VD02nY6BzwvfIeKQBRG/bGEHmbcPOMA=
+Received: from DM6PR02MB4779.namprd02.prod.outlook.com (20.176.109.16) by
+ DM6PR02MB4665.namprd02.prod.outlook.com (20.176.108.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Wed, 26 Jun 2019 11:22:33 +0000
+Received: from DM6PR02MB4779.namprd02.prod.outlook.com
+ ([fe80::936:90c8:a385:1513]) by DM6PR02MB4779.namprd02.prod.outlook.com
+ ([fe80::936:90c8:a385:1513%4]) with mapi id 15.20.2008.017; Wed, 26 Jun 2019
+ 11:22:33 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: RE: [LINUX PATCH v17 1/2] mtd: rawnand: nand_micron: Do not over
+ write driver's read_page()/write_page()
+Thread-Topic: [LINUX PATCH v17 1/2] mtd: rawnand: nand_micron: Do not over
+ write driver's read_page()/write_page()
+Thread-Index: AQHVKxEOKM99KajnN0G2IiFegkrxG6atgBaAgABKdoA=
+Date: Wed, 26 Jun 2019 11:22:33 +0000
+Message-ID: <DM6PR02MB47796E3306C166A91E0BAE91AFE20@DM6PR02MB4779.namprd02.prod.outlook.com>
+References: <20190625044630.31717-1-naga.sureshkumar.relli@xilinx.com>
+ <20190626084807.3f06e718@collabora.com>
+In-Reply-To: <20190626084807.3f06e718@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=nagasure@xilinx.com; 
+x-originating-ip: [149.199.50.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 95cbaa52-84e9-44aa-d657-08d6fa2895ba
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
+ SRVR:DM6PR02MB4665; 
+x-ms-traffictypediagnostic: DM6PR02MB4665:
+x-microsoft-antispam-prvs: <DM6PR02MB46657F33B1F5DECD90BB2C5DAFE20@DM6PR02MB4665.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:660;
+x-forefront-prvs: 00808B16F3
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(136003)(376002)(396003)(366004)(39850400004)(346002)(13464003)(189003)(199004)(6916009)(102836004)(26005)(6506007)(86362001)(33656002)(53546011)(478600001)(6436002)(99286004)(305945005)(486006)(446003)(7736002)(76176011)(186003)(4326008)(11346002)(3846002)(6116002)(7696005)(66446008)(476003)(25786009)(52536014)(64756008)(66556008)(66476007)(73956011)(66946007)(76116006)(74316002)(14454004)(81166006)(81156014)(5660300002)(8676002)(6246003)(8936002)(66066001)(53936002)(229853002)(2906002)(54906003)(9686003)(55016002)(316002)(68736007)(7416002)(71200400001)(71190400001)(256004);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR02MB4665;
+ H:DM6PR02MB4779.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: xilinx.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: imTRrbx7JsSftHeYBqITjQ0teiDCoP+CsC5nPkmjqHIiVQbyg07sHELe3aBmSF8+xuZMeaHeYxrpz9xs0DAx2vFvJMDDwJdPLd5pdk3aHt9E8FinBT0uLQpsOYGiWDfZ/TVRpfRfdiY5QqBemtbn1ZakxNqKKAH1zTIQvlCZyK7Hi4iU6y/3a7lFFNVmy5Tm+ercf8gDntWsx4Manw1W+K6OO8FLdrzkIo3L2yQBM2RMwc7Te67CCIOaZmQb6ldcSZnyp12ACP/06ToYl6S5djuf8Fw5+4p4vwHhBHHNpcOD7mlhQbRGMXElSL2dA2ZoZuiy4Po8KjtlUGYn3ruJonjfP2HbUhxYZqJUBsJSaRdZ7QsZik0rgolBavlew3t4OEGmB3EaH+l2yPyW6ChHnXI+Nq/zwctECcdgj3lt/9M=
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95cbaa52-84e9-44aa-d657-08d6fa2895ba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2019 11:22:33.5860 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nagasure@xilinx.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4665
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190626_025350_129369_6B48F060 
-X-CRM114-Status: GOOD (  30.39  )
+X-CRM114-CacheID: sfid-20190626_042236_826271_73B17EB1 
+X-CRM114-Status: GOOD (  13.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,11 +115,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, linux-spi@vger.kernel.org,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- Mark Brown <broonie@kernel.org>, Naga Sureshkumar Relli <nagasure@xilinx.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: "vigneshr@ti.com" <vigneshr@ti.com>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "helmut.grohne@intenta.de" <helmut.grohne@intenta.de>,
+ "richard@nod.at" <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -105,170 +133,57 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Boris,
 
-On Tue, Sep 18, 2018 at 12:47 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> Hi Naga,
->
-> On Tue, 18 Sep 2018 11:26:05 +0530
-> naga suresh kumar <nagasureshkumarrelli@gmail.com> wrote:
->
-> > Hi,
+> -----Original Message-----
+> From: Boris Brezillon <boris.brezillon@collabora.com>
+> Sent: Wednesday, June 26, 2019 12:18 PM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; helmut.grohne@intenta.de; richard@nod.at;
+> dwmw2@infradead.org; computersforpeace@gmail.com; marek.vasut@gmail.com;
+> vigneshr@ti.com; bbrezillon@kernel.org; yamada.masahiro@socionext.com; linux-
+> mtd@lists.infradead.org; linux-kernel@vger.kernel.org
+> Subject: Re: [LINUX PATCH v17 1/2] mtd: rawnand: nand_micron: Do not over write
+> driver's read_page()/write_page()
+> 
+> On Mon, 24 Jun 2019 22:46:29 -0600
+> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+> 
+> > Add check before assigning chip->ecc.read_page() and
+> > chip->ecc.write_page()
 > >
-> > Please see my reply inline by prefacing my name, currently i am facing
-> > issues with my outlook. the reply looks not good but please don't mind.
->
-> I do mind. Please find a way to fix that, 'cause I'm pretty sure others
-> will soon complain about that too.
->
->
-> > > > As i said, it needs tweaking the mtd->size and spi read/write addresses.
-> > >
-> > > Can you elaborate a bit on why you think this is needed? Did you look
-> > > at [1]? Maybe it will prevent us from exposing the flash size at the
-> > > spi-mem level.
-> > > [naga]: some example snippet below
-> > >
-> > > spi_nor_read () {
-> > >
-> > >    if (nor->isparallel == 1)
-> > >
-> > >    {
-> > >
-> > >       offset /= 2; //byte stripping will happen here
-> > >
-> > >        nor->spi->master->flags |= SPI_DATA_STRIPE;
-> > >
-> > >        //By setting this flag even bits of data word located in lower
-> > > memory and odd are in upper memory
-> > >
-> > >    }
-> > >
-> > >    if (nor->isstacked == 1) {
-> > >
-> > >      stack_shift = 1;
-> > >
-> > >      if (offset >= (mtd->size / 2)) {
-> > >
-> > >      offset = offset - (mtd->size / 2);
-> > >
-> > >      nor->spi->master->flags |= SPI_MASTER_U_PAGE;
-> > >
-> > >      //We can access Upper memory or lower memory, by setting this flag in
-> > > controller.
-> > >
-> > >   } else {
-> > >
-> > >         nor->spi->master->flags &= ~SPI_MASTER_U_PAGE;
-> > >
-> > >   }
-> > >
-> > >  }
-> > >
-> > > same for spi_nor_write() also.
->
-> Let's put the stacked and parallel support on the side for now and
-> focus on single die/chip support. Will find a clean way to handle that
-> afterwards.
->
-> > >
-> > > Also in both dual parallel and stacked mode mtd->size should be sum of
-> > > both flash device sizes
->
-> Yes, but this information should stay at the spi-nor/mtd level.
->
-> > >
-> > > also status register read will change, it needs status from both devices.
-> > > like that some changes
-> > >
-> > > will be needed in core.
->
-> Which is why this needs to be handled in spi-nor.c. The spi-nor core
-> needs to know about the parallel/stack setup and handle it differently
-> (read both status bytes, read both IDs, ...).
->
-> > > > Can somebody share your thoughts on this(Adding Zynq QSPI Dual parallel
-> > > and
-> > > > stacked)?
-> > >
-> > > I always have a hard time with this naming. I guess stacked is when you
-> > > have 2 chips sharing the same I/O bus, and parallel is when you have 2
-> > > chips with one taking all of the I/O and the other taking the other
-> > > half. Is that correct?
-> > > [naga]: Yes, you are correct, i have attached the diagrams for these mode.
-> > >
-> > > In parallel mode, with the help of controller STRIPE feature, even bits of
-> > >
-> > > data words are located in lower memory and odd bits are located in upper
-> > > memory.
-> > >
-> > > Data management will be taken care by controller in both modes
->
-> Ok. I need to think about it a bit more. In the meantime, I recommend
-> that you submit a version of the driver that does not support parallel
-> and stacked modes.
+> > Signed-off-by: Naga Sureshkumar Relli
+> > <naga.sureshkumar.relli@xilinx.com>
+> > ---
+> >  drivers/mtd/nand/raw/nand_micron.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/raw/nand_micron.c
+> > b/drivers/mtd/nand/raw/nand_micron.c
+> > index cbd4f09ac178..565f2696c747 100644
+> > --- a/drivers/mtd/nand/raw/nand_micron.c
+> > +++ b/drivers/mtd/nand/raw/nand_micron.c
+> > @@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
+> >  		chip->ecc.size = 512;
+> >  		chip->ecc.strength = chip->base.eccreq.strength;
+> >  		chip->ecc.algo = NAND_ECC_BCH;
+> > -		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+> > -		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+> > +		if (!chip->ecc.read_page)
+> > +			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+> > +
+> > +		if (!chip->ecc.write_page)
+> > +			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+> 
+> That's wrong, if you don't want on-die ECC to be used, simply don't set nand-ecc-mode to "on-
+> die".
+Ok. But if we want to use on-die ECC then you mean to say it is mandatory to use micron_nand_read/write_page_on_die_ecc()?
 
-As you suggested previously, i have added the support for Zynq QSPI
-controller to support single chip.
-Currently i am planning to add support for Parallel and Stacked for the same.
-Could you please provide your implementation thoughts on this Parallel
-and Stacked mode?
-
-From my side, i am thinking like below.
-Will take two config entries CONFIG_SPI_XLNX_PARALLEL and
-CONFIG_SPI_XLNX_STACKED
-and
-#ifdef CONFIG_SPI_XILINX_PARALLEL
-   #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags) \
-   ------
-  .sector_size = (_sector_size) << 1, \
-  .n_sectors = (_n_sectors), \
-  .page_size = (256 << 1), \
-  .flags = (_flags | SPI_NOR_XLNX_PARALLEL),
-#elif CONFIG_SPI_XILINX_STACKED
-    #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags) \
-    -------
-  .sector_size = (_sector_size), \
-  .n_sectors = (_n_sectors << 1), \
-  .page_size = 256, \
-  .flags = (_flags | SPI_NOR_XLNX_STACKED),
-#else
-  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags) \
-   ------
- .sector_size = (_sector_size), \
-  .n_sectors = (_n_sectors), \
-  .page_size = 256, \
- .flags = (_flags),
- #endif
->
-
-And in the spi_nor_scan()
-if (info->flags & (SPI_NOR_XLNX_PARALLEL || SPI_NOR_XLNX_STACKED)) {
-        mtd->size = (params.size << 1);
-        if (info->flags & SPI_NOR_XLNX_PARALLEL) {
-            nor->spi->controller->flags |= (SPI_CONTROLLER_BOTH_CS |
-SPI_CONTROLLER_DATA_STRIPE);
-            nor->flags |= SNOR_F_XLNX_PARALLEL;
-        } else if (info->flags & SPI_NOR_XLNX_STACKED) {
-            nor->flags |= SNOR_F_XLNX_STACKED;
-       }
-}
-Based on these flags, will alter the address to write/read, in
-spi_nor_write() and spi_nor_read().
-i will send an RFC patch with this update just to give show case this feature.
-
-So could you please provide a way to implement the same?
-i have also seen, that NXP flex controller is also supporting Parallel
-flash mode, but not sure how
-they are handling the chip select and mtd->size, page_size etc...
-Sorry to bother you, but your suggestions helps a lot.
-
-Thanks,
+Regards,
 Naga Sureshkumar Relli
+> 
+> >
+> >  		if (ondie == MICRON_ON_DIE_MANDATORY) {
+> >  			chip->ecc.read_page_raw = nand_read_page_raw_notsupp;
 
-> Regards,
->
-> Boris
 
 ______________________________________________________
 Linux MTD discussion mailing list
