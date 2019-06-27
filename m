@@ -1,132 +1,124 @@
-Return-Path: <SRS0=bYPC=UZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=iCcf=U2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67566C48BD3
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 18:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBAF9C48BD6
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2019 05:36:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C14D21726
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2019 18:17:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AAF7D208E3
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2019 05:36:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SiYBeqsB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C14D21726
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Tn6dyNGT";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G0jiYFyj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="nB7qaexU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAF7D208E3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=o6kTjEbCBrFZ2Y3ZZbvjbQaa38iWuSOrjvvegRNiPyI=; b=SiYBeqsBOAN+nz
-	QGv+4gNOeUI/iMcmbKm+R5qjAQwqLqCMEvrDrzXLSkifAf2Dk6VAZJH4DVDUZl+Lr3xCWGZF/kKmE
-	hWk+glqylFekPJ2Rv9OwLxn4PdKw4Qi+jRxWBCpOXR1IcZ0iJNs1mpYb7jjn1kvO/GcK0xs+THpYk
-	kFU7BUP+YnfOoUvNwLRRzTlND2OinNYR2b4JrY2NBpEU2BIrRt+nIyLQfTUzI5jEc7rHQZYo5x7xu
-	v+yjMK9IOrF7IjocfcDfWGHBnDViK/sfAFEfxYtk3WBwGDFeeB7Oq4sVNJp94FkTumKIUUxRkCFFU
-	v4HYuEF4AC9olNw2/0Pw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=JLhi+sEA6vDbdTQIgQ69Sv12vYoMiTTZYYE8WKazROI=; b=Tn6dyNGTxFKtnx
+	SRus0KxeIxRMfQgutJxhfWjhH2z9/Xbd9vnYPWgVxSehlimXgfi7DPmGUYOQnxDtlLQNmqESTptw1
+	kaNvdD7RFbLZcUGfedG3R8ZkzZIS01EiFRe4vs+xaKpjDNXW+QpMC2fIaLWFLn6DIug7HDziSZd9Q
+	SdW3i09fXTdfDNSpx17XnnHnYF3EdffiRdbDmFVNTqoO4QbmpBDzsjGTziWO5z6aUugRE+smZr0Zg
+	ME7qkzyhw6pbONf7Net+SI5mYN/IAyR65nYnIbDEV9Qq6lOxHHtNfkgjMi4OhvI7SEvUVg10QQSg3
+	uXTtELjQWeuGy7SWUufA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hgCTO-0006Ax-H5; Wed, 26 Jun 2019 18:16:46 +0000
-Received: from gateway22.websitewelcome.com ([192.185.47.79])
+	id 1hgN4z-0007x7-GX; Thu, 27 Jun 2019 05:36:18 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgCTL-00069c-Cu
- for linux-mtd@lists.infradead.org; Wed, 26 Jun 2019 18:16:44 +0000
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
- by gateway22.websitewelcome.com (Postfix) with ESMTP id BEF3A2A2A2
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2019 13:16:30 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id gCT8h5sGS4FKpgCT8hLx95; Wed, 26 Jun 2019 13:16:30 -0500
-X-Authority-Reason: nr=8
-Received: from cablelink-187-160-61-213.pcs.intercable.net
- ([187.160.61.213]:34024 helo=[192.168.0.11])
- by gator4166.hostgator.com with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
- (envelope-from <gustavo@embeddedor.com>)
- id 1hgCT7-003Cw1-HG; Wed, 26 Jun 2019 13:16:29 -0500
-Subject: Re: [PATCH] mtd: onenand_base: Mark expected switch fall-through
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20190604141737.GA1064@embeddedor> <201906040745.B6AE4C6@keescook>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <bc5e1a62-9034-f668-c694-cc6d7e69c114@embeddedor.com>
-Date: Wed, 26 Jun 2019 13:16:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+ id 1hgMsE-0007bR-Va
+ for linux-mtd@bombadil.infradead.org; Thu, 27 Jun 2019 05:23:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=OZ6e0FbvZ6ih1IklP3kOWEbcdJlaHfvXLF3leRVcWUY=; b=G0jiYFyjxzlRukBoYs6s6nrYi
+ G+8yZglb3e5IgAwTnOAdP8I/OuyREUYRLe5i1XBmuXckU6hb3MK+7f4OaoE4S6j/jiY9wn0+rnlcq
+ T4CoQ9CnKQukFFls5RjuIsIpsynO5n5M0Z+h4Sqbi1ixZLhV4C+CDFd02kduQw2QEwhUGBGj4tdsH
+ WBTUwc3WThsqa4l4i9DiG3rfX80Q8CG8ZWX2PtBB31MF2l1LH8E5pc04J9wX0B7QFvGFDZSPYGhPo
+ EOcRUcmSnQWSgTEcsP1hNseSbe9nIo29XUjRk6U1gB72/7eJFeg3q8wEZUxugfzfHcHacaRpB3Yxk
+ /o9Czn4YQ==;
+Received: from userp2130.oracle.com ([156.151.31.86])
+ by casper.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hgIB7-0001ps-De
+ for linux-mtd@lists.infradead.org; Thu, 27 Jun 2019 00:22:20 +0000
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5R095sZ153911;
+ Thu, 27 Jun 2019 00:21:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=OZ6e0FbvZ6ih1IklP3kOWEbcdJlaHfvXLF3leRVcWUY=;
+ b=nB7qaexUVLsnWtZZL8ilmpxLc4CbV8CD4zkMKrWoh3xml3JhUaIp9+OiX8KWgEiq+QTV
+ TmxH5cPDR/GN/Mim9pS0HSeUZriivu5IXjKymJeB4VlwuYqux8YFE96Q7ZuFaywS9GAs
+ IfOynDYAH9wgXQWBBSy6D0VCSg6NmF9n/ECyAKjhrIbHx+AeA7tGFvV0wlMxz0hVhnnB
+ xmxNQ5IUCjtH5vC5g7w5I84m4u6ESWlV3qRYMg8v1xYN3YBxl87OiOZnnvitl0kRmOQG
+ ZRsajauz8/ilsNemW/ld4kcCe0+NXHIqitakDgA0iOejAf6kjQWlHHswxg9S0B9x2R/i YA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2130.oracle.com with ESMTP id 2t9brtd8qm-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 27 Jun 2019 00:21:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5R0I1KJ030470;
+ Thu, 27 Jun 2019 00:19:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by userp3030.oracle.com with ESMTP id 2t99f4r2nb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 27 Jun 2019 00:19:34 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5R0JYLu032344;
+ Thu, 27 Jun 2019 00:19:34 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3030.oracle.com with ESMTP id 2t99f4r2n4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 27 Jun 2019 00:19:34 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5R0JTqS006644;
+ Thu, 27 Jun 2019 00:19:29 GMT
+Received: from localhost (/10.145.178.41)
+ by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 26 Jun 2019 17:19:28 -0700
+Date: Wed, 26 Jun 2019 17:19:26 -0700
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+To: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 2/5] vfs: create a generic checking function for
+ FS_IOC_FSSETXATTR
+Message-ID: <20190627001926.GL5171@magnolia>
+References: <156151632209.2283456.3592379873620132456.stgit@magnolia>
+ <156151633829.2283456.834142172527987802.stgit@magnolia>
+ <20190626041133.GB32272@ZenIV.linux.org.uk>
+ <20190626153542.GE5171@magnolia>
+ <20190626154302.GA31445@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <201906040745.B6AE4C6@keescook>
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.160.61.213
-X-Source-L: No
-X-Exim-ID: 1hgCT7-003Cw1-HG
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: cablelink-187-160-61-213.pcs.intercable.net ([192.168.0.11])
- [187.160.61.213]:34024
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 10
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Disposition: inline
+In-Reply-To: <20190626154302.GA31445@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9300
+ signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906270000
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190626_111643_575893_B77D585D 
-X-CRM114-Status: GOOD (  13.53  )
+X-CRM114-CacheID: sfid-20190627_012217_837866_00D0F2F9 
+X-CRM114-Status: GOOD (  22.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,46 +130,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Kees Cook <keescook@chromium.org>, Richard Weinberger <richard@nod.at>,
- Jonathan Bakker <xc-racer2@live.ca>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Kyungmin Park <kyungmin.park@samsung.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
+ linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>,
+ linux-btrfs@vger.kernel.org, yuchao0@huawei.com, clm@fb.com,
+ adilger.kernel@dilger.ca, matthew.garrett@nebula.com,
+ linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+ linux-ext4@vger.kernel.org, josef@toxicpanda.com,
+ reiserfs-devel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+ dsterba@suse.com, jaegeuk@kernel.org, tytso@mit.edu, ard.biesheuvel@linaro.org,
+ linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-xfs@vger.kernel.org, jk@ozlabs.org, jack@suse.com,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgYWxsLAoKRnJpZW5kbHkgcGluZzoKCldobyBjYW4gdGFrZSB0aGlzPwoKVGhhbmtzCi0tCkd1
-c3Rhdm8KCk9uIDYvNC8xOSA5OjQ1IEFNLCBLZWVzIENvb2sgd3JvdGU6Cj4gT24gVHVlLCBKdW4g
-MDQsIDIwMTkgYXQgMDk6MTc6MzdBTSAtMDUwMCwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToK
-Pj4gSW4gcHJlcGFyYXRpb24gdG8gZW5hYmxpbmcgLVdpbXBsaWNpdC1mYWxsdGhyb3VnaCwgbWFy
-ayBzd2l0Y2ggY2FzZXMKPj4gd2hlcmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2gu
-Cj4+Cj4+IFRoaXMgcGF0Y2ggZml4ZXMgdGhlIGZvbGxvd2luZyB3YXJuaW5nOgo+Pgo+PiBkcml2
-ZXJzL210ZC9uYW5kL29uZW5hbmQvb25lbmFuZF9iYXNlLmM6IEluIGZ1bmN0aW9uIOKAmG9uZW5h
-bmRfY2hlY2tfZmVhdHVyZXPigJk6Cj4+IGRyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5k
-X2Jhc2UuYzozMjY0OjE3OiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBtYXkgZmFsbCB0aHJvdWdo
-IFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0KPj4gICAgdGhpcy0+b3B0aW9ucyB8PSBPTkVOQU5E
-X0hBU19OT1BfMTsKPj4gZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jOjMy
-NjU6Mjogbm90ZTogaGVyZQo+PiAgIGNhc2UgT05FTkFORF9ERVZJQ0VfREVOU0lUWV80R2I6Cj4+
-ICAgXn5+fgo+Pgo+PiBXYXJuaW5nIGxldmVsIDMgd2FzIHVzZWQ6IC1XaW1wbGljaXQtZmFsbHRo
-cm91Z2g9Mwo+Pgo+PiBUaGlzIHBhdGNoIGlzIHBhcnQgb2YgdGhlIG9uZ29pbmcgZWZmb3J0cyB0
-byBlbmFibGUKPj4gLVdpbXBsaWNpdC1mYWxsdGhyb3VnaC4KPj4KPj4gQ2M6IEpvbmF0aGFuIEJh
-a2tlciA8eGMtcmFjZXIyQGxpdmUuY2E+Cj4+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4gUi4g
-U2lsdmEgPGd1c3Rhdm9AZW1iZWRkZWRvci5jb20+Cj4gCj4gUmV2aWV3ZWQtYnk6IEtlZXMgQ29v
-ayA8a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPgo+IAo+IC1LZWVzCj4gCj4+IC0tLQo+PiAgZHJpdmVy
-cy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIHwgMSArCj4+ICAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKykKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvb25l
-bmFuZC9vbmVuYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jh
-c2UuYwo+PiBpbmRleCBiYTQ2ZDBjZjYwYTEuLmJkYjVmNDczM2QyOCAxMDA2NDQKPj4gLS0tIGEv
-ZHJpdmVycy9tdGQvbmFuZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCj4+ICsrKyBiL2RyaXZlcnMv
-bXRkL25hbmQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYwo+PiBAQCAtMzI2Miw2ICszMjYyLDcgQEAg
-c3RhdGljIHZvaWQgb25lbmFuZF9jaGVja19mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCkK
-Pj4gIAlzd2l0Y2ggKGRlbnNpdHkpIHsKPj4gIAljYXNlIE9ORU5BTkRfREVWSUNFX0RFTlNJVFlf
-OEdiOgo+PiAgCQl0aGlzLT5vcHRpb25zIHw9IE9ORU5BTkRfSEFTX05PUF8xOwo+PiArCQkvKiBm
-YWxsIHRocm91Z2ggKi8KPj4gIAljYXNlIE9ORU5BTkRfREVWSUNFX0RFTlNJVFlfNEdiOgo+PiAg
-CQlpZiAoT05FTkFORF9JU19ERFAodGhpcykpCj4+ICAJCQl0aGlzLT5vcHRpb25zIHw9IE9ORU5B
-TkRfSEFTXzJQTEFORTsKPj4gLS0gCj4+IDIuMjEuMAo+Pgo+IAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+On Wed, Jun 26, 2019 at 08:43:02AM -0700, Christoph Hellwig wrote:
+> On Wed, Jun 26, 2019 at 08:35:42AM -0700, Darrick J. Wong wrote:
+> > > static inline void simple_fill_fsxattr(struct fsxattr *fa, unsigned xflags)
+> > > {
+> > > 	memset(fa, 0, sizeof(*fa));
+> > > 	fa->fsx_xflags = xflags;
+> > > }
+> > > 
+> > > and let the compiler optimize the crap out?
+> > 
+> > The v2 series used to do that, but Christoph complained that having a
+> > helper for a two-line memset and initialization was silly[1] so now we
+> > have this version.
+> > 
+> > I don't mind reinstating it as a static inline helper, but I'd like some
+> > input from any of the btrfs developers (or you, Al) about which form is
+> > preferred.
+> 
+> I complained having that helper in btrfs.  I think Al wants a generic
+> one, which at least makes a little more sense.
+
+Ok.
+
+> That being said I wonder if we should lift these attr ioctls to
+> file op methods and deal with all that crap in VFS code instead of
+> having all those duplicated ioctl parsers.
+
+That sounds like an excellent next patchset. :)
+
+--D
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
