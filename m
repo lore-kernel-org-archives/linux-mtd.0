@@ -5,20 +5,20 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4069AC4321A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 02:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DFC7C4321A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 02:50:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11A842086D
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 02:48:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D55A3208CB
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 02:50:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LldnrXw/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cXUsk7BH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11A842086D
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JP4JlUhl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JPILDhSP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D55A3208CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,58 +27,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=DisTcoQyM8vftxvXiY9Th9JxC+Muw3om2/3PQVLEb2o=; b=Lld
-	nrXw/ocs5ooIZ3BVdKVT6z1xgeuc72x0haqAdBSGdOELrZz6pFuwEGoOq6YE423dXUmGizVpoC19A
-	5olcIXIq3SB+itcRb1eqqHSPuxHF7YIW8Uzguv+OT6fd9GikDqqWmM2RZ3uUrPxtcjwaYK6dzXeq5
-	e0er26sBqQTrdHyDymr7SIeAsm/yTiQVDnXlj63XXhstlEpmPCee6mi0+AwkRgdqauq0QJum4lkoH
-	mFEvvWUM4Z6lbNPXb5gkKFZnw61j/6RMcE7n41TKoIMdu1L5VAfLSDJlS9Ah1wI6pe55kqCHJ2DjM
-	TY5iGpjW+GwJXZpP0+W7NUkw3azVI6A==;
+	References:List-Owner; bh=POnyGsFjx+Ge5yo433Ke2083GYPq5WH8wXv7GNv34YA=; b=JP4
+	JlUhlsfWRVze3nY6ZhJVrtqwu0xTFRixazUkBsFbtsHNvVZTC+TePU+7YAe7+j9+yP4nJxnnKLTnZ
+	5QS5vQZfiqcwZVjE3gLcd1aWHptZF7hQLfYFZIe0zOO32TptfguMPymv/qa6WAP1NFrf364Vw7IJs
+	xcOi7le7yTSa6+CS1wtQp5X63B8DkbjPvwC1dgbsqv8uacL8V8+4yjcX8w9Pf4yA7PDLk+JUxYYir
+	7GAqpffvCWxTThCYanvezL5r9g7COk+fZjzJqaQkC1YnD1udjy33kzrbyvMid16Z1A1cgi/jGGxyf
+	6KwJUSpk4tJZBiPIBH8d0EmRHPeSAaA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hggw4-0000G6-Vt; Fri, 28 Jun 2019 02:48:25 +0000
+	id 1hggyE-0002pe-Pc; Fri, 28 Jun 2019 02:50:38 +0000
 Received: from mail-pg1-x544.google.com ([2607:f8b0:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hggw2-0000FB-Ay
- for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 02:48:23 +0000
-Received: by mail-pg1-x544.google.com with SMTP id 25so1900725pgy.4
- for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2019 19:48:21 -0700 (PDT)
+ id 1hggyB-0002p0-6H
+ for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 02:50:36 +0000
+Received: by mail-pg1-x544.google.com with SMTP id z75so1902750pgz.5
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2019 19:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id;
- bh=rbEYaNHREF7ILO8RRtmtvzlf2nFn3SyNQ4zDhV4ZIpU=;
- b=cXUsk7BHAAfEVytNrzbRMTTG4qVyMNRVSl+DrUV9V3TCuzZWX3xZ4YeirpHRbwVcpm
- Rn5bqs3PxJsL7UeHjFN+/WFjSEGisWQQI0tTLV7Kj7cwtD1cQn7kB5IdCFvhH648lUQj
- bjDmy1p2PHFWbbTmLiUdHJ7JYVhVW11jyIq2vwHBURj0xL28wk0n+O2fCC4Wqsv+M50u
- Rx2XhUX9ulKzQvuUs0f8feHOl+dr/E72IB4pT5MYyV1z33OE6igRhdCBSENW9P1RwUBf
- 09s3PImIxR3WVMGdDFmuiwYa9Ce/cSqKjNP3LzJLI4fsYppVKnqdBICpCby6xgIQQBwN
- PnLw==
+ bh=5su9mFiVrtJtzhcekIAr3MXy4s+ZIx1z8ofhG+tteO4=;
+ b=JPILDhSP5ATPbONpMDSBwpTg82BI4UcuX1NoYgJUbjQxN6tlwxmHHjHR6G2sI0Tc8s
+ 2cc4Tt0tZt9axEHI2/hrc2cyl8fq+5a3eXigZAfml1IbT0nbLcgfQvkIbarQWTMz2IU7
+ oNQeEBzBNnGSj0ZEfmkScyeZ3i/ak2NI1BJHVy1Za1o1gQDTIKv/s4LmDpVwgRDZGomj
+ uMGH3Zh+UgWD6KdNHcy4y+5/pOGyjMDEW4AvVpw399XmYlJp2cTsJvcYbjzEHf883nU6
+ LjwBzhoQCFx2Zhq1RyOoWUjiPoJPPI5c1Xh+AK3ZTi0gyHkAET++zqWP4olGFL4ci6+j
+ 78qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=rbEYaNHREF7ILO8RRtmtvzlf2nFn3SyNQ4zDhV4ZIpU=;
- b=TjuywxUP1tYXQKyajvBCKiDhVnn5i5a4MXme50ErHpiFHYVsqeDaYjLSDi8M8x4YZo
- 5B3W3uqTg+wnET5Bie+YHqrD6IkrQhRGEj6v5I6HlWfdUmXQjyJXWJE3tCyAlSUdlrqF
- LqsYPqvoaN+KRrJBK6O7jxXHsnlKLHVpVOZJBJqa7Q2cPYoPtF/MUpNer9D8wwcp+XOI
- n3tqKqwU9GBXwjtnQgx3g1X4gvARybXPhwN/KgBVdbQm3wv8IvTf54ZdJxPIFP47oDg2
- 02tk4fi/Cv/dmMVjN9u94fYoowxy1NPnpFC1P628WM1Mr/KXG2auJxaKIHlPNXUra6D9
- TEzA==
-X-Gm-Message-State: APjAAAV4CNuQNRoeQZtT5OxTunkELLsTzyW4B4p+cQ/4KoeSulk2c3QC
- A1hm9q6a/pLnZrdFJwKgpnM=
-X-Google-Smtp-Source: APXvYqyL2BSk1/B6CxNzvp6a0kmRsoEyOhjwRgO0mLmLEFYVVmbnWhj10DWx9yPVJWrNGPu1UtSwjA==
-X-Received: by 2002:a63:e90b:: with SMTP id i11mr7002772pgh.351.1561690101460; 
- Thu, 27 Jun 2019 19:48:21 -0700 (PDT)
+ bh=5su9mFiVrtJtzhcekIAr3MXy4s+ZIx1z8ofhG+tteO4=;
+ b=a/zYYp3h7vrq9lF13Zdwk5xWs6TsQ6pHUsUIajC4hbpqveU+MacDdY9xTpGO9Dxe3t
+ pG6rtJvu3jAkbdAvsM/Lqk2CEouTObvs0cutwQvH8oCLHZxnxRcR8LOQIlYjpDt7O/ym
+ EqgzneRAeKplcqgHaPLqi0U75BbqvHB0aocdm3ZNWaNucKHr77+WbN5p2/dP3MjcL6dS
+ Pa3L/fWUbgtYcD/tuNk6qe2cSM9pOvYOI9pKwUsfAPxa9qOCSR3KNgxcvT8qZUrUKfs3
+ TSrv5+C0Z6qvC/h8AneASrdlg6Q5cddDZlo7JfexgahopxfxBaaj9XBHDroIJjRT86Yb
+ K3qg==
+X-Gm-Message-State: APjAAAV8AtBY8tI2yCWGjMTBrcyadQYtu26zEGDXsQgW9TDU8XNvgQWv
+ UWEY4XGW2iWSRMuUPmMpxi8=
+X-Google-Smtp-Source: APXvYqxOkI+crx9UfEyNpvwC2KKY2yZ+Uu/fkdYowQKZoSujz9PfcJVdMSjJI8C3Q+qGHJXp9PQY+Q==
+X-Received: by 2002:a17:90a:b903:: with SMTP id
+ p3mr9942929pjr.79.1561690234777; 
+ Thu, 27 Jun 2019 19:50:34 -0700 (PDT)
 Received: from hfq-skylake.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
- by smtp.googlemail.com with ESMTPSA id i123sm446277pfe.147.2019.06.27.19.48.17
+ by smtp.googlemail.com with ESMTPSA id k6sm465209pfi.12.2019.06.27.19.50.32
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 27 Jun 2019 19:48:21 -0700 (PDT)
+ Thu, 27 Jun 2019 19:50:34 -0700 (PDT)
 From: Fuqian Huang <huangfq.daxian@gmail.com>
 To: 
-Subject: [PATCH v2 14/27] mtd: nand: use kzalloc instead of kmalloc and memset
-Date: Fri, 28 Jun 2019 10:48:13 +0800
-Message-Id: <20190628024814.15527-1-huangfq.daxian@gmail.com>
+Subject: [PATCH v2 24/27] fs: jffs2: use kzalloc rather than kmalloc followed
+ with memset
+Date: Fri, 28 Jun 2019 10:50:28 +0800
+Message-Id: <20190628025029.16081-1-huangfq.daxian@gmail.com>
 X-Mailer: git-send-email 2.11.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190627_194822_374554_D312BAB6 
-X-CRM114-Status: GOOD (  14.39  )
+X-CRM114-CacheID: sfid-20190627_195035_231303_F6B23DB9 
+X-CRM114-Status: GOOD (  11.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,51 +92,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Richard Weinberger <richard@nod.at>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Fuqian Huang <huangfq.daxian@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Allison Randal <allison@lohutok.net>
+Cc: Fuqian Huang <huangfq.daxian@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace kmalloc followed by a memset with kzalloc.
-
-There is a recommendation to use zeroing allocator
-rather than allocator followed by memset with 0 in
-./scripts/coccinelle/api/alloc/zalloc-simple.cocci
+Use zero allocator rather than kmalloc followed with memset with 0.
 
 Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
 ---
- drivers/mtd/nand/raw/nand_bch.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/jffs2/erase.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_bch.c b/drivers/mtd/nand/raw/nand_bch.c
-index 55aa4c1cd414..17527310c3a1 100644
---- a/drivers/mtd/nand/raw/nand_bch.c
-+++ b/drivers/mtd/nand/raw/nand_bch.c
-@@ -170,7 +170,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
- 		goto fail;
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index 83b8f06b4a64..30c4385c6545 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -43,7 +43,7 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
+ 	jffs2_dbg(1, "%s(): erase block %#08x (range %#08x-%#08x)\n",
+ 		  __func__,
+ 		  jeb->offset, jeb->offset, jeb->offset + c->sector_size);
+-	instr = kmalloc(sizeof(struct erase_info), GFP_KERNEL);
++	instr = kzalloc(sizeof(struct erase_info), GFP_KERNEL);
+ 	if (!instr) {
+ 		pr_warn("kmalloc for struct erase_info in jffs2_erase_block failed. Refiling block for later\n");
+ 		mutex_lock(&c->erase_free_sem);
+@@ -57,8 +57,6 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
+ 		return;
  	}
  
--	nbc->eccmask = kmalloc(eccbytes, GFP_KERNEL);
-+	nbc->eccmask = kzalloc(eccbytes, GFP_KERNEL);
- 	nbc->errloc = kmalloc_array(t, sizeof(*nbc->errloc), GFP_KERNEL);
- 	if (!nbc->eccmask || !nbc->errloc)
- 		goto fail;
-@@ -182,7 +182,6 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
- 		goto fail;
- 
- 	memset(erased_page, 0xff, eccsize);
--	memset(nbc->eccmask, 0, eccbytes);
- 	encode_bch(nbc->bch, erased_page, eccsize, nbc->eccmask);
- 	kfree(erased_page);
+-	memset(instr, 0, sizeof(*instr));
+-
+ 	instr->addr = jeb->offset;
+ 	instr->len = c->sector_size;
  
 -- 
 2.11.0
