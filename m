@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74FCFC4321A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 16:57:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C338FC4321A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 16:57:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FF8220645
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 16:57:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 913D820645
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 16:57:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uNBezF//";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="obVpWn5M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FF8220645
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MCQcp5Pg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="sTFFxXe0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 913D820645
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,48 +26,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
 	In-Reply-To:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	References:List-Owner; bh=wnbG8UeQg9hdaBXruseDayd+35dthqGNX8h88MSSW70=; b=uNB
-	ezF//HKrUqSqruHN3NEo+lg+kOFFzp7PFyAOYOMWcsYWZVm6y4ljSlsBUsCYyy6LqOHSLg33w+OHP
-	jhTQ+UJwYRrNWD0Rm84rX/s3REdwiAM8YjWrRfm7Hf3bfIH28WI9J98A6AQgxIk1Kj50Nl7Sip7hz
-	sV7n6z5WgqHEB9O4WL7lfI+03DXtfNbVrmy4kgp/e7KcCmzxbtZkp6nZtSoFm8GUlwPAqqxr1K581
-	0ygQItbbtEAV2yIK6mytDiNQ9n3SHeWyMwia9tPLQ8NYONnc5vfkhBRtoziFRjEVAgre7LxK/u5dH
-	JaTT1l/GuLivKttGt6VTyOTkvMy/NcQ==;
+	References:List-Owner; bh=aSpgKUeioFeD3bjza2CSu5UhkhpgAfEfRlnIX69Eg7k=; b=MCQ
+	cp5PgX3gkw1dmIiEF3zQafSfFxleovlWVo9rigxzgYzeLaCp7ZO7urL61zrQE0B0/2qAlUAL+4sm/
+	iQJOxG25QXInk1aZXaqptSz2Z4YZhCAB2esZ+aiBgu9azQeLqDgOLcZn2K49p3yIQ07WPPrskI3Mj
+	6l7lpG24lNvj6EcbSAK3TAO/NauAXatsdo70Ava9cMMaVNM9SsM1OPaH7H5fD3EB5KnTVhUjq32eo
+	+ui56I6wan40/Bex3v9ln677Ebe7Aw5M7qJUTQ4IfEtAMZIzR0TumThRAVVL1mzvDFHTig54xwTFE
+	7qJhsmFJUo1DMl7lIYm6i/spq+xThmw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hguBY-0004eq-Es; Fri, 28 Jun 2019 16:57:16 +0000
+	id 1hguBr-0004vA-RG; Fri, 28 Jun 2019 16:57:35 +0000
 Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hguAv-00043A-7E; Fri, 28 Jun 2019 16:56:41 +0000
+ id 1hguAv-00043B-7A; Fri, 28 Jun 2019 16:56:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=lK0iOan3AVtLl5dzxhYffiHPtchPL13jyFaUkzzdnGY=; b=obVpWn5MXCPj
- xsB7YM7Fl/AleM+yoj8xzMyX8MH6l9FGSrYsiLhtQYDHnbihQfnQNAgHQGSJBYYa7isdgs+zog5xP
- sYNtslMjaYfQNaLjcglfBmSQi1qZ1FR7Hrhy3qyFSnQK5kZv9FeLJ54GeO8tvR3xlSrkSfuuMrhMU
- /kTLo=;
+ List-Archive; bh=iDKc40FydAHvdXLFNwmMjAx1GM+vsXmu1CM9PROUYY4=; b=sTFFxXe07FaF
+ /Vb6DqwLJZ3Ir44c5J+ZPxdRp2YdrODpWMdm3ZaPBdOodXjmH+b7g2lEHhHmUejekBnxya3cNAE9L
+ oYov+sWXYLdeMONNCYO1M7xn7s35IeUmIkdqnKmMyhfAh4qJ8ceEH05oYf2sA+4ldLSJIb4MW2kjb
+ IGK+4=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=finisterre.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.89)
  (envelope-from <broonie@sirena.org.uk>)
- id 1hguAs-0007D3-B1; Fri, 28 Jun 2019 16:56:34 +0000
+ id 1hguAs-0007D4-E1; Fri, 28 Jun 2019 16:56:34 +0000
 Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
- id E5C44440046; Fri, 28 Jun 2019 17:56:33 +0100 (BST)
+ id 0A62C440049; Fri, 28 Jun 2019 17:56:34 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Ludovic Barre <ludovic.barre@st.com>
-Subject: Applied "spi: stm32-qspi: remove signal sensitive on completion" to
- the spi tree
-In-Reply-To: <1561621439-7305-2-git-send-email-ludovic.Barre@st.com>
+Subject: Applied "dt-bindings: spi: stm32-qspi: add dma properties" to the spi
+ tree
+In-Reply-To: <1561621439-7305-1-git-send-email-ludovic.Barre@st.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190628165633.E5C44440046@finisterre.sirena.org.uk>
-Date: Fri, 28 Jun 2019 17:56:33 +0100 (BST)
+Message-Id: <20190628165634.0A62C440049@finisterre.sirena.org.uk>
+Date: Fri, 28 Jun 2019 17:56:34 +0100 (BST)
 X-Bad-Reply: In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190628_095637_641167_3C6FC56B 
-X-CRM114-Status: GOOD (  13.29  )
+X-CRM114-CacheID: sfid-20190628_095637_639145_BEA40428 
+X-CRM114-Status: GOOD (  11.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,7 +93,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 The patch
 
-   spi: stm32-qspi: remove signal sensitive on completion
+   dt-bindings: spi: stm32-qspi: add dma properties
 
 has been applied to the spi tree at
 
@@ -118,49 +118,36 @@ to this mail.
 Thanks,
 Mark
 
-From 775c4c0032c408b8a57a3fc2695eeda101da003a Mon Sep 17 00:00:00 2001
+From cae86eac98cd90934f94072028c362550338e084 Mon Sep 17 00:00:00 2001
 From: Ludovic Barre <ludovic.barre@st.com>
-Date: Thu, 27 Jun 2019 09:43:59 +0200
-Subject: [PATCH] spi: stm32-qspi: remove signal sensitive on completion
+Date: Thu, 27 Jun 2019 09:43:58 +0200
+Subject: [PATCH] dt-bindings: spi: stm32-qspi: add dma properties
 
-On umount step a sigkill signal is set (without user specific
-action), due to sigkill signal the completion will be interrupted and
-the data transfer can't be finished if a sync is needed.
+This patch adds description of dma properties (optional).
 
 Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-stm32-qspi.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/spi/spi-stm32-qspi.txt | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 42f8e3c6aa1f..0b07182f5660 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -245,12 +245,8 @@ static int stm32_qspi_tx_dma(struct stm32_qspi *qspi,
- 	writel_relaxed(cr | CR_DMAEN, qspi->io_base + QSPI_CR);
+diff --git a/Documentation/devicetree/bindings/spi/spi-stm32-qspi.txt b/Documentation/devicetree/bindings/spi/spi-stm32-qspi.txt
+index adeeb63e84b9..bfc038b9478d 100644
+--- a/Documentation/devicetree/bindings/spi/spi-stm32-qspi.txt
++++ b/Documentation/devicetree/bindings/spi/spi-stm32-qspi.txt
+@@ -19,8 +19,11 @@ Required properties:
+ - reg: chip-Select number (QSPI controller may connect 2 flashes)
+ - spi-max-frequency: max frequency of spi bus
  
- 	t_out = sgt.nents * STM32_COMP_TIMEOUT_MS;
--	if (!wait_for_completion_interruptible_timeout(&qspi->dma_completion,
--						       msecs_to_jiffies(t_out)))
--		err = -ETIMEDOUT;
--
--	if (dma_async_is_tx_complete(dma_ch, cookie,
--				     NULL, NULL) != DMA_COMPLETE)
-+	if (!wait_for_completion_timeout(&qspi->dma_completion,
-+					 msecs_to_jiffies(t_out)))
- 		err = -ETIMEDOUT;
+-Optional property:
++Optional properties:
+ - spi-rx-bus-width: see ./spi-bus.txt for the description
++- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
++Documentation/devicetree/bindings/dma/dma.txt.
++- dma-names: DMA request names should include "tx" and "rx" if present.
  
- 	if (err)
-@@ -304,7 +300,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
- 	cr = readl_relaxed(qspi->io_base + QSPI_CR);
- 	writel_relaxed(cr | CR_TCIE | CR_TEIE, qspi->io_base + QSPI_CR);
+ Example:
  
--	if (!wait_for_completion_interruptible_timeout(&qspi->data_completion,
-+	if (!wait_for_completion_timeout(&qspi->data_completion,
- 				msecs_to_jiffies(STM32_COMP_TIMEOUT_MS))) {
- 		err = -ETIMEDOUT;
- 	} else {
 -- 
 2.20.1
 
