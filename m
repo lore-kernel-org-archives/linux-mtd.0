@@ -2,102 +2,64 @@ Return-Path: <SRS0=/mLJ=U3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C625C4321A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16353C4321A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:38:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55FDA2063F
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:38:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF4F82063F
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:38:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bjTyHGZF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ym1PbLrq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55FDA2063F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IyDOGhIR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF4F82063F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:To:From:
-	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2pIp4YMXJEgwl8PHoK4X+Z1obl0f+8OzEzMaUz1gEeY=; b=bjTyHGZF5dvnLv
-	3vYo9DTj3A3I7x1rxx1jyZHLnrkimKZUSQq2AMy3DrzzlP/5Db+DdNUaGAQlBB/E3vFZB6PNmsHg+
-	u+qNiGF8i3YYxgvpGHTVB3cVs+UbKv3h6YBXNswpn53JnGx7GWlwWsOeWM9OHw+bYthKQOYx29CCX
-	FaJtSi378zy87od7GjbPWnt26G30u/Q4+odzIdIGQ6zkZlu1822qEMUmwnlFJylSObNVUZEvXULmJ
-	UGXMJGOC8xNPVYkm2e8MRmSHdcD1NitwSGJ6GGaTvZTPOKg6HQcCwoJI2auU43ALZ6xQl8MwxCJcv
-	soCbIIGfF2QgMOOyCW/Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wk9tHpmTyZwBG/CIFSC0nZ5OxbXlJW9K7868r8qmspA=; b=IyDOGhIRm2rJF6
+	flcrwUW+mMKtXXP5uTgFqemZ0WQrAF1ZGrjtjl/R12otMU7sAW7zoBdR3Arcqrx5agzv7xosV7Yb/
+	XGZa7IMv3NtleArGAORm4xjq8EvrO+kpU9hhhi7ONY87IvJ4jYaxzhV93C/KKLwM484gabArTujNv
+	ELElabA/0mhTlaS5Rsz1DEL9Gn6Y69ztWvo71Cc1KLLOvgMRfKGWzJzSpPs8eej7+NSLMbUWs4Om/
+	P1UAdmOPTUJV6EU9Y6KEg4EK7Zbk439tJoMSvQZtZkCWaL6gTLOFpCylXOJZ1EGmrjZ+WkFOx7zjN
+	/3qmdGmv2PmrvzJzmmjg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hgvlH-0004NY-Br; Fri, 28 Jun 2019 18:38:15 +0000
-Received: from userp2130.oracle.com ([156.151.31.86])
+	id 1hgvld-0004fo-FY; Fri, 28 Jun 2019 18:38:37 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgvja-0007zm-Qr
- for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 18:36:36 +0000
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5SITZBX105273;
- Fri, 28 Jun 2019 18:33:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=subject : from : to :
- cc : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=cAdDQjLmw3paRsCYayAMtBFRH59fRNc4vYLBHuqjsSA=;
- b=Ym1PbLrqLrgILPZ9ahcgds3J8K047msKevHhF5dmFaMWkS8t2xAnIGEx1+BHaqGr1pl/
- HXeOXwzCBsFhn/7lzMtqoVTJFKOCV2j+xhup1v6t+ofAqQxKWMccQra0ZTkBXVEFeXrL
- fJoE1rs6UZ5AukUUwRprgTv0qeOpIDO0zEjIhPJoTtplnvkA/e94BPVuaHySItKPWJp3
- C9SB6s34GVtK1Sf0ZKOED6k7Kb1xQrz9vVZuQxtDO6fnlvNCu/i2nBpLriqSXKxQNFL1
- ACTEb7HIMu7IT18EvDVUGtAmFO9UyvHau6Ox7lLRQYzKrh+zjJTn5vudod4B9q++Stkm XA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2130.oracle.com with ESMTP id 2t9brtq3ep-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 28 Jun 2019 18:33:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5SIX4Q2149109;
- Fri, 28 Jun 2019 18:33:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3020.oracle.com with ESMTP id 2t9p6w22s4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 28 Jun 2019 18:33:58 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5SIXvVD150493;
- Fri, 28 Jun 2019 18:33:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by aserp3020.oracle.com with ESMTP id 2t9p6w22rx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 28 Jun 2019 18:33:57 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5SIXppW025387;
- Fri, 28 Jun 2019 18:33:51 GMT
-Received: from localhost (/67.169.218.210)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Fri, 28 Jun 2019 11:33:51 -0700
-Subject: [PATCH v4 0/5] vfs: clean up SETFLAGS and FSSETXATTR option processing
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
- darrick.wong@oracle.com, shaggy@kernel.org, ard.biesheuvel@linaro.org,
- josef@toxicpanda.com, hch@infradead.org, clm@fb.com,
- adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
- dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk
-Date: Fri, 28 Jun 2019 11:33:49 -0700
-Message-ID: <156174682897.1557318.14418894077683701275.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+ id 1hgvjg-0002ql-V5
+ for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 18:36:45 +0000
+X-Originating-IP: 81.185.164.234
+Received: from localhost.localdomain (234.164.185.81.rev.sfr.net
+ [81.185.164.234]) (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id E819E40002;
+ Fri, 28 Jun 2019 18:36:13 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christophe Kerello <christophe.kerello@st.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, vigneshr@ti.com
+Subject: Re: [PATCH v2] mtd: rawnand: stm32_fmc2: increase DMA completion
+ timeouts
+Date: Fri, 28 Jun 2019 20:36:10 +0200
+Message-Id: <20190628183610.18729-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <1561713486-26597-1-git-send-email-christophe.kerello@st.com>
+References: 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9302
- signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=864 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906280208
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: bce9437a0a48dd5e19490f56e1cdc39a9be5563c
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190628_113631_024269_C488BB0D 
-X-CRM114-Status: UNSURE (   8.69  )
+X-CRM114-CacheID: sfid-20190628_113637_404608_DDFC69DE 
+X-CRM114-Status: UNSURE (   6.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -110,41 +72,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-xfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
- linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- ocfs2-devel@oss.oracle.com
+Cc: linux-stm32@st-md-mailman.stormreply.com,
+ Amelie Delaunay <amelie.delaunay@st.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bbrezillon@kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+On Fri, 2019-06-28 at 09:18:06 UTC, Christophe Kerello wrote:
+> From: Amelie Delaunay <amelie.delaunay@st.com>
+> 
+> When the system is overloaded, DMA data transfer completion occurs after
+> 100ms. Increase the timeouts to let it the time to complete.
+> 
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
 
-The FS_IOC_SETFLAGS and FS_IOC_FSSETXATTR ioctls were promoted from ext4
-and XFS, respectively, into the VFS.  However, we didn't promote any of
-the parameter checking code from those filesystems, which lead to a mess
-where each filesystem open-codes whatever parameter checks they want and
-the behavior across filesystems is no longer consistent.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Therefore, create some generic checking functions in the VFS and remove
-all the open-coded pieces in each filesystem.  This preserves the
-current behavior where a filesystem can choose to ignore fields it
-doesn't understand.
-
-If you're going to start using this mess, you probably ought to just
-pull from my git trees, which are linked below.
-
-This has been lightly tested with fstests.  Enjoy!
-Comments and questions are, as always, welcome.
-
---D
-
-kernel git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git/log/?h=file-ioctl-cleanups
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
