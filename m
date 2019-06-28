@@ -2,92 +2,89 @@ Return-Path: <SRS0=/mLJ=U3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
+X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE417C4321A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D21CC4321A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:37:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCB7020828
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:36:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 366562083B
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 18:37:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="b9bTrQtR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="zfsBPq4V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCB7020828
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MOEH8UnG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MSV3k1wR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 366562083B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:To:From:Subject:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ogi/QeZ6GwVWpotl2ZMrtO89siYu9TcTyzx69L5hsBY=; b=b9bTrQtRhoIf+5
-	AeA1Axlz0voaMe06Ndv1LyCayRzAo/XuFPJaA9FKVY+PJqhjG/gQYvT7G9hUtFDkZr6hj+QmXwMq3
-	4BqbGb7hJrN21qe7llhtVW3691BkbMjpsiFBqzM7xwIAkNG2lKtPsWTkgd73bjmhtUOW6C0mjtXZ1
-	0rRK/XHhyMzN4QUl39GPLh1o8W8t8X+YFlzrp5DlS4r0Us+hyOrjS1y7B/KbsQFcd9w3AQ/nQ7lir
-	Zl8Pd8hJ0KtyL1yaF6BG0kkajxAdLLlFM7K3tIsWYbFqMXDwHDGbgiQyHFnyF3kS+dRRL12Acv5Gc
-	YrcCFHkPisQnq569giZw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:To:From:
+	Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=q+5puTvRmphf/EiI6P9zwBGJjRDuQ7E+0utxllsaj4A=; b=MOEH8UnGFNNq0o
+	1IVWDBWD33djOD4LutSSMp4BmlozkiomMs7M3vPAU/C46kOaL4Oha8ohwMHS9iNABfXqcEmC8YFe7
+	cEPgKDjsazGel75NZlGTYmreMbv5Y6FjJMab/tlFiW5KYg4bxH+mW0dNQWS86hv00mHRO1Ot7jEyu
+	h01Geb5qrvyNjOmwiLYmOt93hpVe6PogPnq9zjpimA9Ph0TNfDFwIyHzvLKOF32R7lMq4Z+VL7LZk
+	I7MZoDqqkmFlR40sSD07H+W6Y5kRtgTeJ39+bsSwiWXBfQYOH3q8r5j52G7qzBVBFf1vwY43+HCzG
+	GXSLNYApMkWWThHchs1w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hgvjY-0002mR-TQ; Fri, 28 Jun 2019 18:36:28 +0000
-Received: from userp2120.oracle.com ([156.151.31.85])
+	id 1hgvk7-0003JE-Ve; Fri, 28 Jun 2019 18:37:04 +0000
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgvhr-0008Cb-Hw
- for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 18:34:48 +0000
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5SIYTuK114669;
- Fri, 28 Jun 2019 18:34:29 GMT
+ id 1hgvi3-0008OW-8c
+ for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 18:35:00 +0000
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5SIYFKk027580;
+ Fri, 28 Jun 2019 18:34:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
  h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=RJo9HRMvrhDC3/z4MR2nW8aji8vHUz97eCXxdDfB7Qw=;
- b=zfsBPq4VIgYQNsYJJLrQACmJUX2r4WH3O24sII7d3G3YpAp2BPvIaItNZuKFgX8DhxfW
- vXdtmCxGUQAsSnZqhsjZ7kHOL3QYXAeRSerILJ9orq99UK4YmM56dP18DZpACbCT3wN2
- V0UDcy16W4vhh0jil3d+yfPReca3dIRCwA0TQNssA4D+W/GOgk6nez66Cf6ykSiEYYmD
- 8T4iOAs7QMyYZCEXLJJXiFCrdLDL866nH1zyubZnV2zumrYW5Op10XIew14erNhQP/4t
- HbOBURZkWTQNo7pA/qgq/oaCbtYUv9E36D5xwci4Dq8czAcUUDO1LB1hSPwSLDRKwbk3 5g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by userp2120.oracle.com with ESMTP id 2t9cyqxyh9-1
+ cc : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=fawPQY/UISfSH6DvrztcWabWXm47TtXieQJWSELxOKQ=;
+ b=MSV3k1wREyOZiFpPpvgY3Rux39mU5lQ1KuniYc4Ie6w7JtZJmHKecvubM23dsIDGuJZj
+ 0kBZKXN2nVbEu420ZAKAI1xRCkRYIV2YwintD6ID8Ef9AbMSdXwgcgptihQ1MHeFh2xq
+ 4rthJOp1LoqFymHqc7XUoAgWgyHhQQXJ6mUsYDiNcGbORfy7T7jZgONqr9D3Obf778mO
+ OMaSDrTN639V6Y5LIwKcUxtwE9Aby8Sku8uUQgNDdtjD6t77xSNL7Dbg+p5SeDnXQdcl
+ a2PsAdVk14mFbai1lLrR0i9JMF4YWvUjiuNurCUsTfH4inSLWA8dSmsARfc/6gXafxRO PQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+ by aserp2120.oracle.com with ESMTP id 2t9c9q72q0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 28 Jun 2019 18:34:29 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5SIXemV001136;
- Fri, 28 Jun 2019 18:34:29 GMT
+ Fri, 28 Jun 2019 18:34:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+ by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5SIXdhY078899;
+ Fri, 28 Jun 2019 18:34:39 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
- by userp3020.oracle.com with ESMTP id 2tat7e3g5e-1
+ by aserp3030.oracle.com with ESMTP id 2t9acdyeaf-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 28 Jun 2019 18:34:29 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5SIYS8N002532;
- Fri, 28 Jun 2019 18:34:28 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by userp3020.oracle.com with ESMTP id 2tat7e3g5b-1
+ Fri, 28 Jun 2019 18:34:39 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5SIYdKY080557;
+ Fri, 28 Jun 2019 18:34:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+ by aserp3030.oracle.com with ESMTP id 2t9acdyeac-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 28 Jun 2019 18:34:28 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5SIYQeU021679;
- Fri, 28 Jun 2019 18:34:27 GMT
+ Fri, 28 Jun 2019 18:34:39 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+ by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5SIYcPk001892;
+ Fri, 28 Jun 2019 18:34:38 GMT
 Received: from localhost (/67.169.218.210)
  by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Fri, 28 Jun 2019 11:34:26 -0700
-Subject: [PATCH 4/5] vfs: teach vfs_ioc_fssetxattr_check to check extent
- size hints
+ with ESMTP ; Fri, 28 Jun 2019 11:34:38 -0700
+Subject: [PATCH v6 0/4] vfs: make immutable files actually immutable
 From: "Darrick J. Wong" <darrick.wong@oracle.com>
 To: matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
- darrick.wong@oracle.com, shaggy@kernel.org, ard.biesheuvel@linaro.org,
+ darrick.wong@oracle.com, ard.biesheuvel@linaro.org,
  josef@toxicpanda.com, hch@infradead.org, clm@fb.com,
- adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
- dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk
-Date: Fri, 28 Jun 2019 11:34:23 -0700
-Message-ID: <156174686376.1557318.5574192602758705361.stgit@magnolia>
-In-Reply-To: <156174682897.1557318.14418894077683701275.stgit@magnolia>
-References: <156174682897.1557318.14418894077683701275.stgit@magnolia>
+ adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+ dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org
+Date: Fri, 28 Jun 2019 11:34:35 -0700
+Message-ID: <156174687561.1557469.7505651950825460767.stgit@magnolia>
 User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9302
@@ -95,12 +92,12 @@ X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9302
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  priorityscore=1501 malwarescore=0
  suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=980 adultscore=0
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
  definitions=main-1906280210
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190628_113444_591969_6651A8CB 
-X-CRM114-Status: GOOD (  16.62  )
+X-CRM114-CacheID: sfid-20190628_113455_534274_13C832C7 
+X-CRM114-Status: GOOD (  11.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,166 +109,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-xfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
- linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- ocfs2-devel@oss.oracle.com
+Cc: linux-efi@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+ linux-mm@kvack.org, linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, devel@lists.orangefs.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+Hi all,
 
-Move the extent size hint checks that aren't xfs-specific to the vfs.
+The chattr(1) manpage has this to say about the immutable bit that
+system administrators can set on files:
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/inode.c         |   18 +++++++++++++
- fs/xfs/xfs_ioctl.c |   70 ++++++++++++++++++++++------------------------------
- 2 files changed, 47 insertions(+), 41 deletions(-)
+"A file with the 'i' attribute cannot be modified: it cannot be deleted
+or renamed, no link can be created to this file, most of the file's
+metadata can not be modified, and the file can not be opened in write
+mode."
 
+Given the clause about how the file 'cannot be modified', it is
+surprising that programs holding writable file descriptors can continue
+to write to and truncate files after the immutable flag has been set,
+but they cannot call other things such as utimes, fallocate, unlink,
+link, setxattr, or reflink.
 
-diff --git a/fs/inode.c b/fs/inode.c
-index c4f8fb16f633..670d5408d022 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2247,6 +2247,24 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
- 			return -EINVAL;
- 	}
- 
-+	/* Check extent size hints. */
-+	if ((fa->fsx_xflags & FS_XFLAG_EXTSIZE) && !S_ISREG(inode->i_mode))
-+		return -EINVAL;
-+
-+	if ((fa->fsx_xflags & FS_XFLAG_EXTSZINHERIT) &&
-+			!S_ISDIR(inode->i_mode))
-+		return -EINVAL;
-+
-+	if ((fa->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
-+	    !S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
-+		return -EINVAL;
-+
-+	/* Extent size hints of zero turn off the flags. */
-+	if (fa->fsx_extsize == 0)
-+		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
-+	if (fa->fsx_cowextsize == 0)
-+		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
-+
- 	return 0;
- }
- EXPORT_SYMBOL(vfs_ioc_fssetxattr_check);
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index f494c01342c6..fe29aa61293c 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -1200,39 +1200,31 @@ xfs_ioctl_setattr_check_extsize(
- 	struct fsxattr		*fa)
- {
- 	struct xfs_mount	*mp = ip->i_mount;
--
--	if ((fa->fsx_xflags & FS_XFLAG_EXTSIZE) && !S_ISREG(VFS_I(ip)->i_mode))
--		return -EINVAL;
--
--	if ((fa->fsx_xflags & FS_XFLAG_EXTSZINHERIT) &&
--	    !S_ISDIR(VFS_I(ip)->i_mode))
--		return -EINVAL;
-+	xfs_extlen_t		size;
-+	xfs_fsblock_t		extsize_fsb;
- 
- 	if (S_ISREG(VFS_I(ip)->i_mode) && ip->i_d.di_nextents &&
- 	    ((ip->i_d.di_extsize << mp->m_sb.sb_blocklog) != fa->fsx_extsize))
- 		return -EINVAL;
- 
--	if (fa->fsx_extsize != 0) {
--		xfs_extlen_t    size;
--		xfs_fsblock_t   extsize_fsb;
--
--		extsize_fsb = XFS_B_TO_FSB(mp, fa->fsx_extsize);
--		if (extsize_fsb > MAXEXTLEN)
--			return -EINVAL;
-+	if (fa->fsx_extsize == 0)
-+		return 0;
- 
--		if (XFS_IS_REALTIME_INODE(ip) ||
--		    (fa->fsx_xflags & FS_XFLAG_REALTIME)) {
--			size = mp->m_sb.sb_rextsize << mp->m_sb.sb_blocklog;
--		} else {
--			size = mp->m_sb.sb_blocksize;
--			if (extsize_fsb > mp->m_sb.sb_agblocks / 2)
--				return -EINVAL;
--		}
-+	extsize_fsb = XFS_B_TO_FSB(mp, fa->fsx_extsize);
-+	if (extsize_fsb > MAXEXTLEN)
-+		return -EINVAL;
- 
--		if (fa->fsx_extsize % size)
-+	if (XFS_IS_REALTIME_INODE(ip) ||
-+	    (fa->fsx_xflags & FS_XFLAG_REALTIME)) {
-+		size = mp->m_sb.sb_rextsize << mp->m_sb.sb_blocklog;
-+	} else {
-+		size = mp->m_sb.sb_blocksize;
-+		if (extsize_fsb > mp->m_sb.sb_agblocks / 2)
- 			return -EINVAL;
--	} else
--		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
-+	}
-+
-+	if (fa->fsx_extsize % size)
-+		return -EINVAL;
- 
- 	return 0;
- }
-@@ -1258,6 +1250,8 @@ xfs_ioctl_setattr_check_cowextsize(
- 	struct fsxattr		*fa)
- {
- 	struct xfs_mount	*mp = ip->i_mount;
-+	xfs_extlen_t		size;
-+	xfs_fsblock_t		cowextsize_fsb;
- 
- 	if (!(fa->fsx_xflags & FS_XFLAG_COWEXTSIZE))
- 		return 0;
-@@ -1266,25 +1260,19 @@ xfs_ioctl_setattr_check_cowextsize(
- 	    ip->i_d.di_version != 3)
- 		return -EINVAL;
- 
--	if (!S_ISREG(VFS_I(ip)->i_mode) && !S_ISDIR(VFS_I(ip)->i_mode))
--		return -EINVAL;
--
--	if (fa->fsx_cowextsize != 0) {
--		xfs_extlen_t    size;
--		xfs_fsblock_t   cowextsize_fsb;
-+	if (fa->fsx_cowextsize == 0)
-+		return 0;
- 
--		cowextsize_fsb = XFS_B_TO_FSB(mp, fa->fsx_cowextsize);
--		if (cowextsize_fsb > MAXEXTLEN)
--			return -EINVAL;
-+	cowextsize_fsb = XFS_B_TO_FSB(mp, fa->fsx_cowextsize);
-+	if (cowextsize_fsb > MAXEXTLEN)
-+		return -EINVAL;
- 
--		size = mp->m_sb.sb_blocksize;
--		if (cowextsize_fsb > mp->m_sb.sb_agblocks / 2)
--			return -EINVAL;
-+	size = mp->m_sb.sb_blocksize;
-+	if (cowextsize_fsb > mp->m_sb.sb_agblocks / 2)
-+		return -EINVAL;
- 
--		if (fa->fsx_cowextsize % size)
--			return -EINVAL;
--	} else
--		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
-+	if (fa->fsx_cowextsize % size)
-+		return -EINVAL;
- 
- 	return 0;
- }
+Since the immutable flag is only settable by administrators, resolve
+this inconsistent behavior in favor of the documented behavior -- once
+the flag is set, the file cannot be modified, period.  We presume that
+administrators must be trusted to know what they're doing, and that
+cutting off programs with writable fds will probably break them.
 
+Therefore, add immutability checks to the relevant VFS functions, then
+refactor the SETFLAGS and FSSETXATTR implementations to use common
+argument checking functions so that we can then force pagefaults on all
+the file data when setting immutability.
+
+Note that various distro manpages points out the inconsistent behavior
+of the various Linux filesystems w.r.t. immutable.  This fixes all that.
+
+I also discovered that userspace programs can write and create writable
+memory mappings to active swap files.  This is extremely bad because
+this allows anyone with write privileges to corrupt system memory.  The
+final patch in this series closes off that hole, at least for swap
+files.
+
+If you're going to start using this mess, you probably ought to just
+pull from my git trees, which are linked below.
+
+This has been lightly tested with fstests.  Enjoy!
+Comments and questions are, as always, welcome.
+
+--D
+
+kernel git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git/log/?h=immutable-files
+
+fstests git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/xfstests-dev.git/log/?h=immutable-files
 
 ______________________________________________________
 Linux MTD discussion mailing list
