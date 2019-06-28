@@ -2,47 +2,47 @@ Return-Path: <SRS0=/mLJ=U3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF38EC4321A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 08:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0A83C4321A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 08:23:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B07B9206E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 08:22:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87D10206E0
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 08:23:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nYp0Kmbo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="YL6DyLgm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B07B9206E0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oF3KvaIB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="k8i7AO9b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87D10206E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-Description:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2ZRQmmqj8TiZ5LctzJ1g3uncJazNubT2021kYxfGVuE=; b=nYp0Kmbo3/jbOz
-	qAEW2gMyTXB2SQOJwdjjBfx3Wk6y78WM/VZdyQA1HMoptG+bypS9sbZ8yi+LOL+FSRfVm3gBjH6cn
-	/PMdeobVDSfyLocKqYjwjO9j4lkOVoVzDvnSWJi9byXx2U8S3PwfB2UirKDn2XfTcTv83kfkfPt0p
-	g0LNEArq7vAcK/Cn2OiOyEHkrVcSrfQEWWPDwp7T4OUGbMeuiHS5of9re9YMdzECv4Jn8cM0YSphj
-	jrN244tEjJV8z3hATTN/sgYq4S4ZsTVOna60YfPk1E9ex8Zb590x80/GdCYzuht2sNqpZNEB9rWsp
-	l/4vrZ61tgZJ38AhVFOw==;
+	List-Owner; bh=69kV3v22SbXFqE4dxKZzPzqLpglMQ80gcXEWn3ztz+I=; b=oF3KvaIBSeRcPN
+	hcJPQ2/uPXmVcrZIF0+FMYMMwlDjb/fvAb4r4sWe+kB4vI+h8cVki3VzVJ7ouL3mbtbj/+csE5YDR
+	wYuXBxO/L/tKgrMWwQSr/mYelHVfP/xRWj/AKEnMuYehloTrqufRZkjJyq5Y7AQ5Spc33PwdTBLa3
+	uyZfUDJjNCBGmFAC1njiniaKE1wOL1v7MxbshdGFX0aup2fNI5WfNkPSOPtVJUH6Vle5Shlxd2Uoy
+	aZNSBfqpMXrIEtdPlxVj29fNMsT0VFJfDcgVOEDX14yP6/68P7OKRp2V4M24FWuzc1K5GUfe/GWd3
+	5Ni11ONXsk3ZeH+aWN8g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hgm9W-0004gg-Nk; Fri, 28 Jun 2019 08:22:38 +0000
-Received: from esa5.microchip.iphmx.com ([216.71.150.166])
+	id 1hgmAK-00050J-4j; Fri, 28 Jun 2019 08:23:28 +0000
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgm9T-0004g8-TG
- for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 08:22:37 +0000
-Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
+ id 1hgmAG-0004zW-LT
+ for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 08:23:26 +0000
+Received-SPF: Pass (esa6.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="Tudor.Ambarus@microchip.com";
  x-conformance=spf_only; x-record-type="v=spf1";
@@ -50,105 +50,104 @@ Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
  a:smtpout.microchip.com a:mx1.microchip.iphmx.com
  a:mx2.microchip.iphmx.com include:servers.mcsv.net
  include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa5.microchip.iphmx.com: no sender
+Received-SPF: None (esa6.microchip.iphmx.com: no sender
  authenticity information available from domain of
  postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa5.microchip.iphmx.com;
+ client-ip=198.175.253.82; receiver=esa6.microchip.iphmx.com;
  envelope-from="Tudor.Ambarus@microchip.com";
  x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa5.microchip.iphmx.com;
+Authentication-Results: esa6.microchip.iphmx.com;
  spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-X-IronPort-AV: E=Sophos;i="5.63,427,1557212400"; d="scan'208";a="37732729"
+X-IronPort-AV: E=Sophos;i="5.63,427,1557212400"; d="scan'208";a="36241967"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 28 Jun 2019 01:22:32 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.87.151) by
- chn-vm-ex01.mchp-main.com (10.10.87.71) with Microsoft SMTP Server
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 Jun 2019 01:23:18 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.87.71) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 28 Jun 2019 01:22:29 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 28 Jun 2019 01:22:29 -0700
+ 15.1.1713.5; Fri, 28 Jun 2019 01:23:17 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5 via Frontend
+ Transport; Fri, 28 Jun 2019 01:23:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=testarcselector01; d=microsoft.com; cv=none;
- b=Ko/LJjAtKoFUmYGEo+yC+b2FV5DKhdFVFidTvYmJopc5hh0/z+rS8JjhqZ8CerEzZuGU1u6lJTmEsE97z/iMlKY9SuEU+gJYusoFuPIRzvXPvtYJ3HhKS9UxsltJsQhs6xSIauHCUm3sA0dQ8HA+5lTT1IaNBU0+v/Ju/vjSGa4=
+ b=r3JFNbwLjG8BwBKha+IVuCxhZ2ghTB99SBaH993dl/nK6Xvi8oa+MzkSB+2J6GJK4wxXfzgzIZanUUXtQqCd0DOLkQy0/yNyvIeHJDhzSa6q4nnIXf5sJ4MfAs7tkY96Y44xqN10qeD+cGq9KCllxr8ki/1wG2hc0yWonMHnxP0=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=testarcselector01;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WeOCvDbn5z7N6RB4NJLa91vkE0r1Ne9633Mw4o7CcHI=;
- b=bptdyjD69OfcdkKOagwwY1sQ+E2GkAGb5xOZG6NSZPTPUvDD77Qft2Gs0BL7W6QvRqapMkb14nJT/oxqqiMbGP1g8LXOmDomi7oj+uuf05HzPeargyKcynLFMzhg7xhIczmsudQBe8lBMYBGGSx0RPneVEAbR7jysNf0c36fpwg=
+ bh=rv6BKJrQ/6eOJX8IyxQAdXhf27M7XATw+FdycBHLYbs=;
+ b=q6m5NmbOQFdt9AZZMXScXrBdyxfjt8UurOOp6/iRVOzBN1Vv99hub/YL42P2aXjVnCWF+Jv6DJKoC2pkTzmQVUAqWr3W6X/NBthnrdoP0SFeKjJa4HVx8RnoR85g9YCUxO/PJ08Cl9Hf9QksdJRDtWI+WP3jAT9fWspqhlHrGxA=
 ARC-Authentication-Results: i=1; test.office365.com
  1;spf=none;dmarc=none;dkim=none;arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector1-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WeOCvDbn5z7N6RB4NJLa91vkE0r1Ne9633Mw4o7CcHI=;
- b=YL6DyLgmkZeg2YYpPn0muV99SBARDe5oVVOvrQ0mFBWxDUnjp5/OglR9J6CLI5JsiR7bSSrHKYjMa/2fB+8mNt64ct9xQvXfCyyOtm1Tvx8zvMUFJ8CTVAyr13dTqDWgR7EPa60LVHiYuJRaDmPD07iiCcNf2E7qKXMlpVKMy0E=
+ bh=rv6BKJrQ/6eOJX8IyxQAdXhf27M7XATw+FdycBHLYbs=;
+ b=k8i7AO9bnhFcV59IAVN7PC24uj5SF9o85CAijesaFrdqc5OV1PI2hAjbLD6kCGQ4+g8Eqsej76EZNuiQ02iAWOx3BctuUijVGkX/5s77SnsqyyUmDtRYU56pUBE0KOB+VyC0XXzu00eBVaOR0RecLxXmmr77UnGBrmXjs2sdr9E=
 Received: from DM5PR11MB1850.namprd11.prod.outlook.com (10.175.91.11) by
  DM5PR11MB1402.namprd11.prod.outlook.com (10.168.101.142) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.16; Fri, 28 Jun 2019 08:22:28 +0000
+ 15.20.2008.16; Fri, 28 Jun 2019 08:23:16 +0000
 Received: from DM5PR11MB1850.namprd11.prod.outlook.com
  ([fe80::5025:6c13:b07d:501e]) by DM5PR11MB1850.namprd11.prod.outlook.com
  ([fe80::5025:6c13:b07d:501e%6]) with mapi id 15.20.2008.017; Fri, 28 Jun 2019
- 08:22:28 +0000
+ 08:23:16 +0000
 From: <Tudor.Ambarus@microchip.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCHv6 1/2] dt-bindings: cadence-quadspi: add options reset
- property
-Thread-Topic: [PATCHv6 1/2] dt-bindings: cadence-quadspi: add options reset
- property
-Thread-Index: AQHVIdusqBYcLDcbq02njfD9Z3kc16aw0X0A
-Date: Fri, 28 Jun 2019 08:22:27 +0000
-Message-ID: <c4a7d10d-6c14-a184-4d53-6bc743c85552@microchip.com>
+To: <dinguyen@kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCHv6 2/2] mtd: spi-nor: cadence-quadspi: add reset control
+Thread-Topic: [PATCHv6 2/2] mtd: spi-nor: cadence-quadspi: add reset control
+Thread-Index: AQHVIdur3cT5P1lXJ0SybjCFjOpNoKaw0bWA
+Date: Fri, 28 Jun 2019 08:23:16 +0000
+Message-ID: <3d592ca2-65c6-892e-6b7b-bf2cf0495386@microchip.com>
 References: <20190613113138.8280-1-dinguyen@kernel.org>
-In-Reply-To: <20190613113138.8280-1-dinguyen@kernel.org>
+ <20190613113138.8280-2-dinguyen@kernel.org>
+In-Reply-To: <20190613113138.8280-2-dinguyen@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR08CA0120.eurprd08.prod.outlook.com
- (2603:10a6:800:d4::22) To DM5PR11MB1850.namprd11.prod.outlook.com
+x-clientproxiedby: VI1PR07CA0190.eurprd07.prod.outlook.com
+ (2603:10a6:802:3f::14) To DM5PR11MB1850.namprd11.prod.outlook.com
  (2603:10b6:3:112::11)
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [94.177.32.154]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 995c577c-7456-4f0d-5086-08d6fba1c1a1
+x-ms-office365-filtering-correlation-id: 8c16e11a-22a2-4f0c-e3fc-08d6fba1de84
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
  SRVR:DM5PR11MB1402; 
 x-ms-traffictypediagnostic: DM5PR11MB1402:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <DM5PR11MB14021DD049D8B1C67229FED7F0FC0@DM5PR11MB1402.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-purlcount: 2
+x-microsoft-antispam-prvs: <DM5PR11MB14025F22D806DDF9AD7AE82DF0FC0@DM5PR11MB1402.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:590;
 x-forefront-prvs: 00826B6158
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(39860400002)(136003)(346002)(366004)(396003)(199004)(189003)(31696002)(6506007)(31686004)(2616005)(476003)(486006)(386003)(316002)(102836004)(53546011)(53936002)(6486002)(14454004)(6512007)(99286004)(76176011)(5640700003)(229853002)(446003)(6246003)(7736002)(11346002)(36756003)(2351001)(256004)(52116002)(8936002)(8676002)(81156014)(81166006)(6306002)(2501003)(6916009)(6436002)(68736007)(14444005)(66066001)(72206003)(86362001)(186003)(305945005)(25786009)(5660300002)(66556008)(71190400001)(71200400001)(64756008)(66946007)(73956011)(26005)(2906002)(66446008)(3846002)(66476007)(6116002)(478600001)(4744005)(966005);
+ SFS:(10009020)(376002)(39860400002)(136003)(346002)(366004)(396003)(199004)(189003)(31696002)(6506007)(31686004)(2616005)(476003)(486006)(386003)(316002)(102836004)(53546011)(53936002)(6486002)(14454004)(54906003)(6512007)(99286004)(110136005)(76176011)(229853002)(446003)(6246003)(7736002)(11346002)(36756003)(256004)(52116002)(8936002)(8676002)(81156014)(81166006)(6306002)(2501003)(6436002)(68736007)(14444005)(66066001)(72206003)(86362001)(186003)(305945005)(25786009)(5660300002)(66556008)(71190400001)(71200400001)(64756008)(66946007)(73956011)(26005)(4326008)(2906002)(66446008)(3846002)(66476007)(6116002)(478600001)(966005);
  DIR:OUT; SFP:1101; SCL:1; SRVR:DM5PR11MB1402;
  H:DM5PR11MB1850.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; A:1; MX:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: lUEED40Td+k1ppGaPd3wuy2dDpnsVdCpIDLGaBIlPxwJUkYofUu3p3Cmh894ihjvJDOBBoskZbgUAuZXElsFbFgX6E4wRgKXVG6O4bLt7f5ux14dp4Oc/IKupkXYuBh3PFEdBI4X598gCECsiw0RPlBnJcc1luNd1PsqKYRwVW/Csz/dOoMsOvUjSkCd9eN5y6r0RCODlvdHN5zL3Sc59trs6ZhEelBEbhXneQ9pHo+p+XSeJBB6qkTodhhTFOjroihCpzemHVjXxVyGBTThMnCuVqHimV2rc0hH8Bv+rFGP3g/rfXUOuf9lEqsmeRKxIg8CbgYHAWMQvuC24+mdFhvIBBqCvrNpbmUXGp7H3vBDG6e9g9MYKX8R4g7JoQVAgjqv5Lg12eFerSR1QPwsi2VT57JFZTYZF4JGZ03LHQI=
-Content-ID: <3795FB291EA7484FBE75D76029B16ECC@namprd11.prod.outlook.com>
+x-microsoft-antispam-message-info: XMlaqP9bnxE0K0HO1MT5xNG6Noh6DfxAY1ak6aHTCeteZQiF5dYpNZyAG8TtmJs8L4sQPQ65M9ofcYAbi/UeGwo7KSkNesrWBjPnyXEINvqU3rFgeyfqyufKNe8lzHj1jwi//ceGNNorPisMNA87j3zGaAFLh5q8u1lC79fc8iGdiTm54MjTeNJlz5a5UL53OUsgG6RwyZnHeBwN6FuCaNwxK5IsYLXc26AyNKawn3+WRu42grCGsiHdFRijlHYUJCpSMF8v9v1oF3qQzmzO2QdI7bhKNTjzdeagFUpqm0l/9JkeOimZeUzPz+qsgOLrE01NOz23ktiVQGiTiudVRi4t9otEiRbSzjtU2O1va62M4fKii+u2jd+e3dtE4roWNzFjmdTu41L8LuiNYMpLOh6r2x7eGwZrexZ+siPnzgk=
+Content-ID: <07CCCC1F5D7AEB46A69D1BBE2EF74AA6@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 995c577c-7456-4f0d-5086-08d6fba1c1a1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2019 08:22:27.9747 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c16e11a-22a2-4f0c-e3fc-08d6fba1de84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2019 08:23:16.5845 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1402
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190628_012236_054454_9B83CF6F 
-X-CRM114-Status: UNSURE (   9.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190628_012324_741251_1F751BC3 
+X-CRM114-Status: GOOD (  19.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -160,6 +159,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: marex@denx.de, tien.fong.chee@intel.com, bbrezillon@kernel.org,
+ linux-kernel@vger.kernel.org, computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -171,27 +172,93 @@ On 06/13/2019 02:31 PM, Dinh Nguyen wrote:
 > External E-Mail
 > 
 > 
-> The QSPI module can have an optional reset signals that will hold the
-> module in a reset state.
+> Get the reset control properties for the QSPI controller and bring them
+> out of reset. Most will have just one reset bit, but there is an additional
+> OCP reset bit that is used ECC. The OCP reset bit will also need to get
+> de-asserted as well. [1]
 > 
+> The reason this patch is needed is in the case where a bootloader leaves
+> the QSPI controller in a reset state, or a state where init cannot occur
+> successfully, the patch will put the QSPI controller into a clean state.
+> 
+> [1] https://www.intel.com/content/www/us/en/programmable/hps/arria-10/hps.html#reg_soc_top/sfo1429890575955.html
+> 
+> Suggested-by: Tien-Fong Chee <tien.fong.chee@intel.com>
 > Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 > ---
-> v6: no change
-> v5: document reset-names
-> v4: no change
-> v3: created base on review comments
-> v2: did not exist
-> v1: did not exist
+> v6: no need to check for reset pointer in assert/deassert as the call to
+>     assert/deassert is already doing the checking
+> v5: remove udelay(not needed) on tested hardware
+>     group reset assert/deassert together
+>     update commit message with reasoning for patch
+> v4: fix compile error
+> v3: return full error by using PTR_ERR(rtsc)
+>     move reset control calls until after the clock enables
+>     use udelay(2) to be safe
+>     Add optional OCP(Open Core Protocol) reset signal
+> v2: use devm_reset_control_get_optional_exclusive
+>     print an error message
+>     return -EPROBE_DEFER
 > ---
->  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 5 +++++
->  1 file changed, 5 insertions(+)
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 > 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 792628750eec..732323c2adb1 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -34,6 +34,7 @@
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/reset.h>
+>  #include <linux/sched.h>
+>  #include <linux/spi/spi.h>
+>  #include <linux/timer.h>
+> @@ -1336,6 +1337,8 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	struct cqspi_st *cqspi;
+>  	struct resource *res;
+>  	struct resource *res_ahb;
+> +	struct reset_control *rstc;
+> +	struct reset_control *rstc_ocp;
 
+ declare rstc and rstc_ocp on the same line and
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
 spi-nor/next branch.
 
 Thanks,
 ta
+
+>  	const struct cqspi_driver_platdata *ddata;
+>  	int ret;
+>  	int irq;
+> @@ -1402,6 +1405,25 @@ static int cqspi_probe(struct platform_device *pdev)
+>  		goto probe_clk_failed;
+>  	}
+>  
+> +	/* Obtain QSPI reset control */
+> +	rstc = devm_reset_control_get_optional_exclusive(dev, "qspi");
+> +	if (IS_ERR(rstc)) {
+> +		dev_err(dev, "Cannot get QSPI reset.\n");
+> +		return PTR_ERR(rstc);
+> +	}
+> +
+> +	rstc_ocp = devm_reset_control_get_optional_exclusive(dev, "qspi-ocp");
+> +	if (IS_ERR(rstc_ocp)) {
+> +		dev_err(dev, "Cannot get QSPI OCP reset.\n");
+> +		return PTR_ERR(rstc_ocp);
+> +	}
+> +
+> +	reset_control_assert(rstc);
+> +	reset_control_deassert(rstc);
+> +
+> +	reset_control_assert(rstc_ocp);
+> +	reset_control_deassert(rstc_ocp);
+> +
+>  	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
+>  	ddata  = of_device_get_match_data(dev);
+>  	if (ddata && (ddata->quirks & CQSPI_NEEDS_WR_DELAY))
+> 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
