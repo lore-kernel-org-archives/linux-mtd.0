@@ -2,22 +2,22 @@ Return-Path: <SRS0=/mLJ=U3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 658CDC4321A
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 14:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E19ABC4321A
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 14:35:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39524205C9
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 14:32:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B2999205C9
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2019 14:35:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dZeGcdo7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AkLnTHTt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39524205C9
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="sPTuRdOY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FJj16cKD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2999205C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,62 +26,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
 	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+7diDNuMDl4Xil5y93eD3LCz3QwGE4wZs7K3N7p8C7k=; b=dZeGcdo7y7o0Yw
-	sTZtPPwNRSIO8F++UKVMYuyuR6a1i8nZY4U+1TL4+5Yxc9sg8d42aZuKOPgy2bH3F3WP7arpLJcok
-	SjI4taXuHGGolbYD6StIg3bF/Gh+Nf1dT+mfCw8SXCVHf5DdQilisfyWoamvaISjhL7xw0WDDmGw7
-	VjmDQb6MCW0HXGF9YLduu6dxuROvIMGwYqIUMo3Mhc9yKres/8gkXBHWN13Poj2zvizKTX9G3Wc18
-	MVyp0ZdADvpFq3sHUaNvOCZ19Fv3guuN/Nie/Oz6hp6QjL8uThlgK8hcrTFC/1IBGxxaQZm2YKd94
-	h2vW2tzpCZzMp01jnsyA==;
+	List-Owner; bh=VUL3Cif57TxKyEoRPSc9ht1ckgbNWIorxyqBh+LuJ+c=; b=sPTuRdOY3M+B81
+	X8OQec4+kYBNndgVXQfCe2G86A+n0DWMf2eJBpuxcAtGqyotLvVGIhYCYLlM6Z49T8bLVfPvXgF2Z
+	PfthQasq+XJIkzITwk2ZdTeXJiNf5x7o0mI4QeVxv3B9FjJ4uY3/4/VW9RdSi9QgrAdIy0buz6nfB
+	gEIS6EVEAIVJ1tLYX4u1GVOH8akw869vBcI8/J/uHwWA3rE4Sh9peUHwe8JiheDpeHd+wKW2PWK0N
+	b948uQjRIDk1GTfOPuJ9GqY18KgaHCs6VBQyksFhF2UxeQLq8AXlwkVyHf2fXvmNLiN7ULgPJ1Jp/
+	dwts8njgxIXbI884UBNg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hgrvr-0001xS-1r; Fri, 28 Jun 2019 14:32:55 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1hgryn-0003fy-FW; Fri, 28 Jun 2019 14:35:57 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hgrvm-0001wW-RS
- for linux-mtd@lists.infradead.org; Fri, 28 Jun 2019 14:32:52 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5SEWOEs119507;
- Fri, 28 Jun 2019 09:32:24 -0500
+ id 1hgryk-0003dj-1Y; Fri, 28 Jun 2019 14:35:55 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id x5SEZmsd069055;
+ Fri, 28 Jun 2019 09:35:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1561732344;
- bh=gbEQ2MAf5BreXjP6+h+dDk7mJOuxFlU+NRxCOXS9m7w=;
+ s=ti-com-17Q1; t=1561732548;
+ bh=1EuGAs9Hme8Xg3Fp5x6Mxds32XVEe/eAw1K3JA7yOTI=;
  h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=AkLnTHTtRg4KS+kVRvkLRmV+VhAQcDI3zp86HBbQpW8UjJ590rtHGC7jKKzjTaal7
- DRF9ndtHsDrV5uUNvWTUBE62BsKGq2H8oRPgO718IlsMcxkFKF/ZVU1CPkLIJEb5Mu
- Su9sVgyCRYrHgWUHWiKtx28wJIgDlBx9wojdY310=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5SEWOKn109975
+ b=FJj16cKDdf1jFEiZABXWqguchaVeSfpmtqdb9qMByJyUsuWjYm/w/2tqhrgpT9QvS
+ FEQgBCHZzQf5CAaO6zKxS8p/ePzE4bb+xDiAI9IPtemLh7vT6mpDm0MK+reLjHHa0D
+ nD5L0YQZql4sfHcqb3o4vM2UrRaCs2nzFy/QmYnU=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x5SEZm56059265
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 28 Jun 2019 09:32:24 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 28 Jun 2019 09:35:48 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Fri, 28
- Jun 2019 09:32:23 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2019 09:35:48 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Fri, 28 Jun 2019 09:32:23 -0500
+ Frontend Transport; Fri, 28 Jun 2019 09:35:48 -0500
 Received: from [10.250.132.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5SEWK5h014844;
- Fri, 28 Jun 2019 09:32:21 -0500
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: dynamically determine the max
- sectors
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>, <dwmw2@infradead.org>, 
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>
-References: <20190522000628.13073-1-chris.packham@alliedtelesis.co.nz>
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x5SEZhKg090817;
+ Fri, 28 Jun 2019 09:35:44 -0500
+Subject: Re: [PATCH v8 0/5] MTD: Add Initial Hyperbus support
+To: Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Rob Herring
+ <robh+dt@kernel.org>
+References: <20190625075746.10439-1-vigneshr@ti.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <b4a2970f-40ff-3c6c-d408-4c19d5d502ad@ti.com>
-Date: Fri, 28 Jun 2019 20:02:19 +0530
+Message-ID: <89b4b00a-0564-2b69-4324-d2554f69e9bf@ti.com>
+Date: Fri, 28 Jun 2019 20:05:43 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190522000628.13073-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20190625075746.10439-1-vigneshr@ti.com>
 Content-Language: en-US
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190628_073251_032953_B1E08466 
-X-CRM114-Status: GOOD (  18.02  )
+X-CRM114-CacheID: sfid-20190628_073554_259883_EE53FE70 
+X-CRM114-Status: GOOD (  12.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,7 +91,11 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: sr@denx.de, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Tokunori Ikegami <ikegami.t@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
@@ -101,72 +103,45 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-On 22-May-19 5:36 AM, Chris Packham wrote:
-> Because PPB unlocking unlocks the whole chip cfi_ppb_unlock() needs to
-> remember the locked status for each sector so it can re-lock the
-> unaddressed sectors. Dynamically calculate the maximum number of sectors
-> rather than using a hardcoded value that is too small for larger chips.
+On 25-Jun-19 1:27 PM, Vignesh Raghavendra wrote:
+[...]
+> Vignesh Raghavendra (5):
+>   mtd: cfi_cmdset_0002: Add support for polling status register
+>   dt-bindings: mtd: Add binding documentation for HyperFlash
+>   mtd: Add support for HyperBus memory devices
+>   dt-bindings: mtd: Add bindings for TI's AM654 HyperBus memory
+>     controller
+>   mtd: hyperbus: Add driver for TI's HyperBus memory controller
 > 
-> Tested with Spansion S29GL01GS11TFI flash device.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+
+Fixed comments on patch 3/5 locally and series applied to
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
 branch mtd/next.
 
 Regards
 Vignesh
 
->  drivers/mtd/chips/cfi_cmdset_0002.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index c8fa5906bdf9..a1a7d334aa82 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -2533,8 +2533,6 @@ struct ppb_lock {
->  	int locked;
->  };
->  
-> -#define MAX_SECTORS			512
-> -
->  #define DO_XXLOCK_ONEBLOCK_LOCK		((void *)1)
->  #define DO_XXLOCK_ONEBLOCK_UNLOCK	((void *)2)
->  #define DO_XXLOCK_ONEBLOCK_GETLOCK	((void *)3)
-> @@ -2633,6 +2631,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  	int i;
->  	int sectors;
->  	int ret;
-> +	int max_sectors;
->  
->  	/*
->  	 * PPB unlocking always unlocks all sectors of the flash chip.
-> @@ -2640,7 +2639,11 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  	 * first check the locking status of all sectors and save
->  	 * it for future use.
->  	 */
-> -	sect = kcalloc(MAX_SECTORS, sizeof(struct ppb_lock), GFP_KERNEL);
-> +	max_sectors = 0;
-> +	for (i = 0; i < mtd->numeraseregions; i++)
-> +		max_sectors += regions[i].numblocks;
-> +
-> +	sect = kcalloc(max_sectors, sizeof(struct ppb_lock), GFP_KERNEL);
->  	if (!sect)
->  		return -ENOMEM;
->  
-> @@ -2689,9 +2692,9 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  		}
->  
->  		sectors++;
-> -		if (sectors >= MAX_SECTORS) {
-> +		if (sectors >= max_sectors) {
->  			printk(KERN_ERR "Only %d sectors for PPB locking supported!\n",
-> -			       MAX_SECTORS);
-> +			       max_sectors);
->  			kfree(sect);
->  			return -EINVAL;
->  		}
+>  .../bindings/mtd/cypress,hyperflash.txt       |  13 ++
+>  .../devicetree/bindings/mtd/ti,am654-hbmc.txt |  51 ++++++
+>  MAINTAINERS                                   |   8 +
+>  drivers/mtd/Kconfig                           |   2 +
+>  drivers/mtd/Makefile                          |   1 +
+>  drivers/mtd/chips/cfi_cmdset_0002.c           | 130 +++++++++++++--
+>  drivers/mtd/hyperbus/Kconfig                  |  23 +++
+>  drivers/mtd/hyperbus/Makefile                 |   4 +
+>  drivers/mtd/hyperbus/hbmc-am654.c             | 141 ++++++++++++++++
+>  drivers/mtd/hyperbus/hyperbus-core.c          | 154 ++++++++++++++++++
+>  include/linux/mtd/cfi.h                       |   7 +
+>  include/linux/mtd/hyperbus.h                  |  86 ++++++++++
+>  12 files changed, 603 insertions(+), 17 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
+>  create mode 100644 drivers/mtd/hyperbus/Kconfig
+>  create mode 100644 drivers/mtd/hyperbus/Makefile
+>  create mode 100644 drivers/mtd/hyperbus/hbmc-am654.c
+>  create mode 100644 drivers/mtd/hyperbus/hyperbus-core.c
+>  create mode 100644 include/linux/mtd/hyperbus.h
 > 
 
 ______________________________________________________
