@@ -1,80 +1,73 @@
-Return-Path: <SRS0=n829=U5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=0U+/=U6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0D1C5B57E
-	for <linux-mtd@archiver.kernel.org>; Sun, 30 Jun 2019 16:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56F49C5B578
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2019 07:11:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 154AD206E0
-	for <linux-mtd@archiver.kernel.org>; Sun, 30 Jun 2019 16:10:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E9F6212F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2019 07:11:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IZDbQnHl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zj2pP4fR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 154AD206E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="eJO+LRpj";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kZgXiFwl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9F6212F5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0xyFFDtOCJFj+yYWdBAsHpQPNOJoAiPO1pjd+EMLJ68=; b=IZDbQnHla9CRrW
-	vXO12WIQtJs9e1LEsr1uSq+99av0Zt6DYpJ0hEQFecgPpjvtMcsktyE0B+CbyDnhuY0FpICdxrZpV
-	uWAqtNL0nDCORDaRGaXwsVsvDKcSo1ITYzmiVVzMSg1tL/EaqDyXGvZ2AyvN38Lpt1HuX1xMhAwf6
-	1AXhmo8lQjjvcE+ZbL31gJ9GF07tsipToY/gE7dJNcuIVJBw4k57vZ+mCVQX1YwcpGlxO80cdxO2d
-	ilUSOlFW+o6ZB6NDVUJIg3wBYJEWlQFyrKEP8GEuo1klTXuUESjshmt6BbbsY9mWB4Bi78JQnIAjk
-	NmfjXIfGwOJaAPVsAgFA==;
+	List-Owner; bh=xgdu8A6oWWyoNJlLUt2L9UiBQt57Y2yX8H8wxTVdya8=; b=eJO+LRpjglYdqz
+	8KA1/ISEwmzspur+/s/ieTYc0uaq3eyQ5KnKbxZGbtMEurykE/B1ba+oDwXWfz7Ca1q+eT/H3uaUZ
+	aBHwP7DPnghX4HwGX1DWVeeDMBqjGMDQA/C3byUJfEu5G33YKddddHKhsW4d+fml4F6alPdoWWtJV
+	qx4PDu+MFtWzisOEMVGOxsUXumMhlHvWsDpMWixeyYy0dKsos0dmnMGGfKAM0xN0lHTPZBg8OWWV/
+	Pn6gbdGE6cVBudV6QFu2rX9MElugKdQhn8HRhYX3TISm3KKfu/PP8KN6J858kTYEBMKKbE89AF2eY
+	myNwTTY/um8KqYK6wn0Q==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hhcOx-000238-Lx; Sun, 30 Jun 2019 16:10:03 +0000
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+	id 1hhqSh-0000B2-J4; Mon, 01 Jul 2019 07:10:51 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hhcOt-0001qS-O1
- for linux-mtd@lists.infradead.org; Sun, 30 Jun 2019 16:10:01 +0000
-Received: by mail-wr1-x443.google.com with SMTP id n4so11150385wrs.3
- for <linux-mtd@lists.infradead.org>; Sun, 30 Jun 2019 09:09:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=EEGvLQnvjmPNSYyesGAZ80/3Kf3Ln2FvTHJZV7d1XSU=;
- b=Zj2pP4fRnPohTIudwwiW5DeyPT1xOXtFdlvhhMsh72NFCCaYAZwXif+pzxqX9RuwOl
- ATS6e2VaQTtNz67gQLfQtjewrAJeAyyM9zZFBDglHLj4B2bBUnPzmYeVCkOnIVxlzuMP
- G4yzBUV/GTKIAiJ5AsoRPYFRoiWd62vbSpRLk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=EEGvLQnvjmPNSYyesGAZ80/3Kf3Ln2FvTHJZV7d1XSU=;
- b=eb/v1pD1XNYomUEmYXPVwBfjUFvgXk1fupDCkR7TvDqY780aVm6H/a5t/8YnkVFUsE
- 4oyphCcJYKXw3XsgZl4BV/u+Ha0iQJtpVbAdwmkx3WF3O+9rYG5NIBU664viqM3+Pz5r
- MP7d/9EHbDWfdnXe9DI6iO0ApDSX2esguytmObyHggT/tVnHSoJrARivJJfcbvG+d1bj
- jzcXoe+izFlF/TPiux4U18enXcyRkKoAfpsfR8HenB7y/Db+iRBnaQFWQd0UBwlK5SB7
- Ycc/Fm7N8Nkjc4VSt4EqruTIiimOmK/w9H+E99z873dl6voZc0dExLo+FEc2S6QSq/dE
- 3+zQ==
-X-Gm-Message-State: APjAAAXLIfUfRGEpksQd/6/u225M+TP8Oi3d/NsEo0FptPu5l9Myqddh
- STVJYyfkihwGfPvMvu60WLwPLCZY+2T+bmbUA/Chew==
-X-Google-Smtp-Source: APXvYqxJ7At7vplyhFNzpYHOHbG/BwK2XybTjD5eLC1/XnP+KuPhAhHeHXcayIqTQU0P0us7aSPbA0o3rUfUFZTz6wg=
-X-Received: by 2002:a5d:5186:: with SMTP id k6mr16721966wrv.30.1561910998037; 
- Sun, 30 Jun 2019 09:09:58 -0700 (PDT)
+ id 1hhqSc-0000AF-89; Mon, 01 Jul 2019 07:10:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=EEP68zDwyPrN704V6W7wZDv5MY+CyjtxVFMvKVCBDf0=; b=kZgXiFwlJPLgyFN+vLQzqWRoam
+ 136gXuEXEjPt2PEO37C+5ptuxsXUUza4MvDwnoKGkKECWe7zT9AREpx+YTjV7BHAn1zgiFaq+715U
+ A4U8jHrau8TO0PiJJWB2rAeGHP3IE5sf5lMwbSUyKLgkv+E2YNS3+K8uITs5l82ZZb45k9HVRciK4
+ 23ngSpF39yJAY/azdrCiXGjFzdw1extKNQLoLrX7aV906tDkD6+0Tblp8hlduQxMCsyKmOj9wvpwq
+ aWr81IyCi41T6h9dfufl+n2Vitgydb9NrLbDMJxOOrn/6j0rCzuzAw6RUT0Tu3JwTIGf9PgoRpv83
+ Q+5OBKmA==;
+Received: from relay12.mail.gandi.net ([217.70.178.232])
+ by merlin.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hhqSY-0004HO-HK; Mon, 01 Jul 2019 07:10:44 +0000
+Received: from xps13 (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id C62BC200007;
+ Mon,  1 Jul 2019 07:10:02 +0000 (UTC)
+Date: Mon, 1 Jul 2019 09:10:01 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: <xiaolei.li@mediatek.com>
+Subject: Re: [PATCH v2] mtd: rawnand: mtk: Re-license MTK NAND driver as
+ Dual MIT/GPL
+Message-ID: <20190701084954.1d590021@xps13>
+In-Reply-To: <20190624013856.20732-1-xiaolei.li@mediatek.com>
+References: <20190624013856.20732-1-xiaolei.li@mediatek.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20190603123835.65536-1-zhuohao@chromium.org>
- <20190630094559.5a1a9a86@collabora.com>
-In-Reply-To: <20190630094559.5a1a9a86@collabora.com>
-From: Zhuohao Lee <zhuohao@chromium.org>
-Date: Mon, 1 Jul 2019 00:09:47 +0800
-Message-ID: <CABD5yb=D1NgWueLtofGs9UftauwXwr8yheRQaCWNA+SYCj8g=A@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] mtd: mtdcore: add debugfs nodes for querying the
- flash name and id
-To: Boris Brezillon <boris.brezillon@collabora.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190630_090959_784573_6546FCE8 
-X-CRM114-Status: GOOD (  11.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,62 +79,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Nicolas Boichat <drinkcat@chromium.org>, bbrezillon@kernel.org,
- richard@nod.at, Brian Norris <briannorris@chromium.org>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ryder.lee@mediatek.com, arnd@arndb.de, srv_heupstream@mediatek.com,
+ richard@nod.at, yellowriver2010@hotmail.com, yamada.masahiro@socionext.com,
+ boris.brezillon@collabora.com, linux-mediatek@lists.infradead.org,
+ jorge.ramirez-ortiz@linaro.org, rafal@milecki.pl,
+ linux-mtd@lists.infradead.org, rogercc.lin@mediatek.com,
+ dan.carpenter@oracle.com, matthias.bgg@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Submitted v8 patch for the change. Thanks for the review.
-
-On Sun, Jun 30, 2019 at 3:46 PM Boris Brezillon
-<boris.brezillon@collabora.com> wrote:
->
-> On Mon,  3 Jun 2019 20:38:35 +0800
-> Zhuohao Lee <zhuohao@chromium.org> wrote:
->
-> > +     if (IS_ERR_OR_NULL(root)) {
-> > +             pr_debug("mtd device %s won't show data in debugfs\n",
-> > +                      dev_name(dev));
->
-> You should be able to use dev_dbg() here since you have a valid dev
-> name.
-done
->
-> > +             return;
-> > +     }
-> > +
-> > +     if (mtd->dbg.partid) {
-> > +             dent = debugfs_create_file("partid", S_IRUSR, root, mtd,
-> > +                                        &mtd_partid_debug_fops);
-> > +             if (IS_ERR_OR_NULL(dent))
-> > +                     pr_err("cannot create debugfs entry for partid\n");
->
-> Same here, dev_err().
-done
->
-> > +     }
-> > +     if (mtd->dbg.partname) {
-> > +             dent = debugfs_create_file("partname", S_IRUSR, root, mtd,
-> > +                                        &mtd_partname_debug_fops);
-> > +             if (IS_ERR_OR_NULL(dent))
-> > +                     pr_err("cannot create debugfs entry for partname\n");
->
-> And here too.
-done
->
-> > +     }
-> > +}
-> > +
->
-> Looks good otherwise. Once addressed you can add>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-added in the v8 patch
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgWGlhb2xlaWwsCgo8eGlhb2xlaS5saUBtZWRpYXRlay5jb20+IHdyb3RlIG9uIE1vbiwgMjQg
+SnVuIDIwMTkgMDk6Mzg6NTYgKzA4MDA6Cgo+IEZyb206IFhpYW9sZWkgTGkgPHhpYW9sZWkubGlA
+bWVkaWF0ZWsuY29tPgo+IAo+IEl0IGlzIHdhbnRlZCB0byB1c2UgTVRLIE5BTkQgZHJpdmVyIHdp
+dGggR1BMLTIuMCBvciBNSVQgbGljZW5zZS4KPiBCdXQgbm93IGl0IGlzIG9ubHkgbGljZW5zZWQg
+YXMgR1BMLTIuMC4KPiBTbyByZS1saWNlbnNlIGl0IGFzIGR1YWwgTUlUL0dQTCBhbmQgcmVwbGFj
+ZSBsaWNlbnNlIHRleHQgd2l0aAo+IFNQRFggdGFnLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFhpYW9s
+ZWkgTGkgPHhpYW9sZWkubGlAbWVkaWF0ZWsuY29tPgo+IEFja2VkLWJ5OiBKb3JnZSBSYW1pcmV6
+LU9ydGl6IDxqb3JnZS5yYW1pcmV6LW9ydGl6QGxpbmFyby5vcmc+Cj4gQWNrZWQtYnk6IFJ5ZGVy
+IExlZSA8cnlkZXIubGVlQG1lZGlhdGVrLmNvbT4KPiBBY2tlZC1ieTogUmFmYcWCIE1pxYJlY2tp
+IDxyYWZhbEBtaWxlY2tpLnBsPgo+IEFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
+bmFsQGJvb3RsaW4uY29tPgo+IEFja2VkLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXpp
+bGxvbkBjb2xsYWJvcmEuY29tPgo+IEFja2VkLWJ5OiBXZW4gWWFuZyA8eWVsbG93cml2ZXIyMDEw
+QGhvdG1haWwuY29tPgo+IEFja2VkLWJ5OiBEYW4gQ2FycGVudGVyIDxkYW4uY2FycGVudGVyQG9y
+YWNsZS5jb20+Cj4gQWNrZWQtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gQWNr
+ZWQtYnk6IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb20+Cj4g
+QWNrZWQtYnk6IFJvZ2VyQ0MgTGluIDxyb2dlcmNjLmxpbkBtZWRpYXRlay5jb20+Cj4gUmV2aWV3
+ZWQtYnk6IE1hdHRoaWFzIEJydWdnZXIgPG1hdHRoaWFzLmJnZ0BnbWFpbC5jb20+Cj4gLS0tCgpB
+cHBsaWVkIHRvIG5hbmQvbmV4dCwgdGhhbmtzLgpNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
