@@ -2,98 +2,85 @@ Return-Path: <SRS0=szGg=U7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7615EC06510
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 17:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB245C06510
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 18:40:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 532602082F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 17:54:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AAD7121850
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 18:40:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jZw6tAEQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="AjJ3nxm/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 532602082F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="YpcTFcSm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="M/zho78z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAD7121850
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:References:To:Subject:From:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jq/GssABvBPEBVH3zk3wBn4ntdoYsAmkpyFpZ7kndXs=; b=jZw6tAEQfPTZqm
-	dW2eUdj+uUjCmSy5HBqtDn1Bwux888K3pdv9/7tN1CzhSiCrZqsz5kw44YtZNc7GAq3bOECxz4F6y
-	araEDHso8r+FNrB8oBtFAIJxvRRJaABW3gXjFfH8Ov/GUDvw00b0yptUehcOpgUDBIlkX0nwEbn5W
-	yyebe/fUMk1EX0rSxzq3RdgJ4y8WHp3BC15xEC99yepRl2IxClgAeRcDP/Ufz9xQh1z3V3qM81p11
-	l84DWGItlqaLK4ZYOdwW6BGERymE1heHQ2NXgsVMLbwf6DRkMc+XkBjtQ5iwvPrBbRBl1iT3a+L9l
-	Q3AJuIiQc2kRVYH/kCNQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=JKqn6HiPW+lv/l08j2YOuTFuq0HF0KxjSOeskBVOXQA=; b=Ypc
+	TFcSmn9ESyTod2HgMx20qr1gY5NURlRlZpjCrqR1mH6+AtedOTE3WjJoDeaRQ0E3vW3rsRFa1c5JZ
+	9n6PNEaja5ic+xeV3Zdde1099ccifeqRkfOy9zN+3Fro3EBEyh8cJa8GTEtdyVTvKcg/v3L1x4cGI
+	n+iTQhm9FOxzJO1jXdwpjbZK+fTY9BHtLhGUPQip6ptgYL+c9N26zkylMHIE8Yj916l8RAzt89jSY
+	I3DpoKlYjLx+h4DQ+5FGsJEQvZRIRQqLizaYusSZ6Q/FNlQ6IxlUdDCQc7PpAjOCpnBdDsfd8QTE1
+	BRyPmJ3guwQOez1XwgfW+CY3pCaekIQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiMyF-00053H-4z; Tue, 02 Jul 2019 17:53:35 +0000
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+	id 1hiNhJ-0003Rk-7I; Tue, 02 Jul 2019 18:40:09 +0000
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiMxl-0004ry-Mi
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 17:53:08 +0000
-Received: by mail-lj1-x244.google.com with SMTP id v24so17825584ljg.13
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 10:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:subject:to:cc:references:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=cMEn3za16fAfd/FKzUgXJWhBF6QU4UvnxjnbeEXsMGQ=;
- b=AjJ3nxm/0ds+e2hRRivY37RuUEa4V59EPE1atiQr2SXEYP2cvI8PWEN+FZ9oVOntUT
- XehNOna7XdSk5ef3/jinBVRzP0Zgoq2nXWU3UGYsYB9ehUh1D+3vpTcj0OvQA+seZDU3
- JCrKct+QFMpmJzw4R3IcICYfPlRQ1z1j0MHz+N34dj9P+l1gqNZyUktAudZ07GKlOlak
- joM3F9dzbJiwS1J8pbV/0g+ni/mDtPKuRtxDgvKK6H4TmP8PVNY8odrp5u1fzRFWaBUi
- Kev+nrvUBH6P4kht+SWadQWqeUZhn9Drib2vk3mjXbi89a1I0olyW75z856NBQ1TpbAj
- 6QMQ==
+ id 1hiNhF-0002xK-W1
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 18:40:07 +0000
+Received: by mail-pg1-x542.google.com with SMTP id p10so8119751pgn.1
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 11:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
+ h=from:to:cc:subject:date:message-id;
+ bh=hG1JsQUy046szRFDOIEOc0GrqgtZ4N9C6eAqGmFMcZg=;
+ b=M/zho78zeJOQugBcdoK7P7W4WUEDOlNbsVIincCdzc7egd5SueogZzrbLrF9qFqxIf
+ zUuXIONh6LZN8s6e87uNdUj2AJp2KzRUirGiAl1Y7YW3J5ZPIa/KgyvZtGTuB0Hr6LbA
+ +vmf1fMprr5qs2SgZf1NbEMO+7lbfI9GIMLESzki905WvFh1ELaBYDQZxGM5a1rdM/T9
+ ztveeivAxZt0qeBazc9JAWkCR8zh77uqMArfEwhtdwvqe+EFAxEVuQeWNUqLTDAXIPtT
+ sOA5EdfthaVkfPc5v5AeIvevLh5/s5A4R1IxC0wnZTfkeiPGL+o+Rmk/CG6JcqZCBPwE
+ ZPqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:references:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=cMEn3za16fAfd/FKzUgXJWhBF6QU4UvnxjnbeEXsMGQ=;
- b=NND82u6XdoLaMkOFgX0VZZCwlhwd4bPO/6hEMwztcl/A/u47jwFdcYLRSYMA/jb0AU
- iQjaELR49XATqKcmY8KaPTJzruem3UCisFs7iALsNH5bEWab9LylN8yCFSvqe3hER+6I
- VMjN/UMJXHFmK1vjOlOT5JsfZLFQGCmeCvkdLIUVxtAz9ZtgkmwBSlSKk+kYLeyKegOH
- lEOD+n0AgMqx3QEw5weVf+G9ZtzQ5K319bhBhB1I9Xf/OTkUqPumiRhD32BAW8DV48NM
- ocvQjDoR9CzjTY3upVICyITfCtf55Do71JOLmLz7Q3/dJPumyS272ONgIIfvkA0kH2Pr
- 0/nw==
-X-Gm-Message-State: APjAAAXP8b5+P27R/W8yIrFWWvrtTpgIUcXJd4oBY9iHfsjyopTeS6IS
- Cp6IrgTpej5qlknDZPH8JecitA==
-X-Google-Smtp-Source: APXvYqyHA/Ov/gzsKWtHLKt+DUZw1yLzTQf05oQbnhdSu9EIi9OqdKbPqDmV3siOLcwZvcf9+6nKTA==
-X-Received: by 2002:a2e:93cc:: with SMTP id p12mr18387950ljh.11.1562089983427; 
- Tue, 02 Jul 2019 10:53:03 -0700 (PDT)
-Received: from wasted.cogentembedded.com
- ([2a00:1fa0:48c7:f2be:45b6:c800:b809:e0f2])
- by smtp.gmail.com with ESMTPSA id g76sm3954000lje.43.2019.07.02.10.53.01
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 02 Jul 2019 10:53:02 -0700 (PDT)
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
-To: Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-References: <20190625075746.10439-1-vigneshr@ti.com>
- <20190625075746.10439-4-vigneshr@ti.com>
-Organization: Cogent Embedded
-Message-ID: <31657fd1-c1c9-7672-14c1-e6f67eee6ac1@cogentembedded.com>
-Date: Tue, 2 Jul 2019 20:53:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
-MIME-Version: 1.0
-In-Reply-To: <20190625075746.10439-4-vigneshr@ti.com>
-Content-Language: en-MW
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=hG1JsQUy046szRFDOIEOc0GrqgtZ4N9C6eAqGmFMcZg=;
+ b=LjNLK+6dnY5HuBQs+QicRLFD0/lvoHz6TX3xR6LKfvHFXMc/dQZi1bh1v9RTvi8wKa
+ c9+tYY92oas21YlVP275qYR5xGles00+6F59gDnKwfYVkxf6jd+cjlLWknIfnJCdo/Rs
+ JzbYeL9Pv/GHukGcl7LoMbo/NuaD4k4B9uzrzKAdm7o+1BVLl6R6I6Bo3VTrvOcqPGO6
+ 0CmjXAJjV+HENf1WnrcC1BWo7I1bibdROWWjigVdO75kQl3Ei5frXMBWiejbgo9W8L9+
+ Um2/pefczO+JADQaYjRMwHAIgkL2Llb2+gMz0ixt1lpj4m9wdtyUlStY+Dem/i5Ppm+i
+ rJ9A==
+X-Gm-Message-State: APjAAAVWAPfJAQ17qPlsDm1sjSC6PI8/1fYyGhFafun8oys4BDxc5oAZ
+ 4L/3h+9CfErzTLUw9XeaTU81NA==
+X-Google-Smtp-Source: APXvYqzsMlaSyc7pZIJYDjprnLyGQKCrS/C/7bgqbvBj63BhfUiyhW4J4JPtfydDsSsZis7KAagqgA==
+X-Received: by 2002:a63:1e0b:: with SMTP id e11mr9709204pge.402.1562092804922; 
+ Tue, 02 Jul 2019 11:40:04 -0700 (PDT)
+Received: from buildserver-90.open-silicon.com ([114.143.65.226])
+ by smtp.googlemail.com with ESMTPSA id
+ e10sm15065327pfi.173.2019.07.02.11.40.00
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Tue, 02 Jul 2019 11:40:04 -0700 (PDT)
+From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+To: marek.vasut@gmail.com, tudor.ambarus@microchip.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com
+Subject: [PATCH v7 0/4] mtd: spi-nor: add support for is25wp256 spi-nor flash
+Date: Wed,  3 Jul 2019 00:09:01 +0530
+Message-Id: <1562092745-11541-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 1.9.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_105305_884384_7FDE2E8A 
-X-CRM114-Status: GOOD (  25.06  )
+X-CRM114-CacheID: sfid-20190702_114006_073354_95B0725A 
+X-CRM114-Status: GOOD (  14.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,125 +92,99 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Cc: aou@eecs.berkeley.edu, palmer@sifive.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
+ paul.walmsley@sifive.com, linux-riscv@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+The patch series adds support for 32MiB spi-nor is25wp256 present on HiFive
+Unleashed A00 board. The flash device gets BFPT_DWORD1_ADDRESS_BYTES_3_ONLY
+from BFPT table for address width, whereas the flash can support 4 byte
+address width, so the address width is configured by using the post bfpt
+fixup hook as done for is25lp256 device in
+commit cf580a924005 ("mtd: spi-nor: fix nor->addr_width when its value
+configured from SFDP does not match the actual width") queued in
+spi-nor/next branch [1].
 
-On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
+Patches 1 and 3 are based on original work done by Wesley Terpstra and/or
+Palmer Dabbelt:
+https://github.com/riscv/riscv-linux/commit/c94e267766d62bc9a669611c3d0c8ed5ea26569b
 
-> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
-> Bus interface between a host system master and one or more slave
-> interfaces. HyperBus is used to connect microprocessor, microcontroller,
-> or ASIC devices with random access NOR flash memory (called HyperFlash)
-> or self refresh DRAM (called HyperRAM).
-> 
-> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
-> signal and either Single-ended clock(3.0V parts) or Differential clock
-> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
-> At bus level, it follows a separate protocol described in HyperBus
-> specification[1].
-> 
-> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
-> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
-> its equivalent to x16 parallel NOR flash with respect to bits per clock
-> cycle. But HyperBus operates at >166MHz frequencies.
-> HyperRAM provides direct random read/write access to flash memory
-> array.
-> 
-> But, HyperBus memory controllers seem to abstract implementation details
-> and expose a simple MMIO interface to access connected flash.
-> 
-> Add support for registering HyperFlash devices with MTD framework. MTD
-> maps framework along with CFI chip support framework are used to support
-> communicating with flash.
-> 
-> Framework is modelled along the lines of spi-nor framework. HyperBus
-> memory controller (HBMC) drivers calls hyperbus_register_device() to
-> register a single HyperFlash device. HyperFlash core parses MMIO access
-> information from DT, sets up the map_info struct, probes CFI flash and
-> registers it with MTD framework.
-> 
-> Some HBMC masters need calibration/training sequence[3] to be carried
-> out, in order for DLL inside the controller to lock, by reading a known
-> string/pattern. This is done by repeatedly reading CFI Query
-> Identification String. Calibration needs to be done before trying to detect
-> flash as part of CFI flash probe.
-> 
-> HyperRAM is not supported at the moment.
-> 
-> HyperBus specification can be found at[1]
-> HyperFlash datasheet can be found at[2]
-> 
-> [1] https://www.cypress.com/file/213356/download
-> [2] https://www.cypress.com/file/213346/download
-> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->     Table 12-5741. HyperFlash Access Sequence
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-[...]
+Erase/Read/Write operations are verified on HiFive Unleashed board using  mtd and
+flash utils (v1.5.2):
+1. mtd_debug  	: Options available are : erase/read/write.
+2. flashcp	: Single utility that erases flash, writes a file to flash and verifies the data back.
+3. flash_unlock : Unlock flash memory blocks. Arguments: are offset and number of blocks.
+3. flash_lock   : Lock flash memory blocks. Arguments: are offset and number of blocks. 
 
-   I have at least created my HyperBus driver and unfortunately I'm having serious
-issues with the design of the support core (see below)...
+The Unlock scheme clears the protection bits of all blocks in the Status register.
 
-[...]
-> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
-> new file mode 100644
-> index 000000000000..63a9e64895bc
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
-> @@ -0,0 +1,154 @@
-[...]
-> +int hyperbus_register_device(struct hyperbus_device *hbdev)
-> +{
-> +	const struct hyperbus_ops *ops;
-> +	struct hyperbus_ctlr *ctlr;
-> +	struct device_node *np;
-> +	struct map_info *map;
-> +	struct resource res;
-> +	struct device *dev;
-> +	int ret;
-> +
-> +	if (!hbdev || !hbdev->np || !hbdev->ctlr || !hbdev->ctlr->dev) {
-> +		pr_err("hyperbus: please fill all the necessary fields!\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	np = hbdev->np;
-> +	ctlr = hbdev->ctlr;
-> +	if (!of_device_is_compatible(np, "cypress,hyperflash"))
-> +		return -ENODEV;
-> +
-> +	hbdev->memtype = HYPERFLASH;
-> +
-> +	ret = of_address_to_resource(np, 0, &res);
+Lock scheme:
+A basic implementation based on the stm_lock scheme and is validated for a different
+number of blocks passed to flash_lock. ISSI devices have top/bottom area selection
+in function register which is OTP memory. so we are not updating the OTP section
+of function register.
 
-   Hm, I doubt that the HB devices are wholly mapped into memory space, that seems
-like a property of the HB controller. In my case, the flash device in the DT has
-only single-cell "reg" prop (equal to the chip select #). Then this function returns 
--EINVAL and the registration fails. Also, in my case such mapping is R/O, not R/W.
+The changes along are available under branch v5.2-rc1-mtd-spi-nor/next at:
+https://github.com/sagsifive/riscv-linux-hifive 
+ 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/log/?h=spi-nor/next
 
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev = ctlr->dev;
-> +	map = &hbdev->map;
-> +	map->size = resource_size(&res);
-> +	map->virt = devm_ioremap_resource(dev, &res);
-> +	if (IS_ERR(map->virt))
-> +		return PTR_ERR(map->virt);
+Revision history:
+V6<->V7:
+-Incorporated review comments from Vignesh.
+-Used post bfpt fixup hook as suggested by Vignesh.
+-Introduce SPI_NOR_HAS_BP3 to identify whether the flash has 4th bit protect bit.
+-Prefix generic flash access functions with spi_nor_xxxx.
 
-   Again, I doubt that this should be done here, and not in the HB controller driver...
+V5<->V6:
+-Incorporated review comments from Vignesh.
+-Set addr width based on device size and if SPI_NOR_4B_OPCODES is set.
+-Added 4th block protect identifier (SPI_NOR_HAS_BP3) to flash_info structure 
+-Changed flash_info: flag from u16 to u32 to accommodate SPI_NOR_HAS_BP3
+-Prefix newly added function with spi_nor_xxx.
+-Dropped write_fr function, as updating OTP bit's present in function register doesn't seem to be a good idea.
+-Set lock/unlock schemes based on whether the ISSI device has locking support and  BP3 bit present.
 
-[...]
+V4<->V5:
+-Rebased to linux version v5.2-rc1.
+-Updated heading of this cover letter with sub-system, instead of just plain "add support for is25wp256..."
 
-MBR, Sergei
+V3<->V4:
+-Extracted comman code and renamed few stm functions so that it can be reused for issi lock implementation.
+-Added function's to read and write FR register, for selecting Top/Bottom area.
+
+V2<->V3:
+-Rebased patch to mainline v5.1 from earlier v5.1-rc5.
+-Updated commit messages, and cover letter with reference to git URL and author information.
+-Deferred flash_lock mechanism and can go as separate patch. 
+
+V1<-> V2:
+-Incorporated changes suggested by reviewers regarding patch/cover letter versioning, references of patch.
+-Updated cover letter with description for flash operations verified with these changes.
+-Add support for unlocking is25xxxxxx device.
+-Add support for locking is25xxxxxx device.
+
+v1:
+-Add support for is25wp256 device.
+
+Sagar Shrikant Kadam (4):
+  mtd: spi-nor: add support for is25wp256
+  mtd: spi-nor: fix nor->addr_width for is25wp256
+  mtd: spi-nor: add support to unlock the flash device
+  mtd: spi-nor: add locking support for is25wp256 device
+
+ drivers/mtd/spi-nor/spi-nor.c | 343 +++++++++++++++++++++++++++++++++++-------
+ include/linux/mtd/spi-nor.h   |   8 +
+ 2 files changed, 300 insertions(+), 51 deletions(-)
+
+-- 
+1.9.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
