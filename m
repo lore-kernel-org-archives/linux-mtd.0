@@ -4,92 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A54C06510
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 16:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7615EC06510
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 17:54:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BABD520B1F
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 16:55:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 532602082F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 17:54:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KeUAlSZV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eoMSY239"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BABD520B1F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jZw6tAEQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="AjJ3nxm/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 532602082F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=jDWKphMCdd6IcH7wCwezPmDV/Cs1qFKIdKhpzK6u/9M=; b=KeUAlSZVNdgYU/F6lV8aVvaqJ
-	0+Td9qpd0XUWxN6KXXUua3ZAJl0WExe3N0xkHPCDGgh8PU0dboxivqqIeWdeTiHbegua/uQD1bCmQ
-	yynYCtgxggzeAOlTWu4L1+qRHJpdxppwLCyqB4Y/Fdo3grD9vzQVB6ra6QvLkULfkqLqI2dU4FKnR
-	uTZmA4xlZY4teVqEa7RBajx+2USQDPDvdd0QoSTzm30WLF2uPmQgBbt51QNZiRNFrmTEWKPLGwVnR
-	gxHN0EAOtTS461VkKx/sypaQAomDO+ykoDIuNWg9nw+FsWHvdpTonvfjbEMPmb55dfx0orglx4LgJ
-	cK25NI4ag==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:To:Subject:From:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jq/GssABvBPEBVH3zk3wBn4ntdoYsAmkpyFpZ7kndXs=; b=jZw6tAEQfPTZqm
+	dW2eUdj+uUjCmSy5HBqtDn1Bwux888K3pdv9/7tN1CzhSiCrZqsz5kw44YtZNc7GAq3bOECxz4F6y
+	araEDHso8r+FNrB8oBtFAIJxvRRJaABW3gXjFfH8Ov/GUDvw00b0yptUehcOpgUDBIlkX0nwEbn5W
+	yyebe/fUMk1EX0rSxzq3RdgJ4y8WHp3BC15xEC99yepRl2IxClgAeRcDP/Ufz9xQh1z3V3qM81p11
+	l84DWGItlqaLK4ZYOdwW6BGERymE1heHQ2NXgsVMLbwf6DRkMc+XkBjtQ5iwvPrBbRBl1iT3a+L9l
+	Q3AJuIiQc2kRVYH/kCNQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiM3b-0001Xd-1I; Tue, 02 Jul 2019 16:55:03 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1hiMyF-00053H-4z; Tue, 02 Jul 2019 17:53:35 +0000
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiM3W-0001Vg-RV
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 16:55:00 +0000
-Received: by mail-wm1-x336.google.com with SMTP id s15so1798458wmj.3
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 09:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=CimDCDGoDfxfHpl+rKhISumqp5NNRWpGlcfKsYJsg90=;
- b=eoMSY2395eqnBmzs60/mrSzr+W9p/RaS1h6zhNKCXI9HsqXF5vyNS923QFIAS0RjxX
- kpe4CRg43qJufKYPk6K1oNG4MLeKupRXl6/vzeGYK/0DekR0fAeaSgOY0MIatqEw2Ezi
- glHEcP/F2J4vJOFcMSZp2RW76PAiaJZ3WtSDPeO6FH3sYpxNsuwGsZ+s4KKTwcR0dlPa
- 6lYzpot2hHny8J286wqn5XbmsSsWYiVhI6CFWI2KRYKSq+5JFwjMOtixnMCMtjYvUACv
- Hm/Gadim5oSfo8WMwGMeSJgnyCNOrTM+Ylv6P2hyPYUZ9ziT2RqMSh5dUb6GvJ9OMV/V
- Gaqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ id 1hiMxl-0004ry-Mi
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 17:53:08 +0000
+Received: by mail-lj1-x244.google.com with SMTP id v24so17825584ljg.13
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 10:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=from:subject:to:cc:references:organization:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=CimDCDGoDfxfHpl+rKhISumqp5NNRWpGlcfKsYJsg90=;
- b=sHsJGpEhTgt/gffmmwFHpxrpZpNmFMAGX0Zn+sODLu7MY0x7HNfo9hfWSDnvph6M1p
- 5h/dYzclsjasNZQRD+6JtwzGTnHKGUU/6J8FLupVXeB5ZhIvLyy+bv9HNKvGjUS+GOZY
- rRDFEjN579rjCyfr++u2PXLFTewmnuSdBdlw9E9Pe8BWzZ7UA4bf4IcuxldIeRnpJjBg
- +MG7TGg7wKl2UjyePWqj8qonkHkFUgH3aAg+vV4YLdArJajjfK3FxlFVmsovUW4jmdUP
- G7wFt7DmXaj6ZO61lKv7SHuZBWrnBCTZZwikLP21k44f0V5xjwHDpHqFOOlBlKCvnKFS
- CiHQ==
-X-Gm-Message-State: APjAAAWXP+ibSNMFpFa6XDmadyrIxV2wk38LYcGyoXqaYWmgC69pF69T
- n5Sv4Qig0RScY2dp+qRk3gHTtg==
-X-Google-Smtp-Source: APXvYqzorO0l43WUW0HU+l8DROk7HfESLlwuN0S38IG5WqRioa3y9qGboUPucd/0wLqFrSB2htFA0A==
-X-Received: by 2002:a7b:c313:: with SMTP id k19mr3931340wmj.2.1562086496818;
- Tue, 02 Jul 2019 09:54:56 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id h84sm3426757wmf.43.2019.07.02.09.54.55
+ bh=cMEn3za16fAfd/FKzUgXJWhBF6QU4UvnxjnbeEXsMGQ=;
+ b=AjJ3nxm/0ds+e2hRRivY37RuUEa4V59EPE1atiQr2SXEYP2cvI8PWEN+FZ9oVOntUT
+ XehNOna7XdSk5ef3/jinBVRzP0Zgoq2nXWU3UGYsYB9ehUh1D+3vpTcj0OvQA+seZDU3
+ JCrKct+QFMpmJzw4R3IcICYfPlRQ1z1j0MHz+N34dj9P+l1gqNZyUktAudZ07GKlOlak
+ joM3F9dzbJiwS1J8pbV/0g+ni/mDtPKuRtxDgvKK6H4TmP8PVNY8odrp5u1fzRFWaBUi
+ Kev+nrvUBH6P4kht+SWadQWqeUZhn9Drib2vk3mjXbi89a1I0olyW75z856NBQ1TpbAj
+ 6QMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:subject:to:cc:references:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=cMEn3za16fAfd/FKzUgXJWhBF6QU4UvnxjnbeEXsMGQ=;
+ b=NND82u6XdoLaMkOFgX0VZZCwlhwd4bPO/6hEMwztcl/A/u47jwFdcYLRSYMA/jb0AU
+ iQjaELR49XATqKcmY8KaPTJzruem3UCisFs7iALsNH5bEWab9LylN8yCFSvqe3hER+6I
+ VMjN/UMJXHFmK1vjOlOT5JsfZLFQGCmeCvkdLIUVxtAz9ZtgkmwBSlSKk+kYLeyKegOH
+ lEOD+n0AgMqx3QEw5weVf+G9ZtzQ5K319bhBhB1I9Xf/OTkUqPumiRhD32BAW8DV48NM
+ ocvQjDoR9CzjTY3upVICyITfCtf55Do71JOLmLz7Q3/dJPumyS272ONgIIfvkA0kH2Pr
+ 0/nw==
+X-Gm-Message-State: APjAAAXP8b5+P27R/W8yIrFWWvrtTpgIUcXJd4oBY9iHfsjyopTeS6IS
+ Cp6IrgTpej5qlknDZPH8JecitA==
+X-Google-Smtp-Source: APXvYqyHA/Ov/gzsKWtHLKt+DUZw1yLzTQf05oQbnhdSu9EIi9OqdKbPqDmV3siOLcwZvcf9+6nKTA==
+X-Received: by 2002:a2e:93cc:: with SMTP id p12mr18387950ljh.11.1562089983427; 
+ Tue, 02 Jul 2019 10:53:03 -0700 (PDT)
+Received: from wasted.cogentembedded.com
+ ([2a00:1fa0:48c7:f2be:45b6:c800:b809:e0f2])
+ by smtp.gmail.com with ESMTPSA id g76sm3954000lje.43.2019.07.02.10.53.01
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 02 Jul 2019 09:54:55 -0700 (PDT)
-Subject: Re: nvmem creates multiple devices with the same name
-To: Sascha Hauer <s.hauer@pengutronix.de>
-References: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
- <a9ccac90-7b2f-41da-2ca9-ca3bba52781b@linaro.org>
- <20190521092107.zpdkkhaanzruhqui@pengutronix.de>
- <20190701080642.4oxmw7c3rmwrt5ee@pengutronix.de>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <45d0cfaf-2511-4b1e-f4da-b67fa9f9e867@linaro.org>
-Date: Tue, 2 Jul 2019 17:54:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ Tue, 02 Jul 2019 10:53:02 -0700 (PDT)
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>
+References: <20190625075746.10439-1-vigneshr@ti.com>
+ <20190625075746.10439-4-vigneshr@ti.com>
+Organization: Cogent Embedded
+Message-ID: <31657fd1-c1c9-7672-14c1-e6f67eee6ac1@cogentembedded.com>
+Date: Tue, 2 Jul 2019 20:53:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-In-Reply-To: <20190701080642.4oxmw7c3rmwrt5ee@pengutronix.de>
-Content-Language: en-US
+In-Reply-To: <20190625075746.10439-4-vigneshr@ti.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_095458_954206_3053226A 
-X-CRM114-Status: GOOD (  21.27  )
+X-CRM114-CacheID: sfid-20190702_105305_884384_7FDE2E8A 
+X-CRM114-Status: GOOD (  25.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,84 +105,125 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de
+Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Sascha,
+Hello!
 
-On 01/07/2019 09:06, Sascha Hauer wrote:
-> Hi Srinivas,
+On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
+
+> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
+> Bus interface between a host system master and one or more slave
+> interfaces. HyperBus is used to connect microprocessor, microcontroller,
+> or ASIC devices with random access NOR flash memory (called HyperFlash)
+> or self refresh DRAM (called HyperRAM).
 > 
-> On Tue, May 21, 2019 at 11:21:07AM +0200, Sascha Hauer wrote:
->> On Tue, May 21, 2019 at 10:02:32AM +0100, Srinivas Kandagatla wrote:
->>>
->>>
->>> On 21/05/2019 09:56, Sascha Hauer wrote:
->>>> . Are there any suggestions how to register the nvmem devices
->>>> with a different name?
->>>
->>> struct nvmem_config provides id field for this purpose, this will be used by
->>> nvmem to set the device name space along with name field.
->>
->> There's no way for a caller to know a unique name/id combination.
->> The mtd layer could initialize the id field with the mtd number, but
->> that would still not guarantee that another caller, like an EEPROM
->> driver or such, doesn't use the same name/id combination.
+> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+> signal and either Single-ended clock(3.0V parts) or Differential clock
+> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+> At bus level, it follows a separate protocol described in HyperBus
+> specification[1].
 > 
-> This is still an unresolved issue. Do you have any input how we could
-> proceed here?
-
-Sorry for the delay!
-I think simplest solution would be to check if there is already an nvmem 
-provider with the same name before assigning name to the device and then 
-append the id in case it exists.
-
-Let me know if below patch helps the situation so that I can take this 
-in next cycle!
-
------------------------------------>cut<----------------------------
-     nvmem: core: Check nvmem device name before adding the same one
-
-     In some usecases where nvmem names are directly derived from
-     partition names, its likely that different devices might have
-     same partition name.
-     This will be an issue as we will be creating two different
-     nvmem devices with same name and sysfs will not be very happy with 
-that.
-
-     Simple solution is to check the existance of the nvmem provider with
-     same name and append an id if it exists before creating the device 
-name.
-
-     Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index f24008b66826..cf70a405023c 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -641,7 +641,11 @@ struct nvmem_device *nvmem_register(const struct 
-nvmem_config *config)
-                 nvmem->dev.of_node = config->dev->of_node;
-
-         if (config->id == -1 && config->name) {
--               dev_set_name(&nvmem->dev, "%s", config->name);
-+               if (nvmem_find(config->name))
-+                       dev_set_name(&nvmem->dev, "%s%d", config->name,
-+                                    nvmem->id);
-+               else
-+                       dev_set_name(&nvmem->dev, "%s", config->name);
-         } else {
-                 dev_set_name(&nvmem->dev, "%s%d",
-                              config->name ? : "nvmem",
------------------------------------>cut<----------------------------
+> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
+> its equivalent to x16 parallel NOR flash with respect to bits per clock
+> cycle. But HyperBus operates at >166MHz frequencies.
+> HyperRAM provides direct random read/write access to flash memory
+> array.
 > 
-> Thanks
->   Sascha
+> But, HyperBus memory controllers seem to abstract implementation details
+> and expose a simple MMIO interface to access connected flash.
 > 
+> Add support for registering HyperFlash devices with MTD framework. MTD
+> maps framework along with CFI chip support framework are used to support
+> communicating with flash.
+> 
+> Framework is modelled along the lines of spi-nor framework. HyperBus
+> memory controller (HBMC) drivers calls hyperbus_register_device() to
+> register a single HyperFlash device. HyperFlash core parses MMIO access
+> information from DT, sets up the map_info struct, probes CFI flash and
+> registers it with MTD framework.
+> 
+> Some HBMC masters need calibration/training sequence[3] to be carried
+> out, in order for DLL inside the controller to lock, by reading a known
+> string/pattern. This is done by repeatedly reading CFI Query
+> Identification String. Calibration needs to be done before trying to detect
+> flash as part of CFI flash probe.
+> 
+> HyperRAM is not supported at the moment.
+> 
+> HyperBus specification can be found at[1]
+> HyperFlash datasheet can be found at[2]
+> 
+> [1] https://www.cypress.com/file/213356/download
+> [2] https://www.cypress.com/file/213346/download
+> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+>     Table 12-5741. HyperFlash Access Sequence
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+[...]
+
+   I have at least created my HyperBus driver and unfortunately I'm having serious
+issues with the design of the support core (see below)...
+
+[...]
+> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
+> new file mode 100644
+> index 000000000000..63a9e64895bc
+> --- /dev/null
+> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
+> @@ -0,0 +1,154 @@
+[...]
+> +int hyperbus_register_device(struct hyperbus_device *hbdev)
+> +{
+> +	const struct hyperbus_ops *ops;
+> +	struct hyperbus_ctlr *ctlr;
+> +	struct device_node *np;
+> +	struct map_info *map;
+> +	struct resource res;
+> +	struct device *dev;
+> +	int ret;
+> +
+> +	if (!hbdev || !hbdev->np || !hbdev->ctlr || !hbdev->ctlr->dev) {
+> +		pr_err("hyperbus: please fill all the necessary fields!\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	np = hbdev->np;
+> +	ctlr = hbdev->ctlr;
+> +	if (!of_device_is_compatible(np, "cypress,hyperflash"))
+> +		return -ENODEV;
+> +
+> +	hbdev->memtype = HYPERFLASH;
+> +
+> +	ret = of_address_to_resource(np, 0, &res);
+
+   Hm, I doubt that the HB devices are wholly mapped into memory space, that seems
+like a property of the HB controller. In my case, the flash device in the DT has
+only single-cell "reg" prop (equal to the chip select #). Then this function returns 
+-EINVAL and the registration fails. Also, in my case such mapping is R/O, not R/W.
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	dev = ctlr->dev;
+> +	map = &hbdev->map;
+> +	map->size = resource_size(&res);
+> +	map->virt = devm_ioremap_resource(dev, &res);
+> +	if (IS_ERR(map->virt))
+> +		return PTR_ERR(map->virt);
+
+   Again, I doubt that this should be done here, and not in the HB controller driver...
+
+[...]
+
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
