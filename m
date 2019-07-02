@@ -1,85 +1,85 @@
-Return-Path: <SRS0=0U+/=U6=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=szGg=U7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D627DC0650E
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2019 18:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A8F5C06511
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 10:46:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2CC42146F
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2019 18:26:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1391D2146F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 10:46:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="kWe6qg6k";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qjj11gfF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2CC42146F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="G/GZmx9t";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdVby+/P"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1391D2146F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
-	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=C/uDiRdxLKdWxcZjjfNjAtAnRE2MS8ZOt33o0Q25Jbg=; b=kWe
-	6qg6kpYsxyEE+PFPVLSbMDuaE2yZ+bEOOcm5xGARAVI+EVRyZFeETuz1LCxzBBCT2KmQNBdtSqA3g
-	ggHre89cNrTMyDeAU7cI9LVjtwBto/o4ISXvp0TXE4AMoqxqBKBKha13Rutw6kfB/9K04G1Ps9j1u
-	dumXlIpklpdiJty/gdkE+jDwL1dn7EwuWgM3hztuGRA/86wOkAZEQoiDIPqQzHtNHk3rxmRHToVcO
-	XTwh6aIbZWfgEjWofFzWXf78sEVINuoCIcrPAkyaYECVPXT3fkQ8hFg3zzMI/hZeLIzBA/Elj9P+r
-	Oix10fw1nZiHMBfeBVJkx7pvAH9xGmQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OUZ3df+QyBUxn/lzaiaYCIHQoRvCwTJbusgmDWGsuo8=; b=G/GZmx9tTtu3Ec
+	L6J27AxEfqMYSvf+UbL3Fh2/IYUdP6L7x9GslcVBZFN8VW4ktD8KLkq5JgkkLmtEP023vOFqhYgKf
+	UrKk6CMj0Ehewzl+PBGjkMdfuI/i5SmLcjIYUjQZriLqf6CQVt5BSCM/UprfOjUIf+eVUiwthv2RK
+	otw++FbUGmBOh0xiCRwC2G8nnzp632Q6+pZB8O3G1qzP7GaeRl29i48SaJTYYKXYf1GZXc91HskkI
+	cjBEN9qoGx8GN+2DlZbsNWkuPLH4fMm37MeiXTJvt7pIkobXI9VYvI5BQPGBJeGvfQh887pMiftSN
+	snOGd+8tc6O60JQ40y7w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hi0zk-0001ob-3H; Mon, 01 Jul 2019 18:25:40 +0000
-Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
+	id 1hiGIK-0001Xf-Kx; Tue, 02 Jul 2019 10:45:52 +0000
+Received: from mail-yb1-xb43.google.com ([2607:f8b0:4864:20::b43])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hi0zh-0001o8-6f
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2019 18:25:38 +0000
-Received: by mail-qk1-x741.google.com with SMTP id i125so11809994qkd.6
- for <linux-mtd@lists.infradead.org>; Mon, 01 Jul 2019 11:25:36 -0700 (PDT)
+ id 1hiGIG-0001W3-43
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 10:45:49 +0000
+Received: by mail-yb1-xb43.google.com with SMTP id j133so1116934ybj.12
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 03:45:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=NYASaQzIqrMpmbB8TOwSwKNNK5Lig/rQkjmVG3DOy1E=;
- b=qjj11gfFHGjJmpur2ybeLi5W04cuF7enlAQIcu+Q2ECVX+zChl/qLSwFw06Zrwj0qw
- P8InovDnfjS4wqlejx7fROJ2oY+xJBWLOsLUn6fUfOZfKzUvJIp2yGeKste4BGKK8kAx
- hN0TndS1CaoDnA8HgR1mAXmbtJIyC/A6lzSR+cOfq2wTwZdJnSj+Zhy5Gu+BYkJgwvKR
- Lv40SmjTsg+HpsUpXsokaXyw2rJTrUlrLD4JxjykiuJDEHQXbJK8ma+7mcPg8n6cIkhP
- gx2oByaguC8GVAnDli1a6vxxM/059DWNG0d4x+FbAAR4kvANu7Pi9nwOXnbakNhdrBw4
- Dflw==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
+ b=kdVby+/PzZu5i6Y9UcQYatHEHHsEPhAQY+mjVHF6xlggt8o+nszbdHXCHfEBil5H5H
+ UL+/28eYKfUAOv8AvNzRMQHWK/y4MABFSamQhRwNZH1hpEc5BUQCjqITvhev6DLWRzG3
+ uOgpinFcBt7pSePpbwiWspS3cbj7dBXMod+4Z94YngJ+nIPc3qdhbsYftXAC3oBGhakE
+ Bt+6iCjbrfqQEg0SzB1WdrzlyuHEb0JfhuYdop7KFU8fbo4QPvOCj4+Z+NVkWFYsg5RT
+ IRHHoit1jxeDZWaJHULPmpdSPTutxwczS9nSE3h7MYk2MPhM/kHniCv9ovLGXWy3LfTv
+ lmfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=NYASaQzIqrMpmbB8TOwSwKNNK5Lig/rQkjmVG3DOy1E=;
- b=CSoeg76sELEZPYj6Je5QW66p+ZsV+MyM4+Ua/7dxp6gvtUTrX/SZbGTfewj4jujnog
- jKubPQNdd9XacaKYBVguviiDHGam7XIfTZnXqer0f2UcSxugTOvbsVF/u9sAhuktF5lU
- 9/v65oVixxAZBw2rptszMYaMYn4Gb63efo27EEiSnqyU5U5d/6j8EL3/k55d6ZDR0tA0
- vgaS2fqT5imMwifOuOn5HNlh+M/7+VGVoUsvEW0gkLFY9lDmdCBFD6wu9Qxq30ASeSX6
- EGReqkK3JGcojT14mhn36ncGbRkdf/FJ5SkqC/OECOSHLdCe5oOm5Ytop6Cxq8M2IIWJ
- vv5w==
-X-Gm-Message-State: APjAAAWrHsc0lZfuXXzm29lPvtyg9S5jV5mN0beDSWUSUa5f3tkHFHtc
- 4Yg0+hyFGGGCmStQM69l5+XGY6r4
-X-Google-Smtp-Source: APXvYqztir7elhp+AJQ8riQ01rRrh7KzXMCGVt537Bc4NB7b7cURDV+MWRre2xu5fVrQol6V63M2eg==
-X-Received: by 2002:a37:a542:: with SMTP id o63mr23057598qke.368.1562005535692; 
- Mon, 01 Jul 2019 11:25:35 -0700 (PDT)
-Received: from wpd-p910.wardrobe.irobot.com ([192.58.132.250])
- by smtp.googlemail.com with ESMTPSA id 34sm5932400qtq.59.2019.07.01.11.25.34
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Mon, 01 Jul 2019 11:25:35 -0700 (PDT)
-From: Patrick Doyle <wpdster@gmail.com>
-X-Google-Original-From: Patrick Doyle <pdoyle@irobot.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubinize: Exit with non-zero exit code on error.
-Date: Mon,  1 Jul 2019 14:25:28 -0400
-Message-Id: <1562005528-22272-1-git-send-email-pdoyle@irobot.com>
-X-Mailer: git-send-email 2.7.4
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
+ b=ev2p5pdsZsDcIP/k5Cq5q+Ure9XAUULd6k4jNDnne+vSSY8fMi2rDDljW45z4Rqiv+
+ UhCnLBsAOOIzmu2JBSNDsAtXYx0SKEHBVIE8hXYYfn+nVmWC3E6CJYSQ2SZAEPFam6QZ
+ j3yF6Iw37jEO27Tk1oFFfVDvEyizIwkb6u+/Sc/kB6K/amB64/CIUOC/tRTtlWPo8Bc9
+ a0hVyUKj/9QP3paNm4Lp1yIYXGg6j+Wr8OkqslaxgzT9Lmgn6qtsKxdundVISvQhlWnC
+ jOQ/XCyG3Z+1yVNvwSkkvNoBThU4hVJXI2zNlyKtRyL4SUuA6R0iWvKVsXQOmN/xRYlU
+ 1nXA==
+X-Gm-Message-State: APjAAAVdD0trprXPwYO1bEtYiPfl/Ms9i66ArWrz2/cYTJ84YQPRgrGF
+ hlS1l7iW6H6uUozVPH7qbXBQNb5rEC6NrPWpze0=
+X-Google-Smtp-Source: APXvYqzMdrjXgWGhi/zPaZxEj+t8DhHrW56qP/YMhmryxOT2o02rqdhc3hQ5y4gjPvsnd8KwypjTK3Tgmn2Zfydvxjo=
+X-Received: by 2002:a25:8109:: with SMTP id o9mr16913558ybk.132.1562064343920; 
+ Tue, 02 Jul 2019 03:45:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <156174687561.1557469.7505651950825460767.stgit@magnolia>
+ <156174690758.1557469.9258105121276292687.stgit@magnolia>
+ <20190701154200.GK1404256@magnolia>
+In-Reply-To: <20190701154200.GK1404256@magnolia>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 2 Jul 2019 13:45:32 +0300
+Message-ID: <CAOQ4uxizFXgSa4KzkwxmoPAvpiENg=y0=fsxEC1PkCX5J1ybag@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] vfs: don't allow most setxattr to immutable files
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190701_112537_267704_842E435F 
-X-CRM114-Status: GOOD (  11.22  )
+X-CRM114-CacheID: sfid-20190702_034548_162607_528D57A2 
+X-CRM114-Status: GOOD (  17.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,72 +91,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Patrick Doyle <pdoyle@irobot.com>
-MIME-Version: 1.0
+Cc: linux-efi@vger.kernel.org, Linux Btrfs <linux-btrfs@vger.kernel.org>,
+ Chao Yu <yuchao0@huawei.com>, Linux MM <linux-mm@kvack.org>,
+ Chris Mason <clm@fb.com>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ matthew.garrett@nebula.com, linux-nilfs@vger.kernel.org,
+ Christoph Hellwig <hch@infradead.org>, Ext4 <linux-ext4@vger.kernel.org>,
+ devel@lists.orangefs.org, Josef Bacik <josef@toxicpanda.com>,
+ reiserfs-devel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Theodore Tso <tytso@mit.edu>, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-xfs <linux-xfs@vger.kernel.org>,
+ jk@ozlabs.org, Jan Kara <jack@suse.com>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-...specifically -1 in all of the new cases.
+On Mon, Jul 1, 2019 at 7:31 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+>
+> The chattr manpage has this to say about immutable files:
+>
+> "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> or renamed, no link can be created to this file, most of the file's
+> metadata can not be modified, and the file can not be opened in write
+> mode."
+>
+> However, we don't actually check the immutable flag in the setattr code,
+> which means that we can update inode flags and project ids and extent
+> size hints on supposedly immutable files.  Therefore, reject setflags
+> and fssetxattr calls on an immutable file if the file is immutable and
+> will remain that way.
+>
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> ---
+> v2: use memcmp instead of open coding a bunch of checks
 
-Signed-off-by: Patrick Doyle <pdoyle@irobot.com>
----
- ubi-utils/ubinize.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/ubi-utils/ubinize.c b/ubi-utils/ubinize.c
-index c85ff9b..4e16871 100644
---- a/ubi-utils/ubinize.c
-+++ b/ubi-utils/ubinize.c
-@@ -430,11 +430,14 @@ int main(int argc, char * const argv[])
- 	verbose(args.verbose, "UBI image sequence number: %u", ui.image_seq);
- 
- 	vtbl = ubigen_create_empty_vtbl(&ui);
--	if (!vtbl)
-+	if (!vtbl) {
-+                err = -1;
- 		goto out;
-+        }
- 
- 	args.dict = iniparser_load(args.f_in);
- 	if (!args.dict) {
-+                err = -1;
- 		errmsg("cannot load the input ini file \"%s\"", args.f_in);
- 		goto out_vtbl;
- 	}
-@@ -444,17 +447,20 @@ int main(int argc, char * const argv[])
- 	/* Each section describes one volume */
- 	sects = iniparser_getnsec(args.dict);
- 	if (sects == -1) {
-+                err = -1;
- 		errmsg("ini-file parsing error (iniparser_getnsec)");
- 		goto out_dict;
- 	}
- 
- 	verbose(args.verbose, "count of sections: %d", sects);
- 	if (sects == 0) {
-+                err = -1;
- 		errmsg("no sections found the ini-file \"%s\"", args.f_in);
- 		goto out_dict;
- 	}
- 
- 	if (sects > ui.max_volumes) {
-+                err = -1;
- 		errmsg("too many sections (%d) in the ini-file \"%s\"",
- 		       sects, args.f_in);
- 		normsg("each section corresponds to an UBI volume, maximum "
-@@ -464,6 +470,7 @@ int main(int argc, char * const argv[])
- 
- 	vi = calloc(sizeof(struct ubigen_vol_info), sects);
- 	if (!vi) {
-+                err = -1;
- 		errmsg("cannot allocate memory");
- 		goto out_dict;
- 	}
--- 
-2.7.4
+Thanks,
 
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+
+> ---
+>  fs/inode.c |   17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index cf07378e5731..31f694e405fe 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2214,6 +2214,14 @@ int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
+>             !capable(CAP_LINUX_IMMUTABLE))
+>                 return -EPERM;
+>
+> +       /*
+> +        * We aren't allowed to change any other flags if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((oldflags & FS_IMMUTABLE_FL) && (flags & FS_IMMUTABLE_FL) &&
+> +           oldflags != flags)
+> +               return -EPERM;
+> +
+>         /*
+>          * Now that we're done checking the new flags, flush all pending IO and
+>          * dirty mappings before setting S_IMMUTABLE on an inode via
+> @@ -2284,6 +2292,15 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+>             !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+>                 return -EINVAL;
+>
+> +       /*
+> +        * We aren't allowed to change any fields if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           (fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           memcmp(fa, old_fa, offsetof(struct fsxattr, fsx_pad)))
+> +               return -EPERM;
+> +
+>         /* Extent size hints of zero turn off the flags. */
+>         if (fa->fsx_extsize == 0)
+>                 fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
 
 ______________________________________________________
 Linux MTD discussion mailing list
