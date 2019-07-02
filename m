@@ -2,83 +2,94 @@ Return-Path: <SRS0=szGg=U7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7898BC06510
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 13:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A54C06510
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 16:55:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42EFB21479
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 13:45:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BABD520B1F
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 16:55:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IrreEqNj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r4++upSj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42EFB21479
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="KeUAlSZV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eoMSY239"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BABD520B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WHXWSGi779HASuW8qjdCHndgP1ReCoqXMNQPpYQXAIw=; b=IrreEqNjZ1iKMD
-	Jm9OmkP/GcfT299+2Q891ObKeV3VtdHfOlrCTl1OZIaCsye/BpaX6JmTUxqPcy7Oj5J8F6WU20nSt
-	Oeiv1pqMlPBFeLFe1NDmbRuUxxmPlGO5QqWAfDnCv3px2CQb12lCTm3B88oikLOxIBcyOVFBuI/h9
-	SJe4ZEuk2x9M6CxTuL4c44Urjs56PUJrrUJviv+E3lL2Zz3S03VvzaAaLidrvHfh3rm+ccU9jTe7N
-	xNbQwo3OGwsh9JOXL/rqZ7D1LKsDhIG6t40DCvx4A/KkjYPC5NxNS+1XKj5Tr9kK2c3qQZ24zuzfi
-	4LIqYVHnShaS6N+0VHVw==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=jDWKphMCdd6IcH7wCwezPmDV/Cs1qFKIdKhpzK6u/9M=; b=KeUAlSZVNdgYU/F6lV8aVvaqJ
+	0+Td9qpd0XUWxN6KXXUua3ZAJl0WExe3N0xkHPCDGgh8PU0dboxivqqIeWdeTiHbegua/uQD1bCmQ
+	yynYCtgxggzeAOlTWu4L1+qRHJpdxppwLCyqB4Y/Fdo3grD9vzQVB6ra6QvLkULfkqLqI2dU4FKnR
+	uTZmA4xlZY4teVqEa7RBajx+2USQDPDvdd0QoSTzm30WLF2uPmQgBbt51QNZiRNFrmTEWKPLGwVnR
+	gxHN0EAOtTS461VkKx/sypaQAomDO+ykoDIuNWg9nw+FsWHvdpTonvfjbEMPmb55dfx0orglx4LgJ
+	cK25NI4ag==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiJ5b-00066n-4O; Tue, 02 Jul 2019 13:44:55 +0000
-Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
+	id 1hiM3b-0001Xd-1I; Tue, 02 Jul 2019 16:55:03 +0000
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiJ5X-00066N-TV
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 13:44:53 +0000
-Received: by mail-qk1-x742.google.com with SMTP id b18so13928394qkc.9
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 06:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=AiNHH5kLF0a5/4W8JVo7tJ00LHYVYNsbbkRzQ50gi+o=;
- b=r4++upSjUBerqcHlHg56rwYAfu0tK+y5Pbtq1VgLa7YWRq/cQfD5qZE/n18jO3v06U
- dKXprarhKDYXAKFn4PfyuiWWLP+MtIaCK1+h+REyeC0Nqiy+KyzPfahEpWGjAs/GRCAW
- SoEUIQYdMJW8JW446Qe1eSLBsKihADrKiMVDV6CGJ1Mfd5kfnc8fzJw0mo8OcOXp0wMt
- ZvLsCRS5WtbbY2JJ8R9oyBSWdr8U/48jak7g9NHCtAIRUewALlOOsepod0+KwvlscqDP
- r6UspE5+UZYJaKoO+5t6JaErJR1RnW+40lSgtVizJn3ZFG9js48BjRSz09Zr73XOINJM
- TOeA==
+ id 1hiM3W-0001Vg-RV
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 16:55:00 +0000
+Received: by mail-wm1-x336.google.com with SMTP id s15so1798458wmj.3
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 09:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=CimDCDGoDfxfHpl+rKhISumqp5NNRWpGlcfKsYJsg90=;
+ b=eoMSY2395eqnBmzs60/mrSzr+W9p/RaS1h6zhNKCXI9HsqXF5vyNS923QFIAS0RjxX
+ kpe4CRg43qJufKYPk6K1oNG4MLeKupRXl6/vzeGYK/0DekR0fAeaSgOY0MIatqEw2Ezi
+ glHEcP/F2J4vJOFcMSZp2RW76PAiaJZ3WtSDPeO6FH3sYpxNsuwGsZ+s4KKTwcR0dlPa
+ 6lYzpot2hHny8J286wqn5XbmsSsWYiVhI6CFWI2KRYKSq+5JFwjMOtixnMCMtjYvUACv
+ Hm/Gadim5oSfo8WMwGMeSJgnyCNOrTM+Ylv6P2hyPYUZ9ziT2RqMSh5dUb6GvJ9OMV/V
+ Gaqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=AiNHH5kLF0a5/4W8JVo7tJ00LHYVYNsbbkRzQ50gi+o=;
- b=Hip3zDM13CK6mUKfpwIt9jAnKwNybWlS40HeoPkUXxXgT7RMWj7Tx41jG+AwV7OKrG
- 44uPH1iME3lY1s2R7PRfjz+nkerHAtlJYl3l4NC582c3ngiyeAl6ENRneAxsNMwgE6Mp
- ujdVLj23oB4uMGxoSRqQH6FYVHR5yctMTHwrVMkAktT0ajpP0i427VDrbe6MUSJwKd1f
- v4hqeMIYnExEvyfgHINMfpUgmlACY1d4/EMkZi7bY2VpWYyLNM4D9rHDOTxNJ5qYPADr
- cXBj4za5tXF7eSNINDiHGeF9YjZy81sjKs4K+5S/wkPr3M4OofQDB9IHPx6PeQadOd10
- L1rQ==
-X-Gm-Message-State: APjAAAWmL/TDzel7pURKIlZcJx9/1YeK+aqjEaoPqUs6gQZEsc/C9Vzl
- JAI4/m4G9T/RJixlDsJOuf0keRAzLidHUAWQCh4=
-X-Google-Smtp-Source: APXvYqyl2L8SickB4Uw/7jG50ilbgF97AWgSOx5lDPLgOAAh4VYDDjdZ0CX+GPw2qJlpv6+vQ7zfKMMGCF09fJbV004=
-X-Received: by 2002:a37:a094:: with SMTP id j142mr26058706qke.2.1562075090142; 
- Tue, 02 Jul 2019 06:44:50 -0700 (PDT)
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=CimDCDGoDfxfHpl+rKhISumqp5NNRWpGlcfKsYJsg90=;
+ b=sHsJGpEhTgt/gffmmwFHpxrpZpNmFMAGX0Zn+sODLu7MY0x7HNfo9hfWSDnvph6M1p
+ 5h/dYzclsjasNZQRD+6JtwzGTnHKGUU/6J8FLupVXeB5ZhIvLyy+bv9HNKvGjUS+GOZY
+ rRDFEjN579rjCyfr++u2PXLFTewmnuSdBdlw9E9Pe8BWzZ7UA4bf4IcuxldIeRnpJjBg
+ +MG7TGg7wKl2UjyePWqj8qonkHkFUgH3aAg+vV4YLdArJajjfK3FxlFVmsovUW4jmdUP
+ G7wFt7DmXaj6ZO61lKv7SHuZBWrnBCTZZwikLP21k44f0V5xjwHDpHqFOOlBlKCvnKFS
+ CiHQ==
+X-Gm-Message-State: APjAAAWXP+ibSNMFpFa6XDmadyrIxV2wk38LYcGyoXqaYWmgC69pF69T
+ n5Sv4Qig0RScY2dp+qRk3gHTtg==
+X-Google-Smtp-Source: APXvYqzorO0l43WUW0HU+l8DROk7HfESLlwuN0S38IG5WqRioa3y9qGboUPucd/0wLqFrSB2htFA0A==
+X-Received: by 2002:a7b:c313:: with SMTP id k19mr3931340wmj.2.1562086496818;
+ Tue, 02 Jul 2019 09:54:56 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id h84sm3426757wmf.43.2019.07.02.09.54.55
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 02 Jul 2019 09:54:55 -0700 (PDT)
+Subject: Re: nvmem creates multiple devices with the same name
+To: Sascha Hauer <s.hauer@pengutronix.de>
+References: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+ <a9ccac90-7b2f-41da-2ca9-ca3bba52781b@linaro.org>
+ <20190521092107.zpdkkhaanzruhqui@pengutronix.de>
+ <20190701080642.4oxmw7c3rmwrt5ee@pengutronix.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <45d0cfaf-2511-4b1e-f4da-b67fa9f9e867@linaro.org>
+Date: Tue, 2 Jul 2019 17:54:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <1562005528-22272-1-git-send-email-pdoyle@irobot.com>
- <5180bc0f-2494-880b-747d-2c09b7e24d7a@sigma-star.at>
-In-Reply-To: <5180bc0f-2494-880b-747d-2c09b7e24d7a@sigma-star.at>
-From: Patrick Doyle <wpdster@gmail.com>
-Date: Tue, 2 Jul 2019 09:44:24 -0400
-Message-ID: <CAF_dkJD+QtYFovinjSC4ybCTQtujyYrZ7rf45gaApBu=KNp1Cg@mail.gmail.com>
-Subject: Re: [PATCH] ubinize: Exit with non-zero exit code on error.
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+In-Reply-To: <20190701080642.4oxmw7c3rmwrt5ee@pengutronix.de>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_064451_955485_D85524F1 
-X-CRM114-Status: UNSURE (   6.14  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190702_095458_954206_3053226A 
+X-CRM114-Status: GOOD (  21.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,20 +101,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Patrick Doyle <pdoyle@irobot.com>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 2, 2019 at 8:43 AM David Oberhollenzer
-<david.oberhollenzer@sigma-star.at> wrote:
-> Note: The source code uses tabs for indentation. I fixed that in the patch.
-Oh! Darn darn darn darn darn!!!!
+Hi Sascha,
 
-I noticed that, and I meant to fix it.  I'm sorry.  Thanks for fixing it for me.
+On 01/07/2019 09:06, Sascha Hauer wrote:
+> Hi Srinivas,
+> 
+> On Tue, May 21, 2019 at 11:21:07AM +0200, Sascha Hauer wrote:
+>> On Tue, May 21, 2019 at 10:02:32AM +0100, Srinivas Kandagatla wrote:
+>>>
+>>>
+>>> On 21/05/2019 09:56, Sascha Hauer wrote:
+>>>> . Are there any suggestions how to register the nvmem devices
+>>>> with a different name?
+>>>
+>>> struct nvmem_config provides id field for this purpose, this will be used by
+>>> nvmem to set the device name space along with name field.
+>>
+>> There's no way for a caller to know a unique name/id combination.
+>> The mtd layer could initialize the id field with the mtd number, but
+>> that would still not guarantee that another caller, like an EEPROM
+>> driver or such, doesn't use the same name/id combination.
+> 
+> This is still an unresolved issue. Do you have any input how we could
+> proceed here?
 
---wpd
+Sorry for the delay!
+I think simplest solution would be to check if there is already an nvmem 
+provider with the same name before assigning name to the device and then 
+append the id in case it exists.
+
+Let me know if below patch helps the situation so that I can take this 
+in next cycle!
+
+----------------------------------->cut<----------------------------
+     nvmem: core: Check nvmem device name before adding the same one
+
+     In some usecases where nvmem names are directly derived from
+     partition names, its likely that different devices might have
+     same partition name.
+     This will be an issue as we will be creating two different
+     nvmem devices with same name and sysfs will not be very happy with 
+that.
+
+     Simple solution is to check the existance of the nvmem provider with
+     same name and append an id if it exists before creating the device 
+name.
+
+     Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index f24008b66826..cf70a405023c 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -641,7 +641,11 @@ struct nvmem_device *nvmem_register(const struct 
+nvmem_config *config)
+                 nvmem->dev.of_node = config->dev->of_node;
+
+         if (config->id == -1 && config->name) {
+-               dev_set_name(&nvmem->dev, "%s", config->name);
++               if (nvmem_find(config->name))
++                       dev_set_name(&nvmem->dev, "%s%d", config->name,
++                                    nvmem->id);
++               else
++                       dev_set_name(&nvmem->dev, "%s", config->name);
+         } else {
+                 dev_set_name(&nvmem->dev, "%s%d",
+                              config->name ? : "nvmem",
+----------------------------------->cut<----------------------------
+> 
+> Thanks
+>   Sascha
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
