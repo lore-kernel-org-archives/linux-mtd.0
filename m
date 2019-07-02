@@ -2,90 +2,61 @@ Return-Path: <SRS0=szGg=U7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D041C06510
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 18:41:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19713C06510
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 19:00:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE8A121721
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 18:41:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA2B621850
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 19:00:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Di95lz0E";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="QBuDtgrC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE8A121721
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sifive.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cq3M1hh8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA2B621850
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=JWhMkWVNNTAFs3JUaCit1GSbhY++BIlOqXKGEbQWSrM=; b=Di95lz0ECS9Am7lUpUpMvKZCKK
-	qpRT7HVlo3MJ1dnyMKwUAEPjCOpH+eyFZL9WR7+QjYD+Eu07aN0MYzZcg+TKb4DQE7bZiQlqVjYVv
-	niJBOdsFt7N77OFNhrKfQCwgBqDNkgtXV+KbqsqLijcwaLfR2binZdkJ9XRY3COrzQB+BEbb+l/dM
-	WfhluV+NmJJEOmdnap0i0CdtTbbDOcEYHh2s0Fa9fz0/YDbDOztZwfiPAoFkGkKpwjc+ukMjeuf5k
-	YVzDgdSgKMUbKyjYoq7fcmmzV96l3ILiLOEI563P5qGNMZcD7/CfW3TPSvWiC7DhTAvZMjOUhtQGN
-	4PG8A+yQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3dhJ+i+YKo50OGr0ot3U36JMv0V+6li9a2EK1ufzjak=; b=Cq3M1hh8MFsXSL
+	BXeEIbVh4GZGwkZStnLvfGyriIyIKHeKZupelZo76kqg2xLzU/wRthwq+3ENwZi9YT377i2BTRSyO
+	oIPgq/2FRt+zrT9HhWm1Hcb5M5rDrKqMYyhzOKAZTMu14LbGh0IFdVaPI58JBeqip+lC4wLnBpj2S
+	GaHY5sEhQJzZi0J0ySVy4J1SusfoFihtKA1NZ9rDI3NGbedzltSqFnIGZk7GEqSA0hdKFZCm7ZV+W
+	j/FbJeUl2JlQ0abT80R0UrXXikN1vcRsK2EaVqGjK5oVt/IPHwcb/9NbJ1tS1o2ABcg3EWG1DF3o2
+	uQkQegn/kgkJxAShL0rA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiNig-00050z-3n; Tue, 02 Jul 2019 18:41:34 +0000
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+	id 1hiO19-0003Dt-9x; Tue, 02 Jul 2019 19:00:39 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiNhf-00049R-9m
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 18:40:34 +0000
-Received: by mail-pl1-x641.google.com with SMTP id cl9so824472plb.10
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jul 2019 11:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=SHKZ+Dr78ZBjglrjMyozIE7l6kXYnfw/Tzo8w3y20N0=;
- b=QBuDtgrC2mwIvF5/O5BK3KQHUEiyvhQDjZgxc0hVaG/uIwS17fWsDgukQHxEQFEdG/
- oXd0eROGRjTOyCFD1loF9qknq4pSWoT5umVmgRDsi0kLZcZg6Lw0P9Qe8bkQjSbrLvqE
- gkz2kPltbl2Hb1q6Ws26BXQ8SZTxL9jnQGp7CQqR16VVgBVhXwd2xg3Yge+oV5YzKYtz
- MVfRkHJXR4apm/LfSD2srrnB8Zi88asK1MxYyJ+oousqNuDHV03fOzygA8s90C6oZdfB
- oRx85XNYmsyKY68Y+Fg8U0E0jxyYMl1vClubuhTE7Mi0mplnT+8vbj9ZPPDyVUx1bo17
- FTBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=SHKZ+Dr78ZBjglrjMyozIE7l6kXYnfw/Tzo8w3y20N0=;
- b=N4UZPE1kN6M09uYmhRoMnixPl1xPbNgMvDmxqwkeDHJFzfvUANqrwYnaYFpJxWRHWh
- +UyfdU1ka72LjGLRcr8xw/Kty/nYXUDpomX8xQlFlAXKIBUzGyBM9QB/Nf5u3PKIP0w6
- Kke096avAtJDdmUovxjFSxx5Q43Cr4FQuPPVGgkIGHcFEWPYFCBtwuPeoEX8kEpojeuc
- HNJFOqXoA9b+yhQ0CqcjpXBOd5veo5GDw2RCz0zVmWuFMfFOwgWcqnZ223xiRYferB6l
- qPHjOX0+6tQ0bFJPnxZNVS4cJ6x5+6MioiFWUNvyyV7yd4D73dD4tqb7j/C1K4tVsxWh
- 6jMw==
-X-Gm-Message-State: APjAAAUD1Pn3BsdDlxLAgPBgu4sMCvx60SWenpv+85bs+fGArQxgumWA
- s+ESxMDZzQ93cYl+4CpRaSI2DA==
-X-Google-Smtp-Source: APXvYqyEKlTlCDkC6AYXm5ThpPHjdbK2woGxSlp4pDfcIrFIUsML6hBX5Pwj9rLEXBq5AYCZWq8Grg==
-X-Received: by 2002:a17:902:ba8e:: with SMTP id
- k14mr36841380pls.256.1562092830223; 
- Tue, 02 Jul 2019 11:40:30 -0700 (PDT)
-Received: from buildserver-90.open-silicon.com ([114.143.65.226])
- by smtp.googlemail.com with ESMTPSA id
- e10sm15065327pfi.173.2019.07.02.11.40.26
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Tue, 02 Jul 2019 11:40:29 -0700 (PDT)
-From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-To: marek.vasut@gmail.com, tudor.ambarus@microchip.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com
-Subject: [PATCH v7 4/4] mtd: spi-nor: add locking support for is25wp256 device
-Date: Wed,  3 Jul 2019 00:09:05 +0530
-Message-Id: <1562092745-11541-5-git-send-email-sagar.kadam@sifive.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1562092745-11541-1-git-send-email-sagar.kadam@sifive.com>
-References: <1562092745-11541-1-git-send-email-sagar.kadam@sifive.com>
+ id 1hiO0W-0001eQ-SU
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 19:00:02 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B91032639CD;
+ Tue,  2 Jul 2019 19:59:57 +0100 (BST)
+Date: Tue, 2 Jul 2019 20:59:55 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: nvmem creates multiple devices with the same name
+Message-ID: <20190702205955.65f1bce2@collabora.com>
+In-Reply-To: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+References: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_114031_386823_3611E9DE 
-X-CRM114-Status: GOOD (  25.44  )
+X-CRM114-CacheID: sfid-20190702_120001_055260_4A38F8F6 
+X-CRM114-Status: GOOD (  15.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,430 +68,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: aou@eecs.berkeley.edu, palmer@sifive.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
- paul.walmsley@sifive.com, linux-riscv@lists.infradead.org
-MIME-Version: 1.0
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement a locking scheme for ISSI devices based on the stm_lock scheme.
-The is25wp256  device has 4 bits for selecting the range of blocks to
-be locked/protected from erase/write operations and function register
-gives feasibility to select the top / bottom area for protection.
-Added opcode to read and write function registers.
+On Tue, 21 May 2019 10:56:41 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-The current implementation enables block protection as per the table
-defined in the datasheet for the is25wp256 device having erase size of
-0x1000. ISSI and stm devices differ in terms of TBS (top/bottom area
-protection) bits. In case of issi this bit is in Function register and
-is OTP memory, so once FR bits are programmed cannot be modified.
+> Hi all,
+> 
+> nvmem derives the device name directly from the partition name of the
+> underlying device. IMO this is wrong since it's not possible to create
+> two partitions with the same name on different devices. In my case I
+> have a NAND device and a SPI NOR device which both happen to have a
+> partition named 'barebox'. This ends up with:
 
-Some common code from stm_lock/unlock implementation is extracted so that
-it can be re-used for issi devices. The locking scheme has been tested on
-HiFive Unleashed board Rev A00  having is25wp256 flash memory.
+Hm, I think I had suggested to use dev_name(&mtd->dev) instead of
+mtd->name at some point. But then you have the problem that MTD
+numbering is dependent on the probe order which is not guaranteed to
+stay the same, so exposing nvmem devices using "mtdXX" name is not super
+user-friendly.
 
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 266 ++++++++++++++++++++++++++++++++++--------
- include/linux/mtd/spi-nor.h   |   5 +
- 2 files changed, 223 insertions(+), 48 deletions(-)
+> 
+> [   11.222196] sysfs: cannot create duplicate filename '/bus/nvmem/devices/barebox'
+> [   11.230136] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.2.0-rc1-00014-g793f23e5adb0-dirty #676
+> [   11.240414] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+> [   11.247174] [<c0112928>] (unwind_backtrace) from [<c010d140>] (show_stack+0x10/0x14)
+> [   11.255171] [<c010d140>] (show_stack) from [<c0bd65cc>] (dump_stack+0xd8/0x110)
+> [   11.262722] [<c0bd65cc>] (dump_stack) from [<c031682c>] (sysfs_warn_dup+0x50/0x64)
+> [   11.270527] [<c031682c>] (sysfs_warn_dup) from [<c0316b34>] (sysfs_do_create_link_sd+0xcc/0xd8)
+> [   11.279487] [<c0316b34>] (sysfs_do_create_link_sd) from [<c06792a0>] (bus_add_device+0x80/0xfc)
+> [   11.288441] [<c06792a0>] (bus_add_device) from [<c0676208>] (device_add+0x328/0x608)
+> [   11.296423] [<c0676208>] (device_add) from [<c08bde64>] (nvmem_register.part.1+0x168/0x5e4)
+> [   11.305030] [<c08bde64>] (nvmem_register.part.1) from [<c06edb34>] (add_mtd_device+0x1e8/0x404)
+> [   11.313988] [<c06edb34>] (add_mtd_device) from [<c06f1004>] (add_mtd_partitions+0x74/0x15c)
+> [   11.322589] [<c06f1004>] (add_mtd_partitions) from [<c06f0da8>] (parse_mtd_partitions+0x180/0x368)
+> [   11.331807] [<c06f0da8>] (parse_mtd_partitions) from [<c06ede68>] (mtd_device_parse_register+0x40/0x164)
+> [   11.341560] [<c06ede68>] (mtd_device_parse_register) from [<c070654c>] (m25p_probe+0x118/0x200)
+> [   11.350513] [<c070654c>] (m25p_probe) from [<c073863c>] (spi_drv_probe+0x80/0xa4)
+> 
+> While it's easy to rename the partitions I see no reason why it should
+> be illegal to have two different (mtd) devices with eqeally named
+> partitions. Are there any suggestions how to register the nvmem devices
+> with a different name?
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 4ed241d..847a848 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -295,6 +295,29 @@ struct flash_info {
- 
- #define JEDEC_MFR(info)	((info)->id[0])
- 
-+/**
-+ * spi_nor_read_fr() - read function register
-+ * @nor: pointer to a 'struct spi_nor'.
-+ *
-+ * ISSI devices have top/bottom area protection bits selection into function
-+ * reg. The bits in FR are OTP. So once it's written, it cannot be changed.
-+ *
-+ * Return: Value in function register or negative if error.
-+ */
-+static int spi_nor_read_fr(struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret = nor->read_reg(nor, SPINOR_OP_RDFR, &val, 1);
-+	if (ret < 0) {
-+		pr_err("error %d reading FR\n", ret);
-+		return ret;
-+	}
-+
-+	return val;
-+}
-+
- /*
-  * Read the status register, returning its value in the location
-  * Return the status register value.
-@@ -1095,10 +1118,18 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
- 				 uint64_t *len)
- {
- 	struct mtd_info *mtd = &nor->mtd;
--	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
--	int shift = ffs(mask) - 1;
-+	u8 mask = 0;
-+	u8 fr = 0;
-+	int shift = 0;
- 	int pow;
- 
-+	if (nor->flags & SNOR_F_HAS_BP3)
-+		mask = SR_BP3 | SR_BP2 | SR_BP1 | SR_BP0;
-+	else
-+		mask = SR_BP2 | SR_BP1 | SR_BP0;
-+
-+	shift = ffs(mask) - 1;
-+
- 	if (!(sr & mask)) {
- 		/* No protection */
- 		*ofs = 0;
-@@ -1106,10 +1137,19 @@ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
- 	} else {
- 		pow = ((sr & mask) ^ mask) >> shift;
- 		*len = mtd->size >> pow;
--		if (nor->flags & SNOR_F_HAS_SR_TB && sr & SR_TB)
--			*ofs = 0;
--		else
--			*ofs = mtd->size - *len;
-+		/* ISSI device's have top/bottom select bit in func reg */
-+		if (JEDEC_MFR(nor->info) == SNOR_MFR_ISSI) {
-+			fr = spi_nor_read_fr(nor);
-+			if (nor->flags & SNOR_F_HAS_SR_TB && fr & FR_TB)
-+				*ofs = 0;
-+			else
-+				*ofs = mtd->size - *len;
-+		} else {
-+			if (nor->flags & SNOR_F_HAS_SR_TB && sr & SR_TB)
-+				*ofs = 0;
-+			else
-+				*ofs = mtd->size - *len;
-+		}
- 	}
- }
- 
-@@ -1136,18 +1176,108 @@ static int stm_check_lock_status_sr(struct spi_nor *nor, loff_t ofs, uint64_t le
- 		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
- }
- 
--static int stm_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
--			    u8 sr)
-+/*
-+ * check if memory region is locked
-+ *
-+ * Returns false if region is locked 0 otherwise.
-+ */
-+static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
-+				u8 sr)
- {
- 	return stm_check_lock_status_sr(nor, ofs, len, sr, true);
- }
- 
--static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
--			      u8 sr)
-+/*
-+ * check if memory region is unlocked
-+ *
-+ * Returns false if region is locked 0 otherwise.
-+ */
-+static int spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
-+				  u8 sr)
- {
- 	return stm_check_lock_status_sr(nor, ofs, len, sr, false);
- }
- 
-+/**
-+ * spi_nor_select_zone() - Select top area or bottom area to lock/unlock
-+ * @nor: pointer to a 'struct spi_nor'.
-+ * @ofs: offset from which to lock memory.
-+ * @len: number of bytes to unlock.
-+ * @sr: status register
-+ * @tb: pointer to top/bottom bool used in caller function
-+ * @op: zone selection is for lock/unlock operation. 1: lock 0:unlock
-+ *
-+ * Select the top area / bottom area pattern to protect memory blocks.
-+ *
-+ * Returns negative on errors, 0 on success.
-+ */
-+static int spi_nor_select_zone(struct spi_nor *nor, loff_t ofs, uint64_t len,
-+			       u8 sr, bool *tb, bool op)
-+{
-+	int retval;
-+	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
-+
-+	if (op) {
-+		/* Select for lock zone operation */
-+
-+		/*
-+		 * If nothing in our range is unlocked, we don't need
-+		 * to do anything.
-+		 */
-+		if (spi_nor_is_locked_sr(nor, ofs, len, sr))
-+			return 0;
-+
-+		/*
-+		 * If anything below us is unlocked, we can't use 'bottom'
-+		 * protection.
-+		 */
-+		if (!spi_nor_is_locked_sr(nor, 0, ofs, sr))
-+			can_be_bottom = false;
-+
-+		/*
-+		 * If anything above us is unlocked, we can't use 'top'
-+		 * protection.
-+		 */
-+		if (!spi_nor_is_locked_sr(nor, ofs + len,
-+					  nor->mtd.size - (ofs + len), sr))
-+			can_be_top = false;
-+	} else {
-+		/* Select unlock zone */
-+
-+		/*
-+		 * If nothing in our range is locked, we don't need to
-+		 * do anything.
-+		 */
-+		if (spi_nor_is_unlocked_sr(nor, ofs, len, sr))
-+			return 0;
-+
-+		/*
-+		 * If anything below us is locked, we can't use 'top'
-+		 * protection
-+		 */
-+		if (!spi_nor_is_unlocked_sr(nor, 0, ofs, sr))
-+			can_be_top = false;
-+
-+		/*
-+		 * If anything above us is locked, we can't use 'bottom'
-+		 * protection
-+		 */
-+		if (!spi_nor_is_unlocked_sr(nor, ofs + len,
-+					    nor->mtd.size - (ofs + len), sr))
-+			can_be_bottom = false;
-+	}
-+
-+	if (!can_be_bottom && !can_be_top) {
-+		retval = -EINVAL;
-+	} else {
-+		/* Prefer top, if both are valid */
-+		*tb = can_be_top;
-+		retval = 1;
-+	}
-+
-+	return retval;
-+}
-+
- /*
-  * Lock a region of the flash. Compatible with ST Micro and similar flash.
-  * Supports the block protection bits BP{0,1,2} in the status register
-@@ -1185,33 +1315,20 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	struct mtd_info *mtd = &nor->mtd;
- 	int status_old, status_new;
- 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
--	u8 shift = ffs(mask) - 1, pow, val;
-+	u8 shift = ffs(mask) - 1, pow, val, ret;
- 	loff_t lock_len;
--	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
- 	bool use_top;
- 
- 	status_old = read_sr(nor);
- 	if (status_old < 0)
- 		return status_old;
- 
--	/* If nothing in our range is unlocked, we don't need to do anything */
--	if (stm_is_locked_sr(nor, ofs, len, status_old))
-+	ret = spi_nor_select_zone(nor, ofs, len, status_old, &use_top, 1);
-+	if (!ret)
- 		return 0;
-+	else if (ret < 0)
-+		return ret;
- 
--	/* If anything below us is unlocked, we can't use 'bottom' protection */
--	if (!stm_is_locked_sr(nor, 0, ofs, status_old))
--		can_be_bottom = false;
--
--	/* If anything above us is unlocked, we can't use 'top' protection */
--	if (!stm_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
--				status_old))
--		can_be_top = false;
--
--	if (!can_be_bottom && !can_be_top)
--		return -EINVAL;
--
--	/* Prefer top, if both are valid */
--	use_top = can_be_top;
- 
- 	/* lock_len: length of region that should end up locked */
- 	if (use_top)
-@@ -1265,33 +1382,19 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	struct mtd_info *mtd = &nor->mtd;
- 	int status_old, status_new;
- 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
--	u8 shift = ffs(mask) - 1, pow, val;
- 	loff_t lock_len;
--	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
-+	u8 shift = ffs(mask) - 1, pow, val, ret;
- 	bool use_top;
- 
- 	status_old = read_sr(nor);
- 	if (status_old < 0)
- 		return status_old;
- 
--	/* If nothing in our range is locked, we don't need to do anything */
--	if (stm_is_unlocked_sr(nor, ofs, len, status_old))
-+	ret = spi_nor_select_zone(nor, ofs, len, status_old, &use_top, 0);
-+	if (!ret)
- 		return 0;
--
--	/* If anything below us is locked, we can't use 'top' protection */
--	if (!stm_is_unlocked_sr(nor, 0, ofs, status_old))
--		can_be_top = false;
--
--	/* If anything above us is locked, we can't use 'bottom' protection */
--	if (!stm_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
--				status_old))
--		can_be_bottom = false;
--
--	if (!can_be_bottom && !can_be_top)
--		return -EINVAL;
--
--	/* Prefer top, if both are valid */
--	use_top = can_be_top;
-+	else if (ret < 0)
-+		return ret;
- 
- 	/* lock_len: length of region that should remain locked */
- 	if (use_top)
-@@ -1353,7 +1456,7 @@ static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	if (status < 0)
- 		return status;
- 
--	return stm_is_locked_sr(nor, ofs, len, status);
-+	return spi_nor_is_locked_sr(nor, ofs, len, status);
- }
- 
- static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-@@ -1468,6 +1571,70 @@ static int macronix_quad_enable(struct spi_nor *nor)
- }
- 
- /**
-+ * issi_lock() - set BP[0123] write-protection.
-+ * @nor: pointer to a 'struct spi_nor'.
-+ * @ofs: offset from which to lock memory.
-+ * @len: number of bytes to unlock.
-+ *
-+ * Lock a region of the flash.Implementation is based on stm_lock
-+ * Supports the block protection bits BP{0,1,2,3} in status register
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int issi_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	int status_old, status_new, blk_prot;
-+	u8 mask;
-+	u8 shift;
-+	u8 pow, ret, func_reg;
-+	bool use_top;
-+	loff_t lock_len;
-+
-+	if (nor->flags & SNOR_F_HAS_BP3)
-+		mask = SR_BP3 | SR_BP2 | SR_BP1 | SR_BP0;
-+	else
-+		mask = SR_BP2 | SR_BP1 | SR_BP0;
-+
-+	shift = ffs(mask) - 1;
-+
-+	status_old = read_sr(nor);
-+
-+	/* if status reg is Write protected don't update bit protection */
-+	if (status_old & SR_SRWD) {
-+		dev_err(nor->dev,
-+			"SR is write protected, can't update BP bits...\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = spi_nor_select_zone(nor, ofs, len, status_old, &use_top, 1);
-+	if (!ret)
-+		/* Older protected blocks include the new requested block's */
-+		return 0;
-+	else if (ret < 0)
-+		return ret;
-+
-+	func_reg = spi_nor_read_fr(nor);
-+	/* lock_len: length of region that should end up locked */
-+	if (use_top)
-+		lock_len = nor->mtd.size - ofs;
-+	else
-+		lock_len = ofs + len;
-+
-+	pow = order_base_2(lock_len);
-+	blk_prot = mask & (((pow + 1) & 0xf) << shift);
-+	if (lock_len <= 0) {
-+		dev_err(nor->dev, "invalid Length to protect");
-+		return -EINVAL;
-+	}
-+
-+	status_new = status_old | blk_prot;
-+	if (status_old == status_new)
-+		return 0;
-+
-+	return write_sr_and_check(nor, status_new, mask);
-+}
-+
-+/**
-  * issi_unlock() - clear BP[0123] write-protection.
-  * @nor: pointer to a 'struct spi_nor'.
-  * @ofs: offset from which to unlock memory.
-@@ -4171,6 +4338,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (JEDEC_MFR(info) == SNOR_MFR_ISSI &&
- 	    info->flags & SPI_NOR_HAS_LOCK &&
- 	    info->flags & SPI_NOR_HAS_BP3) {
-+		nor->flash_lock = issi_lock;
- 		nor->flash_unlock = issi_unlock;
- 	}
- 
-@@ -4194,6 +4362,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
- 	if (info->flags & USE_CLSR)
- 		nor->flags |= SNOR_F_USE_CLSR;
-+	if (info->flags & SPI_NOR_HAS_BP3)
-+		nor->flags |= SNOR_F_HAS_BP3;
- 
- 	if (info->flags & SPI_NOR_NO_ERASE)
- 		mtd->flags |= MTD_NO_ERASE;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index f6fa70f..26dbf48 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -40,6 +40,8 @@
- #define SPINOR_OP_RDSR		0x05	/* Read status register */
- #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
- #define SPINOR_OP_RDSR2		0x3f	/* Read status register 2 */
-+#define SPINOR_OP_RDFR		0x48	/* Read Function register */
-+#define SPINOR_OP_WRFR		0x42	/* Write Function register 1 byte */
- #define SPINOR_OP_WRSR2		0x3e	/* Write status register 2 */
- #define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
- #define SPINOR_OP_READ_FAST	0x0b	/* Read data bytes (high frequency) */
-@@ -139,6 +141,9 @@
- /* Enhanced Volatile Configuration Register bits */
- #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
- 
-+/*Function register bit */
-+#define FR_TB			BIT(1)	/*ISSI: Top/Bottom protect */
-+
- /* Flag Status Register bits */
- #define FSR_READY		BIT(7)	/* Device status, 0 = Busy, 1 = Ready */
- #define FSR_E_ERR		BIT(5)	/* Erase operation status */
--- 
-1.9.1
-
+Note that some MTD users are expecting MTD names to be unique to work
+properly, the example I have in mind is UBI that can be passed the
+partition to attach to using the ubi:<part-name> format, but I'm pretty
+sure we have other places making the same assumption. I guess not
+enforcing mtd->name uniqueness was a bad idea, but I'm not sure we can
+change that now.
 
 ______________________________________________________
 Linux MTD discussion mailing list
