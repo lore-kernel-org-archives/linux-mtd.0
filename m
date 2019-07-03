@@ -2,68 +2,86 @@ Return-Path: <SRS0=y7vF=VA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECAEEC5B57D
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 03:04:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E338CC0650E
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 04:41:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BED8721721
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 03:04:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC13421880
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 04:41:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pf3njjAO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BED8721721
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LZA/Kc4D";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gffr7v2f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC13421880
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S7Y/WozuuuJsUHiF23YlR635q4wkMoQbUc4WnhgX5TY=; b=pf3njjAOYC6nlA
-	zt2uCMm6ugzXX2O3vF9NFGSUwsmSaMFW7KWVJ2SF9t8fwCtKpfhJZfVzvShMEQAo3Rf+HY6taAea3
-	6lX6u6voGiJTqgarNinSLe9pRRWNzo4GsYlvjMyhJ7GxFIXbqYk7rsm0F1J5TfAfxwuT66u0iFjUj
-	oudmOS0K3vRu+BHaiBX2T+YaL3yEe7O1qMFBTUJQ1EbWHHsv1TSjcM3EetAbMG/f8G7d/Hz0vJHyY
-	HODGF4a6O5nzWgaKmRRnSAwOxfraBEHf7ZE2OJoAAFTTuv3/t17PeOUN0m0xjZfGwpbbWKG2+JWH7
-	eZ7eksQr5i1Dh3oFV0dQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zMoEqhNmb9zDOcFooEELEKG8I5Dq+anPcC0/5IrZ2OY=; b=LZA/Kc4DU20qg9
+	1/swOFhqmTFFxXYB68+obmF3EI7uSyLo5JNOtEua8Rah3w5Voirn+Y5ApnozP5MfREushW/gAhSsj
+	OGpCP4CgMEolg1vgJy18UGu0FjWSH45LJOLqWOki+3cvPoZttI1E41Gb2ZtXw4zciuztNEB8ZUVGz
+	iljK+f+5OHx8nJhArk+3tHCH3/T2qNEeQP8z1HsWlnVyfOpRwRF0k5i9DAfQwHWtlkPRX5aojiQP+
+	eKQeOx5d526z4KjgzGBD34COXTD8fjQEj3yKQa1VxcVv6WHkzXAOa1BKD1qhdp302+qxoRKluBWZO
+	HTV481zTq6gO/zowhFQA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiVZW-0001Xn-9B; Wed, 03 Jul 2019 03:04:38 +0000
-Received: from twhmllg3.macronix.com ([122.147.135.201])
+	id 1hiX4X-0000BQ-9i; Wed, 03 Jul 2019 04:40:45 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiVZS-0001Wq-WD
- for linux-mtd@lists.infradead.org; Wed, 03 Jul 2019 03:04:36 +0000
-Received: from twhfmlp1.macronix.com (twhfm1p1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id x6333J7g046150;
- Wed, 3 Jul 2019 11:03:19 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
- by Forcepoint Email with ESMTP id 1CBFD7CFFB98E88ECBE7;
- Wed,  3 Jul 2019 11:03:19 +0800 (CST)
-In-Reply-To: <20190627193635.29abff43@xps13>
-References: <1561443056-13766-1-git-send-email-masonccyang@mxic.com.tw>	<1561443056-13766-2-git-send-email-masonccyang@mxic.com.tw>
- <20190627193635.29abff43@xps13>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v4 1/2] mtd: rawnand: Add Macronix Raw NAND controller
+ id 1hiX4T-0000Ax-3J; Wed, 03 Jul 2019 04:40:43 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x634eVON110690;
+ Tue, 2 Jul 2019 23:40:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1562128831;
+ bh=9bNKxvF0VLaczyeBCMEhxw7ZpdNmUS6nr2XWDzekiGQ=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=gffr7v2fV2c7P/IFTTqSI0mrnnt+97yxTUNcfFBLTBTW9Owv8vr7t+80x3hsNM9T1
+ 3oEjbwoqE9Jnm+PS2QB38Zt7QbcEqQugnvizHQljQD+W892+j3ntlwH+yLPl6QDvJX
+ vdw2DhQuhDEUQ7SoRDfgM9OqyZoudOeQcIk3fhgs=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x634eV6x112951
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 2 Jul 2019 23:40:31 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 2 Jul
+ 2019 23:40:30 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Tue, 2 Jul 2019 23:40:30 -0500
+Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x634eMAK021478;
+ Tue, 2 Jul 2019 23:40:24 -0500
+Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
+References: <20190625075746.10439-1-vigneshr@ti.com>
+ <20190625075746.10439-4-vigneshr@ti.com>
+ <31657fd1-c1c9-7672-14c1-e6f67eee6ac1@cogentembedded.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <5009c418-a051-a42a-f78a-360f7230dd2b@ti.com>
+Date: Wed, 3 Jul 2019 10:11:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-KeepSent: 041E283A:13DCC1D9-4825842C:000C9C7C;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF041E283A.13DCC1D9-ON4825842C.000C9C7C-4825842C.0010C960@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Wed, 3 Jul 2019 11:03:21 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/07/03 AM 11:03:19,
- Serialize complete at 2019/07/03 AM 11:03:19
-X-MAIL: TWHMLLG3.macronix.com x6333J7g046150
+In-Reply-To: <31657fd1-c1c9-7672-14c1-e6f67eee6ac1@cogentembedded.com>
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_200435_308687_0066DD1D 
-X-CRM114-Status: UNSURE (   5.02  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190702_214041_295814_450436A4 
+X-CRM114-Status: GOOD (  25.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,85 +93,161 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, christophe.kerello@st.com, vigneshr@ti.com,
- jianxin.pan@amlogic.com, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- lee.jones@linaro.org, linux-kernel@vger.kernel.org, stefan@agner.ch,
- paul@crapouillou.net, marek.vasut@gmail.com, paul.burton@mips.com,
- broonie@kernel.org, linux-mtd@lists.infradead.org, richard@nod.at,
- anders.roxell@linaro.org, liang.yang@amlogic.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-Hi Miquel,
 
-> > Add a driver for Macronix raw NAND controller.
+On 02/07/19 11:23 PM, Sergei Shtylyov wrote:
+> Hello!
 > 
-> Could you pass userspace major MTD tests and can you attach/mount/edit
-> a UBI/UBIFS storage?
+> On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
+> 
+>> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
+>> Bus interface between a host system master and one or more slave
+>> interfaces. HyperBus is used to connect microprocessor, microcontroller,
+>> or ASIC devices with random access NOR flash memory (called HyperFlash)
+>> or self refresh DRAM (called HyperRAM).
+>>
+>> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
+>> signal and either Single-ended clock(3.0V parts) or Differential clock
+>> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
+>> At bus level, it follows a separate protocol described in HyperBus
+>> specification[1].
+>>
+>> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
+>> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
+>> its equivalent to x16 parallel NOR flash with respect to bits per clock
+>> cycle. But HyperBus operates at >166MHz frequencies.
+>> HyperRAM provides direct random read/write access to flash memory
+>> array.
+>>
+>> But, HyperBus memory controllers seem to abstract implementation details
+>> and expose a simple MMIO interface to access connected flash.
+>>
+>> Add support for registering HyperFlash devices with MTD framework. MTD
+>> maps framework along with CFI chip support framework are used to support
+>> communicating with flash.
+>>
+>> Framework is modelled along the lines of spi-nor framework. HyperBus
+>> memory controller (HBMC) drivers calls hyperbus_register_device() to
+>> register a single HyperFlash device. HyperFlash core parses MMIO access
+>> information from DT, sets up the map_info struct, probes CFI flash and
+>> registers it with MTD framework.
+>>
+>> Some HBMC masters need calibration/training sequence[3] to be carried
+>> out, in order for DLL inside the controller to lock, by reading a known
+>> string/pattern. This is done by repeatedly reading CFI Query
+>> Identification String. Calibration needs to be done before trying to detect
+>> flash as part of CFI flash probe.
+>>
+>> HyperRAM is not supported at the moment.
+>>
+>> HyperBus specification can be found at[1]
+>> HyperFlash datasheet can be found at[2]
+>>
+>> [1] https://www.cypress.com/file/213356/download
+>> [2] https://www.cypress.com/file/213346/download
+>> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
+>>     Table 12-5741. HyperFlash Access Sequence
+>>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> [...]
+> 
+>    I have at least created my HyperBus driver and unfortunately I'm having serious
+> issues with the design of the support core (see below)...
+> 
+> [...]
+>> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
+>> new file mode 100644
+>> index 000000000000..63a9e64895bc
+>> --- /dev/null
+>> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
+>> @@ -0,0 +1,154 @@
+> [...]
+>> +int hyperbus_register_device(struct hyperbus_device *hbdev)
+>> +{
+>> +	const struct hyperbus_ops *ops;
+>> +	struct hyperbus_ctlr *ctlr;
+>> +	struct device_node *np;
+>> +	struct map_info *map;
+>> +	struct resource res;
+>> +	struct device *dev;
+>> +	int ret;
+>> +
+>> +	if (!hbdev || !hbdev->np || !hbdev->ctlr || !hbdev->ctlr->dev) {
+>> +		pr_err("hyperbus: please fill all the necessary fields!\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	np = hbdev->np;
+>> +	ctlr = hbdev->ctlr;
+>> +	if (!of_device_is_compatible(np, "cypress,hyperflash"))
+>> +		return -ENODEV;
+>> +
+>> +	hbdev->memtype = HYPERFLASH;
+>> +
+>> +	ret = of_address_to_resource(np, 0, &res);
+> 
+>    Hm, I doubt that the HB devices are wholly mapped into memory space, that seems
+> like a property of the HB controller. In my case, the flash device in the DT has
+> only single-cell "reg" prop (equal to the chip select #). Then this function returns 
+> -EINVAL and the registration fails. Also, in my case such mapping is R/O, not R/W.
+> 
 
-The other userspace MTD tests are passed.
+You could declare R/O MMIO region in controla and set up a translation using ranges
+from slave's reg CS based reg mapping like:
 
-nandwrite, nanddump and nandtest.
-i.e.,
-zynq> ./nandtest -k /dev/mtd1
-ECC corrections: 0
-ECC failures   : 0
-Bad blocks     : 0
-BBT blocks     : 0
-00100000: writing...random: crng init done
-005c0000: checking...
-Finished pass 1 successfully
-zynq>
++	hbmc: hyperbus@47034000 {
++		compatible = "ti,am654-hbmc";
++		reg = <0x0 0x47034000 0x0 0x100>,
++			<0x5 0x00000000 0x1 0x0000000>;
++		#address-cells = <2>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
++			 <0x1 0x0 0x5 0x04000000 0x4000000>; /* CS1 - 64MB */
++
++		/* Slave flash node */
++		flash@0,0 {
++			compatible = "cypress,hyperflash", "cfi-flash";
++			reg = <0x0 0x0 0x4000000>;
++		};
++	};
 
-
-UBI/UBI-FS test is also passed.
-i.e.,
-UBI/UBIFS storage test on mtd2 as example
-1. ubiformat /dev/mtd2
-2. ubiattach /dev/ubi_ctrl -m 2
-3. ubimkvol /dev/ubi0 -N ubifs -m
-4. mknod -m 777 /dev/ubi0 c 244 0
-5. mount -t ubifs ubi0_0 /mnt/ubifs
-6. copy a file to /mnt/ubifs
-7. sync and power off - on cycle
-8. ubiattach & mount /mnt/ubifs
-9. read file and compare it with md5sum
-
-thanks & best regards,
-Mason
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
+If you use just CS# how would you handle CS to MMIO region mapping? 
+Does both CS use the same MMIO base for reads?
 
 
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	dev = ctlr->dev;
+>> +	map = &hbdev->map;
+>> +	map->size = resource_size(&res);
+>> +	map->virt = devm_ioremap_resource(dev, &res);
+>> +	if (IS_ERR(map->virt))
+>> +		return PTR_ERR(map->virt);
+> 
+>    Again, I doubt that this should be done here, and not in the HB controller driver...
 
-============================================================================
+If multiple CS use same MMIO base, then I can make this part of code non fatal
+when reg entry is a single cell and introduce notion of CS like SPI
 
-CONFIDENTIALITY NOTE:
+> 
+> [...]
+> 
+> MBR, Sergei
+> 
 
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
