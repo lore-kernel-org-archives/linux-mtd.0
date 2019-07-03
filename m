@@ -2,86 +2,110 @@ Return-Path: <SRS0=y7vF=VA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E338CC0650E
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 04:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47D2FC5B578
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 06:14:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC13421880
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 04:41:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 169EC21880
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 06:14:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LZA/Kc4D";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gffr7v2f"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC13421880
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="JLQk8Myf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="mZl18DDC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 169EC21880
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zMoEqhNmb9zDOcFooEELEKG8I5Dq+anPcC0/5IrZ2OY=; b=LZA/Kc4DU20qg9
-	1/swOFhqmTFFxXYB68+obmF3EI7uSyLo5JNOtEua8Rah3w5Voirn+Y5ApnozP5MfREushW/gAhSsj
-	OGpCP4CgMEolg1vgJy18UGu0FjWSH45LJOLqWOki+3cvPoZttI1E41Gb2ZtXw4zciuztNEB8ZUVGz
-	iljK+f+5OHx8nJhArk+3tHCH3/T2qNEeQP8z1HsWlnVyfOpRwRF0k5i9DAfQwHWtlkPRX5aojiQP+
-	eKQeOx5d526z4KjgzGBD34COXTD8fjQEj3yKQa1VxcVv6WHkzXAOa1BKD1qhdp302+qxoRKluBWZO
-	HTV481zTq6gO/zowhFQA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cc8rZ6/rG/mFiE8Efi1ddd5+gOkW5oL5u4SWL7wa92E=; b=JLQk8MyfA5PmSu
+	gf7imHZ8VQ+UVMj0P96rU3DlzwQprH8qB9hNI0LsCulgbf/w60R9Qu4+BIXNH2VbnXlVZau1Y/zCy
+	ZiMQ+1PPIJEUmb3IyFhPRDkELjlwtszv4HQuTtdB8XIhV3yLXnWyBBFR4oUq+7VmnWrbTSMKg7dtC
+	PJK9DQz7qGgxwQpWVug1+T2nVnKly9qcHJ3mdxgnOUBJBN/6BUvXoV/bwUGHAD+B3/4iW1HCRqZbt
+	+qjDs1DCeMwkedUQUMtqdGfi1mGMcs9q8hFyK0Tds+TxDufU6G6bwYfIQUdWA6r40z6J2tlHTSzRX
+	/DYKtkLOn6PpR04XM1BQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiX4X-0000BQ-9i; Wed, 03 Jul 2019 04:40:45 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hiYWi-0004Xs-Cf; Wed, 03 Jul 2019 06:13:56 +0000
+Received: from mail-eopbgr760079.outbound.protection.outlook.com
+ ([40.107.76.79] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiX4T-0000Ax-3J; Wed, 03 Jul 2019 04:40:43 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x634eVON110690;
- Tue, 2 Jul 2019 23:40:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1562128831;
- bh=9bNKxvF0VLaczyeBCMEhxw7ZpdNmUS6nr2XWDzekiGQ=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=gffr7v2fV2c7P/IFTTqSI0mrnnt+97yxTUNcfFBLTBTW9Owv8vr7t+80x3hsNM9T1
- 3oEjbwoqE9Jnm+PS2QB38Zt7QbcEqQugnvizHQljQD+W892+j3ntlwH+yLPl6QDvJX
- vdw2DhQuhDEUQ7SoRDfgM9OqyZoudOeQcIk3fhgs=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x634eV6x112951
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 2 Jul 2019 23:40:31 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 2 Jul
- 2019 23:40:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Tue, 2 Jul 2019 23:40:30 -0500
-Received: from [172.24.190.89] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x634eMAK021478;
- Tue, 2 Jul 2019 23:40:24 -0500
-Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Boris Brezillon
- <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-References: <20190625075746.10439-1-vigneshr@ti.com>
- <20190625075746.10439-4-vigneshr@ti.com>
- <31657fd1-c1c9-7672-14c1-e6f67eee6ac1@cogentembedded.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <5009c418-a051-a42a-f78a-360f7230dd2b@ti.com>
-Date: Wed, 3 Jul 2019 10:11:07 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <31657fd1-c1c9-7672-14c1-e6f67eee6ac1@cogentembedded.com>
+ id 1hiYWf-0004Ws-DO
+ for linux-mtd@lists.infradead.org; Wed, 03 Jul 2019 06:13:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ymS6KkwwZTQC+sQ2EgEKDIkYDAqK4nnANFoc7YJBFLQ=;
+ b=mZl18DDCg83hNVvpk5tkGNU4TnSSpKCvBM66b+rtod4UAUCP5Qyy1dSROAThO8wLIKRDjQoBDHDEJSunDW3NreyXKTe/jr6LA46YntNjLPPRGXmhus+1iIIjCQGcZMkePO73dGU0KCP7ud17DrRYuAf8bRJDtIDN9jWFdGAjJvU=
+Received: from DM6PR02MB4779.namprd02.prod.outlook.com (20.176.109.16) by
+ DM6PR02MB5898.namprd02.prod.outlook.com (20.179.68.97) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.20; Wed, 3 Jul 2019 06:13:47 +0000
+Received: from DM6PR02MB4779.namprd02.prod.outlook.com
+ ([fe80::936:90c8:a385:1513]) by DM6PR02MB4779.namprd02.prod.outlook.com
+ ([fe80::936:90c8:a385:1513%4]) with mapi id 15.20.2032.019; Wed, 3 Jul 2019
+ 06:13:47 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Helmut Grohne <helmut.grohne@intenta.de>, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+Subject: RE: [LINUX PATCH v17 2/2] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Thread-Topic: [LINUX PATCH v17 2/2] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Thread-Index: AQHVKxERfpwoj8XL9UqMkCeJJ20MnKasaZ4AgAwLy6A=
+Date: Wed, 3 Jul 2019 06:13:47 +0000
+Message-ID: <DM6PR02MB47796F40DB186070031E5113AFFB0@DM6PR02MB4779.namprd02.prod.outlook.com>
+References: <20190625044630.31717-1-naga.sureshkumar.relli@xilinx.com>
+ <20190625044630.31717-2-naga.sureshkumar.relli@xilinx.com>
+ <20190625141126.ggmxjcmdh76lguds@laureti-dev>
+In-Reply-To: <20190625141126.ggmxjcmdh76lguds@laureti-dev>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=nagasure@xilinx.com; 
+x-originating-ip: [149.199.50.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3c3423f2-19b9-4b6e-651e-08d6ff7d9bfb
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
+ SRVR:DM6PR02MB5898; 
+x-ms-traffictypediagnostic: DM6PR02MB5898:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <DM6PR02MB58982921A488BA22DDD79084AFFB0@DM6PR02MB5898.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:348;
+x-forefront-prvs: 00872B689F
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(4636009)(396003)(346002)(136003)(366004)(376002)(39860400002)(199004)(189003)(13464003)(66446008)(55016002)(6436002)(6306002)(52536014)(7416002)(53936002)(4326008)(7696005)(99286004)(33656002)(3846002)(11346002)(478600001)(446003)(6116002)(76176011)(6246003)(476003)(86362001)(26005)(68736007)(7736002)(256004)(5660300002)(9686003)(64756008)(73956011)(14444005)(6506007)(110136005)(66476007)(305945005)(316002)(229853002)(186003)(486006)(102836004)(74316002)(2906002)(8676002)(54906003)(8936002)(66946007)(25786009)(71200400001)(71190400001)(81156014)(53546011)(66556008)(966005)(76116006)(81166006)(14454004)(66066001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR02MB5898;
+ H:DM6PR02MB4779.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: xilinx.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: Hj+sdDPEqygBtoipPmFyKvDQr0MbIhoSCDlX6Sgg9Aqk3uzkP3I8J1bMi6EJV3fFOeLuxGAJSDoDGCwDEyx+gEHze7DaJ5XbI2uQWbB70AjcHV8fduu5OCHJPKV9JMNoUSKrqwVpyDH/8HPMGD5NO7WDTpcKg96nKwCHI96bXgLE8ndOCpsBzVtwfSFXqqYiMn0lloUiGyE0ImieLTGoh/dlIvs893fbd9JlwaNkz+2TuaJpRrS4CPxmH88EbC++q4USyHYARmMVkJY1YX0RiSyVfzmw9pkZngcd6rYFWVVgB43MonXSplv3gwYdMBWzr3U3gjOg4ZMUAQjlL0YjlhO0r0O3B7KOeI9AmVldC06StqYI26ARYYAExJcnY4Q+6v+XSNa1VC5lNmcsvUx4NklniX2Kjl+Q05lZECshUss=
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c3423f2-19b9-4b6e-651e-08d6ff7d9bfb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jul 2019 06:13:47.0853 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nagasure@xilinx.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5898
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_214041_295814_450436A4 
-X-CRM114-Status: GOOD (  25.02  )
+X-CRM114-CacheID: sfid-20190702_231353_457215_2A0C8E3D 
+X-CRM114-Status: GOOD (  12.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,161 +117,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+Cc: "vigneshr@ti.com" <vigneshr@ti.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Miquel,
 
+> -----Original Message-----
+> From: linux-mtd <linux-mtd-bounces@lists.infradead.org> On Behalf Of Helmut Grohne
+> Sent: Tuesday, June 25, 2019 7:41 PM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: vigneshr@ti.com; bbrezillon@kernel.org; yamada.masahiro@socionext.com;
+> richard@nod.at; linux-kernel@vger.kernel.org; marek.vasut@gmail.com; linux-
+> mtd@lists.infradead.org; miquel.raynal@bootlin.com; computersforpeace@gmail.com;
+> dwmw2@infradead.org
+> Subject: Re: [LINUX PATCH v17 2/2] mtd: rawnand: pl353: Add basic driver for arm pl353
+> smc nand interface
+> 
+> Thank you for the quick update.
+> 
+> On Tue, Jun 25, 2019 at 06:46:30AM +0200, Naga Sureshkumar Relli wrote:
+> > -> Tested Micron MT29F2G08ABAEAWP (On-die capable) and AMD/Spansion
+> S34ML01G1.
+> 
+> I tested the v17 series with the MT29F2G08ABAEAWP. I can now mount existing jffs2
+> volumes without issues.
+> 
+> When running nandtest on a 64MB area, I no longer see lots of consecutive errors. However I
+> see few (4-8) single byte errors for random locations on about half the runs. In comparison, I
+> couldn't reproduce these on the older driver on v4.14.
+> 
+> When writing random 1MB files on a fresh jffs2 filesystem and reading them back after
+> umounting and mounting the filesystem, I got one faulty file in 50 attempts.
+> 
+> So this driver mostly works for me, but I suspect that something (possibly the tested
+> hardware) doesn't fully work yet. To say more, I'll need long term testing results. In the mean
+> time, I'm in favour of merging the driver.
+What is your take on this?
+Can we consider to merge this driver?
+Could you please let me know?
 
-On 02/07/19 11:23 PM, Sergei Shtylyov wrote:
-> Hello!
+Thanks,
+Naga Sureshkumar Relli
 > 
-> On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
+> Helmut
 > 
->> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
->> Bus interface between a host system master and one or more slave
->> interfaces. HyperBus is used to connect microprocessor, microcontroller,
->> or ASIC devices with random access NOR flash memory (called HyperFlash)
->> or self refresh DRAM (called HyperRAM).
->>
->> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
->> signal and either Single-ended clock(3.0V parts) or Differential clock
->> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
->> At bus level, it follows a separate protocol described in HyperBus
->> specification[1].
->>
->> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
->> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
->> its equivalent to x16 parallel NOR flash with respect to bits per clock
->> cycle. But HyperBus operates at >166MHz frequencies.
->> HyperRAM provides direct random read/write access to flash memory
->> array.
->>
->> But, HyperBus memory controllers seem to abstract implementation details
->> and expose a simple MMIO interface to access connected flash.
->>
->> Add support for registering HyperFlash devices with MTD framework. MTD
->> maps framework along with CFI chip support framework are used to support
->> communicating with flash.
->>
->> Framework is modelled along the lines of spi-nor framework. HyperBus
->> memory controller (HBMC) drivers calls hyperbus_register_device() to
->> register a single HyperFlash device. HyperFlash core parses MMIO access
->> information from DT, sets up the map_info struct, probes CFI flash and
->> registers it with MTD framework.
->>
->> Some HBMC masters need calibration/training sequence[3] to be carried
->> out, in order for DLL inside the controller to lock, by reading a known
->> string/pattern. This is done by repeatedly reading CFI Query
->> Identification String. Calibration needs to be done before trying to detect
->> flash as part of CFI flash probe.
->>
->> HyperRAM is not supported at the moment.
->>
->> HyperBus specification can be found at[1]
->> HyperFlash datasheet can be found at[2]
->>
->> [1] https://www.cypress.com/file/213356/download
->> [2] https://www.cypress.com/file/213346/download
->> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->>     Table 12-5741. HyperFlash Access Sequence
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> [...]
-> 
->    I have at least created my HyperBus driver and unfortunately I'm having serious
-> issues with the design of the support core (see below)...
-> 
-> [...]
->> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
->> new file mode 100644
->> index 000000000000..63a9e64895bc
->> --- /dev/null
->> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
->> @@ -0,0 +1,154 @@
-> [...]
->> +int hyperbus_register_device(struct hyperbus_device *hbdev)
->> +{
->> +	const struct hyperbus_ops *ops;
->> +	struct hyperbus_ctlr *ctlr;
->> +	struct device_node *np;
->> +	struct map_info *map;
->> +	struct resource res;
->> +	struct device *dev;
->> +	int ret;
->> +
->> +	if (!hbdev || !hbdev->np || !hbdev->ctlr || !hbdev->ctlr->dev) {
->> +		pr_err("hyperbus: please fill all the necessary fields!\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	np = hbdev->np;
->> +	ctlr = hbdev->ctlr;
->> +	if (!of_device_is_compatible(np, "cypress,hyperflash"))
->> +		return -ENODEV;
->> +
->> +	hbdev->memtype = HYPERFLASH;
->> +
->> +	ret = of_address_to_resource(np, 0, &res);
-> 
->    Hm, I doubt that the HB devices are wholly mapped into memory space, that seems
-> like a property of the HB controller. In my case, the flash device in the DT has
-> only single-cell "reg" prop (equal to the chip select #). Then this function returns 
-> -EINVAL and the registration fails. Also, in my case such mapping is R/O, not R/W.
-> 
-
-You could declare R/O MMIO region in controla and set up a translation using ranges
-from slave's reg CS based reg mapping like:
-
-+	hbmc: hyperbus@47034000 {
-+		compatible = "ti,am654-hbmc";
-+		reg = <0x0 0x47034000 0x0 0x100>,
-+			<0x5 0x00000000 0x1 0x0000000>;
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
-+			 <0x1 0x0 0x5 0x04000000 0x4000000>; /* CS1 - 64MB */
-+
-+		/* Slave flash node */
-+		flash@0,0 {
-+			compatible = "cypress,hyperflash", "cfi-flash";
-+			reg = <0x0 0x0 0x4000000>;
-+		};
-+	};
-
-If you use just CS# how would you handle CS to MMIO region mapping? 
-Does both CS use the same MMIO base for reads?
-
-
->> +	if (ret)
->> +		return ret;
->> +
->> +	dev = ctlr->dev;
->> +	map = &hbdev->map;
->> +	map->size = resource_size(&res);
->> +	map->virt = devm_ioremap_resource(dev, &res);
->> +	if (IS_ERR(map->virt))
->> +		return PTR_ERR(map->virt);
-> 
->    Again, I doubt that this should be done here, and not in the HB controller driver...
-
-If multiple CS use same MMIO base, then I can make this part of code non fatal
-when reg entry is a single cell and introduce notion of CS like SPI
-
-> 
-> [...]
-> 
-> MBR, Sergei
-> 
-
--- 
-Regards
-Vignesh
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
