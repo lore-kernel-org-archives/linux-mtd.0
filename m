@@ -1,62 +1,72 @@
-Return-Path: <SRS0=szGg=U7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=y7vF=VA=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=CHARSET_FARAWAY_HEADER,
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19713C06510
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 19:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35E37C5B57D
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 01:26:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA2B621850
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2019 19:00:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C53F206A3
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2019 01:26:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Cq3M1hh8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA2B621850
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HONpfil2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C53F206A3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3dhJ+i+YKo50OGr0ot3U36JMv0V+6li9a2EK1ufzjak=; b=Cq3M1hh8MFsXSL
-	BXeEIbVh4GZGwkZStnLvfGyriIyIKHeKZupelZo76kqg2xLzU/wRthwq+3ENwZi9YT377i2BTRSyO
-	oIPgq/2FRt+zrT9HhWm1Hcb5M5rDrKqMYyhzOKAZTMu14LbGh0IFdVaPI58JBeqip+lC4wLnBpj2S
-	GaHY5sEhQJzZi0J0ySVy4J1SusfoFihtKA1NZ9rDI3NGbedzltSqFnIGZk7GEqSA0hdKFZCm7ZV+W
-	j/FbJeUl2JlQ0abT80R0UrXXikN1vcRsK2EaVqGjK5oVt/IPHwcb/9NbJ1tS1o2ABcg3EWG1DF3o2
-	uQkQegn/kgkJxAShL0rA==;
+	List-Owner; bh=H25sZ4bviuxkOOgbvh+IraB2wVKnQ8PeWzPtXgsBrsw=; b=HONpfil2Qf0Wez
+	PgGFq7Jh4D12Q5CXBWqSuECRW605eC8ZVhRIXxFIiHhN3Aio9bK9frn6kJzAE5jgnmr8Zy1tef2yP
+	lp6TYttn8YmHy7nX27fLrg6R2U1RR0xioSneEqVVw6UfmpPZPfRKGuYVCi8+D2Z5VyGOUb9dnVgyu
+	ycfXSCybCIap3M0i48FPGk0zKaglB2Wrn7nHefnr8WHRXIGg4Jyq8VdYXYcsBousJHE2qOqcACXia
+	nOQoVYtKtZNHL8Y/Dj7rpB3UUh27SpGlZkBzmjVLEW5AiQsRI+MRBnpABF2o3r5+t3xQtiXAJLGWT
+	T6S5FgYk5qbP4C4GL2qQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hiO19-0003Dt-9x; Tue, 02 Jul 2019 19:00:39 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hiU1w-0004Op-VJ; Wed, 03 Jul 2019 01:25:53 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hiO0W-0001eQ-SU
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2019 19:00:02 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B91032639CD;
- Tue,  2 Jul 2019 19:59:57 +0100 (BST)
-Date: Tue, 2 Jul 2019 20:59:55 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: nvmem creates multiple devices with the same name
-Message-ID: <20190702205955.65f1bce2@collabora.com>
-In-Reply-To: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
-References: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hiU1s-0004NS-8l
+ for linux-mtd@lists.infradead.org; Wed, 03 Jul 2019 01:25:50 +0000
+Received: from dggemi404-hub.china.huawei.com (unknown [172.30.72.55])
+ by Forcepoint Email with ESMTP id 3C9D01080821BB1EDA5F;
+ Wed,  3 Jul 2019 09:25:39 +0800 (CST)
+Received: from DGGEMI524-MBX.china.huawei.com ([169.254.7.145]) by
+ dggemi404-hub.china.huawei.com ([10.3.17.142]) with mapi id 14.03.0399.000;
+ Wed, 3 Jul 2019 09:25:29 +0800
+From: chengzhihao <chengzhihao1@huawei.com>
+To: "david.oberhollenzer@sigma-star.at" <david.oberhollenzer@sigma-star.at>,
+ "richard@nod.at" <richard@nod.at>, "david@sigma-star.at"
+ <david@sigma-star.at>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "zhangyi (F)" <yi.zhang@huawei.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIFJGQyB2Ml0gbXRkOiB1Ymk6IEFkZCBmYXN0bWFwIHN5?=
+ =?gb2312?Q?sfs_attribute?=
+Thread-Topic: [PATCH RFC v2] mtd: ubi: Add fastmap sysfs attribute
+Thread-Index: AQHVLakkEpLEJIeKg0yEh5ZV5Mu1B6a4IOEQ
+Date: Wed, 3 Jul 2019 01:25:28 +0000
+Message-ID: <0B80F9D4116B2F4484E7279D5A66984F793E33@dggemi524-mbx.china.huawei.com>
+References: <1561723581-70340-1-git-send-email-chengzhihao1@huawei.com>
+In-Reply-To: <1561723581-70340-1-git-send-email-chengzhihao1@huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.177.224.82]
 MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190702_120001_055260_4A38F8F6 
-X-CRM114-Status: GOOD (  15.30  )
+X-CRM114-CacheID: sfid-20190702_182548_603633_44F84413 
+X-CRM114-Status: GOOD (  13.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,61 +78,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 21 May 2019 10:56:41 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
-
-> Hi all,
-> 
-> nvmem derives the device name directly from the partition name of the
-> underlying device. IMO this is wrong since it's not possible to create
-> two partitions with the same name on different devices. In my case I
-> have a NAND device and a SPI NOR device which both happen to have a
-> partition named 'barebox'. This ends up with:
-
-Hm, I think I had suggested to use dev_name(&mtd->dev) instead of
-mtd->name at some point. But then you have the problem that MTD
-numbering is dependent on the probe order which is not guaranteed to
-stay the same, so exposing nvmem devices using "mtdXX" name is not super
-user-friendly.
-
-> 
-> [   11.222196] sysfs: cannot create duplicate filename '/bus/nvmem/devices/barebox'
-> [   11.230136] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.2.0-rc1-00014-g793f23e5adb0-dirty #676
-> [   11.240414] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> [   11.247174] [<c0112928>] (unwind_backtrace) from [<c010d140>] (show_stack+0x10/0x14)
-> [   11.255171] [<c010d140>] (show_stack) from [<c0bd65cc>] (dump_stack+0xd8/0x110)
-> [   11.262722] [<c0bd65cc>] (dump_stack) from [<c031682c>] (sysfs_warn_dup+0x50/0x64)
-> [   11.270527] [<c031682c>] (sysfs_warn_dup) from [<c0316b34>] (sysfs_do_create_link_sd+0xcc/0xd8)
-> [   11.279487] [<c0316b34>] (sysfs_do_create_link_sd) from [<c06792a0>] (bus_add_device+0x80/0xfc)
-> [   11.288441] [<c06792a0>] (bus_add_device) from [<c0676208>] (device_add+0x328/0x608)
-> [   11.296423] [<c0676208>] (device_add) from [<c08bde64>] (nvmem_register.part.1+0x168/0x5e4)
-> [   11.305030] [<c08bde64>] (nvmem_register.part.1) from [<c06edb34>] (add_mtd_device+0x1e8/0x404)
-> [   11.313988] [<c06edb34>] (add_mtd_device) from [<c06f1004>] (add_mtd_partitions+0x74/0x15c)
-> [   11.322589] [<c06f1004>] (add_mtd_partitions) from [<c06f0da8>] (parse_mtd_partitions+0x180/0x368)
-> [   11.331807] [<c06f0da8>] (parse_mtd_partitions) from [<c06ede68>] (mtd_device_parse_register+0x40/0x164)
-> [   11.341560] [<c06ede68>] (mtd_device_parse_register) from [<c070654c>] (m25p_probe+0x118/0x200)
-> [   11.350513] [<c070654c>] (m25p_probe) from [<c073863c>] (spi_drv_probe+0x80/0xa4)
-> 
-> While it's easy to rename the partitions I see no reason why it should
-> be illegal to have two different (mtd) devices with eqeally named
-> partitions. Are there any suggestions how to register the nvmem devices
-> with a different name?
-
-Note that some MTD users are expecting MTD names to be unique to work
-properly, the example I have in mind is UBI that can be passed the
-partition to attach to using the ubi:<part-name> format, but I'm pretty
-sure we have other places making the same assumption. I guess not
-enforcing mtd->name uniqueness was a bad idea, but I'm not sure we can
-change that now.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+cGluZyB+DQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiBjaGVuZ3poaWhhbyANCreiy83K
+sbzkOiAyMDE5xOo21MIyOMjVIDIwOjA2DQrK1bz+yMs6IGRhdmlkLm9iZXJob2xsZW56ZXJAc2ln
+bWEtc3Rhci5hdDsgcmljaGFyZEBub2QuYXQ7IGRhdmlkQHNpZ21hLXN0YXIuYXQ7IGJvcmlzLmJy
+ZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb207IHpoYW5neWkgKEYpIDx5aS56aGFuZ0BodWF3ZWku
+Y29tPg0Ks63LzTogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmc7IGNoZW5nemhpaGFvIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4NCtb3
+zOI6IFtQQVRDSCBSRkMgdjJdIG10ZDogdWJpOiBBZGQgZmFzdG1hcCBzeXNmcyBhdHRyaWJ1dGUN
+Cg0KVGhlIFVCSSBkZXZpY2UgY2FuIGJlIGF0dGFjaGVkIHRvIGEgTVREIGRldmljZSB2aWEgZmFz
+dG1hcCBieSBzZXR0aW5nIENPTkZJR19NVERfVUJJX0ZBU1RNQVAgdG8gJ3knIChJZiB0aGVyZSBh
+bHJlYWR5IGV4aXN0cyBhIGZhc3RtYXAgb24gdGhlIFVCSSBkZXZpY2UpLiBUbyBzdXBwb3J0IHNv
+bWUgZGVidWdnaW5nIHNjZW5hcmlvcywgYXR0YWNoaW5nIHByb2Nlc3MgYnkgZmFzdG1hcCBjYW4g
+YmUgY29uZmlybWVkIGluIGRtZXNnLiBJZiB0aGUgVUJJIGRldmljZSBpcyBhdHRhY2hlZCBieSBm
+YXN0bWFwLCBsb2dzIGxpa2UgZm9sbG93aW5nIHdpbGwgYXBwZWFyIGluIGRtZXNnOg0KDQogIHVi
+aTA6IGF0dGFjaGVkIGJ5IGZhc3RtYXANCg0KSWYgbXVsdGlwbGUgVUJJIGRldmljZXMgYXJlIGF0
+dGFjaGVkIHRvIG11bHRpcGxlIE1URCBkZXZpY2VzIGF0IHRoZSBzYW1lIHRpbWUsIGhvdyB0byBk
+aXN0aW5ndWlzaCB3aGljaCBVQkkgZGV2aWNlcyBhcmUgc3VjY2Vzc2Z1bGx5IGF0dGFjaGVkIGJ5
+IGZhc3RtYXA/IEV4dHJhY3RpbmcgYXR0YWNoaW5nIGluZm9ybWF0aW9uIGZvciBlYWNoIFVCSSBk
+ZXZpY2Ugb25lIGJ5IG9uZSBmcm9tIGRtZXNnIGlzIGEgd2F5LiBBIGJldHRlciBtZXRob2QgaXMg
+dG8gcmVjb3JkIGZhc3RtYXAgZXhpc3RlbmNlIGluIHN5c2ZzLCBzbyBpdCBjYW4gYmUgb2J0YWlu
+ZWQgYnkgdXNlcnNwYWNlIHRvb2xzLg0KDQpUaGlzIHBhdGNoIGV4cG9zZXMgZmFzdG1hcCBvbiBz
+eXNmcy4gU3VwcG9zZSB5b3UgYXR0YWNoIGFuIFVCSSBkZXZpY2UgdG8gYSBNVEQgZGV2aWNlIGJ5
+IGZhc3RtYXA6IGlmIGZhc3RtYXAgZXF1YWxzIHRvICcxJywgdGhhdCBpcywgdGhlIGZhc3RtYXAg
+Z2VuZXJhdGVkIGJlZm9yZSBsYXN0IGRldGFjaGluZyBvcGVyYXRpb24gaXMgY29uZmlybWVkIHZh
+bGlkLiBFbHNlLCB0aGVyZSBtYXkgYmUgc29tZSBwcm9ibGVtcyB3aXRoIG9sZCBmYXN0bWFwLiBC
+ZXNpZGVzLCB1c2Vyc3BhY2UgdG9vbCBjYW4gYWxzbyBjaGVjayB3aGV0aGVyIHRoZSBmYXN0bWFw
+IHVwZGF0aW5nIHRyaWdnZXJlZCBieSBvdGhlciBvcGVyYXRpb25zIChzdWNoIGFzIHJlc2l6ZSB2
+b2x1bWUpIGlzIHN1Y2Nlc3NmdWwgYnkgcmVhZGluZyB0aGlzIHN5c2ZzIGF0dHJpYnV0ZS4NCg0K
+U2lnbmVkLW9mZi1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4NCi0t
+LQ0KIERvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNmcy1jbGFzcy11YmkgfCAxNSArKysrKysr
+KysrKysrKysNCiBkcml2ZXJzL210ZC91YmkvYnVpbGQuYyAgICAgICAgICAgICAgICAgIHwgIDkg
+KysrKysrKystDQogMiBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
+KC0pDQoNCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL0FCSS9zdGFibGUvc3lzZnMtY2xhc3Mt
+dWJpIGIvRG9jdW1lbnRhdGlvbi9BQkkvc3RhYmxlL3N5c2ZzLWNsYXNzLXViaQ0KaW5kZXggYTZi
+MzI0MC4uMWQ5NmNmMCAxMDA2NDQNCi0tLSBhL0RvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNm
+cy1jbGFzcy11YmkNCisrKyBiL0RvY3VtZW50YXRpb24vQUJJL3N0YWJsZS9zeXNmcy1jbGFzcy11
+YmkNCkBAIC0xMTYsNiArMTE2LDIxIEBAIERlc2NyaXB0aW9uOg0KIAkJZGV2aWNlLCBhbmQgIjBc
+biIgaWYgaXQgaXMgY2xlYXJlZC4gVUJJIGRldmljZXMgbWFyayB0aGVtc2VsdmVzDQogCQlhcyBy
+ZWFkLW9ubHkgd2hlbiB0aGV5IGRldGVjdCBhbiB1bnJlY292ZXJhYmxlIGVycm9yLg0KIA0KK1do
+YXQ6CQkvc3lzL2NsYXNzL3ViaS91YmlYL2Zhc3RtYXANCitEYXRlOgkJSnVuZSAyMDE5DQorS2Vy
+bmVsVmVyc2lvbjoJNS4yDQorQ29udGFjdDoJbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcN
+CitEZXNjcmlwdGlvbjoNCisJCUNvbnRhaW5zIEFTQ0lJICIxXG4iIGlmIHRoZXJlIGV4aXN0cyBh
+IGZhc3RtYXAgb24gVUJJIGRldmljZSwNCisJCWFuZCAiMFxuIiBpZiB0aGVyZSBub3QgZXhpc3Rz
+IGEgZmFzdG1hcCBvbiBVQkkgZGV2aWNlLiBBZnRlcg0KKwkJYXR0YWNoaW5nIHRoZSBVQkkgZGV2
+aWNlIHRvIGEgTVREIGRldmljZSB2aWEgZmFzdG1hcCwgdXNlcnNwYWNlDQorCQl0b29sIGNhbiBz
+ZW5zZSB0aGF0IHRoZXJlIGlzIGEgZmFzdG1hcCBvbiBVQkkgZGV2aWNlICBieQ0KKwkJY2hlY2tp
+bmcgc3lzZnMgYXR0cmlidXRlICdmYXN0bWFwJywgdGhhdCBpcywgdGhlIGZhc3RtYXANCisJCWdl
+bmVyYXRlZCBiZWZvcmUgbGFzdCBkZXRhY2hpbmcgb3BlcmF0aW9uIGlzIHZhbGlkLiBJbiBhZGRp
+dGlvbiwNCisJCXVzZXJzcGFjZSB0b29sIGNhbiBhbHNvIGNoZWNrIHdoZXRoZXIgdGhlIGZhc3Rt
+YXAgdXBkYXRpbmcNCisJCXRyaWdnZXJlZCBieSB2b2x1bWUgb3BlcmF0aW9uIGlzIHN1Y2Nlc3Nm
+dWwgYnkgcmVhZGluZyB0aGlzDQorCQlzeXNmcyBhdHRyaWJ1dGUuDQorDQogV2hhdDoJCS9zeXMv
+Y2xhc3MvdWJpL3ViaVgvdG90YWxfZXJhc2VibG9ja3MNCiBEYXRlOgkJSnVseSAyMDA2DQogS2Vy
+bmVsVmVyc2lvbjoJMi42LjIyDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMg
+Yi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYyBpbmRleCBkNjM2YmJlLi4wY2Q2YjhlIDEwMDY0NA0K
+LS0tIGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMNCisrKyBiL2RyaXZlcnMvbXRkL3ViaS9idWls
+ZC5jDQpAQCAtMTQwLDYgKzE0MCw4IEBAIHN0YXRpYyBzdHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSBk
+ZXZfbXRkX251bSA9DQogCV9fQVRUUihtdGRfbnVtLCBTX0lSVUdPLCBkZXZfYXR0cmlidXRlX3No
+b3csIE5VTEwpOyAgc3RhdGljIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRlIGRldl9yb19tb2RlID0N
+CiAJX19BVFRSKHJvX21vZGUsIFNfSVJVR08sIGRldl9hdHRyaWJ1dGVfc2hvdywgTlVMTCk7DQor
+c3RhdGljIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRlIGRldl9mYXN0bWFwID0NCisJX19BVFRSKGZh
+c3RtYXAsIFNfSVJVR08sIGRldl9hdHRyaWJ1dGVfc2hvdywgTlVMTCk7DQogDQogLyoqDQogICog
+dWJpX3ZvbHVtZV9ub3RpZnkgLSBzZW5kIGEgdm9sdW1lIGNoYW5nZSBub3RpZmljYXRpb24uDQpA
+QCAtMzc4LDcgKzM4MCwxMSBAQCBzdGF0aWMgc3NpemVfdCBkZXZfYXR0cmlidXRlX3Nob3coc3Ry
+dWN0IGRldmljZSAqZGV2LA0KIAkJcmV0ID0gc3ByaW50ZihidWYsICIlZFxuIiwgdWJpLT5tdGQt
+PmluZGV4KTsNCiAJZWxzZSBpZiAoYXR0ciA9PSAmZGV2X3JvX21vZGUpDQogCQlyZXQgPSBzcHJp
+bnRmKGJ1ZiwgIiVkXG4iLCB1YmktPnJvX21vZGUpOw0KLQllbHNlDQorCWVsc2UgaWYgKGF0dHIg
+PT0gJmRldl9mYXN0bWFwKSB7DQorCQlkb3duX3dyaXRlKCZ1YmktPmZtX3Byb3RlY3QpOw0KKwkJ
+cmV0ID0gc3ByaW50ZihidWYsICIlZFxuIiwgdWJpLT5mbSA/IDEgOiAwKTsNCisJCXVwX3dyaXRl
+KCZ1YmktPmZtX3Byb3RlY3QpOw0KKwl9IGVsc2UNCiAJCXJldCA9IC1FSU5WQUw7DQogDQogCXVi
+aV9wdXRfZGV2aWNlKHViaSk7DQpAQCAtMzk4LDYgKzQwNCw3IEBAIHN0YXRpYyBzdHJ1Y3QgYXR0
+cmlidXRlICp1YmlfZGV2X2F0dHJzW10gPSB7DQogCSZkZXZfYmd0X2VuYWJsZWQuYXR0ciwNCiAJ
+JmRldl9tdGRfbnVtLmF0dHIsDQogCSZkZXZfcm9fbW9kZS5hdHRyLA0KKwkmZGV2X2Zhc3RtYXAu
+YXR0ciwNCiAJTlVMTA0KIH07DQogQVRUUklCVVRFX0dST1VQUyh1YmlfZGV2KTsNCi0tDQoyLjcu
+NA0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
