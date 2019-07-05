@@ -2,66 +2,63 @@ Return-Path: <SRS0=jTzi=VC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A59AC46499
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jul 2019 21:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4860C46499
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jul 2019 21:02:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 510472133F
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jul 2019 21:01:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B2A62133F
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jul 2019 21:02:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="NgJGWYg5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 510472133F
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pZZ4W+zh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B2A62133F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CIVjuXq9JHEMEJSbBuMw5XOE4IhEsxBkl8YAyrDJqak=; b=NgJGWYg5xn2Iu6
-	/dTEjV2GPTFeW325UTCMpqlWa06uKUvSrm9mBsYKHSdY4hBJQVbWUFdhtcdXCjlEVQySKvobs8fS2
-	64K7s5jJCMOEsmCrSg4Bwm+0sgOtEp7eTGABZK8Zks6au+5A3ZMxwo5qa6vAGT78NKeUySoXYAVX9
-	3CZpwC5xlPbwkXihCmE5tBeoJlzrzZx2Ctux3Uj5COFjTZwcQFHCwVNo6AxDlMeWh80mtwBMgctga
-	xkmXOpmlf2GexV0nfMpR0kDaxP0su8BmfqZFKCP0XAzZEx2Gd7jd7WIWEWIdIM6cuKdQ+1vsGGzp1
-	bhpx/drh4TqIALG72Vvw==;
+	List-Owner; bh=WzsCMdWSSlI7NYoFsKbTc4kokt6nC/+N4VVnnmD37ks=; b=pZZ4W+zhDgb6AH
+	ZrTazYKQMy7ay25hjN1A2Qo6MnhrNtmPMGwsRe9R/xSo7hMgJXMPHhpWCKd+C/CcGUgTfqQm774HH
+	FlfZSU4CK65GDHNu9G3Ea+om8Q9WWw5F+crkR5LIDjHR1xxkFL0aQfgY8khPWZFjl88uNAXoLsZ5z
+	vCnbNih8cnS9MeCNlKobAqOhGncszF/qB+3HED+UYk6yTqPEnwDbTEPcQ4tni0y/n9IQBTtl4/gU1
+	y4PLv2O4gthgI9zKbZK7oVH8YueI2rR1wdZqY/lcKyQYJDFkTln9Vp2xd2uL/tA1OSZXdsQoxZHU0
+	w+SiU0EYTXrzEpC0Eynw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hjVKG-0006d0-1n; Fri, 05 Jul 2019 21:01:00 +0000
+	id 1hjVLi-0007ET-Gk; Fri, 05 Jul 2019 21:02:30 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hjVK1-0006TQ-9T
- for linux-mtd@lists.infradead.org; Fri, 05 Jul 2019 21:00:47 +0000
+ id 1hjVLR-00072p-Va; Fri, 05 Jul 2019 21:02:15 +0000
 X-Originating-IP: 91.224.148.103
-Received: from localhost.localdomain (unknown [91.224.148.103])
+Received: from xps13 (unknown [91.224.148.103])
  (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id AB3C720004;
- Fri,  5 Jul 2019 21:00:32 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3483620009;
+ Fri,  5 Jul 2019 21:02:10 +0000 (UTC)
+Date: Fri, 5 Jul 2019 23:02:08 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Schrempf Frieder <frieder.schrempf@kontron.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "emil.lenngren@gmail.com" <emil.lenngren@gmail.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spinand: Fix max_bad_eraseblocks_per_lun info in
- memorg
-Date: Fri,  5 Jul 2019 23:00:26 +0200
-Message-Id: <20190705210026.13420-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190606170754.6531-1-frieder.schrempf@kontron.de>
-References: 
+To: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Maxime Ripard
+ <maxime.ripard@bootlin.com>
+Subject: Re: [PATCH 1/2] Revert "mtd: rawnand: sunxi: Add A23/A33 DMA support"
+Message-ID: <20190705230208.2ed60a69@xps13>
+In-Reply-To: <20190705101232.30164-1-miquel.raynal@bootlin.com>
+References: <20190705101232.30164-1-miquel.raynal@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: a126483e82957172b8a93ebb1d30fb2b1df3cbbc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190705_140045_483287_F3AD9474 
-X-CRM114-Status: UNSURE (   6.91  )
+X-CRM114-CacheID: sfid-20190705_140214_177295_E6F5FA11 
+X-CRM114-Status: UNSURE (   7.69  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -74,34 +71,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2019-06-06 at 17:07:55 UTC, Schrempf Frieder wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> The 1Gb Macronix chip can have a maximum of 20 bad blocks, while
-> the 2Gb version has twice as many blocks and therefore the maximum
-> number of bad blocks is 40.
-> 
-> The 4Gb GigaDevice GD5F4GQ4xA has twice as many blocks as its 2Gb
-> counterpart and therefore a maximum of 80 bad blocks.
-> 
-> Fixes: 377e517b5fa5 ("mtd: nand: Add max_bad_eraseblocks_per_lun info to memorg")
-> Reported-by: Emil Lenngren <emil.lenngren@gmail.com>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZSBv
+biBGcmksICA1IEp1bCAyMDE5CjEyOjEyOjMxICswMjAwOgoKPiBUaGlzIHJldmVydHMgY29tbWl0
+IGM0OTgzNmYwNWFhMTUyODJmNzI4MGUwNmVkZTNmNmY4YTYzMjQ4MzMuCj4gCj4gVGhlIGNvbW1p
+dCBpcyB3cm9uZyBhbmQgaXRzIGFwcHJvYWNoIGFjdHVhbGx5IGRvZXMgbm90IHdvcmsuIExldCdz
+Cj4gcmV2ZXJ0IGl0IGluIG9yZGVyIHRvIGFkZCB0aGUgZmVhdHVyZSB3aXRoIGEgY2xlYW4gcGF0
+Y2guCj4gCj4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290
+bGluLmNvbT4KPiAtLS0KCkJvdGggcGF0Y2hlcyBhcHBsaWVkIHRvIG10ZC9uZXh0IHdpdGggdGhl
+IGZvbGxvd2luZyB0YWcgYWRkZWQ6CgpGaXhlczogYzQ5ODM2ZjA1YWExICgibXRkOiByYXduYW5k
+OiBzdW54aTogQWRkIEEyMy9BMzMgRE1BIHN1cHBvcnQiKQoKClRoYW5rcywKTWlxdcOobAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
