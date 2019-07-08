@@ -1,79 +1,78 @@
-Return-Path: <SRS0=aZxi=VE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=ZMxb=VF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92BC4C48BDE
-	for <linux-mtd@archiver.kernel.org>; Sun,  7 Jul 2019 21:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F498C48BE7
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jul 2019 07:14:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6918E20684
-	for <linux-mtd@archiver.kernel.org>; Sun,  7 Jul 2019 21:00:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73E2320665
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jul 2019 07:14:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="P4lwI649";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pvBae38m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6918E20684
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cOVqAJLd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73E2320665
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GDni5ikxFMw4jGjU7zxAHy4QfUeLzOw1lJkrK1tOXNM=; b=P4lwI649roUyka
-	An0XzwGLgvB8uH1G2G5xFCZZjHYM7gCMLDTFh2kQdb8z4w8FvCL3rUeu3eFq1ZjCs3+JvKShBsF5l
-	EnbAG22djqFFRwci7M7O1TpbeOPmbfPYLYUN+afGXqK7iEXxl9y/3FEtNe9RO7u4s+SrRGZGsqPYK
-	7SpE+mBnZgueLl+TMebhugBV96O8HsP0SoMc9LH6lZbxEYP2I6RklpwkgLGxipBRjlZS/8wyJ37F/
-	5Uz4tHHp1b9aTXxhznWO9KXcn4LM8pQIzl5/ylUnGWPnmhxJU+rw8k/spjtO0gdXMK0J2/kcnDoTS
-	w3LcHHGJD6g/7n99HBxA==;
+	List-Owner; bh=CUujQgnhc7nP0+3eFXr0uFDzzhXKoAhYIsGPKndaOeM=; b=cOVqAJLdL8br/O
+	dNQp4PE2cFT5/Yz5iB+QVuwpykJ4t48GfhKZiQlqu/R7yGQRT2VswHe3pHiM9LN41SqkwWVgGhLOc
+	YKhI0pHb77VrNDK1ESF0CZFrhcGJjvwo6dh5B70maSqikLNzzHIIjTTb7WxBT+KvbFDPcOpSx6FVh
+	kz3lKb6KAqSbbmAEF32QaLu1GNhlyxxNBfId0ewOZy6Re70Dwo3ej0Tlh7Lwzmfljyvibs7dhzJuW
+	my1neGU8Ho+3u+04lsdpV05daWCaBdjZJ23dTPKp8RcDSjnWpP4TLLb+jGhX6N66yao8jT2yn2PI6
+	z/QeF3XvDLJdD4Cqw8uQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hkEGf-0004hs-Io; Sun, 07 Jul 2019 21:00:17 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1hkNr1-00083Q-C4; Mon, 08 Jul 2019 07:14:27 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkEGe-0004hd-07
- for linux-mtd@bombadil.infradead.org; Sun, 07 Jul 2019 21:00:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=GQfRYS+Lvwyd/H6mr2zx6OT/dFcxnyJoK3DJpF6rA+8=; b=pvBae38m0r5hvpH8GMAoBzAZQZ
- HvllKl+1+MmTHpyn8wvDSs0k7Ggc4CGQkfqMK6yGn3ZS3JztYzXCqljDigfEeWiaTk4S5vx7j0s+U
- qWUe7PoGPByoZ2cnOLWeHammDaPT0NWFBcfh+xE5qzN+KZOCx23dSzfQymc2E3+1ZMjcf483yWbAQ
- By/D2fZuwM7YO7tYL35tneZGzVW9oldIPondDVrRphCcE31otcpcYGKTWCriQmJH8hOpNu1TvmekJ
- LbTbgzHs1ABkz9GcbN7ae0wGmnQObgNX4x8z/6S9hQeCJBkh1P66Y7Zfw/F28bRIbo1lcYcsGSQFv
- RJBGleDQ==;
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
- by casper.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkEGg-0004iY-U5
- for linux-mtd@lists.infradead.org; Sun, 07 Jul 2019 21:00:20 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D897960003;
- Sun,  7 Jul 2019 20:59:23 +0000 (UTC)
-Date: Sun, 7 Jul 2019 22:59:20 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [GIT PULL v2] mtd: spi-nor: Changes for 5.3
-Message-ID: <20190707225921.241deb01@xps13>
-In-Reply-To: <166a1e4f-9ed0-ade5-cae4-841fa97036ce@microchip.com>
-References: <166a1e4f-9ed0-ade5-cae4-841fa97036ce@microchip.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1hkNqx-00082N-KG
+ for linux-mtd@lists.infradead.org; Mon, 08 Jul 2019 07:14:25 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1hkNqt-0000Xy-P7; Mon, 08 Jul 2019 09:14:19 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <sha@pengutronix.de>)
+ id 1hkNqt-0001y2-4P; Mon, 08 Jul 2019 09:14:19 +0200
+Date: Mon, 8 Jul 2019 09:14:19 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: nvmem creates multiple devices with the same name
+Message-ID: <20190708071419.eqhajizbipt24xl3@pengutronix.de>
+References: <20190521085641.i6g5aijwa5zbolah@pengutronix.de>
+ <a9ccac90-7b2f-41da-2ca9-ca3bba52781b@linaro.org>
+ <20190521092107.zpdkkhaanzruhqui@pengutronix.de>
+ <20190701080642.4oxmw7c3rmwrt5ee@pengutronix.de>
+ <45d0cfaf-2511-4b1e-f4da-b67fa9f9e867@linaro.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <45d0cfaf-2511-4b1e-f4da-b67fa9f9e867@linaro.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:02:28 up 13:12, 24 users,  load average: 0.18, 0.32, 0.32
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190707_220019_025129_EE21AE1A 
-X-CRM114-Status: UNSURE (   6.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190708_001423_667353_705089BB 
+X-CRM114-Status: GOOD (  22.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,24 +84,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, richard@nod.at, marek.vasut@gmail.com,
- boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgo8VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tPiB3cm90ZSBvbiBGcmksIDI4
-IEp1biAyMDE5IDA5OjAwOjMyICswMDAwOgoKClsuLi5dCgo+IAo+IFRoZSBmb2xsb3dpbmcgY2hh
-bmdlcyBzaW5jZSBjb21taXQgYTE4ODMzOWNhNWEzOTZhY2M1ODhlNTg1MWVkN2UxOWY2NmIwZWJk
-OToKPiAKPiAgIExpbnV4IDUuMi1yYzEgKDIwMTktMDUtMTkgMTU6NDc6MDkgLTA3MDApCj4gCj4g
-YXJlIGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6Cj4gCj4gICBzc2g6Ly9naXRA
-Z2l0b2xpdGUua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4Lmdp
-dCB0YWdzL3NwaS1ub3IvZm9yLTUuMy12Mgo+IAo+IGZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1
-cCB0byA4ZDEzMzZjMjQxYmRhZGY2MWE1NmUzOThkODJkMWU1MTJkYmZmNWY4Ogo+IAo+ICAgbXRk
-OiBzcGktbm9yOiBjYWRlbmNlLXF1YWRzcGk6IGFkZCByZXNldCBjb250cm9sICgyMDE5LTA2LTI3
-IDE3OjE4OjEzICswMzAwKQoKUHVsbGVkLCB0aGFua3MhCgpNaXF1w6hsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+On Tue, Jul 02, 2019 at 05:54:54PM +0100, Srinivas Kandagatla wrote:
+> Hi Sascha,
+> 
+> On 01/07/2019 09:06, Sascha Hauer wrote:
+> > Hi Srinivas,
+> > 
+> > On Tue, May 21, 2019 at 11:21:07AM +0200, Sascha Hauer wrote:
+> > > On Tue, May 21, 2019 at 10:02:32AM +0100, Srinivas Kandagatla wrote:
+> > > > 
+> > > > 
+> > > > On 21/05/2019 09:56, Sascha Hauer wrote:
+> > > > > . Are there any suggestions how to register the nvmem devices
+> > > > > with a different name?
+> > > > 
+> > > > struct nvmem_config provides id field for this purpose, this will be used by
+> > > > nvmem to set the device name space along with name field.
+> > > 
+> > > There's no way for a caller to know a unique name/id combination.
+> > > The mtd layer could initialize the id field with the mtd number, but
+> > > that would still not guarantee that another caller, like an EEPROM
+> > > driver or such, doesn't use the same name/id combination.
+> > 
+> > This is still an unresolved issue. Do you have any input how we could
+> > proceed here?
+> 
+> Sorry for the delay!
+> I think simplest solution would be to check if there is already an nvmem
+> provider with the same name before assigning name to the device and then
+> append the id in case it exists.
+> 
+> Let me know if below patch helps the situation so that I can take this in
+> next cycle!
+> 
+> ----------------------------------->cut<----------------------------
+>     nvmem: core: Check nvmem device name before adding the same one
+> 
+>     In some usecases where nvmem names are directly derived from
+>     partition names, its likely that different devices might have
+>     same partition name.
+>     This will be an issue as we will be creating two different
+>     nvmem devices with same name and sysfs will not be very happy with that.
+> 
+>     Simple solution is to check the existance of the nvmem provider with
+>     same name and append an id if it exists before creating the device name.
+
+This solution obviously works for me. I am not sure if that's really
+what we want as the resulting names in sysfs are not predictable in any
+way. In that case we might be better off using mtdx as Boris suggested.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
