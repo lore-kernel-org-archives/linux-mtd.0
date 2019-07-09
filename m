@@ -4,55 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF7FC73C53
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 18:43:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FEA8C73C46
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 18:54:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 505D52087F
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 18:43:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4983A20665
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 18:54:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XcN/zNXW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 505D52087F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mansr.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="pKsvN7qC";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=agner.ch header.i=@agner.ch header.b="JxcVs2Sq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4983A20665
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=agner.ch
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OZuUuLkPfZHrkxXWQ6fK7Q23+HflB1btDx3SMLpsZLs=; b=XcN/zNXWlCjjip
-	Ql2H/pT0I0JToJ0cedDhD6Liuw9i9qujFYl20rGdkcC9TA+aE4bbiO/6UTbIn8szQYrEi7e3M8DQY
-	0PBgg4rZq4cB2PYPpjcjQbHnSAH6CkBJy5lIDjs60wMPlbaFhFwen2NCP7gB8mqd5N7gr904LgmKL
-	B/AB+z8r0264DhgZlKAPj2jMx1jSsXwbE4jgNQO8kL9bxMwyl8OXRcwZMZjbRmqHj/p8kgC2HMjQx
-	GCPlk1s7CMVyow7HR76UwshFUG+5mVsx9qnnRf1XKDCjWKSXgeUxbyIKXXjTyGtJj9/lQDKgY3MuE
-	1PJt6xRomia16tQAhKjQ==;
+	List-Owner; bh=raEOgWAGnNsAQnpb/Da/52VREtghL18Gm23m1yfisSY=; b=pKsvN7qCexsR5A
+	sDO1dRZREriGG0TdYK0UQo5V4ahkJdhYcUh5o7QE99c8feeCa65uhNd4DEiacSzlvi/VesrCK2wyp
+	7erQ8teRDCgLBhEvjXKNbsrhc3JGTK1upS8FWQ0ScONqZFzTmaBowt3F+R6+DlikBsBHjZnLzX6VD
+	470pMemwWibCxS85XCdnhS2CmZvaDLqp2hqkZO/f3VUysE2MEcnNXt9wr9neT10LIjvYTf8/EHv/h
+	l+6CvC5w8s6czH0ulYnb9toBs8/Ni27+HkjUJ6xY9bXAwRSxlFjGe6+JqPwjgL2t6gbycSfvIxHbH
+	w+JO5Y3xkDyg7+9LuOcg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hkv4v-0004jQ-Ky; Tue, 09 Jul 2019 18:43:01 +0000
-Received: from unicorn.mansr.com ([2001:8b0:ca0d:8d8e::2])
+	id 1hkvFi-0000Ng-AD; Tue, 09 Jul 2019 18:54:10 +0000
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkv4s-0004aA-3L
- for linux-mtd@lists.infradead.org; Tue, 09 Jul 2019 18:42:59 +0000
-Received: by unicorn.mansr.com (Postfix, from userid 51770)
- id 636F21539B; Tue,  9 Jul 2019 19:42:48 +0100 (BST)
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-To: Nishka Dasgupta <nishkadg.linux@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: tango: Add of_node_put() before return
-References: <20190709171316.13451-1-nishkadg.linux@gmail.com>
-Date: Tue, 09 Jul 2019 19:42:48 +0100
-In-Reply-To: <20190709171316.13451-1-nishkadg.linux@gmail.com> (Nishka
- Dasgupta's message of "Tue, 9 Jul 2019 22:43:16 +0530")
-Message-ID: <yw1xtvbvf3rr.fsf@mansr.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.3 (gnu/linux)
+ id 1hkvFf-0000NJ-D8
+ for linux-mtd@lists.infradead.org; Tue, 09 Jul 2019 18:54:08 +0000
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+ by mail.kmu-office.ch (Postfix) with ESMTPSA id 6B5465C072A;
+ Tue,  9 Jul 2019 20:54:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+ t=1562698445;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=LK+Adb725ZjH4DbihgZdbmF2ZTqv6ZhFTilAQoLTCrc=;
+ b=JxcVs2SqjAMcJLrzHV4oGC+s74UqUO4yFkFvkPbThzdylyV+bKGi1MSAWjys/oR+tPlo6S
+ c9VsSgxTTya8QISWeT+uOEYE8pAXuuY9JHzlqk6Bo8HH6o/chKPZZwQUgFabtTckFO+YX3
+ Mi3tQweENDmgWQyAR8Da5ZWbKROveHU=
 MIME-Version: 1.0
+Date: Tue, 09 Jul 2019 20:54:05 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Nishka Dasgupta <nishkadg.linux@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: vf610_nfc: Add of_node_put() before goto
+In-Reply-To: <20190709170837.13315-1-nishkadg.linux@gmail.com>
+References: <20190709170837.13315-1-nishkadg.linux@gmail.com>
+Message-ID: <d28641662420b0a10fbf2a238a3dd056@agner.ch>
+X-Sender: stefan@agner.ch
+User-Agent: Roundcube Webmail/1.3.9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190709_114258_337137_7F921E8A 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20190709_115407_597123_EA544D31 
+X-CRM114-Status: GOOD (  13.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,48 +76,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: vigneshr@ti.com, marc.w.gonzalez@free.fr, richard@nod.at,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, computersforpeace@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: vigneshr@ti.com, richard@nod.at, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Nishka Dasgupta <nishkadg.linux@gmail.com> writes:
-
-> Each iteration of for_each_child_of_node puts the previous node, but in
-> the case of a return from the middle of the loop, there is no put, thus
-> causing a memory leak. Hence add an of_node_put before the return.
+On 2019-07-09 19:08, Nishka Dasgupta wrote:
+> Each iteration of for_each_available_child_of_node puts the previous
+> node, but in the case of a goto from the middle of the loop, there is no
+> put, thus causing a memory leak. Hence add an of_node_put before the
+> goto.
 > Issue found with Coccinelle.
->
+> 
 > Signed-off-by: Nishka Dasgupta <nishkadg.linux@gmail.com>
+
+Looks good to me:
+
+Reviewed-by: Stefan Agner <stefan@agner.ch>
+
+--
+Stefan
+
 > ---
->  drivers/mtd/nand/raw/tango_nand.c | 1 +
+>  drivers/mtd/nand/raw/vf610_nfc.c | 1 +
 >  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tan=
-go_nand.c
-> index b3f2cabcc7c0..9acf2de37ee0 100644
-> --- a/drivers/mtd/nand/raw/tango_nand.c
-> +++ b/drivers/mtd/nand/raw/tango_nand.c
-> @@ -659,6 +659,7 @@ static int tango_nand_probe(struct platform_device *p=
-dev)
->  		err =3D chip_init(&pdev->dev, np);
->  		if (err) {
->  			tango_nand_remove(pdev);
-> +			of_node_put(np);
->  			return err;
->  		}
->  	}
-> -- =
-
-
-Acked-by: Mans Rullgard <mans@mansr.com>
-
--- =
-
-M=E5ns Rullg=E5rd
+> 
+> diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+> index e4fe8c4bc711..6b399a75f9ae 100644
+> --- a/drivers/mtd/nand/raw/vf610_nfc.c
+> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
+> @@ -862,6 +862,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  				dev_err(nfc->dev,
+>  					"Only one NAND chip supported!\n");
+>  				err = -EINVAL;
+> +				of_node_put(child);
+>  				goto err_disable_clk;
+>  			}
 
 ______________________________________________________
 Linux MTD discussion mailing list
