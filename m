@@ -6,16 +6,16 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AF8BC73C56
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 20:09:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FB0C73C53
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 20:09:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16BD1214AF
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 20:09:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2CE742073D
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2019 20:09:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="RYEGFIVd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16BD1214AF
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="k+vEc8Tb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CE742073D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -24,55 +24,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pLJNv2g7eyz9zt2Q+uhMJd4PXCzz050llykFGgsbvBE=; b=RYEGFIVddKzqfh
-	ZS44/NlWHq1f5uX6Ndbd+HOolq8OfjSsHNlQMpERUJ5b8pV/O44fn+TPPwcE5RoJUvxaCf7LxFgDR
-	b8nHp8V61aINvh6sfAMNPJGHeIzJ96WUc52HwVWD5koV91vNKqo1dt+nC2mZCpuj3OZO9HbohSpZ8
-	GX+C4gbwx12rXYm3zuGw3J8LWdzUx/ZhA8BjWScWzXDDn46hZM8bn0CsBT9vFG+8YdTC/1plZSPWT
-	6IJIrHQ++mYcVbBxUeLppa2ybJtlCRWOpKzsTvZjAUmdrdER3UWg1+KOi+cKsfsAh7K6itAHBmC6t
-	qcDGcZYTtVzvIfLxJDsw==;
+	List-Owner; bh=t09J5qDLhOrQ/5DNzclCiMq7K2GGk+jwA5YoLJLV1+k=; b=k+vEc8TbrJLZ04
+	/G2E+JfTBuU3CuuOoi1CDafCJexMtGpBaUrxcux5dLib8kI4VdIUfU/lr/7nYK2ZAg0LkFw2/iigQ
+	sJzm9tc5NbUOa0P80aLl7As5ojfEtiLyEZyRA8YDry0pw99GsmtW8DjMdFQAbXkEgmt2AdOGyw989
+	BFqlKejsi6ALEATbeVfjxeolGkBkj2f0jKArSEaobVHq7dMYlVmRFtrgZniFr9c1A9ksGwN+ovUWO
+	Nc3d92SI4LoTP/Gkfp+CvvUM1q9tOAqf1ZmX1mXIapluZhIjWPpU49qycYaFNU2KTo0ZqLClslE4T
+	uBVlrHoAtr8ZW4AOZOMA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hkwQ4-00060u-Hy; Tue, 09 Jul 2019 20:08:56 +0000
-Received: from mail-io1-f65.google.com ([209.85.166.65])
+	id 1hkwQh-0006UM-OL; Tue, 09 Jul 2019 20:09:35 +0000
+Received: from mail-io1-f66.google.com ([209.85.166.66])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hkwPn-0005pw-BW; Tue, 09 Jul 2019 20:08:40 +0000
-Received: by mail-io1-f65.google.com with SMTP id q22so24085605iog.4;
- Tue, 09 Jul 2019 13:08:39 -0700 (PDT)
+ id 1hkwQ7-00063E-O3; Tue, 09 Jul 2019 20:09:01 +0000
+Received: by mail-io1-f66.google.com with SMTP id m24so36436659ioo.2;
+ Tue, 09 Jul 2019 13:08:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=tMyCowNzgjxUaK5PWC6oQ1uWddr8utL+ufijtmsasYY=;
- b=DUeK3wJoEi9PhYO8GwBvkN9kcofQtZU6zEjUPrXImy2BHJs3MP9anCqRD2ebjngyq8
- eYlc3P/Pohwe/dR1XjlHwd/Wzbo1F9mrLpF8AmdVT5B7SXcOTyN3dAkRcz4iFaXRMAEp
- ZpkI7dliCiRi7NA8wF4cxCXSiKEMx4JHHxvra+tLGJ3aHRCVO6Lx3e9rVN3A7TeJKb3N
- 35W5F/R7tF5bw6pvEtfmUjHy5uvdP/sU1cGFuI9TuxmoHAcQzy+6YfjXz9H8Nto8uiqy
- CzF5MB9ooZOdzipR5lYEg9YPHs5bTTzxFZkCHpGjR7Q/qn4X15kBNHHrZKk9U05Qmd4m
- GQNg==
-X-Gm-Message-State: APjAAAW7qRPbHgvCDatFjxEsIgPjOYaXeYv8KimV9BY6g4OM6Kc+gQkV
- o72zNCuYCpkILUGv+G644A==
-X-Google-Smtp-Source: APXvYqyKiyPFi1/Sk/eV1if8HfsDBQ9UxZKt6XHIcHyManJ2gt9dEXwY05nvvTvy0mh0ieg/bZNAQQ==
-X-Received: by 2002:a02:b914:: with SMTP id v20mr29828003jan.83.1562702918640; 
- Tue, 09 Jul 2019 13:08:38 -0700 (PDT)
+ bh=IxRusaB6/iyB44ZXKwv1Y+4wUL94u8uFC2wlPuO5HDA=;
+ b=WdY39dIt2b9Vm1SRtWEqLJnSVhP9E8q79QpMMV833mUaUl0QZm1ZOThNyHTMcN+i0D
+ k6zfOTZhe5otyjG1IA+bezA9XEnVvbz65ahiF0ZAuahYaafZuxlc+/WhsCCgedzyof9J
+ 4qgOd0ZEP6P1y3P0v+aFd+mT12VBX2SbiwKUOZHcye+opQ9p2U8g3SLu9JLaHMIYtfqG
+ KlSldN5wVUCxwNJCDvvCy0amMuq5aSzRAxo6cttZ5enwptObkHKdH/9LA7TrgM/fuVlJ
+ 6VMZfxndovyf7RixXuCVxmfLpdN/8ofPBtPgfpL82BQThVqtGsuWs21pfJRMjxm25oHG
+ /5NA==
+X-Gm-Message-State: APjAAAXChPYyXLktu3Tccm5NgO7RY5TRN8osFj0gztYX2W8Ej/9oyif/
+ uE/qs4274DY/E5BdJFZkXA==
+X-Google-Smtp-Source: APXvYqwgd7tVOXHETgkkm76xD20iAJG7Cx7wu+EG/GsDSVtPfjT/kQQX13fkDk6Uvy1rv8KXzARRtA==
+X-Received: by 2002:a02:340d:: with SMTP id x13mr30040764jae.125.1562702938184; 
+ Tue, 09 Jul 2019 13:08:58 -0700 (PDT)
 Received: from localhost ([64.188.179.251])
- by smtp.gmail.com with ESMTPSA id z17sm31248845iol.73.2019.07.09.13.08.37
+ by smtp.gmail.com with ESMTPSA id j25sm38049414ioj.67.2019.07.09.13.08.57
  (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
- Tue, 09 Jul 2019 13:08:37 -0700 (PDT)
-Date: Tue, 9 Jul 2019 14:08:37 -0600
+ Tue, 09 Jul 2019 13:08:57 -0700 (PDT)
+Date: Tue, 9 Jul 2019 14:08:57 -0600
 From: Rob Herring <robh@kernel.org>
 To: Ashish Kumar <Ashish.Kumar@nxp.com>
-Subject: Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add ls2080a
- compatibility string to bindings
-Message-ID: <20190709200837.GA7806@bogus>
+Subject: Re: [Patch v3 2/2] dt-bindings: spi: spi-fsl-qspi: Add bindings of
+ ls1088a and ls1012a
+Message-ID: <20190709200857.GA8477@bogus>
 References: <1560942714-13330-1-git-send-email-Ashish.Kumar@nxp.com>
- <1560942714-13330-2-git-send-email-Ashish.Kumar@nxp.com>
+ <1560942714-13330-3-git-send-email-Ashish.Kumar@nxp.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1560942714-13330-2-git-send-email-Ashish.Kumar@nxp.com>
+In-Reply-To: <1560942714-13330-3-git-send-email-Ashish.Kumar@nxp.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190709_130839_396974_F042EDB4 
-X-CRM114-Status: GOOD (  10.09  )
+X-CRM114-CacheID: sfid-20190709_130859_965524_40B16655 
+X-CRM114-Status: UNSURE (   7.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,14 +94,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 19 Jun 2019 16:41:53 +0530, Ashish Kumar wrote:
-> There are 2 version of QSPI-IP, according to which controller registers sets
-> can be big endian or little endian.There are some other minor changes like
-> RX fifo depth etc.
-> 
-> The big endian version uses driver compatible "fsl,ls1021a-qspi" and
-> little endian version uses driver compatible "fsl,ls2080a-qspi"
-> 
+On Wed, 19 Jun 2019 16:41:54 +0530, Ashish Kumar wrote:
 > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
 > Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
 > ---
@@ -109,8 +103,8 @@ On Wed, 19 Jun 2019 16:41:53 +0530, Ashish Kumar wrote:
 > v2: 
 > Convert to patch series and rebasing done on top of tree
 > 
->  Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
