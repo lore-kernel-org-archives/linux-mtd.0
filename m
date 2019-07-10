@@ -4,20 +4,20 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 874EDC73C7C
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2019 09:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ADE9C74A21
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2019 15:18:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 586EB20838
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2019 09:34:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1CBD42054F
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2019 15:18:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Pql7zLwM";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PPWGN6hr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 586EB20838
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ty1hTiLF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWtsWonF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CBD42054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,57 +26,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7MHxLZ/sRWOqkdFvnr4XjhYLwhsJaedSRUIgjmlpnP8=; b=Pql7zLwMiSfcXs
-	wggCH29NZxc21KddLZdR/b+RZaC/UOMrgwDD+uEpJa0ofbQyK+j37rYSt28rXFkOD8DBWI7NCIgUt
-	sqVhoaXl7DWIuilq3ZqTGMQ8g55imxhCNCkyJRmC1oHrR4b45+o60H0zuyRJPIoTB9ANLD7KyckO8
-	JN/Yb71ePLfFaaEonTsxKT4mUxbMrpO5LvhUGUKWCtFPTdjEUAQulpVZFFLueAEIzv3bzuKEo1PX4
-	LJDzcyS7mNd/o/RCxUTrZhtS2ppCdZkxhgn4eVbsIqj4HvfQswF0gHDPqO0UHmyMho8Y/ofmpp/h1
-	QLFbc9U32+e9O46Uko+g==;
+	List-Owner; bh=B32uNEpCt5W1IIUE3ipNffHnLNWBaEjDzJ+KyjchU4E=; b=ty1hTiLF4RjsjC
+	HaFDdeQmla5tYQCoHMSbEmgTY7GUeKJgT/+sKpr2jADbO51PqPBzdNAHpSubae0FuJuTjex5z1dNH
+	vOGc0uBDGsUI6WShYPTGDuts2vXUnIC/tlBpIm7qBwcWpYbEUcEq5gSMycIBnIKipVUKw8XwHmXRG
+	AMtSZh5NaDrx3Wi2id6r30C98q0aJneF5hUJUaqYZwNRGPFfEdDmEPzrVlKgHNLhqLMMhyZk7ayHy
+	f7Eue2v3BNjEbh0wmaapVvBHOayfDKVSTlOA886rDzXI5RP+/CA3p/KfcyI6W+YmQ7Bqa5KLfLhVw
+	hwAm4QMBABmWgRDPg30g==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hl8zY-0003hR-Hz; Wed, 10 Jul 2019 09:34:24 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1hlEMR-0008Si-4m; Wed, 10 Jul 2019 15:18:23 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hl8zV-0003h2-1y
- for linux-mtd@lists.infradead.org; Wed, 10 Jul 2019 09:34:22 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id s15so1508958wmj.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jul 2019 02:34:19 -0700 (PDT)
+ id 1hlEMK-0008S7-Rv
+ for linux-mtd@lists.infradead.org; Wed, 10 Jul 2019 15:18:18 +0000
+Received: by mail-lf1-x129.google.com with SMTP id h28so1872988lfj.5
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jul 2019 08:18:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=sJlwBRkhAO3ifRTBL5TgLIjDO60DnjEFbj6dmQ+4e6Q=;
- b=PPWGN6hrrjzQr87tUqfFEhLgMsN+dUPnl5fofo8pz7gD9DiUub5PC9deqODv3zsQ01
- FOptaBND+tYOmy/n7AOHHom1iSmQ+NCw8UbLAOQS2+ll3hCP0IY7na7hg+2hCJbZBHo+
- fhxQZIXpBWRGuyjTj6HbvpPGWNNBRveG29AmhjPJaOoXiviavnL64SHxGXOHvxgmoIVJ
- RMAFlAZ3khX8WIkxYQAI79bwySqsq0WcN5nzdc9v6Lu6DPpY32MBD5kYu+RBs5dAnQIF
- sYAr7VD+ZUum7oJ0i//nxPgxdhwR1twKAi5JrW599MEtaYLI0TwDdPPgpUQMFx0LnAB8
- Ne7Q==
+ :cc; bh=qcLCwlbXUioe/kWZ5KJfX5PHg1894kfSeDh/xywHqqU=;
+ b=iWtsWonFCiZfA2lp5sSIJEF+XhgnPeH7ms/918aJo8t0gkEosoKd3PsNiH+SxxN9yz
+ pM8pn6mMxy0+uCb30At/LA2q+LdnO7aiWsDSXTkPcHsMvYrT2sudSfsH3oIUOPFks6Hx
+ m4Yf3ZM9xXHgbp57d3fJVHJy9tJkIU551uyEWSkaBqv+D1izqlNTexqekCcX5DuBuPaJ
+ LK4WF9EV/VxNdWx+NeSBxYb18N1fLaRJsTeqoSnsP3V7i3jeO7oQgW7TTw8Ri19GzkTC
+ FyriDZzfKe3ipst+jGanc3wO8Naal0askOruaURBidWWjtsP0XzQBm/HbEYaIapn3Wgi
+ haJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=sJlwBRkhAO3ifRTBL5TgLIjDO60DnjEFbj6dmQ+4e6Q=;
- b=V95OXqi5urs2XWWPM29kkFXex0UNEIINoUDqUpN+c/JlEm+nj+isxMPjRQnWJB6ky4
- sf0RmPBzG6tubrtbGRepLPg7VtCoLlPUaIgbgCjqBayI3VX3hFaJNt+36IsoW9NukkBC
- Ek0/8Z8Ik4Yw0Fm5VdD5fps5mDHPTpAJOUCRupD69vc12EofmVeE6Vov0oz3wCVhVZ2P
- QpBlgHyqGjT5CevRl5wX2LadRPNjUX3WC8te6rBXPon/dgWaFp2VYNBkXECxRDTvYVgA
- yia9Ho8E70P6TUdbbid9q+6xp7+2xNFzkp7tVNduDUnJQxBr42E97j9Hm+t5HzOgb1b4
- XJ/w==
-X-Gm-Message-State: APjAAAXmFZYLxUeqMw6rpbSafg41ovXw0/BKiyI+YrTmu0FQcLW6k6yL
- ktnNl1xBwjB5j2ae+xooVDubDCqltQDaCjFlhRI=
-X-Google-Smtp-Source: APXvYqw63SyPVeIEo9pchcmSLB4FVJdTg8yUUi2GT4MxPovFiW3TfR75Tec2ZwKizHTUFJ8Tqm2GtHiGGKMaJHI7MkY=
-X-Received: by 2002:a1c:9e4d:: with SMTP id h74mr4676409wme.9.1562751258410;
- Wed, 10 Jul 2019 02:34:18 -0700 (PDT)
+ bh=qcLCwlbXUioe/kWZ5KJfX5PHg1894kfSeDh/xywHqqU=;
+ b=CKT3eXwkx7A4NFVxAmPnWnpoM9IVOLQKOztLNhhZ3bFQW/tKDX8riPfRhdpmWD+WUY
+ JH0IphdzikQW5wpojbXszZgBqEgV7xup5a2gQr1YDcRfIz8Fl4rx+xLn7JuJONlAmzUj
+ 3lfLCUHG97dXGFRC/3Q1Hm4OKSAx9iRi+uNEEtayKtA5dBdxpAbSUplqoddAVkRQSUxS
+ cQGpLUpmi+W5U3k2TPJCXygQGbqDj90Oi8aZS5XMDvPRn2zHD+kHOpnxNgBSC4t07H4B
+ /RKGnxHXYq1kwXi+pDSxYXzsFjKXR3qa99uf/FzRkpIfVJp28bmOrDqzVAaQGLPOjVTa
+ xu6w==
+X-Gm-Message-State: APjAAAU8xV6a0ACPzHxv3JhzXb52xg/hbytGG6C3gWIlC21P/Z4L9g47
+ BK6awhEepP24VPnTKjLBv+FfxR8eKsU1F5Re0mc=
+X-Google-Smtp-Source: APXvYqxvoQkWphcQXU39VWsrSp0aFdwOOh7qSSBGfvUnIgrZGGUNoGgUjgluJvGxSd1TmaFVzl7AEFepNRDXMKoXxMc=
+X-Received: by 2002:a19:7509:: with SMTP id y9mr15301832lfe.117.1562771895046; 
+ Wed, 10 Jul 2019 08:18:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAMk-x8NpDDjqtJQ0WqqRcggQxBp3uu7QbQET0m019LoG9OSkvA@mail.gmail.com>
-In-Reply-To: <CAMk-x8NpDDjqtJQ0WqqRcggQxBp3uu7QbQET0m019LoG9OSkvA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 10 Jul 2019 11:34:07 +0200
-Message-ID: <CAFLxGvy=iwwUbS8O1xMAtMZYibzQ+vbft1ZVpg9erR=S1c8s2g@mail.gmail.com>
+ <CAFLxGvy=iwwUbS8O1xMAtMZYibzQ+vbft1ZVpg9erR=S1c8s2g@mail.gmail.com>
+In-Reply-To: <CAFLxGvy=iwwUbS8O1xMAtMZYibzQ+vbft1ZVpg9erR=S1c8s2g@mail.gmail.com>
+From: Ben Schroeder <klowd92@gmail.com>
+Date: Wed, 10 Jul 2019 18:18:03 +0300
+Message-ID: <CAMk-x8NfGfXZ6c0QV9kVO677PSo4gmHCgPKV=7_iz7HYX6wYEQ@mail.gmail.com>
 Subject: Re: Available space loss due to fragmentation?
-To: Ben Schroeder <klowd92@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190710_023421_125912_4862E3D0 
-X-CRM114-Status: GOOD (  11.05  )
+X-CRM114-CacheID: sfid-20190710_081816_929495_345ACF69 
+X-CRM114-Status: GOOD (  19.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,50 +95,116 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ben,
+On Wed, Jul 10, 2019 at 12:34 PM Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> Ben,
+>
+> On Wed, Jul 10, 2019 at 5:32 AM Ben Schroeder <klowd92@gmail.com> wrote:
+> > Why do I see a loss of space when rewriting the same file?
+>
+> Please see my answer below.
+>
+> > Can I use an upgrade scheme with file binary diff as mentioned above -
+> > One that would run correctly with low available space?
+>
+> If the filesystem is full and all nodes are already packed, it can be
+> a challenge.
+>
+> > Can I use an upgrade scheme with UBI volume binary diff?
+>
+> Yes, you can alter a dynamic volume as you wish. But keep NAND odds on mind.
+> So you need to replace whole LEBs.
+>
+> > Sorry for the long mail, I have not found much information about fragmentation
+> > and space loss in UBIFS. Let me know if I forgot any relevant details.
+>
+> I think the root cause of the problem you see is how NAND works.
+> On NAND we write always full pages. So if you ask UBIFS to change one byte
+> of a file or change meta data, it has to waste a full page.
+>
+> Luckily Linux is a modern operating system with a write-cache and upon
+> write-back UBIFS can pack nodes (UBIFS data nodes, inode nodes, etc...) together
+> and wastes less space.
+> But it wastes still a significant amount of space if userspace forces
+> it to persist data.
+> i.e. by using fsync()/fdatasync().
+> If UBIFS runs out of space the garbage collector will rewrite nodes
+> and pack them tightly
+> together.
+>
+> So, if you have a pre-created UBIFS, nodes are already packed and your
+> update mechanism
+> might force UBIFS to faster than the garbage collector can pack nodes.
+>
+> With that information in mind, do your other questions resolve?
+>
 
-On Wed, Jul 10, 2019 at 5:32 AM Ben Schroeder <klowd92@gmail.com> wrote:
-> Why do I see a loss of space when rewriting the same file?
+Thanks for the reply Richard.
+I just wanted to reiterate that i am using SPI NOR Flash, partitioned
+in an A/B scheme as so:
 
-Please see my answer below.
+mtd7
+Name:                           rootfs
+Type:                           nor
+Eraseblock size:                65536 bytes, 64.0 KiB
+Amount of eraseblocks:          880 (57671680 bytes, 55.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:14
+Bad blocks are allowed:         false
+Device is writable:             true
 
-> Can I use an upgrade scheme with file binary diff as mentioned above -
-> One that would run correctly with low available space?
+mtd8
+Name:                           rootfs1
+Type:                           ubi
+Eraseblock size:                65408 bytes, 63.9 KiB
+Amount of eraseblocks:          353 (23089024 bytes, 22.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:16
+Bad blocks are allowed:         false
+Device is writable:             true
 
-If the filesystem is full and all nodes are already packed, it can be
-a challenge.
+mtd9
+Name:                           rootfs2
+Type:                           ubi
+Eraseblock size:                65408 bytes, 63.9 KiB
+Amount of eraseblocks:          353 (23089024 bytes, 22.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:18
+Bad blocks are allowed:         false
+Device is writable:             true
 
-> Can I use an upgrade scheme with UBI volume binary diff?
+I am not sure the garbage collector will improve the available space issue.
+Regardless of the UBI being mounted with sync option enabled or disabled,
+the issue persists. Even if i allow time for the background thread to run.
+The issue seems very problematic when considering the fact that i am
+downgrading the filesystem, patching files to be slightly smaller size
+than before,
+and i am still running out of disk space, regardless of how long i
+wait for garbage collection.
+On this regard, i will stick with your answer that it can be a serious
+challenge if all nodes are packed,
+and there is little available free space.
 
-Yes, you can alter a dynamic volume as you wish. But keep NAND odds on mind.
-So you need to replace whole LEBs.
+Could you please clarify your answer regarding binary patching UBI Volumes:
+> Yes, you can alter a dynamic volume as you wish. But keep NAND odds on mind.
+> So you need to replace whole LEBs.
 
-> Sorry for the long mail, I have not found much information about fragmentation
-> and space loss in UBIFS. Let me know if I forgot any relevant details.
+It was my understanding that because UBI keeps tracks of bad blocks
+and erase counters,
+so that overwriting an existing and running UBI partition using a
+binary diff against a newer UBI partition,
+might cause loss of that metadata, or even corruption.
 
-I think the root cause of the problem you see is how NAND works.
-On NAND we write always full pages. So if you ask UBIFS to change one byte
-of a file or change meta data, it has to waste a full page.
+> --
+> Thanks,
+> //richard
 
-Luckily Linux is a modern operating system with a write-cache and upon
-write-back UBIFS can pack nodes (UBIFS data nodes, inode nodes, etc...) together
-and wastes less space.
-But it wastes still a significant amount of space if userspace forces
-it to persist data.
-i.e. by using fsync()/fdatasync().
-If UBIFS runs out of space the garbage collector will rewrite nodes
-and pack them tightly
-together.
-
-So, if you have a pre-created UBIFS, nodes are already packed and your
-update mechanism
-might force UBIFS to faster than the garbage collector can pack nodes.
-
-With that information in mind, do your other questions resolve?
-
--- 
 Thanks,
-//richard
+Ben.
 
 ______________________________________________________
 Linux MTD discussion mailing list
