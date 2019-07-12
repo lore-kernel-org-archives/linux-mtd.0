@@ -2,86 +2,118 @@ Return-Path: <SRS0=Ms8K=VJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 476F2C742A5
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2019 04:52:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 972E9C742B9
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2019 12:15:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 184172064B
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2019 04:52:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C23520863
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2019 12:15:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DRgyi6Hb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vN1vs52G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 184172064B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FojZo9k5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="ml6EdFox"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C23520863
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ww6DF9RiLVo3VmiWVgR5Xc8ccZ73qIpg6Q4VBmxfylw=; b=DRgyi6HbNwx5pn
-	dkAHxCJSnky4qZ6TunyDxRCCxwh1E23zWBAz5Og5Lq1MhdJAOKhVNt8CQFn8FmXAG2l6zNmnnPu6J
-	wl9wgAEFed8jTETLpP7+E25r7LWmG6DM8pB64Nd0WZgYuYkJnMrOHCTnI0L7Y6+yT2St8d8drRNkF
-	0frrfLU8DbdCkqpk6mzKwVOQGTOfWmTdn6fkTXC8yCjoJPrBhshJT5QEX9tyrBkEJSxJqryQ/lWwQ
-	XomBmii+UdDEjUzNpleb6tO/EVc5M5u+np3xIIIESd6TFnFKl0bqWhf+6oKQC4sX4tCDzGy2Njc25
-	emLjCyvQN4ZiwLTmBwvQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=e1d4fxzd5vMNPHg8Q+aXtjML5ejf6eFfaOkZ4YE1msU=; b=FojZo9k5Kfn06M
+	DdZt+vpZW7Gt4Uzk1ROtXD2ko6mKxKRXF3JJ0zvaPSj2nj9hB+pM02g6qVoDPheJYBAN5eLTjm5vT
+	c5n/YX1WkOJNNvv4pPQk8ymocukyCdOxMIUhBxhb0ZpfHwtjPhPZbHh87YYNaKS6NlzCIdyJzyJWa
+	lxNzGvEvSIASJdlfOfc5ydxECEKxaiu/7pBWn52XQ3AT037Ax2QXWG4z0Ik5DzEJv7Y9SG9UDCV2K
+	8RJW2hSGgL/jR7BDH8O1Ed+gX7dz07szs6jAmGc8jFspCJ2aIJz8Ux4gnRAwJ0P5vPecFH/kcmFf6
+	iu5Cd2Ge5+1czLL0yhLQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hlnXc-00063O-1F; Fri, 12 Jul 2019 04:52:16 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1hluRt-00005J-7S; Fri, 12 Jul 2019 12:14:49 +0000
+Received: from mail-eopbgr150097.outbound.protection.outlook.com
+ ([40.107.15.97] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hlnXY-00062o-Ho; Fri, 12 Jul 2019 04:52:14 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id x6C4q034077767;
- Thu, 11 Jul 2019 23:52:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1562907120;
- bh=/zwfLA/aP4uvUzim1nRtJcVVP6jnOalIb4INZTWdV9c=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=vN1vs52GkKEgvfv7yQ7vcysw/2VTq69Hque/iNAvbfkUWsi+xuFC4Sacptoc2PDWc
- OdJo2kS/1EZ2oJEclOb6Z7PcZ2dUXfvF9MJnvfPg3yoS9OSGDL3K6W2/axmWZCj87E
- b0Ff8Q4WX7dQklyOBxYlIiiGbxk82EuyecqYvbvw=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x6C4q03W020067
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 11 Jul 2019 23:52:00 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Thu, 11
- Jul 2019 23:52:00 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Thu, 11 Jul 2019 23:52:00 -0500
-Received: from [172.24.145.136] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id x6C4pu2t043488;
- Thu, 11 Jul 2019 23:51:57 -0500
-Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Boris Brezillon
- <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>
-References: <20190625075746.10439-1-vigneshr@ti.com>
- <20190625075746.10439-4-vigneshr@ti.com>
- <e5a7866d-bc34-887d-31d3-de4f745c8d65@cogentembedded.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <54c7ff30-ca8b-cf75-3914-cd5cad33c323@ti.com>
-Date: Fri, 12 Jul 2019 10:22:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <e5a7866d-bc34-887d-31d3-de4f745c8d65@cogentembedded.com>
+ id 1hluRq-0008Vd-13
+ for linux-mtd@lists.infradead.org; Fri, 12 Jul 2019 12:14:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hLxvq5RBYw8EnSVwzqahxfitCqHsA0gIaJvOGMCfYW/P4Rku52wLkfWL383I5JTLFhfg+sI4FrThCHj+Hbk+lAav2JPXInbL+ctZUOLQJ4HFKvLzRXZRqJaLdnHtgWjVsAO4ftGvdvt7chBjn65tIt7qj6PYll0k7qyOyj6POHYOarbMfR/JpomVnFXtVvD2lVzbay+4clUDErfVYIi4cM50gYi9jUFQaBMXXKZy3ato6dkTgTIiO+SRz2R8rcrK7W/V0B1dxecIHXK661D3zw80zyAq/HrAWBDWyfaVoZ6vhZunkDABUInv1Th6teb9YZSdbA11n5CngRzil7eN0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WvqfdTOR7s/RRACRDnnOr5JEVeFUudK4SKjN/V7fbqs=;
+ b=Ys4MVS/UowU7555q39ieAc/KhCMef8ATKmrIdpTbgVZVeQxTJWZPo7eCF8aSCXdUpIEp23g1rUYUyW/Jwn855Oh0ec4dCKnoA8t8B5gbxXaxVPm2pm9bMzwagCPZvluwiuyOv+IJss1OeRjFRo9ZL3ZykeNZIkJ9jW8TafjYgrcfyEGOEPF+qdPhBYgJiYbd1CevXy247YLeM54ZuaFRBJj0JpXy9krRd8Es1JsxV1m2/jUB/FV5g8Wo4QLWomblwTP64fiLgxTYjKobqNIOFYr8KhMGr3zJ7w52UsCULpWFAZ+jK6lFUbaus+EkAZuQ0Xi5zR6fwOKvEvmR/EuP+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=nokia.com;dmarc=pass action=none
+ header.from=nokia.com;dkim=pass header.d=nokia.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WvqfdTOR7s/RRACRDnnOr5JEVeFUudK4SKjN/V7fbqs=;
+ b=ml6EdFoxX70i3elmFFcCxR4iGSMcBtze0gMQ2eOam8gqemXXJ+Xf+gCMCprbOkfOK+FyYwJDg4N2Tn2njc9S2YV17MVJcNT4SkFR8tCa4huIr+/ySH+jt9QMJboECV2pQ6JrqSCgOsVDXGv5tPKghE2+epEI+jjCTgBBmTQTQps=
+Received: from AM0PR07MB4082.eurprd07.prod.outlook.com (52.134.83.30) by
+ AM0PR07MB6259.eurprd07.prod.outlook.com (10.186.174.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2094.7; Fri, 12 Jul 2019 12:14:40 +0000
+Received: from AM0PR07MB4082.eurprd07.prod.outlook.com
+ ([fe80::d0df:69b3:5529:84c9]) by AM0PR07MB4082.eurprd07.prod.outlook.com
+ ([fe80::d0df:69b3:5529:84c9%7]) with mapi id 15.20.2094.007; Fri, 12 Jul 2019
+ 12:14:39 +0000
+From: "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] spi-nor: intel-spi: Whitelist 4B read commands
+Thread-Topic: [PATCH] spi-nor: intel-spi: Whitelist 4B read commands
+Thread-Index: AQHVOKtgwqaYRthXW0GNL3NvkrzY9Q==
+Date: Fri, 12 Jul 2019 12:14:39 +0000
+Message-ID: <20190712121401.28578-1-alexander.sverdlin@nokia.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [131.228.32.181]
+x-mailer: git-send-email 2.22.0
+x-clientproxiedby: HE1PR0501CA0003.eurprd05.prod.outlook.com
+ (2603:10a6:3:1a::13) To AM0PR07MB4082.eurprd07.prod.outlook.com
+ (2603:10a6:208:47::30)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=alexander.sverdlin@nokia.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e553e063-6dd1-481d-c618-08d706c2835d
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
+ SRVR:AM0PR07MB6259; 
+x-ms-traffictypediagnostic: AM0PR07MB6259:
+x-microsoft-antispam-prvs: <AM0PR07MB62592DAC3E3736CC32FEA2B788F20@AM0PR07MB6259.eurprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-forefront-prvs: 00963989E5
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(4636009)(396003)(346002)(366004)(136003)(39860400002)(376002)(199004)(189003)(8676002)(81156014)(81166006)(36756003)(66446008)(26005)(305945005)(102836004)(64756008)(66476007)(99286004)(66556008)(54906003)(4326008)(186003)(2351001)(53936002)(2501003)(316002)(6436002)(66946007)(8936002)(50226002)(7736002)(86362001)(5640700003)(2906002)(3846002)(476003)(2616005)(66066001)(25786009)(6116002)(478600001)(71200400001)(1076003)(256004)(6506007)(386003)(6486002)(52116002)(6916009)(68736007)(14454004)(5660300002)(486006)(71190400001)(6512007);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:AM0PR07MB6259;
+ H:AM0PR07MB4082.eurprd07.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: nokia.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: Rv3BFJXb4kdcIB/frjKemb6ZB+DfZuO8nIQ6d571kdG6iIUK49dgPNAdZS5NhmHsrq0qceTBg/cvmJlN1Qak7csAOJDRgvl7kz58suAG4KMA6l4EQZPQup6E74a0M9gYxsn9DOm9FzlaYpFKp8kJsYHf3/jDRGK9ZlZCs9J9IrUWpRq0fR3Oa7Zjp/u1xJv3Gi5wsfBGiq1Wb1VtBn11rn4rRm8W7oBNf047orlEdOi1oysteMuQOSzb57Wm5xh0Ed3y+4QaDEIdddi79KdVXbO1MxWGW1Wshsemd+yJbo3WyAFutwiE1LplZh73/sy+a3VJpc+ztF7102HxNaCiFa7ADiYstP5qoem/3MixPbwMi3O5LtxhJcqctP1MP0L93qnb5xJSwLMEJEorlqZ4E7ZJwtiEOYsUBDkw+8uxsus=
+MIME-Version: 1.0
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e553e063-6dd1-481d-c618-08d706c2835d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2019 12:14:39.6555 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: alexander.sverdlin@nokia.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB6259
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190711_215212_721447_A74DDBA1 
-X-CRM114-Status: GOOD (  19.66  )
+X-CRM114-CacheID: sfid-20190712_051446_156636_DC5B27CB 
+X-CRM114-Status: UNSURE (   8.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,110 +125,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Tokunori Ikegami <ikegami.t@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ "Sverdlin, Alexander \(Nokia - DE/Ulm\)" <alexander.sverdlin@nokia.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Mason Yang <masonccyang@mxic.com.tw>, linux-arm-kernel@lists.infradead.org
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
+spi-nor.c issues 4B commands for some Flash chips bigger than 16Mbytes.
+Xeon(R) D-1500 documentation mentions its Integrated PCH Logic supports
+Flash chips up to 64Mbytes.
+D-1500 Integrated PCH documenation however has inconsistencies regarding
+FADDR register width and says nothing about particular commands issued
+to support 64Mbytes of Flash.
 
-On 12/07/19 12:56 AM, Sergei Shtylyov wrote:
-> Hello!
-> 
-> On 06/25/2019 10:57 AM, Vignesh Raghavendra wrote:
-> 
->> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
->> Bus interface between a host system master and one or more slave
->> interfaces. HyperBus is used to connect microprocessor, microcontroller,
->> or ASIC devices with random access NOR flash memory (called HyperFlash)
->> or self refresh DRAM (called HyperRAM).
->>
->> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
->> signal and either Single-ended clock(3.0V parts) or Differential clock
->> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
->> At bus level, it follows a separate protocol described in HyperBus
->> specification[1].
->>
->> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
->> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
->> its equivalent to x16 parallel NOR flash with respect to bits per clock
->> cycle. But HyperBus operates at >166MHz frequencies.
->> HyperRAM provides direct random read/write access to flash memory
->> array.
->>
->> But, HyperBus memory controllers seem to abstract implementation details
->> and expose a simple MMIO interface to access connected flash.
->>
->> Add support for registering HyperFlash devices with MTD framework. MTD
->> maps framework along with CFI chip support framework are used to support
->> communicating with flash.
->>
->> Framework is modelled along the lines of spi-nor framework. HyperBus
->> memory controller (HBMC) drivers calls hyperbus_register_device() to
->> register a single HyperFlash device. HyperFlash core parses MMIO access
->> information from DT, sets up the map_info struct, probes CFI flash and
->> registers it with MTD framework.
->>
->> Some HBMC masters need calibration/training sequence[3] to be carried
->> out, in order for DLL inside the controller to lock, by reading a known
->> string/pattern. This is done by repeatedly reading CFI Query
->> Identification String. Calibration needs to be done before trying to detect
->> flash as part of CFI flash probe.
->>
->> HyperRAM is not supported at the moment.
->>
->> HyperBus specification can be found at[1]
->> HyperFlash datasheet can be found at[2]
->>
->> [1] https://www.cypress.com/file/213356/download
->> [2] https://www.cypress.com/file/213346/download
->> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->>     Table 12-5741. HyperFlash Access Sequence
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> [...]
-> 
->> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
->> new file mode 100644
->> index 000000000000..63a9e64895bc
->> --- /dev/null
->> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
->> @@ -0,0 +1,154 @@
-> [...]
->> +int hyperbus_register_device(struct hyperbus_device *hbdev)
->> +{
-> [...]
->> +	map->name = dev_name(dev);
->> +	map->bankwidth = 2;
-> 
->    I think this should really be 1, judging on the comment to that field (and on
-> Cogent's own RPC-IF HF driver).
-> 
+Nevetheless the tests on Xeon(R) CPU D-1548 with 512Mbit Flash chips
+Macronix MX25L51245G and Micron MT25QL512A showed that erase, write and
+read operations work just fine after SPINOR_OP_READ_4B and
+SPINOR_OP_READ_FAST_4B are white-listed (currently only
+SPINOR_OP_READ_FAST_4B is used and only for Macronix).
 
-I agree this setting is a bit confusing because DDR nature. What we have
-with HyperFlash in DDR mode is equivalent to 16bit flash on a 8bit bus
-and kind of equal to 2 bus cycles (in this case clock edges), therefore
-bandwidth would turn out to be 2. Otherwise cfi_build_cmd() would
-generate wrong addresses and simple map implmention of read/writes would
-use wrong accessors.
-Only way I see map->bankwidth = 1 working is if HF is used in SDR mode.
-So is Cogent's HF in SDR mode? I thought HyperFlash is DDR only but I
-may be wrong.
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+ drivers/mtd/spi-nor/intel-spi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->> +	map->device_node = np;
-> 
-> [...]
-> 
-> MBR, Sergei
-> 
-
+diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+index 1ccf23f..43e55a2e 100644
+--- a/drivers/mtd/spi-nor/intel-spi.c
++++ b/drivers/mtd/spi-nor/intel-spi.c
+@@ -621,6 +621,8 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	switch (nor->read_opcode) {
+ 	case SPINOR_OP_READ:
+ 	case SPINOR_OP_READ_FAST:
++	case SPINOR_OP_READ_4B:
++	case SPINOR_OP_READ_FAST_4B:
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
-Regards
-Vignesh
+2.4.6
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
