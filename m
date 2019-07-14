@@ -2,89 +2,71 @@ Return-Path: <SRS0=NuVS=VL=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E8E6C742D2
-	for <linux-mtd@archiver.kernel.org>; Sun, 14 Jul 2019 15:40:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E1D6C73C66
+	for <linux-mtd@archiver.kernel.org>; Sun, 14 Jul 2019 19:02:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41FEC20820
-	for <linux-mtd@archiver.kernel.org>; Sun, 14 Jul 2019 15:40:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26A2D20C01
+	for <linux-mtd@archiver.kernel.org>; Sun, 14 Jul 2019 19:02:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EuoudHiW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EbTQ+Azt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41FEC20820
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LjEcILC3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26A2D20C01
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JOg+1gENwQh7i26NstgYVHCCyLik1tjea1QG1ovhdyM=; b=EuoudHiWVRDBqJ
-	oVBVvtAwd2Y6FTHrT2LFjjJ9rSe0X7MHcwV0AkPYYHcTRkU9RSwICymDoaVJz5NxBZvwJPY4hUW83
-	vbzBfwdeKmKFk/OUCWjAdZ0awUfs8XRYF6ZZKqnTXHLx0BzyDALTlzfZ5E29+l3MNOy0Yh7InB1nQ
-	lDfLnvAO0tQv5lXiGoZuuzox1Cz7iGTrsNuN8wmzeUPPiVdr2WsNDbDKary4VkhNLdeC1GQ6w3dIR
-	k1e1CpuFgMjSz27UU3Z2Ktzoby513/9uFuvyYenHpfEruvFXvS6hjJh58GbH2zps9eyDEaBdH18VM
-	29O82JPX2zXa/uY5MmFw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9UJhbVDlmTfA34ZIaP9DxtoCgYDHIXWZ8Rj8zEyJFso=; b=LjEcILC3qvoRoa
+	+BPG5p80Vbc93mUoNKOJ3lUqhNSw1BCb9DdM/m4gv0kN5nnEK1CzjbJZk/pW/in2zfTYg79agb0R/
+	KyUowVTCHLmGmwgaetWHQnK8PBBGFQmNJyLIQbHjWWpX4kh2+7jjXexZs1yfBY5DhJoar99w8x+Bu
+	5gl09tTbh1xq1ApQv+JWC5NbBzz6W85Y1WnQMLER07M6+PnBbVTIVBmt4/wriBFwOVH9ZHgA6eG7G
+	RAhSH2iVxAOTOlXImj0NiQnl/2eJ9kD2fpfSteoHxkjtjjlDwJ7Am77U5JhDy5sMBIHAj+J0Ylsva
+	SJw330xdYSFLEOyJYSaw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hmgbo-0006Am-R1; Sun, 14 Jul 2019 15:40:16 +0000
-Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+	id 1hmjlG-000321-Cf; Sun, 14 Jul 2019 19:02:14 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hmgbk-0006AL-Jb
- for linux-mtd@lists.infradead.org; Sun, 14 Jul 2019 15:40:14 +0000
-Received: by mail-io1-xd43.google.com with SMTP id m24so30374699ioo.2
- for <linux-mtd@lists.infradead.org>; Sun, 14 Jul 2019 08:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=h4bHQ1Jc5WTGlqwv+kn8JJgmRRoI96dt/IgZ72rjGBA=;
- b=EbTQ+Aztyq+1j51yJyaXlSrersnYBW/r0zoiVuDyu0dByJxIupmw500q+tV1XItn3f
- fGPvHEoox/Z2H3e03WWBHc79byethRqRi+k9uixTxTuO23jbUomxPKTd6GvYAtaiPQ/i
- BsMn4aPMKMHujUFkvPFJLSBEmaL9p1TQgxkZAySXVbi7K49mzgSmmLNPnEmwk6SQ5yEb
- RPT1qxMUSl+rvW9rcrl0PnK4LG/WCY1Agi8HMWmiSVUYe1jxwuT9MAvWrBkS6TR8+nnb
- Yt/QsX/b/hRkM9trNmZDyCSaOIFJGcWZzCLVA70oHtdzYR+04HE81/hQddh/Kfp2ap6x
- 5wAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=h4bHQ1Jc5WTGlqwv+kn8JJgmRRoI96dt/IgZ72rjGBA=;
- b=LJ74eTck8kjtUKfEVCYRByw0YmKLJOwwVXK4AO0UvUnRfdWsaSLohlCoO91XIso7j1
- kAiBwGCq3VVhobDWPXnOw5AlBhhic/79wIIMahPRllhg/qvudTN6ZOR5GWJ+x07bbewP
- ohUeX1JZ0GUrMRuQT34hL3+FikpimmwEO4e2Fjw/nbVGP2OnKZQ33dDgWJkoLAARBnKg
- IvR+w10XRva6zf3TNxJpcKeYxNPFMijj1no05r9jO1iyId1lFyTnJh/ZDzqdXnK9Jr+d
- /hsva6R2LHDZjM83XFt5lIXMVyiQfuF9DKbx8+RlTG4mJJNG6Jm98FT59Vx4vHS7Q1n3
- ZgXA==
-X-Gm-Message-State: APjAAAUCKAyQ5gJin42V/PhHsXIq6ZlPSq4k+y/+hoAjKihneOeLn54x
- 3MhW9KWqztAKYVZb1007ac1mc3mAaQaMhGF69g==
-X-Google-Smtp-Source: APXvYqz5e0ZMsmxeq3BvuV3Veo7tfSZ2IU3WmhirYiJwumXbxG0Wrfs4Jq9gZf52yJ643RUwyL5TZQdr1Y9XVtHMokQ=
-X-Received: by 2002:a02:b90e:: with SMTP id v14mr22926814jan.122.1563118811187; 
- Sun, 14 Jul 2019 08:40:11 -0700 (PDT)
+ id 1hmjlD-00031R-Bt
+ for linux-mtd@lists.infradead.org; Sun, 14 Jul 2019 19:02:12 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 3545A6074CD5;
+ Sun, 14 Jul 2019 21:02:10 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 0CY1gMs9aDPi; Sun, 14 Jul 2019 21:02:09 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id E126A6074CF8;
+ Sun, 14 Jul 2019 21:02:09 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 4uf6qr9J4IfK; Sun, 14 Jul 2019 21:02:09 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id BE16E6074CD5;
+ Sun, 14 Jul 2019 21:02:09 +0200 (CEST)
+Date: Sun, 14 Jul 2019 21:02:09 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Message-ID: <1267151613.38686.1563130929727.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UBIFS changes for 5.3-rc1
 MIME-Version: 1.0
-References: <20190702133444.444440-1-avifishman70@gmail.com>
-In-Reply-To: <20190702133444.444440-1-avifishman70@gmail.com>
-From: Avi Fishman <avifishman70@gmail.com>
-Date: Sun, 14 Jul 2019 18:39:29 +0300
-Message-ID: <CAKKbWA7ZLLp4nmcG+rFQbc=f5GWSThoghgF=B5CiunDczYAz3w@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Add Winbond w25q256jvm
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- David Woodhouse <dwmw2@infradead.org>, 
- Brian Norris <computersforpeace@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, 
- boris.brezillon@bootlin.com, robimarko@gmail.com, 
- Willis Chai <WillisC@supermicro.com.tw>,
- Jerry Wang <Jerry_Wang@supermicro.com.tw>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF60 (Linux)/8.8.12_GA_3809)
+Thread-Index: lukcal4QcUCgWCO+vvtjPRX4XXI9kw==
+Thread-Topic: UBIFS changes for 5.3-rc1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190714_084012_673520_6F76F12F 
-X-CRM114-Status: GOOD (  13.92  )
+X-CRM114-CacheID: sfid-20190714_120211_553709_1852B3A2 
+X-CRM114-Status: UNSURE (   7.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,52 +78,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Tomer Maimon <tmaimon77@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor, Boris & Tudor,
+Linus,
 
-I see that you pushed this kind of commit of Winbond chip previously,
-can you please approve also this?
+The following changes since commit 6fbc7275c7a9ba97877050335f290341a1fd8dbf:
 
-On Tue, Jul 2, 2019 at 5:23 PM Avi Fishman <avifishman70@gmail.com> wrote:
->
-> Similar to w25q256 (besides not supporting QPI mode) but with different ID.
-> The "JVM" suffix is in the datasheet.
-> The datasheet indicates DUAL and QUAD are supported.
-> https://www.winbond.com/resource-files/w25q256jv%20spi%20revi%2010232018%20plus.pdf
->
-> Signed-off-by: Avi Fishman <avifishman70@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 0c2ec1c21434..ccb217a24404 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2120,6 +2120,8 @@ static const struct flash_info spi_nor_ids[] = {
->         { "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
->         { "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
->         { "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +       { "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512,
-> +                       SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
->                         SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
->
-> --
-> 2.18.0
->
+  Linux 5.2-rc7 (2019-06-30 11:25:36 +0800)
 
+are available in the Git repository at:
 
--- 
-Regards,
-Avi
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/upstream-5.3-rc1
+
+for you to fetch changes up to 8009ce956c3d28022af6b122e50213ad830fc902:
+
+  ubifs: Don't leak orphans on memory during commit (2019-07-08 20:01:34 +0200)
+
+Please note there is a merge conflict between commits
+334d581528b9 ("vfs: Convert ubifs to use the new mount API") and
+eeabb9866e4c ("ubifs: Add support for zstd compression.")
+
+For zstd we add a new mount parameter.
+In case of doubt I'll happily review your merge resolution.
+
+----------------------------------------------------------------
+This pull request contains the following changes for UBIFS
+
+- Support for zstd compression
+- Support for offline signed filesystems
+- Various fixes for regressions
+
+----------------------------------------------------------------
+Liu Song (3):
+      ubifs: Simplify redundant code
+      ubifs: Fix typo of output in get_cs_sqnum
+      ubifs: remove unnecessary check in ubifs_log_start_commit
+
+Michele Dionisio (1):
+      ubifs: Add support for zstd compression.
+
+Richard Weinberger (3):
+      ubifs: Correctly use tnc_next() in search_dh_cookie()
+      ubifs: Check link count of inodes when killing orphans.
+      ubifs: Don't leak orphans on memory during commit
+
+Sascha Hauer (1):
+      ubifs: support offline signed images
+
+ fs/ubifs/Kconfig       | 13 ++++++-
+ fs/ubifs/auth.c        | 86 +++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/compress.c    | 27 ++++++++++++++-
+ fs/ubifs/log.c         |  5 +--
+ fs/ubifs/master.c      | 53 ++++++++++++++++++++++++----
+ fs/ubifs/orphan.c      | 94 +++++++++++++++++++++++++++++++-------------------
+ fs/ubifs/recovery.c    |  2 +-
+ fs/ubifs/sb.c          | 52 ++++++++++++++--------------
+ fs/ubifs/super.c       | 46 ++++++++++++++++++------
+ fs/ubifs/tnc.c         | 16 ++++++---
+ fs/ubifs/ubifs-media.h | 30 +++++++++++++++-
+ fs/ubifs/ubifs.h       |  6 ++--
+ 12 files changed, 338 insertions(+), 92 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
