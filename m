@@ -2,64 +2,76 @@ Return-Path: <SRS0=2WOf=VN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CB7FC76188
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jul 2019 07:45:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B271C76188
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jul 2019 08:31:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01E1020880
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jul 2019 07:45:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C72420659
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jul 2019 08:31:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="UW/MtEDi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01E1020880
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fbIxoIL4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s6531Fyq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C72420659
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Gwhl10sPlxAAUS7RWTxXzU7G/5Y+EZUCeGEQnftHoXs=; b=UW/MtEDiUpawPZ
-	ry/K5yrWH4FKx/Ez54POBpTubfT1ND7TcBOtu8q1xa5kInbnV/NjIbDMzu1GzAXmKgbSDObmcBveW
-	63fA/wLHJ6cs+dlAg8L4aW7OX2EHNXWGXt8mSIqpSCEELKjHJ/i4JCxbIPGC4a+C8lgMaXvJvEIJw
-	2h8zoIUTFQEg0yKz1VieS88PWyG4hDxtt314lu1dvld7MGI+o2da7DrlPEwGybzBlG68HwOhE029l
-	ZiPae9LH0g+xDOXsYYhGZ4DwV3MLC8Q+7FIo8qSR17BFEEd0ZlMYVloFgOIDfnzc4z9DDyjZTg2VS
-	jzJjY2N9+Am6Uk/jrUSA==;
+	List-Owner; bh=srWBwxS1lppxQvTabbx9TdAemaEui3z1+tR/4Z/v02k=; b=fbIxoIL4tNeUHK
+	lkWd5EhuuOk1zIn9uM4GGozDBtfUnCQoI5r5gavEnGG6LYPf0vKPocUferHI6UPUhptzBLkLaRyNY
+	ApZYjt5OWvEXHcv+yUd9+SMagAbJwO3As4GbV41r0bih5O8XmcPGWAwfeXhgNa31IKPr4wAP1eFzZ
+	J/lRVufNKOso2kMRu42ir1m3Sj5U5lSeyqeLahB9V78RRsopz40eeu+7VwZE9R9Wud/8/UEpgz3TV
+	VjlDiJiGWeZ7/3D7BcXCn5jbOF67Xvgo/VO1rVzg4SjBbVrq8qpep+jN7ZlOr0eqngH6VEjbNkJed
+	n2qZYcT4VwFNYs7WPkLg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hnI9B-0000Hq-6C; Tue, 16 Jul 2019 07:45:13 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hnIry-0001te-OD; Tue, 16 Jul 2019 08:31:30 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnI8t-0007YV-0U
- for linux-mtd@lists.infradead.org; Tue, 16 Jul 2019 07:44:56 +0000
-Received: from pc-375.home
- (2a01cb0c88d94a005820d607da339aae.ipv6.abo.wanadoo.fr
- [IPv6:2a01:cb0c:88d9:4a00:5820:d607:da33:9aae])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 645C928B69A;
- Tue, 16 Jul 2019 08:44:53 +0100 (BST)
-Date: Tue, 16 Jul 2019 09:44:50 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Subject: Re: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over
- write driver's read_page()/write_page()
-Message-ID: <20190716094450.122ba6e7@pc-375.home>
-In-Reply-To: <20190716093137.3d8e8c1f@pc-375.home>
-References: <20190716053051.11282-1-naga.sureshkumar.relli@xilinx.com>
- <20190716093137.3d8e8c1f@pc-375.home>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hnIrx-0001st-3B
+ for linux-mtd@bombadil.infradead.org; Tue, 16 Jul 2019 08:31:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=9Pj6LKdHp+jsfUxBvWgyyV9vcRgxUI4tHNoHEVStMHU=; b=s6531FyqkvG5FaZVxkNGfIJHL
+ e+uQ49fwMmf7d3vp5XlSgriZXVSmqEtv+nXgzwSDBui75QEGs2gGx5HqVIDFq5LcFqPqf8bYpLHWO
+ 79ToEhrikF61I7oVwhnavJIeyfaK5YqdKnIr5ExGdnQy50k3HTr3hVjt3Bavhcw3MeIKl/2ux4hG2
+ aXKfuk1f4CJxvrYiu30N8/iTUodLSiqoVLxXeyl2HzlP1kC8RJhmPj+GStQg4FP5G38P/H+ZIbgYz
+ MkqFTKIcvkOurwQB6qSNsQSmZ71X6mzaP9enJeHfTfbyt/IT+cIBmHsVCysZKy0S4qSJRm2x64YQy
+ bUFE966LA==;
+Received: from relay10.mail.gandi.net ([217.70.178.230])
+ by casper.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hnIrs-0000Rc-4i
+ for linux-mtd@lists.infradead.org; Tue, 16 Jul 2019 08:31:33 +0000
+Received: from localhost (91-163-65-175.subs.proxad.net [91.163.65.175])
+ (Authenticated sender: maxime.ripard@bootlin.com)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id C1EAD240005;
+ Tue, 16 Jul 2019 08:28:21 +0000 (UTC)
+Date: Tue, 16 Jul 2019 10:28:21 +0200
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Ensure child nodes are of type 'object'
+Message-ID: <20190716082821.eafjvqfczxahx4as@flea>
+References: <20190715230457.3901-1-robh@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190715230457.3901-1-robh@kernel.org>
+User-Agent: NeoMutt/20180716
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190716_004455_305305_F09AB2A8 
-X-CRM114-Status: GOOD (  17.19  )
+X-CRM114-CacheID: sfid-20190716_093125_204463_22005DDF 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,61 +83,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: nagasuresh12@gmail.com, vigneshr@ti.com, bbrezillon@kernel.org,
- yamada.masahiro@socionext.com, richard@nod.at, svemula@xilinx.com,
- linux-kernel@vger.kernel.org, michal.simek@xilinx.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-gpio@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
+ linux-mtd@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ Alexandre Torgue <alexandre.torgue@st.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 16 Jul 2019 09:31:37 +0200
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
+On Mon, Jul 15, 2019 at 05:04:57PM -0600, Rob Herring wrote:
+> Properties which are child node definitions need to have an explict
+> type. Otherwise, a matching (DT) property can silently match when an
+> error is desired. Fix this up tree-wide. Once this is fixed, the
+> meta-schema will enforce this on any child node definitions.
+>
+> Cc: Maxime Ripard <maxime.ripard@bootlin.com>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-spi@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-> On Mon, 15 Jul 2019 23:30:51 -0600
-> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
-> 
-> > Add check before assigning chip->ecc.read_page() and chip->ecc.write_page()
-> > 
-> > Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> > ---
-> > Changes in v18
-> >  - None
-> > ---
-> >  drivers/mtd/nand/raw/nand_micron.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> > index cbd4f09ac178..565f2696c747 100644
-> > --- a/drivers/mtd/nand/raw/nand_micron.c
-> > +++ b/drivers/mtd/nand/raw/nand_micron.c
-> > @@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
-> >  		chip->ecc.size = 512;
-> >  		chip->ecc.strength = chip->base.eccreq.strength;
-> >  		chip->ecc.algo = NAND_ECC_BCH;
-> > -		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-> > -		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-> > +		if (!chip->ecc.read_page)
-> > +			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-> > +
-> > +		if (!chip->ecc.write_page)
-> > +			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-> >    
-> 
-> Seriously?! I told you this was inappropriate and you keep sending this
-> patch. So let's make it clear:
-> 
-> Nacked-by: Boris Brezillon <boris.brezillon@collabora.com>
-> 
-> Fix your controller driver instead of adding hacks to the Micron logic!
+Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
 
-Not even going to review the other patch: if you have to do that, that
-means the driver is broken. On a side note, this patch series is still
-not threaded as it should be and it's a v18 for a damn NAND controller
-driver! Sorry but you reached the limit of my patience. Please find
-someone to help you with that task.
+Thanks!
+Maxime
+
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
