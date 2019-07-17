@@ -1,74 +1,120 @@
-Return-Path: <SRS0=2WOf=VN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=DY/e=VO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F6CCC76192
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jul 2019 11:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 863ADC76186
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 05:34:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18C632173B
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Jul 2019 11:10:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5880820818
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 05:34:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="BG/SbGlX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Stdaqrb4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18C632173B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="M50VO59r";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="1CxmTbq9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5880820818
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=ga5JwSeDPxzdwnJ4iIO1ooEu+Hs5XINxFlT/5Vnj1Tk=; b=BG/SbGlXU9I5N0QlEr1iAkk3A
-	WigEbg96inlSkzRv0+YA3hmolUfx6rXfJgZEOyf3CBVzqDyXtuDxnG8PDVgrxM9gtDja/Zrb1oxtE
-	Homsm5BVvewx4wPJ7JAyU6r4AHvMRvgNch3QS8Rm2U/GJR16+hSDbbJnj7H9G26l0+Ja5O4E82awL
-	A8jk/wL+2UxcPIZOGwzCEdDdAaiBjzSRG3ytxuQEYc9G/mzXEYjQcf91p4sJBxvx2X2zxu59XDNWn
-	s0rfN1UbRefGF32Gr5w0rfEkQ7o4fT9OiD8MQd/OBuxNkz3ABqSA8V2nEafBqKw7Vokndiuv4Yf4U
-	v4nwSu1kA==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Kgh/1MUrwFQmIIZBzB9Q7YwOapFiRFsm0oeET83YyrI=; b=M50VO59rN1ctZS
+	jEU9uJa7IPjODqO+y+HTXM6JogmrbQ+dXoSVhcQevduz359r7me85dZlLPZ8UD1ljkY7YAHcM4YgZ
+	cC9reeFKIEi306jTfL3xqkFLEksPxn0qaC5/jcta0W2EwlW5eTEfEIEhaIhPMnKNdLMOhtLoxVHUp
+	J/dfIFtDIWIDknJMXGbBwmyoffuiBLQi0bfsWZMQM7a2nqO2+IcyCvu0NZqKAnXE0U8fA5PbJtdAM
+	T6Y841qbpjUrnLEhrCK67+987PzYlVW5Am+7IXup7y10AM+u1S7mdYx78oHHGXKl129wmeDOZnyY9
+	uUvat7KYq1meN36qXBcQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hnLLD-00077c-OT; Tue, 16 Jul 2019 11:09:51 +0000
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+	id 1hncZV-0005Vi-Hc; Wed, 17 Jul 2019 05:33:45 +0000
+Received: from mail-eopbgr730046.outbound.protection.outlook.com
+ ([40.107.73.46] helo=NAM05-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnLL9-00075f-Fc
- for linux-mtd@lists.infradead.org; Tue, 16 Jul 2019 11:09:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=GTNttLKfykU0fMB8TWGXww71EUURBDV6zbj9y9y9CVY=; b=Stdaqrb4Nzvjz4Bj7OxsqHHhD
- +Td7CdZOlzO+ek+Wlj1/FC/WJHeQ9gSPUYQBkEz/5sipVYr/hPyWPqlS7cSDQnO+iL3ns21zEDaGi
- 3VvzwyAvDJ+Chvj8tqRy5yeKmx6ZrWTp1EMApgzMNqNyFnCUcN19Mpy6CuXjZ4JswoqRQ=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1hnLKz-0004Sl-R4; Tue, 16 Jul 2019 11:09:37 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 9164A2742C01; Tue, 16 Jul 2019 12:09:36 +0100 (BST)
-Date: Tue, 16 Jul 2019 12:09:36 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Ensure child nodes are of type 'object'
-Message-ID: <20190716110936.GA5428@sirena.org.uk>
-References: <20190715230457.3901-1-robh@kernel.org>
+ id 1hncZP-0005V4-K4
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2019 05:33:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FqEdCvRA1BShk1eXi/JqRYQQiJaNnYzp7Q4ILf7tgtYbLEcjR1fjPird3CcbonACWG6Wtp0PH2Tysngp0Kzak7SDwxRNLs7WeT4HdhW72MiGPC9q8A4P430V+esQsHHRMFz3F7vFONicYK1fTFOsq6G6Ops2AYkXeI5wMXjBiRlhPP1ssEQmkDpjYrcrXEiEOQRo/qxRG8ROYRSOOZ0HpSyx+3yctXydL7fcmSmHVb+B0Uv5iQrvlgpW6h0GSJ/4RGpeNDM5aULbUosy99OVO5MPqOgSq3eI5/qcVcfGv15RN+XPk3ilTj90IRVXfieamsjNCkqn/GKpKzMF4LSB4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A5Zg18hYb+n1/w3c0DL9dslwZp1Nqtuuq+3rHuwirGo=;
+ b=SPO+kkQcC5WCG4zZB+lG1tFULjB1cAG+HNSL1Lyi6ZI3tKOl7umcIBQtj/fKn3C90OpRhroTLJySLQ4vXOJO5gGbCeF215m45rRnLCPinoCsix7fQmFYGZSbx4xzViqXcJnORQoSRKDDVgyHj2NAZas8Nx4Lr6EMu3NUAZ3sPm29nbHZpyuJFlxzPlqLzvRKT35JwFA4N7LXk87X8netWBaHm27b24gnIa3bU9vDtMgCmXSczZWentYlHCkAOAgRexQVomo2yth6f9ZOiq2x5f5kTLjZWOQ2F3sJZkSxMA+oydt4S5lAqWlwgwYyurm+OmfxX7gAJeciPGvKS6ZWiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=xilinx.com;dmarc=pass action=none
+ header.from=xilinx.com;dkim=pass header.d=xilinx.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector1-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A5Zg18hYb+n1/w3c0DL9dslwZp1Nqtuuq+3rHuwirGo=;
+ b=1CxmTbq93exhABnuOPKkoKHVTVMl9nzDm62SNsyGI8iK+Bt3TAow0Laogcfg2wOMBh1RbVpWHlt4kVHVCzALllX/Z2A8VlvPbqilihgTdh09PkPXTSF1b7CGHcdn0fxLULwu8rAmj/1cJGRQRIs79hbFrLhMyoHmM42Hentjj08=
+Received: from DM6PR02MB4779.namprd02.prod.outlook.com (20.176.109.16) by
+ DM6PR02MB4492.namprd02.prod.outlook.com (20.176.104.210) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2073.14; Wed, 17 Jul 2019 05:33:35 +0000
+Received: from DM6PR02MB4779.namprd02.prod.outlook.com
+ ([fe80::936:90c8:a385:1513]) by DM6PR02MB4779.namprd02.prod.outlook.com
+ ([fe80::936:90c8:a385:1513%4]) with mapi id 15.20.2073.012; Wed, 17 Jul 2019
+ 05:33:35 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Subject: RE: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over
+ write driver's read_page()/write_page()
+Thread-Topic: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over
+ write driver's read_page()/write_page()
+Thread-Index: AQHVO5eo4+vjEMfVj0u12vHDQxXMaabM2dGAgAADsQCAAWJjoA==
+Date: Wed, 17 Jul 2019 05:33:35 +0000
+Message-ID: <DM6PR02MB4779307E32670683AE9F60D6AFC90@DM6PR02MB4779.namprd02.prod.outlook.com>
+References: <20190716053051.11282-1-naga.sureshkumar.relli@xilinx.com>
+ <20190716093137.3d8e8c1f@pc-375.home> <20190716094450.122ba6e7@pc-375.home>
+In-Reply-To: <20190716094450.122ba6e7@pc-375.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=nagasure@xilinx.com; 
+x-originating-ip: [149.199.50.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e1a0aaeb-2f7a-4579-1c03-08d70a78504d
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
+ SRVR:DM6PR02MB4492; 
+x-ms-traffictypediagnostic: DM6PR02MB4492:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <DM6PR02MB4492C91FB4F5972A8D91C7B8AFC90@DM6PR02MB4492.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 01018CB5B3
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(4636009)(366004)(39860400002)(136003)(396003)(376002)(346002)(13464003)(199004)(189003)(316002)(7736002)(54906003)(33656002)(8936002)(6436002)(478600001)(14454004)(99286004)(81156014)(81166006)(6116002)(53936002)(4326008)(7696005)(6506007)(25786009)(2906002)(446003)(256004)(66446008)(66476007)(71190400001)(229853002)(6916009)(7416002)(66946007)(76116006)(11346002)(66556008)(186003)(5660300002)(14444005)(76176011)(86362001)(26005)(52536014)(74316002)(66066001)(64756008)(55016002)(486006)(6306002)(3846002)(8676002)(966005)(9686003)(6246003)(476003)(53546011)(68736007)(305945005)(102836004)(71200400001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR02MB4492;
+ H:DM6PR02MB4779.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: xilinx.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 3O0lWqUhHpRlsIA9dFMOKBcWBcUlazHRxFP7r1EkYb9HMkXbHqxS0NuHv+eQ0E8CslecUG2NoSgYzmGXQsyq7rjLMJlGgUOQwScyNr/qSXXE9OvPU7gQSdcuoRQz7oLmIUojPx9vlZLJ00dxuqVeP5CX4anA6i0ZIBMfOan58PTyQ27jzyldE8gK1eeps039HzOoH0Hmw43W9Wu/mnIVJN41pH29hJxGtlIwLcW/ztKob44rZuGbpH9/oQMOpHr43lf7OUAmDO7E2dsAxYadrQPAQ5fkmf5TFTQ7pMcpreVyILQLPBsLoIMHVwQNaxokosi+e03tOrELTrUQYegM5rOfyrElb6RWEGyukm4/XDXqwtI38TUbkvqdQgDk/af8lROP1Y7HSheir86OqzpCBRzbUhx04LxLvfhNYFUoTH0=
 MIME-Version: 1.0
-In-Reply-To: <20190715230457.3901-1-robh@kernel.org>
-X-Cookie: May be too intense for some viewers.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1a0aaeb-2f7a-4579-1c03-08d70a78504d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2019 05:33:35.4419 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nagasure@xilinx.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4492
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190716_040947_560511_799BC1F8 
-X-CRM114-Status: UNSURE (   9.45  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190716_223339_667659_A6F56F91 
+X-CRM114-Status: GOOD (  22.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,67 +126,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-gpio@vger.kernel.org, Maxime Ripard <maxime.ripard@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Linus Walleij <linus.walleij@linaro.org>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-mtd@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-stm32@st-md-mailman.stormreply.com,
- Alexandre Torgue <alexandre.torgue@st.com>
-Content-Type: multipart/mixed; boundary="===============8167274046766727766=="
+Cc: "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
+ "vigneshr@ti.com" <vigneshr@ti.com>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+ "richard@nod.at" <richard@nod.at>, Srikanth Vemula <svemula@xilinx.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ Michal Simek <michals@xilinx.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Boris,
 
---===============8167274046766727766==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
+> -----Original Message-----
+> From: Boris Brezillon <boris.brezillon@collabora.com>
+> Sent: Tuesday, July 16, 2019 1:15 PM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; bbrezillon@kernel.org; richard@nod.at;
+> dwmw2@infradead.org; computersforpeace@gmail.com; marek.vasut@gmail.com;
+> vigneshr@ti.com; yamada.masahiro@socionext.com; linux-mtd@lists.infradead.org; linux-
+> kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>; Srikanth Vemula
+> <svemula@xilinx.com>; nagasuresh12@gmail.com
+> Subject: Re: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over write
+> driver's read_page()/write_page()
+> 
+> On Tue, 16 Jul 2019 09:31:37 +0200
+> Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> 
+> > On Mon, 15 Jul 2019 23:30:51 -0600
+> > Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+> >
+> > > Add check before assigning chip->ecc.read_page() and
+> > > chip->ecc.write_page()
+> > >
+> > > Signed-off-by: Naga Sureshkumar Relli
+> > > <naga.sureshkumar.relli@xilinx.com>
+> > > ---
+> > > Changes in v18
+> > >  - None
+> > > ---
+> > >  drivers/mtd/nand/raw/nand_micron.c | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/raw/nand_micron.c
+> > > b/drivers/mtd/nand/raw/nand_micron.c
+> > > index cbd4f09ac178..565f2696c747 100644
+> > > --- a/drivers/mtd/nand/raw/nand_micron.c
+> > > +++ b/drivers/mtd/nand/raw/nand_micron.c
+> > > @@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
+> > >  		chip->ecc.size = 512;
+> > >  		chip->ecc.strength = chip->base.eccreq.strength;
+> > >  		chip->ecc.algo = NAND_ECC_BCH;
+> > > -		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+> > > -		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+> > > +		if (!chip->ecc.read_page)
+> > > +			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+> > > +
+> > > +		if (!chip->ecc.write_page)
+> > > +			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+> > >
+> >
+> > Seriously?! I told you this was inappropriate and you keep sending
+> > this patch. So let's make it clear:
+> >
+> > Nacked-by: Boris Brezillon <boris.brezillon@collabora.com>
+> >
+> > Fix your controller driver instead of adding hacks to the Micron logic!
+> 
+> Not even going to review the other patch: if you have to do that, that means the driver is
+> broken. On a side note, this patch series is still not threaded as it should be and it's a v18 for a
+> damn NAND controller driver! Sorry but you reached the limit of my patience. Please find
+> someone to help you with that task.
+My intention is not to resend this 1/2 again. Sorry for that.
+We already had some discussion on [v17 1/2], https://lkml.org/lkml/2019/6/26/430
+And there we didn't conclude that raw_read()/writes(). 
+So I thought that, will send updated driver along with this patch, then will get more information about
+The issue on the latest driver review.
+There is nothing like keep on sending this patch, As you people are experts in the driver review, 
+if this patch is a hack, then we will definitely fix that in controller driver. I will find a way to do that.
 
+But in this flow of patch sending, if the work I did hurts you, then I am really sorry for that.
+Will fix this issue in the controller driver and will send the updated one.
+Could you please let me know if this is OK.
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I will send the series as threaded one from next time onwards.
 
-On Mon, Jul 15, 2019 at 05:04:57PM -0600, Rob Herring wrote:
-> Properties which are child node definitions need to have an explict
-> type. Otherwise, a matching (DT) property can silently match when an
-> error is desired. Fix this up tree-wide. Once this is fixed, the
-> meta-schema will enforce this on any child node definitions.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0tsG0ACgkQJNaLcl1U
-h9DgRwf/RVQwM4uJZfc77Bg1QUPRV93uCJ6maAGlUjFImP1U0fpoRuD/zNm5kiIp
-hJhe5TMTX5ua+ajO5DV9S4HD4tRJBv5imHYgx7edGX0XnD6uBhO/Fx91okJhKb54
-hmWEPpZyjursasR/A6HjQi6+OYEnCqrMoTenaZQZ/R7MlS8Z57C5m8slR9m1tSBp
-xam5qvxG3pn5oNarJlCWF9VcVmZckekdU+qutRLVc3xH8bCF6pjfyR5E1M+qRJV6
-av5KFLsTopgBECl4QPHGqIXqhegIjWyeqeMC69s7Nh8pDFpLIwFJfXd7x7UGStgS
-RrPGZDcB2vfMfsXwQAGfu5lyMqkYJA==
-=IEmg
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
-
-
---===============8167274046766727766==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks,
+pcieNaga Sureshkumar Relli
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8167274046766727766==--
-
