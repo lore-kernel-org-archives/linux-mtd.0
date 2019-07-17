@@ -2,121 +2,163 @@ Return-Path: <SRS0=DY/e=VO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A625C76195
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 09:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B565C76192
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 10:59:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 012062077C
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 09:08:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1A4F217F4
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 10:59:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aX8JKQRI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xilinx.onmicrosoft.com header.i=@xilinx.onmicrosoft.com header.b="cbm8sUtr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 012062077C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=xilinx.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="g8URRKuO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="EQXLQFhn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="gYbn6SXq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1A4F217F4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JKNh4Bdh9JwP1mBefEWUV+6d585xMEaRvtvzjBaP3Cg=; b=aX8JKQRIE7O5Fz
-	HsZCJnQEV4VLlsVinALLsajP1zdSwVr360ZaqgOfiAGGUnfwzAwDOhffV4jfsNupCP+gvnpUjfuHf
-	6aiWoIcWoYipY7reMhBWGZboeCeSwEWn8QTsZANKHbhzj3MWfvfNlbgqJGi7iIZ/hhVtg55sPpNkD
-	Spx1XVdDSDi9+lghckTvDJc5MYjvW0a28b7x6Pn2P/RwXcjZwZFJy+10jTJxoftctEjdcLRGEfjUP
-	aj2+mQOPz3bBGr9+ZRgC0fzu3dRD37jBtKTKrwS4kqjfSdX8VPMVns4eZXNQ6lWZaaf/Rqybacy3y
-	GXkWh6Dr+a303nPuJjRg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=8i4tRubdYUzWW950zYqgpWqA/iypEMRK29zUkMfdTr8=; b=g8URRKuOVTwqXS43n5NUqllBa
+	bgeDgzZFf9Gtv8ckdTavS3TyyHyzYgqN52dj9gdV1l69ByCIRxdV3yJCT5LD/kYqJrmTVZym3YYqc
+	43/KR/2QOi1yLlT5MsIKVM9cUWNMO+u4lg2ytaSD+VDoC2/FeGT8UycuoYkVVBeQnbs2SfbHGpZ/R
+	CWeQisfG6TU1uzAxPPWz26hV5I80se6apHRVqCP9Ee5mj3gHHL/5c8uWEBAL2Ray2gzx0PCF8qycl
+	XzMYNEWoqhEnxEah1jgViymoS0HlcmoDDnqQ27bpWoDmTu9m5s1pht2qGAyKFJpROMxVzcAWwalaY
+	FIqB5sCMg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hnfuj-0006rO-H9; Wed, 17 Jul 2019 09:07:53 +0000
-Received: from mail-eopbgr780050.outbound.protection.outlook.com
- ([40.107.78.50] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
+	id 1hnheV-0001WZ-4n; Wed, 17 Jul 2019 10:59:15 +0000
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnfuh-0006r2-2Z
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2019 09:07:53 +0000
+ id 1hnheR-0001Uz-MF
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2019 10:59:13 +0000
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+ by mx0a-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x6HAveav021805; Wed, 17 Jul 2019 03:58:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=proofpoint;
+ bh=k5a0nbgCGii4YyS6eGeL9qKquO//93AyQ+mY231zwi0=;
+ b=EQXLQFhnzL5eLpswgKhxnlX5RAzFMmLaB+zwJlHqgG2SbQxoPr6EucGB4Au6nv7diQTz
+ o7IZA5Gsv9Unim+M0XpUylRiTrB/D3AnFkCLSWxqub62YmTXDw44C8DfEjlPs4r0S3yh
+ CA/PFglHX/bTYCGEjUMd/u+kJxHytZ2jfRUiZG8l8pLlmF/6g9kLVHvH+WWDdD8JM6J6
+ A948PKnl/4xxmgp2pn302aZP6uTSQ8AvJN7BJkMQ6OfBhR23c4PJIxsH6pstE8BMSvEi
+ leX78rjFdcFPPs1BIPhSrlRGHn5+FREnCFyXRKECmnT+3K4MR/HyZzruHUdnFg8afX5z dA== 
+Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
+Received: from nam05-dm3-obe.outbound.protection.outlook.com
+ (mail-dm3nam05lp2052.outbound.protection.outlook.com [104.47.49.52])
+ by mx0a-0014ca01.pphosted.com with ESMTP id 2tqbuw785b-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+ Wed, 17 Jul 2019 03:58:48 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lmDZ0XoaD1lYWwmrS7r19NUKhHZ+UGBTkHQWi/bYWIzrJTwvYMEK83EMSMc0DQw4+aeKBPhkAhJ4i99753oaB8MzAqQo66tlapU37VWOsjHk+3D2y8hGyeEF2PyphJEYxxOWgwRkbucJQQN6gGi2A6YO8i37RgW0JpUyReHIRJxLhgVoLBJBLg1CQ8Tix0zysJ3jK837QPPyWhuFpp1oodRyrDYBXIjtOkAaGvtihIhiZicLIQ46l5fX4hy0WSkb5qU6cN3e6VFrjwmTrApqmENeOM+dFwkaD4jP6D/vOK5HegNR4UsHWch+hIUzmCCU3/UAsqpxwq02wtQN7xgD6w==
+ b=ALN8HtknUraVPpZWEz8qsoVbqiTzWrHiT4eu1rsIvAoYuU6rcEQHCSSxMp7hp2KpstdCAebiySYf1wF3nUwFnNPo2XInbt+8dR5Wmo+ir5Zea9MqwImxeqMVMIjyd5+I0audTuOhyAOtPfdebyfUqlm+pjgMwGDPY0ML8i+CQ71X+sAqx+Z+XfokmCUlNh5Has8RQEsKAOxLB2PleYHt9Qou42FeIKGh4oSoA2VuKUOaMVLwSVu0ZTeE/qWPCV9EmvzlLzr6z4R8mfvpe3XBU9LWsN3LwR9UKhFvoM0h1b2+faj2wca3uBQauOnJmHM8G0Lm02rFdhG8rbYwm7feIQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5fLep/glQMTbIUkGntWjZmp/WrLFZ37OmjbrmjU7D5A=;
- b=EljJRuXD9JtLQCiTdUuuUBc+m603dwD3NxrMUEp6HrOyKRHdeY1SGbyGKCDxL8+gXcfpHcjr5F4U83ecnatAav+/s7qUaA4Gh0BhpVqb+3/nWVDPT5xczNNByMD8Q9Kep/k+L2X0wZ4OwfckGYE4ANgJ2JmAOGjGAkfrsCEfp7F/srJp6XroJCGCqWRUTmMkei/2su9e+GFSuxJXO1brVR1xZsjhpdCrCjiqCUWbNhGN4COLhIBlz34bwKAy645HK/S8XvXM7edWIhI2Pk6/t29VUczToNFEl3UCQNccM6NLjuqxH8+I6r73+DzJxwWaR//qZCxtPFMPPcXcVxhGSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=xilinx.com;dmarc=pass action=none
- header.from=xilinx.com;dkim=pass header.d=xilinx.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector1-xilinx-onmicrosoft-com;
+ bh=k5a0nbgCGii4YyS6eGeL9qKquO//93AyQ+mY231zwi0=;
+ b=Sn8Ix4NjWn5ARwojpaK3tQYoQGiGc01n7wWLZcJDz0ekrLoqnwIvPMLoNiBi2dkhP2oxU2LXytqp4jFTqTZlFsQ1gnqTvvKzY5HshijVYbzmwZ1zXVOXpo7zrNmXySJRSkv4t99DvuZUHAZ/iAZTJnTjss3A19wmIqaU4I8J4w6FPUEOuSRpjR8B7OTK7T057TMjzLoUHlcdBZdMfrmgaek4G763F8t1r253u2zmYkvfQhugs8cxoT7UJ5rTJUoHgz0KFlZKZgMtDb/k/zOWumYcwx05eYIV96m0hYdrirB+FCKml4Ua5TphJ3yJI/KeNHudEaTPBrlOagBMSgMaIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip is
+ 199.43.4.28) smtp.rcpttodomain=gmail.com
+ smtp.mailfrom=cadence.com; dmarc=fail
+ (p=none sp=none pct=100) action=none header.from=cadence.com;dkim=none
+ (message not signed);arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5fLep/glQMTbIUkGntWjZmp/WrLFZ37OmjbrmjU7D5A=;
- b=cbm8sUtrfO3kJQSvxx7222MoJNWOSFySJXe27nY7qTmPyhVzz/x9CfizvP2TAVr8TOEKlmlcdpF2BuRgJ+AwjI4Z66CLxKetZL6cndkt92OS9ROStoistSTBo2jZWVjVOQ6pRZNuC2Vxwd55F/+8vAEeqak43ewQmQMqbC/8WH8=
-Received: from DM6PR02MB4779.namprd02.prod.outlook.com (20.176.109.16) by
- DM6PR02MB6668.namprd02.prod.outlook.com (10.141.187.201) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2094.11; Wed, 17 Jul 2019 09:07:48 +0000
-Received: from DM6PR02MB4779.namprd02.prod.outlook.com
- ([fe80::936:90c8:a385:1513]) by DM6PR02MB4779.namprd02.prod.outlook.com
- ([fe80::936:90c8:a385:1513%4]) with mapi id 15.20.2073.012; Wed, 17 Jul 2019
- 09:07:48 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Subject: RE: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over
- write driver's read_page()/write_page()
-Thread-Topic: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over
- write driver's read_page()/write_page()
-Thread-Index: AQHVO5eo4+vjEMfVj0u12vHDQxXMaabM2dGAgAADsQCAAWJjoIAAMueAgAAPnnA=
-Date: Wed, 17 Jul 2019 09:07:48 +0000
-Message-ID: <DM6PR02MB47794065C8DF1E3FFAF58B54AFC90@DM6PR02MB4779.namprd02.prod.outlook.com>
-References: <20190716053051.11282-1-naga.sureshkumar.relli@xilinx.com>
- <20190716093137.3d8e8c1f@pc-375.home>	<20190716094450.122ba6e7@pc-375.home>
- <DM6PR02MB4779307E32670683AE9F60D6AFC90@DM6PR02MB4779.namprd02.prod.outlook.com>
- <20190717095525.6e2e9730@pc-375.home>
-In-Reply-To: <20190717095525.6e2e9730@pc-375.home>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=nagasure@xilinx.com; 
-x-originating-ip: [149.199.50.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 24bc5a8c-6d2c-410f-7256-08d70a963d63
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
- SRVR:DM6PR02MB6668; 
-x-ms-traffictypediagnostic: DM6PR02MB6668:
-x-ms-exchange-purlcount: 2
-x-microsoft-antispam-prvs: <DM6PR02MB66685CC260411A89CA981071AFC90@DM6PR02MB6668.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-forefront-prvs: 01018CB5B3
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(4636009)(39850400004)(396003)(366004)(346002)(136003)(376002)(13464003)(199004)(189003)(71200400001)(71190400001)(54906003)(2906002)(68736007)(14454004)(305945005)(52536014)(316002)(86362001)(76116006)(66476007)(53546011)(66946007)(66446008)(6506007)(66556008)(256004)(64756008)(486006)(14444005)(5660300002)(7696005)(76176011)(102836004)(6306002)(9686003)(55016002)(6246003)(53936002)(229853002)(6436002)(7416002)(66066001)(186003)(99286004)(4326008)(26005)(6916009)(8676002)(7736002)(11346002)(446003)(476003)(74316002)(81156014)(478600001)(33656002)(966005)(25786009)(6116002)(81166006)(3846002)(8936002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR02MB6668;
- H:DM6PR02MB4779.namprd02.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: xilinx.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: JbMxJG5q9ijpCZrZpETUxJzG0FK1tZVZcEesr5eDaP3dhASApbloQSY9Vs6XDhiuhxiLb6GVEMiMJd/wKO47kL/SdggENTJCMNfb2hdn6aKhrOG2Xnuxd1L4IhgGKGAgCt1dEobxR3wC1x0NGJqgjUQM0fUOuCzU9ChveDfHlM3LvTlmAsIytq/VAgRxZ4Osarhre83Rau3cwgkG53WC0MIWuVbLh46xLqwdCynADcc/+0YRhWTMGslZP+u7Iv/xd07JjVc+zxqafYeF5tTifvQYduf7j1Ok96GBppFpZnPesJ29IfXoW1DlOyoRyfon9zpKkZUtZkXIo1mkFpW6OhOml0eirsYkKzR7ikNDeqols1qNUVpSgQn02eG5wjiN+TcaxjdOocGXV475j4HaoadahbIn2T5O4j+7isq3jsY=
+ bh=k5a0nbgCGii4YyS6eGeL9qKquO//93AyQ+mY231zwi0=;
+ b=gYbn6SXq4DCpvBdWc+9vvACuyuUnRNED7E7kdtA/w9M/dXhTEpgLfcv3OQ9DDXW4P0iv0302UhKVtXa40yS/YWJ3NzDtKucSVVEjXXTA3cY9jvz3NNXsJCMWHPkPjMpl1do6V/bdHWlM58meJpLugabxDjvn7OcDlP/Puh3Gqjk=
+Received: from DM5PR07CA0055.namprd07.prod.outlook.com (2603:10b6:4:ad::20) by
+ BN6PR07MB2994.namprd07.prod.outlook.com (2603:10b6:404:a7::12) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2073.14; Wed, 17 Jul 2019 10:58:45 +0000
+Received: from DM3NAM05FT046.eop-nam05.prod.protection.outlook.com
+ (2a01:111:f400:7e51::209) by DM5PR07CA0055.outlook.office365.com
+ (2603:10b6:4:ad::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2073.14 via Frontend
+ Transport; Wed, 17 Jul 2019 10:58:44 +0000
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ cadence.com discourages use of 199.43.4.28 as permitted sender)
+Received: from rmmaillnx1.cadence.com (199.43.4.28) by
+ DM3NAM05FT046.mail.protection.outlook.com (10.152.98.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.2052.8 via Frontend Transport; Wed, 17 Jul 2019 10:58:43 +0000
+Received: from mailsj6.global.cadence.com (mailsj6.cadence.com
+ [158.140.32.112])
+ by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id x6HAwa2j006017
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+ Wed, 17 Jul 2019 06:58:39 -0400
+X-CrossPremisesHeadersFilteredBySendConnector: mailsj6.global.cadence.com
+Received: from global.cadence.com (158.140.32.37) by
+ mailsj6.global.cadence.com (158.140.32.112) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 17 Jul 2019 03:58:33 -0700
+Date: Wed, 17 Jul 2019 11:58:27 +0100
+From: Piotr Sroka <piotrs@cadence.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [v3 2/2] dt-bindings: nand: Add Cadence NAND controller driver
+Message-ID: <20190717105825.GA11796@global.cadence.com>
+References: <20190614150956.31244-1-piotrs@cadence.com>
+ <20190614151301.5371-1-piotrs@cadence.com>
+ <20190709144853.GA23699@bogus>
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24bc5a8c-6d2c-410f-7256-08d70a963d63
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2019 09:07:48.5895 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nagasure@xilinx.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6668
+Content-Disposition: inline
+In-Reply-To: <20190709144853.GA23699@bogus>
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Originating-IP: [158.140.32.37]
+X-ClientProxiedBy: mailsj7.global.cadence.com (158.140.32.114) To
+ mailsj6.global.cadence.com (158.140.32.112)
+X-OrganizationHeadersPreserved: mailsj6.global.cadence.com
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:199.43.4.28; IPV:CAL; SCL:-1; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(4636009)(39860400002)(136003)(346002)(376002)(396003)(2980300002)(36092001)(199004)(189003)(426003)(54906003)(23676004)(55016002)(11346002)(126002)(58126008)(336012)(2486003)(3846002)(476003)(67846002)(956004)(16586007)(53416004)(26005)(6116002)(186003)(76176011)(6666004)(386003)(316002)(16526019)(81156014)(446003)(70206006)(7696005)(1076003)(76130400001)(8936002)(356004)(6286002)(53936002)(47776003)(68736007)(7416002)(81166006)(486006)(6246003)(50466002)(478600001)(66066001)(4326008)(33656002)(26826003)(69596002)(2906002)(305945005)(5660300002)(86362001)(6916009)(229853002)(8676002)(70586007)(7736002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR07MB2994; H:rmmaillnx1.cadence.com; FPR:;
+ SPF:SoftFail; LANG:en; PTR:InfoDomainNonexistent; A:1; MX:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3f15a167-4e23-4599-0855-08d70aa5bc96
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
+ SRVR:BN6PR07MB2994; 
+X-MS-TrafficTypeDiagnostic: BN6PR07MB2994:
+X-Microsoft-Antispam-PRVS: <BN6PR07MB2994D4D34A81799A6817A9CFDDC90@BN6PR07MB2994.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Forefront-PRVS: 01018CB5B3
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: enLAcxIdBvmK3OmsZO92prmJXwNN/iqzszJY1erJWO79sXaAr1VNUdEiYyDPAI8FSPWuY0Md5u/jugx3aDwUG+X9YkG/CtFo3geIiNunJKQQvdIInwzTKnQyxQrNOS1sccks4RjUd6B82pbO/Qp6Wd2Nl+DE71qjvd1WwVw0mw9ySB3APLAbJ2vsPbC9MS9yTyQjWETsZIr/neH28Sdv6/OCKWXBke942coOOZAjse082FAsP4rlIPQAdupoX9T9R5eFmCnB9KOPF9H1eWmOMcfnj8S0aGO07vQHsJxJ1Q4qfE+uN/WmdopXEVniXYafinUD9JA14ObFRs2W7uDDzPNVRPGaGM/ehiazcn5gMxs+5V8ItfdJW4i0kSNNRHbEd67O3kykDnJslzxfbTOUSZgGAdeOqwXo12Y3cAaPXjs=
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2019 10:58:43.9760 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f15a167-4e23-4599-0855-08d70aa5bc96
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[199.43.4.28];
+ Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR07MB2994
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf.smktg.jp
+ include:_spf.salesforce.com
+ include:mktomail.com include:spf-0014ca01.pphosted.com
+ include:spf.protection.outlook.com include:auth.msgapp.com
+ include:spf.mandrillapp.com ~all
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2019-07-17_04:, , signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
+ score=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
+ spamscore=0 clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907170134
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190717_020751_125676_4A3E43CA 
-X-CRM114-Status: GOOD (  34.60  )
+X-CRM114-CacheID: sfid-20190717_035912_235136_44906AE2 
+X-CRM114-Status: GOOD (  17.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,163 +170,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
- "vigneshr@ti.com" <vigneshr@ti.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "richard@nod.at" <richard@nod.at>, Srikanth Vemula <svemula@xilinx.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- Michal Simek <michals@xilinx.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Boris Brezillon <bbrezillon@kernel.org>, Richard
+ Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ BrianNorris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+The 07/09/2019 08:48, Rob Herring wrote:
+>EXTERNAL MAIL
+>
+>
+>On Fri, Jun 14, 2019 at 04:13:01PM +0100, Piotr Sroka wrote:
+>> Signed-off-by: Piotr Sroka <piotrs@cadence.com>
+>> ---
+>> Changes for v3:
+>> - add unit suffix for board_delay
+>> - move child description to proper place
+>> - remove prefix cadence_ for reg and sdma fields
+>> Changes for v2:
+>> - remove chip dependends parameters from dts bindings
+>> - add names for register ranges in dts bindings
+>> - add generic bindings to describe NAND chip representation
+>> ---
+>>  .../bindings/mtd/cadence-nand-controller.txt       | 51 ++++++++++++++++++++++
+>>  1 file changed, 51 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+>> new file mode 100644
+>> index 000000000000..e485b87075bd
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+>> @@ -0,0 +1,51 @@
+>> +* Cadence NAND controller
+>> +
+>> +Required properties:
+>> +  - compatible : "cdns,hpnfc"
+>
+>Only 1 version of h/w features and bugs?
+>
+At the moment, yes.
+
+>'hp-nfc' would be a bit more readable IMO.
+>
+I will replace it.
+
+>> +  - reg : Contains two entries, each of which is a tuple consisting of a
+>> +	  physical address and length. The first entry is the address and
+>> +	  length of the controller register set. The second entry is the
+>> +	  address and length of the Slave DMA data port.
+>> +  - reg-names: should contain "reg" and "sdma"
+>> +  - interrupts : The interrupt number.
+>> +  - clocks: phandle of the controller core clock (nf_clk).
+>> +
+>> +Optional properties:
+>> +  - dmas: shall reference DMA channel associated to the NAND controller
+>> +  - cdns,board-delay_ps : Estimated Board delay. The value includes the total
+>
+>s/_/-/
+>
+>> +    round trip delay for the signals and is used for deciding on values
+>> +    associated with data read capture. The example formula for SDR mode is
+>> +    the following:
+>> +    board_delay = RE#PAD_delay + PCB trace to device + PCB trace from device
+>> +    + DQ PAD delay
+>> +
+>> +Children nodes represent the available NAND chips.
+>
+>Child nodes...
+>
+>> +
+>> +Required properties of NAND chips:
+>> +  - reg: shall contain the native Chip Select ids from 0 to max supported by
+>> +    the cadence nand flash controller
+>> +
+>> +
+>> +See Documentation/devicetree/bindings/mtd/nand.txt for more details on
+>> +generic bindings.
+>> +
+>> +Example:
+>> +
+>> +nand_controller: nand-controller @60000000 {
+>
+>remove space                       ^
+>
+>> +
+>> +	  compatible = "cdns,hpnfc";
+>> +	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
+>> +	  reg-names = "reg", "sdma";
+>> +	  clocks = <&nf_clk>;
+>> +	  cdns,board-delay_ps = <4830>;
+>> +	  interrupts = <2 0>;
+>> +	  nand@0 {
+>> +	      reg = <0>;
+>> +	      label = "nand-1";
+>> +	  };
+>> +	  nand@1 {
+>> +	      reg = <1>;
+>> +	      label = "nand-2";
+>> +	  };
+>> +
+>> +};
+>> --
+>> 2.15.0
+>>
+Thanks
+Piotr
+  
 
 
-> -----Original Message-----
-> From: Boris Brezillon <boris.brezillon@collabora.com>
-> Sent: Wednesday, July 17, 2019 1:25 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; bbrezillon@kernel.org; richard@nod.at;
-> dwmw2@infradead.org; computersforpeace@gmail.com; marek.vasut@gmail.com;
-> vigneshr@ti.com; yamada.masahiro@socionext.com; linux-mtd@lists.infradead.org; linux-
-> kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>; Srikanth Vemula
-> <svemula@xilinx.com>; nagasuresh12@gmail.com
-> Subject: Re: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over write
-> driver's read_page()/write_page()
-> 
-> On Wed, 17 Jul 2019 05:33:35 +0000
-> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
-> 
-> > Hi Boris,
-> >
-> > > -----Original Message-----
-> > > From: Boris Brezillon <boris.brezillon@collabora.com>
-> > > Sent: Tuesday, July 16, 2019 1:15 PM
-> > > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> > > Cc: miquel.raynal@bootlin.com; bbrezillon@kernel.org;
-> > > richard@nod.at; dwmw2@infradead.org; computersforpeace@gmail.com;
-> > > marek.vasut@gmail.com; vigneshr@ti.com;
-> > > yamada.masahiro@socionext.com; linux-mtd@lists.infradead.org; linux-
-> > > kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>; Srikanth
-> > > Vemula <svemula@xilinx.com>; nagasuresh12@gmail.com
-> > > Subject: Re: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not
-> > > over write driver's read_page()/write_page()
-> > >
-> > > On Tue, 16 Jul 2019 09:31:37 +0200
-> > > Boris Brezillon <boris.brezillon@collabora.com> wrote:
-> > >
-> > > > On Mon, 15 Jul 2019 23:30:51 -0600 Naga Sureshkumar Relli
-> > > > <naga.sureshkumar.relli@xilinx.com> wrote:
-> > > >
-> > > > > Add check before assigning chip->ecc.read_page() and
-> > > > > chip->ecc.write_page()
-> > > > >
-> > > > > Signed-off-by: Naga Sureshkumar Relli
-> > > > > <naga.sureshkumar.relli@xilinx.com>
-> > > > > ---
-> > > > > Changes in v18
-> > > > >  - None
-> > > > > ---
-> > > > >  drivers/mtd/nand/raw/nand_micron.c | 7 +++++--
-> > > > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/mtd/nand/raw/nand_micron.c
-> > > > > b/drivers/mtd/nand/raw/nand_micron.c
-> > > > > index cbd4f09ac178..565f2696c747 100644
-> > > > > --- a/drivers/mtd/nand/raw/nand_micron.c
-> > > > > +++ b/drivers/mtd/nand/raw/nand_micron.c
-> > > > > @@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
-> > > > >  		chip->ecc.size = 512;
-> > > > >  		chip->ecc.strength = chip->base.eccreq.strength;
-> > > > >  		chip->ecc.algo = NAND_ECC_BCH;
-> > > > > -		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-> > > > > -		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-> > > > > +		if (!chip->ecc.read_page)
-> > > > > +			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-> > > > > +
-> > > > > +		if (!chip->ecc.write_page)
-> > > > > +			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-> > > > >
-> > > >
-> > > > Seriously?! I told you this was inappropriate and you keep sending
-> > > > this patch. So let's make it clear:
-> > > >
-> > > > Nacked-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > >
-> > > > Fix your controller driver instead of adding hacks to the Micron logic!
-> > >
-> > > Not even going to review the other patch: if you have to do that,
-> > > that means the driver is broken. On a side note, this patch series
-> > > is still not threaded as it should be and it's a v18 for a damn NAND
-> > > controller driver! Sorry but you reached the limit of my patience. Please find someone to
-> help you with that task.
-> > My intention is not to resend this 1/2 again. Sorry for that.
-> > We already had some discussion on [v17 1/2],
-> > https://lkml.org/lkml/2019/6/26/430
-> > And there we didn't conclude that raw_read()/writes().
-> 
-> Yes, looks like I never replied to that one, but I think my previous explanation were clear
-> enough to not argue on that aspect any longer/
-You replied on that. But I thought that you have some more inputs to give.
-Ok understood thanks.
-> 
-> > So I thought that, will send updated driver along with this patch,
-> > then will get more information about The issue on the latest driver review.
-> 
-> More on that topic. I don't think you ever tested on-die ECC on a Micron NAND, otherwise
-> you would have noticed that your solution completely bypasses the on-die ECC logic (and this
-> will clearly break existing on-die ECC users). See, that's what I'm complaining about, Looks
-> like you don't really understand what you're doing.
-We tested it with pl353_read/write_page_raw(). Hence no information of bit flips.
-As I said, will fix the driver to use micron _read_page_ondie().
-> 
-> > There is nothing like keep on sending this patch, As you people are
-> > experts in the driver review, if this patch is a hack, then we will definitely fix that in
-> controller driver. I will find a way to do that.
-> >
-> > But in this flow of patch sending, if the work I did hurts you, then I am really sorry for that.
-> 
-> I'm not offended, just tired going through the same driver over and over again, reporting
-> things that are wrong/inappropriate to then realize you only addressed of a tiny portion of it in
-> the following version. My last reviews were rather incomplete because of that, and now I'm
-> giving up.
-> 
-> > Will fix this issue in the controller driver and will send the updated one.
-> 
-> How? You say you'll fix the issue but I'm not even sure you understand what the issue is?
-> Clearly, the patch you've posted doesn't fix anything, it's just papering over the fact that your
-> controller driver is not supporting raw accesses (or at least, not supporting it properly).
-> 
-> Have you even looked at the datasheet you pointed to in patch 2 [1]?
-> Just went through it, and found a field that's supposed to control the ECC engine activation:
-> ecc_memcfg.ecc_mode. I don't see anything changing that field in your code, so I guess raw
-> accesses are actually not really happening with the ECC engine disabled...
-It is happening, in the drivers ecc_init(), if the ecc mode is ON_DIE, then 
-We are calling pl353_smc_set_ecc_mode(PL353_SMC_ECCMODE_BYPASS).
-This will internally disables the HW-ECC.
-> 
-> > Could you please let me know if this is OK.
-> 
-> You can send a new version, I'm just saying I won't spend time reviewing it.
-> 
-> >
-> > I will send the series as threaded one from next time onwards.
-> >
-> > Thanks,
-> > pcieNaga Sureshkumar Relli
-> 
-> [1]http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/DDI0380G_smc_pl350_seri
-> es_r2p1_trm.pdf
-
-Regards,
-Naga Sureshkumar Relli
 
 ______________________________________________________
 Linux MTD discussion mailing list
