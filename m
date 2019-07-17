@@ -2,67 +2,154 @@ Return-Path: <SRS0=DY/e=VO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1246C76186
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 08:22:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CA71C76186
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 08:48:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2B1720818
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 08:22:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4F1D2217F4
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 08:48:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="cYNSfh91"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2B1720818
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dELykjkW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="xFZwS0Bb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F1D2217F4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xmPDX0YzLZu8ohHTrKgvX03vpoX8NUYBJLRwy6rNQ8A=; b=cYNSfh91Nym6YV
-	NwmVnkra4EdcER8mc2FfPhHKyvc53/2GgeOAOMs31nHDPJahcZzQr6SHInpySINxM+XDfajabdbfz
-	iEhIvRs0zhM1MA9ocLr5FI1aW0pI9YeHQf5Zs0ff9OXhfNbzl3csNfuFfISMnuVMCrEbjFrVROLKj
-	aVvfVV4mH0ptes0V0mIOIM6nBVYU+ekRtcGYEkuf7lsw1FCLYxrgKe2LVmLRoRarZctXl9a3/IFcM
-	naCWwfLNnQKK9PIUW7L8ugzQ0tHmT5c6uUJU0Y/hyGVa6JarpeUenckcW0+Es0r3us9avWAoP/XAf
-	q9+muCftFh0U4/WgwKvw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PF6BmdrUrDE5V3oGvLFOztsaXXExFRtkxUOKmgZZPpc=; b=dELykjkWGiyyjU
+	jiZd1CMwwaGvvOGboNh8eDdvAwRCMX4IFbUz6942rQXp3lBp5buSFlQfEJgrGY2bJyexyAAjyVm2P
+	LpSWYGlCLu8FrzLeXp9lCMSf4YteiEYTkGWgoUdFuv4O78rtdDAv+qCMwrNtrX/aK17D5XNNaN+21
+	MLZOs3vIP0+0Kr1a0hH4xFe7nnuDOGxXvqFmrvy8tsHqogcEjyQ0bZoeunRdY7wfxjtgEu9i1ssh4
+	QxZfZ6mDhXujxu9bN7I89l9nzYW53JsEa3HFI/HinF9TfbYJID20N7tNuDWBVJZb0ovkk2Z4Qt77D
+	vh+AfK6xF9ABi6ebmM3A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hnfCO-0007vW-81; Wed, 17 Jul 2019 08:22:04 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1hnfbg-0004zf-29; Wed, 17 Jul 2019 08:48:12 +0000
+Received: from esa3.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hnfCK-0007ui-OF
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2019 08:22:02 +0000
-Received: from pc-375.home
- (2a01cb0c88d94a005820d607da339aae.ipv6.abo.wanadoo.fr
- [IPv6:2a01:cb0c:88d9:4a00:5820:d607:da33:9aae])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D0D4828AA38;
- Wed, 17 Jul 2019 09:21:58 +0100 (BST)
-Date: Wed, 17 Jul 2019 10:21:56 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Subject: Re: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over
- write driver's read_page()/write_page()
-Message-ID: <20190717102156.68aa86f7@pc-375.home>
-In-Reply-To: <20190717095525.6e2e9730@pc-375.home>
-References: <20190716053051.11282-1-naga.sureshkumar.relli@xilinx.com>
- <20190716093137.3d8e8c1f@pc-375.home>
- <20190716094450.122ba6e7@pc-375.home>
- <DM6PR02MB4779307E32670683AE9F60D6AFC90@DM6PR02MB4779.namprd02.prod.outlook.com>
- <20190717095525.6e2e9730@pc-375.home>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ id 1hnfba-0004xf-9i
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2019 08:48:10 +0000
+Received-SPF: Pass (esa3.microchip.iphmx.com: domain of
+ Tudor.Ambarus@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="Tudor.Ambarus@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com a:mx1.microchip.iphmx.com
+ a:mx2.microchip.iphmx.com include:servers.mcsv.net
+ include:mktomail.com include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa3.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
+ envelope-from="Tudor.Ambarus@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa3.microchip.iphmx.com;
+ spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: QzGdowYLA48+27nPZvfRV38mTblXx42mexgA5wRTiFfWmC22XBYDNFj+kEYC2cK9q6IcaM21TV
+ ur8P+iwkBb1dg/NctKT/9/Ntvko9jPnI4MU7GxdRdXXdr106ivVxHADw9RAmYdFXcQ1BHK63Uj
+ 2faB5aXbICwrqvo1zcSi9NTeUOa7k268vJQOymqTVYwG2z/xNcCAexPGrSk8iY6BdoFLlH8ymI
+ h2h+IUuU7xtq7MaFPopf5TP8iIB6Mzkxzit1CphoYnMpf+KDz4Os5j3K0AyWMI27898+oJtWgv
+ cjg=
+X-IronPort-AV: E=Sophos;i="5.64,273,1559545200"; d="scan'208";a="41633726"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 17 Jul 2019 01:47:59 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.87.151) by
+ chn-vm-ex01.mchp-main.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 17 Jul 2019 01:47:58 -0700
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 17 Jul 2019 01:47:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CiPmWpZYKZzUYrqH+owOXtQr5UDL0zetXHLDHMDe+kpErRVhwoEucYllgLp+M4R10Vy9ussxy+0QCwX76VYZ+oJWs1hpqghH1sUfuYshdm7zu3DYWbU1kQ/NDL1HQMREOjCa40P9A4kffmH0O4q7h3aJf0wiuJv992CjfJnQkB6mZtyg9raPaFGuQMO/6sdccirOdVv8jWOonH7z7NPdKw0Hee6fJWlQJyTek4CSBJKMo8epc2+Hw99mBecnrq3L/+OtBwoN6flI7KhNyaLpS8e2j295TqNN4cJiwc7h4HYMLjYCxDVXWoHxc9/byBh9nDeJNdTneJV/vvmpQbJRPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Xu84YWtk/lS9JfP69/HC4gSO8nxDAxKE2idXbpKK3M=;
+ b=KHYqzAO/IfcP5PJi8jSQfqZfZMsyDgUTDlwj1mEUHc9X+10Y8nvr+sHM77oRQzAHZo8mEPKNZHWk7ufzs2n11+WO5oYWhCWm+L0Ws0lx29FqKzXonYDxThwa9gftYHMraGDb6ooj3liwOSp3uZjOb731WCycoiqLIZ7EwNwLan5l3s5wIokXe5idVmHGQpRmTwsUB6XblUJVYFVA20ctWqO1CoX4L7BVwEI3N+nSYgfmTUnT1xaTk7nWyNZP4Ce6ML2I5wdIXzamZgJUs7NhtvBjvP7JjM1lmatjrpIlxl9rGw8OHhAXxESUzb4E9hO8nwnUlJf6SlGwGwudXHhszQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=microchip.com;dmarc=pass action=none
+ header.from=microchip.com;dkim=pass header.d=microchip.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector1-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Xu84YWtk/lS9JfP69/HC4gSO8nxDAxKE2idXbpKK3M=;
+ b=xFZwS0BbvT3f3dOcqujCWiqJK1qOQJ6ZOuLVtHUmzJ+QkItYGmVeAVr+nWXgKHc6snl124xECvqqSYF/cK51egQKuQI3pY+NnOYIjxZBWHoaXHt7plKIzdf+do4L1Fjaue/ukFLpUgBke4mBKpGURzzgQtGdGAADd+p2QQDuLdc=
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
+ BN6SPR00MB254.namprd11.prod.outlook.com (10.173.236.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2073.14; Wed, 17 Jul 2019 08:47:57 +0000
+Received: from BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::6515:912a:d113:5102]) by BN6PR11MB1842.namprd11.prod.outlook.com
+ ([fe80::6515:912a:d113:5102%12]) with mapi id 15.20.2073.012; Wed, 17 Jul
+ 2019 08:47:57 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <vigneshr@ti.com>, <marek.vasut@gmail.com>
+Subject: [PATCH 0/5] mtd: spi-nor: write protection at power-up
+Thread-Topic: [PATCH 0/5] mtd: spi-nor: write protection at power-up
+Thread-Index: AQHVPHxUB6tYOD3eaEWmYluw6fwWCA==
+Date: Wed, 17 Jul 2019 08:47:56 +0000
+Message-ID: <20190717084745.19322-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: VI1P195CA0085.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:802:59::38) To BN6PR11MB1842.namprd11.prod.outlook.com
+ (2603:10b6:404:101::18)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.9.5
+x-originating-ip: [94.177.32.154]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0806800c-877d-4cb4-08f9-08d70a9376d4
+x-microsoft-antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);
+ SRVR:BN6SPR00MB254; 
+x-ms-traffictypediagnostic: BN6SPR00MB254:
+x-microsoft-antispam-prvs: <BN6SPR00MB254CB352AC9F444228CEC92F0C90@BN6SPR00MB254.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 01018CB5B3
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(396003)(136003)(39860400002)(376002)(366004)(346002)(189003)(199004)(66066001)(102836004)(186003)(4326008)(99286004)(52116002)(2616005)(486006)(386003)(6436002)(256004)(26005)(476003)(86362001)(53936002)(107886003)(6506007)(6486002)(66446008)(14454004)(14444005)(6512007)(71190400001)(64756008)(71200400001)(25786009)(81156014)(110136005)(2501003)(478600001)(305945005)(7736002)(54906003)(1076003)(2906002)(5660300002)(36756003)(66476007)(81166006)(66556008)(6116002)(8676002)(50226002)(8936002)(316002)(3846002)(66946007)(68736007);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN6SPR00MB254;
+ H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; MX:1; A:1; 
+received-spf: None (protection.outlook.com: microchip.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: mCfwQ3Uhhm8K7Uox/0erWQQFjhkMefzpXL6y0FhI20caKGsejUMP0CSbnh84Dhnv1NF2+MiLt3J3oegq1AOgCr0ztLSmSR5M8PJ+723BfQSw8kMWPe3oVLd6UWxMSe7vxbhBBMO5QBJCe9dCa+XHg+EtkNSzWufxOx7Q1cuI6PrQROYk7NlElox6/GbgPyqhtxVO93NcGKe0N5cIN1CnGNnE4Mf/FTZss0ke9cvJ0tSX38F2hF9GfE3Lx9CytfVvpkrkozXxmyUxnrJTtBO4LECFAD3lSwarQr9liiQpMPbhikrkPQM96WeGEvSPRAN6aTaidrzXi7G663PifbvD+t84xU9gyNbtdq7S7JjNK5Q6hfc3/JxFum/KO/HZkdNyt19GHxgwF57bUpfsYjPxluHbUVBGI+B0qp/J5iWd5Yo=
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0806800c-877d-4cb4-08f9-08d70a9376d4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2019 08:47:56.9200 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6SPR00MB254
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190717_012201_055363_11355945 
-X-CRM114-Status: GOOD (  37.03  )
+X-CRM114-CacheID: sfid-20190717_014806_455855_3EEDB4F9 
+X-CRM114-Status: UNSURE (   5.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,138 +161,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>,
- "vigneshr@ti.com" <vigneshr@ti.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "richard@nod.at" <richard@nod.at>, Srikanth Vemula <svemula@xilinx.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- Michal Simek <michals@xilinx.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: Tudor.Ambarus@microchip.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ Nicolas.Ferre@microchip.com, boris.brezillon@collabora.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 17 Jul 2019 09:55:25 +0200
-Boris Brezillon <boris.brezillon@collabora.com> wrote:
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-> On Wed, 17 Jul 2019 05:33:35 +0000
-> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
-> 
-> > Hi Boris,
-> >   
-> > > -----Original Message-----
-> > > From: Boris Brezillon <boris.brezillon@collabora.com>
-> > > Sent: Tuesday, July 16, 2019 1:15 PM
-> > > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> > > Cc: miquel.raynal@bootlin.com; bbrezillon@kernel.org; richard@nod.at;
-> > > dwmw2@infradead.org; computersforpeace@gmail.com; marek.vasut@gmail.com;
-> > > vigneshr@ti.com; yamada.masahiro@socionext.com; linux-mtd@lists.infradead.org; linux-
-> > > kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>; Srikanth Vemula
-> > > <svemula@xilinx.com>; nagasuresh12@gmail.com
-> > > Subject: Re: [LINUX PATCH v18 1/2] mtd: rawnand: nand_micron: Do not over write
-> > > driver's read_page()/write_page()
-> > > 
-> > > On Tue, 16 Jul 2019 09:31:37 +0200
-> > > Boris Brezillon <boris.brezillon@collabora.com> wrote:
-> > >     
-> > > > On Mon, 15 Jul 2019 23:30:51 -0600
-> > > > Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
-> > > >    
-> > > > > Add check before assigning chip->ecc.read_page() and
-> > > > > chip->ecc.write_page()
-> > > > >
-> > > > > Signed-off-by: Naga Sureshkumar Relli
-> > > > > <naga.sureshkumar.relli@xilinx.com>
-> > > > > ---
-> > > > > Changes in v18
-> > > > >  - None
-> > > > > ---
-> > > > >  drivers/mtd/nand/raw/nand_micron.c | 7 +++++--
-> > > > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/mtd/nand/raw/nand_micron.c
-> > > > > b/drivers/mtd/nand/raw/nand_micron.c
-> > > > > index cbd4f09ac178..565f2696c747 100644
-> > > > > --- a/drivers/mtd/nand/raw/nand_micron.c
-> > > > > +++ b/drivers/mtd/nand/raw/nand_micron.c
-> > > > > @@ -500,8 +500,11 @@ static int micron_nand_init(struct nand_chip *chip)
-> > > > >  		chip->ecc.size = 512;
-> > > > >  		chip->ecc.strength = chip->base.eccreq.strength;
-> > > > >  		chip->ecc.algo = NAND_ECC_BCH;
-> > > > > -		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-> > > > > -		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-> > > > > +		if (!chip->ecc.read_page)
-> > > > > +			chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
-> > > > > +
-> > > > > +		if (!chip->ecc.write_page)
-> > > > > +			chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
-> > > > >    
-> > > >
-> > > > Seriously?! I told you this was inappropriate and you keep sending
-> > > > this patch. So let's make it clear:
-> > > >
-> > > > Nacked-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > >
-> > > > Fix your controller driver instead of adding hacks to the Micron logic!    
-> > > 
-> > > Not even going to review the other patch: if you have to do that, that means the driver is
-> > > broken. On a side note, this patch series is still not threaded as it should be and it's a v18 for a
-> > > damn NAND controller driver! Sorry but you reached the limit of my patience. Please find
-> > > someone to help you with that task.    
-> > My intention is not to resend this 1/2 again. Sorry for that.
-> > We already had some discussion on [v17 1/2], https://lkml.org/lkml/2019/6/26/430
-> > And there we didn't conclude that raw_read()/writes().  
-> 
-> Yes, looks like I never replied to that one, but I think my previous
-> explanation were clear enough to not argue on that aspect any longer/
-> 
-> > So I thought that, will send updated driver along with this patch, then will get more information about
-> > The issue on the latest driver review.  
-> 
-> More on that topic. I don't think you ever tested on-die ECC on a
-> Micron NAND, otherwise you would have noticed that your solution
-> completely bypasses the on-die ECC logic (and this will clearly break
-> existing on-die ECC users). See, that's what I'm complaining about,
-> Looks like you don't really understand what you're doing.
-> 
-> > There is nothing like keep on sending this patch, As you people are experts in the driver review, 
-> > if this patch is a hack, then we will definitely fix that in controller driver. I will find a way to do that.
-> > 
-> > But in this flow of patch sending, if the work I did hurts you, then I am really sorry for that.  
-> 
-> I'm not offended, just tired going through the same driver over and
-> over again, reporting things that are wrong/inappropriate to then
-> realize you only addressed of a tiny portion of it in the following
-> version. My last reviews were rather incomplete because of that, and
-> now I'm giving up.
-> 
-> > Will fix this issue in the controller driver and will send the updated one.  
-> 
-> How? You say you'll fix the issue but I'm not even sure you understand
-> what the issue is? Clearly, the patch you've posted doesn't fix
-> anything, it's just papering over the fact that your controller driver
-> is not supporting raw accesses (or at least, not supporting it
-> properly).
-> 
-> Have you even looked at the datasheet you pointed to in patch 2 [1]?
-> Just went through it, and found a field that's supposed to control the
-> ECC engine activation: ecc_memcfg.ecc_mode. I don't see anything
-> changing that field in your code, so I guess raw accesses are actually
-> not really happening with the ECC engine disabled... 
+There is no functional change intended for the first 2 patches.
 
-Looks like I was wrong about that part, you seem to call
-pl353_smc_set_ecc_mode(), just not in the right place (this should be
-done in the read/write_page_raw()).
+Patch 3 adds support for the Global Block Unlock command: a single
+command cycle that unlocks the entire memory array.
 
-Also noticed the ecc_memcfg.ecc_extra_block field. Have you tried
-setting it to 0 for your raw accesses to get rid of the extra
-PL353_NAND_LAST_TRANSFER_LENGTH transfer?
+Patch 4 unlocks the global block protection on sst26vf064b. This is
+identical with what other nor flashes are doing by clearing the
+block protection bits from the status register: disable the write
+protection after a power-on reset cycle.
+
+Patch 5 adds a Kconfig option to disable the write protection at
+power-up. This permits users to choose if they want the write
+protection at power-up enabled or not. Backward compatibility imposes
+to disable the write protection at power-up, so the Kconfig option is
+selected by default.
+
+Tudor Ambarus (5):
+  mtd: spi-nor: fix description for int (*flash_is_locked)()
+  mtd: spi-nor: group the code about the write protection at power-up
+  mtd: spi-nor: add Global Block Unlock support
+  mtd: spi-nor: unlock global block protection on sst26vf064b
+  mtd: spi-nor: add Kconfig option to disable write protection at
+    power-up
+
+ drivers/mtd/spi-nor/Kconfig   |  8 ++++++
+ drivers/mtd/spi-nor/spi-nor.c | 66 ++++++++++++++++++++++++++++++++-----------
+ include/linux/mtd/spi-nor.h   |  9 +++---
+ 3 files changed, 62 insertions(+), 21 deletions(-)
+
+-- 
+2.9.5
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
