@@ -1,94 +1,71 @@
-Return-Path: <SRS0=DY/e=VO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=pV2g=VP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB085C76186
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 11:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29BC2C7618F
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2019 01:01:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A086020880
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2019 11:32:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2D8021849
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2019 01:01:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SCp2BVKQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A086020880
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sigma-star.at
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ACRm97sq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2D8021849
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=SCp2BVKQCR2azxcHQ8e0p22qR1
-	crNjSDYm5aqKGRRJF9u2I0PHeb1mVXSfeOW3a9UGHtj6YbJjBURV+vzwAhK84rGNFXiCLE+aXe2Wp
-	Hegbs29/Q7SPOu6DjZ987mQKxrj5b8UQT5AKe44YfAWlavig3sQ6aTaiMWdXH1RM/1p/DwQ/NbUVC
-	Nw+0Wj9Mmc9qP8305x6wkD0EqbrmtIDu0LCB5ifbKuly9MmR1YX0eOLc93cTdf+eqDRjvLmFkR2+c
-	cVLN1QbmK4eYb2oWF1zexrDpUduZO9p9uddIG2dCmOtRibDj9hSZDQq0zlw2P4xOQ/lW50/mat/FU
-	56ayvEuQ==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7KxoQkIzeiNokCwpcNQENU+zVzRMVqB0Q4n1ASUNAwI=; b=ACRm97sqpY4yTB
+	Vi1PDGDlj/OJ899Djm2eNLQrCRiYcp1hdHXSkGsEJRFRXfiljuUorVH298GqtxCDGHRuqNOVMox0N
+	sXjohgjGwVjLZehlVm2dNtcCtWdq7Z+Je3NxQHQJgqEcsbVOdmOxPp5Tlof7Nu5wGuUkfRVDRR1Zf
+	Nmne5oaKfuPqz4hsEY2F9HlfQvKwABLRgYWm4pL78T14e7B0UHHjnlM+3PGbz4ZCx8P3FwGc+dAxz
+	PEkMzmM1jm8s5oz+mpKieQaOQNMJoMY+/G6BVfHdItb4nPnraoT1v55FYu4MEU5gnZdqsrfSjjg0s
+	0BUnjLneeM+3uOMXsDaw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hniAj-00051b-Gn; Wed, 17 Jul 2019 11:32:33 +0000
-Received: from lilium.sigma-star.at ([109.75.188.150])
+	id 1hnums-00021v-2h; Thu, 18 Jul 2019 01:00:46 +0000
+Received: from twhmllg4.macronix.com ([122.147.135.202])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hniAg-00050Y-0q
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2019 11:32:31 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id A6829181821E0;
- Wed, 17 Jul 2019 13:32:26 +0200 (CEST)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id fmbC5Ud5JYxH; Wed, 17 Jul 2019 13:32:26 +0200 (CEST)
-Received: from lilium.sigma-star.at ([127.0.0.1])
- by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 8tfzxsLKsYLA; Wed, 17 Jul 2019 13:32:25 +0200 (CEST)
-Subject: Re: [PATCH mtd-utils] mkfs.ubifs: fix compilation without ZSTD
-To: Martin Kaiser <martin@kaiser.cx>, linux-mtd@lists.infradead.org
-References: <20190715133858.18723-1-martin@kaiser.cx>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Openpgp: preference=signencrypt
-Autocrypt: addr=david.oberhollenzer@sigma-star.at; prefer-encrypt=mutual;
- keydata=
- mQENBFZyf0YBCADHyKhABhxthCC9n48pvsuk5p3IEdYXMs8Apenh1N/Z4cViAz/d/nSCZ+FG
- FX/PSubEzq8AilZLejchAltaORCvA1Y6FgTlpcdJ6gHDfStDbJL/vk5N8aL7YNF7VfjTRntB
- tKbhKcrG05nbdNjIioAm04pt9rx5mV5KMbf22/FdZpOSSsC6/N7b/cFH9+fx8kwi4pNFuJwr
- BkWRuQ7rEtCoSpd22t+Vh9qA7kymW9gWY405258jnN65jBO7ElqU2CCuGRPg6uryAHV3RVCB
- 9j9AE3HLacQReFtt5ylyydSQbaK4K9asnd7U2/C11vIuuciXCppX4bPap/pMnGpzw0UNABEB
- AAG0N0RhdmlkIE9iZXJob2xsZW56ZXIgPGRhdmlkLm9iZXJob2xsZW56ZXJAc2lnbWEtc3Rh
- ci5hdD6JATcEEwEIACEFAlZyf0YCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQvOXc
- PHQaAtFuEAgArXOhaoaVvCMVCa5N25Q/+Q6K1wrVpPmkH89yhQqCmfM6f+2VM5MGFDPfaSJ3
- 5fBDH0iwBQwlXIb7NSXWtzdXX9rMvJkJqv45TgeKtJApf/sRhmcN+clrwzP8oZQbxkP1YWzo
- Vwo4lOb3Kv7aY9yeCjqNbdJJ57NpvYOUrzrCpGkrDPBBQOvKF3wbq3oU/o3dT23NDeQ20jXg
- quJf/PCw6WCzRxqg58wH02MdMDQe8vByzVig2bM2e7DErtt+hPK/Dmdsqgns+Z+SrQcOvRa3
- GMAHAuHB0u2LhYO6NyaNCgzdgutorilYcq7FEKr8XqwOnfVmZdCW3qGKmLbn6qMEdLkBDQRW
- cn9GAQgAvugF8cFjv2Zs4BBb44SnxGawBySC1bMRas/MjA9EMHUAx/StcecQmxnl6BzEyGpr
- +TRnXIzcb5xI8SxitBDU5MLvwsHgNvpYp9fscd4kWP7oMir9ta3Q8SvT4OLbO4FZBGaURzGP
- ak8JmjMMtOoOBh4meOjz6GrJe9UIGxT94aB01w7YohfBANzK8xyk4ykKC5Op4XgaaMKOEQUa
- h7wajcojYSlvgOiXqEisMHlRDAW6sXL2sEM7TIpvYhy9txMLllpkYb0Pu1BvUpY/unsybWKA
- FyiTmeiY+nEveUvqX6Ef7BWdClBeCk2UaRvtcoLd22VxMlKTniHQcNMOXlRRawARAQABiQEf
- BBgBCAAJBQJWcn9GAhsMAAoJELzl3Dx0GgLRPtcH/jD6rn2+VIKgrHdt3ao3Abpu2fqYfwbI
- yPAtpXOddDptVq+0A/2arXT1Y8+jNSZpbAg8K+bLaEAcSUEjviKMpfI7ppTUBuGKrpgc5xsi
- UpKkJCb7oB1ZraIBNBPtPPVUhbwLie4uW/LVt+8rBKz3W9KEDOsT0ZCG/pW8Ld+EpDR9l0fm
- qoVHaw8PhLAtez+B7HS7Hv7iJPDtX85kFYpud8kIPENXVn9EjZudyMWgZb2LhYlcavNcszgR
- 7In6ift5SNySojCOfAV0iKZb8QUXWktLleY8kQ8jltOsSRTuO4PDfzvtCQDixUw4tQ7WLwDT
- qyUpot0oG03vtSG4LIRCdxI=
-Organization: sigma star gmbh
-Message-ID: <a42b1b5c-b0b9-8154-35ee-b1e194becea9@sigma-star.at>
-Date: Wed, 17 Jul 2019 13:32:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1hnump-00021E-4U
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2019 01:00:44 +0000
+Received: from twhfmnt1.mxic.com.tw (twhfm1p2.macronix.com [172.17.20.92])
+ by TWHMLLG4.macronix.com with ESMTP id x6I0xWSG038122;
+ Thu, 18 Jul 2019 08:59:32 +0800 (GMT-8)
+ (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id 3D60852754C570DA3E11;
+ Thu, 18 Jul 2019 08:59:32 +0800 (CST)
+In-Reply-To: <93e86083-7f8a-402d-db4b-26263719be25@cogentembedded.com>
+References: <1562138144-2212-1-git-send-email-masonccyang@mxic.com.tw>
+ <1562138144-2212-3-git-send-email-masonccyang@mxic.com.tw>
+ <93e86083-7f8a-402d-db4b-26263719be25@cogentembedded.com>
+To: "Sergei Shtylyov" <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v5 2/2] dt-bindings: mtd: Document Macronix raw NAND
+ controller bindings
 MIME-Version: 1.0
-In-Reply-To: <20190715133858.18723-1-martin@kaiser.cx>
-Content-Language: en-US
+X-KeepSent: A58FF3D1:7CE1288C-4825843B:0005429C;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OFA58FF3D1.7CE1288C-ON4825843B.0005429C-4825843B.00057367@mxic.com.tw>
+From: masonccyang@mxic.com.tw
+Date: Thu, 18 Jul 2019 08:59:32 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2019/07/18 AM 08:59:32,
+ Serialize complete at 2019/07/18 AM 08:59:32
+X-MAIL: TWHMLLG4.macronix.com x6I0xWSG038122
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190717_043230_213458_FD4F9806 
-X-CRM114-Status: UNSURE (   6.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190717_180043_452351_A06E489A 
+X-CRM114-Status: GOOD (  12.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,16 +77,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
+ richard@nod.at, bbrezillon@kernel.org, juliensu@mxic.com.tw,
+ lee.jones@linaro.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ paul@crapouillou.net, marek.vasut@gmail.com, paul.burton@mips.com,
+ liang.yang@amlogic.com, linux-mtd@lists.infradead.org, stefan@agner.ch,
+ miquel.raynal@bootlin.com, anders.roxell@linaro.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, vigneshr@ti.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Applied to mtd-utils.git master.
 
-Thanks,
+Hi Sergei,
 
-David
+> > Document the bindings used by the Macronix raw NAND controller.
+> > 
+> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> > ---
+> >   Documentation/devicetree/bindings/mtd/mxic-nand.txt | 20 
+++++++++++++++++++++
+> >   1 file changed, 20 insertions(+)
+> >   create mode 100644 
+Documentation/devicetree/bindings/mtd/mxic-nand.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/mxic-nand.txt b/
+> Documentation/devicetree/bindings/mtd/mxic-nand.txt
+> > new file mode 100644
+> > index 0000000..ddd7660
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/mxic-nand.txt
+> > @@ -0,0 +1,20 @@
+> > +Macronix Raw NAND Controller Device Tree Bindings
+> > +-------------------------------------------------
+> > +
+> > +Required properties:
+> > +- compatible: should be "macronix,nand-controller"
+> > +- reg: should contain 1 entrie for the registers
+> > +- interrupts: interrupt line connected to this raw NAND controller
+> > +- clock-names: should contain "ps_clk", "send_clk" and "send_dly_clk"
+> > +- clocks: should contain 3 phandles for the "ps_clk", "send_clk" and
+> > +    "send_dly_clk" clocks
+> > +
+> > +Example:
+> > +
+> > +   nand: mxic-nfc@43c30000 {
+> 
+>     The node names should be generic, and the DT spec 0.2 (section 
+2.2.2) even 
+> has documented "nand-controller", please rename.
+
+okay, will fix it to
+
+nand: nand-controller@43c30000 {
+
+}
+
+> 
+> > +      compatible = "macronix,nand-controller";
+> > +      reg = <0x43c30000 0x10000>;
+> > +      reg-names = "regs";
+> > +      clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
+> > +      clock-names = "send_clk", "send_dly_clk", "ps_clk";
+> > +   };
+> > 
+> 
+> MBR, Sergei
+
+thanks & best regards,
+Mason
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
