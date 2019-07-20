@@ -2,84 +2,72 @@ Return-Path: <SRS0=5y3D=VR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BDCBC76188
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jul 2019 08:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D747EC76188
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jul 2019 13:46:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FCCE21872
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jul 2019 08:01:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9ED142085A
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jul 2019 13:46:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="l1Sn+CA7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QzmqGUBd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FCCE21872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="hKY/Ab4X";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hc2vn/K3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9ED142085A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2qh8nktwR7z5H5rwoStHAGAOJnDVXH9C+Fqc8DrNUXM=; b=l1Sn+CA7i2xZbt
-	vm6L2Dk4adEYWLrL7NNTGajwVb55DRuId7vF3vZsbHFUTEEVTi1Kn0UG09nT5Bfo07eyu4b187HF5
-	UPGUksrlbd2vbwpMkm/Xj0DbgWkcNoURmfD8pL19h1ypRWgioFfg/5Qq4dQfCm4Il+yi2wVR7jEW3
-	n/e2X2p2L9tUm17oeMe+QYh5V6/q86bPsOjPI7C8FTW7n3PJ074/oZ/lgs2NVEr6VLw6Gmtv/0avX
-	NaWrdX8nS8HwpeiRVQsLC4vaZsrpjbqiHxFSla2uZVxnGtg9VK/G9wqaqqmYCxw6WqZUewNuFpw+U
-	HWPQTyokSqYNAaxBXsag==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=P6fK5D65UGz6aYwXUrDuWvL9FW7BG8E3BN6nodDSMYQ=; b=hKY/Ab4Xu4WGf1
+	gXA5Xyrsyu4jInJeHnd+VMX1Vsvm2mFktGRjHloGCLN8ouYCubykevsjyFAB82Q39yc7h1X4h7IKd
+	somgy2JDa6HR+rtle4At59uLlwP9+ZQEPSQytXW14HUYI+iSVbvBRA7i655KWEkwp9eokLpgrD3hR
+	Lgw3yHy/bocUsBvAFBDGuutWjVF2s+DCWUpruhYk+aTAu+H4vV9P2ztTIxL8t/7CH/2y0LgVRln+p
+	46SitED5DSb+lS+Hy+CpQOW4HWgC2TPuloYhTh0F8BghqrkkkT9NxC5BdukxCdu4cHlOjXTHqhUyG
+	5y3Pgq3oJ54nhwvQNvPQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hokJ7-0002l6-56; Sat, 20 Jul 2019 08:01:29 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1hopgP-0000w0-6F; Sat, 20 Jul 2019 13:45:53 +0000
+Received: from merlin.infradead.org ([2001:8b0:10b:1231::1])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hokII-0002GT-9B
- for linux-mtd@lists.infradead.org; Sat, 20 Jul 2019 08:00:40 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id x6K80W4c078951;
- Sat, 20 Jul 2019 03:00:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1563609632;
- bh=G2dFa5gqh0pxSKoDZZ1GmICjzR13jLfmt4ybJwHlBV8=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=QzmqGUBdbQo/WK0eX/95/Fge7riBAZvImlDuvmqCOAwJ9GOehW9ta3MqoRMqpnPH0
- +Y4N06aT0kyKUBaaOvHE7hajPkhW3N6Elm9DbUpxab/Cj55ux3ccsqZEOW5+Pv+Sqs
- BTRevxNoR/bpYve5X9u+0glKkBoFQK6n1wCkBEt8=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x6K80We9110083
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Sat, 20 Jul 2019 03:00:32 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Sat, 20
- Jul 2019 03:00:32 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Sat, 20 Jul 2019 03:00:32 -0500
-Received: from a0132425.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x6K80NJ9072322;
- Sat, 20 Jul 2019 03:00:29 -0500
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 2/2] mtd: spi-nor: Rework hwcaps selection for the spi-mem
- case
-Date: Sat, 20 Jul 2019 13:30:23 +0530
-Message-ID: <20190720080023.5279-3-vigneshr@ti.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190720080023.5279-1-vigneshr@ti.com>
-References: <20190720080023.5279-1-vigneshr@ti.com>
+ id 1hopgM-0000vu-Gi
+ for linux-mtd@bombadil.infradead.org; Sat, 20 Jul 2019 13:45:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=RIOU5LAIILgInsLZKUJUGf35teEgUvYEPJttEJyAaQY=; b=hc2vn/K3NITr/qd1/BeBsZT89k
+ zpOPsH5kbh9nphMRj0YhRabkG2m1KOYcLKyR3VLjEXzz5541Dbqq7VCmAmNGuhaxjQlb7Z4KMTjmB
+ TVMtHk3ecngXCQITb+nv8IrZob3Q4piWDyvRQ8hmi/Y2d08pzOq9QgikWJskvrscwbo5VVFSGyv0v
+ +mQPo3uZbr3Z+kTRfPEQys46PYqncVZSM7HXqbMdMsaAWJSfulRFirm35y6RWxJ59ovNr3Ojmzgi/
+ 0aMqZ+Q4OfkizaD2yOJH7YYBFGGmsOkTd+caVR3EgB0JyvZEewk5PIgcmdnFoNif3cYLEm2cWO3nS
+ cXprQMaw==;
+Received: from static-50-53-52-16.bvtn.or.frontiernet.net ([50.53.52.16]
+ helo=[192.168.1.17])
+ by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+ id 1hopgF-00027k-Q9; Sat, 20 Jul 2019 13:45:44 +0000
+Subject: Re: [PATCH] mtd: hyperbus: Kconfig: Fix HBMC_AM654 dependencies
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+References: <20190719082912.10316-1-vigneshr@ti.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <83175738-a41e-04e6-7be2-85213dfdc416@infradead.org>
+Date: Sat, 20 Jul 2019 06:45:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190720_010038_520571_53421917 
-X-CRM114-Status: GOOD (  22.51  )
+In-Reply-To: <20190719082912.10316-1-vigneshr@ti.com>
+Content-Language: en-US
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,281 +79,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Boris Brezillon <bbrezillon@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Mao Wenan <maowenan@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Boris Brezillon <boris.brezillon@bootlin.com>
+On 7/19/19 1:29 AM, Vignesh Raghavendra wrote:
+> On x86_64, when CONFIG_OF is not disabled:
+> 
+> WARNING: unmet direct dependencies detected for MUX_MMIO
+>   Depends on [n]: MULTIPLEXER [=y] && (OF [=n] || COMPILE_TEST [=n])
+>   Selected by [y]:
+>   - HBMC_AM654 [=y] && MTD [=y] && MTD_HYPERBUS [=y]
+> 
+> due to
+> config HBMC_AM654
+> 	tristate "HyperBus controller driver for AM65x SoC"
+> 	select MULTIPLEXER
+> 	select MUX_MMIO
+> 
+> Fix this by making HBMC_AM654 imply MUX_MMIO instead of select so
+> that dependencies are taken care of. MUX_MMIO is optional for
+> functioning of driver.
+> 
+> Fixes: b07079f1642c ("mtd: hyperbus: Add driver for TI's HyperBus memory controller")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-The spi-mem layer provides a spi_mem_supports_op() function to check
-whether a specific operation is supported by the controller or not.
-This is much more accurate than the hwcaps selection logic based on
-SPI_{RX,TX}_ flags.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Rework the hwcaps selection logic to use spi_mem_supports_op() when
-nor->spimem != NULL.
+Thanks.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
-v2:
-Refractor spi_nor_spimem_adjust_hwcaps to avoid looping twice over
-WCAPS
-Add docs to new functions
-Rework spi_nor_spimem_check_op() logic
+> ---
+>  drivers/mtd/hyperbus/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
+> index cff6bbd226f5..1c691df8eff7 100644
+> --- a/drivers/mtd/hyperbus/Kconfig
+> +++ b/drivers/mtd/hyperbus/Kconfig
+> @@ -15,7 +15,7 @@ if MTD_HYPERBUS
+>  config HBMC_AM654
+>  	tristate "HyperBus controller driver for AM65x SoC"
+>  	select MULTIPLEXER
+> -	select MUX_MMIO
+> +	imply MUX_MMIO
+>  	help
+>  	 This is the driver for HyperBus controller on TI's AM65x and
+>  	 other SoCs
+> 
 
- drivers/mtd/spi-nor/spi-nor.c | 183 +++++++++++++++++++++++++++-------
- include/linux/mtd/spi-nor.h   |  14 +++
- 2 files changed, 161 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f428a6d4022b..924dbaf3fa49 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -3028,6 +3028,129 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
- 	return ret;
- }
- 
-+/**
-+ * spi_nor_spimem_check_op - check if the operation is supported
-+ *                           by controller
-+ *@nor:        pointer to a 'struct spi_nor'
-+ *@op:         pointer to op template to be checked
-+ *
-+ * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ */
-+static int spi_nor_spimem_check_op(struct spi_nor *nor,
-+				   struct spi_mem_op *op)
-+{
-+	/*
-+	 * First test with 4 address bytes. The opcode itself might
-+	 * be a 3B addressing opcode but we don't care, because
-+	 * SPI controller implementation should not check the opcode,
-+	 * but just the sequence.
-+	 */
-+	op->addr.nbytes = 4;
-+	if (!spi_mem_supports_op(nor->spimem, op)) {
-+		/* If flash size <16MB, 3 address bytes are sufficient */
-+		if (nor->mtd.size <= SZ_16M) {
-+			op->addr.nbytes = 3;
-+			if (!spi_mem_supports_op(nor->spimem, op))
-+				return -ENOTSUPP;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * spi_nor_spimem_check_readop - check if the read op is supported
-+ *                               by controller
-+ *@nor:         pointer to a 'struct spi_nor'
-+ *@read:        pointer to op template to be checked
-+ *
-+ * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ */
-+static int spi_nor_spimem_check_readop(struct spi_nor *nor,
-+				       const struct spi_nor_read_command *read)
-+{
-+	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(read->opcode, 1),
-+					  SPI_MEM_OP_ADDR(3, 0, 1),
-+					  SPI_MEM_OP_DUMMY(0, 1),
-+					  SPI_MEM_OP_DATA_IN(0, NULL, 1));
-+
-+	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(read->proto);
-+	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(read->proto);
-+	op.data.buswidth = spi_nor_get_protocol_data_nbits(read->proto);
-+	op.dummy.buswidth = op.addr.buswidth;
-+	op.dummy.nbytes = (read->num_mode_clocks + read->num_wait_states) *
-+			  op.dummy.buswidth / 8;
-+
-+	return spi_nor_spimem_check_op(nor, &op);
-+}
-+
-+/**
-+ * spi_nor_spimem_check_pp - check if the page program op is supported
-+ *                           by controller
-+ *@nor:         pointer to a 'struct spi_nor'
-+ *@pp:          pointer to op template to be checked
-+ *
-+ * Returns 0 if operation is supported, -ENOTSUPP otherwise.
-+ */
-+static int spi_nor_spimem_check_pp(struct spi_nor *nor,
-+				   const struct spi_nor_pp_command *pp)
-+{
-+	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(pp->opcode, 1),
-+					  SPI_MEM_OP_ADDR(3, 0, 1),
-+					  SPI_MEM_OP_NO_DUMMY,
-+					  SPI_MEM_OP_DATA_OUT(0, NULL, 1));
-+
-+	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(pp->proto);
-+	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(pp->proto);
-+	op.data.buswidth = spi_nor_get_protocol_data_nbits(pp->proto);
-+
-+	return spi_nor_spimem_check_op(nor, &op);
-+}
-+
-+/**
-+ * spi_nor_spimem_adjust_hwcaps - Find optimal Read/Write protocol
-+ *                                based on SPI controller capabilities
-+ * @nor:        pointer to a 'struct spi_nor'
-+ * @params:     pointer to the 'struct spi_nor_flash_parameter'
-+ *              representing SPI NOR flash capabilities
-+ * @hwcaps:     pointer to resulting capabilities after adjusting
-+ *              according to controller and flash's capability
-+ */
-+static void
-+spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor,
-+			     const struct spi_nor_flash_parameter *params,
-+			     u32 *hwcaps)
-+{
-+	unsigned int cap;
-+
-+	/* DTR modes are not supported yet, mask them all. */
-+	*hwcaps &= ~SNOR_HWCAPS_DTR;
-+
-+	/* X-X-X modes are not supported yet, mask them all. */
-+	*hwcaps &= ~SNOR_HWCAPS_X_X_X;
-+
-+	/* Start with read commands. */
-+	for (cap = 0; cap < sizeof(*hwcaps) * BITS_PER_BYTE; cap++) {
-+		int rdidx, ppidx;
-+
-+		if (!(*hwcaps & BIT(cap)))
-+			continue;
-+
-+		rdidx = spi_nor_hwcaps_read2cmd(BIT(cap));
-+		if (rdidx >= 0 &&
-+		    spi_nor_spimem_check_readop(nor, &params->reads[rdidx]))
-+			*hwcaps &= ~BIT(cap);
-+
-+		ppidx = spi_nor_hwcaps_pp2cmd(BIT(cap));
-+		if (ppidx < 0)
-+			continue;
-+
-+		if (spi_nor_spimem_check_pp(nor,
-+					    &params->page_programs[ppidx]))
-+			*hwcaps &= ~BIT(cap);
-+	}
-+}
-+
- /**
-  * spi_nor_read_sfdp_dma_unsafe() - read Serial Flash Discoverable Parameters.
-  * @nor:	pointer to a 'struct spi_nor'
-@@ -4437,16 +4560,25 @@ static int spi_nor_setup(struct spi_nor *nor,
- 	 */
- 	shared_mask = hwcaps->mask & params->hwcaps.mask;
- 
--	/* SPI n-n-n protocols are not supported yet. */
--	ignored_mask = (SNOR_HWCAPS_READ_2_2_2 |
--			SNOR_HWCAPS_READ_4_4_4 |
--			SNOR_HWCAPS_READ_8_8_8 |
--			SNOR_HWCAPS_PP_4_4_4 |
--			SNOR_HWCAPS_PP_8_8_8);
--	if (shared_mask & ignored_mask) {
--		dev_dbg(nor->dev,
--			"SPI n-n-n protocols are not supported yet.\n");
--		shared_mask &= ~ignored_mask;
-+	if (nor->spimem) {
-+		/*
-+		 * When called from spi_nor_probe(), all caps are set and we
-+		 * need to discard some of them based on what the SPI
-+		 * controller actually supports (using spi_mem_supports_op()).
-+		 */
-+		spi_nor_spimem_adjust_hwcaps(nor, params, &shared_mask);
-+	} else {
-+		/*
-+		 * SPI n-n-n protocols are not supported when the SPI
-+		 * controller directly implements the spi_nor interface.
-+		 * Yet another reason to switch to spi-mem.
-+		 */
-+		ignored_mask = SNOR_HWCAPS_X_X_X;
-+		if (shared_mask & ignored_mask) {
-+			dev_dbg(nor->dev,
-+				"SPI n-n-n protocols are not supported.\n");
-+			shared_mask &= ~ignored_mask;
-+		}
- 	}
- 
- 	/* Select the (Fast) Read command. */
-@@ -4775,11 +4907,11 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 	struct spi_device *spi = spimem->spi;
- 	struct flash_platform_data *data = dev_get_platdata(&spi->dev);
- 	struct spi_nor *nor;
--	struct spi_nor_hwcaps hwcaps = {
--		.mask = SNOR_HWCAPS_READ |
--			SNOR_HWCAPS_READ_FAST |
--			SNOR_HWCAPS_PP,
--	};
-+	/*
-+	 * Enable all caps by default. The core will mask them after
-+	 * checking what's really supported using spi_mem_supports_op().
-+	 */
-+	const struct spi_nor_hwcaps hwcaps = { .mask = SNOR_HWCAPS_ALL };
- 	char *flash_name;
- 	int ret;
- 
-@@ -4806,27 +4938,6 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 
- 	spi_mem_set_drvdata(spimem, nor);
- 
--	if (spi->mode & SPI_RX_OCTAL) {
--		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
--
--		if (spi->mode & SPI_TX_OCTAL)
--			hwcaps.mask |= (SNOR_HWCAPS_READ_1_8_8 |
--					SNOR_HWCAPS_PP_1_1_8 |
--					SNOR_HWCAPS_PP_1_8_8);
--	} else if (spi->mode & SPI_RX_QUAD) {
--		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
--
--		if (spi->mode & SPI_TX_QUAD)
--			hwcaps.mask |= (SNOR_HWCAPS_READ_1_4_4 |
--					SNOR_HWCAPS_PP_1_1_4 |
--					SNOR_HWCAPS_PP_1_4_4);
--	} else if (spi->mode & SPI_RX_DUAL) {
--		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
--
--		if (spi->mode & SPI_TX_DUAL)
--			hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
--	}
--
- 	if (data && data->name)
- 		nor->mtd.name = data->name;
- 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index e18c03f72ded..4521a38452d6 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -526,6 +526,20 @@ struct spi_nor_hwcaps {
- #define SNOR_HWCAPS_PP_1_8_8	BIT(21)
- #define SNOR_HWCAPS_PP_8_8_8	BIT(22)
- 
-+#define SNOR_HWCAPS_X_X_X	(SNOR_HWCAPS_READ_2_2_2 |	\
-+				 SNOR_HWCAPS_READ_4_4_4 |	\
-+				 SNOR_HWCAPS_READ_8_8_8 |	\
-+				 SNOR_HWCAPS_PP_4_4_4 |		\
-+				 SNOR_HWCAPS_PP_8_8_8)
-+
-+#define SNOR_HWCAPS_DTR		(SNOR_HWCAPS_READ_1_1_1_DTR |	\
-+				 SNOR_HWCAPS_READ_1_2_2_DTR |	\
-+				 SNOR_HWCAPS_READ_1_4_4_DTR |	\
-+				 SNOR_HWCAPS_READ_1_8_8_DTR)
-+
-+#define SNOR_HWCAPS_ALL		(SNOR_HWCAPS_READ_MASK |	\
-+				 SNOR_HWCAPS_PP_MASK)
-+
- /**
-  * spi_nor_scan() - scan the SPI NOR
-  * @nor:	the spi_nor structure
 -- 
-2.22.0
-
+~Randy
 
 ______________________________________________________
 Linux MTD discussion mailing list
