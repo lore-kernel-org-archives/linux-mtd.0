@@ -2,69 +2,55 @@ Return-Path: <SRS0=6YPz=VT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB16C76188
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jul 2019 08:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7DDBC7618F
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jul 2019 18:16:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45FB621E6B
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jul 2019 08:41:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0C102190D
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jul 2019 18:16:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="SRa6gOz6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45FB621E6B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="o2kSicBB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0C102190D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f6iz719voD8AhVM291KyEw+fAWFd4LyCgbjjrpHadB4=; b=SRa6gOz6CBkDZD
-	3MfGJM/HiTcBma9Zc6YAtSoRS9oji9ONMasDG/vg2llYegAf9F2Qq/fBm/VK9BlSvc1PGHP9CHEBO
-	4BS2PgeL9SnnWO6Z+qktgnB3kNpBvMo8bScN8HdaPjuYPuecoe9A5sX/WMMkHGW6hGgqMaXp1HuLW
-	ssSck/TEXQdXwl0QQv/npE72eNhCXCYWQ0ldrPFa/Uo1EoTttNEronBQHySG8EVhk/pAm9USdJLu0
-	rtFuEHXFM8//wZAwG28eEeB1r/XA4R9O0p0Cc8bYMS9UD67moTgYoStv5NQqiX4iYXXdC/QcFpSTW
-	+b0oY9vZubo7O6nU3ZGg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1iYBWXsmzhcX9HbrbKNE5uJpOOncHgL7IxeiQUSOtQQ=; b=o2kSicBB00Wb/a
+	dvrli2DJFrXBggNee5yWGGRgSNoaYzSpEundikVDx+NM7J7LVS+SyA/MMnyt/tkmYF150Cyv8HvNj
+	OtehLTSoj7MqrTFLMWCmh61fNcsV5S+d4+GVyIqYEAn5MobuU8HAPioAESFY8i2VwbELhaheL6DJi
+	3QIY7RLOUBdmVH4rcP79sJE/9E1pz4woX/NGL8I9WqHx/pIrr73MW8fslz8rWcfKEuN56ykcM9tLK
+	HXkLUMaAqWFBBPApccdgsWuMLZ9AVtrvQ9s5wM5jD3Rtb69ryUIWDPLqyAUgJgumoo8YASPsQ2gEV
+	2MLAc8VD7IVAzzsLlKCg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hpTsf-0000w6-N1; Mon, 22 Jul 2019 08:41:13 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hpTrx-0000Gw-2a
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2019 08:40:30 +0000
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1hpTrq-0002K3-B8; Mon, 22 Jul 2019 10:40:22 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <ukl@pengutronix.de>)
- id 1hpTro-00006E-AB; Mon, 22 Jul 2019 10:40:20 +0200
-Date: Mon, 22 Jul 2019 10:40:20 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: ubiupdatevol breaks ubi?
-Message-ID: <20190722084020.36rzdcg5o2qxf3xv@pengutronix.de>
-References: <20190718141351.ya7bnhhwgnc2qz56@pengutronix.de>
- <1088672879.45101.1563739430883.JavaMail.zimbra@nod.at>
+	id 1hpcqt-0006G8-S5; Mon, 22 Jul 2019 18:15:59 +0000
+Received: from sauhun.de ([88.99.104.3] helo=pokefinder.org)
+ by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
+ id 1hpcqq-0006Fe-91
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2019 18:15:57 +0000
+Received: from localhost (p54B33E22.dip0.t-ipconnect.de [84.179.62.34])
+ by pokefinder.org (Postfix) with ESMTPSA id 593654A148F;
+ Mon, 22 Jul 2019 20:15:55 +0200 (CEST)
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-i2c@vger.kernel.org
+Subject: [PATCH v2] mtd: maps: pismo: simplify getting the adapter of a client
+Date: Mon, 22 Jul 2019 20:15:49 +0200
+Message-Id: <20190722181549.6798-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1088672879.45101.1563739430883.JavaMail.zimbra@nod.at>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190722_014029_130264_77507828 
-X-CRM114-Status: GOOD (  20.19  )
+X-CRM114-CacheID: sfid-20190722_111556_464025_6B424967 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,85 +62,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>, kernel@pengutronix.de,
- Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Richard,
+We have a dedicated pointer for that, so use it. Much easier to read and
+less computation involved.
 
-On Sun, Jul 21, 2019 at 10:03:50PM +0200, Richard Weinberger wrote:
-> ----- Urspr=FCngliche Mail -----
-> >	[   57.807978] UBIFS error (ubi0:0 pid 262): ubifs_assert_failed: UBIFS=
- assert
-> >	failed: c->lhead_lnum !=3D c->ltail_lnum, in fs/ubifs/log.c:412
-> =
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-> It took me a while to understand what is going on and why you are facing =
-this.
-> The assert seems to trigger only if you mount a filesystem where both log=
- heads
-> point to UBIFS_LOG_LNUM, hence empty log area in initial state, and you c=
-hange
-> more filesystem contents than the log can hold at once.
-> =
+Change since V1:
 
-> After reviewing UBIFS log code I found something odd.
-> UBIFS does not initialize c->min_log_bytes, it is by default 0.
-> =
+* remove 'adapter' variable entirely
 
-> c->min_log_bytes can have two values:
-> - 0: commit in progress, remaining log area may be used
-> - leb_size: no commit in progress, keep leb_size bytes reserved
->   for a future commit.
-> =
+ drivers/mtd/maps/pismo.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> So having it 0 after a mount seems wrong to me because after mounting
-> UBIFS there is no commit in progress.
-> =
+diff --git a/drivers/mtd/maps/pismo.c b/drivers/mtd/maps/pismo.c
+index 788d4996e2c1..946ba80f9758 100644
+--- a/drivers/mtd/maps/pismo.c
++++ b/drivers/mtd/maps/pismo.c
+@@ -211,13 +211,12 @@ static int pismo_remove(struct i2c_client *client)
+ static int pismo_probe(struct i2c_client *client,
+ 		       const struct i2c_device_id *id)
+ {
+-	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
+ 	struct pismo_pdata *pdata = client->dev.platform_data;
+ 	struct pismo_eeprom eeprom;
+ 	struct pismo_data *pismo;
+ 	int ret, i;
+ 
+-	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+ 		dev_err(&client->dev, "functionality mismatch\n");
+ 		return -EIO;
+ 	}
+-- 
+2.20.1
 
-> Can you please give this change a try?
-> With this applied I can no longer trigger the assert.
-
-Same for me, with that change my machine boots fine without hitting an
-assert.
-
-> I'm still not entirely sure whether the assert is correct at all,
-> review in progress... :-) =
-
-
-I assume you will be able to work that out.
-
-Thanks for your time looking into my report,
-Uwe
-
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index 6cfc494050be..b4984da44251 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -607,6 +607,9 @@ static int init_constants_early(struct ubifs_info *c)
->  	c->max_bu_buf_len =3D UBIFS_MAX_BULK_READ * UBIFS_MAX_DATA_NODE_SZ;
->  	if (c->max_bu_buf_len > c->leb_size)
->  		c->max_bu_buf_len =3D c->leb_size;
-> +
-> +	c->min_log_bytes =3D c->leb_size;
-> +
->  	return 0;
->  }
-> =
-
-> Thanks,
-> //richard
-> =
-
-
--- =
-
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
 ______________________________________________________
 Linux MTD discussion mailing list
