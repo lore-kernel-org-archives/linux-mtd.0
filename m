@@ -5,47 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C35C7618B
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 07:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C3EEC7618B
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 12:38:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 33AEC21951
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 07:15:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2EC7421BF6
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 12:38:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="V1sRM/9P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33AEC21951
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CyBZvP94"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EC7421BF6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NLu3Itgv6nKX9Gjhtoji3QHlhfmwvV++3R42VEnwmmQ=; b=V1sRM/9Pt4i3AR
-	iAJjhvnQHgZMDdiRrGtQ/cyy/HKyhy0TB4df39HcUuyEzu9xtAiD2xvrcqV3vZs5Dy8wlDTyZcMqZ
-	X9f3YtD+74t2U5aRiOsIK/SC6Y2OxYQPauwhKMuVRC8XsFAnUR72QitsFKEq8J1j83AqO1ZcF/zna
-	nrZMsZ1/+fLC0hC9nnRqrbyW4BKFefetEixIoHyTrrNtwvhO2hV1SlWcewj4tmmIKOX37sVHHLkeR
-	OqC1zXFPAQvRbwBndG6sb9fAaSbcbB2STyyZO8Kk6SFoLW24C726oTnraIVVm4Rzp/1Q/IWbxuM7d
-	a4Sn22GNeziYw7vb5HPA==;
+	List-Owner; bh=CKuwPD7K+DXEJCFco6itQK/Jum/PGpMzqrX7jI49KJc=; b=CyBZvP94NlEiVc
+	sxAgKaplvk5geRr/flq6fNLJZIdO4pg3K9ZK5B9zLhQsP6XEMcJRSXkDDXe1E8AKV67xoNTIm6Rfi
+	+MI+dHzA1jJ1xWmqOPJ+8HEmrlJ28Kt0hI0vm2gPPCvgkTPJmbV2OpFCAytz6y8ACbkoOoW9uRzUd
+	yycoKCPCNrTOIGgm4926oiRWRK2wNwS5yIiyoGxtm1B6V9o8XN1AzkhNWcT34vWtTcU42egJ27NuA
+	tYYJJND6fRGZeBRM5hme68R089CnRLUP3/YKwx2DeLjt8ehEfAAC7xuvH1Rh29VKFRr2xWwkFfCCI
+	d2gU5DhBKDpzQCkkdmwg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqBUp-00060x-5c; Wed, 24 Jul 2019 07:15:31 +0000
-Received: from 089144207240.atnat0016.highway.bob.at ([89.144.207.240]
- helo=localhost)
- by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
- id 1hqBUl-0005zU-NQ; Wed, 24 Jul 2019 07:15:28 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: dwmw2@infradead.org,
-	richard@nod.at
-Subject: [PATCH] jffs2: remove jffs2_gc_fetch_page and jffs2_gc_release_page
-Date: Wed, 24 Jul 2019 09:15:25 +0200
-Message-Id: <20190724071525.18960-1-hch@lst.de>
-X-Mailer: git-send-email 2.20.1
+	id 1hqGWe-000288-Fl; Wed, 24 Jul 2019 12:37:44 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hqGWZ-00027C-4E
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2019 12:37:43 +0000
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id 0F19ED0A275507F1B81C;
+ Wed, 24 Jul 2019 20:37:34 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 24 Jul 2019
+ 20:37:26 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: <vigneshr@ti.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>
+Subject: [PATCH] mtd: hyperbus: Fix Kconfig warning
+Date: Wed, 24 Jul 2019 20:37:17 +0800
+Message-ID: <20190724123717.34128-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20190724_053741_600463_33B19FCC 
+X-CRM114-Status: UNSURE (   6.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,131 +69,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- viro@zeniv.linux.org.uk
+Cc: YueHaibing <yuehaibing@huawei.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Merge these two helpers into the only callers to get rid of some
-amazingly bad calling conventions.
+WARNING: unmet direct dependencies detected for MUX_MMIO
+  Depends on [n]: MULTIPLEXER [=m] && (OF [=n] || COMPILE_TEST [=n])
+  Selected by [m]:
+  - HBMC_AM654 [=m] && MTD [=m] && MTD_HYPERBUS [=m]
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- fs/jffs2/fs.c       | 27 ---------------------------
- fs/jffs2/gc.c       | 21 +++++++++++++--------
- fs/jffs2/os-linux.h |  3 ---
- 3 files changed, 13 insertions(+), 38 deletions(-)
+ drivers/mtd/hyperbus/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 8a20ddd25f2d..a3193c0f3a9b 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -678,33 +678,6 @@ struct jffs2_inode_info *jffs2_gc_fetch_inode(struct jffs2_sb_info *c,
- 	return JFFS2_INODE_INFO(inode);
- }
+diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
+index cff6bbd..769d129 100644
+--- a/drivers/mtd/hyperbus/Kconfig
++++ b/drivers/mtd/hyperbus/Kconfig
+@@ -14,6 +14,7 @@ if MTD_HYPERBUS
  
--unsigned char *jffs2_gc_fetch_page(struct jffs2_sb_info *c,
--				   struct jffs2_inode_info *f,
--				   unsigned long offset,
--				   unsigned long *priv)
--{
--	struct inode *inode = OFNI_EDONI_2SFFJ(f);
--	struct page *pg;
--
--	pg = read_cache_page(inode->i_mapping, offset >> PAGE_SHIFT,
--			     jffs2_do_readpage_unlock, inode);
--	if (IS_ERR(pg))
--		return (void *)pg;
--
--	*priv = (unsigned long)pg;
--	return kmap(pg);
--}
--
--void jffs2_gc_release_page(struct jffs2_sb_info *c,
--			   unsigned char *ptr,
--			   unsigned long *priv)
--{
--	struct page *pg = (void *)*priv;
--
--	kunmap(pg);
--	put_page(pg);
--}
--
- static int jffs2_flash_setup(struct jffs2_sb_info *c) {
- 	int ret = 0;
- 
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 9ed0f26cf023..373b3b7c9f44 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -1165,12 +1165,13 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 				       struct jffs2_inode_info *f, struct jffs2_full_dnode *fn,
- 				       uint32_t start, uint32_t end)
- {
-+	struct inode *inode = OFNI_EDONI_2SFFJ(f);
- 	struct jffs2_full_dnode *new_fn;
- 	struct jffs2_raw_inode ri;
- 	uint32_t alloclen, offset, orig_end, orig_start;
- 	int ret = 0;
- 	unsigned char *comprbuf = NULL, *writebuf;
--	unsigned long pg;
-+	struct page *page;
- 	unsigned char *pg_ptr;
- 
- 	memset(&ri, 0, sizeof(ri));
-@@ -1325,15 +1326,18 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 	 * end up here trying to GC the *same* page that jffs2_write_begin() is
- 	 * trying to write out, read_cache_page() will not deadlock. */
- 	mutex_unlock(&f->sem);
--	pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
--	mutex_lock(&f->sem);
--
--	if (IS_ERR(pg_ptr)) {
-+	page = read_cache_page(inode->i_mapping, start >> PAGE_SHIFT,
-+			       jffs2_do_readpage_unlock, inode);
-+	if (IS_ERR(page)) {
- 		pr_warn("read_cache_page() returned error: %ld\n",
--			PTR_ERR(pg_ptr));
--		return PTR_ERR(pg_ptr);
-+			PTR_ERR(page));
-+		mutex_lock(&f->sem);
-+		return PTR_ERR(page);
- 	}
- 
-+	pg_ptr = kmap(page);
-+	mutex_lock(&f->sem);
-+
- 	offset = start;
- 	while(offset < orig_end) {
- 		uint32_t datalen;
-@@ -1396,6 +1400,7 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 		}
- 	}
- 
--	jffs2_gc_release_page(c, pg_ptr, &pg);
-+	kunmap(page);
-+	put_page(page);
- 	return ret;
- }
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index bd3d5f0ddc34..f4895dda26a3 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -183,9 +183,6 @@ unsigned char *jffs2_gc_fetch_page(struct jffs2_sb_info *c,
- 				   struct jffs2_inode_info *f,
- 				   unsigned long offset,
- 				   unsigned long *priv);
--void jffs2_gc_release_page(struct jffs2_sb_info *c,
--			   unsigned char *pg,
--			   unsigned long *priv);
- void jffs2_flash_cleanup(struct jffs2_sb_info *c);
- 
- 
+ config HBMC_AM654
+ 	tristate "HyperBus controller driver for AM65x SoC"
++	depends on OF
+ 	select MULTIPLEXER
+ 	select MUX_MMIO
+ 	help
 -- 
-2.20.1
+2.7.4
+
 
 
 ______________________________________________________
