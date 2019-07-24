@@ -5,59 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C3EEC7618B
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 12:38:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D064DC7618B
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 15:22:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EC7421BF6
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 12:38:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4C6821873
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jul 2019 15:22:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CyBZvP94"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EC7421BF6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y8ir0L96"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4C6821873
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CKuwPD7K+DXEJCFco6itQK/Jum/PGpMzqrX7jI49KJc=; b=CyBZvP94NlEiVc
-	sxAgKaplvk5geRr/flq6fNLJZIdO4pg3K9ZK5B9zLhQsP6XEMcJRSXkDDXe1E8AKV67xoNTIm6Rfi
-	+MI+dHzA1jJ1xWmqOPJ+8HEmrlJ28Kt0hI0vm2gPPCvgkTPJmbV2OpFCAytz6y8ACbkoOoW9uRzUd
-	yycoKCPCNrTOIGgm4926oiRWRK2wNwS5yIiyoGxtm1B6V9o8XN1AzkhNWcT34vWtTcU42egJ27NuA
-	tYYJJND6fRGZeBRM5hme68R089CnRLUP3/YKwx2DeLjt8ehEfAAC7xuvH1Rh29VKFRr2xWwkFfCCI
-	d2gU5DhBKDpzQCkkdmwg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
+	Subject:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=mFrTkKPwFtI+/kh7fLueVSDinMdrrjtbO8S46i8PCgI=; b=Y8i
+	r0L96TDKUH5zh54eURpNJHdT9PWLLnf3IF9pH/XsSuRRKIOahBwuvaI5lSeCdIYQWRCFT76B1S8lY
+	/YcGLXBI5xlYwHUech0HzSFlFmk0xS2XPCj3zQXhBgFgAs7ug2Kw/2F6hPST1HCKK7He14eNUb61f
+	T1EgxQQK3q9bTfaJPbnLqLUBNNInHODnPMNG+nWYch9K2SsOgzBLuKgMh026fWeRR58qRGUz8DjcZ
+	/UWILGOU+hQGc2aGuP6f6zJIL4T6WFUJfabQUfxyO8Qmr/sONmF4GYH/XeA0uppoO8tskzT5jh6g3
+	kpv6tyTNDKCh1ohcZ5GngvBsCNNkz6A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqGWe-000288-Fl; Wed, 24 Jul 2019 12:37:44 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
+	id 1hqJ5Z-0007U5-U6; Wed, 24 Jul 2019 15:21:57 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqGWZ-00027C-4E
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2019 12:37:43 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id 0F19ED0A275507F1B81C;
- Wed, 24 Jul 2019 20:37:34 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 24 Jul 2019
- 20:37:26 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <vigneshr@ti.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <marek.vasut@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [PATCH] mtd: hyperbus: Fix Kconfig warning
-Date: Wed, 24 Jul 2019 20:37:17 +0800
-Message-ID: <20190724123717.34128-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
+ id 1hqJ5X-0007TY-43
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2019 15:21:56 +0000
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 24 Jul 2019 08:21:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,303,1559545200"; d="scan'208";a="345131765"
+Received: from tthayer-hp-z620.an.intel.com ([10.122.105.146])
+ by orsmga005.jf.intel.com with ESMTP; 24 Jul 2019 08:21:52 -0700
+From: thor.thayer@linux.intel.com
+To: marek.vasut@gmail.com, tudor.ambarus@microchip.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com
+Subject: [PATCH] mtd: spi-nor: Fix Cadence QSPI RCU Schedule Stall
+Date: Wed, 24 Jul 2019 10:23:50 -0500
+Message-Id: <1563981830-12562-1-git-send-email-thor.thayer@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190724_053741_600463_33B19FCC 
-X-CRM114-Status: UNSURE (   6.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190724_082155_209696_F5121F42 
+X-CRM114-Status: GOOD (  12.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,39 +69,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: YueHaibing <yuehaibing@huawei.com>, linux-mtd@lists.infradead.org,
+Cc: Thor Thayer <thor.thayer@linux.intel.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-WARNING: unmet direct dependencies detected for MUX_MMIO
-  Depends on [n]: MULTIPLEXER [=m] && (OF [=n] || COMPILE_TEST [=n])
-  Selected by [m]:
-  - HBMC_AM654 [=m] && MTD [=m] && MTD_HYPERBUS [=m]
+From: Thor Thayer <thor.thayer@linux.intel.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+The current Cadence QSPI driver sometimes caused a
+"rcu_sched self-detected stall" while writing large files.
+
+Stall Report:
+'# mtd_debug write /dev/mtd1 0 48816464 blob.img
+[ 1815.454227] rcu: INFO: rcu_sched self-detected stall on CPU
+[ 1815.459789] rcu:     0-....: (2099 ticks this GP) idle=8c6/1/0x40000002
+ softirq=6492/6492 fqs=935
+[ 1815.468442] rcu:      (t=2100 jiffies g=8749 q=247)
+	<snip> (abbreviated backtrace)
+[ 1815.772086] [<c05a3ea0>] (cqspi_exec_flash_cmd) (cqspi_read_reg)
+[ 1815.786203] [<c05a5488>] (cqspi_read_reg) from (read_sr)
+[ 1815.803790] [<c05a0330>] (read_sr) from
+	(spi_nor_wait_till_ready_with_timeout)
+[ 1815.816610] [<c05a182c>] (spi_nor_wait_till_ready_with_timeout) from
+	(spi_nor_write+0x104/0x1d0)
+[ 1815.836791] [<c05a1a44>] (spi_nor_write) from (part_write+0x50/0x58)
+	<snip>
+[ 1815.997961] cadence-qspi ff809000.spi: Flash command execution timed out.
+[ 1816.004733] error -110 reading SR
+file_to_flash: write, size 0x2e8e150, n 0x2e8e150
+write(): Connection timed out
+
+This was caused by a tight loop in cqspi_wait_for_bit(). Fix by using
+readl_relaxed_poll_timeout() which sleeps 10us while polling a register.
+
+Fit onto 80 character line by truncating the bool clear parameter
+
+Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")
+Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
 ---
- drivers/mtd/hyperbus/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/hyperbus/Kconfig b/drivers/mtd/hyperbus/Kconfig
-index cff6bbd..769d129 100644
---- a/drivers/mtd/hyperbus/Kconfig
-+++ b/drivers/mtd/hyperbus/Kconfig
-@@ -14,6 +14,7 @@ if MTD_HYPERBUS
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 67f15a1f16fd..7bef63947b29 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -13,6 +13,7 @@
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/jiffies.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -241,23 +242,13 @@ struct cqspi_driver_platdata {
  
- config HBMC_AM654
- 	tristate "HyperBus controller driver for AM65x SoC"
-+	depends on OF
- 	select MULTIPLEXER
- 	select MUX_MMIO
- 	help
+ #define CQSPI_IRQ_STATUS_MASK		0x1FFFF
+ 
+-static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clear)
++static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clr)
+ {
+-	unsigned long end = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
+ 	u32 val;
+ 
+-	while (1) {
+-		val = readl(reg);
+-		if (clear)
+-			val = ~val;
+-		val &= mask;
+-
+-		if (val == mask)
+-			return 0;
+-
+-		if (time_after(jiffies, end))
+-			return -ETIMEDOUT;
+-	}
++	return readl_relaxed_poll_timeout(reg, val,
++					  (((clr ? ~val : val) & mask) == mask),
++					  10, CQSPI_TIMEOUT_MS * 1000);
+ }
+ 
+ static bool cqspi_is_idle(struct cqspi_st *cqspi)
 -- 
 2.7.4
-
 
 
 ______________________________________________________
