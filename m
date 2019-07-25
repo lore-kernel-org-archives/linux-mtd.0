@@ -2,159 +2,63 @@ Return-Path: <SRS0=y1SG=VW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4DACC7618B
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 11:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA7D3C7618B
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 12:38:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73437229F9
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 11:45:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5ADE322C7B
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 12:38:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FEs5ammR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="wCsufhh0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73437229F9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="XlQGmzHu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ADE322C7B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jQ4p5m+MdI+LTFRvbx8Exqd5wuGBnWKvPGGlpl5p6Fc=; b=FEs5ammRKim9QQ
-	siW1JL4uYbf9AezG7vhWk/yk0Zp9Uei6znPPRWekufHb0vmhzOQVXWpp/QG9hopuLv1X4J+fkDlOw
-	kpgaTUB06g0FNRbGMVnG1EOcM6t/iF+BpJVqzLscZYOYTq0B60kDC0Ri0c58ZaLY8T6I9NDSfmd3v
-	MpVxy+rul97o3My6xRkBHovAkm3UFJmds1NgndL7yvt/o5y11pRUjD25v3CspLmxglyu6Q9iEv3Uw
-	nYWb8yTsTzycyxL5dQ9wtwGIkIvlNMSwo6lyQ09TSqfrxbqNoNC/7Qtwc3xgy42OQpxwLbvhquJmD
-	G4huvznRonQdTOjCG0nQ==;
+	List-Owner; bh=7wi88TBDaCe5qKwVTggRvOCcNt4GV9xl4lvrC+yz9YA=; b=XlQGmzHu3NgAgU
+	OUoVbugnGew1q7HFIC6C83XaR6Y//qPvYC0TCd0Zr6iDb9qaHePeGi8u6kSBf122kcf2NVFds12jf
+	1qL64d4GZRe7PZHnm7fL/qHyWxjeMVr2H0ie9pbvNiVrF2aNgnFyU967eik0VLo0ccepdcVHm6RAS
+	RuJo3Eml1TVUUgMIMFt+pkb0x5e3tB1Uk/u4Bvy9VwwlPI8NVKtVyCivZHNA5J961Rass5Qs0vuco
+	n0RxhtIoZ/B2EzpAUHkDimgMCjvrQgom6S9OclfY6BuXdVRoTk8YqlStFWqgrhG3IuDP9s2zD8gEK
+	nTUOKeljOdvPXSiYO8Uw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqcB8-0000WM-Nw; Thu, 25 Jul 2019 11:44:58 +0000
-Received: from esa2.microchip.iphmx.com ([68.232.149.84])
+	id 1hqd0L-0004l8-Gg; Thu, 25 Jul 2019 12:37:53 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqcB5-0000Vq-7r
- for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 11:44:57 +0000
-Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa2.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa2.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: xYS69BO8PuG8b6Ytcp2MEbTafUubRJsBYFYT3IKUmxufk8itZdxZdgSla/k1TnNiLULXFPJ86k
- oAcI+N/To198Y9XmURQDTo9ISt3rIX4JAk+lV7MYWcVAKNdnFe6jFBVxp0KGjabxuF/MZ7I1Cb
- 5dKqEElCvAUvIGZO7wK4Ic/STpZO2YDrZXM1SEGpY5mB6IEydhPQHW9fLzmiIjNNRZKwjFxhr4
- Ob2Klb/at+lNmjA8CY572RxwR+1NaZgXjNrL1S7QPp3QEjB6RMZXXRaPsV/A+fDmZSikcIslzP
- G4c=
-X-IronPort-AV: E=Sophos;i="5.64,306,1559545200"; d="scan'208";a="42717251"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 25 Jul 2019 04:44:54 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.87.71) by
- chn-vm-ex03.mchp-main.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 25 Jul 2019 04:44:53 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Thu, 25 Jul 2019 04:44:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XWLN0Cubq2IJMd8fom8GkpijnHd8KIxeMORbxNoS+nAmF2WWqSRh801aTPyAVQH1DVo7+zNjrN/9FNWleFzZi9SVXedn3Y+0K19KlSDfj8bVteWUeksuluHvoy+8h5devCdqgd0RFaOpRr1Dw3owSpyueByBZECtpzfPBT+Kf50keqNmtb+WnJZkSNQ6vgZTZbYSZPg04HrEk+61E+ClIPgkYgZjRx3DUyJPq10XHcWf5nBWBldWK9xpV1uFCaWpoBQKoAOXoV8lEGtO57beO52D7GFHgfz2U/P9BVr5GTgcTfLtkp82kDsHdyhXPyWC8Loxq0bGEsFBA8Bs3O/CnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zkIu4mvajccoXK948aemzhJN8murMFj1qsVf+J+2pOg=;
- b=aHERi80S/ptVebIX2X657rhN+xyQrjKGQwGvHZVMDFaz7KLWbvJUFWVAPVGHenSPHBV+/x2x9o0fnCQzObCglasS9iiE8M2ha2KICRYgrdg8BylSdC6+0LYrC2+RYqGYZkUodZUkpmPYHUm6rD4qEuhkZm0cbP9GZ3u32JrZth9xvdr2ZDTWx6iY8841Q2xd7qs5igDF9C2v2IMeg0lXXTakCNIxDTcGP/chISiux1/byEzatUSwijWEffVEtsbPZQ1crq2O30PZLNmj6I+FYt8xPl878R0U3M7wsL5VCwK8hlVCcmAlQNLE0JjEnx1zCtSzTWRlhisng8F7KneGYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=microchip.com;dmarc=pass action=none
- header.from=microchip.com;dkim=pass header.d=microchip.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zkIu4mvajccoXK948aemzhJN8murMFj1qsVf+J+2pOg=;
- b=wCsufhh0bCNEsTMNloDloiP0MjqRI0OdiYvIxAi01ua0UK9Mxq0lk2Veo22OnMf08+5pTjJZ5Bbi3SsdE5XcaJ+m20IIn+fa3fGawx70VVKSFRO+Hbuuu3fGLi4EUthn6/Qcr8n+bXLb6YrJSpcBLqOucjbGGE8B6B4sgEg8zVo=
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com (10.175.98.146) by
- BN6PR11MB4018.namprd11.prod.outlook.com (10.255.129.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.10; Thu, 25 Jul 2019 11:44:52 +0000
-Received: from BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::3161:92ff:d26c:8b66]) by BN6PR11MB1842.namprd11.prod.outlook.com
- ([fe80::3161:92ff:d26c:8b66%7]) with mapi id 15.20.2094.013; Thu, 25 Jul 2019
- 11:44:52 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <marek.vasut@gmail.com>
+ id 1hqd0I-0004kN-Fb
+ for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 12:37:52 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C053828AC0F;
+ Thu, 25 Jul 2019 13:37:47 +0100 (BST)
+Date: Thu, 25 Jul 2019 14:37:45 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <Tudor.Ambarus@microchip.com>
 Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Move m25p80 code in spi-nor.c
-Thread-Topic: [PATCH v2 1/2] mtd: spi-nor: Move m25p80 code in spi-nor.c
-Thread-Index: AQHVPtFNjfEG9DN44ESnRp+H/g0b8qbbN92AgAAHOoA=
-Date: Thu, 25 Jul 2019 11:44:52 +0000
-Message-ID: <b60adcf5-e85b-875a-c041-6bff1cade296@microchip.com>
+Message-ID: <20190725143745.634efcd6@collabora.com>
+In-Reply-To: <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
 References: <20190720080023.5279-1-vigneshr@ti.com>
  <20190720080023.5279-2-vigneshr@ti.com>
  <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
-In-Reply-To: <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: VI1PR08CA0106.eurprd08.prod.outlook.com
- (2603:10a6:800:d3::32) To BN6PR11MB1842.namprd11.prod.outlook.com
- (2603:10b6:404:101::18)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 108fc523-07df-4f23-bc95-08d710f5814d
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:BN6PR11MB4018; 
-x-ms-traffictypediagnostic: BN6PR11MB4018:
-x-microsoft-antispam-prvs: <BN6PR11MB4018DC513D8D27676999393DF0C10@BN6PR11MB4018.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 0109D382B0
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(136003)(366004)(376002)(346002)(39860400002)(199004)(189003)(3846002)(2616005)(110136005)(54906003)(6116002)(316002)(446003)(31686004)(36756003)(4744005)(99286004)(52116002)(76176011)(256004)(71200400001)(71190400001)(486006)(64756008)(186003)(2201001)(476003)(81156014)(81166006)(68736007)(8936002)(8676002)(66066001)(386003)(6506007)(86362001)(53936002)(6436002)(478600001)(66476007)(66446008)(14454004)(66556008)(6486002)(229853002)(7736002)(66946007)(26005)(6246003)(305945005)(2501003)(5660300002)(4326008)(6512007)(31696002)(102836004)(25786009)(2906002)(53546011)(11346002);
- DIR:OUT; SFP:1101; SCL:1; SRVR:BN6PR11MB4018;
- H:BN6PR11MB1842.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: yJigpJlTGRRurJgF4uWQUNjdXHNFx1B2w5woumwTtI1fI/1mqF86/LObWfxIRk5TzEuIqTXk3tJzEmmNX566QaTgCDk4llaBJaotSL04z9vZulJFiTSbLh/vyMsAg1BA08C831xhqWEwvBnDCttos9LPSrVUEIPLmveCN77yfWZ2LTb58HJSmWbDyHKAyFAF6Wh8A9cd3HstLiu+haLjDkUWSu7qKN3zHaiLb/RnxDx8Og9d/NbFkr1+ttXJXhvq8w64ZC3AxH22dci3KNDA7HECEaqhKN+9uC9HIGe0ZC+qWGqG5uNCxlmLH6f6y+y8XN9l8Re13mVRElb5MmWaDWrd64z++0wYr5u7HY0DW5W2pTdvee9XSJVFcovXGA8imMXZxctejl7v46lIFugEud+xejfUx8rnh42wjI3wed8=
-Content-ID: <7AF77D3742602449AFF30BC901B41BC2@namprd11.prod.outlook.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 108fc523-07df-4f23-bc95-08d710f5814d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2019 11:44:52.2740 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB4018
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190725_044455_421208_05A1BBDB 
-X-CRM114-Status: UNSURE (   6.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190725_053750_784455_3629F654 
+X-CRM114-Status: GOOD (  25.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,27 +70,184 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: yogeshnarayan.gaur@nxp.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, bbrezillon@kernel.org
+Cc: yogeshnarayan.gaur@nxp.com, vigneshr@ti.com, bbrezillon@kernel.org,
+ richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Thu, 25 Jul 2019 11:19:06 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-
-On 07/25/2019 02:19 PM, Tudor.Ambarus@microchip.com wrote:
+> > + */
+> > +static int spi_nor_exec_op(struct spi_nor *nor, struct spi_mem_op *op,
+> > +			   u64 *addr, void *buf, size_t len)
+> > +{
+> > +	int ret;
+> > +	bool usebouncebuf = false;  
+> 
+> I don't think we need a bounce buffer for regs. What is the maximum size that we
+> read/write regs, SPI_NOR_MAX_CMD_SIZE(8)?
+> 
+> In spi-nor.c the maximum length that we pass to nor->read_reg()/write_reg() is
+> SPI_NOR_MAX_ID_LEN(6).
+> 
+> I can provide a patch to always use nor->cmd_buf when reading/writing regs so
+> you respin the series on top of it, if you feel the same.
+> 
+> With nor->cmd_buf this function will be reduced to the following:
+> 
 > static int spi_nor_spimem_xfer_reg(struct spi_nor *nor, struct spi_mem_op *op)
 > {
 > 	if (!op || (op->data.nbytes && !nor->cmd_buf))
-
-!nor->cmd_buf can't be NULL, we can get rid of this check too, and use
-spi_mem_exec_op() directly when interacting with registers.
-
 > 		return -EINVAL;
 > 
 > 	return spi_mem_exec_op(nor->spimem, op);
 > }
+
+Well, I don't think that's a good idea. ->cmd_buf is an array in the
+middle of the spi_nor struct, which means it won't be aligned on a
+cache line and you'll have to be extra careful not to touch the spi_nor
+fields when calling spi_mem_exec_op(). Might work, but I wouldn't take
+the risk if I were you.
+
+Another option would be to allocate ->cmd_buf with kmalloc() instead of
+having it defined as a static array.
+
+> 
+> spi_nor_exec_op() always received a NULL addr, let's get rid of it. We won't
+> need buf anymore and you can retrieve the length from op->data.nbytes. Now that
+> we trimmed the arguments, I think I would get rid of the
+> spi_nor_data/nodata_op() wrappers and use spi_nor_spimem_xfer_reg() directly.
+
+I think I added the addr param for a good reason (probably to support
+Octo mode cmds that take an address parameter). This being said, I
+agree with you, we should just pass everything through the op parameter
+(including the address if we ever need to add one).
+
+
+> > +
+> > +/**
+> > + * spi_nor_spimem_xfer_data() - helper function to read/write data to
+> > + *                              flash's memory region
+> > + * @nor:        pointer to 'struct spi_nor'
+> > + * @op:         pointer to 'struct spi_mem_op' template for transfer
+> > + * @proto:      protocol to be used for transfer
+> > + *
+> > + * Return: number of bytes transferred on success, -errno otherwise
+> > + */
+> > +static ssize_t spi_nor_spimem_xfer_data(struct spi_nor *nor,
+> > +					struct spi_mem_op *op,
+> > +					enum spi_nor_protocol proto)
+> > +{
+> > +	bool usebouncebuf = false;  
+> 
+> declare bool at the end to avoid stack padding.
+
+But it breaks the reverse-xmas-tree formatting :-).
+
+> 
+> > +	void *rdbuf = NULL;
+> > +	const void *buf;  
+> 
+> you can get rid of rdbuf and buf if you pass buf as argument.
+
+Hm, passing the buffer to send data from/receive data into is already
+part of the spi_mem_op definition process (which is done in the caller
+of this func) so why bother passing an extra arg to the function.
+Note that you had the exact opposite argument for the
+spi_nor_spimem_xfer_reg() prototype you suggested above (which I
+agree with BTW) :P.
+
+> 
+> > +	int ret;
+> > +
+> > +	/* get transfer protocols. */
+> > +	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(proto);
+> > +	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
+> > +	op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
+> > +
+> > +	if (op->data.dir == SPI_MEM_DATA_IN)
+> > +		buf = op->data.buf.in;
+> > +	else
+> > +		buf = op->data.buf.out;
+> > +
+> > +	if (object_is_on_stack(buf) || !virt_addr_valid(buf))
+> > +		usebouncebuf = true;
+> > +
+> > +	if (usebouncebuf) {
+> > +		if (op->data.nbytes > nor->bouncebuf_size)
+> > +			op->data.nbytes = nor->bouncebuf_size;
+> > +
+> > +		if (op->data.dir == SPI_MEM_DATA_IN) {
+> > +			rdbuf = op->data.buf.in;
+> > +			op->data.buf.in = nor->bouncebuf;
+> > +		} else {
+> > +			op->data.buf.out = nor->bouncebuf;
+> > +			memcpy(nor->bouncebuf, buf,
+> > +			       op->data.nbytes);
+> > +		}
+> > +	}
+> > +
+> > +	ret = spi_mem_adjust_op_size(nor->spimem, op);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = spi_mem_exec_op(nor->spimem, op);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (usebouncebuf && op->data.dir == SPI_MEM_DATA_IN)
+> > +		memcpy(rdbuf, nor->bouncebuf, op->data.nbytes);
+> > +
+> > +	return op->data.nbytes;
+> > +}
+> > +
+> > +/**
+> > + * spi_nor_spimem_read_data() - read data from flash's memory region via
+> > + *                              spi-mem
+> > + * @nor:        pointer to 'struct spi_nor'
+> > + * @ofs:        offset to read from
+> > + * @len:        number of bytes to read
+> > + * @buf:        pointer to dst buffer
+> > + *
+> > + * Return: number of bytes read successfully, -errno otherwise
+> > + */
+> > +static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t ofs,  
+> 
+> s/ofs/from? both flash and buf may have offsets, "from" better indicates that
+> the offset is associated with the flash.
+
+The semantic is well documented in the doc just above the function, but
+I have the feeling that you're in 'nitpick' mode, so I'll just let you
+pick the one you prefer :).
+
+> 
+> > +					size_t len, u8 *buf)
+> > +{
+> > +	struct spi_mem_op op =
+> > +		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
+> > +			   SPI_MEM_OP_ADDR(nor->addr_width, ofs, 1),
+> > +			   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
+> > +			   SPI_MEM_OP_DATA_IN(len, buf, 1));
+> > +
+> > +	op.dummy.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
+> > +
+> > +	/* convert the dummy cycles to the number of bytes */
+> > +	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
+> > +
+> > +	return spi_nor_spimem_xfer_data(nor, &op, nor->read_proto);  
+> 
+> stop passing nor->read_proto and do all buswidth initialization here. This way
+> we'll keep the inits all gathered together, and will have the xfer() that will
+> do just the transfer (with bouncebuffer if needed). Function that does a single
+> thing.
+
+Indeed, doesn't make sense to pass this info since it could be passed
+through the op->data field.
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
