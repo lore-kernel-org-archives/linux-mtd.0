@@ -2,159 +2,162 @@ Return-Path: <SRS0=y1SG=VW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99C3CC7618B
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 14:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32611C7618B
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 15:00:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D7F721901
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 14:36:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 032C02238C
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 15:00:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HbFDmWya";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="2oHVYr0a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D7F721901
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="rSdI0WIM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="hz4ZObUN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="XcxcBnbw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 032C02238C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cadence.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qQncLuCIWPSk3bOUA7tYuDDtdMiyFztviNLjylytQ50=; b=HbFDmWyaoS7mzf
-	4iV02X3vQBKA1lVDn4TVr61BhYRpgyYBLRR7Te+DAjEqs8+bN7Lv1Qb9iEZegt/fw1iy2kTUdbA1L
-	qZMdbDoucX9KjyTGjhmVDDVqhLD6VOd+WDkkn/UtTLX7Lv0N5LFAoAAECm35/rEHuB2CM4y5w3Y7R
-	04Nlk1tvr1w2q45fhY/DSF6m1mmiVuzHBhDP0AWGnf2fV3sjw0nXo9qMRUW4321hWgsHQ2P7hFtgc
-	yvSDw9ZfiBM8fIytJvWjqY/h8q/JG8wP6FSE3jJECzBQzfysJ24TFWDoGLAbb1rS8ewnPvvorfxzH
-	Kpjz2es+qt+pmTSi6bmQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kMHGh8VapnpxZ+LK+5AMIz+KfR2kJKj7yzwYXMX+I7Y=; b=rSdI0WIMe+zxEh
+	TWy2EtEPzv3pQzZ9ict7yh1Z8PLY7s5hmOy20wIosM31NfQ4NDmgxHFkvR0OfRhedVxzlrr6Di9By
+	Ti538oBvYEHPUJlxXrXWkOJ2B3eFjXMuqs+pfSHCaYq22DxvqXVEmnUN8qWrrO4Ep5mlneF6PnJTN
+	AasZNwC+jIJgt/a+F1Au7Ue9WpezmLS9+GHQk6Vr14j9nz1LcpY3qS+O2q7yxQpY1qoY7Xe7+4E5y
+	5GaCYAGDiErGbyaHUdj6G7AuzuexEnGopw2nnvW4rcjoGQmrxkoLTzgB1Ir0jsz7mLemEujnQ3KEG
+	9ZU4pqL3wVKodUuwOTww==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqer5-0000ie-87; Thu, 25 Jul 2019 14:36:27 +0000
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+	id 1hqfEQ-0005QW-1N; Thu, 25 Jul 2019 15:00:34 +0000
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqeqy-0000hW-Vt
- for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 14:36:25 +0000
-Received-SPF: Pass (esa3.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa3.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa3.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa3.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: STe+EqR4tjGsKO3ciSI1tN40a7ghv45PRkZn1j6z+lYUTLJE/9mC3eaSejWH0MATMJ8hHMEjsE
- Kp+ZoiRS6QGlxTMXSnjUVRndvZtqqG2UCjTS+4HhdxviASTvEfK85e0HtVUTuOf2kWPtvf7TFI
- pJneUtzPTZ/tCgpgGSaIC0MKWyidl0fQq0JzPiYO+JW71Nm078v6KWythpCFySSxIoKcrJhcBh
- Ik0GClxTJs9Ol/uT65T/UCM8/kkCQpjXnSNaa213pmUHq7s2vZNrpZQZzT79ycFhtYZtF5K2Aw
- thQ=
-X-IronPort-AV: E=Sophos;i="5.64,307,1559545200"; d="scan'208";a="42759783"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 25 Jul 2019 07:36:19 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.87.151) by
- chn-vm-ex03.mchp-main.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 25 Jul 2019 07:36:18 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 25 Jul 2019 07:36:18 -0700
+ id 1hqfE2-0004Rs-3s
+ for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 15:00:12 +0000
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+ by mx0a-0014ca01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id
+ x6PEvjlO001791; Thu, 25 Jul 2019 07:59:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=eLltd09AZLnnfOw2WrA/G1QDSh/+zspsDr0BDSLPhBQ=;
+ b=hz4ZObUNiC2u7psSw+/euweRuI/h6QxXcD5dqOi29G7Me3yqcPYS056hLNor0PNCQC7q
+ kAbxXwOSNk4XfCDENTrRbgoSYeqhe4h4t/wFNUxxO9irNmfMA51zfEVVvVfMJoqRIRjc
+ Ko4J7kC54k1+SH0nUXEF1njTSoEb0yiwdnb2xLCIM4Eec0Qpd2ty+kcb45tLZNFY6ncW
+ 6vuREWJ0QNAZm9gguiHJyjA6BfiD3HjrOyt26t8ydFQzOkqJAflapVDFWn29Y6CYDD7R
+ huRByhfi3CvEcsQkByADohlRuxABJj3lmgViCHOgpu3OVXsumrR/W7SZx2Gapj7R3pHQ hg== 
+Authentication-Results: cadence.com; spf=pass smtp.mailfrom=piotrs@cadence.com
+Received: from nam04-bn3-obe.outbound.protection.outlook.com
+ (mail-bn3nam04lp2057.outbound.protection.outlook.com [104.47.46.57])
+ by mx0a-0014ca01.pphosted.com with ESMTP id 2ty9h4h4vg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 25 Jul 2019 07:59:37 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G32GolzXEOQJJCW8CVsH1Q6KBxUD2VqUhsoTWyY9CzNH8vxMZ0VFEe+gFc1DRYkRk8EAju+R27uCPkjKiDZxwLlDZ3KGWBTfnusGwb22azzb3t/VxO0bTE1FkxzNblo5NzgVjb93o46iCVBTmFdoP3MtYKuOOdoH+qnYMh3qVeEyaMIJJ4oSENoqYrHvmucgSkkmbhWGvCoT0I5fzIuHZFUo8dD/LQavp/tIYDj1mjnRxIFktlZMpgDbf6WQoq/Wg1IzpjssKmTHFZdOQb74/8nl6BbGf0sbRtcS6fip1+AbepGiP5tOG7b2uq1PYOJMKKJcALeSwzote5hQ+/0VeQ==
+ b=JbU9CvGnMty/kNpBYTFGn8Qrloqy6FW0sA8qkKJAJDoXanmK6NTSbzG08ygnitjC5mZkyrnAtd12E/wguJskeqp+/Dy9M9c410W0uDLs7+tol8bNITXJB++ZQhIVRGJmHpvdVjhOEZRI6nQu+TrDzOHtHj2SwASPA0vPyPq8vmiZ3d0PSVnQTdzWGfkvQaNk+3jLstbDlCiNHwRUMuCUJBbRw5Hhbn2cEuq6P4jq9C8befk0K1vEEZOK/vuFB5GhT/91isqwC+QVTmNHR2Z0YQxD5S5yuRUBdZ6+rFuujWZtjeAkaRBrhGSXEpzP5S+CXpxQEQ4NMZwZvhnDXCz/Iw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PVDg29X+TOMsPl9jT4p6XeudCzr2b9o+A7IclwhEJZs=;
- b=J5z9z3pVKE9oXJ6hufo66qU9akL3zGcW/2tc8xq2wPNiA4U3pvb4OejoMA6yWUlcwmOo2g+9w9E+Ur1202v07XFuyzWUjjk8ltFYqTCDjqUbuq1TZBtNhTpuNurh3fX4I2VT4ewFP0YgMOQ8+ATDw8eEg0x8fRt25sj+Xe7CIzkr8PW8D+1RQfbXbdBtXEHl1N0cUJkYCYzoBEFuuHQo4B0tXt2gEw2xoNgURfb0mkX6OE6EMV5/bjPFHunkX+p8WH45XLJzZTggYTMAJufAdSLT1Yq5AUWelW/0MjJ7eTVCAasL35fLMrcuQ9qxmGcpflzU2NEX9TMXyuBG/wmEZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=microchip.com;dmarc=pass action=none
- header.from=microchip.com;dkim=pass header.d=microchip.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
+ bh=eLltd09AZLnnfOw2WrA/G1QDSh/+zspsDr0BDSLPhBQ=;
+ b=g/W6BT+hEsI8F25gmcx0n0tBv6F3Tf6/nnVm5JV1zERCC1cURrpf/Icx+lPE7DPj+3YMqSexTupfAtuPcg1nnqDo1aP6qjKKnOj2Wi3hEemAW5RiaYiA3sLCmAEJQy47jpRQ5BZ/LyQb5NgvzjRs8BAorEu/Fa+DS4QKBYcTi4mqtrIgv8HdVKHN+WV6/S0b7Byx17UJ8DjhuO1b5VIO/U6V/NGzTNWaRo9WMw8yE1Xtkrj3mTUF4zOG4W8SrGWsbm0Yy4+JNR+kemVyea70Qkg/HiSja2t1nNlSMKyCEOMJ9L4Z2UUxwT7+y4rA3/LcglebiDS++bEbghrU05rR4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip is
+ 158.140.1.28) smtp.rcpttodomain=infradead.org
+ smtp.mailfrom=cadence.com;dmarc=fail (p=none sp=none pct=100) action=none
+ header.from=cadence.com;dkim=none (message not signed);arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PVDg29X+TOMsPl9jT4p6XeudCzr2b9o+A7IclwhEJZs=;
- b=2oHVYr0aIBHazqSOeI9fERt67F2mgfQhjDMWbbE+qDDe+kQWbhLbdlsscnyOcBnOKYIVxpxanAuZ7UzdT/NgRCzLSbnY/k7NOq8RkPu0HeDh4MCrqnr7piHx3n6/mBgmm8S6i9OeIqc9pF3BvDgU9Ca2sqDnZT9FEXTjeC5FcRY=
-Received: from CH2PR11MB4438.namprd11.prod.outlook.com (10.186.149.223) by
- CH2PR11MB4406.namprd11.prod.outlook.com (10.186.148.21) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2094.16; Thu, 25 Jul 2019 14:36:15 +0000
-Received: from CH2PR11MB4438.namprd11.prod.outlook.com
- ([fe80::a9cc:45df:96cb:4b81]) by CH2PR11MB4438.namprd11.prod.outlook.com
- ([fe80::a9cc:45df:96cb:4b81%4]) with mapi id 15.20.2073.017; Thu, 25 Jul 2019
- 14:36:15 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Move m25p80 code in spi-nor.c
-Thread-Topic: [PATCH v2 1/2] mtd: spi-nor: Move m25p80 code in spi-nor.c
-Thread-Index: AQHVPtFNjfEG9DN44ESnRp+H/g0b8qbbN92AgAAWBICAAAr8AIAADB2AgAAJ/oA=
-Date: Thu, 25 Jul 2019 14:36:15 +0000
-Message-ID: <c914178b-cf81-4be2-044e-67d1ab8aebf7@microchip.com>
-References: <20190720080023.5279-1-vigneshr@ti.com>
- <20190720080023.5279-2-vigneshr@ti.com>
- <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
- <20190725143745.634efcd6@collabora.com>
- <dbb33973-bb6f-9a01-b821-693387aff98a@microchip.com>
- <20190725160025.2d8e24f8@collabora.com>
-In-Reply-To: <20190725160025.2d8e24f8@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: LO2P265CA0342.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:d::18) To CH2PR11MB4438.namprd11.prod.outlook.com
- (2603:10b6:610:4a::31)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b7ce33c0-7fa0-478a-3b9b-08d7110d7281
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:CH2PR11MB4406; 
-x-ms-traffictypediagnostic: CH2PR11MB4406:
-x-microsoft-antispam-prvs: <CH2PR11MB4406DDB09C368C44B7B6302BF0C10@CH2PR11MB4406.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0109D382B0
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(396003)(39860400002)(346002)(366004)(376002)(136003)(199004)(189003)(3846002)(486006)(6436002)(99286004)(478600001)(25786009)(14444005)(6512007)(305945005)(2616005)(53936002)(6486002)(6116002)(8936002)(66066001)(14454004)(316002)(11346002)(52116002)(7736002)(86362001)(446003)(256004)(26005)(31696002)(102836004)(36756003)(71190400001)(6506007)(5660300002)(76176011)(66556008)(4326008)(68736007)(71200400001)(66946007)(31686004)(66476007)(53546011)(229853002)(386003)(81156014)(54906003)(81166006)(186003)(6246003)(2906002)(8676002)(476003)(66446008)(6916009)(64756008);
- DIR:OUT; SFP:1101; SCL:1; SRVR:CH2PR11MB4406;
- H:CH2PR11MB4438.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: LLrYEtsyadIEI3JqhgoB0L7hmxlnJ9We/zKINDCQGjCiE4W/W38DBABe06uVqYfmeqnOBpdgy0Z8fNDpoqEoKIPYRbHh8f9B5SjV2QmP4sxH3ZPh2GxuFvAYwFyCPCCC9NMENy7V09gAx8qH4r1qEg2eBvK8UNcHsEZC4g1vkeImExFz67Hn/plsWCO85P1aX98vuZHiBfOwt9kWvYTC+5dhAYDBoGSfUhsvanCurwgcYSiqtR6Vej3+W4trKoRGABdQms3O/rBjAkneJi/7uKkpOPkFuNZiRbotWFQl3poaqeok1qYs9oiNamKph+Br1FuoQRSf0f5RiFwwOi+VczFP/e2jtbMA1VgcNKbWDrGYHUCfGRpP7Sc3YsA9FUsRuaQvqt0vk/HZB2u2UweMT/m302ud69A2HxLGL1TgffE=
-Content-ID: <4A992AA3DB7E764085110CE1E8E9F327@namprd11.prod.outlook.com>
+ bh=eLltd09AZLnnfOw2WrA/G1QDSh/+zspsDr0BDSLPhBQ=;
+ b=XcxcBnbwzgHnGD6F97+H3KvyrhozSET3kY3XDfDfvVXm1C3hs5QCzNds+PMKI8yg/e1iKaTH8g1hERIo8ThmaiJHrQxE+9jx20yVPa8RqwaE2J3EIgCRP4D+wgYu1vqqknbluE5ty3lqQIgHyIBSClUV6clqN1+20hyu8tdtOpo=
+Received: from BN8PR07CA0036.namprd07.prod.outlook.com (2603:10b6:408:ac::49)
+ by BN8PR07MB6817.namprd07.prod.outlook.com (2603:10b6:408:b9::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2115.10; Thu, 25 Jul
+ 2019 14:59:35 +0000
+Received: from BY2NAM05FT041.eop-nam05.prod.protection.outlook.com
+ (2a01:111:f400:7e52::209) by BN8PR07CA0036.outlook.office365.com
+ (2603:10b6:408:ac::49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2115.13 via Frontend
+ Transport; Thu, 25 Jul 2019 14:59:35 +0000
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ cadence.com discourages use of 158.140.1.28 as permitted sender)
+Received: from sjmaillnx1.cadence.com (158.140.1.28) by
+ BY2NAM05FT041.mail.protection.outlook.com (10.152.100.178) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2136.7 via Frontend Transport; Thu, 25 Jul 2019 14:59:34 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+ by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id
+ x6PExTRm024674
+ (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+ Thu, 25 Jul 2019 07:59:30 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Thu, 25 Jul 2019 16:59:28 +0200
+Received: from lvlogina.cadence.com (10.165.176.102) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Thu, 25 Jul 2019 16:59:27 +0200
+Received: from lvlogina.cadence.com (localhost.localdomain [127.0.0.1])
+ by lvlogina.cadence.com (8.14.4/8.14.4) with ESMTP id x6PExS3Z012639;
+ Thu, 25 Jul 2019 15:59:28 +0100
+Received: (from piotrs@localhost)
+ by lvlogina.cadence.com (8.14.4/8.14.4/Submit) id x6PExN34012572;
+ Thu, 25 Jul 2019 15:59:23 +0100
+From: Piotr Sroka <piotrs@cadence.com>
+To: <linux-kernel@vger.kernel.org>
+Subject: [v5 0/2] mtd: nand: Add Cadence NAND controller driver
+Date: Thu, 25 Jul 2019 15:58:04 +0100
+Message-ID: <20190725145804.8886-1-piotrs@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7ce33c0-7fa0-478a-3b9b-08d7110d7281
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2019 14:36:15.0824 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR11MB4406
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:158.140.1.28; IPV:CAL; SCL:-1; CTRY:US;
+ EFV:NLI; SFV:NSPM;
+ SFS:(10009020)(4636009)(39860400002)(396003)(376002)(346002)(136003)(2980300002)(36092001)(189003)(199004)(36756003)(47776003)(42186006)(70206006)(7636002)(26005)(51416003)(305945005)(316002)(16586007)(5660300002)(8936002)(336012)(50466002)(50226002)(76130400001)(48376002)(107886003)(86362001)(2906002)(1076003)(70586007)(486006)(246002)(54906003)(426003)(6916009)(2351001)(4326008)(478600001)(26826003)(87636003)(476003)(2616005)(186003)(8676002)(6666004)(7416002)(356004)(126002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:BN8PR07MB6817; H:sjmaillnx1.cadence.com; FPR:;
+ SPF:SoftFail; LANG:en; PTR:corp.Cadence.COM; MX:1; A:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1076296b-91dc-4ada-d8e8-08d71110b4eb
+X-Microsoft-Antispam: BCL:0; PCL:0;
+ RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328);
+ SRVR:BN8PR07MB6817; 
+X-MS-TrafficTypeDiagnostic: BN8PR07MB6817:
+X-Microsoft-Antispam-PRVS: <BN8PR07MB6817CD2083D88F73390B6961DDC10@BN8PR07MB6817.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0109D382B0
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: 7iu/bsVckLe7H5CZaRpSL9/jRzadflnWmOZiofIwq86g9clE+Sj102XX7qoDm65MMpO6FHs1a6sEYzrUbGAtVL8BsC6xzG7ZbiPmx+lkw2C0rEkS1c4Y2Bu/d7i+QJnidzDgGKm9cCZGOqLEl3Bwe1Vp1ffc7BFNAd86PkKL6fqI8ENy3LpJCH6gNLtjj9jBETzeWAgCyNteWHy+4ULaa/ChP6JmG9v2yTzLpKenQxi9zG4zPua76vnBNOak5QmAMkUHVAKUCaPf0d+nKKvgEECqQEQLz5l+aS6f9cXwvp4L7x13+AwXA+pJS64CpE3JTi2Qd7Od9IanznRfMgMpGyeKqySogMHSJWPHqxiOWT8ScdN6a4OSvktvFbEWiq+W8h49A5rzztetAsmTyH3ZDQGmOPeep66pO1sRuFcqljA=
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2019 14:59:34.7838 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1076296b-91dc-4ada-d8e8-08d71110b4eb
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9; Ip=[158.140.1.28];
+ Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR07MB6817
+X-Proofpoint-SPF-Result: pass
+X-Proofpoint-SPF-Record: v=spf1 include:spf.smktg.jp
+ include:_spf.salesforce.com
+ include:mktomail.com include:spf-0014ca01.pphosted.com
+ include:spf.protection.outlook.com include:auth.msgapp.com
+ include:spf.mandrillapp.com ~all
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2019-07-25_06:, , signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check
+ score=0
+ priorityscore=1501 malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0
+ spamscore=0 clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907250175
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190725_073621_259351_4D9F9CC8 
-X-CRM114-Status: GOOD (  19.44  )
+X-CRM114-CacheID: sfid-20190725_080010_444318_1410F10F 
+X-CRM114-Status: GOOD (  15.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,141 +169,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: yogeshnarayan.gaur@nxp.com, vigneshr@ti.com, bbrezillon@kernel.org,
- richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Cc: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon <bbrezillon@kernel.org>,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Richard Weinberger <richard@nod.at>, Stefan Agner <stefan@agner.ch>,
+ Marek Vasut <marek.vasut@gmail.com>, Paul Burton <paul.burton@mips.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Dmitry Osipenko <digetx@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Kazuhiro Kasai <kasai.kazuhiro@socionext.com>,
+ Piotr Sroka <piotrs@cadence.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Driver for Cadence HPNFC NAND flash controller.
+
+HW DMA interface
+Page write and page read operations are executed in Command DMA mode.
+Commands are defined by DMA descriptors.
+In CDMA mode controller own DMA engine is used (Master DMA mode).
+Other operations defined by nand_op_instr are executed in "Generic" mode.
+In that mode data can be transferred only in by Slave DMA interface.
+Slave DMA interface can be connected directly to AXI or to an external
+DMA engine.
+
+HW ECC support
+Cadence NAND controller supports HW BCH correction.
+ ECC is transparent from SW point of view. It means that ECC codes
+are calculated and written to flash. In read operation ECC codes 
+are removed from user data and correction is made if necessary.
+
+Controller data layout with ECC enabled:
+ -------------------------------------------------------------------------
+|Sec 1 | ECC | Sec 2 | ECC ...... | Sec n | OOB (32B) | ECC | unused data |
+ -------------------------------------------------------------------------
+
+Last sector is extended by a out-bound data. Tha maximum size of
+"extra data" is 32 bytes. The oob data are protected by ECC. If we need to 
+read only oob data the whole last sector must be read. It is because 
+oob data are part of last sector. Reading oob function always reads 
+whole sector and writing oob function always writes whole last sector.
+Written data are interleaved with the ECC therefore part of the 
+last sector is located on oob area and the BBM is overwritten.
+
+SKIP BYTES feature
+To protect BBM the "skip byte" HW feature is used. 
+Write page function copies BBM value from first byte of oob data to 
+BBM offset defined by manufacturer. Read page functions always takes 
+BBM from flash manufacturer offset. It causes that for not written 
+pages the proper value of BBM marker is used.
+
+ECC size calculation
+Information about supported ECC steps and ECC strengths are read 
+from controller registers. ECC sector size and ECC strength can be
+configurable. Size of ECC depends on maximum supported sector size 
+it not depends on selected sector size. Therefore there is a separate
+function for calculating ECC size for each of possible 
+sector size/step size.
+
+Piotr Sroka (2):
+  Add new Cadence NAND driver to MTD subsystem
+  Add Cadence NAND controller driver
+
+ .../bindings/mtd/cadence-nand-controller.txt       |   50 +
+ drivers/mtd/nand/raw/Kconfig                       |    7 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/cadence-nand-controller.c     | 3021 ++++++++++++++++++++
+ 4 files changed, 3079 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+ create mode 100644 drivers/mtd/nand/raw/cadence-nand-controller.c
+
+-- 
+2.15.0
 
 
-On 07/25/2019 05:00 PM, Boris Brezillon wrote:
-> External E-Mail
-> 
-> 
-> On Thu, 25 Jul 2019 13:17:07 +0000
-> <Tudor.Ambarus@microchip.com> wrote:
-> 
->> Hi, Boris,
->>
->> On 07/25/2019 03:37 PM, Boris Brezillon wrote:
->>> External E-Mail
->>>
->>>
->>> On Thu, 25 Jul 2019 11:19:06 +0000
->>> <Tudor.Ambarus@microchip.com> wrote:
->>>   
->>>>> + */
->>>>> +static int spi_nor_exec_op(struct spi_nor *nor, struct spi_mem_op *op,
->>>>> +			   u64 *addr, void *buf, size_t len)
->>>>> +{
->>>>> +	int ret;
->>>>> +	bool usebouncebuf = false;    
->>>>
->>>> I don't think we need a bounce buffer for regs. What is the maximum size that we
->>>> read/write regs, SPI_NOR_MAX_CMD_SIZE(8)?
->>>>
->>>> In spi-nor.c the maximum length that we pass to nor->read_reg()/write_reg() is
->>>> SPI_NOR_MAX_ID_LEN(6).
->>>>
->>>> I can provide a patch to always use nor->cmd_buf when reading/writing regs so
->>>> you respin the series on top of it, if you feel the same.
->>>>
->>>> With nor->cmd_buf this function will be reduced to the following:
->>>>
->>>> static int spi_nor_spimem_xfer_reg(struct spi_nor *nor, struct spi_mem_op *op)
->>>> {
->>>> 	if (!op || (op->data.nbytes && !nor->cmd_buf))
->>>> 		return -EINVAL;
->>>>
->>>> 	return spi_mem_exec_op(nor->spimem, op);
->>>> }  
->>>
->>> Well, I don't think that's a good idea. ->cmd_buf is an array in the
->>> middle of the spi_nor struct, which means it won't be aligned on a
->>> cache line and you'll have to be extra careful not to touch the spi_nor
->>> fields when calling spi_mem_exec_op(). Might work, but I wouldn't take
->>> the risk if I were you.
->>>   
->>
->> u8 cmd_buf[SPI_NOR_MAX_CMD_SIZE] ____cacheline_aligned;
->>
->> Does this help?
-> 
-> I guess you'll also need one on the following field to guarantee that
-> cmd_buf is covering the whole cache line. TBH, I really prefer the
-> option of allocating ->cmd_buf.
-
-agreed.
-
-> 
->>
->>> Another option would be to allocate ->cmd_buf with kmalloc() instead of
->>> having it defined as a static array.
->>>   
->>>>
->>>> spi_nor_exec_op() always received a NULL addr, let's get rid of it. We won't
->>>> need buf anymore and you can retrieve the length from op->data.nbytes. Now that
->>>> we trimmed the arguments, I think I would get rid of the
->>>> spi_nor_data/nodata_op() wrappers and use spi_nor_spimem_xfer_reg() directly.  
->>>
->>> I think I added the addr param for a good reason (probably to support
->>> Octo mode cmds that take an address parameter). This being said, I
->>> agree with you, we should just pass everything through the op parameter
->>> (including the address if we ever need to add one).
->>>
->>>   
->>>>> +
->>>>> +/**
->>>>> + * spi_nor_spimem_xfer_data() - helper function to read/write data to
->>>>> + *                              flash's memory region
->>>>> + * @nor:        pointer to 'struct spi_nor'
->>>>> + * @op:         pointer to 'struct spi_mem_op' template for transfer
->>>>> + * @proto:      protocol to be used for transfer
->>>>> + *
->>>>> + * Return: number of bytes transferred on success, -errno otherwise
->>>>> + */
->>>>> +static ssize_t spi_nor_spimem_xfer_data(struct spi_nor *nor,
->>>>> +					struct spi_mem_op *op,
->>>>> +					enum spi_nor_protocol proto)
->>>>> +{
->>>>> +	bool usebouncebuf = false;    
->>>>
->>>> declare bool at the end to avoid stack padding.  
->>>
->>> But it breaks the reverse-xmas-tree formatting :-).
->>>   
->>>>  
->>>>> +	void *rdbuf = NULL;
->>>>> +	const void *buf;    
->>>>
->>>> you can get rid of rdbuf and buf if you pass buf as argument.  
->>>
->>> Hm, passing the buffer to send data from/receive data into is already
->>> part of the spi_mem_op definition process (which is done in the caller
->>> of this func) so why bother passing an extra arg to the function.
->>> Note that you had the exact opposite argument for the
->>> spi_nor_spimem_xfer_reg() prototype you suggested above (which I
->>> agree with BTW) :P.  
->>
->> In order to avoid if clauses like "if (op->data.dir == SPI_MEM_DATA_IN)". You
->> can't use op->data.buf directly, the *out const qualifier can be discarded.
-> 
-> Not entirely sure why you think this is important to avoid that
-> test (looks like a micro-optimization to me), but if you really want to
-> have a non-const buffer, just use the one pointed by op->data.buf.in
-> (buf is a union so both in and out point to the same thing). Note that
-> we'd need a comment explaining why this is safe to do that, because
-> bypassing constness constraints is usually a bad thing.
-
-No need for a buf argument, I missed that the const qualifier will be discarded
-when passing the pointer. We'll keep the function as it is, with the amend that
-the "enum spi_nor_protocol proto" will be removed from the arguments.
-
-Thanks for jumping in,
-ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
