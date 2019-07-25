@@ -2,82 +2,72 @@ Return-Path: <SRS0=y1SG=VW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82DA1C76190
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 21:02:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3626CC76190
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 21:03:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5573A218D4
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 21:02:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06ABD218D4
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 21:03:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r9RAPkOs";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nN1nf9Kh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5573A218D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ej3vmr1h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06ABD218D4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y0Rriuf6U7mzApsrhjHnwgjGRBGuECu/QGL6v5/DpPU=; b=r9RAPkOsY7pEU3
-	50CMIuFgMnByHUTaiCDnl+SFVb4vchvg+hMrJhMGkK8UXVWIFJcpsE1pPcF5FpVIBZnREOqWgHWm7
-	IvFXyi4rzP8JqTsgSzxJkfH9QjuQqy9wuz0Wh9n52fFkpZDzD2tBsGmsqz0NB3JADHGNi2ragXRX0
-	tThSlplLSXpm1mwTfT10hH54M/rss714iTvtSrO/vaMrxUdWIP72EraufvZshXl1+zlA+3emgKF4/
-	wVaC2b+zwLoIU6WFnEr5kZZT1efWUhYj/EjbQlrzmuor3IiYAumpeWHo6PsmlP7jgQeuWtq4+wuy+
-	yMEvLd4ixRZpt9kueodA==;
+	List-Owner; bh=xzeRnhhYgPRoOcJuZHMinJvfjuKrnQwS6RCYGTA/fr4=; b=ej3vmr1hphw2FX
+	hykhMTEBWr/ubnJTJyMS0zKYuUt/KOonZpZChsxENebjpWHax18haz2ltfJnP2/JMppos159ZSH50
+	wzM0n0xmqyWgNzgI5+K5ibD9CezyhPeJBoWiC3eE4N58jujoghxW//T4nFmbGrGKyAFFj8mXB0QsM
+	v2mtX7+5rHFuXfZYnqQqPRtQH4iO7PsMMEbwfILOn94OW4ELrGiYe6IbHKyd9TRQO81sQEwZjcWwS
+	8uXZoLUZHF5NEJ9MEYMAqogQWGGdqY6hJxeepxOq52q6ISTb2D3tx/R8+t15NFaNNOVDXv8FE7UPw
+	ZJOT+b071U3vYAPZdYiA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqksl-000063-Fj; Thu, 25 Jul 2019 21:02:35 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1hqktn-0000Lx-Uq; Thu, 25 Jul 2019 21:03:39 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqksj-00005k-69
- for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 21:02:34 +0000
-Received: by mail-wm1-x331.google.com with SMTP id v19so45926715wmj.5
- for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2019 14:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=VH2j9UqcG5THXeXlXzpZe34OtN+FEZ2Jpu3FKAObkLs=;
- b=nN1nf9Kh+HfsV2BmEEpCuS5zCB1I8sJ5uBJ0qhLPFfaYIpHD3xtV7QFvgJVEbvgw9O
- cfNwRbTm9+ZxPxGMRMEcyKf2dmtOXZkvVe2TIqDttI7ta/s04ebXOXtiliM28AlmlbI6
- em+MICQ/K52T9IC90c7TdRLhfza+uShVg6zcYRoMxqka79IdWdXxmsBE7PbmSCkyRyEO
- Yx6q861tYkFi+7yJ31Qby0+teNLubPXL2JasF4sNCbNlA0y66AUm8NCVfQCTnql0J3UP
- FMSfKBkfsWTH5JiI41KBxTgJh1DlW1+VRrgYwYHrwm3GdBZ7WOhswj/vza+uZAfOcMcu
- O+9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=VH2j9UqcG5THXeXlXzpZe34OtN+FEZ2Jpu3FKAObkLs=;
- b=qGMQbfKgDNQhwmT9jtewtKzkJw2AQOCP2mHnIuny3rgI6etFkOHMYwtCZfWWnuEzSb
- l326M2rksX4jCX6CsO+vCsD6nvtx5AO1vGyALC/b4KNJYWoLJfktgXwu10eZ2tCoaLgo
- IcJy10sL80nFCioAnZIM5PLcFs0cwT9P1x+K+4+FjB7Ur3avyhNaxLd7+B3VafT9qKKl
- Zl+PA45KI1mwtaKOQjfnDhSySShc0xhov7RE9dl/B055Dng95W3g5W11EI6832S38gSF
- LcCrpsh+jhChXogKheq591b9PuYcrSj3niDW4J1B6P3zYNafCiStTwUWlKItf/TReGz+
- Esdw==
-X-Gm-Message-State: APjAAAX2mLPAxdtuzM1c2Y6OjR3B2x000FPfoHfk9r9sTkoxRVmJwjqI
- 7sGrb7v+NZEItS04sfJSxiGzZqdo0e1jrPA6j0gEAQ==
-X-Google-Smtp-Source: APXvYqx+mjFATu2/gVX8Zxp8iZfPhTgkl+0ZNNGdEyLK4/K1Wc1kNvrJEaDvAnr0bAvcoIOaPTTCmIZ7noePnn40tpE=
-X-Received: by 2002:a1c:2e09:: with SMTP id u9mr81929407wmu.137.1564088551075; 
- Thu, 25 Jul 2019 14:02:31 -0700 (PDT)
+ id 1hqktk-0000LU-V0
+ for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 21:03:38 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 1E20B608311C;
+ Thu, 25 Jul 2019 23:03:35 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id LxP2cxpMBDD1; Thu, 25 Jul 2019 23:03:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id BEED9608313E;
+ Thu, 25 Jul 2019 23:03:34 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id m6JdiSMsNDEw; Thu, 25 Jul 2019 23:03:34 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id A4FC3608311C;
+ Thu, 25 Jul 2019 23:03:34 +0200 (CEST)
+Date: Thu, 25 Jul 2019 23:03:34 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <744856658.50252.1564088614575.JavaMail.zimbra@nod.at>
+In-Reply-To: <20190725205627.31313-1-richard@nod.at>
+References: <20190725205627.31313-1-richard@nod.at>
+Subject: Re: [PATCH] ubifs: Correctly initialize c->min_log_bytes
 MIME-Version: 1.0
-References: <1c8ba7bc90fa4695be180e106309819d@eckelmann.de>
-In-Reply-To: <1c8ba7bc90fa4695be180e106309819d@eckelmann.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 25 Jul 2019 23:02:19 +0200
-Message-ID: <CAFLxGvwWf2Ok=C7VAJFfB5ths3TV+X+ah8WotOC0gCCxW1H5Ow@mail.gmail.com>
-Subject: Re: Does a chattr -c/+c on ubifs automagically compress/uncompress
- all blocks of an inode ?
-To: "Mainz, Roland" <R.Mainz@eckelmann.de>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF60 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Correctly initialize c->min_log_bytes
+Thread-Index: SwnPH8ZESbV8mnXC/gLwFkHEHZxb8A==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190725_140233_233977_E9EAE482 
-X-CRM114-Status: UNSURE (   6.09  )
+X-CRM114-CacheID: sfid-20190725_140337_142880_D54C4B06 
+X-CRM114-Status: UNSURE (   8.16  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -90,18 +80,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 25, 2019 at 6:18 PM Mainz, Roland <R.Mainz@eckelmann.de> wrote:
-> Does a chattr -c/+c automagically compress/uncompress all blocks of an inode in ubifs, or will the change only affect newly written or updated blocks ?
-
-Nope, only new writes are affected. No re-compression.
-AFAIK this is also what other filesystems do.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogInJpY2hhcmQiIDxyaWNoYXJk
+QG5vZC5hdD4KPiBBbjogImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
+Pgo+IENDOiAiVXdlIEtsZWluZS1Lw7ZuaWciIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXgu
+ZGU+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+IEdlc2VuZGV0OiBEb25uZXJzdGFnLCAy
+NS4gSnVsaSAyMDE5IDIyOjU2OjI3Cj4gQmV0cmVmZjogW1BBVENIXSB1YmlmczogQ29ycmVjdGx5
+IGluaXRpYWxpemUgYy0+bWluX2xvZ19ieXRlcwoKPiBDdXJyZW50bHkgb24gYSBmcmVzaGx5IG1v
+dW50ZWQgVUJJRlMsIGMtPm1pbl9sb2dfYnl0ZXMgaXMgMC4KPiBUaGlzIGNhbiBsZWFkIHRvIGEg
+bG9nIG92ZXJydW4gYW5kIG1ha2UgY29tbWl0cyBmYWlsLgo+IAo+IFJlY2VudCBrZXJuZWxzIHdp
+bGwgcmVwb3J0IHRoZSBmb2xsb3dpbmcgYXNzZXJ0Ogo+IFVCSUZTIGFzc2VydCBmYWlsZWQ6IGMt
+PmxoZWFkX2xudW0gIT0gYy0+bHRhaWxfbG51bSwgaW4gZnMvdWJpZnMvbG9nLmM6NDEyCj4gCj4g
+Yy0+bWluX2xvZ19ieXRlcyBjYW4gaGF2ZSB0d28gc3RhdGVzLCAwIGFuZCBjLT5sZWJfc2l6ZS4K
+PiBJdCBjb250cm9scyBob3cgbXVjaCBieXRlcyBvZiB0aGUgbG9nIGFyZWEgYXJlIHJlc2VydmVk
+IGZvciBub24tYnVkCj4gbm9kZXMgc3VjaCBhcyBjb21taXQgbm9kZXMuCj4gCj4gQWZ0ZXIgYSBj
+b21taXQgaXQgaGFzIHRvIGJlIHNldCB0byBjLT5sZWJfc2l6ZSBzdWNoIHRoYXQgd2UgaGF2ZSBh
+bHdheXMKPiBlbm91Z2h0IHNwYWNlIGZvciBhIGNvbW1pdC4gV2hpbGUgYSBjb21taXQgcnVucyBp
+dCBjYW4gYmUgMCB0byBtYWtlIHRoZQo+IHJlbWFpbmluZyBieXRlcyBvZiB0aGUgbG9nIGF2YWls
+YWJsZSB0byB3cml0ZXJzLgo+IAo+IEhhdmluZyBpdCBzZXQgdG8gMCByaWdodCBhZnRlciBtb3Vu
+dCBpcyB3cm9uZyBzaW5jZSBubyBzcGFjZSBmb3IgY29tbWl0cwo+IGlzIHJlc2VydmVkLgo+IAo+
+IFJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2Vu
+aWdAcGVuZ3V0cm9uaXguZGU+Cj4gU2lnbmVkLW9mZi1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxy
+aWNoYXJkQG5vZC5hdD4KCkZpeGVzOiAxZTUxNzY0YTNjMmFjICgiVUJJRlM6IGFkZCBuZXcgZmxh
+c2ggZmlsZSBzeXN0ZW0iKQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
