@@ -2,101 +2,65 @@ Return-Path: <SRS0=y1SG=VW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC5AC7618B
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 13:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F2B2C7618B
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 14:00:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E338722BEF
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 13:48:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 030972075E
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jul 2019 14:00:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="EZfoTJKX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E338722BEF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="W/DkUqYU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 030972075E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PRAnbVJJCuxmAoWyTX8fnCZWmYUMdbHJBTAyjVm5K2o=; b=EZfoTJKXc4mi8L
-	5cZZU5uSshjHtPARTQcZSOZ4JuLpnCVKMbtMIpm4N+w1ginPTeQEkb1zuLnr/i4pJrRMD4s2cSBQJ
-	7/XD0ouXZxpLFOeq5g5qQkXdnINOKJks0KjSDwnbFWN1so/lYJfr+JwpnyzujMTfGkQfHmVnJdXwS
-	0wzV3gWg9gkRzVqngfXqVXlxi7/ezASU90bJcJJr5ERSVgQELw7B/t0vIuefVUwi29I2xmkQWzBhF
-	DJeG2LAIwueMcCIWNPdsLiA28GkJC0umpvLehT50VccqwVntmjHfPOttCrnoNCOt52IrRPPgqaQWa
-	GEcgcy//EbL9AEwksWDA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uqk8fXwpSqAhE6bvw4V8wTSyzU2XaiaiIS9Cq/ReZBA=; b=W/DkUqYUKqI9tZ
+	HhVaez0uG3WsBL0uBDCOlgeR7bT5jSmatmx2zruhceLgVjTyaAoRqyqsEzy+9+r3F9DMvqw6EQpKH
+	gy1dAf4Ezqm1u3CC92xMo/ShwhWiAnDoimDoO7E/sENoDwTNvZ+x2apaxNRF1fxRLWjaNhn1btr2/
+	47p1t9OKs1Yzn5oksTsnzmQmiFV6aq/XC5Cl+JoJFQugdUUvl0KYykW8FsPFQoUiZS8bnAETWvGbR
+	GDWKYnNmcwm1lQy17mkD6wAgiNi9taGl6PmBSb8eQDZNCT41byZBVm2dF5yPYhJ7OQ4UBy91DnpWJ
+	eWtH4rBsVyuvxIp0NU0A==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqe63-0003Xs-CN; Thu, 25 Jul 2019 13:47:51 +0000
-Received: from mail.delivery-59-eu-central-1.prod.hydra.sophos.com
- ([35.159.27.150])
+	id 1hqeIL-0005H6-Uu; Thu, 25 Jul 2019 14:00:33 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqe5y-0003WL-Dx
- for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 13:47:49 +0000
-Received: from ip-172-20-0-46.eu-central-1.compute.internal
- (ip-172-20-0-46.eu-central-1.compute.internal [127.0.0.1])
- by mail.delivery-59-eu-central-1.prod.hydra.sophos.com (Postfix) with ESMTP id
- 45vYSG1KSBzFpVT
- for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2019 13:47:42 +0000 (UTC)
-X-Sophos-Email-ID: d8ebc45aaae84b6799d0d65c7d831f7b
-X-Sophos-TLS-Probe: SUCCESS
-Received: from smtp.eckelmann.de (smtp.eckelmann.de [217.19.183.80])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by relay-eu-central-1.prod.hydra.sophos.com (Postfix) with ESMTPS id
- 45vYS35Y1MzgYDx
- for <linux-mtd@lists.infradead.org>; Thu, 25 Jul 2019 13:47:31 +0000 (UTC)
-Received: from EX-SRV1.eckelmann.group (2a00:1f08:4007:e035:172:18:35:4) by
- EX-SRV2.eckelmann.group (2a00:1f08:4007:e035:172:18:35:5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1591.10; Thu, 25 Jul 2019 15:47:30 +0200
-Received: from EX-SRV1.eckelmann.group ([fe80::250:56ff:fe8b:faa6]) by
- EX-SRV1.eckelmann.group ([fe80::250:56ff:fe8b:faa6%3]) with mapi id
- 15.01.1591.017; Thu, 25 Jul 2019 15:47:30 +0200
-From: "Mainz, Roland" <R.Mainz@eckelmann.de>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: ubsfs scrubbing ?
-Thread-Topic: ubsfs scrubbing ?
-Thread-Index: AQHVQu9MK95b/s+0xk2i2/lN4ArN3A==
-Date: Thu, 25 Jul 2019 13:47:30 +0000
-Message-ID: <e42672a6e383438ba32b61da1dbd70c7@eckelmann.de>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [2a00:1f08:4007:f224:172:18:224:13]
+ id 1hqeII-0005AR-Vm
+ for linux-mtd@lists.infradead.org; Thu, 25 Jul 2019 14:00:32 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ECBEC28A131;
+ Thu, 25 Jul 2019 15:00:28 +0100 (BST)
+Date: Thu, 25 Jul 2019 16:00:25 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Move m25p80 code in spi-nor.c
+Message-ID: <20190725160025.2d8e24f8@collabora.com>
+In-Reply-To: <dbb33973-bb6f-9a01-b821-693387aff98a@microchip.com>
+References: <20190720080023.5279-1-vigneshr@ti.com>
+ <20190720080023.5279-2-vigneshr@ti.com>
+ <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
+ <20190725143745.634efcd6@collabora.com>
+ <dbb33973-bb6f-9a01-b821-693387aff98a@microchip.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-LASED-Pver: 0000002
-X-Sophos-Email: [eu-central-1] Antispam-Engine: 3.1.5,
- AntispamData: 2019.7.25.133916
-X-LASED-SpamProbabilty: 0.079439
-X-LASED-Hits: BODYTEXTP_SIZE_3000_LESS 0.000000,
- BODYTEXTP_SIZE_400_LESS 0.000000, BODY_SIZE_1000_LESS 0.000000,
- BODY_SIZE_2000_LESS 0.000000, BODY_SIZE_300_399 0.000000,
- BODY_SIZE_5000_LESS 0.000000, BODY_SIZE_7000_LESS 0.000000,
- HTML_00_01 0.050000, HTML_00_10 0.050000, NO_URI_HTTPS 0.000000,
- OUTBOUND 0.000000, OUTBOUND_SOPHOS 0.000000, WEBMAIL_SOURCE 0.000000,
- __ANY_URI 0.000000, __BODY_NO_MAILTO 0.000000, __BUSINESS_SIGNATURE 0.000000, 
- __CC_NAME 0.000000, __CC_NAME_DIFF_FROM_ACC 0.000000, __CC_REAL_NAMES 0.000000,
- __CT 0.000000, __CTE 0.000000, __CT_TEXT_PLAIN 0.000000,
- __FROM_DOMAIN_IN_ANY_CC1 0.000000, __FROM_DOMAIN_IN_RCPT 0.000000,
- __HAS_CC_HDR 0.000000, __HAS_FROM 0.000000, __HAS_MSGID 0.000000,
- __HAS_XOIP 0.000000, __MIME_TEXT_ONLY 0.000000, __MIME_TEXT_P 0.000000,
- __MIME_TEXT_P1 0.000000, __MIME_VERSION 0.000000, __MSGID_32HEX 0.000000,
- __NO_HTML_TAG_RAW 0.000000, __SANE_MSGID 0.000000, __SUBJ_ALPHA_START 0.000000,
- __TO_MALFORMED_2 0.000000, __TO_NAME 0.000000, __TO_NO_NAME 0.000000,
- __URI_NO_WWW 0.000000, __URI_NS 0.000000
-X-LASED-Authed: 1
-X-LASED-Spam: NonSpam
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190725_064746_608285_555E9C25 
-X-CRM114-Status: UNSURE (   5.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190725_070031_299866_A7F18402 
+X-CRM114-Status: GOOD (  28.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,43 +72,134 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "Mainz, Roland" <R.Mainz@eckelmann.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Cc: yogeshnarayan.gaur@nxp.com, vigneshr@ti.com, bbrezillon@kernel.org,
+ richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Thu, 25 Jul 2019 13:17:07 +0000
+<Tudor.Ambarus@microchip.com> wrote:
 
-Hi!
+> Hi, Boris,
+> 
+> On 07/25/2019 03:37 PM, Boris Brezillon wrote:
+> > External E-Mail
+> > 
+> > 
+> > On Thu, 25 Jul 2019 11:19:06 +0000
+> > <Tudor.Ambarus@microchip.com> wrote:
+> >   
+> >>> + */
+> >>> +static int spi_nor_exec_op(struct spi_nor *nor, struct spi_mem_op *op,
+> >>> +			   u64 *addr, void *buf, size_t len)
+> >>> +{
+> >>> +	int ret;
+> >>> +	bool usebouncebuf = false;    
+> >>
+> >> I don't think we need a bounce buffer for regs. What is the maximum size that we
+> >> read/write regs, SPI_NOR_MAX_CMD_SIZE(8)?
+> >>
+> >> In spi-nor.c the maximum length that we pass to nor->read_reg()/write_reg() is
+> >> SPI_NOR_MAX_ID_LEN(6).
+> >>
+> >> I can provide a patch to always use nor->cmd_buf when reading/writing regs so
+> >> you respin the series on top of it, if you feel the same.
+> >>
+> >> With nor->cmd_buf this function will be reduced to the following:
+> >>
+> >> static int spi_nor_spimem_xfer_reg(struct spi_nor *nor, struct spi_mem_op *op)
+> >> {
+> >> 	if (!op || (op->data.nbytes && !nor->cmd_buf))
+> >> 		return -EINVAL;
+> >>
+> >> 	return spi_mem_exec_op(nor->spimem, op);
+> >> }  
+> > 
+> > Well, I don't think that's a good idea. ->cmd_buf is an array in the
+> > middle of the spi_nor struct, which means it won't be aligned on a
+> > cache line and you'll have to be extra careful not to touch the spi_nor
+> > fields when calling spi_mem_exec_op(). Might work, but I wouldn't take
+> > the risk if I were you.
+> >   
+> 
+> u8 cmd_buf[SPI_NOR_MAX_CMD_SIZE] ____cacheline_aligned;
+> 
+> Does this help?
 
-----
+I guess you'll also need one on the following field to guarantee that
+cmd_buf is covering the whole cache line. TBH, I really prefer the
+option of allocating ->cmd_buf.
 
-Is there a tool to scrub an ubifs filesystem, i.e. that data are read, veri=
-fied and then written to a new block/leb ?
+> 
+> > Another option would be to allocate ->cmd_buf with kmalloc() instead of
+> > having it defined as a static array.
+> >   
+> >>
+> >> spi_nor_exec_op() always received a NULL addr, let's get rid of it. We won't
+> >> need buf anymore and you can retrieve the length from op->data.nbytes. Now that
+> >> we trimmed the arguments, I think I would get rid of the
+> >> spi_nor_data/nodata_op() wrappers and use spi_nor_spimem_xfer_reg() directly.  
+> > 
+> > I think I added the addr param for a good reason (probably to support
+> > Octo mode cmds that take an address parameter). This being said, I
+> > agree with you, we should just pass everything through the op parameter
+> > (including the address if we ever need to add one).
+> > 
+> >   
+> >>> +
+> >>> +/**
+> >>> + * spi_nor_spimem_xfer_data() - helper function to read/write data to
+> >>> + *                              flash's memory region
+> >>> + * @nor:        pointer to 'struct spi_nor'
+> >>> + * @op:         pointer to 'struct spi_mem_op' template for transfer
+> >>> + * @proto:      protocol to be used for transfer
+> >>> + *
+> >>> + * Return: number of bytes transferred on success, -errno otherwise
+> >>> + */
+> >>> +static ssize_t spi_nor_spimem_xfer_data(struct spi_nor *nor,
+> >>> +					struct spi_mem_op *op,
+> >>> +					enum spi_nor_protocol proto)
+> >>> +{
+> >>> +	bool usebouncebuf = false;    
+> >>
+> >> declare bool at the end to avoid stack padding.  
+> > 
+> > But it breaks the reverse-xmas-tree formatting :-).
+> >   
+> >>  
+> >>> +	void *rdbuf = NULL;
+> >>> +	const void *buf;    
+> >>
+> >> you can get rid of rdbuf and buf if you pass buf as argument.  
+> > 
+> > Hm, passing the buffer to send data from/receive data into is already
+> > part of the spi_mem_op definition process (which is done in the caller
+> > of this func) so why bother passing an extra arg to the function.
+> > Note that you had the exact opposite argument for the
+> > spi_nor_spimem_xfer_reg() prototype you suggested above (which I
+> > agree with BTW) :P.  
+> 
+> In order to avoid if clauses like "if (op->data.dir == SPI_MEM_DATA_IN)". You
+> can't use op->data.buf directly, the *out const qualifier can be discarded.
 
-----
+Not entirely sure why you think this is important to avoid that
+test (looks like a micro-optimization to me), but if you really want to
+have a non-const buffer, just use the one pointed by op->data.buf.in
+(buf is a union so both in and out point to the same thing). Note that
+we'd need a comment explaining why this is safe to do that, because
+bypassing constness constraints is usually a bad thing.
 
-Bye,
-Roland =
+> 
+> pointer to buf was not needed in spi_nor_spimem_xfer_reg(), we could use
+> nor->cmd_buf.
 
--- =
+Do you mean that callers of spi_nor_spimem_xfer_data() should put data
+into/read from ->cmd_buf and let spi_nor_spimem_xfer_data() assign
+op->data.buf.{in,out} to ->cmd_buf?
 
- Roland Mainz, MAA/CAS
- Eckelmann AG, Berliner Str. 161, 65205 Wiesbaden
- Telefon +49/611/7103-661, Fax +49/611/7103-133
- r.mainz@eckelmann.de
- =
-
- Eckelmann Group =96 Source of inspiration
- =
-
- =
-
-  =
-
- =
-
-    =
 
 ______________________________________________________
 Linux MTD discussion mailing list
