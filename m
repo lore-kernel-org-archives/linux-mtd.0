@@ -2,65 +2,67 @@ Return-Path: <SRS0=VmK4=VX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA64FC76190
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 00:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDCDFC7618B
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 07:45:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F6FC22CBA
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 00:10:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1426217D4
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 07:45:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aOOvs2qX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="EjeAwp0Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F6FC22CBA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="GdLxQJgq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1426217D4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:To:
-	Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=lQH4yg10PBmoxqdrbRXsL9kKAkR+qgn3Sp5TESSkm5Y=; b=aOOvs2qXzlSLYywZ/LGEtrPZp
-	t/w/qKSxvmf5qFfxxcJ0z/PKBxvXwJEKKb85U7xuqJJOP4JfoKiaUNoYgS/Vzu+NZHfeUYGNlIHqE
-	dHnhSuJGsdRoWF87At3ublUCcFietzt5c3UMh0Kw8wylE5rjhV+kutr8q02zdtm0TgE0dzgRrpp6k
-	hCT2gruEpwJHetjKm3y5g7UeRrI5ahmDJkIkKZAoqs1tsR4K0UWEV7PnKZSI6tAlIFinywklkmitn
-	65NXJiVq5klZ9ExrEJ6xqxjGsoYJOSk999HMTmdoxvJM50DLFyCnabZoGuOUh6hmfG3NulFIXChRL
-	oCnGTQABQ==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Oh1AJ+DVZON+6yEJ7eA4rAQtvXaGxhFywdOgyxQt1T0=; b=GdLxQJgqh3Qudz
+	GJAgOaPzbCLk5TuhpColv89SoUZlMtyvsp46w+L/OsG5xqhBXukANaJ3YtKebJxREEMmbY2mRUR3N
+	6brdUnZ7kyYb/A25S8qAsatc+PgqFUSXhrefxpdkDn+jz9lHIV6PMnvSmYE48FavE2/+q66h7abUq
+	itcricLly0syCacm0+01urGeM35DTyp+QgfrF+JhzTlmBLFU1gP5XDnQI4HVTYx0JHGMYsUvPZ21g
+	iOMwh66/BCLF6Omk/1Ag2v2NI6MJHc514W+b5IV3cSk9FsZC0o2Pdlhs2LtvOrCgqkitTbcUDnW7L
+	ydWtBUs7U4E0NmIdLhVA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hqnoQ-0003M9-9s; Fri, 26 Jul 2019 00:10:18 +0000
-Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
+	id 1hquuI-000776-Dp; Fri, 26 Jul 2019 07:44:50 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hqnoM-0003LD-Ub
- for linux-mtd@lists.infradead.org; Fri, 26 Jul 2019 00:10:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1564099806; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gFaFrhEeyihyNbT3NtUBxEN4a+tGXeK6Vj+6otZDbtA=;
- b=EjeAwp0Z/Iz3JRj9xNi/OYWvP2qoXOXLR2kbAZQ7FDIMPuZOSiF0qc+SgEr+9qWUDz7njx
- 9fSJSmwLBKrpzZNSM2vLDDU9dSKZqz4/qtlXGm6qm9sWN7tSWyprI05k88rU07mM/u+DSu
- bZeGz0/dkH6Ou3QGiuwrGDsK3pWy2rI=
-Date: Thu, 25 Jul 2019 20:09:41 -0400
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 02/11] MIPS: qi_lb60: Migrate to devicetree
-To: Paul Burton <paul.burton@mips.com>
-Message-Id: <1564099781.1699.0@crapouillou.net>
-In-Reply-To: <20190725234735.h7qmtt26qpkjw3n6@pburton-laptop>
-References: <20190725220215.460-1-paul@crapouillou.net>
- <20190725220215.460-3-paul@crapouillou.net>
- <20190725234735.h7qmtt26qpkjw3n6@pburton-laptop>
+ id 1hquuF-00076f-FG
+ for linux-mtd@lists.infradead.org; Fri, 26 Jul 2019 07:44:48 +0000
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28]
+ helo=dude02.lab.pengutronix.de)
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <mfe@pengutronix.de>)
+ id 1hquuA-0007C9-Jg; Fri, 26 Jul 2019 09:44:42 +0200
+Received: from mfe by dude02.lab.pengutronix.de with local (Exim 4.89)
+ (envelope-from <mfe@pengutronix.de>)
+ id 1hquuA-0005e1-6u; Fri, 26 Jul 2019 09:44:42 +0200
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: boris.brezillon@bootlin.com,
+	miquel.raynal@bootlin.com
+Subject: [PATCH] mtd: rawnand: micron: handle "ecc off" devices correctly
+Date: Fri, 26 Jul 2019 09:44:34 +0200
+Message-Id: <20190726074434.21627-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190725_171015_363330_501B1DF8 
-X-CRM114-Status: GOOD (  18.06  )
+X-CRM114-CacheID: sfid-20190726_004447_506817_CE0CB45C 
+X-CRM114-Status: GOOD (  14.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,107 +74,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-fbdev@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, James Hogan <jhogan@kernel.org>,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Sebastian Reichel <sre@kernel.org>, od@zcrc.me, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, Lee Jones <lee.jones@linaro.org>,
- Artur Rojek <contact@artur-rojek.eu>, Richard Weinberger <richard@nod.at>,
- linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
- Jean Delvare <jdelvare@suse.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org,
- linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
- Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- dmaengine@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Some devices don't support ecc "official". By "official" I mean that the
+feature can be set trough the "SET FEATURE (EFh)" command but isn't
+reported to the "READ ID Parameter Tables". Because the "ECC Field"
+still says that it is disabled. This is applicable at least
+for the MT29F2G08ABAGA and MT29F2G08ABBGA devices. Even worse the
+datasheet describes the ECC feature in chapter "ECC Protection".
 
+Currently the driver checks the "READ ID Parameter" field directly after
+we enabled the feature. If the check fails we return immediately but
+leave the ECC on. Now all future read/program cycles goes trough the ecc
+and the host nfc gets confused and reports ECC errors.
 
-Le jeu. 25 juil. 2019 =E0 19:47, Paul Burton <paul.burton@mips.com> a =
+To address this in a common way we need to turn off the ECC directly
+after reading the "READ ID Parameter" and before checking the
+"ECC status".
 
-=E9crit :
-> Hi Paul,
-> =
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+---
+ drivers/mtd/nand/raw/nand_micron.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-> On Thu, Jul 25, 2019 at 06:02:06PM -0400, Paul Cercueil wrote:
->>  Move all the platform data to devicetree.
-> =
-
-> Nice! :)
-> =
-
->>  The only bit dropped is the PWM beeper, which requires the PWM =
-
->> driver
->>  to be updated. I figured it's okay to remove it here since it's =
-
->> really
->>  a non-critical device, and it'll be re-introduced soon enough.
-> =
-
-> OK, I can see that being a price worth paying. Though it's possible to
-> include the binding at least for that in this series I'd be even
-> happier. Actually I see we already have
-> =
-
->   Documentation/devicetree/bindings/pwm/ingenic,jz47xx-pwm.txt
-> =
-
-> in mainline - what needs to change with it?
-
-The PWM driver will be updated to use the TCU clocks and the regmap =
-
-provided
-by the TCU driver. The PWM node will be a sub-node of the TCU one.
-
-Additionally, there is this[1] ongoing discussion about PWM which makes
-me uneasy about how to write the binding. So I'd rather not rush it,
-because once the devicetree is written, it's ABI.
-
-[1]: https://lkml.org/lkml/2019/5/22/607
-
-
->>  +	spi {
->>  +		compatible =3D "spi-gpio";
->>  +		#address-cells =3D <1>;
->>  +		#size-cells =3D <0>;
->>  +
->>  +		sck-gpios =3D <&gpc 23 GPIO_ACTIVE_HIGH>;
->>  +		mosi-gpios =3D <&gpc 22 GPIO_ACTIVE_HIGH>;
->>  +		cs-gpios =3D <&gpc 21 GPIO_ACTIVE_LOW>;
->>  +		num-chipselects =3D <1>;
->>  +
->>  +		spi@0 {
->>  +			compatible =3D "ili8960";
-> =
-
-> Should this be "ilitek,ili8960"?
-> =
-
-> Is there a binding & driver for this submitted somewhere? If not then =
-
-> do
-> we need this at all? It doesn't look like the existing platform data
-> would actually lead to a driver being loaded so I'm wondering if we =
-
-> can
-> just drop this until such a driver (or at least a documented DT =
-
-> binding)
-> exists.
-
-I can drop it. There is no driver for it, and I'm not even sure the LB60
-has a ILI8960 in the first place.
-
-
-> Thanks,
->     Paul
-
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 1622d3145587..fb199ad2f1a6 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -390,6 +390,14 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ 	    (chip->id.data[4] & MICRON_ID_INTERNAL_ECC_MASK) != 0x2)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+ 
++	/*
++	 * It seems that there are devices which do not support ECC official.
++	 * At least the MT29F2G08ABAGA / MT29F2G08ABBGA devices supports
++	 * enabling the ECC feature but don't reflect that to the READ_ID table.
++	 * So we have to guarantee that we disable the ECC feature directly
++	 * after we did the READ_ID table command. Later we can evaluate the
++	 * ECC_ENABLE support.
++	 */
+ 	ret = micron_nand_on_die_ecc_setup(chip, true);
+ 	if (ret)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+@@ -398,13 +406,13 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ 	if (ret)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+ 
+-	if (!(id[4] & MICRON_ID_ECC_ENABLED))
+-		return MICRON_ON_DIE_UNSUPPORTED;
+-
+ 	ret = micron_nand_on_die_ecc_setup(chip, false);
+ 	if (ret)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+ 
++	if (!(id[4] & MICRON_ID_ECC_ENABLED))
++		return MICRON_ON_DIE_UNSUPPORTED;
++
+ 	ret = nand_readid_op(chip, 0, id, sizeof(id));
+ 	if (ret)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+-- 
+2.20.1
 
 
 ______________________________________________________
