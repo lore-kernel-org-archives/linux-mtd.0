@@ -4,59 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D7D1C7618B
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 13:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F146C7618F
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 18:45:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFDDA22BE8
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 13:26:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 018D822BEF
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 18:45:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qLw2tSdp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFDDA22BE8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="uQI3gvsG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 018D822BEF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rnsiy+Z8UaeEIFVkxS0cK4rGsFWlMvvT3bQxy3ijDZ8=; b=qLw2tSdp5qtjog
-	U9nyg68Zw2utdfCAjQLY0mewynq9+u9TwPHwG9MriwnascqiPzltAWLf/SvLGn5BvFFGtpzacFKzO
-	+/0y4wgcfPCmEhCxaiAoYavp9ORDDrgLccN6A+O3ho3ZrviA1oUmJEHwNXdiu1iHAO0aIYneDPNbD
-	d+IjSdssvjNu+gJ4ppiwUVnj0xPOdYY/ueDBSxATPLV3H+dvkOINwP2pweii0eOUc7Su9cmawTIZr
-	VJWRECPbSavhxOM+EW0MCS0R7oYjKJrmwHrxRDQ7zgSyQzyumq4rXBZ1bdcSNkOT+oXMdNxaeViza
-	y0c8263VZFrxEGpo/abA==;
+	List-Owner; bh=CvtTRJEuEP7dnQIcHIDHOlHzIKaCRUNVWG6bHGecOp0=; b=uQI3gvsGfqhdoo
+	cX/JfltGSeLSAjbmTqrHdGx1KZb3LP5ecuKsy3L1ELHISVZTtbWIWRbwgxyOpqRbkpk2ctm8j8oM9
+	Jh7luYArCRyx6MUdXDzSYjjy+8oJ9l5CSWG4kkXrIK7rssi8JDKf3uZ28VWKe5R1kF6ESX8u0zhD5
+	tZ61cKzASHgqOB5qR4DoCz6L4HJ4mV84z8vyC1ARrsi8M4cnMbBvSoFzxgzbyyNHsHTthNvmJJ+Qt
+	k7mMjIG0cUc2cYBjRRt4J40ULzoL0iHIHrih89PO4T9TSIdpWzYkz6pmtbEyytit0tB+0fRRIfnvr
+	PIqIjeHEJQRX8vvCqyfQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hr0F6-0004bg-P0; Fri, 26 Jul 2019 13:26:40 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1hr5Df-0006gj-7J; Fri, 26 Jul 2019 18:45:31 +0000
+Received: from asavdk3.altibox.net ([109.247.116.14])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hr0F3-0004as-LC
- for linux-mtd@lists.infradead.org; Fri, 26 Jul 2019 13:26:39 +0000
-X-Originating-IP: 86.250.200.211
-Received: from xps13 (lfbn-1-17395-211.w86-250.abo.wanadoo.fr [86.250.200.211])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 422771BF213;
- Fri, 26 Jul 2019 13:26:29 +0000 (UTC)
-Date: Fri, 26 Jul 2019 15:26:29 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marco Felsch <m.felsch@pengutronix.de>
-Subject: Re: [PATCH] mtd: rawnand: micron: handle "ecc off" devices correctly
-Message-ID: <20190726152629.30575327@xps13>
-In-Reply-To: <20190726094010.6sj4vrvco4hpjitu@pengutronix.de>
-References: <20190726111716.591992c7@xps13> <20190726112001.4035f85f@xps13>
- <20190726094010.6sj4vrvco4hpjitu@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1hr5Dc-0006g8-Sq
+ for linux-mtd@lists.infradead.org; Fri, 26 Jul 2019 18:45:30 +0000
+Received: from ravnborg.org (unknown [158.248.194.18])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by asavdk3.altibox.net (Postfix) with ESMTPS id 05C2720117;
+ Fri, 26 Jul 2019 20:45:23 +0200 (CEST)
+Date: Fri, 26 Jul 2019 20:45:22 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 05/11] video/fbdev: Drop JZ4740 driver
+Message-ID: <20190726184522.GB14981@ravnborg.org>
+References: <20190725220215.460-1-paul@crapouillou.net>
+ <20190725220215.460-6-paul@crapouillou.net>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190725220215.460-6-paul@crapouillou.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=dqr19Wo4 c=1 sm=1 tr=0
+ a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8
+ a=p6pI0oa4AAAA:8 a=7gkXJVJtAAAA:8 a=_OfsqKrkMx9ODVYiAzcA:9
+ a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=9cw2y2bKwytFd151gpuR:22
+ a=E9Po1WZjFZOl8hwRPBS3:22
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190726_062638_007740_14860459 
-X-CRM114-Status: GOOD (  24.16  )
+X-CRM114-CacheID: sfid-20190726_114529_110033_FC2949F4 
+X-CRM114-Status: GOOD (  10.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,78 +75,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Lucas Stach <l.stach@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-fbdev@vger.kernel.org,
+ James Hogan <jhogan@kernel.org>, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org, od@zcrc.me,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Lee Jones <lee.jones@linaro.org>, Artur Rojek <contact@artur-rojek.eu>,
+ Richard Weinberger <richard@nod.at>, linux-pm@vger.kernel.org,
+ Paul Burton <paul.burton@mips.com>, Guenter Roeck <linux@roeck-us.net>,
+ devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
+ linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyY28sCgpNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPiB3cm90ZSBv
-biBGcmksIDI2IEp1bCAyMDE5CjExOjQwOjEwICswMjAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24g
-MTktMDctMjYgMTE6MjAsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPiBXcm9uZyBhZGRyZXNzIGZv
-ciBCb3JpcyBhZ2Fpbiwgc29ycnkgZm9yIHRoZSBub2lzZS4KPiA+ICAgCj4gPiA+IEhpIEx1Y2Fz
-LCBNYXJjbywKPiA+ID4gCj4gPiA+IEx1Y2FzIFN0YWNoIDxsLnN0YWNoQHBlbmd1dHJvbml4LmRl
-PiB3cm90ZSBvbiBGcmksIDI2IEp1bCAyMDE5IDEwOjU0OjExCj4gPiA+ICswMjAwOgo+ID4gPiAg
-IAo+ID4gPiA+IEhpIE1pZ3VlbCwKPiA+ID4gPiAKPiA+ID4gPiBBbSBGcmVpdGFnLCBkZW4gMjYu
-MDcuMjAxOSwgMTA6MjggKzAyMDAgc2NocmllYiBNaXF1ZWwgUmF5bmFsOiAgICAKPiA+ID4gPiA+
-IEhpIE1hcmNvLAo+ID4gPiA+ID4gCj4gPiA+ID4gPiArIFJpY2hhcmQKPiA+ID4gPiA+ICsgV29y
-a2luZyBlLW1haWwgYWRkcmVzcyBmb3IgQm9yaXMKPiA+ID4gPiA+ICAgICAgIAo+ID4gPiA+ID4g
-PiBNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPiB3cm90ZSBvbiBGcmksIDI2
-IEp1bCAyMDE5ICAgICAgCj4gPiA+ID4gPiAwOTo0NDozNCArMDIwMDoKPiA+ID4gPiA+ICAgICAg
-IAo+ID4gPiA+ID4gPiBTb21lIGRldmljZXMgZG9uJ3Qgc3VwcG9ydCBlY2MgIm9mZmljaWFsIi4g
-QnkgIm9mZmljaWFsIiBJIG1lYW4gdGhhdCB0aGUgICAgCj4gPiA+IAo+ID4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBeIHVwcGVyY2FzZSBFQ0MKPiA+ID4gICAKPiA+ID4gPiA+
-ID4gZmVhdHVyZSBjYW4gYmUgc2V0IHRyb3VnaCB0aGUgIlNFVCBGRUFUVVJFIChFRmgpIiBjb21t
-YW5kIGJ1dCBpc24ndAo+ID4gPiA+ID4gPiByZXBvcnRlZCB0byB0aGUgIlJFQUQgSUQgUGFyYW1l
-dGVyIFRhYmxlcyIuIEJlY2F1c2UgdGhlICJFQ0MgRmllbGQiCj4gPiA+ID4gPiA+IHN0aWxsIHNh
-eXMgdGhhdCBpdCBpcyBkaXNhYmxlZC4gVGhpcyBpcyBhcHBsaWNhYmxlIGF0IGxlYXN0Cj4gPiA+
-ID4gPiA+IGZvciB0aGUgTVQyOUYyRzA4QUJBR0EgYW5kIE1UMjlGMkcwOEFCQkdBIGRldmljZXMu
-IEV2ZW4gd29yc2UgdGhlCj4gPiA+ID4gPiA+IGRhdGFzaGVldCBkZXNjcmliZXMgdGhlIEVDQyBm
-ZWF0dXJlIGluIGNoYXB0ZXIgIkVDQyBQcm90ZWN0aW9uIi4gICAgCj4gPiA+IAo+ID4gPiBXaGF0
-IGFib3V0Ogo+ID4gPiAKPiA+ID4gIlNvbWUgZGV2aWNlcyBhcmUgc3VwcG9zZWQgdG8gZG8gbm90
-IHN1cHBvcnQgb24tZGllIEVDQyBidXQKPiA+ID4gZXhwZXJpZW5jZSBzaG93cyB0aGF0IGludGVy
-bmFsIEVDQyBtYWNoaW5lcnkgY2FuIGFjdHVhbGx5IGJlIGVuYWJsZWQKPiA+ID4gdGhyb3VnaCB0
-aGUgIlNFVCBGRUFUVVJFIChFRmgpIiBjb21tYW5kLCBldmVuIGlmIGEgcmVhZCBvZiB0aGUgIlJF
-QUQgSUQKPiA+ID4gUGFyYW1ldGVyIFRhYmxlcyIgcmV0dXJucyB0aGF0IGl0IGlzIG5vdC4iCj4g
-PiA+ICAgCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBDdXJyZW50bHkgdGhlIGRyaXZlciBjaGVj
-a3MgdGhlICJSRUFEIElEIFBhcmFtZXRlciIgZmllbGQgZGlyZWN0bHkgYWZ0ZXIKPiA+ID4gPiA+
-ID4gd2UgZW5hYmxlZCB0aGUgZmVhdHVyZS4gSWYgdGhlIGNoZWNrIGZhaWxzIHdlIHJldHVybiBp
-bW1lZGlhdGVseSBidXQKPiA+ID4gPiA+ID4gbGVhdmUgdGhlIEVDQyBvbi4gTm93IGFsbCBmdXR1
-cmUgcmVhZC9wcm9ncmFtIGN5Y2xlcyBnb2VzIHRyb3VnaCB0aGUgZWNjCj4gPiA+ID4gPiA+IGFu
-ZCB0aGUgaG9zdCBuZmMgZ2V0cyBjb25mdXNlZCBhbmQgcmVwb3J0cyBFQ0MgZXJyb3JzLiAgICAK
-PiA+ID4gCj4gPiA+IEFuZCBoZXJlOgo+ID4gPiAKPiA+ID4gIkN1cnJlbnRseSwgdGhlIGRyaXZl
-ciBjaGVja3MgdGhlICJSRUFEIElEIFBhcmFtZXRlciIgZmllbGQKPiA+ID4gZGlyZWN0bHkgYWZ0
-ZXIgaGF2aW5nIGVuYWJsZWQgdGhlIGZlYXR1cmUuIElmIHRoZSBjaGVjayBmYWlscyBpdCByZXR1
-cm5zCj4gPiA+IGltbWVkaWF0ZWx5IGJ1dCBsZWF2ZXMgdGhlIEVDQyBvbi4gV2hlbiB1c2luZyBi
-dWdneSBjaGlwcyBsaWtlCj4gPiA+IE1UMjlGMkcwOEFCQUdBIGFuZCBNVDI5RjJHMDhBQkJHQSwg
-YWxsIGZ1dHVyZSByZWFkL3Byb2dyYW0gY3ljbGVzIHdpbGwKPiA+ID4gZ28gdGhyb3VnaCB0aGUg
-b24tZGllIEVDQywgY29uZnVzaW5nIHRoZSBob3N0IGNvbnRyb2xsZXIgd2hpY2ggaXMKPiA+ID4g
-c3VwcG9zZWQgdG8gYmUgdGhlIG9uZSBoYW5kbGluZyBjb3JyZWN0aW9uLiIKPiA+ID4gICAKPiA+
-ID4gPiA+ID4gVG8gYWRkcmVzcyB0aGlzIGluIGEgY29tbW9uIHdheSB3ZSBuZWVkIHRvIHR1cm4g
-b2ZmIHRoZSBFQ0MgZGlyZWN0bHkKPiA+ID4gPiA+ID4gYWZ0ZXIgcmVhZGluZyB0aGUgIlJFQUQg
-SUQgUGFyYW1ldGVyIiBhbmQgYmVmb3JlIGNoZWNraW5nIHRoZQo+ID4gPiA+ID4gPiAiRUNDIHN0
-YXR1cyIuCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBNYXJjbyBGZWxz
-Y2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPiAgICAgIAo+ID4gPiA+ID4gCj4gPiA+ID4gPiBH
-b29kIGNhdGNoISBIb3dldmVyIHlvdSByZXBvcnQgdGhhdCBvbi1kaWUgRUNDIGNvcnJlY3Rpb24g
-aXMgd29ya2luZwo+ID4gPiA+ID4gYnV0IHlvdSBzdGlsbCBkaXNhYmxlIGl0OyBhbnkgcmVhc29u
-IHRvIGRvIHNvID8gV291bGQgaXQgYmUgYmV0dGVyIHRvCj4gPiA+ID4gPiBhY3R1YWxseSBlbmFi
-bGUgb24tZGllIEVDQyBhbmQgZXhwbGljaXRseSBtYXJrIHRoZXNlIHR3byBjaGlwcyBhcwo+ID4g
-PiA+ID4gYnVnZ3kgKHNlZSBbMV0gZm9yIGNoZWNraW5nIHRoZSBjaGlwIElEcyk/ICAgICAgCj4g
-PiA+ID4gCj4gPiA+ID4gSXQncyB0aGUgb3RoZXIgd2F5IGFyb3VuZC4gVGhlIGNoaXAgaXMgbm90
-IHN1cHBvc2VkIHRvIGhhdmUgb24tZGllIEVDQwo+ID4gPiA+IGFjY29yZGluZyB0byB0aGUgZGF0
-YXNoZWV0IGFuZCBjb3JyZWN0bHkgcmVmbGVjdHMgdGhpcyBmYWN0IGluIHRoZQo+ID4gPiA+IFJF
-QURfSUQsIHNvIExpbnV4IHNob3VsZCBub3QgdHJ5IHRvIHVzZSB0aGUgb24tZGllIEVDQy4gICAg
-Cj4gPiA+IAo+ID4gPiBPayBJIHVuZGVyc3Rvb2QgdGhlIG9wcG9zaXRlIGJlY2F1c2Ugb2YgdGhl
-ICJFdmVuIHdvcnNlIHRoZSBkYXRhc2hlZXQKPiA+ID4gZGVzY3JpYmVzIHRoZSBFQ0MgZmVhdHVy
-ZSBbLi4uXSIgd2hpY2ggaW1wbGllZCB0byBtZSB0aGF0IHRoZSBvbi1kaWUgRUNDCj4gPiA+IGZl
-YXR1cmUgd2FzIGFjdHVhbGx5IGV4cGVjdGVkIGRlc3BpdGUgdGhlIHN0YXR1cyBiaXQgbm90IGJl
-aW5nIHNldC4KPiA+ID4gCj4gPiA+IE1hcmNvLCBjYW4geW91IHJlcGhyYXNlIGEgYml0IHRoZSBj
-b21taXQgbG9nPyBJIHByb3Bvc2VkIHNvbWV0aGluZywKPiA+ID4gZmVlbCBmcmVlIHRvIGFkYXB0
-LiAgCj4gCj4gVGhhbmtzIGZvciB0aGUgZmFzdCByZXBseSA6KSBPZiBjb3Vyc2UgSSBjYW4gYWRh
-cHQgaXQgYW5kIGFkZGluZyBCb3JpcyByYi10YWcuCgpJIHN1cHBvc2UgeW91IGNhbiBhbHNvIGFk
-ZCBGaXhlcyBhbmQgU3RhYmxlIHRhZ3MuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+Hi Paul.
+
+On Thu, Jul 25, 2019 at 06:02:09PM -0400, Paul Cercueil wrote:
+> The JZ4740 fbdev driver has been replaced with the ingenic-drm driver.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Tested-by: Artur Rojek <contact@artur-rojek.eu>
+> ---
+>  drivers/video/fbdev/Kconfig     |   9 -
+>  drivers/video/fbdev/Makefile    |   1 -
+>  drivers/video/fbdev/jz4740_fb.c | 690 --------------------------------
+>  3 files changed, 700 deletions(-)
+>  delete mode 100644 drivers/video/fbdev/jz4740_fb.c
+Nice work of you and others involved.
+
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+
+	Sam
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
