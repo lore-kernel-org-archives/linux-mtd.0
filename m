@@ -2,61 +2,56 @@ Return-Path: <SRS0=VmK4=VX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1685FC7618F
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 18:58:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53598C7618F
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 21:09:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEF9722BEF
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 18:58:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1CF0022BE8
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jul 2019 21:09:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="qunwcthu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEF9722BEF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="WECQ6o4C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CF0022BE8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=advem.lv
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3ai/3hNC3NT1DWF3FBTNvKoZWx1wg/kjFYnalz+uRls=; b=qunwcthuvUZwoT
-	L6oS3fYzTJTp129cDy2Cm9Bd5SY5LcGD4Ic1FxrVJDLZes105+x5XYsqQxeAoyrNTN4SoTykIf8Vv
-	cf/M+SE9YsJBHGROmkMYffT2jGnSp/gDzdQA6CJmiwEuMT/WwqnX30dwN9az34sFdtfXIjnRyPYl8
-	2PMnY4SVh+a190JfzUxhi7HSNacvvOpQAm+Z0T885u4UpQDmwystW4m7db6t4f7O0VtwhZPXoUk02
-	fxcsXCV3Br1y0tNY94RQOg8CaECtcX4RBSfCk4OeZl8FFqfWR5rGMVGC/lVHJ/uZk+epQYT80YyYv
-	jjUHgfajZTXLcwgKdydg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HY0kxCwzSp7+Mrlpdv25cUvxCge5YH1eFOG5XkiQXLM=; b=WECQ6o4CfWnQCS
+	3168QZmkp/A23M2Rn+t9+9sVxSsNoYiU6ZMwMzm7aXxZT8FnFVNlhy0ukeaI19LiOCTL7MCA71iTs
+	XCVSgXdbs5lcxAjzMtn2nJCHmFnxPAgJ2HbSSBmtvu/32UfyA3HSsDoXe8QNWNxwSeIO+WxbrcOAP
+	WTyGk5ehlYC42O9WUxCWdJw57HqEFDHMKP2NkD/HDUloaEK0MJ8ZFNfRd9wj6sTIfzVgdYxswv/VB
+	cbVRo+R8JruwLsiggUtuQOFXE0zrdwg0IC1J6+uooX9EUnd6SmANU3fAMP6BOP8ntCTtfPDqCt5Un
+	rx9Ic90PPKMUNzlhX/Fw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hr5Pk-0002lL-34; Fri, 26 Jul 2019 18:58:00 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
- by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hr5Pf-0002kJ-Us
- for linux-mtd@lists.infradead.org; Fri, 26 Jul 2019 18:57:58 +0000
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 8D5D2240009;
- Fri, 26 Jul 2019 18:57:43 +0000 (UTC)
-Date: Fri, 26 Jul 2019 20:57:42 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 07/11] mtd: rawnand: Drop obsolete JZ4740 NAND driver
-Message-ID: <20190726205742.71210c24@xps13>
-In-Reply-To: <20190725220215.460-8-paul@crapouillou.net>
-References: <20190725220215.460-1-paul@crapouillou.net>
- <20190725220215.460-8-paul@crapouillou.net>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	id 1hr7SM-00086z-2g; Fri, 26 Jul 2019 21:08:50 +0000
+Received: from [213.175.92.62] (helo=mail.pbx.lv)
+ by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
+ id 1hr7SJ-00086T-0r
+ for linux-mtd@lists.infradead.org; Fri, 26 Jul 2019 21:08:48 +0000
+Received: from localhost.localdomain (balticom-200-108.balticom.lv
+ [83.99.200.108])
+ by mail.pbx.lv (MailSystem) with ESMTPSA id EE5D21A60A4;
+ Sat, 27 Jul 2019 00:08:38 +0300 (EEST)
+From: Roman Yeryomin <roman@advem.lv>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] mtd: spi-nor: fix GigaDevice quad_enable
+Date: Sat, 27 Jul 2019 00:08:30 +0300
+Message-Id: <20190726210830.1932-1-roman@advem.lv>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190726_115756_153226_AE07695A 
-X-CRM114-Status: UNSURE (   6.78  )
+X-CRM114-CacheID: sfid-20190726_140847_246724_EA15DACC 
+X-CRM114-Status: UNSURE (   6.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
@@ -69,31 +64,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-fbdev@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, James Hogan <jhogan@kernel.org>,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Sebastian Reichel <sre@kernel.org>, od@zcrc.me, linux-mtd@lists.infradead.org,
- Lee Jones <lee.jones@linaro.org>, Artur Rojek <contact@artur-rojek.eu>,
- Richard Weinberger <richard@nod.at>, linux-pm@vger.kernel.org,
- Paul Burton <paul.burton@mips.com>, linux-mips@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
- Jean Delvare <jdelvare@suse.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org,
- linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
- Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- dmaengine@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUGF1bCwKClBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PiB3cm90ZSBvbiBU
-aHUsIDI1IEp1bCAyMDE5IDE4OjAyOjExCi0wNDAwOgoKPiBJdCBoYXMgYmVlbiByZXBsYWNlZCB3
-aXRoIHRoZSBuZXdlciBJbmdlbmljIE5BTkQgZHJpdmVyLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFBh
-dWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0Pgo+IFRlc3RlZC1ieTogQXJ0dXIgUm9q
-ZWsgPGNvbnRhY3RAYXJ0dXItcm9qZWsuZXU+Cj4gLS0tCgpBY2tlZC1ieTogTWlxdWVsIFJheW5h
-bCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+According to datasheets all GD devices are capable of quad mode, which
+is enabled via Status Register-2, bit 1 (S9). This corresponds to
+Spansion SR/CR operations. Unfortunately only gd25q256 datasheet is
+clear about Quad Enable Requirements (QER), others have no such
+information in datasheets.
+So define quad_enable for all GD devices to be sure.
+Also gd25q256 is an exception. There are two versions: C and D.
+First one uses S6 bit (like described in e27072851bf7d) but the latter
+uses S9 bit like others. To add support for D this should be handled
+differently, so, to retain compatibility, leave gd25q256 quad_enable
+callback intact.
+
+Signed-off-by: Roman Yeryomin <roman@advem.lv>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 6e13bbd1aaa5..d598efb57f20 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1764,31 +1764,37 @@ static const struct flash_info spi_nor_ids[] = {
+ 		"gd25q16", INFO(0xc84015, 0, 64 * 1024,  32,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.quad_enable = spansion_read_cr_quad_enable,
+ 	},
+ 	{
+ 		"gd25q32", INFO(0xc84016, 0, 64 * 1024,  64,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.quad_enable = spansion_read_cr_quad_enable,
+ 	},
+ 	{
+ 		"gd25lq32", INFO(0xc86016, 0, 64 * 1024, 64,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.quad_enable = spansion_read_cr_quad_enable,
+ 	},
+ 	{
+ 		"gd25q64", INFO(0xc84017, 0, 64 * 1024, 128,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.quad_enable = spansion_read_cr_quad_enable,
+ 	},
+ 	{
+ 		"gd25lq64c", INFO(0xc86017, 0, 64 * 1024, 128,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.quad_enable = spansion_read_cr_quad_enable,
+ 	},
+ 	{
+ 		"gd25q128", INFO(0xc84018, 0, 64 * 1024, 256,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.quad_enable = spansion_read_cr_quad_enable,
+ 	},
+ 	{
+ 		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
