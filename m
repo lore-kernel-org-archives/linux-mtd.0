@@ -2,76 +2,68 @@ Return-Path: <SRS0=s9Jc=V2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=1.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAB4CC433FF
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 20:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ADB4C433FF
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 21:03:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9BEC3206A2
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 20:46:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0A6192067D
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 21:03:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fr3N2nf2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="K79oGysD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BEC3206A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="tD7K/DmF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A6192067D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ov0K9B1vyTE63hIHSt8yH+XlDqUCg178ILp95foZq1I=; b=fr3N2nf2EYdTbK
-	LVddPxiS3LfXNPsj+DNyGu2CNYs3yHiqpnlRZNRkwI/56WHUDc6rqvDORZbAx/wikwA9rbLdZRIwI
-	O5jwDXbGREnFlfxTivbpmAeynA2+uHPB/TZ1Vsko5pO6o2Mv3idVOzNzIf9NPtrcCJznLYUrMJbVg
-	VjbroxdIMHUkRo6JxUM2lZyl+bL9wD+OBXbMIrq1qToE1d+aCKxTgUc2tWcONdeCRXM4or2OxMPp/
-	q6pan+Ap2JdxtijB1S8OVSGptt4czxIdePYOqy3SLpbpi1z5uH7hcBJf5GOM7VB1AcnAp3TopZxCA
-	13kuRhjqkHmirxvfVdqw==;
+	List-Owner; bh=r7aXyPZcQG8hIO4l5seuShIFL5FKATUSEUuWscKLGmc=; b=tD7K/DmFMFWffO
+	+dQA9F8xddVAQy+LHI0bkymazsVY7vUSx8rMhXUK99RxGG7f5S2PRVXGSxP0ehUz1ivR3Kv5QEXLc
+	cczfYa1yCTY/Vc2nwBNpbR+0LoySKPPHBb31Jy476VOhyX/G6CW/Oedju2f3rOJXIigwLfCMlRu/O
+	GbLnOjlzaz/bWSZp0238MUypKFzw2IxHY/wpELTZum6G7tnz7Da/ptw5Q10bnH2t5XEp7iOnPnNSQ
+	Jg5FWUIHMNbKp9x4OL5XQKVrBxGReh3/Y240whkGlpBqjqhLzKRksuPuAYWktEnJHyc9QzeRURyfy
+	TIviltvRPajGOcq1+Pxg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsCXR-0003jQ-Af; Mon, 29 Jul 2019 20:46:33 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1hsCnZ-0003IG-VS; Mon, 29 Jul 2019 21:03:13 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsCXO-0003iu-SI
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2019 20:46:32 +0000
-Received: from gmail.com (unknown [104.132.1.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2D6B0206A2;
- Mon, 29 Jul 2019 20:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1564433190;
- bh=DNMh2YRc0dQISTUq/gkVxZiJ3MfUwE+LBvvMLd0sx0w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=K79oGysDbp1R9KcVqj1mKpfGB23D0dx9KzJwL1URFJI/8PotFaTXB1QXv/9jPmJ5e
- cd4dzd2ixOf8QsiHSDEd5r1iJBny2qYoC0vd1z0wpsTIbfCpr52p94FTMkHI78oJ2t
- NisulN2mchZN4cYXAX27Nu925MXHkVW50WusaYRo=
-Date: Mon, 29 Jul 2019 13:46:28 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: "Theodore Y. Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH v7 10/16] fscrypt: v2 encryption policy support
-Message-ID: <20190729204627.GH169027@gmail.com>
-Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
- linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
- Paul Crowley <paulcrowley@google.com>,
- Satya Tangirala <satyat@google.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-11-ebiggers@kernel.org>
- <20190728211730.GK6088@mit.edu>
+ id 1hsCnX-0003Hf-Gs
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2019 21:03:13 +0000
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+ (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 901D0E0005;
+ Mon, 29 Jul 2019 21:02:59 +0000 (UTC)
+Date: Mon, 29 Jul 2019 23:02:58 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Subject: Re: GPMI iMX6ull timeout on DMA
+Message-ID: <20190729230258.4d474d2e@xps13>
+In-Reply-To: <CAOf5uwmd7LFOS0cRWX5ANnmzf0aZWn0RFF_YWkwxtGUjymmMXA@mail.gmail.com>
+References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
+ <20190729103655.095297a2@xps13>
+ <18734a1d-17d9-d390-58ef-ad8ca1be925f@kernel.org>
+ <20190729144730.4a58de32@xps13>
+ <CAOf5uwkGC8upBuePJPUG1hfon_018UT_nz=mYTm2G0c3whHZYg@mail.gmail.com>
+ <20190729145538.2352b21f@xps13>
+ <CAOf5uwmu_kTViFy4hxZH30aWBynSVhXC6=h-fmX=KJ0ob8Bu1g@mail.gmail.com>
+ <20190729152218.362bc58d@xps13>
+ <CAOf5uwmd7LFOS0cRWX5ANnmzf0aZWn0RFF_YWkwxtGUjymmMXA@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190728211730.GK6088@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190729_134630_945977_E45DF729 
-X-CRM114-Status: GOOD (  21.02  )
+X-CRM114-CacheID: sfid-20190729_140311_738104_FB0EAECB 
+X-CRM114-Status: GOOD (  13.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,90 +75,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Satya Tangirala <satyat@google.com>, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: s.hauer@pengutronix.de, Greg Ungerer <gerg@kernel.org>,
+ linux-mtd@lists.infradead.org, Boris Brezillon <bbrezillon@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jul 28, 2019 at 05:17:30PM -0400, Theodore Y. Ts'o wrote:
-> On Fri, Jul 26, 2019 at 03:41:35PM -0700, Eric Biggers wrote:
-> > @@ -319,6 +329,31 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
-> >  	if (!capable(CAP_SYS_ADMIN))
-> >  		goto out_wipe_secret;
-> >  
-> > +	if (arg.key_spec.type != FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
-> 
-> This should be "== FSCRYPT_KEY_SPEC_TYPE_INDENTIFIER" instead.  That's
-> because you use the identifier part of the union:
-> 
-> > +		/* Calculate the key identifier and return it to userspace. */
-> > +		err = fscrypt_hkdf_expand(&secret.hkdf,
-> > +					  HKDF_CONTEXT_KEY_IDENTIFIER,
-> > +					  NULL, 0, arg.key_spec.u.identifier,
-> 
-> If we ever add a new key specifier type, and alternative in the union,
-> this is going to come back to bite us.
-
-Well, I did it this way because the next patch changes the code to:
-
-	if (arg.key_spec.type == FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
-		...
-	} else {
-		...
-	}
-
-We already validated that it's either TYPE_DESCRIPTOR or TYPE_IDENTIFIER.
-
-But I guess to be more clear I'll just make it handle the default case again.
-
-	switch (arg.key_spec.type) {
-	case FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR:
-		...
-		break;
-	case FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER:
-		...
-		break;
-	default:
-		err = -EINVAL;
-		break;
-	}
-
-> 
-> > +	if (policy->version == FSCRYPT_POLICY_V1) {
-> > +		/*
-> > +		 * The original encryption policy version provided no way of
-> > +		 * verifying that the correct master key was supplied, which was
-> > +		 * insecure in scenarios where multiple users have access to the
-> > +		 * same encrypted files (even just read-only access).
-> 
-> Which scenario do you have in mind?  With read-only access, Alice can
-> fetch the encryption policy for a directory, and introduce a key with
-> the same descriptor, but the "wrong" key, but that's only going to
-> affect Alice's use of the key.  It won't affect what key is used by
-> Bob, since Alice doesn't have write access to Bob's keyrings.
-> 
-> If what you mean is the risk when there is a single global
-> filesystem-specific keyring, where Alice could introduce a "wrong" key
-> identified with a specific descriptor, then sure, Alice could trick
-> Bob into encrypting his data with the wrong key (one known to Alice).
-> But we don't allow keys usable by V1 policies to be used in the
-> filesystem-specific keyring, do we?
-> 
-
-The scenario is that Alice lists the directory with the wrong key, then Bob
-lists the directory too and gets the wrong filenames.  This happens because the
-inode, fscrypt_info, dentry cache, page cache, etc. are the same for everyone.
-Bob's key is never looked up because the inode already has a key cached.
-
-This also applies to regular files and symlinks.
-
-- Eric
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKCk1pY2hhZWwgTmF6emFyZW5vIFRyaW1hcmNoaSA8bWljaGFlbEBhbWFydWxh
+c29sdXRpb25zLmNvbT4gd3JvdGUgb24KTW9uLCAyOSBKdWwgMjAxOSAyMjowMDoyNSArMDIwMDoK
+Cj4gSGkgTWlxdWVsCj4gCj4gc29ycnkgd2FzIGRpZmZpY3VsdCBkYXkgOykuIE15IGFuc3dlciBi
+ZWxvdwo+IAoKTm8gcGIgOykKClsuLi5dCgo+ID4gPiA+ID4gPiA+ID4gVGhhdCdzIHN0cmFuZ2Uu
+Li4gSSBkb24ndCBnZXQgd2hhdCB3b3VsZCBwcm9kdWNlCnN1Y2ggdW5zdGFibGUgaXNzdWUuICAK
+PiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IE15IGluaXRpYWwgZ3Vlc3MgaXMgdGhhdCB0aGUg
+Y2FsY3VsYXRlZCB0aW1pbmcgaXMgdmVyeSBtYXJnaW5hbC4gIAo+ID4gPiA+ID4gPgo+ID4gPiA+
+ID4gPiBXaGF0IGRvIHlvdSBtZWFuIGJ5ICJtYXJnaW5hbCI/Cj4gPiA+ID4gPiA+ICAKPiA+ID4g
+PiA+Cj4gPiA+ID4gPiBJIGRvbid0IHRoaW5rIHRoYXQgaXMgdGltaW5nIGNhbGN1bGF0aW9uLiBJ
+IGhhdmUgdHJpZWQgdG8gdXNlIHRoZSBzYW1lIHRpbWluZwo+ID4gPiA+ID4gYXMgYmVmb3JlIGJ1
+dCB3aGVuIHRob3NlIGFyZSBhcHBsaWRlLiBJcyBpdCBwb3NzaWJsZT8gIAo+ID4gPiA+Cj4gPiA+
+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCj4gPiA+ID4gSSBzdXBw
+b3NlIHRoZSBlbmQgb2YgdGhlIHNlbnRlbmNlIGlzIG1pc3Npbmc/ICAKPiA+Cj4gPiBNaWNoYWVs
+LCB3aGF0IGRpZCB5b3UgbWVhbiBoZXJlPwo+ID4gIAo+IGNvbW1pdCAwMmM3ODY2MjdiOTNiM2Mz
+Mjg2NTcwZjc5MzI5NDgxNjI4NmZmMzk3Cj4gQXV0aG9yOiBNaWNoYWVsIFRyaW1hcmNoaSA8bWlj
+aGFlbEBhbWFydWxhc29sdXRpb25zLmNvbT4KPiBEYXRlOiAgIEZyaSBPY3QgNSAwOTo0NjoyOSAy
+MDE4ICswMjAwCj4gCj4gICAgIFJldmVydCAibXRkOiByYXduYW5kOiBncG1pOiB1c2UgY29yZSB0
+aW1pbmdzIGluc3RlYWQgb2YgYW4KPiBlbXBpcmljYWwgZGVyaXZhdGlvbiIKPiAKPiAgICAgVGhp
+cyByZXZlcnRzIGNvbW1pdCBiMTIwNjEyMjA2OWFhZGFiZTFhOGM1MDc4OTI3N2E5NzhhYWE0ZGY3
+Lgo+IAo+ICAgICBDaGFuZ2UtSWQ6IEljZDBkZGNkNWUzYWM3ZDgyOTMyYmJmNDEyMjk5Y2NhNDI0
+Y2JjNTcxCj4gICAgIEppcmEtSWQ6IFdBTi01MAo+ICAgICBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVs
+IFRyaW1hcmNoaSA8bWljaGFlbEBhbWFydWxhc29sdXRpb25zLmNvbT4KPiAKPiBSZXZlcnQgdGhp
+cyBvbmUgZG9lcyBub3QgZml4IHRoZSBwcm9ibGVtLiBSaWdodCBub3cgSSBoYXZlIHR3byByZXZl
+cnQKPiB0aGlzIG9uZSBhbmQKPiAKPiBjb21taXQgNmFiNTQzYzE5MjRmNzc5NTcwMDQ5OTRiZDY4
+MDZhOWRhYTQ1ZjkwMyAodGFnOiBNTUlfMDA0XzAxMV9SMDIpCj4gQXV0aG9yOiBNaWNoYWVsIFRy
+aW1hcmNoaSA8bWljaGFlbEBhbWFydWxhc29sdXRpb25zLmNvbT4KPiBEYXRlOiAgIEZyaSBPY3Qg
+NSAwOTo0Njo0NCAyMDE4ICswMjAwCj4gCj4gICAgIFJldmVydCAibXRkOiByYXduYW5kOiBncG1p
+OiBzdXBwb3J0IC0+c2V0dXBfZGF0YV9pbnRlcmZhY2UoKSIKPiAKPiAgICAgVGhpcyByZXZlcnRz
+IGNvbW1pdCA3NmUxYTAwODZhMGMzMjc2YjM4NGY3NzkwNTM0NWUwZmNjODg2ZmRkLgo+IAo+ICAg
+ICBDaGFuZ2UtSWQ6IEk2MGZiNmY4NzQzNjRkMWRlZWRhMzQyNGQ0NTA4NTUzYTM4YWM5YjFhCj4g
+ICAgIEppcmEtSWQ6IFdBTi01MAo+ICAgICBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIFRyaW1hcmNo
+aSA8bWljaGFlbEBhbWFydWxhc29sdXRpb25zLmNvbT4KPiAKPiBJIGRpZCBub3QgaGF2ZSB0aW1l
+IHRvIGZpbmlzaCB0byB1bmRlc3RhbmQgd2h5IHRoaXMgd2FzIGZpeGluZyBteSBwcm9ibGVtCgpP
+ayBzbyBJIGFtIHByZXR0eSBjb252aW5jZWQgdGhhdCB0aGlzIGlzIHN0aWxsIGEgdGltaW5ncyBp
+c3N1ZSB0aGVuOwpidXQgbm90IGVudGlyZWx5IGR1ZSB0byB0aGUgZGlmZmVyZW50IHRpbWluZ3Mg
+Y2FsY3VsYXRpb24uIEludGVyZXN0aW5nLgpJJ20gd2FpdGluZyBmb3IgR3JlZydzIHJlc3VsdHMg
+bm93LgoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
