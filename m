@@ -2,84 +2,76 @@ Return-Path: <SRS0=s9Jc=V2=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C95EC7618E
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 21:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02721C76186
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 21:54:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D31520679
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 21:43:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CBD07216C8
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 21:54:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="bI5nsBFB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="lHLpYWO3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="XBkskcBS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D31520679
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="CI16/0Pl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBD07216C8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XaVe9tKC5GzRZUK6wIRFIRBwCY6MjRoayiHBGcgXkYA=; b=bI5nsBFBjG6Zkc
-	5JF3/zaPHcsfGtAOS/XFSS7LIGDH+EZpuunVjDDmXqWLJSNb3T5nZ8uQj/s2aBVoy2Spy2fOsmAeN
-	mUFMpc22H+FLal4FEvxKqs14Kh+oyD1a5DK0Uf+09Xwprch9aw2A0JPAEvcNt4mPA1J5ci3gbVr4C
-	X75fLwGV9kxj9lxsU6NOYRAKnSY83W+P2yeRfSioXuFMW7H+fKKdNLAKYgcDjCqWZfaCYRul31LqR
-	OW0uY8jIXcYdqhG2XWs53pNzEEp2DLx1cziDA3JjPLaLqN3hBxmeW29NerN6pC93GYcn9lmEJJ7SX
-	OqKVT7go0J+/iaiUVeeg==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	 bh=Il4qdWwCva4JNt2J0YrLLqlVg1pN1DRyYNEV/In/1O0=; b=CI16/0PljWRdgtRkm789kCILK
+	T5GFHDTP8hPoM4bGGjg6HT2Ix3z/YGZYxOUPbYhw73JiJVMYwWFJE94wv2NTH6auEZ1+OsX0YlL7D
+	5SK0B1fPwtYucIwgPQ+L1o67oU4aAgs3e+iQ3r996QHn3rjD/OiKLevJGJcBaQbdO9rquieMOB2vI
+	WaHFU57uO5Os5z90sFClzzR+sekg4+qv6UCjooJ44zOLIW/w/L1LtV210S6+ZaoTT4UF5p1B9PiVE
+	XUEO1zCJgpOIQ1Bc+Dufq6W0b9kmzzQJWyrLidQvkxk2rqVmQtlxo0vNkOgrBRa1NM0DZdopmpDRF
+	u+3qFMStQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsDPp-0000lm-6T; Mon, 29 Jul 2019 21:42:45 +0000
-Received: from bedivere.hansenpartnership.com ([66.63.167.143])
+	id 1hsDb4-0004re-Tf; Mon, 29 Jul 2019 21:54:23 +0000
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsDPl-0000kL-Bn
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2019 21:42:43 +0000
-Received: from localhost (localhost [127.0.0.1])
- by bedivere.hansenpartnership.com (Postfix) with ESMTP id 08EF38EE128;
- Mon, 29 Jul 2019 14:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
- s=20151216; t=1564436558;
- bh=O9+94053nXIdaYjX0KWz3Uph5DqmEC5747H6+EU/Zj4=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=lHLpYWO34joaWpbbHUhSuzCeIS+wzLPt/o74sdOPpx/41Uwx9X+LCpSavRxIQLAmS
- GLtxTKlvIqHG34IA+ti/PeDOb4qmIWbvG7PMgBTtkvJ87tJeUu3JH7H70BpJimBUbs
- Vq44Zx03MEmLllgHt1oMT30KL5EcjHaTsW99PNUM=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
+ id 1hsDb1-0004r1-I6
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2019 21:54:21 +0000
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 45yD3s0q3Cz1rJhT;
+ Mon, 29 Jul 2019 23:54:17 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 45yD3r6tHrz1qqkK;
+ Mon, 29 Jul 2019 23:54:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
  port 10024)
- with ESMTP id 5Z_AzM2cI4iM; Mon, 29 Jul 2019 14:42:37 -0700 (PDT)
-Received: from jarvis.lan (unknown [50.35.71.147])
+ with ESMTP id 5i7QSaa_qJAy; Mon, 29 Jul 2019 23:54:15 +0200 (CEST)
+X-Auth-Info: 40vK9CVzkSMUDpFaAK9f+nSjTswLqT3qx2VwvSS+QHQ=
+Received: from jawa (85-222-111-42.dynamic.chello.pl [85.222.111.42])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 5319E8EE116;
- Mon, 29 Jul 2019 14:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
- s=20151216; t=1564436557;
- bh=O9+94053nXIdaYjX0KWz3Uph5DqmEC5747H6+EU/Zj4=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=XBkskcBS+6ULfJ0Mmli/fO9I4Gh6vlIYhaMvx29RfACbNfsJHrN2Vg9eEb8GBTKfZ
- L0mqQVtElU/FyAX9I84kahiqjaV7j4AqSdTvv35kvCXsh+HgK0jtpTDtFzLL6rJMHZ
- oJ/v0RFNO74FKRJTPQjojHnhiruRm+54OdND5jTU=
-Message-ID: <1564436554.12726.38.camel@HansenPartnership.com>
-Subject: Re: [PATCH v7 09/16] fscrypt: add an HKDF-SHA512 implementation
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>
-Date: Mon, 29 Jul 2019 14:42:34 -0700
-In-Reply-To: <20190729202951.GG169027@gmail.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-10-ebiggers@kernel.org>
- <20190728193949.GI6088@mit.edu> <20190729202951.GG169027@gmail.com>
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+ by mail.mnet-online.de (Postfix) with ESMTPSA;
+ Mon, 29 Jul 2019 23:54:15 +0200 (CEST)
+Date: Mon, 29 Jul 2019 23:54:09 +0200
+From: Lukasz Majewski <lukma@denx.de>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [imx][vybrid][qspi] Regression notification - vybrid vf610
+ QUADSPI - BK4 board
+Message-ID: <20190729235409.222c8880@jawa>
+In-Reply-To: <CAOMZO5C4UgetHAW6_JqLGZH96_8TyHSzj10DxFe+XMnZR07ASA@mail.gmail.com>
+References: <20190725001114.0ceff19c@jawa>
+ <CAOMZO5CsTPaRSe-VmOwnnYrsMMXa3GhurmsWwzaPo948xs10FA@mail.gmail.com>
+ <20190729224326.44aa3057@jawa>
+ <CAOMZO5C4UgetHAW6_JqLGZH96_8TyHSzj10DxFe+XMnZR07ASA@mail.gmail.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190729_144241_417309_6A43BC69 
-X-CRM114-Status: GOOD (  22.42  )
+X-CRM114-CacheID: sfid-20190729_145419_894444_6E10D5B5 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,95 +83,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Satya Tangirala <satyat@google.com>, linux-api@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Andrey Smirnov <andrew.smirnov@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
+ NXP Linux Team <linux-imx@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>,
+ Chris Healy <cphealy@gmail.com>
+Content-Type: multipart/mixed; boundary="===============4562255988068053696=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2019-07-29 at 13:29 -0700, Eric Biggers wrote:
-> On Sun, Jul 28, 2019 at 03:39:49PM -0400, Theodore Y. Ts'o wrote:
-> > On Fri, Jul 26, 2019 at 03:41:34PM -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-[...]
-> > > HKDF solves all the above problems.
-> > > 
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > 
-> > Unless I missed something there's nothing here which is fscrypt
-> > specific.  Granted that it's somewhat unlikely that someone would
-> > want to implement (the very bloated) IKE from IPSEC in the kernel,
-> > I wonder if there might be other users of HKDF, and whether this
-> > would be better placed in lib/ or crypto/ instead of fs/crypto?
-> 
-> This is standard HKDF-SHA512; only the choice of parameters is
-> fscrypt-specific. So it could indeed use a common implementation of
-> HKDF if one were available.
-> 
-> However, I don't think there are any other HKDF users in the kernel
-> currently.
+--===============4562255988068053696==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/MDVXulJPWIcMdxwYi2hg6.N"; protocol="application/pgp-signature"
 
-Well, I'm still trying to add the TPM ones, but they're based on SP800-
-108 for arbitrary keys and SP800-56A for elliptic curve ones.  These
-are similar to the RFC5869 except that they do extract/expand in a
-single operation.  Plus, of course, the TPM mandates we use the name
-algorithm (usually sha256, which is what I hardcoded) as the hash.
+--Sig_/MDVXulJPWIcMdxwYi2hg6.N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Note: since you don't use the extract step either in your
-implementation, effectively you're equivalent to SP800-108 as well. 
-This is effectively the same reason as the TPM: we need deterministic
-keys, so we've nowhere to get the salt from that would persist.
+Hi Fabio,
 
-> Also, while there was a patch to support HKDF via the crypto_rng API,
-> there was no consensus about whether this was actually the best way
-> to add KDF support:
-> https://lore.kernel.org/linux-crypto/2423373.Zd5ThvQH5g@positron.chro
-> nox.de
-> 
-> So for now, to avoid unnecessarily blocking this patchset I think we
-> should just go with this implementation in fs/crypto/.  It can always
-> be changed later, once we decide on the best way to add KDFs to the
-> crypto API.
-> 
-> [To be clear: this patch already uses "hmac(sha512)" from the crypto
-> API.  It's only the actual HKDF part that we're talking about here.
+> Hi Lukasz,
+>=20
+> On Mon, Jul 29, 2019 at 5:43 PM Lukasz Majewski <lukma@denx.de> wrote:
+>=20
+> > Thank you for your reply, Fabio. =20
+>=20
+> I assume you are using arch/arm/boot/dts/vf610-bk4.dts
+>=20
+> In this file I see that you only define the DATA0 and DATA1 pins for
+> QSPI0_B:
+>=20
+> VF610_PAD_PTD11__QSPI0_B_DATA1 0x397f
+> VF610_PAD_PTD12__QSPI0_B_DATA0 0x397f
+>=20
+> Don't you also need to define DATA2 and DATA3?
+>=20
 
-Right, once you have the hmac + hash available, the rest is easy, so
-this is what we have for the TPM KDFa:
+You got me  :-) [1]
 
-static void KDFa(u8 *key, int keylen, const char *label, u8 *u,
-		 u8 *v, int bytes, u8 *out)
-{
-	u32 counter;
-	const __be32 bits = cpu_to_be32(bytes * 8);
+The DATA2 and DATA3 (for QSPI0_B "lane") are used for other purposes -
+this is how the PCB was designed.
 
-	for (counter = 1; bytes > 0; bytes -= SHA256_DIGEST_SIZE, counter++,
-		     out += SHA256_DIGEST_SIZE) {
-		SHASH_DESC_ON_STACK(desc, sha256_hash);
-		__be32 c = cpu_to_be32(counter);
+At best it is possible to have both memories working with double SPI
+configuration or single (QSPI0_A with quad SPI [2]).
 
-		hmac_init(desc, key, keylen);
-		crypto_shash_update(desc, (u8 *)&c, sizeof(c));
-		crypto_shash_update(desc, label, strlen(label)+1);
-		crypto_shash_update(desc, u, SHA256_DIGEST_SIZE);
-		crypto_shash_update(desc, v, SHA256_DIGEST_SIZE);
-		crypto_shash_update(desc, (u8 *)&bits, sizeof(bits));
-		hmac_final(desc, key, keylen, out);
-	}
-}
+(And hence it is why I've asked Andrey for sharing his DTS files).
 
-I honestly think these things are so simplistic with the correct hmac
-that it would make it more confusing to try to produce a general KDF
-than it would simply to hard code them where we need them.
-
-James
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
+Note:
+
+[1] -
+https://elixir.bootlin.com/linux/latest/source/arch/arm/boot/dts/vf610-bk4.=
+dts#L235
+
+[2] -
+https://elixir.bootlin.com/linux/latest/source/arch/arm/boot/dts/vf610-bk4.=
+dts#L491
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/MDVXulJPWIcMdxwYi2hg6.N
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl0/awEACgkQAR8vZIA0
+zr1vawf/dCZ2s8uAvQeKJ3Lwg29S8SpcyVmmQlwf3XSKgVFiLASoUWv/gkMckrPn
+3VJOK28NrkokBwIxi9yCvI5fUITkPYbc/Y+00bqWGVkrPTbgqNEHnERAfO4FS3xj
+tA4ZW/cR2o+mN8oMKsElEzmWBznFJv/+oIMr7NfgcxS7oNWtA286brWws0ce9u3S
+hMa2aRlYFt+q6llx1mXn2OTOhmaJ9iQSWIKPU5DyFA7jeGATBcnva/KU4YBZHWOS
++ggU7+CsfyMV+7b1MQPb9WLiMPxX1UyxngNPiyAoRvV2a98iDvGh+W6cIGHrVNn/
+Z/m6TuVCFosobEMFXIwb9Z1swmLbzQ==
+=NZxW
+-----END PGP SIGNATURE-----
+
+--Sig_/MDVXulJPWIcMdxwYi2hg6.N--
+
+
+--===============4562255988068053696==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4562255988068053696==--
+
