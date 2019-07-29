@@ -7,17 +7,17 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C417C7618B
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 09:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BCCBC7618B
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 09:12:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01605206DD
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 09:09:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3CD0C206DD
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Jul 2019 09:12:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="IL73CYG0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="heLfglmK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01605206DD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jPGxeHcU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="TMXotK78"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CD0C206DD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,54 +26,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SAZOf5vuP+ttfurrxRT+F8G4i9qDvjPMlM5FDpvqCKk=; b=IL73CYG0lGxZuG
-	qxpodG9ShpCGAzG04fga1DsZCGuLCnL63+Kz51MGg1okPydLnYwKh7+sRyOdI/zLbKg7bJnEMZ66Q
-	TASAvjLXXdOpv8aZV2lR2zVA5qp4n1BFwIulASZC2uSPvdS0faP1MXj4idT/cKrqgwRjDtPyUpKSC
-	4wQsrLVDjEoVdgfIEGmrfna/g42TbxBYbfFvQ+2SwG0318MImcQVNyPGeXjVczPxi4wvVpFpOSTEH
-	BhTQCGqaHgBqu3cW+Vzct4/mYS0/5OapXDRPD2ZKb18u6jR6hKhTRIyXdisFs/bZhJFn+RZHjo+qJ
-	4nbygIAeIQQ7ttkiorTA==;
+	List-Owner; bh=EdfN8wNxBtmtIiVPdadjbryE+HaE1ygFVcL/TrAX/vk=; b=jPGxeHcUsMCNJx
+	f9Q3YreCjdmDuUJWcJsTyFCVOceEjzHH64+3PiB9P+KEEbMTqgpM+mbunkJp+a2rWUb8vn/IKGW8v
+	V5BDde1l3r2P+eM0/ojCpNw3AYz0aQYsMwrNyiAEc1Ynrb/Jq/LbkwMBdI1ucy0r74aNm4LFudEpu
+	mCglN65ji2wvKr9Z+W3UYPCS6s3AHsyQ2RYgmX+0V+gD/bH7Cz2GjYTgtX9d3JPttTw7huGAi4OiF
+	OhGGEr237fL7wv32LrOd/t8RQIeGoW7m/f9yTZAkWPlr6vveOWbcroB+ikA5lS5xlpfYfXdsXh4/C
+	bdDs7QdrN3xRIRQIFtuQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hs1ef-0005rm-Ui; Mon, 29 Jul 2019 09:09:18 +0000
-Received: from mail-eopbgr50056.outbound.protection.outlook.com ([40.107.5.56]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+	id 1hs1h3-0007rd-Kt; Mon, 29 Jul 2019 09:11:45 +0000
+Received: from mail-eopbgr150082.outbound.protection.outlook.com
+ ([40.107.15.82] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hs1eS-0005gK-6J; Mon, 29 Jul 2019 09:09:05 +0000
+ id 1hs1go-0007W8-My; Mon, 29 Jul 2019 09:11:32 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q9Ll+u4/7xUhkjhQsLXtL0Q3EHfMuZ+AK7wI9pKkfrCOv/MhEL0x9PhpOfLwu+N4Z9vIbZVUvqkCLihViNhYfcnFCqnyHgdJ8ambWZ/7GMEAUR787A+I9BGxAEmVfQh0z7uIntD1LMwMGdxXIs0QEL1KCh3PZNcptKcmWCvS4EA8KtZGcUGc4Xd1uAb+DbMT+j6CmH3x5kVfkQcFz0zBU+alUiq3P1x3FT3Bl+ebxQTmlVChvkh4gCHsRgP7xjFYygHyvnksBRlpxWJCM6/13LbulXKCVuC5Q0B9qYY6Lc4phELGb9sO042TMlUVb+tIqk5tE5uOxVhUyO/mMqUoRA==
+ b=cQHkwiHVIK7O9NaxQqBYg0Z3V8Dblmvnp5a81EfhA51sSBE7Um1etULDcEPNxDL8yKVQst3JRWMBenPEaMA6HbOmPBPDTmbPAdY+9ifY2nlfi/4GnAKJIMvmfGZXxB+tD4AzP1l5O6nfNLj0BBv1MxsroFIhR8v1r0LrSwTatr9cU0xftuz2KGw1ON1By8DFsf2P0EAnQ1TkPrn3Xu1ZOVGoRpX53wk1D3JEb4eafQvfiiI8meCVYhw1x001PJHMi3+dKrkBk2ejo4idS9xgvQthnWAyxf7F21MJI/TKMZa3xbbZlozzzg7heHLsTd7d2dN34nMkOqzGIkgJI9d/wg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YKTTO1iLh/UHzdh0ywT7ipSzW+clXe/1BANF1i6r2dU=;
- b=VtO5WjMm7e5cxY0pB/afqlvnd6ansthvrFZNTrSJvKfGrgx4k4yVdZXUTYYxjPLVQ+/2iWzr5ibCzY43urW2nz+oe9Sm2Q36D1T9y4jbE4BiAkj72pfstWG4qtSdEAENo+sfFFbPjs5pOIJnfW/E9ZRiZhp8oCwhSHDuwOy3y3Iw/PCLXJhuRIR9fJzFmROAh1Ooz8EFv6KztDn67IuFZrZ8h8cFGt17uihUonWBjvQ1E/WS9tktLbPzMA665f2Xv5/O0Cd3TA3Jn4rJA5VVhckh1MQxKBHGcNST7tuoXK1Y0cOM0bGkiamlFKypQ8LlY4N8JdWXJnANDEJ2+TQ4gA==
+ bh=DveM1W5+le6NwFjxDAyTFbwkrqroAW+OROLjAJ5deuE=;
+ b=M1g4arWvv4xTlBijqpE9nMby774Ee1HdVsTiLKeKwkUcy22sSfABzwJZOEhGarRQNOogTKDzq9SA5PsCZcVXdl8OoDVzRH55G/FG5dhFe6THvaNP50r6Wd1ntVzZyxPSBgQJdo++7fZ4UFkHBfrXutaUWn424Tcu1iuYTBLouDTnXU32QtJrKkzAntUaRVwQFbfzJYsmFtsW+P52eETCq1IolDpqyhcOsl/dq8uefKO92s41mCtbokZPB3cCWYCWjPwGgO4e1+FS57l6OZDfWdIis6R6j1zus6k+vYY1H/OyHvI4MHEt2N4X+6cRx0Dk9iHYwF+SvRGFCrEBfsJrgw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
  smtp.mailfrom=nxp.com;dmarc=pass action=none header.from=nxp.com;dkim=pass
  header.d=nxp.com;arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YKTTO1iLh/UHzdh0ywT7ipSzW+clXe/1BANF1i6r2dU=;
- b=heLfglmKZVqgmYHMFJbj7sDRaG6iDWimDZe2wxRPKG9jQZys0brdm86w+zhcYoQRv8u3l3CVypPBF9Q7jy1GrNumC3BzT5SqrgClUBDOHVvUTIWEVOUkpoVzaUn/u3HN5+ZLHpZpV5RfAIJwF0fwShOgYMbKxIrOlSytDvwxm+A=
+ bh=DveM1W5+le6NwFjxDAyTFbwkrqroAW+OROLjAJ5deuE=;
+ b=TMXotK78P0PRiowqYKu97VQgQKGSNDvFyzxc5ZP2N64IlxFWJp5O0ims545/vj/4SHmS3h6DsaOmTTb4H6cX0AMu0UQrneABz5K4eoMbH/0RGqAjEuhllc26MWw71vxyMGVu2Uzld+qpVKN6SUWF8ktqDK4E6S2RoZaB1QA/qWk=
 Received: from VI1PR04MB4015.eurprd04.prod.outlook.com (10.171.182.24) by
  VI1PR04MB4909.eurprd04.prod.outlook.com (20.177.49.158) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.10; Mon, 29 Jul 2019 09:08:59 +0000
+ 15.20.2115.10; Mon, 29 Jul 2019 09:11:27 +0000
 Received: from VI1PR04MB4015.eurprd04.prod.outlook.com
  ([fe80::9c4f:262d:db31:e339]) by VI1PR04MB4015.eurprd04.prod.outlook.com
  ([fe80::9c4f:262d:db31:e339%4]) with mapi id 15.20.2115.005; Mon, 29 Jul 2019
- 09:08:59 +0000
+ 09:11:27 +0000
 From: Ashish Kumar <ashish.kumar@nxp.com>
 To: Rob Herring <robh@kernel.org>, Leo Li <leoyang.li@nxp.com>
-Subject: RE: [EXT] Re: [Patch v3 2/2] dt-bindings: spi: spi-fsl-qspi: Add
- bindings of ls1088a and ls1012a
-Thread-Topic: [EXT] Re: [Patch v3 2/2] dt-bindings: spi: spi-fsl-qspi: Add
- bindings of ls1088a and ls1012a
-Thread-Index: AQHVJo/WR5aDyJa0DkeJCggmqW/DRqbC1yeAgB61yWA=
-Date: Mon, 29 Jul 2019 09:08:58 +0000
-Message-ID: <VI1PR04MB4015206CD4AAA1E54C5978DA95DD0@VI1PR04MB4015.eurprd04.prod.outlook.com>
+Subject: RE: [EXT] Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add
+ ls2080a compatibility string to bindings
+Thread-Topic: [EXT] Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add
+ ls2080a compatibility string to bindings
+Thread-Index: AQHVJo/VeuuMDsBciEWXxGwYBY/pIqbC1w+AgB62iOA=
+Date: Mon, 29 Jul 2019 09:11:27 +0000
+Message-ID: <VI1PR04MB4015B154965BA4BEF402890B95DD0@VI1PR04MB4015.eurprd04.prod.outlook.com>
 References: <1560942714-13330-1-git-send-email-Ashish.Kumar@nxp.com>
- <1560942714-13330-3-git-send-email-Ashish.Kumar@nxp.com>
- <20190709200857.GA8477@bogus>
-In-Reply-To: <20190709200857.GA8477@bogus>
+ <1560942714-13330-2-git-send-email-Ashish.Kumar@nxp.com>
+ <20190709200837.GA7806@bogus>
+In-Reply-To: <20190709200837.GA7806@bogus>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -82,36 +82,36 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=ashish.kumar@nxp.com; 
 x-originating-ip: [92.120.0.6]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8534ccf4-3316-43f9-9f61-08d714046445
+x-ms-office365-filtering-correlation-id: 021e5427-3df6-446f-c842-08d71404bcdd
 x-ms-office365-filtering-ht: Tenant
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);
  SRVR:VI1PR04MB4909; 
 x-ms-traffictypediagnostic: VI1PR04MB4909:
-x-microsoft-antispam-prvs: <VI1PR04MB4909D40BDA9AB4E13386A73895DD0@VI1PR04MB4909.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:758;
+x-microsoft-antispam-prvs: <VI1PR04MB49094FD491B98C12E9F5391F95DD0@VI1PR04MB4909.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:480;
 x-forefront-prvs: 01136D2D90
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(4636009)(366004)(136003)(39860400002)(396003)(346002)(376002)(13464003)(199004)(189003)(53546011)(6506007)(6436002)(76176011)(26005)(110136005)(54906003)(6636002)(186003)(2906002)(316002)(256004)(44832011)(486006)(86362001)(66066001)(55016002)(71200400001)(71190400001)(446003)(11346002)(476003)(229853002)(68736007)(53936002)(52536014)(33656002)(7736002)(8936002)(6246003)(4744005)(478600001)(25786009)(102836004)(99286004)(7696005)(76116006)(5660300002)(66446008)(64756008)(66556008)(66476007)(66946007)(3846002)(4326008)(6116002)(81166006)(8676002)(14454004)(81156014)(74316002)(9686003)(305945005);
+ SFS:(10009020)(4636009)(366004)(136003)(39860400002)(396003)(346002)(376002)(13464003)(199004)(189003)(53546011)(6506007)(6436002)(76176011)(26005)(110136005)(54906003)(6636002)(186003)(2906002)(316002)(256004)(44832011)(486006)(86362001)(66066001)(55016002)(71200400001)(71190400001)(446003)(11346002)(476003)(229853002)(68736007)(53936002)(52536014)(33656002)(7736002)(8936002)(6246003)(478600001)(25786009)(102836004)(99286004)(7696005)(76116006)(5660300002)(66446008)(64756008)(66556008)(66476007)(66946007)(3846002)(4326008)(6116002)(81166006)(8676002)(14454004)(81156014)(74316002)(9686003)(305945005);
  DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR04MB4909;
  H:VI1PR04MB4015.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; A:1; MX:1; 
 received-spf: None (protection.outlook.com: nxp.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Na7WetldCDf0kisvygFV4kL513RDyGqwyOprmPUuVlv3NrzClaL+rLLTWB7+A9JWeHFsEHdQVTEjbnKdaePuieHGIMRwT+/el52KTQHEeraPecdcEfu6y1wYhnBxzS3ITQal8hUzlvqJ2Nikqyba3IOsiZuP9h2E3bfZGOMhspTzP6HFxLHN95V/RRICwIzYHwzGxQipjmVa8KHk/SY1zRgdwkwICUKMqvSXJMwTEk18fzOoLTKJMEAd7qV1dd8vYL5BGnS1yDhnOK84C3oNcRr7s60+je2LkkvR+WzSB53sHt2oMjxl4EYoLx+MO3zJ0ubX1WBS4GHbih7kc63wN8CkDCc9Y5FkYYp87V7eKjTBMMEes1R+pSvGYz5mKeURXXoyr/1cUe8mMhN/COouycf2xoFu6dVvCh88bD+dE4s=
+x-microsoft-antispam-message-info: gD3W9ZnKW+I8ndf1ZMElNa3PBYuITlsb71h81vcs3kHtXGT4wuYXR+TYahAdYBQWvMHf55dCWFi7xyxmm7vGqtiVOPsICtKWYnmmTwcW50MmwejXZQU+o5+WHRMF2J/Na7ii9lu2ZjOP7G+xbUF3dPICKryvS6nCC2alUI7WjymsyqnDLPYtcdsNc+s0zijryPqGHliqyel87YTouX/OFF32NBN2QLwkAQbty4PWbNDLKs8ONPC4aQsPRz6Sr215mZzIF5eyc/ezEyNsOE3ed//sz6BdUIwVzmzSorlRkMtxORhGOryL6Cb+6Os5NFY6a2qNv45IW72M5rFm/Jjjf32GlgQ0t7KYgC5QAI8AAaVxJn9YpyVg+KbSQoYJwsy3iusBEceDnGcfTm+iCBZ0hyZ10x0690kMakjl8IMgxOY=
 MIME-Version: 1.0
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8534ccf4-3316-43f9-9f61-08d714046445
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2019 09:08:58.9794 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 021e5427-3df6-446f-c842-08d71404bcdd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2019 09:11:27.5851 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: ashish.kumar@nxp.com
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190729_020904_239118_7130AEB1 
-X-CRM114-Status: GOOD (  10.00  )
+X-CRM114-CacheID: sfid-20190729_021130_755477_993B1C92 
+X-CRM114-Status: GOOD (  12.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -144,12 +144,19 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 > linux-arm-kernel@lists.infradead.org; linux-mtd@lists.infradead.org; Ashish
 > Kumar <ashish.kumar@nxp.com>; Kuldeep Singh <kuldeep.singh@nxp.com>;
 > Ashish Kumar <ashish.kumar@nxp.com>
-> Subject: [EXT] Re: [Patch v3 2/2] dt-bindings: spi: spi-fsl-qspi: Add bindings of
-> ls1088a and ls1012a
+> Subject: [EXT] Re: [Patch v3 1/2] dt-bindings: spi: spi-fsl-qspi: Add ls2080a
+> compatibility string to bindings
 > 
 > Caution: EXT Email
 > 
-> On Wed, 19 Jun 2019 16:41:54 +0530, Ashish Kumar wrote:
+> On Wed, 19 Jun 2019 16:41:53 +0530, Ashish Kumar wrote:
+> > There are 2 version of QSPI-IP, according to which controller
+> > registers sets can be big endian or little endian.There are some other
+> > minor changes like RX fifo depth etc.
+> >
+> > The big endian version uses driver compatible "fsl,ls1021a-qspi" and
+> > little endian version uses driver compatible "fsl,ls2080a-qspi"
+> >
 > > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
 > > Signed-off-by: Ashish Kumar <ashish.kumar@nxp.com>
 > > ---
@@ -158,8 +165,8 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 > > v2:
 > > Convert to patch series and rebasing done on top of tree
 > >
-> >  Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt | 2 ++
-> >  1 file changed, 2 insertions(+)
+> >  Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
 > >
 > 
 > Reviewed-by: Rob Herring <robh@kernel.org>
@@ -168,7 +175,7 @@ Hi Leo,
 
 I think Rob, is waiting for you ack.
 
-Regards
+Regards 
 Ashish 
 
 ______________________________________________________
