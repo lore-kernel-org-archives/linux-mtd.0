@@ -2,78 +2,98 @@ Return-Path: <SRS0=td2l=V3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3BDFC0650F
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 15:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18AB3C433FF
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 16:54:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 779C420693
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 15:15:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFC1520657
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 16:54:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="C1zGJLjR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 779C420693
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ie3dYXEV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="n6VwzoC8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC1520657
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:Cc:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Message-ID:Subject:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=zGHxU+3VmVrmwSvxheCztM9+mIh/tBbjMBZuiOHiWus=; b=C1zGJLjR5SN9hH9voqDrCOzHH
-	Bc6Cge98RrOV0v+0mowSSHgpKKKbDqZFa7UZDZirFgI4RNxo+9d4jRC9IP8xFHVSF4I0+OYV32bT2
-	83xSzqIfk9CPl0Z5GkDC0RL7xoT8Ixa9kBPKkgMie4eZ2jxSJ4Iif9yb5gTz13rAxQL8luYejhyKN
-	+zza4rRQQQ82bBvFG6Yqsj3VNuN5ssvX/UmHRXRDL8u5N6NCaX3XlZhmtDlVALtV1Sawioij/5RXo
-	AIh6CiIQ1jlwBz7pSnKg9nxfnnq2Q8/LQ4+HzojTYBaR0tLVuIVpj8UFDGWtYrS5fLtxqeqyXvj4a
-	akfHZjq+Q==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1HpGOejiu6OEBEc8W73vzo/Ndx7iaWi2mhxNlv26BOU=; b=ie3dYXEVXWZurT
+	zGV3Y60tta2tzuTBx6qsYRsJi0y0lvvdSffWCMSz3cnibpjN0VIilR/wEc/BcxJzaHP3r2xcb0RZv
+	MkaxS2uHRb0IPQ1132/+bDyB3TitgDer+bi718ioqbLIJu/0tSUDRuKAluOOpxhlCfBU+Hyiglgqr
+	GFXOUC0+5+d9ICtWwleWKG/rzmz3nw9uCz86NFjhESeey46FiCMyRY7Hp3xz4GgO9bcRx1lhGY9aS
+	HNZCelx/HeJpJ69AztOYg17rLrGRMeWfOrcK2cw6tLIV0da1T3LebfNj8ZCR8AHa9qfGSU8z7pI0e
+	pE/8zIEy/X7L0mqkymyA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsTqZ-00054I-0R; Tue, 30 Jul 2019 15:15:27 +0000
-Received: from mail-out.m-online.net ([212.18.0.9])
+	id 1hsVO2-0002QV-5b; Tue, 30 Jul 2019 16:54:06 +0000
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsTqD-0003gB-1G
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 15:15:07 +0000
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
- by mail-out.m-online.net (Postfix) with ESMTP id 45yg8j6xQxz1rJh3;
- Tue, 30 Jul 2019 17:15:01 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
- by mail.m-online.net (Postfix) with ESMTP id 45yg8j5wYWz1qqkK;
- Tue, 30 Jul 2019 17:15:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
- port 10024)
- with ESMTP id 22g-8UGNh7wX; Tue, 30 Jul 2019 17:14:59 +0200 (CEST)
-X-Auth-Info: r8dPYEyvTbaQ+bPM3ZUCg2RK7//Y8yZyHURsYqUc8aw=
-Received: from jawa (85-222-111-42.dynamic.chello.pl [85.222.111.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.mnet-online.de (Postfix) with ESMTPSA;
- Tue, 30 Jul 2019 17:14:59 +0200 (CEST)
-Date: Tue, 30 Jul 2019 17:14:58 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [imx][vybrid][qspi] Regression notification - vybrid vf610
- QUADSPI - BK4 board
-Message-ID: <20190730171458.7ea68db7@jawa>
-In-Reply-To: <CAOMZO5BXvMByYX2ixLK+rXoT7ueb0aTmR+L-w6s6-GvFkC1Bcw@mail.gmail.com>
-References: <20190725001114.0ceff19c@jawa>
- <CAOMZO5CsTPaRSe-VmOwnnYrsMMXa3GhurmsWwzaPo948xs10FA@mail.gmail.com>
- <20190729224326.44aa3057@jawa>
- <CAOMZO5C4UgetHAW6_JqLGZH96_8TyHSzj10DxFe+XMnZR07ASA@mail.gmail.com>
- <20190729235409.222c8880@jawa>
- <CAOMZO5BXvMByYX2ixLK+rXoT7ueb0aTmR+L-w6s6-GvFkC1Bcw@mail.gmail.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+ id 1hsVNq-0002FX-0E
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 16:53:55 +0000
+Received: by mail-lf1-x143.google.com with SMTP id h28so45196943lfj.5
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2019 09:53:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:cc:references:from:organization:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Dr5C7KQU9eOCQSa8blb+7TwHFoH/AQOPyjtbxZR3wEw=;
+ b=n6VwzoC82cjLzaKyMS8TYJE21RybcmpxGRbyaDegPwja7yh9OImhVQ96rNFap2asR+
+ AesvPOS6PMPKdIXBKXbBhS9JnXyov3teWpjDtcz1RAuF8uzkgWIwC1E2vJuycwXl7o4B
+ 1GBFQGSZ6HHgoU6h3Riq1tDwK9tN5+GB+PJawR9jmOqtLGLq0XnaMKPRe8QDNFinGNDv
+ iHT0dy0E96DEOROAErzWARnrqfe0n4uaxaEDuTSGvcoVf1HAXitquQdneqDEzemhG7ec
+ dMzo5x7GVe1M9hFoCSXWTeEqVdA+XECsKDOZEY9npRoButzNFXxnKzuOQquN76bSbb2e
+ kwCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:organization
+ :message-id:date:user-agent:mime-version:in-reply-to
+ :content-language:content-transfer-encoding;
+ bh=Dr5C7KQU9eOCQSa8blb+7TwHFoH/AQOPyjtbxZR3wEw=;
+ b=BWh199OwRg5SDazqUeIdohuArXR4RMDSdURcpWHT3DktWxxurWEWAbPjc+8NMWh6Lz
+ mh1a6ADu+2rgfDAsU/+2XAgQB2uaOk62SQhKZD9W13wgCqCTq9JlZ8pqx+5dk7DI7DZT
+ MyySyWjxAfc8puFdjQ22v82MXV0OexFdrEIBzS9JbDEr/16ju1yHFtwyrPDliWr0/abH
+ 5jh57RyAoX5jxaTRhSVQtloYsWl1HfwcidXfX1Pk6GNuzreW4pW/Ohvrdk/s6HOdC+Ta
+ KqM/YoKG/kfwdW8DfmKGvhPrUx4yXeh6pApITp1t/vrt/LSxDopfV0V/r3ksmTUnGBKk
+ MO+w==
+X-Gm-Message-State: APjAAAWw1cvGM9xmtxfg0aLumEUPScvKI/w7S/k9ktJx0aUOqYr/bamM
+ DmvlmHJhEvPYliP+1Bk2hQHEPQ==
+X-Google-Smtp-Source: APXvYqwJvNf17IzLfphH3pMtcc+2Ne0XbkA7B9Qjxqb0xpsM3x4YTmfFl6y9Ur5HSRYGsOfd35JrdA==
+X-Received: by 2002:a19:4f4a:: with SMTP id a10mr54759913lfk.30.1564505631521; 
+ Tue, 30 Jul 2019 09:53:51 -0700 (PDT)
+Received: from wasted.cogentembedded.com
+ ([2a00:1fa0:4c5:af01:782b:483e:bc20:30b0])
+ by smtp.gmail.com with ESMTPSA id v17sm15174582ljg.36.2019.07.30.09.53.49
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 30 Jul 2019 09:53:50 -0700 (PDT)
+Subject: Re: [RFC v1 0/3] *spi-mem: adding setup and callback function
+To: Boris Brezillon <boris.brezillon@collabora.com>,
+ Tomer Maimon <tmaimon77@gmail.com>, vigneshr@ti.com
+References: <20190729142504.188336-1-tmaimon77@gmail.com>
+ <20190729172859.4374a2ad@collabora.com>
+ <CAP6Zq1iPXDX_Gtz6ZWYm3JoHgHjdapotVLGw-Lq4tc2X-6eAug@mail.gmail.com>
+ <20190730085438.6fe0480b@collabora.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Organization: Cogent Embedded
+Message-ID: <2272f934-df83-bd6d-2aee-ac2d93799092@cogentembedded.com>
+Date: Tue, 30 Jul 2019 19:53:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
+In-Reply-To: <20190730085438.6fe0480b@collabora.com>
+Content-Language: en-MW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190730_081505_431677_F8223E39 
-X-CRM114-Status: GOOD (  15.78  )
+X-CRM114-CacheID: sfid-20190730_095354_240825_9530740A 
+X-CRM114-Status: GOOD (  19.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,121 +105,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Andrey Smirnov <andrew.smirnov@gmail.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
- NXP Linux Team <linux-imx@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>,
- Chris Healy <cphealy@gmail.com>
-Content-Type: multipart/mixed; boundary="===============2650788084951857345=="
+Cc: bbrezillon@kernel.org, richard@nod.at, tudor.ambarus@microchip.com,
+ Schrempf Frieder <frieder.schrempf@kontron.de>, linux-spi@vger.kernel.org,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============2650788084951857345==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/USNi+Xd_G=l57K_E0I5q=zE"; protocol="application/pgp-signature"
+On 07/30/2019 09:54 AM, Boris Brezillon wrote:
 
---Sig_/USNi+Xd_G=l57K_E0I5q=zE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> Trimmed the recipient list a bit and used Frieder's new address.
+> +Sergey
 
-Hi Fabio,
+  TY. :-)
 
-> Hi Lukasz,
->=20
-> On Mon, Jul 29, 2019 at 6:54 PM Lukasz Majewski <lukma@denx.de> wrote:
->=20
-> > At best it is possible to have both memories working with double SPI
-> > configuration or single (QSPI0_A with quad SPI [2]). =20
->=20
-> But according to
-> Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt if you use one
-> chip select for bus A and one chip select for bus B, then you should
-> have your dts changed like this:
->=20
-> diff --git a/arch/arm/boot/dts/vf610-bk4.dts
-> b/arch/arm/boot/dts/vf610-bk4.dts index 3fa0cbe456db..0f3870d3b099
-> 100644 --- a/arch/arm/boot/dts/vf610-bk4.dts
-> +++ b/arch/arm/boot/dts/vf610-bk4.dts
-> @@ -246,13 +246,13 @@
->                 reg =3D <0>;
->         };
->=20
-> -       n25q128a13_2: flash@1 {
-> +       n25q128a13_2: flash@2 {
->                 compatible =3D "n25q128a13", "jedec,spi-nor";
->                 #address-cells =3D <1>;
->                 #size-cells =3D <1>;
->                 spi-max-frequency =3D <66000000>;
->                 spi-rx-bus-width =3D <2>;
-> -               reg =3D <1>;
-> +               reg =3D <2>;
->         };
->  };
+> On Mon, 29 Jul 2019 23:55:05 +0300
+> Tomer Maimon <tmaimon77@gmail.com> wrote:
+> 
+>> Hi Boris,
+>>
+>> Thanks for the prompt reply,
+>>
+>>
+>>
+>> On Mon, 29 Jul 2019 at 18:29, Boris Brezillon <boris.brezillon@collabora.com>
+>> wrote:
+>>
+>>> Hi Tomer,
+>>>
+>>> On Mon, 29 Jul 2019 17:25:01 +0300
+>>> Tomer Maimon <tmaimon77@gmail.com> wrote:
+>>>  
+>>>> Lately we have working on Flash interface unit (FIU) SPI driver that
+>>>> using spi-mem interface, Our FIU HW module support direct Flash Rd//Wr.
+>>>>
+>>>> In our SOC (32 bit dual core ARM) we have 3 FIU's that using memory  
+>>> mapping as follow:  
+>>>>
+>>>> FIU0 - have 2 chip select and each one have 128MB memory mapping (total  
+>>> 256MB memory mapping)  
+>>>> FIU1 - have 4 chip select and each one have 128MB memory mapping (total  
+>>> 512MB memory mapping)  
+>>>> FIU2 - have 4 chip select and each one have 16MB memory mapping (total  
+>>> 32MB memory mapping)  
+>>>>
+>>>> Totally 800MB memory mapping.
+>>>>
+>>>> When the FIU driver probe it don't know the size of each Flash that
+>>>> connected to the FIU, so the entire memory mapping is allocated for each  
+>>> FIU  
+>>>> according the FIU device tree memory map parameters.  
+>>>
+>>> Do you need those mappings to be active to support simple reg accesses?
+>>>  
+>>>> It means, if we enable all three FIU's the drivers will try to allocate  
+>>> totally 800MB.  
+>>>>
+>>>> In 32bit system it is problematic because the kernel have only 1GB
+>>>> of memory allocation so the vmalloc cannot take 800MB.
+>>>>
+>>>> When implementing the FIU driver in the mtd/spi-nor we allocating memory  
+>>> address only  
+>>>> for detected Flash with exact size (usually we are not using 128MB  
+>>> Flash), and in that case usually we allocating much less memory.  
+>>>>
+>>>> To solve this issue we needed to overcome two things:
+>>>>
+>>>> 1.    Get argument from the upper layer (spi-mem layer)
+>>>> 2.    Calling the get argument function after SPI_NOR_SCAN function.  
+>>> (the MTD Flash size filled in  SPI_NOR_SCAN function)
+>>>
+>>> That's clearly breaking the layering we've tried to restore with the
+>>> spi-nor/spi-mem split, and I don't see why this is needed since we now
+>>> have a way to create direct mappings dynamically (with the dirmap API).
+>>> Have you tried implementing the dirmap hooks in your driver?  
+>>
+>>
+>>  Sorry but I wasn't familiar with the direct mapping in the spi-mem, it
+>> seems it needed to implemented in the m25p80 driver as well, am I correct?
+> 
+> There's this patch [1] floating around. IIRC, Sergey was waiting for
+> the m25p80 -> spi-nor merge to send a v5.
 
-That was the exact issue it seems. I've tested the 5.2. kernel with
-this test [1] and it works reliably now.
+   No, not really waiting for it. I was asked to recast the patch using
+the managed device APIs, and I got sucked into my HyperFlash driver and
+dropped the ball...
 
-Apparently those were leftovers from some old, in-house development.
+> Vignesh, any updates on that
+> one? If you don't have time to work on that, maybe Sergey could send a
+> v5.
 
-Anyway thanks for help :-)
+   I can try recasting it RSN, if it's blocking some other stuff...
 
->=20
-> From the dt-bindings:
->=20
-> "Required SPI slave node properties:
->   - reg: There are two buses (A and B) with two chip selects each.
-> This encodes to which bus and CS the flash is connected:
-> <0>: Bus A, CS 0
-> <1>: Bus A, CS 1
-> <2>: Bus B, CS 0
-> <3>: Bus B, CS 1"
+> [1]https://www.spinics.net/lists/linux-mtd/msg07358.html
 
-
-Note:
-
-[1] -
-https://github.com/lmajewski/tests-spi/blob/master/tests/spi/spi_nor_quadsp=
-i_test.sh
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/USNi+Xd_G=l57K_E0I5q=zE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl1AXvIACgkQAR8vZIA0
-zr3jfgf/SIHScGKTrvxOhFM1AZI/y1zjhBDONGghm5XWh1Km17/45o4ZvuD7zdub
-sncRCcwkH1jHFUvBgRESb5eYrCnIR2wtxQ+7MuoDmWwUXNrhCQbVWTtslGo86RQl
-kWoyXislc1GB6zcLknE0Un5a87KDtyzuM7EQnm4PABdjzFkXOGVREsPvefuJh/ga
-iDYtPLpJhyznrEoP6VE+5d8c2beaC34kK2OfeaT9fCdNIsiOzXaalcbbuCbG2hS9
-NEs5ewN8WRzzExXynJ1o4LjGZ1OD3219Va+Af0VHjNfJqAuHrU/4Aq+s6yXOpEeG
-2MMFUogYogZP65Ns0GTL2QJ/S+jKMg==
-=5jHp
------END PGP SIGNATURE-----
-
---Sig_/USNi+Xd_G=l57K_E0I5q=zE--
-
-
---===============2650788084951857345==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+MBR, Sergei
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2650788084951857345==--
-
