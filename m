@@ -2,98 +2,84 @@ Return-Path: <SRS0=td2l=V3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18AB3C433FF
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 16:54:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B1ACC0650F
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 17:26:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFC1520657
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 16:54:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FDFA2089E
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 17:26:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="ie3dYXEV";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="n6VwzoC8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC1520657
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LGk/cM9V";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUamGemk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FDFA2089E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1HpGOejiu6OEBEc8W73vzo/Ndx7iaWi2mhxNlv26BOU=; b=ie3dYXEVXWZurT
-	zGV3Y60tta2tzuTBx6qsYRsJi0y0lvvdSffWCMSz3cnibpjN0VIilR/wEc/BcxJzaHP3r2xcb0RZv
-	MkaxS2uHRb0IPQ1132/+bDyB3TitgDer+bi718ioqbLIJu/0tSUDRuKAluOOpxhlCfBU+Hyiglgqr
-	GFXOUC0+5+d9ICtWwleWKG/rzmz3nw9uCz86NFjhESeey46FiCMyRY7Hp3xz4GgO9bcRx1lhGY9aS
-	HNZCelx/HeJpJ69AztOYg17rLrGRMeWfOrcK2cw6tLIV0da1T3LebfNj8ZCR8AHa9qfGSU8z7pI0e
-	pE/8zIEy/X7L0mqkymyA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Kztnf/c3TiJjsRyn0vZ13QAmrosREGprQKgOK5illuY=; b=LGk/cM9V6LYMU6
+	115gUXn8KG+jkgrFI7WZPmDmU1tMzwdgtd7opESPWzR0L0im3y6GNAlLNn/zL17b4Wx6651k5CO30
+	mRa6UCUCVMqrMbR6rEDh748UDlFXZcaMOPqJVvMQc8Ce5fD8b56D/8qiGAlAcUX2d1IpqofbJzfXY
+	bsFiz8hLkwxN5XDF4dLl+tdFZjmot7uq16ZRjVldkydmQ05yZWaVVgfPvj4PJxXySJNk7J0sLDEwM
+	qe2DheWs0B67wQjOJbDyNdtkElfetdJ+gnaVVuNAybaBZP8NDM7aiBvXoJc8ihWn5k+/Ihym22Of/
+	xKwRFMI1zMyB2R1U6B3w==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsVO2-0002QV-5b; Tue, 30 Jul 2019 16:54:06 +0000
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
+	id 1hsVtW-0003wy-0y; Tue, 30 Jul 2019 17:26:38 +0000
+Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsVNq-0002FX-0E
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 16:53:55 +0000
-Received: by mail-lf1-x143.google.com with SMTP id h28so45196943lfj.5
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2019 09:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:organization:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=Dr5C7KQU9eOCQSa8blb+7TwHFoH/AQOPyjtbxZR3wEw=;
- b=n6VwzoC82cjLzaKyMS8TYJE21RybcmpxGRbyaDegPwja7yh9OImhVQ96rNFap2asR+
- AesvPOS6PMPKdIXBKXbBhS9JnXyov3teWpjDtcz1RAuF8uzkgWIwC1E2vJuycwXl7o4B
- 1GBFQGSZ6HHgoU6h3Riq1tDwK9tN5+GB+PJawR9jmOqtLGLq0XnaMKPRe8QDNFinGNDv
- iHT0dy0E96DEOROAErzWARnrqfe0n4uaxaEDuTSGvcoVf1HAXitquQdneqDEzemhG7ec
- dMzo5x7GVe1M9hFoCSXWTeEqVdA+XECsKDOZEY9npRoButzNFXxnKzuOQquN76bSbb2e
- kwCg==
+ id 1hsVtT-0003wS-0i
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 17:26:36 +0000
+Received: by mail-io1-xd42.google.com with SMTP id m24so129986219ioo.2
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2019 10:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=tsLPrLOcclqm31GATo5KG4DgL5WcwoSIYZV9oMmibkM=;
+ b=LUamGemkbRqnOVHbq7CXnlGi/lEYqOEEySiKtSrwXqEp6shA4gxXuseHjOaOiH3aa7
+ q4CF5Eum/dqTa4wC00EDfSR4wSTPClq6Y3O6fnjnuTa8UISAGRv24/2prGpJP4yj+/5K
+ pp6QgCoaOkGX8YfVQJvI0ldkf7g5Qtz5YPjBIm1MafS1QJbnmne2KPhWiFiOFjpLhpua
+ 9zkTIHWrBNLvn7Si20xo61CMzJCVm2tyy8IPzybo7iqfWECXz7HiHXR7qDV7Zs/ri977
+ AjNYEbpGf5FVBSgWnRjBEI6oRswJ4WN7oBSH2Oh+cBt5ZquUgXtZtN3ILEA184MLtXtW
+ bQ/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:organization
- :message-id:date:user-agent:mime-version:in-reply-to
- :content-language:content-transfer-encoding;
- bh=Dr5C7KQU9eOCQSa8blb+7TwHFoH/AQOPyjtbxZR3wEw=;
- b=BWh199OwRg5SDazqUeIdohuArXR4RMDSdURcpWHT3DktWxxurWEWAbPjc+8NMWh6Lz
- mh1a6ADu+2rgfDAsU/+2XAgQB2uaOk62SQhKZD9W13wgCqCTq9JlZ8pqx+5dk7DI7DZT
- MyySyWjxAfc8puFdjQ22v82MXV0OexFdrEIBzS9JbDEr/16ju1yHFtwyrPDliWr0/abH
- 5jh57RyAoX5jxaTRhSVQtloYsWl1HfwcidXfX1Pk6GNuzreW4pW/Ohvrdk/s6HOdC+Ta
- KqM/YoKG/kfwdW8DfmKGvhPrUx4yXeh6pApITp1t/vrt/LSxDopfV0V/r3ksmTUnGBKk
- MO+w==
-X-Gm-Message-State: APjAAAWw1cvGM9xmtxfg0aLumEUPScvKI/w7S/k9ktJx0aUOqYr/bamM
- DmvlmHJhEvPYliP+1Bk2hQHEPQ==
-X-Google-Smtp-Source: APXvYqwJvNf17IzLfphH3pMtcc+2Ne0XbkA7B9Qjxqb0xpsM3x4YTmfFl6y9Ur5HSRYGsOfd35JrdA==
-X-Received: by 2002:a19:4f4a:: with SMTP id a10mr54759913lfk.30.1564505631521; 
- Tue, 30 Jul 2019 09:53:51 -0700 (PDT)
-Received: from wasted.cogentembedded.com
- ([2a00:1fa0:4c5:af01:782b:483e:bc20:30b0])
- by smtp.gmail.com with ESMTPSA id v17sm15174582ljg.36.2019.07.30.09.53.49
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 30 Jul 2019 09:53:50 -0700 (PDT)
-Subject: Re: [RFC v1 0/3] *spi-mem: adding setup and callback function
-To: Boris Brezillon <boris.brezillon@collabora.com>,
- Tomer Maimon <tmaimon77@gmail.com>, vigneshr@ti.com
-References: <20190729142504.188336-1-tmaimon77@gmail.com>
- <20190729172859.4374a2ad@collabora.com>
- <CAP6Zq1iPXDX_Gtz6ZWYm3JoHgHjdapotVLGw-Lq4tc2X-6eAug@mail.gmail.com>
- <20190730085438.6fe0480b@collabora.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <2272f934-df83-bd6d-2aee-ac2d93799092@cogentembedded.com>
-Date: Tue, 30 Jul 2019 19:53:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=tsLPrLOcclqm31GATo5KG4DgL5WcwoSIYZV9oMmibkM=;
+ b=EoLYk6FOsPo2yFCk3YN7Y2tB1PvqlxbAZ+0goh5UCtp+PDNgLuM2WnsuXp299QZ2pC
+ 71DXnJOlw7lKvf+sEbLBX7IDyJZvfQTMoivwTbOg+EmectgZ/Z6NnxcuXOcHQjaqnPNM
+ nQqFa7GzcyFxLDn4f3z8pOov2XcKteBZUDDmqeu8bQzuqteV0U/cuxVORvWWLGPSBRj+
+ 8XtHhX7CENLl6ltFZRehE/K/72p9TfcmQkPxm1XsGlnsZOOQafZ5nxCzVf/sWoPlCm7+
+ wrD99EeWrsY3epEoDeYXuSsHS7LgdPuCEgfYk3e5CpVNhXFIqsEGOw4GMgGix/B22n1n
+ BqyQ==
+X-Gm-Message-State: APjAAAXCxP2QESxsbUswm9JtlN8RlSMEklRVTqd/v3iBU7TzHC5xh+x5
+ ++KINZzB5WFZ+N6HdmOa+Mir/yOQYLnhfxOrTE8=
+X-Google-Smtp-Source: APXvYqy+9zDOTHm2OHuBLA2soclNQ3YwB8p18dgCUYzErzvrXdSDbEEW8GCwNV3FQCvXOrwwAN9MF+uqzNXPUM4I49E=
+X-Received: by 2002:a5e:8210:: with SMTP id l16mr81558885iom.240.1564507594217; 
+ Tue, 30 Jul 2019 10:26:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190730085438.6fe0480b@collabora.com>
-Content-Language: en-MW
+References: <20190730014924.2193-1-deepa.kernel@gmail.com>
+ <20190730014924.2193-4-deepa.kernel@gmail.com>
+ <87d0hsapwr.fsf@mail.parknet.co.jp>
+In-Reply-To: <87d0hsapwr.fsf@mail.parknet.co.jp>
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Date: Tue, 30 Jul 2019 10:26:22 -0700
+Message-ID: <CABeXuvqgaxDSR8N_D1Tdw06g_5PGinZS--6nx-bPtAWP4v+mwg@mail.gmail.com>
+Subject: Re: [PATCH 03/20] timestamp_truncate: Replace users of
+ timespec64_trunc
+To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190730_095354_240825_9530740A 
-X-CRM114-Status: GOOD (  19.86  )
+X-CRM114-CacheID: sfid-20190730_102635_061568_9AEBD866 
+X-CRM114-Status: GOOD (  13.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,102 +91,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: bbrezillon@kernel.org, richard@nod.at, tudor.ambarus@microchip.com,
- Schrempf Frieder <frieder.schrempf@kontron.de>, linux-spi@vger.kernel.org,
- broonie@kernel.org, linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
+Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Greg KH <gregkh@linuxfoundation.org>, yuchao0@huawei.com,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Tejun Heo <tj@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Richard Weinberger <richard@nod.at>,
+ Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, "Linux F2FS DEV,
+ Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
+ linux-ntfs-dev@lists.sourceforge.net, stoph Hellwig <hch@lst.de>,
+ anton@tuxera.com, Joel Becker <jlbec@evilplan.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 07/30/2019 09:54 AM, Boris Brezillon wrote:
+On Tue, Jul 30, 2019 at 1:27 AM OGAWA Hirofumi
+<hirofumi@mail.parknet.co.jp> wrote:
+>
+> Deepa Dinamani <deepa.kernel@gmail.com> writes:
+>
+> > diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> > index 1e08bd54c5fb..53bb7c6bf993 100644
+> > --- a/fs/fat/misc.c
+> > +++ b/fs/fat/misc.c
+> > @@ -307,8 +307,9 @@ int fat_truncate_time(struct inode *inode, struct timespec64 *now, int flags)
+> >               inode->i_atime = (struct timespec64){ seconds, 0 };
+> >       }
+> >       if (flags & S_CTIME) {
+> > -             if (sbi->options.isvfat)
+> > -                     inode->i_ctime = timespec64_trunc(*now, 10000000);
+> > +             if (sbi->options.isvfat) {
+> > +                     inode->i_ctime = timestamp_truncate(*now, inode);
+> > +             }
+> >               else
+> >                       inode->i_ctime = fat_timespec64_trunc_2secs(*now);
+> >       }
+>
+> Looks like broken. It changed to sb->s_time_gran from 10000000, and
+> changed coding style.
 
-> Trimmed the recipient list a bit and used Frieder's new address.
-> +Sergey
+This is using a new api: timestamp_truncate(). granularity is gotten
+by inode->sb->s_time_gran. See Patch [2/20]:
+https://lkml.org/lkml/2019/7/29/1853
 
-  TY. :-)
+So this is not broken if fat is filling in the right granularity in the sb.
 
-> On Mon, 29 Jul 2019 23:55:05 +0300
-> Tomer Maimon <tmaimon77@gmail.com> wrote:
-> 
->> Hi Boris,
->>
->> Thanks for the prompt reply,
->>
->>
->>
->> On Mon, 29 Jul 2019 at 18:29, Boris Brezillon <boris.brezillon@collabora.com>
->> wrote:
->>
->>> Hi Tomer,
->>>
->>> On Mon, 29 Jul 2019 17:25:01 +0300
->>> Tomer Maimon <tmaimon77@gmail.com> wrote:
->>>  
->>>> Lately we have working on Flash interface unit (FIU) SPI driver that
->>>> using spi-mem interface, Our FIU HW module support direct Flash Rd//Wr.
->>>>
->>>> In our SOC (32 bit dual core ARM) we have 3 FIU's that using memory  
->>> mapping as follow:  
->>>>
->>>> FIU0 - have 2 chip select and each one have 128MB memory mapping (total  
->>> 256MB memory mapping)  
->>>> FIU1 - have 4 chip select and each one have 128MB memory mapping (total  
->>> 512MB memory mapping)  
->>>> FIU2 - have 4 chip select and each one have 16MB memory mapping (total  
->>> 32MB memory mapping)  
->>>>
->>>> Totally 800MB memory mapping.
->>>>
->>>> When the FIU driver probe it don't know the size of each Flash that
->>>> connected to the FIU, so the entire memory mapping is allocated for each  
->>> FIU  
->>>> according the FIU device tree memory map parameters.  
->>>
->>> Do you need those mappings to be active to support simple reg accesses?
->>>  
->>>> It means, if we enable all three FIU's the drivers will try to allocate  
->>> totally 800MB.  
->>>>
->>>> In 32bit system it is problematic because the kernel have only 1GB
->>>> of memory allocation so the vmalloc cannot take 800MB.
->>>>
->>>> When implementing the FIU driver in the mtd/spi-nor we allocating memory  
->>> address only  
->>>> for detected Flash with exact size (usually we are not using 128MB  
->>> Flash), and in that case usually we allocating much less memory.  
->>>>
->>>> To solve this issue we needed to overcome two things:
->>>>
->>>> 1.    Get argument from the upper layer (spi-mem layer)
->>>> 2.    Calling the get argument function after SPI_NOR_SCAN function.  
->>> (the MTD Flash size filled in  SPI_NOR_SCAN function)
->>>
->>> That's clearly breaking the layering we've tried to restore with the
->>> spi-nor/spi-mem split, and I don't see why this is needed since we now
->>> have a way to create direct mappings dynamically (with the dirmap API).
->>> Have you tried implementing the dirmap hooks in your driver?  
->>
->>
->>  Sorry but I wasn't familiar with the direct mapping in the spi-mem, it
->> seems it needed to implemented in the m25p80 driver as well, am I correct?
-> 
-> There's this patch [1] floating around. IIRC, Sergey was waiting for
-> the m25p80 -> spi-nor merge to send a v5.
-
-   No, not really waiting for it. I was asked to recast the patch using
-the managed device APIs, and I got sucked into my HyperFlash driver and
-dropped the ball...
-
-> Vignesh, any updates on that
-> one? If you don't have time to work on that, maybe Sergey could send a
-> v5.
-
-   I can try recasting it RSN, if it's blocking some other stuff...
-
-> [1]https://www.spinics.net/lists/linux-mtd/msg07358.html
-
-MBR, Sergei
+-Deepa
 
 ______________________________________________________
 Linux MTD discussion mailing list
