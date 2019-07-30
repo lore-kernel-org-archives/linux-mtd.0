@@ -2,69 +2,106 @@ Return-Path: <SRS0=td2l=V3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C5FEC76186
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 01:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE4EC76186
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 02:05:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E2DD2070B
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 01:21:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C39C6206E0
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 02:05:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="beDeYX0s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E2DD2070B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="MhyJrNUW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="viwCcV43";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYkm93F1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C39C6206E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XeUAC5/MEDNkoSOdaJEBh97DzAlS7JV6804rJgWQ/sQ=; b=beDeYX0sA+DO77
-	IZ69g7QwWJ5XYte7yRh/QaFkQu3bYmSMTOFme71pJF9/4C/g85FBuSmpZ2+V+g/xwE+24M/5DRaJR
-	fq3j4A+PlSLF0/EitLskxMxCj+x2wrjo9VXbmgIcEfnjPYq4fEsUK4S5pnaR5+uY6hwZFNCR+Blv2
-	MZ4kdgy02YqG3+29IXx591tT6iS043/od0rz/WQqYOdjRUGu/UBtIUcc+n3b6Penxen1Foxa0Mbau
-	5EKajv1MywEaprxhhZjaEA+1XQ3pudMwbhlz6zot21zMFeE2vqEDc8bZZuOp3+v9gE1xHtyemnGEG
-	uEnfUs7Q1NLaR3LG0ksg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
+	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=UQZYYr/Hbdqhd6Z0GDQwHTB7nTkhVEnTulk/T0njKvk=; b=MhyJrNUW9umd4nYS3HsKfEcFN4
+	0B+Nc9eG2/XD7xoE/bW4aKASSZJ/n7LWsIXzhUkKd1uys+RGzrhuszVyIjTWCpA4hMZqjyTV1eyB3
+	7VLOIcIrJSV96S9Jjc89XZfXCaDnLuddcNYR9Ih1Ae/2EgEDrqLCWH1hPN2OpvQk3E1DT0QGq7hhD
+	/yctPwyhNzs7LabbdIGMtIkNis/eLwTpK+lr3HE8IeVaAZ7VJ/vIRhpUFRtQ3+b83aBbe8ErCJ4Wy
+	uqPOumzPtuSc6W94bxe6tpqF227tIzzw4QoheVtMie2YfRbUZW5UnXrz+/Xkj4IT2gO2cRJsO87jK
+	JGAo+NSA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsGpY-0006ke-41; Tue, 30 Jul 2019 01:21:32 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188] helo=huawei.com)
+	id 1hsHVh-0003QD-5O; Tue, 30 Jul 2019 02:05:05 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsGpT-0006jd-HY
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 01:21:29 +0000
-Received: from dggemi405-hub.china.huawei.com (unknown [172.30.72.54])
- by Forcepoint Email with ESMTP id B95CB5966B34DFBF93FD;
- Tue, 30 Jul 2019 09:21:12 +0800 (CST)
-Received: from DGGEMI524-MBX.china.huawei.com ([169.254.7.227]) by
- dggemi405-hub.china.huawei.com ([10.3.17.143]) with mapi id 14.03.0439.000;
- Tue, 30 Jul 2019 09:20:59 +0800
-From: chengzhihao <chengzhihao1@huawei.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHViaWZzOiB1Ymlmc190bmNfc3RhcnRfY29tbWl0?=
- =?utf-8?B?OiBGaXggT09CIGluIGxheW91dF9pbl9nYXBz?=
-Thread-Topic: [PATCH] ubifs: ubifs_tnc_start_commit: Fix OOB in layout_in_gaps
-Thread-Index: AQHVPsBTBWetoNcJ1UaytZ+21M4VxabhWCiAgAETrKA=
-Date: Tue, 30 Jul 2019 01:20:48 +0000
-Message-ID: <0B80F9D4116B2F4484E7279D5A66984F7A7472@dggemi524-mbx.china.huawei.com>
-References: <1563602720-113903-1-git-send-email-chengzhihao1@huawei.com>
- <CAFLxGvxEAGtQDFm4G3orY+M9yuthDA4j0+u=HbE9DKuo7H8WCg@mail.gmail.com>
-In-Reply-To: <CAFLxGvxEAGtQDFm4G3orY+M9yuthDA4j0+u=HbE9DKuo7H8WCg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.177.224.82]
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+ id 1hsHVf-0002bT-HU
+ for linux-mtd@bombadil.infradead.org; Tue, 30 Jul 2019 02:05:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=References:In-Reply-To:Message-Id:Date:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=CJvht37EZemmcnBgtlNiz9+F+TMC9CP5JC3nxpy4VdY=; b=viwCcV43fg1TlXa7QzzzvDksL
+ U+nVxaX8/BuermqKWpQSGn8814LJc0pYQ8ZWWYgHl7mD7N4jnRLf8xdDCa2kqw1sORFruZoK30XC0
+ 0u6UDgCmk9tCi4Dt5ZBJcpu6MsFcNt2JA4cwTX0vwEfGKq7ayUesm0QZgGQdHr+hMPCHzdjdPSnqH
+ 9hS2JhMFUB3XhycQfWZZKhD7iUGZhAuSfTDXp+seCMhnuchrCzyH3sRqhrmMZZEjjSCGD4GX/83Ij
+ LrIZhuebb0SlWv4QMgAJOqOtxI8eJ+H6g3XH8YiYfVqtZPVpaY8v1v6MaAu0dUkFTSdjdFQz65iUN
+ ttVAJFV7g==;
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+ by casper.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hsHHj-0001ir-Mk
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 01:50:42 +0000
+Received: by mail-pf1-x443.google.com with SMTP id g2so28950209pfq.0
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2019 18:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=CJvht37EZemmcnBgtlNiz9+F+TMC9CP5JC3nxpy4VdY=;
+ b=GYkm93F1cJJjois+RV8eMjig9xIYQGk+SUnlQDx43S+Uu/41dHNKq90eVf618tDeUr
+ WEhiGiy+V5MiKxL76vvoq57Fv52TCb6McUeald2lUzRsAlH+djZTCx912xz1xe/0uhYF
+ raBQiGP750m/gqcyG2+H2THhlCHvYbdV9cbIZ5XSHgORnKCeuL6V7rrfuzm7WbifsB/e
+ G0zvOt+LVA9KtaEu6+9piTZLiIDyeuqyGnhvHXnLUfRKpsjGvo2fnsVCgoerB7LL2t1j
+ DkiSzSFuxoUY16+Xnrx6oiR20x5Cq+JMCahtn/DNTqBOsUs+1/tmZeAf61XUNw7gdTOR
+ tE4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=CJvht37EZemmcnBgtlNiz9+F+TMC9CP5JC3nxpy4VdY=;
+ b=I9syZ9OWUCy+vinK6OGB4yviHNnMz/DzF4RAjmqE9cqqWkbqMrAvK0NJz4+NKSjDsA
+ +j65OoR7Mz7GPny3WZKCi5sceg8PxVJ4ndLWts3QJPTYMmvLt48WsfW1F+gblaX8meWQ
+ HfmdR30bzXxx7N+5/uSMBPt5w1kd4CEKFm66W4oE/0zlQn+XoADR4crvS8Rhroa+r3WZ
+ 1nbsU7Yu+XVK4FH8k5ERtoswMmw/QbKtp8ul2eies4ibMnwKYPmGx0+ioyk7v8opgE8y
+ ZW4z/SHfjvTOkG/rZEGmLdKg2ZjjzUx3mPaiZicBRw7H7U7AdSsmikDpBQ6ThnRQdC5v
+ uGGA==
+X-Gm-Message-State: APjAAAWnK2uEpWPUOuMWqHB5TzU/Iu2QjzB8ZpwL7lnajWPq9ub1Yn+o
+ MYZQA0qvGY2hCNYW7UdTUOk=
+X-Google-Smtp-Source: APXvYqw9HM2FyYpOSBZ+oV02s33RW4zpOn3lB0rMSooqL418lTjpdNtWteRxv46hIS/3Tw3gww5h6Q==
+X-Received: by 2002:a62:e315:: with SMTP id g21mr40609144pfh.225.1564451426354; 
+ Mon, 29 Jul 2019 18:50:26 -0700 (PDT)
+Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net.
+ [98.234.52.230])
+ by smtp.gmail.com with ESMTPSA id r6sm138807156pjb.22.2019.07.29.18.50.24
+ (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+ Mon, 29 Jul 2019 18:50:25 -0700 (PDT)
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+To: viro@zeniv.linux.org.uk,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 06/20] fs: Fill in max and min timestamps in superblock
+Date: Mon, 29 Jul 2019 18:49:10 -0700
+Message-Id: <20190730014924.2193-7-deepa.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190730014924.2193-1-deepa.kernel@gmail.com>
+References: <20190730014924.2193-1-deepa.kernel@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190729_182127_911096_1E5F7D51 
-X-CRM114-Status: GOOD (  25.34  )
+X-CRM114-CacheID: sfid-20190730_025039_948572_9F3E1EF7 
+X-CRM114-Status: GOOD (  15.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,145 +113,309 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: "zhangyi \(F\)" <yi.zhang@huawei.com>, Richard Weinberger <richard@nod.at>,
- Sascha Hauer <s.hauer@pengutronix.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: shaggy@kernel.org, jfs-discussion@lists.sourceforge.net, al@alarsen.net,
+ linux-mtd@lists.infradead.org, darrick.wong@oracle.com, y2038@lists.linaro.org,
+ richard@nod.at, codalist@coda.cs.cmu.edu, hch@infradead.org, coda@cs.cmu.edu,
+ linux-ext4@vger.kernel.org, salah.triki@gmail.com, dushistov@mail.ru,
+ arnd@arndb.de, reiserfs-devel@vger.kernel.org, aivazian.tigran@gmail.com,
+ jaharkes@cs.cmu.edu, luisbg@kernel.org, nico@fluxnic.net,
+ linux-xfs@vger.kernel.org, jack@suse.com, linux-fsdevel@vger.kernel.org,
+ phillip@squashfs.org.uk, dwmw2@infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T0ssIHRoYXQncyBmaW5lLCBhbmQgSSB3aWxsIGNvbnRpbnVlIHRvIHVuZGVyc3RhbmQgbW9yZSBp
-bXBsZW1lbnRhdGlvbiBjb2RlIHJlbGF0ZWQgdG8gdGhpcyBwYXJ0Lg0KDQotDQpUaGFua3MsDQpD
-aGVuZyB6aGloYW8NCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBSaWNoYXJk
-IFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tXSANCuWPkemA
-geaXtumXtDogMjAxOeW5tDfmnIgzMOaXpSAwOjUyDQrmlLbku7bkuro6IGNoZW5nemhpaGFvIDxj
-aGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4NCuaKhOmAgTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNo
-YXJkQG5vZC5hdD47IFNhc2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT47IEFydGVt
-IEJpdHl1dHNraXkgPGRlZGVraW5kMUBnbWFpbC5jb20+OyB6aGFuZ3lpIChGKSA8eWkuemhhbmdA
-aHVhd2VpLmNvbT47IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBMS01MIDxsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnPg0K5Li76aKYOiBSZTogW1BBVENIXSB1YmlmczogdWJpZnNf
-dG5jX3N0YXJ0X2NvbW1pdDogRml4IE9PQiBpbiBsYXlvdXRfaW5fZ2Fwcw0KDQpPbiBTYXQsIEp1
-bCAyMCwgMjAxOSBhdCA4OjAwIEFNIFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5j
-b20+IHdyb3RlOg0KPg0KPiBSdW5uaW5nIHN0cmVzcy10ZXN0IHRlc3RfMiBpbiBtdGQtdXRpbHMg
-b24gdWJpIGRldmljZSwgc29tZXRpbWVzIHdlIA0KPiBjYW4gZ2V0IGZvbGxvd2luZyBvb3BzIG1l
-c3NhZ2U6DQo+DQo+ICAgQlVHOiB1bmFibGUgdG8gaGFuZGxlIHBhZ2UgZmF1bHQgZm9yIGFkZHJl
-c3M6IGZmZmZmZmZmMDAwMDAxNDANCj4gICAjUEY6IHN1cGVydmlzb3IgcmVhZCBhY2Nlc3MgaW4g
-a2VybmVsIG1vZGUNCj4gICAjUEY6IGVycm9yX2NvZGUoMHgwMDAwKSAtIG5vdC1wcmVzZW50IHBh
-Z2UNCj4gICBQR0QgMjgwYTA2NyBQNEQgMjgwYTA2NyBQVUQgMA0KPiAgIE9vcHM6IDAwMDAgWyMx
-XSBTTVANCj4gICBDUFU6IDAgUElEOiA2MCBDb21tOiBrd29ya2VyL3UxNjoxIEtkdW1wOiBsb2Fk
-ZWQgTm90IHRhaW50ZWQgNS4yLjAgIzEzDQo+ICAgSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFuZGFy
-ZCBQQyAoaTQ0MEZYICsgUElJWCwgMTk5NiksIEJJT1MgcmVsLTEuMTIuMA0KPiAgIC0wLWdhNjk4
-Yzg5OTVmLXByZWJ1aWx0LnFlbXUub3JnIDA0LzAxLzIwMTQNCj4gICBXb3JrcXVldWU6IHdyaXRl
-YmFjayB3Yl93b3JrZm4gKGZsdXNoLXViaWZzXzBfMCkNCj4gICBSSVA6IDAwMTA6cmJfbmV4dF9w
-b3N0b3JkZXIrMHgyZS8weGIwDQo+ICAgQ29kZTogODAgZGIgMDMgMDEgNDggODUgZmYgMGYgODQg
-OTcgMDAgMDAgMDAgNDggOGIgMTcgNDggODMgMDUgYmMgODAgZGINCj4gICAwMyAwMSA0OCA4MyBl
-MiBmYyAwZiA4NCA4MiAwMCAwMCAwMCA0OCA4MyAwNSBiMiA4MCBkYiAwMyAwMSA8NDg+IDNiIDdh
-DQo+ICAgMTAgNDggODkgZDAgNzQgMDIgZjMgYzMgNDggOGIgNTIgMDggNDggODMgMDUgYTMgODAg
-ZGIgMDMNCj4gICBSU1A6IDAwMTg6ZmZmZmM5MDAwMDg4Nzc1OCBFRkxBR1M6IDAwMDEwMjAyDQo+
-ICAgUkFYOiBmZmZmODg4MTI5YWU0NzAwIFJCWDogZmZmZjg4ODEzOGIwODQwMCBSQ1g6IDAwMDAw
-MDAwODA4MDAwMDENCj4gICBSRFg6IGZmZmZmZmZmMDAwMDAxMzAgUlNJOiAwMDAwMDAwMDgwODAw
-MDI0IFJESTogZmZmZjg4ODEzOGIwODQwMA0KPiAgIFJCUDogZmZmZjg4ODEzOGIwODQwMCBSMDg6
-IGZmZmZlYTAwMDRhNmI5MjAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQo+ICAgUjEwOiBmZmZmYzkw
-MDAwODg3NzQwIFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IGZmZmY4ODgxMjhkNDgwMDANCj4g
-ICBSMTM6IDAwMDAwMDAwMDAwMDA4MDAgUjE0OiAwMDAwMDAwMDAwMDAwMTFlIFIxNTogMDAwMDAw
-MDAwMDAwMDdjOA0KPiAgIEZTOiAgMDAwMDAwMDAwMDAwMDAwMCgwMDAwKSBHUzpmZmZmODg4MTNi
-YTAwMDAwKDAwMDApDQo+ICAga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiAgIENTOiAgMDAxMCBE
-UzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4gICBDUjI6IGZmZmZmZmZm
-MDAwMDAxNDAgQ1IzOiAwMDAwMDAwMTM3ODlkMDAwIENSNDogMDAwMDAwMDAwMDAwMDZmMA0KPiAg
-IERSMDogMDAwMDAwMDAwMDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAwMDAw
-MDAwMDAwMDAwDQo+ICAgRFIzOiAwMDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZm
-MCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANCj4gICBDYWxsIFRyYWNlOg0KPiAgICAgZGVzdHJveV9v
-bGRfaWR4KzB4NWQvMHhhMCBbdWJpZnNdDQo+ICAgICB1Ymlmc190bmNfc3RhcnRfY29tbWl0KzB4
-NGZlLzB4MTM4MCBbdWJpZnNdDQo+ICAgICBkb19jb21taXQrMHgzZWIvMHg4MzAgW3ViaWZzXQ0K
-PiAgICAgdWJpZnNfcnVuX2NvbW1pdCsweGRjLzB4MWMwIFt1Ymlmc10NCj4NCj4gQWJvdmUgT29w
-cyBhcmUgZHVlIHRvIHRoZSBzbGFiLW91dC1vZi1ib3VuZHMgaGFwcGVuZWQgaW4gZG8td2hpbGUg
-b2YgDQo+IGZ1bmN0aW9uIGxheW91dF9pbl9nYXBzIGluZGlyZWN0bHkgY2FsbGVkIGJ5IHViaWZz
-X3RuY19zdGFydF9jb21taXQuIA0KPiBJbiBmdW5jdGlvbiBsYXlvdXRfaW5fZ2FwcywgdGhlcmUg
-aXMgYSBkby13aGlsZSBsb29wIHBsYWNpbmcgaW5kZXggDQo+IG5vZGVzIGludG8gdGhlIGdhcHMg
-Y3JlYXRlZCBieSBvYnNvbGV0ZSBpbmRleCBub2RlcyBpbiBub24tZW1wdHkgaW5kZXggDQo+IExF
-QnMgdW50aWwgcmVzdCBpbmRleCBub2RlcyBjYW4gdG90YWxseSBiZSBwbGFjZWQgaW50byBwcmUt
-YWxsb2NhdGVkIA0KPiBlbXB0eSBMRUJzLiBAYy0+Z2FwX2xlYnMgcG9pbnRzIHRvIGEgbWVtb3J5
-IGFyZWEoaW50ZWdlciBhcnJheSkgd2hpY2ggDQo+IHJlY29yZHMgTEVCIG51bWJlcnMgdXNlZCBi
-eSAnaW4tdGhlLWdhcHMnIG1ldGhvZC4gV2hlbmV2ZXIgYSBmaXRhYmxlIA0KPiBpbmRleCBMRUIg
-aXMgZm91bmQsIGNvcnJlc3BvbmRpbmcgbG51bSB3aWxsIGJlIGluY3JlbWVudGFsbHkgd3JpdHRl
-biANCj4gaW50byB0aGUgbWVtb3J5IGFyZWEgcG9pbnRlZCBieSBAYy0+Z2FwX2xlYnMuIFRoZSBz
-aXplIA0KPiAoKEBjLT5sc3QuaWR4X2xlYnMgKyAxKSAqIHNpemVvZihpbnQpKSBvZiBtZW1vcnkg
-YXJlYSBpcyBhbGxvY2F0ZWQgDQo+IGJlZm9yZSBkby13aGlsZSBsb29wIGFuZCBjYW4gbm90IGJl
-IGNoYW5nZWQgaW4gdGhlIGxvb3AuIEJ1dCANCj4gQGMtPmxzdC5pZHhfbGVicyBjb3VsZCBiZSBp
-bmNyZWFzZWQgYnkgZnVuY3Rpb24gdWJpZnNfY2hhbmdlX2xwIA0KPiAoY2FsbGVkIGJ5DQo+IGxh
-eW91dF9sZWJfaW5fZ2Fwcy0+dWJpZnNfZmluZF9kaXJ0eV9pZHhfbGViLT5nZXRfaWR4X2djX2xl
-YikgZHVyaW5nIA0KPiB0aGUgbG9vcC4gU28sIHNvbWV0aW1lcyBvb2IgaGFwcGVucyB3aGVuIG51
-bWJlciBvZiBjeWNsZXMgaW4gZG8td2hpbGUgDQo+IGxvb3AgZXhjZWVkcyB0aGUgb3JpZ2luYWwg
-dmFsdWUgb2YgQGMtPmxzdC5pZHhfbGVicy4gU2VlIGRldGFpbCBpbiANCj4gaHR0cHM6Ly9idWd6
-aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMDQyMjkuDQo+IFRoaXMgcGF0Y2ggZml4
-ZXMgb29iIGluIGxheW91dF9pbl9nYXBzLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBaaGloYW8gQ2hl
-bmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPg0KPiAtLS0NCj4gIGZzL3ViaWZzL3RuY19jb21t
-aXQuYyB8IDM0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gIDEgZmlsZSBj
-aGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0
-IGEvZnMvdWJpZnMvdG5jX2NvbW1pdC5jIGIvZnMvdWJpZnMvdG5jX2NvbW1pdC5jIGluZGV4IA0K
-PiBhMzg0YTBmLi4yMzRiZTFjIDEwMDY0NA0KPiAtLS0gYS9mcy91Ymlmcy90bmNfY29tbWl0LmMN
-Cj4gKysrIGIvZnMvdWJpZnMvdG5jX2NvbW1pdC5jDQo+IEBAIC0yMTIsNyArMjEyLDcgQEAgc3Rh
-dGljIGludCBpc19pZHhfbm9kZV9pbl91c2Uoc3RydWN0IHViaWZzX2luZm8gDQo+ICpjLCB1bmlv
-biB1Ymlmc19rZXkgKmtleSwNCj4gIC8qKg0KPiAgICogbGF5b3V0X2xlYl9pbl9nYXBzIC0gbGF5
-b3V0IGluZGV4IG5vZGVzIHVzaW5nIGluLXRoZS1nYXBzIG1ldGhvZC4NCj4gICAqIEBjOiBVQklG
-UyBmaWxlLXN5c3RlbSBkZXNjcmlwdGlvbiBvYmplY3QNCj4gLSAqIEBwOiByZXR1cm4gTEVCIG51
-bWJlciBoZXJlDQo+ICsgKiBAcDogcmV0dXJuIExFQiBudW1iZXIgaW4gQGMtPmdhcF9sZWJzW3Bd
-DQo+ICAgKg0KPiAgICogVGhpcyBmdW5jdGlvbiBsYXlzIG91dCBuZXcgaW5kZXggbm9kZXMgZm9y
-IGRpcnR5IHpub2RlcyB1c2luZyBpbi10aGUtZ2Fwcw0KPiAgICogbWV0aG9kIG9mIFROQyBjb21t
-aXQuDQo+IEBAIC0yMjEsNyArMjIxLDcgQEAgc3RhdGljIGludCBpc19pZHhfbm9kZV9pbl91c2Uo
-c3RydWN0IHViaWZzX2luZm8gKmMsIHVuaW9uIHViaWZzX2tleSAqa2V5LA0KPiAgICogVGhpcyBm
-dW5jdGlvbiByZXR1cm5zIHRoZSBudW1iZXIgb2YgaW5kZXggbm9kZXMgd3JpdHRlbiBpbnRvIHRo
-ZSBnYXBzLCBvciBhDQo+ICAgKiBuZWdhdGl2ZSBlcnJvciBjb2RlIG9uIGZhaWx1cmUuDQo+ICAg
-Ki8NCj4gLXN0YXRpYyBpbnQgbGF5b3V0X2xlYl9pbl9nYXBzKHN0cnVjdCB1Ymlmc19pbmZvICpj
-LCBpbnQgKnApDQo+ICtzdGF0aWMgaW50IGxheW91dF9sZWJfaW5fZ2FwcyhzdHJ1Y3QgdWJpZnNf
-aW5mbyAqYywgaW50IHApDQo+ICB7DQo+ICAgICAgICAgc3RydWN0IHViaWZzX3NjYW5fbGViICpz
-bGViOw0KPiAgICAgICAgIHN0cnVjdCB1Ymlmc19zY2FuX25vZGUgKnNub2Q7DQo+IEBAIC0yMzYs
-NyArMjM2LDcgQEAgc3RhdGljIGludCBsYXlvdXRfbGViX2luX2dhcHMoc3RydWN0IHViaWZzX2lu
-Zm8gKmMsIGludCAqcCkNCj4gICAgICAgICAgICAgICAgICAqIGZpbGxlZCwgaG93ZXZlciB3ZSBk
-byBub3QgY2hlY2sgdGhlcmUgYXQgcHJlc2VudC4NCj4gICAgICAgICAgICAgICAgICAqLw0KPiAg
-ICAgICAgICAgICAgICAgcmV0dXJuIGxudW07IC8qIEVycm9yIGNvZGUgKi8NCj4gLSAgICAgICAq
-cCA9IGxudW07DQo+ICsgICAgICAgYy0+Z2FwX2xlYnNbcF0gPSBsbnVtOw0KPiAgICAgICAgIGRi
-Z19nYygiTEVCICVkIiwgbG51bSk7DQo+ICAgICAgICAgLyoNCj4gICAgICAgICAgKiBTY2FuIHRo
-ZSBpbmRleCBMRUIuICBXZSB1c2UgdGhlIGdlbmVyaWMgc2NhbiBmb3IgdGhpcyBldmVuIA0KPiB0
-aG91Z2ggQEAgLTM1NSw3ICszNTUsNyBAQCBzdGF0aWMgaW50IGdldF9sZWJfY250KHN0cnVjdCB1
-Ymlmc19pbmZvICpjLCBpbnQgY250KQ0KPiAgICovDQo+ICBzdGF0aWMgaW50IGxheW91dF9pbl9n
-YXBzKHN0cnVjdCB1Ymlmc19pbmZvICpjLCBpbnQgY250KSAgew0KPiAtICAgICAgIGludCBlcnIs
-IGxlYl9uZWVkZWRfY250LCB3cml0dGVuLCAqcDsNCj4gKyAgICAgICBpbnQgZXJyLCBsZWJfbmVl
-ZGVkX2NudCwgd3JpdHRlbiwgcCA9IDAsIG9sZF9pZHhfbGVicywgDQo+ICsgKmdhcF9sZWJzOw0K
-Pg0KPiAgICAgICAgIGRiZ19nYygiJWQgem5vZGVzIHRvIHdyaXRlIiwgY250KTsNCj4NCj4gQEAg
-LTM2NCw5ICszNjQsOSBAQCBzdGF0aWMgaW50IGxheW91dF9pbl9nYXBzKHN0cnVjdCB1Ymlmc19p
-bmZvICpjLCBpbnQgY250KQ0KPiAgICAgICAgIGlmICghYy0+Z2FwX2xlYnMpDQo+ICAgICAgICAg
-ICAgICAgICByZXR1cm4gLUVOT01FTTsNCj4NCj4gLSAgICAgICBwID0gYy0+Z2FwX2xlYnM7DQo+
-ICsgICAgICAgb2xkX2lkeF9sZWJzID0gYy0+bHN0LmlkeF9sZWJzOw0KPiAgICAgICAgIGRvIHsN
-Cj4gLSAgICAgICAgICAgICAgIHViaWZzX2Fzc2VydChjLCBwIDwgYy0+Z2FwX2xlYnMgKyBjLT5s
-c3QuaWR4X2xlYnMpOw0KPiArICAgICAgICAgICAgICAgdWJpZnNfYXNzZXJ0KGMsIHAgPCBjLT5s
-c3QuaWR4X2xlYnMpOw0KPiAgICAgICAgICAgICAgICAgd3JpdHRlbiA9IGxheW91dF9sZWJfaW5f
-Z2FwcyhjLCBwKTsNCj4gICAgICAgICAgICAgICAgIGlmICh3cml0dGVuIDwgMCkgew0KPiAgICAg
-ICAgICAgICAgICAgICAgICAgICBlcnIgPSB3cml0dGVuOyBAQCAtMzkyLDkgKzM5MiwyOSBAQCBz
-dGF0aWMgaW50IA0KPiBsYXlvdXRfaW5fZ2FwcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgaW50IGNu
-dCkNCj4gICAgICAgICAgICAgICAgIGxlYl9uZWVkZWRfY250ID0gZ2V0X2xlYl9jbnQoYywgY250
-KTsNCj4gICAgICAgICAgICAgICAgIGRiZ19nYygiJWQgem5vZGVzIHJlbWFpbmluZywgbmVlZCAl
-ZCBMRUJzLCBoYXZlICVkIiwgY250LA0KPiAgICAgICAgICAgICAgICAgICAgICAgIGxlYl9uZWVk
-ZWRfY250LCBjLT5pbGViX2NudCk7DQo+ICsgICAgICAgICAgICAgICAvKg0KPiArICAgICAgICAg
-ICAgICAgICogRHluYW1pY2FsbHkgY2hhbmdlIHRoZSBzaXplIG9mIEBjLT5nYXBfbGVicyB0byBw
-cmV2ZW50DQo+ICsgICAgICAgICAgICAgICAgKiBvb2IsIGJlY2F1c2UgQGMtPmxzdC5pZHhfbGVi
-cyBjb3VsZCBiZSBpbmNyZWFzZWQgYnkNCj4gKyAgICAgICAgICAgICAgICAqIGZ1bmN0aW9uIEBn
-ZXRfaWR4X2djX2xlYiAoY2FsbGVkIGJ5IGxheW91dF9sZWJfaW5fZ2Fwcy0+DQo+ICsgICAgICAg
-ICAgICAgICAgKiB1Ymlmc19maW5kX2RpcnR5X2lkeF9sZWIpIGR1cmluZyBsb29wLiBPbmx5IGVu
-bGFyZ2UNCj4gKyAgICAgICAgICAgICAgICAqIEBjLT5nYXBfbGVicyB3aGVuIG5lZWRlZC4NCj4g
-KyAgICAgICAgICAgICAgICAqDQo+ICsgICAgICAgICAgICAgICAgKi8NCj4gKyAgICAgICAgICAg
-ICAgIGlmIChsZWJfbmVlZGVkX2NudCA+IGMtPmlsZWJfY250ICYmIHAgPj0gb2xkX2lkeF9sZWJz
-ICYmDQo+ICsgICAgICAgICAgICAgICAgICAgb2xkX2lkeF9sZWJzIDwgYy0+bHN0LmlkeF9sZWJz
-KSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIG9sZF9pZHhfbGVicyA9IGMtPmxzdC5pZHhf
-bGViczsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgZ2FwX2xlYnMgPSBrcmVhbGxvYyhjLT5n
-YXBfbGVicywgc2l6ZW9mKGludCkgKg0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIChvbGRfaWR4X2xlYnMgKyAxKSwgDQo+ICsgR0ZQX05PRlMpOw0KDQpJ
-IHNlZSB0aGUgcHJvYmxlbS4gOi0oDQoNCkJ1dCBJJ20gbm90IHN1cmUgeWV0IHdoZXRoZXIga3Jl
-YWxsb2MoKSBpcyB0aGUgcmlnaHQgc29sdXRpb24sIHdlIG5lZWQgdG8gYmUgc3VyZSB0aGF0IHRo
-aXMgZG9lcyBub3QganVzdCBwYXBlciBvdmVyIHRoZSByb290IGNhdXNlLg0KUGxlYXNlIGdpdmUg
-bWUgbW9yZSB0aW1lIHRvIHVuZGVyc3RhbmQgdGhlIHJvb3QgY2F1c2UuDQoNCi0tDQpUaGFua3Ms
-DQovL3JpY2hhcmQNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Fill in the appropriate limits to avoid inconsistencies
+in the vfs cached inode times when timestamps are
+outside the permitted range.
+
+Even though some filesystems are read-only, fill in the
+timestamps to reflect the on-disk representation.
+
+Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: aivazian.tigran@gmail.com
+Cc: al@alarsen.net
+Cc: coda@cs.cmu.edu
+Cc: darrick.wong@oracle.com
+Cc: dushistov@mail.ru
+Cc: dwmw2@infradead.org
+Cc: hch@infradead.org
+Cc: jack@suse.com
+Cc: jaharkes@cs.cmu.edu
+Cc: luisbg@kernel.org
+Cc: nico@fluxnic.net
+Cc: phillip@squashfs.org.uk
+Cc: richard@nod.at
+Cc: salah.triki@gmail.com
+Cc: shaggy@kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: codalist@coda.cs.cmu.edu
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: jfs-discussion@lists.sourceforge.net
+Cc: reiserfs-devel@vger.kernel.org
+---
+ fs/befs/linuxvfs.c       | 2 ++
+ fs/bfs/inode.c           | 2 ++
+ fs/coda/inode.c          | 3 +++
+ fs/cramfs/inode.c        | 2 ++
+ fs/efs/super.c           | 2 ++
+ fs/ext2/super.c          | 2 ++
+ fs/freevxfs/vxfs_super.c | 2 ++
+ fs/jffs2/fs.c            | 3 +++
+ fs/jfs/super.c           | 2 ++
+ fs/minix/inode.c         | 2 ++
+ fs/qnx4/inode.c          | 2 ++
+ fs/qnx6/inode.c          | 2 ++
+ fs/reiserfs/super.c      | 3 +++
+ fs/romfs/super.c         | 2 ++
+ fs/squashfs/super.c      | 2 ++
+ fs/ufs/super.c           | 7 +++++++
+ fs/xfs/xfs_super.c       | 2 ++
+ 17 files changed, 42 insertions(+)
+
+diff --git a/fs/befs/linuxvfs.c b/fs/befs/linuxvfs.c
+index 462d096ff3e9..64cdf4d8e424 100644
+--- a/fs/befs/linuxvfs.c
++++ b/fs/befs/linuxvfs.c
+@@ -893,6 +893,8 @@ befs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb_set_blocksize(sb, (ulong) befs_sb->block_size);
+ 	sb->s_op = &befs_sops;
+ 	sb->s_export_op = &befs_export_operations;
++	sb->s_time_min = 0;
++	sb->s_time_max = 0xffffffffffffll;
+ 	root = befs_iget(sb, iaddr2blockno(sb, &(befs_sb->root_dir)));
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+diff --git a/fs/bfs/inode.c b/fs/bfs/inode.c
+index 5e97bed073d7..f8ce1368218b 100644
+--- a/fs/bfs/inode.c
++++ b/fs/bfs/inode.c
+@@ -324,6 +324,8 @@ static int bfs_fill_super(struct super_block *s, void *data, int silent)
+ 		return -ENOMEM;
+ 	mutex_init(&info->bfs_lock);
+ 	s->s_fs_info = info;
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 
+ 	sb_set_blocksize(s, BFS_BSIZE);
+ 
+diff --git a/fs/coda/inode.c b/fs/coda/inode.c
+index 321f56e487cb..b1c70e2b9b1e 100644
+--- a/fs/coda/inode.c
++++ b/fs/coda/inode.c
+@@ -188,6 +188,9 @@ static int coda_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_magic = CODA_SUPER_MAGIC;
+ 	sb->s_op = &coda_super_operations;
+ 	sb->s_d_op = &coda_dentry_operations;
++	sb->s_time_gran = 1;
++	sb->s_time_min = S64_MIN;
++	sb->s_time_max = S64_MAX;
+ 
+ 	error = super_setup_bdi(sb);
+ 	if (error)
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 9352487bd0fc..4d1d8b7761ed 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -597,6 +597,8 @@ static int cramfs_finalize_super(struct super_block *sb,
+ 
+ 	/* Set it all up.. */
+ 	sb->s_flags |= SB_RDONLY;
++	sb->s_time_min = 0;
++	sb->s_time_max = 0;
+ 	sb->s_op = &cramfs_ops;
+ 	root = get_cramfs_inode(sb, cramfs_root, 0);
+ 	if (IS_ERR(root))
+diff --git a/fs/efs/super.c b/fs/efs/super.c
+index 867fc24dee20..4a6ebff2af76 100644
+--- a/fs/efs/super.c
++++ b/fs/efs/super.c
+@@ -257,6 +257,8 @@ static int efs_fill_super(struct super_block *s, void *d, int silent)
+ 	if (!sb)
+ 		return -ENOMEM;
+ 	s->s_fs_info = sb;
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+  
+ 	s->s_magic		= EFS_SUPER_MAGIC;
+ 	if (!sb_set_blocksize(s, EFS_BLOCKSIZE)) {
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 44eb6e7eb492..baa36c6fb71e 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1002,6 +1002,8 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_maxbytes = ext2_max_size(sb->s_blocksize_bits);
+ 	sb->s_max_links = EXT2_LINK_MAX;
++	sb->s_time_min = S32_MIN;
++	sb->s_time_max = S32_MAX;
+ 
+ 	if (le32_to_cpu(es->s_rev_level) == EXT2_GOOD_OLD_REV) {
+ 		sbi->s_inode_size = EXT2_GOOD_OLD_INODE_SIZE;
+diff --git a/fs/freevxfs/vxfs_super.c b/fs/freevxfs/vxfs_super.c
+index a89f68c3cbed..578a5062706e 100644
+--- a/fs/freevxfs/vxfs_super.c
++++ b/fs/freevxfs/vxfs_super.c
+@@ -229,6 +229,8 @@ static int vxfs_fill_super(struct super_block *sbp, void *dp, int silent)
+ 
+ 	sbp->s_op = &vxfs_super_ops;
+ 	sbp->s_fs_info = infp;
++	sbp->s_time_min = 0;
++	sbp->s_time_max = U32_MAX;
+ 
+ 	if (!vxfs_try_sb_magic(sbp, silent, 1,
+ 			(__force __fs32)cpu_to_le32(VXFS_SUPER_MAGIC))) {
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 8a20ddd25f2d..d0b59d03a7a9 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -590,6 +590,9 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_blocksize = PAGE_SIZE;
+ 	sb->s_blocksize_bits = PAGE_SHIFT;
+ 	sb->s_magic = JFFS2_SUPER_MAGIC;
++	sb->s_time_min = 0;
++	sb->s_time_max = U32_MAX;
++
+ 	if (!sb_rdonly(sb))
+ 		jffs2_start_garbage_collect_thread(c);
+ 	return 0;
+diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+index f4e10cb9f734..b2dc4d1f9dcc 100644
+--- a/fs/jfs/super.c
++++ b/fs/jfs/super.c
+@@ -503,6 +503,8 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_fs_info = sbi;
+ 	sb->s_max_links = JFS_LINK_MAX;
++	sb->s_time_min = 0;
++	sb->s_time_max = U32_MAX;
+ 	sbi->sb = sb;
+ 	sbi->uid = INVALID_UID;
+ 	sbi->gid = INVALID_GID;
+diff --git a/fs/minix/inode.c b/fs/minix/inode.c
+index f96073f25432..7cb5fd38eb14 100644
+--- a/fs/minix/inode.c
++++ b/fs/minix/inode.c
+@@ -277,6 +277,8 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
+ 
+ 	/* set up enough so that it can read an inode */
+ 	s->s_op = &minix_sops;
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 	root_inode = minix_iget(s, MINIX_ROOT_INO);
+ 	if (IS_ERR(root_inode)) {
+ 		ret = PTR_ERR(root_inode);
+diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
+index 922d083bbc7c..e8da1cde87b9 100644
+--- a/fs/qnx4/inode.c
++++ b/fs/qnx4/inode.c
+@@ -201,6 +201,8 @@ static int qnx4_fill_super(struct super_block *s, void *data, int silent)
+ 	s->s_op = &qnx4_sops;
+ 	s->s_magic = QNX4_SUPER_MAGIC;
+ 	s->s_flags |= SB_RDONLY;	/* Yup, read-only yet */
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 
+ 	/* Check the superblock signature. Since the qnx4 code is
+ 	   dangerous, we should leave as quickly as possible
+diff --git a/fs/qnx6/inode.c b/fs/qnx6/inode.c
+index 0f8b0ff1ba43..345db56c98fd 100644
+--- a/fs/qnx6/inode.c
++++ b/fs/qnx6/inode.c
+@@ -429,6 +429,8 @@ static int qnx6_fill_super(struct super_block *s, void *data, int silent)
+ 	s->s_op = &qnx6_sops;
+ 	s->s_magic = QNX6_SUPER_MAGIC;
+ 	s->s_flags |= SB_RDONLY;        /* Yup, read-only yet */
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 
+ 	/* ease the later tree level calculations */
+ 	sbi = QNX6_SB(s);
+diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+index ab028ea0e561..d69b4ac0ae2f 100644
+--- a/fs/reiserfs/super.c
++++ b/fs/reiserfs/super.c
+@@ -1976,6 +1976,9 @@ static int reiserfs_fill_super(struct super_block *s, void *data, int silent)
+ 		goto error_unlocked;
+ 	}
+ 
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
++
+ 	rs = SB_DISK_SUPER_BLOCK(s);
+ 	/*
+ 	 * Let's do basic sanity check to verify that underlying device is not
+diff --git a/fs/romfs/super.c b/fs/romfs/super.c
+index 7d580f7c3f1d..a42c0e3079dc 100644
+--- a/fs/romfs/super.c
++++ b/fs/romfs/super.c
+@@ -478,6 +478,8 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_maxbytes = 0xFFFFFFFF;
+ 	sb->s_magic = ROMFS_MAGIC;
+ 	sb->s_flags |= SB_RDONLY | SB_NOATIME;
++	sb->s_time_min = 0;
++	sb->s_time_max = 0;
+ 	sb->s_op = &romfs_super_ops;
+ 
+ #ifdef CONFIG_ROMFS_ON_MTD
+diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+index effa638d6d85..a9e9837617a9 100644
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -183,6 +183,8 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+ 		(u64) le64_to_cpu(sblk->id_table_start));
+ 
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
++	sb->s_time_min = 0;
++	sb->s_time_max = U32_MAX;
+ 	sb->s_flags |= SB_RDONLY;
+ 	sb->s_op = &squashfs_super_ops;
+ 
+diff --git a/fs/ufs/super.c b/fs/ufs/super.c
+index 4ed0dca52ec8..1da0be667409 100644
+--- a/fs/ufs/super.c
++++ b/fs/ufs/super.c
+@@ -843,6 +843,10 @@ static int ufs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ 
++	sb->s_time_gran = NSEC_PER_SEC;
++	sb->s_time_min = S32_MIN;
++	sb->s_time_max = S32_MAX;
++
+ 	switch (sbi->s_mount_opt & UFS_MOUNT_UFSTYPE) {
+ 	case UFS_MOUNT_UFSTYPE_44BSD:
+ 		UFSD("ufstype=44bsd\n");
+@@ -861,6 +865,9 @@ static int ufs_fill_super(struct super_block *sb, void *data, int silent)
+ 		uspi->s_fshift = 9;
+ 		uspi->s_sbsize = super_block_size = 1536;
+ 		uspi->s_sbbase =  0;
++		sb->s_time_gran = 1;
++		sb->s_time_min = S64_MIN;
++		sb->s_time_max = S64_MAX;
+ 		flags |= UFS_TYPE_UFS2 | UFS_DE_44BSD | UFS_UID_44BSD | UFS_ST_44BSD | UFS_CG_44BSD;
+ 		break;
+ 		
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index a14d11d78bd8..1a0daf46bae8 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1685,6 +1685,8 @@ xfs_fs_fill_super(
+ 	sb->s_maxbytes = xfs_max_file_offset(sb->s_blocksize_bits);
+ 	sb->s_max_links = XFS_MAXLINK;
+ 	sb->s_time_gran = 1;
++	sb->s_time_min = S32_MIN;
++	sb->s_time_max = S32_MAX;
+ 	set_posix_acl_flag(sb);
+ 
+ 	/* version 5 superblocks support inode version counters. */
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
