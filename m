@@ -2,75 +2,69 @@ Return-Path: <SRS0=td2l=V3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6540C433FF
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 00:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C5FEC76186
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 01:21:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A456F20651
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 00:41:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E2DD2070B
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 01:21:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="HsFjmjvQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A456F20651
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="beDeYX0s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E2DD2070B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20170209; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	 bh=igrZQ3ShURnKHyXqFVfsCYXTMZzn2Rvd3KyuHEZBgSs=; b=HsFjmjvQ+V/lNGJXpm+UhjDI1
-	AWqh34nMaS+RxQTRsRRzSG+VErgGn++2HbuZHMeEcXvyLsAlNL3aKd3yJXA9bs2MGytBdXHYsVKp6
-	W7S11uWJsNCShRD+8gUOd3W8vfIRyzg45/eUAu+X14GbnFxhsveFAxPcmy04paKDIOCmPBsaicez1
-	E1kOBRgyCL+A3xe95194WAAk2UwrENYCW2TzMSr/3K/CZDK5XpAXH3NjAVs8lzaLyVYCQldtC8H3g
-	vSfkxAWxMftJRBtAvW66r668XggsB9R4ptb7+7LxRQxB4TeCHEwuk2zOAE+CtD/4Om0QSWG8dD3O2
-	omCzlR35A==;
+	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XeUAC5/MEDNkoSOdaJEBh97DzAlS7JV6804rJgWQ/sQ=; b=beDeYX0sA+DO77
+	IZ69g7QwWJ5XYte7yRh/QaFkQu3bYmSMTOFme71pJF9/4C/g85FBuSmpZ2+V+g/xwE+24M/5DRaJR
+	fq3j4A+PlSLF0/EitLskxMxCj+x2wrjo9VXbmgIcEfnjPYq4fEsUK4S5pnaR5+uY6hwZFNCR+Blv2
+	MZ4kdgy02YqG3+29IXx591tT6iS043/od0rz/WQqYOdjRUGu/UBtIUcc+n3b6Penxen1Foxa0Mbau
+	5EKajv1MywEaprxhhZjaEA+1XQ3pudMwbhlz6zot21zMFeE2vqEDc8bZZuOp3+v9gE1xHtyemnGEG
+	uEnfUs7Q1NLaR3LG0ksg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsGCw-0000Em-Ax; Tue, 30 Jul 2019 00:41:38 +0000
-Received: from icp-osb-irony-out7.external.iinet.net.au ([203.59.1.107])
- by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
- id 1hsGCs-0000EO-Hz
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 00:41:36 +0000
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AHAAAGkT9d/zXSMGcNWRkBAQEBAQE?=
- =?us-ascii?q?BAQEBAQEHAQEBAQEBgVYBAQEBAQELAYMDgS6EHpFrAQEGgQktg2SFfpEaCQE?=
- =?us-ascii?q?BAQEBAQEBAS0KAQGEQAKDDzcGDgEDAQEBBAEBAQEFAYVSOYVXAQEBAyMEEQ8?=
- =?us-ascii?q?yEAsNCwICJgICVwYNBgIBAYMeAYF2I6wDcX8zGoMVhUqBQgaBDCgBgVkJihR?=
- =?us-ascii?q?4gQeBESeCaz6CSBkEgTmDMYJYBIw7iD2VfwmCHIZbjTMGG4IuhyWDegOKPpU?=
- =?us-ascii?q?FkhqBejMaCCgIgyeCSxqDToplYAEBi0iCUQEB?=
-X-IPAS-Result: =?us-ascii?q?A2AHAAAGkT9d/zXSMGcNWRkBAQEBAQEBAQEBAQEHAQEBA?=
- =?us-ascii?q?QEBgVYBAQEBAQELAYMDgS6EHpFrAQEGgQktg2SFfpEaCQEBAQEBAQEBAS0KA?=
- =?us-ascii?q?QGEQAKDDzcGDgEDAQEBBAEBAQEFAYVSOYVXAQEBAyMEEQ8yEAsNCwICJgICV?=
- =?us-ascii?q?wYNBgIBAYMeAYF2I6wDcX8zGoMVhUqBQgaBDCgBgVkJihR4gQeBESeCaz6CS?=
- =?us-ascii?q?BkEgTmDMYJYBIw7iD2VfwmCHIZbjTMGG4IuhyWDegOKPpUFkhqBejMaCCgIg?=
- =?us-ascii?q?yeCSxqDToplYAEBi0iCUQEB?=
-X-IronPort-AV: E=Sophos;i="5.64,324,1559491200"; d="scan'208";a="193361724"
-Received: from unknown (HELO [10.44.0.22]) ([103.48.210.53])
- by icp-osb-irony-out7.iinet.net.au with ESMTP; 30 Jul 2019 08:41:25 +0800
-Subject: Re: GPMI iMX6ull timeout on DMA
-From: Greg Ungerer <gerg@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
- <20190729103655.095297a2@xps13>
- <18734a1d-17d9-d390-58ef-ad8ca1be925f@kernel.org>
- <20190729144730.4a58de32@xps13>
- <17b49e7d-ff63-315f-cf12-3474f7228c6d@kernel.org>
-Message-ID: <781dd4e6-a694-c3e1-ee13-9c5c51598623@kernel.org>
-Date: Tue, 30 Jul 2019 10:41:25 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	id 1hsGpY-0006ke-41; Tue, 30 Jul 2019 01:21:32 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188] helo=huawei.com)
+ by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
+ id 1hsGpT-0006jd-HY
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 01:21:29 +0000
+Received: from dggemi405-hub.china.huawei.com (unknown [172.30.72.54])
+ by Forcepoint Email with ESMTP id B95CB5966B34DFBF93FD;
+ Tue, 30 Jul 2019 09:21:12 +0800 (CST)
+Received: from DGGEMI524-MBX.china.huawei.com ([169.254.7.227]) by
+ dggemi405-hub.china.huawei.com ([10.3.17.143]) with mapi id 14.03.0439.000;
+ Tue, 30 Jul 2019 09:20:59 +0800
+From: chengzhihao <chengzhihao1@huawei.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHViaWZzOiB1Ymlmc190bmNfc3RhcnRfY29tbWl0?=
+ =?utf-8?B?OiBGaXggT09CIGluIGxheW91dF9pbl9nYXBz?=
+Thread-Topic: [PATCH] ubifs: ubifs_tnc_start_commit: Fix OOB in layout_in_gaps
+Thread-Index: AQHVPsBTBWetoNcJ1UaytZ+21M4VxabhWCiAgAETrKA=
+Date: Tue, 30 Jul 2019 01:20:48 +0000
+Message-ID: <0B80F9D4116B2F4484E7279D5A66984F7A7472@dggemi524-mbx.china.huawei.com>
+References: <1563602720-113903-1-git-send-email-chengzhihao1@huawei.com>
+ <CAFLxGvxEAGtQDFm4G3orY+M9yuthDA4j0+u=HbE9DKuo7H8WCg@mail.gmail.com>
+In-Reply-To: <CAFLxGvxEAGtQDFm4G3orY+M9yuthDA4j0+u=HbE9DKuo7H8WCg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.177.224.82]
 MIME-Version: 1.0
-In-Reply-To: <17b49e7d-ff63-315f-cf12-3474f7228c6d@kernel.org>
-Content-Language: en-US
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190729_174134_836209_9D5EC484 
-X-CRM114-Status: GOOD (  13.47  )
+X-CRM114-CacheID: sfid-20190729_182127_911096_1E5F7D51 
+X-CRM114-Status: GOOD (  25.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,144 +76,145 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: s.hauer@pengutronix.de,
- Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
- linux-mtd@lists.infradead.org, Boris Brezillon <bbrezillon@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: "zhangyi \(F\)" <yi.zhang@huawei.com>, Richard Weinberger <richard@nod.at>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On 30/7/19 10:28 am, Greg Ungerer wrote:
-> On 29/7/19 10:47 pm, Miquel Raynal wrote:
->> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 22:33:56 +1000:
->>> On 29/7/19 6:36 pm, Miquel Raynal wrote:
->>>> Greg Ungerer <gerg@kernel.org> wrote on Mon, 29 Jul 2019 16:41:51 +1000:
-[snip]
->>>>> nand: timing mode 5 not acknowledged by the NAND chip
->>>>
->>>> What is the final timing mode used? Most of us tested in mode 5 I
->>>> guess, maybe mode 4 is broken (don't know if this is the one used here,
->>>> neither why mode 5 is refused). Can you please try by limiting the mode
->>>> to 0, 1, 2... until, hopefully, we narrow down to the failing mode.
->>>
->>> Sure, how to do that?
->>
->> This loop [1] tries to configure each mode (5, 4, ...) until one
->> succeeds (default is 0: must always work). Please try to limit mode to
->> 0, 1, etc.
->>
->> Mode 0 should work.
->>
->> [1] https://elixir.bootlin.com/linux/v5.3-rc1/source/drivers/mtd/nand/raw/nand_base.c#L933
-> 
-> The normal behavior - which usually works - has
-> chip->onfi_timing_mode_default=5 here. So in other words on the first pass
-> through this loop it is checking mode 5, and setting it as the default.
-> 
-> I am running a test/reboot loop now waiting for failure to see
-> if it is still using mode 5 in that case.
-
-With this trace in place:
-
---- a/linux/drivers/mtd/nand/raw/nand_base.c
-+++ b/linux/drivers/mtd/nand/raw/nand_base.c
-@@ -910,6 +910,7 @@ static int nand_init_data_interface(struct nand_chip *chip)
-         }
-  
-         for (mode = fls(modes) - 1; mode >= 0; mode--) {
-+               printk("%s(%d): checking mode=%d\n", __FILE__, __LINE__, mode);
-                 ret = onfi_fill_data_interface(chip, NAND_SDR_IFACE, mode);
-                 if (ret)
-                         continue;
-@@ -923,10 +924,12 @@ static int nand_init_data_interface(struct nand_chip *chip)
-                                                  &chip->data_interface);
-                 if (!ret) {
-                         chip->onfi_timing_mode_default = mode;
-+                       printk("%s(%d): BREAKING AT mode=%d\n", __FILE__, __LINE__, mode);
-                         break;
-                 }
-         }
-  
-+       printk("%s(%d): chip->onfi_timing_mode_default=%d\n", __FILE__, __LINE__, chip->onfi_timing_mode_default);
-         return 0;
-  }
-  
-
-First NAND failure gives this:
-
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-nand: Micron MT29F2G08ABAEAWP
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-gpmi-nand 1806000.gpmi-nand: use legacy bch geometry
-drivers/mtd/nand/raw/nand_base.c(913): checking mode=5
-drivers/mtd/nand/raw/nand_base.c(927): BREAKING AT mode=5
-drivers/mtd/nand/raw/nand_base.c(932): chip->onfi_timing_mode_default=5
-gpmi-nand 1806000.gpmi-nand: DMA timeout, last DMA
-gpmi-nand 1806000.gpmi-nand: Show GPMI registers :
-gpmi-nand 1806000.gpmi-nand: offset 0x000 : 0x20830002
-gpmi-nand 1806000.gpmi-nand: offset 0x010 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x020 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x030 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x040 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x050 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x060 : 0x01c6800c
-gpmi-nand 1806000.gpmi-nand: offset 0x070 : 0x00010101
-gpmi-nand 1806000.gpmi-nand: offset 0x080 : 0xe0000000
-gpmi-nand 1806000.gpmi-nand: offset 0x090 : 0x23023336
-gpmi-nand 1806000.gpmi-nand: offset 0x0a0 : 0x000001ee
-gpmi-nand 1806000.gpmi-nand: offset 0x0b0 : 0xff000001
-gpmi-nand 1806000.gpmi-nand: offset 0x0c0 : 0x00000100
-gpmi-nand 1806000.gpmi-nand: offset 0x0d0 : 0x05020000
-gpmi-nand 1806000.gpmi-nand: Show BCH registers :
-gpmi-nand 1806000.gpmi-nand: offset 0x000 : 0x00000100
-gpmi-nand 1806000.gpmi-nand: offset 0x010 : 0x00000010
-gpmi-nand 1806000.gpmi-nand: offset 0x020 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x030 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x040 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x050 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x060 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x070 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x080 : 0x030a2080
-gpmi-nand 1806000.gpmi-nand: offset 0x090 : 0x083e2080
-gpmi-nand 1806000.gpmi-nand: offset 0x0a0 : 0x070a4080
-gpmi-nand 1806000.gpmi-nand: offset 0x0b0 : 0x10da4080
-gpmi-nand 1806000.gpmi-nand: offset 0x0c0 : 0x070a4080
-gpmi-nand 1806000.gpmi-nand: offset 0x0d0 : 0x10da4080
-gpmi-nand 1806000.gpmi-nand: offset 0x0e0 : 0x070a4080
-gpmi-nand 1806000.gpmi-nand: offset 0x0f0 : 0x10da4080
-gpmi-nand 1806000.gpmi-nand: offset 0x100 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x110 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x120 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x130 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x140 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: offset 0x150 : 0x20484342
-gpmi-nand 1806000.gpmi-nand: offset 0x160 : 0x01000000
-gpmi-nand 1806000.gpmi-nand: offset 0x170 : 0x00000000
-gpmi-nand 1806000.gpmi-nand: BCH Geometry :
-GF length              : 13
-ECC Strength           : 8
-Page Size in Bytes     : 2110
-Metadata Size in Bytes : 10
-ECC Chunk0 Size in Bytes: 512
-ECC Chunkn Size in Bytes: 512
-ECC Chunk Count        : 4
-Payload Size in Bytes  : 2048
-Auxiliary Size in Bytes: 16
-Auxiliary Status Offset: 12
-Block Mark Byte Offset : 1999
-Block Mark Bit Offset  : 0
-gpmi-nand 1806000.gpmi-nand: Chip: 0, Error -110
-nand: timing mode 5 not acknowledged by the NAND chip
-gpmi-nand 1806000.gpmi-nand: Chip: 0, Error -22
-
-Regards
-Greg
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T0ssIHRoYXQncyBmaW5lLCBhbmQgSSB3aWxsIGNvbnRpbnVlIHRvIHVuZGVyc3RhbmQgbW9yZSBp
+bXBsZW1lbnRhdGlvbiBjb2RlIHJlbGF0ZWQgdG8gdGhpcyBwYXJ0Lg0KDQotDQpUaGFua3MsDQpD
+aGVuZyB6aGloYW8NCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBSaWNoYXJk
+IFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tXSANCuWPkemA
+geaXtumXtDogMjAxOeW5tDfmnIgzMOaXpSAwOjUyDQrmlLbku7bkuro6IGNoZW5nemhpaGFvIDxj
+aGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4NCuaKhOmAgTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNo
+YXJkQG5vZC5hdD47IFNhc2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT47IEFydGVt
+IEJpdHl1dHNraXkgPGRlZGVraW5kMUBnbWFpbC5jb20+OyB6aGFuZ3lpIChGKSA8eWkuemhhbmdA
+aHVhd2VpLmNvbT47IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBMS01MIDxsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnPg0K5Li76aKYOiBSZTogW1BBVENIXSB1YmlmczogdWJpZnNf
+dG5jX3N0YXJ0X2NvbW1pdDogRml4IE9PQiBpbiBsYXlvdXRfaW5fZ2Fwcw0KDQpPbiBTYXQsIEp1
+bCAyMCwgMjAxOSBhdCA4OjAwIEFNIFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5j
+b20+IHdyb3RlOg0KPg0KPiBSdW5uaW5nIHN0cmVzcy10ZXN0IHRlc3RfMiBpbiBtdGQtdXRpbHMg
+b24gdWJpIGRldmljZSwgc29tZXRpbWVzIHdlIA0KPiBjYW4gZ2V0IGZvbGxvd2luZyBvb3BzIG1l
+c3NhZ2U6DQo+DQo+ICAgQlVHOiB1bmFibGUgdG8gaGFuZGxlIHBhZ2UgZmF1bHQgZm9yIGFkZHJl
+c3M6IGZmZmZmZmZmMDAwMDAxNDANCj4gICAjUEY6IHN1cGVydmlzb3IgcmVhZCBhY2Nlc3MgaW4g
+a2VybmVsIG1vZGUNCj4gICAjUEY6IGVycm9yX2NvZGUoMHgwMDAwKSAtIG5vdC1wcmVzZW50IHBh
+Z2UNCj4gICBQR0QgMjgwYTA2NyBQNEQgMjgwYTA2NyBQVUQgMA0KPiAgIE9vcHM6IDAwMDAgWyMx
+XSBTTVANCj4gICBDUFU6IDAgUElEOiA2MCBDb21tOiBrd29ya2VyL3UxNjoxIEtkdW1wOiBsb2Fk
+ZWQgTm90IHRhaW50ZWQgNS4yLjAgIzEzDQo+ICAgSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFuZGFy
+ZCBQQyAoaTQ0MEZYICsgUElJWCwgMTk5NiksIEJJT1MgcmVsLTEuMTIuMA0KPiAgIC0wLWdhNjk4
+Yzg5OTVmLXByZWJ1aWx0LnFlbXUub3JnIDA0LzAxLzIwMTQNCj4gICBXb3JrcXVldWU6IHdyaXRl
+YmFjayB3Yl93b3JrZm4gKGZsdXNoLXViaWZzXzBfMCkNCj4gICBSSVA6IDAwMTA6cmJfbmV4dF9w
+b3N0b3JkZXIrMHgyZS8weGIwDQo+ICAgQ29kZTogODAgZGIgMDMgMDEgNDggODUgZmYgMGYgODQg
+OTcgMDAgMDAgMDAgNDggOGIgMTcgNDggODMgMDUgYmMgODAgZGINCj4gICAwMyAwMSA0OCA4MyBl
+MiBmYyAwZiA4NCA4MiAwMCAwMCAwMCA0OCA4MyAwNSBiMiA4MCBkYiAwMyAwMSA8NDg+IDNiIDdh
+DQo+ICAgMTAgNDggODkgZDAgNzQgMDIgZjMgYzMgNDggOGIgNTIgMDggNDggODMgMDUgYTMgODAg
+ZGIgMDMNCj4gICBSU1A6IDAwMTg6ZmZmZmM5MDAwMDg4Nzc1OCBFRkxBR1M6IDAwMDEwMjAyDQo+
+ICAgUkFYOiBmZmZmODg4MTI5YWU0NzAwIFJCWDogZmZmZjg4ODEzOGIwODQwMCBSQ1g6IDAwMDAw
+MDAwODA4MDAwMDENCj4gICBSRFg6IGZmZmZmZmZmMDAwMDAxMzAgUlNJOiAwMDAwMDAwMDgwODAw
+MDI0IFJESTogZmZmZjg4ODEzOGIwODQwMA0KPiAgIFJCUDogZmZmZjg4ODEzOGIwODQwMCBSMDg6
+IGZmZmZlYTAwMDRhNmI5MjAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQo+ICAgUjEwOiBmZmZmYzkw
+MDAwODg3NzQwIFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IGZmZmY4ODgxMjhkNDgwMDANCj4g
+ICBSMTM6IDAwMDAwMDAwMDAwMDA4MDAgUjE0OiAwMDAwMDAwMDAwMDAwMTFlIFIxNTogMDAwMDAw
+MDAwMDAwMDdjOA0KPiAgIEZTOiAgMDAwMDAwMDAwMDAwMDAwMCgwMDAwKSBHUzpmZmZmODg4MTNi
+YTAwMDAwKDAwMDApDQo+ICAga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiAgIENTOiAgMDAxMCBE
+UzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4gICBDUjI6IGZmZmZmZmZm
+MDAwMDAxNDAgQ1IzOiAwMDAwMDAwMTM3ODlkMDAwIENSNDogMDAwMDAwMDAwMDAwMDZmMA0KPiAg
+IERSMDogMDAwMDAwMDAwMDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAwMDAw
+MDAwMDAwMDAwDQo+ICAgRFIzOiAwMDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZm
+MCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANCj4gICBDYWxsIFRyYWNlOg0KPiAgICAgZGVzdHJveV9v
+bGRfaWR4KzB4NWQvMHhhMCBbdWJpZnNdDQo+ICAgICB1Ymlmc190bmNfc3RhcnRfY29tbWl0KzB4
+NGZlLzB4MTM4MCBbdWJpZnNdDQo+ICAgICBkb19jb21taXQrMHgzZWIvMHg4MzAgW3ViaWZzXQ0K
+PiAgICAgdWJpZnNfcnVuX2NvbW1pdCsweGRjLzB4MWMwIFt1Ymlmc10NCj4NCj4gQWJvdmUgT29w
+cyBhcmUgZHVlIHRvIHRoZSBzbGFiLW91dC1vZi1ib3VuZHMgaGFwcGVuZWQgaW4gZG8td2hpbGUg
+b2YgDQo+IGZ1bmN0aW9uIGxheW91dF9pbl9nYXBzIGluZGlyZWN0bHkgY2FsbGVkIGJ5IHViaWZz
+X3RuY19zdGFydF9jb21taXQuIA0KPiBJbiBmdW5jdGlvbiBsYXlvdXRfaW5fZ2FwcywgdGhlcmUg
+aXMgYSBkby13aGlsZSBsb29wIHBsYWNpbmcgaW5kZXggDQo+IG5vZGVzIGludG8gdGhlIGdhcHMg
+Y3JlYXRlZCBieSBvYnNvbGV0ZSBpbmRleCBub2RlcyBpbiBub24tZW1wdHkgaW5kZXggDQo+IExF
+QnMgdW50aWwgcmVzdCBpbmRleCBub2RlcyBjYW4gdG90YWxseSBiZSBwbGFjZWQgaW50byBwcmUt
+YWxsb2NhdGVkIA0KPiBlbXB0eSBMRUJzLiBAYy0+Z2FwX2xlYnMgcG9pbnRzIHRvIGEgbWVtb3J5
+IGFyZWEoaW50ZWdlciBhcnJheSkgd2hpY2ggDQo+IHJlY29yZHMgTEVCIG51bWJlcnMgdXNlZCBi
+eSAnaW4tdGhlLWdhcHMnIG1ldGhvZC4gV2hlbmV2ZXIgYSBmaXRhYmxlIA0KPiBpbmRleCBMRUIg
+aXMgZm91bmQsIGNvcnJlc3BvbmRpbmcgbG51bSB3aWxsIGJlIGluY3JlbWVudGFsbHkgd3JpdHRl
+biANCj4gaW50byB0aGUgbWVtb3J5IGFyZWEgcG9pbnRlZCBieSBAYy0+Z2FwX2xlYnMuIFRoZSBz
+aXplIA0KPiAoKEBjLT5sc3QuaWR4X2xlYnMgKyAxKSAqIHNpemVvZihpbnQpKSBvZiBtZW1vcnkg
+YXJlYSBpcyBhbGxvY2F0ZWQgDQo+IGJlZm9yZSBkby13aGlsZSBsb29wIGFuZCBjYW4gbm90IGJl
+IGNoYW5nZWQgaW4gdGhlIGxvb3AuIEJ1dCANCj4gQGMtPmxzdC5pZHhfbGVicyBjb3VsZCBiZSBp
+bmNyZWFzZWQgYnkgZnVuY3Rpb24gdWJpZnNfY2hhbmdlX2xwIA0KPiAoY2FsbGVkIGJ5DQo+IGxh
+eW91dF9sZWJfaW5fZ2Fwcy0+dWJpZnNfZmluZF9kaXJ0eV9pZHhfbGViLT5nZXRfaWR4X2djX2xl
+YikgZHVyaW5nIA0KPiB0aGUgbG9vcC4gU28sIHNvbWV0aW1lcyBvb2IgaGFwcGVucyB3aGVuIG51
+bWJlciBvZiBjeWNsZXMgaW4gZG8td2hpbGUgDQo+IGxvb3AgZXhjZWVkcyB0aGUgb3JpZ2luYWwg
+dmFsdWUgb2YgQGMtPmxzdC5pZHhfbGVicy4gU2VlIGRldGFpbCBpbiANCj4gaHR0cHM6Ly9idWd6
+aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMDQyMjkuDQo+IFRoaXMgcGF0Y2ggZml4
+ZXMgb29iIGluIGxheW91dF9pbl9nYXBzLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBaaGloYW8gQ2hl
+bmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPg0KPiAtLS0NCj4gIGZzL3ViaWZzL3RuY19jb21t
+aXQuYyB8IDM0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gIDEgZmlsZSBj
+aGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0
+IGEvZnMvdWJpZnMvdG5jX2NvbW1pdC5jIGIvZnMvdWJpZnMvdG5jX2NvbW1pdC5jIGluZGV4IA0K
+PiBhMzg0YTBmLi4yMzRiZTFjIDEwMDY0NA0KPiAtLS0gYS9mcy91Ymlmcy90bmNfY29tbWl0LmMN
+Cj4gKysrIGIvZnMvdWJpZnMvdG5jX2NvbW1pdC5jDQo+IEBAIC0yMTIsNyArMjEyLDcgQEAgc3Rh
+dGljIGludCBpc19pZHhfbm9kZV9pbl91c2Uoc3RydWN0IHViaWZzX2luZm8gDQo+ICpjLCB1bmlv
+biB1Ymlmc19rZXkgKmtleSwNCj4gIC8qKg0KPiAgICogbGF5b3V0X2xlYl9pbl9nYXBzIC0gbGF5
+b3V0IGluZGV4IG5vZGVzIHVzaW5nIGluLXRoZS1nYXBzIG1ldGhvZC4NCj4gICAqIEBjOiBVQklG
+UyBmaWxlLXN5c3RlbSBkZXNjcmlwdGlvbiBvYmplY3QNCj4gLSAqIEBwOiByZXR1cm4gTEVCIG51
+bWJlciBoZXJlDQo+ICsgKiBAcDogcmV0dXJuIExFQiBudW1iZXIgaW4gQGMtPmdhcF9sZWJzW3Bd
+DQo+ICAgKg0KPiAgICogVGhpcyBmdW5jdGlvbiBsYXlzIG91dCBuZXcgaW5kZXggbm9kZXMgZm9y
+IGRpcnR5IHpub2RlcyB1c2luZyBpbi10aGUtZ2Fwcw0KPiAgICogbWV0aG9kIG9mIFROQyBjb21t
+aXQuDQo+IEBAIC0yMjEsNyArMjIxLDcgQEAgc3RhdGljIGludCBpc19pZHhfbm9kZV9pbl91c2Uo
+c3RydWN0IHViaWZzX2luZm8gKmMsIHVuaW9uIHViaWZzX2tleSAqa2V5LA0KPiAgICogVGhpcyBm
+dW5jdGlvbiByZXR1cm5zIHRoZSBudW1iZXIgb2YgaW5kZXggbm9kZXMgd3JpdHRlbiBpbnRvIHRo
+ZSBnYXBzLCBvciBhDQo+ICAgKiBuZWdhdGl2ZSBlcnJvciBjb2RlIG9uIGZhaWx1cmUuDQo+ICAg
+Ki8NCj4gLXN0YXRpYyBpbnQgbGF5b3V0X2xlYl9pbl9nYXBzKHN0cnVjdCB1Ymlmc19pbmZvICpj
+LCBpbnQgKnApDQo+ICtzdGF0aWMgaW50IGxheW91dF9sZWJfaW5fZ2FwcyhzdHJ1Y3QgdWJpZnNf
+aW5mbyAqYywgaW50IHApDQo+ICB7DQo+ICAgICAgICAgc3RydWN0IHViaWZzX3NjYW5fbGViICpz
+bGViOw0KPiAgICAgICAgIHN0cnVjdCB1Ymlmc19zY2FuX25vZGUgKnNub2Q7DQo+IEBAIC0yMzYs
+NyArMjM2LDcgQEAgc3RhdGljIGludCBsYXlvdXRfbGViX2luX2dhcHMoc3RydWN0IHViaWZzX2lu
+Zm8gKmMsIGludCAqcCkNCj4gICAgICAgICAgICAgICAgICAqIGZpbGxlZCwgaG93ZXZlciB3ZSBk
+byBub3QgY2hlY2sgdGhlcmUgYXQgcHJlc2VudC4NCj4gICAgICAgICAgICAgICAgICAqLw0KPiAg
+ICAgICAgICAgICAgICAgcmV0dXJuIGxudW07IC8qIEVycm9yIGNvZGUgKi8NCj4gLSAgICAgICAq
+cCA9IGxudW07DQo+ICsgICAgICAgYy0+Z2FwX2xlYnNbcF0gPSBsbnVtOw0KPiAgICAgICAgIGRi
+Z19nYygiTEVCICVkIiwgbG51bSk7DQo+ICAgICAgICAgLyoNCj4gICAgICAgICAgKiBTY2FuIHRo
+ZSBpbmRleCBMRUIuICBXZSB1c2UgdGhlIGdlbmVyaWMgc2NhbiBmb3IgdGhpcyBldmVuIA0KPiB0
+aG91Z2ggQEAgLTM1NSw3ICszNTUsNyBAQCBzdGF0aWMgaW50IGdldF9sZWJfY250KHN0cnVjdCB1
+Ymlmc19pbmZvICpjLCBpbnQgY250KQ0KPiAgICovDQo+ICBzdGF0aWMgaW50IGxheW91dF9pbl9n
+YXBzKHN0cnVjdCB1Ymlmc19pbmZvICpjLCBpbnQgY250KSAgew0KPiAtICAgICAgIGludCBlcnIs
+IGxlYl9uZWVkZWRfY250LCB3cml0dGVuLCAqcDsNCj4gKyAgICAgICBpbnQgZXJyLCBsZWJfbmVl
+ZGVkX2NudCwgd3JpdHRlbiwgcCA9IDAsIG9sZF9pZHhfbGVicywgDQo+ICsgKmdhcF9sZWJzOw0K
+Pg0KPiAgICAgICAgIGRiZ19nYygiJWQgem5vZGVzIHRvIHdyaXRlIiwgY250KTsNCj4NCj4gQEAg
+LTM2NCw5ICszNjQsOSBAQCBzdGF0aWMgaW50IGxheW91dF9pbl9nYXBzKHN0cnVjdCB1Ymlmc19p
+bmZvICpjLCBpbnQgY250KQ0KPiAgICAgICAgIGlmICghYy0+Z2FwX2xlYnMpDQo+ICAgICAgICAg
+ICAgICAgICByZXR1cm4gLUVOT01FTTsNCj4NCj4gLSAgICAgICBwID0gYy0+Z2FwX2xlYnM7DQo+
+ICsgICAgICAgb2xkX2lkeF9sZWJzID0gYy0+bHN0LmlkeF9sZWJzOw0KPiAgICAgICAgIGRvIHsN
+Cj4gLSAgICAgICAgICAgICAgIHViaWZzX2Fzc2VydChjLCBwIDwgYy0+Z2FwX2xlYnMgKyBjLT5s
+c3QuaWR4X2xlYnMpOw0KPiArICAgICAgICAgICAgICAgdWJpZnNfYXNzZXJ0KGMsIHAgPCBjLT5s
+c3QuaWR4X2xlYnMpOw0KPiAgICAgICAgICAgICAgICAgd3JpdHRlbiA9IGxheW91dF9sZWJfaW5f
+Z2FwcyhjLCBwKTsNCj4gICAgICAgICAgICAgICAgIGlmICh3cml0dGVuIDwgMCkgew0KPiAgICAg
+ICAgICAgICAgICAgICAgICAgICBlcnIgPSB3cml0dGVuOyBAQCAtMzkyLDkgKzM5MiwyOSBAQCBz
+dGF0aWMgaW50IA0KPiBsYXlvdXRfaW5fZ2FwcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgaW50IGNu
+dCkNCj4gICAgICAgICAgICAgICAgIGxlYl9uZWVkZWRfY250ID0gZ2V0X2xlYl9jbnQoYywgY250
+KTsNCj4gICAgICAgICAgICAgICAgIGRiZ19nYygiJWQgem5vZGVzIHJlbWFpbmluZywgbmVlZCAl
+ZCBMRUJzLCBoYXZlICVkIiwgY250LA0KPiAgICAgICAgICAgICAgICAgICAgICAgIGxlYl9uZWVk
+ZWRfY250LCBjLT5pbGViX2NudCk7DQo+ICsgICAgICAgICAgICAgICAvKg0KPiArICAgICAgICAg
+ICAgICAgICogRHluYW1pY2FsbHkgY2hhbmdlIHRoZSBzaXplIG9mIEBjLT5nYXBfbGVicyB0byBw
+cmV2ZW50DQo+ICsgICAgICAgICAgICAgICAgKiBvb2IsIGJlY2F1c2UgQGMtPmxzdC5pZHhfbGVi
+cyBjb3VsZCBiZSBpbmNyZWFzZWQgYnkNCj4gKyAgICAgICAgICAgICAgICAqIGZ1bmN0aW9uIEBn
+ZXRfaWR4X2djX2xlYiAoY2FsbGVkIGJ5IGxheW91dF9sZWJfaW5fZ2Fwcy0+DQo+ICsgICAgICAg
+ICAgICAgICAgKiB1Ymlmc19maW5kX2RpcnR5X2lkeF9sZWIpIGR1cmluZyBsb29wLiBPbmx5IGVu
+bGFyZ2UNCj4gKyAgICAgICAgICAgICAgICAqIEBjLT5nYXBfbGVicyB3aGVuIG5lZWRlZC4NCj4g
+KyAgICAgICAgICAgICAgICAqDQo+ICsgICAgICAgICAgICAgICAgKi8NCj4gKyAgICAgICAgICAg
+ICAgIGlmIChsZWJfbmVlZGVkX2NudCA+IGMtPmlsZWJfY250ICYmIHAgPj0gb2xkX2lkeF9sZWJz
+ICYmDQo+ICsgICAgICAgICAgICAgICAgICAgb2xkX2lkeF9sZWJzIDwgYy0+bHN0LmlkeF9sZWJz
+KSB7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIG9sZF9pZHhfbGVicyA9IGMtPmxzdC5pZHhf
+bGViczsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgZ2FwX2xlYnMgPSBrcmVhbGxvYyhjLT5n
+YXBfbGVicywgc2l6ZW9mKGludCkgKg0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIChvbGRfaWR4X2xlYnMgKyAxKSwgDQo+ICsgR0ZQX05PRlMpOw0KDQpJ
+IHNlZSB0aGUgcHJvYmxlbS4gOi0oDQoNCkJ1dCBJJ20gbm90IHN1cmUgeWV0IHdoZXRoZXIga3Jl
+YWxsb2MoKSBpcyB0aGUgcmlnaHQgc29sdXRpb24sIHdlIG5lZWQgdG8gYmUgc3VyZSB0aGF0IHRo
+aXMgZG9lcyBub3QganVzdCBwYXBlciBvdmVyIHRoZSByb290IGNhdXNlLg0KUGxlYXNlIGdpdmUg
+bWUgbW9yZSB0aW1lIHRvIHVuZGVyc3RhbmQgdGhlIHJvb3QgY2F1c2UuDQoNCi0tDQpUaGFua3Ms
+DQovL3JpY2hhcmQNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
