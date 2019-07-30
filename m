@@ -2,86 +2,84 @@ Return-Path: <SRS0=td2l=V3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03870C0650F
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 18:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A7D0C0650F
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 18:16:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDABD206A2
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 18:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 094412064A
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 18:16:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Y42wlb4u";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SciHzr6H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDABD206A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="r92aSPeb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GMsUVWRU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 094412064A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:To:Subject:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NszLP6/g4vkdfcDE6pxdE/AVaviAWaRRKn77EZlLtEk=; b=Y42wlb4uXKejQh
-	UvYqg3xRJOnst7PXD5McNzuwlmjwVP8UgI8FenKTDJcYe8TAiSz3xtcNKRZdixVhhkLp5h0ohPab/
-	2qNWWo2NH5Nij1zipOXw+ytQ9Jkieyd2Q5Oli2VWwQ0QSaRRjLmIgIBCmsS+SgEt9yM3LliyEsw7H
-	tWVc2f5sf/2jVuGczJtv3eBqT2XCw/Gl4pfCJd5F/aeWxUbgmRFN05WNZyMnB6d/n3V3cUzdIOgus
-	rS75R6eveN08Y1XHmspFjfDK1hGD+592/DQ8kmE8FBUwSU2ogu3dbjnVPr9XBMjw9QJ1kiD7usoRt
-	rn/amp6MTUNlw4vsMgKA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Eimd+Kj7cdHGbm54MeiUCtvgUSZte2SfzKIu+hN5kns=; b=r92aSPebc4m0N6
+	688qEHqCFAvGV8gCiN4+vk1uCns7kEqhs6wPAOhlQjU6V7ZbllamlKZ/IN/tGRropVuMSGSfnqqGw
+	Y+mWsj6H7KVSMUkg3UkDV/IcZbkfxGpdlMN5Pc8MFTvWsZEgL2WmqFgBxEWIM+16BuzTGnSpNSQoP
+	Pxm4xXEBjMzjPyjQVQrTyZmAzHom1NVeISKDt3D3740XB4NOz/QFX1UyZWtF8Yaw15mZwPDgSiubV
+	gT/c9W65t700hKwgOomy8wnXt4bObitRKrZxws6E9IKYzXiDKjD8JVicVZGBwLrGgIqDIg6KSNKx4
+	xggcHtD/1p1tVorjRgRA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsWUD-0005D8-BP; Tue, 30 Jul 2019 18:04:33 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1hsWfx-00020v-6U; Tue, 30 Jul 2019 18:16:41 +0000
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsWU9-0005AV-Qj
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 18:04:31 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x6UI4P61065926;
- Tue, 30 Jul 2019 13:04:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1564509865;
- bh=Plg+6dO8ZCIV/LQ2ValIlp+OCS3L4NUfHtexWQxeqbQ=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=SciHzr6HoiABsNPhD7LE/mPyqAOuQIPQoGBAr8jh2lsEzUgMOGqF5RcstHgsdTULE
- Lig4h4y8W5jqJPamMySaW9lDwtFi1QhXGD/vgwljuQgtZEYq+Y7FALDwYj8WEYJ/7T
- iRxc8R3z2GJm2nvLuMM3OgBpurOLxbTtn0SmfpWY=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x6UI4PSK111818
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 30 Jul 2019 13:04:25 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 30
- Jul 2019 13:04:24 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
- Frontend Transport; Tue, 30 Jul 2019 13:04:24 -0500
-Received: from [10.250.133.35] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id x6UI4LYU105350;
- Tue, 30 Jul 2019 13:04:22 -0500
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Move m25p80 code in spi-nor.c
-To: <Tudor.Ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <marek.vasut@gmail.com>
-References: <20190720080023.5279-1-vigneshr@ti.com>
- <20190720080023.5279-2-vigneshr@ti.com>
- <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <512b5fac-b1e4-0350-a07c-184008f67341@ti.com>
-Date: Tue, 30 Jul 2019 23:34:20 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 1hsWfg-0001lw-Gf
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 18:16:29 +0000
+Received: by mail-pf1-x443.google.com with SMTP id 19so30258017pfa.4
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2019 11:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=p5RXXsJ4e7VkeUHqrbY1IBvBfJ/z9E69a8edPnsDJdQ=;
+ b=GMsUVWRU1aTB1hWSiYZ1yAHVCz3KA2ZakCDiEbHmhhMz9lBM+S7FVB4L5n5H6H5b7I
+ a+V6A1cm8rKTkEVe9O10c9KE01cFXuO2I7/xyU9a+3JPf7Ypvy+wJIzcwPaX5a1UeMtN
+ YRxWZCQShkBcbMB3nfX0+dBg/+B4Nb/ZW5yMU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=p5RXXsJ4e7VkeUHqrbY1IBvBfJ/z9E69a8edPnsDJdQ=;
+ b=QZqOxQ/H2gGeDvMwOi8tKb+9StATVHrAeyodZ/a6xTlVvN7Pil++nGkcLgpJYgeR32
+ ZpV1zE6ZUtCxpn+UElYUZe0zI39TtMmdIy/LDhcY4xs5chJB7QqzB9unBUtQs1X9AeEe
+ Tb8QF1jh078bhD2SkduBxOB9nKQqCRClcLOSdhzChi5urYgL83+S5s42G63ZgovELlfv
+ Ua44rXIglpfmtZTsKGBVY0abYzW+TaVAGBJfK/qMv6ax6WGZHMpq/im0pTRuos3WQV88
+ ekPFOtxRm2XMU7tFnRK82YXVzDyXGEduxwlokp26ab5arRf3lE05z4oDwYxnaPueviL5
+ VpOw==
+X-Gm-Message-State: APjAAAVivEawdz8s63Jm7TJmsyRu5Wh7GioQIC3Dgjls0GW4n18ZBRu2
+ Gw0TzyESHjVKIboYayW/D+f0ww==
+X-Google-Smtp-Source: APXvYqzdmoE2JLem/gbX1r3OvXzJEHBzGCQNGOjvOY6r5ot2LQEojL9LCQ0tBaIgf+wJXvZLyLIL+A==
+X-Received: by 2002:a65:4304:: with SMTP id j4mr112698627pgq.419.1564510583820; 
+ Tue, 30 Jul 2019 11:16:23 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
+ by smtp.gmail.com with ESMTPSA id g1sm106744083pgg.27.2019.07.30.11.16.23
+ (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+ Tue, 30 Jul 2019 11:16:23 -0700 (PDT)
+From: Stephen Boyd <swboyd@chromium.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v6 30/57] mtd: Remove dev_err() usage after platform_get_irq()
+Date: Tue, 30 Jul 2019 11:15:30 -0700
+Message-Id: <20190730181557.90391-31-swboyd@chromium.org>
+X-Mailer: git-send-email 2.22.0.709.g102302147b-goog
+In-Reply-To: <20190730181557.90391-1-swboyd@chromium.org>
+References: <20190730181557.90391-1-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <f6410e21-18c3-9733-4ea5-13eb26ad6169@microchip.com>
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190730_110429_949237_075C81DD 
-X-CRM114-Status: GOOD (  30.41  )
+X-CRM114-CacheID: sfid-20190730_111624_561470_21BD5147 
+X-CRM114-Status: GOOD (  16.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,330 +91,292 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: yogeshnarayan.gaur@nxp.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, bbrezillon@kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
+We don't need dev_err() messages when platform_get_irq() fails now that
+platform_get_irq() prints an error message itself when something goes
+wrong. Let's remove these prints with a simple semantic patch.
 
-On 25-Jul-19 4:49 PM, Tudor.Ambarus@microchip.com wrote:
-> All,
-> 
-> I want this in 5.4, please review/test the soonest.
-> 
-> On 07/20/2019 11:00 AM, Vignesh Raghavendra wrote:
-> 
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 03cc788511d5..f428a6d4022b 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -19,6 +19,7 @@
->>  
->>  #include <linux/mtd/mtd.h>
->>  #include <linux/of_platform.h>
->> +#include <linux/sched/task_stack.h>
->>  #include <linux/spi/flash.h>
->>  #include <linux/mtd/spi-nor.h>
->>  
->> @@ -288,6 +289,232 @@ struct flash_info {
->>  
->>  #define JEDEC_MFR(info)	((info)->id[0])
->>  
->> +/**
->> + * spi_nor_exec_op() - helper function to read/write flash registers
-> 
-> the function name can easily get confused with spi_mem_exec_op(). How about
-> renaming it to spi_nor_spimem_xfer_reg(), it will be in concordance with
-> spi_nor_spimem_xfer_data().
-> 
->> + * @nor:        pointer to 'struct spi_nor'
->> + * @op:         pointer to 'struct spi_mem_op' template for transfer
->> + * @addr:       pointer to offset within flash
->> + * @buf:        pointer to data buffer into which data is read/written
->> + *              into
-> 
->                    ^ drop second into
-> 
->> + * @len:        length of the transfer
->> + *
->> + * Return: 0 on success, non-zero otherwise
-> 
->                             ^ s/non-zero/-errno?
-> 
->> + */
->> +static int spi_nor_exec_op(struct spi_nor *nor, struct spi_mem_op *op,
->> +			   u64 *addr, void *buf, size_t len)
->> +{
->> +	int ret;
->> +	bool usebouncebuf = false;
-> 
-> I don't think we need a bounce buffer for regs. What is the maximum size that we
-> read/write regs, SPI_NOR_MAX_CMD_SIZE(8)?
-> 
-> In spi-nor.c the maximum length that we pass to nor->read_reg()/write_reg() is
-> SPI_NOR_MAX_ID_LEN(6).
-> 
-> I can provide a patch to always use nor->cmd_buf when reading/writing regs so
-> you respin the series on top of it, if you feel the same.
-> 
+// <smpl>
+@@
+expression ret;
+struct platform_device *E;
+@@
 
+ret =
+(
+platform_get_irq(E, ...)
+|
+platform_get_irq_byname(E, ...)
+);
 
-> With nor->cmd_buf this function will be reduced to the following:
->
+if ( \( ret < 0 \| ret <= 0 \) )
+{
+(
+-if (ret != -EPROBE_DEFER)
+-{ ...
+-dev_err(...);
+-... }
+|
+...
+-dev_err(...);
+)
+...
+}
+// </smpl>
 
-I will move the code introducing bounce buffer into separate patch at
-the beginning of this series and switch over all read/write regs
-functions to use bounce buffer instead of cmd_buf. cmd_buf will be dropped.
-And then simplify this patch to spi_nor_spimem_xfer_reg() to you pointed
-out below. Does that sound good?
+While we're here, remove braces on if statements that only have one
+statement (manually).
 
-> static int spi_nor_spimem_xfer_reg(struct spi_nor *nor, struct spi_mem_op *op)
-> {
-> 	if (!op || (op->data.nbytes && !nor->cmd_buf))
-> 		return -EINVAL;
-> 
-> 	return spi_mem_exec_op(nor->spimem, op);
-> }
-> 
-> spi_nor_exec_op() always received a NULL addr, let's get rid of it. We won't
-> need buf anymore and you can retrieve the length from op->data.nbytes. Now that
-> we trimmed the arguments, I think I would get rid of the
-> spi_nor_data/nodata_op() wrappers and use spi_nor_spimem_xfer_reg() directly.
-> 
->> +
->> +	if (!op || (len && !buf))
->> +		return -EINVAL;
->> +
->> +	if (op->addr.nbytes && addr)
->> +		op->addr.val = *addr;
->> +
->> +	op->data.nbytes = len;
->> +
->> +	if (object_is_on_stack(buf) || !virt_addr_valid(buf))
->> +		usebouncebuf = true;
->> +	if (len && usebouncebuf) {
->> +		if (len > nor->bouncebuf_size)
->> +			return -ENOTSUPP;
->> +
->> +		if (op->data.dir == SPI_MEM_DATA_IN) {
->> +			op->data.buf.in = nor->bouncebuf;
->> +		} else {
->> +			op->data.buf.out = nor->bouncebuf;
->> +			memcpy(nor->bouncebuf, buf, len);
->> +		}
->> +	} else {
->> +		op->data.buf.out = buf;
->> +	}
->> +
->> +	ret = spi_mem_exec_op(nor->spimem, op);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (usebouncebuf && len && op->data.dir == SPI_MEM_DATA_IN)
->> +		memcpy(buf, nor->bouncebuf, len);
->> +
->> +	return 0;
->> +}
-> 
-> cut
-> 
->> +
->> +/**
->> + * spi_nor_spimem_xfer_data() - helper function to read/write data to
->> + *                              flash's memory region
->> + * @nor:        pointer to 'struct spi_nor'
->> + * @op:         pointer to 'struct spi_mem_op' template for transfer
->> + * @proto:      protocol to be used for transfer
->> + *
->> + * Return: number of bytes transferred on success, -errno otherwise
->> + */
->> +static ssize_t spi_nor_spimem_xfer_data(struct spi_nor *nor,
->> +					struct spi_mem_op *op,
->> +					enum spi_nor_protocol proto)
->> +{
->> +	bool usebouncebuf = false;
-> 
-> declare bool at the end to avoid stack padding.
-> 
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-I prefer reverse xmas and hope compilers are intelligent enough to
-reorder allocation to save padding :)
+Please apply directly to subsystem trees
 
->> +	void *rdbuf = NULL;
->> +	const void *buf;
-> 
-> you can get rid of rdbuf and buf if you pass buf as argument.
-> 
->> +	int ret;
->> +
->> +	/* get transfer protocols. */
->> +	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(proto);
->> +	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
->> +	op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
->> +
->> +	if (op->data.dir == SPI_MEM_DATA_IN)
->> +		buf = op->data.buf.in;
->> +	else
->> +		buf = op->data.buf.out;
->> +
->> +	if (object_is_on_stack(buf) || !virt_addr_valid(buf))
->> +		usebouncebuf = true;
->> +
->> +	if (usebouncebuf) {
->> +		if (op->data.nbytes > nor->bouncebuf_size)
->> +			op->data.nbytes = nor->bouncebuf_size;
->> +
->> +		if (op->data.dir == SPI_MEM_DATA_IN) {
->> +			rdbuf = op->data.buf.in;
->> +			op->data.buf.in = nor->bouncebuf;
->> +		} else {
->> +			op->data.buf.out = nor->bouncebuf;
->> +			memcpy(nor->bouncebuf, buf,
->> +			       op->data.nbytes);
->> +		}
->> +	}
->> +
->> +	ret = spi_mem_adjust_op_size(nor->spimem, op);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = spi_mem_exec_op(nor->spimem, op);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (usebouncebuf && op->data.dir == SPI_MEM_DATA_IN)
->> +		memcpy(rdbuf, nor->bouncebuf, op->data.nbytes);
->> +
->> +	return op->data.nbytes;
->> +}
->> +
->> +/**
->> + * spi_nor_spimem_read_data() - read data from flash's memory region via
->> + *                              spi-mem
->> + * @nor:        pointer to 'struct spi_nor'
->> + * @ofs:        offset to read from
->> + * @len:        number of bytes to read
->> + * @buf:        pointer to dst buffer
->> + *
->> + * Return: number of bytes read successfully, -errno otherwise
->> + */
->> +static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t ofs,
-> 
-> s/ofs/from? both flash and buf may have offsets, "from" better indicates that
-> the offset is associated with the flash.
+ drivers/mtd/devices/spear_smi.c        | 1 -
+ drivers/mtd/nand/raw/denali_dt.c       | 4 +---
+ drivers/mtd/nand/raw/hisi504_nand.c    | 4 +---
+ drivers/mtd/nand/raw/lpc32xx_mlc.c     | 1 -
+ drivers/mtd/nand/raw/marvell_nand.c    | 4 +---
+ drivers/mtd/nand/raw/meson_nand.c      | 4 +---
+ drivers/mtd/nand/raw/mtk_ecc.c         | 4 +---
+ drivers/mtd/nand/raw/mtk_nand.c        | 1 -
+ drivers/mtd/nand/raw/omap2.c           | 8 ++------
+ drivers/mtd/nand/raw/sh_flctl.c        | 4 +---
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 5 +----
+ drivers/mtd/nand/raw/sunxi_nand.c      | 4 +---
+ drivers/mtd/spi-nor/cadence-quadspi.c  | 4 +---
+ 13 files changed, 11 insertions(+), 37 deletions(-)
 
-OK.
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index 986f81d2f93e..7f6f6f1d965f 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -933,7 +933,6 @@ static int spear_smi_probe(struct platform_device *pdev)
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+ 		ret = -ENODEV;
+-		dev_err(&pdev->dev, "invalid smi irq\n");
+ 		goto err;
+ 	}
+ 
+diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+index 5e14836f6bd5..df992554a66f 100644
+--- a/drivers/mtd/nand/raw/denali_dt.c
++++ b/drivers/mtd/nand/raw/denali_dt.c
+@@ -167,10 +167,8 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 
+ 	denali->dev = dev;
+ 	denali->irq = platform_get_irq(pdev, 0);
+-	if (denali->irq < 0) {
+-		dev_err(dev, "no irq defined\n");
++	if (denali->irq < 0)
+ 		return denali->irq;
+-	}
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "denali_reg");
+ 	denali->reg = devm_ioremap_resource(dev, res);
+diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
+index 6a4626a8bf95..0b48be54ba6f 100644
+--- a/drivers/mtd/nand/raw/hisi504_nand.c
++++ b/drivers/mtd/nand/raw/hisi504_nand.c
+@@ -751,10 +751,8 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	mtd  = nand_to_mtd(chip);
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "no IRQ resource defined\n");
++	if (irq < 0)
+ 		return -ENXIO;
+-	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	host->iobase = devm_ioremap_resource(dev, res);
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index 78b31f845c50..241b58b83240 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -773,7 +773,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 
+ 	host->irq = platform_get_irq(pdev, 0);
+ 	if (host->irq < 0) {
+-		dev_err(&pdev->dev, "failed to get platform irq\n");
+ 		res = -EINVAL;
+ 		goto release_dma_chan;
+ 	}
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index fc49e13d81ec..fb5abdcfb007 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2862,10 +2862,8 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(nfc->regs);
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "failed to retrieve irq\n");
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	nfc->core_clk = devm_clk_get(&pdev->dev, "core");
+ 
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index ea57ddcec41e..84b82d823952 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -1398,10 +1398,8 @@ static int meson_nfc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "no NFC IRQ resource\n");
++	if (irq < 0)
+ 		return -EINVAL;
+-	}
+ 
+ 	ret = meson_nfc_clk_init(nfc);
+ 	if (ret) {
+diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
+index 74595b644b7c..75f1fa3d4d35 100644
+--- a/drivers/mtd/nand/raw/mtk_ecc.c
++++ b/drivers/mtd/nand/raw/mtk_ecc.c
+@@ -527,10 +527,8 @@ static int mtk_ecc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "failed to get irq: %d\n", irq);
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = dma_set_mask(dev, DMA_BIT_MASK(32));
+ 	if (ret) {
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index 373d47d1ba4c..b8305e39ab51 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -1540,7 +1540,6 @@ static int mtk_nfc_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		dev_err(dev, "no nfi irq resource\n");
+ 		ret = -EINVAL;
+ 		goto clk_disable;
+ 	}
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index 8d881a28140e..dccc927c5fa5 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -1967,10 +1967,8 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
+ 
+ 	case NAND_OMAP_PREFETCH_IRQ:
+ 		info->gpmc_irq_fifo = platform_get_irq(info->pdev, 0);
+-		if (info->gpmc_irq_fifo <= 0) {
+-			dev_err(dev, "Error getting fifo IRQ\n");
++		if (info->gpmc_irq_fifo <= 0)
+ 			return -ENODEV;
+-		}
+ 		err = devm_request_irq(dev, info->gpmc_irq_fifo,
+ 				       omap_nand_irq, IRQF_SHARED,
+ 				       "gpmc-nand-fifo", info);
+@@ -1982,10 +1980,8 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
+ 		}
+ 
+ 		info->gpmc_irq_count = platform_get_irq(info->pdev, 1);
+-		if (info->gpmc_irq_count <= 0) {
+-			dev_err(dev, "Error getting IRQ count\n");
++		if (info->gpmc_irq_count <= 0)
+ 			return -ENODEV;
+-		}
+ 		err = devm_request_irq(dev, info->gpmc_irq_count,
+ 				       omap_nand_irq, IRQF_SHARED,
+ 				       "gpmc-nand-count", info);
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index e509c93737c4..058e99d0cbcf 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -1129,10 +1129,8 @@ static int flctl_probe(struct platform_device *pdev)
+ 	flctl->fifo = res->start + 0x24; /* FLDTFIFO */
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(&pdev->dev, "failed to get flste irq data: %d\n", irq);
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = devm_request_irq(&pdev->dev, irq, flctl_handle_flste, IRQF_SHARED,
+ 			       "flste", flctl);
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index e63acc077c18..1cc70fe2a4d7 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1912,11 +1912,8 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		if (irq != -EPROBE_DEFER)
+-			dev_err(dev, "IRQ error missing or invalid\n");
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = devm_request_irq(dev, irq, stm32_fmc2_irq, 0,
+ 			       dev_name(dev), fmc2);
+diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+index 89773293c64d..37a4ac0dd85b 100644
+--- a/drivers/mtd/nand/raw/sunxi_nand.c
++++ b/drivers/mtd/nand/raw/sunxi_nand.c
+@@ -2071,10 +2071,8 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(nfc->regs);
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "failed to retrieve irq\n");
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	nfc->ahb_clk = devm_clk_get(dev, "ahb");
+ 	if (IS_ERR(nfc->ahb_clk)) {
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 67f15a1f16fd..172d7a0a2454 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -1375,10 +1375,8 @@ static int cqspi_probe(struct platform_device *pdev)
+ 
+ 	/* Obtain IRQ line. */
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "Cannot obtain IRQ.\n");
++	if (irq < 0)
+ 		return -ENXIO;
+-	}
+ 
+ 	pm_runtime_enable(dev);
+ 	ret = pm_runtime_get_sync(dev);
+-- 
+Sent by a computer through tubes
 
-> 
->> +					size_t len, u8 *buf)
->> +{
->> +	struct spi_mem_op op =
->> +		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
->> +			   SPI_MEM_OP_ADDR(nor->addr_width, ofs, 1),
->> +			   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
->> +			   SPI_MEM_OP_DATA_IN(len, buf, 1));
->> +
->> +	op.dummy.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
->> +
->> +	/* convert the dummy cycles to the number of bytes */
->> +	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
->> +
->> +	return spi_nor_spimem_xfer_data(nor, &op, nor->read_proto);
-> 
-> stop passing nor->read_proto and do all buswidth initialization here. This way
-> we'll keep the inits all gathered together, and will have the xfer() that will
-> do just the transfer (with bouncebuffer if needed). Function that does a single
-> thing.
-> 
-
-Ok, my idea was to factor out all common code b/w
-spi_nor_spimem_read_data() and spi_nor_spimem_write_data() in
-spi_nor_spimem_xfer_data(). But, I am fine with your idea.
-
->> +}
-> 
-> cut
-> 
->> @@ -459,7 +749,6 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
->>  		struct spi_nor_erase_map *map = &nor->erase_map;
->>  		struct spi_nor_erase_type *erase;
->>  		int i;
->> -
-> 
-> keep the blank line
-> 
-
-Will drop
-
-> cut
-> 
->> @@ -1406,7 +1807,18 @@ static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
->>  
->>  	write_enable(nor);
->>  
->> -	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
->> +	if (nor->spimem) {
->> +		struct spi_mem_op op =
->> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR, 1),
->> +				   SPI_MEM_OP_NO_ADDR,
->> +				   SPI_MEM_OP_NO_DUMMY,
->> +				   SPI_MEM_OP_DATA_OUT(0, NULL, 1));
-> 
-> nbytes is 2.
-> 
-
-Will update when dropping spi_nor_data_op()
-
->> +
->> +		ret = spi_nor_data_op(nor, &op, sr_cr, 2);
->> +	} else {
->> +		ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
->> +	}
-> 
-> cut
-> 
->> @@ -1626,8 +2068,7 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
->>  		return ret;
->>  	}
->>  
->> -	/* Read back and check it. */
-> 
-> don't drop the comment
-
-Agreed
-
-> 
->> -	ret = nor->read_reg(nor, SPINOR_OP_RDSR2, &sr2, 1);
->> +	ret = spi_nor_read_sr2(nor, &sr2);
->>  	if (!(ret > 0 && (sr2 & SR2_QUAD_EN_BIT7))) {
->>  		dev_err(nor->dev, "SR2 Quad bit not set\n");
->>  		return -EINVAL;
->> @@ -2180,7 +2621,18 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>  	u8			id[SPI_NOR_MAX_ID_LEN];
->>  	const struct flash_info	*info;
->>  
->> -	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
->> +	if (nor->spimem) {
->> +		struct spi_mem_op op =
->> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
->> +				   SPI_MEM_OP_NO_ADDR,
->> +				   SPI_MEM_OP_NO_DUMMY,
->> +				   SPI_MEM_OP_DATA_IN(0, NULL, 1));
-> 
-> nbytes is SPI_NOR_MAX_ID_LEN and not 1.
-> 
-
-Will fix along with dropping spi_nor_data_op()
-
-> Cheers,
-> ta
-> 
-
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
