@@ -2,90 +2,85 @@ Return-Path: <SRS0=td2l=V3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 772EAC76186
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 03:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9993C433FF
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 03:07:38 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C60621841
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 03:00:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 973FB20693
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2019 03:07:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="OhfVVcf6";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QHhbTm1T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C60621841
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="slZLhZId";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f/NfvxDX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 973FB20693
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:References:
-	In-Reply-To:Message-Id:Date:Subject:To:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=qSnvOO74cpelO94rM0OKsr5Xt5fRo6hlAM9Rev2fc8c=; b=OhfVVcf6AkB7+/mqebjdKTY4Q/
-	5QjiVytzRBIP/RZkkDe2WeiMsAAFqUAnWaoydbYc6mGYr3ugUC8WYyBKPc6Cf77px9DybR4yR7EHM
-	TC4lHm8fiLzHdEoSs+wStDnM6Vp01RimqtoxH2kkp1FjUuPZRRXGKuW3qQPZqf/nW5De6aFQm8mFt
-	BlC9ELMOTn74XXGYp5OPJ4G62sKVk1ZvZ3TUb1MbN2HDbaxVzTG81m/4/cmxt9ObX4piMnwq6XCCG
-	2TucIaVju25b7TETVpumey+crKmukXno+ahxLu7S6c5RFAx1gHcnBjRcTOAyStJSp6C6mjdv1exGu
-	mgA2naMg==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6ytg8JzsQA1ZndOtaKQkpBBNj/hktK0HWvXgUBRHlos=; b=slZLhZIdFMfS0w
+	Fh99lUlNxYI0ES0hwxbyVWG9NtW+3/NezYAXUE8wqFwfqHUrcwa1yRvnPOyDeIg373vnd2nCMz1zb
+	D59vOrCCtDmVkAig2EUtq35+ndQABh0hZijJ6uTgOiLoCUXKPgmqYbliiGUyxkmkvjQ0flAx0RMEu
+	rmKOLGQDZ98OF+WZ7uuuHTz39DpPeY6Ldwh62wv5d6XmwT+vVhJhWYYeBRGCPSqBNwKVsyJ98qgp6
+	al1UPwu8f46+QKd5wumaioW3izpXAzeqhiPNkcLZZ5cu7E6H0BQBeGkHofiebVDsZGqcmGonmVQ4s
+	PdrRW8uIsmwNp6VraRtw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsINY-00059L-G9; Tue, 30 Jul 2019 03:00:44 +0000
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+	id 1hsIU1-00070I-Ee; Tue, 30 Jul 2019 03:07:25 +0000
+Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsHHL-0008AU-IO
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 01:50:17 +0000
-Received: by mail-pg1-x543.google.com with SMTP id r22so1564848pgk.10
- for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2019 18:50:15 -0700 (PDT)
+ id 1hsITy-0006zv-56
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2019 03:07:23 +0000
+Received: by mail-io1-xd43.google.com with SMTP id k8so124887107iot.1
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2019 20:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=L/HD57pd50ajIUsHODxhnXGWHejzLDOdwJEP3n72SQw=;
- b=QHhbTm1TZgOm6WvfrheJvUVNeDXD58E3pX5WUEvt1BP91bmPiq5Zxlwe0W7TOYXoCN
- MkNfx9qLLj8fyaP3b7IF4i6G6Mkgb23PHdlgaNIJRlu3NM6Es13SefEmhkB3J1UfIWGK
- soB7NWNFa20U8NYgNzlRF3WMC88RtL7qe0bTbQ1cvIhorC2b8kqE/RY85zKTkCEyBsQh
- BdKev0yI9rY4xF4cPnJ6NS8ZwaRWLLgKzkuAdtPNzcv+sltC90b1jYaaBMcLW3gtpjT0
- lcILku6POE4fQfSb3rTDmKTDv0Qjk9tMvj5rB3uc2hsoyfEIeJojb/BRzbD01DDJWzF+
- eymA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=A+ca/5uedCixWIQer/ZjP7BnYJmLZASZxV771imHbM4=;
+ b=f/NfvxDXZcO5O+OU54O/J20STpBsaSXWWDvSiFlg2VBV+gmMCcPT+PSqUt1qG31xMj
+ HKJ3Z1XJIJWckJuIFM+fexqU2WAcHrK8GPxwgvQimAuCxIDAGZ8NR/BJImPX2O85ETh5
+ QqJFrpAX643+qe3Hsr2q4E28NoOS5c/3CMe1LmdCw7V2dfwlEWZo67+5Z0nzmED4TF02
+ o3Bqafe3zjV5IFhzY/m64YRZzJEkcEVbZh1UiXmNP9FPlYRIALa9Wad1l9fCTRTdO+4q
+ u1NmxOq8q1jQK+CsJKvDvUAYW3pPyESIUvu4iLfKKhQHAxM1G5Sl/BDMKs5UfIxuLb0R
+ /kbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=L/HD57pd50ajIUsHODxhnXGWHejzLDOdwJEP3n72SQw=;
- b=fTZKdQPxV4k8IqEVx4q5qdMCg95sd08iICwUblApbWEbNGdTlRmIl5VHIot+uuCLYB
- ph9xiL9V+FRldEqaJVaw+QhLVSu5RL94Eg09U4Zwzw/wOQyySvHWUe2BFKC++nOmTN9I
- LxC5MOe9HNsHa5SvAuhZ/oDR43keWdfWhFrGG8e2kWGRRT75VGdUY63X30Tfs2Rgotkb
- yxGCElOjA9Oju7dAxxe35vc5G8qKkrstnQ7XCxyAuod9tvt8dz57CMcF5wMapQymbghY
- ddVLHviW0HayNFYBbBNE5oqE8k2WumeBZ31jQqxHIRkVezuQ/DHQUKCEIIyIEXH5eNt9
- OyRg==
-X-Gm-Message-State: APjAAAWrLR0pR3yN32SEj2kpFV9yuvUeW+EueT9RRHy+5gcuL9LdmDLL
- viXpWwWugd16kfuEB3582tsIg1SzoUI=
-X-Google-Smtp-Source: APXvYqymlfxXZkLKDbtTqqG4gNF0mEEFbRBNU2budVpRI6cIsHbCtGHUYAgZi7Jxv18tF300c570QQ==
-X-Received: by 2002:a17:90a:bd0b:: with SMTP id
- y11mr109382806pjr.141.1564451414701; 
- Mon, 29 Jul 2019 18:50:14 -0700 (PDT)
-Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net.
- [98.234.52.230])
- by smtp.gmail.com with ESMTPSA id r6sm138807156pjb.22.2019.07.29.18.50.13
- (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
- Mon, 29 Jul 2019 18:50:14 -0700 (PDT)
-From: Deepa Dinamani <deepa.kernel@gmail.com>
-To: viro@zeniv.linux.org.uk,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 03/20] timestamp_truncate: Replace users of timespec64_trunc
-Date: Mon, 29 Jul 2019 18:49:07 -0700
-Message-Id: <20190730014924.2193-4-deepa.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190730014924.2193-1-deepa.kernel@gmail.com>
-References: <20190730014924.2193-1-deepa.kernel@gmail.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=A+ca/5uedCixWIQer/ZjP7BnYJmLZASZxV771imHbM4=;
+ b=mC2NPuZi3cuZPb4+g6bvDYgdJmgzYEwN+qlhnJTnvRPMwO/dyXmNXpYwXmXYEBqyvz
+ /i4CHGv9u/4lJTcW+WAXM84UMJnxXjULPC75hgdcNmncf1JNKkjHtyjNH4urdubmk44/
+ K7QmPgAM8kB8MxBiOJaQLvBleAspCQwnNtt2c+A5SVD+A+g6zEX0r5tB3zrm+8TpEcUg
+ rN+qAWWKVEw4qTcOPT4wBnyFkrV+FfVEUC1F9TGnEp2GS2B5Vh6LkL+QrDsRUWhXJwUU
+ WtL6Ck1RYes/2qyc7QaQXw1cER+uWJK4cDEyRRNOx7b6c9MVw4DuLISDjrlMHPoA4UUk
+ JVbg==
+X-Gm-Message-State: APjAAAUOD7iiPzncxmZ6Er7tMxk/zpWGaPgKRjsbahYwTlQE16fDQVtk
+ hR3YMbtpn6TCosebXtYFZJe1CBDAmWpID7XfqD0=
+X-Google-Smtp-Source: APXvYqwIAVlSwA7TBl5/cJpyTdyz2ZEco0nHJWKTuOSSzTcogQv6ecDu/R7okBGlt4uZIdcj0zYHc/OEa02aQQPuiOo=
+X-Received: by 2002:a5d:9d90:: with SMTP id 16mr5067185ion.132.1564456040635; 
+ Mon, 29 Jul 2019 20:07:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190725001114.0ceff19c@jawa>
+ <CAOMZO5CsTPaRSe-VmOwnnYrsMMXa3GhurmsWwzaPo948xs10FA@mail.gmail.com>
+ <20190729224326.44aa3057@jawa>
+In-Reply-To: <20190729224326.44aa3057@jawa>
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+Date: Mon, 29 Jul 2019 20:07:09 -0700
+Message-ID: <CAHQ1cqGf6aeUu+QzOCuOgcaEaZhXe7Kdj8vaBo-30KMsyUTjsA@mail.gmail.com>
+Subject: Re: [imx][vybrid][qspi] Regression notification - vybrid vf610
+ QUADSPI - BK4 board
+To: Lukasz Majewski <lukma@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190729_185015_613176_4DDB3764 
-X-CRM114-Status: GOOD (  13.44  )
+X-CRM114-CacheID: sfid-20190729_200722_221896_4ABC1134 
+X-CRM114-Status: GOOD (  24.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,255 +92,110 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: arnd@arndb.de, dedekind1@gmail.com, y2038@lists.linaro.org,
- gregkh@linuxfoundation.org, yuchao0@huawei.com, adrian.hunter@intel.com,
- linux-f2fs-devel@lists.sourceforge.net, tj@kernel.org,
- linux-mtd@lists.infradead.org, hirofumi@mail.parknet.co.jp, richard@nod.at,
- linux-fsdevel@vger.kernel.org, jaegeuk@kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, hch@lst.de, anton@tuxera.com,
- jlbec@evilplan.org
-MIME-Version: 1.0
+Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>, linux-mtd@lists.infradead.org,
+ NXP Linux Team <linux-imx@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>,
+ Fabio Estevam <festevam@gmail.com>, Chris Healy <cphealy@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update the inode timestamp updates to use timestamp_truncate()
-instead of timespec64_trunc().
+On Mon, Jul 29, 2019 at 1:43 PM Lukasz Majewski <lukma@denx.de> wrote:
+>
+> Hi Fabio,
+>
+> > Hi Lukasz,
+> >
+> > On Wed, Jul 24, 2019 at 7:11 PM Lukasz Majewski <lukma@denx.de> wrote:
+> > >
+> > > Dear All,
+> > >
+> > > I'd like to report that after moving the fsl-quadspi.c driver
+> > > from ./drivers/mtd to ./drivers/spi (around 5.1-rc1) [1] the
+> > > Vybrid's QUADSPI (even with single SPI-NOR memory connected) is not
+> > > working anymore (the chip ID read is FF FF FF).
+> > >
+> > > This wouldn't be a problem per-se, but not all necessary code was
+> > > moved
+> > > - especially for vybrid which has issues with some HW bugs [2]:
+> > >
+> > > --------------->8----------------
+> > >  * The IC guy suggests we use the "AHB Command Read" which is faster
+> > >  * then the "IP Command Read". (What's more is that there is a bug
+> > > in
+> > >  * the "IP Command Read" in the Vybrid.)
+> > > ---------------8<----------------
+> > >
+> > > I've explicitly asked NXP support for this HW issue [3] - but till
+> > > now there was no reply.
+> > >
+> > > The official linux-imx (from meta-freescale) seems not to support
+> > > vybrid (vf610) anymore - and the newest available now kernel is
+> > > 4.19 (with the old fsl-quadspi.c driver available).
+> > >
+> > >
+> > >
+> > > Hence the question - has anybody noticed this issue and (maybe) is
+> > > working on it?
+> >
+> > I don't have access to a Vybrid board, but I kindly got the
+> > confirmation from Andrey on Cc that QSPI is working fine on his Vybrid
+> > based board running linux-next.
+> >
+>
+> Thank you for your reply, Fabio.
+>
+> Andrey , could you share your setup info? How your memories are
+> connected?
+>
 
-The change was mostly generated by the following coccinelle
-script.
+I did all my testing on ZII VF610 devboard rev C. The board has two
+SPI-NOR chips connected to 4-bit QSPI_A and 4-bit QSPI_B. See
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/vf610-zii-dev.dtsi?h=v5.3-rc2#n180
 
-virtual context
-virtual patch
+> Would it be possible to share your dts files for linux-next?
+>
 
-@r1 depends on patch forall@
-struct inode *inode;
-identifier i_xtime =~ "^i_[acm]time$";
-expression e;
-@@
+I don't have a special DTS file I am using. The one currently
+available upstream is what I am using:
 
-inode->i_xtime =
-- timespec64_trunc(
-+ timestamp_truncate(
-...,
-- e);
-+ inode);
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
 
-Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: adrian.hunter@intel.com
-Cc: anton@tuxera.com
-Cc: dedekind1@gmail.com
-Cc: gregkh@linuxfoundation.org
-Cc: hch@lst.de
-Cc: hirofumi@mail.parknet.co.jp
-Cc: jaegeuk@kernel.org
-Cc: jlbec@evilplan.org
-Cc: richard@nod.at
-Cc: tj@kernel.org
-Cc: yuchao0@huawei.com
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Cc: linux-ntfs-dev@lists.sourceforge.net
-Cc: linux-mtd@lists.infradead.org
----
- fs/attr.c           | 21 ++++++++++++---------
- fs/configfs/inode.c | 12 ++++++------
- fs/f2fs/file.c      | 21 ++++++++++++---------
- fs/fat/misc.c       |  5 +++--
- fs/kernfs/inode.c   |  6 +++---
- fs/ntfs/inode.c     | 21 ++++++++++++---------
- fs/ubifs/file.c     | 21 ++++++++++++---------
- 7 files changed, 60 insertions(+), 47 deletions(-)
+> I did a bit more debugging and the old driver (before conversion) on my
+> setup breaks when I try to erase/write/read 256+ bytes (with dd's block
+> size -> bs = 1).
+>
+> Could you check if erase, write and read of
+>
+> dd if=/dev/urandom of=/dev/mtd7 bs=1 count=256
+>
+> works as expected?
+>
 
-diff --git a/fs/attr.c b/fs/attr.c
-index d22e8187477f..df28035aa23e 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -183,15 +183,18 @@ void setattr_copy(struct inode *inode, const struct iattr *attr)
- 		inode->i_uid = attr->ia_uid;
- 	if (ia_valid & ATTR_GID)
- 		inode->i_gid = attr->ia_gid;
--	if (ia_valid & ATTR_ATIME)
--		inode->i_atime = timespec64_trunc(attr->ia_atime,
--						  inode->i_sb->s_time_gran);
--	if (ia_valid & ATTR_MTIME)
--		inode->i_mtime = timespec64_trunc(attr->ia_mtime,
--						  inode->i_sb->s_time_gran);
--	if (ia_valid & ATTR_CTIME)
--		inode->i_ctime = timespec64_trunc(attr->ia_ctime,
--						  inode->i_sb->s_time_gran);
-+	if (ia_valid & ATTR_ATIME) {
-+		inode->i_atime = timestamp_truncate(attr->ia_atime,
-+						  inode);
-+	}
-+	if (ia_valid & ATTR_MTIME) {
-+		inode->i_mtime = timestamp_truncate(attr->ia_mtime,
-+						  inode);
-+	}
-+	if (ia_valid & ATTR_CTIME) {
-+		inode->i_ctime = timestamp_truncate(attr->ia_ctime,
-+						  inode);
-+	}
- 	if (ia_valid & ATTR_MODE) {
- 		umode_t mode = attr->ia_mode;
- 
-diff --git a/fs/configfs/inode.c b/fs/configfs/inode.c
-index ab0284321912..884dcf06cfbe 100644
---- a/fs/configfs/inode.c
-+++ b/fs/configfs/inode.c
-@@ -76,14 +76,14 @@ int configfs_setattr(struct dentry * dentry, struct iattr * iattr)
- 	if (ia_valid & ATTR_GID)
- 		sd_iattr->ia_gid = iattr->ia_gid;
- 	if (ia_valid & ATTR_ATIME)
--		sd_iattr->ia_atime = timespec64_trunc(iattr->ia_atime,
--						      inode->i_sb->s_time_gran);
-+		sd_iattr->ia_atime = timestamp_truncate(iattr->ia_atime,
-+						      inode);
- 	if (ia_valid & ATTR_MTIME)
--		sd_iattr->ia_mtime = timespec64_trunc(iattr->ia_mtime,
--						      inode->i_sb->s_time_gran);
-+		sd_iattr->ia_mtime = timestamp_truncate(iattr->ia_mtime,
-+						      inode);
- 	if (ia_valid & ATTR_CTIME)
--		sd_iattr->ia_ctime = timespec64_trunc(iattr->ia_ctime,
--						      inode->i_sb->s_time_gran);
-+		sd_iattr->ia_ctime = timestamp_truncate(iattr->ia_ctime,
-+						      inode);
- 	if (ia_valid & ATTR_MODE) {
- 		umode_t mode = iattr->ia_mode;
- 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 45b45f37d347..faf1e160961b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -744,15 +744,18 @@ static void __setattr_copy(struct inode *inode, const struct iattr *attr)
- 		inode->i_uid = attr->ia_uid;
- 	if (ia_valid & ATTR_GID)
- 		inode->i_gid = attr->ia_gid;
--	if (ia_valid & ATTR_ATIME)
--		inode->i_atime = timespec64_trunc(attr->ia_atime,
--						  inode->i_sb->s_time_gran);
--	if (ia_valid & ATTR_MTIME)
--		inode->i_mtime = timespec64_trunc(attr->ia_mtime,
--						  inode->i_sb->s_time_gran);
--	if (ia_valid & ATTR_CTIME)
--		inode->i_ctime = timespec64_trunc(attr->ia_ctime,
--						  inode->i_sb->s_time_gran);
-+	if (ia_valid & ATTR_ATIME) {
-+		inode->i_atime = timestamp_truncate(attr->ia_atime,
-+						  inode);
-+	}
-+	if (ia_valid & ATTR_MTIME) {
-+		inode->i_mtime = timestamp_truncate(attr->ia_mtime,
-+						  inode);
-+	}
-+	if (ia_valid & ATTR_CTIME) {
-+		inode->i_ctime = timestamp_truncate(attr->ia_ctime,
-+						  inode);
-+	}
- 	if (ia_valid & ATTR_MODE) {
- 		umode_t mode = attr->ia_mode;
- 
-diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-index 1e08bd54c5fb..53bb7c6bf993 100644
---- a/fs/fat/misc.c
-+++ b/fs/fat/misc.c
-@@ -307,8 +307,9 @@ int fat_truncate_time(struct inode *inode, struct timespec64 *now, int flags)
- 		inode->i_atime = (struct timespec64){ seconds, 0 };
- 	}
- 	if (flags & S_CTIME) {
--		if (sbi->options.isvfat)
--			inode->i_ctime = timespec64_trunc(*now, 10000000);
-+		if (sbi->options.isvfat) {
-+			inode->i_ctime = timestamp_truncate(*now, inode);
-+		}
- 		else
- 			inode->i_ctime = fat_timespec64_trunc_2secs(*now);
- 	}
-diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-index f3f3984cce80..892a58cfe7a1 100644
---- a/fs/kernfs/inode.c
-+++ b/fs/kernfs/inode.c
-@@ -161,9 +161,9 @@ static inline void set_inode_attr(struct inode *inode,
- 	struct super_block *sb = inode->i_sb;
- 	inode->i_uid = attrs->ia_uid;
- 	inode->i_gid = attrs->ia_gid;
--	inode->i_atime = timespec64_trunc(attrs->ia_atime, sb->s_time_gran);
--	inode->i_mtime = timespec64_trunc(attrs->ia_mtime, sb->s_time_gran);
--	inode->i_ctime = timespec64_trunc(attrs->ia_ctime, sb->s_time_gran);
-+	inode->i_atime = timestamp_truncate(attrs->ia_atime, inode);
-+	inode->i_mtime = timestamp_truncate(attrs->ia_mtime, inode);
-+	inode->i_ctime = timestamp_truncate(attrs->ia_ctime, inode);
- }
- 
- static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index 8baa34baf548..6c7388430ad3 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -2899,15 +2899,18 @@ int ntfs_setattr(struct dentry *dentry, struct iattr *attr)
- 			ia_valid |= ATTR_MTIME | ATTR_CTIME;
- 		}
- 	}
--	if (ia_valid & ATTR_ATIME)
--		vi->i_atime = timespec64_trunc(attr->ia_atime,
--					       vi->i_sb->s_time_gran);
--	if (ia_valid & ATTR_MTIME)
--		vi->i_mtime = timespec64_trunc(attr->ia_mtime,
--					       vi->i_sb->s_time_gran);
--	if (ia_valid & ATTR_CTIME)
--		vi->i_ctime = timespec64_trunc(attr->ia_ctime,
--					       vi->i_sb->s_time_gran);
-+	if (ia_valid & ATTR_ATIME) {
-+		vi->i_atime = timestamp_truncate(attr->ia_atime,
-+					       vi);
-+	}
-+	if (ia_valid & ATTR_MTIME) {
-+		vi->i_mtime = timestamp_truncate(attr->ia_mtime,
-+					       vi);
-+	}
-+	if (ia_valid & ATTR_CTIME) {
-+		vi->i_ctime = timestamp_truncate(attr->ia_ctime,
-+					       vi);
-+	}
- 	mark_inode_dirty(vi);
- out:
- 	return err;
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 400970d740bb..cd52585c8f4f 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1078,15 +1078,18 @@ static void do_attr_changes(struct inode *inode, const struct iattr *attr)
- 		inode->i_uid = attr->ia_uid;
- 	if (attr->ia_valid & ATTR_GID)
- 		inode->i_gid = attr->ia_gid;
--	if (attr->ia_valid & ATTR_ATIME)
--		inode->i_atime = timespec64_trunc(attr->ia_atime,
--						  inode->i_sb->s_time_gran);
--	if (attr->ia_valid & ATTR_MTIME)
--		inode->i_mtime = timespec64_trunc(attr->ia_mtime,
--						  inode->i_sb->s_time_gran);
--	if (attr->ia_valid & ATTR_CTIME)
--		inode->i_ctime = timespec64_trunc(attr->ia_ctime,
--						  inode->i_sb->s_time_gran);
-+	if (attr->ia_valid & ATTR_ATIME) {
-+		inode->i_atime = timestamp_truncate(attr->ia_atime,
-+						  inode);
-+	}
-+	if (attr->ia_valid & ATTR_MTIME) {
-+		inode->i_mtime = timestamp_truncate(attr->ia_mtime,
-+						  inode);
-+	}
-+	if (attr->ia_valid & ATTR_CTIME) {
-+		inode->i_ctime = timestamp_truncate(attr->ia_ctime,
-+						  inode);
-+	}
- 	if (attr->ia_valid & ATTR_MODE) {
- 		umode_t mode = attr->ia_mode;
- 
--- 
-2.17.1
+# flash_erase /dev/mtd0 0 1024
+Erasing 64 Kibyte @ 3ff0000 -- 100 % complete
+# dd if=/dev/urandom of=blob.bin bs=1 count=1024
+1024+0 records in
+1024+0 records out
+1024 bytes (1.0 kB, 1.0 KiB) copied, 0.0360427 s, 28.4 kB/s
+# md5sum blob.bin
+5064a3852988ce75c60e9bc867f62230  blob.bin
+# dd if=blob.bin of=/dev/mtd0 bs=1 count=1024
+1024+0 records in
+1024+0 records out
+1024 bytes (1.0 kB, 1.0 KiB) copied, 0.269917 s, 3.8 kB/s
+# dd if=/dev/mtd0 bs=1 count=1024 | md5sum
+5064a3852988ce75c60e9bc867f62230  -
+1024+0 records in
+1024+0 records out
+1024 bytes (1.0 kB, 1.0 KiB) copied, 0.182514 s, 5.6 kB/s
 
+AFAICT works as expected.
+
+Thanks,
+Andrey Smirnov
 
 ______________________________________________________
 Linux MTD discussion mailing list
