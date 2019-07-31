@@ -2,159 +2,102 @@ Return-Path: <SRS0=JTfG=V4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DDEAC433FF
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 13:07:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54020C32751
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 15:30:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E267206B8
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 13:07:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 221D7206A3
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 15:30:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="F+IkZjjJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="mdRrR3GK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E267206B8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="LptDN2GU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SJCgVT+0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 221D7206A3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PS8rVTVWdTCdTqheRV2BWGC2WkgwuEb6CecK5AjiW+M=; b=F+IkZjjJCdUBSL
-	Qw28aT1mkfG5a2znPznR/6rpqun2YhsptrCmGToIVe6oqIEn6xEhrdr36uoIPAxWFZ735IwPJnxb+
-	dtOclboJBPG7y8jUd77kxTsYCNqj7NGV9tH+url0wYKb+E4WXV10v43ltZ+UidBmV5s48CG7r6Y8F
-	RDASZaVUwBmQVdW5oHFusWDPxFwV/TnYbX++aKjKfvvYFaT8tqFuDCnAU+828mU2USfJhBcYHFgj2
-	t3K6Z6y7oxQwnop/S9ySXjGE4qalSdkf9tGKv4Trjq8xqkXmVyYzQtQDDQa3yhIKiyG2/4FCXbVaq
-	WAO6EwM9fPK7wOp0RJog==;
+	List-Owner; bh=NajjQOnx626ovK2EtNXNI9Fso9TCha63+M8kyfNlFUc=; b=LptDN2GU1LQNH1
+	mYl3lnFiwoQIAaUrMeFAsQXSLZtrf7avxmUkQy8Gz26KDOhrtzPDb2BIuM0Hf0FUBoGE8SETrNX69
+	EsQX76pTx+n2QnltRnoex505z9RFjuQW3tjnTvlgBznaC/hhgpOMpkKSx3cY+jcpp7XVkL013MhvO
+	t99oUeCcWb+oLnuerrRdfMh1HcDZAk11TRCSubnrQbC0slRSgpXk+Sb0FZwd8NoAxHTiQUb9G6XlE
+	6DzjnBAmDkvZkBYNnufJpzz4UITquvYfM5wdIbJNm4gk/g0s+1OTPTDks8lLj5VUj/N2INpf3iGzS
+	Mmb5x1JABbGafB51PbvQ==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsoJm-0004Pj-Qn; Wed, 31 Jul 2019 13:06:58 +0000
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+	id 1hsqYm-0003IS-M3; Wed, 31 Jul 2019 15:30:36 +0000
+Received: from userp2130.oracle.com ([156.151.31.86])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsoJh-0004Og-Ka
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2019 13:06:57 +0000
-Received-SPF: Pass (esa4.microchip.iphmx.com: domain of
- Tudor.Ambarus@microchip.com designates 198.175.253.82 as
- permitted sender) identity=mailfrom;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="Tudor.Ambarus@microchip.com";
- x-conformance=spf_only; x-record-type="v=spf1";
- x-record-text="v=spf1 mx a:ushub1.microchip.com
- a:smtpout.microchip.com a:mx1.microchip.iphmx.com
- a:mx2.microchip.iphmx.com include:servers.mcsv.net
- include:mktomail.com include:spf.protection.outlook.com ~all"
-Received-SPF: None (esa4.microchip.iphmx.com: no sender
- authenticity information available from domain of
- postmaster@email.microchip.com) identity=helo;
- client-ip=198.175.253.82; receiver=esa4.microchip.iphmx.com;
- envelope-from="Tudor.Ambarus@microchip.com";
- x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
-Authentication-Results: esa4.microchip.iphmx.com;
- spf=Pass smtp.mailfrom=Tudor.Ambarus@microchip.com;
- spf=None smtp.helo=postmaster@email.microchip.com;
- dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
- dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: 3Bk5g0SioaS+ab2CxA2sF4JJ3qs/8dZOYCMIDjlZRab8yAkuofDivSarHDHVV4DxwU6DgPZqTd
- JTIY8ji/Mz15XAGERMSpDJ7US92BobFKnWTDuXZub8q8VXMCyGgf6n52A11tCpnZUUtIMFCA2K
- UgOe42hy/CvXfx8HhmrWpjMSYndrS7YMVv0LVOq4pVS6qngMsEPGVXKP7GtVlhHyLxjT5R5/dB
- JoRh/t/iUxeA0CJ3zZ7c8TxVL9DLZwOJAtWpwmc5kIqAKgFioQ+EDyny4yocO4WTpbJI7I5Fja
- 6bI=
-X-IronPort-AV: E=Sophos;i="5.64,330,1559545200"; d="scan'208";a="42656730"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 31 Jul 2019 06:06:48 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 31 Jul 2019 06:06:46 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 31 Jul 2019 06:06:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ObwHP3pb0T1HS5gypDUHsGDaEZomf9MBYabqxXslWXHwKR5qDA0Wwrw1s0QE14HHXkC/7Vwn0pVy7uEXf587QvdEyUkcoxFaZNN6p77zoYd3dK24NU//Lr607KKq+3xN2Y6VSNOjYG9vaWTa//l6GwuMC2AiFmygAI08PHBTK7r683QXGCsvkR1t+lDxFPvBoC02WvxHQN8gYO3k1O3kumPz6Q+ZiAu0ctZi+ObiPGYJc0sai0dOUlu8I6EgntcyWcPuz82P6wqLUhWWqy+ISqIq2t9dwTmyDkS2lQzBnbvVEyo1wPonf4y0FD4SDxSH3FMRvqdoJSnUsg0HpI01zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DzrPid35fjCOw3EkXeoph/i9Wv+vr9lZc8pr58BleKo=;
- b=Cfu+XjK9iBtAc14UtX6oeKVKyirVmwDsmG4i5wqgApSzkSdfp2yTiLQ4EorXho/QPXePFrQ1dpREPuIZao/Pa+42ldhU86UWDHh2+GIJVUGClqUKqhO3DzdeR6DkPIiZe4d7NUYCqTM1Av7nukpC2f/QDd6pT4kir3R76SOlFxoRdGHIUDb9Sb5Bja3xnQiQT4UUh2DaHVYrxSJRv9KCbyyQSgPTsQXcswbuYe8jTyYUBB0oE86fLh8gHAMJcnvMPz7szqdn5afx6vfLf0dZBdfvtifNtJXzbR/diuFtyolZqMYR+wosaNnO8WtgbC+FXFEDuO4WrbtJThIHPZ7+kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=microchip.com;dmarc=pass action=none
- header.from=microchip.com;dkim=pass header.d=microchip.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector1-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DzrPid35fjCOw3EkXeoph/i9Wv+vr9lZc8pr58BleKo=;
- b=mdRrR3GKXlsujCpcAvycnVlQMUqgec8kZtPA4cqUXDmX6auuq0qzwjReCYtmVXEbL7jj0deWKSWnaCT6BR+3MOaD+Txj/yauWuqQPnUROm0/6swdNcIjIeEToW0hYTU3UMjKHhUazczX5BoYk6c+CWtztwndUWiQT5pc7k8bUh8=
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
- MN2PR11MB3711.namprd11.prod.outlook.com (20.178.254.154) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.10; Wed, 31 Jul 2019 13:06:46 +0000
-Received: from MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::61d1:6408:89a2:8de5]) by MN2PR11MB4448.namprd11.prod.outlook.com
- ([fe80::61d1:6408:89a2:8de5%2]) with mapi id 15.20.2115.005; Wed, 31 Jul 2019
- 13:06:46 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <nagasure@xilinx.com>, <boris.brezillon@collabora.com>,
- <marek.vasut@gmail.com>, <vigneshr@ti.com>
-Subject: Re: [PATCH 5/6] mtd: spi-nor: Add s3an_post_sfdp_fixups()
-Thread-Topic: [PATCH 5/6] mtd: spi-nor: Add s3an_post_sfdp_fixups()
-Thread-Index: AQHVR4AMaH6Ddp0nkEGsW9FcCZCHs6bkqLWAgAAJ2wA=
-Date: Wed, 31 Jul 2019 13:06:45 +0000
-Message-ID: <cfe63aee-2c48-c321-53b7-3997c97dc215@microchip.com>
-References: <20190731091145.27374-1-tudor.ambarus@microchip.com>
- <20190731091145.27374-6-tudor.ambarus@microchip.com>
- <MN2PR02MB5727FF8617B1A2FC89739601AFDF0@MN2PR02MB5727.namprd02.prod.outlook.com>
-In-Reply-To: <MN2PR02MB5727FF8617B1A2FC89739601AFDF0@MN2PR02MB5727.namprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MR2P264CA0052.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:500:31::16) To MN2PR11MB4448.namprd11.prod.outlook.com
- (2603:10b6:208:193::29)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [94.177.32.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0549b613-59c2-4423-606b-08d715b7f096
-x-microsoft-antispam: BCL:0; PCL:0;
- RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
- SRVR:MN2PR11MB3711; 
-x-ms-traffictypediagnostic: MN2PR11MB3711:
-x-ms-exchange-purlcount: 2
-x-microsoft-antispam-prvs: <MN2PR11MB3711470F15F9F0CDE6F9684FF0DF0@MN2PR11MB3711.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 011579F31F
-x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(136003)(376002)(346002)(396003)(366004)(39860400002)(199004)(189003)(52116002)(4326008)(7736002)(316002)(6116002)(8936002)(6486002)(86362001)(25786009)(53546011)(3846002)(71200400001)(31696002)(54906003)(6246003)(8676002)(966005)(305945005)(71190400001)(478600001)(5660300002)(6436002)(66066001)(6306002)(14454004)(2501003)(68736007)(6506007)(386003)(2201001)(110136005)(64756008)(486006)(66476007)(66446008)(66556008)(186003)(6512007)(31686004)(446003)(81166006)(99286004)(2616005)(4744005)(476003)(11346002)(256004)(81156014)(102836004)(7416002)(76176011)(2906002)(26005)(66946007)(229853002)(53936002)(36756003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3711;
- H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; A:1; MX:1; 
-received-spf: None (protection.outlook.com: microchip.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: MO02jVNxFq7CS8RRBHFe2roKMMXMyivH+6TTQEDgTNhdicxtbJe5mT0RBREnQRpqLulhAsvyBTJdg/yIMp89m01evyJ4Tb3sPCaD2g4aHNlzPUU7+ReKAdrgTSA+Aux1dEpq6ZdZhKWzGsX+X/FTVrRsl/s9saGP59sYg6h0xWZURycjDOICHn8DDFMcImjDQcVGKdHuLfrbRkBnWn8c6+qYMWoQ4W0hQAJPXRt/eWB2E5E9oETvduZjAMGkQtZ4/hw6GfW25hUz7j4O/y2YrLuJLiw7eyYvKhekeCwM7e0Ze3v5/2iYa1z/FF9rqBKHoCj9Q7ODHGdkUOcNVnOfWqD9mWc27cytaQ17yDoP4wUFJXeFbFIuvFJeOLn/WrIC/iAALCFDSowTg6+gq+bEperdwoPbmMwB6q4+oGz8MFE=
-Content-ID: <9C5BA27FD850E84E9261E407CB6C7352@namprd11.prod.outlook.com>
+ id 1hsqYj-0003GC-Ux
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2019 15:30:35 +0000
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6VF8ggp167637;
+ Wed, 31 Jul 2019 15:28:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=e//p2MeonEpNRd3oew+L/RI5f1yyX9Uye2F9qPC3fxo=;
+ b=SJCgVT+05ciRAoA/gSCHXMfxdCLFnhl8qjVh90DOPzm1mguk3Q8SSTQgI3dKu0cZpbWn
+ zYmqtERsA/qiUgG0xrMjP5PJz+tveGesCAD7BjOCBVFeXYdy9ssM+y6VDbPm/vY++yuu
+ YtB0fL4/DCN+jLinaLi3hdPDML9GS1p1HDSXkBpIM1OCDn6vNddvPbvX2pD3IDUj/UAJ
+ +m3CXc4pxA86xCiTMzYcl+aAxnrDSoGM9kqYX9nPE8nroqK/gAHdssaqyVW9r8zDGJ7h
+ thAaDEOUE+KEn6v+AmOecuxAX026po7pz8x6zNbawgSJVE1tBbhOv581HIQe+2QPqdnA qQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2130.oracle.com with ESMTP id 2u0e1tx735-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 31 Jul 2019 15:28:39 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6VFRiIc127699;
+ Wed, 31 Jul 2019 15:28:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+ by userp3030.oracle.com with ESMTP id 2u38fb5f53-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 31 Jul 2019 15:28:39 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+ by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6VFSWe5001806;
+ Wed, 31 Jul 2019 15:28:32 GMT
+Received: from localhost (/67.169.218.210)
+ by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 31 Jul 2019 08:28:31 -0700
+Date: Wed, 31 Jul 2019 08:28:29 -0700
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH 06/20] fs: Fill in max and min timestamps in superblock
+Message-ID: <20190731152829.GS1561054@magnolia>
+References: <20190730014924.2193-1-deepa.kernel@gmail.com>
+ <20190730014924.2193-7-deepa.kernel@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0549b613-59c2-4423-606b-08d715b7f096
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 13:06:45.6790 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3711
+Content-Disposition: inline
+In-Reply-To: <20190730014924.2193-7-deepa.kernel@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9335
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=18
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1907310157
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9335
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=18 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1907310156
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190731_060653_765205_17CD16B6 
-X-CRM114-Status: UNSURE (   7.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20190731_083034_083006_14BC1984 
+X-CRM114-Status: GOOD (  22.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,34 +109,317 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: shaggy@kernel.org, jfs-discussion@lists.sourceforge.net, al@alarsen.net,
+ linux-mtd@lists.infradead.org, codalist@telemann.coda.cs.cmu.edu,
+ y2038@lists.linaro.org, richard@nod.at, hch@infradead.org, coda@cs.cmu.edu,
+ linux-ext4@vger.kernel.org, salah.triki@gmail.com, dushistov@mail.ru,
+ arnd@arndb.de, reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk,
+ aivazian.tigran@gmail.com, jaharkes@cs.cmu.edu, luisbg@kernel.org,
+ nico@fluxnic.net, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ jack@suse.com, linux-fsdevel@vger.kernel.org, phillip@squashfs.org.uk,
+ dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Naga,
+On Mon, Jul 29, 2019 at 06:49:10PM -0700, Deepa Dinamani wrote:
+> Fill in the appropriate limits to avoid inconsistencies
+> in the vfs cached inode times when timestamps are
+> outside the permitted range.
+> 
+> Even though some filesystems are read-only, fill in the
+> timestamps to reflect the on-disk representation.
+> 
+> Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+> Cc: aivazian.tigran@gmail.com
+> Cc: al@alarsen.net
+> Cc: coda@cs.cmu.edu
+> Cc: darrick.wong@oracle.com
+> Cc: dushistov@mail.ru
+> Cc: dwmw2@infradead.org
+> Cc: hch@infradead.org
+> Cc: jack@suse.com
+> Cc: jaharkes@cs.cmu.edu
+> Cc: luisbg@kernel.org
+> Cc: nico@fluxnic.net
+> Cc: phillip@squashfs.org.uk
+> Cc: richard@nod.at
+> Cc: salah.triki@gmail.com
+> Cc: shaggy@kernel.org
+> Cc: linux-xfs@vger.kernel.org
+> Cc: codalist@coda.cs.cmu.edu
+> Cc: linux-ext4@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: jfs-discussion@lists.sourceforge.net
+> Cc: reiserfs-devel@vger.kernel.org
+> ---
+>  fs/befs/linuxvfs.c       | 2 ++
+>  fs/bfs/inode.c           | 2 ++
+>  fs/coda/inode.c          | 3 +++
+>  fs/cramfs/inode.c        | 2 ++
+>  fs/efs/super.c           | 2 ++
+>  fs/ext2/super.c          | 2 ++
+>  fs/freevxfs/vxfs_super.c | 2 ++
+>  fs/jffs2/fs.c            | 3 +++
+>  fs/jfs/super.c           | 2 ++
+>  fs/minix/inode.c         | 2 ++
+>  fs/qnx4/inode.c          | 2 ++
+>  fs/qnx6/inode.c          | 2 ++
+>  fs/reiserfs/super.c      | 3 +++
+>  fs/romfs/super.c         | 2 ++
+>  fs/squashfs/super.c      | 2 ++
+>  fs/ufs/super.c           | 7 +++++++
+>  fs/xfs/xfs_super.c       | 2 ++
+>  17 files changed, 42 insertions(+)
+> 
+> diff --git a/fs/befs/linuxvfs.c b/fs/befs/linuxvfs.c
+> index 462d096ff3e9..64cdf4d8e424 100644
+> --- a/fs/befs/linuxvfs.c
+> +++ b/fs/befs/linuxvfs.c
+> @@ -893,6 +893,8 @@ befs_fill_super(struct super_block *sb, void *data, int silent)
+>  	sb_set_blocksize(sb, (ulong) befs_sb->block_size);
+>  	sb->s_op = &befs_sops;
+>  	sb->s_export_op = &befs_export_operations;
+> +	sb->s_time_min = 0;
+> +	sb->s_time_max = 0xffffffffffffll;
+>  	root = befs_iget(sb, iaddr2blockno(sb, &(befs_sb->root_dir)));
+>  	if (IS_ERR(root)) {
+>  		ret = PTR_ERR(root);
+> diff --git a/fs/bfs/inode.c b/fs/bfs/inode.c
+> index 5e97bed073d7..f8ce1368218b 100644
+> --- a/fs/bfs/inode.c
+> +++ b/fs/bfs/inode.c
+> @@ -324,6 +324,8 @@ static int bfs_fill_super(struct super_block *s, void *data, int silent)
+>  		return -ENOMEM;
+>  	mutex_init(&info->bfs_lock);
+>  	s->s_fs_info = info;
+> +	s->s_time_min = 0;
+> +	s->s_time_max = U32_MAX;
+>  
+>  	sb_set_blocksize(s, BFS_BSIZE);
+>  
+> diff --git a/fs/coda/inode.c b/fs/coda/inode.c
+> index 321f56e487cb..b1c70e2b9b1e 100644
+> --- a/fs/coda/inode.c
+> +++ b/fs/coda/inode.c
+> @@ -188,6 +188,9 @@ static int coda_fill_super(struct super_block *sb, void *data, int silent)
+>  	sb->s_magic = CODA_SUPER_MAGIC;
+>  	sb->s_op = &coda_super_operations;
+>  	sb->s_d_op = &coda_dentry_operations;
+> +	sb->s_time_gran = 1;
+> +	sb->s_time_min = S64_MIN;
+> +	sb->s_time_max = S64_MAX;
+>  
+>  	error = super_setup_bdi(sb);
+>  	if (error)
+> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+> index 9352487bd0fc..4d1d8b7761ed 100644
+> --- a/fs/cramfs/inode.c
+> +++ b/fs/cramfs/inode.c
+> @@ -597,6 +597,8 @@ static int cramfs_finalize_super(struct super_block *sb,
+>  
+>  	/* Set it all up.. */
+>  	sb->s_flags |= SB_RDONLY;
+> +	sb->s_time_min = 0;
+> +	sb->s_time_max = 0;
+>  	sb->s_op = &cramfs_ops;
+>  	root = get_cramfs_inode(sb, cramfs_root, 0);
+>  	if (IS_ERR(root))
+> diff --git a/fs/efs/super.c b/fs/efs/super.c
+> index 867fc24dee20..4a6ebff2af76 100644
+> --- a/fs/efs/super.c
+> +++ b/fs/efs/super.c
+> @@ -257,6 +257,8 @@ static int efs_fill_super(struct super_block *s, void *d, int silent)
+>  	if (!sb)
+>  		return -ENOMEM;
+>  	s->s_fs_info = sb;
+> +	s->s_time_min = 0;
+> +	s->s_time_max = U32_MAX;
+>   
+>  	s->s_magic		= EFS_SUPER_MAGIC;
+>  	if (!sb_set_blocksize(s, EFS_BLOCKSIZE)) {
+> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+> index 44eb6e7eb492..baa36c6fb71e 100644
+> --- a/fs/ext2/super.c
+> +++ b/fs/ext2/super.c
+> @@ -1002,6 +1002,8 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	sb->s_maxbytes = ext2_max_size(sb->s_blocksize_bits);
+>  	sb->s_max_links = EXT2_LINK_MAX;
+> +	sb->s_time_min = S32_MIN;
+> +	sb->s_time_max = S32_MAX;
+>  
+>  	if (le32_to_cpu(es->s_rev_level) == EXT2_GOOD_OLD_REV) {
+>  		sbi->s_inode_size = EXT2_GOOD_OLD_INODE_SIZE;
+> diff --git a/fs/freevxfs/vxfs_super.c b/fs/freevxfs/vxfs_super.c
+> index a89f68c3cbed..578a5062706e 100644
+> --- a/fs/freevxfs/vxfs_super.c
+> +++ b/fs/freevxfs/vxfs_super.c
+> @@ -229,6 +229,8 @@ static int vxfs_fill_super(struct super_block *sbp, void *dp, int silent)
+>  
+>  	sbp->s_op = &vxfs_super_ops;
+>  	sbp->s_fs_info = infp;
+> +	sbp->s_time_min = 0;
+> +	sbp->s_time_max = U32_MAX;
+>  
+>  	if (!vxfs_try_sb_magic(sbp, silent, 1,
+>  			(__force __fs32)cpu_to_le32(VXFS_SUPER_MAGIC))) {
+> diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+> index 8a20ddd25f2d..d0b59d03a7a9 100644
+> --- a/fs/jffs2/fs.c
+> +++ b/fs/jffs2/fs.c
+> @@ -590,6 +590,9 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
+>  	sb->s_blocksize = PAGE_SIZE;
+>  	sb->s_blocksize_bits = PAGE_SHIFT;
+>  	sb->s_magic = JFFS2_SUPER_MAGIC;
+> +	sb->s_time_min = 0;
+> +	sb->s_time_max = U32_MAX;
+> +
+>  	if (!sb_rdonly(sb))
+>  		jffs2_start_garbage_collect_thread(c);
+>  	return 0;
+> diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+> index f4e10cb9f734..b2dc4d1f9dcc 100644
+> --- a/fs/jfs/super.c
+> +++ b/fs/jfs/super.c
+> @@ -503,6 +503,8 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	sb->s_fs_info = sbi;
+>  	sb->s_max_links = JFS_LINK_MAX;
+> +	sb->s_time_min = 0;
+> +	sb->s_time_max = U32_MAX;
+>  	sbi->sb = sb;
+>  	sbi->uid = INVALID_UID;
+>  	sbi->gid = INVALID_GID;
+> diff --git a/fs/minix/inode.c b/fs/minix/inode.c
+> index f96073f25432..7cb5fd38eb14 100644
+> --- a/fs/minix/inode.c
+> +++ b/fs/minix/inode.c
+> @@ -277,6 +277,8 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
+>  
+>  	/* set up enough so that it can read an inode */
+>  	s->s_op = &minix_sops;
+> +	s->s_time_min = 0;
+> +	s->s_time_max = U32_MAX;
+>  	root_inode = minix_iget(s, MINIX_ROOT_INO);
+>  	if (IS_ERR(root_inode)) {
+>  		ret = PTR_ERR(root_inode);
+> diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
+> index 922d083bbc7c..e8da1cde87b9 100644
+> --- a/fs/qnx4/inode.c
+> +++ b/fs/qnx4/inode.c
+> @@ -201,6 +201,8 @@ static int qnx4_fill_super(struct super_block *s, void *data, int silent)
+>  	s->s_op = &qnx4_sops;
+>  	s->s_magic = QNX4_SUPER_MAGIC;
+>  	s->s_flags |= SB_RDONLY;	/* Yup, read-only yet */
+> +	s->s_time_min = 0;
+> +	s->s_time_max = U32_MAX;
+>  
+>  	/* Check the superblock signature. Since the qnx4 code is
+>  	   dangerous, we should leave as quickly as possible
+> diff --git a/fs/qnx6/inode.c b/fs/qnx6/inode.c
+> index 0f8b0ff1ba43..345db56c98fd 100644
+> --- a/fs/qnx6/inode.c
+> +++ b/fs/qnx6/inode.c
+> @@ -429,6 +429,8 @@ static int qnx6_fill_super(struct super_block *s, void *data, int silent)
+>  	s->s_op = &qnx6_sops;
+>  	s->s_magic = QNX6_SUPER_MAGIC;
+>  	s->s_flags |= SB_RDONLY;        /* Yup, read-only yet */
+> +	s->s_time_min = 0;
+> +	s->s_time_max = U32_MAX;
+>  
+>  	/* ease the later tree level calculations */
+>  	sbi = QNX6_SB(s);
+> diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+> index ab028ea0e561..d69b4ac0ae2f 100644
+> --- a/fs/reiserfs/super.c
+> +++ b/fs/reiserfs/super.c
+> @@ -1976,6 +1976,9 @@ static int reiserfs_fill_super(struct super_block *s, void *data, int silent)
+>  		goto error_unlocked;
+>  	}
+>  
+> +	s->s_time_min = 0;
+> +	s->s_time_max = U32_MAX;
+> +
+>  	rs = SB_DISK_SUPER_BLOCK(s);
+>  	/*
+>  	 * Let's do basic sanity check to verify that underlying device is not
+> diff --git a/fs/romfs/super.c b/fs/romfs/super.c
+> index 7d580f7c3f1d..a42c0e3079dc 100644
+> --- a/fs/romfs/super.c
+> +++ b/fs/romfs/super.c
+> @@ -478,6 +478,8 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
+>  	sb->s_maxbytes = 0xFFFFFFFF;
+>  	sb->s_magic = ROMFS_MAGIC;
+>  	sb->s_flags |= SB_RDONLY | SB_NOATIME;
+> +	sb->s_time_min = 0;
+> +	sb->s_time_max = 0;
+>  	sb->s_op = &romfs_super_ops;
+>  
+>  #ifdef CONFIG_ROMFS_ON_MTD
+> diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+> index effa638d6d85..a9e9837617a9 100644
+> --- a/fs/squashfs/super.c
+> +++ b/fs/squashfs/super.c
+> @@ -183,6 +183,8 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+>  		(u64) le64_to_cpu(sblk->id_table_start));
+>  
+>  	sb->s_maxbytes = MAX_LFS_FILESIZE;
+> +	sb->s_time_min = 0;
+> +	sb->s_time_max = U32_MAX;
+>  	sb->s_flags |= SB_RDONLY;
+>  	sb->s_op = &squashfs_super_ops;
+>  
+> diff --git a/fs/ufs/super.c b/fs/ufs/super.c
+> index 4ed0dca52ec8..1da0be667409 100644
+> --- a/fs/ufs/super.c
+> +++ b/fs/ufs/super.c
+> @@ -843,6 +843,10 @@ static int ufs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	sb->s_maxbytes = MAX_LFS_FILESIZE;
+>  
+> +	sb->s_time_gran = NSEC_PER_SEC;
+> +	sb->s_time_min = S32_MIN;
+> +	sb->s_time_max = S32_MAX;
+> +
+>  	switch (sbi->s_mount_opt & UFS_MOUNT_UFSTYPE) {
+>  	case UFS_MOUNT_UFSTYPE_44BSD:
+>  		UFSD("ufstype=44bsd\n");
+> @@ -861,6 +865,9 @@ static int ufs_fill_super(struct super_block *sb, void *data, int silent)
+>  		uspi->s_fshift = 9;
+>  		uspi->s_sbsize = super_block_size = 1536;
+>  		uspi->s_sbbase =  0;
+> +		sb->s_time_gran = 1;
+> +		sb->s_time_min = S64_MIN;
+> +		sb->s_time_max = S64_MAX;
+>  		flags |= UFS_TYPE_UFS2 | UFS_DE_44BSD | UFS_UID_44BSD | UFS_ST_44BSD | UFS_CG_44BSD;
+>  		break;
+>  		
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index a14d11d78bd8..1a0daf46bae8 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -1685,6 +1685,8 @@ xfs_fs_fill_super(
+>  	sb->s_maxbytes = xfs_max_file_offset(sb->s_blocksize_bits);
+>  	sb->s_max_links = XFS_MAXLINK;
+>  	sb->s_time_gran = 1;
+> +	sb->s_time_min = S32_MIN;
+> +	sb->s_time_max = S32_MAX;
 
-On 07/31/2019 03:31 PM, Naga Sureshkumar Relli wrote:
->> +	if (nor->info->flags & SPI_S3AN)
->> +		s3an_post_sfdp_fixups(nor);
->>  }
->>
-> Instead of checking the flags, why can't we call directly the nor_fixups?
-> like Boris implementation nor->info->fixups->post_sfdp()
-> https://patchwork.ozlabs.org/patch/1009291/
+For the XFS part,
 
-This check will vanish and nor->info->fixups->post_sfdp() will be called
-directly once I'll respin the manufacturer driver part. post_sfdp() will set
-just flash parameters. Check Boris' patch at
-https://patchwork.ozlabs.org/patch/1009295/
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-I'll try to respin the rest of Boris' patches sometime at the beginning of the
-next week.
+--D
 
-Cheers,
-ta
+>  	set_posix_acl_flag(sb);
+>  
+>  	/* version 5 superblocks support inode version counters. */
+> -- 
+> 2.17.1
+> 
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
