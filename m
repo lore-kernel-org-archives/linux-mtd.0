@@ -5,19 +5,19 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 023E1C32751
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 09:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB209C433FF
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 09:03:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3FE5208E4
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 09:03:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D2FA20693
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 09:03:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Iutm0sxN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="ojdG4ITi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3FE5208E4
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="dpIbfw8e";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microchiptechnology.onmicrosoft.com header.i=@microchiptechnology.onmicrosoft.com header.b="QG/sPboq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D2FA20693
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9vUVPgx9HcQwvkufOWPT0pujaJGNOy5wKwMQiaxlTHE=; b=Iutm0sxNWDZmVO
-	WCDrXFTobq4wJu/GDNe2BYU6whfairNW4NdWp/AjPz5fbOHmPg+Lr/FnATeapw7rxwb/LI6kDqiJe
-	ft0uUZklj2ZQ1uqb/wNTG8Ov4RHSjEafGXF1sI2H2LSezGfts9nwylSgIUP1Bfa4HBjxktz0iNc4m
-	nsp70Sa/uREcj1O+Vp8arlu4PTKFTLtxgogIh2zYG5gjfxw6pJeNjObiS3dIwXgKbvZ/FpXi0KwOK
-	/13VDvyZT0chZowR5iLtI2+JN8BZYKrCilevwRkuSWIG0RGG+LkjEd6Ubb4HANSNyvZ+LzFes/NPD
-	o5Me5fWr+dY0vUIWKLkg==;
+	List-Owner; bh=jBMx3jkHW7ZV07BmajS+5vfVZ5dcwbHX1ZK2hq1Ks/8=; b=dpIbfw8eeT524Q
+	HL+dkAQRoKXW5AjNALhHVBWKjiiOKzVoZC8F2RAuxodZ77Gu325dzCJNr9sbWjBTZYFUjMEg5Sk5L
+	6l6R1LMr7/xcFmQOytF0MFsvtctONIK9q8MO6l/07ZgKVvnqD/G0gndfFIQWV/pLQOLKcZ2KyEx5Q
+	GfFk4HpT8HgJdELikEXtg5VZ1ObnGePBufm5jM9Or3OAVKvOj/2t/x5T+PTxF73+HdqyiJWnhkWP7
+	6hbKaXU/6LWCXIfE73FyJvZhl43Foo0p3Em5aDpZ6KAeQkEs2nWVVGIhrdc1XWdVmazEy6HzzbSu5
+	hbj6VVhsaod5VFAU18Hg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hskWG-0007VE-AA; Wed, 31 Jul 2019 09:03:36 +0000
+	id 1hskWO-0007fh-A2; Wed, 31 Jul 2019 09:03:44 +0000
 Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hskWD-0007U2-2D
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2019 09:03:34 +0000
+ id 1hskWE-0007UH-Cw
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2019 09:03:35 +0000
 Received-SPF: Pass (esa5.microchip.iphmx.com: domain of
  Tudor.Ambarus@microchip.com designates 198.175.253.82 as
  permitted sender) identity=mailfrom;
@@ -61,12 +61,12 @@ Authentication-Results: esa5.microchip.iphmx.com;
  spf=None smtp.helo=postmaster@email.microchip.com;
  dkim=pass (signature verified) header.i=@microchiptechnology.onmicrosoft.com;
  dmarc=pass (p=none dis=none) d=microchip.com
-IronPort-SDR: QegnquWj1lBJyeuOHK45F2UOpBYZsvZe1JxKrk3tFnR3NMg7bzTR6yysuQbveHoSkggVgafKqN
- wIFAzgULnfgptpgt4QPkrcu18+6wIxWd6Ifq3ws1uOQtLfCDjo+sgBBt3KtRq1VhAtY78/rmdf
- lNpbspOz/KwNDimoxPVd/NQ9JsewTxbRUk3POePcYvwdZBkat5TJnp2lllgFxEWsBDi2qb8RIP
- 5UtGxXbT0KCwtKAIbJsqzU9CevgWdWIxBp+y/pVF+G7KZ9svBfIbm5QDlA78yqo3tTrFxETda/
- oIM=
-X-IronPort-AV: E=Sophos;i="5.64,329,1559545200"; d="scan'208";a="41823048"
+IronPort-SDR: RIu+WhYM7EolzeEm1amKvSdREtxRJhIdxRl2EmGlv2tSFS3GzIUfKLjgjCO16+EVzkv3+Ek2Qt
+ G3m/79TEzMpl8jVq6xciQpqNKOQ+pCaQzCZvXHtGkJna5Wwl1hmW2aqygRiGljyPLExXFacJnn
+ BiXTKdkRnWGg6drwWlJ1D2PpwZaI8HJWpxJkXs7URUmB749l3u5vImW0CqEGPKrw9MpwHmMeVl
+ 6U2cI2ecVE5RmbYbmfHh9v8dQgBjb3mwCiD2IyPyZce7/ESNljc5j2OINHD4wyshrbIM80Yh+y
+ n3c=
+X-IronPort-AV: E=Sophos;i="5.64,329,1559545200"; d="scan'208";a="41823055"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
@@ -74,19 +74,19 @@ Received: from smtpout.microchip.com (HELO email.microchip.com)
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 31 Jul 2019 02:03:28 -0700
+ 15.1.1713.5; Wed, 31 Jul 2019 02:03:29 -0700
 Received: from NAM03-DM3-obe.outbound.protection.outlook.com (10.10.215.89) by
  email.microchip.com (10.10.87.71) with Microsoft SMTP Server
  (version=TLS1_2, 
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5 via Frontend
- Transport; Wed, 31 Jul 2019 02:03:28 -0700
+ Transport; Wed, 31 Jul 2019 02:03:29 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZJ2rDfFjm/FSt/2VhagkOHekuuMCIW9PtjV5EmN0qOJRUdQMgntVT6t30wLDOF3yATfIf9WlragAJ3R5+crQKqepDCfiTnLi4KpWwkTseDs54BXQsHOAuhymdt/eX0vd/pjs/EXLUITP4lhQg+LOelgcAkRql5NtjDPN77L4f+pfkn4dk7b4JbTEpeHCjtRv2aocAHHm0tmn7cxhNN+HX4ILiKoBZeJrnD5GxEQbKMWPKPdlcTUg0QEG6oLt4h17L271VE58idKJxWfPLi5SO47ta5XEWaCsDHqd01jG/QZtoC3219h+MqVAJXmsQS5HsPrDzn+kM1fJywbuDBzoqw==
+ b=aYz0yGTvWlNnApnP2Ca5eefeV/xVn+bImgrAjVk3lMV5iXP/+TXdRFBolnHe3hr9H747lBJ17zPfL2fMcsRQZirmKpxwVibUwvwS4lEzJ5Iw5kB8Lwld5VbpZOYvW2fUbMFVdcTcJRMdmdJwWSaK4+sUtVuzNPBc9MimDLCjKSpGhsLRkCKFdHgs+dC+YDpTmMjgINb42JmGXoQDwjR1IWMhE9tZboggUckEa2dEoo0RlDptwVi9Ay9C8s/91Bvk9BkOByNJsN6ZLhVb47vEXpSk2Mk+pODHhww/qopEiurs6oFrQ07IR0KBK77Bc7FChNWpJosViQ0Xxo6rkZ4nnA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Shk7mTPLAIKzeDt+kvfUgbyT9Xkn4EQEtH453ue+R44=;
- b=AQdm5vUu1S9Tvx6Sp4rcx+zyTbGvGPhBDw1dnHetEB2djiv4GaoH69UI88VkLsCUvFpLelQ64G2KgfC0w+uTudgFbOEtSvoQDnluFRMpYenTPfhC8QtISAdWyIB6VzwDD3YCD8Pd/TwlLcVBz6GcsTVdZZiZn6swdsMR/srzXbcQMdFSD1E3zf7FnvErpG1+GdYwEEcq6/Rw3YrgPAUSptC4gM+XkLfL99iVR1QEOL2EdozLSVj3x5VE4Q9NrOcrLD6VcxxOeBg1z0ZG2FIithvYc2XnO/9X0YPYQFNNBzjYrpnVnt1e6ohioFtpdFpd6KFANh+v5wuQGdoYKi1glg==
+ bh=d8yIcMHMq6Er6vAjwuUn5TbieUcB74FCHRHEw8tljbw=;
+ b=JhrAj9T5arv7QHACaTOQUWv0x3yzcMoSyC2BiMhS7EbG2G4eRbq2SKzPYMXBbRU8FeJQKowcSO9S5pMpJNbGpt6YrJaOYzUNpWvX/A3peQxi52XUPes2ZKWkxYLO+2BUlMGA9g08lzT1z6qEynklgWOkFa78cQhukGsRUihcjm9EbMtFfevFXi+jWDCF7NwtrSJRacZLYVT+AsNzy0bDcqoMQjrYivFrC6RIkBn7pN0GZi/JtjeOX8Mn5QwS2Q5aKBmNeTA8DljWs5mMvumr8y6QuZd+rl7i/7K/lZWKtO5r+TuQ41b5sRfWgDQgC52FDpv3Hn2e9UsGjNpNJwHdcA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
  smtp.mailfrom=microchip.com;dmarc=pass action=none
  header.from=microchip.com;dkim=pass header.d=microchip.com;arc=none
@@ -94,25 +94,24 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector1-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Shk7mTPLAIKzeDt+kvfUgbyT9Xkn4EQEtH453ue+R44=;
- b=ojdG4ITi042bbJ3GmdT2rSg6FX/NsBSbBDvsjHJxvNgaIuuc/vaJD5K9DcwqS+nOTLlabOzWQMdVPMvHU6/054GJHSk9Ti1NN2aXpDvmfWE8CtS7+qEJkhU9Nj2bVQr6lP2G/01z6ji8vhOuUL9bMXLd11Eg7LEwXZ/OeFvH1Mo=
+ bh=d8yIcMHMq6Er6vAjwuUn5TbieUcB74FCHRHEw8tljbw=;
+ b=QG/sPboqzSiy0ROP23Ajm2AWwUg2MMzIFxE7CZz2nT57zuvlI2YN18LcqNfIuBSQtrK+nsdBoTPX8sw2sjDNs6ePTFT3OLQen78jpVUBdALaPjO+BarshT1CCTQaPz9jUPIeLfcagiQFa/K1cyHnlbOW23mI1lJcRdPfcHnjyns=
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com (52.135.39.157) by
  MN2SPR01MB0050.namprd11.prod.outlook.com (10.255.239.221) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.15; Wed, 31 Jul 2019 09:03:27 +0000
+ 15.20.2115.15; Wed, 31 Jul 2019 09:03:29 +0000
 Received: from MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::61d1:6408:89a2:8de5]) by MN2PR11MB4448.namprd11.prod.outlook.com
  ([fe80::61d1:6408:89a2:8de5%2]) with mapi id 15.20.2115.005; Wed, 31 Jul 2019
- 09:03:27 +0000
+ 09:03:29 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <boris.brezillon@collabora.com>, <marek.vasut@gmail.com>, <vigneshr@ti.com>
-Subject: [PATCH 1/7] mtd: spi-nor: Add default_init() hook to tweak flash
- parameters
-Thread-Topic: [PATCH 1/7] mtd: spi-nor: Add default_init() hook to tweak flash
- parameters
-Thread-Index: AQHVR37QnctowS0O+U25R2UnwE0NUA==
-Date: Wed, 31 Jul 2019 09:03:27 +0000
-Message-ID: <20190731090315.26798-2-tudor.ambarus@microchip.com>
+Subject: [PATCH 2/7] mtd: spi-nor: Add a default_init() fixup hook for gd25q256
+Thread-Topic: [PATCH 2/7] mtd: spi-nor: Add a default_init() fixup hook for
+ gd25q256
+Thread-Index: AQHVR37SzJUb6rePcEWKq1Ud1rngjw==
+Date: Wed, 31 Jul 2019 09:03:29 +0000
+Message-ID: <20190731090315.26798-3-tudor.ambarus@microchip.com>
 References: <20190731090315.26798-1-tudor.ambarus@microchip.com>
 In-Reply-To: <20190731090315.26798-1-tudor.ambarus@microchip.com>
 Accept-Language: en-US
@@ -126,34 +125,34 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.9.5
 x-originating-ip: [94.177.32.154]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 597d8b42-3170-45ff-de10-08d71595f33d
+x-ms-office365-filtering-correlation-id: e07a43d7-f741-43ff-4a61-08d71595f47f
 x-microsoft-antispam: BCL:0; PCL:0;
  RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);
  SRVR:MN2SPR01MB0050; 
 x-ms-traffictypediagnostic: MN2SPR01MB0050:
-x-microsoft-antispam-prvs: <MN2SPR01MB0050663B1EECF4ECC2262A82F0DF0@MN2SPR01MB0050.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-microsoft-antispam-prvs: <MN2SPR01MB0050868659E7C0A0C12BAEB9F0DF0@MN2SPR01MB0050.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-forefront-prvs: 011579F31F
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(376002)(39860400002)(366004)(346002)(396003)(136003)(189003)(199004)(6116002)(3846002)(50226002)(53936002)(36756003)(54906003)(305945005)(8676002)(81166006)(107886003)(2906002)(81156014)(6436002)(316002)(26005)(66476007)(66946007)(64756008)(66446008)(66556008)(6486002)(68736007)(8936002)(6512007)(86362001)(5660300002)(25786009)(1076003)(110136005)(7736002)(186003)(4326008)(11346002)(446003)(102836004)(386003)(6506007)(256004)(2616005)(476003)(52116002)(99286004)(76176011)(478600001)(2501003)(66066001)(14454004)(486006)(71190400001)(71200400001)(2201001);
+ SFS:(10009020)(376002)(39860400002)(366004)(346002)(396003)(136003)(189003)(199004)(6116002)(3846002)(50226002)(53936002)(36756003)(54906003)(7416002)(305945005)(8676002)(81166006)(107886003)(2906002)(81156014)(6436002)(316002)(26005)(66476007)(66946007)(64756008)(66446008)(66556008)(6486002)(68736007)(8936002)(6512007)(86362001)(5660300002)(25786009)(1076003)(110136005)(7736002)(186003)(4326008)(11346002)(446003)(102836004)(386003)(6506007)(256004)(2616005)(476003)(52116002)(99286004)(76176011)(478600001)(2501003)(66066001)(14454004)(14444005)(486006)(71190400001)(71200400001)(2201001)(138113003);
  DIR:OUT; SFP:1101; SCL:1; SRVR:MN2SPR01MB0050;
  H:MN2PR11MB4448.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; MX:1; A:1; 
 received-spf: None (protection.outlook.com: microchip.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: FDiZqmVYRM4pwogXhTdeDuH03DUY7B7iEadGqnWPKw5nP4vZxKaskz50Ve1RtT629xhVxyKORIWc5C82GgdNimdqrj7eU/rqwofHBOSur4nQiAMMXH0G+oA3y8rJHvRloOOXqHyVZzJHEmw6KWnD9oKlzN6NYlKDCtAA7HwzGrBWE/QPEAHHf3KF0mGS6AAhdf5odWuitqD0KEtyclh2c/P+SM5gpwjoKBWvVRZoFEx6+gG8Xk+Mj1suUd1PH/++US1TilLDaRc7u5BIPVzoWRnnXSMAxLvtPfcR5YCWoP6LovSOQJ6+KeWF3O3wQ59SkZSftA0vGhNx511oTVmfO91FLtJHwqm2hPKoDj9sSdPDR0etFjkqVx9yFzQY9MJ9FOmqOi9sseAmGGUnwWVPbz/PPasubSrpN6GKT2lresk=
+x-microsoft-antispam-message-info: zROeRrD3PoYeuqunA33zfpT4HFF33eixWWmg0TBizrSkB4hsiSmCUXzQx1lAvkhKbwgVIJGZ7LCB8USOUAM75FYLMTm+17Dtvp3csq2K6UZgrFeJxokJ3iWjJ/S2GfOty7bexOxJEp5tBxIp22hBn70yJY2Fku0mnOiQ/53zANTfoFZyVFPMUIMyUQXUUiCsFlfGvDWCU87rNtGXka6l8I29/I0EIC2XfnaQACl0NhxO7aBrc+Rust9wp48DAtRuthI4XbIfZ4AVtu1+7m/8Qd/I4LbP+EfuMHqBROgb1YxuoVXOQv4OxULDAKXBrlGr6D9XU3ZG+eRcEGQZBSNRONm9FXm8+OG3sS6A/WYrK93+hVZ9KK19wmeElbM9o5a2XLVjnHpF0K3MV/EfC5dm8lmaLsmrnj3tvbFJonwRqB0=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 597d8b42-3170-45ff-de10-08d71595f33d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 09:03:27.3194 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e07a43d7-f741-43ff-4a61-08d71595f47f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 09:03:29.4088 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2SPR01MB0050
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190731_020333_224228_C1D6EFF7 
-X-CRM114-Status: GOOD (  11.64  )
+X-CRM114-CacheID: sfid-20190731_020334_556402_D023045A 
+X-CRM114-Status: GOOD (  13.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -166,99 +165,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Cc: Tudor.Ambarus@microchip.com, richard@nod.at, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+ boris.brezillon@bootlin.com, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, computersforpeace@gmail.com, dwmw2@infradead.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+From: Boris Brezillon <boris.brezillon@bootlin.com>
 
-As of now, the flash parameters initialization logic is as following:
+gd25q256 needs to tweak the ->quad_enable() implementation and the
+->default_init() fixup hook is the perfect place to do that. This way,
+if we ever need to tweak more things for this flash, we won't have to
+add new fields in flash_info.
 
-a/ default flash parameters init in spi_nor_init_params()
-b/ manufacturer specific flash parameters updates, split across entire
-   spi-nor core code
-c/ flash parameters updates based on SFDP tables
-d/ post BFPT flash parameter updates
+We can get rid of the flash_info->quad_enable field as gd25q256 was
+the only user.
 
-In the quest of removing the manufacturer specific code from the spi-nor
-core, we want to impose a timeline/priority on how the flash parameters
-are updated. The following sequence of calls is pursued:
-
-1/ spi-nor core legacy flash parameters init:
-	spi_nor_default_init_params()
-
-2/ MFR-based manufacturer flash parameters init:
-	nor->manufacturer->fixups->default_init()
-
-3/ specific flash_info tweeks done when decisions can not be done just on
-   MFR:
-	nor->info->fixups->default_init()
-
-4/ SFDP tables flash parameters init - SFDP knows better:
-	spi_nor_sfdp_init_params()
-
-5/ post SFDP tables flash parameters updates - in case manufacturers get
-   the serial flash tables wrong or incomplete.
-	nor->info->fixups->post_sfdp()
-   The later can be extended to nor->manufacturer->fixups->post_sfdp() if
-   needed.
-
-This patch opens doors for steps 2/ and 3/.
-
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+[tudor.ambarus@microchip.com: use ->default_init() hook instead of
+->post_sfdp()]
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mtd/spi-nor/spi-nor.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 28a64dbdaea9..ac00f90ebaa9 100644
+index ac00f90ebaa9..94aba5ce1462 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -219,12 +219,17 @@ struct sfdp_bfpt {
+@@ -288,8 +288,6 @@ struct flash_info {
  
- /**
-  * struct spi_nor_fixups - SPI NOR fixup hooks
-+ * @default_init: called after default flash parameters init. Used to tweak
-+ *                flash parameters when information provided by the flash_info
-+ *                table is incomplete or wrong.
-  * @post_bfpt: called after the BFPT table has been parsed
-  *
-  * Those hooks can be used to tweak the SPI NOR configuration when the SFDP
-  * table is broken or not available.
-  */
- struct spi_nor_fixups {
-+	void (*default_init)(struct spi_nor *nor,
-+			     struct spi_nor_flash_parameter *params);
- 	int (*post_bfpt)(struct spi_nor *nor,
- 			 const struct sfdp_parameter_header *bfpt_header,
- 			 const struct sfdp_bfpt *bfpt,
-@@ -4267,6 +4272,14 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 	return err;
- }
+ 	/* Part specific fixup hooks. */
+ 	const struct spi_nor_fixups *fixups;
+-
+-	int	(*quad_enable)(struct spi_nor *nor);
+ };
  
-+static void
-+spi_nor_manufacturer_init_params(struct spi_nor *nor,
-+				 struct spi_nor_flash_parameter *params)
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -2268,6 +2266,22 @@ static struct spi_nor_fixups mx25l25635_fixups = {
+ 	.post_bfpt = mx25l25635_post_bfpt_fixups,
+ };
+ 
++static void gd25q256_default_init(struct spi_nor *nor,
++				  struct spi_nor_flash_parameter *params)
 +{
-+	if (nor->info->fixups && nor->info->fixups->default_init)
-+		return nor->info->fixups->default_init(nor, params);
++	/*
++	 * Some manufacturer like GigaDevice may use different
++	 * bit to set QE on different memories, so the MFR can't
++	 * indicate the quad_enable method for this case, we need
++	 * set it in the default_init fixup hook.
++	 */
++	params->quad_enable = macronix_quad_enable;
 +}
 +
- static int spi_nor_init_params(struct spi_nor *nor,
- 			       struct spi_nor_flash_parameter *params)
- {
-@@ -4370,6 +4383,8 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 			params->quad_enable = info->quad_enable;
++static struct spi_nor_fixups gd25q256_fixups = {
++	.default_init = gd25q256_default_init,
++};
++
+ /* NOTE: double check command sets and memory organization when you add
+  * more nor chips.  This current list focusses on newer chips, which
+  * have been converging on command sets which including JEDEC ID.
+@@ -2360,7 +2374,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+-			.quad_enable = macronix_quad_enable,
++			.fixups = &gd25q256_fixups,
+ 	},
+ 
+ 	/* Intel/Numonyx -- xxxs33b */
+@@ -4372,15 +4386,6 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ 			params->quad_enable = spansion_quad_enable;
+ 			break;
+ 		}
+-
+-		/*
+-		 * Some manufacturer like GigaDevice may use different
+-		 * bit to set QE on different memories, so the MFR can't
+-		 * indicate the quad_enable method for this case, we need
+-		 * set it in flash info list.
+-		 */
+-		if (info->quad_enable)
+-			params->quad_enable = info->quad_enable;
  	}
  
-+	spi_nor_manufacturer_init_params(nor, params);
-+
- 	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
- 	    !(info->flags & SPI_NOR_SKIP_SFDP)) {
- 		struct spi_nor_flash_parameter sfdp_params;
+ 	spi_nor_manufacturer_init_params(nor, params);
 -- 
 2.9.5
 
