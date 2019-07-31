@@ -2,70 +2,66 @@ Return-Path: <SRS0=JTfG=V4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B5F3C433FF
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 08:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 600EBC32751
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 08:38:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E1AD2067D
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 08:23:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34E0F206A2
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2019 08:38:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="Jq6x5XuY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E1AD2067D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="aK8NQEMv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34E0F206A2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VjLRK/ohDRp7TV8TthUHA+pmqygqz/v/KKtk7WAW8GY=; b=Jq6x5XuYCTPig7
-	WihexdJO5s7XBN1isTu1JEhf2WUsADVHQVTJMvXkD0alW25bv5M+pjVKF85zXrKN2jkWlyIx568NX
-	SRvTl9hZHUMDNmktC1HZgUf0jBRdWJnO1eOJti2aht9EEILfDMFj0MYyRyuuZ1IKSDGCOqNOCDlxr
-	D4CGmgTMnl7D6Si0T9KfWevCsbyWo2JTwpRLC/1SwUGvVG47SUk2785F4pTd6F+VcGyTdkpmXr+8b
-	tubDZCwXflG6AY7uIhWjLzLidd6wEJxNfbh0RRALIhMe4yaQHXzbirxbjLpQ4FwgUgHeDYKvDPzzw
-	RKWUrBo8AyrESdGjnm/Q==;
+	List-Owner; bh=1PjD39Q4B3TDAL2LjMm+oY73d/VFQp8lcOSaIXuHkDM=; b=aK8NQEMvU1bYKS
+	/zqT73l+mNKR9KOYHonkJsucAh6HbN8SK49YYI0ckt1dGz+fSeUmxkwPYNUofrfcGUnnWDmft+dqW
+	ijDnN4kmmHUhpnQEfzOATQNys5UTF3+zu+U0Tlo5R18OepNNuI+PgewzQD/GRfBkpfQjqUw8QsV8F
+	xX9kNEmQ+MRdNnesrgax2zeJQXI3+j8MBZY3f7q8ZYGdABQND8CDb0nibQTySF1l1yWndu0amIMay
+	A/hneQeVaeYg7qhbMy35JJeDn5obJUNf1JrSjezV/1A7Vbnpsxb2AADh36LU5yXDApOJxm0ucO7Q6
+	/LzpaTkz5N72mbzpAPKw==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1hsjsn-0004Ui-KP; Wed, 31 Jul 2019 08:22:49 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1hsk7n-00047y-4j; Wed, 31 Jul 2019 08:38:19 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1hsjsk-0004UD-3S
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2019 08:22:47 +0000
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1hsjsg-0005wk-Fv; Wed, 31 Jul 2019 10:22:42 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <ukl@pengutronix.de>)
- id 1hsjsg-0000OH-6Y; Wed, 31 Jul 2019 10:22:42 +0200
-Date: Wed, 31 Jul 2019 10:22:42 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] ubifs: Correctly initialize c->min_log_bytes
-Message-ID: <20190731082242.bezqzog4hqdluuxs@pengutronix.de>
-References: <20190725205627.31313-1-richard@nod.at>
- <20190731074244.2msdjvuokoci2lxx@pengutronix.de>
- <1015927082.55006.1564560426219.JavaMail.zimbra@nod.at>
+ id 1hsk7W-0003vm-58; Wed, 31 Jul 2019 08:38:04 +0000
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
+ [10.5.11.11])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id CD99FC007359;
+ Wed, 31 Jul 2019 08:38:00 +0000 (UTC)
+Received: from gondolin (dhcp-192-232.str.redhat.com [10.33.192.232])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 30EE16012E;
+ Wed, 31 Jul 2019 08:37:54 +0000 (UTC)
+Date: Wed, 31 Jul 2019 10:37:51 +0200
+From: Cornelia Huck <cohuck@redhat.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v5 12/29] compat_ioctl: move drivers to compat_ptr_ioctl
+Message-ID: <20190731103751.3cc53132.cohuck@redhat.com>
+In-Reply-To: <20190730195227.742215-1-arnd@arndb.de>
+References: <20190730192552.4014288-1-arnd@arndb.de>
+ <20190730195227.742215-1-arnd@arndb.de>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1015927082.55006.1564560426219.JavaMail.zimbra@nod.at>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.5.110.32]); Wed, 31 Jul 2019 08:38:01 +0000 (UTC)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190731_012246_147375_255AB391 
-X-CRM114-Status: GOOD (  15.96  )
+X-CRM114-CacheID: sfid-20190731_013802_226112_6066F728 
+X-CRM114-Status: GOOD (  12.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,65 +73,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Cc: devel@driverdev.osuosl.org, kvm@vger.kernel.org,
+ "Michael S . Tsirkin" <mst@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org,
+ Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+ virtualization@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Stefan Hajnoczi <stefanha@redhat.com>, linux-input@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
+ ceph-devel@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+ Jason Gunthorpe <jgg@mellanox.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Richard,
+On Tue, 30 Jul 2019 21:50:28 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-On Wed, Jul 31, 2019 at 10:07:06AM +0200, Richard Weinberger wrote:
-> > On Thu, Jul 25, 2019 at 10:56:27PM +0200, Richard Weinberger wrote:
-> >> Currently on a freshly mounted UBIFS, c->min_log_bytes is 0.
-> >> This can lead to a log overrun and make commits fail.
-> >> =
+> Each of these drivers has a copy of the same trivial helper function to
+> convert the pointer argument and then call the native ioctl handler.
+> 
+> We now have a generic implementation of that, so use it.
+> 
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+> Reviewed-by: Jiri Kosina <jkosina@suse.cz>
+> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-> >> Recent kernels will report the following assert:
-> >> UBIFS assert failed: c->lhead_lnum !=3D c->ltail_lnum, in fs/ubifs/log=
-.c:412
-> >> =
+>  drivers/vfio/vfio.c               | 39 +++----------------------------
 
-> >> c->min_log_bytes can have two states, 0 and c->leb_size.
-> >> It controls how much bytes of the log area are reserved for non-bud
-> >> nodes such as commit nodes.
-> >> =
+vfio changes:
 
-> >> After a commit it has to be set to c->leb_size such that we have always
-> >> enought space for a commit. While a commit runs it can be 0 to make the
-> >> remaining bytes of the log available to writers.
-> >> =
-
-> >> Having it set to 0 right after mount is wrong since no space for commi=
-ts
-> >> is reserved.
-> >> =
-
-> >> Reported-and-tested-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutroni=
-x.de>
-> >> Signed-off-by: Richard Weinberger <richard@nod.at>
-> > =
-
-> > I assume you care for applying this to mainline? I wonder it isn't in
-> > next yet?!
-> =
-
-> Don't stress me. The issue is present in UBIFS since day 0, there is abso=
-lutely
-> no reason to hurry.
-> It will get merged when I'm back from traveling and my time permits it.
-
-My intention was not to stess you, just to ensure this is eventually
-taken care of and to check if there is a blocker that I can help to
-remove.
-
-Thanks
-Uwe
-
--- =
-
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
