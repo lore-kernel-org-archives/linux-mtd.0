@@ -2,69 +2,76 @@ Return-Path: <SRS0=R5zI=V5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6546AC433FF
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C100C19759
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:21:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24150216C8
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:18:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5885F205F4
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:21:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="fzkIeaQ4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24150216C8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="nU+OvnaW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5885F205F4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20170209; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6jtpUQ6gkU++P4WvaZ5uMYABVEEsCCAjXeKBr3rhmeU=; b=fzkIeaQ461nT/n
-	FiS90A+jfJXhLJXKI4rq3reUmtIzMtAqCWCA3n6uDxL1oL/iX7oMlC06IxtW7q8Ewh0nPRLTvdRXt
-	ULAGpLxbGz8OwDrA5VrcArqpeIVNznqDdaXMlCsoMdLH39k1601SIP4g0VW5A2FyH2DMy6ROJhHXg
-	0NCWnP33gbqYku3BJuMMMVj4xABy0LNJ0111cNVIdi1xErrPET9Qj032KVFtMlXw+y1ehVkIR3mLE
-	/Ft/904C9gWXcGbVvKuK5zCyhbwW7FMpjdxBQydordrm1eVS498AtyucmVG29y5LrL9MY9S8/2owh
-	YKilTnDn2OOwJYBmUkBA==;
+	List-Owner; bh=9f3nLy9OEg6YI26FalfA5DajRqoCPl51lQsRZTosAOw=; b=nU+OvnaWhlb68w
+	6DcOlrdznH8mKf1yoyewHdBi51K7eOynTdUabACCno7OWyTRxTSXoJhFETah67bvK9zpGmsMRSUIB
+	QwO3hzEo3J/FnhbrlmTqd5RyG8iFKmIE/d22WfMaDJWLBEvT2m2gmNYCpbjX96JYtM89CO7AE0SyS
+	yWlNVTx2je7CYedcHlQ/uBajvbbxzBDdVzSSub/uzwIAKW8fI/IHwwWs8nsucwTfuxQ+0FYTC0wIq
+	6Ku+8SPJUBhoFFtIIp4oYx7E7WaM1SLGXMomt5DF6qYcD6cFWBk9x9uXARZWX7SP1MgUvbwAEgNKy
+	rww5pP/cWaV3jBTb1zSA==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1ht7EJ-0005HS-Dx; Thu, 01 Aug 2019 09:18:35 +0000
-Received: from twhmllg4.macronix.com ([211.75.127.132])
+	id 1ht7Gs-0006r9-Dn; Thu, 01 Aug 2019 09:21:14 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1ht7EG-0005H0-2z
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2019 09:18:33 +0000
-Received: from twhfmnt1.mxic.com.tw (twhfm1p2.macronix.com [172.17.20.92])
- by TWHMLLG4.macronix.com with ESMTP id x719HTPb014187;
- Thu, 1 Aug 2019 17:17:29 +0800 (GMT-8)
- (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id E762F2D1C15A92C1395E;
- Thu,  1 Aug 2019 17:17:29 +0800 (CST)
-In-Reply-To: <20190801075725.4f23e0f5@collabora.com>
-References: <1564631710-30276-1-git-send-email-masonccyang@mxic.com.tw>	<1564631710-30276-3-git-send-email-masonccyang@mxic.com.tw>
- <20190801075725.4f23e0f5@collabora.com>
-To: "Boris Brezillon" <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v6 2/2] dt-bindings: mtd: Document Macronix raw NAND
- controller bindings
+ id 1ht7Gp-0006pu-L2
+ for linux-mtd@lists.infradead.org; Thu, 01 Aug 2019 09:21:13 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 8F9B9608311C;
+ Thu,  1 Aug 2019 11:21:01 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id YRXpaPGSw17I; Thu,  1 Aug 2019 11:20:55 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 23F7760632E8;
+ Thu,  1 Aug 2019 11:20:55 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id AmoBxAj1X7tG; Thu,  1 Aug 2019 11:20:55 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id F27E9608311C;
+ Thu,  1 Aug 2019 11:20:54 +0200 (CEST)
+Date: Thu, 1 Aug 2019 11:20:54 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: chengzhihao1 <chengzhihao1@huawei.com>
+Message-ID: <1515821930.55881.1564651254907.JavaMail.zimbra@nod.at>
+In-Reply-To: <0B80F9D4116B2F4484E7279D5A66984F7A8A13@dggemi524-mbx.china.huawei.com>
+References: <1564651065-4585-1-git-send-email-chengzhihao1@huawei.com>
+ <0B80F9D4116B2F4484E7279D5A66984F7A8A13@dggemi524-mbx.china.huawei.com>
+Subject: =?utf-8?Q?Re:_=E7=AD=94=E5=A4=8D:_[PATCH_RFC]_ubi:_ub?=
+ =?utf-8?Q?i=5Fwl=5Fget=5Fpeb:_Replace_a_lim?=
+ =?utf-8?Q?ited_number_of_attempts_with_polling_while_getting_PEB?=
 MIME-Version: 1.0
-X-KeepSent: 42C4D3EC:9549E8DC-48258449:003273A5;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF42C4D3EC.9549E8DC-ON48258449.003273A5-48258449.00330A06@mxic.com.tw>
-From: masonccyang@mxic.com.tw
-Date: Thu, 1 Aug 2019 17:17:29 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2019/08/01 PM 05:17:29,
- Serialize complete at 2019/08/01 PM 05:17:29
-X-MAIL: TWHMLLG4.macronix.com x719HTPb014187
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF60 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubi_wl_get_peb: Replace a limited number of attempts with
+ polling while getting PEB
+Thread-Index: AQHVSEkuRooM7Daz00mNhjuG43MDw6bmAggAJrEe1mw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190801_021832_384545_1E8C898D 
-X-CRM114-Status: GOOD (  15.06  )
+X-CRM114-CacheID: sfid-20190801_022111_841038_2763C492 
+X-CRM114-Status: UNSURE (   5.64  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,120 +83,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, christophe.kerello@st.com,
- richard@nod.at, bbrezillon@kernel.org, juliensu@mxic.com.tw,
- lee.jones@linaro.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- paul@crapouillou.net, marek.vasut@gmail.com, paul.burton@mips.com,
- liang.yang@amlogic.com, linux-mtd@lists.infradead.org, stefan@agner.ch,
- miquel.raynal@bootlin.com, anders.roxell@linaro.org,
- computersforpeace@gmail.com, dwmw2@infradead.org, vigneshr@ti.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, yi zhang <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi Boris,
-
-> On Thu,  1 Aug 2019 11:55:10 +0800
-> Mason Yang <masonccyang@mxic.com.tw> wrote:
-> 
-> > Document the bindings used by the Macronix raw NAND controller.
-> > 
-> > Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/mxic-nand.txt | 19 
-+++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >  create mode 100644 
-Documentation/devicetree/bindings/mtd/mxic-nand.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/mxic-nand.txt b/
-> Documentation/devicetree/bindings/mtd/mxic-nand.txt
-> > new file mode 100644
-> > index 0000000..de37d60
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/mxic-nand.txt
-> > @@ -0,0 +1,19 @@
-> > +Macronix Raw NAND Controller Device Tree Bindings
-> > +-------------------------------------------------
-> > +
-> > +Required properties:
-> > +- compatible: should be "mxicy,multi-itfc-v009-nand-morph"
-> > +- reg: should contain 1 entry for the registers
-> > +- interrupts: interrupt line connected to this raw NAND controller
-> > +- clock-names: should contain "ps", "send" and "send_dly"
-> > +- clocks: should contain 3 phandles for the "ps", "send" and
-> > +    "send_dly" clocks
-> > +
-> > +Example:
-> > +
-> > +   nand: nand-controller@43c30000 {
-> > +      compatible = "mxicy,multi-itfc-v009-nand-morph";
-> > +      reg = <0x43c30000 0x10000>;
-> > +      clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
-> > +      clock-names = "send", "send_dly", "ps";
-> 
-> You should have subnodes describing the NAND connected to the
-> controller (see [1]).
-> 
-> [1]
-https://elixir.bootlin.com/linux/v5.3-rc2/source/Documentation/devicetree/
-> bindings/mtd/nand-controller.yaml#L131
-> 
-> > +   };
-> 
-
-Do you mean to add patternProperties ?
-
-                 nand: nand-controller@43c30000 {
-                                 compatible = 
-"mxicy,multi-itfc-v009-nand-morph";
-                                 reg = <0x43c30000 0x10000>;
-                                 clocks = <&clkwizard 0>, <&clkwizard 1>, 
-<&clkc 15>;
-                                 clock-names = "send", "send_dly", "ps";
-
-+                               nand@0 {
-+
-+                               };
-                 };
-
-something like that.
-
-thanks & best regards,
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
+ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Piwg
+InlpIHpoYW5nIiA8eWkuemhhbmdAaHVhd2VpLmNvbT4KPiBDQzogImxpbnV4LW10ZCIgPGxpbnV4
+LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPiwgImxpbnV4LWtlcm5lbCIgPGxpbnV4LWtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmc+Cj4gR2VzZW5kZXQ6IERvbm5lcnN0YWcsIDEuIEF1Z3VzdCAyMDE5IDEx
+OjEzOjIwCj4gQmV0cmVmZjog562U5aSNOiBbUEFUQ0ggUkZDXSB1Ymk6IHViaV93bF9nZXRfcGVi
+OiBSZXBsYWNlIGEgbGltaXRlZCBudW1iZXIgb2YgYXR0ZW1wdHMgd2l0aCBwb2xsaW5nIHdoaWxl
+IGdldHRpbmcgUEVCCgo+IEkgZG9uJ3QgcXVpdGUgdW5kZXJzdGFuZCB3aHkgYSBsaW1pdGVkIG51
+bWJlciBvZiBhdHRlbXB0cyBoYXZlIGJlZW4gbWFkZSB0byBnZXQKPiBhIGZyZWUgUEVCIGluIHVi
+aV93bF9nZXRfcGViIChpbiBmYXN0bWFwLXdsLmMpLiBJIHByb3Bvc2VkIHRoaXMgUEFUQ0ggd2l0
+aAo+IHJlZmVyZW5jZSB0byB0aGUgaW1wbGVtZW50YXRpb24gb2YgdWJpX3dsX2dldF9wZWIgKGlu
+IHdsLmMpLiBBcyBmYXIgYXMgSSBrbm93LAo+IGdldHRpbmcgUEVCIGJ5IHBvbGxpbmcgcHJvYmFi
+bHkgd29uJ3QgZmFsbCBpbnRvIHNvZnQtbG9ja3VwLgo+IHViaV91cGRhdGVfZmFzdG1hcCBtYXkg
+YWRkIG5ldyB0YXNrcyAoaW5jbHVkaW5nIGVyYXNlIHRhc2sgb3Igd2wgdGFza2ssIHdsIHRhc2tz
+Cj4gZ2VuZXJhbGx5IGRvIG5vdCBnZW5lcmF0ZSBhZGRpdGlvbmFsIGZyZWUgUEVCcykgdG8gdWJp
+LT53b3JrcywgYW5kCj4gcHJvZHVjZV9mcmVlX3BlYiB3aWxsIGV2ZW50dWFsbHkgY29tcGxldGUg
+YWxsIHRhc2tzIGluIHViaS0+d29ya3Mgb3Igb2J0YWluIGFuCj4gZnJlZSBQRUIgdGhhdCBjYW4g
+YmUgZmlsbGVkIGludG8gcG9vbC4KCllvdSBzZW5kIHRoaXMgcGF0Y2ggdGhyZWUgdGltZXMsIEkg
+Z3Vlc3MgeW91ciBtYWlsIHNldHVwIGhhcyBpc3N1ZXM/IDotKQogClRoaXMgaXMgb25lIG9mIHRo
+ZSBkYXJrZXN0IGNvcm5lcnMgb2YgRmFzdG1hcCB3aGVyZSB0aGluZ3MgZ2V0IG1lc3N5LgpUaGUg
+bnVtYmVyIG9mIHJldHJ5IGF0dGVtcHRzIHdhcyBsaW1pdGVkIHRvIGF2b2lkIGEgbGl2ZSBsb2Nr
+LgoKSSBhZ3JlZSB0aGF0IGFsbG93aW5nIG9ubHkgb25lIHJldHJ5IGlzIGEgbGl0dGxlIHRvIGZl
+dy4KV2l0aCBuYW5kc2ltLCBhIHNtYWxsIG5hbmQgYW5kIGEgZmFzdCBQQyB5b3UgY2FuIGhpdCB0
+aGF0LgoKRG8geW91IGhhdmUgbnVtYmVycyBob3cgbWFueSBhdHRlbXB0cyB3ZXJlIG5lZWRlZCB0
+byBnZXQgYSBmcmVlIGJsb2NrPwoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
