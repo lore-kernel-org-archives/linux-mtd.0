@@ -4,19 +4,19 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB3ABC433FF
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7DBCC19759
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:12:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88C5620644
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:02:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 429062087E
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 09:12:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="DuoQqkTU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88C5620644
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="oJ4/Fkla"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 429062087E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,38 +25,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
 	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3bsE8Zx0jDB5lWkMiAgVVQj1YR+6pavNhVKLomRuiEg=; b=DuoQqkTUIvlZKx
-	l3Iqx6B/kPXwBkY0gSTpAfqw9qSeTTNWGuIzUJYUkTG7CMfRHrlqyl1zzUGmLxVovFNh57meykm+c
-	SZoNhFFpw7e9nKXYLWlX4KzmIL7p1H4xUaL9tPQpbxL2bjeuuFbLVwsK3Rj/FS67FvsxWsLlPzyh6
-	AGrybTOCeJVEXOUlV1vqvXp+FUdyrxr/yRZGjXHAotBviKPtAjRxVtf7nKkjWYhDtrC31V22OzCpu
-	e16Q1CO4olAiB3A6+SaKTZ5aIZZrdQN59GWfGjKBVpvncU3KjmkhoRR+cn+dVi86UGrwWiNmwhn2+
-	SgW/8Km3OEEmaYSCiUtA==;
+	List-Owner; bh=3bsE8Zx0jDB5lWkMiAgVVQj1YR+6pavNhVKLomRuiEg=; b=oJ4/Fkla3aAbWG
+	JdAAHCChNx3Yz+y+Wt8I3FObg//hL79dng5MjiscRuw98QLrwD40nz8jCnBp96ZfM+nYaGd7C/7XZ
+	c6GaTQm0GaggbusVczjw+7xqpf1sciQo8bGXN0dX/rx+xaUYVWo6rJvjVSWFntZ/d9gh6RdWJnvCL
+	m5FwLUHWJzomYq89GamU++/CCPjnPU+/X5GyOds7l7ivryp0ZinJ95IJ4PbF2HhJ5p4eD0cF2xFsx
+	rf/5rXj+8p/rs1vziwzvl4C0sR4KAnEpGSBFJpBGV2HXPc+kI7ZLWAiFHGPvrPkIeMISO9JWKGJar
+	VnP4ZyJPR9l9r/cavnsg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1ht6yg-00077c-Al; Thu, 01 Aug 2019 09:02:26 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+	id 1ht784-0002kx-OU; Thu, 01 Aug 2019 09:12:08 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1ht6yc-00076Z-OQ
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2019 09:02:24 +0000
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id EC4231E189F8CB4F00ED;
- Thu,  1 Aug 2019 17:02:10 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Thu, 1 Aug 2019
- 17:01:56 +0800
+ id 1ht782-0002kO-6r
+ for linux-mtd@lists.infradead.org; Thu, 01 Aug 2019 09:12:07 +0000
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id 6772E82FFE7FD0B29AB6;
+ Thu,  1 Aug 2019 17:12:01 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Thu, 1 Aug 2019
+ 17:11:52 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <yi.zhang@huawei.com>
-Subject: [RFC] ubi: ubi_wl_get_peb: Replace a limited number of attempts with
- polling while getting PEB
-Date: Thu, 1 Aug 2019 17:07:49 +0800
-Message-ID: <1564650469-130037-1-git-send-email-chengzhihao1@huawei.com>
+Subject: [PATCH RFC] ubi: ubi_wl_get_peb: Replace a limited number of attempts
+ with polling while getting PEB
+Date: Thu, 1 Aug 2019 17:17:45 +0800
+Message-ID: <1564651065-4585-1-git-send-email-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 X-Originating-IP: [10.90.53.225]
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190801_020223_355994_7D15929C 
-X-CRM114-Status: GOOD (  15.30  )
+X-CRM114-CacheID: sfid-20190801_021206_427819_7AFC171C 
+X-CRM114-Status: GOOD (  15.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
