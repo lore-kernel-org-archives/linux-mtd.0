@@ -7,16 +7,16 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58870C433FF
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 06:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3392C19759
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 06:32:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B8F9214DA
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 06:30:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 56A922089E
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Aug 2019 06:32:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="jmZ37v60"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B8F9214DA
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.b="FLXxZ4mo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56A922089E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -25,39 +25,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4NFMOS4b81CV0HRWVt8rh8Q+rvh9IoMFGuXETLmwaK0=; b=jmZ37v60EMtCqq
-	b9wvFQIGvoJU3ccvRItyC81UKtdBLiVbcH2WTjIDyCj4H9i4Zv9Q4hr5+p3K/4rGtXv+6LVEadHJ0
-	gcGNNxnsVqgAnPRym8rsMVJZniwQcRk0OUqgDfPcB9Jnd9ZGIpU7/hrXCcse9TBn3tKeSM4AUbY86
-	JabWoqsn1pupfABbDM+w6oHdJq2OZNDhM18hDYGJ5mJ9weynGHy231UH88IJYsOfVIVXH8d8M8mLt
-	Vg/rFo7gyPovdSbQ6RVA1SgihBe1h/C9pOUtTAgn2yw2yaBIOv/omAlPd1nei+te5m2apR1EMnX8r
-	itdnYtUHM46aRCvboUQw==;
+	List-Owner; bh=EVodEDc7cMvD73SaCcvhsl6KAyeWCNbCZay+rwTd3pA=; b=FLXxZ4moQ6ophB
+	8fuR3CNBsYA+JoDzoXdeLqBC7l08eFSzsw6XHImvwQbOeJ/pmG6Fx61+dphWAPlDfowiOyIqKNTaN
+	Nqx2wSIsi0aVID/4IfZxjsFDwRwzEZ3cjHYvlPx1uPFWxUtyUPPTO99urNipz79Hf9GVUqcZkEsTD
+	piPOBi/x9PUTVjC9QedUEEc1zgAynD69NrIR+Q4SwAkqrWCT+KCyelktLrnaGjGwQ+lZQdUXEt79N
+	IdPpCBiUs1D09O7MyUZWl76dedN0kgSiMQh4WO5/OF2Z6gfzdH12luSxu17tsuFZQ59uZe5Wh6REb
+	3BnFgH5Osruhax3CUrUg==;
 Received: from localhost ([127.0.0.1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.92 #3 (Red Hat Linux))
-	id 1ht4b8-0006bn-2H; Thu, 01 Aug 2019 06:29:58 +0000
+	id 1ht4d3-0008TL-S5; Thu, 01 Aug 2019 06:31:57 +0000
 Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.92 #3 (Red Hat Linux))
- id 1ht4b4-0006bQ-23
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2019 06:29:55 +0000
+ id 1ht4d0-0008Sw-Ow
+ for linux-mtd@lists.infradead.org; Thu, 01 Aug 2019 06:31:56 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8F02628B1A0;
- Thu,  1 Aug 2019 07:29:52 +0100 (BST)
-Date: Thu, 1 Aug 2019 08:29:49 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5FCA728AC4D;
+ Thu,  1 Aug 2019 07:31:53 +0100 (BST)
+Date: Thu, 1 Aug 2019 08:31:51 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH 3/7] mtd: spi_nor: Rework quad_enable()
-Message-ID: <20190801082949.2f08feae@collabora.com>
-In-Reply-To: <20190731090315.26798-4-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH 4/7] mtd: spi-nor: Split spi_nor_init_params()
+Message-ID: <20190801083151.5c96741d@collabora.com>
+In-Reply-To: <20190731090315.26798-5-tudor.ambarus@microchip.com>
 References: <20190731090315.26798-1-tudor.ambarus@microchip.com>
- <20190731090315.26798-4-tudor.ambarus@microchip.com>
+ <20190731090315.26798-5-tudor.ambarus@microchip.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20190731_232954_364257_02C91C62 
-X-CRM114-Status: GOOD (  27.00  )
+X-CRM114-CacheID: sfid-20190731_233155_067930_D77443C3 
+X-CRM114-Status: GOOD (  17.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,236 +77,124 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 31 Jul 2019 09:03:31 +0000
+On Wed, 31 Jul 2019 09:03:33 +0000
 <Tudor.Ambarus@microchip.com> wrote:
 
 > From: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> The goal is to move the quad_enable manufacturer specific init in the
-> nor->manufacturer->fixups->default_init()
+> Add functions to delimit what the chunks of code do:
 > 
-> The legacy/core quad_enable() implementation is spansion_quad_enable(),
-> select this method by default.
+> static void spi_nor_init_params()
+> {
+> 	spi_nor_default_init_params()
+> 	spi_nor_manufacturer_init_params()
+> 	spi_nor_sfdp_init_params()
+> }
 > 
-> Set specific manufacturer fixups->default_init() hooks to overwrite
-> the default quad_enable() implementation when needed.
-> 
-> Get rid of the spi_nor_flash_parameter int (*quad_enable)() pointer to
-> function, as we always choose to overwrite the nor->quad_enable,
-> if needed.
+> spi_nor_init_params() becomes of type void, as all its children
+> return void.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 103 +++++++++++++++++++++++-------------------
->  1 file changed, 57 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 94aba5ce1462..a906c36260c8 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -101,8 +101,6 @@ struct spi_nor_flash_parameter {
->  	struct spi_nor_hwcaps		hwcaps;
->  	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
->  	struct spi_nor_pp_command	page_programs[SNOR_CMD_PP_MAX];
-> -
-> -	int (*quad_enable)(struct spi_nor *nor);
->  };
->  
->  struct sfdp_parameter_header {
-> @@ -2275,7 +2273,7 @@ static void gd25q256_default_init(struct spi_nor *nor,
->  	 * indicate the quad_enable method for this case, we need
->  	 * set it in the default_init fixup hook.
->  	 */
-> -	params->quad_enable = macronix_quad_enable;
-> +	nor->quad_enable = macronix_quad_enable;
->  }
->  
->  static struct spi_nor_fixups gd25q256_fixups = {
-> @@ -3618,24 +3616,24 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->  	/* Quad Enable Requirements. */
->  	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
->  	case BFPT_DWORD15_QER_NONE:
-> -		params->quad_enable = NULL;
-> +		nor->quad_enable = NULL;
->  		break;
->  
->  	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
->  	case BFPT_DWORD15_QER_SR2_BIT1_NO_RD:
-> -		params->quad_enable = spansion_no_read_cr_quad_enable;
-> +		nor->quad_enable = spansion_no_read_cr_quad_enable;
->  		break;
->  
->  	case BFPT_DWORD15_QER_SR1_BIT6:
-> -		params->quad_enable = macronix_quad_enable;
-> +		nor->quad_enable = macronix_quad_enable;
->  		break;
->  
->  	case BFPT_DWORD15_QER_SR2_BIT7:
-> -		params->quad_enable = sr2_bit7_quad_enable;
-> +		nor->quad_enable = sr2_bit7_quad_enable;
->  		break;
->  
->  	case BFPT_DWORD15_QER_SR2_BIT1:
-> -		params->quad_enable = spansion_read_cr_quad_enable;
-> +		nor->quad_enable = spansion_read_cr_quad_enable;
->  		break;
->  
->  	default:
-> @@ -4286,10 +4284,41 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
->  	return err;
->  }
->  
-> +static void macronix_set_default_init(struct spi_nor *nor)
-> +{
-> +	nor->quad_enable = macronix_quad_enable;
-> +}
-> +
-> +static void st_micron_set_default_init(struct spi_nor *nor)
-> +{
-> +	nor->quad_enable = NULL;
-> +}
-> +
-> +static void spi_nor_mfr_init_params(struct spi_nor *nor,
-> +				    struct spi_nor_flash_parameter *params)
-
-So now we have spi_nor_mfr_init_params() and
-spi_nor_manufacturer_init_params(), that's a bit confusing. Can't we
-just inline the below code in the spi_nor_manufacturer_init_params()
-func? I guess this func will be removed anyway, so maybe it's not
-such a big deal.
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 58 ++++++++++++++++++++++++-------------------
+>  1 file changed, 32 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index a906c36260c8..b2e72668e7ab 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -4312,6 +4312,25 @@ static void spi_nor_mfr_init_params(struct spi_nor *nor,
+>  	}
+>  }
+>  
+> +static void spi_nor_sfdp_init_params(struct spi_nor *nor,
+> +				     struct spi_nor_flash_parameter *params)
 > +{
-> +	switch (JEDEC_MFR(nor->info)) {
-> +	case SNOR_MFR_MACRONIX:
-> +		macronix_set_default_init(nor);
-> +		break;
+> +	struct spi_nor_flash_parameter sfdp_params;
+> +	struct spi_nor_erase_map prev_map;
 > +
-> +	case SNOR_MFR_ST:
-> +	case SNOR_MFR_MICRON:
-> +		st_micron_set_default_init(nor);
-> +		break;
+> +	memcpy(&sfdp_params, params, sizeof(sfdp_params));
+> +	memcpy(&prev_map, &nor->erase_map, sizeof(prev_map));
 > +
-> +	default:
-> +		break;
+> +	if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+> +		nor->addr_width = 0;
+> +		nor->flags &= ~SNOR_F_4B_OPCODES;
+> +		/* restore previous erase map */
+> +		memcpy(&nor->erase_map, &prev_map, sizeof(nor->erase_map));
+> +	} else {
+> +		memcpy(params, &sfdp_params, sizeof(*params));
 > +	}
 > +}
 > +
 >  static void
 >  spi_nor_manufacturer_init_params(struct spi_nor *nor,
 >  				 struct spi_nor_flash_parameter *params)
->  {
-> +	/* Init flash parameters based on MFR */
-> +	spi_nor_mfr_init_params(nor, params);
-> +
->  	if (nor->info->fixups && nor->info->fixups->default_init)
+> @@ -4323,8 +4342,8 @@ spi_nor_manufacturer_init_params(struct spi_nor *nor,
 >  		return nor->info->fixups->default_init(nor, params);
 >  }
-> @@ -4369,25 +4398,6 @@ static int spi_nor_init_params(struct spi_nor *nor,
+>  
+> -static int spi_nor_init_params(struct spi_nor *nor,
+> -			       struct spi_nor_flash_parameter *params)
+> +static void spi_nor_default_init_params(struct spi_nor *nor,
+> +					struct spi_nor_flash_parameter *params)
+>  {
+>  	struct spi_nor_erase_map *map = &nor->erase_map;
+>  	const struct flash_info *info = nor->info;
+> @@ -4397,29 +4416,18 @@ static int spi_nor_init_params(struct spi_nor *nor,
+>  	spi_nor_set_erase_type(&map->erase_type[i], info->sector_size,
 >  			       SPINOR_OP_SE);
 >  	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
->  
-> -	/* Select the procedure to set the Quad Enable bit. */
-> -	if (params->hwcaps.mask & (SNOR_HWCAPS_READ_QUAD |
-> -				   SNOR_HWCAPS_PP_QUAD)) {
-> -		switch (JEDEC_MFR(info)) {
-> -		case SNOR_MFR_MACRONIX:
-> -			params->quad_enable = macronix_quad_enable;
-> -			break;
-> -
-> -		case SNOR_MFR_ST:
-> -		case SNOR_MFR_MICRON:
-> -			break;
-> -
-> -		default:
-> -			/* Kept only for backward compatibility purpose. */
-> -			params->quad_enable = spansion_quad_enable;
-> -			break;
-> -		}
-> -	}
-> -
->  	spi_nor_manufacturer_init_params(nor, params);
->  
->  	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
-> @@ -4569,7 +4579,6 @@ static int spi_nor_setup(struct spi_nor *nor,
->  			 const struct spi_nor_hwcaps *hwcaps)
->  {
->  	u32 ignored_mask, shared_mask;
-> -	bool enable_quad_io;
->  	int err;
->  
->  	/*
-> @@ -4617,21 +4626,23 @@ static int spi_nor_setup(struct spi_nor *nor,
->  
->  	/* Select the Sector Erase command. */
->  	err = spi_nor_select_erase(nor, nor->info->sector_size);
-> -	if (err) {
-> +	if (err)
->  		dev_err(nor->dev,
->  			"can't select erase settings supported by both the SPI controller and memory.\n");
-> -		return err;
-> -	}
->  
-> -	/* Enable Quad I/O if needed. */
-> -	enable_quad_io = (spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-> -			  spi_nor_get_protocol_width(nor->write_proto) == 4);
-> -	if (enable_quad_io && params->quad_enable)
-> -		nor->quad_enable = params->quad_enable;
-> -	else
-> -		nor->quad_enable = NULL;
-> +	return err;
 > +}
 >  
-> -	return 0;
-> +static int spi_nor_quad_enable(struct spi_nor *nor)
+> -	spi_nor_manufacturer_init_params(nor, params);
+> -
+> -	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
+> -	    !(info->flags & SPI_NOR_SKIP_SFDP)) {
+> -		struct spi_nor_flash_parameter sfdp_params;
+> -		struct spi_nor_erase_map prev_map;
+> -
+> -		memcpy(&sfdp_params, params, sizeof(sfdp_params));
+> -		memcpy(&prev_map, &nor->erase_map, sizeof(prev_map));
+> +static void spi_nor_init_params(struct spi_nor *nor,
+> +				struct spi_nor_flash_parameter *params)
 > +{
-> +	if (!nor->quad_enable)
-> +		return 0;
-> +
-> +	if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-> +	      spi_nor_get_protocol_width(nor->write_proto) == 4))
-> +		return 0;
-> +
-> +	return nor->quad_enable(nor);
+> +	spi_nor_default_init_params(nor, params);
+>  
+> -		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
+> -			nor->addr_width = 0;
+> -			nor->flags &= ~SNOR_F_4B_OPCODES;
+> -			/* restore previous erase map */
+> -			memcpy(&nor->erase_map, &prev_map,
+> -			       sizeof(nor->erase_map));
+> -		} else {
+> -			memcpy(params, &sfdp_params, sizeof(*params));
+> -		}
+> -	}
+> +	spi_nor_manufacturer_init_params(nor, params);
+>  
+> -	return 0;
+> +	if ((nor->info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
+> +	    !(nor->info->flags & SPI_NOR_SKIP_SFDP))
+> +		spi_nor_sfdp_init_params(nor, params);
 >  }
 >  
->  static int spi_nor_init(struct spi_nor *nor)
-> @@ -4650,12 +4661,10 @@ static int spi_nor_init(struct spi_nor *nor)
->  		}
->  	}
+>  static int spi_nor_select_read(struct spi_nor *nor,
+> @@ -4794,10 +4802,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	/* Kept only for backward compatibility purpose. */
+>  	nor->quad_enable = spansion_quad_enable;
 >  
-> -	if (nor->quad_enable) {
-> -		err = nor->quad_enable(nor);
-> -		if (err) {
-> -			dev_err(nor->dev, "quad mode not supported\n");
-> -			return err;
-> -		}
-> +	err = spi_nor_quad_enable(nor);
-> +	if (err) {
-> +		dev_err(nor->dev, "quad mode not supported\n");
-> +		return err;
->  	}
+> -	/* Parse the Serial Flash Discoverable Parameters table. */
+> -	ret = spi_nor_init_params(nor, &params);
+> -	if (ret)
+> -		return ret;
+> +	/* Init flash parameters based on flash_info struct and SFDP */
+> +	spi_nor_init_params(nor, &params);
 >  
->  	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
-> @@ -4782,6 +4791,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  	    nor->info->flags & SPI_NOR_HAS_LOCK)
->  		nor->clear_sr_bp = spi_nor_clear_sr_bp;
->  
-> +	/* Kept only for backward compatibility purpose. */
-> +	nor->quad_enable = spansion_quad_enable;
-> +
->  	/* Parse the Serial Flash Discoverable Parameters table. */
->  	ret = spi_nor_init_params(nor, &params);
->  	if (ret)
-> @@ -4858,7 +4870,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
->  	 * - set the number of dummy cycles (mode cycles + wait states).
->  	 * - set the SPI protocols for register and memory accesses.
-> -	 * - set the Quad Enable bit if needed (required by SPI x-y-4 protos).
->  	 */
->  	ret = spi_nor_setup(nor, &params, hwcaps);
->  	if (ret)
+>  	if (!mtd->name)
+>  		mtd->name = dev_name(dev);
 
 
 ______________________________________________________
